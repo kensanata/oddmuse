@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.10 2004/10/15 22:52:02 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.11 2004/10/16 23:51:41 as Exp $</p>';
 
 $DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /table\.user/; # mod_perl?
 table.user { border-style:solid; border-width:thin; }
@@ -24,20 +24,21 @@ table.user tr td { border-style:solid; border-width:thin; padding:5px; }
 EOT
 
 use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml
-	    $UseModSpaceRequired);
+	    $UseModSpaceRequired $UseModMarkupInTitles);
 
 push(@MyRules, \&UsemodRule);
 # The ---- rule conflicts with the --- rule in markup.pl and portrait-support.pl
 # The == heading rule conflicts with the same rule in portrait-support.pl
 $RuleOrder{\&UsemodRule} = 100;
 
-$RFCPattern = "RFC\\s?(\\d+)";
+$RFCPattern  = 'RFC\\s?(\\d+)';
 $ISBNPattern = 'ISBN:?([0-9- xX]{10,})';
 $HtmlLinks   = 0;   # 1 = <a href="foo">desc</a> is a link
 $RawHtml     = 0;   # 1 = allow <HTML> environment for raw HTML inclusion
 @HtmlTags    = ();  # List of HTML tags.  If not set, determined by $HtmlTags
 $HtmlTags    = 0;   # 1 = allow some 'unsafe' HTML tags
-$UseModSpaceRequired = 1; # 1 = require space after * # : ; for lists.
+$UseModSpaceRequired = 1;  # 1 = require space after * # : ; for lists.
+$UseModMarkupInTitles = 0; # 1 = may use links and other markup in ==titles==
 
 *OldUsemodInitVariables = *InitVariables;
 *InitVariables = *NewUsemodInitVariables;
@@ -102,8 +103,17 @@ sub UsemodRule {
   } elsif (InElement('dt', 'dd') and m/\G:[ \t]*/cg) {
     return CloseHtmlEnvironmentUntil('dt') . CloseHtmlEnvironment() . AddHtmlEnvironment('dd');
   }
-  # headings using =
-  elsif ($bol && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg) {
+  # headings using = (with lookahead)
+  elsif ($bol && $UseModMarkupInTitles && m/\G(\s*\n)*(\=+)[ \t]*(?=[^=\n]+=)/cg) {
+    my $depth = length($2);
+    $depth = 6 if $depth > 6;
+    return CloseHtmlEnvironments() . AddHtmlEnvironment('h' . $depth);
+  } elsif ($UseModMarkupInTitles
+	   && m/\G[ \t]*=+\n?/cg
+	   && (InElement('h1') || InElement('h2') || InElement('h3')
+		|| InElement('h4') || InElement('h5') || InElement('h6'))) {
+    return CloseHtmlEnvironments();
+  } elsif ($bol && !$UseModMarkupInTitles && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg) {
     return CloseHtmlEnvironments() . WikiHeading($2, $3);
   }
   # horizontal lines using ----
