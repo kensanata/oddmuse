@@ -16,9 +16,9 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: markup.pl,v 1.11 2004/09/02 20:34:52 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: markup.pl,v 1.12 2004/09/27 21:38:08 as Exp $</p>';
 
-use vars qw(%MarkupPairs %MarkupSingles);
+use vars qw(%MarkupPairs %MarkupSingles %MarkupLines);
 
 push(@MyRules, \&MarkupRule);
 # The ---- rule in usemod.pl conflicts with the --- rule
@@ -37,8 +37,11 @@ $RuleOrder{\&MarkupRule} = 150;
 %MarkupSingles = ('...' => '&#x2026;', # HORIZONTAL ELLIPSIS
 		  '---' => '&#x2014;', # EM DASH
 		  '-- ' => '&#x2013; ', # EN DASH
-		  '-&gt; ' => '&#x2192; ', # RIGHTWARDS ARROW
+		  '-> ' => '&#x2192; ', # RIGHTWARDS ARROW
 		 );
+
+%MarkupLines = ('>' => 'pre',
+	       );
 
 my $words = '([A-Za-z\x80-\xff][-%.,:;\'"!?0-9 A-Za-z\x80-\xff]*?)';
 # zero-width look-ahead assertion to prevent km/h from counting
@@ -46,36 +49,55 @@ my $noword = '(?=[^-0-9A-Za-z\x80-\xff]|$)';
 
 my $markup_pairs_re = '';
 my $markup_singles_re = '';
+my $markup_lines_re = '';
 
 *OldMarkupInitVariables = *InitVariables;
 *InitVariables = *NewMarkupInitVariables;
 
 sub NewMarkupInitVariables {
   OldMarkupInitVariables();
-  $markup_pairs_re = '\G([' . join('', (map { quotemeta($_) } keys(%MarkupPairs))) . '])';
-  # die($markup_pairs_re);
+  $markup_pairs_re = '\G([' . join('', (map { quotemeta(QuoteHtml($_)) }
+					keys(%MarkupPairs))) . '])';
   $markup_pairs_re = qr/\G${markup_pairs_re}${words}\1${noword}/;
-  $markup_singles_re = '\G(' . join('|', (map { quotemeta($_) } keys(%MarkupSingles))) . ')';
+  $markup_singles_re = '\G(' . join('|', (map { quotemeta(QuoteHtml($_)) }
+					  keys(%MarkupSingles))) . ')';
   $markup_singles_re = qr/$markup_singles_re/;
+  $markup_lines_re = '\G(' . join('|', (map { quotemeta(QuoteHtml($_)) }
+					keys(%MarkupLines))) . ')(.*\n?)';
+  $markup_lines_re = qr/$markup_lines_re/;
+}
+
+sub MarkupTag {
+  my ($tag, $str) = @_;
+  my ($start, $end);
+  if (ref($tag)) {
+    my $arrayref = $tag;
+    my ($tag, $hashref) = @{$arrayref};
+    my %hash = %{$hashref};
+    $start = $end = $tag;
+    foreach my $attr (keys %hash) {
+      $start .= ' ' . $attr . '="' . $hash{$attr} . '"';
+    }
+  } else {
+    $start = $end = $tag;
+  }
+  return '<' . $start . '>' . $str . '</' . $end . '>';
 }
 
 sub MarkupRule {
-  if (m/$markup_pairs_re/gc) {
-    my ($start, $end);
-    if (ref($MarkupPairs{$1})) {
-      my $arrayref = $MarkupPairs{$1};
-      my ($tag, $hashref) = @{$arrayref};
-      my %hash = %{$hashref};
-      $start = $end = $tag;
-      foreach my $attr (keys %hash) {
-	$start .= ' ' . $attr . '="' . $hash{$attr} . '"';
-      }
-    } else {
-      $start = $end = $MarkupPairs{$1};
+  if ($bol and m/$markup_lines_re/gc) {
+    my ($tag, $str) = ($1, $2);
+    $str = $q->span($tag) . $str;
+    while (m/$markup_lines_re/gc) {
+      $str .= $q->span($1) . $2;
     }
-    return '<' . $start . '>' . $2 . '</' . $end . '>';
+    warn '...' . $MarkupLines{UnquoteHtml($tag)};
+    return MarkupTag($MarkupLines{UnquoteHtml($tag)}, $str);
+  }
+  elsif (m/$markup_pairs_re/gc) {
+    return MarkupTag($MarkupPairs{UnquoteHtml($1)}, $2);
   } elsif (m/$markup_singles_re/gc) {
-    return $MarkupSingles{$1};
+    return $MarkupSingles{UnquoteHtml($1)};
   } elsif ($MarkupPairs{'/'} and m|\G~/|gc) {
     return '~/'; # fix ~/elisp/ example
   } elsif ($MarkupPairs{'/'} and m|\G(/[-A-Za-z0-9\x80-\xff/]+/$words/)|gc) {
