@@ -265,7 +265,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.185 2003/10/07 16:42:36 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.186 2003/10/09 22:16:49 as Exp $');
 }
 
 sub InitCookie {
@@ -2406,7 +2406,7 @@ sub ExpireKeepFile {
     return;
   }
   return  if (!$anyExpire);  # No sections expired
-  open (OUT, ">$fname") or ReportError(Ts('cant write %s', $fname) . ": $!");
+  open (OUT, ">$fname") or ReportError(Ts('cannot write %s', $fname) . ": $!");
   foreach (@kplist) {
     %tempSection = split(/$FS2/, $_, -1);
     $sectName = $tempSection{'name'};
@@ -2583,14 +2583,14 @@ sub ReadFileOrDie {
 
 sub WriteStringToFile {
   my ($file, $string) = @_;
-  open (OUT, ">$file") or die(Ts('cant write %s', $file) . ": $!");
+  open (OUT, ">$file") or die(Ts('cannot write %s', $file) . ": $!");
   print OUT  $string;
   close(OUT);
 }
 
 sub AppendStringToFile {
   my ($file, $string) = @_;
-  open (OUT, ">>$file") or die(Ts('cant write %s', $file) . ": $!");
+  open (OUT, ">>$file") or die(Ts('cannot write %s', $file) . ": $!");
   print OUT  $string;
   close(OUT);
 }
@@ -3327,10 +3327,12 @@ sub DoPost {
     $new = MergeRevisions($string, GetTextAtTime($oldtime), $old) if $oldtime;
     if ($new) {
       $string = $new;
-      if ($new =~ /<<<<<<</ and $new =~ />>>>>>>/) {
+      if ($new =~ /^<<<<<<</m and $new =~ /^>>>>>>>/m) {
 	$NewCookie{'msg'} = Ts('This page was changed by somebody else %s.',
 			       CalcTimeSince($Now - $Section{'ts'}))
 	  . ' ' . T('The changes conflict.  Please check the page again.');
+	$string =~ s/^<<<<<<</\n\n<pre><<<<<<</mg;
+	$string =~ s/^>>>>>>>(.*)/>>>>>>>$1\n<\/pre>\n/mg;
       }
     } elsif (($Now - $Section{'ts'}) < (600)) {
       $NewCookie{'msg'} = Ts('This page was changed by somebody else %s.',
@@ -3403,7 +3405,7 @@ sub MergeRevisions { # merge change from file2 to file3 into file1
   WriteStringToFile($name2, $file2);
   WriteStringToFile($name3, $file3);
   my ($you,$ancestor,$other) = (T('you'), T('ancestor'), T('other'));
-  my $output = `merge -p -q -L $you -L $ancestor -L $other $name1 $name2 $name3`;
+  my $output = `diff3 -m -L $you -L $ancestor -L $other $name1 $name2 $name3`;
   ReleaseLockDir('merge');
   # No need to unlink temp files--next merge will just overwrite.
   return $output;
@@ -3882,7 +3884,7 @@ sub GetPermanentAnchor {
   ReadPermanentAnchors();
   if ( $PermanentAnchors{$id} ) {
     if ($PermanentAnchors{$id} ne $OpenPageName) {
-      return '[' . T('anchor first defined here') . ': ' . GetPermanentAnchorLink($id) .']';
+      return '[' . Ts('anchor first defined here: %s', GetPermanentAnchorLink($id)) . ']';
     }
   } elsif (RequestLockDir('permanentanchors')) { # not fatal
     $PermanentAnchors{$id}=$OpenPageName;
