@@ -310,7 +310,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.338 2004/03/07 20:32:05 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.339 2004/03/07 20:37:13 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -968,6 +968,7 @@ sub ScriptLink {
 
 sub Upload {
   my ($id, $image, $revision) = @_;
+  $id = FreeToNormal($id);
   AllPagesList();
   # if the page does not exist
   return '[' . ($image ? 'image' : 'link') . ':' . $id . ']' unless $IndexHash{$id};
