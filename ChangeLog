@@ -1,3 +1,12 @@
+2004-10-07  Alex Schroeder  <alex@confusibombus>
+
+	* modules/static-copy.pl: Rewrite to correctly extract and link
+	uploaded files.
+	(StaticFileName): Fix encoding issue.  When called from
+	StaticScriptLink, the $id is already UrlEncoded, so we have to
+	decode it again to get the filename.
+	(StaticUrlDecode): New.
+
 2004-10-06  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (RSS): Handle list start tag for feeds without dates.
