@@ -55,13 +55,13 @@ $SurgeProtectionTime $DeletedPage %Languages $LanguageLimit
 $ValidatorLink $RefererTracking $RefererTimeLimit $RefererLimit
 $TopLinkBar $NotifyWeblogs $InterMap @LockOnCreation $RefererFilter
 $PermanentAnchorsFile $PermanentAnchors %CookieParameters
-$StyleSheetPage @UserGotoBarPages $ConfigPage);
+$StyleSheetPage @UserGotoBarPages $ConfigPage $ScriptName);
 
 # Other global variables:
 use vars qw(%Page %Section %Text %InterSite %KeptRevisions %IndexHash
 %Translate %OldCookie %NewCookie $InterSiteInit $FootnoteNumber
 $MainPage $OpenPageName @KeptList @IndexList $IndexInit $Message $q
-$Now $ScriptName %RecentVisitors @HtmlStack %Referers $Monolithic
+$Now %RecentVisitors @HtmlStack %Referers $Monolithic
 $ReplaceForm %PermanentAnchors %PagePermanentAnchors);
 
 # == Configuration ==
@@ -86,7 +86,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.83 2003/06/05 00:10:10 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.84 2003/06/05 16:25:45 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -259,7 +259,7 @@ sub InitRequest { # Init global session variables for mod_perl!
   $Now = time;                     # Reset in case script is persistent
   $ReplaceForm = 0;
   my @ScriptPath = split('/', $q->script_name());
-  $ScriptName = pop(@ScriptPath);  # Name used in links
+  $ScriptName = pop(@ScriptPath) unless defined $ScriptName; # Name used in links
   $IndexInit = 0;                  # Must be reset for each request
   $InterSiteInit = 0;
   %InterSite = ();
@@ -1239,7 +1239,6 @@ sub GetRc {
   my ($ts, $pagename, $summary, $minor, $host, $kind, $extraTemp);
   my %extra = ();
   my %changetime = ();
-  my %pagecount = ();
   my @languages;
   # Slice minor edits
   $showedit = GetParam('showedit', $ShowEdits);
@@ -1254,16 +1253,12 @@ sub GetRc {
       } else {               # 2 = Only edits
 	push(@temprc, $rcline)  if ($minor);
       }
-      $pagecount{$pagename}++;
       $changetime{$pagename} = $ts;
     }
     @outrc = @temprc;
   }
-  # Now store the number of changes and the latest change
-  # regardless of showedit
   foreach $rcline (@outrc) {
     ($ts, $pagename) = split(/$FS3/, $rcline);
-    $pagecount{$pagename}++;
     $changetime{$pagename} = $ts;
   }
   $date = '';
@@ -1285,21 +1280,19 @@ sub GetRc {
       &$printDailyTear($date);
     }
     &$printRCLine( $pagename, $ts, $host, $extra{'name'},
-		   $summary, $minor, $pagecount{$pagename},
-		   $extra{'revision'}, \@languages);
+		   $summary, $minor, $extra{'revision'}, \@languages);
   }
 }
 
 sub GetRcHtml {
-  my ($html, $inlist, $all, $rcchangehist);
-  my ($tEdit, $tChanges, $tDiff);
+  my ($html, $inlist);
   # Optimize param fetches out of main loop
-  $all = GetParam('all', 0);
-  $rcchangehist = GetParam('rcchangehist', 1);
+  my $all = GetParam('all', 0);
+  my $rcchangehist = GetParam('rcchangehist', 1);
   # Optimize translations out of main loop
-  $tEdit    = T('(minor)');
-  $tDiff    = T('(diff)');
-  $tChanges = T('changes');
+  my $tEdit    = T('(minor)');
+  my $tDiff    = T('(diff)');
+  my $tHistory = T('history');
   GetRc
     # printDailyTear
     sub {
@@ -1316,21 +1309,14 @@ sub GetRcHtml {
     },
     # printRCLine
     sub {
-      my($pagename, $timestamp, $host, $userName, $summary, $minor,
-         $pagecount, $revision, $languages) = @_;
+      my($pagename, $timestamp, $host, $userName, $summary, $minor, $revision, $languages) = @_;
       my($author, $sum, $edit, $count, $link, $lang);
       $host = QuoteHtml($host);
       $author = GetAuthorLink($host, $userName);
       $sum = $q->strong('[' . QuoteHtml($summary) . ']')  if $summary;
       $edit = $q->em($tEdit)  if $minor;
-      if ((!$all) && ($pagecount > 1)) {
-	$count = "($pagecount ";
-	if ($rcchangehist) {
-	  $count .= GetHistoryLink($pagename, $tChanges);
-	} else {
-	  $count .= $tChanges;
-	}
-	$count .= ')';
+      if (!$all) {
+	$count = '(' . GetHistoryLink($pagename, $tHistory) . ')';
       }
       $lang = '[' . join(', ', @{$languages}) . ']'  if @{$languages};
       if ($UseDiff && GetParam('diffrclink', 1)) {
@@ -1361,7 +1347,7 @@ sub GetRcText {
     # printRCLine
     sub {
       my($pagename, $timestamp, $host, $userName, $summary, $minor,
-         $pagecount, $revision, $languages) = @_;
+         $revision, $languages) = @_;
       my($author, $sum, $edit, $difftype, $lang);
       $author = GetAuthorLink($host, $userName);
       $sum = '[' . QuoteHtml($summary) . '] '  if $summary;
@@ -1419,8 +1405,7 @@ sub GetRcRss {
     # printRCLine
     sub {
       # ignore languages for the moment
-      my( $pagename, $timestamp, $host, $userName, $summary,
-	  $minor, $pagecount, $revision ) = @_;
+      my( $pagename, $timestamp, $host, $userName, $summary, $minor, $revision ) = @_;
       my( $description, $author, $status, $importance, $date );
       my ($sec, $min, $hour, $mday, $mon, $year) = gmtime($timestamp);
       $year += 1900;
