@@ -2,6 +2,7 @@
 
 	* wiki.pl (BrowsePage): Added a div class="content" around the
 	main part.
+	(RSS): Removed unnecessary CSS class for link within RSS divs.
 
 2003-04-26  Alex Schroeder  <alex@gnu.org>
 
