@@ -276,7 +276,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.275 2003/11/29 15:14:22 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.276 2003/11/29 20:55:50 as Exp $');
 }
 
 sub InitCookie {
@@ -3024,7 +3024,7 @@ sub DoPost {
   $_ = GetParam('text', undef);
   foreach my $macro (@MyMacros) { &$macro; }
   my $string = $_;
-  my $preview = 0;
+  my $comment = GetParam('aftertext', undef);
   # Upload file
   if ($filename) {
     require MIME::Base64;
@@ -3042,9 +3042,7 @@ sub DoPost {
     eval { $_ = MIME::Base64::encode(<$file>) };
     $string = '#FILE ' . $type . "\n" . $_;
   } else {
-    $preview = 1  if (GetParam('Preview', ''));
-    my $comment = GetParam('aftertext', undef);
-    if (defined $comment) {
+    if ($comment) {
       $comment =~ s/\r//g;	# Remove "\r"-s (0x0d) from the string
       $comment =~ s/\s+$//g;    # Remove whitespace at the end
       if ($comment ne '' and $comment ne $NewComment) {
@@ -3065,14 +3063,13 @@ sub DoPost {
   $summary =~ s/[\r\n]+/ /g;
   # rebrowse if no changes
   my $oldrev = $Page{'revision'};
-  if (!$preview && (($old eq $string) or ($oldrev == 0 and $string eq $NewText))) {
-    ReleaseLock(); # No changes -- just show the same page again
-    ReBrowsePage($id);
-    return;
-  }
-  if ($preview) {
+  if (GetParam('Preview', '')) {
     ReleaseLock();
     DoEdit($id, $string, 1);
+    return;
+  } elsif (($old eq $string) or ($oldrev == 0 and $string eq $NewText)) {
+    ReleaseLock(); # No changes -- just show the same page again
+    ReBrowsePage($id);
     return;
   }
   my $newAuthor = 0;
@@ -3089,7 +3086,7 @@ sub DoPost {
     $string = $2;
   }
   my $generalwarning = 0;
-  if ($newAuthor and $oldtime ne $myoldtime) {
+  if ($newAuthor and $oldtime ne $myoldtime and not $comment) {
     if ($myoldtime) {
       my $ancestor = GetTextAtTime($myoldtime);
       if ($ancestor and $old ne $ancestor) {
