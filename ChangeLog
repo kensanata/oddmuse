@@ -1,3 +1,9 @@
+2003-05-18  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetHtmlHeader): Add a class to the body; the value of
+	the class is the URL of the script -- this way it can be
+	distinguished from all other sites in a user style sheet.
+
 2003-05-17  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl ($NewText): Default value in the init section instead of
