@@ -356,7 +356,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.528 2005/01/31 23:27:03 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.529 2005/02/01 23:28:26 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -1292,7 +1292,7 @@ sub BrowsePage {
   }
   # shortcut if we only need the raw text: no caching, no diffs, no html.
   if ($raw) {
-    print GetHttpHeader('text/plain');
+    print GetHttpHeader('text/plain', undef, $IndexHash{$id} ? 200 : 404);
     if ($raw == 2) {
       print $Page{ts} . " # Do not delete this line when editing!\n";
     }
