@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.360 2004/03/19 00:20:45 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.361 2004/03/19 15:40:28 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -933,7 +933,7 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
   if ($exists) { # don't show brackets if the page is local/anchor/near.
     $text = $id unless $text;
     $text =~ s/_/ /g if $free;
-    return ScriptLink(UrlEncode($id), $text, $class, '', $title);
+    return ScriptLink(UrlEncode($id), $text, $class, undef, $title);
   } else {
     # $free and $bracket usually exclude each other
     # $text and not $bracket exclude each other
@@ -971,7 +971,7 @@ sub GetEditLink { # shortcut
   $name =~ s/_/ /g;
   my $action = 'action=edit;id=' . UrlEncode($id);
   $action .= ';upload=1' if $upload;
-  return ScriptLink($action, $name, 'edit', '', T('Click to create this page'));
+  return ScriptLink($action, $name, 'edit', undef, T('Click to create this page'));
 }
 
 sub ScriptLink {
@@ -985,7 +985,7 @@ sub ScriptLink {
     $params{-href} = $ScriptName . '?' . $action;
   }
   $params{'-class'} = $class  if $class;
-  $params{'-name'} = $name  if $name;
+  $params{'-name'} = UrlEncode($name)  if $name;
   $params{'-title'} = $title  if $title;
   return $q->a(\%params, $text);
 }
@@ -1012,7 +1012,7 @@ sub GetDownloadLink {
       $action = $ScriptName . '?' . $action;
     }
     my $result = $q->img({-src=>$action, -alt=>$id, -class=>'upload'});
-    $result = ScriptLink($id, $result, 'upload image') unless $id eq $OpenPageName;
+    $result = ScriptLink(UrlEncode($id), $result, 'upload image') unless $id eq $OpenPageName;
     return $result;
   } else {
     return ScriptLink($action, $id, 'upload');
@@ -1766,7 +1766,7 @@ sub GetPageParameters {
   $id = FreeToNormal($id);
   my $link = "action=$action;id=" . UrlEncode($id);
   $link .= ";revision=$revision" if $revision;
-  $link .= ";rcclusteronly=$cluster" if $cluster;
+  $link .= ';rcclusteronly=' . UrlEncode($cluster) if $cluster;
   return $link;
 }
 
@@ -1807,7 +1807,7 @@ sub GetAuthorLink {
     $userName = '';  # Just pretend it isn't there.
   }
   if ($userName and $RecentLink) {
-    $html = ScriptLink($userName, $userNameShow, 'author', undef, Ts('from %s', $host));
+    $html = ScriptLink(UrlEncode($userName), $userNameShow, 'author', undef, Ts('from %s', $host));
   } elsif ($userName) {
     $html = $q->span({-class=>'author'}, $userNameShow) . ' ' . Ts('from %s', $host);
   } else {
@@ -2029,7 +2029,7 @@ sub PrintFooter {
   if ($id and $rev ne 'history' and $rev ne 'edit') {
     if (UserCanEdit($CommentsPrefix . $id, 0)
 	and $OpenPageName !~ /^$CommentsPrefix/) {
-      $revisions .= ScriptLink($CommentsPrefix . UrlEncode($OpenPageName),
+      $revisions .= ScriptLink(UrlEncode($CommentsPrefix . $OpenPageName),
 			       T('Comments on this page'));
     }
     $revisions .= ' | ' if $revisions;
@@ -2046,9 +2046,9 @@ sub PrintFooter {
     if (UserIsAdmin()) {
       $revisions .= ' | ' if $revisions;
       if (-f GetLockedPageFile($id)) {
-	$revisions .= ScriptLink('action=pagelock;set=0;id=' . $id, T('Unlock page'));
+	$revisions .= ScriptLink('action=pagelock;set=0;id=' . UrlEncode($id), T('Unlock page'));
       } else {
-	$revisions .= ScriptLink('action=pagelock;set=1;id=' . $id, T('Lock page'));
+	$revisions .= ScriptLink('action=pagelock;set=1;id=' . UrlEncode($id), T('Lock page'));
       }
     }
   }
@@ -2888,7 +2888,7 @@ sub PrintPage {
     my ($class, $exists, $title) = ResolveId($id); #FIXME
     my $text = $id;
     $text =~ s/_/ /g;
-    print ScriptLink(UrlEncode($id), $text, $class, '', $title), $q->br();
+    print ScriptLink(UrlEncode($id), $text, $class, undef, $title), $q->br();
   }
 }
 
@@ -3095,9 +3095,9 @@ sub PrintSearchResultEntry {
     my ($class, $exists, $title) = ResolveId($id); #FIXME
     my $text = $id;
     $text =~ s/_/ /g;
-    $id = UrlEncode($id);
+    $id = UrlEncode($id); # watch out when passing this on!
     $id = 'action=browse;id=' . $id if $id =~ /\%2f/;
-    my $result = $q->span({-class=>'result'}, ScriptLink($id, $text, $class, '', $title));
+    my $result = $q->span({-class=>'result'}, ScriptLink($id, $text, $class, undef, $title));
     my $description = $entry{description};
     $description = $q->br() . SearchHighlight($description, $regex) if $description;
     my $info = $entry{size};
