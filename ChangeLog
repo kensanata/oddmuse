@@ -1,3 +1,20 @@
+2003-04-16  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetPageLinks): No longer call StripUrlPunct.
+	(StripUrlPunct): Removed.
+	(SplitUrlPunct): Removed.
+	(GetUrl): No longer call SplitUrlPunct, no longer return a list.
+	(PrintLinkList): GetUrl no longer returns a list.
+	(GetInterLink): No longer call SplitUrlPunct.
+	(ApplyRules): GetUrl no longer returns a list.
+	(InitLinkPatterns): Changed $UrlPattern.
+	(InitRequest): Reset $Debug on every invocation (for mod_perl!).
+	(InitCookie): Move password into the cookie, too, so that you can
+	set the password even when you are banned and banned cannot read.
+	(GetHeader): Add message at the top of the file when $Debug is set.
+	(DoPassword): Get rid of the default '*' password.
+	(RSS): Charsets are case-insensitive.
+
 2003-04-15  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (ApplyRules): Fixed handling of the last cell per row in
