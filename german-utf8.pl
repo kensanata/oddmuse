@@ -495,6 +495,10 @@ Next
 Nächster
 Calendar %s
 Kalender %s
+Comments on 
+
+Comment on 
+
 Compilation for %s
 Zusammenstellung für %s
 Compilation tag is missing a regular expression.
