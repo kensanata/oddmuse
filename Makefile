@@ -8,8 +8,8 @@ MODULES=$(wildcard modules/*.pl)
 dist: $(VERSION).tar.gz
 
 upload: $(VERSION).tar.gz $(VERSION).tar.gz.sig
-	curl -T $(VERSION).tar.gz -T $(VERSION).tar.gz.sig \
-	ftp://savannah.gnu.org/incoming/savannah/oddmuse/
+	curl -T $(VERSION).tar.gz      ftp://savannah.gnu.org/incoming/savannah/oddmuse/
+	curl -T $(VERSION).tar.gz.sig  ftp://savannah.gnu.org/incoming/savannah/oddmuse/
 
 upload-text: new-utf8.pl
 	wikiupload new-utf8.pl http://www.oddmuse.org/cgi-bin/oddmuse-en/New_Translation_File
