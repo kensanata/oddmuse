@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.426 2004/06/21 17:57:38 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.427 2004/06/22 20:06:55 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2801,7 +2801,7 @@ sub DoDownload {
   my ($text, $revision) = GetTextRevision(GetParam('revision', '')); # maybe revision reset!
   my $ts = $Page{ts};
   if ($text =~ /#FILE ([^ \n]+)\n(.*)/s) {
-    my ($type, $data) = ($1, $2);
+    my ($type, $data) = (quotemeta($1), $2);
     if (@UploadTypes and not grep(/^$type$/, @UploadTypes)) {
       ReportError(Ts('Files of type %s are not allowed.', $type), '415 UNSUPPORTED MEDIA TYPE');
     }
@@ -3298,7 +3298,7 @@ sub DoPost {
     }
     ReportError(T('Browser reports no file info.'), '500 INTERNAL SERVER ERROR')
       unless $q->uploadInfo($filename);
-    my $type = $q->uploadInfo($filename)->{'Content-Type'};
+    my $type = quotemeta($q->uploadInfo($filename)->{'Content-Type'});
     ReportError(T('Browser reports no file type.'), '415 UNSUPPORTED MEDIA TYPE') unless $type;
     if (@UploadTypes and not grep(/^$type$/, @UploadTypes)) {
       ReportError(Ts('Files of type %s are not allowed.', $type), '415 UNSUPPORTED MEDIA TYPE');
