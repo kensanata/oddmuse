@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.15 2004/12/03 08:48:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.16 2004/12/05 04:04:41 as Exp $</p>';
 
 $DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /table\.user/; # mod_perl?
 table.user { border-style:solid; border-width:thin; }
@@ -62,7 +62,7 @@ sub UsemodRule {
   my $htmlre = join('|',(@HtmlTags)) unless $htmlre;
   # <pre> for monospaced, preformatted and escaped
   if ($bol && m/\G&lt;pre&gt;\n?(.*?\n)&lt;\/pre&gt;[ \t]*\n?/cgs) {
-    return CloseHtmlEnvironments() . $q->pre({-class=>'real'}, $1);
+    return CloseHtmlEnvironments() . $q->pre({-class=>'real'}, $1) . AddHtmlEnvironment('p');
   }
   # <code> for monospaced and escaped
   elsif (m/\G\&lt;code\&gt;(.*?)\&lt;\/code\&gt;/cgis) { return $q->code($1); }
@@ -108,7 +108,7 @@ sub UsemodRule {
     my $depth = length($2);
     $depth = 6 if $depth > 6;
     my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '')
-      . AddHtmlEnvironment('h' . $depth);
+      . AddHtmlEnvironment('h' . $depth) . AddHtmlEnvironment('p');
     $PortraitSupportColorDiv = 0; # after the HTML has been determined.
     $PortraitSupportColor = 0;
     return $html;
@@ -116,17 +116,18 @@ sub UsemodRule {
 	   && m/\G[ \t]*=+\n?/cg
 	   && (InElement('h1') || InElement('h2') || InElement('h3')
 		|| InElement('h4') || InElement('h5') || InElement('h6'))) {
-    return CloseHtmlEnvironments();
+    return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
   } elsif ($bol && !$UseModMarkupInTitles && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg) {
     my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '')
-      . WikiHeading($2, $3);
+      . WikiHeading($2, $3) . AddHtmlEnvironment('p');
     $PortraitSupportColorDiv = 0; # after the HTML has been determined.
     $PortraitSupportColor = 0;
     return $html;
   }
   # horizontal lines using ----
   elsif ($bol && m/\G(\s*\n)*----+[ \t]*\n?/cg) {
-    my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '') . $q->hr();
+    my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '')
+      . $q->hr() . AddHtmlEnvironment('p');
     $PortraitSupportColorDiv = 0;
     $PortraitSupportColor = 0;
     return $html;
@@ -150,7 +151,7 @@ sub UsemodRule {
   }
   # tables using || -- since "next row" was taken care of above, this must be the last row
   elsif (InElement('td') && m/\G[ \t]*((\|\|)+)[ \t]*/cg) {
-    return CloseHtmlEnvironments();
+    return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
   }
   # RFC
   elsif (m/\G$RFCPattern/cog) { return &RFC($1); }
