@@ -305,7 +305,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.446 2004/08/15 18:08:06 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.447 2004/08/18 22:47:12 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1564,8 +1564,8 @@ sub GetRcText {
     sub {
       my($pagename, $timestamp, $host, $username, $summary, $minor, $revision, $languages, $cluster) = @_;
       my $link = $ScriptName . (GetParam('all', 0)
-				? GetPageParameters('browse', $pagename, $revision, $cluster)
-				: "/$pagename");
+				? '?' . GetPageParameters('browse', $pagename, $revision, $cluster)
+				: ($UsePathInfo ? '/' : '?') . $pagename);
       $pagename =~ s/_/ /g;
       print "\n" . RcTextItem('title', $pagename)
       . RcTextItem('description', $summary)
@@ -1579,9 +1579,9 @@ sub GetRcText {
 }
 
 sub GetRcRss {
-  my $quotedFullUrl = QuoteHtml($FullUrl);
-  my $diffPrefix = $quotedFullUrl . QuoteHtml("?action=browse;diff=1;id=");
-  my $historyPrefix = $quotedFullUrl . QuoteHtml("?action=history;id=");
+  my $url = QuoteHtml($ScriptName);
+  my $diffPrefix = $url . QuoteHtml("?action=browse;diff=1;id=");
+  my $historyPrefix = $url . QuoteHtml("?action=history;id=");
   my ($sec, $min, $hour, $mday, $mon, $year) = gmtime($Now);
   $year += 1900;
   my $date = sprintf( "%4d-%02d-%02dT%02d:%02d:%02d+00:00",
@@ -1602,7 +1602,7 @@ sub GetRcRss {
   );
   $rss->channel(
     title	  => QuoteHtml($SiteName),
-    link	  => $quotedFullUrl . '?' . UrlEncode($RCName),
+    link	  => $url . ($UsePathInfo ? '/' : '?') . UrlEncode($RCName),
     description	  => QuoteHtml($SiteDescription),
     dc => {
       publisher	  => $RssPublisher,
@@ -1617,7 +1617,7 @@ sub GetRcRss {
   $rss->image(
     title  => QuoteHtml($SiteName),
     url	   => $RssImageUrl,
-    link   => $quotedFullUrl,
+    link   => $url,
   );
   # Now call GetRc with some blocks of code as parameters:
   GetRc
@@ -1645,8 +1645,10 @@ sub GetRcRss {
 		   history     => $historyPrefix . $pagename, );
       $wiki{diff} = $diffPrefix . $pagename if $UseDiff and GetParam('diffrclink', 1);
       $rss->add_item( title	   => QuoteHtml($name),
-		      link	   => $quotedFullUrl . '?'
-		      . GetPageParameters('browse', $pagename, $revision, $cluster),
+		      link	   => $url
+		      . (GetParam('all', 0)
+			 ? '?' . GetPageParameters('browse', $pagename, $revision, $cluster)
+			 : ($UsePathInfo ? '/' : '?') . UrlEncode($pagename)),
 		      description  => QuoteHtml($summary),
 		      dc => { date	  => $date,
 			      contributor => $author, },
