@@ -265,7 +265,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.171 2003/09/30 08:09:01 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.172 2003/10/02 21:10:01 as Exp $');
 }
 
 sub InitCookie {
@@ -398,10 +398,10 @@ sub ApplyRules {
 	my $oldpos = pos;
 	PrintJournal($3, $5, $7);
 	pos = $oldpos; # restore \G after call to ApplyRules
-      } elsif (m/\G(\&lt;rss +"(.*)"\&gt;[ \t]*\n?)/cgi) { # <rss "uri..."> stores the parsed RSS of the given URI
+      } elsif (m/\G(\&lt;rss( +(\d*))? +"(.*)"\&gt;[ \t]*\n?)/cgi) { # <rss "uri..."> stores the parsed RSS of the given URI
 	my $oldpos = pos;
 	DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
-	print &RSS($2);
+	print &RSS($3 ? $3 : 15, split(/ +/, $4));
 	pos = $oldpos; # restore \G after call to RSS which uses the LWP module (for older copies of the module?)
       }
       if (defined $fragment) {
@@ -708,47 +708,49 @@ sub PrintJournal {
 }
 
 sub RSS {
+  my $maxitems = shift;
+  my @uris = @_;
+  my %lines;
   require XML::RSS;
   require LWP::UserAgent;
-  my ($uri) = @_;
   my $rss = new XML::RSS;
   my $ua = LWP::UserAgent->new;
-  my $request = HTTP::Request->new('GET', $uri);
-  my $response = $ua->request($request);
-  my $data = $response->content;
-  my $maxitems = 15; # recommended max. by the validator
-  eval {
-    local $SIG{__DIE__}; # work around some broken XML::Parser stuff
-    $rss->parse($data);
-  };
-  if ($@) {
-    return $q->p($q->strong("[RSS parsing failed for $uri]"));
+  foreach my $uri (@uris) {
+    my $request = HTTP::Request->new('GET', $uri);
+    my $response = $ua->request($request);
+    my $data = $response->content;
+    eval {
+      local $SIG{__DIE__}; # work around some broken XML::Parser stuff
+      $rss->parse($data);
+    };
+    return $q->p($q->strong("[RSS parsing failed for $uri]")) if $@;
+    my $counter;
+    foreach my $i (@{$rss->{items}}) {
+      my $line = $q->a({-href=>$i->{'link'}, -title=>$i->{'dc'}->{'date'}}, "[$i->{'title'}]");
+      $line .= ' -- ' . $i->{'description'} if $i->{'description'};
+      my $key = $i->{'dc'}->{'date'} or $i->{'title'};
+      $lines{$key} = $line;
+    }
+  }
+  my @lines = sort { $b cmp $a } keys %lines;
+  @lines = @lines[0..$maxitems-1] if $maxitems;
+  my $str;
+  foreach my $i (@lines) { $str .= $q->ul($lines{$i}); }
+  $str = $q->div({-class=>'rss'},$str);
+  my $charset = uc($HttpCharset); # charsets are case insensitive
+  if ($charset eq '' or $charset eq 'UTF-8') {
+    return $str;
+  } elsif ($charset eq 'ISO-8859-1') {
+    require Unicode::String;
+    my $u = Unicode::String->new($str);
+    return $u->latin1;
   } else {
-    my $counter = 0;
-    my $str;
-    for my $i (@{$rss->{items}}) {
-      $counter++;
-      last if $counter == $maxitems;
-      my $line = $q->a({-href=>$i->{'link'}},"[$i->{'title'}]");
-      $line .= qq{ -- $i->{'description'}} if $i->{'description'};
-      $str .= $q->li($line);
-    }
-    $str = $q->div({-class=>'rss'},$q->ul($str));
-    my $charset = uc($HttpCharset); # charsets are case insensitive
-    if ($charset eq '' or $charset eq 'UTF-8') {
-      return $str;
-    } elsif ($charset eq 'ISO-8859-1') {
-      require Unicode::String;
-      my $u = Unicode::String->new($str);
-      return $u->latin1;
-    } else {
-      # FIXME: This is perhaps broken.
-      require Unicode::String;
-      require Unicode::Map8;
-      my $u = Unicode::String->new($str);
-      my $m = Unicode::Map8->new($charset);
-      return $m->to8($u->ucs2);
-    }
+    # FIXME: This is perhaps broken.
+    require Unicode::String;
+    require Unicode::Map8;
+    my $u = Unicode::String->new($str);
+    my $m = Unicode::Map8->new($charset);
+    return $m->to8($u->ucs2);
   }
 }
 
