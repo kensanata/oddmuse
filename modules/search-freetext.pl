@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.12 2004/12/25 20:42:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.13 2004/12/27 01:58:42 as Exp $</p>';
 
 use vars qw($SearchFreeTextNewForm);
 
@@ -41,7 +41,7 @@ sub SearchFreeTextIndex {
   }
   $db->close_index();
   ReleaseLock();
-  print T('Done.</p></div>');
+  print T('Done.') . '</p></div>';
   PrintFooter();
 }
 
