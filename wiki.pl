@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.411 2004/06/04 21:41:30 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.412 2004/06/05 02:09:24 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1282,9 +1282,9 @@ sub GetRedirectPage {
     return $html;
   }
   if ($UsePathInfo and $action !~ /=/) {
-    $url = $FullUrl . '/' . $action;
+    $url = $ScriptName . '/' . $action;
   } else {
-    $url = $FullUrl . '?' . $action;
+    $url = $ScriptName . '?' . $action;
   }
   my $nameLink = $q->a({-href=>$url}, $name);
   # NOTE: do NOT use -method (does not work with old CGI.pm versions)
