@@ -5,6 +5,22 @@
 	(DoHistory): Removed a br tag.
 	(GetHtmlHeader): Encoding multiple style sheets.
 	(PrintHtmlDiff): Fixed extent of the 'diff' div.
+	($PrintedHeader): New variable.
+	(InitVariables): Set it.
+	(GetHttpHeader): Set it.
+	(ReportError): Use GetHttpHeader to print header.
+	(DoRollback): No error message required.
+	(ExpireKeepFile): Rewrote some conditions.
+	(ExpireKeepFile): Use ReportError instead of die.
+	(RequestLockDir): Use ReportError instead of die.
+	(PrintPageList): Rewrote lock handling.
+	(DoPost): Rewrote lock handling.
+	(DoMaintain): Rewrote lock handling.
+	(DoConvert): Rewrote lock handling.
+	(DoSurgeProtection): Rewrote lock handling.
+	(WriteReferers): Rewrote lock handling.
+	(GetPermanentAnchor): Rewrote lock handling.
+	(DeletePermanentAnchors): Rewrote lock handling.
 
 2003-09-26  Alex Schroeder  <alex@gnu.org>
 
