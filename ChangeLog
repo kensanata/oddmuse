@@ -3,6 +3,9 @@
 	* wiki.pl (SavePage): Added error for missing pagenames.
 	(DoSearch): Indicate the replacement text, too.
 	(Replace): Do replacement in an eval so that backreferences work.
+	(PrintWikiToHTML): Don't do locking if the calling context has
+	already locked the wiki.
+	(DoMaintain): When cache=1, refresh the cache, too.
 
 	* test-markup.pl: Added tests for search and replace.
 
