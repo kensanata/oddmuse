@@ -56,7 +56,7 @@ $ValidatorLink $RefererTracking $RefererTimeLimit $RefererLimit
 $TopLinkBar $NotifyTracker $InterMap @LockOnCreation $RefererFilter
 $PermanentAnchorsFile $PermanentAnchors %CookieParameters
 $StyleSheetPage @UserGotoBarPages $ConfigPage $ScriptName
-$CommentsPrefix $NewComment $AllNetworkFiles);
+$CommentsPrefix $NewComment $AllNetworkFiles $UsePathInfo);
 
 # Other global variables:
 use vars qw(%Page %Section %Text %InterSite %KeptRevisions %IndexHash
@@ -74,6 +74,7 @@ $UseConfig   = 1 unless defined $UseConfig; # 1 = load config file in the data d
 $DataDir   = '/tmp/oddmuse' unless $DataDir; # Main wiki directory
 $ConfigPage  = '' unless $ConfigPage; # config page
 $RunCGI      = 1;   # 1 = Run script as CGI instead of being a library
+$UsePathInfo = 1;   # 1 = allow page views using wiki.pl/PageName
 
 # Basics
 $SiteName    = 'Wiki';     # Name of site (used for titles)
@@ -87,7 +88,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.123 2003/08/16 02:01:27 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.124 2003/08/16 02:21:25 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -863,12 +864,12 @@ sub GetEditLink { # shortcut
 sub ScriptLink {
   my ($action, $text, $class, $name) = @_;
   my %params;
-  if ($action =~ /=/) {
-    $params{-href} = $ScriptName . '?' . $action;
-  } elsif (!$Monolithic) {
+  if ($UsePathInfo and !$Monolithic and $action !~ /=/) {
     $params{-href} = $ScriptName . '/' . $action;
-  } else { # Monolithic and !~ /=/ -- ie. just a page link
+  } elsif ($Monolithic) {
     $params{-href} = '#' . $action;
+  } else {
+    $params{-href} = $ScriptName . '?' . $action;
   }
   $params{'-class'} = $class  if $class;
   $params{'-name'} = $name  if $name;
@@ -950,7 +951,7 @@ sub DoBrowseRequest {
     return 1;
   }
   $id = join('_', $q->keywords);
-  $id = $q->path_info() unless $id;
+  $id = $q->path_info() if not $id and $UsePathInfo;
   $id =~ s|.*/||;
   if ($id) {                    # Just script?PageName
     if ($FreeLinks && (!-f GetPageFile($id))) {
