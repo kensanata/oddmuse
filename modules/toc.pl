@@ -16,12 +16,14 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.16 2004/11/25 19:49:32 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.17 2004/11/27 00:57:15 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
 # This must come *before* the usemod.pl rules.
 $RuleOrder{ \&TocRule } = 90;
+
+my $TocCounter = 0;
 
 sub TocRule {
 
@@ -32,7 +34,8 @@ sub TocRule {
         && m/\G(\s*\n)*(\=+)[ \t]*(?=[^=\n]+=)/cg) {
         my $depth = length($2);
         $depth = 6 if $depth > 6;
-        return CloseHtmlEnvironments() . AddHtmlEnvironment('h' . $depth);
+        return CloseHtmlEnvironments() . AddHtmlEnvironment('h' . $depth)
+	  . $q->a({-id=>'toc' . $TocCounter++});
     } elsif (   $UseModMarkupInTitles
 	     && m/\G[ \t]*=+\n?/cg
 	     && (   InElement('h1')
@@ -45,17 +48,13 @@ sub TocRule {
     } elsif ($bol
         && !$UseModMarkupInTitles
         && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg) {
-        return CloseHtmlEnvironments() . TocWikiHeading($2, $3);
+        my $depth = length($2);
+        $depth = 6 if $depth > 6;
+	my $text = $3;
+        return CloseHtmlEnvironments() . "<h$depth>"
+	  . $q->a({-id=>'toc' . $TocCounter++}, $text) . "</h$depth>";
     }
     return undef;
-}
-
-sub TocWikiHeading {
-    my ($depth, $text) = @_;
-    $depth = length($depth);
-    $depth = 6 if ($depth > 6);
-    my $link = FreeToNormal($text);
-    return "<h$depth><a name=\"$link\">$text</a></h$depth>";
 }
 
 *OldTocGetHeader = *GetHeader;
@@ -89,7 +88,7 @@ sub TocHeadings {
         my $depth = length($1);
         my $text  = $2;
         next unless $text;
-        my $link = UrlEncode(FreeToNormal($text));
+        my $link = "toc$count";
         $text = QuoteHtml($text);
         if (not defined $HeadingsLevelStart) {
 
