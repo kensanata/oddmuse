@@ -15,10 +15,9 @@
 #
 # Installation:
 # =============
-# This file should be saved into the same folder where the config file
-# resides.  Load it from the config file:
 #
-# do 'swedish-utf8.pl';
+# Create a modules subdirectory in your data directory, and put the
+# file in there. It will be loaded automatically.
 #
 # This translation was last checked for OddMuse version 1.304.
 #

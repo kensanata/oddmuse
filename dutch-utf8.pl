@@ -1,3 +1,4 @@
+# UTF-8 encoded Dutch language file for use with Oddmuse
 #
 # Copyright (c) 2003  Onno Broekmans <obroekma@angelfire.com>
 #
@@ -17,10 +18,9 @@
 #
 # Installation:
 # =============
-# This file should be saved into the same folder where the config file
-# resides.  Load it from the config file:
 #
-# do 'dutch-utf8.pl;
+# Create a modules subdirectory in your data directory, and put the
+# file in there. It will be loaded automatically.
 #
 # This translation was last checked for Oddmuse version 1.215.
 #

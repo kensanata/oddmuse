@@ -12,11 +12,9 @@
 #
 # Installation:
 # =============
-# Diese Datei sollte im gleichen Verzeichnis wie die
-# Konfigurationsdatei gespeichert werden.  In der Konfigurationsdatei
-# muss diese Datei dann geladen werden:
 #
-# do 'german-utf8.pl';
+# Create a modules subdirectory in your data directory, and put the
+# file in there. It will be loaded automatically.
 #
 # Diese Übersetzung wurde für Oddmuse 1.301 erstellt.
 #
