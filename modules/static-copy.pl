@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.12 2004/12/26 01:08:21 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.13 2004/12/26 01:39:00 as Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -232,7 +232,7 @@ sub StaticDeleteFile {
 }
 
 # override the default!
-sub GetStaticDownloadLink {
+sub GetDownloadLink {
   my ($name, $image, $revision, $alt) = @_;
   $alt = $name unless $alt;
   my $id = FreeToNormal($name);
@@ -252,7 +252,8 @@ sub GetStaticDownloadLink {
     if ($UsePathInfo and not $revision) {
       if ($StaticAlways and $StaticUrl) {
 	my $url = $StaticUrl;
-	$url =~ s/\%s/$action/g or $url .= $action;
+	my $img = UrlEncode(StaticFileName($id));
+	$url =~ s/\%s/$img/g or $url .= $img;
 	$action = $url;
       } else {
 	$action = $ScriptName . '/' . $action;
