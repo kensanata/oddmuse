@@ -167,9 +167,13 @@ EOT
 
 test_page(get_page('action=rc'), @Test);
 
-## Create InterMap page
+## Create InterMap page as admin
 
-update_page('InterMap', " OddMuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n", 'required');
+@Test = split('\n',<<'EOT');
+OddMuse
+EOT
+
+test_page(update_page('InterMap', " OddMuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n", 'required', 0, 1), @Test);
 
 ### SIMPLE MARKUP TESTS
 
