@@ -54,12 +54,12 @@ $BannedCanRead $SurgeProtection $SurgeProtectionViews $TopLinkBar
 $LanguageLimit $SurgeProtectionTime $DeletedPage %Languages $InterMap
 $ValidatorLink $RefererTracking $RefererTimeLimit $RefererLimit
 @LockOnCreation $RefererFilter $PermanentAnchorsFile $PermanentAnchors
-@MyRules %CookieParameters $NewComment $StyleSheetPage
-@UserGotoBarPages $ConfigPage $ScriptName @MyMacros $CommentsPrefix
-$AllNetworkFiles $UsePathInfo $UploadAllowed @UploadTypes $LastUpdate
-$PageCluster $RssInterwikiTranslate $UseCache $ModuleDir $HtmlHeaders
-$DebugInfo %InvisibleCookieParameters $FreeInterLinkPattern
-$FullUrlPattern);
+@MyRules %CookieParameters $NewComment $StyleSheetPage $ConfigPage
+@UserGotoBarPages $ScriptName @MyMacros $CommentsPrefix @UploadTypes
+$DefaultStyleSheet $AllNetworkFiles $UsePathInfo $UploadAllowed
+$LastUpdate $PageCluster $RssInterwikiTranslate $UseCache $ModuleDir
+$HtmlHeaders $DebugInfo %InvisibleCookieParameters $FullUrlPattern
+$FreeInterLinkPattern);
 
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
@@ -174,6 +174,49 @@ $UserGotoBar = '';	# HTML added to end of goto bar
 $ValidatorLink = 0;	# 1 = Link to the W3C HTML validator service
 $CommentsPrefix = '';	# prefix for comment pages, eg. 'Comments_on_' to enable
 $HtmlHeaders = '';	# Additional stuff to put in the HTML <head> section
+$DefaultStyleSheet = <<'EOT'; # the <!-- and --> is added at the end
+body { background-color:#FFF; color:#000; }
+a:link { color:#00F; }
+a:visited { color:#A0A; }
+a:active { color:#F00; }
+a.definition:before { content:"[::"; }
+a.definition:after { content:"]"; }
+a.alias { text-decoration:none; border-bottom: thin dashed; }
+a.near:link { color:#093; }
+a.near:visited { color:#550; }
+a.upload:before { content:"<"; }
+a.upload:after { content:">"; }
+a.outside:before { content:"["; }
+a.outside:after { content:"]"; }
+img.logo { float: right; clear: right; border-style:none; }
+div.diff { padding-left:5%; padding-right:5%; }
+div.old { background-color:#FFFFAF; }
+div.new { background-color:#CFFFCF; }
+div.refer { padding-left:5%; padding-right:5%; font-size:smaller; }
+div.message { background-color:#FEE; }
+div.journal h1 { font-size:large; }
+table.history { border-style:none; }
+td.history { border-style:none; }
+table.user { border-style:solid; border-width:thin; }
+table.user tr td { border-style:solid; border-width:thin; padding:5px; text-align:center; }
+span.result { font-size:larger; }
+span.info { font-size:smaller; font-style:italic; }
+div.rss { background-color:#EEF; }
+div.sister { float:left; margin-right:1ex; background-color:#FFF; }
+div.sister p { margin-top:0; }
+div.sister img { border:none; }
+div.near { background-color:#EFE; }
+div.near p { margin-top:0; }
+\@media print {
+ body { font:12pt sans-serif; }
+ a, a:link, a:visited { color:#000; text-decoration:none; font-style:oblique; }
+ h1 a, h2 a, h3 a, h4 a { font-style:normal; }
+ a.edit, div.footer, div.refer, form, span.gotobar, a.number span { display:none; }
+ a[class="url number"]:after, a[class="inter number"]:after { content:"[" attr(href) "]"; }
+ a[class="local number"]:after { content:"[" attr(title) "]"; }
+ img[smiley] { line-height: inherit; }
+}
+EOT
 
 # Display short comments below the GotoBar for special days
 # Example: %SpecialDays = ('1-1' => 'New Year', '1-2' => 'Next Day');
@@ -305,7 +348,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.450 2004/09/02 20:38:38 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.451 2004/09/04 09:14:13 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1932,51 +1975,7 @@ sub GetHtmlHeader {
   } elsif ($StyleSheetPage) {
     $html .= $q->style({-type=>'text/css'}, GetPageContent($StyleSheetPage));
   } else {
-    $html .= $q->style({-type=>'text/css'},<<EOT);
-<!--
-body { background-color:#FFF; color:#000; }
-a:link { color:#00F; }
-a:visited { color:#A0A; }
-a:active { color:#F00; }
-a.definition:before { content:"[::"; }
-a.definition:after { content:"]"; }
-a.alias { text-decoration:none; border-bottom: thin dashed; }
-a.near:link { color:#093; }
-a.near:visited { color:#550; }
-a.upload:before { content:"<"; }
-a.upload:after { content:">"; }
-a.outside:before { content:"["; }
-a.outside:after { content:"]"; }
-img.logo { float: right; clear: right; border-style:none; }
-div.diff { padding-left:5%; padding-right:5%; }
-div.old { background-color:#FFFFAF; }
-div.new { background-color:#CFFFCF; }
-div.refer { padding-left:5%; padding-right:5%; font-size:smaller; }
-div.message { background-color:#FEE; }
-div.journal h1 { font-size:large; }
-table.history { border-style:none; }
-td.history { border-style:none; }
-table.user { border-style:solid; border-width:thin; }
-table.user tr td { border-style:solid; border-width:thin; padding:5px; text-align:center; }
-span.result { font-size:larger; }
-span.info { font-size:smaller; font-style:italic; }
-div.rss { background-color:#EEF; }
-div.sister { float:left; margin-right:1ex; background-color:#FFF; }
-div.sister p { margin-top:0; }
-div.sister img { border:none; }
-div.near { background-color:#EFE; }
-div.near p { margin-top:0; }
-\@media print {
- body { font:12pt sans-serif; }
- a, a:link, a:visited { color:#000; text-decoration:none; font-style:oblique; }
- h1 a, h2 a, h3 a, h4 a { font-style:normal; }
- a.edit, div.footer, div.refer, form, span.gotobar, a.number span { display:none; }
- a[class="url number"]:after, a[class="inter number"]:after { content:"[" attr(href) "]"; }
- a[class="local number"]:after { content:"[" attr(title) "]"; }
- img[smiley] { line-height: inherit; }
-}
--->
-EOT
+    $html .= $q->style({-type=>'text/css'}, "<!--$DefaultStyleSheet-->");
   }
   # INDEX,NOFOLLOW tag for wiki pages only so that the robot doesn't index
   # history pages.  INDEX,FOLLOW tag for RecentChanges and the index of all
