@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.12 2005/01/06 11:35:04 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.13 2005/03/24 22:49:30 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent $NamespaceRoot);
 
@@ -57,6 +57,7 @@ sub NamespacesInitVariables {
     $NamespacesInit = 1;
     # Change some stuff from the original InitVariables call:
     $SiteName   .= ' ' . $NamespaceCurrent;
+    $InterWikiMoniker = $NamespaceCurrent;
     $DataDir    .= '/' . $NamespaceCurrent;
     $PageDir     = "$DataDir/page";
     $KeepDir     = "$DataDir/keep";
