@@ -54,6 +54,7 @@ while ($data =~ m|<dt>.*?<a href="([^"]*)".*\n((<dd>.*</dd>\n)*)|g) {
   s|</strong>||g;
   s|</small>||g;
   s|</dd>||g;
+  s|\n+$||g;
   s|\n|\n\t|g;
   print "description: $_\n";
   print "\n";
