@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.356 2004/03/15 19:48:58 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.357 2004/03/15 19:56:38 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -777,7 +777,7 @@ sub RSS {
       $interwiki = $RssInterwikiTranslate{$interwiki} if $RssInterwikiTranslate{$interwiki};
       $interwiki = $RssInterwikiTranslate{$uri} unless $interwiki;
     }
-    my $num = 9999;
+    my $num = 999;
     foreach my $i (@{$rss->{items}}) {
       my $line;
       my $date = $i->{dc}->{date};
