@@ -16,14 +16,15 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.9 2004/10/13 19:52:08 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.10 2004/10/15 22:52:02 as Exp $</p>';
 
 $DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /table\.user/; # mod_perl?
 table.user { border-style:solid; border-width:thin; }
 table.user tr td { border-style:solid; border-width:thin; padding:5px; }
 EOT
 
-use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml);
+use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml
+	    $UseModSpaceRequired);
 
 push(@MyRules, \&UsemodRule);
 # The ---- rule conflicts with the --- rule in markup.pl and portrait-support.pl
@@ -36,6 +37,7 @@ $HtmlLinks   = 0;   # 1 = <a href="foo">desc</a> is a link
 $RawHtml     = 0;   # 1 = allow <HTML> environment for raw HTML inclusion
 @HtmlTags    = ();  # List of HTML tags.  If not set, determined by $HtmlTags
 $HtmlTags    = 0;   # 1 = allow some 'unsafe' HTML tags
+$UseModSpaceRequired = 1; # 1 = require space after * # : ; for lists.
 
 *OldUsemodInitVariables = *InitVariables;
 *InitVariables = *NewUsemodInitVariables;
@@ -74,21 +76,27 @@ sub UsemodRule {
     }
     return OpenHtmlEnvironment('pre',1) . $str; # always level 1
   }
+  # unumbered lists using *
+  elsif ($bol && m/\G(\s*\n)*(\*+)[ \t]{$UseModSpaceRequired,}/cg
+	 or InElement('li') && m/\G(\s*\n)+(\*+)[ \t]{$UseModSpaceRequired,}/cg) {
+    return CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ul',length($2))
+      . AddHtmlEnvironment('li');
+  }
   # numbered lists using #
-  elsif ($bol && m/\G(\s*\n)*(\#+)[ \t]+/cg
-	 or InElement('li') && m/\G(\s*\n)+(\#+)[ \t]*/cg) {
+  elsif ($bol && m/\G(\s*\n)*(\#+)[ \t]{$UseModSpaceRequired,}/cog
+	 or InElement('li') && m/\G(\s*\n)+(\#+)[ \t]{$UseModSpaceRequired,}/cog) {
     return CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ol',length($2))
       . AddHtmlEnvironment('li');
   }
-  # indented text using :
-  elsif ($bol && m/\G(\s*\n)*(\:+)[ \t]+/cg
-	 or InElement('dd') && m/\G(\s*\n)+(\:+)[ \t]*/cg) { # blockquote instead?
+  # indented text using : (use blockquote instead?)
+  elsif ($bol && m/\G(\s*\n)*(\:+)[ \t]{$UseModSpaceRequired,}/cog
+	 or InElement('dd') && m/\G(\s*\n)+(\:+)[ \t]{$UseModSpaceRequired,}/cog) {
     return CloseHtmlEnvironmentUntil('dd') . OpenHtmlEnvironment('dl',length($2), 'quote')
       . $q->dt() . AddHtmlEnvironment('dd');
   }
   # definition lists using ;
-  elsif ($bol && m/\G(\s*\n)*(\;+)[ \t]+(?=.*\:)/cg
-	 or InElement('dd') && m/\G(\s*\n)+(\;+)[ \t]*(?=.*\:)/cg) {
+  elsif ($bol && m/\G(\s*\n)*(\;+)[ \t]{$UseModSpaceRequired,}(?=.*\:)/cog
+	 or InElement('dd') && m/\G(\s*\n)+(\;+)[ \t]{$UseModSpaceRequired,}(?=.*\:)/cog) {
     return CloseHtmlEnvironmentUntil('dd') . OpenHtmlEnvironment('dl',length($2))
       . AddHtmlEnvironment('dt'); # `:' needs special treatment, later
   } elsif (InElement('dt', 'dd') and m/\G:[ \t]*/cg) {
