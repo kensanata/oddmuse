@@ -1,3 +1,5 @@
+use vars qr($PageTypesName);
+
 # You need to define the available types on the following page.
 
 my $PageTypesName = 'PageTypes';
@@ -14,7 +16,7 @@ my $PageTypesName = 'PageTypes';
 # have page clustering enabled (see the manual), then the page type
 # will automatically act as a cluster.
 
-# $Id: page-type.pl,v 1.2 2004/01/25 19:54:26 as Exp $
+$ModulesDescription .= '<p>$Id: page-type.pl,v 1.3 2004/01/27 00:30:54 as Exp $</p>';
 
 *OldDoPost = *DoPost;
 *DoPost = *NewDoPost;
