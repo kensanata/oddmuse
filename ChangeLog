@@ -1,6 +1,9 @@
 2004-01-06  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetPageOrEditLink): Add class to edit links.
+	(ApplyRules): Removed binmode call, since that led to weird errors
+	in perl 5.8.0 and 5.8.2 when printing large amounts of data (seen
+	when using action=all).
 
 2004-01-03  Alex Schroeder  <alex@gnu.org>
 
