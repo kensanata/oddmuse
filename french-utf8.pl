@@ -27,6 +27,10 @@ Invalid UserName %s: not saved.
 Nom d'utilisateur non valide %s&nbsp;: pas sauvegardé
 UserName must be 50 characters or less: not saved
 Le nom d'utilisateur ne doit pas dépasser 50 caractères&nbsp;: pas sauvegardé
+XML::RSS is not available on this system.
+
+LWP::UserAgent is not available on this system.
+
 diff
 
 history
@@ -57,12 +61,6 @@ Invalid Page %s (must not end with .lck)
 Page non valide %s (elle ne doit pas se terminer par .lck)
 Page name may not contain space characters: %s
 Le nom de la page ne peut pas contenir d'espaces&nbsp;: %s
-Revision %s not available
-La version %s n'est pas disponible
-showing current revision instead
-Présentation de la version en cours à sa place.
-Showing revision %s
-Présentation de la version %s
 Please go on to %s.
 Svp aller a %s
 Could not open %s log file
@@ -171,6 +169,10 @@ Database is stored in temporary directory %s
 Base de données stockée dans le repertoire temporaire 
 %s seconds
 %s secondes
+The same page on other sites:
+
+EditNearLinks
+
 Search:
 Rechercher&nbsp;:
 Replace:
@@ -201,6 +203,12 @@ Added:
 Ajoutée&nbsp;:
 to
 à
+Revision %s not available
+La version %s n'est pas disponible
+showing current revision instead
+Présentation de la version en cours à sa place.
+Showing revision %s
+Présentation de la version %s
 Cannot save an nameless page.
 
 Cannot open %s
@@ -293,23 +301,31 @@ This operation is restricted to administrators only...
 Cette opération est réservée aux administrateurs seulement...
 Index of all pages
 Index de toutes les pages
-(including permanent anchors)
+all pages
 
-(permanent anchors only)
+permanent anchors
 
-(for %s only)
+near links
 
-%s pages found:
-%s pages trouvées&nbsp;:
+(for %s)
+
+%s pages found.
+
 Replaced: %s
 Remplacé&nbsp;: %s
 Search for: %s
 Rechercher&nbsp;: %s
 View changes for these pages
 
+Search sites on the %s as well
+
 and
 
 or
+
+Fetching results from %s:
+
+Near pages:
 
 last updated
 Dernière mise à jour
@@ -377,6 +393,8 @@ Moving part of the %s log file.
 Deplace une partie du fichier de log %s.
 Moving %s log entries.
 Déplace %s entrées du log.
+Getting page index file for %s.
+
 Main lock released.
 Verrou principal rendu.
 Set or Remove global edit lock
@@ -395,6 +413,10 @@ Lock for %s removed.
 Verrou pour %s enlevé.
 Displaying Wiki Version
 Affiche la version du wiki
+Inter links:
+
+Near links:
+
 Too many connections by %s
 Trop de connections par %s
 Recent Visitors

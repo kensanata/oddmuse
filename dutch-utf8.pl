@@ -1,4 +1,3 @@
-﻿# UTF-8 encoded Dutch translation file for use with Oddmuse
 #
 # Copyright (c) 2003  Onno Broekmans <obroekma@angelfire.com>
 #
@@ -34,6 +33,16 @@ Invalid UserName %s: not saved.
 Niet opgeslagen: de GebruikersNaam %s is ongeldig.
 UserName must be 50 characters or less: not saved
 Niet opgeslagen: de GebruikersNaam mag hoogstens 50 tekens lang zijn.
+XML::RSS is not available on this system.
+
+LWP::UserAgent is not available on this system.
+
+diff
+
+history
+geschiedenis
+ . . . . 
+
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -58,12 +67,8 @@ Invalid Page %s (must not end with .lck)
 Ongeldige pagina; mag niet eindigen in .lck: %s
 Page name may not contain space characters: %s
 De naam van de pagina mag geen spaties bevatten: %s
-Revision %s not available
-De revisie %s is niet beschikbaar
-showing current revision instead
-in plaats daarvan ziet u nu de huidige revisie
-Showing revision %s
-Dit is revisie %s
+Please go on to %s.
+Ga a.u.b. verder naar %s.
 Could not open %s log file
 Kan logboekbestand %s niet openen
 Error was
@@ -74,8 +79,6 @@ Could not open old %s log file
 Kan oude logboekbestand %s niet openen
 No updates since %s
 Geen wijzigingen sinds %s
-Page generated %s
-Pagina gegenereerd op %s
 Updates since %s
 Wijzigingen sinds %s
 Updates in the last %s days
@@ -94,20 +97,22 @@ List all changes
 Toon alle wijzigingen
 %s days
 %s dagen
-List new changes starting from
-Toon wijzigingen vanaf
-Related changes
-Verwante wijzigingen
+List later changes
+
+Username:
+Gebruikersnaam:
+Host:
+
+Language:
+
+Filters
+
+Go!
+OK
 (minor)
 (klein)
-(diff)
-(verschillen)
-history
-geschiedenis
 rollback
 ongedaan maken
-Cluster:
-Cluster:
 from %s
 vanaf %s
 History of %s
@@ -116,8 +121,6 @@ Compare
 Vergelijk
 Revision %s
 Revisie %s
- . . . .
- . . . .
 by
 door
 Rolling back changes
@@ -136,12 +139,10 @@ redirected from %s
 doorverwezen vanaf %s
 Click to search for references to this page
 Klik hier om te zoeken naar verwijzingen naar deze pagina
-Cookie:
-Cookie:
+Cookie: 
+
 new comment
 nieuw commentaar
-Username:
-Gebruikersnaam:
 Save
 Opslaan
 Comments on this page
@@ -166,44 +167,40 @@ Edited
 Gewijzigd
 by %s
 door %s
+(diff)
+(verschillen)
 Warning
 Waarschuwing
 Database is stored in temporary directory %s
 De database is opgeslagen in de tijdelijke map %s
 %s seconds
 %s seconden
+The same page on other sites:
+
+EditNearLinks
+
 Search:
 Zoeken naar:
 Replace:
 Vervangen door:
-Go!
-OK
 Validate HTML
 Valideer HTML
 Validate CSS
 Valideer CSS
-Please go on to %s.
-Ga a.u.b. verder naar %s.
+Difference (from revision %1 to %2)
+
+revision %s
+revisie %s
+current revision
+huidige revisie
+Difference (from prior %s revision)
+Verschil (tussen deze revisie en vorige revisie %s)
 major
 groot
 minor
 klein
-(The revisions are identical or unavailable.)
-(De revisies zijn gelijk of niet beschikbaar.)
 No diff available.
 Er is geen verschillenanalyse beschikbaar.
-current revision
-huidige revisie
-revision %s
-revisie %s
-Difference (from revision %s
-Verschillen (tussen revisie %s
- to %s)
-en %s)
-No diff available--this is the first %s revision.
-Geen verschillenanalyse beschikbaar -- dit is het origineel (revisie %s).
-Difference (from prior %s revision)
-Verschil (tussen deze revisie en vorige revisie %s)
 Changed:
 Veranderd:
 Removed:
@@ -212,12 +209,18 @@ Added:
 Toegevoegd:
 to
 in
-Bad page version (or corrupt page).
-Verkeerde versie van de pagina; het kan ook zijn dat de pagina beschadigd is.
+Revision %s not available
+De revisie %s is niet beschikbaar
+showing current revision instead
+in plaats daarvan ziet u nu de huidige revisie
+Showing revision %s
+Dit is revisie %s
 Cannot save an nameless page.
 Kan een pagina zonder naam niet opslaan.
-cannot write %s
-kan niet schrijven naar %s
+Cannot open %s
+
+Cannot write %s
+
 Could not get %s lock
 Kan %s niet vergrendelen
 Unlocking
@@ -228,8 +231,6 @@ Forced unlock of %s lock.
 De vergrendeling van %s is geforceerd.
 No unlock required.
 Ontgrendelen is niet nodig.
-Can not open %s
-Kan %s niet openen
 %s hours ago
 %s uur geleden
 1 hour ago
@@ -280,8 +281,8 @@ Preview:
 Voorvertoning:
 Preview only, not yet saved
 Dit is slechts een voorvertoning; er is nog niets opgeslagen!
-File to upload:
-Bestand om te uploaden:
+File to upload: 
+
 Files of type %s are not allowed.
 Bestanden van het type %s zijn niet toegestaan.
 Password
@@ -306,18 +307,32 @@ This operation is restricted to administrators only...
 Deze taak mag alleen uitgevoerd worden door beheerders...
 Index of all pages
 Index van alle pagina's
+all pages
+
+permanent anchors
+
+near links
+
+(for %s)
+
+%s pages found.
+
 Replaced: %s
 Vervangen door: %s
 Search for: %s
 Gezocht naar: %s
 View changes for these pages
 Toon wijzigingen in deze pagina's
+Search sites on the %s as well
+
 and
 en
 or
 of
-%s pages found:
-%s pagina's gevonden:
+Fetching results from %s:
+
+Near pages:
+
 last updated
 laatst gewijzigd
 Full Link List
@@ -360,8 +375,6 @@ ancestor
 vorige revisie
 other
 ander
-%s log error:
-Fout tijdens bijwerken van het logboek voor %s: kan bestand niet aanmaken
 Ping
 Ping
 No response.
@@ -386,18 +399,10 @@ Moving part of the %s log file.
 Bezig met verplaatsen van een deel van het logboekbestand %s
 Moving %s log entries.
 Bezig met verplaatsen van %s items.
+Getting page index file for %s.
+
 Main lock released.
 De vergrendeling van de gehele site is opgeheven.
-Converting all files
-Bezig met converteren van alle bestanden
-No conversion required.
-Conversie niet nodig.
-converted
-geconverteerd
-no conversion required
-conversie niet nodig
-has no file
-heeft geen bestand
 Set or Remove global edit lock
 Ver-/ontgrendelen van de gehele site
 Edit lock created.
@@ -414,6 +419,10 @@ Lock for %s removed.
 %s is ontgrendeld, en kan nu weer gewijzigd worden.
 Displaying Wiki Version
 Tonen van Wiki-versie
+Inter links:
+
+Near links:
+
 Too many connections by %s
 Te veel verbindingen met %s
 Recent Visitors

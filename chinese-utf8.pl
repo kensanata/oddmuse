@@ -27,6 +27,16 @@ Invalid UserName %s: not saved.
 無效的使用者名稱 %s：沒有儲存。
 UserName must be 50 characters or less: not saved
 使用者名稱必需小於 50 個字元：沒有儲存
+XML::RSS is not available on this system.
+
+LWP::UserAgent is not available on this system.
+
+diff
+
+history
+歷史記錄
+ . . . . 
+……
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -51,18 +61,8 @@ Invalid Page %s (must not end with .lck)
 無效的頁面 %s（不允許 ".lck" 結尾）
 Page name may not contain space characters: %s
 這個頁面名稱可能沒有包含空白字元：%s
-Revision %s not available
-%s 的版本不存在
-showing current revision instead
-顯示目前的版本
-Showing revision %s
-顯示 %s 的版本
-Updates since %s
-自從 %s 的更新
-Updates in the last %s day
-在 %s 天內有修改的
-Updates in the last %s days
-在 %s 天內有修改的
+Please go on to %s.
+請前往 %s。
 Could not open %s log file
 無法開啟 %s 記錄檔
 Error was
@@ -71,29 +71,41 @@ Note: This error is normal if no changes have been made.
 注意：如果沒有做任何改變的話，出現這個錯誤是正常的。
 Could not open old %s log file
 無法開啟舊的 %s 記錄檔
-for %s only
-只有 %s
-%s day
-%s 天
-%s days
-%s 天
-List new changes starting from
-列出新的改變，自
 No updates since %s
 自 %s 沒有修改
-Page generated %s
-頁面產生：%s
-Related changes
+Updates since %s
+自從 %s 的更新
+Updates in the last %s days
+在 %s 天內有修改的
+Updates in the last %s day
+在 %s 天內有修改的
+for %s only
+只有 %s
+List latest change per page only
 
+List only major changes
+
+Include minor changes
+
+List all changes
+
+%s days
+%s 天
+List later changes
+
+Username:
+使用者名稱：
+Host:
+
+Language:
+
+Filters
+
+Go!
+前往！
 (minor)
 （次要的）
-(diff)
-（差異）
-history
-歷史記錄
 rollback
-
-Cluster:
 
 from %s
 從 %s
@@ -103,8 +115,6 @@ Compare
 比較
 Revision %s
 版本記錄 %s
- . . . . 
-……
 by
 由
 Rolling back changes
@@ -121,12 +131,12 @@ Rollback to %s
 首頁
 redirected from %s
 自 %s 重導向
+Click to search for references to this page
+
 Cookie: 
 Cookie: 
 new comment
 新的評論
-Username:
-使用者名稱：
 Save
 儲存
 Comments on this page
@@ -151,44 +161,40 @@ Edited
 已編輯
 by %s
 
+(diff)
+（差異）
 Warning
 警告
 Database is stored in temporary directory %s
 資料庫已儲存在暫存記錄 %s
 %s seconds
 %s 秒
+The same page on other sites:
+
+EditNearLinks
+
 Search:
 搜尋：
 Replace:
 取代：
-Go!
-前往！
 Validate HTML
 驗證本頁的 HTML
 Validate CSS
 驗證本頁的 CSS
-Please go on to %s.
-請前往 %s。
+Difference (from revision %1 to %2)
+
+revision %s
+%s 版本
+current revision
+目前的版本
+Difference (from prior %s revision)
+差異（相對於先前 %s 的版本）
 major
 主要的
 minor
 次要的
-(The revisions are identical or unavailable.)
-（這個版本是完全相同的或是不存在的。）
 No diff available.
 沒有其他的修改了。
-current revision
-目前的版本
-revision %s
-%s 版本
-Difference (from revision %s
-差異（從版本 %s
- to %s)
-到 %s）
-No diff available--this is the first %s revision.
-沒有差異－這是第一個 %s 版本。
-Difference (from prior %s revision)
-差異（相對於先前 %s 的版本）
 Changed:
 改變：
 Removed:
@@ -197,11 +203,17 @@ Added:
 增加：
 to
 到
-Bad page version (or corrupt page).
-錯誤頁面版本（或是損壞的頁面）。
+Revision %s not available
+%s 的版本不存在
+showing current revision instead
+顯示目前的版本
+Showing revision %s
+顯示 %s 的版本
 Cannot save an nameless page.
 
-cannot write %s
+Cannot open %s
+
+Cannot write %s
 
 Could not get %s lock
 
@@ -213,8 +225,6 @@ Forced unlock of %s lock.
 強制解開 % 鎖定。
 No unlock required.
 不需要解除鎖定。
-Can not open %s
-無法開啟 %s
 %s hours ago
 %s 小時前
 1 hour ago
@@ -291,16 +301,32 @@ This operation is restricted to administrators only...
 只有站上的管理者才能進行這個被限制的操作…
 Index of all pages
 所有頁面的索引
+all pages
+
+permanent anchors
+
+near links
+
+(for %s)
+
+%s pages found.
+
 Replaced: %s
 取代：%s
 Search for: %s
 搜尋：%s
+View changes for these pages
+
+Search sites on the %s as well
+
 and
 
 or
 
-%s pages found:
-發現　%s 個頁面：
+Fetching results from %s:
+
+Near pages:
+
 last updated
 最後更新
 Full Link List
@@ -343,8 +369,6 @@ ancestor
 
 other
 
-%s log error:
-%s 記錄錯誤：
 Ping
 探測(Ping)
 No response.
@@ -369,18 +393,10 @@ Moving part of the %s log file.
 搬移一部分的 %s 記錄檔。
 Moving %s log entries.
 搬移 %s 記錄項目。
+Getting page index file for %s.
+
 Main lock released.
 已釋放主要的鎖定。
-Converting all files
-轉換所有的檔案
-No conversion required.
-不需要轉換。
-converted
-已轉換
-no conversion required
-不需要轉換
-has no file
-沒有檔案
 Set or Remove global edit lock
 設定或清除全域的編輯鎖定
 Edit lock created.
@@ -397,6 +413,10 @@ Lock for %s removed.
 %s 的鎖定已清除。
 Displaying Wiki Version
 顯非 Wiki 的版本
+Inter links:
+
+Near links:
+
 Too many connections by %s
 太多來自 %s 的連線
 Recent Visitors
@@ -406,5 +426,7 @@ Referrers
 All Referrers
 所有的引述
 anchor first defined here: %s
+
+Click to search for references to this permanent anchor
 
 END_OF_TRANSLATION

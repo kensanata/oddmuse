@@ -27,6 +27,16 @@ Invalid UserName %s: not saved.
 שם משתמש שגוי: %s לא נשמר.
 UserName must be 50 characters or less: not saved
 שם המשתמש חייב להיות באורך 50 תווים או פחות: לא נשמר
+XML::RSS is not available on this system.
+
+LWP::UserAgent is not available on this system.
+
+diff
+
+history
+היסטוריה
+ . . . . 
+
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -51,18 +61,8 @@ Invalid Page %s (must not end with .lck)
 דף לא חוקי %s (אסור שיסתיים בסיומת .lck)
 Page name may not contain space characters: %s
 שם הדף אינו יכול להכיל תווי רווח: %s
-Revision %s not available
-גירסה %s אינה זמינה.
-showing current revision instead
-מציג את הגירסה הנוכחית במקומה.
-Showing revision %s
-מציג את גירסה %s
-Updates since %s
-עדכונים מאז %s
-Updates in the last %s day
-עדכונים ביום האחרון
-Updates in the last %s days
-עדכונים ב%s הימים האחרונים
+Please go on to %s.
+בבקשה המשך ל-%s.
 Could not open %s log file
 לא ניתן לפתוח את קובץ היומן %s
 Error was
@@ -71,29 +71,41 @@ Note: This error is normal if no changes have been made.
 הערה: שגיאה זו היא רגילה אם לא בוצעו שינויים.
 Could not open old %s log file
 לא ניתן לפתוח את קובץ היומן הישן %s
-for %s only
-עבור %s בלבד
-%s day
-%s יום
-%s days
-%s ימים
-List new changes starting from
-הצג שינויים חדשים החל מ
 No updates since %s
 אין עדכונים מאז %s
-Page generated %s
-עמוד נוצר %s
-Related changes
+Updates since %s
+עדכונים מאז %s
+Updates in the last %s days
+עדכונים ב%s הימים האחרונים
+Updates in the last %s day
+עדכונים ביום האחרון
+for %s only
+עבור %s בלבד
+List latest change per page only
 
+List only major changes
+
+Include minor changes
+
+List all changes
+
+%s days
+%s ימים
+List later changes
+
+Username:
+שם משתמש:
+Host:
+
+Language:
+
+Filters
+
+Go!
+חפש!
 (minor)
 (קטן)
-(diff)
-(הבדלים)
-history
-היסטוריה
 rollback
-
-Cluster:
 
 from %s
 מ %s
@@ -103,8 +115,6 @@ Compare
 השוואה
 Revision %s
 עדכון %s
- . . . . 
-
 by
 על-ידי
 Rolling back changes
@@ -121,12 +131,12 @@ Rollback to %s
 [דף בית]
 redirected from %s
 הוכוון מחדש מ %s
+Click to search for references to this page
+
 Cookie: 
 
 new comment
 הערה חדשה
-Username:
-שם משתמש:
 Save
 שמור
 Comments on this page
@@ -151,44 +161,40 @@ Edited
 נערך
 by %s
 
+(diff)
+(הבדלים)
 Warning
 אזהרה
 Database is stored in temporary directory %s
 מסד הנתונים מאוחסן בספריה זמנית %s
 %s seconds
 %s שניות
+The same page on other sites:
+
+EditNearLinks
+
 Search:
 חיפוש:
 Replace:
 החלפה:
-Go!
-חפש!
 Validate HTML
 אמת HTML
 Validate CSS
 אמת CSS
-Please go on to %s.
-בבקשה המשך ל-%s.
+Difference (from revision %1 to %2)
+
+revision %s
+עדכון %s
+current revision
+גירסה נוכחית
+Difference (from prior %s revision)
+הבדל (מגירסה %s הקודמת(
 major
 גדול
 minor
 קטן
-(The revisions are identical or unavailable.)
-(העדכונים זהים או שאינם זמינים)
 No diff available.
 לא ניתן להשיג הבדלים
-current revision
-גירסה נוכחית
-revision %s
-עדכון %s
-Difference (from revision %s
-הבדל (מגירסה %s
- to %s)
-לגירסה %s)
-No diff available--this is the first %s revision.
-לא ניתן להציג הבדלים -- זו הגירסה %s הראשונה.
-Difference (from prior %s revision)
-הבדל (מגירסה %s הקודמת(
 Changed:
 שונה:
 Removed:
@@ -197,11 +203,17 @@ Added:
 התווסף:
 to
 אל
-Bad page version (or corrupt page).
-שגיאה בגירסת הדף (או דף פגום).
+Revision %s not available
+גירסה %s אינה זמינה.
+showing current revision instead
+מציג את הגירסה הנוכחית במקומה.
+Showing revision %s
+מציג את גירסה %s
 Cannot save an nameless page.
 
-cannot write %s
+Cannot open %s
+
+Cannot write %s
 
 Could not get %s lock
 
@@ -213,8 +225,6 @@ Forced unlock of %s lock.
 שוחררה נעילה של %s.
 No unlock required.
 אין צורך לשחרר נעילה.
-Can not open %s
-לא ניתן לפתוח את %s
 %s hours ago
 לפני %s שעות.
 1 hour ago
@@ -291,16 +301,32 @@ This operation is restricted to administrators only...
 פעולה זו מוגבלת למנהלים בלבד...
 Index of all pages
 תוכן כל הדפים:
+all pages
+
+permanent anchors
+
+near links
+
+(for %s)
+
+%s pages found.
+
 Replaced: %s
 הוחלף: %s
 Search for: %s
 חיפוש של: %s
+View changes for these pages
+
+Search sites on the %s as well
+
 and
 
 or
 
-%s pages found:
-%s דפים נמצאו:
+Fetching results from %s:
+
+Near pages:
+
 last updated
 עדכון אחרון
 Full Link List
@@ -343,8 +369,6 @@ ancestor
 
 other
 
-%s log error:
-שגיאה ביומן %s:
 Ping
 
 No response.
@@ -369,18 +393,10 @@ Moving part of the %s log file.
 מזיז חלק מקובץ היומן %s.
 Moving %s log entries.
 מזיז %s ערכי יומן.
+Getting page index file for %s.
+
 Main lock released.
 נעילה ראשית שוחררה.
-Converting all files
-ממיר את כל הקבצים.
-No conversion required.
-אין צורך בהמרה.
-converted
-הומר
-no conversion required
-אין צורך בהמרה
-has no file
-אינו מכיל קובץ
 Set or Remove global edit lock
 קבע או הסר נעילת עריכה גלובלית
 Edit lock created.
@@ -397,6 +413,10 @@ Lock for %s removed.
 נעילה הוסרה מ-%s.
 Displaying Wiki Version
 מציג את גירסת ה-Wiki.
+Inter links:
+
+Near links:
+
 Too many connections by %s
 יותר מדי חיבורים מ-%s.
 Recent Visitors
@@ -406,5 +426,7 @@ Referrers
 All Referrers
 כל המפנים
 anchor first defined here: %s
+
+Click to search for references to this permanent anchor
 
 END_OF_TRANSLATION

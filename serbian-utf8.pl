@@ -27,6 +27,16 @@ Invalid UserName %s: not saved.
 Неисправно корисничко име %s: није снимљено.
 UserName must be 50 characters or less: not saved
 Корисничко име мора имати 50 или мање знакова: није снимљено.
+XML::RSS is not available on this system.
+
+LWP::UserAgent is not available on this system.
+
+diff
+
+history
+историјат
+ . . . . 
+
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -51,18 +61,8 @@ Invalid Page %s (must not end with .lck)
 Неисправна страница %s (не сме имати наставак .lck)
 Page name may not contain space characters: %s
 Име странице не може садржати размаке: %s
-Revision %s not available
-Верзија %s није доступна
-showing current revision instead
-уместо тога, користи се тренутна верзија
-Showing revision %s
-Приказана верзија %s
-Updates since %s
-Измене од %s
-Updates in the last %s day
-Измене у последњи %s дан
-Updates in the last %s days
-Измене у последњих %s дана
+Please go on to %s.
+Настави до %s.
 Could not open %s log file
 Нисам могао да отворим дневничку датотеку %s
 Error was
@@ -71,30 +71,42 @@ Note: This error is normal if no changes have been made.
 Пажња: Ова грешка је уобичајена уколико ништа нисте изменили.
 Could not open old %s log file
 Нисам могао да отворим стару дневничку датотеку %s
-for %s only
-само за %s
-%s day
-%s дан
-%s days
-%s дана
-List new changes starting from
-Списак нових измена почев од
 No updates since %s
 Нема измена од %s
-Page generated %s
-Страница генерисана %s
-Related changes
-Повезане измене
+Updates since %s
+Измене од %s
+Updates in the last %s days
+Измене у последњих %s дана
+Updates in the last %s day
+Измене у последњи %s дан
+for %s only
+само за %s
+List latest change per page only
+
+List only major changes
+
+Include minor changes
+
+List all changes
+
+%s days
+%s дана
+List later changes
+
+Username:
+Корисничко име:
+Host:
+
+Language:
+
+Filters
+
+Go!
+Иди!
 (minor)
 (ситна)
-(diff)
-(разлике)
-history
-историјат
 rollback
 повратак
-Cluster:
-Јато:
 from %s
 од %s
 History of %s
@@ -103,8 +115,6 @@ Compare
 Упореди
 Revision %s
 Верзија %s
- . . . . 
-
 by
 —
 Rolling back changes
@@ -121,12 +131,12 @@ Rollback to %s
 [Кућа]
 redirected from %s
 преусмерено са %s
+Click to search for references to this page
+
 Cookie: 
 Колачић: 
 new comment
 нови коментар
-Username:
-Корисничко име:
 Save
 Сачувај
 Comments on this page
@@ -151,44 +161,40 @@ Edited
 Уређено
 by %s
 — %s
+(diff)
+(разлике)
 Warning
 Упозорење
 Database is stored in temporary directory %s
 База је снимљена у привремени директоријум %s
 %s seconds
 %s секунди
+The same page on other sites:
+
+EditNearLinks
+
 Search:
 Пронађи:
 Replace:
 Замени:
-Go!
-Иди!
 Validate HTML
 Провери HTML
 Validate CSS
 Провери CSS
-Please go on to %s.
-Настави до %s.
+Difference (from revision %1 to %2)
+
+revision %s
+верзија %s
+current revision
+текућа верзија
+Difference (from prior %s revision)
+Разлика (текућа верзија у односу на претходну - %s)
 major
 крупна
 minor
 ситна
-(The revisions are identical or unavailable.)
-(Верзије су или идентичне или недоступне.)
 No diff available.
 Разлика није доступна.
-current revision
-текућа верзија
-revision %s
-верзија %s
-Difference (from revision %s
-Разлика (од верзије %s
- to %s)
- до %s)
-No diff available--this is the first %s revision.
-Разлика није доступна — ово је прва верзија %s.
-Difference (from prior %s revision)
-Разлика (текућа верзија у односу на претходну - %s)
 Changed:
 Измењено:
 Removed:
@@ -197,12 +203,18 @@ Added:
 Додато:
 to
 у
-Bad page version (or corrupt page).
-Лоша верзија стране (или је страна искварена).
+Revision %s not available
+Верзија %s није доступна
+showing current revision instead
+уместо тога, користи се тренутна верзија
+Showing revision %s
+Приказана верзија %s
 Cannot save an nameless page.
 Не могу да снимим безимену страну.
-cannot write %s
-не могу да запишем %s
+Cannot open %s
+
+Cannot write %s
+
 Could not get %s lock
 Нисам могао да добавим браву %s
 Unlocking
@@ -213,8 +225,6 @@ Forced unlock of %s lock.
 Форсирано откључавање браве %s.
 No unlock required.
 Откључавање није неопходно.
-Can not open %s
-Не могу да отворим %s
 %s hours ago
 пре %s часова
 1 hour ago
@@ -291,16 +301,32 @@ This operation is restricted to administrators only...
 Ово сме да ради само администратор...
 Index of all pages
 Списак свих страна:
+all pages
+
+permanent anchors
+
+near links
+
+(for %s)
+
+%s pages found.
+
 Replaced: %s
 Замењено: %s
 Search for: %s
 Тражи: %s
+View changes for these pages
+
+Search sites on the %s as well
+
 and
 
 or
 
-%s pages found:
-%s стране пронађене:
+Fetching results from %s:
+
+Near pages:
+
 last updated
 последњи пут ажурирана
 Full Link List
@@ -343,8 +369,6 @@ ancestor
 предак
 other
 други
-%s log error:
-%s дневничка грешка:
 Ping
 Пинг
 No response.
@@ -369,18 +393,10 @@ Moving part of the %s log file.
 Премештам део дневничке датотеке %s.
 Moving %s log entries.
 Премештам %s дневничких ставки.
+Getting page index file for %s.
+
 Main lock released.
 Главна брава је отпуштена.
-Converting all files
-Конвертујем све датотеке
-No conversion required.
-Конверзија није неопходна.
-converted
-конвертовано
-no conversion required
-конверзија није неопходна
-has no file
-нема датотеке
 Set or Remove global edit lock
 Постави или уклони глобалну браву за уређивање
 Edit lock created.
@@ -397,6 +413,10 @@ Lock for %s removed.
 Брава за %s је уклоњена.
 Displaying Wiki Version
 Приказујем верзију Викија
+Inter links:
+
+Near links:
+
 Too many connections by %s
 Превише веза од %s
 Recent Visitors
@@ -407,4 +427,6 @@ All Referrers
 Све референце
 anchor first defined here: %s
 сидро је прво дефинисано овде: %s
+Click to search for references to this permanent anchor
+
 END_OF_TRANSLATION
