@@ -16,7 +16,7 @@
 #
 # do 'french-utf8.pl;
 #
-# This translation was last checked for Oddmuse version 1.195.
+# This translation was last checked for Oddmuse version 1.262.
 #
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
@@ -27,6 +27,12 @@ Invalid UserName %s: not saved.
 Nom d'utilisateur non valide %s: pas sauvegardé
 UserName must be 50 characters or less: not saved
 Le nom d'utilisateur ne doit pas dépasser 50 caractères: pas sauvegardé
+diff
+
+history
+historique
+ . . . . 
+ . . . . 
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -57,12 +63,8 @@ showing current revision instead
 Présentation de la version en cours à sa place.
 Showing revision %s
 Présentation de la version %s
-Updates since %s
-Mises à hour depuis %s
-Updates in the last %s day
-Mises à jour durant le dernier %s jour
-Updates in the last %s days
-Mises à jour durant les derniers %s jours
+Please go on to %s.
+Svp aller a %s
 Could not open %s log file
 Impossible d'ouvrir le fichier de log %
 Error was
@@ -71,29 +73,41 @@ Note: This error is normal if no changes have been made.
 Remarque: Cette erreur est normale si aucune modification n'a été effectuée.
 Could not open old %s log file
 Impossible d'ouvrir l'ancien fichier de log %
-for %s only
-pour %s seulement
-%s day
-%s jour
-%s days
-%s jours
-List new changes starting from
-Liste des nouveaux changements depuis le
 No updates since %s
 Aucune mise à jour depuis le %s
-Page generated %s
-Page générée le %s
-Related changes
+Updates since %s
+Mises à hour depuis %s
+Updates in the last %s days
+Mises à jour durant les derniers %s jours
+Updates in the last %s day
+Mises à jour durant le dernier %s jour
+for %s only
+pour %s seulement
+List latest change per page only
 
+List only major changes
+
+Include minor changes
+
+List all changes
+
+%s days
+%s jours
+List later changes
+
+Username:
+Nom d'utilisateur:
+Host:
+
+Language:
+
+Filters
+
+Go!
+Aller !
 (minor)
 (mineur)
-(diff)
-(diff)
-history
-historique
 rollback
-
-Cluster:
 
 from %s
 depuis %s
@@ -103,8 +117,6 @@ Compare
 Comparaison
 Revision %s
 Version %s
- . . . . 
- . . . . 
 by
 par
 Rolling back changes
@@ -121,12 +133,12 @@ Rollback to %s
 [Accueil]
 redirected from %s
 Redirection depuis %s
+Click to search for references to this page
+
 Cookie: 
 Cookie: 
 new comment
 nouveau commentaire
-Username:
-Nom d'utilisateur:
 Save
 Sauvegarder
 Comments on this page
@@ -151,6 +163,8 @@ Edited
 Modifié
 by %s
 
+(diff)
+(diff)
 Warning
 ATTENTION
 Database is stored in temporary directory %s
@@ -161,34 +175,24 @@ Search:
 Rechercher:
 Replace:
 Remplacer:
-Go!
-Aller !
 Validate HTML
 Validation du HTML
 Validate CSS
 Validation des CSS
-Please go on to %s.
-Svp aller a %s
+Difference (from revision %1 to %2)
+
+revision %s
+Version %s
+current revision
+version actuelle
+Difference (from prior %s revision)
+Différences (depuis les dernières versions %s)
 major
 majeure
 minor
 mineure
-(The revisions are identical or unavailable.)
-(La version est identique ou n'est pas disponible)
 No diff available.
 Pas de diff disponible
-current revision
-version actuelle
-revision %s
-Version %s
-Difference (from revision %s
-Difference (entre les versions %s
- to %s)
- et %s)
-No diff available--this is the first %s revision.
-Aucune diff disponible--Ceci est la première version %s
-Difference (from prior %s revision)
-Différences (depuis les dernières versions %s)
 Changed:
 Modifiée:
 Removed:
@@ -197,11 +201,11 @@ Added:
 Ajoutée:
 to
 à
-Bad page version (or corrupt page).
-Mauvaise version (ou page corompue) 
 Cannot save an nameless page.
 
-cannot write %s
+Cannot open %s
+
+Cannot write %s
 
 Could not get %s lock
 
@@ -213,8 +217,6 @@ Forced unlock of %s lock.
 Supression forcée du verrou %s.
 No unlock required.
 La suppression du verrour n'est pas necessaire.
-Can not open %s
-Ne peut pas ouvrir %s
 %s hours ago
 il y a %s heures
 1 hour ago
@@ -291,16 +293,18 @@ This operation is restricted to administrators only...
 Cette opération est réservée aux administrateurs seulement...
 Index of all pages
 Index de toutes les pages
+%s pages found:
+%s pages trouvées:
 Replaced: %s
 Remplacé: %s
 Search for: %s
 Rechercher: %s
+View changes for these pages
+
 and
 
 or
 
-%s pages found:
-%s pages trouvées:
 last updated
 Dernière mise à jour
 Full Link List
@@ -343,8 +347,6 @@ ancestor
 
 other
 
-%s log error:
-%s Erreur lors de l´écriture du journal:
 Ping
 Ping
 No response.
@@ -371,16 +373,6 @@ Moving %s log entries.
 Déplace %s entrées du log.
 Main lock released.
 Verrou principal rendu.
-Converting all files
-Convertit tous les fichiers
-No conversion required.
-Pas de conversion requise.
-converted
-Convertie
-no conversion required
-pas de conversion requise
-has no file
-n'as pas de fichier
 Set or Remove global edit lock
 Positionne ou enlève le verrou global d'édition
 Edit lock created.
@@ -406,5 +398,7 @@ Referrers
 All Referrers
 Tous les referrers
 anchor first defined here: %s
+
+Click to search for references to this permanent anchor
 
 END_OF_TRANSLATION
