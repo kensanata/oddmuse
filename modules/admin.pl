@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: admin.pl,v 1.8 2005/01/24 17:00:58 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: admin.pl,v 1.9 2005/02/01 20:48:09 as Exp $</p>';
 
 $Action{delete} = \&AdminPowerDelete;
 $Action{rename} = \&AdminPowerRename;
@@ -78,7 +78,7 @@ sub AdminPowerRename {
     my $newrdir = GetRefererFile($new);
     CreatePageDir($RefererDir, $new); # It might not exist yet
     rename($rdir, $newrdir)
-      or ReportError(Tss('Cannot rename %1 to % 2 ', $rdir, $newrdir) . ": $!", '500 INTERNAL SERVER ERROR')
+      or ReportError(Tss('Cannot rename %1 to % 2', $rdir, $newrdir) . ": $!", '500 INTERNAL SERVER ERROR')
 	if -d $rdir;
   }
   # RecentChanges
