@@ -25,7 +25,7 @@ push (@NotifyUrlPatterns, 'http://ping.blo.gs/?name=$name&url=$url&rssUrl=$rss&d
 
 sub NewSave {
   my ($id, $new, $summary, $minor, $upload) = @_;
-  Save(@_);
+  OldSave(@_);
   if (not $minor) {
     PingTracker($id);
   }
