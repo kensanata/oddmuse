@@ -1,3 +1,10 @@
+2003-09-12  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl: Replaced many occurences of || with or.
+	(GetHtmlHeader): The index of all pages gets robot INDEX
+	tagged so that you can submit it to a search engine to spider your
+	entire site, together with your recent changes page.
+
 2003-09-08  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl: Many little CGI changes, changes of local
