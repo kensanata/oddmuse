@@ -349,7 +349,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.481 2004/11/14 23:56:53 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.482 2004/11/15 00:01:28 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2187,7 +2187,7 @@ sub GetValidatorLink {
 
 sub GetGotoBar {
   my $id = shift;
-  return $q->span({-class=>'gotobar'}, map { GetPageLink($_) } @UserGotoBarPages);
+  return $q->span({-class=>'gotobar'}, (map { GetPageLink($_) } @UserGotoBarPages), $UserGotoBar);
 }
 
 # == Difference markup and HTML ==
