@@ -1,3 +1,27 @@
+2004-08-07  Alex Schroeder  <alex@confusibombus>
+
+	* modules/anchors.pl (AnchorsRule): Add support for named anchors
+	in free links.
+
+2004-08-06  Alex Schroeder  <alex@confusibombus>
+
+	* modules/anchors.pl (AnchorsRule): Added invisible anchor
+	definition.
+
+	* modules/portrait-support.pl (PortraitSupportRule): Duplicate the
+	horizontal rule and the heading stuff from usemod.pl, but only
+	enable them if usemod.pl is loaded (when UsemodRule is defined).
+	(NewPortraitSupportWikiHeading): Deleted.
+
+	* wiki.pl (GetHttpHeader): Fix typo related to last_modified
+	header, thanks to Andrés Martinelli.
+
+	* modules/toc.pl (TocHeadings): Quote text in TOC, as noted by
+	Ronnie Bashra.
+
+	* modules/beautify.pl (Beautify): Use UnquoteHtml, as suggested by
+	an anonymous user on the wiki.
+
 2004-07-16  Sebastian Blatt  <sblatt@havens.de>
 
 	* modules/admin.pl (AdminPowerDelete): added missing parenthesis
