@@ -274,7 +274,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.206 2003/10/17 12:36:41 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.207 2003/10/17 17:18:09 as Exp $');
 }
 
 sub InitCookie {
@@ -3861,8 +3861,12 @@ sub WriteReferers {
   return unless RequestLockDir('refer_' . $id); # not fatal
   my $data = join($FS1, map { $_ . $FS1 . $Referers{$_} } keys %Referers);
   my $file = GetRefererFile($id);
-  CreatePageDir($RefererDir, $id);
-  WriteStringToFile($file, $data);
+  if ($data) {
+    CreatePageDir($RefererDir, $id);
+    WriteStringToFile($file, $data);
+  } else {
+    unlink $file; # just try it, doesn't matter if it fails
+  }
   ReleaseLockDir('refer_' . $id);
 }
 
