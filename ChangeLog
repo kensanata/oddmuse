@@ -1,8 +1,9 @@
 2005-03-28  Alex Schroeder  <alex@confusibombus.emacswiki.org>
 
 	* modules/crumbs.pl (CrumbsRule): Independent of GetCluster and
-	therefore no longer requires $PageCluster to be set.
-
+	therefore no longer requires $PageCluster to be set.  Call
+	FreeToNormal on all clusters.
+	
 2005-03-27  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (RSS): Use LWP::Parallel::UserAgent if available.
