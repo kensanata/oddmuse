@@ -287,7 +287,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.296 2004/01/03 19:07:49 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.297 2004/01/06 00:57:34 as Exp $');
 }
 
 sub InitCookie {
@@ -857,7 +857,8 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
   } else {
     # $free and $bracket usually exclude each other
     # $text and not $bracket exclude each other
-    my $link = ScriptLink('action=edit;id=' . UrlEncode($id), '?');
+    my $link = ScriptLink('action=edit;id=' . UrlEncode($id), '?', 'edit', '',
+			  T('Click to create this page'));
     if ($bracket && $text) {
       return "[$id$link $text]";
     } elsif ($bracket) {
