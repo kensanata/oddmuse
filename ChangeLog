@@ -3,6 +3,8 @@
 	* wiki.pl (ApplyRules): Allow uptional maxitems argument for RSS
 	feeds, and allow multiple RSS feeds to be merged.
 	(RSS): Implement it.
+	(ApplyRules): Allow any whitespace, not only spaces, inside rss,
+	include, and journal pseudo-tags.
 
 2003-09-30  Alex Schroeder  <alex@gnu.org>
 
