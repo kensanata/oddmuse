@@ -119,6 +119,8 @@ sub run_tests {
 
 # Create temporary data directory as expected by the script
 
+my $str;
+
 system('/bin/rm -rf /tmp/oddmuse');
 die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
 mkdir '/tmp/oddmuse';
@@ -128,6 +130,28 @@ mkdir '/tmp/oddmuse';
 $ENV{'REMOTE_ADDR'} = 'test-markup';
 
 # --------------------
+
+print '[rollback]';
+
+open(F,'>/tmp/oddmuse/config');
+print F "\$AdminPass = 'foo';\n";
+print F "\$SurgeProtection = 0;\n";
+close(F);
+
+update_page('NicePage', 'Friendly content.', 'good guy one');
+sleep(2);
+update_page('NicePage', 'Nice content.', 'good guy two');
+sleep(2);
+update_page('NicePage', 'Evil content.', 'vandal one');
+sleep(2);
+update_page('NicePage', 'Bad content.', 'vandal two');
+test_page(get_page('NicePage'), 'Bad content');
+get_page('action=rc all=1 pwd=foo') =~ /.*action=rollback;to=([0-9]+).*?-- good guy two/;
+test_page(get_page("action=rollback to=$1"), 'restricted to administrators');
+test_page(get_page("action=rollback to=$1 pwd=foo"),
+	  'Rolling back changes', 'NicePage rolled back');
+test_page(get_page('NicePage'), 'Nice content');
+test_page(get_page('action=rc showedit=1'), 'Rollback to ');
 
 print '[clusters]';
 
@@ -548,7 +572,7 @@ test_page(update_page('ConflictTest', "test\ntest\nbar\nend\n", '', '', '', "old
 
 # test conflict during merging -- first get oldtime, then do two conflicting edits
 
-my $str = QuoteHtml(<<'EOT');
+$str = QuoteHtml(<<'EOT');
 test
 <<<<<<< you
 bar
@@ -1147,6 +1171,12 @@ URL abbreviation with extra brackets: [Oddmuse:Link_Pattern]
 URL abbreviation with extra brackets: <a class="inter number" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>
 URL abbreviation with other text: [Oddmuse:Link_Pattern link patterns]
 URL abbreviation with other text: <a class="inter outside" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern">link patterns</a>
+free URL abbreviation: [[Oddmuse:Link Pattern]]
+free URL abbreviation: <a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern"><span class="site">Oddmuse</span>:<span class="page">Link Pattern</span></a>
+free URL abbreviation with extra brackets: [[[Oddmuse:Link Pattern]]]
+free URL abbreviation with extra brackets: <a class="inter number" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>
+free URL abbreviation with other text: [[Oddmuse:Link Pattern|link pattern]]
+free URL abbreviation with other text: <a class="inter outside" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern">link pattern</a>
 EOT
 
 run_tests();
@@ -1180,6 +1210,12 @@ URL abbreviation with extra brackets: [Oddmuse:Link_Pattern]
 URL abbreviation with extra brackets: <a class="inter number" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>
 URL abbreviation with other text: [Oddmuse:Link_Pattern link patterns]
 URL abbreviation with other text: <a class="inter outside" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern">link patterns</a>
+free URL abbreviation: [[Oddmuse:Link Pattern]]
+free URL abbreviation: <a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern"><span class="site">Oddmuse</span>:<span class="page">Link Pattern</span></a>
+free URL abbreviation with extra brackets: [[[Oddmuse:Link Pattern]]]
+free URL abbreviation with extra brackets: <a class="inter number" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>
+free URL abbreviation with other text: [[Oddmuse:Link Pattern|link pattern]]
+free URL abbreviation with other text: <a class="inter outside" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern">link pattern</a>
 EOT
 
 run_tests();
