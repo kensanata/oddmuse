@@ -1,3 +1,7 @@
+2004-10-13  Alex Schroeder  <alex@confusibombus>
+
+	* Makefile (upload): Fix upload target.
+
 2004-10-13  Alex Schroeder  <alex@gnu.org>
 
 	* wikiupload (main, usage, wikiput): Add password support.
