@@ -16,11 +16,21 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.7 2004/04/03 10:51:21 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.8 2004/07/14 14:55:56 as Exp $</p>';
 
-*WikiHeading = *NewTocWikiHeading;
+push(@MyRules, \&TocRule);
+# This must come *before* the usemod.pl rules.
+$RuleOrder{\&TocRule} = 90;
 
-sub NewTocWikiHeading {
+sub TocRule {
+  # headings using =
+  if ($bol && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg) {
+    return CloseHtmlEnvironments() . TocWikiHeading($2, $3);
+  }
+  return undef;
+}
+
+sub TocWikiHeading {
   my ($depth, $text) = @_;
   $depth = length($depth);
   $depth = 6  if ($depth > 6);
