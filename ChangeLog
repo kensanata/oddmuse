@@ -1,3 +1,33 @@
+2004-12-05  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+
+	* modules/usemod.pl (UsemodRule): AddHtmlEnvironment('p')
+
+	* modules/toc.pl (TocRule): AddHtmlEnvironment('p')
+
+	* modules/tables.pl (TablesRule): AddHtmlEnvironment('p')
+
+	* modules/setext.pl (SeTextRule): AddHtmlEnvironment('p')
+
+	* modules/portrait-support.pl (PortraitSupportRule): AddHtmlEnvironment('p')
+
+	* modules/partial-journal.pl (PartialCutRule): AddHtmlEnvironment('p')
+
+	* modules/live-templates.pl (LiveTemplateRule): AddHtmlEnvironment('p')
+
+	* modules/headlines.pl (HeadlinesRule): AddHtmlEnvironment('p')
+
+	* modules/headers.pl (HeadersRule): AddHtmlEnvironment('p')
+
+	* modules/forms.pl (FormsRule): AddHtmlEnvironment('p')
+
+	* modules/compilation.pl (CompilationRule): AddHtmlEnvironment('p')
+
+	* modules/beautify.pl (BeautificationRule): AddHtmlEnvironment('p')
+
+	* wiki.pl (ApplyRules): Add print AddHtmlEnvironment('p') in
+	various places where CloseHtmlEnvironments() is called -- after
+	includes, journals, rss feeds, and conflicts.
+
 2004-12-03  Alex Schroeder  <alex@gnu.org>
 
 	* modules/usemod.pl (UsemodRule): Fix hr handling.
