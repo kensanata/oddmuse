@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.40 2003/04/23 21:02:56 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.41 2003/04/24 10:33:36 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -107,7 +107,7 @@ $BannedCanRead = 1; # 1 = banned cannot edit, 0 = banned cannot read
 # LinkPattern
 $WikiLinks   = 1;   # 1 = LinkPattern is a link
 $FreeLinks   = 1;   # 1 = [[some text]] is a link
-$FreeUpper   = 1;   # 1 = forces free links to start with upper case
+$FreeUpper   = 0;   # 1 = forces free links to start with upper case
 $SimpleLinks = 0;   # 1 = only letters in links, 0 = allow _ and numbers
 $NonEnglish  = 0;   # 1 = non-ASCII link characters allowed
 $BracketText = 1;   # 1 = [URL desc] uses a description for the URL
