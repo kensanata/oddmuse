@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: simple-rules.pl,v 1.11 2004/04/09 01:25:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: simple-rules.pl,v 1.12 2004/04/11 11:18:04 as Exp $</p>';
 
 *ApplyRules = *NewSimpleRulesApplyRules;
 
@@ -25,7 +25,7 @@ my $DIRT = "\x1d";
 
 sub NewSimpleRulesApplyRules {
   # locallinks: apply rules that create links depending on local config (incl. interlink!)
-  my ($text, $locallinks) = @_;
+  my ($text, $locallinks, $withanchors, $revision) = @_;
   # shortcut for dirty blocks (if this is the content of a real page: no caching!)
   local $counter = 0;
   local %protected = ();
@@ -52,6 +52,9 @@ sub NewSimpleRulesApplyRules {
 	$block = SimpleRulesProtect($q->ol(join('', # avoid extra space in CGI.pm code
 						map{$q->li(NewSimpleRulesApplyInlineRules($_))}
 						split(/\n[0-9]\. */, $1))));
+      } elsif ($block =~ m/^#FILE ([^ \n]+)\n(.*)/s) {
+	$block = SimpleRulesProtect(GetDownloadLink(
+                   $OpenPageName, (substr($1, 0, 6) eq 'image/'), $revision));
       } else {
 	$block = SimpleRulesProtect('<p>') . $block . SimpleRulesProtect('</p>');
       }
@@ -84,6 +87,9 @@ sub NewSimpleRulesApplyDirtyInlineRules {
     ($block =~ s/(\[\[$FreeLinkPattern\]\])/
      my ($str, $link) = ($1, $2);
      SimpleRulesDirty($str, GetPageOrEditLink($link,0,0,1))/ego);
+    ($block =~ s/(\[\[image:$FreeLinkPattern\]\])/
+     my ($str, $link) = ($1, $2);
+     SimpleRulesDirty($str, GetDownloadLink($link, 1))/ego);
   }
   return $block;
 }
