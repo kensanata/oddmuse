@@ -1,3 +1,24 @@
+2003-05-24  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (PrintAllReferers): New function.
+	(DoPrintAllReferers): New function.
+	(DoBrowseRequest): New refer action.
+	(GetReferers): Fixed spelling of Referer to Referrer.
+
+	Lots of tiny changes -- moved from the &foo() notation to foo().
+	Saved some lines by changing some if conditions around.
+	This patch is very big!
+
+	Unified all lock requests and releases:
+	(RequestDiffLock, ReleaseDiffLock, RequestVisitorsLock)
+	(ReleaseVisitorsLock, RequestMergeLock, RequestMergeLock)
+	(ReleaseMergeLock, ReleaseRefererLock, RequestIndexLock)
+	(ReleaseIndexLock): Removed, changed callers.
+	
+2003-05-23  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetRcHtml, GetRcText): Cleanup, saving some lines.
+
 2003-05-23  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl ($ReplaceForm): New global variable.
@@ -8,7 +29,7 @@
 	(DoPost): Removed $isEdit and $editTime.  Use $Now instead.  Moved
 	the saving code into Save.
 	(Save): New function.
-	
+
 	(WriteRcLog): Use $Now instead of $editTime.
 	(ReBrowsePage): Rename $isEdit to $minor.
 	(GetRc, GetRcHtml, GetRcRss, GetRcText, GetRedirectPage): Ditto.
