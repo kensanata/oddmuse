@@ -86,7 +86,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.87 2003/06/10 21:05:06 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.88 2003/06/10 21:41:26 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -94,15 +94,6 @@ $StyleSheetPage = ''; # Page for CSS sheet
 $LogoUrl     = '';  # URL for site logo ('' for no logo)
 $NotFoundPg  = '';  # Page for not-found links ('' for blank pg)
 $NewText     = "Describe the new page here.\n";  # New page text
-
-# Header and Footer, Notes, GotoBar
-$EmbedWiki   = 0;   # 1 = no headers/footers
-$FooterNote  = '';  # HTML for bottom of every page
-$EditNote    = '';  # HTML notice above buttons on edit page
-$TopLinkBar  = 1;   # 1 = add a goto bar at the top of the page
-@UserGotoBarPages = ($HomePage, $RcName); # List of pagenames
-$UserGotoBar = '';  # HTML added to end of goto bar
-$ValidatorLink = 0; # 1 = Link to the W3C HTML validator service
 
 # HardSecurity
 $EditAllowed = 1;   # 1 = editing allowed,    0 = read-only
@@ -161,6 +152,15 @@ $RssPublisher     = '';    # Name of RSS publisher
 $RssContributor   = '';    # List or description of the contributors
 $RssRights        = '';    # Copyright notice for RSS
 $NotifyWeblogs    = 0;     # 1 = send pings to weblogs.com for major changes
+
+# Header and Footer, Notes, GotoBar
+$EmbedWiki   = 0;   # 1 = no headers/footers
+$FooterNote  = '';  # HTML for bottom of every page
+$EditNote    = '';  # HTML notice above buttons on edit page
+$TopLinkBar  = 1;   # 1 = add a goto bar at the top of the page
+@UserGotoBarPages = ($HomePage, $RCName); # List of pagenames
+$UserGotoBar = '';  # HTML added to end of goto bar
+$ValidatorLink = 0; # 1 = Link to the W3C HTML validator service
 
 # Display short comments below the GotoBar for special days
 # Example: %SpecialDays = ('1-1' => 'New Year', '1-2' => 'Next Day');
@@ -1829,7 +1829,7 @@ sub GetValidatorLink {
 sub GetGotoBar {
   my $id = shift;
   my $bartext;
-  $bartext .= join(' | ', map { ScriptLink($_, $_) } @UserGotoBarPages);
+  $bartext .= join(' | ', map { ScriptLink(FreeToNormal($_), $_) } @UserGotoBarPages);
   $bartext .= ' | ' . $UserGotoBar  if $UserGotoBar ne '';
   return $q->span({-class=>'gotobar'}, $bartext);
 }
