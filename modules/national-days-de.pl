@@ -24,7 +24,7 @@
 # If you are running a multilingual site, then you should explicitly
 # load this file from your language-specific config file.
 
-$ModulesDescription .= '<p>$Id: national-days-de.pl,v 1.5 2004/05/31 00:08:15 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: national-days-de.pl,v 1.6 2004/08/13 02:29:59 as Exp $</p>';
 
 %SpecialDays = (
 		'2-16' => 'Litauen: Unabhängigkeitstag',
@@ -59,7 +59,43 @@ $ModulesDescription .= '<p>$Id: national-days-de.pl,v 1.5 2004/05/31 00:08:15 as
 		'6-5' => 'Dänemark: Nationalfeiertag',
 		'6-6' => 'Schweden: Nationalfeiertag',
 		'6-10' => 'Portugal: Nationalfeiertag',
-
+		'6-12' => 'Philippinen: Unabhängigkeitstag, Russland: Unabhängigkeitstag, Großbritannien: Nationalfeiertag',
+		'6-17' => 'Island: Nationalfeiertag',
+		'6-18' => 'Seychellen: Nationalfeiertag',
+		'6-23' => 'Luxenburg: Nationalfeiertag',
+		'6-25' => 'Kroatien: Nationalfeiertag, Mosambik: Nationalfeiertag, Slowenien: Unabhängigkeitstag',
+		'6-26' => 'Madagaskar: Unabhängigkeitstag',
+		'6-27' => 'Dschibuti: Unabhängigkeitstag',
+		'6-30' => 'DR Kongo: Nationalfeiertag',
+		'7-1' => 'Burundi: Unabhängigkeitstag, Kanada: Nationalfeiertag, Ruanda: Unabhängigkeitstag',
+		'7-4' => 'USA: Unabhängigkeitstag',
+		'7-5' => 'Algerien: Unabhängigkeitstag, Kap Verden: Unabhängigkeitstag, Venezuela: Unabhängigkeitstag',
+		'7-6' => 'Komoren: Unabhängigkeitstag, Malawi: Nationalfeiertag',
+		'7-7' => 'Nepal: Nationalfeiertag',
+		'7-9' => 'Palau: Nationalfeiertag',
+		'7-10' => 'Bahamas: Unabhängigkeitstag',
+		'7-11' => 'Mongolei: Nationalfeiertag',
+		'7-12' => 'Kiribati: Unabhängigkeitstag, São Tomé und Principe: Unabhängigkeitstag',
+		'7-14' => 'Frankreich: Nationalfeiertag',
+		'7-17' => 'Irak: Nationalfeiertag',
+		'7-20' => 'Kolumbien: Nationalfeiertag',
+		'7-21' => 'Belgien: Nationalfeiertag',
+		'7-23' => 'Ägypten: Nationalfeiertag',
+		'7-26' => 'Liberia: Unabhängigkeitstag, Malediven: Unabhängigkeitstag',
+		'7-27' => 'Weißrussland: Unabhängigkeitstag',
+		'7-28' => 'Peru: Unabhängigkeitstag',
+		'7-30' => 'Vanuatu: Unabhängigkeitstag',
+		'8-1' => 'Benin: Unabhängigkeitstag, Schweiz: Nationalfeiertag',
+		'8-2' => 'Mazedonien: Nationalfeiertag',
+		'8-3' => 'Niger: Unabhängigkeitstag',
+		'8-5' => 'Burkina Faso: Unabhängigkeitstag',
+		'8-6' => 'Bolivien: Nationalfeiertag, Jamaika: Unabhängigkeitstag',
+		'8-7' => 'Elfenbeinküste: Unabhängigkeitstag',
+		'8-9' => 'Singapur: Nationalfeiertag',
+		'8-10' => 'Ecuador: Unabhängigkeitstag',
+		'8-11' => 'Tschad: Unabhängigkeitstag',
+		'8-13' => 'Zentralafrikanische Republik: Unabhängigkeitstag',
+		'8-31' => 'Malaysia: Unabhängigkeitstag',
 		'9-15' => 'Costa Rica, El Salvador, Guatemala, Honduras, Nicaragua: Unabhängigkeitstag',
 		'9-16' => 'Mexiko, Papua-Neuguinea: Unabhängigkeitstag',
 		'9-18' => 'Chile: Unabhängigkeitstag',
