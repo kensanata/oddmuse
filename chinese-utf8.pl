@@ -1,6 +1,6 @@
-# UTF-8 encoded Chinese language file for use with Oddmuse
+# UTF-8 encoded Traditional Chinese language file for use with Oddmuse
 #
-# Copyright (c) 2003  wctang <wctang@csie.nctu.edu.tw>.
+# Copyright (c) 2003, 2004  wctang <wctang@csie.nctu.edu.tw>.
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
@@ -15,35 +15,35 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-# This translation was last checked for Oddmuse version 1.195.
+# This translation was last checked for Oddmuse version 1.342.
 #
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
-無法讀取：使用者，ip，或是網路已被阻擋。
+禁止讀取：名稱、 ip 或網路已被阻擋。
 Could not create %s
 無法建立 %s
 Invalid UserName %s: not saved.
-無效的使用者名稱 %s：沒有儲存。
+無法儲存。無效的使用者名稱 %s
 UserName must be 50 characters or less: not saved
-使用者名稱必需小於 50 個字元：沒有儲存
+無法儲存。使用者名稱必需不可多於 50 字元。
 XML::RSS is not available on this system.
-
+本系統無法使用 XML::RSS 。
 LWP::UserAgent is not available on this system.
-
+本系統無法使用 LWP::UserAgent 。
 diff
-
+差異
 history
 歷史記錄
  . . . . 
-……
-Click to create this page
 
+Click to create this page
+按下即可建立此頁面
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
 
 alternate
-輪流
+另一個連結
 http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 
 search
@@ -51,95 +51,97 @@ search
 Invalid action parameter %s
 無效的動作參數 %s
 Invalid URL.
-無效的 URL。
+無效的 URL 。
+Page name is missing
+頁面不存在
 Page name is too long: %s
-頁面 %s 的名稱太長
+頁面名稱太長了： %s
 Invalid Page %s
-無效的頁面 %s
+無效的頁面名稱 %s
 Invalid Page %s (must not end with .db)
-無效的頁面 %s（不允許 ".db" 結尾）
+無效的頁面名稱 %s (不可以用 .db 結尾)
 Invalid Page %s (must not end with .lck)
-無效的頁面 %s（不允許 ".lck" 結尾）
+無效的頁面名稱 %s (不可以用 .lck 結尾)
 Page name may not contain space characters: %s
-這個頁面名稱可能沒有包含空白字元：%s
+頁面名稱不可以包含空白字元： %s
 Preview:
 預覽：
 Preview only, not yet saved
-只是預覽，還沒有儲存
+現在是預覽模式，尚未儲存
 Please go on to %s.
-請前往 %s。
+請繼續前住 %s 。
 Could not open %s log file
 無法開啟 %s 記錄檔
 Error was
 錯誤是
 Note: This error is normal if no changes have been made.
-注意：如果沒有做任何改變的話，出現這個錯誤是正常的。
+如果還沒有做過任何修改，這個錯誤是正常的。
 Could not open old %s log file
 無法開啟舊的 %s 記錄檔
 No updates since %s
-自 %s 沒有修改
+自 %s 以來沒有修改
 Updates since %s
-自從 %s 的更新
+自 %s 以來的修改
 Updates in the last %s days
-在 %s 天內有修改的
+在 %s 天之內的更動
 Updates in the last %s day
-在 %s 天內有修改的
+在 %s 天之內的更動
 for %s only
-只有 %s
+只列出 %s
 List latest change per page only
-
+只列出每個頁面最新的修改
 List only major changes
-
+只列出主要的修改
 Include minor changes
-
+也顯示次要的修改
 List all changes
-
+列出所有的修改
 %s days
 %s 天
 List later changes
-
+列出最新的修改
 Username:
 使用者名稱：
 Host:
-
+來源主機：
 Language:
-
+語文：
 Filters
-
+過濾器
 Go!
-前往！
+開始！
 (minor)
-（次要的）
+(次要的)
 rollback
-
+回復
 from %s
-從 %s
+自 %s
 History of %s
 %s 的歷史記錄
 Compare
 比較
 Revision %s
-版本記錄 %s
+第 %s 版本
 by
 由
 Rolling back changes
-
+回復修改
 Missing target for rollback.
-
+找不到要回復的目標
 Target for rollback is too far back.
-
+要回復的目標已太久以前了。
 Rollback to %s
-
+回復至 %s
 %s rolled back
-
+%s 已回復
 [Home]
-首頁
+[首頁]
 redirected from %s
-自 %s 重導向
+轉址自 %s
 Click to search for references to this page
+按下即可以搜尋參考至本頁的資料
+Cookie: 
 
-Cookie: 
-Cookie: 
 new comment
 新的評論
 Save
@@ -147,37 +149,41 @@ Save
 Preview
 預覽
 Comments on this page
-對本頁的評論
+對本頁發表評論
 Edit revision %s of this page
-編輯這個頁面的 %s 版本
+編輯本頁的第 %s 版本
 Edit text of this page
 編輯本頁的文字
 This page is read-only
 本頁是唯讀的
+Unlock page
+頁面解鎖
+Lock page
+頁面鎖定
 View other revisions
-觀看其他的版本
+參閱其他版本
 View current revision
-觀看目前的版本
+參閱目前版本
 View all changes
-
+列出所有的修改
 Back to %s
-
+返回 %s
 Last edited
-最後修改
+最後編輯於
 Edited
-已編輯
+編輯
 by %s
-
+由 %s
 (diff)
-（差異）
+(比較差異)
 Warning
 警告
 Database is stored in temporary directory %s
-資料庫已儲存在暫存記錄 %s
+資料庫現在是存放於暫存目錄 %s
 %s seconds
 %s 秒
 The same page on other sites:
-
+其他網站的相同頁面
 EditNearLinks
 
 Search:
@@ -185,53 +191,53 @@ Search:
 Replace:
 取代：
 Validate HTML
-驗證本頁的 HTML
+驗證 HTML
 Validate CSS
-驗證本頁的 CSS
+驗證 CSS
 Difference (from revision %1 to %2)
-
+差異 (自第 %1 版到%2)
 revision %s
-%s 版本
+第 %s 版
 current revision
 目前的版本
 Difference (from prior %s revision)
-差異（相對於先前 %s 的版本）
+差異 (比較之前的%s版本)
 major
-主要的
+主要
 minor
-次要的
+次要
 No diff available.
-沒有其他的修改了。
+沒有差異。
 Changed:
-改變：
+修改：
 Removed:
-去除：
+刪除：
 Added:
 增加：
 to
-到
+至
 Revision %s not available
-%s 的版本不存在
+不存在第 %s 版
 showing current revision instead
-顯示目前的版本
+現在顯示最新的版本
 Showing revision %s
-顯示 %s 的版本
+顯示第 %s 版
 Cannot save an nameless page.
-
+無法儲存沒有名稱的頁面。
 Cannot open %s
-
+無法開啟 %s
 Cannot write %s
-
+無法寫入 %s
 Could not get %s lock
-
+無法取得 %s 鎖定
 Unlocking
-正在開鎖
+解鎖
 This operation may take several seconds...
-這個操作需要花費幾秒鐘…
+這個動作可能要花幾秒…
 Forced unlock of %s lock.
-強制解開 % 鎖定。
+強制解開 %s 鎖定。
 No unlock required.
-不需要解除鎖定。
+不需要解鎖。
 %s hours ago
 %s 小時前
 1 hour ago
@@ -247,185 +253,181 @@ No unlock required.
 just now
 就是現在
 Editing Denied
-禁止修改。
+禁止編輯
 Editing not allowed: user, ip, or network is blocked.
-不允許編輯：使用者，ip，或是網路已被攔阻了。
+不允許編輯；使用者、ip 或是網路已被阻擋。
 Contact the wiki administrator for more information.
-通知 wiki 管理者以獲得更多的資訊。
+請通知 wiki 管理者，以取得更多的資訊。
 The rule %s matched for you.
-
+你符合的規則： %s 。
 See %s for more information.
-
+請參閱 %s 以取得更多資訊。
 Editing not allowed: %s is read-only.
-不允許編輯：%s 是唯讀的。
+不允許編輯； %s 是唯讀的。
 Only administrators can upload files.
-
+只有管理者可以上傳檔案。
 Editing revision %s of
-編輯 %s 版本：
+正在編輯第 %s 版的
 Editing %s
 正在編輯 %s
 Editing old revision %s.
-編輯先前的 %s 版本。
+正在編輯舊的第 %s 版。
 Saving this page will replace the latest revision with this text.
-儲存此頁將會取代這份文件的最新版本。
+如果儲存的話，將會取代目前最新的版本。
 Summary:
-摘要
+摘要：
 This change is a minor edit.
-這次的修改是次要的修改。
+這次的修改是次要的。
 Replace this file with text.
-
+用文字來取代本檔。
 Replace this text with a file.
-
+用檔案來取代本文。
 File to upload: 
-
+要上傳的檔案：
 Files of type %s are not allowed.
-
+不允許 %s 型態的檔案。
 Password
 密碼
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
-如果您的 cookies 是打開的話，則您的密碼已儲存在 cookie 中。
+如果你的 cookie 功能開啟的話，則你的密碼會被儲放在 cookie 中。如果你由其他機器、用其他的帳號、或使用別的軟體來連線的話，則 cookie 可能會消失。
 You are currently an administrator on this site.
-您現在是站上的管理者。
+你現在是本站的管理者。
 You are currently an editor on this site.
-您現在是站上的編輯者。
+你現在是本站的編輯者。
 You are a normal user on this site.
-您現在是站上的使用者。
+你現在是本站的一般使用者。
 Your password does not match any of the  administrator or editor passwords.
-您的密碼不符合任何管理者或使用者的密碼。
+你的密碼不符合任何管理者或編輯者的密碼。
 Password:
-密碼
+密碼：
 This site does not use admin or editor passwords.
-這個站沒有使用管理者或編輯者密碼的功能。
+本站並不使用管理者或編輯者密碼功能。
 This operation is restricted to site editors only...
-只有站上的編輯者才能進行這個被限制的操作…
+這個動作限定只允許編輯者使用…
 This operation is restricted to administrators only...
-只有站上的管理者才能進行這個被限制的操作…
+這個動作限定只允許管理者使用…
 Index of all pages
 所有頁面的索引
 all pages
-
+所有的頁面
 permanent anchors
-
+固定錨點
 near links
-
+近端連結
 (for %s)
-
+(列出 %s )
 %s pages found.
-
+找到 %s 頁面。
 Replaced: %s
 取代：%s
 Search for: %s
 搜尋：%s
 View changes for these pages
-
+參閱這些頁面的更動
 Search sites on the %s as well
-
+也搜尋列在 %s 上的網站
 and
-
+和
 or
-
+或
 Fetching results from %s:
-
+由 %s 取回的結果：
 Near pages:
-
+近端頁面：
 last updated
-最後更新
+最後更新於
 Full Link List
-完整的連結列表
+完整連結列表
 Complete Content
-完成內容
+完整內容
 The main page is %s.
-主要的頁面是 %s 。
+首頁是 %s 。
 Editing not allowed for %s.
-不允許對 %s 的編輯。
+不允許編輯 %s 。
 SampleUndefinedPage
-未定義頁面範例
+
 %s cannot be defined.
-%s 無法定義。
+無法指定 %s 為頁面名稱。
 Sample_Undefined_Page
-未定義頁面範例
+
 [[%s]] cannot be defined.
-[[%s]] 無法定義。
+無法指定 [[%s]] 為頁面名稱。
 Only an administrator can create %s
-只有管理者能建立 %s
+只有管理者可建立 %s
 Transfer Error: %s
-
+傳輸錯誤：%s
 Browser reports no file info.
-
+瀏覽器沒有提供檔案資料。
 Browser reports no file type.
-
+瀏覽器沒有提供檔案型態。
 This page was changed by somebody else %s.
-
+本頁在 %s已被人修改過。
 The changes conflict.  Please check the page again.
-
+你的修改和他人發生衝突。請再次確認。
 Please check whether you overwrote those changes.
-
+請確認一下是否你要覆寫這些修改。
 Anonymous
 匿名者
 Could not get a lock to merge!
-無法取得合併的鎖定！
+在合併時無法取得鎖定！
 you
-
+你的
 ancestor
-
+之前的
 other
-
-Ping
-探測(Ping)
-No response.
-沒有回應。
+別人的
 Maintenance on all pages
-所有頁面的維護
+對所有頁面進行管理
 Maintenance not done.
-維護未完成
+無法進行管理。
 (Maintenance can only be done once every 12 hours.)
-（維護每 12 小時只能做一次）
+(管理每 12 小時只能進行一次。)
 Remove the "maintain" file or wait.
-（清除 "maintain" 檔或是等待吧）
+移除 "maintain" 檔，或等時間到了再進行。
 Main lock obtained.
-已獲得主要的鎖定。
+取得主要鎖定。
 Expiring keep files and deleting pages marked for deletion
-清除已過期和標記刪除的檔案
+清除過期的庫存檔和刪除已標記的檔案
 deleted
-刪除
+已刪除
 Moving part of the %s log file.
-搬移一部分的 %s 記錄檔。
+移除部分在 %s 記錄檔中的資料。
 Moving %s log entries.
-搬移 %s 記錄項目。
+移除了 %s 個記錄項目。
 Getting page index file for %s.
-
+自 %s 取得頁面索引資料。
 Main lock released.
-已釋放主要的鎖定。
+釋放主要鎖定。
 Set or Remove global edit lock
-設定或清除全域的編輯鎖定
+設定或移除整個網站的編輯鎖定
 Edit lock created.
 建立編輯鎖定。
 Edit lock removed.
-清除編輯鎖定。
+移除編輯鎖定。
 Set or Remove page edit lock
-設定或清除頁面的編輯鎖定
+設定或移除頁面的編輯鎖定
 Missing page id to lock/unlock...
-尋找要鎖定╱解鎖的頁面 id 
+沒有指定要鎖定/解鎖的頁面名稱 (id)...
 Lock for %s created.
-%s 的鎖定已建立。
+已建立 %s 的鎖定。
 Lock for %s removed.
-%s 的鎖定已清除。
+已移除 %s 的鎖定。
 Displaying Wiki Version
-顯非 Wiki 的版本
+顯示 Wiki 的版本
 Inter links:
-
+內部連結：
 Near links:
-
+近端連結：
 Too many connections by %s
 太多來自 %s 的連線
 Recent Visitors
-最近的參觀者
+近期的參訪者
 Referrers
-引述
+引用者
 All Referrers
-所有的引述
+所有的引用者
 anchor first defined here: %s
-
+%s 錨點已被定義
 Click to search for references to this permanent anchor
-
+按下即可搜尋此錨點相關的相關資料
 END_OF_TRANSLATION
