@@ -286,7 +286,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.284 2003/12/30 20:35:32 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.285 2003/12/31 19:01:37 as Exp $');
 }
 
 sub InitCookie {
@@ -2960,7 +2960,7 @@ sub PrintSearchResult {
   my $raw = GetParam('raw', 0);
   my $files = ($regex =~ /^\^#FILE/); # usually skip files
   OpenPage($name); # should be open already, just making sure!
-  my $pageText = QuoteHtml($Page{text});
+  my $pageText = $Page{text};
   my %entry;
   #  get the page, filter it, remove all tags
   $pageText =~ s/$FS//g;	# Remove separators (paranoia)
@@ -2973,7 +2973,7 @@ sub PrintSearchResult {
     $pageText =~ /^#FILE ([^ ]+)/;
     $entry{description} = $1;
   } else {
-    $entry{description} = SearchExtract($Page{text}, $regex);
+    $entry{description} = SearchExtract(QuoteHtml($Page{text}), $regex);
   }
   $entry{size} = int((length($pageText)/1024)+1) . 'K';
   $entry{'last-modified'} = TimeToText($Page{ts});
