@@ -83,7 +83,7 @@ $HttpCharset = '';  # Charset for pages, default is ISO-8859-1
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.26 2003/04/07 20:38:30 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.27 2003/04/11 11:03:29 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -1531,7 +1531,7 @@ sub GetRcText {
 	$lang = '[' . join(', ', @{$languages}) . '] ';
       }
       # Later do new-RC looping here.
-      $text .= $pagename
+      $text .= $pagename . ' '
 	. &CalcTime($timestamp) . " $edit$sum$lang"
         . ". . . . . $author\n";
     },
@@ -1874,6 +1874,9 @@ sub GetFooterText {
 }
 
 sub GetCommonFooter {
+  if (&GetParam('embed', $EmbedWiki)) {
+    return $q->end_html;
+  }
   return $q->hr() . &GetFormStart() . &GetGotoBar('') .
          &GetSearchForm() . $q->endform . &GetMinimumFooter();
 }
