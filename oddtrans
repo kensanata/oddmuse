@@ -2,24 +2,7 @@
 # Based on umtrans.pl version 1.0 (April 8, 2001) by Clifford Adams.
 # Extracts translation strings from wiki script and extensions.
 
-use Getopt::Std;
-$Getopt::Std::STANDARD_HELP_VERSION = 1;
-
-our($opt_l, %Translate);
-
-getopts('l:');
-
-do $opt_l if $opt_l;
-
-sub VERSION_MESSAGE {
-  my $fh = shift;
-  print $fh '$Id: oddtrans,v 1.2 2004/06/28 22:07:13 as Exp $' . "\n";
-}
-
-sub HELP_MESSAGE {
-  my $fh = shift;
-  print $fh <<'EOT';
-
+$help = q{
 NAME
        oddtrans - complement translation tables for Oddmuse
 
@@ -33,14 +16,30 @@ DESCRIPTION
        empty string unless you use -l to load a library).
 
        -l
-              load a library from a previous run
+              load a library from a previous run; you can use multiple -l
 
 EXAMPLES
 
        oddtrans -l german-utf8.pl wiki.pl modules/*.pl > new-german-utf8.pl
 
-EOT
+};
+
+%Translate = ();
+
+$arg = shift;
+while ($arg =~ /^-l/) {
+  $file = substr($arg, 3);
+  $file = shift unless $file;
+  die $help unless -f $file;
+  %backup = %Translate;
+  do $file;
+  foreach $key (keys %Translate) {
+    $backup{$key} = $Translate{$key};
+  }
+  %Translate = %backup;
+  $arg = shift;
 }
+unshift(@ARGV,$arg); # shove the last one back because it is not -l!
 
 my %seen = ();
 
