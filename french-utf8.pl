@@ -16,7 +16,7 @@
 #
 # do 'french-utf8.pl;
 #
-# This translation was last checked for Oddmuse version 1.262.
+# This translation was last checked for Oddmuse version 1.296.
 #
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
@@ -153,8 +153,8 @@ View current revision
 Voir la version actuelle
 View all changes
 Voir toutes les modifications
-View original
-Voir l'original
+Back to %s
+
 Last edited
 Dernière modification
 Edited
@@ -305,6 +305,8 @@ all pages
 toutes les pages
 permanent anchors
 ancres permanentes
+near links
+
 (for %s)
 (pour %s)
 %s pages found.
@@ -383,8 +385,6 @@ Main lock obtained.
 Verrou principal obtenu.
 Expiring keep files and deleting pages marked for deletion
 Expiration des fichiers de cache et suppression des pages marquées pour la suppression
-and refreshing HTML cache
-et rafraîchissement du cache HTML
 deleted
 supprimé
 Moving part of the %s log file.
