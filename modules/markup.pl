@@ -16,18 +16,19 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: markup.pl,v 1.5 2004/06/23 13:06:37 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: markup.pl,v 1.6 2004/06/26 20:58:05 as Exp $</p>';
 
 push(@MyRules, \&MarkupRule);
 my $words = '([A-Za-z\x80-\xff][-A-Za-z0-9\x80-\xff ]*?)';
+my $noword = '(?=[^-A-Za-z0-9\x80-\xff]|$)'; # zero-width look-ahead assertion
 sub MarkupRule {
-  if (m/\G\*$words\*/goc) {
+  if (m/\G\*$words\*$noword/goc) {
     return "<b>$1</b>";
-  } elsif (m/\G\/$words\//goc) {
+  } elsif (m/\G\/$words\/$noword/goc) {
     return "<i>$1</i>";
-  } elsif (m/\G_${words}_/goc) {
+  } elsif (m/\G_${words}_$noword/goc) {
     return "<u>$1</u>";
-  } elsif (m/\G~$words~/goc) {
+  } elsif (m/\G~$words~$noword/goc) {
     return "<em>$1</em>";
   } elsif (m/\G-\&gt; /gc) {
     return '&#x2192; '; # RIGHTWARDS ARROW
