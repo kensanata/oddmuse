@@ -1,3 +1,7 @@
+2003-10-07  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ValidId): Only avoid spaces in filenames when not $FreeLinks.
+
 2003-10-04  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoUnlock): Added merge back.
