@@ -1,3 +1,22 @@
+2004-10-26  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoSearch): Accesskey 'f'.
+
+2004-10-23  Alex Schroeder  <alex@confusibombus>
+
+	* modules/compilation.pl (PrintCompilation): Return the pages printed.
+	(DoCompilation): Print how many pages got printed.
+
+2004-10-22  Alex Schroeder  <alex@confusibombus>
+
+	* wiki.pl (PageDeletable): Never delete pages if $KeepDays is set
+	to 0.
+
+2004-10-20  Alex Schroeder  <alex@gnu.org>
+
+	* modules/headers.pl (HeadersRule): Relax requirements for headers
+	-- just require === or --- at the beginning of a line.
+
 2004-10-19  Alex Schroeder  <alex@confusibombus>
 
 	* wiki.pl (GetDownloadLink): Change look of download link if the
