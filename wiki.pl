@@ -56,7 +56,7 @@ $RefererTimeLimit $RefererLimit $TopLinkBar $NotifyTracker $InterMap
 @LockOnCreation $RefererFilter $PermanentAnchorsFile $PermanentAnchors
 %CookieParameters $StyleSheetPage @UserGotoBarPages $ConfigPage
 $ScriptName $CommentsPrefix $NewComment $AllNetworkFiles
-$UsePathInfo);
+$UsePathInfo $UploadAllowed @UploadTypes);
 
 # Other global variables:
 use vars qw(%Page %Section %Text %InterSite %KeptRevisions %IndexHash
@@ -155,6 +155,10 @@ $RssContributor   = '';    # List or description of the contributors
 $RssRights        = '';    # Copyright notice for RSS
 $NotifyTracker    = 0;     # 1 = send pings to weblogs.com for major changes
 
+# File uploads
+$UploadAllowed    = 0;     # 1 = yes, 0 = administrators only
+@UploadTypes      = ('image/jpeg', 'image/png'); # MIME types allowed
+
 # Header and Footer, Notes, GotoBar
 $EmbedWiki   = 0;   # 1 = no headers/footers
 $FooterNote  = '';  # HTML for bottom of every page
@@ -242,7 +246,6 @@ use CGI::Carp qw(fatalsToBrowser);
 
 sub InitRequest {
   $CGI::POST_MAX = $MaxPost;
-  $CGI::DISABLE_UPLOADS = 1;  # no uploads
   $q = new CGI;
 }
 
@@ -270,7 +273,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.151 2003/09/21 12:03:04 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.152 2003/09/22 01:43:08 as Exp $');
 }
 
 sub InitCookie {
@@ -347,7 +350,17 @@ sub ApplyRules {
     # first block -- at the beginning of a line.  Note that block level elements eat empty lines to prevent empty p elements.
     undef($fragment);
     if (m/\G(?<=\n)/cg or m/\G^/cg) { # at the beginning of a line
-      if (m/\G&lt;pre&gt;\n?(.*?\n)&lt;\/pre&gt;[ \t]*\n?/cgs) { # pre must be on column 1
+      if (pos == 0 and m/#FILE ([^ \n]+)\n(.*)/cgs) {
+	my $oldpos = pos;
+	my ($type, $data) = ($1, $2);
+	if (substr($type, 0, 6) eq 'image/') {
+	  $fragment = $q->img({-src=>$ScriptName . '?action=download;id=' . $OpenPageName,
+			       -alt=>$OpenPageName});
+	} else {
+	  $fragment = ScriptLink('action=download;id=' . $OpenPageName, $OpenPageName);
+	}
+	pos = $oldpos;
+      } elsif (m/\G&lt;pre&gt;\n?(.*?\n)&lt;\/pre&gt;[ \t]*\n?/cgs) { # pre must be on column 1
 	$fragment = CloseHtmlEnvironments() . $q->pre({-class=>'real'}, $1);
       } elsif (m/\G(\s*\n)*(\*+)[ \t]*/cg) {
 	$fragment = OpenHtmlEnvironment('ul',length($2)) . AddHtmlEnvironment('li');
@@ -1005,6 +1018,8 @@ sub DoBrowseRequest {
     DoHistory($id)   if ValidIdOrDie($id);
   } elsif ($action eq 'edit') {
     DoEdit($id, 0, 0, '', 0)  if ValidIdOrDie($id);
+  } elsif ($action eq 'download') {
+    DoDownload($id)  if ValidIdOrDie($id);
   } elsif ($action eq 'unlock') {
     DoUnlock();
   } elsif ($action eq 'index') {
@@ -1600,9 +1615,9 @@ sub RollbackPossible {
 
 sub DoRollback {
   my $to = GetParam('to', 0);
-  if (!UserIsAdminOrError()) {
-    return;
-  } elsif (!$to) {
+  print GetHeader('', T('Rolling back changes'), '');
+  return  if (!UserIsAdminOrError());
+  if (!$to) {
     ReportError(T('Missing target for rollback.'));
     return;
   } elsif (!RollbackPossible($to)) {
@@ -1612,7 +1627,7 @@ sub DoRollback {
     ReportError(T('Could not get main lock'));
     return;
   }
-  print GetHeader('', T('Rolling back changes'), '') . '<p>';
+  print '<p>';
   foreach my $id (AllPagesList()) {
     OpenPage($id);
     my $text = GetTextAtTime($to);
@@ -1742,14 +1757,16 @@ sub GetHeader {
 }
 
 sub GetHttpHeader {
-  my ($type) = @_;
-  my ($now, $name, $pwd, %headers);
-  $now = gmtime;
+  my ($type, $nocache) = @_;
   $type = 'text/html'  unless $type;
-  %headers = (-pragma=>'no-cache',
-	      -cache_control=>'no-cache',
-	      -last_modified=>"$now",
-	      -expires=>"+10s");
+  my $now = gmtime;
+  my %headers;
+  if ($nocache) {
+    %headers = (-expires=>"+24h");
+  } else {
+    %headers = (-pragma=>'no-cache', -cache_control=>'no-cache',
+		-last_modified=>"$now", -expires=>"+10s");
+  }
   if ($HttpCharset ne '') {
     $headers{-type} = "$type; charset=$HttpCharset";
   } else {
@@ -1937,12 +1954,12 @@ sub PrintFooter {
 }
 
 sub GetFormStart {
-  return $q->startform('POST', "$ScriptName",
-                       "application/x-www-form-urlencoded");
+  my $encoding = (shift) ? 'multipart/form-data' : 'application/x-www-form-urlencoded';
+  return $q->start_form(-method=>'post', -action=>$ScriptName, -enctype=>$encoding);
 }
 
 sub GetSearchForm {
-  my $form = GetFormStart . T('Search:') . ' '
+  my $form = GetFormStart() . T('Search:') . ' '
     . $q->textfield(-name=>'search', -size=>20) . ' ';
   if ($ReplaceForm) {
     $form .= T('Replace:') . ' '
@@ -2193,7 +2210,6 @@ sub OpenNewText {
   }
   $Text{'text'} .= "\n"  if $Text{'text'} !~ /^\n$/;
   $Text{'minor'} = 0;      # Default as major edit
-  $Text{'newauthor'} = 1;  # Default as new author
   $Text{'summary'} = '';
   OpenNewSection("text_$name", join($FS3, %Text));
 }
@@ -2724,11 +2740,11 @@ sub FreeToNormal {
 
 sub DoEdit {
   my ($id, $isConflict, $oldTime, $newText, $preview) = @_;
-  my ($header, $userName, $revision, $oldText);
-  my ($summary, $minor, $pageTime, $rule);
+  my $upload = GetParam('upload', undef);
   if (!UserCanEdit($id, 1)) {
     print GetHeader('', T('Editing Denied'), '');
-    if ($rule = UserIsBanned()) { # set $rule
+    my $rule = UserIsBanned();
+    if ($rule) {
       print $q->p(T('Editing not allowed: user, ip, or network is blocked.'));
       print $q->p(T('Contact the wiki administrator for more information.'));
       print $q->p(Ts('The rule %s matched for you.', $rule) . ' '
@@ -2738,13 +2754,16 @@ sub DoEdit {
     }
     PrintFooter();
     return;
+  } elsif ($upload and not $UploadAllowed and not UserIsAdmin()) {
+    ReportError(T('Only administrators can upload files.'));
+    return;
   }
   OpenPage($id);
   OpenDefaultText();
-  $pageTime = $Section{'ts'};
-  $header = Ts('Editing %s', $id);
+  my $pageTime = $Section{'ts'};
   # Old revision handling
-  $revision = GetParam('revision', '');
+  my $header; # set header only when sure that this is not an upload
+  my $revision = GetParam('revision', '');
   $revision =~ s/\D//g;  # Remove non-numeric chars
   if ($revision ne '') {
     OpenKeptRevisions('text_default');
@@ -2756,7 +2775,18 @@ sub DoEdit {
       $header = Ts('Editing revision %s of', $revision) . ' ' . $id;
     }
   }
-  $oldText = $Text{'text'};
+  my $oldText = $Text{'text'};
+  $upload = ($oldText =~ m/#FILE ([^ \n]+)\n(.*)/s) if not defined $upload;
+  if ($upload and not $UploadAllowed and not UserIsAdmin()) {
+    ReportError(T('Only administrators can upload files.'));
+    return;
+  }
+  if ($upload) { # shortcut lots of code
+    $revision = '';
+    $isConflict = 0;
+    $preview = 0;
+  }
+  $header = Ts('Editing %s', $id) if $upload or not $header;
   if ($preview && !$isConflict) {
     $oldText = $newText;
   }
@@ -2783,15 +2813,19 @@ sub DoEdit {
     print $q->p(T('Last save time:') . ' ' . TimeToText($oldTime)
 		. ' (' . T('Current time is:') . ' ' . TimeToText($Now) . ')');
   }
-  print GetFormStart();
+  print GetFormStart($upload);
   print GetHiddenValue("title", $id),
         GetHiddenValue("oldtime", $pageTime),
         GetHiddenValue("oldconflict", $isConflict);
   if ($revision ne '') {
     print GetHiddenValue('revision', $revision);
   }
-  print GetTextArea('text', $oldText);
-  $summary = GetParam('summary', '');
+  if ($upload) {
+    print GetUpload();
+  } else {
+    print GetTextArea('text', $oldText);
+  }
+  my $summary = GetParam('summary', '');
   print $q->p(T('Summary:'),
 	      $q->textfield(-name=>'summary', -default=>$summary, -override=>1, -size=>60));
   if (GetParam('recent_edit') eq 'on') {
@@ -2804,14 +2838,19 @@ sub DoEdit {
   if ($EditNote ne '') {
     print T($EditNote);  # Allow translation, must be a block level element (paragraph, list, table, etc.)
   }
-  $userName = GetParam('username', '');
+  my $userName = GetParam('username', '');
   print $q->p(T('Username:')
 	      . $q->textfield(-name=>'username',
 			      -default=>$userName, -override=>1,
 			      -size=>20, -maxlength=>50));
-  print $q->p($q->submit(-name=>'Save', -value=>T('Save')) . ' '
-	      . $q->submit(-name=>'Preview', -value=>T('Preview')));
-  if ($isConflict) {
+  print $q->p($q->submit(-name=>'Save', -value=>T('Save'))
+	      . ($upload ? '' :  ' ' . $q->submit(-name=>'Preview', -value=>T('Preview'))));
+  if ($upload) {
+    print $q->p(ScriptLink('action=edit;upload=0;id=' . $id, T('Replace this file with text.')));
+  } else {
+    print $q->p(ScriptLink('action=edit;upload=1;id=' . $id, T('Replace this text with a file.')));
+  }
+  if ($isConflict and not $upload) {
     print $q->hr();
     if ($UseDiff) {
       print $q->p($q->strong(T('This is the text with conflict markers:')));
@@ -2821,7 +2860,7 @@ sub DoEdit {
     print $q->p(GetTextArea('newtext', $newText));
   }
   print $q->endform();
-  if ($preview) {
+  if ($preview and not $upload) {
     print '<div class="preview">', $q->hr();
     print $q->h2(T('Preview:'));
     if ($isConflict) {
@@ -2837,6 +2876,30 @@ sub DoEdit {
 sub GetTextArea {
   my ($name, $text) = @_;
   return $q->textarea(-name=>$name, -default=>$text, -rows=>25, -columns=>78, -override=>1);
+}
+
+sub GetUpload {
+  return $q->p(T('File to upload: ')
+	       . $q->filefield(-name=>'file', -size=>50, -maxlength=>100));
+}
+
+sub DoDownload {
+  my $id = shift;
+  OpenPage($id);
+  OpenDefaultText($id);
+  if ($Text{'text'} =~ /#FILE ([^ \n]+)\n(.*)/s) {
+    my ($type, $data) = ($1, $2);
+    if (not grep(/^$type$/, @UploadTypes)) {
+      ReportError (Ts('Files of type %s are not allowed.', $type));
+      return;
+    }
+    print GetHttpHeader($type, 1); # increase cache time!
+    require MIME::Base64;
+    print MIME::Base64::decode($data);
+  } else {
+    print GetHttpHeader('text/plain');
+    print $Text{'text'};
+  }
 }
 
 # == Passwords ==
@@ -2956,9 +3019,9 @@ sub DoSearch {
     DoIndex();
     return;
   }
-  return  if $replacement and !UserIsAdminOrError();
   if ($replacement) {
     print GetHeader('', QuoteHtml(Ts('Replaced: %s', "$string -> $replacement")), '');
+    return  if (!UserIsAdminOrError());
     Replace($string,$replacement);
     $string = $replacement;
   } else {
@@ -3233,7 +3296,6 @@ sub PrintAllPages {
 sub DoPost {
   my $id = GetParam('title', '');
   if (!UserCanEdit($id, 1)) {
-    # This is an internal interface--we don't need to explain
     ReportError(Ts('Editing not allowed for %s.', $id));
     return;
   } elsif (($id eq 'SampleUndefinedPage') or ($id eq T('SampleUndefinedPage'))) {
@@ -3248,6 +3310,7 @@ sub DoPost {
   }
   # Handle raw edits with the meta info on the first line
   my $string = GetParam('text', undef);
+  my $filename = GetParam('file', undef);
   my $oldtime = GetParam('oldtime', '');
   my $raw = GetParam('raw', 0);
   if ($raw == 2) {
@@ -3266,22 +3329,40 @@ sub DoPost {
   my $oldrev = $Section{'revision'};
   my $pgtime = $Section{'ts'};
   my $preview = 0;
-  $preview = 1  if (GetParam('Preview', '') ne '');
-  my $comment = GetParam('aftertext', undef);
-  if (defined $comment) {
-    $comment =~ s/\r//g;  # Remove "\r"-s (0x0d) from the string
-    if ($comment ne '' and $comment ne $NewComment) {
-      $string = $old  . "----\n" if $old and $old ne "\n";
-      $string .= $comment . ' -- ' .  GetParam('username', T('Anonymous'))
-	. ' ' . TimeToText($Now) . "\n\n";
-    } else {
-      $string = $old;
+  # Upload file
+  if ($filename) {
+    require MIME::Base64;
+    my $file = $q->upload('file');
+    if (not $file and $q->cgi_error) {
+      ReportError (Ts('Transfer Error: %s', $q->cgi_error));
+      return;
     }
+    my $type = $q->uploadInfo($filename)->{'Content-Type'};
+    if (not grep(/^$type$/, @UploadTypes)) {
+      ReportError (Ts('Files of type %s are not allowed.', $type));
+      return;
+    }
+    local $/ = undef;   # Read complete files
+    my $data = MIME::Base64::encode(<$file>);
+    $string = '#FILE ' . $type . "\n" . $data;
+  } else {
+    $preview = 1  if (GetParam('Preview', ''));
+    my $comment = GetParam('aftertext', undef);
+    if (defined $comment) {
+      $comment =~ s/\r//g;	# Remove "\r"-s (0x0d) from the string
+      if ($comment ne '' and $comment ne $NewComment) {
+	$string = $old  . "----\n" if $old and $old ne "\n";
+	$string .= $comment . ' -- ' .  GetParam('username', T('Anonymous'))
+	  . ' ' . TimeToText($Now) . "\n\n";
+      } else {
+	$string = $old;
+      }
+    }
+    # Massage the string
+    $string =~ s/\r//g;
+    $string .= "\n"  if ($string !~ /\n$/);
+    $string =~ s/$FS//g;
   }
-  # Massage the string
-  $string =~ s/\r//g;
-  $string .= "\n"  if ($string !~ /\n$/);
-  $string =~ s/$FS//g;
   my $summary = GetParam('summary', '');
   $summary =~ s/$FS//g;
   $summary =~ s/[\r\n]+/ /g;
@@ -3298,7 +3379,7 @@ sub DoPost {
   $newAuthor = 0  if (!$newAuthor);   # Standard flag form, not empty
   # Handle editing conflicts.  If possible, merge automatically.
   my $oldconflict = GetParam('oldconflict', '');
-  if (($oldrev > 0) && ($newAuthor && ($oldtime < $pgtime))) {
+  if (($oldrev > 0) and ($newAuthor and ($oldtime < $pgtime)) and not $filename) {
     my $conflict = 1;
     if ($UseDiff) {
       # merge all changes that lead from file2 to file3 into file1.
@@ -3316,8 +3397,8 @@ sub DoPost {
     DoEdit($id, 0, $pgtime, $string, 1);
     return;
   }
-  Save($id, $string, $summary, (GetParam('recent_edit', '') eq 'on'),
-	$newAuthor);
+  # Save page
+  Save($id, $string, $summary, (GetParam('recent_edit', '') eq 'on'), $filename);
   ReleaseLock();
   DeletePermanentAnchors();
   if (GetParam('recent_edit', '') ne 'on' and $NotifyTracker) {
@@ -3327,7 +3408,7 @@ sub DoPost {
 }
 
 sub Save { # call within lock, with opened page
-  my ($id, $new, $summary, $minor, $newAuthor) = @_;
+  my ($id, $new, $summary, $minor, $upload) = @_;
   my $old = $Text{'text'};
   my $user = GetParam('username', '');
   if (!$minor) {
@@ -3335,19 +3416,20 @@ sub Save { # call within lock, with opened page
   }
   SaveKeepSection();
   ExpireKeepFile();
-  if ($UseDiff) {
+  if ($UseDiff and not $upload) {
     UpdateDiffs($id, $old, $new, $minor);
   }
   $Text{'text'} = $new;
   $Text{'minor'} = $minor;
-  $Text{'newauthor'} = $newAuthor;
   $Text{'summary'} = $summary;
   $Section{'host'} = GetRemoteHost();
   SaveDefaultText();
   SetPageCache('blocks','');
   SavePage();
+  my $languages;
+  $languages = GetLanguages($Text{'text'}) unless $upload;
   WriteRcLog($id, $summary, $minor, $Section{'revision'}, $user,
-	      $Section{'host'}, GetLanguages($Text{'text'}));
+	      $Section{'host'}, $languages);
   if ($Page{'revision'} == 1) {
     unlink($IndexFile);  # Regenerate index on next request
     if (grep(/^$id$/, @LockOnCreation)) {
@@ -3428,8 +3510,6 @@ sub PingTracker {
     my $url = UrlEncode($q->url . '/' . $id);
     my $name = UrlEncode($SiteName . ': ' . $id);
     my $rss = UrlEncode($q->url . '?action=rss');
-    # my $uri = "http://newhome.weblogs.com/pingSiteForm?name=$id&url=$url";
-    # my $uri = "http://www.blogrolling.com/ping.php?pingform=single&title=$name&url_1=$url&submit=Ping";
     my $uri = "http://ping.blo.gs/?name=$name&url=$url&rssUrl=$rss&direct=1";
     require LWP::UserAgent;
     my $ua = LWP::UserAgent->new;
@@ -3475,7 +3555,6 @@ sub DoMaintain {
   # Expire all keep files
   foreach my $name (AllPagesList()) {
     print $q->br();
-    print '.... '  if ($name =~ m|/|);
     print GetPageLink($name);
     OpenPage($name);
     OpenDefaultText();
@@ -3522,7 +3601,6 @@ sub DoMaintain {
     WriteStringToFile($RcFile . '.old', $data);
     WriteStringToFile($RcFile, join("\n",@rc) . "\n");
   }
-  # Write timestamp
   WriteStringToFile($fname, 'Maintenance done at ' . TimeToText($Now));
   ReleaseLock();
   print $q->p(T('Main lock released.'));
@@ -3582,8 +3660,7 @@ sub PageDeletable {
   return $DeletedPage && $Text{'text'} =~ /^\s*$DeletedPage\b/o;
 }
 
-# Delete and rename must be done inside locks.
-sub DeletePage {
+sub DeletePage { # Delete must be done inside locks.
   my ($page) = @_;
   my ($fname, $status);
   $page =~ s/ /_/g;
@@ -3600,43 +3677,6 @@ sub DeletePage {
   unlink($fname)  if (-f $fname);
   unlink($IndexFile);
   DeletePermanentAnchors();
-  EditRecentChanges(1, $page, '');  # Delete page from rclog files
-}
-
-sub EditRecentChanges {
-  my ($action, $old, $new) = @_;
-  EditRecentChangesFile($RcFile,    $action, $old, $new);
-  EditRecentChangesFile($RcOldFile, $action, $old, $new);
-}
-
-sub EditRecentChangesFile {
-  my ($fname, $action, $old, $new) = @_;
-  my ($status, $fileData) = ReadFile($fname);
-  if (!$status) {
-    # Save error text if needed.
-    print $q->p($q->strong("Could not open $RCName log file:") . ' ' . $fname)
-      . $q->p('Error was:')
-      . $q->pre($!);
-    return;
-  }
-  my $outrc = '';
-  my @rclist = split(/\n/, $fileData);
-  foreach my $rcline (@rclist) {
-    my ($ts, $page, $junk) = split(/$FS3/, $rcline);
-    if ($page eq $old) {
-      if ($action == 1) {  # Delete
-        ; # Do nothing (don't add line to new RC)
-      } elsif ($action == 2) {
-        $junk = $rcline;
-        $junk =~ s/^(\d+$FS3)$old($FS3)/"$1$new$2"/ge;
-        $outrc .= $junk . "\n";
-      }
-    } else {
-      $outrc .= $rcline . "\n";
-    }
-  }
-  WriteStringToFile($fname . '.old', $fileData);  # Backup copy
-  WriteStringToFile($fname, $outrc);
 }
 
 # == Page locking ==
