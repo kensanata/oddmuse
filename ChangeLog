@@ -4,6 +4,8 @@
 	2396.
 	(DoBrowseRequest): Use join(' ', $q->keywords) to deal with link
 	that include encoded spaces (%20) instead of underlines.
+	(DoBrowseRequest): Join using '_' instead of the space character.
+	(DoEdit): No longer limit the length of the summary.
 
 2003-06-20  Alex Schroeder  <alex@gnu.org>
 
