@@ -1,4 +1,26 @@
+2004-06-28  Alex Schroeder  <alex@confusibombus>
+
+	* wiki.pl (ApplyRules): Don't allow empty headers.
+	(DoDownload): Use unquoted type for messages.
+	(DoPost): Save unquoted type, use unquoted type for messages.
+
+2004-06-28  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($bol): New global variable.
+	(ApplyRules): Use local $bol instead of my $bol, so that
+	extensions can use it as well.
+
+	* modules/setext.pl (SeTextRule): Use the local $bol variable.
+
 2004-06-26  Alex Schroeder  <alex@confusibombus>
+
+	* test-markup.pl: New markup module tests.
+
+	* modules/markup.pl (MarkupRule): Added zero-width look-ahead
+	assertion.  Fix ~/elisp/ and /usr/bin/ example.
+
+	* wiki.pl (ApplyRules): Require a space after list items (after
+	*, #, :, ;).
 
 	* modules/not-found-handler.pl (WriteLinkDb): Removed lock.
 	(DoLinkDb): Added Lock.
