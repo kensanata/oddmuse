@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-# This script was last checked for Oddmuse version 1.195.
+# This script was last checked for Oddmuse version 1.383.
 #
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
@@ -53,6 +53,8 @@ Invalid action parameter %s
 Некорректный параметр действия %s
 Invalid URL.
 Некорректный URL.
+Page name is missing
+
 Page name is too long: %s
 Имя страницы слишком велико: %s
 Invalid Page %s
@@ -141,36 +143,6 @@ Click to search for references to this page
 Щелчок - искать ссылки на эту страницу
 Cookie: 
 
-new comment
-новый комментарий
-Save
-Сохранить
-Preview
-Предпросмотр
-Comments on this page
-Комментарии к этой странице
-Edit revision %s of this page
-Править версию %s этой страницы
-Edit text of this page
-Редактировать текст этой страницы
-This page is read-only
-Эта страница предназначена только для чтения
-View other revisions
-Смотреть другие версии
-View current revision
-Смотреть текущую версию
-View all changes
-Смотреть все изменения
-Back to %s
-Назад к %s
-Last edited
-Последнее редактирование
-Edited
-Правленное
-by %s
-
-(diff)
-(отличия)
 Warning
 Внимание
 Database is stored in temporary directory %s
@@ -181,6 +153,50 @@ The same page on other sites:
 
 EditNearLinks
 
+Last edited
+Последнее редактирование
+Edited
+Правленное
+by %s
+
+(diff)
+(отличия)
+Run maintenance
+
+Unlock site
+
+Lock site
+
+Comments on this page
+Комментарии к этой странице
+Edit revision %s of this page
+Править версию %s этой страницы
+Edit text of this page
+Редактировать текст этой страницы
+e
+
+This page is read-only
+Эта страница предназначена только для чтения
+Unlock page
+
+Lock page
+
+View other revisions
+Смотреть другие версии
+View current revision
+Смотреть текущую версию
+View all changes
+Смотреть все изменения
+Back to %s
+Назад к %s
+new comment
+новый комментарий
+s
+
+Save
+Сохранить
+Preview
+Предпросмотр
 Search:
 Поиск:
 Replace:
@@ -371,10 +387,6 @@ ancestor
 
 other
 
-Ping
-
-No response.
-
 Maintenance on all pages
 
 Maintenance not done.
@@ -428,5 +440,7 @@ All Referrers
 anchor first defined here: %s
 
 Click to search for references to this permanent anchor
+
+the page %s also exists
 
 END_OF_TRANSLATION
