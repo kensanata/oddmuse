@@ -3,6 +3,7 @@
 	* wiki.pl (PrintFooter): More spans.
 	(DoSurgeProtection): Report $SurgeProtectionViews and
 	$SurgeProtectionTime when surge protection is triggered.
+	(RcHeader): Fixed text bug.
 
 2004-05-21  Alex Schroeder  <alex@confusibombus>
 
