@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.27 2004/10/12 21:28:11 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.28 2004/10/12 21:55:21 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalendarUseCal);
 
@@ -25,11 +25,17 @@ div.month { float:right; margin:0; padding-left:1ex; padding-right:1ex; }
 div.footer { clear:both; }
 div.year div.month { float:left; }
 div.month pre { margin:0; padding:0; background-color:#ffe; }
-div.month a.edit { text-decoration:none; color:inherit; }
+div.month a { text-decoration:none; color:inherit; }
+div.month span.title a { background-color:inherit; }
+div.month a.exact { background-color:#eef; }
+div.month a.collection { background-color:#ccf; }
 div.month a.today { background-color:#fcc; }
+div.month a[class~="today"][class~="exact"] { background-color:#fcf; }
+div.month a[class~="today"][class~="collection"] { background-color:#faf; }
 @media print {
   div.month { display: none; }
   div.year div.month { display: block; }
+  div.year div.month a { display: inline; }
 }
 EOT
 
