@@ -5,6 +5,7 @@
 	(RSS): Implement it.
 	(ApplyRules): Allow any whitespace, not only spaces, inside rss,
 	include, and journal pseudo-tags.
+	(GetRcRss): Use rsslimit-1 instead of rsslimit.
 
 2003-09-30  Alex Schroeder  <alex@gnu.org>
 
