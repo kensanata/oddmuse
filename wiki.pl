@@ -276,7 +276,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.251 2003/11/08 22:26:51 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.252 2003/11/08 22:37:59 as Exp $');
 }
 
 sub InitCookie {
@@ -593,8 +593,8 @@ sub PrintWikiToHTML {
   if ($savecache and not $revision) {
     $Page{blocks} = $blocks;
     $Page{flags} = $flags;
-    if ($islocked or RequestLockOrError()) {
-      SavePage(); # unnecessarily fatal when no lock can be obtained
+    if ($islocked or RequestLockDir('main')) { # not fatal!
+      SavePage();
       ReleaseLock() unless $islocked;
     }
   }
