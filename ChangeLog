@@ -1,3 +1,19 @@
+2003-11-02  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoHistory): Extract revision numbers from the keep file
+	names.
+	(GetRefererFile): Changed name of referer files.
+	(ApplyRules): Permanent anchors are printed using a special span
+	element when $withanchors is not used (eg. when showing older
+	revisions of a page).
+
+2003-11-02  Alex Schroeder  <alex@gnu.org>
+
+	Major Rewrite!  This version uses a completely new file format,
+	and it stores kept revisions in separate files instead of one big
+	keep file.  Before upgrading to this revision or later, you MUST
+	run the upgrade-files.pl script.
+
 2003-10-28  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (Clean): Fix "eating of zero" bug.
