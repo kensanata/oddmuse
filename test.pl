@@ -2150,8 +2150,6 @@ remove_rule(\&PortraitSupportRule);
 
 # --------------------
 
-fixme:
-
 print '[calendar]';
 
 clear_pages();
@@ -2198,6 +2196,26 @@ test_page(get_page('action=calendar'),
 
 remove_rule(\&CalendarRule);
 *GetHeader = *OldCalendarGetHeader;
+
+
+# --------------------
+
+fixme:
+
+print '[crumbs]';
+
+clear_pages();
+AppendStringToFile($ConfigFile, "\$PageCluster = 'Cluster';\n");
+
+add_module('crumbs.pl');
+
+update_page("HomePage", "Has to do with [[Software]].");
+update_page("Software", "[[HomePage]]\n\nCheck out [[Games]].");
+update_page("Games", "[[Software]]\n\nThis is it.");
+test_page(get_page('Games'),
+	  '<p><span class="crumbs"><a class="local" href="http://localhost/wiki.pl/HomePage">HomePage</a> <a class="local" href="http://localhost/wiki.pl/Software">Software</a></span></p>');
+
+remove_rule(\&CrumbsRule);
 
 ### END OF TESTS
 
