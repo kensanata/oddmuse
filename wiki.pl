@@ -349,7 +349,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.484 2004/11/15 01:20:20 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.485 2004/11/15 01:39:15 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1291,7 +1291,7 @@ sub BrowsePage {
   SetParam('rcclusteronly', $id) if GetCluster($text) eq $id;
   if (($id eq $RCName) || (T($RCName) eq $id) || (T($id) eq $RCName)
       || GetParam('rcclusteronly', '')) {
-    print $q->start_div({-class=>'content rc'});;
+    print $q->start_div({-class=>'rc'});;
     print $q->hr()  if (!$embed);
     DoRc(\&GetRcHtml);
     print $q->end_div();
