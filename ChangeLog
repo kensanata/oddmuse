@@ -1,3 +1,19 @@
+2003-09-04  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (InitLinkPatterns): Small refactoring.
+	(BrowsePage): Small refactoring.
+	(GetRc): Small refactoring.
+	(SaveKeepSection): Small refactoring.
+	(ScriptLinkDiff): Allow new parameter for the old revision to use.
+	(GetRcHtml): Removed rcchangehist parameter which had no effect.
+	If parameter all=1 is given, the diff link uses the new
+	ScriptLinkDiff parameter.
+	(PrintHtmlDiff): Simplified substantially.  Removed author diffs.
+	Removed links to alternate diffs.
+	(GetCacheDiff): Removed author diffs.
+	(ExpireKeepFile): Removed author diffs.
+	(UpdateDiffs): Simplified substantially.  Removed author diffs.
+
 2003-09-03  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoEdit): Print the rule that matched when somebody is
