@@ -20,7 +20,7 @@ use vars qw($StrictSeTextRules);
 
 $StrictSeTextRules = 0;
 
-$ModulesDescription .= '<p>$Id: simple-rules.pl,v 1.9 2004/01/30 21:35:44 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: simple-rules.pl,v 1.10 2004/02/10 18:21:17 as Exp $</p>';
 
 *ApplyRules = *NewSimpleRulesApplyRules;
 
@@ -57,6 +57,11 @@ sub NewSimpleRulesApplyRules {
       $block =~ s/\*([^<>\* \t]+)\*/$q->b($1)/seg;
       $block =~ s/\/([^<>\/ \t]+)\//$q->i($1)/seg; # careful not to match HTML tags!
       $block =~ s/\_([^<>\_ \t]+)\_/$q->u($1)/seg;
+      ($block =~ s/(\&lt;journal(\s+(\d*))?(\s+"(.*)")?(\s+(reverse))?\&gt;)/
+       my ($str, $num, $regexp, $reverse) = ($1, $3, $5, $7);
+       push (@dirty, $str);
+       push (@escapes, sub { PrintJournal($num, $regexp, $reverse)} );
+       $FS;/ego);
     }
     if ($locallinks) {
       ($block =~ s/(\[\[$FreeLinkPattern\]\])/
@@ -77,7 +82,12 @@ sub NewSimpleRulesApplyRules {
     if (@dirty) {
       push (@blocks, shift(@dirty));
       push (@flags, 1);
-      print shift(@escapes);
+      my $escape = shift(@escapes);
+      if (ref($escape) eq 'CODE') {
+	&$escape;
+      } else {
+	print $escape;
+      }
     }
   }
   return (join($FS, @blocks), join($FS, @flags));
