@@ -87,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.120 2003/08/15 10:06:49 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.121 2003/08/16 01:00:39 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -320,7 +320,9 @@ sub InitLinkPatterns {
   $UrlProtocols = 'http|https|ftp|afs|news|nntp|mid|cid|mailto|wais|'
                   . 'prospero|telnet|gopher';
   $UrlProtocols .= '|file'  if $NetworkFile;
-  $UrlPattern = "((?:$UrlProtocols):(?://[-a-zA-Z0-9_.]+:[0-9]*)?[-a-zA-Z0-9_=!?#$\@~`%&*+\\/:;.,]+[-a-zA-Z0-9_=#$\@~`%&*+\\/])$QDelim";
+  my $UrlChars = '[-a-zA-Z0-9/@=+$_~*.,;:?!\'"()&#%]'; # see RFC 2396
+  my $EndChars = '[-a-zA-Z0-9/@=+$_~*]'; # no punctuation at the end of the url.
+  $UrlPattern = "((?:$UrlProtocols):$UrlChars+$EndChars)";
   $ImageExtensions = '(gif|jpg|png|bmp|jpeg)';
   $RFCPattern = "RFC\\s?(\\d+)";
   $ISBNPattern = 'ISBN:?([0-9- xX]{10,})';
@@ -381,15 +383,13 @@ sub ApplyRules {
 	pos = $oldpos; # restore \G after call to ApplyRules
 	DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
       } elsif (m/\G(\&lt;journal( +(\d*))?( +"(.*)")?\&gt;[ \t]*\n?)/cgi) { # <journal 10 "regexp"> includes 10 pages matching regexp
-	$oldmatch = $1;
+	DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
 	my $oldpos = pos;
 	PrintJournal($3, $5);
 	pos = $oldpos; # restore \G after call to ApplyRules
-	DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
       } elsif (m/\G(\&lt;rss +"(.*)"\&gt;[ \t]*\n?)/cgi) { # <rss "uri..."> stores the parsed RSS of the given URI
-	$oldmatch = $1;
+	DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
 	print &RSS($2);
-	DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
       }
       if (defined $fragment) {
 	print $fragment;
@@ -415,7 +415,8 @@ sub ApplyRules {
     } elsif (m/\G$RFCPattern/cg) { # RFC 1234 gets linked
       $fragment = &RFC($1);
     } elsif (m/\G$ISBNPattern/cg) { # ISBN 1234567890 gets linked
-      $fragment = &ISBN($1);
+      DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
+      print ISBN($1);
     } elsif (m/\G'''/cg) { # traditional wiki syntax with '''strong'''
       if ($HtmlStack[0] eq 'strong') {
 	$fragment = CloseHtmlEnvironment();
@@ -476,35 +477,28 @@ sub ApplyRules {
     } elsif (m/\G$UrlPattern/cg) { # plain URLs after all $UrlPattern, such that [$UrlPattern text] has priority
       $fragment = GetUrl($1, '', 0, 1);
     } elsif ($WikiLinks && $BracketWiki && $locallinks && m/\G(\[$LinkPattern\s+([^\]]+?)\])/cg) { # [LocalPage text]
-      $oldmatch = $1;
+      DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
       print GetPageOrEditLink($2, $3, 1);
-      DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
     } elsif ($WikiLinks && $locallinks && m/\G(\[$LinkPattern\])/cg) { # [LocalPage]
-      $oldmatch = $1;
+      DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
       print GetPageOrEditLink($2, '', 1);
-      DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
     } elsif ($WikiLinks && $locallinks && m/\G$LinkPattern/cg) { # LocalPage
       # LinkPattern after all $UrlPattern, such that http//:...?FooBar
       # will not get an additional ? if FooBar is undefined.
-      $oldmatch = $1;
+      DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
       print GetPageOrEditLink($1, '');
-      DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
     }  elsif ($PermanentAnchors && m/\G(\[::$FreeLinkPattern\])/cg) { #[::Free Link] permanent anchor create
-      $oldmatch = $1;
+      DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
       print GetPermanentAnchor($2);
-      DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
     } elsif ($PermanentAnchors && m/\G(\[\#\#$FreeLinkPattern\])/cg) { #[##Free Link] permanent anchor link
-      $oldmatch = $1;
+      DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
       print GetPermanentAnchorLink($2);
-      DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
     } elsif ($FreeLinks && $BracketWiki && $locallinks && m/\G(\[\[$FreeLinkPattern\|([^\]]+)\]\])/cg) { # [[Free Link|text]]
-      $oldmatch = $1;
+      DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
       print GetPageOrEditLink($2, $3, 0 , 1);
-      DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
     } elsif ($FreeLinks && $locallinks && m/\G(\[\[$FreeLinkPattern\]\])/cg) { # [[Free Link]]
-      $oldmatch = $1;
+      DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
       print GetPageOrEditLink($2, '', 0, 1);
-      DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
     } elsif (%Smilies && ($fragment = SmileyReplace())) {
       # $fragment already set
     } elsif ( eval {     local $SIG{__DIE__}; $fragment = MyRules(\$block, \@blocks, \@flags); } ) {
