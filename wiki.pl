@@ -44,7 +44,7 @@ $BannedHosts $ConfigFile $FullUrl $SiteName $HomePage $LogoUrl
 $RcDefault $IndentLimit $RecentTop $RecentLink $EditAllowed $UseDiff
 $KeepDays $KeepMajor $EmbedWiki $BracketText $UseConfig $UseLookup
 $AdminPass $EditPass $NetworkFile $BracketWiki $FreeLinks $WikiLinks
-$FreeLinkPattern $RCName $RunCGI $ShowEdits $LinkPattern
+$FreeLinkPattern $RCName $RunCGI $ShowEdits $LinkPattern $RssExclude
 $InterLinkPattern $InterSitePattern $MaxPost $UrlPattern $UrlProtocols
 $ImageExtensions $FS $CookieName $SiteBase $StyleSheet $NotFoundPg
 $FooterNote $NewText $EditNote $HttpCharset $UserGotoBar $VisitorTime
@@ -158,6 +158,7 @@ $RssImageUrl	  = ''; # URL to image to associate with your RSS feed
 $RssPublisher	  = ''; # Name of RSS publisher
 $RssContributor	  = ''; # List or description of the contributors
 $RssRights	  = ''; # Copyright notice for RSS
+$RssExclude       = 'RssExclude'; # name of the page that lists pages to be excluded from the feed
 
 # File uploads
 $UploadAllowed	  = 0;	# 1 = yes, 0 = administrators only
@@ -299,12 +300,12 @@ sub InitVariables {    # Init global session variables for mod_perl!
   @LockOnCreation = ($BannedHosts, $RefererFilter, $StyleSheetPage, $ConfigPage, $InterMap,
 		     $NearMap, $RssInterwikiTranslate, $BannedContent) unless @LockOnCreation;
   map { $$_ = FreeToNormal($$_); } # convert spaces to underscores on all configurable pagenames
-    (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$RefererFilter, \$StyleSheetPage,
-     \$ConfigPage, \$NotFoundPg, \$NearMap, \$RssInterwikiTranslate, \$BannedContent);
+    (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$RefererFilter, \$StyleSheetPage, \$NearMap,
+     \$ConfigPage, \$NotFoundPg, \$RssInterwikiTranslate, \$BannedContent, \$RssExclude);
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.438 2004/08/11 13:05:29 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.439 2004/08/12 16:35:37 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -994,6 +995,14 @@ sub PrintCache { # Use after OpenPage!
   }
 }
 
+sub PrintPageHtml { # print an open page
+  if ($Page{blocks} && $Page{flags} && GetParam('cache', $UseCache)) {
+    PrintCache();
+  } else {
+    PrintWikiToHTML($Page{text}, 1); # save cache, current revision, no main lock
+  }
+}
+
 # == Translating ==
 
 sub T {
@@ -1533,6 +1542,14 @@ sub GetRcRss {
   $year += 1900;
   my $date = sprintf( "%4d-%02d-%02dT%02d:%02d:%02d+00:00",
 		   $year, $mon+1, $mday, $hour, $min, $sec);
+  my @excluded = ();
+  if (GetParam('exclude', 1)) {
+    foreach (split(/\n/, GetPageContent($RssExclude))) {
+      if (/^ ([^ ]+)[ \t]*$/) {  # only read lines with one word after one space
+	push(@excluded, $1);
+      }
+    }
+  }
   require XML::RSS;
   my $rss = new XML::RSS (version => '1.0', encoding => $HttpCharset);
   $rss->add_module(
@@ -1565,6 +1582,7 @@ sub GetRcRss {
     # printRCLine
     sub {
       my ($pagename, $timestamp, $host, $userName, $summary, $minor, $revision, $languages, $cluster) = @_;
+      return if grep(/$pagename/, @excluded);
       my ($sec, $min, $hour, $mday, $mon, $year) = gmtime($timestamp);
       my $name = FreeToNormal($pagename);
       $name =~ s/_/ /g;
@@ -1610,11 +1628,7 @@ sub PageHtml {
   local *STDOUT;
   open(STDOUT, '>', \$result) or die "Can't open memory file: $!";
   OpenPage($id);
-  if ($Page{blocks} && $Page{flags}) {
-    PrintCache();
-  } else {
-    PrintWikiToHTML($Page{text}, 1); # save cache, current revision, no main lock
-  }
+  PrintPageHtml();
   return $result;
 }
 
@@ -3159,18 +3173,13 @@ sub PrintAllPages {
   my $links = shift;
   my $comments = shift;
   my $lang = GetParam('lang', 0);
-  my $cache = GetParam('cache', $UseCache);
   for my $id (@_) {
     OpenPage($id);
     my @languages = split(/,/, $Page{languages});
-    @languages = GetLanguages($Page{text}) unless $cache; # maybe refresh!
+    @languages = GetLanguages($Page{text}) unless GetParam('cache', $UseCache); # maybe refresh!
     next if $lang and @languages and not grep(/$lang/, @languages);
     print $q->hr . $q->h1($links ? GetPageLink($id) : $q->a({-name=>$id},$id));
-    if ($Page{blocks} && $Page{flags} && $cache) {
-      PrintCache();
-    } else {
-      PrintWikiToHTML($Page{text}, 1); # save cache, current revision, no main lock
-    }
+    PrintPageHtml();
     if ($comments and UserCanEdit($CommentsPrefix . $id, 0) and $id !~ /^$CommentsPrefix/) {
       print $q->p({-class=>'comment'},
 		  GetPageLink($CommentsPrefix . $id, T('Comments on this page')));
