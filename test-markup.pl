@@ -29,22 +29,19 @@ do 'wiki.pl';
 
 my ($passed, $failed) = (0, 0);
 my $resultfile = "/tmp/test-markup-result-$$";
+my $redirect;
 undef $/;
 $| = 1; # no output buffering
 
 sub update_page {
-  my ($id, $text, $summary, $minor, $admin) = @_;
+  my ($id, $text, $summary, $minor, $admin, @rest) = @_;
   print '*';
   my $pwd = $admin ? 'foo' : 'wrong';
   $text = UrlEncode($text);
   $summary = UrlEncode($summary);
   $minor = $minor ? 'on' : 'off';
-  open(F,"perl wiki.pl action=edit id=$id pwd=$pwd |");
-  my $output = <F>;
-  close F;
-  $output =~ /name="oldtime" value="([0-9]+)"/;
-  my $oldtime = $1;
-  system("perl wiki.pl oldtime=$oldtime title=$id summary=$summary recent_edit=$minor text=$text pwd=$pwd > /dev/null");
+  my $rest = join(' ', @rest);
+  $redirect = `perl wiki.pl Save=1 title=$id summary=$summary recent_edit=$minor text=$text pwd=$pwd $rest`;
   open(F,"perl wiki.pl action=browse id=$id|");
   my $output = <F>;
   close F;
@@ -109,8 +106,73 @@ system('/bin/rm -rf /tmp/oddmuse');
 die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
 mkdir '/tmp/oddmuse';
 
-my $localhost = 'confusibombus';
-$ENV{'REMOTE_ADDR'} = $localhost;
+# create simple config file
+
+open(F,'>/tmp/oddmuse/config');
+print F "\$SurgeProtection = 0;\n";
+close(F);
+
+# simple edit
+
+@Test = split('\n',<<'EOT');
+test test test
+EOT
+
+$ENV{'REMOTE_ADDR'} = 'confusibombus';
+test_page(update_page('ConflictTest', "test\ntest\ntest\n"), @Test);
+
+# edit from another address should result in conflict warning
+
+$ENV{'REMOTE_ADDR'} = 'megabombus';
+test_page(update_page('ConflictTest', "test\ntest\ntest\nend\n"), @Test);
+
+@Test = split('\n',<<'EOT');
+This page was changed by somebody else
+Please check whether you overwrote those changes
+EOT
+
+test_page($redirect, map { UrlEncode($_); } @Test); # test cookie!
+
+# test normal merging -- first get oldtime, then do two conflicting edits
+
+@Test = split('\n',<<'EOT');
+foo test bar end
+EOT
+
+$_ = `perl wiki.pl action=edit id=ConflictTest`;
+/name="oldtime" value="([0-9]+)"/;
+my $oldtime = $1;
+
+$ENV{'REMOTE_ADDR'} = 'confusibombus';
+update_page('ConflictTest', "foo\ntest\ntest\nend\n");
+
+$ENV{'REMOTE_ADDR'} = 'megabombus';
+test_page(update_page('ConflictTest', "test\ntest\nbar\nend\n", '', '', '', "oldtime=$oldtime"), @Test);
+
+# test conflict during merging -- first get oldtime, then do two conflicting edits
+
+@Test = split('\n',<<'EOT');
+test &lt;&lt;&lt;&lt;&lt;&lt;&lt; you bar <h6></h6>foo &gt;&gt;&gt;&gt;&gt;&gt;&gt; other test end
+EOT
+
+update_page('ConflictTest', "test\ntest\ntest\nend\n");
+
+$_ = `perl wiki.pl action=edit id=ConflictTest`;
+/name="oldtime" value="([0-9]+)"/;
+my $oldtime = $1;
+
+$ENV{'REMOTE_ADDR'} = 'confusibombus';
+update_page('ConflictTest', "test\nfoo\ntest\nend\n");
+
+$ENV{'REMOTE_ADDR'} = 'megabombus';
+test_page(update_page('ConflictTest', "test\nbar\ntest\nend\n", '', '', '', "oldtime=$oldtime"), @Test);
+
+@Test = split('\n',<<'EOT');
+This page was changed by somebody else
+The changes conflict
+EOT
+
+test_page($redirect, map { UrlEncode($_); } @Test); # test cookie!
 
 # create config file with WikiLinks=0
 
@@ -221,6 +283,9 @@ EOT
 test_page(update_page('Alexander_Schr\%f6der', "Edit [[Alexander Schröder]]!"), @Test);
 
 ## Edit banned hosts as a normal user should fail
+
+my $localhost = 'confusibombus';
+$ENV{'REMOTE_ADDR'} = $localhost;
 
 @Test = split('\n',<<'EOT');
 Describe the new page here
