@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.425 2004/06/21 00:23:46 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.426 2004/06/21 17:57:38 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1505,15 +1505,20 @@ sub GetRc {
     next if ($userOnly and $userOnly ne $username);
     my @languages = split(/,/, $languages);
     next if ($lang and @languages and not grep(/$lang/, @languages));
-    next if ($PageCluster and $clusterOnly and $clusterOnly ne $cluster);
-    $cluster = '' if $clusterOnly or not $PageCluster; # since now $clusterOnly eq $cluster
-    if ($PageCluster and $all < 2 and not $clusterOnly and $cluster) {
-      next if grep(/^$cluster$/, @clusters);
-      $pagename = $cluster;
-      $summary = '';
-      $minor = 0;
-      $revision = '';
-      push(@clusters, $pagename);
+    if ($PageCluster) {
+      ($cluster, $summary) = ($1, $2) if $summary =~ /^\[\[$FreeLinkPattern\]\] ?: *(.*)/
+	or $summary =~ /^$LinkPattern ?: *(.*)/;
+      next if ($clusterOnly and $clusterOnly ne $cluster);
+      $cluster = '' if $clusterOnly; # don't show cluster if $clusterOnly eq $cluster
+      if ($all < 2 and not $clusterOnly and $cluster) {
+	next if grep(/^$cluster$/, @clusters);
+	$summary = "$pagename: $summary"; # print the cluster instead of the page
+	$pagename = $cluster;
+	$revision = '';
+	push(@clusters, $pagename);
+      }
+    } else {
+      $cluster = '';
     }
     if ($date ne CalcDay($ts)) {
       $date = CalcDay($ts);
