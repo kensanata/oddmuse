@@ -59,7 +59,7 @@ Foo::Bar
 <table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table>
 EOT
 
-# Now translate embedded newlines
+# Now translate embedded newlines (other backslashes remain untouched)
 my %New;
 foreach (keys %Test) {
   $Test{$_} =~ s/\\n/\n/g;
