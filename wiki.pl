@@ -71,7 +71,7 @@ $CollectingJournal $WikiDescription $PrintedHeader %Locks $Fragment
 # == Configuration ==
 
 # Can be set outside the script: $DataDir, $UseConfig, $ConfigFile,
-# $ConfigPage, $AdminPass, $EditPass, $ScriptName
+# $ConfigPage, $AdminPass, $EditPass, $ScriptName, $FullUrl
 
 $UseConfig   = 1 unless defined $UseConfig; # 1 = load config file in the data directory
 $DataDir   = '/tmp/oddmuse' unless $DataDir; # Main wiki directory
@@ -86,7 +86,6 @@ $CookieName  = 'Wiki';     # Name for this wiki (for multi-wiki sites)
 
 # Fix if defaults do not work
 $SiteBase    = '';  # Full URL for <BASE> header
-$FullUrl     = '';  # Set if the auto-detected URL is wrong
 $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 
@@ -247,8 +246,8 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $ReplaceForm = 0;    # Only admins may search and replace
-  $ScriptName = $q->url() unless defined $ScriptName; # Name used in links
-  $FullUrl = $q->url(-full=>1) unless $FullUrl;
+  $ScriptName = $q->url() unless defined $ScriptName; # URL used in links
+  $FullUrl = $ScriptName unless $FullUrl; # URL used in forms
   $Now = time;         # Reset in case script is persistent
   if (not $LastUpdate) { # mod_perl: stat should be unnecessary since LastUpdate persists.
     my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size, $atime,$mtime,$ctime,$blksize,$blocks)
@@ -276,7 +275,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.253 2003/11/09 18:42:12 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.254 2003/11/10 17:06:52 as Exp $');
 }
 
 sub InitCookie {
