@@ -5,6 +5,10 @@
 	(GetSiteUrl): Use it.
 	(UserIsBanned): Fixed regexp.
 	(GetSiteUrl): Use $InterSitePattern.
+	(GetPageContent): New.
+	(GetSiteUrl, UserCanEdit): Use it.
+	(@LockOnCreation): New, defaults to ($BannedHosts, $InterMap).
+	(DoPost, Save): Use it.
 
 2003-05-27  Alex Schroeder  <alex@gnu.org>
 
