@@ -276,7 +276,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.274 2003/11/29 15:07:39 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.275 2003/11/29 15:14:22 as Exp $');
 }
 
 sub InitCookie {
@@ -2787,8 +2787,10 @@ sub DoSearch {
   } else {
     @results = SearchTitleAndBody($string, \&PrintPage);
   }
-  print $q->p(Ts('%s pages found.', ($#results + 1))) unless $raw;
-  PrintFooter();
+  if (not $raw) {
+    print $q->p(Ts('%s pages found.', ($#results + 1)));
+    PrintFooter();
+  }
 }
 
 sub SearchTitleAndBody {
