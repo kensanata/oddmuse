@@ -141,6 +141,10 @@ OddMuse:
 OddMuse<a href="test-wrapper.pl?action=edit&amp;id=OddMuse">?</a>:
 OddMuse:test
 <a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test">OddMuse:test</a>
+OddMuse:test: or not
+<a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test">OddMuse:test</a>: or not
+OddMuse:test, and foo
+<a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test">OddMuse:test</a>, and foo
 Foo::Bar
 Foo::Bar
 ||one||
@@ -214,4 +218,3 @@ foreach my $input (keys %New) {
 
 print "\n";
 print "$passed passed, $failed failed.\n";
-
