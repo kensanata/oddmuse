@@ -43,6 +43,8 @@ history
 geschiedenis
  . . . . 
 
+Click to create this page
+
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -67,6 +69,10 @@ Invalid Page %s (must not end with .lck)
 Ongeldige pagina; mag niet eindigen in .lck: %s
 Page name may not contain space characters: %s
 De naam van de pagina mag geen spaties bevatten: %s
+Preview:
+Voorvertoning:
+Preview only, not yet saved
+Dit is slechts een voorvertoning; er is nog niets opgeslagen!
 Please go on to %s.
 Ga a.u.b. verder naar %s.
 Could not open %s log file
@@ -145,6 +151,8 @@ new comment
 nieuw commentaar
 Save
 Opslaan
+Preview
+Voorvertoning
 Comments on this page
 Commentaar op deze pagina
 Edit revision %s of this page
@@ -159,8 +167,8 @@ View current revision
 Bekijk huidige revisie
 View all changes
 Toon alle wijzigingen
-View original
-Bekijk origineel
+Back to %s
+
 Last edited
 Laatst gewijzigd op
 Edited
@@ -271,16 +279,10 @@ Summary:
 Samenvatting:
 This change is a minor edit.
 Dit is slechts een kleine wijziging.
-Preview
-Voorvertoning
 Replace this file with text.
 Vervang dit bestand door tekst.
 Replace this text with a file.
 Vervang deze tekst door een bestand.
-Preview:
-Voorvertoning:
-Preview only, not yet saved
-Dit is slechts een voorvertoning; er is nog niets opgeslagen!
 File to upload: 
 
 Files of type %s are not allowed.
@@ -359,14 +361,14 @@ Browser reports no file info.
 Uw browser heeft geen informatie over het bestand opgegeven.
 Browser reports no file type.
 Uw browser heeft geen informatie over het bestandstype opgegeven.
-Anonymous
-Anoniem
 This page was changed by somebody else %s.
 Deze pagina is gewijzigd door iemand anders %s.
 The changes conflict.  Please check the page again.
 De wijzigingen zijn strijdig met elkaar. Controleer de pagina a.u.b. opnieuw.
 Please check whether you overwrote those changes.
 Controleer a.u.b. of u die wijzigingen overschreven heeft.
+Anonymous
+Anoniem
 Could not get a lock to merge!
 Kan de pagina niet vergrendelen voor het samenvoegen
 you
@@ -391,8 +393,6 @@ Main lock obtained.
 De gehele site is vergrendeld.
 Expiring keep files and deleting pages marked for deletion
 Bezig met verwijderen van te oude revisies uit de archieven, en verwijderen van pagina's die daarvoor gemarkeerd zijn
-and refreshing HTML cache
-en verversen van de HTML cache
 deleted
 verwijderd
 Moving part of the %s log file.
