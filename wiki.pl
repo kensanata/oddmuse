@@ -270,7 +270,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.147 2003/09/19 18:49:59 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.148 2003/09/19 22:33:29 as Exp $');
 }
 
 sub InitCookie {
@@ -3426,6 +3426,8 @@ sub DoMaintain {
   print $q->p(T('Main lock obtained.'));
   print '<p>' . T('Expiring keep files and deleting pages marked for deletion')
     . ($cache ? ' ' . T('and refreshing HTML cache') : '');
+  unlink($IndexFile) if $cache;
+  unlink($PermanentAnchorsFile) if $cache;
   # Expire all keep files
   foreach my $name (AllPagesList()) {
     print $q->br();
@@ -3875,7 +3877,7 @@ sub GetPermanentAnchor {
   if ( $PermanentAnchors{$id} ) {
     if ($PermanentAnchors{$id} ne $OpenPageName) {
       ReleaseLockDir('permanentanchors');
-      return '[' . T('anchor first defined here') . ' ' . GetPermanentAnchorLink($id) .']';
+      return '[' . T('anchor first defined here') . ': ' . GetPermanentAnchorLink($id) .']';
     }
   } else {
     $PermanentAnchors{$id}=$OpenPageName;
