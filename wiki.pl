@@ -66,9 +66,11 @@ $ReplaceForm %PermanentAnchors %PagePermanentAnchors);
 
 # == Configuration ==
 
-$DataDir   = '/tmp/oddmuse' unless $DataDir; # Main wiki directory
+# Can be set before loading the script: $DataDir, $ConfigFile, $ConfigPage
+
 $UseConfig   = 1;   # 1 = load config file in the data directory
-$ConfigPage  = '';  # # Page for more config (change space to _)
+$DataDir   = '/tmp/oddmuse' unless $DataDir; # Main wiki directory
+$ConfigPage  = '' unless $ConfigPage; # config page (change space to _)
 $RunCGI      = 1;   # 1 = Run script as CGI instead of being a library
 
 # Basics
@@ -83,7 +85,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.80 2003/06/04 01:02:03 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.81 2003/06/04 23:42:46 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -130,8 +132,8 @@ $UseDiff     = 1;           # 1 = use diff and merge
 
 # Visitors and SurgeProtection
 $SurgeProtection = 1;      # 1 = protect against leeches
-$Visitors    = 1;          # 1 = maintain list of recent visitors
-$VisitorTime = 120 * 60;   # Timespan to remember visitors in seconds
+$Visitors        = 1;      # 1 = maintain list of recent visitors
+$VisitorTime   = 120 * 60; # Timespan to remember visitors in seconds
 $SurgeProtectionTime = 10; # Size of the protected window in seconds
 $SurgeProtectionViews = 5; # How many page views to allow in this window
 $RefererTracking = 0;      # Keep track of referrals to your pages
@@ -210,15 +212,18 @@ $ConfigFile  = "$DataDir/config" unless $ConfigFile; # Config file with Perl cod
 
 # The 'main' program, called at the end of this script file.
 sub DoWikiRequest {
-  do $ConfigFile  if $UseConfig and $ConfigFile and -f $ConfigFile;
-  InitLinkPatterns();
-  if ($UseConfig and $ConfigPage) {
-    eval GetPageContent($ConfigPage);
-    $Message = $@; # guaranteed to be null if eval succeeded
-  } else {
-    $Message = '';
+  Init();             # FS character can only be changed in config *file*
+  InitLinkPatterns(); # Link pattern can be changed in config files
+  if ($UseConfig and $ConfigFile and -f $ConfigFile) {
+    do $ConfigFile;
+    $Message .= $q->p($@) if $@;
   }
-  InitRequest() or return;
+  if ($ConfigPage) {
+    eval GetPageContent($ConfigPage);
+    $Message .= $q->p($@) if $@;
+  }
+  InitRequest();      # After config files, because $HttpCharset is used
+  InitCookie();       # After request, because $q is used
   DoSurgeProtection();
   if (not $BannedCanRead and UserIsBanned() and not UserIsAdmin()) {
     DoBannedReading();
@@ -231,20 +236,77 @@ sub DoBannedReading {
   ReportError(T('Reading not allowed: user, ip, or network is blocked.'));
 }
 
+sub Init {
+  $FS  = "\x1e";      # The FS character is the RECORD SEPARATOR control char in ASCII
+  $FS0 = "\xb3";      # The old FS character is a superscript "3" in Latin-1
+  $FS1 = $FS . '1';   # The FS values are used to separate fields
+  $FS2 = $FS . '2';   # in stored hashtables and other data structures.
+  $FS3 = $FS . '3';   # The FS character is not allowed in user data.
+  $Message = '';      # Warnings and non-fatal errors.
+}
+
+# == CGI startup, cookie ==
+
+use CGI;
+use CGI::Carp qw(fatalsToBrowser);
+
+sub InitRequest { # Init global session variables for mod_perl!
+  $CGI::POST_MAX = $MaxPost;
+  $CGI::DISABLE_UPLOADS = 1;  # no uploads
+  $q = new CGI;
+  $q->charset($HttpCharset) if $HttpCharset;
+  $Now = time;                     # Reset in case script is persistent
+  $ReplaceForm = 0;
+  my @ScriptPath = split('/', $q->script_name());
+  $ScriptName = pop(@ScriptPath);  # Name used in links
+  $IndexInit = 0;                  # Must be reset for each request
+  $InterSiteInit = 0;
+  %InterSite = ();
+  $MainPage = '.';       # For subpages only, the name of the top-level page
+  $OpenPageName = '';    # Currently open page
+  CreateDir($DataDir);  # Create directory if it doesn't exist
+  ReportError(Ts('Could not create %s', $DataDir) . ": $!") unless -d $DataDir;
+}
+
+sub InitCookie {
+  undef $q->{'.cookies'};  # Clear cache if it exists (for SpeedyCGI)
+  %OldCookie = split(/$FS1/, $q->cookie($CookieName));
+  %NewCookie = %OldCookie;
+  # Only valid usernames get stored in the new cookie.
+  my $name = GetParam('username', '');
+  $q->delete('username');
+  delete $NewCookie{'username'};
+  if (!$name) {
+    # do nothing
+  } elsif (!$FreeLinks && !($name =~ /^$LinkPattern$/)) {
+    $Message .= $q->p(Ts('Invalid UserName %s: not saved.', $name));
+  } elsif ($FreeLinks && (!($name =~ /^$FreeLinkPattern$/))) {
+    $Message .= $q->p(Ts('Invalid UserName %s: not saved.', $name));
+  } elsif (length($name) > 50) {  # Too long
+    $Message .= $q->p(T('UserName must be 50 characters or less: not saved'));
+  } else {
+    $NewCookie{'username'} = $name;
+  }
+}
+
+sub GetParam {
+  my ($name, $default) = @_;
+  my $result;
+  $result = $q->param($name);
+  if (!defined($result)) {
+    if (defined($NewCookie{$name})) {
+      $result = $NewCookie{$name};
+    } else {
+      $result = $default;
+    }
+  }
+  return $result;
+}
+
 # == Markup Code ==
 
 sub InitLinkPatterns {
   my ($UpperLetter, $LowerLetter, $AnyLetter, $WikiWord, $SubPage, $QDelim);
-  # Allow uses to call this from their config file, so do not run twice.
-  return if $FS;
-  # Field separators are used in the URL-style patterns below.
-  if (!$FS) {
-    $FS  = "\x1e";    # The FS character is the RECORD SEPARATOR control char in ASCII
-    $FS0 = "\xb3";    # The old FS character is a superscript "3" in Latin-1
-  }
-  $FS1 = $FS . '1';   # The FS values are used to separate fields
-  $FS2 = $FS . '2';   # in stored hashtables and other data structures.
-  $FS3 = $FS . '3';   # The FS character is not allowed in user data.
   $QDelim = '(?:"")?';# Optional quote delimiter (removed from the output)
   $WikiWord = '[A-Z]+[a-z\x80-\xff]+[A-Z][A-Za-z\x80-\xff]*';
   $SubPage = '[A-Z]+[a-z\x80-\xff]+[A-Za-z\x80-\xff]*';
@@ -857,70 +919,6 @@ sub Ts {
   $text =~ s/\%s/$string/;
   return $text;
 }
-
-# == CGI startup, cookie ==
-
-use CGI;
-use CGI::Carp qw(fatalsToBrowser);
-
-sub InitRequest {
-  $CGI::POST_MAX = $MaxPost;
-  $CGI::DISABLE_UPLOADS = 1;  # no uploads
-  $q = new CGI;
-  $q->charset($HttpCharset) if $HttpCharset;
-  $Now = time;                     # Reset in case script is persistent
-  $ReplaceForm = 0;
-  my @ScriptPath = split('/', $q->script_name());
-  $ScriptName = pop(@ScriptPath);  # Name used in links
-  $IndexInit = 0;                  # Must be reset for each request
-  $InterSiteInit = 0;
-  %InterSite = ();
-  $MainPage = '.';       # For subpages only, the name of the top-level page
-  $OpenPageName = '';    # Currently open page
-  CreateDir($DataDir);  # Create directory if it doesn't exist
-  if (!-d $DataDir) {
-    ReportError(Ts('Could not create %s', $DataDir) . ": $!");
-    return 0;
-  }
-  InitCookie();         # Reads in user data
-  return 1;
-}
-
-sub InitCookie {
-  undef $q->{'.cookies'};  # Clear cache if it exists (for SpeedyCGI)
-  %OldCookie = split(/$FS1/, $q->cookie($CookieName));
-  %NewCookie = %OldCookie;
-  # Only valid usernames get stored in the new cookie.
-  my $name = GetParam('username', '');
-  $q->delete('username');
-  delete $NewCookie{'username'};
-  if (!$name) {
-    # do nothing
-  } elsif (!$FreeLinks && !($name =~ /^$LinkPattern$/)) {
-    $Message .= $q->p(Ts('Invalid UserName %s: not saved.', $name));
-  } elsif ($FreeLinks && (!($name =~ /^$FreeLinkPattern$/))) {
-    $Message .= $q->p(Ts('Invalid UserName %s: not saved.', $name));
-  } elsif (length($name) > 50) {  # Too long
-    $Message .= $q->p(T('UserName must be 50 characters or less: not saved'));
-  } else {
-    $NewCookie{'username'} = $name;
-  }
-}
-
-sub GetParam {
-  my ($name, $default) = @_;
-  my $result;
-  $result = $q->param($name);
-  if (!defined($result)) {
-    if (defined($NewCookie{$name})) {
-      $result = $NewCookie{$name};
-    } else {
-      $result = $default;
-    }
-  }
-  return $result;
-}
-
 
 # == Choosing action
 
@@ -1744,10 +1742,10 @@ div.rss { background-color:#EEF; color:#000; }
 div.rss a:link { background-color:#EEF; color:#00F; }
 div.rss a:visited { background-color:#EEF; color:#A0A; }
 div.rss a:active { background-color:#EEF; color:#F00; }
-a.permanent_def:before { content:"[::"; }
-a.permanent_def:after { content:"]"; }
-a.permanent_link:before { content:"[##"; }
-a.permanent_link:after { content:"]" }
+a.definition:before { content:"[::"; }
+a.definition:after { content:"]"; }
+a.link:before { content:"[##"; }
+a.link:after { content:"]" }
 -->
 EOT
   }
@@ -3962,7 +3960,7 @@ sub GetPermanentAnchor {
    }
   ReleaseLockDir('permanentanchors');
   $PagePermanentAnchors{$id} = 1; # add to the list of anchors in page
-  return ScriptLink("action=anchor&id=$id#$id",$text,'permanent_def',$id);
+  return ScriptLink("action=anchor&id=$id#$id",$text,'definition',$id);
 }
 
 sub GetPermanentAnchorLink {
@@ -3975,7 +3973,7 @@ sub GetPermanentAnchorLink {
   $text =~ s/_/ /g;
   ReadPermanentAnchors();
   if ( $PermanentAnchors{$id} ) {
-    return ScriptLink("$PermanentAnchors{$id}#$id",$text,'permanent_link');
+    return ScriptLink("$PermanentAnchors{$id}#$id",$text,'link');
   }
   return "[## $id]";
 }
