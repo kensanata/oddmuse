@@ -10,6 +10,9 @@
 	text.
 	(Cookie): Only set attributes if necessary.  Report setting of
 	cookie via $Message.
+	($SimpleLinks, $NonEnglish): Removed.
+	(InitLinkPatterns): Simplified the regexp generating code such
+	that the regexps used are clearer now,
 
 2003-05-17  Pierre Gaston  <pgas@intracom.gr>
 	
