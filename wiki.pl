@@ -81,7 +81,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.74 2003/05/31 13:27:14 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.75 2003/05/31 20:16:07 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -182,7 +182,7 @@ if (not @HtmlTags) { # don't set if set in the config file
 @LockOnCreation = ($BannedHosts, $InterMap, $RefererFilter);
 
 %CookieParameters = ('username' => '',
-		     'password' => '',
+		     'pwd' => '',
 		     'toplinkbar' => $TopLinkBar,
 		     'embed' => $EmbedWiki);
 
@@ -1691,6 +1691,7 @@ sub Cookie {
     my $value = GetParam($_, $default);
     $params{$_} = $value  if $value ne $default;
     $changed = 1  if $value ne $OldCookie{$_} and ($OldCookie{$_} ne '' or $value ne $default);
+    # $Message .= "<p>$_: $value ($default), old: $OldCookie{$_}";
   }
   if ($changed) {
     my $cookie = join($FS1, map {$_ . $FS1 . $params{$_}} keys(%params));
