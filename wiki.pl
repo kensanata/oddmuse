@@ -265,7 +265,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.177 2003/10/03 18:18:05 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.178 2003/10/04 00:57:23 as Exp $');
 }
 
 sub InitCookie {
@@ -2503,7 +2503,8 @@ sub RequestLockDir {
   $lockName = $LockDir . $name;
   $n = 0;
   while (mkdir($lockName, 0555) == 0) {
-    if ($n++ >= $tries and $error) {
+    if ($n++ >= $tries) {
+      return 0 unless $error;
       ReportError(Ts('Could not get %s lock', $name) . ": $!\n");
     }
     sleep($wait);
