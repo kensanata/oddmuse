@@ -139,9 +139,22 @@ print F "\$SurgeProtection = 0;\n";
 close(F);
 
 update_page('NicePage', 'Friendly content.', 'good guy one');
-sleep(2);
-update_page('OtherPage', 'Other cute content.', 'another good guy');
-sleep(2);
+sleep(1);
+update_page('OtherPage', 'Other cute content 1.', 'another good guy');
+update_page('OtherPage', 'Other cute content 2.', 'another good guy');
+update_page('OtherPage', 'Other cute content 3.', 'another good guy');
+update_page('OtherPage', 'Other cute content 4.', 'another good guy');
+sleep(1);
+update_page('OtherPage', 'Other cute content 5.', 'another good guy');
+update_page('OtherPage', 'Other cute content 6.', 'another good guy');
+update_page('OtherPage', 'Other cute content 7.', 'another good guy');
+update_page('OtherPage', 'Other cute content 8.', 'another good guy');
+sleep(1);
+update_page('OtherPage', 'Other cute content 9.', 'another good guy');
+update_page('OtherPage', 'Other cute content 10.', 'another good guy');
+update_page('OtherPage', 'Other cute content 11.', 'another good guy');
+update_page('OtherPage', 'Other cute content 12.', 'another good guy');
+sleep(1);
 update_page('NicePage', 'Nice content.', 'good guy two');
 sleep(2);
 update_page('NicePage', 'Evil content.', 'vandal one');
@@ -155,7 +168,7 @@ test_page(get_page("action=rollback to=$1"), 'restricted to administrators');
 test_page(get_page("action=rollback to=$1 pwd=foo"),
 	  'Rolling back changes', 'NicePage rolled back', 'OtherPage rolled back');
 test_page(get_page('NicePage'), 'Nice content');
-test_page(get_page('OtherPage'), 'Other cute content');
+test_page(get_page('OtherPage'), 'Other cute content 12');
 test_page(get_page('action=rc showedit=1'), 'Rollback to ');
 
 print '[clusters]';
