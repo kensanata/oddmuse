@@ -274,7 +274,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.193 2003/10/12 13:43:13 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.194 2003/10/12 16:55:54 as Exp $');
 }
 
 sub InitCookie {
@@ -2999,18 +2999,30 @@ sub DoSearch {
 
 sub SearchTitleAndBody {
   my $string = shift;
+  my $and = T('and');
+  my $or = T('or');
+  my @strings = split(/ +$and +/, $string);
   my @found;
   foreach my $name (AllPagesList()) {
     OpenPage($name);
     OpenDefaultText();
-    next if ($Text{'text'} =~ /^#FILE / and $string !~ /^\^#FILE/); # usually skip files
-    if (($Text{'text'} =~ /$string/i) or ($name =~ /$string/i)) {
+    next if ($Text{'text'} =~ /^#FILE / and $string !~ /^\^#FILE/); # skip files unless requested
+    my $found = 1; # assume found
+    foreach my $str (@strings) {
+      my @temp = split(/ +$or +/, $str);
+      $str = join('|', @temp);
+      if (not ($Text{'text'} =~ /$str/i)) {
+	$found = 0;
+	last;
+      }
+    }
+    if ($found or $name =~ /$string/i) {
       push(@found, $name);
     } elsif ($FreeLinks && ($name =~ m/_/)) {
       my $freeName = $name;
       $freeName =~ s/_/ /g;
       if ($freeName =~ /$string/i) {
-        push(@found, $name);
+	push(@found, $name);
       }
     }
   }
@@ -3018,7 +3030,10 @@ sub SearchTitleAndBody {
 }
 
 sub PrintSearchResults {
-  my ($searchstring, @results) = @_ ;  #  inputs
+  my ($searchstring, @results) = @_ ;
+  my $and = T('and');
+  my $or = T('or');
+  my $searchstring = join('|', split(/ +(?:$and|$or) +/, $searchstring));
   my ($snippetlen, $maxsnippets) = (100, 4) ; #  these seem nice.
   print $q->h2(Ts('%s pages found:', ($#results + 1)));
   my $files = ($searchstring =~ /^\^#FILE/); # usually skip files
@@ -3038,27 +3053,28 @@ sub PrintSearchResults {
       $pageText =~ /^#FILE ([^ ]+)/;
       print $1;
     } else {
-      #  show a snippet from the top of the document
-      my $j = index( $pageText, ' ', $snippetlen ) ; #  end on word boundary
-      print substr( $pageText, 0, $j ), ' ', $q->b('...');
-      $pageText = substr( $pageText, $j ) ; #  to avoid rematching
-      #  search for occurrences of searchstring
+      # show a snippet from the top of the document
+      my $j = index($pageText, ' ', $snippetlen); # end on word boundary
+      my $t = substr($pageText, 0, $j);
+      $t =~ s/($searchstring)/<strong>\1<\/strong>/gi;
+      print $t, ' ', $q->b('...');
+      $pageText = substr($pageText, $j); # to avoid rematching
+      # search for occurrences of searchstring
       my $jsnippet = 0 ;
-      while ( $jsnippet < $maxsnippets
-	      &&  $pageText =~ m/($searchstring)/i ) { #  captures match as $1
-	$jsnippet++ ;		#  paranoid about looping
-	if ( ($j = index( $pageText, $1 )) > -1 ) { #  get index of match
-	  #  get substr containing (start of) match, ending on word boundaries
-	  my $start = index( $pageText, ' ', $j-($snippetlen/2) ) ;
-	  $start = 0  if ( $start == -1 ) ;
-	  my $end = index( $pageText, ' ', $j+($snippetlen/2) ) ;
-	  $end = length( $pageText )  if ( $end == -1 ) ;
-	  my $t = substr( $pageText, $start, $end-$start ) ;
-	  #  highlight occurrences and tack on to output stream.
-	  $t =~ s/($searchstring)/<strong>\1<\/strong>/gi ;
+      while ($jsnippet < $maxsnippets && $pageText =~ m/($searchstring)/i) {
+	$jsnippet++;
+	if (($j = index($pageText, $1)) > -1 ) {
+	  # get substr containing (start of) match, ending on word boundaries
+	  my $start = index($pageText, ' ', $j-($snippetlen/2));
+	  $start = 0 if ($start == -1);
+	  my $end = index($pageText, ' ', $j+($snippetlen/2));
+	  $end = length($pageText ) if ($end == -1);
+	  $t = substr($pageText, $start, $end-$start);
+	  # highlight occurrences and tack on to output stream.
+	  $t =~ s/($searchstring)/<strong>\1<\/strong>/gi;
 	  print $t, ' ', $q->b('...');
-	  #  truncate text to avoid rematching the same string.
-	  $pageText = substr( $pageText, $end ) ;
+	  # truncate text to avoid rematching the same string.
+	  $pageText = substr($pageText, $end);
 	}
       }
     }
