@@ -305,7 +305,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.445 2004/08/13 10:01:34 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.446 2004/08/15 18:08:06 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1028,12 +1028,21 @@ sub PrintPageHtml { # print an open page
   }
 }
 
+sub PrintPageDiff { # print diff for open page
+  my $diff = GetParam('diff', 0);
+  if ($UseDiff && $diff) {
+    PrintHtmlDiff($diff);
+    print $q->hr();
+  }
+}
+
 sub PageHtml {
   my $id = shift;
   my $result = '';
   local *STDOUT;
   open(STDOUT, '>', \$result) or die "Can't open memory file: $!";
   OpenPage($id);
+  PrintPageDiff();
   PrintPageHtml();
   return $result;
 }
@@ -1190,8 +1199,7 @@ sub BrowsePage {
   print GetHeader($id, QuoteHtml($id), $oldId, undef, $status);
   my $showDiff = GetParam('diff', 0);
   if ($UseDiff && $showDiff) {
-    my $diffRevision = GetParam('diffrevision', $revision);
-    PrintHtmlDiff($showDiff, $id, $diffRevision, $revision, $text);
+    PrintHtmlDiff($showDiff, GetParam('diffrevision', $revision), $revision, $text);
     print $q->hr();
   }
   print '<div class="content">';
@@ -1594,7 +1602,7 @@ sub GetRcRss {
   );
   $rss->channel(
     title	  => QuoteHtml($SiteName),
-    link	  => $quotedFullUrl . QuoteHtml("?$RCName"),
+    link	  => $quotedFullUrl . '?' . UrlEncode($RCName),
     description	  => QuoteHtml($SiteDescription),
     dc => {
       publisher	  => $RssPublisher,
@@ -2165,7 +2173,7 @@ sub GetGotoBar {
 # == Difference markup and HTML ==
 
 sub PrintHtmlDiff {
-  my ($diffType, $id, $revOld, $revNew, $newText) = @_;
+  my ($diffType, $revOld, $revNew, $newText) = @_;
   my ($diffText, $intro);
   if ($revOld) {
     $diffText = GetKeptDiff($newText, $revOld);
