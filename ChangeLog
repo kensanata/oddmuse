@@ -1,3 +1,29 @@
+2004-10-15  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (InitVariables): Bugfix -- handle '_' at the endo of
+	$CommentsPrefix as well.
+	(RSS): Warning if feed contains no item (even if no parsing
+	error...).
+	(RSS): Don't add closing ul unless an opening one was added.
+
+2004-10-13  Alex Schroeder  <alex@gnu.org>
+
+	* modules/tables.pl (TablesRule): Fix search'n'replace bug.
+
+	* wiki.pl: No provide $DefaultCSS for tables.
+	(InitVariables): Handle $CommentsPrefix.
+	(GetHeader): Simplified.
+	(AddComment): Added extra newlines.
+
+	* modules/usemod.pl: Add $DefaultCSS for tables.
+
+	* modules/tables.pl: Add $DefaultCSS for tables.
+
+	* modules/static-copy.pl (StaticFileName): Add <br/>.
+	(StaticHtml): Add h1 title, limited goto-bar, and footer.
+	(StaticScriptLink): Don't link to non-existing pages.
+	(StaticHtml): Handle comment pages.
+
 2004-10-13  Alex Schroeder  <alex@confusibombus>
 
 	* Makefile (upload): Fix upload target.
