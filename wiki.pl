@@ -356,7 +356,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.520 2005/01/07 00:46:23 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.521 2005/01/07 08:51:49 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -3902,7 +3902,10 @@ sub handler
 {
   my $r = shift;
   Apache->request($r);
-  $DataDir = $ENV{WikiDataDir} if exists $ENV{WikiDataDir};
+  for $var (qw{DataDir UseConfig ConfigFile ModuleDir ConfigPage
+	       AdminPass EditPass ScriptName FullUrl RunCGI}) {
+    $$var = $ENV{"Wiki$var"} if exists $ENV{"Wiki$var"}; # symbolic references
+  }
   DoWikiRequest();
   return 200;
 }
