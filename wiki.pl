@@ -87,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.99 2003/06/15 00:41:35 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.100 2003/06/15 18:26:13 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -3277,7 +3277,7 @@ sub DoPost {
   $pgtime = $Section{'ts'};
   $preview = 0;
   $preview = 1  if (GetParam('Preview', '') ne '');
-  if (!$preview && (($old eq $string)
+  if (!$preview && (($old eq $string and not $comment)
 		    or ($oldrev == 0 and $string eq $NewText))) {
     ReleaseLock(); # No changes
     ReBrowsePage($id, '', 1);
