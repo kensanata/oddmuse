@@ -276,7 +276,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.249 2003/11/08 12:27:58 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.250 2003/11/08 13:54:00 as Exp $');
 }
 
 sub InitCookie {
@@ -697,12 +697,14 @@ sub RSS {
     }
     foreach my $i (@{$rss->{items}}) {
       my $line;
+      my $date = $i->{'dc'}->{'date'};
+      $date = $i->{'pubdate'} unless $date;
       $line .= $q->a({-href=>$i->{$wikins}->{diff}}, $tDiff)
 	if $i->{$wikins}->{diff};
-      $line .= ' ' . $q->a({-href=>$i->{'link'}, -title=>$i->{'dc'}->{'date'}},
+      $line .= ' ' . $q->a({-href=>$i->{'link'}, -title=>$date},
 			   $interwiki ? "$interwiki:$i->{'title'}" : "[$i->{'title'}]")
 	if $i->{'title'} and $i->{'link'};
-      $line .= ' ' . $q->a({-href=>$i->{guid}, -title=>$i->{dc}->{date}}, $i->{guid})
+      $line .= ' ' . $q->a({-href=>$i->{guid}, -title=>$date}, $i->{guid})
 	if $i->{guid}; # for RSS 2.0
       $line .= ' ' . $q->a({-href=>$i->{$wikins}->{history}}, "($tHistory)")
 	if $i->{$wikins}->{history};
@@ -716,8 +718,7 @@ sub RSS {
       }
       $line .= $q->span({-class=>'contributor'}, $q->span(' . . . . . ') . $contributor)
 	if $contributor;
-      my $key = $i->{'dc'}->{'date'};
-      $key = $i->{'pubdate'} unless $key;
+      my $key = $date;
       $key = $i->{'title'} unless $key;
       $key = $i->{'guid'} unless $key;
       $lines{$key} = $line;
