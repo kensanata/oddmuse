@@ -1278,7 +1278,7 @@ file://home/foo/tutorial.pdf
 file:///home/foo/tutorial.pdf
 <a class="url" href="file:///home/foo/tutorial.pdf">file:///home/foo/tutorial.pdf</a>
 image inline: [[image:HomePage]], [[image:OtherPage]]
-image inline: <a class="image" href="http://localhost/test-wrapper.pl/HomePage"><img class="upload" src="http://localhost/test-wrapper.pl/download/HomePage" alt="HomePage" /></a>, [image:OtherPage<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage;upload=1">?</a>]
+image inline: <a class="image" href="http://localhost/test-wrapper.pl/HomePage"><img class="upload" src="http://localhost/test-wrapper.pl/download/HomePage" alt="HomePage" /></a>, [image:OtherPage]<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage;upload=1">?</a>
 traditional local link: HomePage, OtherPage
 traditional local link: <a class="local" href="http://localhost/test-wrapper.pl/HomePage">HomePage</a>, OtherPage<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a>
 traditional local link with extra brackets: [HomePage], [OtherPage]
@@ -1792,7 +1792,7 @@ update_page('bar', 'foo');
 
 %Test = split('\n',<<'EOT');
 [[image:foo]]
-[image:foo<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=foo;upload=1">?</a>]
+[image:foo]<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=foo;upload=1">?</a>
 [[image:bar]]
 <a class="image" href="http://localhost/test-wrapper.pl/bar"><img class="upload" src="http://localhost/test-wrapper.pl/download/bar" alt="bar" /></a>
 [[image:bar|alternative text]]
