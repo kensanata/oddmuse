@@ -230,14 +230,14 @@ sub DoWikiRequest {
   Init();
   DoSurgeProtection();
   if (not $BannedCanRead and UserIsBanned() and not UserIsAdmin()) {
-    ReportError(T('Reading not allowed: user, ip, or network is blocked.'));
+    ReportError(T('Reading not allowed: user, ip, or network is blocked.'), '403 FORBIDDEN');
   }
   DoBrowseRequest();
 }
 
 sub ReportError { # fatal!
-  my $errmsg = shift;
-  print GetHttpHeader('text/html', 1); # no caching
+  my ($errmsg, $status) = @_;
+  print GetHttpHeader('text/html', 1, undef, $status); # no caching
   print $q->h2($errmsg), $q->end_html;
   map { ReleaseLockDir($_); } keys %Locks;
   exit (1);
@@ -294,7 +294,8 @@ sub InitVariables {    # Init global session variables for mod_perl!
   $OpenPageName = '';  # Currently open page
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   CreateDir($DataDir); # Create directory if it doesn't exist
-  ReportError(Ts('Could not create %s', $DataDir) . ": $!") unless -d $DataDir;
+  ReportError(Ts('Could not create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR')
+    unless -d $DataDir;
   @UserGotoBarPages = ($HomePage, $RCName) unless @UserGotoBarPages;
   map { $$_ = FreeToNormal($$_); } # convert spaces to underscores on all configurable pagenames
     (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$RefererFilter, \$StyleSheetPage,
@@ -309,7 +310,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.328 2004/02/23 23:53:31 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.329 2004/02/24 22:33:34 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1069,9 +1070,9 @@ sub DoBrowseRequest {
     DoPost(GetParam('title', ''));
   } else {
     if ($action) {
-      ReportError(Ts('Invalid action parameter %s', $action));
+      ReportError(Ts('Invalid action parameter %s', $action), '501 NOT IMPLEMENTED');
     } else {
-      ReportError(T('Invalid URL.'));
+      ReportError(T('Invalid URL.'), '400 BAD REQUEST');
     }
   }
 }
@@ -1098,7 +1099,7 @@ sub ValidIdOrDie {
   my $id = shift;
   my $error;
   $error = ValidId($id);
-  ReportError($error) if $error;
+  ReportError($error, '400 BAD REQUEST') if $error;
   return 1;
 }
 
@@ -1131,14 +1132,14 @@ sub BrowseResolvedPage {
   } elsif ($resolved) { # an existing page was found
     BrowsePage($id, GetParam('raw', 0));
   } else { # new page!
-    BrowsePage($id, GetParam('raw', 0), undef, 1) if ValidIdOrDie($id);
+    BrowsePage($id, GetParam('raw', 0), undef, '404 NOT FOUND') if ValidIdOrDie($id);
   }
 }
 
 # == Browse page ==
 
 sub BrowsePage {
-  my ($id, $raw, $comment, $new) = @_;
+  my ($id, $raw, $comment, $status) = @_;
   if ($q->http('HTTP_IF_MODIFIED_SINCE')
       and $q->http('HTTP_IF_MODIFIED_SINCE') eq gmtime($LastUpdate)
       and GetParam('cache', $UseCache) >= 2) {
@@ -1169,7 +1170,7 @@ sub BrowsePage {
   my $msg = GetParam('msg', '');
   $Message .= $q->p($msg) if $msg; # show message if the page is shown
   SetParam('msg', '');
-  print GetHeader($id, QuoteHtml($id), $oldId, undef, $new);
+  print GetHeader($id, QuoteHtml($id), $oldId, undef, $status);
   my $showDiff = GetParam('diff', 0);
   if ($UseDiff && $showDiff) {
     my $diffRevision = GetParam('diffrevision', $revision);
@@ -1695,8 +1696,9 @@ sub DoRollback {
   my $to = GetParam('to', 0);
   print GetHeader('', T('Rolling back changes'), '');
   return unless UserIsAdminOrError();
-  ReportError(T('Missing target for rollback.')) unless $to;
-  ReportError(T('Target for rollback is too far back.')) unless RollbackPossible($to);
+  ReportError(T('Missing target for rollback.'), '400 BAD REQUEST') unless $to;
+  ReportError(T('Target for rollback is too far back.'), '400 BAD REQUEST')
+    unless RollbackPossible($to);
   RequestLockOrError();
   print '<p>';
   foreach my $id (AllPagesList()) {
@@ -1787,11 +1789,11 @@ sub GetRCLink {
 }
 
 sub GetHeader {
-  my ($id, $title, $oldId, $nocache, $new) = @_;
+  my ($id, $title, $oldId, $nocache, $status) = @_;
   my $result = '';
   my $embed = GetParam('embed', $EmbedWiki);
   my $altText = T('[Home]');
-  $result = GetHttpHeader('text/html', $nocache ? $Now : 0, $new);
+  $result = GetHttpHeader('text/html', $nocache ? $Now : 0, $status);
   if ($FreeLinks) {
     $title =~ s/_/ /g;	 # Display as spaces
   }
@@ -1831,7 +1833,7 @@ sub GetHeader {
 sub GetHttpHeader {
   return if $PrintedHeader;
   $PrintedHeader = 1;
-  my ($type, $modified, $new) = @_;
+  my ($type, $modified, $status) = @_;
   my $mod = gmtime($modified or $LastUpdate);
   my %headers = (-last_modified=>$mod, -cache_control=>'max-age=10'); # HTTP/1.1 headers only
   if ($HttpCharset ne '') {
@@ -1839,7 +1841,7 @@ sub GetHttpHeader {
   } else {
     $headers{-type} = $type;
   }
-  $headers{-status} = '404 NOT FOUND' if $new;
+  $headers{-status} = $status if $status;
   my $cookie = Cookie();
   $headers{-cookie} = $cookie  if $cookie;
   return $q->header(%headers);
@@ -2321,7 +2323,7 @@ sub GetPageDirectory {
 
 # Always call SavePage within a lock.
 sub SavePage { # updating the cache will not change timestamp and revision!
-  ReportError(T('Cannot save an nameless page.')) unless $OpenPageName;
+  ReportError(T('Cannot save an nameless page.'), '400 BAD REQUEST') unless $OpenPageName;
   CreatePageDir($PageDir, $OpenPageName);
   WriteStringToFile(GetPageFile($OpenPageName), EncodePage(%Page));
 }
@@ -2383,7 +2385,7 @@ sub ReadFileOrDie {
   my ($status, $data);
   ($status, $data) = ReadFile($fileName);
   if (!$status) {
-    ReportError(Ts('Cannot open %s', $fileName) . ": $!");
+    ReportError(Ts('Cannot open %s', $fileName) . ": $!", '500 INTERNAL SERVER ERROR');
   }
   return $data;
 }
@@ -2391,7 +2393,7 @@ sub ReadFileOrDie {
 sub WriteStringToFile {
   my ($file, $string) = @_;
   open (OUT, ">$file")
-    or ReportError(Ts('Cannot write %s', $file) . ": $!");
+    or ReportError(Ts('Cannot write %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
   print OUT  $string;
   close(OUT);
 }
@@ -2399,7 +2401,7 @@ sub WriteStringToFile {
 sub AppendStringToFile {
   my ($file, $string) = @_;
   open (OUT, ">>$file")
-    or ReportError(Ts('Cannot write %s', $file) . ": $!");
+    or ReportError(Ts('Cannot write %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
   print OUT  $string;
   close(OUT);
 }
@@ -2439,7 +2441,7 @@ sub RequestLockDir {
   while (mkdir($lockName, 0555) == 0) {
     if ($n++ >= $tries) {
       return 0 unless $error;
-      ReportError(Ts('Could not get %s lock', $name) . ": $!\n");
+      ReportError(Ts('Could not get %s lock', $name) . ": $!\n", '503 SERVICE UNAVAILABLE');
     }
     sleep($wait);
   }
@@ -2556,7 +2558,7 @@ sub DoEdit {
   ValidIdOrDie($id);
   my $upload = GetParam('upload', undef);
   if (!UserCanEdit($id, 1)) {
-    print GetHeader('', T('Editing Denied'), '');
+    print GetHeader('', T('Editing Denied'), undef, undef, '403 FORBIDDEN');
     my $rule = UserIsBanned();
     if ($rule) {
       print $q->p(T('Editing not allowed: user, ip, or network is blocked.'));
@@ -2569,7 +2571,7 @@ sub DoEdit {
     PrintFooter();
     return;
   } elsif ($upload and not $UploadAllowed and not UserIsAdmin()) {
-    ReportError(T('Only administrators can upload files.'));
+    ReportError(T('Only administrators can upload files.'), '403 FORBIDDEN');
   }
   OpenPage($id);
   my ($text, $revision) = GetTextRevision(GetParam('revision', ''), 1); # maybe revision reset!
@@ -2577,7 +2579,7 @@ sub DoEdit {
   my $isFile = ($oldText =~ m/^#FILE ([^ \n]+)\n(.*)/s);
   $upload = $isFile if not defined $upload;
   if ($upload and not $UploadAllowed and not UserIsAdmin()) {
-    ReportError(T('Only administrators can upload files.'));
+    ReportError(T('Only administrators can upload files.'), '403 FORBIDDEN');
   }
   if ($upload) { # shortcut lots of code
     $revision = '';
@@ -2661,7 +2663,7 @@ sub DoDownload {
   if ($text =~ /#FILE ([^ \n]+)\n(.*)/s) {
     my ($type, $data) = ($1, $2);
     if (not grep(/^$type$/, @UploadTypes)) {
-      ReportError(Ts('Files of type %s are not allowed.', $type));
+      ReportError(Ts('Files of type %s are not allowed.', $type), '415 UNSUPPORTED MEDIA TYPE');
     }
     print GetHttpHeader($type, $ts);
     require MIME::Base64;
@@ -2707,7 +2709,8 @@ sub UserIsEditorOrError {
 }
 
 sub UserIsAdminOrError {
-  UserIsAdmin() or ReportError(T('This operation is restricted to administrators only...'));
+  UserIsAdmin()
+    or ReportError(T('This operation is restricted to administrators only...'), '403 FORBIDDEN');
   return 1;
 }
 
@@ -3197,17 +3200,17 @@ sub DoPost {
   $id = FreeToNormal($id) if $FreeLinks;
   ValidIdOrDie($id);
   if (!UserCanEdit($id, 1)) {
-    ReportError(Ts('Editing not allowed for %s.', $id));
+    ReportError(Ts('Editing not allowed for %s.', $id), '403 FORBIDDEN');
   } elsif (($id eq 'SampleUndefinedPage') or ($id eq T('SampleUndefinedPage'))) {
-    ReportError(Ts('%s cannot be defined.', $id));
+    ReportError(Ts('%s cannot be defined.', $id), '403 FORBIDDEN');
   } elsif (($id eq 'Sample_Undefined_Page') or ($id eq T('Sample_Undefined_Page'))) {
-    ReportError(Ts('[[%s]] cannot be defined.', $id));
+    ReportError(Ts('[[%s]] cannot be defined.', $id), '403 FORBIDDEN');
   } elsif (grep(/^$id$/, @LockOnCreation) and !UserIsAdmin() and not -f GetPageFile($id)) {
-    ReportError(Ts('Only an administrator can create %s', $id));
+    ReportError(Ts('Only an administrator can create %s', $id), '403 FORBIDDEN');
   }
   my $filename = GetParam('file', undef);
   if ($filename and not $UploadAllowed and not UserIsAdmin()) {
-    ReportError(T('Only administrators can upload files.'));
+    ReportError(T('Only administrators can upload files.'), '403 FORBIDDEN');
   }
   # Lock before getting old page to prevent races
   RequestLockOrError(); # fatal
@@ -3222,13 +3225,14 @@ sub DoPost {
     require MIME::Base64;
     my $file = $q->upload('file');
     if (not $file and $q->cgi_error) {
-      ReportError (Ts('Transfer Error: %s', $q->cgi_error));
+      ReportError (Ts('Transfer Error: %s', $q->cgi_error), '500 INTERNAL SERVER ERROR');
     }
-    ReportError(T('Browser reports no file info.')) unless $q->uploadInfo($filename);
+    ReportError(T('Browser reports no file info.'), '500 INTERNAL SERVER ERROR')
+      unless $q->uploadInfo($filename);
     my $type = $q->uploadInfo($filename)->{'Content-Type'};
-    ReportError(T('Browser reports no file type.')) unless $type;
+    ReportError(T('Browser reports no file type.'), '415 UNSUPPORTED MEDIA TYPE') unless $type;
     if (not grep(/^$type$/, @UploadTypes)) {
-      ReportError (Ts('Files of type %s are not allowed.', $type));
+      ReportError (Ts('Files of type %s are not allowed.', $type), '415 UNSUPPORTED MEDIA TYPE');
     }
     local $/ = undef;	# Read complete files
     eval { $_ = MIME::Base64::encode(<$file>) };
@@ -3599,10 +3603,10 @@ sub DoSurgeProtection {
 	WriteRecentVisitors();
 	ReleaseLockDir('visitors');
 	if ($SurgeProtection and DelayRequired($name)) {
-	  ReportError(Ts('Too many connections by %s',$name));
+	  ReportError(Ts('Too many connections by %s',$name), '503 SERVICE UNAVAILABLE');
 	}
       } elsif ($SurgeProtection and GetParam('action', '') ne 'unlock') {
-	ReportError(Ts('Could not get %s lock', 'visitors'));
+	ReportError(Ts('Could not get %s lock', 'visitors'), '503 SERVICE UNAVAILABLE');
       }
     }
   }
