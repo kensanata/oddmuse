@@ -274,7 +274,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.230 2003/11/02 16:58:47 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.231 2003/11/02 17:32:30 as Exp $');
 }
 
 sub InitCookie {
@@ -471,10 +471,14 @@ sub ApplyRules {
       my $bracket = (substr($1, 0, 1) eq '[');
       Clean(GetUrl($2, $3, $bracket, not $bracket)); # $2 may be empty
     } elsif ($WikiLinks && m/\G!$LinkPattern/cog) { Clean($1); # ! gets eaten
-    } elsif ($withanchors && $PermanentAnchors && m/\G(\[::$FreeLinkPattern\])/cog) {
+    } elsif ($PermanentAnchors && m/\G(\[::$FreeLinkPattern\])/cog) {
       #[::Free Link] permanent anchor create only $withanchors
       Dirty($1);
-      print GetPermanentAnchor($2);
+      if ($withanchors) {
+	print GetPermanentAnchor($2);
+      } else {
+	print $q->span({-class=>'permanentanchor'}, $2);
+      }
     } elsif ($WikiLinks && $locallinks
 	     && ($BracketWiki && m/\G(\[$LinkPattern\s+([^\]]+?)\])/cog
 		 or m/\G(\[$LinkPattern\])/cog or m/\G($LinkPattern)/cog)) {
