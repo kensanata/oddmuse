@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.48 2003/04/27 13:12:51 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.49 2003/04/27 14:35:29 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -1070,17 +1070,17 @@ sub BrowsePage {
   my $revision = &GetParam('revision', '');
   $revision =~ s/\D//g;           # Remove non-numeric chars
   my $goodRevision = $revision;   # Leave this non-blank only if it exists
-  if ($revision ne '') {
+  if ($revision ne '' and $revision ne $Section{'revision'}) {
     &OpenKeptRevisions('text_default');
     $openKept = 1;
     if (!defined($KeptRevisions{$revision})) {
       $goodRevision = '';
-      print $q->strong(Ts('Revision %s not available', $revision)
-		       . ' (' . T('showing current revision instead') . ')')
+      print $q->div({-class=>'message'}, Ts('Revision %s not available', $revision)
+		    . ' (' . T('showing current revision instead') . ')')
 	. $q->br();
     } else {
       &OpenKeptRevision($revision);
-      print $q->strong(Ts('Showing revision %s', $goodRevision))
+      print $q->div({-class=>'message'}, Ts('Showing revision %s', $goodRevision))
 	. $q->br();
     }
   }
