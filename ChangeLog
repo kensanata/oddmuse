@@ -1,3 +1,57 @@
+2004-12-22  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoPost): Only determine new authors if there is an old
+	revision that is being changed.
+
+2004-12-21  Alex Schroeder  <alex@gnu.org>
+
+	* modules/search-freetext.pl (SearchFreeTextIndex): The page title
+	should be part of the document.
+
+	* modules/namespaces.pl ($NamespacesSelf): New variable.
+	(NewNamespacesInitVariables): Set it.
+	(NewNamespacesInitVariables): Make "Self" forbidden, too.
+
+2004-12-20  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+
+	* modules/namespaces.pl (NamespaceInternalRc): "No items foundin
+	foo" removed.
+
+	* modules/calendar.pl (DoCollect): Use content class.
+	(CalendarRule): Print calendar in a div.
+	(PrintYearCalendar): Don't print div here.
+	(DoYearCalendar): Print div here.
+
+	* modules/namespaces.pl (NewNamespacesInitVariables): Set
+	$NamespaceCurrent; don't change $Action{rc}.
+	(NewNamespacesInitVariables): Don't print header and footer.
+	(NewNamespaceDoRc): New replacement for DoRc.
+
+2004-12-20  Alex Schroeder  <alex@gnu.org>
+
+	* modules/namespaces.pl (NamespaceBrowseRc, NamespaceInternalRc,
+	NewNamespacesInitVariables):  Support for recent changes for all
+	namespaces.
+
+2004-12-19  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+
+	* wiki.pl (Save): Moved automatic lock creation back to after the
+	SavePage call in order to make sure the directory exists.
+	(ApplyRules): Locally set $OpenPageName when including local
+	pages.
+
+	* modules/calendar.pl (CalendarRule, PrintYearCalendar): Close
+	HTML environments before printing and open new p after printing.
+
+	* wiki.pl (PrintPageHtml, BrowsePage): Don't print cache if using
+	$UseCache=-1.
+	(PrintHtmlDiff): Take cache=0 and cache=-1 into account when
+	serving diffs.
+	(DiffMarkWords): Append trailing newlines.
+	(InitVariables): Removed handling of $HtmlHeaders.
+	(GetHtmlHeader): Add site RSS and page RSS if $HtmlHeaders is not
+	set.
+
 2004-12-18  Alex Schroeder  <alex@confusibombus.emacswiki.org>
 
 	* Makefile (upload-translations): Fix bug.
