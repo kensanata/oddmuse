@@ -1,3 +1,17 @@
+2003-06-15  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetRandomLink): Removed.
+	(ApplyRules): Include local pages using GetPageContent, if possible.
+	(GetRaw): Simplified.
+	(DoPost): Append comment it necessary.
+
+2003-06-15  Pierre Gaston  <pgas@intracom.gr>, Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($CommentsPrefix): New.
+	(PrintFooter): Added easy submission code.
+	(OpenNewText): Only add if not commenting.
+	(DoPost): Extract comments from aftertext parameter.
+
 2003-06-13  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (PrintJournal): Use the subroutine JournalSort if
