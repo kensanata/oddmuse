@@ -38,26 +38,39 @@ close(F);
 
 ### SIMPLE MARKUP TESTS
 
-%Test = split('\n',<<EOT);
-Foo::Bar
-Foo::Bar
+%Test = split('\n',<<'EOT');
+ordinary text
+ordinary text
+WikiWord
+WikiWord<a href="test-wrapper.pl?action=edit&amp;id=WikiWord">?</a>
+WikiWord:
+WikiWord<a href="test-wrapper.pl?action=edit&amp;id=WikiWord">?</a>:
 OddMuse
 OddMuse<a href="test-wrapper.pl?action=edit&amp;id=OddMuse">?</a>
 OddMuse:
 OddMuse<a href="test-wrapper.pl?action=edit&amp;id=OddMuse">?</a>:
 OddMuse:test
 <a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test">OddMuse:test</a>
-WikiWord
-WikiWord<a href="test-wrapper.pl?action=edit&amp;id=WikiWord">?</a>
-WikiWord:
-WikiWord<a href="test-wrapper.pl?action=edit&amp;id=WikiWord">?</a>:
-ordinary text
-ordinary text
+Foo::Bar
+Foo::Bar
+||one||
+<table class="user"><tr><td>one</td></tr></table>
+||one||two||three||\n||||one two||three||\n
+<table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table>
 EOT
+
+# Now translate embedded newlines
+my %New;
+foreach (keys %Test) {
+  $Test{$_} =~ s/\\n/\n/g;
+  my $new = $Test{$_};
+  s/\\n/\n/g;
+  $New{$_} = $new;
+}
 
 # Note that the order of tests is not specified!
 
-foreach my $input (keys %Test) {
+foreach my $input (keys %New) {
   print '.';
   open(F,"|perl test-wrapper.pl > $resultfile");
   print F $input;
@@ -65,11 +78,11 @@ foreach my $input (keys %Test) {
   open(F,$resultfile);
   $output = <F>;
   close F;
-  if ($output eq $Test{$input}) {
+  if ($output eq $New{$input}) {
     $passed++;
   } else {
     $failed++;
-    print "\n\"", $input, '" -> "', $output, '" instead of "', $Test{$input}, "\"\n";
+    print "\n\"", $input, '" -> "', $output, '" instead of "', $New{$input}, "\"\n";
   }
 }
 
