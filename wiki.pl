@@ -305,7 +305,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.444 2004/08/13 02:14:10 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.445 2004/08/13 10:01:34 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1686,9 +1686,9 @@ sub DoHistory {
           . $q->p( # don't use $q->hidden here, the sticky action value will be used instead
 		  $q->input({-type=>'hidden', -name=>'action', -value=>'browse'})
 		  . $q->input({-type=>'hidden', -name=>'diff', -value=>'1'})
-		  . $q->input({-type=>'hidden', -name=>'id', -value=>$id})
-		  . $q->table({-class=>'history'}, $html)
-		  . $q->submit({-name=>T('Compare')})) . $q->end_form();
+		  . $q->input({-type=>'hidden', -name=>'id', -value=>$id}))
+	    . $q->table({-class=>'history'}, $html)
+	    . $q->p($q->submit({-name=>T('Compare')})) . $q->end_form();
   }
   print $html;
   PrintFooter($id, 'history');
