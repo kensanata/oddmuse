@@ -2,6 +2,8 @@
 
 	* wiki.pl (RequestLockDir): Added return back in for the case
 	where no error is reported.
+	(DoPost): Report errors if the browser does not provide enough
+	information.
 
 2003-10-03  Alex Schroeder  <alex@gnu.org>
 
