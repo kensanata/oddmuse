@@ -69,7 +69,7 @@ $Monolithic $ReplaceForm %PermanentAnchors %PagePermanentAnchors
 $CollectingJournal $WikiDescription $PrintedHeader %Locks $Fragment
 @Blocks @Flags %NearSite %NearSource %NearLinksUsed $NearSiteInit
 $NearDir $NearMap $SisterSiteLogoUrl %NearSearch @KnownLocks
-$PermanentAnchorsInit $ModulesDescription %Action $bol
+$PermanentAnchorsInit $ModulesDescription %RuleOrder %Action $bol
 %RssInterwikiTranslate $RssInterwikiTranslateInit);
 
 # == Configuration ==
@@ -301,8 +301,10 @@ sub InitVariables {    # Init global session variables for mod_perl!
   map { $$_ = FreeToNormal($$_); } # convert spaces to underscores on all configurable pagenames
     (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$RefererFilter, \$StyleSheetPage,
      \$ConfigPage, \$NotFoundPg, \$NearMap, \$RssInterwikiTranslate, \$BannedContent);
+  unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
+  @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.435 2004/07/08 16:02:36 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.436 2004/07/14 14:50:08 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -596,7 +598,6 @@ sub SmileyReplace {
 }
 
 sub RunMyRules {
-  unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   foreach my $sub (@MyRules) {
     my $result = &$sub;
     SetParam('msg', $@) if $@;
