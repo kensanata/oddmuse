@@ -274,7 +274,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.198 2003/10/14 23:09:00 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.199 2003/10/15 15:23:19 as Exp $');
 }
 
 sub InitCookie {
@@ -1104,10 +1104,10 @@ sub BrowsePage {
   # Handle a single-level redirect
   my $oldId = GetParam('oldid', '');
   if (($oldId eq '') && (substr($Text{'text'}, 0, 10) eq '#REDIRECT ')) {
-    if ($FreeLinks and $Text{'text'} =~ /\#REDIRECT\s+\[\[$FreeLinkPattern\]\]/) {
+    if ($FreeLinks and $Text{'text'} =~ /^\#REDIRECT\s+\[\[$FreeLinkPattern\]\]/) {
       ReBrowsePage(FreeToNormal($1), $id);
       return;
-    } elsif ($WikiLinks and $Text{'text'} =~ /^$LinkPattern/) {
+    } elsif ($WikiLinks and $Text{'text'} =~ /^\#REDIRECT\s+$LinkPattern/) {
       ReBrowsePage($1, $id);
       return;
     }
