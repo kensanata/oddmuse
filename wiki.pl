@@ -49,21 +49,22 @@ $RFCPattern $ISBNPattern $FS $FS0 $FS1 $FS2 $FS3 $CookieName $SiteBase
 $StyleSheet $NotFoundPg $FooterNote $EditNote $MaxPost $NewText
 $HttpCharset $UserGotoBar $VisitorTime $VisitorFile $Visitors %Smilies
 %SpecialDays $InterWikiMoniker $SiteDescription $RssImageUrl
-$RssPublisher $RssContributor $RssRights $WikiDescription
-$BannedCanRead $SurgeProtection $SurgeProtectionViews
-$SurgeProtectionTime $DeletedPage %Languages $LanguageLimit
-$ValidatorLink $RefererTracking $RefererTimeLimit $RefererLimit
-$TopLinkBar $NotifyTracker $InterMap @LockOnCreation $RefererFilter
-$PermanentAnchorsFile $PermanentAnchors %CookieParameters
-$StyleSheetPage @UserGotoBarPages $ConfigPage $ScriptName
-$CommentsPrefix $NewComment $AllNetworkFiles $UsePathInfo);
+$RssPublisher $RssContributor $RssRights $BannedCanRead
+$SurgeProtection $SurgeProtectionViews $SurgeProtectionTime
+$DeletedPage %Languages $LanguageLimit $ValidatorLink $RefererTracking
+$RefererTimeLimit $RefererLimit $TopLinkBar $NotifyTracker $InterMap
+@LockOnCreation $RefererFilter $PermanentAnchorsFile $PermanentAnchors
+%CookieParameters $StyleSheetPage @UserGotoBarPages $ConfigPage
+$ScriptName $CommentsPrefix $NewComment $AllNetworkFiles
+$UsePathInfo);
 
 # Other global variables:
 use vars qw(%Page %Section %Text %InterSite %KeptRevisions %IndexHash
 %Translate %OldCookie %NewCookie $InterSiteInit $FootnoteNumber
 $OpenPageName @KeptList @IndexList $IndexInit $Message $q $Now
 %RecentVisitors @HtmlStack %Referers $Monolithic $ReplaceForm
-%PermanentAnchors %PagePermanentAnchors $CollectingJournal);
+%PermanentAnchors %PagePermanentAnchors $CollectingJournal
+$WikiDescription);
 
 # == Configuration ==
 
@@ -86,9 +87,6 @@ $SiteBase    = '';  # Full URL for <BASE> header
 $FullUrl     = '';  # Set if the auto-detected URL is wrong
 $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
-$WikiDescription =  # Version string
-    '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.139 2003/09/06 12:55:32 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -218,7 +216,11 @@ sub DoBannedReading {
   ReportError(T('Reading not allowed: user, ip, or network is blocked.'));
 }
 
+use CGI;
+use CGI::Carp qw(fatalsToBrowser);
+
 sub Init {
+  InitRequest();      # get $q!
   $FS  = "\x1e";      # The FS character is the RECORD SEPARATOR control char in ASCII
   $FS0 = "\xb3";      # The old FS character is a superscript "3" in Latin-1
   $FS1 = $FS . '1';   # The FS values are used to separate fields
@@ -228,39 +230,37 @@ sub Init {
   InitLinkPatterns(); # Link pattern can be changed in config files
   if ($UseConfig and $ConfigFile and -f $ConfigFile) {
     do $ConfigFile;
-    $Message .= "<p>$ConfigFile: $@</p>" if $@;
+    $Message .= $q->p("$ConfigFile: $@") if $@;
   } # FS character can only be changed in config *file*
   if ($ConfigPage) {
     eval GetPageContent($ConfigPage);
-    $Message .= "<p>$ConfigPage: $@</p>" if $@;
+    $Message .= $q->("$ConfigPage: $@") if $@;
   }
-  InitRequest();      # After config files, because $HttpCharset is used
+  InitVariables();    # Ater config file, to post-process some variables
   InitCookie();       # After request, because $q is used
 }
 
-# == CGI startup, cookie ==
-
-use CGI;
-use CGI::Carp qw(fatalsToBrowser);
-
-sub InitRequest { # Init global session variables for mod_perl!
+sub InitRequest {
   $CGI::POST_MAX = $MaxPost;
   $CGI::DISABLE_UPLOADS = 1;  # no uploads
   $q = new CGI;
+}
+
+sub InitVariables {    # Init global session variables for mod_perl!
   $q->charset($HttpCharset) if $HttpCharset;
-  $Now = time;                     # Reset in case script is persistent
-  $ReplaceForm = 0;
+  $Now = time;         # Reset in case script is persistent
+  $ReplaceForm = 0;    # Only admins may search and replace
   $ScriptName = $q->url() unless defined $ScriptName; # Name used in links
-  $IndexInit = 0;                  # Must be reset for each request
+  $IndexInit = 0;      # Must be reset for each request
   $InterSiteInit = 0;
   %InterSite = ();
-  $OpenPageName = '';    # Currently open page
-  CreateDir($DataDir);  # Create directory if it doesn't exist
+  $OpenPageName = '';  # Currently open page
+  CreateDir($DataDir); # Create directory if it doesn't exist
   ReportError(Ts('Could not create %s', $DataDir) . ": $!") unless -d $DataDir;
   @UserGotoBarPages = ($HomePage, $RCName) unless @UserGotoBarPages;
   map { $$_ = FreeToNormal($$_); } # convert spaces to underscores on all configurable pagenames
     (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$RefererFilter, \$StyleSheetPage, \$ConfigPage);
-  if (not @HtmlTags) { # don't set if set in the config file -- must come after config file is read!
+  if (not @HtmlTags) { # do not override settings in the config file
     if ($HtmlTags) {   # allow many tags
       @HtmlTags = qw(b i u font big small sub sup h1 h2 h3 h4 h5 h6 cite code
 		     em s strike strong tt var div center blockquote ol ul dl
@@ -269,6 +269,8 @@ sub InitRequest { # Init global session variables for mod_perl!
       @HtmlTags = qw(b i u em strong tt);
     }
   }
+  $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
+    . $q->p('$Id: wiki.pl,v 1.140 2003/09/07 23:21:58 as Exp $');
 }
 
 sub InitCookie {
@@ -613,7 +615,7 @@ sub SmileyReplace {
   my $match = 0;
   foreach my $regexp (keys %Smilies) {
     if (m/\G($regexp)/cg) {
-      $match = "<img src=\"$Smilies{$regexp}\" alt=\"$1\">";
+      $match = $q->img({-src=>$Smilies{$regexp}, -alt=>$1});
       last;
     }
   }
@@ -1140,19 +1142,16 @@ sub DoRcText {
 }
 
 sub DoRc {
-  my ($GetRC) = @_;
-  my ($fileData, $rcline, $i, $daysago, $lastTs, $ts, $idOnly);
-  my (@fullrc, $status, $oldFileData, $firstTs, $errorText);
+  my $GetRC = shift;
   my $starttime = 0;
-  my $showbar = 0;
-  my $showHTML = $GetRC eq \&GetRcHtml; # Special (normative) case
+  my $showHTML = $GetRC eq \&GetRcHtml; # optimized for HTML
   if (GetParam('from', 0)) {
     $starttime = GetParam('from', 0);
-   if( $showHTML ) {
+   if($showHTML) {
       print $q->h2(Ts('Updates since %s', TimeToText($starttime)));
     }
   } else {
-    $daysago = GetParam('days', 0);
+    my $daysago = GetParam('days', 0);
     if ($daysago) {
       $starttime = $Now - ((24*60*60)*$daysago);
       if( $showHTML ) {
@@ -1173,8 +1172,8 @@ sub DoRc {
     # Translation of above line is identical to previous version
   }
   # Read rclog data (and oldrclog data if needed)
-  ($status, $fileData) = ReadFile($RcFile);
-  $errorText = '';
+  my $errorText = '';
+  my ($status, $fileData) = ReadFile($RcFile);
   if (!$status) {
     # Save error text if needed.
     $errorText = $q->p($q->strong(Ts('Could not open %s log file', $RCName)
@@ -1183,13 +1182,13 @@ sub DoRc {
       . $q->pre($!)
       . $q->p(T('Note: This error is normal if no changes have been made.'));
   }
-  @fullrc = split(/\n/, $fileData);
-  $firstTs = 0;
+  my @fullrc = split(/\n/, $fileData);
+  my $firstTs = 0;
   if (@fullrc > 0) {  # Only false if no lines in file
     ($firstTs) = split(/$FS3/, $fullrc[0]);
   }
   if (($firstTs == 0) || ($starttime <= $firstTs)) {
-    ($status, $oldFileData) = ReadFile($RcOldFile);
+    my ($status, $oldFileData) = ReadFile($RcOldFile);
     if ($status) {
       @fullrc = split(/\n/, $oldFileData . $fileData);
     } else {
@@ -1203,34 +1202,33 @@ sub DoRc {
       }
     }
   }
-  $lastTs = 0;
+  my $lastTs = 0;
   if (@fullrc > 0) {  # Only false if no lines in file
     ($lastTs) = split(/$FS3/, $fullrc[$#fullrc]);
   }
   $lastTs++  if (($Now - $lastTs) > 5);  # Skip last unless very recent
-  $idOnly = GetParam('rcidonly', '');
+  my $idOnly = GetParam('rcidonly', '');
   if ($idOnly && $showHTML) {
-    print '<b>(' . Ts('for %s only', ScriptLink(UrlEncode($idOnly), $idOnly))
-	  . ')</b><br>';
+    print $q->p($q->b('(' . Ts('for %s only', ScriptLink(UrlEncode($idOnly), $idOnly)) . ')'));
   }
-  if( $showHTML ) {
-    foreach $i (@RcDays) {
-      print ' | '  if $showbar;
+  if($showHTML) {
+    my ($showbar, $html);
+    foreach my $i (@RcDays) {
+      $html .= ' | '  if $showbar;
       $showbar = 1;
-      print ScriptLink("action=rc&days=$i",
-			Ts('%s day' . (($i != 1)?'s':''), $i));
-	# Note: must have two translations (for 'day' and 'days')
-	# Following comment line is for translation helper script
-	# Ts('%s days', '');
+      $html .= ScriptLink("action=rc&days=$i", Ts('%s day' . (($i != 1)?'s':''), $i));
+      # Note: must have two translations (for 'day' and 'days')
+      # Following comment line is for translation helper script
+      # Ts('%s days', '');
     }
-    print '<br>' . ScriptLink("action=rc&from=$lastTs",
-			       T('List new changes starting from'));
-    print " " . TimeToText($lastTs) . "<br>\n";
+    print $q->p($html . $q->br()
+		. ScriptLink("action=rc&from=$lastTs", T('List new changes starting from'))
+		. ' ' . TimeToText($lastTs));
   }
   # Later consider a binary search?
-  $i = 0;
+  my $i = 0;
   while ($i < @fullrc) {  # Optimization: skip old entries quickly
-    ($ts) = split(/$FS3/, $fullrc[$i]);
+    my ($ts) = split(/$FS3/, $fullrc[$i]);
     if ($ts >= $starttime) {
       $i -= 1000  if ($i > 0);
       last;
@@ -1239,18 +1237,17 @@ sub DoRc {
   }
   $i -= 1000  if (($i > 0) && ($i >= @fullrc));
   for (; $i < @fullrc ; $i++) {
-    ($ts) = split(/$FS3/, $fullrc[$i]);
+    my ($ts) = split(/$FS3/, $fullrc[$i]);
     last if ($ts >= $starttime);
   }
   if ($i == @fullrc && $showHTML) {
-    print '<br><strong>' . Ts('No updates since %s',
-			      TimeToText($starttime)) . "</strong><br>\n";
+    print $q->p($q->strong(Ts('No updates since %s', TimeToText($starttime))));
   } else {
     splice(@fullrc, 0, $i);  # Remove items before index $i
     # Later consider an end-time limit (items older than X)
     print &$GetRC(@fullrc);
   }
-  print '<p>' . Ts('Page generated %s', TimeToText($Now)), "<br>\n" if $showHTML;
+  print $q->p(Ts('Page generated %s', TimeToText($Now))) if $showHTML;
 }
 
 sub GetRc {
@@ -1499,74 +1496,70 @@ sub DoRandom {
 
 sub DoHistory {
   my $id = shift;
-  my ($html, $row, $newText);
+  my ($html, $row);
   print GetHeader('',QuoteHtml(Ts('History of %s', $id)), '') . '<br>';
   OpenPage($id);
   OpenDefaultText();
-  if( $UseDiff ) {
-    print <<EOF ;
-<form action='$ScriptName' METHOD='GET'>
-<input type='hidden' name='action' value='browse'/>
-<input type='hidden' name='diff' value='1'/>
-<input type='hidden' name='id' value='$id'/>
-<table class="history">
-EOF
-  }
   $html = GetHistoryLine($id, $Page{'text_default'}, $row++);
   OpenKeptRevisions('text_default');
   foreach (reverse sort {$a <=> $b} keys %KeptRevisions) {
     next  if ($_ eq '');  # (needed?)
     $html .= GetHistoryLine($id, $KeptRevisions{$_}, $row++);
   }
+  if ($UseDiff) {
+    $html = $q->start_form(-method=>'GET', -action=>$ScriptName)
+      # don't use $q->hidden here, because then the sticky action value is used instead
+      . $q->input({-type=>'hidden', -name=>'action', -value=>'browse'})
+      . $q->input({-type=>'hidden', -name=>'diff', -value=>'1'})
+      . $q->input({-type=>'hidden', -name=>'id', -value=>$id})
+      . $q->table({-class=>'history'}, $html)
+      . $q->submit({-name=>T('Compare')})
+      . $q->end_form();
+  }
   print $html;
-  if( $UseDiff )
-    {
-      my $label = T('Compare');
-      print "<tr><td align='center'><input type='submit' value='$label'/></td></table></form><hr>";
-      PrintHtmlDiff( 1, $id, '', '', $newText );
-    }
   PrintFooter($id, 'history');
 }
 
 sub GetHistoryLine {
   my ($id, $section, $row) = @_;
-  my ($html, $expirets, $rev, $summary, $host, $user, $ts, $minor);
   my (%sect, %revtext);
   %sect = split(/$FS2/, $section, -1);
   %revtext = split(/$FS3/, $sect{'data'});
-  $rev = $sect{'revision'};
-  $summary = $revtext{'summary'};
+  my $summary = $revtext{'summary'};
+  my $rev = $sect{'revision'};
+  my $user = $sect{'username'};
+  my $host;
   if ((defined($sect{'host'})) && ($sect{'host'} ne '')) {
     $host = $sect{'host'};
   } else {
     $host = $sect{'ip'};
   }
-  $user = $sect{'username'};
-  $ts = $sect{'ts'};
-  if ($revtext{'minor'}) {
-    $minor = '<i>' . T('(minor)') . '</i> ';
-  } else {
-    $minor = T(' . . . . ');
-  }
-  $expirets = $Now - ($KeepDays * 24 * 60 * 60);
-  if ($UseDiff) {
-    my ($c1, $c2);
-    $c1 = 'checked="checked"' if 1 == $row;
-    $c2 = 'checked="checked"' if 0 == $row;
-    $html .= "<tr><td align='center'><input type='radio' name='diffrevision' value='$rev' $c1/> ";
-    $html .= "<input type='radio' name='revision' value='$rev' $c2/></td><td>";
-  }
+  my $html;
   if (0 == $row) { # current revision
-    $html .= GetPageLink($id, Ts('Revision %s', $rev)) . ' ';
+    $html = GetPageLink($id, Ts('Revision %s', $rev));
   } else {
-    $html .= GetOldPageLink('browse', $id, $rev, Ts('Revision %s', $rev)) . ' ';
+    $html = GetOldPageLink('browse', $id, $rev, Ts('Revision %s', $rev));
   }
-  $html .= $minor . ' ' . TimeToText($ts) . ' ' . T('by') . ' ' . GetAuthorLink($host, $user) . ' ';
+  if ($revtext{'minor'}) {
+    $html .= ' ' . $q->i(T('(minor)')) . ' ';
+  } else {
+    $html .= T(' . . . . ');
+  }
+  $html .= TimeToText($sect{'ts'}) . ' ';
+  $html .= T('by') . ' ' . GetAuthorLink($host, $user);
   if (defined($summary) && ($summary ne '')) {
-    $summary = QuoteHtml($summary);   # Thanks Sunir! :-)
-    $html .= "<b>[$summary]</b> ";
+    $html .=  ' ' . $q->b('[' . QuoteHtml($summary) . ']');
   }
-  $html .= $UseDiff ? "</tr>\n" : "<br>\n";
+  if ($UseDiff) {
+    my %attr1 = (-type=>'radio', -name=>'diffrevision', -value=>$rev);
+    $attr1{-checked} = 'checked' if 1==$row;
+    my %attr2 = (-type=>'radio', -name=>'revision', -value=>$rev);
+    $attr2{-checked} = 'checked' if 0==$row;
+    $html = $q->Tr($q->td($q->input(\%attr1)), $q->td($q->input(\%attr2)),
+		   $q->td($html));
+  } else {
+    $html .= $q->br();
+  }
   return $html;
 }
 
@@ -1661,7 +1654,7 @@ sub GetHeader {
   }
   $result .= '<div class="header">';
   if ((!$embed) && ($LogoUrl ne '')) {
-    $result .= ScriptLink($HomePage, "<img src=\"$LogoUrl\" alt=\"$altText\" class=\"logo\">");
+    $result .= ScriptLink($HomePage, $q->img({-src=>$LogoUrl, -alt=>$altText, -class=>'logo'}));
   }
   if (GetParam('toplinkbar', $TopLinkBar)) {
     $result .= GetGotoBar($id);
@@ -1710,7 +1703,6 @@ sub Cookie {
     my $value = GetParam($_, $default);
     $params{$_} = $value  if $value ne $default;
     $changed = 1  if $value ne $OldCookie{$_} and ($OldCookie{$_} ne '' or $value ne $default);
-    # $Message .= "<p>$_: $value ($default), old: $OldCookie{$_}";
   }
   if ($changed) {
     my $cookie = join($FS1, map {$_ . $FS1 . $params{$_}} keys(%params));
@@ -1728,7 +1720,7 @@ sub GetHtmlHeader {
   my $html = '';
   $html .= $q->base({-href=>$SiteBase}) if $SiteBase;
   if ($StyleSheet ne '') {
-    $html .= qq(<link type="text/css" rel="stylesheet" href="$StyleSheet">\n);
+    $html .= qq(<link type="text/css" rel="stylesheet" href="$StyleSheet">);
   } elsif ($StyleSheetPage ne '') {
     $html .= $q->style({-type=>'text/css'}, GetPageContent($StyleSheetPage));
   } else {
@@ -1802,8 +1794,7 @@ sub PrintFooter {
 		    . $q->endform());
     }
   }
-  print '<div class="footer">';
-  print $q->hr() . GetGotoBar($id);
+  my $html = $q->hr() . GetGotoBar($id);
   # other revisions
   my $revisions;
   if ($id and $rev ne 'history' and $rev ne 'edit') {
@@ -1837,39 +1828,39 @@ sub PrintFooter {
     $revisions .= ' | ' if $revisions;
     $revisions .= GetPageLink($1, T('View original'));
   }
-  print $q->br() . $revisions  if $revisions;
+  $html .= $q->br() . $revisions  if $revisions;
   # time stamps
   if ($id and $rev ne 'history' and $rev ne 'edit') {
-    print $q->br();
+    $html .= $q->br();
     if ($rev eq '') {		# Only for most current rev
-      print T('Last edited');
+      $html .= T('Last edited');
     } else {
-      print T('Edited');
+      $html .= T('Edited');
     }
-    print ' ' . TimeToText($Section{ts})
+    $html .= ' ' . TimeToText($Section{ts})
       . ' ' . Ts('by %s', &GetAuthorLink($Section{'host'},
 					 $Section{'username'},
 					 $Section{'id'}));
     if ($UseDiff) {
-      print ' ' . ScriptLinkDiff(1, $id, T('(diff)'), $rev);
+      $html .= ' ' . ScriptLinkDiff(1, $id, T('(diff)'), $rev);
     }
   }
   # search
-  print $q->br() . GetSearchForm();
+  $html .= GetSearchForm();
   if ($DataDir =~ m|/tmp/|) {
-    print $q->br() . $q->strong(T('Warning') . ': ')
-      . Ts('Database is stored in temporary directory %s', $DataDir);
+    $html .= $q->p($q->strong(T('Warning') . ': ')
+		. Ts('Database is stored in temporary directory %s', $DataDir));
   }
   if ($FooterNote ne '') {
-    print T($FooterNote);  # Allow local translations
+    $html .= T($FooterNote);  # Allow local translations
   }
   if (GetParam('validate', $ValidatorLink)) {
-    print $q->p(GetValidatorLink());
+    $html .= $q->p(GetValidatorLink());
   }
   if (GetParam('time',0)) {
-    print $q->p(Ts('%s seconds', (time - $Now)));
+    $html .= $q->p(Ts('%s seconds', (time - $Now)));
   }
-  print '</div>';
+  print $q->div({-class=>'footer'}, $html);
   eval {
     local $SIG{__DIE__};
     PrintMyContent($id);
@@ -1922,7 +1913,7 @@ sub GetRedirectPage {
   # Normally get URL from script, but allow override.
   $FullUrl = $q->url(-full=>1)  if ($FullUrl eq '');
   $url = $FullUrl . '?' . $newid;
-  $nameLink = "<a href=\"$url\">$name</a>";
+  $nameLink = $q->a({-href=>$url}, $name);
   # NOTE: do NOT use -method (does not work with old CGI.pm versions)
   # Thanks to Daniel Neri for fixing this problem.
   my %headers = (-uri=>$url);
@@ -2700,7 +2691,7 @@ sub DoEdit {
   if ($preview && !$isConflict) {
     $oldText = $newText;
   }
-  print GetHeader('', QuoteHtml($header), ''), "\n";
+  print GetHeader('', QuoteHtml($header), '');
   if ($revision ne '') {
     print $q->strong(Ts('Editing old revision %s.', $revision) . '  '
 		   . T('Saving this page will replace the latest revision with this text.'))
@@ -2989,7 +2980,6 @@ sub PrintPageList {
   my $pagename;
   print $q->h2(Ts('%s pages found:', ($#_ + 1))), '<p>';
   foreach $pagename (@_) {
-    print '.... '  if ($pagename =~ m|/|);
     print GetPageLink($pagename), $q->br();
   }
   print '</p>';
@@ -3015,9 +3005,7 @@ sub Replace {
 
 sub DoLinks {
   print GetHeader('', QuoteHtml(T('Full Link List')), '');
-  print "<pre>\n\n\n\n\n";  # Extra lines to get below the logo
   PrintLinkList(GetFullLinkList());
-  print "</pre>\n";
   PrintFooter();
 }
 
@@ -3051,10 +3039,12 @@ sub PrintLinkList {
       }
       push(@links, $link);
     }
-    if (!$names) {
+    if ($names) {
+      $links[0] .= ':';
+    } else {
       shift(@links);
     }
-    print join(' ', @links), "\n";
+    print $q->p(join(' ', @links));
   }
 }
 
@@ -3547,20 +3537,18 @@ sub EditRecentChanges {
 
 sub EditRecentChangesFile {
   my ($fname, $action, $old, $new) = @_;
-  my ($status, $fileData, $errorText, $rcline, @rclist);
-  my ($outrc, $ts, $page, $junk);
-  ($status, $fileData) = ReadFile($fname);
+  my ($status, $fileData) = ReadFile($fname);
   if (!$status) {
     # Save error text if needed.
-    $errorText = "<p><strong>Could not open $RCName log file:"
-                 . "</strong> $fname<p>Error was:\n<pre>$!</pre>\n";
-    print $errorText;   # Maybe handle differently later?
+    print $q->p($q->strong("Could not open $RCName log file:") . ' ' . $fname)
+      . $q->p('Error was:')
+      . $q->pre($!);
     return;
   }
-  $outrc = '';
-  @rclist = split(/\n/, $fileData);
-  foreach $rcline (@rclist) {
-    ($ts, $page, $junk) = split(/$FS3/, $rcline);
+  my $outrc = '';
+  my @rclist = split(/\n/, $fileData);
+  foreach my $rcline (@rclist) {
+    my ($ts, $page, $junk) = split(/$FS3/, $rcline);
     if ($page eq $old) {
       if ($action == 1) {  # Delete
         ; # Do nothing (don't add line to new RC)
