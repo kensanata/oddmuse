@@ -270,7 +270,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.146 2003/09/19 00:03:58 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.147 2003/09/19 18:49:59 as Exp $');
 }
 
 sub InitCookie {
@@ -632,16 +632,16 @@ sub SmileyReplace {
 }
 
 sub PrintWikiToHTML {
-  my ($pageText, $revision) = @_;
+  my ($pageText, $revision, $islocked) = @_;
   $FootnoteNumber = 0;
   $pageText =~ s/$FS//g;              # Remove separators (paranoia)
   $pageText = QuoteHtml($pageText);
   my $cache = ApplyRules($pageText,1);
   if ($revision eq '') {
     SetPageCache('blocks', $cache);
-    if (RequestLock()) {
+    if ($islocked or RequestLock()) {
       SavePage(1);
-      ReleaseLock();
+      ReleaseLock() unless $islocked;
     }
   }
 }
@@ -3410,9 +3410,8 @@ sub DoPingTracker {
 # == Maintenance ==
 
 sub DoMaintain {
-  my ($name, $fname, @rc, @temp, $starttime, $days, $status, $data, $i, $ts);
   print GetHeader('', T('Maintenance on all pages'), '');
-  $fname = "$DataDir/maintain";
+  my $fname = "$DataDir/maintain";
   if (!UserIsAdmin()) {
     if ((-f $fname) && ((-M $fname) < 0.5)) {
       print $q->p(T('Maintenance not done.') . ' '
@@ -3422,11 +3421,13 @@ sub DoMaintain {
       return;
     }
   }
+  my $cache = GetParam('cache', 0);
   RequestLock() or die(T('Could not get main lock'));
   print $q->p(T('Main lock obtained.'));
-  print '<p>' . T('Expiring keep files and deleting pages marked for deletion');
+  print '<p>' . T('Expiring keep files and deleting pages marked for deletion')
+    . ($cache ? ' ' . T('and refreshing HTML cache') : '');
   # Expire all keep files
-  foreach $name (AllPagesList()) {
+  foreach my $name (AllPagesList()) {
     print $q->br();
     print '.... '  if ($name =~ m|/|);
     print GetPageLink($name);
@@ -3438,18 +3439,21 @@ sub DoMaintain {
       print ' ' . T('deleted');
     } else {
       ExpireKeepFile();
+      local *STDOUT;
+      open (STDOUT, "> /dev/null");
+      PrintWikiToHTML($Text{'text'}, '', 1) if ($cache); # is locked
     }
   }
   print '</p>';
   print $q->p(Ts('Moving part of the %s log file.', $RCName));
   # Determine the number of days to go back
-  $days = 0;
+  my $days = 0;
   foreach (@RcDays) {
     $days = $_ if $_ > $days;
   }
-  $starttime = $Now - $days * 24 * 60 * 60;
+  my $starttime = $Now - $days * 24 * 60 * 60;
   # Read the current file
-  ($status, $data) = ReadFile($RcFile);
+  my ($status, $data) = ReadFile($RcFile);
   if (!$status) {
     print $q->p($q->strong(Ts('Could not open %s log file', $RCName) . ':') . ' '
 		. $RcFile)
@@ -3458,14 +3462,15 @@ sub DoMaintain {
       . $q->p(T('Note: This error is normal if no changes have been made.'));
   }
   # Move the old stuff from rc to temp
-  @rc = split(/\n/, $data);
+  my @rc = split(/\n/, $data);
+  my $i;
   for ($i = 0; $i < @rc ; $i++) {
-    ($ts) = split(/$FS3/, $rc[$i]);
+    my ($ts) = split(/$FS3/, $rc[$i]);
     last if ($ts >= $starttime);
   }
   print $q->p(Ts('Moving %s log entries.', $i));
   if ($i) {
-    @temp = splice(@rc, 0, $i);
+    my @temp = splice(@rc, 0, $i);
     # Write new files, and backups
     AppendStringToFile($RcOldFile, join("\n",@temp) . "\n");
     WriteStringToFile($RcFile . '.old', $data);
