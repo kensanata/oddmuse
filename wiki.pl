@@ -269,7 +269,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.161 2003/09/26 23:41:26 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.162 2003/09/27 09:49:05 as Exp $');
 }
 
 sub InitCookie {
@@ -2041,7 +2041,7 @@ sub PrintHtmlDiff {
       $html = Ts('Difference (from prior %s revision)', $priorName);
     }
   }
-  print $q->div({-class=>'diff'}, $q->p($q->b($html))), $diffText;
+  print $q->div({-class=>'diff'}, $q->p($q->b($html)), $diffText);
 }
 
 sub GetCacheDiff {
