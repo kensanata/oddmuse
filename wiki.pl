@@ -88,7 +88,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.128 2003/08/21 15:48:12 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.129 2003/08/29 15:49:40 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -1333,12 +1333,15 @@ sub GetRcHtml {
     # printRCLine
     sub {
       my($pagename, $timestamp, $host, $userName, $summary, $minor, $revision, $languages) = @_;
-      my($author, $sum, $edit, $count, $link, $lang);
+      my($pagelink, $author, $sum, $edit, $count, $link, $lang);
       $host = QuoteHtml($host);
       $author = GetAuthorLink($host, $userName);
       $sum = $q->strong('[' . QuoteHtml($summary) . ']')  if $summary;
       $edit = $q->em($tEdit)  if $minor;
-      if (!$all) {
+      if ($all) {
+	$pagelink = GetOldPageLink('browse', $pagename, $revision, $pagename);
+      } else {
+	$pagelink = GetPageLink($pagename);
 	$count = '(' . GetHistoryLink($pagename, $tHistory) . ')';
       }
       $lang = '[' . join(', ', @{$languages}) . ']'  if @{$languages};
@@ -1349,7 +1352,7 @@ sub GetRcHtml {
 	  $link .= ScriptLinkDiff(1, $pagename, $tDiff, ''); # major
 	}
       }
-      $html .= $q->li($link, GetPageLink($pagename), CalcTime($timestamp),
+      $html .= $q->li($link, $pagelink, CalcTime($timestamp),
 		      $count, $edit, $sum, $lang, '. . . . .', $author, "\n");
     },
     @_;
@@ -1633,6 +1636,14 @@ sub GetHistoryLink {
   return ScriptLink('action=history&amp;id=' . UrlEncode($id), $text);
 }
 
+sub GetRCLink {
+  my ($id, $text) = @_;
+  if ($FreeLinks) {
+    $id =~ s/ /_/g;
+  }
+  return ScriptLink('action=rc&amp;all=1&amp;from=1&amp;rcidonly=' . UrlEncode($id), $text);
+}
+
 sub GetHeader {
   my ($id, $title, $oldId) = @_;
   my $result = '';
@@ -1824,7 +1835,8 @@ sub PrintFooter {
   }
   if ($rev ne '') {
     $revisions .= ' | ' if $revisions;
-    $revisions .= GetPageLink($id, T('View current revision'));
+    $revisions .= GetPageLink($id, T('View current revision'))
+      . ' | ' . GetRCLink($id, T('View all changes'));
   }
   if ($CommentsPrefix and $id =~ /^$CommentsPrefix(.*)/) {
     $revisions .= ' | ' if $revisions;
