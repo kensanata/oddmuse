@@ -60,7 +60,7 @@ use vars qw(%Page %Section %Text %InterSite %KeptRevisions
   %IndexHash %Translate %OldCookie %NewCookie $InterSiteInit
   $FootnoteNumber $MainPage $OpenPageName @KeptList @IndexList
   $IndexInit $Message $q $Now $ScriptName %RecentVisitors @HtmlStack
-  %Referers $Monolithic);
+  %Referers $Monolithic $ReplaceForm);
 
 # == Configuration ==
 
@@ -80,7 +80,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.62 2003/05/21 22:46:05 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.63 2003/05/22 22:45:54 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -854,6 +854,7 @@ sub InitRequest {
   $q->charset($HttpCharset) if $HttpCharset;
   $Message = '';
   $Now = time;                     # Reset in case script is persistent
+  $ReplaceForm = 0;
   my @ScriptPath = split('/', $q->script_name());
   $ScriptName = pop(@ScriptPath);  # Name used in links
   $IndexInit = 0;                  # Must be reset for each request
@@ -1072,12 +1073,12 @@ sub BrowsePage {
 }
 
 sub ReBrowsePage {
-  my ($id, $oldId, $isEdit) = @_;
+  my ($id, $oldId, $minor) = @_;
   if ($oldId ne '') {   # Target of #REDIRECT (loop breaking)
     print &GetRedirectPage("action=browse&id=$id&oldid=$oldId",
-                           $id, $isEdit);
+                           $id, $minor);
   } else {
-    print &GetRedirectPage($id, $id, $isEdit);
+    print &GetRedirectPage($id, $id, $minor);
   }
 }
 
@@ -1202,7 +1203,7 @@ sub GetRc {
   my $printRCLine = shift;
   my @outrc = @_;
   my ($rcline, $date, $newtop, $showedit, $all, $idOnly, $langFilter);
-  my ($ts, $pagename, $summary, $isEdit, $host, $kind, $extraTemp);
+  my ($ts, $pagename, $summary, $minor, $host, $kind, $extraTemp);
   my %extra = ();
   my %changetime = ();
   my %pagecount = ();
@@ -1214,11 +1215,11 @@ sub GetRc {
   if ($showedit != 1) {
     my @temprc = ();
     foreach $rcline (@outrc) {
-      ($ts, $pagename, $summary, $isEdit, $host) = split(/$FS3/, $rcline);
+      ($ts, $pagename, $summary, $minor, $host) = split(/$FS3/, $rcline);
       if ($showedit == 0) {  # 0 = No edits
-	push(@temprc, $rcline)  if (!$isEdit);
+	push(@temprc, $rcline)  if (!$minor);
       } else {               # 2 = Only edits
-	push(@temprc, $rcline)  if ($isEdit);
+	push(@temprc, $rcline)  if ($minor);
       }
       $pagecount{$pagename}++;
       $changetime{$pagename} = $ts;
@@ -1238,7 +1239,7 @@ sub GetRc {
   $idOnly = &GetParam('rcidonly', '');
   @outrc = reverse @outrc if ($newtop);
   foreach $rcline (@outrc) {
-    ($ts, $pagename, $summary, $isEdit, $host, $kind, $extraTemp)
+    ($ts, $pagename, $summary, $minor, $host, $kind, $extraTemp)
       = split(/$FS3/, $rcline);
     # Later: need to change $all for new-RC?
     next  if (not $all and $ts < $changetime{$pagename});
@@ -1251,7 +1252,7 @@ sub GetRc {
       &$printDailyTear($date);
     }
     &$printRCLine( $pagename, $ts, $host, $extra{'name'},
-		   $summary, $isEdit, $pagecount{$pagename},
+		   $summary, $minor, $pagecount{$pagename},
 		   $extra{'revision'}, \@languages);
   }
 }
@@ -1282,7 +1283,7 @@ sub GetRcHtml {
     },
     # printRCLine
     sub {
-      my($pagename, $timestamp, $host, $userName, $summary, $isEdit,
+      my($pagename, $timestamp, $host, $userName, $summary, $minor,
          $pagecount, $revision, $languages) = @_;
       my($author, $sum, $edit, $count, $link, $difftype, $lang);
       $host = &QuoteHtml($host);
@@ -1297,7 +1298,7 @@ sub GetRcHtml {
 	$sum = "<strong>[$summary]</strong> ";
       }
       $edit = '';
-      $edit = "<em>$tEdit</em> "  if ($isEdit);
+      $edit = "<em>$tEdit</em> "  if ($minor);
       $count = '';
       if ((!$all) && ($pagecount > 1)) {
 	$count = "($pagecount ";
@@ -1314,7 +1315,7 @@ sub GetRcHtml {
       }
       $link = '';
       if ($UseDiff && &GetParam('diffrclink', 1)) {
-	if ($isEdit) {
+	if ($minor) {
 	  $difftype = 2;	# minor
 	} else {
 	  $difftype = 1;	# major
@@ -1377,7 +1378,7 @@ sub GetRcRss {
     sub {
       # ignore languages for the moment
       my( $pagename, $timestamp, $host, $userName, $summary,
-	  $isEdit, $pagecount, $revision ) = @_;
+	  $minor, $pagecount, $revision ) = @_;
       my( $description, $author, $status, $importance, $date );
       my ($sec, $min, $hour, $mday, $mon, $year) = gmtime($timestamp);
       $year += 1900;
@@ -1392,7 +1393,7 @@ sub GetRcRss {
 	$author = $host;
       }
       $status = (1 == $revision) ? 'new' : 'updated';
-      $importance = $isEdit ? 'minor' : 'major';
+      $importance = $minor ? 'minor' : 'major';
       $rss->add_item(
         title         => &QuoteHtml($pagename),
 	link          => $QuotedFullUrl . '?action=browse'
@@ -1440,7 +1441,7 @@ sub GetRcText {
     },
     # printRCLine
     sub {
-      my($pagename, $timestamp, $host, $userName, $summary, $isEdit,
+      my($pagename, $timestamp, $host, $userName, $summary, $minor,
          $pagecount, $revision, $languages) = @_;
       my($author, $sum, $edit, $difftype, $lang);
       $host = $host;
@@ -1455,7 +1456,7 @@ sub GetRcText {
 	$sum = "[$summary] ";
       }
       $edit = '';
-      $edit = $tEdit . ' '  if ($isEdit);
+      $edit = $tEdit . ' '  if ($minor);
       $lang = '';
       if (@{$languages}) {
 	$lang = '[' . join(', ', @{$languages}) . '] ';
@@ -1848,9 +1849,13 @@ sub GetFormStart {
 }
 
 sub GetSearchForm {
-  return &GetFormStart . T('Search:') . ' '
-    . $q->textfield(-name=>'search', -size=>20) . ' '
-    . $q->submit('dosearch', T('Go!')) . $q->endform;
+  my $form = &GetFormStart . T('Search:') . ' '
+    . $q->textfield(-name=>'search', -size=>20) . ' ';
+  if ($ReplaceForm) {
+    $form .= T('Replace:') . ' '
+      . $q->textfield(-name=>'replace', -size=>20) . ' ';
+  }
+  return $form . $q->submit('dosearch', T('Go!')) . $q->endform;
 }
 
 sub GetValidatorLink {
@@ -1883,7 +1888,7 @@ sub GetGotoBar {
 }
 
 sub GetRedirectPage {
-  my ($newid, $name, $isEdit) = @_;
+  my ($newid, $name, $minor) = @_;
   my ($url, $html);
   my ($nameLink);
   # shortcut if we only need the raw text: no redirect.
@@ -2768,7 +2773,7 @@ sub FreeToNormal {
 sub DoEdit {
   my ($id, $isConflict, $oldTime, $newText, $preview) = @_;
   my ($header, $editRows, $editCols, $userName, $revision, $oldText);
-  my ($summary, $isEdit, $pageTime);
+  my ($summary, $minor, $pageTime);
   if (!&UserCanEdit($id, 1)) {
     print &GetHeader('', T('Editing Denied'), '');
     if (&UserIsBanned()) {
@@ -3030,13 +3035,21 @@ sub DoIndex {
 # == Searching ==
 
 sub DoSearch {
-  my ($string) = @_;
+  my $string = shift;
+  my $replacement = &GetParam('replace','');
   if ($string eq '') {
     &DoIndex();
     return;
   }
-  print &GetHeader('', &QuoteHtml(Ts('Search for: %s', $string)), '');
-  print '<br>';
+  return  if $replacement and !&UserIsAdminOrError();
+  if ($replacement) {
+    print &GetHeader('', &QuoteHtml(Ts('Replaced: %s', $string)), '');
+    &Replace($string,$replacement);
+    $string = $replacement;
+  } else {
+    print &GetHeader('', &QuoteHtml(Ts('Search for: %s', $string)), '');
+    $ReplaceForm = &UserIsAdmin(); # only show on new searches for admins
+  }
   if (&GetParam('context',1)) {
     &PrintSearchResults($string,&SearchTitleAndBody($string)) ;
   } else {
@@ -3126,6 +3139,22 @@ sub PrintPageList {
     print &GetPageLink($pagename), $q->br();
   }
   print '</p>';
+}
+
+sub Replace {
+  my ($from, $to) = @_;
+  if (&RequestLock()) {
+    foreach my $id (&AllPagesList()) {
+      &OpenPage($id);
+      &OpenDefaultText();
+      my $new = $Text{'text'};
+      if ($new =~ s/$from/$to/gi) {
+	&Save ($id, $new, $from . ' -> ' . $to, 1,
+	       ($Section{'ip'} ne $ENV{REMOTE_ADDR}));
+      }
+    }
+  }
+  &ReleaseLock();
 }
 
 # == Links ==
@@ -3295,8 +3324,6 @@ sub DoPost {
   my $oldtime = &GetParam('oldtime', '');
   my $raw = &GetParam('raw', 0);
   my $oldconflict = &GetParam('oldconflict', '');
-  my $isEdit = 0;
-  my $editTime = $Now;
   my $authorAddr = $ENV{REMOTE_ADDR};
   if (!&UserCanEdit($id, 1)) {
     # This is an internal interface--we don't need to explain
@@ -3358,11 +3385,7 @@ sub DoPost {
     }
     if ($conflict) {
       &ReleaseLock();
-      if ($oldconflict > 0) {	# Conflict again...
-	&DoEdit($id, 2, $pgtime, $string, $preview);
-      } else {
-	&DoEdit($id, 1, $pgtime, $string, $preview);
-      }
+      &DoEdit($id, ($oldconflict > 0 ? 2 : 1), $pgtime, $string, $preview);
       return;
     }
   }
@@ -3371,11 +3394,20 @@ sub DoPost {
     &DoEdit($id, 0, $pgtime, $string, 1);
     return;
   }
-  $user = &GetParam('username', '');
-  if (&GetParam('recent_edit', '') eq 'on') {
-    $isEdit = 1;
+  &Save($id, $string, $summary, (&GetParam('recent_edit', '') eq 'on'),
+	$newAuthor);
+  &ReleaseLock();
+  &ReBrowsePage($id, '', 1);
+  if (&GetParam('recent_edit', '') ne 'on' and $NotifyWeblogs) {
+    &PingWeblogs();
   }
-  if (!$isEdit) {
+}
+
+sub Save { # call within lock, with opened page
+  my ($id, $new, $summary, $minor, $newAuthor) = @_;
+  my $old = $Text{'text'};
+  my $user = &GetParam('username', '');
+  if (!$minor) {
     &SetPageCache('oldmajor', $Section{'revision'});
   }
   if ($newAuthor) {
@@ -3384,25 +3416,20 @@ sub DoPost {
   &SaveKeepSection();
   &ExpireKeepFile();
   if ($UseDiff) {
-    &UpdateDiffs($id, $editTime, $old, $string, $isEdit, $newAuthor);
+    &UpdateDiffs($id, $old, $new, $minor, $newAuthor);
   }
-  $Text{'text'} = $string;
-  $Text{'minor'} = $isEdit;
+  $Text{'text'} = $new;
+  $Text{'minor'} = $minor;
   $Text{'newauthor'} = $newAuthor;
   $Text{'summary'} = $summary;
   $Section{'host'} = &GetRemoteHost();
   &SaveDefaultText();
   &SetPageCache('blocks','');
   &SavePage();
-  &WriteRcLog($id, $summary, $isEdit, $editTime, $Section{'revision'}, $user,
+  &WriteRcLog($id, $summary, $minor, $Section{'revision'}, $user,
 	      $Section{'host'}, &GetLanguages($Text{'text'}));
   if ($Page{'revision'} == 1) {
     unlink($IndexFile);  # Regenerate index on next request
-  }
-  &ReleaseLock();
-  &ReBrowsePage($id, '', 1);
-  if (not $isEdit and $NotifyWeblogs) {
-    &PingWeblogs();
   }
 }
 
@@ -3441,7 +3468,7 @@ sub MergeRevisions {
 
 # Note: all diff and recent-list operations should be done within locks.
 sub WriteRcLog {
-  my ($id, $summary, $isEdit, $editTime, $revision, $name, $rhost, $languages) = @_;
+  my ($id, $summary, $minor, $revision, $name, $rhost, $languages) = @_;
   my ($extraTemp, %extra);
   %extra = ();
   $extra{'name'} = $name  if ($name ne '');
@@ -3449,8 +3476,8 @@ sub WriteRcLog {
   $extra{'languages'} = join($FS1, @{$languages}) if $languages;
   $extraTemp = join($FS2, %extra);
   # The two fields at the end of a line are kind and extension-hash
-  my $rc_line = join($FS3, $editTime, $id, $summary,
-                     $isEdit, $rhost, '0', $extraTemp);
+  my $rc_line = join($FS3, $Now, $id, $summary,
+                     $minor, $rhost, '0', $extraTemp);
   if (!open(OUT, ">>$RcFile")) {
     die(Ts('%s log error:', $RCName) . " $!");
   }
@@ -3459,16 +3486,16 @@ sub WriteRcLog {
 }
 
 sub UpdateDiffs {
-  my ($id, $editTime, $old, $new, $isEdit, $newAuthor) = @_;
+  my ($id, $old, $new, $minor, $newAuthor) = @_;
   my ($editDiff, $oldMajor, $oldAuthor);
   $editDiff  = &GetDiff($old, $new, 0);     # 0 = already in lock
   $oldMajor  = &GetPageCache('oldmajor');
   $oldAuthor = &GetPageCache('oldauthor');
   &SetPageCache('diff_default_minor', $editDiff);
-  if ($isEdit || !$newAuthor) {
+  if ($minor || !$newAuthor) {
     &OpenKeptRevisions('text_default');
   }
-  if (!$isEdit) {
+  if (!$minor) {
     &SetPageCache('diff_default_major', '1');
   } else {
     &SetPageCache('diff_default_major', &GetKeptDiff($new, $oldMajor, 0));
