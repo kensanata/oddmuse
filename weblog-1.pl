@@ -3,7 +3,7 @@ use vars qw($WeblogTextLogo $WeblogXmlLogo);
 $WeblogXmlLogo = '/images/rss.png';
 $WeblogTextLogo = '/images/txt.png';
 
-$ModulesDescription .= '<p>$Id: weblog-1.pl,v 1.7 2004/01/28 21:13:44 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: weblog-1.pl,v 1.8 2004/01/30 01:21:05 as Exp $</p>';
 
 $RefererTracking = 1;
 $CommentsPrefix = 'Comments_on_';
@@ -20,7 +20,10 @@ sub NewWeblog1InitVariables {
     ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = gmtime(time - 60*60*24);
     $yesterday = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
     # this modification is not mod_perl safe!
-    push(@UserGotoBarPages, T('Blog'), $today, $yesterday);
+    my $blog = T('Blog');
+    push(@UserGotoBarPages, $blog) unless grep (/^$blog$/, @UserGotoBarPages);
+    push(@UserGotoBarPages, $today) unless grep (/^$today$/, @UserGotoBarPages);
+    push(@UserGotoBarPages, $yesterday) unless grep (/^$yesterday$/, @UserGotoBarPages);
     $UserGotoBar .=
       ScriptLink('action=rss',
 		 "<img src=\"$WeblogXmlLogo\" alt=\"XML\" class=\"XML\" />")
