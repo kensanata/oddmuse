@@ -7,7 +7,7 @@ Package: oddmuse
 Architecture: any
 Depends: apache | httpd, perl5, perl-modules,
   libwww-perl, libxml-rss-perl, libmime-base64-perl,
-  diff, rcs
+  diff
 Suggests: libunicode-map8-perl, libunicode-string-perl
 Description: wiki engine
   A "wiki" is a website that is usally collaboratively edited
