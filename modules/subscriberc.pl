@@ -16,10 +16,9 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: subscriberc.pl,v 1.2 2004/07/14 13:00:04 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: subscriberc.pl,v 1.3 2004/07/14 14:54:32 as Exp $</p>';
 
-# put at the front of the list because it conflicts with link-all-words
-unshift(@MyRules, \&SubscribedRecentChangesRule);
+push(@MyRules, \&SubscribedRecentChangesRule);
 
 sub SubscribedRecentChangesRule {
   if ($bol) {
