@@ -352,7 +352,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.496 2004/12/14 01:08:39 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.497 2004/12/16 18:08:56 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -3382,6 +3382,7 @@ sub AddComment {
   if ($comment ne '' and $comment ne $NewComment) {
     my $author = GetParam('username', T('Anonymous'));
     my $homepage = GetParam('homepage', '');
+    $homepage = 'http://' . $homepage if $homepage and not substr($homepage,0,7) eq 'http://';
     $author = "[$homepage $author]" if $homepage;
     $string .= "\n----\n\n" if $string and $string ne "\n";
     $string .= $comment . "\n\n-- " . $author . ' ' . TimeToText($Now) . "\n\n";
@@ -3391,6 +3392,10 @@ sub AddComment {
 
 sub Save { # call within lock, with opened page
   my ($id, $new, $summary, $minor, $upload) = @_;
+  my $old = $Page{text}; # copy before it gets encoded
+  my $user = GetParam('username', '');
+  my $host = GetRemoteHost();
+  my $revision = $Page{revision} + 1;
   if ($revision == 1) {
     if (-e $IndexFile and not unlink($IndexFile)) { # regenerate index on next request
       SetParam('msg', Ts('Cannot delete the index file %s.', $IndexFile)
@@ -3404,10 +3409,6 @@ sub Save { # call within lock, with opened page
   } else {
     utime time, time, $IndexFile; # touch index file
   }
-  my $old = $Page{text}; # copy before it gets encoded
-  my $user = GetParam('username', '');
-  my $host = GetRemoteHost();
-  my $revision = $Page{revision} + 1;
   SaveKeepFile(); # deletes clean, dirty, diff-major, and diff-minor, encode multiline content
   ExpireKeepFiles();
   $Page{ts} = $Now;
