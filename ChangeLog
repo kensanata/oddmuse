@@ -1,3 +1,8 @@
+2004-03-07  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetInterLink): Add more spans to interlinks.
+	(RSS): Use feed title as interwiki, if none is provided.
+
 2004-03-06  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetFormStart): Second parameter to choose GET instead of POST.
