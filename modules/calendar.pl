@@ -16,15 +16,15 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.33 2005/01/06 11:35:04 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.34 2005/01/06 11:56:00 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalendarUseCal);
 
 $DefaultStyleSheet .= q{
-div.month { float:right; margin:0; padding-left:1ex; padding-right:1ex; }
+div.month { margin:0; padding:1ex; font-size:x-small; }
 div.footer { clear:both; }
-div.year div.month { float:left; }
-div.month pre { margin:0; padding:0; background-color:#ffe; }
+div.year div.month { float:left; font-size:medium; }
+div.month pre { margin:0; padding:0 0 0 1ex; background-color:#ffe; width:21ex; }
 div.month a { text-decoration:none; color:inherit; }
 div.month span.title a { background-color:inherit; }
 div.month a.exact { background-color:#eef; }
