@@ -1,7 +1,7 @@
 # UTF-8 encoded German translation file for use with Oddmuse
 #
 # Copyright (c) 2003  Karl Loncarek <karl@loncarek.de>
-# Copyright (c) 2003  Alex Schröder <alex@oddmuse.org>
+# Copyright (c) 2003, 2004  Alex Schröder <alex@oddmuse.org>
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
@@ -18,7 +18,7 @@
 #
 # do 'german-utf8.pl';
 #
-# Diese Übersetzung wurde für Oddmuse 1.258 erstellt.
+# Diese Übersetzung wurde für Oddmuse 1.301 erstellt.
 #
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
@@ -30,15 +30,17 @@ Ungültiger Benutzername %s: nicht gespeichert.
 UserName must be 50 characters or less: not saved
 Länge des Benutzernamens maximal 50 Zeichen: nicht gespeichert.
 XML::RSS is not available on this system.
-
+Das XML::RSS Modul ist auf diesem System nicht installiert.
 LWP::UserAgent is not available on this system.
-
+Das LWP::UserAgent Modul ist auf diesem System nicht installiert.
 diff
 Unterschiede
 history
 alte Versionen
  . . . . 
  . . . . 
+Click to create this page
+Hier klicken um die Seite zu erstellen
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 http://www.kelkoo.de/shopbot/search.jsp?from=shopbot&catPath=de%2Fbook&catId=100801&title=&author=&isbn=%s&maxprice=&x=36&y=9
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -155,8 +157,8 @@ View current revision
 Aktuelle Version ansehen
 View all changes
 Alle Änderungen ansehen
-View original
-Original ansehen
+Back to %s
+Zurück zu %s
 Last edited
 Zuletzt geändert
 Edited
@@ -172,9 +174,9 @@ Datenbank wird im temporären Verzeichnis %s gespeichert
 %s seconds
 %s Sekunden
 The same page on other sites:
-
+Dieselbe Seite auf anderen Sites:
 EditNearLinks
-
+Diese Seiten lokal erstellen
 Search:
 Suchen:
 Replace:
@@ -304,15 +306,15 @@ Diese Aktion darf nur von Administratoren durchgeführt werden...
 Index of all pages
 Index aller Seiten
 all pages
-
+alle Seiten
 permanent anchors
-
+permanente Anker
 near links
-
+"nahe" Seiten
 (for %s)
-
+(für %s)
 %s pages found.
-
+%s Seiten gefunden.
 Replaced: %s
 Ersetzt: %s
 Search for: %s
@@ -320,15 +322,15 @@ Suche nach: %s
 View changes for these pages
 Änderungen für diese Seiten
 Search sites on the %s as well
-
+Sites auf der %s auch durchsuchen
 and
 und
 or
 oder
 Fetching results from %s:
-
+Resultate von %s:
 Near pages:
-
+Nahe Seiten:
 last updated
 Zuletzt geändert
 Full Link List
@@ -387,8 +389,6 @@ Main lock obtained.
 Hauptsperre aktiviert.
 Expiring keep files and deleting pages marked for deletion
 Alte Versionen werden aus dem Archiv entfernt und Seiten, die als gelöscht markiert wurden, werden gelöscht
-and refreshing HTML cache
-und HTML Cache wird aufgefrischt
 deleted
 Datei gelöscht
 Moving part of the %s log file.
@@ -396,7 +396,7 @@ Verschiebe einen Teil der Logdatei %s.
 Moving %s log entries.
 Verschiebe %s Log-Einträge.
 Getting page index file for %s.
-
+Hole den Seitenindex für %s.
 Main lock released.
 Hauptsperre aufgehoben.
 Set or Remove global edit lock
@@ -416,9 +416,9 @@ Sperre von %s aufheben.
 Displaying Wiki Version
 Anzeige der Wiki Version
 Inter links:
-
+Inter Links:
 Near links:
-
+Nahe Links:
 Too many connections by %s
 Zu viele Verbindungen durch %s
 Recent Visitors
