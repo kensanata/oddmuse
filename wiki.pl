@@ -187,7 +187,7 @@ $CommentsPrefix = ''; # prefix for comment pages, eg. 'Comments_on_' to enable
 @LockOnCreation = ($BannedHosts, $InterMap, $RefererFilter, $StyleSheetPage, $ConfigPage);
 
 %CookieParameters = ('username'=>'', 'pwd'=>'', 'theme'=>'', 'css'=>'', 'msg'=>'',
-		     'toplinkbar'=>$TopLinkBar, 'embed'=>$EmbedWiki);
+		     'lang'=>'', 'toplinkbar'=>$TopLinkBar, 'embed'=>$EmbedWiki);
 
 $IndentLimit = 20;                  # Maximum depth of nested lists
 $LanguageLimit = 3;                 # Number of matches req. for each language
@@ -276,7 +276,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.265 2003/11/27 00:14:32 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.266 2003/11/27 00:43:42 as Exp $');
 }
 
 sub InitCookie {
@@ -1284,7 +1284,7 @@ sub RcHeader {
       $val;
     }
       ('rcidonly', 'rcuseronly', 'rchostonly', 'rcclusteronly',
-       'rcfilteronly', 'rclang');
+       'rcfilteronly', 'lang');
   if ($clusterOnly) {
     $action = GetPageParameters('browse', $clusterOnly) . $action;
   } else {
@@ -1323,7 +1323,7 @@ sub GetFilterForm {
   my $table =
     $q->Tr($q->td(T('Username:')) . $q->td($q->textfield(-name=>'rcuseronly', -size=>20)))
     . $q->Tr($q->td(T('Host:')) . $q->td($q->textfield(-name=>'rchostonly', -size=>20)));
-  $table .= $q->Tr($q->td(T('Language:')) . $q->td($q->textfield(-name=>'rclang', -size=>10)))
+  $table .= $q->Tr($q->td(T('Language:')) . $q->td($q->textfield(-name=>'lang', -size=>10)))
     if %Languages;
   $form .= $q->strong(T('Filters')) . $q->table($table);
   return $form . $q->submit('dofilter', T('Go!')) . $q->endform;
@@ -1360,7 +1360,7 @@ sub GetRc {
   my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $langFilter) =
     map { GetParam($_, ''); }
       ('rcidonly', 'rcuseronly', 'rchostonly', 'rcclusteronly',
-       'rcfilteronly', 'rclang');
+       'rcfilteronly', 'lang');
   @outrc = reverse @outrc if GetParam('newtop', $RecentTop);
   my @clusters;
   my @filters;
@@ -1993,11 +1993,12 @@ sub GetFormStart {
 }
 
 sub GetSearchForm {
-  my $form = GetFormStart() . T('Search:') . ' '
-    . $q->textfield(-name=>'search', -size=>20) . ' ';
+  my $form = GetFormStart() . T('Search:') . ' ' . $q->textfield(-name=>'search', -size=>20) . ' ';
   if ($ReplaceForm) {
-    $form .= T('Replace:') . ' '
-      . $q->textfield(-name=>'replace', -size=>20) . ' ';
+    $form .= T('Replace:') . ' ' . $q->textfield(-name=>'replace', -size=>20) . ' ';
+  }
+  if (%Languages) {
+    $form .= T('Language:') . ' ' . $q->textfield(-name=>'lang', -size=>10) . ' ';
   }
   return $form . $q->submit('dosearch', T('Go!')) . $q->endform;
 }
@@ -2784,7 +2785,8 @@ sub DoSearch {
     print GetHeader('', QuoteHtml(Ts('Search for: %s', $string)), '');
     $ReplaceForm = UserIsAdmin(); # only show on new searches for admins
     print $q->p(ScriptLink('action=rc;rcfilteronly=' . UrlEncode($string),
-			   Ts('View changes for these pages'))); }
+			   Ts('View changes for these pages')));
+  }
   if (GetParam('context',1)) {
     PrintSearchResults($string,SearchTitleAndBody($string)) ;
   } else {
@@ -2799,9 +2801,15 @@ sub SearchTitleAndBody {
   my $or = T('or');
   my @strings = split(/ +$and +/, $string);
   my @found;
+  my $langFilter = GetParam('lang', '');
   foreach my $name (AllPagesList()) {
     OpenPage($name);
     next if ($Page{'text'} =~ /^#FILE / and $string !~ /^\^#FILE/); # skip files unless requested
+    if ($langFilter) {
+      my @languages = split(/,/, $Page{languages});
+      push (@languages, T('none')) unless @languages; # allow searching for these pages
+      next if ($langFilter and not grep(/$langFilter/, @languages));
+    }
     my $found = 1; # assume found
     foreach my $str (@strings) {
       my @temp = split(/ +$or +/, $str);
