@@ -1,3 +1,30 @@
+2004-04-12  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoPost): Fix raw=2 bug.
+	(GetTextAtTime): Fix bug for rollback action where only the pages
+	were rolled back that were changed at the exact moment!
+
+2004-04-11  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoRollback): Fixed old bug: Rollback action has been
+	unusable for a very long time!
+
+	* test-markup.pl: added tests for rollback action.
+
+	* wiki.pl (GetDownloadLink): Don't use the upload class for 'a'
+	when linking to an inlined image.
+
+	* modules/simple-rules.pl (NewSimpleRulesApplyRules): Added
+	download links to uploaded images.
+	(NewSimpleRulesApplyDirtyInlineRules): Added [[image:foo]] rule.
+
+2004-04-10  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($FreeInterLinkPattern): New variable
+	(InitLinkPatterns): Set it.
+	(ApplyRules): Support new interlinks with spaces in the pagename.
+	(GetInterSiteUrl): Encode the page name.
+
 2004-04-09  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (ScriptLink, GetEditLink, GetFooterLinks): Add accesskey.
