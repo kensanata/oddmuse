@@ -1,4 +1,4 @@
-$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.3 2004/01/27 01:36:38 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.4 2004/01/27 23:07:44 as Exp $</p>';
 
 push(@MyMacros, sub{ s/\[new(:[^]:]*)\]/"[new$1:" . TimeToText($Now) . "]"/ge });
 
@@ -40,18 +40,19 @@ sub PortraitSupportRule {
   }
 }
 
-*OldWikiHeading = *WikiHeading;
-*WikiHeading = *NewWikiHeading;
+*OldPortraitSupportWikiHeading = *WikiHeading;
+*WikiHeading = *NewPortraitSupportWikiHeading;
 
-sub NewWikiHeading {
+sub NewPortraitSupportWikiHeading {
   my $html;
   $html = '</div>' if $MyColorDiv;
   return $html . OldWikiHeading(@_);
 }
-*OldApplyRules = *ApplyRules;
-*ApplyRules = *NewApplyRules;
 
-sub NewApplyRules {
+*OldPortraitSupportApplyRules = *ApplyRules;
+*ApplyRules = *NewPortraitSupportApplyRules;
+
+sub NewPortraitSupportApplyRules {
   my ($blocks, $flags) = OldApplyRules(@_);
   if ($MyColorDiv) {
     print '</div>';
