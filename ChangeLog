@@ -12,6 +12,8 @@
 	instead there is links=0 to disable ordinary links, and inter=1
 	for interlinks.
 	(DoIndex): Rework how the subtitle is created.
+	(PrintFooter): Use "Back to X".
+	(PrintAllPages): Allow filtering by language.
 
 2004-01-02  Alex Schroeder  <alex@gnu.org>
 
