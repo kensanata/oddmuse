@@ -17,7 +17,7 @@
 #
 # This translation was last checked for Oddmuse version 1.195.
 #
-$ModulesDescription .= '<p>$Id: spanish-utf8.pl,v 1.16 2004/12/27 01:57:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: spanish-utf8.pl,v 1.17 2005/01/07 23:58:49 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Consulta no permitida: el usuario, ip o sub-red ha sido bloqueado.
@@ -137,6 +137,34 @@ Rollback to %s
 
 %s rolled back
 
+Index of all pages
+Índice de todas las páginas
+Wiki Version
+Versión del Wiki
+Unlock Wiki
+Deshabilitando el bloqueo
+Recent Visitors
+Visitantes Recientes
+Password
+Contraseña
+Run maintenance
+
+Unlock site
+
+Lock site
+
+Unlock %s
+
+Lock %s
+
+Administration
+
+Actions:
+
+Important pages:
+
+To mark a page for deletion, put <strong>%s</strong> on the first line.
+
 [Home]
 [Inicio]
 redirected from %s
@@ -162,16 +190,6 @@ Editado
 by %s
 
 (diff)
-
-Run maintenance
-
-Unlock site
-
-Lock site
-
-Unlock page
-
-Lock page
 
 Edit revision %s of this page
 Editar la revisión %s de esta página
@@ -247,8 +265,6 @@ Cannot write %s
 
 Could not get %s lock
 
-Unlocking
-Deshabilitando el bloqueo
 This operation may take several seconds...
 Esta operación puede tomar varios segundos...
 Forced unlock of %s lock.
@@ -303,8 +319,6 @@ File to upload:
 
 Files of type %s are not allowed.
 
-Password
-Contraseña
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 Su contraseña es almacenada en una cookie, si su navegador tiene habilitado su uso. Estas cookies pueden perderse si se conecta desde otra máquina, otra cuenta, o usando un software de navegación diferente.
 You are currently an administrator on this site.
@@ -325,13 +339,17 @@ This operation is restricted to administrators only...
 Esta operación está restringida para su uso por administradores únicamente...
 Rule "%1" matched "%2" on this page.
 
-Index of all pages
-Índice de todas las páginas
-all pages
+Without normal pages
 
-permanent anchors
+Include normal pages
 
-near links
+Without permanent anchors
+
+Include permanent anchors
+
+Without near pages
+
+Include near pages
 
 (for %s)
 
@@ -405,8 +423,8 @@ ancestor
 
 other
 
-Maintenance on all pages
-Mantenimiento en todas las páginas
+Run Maintenance
+
 Maintenance not done.
 El mantenimiento no se ha realizado.
 (Maintenance can only be done once every 12 hours.)
@@ -444,7 +462,7 @@ Se ha creado bloqueo para %s.
 Lock for %s removed.
 Se ha eliminado bloqueo para %s.
 Displaying Wiki Version
-Versión del Wiki
+
 Show dependencies
 
 Inter links:
@@ -459,12 +477,6 @@ Please do not fetch more than %1 pages in %2 seconds.
 
 Check whether the web server can create the directory %s and whether it can create files in it.
 
-Recent Visitors
-Visitantes Recientes
-Referrers
-Orígenes
-All Referrers
-Todos los orígenes
 anchor first defined here: %s
 
 Click to search for references to this permanent anchor
@@ -487,9 +499,9 @@ Renamed from %s
 
 Renamed %1 to %2.
 
-Delete page
+Immediately delete %s
 
-Rename this page to:
+Rename %s to:
 
 Cannot highlight the language %s.
 
@@ -567,9 +579,11 @@ Portrait
 
 You did not answer correctly.
 
+All Referrers
+Todos los orígenes
+Referrers
+Orígenes
 Updating %s
-
-Done.
 
 Search term missing.
 

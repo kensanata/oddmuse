@@ -17,7 +17,7 @@
 #
 # This translation was last checked for Oddmuse version 1.215.
 #
-$ModulesDescription .= '<p>$Id: japanese-utf8.pl,v 1.14 2004/12/27 01:57:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: japanese-utf8.pl,v 1.15 2005/01/07 23:58:49 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 
@@ -137,6 +137,34 @@ Rollback to %s
 
 %s rolled back
 
+Index of all pages
+
+Wiki Version
+
+Unlock Wiki
+
+Recent Visitors
+
+Password
+
+Run maintenance
+
+Unlock site
+
+Lock site
+
+Unlock %s
+
+Lock %s
+
+Administration
+
+Actions:
+
+Important pages:
+
+To mark a page for deletion, put <strong>%s</strong> on the first line.
+
 [Home]
 
 redirected from %s
@@ -162,16 +190,6 @@ Edited
 by %s
 
 (diff)
-
-Run maintenance
-
-Unlock site
-
-Lock site
-
-Unlock page
-
-Lock page
 
 Edit revision %s of this page
 
@@ -247,8 +265,6 @@ Cannot write %s
 
 Could not get %s lock
 
-Unlocking
-
 This operation may take several seconds...
 
 Forced unlock of %s lock.
@@ -303,8 +319,6 @@ File to upload:
 
 Files of type %s are not allowed.
 
-Password
-
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 
 You are currently an administrator on this site.
@@ -325,13 +339,17 @@ This operation is restricted to administrators only...
 
 Rule "%1" matched "%2" on this page.
 
-Index of all pages
+Without normal pages
 
-all pages
+Include normal pages
 
-permanent anchors
+Without permanent anchors
 
-near links
+Include permanent anchors
+
+Without near pages
+
+Include near pages
 
 (for %s)
 
@@ -405,7 +423,7 @@ ancestor
 
 other
 
-Maintenance on all pages
+Run Maintenance
 
 Maintenance not done.
 
@@ -459,12 +477,6 @@ Please do not fetch more than %1 pages in %2 seconds.
 
 Check whether the web server can create the directory %s and whether it can create files in it.
 
-Recent Visitors
-
-Referrers
-
-All Referrers
-
 anchor first defined here: %s
 
 Click to search for references to this permanent anchor
@@ -487,9 +499,9 @@ Renamed from %s
 
 Renamed %1 to %2.
 
-Delete page
+Immediately delete %s
 
-Rename this page to:
+Rename %s to:
 
 Cannot highlight the language %s.
 
@@ -567,9 +579,11 @@ Portrait
 
 You did not answer correctly.
 
-Updating %s
+All Referrers
 
-Done.
+Referrers
+
+Updating %s
 
 Search term missing.
 

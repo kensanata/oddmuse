@@ -24,7 +24,7 @@
 #
 # This translation was last checked for Oddmuse version 1.215.
 #
-$ModulesDescription .= '<p>$Id: dutch-utf8.pl,v 1.17 2004/12/27 01:57:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: dutch-utf8.pl,v 1.18 2005/01/07 23:58:49 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 U mag deze pagina niet lezen: uw account op deze Wiki, uw IP of uw netwerk is buitengesloten.
@@ -144,6 +144,34 @@ Rollback to %s
 Wijzigingen ongedaan maken tot %s
 %s rolled back
 %s is in de oorspronkelijke staat teruggebracht
+Index of all pages
+Index van alle pagina's
+Wiki Version
+Tonen van Wiki-versie
+Unlock Wiki
+Bezig met ontgrendelen
+Recent Visitors
+Recente bezoekers
+Password
+Wachtwoord
+Run maintenance
+Voor onderhoud uit
+Unlock site
+Ontgrendel site
+Lock site
+Vergrendel site
+Unlock %s
+
+Lock %s
+
+Administration
+
+Actions:
+
+Important pages:
+
+To mark a page for deletion, put <strong>%s</strong> on the first line.
+
 [Home]
 [Start]
 redirected from %s
@@ -170,16 +198,6 @@ by %s
 door %s
 (diff)
 (verschillen)
-Run maintenance
-Voor onderhoud uit
-Unlock site
-Ontgrendel site
-Lock site
-Vergrendel site
-Unlock page
-Ontgrendel pagina
-Lock page
-Vergrendel pagina
 Edit revision %s of this page
 Wijzig revisie %s van deze pagina
 Edit this page
@@ -254,8 +272,6 @@ Cannot write %s
 Kan %s niet wijzigen
 Could not get %s lock
 Kan %s niet vergrendelen
-Unlocking
-Bezig met ontgrendelen
 This operation may take several seconds...
 Dit kan een aantal seconden duren...
 Forced unlock of %s lock.
@@ -310,8 +326,6 @@ File to upload:
 Te publiceren bestand: 
 Files of type %s are not allowed.
 Bestanden van het type %s zijn niet toegestaan.
-Password
-Wachtwoord
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 Als uw browser gebruik maakt van cookies, is uw wachtwoord in een cookie opgeslagen. Cookies kunnen verloren gaan als u verbinding maakt vanaf een andere machine, vanaf een ander account of met behulp van andere software.
 You are currently an administrator on this site.
@@ -332,14 +346,18 @@ This operation is restricted to administrators only...
 Deze taak mag alleen uitgevoerd worden door beheerders...
 Rule "%1" matched "%2" on this page.
 
-Index of all pages
-Index van alle pagina's
-all pages
-alle pagina's
-permanent anchors
-permanente bladwijzers
-near links
-nabije koppelingen
+Without normal pages
+
+Include normal pages
+
+Without permanent anchors
+
+Include permanent anchors
+
+Without near pages
+
+Include near pages
+
 (for %s)
 (voor %s)
 %s pages found.
@@ -412,8 +430,8 @@ ancestor
 vorige revisie
 other
 ander
-Maintenance on all pages
-Onderhoud van alle pagina's
+Run Maintenance
+
 Maintenance not done.
 Er is geen onderhoud gepleegd.
 (Maintenance can only be done once every 12 hours.)
@@ -451,7 +469,7 @@ Lock for %s created.
 Lock for %s removed.
 %s is ontgrendeld, en kan nu weer gewijzigd worden.
 Displaying Wiki Version
-Tonen van Wiki-versie
+
 Show dependencies
 
 Inter links:
@@ -466,12 +484,6 @@ Please do not fetch more than %1 pages in %2 seconds.
 Haal a.u.b. niet meer dan %s pagina's op in %2 seconden.
 Check whether the web server can create the directory %s and whether it can create files in it.
 
-Recent Visitors
-Recente bezoekers
-Referrers
-Verwijzingen
-All Referrers
-Alle verwijzingen
 anchor first defined here: %s
 bladwijzer als eerste hier gedefinieerd: %s
 Click to search for references to this permanent anchor
@@ -494,10 +506,10 @@ Renamed from %s
 Hernoemd van %s
 Renamed %1 to %2.
 %1 hernoemd in %2.
-Delete page
-Verwijder pagina
-Rename this page to:
-Hernoem deze pagina in:
+Immediately delete %s
+
+Rename %s to:
+
 Cannot highlight the language %s.
 
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
@@ -555,7 +567,7 @@ The template %s is either empty or does not exist.
 Clearing Cache
 Bezig met leegmaken van de cache
 Done.
-Klaar.
+
 Generating Link Database
 Bezig met genereren van Koppelingendatabase
 The 404 handler extension requires the link data extension (links.pl).
@@ -574,9 +586,11 @@ Portrait
 Portret
 You did not answer correctly.
 
+All Referrers
+Alle verwijzingen
+Referrers
+Verwijzingen
 Updating %s
-
-Done.
 
 Search term missing.
 

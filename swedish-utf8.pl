@@ -24,7 +24,7 @@
 # This translation was last checked for OddMuse version 1.517.
 # Checked and updated by Johan Adler 050106
 #
-$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.21 2005/01/07 23:55:14 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.22 2005/01/07 23:58:49 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Läsning inte tillåten: användare, ip eller nätverk är blockerat.
@@ -48,7 +48,7 @@ RSS parsing failed for %s
 Misslyckades med RSS parsningen av %s
 No items found in %s.
 Ingen information funnen i %s.
- . . . .
+ . . . . 
 
 Click to edit this page
 Klicka för att redigera den här sidan
@@ -144,14 +144,42 @@ Rollback to %s
 Återställning till %s
 %s rolled back
 %s återställd
+Index of all pages
+Index över alla sidor
+Wiki Version
+
+Unlock Wiki
+
+Recent Visitors
+Senaste besökare
+Password
+Lösenord
+Run maintenance
+Utför underhåll
+Unlock site
+Lås upp wikin
+Lock site
+Lås wikin
+Unlock %s
+
+Lock %s
+
+Administration
+
+Actions:
+
+Important pages:
+
+To mark a page for deletion, put <strong>%s</strong> on the first line.
+
 [Home]
 [Startsida]
 redirected from %s
 omdirigerad från %s
 Click to search for references to this page
 Klicka för att söka efter referenser till den här sidan
-Cookie:
-Cookie:
+Cookie: 
+
 Warning
 Varning
 Database is stored in temporary directory %s
@@ -170,16 +198,6 @@ by %s
 av %s
 (diff)
 (ändringar)
-Run maintenance
-Utför underhåll
-Unlock site
-Lås upp wikin
-Lock site
-Lås wikin
-Unlock page
-Lås upp sidan
-Lock page
-Lås sidan
 Edit revision %s of this page
 Redigera version %s av den här sidan
 Edit this page
@@ -254,8 +272,6 @@ Cannot write %s
 Kan inte skriva %s
 Could not get %s lock
 Kunde inte låsa %s
-Unlocking
-Låser upp
 This operation may take several seconds...
 Den här funktionen kan ta flera sekunder...
 Forced unlock of %s lock.
@@ -306,12 +322,10 @@ Replace this file with text.
 Skriv text istället för den här filen.
 Replace this text with a file.
 Använd en fil i stället för den här texten.
-File to upload:
-Fil att ladda upp:
+File to upload: 
+
 Files of type %s are not allowed.
 Filer av typen %s är inte tillåtna.
-Password
-Lösenord
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 Ditt lösenord sparas i en cookie om du har cookies påslagna. Cookies kan försvinna om du ansluter från en annan dator, från ett annat konto eller med ett annat program.
 You are currently an administrator on this site.
@@ -332,14 +346,18 @@ This operation is restricted to administrators only...
 Den här funktionen kan bara utföras av adminstratörer...
 Rule "%1" matched "%2" on this page.
 Regel "%1"  matchade "%2" på denna sida.
-Index of all pages
-Index över alla sidor
-all pages
-alla sidor
-permanent anchors
-permanenta ankare
-near links
-nära länkar
+Without normal pages
+
+Include normal pages
+
+Without permanent anchors
+
+Include permanent anchors
+
+Without near pages
+
+Include near pages
+
 (for %s)
 (för: %s)
 %s pages found.
@@ -412,8 +430,8 @@ ancestor
 förfader
 other
 annan
-Maintenance on all pages
-Underhåll av alla sidor
+Run Maintenance
+
 Maintenance not done.
 Underhåll ej slutfört.
 (Maintenance can only be done once every 12 hours.)
@@ -424,8 +442,8 @@ Main lock obtained.
 Huvudlås påslaget.
 Expiring keep files and deleting pages marked for deletion
 Avlägsnar "keep"-filer och raderar sidor märkta för radering
-not deleted:
-inte borttagen:
+not deleted: 
+
 deleted
 borttagen
 Moving part of the %s log file.
@@ -466,12 +484,6 @@ Please do not fetch more than %1 pages in %2 seconds.
 Vänligen hämta inte mer än %1 sidor på %2 sekunder.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Kontrollera att webservern kan skapa biblioteket %s och att den kan skapa filer i det.
-Recent Visitors
-Senaste besökare
-Referrers
-Sidor som länkat hit
-All Referrers
-Alla som länkat hit
 anchor first defined here: %s
 ankare definierades här först: %s
 Click to search for references to this permanent anchor
@@ -494,10 +506,10 @@ Renamed from %s
 Bytt namn från %s
 Renamed %1 to %2.
 Bytt namn på %1 till %2
-Delete page
-Ta bort sida
-Rename this page to:
-Byt namn på denna sida till:
+Immediately delete %s
+
+Rename %s to:
+
 Cannot highlight the language %s.
 Kan ej markera språket %s.
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
@@ -512,10 +524,10 @@ Next
 Nästa
 Calendar %s
 Kalender %s
-Comments on
-kommentarer till
-Comment on
-kommentar till
+Comments on 
+
+Comment on 
+
 Compilation for %s
 Sammanställning för %s
 Compilation tag is missing a regular expression.
@@ -562,8 +574,8 @@ The 404 handler extension requires the link data extension (links.pl).
 404-hanterarmodulen kräver länkdatamodulen för att fungera (links.pl).
 Orphan List
 Lista över övergivna sidor
-Trail:
-Senast:
+Trail: 
+
 None
 Inga
 Type
@@ -574,10 +586,12 @@ Portrait
 Porträtt
 You did not answer correctly.
 Du svarade inte korrekt
+All Referrers
+Alla som länkat hit
+Referrers
+Sidor som länkat hit
 Updating %s
 Uppdaterar %s
-Done.
-Färdig.
 Search term missing.
 Sökord saknas
 Static Copy
@@ -610,8 +624,8 @@ Failed to remove %s
 Misslyckades med att ta bort %s
 Contents
 Innehåll
-This page is a translation of %s.
-Denna sida är en översättning av %s.
+This page is a translation of %s. 
+
 The translation is up to date.
 Denna översättning är aktuell.
 The translation is outdated.

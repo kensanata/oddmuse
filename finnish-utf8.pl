@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: finnish-utf8.pl,v 1.7 2004/12/27 01:57:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: finnish-utf8.pl,v 1.8 2005/01/07 23:58:49 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lukeminen ei ole sallittua: käyttäjä, IP tai verkko on estetty.
@@ -136,6 +136,34 @@ Rollback to %s
 Palautus %s:ään
 %s rolled back
 %s palautettu
+Index of all pages
+Sivuston sisällysluettelo
+Wiki Version
+Wikin versio
+Unlock Wiki
+Avataan lukitus
+Recent Visitors
+Viimeisimmät vierailijat
+Password
+Salasana
+Run maintenance
+Ylläpitotoiminto
+Unlock site
+Avaa sivuston lukko
+Lock site
+Lukitse sivusto
+Unlock %s
+
+Lock %s
+
+Administration
+
+Actions:
+
+Important pages:
+
+To mark a page for deletion, put <strong>%s</strong> on the first line.
+
 [Home]
 [Etusivu]
 redirected from %s
@@ -162,16 +190,6 @@ by %s
  %s
 (diff)
 (diff)
-Run maintenance
-Ylläpitotoiminto
-Unlock site
-Avaa sivuston lukko
-Lock site
-Lukitse sivusto
-Unlock page
-Avaa sivun lukko
-Lock page
-Lukitse sivu
 Edit revision %s of this page
 Muokkaa tämän sivun versiota %s
 Edit this page
@@ -246,8 +264,6 @@ Cannot write %s
 Ei voitu kirjoittaa: %s
 Could not get %s lock
 Ei voitu lukita: %s
-Unlocking
-Avataan lukitus
 This operation may take several seconds...
 Tämä operaatio voi kestää useita sekunteja...
 Forced unlock of %s lock.
@@ -302,8 +318,6 @@ File to upload:
 Tallennettava tiedosto: 
 Files of type %s are not allowed.
 Tyyppiä %s olevat tiedostot eivät ole sallittuja.
-Password
-Salasana
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 Salasanasi tallennetaan keksiin (cookie), jos cookies-toiminto on päällä. Tallennettu cookie voi kadota, jos siirryt toiselle tietokoneelle, toiselle käyttäjäntunnukselle tai eri verkkoselaimelle.
 You are currently an administrator on this site.
@@ -324,14 +338,18 @@ This operation is restricted to administrators only...
 Tämä toiminto on rajoitettu sivuston ylläpitäjille...
 Rule "%1" matched "%2" on this page.
 Sääntö "%1" sopi "%2":teen tällä sivulla.
-Index of all pages
-Sivuston sisällysluettelo
-all pages
-kaikki sivut
-permanent anchors
-pysyvät ankkurit
-near links
-lähilinkit
+Without normal pages
+
+Include normal pages
+
+Without permanent anchors
+
+Include permanent anchors
+
+Without near pages
+
+Include near pages
+
 (for %s)
 (%s:lle)
 %s pages found.
@@ -404,8 +422,8 @@ ancestor
 edeltäjä
 other
 muu
-Maintenance on all pages
-Ylläpito kaikilla sivuilla
+Run Maintenance
+
 Maintenance not done.
 Ylläpitoa ei suoritettu.
 (Maintenance can only be done once every 12 hours.)
@@ -443,7 +461,7 @@ Lukko %s:lle luotu.
 Lock for %s removed.
 Lukko %s:lle poistettu.
 Displaying Wiki Version
-Wikin versio
+
 Show dependencies
 
 Inter links:
@@ -458,12 +476,6 @@ Please do not fetch more than %1 pages in %2 seconds.
 älä avaa yli %1 sivua %2 sekunnin aikana.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Tarkista voiko www-palvelin luoda hakemiston %s ja voiko se luoda sivuja tähän hakemistoon.
-Recent Visitors
-Viimeisimmät vierailijat
-Referrers
-Viittaukset
-All Referrers
-Kaikki viittaukset
 anchor first defined here: %s
 ankkuri nimetty ensimmäisen kerran täällä: %s
 Click to search for references to this permanent anchor
@@ -486,10 +498,10 @@ Renamed from %s
 Nimi muutettu %s:stä
 Renamed %1 to %2.
 Nimi vaihdettu %1:stä %2:ksi
-Delete page
-Poista sivu
-Rename this page to:
-Uudelleennimeä tämä sivu:
+Immediately delete %s
+
+Rename %s to:
+
 Cannot highlight the language %s.
 Kieltä %s ei voida merkitä
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
@@ -547,7 +559,7 @@ Pohja %s on joko tyhjä tai ei ole olemassa.
 Clearing Cache
 Välimuistia tyhjennetään
 Done.
-Valmis
+
 Generating Link Database
 Linkkitietokantaa luodaan
 The 404 handler extension requires the link data extension (links.pl).
@@ -566,9 +578,11 @@ Portrait
 Avatar
 You did not answer correctly.
 
+All Referrers
+Kaikki viittaukset
+Referrers
+Viittaukset
 Updating %s
-
-Done.
 
 Search term missing.
 

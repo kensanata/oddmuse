@@ -18,7 +18,7 @@
 #
 # This translation was updated for Oddmuse 1.354.
 #
-$ModulesDescription .= '<p>$Id: bulgarian-utf8.pl,v 1.12 2004/12/27 01:57:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: bulgarian-utf8.pl,v 1.13 2005/01/07 23:58:49 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Не е разрешено четенето: блокиран потребител, IP адрес или мрежа.
@@ -138,6 +138,34 @@ Rollback to %s
 Връщане до %s
 %s rolled back
 Промените върху %s бяха успешно върнати
+Index of all pages
+Индекс на всички страници
+Wiki Version
+Показ на Уики-версия
+Unlock Wiki
+Премахване на защити
+Recent Visitors
+Скорошни посетители
+Password
+Парола
+Run maintenance
+
+Unlock site
+
+Lock site
+
+Unlock %s
+
+Lock %s
+
+Administration
+
+Actions:
+
+Important pages:
+
+To mark a page for deletion, put <strong>%s</strong> on the first line.
+
 [Home]
 [Начална страница]
 redirected from %s
@@ -164,16 +192,6 @@ by %s
 от %s
 (diff)
 (разлики)
-Run maintenance
-
-Unlock site
-
-Lock site
-
-Unlock page
-
-Lock page
-
 Edit revision %s of this page
 Редакция на версия %s на тази страница
 Edit this page
@@ -248,8 +266,6 @@ Cannot write %s
 Не може да се запише: %s
 Could not get %s lock
 Не може да се резервират изключителни права върху %s.
-Unlocking
-Премахване на защити
 This operation may take several seconds...
 Тази операция може да потрае малко...
 Forced unlock of %s lock.
@@ -304,8 +320,6 @@ File to upload:
 Файл за качване: 
 Files of type %s are not allowed.
 Файлове тип %s не са разрешени.
-Password
-Парола
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 Паролата се записва в курабийка (cookie), ако те са разрешени. Курабийките могат да се загубят, ако се свързваш от друг компютър или акаунт, или с друг софтуер.
 You are currently an administrator on this site.
@@ -326,14 +340,18 @@ This operation is restricted to administrators only...
 Тази операция може да се извършва само от администратори.
 Rule "%1" matched "%2" on this page.
 
-Index of all pages
-Индекс на всички страници
-all pages
-всички страници
-permanent anchors
-постоянни точки
-near links
-близки линкове
+Without normal pages
+
+Include normal pages
+
+Without permanent anchors
+
+Include permanent anchors
+
+Without near pages
+
+Include near pages
+
 (for %s)
 (за %s)
 %s pages found.
@@ -406,8 +424,8 @@ ancestor
 предшественик
 other
 друг
-Maintenance on all pages
-Поддръжка на всички страници
+Run Maintenance
+
 Maintenance not done.
 Поддъжката не бе осъществена.
 (Maintenance can only be done once every 12 hours.)
@@ -445,7 +463,7 @@ Lock for %s created.
 Lock for %s removed.
 Защитата за %s бе отменена.
 Displaying Wiki Version
-Показ на Уики-версия
+
 Show dependencies
 
 Inter links:
@@ -460,12 +478,6 @@ Please do not fetch more than %1 pages in %2 seconds.
 
 Check whether the web server can create the directory %s and whether it can create files in it.
 
-Recent Visitors
-Скорошни посетители
-Referrers
-Линкове
-All Referrers
-Всички линкове
 anchor first defined here: %s
 Точката бе първо дефинирана тук: %s
 Click to search for references to this permanent anchor
@@ -488,9 +500,9 @@ Renamed from %s
 
 Renamed %1 to %2.
 
-Delete page
+Immediately delete %s
 
-Rename this page to:
+Rename %s to:
 
 Cannot highlight the language %s.
 
@@ -568,9 +580,11 @@ Portrait
 
 You did not answer correctly.
 
+All Referrers
+Всички линкове
+Referrers
+Линкове
 Updating %s
-
-Done.
 
 Search term missing.
 

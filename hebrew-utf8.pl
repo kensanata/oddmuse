@@ -17,7 +17,7 @@
 #
 # This translation was last checked for Oddmuse version 1.195.
 #
-$ModulesDescription .= '<p>$Id: hebrew-utf8.pl,v 1.15 2004/12/27 01:57:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: hebrew-utf8.pl,v 1.16 2005/01/07 23:58:49 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 
@@ -137,6 +137,34 @@ Rollback to %s
 
 %s rolled back
 
+Index of all pages
+תוכן כל הדפים:
+Wiki Version
+מציג את גירסת ה-Wiki.
+Unlock Wiki
+משחרר נעילה
+Recent Visitors
+מבקרים מהזמן האחרון
+Password
+ססמה
+Run maintenance
+
+Unlock site
+
+Lock site
+
+Unlock %s
+
+Lock %s
+
+Administration
+
+Actions:
+
+Important pages:
+
+To mark a page for deletion, put <strong>%s</strong> on the first line.
+
 [Home]
 [דף בית]
 redirected from %s
@@ -163,16 +191,6 @@ by %s
 
 (diff)
 (הבדלים)
-Run maintenance
-
-Unlock site
-
-Lock site
-
-Unlock page
-
-Lock page
-
 Edit revision %s of this page
 ערוך את גירסה %s של דף זה
 Edit this page
@@ -247,8 +265,6 @@ Cannot write %s
 
 Could not get %s lock
 
-Unlocking
-משחרר נעילה
 This operation may take several seconds...
 פעולה זו עשויה להימשך מספר שניות...
 Forced unlock of %s lock.
@@ -303,8 +319,6 @@ File to upload:
 
 Files of type %s are not allowed.
 
-Password
-ססמה
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 הססמה שלך נשמרת כ-cookie, אם cookies מופעלות. Cookies עלולות ללכת לאיבוד אם תתחבר ממחשב אחר או מתוכנה אחרת.
 You are currently an administrator on this site.
@@ -325,13 +339,17 @@ This operation is restricted to administrators only...
 פעולה זו מוגבלת למנהלים בלבד...
 Rule "%1" matched "%2" on this page.
 
-Index of all pages
-תוכן כל הדפים:
-all pages
+Without normal pages
 
-permanent anchors
+Include normal pages
 
-near links
+Without permanent anchors
+
+Include permanent anchors
+
+Without near pages
+
+Include near pages
 
 (for %s)
 
@@ -405,8 +423,8 @@ ancestor
 
 other
 
-Maintenance on all pages
-תחזוקה לכל הדפים.
+Run Maintenance
+
 Maintenance not done.
 תחזוקה לא בוצעה.
 (Maintenance can only be done once every 12 hours.)
@@ -444,7 +462,7 @@ Lock for %s created.
 Lock for %s removed.
 נעילה הוסרה מ-%s.
 Displaying Wiki Version
-מציג את גירסת ה-Wiki.
+
 Show dependencies
 
 Inter links:
@@ -459,12 +477,6 @@ Please do not fetch more than %1 pages in %2 seconds.
 
 Check whether the web server can create the directory %s and whether it can create files in it.
 
-Recent Visitors
-מבקרים מהזמן האחרון
-Referrers
-מפנים
-All Referrers
-כל המפנים
 anchor first defined here: %s
 
 Click to search for references to this permanent anchor
@@ -487,9 +499,9 @@ Renamed from %s
 
 Renamed %1 to %2.
 
-Delete page
+Immediately delete %s
 
-Rename this page to:
+Rename %s to:
 
 Cannot highlight the language %s.
 
@@ -567,9 +579,11 @@ Portrait
 
 You did not answer correctly.
 
+All Referrers
+כל המפנים
+Referrers
+מפנים
 Updating %s
-
-Done.
 
 Search term missing.
 

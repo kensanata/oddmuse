@@ -17,7 +17,7 @@
 #
 # This translation was last checked for Oddmuse version 1.195.
 #
-$ModulesDescription .= '<p>$Id: serbian-utf8.pl,v 1.16 2004/12/27 01:57:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: serbian-utf8.pl,v 1.17 2005/01/07 23:58:49 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Читање није дозвољено: приступ за корисника, IP број или мрежу је блокиран.
@@ -137,6 +137,34 @@ Rollback to %s
 Повратак на %s
 %s rolled back
 %s је враћен
+Index of all pages
+Списак свих страна:
+Wiki Version
+Приказујем верзију Викија
+Unlock Wiki
+Откључавам
+Recent Visitors
+Скори посетиоци
+Password
+Лозинка
+Run maintenance
+
+Unlock site
+
+Lock site
+
+Unlock %s
+
+Lock %s
+
+Administration
+
+Actions:
+
+Important pages:
+
+To mark a page for deletion, put <strong>%s</strong> on the first line.
+
 [Home]
 [Кућа]
 redirected from %s
@@ -163,16 +191,6 @@ by %s
 — %s
 (diff)
 (разлике)
-Run maintenance
-
-Unlock site
-
-Lock site
-
-Unlock page
-
-Lock page
-
 Edit revision %s of this page
 Уреди верзију %s ове странице
 Edit this page
@@ -247,8 +265,6 @@ Cannot write %s
 
 Could not get %s lock
 Нисам могао да добавим браву %s
-Unlocking
-Откључавам
 This operation may take several seconds...
 Ова операција може потрајати неколико секунди...
 Forced unlock of %s lock.
@@ -303,8 +319,6 @@ File to upload:
 Датотека коју треба окачити: 
 Files of type %s are not allowed.
 Датотеке типа %s нису дозвољене.
-Password
-Лозинка
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 Ваша лозинка је снимљена у колачићу, ако су укључени. Колачићи могу бити изгубљени ако се повежете са друге машине, са другог налога, или користећи други програм.
 You are currently an administrator on this site.
@@ -325,13 +339,17 @@ This operation is restricted to administrators only...
 Ово сме да ради само администратор...
 Rule "%1" matched "%2" on this page.
 
-Index of all pages
-Списак свих страна:
-all pages
+Without normal pages
 
-permanent anchors
+Include normal pages
 
-near links
+Without permanent anchors
+
+Include permanent anchors
+
+Without near pages
+
+Include near pages
 
 (for %s)
 
@@ -405,8 +423,8 @@ ancestor
 предак
 other
 други
-Maintenance on all pages
-Одржавање на свим странама
+Run Maintenance
+
 Maintenance not done.
 Одржавање није урађено.
 (Maintenance can only be done once every 12 hours.)
@@ -444,7 +462,7 @@ Lock for %s created.
 Lock for %s removed.
 Брава за %s је уклоњена.
 Displaying Wiki Version
-Приказујем верзију Викија
+
 Show dependencies
 
 Inter links:
@@ -459,12 +477,6 @@ Please do not fetch more than %1 pages in %2 seconds.
 
 Check whether the web server can create the directory %s and whether it can create files in it.
 
-Recent Visitors
-Скори посетиоци
-Referrers
-Референце
-All Referrers
-Све референце
 anchor first defined here: %s
 сидро је прво дефинисано овде: %s
 Click to search for references to this permanent anchor
@@ -487,9 +499,9 @@ Renamed from %s
 
 Renamed %1 to %2.
 
-Delete page
+Immediately delete %s
 
-Rename this page to:
+Rename %s to:
 
 Cannot highlight the language %s.
 
@@ -567,9 +579,11 @@ Portrait
 
 You did not answer correctly.
 
+All Referrers
+Све референце
+Referrers
+Референце
 Updating %s
-
-Done.
 
 Search term missing.
 

@@ -17,7 +17,7 @@
 #
 # This translation was last checked for Oddmuse version 1.504.
 #
-$ModulesDescription .= '<p>$Id: chinese-utf8.pl,v 1.19 2004/12/27 01:57:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: chinese-utf8.pl,v 1.20 2005/01/07 23:58:49 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 禁止讀取：使用者、ip 或是網路已被禁止連線。
@@ -137,6 +137,34 @@ Rollback to %s
 回復至 %s
 %s rolled back
 %s 已回復
+Index of all pages
+所有頁面的索引
+Wiki Version
+顯示 Wiki 的版本
+Unlock Wiki
+解鎖
+Recent Visitors
+最近的參訪者
+Password
+密碼
+Run maintenance
+執行維護動作
+Unlock site
+網站解鎖
+Lock site
+網站鎖定
+Unlock %s
+
+Lock %s
+
+Administration
+
+Actions:
+
+Important pages:
+
+To mark a page for deletion, put <strong>%s</strong> on the first line.
+
 [Home]
 [首頁]
 redirected from %s
@@ -163,16 +191,6 @@ by %s
 由 %s
 (diff)
 (比較差異)
-Run maintenance
-執行維護動作
-Unlock site
-網站解鎖
-Lock site
-網站鎖定
-Unlock page
-頁面解鎖
-Lock page
-頁面鎖定
 Edit revision %s of this page
 編輯本頁的第 %s 版本
 Edit this page
@@ -247,8 +265,6 @@ Cannot write %s
 無法寫入 %s
 Could not get %s lock
 無法取得 %s 鎖定
-Unlocking
-解鎖
 This operation may take several seconds...
 這個動作可能要花幾秒…
 Forced unlock of %s lock.
@@ -303,8 +319,6 @@ File to upload:
 要上傳的檔案：
 Files of type %s are not allowed.
 不允許 %s 型態的檔案。
-Password
-密碼
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 如果你的 cookie 功能開啟的話，則你的密碼會被儲放在 cookie 中。如果你由其他機器、用其他的帳號、或使用別的軟體來連線的話，則 cookie 可能會消失。
 You are currently an administrator on this site.
@@ -325,14 +339,18 @@ This operation is restricted to administrators only...
 這個動作限定只允許管理者使用…
 Rule "%1" matched "%2" on this page.
 本頁的 "%2" 符合規則 "%1"。
-Index of all pages
-所有頁面的索引
-all pages
-所有的頁面
-permanent anchors
-固定錨點
-near links
-近端連結
+Without normal pages
+
+Include normal pages
+
+Without permanent anchors
+
+Include permanent anchors
+
+Without near pages
+
+Include near pages
+
 (for %s)
 (列出 %s )
 %s pages found.
@@ -405,8 +423,8 @@ ancestor
 之前的
 other
 別人的
-Maintenance on all pages
-對所有頁面進行管理
+Run Maintenance
+
 Maintenance not done.
 無法進行管理。
 (Maintenance can only be done once every 12 hours.)
@@ -444,7 +462,7 @@ Lock for %s created.
 Lock for %s removed.
 已移除 %s 的鎖定。
 Displaying Wiki Version
-顯示 Wiki 的版本
+
 Show dependencies
 顯示相依函式庫
 Inter links:
@@ -459,12 +477,6 @@ Please do not fetch more than %1 pages in %2 seconds.
 請不要在 %2 秒內抓取超過 %1 頁的資料。
 Check whether the web server can create the directory %s and whether it can create files in it.
 請確認網站伺服器是否可建立 %s 目錄，並且在其中建立檔案。
-Recent Visitors
-最近的參訪者
-Referrers
-引用者
-All Referrers
-所有的引用者
 anchor first defined here: %s
 錨點已被定義於 %s
 Click to search for references to this permanent anchor
@@ -487,10 +499,10 @@ Renamed from %s
 更名自 %s
 Renamed %1 to %2.
 已將 %1 更名為 %2 。
-Delete page
-刪除頁面
-Rename this page to:
-將本頁更名至：
+Immediately delete %s
+
+Rename %s to:
+
 Cannot highlight the language %s.
 無法強調顯示 %s 。
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
@@ -548,7 +560,7 @@ The template %s is either empty or does not exist.
 Clearing Cache
 清除暫存
 Done.
-完成。
+
 Generating Link Database
 產生連結資料庫
 The 404 handler extension requires the link data extension (links.pl).
@@ -567,10 +579,12 @@ Portrait
 肖像
 You did not answer correctly.
 
+All Referrers
+所有的引用者
+Referrers
+引用者
 Updating %s
 更新 %s
-Done.
-
 Search term missing.
 
 Static Copy
