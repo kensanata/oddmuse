@@ -16,20 +16,32 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: thread.pl,v 1.3 2004/03/14 14:33:05 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: thread.pl,v 1.4 2004/03/14 16:27:45 as Exp $</p>';
 
 $Action{getthread} = \&ThreadGet;
 $Action{addthread} = \&ThreadAdd;
 
+push(@MyRules, \&ThreadRule);
+
+sub ThreadRule {
+  if (m/\G(\[\[thread:$FreeLinkPattern\]\])/gcs) {
+    Dirty($1);
+    my $oldpos = pos;
+    ThreadGet($2, 1, 1);
+    pos = $oldpos;
+  }
+  return '';
+}
+
 sub ThreadGet {
-  my ($id, $interactive) = @_;
+  my ($id, $interactive, $inline) = @_;
   my ($page, $thread) = ThreadExtract($id);
-  print GetHttpHeader('text/html') . GetHtmlHeader(Ts('Thread: %s', $id), '');
+  print GetHttpHeader('text/html') . GetHtmlHeader(Ts('Thread: %s', $id), '') unless $inline;
   if (GetParam('interactive', $interactive)) {
     $thread = ThreadInteractive($id, $thread);
   }
   ApplyRules($thread);
-  print $q->end_html;
+  print $q->end_html unless $inline;
 }
 
 sub ThreadExtract {
