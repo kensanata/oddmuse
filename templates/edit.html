@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <title><?$SiteName?>: Editing <?$OpenPageName?></title>
+    <link type="text/css" rel="stylesheet" href="<?$StyleSheet?>" />
+  </head>
+  <body>
+    <div class="header">
+      <img class="logo" src="<?$LogoUrl?>" alt="[<?$HomePage?>]" />
+      <h1>Editing <?$OpenPageName?></h1>
+    </div>
+    <div class="content edit">
+      <form method="post"
+            action="<?$FullUrl?>"
+            enctype="application/x-www-form-urlencoded">
+        <p>
+          <input type="hidden" name="title" value="<?$OpenPageName?>" />
+          <input type="hidden" name="oldtime" value="<?$Now?>" />
+          <textarea name="text" rows="25" cols="78"><?$Page{text}?></textarea>
+        </p>
+        <p>
+          Zusammenfassung:
+          <input type="text" name="summary"  size="60" />
+        </p>
+        <p>
+          <input type="checkbox" name="recent_edit" value="on" />
+          Dies ist eine kleinere Änderung.
+        </p>
+        <p>
+          Benutzername:
+          <input type="text" name="username" value="<?GetParam('username', '')?>" size="20" maxlength="50" />
+        </p>
+        <p>
+          <input type="submit" name="Save" value="Speichern" accesskey="s" />
+          <input type="submit" name="Preview" value="Vorschau" />
+        </p>
+        <p>
+          <a href="<?$FullUrl?>?action=edit;upload=1;id=<?$OpenPageName?>">
+            Datei hochladen und den Text durch diese Datei ersetzen.
+          </a>
+        </p>
+      </form>
+    </div>
+    <div class="footer">
+      <hr />
+      <?&GetGotoBar?>
+      <?&GetFooterLinks($id)?>
+    </div>
+  </body>
+</html>

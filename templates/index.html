@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <title><?$SiteName?>: Index of all pages</title>
+    <link type="text/css" rel="stylesheet" href="<?$StyleSheet?>" />
+  </head>
+  <body>
+    <div class="header">
+      <img class="logo" src="<?$LogoUrl?>" alt="[<?$HomePage?>]" />
+      <h1>Index of all pages</h1>
+    </div>
+    <div class="content index">
+<?
+  $q->p(map {
+	  my $id = $_;
+	  my $title = $id;
+	  $title =~ s/_/ /g;
+	  GetPageOrEditLink($id, $title) . $q->br();
+	} AllPagesList());
+?>
+    </div>
+    <div class="footer">
+      <hr />
+      <?&GetGotoBar?>
+      <?&GetFooterLinks($id)?>
+    </div>
+  </body>
+</html>
