@@ -15,6 +15,9 @@
 	(PrintFooter): Use "Back to X".
 	(PrintAllPages): Allow filtering by language.
 	(DoMaintain): Determine languages, too, if cache.
+	(PrintFooter): Text change.
+	(PrintAllPages): Refresh languages, too, when cache=0 is used.
+	(DoMaintain): No longer handle cache parameter.
 
 2004-01-02  Alex Schroeder  <alex@gnu.org>
 
