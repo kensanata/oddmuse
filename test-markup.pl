@@ -691,7 +691,7 @@ test_page(get_page('SearchAndReplace'), @Test);
 
 @Test = split('\n',<<'EOT');
 <h1><a title="Click to search for references to this page" href="http://localhost/wiki.pl\?search=Alexander\+Schr\%c3\%b6der">Alexander Schröder</a></h1>
-Edit <a href="http://localhost/wiki.pl/Alexander_Schr\%c3\%b6der">Alexander Schröder</a>!
+Edit <a class="local" href="http://localhost/wiki.pl/Alexander_Schr\%c3\%b6der">Alexander Schröder</a>!
 EOT
 
 test_page(update_page('Alexander_Schr\%c3\%b6der', "Edit [[Alexander Schröder]]!"), @Test);
@@ -984,7 +984,7 @@ mailto:alex@emacswiki.org
  source\n \n etc\n\nother
 <pre> source\n \n etc\n</pre><p>other
 [[SandBox|play here]]
-[[<a href="http://localhost/test-wrapper.pl/SandBox">SandBox</a>|play here]]
+[[<a class="local" href="http://localhost/test-wrapper.pl/SandBox">SandBox</a>|play here]]
 [[Appel|Not a pear]]
 [[Appel|Not a pear]]
 EOT
@@ -1007,11 +1007,11 @@ update_page('Banana', "This page exists also.");
 
 %Test = split('\n',<<'EOT');
 [[SandBox|play here]]
-<a href="http://localhost/test-wrapper.pl/SandBox">play here</a>
+<a class="local" href="http://localhost/test-wrapper.pl/SandBox">play here</a>
 [[FooBar|do not play here]]
 [FooBar<a href="http://localhost/test-wrapper.pl?action=edit;id=FooBar">?</a> do not play here]
 [[Banana|Not a pear]]
-<a href="http://localhost/test-wrapper.pl/Banana">Not a pear</a>
+<a class="local" href="http://localhost/test-wrapper.pl/Banana">Not a pear</a>
 [[Appel|Not a pear]]
 [Appel<a href="http://localhost/test-wrapper.pl?action=edit;id=Appel">?</a> Not a pear]
 file://home/foo/tutorial.pdf
