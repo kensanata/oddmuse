@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.2 2004/07/04 23:11:24 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.3 2004/07/06 00:53:25 as Exp $</p>';
 
 use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml);
 
@@ -61,7 +61,7 @@ sub UsemodRule {
   # <nowiki> for escaped
   elsif (m/\G\&lt;nowiki\&gt;(.*?)\&lt;\/nowiki\&gt;/cgis) { return $1; }
   # whitespace for monospaced, preformatted and escaped
-  elsif ($bol && m/\G(\s*\n)*(([ \t]+.*\n?)+)/cg) {
+  elsif ($bol && m/\G(\s*\n)*([ \t]+(.+\n)*.*)/cg) {
     return OpenHtmlEnvironment('pre',1) . $2; # always level 1
   }
   # numbered lists using #
