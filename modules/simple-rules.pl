@@ -16,81 +16,138 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-use vars qw($StrictSeTextRules);
-
-$StrictSeTextRules = 0;
-
-$ModulesDescription .= '<p>$Id: simple-rules.pl,v 1.10 2004/02/10 18:21:17 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: simple-rules.pl,v 1.11 2004/04/09 01:25:35 as Exp $</p>';
 
 *ApplyRules = *NewSimpleRulesApplyRules;
+
+my $PROT = "\x1c";
+my $DIRT = "\x1d";
 
 sub NewSimpleRulesApplyRules {
   # locallinks: apply rules that create links depending on local config (incl. interlink!)
   my ($text, $locallinks) = @_;
   # shortcut for dirty blocks (if this is the content of a real page: no caching!)
-  if ($locallinks and $text =~ m/^\[\[$FreeLinkPattern\]\]$/) {
-    print GetPageOrEditLink($1,0,0,1);
-    return;
-  }
-  $text =~ s/[ \t]+\n/\n/g; # no trailing whitespace to worry about
-  my @paragraphs = split(/\n\n+/, $text);
-  my $html;
-  my @escapes;
-  my @dirty;
-  foreach my $block (@paragraphs) {
-    if ($block =~ /^(.+?)\n(--+)$/ and length($1) == length($2)) {
-      $block = $q->h3($1);
-    } elsif ($block =~ /^(.+?)\n(==+)$/ and length($1) == length($2)) {
-      $block = $q->h2($1);
-    } elsif ($block =~ /^\* (.*)/s) {
-      $block = $q->ul( map{$q->li($_)} split(/\n\* */, $1));
-    } elsif ($block =~ /^[0-9]\. (.*)/s) {
-      $block = $q->ol( map{$q->li($_)} split(/\n[0-9]\. */, $1));
-    } else {
-      $block = $q->p($block);
-    }
-    $block =~ s/~(\S+)~/$q->em($1)/eg;
-    $block =~ s/\*\*(.+?)\*\*/$q->strong($1)/seg;
-    if (!$StrictSeTextRules) {
-      $block =~ s/\/\/(.+?)\/\//$q->em($1)/seg;
-      $block =~ s/\_\_(.+?)\_\_/$q->u($1)/seg;
-      $block =~ s/\*([^<>\* \t]+)\*/$q->b($1)/seg;
-      $block =~ s/\/([^<>\/ \t]+)\//$q->i($1)/seg; # careful not to match HTML tags!
-      $block =~ s/\_([^<>\_ \t]+)\_/$q->u($1)/seg;
+  local $counter = 0;
+  local %protected = ();
+  local %dirty = ();
+  my $result;
+  $text = NewSimpleRulesApplyDirtyInlineRules($text, $locallinks);
+  if ($text =~ /^${DIRT}[0-9]+${DIRT}$/) { # shortcut
+    $result = $text;
+  } else {
+    $text =~ s/[ \t]+\n/\n/g;  # no trailing whitespace to worry about
+    $text =~ s/\n$//g;
+    $text =~ s/^\n//g;
+    my @paragraphs = split(/\n\n+/, $text);
+    foreach my $block (@paragraphs) {
+      if ($block =~ /^(.+?)\n(--+)$/ and length($1) == length($2)) {
+	$block = SimpleRulesProtect($q->h3($1));
+      } elsif ($block =~ /^(.+?)\n(==+)$/ and length($1) == length($2)) {
+	$block = SimpleRulesProtect($q->h2($1));
+      } elsif ($block =~ /^\* (.*)/s) {
+	$block = SimpleRulesProtect($q->ul(join('', # avoid extra space in CGI.pm code
+						map{$q->li(NewSimpleRulesApplyInlineRules($_))}
+						split(/\n\* +/, $1))));
+      } elsif ($block =~ /^[0-9]\. (.*)/s) {
+	$block = SimpleRulesProtect($q->ol(join('', # avoid extra space in CGI.pm code
+						map{$q->li(NewSimpleRulesApplyInlineRules($_))}
+						split(/\n[0-9]\. */, $1))));
+      } else {
+	$block = SimpleRulesProtect('<p>') . $block . SimpleRulesProtect('</p>');
+      }
       ($block =~ s/(\&lt;journal(\s+(\d*))?(\s+"(.*)")?(\s+(reverse))?\&gt;)/
        my ($str, $num, $regexp, $reverse) = ($1, $3, $5, $7);
-       push (@dirty, $str);
-       push (@escapes, sub { PrintJournal($num, $regexp, $reverse)} );
-       $FS;/ego);
+       SimpleRulesDirty($str, sub { PrintJournal($num, $regexp, $reverse)});/ego);
+      $result .= NewSimpleRulesApplyInlineRules($block);
     }
-    if ($locallinks) {
-      ($block =~ s/(\[\[$FreeLinkPattern\]\])/
-       push (@dirty, $1);
-       push (@escapes, GetPageOrEditLink($2,0,0,1));
-       $FS;/ego);
-    }
-    # add more rules here
-    $html .= $block;
   }
+  return SimpleRulesMungeResult($result);
+}
+
+sub NewSimpleRulesApplyInlineRules {
+  my ($block, $locallinks) = @_;
+  $block = NewSimpleRulesApplyDirtyInlineRules($block, $locallinks);
+  $block =~ s/$UrlPattern/SimpleRulesProtect($q->a({-href=>$1}, $1))/seg;
+  $block =~ s/~(\S+)~/SimpleRulesProtect($q->em($1))/eg;
+  $block =~ s/\*\*(.+?)\*\*/SimpleRulesProtect($q->strong($1))/seg;
+  $block =~ s/\/\/(.+?)\/\//SimpleRulesProtect($q->em($1))/seg;
+  $block =~ s/\_\_(.+?)\_\_/SimpleRulesProtect($q->u($1))/seg;
+  $block =~ s/\*(.+?)\*/SimpleRulesProtect($q->b($1))/seg;
+  $block =~ s/\/(.+?)\//SimpleRulesProtect($q->i($1))/seg;
+  $block =~ s/\_(.+?)\_/SimpleRulesProtect($q->u($1))/seg;
+  return $block;
+}
+
+sub NewSimpleRulesApplyDirtyInlineRules {
+  my ($block, $locallinks) = @_;
+  if ($locallinks) {
+    ($block =~ s/(\[\[$FreeLinkPattern\]\])/
+     my ($str, $link) = ($1, $2);
+     SimpleRulesDirty($str, GetPageOrEditLink($link,0,0,1))/ego);
+  }
+  return $block;
+}
+
+sub SimpleRulesProtect {
+  my $html = shift;
+  $counter++;
+  $protected{$counter} = $html;
+  return $PROT . $counter . $PROT;
+}
+
+sub SimpleRulesDirty {
+  my ($str, $html) = @_;
+  $counter++;
+  $dirty{$counter} = $str;
+  $protected{$counter} = $html;
+  return $DIRT . $counter . $DIRT;
+}
+
+sub SimpleRulesMungeResult {
+  my $raw = shift;
+  $raw = SimpleRulesUnprotect($raw);
   # now do the dirty and clean block stuff
   my @blocks;
   my @flags;
-  foreach $_ (split(/$FS/, $html)) {
-    print $_;
-    push (@blocks, $_);
-    push (@flags, 0);
-    if (@dirty) {
-      push (@blocks, shift(@dirty));
-      push (@flags, 1);
-      my $escape = shift(@escapes);
-      if (ref($escape) eq 'CODE') {
-	&$escape;
-      } else {
-	print $escape;
+  my $count = 0;
+  my $html;
+  foreach $item (split(/$DIRT([0-9]+)$DIRT/, $raw)) {
+    if ($count % 2) { # deal with reference
+      if ($dirty{$item}) { # dirty block
+	if ($html) {
+	  push (@blocks, $html); # store what we have as a clean block
+	  push (@flags, 0);
+	  print $html; # flush what we have
+	  $html = '';
+	}
+	push (@blocks, $dirty{$item}); # store the raw fragment as dirty block
+	push (@flags, 1);
+	if (ref($protected{$item}) eq 'CODE') { # print stored html or execute code
+	  &{$protected{$item}};
+	} else {
+	  print $protected{$item};
+	}
+      } else { # clean reference
+	$html .= $protected{$item};
       }
+    } else { # deal with normal text
+      $html .= $item;
     }
+    $count++;
+  }
+  if ($html) { # deal last bit of unprinted normal text
+    print $html;
+    push (@blocks, $html); # store what we have as a clean block
+    push (@flags, 0);
   }
   return (join($FS, @blocks), join($FS, @flags));
+}
+
+sub SimpleRulesUnprotect {
+  my $raw = shift;
+  $raw =~ s/$PROT([0-9]+)$PROT/$protected{$1}/ge
+    while $raw =~ /$PROT([0-9]+)$PROT/; # find recursive replacements!
+  return $raw;
 }
 
 __DATA__
@@ -110,10 +167,8 @@ We also have numbered lists:
 2. But we ~extend~ it.
 3. **Really we do!**
 
-The default are non-strict setext rules.
-Therefore we also allow
 //multi-word emphasis// and
-__multi-word underlineing__, and we also
+__multi-word underlining__, and we also
 allow the similar /single/ _word_ *rules*.
 
 I think that's all the rules we [[implemented]].
