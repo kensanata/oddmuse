@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.372 2004/04/06 18:26:15 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.373 2004/04/09 19:25:53 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -970,16 +970,16 @@ sub GetPageLink { # shortcut
 }
 
 sub GetEditLink { # shortcut
-  my ($id, $name, $upload) = @_;
+  my ($id, $name, $upload, $accesskey) = @_;
   $id = FreeToNormal($id);
   $name =~ s/_/ /g;
   my $action = 'action=edit;id=' . UrlEncode($id);
   $action .= ';upload=1' if $upload;
-  return ScriptLink($action, $name, 'edit', undef, T('Click to create this page'));
+  return ScriptLink($action, $name, 'edit', undef, T('Click to create this page'), $accesskey);
 }
 
 sub ScriptLink {
-  my ($action, $text, $class, $name, $title) = @_;
+  my ($action, $text, $class, $name, $title, $accesskey) = @_;
   my %params;
   if ($UsePathInfo and !$Monolithic and $action !~ /=/) {
     $params{-href} = $ScriptName . '/' . $action;
@@ -991,6 +991,7 @@ sub ScriptLink {
   $params{'-class'} = $class  if $class;
   $params{'-name'} = UrlEncode($name)  if $name;
   $params{'-title'} = $title  if $title;
+  $params{'-accesskey'} = $accesskey  if $accesskey;
   return $q->a(\%params, $text);
 }
 
@@ -2094,7 +2095,7 @@ sub GetFooterLinks {
 	$revisions .= GetOldPageLink('edit', $id, $rev,
 				     Ts('Edit revision %s of this page', $rev));
       } else { # showing current revision
-	$revisions .= GetEditLink($id, T('Edit text of this page'));
+	$revisions .= GetEditLink($id, T('Edit text of this page'), undef, T('e'));
       }
     } else { # no permission or generated page
       $revisions .= ScriptLink('action=password', T('This page is read-only'));
