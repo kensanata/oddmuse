@@ -2,7 +2,7 @@
 # Make sure the CVS keywords for the sed command on the next line are not expanded.
 
 VERSION=oddmuse-$(shell sed -n -e 's/^.*\$$Id: wiki\.pl,v \([0-9.]*\).*$$/\1/p' wiki.pl)
-TRANSLATIONS=$(wildcard [a-z]*-utf8.pl$)
+TRANSLATIONS=$(wildcard translations/[a-z]*-utf8.pl$)
 MODULES=$(wildcard modules/*.pl)
 
 dist: $(VERSION).tar.gz
@@ -42,9 +42,9 @@ upload-translations: always
 	done
 
 %-utf8.pl: always
-	wget -q http://www.oddmuse.org/cgi-bin/oddmuse/raw/$@ -O $@.wiki
-	grep '^\(#\|\$$\)' $@ > new-$@
-	perl oddtrans -l $@ $@.wiki wiki.pl $(MODULES) >> new-$@ && mv new-$@ $@
+	f=`basename $@` && wget -q http://www.oddmuse.org/cgi-bin/oddmuse/raw/$$f -O $@.wiki
+	grep '^\(#\|\$$\)' $@.wiki > $@-new
+	perl oddtrans -l $@ -l $@.wiki wiki.pl $(MODULES) >> $@-new && mv $@-new $@
 
 .PHONY: always
 
