@@ -1,3 +1,8 @@
+2003-08-21  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ApplyRules): Extend journal rule to allow reverse parameter.
+	(PrintJournal): New parameter to reverse journals.
+
 2003-08-19  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetReferers): Don't quote HTML in href to avoid having
