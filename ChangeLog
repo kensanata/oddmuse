@@ -1,3 +1,9 @@
+2004-02-20  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (Init): Only load modules and config file if they
+	haven't been loaded already, so that sub redefinitions don't cause
+	havoc in a mod_perl environment.
+
 2004-02-11  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (@KnownLocks): New variable.
