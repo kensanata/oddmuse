@@ -20,38 +20,64 @@
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
 use LWP::UserAgent;
-use encoding 'utf8';
-use POSIX;
 
+my $db = 'localnames.db';
+my $pwd = '5ga55b6b4aq00x192w23efrvhtg';
 my $q = new CGI;
 my $url = $q->param('url');
+my $name = $q->param('name');
 
-if (not $url) {
+if ($url and $q->param('pwd') eq $pwd) {
+  redefine();
+} elsif ($name) {
+  resolve();
+} elsif ($q->param('debug')) {
+  debug();
+} else {
+  html();
+}
+
+sub html {
   print $q->header(),
     $q->start_html('LocalNames Server'),
     $q->h1('LocalNames Server'),
     $q->p('Reads a definition of', $q->a({-href=>'http://ln.taoriver.net/about.html'}, 'local names'),
-	  'from an URL and returns a list of names, one per line.  Use the resulting URL for your NearMap.'),
-    $q->p(q{$Id: localnames-server.pl,v 1.2 2005/01/09 22:49:03 as Exp $}),
+	  'from an URL and saves it.  At the same time it also offers to redirect you to the matching URL,',
+	  'if you query it for a name.'),
+    $q->p(q{$Id: localnames-server.pl,v 1.3 2005/01/09 23:17:07 as Exp $}),
     $q->start_form(-method=>'GET'),
-    $q->p('LocalNames Definition  URL: ',
-	  $q->textfield('url', '', 70)),
+    $q->p('Reload LocalNames from definition at URL:',
+	  $q->textfield('url', '', 70),
+	  'using the following password:',
+	  $q->textfield('pwd', '', 70)),
+    $q->p('Query existing database for the following name: ',
+	  $q->textfield('name', '', 70)),
     $q->p($q->submit()),
     $q->end_form(),
     $q->end_html();
   exit;
 }
-
-print $q->header(-type=>'text/plain; charset=UTF-8');
-print LocalNamesParseDefinition($url);
+use warnings ;
+use strict ;
+use DB_File ;
 
 my %LocalNamesSeen = ();
 my %LocalNames = ();
+
+sub redefine {
+  print $q->header(-type=>'text/plain; charset=UTF-8');
+  unlink $db;
+  tie %LocalNames, "DB_File", $db, O_RDWR|O_CREAT, 0666, $DB_HASH
+    or die "Cannot open file '$db': $!\n";
+  LocalNamesParseDefinition($url);
+  print "Done.\n";
+}
 
 sub LocalNamesParseDefinition {
   my $url = shift;
   if (not $LocalNamesSeen{$url}) {
     $LocalNamesSeen{$url} = 1;
+    print "Reading $url\n";
     my $ua = new LWP::UserAgent;
     my $response = $ua->get($url);
     die $response->status_line unless $response->is_success;
@@ -92,4 +118,28 @@ sub FreeToNormal { # trim all spaces and convert them to underlines
     $id =~ s/_$//;
   }
   return $id;
+}
+
+sub resolve {
+  tie %LocalNames, "DB_File", $db, O_RDWR|O_CREAT, 0666, $DB_HASH
+    or die "Cannot open file '$db': $!\n";
+  $name = FreeToNormal($name);
+  my $target = $LocalNames{$name};
+  if ($target) {
+    print $q->redirect($target);
+  } else {
+    print $q->header(-status=>404),
+      $q->start_html('Not Found'),
+      $q->h2('Not Found'),
+      $q->p("The name '$name' was not found on this server."),
+      $q->end_html();
+  }
+}
+
+sub debug {
+  tie %LocalNames, "DB_File", $db, O_RDWR|O_CREAT, 0666, $DB_HASH
+    or die "Cannot open file '$db': $!\n";
+  foreach (keys %LocalNames) {
+    print $_, "\n";
+  }
 }
