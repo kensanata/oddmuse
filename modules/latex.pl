@@ -16,7 +16,7 @@
 #    Free Software Foundation, Inc.
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
-
+#
 # External programs needed
 # LaTeX   - http://www.latex-project.org
 # TeX     - http://www.tug.org/teTeX/
@@ -24,6 +24,12 @@
 # And one of : 
 # dvipng  - http://sourceforge.net/projects/dvipng/
 # convert - http://www.imagemagick.org/
+#
+# CSS Styles:
+# span.eqCount 
+# img.LaTeX
+# img.InlineMath
+# img.DisplayMath
 
 use vars qw($LatexDir $LatexLinkDir $LatexExtendPath $LatexSingleDollars);
 
@@ -60,6 +66,8 @@ $allowPlainLaTeX = 0;
 $LatexDir    = "$DataDir/latex";
 $LatexLinkDir= "/wiki/latex";
 
+# Text used when referencing equations with EQ(equationLabel)
+my $eqAbbrev = "Eq. ";
 
 # You also need a template stored as $DataDir/template.latex.  The
 # template must contain the string <math> where the LaTeX code is
@@ -67,8 +75,11 @@ $LatexLinkDir= "/wiki/latex";
 my $LatexDefaultTemplateName = "$LatexDir/template.latex";
 
 
+$ModulesDescription .= '<p>$Id: latex.pl,v 1.13 2004/10/04 21:27:14 tolchz Exp $</p>';
 
-$ModulesDescription .= '<p>$Id: latex.pl,v 1.12 2004/10/04 15:25:12 tolchz Exp $</p>';
+# Internal Equation counting and referencing variables
+my $eqCounter = 0;
+my %eqHash;
 
 my $LatexDefaultTemplate = << 'EOT';
 \documentclass[12pt]{article}
@@ -81,21 +92,35 @@ EOT
 push(@MyRules, \&LatexRule);
 
 sub LatexRule {
-  if (m/\G\\\[((.*\n)*?)\\\]/gc) {
-    return &MakeLaTeX("\$\$ $1 \$\$", "display math");
+  if (m/\G\\\[(\(.*?\))?((.*\n)*?.*?)\\\]/gc) {
+    my $label = $1;
+    my $latex = $2;
+    $label =~ s#\(?\)?##g;# Remove the ()'s from the label and convert case
+    $label =~ tr/A-Z/a-z/; 
+    $eqCounter++;
+    $eqHash{$label} = $eqCounter;
+    return &MakeLaTeX("\\begin{displaymath} $latex \\end{displaymath}", "display math",$label);
   } elsif (m/\G\$\$((.*\n)*?.*?)\$\$/gc) {
     return &MakeLaTeX("\$\$ $1 \$\$", $LatexSingleDollars ? "display math" : "inline math");
   } elsif ($LatexSingleDollars and m/\G\$((.*\n)*?.*?)\$/gc) {
     return &MakeLaTeX("\$ $1 \$", "inline math");
   } elsif ($allowPlainLaTeX && m/\G\$\[((.*\n)*?.*?)\]\$/gc) { #Pick up plain LaTeX commands
     return &MakeLaTeX(" $1 ", "LaTeX");   
+  } elsif (m/\GEQ\((.*?)\)/gc) { # Handle references to equations
+    my $label = $1;
+    $label =~ tr/A-Z/a-z/; 
+    if ($eqHash{$label}) {
+	return $eqAbbrev . "<a href=\"#$label\">". $eqHash{$label} . "</a>";
+    }
+    else {
+	return "[ Equation $label not found ]";
+    }
   }
-
   return undef;
 }
 
 sub MakeLaTeX {
-  my ($latex, $type) = @_;
+  my ($latex, $type, $label) = @_;
   $ENV{PATH} .= $LatexExtendPath if $LatexExtendPath and $ENV{PATH} !~ /$LatexExtendPath/;
 
   # Select which binary to use for conversion of dvi to images
@@ -128,71 +153,67 @@ sub MakeLaTeX {
 
 
   # check cache
-  if (-f "$LatexDir/$hash.png"
-      and not -z "$LatexDir/$hash.png") {
+  if (not -f "$LatexDir/$hash.png" or -z "$LatexDir/$hash.png") { #If file doesn't exist or is zero bytes
+      # Then create the image
+
+      # read template and replace <math>
+      mkdir($LatexDir) unless -d $LatexDir;
+      if (not -f $LatexDefaultTemplateName) {
+	  open (F, "> $LatexDefaultTemplateName") or return '[Unable to write template]';
+	  print F $LatexDefaultTemplate;
+	  close (F);
+      }
+      my $template = ReadFileOrDie($LatexDefaultTemplateName);
+      $template =~ s/<math>/$latex/ig;
+      #setup rendering directory
+      my $dir = "$LatexDir/$hash";
+      if (-d $dir) {
+	  unlink (glob('$dir/*'));
+      } else {
+	  mkdir($dir) or return "[Unable to create $dir]";
+      }
+      chdir ($dir) or return "[Unable to switch to $dir]";
+      WriteStringToFile ("srender.tex", $template);
+      qx(latex srender.tex);
+      return "[Illegal LaTeX markup: <pre>$latex</pre>]" if $?;
+      
+      my $output;
+      
+      # Use specified binary to convert dvi to png
+      if ($useConvert) { 
+	  $output = qx($convertPath -antialias -crop 0x0 -density 120x120 -transparent white srender.dvi srender1.png );
+	  return "[convert error $? ($output)]" if $?;
+      } else {
+	  $output = qx($dvipngPath -T tight -bg Transparent srender.dvi);
+	  return "[dvipng error $? ($output)]" if $?;
+      }
+      
+      my $result;
+      if (-f 'srender1.png' and not -z 'srender1.png') {
+	  my $png = ReadFileOrDie("srender1.png");
+	  WriteStringToFile ("$LatexDir/$hash.png", $png);
+      } else {	  $result = "[Error retrieving image for $latex]"; }
+      
+								}
+    # Finally print the html for the image
     if ($type eq "inline math") { # inline math
       return ("<img class='InlineMath' "
               ."src='$LatexLinkDir/$hash.png' alt='$latex'\/>");
     } elsif ($type eq "display math") { # display math
-      return ("<center><img class='DisplayMath' "
-             ."src='$LatexLinkDir/$hash.png' alt='$latex'><\/center>");
+	my $ret;
+	if ($label) { $ret = "<a name='$label'>"; }
+	$ret .= "<center><img class='DisplayMath' "
+             ."src='$LatexLinkDir/$hash.png' alt='$latex'> <span class=\'eqCount\'>($eqCounter)</span><\/center>";
+	return($ret);
     } else {  # latex format
       return ("<img class='LaTeX' "
              ."src='$LatexLinkDir/$hash.png' alt='$latex' \/>");
-    }
-  }
+	   }								
 
-  # read template and replace <math>
-  mkdir($LatexDir) unless -d $LatexDir;
-  if (not -f $LatexDefaultTemplateName) {
-    open (F, "> $LatexDefaultTemplateName") or return '[Unable to write template]';
-    print F $LatexDefaultTemplate;
-    close (F);
-  }
-  my $template = ReadFileOrDie($LatexDefaultTemplateName);
-  $template =~ s/<math>/$latex/ig;
-  #setup rendering directory
-  my $dir = "$LatexDir/$hash";
-  if (-d $dir) {
-    unlink (glob('$dir/*'));
-  } else {
-    mkdir($dir) or return "[Unable to create $dir]";
-  }
-  chdir ($dir) or return "[Unable to switch to $dir]";
-  WriteStringToFile ("srender.tex", $template);
-  qx(latex srender.tex);
-  return "[Illegal LaTeX markup: <pre>$latex</pre>]" if $?;
-
-  my $output;
-  
-  # Use specified binary to convert dvi to png
-  if ($useConvert) { 
-      $output = qx($convertPath -antialias -crop 0x0 -density 120x120 -transparent white srender.dvi srender1.png );
-      return "[convert error $? ($output)]" if $?;
-  } else {
-      $output = qx($dvipngPath -T tight -bg Transparent srender.dvi);
-      return "[dvipng error $? ($output)]" if $?;
-  }
-
-  my $result;
-  if (-f 'srender1.png' and not -z 'srender1.png') {
-    my $png = ReadFileOrDie("srender1.png");
-    WriteStringToFile ("$LatexDir/$hash.png", $png);
-    if ($type eq "inline math") {
-      $result = "<img class='InlineMath' "
-                ."src='$LatexLinkDir/$hash.png' alt='$latex'\/>";
-    } elsif ($type eq "display math") {
-      $result = "<center><img class='DisplayMath'"
-               ."src='$LatexLinkDir/$hash.png' alt='$latex'><\/center>";    
-    } else { # latex format
-      return ("<img class='LaTeX' "
-                   ."src='$LatexLinkDir/$hash.png' alt='$latex' \/>");	   
-    }
-  } else {
-    $result = "[Error retrieving image for $latex]";
-  }
   unlink (glob('*'));
   chdir ($LatexDir);
   rmdir ($dir);
   return $result;
 }
+
+
