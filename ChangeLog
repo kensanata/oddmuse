@@ -1,3 +1,9 @@
+2003-04-12  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($HttpCharset): Default is 'ISO-8859-1' instead of empty.
+	(ApplyRules): Include and rss pseudo tags don't eat all following whitespace.
+	(RSS): Error message is on a paragraph of its own.
+
 2003-04-11  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetRcText): Added space by Pierre Gaston <pgas@intracom.gr>.
