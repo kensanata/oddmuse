@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.7 2004/12/25 15:52:59 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.8 2004/12/25 16:23:16 as Exp $</p>';
 
 use vars qw($SearchFreeTextNewForm);
 
@@ -37,7 +37,7 @@ sub SearchFreeTextIndex {
   $db->clear_index();
   foreach my $name (AllPagesList()) {
     OpenPage($name);
-    next if ($Page{text} =~ /^#FILE / and $string !~ /^\^#FILE/); # skip files unless requested
+    next if ($Page{text} =~ /^#FILE /); # skip files
     print $name, $q->br();
     $db->index_document($name, $OpenPageName . ' ' . $Page{text}); # don't forget to add the pagename!
   }
@@ -47,64 +47,34 @@ sub SearchFreeTextIndex {
   PrintFooter();
 }
 
-my $SearchFreeTextNum = 10; # results per page
-my $SearchFreeTextMax = 10; # max. number of pages
-
 sub SearchFreeText {
-  my $term = GetParam('term', '');
+  local *SearchTitleAndBody = *SearchFreeTextTitleAndBody;
+  return DoSearch(GetParam('term', ''));
+}
+
+sub SearchFreeTextTitleAndBody {
+  my ($term, $func, @args) = @_;
   ReportError(T('Search term missing.'), '400 BAD REQUEST') unless $term;
   require Search::FreeText;
   my $file = $DataDir . '/word.db';
   my $page = GetParam('page', 1);
-  my $limit = GetParam('limit', $SearchFreeTextNum);
   my $context = GetParam('context', 1);
   my $db = new Search::FreeText(-db => ['DB_File', $file]);
   $db->open_index();
-  print GetHeader('', QuoteHtml(Ts('Searching for %s', $term)), ''),
-    $q->start_div({-class=>'content search'});
-  my @result = $db->search($term, $limit * $SearchFreeTextMax);
-  if (@result) {
-    print '<p>' unless $context;
-    my $max = $page * $limit - 1;
-    $max = @result - 1 if @result -1 < $max;
-    my $count = ($page - 1) * $limit;
-    foreach (@result[($page - 1) * $limit  .. $max]) {
-      my ($id, $score) = ($_->[0], $_->[1]);
-      my $title = $id;
-      $title =~ s/_/ /g;
-      if ($context) {
-	PrintSearchResult($id, join('|', split(' ', $term)));
-      } else {
-	PrintPage($id);
-      }
-    }
-    print '</p>' unless $context;
-    my @links = ();
-    my $i = 0;
-    my $prev = '';
-    my $next = '';
-    while($i++ * $limit < @result) {
-      if ($i == $page) {
-	push(@links, $i);
-      } else {
-	my $action = 'action=search;term=' . UrlEncode($term);
-	$action .= ';page=' . $i if $i != 1;
-	$action .= ';context=0' unless $context;
-	$action .= ';limit=' . $limit if $limit != $SearchFreeTextNum;
-	push(@links, ScriptLink($action, $i));
-	$prev = $action if ($i == $page - 1);
-	$next = $action if ($i == $page + 1);
-      }
-    }
-    unshift(@links, ScriptLink($prev, T('Previous'))) if $prev;
-    push(@links, ScriptLink($next, T('Next'))) if $next;
-    print $q->p(T('Result pages: '), @links);
-  } else {
-    print $q->p(T('No results found.'));
+  my @found = $db->search($term);
+  foreach (@found) {
+    my ($id, $score) = ($_->[0], $_->[1]);
+    &$func($id, @args) if $func;
   }
-  print $q->end_div();
-  PrintFooter();
   $db->close_index();
+  return @found;
+}
+
+*SearchFreeTextOldHighlightRegex = *HighlightRegex;
+*HighlightRegex = *SearchFreeTextNewHighlightRegex;
+
+sub SearchFreeTextNewHighlightRegex {
+  return join('|', split(/ /, shift));
 }
 
 *SearchFreeTextOldForm = *GetSearchForm;
