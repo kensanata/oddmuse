@@ -1,8 +1,8 @@
-use vars qr($PageTypesName);
+use vars qw($PageTypesName);
 
 # You need to define the available types on the following page.
 
-my $PageTypesName = 'PageTypes';
+$PageTypesName = 'PageTypes';
 
 # A page type has to appear as a bullet list item on the page.
 #
@@ -16,7 +16,7 @@ my $PageTypesName = 'PageTypes';
 # have page clustering enabled (see the manual), then the page type
 # will automatically act as a cluster.
 
-$ModulesDescription .= '<p>$Id: page-type.pl,v 1.3 2004/01/27 00:30:54 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: page-type.pl,v 1.4 2004/01/27 00:32:46 as Exp $</p>';
 
 *OldDoPost = *DoPost;
 *DoPost = *NewDoPost;
