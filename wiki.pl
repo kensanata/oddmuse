@@ -40,16 +40,16 @@ use vars qw(@RcDays @HtmlTags $TempDir $LockDir $DataDir $KeepDir
 $PageDir $RefererDir $RcFile $RcOldFile $IndexFile $NoEditFile
 $BannedHosts $ConfigFile $FullUrl $SiteName $HomePage $LogoUrl
 $RcDefault $IndentLimit $RecentTop $RecentLink $EditAllowed $UseDiff
-$UseSubpage $RawHtml $KeepDays $HtmlTags $HtmlLinks $KeepMajor
-$KeepAuthor $FreeUpper $EmbedWiki $BracketText $UseConfig $UseLookup
-$AdminPass $EditPass $NetworkFile $BracketWiki $FreeLinks $WikiLinks
-$FreeLinkPattern $RCName $RunCGI $ShowEdits $LinkPattern
-$InterLinkPattern $InterSitePattern $UrlProtocols $UrlPattern
-$ImageExtensions $RFCPattern $ISBNPattern $FS $FS0 $FS1 $FS2 $FS3
-$CookieName $SiteBase $StyleSheet $NotFoundPg $FooterNote $EditNote
-$MaxPost $NewText $HttpCharset $UserGotoBar $VisitorTime $VisitorFile
-$Visitors %Smilies %SpecialDays $InterWikiMoniker $SiteDescription
-$RssImageUrl $RssPublisher $RssContributor $RssRights $WikiDescription
+$RawHtml $KeepDays $HtmlTags $HtmlLinks $KeepMajor $KeepAuthor
+$EmbedWiki $BracketText $UseConfig $UseLookup $AdminPass $EditPass
+$NetworkFile $BracketWiki $FreeLinks $WikiLinks $FreeLinkPattern
+$RCName $RunCGI $ShowEdits $LinkPattern $InterLinkPattern
+$InterSitePattern $UrlProtocols $UrlPattern $ImageExtensions
+$RFCPattern $ISBNPattern $FS $FS0 $FS1 $FS2 $FS3 $CookieName $SiteBase
+$StyleSheet $NotFoundPg $FooterNote $EditNote $MaxPost $NewText
+$HttpCharset $UserGotoBar $VisitorTime $VisitorFile $Visitors %Smilies
+%SpecialDays $InterWikiMoniker $SiteDescription $RssImageUrl
+$RssPublisher $RssContributor $RssRights $WikiDescription
 $BannedCanRead $SurgeProtection $SurgeProtectionViews
 $SurgeProtectionTime $DeletedPage %Languages $LanguageLimit
 $ValidatorLink $RefererTracking $RefererTimeLimit $RefererLimit
@@ -60,9 +60,9 @@ $StyleSheetPage @UserGotoBarPages $ConfigPage $ScriptName);
 # Other global variables:
 use vars qw(%Page %Section %Text %InterSite %KeptRevisions %IndexHash
 %Translate %OldCookie %NewCookie $InterSiteInit $FootnoteNumber
-$MainPage $OpenPageName @KeptList @IndexList $IndexInit $Message $q
-$Now %RecentVisitors @HtmlStack %Referers $Monolithic
-$ReplaceForm %PermanentAnchors %PagePermanentAnchors);
+$OpenPageName @KeptList @IndexList $IndexInit $Message $q $Now
+%RecentVisitors @HtmlStack %Referers $Monolithic $ReplaceForm
+%PermanentAnchors %PagePermanentAnchors);
 
 # == Configuration ==
 
@@ -86,7 +86,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.85 2003/06/08 00:14:27 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.86 2003/06/09 21:55:16 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -114,11 +114,9 @@ $BannedCanRead = 1; # 1 = banned cannot edit, 0 = banned cannot read
 # LinkPattern
 $WikiLinks   = 1;   # 1 = LinkPattern is a link
 $FreeLinks   = 1;   # 1 = [[some text]] is a link
-$FreeUpper   = 0;   # 1 = forces free links to start with upper case
 $BracketText = 1;   # 1 = [URL desc] uses a description for the URL
 $BracketWiki = 0;   # 1 = [WikiLink desc] uses a desc for the local link
 $HtmlLinks   = 0;   # 1 = <a href="foo">desc</a> is a link
-$UseSubpage  = 0;   # 1 = PageName/SubPage is a link
 $NetworkFile = 1;   # 1 = file: is a valid protocol for URLs
 $InterMap    = 'InterMap'; # name of the intermap page (change space to _)
 $PermanentAnchors = 1;   # 1 = [::some text] creates a permanent anchor [##some text] link to the anchor
@@ -263,7 +261,6 @@ sub InitRequest { # Init global session variables for mod_perl!
   $IndexInit = 0;                  # Must be reset for each request
   $InterSiteInit = 0;
   %InterSite = ();
-  $MainPage = '.';       # For subpages only, the name of the top-level page
   $OpenPageName = '';    # Currently open page
   CreateDir($DataDir);  # Create directory if it doesn't exist
   ReportError(Ts('Could not create %s', $DataDir) . ": $!") unless -d $DataDir;
@@ -307,24 +304,16 @@ sub GetParam {
 # == Markup Code ==
 
 sub InitLinkPatterns {
-  my ($UpperLetter, $LowerLetter, $AnyLetter, $WikiWord, $SubPage, $QDelim);
+  my ($UpperLetter, $LowerLetter, $AnyLetter, $WikiWord, $QDelim);
   $QDelim = '(?:"")?';# Optional quote delimiter (removed from the output)
   $WikiWord = '[A-Z]+[a-z\x80-\xff]+[A-Z][A-Za-z\x80-\xff]*';
-  $SubPage = '[A-Z]+[a-z\x80-\xff]+[A-Za-z\x80-\xff]*';
   $LinkPattern = "($WikiWord)";
-  if ($UseSubpage) {
-    $LinkPattern = "((?:(?:$WikiWord)?\\/$SubPage)|$WikiWord)";
-  }
   $LinkPattern .= $QDelim;
   # Inter-site convention: sites must start with uppercase letter.
   # This avoids confusion with URLs.
   $InterSitePattern = '[A-Z]+[A-Za-z\x80-\xff]+';
   $InterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x80-\xff_=!?#$@~`%&*+\\/:;.,]+[-a-zA-Z0-9\x80-\xff_=#$@~`%&*+\\/])$QDelim";
-  $FreeLinkPattern = "([-,.()' _0-9A-Za-z\x80-\xff]+)";
-  if ($UseSubpage) {
-    $FreeLinkPattern = "((?:(?:[-,.()' _0-9A-Za-z\x80-\xff]+)?\\/)?[-,.()' _0-9A-Za-z\x80-\xff]+)";
-  }
-  $FreeLinkPattern .= $QDelim;
+  $FreeLinkPattern = "([-,.()' _0-9A-Za-z\x80-\xff]+)$QDelim";
   $UrlProtocols = 'http|https|ftp|afs|news|nntp|mid|cid|mailto|wais|'
                   . 'prospero|telnet|gopher';
   $UrlProtocols .= '|file'  if $NetworkFile;
@@ -782,8 +771,6 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
   my ($id, $text, $bracket, $free) = @_;
   $id =~ s/^\s+//;      # Trim extra spaces
   $id =~ s/\s+$//;
-  $id =~ s|\s*/\s*|/|;  # ...also before/after subpages
-  $id =~ s|^/|$MainPage/|;
   $id = FreeToNormal($id) if $free;
   AllPagesList() unless $IndexInit;
   my $exists = $IndexHash{$id};
@@ -824,7 +811,6 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
 sub GetPageLink { # shortcut
   my ($id, $name) = @_;
   $name = $id unless $name;
-  $id =~ s|^/|$MainPage/|;
   if ($FreeLinks) {
     $id = FreeToNormal($id);
     $name =~ s/_/ /g;
@@ -834,7 +820,6 @@ sub GetPageLink { # shortcut
 
 sub GetEditLink { # shortcut
   my ($id, $name) = @_;
-  $id =~ s|^/|$MainPage/|;
   if ($FreeLinks) {
     $id = FreeToNormal($id);
     $name =~ s/_/ /g;
@@ -1065,9 +1050,6 @@ sub BrowsePage {
   }
   # print header
   print GetHeader($id, QuoteHtml($id), $oldId);
-  # global variable for some markup rules
-  $MainPage = $id;
-  $MainPage =~ s|/.*||;  # Only the main page name (remove subpage)
   # print diff, if required
   my $showDiff = GetParam('diff', 0);
   if ($UseDiff && $showDiff) {
@@ -1560,7 +1542,6 @@ sub GetOldPageLink {
 sub GetSearchLink {
   my $id = shift;
   my $name = $id;
-  $id =~ s|.+/|/|;   # Subpage match: search for just /SubName
   if ($FreeLinks) {
     $name =~ s/_/ /g;  # Display with spaces
     $id =~ s/_/+/g;    # Search for url-escaped spaces
@@ -1847,13 +1828,7 @@ sub GetValidatorLink {
 
 sub GetGotoBar {
   my $id = shift;
-  my ($main, $bartext);
-  $bartext  = GetPageLink($HomePage);
-  if ($id =~ m|/|) {
-    $main = $id;
-    $main =~ s|/.*||;  # Only the main page name (remove subpage)
-    $bartext .= ' | ' . GetPageLink($main);
-  }
+  my  $bartext  = GetPageLink($HomePage);
   $bartext .= ' | ' . GetPageLink($RCName);
   $bartext .= ' | ' . GetRandomLink()  if GetParam('linkrandom', 0);
   $bartext .= ' | ' . join(' | ', map { ScriptLink($_, $_) } @UserGotoBarPages)
@@ -2409,24 +2384,8 @@ sub ValidId {
   if ($id =~ m| |) {
     return Ts('Page name may not contain space characters: %s', $id);
   }
-  if ($UseSubpage) {
-    if ($id =~ m|.*/.*/|) {
-      return Ts('Too many / characters in page %s', $id);
-    }
-    if ($id =~ /^\//) {
-      return Ts('Invalid Page %s (subpage without main page)', $id);
-    }
-    if ($id =~ /\/$/) {
-      return Ts('Invalid Page %s (missing subpage name)', $id);
-    }
-  }
   if ($FreeLinks) {
     $id =~ s/ /_/g;
-    if (!$UseSubpage) {
-      if ($id =~ /\//) {
-        return Ts('Invalid Page %s (/ not allowed)', $id);
-      }
-    }
     if (!($id =~ m|^$FreeLinkPattern$|)) {
       return Ts('Invalid Page %s', $id);
     }
@@ -2581,7 +2540,7 @@ sub CreatePageDir {
 }
 
 sub GenerateAllPagesList {
-  my (@pages, @dirs, $id, $dir, @pageFiles, @subpageFiles, $subId);
+  my (@pages, @dirs, $id, $dir, @pageFiles, $subId);
   @pages = ();
   # The following was inspired by the FastGlob code by Marc W. Mengel.
   # Thanks to Bob Showalter for pointing out the improvement.
@@ -2598,15 +2557,6 @@ sub GenerateAllPagesList {
       next  if (($id eq '.') || ($id eq '..'));
       if (substr($id, -3) eq '.db') {
 	push(@pages, substr($id, 0, -3));
-      } elsif (substr($id, -4) ne '.lck') {
-	opendir(PAGELIST, "$PageDir/$dir/$id");
-	@subpageFiles = readdir(PAGELIST);
-	closedir(PAGELIST);
-	foreach $subId (@subpageFiles) {
-	  if (substr($subId, -3) eq '.db') {
-	    push(@pages, "$id/" . substr($subId, 0, -3));
-	  }
-	}
       }
     }
   }
@@ -2690,16 +2640,6 @@ sub FreeToNormal {
     $id =~ s/__+/_/g;
     $id =~ s/^_//;
     $id =~ s/_$//;
-    if ($UseSubpage) {
-      $id =~ s|_/|/|g;
-      $id =~ s|/_|/|g;
-    }
-  }
-  if ($FreeUpper) {
-    # Note that letters after ' are *not* capitalized
-    if ($id =~ m|[-_.,\(\)/][a-z]|) {    # Quick check for non-canonical case
-      $id =~ s|([-_.,\(\)/])([a-z])|$1 . uc($2)|ge;
-    }
   }
   return $id;
 }
@@ -2815,8 +2755,6 @@ sub DoEdit {
       print $q->strong(T('NOTE: This preview shows the revision of the other author.'))
 	. $q->hr();
     }
-    $MainPage = $id;
-    $MainPage =~ s|/.*||;  # Only the main page name (remove subpage)
     PrintWikiToHTML($oldText, 'preview');
     print $q->hr(), $q->h2(T('Preview only, not yet saved')), '</div>';
   }
