@@ -16,28 +16,25 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: headers.pl,v 1.2 2004/10/16 16:18:30 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: headers.pl,v 1.3 2004/10/19 23:31:05 as Exp $</p>';
 
 push(@MyRules, \&HeadersRule);
 
 # The trickiest part is the first rule.  It finds titles like the following:
 #
 # foo
-# ===
+# ---
 #
-# It ignores the amount of whitespace after the title and the
-# underlining, and it allows underlining using ==== or ----.  The
-# underlining has to be exactly as wide as the title itself.  If it is
-# too long or too short, the entire thing is not a title.
+# This assumes that --- is not found at the beginning of a line.
+# Normally this is used as an M-dash in the middle of text with no
+# surrounding whitespace---like this.
 #
-# If the length does not match, pos is reset and zero is returned so
-# that the remaining rules will be tested instead.
+# Similarly, the horizontal rule will now require an empty preceding
+# line to work.
 
 sub HeadersRule {
   my $oldpos = pos;
-  if ($bol && ((m/\G((.+?)[ \t]*\n(-+|=+)[ \t]*\n)/gc
-		and (length($2) == length($3)))
-	       or ((pos = $oldpos) and 0))) {
+  if ($bol && (m/\G((.+?)[ \t]*\n(---+|===+)[ \t]*\n)/gc)) {
     if (substr($3,0,1) eq '=') {
       return CloseHtmlEnvironments() . "<h2>$2</h2>";
     } else {
@@ -48,4 +45,3 @@ sub HeadersRule {
   }
   return undef;
 }
-
