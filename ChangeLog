@@ -2,6 +2,9 @@
 
 	* wiki.pl ($ModulesDescription): New variable.
 	(InitVariables): Use it.
+	(@MyRules): New option.
+	(RunMyRules): New function.
+	(ApplyRules): Call it.
 
 2004-01-25  Alex Schroeder  <alex@gnu.org>
 
