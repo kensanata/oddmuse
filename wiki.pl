@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.44 2003/04/26 17:21:42 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.45 2003/04/26 17:25:23 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -3599,7 +3599,7 @@ sub DoMaintain {
 
 sub DoConvert {
   print &GetHeader('', T('Converting all files'), '');
-  if (!FS0 or $FS0 eq $FS) {
+  if (!$FS0 or $FS0 eq $FS) {
     print $q->p(T('No conversion required.'));
     return;
   }
@@ -3612,7 +3612,7 @@ sub DoConvert {
     &ConvertFile (&GetKeepFile($name));
     &ConvertFile (&GetRefererFile($name));
   }
-  foreach my $name ($RcFile $RcOldFile $VisitorFile) {
+  foreach my $name ($RcFile, $RcOldFile, $VisitorFile) {
     print $q->br();
     &ConvertFile ($name);
   }
@@ -3636,7 +3636,7 @@ sub ConvertFile {
 	print T('no conversion required');
       }
     } else {
-      print Ts('Can not open %s', $fileName) . ": $!";
+      print Ts('Can not open %s', $file) . ": $!";
     }
   } else {
     print T('has no file');
