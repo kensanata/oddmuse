@@ -24,17 +24,39 @@
 my ($passed, $failed) = (0, 0);
 my $resultfile = "/tmp/test-markup-result-$$";
 undef $/;
+$| = 1; # no output buffering
+
+# Create temporary data directory as expected by the script
+# and create a config file in this directory.
+
+mkdir '/tmp/oddmuse';
+open(F,'>/tmp/oddmuse/config');
+close(F);
+open(F,'>/tmp/oddmuse/intermap');
+print F "OddMuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n";
+close(F);
 
 ### SIMPLE MARKUP TESTS
 
 %Test = split('\n',<<EOT);
-ordinary text
-ordinary text
+Foo::Bar
+Foo::Bar
+OddMuse
+OddMuse<a href="test-wrapper.pl?action=edit&amp;id=OddMuse">?</a>
+OddMuse:
+OddMuse<a href="test-wrapper.pl?action=edit&amp;id=OddMuse">?</a>:
+OddMuse:test
+<a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test">OddMuse:test</a>
 WikiWord
 WikiWord<a href="test-wrapper.pl?action=edit&amp;id=WikiWord">?</a>
+WikiWord:
+WikiWord<a href="test-wrapper.pl?action=edit&amp;id=WikiWord">?</a>:
+ordinary text
+ordinary text
 EOT
 
 foreach my $input (keys %Test) {
+  print '.';
   open(F,"|perl test-wrapper.pl > $resultfile");
   print F $input;
   close F;
@@ -44,11 +66,12 @@ foreach my $input (keys %Test) {
   if ($output eq $Test{$input}) {
     $passed++;
   } else {
-    print $input, ' -> ', $output, ' instead of ', $Test{$input}, "\n";
     $failed++;
+    print "\nTest ", $failed + $passed, ': "', $input, '" -> "', $output, '" instead of "', $Test{$input}, "\"\n";
   }
 }
 
 ### END OF TESTS
 
+print "\n";
 print "$passed passed, $failed failed.\n";
