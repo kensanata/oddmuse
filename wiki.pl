@@ -286,7 +286,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.279 2003/12/27 19:34:08 uid68242 Exp $');
+    . $q->p('$Id: wiki.pl,v 1.280 2003/12/27 22:16:19 uid68242 Exp $');
 }
 
 sub InitCookie {
@@ -2790,7 +2790,7 @@ sub PrintPage {
       print $id, "\n";
     }
   } else {
-    my ($class, $exists, $title) = ResolveId($id);
+    my ($class, $exists, $title) = ResolveId($id); #FIXME
     my $text = $id;
     $text =~ s/_/ /g;
     print ScriptLink(UrlEncode($id), $text, $class, '', $title), $q->br();
@@ -2994,7 +2994,13 @@ sub PrintSearchResultEntry {
   } else {
     my $author = GetAuthorLink($entry{host}, $entry{username});
     $author = $entry{generator} unless $author;
-    my $result = $q->span({-class=>'result'}, GetPageLink($entry{title}));
+    my $id = $entry{title};
+    my ($class, $exists, $title) = ResolveId($id); #FIXME
+    my $text = $id;
+    $text =~ s/_/ /g;
+    $id = UrlEncode($id);
+    $id = 'action=browse;id=' . $id if $id =~ /\//;
+    my $result = $q->span({-class=>'result'}, ScriptLink($id, $text, $class, '', $title));
     my $description = $entry{description};
     $description = $q->br() . SearchHighlight($description, $regex) if $description;
     my $info = $entry{size};
