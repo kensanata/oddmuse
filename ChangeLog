@@ -1,3 +1,31 @@
+2003-09-30  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl: Moved use CGI and use CGI::Carp to the top.
+	(%Lock): New variable.
+	(InitVariables): Set it.
+	(ReportError): Exit upon an error.  Clean up locks behind us.
+	(RequestLockDir): Don't return after ReportError.  Add current
+	lock to %Locks.
+	(ReleaseLockDir): Remove lock from %Locks.
+	(DoBannedReading): Deleted.
+	(DoWikiRequest): Don't use DoBannedReading, don't return after
+	ReportError.
+	(DoRollback): Don't return after ReportError.
+	(DiffHtmlMarkWords): No highlighting if more than 50 words.  There
+	was a case where highlighting from 1 to 1739 caused a crash that
+	was not caught by fatalsToBrowser.
+	(UpdatePageVersion): Deleted.
+	(OpenPage): Don't use UpdatePageVersion, don't return after
+	ReportError.
+	(DoPost): Check for $UploadAllowed before accepting uploads.
+	(ExpireKeepFile, ValidIdOrDie): Don't return after ReportError.
+	(DoEdit, DoDownload, DoPost): Don't return after ReportError.
+	(DoPost): Catch empty string returned by MergeRevisions, eg. if
+	/usr/bin/merge is missing.
+	(WriteRcLog): Don't die; use ReportError instead.
+	(DoPageLock): Don't return after ValidIdOrDie.
+	(DoSurgeProtection): Don't exit after ReportError.
+
 2003-09-28  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoPost): Release lock on errors.
