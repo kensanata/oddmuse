@@ -18,8 +18,8 @@
 #    Boston, MA 02111-1307 USA
 
 $ConfigFile = "/home/alex/WWW/emacswiki/cgi-bin/test-texi-config";
-$outdir = "/home/alex/WWW/emacswiki/test";
-$outname = "emacswiki.texi";
+$outdir = "/home/alex/src/oddmuse";
+$outname = "emacswiki";
 $licensefile = "/home/alex/WWW/emacswiki/fdl.texi";
 
 ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = localtime(time);
