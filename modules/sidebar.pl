@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: sidebar.pl,v 1.3 2004/02/22 12:24:20 as Exp $</p>';
+$ModulesDescription .= '<p>sidebar.pl (proto)</p>';
 
 use vars qw($SidebarName);
 
@@ -27,6 +27,11 @@ $SidebarName = 'SideBar';
 
 *OldSideBarGetHeader = *GetHeader;
 *GetHeader = *NewSideBarGetHeader;
+
+$DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /div\.sidebar/; # mod_perl?
+div.sidebar { position:absolute; right:0; width:20ex; top:0; }
+body { margin-right:22ex; border-right:1px solid #999; }
+EOT
 
 # this assumes that *all* calls to GetHeader will print!
 sub NewSideBarGetHeader {
