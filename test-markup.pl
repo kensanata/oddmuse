@@ -222,6 +222,21 @@ EOT
 update_page('RSS', "<rss $uri/heise.rdf>");
 test_page(get_page('RSS'), @Test);
 
+# Note, cannot identify BayleShanks as author in the mb.rdf
+@Test = split('\n',<<'EOT');
+\[LionKimbro\]
+2003-10-24T22:49:33\+06:00
+\[RecentNearChanges\]
+http://www.usemod.com/cgi-bin/mb.pl\?LionKimbro
+2003-10-24T21:02:53\+00:00
+unified rc for here and meatball
+<span class="contributor"><span> \. \. \. \. \. </span>AlexSchroeder</span>
+http://www.emacswiki.org/cgi-bin/community\?action=browse;id=RecentNearChanges;revision=1
+EOT
+
+update_page('RSS', "<rss $uri/mb.rdf $uri/community.rdf>");
+test_page(get_page('RSS'), @Test);
+
 print '[redirection]';
 
 update_page('Miles_Davis', 'Featuring [[John Coltrane]]'); # plain link
