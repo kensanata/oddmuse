@@ -16,13 +16,32 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: anchors.pl,v 1.10 2004/08/06 21:47:57 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: anchors.pl,v 1.11 2004/08/06 22:19:16 as Exp $</p>';
 
 push(@MyRules, \&AnchorsRule);
 
 sub AnchorsRule {
   if (m/\G\[\[\#([-a-zA-Z0-9_]+)\]\]/gc) {
     return $q->a({-href=>"#$1", -class=>'local anchor'}, $1);
+  } elsif ($BracketWiki && m/\G(\[\[$FreeLinkPattern\#([-a-zA-Z0-9_]+)\|([^\]]+)\]\])/cog
+	   or m/\G(\[\[\[$FreeLinkPattern\#([-a-zA-Z0-9_]+)\]\]\])/cog
+	   or m/\G(\[\[$FreeLinkPattern\#([-a-zA-Z0-9_]+)\]\])/cog) {
+    Dirty($1);
+    my $bracket = (substr($1, 0, 3) eq '[[[');
+    my $id = $2 . '#' . $3;
+    my $text = $4;
+    my $class = 'local';
+    my $title = '';
+    $id = FreeToNormal($id);
+    if (!$text && $bracket) {
+      $text = BracketLink(++$FootnoteNumber); # s/_/ /g happens further down!
+      $class .= ' number';
+      $title = $id; # override title
+      $title =~ s/_/ /g if $free;
+    }
+    $text = $id unless $text;
+    $text =~ s/_/ /g;
+    return ScriptLink(UrlEncode($id), $text, $class, undef, $title);
   } elsif (m/\G\[\:([-a-zA-Z0-9_]+)\]/gc) {
     return $q->a({-name=>"$1", -class=>'anchor'});
   }
