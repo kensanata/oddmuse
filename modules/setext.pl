@@ -16,9 +16,27 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: setext.pl,v 1.3 2004/06/27 23:47:02 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: setext.pl,v 1.4 2004/06/28 23:38:11 as Exp $</p>';
 
-push(@MyRules, \&SeTextRule);
+# Since the title rule applies to plain words, it will interfere with
+# the 'Link All Words' extension.  Therefore, we don't push the new
+# rule onto the end of the list, we unshift it to the front of the
+# list!
+
+unshift(@MyRules, \&SeTextRule);
+
+# The trickiest part is the first rule.  It finds titles like the following:
+#
+# foo
+# ===
+#
+# It ignores the amount of whitespace after the title and the
+# underlining, and it allows underlining using ==== or ----.  The
+# underlining has to be exactly as wide as the title itself.  If it is
+# too long or too short, the entire thing is not a title.
+#
+# If the length does not match, pos is reset and zero is returned so
+# that the remaining rules will be tested instead.
 
 my $word = '([-A-Za-z\x80-\xff]+)';
 sub SeTextRule {
