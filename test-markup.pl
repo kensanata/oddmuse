@@ -30,6 +30,8 @@ undef $/;
 %Test = split('\n',<<EOT);
 ordinary text
 ordinary text
+WikiWord
+WikiWord<a href="test-wrapper.pl?action=edit&amp;id=WikiWord">?</a>
 EOT
 
 foreach my $input (keys %Test) {
