@@ -45,20 +45,20 @@ $RcDefault $IndentLimit $RecentTop $RecentLink $EditAllowed $UseDiff
 $RawHtml $KeepDays $HtmlTags $HtmlLinks $KeepMajor $EmbedWiki
 $BracketText $UseConfig $UseLookup $AdminPass $EditPass $NetworkFile
 $BracketWiki $FreeLinks $WikiLinks $FreeLinkPattern $RCName $RunCGI
-$ShowEdits $LinkPattern $InterLinkPattern $InterSitePattern
-$UrlProtocols $UrlPattern $ImageExtensions $RFCPattern $ISBNPattern
-$FS $CookieName $SiteBase $StyleSheet $NotFoundPg $FooterNote
-$EditNote $MaxPost $NewText $HttpCharset $UserGotoBar $VisitorTime
-$VisitorFile $Visitors %Smilies %SpecialDays $InterWikiMoniker
-$SiteDescription $RssImageUrl $RssPublisher $RssContributor $RssRights
-$BannedCanRead $SurgeProtection $SurgeProtectionViews
-$SurgeProtectionTime $DeletedPage %Languages $LanguageLimit
-$ValidatorLink $RefererTracking $RefererTimeLimit $RefererLimit
-$TopLinkBar $NotifyTracker $InterMap @LockOnCreation $RefererFilter
-$PermanentAnchorsFile $PermanentAnchors %CookieParameters
-$StyleSheetPage @UserGotoBarPages $ConfigPage $ScriptName
-$CommentsPrefix $NewComment $AllNetworkFiles $UsePathInfo
-$UploadAllowed @UploadTypes @MyMacros $LastUpdate $PageCluster);
+$ShowEdits $LinkPattern $InterLinkPattern $InterSitePattern $MaxPost
+$UrlPattern $UrlProtocols $ImageExtensions $RFCPattern $ISBNPattern
+$FS $CookieName $SiteBase $StyleSheet $NotFoundPg $FooterNote $NewText
+$EditNote $HttpCharset $UserGotoBar $VisitorTime $VisitorFile
+$Visitors %Smilies %SpecialDays $InterWikiMoniker $SiteDescription
+$RssImageUrl $RssPublisher $RssContributor $RssRights $BannedCanRead
+$SurgeProtection $SurgeProtectionViews $TopLinkBar $LanguageLimit
+$SurgeProtectionTime $DeletedPage %Languages $InterMap $ValidatorLink
+$RefererTracking $RefererTimeLimit $RefererLimit $NotifyTracker
+@LockOnCreation $RefererFilter $PermanentAnchorsFile $PermanentAnchors
+%CookieParameters $NewComment $StyleSheetPage @UserGotoBarPages
+$ConfigPage $ScriptName @MyMacros $CommentsPrefix $AllNetworkFiles
+$UsePathInfo $UploadAllowed @UploadTypes $LastUpdate $PageCluster
+%NotifyJournalPage);
 
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
@@ -156,6 +156,7 @@ $RssPublisher     = '';    # Name of RSS publisher
 $RssContributor   = '';    # List or description of the contributors
 $RssRights        = '';    # Copyright notice for RSS
 $NotifyTracker    = 0;     # 1 = send pings to weblogs.com for major changes
+%NotifyJournalPage = ();   # $NotifyJournalPage{'\d\d\d\d-\d\d-\d\d'}='Diary';
 
 # File uploads
 $UploadAllowed    = 0;     # 1 = yes, 0 = administrators only
@@ -275,7 +276,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.240 2003/11/05 22:29:38 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.241 2003/11/05 23:37:36 as Exp $');
 }
 
 sub InitCookie {
@@ -3150,6 +3151,12 @@ sub UpdateDiffs {
 
 sub PingTracker {
   my $id = shift;
+  foreach my $regexp (keys %NotifyJournalPage) {
+    if ($id =~ m/$regexp/) {
+      $id = $NotifyJournalPage{$regexp};
+      last;
+    }
+  }
   if ($q->url(-base=>1) !~ m|^http://localhost|) {
     my $url = UrlEncode($q->url . '/' . $id);
     my $name = UrlEncode($SiteName . ': ' . $id);
