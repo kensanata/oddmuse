@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.397 2004/05/18 20:25:40 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.398 2004/05/18 20:43:47 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1403,28 +1403,23 @@ sub RcHeader {
   } else {
     $action = "action=rc$action";
   }
-  my ($all, $edits, $days, $switches) = (GetParam('all', 0), GetParam('showedit', 0));
-  $days = ";days=" . GetParam('days', 0) if GetParam('days', $RcDefault) != $RcDefault;
-  if ($all and $edits) {
-    $switches = ScriptLink("$action$days;showedit=1", T('List latest change per page only'))
-      . ' | ' . ScriptLink("$action$days;all=1", T('List only major changes'));
-    $action .= ';all=1;showedit=1';
-  } elsif ($all) {
-    $switches = ScriptLink("$action$days", T('List latest change per page only'))
-      . ' | ' . ScriptLink("$action$days;all=1;showedit=1", T('Include minor changes'));
-    $action .= ';all=1';
-  } elsif ($edits) {
-    $switches = ScriptLink("$action$days;all=1;showedit=1", T('List all changes'))
-      . ' | ' . ScriptLink("$action$days", T('List only major changes'));
-    $action .= ';showedit=1';
+  my ($all, $edits, $menu) = (GetParam('all', 0), GetParam('showedit', 0));
+  $action .= ";days=" . GetParam('days', $RcDefault);
+  if ($all) {
+    $menu = ScriptLink("$action;all=0;showedit=$edits", T('List latest change per page only'));
   } else {
-    $switches = ScriptLink("$action$days;all=1", T('List all changes'))
-      . ' | ' . ScriptLink("$action$days;showedit=1", T('Include minor changes'));
+    $menu = ScriptLink("$action;all=1;showedit=$edits", T('List only major changes'));
   }
-  print $q->p(join(' | ', map { ScriptLink("$action;days=$_",
+  if ($edits) {
+    $menu .= ' | ' . ScriptLink("$action;all=$all;showedit=0", T('List only major changes'));
+  } else {
+    $menu .= ' | ' . ScriptLink("$action;all=$all;showedit=1", T('Include minor changes'));
+  }
+  print $q->p(join(' | ', map { ScriptLink("$action;days=$_;all=$all;showedit=$edits",
 					   ($_ != 1) ? Ts('%s days', $_) : Ts('%s days', $_));
-			      } @RcDays) . $q->br() . $switches . $q->br()
-	      . ScriptLink($action . ';from=' . ($LastUpdate + 1), T('List later changes')));
+			      } @RcDays) . $q->br() . $menu . $q->br()
+	      . ScriptLink($action . ';from=' . ($LastUpdate + 1) . ";all=$all;showedit=$edits",
+			   T('List later changes')));
 }
 
 sub GetFilterForm {
