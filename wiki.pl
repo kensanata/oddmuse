@@ -66,9 +66,9 @@ $ReplaceForm %PermanentAnchors %PagePermanentAnchors);
 
 # == Configuration ==
 
-# Can be set before loading the script: $DataDir, $ConfigFile, $ConfigPage
+# Can be set outside the script: $DataDir, $UseConfig, $ConfigFile, $ConfigPage
 
-$UseConfig   = 1;   # 1 = load config file in the data directory
+$UseConfig   = 1 unless defined $UseConfig; # 1 = load config file in the data directory
 $DataDir   = '/tmp/oddmuse' unless $DataDir; # Main wiki directory
 $ConfigPage  = '' unless $ConfigPage; # config page (change space to _)
 $RunCGI      = 1;   # 1 = Run script as CGI instead of being a library
@@ -85,7 +85,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.81 2003/06/04 23:42:46 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.82 2003/06/05 00:05:00 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
