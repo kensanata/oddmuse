@@ -1,3 +1,8 @@
+2003-08-14  Alex Schroeder  <alex@emacswikiorg>
+
+	* wiki.pl (InitRequest): @HtmlTags are only initialized within
+	this sub in order to read the config files, first.
+
 2003-08-02  Pierre Gaston  <pgas@intracom.gr>
 
 	* wiki.pl (ApplyRules): Pass $block, @blocks, and @flags to
