@@ -304,7 +304,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.437 2004/08/06 13:12:54 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.438 2004/08/11 13:05:29 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -406,7 +406,7 @@ sub ApplyRules {
   while(1) {
     # Block level elements eat empty lines to prevent empty p elements.
     if ($bol && m/\G(\s*\n)*(\*+)[ \t]+/cg
-	     or $HtmlStack[0] eq 'li' && m/\G(\s*\n)+(\*+)[ \t]*/cg) {
+	     or $HtmlStack[0] && $HtmlStack[0] eq 'li' && m/\G(\s*\n)+(\*+)[ \t]*/cg) {
       Clean(OpenHtmlEnvironment('ul',length($2)) . AddHtmlEnvironment('li'));
     } elsif ($bol && m/\G(\s*\n)+/cg) {
       Clean(CloseHtmlEnvironments() . '<p>');
@@ -1568,6 +1568,10 @@ sub GetRcRss {
       my ($sec, $min, $hour, $mday, $mon, $year) = gmtime($timestamp);
       my $name = FreeToNormal($pagename);
       $name =~ s/_/ /g;
+      if (GetParam('full', 0)) {
+	$name .= ': ' . $summary;
+	$summary = PageHtml($pagename);
+      }
       $year += 1900;
       my $date = sprintf( "%4d-%02d-%02dT%02d:%02d:%02d+00:00",
 	$year, $mon+1, $mday, $hour, $min, $sec);
@@ -1596,8 +1600,22 @@ sub GetRcRss {
 }
 
 sub DoRss {
-  print GetHttpHeader('text/plain');
+  print GetHttpHeader('application/rss+xml');
   DoRc(\&GetRcRss);
+}
+
+sub PageHtml {
+  my $id = shift;
+  my $result = '';
+  local *STDOUT;
+  open(STDOUT, '>', \$result) or die "Can't open memory file: $!";
+  OpenPage($id);
+  if ($Page{blocks} && $Page{flags}) {
+    PrintCache();
+  } else {
+    PrintWikiToHTML($Page{text}, 1); # save cache, current revision, no main lock
+  }
+  return $result;
 }
 
 # == Random ==
