@@ -118,7 +118,7 @@ Los!
 rollback
 bis hier alles Rückgängig machen
 new
-neu
+Neue Seite
 from %s
 von %s
 History of %s
