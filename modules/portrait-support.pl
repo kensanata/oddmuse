@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.19 2004/11/27 21:12:20 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.20 2004/11/27 21:16:02 as Exp $</p>';
 
 push(@MyMacros, sub{ s/\[new::\]/"[new:" . GetParam('username', T('Anonymous'))
 		       . ':' . TimeToText($Now) . "]"/ge });
@@ -55,9 +55,9 @@ div.one {
 }
 EOT
 
-use vars qw($MyColorDiv);
+use vars qw($PortraitSupportColorDiv);
 
-$MyColorDiv = 0;
+$PortraitSupportColorDiv = 0;
 
 my $MyColor = 0;
 my %Portraits = ();
@@ -66,10 +66,8 @@ sub PortraitSupportRule {
   if ($bol) {
     if (m/\G(\s*\n)*----+[ \t]*\n?/cg) {
       $MyColor = 0;
-      my $html = CloseHtmlEnvironments() . ($MyColorDiv ? '</div>' : '')
-	. $q->hr();
-      $MyColorDiv = 0;
-      return $html;
+      $PortraitSupportColorDiv = 0;
+      return CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '') . $q->hr();
     } elsif ($bol && m/\Gportrait:$UrlPattern/gc) {
       return $q->img({-src=>$1, -alt=>T("Portrait"), -class=>'portrait'});
     } elsif ($bol && m/\G\[new(.*)\]/gc) {
@@ -91,10 +89,10 @@ sub PortraitSupportRule {
 	$portrait = $Portrait{$name};
 	$portrait =~ s/$FS/$time/;
       }
-      my $html = CloseHtmlEnvironments() . ($MyColorDiv ? '</div>' : '');
+      my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '');
       $MyColor = !$MyColor;
       $html .= '<div class="color ' . ($MyColor ? 'one' : 'two') . '">' . $portrait;
-      $MyColorDiv = 1;
+      $PortraitSupportColorDiv = 1;
       return $html;
     }
   }
@@ -106,11 +104,11 @@ sub PortraitSupportRule {
 
 sub NewPortraitSupportApplyRules {
   my ($blocks, $flags) = OldPortraitSupportApplyRules(@_);
-  if ($MyColorDiv) {
+  if ($PortraitSupportColorDiv) {
     print '</div>';
     $blocks .= $FS . '</div>';
     $flags .= $FS . 0;
-    $MyColorDiv = 0;
+    $PortraitSupportColorDiv = 0;
   }
   return ($blocks, $flags);
 }
