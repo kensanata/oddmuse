@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.359 2004/03/15 22:30:32 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.360 2004/03/19 00:20:45 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -660,7 +660,7 @@ sub RunMyRules {
 
 sub PrintWikiToHTML {
   my ($pageText, $savecache, $revision, $islocked) = @_;
-  $FootnoteNumber = 0;
+  $FootnoteNumber = 1;
   $pageText =~ s/$FS//g; # Remove separators (paranoia)
   $pageText = QuoteHtml($pageText);
   my ($blocks, $flags) = ApplyRules($pageText, 1, $savecache, $revision);
@@ -861,6 +861,10 @@ sub GetInterSiteUrl {
   return $url;
 }
 
+sub BracketLink { # brackets can be removed via CSS
+  return $q->span($q->span({class=>'bracket'}, '[') . (shift) . $q->span({class=>'bracket'}, ']'));
+}
+
 sub GetInterLink {
   my ($id, $text, $bracket) = @_;
   my ($site, $page) = split(/:/, $id, 2);
@@ -874,12 +878,12 @@ sub GetInterLink {
   } elsif (!$url) {
     return $id;
   } elsif ($bracket && !$text) {
-    $text = $q->span('[' . ++$FootnoteNumber . ']');
+    $text = BracketLink($FootnoteNumber++);
     $class .= ' number';
   } elsif (!$text) {
     $text = $q->span({-class=>'site'}, $site) . ':' . $q->span({-class=>'page'}, $page);
   } elsif ($bracket) { # and $text is set
-    $text = "[$text]";
+    $class .= ' outside';
   }
   return $q->a({-href=>$url, -class=>$class}, $text);
 }
@@ -901,12 +905,12 @@ sub GetUrl {
     # Only do remote file:// links. No file:///c|/windows.
     return $url;
   } elsif ($bracket && !$text) {
-    $text = $q->span('[' . ++$FootnoteNumber . ']');
+    $text = BracketLink($FootnoteNumber++);
     $class .= ' number';
   } elsif (!$text) {
     $text = $url;
   } elsif ($bracket) { # and $text is set
-    $text = '[' . $text . ']';
+    $class .= ' outside';
   }
   $url = UnquoteHtml($url); # links should be unquoted again
   if ($images && $url =~ /^(http:|https:|ftp:).+\.$ImageExtensions$/) {
@@ -921,10 +925,10 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
   $id = FreeToNormal($id);
   my ($class, $exists, $title) = ResolveId($id);
   if (!$text && $exists && $bracket) {
-    $text = $q->span('[' . ++$FootnoteNumber . ']'); # s/_/ /g happens further down!
+    $text = BracketLink($FootnoteNumber++); # s/_/ /g happens further down!
+    $class .= ' number';
     $title = $id; # override title from ResolveId!
     $title =~ s/_/ /g if $free;
-    $class .= ' number';
   }
   if ($exists) { # don't show brackets if the page is local/anchor/near.
     $text = $id unless $text;
@@ -1051,6 +1055,7 @@ sub WikiHeading {
 sub PrintCache { # Use after OpenPage!
   my @blocks = split($FS,$Page{blocks});
   my @flags = split($FS,$Page{flags});
+  $FootnoteNumber = 1;
   foreach my $block (@blocks) {
     if (shift(@flags)) {
       ApplyRules($block, 1, 1); # local links, anchors, current revision
@@ -1940,6 +1945,8 @@ a.near:link { color:#093; }
 a.near:visited { color:#550; }
 a.upload:before { content:"<"; }
 a.upload:after { content:">"; }
+a.outside:before { content:"["; }
+a.outside:after { content:"]"; }
 img.logo { float: right; clear: right; border-style:none; }
 div.diff { padding-left:5%; padding-right:5%; }
 div.old { background-color:#FFFFAF; }
