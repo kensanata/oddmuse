@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.3 2004/08/31 15:05:04 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.4 2004/08/31 15:10:19 as Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -43,7 +43,7 @@ rict.dtd">
 <html>
 <head>
 <title>$SiteName: $id</title>
-<link type="text/css" rel="stylesheet" href="$StyleSheet" />
+<link type="text/css" rel="stylesheet" href="static.css" />
 </head>
 <body>
 <div class="content">
