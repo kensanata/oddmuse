@@ -1,3 +1,7 @@
+2003-09-06  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetSearchLink): Do not encode page title.
+
 2003-09-04  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (InitLinkPatterns): Small refactoring.
