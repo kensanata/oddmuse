@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.7 2005/01/01 13:55:22 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.8 2005/01/02 01:48:40 as Exp $</p>';
 
 # add the same CSS as in tables.pl
 $DefaultStyleSheet .= q{
@@ -45,13 +45,13 @@ sub TablesLongRule {
   # a new row is started when a cell is repeated
   # if cells are missing, column spans are created (the first row
   # could use row spans...)
-  if ($bol && m/\G\s*\n*\&lt;table(?:\/([a-z]+))? +([A-Za-z\x80-\xff,;\/ ]+)\&gt; *\n/cgo) {
-    my $class = ' ' . $1 if $1;
+  if ($bol && m|\G\s*\n*\&lt;table(/[A-Za-z\x80-\xff/]+)? +([A-Za-z\x80-\xff,;\/ ]+)\&gt; *\n|cgo) {
+    my $class = join(' ', split(m|/|, $1)); # leading / in $1 will make sure we have leading space
     Clean(CloseHtmlEnvironments() . "<table class=\"user long$class\">");
     # labels and their default class
     my %default_class = ();
-    my @labels = map { my ($label, $class) = split /\//;
-		       $default_class{$label} = $class;
+    my @labels = map { my ($label, @classes) = split /\//;
+		       $default_class{$label} = join(' ', @classes);
 		       $label;
 		     } split(/ *[,;] */, $2);
     my $regexp = join('|', @labels);
@@ -70,9 +70,9 @@ sub TablesLongRule {
     my $label = '';
     my $first = 1;
     for my $line (@lines) {
-      if ($line =~ /^($regexp)(?:\/([a-z]+))?[:=] *(.*)/o) {
+      if ($line =~ m|^($regexp)(/[A-Za-z\x80-\xff/]+)?[:=] *(.*)|o) {
 	$label = $1;
-	$class = $2;
+	$class = join(' ', split(m|/|, $2));
 	$line = $3;
 	if ($row{$label}) { # repetition of label, we must start a new row
 	  TablesLongRow(\@labels, \%row, \%class, $first);
