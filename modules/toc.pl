@@ -16,14 +16,14 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.1 2004/02/09 20:25:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.2 2004/02/09 20:31:19 as Exp $</p>';
 
 *OldTocGetHeader = *GetHeader;
 *GetHeader = *NewTocGetHeader;
 
 sub NewTocGetHeader {
   my ($id) = @_;
-  my $result = OldGetHeader(@_);
+  my $result = OldTocGetHeader(@_);
   # append TOC to header
   $result .= TocHeadings() if $id;
   return $result;
@@ -62,4 +62,3 @@ sub TocHeadings {
   }
   return '<div class="toc">' . $Headings . '</div>' if $Headings;
 }
-
