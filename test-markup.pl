@@ -953,8 +953,6 @@ test_page(update_page('InterMap', "All your edits are blong to us!\n", 'required
 
 # --------------------
 
-markup:
-
 print '[markup]';
 
 open(F,'>/tmp/oddmuse/config');
@@ -1099,44 +1097,91 @@ mailto:alex@emacswiki.org
 <pre> source\n \n etc\n</pre>
  source\n \n etc\n\nother
 <pre> source\n \n etc\n</pre><p>other
-[[SandBox|play here]]
-[[<a class="local" href="http://localhost/test-wrapper.pl/SandBox">SandBox</a>|play here]]
-[[Appel|Not a pear]]
-[[Appel|Not a pear]]
 EOT
 
 run_tests();
 
-print '[more markup]';
+markup:
+
+print '[link pattern]';
 
 system('/bin/rm -rf /tmp/oddmuse');
 die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
 mkdir '/tmp/oddmuse';
 open(F,'>/tmp/oddmuse/config');
-print F "\$BracketWiki = 1;\n";
 print F "\$AllNetworkFiles = 1;\n";
 print F "\$SurgeProtection = 0;\n";
 print F "\$AdminPass = 'foo';\n";
 close(F);
-update_page('SandBox', "This page exists.");
-update_page('Banana', "This page exists also.");
-update_page('InterMap', " OddMuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n PlanetMath http://planetmath.org/encyclopedia/%s.html", 'required', 0, 1);
+update_page('HomePage', "This page exists.");
+update_page('InterMap', " Oddmuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n PlanetMath http://planetmath.org/encyclopedia/%s.html", 'required', 0, 1);
 
 %Test = split('\n',<<'EOT');
-[[SandBox|play here]]
-<a class="local" href="http://localhost/test-wrapper.pl/SandBox">play here</a>
-[[FooBar|do not play here]]
-[FooBar<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=FooBar">?</a> do not play here]
-[[Banana|Not a pear]]
-<a class="local" href="http://localhost/test-wrapper.pl/Banana">Not a pear</a>
-[[Appel|Not a pear]]
-[Appel<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=Appel">?</a> Not a pear]
 file://home/foo/tutorial.pdf
 <a href="file://home/foo/tutorial.pdf">file://home/foo/tutorial.pdf</a>
 file:///home/foo/tutorial.pdf
 <a href="file:///home/foo/tutorial.pdf">file:///home/foo/tutorial.pdf</a>
-[OddMuse:test this is a test]
-<a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test">[this is a test]</a>
+traditional local link: HomePage, OtherPage
+traditional local link: <a class="local" href="http://localhost/test-wrapper.pl/HomePage">HomePage</a>, OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a>
+traditional local link with extra brackets: [HomePage], [OtherPage]
+traditional local link with extra brackets: <a class="local footnote" href="http://localhost/test-wrapper.pl/HomePage">[1]</a>, [OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a>]
+traditional local link with other text: [HomePage homepage], [OtherPage other page]
+traditional local link with other text: [<a class="local" href="http://localhost/test-wrapper.pl/HomePage">HomePage</a> homepage], [OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a> other page]
+free link: [[home page]], [[other page]]
+free link: [home page]<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=home_page">?</a>, [other page]<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=other_page">?</a>
+free link with extra brackets: [[[home page]]], [[[other page]]]
+free link with extra brackets: [home_page<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=home_page">?</a>], [other_page<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=other_page">?</a>]
+free link with other text: [[home page|da homepage]], [[other page|da other homepage]]
+free link with other text: [[home page|da homepage]], [[other page|da other homepage]]
+URL: http://www.oddmuse.org/
+URL: <a href="http://www.oddmuse.org/">http://www.oddmuse.org/</a>
+URL in brackets: [http://www.oddmuse.org/]
+URL in brackets: <a href="http://www.oddmuse.org/">[1]</a>
+URL in brackets with other text: [http://www.oddmuse.org/ oddmuse]
+URL in brackets with other text: <a href="http://www.oddmuse.org/">[oddmuse]</a>
+URL abbreviation: Oddmuse:Link_Pattern
+URL abbreviation: <a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"><span class="site">Oddmuse</span>:<span class="page">Link_Pattern</span></a>
+URL abbreviation with extra brackets: [Oddmuse:Link_Pattern]
+URL abbreviation with extra brackets: <a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern">[1]</a>
+URL abbreviation with other text: [Oddmuse:Link_Pattern link patterns]
+URL abbreviation with other text: <a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern">[link patterns]</a>
+EOT
+
+run_tests();
+
+open(F,'>>/tmp/oddmuse/config');
+print F "\$BracketWiki = 1;\n";
+close(F);
+
+%Test = split('\n',<<'EOT');
+file://home/foo/tutorial.pdf
+<a href="file://home/foo/tutorial.pdf">file://home/foo/tutorial.pdf</a>
+file:///home/foo/tutorial.pdf
+<a href="file:///home/foo/tutorial.pdf">file:///home/foo/tutorial.pdf</a>
+traditional local link: HomePage, OtherPage
+traditional local link: <a class="local" href="http://localhost/test-wrapper.pl/HomePage">HomePage</a>, OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a>
+traditional local link with extra brackets: [HomePage], [OtherPage]
+traditional local link with extra brackets: <a class="local footnote" href="http://localhost/test-wrapper.pl/HomePage">[1]</a>, [OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a>]
+traditional local link with other text: [HomePage homepage], [OtherPage other page]
+traditional local link with other text: <a class="local" href="http://localhost/test-wrapper.pl/HomePage">homepage</a>, [OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a> other page]
+free link: [[home page]], [[other page]]
+free link: [home page]<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=home_page">?</a>, [other page]<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=other_page">?</a>
+free link with extra brackets: [[[home page]]], [[[other page]]]
+free link with extra brackets: [home_page<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=home_page">?</a>], [other_page<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=other_page">?</a>]
+free link with other text: [[home page|da homepage]], [[other page|da other homepage]]
+free link with other text: [home page<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=home_page">?</a> da homepage], [other page<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=other_page">?</a> da other homepage]
+URL: http://www.oddmuse.org/
+URL: <a href="http://www.oddmuse.org/">http://www.oddmuse.org/</a>
+URL in brackets: [http://www.oddmuse.org/]
+URL in brackets: <a href="http://www.oddmuse.org/">[1]</a>
+URL in brackets with other text: [http://www.oddmuse.org/ oddmuse]
+URL in brackets with other text: <a href="http://www.oddmuse.org/">[oddmuse]</a>
+URL abbreviation: Oddmuse:Link_Pattern
+URL abbreviation: <a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"><span class="site">Oddmuse</span>:<span class="page">Link_Pattern</span></a>
+URL abbreviation with extra brackets: [Oddmuse:Link_Pattern]
+URL abbreviation with extra brackets: <a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern">[1]</a>
+URL abbreviation with other text: [Oddmuse:Link_Pattern link patterns]
+URL abbreviation with other text: <a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern">[link patterns]</a>
 EOT
 
 run_tests();
