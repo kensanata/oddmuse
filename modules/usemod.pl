@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.11 2004/10/16 23:51:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.12 2004/11/27 21:23:33 as Exp $</p>';
 
 $DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /table\.user/; # mod_perl?
 table.user { border-style:solid; border-width:thin; }
@@ -107,14 +107,18 @@ sub UsemodRule {
   elsif ($bol && $UseModMarkupInTitles && m/\G(\s*\n)*(\=+)[ \t]*(?=[^=\n]+=)/cg) {
     my $depth = length($2);
     $depth = 6 if $depth > 6;
-    return CloseHtmlEnvironments() . AddHtmlEnvironment('h' . $depth);
+    my $html = CloseHtmlEnvironments() . ($MyColorDiv ? '</div>' : '') . AddHtmlEnvironment('h' . $depth);
+    $PortraitSupportColorDiv = 0; # after the HTML has been determined.
+    return $html;
   } elsif ($UseModMarkupInTitles
 	   && m/\G[ \t]*=+\n?/cg
 	   && (InElement('h1') || InElement('h2') || InElement('h3')
 		|| InElement('h4') || InElement('h5') || InElement('h6'))) {
     return CloseHtmlEnvironments();
   } elsif ($bol && !$UseModMarkupInTitles && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg) {
-    return CloseHtmlEnvironments() . WikiHeading($2, $3);
+    my $html = CloseHtmlEnvironments() . ($MyColorDiv ? '</div>' : '') . WikiHeading($2, $3);
+    $PortraitSupportColorDiv = 0; # after the HTML has been determined.
+    return $html;
   }
   # horizontal lines using ----
   elsif ($bol && m/\G(\s*\n)*----+[ \t]*\n?/cg) {
