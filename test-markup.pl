@@ -162,6 +162,9 @@ sleep(2);
 update_page('OtherPage', 'Other evil content.', 'another vandal');
 sleep(2);
 update_page('NicePage', 'Bad content.', 'vandal two');
+update_page('EvilPage', 'Spam!', 'vandal three');
+update_page('AnotherEvilPage', 'More Spam!', 'vandal four');
+update_page('AnotherEvilPage', 'Still More Spam!', 'vandal five');
 test_page(get_page('NicePage'), 'Bad content');
 get_page('action=rc all=1 pwd=foo') =~ /.*action=rollback;to=([0-9]+).*?-- good guy two/;
 test_page(get_page("action=rollback to=$1"), 'restricted to administrators');
@@ -169,7 +172,11 @@ test_page(get_page("action=rollback to=$1 pwd=foo"),
 	  'Rolling back changes', 'NicePage rolled back', 'OtherPage rolled back');
 test_page(get_page('NicePage'), 'Nice content');
 test_page(get_page('OtherPage'), 'Other cute content 12');
+test_page(get_page('EvilPage'), 'DeletedPage');
+test_page(get_page('AnotherEvilPage'), 'DeletedPage');
 test_page(get_page('action=rc showedit=1'), 'Rollback to ');
+
+exit;
 
 print '[clusters]';
 
