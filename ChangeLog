@@ -1,3 +1,13 @@
+2003-10-28  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (Clean): Fix "eating of zero" bug.
+	(Dirty): Ditto.
+	(ApplyRules): Optimize regexp matches by working around /m, and
+	fix "eating of zero" bug.
+	(GetRcRss): Replace & with ; in URLs.
+	(ScriptLinkDiff): Ditto.
+	(DoPost): Optimize regexp matches by working around $'.
+
 2003-10-27  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl ($PageCluster): New variable.
