@@ -87,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.97 2003/06/15 00:00:19 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.98 2003/06/15 00:09:43 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -377,7 +377,7 @@ sub ApplyRules {
 	if ($uri =~ /^$UrlProtocols:/) {
 	  ApplyRules(QuoteHtml(GetRaw($uri)),0);
 	} else {
-	  ApplyRules(QuoteHtml(GetPageContent($uri)), 1);
+	  ApplyRules(QuoteHtml(GetPageContent(FreeToNormal($uri))), 1);
 	}
 	pos = $oldpos; # restore \G after call to ApplyRules
 	DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
