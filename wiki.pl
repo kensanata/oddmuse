@@ -1,4 +1,4 @@
-#! /usr/bin/perl -w
+#! /usr/bin/perl
 # OddMuse (see $WikiDescription below)
 # Copyright (C) 2001, 2002, 2003, 2004	Alex Schroeder <alex@emacswiki.org>
 # ... including lots of patches from the UseModWiki site
@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.403 2004/05/28 22:50:30 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.404 2004/05/29 01:18:54 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -346,15 +346,9 @@ sub InitCookie {
 
 sub GetParam {
   my ($name, $default) = @_;
-  my $result;
-  $result = $q->param($name);
-  if (!defined($result)) {
-    if (defined($NewCookie{$name})) {
-      $result = $NewCookie{$name};
-    } else {
-      $result = $default;
-    }
-  }
+  my $result = $q->param($name);
+  $result = $NewCookie{$name} unless defined($result); # empty strings are defined!
+  $result = $default unless defined($result);
   return $result;
 }
 
@@ -711,7 +705,7 @@ sub UrlEncode {
   my $str = shift;
   return '' unless $str;
   my @letters = split(//, $str);
-  my @safe = ('a' .. 'z', 'A' .. 'Z', '0' .. '9', '-', '_', '.', '!', '~', '*', "'", '(', ')');
+  my @safe = ('a' .. 'z', 'A' .. 'Z', '0' .. '9', '-', '_', '.', '!', '~', '*', "'", '(', ')', '#');
   foreach my $letter (@letters) {
     my $pattern = quotemeta($letter);
     if (not grep(/$pattern/, @safe)) {
@@ -942,7 +936,7 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
   if (!$text && $resolved && $bracket) {
     $text = BracketLink(++$FootnoteNumber); # s/_/ /g happens further down!
     $class .= ' number';
-    $title = $id; # override title from ResolveId!
+    $title = $id; # override title
     $title =~ s/_/ /g if $free;
   }
   if ($resolved) { # anchors don't exist as pages, therefore do not use $exists
@@ -1168,24 +1162,25 @@ sub ResolveId { # return css class, resolved id, title (eg. for popups), exist-o
   my $exists = $IndexHash{$id}; # if the page exists physically
   if (GetParam('anchor', $PermanentAnchors)) { # anchors are preferred
     ReadPermanentAnchors() unless $PermanentAnchorsInit;
-    my $anchor = $PermanentAnchors{$id};
-    return ('alias', $anchor, '', $exists) if $anchor; # probably a matching page does not exist
+    my $page = $PermanentAnchors{$id};
+    return ('alias', $page . '#' . $id, $page, $exists) if $page; # use page as title
   }
   return ('local', $id, '', $exists) if $exists;
   NearInit() unless $NearSiteInit;
   if ($NearSource{$id}) {
     $NearLinksUsed{$id} = 1;
-    return ('near', $id, $NearSource{$id}[0]); # return source as title attribute
+    my $site = $NearSource{$id}[0];
+    return ('near', GetInterSiteUrl($site, $id), $site); # return source as title attribute
   }
 }
 
 sub BrowseResolvedPage {
   my $id = FreeToNormal(shift);
   my ($class, $resolved, $title, $exists) = ResolveId($id);
-  if ($class eq 'near' && not GetParam('rcclusteronly', 0)) {
-    print $q->redirect({-uri=>GetInterSiteUrl($title, $resolved)});
+  if ($class eq 'near' && not GetParam('rcclusteronly', 0)) { # nearlink (is url)
+    print $q->redirect({-uri=>$resolved});
   } elsif ($class eq 'alias') { # an anchor was found instead of a page
-    ReBrowsePage($resolved, undef, $id);
+    ReBrowsePage($resolved, undef);
   } elsif (not $resolved and $NotFoundPg) { # custom page-not-found message
     BrowsePage($NotFoundPg);
   } elsif ($resolved) { # an existing page was found
@@ -1267,8 +1262,7 @@ sub BrowsePage {
 }
 
 sub ReBrowsePage {
-  my ($id, $oldId, $anchor) = map { UrlEncode($_); } @_; # encode before printing URL
-  $id = $id . '#' . $anchor if $anchor; # with anchor
+  my ($id, $oldId) = map { UrlEncode($_); } @_; # encode before printing URL
   if ($oldId) {	# Target of #REDIRECT (loop breaking)
     print GetRedirectPage("action=browse;oldid=$oldId;id=$id", $id);
   } else {
@@ -1403,17 +1397,23 @@ sub RcHeader {
   } else {
     $action = "action=rc$action";
   }
-  my ($all, $edits, $menu) = (GetParam('all', 0), GetParam('showedit', 0));
-  $action .= ";days=" . GetParam('days', $RcDefault);
+  my $days = GetParam('days', $RcDefault);
+  my $all = GetParam('all', 0);
+  my $edits = GetParam('showedit', 0);
+  my $menu;
   if ($all) {
-    $menu = ScriptLink("$action;all=0;showedit=$edits", T('List latest change per page only'));
+    $menu = ScriptLink("$action;days=$days;all=0;showedit=$edits",
+		       T('List latest change per page only'));
   } else {
-    $menu = ScriptLink("$action;all=1;showedit=$edits", T('List all changes'));
+    $menu = ScriptLink("$action;days=$days;all=1;showedit=$edits",
+		       T('List all changes'));
   }
   if ($edits) {
-    $menu .= ' | ' . ScriptLink("$action;all=$all;showedit=0", T('List only major changes'));
+    $menu .= ' | ' . ScriptLink("$action;days=$days;all=$all;showedit=0",
+				T('List only major changes'));
   } else {
-    $menu .= ' | ' . ScriptLink("$action;all=$all;showedit=1", T('Include minor changes'));
+    $menu .= ' | ' . ScriptLink("$action;days=$days;all=$all;showedit=1",
+				T('Include minor changes'));
   }
   print $q->p(join(' | ', map { ScriptLink("$action;days=$_;all=$all;showedit=$edits",
 					   ($_ != 1) ? Ts('%s days', $_) : Ts('%s days', $_));
@@ -1889,9 +1889,10 @@ sub GetHttpHeader {
   return if $PrintedHeader;
   $PrintedHeader = 1;
   my ($type, $modified, $status) = @_;
-  my $mod = gmtime($modified or $LastUpdate);
+  $modified = $LastUpdate unless $modified;
+  my $time = $modified ? gmtime($modified) : gmtime;
   my %headers = (-cache_control=>($UseCache < 0 ? 'no-cache' : 'max-age=10'));
-  $headers{last_modified} = $mod if GetParam('cache', $UseCache) >= 2;
+  $headers{last_modified} = $time if GetParam('cache', $UseCache) >= 2;
   if ($HttpCharset ne '') {
     $headers{-type} = "$type; charset=$HttpCharset";
   } else {
@@ -2638,15 +2639,14 @@ sub GetHiddenValue {
   return $q->hidden($name);
 }
 
-sub GetRemoteHost {
-  my ($rhost, $iaddr);
-  $rhost = $ENV{REMOTE_HOST};
-  if ($UseLookup && ($rhost eq '')) {
+sub GetRemoteHost {               # when testing, these variables are undefined.
+  my $rhost = $ENV{REMOTE_HOST};  # tests are written to avoid -w warnings.
+  if (not $rhost and $UseLookup and $ENV{REMOTE_ADDR}) {
     # Catch errors (including bad input) without aborting the script
-    eval 'use Socket; $iaddr = inet_aton($ENV{REMOTE_ADDR});'
-	 . '$rhost = gethostbyaddr($iaddr, AF_INET)';
+    eval 'use Socket; my $iaddr = inet_aton($ENV{REMOTE_ADDR});'
+	 . '$rhost = gethostbyaddr($iaddr, AF_INET) if $iaddr;';
   }
-  if ($rhost eq '') {
+  if (not $rhost) {
     $rhost = $ENV{REMOTE_ADDR};
   }
   return $rhost;
@@ -3942,8 +3942,9 @@ sub GetPermanentAnchor {
   my $text = $id;
   $text =~ s/_/ /g;
   my ($class, $resolved, $title, $exists) = ResolveId($id);
-  if ($resolved ne $OpenPageName and $class eq 'alias') {
-    return '[' . Ts('anchor first defined here: %s', GetPageLink($id)) . ']';
+  if ($class eq 'alias' and $title ne $OpenPageName) {
+    return '[' . Ts('anchor first defined here: %s',
+		    ScriptLink(UrlEncode($resolved), $text, 'alias')) . ']';
   } elsif ($PermanentAnchors{$id} ne $OpenPageName
 	   and RequestLockDir('permanentanchors')) { # not fatal
     $PermanentAnchors{$id} = $OpenPageName;
