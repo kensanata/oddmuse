@@ -34,7 +34,9 @@ if (not param('url')) {
       'It understands ModWiki, and will use wiki:diff as the link,',
       'and it will add dc:contributor to the description.'),
     start_form(-method=>'GET'),
-    p('RSS feed: ', textfield('url'), submit()),
+    p('RSS feed: ', textfield('url', '', 70)),
+    p('Change encoding from Latin-1 to UTF-8: ', checkbox('Latin-1')),
+    p(submit()),
     end_form(),
     end_html();
   exit;
@@ -42,15 +44,16 @@ if (not param('url')) {
 
 print header(-type=>'text/plain; charset=UTF-8');
 
-my $rss = new XML::RSS(output=>$output);
+my $encoding = param('Latin-1') ? 'ISO-8859-1' : 'UTF-8';
+my $rss = new XML::RSS(output=>$output, encoding=>$encoding);
 my $ua = new LWP::UserAgent;
 my $request = HTTP::Request->new('GET', param('url'));
 my $response = $ua->request($request);
 my $data = $response->content;
 eval {
-  local $SIG{__DIE__} = &parse_rss3; # parsing errors -> try RSS 3.0!
+  local $SIG{__DIE__} = sub { parse_rss3(); }; # parsing errors -> try RSS 3.0!
   $rss->parse($data);
-  munge_rss(); # parsing succesfull
+  munge_rss();
 };
 
 sub munge_rss {
