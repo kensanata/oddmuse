@@ -1,3 +1,7 @@
+2003-11-20  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoShowVersion): Print server software as well.
+
 2003-11-16  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (Tss): @_[0] -> $_[0]
