@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.346 2004/03/08 23:20:45 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.347 2004/03/09 00:51:24 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -866,6 +866,7 @@ sub GetInterLink {
   my ($site, $page) = split(/:/, $id, 2);
   $page =~ s/&amp;/&/g;	 # Unquote common URL HTML
   my $url = GetInterSiteUrl($site, $page);
+  my $class = 'inter';
   if ($text && $bracket && !$url) {
     return "[$id $text]";
   } elsif ($bracket && !$url) {
@@ -873,14 +874,14 @@ sub GetInterLink {
   } elsif (!$url) {
     return $id;
   } elsif ($bracket && !$text) {
-    $text = $q->span({-class=>'number'}, ++$FootnoteNumber);
+    $text = $q->span('[' . ++$FootnoteNumber . ']'); # so we can hide it for printing
+    $class .= ' number';
   } elsif (!$text) {
     $text = $q->span({-class=>'site'}, $site) . ':' . $q->span({-class=>'page'}, $page);
-  }
-  if ($bracket) {
+  } elsif ($bracket) { # and $text is set
     $text = "[$text]";
   }
-  return $q->a({-href=>$url, -class=>'inter'}, $text);
+  return $q->a({-href=>$url, -class=>$class}, $text);
 }
 
 sub InterInit {
@@ -894,22 +895,24 @@ sub InterInit {
 
 sub GetUrl {
   my ($url, $text, $bracket, $images) = @_;
+  my $class = 'url';
   if ($NetworkFile && $url =~ m|^file:///| && !$AllNetworkFiles
       or !$NetworkFile && $url =~ m|^file:|) {
     # Only do remote file:// links. No file:///c|/windows.
     return $url;
   } elsif ($bracket && !$text) {
-    $text = $q->span({-class=>'number'}, ++$FootnoteNumber);
+    $text = $q->span('[' . ++$FootnoteNumber . ']'); # so we can hide it for printing
+    $class .= ' number';
   } elsif (!$text) {
     $text = $url;
+  } elsif ($bracket) { # and $text is set
+    $text = '[' . $text . ']';
   }
   $url = UnquoteHtml($url); # links should be unquoted again
-  if ($bracket) {
-    return $q->a({-href=>$url, -class=>'url number'}, "[$text]");
-  } elsif ($images && $url =~ /^(http:|https:|ftp:).+\.$ImageExtensions$/) {
-    return $q->img({-src=>$url, -alt=>$url, -class=>'url'});
+  if ($images && $url =~ /^(http:|https:|ftp:).+\.$ImageExtensions$/) {
+    return $q->img({-src=>$url, -alt=>$url, -class=>$class});
   } else {
-    return $q->a({-href=>$url, -class=>'url'}, $text);
+    return $q->a({-href=>$url, -class=>$class}, $text);
   }
 }
 
@@ -918,8 +921,8 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
   $id = FreeToNormal($id);
   my ($class, $exists, $title) = ResolveId($id);
   if (!$text && $exists && $bracket) {
-    $text = '[' . $q->span({-class=>'number'}, ++$FootnoteNumber) . ']';
-    $class .= " number";
+    $text = $q->span('[' . ++$FootnoteNumber . ']'); # so we can hide it for printing
+    $class .= ' number';
   }
   if ($exists) { # don't show brackets if the page is local/anchor/near.
     $text = $id unless $text;
