@@ -7,6 +7,9 @@
 	necessary.
 	(GetPageOrEditLink): Use it.
 	(GetHtmlHeader): Default CSS for a.outside.
+	(GetPageParameters, GetPageOrEditLink): Add UrlEncode thanks to wctang.
+	(ScriptLink, GetAuthorLink, GetDownloadLink): Dito.
+	(GetAuthorLink, PrintFooter, PrintPage, PrintSearchResultEntry): Dito.
 
 2004-03-15  Alex Schroeder  <alex@gnu.org>
 
