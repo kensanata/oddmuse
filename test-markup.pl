@@ -36,6 +36,7 @@ $| = 1; # no output buffering
 # and create a config file in this directory.
 
 system('/bin/rm -rf /tmp/oddmuse');
+die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
 mkdir '/tmp/oddmuse';
 open(F,'>/tmp/oddmuse/config');
 print F "\$NetworkFile = 1;\n";
@@ -87,25 +88,6 @@ sub test_page {
   }
   print "\n\nPage content:\n", $page, "\n" if $printpage;
 }
-
-
-## Create diary pages
-
-update_page('2003-06-13', "Freitag");
-update_page('2003-06-14', "Samstag");
-update_page('2003-06-15', "Sonntag");
-@Test = split('\n',<<'EOT');
-This is my journal
-2003-06-15
-Sonntag
-2003-06-14
-Samstag
-EOT
-
-test_page(update_page('Summary', "This is my journal:\n\n<journal 2>"), @Test);
-test_page(update_page('2003-01-01', "This is my journal -- recursive:\n\n<journal>"), @Test);
-push @Test, 'journal';
-test_page(update_page('2003-01-01', "This is my journal -- truly recursive:\n\n<journal>"), @Test);
 
 ## Try to edit BanList
 
@@ -210,6 +192,24 @@ OddMuse
 EOT
 
 test_page(update_page('InterMap', "All your edits are blong to us!\n", 'required'), @Test);
+
+## Create diary pages
+
+update_page('2003-06-13', "Freitag");
+update_page('2003-06-14', "Samstag");
+update_page('2003-06-15', "Sonntag");
+@Test = split('\n',<<'EOT');
+This is my journal
+2003-06-15
+Sonntag
+2003-06-14
+Samstag
+EOT
+
+test_page(update_page('Summary', "This is my journal:\n\n<journal 2>"), @Test);
+test_page(update_page('2003-01-01', "This is my journal -- recursive:\n\n<journal>"), @Test);
+push @Test, 'journal';
+test_page(update_page('2003-01-01', "This is my journal -- truly recursive:\n\n<journal>"), @Test);
 
 ### SIMPLE MARKUP TESTS
 
