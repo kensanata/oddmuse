@@ -278,7 +278,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.217 2003/10/24 00:34:40 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.218 2003/10/24 10:55:36 as Exp $');
 }
 
 sub InitCookie {
@@ -1209,8 +1209,8 @@ sub RcHeader {
     print $q->h2(Ts('Updates since %s', TimeToText(GetParam('from', 0))));
   } else {
     print $q->h2((GetParam('days', $RcDefault) != 1)
-		 ? Ts('Updates in the last %s days', GetParam('days', $RcDefault))
-		 : Ts('Updates in the last %s day', GetParam('days', $RcDefault)))
+	  ? Ts('Updates in the last %s days', GetParam('days', $RcDefault))
+	  : Ts('Updates in the last %s day', GetParam('days', $RcDefault)))
   }
   my $lastTs = 0;
   if (@_ > 0) {  # Only false if no lines in file
@@ -1218,14 +1218,15 @@ sub RcHeader {
   }
   $lastTs++  if (($Now - $lastTs) > 5);  # Skip last unless very recent
   my ($action);
-  my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly) =
+  my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $langFilter) =
     map {
       my $val = GetParam($_, '');
       print $q->p($q->b('(' . Ts('for %s only', $val) . ')')) if $val;
-      $action .= ";$_=$val" if $val; # remember these parameters in the actions!
+      $action .= ";$_=$val" if $val; # remember these parameters later!
       $val;
     }
-      ('rcidonly', 'rcuseronly', 'rchostonly', 'rcclusteronly', 'rcfilteronly');
+      ('rcidonly', 'rcuseronly', 'rchostonly', 'rcclusteronly',
+       'rcfilteronly', 'rclang');
   if ($clusterOnly) {
     $action = GetPageParameters('browse', $clusterOnly) . $action;
   } else {
@@ -1233,12 +1234,14 @@ sub RcHeader {
   }
   my ($all, $edits, $switches) = (GetParam('all',0), GetParam('showedit',0));
   if ($all and $edits) {
-    $switches = ScriptLink("$action;showedit=1", T('List latest change per page only'))
+    $switches = ScriptLink("$action;showedit=1",
+			   T('List latest change per page only'))
       . ' | ' . ScriptLink("$action;all=1", T('List only major changes'));
     $action .= ';all=1;showedit=1';
   } elsif ($all) {
     $switches = ScriptLink("$action", T('List latest change per page only'))
-      . ' | ' . ScriptLink("$action;all=1;showedit=1", T('Include minor changes'));
+      . ' | ' . ScriptLink("$action;all=1;showedit=1",
+			   T('Include minor changes'));
     $action .= ';all=1';
   } elsif ($edits) {
     $switches = ScriptLink("$action;all=1", T('List all changes'))
@@ -1249,10 +1252,10 @@ sub RcHeader {
       . ' | ' . ScriptLink("$action;showedit=1", T('Include minor changes'));
   }
   print $q->p(join(' | ', map { ScriptLink("$action;days=$_",
-					   ($_ != 1) ? Ts('%s days', $_) : Ts('%s days', $_));
+		  ($_ != 1) ? Ts('%s days', $_) : Ts('%s days', $_));
 			      } @RcDays) . $q->br() . $switches . $q->br()
-	      . ScriptLink("$action;from=$lastTs", T('List new changes starting from'))
-	      . ' ' . TimeToText($lastTs));
+	      . ScriptLink("$action;from=$lastTs",
+	   T('List new changes starting from')) . ' ' . TimeToText($lastTs));
 }
 
 sub GetRc {
@@ -1264,7 +1267,6 @@ sub GetRc {
   my @languages;
   # Slice minor edits
   my $showedit = GetParam('showedit', $ShowEdits);
-  my $langFilter = GetParam('rclang', '');
   # Filter out some entries if not showing all changes
   if ($showedit != 1) {
     my @temprc = ();
@@ -1285,9 +1287,10 @@ sub GetRc {
   }
   my $date = '';
   my $all = GetParam('all', 0);
-  my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly) =
+  my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $langFilter) =
     map { GetParam($_, ''); }
-      ('rcidonly', 'rcuseronly', 'rchostonly', 'rcclusteronly', 'rcfilteronly');
+      ('rcidonly', 'rcuseronly', 'rchostonly', 'rcclusteronly',
+       'rcfilteronly', 'rclang');
   @outrc = reverse @outrc if GetParam('newtop', $RecentTop);
   my @clusters;
   my @filters;
