@@ -14,6 +14,7 @@
 	(GetPermanentAnchorLink): Changed permanent_link to link.
 	($UseConfig): Only set when undefined, so that it can be set to 0
 	in the wrapper.
+	($AdminPass, $EditPass): Only set when undefined.
 
 2003-06-04  Alex Schroeder  <alex@gnu.org>
 
