@@ -1,3 +1,7 @@
+2004-10-02  Sebastian Blatt  <sblatt@havens.de>
+
+	* modules/dynlogo.pl: Fixed configuration and added example.
+
 2004-09-30  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetAdminBar): Moved GetGotoBar($id) out of this sub and
@@ -69,7 +73,7 @@
 	* wiki.pl (ApplyRules): Disallow | in the alternate text of
 	the [[image:page|text]] rule.  It
 	prevented [[image:page|text|page]] from reaching image.pl.
-	(GetDownloadLink): Use 
+	(GetDownloadLink): Use
 
 	* modules/image.pl (ImageSupportRule): Changed regular expression
 	a bit.
