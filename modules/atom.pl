@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: atom.pl,v 1.4 2004/08/11 10:55:20 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: atom.pl,v 1.5 2004/08/16 01:24:38 as Exp $</p>';
 
 $Action{atom} = \&DoAtom;
 
@@ -27,13 +27,18 @@ sub DoAtom {
 
 sub AtomTime {
   my ($sec, $min, $hour, $mday, $mon, $year) = gmtime(shift);
-  return sprintf( "%4d-%02d-%02dT%02d:%02d:%02d+00:00 UTC",
-		  $year+1900, $mon+1, $mday, $hour, $min, $sec);
+  return sprintf( "%4d-%02d-%02dT%02d:%02dZ",
+		  $year+1900, $mon+1, $mday, $hour, $min);
 }
 
 sub AtomTag {
-  my ($tag, $value) = @_;
-  return "<$tag>$value</$tag>\n" if $value;
+  my ($tag, $value, $escaped) = @_;
+  return '' unless $value;
+  if ($escaped) {
+    return "<$tag mode=\"escaped\">$value</$tag>\n";
+  } else {
+    return "<$tag>$value</$tag>\n";
+  }
 }
 
 sub GetRcAtom {
@@ -45,15 +50,12 @@ sub GetRcAtom {
 EOT
   my $title = $SiteName;
   my $link = $ScriptName;
-  print AtomTag('title', $title);
-  print "<link href=\"$link\" rel=\"alternate\" title=\"$title\" type=\"text/html\" />\n";
-  print AtomTag('author', "<person><name>$RssPublisher</name></person>")
-    if $RssPublisher;
-  print AtomTag('contributor', "<person><name>$RssContributor</name></person>")
-    if $RssContributor;
+  print AtomTag('title', QuoteHtml($title), 1);
+  print "<link href=\"$link\" rel=\"alternate\" title=\"$title\" type=\"text/html\"/>\n";
+  print AtomTag('author', AtomTag('name', $RssPublisher)) if $RssPublisher;
+  print AtomTag('contributor', AtomTag('name', $RssContributor)) if $RssContributor;
   print "<generator url=\"http://www.oddmuse.org/\">Oddmuse</generator>\n";
-  print AtomTag('copyright', $RssRights)
-    if $RssRights;
+  print AtomTag('copyright', QuoteHtml($RssRights), 1) if $RssRights;
   print <<EOT;
 <info mode="xml" type="text/html">
 <div xmlns="http://www.w3.org/1999/xhtml">This is an Atom formatted XML site feed. It is intended to be viewed in a Newsreader or syndicated to another site.</div>
@@ -70,32 +72,21 @@ EOT
 	  $author = $host unless $author;
 	  # output
 	  print "<entry>\n",
-	    AtomTag('title', $title),
-	    "<link href=\"$link\" rel=\"alternate\" title=\"$title\" type=\"text/html\" />\n",
-	    AtomTag('author', "<person><name>$author</name></person>"),
+	    AtomTag('title', QuoteHtml($title), 1),
+	    "<link href=\"$link\" rel=\"alternate\" title=\"$title\" type=\"text/html\"/>\n",
+	    AtomTag('author', AtomTag('name', $author, 1)),
 	    AtomTag('modified', AtomTime($timestamp)),
 	    AtomTag('issued', AtomTime($timestamp)),
-	    AtomTag('summary', $summary),
-	    "<content type=\"text/html\" mode=\"escaped\">\n",
-	    AtomPage($pagename),
-	    "\n</content>\n",
+	    AtomTag('summary', QuoteHtml($summary), 1);
+	  print '<content type="application/xhtml+xml">', "\n",
+	    '<div xmlns="http://www.w3.org/1999/xhtml">', "\n";
+	  OpenPage($pagename);
+	  PrintPageDiff();
+	  PrintPageHtml();
+	  print "\n</content>\n",
 	    "</entry>\n";
 	},
 	@_);
   print "</feed>\n";
   return '';
-}
-
-sub AtomPage {
-  my $id = shift;
-  my $result = '';
-  local *STDOUT;
-  open(STDOUT, '>', \$result) or die "Can't open memory file: $!";
-  OpenPage($id);
-  if ($Page{blocks} && $Page{flags}) {
-    PrintCache();
-  } else {
-    PrintWikiToHTML($Page{text}, 1); # save cache, current revision, no main lock
-  }
-  return QuoteHtml($result);
 }
