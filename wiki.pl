@@ -53,7 +53,7 @@ use vars qw(@RcDays @HtmlTags
   $WikiDescription $BannedCanRead $SurgeProtection
   $SurgeProtectionViews $SurgeProtectionTime $DeletedPage %Languages
   $LanguageLimit $ValidatorLink $RefererTracking $RefererTimeLimit
-  $RefererLimit $TopLinkBar);
+  $RefererLimit $TopLinkBar $NotifyWeblogs);
 
 # Other global variables:
 use vars qw(%Page %Section %Text %InterSite %KeptRevisions
@@ -63,9 +63,6 @@ use vars qw(%Page %Section %Text %InterSite %KeptRevisions
   %Referers $Monolithic);
 
 # == Configuration ==
-
-# All non-default options should be set in the config file in the data
-# directory.
 
 $DataDir   = '/tmp/oddmuse' unless $DataDir; # Main wiki directory
 $UseConfig   = 1;   # 1 = load config file in the data directory
@@ -83,7 +80,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.61 2003/05/21 01:16:25 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.62 2003/05/21 22:46:05 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -146,16 +143,16 @@ $UseLookup   = 1;   # 1 = lookup host names instead of using only IP numbers
 $RecentTop   = 1;   # 1 = most recent entries at the top of the list
 $RecentLink  = 1;   # 1 = link to usernames
 
-# RSS
+# RSS and other Weblog Technology
 $InterWikiMoniker = '';    # InterWiki prefix for this wiki for RSS
 $SiteDescription  = '';    # RSS Description of this wiki
 $RssImageUrl      = '';    # URL to image to associate with your RSS feed
 $RssPublisher     = '';    # Name of RSS publisher
 $RssContributor   = '';    # List or description of the contributors
 $RssRights        = '';    # Copyright notice for RSS
+$NotifyWeblogs    = 0;     # 1 = send pings to weblogs.com for major changes
 
 # Display short comments below the GotoBar for special days
-# Possible source: http://www.dfat.gov.au/protocol/NationalDayList/
 # Example: %SpecialDays = ('1-1' => 'New Year', '1-2' => 'Next Day');
 %SpecialDays = ();
 
@@ -168,20 +165,14 @@ $RssRights        = '';    # Copyright notice for RSS
 %Languages = ();
 
 if (not @HtmlTags) { # don't set if set in the config file
-  if ($HtmlTags) {
-    # HTML tag lists, enabled if $HtmlTags is set.
-    # Scripting is currently possible with these tags,
-    # so they are *not* particularly 'safe'.
-    # Tags that must be in <tag> ... </tag> pairs:
+  if ($HtmlTags) {   # allow many tags
     @HtmlTags = qw(b i u font big small sub sup h1 h2 h3 h4 h5 h6 cite code
                    em s strike strong tt var div center blockquote ol ul dl
                    table caption br p hr li dt dd tr td th);
-  } else {
+  } else {           # only allow a very small subset
     @HtmlTags = qw(b i u em strong tt);
   }
 }
-
-# == You should not have to change anything below this line. ==
 
 $IndentLimit = 20;                  # Maximum depth of nested lists
 $LanguageLimit = 3;                 # Number of matches req. for each language
@@ -786,23 +777,13 @@ sub InheritParameter {
 }
 
 sub RFC {
-  my ($num) = @_;
-  return &RFCLink($num);
-}
-
-sub RFCLink {
-  my ($num) = @_;
+  my $num = shift;
   return $q->a({-href=>"http://www.faqs.org/rfcs/rfc${num}.html"}, "RFC $num");
 }
 
 sub ISBN {
-  my ($num) = @_;
-  return &ISBNLink($num);
-}
-
-sub ISBNLink {
-  my ($rawnum) = @_;
-  my ($rawprint, $html, $num, $first, $second, $third); 
+  my $rawnum = shift;
+  my ($rawprint, $html, $num, $first, $second, $third);
   $num = $rawnum;
   $rawprint = $rawnum;
   $rawprint =~ s/ +$//;
@@ -983,6 +964,8 @@ sub DoBrowseRequest {
     &DoPassword();
   } elsif ($action eq 'visitors') {
     &DoShowVisitors();
+  } elsif ($action eq 'ping') {
+    &DoPingWeblogs();
   } elsif (&GetParam('edit_ban', 0)) { # after editbanned
     &DoUpdateBanned();
   } elsif (($search ne '') || (&GetParam('dosearch', '') ne '')) {
@@ -3418,6 +3401,9 @@ sub DoPost {
   }
   &ReleaseLock();
   &ReBrowsePage($id, '', 1);
+  if (not $isEdit and $NotifyWeblogs) {
+    &PingWeblogs();
+  }
 }
 
 sub GetLanguages {
@@ -3494,6 +3480,33 @@ sub UpdateDiffs {
   } else {
     &SetPageCache('diff_default_author', &GetKeptDiff($new, $oldAuthor, 0));
   }
+}
+
+# == Weblogs.Com ==
+
+sub PingWeblogs {
+  if ($q->url(-base=>1) !~ m|^http://localhost|) {
+    my $url = $q->url(-path_info=>1);
+    my $name = &UrlEncode($SiteName);
+    my $uri = "http://newhome.weblogs.com/pingSiteForm?name=$name&url=$url%3faction=rc";
+    require LWP::UserAgent;
+    my $ua = LWP::UserAgent->new;
+    my $request = HTTP::Request->new('GET', $uri);
+    return $ua->request($request);
+  }
+}
+
+sub DoPingWeblogs {
+  print &GetHeader('', T('Ping Weblogs.Com'), '');
+  return  if (!&UserIsAdminOrError());
+  my $response = &PingWeblogs();
+  if ($response) {
+    print $q->pre($response->request->uri, "\n",
+		  $response->status_line, "\n");
+  } else {
+    print $q->p(T('No response.'));
+  }
+  &PrintFooter();
 }
 
 # == Maintenance ==
