@@ -1,5 +1,20 @@
 2004-12-05  Alex Schroeder  <alex@confusibombus.emacswiki.org>
 
+	* wiki.pl (InitVariables): Use the link to the RSS feed as the
+	default for $HtmlHeaders.
+	(GetHtmlHeader): Don't add RSS feed.  It should be part of
+	$HtmlHeaders.
+	(Clean, Dirty, ApplyRules): Print clean blocks in Dirty() instead
+	of Clean().  Remove empty p elements.
+	(ApplyRules): Exchanged order of print and Dirty for one of the
+	rules.
+
+	* modules/usemod.pl (UsemodRule): Used /o for one of the rules.
+	Fixed a bug that added paragraphs in titles if
+	$UseModMarkupInTitles was set.
+
+	* Makefile (test): Changed test script to test.pl.
+
 	* modules/setext.pl (SeTextRule): Fix bug with h3 headers.
 
 	* modules/usemod.pl (UsemodRule): AddHtmlEnvironment('p')
