@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.19 2004/11/27 21:25:20 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.20 2004/12/03 08:43:33 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
@@ -38,6 +38,7 @@ sub TocRule {
 	my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '')
 	  . AddHtmlEnvironment('h' . $depth) . $q->a({-id=>'toc' . $TocCounter++});
 	$PortraitSupportColorDiv = 0; # after the HTML has been determined.
+	$PortraitSupportColor = 0;
         return $html;
     } elsif (   $UseModMarkupInTitles
 	     && m/\G[ \t]*=+\n?/cg
@@ -57,6 +58,7 @@ sub TocRule {
 	my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '') . "<h$depth>"
 	  . $q->a({-id=>'toc' . $TocCounter++}, $text) . "</h$depth>";
 	$PortraitSupportColorDiv = 0; # after the HTML has been determined.
+	$PortraitSupportColor = 0;
         return $html;
     }
     return undef;
