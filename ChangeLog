@@ -1,3 +1,14 @@
+2003-10-13  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoRc): Rewrite in a more compact call to map.
+	(GetRc): Rewrite in a more compact call to map.
+	(DoMaintain): Prune referrers.
+	(DeletePage): Rewrite in a more compact loop.
+	(ReadReferers): Call ExpireReferers.
+	(ExpireReferers): New function extracted from UpdateReferers.
+	(UpdateReferers): Don't expire referrers, since that happens upon
+	reading.
+
 2003-10-12  Alex Schroeder  <alex@gnu.org>
 
 	(SearchTitleAndBody): Support "and" and "or".
