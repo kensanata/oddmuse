@@ -1,3 +1,11 @@
+2003-04-24  Alex Schroeder  <alex@gnu.org>
+
+	* test-texi.pl: New file.
+	
+	* texi.pl: New file.
+
+	* wiki.pl ($FreeUpper): Defaults to 0.
+
 2003-04-23  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (InitRequest): Set the query object charset as suggested
