@@ -87,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.109 2003/06/18 21:33:04 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.110 2003/06/20 19:14:24 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -3449,8 +3449,10 @@ sub PingTracker {
   if ($q->url(-base=>1) !~ m|^http://localhost|) {
     my $url = UrlEncode($q->url . '/' . $id);
     my $name = UrlEncode($SiteName . ': ' . $id);
+    my $rss = UrlEncode($q->url . '?action=rss');
     # my $uri = "http://newhome.weblogs.com/pingSiteForm?name=$id&url=$url";
-    my $uri = "http://www.blogrolling.com/ping.php?pingform=single&title=$name&url_1=$url&submit=Ping";
+    # my $uri = "http://www.blogrolling.com/ping.php?pingform=single&title=$name&url_1=$url&submit=Ping";
+    my $uri = "http://ping.blo.gs/?name=$name&url=$url&rssUrl=$rss&direct=1";
     require LWP::UserAgent;
     my $ua = LWP::UserAgent->new;
     my $request = HTTP::Request->new('GET', $uri);
