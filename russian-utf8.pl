@@ -1,6 +1,7 @@
 # UTF-8 encoded Russian language file for use with Oddmuse
 #
 # Copyright (c) 2003  Zajcev Evgeny
+# Copyright (C) 2004  Andrei Bulava <abulava@users.sourceforge.net>
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
@@ -31,13 +32,13 @@ XML::RSS is not available on this system.
 LWP::UserAgent is not available on this system.
 
 diff
-
+отличия
 history
-
+история
  . . . . 
 
 Click to create this page
-
+Щелчок - создать эту страницу
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -77,7 +78,7 @@ Note: This error is normal if no changes have been made.
 Could not open old %s log file
 Не возможно открыть старый файл протокола %s 
 No updates since %s
-Небыло обновлений с %s
+Не было обновлений с %s
 Updates since %s
 Обновления с %s
 Updates in the last %s days
@@ -87,37 +88,37 @@ Updates in the last %s day
 for %s only
 только для %s
 List latest change per page only
-
+Перечислить только последнее изменение на страницу
 List only major changes
-
+Перечислить только значительные изменения
 Include minor changes
-
+Включить незначительные изменения
 List all changes
-
+Перечислить все изменения
 %s days
 %s дней
 List later changes
-
+Перечислить недавние изменения
 Username:
-
+Имя пользователя:
 Host:
-
+Хост:
 Language:
 
 Filters
-
+Фильтры
 Go!
-
+Вперёд!
 (minor)
-
+(незначительные)
 rollback
-
+откат
 from %s
 с %s
 History of %s
 История %s
 Compare
-
+Сравнить
 Revision %s
 Версия %s
 by
@@ -137,19 +138,19 @@ Rollback to %s
 redirected from %s
 перенаправлено с %s
 Click to search for references to this page
-
+Щелчок - искать ссылки на эту страницу
 Cookie: 
 
 new comment
-
+новый комментарий
 Save
 Сохранить
 Preview
 Предпросмотр
 Comments on this page
-
+Комментарии к этой странице
 Edit revision %s of this page
-Править версию % этой страницы
+Править версию %s этой страницы
 Edit text of this page
 Редактировать текст этой страницы
 This page is read-only
@@ -159,9 +160,9 @@ View other revisions
 View current revision
 Смотреть текущую версию
 View all changes
-
+Смотреть все изменения
 Back to %s
-
+Назад к %s
 Last edited
 Последнее редактирование
 Edited
@@ -183,23 +184,23 @@ EditNearLinks
 Search:
 Поиск:
 Replace:
-
+Замена:
 Validate HTML
 
 Validate CSS
 
 Difference (from revision %1 to %2)
-
+Отличия (от версии %1 до %2)
 revision %s
-
+версии %s
 current revision
-
+текущей версии
 Difference (from prior %s revision)
 Отличия (текущей версии от предыдущей - %s)
 major
-основной
+значительные
 minor
-второстепенный
+незначительные
 No diff available.
 Отличий нет.
 Changed:
@@ -267,57 +268,57 @@ Editing %s
 Editing old revision %s.
 Редактирование старой версии %s.
 Saving this page will replace the latest revision with this text.
-Сохранение этой страницы заменит последную версию на этот текст.
+Сохранение этой страницы заменит последнюю версию на этот текст.
 Summary:
 Итого:
 This change is a minor edit.
 Это изменение является незначительной правкой.
 Replace this file with text.
-
+Заменить этот файл текстом.
 Replace this text with a file.
-
+Заменить этот текст файлом.
 File to upload: 
 
 Files of type %s are not allowed.
 
 Password
-
+Пароль
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
-
+Ваш пароль сохраняется в cookie, если cookies у вас включены. Cookies могут быть потеряны, если вы подключаетесь с другого компьютера, с другой учётной записи, или используя другое программное обеспечение.
 You are currently an administrator on this site.
-
+Теперь вы - администратор на этом сайте.
 You are currently an editor on this site.
-
+Теперь вы - редактор на этом сайте.
 You are a normal user on this site.
-
+Вы - обычный пользователь на этом сайте.
 Your password does not match any of the  administrator or editor passwords.
-
+Ваш пароль не совпадает с паролями администратора или редактора.
 Password:
 Пароль:
 This site does not use admin or editor passwords.
-
+Этот сайт не использует пароли администратора или редактора.
 This operation is restricted to site editors only...
 Эта операция только для редакторов сайта...
 This operation is restricted to administrators only...
 Эта операция только для администаторов сайта...
 Index of all pages
-Проиндексировать все страницы:
+Каталог всех страниц:
 all pages
-
+все страницы
 permanent anchors
-
+неизменные якори
 near links
 
 (for %s)
-
+(%s)
 %s pages found.
-
+Найдено %s страниц.
 Replaced: %s
 
 Search for: %s
 Искать: %s
 View changes for these pages
-
+Смотреть изменения этих страниц
 Search sites on the %s as well
 
 and
