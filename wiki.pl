@@ -274,7 +274,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.229 2003/11/02 01:07:51 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.230 2003/11/02 16:58:47 as Exp $');
 }
 
 sub InitCookie {
@@ -1530,7 +1530,7 @@ sub DoHistory {
   print GetHeader('',QuoteHtml(Ts('History of %s', $id)), '');
   OpenPage($id);
   $html = GetHistoryLine($id, \%Page, $row++);
-  my @revisions = sort {$b <=> $a} map { s/\D//g; $_; } GetKeepFiles($OpenPageName);
+  my @revisions = sort {$b <=> $a} map { m|/([0-9]+).kp$|; $1; } GetKeepFiles($OpenPageName);
   foreach my $revision (@revisions) {
     my %keep = GetKeptRevision($revision);
     $html .= GetHistoryLine($id, \%keep, $row++);
@@ -3444,7 +3444,7 @@ sub DoShowVisitors {
 
 sub GetRefererFile {
   my $id = shift;
-  return $RefererDir . '/' . GetPageDirectory($id) . "/$id.rb";
+  return $RefererDir . '/' . GetPageDirectory($id) . "/$id.rf";
 }
 
 sub ReadReferers {
