@@ -36,13 +36,13 @@ local $| = 1;  # Do not buffer output (localized for mod_perl)
 
 # Configuration/constant variables:
 use vars qw(@RcDays @HtmlTags
-  $TempDir $LockDir $DataDir $KeepDir $PageDir $InterFile $RcFile
-  $RcOldFile $IndexFile $NoEditFile $BanListFile $ConfigFile $FullUrl
-  $SiteName $HomePage $LogoUrl $RcDefault $IndentLimit $RecentTop
-  $RecentLink $EditAllowed $UseDiff $UseSubpage $RawHtml $SimpleLinks
-  $NonEnglish $KeepDays $HtmlTags $HtmlLinks $KeepMajor $KeepAuthor
-  $FreeUpper $EmbedWiki $BracketText $UseConfig $UseLookup $AdminPass
-  $EditPass $NetworkFile $BracketWiki $FreeLinks $WikiLinks
+  $TempDir $LockDir $DataDir $KeepDir $PageDir $RefererDir $InterFile
+  $RcFile $RcOldFile $IndexFile $NoEditFile $BanListFile $ConfigFile
+  $FullUrl $SiteName $HomePage $LogoUrl $RcDefault $IndentLimit
+  $RecentTop $RecentLink $EditAllowed $UseDiff $UseSubpage $RawHtml
+  $SimpleLinks $NonEnglish $KeepDays $HtmlTags $HtmlLinks $KeepMajor
+  $KeepAuthor $FreeUpper $EmbedWiki $BracketText $UseConfig $UseLookup
+  $AdminPass $EditPass $NetworkFile $BracketWiki $FreeLinks $WikiLinks
   $FreeLinkPattern $RCName $RunCGI $ShowEdits $LinkPattern
   $InterLinkPattern $InterSitePattern $UrlProtocols $UrlPattern
   $ImageExtensions $RFCPattern $ISBNPattern $FS $FS0 $FS1 $FS2 $FS3
@@ -52,14 +52,15 @@ use vars qw(@RcDays @HtmlTags
   $SiteDescription $RssImageUrl $RssPublisher $RssContributor
   $RssRights $WikiDescription $BannedCanRead $SurgeProtection
   $SurgeProtectionViews $SurgeProtectionTime $DeletedPage %Languages
-  $LanguageLimit $ValidatorLink);
+  $LanguageLimit $ValidatorLink $RefererTracking $RefererTimeLimit
+  $RefererLimit);
 
 # Other global variables:
 use vars qw(%Page %Section %Text %InterSite %KeptRevisions
   %IndexHash %Translate %OldCookie %NewCookie $InterSiteInit
   $FootnoteNumber $MainPage $OpenPageName @KeptList @IndexList
   $IndexInit $Debug $q $Now $ScriptName %RecentVisitors @HtmlStack
-  $FS0used);
+  $FS0used %Referers);
 
 # == Configuration ==
 
@@ -82,7 +83,7 @@ $HttpCharset = '';  # Charset for pages, default is ISO-8859-1
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.20 2003/03/28 21:07:01 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.21 2003/04/01 12:24:03 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -129,6 +130,9 @@ $Visitors    = 1;          # 1 = maintain list of recent visitors
 $VisitorTime = 120 * 60;   # Timespan to remember visitors in seconds
 $SurgeProtectionTime = 10; # Size of the protected window in seconds
 $SurgeProtectionViews = 5; # How many page views to allow in this window
+$RefererTracking = 0;      # Keep track of referrals to your pages
+$RefererTimeLimit = 60 * 60 * 24; # How long referrals shall be remembered
+$RefererLimit = 15;        # How many different referer shall be remembered
 
 # RecentChanges and KeptPages
 $DeletedPage = "DeletedPage";   # Pages starting with this can be deleted
@@ -184,6 +188,7 @@ $IndentLimit = 20;                  # Maximum depth of nested lists
 $LanguageLimit = 3;                 # Number of matches req. for each language
 $PageDir     = "$DataDir/page";     # Stores page data
 $KeepDir     = "$DataDir/keep";     # Stores kept (old) page data
+$RefererDir  = "$DataDir/referer";  # Stores referer data
 $TempDir     = "$DataDir/temp";     # Temporary files and locks
 $LockDir     = "$TempDir/lock";     # DB is locked if this exists
 $BanListFile = "$DataDir/banlist";  # List of banned hosts and IPs
@@ -334,7 +339,7 @@ sub ApplyRules {
       } elsif (m/\G(\&lt;include +"(.*)"\&gt;\s*\n?)/cgi) { # <include "uri..."> includes the text of the given URI verbatim
 	$oldmatch = $1;
 	my $oldpos = pos;
-	&ApplyRules(&IncludeRaw($2),0);
+	&ApplyRules(&QuoteHtml(&GetRaw($2)),0);
 	pos = $oldpos;
 	&DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags); # parse recursively!
       } elsif (m/\G(\&lt;rss +"(.*)"\&gt;\s*\n?)/cgi) { # <rss "uri..."> stores the parsed RSS of the given URI
@@ -613,7 +618,7 @@ sub UrlEncode {
   return join('', @letters);
 }
 
-sub IncludeRaw {
+sub GetRaw {
   require LWP::UserAgent;
   my ($uri) = @_;
   my $ua = LWP::UserAgent->new;
@@ -622,7 +627,7 @@ sub IncludeRaw {
   my $request = HTTP::Request->new('GET', $uri);
   my $response = $ua->request($request);
   my $data = $response->content;
-  return &QuoteHtml($data);
+  return $data;
 }
 
 sub RSS {
@@ -1095,11 +1100,13 @@ sub BrowsePage {
     $openKept = 1;
     if (!defined($KeptRevisions{$revision})) {
       $goodRevision = '';
-      print '<b>' . Ts('Revision %s not available', $revision)
-	. ' (' . T('showing current revision instead') . ')</b><br>';
+      print $q->strong(Ts('Revision %s not available', $revision)
+		       . ' (' . T('showing current revision instead') . ')')
+	. $q->br();
     } else {
       &OpenKeptRevision($revision);
-      print '<b>' . Ts('Showing revision %s', $goodRevision) . '</b><br>';
+      print $q->strong(Ts('Showing revision %s', $goodRevision))
+	. $q->br();
     }
   }
   # gloval variable for some markup rules
@@ -1112,7 +1119,7 @@ sub BrowsePage {
     # Later try to avoid the following keep-loading if possible?
     &OpenKeptRevisions('text_default')  if (!$openKept);
     &PrintHtmlDiff($showDiff, $id, $diffRevision, $revision, $Text{'text'});
-    print "<hr>";
+    print $q->hr();
   }
   # print HTML of the main text
   if ($revision eq '' && &GetPageCache('blocks') && &GetParam('cache',1)) {
@@ -1120,10 +1127,14 @@ sub BrowsePage {
   } else {
     &PrintWikiToHTML($Text{'text'}, $revision);
   }
-  print '<hr>'  if (!&GetParam('embed', $EmbedWiki));
+  my $embed = &GetParam('embed', $EmbedWiki);
+  print $q->hr()  if (!$embed);
   if ($rc) {
     &DoRc(\&GetRcHtml);
-    print '<hr>'  if (!&GetParam('embed', $EmbedWiki));
+    print $q->hr()  if (!$embed);
+  }
+  if ($RefererTracking && !$embed) {
+    print &RefererTrack($id);
   }
   print &GetFooterText($id, $goodRevision);
 }
@@ -1150,16 +1161,15 @@ sub DoRc {
   if (&GetParam('from', 0)) {
     $starttime = &GetParam('from', 0);
    if( $showHTML ) {
-      print '<h2>' . Ts('Updates since %s', &TimeToText($starttime))
-	    . "</h2>\n";
+      print $q->h2(Ts('Updates since %s', &TimeToText($starttime)));
     }
   } else {
     $daysago = &GetParam('days', 0);
     if ($daysago) {
       $starttime = $Now - ((24*60*60)*$daysago);
       if( $showHTML ) {
-	print '<h2>' . Ts('Updates in the last %s day'
-			  . (($daysago != 1)?'s':''), $daysago) . "</h2>\n";
+	print $q->h2(Ts('Updates in the last %s day'
+			. (($daysago != 1)?'s':''), $daysago));
       }
       # Note: must have two translations (for "day" and "days")
       # Following comment line is for translation helper script
@@ -1169,8 +1179,8 @@ sub DoRc {
   if ($starttime == 0) {
     $starttime = $Now - ((24*60*60)*$RcDefault);
     if( $showHTML ) {
-      print '<h2>' . Ts('Updates in the last %s day'
-			. (($RcDefault != 1)?'s':''), $RcDefault) . "</h2>\n";
+      print $q->h2(Ts('Updates in the last %s day'
+		      . (($RcDefault != 1)?'s':''), $RcDefault));
     }
     # Translation of above line is identical to previous version
   }
@@ -1179,10 +1189,11 @@ sub DoRc {
   $errorText = '';
   if (!$status) {
     # Save error text if needed.
-    $errorText = '<p><strong>' . Ts('Could not open %s log file', $RCName)
-		 . ":</strong> $RcFile<p>"
-		 . T('Error was') . ":\n<pre>$!</pre>\n" . '<p>'
-    . T('Note: This error is normal if no changes have been made.') . "\n";
+    $errorText = $q->p($q->strong(Ts('Could not open %s log file', $RCName)
+				  . ':') . ' ' . $RcFile)
+      . $q->p(T('Error was') . ':')
+      . $q->pre($!)
+      . $q->p(T('Note: This error is normal if no changes have been made.'));
   }
   @fullrc = split(/\n/, $fileData);
   $firstTs = 0;
@@ -1196,11 +1207,11 @@ sub DoRc {
     } else {
       if ($errorText ne '') {  # could not open either rclog file
 	print $errorText;
-	print '<p><strong>'
-	      . Ts('Could not open old %s log file', $RCName)
-	      . ":</strong> $RcOldFile<p>"
-	      . T('Error was') . ":\n<pre>$!</pre>\n";
-	return;
+	print $q->p($q->strong(Ts('Could not open old %s log file', $RCName)
+				  . ':') . ' ' . $RcOldFile)
+	  . $q->p(T('Error was') . ':')
+	  . $q->pre($!);
+        return;
       }
     }
   }
@@ -1782,6 +1793,7 @@ img.logo { float: right; clear: right; border-style:none; }
 div.diff { padding-left:5%; padding-right:5%; }
 div.old { background-color:#FFFFAF; color:#000; }
 div.new { background-color:#CFFFCF; color:#000; }
+div.refer { padding-left:5%; padding-right:5%; font-size:smaller; }
 table.history { border-style:none; }
 td.history { border-style:none; }
 table.user { border-style:solid; border-width:thin; }
@@ -2544,12 +2556,15 @@ sub ReleaseLock {
 }
 
 sub ForceReleaseLock {
-  my ($name) = @_;
+  my ($pattern) = @_;
   my $forced;
-  # First try to obtain lock (in case of normal edit lock)
-  # 5 tries, 3 second wait, do not die on error
-  $forced = !&RequestLockDir($name, 5, 3, 0);
-  &ReleaseLockDir($name);  # Release the lock, even if we didn't get it.
+  foreach my $name (glob $pattern) {
+    # First try to obtain lock (in case of normal edit lock)
+    # 5 tries, 3 second wait, do not die on error
+    # return 1 if any of the globs was forced
+    $forced = 1 if !&RequestLockDir($name, 5, 3, 0);
+    &ReleaseLockDir($name);  # Release the lock, even if we didn't get it.
+  }
   return $forced;
 }
 
@@ -2578,6 +2593,17 @@ sub RequestMergeLock {
 
 sub ReleaseMergeLock {
   &ReleaseLockDir('merge');
+}
+
+sub RequestRefererLock {
+  # 4 tries, 2 second wait, do not die on error
+  my $id = shift;
+  return &RequestLockDir('refer_' . $id, 4, 2, 0);
+}
+
+sub ReleaseRefererLock {
+  my $id = shift;
+  &ReleaseLockDir('refer_' . $id);
 }
 
 # Index lock is not very important--just return error if not available
@@ -2609,6 +2635,9 @@ sub DoUnlock {
   }
   if (&ForceReleaseLock('visitors')) {
     $message .= $q->p(Ts('Forced unlock of %s lock.', 'visitors')) . "\n";
+  }
+  if (&ForceReleaseLock('refer_*')) {
+    $message .= $q->p(Ts('Forced unlock of %s lock.', 'referer')) . "\n";
   }
   if ($message) {
     print $message;
@@ -3883,6 +3912,75 @@ sub DoShowVisitors {
   }
   print '</ul>';
   print &GetCommonFooter();
+}
+
+# == Track Back ==
+
+sub GetRefererFile {
+  my ($id) = @_;
+  return $RefererDir . '/' . &GetPageDirectory($id) . "/$id.rb";
+}
+
+sub ReadReferers {
+  my ($id) = @_;
+  my $file = &GetRefererFile($id);
+  %Referers = ();
+  if (-f $file) {
+    my ($status, $data) = &ReadFile($file);
+    %Referers = split(/$FS1/, $data, -1) if $status;
+  }
+}
+
+sub GetReferers {
+  my $result = join(' ', map { $q->a({-href=>$_}, $_) } keys %Referers);
+  $result = $q->div({-class=>'refer'}, $q->p(T('Referers') . ': ' . $result)) if $result;
+  return $result;
+}
+
+sub UpdateReferers {
+  my ($id) = @_;
+  my $self = $q->url();
+  my $referer = $q->referer();
+  if ($referer and $referer !~ /$self/) {
+    my $data = &GetRaw($referer);
+    if ($data =~ /$self/) {
+      $Referers{$referer} = $Now;
+      if ($RefererTimeLimit) {
+	foreach (keys %Referers) {
+	  if ($Now - $Referers{$_} > $RefererTimeLimit) {
+	    delete $Referers{$_};
+	  }
+	}
+      }
+      if ($RefererLimit) {
+	my @list = sort {$Referers{$a} cmp $Referers{$b}} keys %Referers;
+	@list = @list[$RefererLimit .. @list-1];
+	foreach (@list) {
+	  delete $Referers{$_};
+	}
+      }
+      return 1;
+    }
+  }
+}
+
+sub WriteReferers {
+  my ($id) = @_;
+  my $data = join($FS1, map { $_ . $FS1 . $Referers{$_} } keys %Referers);
+  my $file = &GetRefererFile($id);
+  &RequestRefererLock($id);
+  &CreatePageDir($RefererDir, $id);
+  &WriteStringToFile($file, $data);
+  &ReleaseRefererLock($id);
+}
+
+sub RefererTrack {
+  my ($id) = @_;
+  &ReadReferers($id);
+  if (&UpdateReferers($id)) {
+    &WriteReferers($id);
+  }
+  return &GetReferers();
 }
 
 &DoWikiRequest()  if ($RunCGI && ($_ ne 'nocgi'));   # Do everything.
