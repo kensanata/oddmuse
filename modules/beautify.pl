@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: beautify.pl,v 1.2 2004/08/06 11:13:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: beautify.pl,v 1.3 2004/12/05 03:23:04 as Exp $</p>';
 
 use Beautifier::Core;
 use Output::HTML;
@@ -35,7 +35,7 @@ sub BeautificationRule {
     $result = $@ if $@;
     $_ = $old_;
     pos = $oldpos;
-    return CloseHtmlEnvironments() . $q->pre({-class=>'beauty'}, $result);
+    return CloseHtmlEnvironments() . $q->pre({-class=>'beauty'}, $result) . AddHtmlEnvironment('p');
   }
   return undef;
 }
