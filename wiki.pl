@@ -59,7 +59,7 @@ $ValidatorLink $RefererTracking $RefererTimeLimit $RefererLimit
 $DefaultStyleSheet $AllNetworkFiles $UsePathInfo $UploadAllowed
 $LastUpdate $PageCluster $RssInterwikiTranslate $UseCache $ModuleDir
 $HtmlHeaders $DebugInfo %InvisibleCookieParameters $FullUrlPattern
-$FreeInterLinkPattern);
+$FreeInterLinkPattern @AdminPages @AdminBlocks);
 
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
@@ -261,7 +261,8 @@ $SisterSiteLogoUrl = 'file:///tmp/oddmuse/%s.png'; # URL format string for logos
 	    download => \&DoDownload,	    rss => \&DoRss,
 	    unlock => \&DoUnlock,	    password => \&DoPassword,
 	    index => \&DoIndex,		    visitors => \&DoShowVisitors,
-	    refer => \&DoPrintAllReferers,  all => \&DoPrintAllPages, );
+	    refer => \&DoPrintAllReferers,  all => \&DoPrintAllPages,
+	    admin => \&DoAdminPage, );
 
 # The 'main' program, called at the end of this script file (aka. as handler)
 sub DoWikiRequest {
@@ -341,8 +342,9 @@ sub InitVariables {    # Init global session variables for mod_perl!
   ReportError(Ts('Could not create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR')
     unless -d $DataDir;
   @UserGotoBarPages = ($HomePage, $RCName) unless @UserGotoBarPages;
-  @LockOnCreation = ($BannedHosts, $RefererFilter, $StyleSheetPage, $ConfigPage, $InterMap,
-		     $NearMap, $RssInterwikiTranslate, $BannedContent) unless @LockOnCreation;
+  @AdminPages = sort ($BannedHosts, $RefererFilter, $StyleSheetPage, $ConfigPage, $InterMap,
+		      $NearMap, $RssInterwikiTranslate, $BannedContent);
+  @LockOnCreation = @AdminPages unless @LockOnCreation;
   my $add_space = $CommentsPrefix =~ /[ \t_]$/;
   map { $$_ = FreeToNormal($$_); } # convert spaces to underscores on all configurable pagenames
     (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$RefererFilter, \$StyleSheetPage, \$NearMap,
@@ -352,7 +354,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.506 2005/01/02 15:52:48 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.507 2005/01/04 06:27:00 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1851,6 +1853,39 @@ sub DoRollback {
   PrintFooter();
 }
 
+# == Administration ==
+
+sub DoAdminPage {
+  my $id = shift;
+  print GetHeader('', T('Administration'), ''), $q->start_div({-class=>'content admin'});
+  my @menu = (ScriptLink('action=index', T('Index of all pages')),
+	      ScriptLink('action=maintain', T('Run maintenance')));
+  if (UserIsAdmin()) {
+    if (-f "$DataDir/noedit") {
+      push(@menu, ScriptLink('action=editlock;set=0', T('Unlock site')));
+    } else {
+      push(@menu, ScriptLink('action=editlock;set=1', T('Lock site')));
+    }
+    if ($id) {
+      my $title = $id;
+      $title =~ s/_/ /g;
+      if (-f GetLockedPageFile($id)) {
+	push(@menu, ScriptLink('action=pagelock;set=0;id=' . UrlEncode($id), Ts('Unlock %s', $title)));
+      } else {
+	push(@menu, ScriptLink('action=pagelock;set=1;id=' . UrlEncode($id), Ts('Lock %s', $title)));
+      }
+    }
+  }
+  print $q->p(T('Actions:')), $q->ul($q->li(\@menu));
+  print $q->p(T('Important pages:')) . $q->ul(map { $q->li(GetPageLink($_)) if $_ } @AdminPages);
+  foreach my $block (@AdminBlocks) {
+    print $block;
+  }
+  print $q->p(Ts('To mark a page for deletion, put <strong>%s</strong> on the first line.', $DeletedPage)),
+    $q->end_div();
+  PrintFooter();
+}
+
 # == HTML and page-oriented functions ==
 
 sub GetPageParameters {
@@ -2052,7 +2087,6 @@ sub PrintFooter {
   print GetCommentForm($id, $rev, $comment);
   print $q->start_div({-class=>'footer'}) . $q->hr();
   print GetGotoBar($id), GetFooterLinks($id, $rev);
-  print GetAdminBar($id, $rev) if UserIsAdmin();
   print GetFooterTimestamp($id, $rev), GetSearchForm();
   if ($DataDir =~ m|/tmp/|) {
     print $q->p($q->strong(T('Warning') . ': ')
@@ -2101,25 +2135,6 @@ sub GetFooterTimestamp {
   return '';
 }
 
-sub GetAdminBar {
-  my ($id, $rev) = @_;
-  my @elements = ($q->br(), ScriptLink('action=maintain', T('Run maintenance')));
-  if (-f "$DataDir/noedit") {
-    push(@elements, ScriptLink('action=editlock;set=0', T('Unlock site')));
-  } else {
-    push(@elements, ScriptLink('action=editlock;set=1', T('Lock site')));
-  }
-  if (-f GetLockedPageFile($id)) {
-    push(@elements, ScriptLink('action=pagelock;set=0;id=' . UrlEncode($id), T('Unlock page')));
-  } else {
-    push(@elements, ScriptLink('action=pagelock;set=1;id=' . UrlEncode($id), T('Lock page')));
-  }
-  foreach my $page (@LockOnCreation) {
-    push(@elements, GetPageLink($page)) if $page;
-  }
-  return $q->span({-class=>'admin bar'}, @elements) if @elements;
-}
-
 sub GetFooterLinks {
   my ($id, $rev) = @_;
   my @elements;
@@ -2148,6 +2163,11 @@ sub GetFooterLinks {
   if ($rev ne '') {
     push(@elements, GetPageLink($id, T('View current revision')),
 	 GetRCLink($id, T('View all changes')));
+  }
+  if (GetParam('action', '') ne 'admin') {
+    my $action = 'action=admin';
+    $action .= ';id=' . $id if $id;
+    push(@elements, ScriptLink($action, T('Administration')))
   }
   return @elements ? $q->span({-class=>'edit bar'}, $q->br(), @elements) : '';
 }
@@ -2929,25 +2949,49 @@ sub DoIndex {
   my $pages = GetParam('pages', 1);
   my $anchors = GetParam('permanentanchors', 1);
   my $near = GetParam('near', 0);
-  if ($raw) {
-    print GetHttpHeader('text/plain');
-  } else {
-    print GetHeader('', T('Index of all pages'), ''), $q->start_div({-class=>'content index'});
-    my @for;
-    push(@for, T('all pages')) if $pages;
-    push(@for, T('permanent anchors')) if $anchors;
-    push(@for, T('near links')) if $near;
-    push(@for, GetParam('lang', '')) if GetParam('lang', '');
-    print $q->p($q->b(Ts('(for %s)', join(', ', @for))));
-  }
-  ReadPermanentAnchors() if $anchors and not $PermanentAnchorsInit;
-  NearInit() if $near and not $NearSiteInit;
+  NearInit() if not $NearSiteInit; # init always to get the menu right
+  ReadPermanentAnchors() if $PermanentAnchors and not $PermanentAnchorsInit;
   push(@pages, AllPagesList()) if $pages;
   push(@pages, keys %PermanentAnchors) if $anchors;
   push(@pages, keys %NearSource) if $near;
   @pages = sort @pages;
+  if ($raw) {
+    print GetHttpHeader('text/plain');
+  } else {
+    print GetHeader('', T('Index of all pages'), ''), $q->start_div({-class=>'content index'});
+    my @menu = ();
+    if (%PermanentAnchors or %NearSource) { # only show when there is something to show
+      if ($pages) {
+	push(@menu, ScriptLink("action=index;pages=0;permanentanchors=$anchors;near=$near",
+			       T('Without normal pages')));
+      } else {
+	push(@menu, ScriptLink("action=index;pages=1;permanentanchors=$anchors;near=$near",
+			       T('Include normal pages')));
+      }
+    }
+    if (%PermanentAnchors) { # only show when there is something to show
+      if ($anchors) {
+	push(@menu, ScriptLink("action=index;pages=$pages;permanentanchors=0;near=$near",
+			       T('Without permanent anchors')));
+      } else {
+	push(@menu, ScriptLink("action=index;pages=$pages;permanentanchors=1;near=$near",
+			       T('Include permanent anchors')));
+      }
+    }
+    if (%NearSource) { # only show when there is something to show
+      if ($near) {
+	push(@menu, ScriptLink("action=index;pages=$pages;permanentanchors=$anchors;near=0",
+			       T('Without near pages')));
+      } else {
+	push(@menu, ScriptLink("action=index;pages=$pages;permanentanchors=$anchors;near=1",
+			       T('Include near pages')));
+      }
+    }
+    push(@menu, $q->b(Ts('(for %s)', GetParam('lang', '')))) if GetParam('lang', '');
+    print $q->p(@menu);
+  }
   print $q->h2(Ts('%s pages found.', ($#pages + 1))), $q->start_p() unless $raw;
-  map { PrintPage($_); } @pages;
+  foreach (@pages) { PrintPage($_) }
   print $q->end_p(), $q->end_div() unless $raw;
   PrintFooter() unless $raw;
 }
@@ -3625,6 +3669,7 @@ sub DoEditLock {
   } else {
     unlink($fname);
   }
+  utime time, time, $IndexFile; # touch index file
   if (-f $fname) {
     print $q->p(T('Edit lock created.'));
   } else {
@@ -3649,6 +3694,7 @@ sub DoPageLock {
   } else {
     unlink($fname);
   }
+  utime time, time, $IndexFile; # touch index file
   if (-f $fname) {
     print $q->p(Ts('Lock for %s created.', $id));
   } else {
