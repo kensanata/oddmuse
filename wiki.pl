@@ -274,7 +274,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.197 2003/10/14 22:39:25 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.198 2003/10/14 23:09:00 as Exp $');
 }
 
 sub InitCookie {
@@ -1270,18 +1270,19 @@ sub RcHeader {
     ($lastTs) = split(/$FS3/, $_[$#_]);
   }
   $lastTs++  if (($Now - $lastTs) > 5);  # Skip last unless very recent
+  my ($showbar, $html, $action);
   my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly) =
     map {
       my $val = GetParam($_, '');
       print $q->p($q->b('(' . Ts('for %s only', $val) . ')')) if $val;
+      $action .= ";$_=$val" if $val; # remember these parameters in the actions!
       $val;
     }
       ('rcidonly', 'rcuseronly', 'rchostonly', 'rcclusteronly', 'rcfilteronly');
-  my ($showbar, $html, $action);
   if ($clusterOnly) {
-    $action .= GetPageParameters('browse', $clusterOnly, '', $clusterOnly);
+    $action = GetPageParameters('browse', $clusterOnly, '', $clusterOnly) . $action;
   } else {
-    $action = 'action=rc';
+    $action = "action=rc$action";
   }
   foreach my $i (@RcDays) {
     $html .= ' | '  if $showbar;
