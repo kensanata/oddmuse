@@ -39,25 +39,24 @@ system('/bin/rm -rf /tmp/oddmuse');
 mkdir '/tmp/oddmuse';
 open(F,'>/tmp/oddmuse/config');
 print F "\$NetworkFile = 1;\n";
-close(F);
-open(F,'>/tmp/oddmuse/intermap');
-print F "OddMuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n";
+print F "\$AdminPass = 'foo';\n";
 close(F);
 
 ### COMPLEX HTML OUTPUT TESTS
 
 sub update_page {
-  my ($id, $text, $summary, $minor) = @_;
+  my ($id, $text, $summary, $minor, $admin) = @_;
   print '*';
+  my $pwd = $admin ? 'foo' : 'wrong';
   $text = UrlEncode($text);
   $summary = UrlEncode($summary);
   $minor = 0 unless $minor;
-  open(F,"perl wiki.pl action=edit id=$id |");
+  open(F,"perl wiki.pl action=edit id=$id pwd=$pwd |");
   my $output = <F>;
   close F;
   $output =~ /name="oldtime" value="([0-9]+)"/;
   my $oldtime = $1;
-  system("perl wiki.pl oldtime=$oldtime title=$id summary=$summary text=$text > /dev/null");
+  system("perl wiki.pl oldtime=$oldtime title=$id summary=$summary text=$text pwd=$pwd > /dev/null");
   open(F,"perl wiki.pl action=browse id=$id|");
   my $output = <F>;
   close F;
@@ -88,6 +87,48 @@ sub test_page {
   }
   print "\n\nPage content:\n", $page, "\n" if $printpage;
 }
+
+## Try to edit BanList
+
+@Test = split('\n',<<'EOT');
+Describe the new page here
+EOT
+
+test_page(update_page('BannedHosts', "Foo\nBar\n localhost\n", 'banning me'), @Test);
+
+## Try to edit BanList
+
+@Test = split('\n',<<'EOT');
+Foo
+ localhost
+EOT
+
+test_page(update_page('BannedHosts', "Foo\n localhost\n", 'banning me', 0, 1), @Test);
+
+## Try to edit another page as a banned user
+
+@Test = split('\n',<<'EOT');
+Describe the new page here
+EOT
+
+test_page(update_page('BannedUser', 'This is a test.', 'banning test'), @Test);
+
+## Try to edit the same page as a banned user with admin password
+
+@Test = split('\n',<<'EOT');
+This is a test
+EOT
+
+test_page(update_page('BannedUser', 'This is a test.', 'banning test', 0, 1), @Test);
+
+## Unbann myself again, testing the regexp
+
+@Test = split('\n',<<'EOT');
+Foo
+localhost
+EOT
+
+test_page(update_page('BannedHosts', "Foo\nlocalhost\n", 'banning me', 0, 1), @Test);
 
 ## Create a sample page, and test for regular expressions in the output
 
@@ -125,6 +166,10 @@ second test
 EOT
 
 test_page(get_page('action=rc'), @Test);
+
+## Create InterMap page
+
+update_page('InterMap', " OddMuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n", 'required');
 
 ### SIMPLE MARKUP TESTS
 
