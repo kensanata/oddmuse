@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.367 2004/04/02 00:15:26 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.368 2004/04/02 00:21:48 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -511,7 +511,7 @@ sub ApplyRules {
       Clean("<a$1>$2</a>");
     } elsif ($locallinks
 	     and ($BracketText && m/\G(\[$InterLinkPattern\s+([^\]]+?)\])/cog
-		  or m/\G($InterLinkPattern)/cog)) {
+		  or m/\G(\[$InterLinkPattern\])/cog or m/\G($InterLinkPattern)/cog)) {
       # [InterWiki:FooBar text] or [InterWiki:FooBar] or InterWiki:FooBar -- Interlinks can change
       # when the intermap changes (local config, therefore depend on $locallinks).  The intermap
       # is only read if necessary, so if this not an interlink, we have to backtrack a bit.
@@ -529,10 +529,15 @@ sub ApplyRules {
 	    or m/\G(\[$UrlPattern\])/cog or m/\G($UrlPattern)/cog) {
       # [URL text] makes [text] link to URL, [URL] makes footnotes [1]
       my $bracket = (substr($1, 0, 1) eq '[');
-      Clean(GetUrl($2, $3, $bracket, not $bracket)); # $2 may be empty
+      if ($bracket and not $3) { # [URL] is dirty because the number may change
+	Dirty($1);
+	print GetUrl($2, '', 1);
+      } else {
+	Clean(GetUrl($2, $3, $bracket, not $bracket)); # $2 may be empty
+      }
     } elsif ($WikiLinks && m/\G!$LinkPattern/cog) { Clean($1); # ! gets eaten
     } elsif ($PermanentAnchors && m/\G(\[::$FreeLinkPattern\])/cog) {
-      # [::Free Link] permanent anchor create only $withanchors
+      #[::Free Link] permanent anchor create only $withanchors
       Dirty($1);
       if ($withanchors) {
 	print GetPermanentAnchor($2);
@@ -541,7 +546,7 @@ sub ApplyRules {
       }
     } elsif ($WikiLinks && $locallinks
 	     && ($BracketWiki && m/\G(\[$LinkPattern\s+([^\]]+?)\])/cog
-		 or m/\G($LinkPattern)/cog)) {
+		 or m/\G(\[$LinkPattern\])/cog or m/\G($LinkPattern)/cog)) {
       # [LocalPage text], [LocalPage], LocalPage
       Dirty($1);
       my $bracket = (substr($1, 0, 1) eq '[');
@@ -552,6 +557,7 @@ sub ApplyRules {
       print GetDownloadLink($2, 1);
     } elsif ($FreeLinks && $locallinks
 	     && ($BracketWiki && m/\G(\[\[$FreeLinkPattern\|([^\]]+)\]\])/cog
+		 or m/\G(\[\[\[$FreeLinkPattern\]\]\])/cog
 		 or m/\G(\[\[$FreeLinkPattern\]\])/cog)) {
       # [[Free Link|text]], [[Free Link]]
       Dirty($1);
