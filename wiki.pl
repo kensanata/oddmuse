@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.404 2004/05/29 01:18:54 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.405 2004/05/29 01:37:24 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -942,6 +942,7 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
   if ($resolved) { # anchors don't exist as pages, therefore do not use $exists
     $text = $id unless $text;
     $text =~ s/_/ /g if $free;
+    return $q->a({-class=>$class, -href=>$resolved, -title=>$title}, $text) if $class eq 'near';
     return ScriptLink(UrlEncode($resolved), $text, $class, undef, $title);
   } else {
     # $free and $bracket usually exclude each other
