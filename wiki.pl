@@ -81,7 +81,7 @@ $HttpCharset = '';  # Charset for pages, default is ISO-8859-1
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.6 2003/03/21 21:00:10 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.7 2003/03/22 01:48:31 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -1889,12 +1889,16 @@ sub GetSearchForm {
 }
 
 sub GetValidatorLink {
-  return $q->a({-href => 'http://validator.w3.org/check?uri='
-		. &QuoteHtml('http://'
-			     . $q->server_name() . ':'
-			     . $q->server_port()
-			     . $q->script_name()
-			     . $q->path_info())}, T('Validate HTML'));
+  my $uri = &QuoteHtml('http://'
+		       . $q->server_name() . ':'
+		       . $q->server_port()
+		       . $q->script_name()
+		       . $q->path_info());
+  return $q->a({-href => 'http://validator.w3.org/check?uri=' . $uri},
+	       T('Validate HTML'))
+    . ' '
+    . $q->a({-href => 'http://jigsaw.w3.org/css-validator/validator?uri=' . $uri},
+	    T('Validate CSS'));
 }
 
 sub GetRedirectPage {
