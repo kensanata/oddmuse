@@ -5,6 +5,9 @@
 	(Save): Save languages as part of the page.
 	(GetLanguages): Return the languages in a string instead of a listref.
 	(WriteRcLog): Use the languages string directly.
+	($UseCache): New variable.
+	(BrowsePage): Check it before allowing the use of the cache.
+	(PrintAllPages): Check it before allowing the use of the cache.
 
 2003-11-20  Alex Schroeder  <alex@gnu.org>
 
