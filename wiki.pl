@@ -286,7 +286,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.281 2003/12/27 22:21:23 uid68242 Exp $');
+    . $q->p('$Id: wiki.pl,v 1.282 2003/12/28 02:06:31 uid68242 Exp $');
 }
 
 sub InitCookie {
@@ -3586,6 +3586,7 @@ sub DoShowVersion {
   print $WikiDescription;
   if (GetParam('dependencies', 0)) {
     print $q->p($q->server_software());
+    printf ($q->p('Perl v%vd'), $^V);
     print $q->p('CGI: ', $CGI::VERSION,
 		'XML::RSS: ', eval { local $SIG{__DIE__}; require XML::RSS; $XML::RSS::VERSION; },
 		'XML::Parser: ', eval { local $SIG{__DIE__}; $XML::Parser::VERSION; }, );
