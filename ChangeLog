@@ -1,6 +1,6 @@
 2003-06-01  Alex Schroeder  <alex@gnu.org>
 
-	* wiki.pl ($StyleSheetPage): New.
+	* wiki.pl ($StyleSheetPage): New, default to empty.
 	(@LockOnCreation): Added it.
 	(%CookieParameters): Added 'theme'.
 	(GetHtmlHeader): Use $StyleSheetPage if no $StyleSheet is given.
