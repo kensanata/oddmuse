@@ -1,6 +1,9 @@
 2004-03-15  Alex Schroeder  <alex@gnu.org>
 
-	* wiki.pl (RSS): Use three-digit numbers to number items without a
+	* wiki.pl (InitVariables): Add $RssInterwikiTranslate.
+	(PrintFooter): Added admin bar inspired from UseMod 1.0.
+
+	(RSS): Use three-digit numbers to number items without a
 	timestamp, so that the number is not recognized as a valid
 	date (year-only) when printing the lines.
 
