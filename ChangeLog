@@ -1,6 +1,13 @@
 2003-11-27  Alex Schroeder  <alex@gnu.org>
 
-	* wiki.pl (%CookieParameters): Added 'lang'.
+	* wiki.pl (SearchTitleAndBody, GetRc): Tweaking handling of "none".
+	(DoSearch): Only replace when lang is not given.
+	(PrintPageList): Handle raw parameter.
+	(DoBrowseRequest): Call DoIndex without raw parameter.
+	(DoIndex): Print header only when no raw parameter; retrieve it here.
+	(GetSearchForm, GetFilterForm): Use lang parameter as default.
+
+	(%CookieParameters): Added 'lang'.
 	(RcHeader, GetFilterForm, GetRc): Changed 'rclang' to 'lang'.
 	(GetSearchForm): Add language textfield.
 	(SearchTitleAndBody): Filter by languages.
