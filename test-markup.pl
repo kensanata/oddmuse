@@ -21,6 +21,12 @@
 # This program uses test-wrapper.el to run ApplyRules,
 # because ApplyRules prints the result to stdout.
 
+# Import the functions
+
+package OddMuse;
+$_ = 'nocgi';
+do 'wiki.pl';
+
 my ($passed, $failed) = (0, 0);
 my $resultfile = "/tmp/test-markup-result-$$";
 undef $/;
@@ -29,6 +35,7 @@ $| = 1; # no output buffering
 # Create temporary data directory as expected by the script
 # and create a config file in this directory.
 
+system('/bin/rm -rf /tmp/oddmuse');
 mkdir '/tmp/oddmuse';
 open(F,'>/tmp/oddmuse/config');
 print F "\$NetworkFile = 1;\n";
@@ -36,6 +43,88 @@ close(F);
 open(F,'>/tmp/oddmuse/intermap');
 print F "OddMuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n";
 close(F);
+
+### COMPLEX HTML OUTPUT TESTS
+
+sub update_page {
+  my ($id, $text, $summary, $minor) = @_;
+  print '*';
+  $text = UrlEncode($text);
+  $summary = UrlEncode($summary);
+  $minor = 0 unless $minor;
+  open(F,"perl wiki.pl action=edit id=$id |");
+  my $output = <F>;
+  close F;
+  $output =~ /name="oldtime" value="([0-9]+)"/;
+  my $oldtime = $1;
+  system("perl wiki.pl oldtime=$oldtime title=$id summary=$summary text=$text > /dev/null");
+  open(F,"perl wiki.pl action=browse id=$id|");
+  my $output = <F>;
+  close F;
+  return $output;
+}
+
+sub get_page {
+  my ($params) = @_;
+  print '*';
+  open(F,"perl wiki.pl $params |");
+  my $output = <F>;
+  close F;
+  return $output;
+}
+
+sub test_page {
+  my $page = shift;
+  my $printpage = 0;
+  foreach my $str (@_) {
+    print '.';
+    if ($page =~ /$str/) {
+      $passed++;
+    } else {
+      $failed++;
+      $printpage = 1;
+      print "\nSimple Test: Did not find \"", $str, '"';
+    }
+  }
+  print "\n\nPage content:\n", $page, "\n" if $printpage;
+}
+
+## Create a sample page, and test for regular expressions in the output
+
+@Test = split('\n',<<'EOT');
+SandBox
+This is a test.
+<h1><a href="wiki.pl\?search=SandBox">SandBox</a></h1>
+EOT
+
+test_page(update_page('SandBox', 'This is a test.', 'first test'), @Test);
+
+## Test RecentChanges
+
+@Test = split('\n',<<'EOT');
+RecentChanges
+first test
+EOT
+
+test_page(get_page('action=rc'), @Test);
+
+## Updated the page
+
+@Test = split('\n',<<'EOT');
+RecentChanges
+This is another test.
+EOT
+
+test_page(update_page('SandBox', 'This is another test.', 'second test'), @Test);
+
+## Test RecentChanges
+
+@Test = split('\n',<<'EOT');
+RecentChanges
+second test
+EOT
+
+test_page(get_page('action=rc'), @Test);
 
 ### SIMPLE MARKUP TESTS
 
@@ -111,7 +200,7 @@ foreach my $input (keys %New) {
   print F $input;
   close F;
   open(F,$resultfile);
-  $output = <F>;
+  my $output = <F>;
   close F;
   if ($output eq $New{$input}) {
     $passed++;
