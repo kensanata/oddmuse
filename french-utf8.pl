@@ -16,7 +16,7 @@
 #
 # do 'french-utf8.pl;
 #
-# This translation was last checked for Oddmuse version 1.105.
+# This translation was last checked for Oddmuse version 1.195.
 #
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
@@ -41,6 +41,16 @@ Invalid action parameter %s
 Parmètre d'action invalide %s
 Invalid URL.
 URL non valide
+Page name is too long: %s
+Nom de page trop long: %s
+Invalid Page %s
+Page non valide %s
+Invalid Page %s (must not end with .db)
+Page non valide %s (elle ne doit pas se terminer par .db)
+Invalid Page %s (must not end with .lck)
+Page non valide %s (elle ne doit pas se terminer par .lck)
+Page name may not contain space characters: %s
+Le nom de la page ne peut pas contenir d'espaces: %s
 Revision %s not available
 La version %s n'est pas disponible
 showing current revision instead
@@ -73,26 +83,40 @@ No updates since %s
 Aucune mise à jour depuis le %s
 Page generated %s
 Page générée le %s
+Related changes
+
 (minor)
 (mineur)
 (diff)
 (diff)
 history
 historique
+rollback
+
+Cluster:
+
+from %s
+depuis %s
 History of %s
 Historique de %s
 Compare
 Comparaison
- . . . . 
- . . . . 
 Revision %s
 Version %s
-Edit
-Modification
+ . . . . 
+ . . . . 
 by
 par
-from %s
-depuis %s
+Rolling back changes
+
+Missing target for rollback.
+
+Target for rollback is too far back.
+
+Rollback to %s
+
+%s rolled back
+
 [Home]
 [Accueil]
 redirected from %s
@@ -117,12 +141,16 @@ View other revisions
 Voir les autres versions
 View current revision
 Voir la version actuelle
+View all changes
+
 View original
 Voir l'original
 Last edited
 Dernière modification
 Edited
 Modifié
+by %s
+
 Warning
 ATTENTION
 Database is stored in temporary directory %s
@@ -141,22 +169,12 @@ Validate CSS
 Validation des CSS
 Please go on to %s.
 Svp aller a %s
-major diff
-diff majeure
-minor diff
-diff mineure
-author diff
-diff de l'auteur
 major
 majeure
 minor
 mineure
-author
-auteur
 (The revisions are identical or unavailable.)
 (La version est identique ou n'est pas disponible)
-no other diffs
-pas d'autres diffs
 No diff available.
 Pas de diff disponible
 current revision
@@ -181,20 +199,12 @@ to
 à
 Bad page version (or corrupt page).
 Mauvaise version (ou page corompue) 
-cant write %s
-Impossible d'écrire %s
-Page name is too long: %s
-Nom de page trop long: %s
-Page name may not contain space characters: %s
-Le nom de la page ne peut pas contenir d'espaces: %s
-Invalid Page %s
-Page non valide %s
-Invalid Page %s (must not end with .db)
-Page non valide %s (elle ne doit pas se terminer par .db)
-Invalid Page %s (must not end with .lck)
-Page non valide %s (elle ne doit pas se terminer par .lck)
-can not make %s
-impossible de faire %s
+Cannot save an nameless page.
+
+cannot write %s
+
+Could not get %s lock
+
 Unlocking
 Supression du verrou
 This operation may take several seconds...
@@ -205,56 +215,60 @@ No unlock required.
 La suppression du verrour n'est pas necessaire.
 Can not open %s
 Ne peut pas ouvrir %s
+%s hours ago
+il y a %s heures
+1 hour ago
+il y a une heure
+%s minutes ago
+il y a %s minutes
+1 minute ago
+il y a une minute
+%s seconds ago
+il y a %s secondes
+1 second ago
+il y a 1 seconde
+just now
+a l'instant
 Editing Denied
 Modification interdite
 Editing not allowed: user, ip, or network is blocked.
 Modification interdite: l'utilisateur, l'adresse ip, ou le reseau est bloqué
 Contact the wiki administrator for more information.
 Contactez l'administrateur du wiki pour plus d'information.
+The rule %s matched for you.
+
+See %s for more information.
+
 Editing not allowed: %s is read-only.
 Modification interdite: %s est en lecture seule
-Editing %s
-Modification de %s
+Only administrators can upload files.
+
 Editing revision %s of
 Modification de la version %s de
+Editing %s
+Modification de %s
 Editing old revision %s.
 Modification de l'ancienne version %s.
 Saving this page will replace the latest revision with this text.
 Sauvegarder cette page remplacera la dernière version par ce texte.
-Edit Conflict!
-Conflit lors de la Modification!
-(This is a new conflict)
-(Il s'agit d'un nouveau conflit)
-Someone saved this page after you started editing.
-Quelqu'un a sauvegardé cette page après que vous ayez commencé sa modification
-The top textbox contains the saved text.
-La boîte de texte située en debut de page contient le texte sauvegardé.
-Only the text in the top textbox will be saved.
-Seul le texte dans la boîte de texte située en debut de page sera sauvegardé.
-Scroll down to see your text with conflict markers.
-Faites défiler vers le bas pour voir votre texte avec des marqueurs indiquants les conflits.
-Scroll down to see your edited text.
-Faites défiler vers le bas pour voir votre texte modifié.
-Last save time:
-Dernière date de sauvegarde:
-Current time is:
-Heure actuelle:
 Summary:
 Résumé:
 This change is a minor edit.
 Ce changement est mineur.
 Preview
 Prévisualisation
-This is the text with conflict markers:
-Voici le texte avec des marqueurs indiquant les conflits:
-This is the text you submitted:
-Voici le texte que vous avez soumis:
+Replace this file with text.
+
+Replace this text with a file.
+
 Preview:
 Prévisualisation
-NOTE: This preview shows the revision of the other author.
-NOTE: Cette prévisualisation montre la version de l'autre auteur.
 Preview only, not yet saved
 Prévisualisation seulement, pas encore sauvegardée
+File to upload: 
+
+Files of type %s are not allowed.
+
 Password
 Mot de passe
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
@@ -281,6 +295,10 @@ Replaced: %s
 Remplacé: %s
 Search for: %s
 Rechercher: %s
+and
+
+or
+
 %s pages found:
 %s pages trouvées:
 last updated
@@ -303,14 +321,28 @@ Exemple_De_PageNon_Definie
 [[%s]] ne peut être défini.
 Only an administrator can create %s
 Seul un administrateur peut créer %s
-Cannot find timestamp on the first line.
-Timestamp introuvable sur la première ligne.
-Could not get main lock
-Ne peut pas obtenir le verrou principal
+Transfer Error: %s
+
+Browser reports no file info.
+
+Browser reports no file type.
+
 Anonymous
 Anonyme
+This page was changed by somebody else %s.
+
+The changes conflict.  Please check the page again.
+
+Please check whether you overwrote those changes.
+
 Could not get a lock to merge!
 Ne peut pas obtenir un verrou pour la fusion !
+you
+
+ancestor
+
+other
+
 %s log error:
 %s Erreur lors de l´écriture du journal:
 Ping
@@ -329,6 +361,8 @@ Main lock obtained.
 Verrou principal obtenu
 Expiring keep files and deleting pages marked for deletion
 Expiration des fichiers de cache et suppression des pages marquées pour la suppression
+and refreshing HTML cache
+
 deleted
 Supprimé
 Moving part of the %s log file.
@@ -367,24 +401,10 @@ Too many connections by %s
 Trop de connections par %s
 Recent Visitors
 Derniers visiteurs
-%s hours ago
-il y a %s heures
-1 hour ago
-il y a une heure
-%s minutes ago
-il y a %s minutes
-1 minute ago
-il y a une minute
-%s seconds ago
-il y a %s secondes
-1 second ago
-il y a 1 seconde
-just now
-a l'instant
 Referrers
 Referrers
 All Referrers
 Tous les referrers
-anchor first defined here
-ancre d'abord définie ici
+anchor first defined here: %s
+
 END_OF_TRANSLATION

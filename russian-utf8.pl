@@ -16,7 +16,7 @@
 #
 # do 'russian-utf8.pl';
 #
-# This script was last checked for Oddmuse version 1.37.
+# This script was last checked for Oddmuse version 1.195.
 #
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
@@ -41,6 +41,16 @@ Invalid action parameter %s
 Некорректный параметр действия %s
 Invalid URL.
 Некорректный URL.
+Page name is too long: %s
+Имя страницы слишком велико: %s
+Invalid Page %s
+Некорректная страница %s
+Invalid Page %s (must not end with .db)
+Некорректная страница %s (не должна оканчиваться на .db)
+Invalid Page %s (must not end with .lck)
+Некорректная страница %s (Некорректная страница %s lck)
+Page name may not contain space characters: %s
+Имя страницы не может содержать пробельные символы: %s
 Revision %s not available
 Версия %s не доступна
 showing current revision instead
@@ -73,26 +83,40 @@ No updates since %s
 Небыло обновлений с %s
 Page generated %s
 Страница сгенерирована %s
+Related changes
+
 (minor)
 
 (diff)
 (отличия)
 history
 
+rollback
+
+Cluster:
+
+from %s
+с %s
 History of %s
 История %s
 Compare
 
- . . . . 
-
 Revision %s
 Версия %s
-Edit
-Правка
+ . . . . 
+
 by
 
-from %s
-с %s
+Rolling back changes
+
+Missing target for rollback.
+
+Target for rollback is too far back.
+
+Rollback to %s
+
+%s rolled back
+
 [Home]
 [Домой]
 redirected from %s
@@ -117,12 +141,16 @@ View other revisions
 Смотреть другие версии
 View current revision
 Смотреть текущую версию
+View all changes
+
 View original
 
 Last edited
 Последнее редактирование
 Edited
 Правленное
+by %s
+
 Warning
 Внимание
 Database is stored in temporary directory %s
@@ -141,22 +169,12 @@ Validate CSS
 
 Please go on to %s.
 
-major diff
-основные отличия
-minor diff
-незначительные отличия
-author diff
-авторские отличия
 major
 основной
 minor
 второстепенный
-author
-автор
 (The revisions are identical or unavailable.)
 (Версии идентичны или недоступны.)
-no other diffs
-других отличий нет
 No diff available.
 Отличий нет.
 current revision
@@ -181,20 +199,12 @@ to
 
 Bad page version (or corrupt page).
 Плохая версия страницы (или испорченая).
-cant write %s
-невозможно записать %s
-Page name is too long: %s
-Имя страницы слишком велико: %s
-Page name may not contain space characters: %s
-Имя страницы не может содержать пробельные символы: %s
-Invalid Page %s
-Некорректная страница %s
-Invalid Page %s (must not end with .db)
-Некорректная страница %s (не должна оканчиваться на .db)
-Invalid Page %s (must not end with .lck)
-Некорректная страница %s (Некорректная страница %s lck)
-can not make %s
-не могу сделать %s
+Cannot save an nameless page.
+
+cannot write %s
+
+Could not get %s lock
+
 Unlocking
 
 This operation may take several seconds...
@@ -205,56 +215,60 @@ No unlock required.
 
 Can not open %s
 Невозможно открыть %s
+%s hours ago
+
+1 hour ago
+
+%s minutes ago
+
+1 minute ago
+
+%s seconds ago
+
+1 second ago
+
+just now
+
 Editing Denied
 Редактирование запрещено
 Editing not allowed: user, ip, or network is blocked.
 Редактирование не разрешено: пользователь, IP или сеть заблокированы.
 Contact the wiki administrator for more information.
 Свяжитесь с нашей администрацией чтоб узнать больше.
+The rule %s matched for you.
+
+See %s for more information.
+
 Editing not allowed: %s is read-only.
 Редактирование не допустимо: %s только для чтения.
-Editing %s
-Редактирование %s
+Only administrators can upload files.
+
 Editing revision %s of
 Редактирование версии %s
+Editing %s
+Редактирование %s
 Editing old revision %s.
 Редактирование старой версии %s.
 Saving this page will replace the latest revision with this text.
 Сохранение этой страницы заменит последную версию на этот текст.
-Edit Conflict!
-Конфликт во время редактирования!
-(This is a new conflict)
-(Это новый конфликт)
-Someone saved this page after you started editing.
-Кто то сохранил эту страницу после того, как Вы начали её реадктировать.
-The top textbox contains the saved text.
-Верхнее поле с текстом содержит сохранённый текст.
-Only the text in the top textbox will be saved.
-Только текст из верхнего поля будет сохранён.
-Scroll down to see your text with conflict markers.
-
-Scroll down to see your edited text.
-Смотрите ниже, Ваш правленый текст там.
-Last save time:
-Время последнего сохранения:
-Current time is:
-Текущее время:
 Summary:
 Итого:
 This change is a minor edit.
 Это изменение является незначительной правкой.
 Preview
 Предпросмотр
-This is the text with conflict markers:
+Replace this file with text.
 
-This is the text you submitted:
-Вот отправленый Вами текст:
+Replace this text with a file.
+
 Preview:
 Предпросмотр:
-NOTE: This preview shows the revision of the other author.
-Внимание: Тут отображена версия другого автора.
 Preview only, not yet saved
 Только предпросмотр - пока ничего не записано
+File to upload: 
+
+Files of type %s are not allowed.
+
 Password
 
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
@@ -281,6 +295,10 @@ Replaced: %s
 
 Search for: %s
 Искать: %s
+and
+
+or
+
 %s pages found:
 %s страницы не найдены:
 last updated
@@ -303,13 +321,27 @@ Sample_Undefined_Page
 [[%s]] невозможно определить
 Only an administrator can create %s
 
-Cannot find timestamp on the first line.
+Transfer Error: %s
 
-Could not get main lock
+Browser reports no file info.
+
+Browser reports no file type.
 
 Anonymous
 
+This page was changed by somebody else %s.
+
+The changes conflict.  Please check the page again.
+
+Please check whether you overwrote those changes.
+
 Could not get a lock to merge!
+
+you
+
+ancestor
+
+other
 
 %s log error:
 
@@ -328,6 +360,8 @@ Remove the "maintain" file or wait.
 Main lock obtained.
 
 Expiring keep files and deleting pages marked for deletion
+
+and refreshing HTML cache
 
 deleted
 
@@ -367,24 +401,10 @@ Too many connections by %s
 
 Recent Visitors
 
-%s hours ago
-
-1 hour ago
-
-%s minutes ago
-
-1 minute ago
-
-%s seconds ago
-
-1 second ago
-
-just now
-
 Referrers
 
 All Referrers
 
-anchor first defined here
+anchor first defined here: %s
 
 END_OF_TRANSLATION

@@ -16,7 +16,7 @@
 #
 # do 'spanish-utf8.pl;
 #
-# This translation was last checked for an unknown Oddmuse version.
+# This translation was last checked for Oddmuse version 1.195.
 #
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
@@ -41,6 +41,16 @@ Invalid action parameter %s
 Parámetro de acción %s inválido
 Invalid URL.
 URL inválida.
+Page name is too long: %s
+El nombre de la página es demasiado largo: %s
+Invalid Page %s
+Página %s Inválida
+Invalid Page %s (must not end with .db)
+Página %s Inválida (no debe terminar con la extensión .db)
+Invalid Page %s (must not end with .lck)
+Página %s Inválida (no debe terminar con la extensión .lck)
+Page name may not contain space characters: %s
+El nombre de la página no puede contener caracteres de espacio: %s
 Revision %s not available
 La revisión %s no está disponible.
 showing current revision instead
@@ -73,26 +83,40 @@ No updates since %s
 No han habido actualizaciones desde %s
 Page generated %s
 Página generada en %s
+Related changes
+
 (minor)
 (menor)
 (diff)
 
 history
 historial
+rollback
+
+Cluster:
+
+from %s
+desde %s
 History of %s
 Historial de %s
 Compare
 Comparar
- . . . . 
-
 Revision %s
 Revisión %s
-Edit
-Editar
+ . . . . 
+
 by
 por
-from %s
-desde %s
+Rolling back changes
+
+Missing target for rollback.
+
+Target for rollback is too far back.
+
+Rollback to %s
+
+%s rolled back
+
 [Home]
 [Inicio]
 redirected from %s
@@ -117,12 +141,16 @@ View other revisions
 Ver otras revisiones
 View current revision
 Ver revisión actual
+View all changes
+
 View original
 Ver la versión original
 Last edited
 Editado por última vez
 Edited
 Editado
+by %s
+
 Warning
 Advertencia
 Database is stored in temporary directory %s
@@ -141,22 +169,12 @@ Validate CSS
 Validar CSS
 Please go on to %s.
 Por favor proceda a %s.
-major diff
-diff mayor
-minor diff
-diff menor
-author diff
-diff de autor
 major
 mayor
 minor
 menor
-author
-autor
 (The revisions are identical or unavailable.)
 (Las revisiones son idénticas o no están disponibles.)
-no other diffs
-no hay más diffs
 No diff available.
 No hoy diffs disponibles.
 current revision
@@ -181,20 +199,12 @@ to
 a
 Bad page version (or corrupt page).
 Versión incorrecta (o corrupta) de la página.
-cant write %s
-no es posible escribir %s
-Page name is too long: %s
-El nombre de la página es demasiado largo: %s
-Page name may not contain space characters: %s
-El nombre de la página no puede contener caracteres de espacio: %s
-Invalid Page %s
-Página %s Inválida
-Invalid Page %s (must not end with .db)
-Página %s Inválida (no debe terminar con la extensión .db)
-Invalid Page %s (must not end with .lck)
-Página %s Inválida (no debe terminar con la extensión .lck)
-can not make %s
-no se puede crear %s
+Cannot save an nameless page.
+
+cannot write %s
+
+Could not get %s lock
+
 Unlocking
 Deshabilitando el bloqueo
 This operation may take several seconds...
@@ -205,56 +215,60 @@ No unlock required.
 No se requiere una operación de desbloqueo.
 Can not open %s
 No es posible abrir %s
+%s hours ago
+hace %s horas
+1 hour ago
+hace 1 hora
+%s minutes ago
+hace %s minutos
+1 minute ago
+hace 1 minuto
+%s seconds ago
+hace %s segundos
+1 second ago
+hace un segundo
+just now
+hace un instante
 Editing Denied
 Se ha denegado el permiso de edición
 Editing not allowed: user, ip, or network is blocked.
 La edición no se es permitida: el usuario, ip o sub-red ha sido bloqueado.
 Contact the wiki administrator for more information.
 Contacte al administrador del wiki para más información.
+The rule %s matched for you.
+
+See %s for more information.
+
 Editing not allowed: %s is read-only.
 La edición no se es permitida: %s es de sólo-lectura.
-Editing %s
-Editando %s
+Only administrators can upload files.
+
 Editing revision %s of
 Editando la revisión %s de
+Editing %s
+Editando %s
 Editing old revision %s.
 Editando la revisión antigua %s.
 Saving this page will replace the latest revision with this text.
 Al ser guardada esta página, el contenido de la última revisión será reemplazado.
-Edit Conflict!
-¡Conflicto de edición!
-(This is a new conflict)
-(Este es un nuevo conflicto)
-Someone saved this page after you started editing.
-Alguien ha editado esta página antes que usted.
-The top textbox contains the saved text.
-El cuadro de texto anterior muestra el contenido que ha sido guardado.
-Only the text in the top textbox will be saved.
-Únicamente el texto del cuadro superior será guardado.
-Scroll down to see your text with conflict markers.
-Avance para observar su texto con marcas que indican el conflicto.
-Scroll down to see your edited text.
-Avance para observar su texto editado.
-Last save time:
-Hora de la última edición:
-Current time is:
-La hora actual es:
 Summary:
 Resumen:
 This change is a minor edit.
 Este cambio es solo una edición menor.
 Preview
 Previsualización
-This is the text with conflict markers:
-Este es el texto con marcas que indican el conflicto:
-This is the text you submitted:
-Este es el texto que usted ha enviado:
+Replace this file with text.
+
+Replace this text with a file.
+
 Preview:
 Previsualización:
-NOTE: This preview shows the revision of the other author.
-NOTA: Esta previsualización muestra la revisión del otro autor.
 Preview only, not yet saved
 Esta es únicamente una vista previa; no ha sido guardada aun.
+File to upload: 
+
+Files of type %s are not allowed.
+
 Password
 Contraseña
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
@@ -281,6 +295,10 @@ Replaced: %s
 Reemplazado: %s
 Search for: %s
 Buscar por: %s
+and
+
+or
+
 %s pages found:
 %s páginas encontradas:
 last updated
@@ -303,14 +321,28 @@ Pagina_Ejemplo_Sin_Definir
 [[%s]] no puede ser definida.
 Only an administrator can create %s
 Únicamente un administrador puede crear %s
-Cannot find timestamp on the first line.
-No se ha encontrado la marca de fecha-hora en la primera línea.
-Could not get main lock
-No se pudo obtener el bloqueo principal
+Transfer Error: %s
+
+Browser reports no file info.
+
+Browser reports no file type.
+
 Anonymous
 Anónimo
+This page was changed by somebody else %s.
+
+The changes conflict.  Please check the page again.
+
+Please check whether you overwrote those changes.
+
 Could not get a lock to merge!
 ¡No pudo obtenerse un bloqueo para incorporar los cambios!
+you
+
+ancestor
+
+other
+
 %s log error:
 Error de registro %s:
 Ping
@@ -329,6 +361,8 @@ Main lock obtained.
 Se obtuvo el bloqueo principal.
 Expiring keep files and deleting pages marked for deletion
 Expirando los archivos "keep" y eliminando las páginas marcadas para borrado
+and refreshing HTML cache
+
 deleted
 eliminado
 Moving part of the %s log file.
@@ -367,24 +401,10 @@ Too many connections by %s
 Demasiadas conexiones de %s
 Recent Visitors
 Visitantes Recientes
-%s hours ago
-hace %s horas
-1 hour ago
-hace 1 hora
-%s minutes ago
-hace %s minutos
-1 minute ago
-hace 1 minuto
-%s seconds ago
-hace %s segundos
-1 second ago
-hace un segundo
-just now
-hace un instante
 Referrers
 Orígenes
 All Referrers
 Todos los orígenes
-anchor first defined here
-ancla definida par primera vez aquí
+anchor first defined here: %s
+
 END_OF_TRANSLATION

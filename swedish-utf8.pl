@@ -16,7 +16,7 @@
 #
 # do 'swedish-utf8.pl;
 #
-# This translation was last checked for an unknown Oddmuse version.
+# This translation was last checked for Oddmuse version 1.195.
 #
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
@@ -41,6 +41,16 @@ Invalid action parameter %s
 Ogiltig parameter %s
 Invalid URL.
 Ogiltig URL.
+Page name is too long: %s
+Sidans namn är för långt: %s
+Invalid Page %s
+Ogiltig sida %s
+Invalid Page %s (must not end with .db)
+Ogiltig sida %s (får inte sluta med .db) 
+Invalid Page %s (must not end with .lck)
+Ogiltig sida %s (får inte sluta med .lck) 
+Page name may not contain space characters: %s
+Sidans namn får inte innehålla mellanslag: %s
 Revision %s not available
 Version %s är inte tillgänglig
 showing current revision instead
@@ -73,26 +83,40 @@ No updates since %s
 Inga ändringar sedan %s
 Page generated %s
 Sidan skapad %s
+Related changes
+
 (minor)
 (mindre)
 (diff)
 (visa ändringar)
 history
 historik
+rollback
+
+Cluster:
+
+from %s
+från %s
 History of %s
 Historik för %s
 Compare
 Jämför
- . . . . 
-
 Revision %s
 Version %s
-Edit
-Ändra
+ . . . . 
+
 by
 av
-from %s
-från %s
+Rolling back changes
+
+Missing target for rollback.
+
+Target for rollback is too far back.
+
+Rollback to %s
+
+%s rolled back
+
 [Home]
 [Startsida]
 redirected from %s
@@ -117,12 +141,16 @@ View other revisions
 Se andra versioner
 View current revision
 Se aktuell version
+View all changes
+
 View original
 Visa original
 Last edited
 Senast ändrad
 Edited
 Ändrad
+by %s
+
 Warning
 Varning
 Database is stored in temporary directory %s
@@ -141,22 +169,12 @@ Validate CSS
 Validera CSS
 Please go on to %s.
 Gå vidare till %s.
-major diff
-stor ändring
-minor diff
-liten ändring
-author diff
-författarändring
 major
 stor
 minor
 liten
-author
-författare
 (The revisions are identical or unavailable.)
 (Versionerna är likadana eller inte tillgängliga)
-no other diffs
-inga andra ändringar
 No diff available.
 Det finns ingen ändring.
 current revision
@@ -181,20 +199,12 @@ to
 till
 Bad page version (or corrupt page).
 Felaktig version av sidan (eller trasig sida)
-cant write %s
-kan inte skriva %s
-Page name is too long: %s
-Sidans namn är för långt: %s
-Page name may not contain space characters: %s
-Sidans namn får inte innehålla mellanslag: %s
-Invalid Page %s
-Ogiltig sida %s
-Invalid Page %s (must not end with .db)
-Ogiltig sida %s (får inte sluta med .db) 
-Invalid Page %s (must not end with .lck)
-Ogiltig sida %s (får inte sluta med .lck) 
-can not make %s
-kan inte skapa %s
+Cannot save an nameless page.
+
+cannot write %s
+
+Could not get %s lock
+
 Unlocking
 Upplåsning
 This operation may take several seconds...
@@ -205,56 +215,60 @@ No unlock required.
 Upplåsning behövs ej.
 Can not open %s
 Kan inte öppna %s
+%s hours ago
+för %s timmar sedan
+1 hour ago
+för en timme sedan
+%s minutes ago
+%s minuter sedan
+1 minute ago
+en minut sedan
+%s seconds ago
+%s sekunder sedan
+1 second ago
+en sekund sedan
+just now
+precis nu
 Editing Denied
 Ändringen är inte tillåten
 Editing not allowed: user, ip, or network is blocked.
 Ändringen är inte tillåten: användare, ip-adress eller nätverk är blockerat.
 Contact the wiki administrator for more information.
 För mer information, kontakta wiki-administratören.
+The rule %s matched for you.
+
+See %s for more information.
+
 Editing not allowed: %s is read-only.
 Ändring ej tillåten: %s är bara till för läsning och går inte att ändra
-Editing %s
-Ändrar %s
+Only administrators can upload files.
+
 Editing revision %s of
 Ändrar version %s av
+Editing %s
+Ändrar %s
 Editing old revision %s.
 Ändrar den gamla versionen %s.
 Saving this page will replace the latest revision with this text.
 Sparande av den här sidan kommer att ersätta den senaste versionen med den här texten.
-Edit Conflict!
-Ändringskonflikt!
-(This is a new conflict)
-(Det här är en ny konflikt)
-Someone saved this page after you started editing.
-Någon har sparat den här sidan efter att du började ändra på den.
-The top textbox contains the saved text.
-Den översta textrutan innehåller den sparade texten.
-Only the text in the top textbox will be saved.
-Bara texten i den översta textrutan kommer att sparas.
-Scroll down to see your text with conflict markers.
-Skrolla ner och se din text med konfliktmarkeringar.
-Scroll down to see your edited text.
-I textboxen nedanför kan du se din ändrade text.
-Last save time:
-Senast sparad:
-Current time is:
-Nuvarande tid:
 Summary:
 Sammanfattning:
 This change is a minor edit.
 Detta är en mindre ändring.
 Preview
 Förhandsgranska
-This is the text with conflict markers:
-Detta är texten med konfliktmaerkeringar:
-This is the text you submitted:
-Det här är den text som du har skickat in:
+Replace this file with text.
+
+Replace this text with a file.
+
 Preview:
 Förhandsgranskning:
-NOTE: This preview shows the revision of the other author.
-Observera: Den här förhandsgranskningen visar ändringar av den andra skribenten.
 Preview only, not yet saved
 Det här är bara en förhandsgranskning, det är inte sparat ännu
+File to upload: 
+
+Files of type %s are not allowed.
+
 Password
 Lösenord
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
@@ -281,6 +295,10 @@ Replaced: %s
 Ersatt: %s
 Search for: %s
 Sök efter: %s
+and
+
+or
+
 %s pages found:
 %s sidor hittade:
 last updated
@@ -303,14 +321,28 @@ Exempel_Namnlös_Sida
 [[%s]] kan inte definieras.
 Only an administrator can create %s
 Bara en administratör can skala %s
-Cannot find timestamp on the first line.
-Hittar inte tidsstämpel på första raden.
-Could not get main lock
-Kunde inte få tag i huvudlås.
+Transfer Error: %s
+
+Browser reports no file info.
+
+Browser reports no file type.
+
 Anonymous
 Anonym
+This page was changed by somebody else %s.
+
+The changes conflict.  Please check the page again.
+
+Please check whether you overwrote those changes.
+
 Could not get a lock to merge!
 Kunde inte få tag i ett lås för att merga!
+you
+
+ancestor
+
+other
+
 %s log error:
 %s logg-fel:
 Ping
@@ -328,6 +360,8 @@ Ta bort filen "maintain" eller vänta
 Main lock obtained.
 Fick tag på huvudlås.
 Expiring keep files and deleting pages marked for deletion
+
+and refreshing HTML cache
 
 deleted
 borttagen
@@ -367,24 +401,10 @@ Too many connections by %s
 För många uppkopplingar från %s
 Recent Visitors
 Senaste besökare
-%s hours ago
-för %s timmar sedan
-1 hour ago
-för en timme sedan
-%s minutes ago
-%s minuter sedan
-1 minute ago
-en minut sedan
-%s seconds ago
-%s sekunder sedan
-1 second ago
-en sekund sedan
-just now
-precis nu
 Referrers
 
 All Referrers
 
-anchor first defined here
+anchor first defined here: %s
 
 END_OF_TRANSLATION

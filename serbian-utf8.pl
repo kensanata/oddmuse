@@ -15,7 +15,7 @@
 #
 # do 'serbian-utf8.pl';
 #
-# This translation was last checked for Oddmuse version 1.37.
+# This translation was last checked for Oddmuse version 1.195.
 #
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
@@ -40,6 +40,16 @@ Invalid action parameter %s
 Неисправан параметар за акцију %s
 Invalid URL.
 Неисправан URL.
+Page name is too long: %s
+Име странице је предугачко: %s
+Invalid Page %s
+Неисправна страница %s
+Invalid Page %s (must not end with .db)
+Неисправна страница %s (не сме имати екстензију .db)
+Invalid Page %s (must not end with .lck)
+Неисправна страница %s (Неисправна страница .lck)
+Page name may not contain space characters: %s
+Име странице не може садржати знаке за размак: %s
 Revision %s not available
 Верзија %s није доступна
 showing current revision instead
@@ -72,26 +82,40 @@ No updates since %s
 Нема измена од %s
 Page generated %s
 Страница генерисана %s
+Related changes
+
 (minor)
 
 (diff)
 (разлике)
 history
 
+rollback
+
+Cluster:
+
+from %s
+од %s
 History of %s
 Историја %s
 Compare
 
- . . . . 
-
 Revision %s
 Верзија %s
-Edit
-Измени
+ . . . . 
+
 by
 
-from %s
-од %s
+Rolling back changes
+
+Missing target for rollback.
+
+Target for rollback is too far back.
+
+Rollback to %s
+
+%s rolled back
+
 [Home]
 [Кућа]
 redirected from %s
@@ -116,12 +140,16 @@ View other revisions
 Погледај остале верзије
 View current revision
 Погледај тренутну верзију
+View all changes
+
 View original
 
 Last edited
 Последња измена
 Edited
 Измењено
+by %s
+
 Warning
 Пажња
 Database is stored in temporary directory %s
@@ -140,22 +168,12 @@ Validate CSS
 
 Please go on to %s.
 
-major diff
-Главне ревизије
-minor diff
-Споредне ревизије
-author diff
-Ауторске ревизије
 major
 главни
 minor
 споредно
-author
-аутор
 (The revisions are identical or unavailable.)
 (Верзије су или идентичне или недоступне.)
-no other diffs
-нема других верзија
 No diff available.
 нема података о верзијама
 current revision
@@ -180,20 +198,12 @@ to
 
 Bad page version (or corrupt page).
 Плохая версия страницы (или испорченая).
-cant write %s
-не може се записати %s
-Page name is too long: %s
-Име странице је предугачко: %s
-Page name may not contain space characters: %s
-Име странице не може садржати знаке за размак: %s
-Invalid Page %s
-Неисправна страница %s
-Invalid Page %s (must not end with .db)
-Неисправна страница %s (не сме имати екстензију .db)
-Invalid Page %s (must not end with .lck)
-Неисправна страница %s (Неисправна страница .lck)
-can not make %s
-Не могу да направим %s
+Cannot save an nameless page.
+
+cannot write %s
+
+Could not get %s lock
+
 Unlocking
 Откључавам
 This operation may take several seconds...
@@ -204,56 +214,60 @@ No unlock required.
 
 Can not open %s
 Не може се отворити %s
+%s hours ago
+
+1 hour ago
+
+%s minutes ago
+
+1 minute ago
+
+%s seconds ago
+
+1 second ago
+
+just now
+
 Editing Denied
 Измене нису дозвољене
 Editing not allowed: user, ip, or network is blocked.
 Измене нису дозвољене: приступ за корисника, IP број или мрежу није одобрен.
 Contact the wiki administrator for more information.
 Обратите се администратору за више информација
+The rule %s matched for you.
+
+See %s for more information.
+
 Editing not allowed: %s is read-only.
 Измене нису дозвољене: %s се може само читати.
-Editing %s
-Измена %s
+Only administrators can upload files.
+
 Editing revision %s of
 Измена верзије %s
+Editing %s
+Измена %s
 Editing old revision %s.
 Измена старе верзије %s.
 Saving this page will replace the latest revision with this text.
 Снимање ове странице ће преписати последњу верзију новим текстом.
-Edit Conflict!
-Конфликт при измени!
-(This is a new conflict)
-(Ово је нови конфликт)
-Someone saved this page after you started editing.
-Неко је изменио ову страницу пошто сте почели да мењате.
-The top textbox contains the saved text.
-Поље за унос на врхз садржи сачуван текст.
-Only the text in the top textbox will be saved.
-Биће сачуван само текст из поља за унос.
-Scroll down to see your text with conflict markers.
-
-Scroll down to see your edited text.
-Скролујте наниже да бисте видели ваше измене.
-Last save time:
-Време последње измене:
-Current time is:
-Тренутно време:
 Summary:
 Сиже:
 This change is a minor edit.
 Ова измена је секундарна.
 Preview
 Предглед
-This is the text with conflict markers:
+Replace this file with text.
 
-This is the text you submitted:
-Ово је текст који сте унели:
+Replace this text with a file.
+
 Preview:
 Предглед:
-NOTE: This preview shows the revision of the other author.
-Пажња: Овај предглед показује ревизију другог аутора.
 Preview only, not yet saved
 Само предглед, ништа није записано
+File to upload: 
+
+Files of type %s are not allowed.
+
 Password
 
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
@@ -280,6 +294,10 @@ Replaced: %s
 
 Search for: %s
 Тражи: %s
+and
+
+or
+
 %s pages found:
 %s стране пронађене:
 last updated
@@ -302,13 +320,27 @@ Sample_Undefined_Page
 [[%s]] се не може дефинисати
 Only an administrator can create %s
 
-Cannot find timestamp on the first line.
+Transfer Error: %s
 
-Could not get main lock
+Browser reports no file info.
+
+Browser reports no file type.
 
 Anonymous
 
+This page was changed by somebody else %s.
+
+The changes conflict.  Please check the page again.
+
+Please check whether you overwrote those changes.
+
 Could not get a lock to merge!
+
+you
+
+ancestor
+
+other
 
 %s log error:
 
@@ -327,6 +359,8 @@ Remove the "maintain" file or wait.
 Main lock obtained.
 
 Expiring keep files and deleting pages marked for deletion
+
+and refreshing HTML cache
 
 deleted
 
@@ -366,24 +400,10 @@ Too many connections by %s
 
 Recent Visitors
 
-%s hours ago
-
-1 hour ago
-
-%s minutes ago
-
-1 minute ago
-
-%s seconds ago
-
-1 second ago
-
-just now
-
 Referrers
 
 All Referrers
 
-anchor first defined here
+anchor first defined here: %s
 
 END_OF_TRANSLATION
