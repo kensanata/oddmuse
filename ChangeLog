@@ -1,3 +1,8 @@
+2003-04-15  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ApplyRules): Fixed handling of the last cell per row in
+	tables.
+
 2003-04-14  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (ApplyRules): If something looked like an Interlink but
