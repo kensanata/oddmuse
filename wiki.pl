@@ -198,8 +198,6 @@ div.message { background-color:#FEE; }
 div.journal h1 { font-size:large; }
 table.history { border-style:none; }
 td.history { border-style:none; }
-table.user { border-style:solid; border-width:thin; }
-table.user tr td { border-style:solid; border-width:thin; padding:5px; text-align:center; }
 span.result { font-size:larger; }
 span.info { font-size:smaller; font-style:italic; }
 div.rss { background-color:#EEF; }
@@ -343,13 +341,16 @@ sub InitVariables {    # Init global session variables for mod_perl!
   @UserGotoBarPages = ($HomePage, $RCName) unless @UserGotoBarPages;
   @LockOnCreation = ($BannedHosts, $RefererFilter, $StyleSheetPage, $ConfigPage, $InterMap,
 		     $NearMap, $RssInterwikiTranslate, $BannedContent) unless @LockOnCreation;
+  my $add_space = $CommentsPrefix =~ /[ \t]$/;
   map { $$_ = FreeToNormal($$_); } # convert spaces to underscores on all configurable pagenames
     (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$RefererFilter, \$StyleSheetPage, \$NearMap,
-     \$ConfigPage, \$NotFoundPg, \$RssInterwikiTranslate, \$BannedContent, \$RssExclude);
+     \$ConfigPage, \$NotFoundPg, \$RssInterwikiTranslate, \$BannedContent, \$RssExclude,
+     \$CommentsPrefix);
+  $CommentsPrefix .= '_' if $add_space;
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.464 2004/10/11 23:30:14 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.465 2004/10/13 19:55:19 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1893,9 +1894,7 @@ sub GetHeader {
   my $embed = GetParam('embed', $EmbedWiki);
   my $altText = T('[Home]');
   $result = GetHttpHeader('text/html', $nocache ? $Now : 0, $status);
-  if ($FreeLinks) {
-    $title =~ s/_/ /g;	 # Display as spaces
-  }
+  $title =~ s/_/ /g;	 # Display as spaces
   if ($oldId ne '') {
     $Message .= $q->p('(' . Ts('redirected from %s', GetEditLink($oldId, $oldId)) . ')');
   }
@@ -2099,7 +2098,7 @@ sub GetFooterLinks {
   my $html;
   if ($id and $rev ne 'history' and $rev ne 'edit') {
     if (UserCanEdit($CommentsPrefix . $id, 0)
-	and $OpenPageName !~ /^$CommentsPrefix/) {
+	and $OpenPageName !~ /^$CommentsPrefix/) { # fails if $CommentsPrefix is empty!
       $html .= ScriptLink(UrlEncode($CommentsPrefix . $OpenPageName),
 			       T('Comments on this page'));
     }
@@ -3361,7 +3360,7 @@ sub AddComment {
   $comment =~ s/\r//g;	# Remove "\r"-s (0x0d) from the string
   $comment =~ s/\s+$//g;    # Remove whitespace at the end
   if ($comment ne '' and $comment ne $NewComment) {
-    $string .= "----\n" if $string and $string ne "\n";
+    $string .= "\n----\n\n" if $string and $string ne "\n";
     $string .= $comment . "\n\n-- " .  GetParam('username', T('Anonymous'))
       . ' ' . TimeToText($Now) . "\n\n";
   }
