@@ -2,6 +2,7 @@
 
 	* wiki.pl (%NotifyJournalPage): New variable.
 	(PingTracker): Use it.
+	(RSS): Print interwiki link if provided and RSS feeds are being merged.
 
 2003-11-05  Alex Schroeder  <alex@gnu.org>
 
