@@ -274,7 +274,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.200 2003/10/15 21:29:59 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.201 2003/10/15 23:59:10 as Exp $');
 }
 
 sub InitCookie {
@@ -1281,7 +1281,7 @@ sub RcHeader {
     }
       ('rcidonly', 'rcuseronly', 'rchostonly', 'rcclusteronly', 'rcfilteronly');
   if ($clusterOnly) {
-    $action = GetPageParameters('browse', $clusterOnly, '', $clusterOnly) . $action;
+    $action = GetPageParameters('browse', $clusterOnly) . $action;
   } else {
     $action = "action=rc$action";
   }
