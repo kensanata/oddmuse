@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.6 2004/08/13 02:32:14 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.7 2004/08/31 23:24:59 as Exp $</p>';
 
 use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml);
 
@@ -92,20 +92,25 @@ sub UsemodRule {
   elsif ($bol && m/\G(\s*\n)*----+[ \t]*\n?/cg) {
     return CloseHtmlEnvironments() . $q->hr();
   }
-  # tables using ||
-  elsif ($bol && m/\G(\s*\n)*((\|\|)+)[ \t]*(?=.*\|\|[ \t]*(\n|$))/cg) {
-    return OpenHtmlEnvironment('table',1,'user')	# `||' needs special treatment, later
-      . AddHtmlEnvironment('tr')
-      . ((length($2) == 2)
-	 ? AddHtmlEnvironment('td')
-	 : AddHtmlEnvironment('td', 'colspan="' . length($2)/2 . '"'));
-  } elsif (InElement('td') && m/\G[ \t]*((\|\|)+)[ \t]*\n((\|\|)+)[ \t]*/cg) { # end row + cont.
-    return '</td></tr><tr>' . ((length($3) == 2)
-			       ? '<td>' : ('<td colspan="' . length($3)/2 . '">'));
-  } elsif (InElement('td') && m/\G[ \t]*((\|\|)+)[ \t]*(?!(\n|$))/cg) { # next cell
-    return '</td>' . ((length($1) == 2) ?
-		      '<td>' : ('<td colspan="' . length($1)/2 . '">'));
-  } elsif (InElement('td') && m/\G[ \t]*((\|\|)+)[ \t]*/cg) { # end row, therefore end of table
+  # tables using || -- the first row of a table
+  elsif ($bol && m/\G(\s*\n)*((\|\|)+)([ \t])*(?=.*\|\|[ \t]*(\n|$))/cg) {
+    return OpenHtmlEnvironment('table',1,'user') . AddHtmlEnvironment('tr')
+      . AddHtmlEnvironment('td', UsemodTableAttributes(length($2)/2, $4));
+  }
+  # tables using || -- end of the row and beginning of the next row
+  elsif (InElement('td') && m/\G[ \t]*((\|\|)+)[ \t]*\n((\|\|)+)([ \t]*)/cg) {
+    my $attr = UsemodTableAttributes(length($3)/2, $5);
+    $attr = " " . $attr if $attr;
+    return "</td></tr><tr><td$attr>";
+  }
+  # tables using || -- an ordinary table cell
+  elsif (InElement('td') && m/\G[ \t]*((\|\|)+)([ \t]*)(?!(\n|$))/cg) {
+    my $attr = UsemodTableAttributes(length($1)/2, $3);
+    $attr = " " . $attr if $attr;
+    return "</td><td$attr>";
+  }
+  # tables using || -- since "next row" was taken care of above, this must be the last row
+  elsif (InElement('td') && m/\G[ \t]*((\|\|)+)[ \t]*/cg) {
     return CloseHtmlEnvironments();
   }
   # RFC
@@ -136,6 +141,19 @@ sub UsemodRule {
     return "<a$1>$2</a>";
   }
   return undef;
+}
+
+sub UsemodTableAttributes {
+  my ($span, $left, $right) = @_;
+  my $attr = '';
+  $attr = "colspan=\"$span\"" if ($span != 1);
+  m/\G(?=.*?([ \t]*)\|\|)/;
+  $right = $1;
+  $attr .= ' ' if ($attr and ($left or $right));
+  if ($left and $right) { $attr .= 'align="center"' }
+  elsif ($left) { $attr .= 'align="right"' }
+  elsif ($right) { $attr .= 'align="left"' }
+  return $attr;
 }
 
 sub WikiHeading {
