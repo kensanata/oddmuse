@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: image.pl,v 1.9 2004/06/19 19:54:17 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: image.pl,v 1.10 2004/06/19 20:30:21 as Exp $</p>';
 
 use vars qw($ImageUrlPath);
 
@@ -67,7 +67,7 @@ sub ImageSupportRule {
     } else {
       $src = $ScriptName . "?action=download;id=" . UrlEncode($id);
     }
-    $result = $q->img({-src=>$src, -alt=>$alt, -class=>'upload'});
+    $result = $q->img({-src=>$src, -alt=>$alt, -title=>$alt, -class=>'upload'});
     $result = $q->a({-href=>$link, -class=>$class}, $result);
     pos = $oldpos;
   }
