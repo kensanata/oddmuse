@@ -357,7 +357,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.541 2005/04/05 21:10:02 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.542 2005/04/05 23:01:11 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -2320,11 +2320,11 @@ sub GetCacheDiff {
 }
 
 sub GetKeptDiff {
-  my ($newText, $oldRevision) = @_;
-  die 'No old revision' unless $oldRevision; # FIXME
-  my %keep = GetKeptRevision($oldRevision);
-  return '' unless $keep{text};
-  return GetDiff($keep{text}, $newText, $oldRevision);
+  my ($new, $revision) = @_;
+  $revision = 1 unless $revision;
+  my ($old, $rev) = GetTextRevision($revision, 1);
+  return '' unless $rev;
+  return GetDiff($old, $new, $rev);
 }
 
 sub DoDiff {	# Actualy call the diff program
@@ -2342,7 +2342,7 @@ sub DoDiff {	# Actualy call the diff program
 }
 
 sub GetDiff {
-  my ($old, $new, $oldRevision) = @_;
+  my ($old, $new, $revision) = @_;
   $old =~ m/^#FILE ([^ \n]+)\n/;
   my $old_is_file = ($1 ? substr($1, 0, 6) : 0);
   my $old_is_image = ($old_is_file eq 'image/');
@@ -2351,7 +2351,7 @@ sub GetDiff {
   if ($old_is_file or $new_is_file) {
     return $q->p($q->strong(T('Old revision:')))
       . $q->div({-class=>'old'}, # don't pring new revision, because that's the one that gets shown!
-      $q->p($old_is_file ? GetDownloadLink($OpenPageName, $old_is_image, $oldRevision) : $old))
+      $q->p($old_is_file ? GetDownloadLink($OpenPageName, $old_is_image, $revision) : $old))
   }
   $old =~ s/[\r\n]+/\n/g;
   $new =~ s/[\r\n]+/\n/g;
@@ -3520,10 +3520,10 @@ sub AddComment {
 
 sub Save { # call within lock, with opened page
   my ($id, $new, $summary, $minor, $upload) = @_;
-  my $old = $Page{text}; # copy before it gets encoded
   my $user = GetParam('username', '');
   my $host = GetRemoteHost();
   my $revision = $Page{revision} + 1;
+  my $old = $Page{text};
   if ($revision == 1 and -e $IndexFile and not unlink($IndexFile)) { # regenerate index on next request
     SetParam('msg', Ts('Cannot delete the index file %s.', $IndexFile)
 	     . ' ' . T('Please check the directory permissions.')
@@ -3532,19 +3532,20 @@ sub Save { # call within lock, with opened page
   } else {
     utime time, time, $IndexFile; # touch index file
   }
-  SaveKeepFile(); # deletes clean, dirty, diff-major, and diff-minor, encode multiline content
+  SaveKeepFile(); # deletes blocks, flags, diff-major, and diff-minor, and sets keep-ts
   ExpireKeepFiles();
   $Page{ts} = $Now;
-  $Page{oldmajor} = $Page{revision} unless $minor; # if the new revision is minor, don't update the oldmajor.
+  $Page{oldmajor} = $Page{lastmajor} unless $minor;
+  $Page{lastmajor} = $revision unless $minor;
   $Page{revision} = $revision;
   $Page{summary} = $summary;
   $Page{username} = $user;
   $Page{ip} = $ENV{REMOTE_ADDR};
   $Page{host} = $host;
   $Page{minor} = $minor;
-  $Page{text} = $new; # this is the only multiline content right now, and it is not encoded
-  if ($UseDiff and $revision > 1 and not $upload and $old !~ /^#FILE /) {
-    UpdateDiffs($id, $old, $new, $minor); # more multiline, non-encoded content
+  $Page{text} = $new;
+  if ($UseDiff and $revision > 1 and not $upload and $old !~ /^\#FILE /) {
+    UpdateDiffs($old, $new); # sets diff-major and diff-minor}
   }
   my $languages;
   $languages = GetLanguages($new) unless $upload;
@@ -3603,13 +3604,12 @@ sub WriteRcLog {
 }
 
 sub UpdateDiffs {
-  my ($id, $old, $new, $minor) = @_;
-  my $editDiff	= GetDiff($old, $new);
-  $Page{'diff-minor'} = $editDiff;
-  if ($minor and $Page{oldmajor}) {
-    $Page{'diff-major'} = GetKeptDiff($new, $Page{oldmajor});
+  my ($old, $new) = @_;
+  $Page{'diff-minor'} = GetDiff($old, $new);
+  if ($Page{revision} - 1 == $Page{oldmajor}) {
+    $Page{'diff-major'} = 1; # used in GetCacheDiff to indicate it is the same as in diff-minor
   } else {
-    $Page{'diff-major'} = '1'; # special value, used in GetCacheDiff
+    $Page{'diff-major'} = GetKeptDiff($new, $Page{oldmajor});
   }
 }
 
