@@ -295,7 +295,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.310 2004/01/27 01:35:52 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.311 2004/01/31 00:42:45 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2562,7 +2562,6 @@ sub DoEdit {
   }
   OpenPage($id);
   my ($text, $revision) = GetTextRevision(GetParam('revision', ''), 1); # maybe revision reset!
-  my $header = Ts('Editing revision %s of', $revision) . ' ' . $id if ($revision);
   my $oldText = $text;
   my $isFile = ($oldText =~ m/^#FILE ([^ \n]+)\n(.*)/s);
   $upload = $isFile if not defined $upload;
@@ -2575,7 +2574,12 @@ sub DoEdit {
   } elsif ($isFile and not $upload) {
     $oldText = '';
   }
-  $header = Ts('Editing %s', $id) if $upload or not $header; # maybe it was set earlier
+  my $header;
+  if ($revision and not $upload) {
+    $header = Ts('Editing revision %s of', $revision) . ' ' . $id;
+  } else {
+    $header = Ts('Editing %s', $id);
+  }
   $oldText = $newText if $preview;
   print GetHeader('', QuoteHtml($header), '');
   if ($revision) {
