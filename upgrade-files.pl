@@ -6,7 +6,7 @@
 use CGI qw/:standard/;
 use CGI::Carp qw(fatalsToBrowser);
 print header() . start_html(), p;
-print 'Upgrade version: $Id: upgrade-files.pl,v 1.7 2003/12/24 04:05:18 uid68242 Exp $', "\n";
+print 'Upgrade version: $Id: upgrade-files.pl,v 1.8 2004/01/17 10:26:47 as Exp $', "\n";
 if (not param('dir')) {
   print start_form, p,
     '$DataDir: ', textfield('dir', '/tmp/oddmuse'),
@@ -113,7 +113,7 @@ sub read_file {
 
 sub write_file {
   my $filename = shift;
-  open(F, ">$filename") or die "can't read $filename: $!";
+  open(F, ">$filename") or die "can't write $filename: $!";
   print F (shift);
   close F;
 }
