@@ -1,3 +1,25 @@
+2003-05-02  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($Debug, $Message): Renamed $Debug to $Message.
+	(InitRequest): Ditto.
+	(InitCookie): Ditto.
+	(BrowsePage): Print header later, set $Message for the messages
+	"Revision %s not available" and "Showing revision %s".
+	(BrowsePage): Added new div class="rc" for recent changes output.
+	(GetHeader): Changed header layout.  Logo and GotoBar are now at
+	the top, followed by messages, page title, and content.  Added div
+	and special days.
+	(GetGotoBar): Removed special days from the goto bar.
+	(GetFooterText, GetCommonFooter, GetMinimumFooter): Replaced by GetFooter.
+	(GetFooter): New, unified, added div.
+	(DoHistory): Use GetFooter with history parameter.
+	(DoUnlock): Use GetFooter.
+	(DoEdit): Use GetFooter with edit parameter.
+	(DoPassword, DoEdit, UserIsEditorOrError, UserIsAdminOrError)
+	(DoSearch, DoLinks, DoPrintAllPages, DoMaintain, DoMaintain)
+	(DoIndex, DoConvert, DoEditLock, DoPageLock, DoEditBanned)
+	(DoUpdateBanned, DoShowVersion, DoShowVisitors): Use GetFooter.
+
 2003-04-27  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (BrowsePage): Added a div class="content" around the

@@ -59,7 +59,7 @@ use vars qw(@RcDays @HtmlTags
 use vars qw(%Page %Section %Text %InterSite %KeptRevisions
   %IndexHash %Translate %OldCookie %NewCookie $InterSiteInit
   $FootnoteNumber $MainPage $OpenPageName @KeptList @IndexList
-  $IndexInit $Debug $q $Now $ScriptName %RecentVisitors @HtmlStack
+  $IndexInit $Message $q $Now $ScriptName %RecentVisitors @HtmlStack
   %Referers $Monolithic);
 
 # == Configuration ==
@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.51 2003/04/27 21:22:52 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.52 2003/05/02 06:20:12 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -907,7 +907,7 @@ sub InitRequest {
   $CGI::DISABLE_UPLOADS = 1;  # no uploads
   $q = new CGI;
   $q->charset($HttpCharset) if $HttpCharset;
-  $Debug = '';
+  $Message = '';
   $Now = time;                     # Reset in case script is persistent
   my @ScriptPath = split('/', $q->script_name());
   $ScriptName = pop(@ScriptPath);  # Name used in links
@@ -936,11 +936,11 @@ sub InitCookie {
   if (!$name) {
     # do nothing
   } elsif (!$FreeLinks && !($name =~ /^$LinkPattern$/)) {
-    $Debug .= Ts('Invalid UserName %s: not saved.', $name);
+    $Message .= $q->p(Ts('Invalid UserName %s: not saved.', $name));
   } elsif ($FreeLinks && (!($name =~ /^$FreeLinkPattern$/))) {
-    $Debug .= Ts('Invalid UserName %s: not saved.', $name);
+    $Message .= $q->p(Ts('Invalid UserName %s: not saved.', $name));
   } elsif (length($name) > 50) {  # Too long
-    $Debug .= T('UserName must be 50 characters or less: not saved');
+    $Message .= $q->p(T('UserName must be 50 characters or less: not saved'));
   } else {
     $NewCookie{'username'} = $name;
   }
@@ -1070,8 +1070,6 @@ sub BrowsePage {
     print $Text{'text'};
     return;
   }
-  # print header
-  print &GetHeader($id, &QuoteHtml($id), $oldId);
   # handle subtitle for old revisions, if these exist, and open keep file
   my $openKept = 0;
   my $revision = &GetParam('revision', '');
@@ -1082,15 +1080,15 @@ sub BrowsePage {
     $openKept = 1;
     if (!defined($KeptRevisions{$revision})) {
       $goodRevision = '';
-      print $q->div({-class=>'message'}, Ts('Revision %s not available', $revision)
-		    . ' (' . T('showing current revision instead') . ')')
-	. $q->br();
+      $Message .= $q->p(Ts('Revision %s not available', $revision)
+			. ' (' . T('showing current revision instead') . ')');
     } else {
       &OpenKeptRevision($revision);
-      print $q->div({-class=>'message'}, Ts('Showing revision %s', $goodRevision))
-	. $q->br();
+      $Message .= $q->p(Ts('Showing revision %s', $goodRevision));
     }
   }
+  # print header
+  print &GetHeader($id, &QuoteHtml($id), $oldId);
   # gloval variable for some markup rules
   $MainPage = $id;
   $MainPage =~ s|/.*||;  # Only the main page name (remove subpage)
@@ -1112,15 +1110,19 @@ sub BrowsePage {
   }
   print '</div>';
   my $embed = &GetParam('embed', $EmbedWiki);
-  print $q->hr()  if (!$embed);
   if ($rc) {
-    &DoRc(\&GetRcHtml);
+    print '<div class="rc">';
     print $q->hr()  if (!$embed);
+    &DoRc(\&GetRcHtml);
+    print '</div>';
   }
   if ($RefererTracking && !$embed) {
+    print '<div class="refer">';
+    print $q->hr()  if (!$embed);
     print &RefererTrack($id);
+    print '</div>';
   }
-  print &GetFooterText($id, $goodRevision);
+  print &GetFooter($id, $goodRevision);
 }
 
 sub ReBrowsePage {
@@ -1568,7 +1570,7 @@ EOF
       print "<tr><td align='center'><input type='submit' value='$label'/></td></table></form><hr>";
       &PrintHtmlDiff( 1, $id, '', '', $newText );
    }
-  print &GetCommonFooter();
+  print &GetFooter($id, 'history');
 }
 
 sub GetHistoryLine {
@@ -1696,8 +1698,6 @@ sub GetHistoryLink {
 
 sub GetHeader {
   my ($id, $title, $oldId) = @_;
-  my $header = '';
-  my $logoImage = '';
   my $result = '';
   my $embed = &GetParam('embed', $EmbedWiki);
   my $altText = T('[Home]');
@@ -1705,25 +1705,35 @@ sub GetHeader {
   if ($FreeLinks) {
     $title =~ s/_/ /g;   # Display as spaces
   }
-  $result .= &GetHtmlHeader("$SiteName: $title", $id);
-  $result .= $q->div({-class=>'message'}, $Debug) if $Debug;
-  return $result  if ($embed);
   if ($oldId ne '') {
-    $result .= $q->h3('(' . Ts('redirected from %s',
-                               &GetEditLink($oldId, $oldId)) . ')');
+    $Message .= $q->p('(' . Ts('redirected from %s', &GetEditLink($oldId, $oldId)) . ')');
   }
+  $result .= &GetHtmlHeader("$SiteName: $title", $id);
+  if ($embed) {
+    $result .= $q->div({-class=>'header'}, $q->div({-class=>'message'}, $Message))  if $Message;
+    return $result;
+  }
+  $result .= '<div class="header">';
   if ((!$embed) && ($LogoUrl ne '')) {
-    $logoImage = "img src=\"$LogoUrl\" alt=\"$altText\" class=\"logo\"";
-    $header = &ScriptLink($HomePage, "<$logoImage>");
-  }
-  if ($id ne '') {
-    $result .= $q->h1($header . &GetSearchLink($id));
-  } else {
-    $result .= $q->h1($header . $title);
+    $result .= &ScriptLink($HomePage, "<img src=\"$LogoUrl\" alt=\"$altText\" class=\"logo\">");
   }
   if (&GetParam('toplinkbar', $TopLinkBar)) {
-    $result .= &GetGotoBar($id) . '<hr>';
+    $result .= &GetGotoBar($id);
+    if (%SpecialDays) {
+      my ($sec, $min, $hour, $mday, $mon, $year) = gmtime($Now);
+      if ($SpecialDays{($mon + 1) . '-' . $mday}) {
+	$result .= $q->br() . $q->span({-class=>'specialdays'},
+				       $SpecialDays{($mon + 1) . '-' . $mday});
+      }
+    }
   }
+  $result .= $q->div({-class=>'message'}, $Message)  if $Message;
+  if ($id ne '') {
+    $result .= $q->h1(&GetSearchLink($id));
+  } else {
+    $result .= $q->h1($title);
+  }
+  $result .= '</div>';
   return $result;
 }
 
@@ -1810,77 +1820,85 @@ EOT
   return $html;
 }
 
-sub GetFooterText {
+sub GetFooter {
   my ($id, $rev) = @_;
-  my $result = '';
   if (&GetParam('embed', $EmbedWiki)) {
     return $q->end_html;
   }
-  $result = &GetFormStart();
-  $result .= &GetGotoBar($id);
-  if (&UserCanEdit($id, 0)) {
-    if ($rev ne '') {
-      $result .= &GetOldPageLink('edit',   $id, $rev,
-                                 Ts('Edit revision %s of this page', $rev));
-    } else {
-      $result .= &GetEditLink($id, T('Edit text of this page'));
+  my $result = '<div class="footer">';
+  $result .= $q->hr() . &GetGotoBar($id);
+  # other revisions
+  my $revisions;
+  if ($id and $rev ne 'history' and $rev ne 'edit') {
+    if (&UserCanEdit($id, 0)) {
+      if ($rev) { # showing old revision
+	$revisions .= &GetOldPageLink('edit', $id, $rev,
+				   Ts('Edit revision %s of this page', $rev));
+      } else { # showing current revision
+	$revisions .= &GetEditLink($id, T('Edit text of this page'));
+      }
+    } else { # no permission or generated page
+      $revisions .= T('This page is read-only');
     }
-  } else {
-    $result .= T('This page is read-only');
   }
-  $result .= ' | ';
-  $result .= &GetHistoryLink($id, T('View other revisions'));
+  if ($id and $rev ne 'history') {
+    $revisions .= ' | ' if $revisions;
+    $revisions .= &GetHistoryLink($id, T('View other revisions'));
+  }
   if ($rev ne '') {
-    $result .= ' | ';
-    $result .= &GetPageLink($id, T('View current revision'));
+    $revisions .= ' | ' if $revisions;
+    $revisions .= &GetPageLink($id, T('View current revision'));
   }
-  if ($Section{'revision'} > 0) {
+  $result .= $q->br() . $revisions  if $revisions;
+  # time stamps
+  if ($id and $rev ne 'history' and $rev ne 'edit') {
     $result .= $q->br();
-    if ($rev eq '') {  # Only for most current rev
+    if ($rev eq '') {		# Only for most current rev
       $result .= T('Last edited');
     } else {
       $result .= T('Edited');
     }
     $result .= ' ' . &TimeToText($Section{ts});
+    if ($UseDiff) {
+      $result .= ' ' . &ScriptLinkDiff(1, $id, T('(diff)'), $rev);
+    }
   }
-  if ($UseDiff) {
-    $result .= ' ' . &ScriptLinkDiff(1, $id, T('(diff)'), $rev);
-  }
+  # search
   $result .= $q->br() . &GetSearchForm();
   if ($DataDir =~ m|/tmp/|) {
     $result .= $q->br() . $q->strong(T('Warning') . ': ')
       . Ts('Database is stored in temporary directory %s', $DataDir);
   }
-  $result .= $q->endform;
-  $result .= &GetMinimumFooter();
-  return $result;
-}
-
-sub GetCommonFooter {
-  if (&GetParam('embed', $EmbedWiki)) {
-    return $q->end_html;
-  }
-  return $q->hr() . &GetFormStart() . &GetGotoBar('') .
-         &GetSearchForm() . $q->endform . &GetMinimumFooter();
-}
-
-sub GetMinimumFooter {
-  my $text = '';
   if ($FooterNote ne '') {
-    $text .= T($FooterNote);  # Allow local translations
+    $result .= T($FooterNote);  # Allow local translations
   }
   if (GetParam('validate', $ValidatorLink)) {
-    $text .= $q->p(&GetValidatorLink());
+    $result .= $q->p(&GetValidatorLink());
   }
   if (&GetParam('time',0)) {
-    $text .= $q->p(Ts('%s seconds', (time - $Now)));
+    $result .= $q->p(Ts('%s seconds', (time - $Now)));
   }
-  return $text . $q->end_html;
+  return $result . '</div>' . $q->end_html;
 }
 
 sub GetFormStart {
   return $q->startform('POST', "$ScriptName",
                        "application/x-www-form-urlencoded");
+}
+
+sub GetSearchForm {
+  return &GetFormStart . T('Search:') . ' '
+    . $q->textfield(-name=>'search', -size=>20) . ' '
+    . $q->submit('dosearch', T('Go!')) . $q->endform;
+}
+
+sub GetValidatorLink {
+  my $uri = &UrlEncode($q->self_url);
+  return $q->a({-href => 'http://validator.w3.org/check?uri=' . $uri},
+	       T('Validate HTML'))
+    . ' '
+    . $q->a({-href => 'http://jigsaw.w3.org/css-validator/validator?uri=' . $uri},
+	    T('Validate CSS'));
 }
 
 sub GetGotoBar {
@@ -1900,29 +1918,7 @@ sub GetGotoBar {
     $bartext .= ' | ' . $UserGotoBar;
   }
   $bartext = $q->span({-class=>'gotobar'}, $bartext);
-  if (%SpecialDays) {
-    my ($sec, $min, $hour, $mday, $mon, $year) = gmtime($Now);
-    if ($SpecialDays{($mon + 1) . '-' . $mday}) {
-      $bartext .= '<br>' . $q->span({-class=>'specialdays'}, $SpecialDays{($mon + 1) . '-' . $mday});
-    }
-  }
-  $bartext .= "<br>";
   return $bartext;
-}
-
-sub GetSearchForm {
-  return T('Search:') . ' '
-    . $q->textfield(-name=>'search', -size=>20) . ' '
-    . $q->submit('dosearch', T('Go!'));
-}
-
-sub GetValidatorLink {
-  my $uri = &UrlEncode($q->self_url);
-  return $q->a({-href => 'http://validator.w3.org/check?uri=' . $uri},
-	       T('Validate HTML'))
-    . ' '
-    . $q->a({-href => 'http://jigsaw.w3.org/css-validator/validator?uri=' . $uri},
-	    T('Validate CSS'));
 }
 
 sub GetRedirectPage {
@@ -2615,7 +2611,7 @@ sub DoUnlock {
   } else {
     print $q->p(T('No unlock required.'));
   }
-  print &GetCommonFooter();
+  print &GetFooter();
 }
 
 # == File operations
@@ -2825,7 +2821,7 @@ sub DoEdit {
     } else {
       print $q->p(Ts('Editing not allowed: %s is read-only.', $SiteName));
     }
-    print &GetCommonFooter();
+    print &GetFooter();
     return;
   }
   &OpenPage($id);
@@ -2927,10 +2923,7 @@ sub DoEdit {
     &PrintWikiToHTML($oldText, 'preview');
     print $q->hr(), $q->h2(T('Preview only, not yet saved')), '</div>';
   }
-  print $q->hr();
-  print &GetHistoryLink($id, T('View other revisions')) . $q->br();
-  print &GetGotoBar($id);
-  print &GetMinimumFooter();
+  print &GetFooter($id, 'edit');
 }
 
 sub GetTextArea {
@@ -2979,13 +2972,13 @@ sub DoPassword {
   } else {
     print $q->p(T('This site does not use admin or editor passwords.'));
   }
-  print &GetCommonFooter();
+  print &GetFooter();
 }
 
 sub UserIsEditorOrError {
   if (!&UserIsEditor()) {
-    print '<p>', T('This operation is restricted to site editors only...');
-    print &GetCommonFooter();
+    print $q->p(T('This operation is restricted to site editors only...'));
+    print &GetFooter();
     return 0;
   }
   return 1;
@@ -2993,8 +2986,8 @@ sub UserIsEditorOrError {
 
 sub UserIsAdminOrError {
   if (!&UserIsAdmin()) {
-    print '<p>', T('This operation is restricted to administrators only...');
-    print &GetCommonFooter();
+    print $q->p(T('This operation is restricted to administrators only...'));
+    print &GetFooter();
     return 0;
   }
   return 1;
@@ -3075,7 +3068,7 @@ sub DoIndex {
   print &GetHeader('', T('Index of all pages'), '');
   print '<br>';
   &PrintPageList(&AllPagesList());
-  print &GetCommonFooter();
+  print &GetFooter();
 }
 
 # == Searching ==
@@ -3093,7 +3086,7 @@ sub DoSearch {
   } else {
     &PrintPageList(&SearchTitleAndBody($string));
   }
-  print &GetCommonFooter();
+  print &GetFooter();
 }
 
 sub SearchTitleAndBody {
@@ -3186,8 +3179,7 @@ sub DoLinks {
   print "<pre>\n\n\n\n\n";  # Extra lines to get below the logo
   &PrintLinkList(&GetFullLinkList());
   print "</pre>\n";
-  print $q->hr();
-  print &GetMinimumFooter();
+  print &GetFooter();
 }
 
 sub PrintLinkList {
@@ -3321,8 +3313,7 @@ sub DoPrintAllPages {
   print &GetHeader('', T('Complete Content'), '')
     . $q->p(Ts('The main page is %s.', $q->a({-href=>'#' . $HomePage}, $HomePage)));
   &PrintAllPages(&AllPagesList());
-  print $q->hr();
-  print &GetMinimumFooter();
+  print &GetFooter();
 }
 
 sub PrintAllPages {
@@ -3542,7 +3533,7 @@ sub DoMaintain {
       print $q->p(T('Maintenance not done.') . ' '
 		  . T('(Maintenance can only be done once every 12 hours.)')
 		  . ' ', T('Remove the "maintain" file or wait.'));
-      print &GetCommonFooter();
+      print &GetFooter();
       return;
     }
   }
@@ -3597,9 +3588,8 @@ sub DoMaintain {
   &WriteStringToFile($fname, 'Maintenance done at ' . &TimeToText($Now));
   &ReleaseLock();
   print $q->p(T('Main lock released.'));
-  print &GetCommonFooter();
+  print &GetFooter();
 }
-
 
 sub DoConvert {
   print &GetHeader('', T('Converting all files'), '');
@@ -3621,7 +3611,7 @@ sub DoConvert {
   print '</p>';
   &ReleaseLock();
   print $q->p(T('Main lock released.'));
-  print &GetCommonFooter();
+  print &GetFooter();
 }
 
 sub ConvertFile {
@@ -3726,11 +3716,11 @@ sub DoEditLock {
     unlink($fname);
   }
   if (-f $fname) {
-    print '<p>', T('Edit lock created.'), '<br>';
+    print $q->p(T('Edit lock created.'));
   } else {
-    print '<p>', T('Edit lock removed.'), '<br>';
+    print $q->p(T('Edit lock removed.'));
   }
-  print &GetCommonFooter();
+  print &GetFooter();
 }
 
 sub DoPageLock {
@@ -3755,7 +3745,7 @@ sub DoPageLock {
   } else {
     print $q->p(Ts('Lock for %s removed.', $id));
   }
-  print &GetCommonFooter();
+  print &GetFooter();
 }
 
 # == Banning ==
@@ -3777,10 +3767,7 @@ sub DoEditBanned {
 	      . T('^123\.21\.3\. (blocks whole 123.21.3.* IP network)'));
   print &GetTextArea('banlist', $banList, 12, 50);
   print $q->p($q->submit(-name=>T('Save')));
-  print $q->hr();
-  print &GetGotoBar('');
-  print $q->endform;
-  print &GetMinimumFooter();
+  print &GetFooter();
 }
 
 sub DoUpdateBanned {
@@ -3799,7 +3786,7 @@ sub DoUpdateBanned {
     &WriteStringToFile($fname, $newList);
     print $q->p(T('Updated banned list'));
   }
-  print &GetCommonFooter();
+  print &GetFooter();
 }
 
 # == Version ==
@@ -3807,7 +3794,7 @@ sub DoUpdateBanned {
 sub DoShowVersion {
   print &GetHeader('', T('Displaying Wiki Version'), '');
   print $WikiDescription;
-  print &GetCommonFooter();
+  print &GetFooter();
 }
 
 # == Maintaining a list of recent visitors plus surge protection ==
@@ -3917,7 +3904,7 @@ sub DoShowVisitors {
     print ', ', $str, '</li>';
   }
   print '</ul>';
-  print &GetCommonFooter();
+  print &GetFooter();
 }
 
 # == Track Back ==
