@@ -16,13 +16,14 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.3 2004/12/14 23:24:28 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.4 2004/12/15 00:26:51 as Exp $</p>';
 
 $Action{buildindex} = \&SearchFreeTextIndex;
 
 $Action{search} = \&SearchFreeText;
 
 sub SearchFreeTextIndex {
+  RequestLockOrError(); # fatal
   require Search::FreeText;
   my $file = $DataDir . '/word.db';
   my $db = new Search::FreeText(-db => ['DB_File', $file]);
@@ -37,6 +38,7 @@ sub SearchFreeTextIndex {
     $db->index_document($name, $Page{text});
   }
   $db->close_index();
+  ReleaseLock();
   print T('Done.</p></div>');
   PrintFooter();
 }
@@ -110,3 +112,16 @@ sub SearchFreeTextNewForm {
     . $q->textfield(-name=>'term', -size=>20, -accesskey=>T('f')) . ' ';
   return GetFormStart(0, 1, 'search') . $q->p($form . $q->submit('dosearch', T('Go!'))) . $q->endform;
 }
+
+# *SearchFreeTextOldSavePage = *SavePage;
+# *SavePage = *SearchFreeTextNewSavePage;
+
+# sub SearchFreeTextNewSavePage {
+#   SearchFreeTextOldSavePage();
+#   require Search::FreeText;
+#   my $file = $DataDir . '/word.db';
+#   my $db = new Search::FreeText(-db => ['DB_File', $file]);
+#   $db->open_index();
+#   $db->index_document($OpenPageName, $Page{text}) # dies with "Document already indexed"!
+#   $db->close_index();
+# }
