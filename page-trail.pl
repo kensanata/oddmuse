@@ -1,7 +1,8 @@
-# $Id: page-trail.pl,v 1.1 2004/01/25 20:27:58 as Exp $
+# $Id: page-trail.pl,v 1.2 2004/01/25 21:02:12 as Exp $
 
-my $PageTrailCookieName = $CookieName . "Trail";
 my $PageTrailLength = 10;
+
+$CookieParameters{trail} = '';
 my @PageTrail;
 
 *OldBrowsePage = *BrowsePage;
@@ -15,9 +16,11 @@ sub NewBrowsePage {
 
 sub UpdatePageTrail {
   my $id = shift;
-  @PageTrail = split(/$FS/, $q->cookie($PageTrailCookieName));
+  my $US  = "\x1f";
+  @PageTrail = split(/$US/, GetParam('trail', ''));
   unshift(@PageTrail, $id);
-  @PageTrail = @PageTrail[0..$PageTrailLength-1];
+  @PageTrail = @PageTrail[0..$PageTrailLength-1] if $PageTrail[$PageTrailLength];
+  SetParam('trail', join($US, @PageTrail));
 }
 
 *OldGetGotoBar = *GetGotoBar;
@@ -26,6 +29,7 @@ sub UpdatePageTrail {
 sub NewGetGotoBar {
   my $bar = OldGetGotoBar(@_);
   $bar .= $q->span({-class=>'trail'}, $q->br(),
-		   map { GetPageLink($_) } reverse(@trail));
+		   map { GetPageLink($_) } reverse(@PageTrail))
+    if @PageTrail;
   return $bar;
 }
