@@ -350,7 +350,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.468 2004/10/16 23:53:18 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.469 2004/10/17 14:50:21 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -729,10 +729,7 @@ sub GetRaw {
   my $uri = shift;
   return unless eval { require LWP::UserAgent; };
   my $ua = LWP::UserAgent->new;
-  # consider setting $ua->max_size(50000);
-  # consider setting $ua->timeout(20);
-  my $request = HTTP::Request->new('GET', $uri);
-  my $response = $ua->request($request);
+  my $response = $ua->get($uri);
   return $response->content;
 }
 
@@ -3220,8 +3217,10 @@ sub PrintAllPages {
     my @languages = split(/,/, $Page{languages});
     @languages = GetLanguages($Page{text}) unless GetParam('cache', $UseCache); # maybe refresh!
     next if $lang and @languages and not grep(/$lang/, @languages);
+    my $title = $id;
+    $title =~ s/_/ /g;	 # Display as spaces
     print '<div class="page">' . $q->hr
-      . $q->h1($links ? GetPageLink($id) : $q->a({-name=>$id},$id));
+      . $q->h1($links ? GetPageLink($id, $title) : $q->a({-name=>$id},$title));
     PrintPageHtml();
     if ($comments and UserCanEdit($CommentsPrefix . $id, 0) and $id !~ /^$CommentsPrefix/) {
       print $q->p({-class=>'comment'},
