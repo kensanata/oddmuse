@@ -1,3 +1,10 @@
+2004-01-23  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($DataDir): Allow setting it via the environment
+	variable "WikiDataDir" (for mod_perl).
+	($ModuleDir): New variable.
+	(Init): Load modules in $ModuleDir.
+
 2004-01-19  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (RSS): Print error message when parsing fails.
