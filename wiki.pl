@@ -274,7 +274,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.209 2003/10/18 11:26:54 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.210 2003/10/18 22:30:54 as Exp $');
 }
 
 sub InitCookie {
@@ -829,7 +829,7 @@ sub GetUrl {
 sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result!
   my ($id, $text, $bracket, $free) = @_;
   $id = FreeToNormal($id) if $FreeLinks;
-  my $exists = ResolveId($id);
+  my ($class, $exists, $title) = ResolveId($id);
   if (!$text && $exists && $bracket) {
     $text = ++$FootnoteNumber;
   }
@@ -837,7 +837,7 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
     $text = $id unless $text;
     $text =~ s/_/ /g if $free;
     $text = "[$text]" if $bracket;
-    return ScriptLink(UrlEncode($id), $text);
+    return ScriptLink(UrlEncode($id), $text, $class, '', $title);
   } else {
     # $free and $bracket usually exclude each other
     # $text and not $bracket exclude each other
@@ -1075,19 +1075,19 @@ sub ValidIdOrDie {
 sub ResolveId {
   my $id = shift;
   AllPagesList();
-  return $id if $IndexHash{$id}; # page exists
+  return ('local', $id) if $IndexHash{$id}; # page exists
   if ($PermanentAnchors) {
     ReadPermanentAnchors();
     my $anchor = $PermanentAnchors{$id};
-    return $anchor if $anchor; # permanent anchor exists
+    return ('alias', $anchor) if $anchor; # permanent anchor exists
   }
 }
 
 sub BrowseResolvedPage {
   my $id = shift;
   $id = FreeToNormal($id) if $FreeLinks; # needed even if page does not exist
-  my $resolved = ResolveId($id);
-  if ($resolved and $resolved ne $id) { # an anchor was found instead of a page
+  my ($class, $resolved) = ResolveId($id);
+  if ($class eq 'alias') { # an anchor was found instead of a page
     ReBrowsePage($resolved . '#' . $id);
   } elsif (not $resolved and $NotFoundPg) { # custom page-not-found message
     BrowsePage($NotFoundPg);
@@ -1852,6 +1852,11 @@ body { background-color:#FFF; color:#000; }
 a:link { color:#00F; }
 a:visited { color:#A0A; }
 a:active { color:#F00; }
+a.definition:before { content:"[::"; }
+a.definition:after { content:"]"; }
+a.alias { text-decoration:none; border-bottom: thin dashed; }
+a.upload:before { content:"<"; }
+a.upload:after { content:">"; }
 img.logo { float: right; clear: right; border-style:none; }
 div.diff { padding-left:5%; padding-right:5%; }
 div.old { background-color:#FFFFAF; }
@@ -1866,10 +1871,6 @@ table.user tr td { border-style:solid; border-width:thin; padding:5px; text-alig
 span.result { font-size:larger; }
 span.info { font-size:smaller; font-style:italic; }
 div.rss { background-color:#EEF; }
-a.definition:before { content:"[::"; }
-a.definition:after { content:"]"; }
-a.upload:before { content:"<"; }
-a.upload:after { content:">"; }
 -->
 EOT
   }
