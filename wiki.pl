@@ -348,7 +348,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.461 2004/10/05 23:15:34 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.462 2004/10/10 13:46:16 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2918,7 +2918,7 @@ sub PrintPage {
   my $id = shift;
   my $lang = GetParam('lang', 0);
   if ($lang) {
-    OpenPage ($id);
+    OpenPage($id);
     my @languages = split(/,/, $Page{languages});
     next if (@languages and not grep(/$lang/, @languages));
   }
@@ -3275,6 +3275,7 @@ sub DoPost {
     $string = '#FILE ' . $type . "\n" . $_;
   } else {
     $string = AddComment($old, $comment) if $comment;
+    $string =~ s/^$DeletedPage// if $comment;
     # Massage the string
     $string =~ s/\r//g;
     $string .= "\n"  if ($string !~ /\n$/);
@@ -3547,8 +3548,7 @@ sub DoMaintain {
 # == Deleting pages ==
 
 sub PageDeletable {
-  my ($expirets);
-  $expirets = $Now - ($KeepDays * 24 * 60 * 60);
+  my $expirets = $Now - ($KeepDays * 24 * 60 * 60);
   return 0 unless $Page{ts} < $expirets;
   return $DeletedPage && $Page{text} =~ /^\s*$DeletedPage\b/o;
 }
