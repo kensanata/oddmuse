@@ -17,8 +17,17 @@
 #    Boston, MA 02111-1307 USA
 
 # Makes the wiki logo depend on the current date.
+#
+# Example Usage: Put the following into your config file and modify as
+# needed:
+#
+#  $DynLogoDirectory = '/mypic/dynlogo';
+#  $DynLogoDefault = 'wiki.jpg';
+#  %DynLogoMap = ('\d{4}-12-31' => 'party.jpg');
+#  $LogoUrl = GetDynLogoUrl();
+#
 
-$ModulesDescription .= '<p>$Id: dynlogo.pl,v 1.1 2004/09/27 23:01:28 sblatt Exp $</p>';
+$ModulesDescription .= '<p>$Id: dynlogo.pl,v 1.2 2004/10/02 08:40:01 sblatt Exp $</p>';
 
 use vars qw($DynLogoDirectory $DynLogoDefault %DynLogoMap);
 
@@ -43,6 +52,3 @@ sub GetDynLogoUrl {
   }
   return "$DynLogoDirectory/$DynLogoDefault";
 }
-
-# Only use a dynamic logo if no global logo is defined yet.
-$LogoUrl = GetDynLogoUrl() if $LogoUrl eq '';
