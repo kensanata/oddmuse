@@ -1,3 +1,20 @@
+2004-06-15  Alex Schroeder  <alex@confusibombus>
+
+	* modules/calendar.pl (Cal): Accept year and month as parameters.
+	Link month names.
+	(PrintYearCalendar): Use Cal instead of near-duplication of code.
+	(DoYearCalendar): New action 'calendar' used to print yearly
+	calendar.
+	(Cal): The year now links to an overview of the entire year.
+	(CalendarRule): New rule for month:2004-06.
+	(CalendarRule): New rule for month:+1 or month:-1.
+	(PrintYearCalendar): Add div.year.
+
+2004-06-15  Alex Schroeder  <alex@gnu.org>
+
+	* modules/calendar.pl (Cal): Support for Date::Calc and Date::Pcalc.
+	($CalendarUseCal): New option.
+
 2004-06-13  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoLinks): Pass parameters onto GetFullLinkList.
