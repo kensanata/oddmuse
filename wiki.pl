@@ -87,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.118 2003/08/14 13:07:49 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.119 2003/08/14 13:18:16 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -432,6 +432,8 @@ sub ApplyRules {
       $fragment = AddHtmlEnvironment($1);
     } elsif (m/\G\&lt;\/($htmlre)\&gt;/cgi) { # closing tags
       $fragment = CloseHtmlEnvironment($1);
+    } elsif (m/\G\&lt;($htmlre) *\/\&gt;/cgi) { # empty tags
+      $fragment = "<$1 />";
     } elsif ($HtmlLinks && m/\G\&lt;a(\s[^<>]+?)\&gt;(.*?)\&lt;\/a\&gt;/cgi) { # <a ...>text</a>
       $fragment = "<a$1>$2</a>";
     } elsif ($BracketText && $locallinks && m/\G(\[$InterLinkPattern\s+([^\]]+?)\])/cg) { # [InterLink text]
