@@ -1,3 +1,12 @@
+2004-04-05  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (UpdateReferers): Replace $q->url() with $ScriptName,
+	since that's the default value.
+	(GetHtmlHeader): Replace $q->url() with $ScriptName in the default
+	body class (aka theme).
+	(DoBrowseRequest): New handling, so that modules/namespaces.pl
+	works.
+
 2004-04-04  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (AllPagesList): Produce an error if the pageidx file
