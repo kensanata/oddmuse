@@ -1,0 +1,641 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://purl.org/rss/1.0/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:wiki="http://purl.org/rss/1.0/modules/wiki/"
+>
+    <channel rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=rss&amp;days=1">
+        <title>Meatball Wiki</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?RecentChanges</link>
+        <description>An online community for online communities.</description>
+        <wiki:interwiki>
+            <rdf:Description link="http://www.usemod.com/cgi-bin/mb.pl">
+                <rdf:value>MeatBall</rdf:value>
+            </rdf:Description>
+        </wiki:interwiki>
+        <items>
+            <rdf:Seq>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=LionKimbro&amp;revision=143"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=AlexSchroeder&amp;revision=433"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=TargetReached&amp;revision=10"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=WhatIsaCommunity&amp;revision=16"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=OfflineCommunity&amp;revision=3"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=OccamsRazor&amp;revision=35"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=CommunityMember&amp;revision=18"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=BayleShanks&amp;revision=190"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=DifferenceSuggestions&amp;revision=23"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=SunirsMessageBox&amp;revision=31"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=CommunityWiki&amp;revision=3"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=ScottMoonen&amp;revision=131"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=MeatballWikiCopyrightDiscussion&amp;revision=67"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=OpenMeatballWiki&amp;revision=14"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=BerneConvention&amp;revision=6"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=HelmutLeitner&amp;revision=152"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=FilteredRecentChanges&amp;revision=11"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=SoftSecurity&amp;revision=74"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=FairUse&amp;revision=2"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=StevenGasperino&amp;revision=8"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=AlexSchroederArchive&amp;revision=4"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=SunirShah&amp;revision=898"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=TargetGroup&amp;revision=15"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=AbbrevAreEvil&amp;revision=4"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=ErnstGruber&amp;revision=25"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=PageClusters&amp;revision=41"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=TourBusChanges&amp;revision=142"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=UnifiedRecentChanges&amp;revision=27"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=RatingGroups&amp;revision=19"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=WikiMass&amp;revision=30"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=WikiCanonicalization&amp;revision=96"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=PageChurn&amp;revision=16"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=ProjectVincent&amp;revision=14"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=DaveJacobyDiary&amp;revision=65"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=DarkSideOfCommunityAtMeatball&amp;revision=10"/>
+                <rdf:li rdf:resource="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=BeProfessional&amp;revision=21"/>
+
+            </rdf:Seq>
+        </items>
+    </channel>
+    <image rdf:about="http://usemod.com/meatball-rss.gif">
+        <title>Meatball Wiki</title>
+        <url>http://usemod.com/meatball-rss.gif</url>
+        <link>http://www.usemod.com/cgi-bin/mb.pl</link>
+    </image>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=LionKimbro&amp;revision=143">
+        <title>LionKimbro</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?LionKimbro</link>
+        <description>reply to Scott's comment (need threading!)</description>
+        <dc:date>2003-10-24T22:49:33+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="lorenz.ucsd.edu" link="http://www.usemod.com/cgi-bin/mb.pl?BayleShanks">
+                <rdf:value>BayleShanks</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>major</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=LionKimbro</wiki:diff>
+        <wiki:version>143</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=LionKimbro</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=AlexSchroeder&amp;revision=433">
+        <title>AlexSchroeder</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?AlexSchroeder</link>
+        <description>reply to sunir</description>
+        <dc:date>2003-10-24T22:49:18+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="dclient80-218-94-90.hispeed.ch" link="http://www.usemod.com/cgi-bin/mb.pl?AlexSchroeder">
+                <rdf:value>AlexSchroeder</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>major</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=AlexSchroeder</wiki:diff>
+        <wiki:version>433</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=AlexSchroeder</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=TargetReached&amp;revision=10">
+        <title>TargetReached</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?TargetReached</link>
+        <description>WikiEmigration is the way to go</description>
+        <dc:date>2003-10-24T22:31:09+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="lorenz.ucsd.edu" link="http://www.usemod.com/cgi-bin/mb.pl?BayleShanks">
+                <rdf:value>BayleShanks</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>major</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=TargetReached</wiki:diff>
+        <wiki:version>10</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=TargetReached</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=WhatIsaCommunity&amp;revision=16">
+        <title>WhatIsaCommunity</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?WhatIsaCommunity</link>
+        <description>delk OfflineCommunity, lk VirtualCommunity</description>
+        <dc:date>2003-10-24T22:29:48+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="user-835.wfd12.dsl.pol.co.uk" link="http://www.usemod.com/cgi-bin/mb.pl?MartinHarper">
+                <rdf:value>MartinHarper</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>minor</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=WhatIsaCommunity</wiki:diff>
+        <wiki:version>16</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=WhatIsaCommunity</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=OfflineCommunity&amp;revision=3">
+        <title>OfflineCommunity</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?OfflineCommunity</link>
+        <description>delete - shallow</description>
+        <dc:date>2003-10-24T22:29:11+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="user-835.wfd12.dsl.pol.co.uk" link="http://www.usemod.com/cgi-bin/mb.pl?MartinHarper">
+                <rdf:value>MartinHarper</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>major</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=OfflineCommunity</wiki:diff>
+        <wiki:version>3</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=OfflineCommunity</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=OccamsRazor&amp;revision=35">
+        <title>OccamsRazor</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?OccamsRazor</link>
+        <description>response</description>
+        <dc:date>2003-10-24T22:23:56+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="user-835.wfd12.dsl.pol.co.uk" link="http://www.usemod.com/cgi-bin/mb.pl?MartinHarper">
+                <rdf:value>MartinHarper</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>major</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=OccamsRazor</wiki:diff>
+        <wiki:version>35</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=OccamsRazor</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=CommunityMember&amp;revision=18">
+        <title>CommunityMember</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?CommunityMember</link>
+        <description>interesting idea</description>
+        <dc:date>2003-10-24T22:15:43+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="lorenz.ucsd.edu" link="http://www.usemod.com/cgi-bin/mb.pl?BayleShanks">
+                <rdf:value>BayleShanks</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>major</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=CommunityMember</wiki:diff>
+        <wiki:version>18</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=CommunityMember</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=BayleShanks&amp;revision=190">
+        <title>BayleShanks</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?BayleShanks</link>
+        <description>You last large edit prompted me to start a new wiki as a repository for myself and others: CommunityWiki.  I've copied your text that inspired me over there.</description>
+        <dc:date>2003-10-24T22:12:10+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="dclient80-218-94-90.hispeed.ch" link="http://www.usemod.com/cgi-bin/mb.pl?AlexSchroeder">
+                <rdf:value>AlexSchroeder</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>major</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=BayleShanks</wiki:diff>
+        <wiki:version>190</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=BayleShanks</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=DifferenceSuggestions&amp;revision=23">
+        <title>DifferenceSuggestions</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?DifferenceSuggestions</link>
+        <description>related to CatchUp, ThreadingForWiki</description>
+        <dc:date>2003-10-24T22:10:22+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="lorenz.ucsd.edu" link="http://www.usemod.com/cgi-bin/mb.pl?BayleShanks">
+                <rdf:value>BayleShanks</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>major</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=DifferenceSuggestions</wiki:diff>
+        <wiki:version>23</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=DifferenceSuggestions</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=SunirsMessageBox&amp;revision=31">
+        <title>SunirsMessageBox</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?SunirsMessageBox</link>
+        <description>compelling application</description>
+        <dc:date>2003-10-24T22:05:47+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="128.100.159.80" >
+                <rdf:value>128.100.159.80</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>major</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=SunirsMessageBox</wiki:diff>
+        <wiki:version>31</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=SunirsMessageBox</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=CommunityWiki&amp;revision=3">
+        <title>CommunityWiki</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?CommunityWiki</link>
+        <description></description>
+        <dc:date>2003-10-24T21:35:37+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="dclient80-218-94-90.hispeed.ch" link="http://www.usemod.com/cgi-bin/mb.pl?AlexSchroeder">
+                <rdf:value>AlexSchroeder</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>minor</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=CommunityWiki</wiki:diff>
+        <wiki:version>3</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=CommunityWiki</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=ScottMoonen&amp;revision=131">
+        <title>ScottMoonen</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?ScottMoonen</link>
+        <description>reply</description>
+        <dc:date>2003-10-24T21:13:44+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="user-0c8hpr0.cable.mindspring.com" link="http://www.usemod.com/cgi-bin/mb.pl?ScottMoonen">
+                <rdf:value>ScottMoonen</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>major</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=ScottMoonen</wiki:diff>
+        <wiki:version>131</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=ScottMoonen</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=MeatballWikiCopyrightDiscussion&amp;revision=67">
+        <title>MeatballWikiCopyrightDiscussion</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?MeatballWikiCopyrightDiscussion</link>
+        <description>proposed changes + meta-rationale</description>
+        <dc:date>2003-10-24T20:43:55+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="128.100.159.80" >
+                <rdf:value>128.100.159.80</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>major</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=MeatballWikiCopyrightDiscussion</wiki:diff>
+        <wiki:version>67</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=MeatballWikiCopyrightDiscussion</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=OpenMeatballWiki&amp;revision=14">
+        <title>OpenMeatballWiki</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?OpenMeatballWiki</link>
+        <description>summary</description>
+        <dc:date>2003-10-24T20:34:44+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="128.100.159.80" >
+                <rdf:value>128.100.159.80</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>major</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=OpenMeatballWiki</wiki:diff>
+        <wiki:version>14</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=OpenMeatballWiki</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=BerneConvention&amp;revision=6">
+        <title>BerneConvention</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?BerneConvention</link>
+        <description>See WikiPedia:Berne_Convention_for_the_Protection_of_Literary_and_Artistic_Works</description>
+        <dc:date>2003-10-24T20:14:56+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="user-835.wfd12.dsl.pol.co.uk" link="http://www.usemod.com/cgi-bin/mb.pl?MartinHarper">
+                <rdf:value>MartinHarper</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>minor</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=BerneConvention</wiki:diff>
+        <wiki:version>6</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=BerneConvention</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=HelmutLeitner&amp;revision=152">
+        <title>HelmutLeitner</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?HelmutLeitner</link>
+        <description></description>
+        <dc:date>2003-10-24T20:00:09+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="chello212186192182.graz.surfer.at" link="http://www.usemod.com/cgi-bin/mb.pl?HelmutLeitner">
+                <rdf:value>HelmutLeitner</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>major</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=HelmutLeitner</wiki:diff>
+        <wiki:version>152</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=HelmutLeitner</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=FilteredRecentChanges&amp;revision=11">
+        <title>FilteredRecentChanges</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?FilteredRecentChanges</link>
+        <description>BiggestWiki</description>
+        <dc:date>2003-10-24T19:36:28+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="user-835.wfd12.dsl.pol.co.uk" link="http://www.usemod.com/cgi-bin/mb.pl?MartinHarper">
+                <rdf:value>MartinHarper</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>minor</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=FilteredRecentChanges</wiki:diff>
+        <wiki:version>11</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=FilteredRecentChanges</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=SoftSecurity&amp;revision=74">
+        <title>SoftSecurity</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?SoftSecurity</link>
+        <description>Titled/Commented on the hospital one</description>
+        <dc:date>2003-10-24T19:24:05+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="ip68-97-245-189.ok.ok.cox.net" >
+                <rdf:value>ip68-97-245-189.ok.ok.cox.net</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>major</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=SoftSecurity</wiki:diff>
+        <wiki:version>74</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=SoftSecurity</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=FairUse&amp;revision=2">
+        <title>FairUse</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?FairUse</link>
+        <description>WikiPedia:fair_use.</description>
+        <dc:date>2003-10-24T19:16:28+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="user-835.wfd12.dsl.pol.co.uk" link="http://www.usemod.com/cgi-bin/mb.pl?MartinHarper">
+                <rdf:value>MartinHarper</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>minor</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=FairUse</wiki:diff>
+        <wiki:version>2</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=FairUse</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=StevenGasperino&amp;revision=8">
+        <title>StevenGasperino</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?StevenGasperino</link>
+        <description></description>
+        <dc:date>2003-10-24T19:13:51+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="ip68-97-245-189.ok.ok.cox.net" >
+                <rdf:value>ip68-97-245-189.ok.ok.cox.net</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>minor</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=StevenGasperino</wiki:diff>
+        <wiki:version>8</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=StevenGasperino</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=AlexSchroederArchive&amp;revision=4">
+        <title>AlexSchroederArchive</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?AlexSchroederArchive</link>
+        <description>moved here</description>
+        <dc:date>2003-10-24T18:39:51+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="dclient80-218-94-90.hispeed.ch" link="http://www.usemod.com/cgi-bin/mb.pl?AlexSchroeder">
+                <rdf:value>AlexSchroeder</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>minor</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=AlexSchroederArchive</wiki:diff>
+        <wiki:version>4</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=AlexSchroederArchive</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=SunirShah&amp;revision=898">
+        <title>SunirShah</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?SunirShah</link>
+        <description>12:33pm, October 24, 2003</description>
+        <dc:date>2003-10-24T18:35:10+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="128.100.159.80" >
+                <rdf:value>128.100.159.80</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>major</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=SunirShah</wiki:diff>
+        <wiki:version>898</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=SunirShah</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=TargetGroup&amp;revision=15">
+        <title>TargetGroup</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?TargetGroup</link>
+        <description></description>
+        <dc:date>2003-10-24T18:26:19+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="L0825P25.dipool.highway.telekom.at" >
+                <rdf:value>L0825P25.dipool.highway.telekom.at</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>major</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=TargetGroup</wiki:diff>
+        <wiki:version>15</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=TargetGroup</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=AbbrevAreEvil&amp;revision=4">
+        <title>AbbrevAreEvil</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?AbbrevAreEvil</link>
+        <description>delete</description>
+        <dc:date>2003-10-24T17:10:09+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="bi01p1.nc.us.ibm.com" link="http://www.usemod.com/cgi-bin/mb.pl?ScottMoonen">
+                <rdf:value>ScottMoonen</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>major</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=AbbrevAreEvil</wiki:diff>
+        <wiki:version>4</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=AbbrevAreEvil</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=ErnstGruber&amp;revision=25">
+        <title>ErnstGruber</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?ErnstGruber</link>
+        <description></description>
+        <dc:date>2003-10-24T15:35:26+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="chello062178106047.8.12.vie.surfer.at" link="http://www.usemod.com/cgi-bin/mb.pl?ErnstGruber">
+                <rdf:value>ErnstGruber</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>major</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=ErnstGruber</wiki:diff>
+        <wiki:version>25</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=ErnstGruber</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=PageClusters&amp;revision=41">
+        <title>PageClusters</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?PageClusters</link>
+        <description>typo</description>
+        <dc:date>2003-10-24T15:25:28+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="dclient80-218-94-90.hispeed.ch" link="http://www.usemod.com/cgi-bin/mb.pl?AlexSchroeder">
+                <rdf:value>AlexSchroeder</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>minor</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=PageClusters</wiki:diff>
+        <wiki:version>41</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=PageClusters</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=TourBusChanges&amp;revision=142">
+        <title>TourBusChanges</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?TourBusChanges</link>
+        <description>Desynchronization detected!</description>
+        <dc:date>2003-10-24T14:25:28+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="65.110.6.133" >
+                <rdf:value>65.110.6.133</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>major</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=TourBusChanges</wiki:diff>
+        <wiki:version>142</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=TourBusChanges</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=UnifiedRecentChanges&amp;revision=27">
+        <title>UnifiedRecentChanges</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?UnifiedRecentChanges</link>
+        <description>wikigateway backend</description>
+        <dc:date>2003-10-24T10:38:00+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="user-10cm289.cable.mindspring.com" link="http://www.usemod.com/cgi-bin/mb.pl?BayleShanks">
+                <rdf:value>BayleShanks</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>major</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=UnifiedRecentChanges</wiki:diff>
+        <wiki:version>27</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=UnifiedRecentChanges</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=RatingGroups&amp;revision=19">
+        <title>RatingGroups</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?RatingGroups</link>
+        <description>copied off some spaghetti pages</description>
+        <dc:date>2003-10-24T08:10:44+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="user-10cm289.cable.mindspring.com" link="http://www.usemod.com/cgi-bin/mb.pl?BayleShanks">
+                <rdf:value>BayleShanks</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>major</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=RatingGroups</wiki:diff>
+        <wiki:version>19</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=RatingGroups</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=WikiMass&amp;revision=30">
+        <title>WikiMass</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?WikiMass</link>
+        <description></description>
+        <dc:date>2003-10-24T07:42:53+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="chello212186192182.graz.surfer.at" link="http://www.usemod.com/cgi-bin/mb.pl?HelmutLeitner">
+                <rdf:value>HelmutLeitner</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>major</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=WikiMass</wiki:diff>
+        <wiki:version>30</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=WikiMass</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=WikiCanonicalization&amp;revision=96">
+        <title>WikiCanonicalization</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?WikiCanonicalization</link>
+        <description>response</description>
+        <dc:date>2003-10-24T03:21:50+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="128.100.159.100" >
+                <rdf:value>128.100.159.100</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>major</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=WikiCanonicalization</wiki:diff>
+        <wiki:version>96</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=WikiCanonicalization</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=PageChurn&amp;revision=16">
+        <title>PageChurn</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?PageChurn</link>
+        <description>when editing for ForgiveAndForget or DissuadeReputation</description>
+        <dc:date>2003-10-24T00:41:14+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="user-3943.tcl21.dsl.pol.co.uk" link="http://www.usemod.com/cgi-bin/mb.pl?MartinHarper">
+                <rdf:value>MartinHarper</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>major</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=PageChurn</wiki:diff>
+        <wiki:version>16</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=PageChurn</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=ProjectVincent&amp;revision=14">
+        <title>ProjectVincent</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?ProjectVincent</link>
+        <description>delete - forgive and forget</description>
+        <dc:date>2003-10-24T00:38:41+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="user-3943.tcl21.dsl.pol.co.uk" link="http://www.usemod.com/cgi-bin/mb.pl?MartinHarper">
+                <rdf:value>MartinHarper</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>major</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=ProjectVincent</wiki:diff>
+        <wiki:version>14</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=ProjectVincent</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=DaveJacobyDiary&amp;revision=65">
+        <title>DaveJacobyDiary</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?DaveJacobyDiary</link>
+        <description>rm NameWithheld </description>
+        <dc:date>2003-10-24T00:10:24+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="user-3943.tcl21.dsl.pol.co.uk" link="http://www.usemod.com/cgi-bin/mb.pl?MartinHarper">
+                <rdf:value>MartinHarper</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>minor</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=DaveJacobyDiary</wiki:diff>
+        <wiki:version>65</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=DaveJacobyDiary</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=DarkSideOfCommunityAtMeatball&amp;revision=10">
+        <title>DarkSideOfCommunityAtMeatball</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?DarkSideOfCommunityAtMeatball</link>
+        <description></description>
+        <dc:date>2003-10-24T00:09:16+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="user-3943.tcl21.dsl.pol.co.uk" link="http://www.usemod.com/cgi-bin/mb.pl?MartinHarper">
+                <rdf:value>MartinHarper</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>minor</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=DarkSideOfCommunityAtMeatball</wiki:diff>
+        <wiki:version>10</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=DarkSideOfCommunityAtMeatball</wiki:history>
+    </item>
+    <item rdf:about="http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;id=BeProfessional&amp;revision=21">
+        <title>BeProfessional</title>
+        <link>http://www.usemod.com/cgi-bin/mb.pl?BeProfessional</link>
+        <description></description>
+        <dc:date>2003-10-23T23:07:04+06:00</dc:date>
+        <dc:contributor>
+            <rdf:Description wiki:host="chello212186192182.graz.surfer.at" link="http://www.usemod.com/cgi-bin/mb.pl?HelmutLeitner">
+                <rdf:value>HelmutLeitner</rdf:value>
+            </rdf:Description>
+        </dc:contributor>
+        <wiki:status>updated</wiki:status>
+        <wiki:importance>minor</wiki:importance>
+        <wiki:diff>http://www.usemod.com/cgi-bin/mb.pl?action=browse&amp;diff=4&amp;id=BeProfessional</wiki:diff>
+        <wiki:version>21</wiki:version>
+        <wiki:history>http://www.usemod.com/cgi-bin/mb.pl?action=history&amp;id=BeProfessional</wiki:history>
+    </item>
+
+</rdf:RDF>

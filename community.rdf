@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<rdf:RDF
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns="http://purl.org/rss/1.0/"
+ xmlns:taxo="http://purl.org/rss/1.0/modules/taxonomy/"
+ xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:syn="http://purl.org/rss/1.0/modules/syndication/"
+ xmlns:wiki="http://purl.org/rss/1.0/modules/wiki/"
+>
+
+<channel rdf:about="http://www.emacswiki.org/cgi-bin/community?RecentChanges">
+<title>CommunityWiki</title>
+<link>http://www.emacswiki.org/cgi-bin/community?RecentChanges</link>
+<description>The multilingual copyleft wiki on communities.</description>
+<dc:rights>Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation.</dc:rights>
+<dc:date>2003-10-24T21:16:21+00:00</dc:date>
+<dc:publisher>Alex Schroeder</dc:publisher>
+<dc:contributor>The CommunityWiki community</dc:contributor>
+<wiki:interwiki>CommunityWiki</wiki:interwiki>
+<items>
+ <rdf:Seq>
+  <rdf:li rdf:resource="http://www.emacswiki.org/cgi-bin/community?action=browse;id=RecentNearChanges;revision=1" />
+  <rdf:li rdf:resource="http://www.emacswiki.org/cgi-bin/community?action=browse;id=RecentChanges;revision=2" />
+  <rdf:li rdf:resource="http://www.emacswiki.org/cgi-bin/community?action=browse;id=CategoryHomepage;revision=2" />
+  <rdf:li rdf:resource="http://www.emacswiki.org/cgi-bin/community?action=browse;id=2003-10-24;revision=3" />
+  <rdf:li rdf:resource="http://www.emacswiki.org/cgi-bin/community?action=browse;id=2003-10-24;revision=2" />
+  <rdf:li rdf:resource="http://www.emacswiki.org/cgi-bin/community?action=browse;id=Blog;revision=2" />
+  <rdf:li rdf:resource="http://www.emacswiki.org/cgi-bin/community?action=browse;id=Blog;revision=1" />
+  <rdf:li rdf:resource="http://www.emacswiki.org/cgi-bin/community?action=browse;id=2003-10-24;revision=1" />
+  <rdf:li rdf:resource="http://www.emacswiki.org/cgi-bin/community?action=browse;id=HowTo;revision=1" />
+  <rdf:li rdf:resource="http://www.emacswiki.org/cgi-bin/community?action=browse;id=InterMap;revision=4" />
+  <rdf:li rdf:resource="http://www.emacswiki.org/cgi-bin/community?action=browse;id=NewPage;revision=5" />
+  <rdf:li rdf:resource="http://www.emacswiki.org/cgi-bin/community?action=browse;id=NewPage;revision=4" />
+  <rdf:li rdf:resource="http://www.emacswiki.org/cgi-bin/community?action=browse;id=MeatballWiki;revision=1" />
+  <rdf:li rdf:resource="http://www.emacswiki.org/cgi-bin/community?action=browse;id=NewPage;revision=3" />
+  <rdf:li rdf:resource="http://www.emacswiki.org/cgi-bin/community?action=browse;id=NewPage;revision=2" />
+ </rdf:Seq>
+</items>
+</channel>
+
+<item rdf:about="http://www.emacswiki.org/cgi-bin/community?action=browse;id=RecentNearChanges;revision=1">
+<title>RecentNearChanges</title>
+<link>http://www.emacswiki.org/cgi-bin/community?action=browse;id=RecentNearChanges;revision=1</link>
+<description>unified rc for here and meatball</description>
+<dc:date>2003-10-24T21:02:53+00:00</dc:date>
+<dc:contributor>AlexSchroeder</dc:contributor>
+<wiki:history>http://www.emacswiki.org/cgi-bin/community?action=history&amp;id=RecentNearChanges</wiki:history>
+<wiki:importance>major</wiki:importance>
+<wiki:version>1</wiki:version>
+<wiki:status>new</wiki:status>
+<wiki:diff>http://www.emacswiki.org/cgi-bin/community?action=browse&amp;diff=1&amp;id=RecentNearChanges</wiki:diff>
+</item>
+
+<item rdf:about="http://www.emacswiki.org/cgi-bin/community?action=browse;id=RecentChanges;revision=2">
+<title>RecentChanges</title>
+<link>http://www.emacswiki.org/cgi-bin/community?action=browse;id=RecentChanges;revision=2</link>
+<dc:date>2003-10-24T21:01:17+00:00</dc:date>
+<dc:contributor>AlexSchroeder</dc:contributor>
+<wiki:history>http://www.emacswiki.org/cgi-bin/community?action=history&amp;id=RecentChanges</wiki:history>
+<wiki:importance>major</wiki:importance>
+<wiki:version>2</wiki:version>
+<wiki:status>updated</wiki:status>
+<wiki:diff>http://www.emacswiki.org/cgi-bin/community?action=browse&amp;diff=1&amp;id=RecentChanges</wiki:diff>
+</item>
+
+<item rdf:about="http://www.emacswiki.org/cgi-bin/community?action=browse;id=CategoryHomepage;revision=2">
+<title>CategoryHomepage</title>
+<link>http://www.emacswiki.org/cgi-bin/community?action=browse;id=CategoryHomepage;revision=2</link>
+<description>see newpage if you have a namepage on MeatballWiki</description>
+<dc:date>2003-10-24T21:00:12+00:00</dc:date>
+<dc:contributor>AlexSchroeder</dc:contributor>
+<wiki:history>http://www.emacswiki.org/cgi-bin/community?action=history&amp;id=CategoryHomepage</wiki:history>
+<wiki:importance>major</wiki:importance>
+<wiki:version>2</wiki:version>
+<wiki:status>updated</wiki:status>
+<wiki:diff>http://www.emacswiki.org/cgi-bin/community?action=browse&amp;diff=1&amp;id=CategoryHomepage</wiki:diff>
+</item>
+
+<item rdf:about="http://www.emacswiki.org/cgi-bin/community?action=browse;id=2003-10-24;revision=3">
+<title>2003-10-24</title>
+<link>http://www.emacswiki.org/cgi-bin/community?action=browse;id=2003-10-24;revision=3</link>
+<description>copied bayle's original message here.</description>
+<dc:date>2003-10-24T20:09:28+00:00</dc:date>
+<dc:contributor>AlexSchroeder</dc:contributor>
+<wiki:history>http://www.emacswiki.org/cgi-bin/community?action=history&amp;id=2003-10-24</wiki:history>
+<wiki:importance>minor</wiki:importance>
+<wiki:version>3</wiki:version>
+<wiki:status>updated</wiki:status>
+<wiki:diff>http://www.emacswiki.org/cgi-bin/community?action=browse&amp;diff=1&amp;id=2003-10-24</wiki:diff>
+</item>
+
+<item rdf:about="http://www.emacswiki.org/cgi-bin/community?action=browse;id=2003-10-24;revision=2">
+<title>2003-10-24</title>
+<link>http://www.emacswiki.org/cgi-bin/community?action=browse;id=2003-10-24;revision=2</link>
+<description>copied bayle's original message here.</description>
+<dc:date>2003-10-24T20:08:57+00:00</dc:date>
+<dc:contributor>AlexSchroeder</dc:contributor>
+<wiki:history>http://www.emacswiki.org/cgi-bin/community?action=history&amp;id=2003-10-24</wiki:history>
+<wiki:importance>major</wiki:importance>
+<wiki:version>2</wiki:version>
+<wiki:status>updated</wiki:status>
+<wiki:diff>http://www.emacswiki.org/cgi-bin/community?action=browse&amp;diff=1&amp;id=2003-10-24</wiki:diff>
+</item>
+
+<item rdf:about="http://www.emacswiki.org/cgi-bin/community?action=browse;id=Blog;revision=2">
+<title>Blog</title>
+<link>http://www.emacswiki.org/cgi-bin/community?action=browse;id=Blog;revision=2</link>
+<description>new</description>
+<dc:date>2003-10-24T20:05:46+00:00</dc:date>
+<dc:contributor>AlexSchroeder</dc:contributor>
+<wiki:history>http://www.emacswiki.org/cgi-bin/community?action=history&amp;id=Blog</wiki:history>
+<wiki:importance>major</wiki:importance>
+<wiki:version>2</wiki:version>
+<wiki:status>updated</wiki:status>
+<wiki:diff>http://www.emacswiki.org/cgi-bin/community?action=browse&amp;diff=1&amp;id=Blog</wiki:diff>
+</item>
+
+<item rdf:about="http://www.emacswiki.org/cgi-bin/community?action=browse;id=Blog;revision=1">
+<title>Blog</title>
+<link>http://www.emacswiki.org/cgi-bin/community?action=browse;id=Blog;revision=1</link>
+<description>new</description>
+<dc:date>2003-10-24T20:02:22+00:00</dc:date>
+<dc:contributor>AlexSchroeder</dc:contributor>
+<wiki:history>http://www.emacswiki.org/cgi-bin/community?action=history&amp;id=Blog</wiki:history>
+<wiki:importance>major</wiki:importance>
+<wiki:version>1</wiki:version>
+<wiki:status>new</wiki:status>
+<wiki:diff>http://www.emacswiki.org/cgi-bin/community?action=browse&amp;diff=1&amp;id=Blog</wiki:diff>
+</item>
+
+<item rdf:about="http://www.emacswiki.org/cgi-bin/community?action=browse;id=2003-10-24;revision=1">
+<title>2003-10-24</title>
+<link>http://www.emacswiki.org/cgi-bin/community?action=browse;id=2003-10-24;revision=1</link>
+<dc:date>2003-10-24T20:01:03+00:00</dc:date>
+<dc:contributor>AlexSchroeder</dc:contributor>
+<wiki:history>http://www.emacswiki.org/cgi-bin/community?action=history&amp;id=2003-10-24</wiki:history>
+<wiki:importance>major</wiki:importance>
+<wiki:version>1</wiki:version>
+<wiki:status>new</wiki:status>
+<wiki:diff>http://www.emacswiki.org/cgi-bin/community?action=browse&amp;diff=1&amp;id=2003-10-24</wiki:diff>
+</item>
+
+<item rdf:about="http://www.emacswiki.org/cgi-bin/community?action=browse;id=HowTo;revision=1">
+<title>HowTo</title>
+<link>http://www.emacswiki.org/cgi-bin/community?action=browse;id=HowTo;revision=1</link>
+<description>new</description>
+<dc:date>2003-10-24T19:56:28+00:00</dc:date>
+<dc:contributor>AlexSchroeder</dc:contributor>
+<wiki:history>http://www.emacswiki.org/cgi-bin/community?action=history&amp;id=HowTo</wiki:history>
+<wiki:importance>major</wiki:importance>
+<wiki:version>1</wiki:version>
+<wiki:status>new</wiki:status>
+<wiki:diff>http://www.emacswiki.org/cgi-bin/community?action=browse&amp;diff=1&amp;id=HowTo</wiki:diff>
+</item>
+
+<item rdf:about="http://www.emacswiki.org/cgi-bin/community?action=browse;id=InterMap;revision=4">
+<title>InterMap</title>
+<link>http://www.emacswiki.org/cgi-bin/community?action=browse;id=InterMap;revision=4</link>
+<description>added oddmuse</description>
+<dc:date>2003-10-24T19:53:48+00:00</dc:date>
+<dc:contributor>AlexSchroeder</dc:contributor>
+<wiki:history>http://www.emacswiki.org/cgi-bin/community?action=history&amp;id=InterMap</wiki:history>
+<wiki:importance>major</wiki:importance>
+<wiki:version>4</wiki:version>
+<wiki:status>updated</wiki:status>
+<wiki:diff>http://www.emacswiki.org/cgi-bin/community?action=browse&amp;diff=1&amp;id=InterMap</wiki:diff>
+</item>
+
+<item rdf:about="http://www.emacswiki.org/cgi-bin/community?action=browse;id=NewPage;revision=5">
+<title>NewPage</title>
+<link>http://www.emacswiki.org/cgi-bin/community?action=browse;id=NewPage;revision=5</link>
+<dc:date>2003-10-24T19:46:41+00:00</dc:date>
+<dc:contributor>AlexSchroeder</dc:contributor>
+<wiki:history>http://www.emacswiki.org/cgi-bin/community?action=history&amp;id=NewPage</wiki:history>
+<wiki:importance>minor</wiki:importance>
+<wiki:version>5</wiki:version>
+<wiki:status>updated</wiki:status>
+<wiki:diff>http://www.emacswiki.org/cgi-bin/community?action=browse&amp;diff=1&amp;id=NewPage</wiki:diff>
+</item>
+
+<item rdf:about="http://www.emacswiki.org/cgi-bin/community?action=browse;id=NewPage;revision=4">
+<title>NewPage</title>
+<link>http://www.emacswiki.org/cgi-bin/community?action=browse;id=NewPage;revision=4</link>
+<dc:date>2003-10-24T19:46:09+00:00</dc:date>
+<dc:contributor>AlexSchroeder</dc:contributor>
+<wiki:history>http://www.emacswiki.org/cgi-bin/community?action=history&amp;id=NewPage</wiki:history>
+<wiki:importance>minor</wiki:importance>
+<wiki:version>4</wiki:version>
+<wiki:status>updated</wiki:status>
+<wiki:diff>http://www.emacswiki.org/cgi-bin/community?action=browse&amp;diff=1&amp;id=NewPage</wiki:diff>
+</item>
+
+<item rdf:about="http://www.emacswiki.org/cgi-bin/community?action=browse;id=MeatballWiki;revision=1">
+<title>MeatballWiki</title>
+<link>http://www.emacswiki.org/cgi-bin/community?action=browse;id=MeatballWiki;revision=1</link>
+<dc:date>2003-10-24T19:45:27+00:00</dc:date>
+<dc:contributor>AlexSchroeder</dc:contributor>
+<wiki:history>http://www.emacswiki.org/cgi-bin/community?action=history&amp;id=MeatballWiki</wiki:history>
+<wiki:importance>major</wiki:importance>
+<wiki:version>1</wiki:version>
+<wiki:status>new</wiki:status>
+<wiki:diff>http://www.emacswiki.org/cgi-bin/community?action=browse&amp;diff=1&amp;id=MeatballWiki</wiki:diff>
+</item>
+
+<item rdf:about="http://www.emacswiki.org/cgi-bin/community?action=browse;id=NewPage;revision=3">
+<title>NewPage</title>
+<link>http://www.emacswiki.org/cgi-bin/community?action=browse;id=NewPage;revision=3</link>
+<dc:date>2003-10-24T19:45:11+00:00</dc:date>
+<dc:contributor>AlexSchroeder</dc:contributor>
+<wiki:history>http://www.emacswiki.org/cgi-bin/community?action=history&amp;id=NewPage</wiki:history>
+<wiki:importance>minor</wiki:importance>
+<wiki:version>3</wiki:version>
+<wiki:status>updated</wiki:status>
+<wiki:diff>http://www.emacswiki.org/cgi-bin/community?action=browse&amp;diff=1&amp;id=NewPage</wiki:diff>
+</item>
+
+<item rdf:about="http://www.emacswiki.org/cgi-bin/community?action=browse;id=NewPage;revision=2">
+<title>NewPage</title>
+<link>http://www.emacswiki.org/cgi-bin/community?action=browse;id=NewPage;revision=2</link>
+<dc:date>2003-10-24T19:44:13+00:00</dc:date>
+<dc:contributor>AlexSchroeder</dc:contributor>
+<wiki:history>http://www.emacswiki.org/cgi-bin/community?action=history&amp;id=NewPage</wiki:history>
+<wiki:importance>minor</wiki:importance>
+<wiki:version>2</wiki:version>
+<wiki:status>updated</wiki:status>
+<wiki:diff>http://www.emacswiki.org/cgi-bin/community?action=browse&amp;diff=1&amp;id=NewPage</wiki:diff>
+</item>
+
+</rdf:RDF>
