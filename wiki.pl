@@ -275,7 +275,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.263 2003/11/21 18:40:03 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.264 2003/11/26 23:59:57 as Exp $');
 }
 
 sub InitCookie {
@@ -1372,6 +1372,7 @@ sub GetRc {
     next if $filterOnly and not grep(/^$pagename$/, @filters);
     next if ($userOnly and $userOnly ne $username);
     my @languages = split(/,/, $languages);
+    push (@languages, T('none')) unless @languages; # allow searching for these pages
     next if ($langFilter and not grep(/$langFilter/, @languages));
     next if ($PageCluster and $clusterOnly and $clusterOnly ne $cluster);
     $cluster = '' if $clusterOnly or not $PageCluster; # since now $clusterOnly eq $cluster
@@ -3129,9 +3130,10 @@ sub Save { # call within lock, with opened page
   if ($UseDiff and $revision > 1 and not $upload and $old !~ /^#FILE /) {
     UpdateDiffs($id, $old, $new, $minor); # more multiline, non-encoded content
   }
-  SavePage();
   my $languages;
   $languages = GetLanguages($new) unless $upload;
+  $Page{languages} = $languages;
+  SavePage();
   WriteRcLog($id, $summary, $minor, $revision, $user, $host, $languages, GetCluster($new));
   if ($revision == 1) {
     unlink($IndexFile);  # Regenerate index on next request
@@ -3158,7 +3160,7 @@ sub GetLanguages {
       }
     }
   }
-  return \@result;
+  return join(',', @result);
 }
 
 sub GetCluster {
@@ -3185,9 +3187,7 @@ sub MergeRevisions { # merge change from file2 to file3 into file1
 
 # Note: all diff and recent-list operations should be done within locks.
 sub WriteRcLog {
-  my ($id, $summary, $minor, $revision, $username, $host, $langref, $cluster) = @_;
-  my $languages;
-  $languages = join(',', @$langref) if $langref;
+  my ($id, $summary, $minor, $revision, $username, $host, $languages, $cluster) = @_;
   my $rc_line = join($FS, $Now, $id, $minor, $summary, $host,
 		     $username, $revision, $languages, $cluster);
   AppendStringToFile($RcFile, $rc_line . "\n");
