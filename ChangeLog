@@ -1,3 +1,24 @@
+2004-10-17  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ApplyRules): Require space after * all list items, not
+	just the first.
+	(GetRaw): Simplify.
+	(PrintAllPages): Page titles with spaces.
+
+	* modules/usemod.pl ($UseModMarkupInTitles): New option.
+	(UsemodRule): Use it.
+
+2004-10-16  Alex Schroeder  <alex@gnu.org>
+
+	* modules/headers.pl (HeadersRule): Add code for horizontal rules.
+
+2004-10-16  Alex Schroeder  <alex@confusibombus>
+
+	* modules/usemod.pl ($UseModSpaceRequired, UsemodRule): Added a
+	copy of the unnumbered list rule and a new option.  If this option
+	is set to 0, the space after *, #, :, and ; is also no longer
+	required.
+
 2004-10-15  Alex Schroeder  <alex@gnu.org>
 
 	* modules/download.pl (DownloadSupportRule): Allow alternate
