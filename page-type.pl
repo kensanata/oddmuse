@@ -16,12 +16,12 @@ $PageTypesName = 'PageTypes';
 # have page clustering enabled (see the manual), then the page type
 # will automatically act as a cluster.
 
-$ModulesDescription .= '<p>$Id: page-type.pl,v 1.4 2004/01/27 00:32:46 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: page-type.pl,v 1.5 2004/01/28 00:49:24 as Exp $</p>';
 
-*OldDoPost = *DoPost;
-*DoPost = *NewDoPost;
+*OldPageTypeDoPost = *DoPost;
+*DoPost = *NewPageTypeDoPost;
 
-sub NewDoPost {
+sub NewPageTypeDoPost {
   my $id = shift;
   my $type = GetParam('types', '');
   if ($type and $type ne T('None')) {
@@ -32,15 +32,15 @@ sub NewDoPost {
     # parameters set by the cookie (which is what SetParam manipulates).
     $q->param(-name=>'text', -value=>$text);
   }
-  OldDoPost($id);
+  OldPageTypeDoPost($id);
 }
 
-*OldGetTextArea = *GetTextArea;
-*GetTextArea = NewGetTextArea;
+*OldPageTypeGetTextArea = *GetTextArea;
+*GetTextArea = NewPageTypeGetTextArea;
 
-sub NewGetTextArea {
+sub NewPageTypeGetTextArea {
   my ($name, $text) = @_;
-  return OldGetTextArea(@_) if ($name ne 'text'); # comment box!
+  return OldPageTypeGetTextArea(@_) if ($name ne 'text'); # comment box!
   my @types = (T('None'),);
   # read categories
   foreach (split ('\n', GetPageContent($PageTypesName))) {
@@ -61,7 +61,7 @@ sub NewGetTextArea {
     $cluster = T('None');
   }
   #build the new input
-  my $html = OldGetTextArea($name, $text);
+  my $html = OldPageTypeGetTextArea($name, $text);
   my $list = T('Type') . ': <select name="types">';
   foreach my $type (@types) {
     if ($type eq $cluster) {

@@ -2,7 +2,7 @@ use vars qw($PageTrailLength);
 
 $PageTrailLength = 10;
 
-$ModulesDescription .= '<p>$Id: page-trail.pl,v 1.7 2004/01/27 23:06:51 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: page-trail.pl,v 1.8 2004/01/28 00:50:59 as Exp $</p>';
 
 $CookieParameters{trail} = '';
 $InvisibleCookieParameters{trail} = 1;
@@ -14,7 +14,7 @@ my @PageTrail;
 sub NewPageTrailBrowsePage {
   my ($id, $raw, $comment) = @_;
   UpdatePageTrail($id);
-  OldBrowsePage($id, $raw, $comment);
+  OldPageTrailBrowsePage($id, $raw, $comment);
 }
 
 sub UpdatePageTrail {
@@ -30,7 +30,7 @@ sub UpdatePageTrail {
 *GetGotoBar = *NewPageTrailGetGotoBar;
 
 sub NewPageTrailGetGotoBar {
-  my $bar = OldGetGotoBar(@_);
+  my $bar = OldPageTrailGetGotoBar(@_);
   $bar .= $q->span({-class=>'trail'}, $q->br(), T('Trail: '),
 		   map { GetPageLink($_) } reverse(@PageTrail))
     if @PageTrail;
