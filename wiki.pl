@@ -87,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.111 2003/06/20 19:23:53 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.112 2003/06/20 20:15:23 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -2892,7 +2892,7 @@ sub UserCanEdit {
     return 0  if (UserIsBanned());
   }
   if ($EditAllowed == 2) {
-    return 1  if ($CommentsPrefix and $id and $id =~ /^$CommentsPrefix/);
+    return 1  if (UserIsEditor() or ($CommentsPrefix and $id =~ /^$CommentsPrefix/));
     return 0;
   }
   return 1;
