@@ -1,6 +1,13 @@
-# UTF-8 encoded Dutch translation file for use with Oddmuse
+﻿# UTF-8 encoded Dutch translation file for use with Oddmuse
 #
-# Copyright (c) 2003  ...
+# Copyright (c) 2003  Onno Broekmans <obroekma@angelfire.com>
+#
+# Release 0.1 of this translation
+#
+# This is my first translation of OddMuse, and since I've only just
+# started using OddMuse, I suspect there are still some things that
+# need to be changed. Please contact me at obroekma@angelfire.com
+# with any suggestions etc.
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
@@ -20,403 +27,403 @@
 #
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
-
+U mag deze pagina niet lezen: uw account op deze Wiki, uw IP of uw netwerk is buitengesloten.
 Could not create %s
-
+Kan %s niet aanmaken
 Invalid UserName %s: not saved.
-
+Niet opgeslagen: de GebruikersNaam %s is ongeldig.
 UserName must be 50 characters or less: not saved
-
+Niet opgeslagen: de GebruikersNaam mag hoogstens 50 tekens lang zijn.
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
-
+http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 http://www.amazon.com/exec/obidos/ISBN=%s
-
+http://www.amazon.com/exec/obidos/ISBN=%s
 alternate
-
+alternatief
 http://www.pricescan.com/books/BookDetail.asp?isbn=%s
-
+http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 search
-
+zoeken
 Invalid action parameter %s
-
+Ongeldige actieparameter %s
 Invalid URL.
-
+Ongeldige URL.
 Page name is too long: %s
-
+De naam van de pagina is te lang :%s
 Invalid Page %s
-
+Ongeldige pagina: %s
 Invalid Page %s (must not end with .db)
-
+Ongeldige pagina; mag niet eindigen in .db: %s
 Invalid Page %s (must not end with .lck)
-
+Ongeldige pagina; mag niet eindigen in .lck: %s
 Page name may not contain space characters: %s
-
+De naam van de pagina mag geen spaties bevatten: %s
 Revision %s not available
-
+De revisie %s is niet beschikbaar
 showing current revision instead
-
+in plaats daarvan ziet u nu de huidige revisie
 Showing revision %s
-
+Dit is revisie %s
 Could not open %s log file
-
+Kan logboekbestand %s niet openen
 Error was
-
+De fout is
 Note: This error is normal if no changes have been made.
-
+NB: Deze foutmelding is gebruikelijk als er geen wijzigingen zijn gemaakt.
 Could not open old %s log file
-
+Kan oude logboekbestand %s niet openen
 No updates since %s
-
+Geen wijzigingen sinds %s
 Page generated %s
-
+Pagina gegenereerd op %s
 Updates since %s
-
+Wijzigingen sinds %s
 Updates in the last %s days
-
+Wijzigingen in de laatste %s dagen
 Updates in the last %s day
-
+Wijzigingen in de laatste %s dag
 for %s only
-
+alleen voor %s
 List latest change per page only
-
+Toon alleen de laatst gewijzigde pagina's
 List only major changes
-
+Toon alleen grote wijzigingen
 Include minor changes
-
+Toon ook kleine wijzigingen
 List all changes
-
+Toon alle wijzigingen
 %s days
-
+%s dagen
 List new changes starting from
-
+Toon wijzigingen vanaf
 Related changes
-
+Verwante wijzigingen
 (minor)
-
+(klein)
 (diff)
-
+(verschillen)
 history
-
+geschiedenis
 rollback
-
+ongedaan maken
 Cluster:
-
+Cluster:
 from %s
-
+vanaf %s
 History of %s
-
+Geschiedenis van %s
 Compare
-
+Vergelijk
 Revision %s
-
- . . . . 
-
+Revisie %s
+ . . . .
+ . . . .
 by
-
+door
 Rolling back changes
-
+Bezig met ongedaan maken van wijzigingen
 Missing target for rollback.
-
+U heeft niet opegegeven tot hoever de wijzigingen ongedaan moeten worden gemaakt.
 Target for rollback is too far back.
-
+De staat waarin de pagina moet worden teruggebracht is van te lang geleden.
 Rollback to %s
-
+Wijzigingen ongedaan maken tot %s
 %s rolled back
-
+%s is in de oorspronkelijke staat teruggebracht
 [Home]
-
+[Start]
 redirected from %s
-
+doorverwezen vanaf %s
 Click to search for references to this page
-
-Cookie: 
-
+Klik hier om te zoeken naar verwijzingen naar deze pagina
+Cookie:
+Cookie:
 new comment
-
+nieuw commentaar
 Username:
-
+Gebruikersnaam:
 Save
-
+Opslaan
 Comments on this page
-
+Commentaar op deze pagina
 Edit revision %s of this page
-
+Wijzig revisie %s van deze pagina
 Edit text of this page
-
+Wijzig de tekst op deze pagina
 This page is read-only
-
+Deze pagina kan alleen gelezen worden
 View other revisions
-
+Bekijk andere revisies
 View current revision
-
+Bekijk huidige revisie
 View all changes
-
+Toon alle wijzigingen
 View original
-
+Bekijk origineel
 Last edited
-
+Laatst gewijzigd op
 Edited
-
+Gewijzigd
 by %s
-
+door %s
 Warning
-
+Waarschuwing
 Database is stored in temporary directory %s
-
+De database is opgeslagen in de tijdelijke map %s
 %s seconds
-
+%s seconden
 Search:
-
+Zoeken naar:
 Replace:
-
+Vervangen door:
 Go!
-
+OK
 Validate HTML
-
+Valideer HTML
 Validate CSS
-
+Valideer CSS
 Please go on to %s.
-
+Ga a.u.b. verder naar %s.
 major
-
+groot
 minor
-
+klein
 (The revisions are identical or unavailable.)
-
+(De revisies zijn gelijk of niet beschikbaar.)
 No diff available.
-
+Er is geen verschillenanalyse beschikbaar.
 current revision
-
+huidige revisie
 revision %s
-
+revisie %s
 Difference (from revision %s
-
+Verschillen (tussen revisie %s
  to %s)
-
+en %s)
 No diff available--this is the first %s revision.
-
+Geen verschillenanalyse beschikbaar -- dit is het origineel (revisie %s).
 Difference (from prior %s revision)
-
+Verschil (tussen deze revisie en vorige revisie %s)
 Changed:
-
+Veranderd:
 Removed:
-
+Verwijderd:
 Added:
-
+Toegevoegd:
 to
-
+in
 Bad page version (or corrupt page).
-
+Verkeerde versie van de pagina; het kan ook zijn dat de pagina beschadigd is.
 Cannot save an nameless page.
-
+Kan een pagina zonder naam niet opslaan.
 cannot write %s
-
+kan niet schrijven naar %s
 Could not get %s lock
-
+Kan %s niet vergrendelen
 Unlocking
-
+Bezig met ontgrendelen
 This operation may take several seconds...
-
+Dit kan een aantal seconden duren...
 Forced unlock of %s lock.
-
+De vergrendeling van %s is geforceerd.
 No unlock required.
-
+Ontgrendelen is niet nodig.
 Can not open %s
-
+Kan %s niet openen
 %s hours ago
-
+%s uur geleden
 1 hour ago
-
+1 uur geleden
 %s minutes ago
-
+%s minuten geleden
 1 minute ago
-
+1 minuut geleden
 %s seconds ago
-
+%s seconden geleden
 1 second ago
-
+1 seconde geleden
 just now
-
+precies op dit moment
 Editing Denied
-
+Wijzigen niet toegestaan
 Editing not allowed: user, ip, or network is blocked.
-
+U mag deze pagina niet wijzigen: uw account op deze Wiki, uw IP of uw netwerk is buitengesloten.
 Contact the wiki administrator for more information.
-
+Neem contact op met de beheerder van de wiki voor meer informatie.
 The rule %s matched for you.
-
+Uw gegevens passen bij de door de beheerder ingestelde regel %s.
 See %s for more information.
-
+Zie %s voor meer informatie.
 Editing not allowed: %s is read-only.
-
+Wijzigen niet toegestaan: %s mag alleen gelezen worden.
 Only administrators can upload files.
-
+Alleen beheerders kunnen bestanden uploaden.
 Editing revision %s of
-
+Wijzigen van revisie %s van
 Editing %s
-
+Wijzigen van %s
 Editing old revision %s.
-
+Wijzigen van oude revisie %s.
 Saving this page will replace the latest revision with this text.
-
+Als u deze pagina opslaat wordt de meest recente revisie vervangen door deze tekst.
 Summary:
-
+Samenvatting:
 This change is a minor edit.
-
+Dit is slechts een kleine wijziging.
 Preview
-
+Voorvertoning
 Replace this file with text.
-
+Vervang dit bestand door tekst.
 Replace this text with a file.
-
+Vervang deze tekst door een bestand.
 Preview:
-
+Voorvertoning:
 Preview only, not yet saved
-
-File to upload: 
-
+Dit is slechts een voorvertoning; er is nog niets opgeslagen!
+File to upload:
+Bestand om te uploaden:
 Files of type %s are not allowed.
-
+Bestanden van het type %s zijn niet toegestaan.
 Password
-
+Wachtwoord
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
-
+Als uw browser gebruik maakt van cookies, is uw wachtwoord in een cookie opgeslagen. Cookies kunnen verloren gaan als u verbinding maakt vanaf een andere machine, vanaf een ander account of met behulp van andere software.
 You are currently an administrator on this site.
-
+U bent een beheerder van deze site.
 You are currently an editor on this site.
-
+U bent een redacteur op deze site.
 You are a normal user on this site.
-
+U bent een gewone gebruiker op deze site.
 Your password does not match any of the  administrator or editor passwords.
-
+Uw wachtwoord komt niet overeen met een beheerders- of redacteurswachtwoord.
 Password:
-
+Wachtwoord:
 This site does not use admin or editor passwords.
-
+Deze site heeft geen beheerders- of redacteurswachtwoorden.
 This operation is restricted to site editors only...
-
+Deze taak mag alleen uitgevoerd worden door redacteuren...
 This operation is restricted to administrators only...
-
+Deze taak mag alleen uitgevoerd worden door beheerders...
 Index of all pages
-
+Index van alle pagina's
 Replaced: %s
-
+Vervangen door: %s
 Search for: %s
-
+Gezocht naar: %s
 View changes for these pages
-
+Toon wijzigingen in deze pagina's
 and
-
+en
 or
-
+of
 %s pages found:
-
+%s pagina's gevonden:
 last updated
-
+laatst gewijzigd
 Full Link List
-
+Volledige lijst van koppelingen
 Complete Content
-
+Volledige inhoud
 The main page is %s.
-
+De hoofdpagina is %s.
 Editing not allowed for %s.
-
+Het wijzigen van %s is niet toegestaan.
 SampleUndefinedPage
-
+VoorbeeldVanEenNietBestaandePagina
 %s cannot be defined.
-
+%s kan niet aangemaakt worden.
 Sample_Undefined_Page
-
+Voorbeeld_Van_Een_Niet_Bestaande_Pagina
 [[%s]] cannot be defined.
-
+[[%s]] kan niet aangemaakt worden.
 Only an administrator can create %s
-
+Alleen een beheerder kan %s aanmaken
 Transfer Error: %s
-
+Fout tijdens overdacht: %s
 Browser reports no file info.
-
+Uw browser heeft geen informatie over het bestand opgegeven.
 Browser reports no file type.
-
+Uw browser heeft geen informatie over het bestandstype opgegeven.
 Anonymous
-
+Anoniem
 This page was changed by somebody else %s.
-
+Deze pagina is gewijzigd door iemand anders %s.
 The changes conflict.  Please check the page again.
-
+De wijzigingen zijn strijdig met elkaar. Controleer de pagina a.u.b. opnieuw.
 Please check whether you overwrote those changes.
-
+Controleer a.u.b. of u die wijzigingen overschreven heeft.
 Could not get a lock to merge!
-
+Kan de pagina niet vergrendelen voor het samenvoegen
 you
-
+u
 ancestor
-
+vorige revisie
 other
-
+ander
 %s log error:
-
+Fout tijdens bijwerken van het logboek voor %s: kan bestand niet aanmaken
 Ping
-
+Ping
 No response.
-
+Geen reactie.
 Maintenance on all pages
-
+Onderhoud van alle pagina's
 Maintenance not done.
-
+Er is geen onderhoud gepleegd.
 (Maintenance can only be done once every 12 hours.)
-
+(Onderhoud kan slechts eens in de 12 uur uitgevoerd worden.)
 Remove the "maintain" file or wait.
-
+Verwijder het bestand "maintain" of wacht.
 Main lock obtained.
-
+De gehele site is vergrendeld.
 Expiring keep files and deleting pages marked for deletion
-
+Bezig met verwijderen van te oude revisies uit de archieven, en verwijderen van pagina's die daarvoor gemarkeerd zijn
 and refreshing HTML cache
-
+en verversen van de HTML cache
 deleted
-
+verwijderd
 Moving part of the %s log file.
-
+Bezig met verplaatsen van een deel van het logboekbestand %s
 Moving %s log entries.
-
+Bezig met verplaatsen van %s items.
 Main lock released.
-
+De vergrendeling van de gehele site is opgeheven.
 Converting all files
-
+Bezig met converteren van alle bestanden
 No conversion required.
-
+Conversie niet nodig.
 converted
-
+geconverteerd
 no conversion required
-
+conversie niet nodig
 has no file
-
+heeft geen bestand
 Set or Remove global edit lock
-
+Ver-/ontgrendelen van de gehele site
 Edit lock created.
-
+De gehele site is vergrendeld; er an nu niets meer gewijzigd worden.
 Edit lock removed.
-
+De site is ontgrendeld; er kunnen nu weer wijzigingen aangebracht worden.
 Set or Remove page edit lock
-
+Ver-/ontgrendelen van pagina
 Missing page id to lock/unlock...
-
+U heeft niet opgegeven welke pagina ver-/ontgrendeld moet worden.
 Lock for %s created.
-
+%s is vergrendeld, en kan nu niet meer gewijzigd worden.
 Lock for %s removed.
-
+%s is ontgrendeld, en kan nu weer gewijzigd worden.
 Displaying Wiki Version
-
+Tonen van Wiki-versie
 Too many connections by %s
-
+Te veel verbindingen met %s
 Recent Visitors
-
+Recente bezoekers
 Referrers
-
+Verwijzingen
 All Referrers
-
+Alle verwijzingen
 anchor first defined here: %s
-
+bladwijzer als eerste hier gedefinieerd: %s
 Click to search for references to this permanent anchor
-
+Klik hier om te zoeken naar verwijzingen naar deze permanente bladwijzer
 END_OF_TRANSLATION
