@@ -81,7 +81,7 @@ $HttpCharset = '';  # Charset for pages, default is ISO-8859-1
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.10 2003/03/22 15:42:29 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.11 2003/03/22 15:47:14 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -566,14 +566,17 @@ sub SmileyReplace {
 }
 
 sub PrintWikiToHTML {
-  my ($pageText) = @_;
+  my ($pageText, $revision) = @_;
   $FootnoteNumber = 0;
   $pageText =~ s/$FS//g;              # Remove separators (paranoia)
   $pageText = &QuoteHtml($pageText);
-  &SetPageCache('blocks', &ApplyRules($pageText,1));
-  if (&RequestLock()) {
-    &SavePage(1);
-    &ReleaseLock();
+  my $cache = &ApplyRules($pageText,1);
+  if ($revision eq '') {
+    &SetPageCache('blocks', $cache);
+    if (&RequestLock()) {
+      &SavePage(1);
+      &ReleaseLock();
+    }
   }
 }
 
@@ -1099,7 +1102,7 @@ sub BrowsePage {
   if ($revision eq '' && &GetPageCache('blocks') && &GetParam('cache',1)) {
     &PrintCache(&GetPageCache('blocks'));
   } else {
-    &PrintWikiToHTML($Text{'text'});
+    &PrintWikiToHTML($Text{'text'}, $revision);
   }
   print '<hr>'  if (!&GetParam('embed', $EmbedWiki));
   if ($rc) {
