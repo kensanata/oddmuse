@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.47 2003/04/27 12:07:55 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.48 2003/04/27 13:12:51 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -650,7 +650,7 @@ sub RSS {
     for my $i (@{$rss->{items}}) {
       $counter++;
       last if $counter == $maxitems;
-      my $line = $q->a({-href=>$i->{'link'},-class=>'rss'},"[$i->{'title'}]");
+      my $line = $q->a({-href=>$i->{'link'}},"[$i->{'title'}]");
       $line .= qq{ -- $i->{'description'}} if $i->{'description'};
       $str .= $q->li($line);
     }
