@@ -53,12 +53,12 @@ $Visitors %Smilies %SpecialDays $InterWikiMoniker $SiteDescription
 $RssImageUrl $RssPublisher $RssContributor $RssRights $BannedCanRead
 $SurgeProtection $SurgeProtectionViews $TopLinkBar $LanguageLimit
 $SurgeProtectionTime $DeletedPage %Languages $InterMap $ValidatorLink
-$RefererTracking $RefererTimeLimit $RefererLimit $NotifyTracker
-@LockOnCreation $RefererFilter $PermanentAnchorsFile $PermanentAnchors
+$RefererTracking $RefererTimeLimit $RefererLimit @LockOnCreation
+$RefererFilter $PermanentAnchorsFile $PermanentAnchors
 %CookieParameters $NewComment $StyleSheetPage @UserGotoBarPages
 $ConfigPage $ScriptName @MyMacros $CommentsPrefix $AllNetworkFiles
 $UsePathInfo $UploadAllowed @UploadTypes $LastUpdate $PageCluster
-%NotifyJournalPage %RssInterwikiTranslate $UseCache $ModuleDir);
+%RssInterwikiTranslate $UseCache $ModuleDir);
 
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
@@ -159,8 +159,6 @@ $RssImageUrl      = '';    # URL to image to associate with your RSS feed
 $RssPublisher     = '';    # Name of RSS publisher
 $RssContributor   = '';    # List or description of the contributors
 $RssRights        = '';    # Copyright notice for RSS
-$NotifyTracker    = 0;     # 1 = send pings to weblogs.com for major changes
-%NotifyJournalPage = ();   # $NotifyJournalPage{'\d\d\d\d-\d\d-\d\d'}='Diary';
 
 # File uploads
 $UploadAllowed    = 0;     # 1 = yes, 0 = administrators only
@@ -235,7 +233,7 @@ sub Init {
   $Message = '';      # Warnings and non-fatal errors.
   InitLinkPatterns(); # Link pattern can be changed in config files
   if ($UseConfig and $ModuleDir and -d $ModuleDir) {
-    foreach $lib (glob("$ModuleDir/*.pm $ModuleDir/*.pl")) {
+    foreach my $lib (glob("$ModuleDir/*.pm $ModuleDir/*.pl")) {
       do $lib;
       $Message .= CGI::p("$lib: $@") if $@; # no $q exists, yet
     }
@@ -295,7 +293,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.305 2004/01/23 00:39:39 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.306 2004/01/23 01:52:22 as Exp $');
 }
 
 sub InitCookie {
@@ -1053,8 +1051,6 @@ sub DoBrowseRequest {
     DoShowVisitors();
   } elsif ($action eq 'refer') {
     DoPrintAllReferers();
-  } elsif ($action eq 'ping') {
-    DoPingTracker();
   } elsif ($action eq 'rollback') {
     DoRollback();
   } elsif (($search ne '') || (GetParam('dosearch', '') ne '')) {
@@ -3272,9 +3268,6 @@ sub DoPost {
   Save($id, $string, $summary, (GetParam('recent_edit', '') eq 'on'), $filename);
   ReleaseLock();
   DeletePermanentAnchors();
-  if (GetParam('recent_edit', '') ne 'on' and $NotifyTracker) {
-    PingTracker($id);
-  }
   ReBrowsePage($id);
 }
 
@@ -3383,41 +3376,6 @@ sub UpdateDiffs {
   } else {
     $Page{'diff-major'} = '1'; # special value, used in GetCacheDiff
   }
-}
-
-# == Weblog Tracking ==
-
-sub PingTracker {
-  my $id = shift;
-  foreach my $regexp (keys %NotifyJournalPage) {
-    if ($id =~ m/$regexp/) {
-      $id = $NotifyJournalPage{$regexp};
-      last;
-    }
-  }
-  if ($q->url(-base=>1) !~ m|^http://localhost|) {
-    my $url = UrlEncode($q->url . '/' . $id);
-    my $name = UrlEncode($SiteName . ': ' . $id);
-    my $rss = UrlEncode($q->url . '?action=rss');
-    my $uri = "http://ping.blo.gs/?name=$name&url=$url&rssUrl=$rss&direct=1";
-    require LWP::UserAgent;
-    my $ua = LWP::UserAgent->new;
-    my $request = HTTP::Request->new('GET', $uri);
-    return $ua->request($request);
-  }
-}
-
-sub DoPingTracker {
-  print GetHeader('', T('Ping'), '');
-  return  if (!UserIsAdminOrError());
-  my $response = PingTracker(GetParam('id', $RCName));
-  if ($response) {
-    print $q->pre($response->request->uri, "\n",
-		  $response->status_line, "\n");
-  } else {
-    print $q->p(T('No response.'));
-  }
-  PrintFooter();
 }
 
 # == Maintenance ==
