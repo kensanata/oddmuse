@@ -2,6 +2,9 @@
 
 	* wiki.pl (RSS): Reinitialize the RSS parser and the HTTP user
 	agent for every URI.
+	(ApplyRules): No longer require quotes for RSS rule.
+	(RSS): Remove extra quotes around URIs.  'title' is no longer
+	guaranteed.  Use 'guid' if available.  But it back in a list.
 
 2003-10-02  Alex Schroeder  <alex@gnu.org>
 
