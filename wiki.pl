@@ -42,31 +42,31 @@ use vars qw(@RcDays @HtmlTags $TempDir $LockDir $DataDir $KeepDir
 $PageDir $RefererDir $RcFile $RcOldFile $IndexFile $NoEditFile
 $BannedHosts $ConfigFile $FullUrl $SiteName $HomePage $LogoUrl
 $RcDefault $IndentLimit $RecentTop $RecentLink $EditAllowed $UseDiff
-$RawHtml $KeepDays $HtmlTags $HtmlLinks $KeepMajor $KeepAuthor
-$EmbedWiki $BracketText $UseConfig $UseLookup $AdminPass $EditPass
-$NetworkFile $BracketWiki $FreeLinks $WikiLinks $FreeLinkPattern
-$RCName $RunCGI $ShowEdits $LinkPattern $InterLinkPattern
-$InterSitePattern $UrlProtocols $UrlPattern $ImageExtensions
-$RFCPattern $ISBNPattern $FS $FS0 $FS1 $FS2 $FS3 $CookieName $SiteBase
-$StyleSheet $NotFoundPg $FooterNote $EditNote $MaxPost $NewText
-$HttpCharset $UserGotoBar $VisitorTime $VisitorFile $Visitors %Smilies
-%SpecialDays $InterWikiMoniker $SiteDescription $RssImageUrl
-$RssPublisher $RssContributor $RssRights $BannedCanRead
-$SurgeProtection $SurgeProtectionViews $SurgeProtectionTime
-$DeletedPage %Languages $LanguageLimit $ValidatorLink $RefererTracking
-$RefererTimeLimit $RefererLimit $TopLinkBar $NotifyTracker $InterMap
-@LockOnCreation $RefererFilter $PermanentAnchorsFile $PermanentAnchors
-%CookieParameters $StyleSheetPage @UserGotoBarPages $ConfigPage
-$ScriptName $CommentsPrefix $NewComment $AllNetworkFiles $UsePathInfo
+$RawHtml $KeepDays $HtmlTags $HtmlLinks $KeepMajor $EmbedWiki
+$BracketText $UseConfig $UseLookup $AdminPass $EditPass $NetworkFile
+$BracketWiki $FreeLinks $WikiLinks $FreeLinkPattern $RCName $RunCGI
+$ShowEdits $LinkPattern $InterLinkPattern $InterSitePattern
+$UrlProtocols $UrlPattern $ImageExtensions $RFCPattern $ISBNPattern
+$FS $CookieName $SiteBase $StyleSheet $NotFoundPg $FooterNote
+$EditNote $MaxPost $NewText $HttpCharset $UserGotoBar $VisitorTime
+$VisitorFile $Visitors %Smilies %SpecialDays $InterWikiMoniker
+$SiteDescription $RssImageUrl $RssPublisher $RssContributor $RssRights
+$BannedCanRead $SurgeProtection $SurgeProtectionViews
+$SurgeProtectionTime $DeletedPage %Languages $LanguageLimit
+$ValidatorLink $RefererTracking $RefererTimeLimit $RefererLimit
+$TopLinkBar $NotifyTracker $InterMap @LockOnCreation $RefererFilter
+$PermanentAnchorsFile $PermanentAnchors %CookieParameters
+$StyleSheetPage @UserGotoBarPages $ConfigPage $ScriptName
+$CommentsPrefix $NewComment $AllNetworkFiles $UsePathInfo
 $UploadAllowed @UploadTypes @MyMacros $LastUpdate $PageCluster);
 
 # Other global variables:
-use vars qw(%Page %Section %Text %InterSite %KeptRevisions %IndexHash
-%Translate %OldCookie %NewCookie $InterSiteInit $FootnoteNumber
-$OpenPageName @KeptList @IndexList $IndexInit $Message $q $Now
-%RecentVisitors @HtmlStack %Referers $Monolithic $ReplaceForm
-%PermanentAnchors %PagePermanentAnchors $CollectingJournal
-$WikiDescription $PrintedHeader %Locks $Fragment @Blocks @Flags);
+use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
+%NewCookie $InterSiteInit $FootnoteNumber $OpenPageName @IndexList
+$IndexInit $Message $q $Now %RecentVisitors @HtmlStack %Referers
+$Monolithic $ReplaceForm %PermanentAnchors %PagePermanentAnchors
+$CollectingJournal $WikiDescription $PrintedHeader %Locks $Fragment
+@Blocks @Flags);
 
 # == Configuration ==
 
@@ -142,7 +142,6 @@ $RCName      = 'RecentChanges'; # Name of changes page
 $RcDefault   = 30;  # Default number of RecentChanges days
 $KeepDays    = 14;  # Days to keep old revisions
 $KeepMajor   = 1;   # 1 = keep at least one major rev when expiring pages
-$KeepAuthor  = 1;   # 1 = keep at least one author rev when expiring pages
 $ShowEdits   = 0;   # 1 = major and show minor edits in recent changes
 $UseLookup   = 1;   # 1 = lookup host names instead of using only IP numbers
 $RecentTop   = 1;   # 1 = most recent entries at the top of the list
@@ -197,10 +196,10 @@ $RefererDir  = "$DataDir/referer";  # Stores referer data
 $TempDir     = "$DataDir/temp";     # Temporary files and locks
 $LockDir     = "$TempDir/lock";     # DB is locked if this exists
 $NoEditFile  = "$DataDir/noedit";   # Indicates that the site is read-only
-$RcFile      = "$DataDir/rclog";    # New RecentChanges logfile
-$RcOldFile   = "$DataDir/oldrclog"; # Old RecentChanges logfile
+$RcFile      = "$DataDir/rc.log";    # New RecentChanges logfile
+$RcOldFile   = "$DataDir/oldrc.log"; # Old RecentChanges logfile
 $IndexFile   = "$DataDir/pageidx";  # List of all pages
-$VisitorFile = "$DataDir/visitors"; # List of recent visitors
+$VisitorFile = "$DataDir/visitors.log"; # List of recent visitors
 $PermanentAnchorsFile = "$DataDir/permanentanchors"; # Store permanent anchors
 $ConfigFile  = "$DataDir/config" unless $ConfigFile; # Config file with Perl code to execute
 
@@ -224,10 +223,6 @@ sub ReportError { # fatal!
 
 sub Init {
   $FS  = "\x1e";      # The FS character is the RECORD SEPARATOR control char in ASCII
-  $FS0 = "\xb3";      # The old FS character is a superscript "3" in Latin-1
-  $FS1 = $FS . '1';   # The FS values are used to separate fields
-  $FS2 = $FS . '2';   # in stored hashtables and other data structures.
-  $FS3 = $FS . '3';   # The FS character is not allowed in user data.
   $Message = '';      # Warnings and non-fatal errors.
   InitLinkPatterns(); # Link pattern can be changed in config files
   if ($UseConfig and $ConfigFile and -f $ConfigFile) {
@@ -279,12 +274,12 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.228 2003/10/28 20:33:32 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.229 2003/11/02 01:07:51 as Exp $');
 }
 
 sub InitCookie {
   undef $q->{'.cookies'};  # Clear cache if it exists (for SpeedyCGI)
-  %OldCookie = split(/$FS1/, $q->cookie($CookieName));
+  %OldCookie = split(/$FS/, $q->cookie($CookieName));
   %NewCookie = %OldCookie;
   # Only valid usernames get stored in the new cookie.
   my $name = GetParam('username', '');
@@ -509,7 +504,7 @@ sub ApplyRules {
     push(@Flags, 0);
   }
   # this can be stored in the page cache -- see PrintCache
-  return join($FS3,@Blocks) . $FS2 . join($FS3,@Flags);
+  return (join($FS, @Blocks), join($FS, @Flags));
 }
 
 sub CloseHtmlEnvironment { # just close the current one
@@ -580,15 +575,17 @@ sub SmileyReplace {
 }
 
 sub PrintWikiToHTML {
-  my ($pageText, $cacheok, $revision, $islocked) = @_;
+  my ($pageText, $savecache, $revision, $islocked) = @_;
   $FootnoteNumber = 0;
   $pageText =~ s/$FS//g; # Remove separators (paranoia)
   $pageText = QuoteHtml($pageText);
-  my $cache = ApplyRules($pageText, 1, $cacheok, $revision); # local links, anchors if cache ok
-  if ($cacheok and not $revision) {
-    SetPageCache('blocks', $cache);
-    if ($islocked or RequestLockOrError()) { # unnecessarily fatal when no lock can be obtained
-      SavePage(1);
+  my ($blocks, $flags) = ApplyRules($pageText, 1, $savecache, $revision);
+  # local links, anchors if cache ok
+  if ($savecache and not $revision) {
+    $Page{blocks} = $blocks;
+    $Page{flags} = $flags;
+    if ($islocked or RequestLockOrError()) {
+      SavePage(); # unnecessarily fatal when no lock can be obtained
       ReleaseLock() unless $islocked;
     }
   }
@@ -891,11 +888,9 @@ sub WikiHeading {
   return "<h$depth>$text</h$depth>";
 }
 
-sub PrintCache {
-  my $raw = shift;
-  my ($rawblocks, $rawflags) = split(/$FS2/, $raw);
-  my @blocks = split($FS3,$rawblocks);
-  my @flags = split($FS3,$rawflags);
+sub PrintCache { # Use after OpenPage!
+  my @blocks = split($FS,$Page{blocks});
+  my @flags = split($FS,$Page{flags});
   foreach my $block (@blocks) {
     if (shift(@flags)) {
       ApplyRules($block, 1, 1); # local links, anchors, current revision
@@ -917,6 +912,13 @@ sub Ts {
   my ($text, $string) = @_;
   $text = T($text);
   $text =~ s/\%s/$string/;
+  return $text;
+}
+
+sub Tss {
+  my $text = @_[0];
+  $text = T($text);
+  $text =~ s/\%([1-9])/$_[$1]/ge;
   return $text;
 }
 
@@ -960,8 +962,6 @@ sub DoBrowseRequest {
     DoPrintAllPages();
   } elsif ($action eq 'maintain') {
     DoMaintain();
-  } elsif ($action eq 'convert') {
-    DoConvert();
   } elsif ($action eq 'pagelock') {
     DoPageLock();
   } elsif ($action eq 'editlock') {
@@ -1053,14 +1053,14 @@ sub BrowsePage {
     return;
   }
   OpenPage($id);
-  OpenDefaultText($id);
+  my $text = $Page{text};
   # Handle a single-level redirect
   my $oldId = GetParam('oldid', '');
-  if (($oldId eq '') && (substr($Text{'text'}, 0, 10) eq '#REDIRECT ')) {
-    if ($FreeLinks and $Text{'text'} =~ /^\#REDIRECT\s+\[\[$FreeLinkPattern\]\]/) {
+  if (($oldId eq '') && (substr($text, 0, 10) eq '#REDIRECT ')) {
+    if ($FreeLinks and $text =~ /^\#REDIRECT\s+\[\[$FreeLinkPattern\]\]/) {
       ReBrowsePage(FreeToNormal($1), $id);
       return;
-    } elsif ($WikiLinks and $Text{'text'} =~ /^\#REDIRECT\s+$LinkPattern/) {
+    } elsif ($WikiLinks and $text =~ /^\#REDIRECT\s+$LinkPattern/) {
       ReBrowsePage($1, $id);
       return;
     }
@@ -1069,30 +1069,28 @@ sub BrowsePage {
   if ($raw) {
     print GetHttpHeader('text/plain');
     if ($raw == 2) {
-      print $Section{'ts'} . " # Do not delete this line when editing!\n";
+      print $Page{'ts'} . " # Do not delete this line when editing!\n";
     }
-    print $Text{'text'};
+    print $text;
     return;
   }
   my $msg = GetParam('msg', '');
   $Message .= $q->p($msg) if $msg; # show message if the page is shown
   $NewCookie{'msg'} = '';
   # handle subtitle for old revisions, if these exist, and open keep file
-  my $openKept = 0;
   my $revision = GetParam('revision', ''); # default empty string
   $revision =~ s/\D//g; # Remove non-numeric chars
   my $goodRevision; # empty string if no specific revision specified
-  $goodRevision = $revision if $revision ne $Section{'revision'};
-  if ($goodRevision ne '') {
-    OpenKeptRevisions('text_default');
-    $openKept = 1;
-    if (!defined($KeptRevisions{$goodRevision})) {
+  $goodRevision = $revision if $revision ne $Page{'revision'};
+  if ($goodRevision) {
+    my %keep = GetKeptRevision($goodRevision);
+    if (not %keep) {
       $goodRevision = ''; # reset if requested revision is not available
       $Message .= $q->p(Ts('Revision %s not available', $revision)
 			. ' (' . T('showing current revision instead') . ')');
     } else {
-      OpenKeptRevision($goodRevision);
       $Message .= $q->p(Ts('Showing revision %s', $goodRevision));
+      $text = $keep{text};
     }
   }
   # print header
@@ -1101,18 +1099,16 @@ sub BrowsePage {
   my $showDiff = GetParam('diff', 0);
   if ($UseDiff && $showDiff) {
     my $diffRevision = GetParam('diffrevision', $goodRevision);
-    # Later try to avoid the following keep-loading if possible?
-    OpenKeptRevisions('text_default')  if (!$openKept);
-    PrintHtmlDiff($showDiff, $id, $diffRevision, $revision, $Text{'text'});
+    PrintHtmlDiff($showDiff, $id, $diffRevision, $revision, $text);
     print $q->hr();
   }
   # print HTML of the main text
   print '<div class="content">';
-  if ($revision eq '' && GetPageCache('blocks') && GetParam('cache',1)) {
-    PrintCache(GetPageCache('blocks'));
+  if ($revision eq '' && $Page{blocks} && $Page{flags} && GetParam('cache',1)) {
+    PrintCache();
   } else {
-    my $cache = ($Section{'revision'} > 0 and $revision eq ''); # new page not cached
-    PrintWikiToHTML($Text{'text'}, $cache, $revision); # unlocked, with anchors, unlocked
+    my $savecache = ($Page{'revision'} > 0 and $revision eq ''); # new page not cached
+    PrintWikiToHTML($text, $savecache, $revision); # unlocked, with anchors, unlocked
   }
   print '</div>';
   my $embed = GetParam('embed', $EmbedWiki);
@@ -1169,7 +1165,7 @@ sub DoRc {
   my @fullrc = split(/\n/, $fileData);
   my $firstTs = 0;
   if (@fullrc > 0) {  # Only false if no lines in file
-    ($firstTs) = split(/$FS3/, $fullrc[0]);
+    ($firstTs) = split(/$FS/, $fullrc[0]); # just look at the first element
   }
   if (($firstTs == 0) || ($starttime <= $firstTs)) {
     my ($status, $oldFileData) = ReadFile($RcOldFile);
@@ -1188,8 +1184,8 @@ sub DoRc {
   }
   RcHeader(@fullrc) if $showHTML;
   my $i = 0;
-  while ($i < @fullrc) {  # Optimization: skip old entries quickly
-    my ($ts) = split(/$FS3/, $fullrc[$i]);
+  while ($i < @fullrc) { # Optimization: skip old entries quickly
+    my ($ts) = split(/$FS/, $fullrc[$i]); # just look at the first element
     if ($ts >= $starttime) {
       $i -= 1000  if ($i > 0);
       last;
@@ -1198,7 +1194,7 @@ sub DoRc {
   }
   $i -= 1000  if (($i > 0) && ($i >= @fullrc));
   for (; $i < @fullrc ; $i++) {
-    my ($ts) = split(/$FS3/, $fullrc[$i]);
+    my ($ts) = split(/$FS/, $fullrc[$i]); # just look at the first element
     last if ($ts >= $starttime);
   }
   if ($i == @fullrc && $showHTML) {
@@ -1220,7 +1216,7 @@ sub RcHeader {
   }
   my $lastTs = 0;
   if (@_ > 0) {  # Only false if no lines in file
-    ($lastTs) = split(/$FS3/, $_[$#_]);
+    ($lastTs) = split(/$FS/, $_[$#_]); # just look at the first element
   }
   $lastTs++  if (($Now - $lastTs) > 5);  # Skip last unless very recent
   my ($action);
@@ -1270,14 +1266,13 @@ sub GetRc {
   my @outrc = @_;
   my %extra = ();
   my %changetime = ();
-  my @languages;
   # Slice minor edits
   my $showedit = GetParam('showedit', $ShowEdits);
   # Filter out some entries if not showing all changes
   if ($showedit != 1) {
     my @temprc = ();
     foreach my $rcline (@outrc) {
-      my ($ts, $pagename, $summary, $minor, $host) = split(/$FS3/, $rcline);
+      my ($ts, $pagename, $minor) = split(/$FS/, $rcline); # skip remaining fields
       if ($showedit == 0) {	# 0 = No edits
 	push(@temprc, $rcline)  if (!$minor);
       } else {			# 2 = Only edits
@@ -1288,7 +1283,7 @@ sub GetRc {
     @outrc = @temprc;
   }
   foreach my $rcline (@outrc) {
-    my ($ts, $pagename) = split(/$FS3/, $rcline);
+    my ($ts, $pagename, $minor) = split(/$FS/, $rcline);
     $changetime{$pagename} = $ts;
   }
   my $date = '';
@@ -1302,24 +1297,21 @@ sub GetRc {
   my @filters;
   @filters = SearchTitleAndBody($filterOnly) if $filterOnly;
   foreach my $rcline (@outrc) {
-    my ($ts, $pagename, $summary, $minor, $host, $kind, $extraTemp)
-      = split(/$FS3/, $rcline);
+    my ($ts, $pagename, $minor, $summary, $host, $username, $revision, $languages, $cluster)
+      = split(/$FS/, $rcline);
     next if not $all and $ts < $changetime{$pagename};
     next if $idOnly and $idOnly ne $pagename;
     next if $hostOnly and $host !~ /$hostOnly/;
     next if $filterOnly and not grep(/^$pagename$/, @filters);
-    %extra = split(/$FS2/, $extraTemp, -1);
-    next if ($userOnly and $userOnly ne $extra{'name'});
-    @languages = split(/$FS1/, $extra{'languages'});
+    next if ($userOnly and $userOnly ne $username);
+    my @languages = split(/,/, $languages);
     next if ($langFilter and not grep(/$langFilter/, @languages));
-    my $cluster = '';
-    my $revision = $extra{'revision'};
-    next if ($PageCluster and $clusterOnly and $clusterOnly ne $extra{'cluster'});
-    if ($PageCluster and $all < 2 and not $clusterOnly and $extra{'cluster'}) {
-      next if grep(/^$extra{'cluster'}/, @clusters);
-      $cluster = $extra{'cluster'};
+    next if ($PageCluster and $clusterOnly and $clusterOnly ne $cluster);
+    $cluster = '' if $clusterOnly or not $PageCluster; # since now $clusterOnly eq $cluster
+    if ($PageCluster and $all < 2 and not $clusterOnly and $cluster) {
+      next if grep(/^$cluster$/, @clusters);
       $pagename = $cluster;
-      $summary = T('Related changes');
+      $summary = '';
       $minor = 0;
       $revision = '';
       push(@clusters, $pagename);
@@ -1328,8 +1320,8 @@ sub GetRc {
       $date = CalcDay($ts);
       &$printDailyTear($date);
     }
-    &$printRCLine( $pagename, $ts, $host, $extra{'name'},
-		   $summary, $minor, $revision, \@languages, $cluster);
+    &$printRCLine($pagename, $ts, $host, $username, $summary, $minor, $revision,
+		  \@languages, $cluster);
   }
 }
 
@@ -1386,7 +1378,7 @@ sub GetRcHtml {
 	  }
 	}
 	$html .= $q->li($link, $pagelink, CalcTime($timestamp), $rollback,
-			$count, $edit, $sum, $lang, '. . . . .', $author, "\n");
+			$count, $edit, $sum, $lang, '. . . . .', $author);
       },
 	@_;
   $html .= '</ul>' if ($inlist);
@@ -1537,12 +1529,11 @@ sub DoHistory {
   my ($html, $row);
   print GetHeader('',QuoteHtml(Ts('History of %s', $id)), '');
   OpenPage($id);
-  OpenDefaultText();
-  $html = GetHistoryLine($id, $Page{'text_default'}, $row++);
-  OpenKeptRevisions('text_default');
-  foreach (reverse sort {$a <=> $b} keys %KeptRevisions) {
-    next  if ($_ eq '');  # (needed?)
-    $html .= GetHistoryLine($id, $KeptRevisions{$_}, $row++);
+  $html = GetHistoryLine($id, \%Page, $row++);
+  my @revisions = sort {$b <=> $a} map { s/\D//g; $_; } GetKeepFiles($OpenPageName);
+  foreach my $revision (@revisions) {
+    my %keep = GetKeptRevision($revision);
+    $html .= GetHistoryLine($id, \%keep, $row++);
   }
   if ($UseDiff) {
     $html = $q->start_form(-method=>'GET', -action=>$ScriptName)
@@ -1559,39 +1550,29 @@ sub DoHistory {
 }
 
 sub GetHistoryLine {
-  my ($id, $section, $row) = @_;
-  my (%sect, %revtext);
-  %sect = split(/$FS2/, $section, -1);
-  %revtext = split(/$FS3/, $sect{'data'});
-  my $summary = $revtext{'summary'};
-  my $rev = $sect{'revision'};
-  my $user = $sect{'username'};
-  my $host;
-  if ((defined($sect{'host'})) && ($sect{'host'} ne '')) {
-    $host = $sect{'host'};
-  } else {
-    $host = $sect{'ip'};
-  }
+  my ($id, $dataref, $row) = @_;
+  my %data = %$dataref;
+  my $revision = $data{revision};
   my $html;
   if (0 == $row) { # current revision
-    $html = GetPageLink($id, Ts('Revision %s', $rev));
+    $html = GetPageLink($id, Ts('Revision %s', $revision));
   } else {
-    $html = GetOldPageLink('browse', $id, $rev, Ts('Revision %s', $rev));
+    $html = GetOldPageLink('browse', $id, $revision, Ts('Revision %s', $revision));
   }
-  if ($revtext{'minor'}) {
+  if ($data{minor}) {
     $html .= ' ' . $q->i(T('(minor)')) . ' ';
   } else {
     $html .= T(' . . . . ');
   }
-  $html .= TimeToText($sect{'ts'}) . ' ';
-  $html .= T('by') . ' ' . GetAuthorLink($host, $user);
-  if (defined($summary) && ($summary ne '')) {
-    $html .=  ' ' . $q->b('[' . QuoteHtml($summary) . ']');
-  }
+  $html .= TimeToText($data{ts}) . ' ';
+  my $host = $data{host};
+  $host = $data{ip} unless $host;
+  $html .= T('by') . ' ' . GetAuthorLink($host, $data{username});
+  $html .= ' ' . $q->b('[' . QuoteHtml($data{summary}) . ']') if ($data{summary});
   if ($UseDiff) {
-    my %attr1 = (-type=>'radio', -name=>'diffrevision', -value=>$rev);
+    my %attr1 = (-type=>'radio', -name=>'diffrevision', -value=>$revision);
     $attr1{-checked} = 'checked' if 1==$row;
-    my %attr2 = (-type=>'radio', -name=>'revision', -value=>$rev);
+    my %attr2 = (-type=>'radio', -name=>'revision', -value=>$revision);
     $attr2{-checked} = 'checked' if 0==$row;
     $html = $q->Tr($q->td($q->input(\%attr1)), $q->td($q->input(\%attr2)),
 		   $q->td($html));
@@ -1620,9 +1601,9 @@ sub DoRollback {
     OpenPage($id);
     my $text = GetTextAtTime($to);
     OpenDefaultText();
-    if ($Text{'text'} ne $text) {
+    if ($text ne $text) {
       Save($id, $text, Ts('Rollback to %s', TimeToText($to)), 1,
-	   ($Section{'ip'} ne $ENV{REMOTE_ADDR}));
+	   ($Page{'ip'} ne $ENV{REMOTE_ADDR}));
       print Ts('%s rolled back', $id), $q->br();
     }
   }
@@ -1775,7 +1756,7 @@ sub Cookie {
     $changed = 1  if $change; # note if any parameter changed and needs storing
   }
   if ($changed) {
-    my $cookie = join($FS1, map {$_ . $FS1 . $params{$_}} keys(%params));
+    my $cookie = join($FS, %params);
     my $result = $q->cookie(-name=>$CookieName,
 			    -value=>$cookie,
 			    -expires=>'+2y');
@@ -1792,7 +1773,7 @@ sub GetHtmlHeader {
   $html = $q->base({-href=>$SiteBase}) if $SiteBase;
   my $css = GetParam('css', '');
   if ($css) {
-    foreach my $sheet (split(/$FS2/, $css)) {
+    foreach my $sheet (split(/\s+/, $css)) {
       $html .= qq(<link type="text/css" rel="stylesheet" href="$sheet">);
     }
   } elsif ($StyleSheet) {
@@ -1916,10 +1897,8 @@ sub PrintFooter {
     } else {
       $html .= T('Edited');
     }
-    $html .= ' ' . TimeToText($Section{ts})
-      . ' ' . Ts('by %s', &GetAuthorLink($Section{'host'},
-					 $Section{'username'},
-					 $Section{'id'}));
+    $html .= ' ' . TimeToText($Page{ts}) . ' '
+      . Ts('by %s', &GetAuthorLink($Page{'host'}, $Page{'username'}, $Page{'id'}));
     if ($UseDiff) {
       $html .= ' ' . ScriptLinkDiff(1, $id, T('(diff)'), $rev);
     }
@@ -2003,59 +1982,33 @@ sub GetRedirectPage {
 
 sub PrintHtmlDiff {
   my ($diffType, $id, $revOld, $revNew, $newText) = @_;
-  my ($diffText, $diffTextTwo, $links, $usecomma);
-  my $cacheName = ($diffType == 1 ? 'major' : 'minor');
-  my $priorName = ($diffType == 1 ? T('major') : T('minor'));
-  if ($revOld ne '') {
-    # Note: OpenKeptRevisions must have been done by caller.
-    # Later optimize if same as cached revision
+  my ($diffText, $intro);
+  if ($revOld) {
     $diffText = GetKeptDiff($newText, $revOld, 1);  # 1 = get lock
-    if ($diffText eq '') {
-      $diffText = T('(The revisions are identical or unavailable.)');
-    }
+    $intro = Tss('Difference (from revision %1 to %2)', $revOld,
+		 $revNew ? Ts('revision %s', $revNew) : T('current revision'));
   } else {
-    $diffText  = GetCacheDiff($cacheName);
+    $diffText = GetCacheDiff($diffType == 1 ? 'major' : 'minor');
+    $intro = Ts('Difference (from prior %s revision)',
+		$diffType == 1 ? T('major') : T('minor'));
   }
-  if ((!defined($diffText)) or ($diffText eq '')) {
-    $diffText = T('No diff available.');
-  }
-  my $html;
-  if ($revOld ne '') {
-    my $currentRevision = T('current revision');
-    $currentRevision = Ts('revision %s', $revNew) if $revNew;
-      $html = Ts('Difference (from revision %s', $revOld)
-	. Ts(' to %s)', $currentRevision);
-  } else {
-    if (($diffType != 2) &&
-        ((!defined(GetPageCache("old$cacheName"))) or
-         (GetPageCache("old$cacheName") < 1))) {
-      $html = Ts('No diff available--this is the first %s revision.', $priorName);
-    } else {
-      $html = Ts('Difference (from prior %s revision)', $priorName);
-    }
-  }
-  print $q->div({-class=>'diff'}, $q->p($q->b($html)), $diffText);
+  $diffText = T('No diff available.') unless $diffText;
+  print $q->div({-class=>'diff'}, $q->p($q->b($intro)), $diffText);
 }
 
 sub GetCacheDiff {
   my $type = shift;
-  my $diffText = GetPageCache("diff_default_$type");
-  $diffText = GetCacheDiff('minor')  if ($diffText eq '1'); # if major eq minor diff
-  return $diffText;
+  my $diff = $Page{"diff-$type"};
+  $diff = $Page{"diff-minor"} if ($diff eq '1'); # if major eq minor diff
+  return $diff;
 }
 
-# Must be done after minor diff is set and OpenKeptRevisions called
 sub GetKeptDiff {
   my ($newText, $oldRevision, $lock) = @_;
-  my (%sect, %data, $oldText);
-  $oldText = '';
-  if (defined($KeptRevisions{$oldRevision})) {
-    %sect = split(/$FS2/, $KeptRevisions{$oldRevision}, -1);
-    %data = split(/$FS3/, $sect{'data'}, -1);
-    $oldText = $data{'text'};
-  }
-  return ''  if ($oldText eq '');  # Old revision not found
-  return GetDiff($oldText, $newText, $lock);
+  die 'No old revision' unless $oldRevision; # FIXME
+  my %keep = GetKeptRevision($oldRevision);
+  return '' unless $keep{text};
+  return GetDiff($keep{text}, $newText, $lock);
 }
 
 sub GetDiff {
@@ -2167,42 +2120,88 @@ sub DiffHtmlMarkWords { # this code seem brittle and has been known to crash!
   return $text;
 }
 
-# == Database (Page, Section, Text, Kept, User) functions ==
+# == Database functions ==
 
-sub OpenNewPage {
-  my $id = shift;
-  %Page = ();
-  $Page{'version'} = 3;      # Data format version
-  $Page{'revision'} = 0;     # Number of edited times
-  $Page{'tscreate'} = $Now;  # Set once at creation
-  $Page{'ts'} = $Now;        # Updated every edit
-}
-
-sub OpenNewSection {
-  my ($name, $data) = @_;
-  %Section = ();
-  $Section{'name'} = $name;
-  $Section{'version'} = 1;      # Data format version
-  $Section{'revision'} = 0;     # Number of edited times
-  $Section{'tscreate'} = $Now;  # Set once at creation
-  $Section{'ts'} = $Now;        # Updated every edit
-  $Section{'ip'} = $ENV{REMOTE_ADDR};
-  $Section{'host'} = '';        # Updated only for real edits (can be slow)
-  $Section{'username'} = GetParam('username', '');
-  $Section{'data'} = $data;
-  $Page{$name} = join($FS2, %Section);  # Replace with save?
-}
-
-sub OpenNewText {
-  my $name = shift;  # Name of text (usually 'default')
-  %Text = ();
-  if (not $CommentsPrefix or $OpenPageName !~ /^$CommentsPrefix(.*)/) {
-    $Text{'text'} = T($NewText);
+sub ParseData {
+  my $data = shift;
+  my %result;
+  while ($data =~ /(\S+?): (.*?)(?=\n[^\t]|\Z)/sg) {
+    my ($key, $value) = ($1, $2);
+    $value =~ s/\n\t/\n/g;
+    $result{$key} = $value;
   }
-  $Text{'text'} .= "\n"  if $Text{'text'} !~ /^\n$/;
-  $Text{'minor'} = 0;      # Default as major edit
-  $Text{'summary'} = '';
-  OpenNewSection("text_$name", join($FS3, %Text));
+  return %result;
+}
+
+sub OpenPage { # Sets global variables
+  my $id = shift;
+  if ($OpenPageName eq $id) {
+    return;
+  }
+  AllPagesList(); # set IndexHash
+  if ($IndexHash{$id}) {
+    %Page = ParseData(ReadFileOrDie(GetPageFile($id)));
+  } else {
+    $Page{ts} = $Now;
+    $Page{revision} = 0;
+    if ($id eq $HomePage and (open(F,'README') or open(F,"$DataDir/README"))) {
+      local $/ = undef;
+      $Page{text} = <F>;
+      close F;
+    } else {
+      $Page{text} = $NewText;
+    }
+  }
+  $OpenPageName = $id;
+}
+
+sub GetTextAtTime {
+  my $ts = shift;
+  my @keeps = GetKeepFiles($OpenPageName);
+  foreach my $keep (@keeps) {
+    my ($status, $data) = ReadFile($keep);
+    next unless $status;
+    my %field = ParseData($data);
+    if ($field{ts} == $ts) {
+      return $field{text};
+    }
+  }
+  return '';
+}
+
+sub GetPageContent {
+  my $id = shift;
+  AllPagesList(); # set IndexHash
+  if ($IndexHash{$id}) {
+    my %data = ParseData(ReadFileOrDie(GetPageFile($id)));
+    return $data{text};
+  }
+  return '';
+}
+
+sub GetKeptRevision { # Call after OpenPage
+  my ($status, $data) = ReadFile(GetKeepFile($OpenPageName, (shift)));
+  return () unless $status;
+  return ParseData($data);
+}
+
+sub GetPageFile {
+  my ($id, $revision) = @_;
+  return $PageDir . '/' . GetPageDirectory($id) . "/$id.pg";
+}
+
+sub GetKeepFile {
+  my ($id, $revision) = @_; die 'No revision' unless $revision; #FIXME
+  return $KeepDir . '/' . GetPageDirectory($id) . "/$id/$revision.kp";
+}
+
+sub GetKeepDir {
+  my $id = shift; die 'No id' unless $id; #FIXME
+  return $KeepDir . '/' . GetPageDirectory($id) . '/' . $id;
+}
+
+sub GetKeepFiles {
+  return glob(GetKeepDir(shift) . '/*.kp');
 }
 
 sub GetPageDirectory {
@@ -2213,235 +2212,103 @@ sub GetPageDirectory {
   return 'other';
 }
 
-sub GetPageFile {
-  my $id = shift;
-  return $PageDir . '/' . GetPageDirectory($id) . "/$id.db";
-}
-
-sub OpenPage {
-  my $id = shift;
-  my ($fname, $data);
-  if ($OpenPageName eq $id) {
-    return;
-  }
-  %Section = ();
-  %Text = ();
-  $fname = GetPageFile($id);
-  if (-f $fname) {
-    $data = ReadFileOrDie($fname);
-    %Page = split(/$FS1/, $data, -1);  # -1 keeps trailing null fields
-  } else {
-    OpenNewPage($id);
-  }
-  ReportError(T('Bad page version (or corrupt page).')) if ($Page{'version'} != 3);
-  $OpenPageName = $id;
-}
-
-sub OpenSection {
-  my $name = shift;
-  if (!defined($Page{$name})) {
-    OpenNewSection($name, '');
-  } else {
-    %Section = split(/$FS2/, $Page{$name}, -1);
-  }
-}
-
-sub OpenText {
-  my $name = shift;
-  if (!defined($Page{"text_$name"})) {
-    OpenNewText($name);
-  } else {
-    OpenSection("text_$name");
-    %Text = split(/$FS3/, $Section{'data'}, -1);
-  }
-}
-
-sub OpenDefaultText {
-  my $id = shift;
-  OpenText('default');
-  # show README for first timers
-  if ($Section{'revision'} == 0 and $id eq $HomePage
-      and (open(F,'README') or open(F,"$DataDir/README"))) {
-    local $/ = undef;   # Read complete files
-    $Text{'text'} = <F>;
-    close F;
-  }
-}
-
-sub GetPageContent {
-  my $id = shift;
-  my $fname = GetPageFile($id);
-  if (-f $fname) {
-    my $data = ReadFileOrDie($fname);
-    my %tempPage = split(/$FS1/, $data, -1);  # -1 keeps trailing null fields
-    my %tempSection = split(/$FS2/, $tempPage{'text_default'}, -1);
-    my %tempText = split(/$FS3/, $tempSection{'data'}, -1);
-    return $tempText{'text'};
-  }
-}
-
-# Called after OpenKeptRevisions
-sub OpenKeptRevision {
-  my ($revision) = @_;
-  %Section = split(/$FS2/, $KeptRevisions{$revision}, -1);
-  %Text = split(/$FS3/, $Section{'data'}, -1);
-}
-
-sub GetPageCache {
-  my $name = shift;
-  return $Page{"cache_$name"};
-}
-
 # Always call SavePage within a lock.
-sub SavePage {
-  my $quiet = shift;
+sub SavePage { # updating the cache will not change timestamp and revision!
   ReportError(T('Cannot save an nameless page.')) unless $OpenPageName;
-  my $file = GetPageFile($OpenPageName);
-  if (not $quiet) {
-    $Page{'revision'} += 1;    # Number of edited times
-    $Page{'ts'} = $Now;        # Updated every edit
-  }
   CreatePageDir($PageDir, $OpenPageName);
-  WriteStringToFile($file, join($FS1, %Page));
+  WriteStringToFile(GetPageFile($OpenPageName), EncodePage(%Page));
 }
 
-sub SaveSection {
-  my ($name, $data) = @_;
-  $Section{'revision'} += 1;   # Number of edited times
-  $Section{'ts'} = $Now;       # Updated every edit
-  $Section{'ip'} = $ENV{REMOTE_ADDR};
-  $Section{'username'} = GetParam('username', '');
-  $Section{'data'} = $data;
-  $Page{$name} = join($FS2, %Section);
+sub SaveKeepFile {
+  return if ($Page{revision} < 1);  # Don't keep 'empty' revision
+  delete $Page{blocks}; # delete some info from the page
+  delete $Page{flags};
+  delete $Page{'diff-major'};
+  delete $Page{'diff-minor'};
+  CreateKeepDir($KeepDir, $OpenPageName);
+  WriteStringToFile(GetKeepFile($OpenPageName, $Page{revision}), EncodePage(%Page));
 }
 
-sub SaveText {
-  my $name = shift;
-  SaveSection("text_$name", join($FS3, %Text));
+sub EncodePage {
+  my $data;
+  while (@_) { # don't copy @_ into private variables, use it directly
+    $data .= (shift @_) . ': ' . EscapeNewlines(shift @_) . "\n";
+  }
+  return $data;
 }
 
-sub SaveDefaultText {
-  SaveText('default');
+sub EscapeNewlines {
+  $_[0] =~ s/\n/\n\t/g; # modify original instead of copying
+  return $_[0];
 }
 
-sub SetPageCache {
-  my ($name, $data) = @_;
-  $Page{"cache_$name"} = $data;
-}
-
-sub GetKeepFile {
-  my $id = shift;
-  return $KeepDir . '/' . GetPageDirectory($id) . "/$id.kp";
-}
-
-sub KeepFileName {
-  return GetKeepFile($OpenPageName);
-}
-
-sub SaveKeepSection {
-  my $file = KeepFileName();
-  return  if ($Section{'revision'} < 1);  # Don't keep 'empty' revision
-  $Section{'keepts'} = $Now;
-  my $data = $FS1 . join($FS2, %Section);
-  CreatePageDir($KeepDir, $OpenPageName);
-  AppendStringToFile($file, $data);
-}
-
-sub ExpireKeepFile {
-  my ($fname, $data, @kplist, %tempSection, $expirets);
-  my ($anyExpire, $anyKeep, $expire, %keepFlag, $sectName, $sectRev);
-  my ($oldMajor);
+sub ExpireKeepFiles {
   return unless $KeepDays;
-  $fname = KeepFileName();
-  return unless -f $fname;
-  $data = ReadFileOrDie($fname);
-  @kplist = split(/$FS1/, $data, -1);  # -1 keeps trailing null fields
-  return if length(@kplist) < 1;  # Also empty
-  shift(@kplist)  if ($kplist[0] eq '');  # First can be empty
-  return if length(@kplist) < 1;  # Also empty
-  %tempSection = split(/$FS2/, $kplist[0], -1);
-  return unless defined($tempSection{'keepts'}); # corrupt?
-  $expirets = $Now - ($KeepDays * 24 * 60 * 60);
-  return if ($tempSection{'keepts'} >= $expirets);  # Nothing old enough
-  $anyExpire = 0;
-  $anyKeep   = 0;
-  %keepFlag  = ();
-  $oldMajor  = GetPageCache('oldmajor');
-  foreach (reverse @kplist) {
-    %tempSection = split(/$FS2/, $_, -1);
-    $sectName = $tempSection{'name'};
-    $sectRev = $tempSection{'revision'};
-    $expire = 0;
-    if ($sectName eq 'text_default') {
-      if (($KeepMajor && ($sectRev == $oldMajor))) {
-        $expire = 0;
-      } elsif ($tempSection{'keepts'} < $expirets) {
-        $expire = 1;
-      }
-    } else {
-      if ($tempSection{'keepts'} < $expirets) {
-        $expire = 1;
-      }
-    }
-    if (!$expire) {
-      $keepFlag{$sectRev . ',' . $sectName} = 1;
-      $anyKeep = 1;
-    } else {
-      $anyExpire = 1;
-    }
+  my @keeps = GetKeepFiles($OpenPageName);
+  my $expirets = $Now - ($KeepDays * 24 * 60 * 60);
+  foreach my $keep (@keeps) {
+    my ($status, $data) = ReadFile($keep);
+    next unless $status;
+    my %field = ParseData($data);
+    next if $field{ts} >= $expirets;
+    next if $KeepMajor && ($field{revision} == $Page{oldmajor});
+    unlink $keep;
   }
-  if (!$anyKeep) {  # Empty, so remove file
-    unlink($fname);
-    return;
+}
+
+# == File operations
+
+sub ReadFile {
+  my ($fileName) = @_;
+  my ($data);
+  local $/ = undef;   # Read complete files
+  if (open(IN, "<$fileName")) {
+    $data=<IN>;
+    close IN;
+    return (1, $data);
   }
-  return  if (!$anyExpire);  # No sections expired
-  open (OUT, ">$fname") or ReportError(Ts('cannot write %s', $fname) . ": $!");
-  foreach (@kplist) {
-    %tempSection = split(/$FS2/, $_, -1);
-    $sectName = $tempSection{'name'};
-    $sectRev = $tempSection{'revision'};
-    if ($keepFlag{$sectRev . ',' . $sectName}) {
-      print OUT $FS1, $_;
-    }
+  return (0, '');
+}
+
+sub ReadFileOrDie {
+  my ($fileName) = @_;
+  my ($status, $data);
+  ($status, $data) = ReadFile($fileName);
+  if (!$status) {
+    die(Ts('Can not open %s', $fileName) . ": $!");
   }
+  return $data;
+}
+
+sub WriteStringToFile {
+  my ($file, $string) = @_;
+  open (OUT, ">$file") or die(Ts('cannot write %s', $file) . ": $!");
+  print OUT  $string;
   close(OUT);
 }
 
-sub OpenKeptList {
-  my ($fname, $data);
-  @KeptList = ();
-  $fname = KeepFileName();
-  return  if (!(-f $fname));
-  $data = ReadFileOrDie($fname);
-  @KeptList = split(/$FS1/, $data, -1);  # -1 keeps trailing null fields
+sub AppendStringToFile {
+  my ($file, $string) = @_;
+  open (OUT, ">>$file") or ReportError(Ts('Cannot write %s', $file) . ": $!");
+  print OUT  $string;
+  close(OUT);
 }
 
-sub OpenKeptRevisions {
-  my $name = shift;  # Name of section
-  my (%tempSection);
-  %KeptRevisions = ();
-  OpenKeptList();
-  foreach (@KeptList) {
-    %tempSection = split(/$FS2/, $_, -1);
-    next  if ($tempSection{'name'} ne $name);
-    $KeptRevisions{$tempSection{'revision'}} = $_;
-  }
+sub CreateDir {
+  my ($newdir) = @_;
+  mkdir($newdir, 0775)  if (!(-d $newdir));
 }
 
-sub GetTextAtTime {
-  my ($ts) = @_;
-  my (%tempSection, %tempText, $revision);
-  # OpenPage() was already called
-  OpenKeptList(); # sets @KeptList
-  OpenKeptRevisions('text_default'); # sets $KeptRevisions{<revision>} = <section>
-  foreach $revision (keys %KeptRevisions) {
-    %tempSection = split(/$FS2/, $KeptRevisions{$revision}, -1);
-    if ($tempSection{'ts'} eq $ts) {
-      %tempText = split(/$FS3/, $tempSection{'data'}, -1);
-      return $tempText{'text'};
-    }
-  }
-  return '';
+sub CreatePageDir {
+  my ($dir, $id) = @_;
+  CreateDir($dir);
+  CreateDir($dir . '/' . GetPageDirectory($id));
+}
+
+sub CreateKeepDir {
+  my ($dir, $id) = @_;
+  CreatePageDir($dir, $id);
+  CreateDir($dir . '/' . GetPageDirectory($id) . '/' . $id);
 }
 
 # == Lock files ==
@@ -2499,10 +2366,10 @@ sub ForceReleaseLock {
 sub DoUnlock {
   my $message = '';
   print GetHeader('', T('Unlocking'), '');
-  print $q->p(T('This operation may take several seconds...')) . "\n";
+  print $q->p(T('This operation may take several seconds...'));
   for my $lock (qw(main diff index merge visitors refer_*)) {
     if (ForceReleaseLock($lock)) {
-      $message .= $q->p(Ts('Forced unlock of %s lock.', $lock)) . "\n";
+      $message .= $q->p(Ts('Forced unlock of %s lock.', $lock));
     }
   }
   if ($message) {
@@ -2513,113 +2380,7 @@ sub DoUnlock {
   PrintFooter();
 }
 
-# == File operations
-
-sub ReadFile {
-  my ($fileName) = @_;
-  my ($data);
-  local $/ = undef;   # Read complete files
-  if (open(IN, "<$fileName")) {
-    $data=<IN>;
-    close IN;
-    return (1, $data);
-  }
-  return (0, '');
-}
-
-sub ReadFileOrDie {
-  my ($fileName) = @_;
-  my ($status, $data);
-  ($status, $data) = ReadFile($fileName);
-  if (!$status) {
-    die(Ts('Can not open %s', $fileName) . ": $!");
-  }
-  return $data;
-}
-
-sub WriteStringToFile {
-  my ($file, $string) = @_;
-  open (OUT, ">$file") or die(Ts('cannot write %s', $file) . ": $!");
-  print OUT  $string;
-  close(OUT);
-}
-
-sub AppendStringToFile {
-  my ($file, $string) = @_;
-  open (OUT, ">>$file") or die(Ts('cannot write %s', $file) . ": $!");
-  print OUT  $string;
-  close(OUT);
-}
-
-sub CreateDir {
-  my ($newdir) = @_;
-  mkdir($newdir, 0775)  if (!(-d $newdir));
-}
-
-sub CreatePageDir {
-  my ($dir, $id) = @_;
-  my $subdir;
-  CreateDir($dir);  # Make sure main page exists
-  $subdir = $dir . '/' . GetPageDirectory($id);
-  CreateDir($subdir);
-  if ($id =~ m|([^/]+)/|) {
-    $subdir = $subdir . '/' . $1;
-    CreateDir($subdir);
-  }
-}
-
-sub GenerateAllPagesList {
-  my (@pages, @dirs, $id, $dir, @pageFiles, $subId);
-  @pages = ();
-  # The following was inspired by the FastGlob code by Marc W. Mengel.
-  # Thanks to Bob Showalter for pointing out the improvement.
-  opendir(PAGELIST, $PageDir);
-  @dirs = readdir(PAGELIST);
-  closedir(PAGELIST);
-  foreach $dir (@dirs) {
-    next  if (($dir eq '.') or ($dir eq '..'));
-    opendir(PAGELIST, "$PageDir/$dir");
-    @pageFiles = readdir(PAGELIST);
-    closedir(PAGELIST);
-    foreach $id (@pageFiles) {
-      next  if (($id eq '.') or ($id eq '..'));
-      if (substr($id, -3) eq '.db') {
-	push(@pages, substr($id, 0, -3));
-      }
-    }
-  }
-  return sort(@pages);
-}
-
-sub AllPagesList {
-  my ($rawIndex, $refresh, $status);
-  $refresh = GetParam('refresh', 0);
-  if ($IndexInit && !$refresh) {
-    return @IndexList;
-  }
-  if ((!$refresh) && (-f $IndexFile)) {
-    ($status, $rawIndex) = ReadFile($IndexFile);
-    if ($status) {
-      %IndexHash = split(/\s+/, $rawIndex);
-      @IndexList = sort(keys %IndexHash);
-      $IndexInit = 1;
-      return @IndexList;
-    }
-    # If open fails just refresh the index
-  }
-  @IndexList = ();
-  %IndexHash = ();
-  @IndexList = GenerateAllPagesList();
-  foreach (@IndexList) {
-    $IndexHash{$_} = 1;
-  }
-  $IndexInit = 1;  # Initialized for this run of the script
-  # Try to write out the list for future runs
-  RequestLockDir('index') or return @IndexList; # not fatal
-  WriteStringToFile($IndexFile, join(' ', %IndexHash));
-  ReleaseLockDir('index');
-  return @IndexList;
-}
+# == Helpers ==
 
 sub CalcDay {
   my ($sec, $min, $hour, $mday, $mon, $year) = gmtime(shift);
@@ -2700,22 +2461,21 @@ sub DoEdit {
     ReportError(T('Only administrators can upload files.'));
   }
   OpenPage($id);
-  OpenDefaultText();
-  # Old revision handling
+  my $text = $Page{text};
+  # Old revision handling (adapted from to BrowsePage!)
   my $header; # set header only when sure that this is not an upload
   my $revision = GetParam('revision', '');
   $revision =~ s/\D//g;  # Remove non-numeric chars
-  if ($revision ne '') {
-    OpenKeptRevisions('text_default');
-    if (!defined($KeptRevisions{$revision})) {
-      $revision = '';
-      # Later look for better solution, like error message?
+  if ($revision) {
+    my %keep = GetKeptRevision($revision);
+    if (not %keep) {
+      $revision = ''; # reset if requested revision is not available
     } else {
-      OpenKeptRevision($revision);
+      $text = $keep{text};
       $header = Ts('Editing revision %s of', $revision) . ' ' . $id;
     }
   }
-  my $oldText = $Text{'text'};
+  my $oldText = $text;
   my $isFile = ($oldText =~ m/^#FILE ([^ \n]+)\n(.*)/s);
   $upload = $isFile if not defined $upload;
   if ($upload and not $UploadAllowed and not UserIsAdmin()) {
@@ -2737,7 +2497,7 @@ sub DoEdit {
   print GetFormStart($upload);
   print GetHiddenValue("title", $id);
   print GetHiddenValue('revision', $revision) if $revision;
-  print GetHiddenValue('oldtime', $Section{'ts'});
+  print GetHiddenValue('oldtime', $Page{'ts'});
   if ($upload) {
     print GetUpload();
   } else {
@@ -2790,8 +2550,7 @@ sub DoDownload {
   my $ts;
   my $revision = GetParam('revision', '');
   OpenPage($id);
-  OpenDefaultText($id);
-  if ($revision && $revision ne $Section{'revision'}) {
+  if ($revision && $revision ne $Page{'revision'}) {
     OpenKeptRevisions('text_default');
     OpenKeptRevision($revision);
   } else {
@@ -2801,7 +2560,7 @@ sub DoDownload {
     }
     $ts = $Page{'ts'};
   }
-  if ($Text{'text'} =~ /#FILE ([^ \n]+)\n(.*)/s) {
+  if ($Page{'text'} =~ /#FILE ([^ \n]+)\n(.*)/s) {
     my ($type, $data) = ($1, $2);
     if (not grep(/^$type$/, @UploadTypes)) {
       ReportError (Ts('Files of type %s are not allowed.', $type));
@@ -2811,7 +2570,7 @@ sub DoDownload {
     print MIME::Base64::decode($data);
   } else {
     print GetHttpHeader('text/plain', $ts);
-    print $Text{'text'};
+    print $Page{'text'};
   }
 }
 
@@ -2926,6 +2685,37 @@ sub PrintPageList {
   print '</p>';
 }
 
+sub AllPagesList {
+  my ($rawIndex, $refresh, $status);
+  $refresh = GetParam('refresh', 0);
+  if ($IndexInit && !$refresh) {
+    return @IndexList;
+  }
+  if ((!$refresh) && (-f $IndexFile)) {
+    ($status, $rawIndex) = ReadFile($IndexFile);
+    if ($status) {
+      %IndexHash = split(/\s+/, $rawIndex);
+      @IndexList = sort(keys %IndexHash);
+      $IndexInit = 1;
+      return @IndexList;
+    }
+    # If open fails just refresh the index
+  }
+  @IndexList = ();
+  %IndexHash = ();
+  foreach (sort(glob("$PageDir/*/*.pg"))) { # sort of DoIndex etc.
+    next unless m|/.*/(.+)\.pg$|;
+    push @IndexList, $1;
+    $IndexHash{$1} = 1;
+  }
+  $IndexInit = 1;  # Initialized for this run of the script
+  # Try to write out the list for future runs
+  RequestLockDir('index') or return @IndexList; # not fatal
+  WriteStringToFile($IndexFile, join(' ', %IndexHash));
+  ReleaseLockDir('index');
+  return @IndexList;
+}
+
 # == Searching ==
 
 sub DoSearch {
@@ -2961,13 +2751,12 @@ sub SearchTitleAndBody {
   my @found;
   foreach my $name (AllPagesList()) {
     OpenPage($name);
-    OpenDefaultText();
-    next if ($Text{'text'} =~ /^#FILE / and $string !~ /^\^#FILE/); # skip files unless requested
+    next if ($Page{'text'} =~ /^#FILE / and $string !~ /^\^#FILE/); # skip files unless requested
     my $found = 1; # assume found
     foreach my $str (@strings) {
       my @temp = split(/ +$or +/, $str);
       $str = join('|', @temp);
-      if (not ($Text{'text'} =~ /$str/i)) {
+      if (not ($Page{'text'} =~ /$str/i)) {
 	$found = 0;
 	last;
       }
@@ -2995,8 +2784,7 @@ sub PrintSearchResults {
   my $files = ($searchstring =~ /^\^#FILE/); # usually skip files
   foreach my $name (@results) {
     OpenPage($name);
-    OpenDefaultText();
-    my $pageText = QuoteHtml($Text{'text'});
+    my $pageText = QuoteHtml($Page{'text'});
     #  get the page, filter it, remove all tags
     $pageText =~ s/$FS//g;	# Remove separators (paranoia)
     $pageText =~ s/[\s]+/ /g;	#  Shrink whitespace
@@ -3037,8 +2825,8 @@ sub PrintSearchResults {
     #  entry trailer
     print $q->br(), $q->span({-class=>'info'},
       int((length($pageText)/1024)+1) . 'K - ' . T('last updated') . ' '
-      . TimeToText($Section{ts}) . ' ' . T('by') . ' '
-      . GetAuthorLink($Section{'host'}, $Section{'username'})), '</p>';
+      . TimeToText($Page{ts}) . ' ' . T('by') . ' '
+      . GetAuthorLink($Page{'host'}, $Page{'username'})), '</p>';
   }
 }
 
@@ -3047,11 +2835,10 @@ sub Replace {
   RequestLockOrError(); # fatal
   foreach my $id (AllPagesList()) {
     OpenPage($id);
-    OpenDefaultText();
-    $_ = $Text{'text'};
+    $_ = $Page{'text'};
     if (eval "s/$from/$to/gi") { # allows use of backreferences
       Save($id, $_, $from . ' -> ' . $to, 1,
-	   ($Section{'ip'} ne $ENV{REMOTE_ADDR}));
+	   ($Page{'ip'} ne $ENV{REMOTE_ADDR}));
     }
   }
   ReleaseLock();
@@ -3093,10 +2880,8 @@ sub GetFullLinkList {
   my $url = GetParam('url', 0);
   foreach my $name (@pglist) {
     OpenPage($name);
-    my $data = GetPageCache('blocks');
-    my ($rawblocks, $rawflags) = split(/$FS2/, $data);
-    my @blocks = split($FS3,$rawblocks);
-    my @flags = split($FS3,$rawflags);
+    my @blocks = split($FS, $Page{blocks});
+    my @flags = split($FS, $Page{flags});
     my %links;
     foreach my $block (@blocks) {
       if (shift(@flags)) { # dirty blocks
@@ -3141,12 +2926,11 @@ sub PrintAllPages {
   my $comments = shift;
   for my $id (@_) {
     OpenPage($id); # After this call, don't save cache!
-    OpenDefaultText($id);
     print $q->hr . $q->h1($links ? GetPageLink($id) : $q->a({-name=>$id},$id));
-    if (GetPageCache('blocks') && GetParam('cache',1)) {
-      PrintCache(GetPageCache('blocks'));
+    if ($Page{blocks} && $Page{flags} && GetParam('cache',1)) {
+      PrintCache();
     } else {
-      PrintWikiToHTML($Text{'text'}, 1); # cache, current, not locked
+      PrintWikiToHTML($Page{'text'}, 1); # cache, current, not locked
     }
     if ($comments and UserCanEdit($CommentsPrefix . $id, 0) and $id !~ /^$CommentsPrefix/) {
       print $q->p({-class=>'comment'}, ScriptLink($CommentsPrefix . UrlEncode($id),
@@ -3177,8 +2961,7 @@ sub DoPost {
   # Lock before getting old page to prevent races
   RequestLockOrError(); # fatal
   OpenPage($id);
-  OpenDefaultText();
-  my $old = $Text{'text'};
+  my $old = $Page{'text'};
   $_ = GetParam('text', undef);
   foreach my $macro (@MyMacros) { &$macro; }
   my $string = $_;
@@ -3204,9 +2987,10 @@ sub DoPost {
     my $comment = GetParam('aftertext', undef);
     if (defined $comment) {
       $comment =~ s/\r//g;	# Remove "\r"-s (0x0d) from the string
+      $comment =~ s/\s+$//g;    # Remove whitespace at the end
       if ($comment ne '' and $comment ne $NewComment) {
 	$string = $old  . "----\n" if $old and $old ne "\n";
-	$string .= $comment . ' -- ' .  GetParam('username', T('Anonymous'))
+	$string .= $comment . "\n\n-- " .  GetParam('username', T('Anonymous'))
 	  . ' ' . TimeToText($Now) . "\n\n";
       } else {
 	$string = $old;
@@ -3221,7 +3005,7 @@ sub DoPost {
   $summary =~ s/$FS//g;
   $summary =~ s/[\r\n]+/ /g;
   # rebrowse if no changes
-  my $oldrev = $Section{'revision'};
+  my $oldrev = $Page{'revision'};
   if (!$preview && (($old eq $string) or ($oldrev == 0 and $string eq $NewText))) {
     ReleaseLock(); # No changes -- just show the same page again
     ReBrowsePage($id);
@@ -3234,8 +3018,8 @@ sub DoPost {
   }
   my $newAuthor = 0;
   if (GetParam('username', '')) { # prefer usernames for potential newAuthor detection
-    $newAuthor = 1 if GetParam('username', '') ne $Section{'username'};
-  } elsif ($ENV{REMOTE_ADDR} ne $Section{'ip'}) {
+    $newAuthor = 1 if GetParam('username', '') ne $Page{'username'};
+  } elsif ($ENV{REMOTE_ADDR} ne $Page{'ip'}) {
     $newAuthor = 1;
   }
   my $oldtime = $Page{'ts'};
@@ -3255,7 +3039,7 @@ sub DoPost {
 	  $string = $new;
 	  if ($new =~ /^<<<<<<</m and $new =~ /^>>>>>>>/m) {
 	    $NewCookie{'msg'} = Ts('This page was changed by somebody else %s.',
-				   CalcTimeSince($Now - $Section{'ts'}))
+				   CalcTimeSince($Now - $Page{'ts'}))
 	      . ' ' . T('The changes conflict.  Please check the page again.');
 	    $string =~ s/^<<<<<<</\n\n<pre><<<<<<</mg;
 	    $string =~ s/^>>>>>>>(.*)/>>>>>>>$1\n<\/pre>\n/mg;
@@ -3264,9 +3048,9 @@ sub DoPost {
       } # else nobody changed the page in the mean time (same text)
     } else { $generalwarning = 1; } # no way to be sure since myoldtime is missing
   } # same author or nobody changed the page in the mean time (same timestamp)
-  if ($generalwarning and ($Now - $Section{'ts'}) < 600) {
+  if ($generalwarning and ($Now - $Page{'ts'}) < 600) {
     $NewCookie{'msg'} = Ts('This page was changed by somebody else %s.',
-			   CalcTimeSince($Now - $Section{'ts'}))
+			   CalcTimeSince($Now - $Page{'ts'}))
       . ' ' . T('Please check whether you overwrote those changes.');
   }
   Save($id, $string, $summary, (GetParam('recent_edit', '') eq 'on'), $filename);
@@ -3280,28 +3064,29 @@ sub DoPost {
 
 sub Save { # call within lock, with opened page
   my ($id, $new, $summary, $minor, $upload) = @_;
-  my $old = $Text{'text'};
+  SaveKeepFile(); # deletes clean, dirty, diff-major, and diff-minor
+  ExpireKeepFiles();
+  my $old = $Page{'text'};
   my $user = GetParam('username', '');
-  if (!$minor) {
-    SetPageCache('oldmajor', $Section{'revision'});
-  }
-  SaveKeepSection();
-  ExpireKeepFile();
-  if ($UseDiff and not $upload) {
+  my $host = GetRemoteHost();
+  my $revision = $Page{revision} + 1;
+  $Page{ts} = $Now;
+  $Page{revision} = $revision;
+  $Page{summary} = $summary;
+  $Page{username} = $user;
+  $Page{ip} = $ENV{REMOTE_ADDR};
+  $Page{host} = $host;
+  $Page{minor} = $minor;
+  $Page{oldmajor} = $revision unless $minor; # if a minor rev, this stores the last major rev
+  $Page{text} = $new;
+  if ($UseDiff and not $upload and $old !~ /^#FILE /) {
     UpdateDiffs($id, $old, $new, $minor);
   }
-  $Text{'text'} = $new;
-  $Text{'minor'} = $minor;
-  $Text{'summary'} = $summary;
-  $Section{'host'} = GetRemoteHost();
-  SaveDefaultText();
-  SetPageCache('blocks','');
   SavePage();
   my $languages;
-  $languages = GetLanguages($Text{'text'}) unless $upload;
-  WriteRcLog($id, $summary, $minor, $Section{'revision'}, $user,
-	      $Section{'host'}, $languages, GetCluster($new));
-  if ($Page{'revision'} == 1) {
+  $languages = GetLanguages($new) unless $upload;
+  WriteRcLog($id, $summary, $minor, $revision, $user, $host, $languages, GetCluster($new));
+  if ($revision == 1) {
     unlink($IndexFile);  # Regenerate index on next request
     $IndexInit = 0; # mod_perl: this variable may persist accross sessions
     if (grep(/^$id$/, @LockOnCreation)) {
@@ -3353,33 +3138,21 @@ sub MergeRevisions { # merge change from file2 to file3 into file1
 
 # Note: all diff and recent-list operations should be done within locks.
 sub WriteRcLog {
-  my ($id, $summary, $minor, $revision, $name, $rhost, $languages, $cluster) = @_;
-  my %extra = ();
-  $extra{'name'} = $name  if ($name ne '');
-  $extra{'revision'} = $revision if ($revision ne '');
-  $extra{'languages'} = join($FS1, @{$languages}) if $languages;
-  $extra{'cluster'} = $cluster if $cluster;
-  my $extraTemp = join($FS2, %extra);
-  # The two fields at the end of a line are kind and extension-hash
-  my $rc_line = join($FS3, $Now, $id, $summary,
-                     $minor, $rhost, '0', $extraTemp);
-  if (!open(OUT, ">>$RcFile")) {
-    ReportError(Ts('%s log error:', $RCName) . " $!");
-  }
-  print OUT  $rc_line . "\n";
-  close(OUT);
+  my ($id, $summary, $minor, $revision, $username, $host, $langref, $cluster) = @_;
+  my $languages = join(',', @$langref);
+  my $rc_line = join($FS, $Now, $id, $minor, $summary, $host,
+		     $username, $revision, $languages, $cluster);
+  AppendStringToFile($RcFile, $rc_line . "\n");
 }
 
 sub UpdateDiffs {
   my ($id, $old, $new, $minor) = @_;
   my $editDiff  = GetDiff($old, $new, 0);     # 0 = already in lock
-  SetPageCache('diff_default_minor', $editDiff);
-  my $oldMajor  = GetPageCache('oldmajor');
-  if ($minor) {
-    OpenKeptRevisions('text_default');
-    SetPageCache('diff_default_major', GetKeptDiff($new, $oldMajor, 0));
+  $Page{'diff-minor'} = $editDiff;
+  if ($minor and $Page{oldmajor}) {
+    $Page{'diff-major'} = GetKeptDiff($new, $Page{oldmajor}, 0);
   } else {
-    SetPageCache('diff_default_major', '1');
+    $Page{'diff-major'} = '1'; # special value, used in GetCacheDiff
   }
 }
 
@@ -3441,19 +3214,18 @@ sub DoMaintain {
     print $q->br();
     print GetPageLink($name);
     OpenPage($name);
-    OpenDefaultText();
     my $delete = PageDeletable($name);
     if ($delete) {
       DeletePage($OpenPageName);
       print ' ' . T('deleted');
     } else {
-      ExpireKeepFile();
+      ExpireKeepFiles();
       ReadReferers($OpenPageName); # clean up even if disabled
       WriteReferers($OpenPageName);
       if ($cache) {
 	local *STDOUT;
 	open (STDOUT, "> /dev/null");
-	PrintWikiToHTML($Text{'text'}, 1, '', 1) if ($cache); # cache, current, locked
+	PrintWikiToHTML($Page{'text'}, 1, '', 1) if ($cache); # cache, current, locked
       }
     }
   }
@@ -3478,7 +3250,7 @@ sub DoMaintain {
   my @rc = split(/\n/, $data);
   my $i;
   for ($i = 0; $i < @rc ; $i++) {
-    my ($ts) = split(/$FS3/, $rc[$i]);
+    my ($ts) = split(/$FS/, $rc[$i]);
     last if ($ts >= $starttime);
   }
   print $q->p(Ts('Moving %s log entries.', $i));
@@ -3495,57 +3267,13 @@ sub DoMaintain {
   PrintFooter();
 }
 
-sub DoConvert {
-  print GetHeader('', T('Converting all files'), '');
-  if (!$FS0 or $FS0 eq $FS) {
-    print $q->p(T('No conversion required.'));
-    return;
-  }
-  UserIsAdminOrError();
-  RequestLockOrError();
-  print '<p>' . T('Main lock obtained.');
-  foreach my $name (AllPagesList()) {
-    ConvertFile (GetPageFile($name));
-    ConvertFile (GetKeepFile($name));
-    ConvertFile (GetRefererFile($name));
-  }
-  foreach my $name ($RcFile, $RcOldFile, $VisitorFile) {
-    ConvertFile ($name);
-  }
-  print '</p>';
-  ReleaseLock();
-  print $q->p(T('Main lock released.'));
-  PrintFooter();
-}
-
-sub ConvertFile {
-  my $file = shift;
-  print $q->br() . $file . ' ';
-  if (-f $file) {
-    my ($status, $data) = ReadFile($file);
-    if ($status) {
-      if ($data =~ /$FS0/ and $data !~ /$FS/) {
-	$data =~ s/$FS0/$FS/go;
-	WriteStringToFile($file, $data);
-	print T('converted');
-      } else {
-	print T('no conversion required');
-      }
-    } else {
-      print Ts('Can not open %s', $file) . ": $!";
-    }
-  } else {
-    print T('has no file');
-  }
-}
-
 # == Deleting pages ==
 
 sub PageDeletable {
   my ($expirets);
   $expirets = $Now - ($KeepDays * 24 * 60 * 60);
   return 0 unless $Page{'ts'} < $expirets;
-  return $DeletedPage && $Text{'text'} =~ /^\s*$DeletedPage\b/o;
+  return $DeletedPage && $Page{'text'} =~ /^\s*$DeletedPage\b/o;
 }
 
 sub DeletePage { # Delete must be done inside locks.
@@ -3556,10 +3284,10 @@ sub DeletePage { # Delete must be done inside locks.
   $page =~ s/\]+//;
   $status = ValidId($page);
   if ($status ne '') {
-    print "Delete-Page: page $page is invalid, error is: $status<br>\n";
+    print "DeletePage: page $page is invalid, error is: $status<br>\n";
     return;
   }
-  foreach my $fname (GetPageFile($page), GetKeepFile($page),
+  foreach my $fname (GetPageFile($page), GetKeepFiles($page), GetKeepDir($page),
 		     GetRefererFile($page), $IndexFile) {
     unlink($fname) if (-f $fname);
   }
@@ -3666,10 +3394,10 @@ sub ReadRecentVisitors {
   my ($status, $data) = ReadFile($VisitorFile);
   %RecentVisitors = ();
   return  unless $status;
-  foreach (split(/$FS1/,$data)) {
-    my @entries = split /$FS2/;
+  foreach (split(/\n/,$data)) {
+    my @entries = split /$FS/;
     my $name = shift(@entries);
-    $RecentVisitors{$name} = \@entries;
+    $RecentVisitors{$name} = \@entries if $name;
   }
 }
 
@@ -3683,9 +3411,9 @@ sub WriteRecentVisitors {
       if ($entries[0] >= $limit) {
 	# save the data
 	if ($SurgeProtection) {
-	  $data .= $name . $FS2 . join($FS2, @entries[0 .. $SurgeProtectionViews - 1]) . $FS1;
+	  $data .=  join($FS, $name, @entries[0 .. $SurgeProtectionViews - 1]) . "\n";
 	} else {
-	  $data .= $name . $FS2 . $entries[0] . $FS1;
+	  $data .= $name . $FS . $entries[0] . "\n";
 	}
       }
     }
@@ -3724,7 +3452,7 @@ sub ReadReferers {
   %Referers = ();
   if (-f $file) {
     my ($status, $data) = ReadFile($file);
-    %Referers = split(/$FS1/, $data, -1) if $status;
+    %Referers = split(/$FS/, $data, -1) if $status;
   }
   ExpireReferers();
 }
@@ -3771,7 +3499,7 @@ sub UpdateReferers {
 sub WriteReferers {
   my $id = shift;
   return unless RequestLockDir('refer_' . $id); # not fatal
-  my $data = join($FS1, map { $_ . $FS1 . $Referers{$_} } keys %Referers);
+  my $data = join($FS, %Referers);
   my $file = GetRefererFile($id);
   if ($data) {
     CreatePageDir($RefererDir, $id);
