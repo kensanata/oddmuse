@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.342 2004/03/08 01:26:13 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.343 2004/03/08 19:57:22 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -420,7 +420,7 @@ sub ApplyRules {
   while(1) {
     # Block level elements eat empty lines to prevent empty p elements.
     if ($first and m/^#FILE ([^ \n]+)\n(.*)/cgs) {
-      Clean(Upload($OpenPageName, (substr($1, 0, 6) eq 'image/'), $revision));
+      Clean(GetDownloadLink($OpenPageName, (substr($1, 0, 6) eq 'image/'), $revision));
     } elsif ($bol && m/\G&lt;pre&gt;\n?(.*?\n)&lt;\/pre&gt;[ \t]*\n?/cgs) {
       Clean(CloseHtmlEnvironments() . $q->pre({-class=>'real'}, $1));
     } elsif ($bol && m/\G(\s*\n)*(\*+)[ \t]*/cg) {
@@ -550,7 +550,7 @@ sub ApplyRules {
     } elsif ($locallinks && $FreeLinks && m/\G(\[\[image:$FreeLinkPattern\]\])/cog) {
       # [[image:Free Link]]
       Dirty($1);
-      print Upload($2, 1);
+      print GetDownloadLink($2, 1);
     } elsif ($FreeLinks && $locallinks
 	     && ($BracketWiki && m/\G(\[\[$FreeLinkPattern\|([^\]]+)\]\])/cog
 		 or m/\G(\[\[\[$FreeLinkPattern\]\]\])/cog
@@ -958,10 +958,12 @@ sub GetPageLink { # shortcut
 }
 
 sub GetEditLink { # shortcut
-  my ($id, $name) = @_;
+  my ($id, $name, $upload) = @_;
   $id = FreeToNormal($id);
   $name =~ s/_/ /g;
-  return ScriptLink('action=edit;id=' . UrlEncode($id), $name);
+  my $action = 'action=edit;id=' . UrlEncode($id);
+  $action .= ';upload=1' if $upload;
+  return ScriptLink($action, $name);
 }
 
 sub ScriptLink {
@@ -980,12 +982,13 @@ sub ScriptLink {
   return $q->a(\%params, $text);
 }
 
-sub Upload {
+sub GetDownloadLink {
   my ($id, $image, $revision) = @_;
   $id = FreeToNormal($id);
   AllPagesList();
   # if the page does not exist
-  return '[' . ($image ? 'image' : 'link') . ':' . $id . ']' unless $IndexHash{$id};
+  return '[' . ($image ? 'image' : 'link') . ':' . $id
+    . GetEditLink($id, $id, 1) . ']' unless $IndexHash{$id};
   my $action;
   if ($revision) {
     $action = "action=download;id=$id;revision=$revision";
