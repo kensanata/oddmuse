@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.16 2004/12/05 04:04:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.17 2004/12/05 21:37:10 as Exp $</p>';
 
 $DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /table\.user/; # mod_perl?
 table.user { border-style:solid; border-width:thin; }
@@ -78,8 +78,8 @@ sub UsemodRule {
     return OpenHtmlEnvironment('pre',1) . $str; # always level 1
   }
   # unumbered lists using *
-  elsif ($bol && m/\G(\s*\n)*(\*+)[ \t]{$UseModSpaceRequired,}/cg
-	 or InElement('li') && m/\G(\s*\n)+(\*+)[ \t]{$UseModSpaceRequired,}/cg) {
+  elsif ($bol && m/\G(\s*\n)*(\*+)[ \t]{$UseModSpaceRequired,}/cog
+	 or InElement('li') && m/\G(\s*\n)+(\*+)[ \t]{$UseModSpaceRequired,}/cog) {
     return CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ul',length($2))
       . AddHtmlEnvironment('li');
   }
@@ -108,7 +108,7 @@ sub UsemodRule {
     my $depth = length($2);
     $depth = 6 if $depth > 6;
     my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '')
-      . AddHtmlEnvironment('h' . $depth) . AddHtmlEnvironment('p');
+      . AddHtmlEnvironment('h' . $depth);
     $PortraitSupportColorDiv = 0; # after the HTML has been determined.
     $PortraitSupportColor = 0;
     return $html;
