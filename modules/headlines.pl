@@ -18,7 +18,7 @@
 
 use vars qw($HeadlineNumber);
 
-$ModulesDescription .= '<p>$Id: headlines.pl,v 1.1 2004/02/22 13:19:09 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: headlines.pl,v 1.2 2004/02/22 13:20:03 as Exp $</p>';
 
 push(@MyRules, \&HeadlinesRule);
 
@@ -44,9 +44,9 @@ sub HeadlinesPrint {
     foreach my $page (@pages) {
       if ($page =~ /^(\d\d\d\d-\d\d-\d\d)_(.+)/) {
 	my ($date, $title) = ($1, $2);
-	print '<span class="date">' . $date . '</span>' unless $date eq $current_date;
+	print '<span class="date">' . $date . '</span><br />' unless $date eq $current_date;
 	$current_date = $date;
-	print ScriptLink($page, $title, 'headline');
+	print ScriptLink($page, $title, 'headline') . '<br />';
       }
     }
     print '</div>';
