@@ -5,6 +5,7 @@
 	(DoPost): Use diff3 for conflict merging, and use a pre block for
 	the conflict itself.
 	(GetPermanentAnchor): New text.
+	(DoPost): Rewrote conflict handling again.
 
 2003-10-07  Alex Schroeder  <alex@gnu.org>
 

@@ -265,7 +265,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.186 2003/10/09 22:16:49 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.187 2003/10/09 22:45:32 as Exp $');
 }
 
 sub InitCookie {
@@ -3321,24 +3321,31 @@ sub DoPost {
   } elsif ($ENV{REMOTE_ADDR} ne $Section{'ip'}) {
     $newAuthor = 1;
   }
-  my $oldtime = GetParam('oldtime', '');
-  if ($newAuthor) { # can't print warnings here here because of redirect!
-    my $new;
-    $new = MergeRevisions($string, GetTextAtTime($oldtime), $old) if $oldtime;
-    if ($new) {
-      $string = $new;
-      if ($new =~ /^<<<<<<</m and $new =~ /^>>>>>>>/m) {
-	$NewCookie{'msg'} = Ts('This page was changed by somebody else %s.',
-			       CalcTimeSince($Now - $Section{'ts'}))
-	  . ' ' . T('The changes conflict.  Please check the page again.');
-	$string =~ s/^<<<<<<</\n\n<pre><<<<<<</mg;
-	$string =~ s/^>>>>>>>(.*)/>>>>>>>$1\n<\/pre>\n/mg;
-      }
-    } elsif (($Now - $Section{'ts'}) < (600)) {
-      $NewCookie{'msg'} = Ts('This page was changed by somebody else %s.',
-			     CalcTimeSince($Now - $Section{'ts'}))
-	. ' ' . T('Please check whether you overwrote those changes.');
-    }
+  my $oldtime = $Page{'ts'};
+  my $myoldtime = GetParam('oldtime', ''); # maybe empty!
+  my $generalwarning = 0;
+  if ($newAuthor and $oldtime ne $myoldtime) {
+    if ($myoldtime) {
+      my $ancestor = GetTextAtTime($myoldtime);
+      if ($ancestor and $old ne $ancestor) {
+	my $new = MergeRevisions($string, $ancestor, $old);
+	if ($new) {
+	  $string = $new;
+	  if ($new =~ /^<<<<<<</m and $new =~ /^>>>>>>>/m) {
+	    $NewCookie{'msg'} = Ts('This page was changed by somebody else %s.',
+				   CalcTimeSince($Now - $Section{'ts'}))
+	      . ' ' . T('The changes conflict.  Please check the page again.');
+	    $string =~ s/^<<<<<<</\n\n<pre><<<<<<</mg;
+	    $string =~ s/^>>>>>>>(.*)/>>>>>>>$1\n<\/pre>\n/mg;
+	  } # else no conflict
+	} else { $generalwarning = 1; } # else merge revision didn't work
+      } # else nobody changed the page in the mean time (same text)
+    } else { $generalwarning = 1; } # no way to be sure since myoldtime is missing
+  } # same author or nobody changed the page in the mean time (same timestamp)
+  if ($generalwarning and ($Now - $Section{'ts'}) < 600) {
+    $NewCookie{'msg'} = Ts('This page was changed by somebody else %s.',
+			   CalcTimeSince($Now - $Section{'ts'}))
+      . ' ' . T('Please check whether you overwrote those changes.');
   }
   Save($id, $string, $summary, (GetParam('recent_edit', '') eq 'on'), $filename);
   ReleaseLock();
