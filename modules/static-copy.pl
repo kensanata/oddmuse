@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.13 2004/12/26 01:39:00 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.14 2004/12/29 00:41:21 as Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -126,12 +126,13 @@ sub StaticUrlDecode {
 sub StaticWriteFile {
   my $id = shift;
   my $raw = GetParam('raw', 0);
+  my $html = GetParam('html', 1);
   my $filename = StaticFileName($id);
   OpenPage($id);
   open(F,"> $StaticDir/$filename") or ReportError(Ts('Cannot write %s', $filename));
   if ($Page{text} =~ /^#FILE ([^ \n]+)\n(.*)/s) {
     StaticFile($id, $1, $2);
-  } else {
+  } elsif ($html) {
     StaticHtml($id);
   }
   close(F);
