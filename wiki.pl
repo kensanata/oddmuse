@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 # OddMuse (see $WikiDescription below)
-# Copyright (C) 2001, 2002, 2003, 2004  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2001, 2002, 2003, 2004	Alex Schroeder <alex@emacswiki.org>
 # ... including lots of patches from the UseModWiki site
 # Copyright (C) 2001, 2002  various authors
 # ... which was based on UseModWiki version 0.92 (April 21, 2001)
@@ -21,7 +21,7 @@
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
@@ -69,7 +69,7 @@ $Monolithic $ReplaceForm %PermanentAnchors %PagePermanentAnchors
 $CollectingJournal $WikiDescription $PrintedHeader %Locks $Fragment
 @Blocks @Flags %NearSite %NearSource %NearLinksUsed $NearSiteInit
 $NearDir $NearMap $SisterSiteLogoUrl %NearSearch @KnownLocks
-$PermanentAnchorsInit $ModulesDescription);
+$PermanentAnchorsInit $ModulesDescription %Action);
 
 # == Configuration ==
 
@@ -80,14 +80,14 @@ $UseConfig   = 1 unless defined $UseConfig; # 1 = load config file in the data d
 $DataDir     = $ENV{WikiDataDir} if $UseConfig and not $DataDir; # Main wiki directory
 $DataDir   = '/tmp/oddmuse' unless $DataDir;
 $ConfigPage  = '' unless $ConfigPage; # config page
-$RunCGI      = 1  unless defined $RunCGI; # 1 = Run script as CGI instead of being a library
+$RunCGI	     = 1  unless defined $RunCGI; # 1 = Run script as CGI instead of being a library
 $UsePathInfo = 1;   # 1 = allow page views using wiki.pl/PageName
 $UseCache    = 2;   # 0 = no; 1 = partial HTML cache; 2 = HTTP/1.1 caching
 
 # Basics
-$SiteName    = 'Wiki';     # Name of site (used for titles)
+$SiteName    = 'Wiki';	   # Name of site (used for titles)
 $HomePage    = 'HomePage'; # Home page
-$CookieName  = 'Wiki';     # Name for this wiki (for multi-wiki sites)
+$CookieName  = 'Wiki';	   # Name for this wiki (for multi-wiki sites)
 
 # Fix if defaults do not work
 $SiteBase    = '';  # Full URL for <BASE> header
@@ -99,8 +99,8 @@ $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
 $StyleSheetPage = ''; # Page for CSS sheet
 $LogoUrl     = '';  # URL for site logo ('' for no logo)
 $NotFoundPg  = '';  # Page for not-found links ('' for blank pg)
-$NewText     = "Describe the new page here.\n";  # New page text
-$NewComment  = "Add your comment here.\n";       # New comment text
+$NewText     = "Describe the new page here.\n";	 # New page text
+$NewComment  = "Add your comment here.\n";	 # New comment text
 
 # HardSecurity
 $EditAllowed = 1;   # 0 = no, 1 = yes, 2 = comments only
@@ -117,7 +117,7 @@ $BracketWiki = 0;   # 1 = [WikiLink desc] uses a desc for the local link
 $HtmlLinks   = 0;   # 1 = <a href="foo">desc</a> is a link
 $NetworkFile = 1;   # 1 = file: is a valid protocol for URLs
 $AllNetworkFiles = 0; # 1 = file:///foo is allowed -- the default allows only file://foo
-$PermanentAnchors = 1;   # 1 = [::some text] defines permanent anchors (page aliases)
+$PermanentAnchors = 1;	 # 1 = [::some text] defines permanent anchors (page aliases)
 $InterMap    = 'InterMap'; # name of the intermap page
 $NearMap     = 'NearMap';  # name of the nearmap page
 
@@ -127,23 +127,23 @@ $RawHtml     = 0;   # 1 = allow <HTML> environment for raw HTML inclusion
 
 # Diff
 $ENV{PATH}   = '/usr/bin/'; # Path used to find 'diff'
-$UseDiff     = 1;           # 1 = use diff
+$UseDiff     = 1;	    # 1 = use diff
 
 # Visitors and SurgeProtection
-$SurgeProtection      = 1;      # 1 = protect against leeches
-$Visitors             = 1;      # 1 = maintain list of recent visitors
-$VisitorTime          = 7200;   # Timespan to remember visitors in seconds
-$SurgeProtectionTime  = 20;     # Size of the protected window in seconds
-$SurgeProtectionViews = 10;     # How many page views to allow in this window
-$RefererTracking      = 0;      # Keep track of referrals to your pages
-$RefererTimeLimit     = 86400;  # How long referrals shall be remembered in seconds
-$RefererLimit         = 15;     # How many different referer shall be remembered
+$SurgeProtection      = 1;	# 1 = protect against leeches
+$Visitors	      = 1;	# 1 = maintain list of recent visitors
+$VisitorTime	      = 7200;	# Timespan to remember visitors in seconds
+$SurgeProtectionTime  = 20;	# Size of the protected window in seconds
+$SurgeProtectionViews = 10;	# How many page views to allow in this window
+$RefererTracking      = 0;	# Keep track of referrals to your pages
+$RefererTimeLimit     = 86400;	# How long referrals shall be remembered in seconds
+$RefererLimit	      = 15;	# How many different referer shall be remembered
 $RefererFilter = 'ReferrerFilter'; # name of the filter pg
 
 # RecentChanges and KeptPages
-$DeletedPage = 'DeletedPage';   # Pages starting with this can be deleted
-$RCName      = 'RecentChanges'; # Name of changes page
-@RcDays      = qw(1 3 7 30 90); # Days for links on RecentChanges
+$DeletedPage = 'DeletedPage';	# Pages starting with this can be deleted
+$RCName	     = 'RecentChanges'; # Name of changes page
+@RcDays	     = qw(1 3 7 30 90); # Days for links on RecentChanges
 $RcDefault   = 30;  # Default number of RecentChanges days
 $KeepDays    = 14;  # Days to keep old revisions
 $KeepMajor   = 1;   # 1 = keep at least one major rev when expiring pages
@@ -156,25 +156,25 @@ $PageCluster = '';  # name of cluster page, eg. 'Cluster' to enable
 # RSS and other Weblog Technology
 $InterWikiMoniker = ''; # InterWiki prefix for this wiki for RSS
 $SiteDescription  = ''; # RSS Description of this wiki
-$RssImageUrl      = ''; # URL to image to associate with your RSS feed
-$RssPublisher     = ''; # Name of RSS publisher
-$RssContributor   = ''; # List or description of the contributors
-$RssRights        = ''; # Copyright notice for RSS
+$RssImageUrl	  = ''; # URL to image to associate with your RSS feed
+$RssPublisher	  = ''; # Name of RSS publisher
+$RssContributor	  = ''; # List or description of the contributors
+$RssRights	  = ''; # Copyright notice for RSS
 
 # File uploads
-$UploadAllowed    = 0;  # 1 = yes, 0 = administrators only
-@UploadTypes      = ('image/jpeg', 'image/png'); # MIME types allowed
+$UploadAllowed	  = 0;	# 1 = yes, 0 = administrators only
+@UploadTypes	  = ('image/jpeg', 'image/png'); # MIME types allowed
 
 # Header and Footer, Notes, GotoBar
-$EmbedWiki   = 0;       # 1 = no headers/footers
-$FooterNote  = '';      # HTML for bottom of every page
-$EditNote    = '';      # HTML notice above buttons on edit page
-$TopLinkBar  = 1;       # 1 = add a goto bar at the top of the page
+$EmbedWiki   = 0;	# 1 = no headers/footers
+$FooterNote  = '';	# HTML for bottom of every page
+$EditNote    = '';	# HTML notice above buttons on edit page
+$TopLinkBar  = 1;	# 1 = add a goto bar at the top of the page
 @UserGotoBarPages = (); # List of pagenames
-$UserGotoBar = '';      # HTML added to end of goto bar
-$ValidatorLink = 0;     # 1 = Link to the W3C HTML validator service
-$CommentsPrefix = '';   # prefix for comment pages, eg. 'Comments_on_' to enable
-$HtmlHeaders = '';      # Additional stuff to put in the HTML <head> section
+$UserGotoBar = '';	# HTML added to end of goto bar
+$ValidatorLink = 0;	# 1 = Link to the W3C HTML validator service
+$CommentsPrefix = '';	# prefix for comment pages, eg. 'Comments_on_' to enable
+$HtmlHeaders = '';	# Additional stuff to put in the HTML <head> section
 
 # Display short comments below the GotoBar for special days
 # Example: %SpecialDays = ('1-1' => 'New Year', '1-2' => 'Next Day');
@@ -189,30 +189,41 @@ $HtmlHeaders = '';      # Additional stuff to put in the HTML <head> section
 %Languages = ();
 
 @LockOnCreation = ($BannedHosts, $InterMap, $RefererFilter, $StyleSheetPage,
-		   $ConfigPage, $NearMap, );              # pages to lock
+		   $ConfigPage, $NearMap, );		  # pages to lock
 @KnownLocks = qw(main diff index merge visitors refer_*); # locks to remove
 
-%CookieParameters = ('username'=>'', 'pwd'=>'', 'theme'=>'', 'css'=>'', 'msg'=>'',
-		     'lang'=>'', 'toplinkbar'=>$TopLinkBar, 'embed'=>$EmbedWiki, );
-%InvisibleCookieParameters = ('msg' => 1, );
+%CookieParameters = (username=>'', pwd=>'', theme=>'', css=>'', msg=>'',
+		     lang=>'', toplinkbar=>$TopLinkBar, embed=>$EmbedWiki, );
+%InvisibleCookieParameters = (msg => 1, );
 
-$IndentLimit = 20;                  # Maximum depth of nested lists
-$LanguageLimit = 3;                 # Number of matches req. for each language
-$PageDir     = "$DataDir/page";     # Stores page data
-$KeepDir     = "$DataDir/keep";     # Stores kept (old) page data
+$IndentLimit = 20;		    # Maximum depth of nested lists
+$LanguageLimit = 3;		    # Number of matches req. for each language
+$PageDir     = "$DataDir/page";	    # Stores page data
+$KeepDir     = "$DataDir/keep";	    # Stores kept (old) page data
 $RefererDir  = "$DataDir/referer";  # Stores referer data
-$TempDir     = "$DataDir/temp";     # Temporary files and locks
-$LockDir     = "$TempDir/lock";     # DB is locked if this exists
+$TempDir     = "$DataDir/temp";	    # Temporary files and locks
+$LockDir     = "$TempDir/lock";	    # DB is locked if this exists
 $NoEditFile  = "$DataDir/noedit";   # Indicates that the site is read-only
-$RcFile      = "$DataDir/rc.log";   # New RecentChanges logfile
+$RcFile	     = "$DataDir/rc.log";   # New RecentChanges logfile
 $RcOldFile   = "$DataDir/oldrc.log"; # Old RecentChanges logfile
 $IndexFile   = "$DataDir/pageidx";  # List of all pages
 $VisitorFile = "$DataDir/visitors.log"; # List of recent visitors
 $PermanentAnchorsFile = "$DataDir/permanentanchors"; # Store permanent anchors
 $ConfigFile  = "$DataDir/config" unless $ConfigFile; # Config file with Perl code to execute
 $ModuleDir   = "$DataDir/modules";  # Directory for extension files (ending in .pm or .pl)
-$NearDir     = "$DataDir/near";     # For page indexes and .png files of other sites
+$NearDir     = "$DataDir/near";	    # For page indexes and .png files of other sites
 $SisterSiteLogoUrl = 'file:///tmp/oddmuse/%s.png'; # URL format string for logos
+
+%Action = ( rc => \&BrowseRc,		    rollback => \&DoRollback,
+	    browse => \&BrowseResolvedPage, maintain => \&DoMaintain,
+	    random => \&DoRandom,	    pagelock => \&DoPageLock,
+	    history => \&DoHistory,	    editlock => \&DoEditLock,
+	    edit => \&DoEdit,		    version => \&DoShowVersion,
+	    download => \&DoDownload,	    rss => \&DoRss,
+	    unlock => \&DoUnlock,	    password => \&DoPassword,
+	    index => \&DoIndex,		    visitors => \&DoShowVisitors,
+	    links => \&DoLinks,		    refer => \&DoPrintAllReferers,
+	    all => \&DoPrintAllPages, );
 
 # The 'main' program, called at the end of this script file (aka. as handler)
 sub DoWikiRequest {
@@ -253,7 +264,7 @@ sub Init {
   }
   eval { local $SIG{__DIE__}; binmode(STDOUT, ":raw"); };
   InitVariables();    # Ater config file, to post-process some variables
-  InitCookie();       # After request, because $q is used
+  InitCookie();	      # After request, because $q is used
 }
 
 sub InitRequest {
@@ -266,7 +277,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   $ReplaceForm = 0;    # Only admins may search and replace
   $ScriptName = $q->url() unless defined $ScriptName; # URL used in links
   $FullUrl = $ScriptName unless $FullUrl; # URL used in forms
-  $Now = time;         # Reset in case script is persistent
+  $Now = time;	       # Reset in case script is persistent
   if (not $LastUpdate) { # mod_perl: stat should be unnecessary since LastUpdate persists.
     my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size, $atime,$mtime,$ctime,$blksize,$blocks)
       = stat($IndexFile);
@@ -298,7 +309,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.325 2004/02/22 16:03:41 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.326 2004/02/23 21:56:31 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -359,7 +370,7 @@ sub InitLinkPatterns {
   $InterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x80-\xff_=!?#$@~`%&*+\\/:;.,]+[-a-zA-Z0-9\x80-\xff_=#$@~`%&*+\\/])$QDelim";
   $FreeLinkPattern = "([-,.()' _0-9A-Za-z\x80-\xff]+)$QDelim";
   $UrlProtocols = 'http|https|ftp|afs|news|nntp|mid|cid|mailto|wais|'
-                  . 'prospero|telnet|gopher';
+		  . 'prospero|telnet|gopher';
   $UrlProtocols .= '|file'  if $NetworkFile;
   my $UrlChars = '[-a-zA-Z0-9/@=+$_~*.,;:?!\'"()&#%]'; # see RFC 2396
   my $EndChars = '[-a-zA-Z0-9/@=+$_~*]'; # no punctuation at the end of the url.
@@ -395,7 +406,7 @@ sub ApplyRules {
   return unless $text;
   local $Fragment = ''; # the clean HTML fragment not yet on @Blocks
   local @Blocks;  # the list of cached HTML blocks
-  local @Flags;   # a list for each block, 1 = dirty, 0 = clean
+  local @Flags;	  # a list for each block, 1 = dirty, 0 = clean
   local @HtmlStack = ();
   my $htmlre = join('|',(@HtmlTags));
   local $_ = $text;
@@ -486,7 +497,7 @@ sub ApplyRules {
     } elsif (m/\G'''/cg) { # traditional wiki syntax with '''strong'''
       Clean((defined $HtmlStack[0] && $HtmlStack[0] eq 'strong')
 	    ? CloseHtmlEnvironment() : AddHtmlEnvironment('strong'));
-    } elsif (m/\G''/cg) {     #  traditional wiki syntax with ''emph''
+    } elsif (m/\G''/cg) {     #	 traditional wiki syntax with ''emph''
       Clean((defined $HtmlStack[0] && $HtmlStack[0] eq 'em')
 	    ? CloseHtmlEnvironment() : AddHtmlEnvironment('em'));
     } elsif (m/\G\&lt;($htmlre)\&gt;/cgi) { Clean(AddHtmlEnvironment($1));
@@ -604,7 +615,7 @@ sub OpenHtmlEnvironment { # close the previous one and open a new one instead
     $text .=  '</' . shift(@HtmlStack) . '>';
   }
   @HtmlStack = @stack;
-  $depth = $IndentLimit  if ($depth > $IndentLimit); # requested depth 0 makes no sense
+  $depth = $IndentLimit	 if ($depth > $IndentLimit); # requested depth 0 makes no sense
   for (my $i = $found; $i < $depth; $i++) {
     unshift(@HtmlStack, $code);
     if ($class) {
@@ -727,9 +738,9 @@ sub RSS {
   my @uris = @_;
   my %lines;
   eval { require XML::RSS;  } or return $q->div({-class=>'rss'},
-         $q->strong(T('XML::RSS is not available on this system.')));
+	 $q->strong(T('XML::RSS is not available on this system.')));
   eval { require LWP::UserAgent; } or return $q->div({-class=>'rss'},
-         $q->strong(T('LWP::UserAgent is not available on this system.')));
+	 $q->strong(T('LWP::UserAgent is not available on this system.')));
   my $tDiff = T('diff');
   my $tHistory = T('history');
   my $wikins = 'http://purl.org/rss/1.0/modules/wiki/';
@@ -831,7 +842,7 @@ sub GetInterSiteUrl {
 sub GetInterLink {
   my ($id, $text, $bracket) = @_;
   my ($site, $page) = split(/:/, $id, 2);
-  $page =~ s/&amp;/&/g;  # Unquote common URL HTML
+  $page =~ s/&amp;/&/g;	 # Unquote common URL HTML
   my $url = GetInterSiteUrl($site, $page);
   if ($text && $bracket && !$url) {
     return "[$id $text]";
@@ -986,8 +997,8 @@ sub ISBN {
 		  T('alternate'));
   $third  = $q->a({-href => Ts('http://www.pricescan.com/books/BookDetail.asp?isbn=%s', $num)},
 		  T('search'));
-  $html  = "$first ($second, $third)";
-  $html .= ' '  if ($rawnum =~ / $/);  # Add space if old ISBN had space.
+  $html	 = "$first ($second, $third)";
+  $html .= ' '	if ($rawnum =~ / $/);  # Add space if old ISBN had space.
   return $html;
 }
 
@@ -1048,54 +1059,14 @@ sub DoBrowseRequest {
   return BrowseResolvedPage($id) if $id and not $action; # script?PageName or script/PageName
   $id = GetParam('id', $id);
   my $search = GetParam('search', '');
-  if ($action eq 'browse') {
-    BrowseResolvedPage($id);
-  } elsif ($action eq 'rc') {
-    if (GetParam('raw', 0)) {
-      DoRcText();
-    } else {
-      BrowsePage($RCName);
-    }
-  } elsif ($action eq 'random') {
-    DoRandom();
-  } elsif ($action eq 'history') {
-    DoHistory($id)   if ValidIdOrDie($id);
-  } elsif ($action eq 'edit') {
-    DoEdit($id)  if ValidIdOrDie($id);
-  } elsif ($action eq 'download') {
-    DoDownload($id)  if ValidIdOrDie($id);
-  } elsif ($action eq 'unlock') {
-    DoUnlock();
-  } elsif ($action eq 'index') {
-    DoIndex();
-  } elsif ($action eq 'links') {
-    DoLinks();
-  } elsif ($action eq 'all') {
-    DoPrintAllPages();
-  } elsif ($action eq 'maintain') {
-    DoMaintain();
-  } elsif ($action eq 'pagelock') {
-    DoPageLock();
-  } elsif ($action eq 'editlock') {
-    DoEditLock();
-  } elsif ($action eq 'version') {
-    DoShowVersion();
-  } elsif ($action eq 'rss') {
-    DoRss();
-  } elsif ($action eq 'password') {
-    DoPassword();
-  } elsif ($action eq 'visitors') {
-    DoShowVisitors();
-  } elsif ($action eq 'refer') {
-    DoPrintAllReferers();
-  } elsif ($action eq 'rollback') {
-    DoRollback();
+  if ($Action{$action}) {
+    &{$Action{$action}}($id);
+  } elsif ($action and defined &MyActions) {
+    eval { local $SIG{__DIE__}; MyActions(); };
   } elsif (($search ne '') || (GetParam('dosearch', '') ne '')) {
     DoSearch($search);
   } elsif (GetParam('title', '')) {
     DoPost(GetParam('title', ''));
-  } elsif ($action and defined &MyActions) {
-    eval { local $SIG{__DIE__}; MyActions(); };
   } else {
     if ($action) {
       ReportError(Ts('Invalid action parameter %s', $action));
@@ -1115,7 +1086,7 @@ sub ValidId {
     $id =~ s/ /_/g;
     return Ts('Invalid Page %s', $id)  if (!($id =~ m|^$FreeLinkPattern$|));
     return Ts('Invalid Page %s (must not end with .db)', $id)  if ($id =~ m|\.db$|);
-    return Ts('Invalid Page %s (must not end with .lck)', $id)  if ($id =~ m|\.lck$|);
+    return Ts('Invalid Page %s (must not end with .lck)', $id)	if ($id =~ m|\.lck$|);
   } else {
     return Ts('Page name may not contain space characters: %s', $id) if ($id =~ m| |);
     return Ts('Invalid Page %s', $id)  if (!($id =~ /^$LinkPattern$/));
@@ -1235,7 +1206,7 @@ sub BrowsePage {
 
 sub ReBrowsePage {
   my ($id, $oldId) = @_;
-  if ($oldId ne '') {   # Target of #REDIRECT (loop breaking)
+  if ($oldId ne '') {	# Target of #REDIRECT (loop breaking)
     print GetRedirectPage("action=browse;oldid=$oldId;id=$id", $id);
   } else {
     print GetRedirectPage($id, $id);
@@ -1269,6 +1240,14 @@ sub GetRedirectPage {
 }
 
 # == Recent changes and RSS
+
+sub BrowseRc {
+  if (GetParam('raw', 0)) {
+    DoRcText();
+  } else {
+    BrowsePage($RCName);
+  }
+}
 
 sub DoRcText {
   print GetHttpHeader('text/plain');
@@ -1311,7 +1290,7 @@ sub DoRc {
 				  . ':') . ' ' . $RcOldFile)
 	  . $q->p(T('Error was') . ':')
 	  . $q->pre($!);
-        return;
+	return;
       }
     }
   }
@@ -1415,9 +1394,9 @@ sub GetRc {
     foreach my $rcline (@outrc) {
       my ($ts, $pagename, $minor) = split(/$FS/, $rcline); # skip remaining fields
       if ($showedit == 0) {	# 0 = No edits
-	push(@temprc, $rcline)  if (!$minor);
+	push(@temprc, $rcline)	if (!$minor);
       } else {			# 2 = Only edits
-	push(@temprc, $rcline)  if ($minor);
+	push(@temprc, $rcline)	if ($minor);
       }
       $changetime{$pagename} = $ts;
     }
@@ -1494,7 +1473,7 @@ sub GetRcHtml {
 	my($pagename, $timestamp, $host, $userName, $summary, $minor, $revision, $languages, $cluster) = @_;
 	$host = QuoteHtml($host);
 	my $author = GetAuthorLink($host, $userName);
-	my $sum = $q->strong('--', QuoteHtml($summary))  if $summary;
+	my $sum = $q->strong('--', QuoteHtml($summary))	 if $summary;
 	my $edit = $q->em($tEdit)  if $minor;
 	my $lang = '[' . join(', ', @{$languages}) . ']'  if @{$languages};
 	my ($pagelink, $history, $diff, $rollback);
@@ -1574,25 +1553,25 @@ sub GetRcRss {
   my $rss = new XML::RSS (version => '1.0', encoding => $HttpCharset);
   $rss->add_module(
     prefix => 'wiki',
-    uri    => 'http://purl.org/rss/1.0/modules/wiki/'
+    uri	   => 'http://purl.org/rss/1.0/modules/wiki/'
   );
   $rss->channel(
-    title         => QuoteHtml($SiteName),
-    link          => $quotedFullUrl . QuoteHtml("?$RCName"),
-    description   => QuoteHtml($SiteDescription),
+    title	  => QuoteHtml($SiteName),
+    link	  => $quotedFullUrl . QuoteHtml("?$RCName"),
+    description	  => QuoteHtml($SiteDescription),
     dc => {
-      publisher   => $RssPublisher,
+      publisher	  => $RssPublisher,
       contributor => $RssContributor,
-      date        => $date,
-      rights      => $RssRights,
+      date	  => $date,
+      rights	  => $RssRights,
     },
     wiki => {
-      interwiki   => $InterWikiMoniker,
+      interwiki	  => $InterWikiMoniker,
     },
   );
   $rss->image(
     title  => QuoteHtml($SiteName),
-    url    => $RssImageUrl,
+    url	   => $RssImageUrl,
     link   => $quotedFullUrl,
   );
   # Now call GetRc with some blocks of code as parameters:
@@ -1615,11 +1594,11 @@ sub GetRcRss {
 		   version     => $revision,
 		   history     => $historyPrefix . $pagename, );
       $wiki{diff} = $diffPrefix . $pagename if $UseDiff and GetParam('diffrclink', 1);
-      $rss->add_item( title        => QuoteHtml($name),
-		      link         => $quotedFullUrl . '?'
+      $rss->add_item( title	   => QuoteHtml($name),
+		      link	   => $quotedFullUrl . '?'
 		      . GetPageParameters('browse', $pagename, $revision, $cluster),
 		      description  => QuoteHtml($summary),
-		      dc => { date        => $date,
+		      dc => { date	  => $date,
 			      contributor => $author, },
 		      wiki => \%wiki, );
     },
@@ -1650,6 +1629,7 @@ sub DoRandom {
 
 sub DoHistory {
   my $id = shift;
+  ValidIdOrDie($id);
   my ($html, $row);
   print GetHeader('',QuoteHtml(Ts('History of %s', $id)), '');
   OpenPage($id);
@@ -1772,7 +1752,7 @@ sub GetAuthorLink {
   my ($html, $title, $userNameShow);
   $userNameShow = $userName;
   if ($FreeLinks) {
-    $userName     =~ s/ /_/g;
+    $userName	  =~ s/ /_/g;
     $userNameShow =~ s/_/ /g;
   }
   if (ValidId($userName) ne '') {  # Invalid under current rules
@@ -1811,7 +1791,7 @@ sub GetHeader {
   my $altText = T('[Home]');
   $result = GetHttpHeader('text/html', $nocache ? $Now : 0);
   if ($FreeLinks) {
-    $title =~ s/_/ /g;   # Display as spaces
+    $title =~ s/_/ /g;	 # Display as spaces
   }
   if ($oldId ne '') {
     $Message .= $q->p('(' . Ts('redirected from %s', GetEditLink($oldId, $oldId)) . ')');
@@ -2142,7 +2122,7 @@ sub GetDiff {
   WriteStringToFile($oldName, $old);
   WriteStringToFile($newName, $new);
   $diff_out = `diff $oldName $newName`;
-  $diff_out =~ s/\\ No newline.*\n//g;   # Get rid of common complaint.
+  $diff_out =~ s/\\ No newline.*\n//g;	 # Get rid of common complaint.
   $diff_out = ImproveDiff($diff_out);
   ReleaseLockDir('diff');
   # No need to unlink temp files--next diff will just overwrite.
@@ -2423,7 +2403,7 @@ sub AppendStringToFile {
 
 sub CreateDir {
   my ($newdir) = @_;
-  mkdir($newdir, 0775)  if (!(-d $newdir));
+  mkdir($newdir, 0775)	if (!(-d $newdir));
 }
 
 sub CreatePageDir {
@@ -2521,13 +2501,13 @@ sub CalcTime {
 
 sub CalcTimeSince {
   my $total = shift;
-  if    ($total >= 7200) { return Ts('%s hours ago',int($total/3600)) }
+  if	($total >= 7200) { return Ts('%s hours ago',int($total/3600)) }
   elsif ($total >= 3600) { return T('1 hour ago'); }
-  elsif ($total >= 120)  { return Ts('%s minutes ago',int($total/60)) }
-  elsif ($total >= 60)   { return T('1 minute ago'); }
-  elsif ($total >= 2)    { return Ts('%s seconds ago',int($total)) }
-  elsif ($total == 1)    { return T('1 second ago'); }
-  else                   { return T('just now'); }
+  elsif ($total >= 120)	 { return Ts('%s minutes ago',int($total/60)) }
+  elsif ($total >= 60)	 { return T('1 minute ago'); }
+  elsif ($total >= 2)	 { return Ts('%s seconds ago',int($total)) }
+  elsif ($total == 1)	 { return T('1 second ago'); }
+  else			 { return T('just now'); }
 }
 
 sub TimeToText {
@@ -2547,7 +2527,7 @@ sub GetRemoteHost {
   if ($UseLookup && ($rhost eq '')) {
     # Catch errors (including bad input) without aborting the script
     eval 'use Socket; $iaddr = inet_aton($ENV{REMOTE_ADDR});'
-         . '$rhost = gethostbyaddr($iaddr, AF_INET)';
+	 . '$rhost = gethostbyaddr($iaddr, AF_INET)';
   }
   if ($rhost eq '') {
     $rhost = $ENV{REMOTE_ADDR};
@@ -2570,6 +2550,7 @@ sub FreeToNormal {
 
 sub DoEdit {
   my ($id, $newText, $preview) = @_;
+  ValidIdOrDie($id);
   my $upload = GetParam('upload', undef);
   if (!UserCanEdit($id, 1)) {
     print GetHeader('', T('Editing Denied'), '');
@@ -2639,7 +2620,7 @@ sub DoEdit {
 			      -default=>$userName, -override=>1,
 			      -size=>20, -maxlength=>50));
   print $q->p($q->submit(-name=>'Save', -value=>T('Save'))
-	      . ($upload ? '' :  ' ' . $q->submit(-name=>'Preview', -value=>T('Preview'))));
+	      . ($upload ? '' :	 ' ' . $q->submit(-name=>'Preview', -value=>T('Preview'))));
   if ($upload) {
     print $q->p(ScriptLink('action=edit;upload=0;id=' . $id, T('Replace this file with text.')));
   } elsif ($UploadAllowed or UserIsAdmin()) {
@@ -2666,7 +2647,7 @@ sub GetUpload {
 
 sub DoDownload {
   my $id = shift;
-  OpenPage($id);
+  OpenPage($id) if ValidIdOrDie($id);
   if ($q->http('HTTP_IF_MODIFIED_SINCE') eq gmtime($Page{revision})
       and GetParam('cache', $UseCache) >= 2) {
     print $q->header(-status=>'304 NOT MODIFIED');
@@ -2765,9 +2746,9 @@ sub UserIsAdmin {
 }
 
 sub UserIsEditor {
-  return 1  if (UserIsAdmin());         # Admin includes editor
+  return 1  if (UserIsAdmin());		# Admin includes editor
   return 0  if ($EditPass eq '');
-  my $pwd = GetParam('pwd', '');        # Used for both
+  my $pwd = GetParam('pwd', '');	# Used for both
   return 0  if ($pwd eq '');
   foreach (split(/\s+/, $EditPass)) {
     next  if ($_ eq '');
@@ -3054,7 +3035,7 @@ sub SearchHighlight {
 
 sub SearchExtract {
   my ($data, $string) = @_;
-  my ($snippetlen, $maxsnippets) = (100, 4) ; #  these seem nice.
+  my ($snippetlen, $maxsnippets) = (100, 4) ; #	 these seem nice.
   # show a snippet from the beginning of the document
   my $j = index($data, ' ', $snippetlen); # end on word boundary
   my $t = substr($data, 0, $j);
@@ -3246,7 +3227,7 @@ sub DoPost {
     if (not grep(/^$type$/, @UploadTypes)) {
       ReportError (Ts('Files of type %s are not allowed.', $type));
     }
-    local $/ = undef;   # Read complete files
+    local $/ = undef;	# Read complete files
     eval { $_ = MIME::Base64::encode(<$file>) };
     $string = '#FILE ' . $type . "\n" . $_;
   } else {
@@ -3356,7 +3337,7 @@ sub Save { # call within lock, with opened page
   SavePage();
   WriteRcLog($id, $summary, $minor, $revision, $user, $host, $languages, GetCluster($new));
   if ($revision == 1) {
-    unlink($IndexFile);  # Regenerate index on next request
+    unlink($IndexFile);	 # Regenerate index on next request
     $IndexInit = 0; # mod_perl: this variable may persist accross sessions
     if (grep(/^$id$/, @LockOnCreation)) {
       WriteStringToFile(GetLockedPageFile($id), 'editing locked.');
@@ -3415,7 +3396,7 @@ sub WriteRcLog {
 
 sub UpdateDiffs {
   my ($id, $old, $new, $minor) = @_;
-  my $editDiff  = GetDiff($old, $new);
+  my $editDiff	= GetDiff($old, $new);
   $Page{'diff-minor'} = $editDiff;
   if ($minor and $Page{oldmajor}) {
     $Page{'diff-major'} = GetKeptDiff($new, $Page{oldmajor});
@@ -3844,7 +3825,7 @@ sub DeletePermanentAnchors {
   ReleaseLockDir('permanentanchors');
 }
 
-DoWikiRequest()  if $RunCGI;   # Do everything.
+DoWikiRequest()	 if $RunCGI;   # Do everything.
 1; # In case we are loaded from elsewhere
 
 # == End of the OddMuse script. ==
