@@ -87,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.107 2003/06/16 23:27:58 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.108 2003/06/18 19:50:48 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -819,29 +819,26 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
     $text = $id unless $text;
     $text =~ s/_/ /g if $free;
     $text = "[$text]" if $bracket;
-    return ScriptLink($id, $text);
+    return ScriptLink(UrlEncode($id), $text);
   } else {
     # $free and $bracket usually exclude each other
     # $text and not $bracket exclude each other
+    my $link = ScriptLink('action=edit&id=' . UrlEncode($id), '?');
     if ($bracket && $text) {
-      $id = $id . ScriptLink("action=edit&id=$id", '?');
-      return "[$id $text]";
+      return "[$id$link $text]";
     } elsif ($bracket) {
-      $id = $id . ScriptLink("action=edit&id=$id", '?');
-      return "[$id]";
+      return "[$id$link]";
     } elsif ($free && $text) {
-      my $lnk = ScriptLink("action=edit&id=$id", '?');
       $id =~ s/_/ /g;
       $text =~ s/_/ /g;
-      return "[$id$lnk $text]";
+      return "[$id$link $text]";
     } elsif ($free) {
       $text = $id;
       $text = "[$text]" if $text =~ /_/;
       $text =~ s/_/ /g;
-      $text = $text . ScriptLink("action=edit&id=$id", '?');
-      return $text;
+      return $text . $link;
     } else { # plain, no text
-      return $id . ScriptLink("action=edit&id=$id", '?');
+      return $id . $link;
     }
   }
 }
@@ -853,7 +850,7 @@ sub GetPageLink { # shortcut
     $id = FreeToNormal($id);
     $name =~ s/_/ /g;
   }
-  return ScriptLink($id, $name);
+  return ScriptLink(UrlEncode($id), $name);
 }
 
 sub GetEditLink { # shortcut
@@ -862,7 +859,7 @@ sub GetEditLink { # shortcut
     $id = FreeToNormal($id);
     $name =~ s/_/ /g;
   }
-  return ScriptLink("action=edit&id=$id", $name);
+  return ScriptLink('action=edit&id=' . UrlEncode($id), $name);
 }
 
 sub ScriptLink {
@@ -1212,7 +1209,7 @@ sub DoRc {
   $lastTs++  if (($Now - $lastTs) > 5);  # Skip last unless very recent
   $idOnly = GetParam('rcidonly', '');
   if ($idOnly && $showHTML) {
-    print '<b>(' . Ts('for %s only', ScriptLink($idOnly, $idOnly))
+    print '<b>(' . Ts('for %s only', ScriptLink(UrlEncode($idOnly), $idOnly))
 	  . ')</b><br>';
   }
   if( $showHTML ) {
@@ -1574,7 +1571,7 @@ sub GetHistoryLine {
 sub GetOldPageParameters {
   my ($kind, $id, $revision) = @_;
   $id = FreeToNormal($id) if $FreeLinks;
-  return "action=$kind&id=$id&revision=$revision";
+  return "action=$kind&revision=$revision&id=" . UrlEncode($id);
 }
 
 sub GetOldPageLink {
@@ -1590,13 +1587,13 @@ sub GetSearchLink {
     $name =~ s/_/ /g;  # Display with spaces
     $id =~ s/_/+/g;    # Search for url-escaped spaces
   }
-  return ScriptLink("search=$id", $name);
+  return ScriptLink('search=' . UrlEncode($id), $name);
 }
 
 sub ScriptLinkDiff {
   my ($diff, $id, $text, $rev) = @_;
   $rev = "&revision=$rev"  if ($rev ne '');
-  return ScriptLink("action=browse&diff=$diff&id=$id$rev", $text);
+  return ScriptLink("action=browse&diff=$diff$rev&id=" . UrlEncode($id), $text);
 }
 
 sub GetAuthorLink {
@@ -1628,7 +1625,7 @@ sub GetHistoryLink {
   if ($FreeLinks) {
     $id =~ s/ /_/g;
   }
-  return ScriptLink("action=history&amp;id=$id", $text);
+  return ScriptLink('action=history&amp;id=' . UrlEncode($id), $text);
 }
 
 sub GetHeader {
@@ -1799,8 +1796,10 @@ sub PrintFooter {
   # other revisions
   my $revisions;
   if ($id and $rev ne 'history' and $rev ne 'edit') {
-    if (UserCanEdit($CommentsPrefix . $id, 0) and $OpenPageName !~ /^$CommentsPrefix/) {
-      $revisions .= ScriptLink($CommentsPrefix . $OpenPageName, T("Comments on this page"));
+    if (UserCanEdit($CommentsPrefix . $id, 0)
+	and $OpenPageName !~ /^$CommentsPrefix/) {
+      $revisions .= ScriptLink($CommentsPrefix . UrlEncode($OpenPageName),
+			       T("Comments on this page"));
     }
     $revisions .= ' | ' if $revisions;
     if (UserCanEdit($id, 0)) {
@@ -3893,7 +3892,7 @@ sub PrintAllReferers {
   for my $id (@_) {
     ReadReferers($id);
     if (%Referers) {
-      print $q->p(ScriptLink($id,$id));
+      print $q->p(ScriptLink(UrlEncode($id),$id));
       print GetReferers();
     }
   }
@@ -3940,6 +3939,7 @@ sub GetPermanentAnchor {
    }
   ReleaseLockDir('permanentanchors');
   $PagePermanentAnchors{$id} = 1; # add to the list of anchors in page
+  $id = UrlEncode($id);
   return ScriptLink("action=anchor&id=$id#$id",$text,'definition',$id);
 }
 
@@ -3953,6 +3953,7 @@ sub GetPermanentAnchorLink {
   $text =~ s/_/ /g;
   ReadPermanentAnchors();
   if ( $PermanentAnchors{$id} ) {
+    $id = UrlEncode($id);
     return ScriptLink("$PermanentAnchors{$id}#$id",$text,'link');
   }
   return "[## $id]";
