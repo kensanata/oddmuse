@@ -350,7 +350,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.501 2004/12/19 15:51:39 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.502 2004/12/19 16:41:42 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -475,11 +475,12 @@ sub ApplyRules {
 	    print $q->end_div();
 	  }
 	} else {
+	  local $OpenPageName = FreeToNormal($uri);
 	  if ($type eq 'text') {
-	    print $q->pre({class=>"include $uri"},QuoteHtml(GetPageContent(FreeToNormal($uri))));
+	    print $q->pre({class=>"include $uri"},QuoteHtml(GetPageContent($OpenPageName)));
 	  } else {		# with a starting tag
 	    print $q->start_div({class=>"include $uri"});
-	    ApplyRules(QuoteHtml(GetPageContent(FreeToNormal($uri))), $locallinks, $withanchors, undef, 'p');
+	    ApplyRules(QuoteHtml(GetPageContent($OpenPageName)), $locallinks, $withanchors, undef, 'p');
 	    print $q->end_div();
 	  }
 	}
