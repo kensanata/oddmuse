@@ -216,9 +216,6 @@ sub DoBannedReading {
   ReportError(T('Reading not allowed: user, ip, or network is blocked.'));
 }
 
-use CGI;
-use CGI::Carp qw(fatalsToBrowser);
-
 sub Init {
   InitRequest();      # get $q!
   $FS  = "\x1e";      # The FS character is the RECORD SEPARATOR control char in ASCII
@@ -239,6 +236,9 @@ sub Init {
   InitVariables();    # Ater config file, to post-process some variables
   InitCookie();       # After request, because $q is used
 }
+
+use CGI;
+use CGI::Carp qw(fatalsToBrowser);
 
 sub InitRequest {
   $CGI::POST_MAX = $MaxPost;
@@ -270,7 +270,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.148 2003/09/19 22:33:29 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.149 2003/09/20 11:55:11 as Exp $');
 }
 
 sub InitCookie {
@@ -350,11 +350,12 @@ sub ApplyRules {
       if (m/\G&lt;pre&gt;\n?(.*?\n)&lt;\/pre&gt;[ \t]*\n?/cgs) { # pre must be on column 1
 	$fragment = CloseHtmlEnvironments() . $q->pre({-class=>'real'}, $1);
       } elsif (m/\G(\s*\n)*(\*+)[ \t]*/cg) {
-	$fragment = OpenHtmlEnvironment('ul',length($2)) . '<li>';
+	$fragment = OpenHtmlEnvironment('ul',length($2)) . AddHtmlEnvironment('li');
       } elsif (m/\G(\s*\n)*(\#+)[ \t]*/cg) {
-	$fragment = OpenHtmlEnvironment('ol',length($2)) . '<li>';
-      } elsif (m/\G(\s*\n)*(\:+)[ \t]*/cg) {
-	$fragment = OpenHtmlEnvironment('dl',length($2)) . '<dt><dd class="quote">'; # use blockquote instead?
+	$fragment = OpenHtmlEnvironment('ol',length($2)) . AddHtmlEnvironment('li');
+      } elsif (m/\G(\s*\n)*(\:+)[ \t]*/cg) { # blockquote instead?
+	$fragment = OpenHtmlEnvironment('dl',length($2), 'quote')
+	  . $q->dt() . AddHtmlEnvironment('dd');
       } elsif (m/\G(\s*\n)*(\=+)[ \t]*(.*?)[ \t]*(=+)[ \t]*\n?/cg) {
 	$fragment = CloseHtmlEnvironments() . WikiHeading($2, $3);
       } elsif (m/\G(\s*\n)*----+[ \t]*\n?/cg) {
@@ -363,7 +364,7 @@ sub ApplyRules {
 	$fragment = OpenHtmlEnvironment('pre',1) . $2; # always level 1
       } elsif (m/\G(\s*\n)*(\;+)[ \t]*(?=.*\:)/cg) {
 	$fragment = OpenHtmlEnvironment('dl',length($2))
-	  . AddHtmlEnvironment('dt'); # the `:' needs special treatment, later
+	  . AddHtmlEnvironment('dt'); # `:' needs special treatment, later
       } elsif (m/\G(\s*\n)*((\|\|)+)[ \t]*(?=.*\|\|[ \t]*$)/cgm) {
 	$fragment = OpenHtmlEnvironment('table',1,'user') # `||' needs special treatment, later
 	  . AddHtmlEnvironment('tr');
@@ -413,7 +414,7 @@ sub ApplyRules {
     }
     # second block -- remaining hilighting
     if ($HtmlStack[0] eq 'dt' && m/\G:/cg) {
-      $fragment = OpenHtmlEnvironment('dd');
+      $fragment = CloseHtmlEnvironment() . AddHtmlEnvironment('dd');
     } elsif ($HtmlStack[0] eq 'td' && m/\G[ \t]*((\|\|)+)[ \t]*\n((\|\|)+)[ \t]*/cgm) {
       $fragment = '</td></tr><tr>' . ((length($3) == 2) ? '<td>' : ('<td colspan="' . length($3)/2 . '">'));
     } elsif ($HtmlStack[0] eq 'td' && m/\G[ \t]*((\|\|)+)[ \t]*(?!(\n|$))/cgm) { # continued
@@ -577,32 +578,28 @@ sub CloseHtmlEnvironments { # close all
 
 sub OpenHtmlEnvironment { # close the previous one and open a new one instead
   my ($code, $depth, $class) = @_;
-  my $oldCode;
-  my $text = ''; # always return something
-  $depth = @HtmlStack unless defined($depth);
-  while (@HtmlStack > $depth) { # Close tags as needed
+  my $text = '';		# always return something
+  my @stack;
+  my $found = 0;
+  while (@HtmlStack and $found < $depth) { # determine new stack
+    my $tag = pop(@HtmlStack);
+    $found++ if $tag eq $code;
+    unshift(@stack,$tag);
+  }
+  if (@HtmlStack and $found < $depth) { # nested sublist coming up, keep list item
+    unshift(@stack, pop(@HtmlStack));
+  }
+  while (@HtmlStack) { # close remaining elements
     $text .=  '</' . shift(@HtmlStack) . '>';
   }
-  if ($depth > 0) {
-    $depth = $IndentLimit  if ($depth > $IndentLimit);
-    if (@HtmlStack) {  # Non-empty stack
-      $oldCode = shift(@HtmlStack);
-      if ($oldCode ne $code) {
-	if ($class) {
-	  $text .= "</$oldCode><$code class=\"$class\">";
-	} else {
-	  $text .= "</$oldCode><$code>";
-	}
-      }
-      unshift(@HtmlStack, $code);
-    }
-    while (@HtmlStack < $depth) {
-      unshift(@HtmlStack, $code);
-      if ($class) {
-	$text .= "<$code class=\"$class\">";
-      } else {
-	$text .= "<$code>";
-      }
+  @HtmlStack = @stack;
+  $depth = $IndentLimit  if ($depth > $IndentLimit); # requested depth 0 makes no sense
+  for (my $i = $found; $i < $depth; $i++) {
+    unshift(@HtmlStack, $code);
+    if ($class) {
+      $text .= "<$code class=\"$class\">";
+    } else {
+      $text .= "<$code>";
     }
   }
   return $text;
@@ -835,7 +832,7 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
   } else {
     # $free and $bracket usually exclude each other
     # $text and not $bracket exclude each other
-    my $link = ScriptLink('action=edit&id=' . UrlEncode($id), '?');
+    my $link = ScriptLink('action=edit&amp;id=' . UrlEncode($id), '?');
     if ($bracket && $text) {
       return "[$id$link $text]";
     } elsif ($bracket) {
@@ -871,7 +868,7 @@ sub GetEditLink { # shortcut
     $id = FreeToNormal($id);
     $name =~ s/_/ /g;
   }
-  return ScriptLink('action=edit&id=' . UrlEncode($id), $name);
+  return ScriptLink('action=edit&amp;id=' . UrlEncode($id), $name);
 }
 
 sub ScriptLink {
@@ -1233,13 +1230,13 @@ sub DoRc {
     foreach my $i (@RcDays) {
       $html .= ' | '  if $showbar;
       $showbar = 1;
-      $html .= ScriptLink("action=rc&days=$i", Ts('%s day' . (($i != 1)?'s':''), $i));
+      $html .= ScriptLink("action=rc&amp;days=$i", Ts('%s day' . (($i != 1)?'s':''), $i));
       # Note: must have two translations (for 'day' and 'days')
       # Following comment line is for translation helper script
       # Ts('%s days', '');
     }
     print $q->p($html . $q->br()
-		. ScriptLink("action=rc&from=$lastTs", T('List new changes starting from'))
+		. ScriptLink("action=rc&amp;from=$lastTs", T('List new changes starting from'))
 		. ' ' . TimeToText($lastTs));
   }
   # Later consider a binary search?
@@ -3729,21 +3726,13 @@ sub DoShowVisitors {
     my $time = @{$RecentVisitors{$name}}[0];
     my $total = $Now - $time;
     my $str;
-    if ($total >= 7200) {
-      $str = Ts('%s hours ago',int($total/3600))
-    } elsif ($total >= 3600) {
-      $str = T('1 hour ago');
-    } elsif ($total >= 120) {
-      $str = Ts('%s minutes ago',int($total/60))
-    } elsif ($total >= 60) {
-      $str = T('1 minute ago');
-    } elsif ($total >= 2) {
-      $str = Ts('%s seconds ago',int($total))
-    } elsif ($total == 1) {
-      $str = T('1 second ago');
-    } else {
-      $str = T('just now');
-    }
+    if    ($total >= 7200) { $str = Ts('%s hours ago',int($total/3600)) }
+    elsif ($total >= 3600) { $str = T('1 hour ago'); }
+    elsif ($total >= 120)  { $str = Ts('%s minutes ago',int($total/60)) }
+    elsif ($total >= 60)   { $str = T('1 minute ago'); }
+    elsif ($total >= 2)    { $str = Ts('%s seconds ago',int($total)) }
+    elsif ($total == 1)    { $str = T('1 second ago'); }
+    else                   { $str = T('just now'); }
     print '<li>';
     if (!$name or ($SurgeProtection and $name =~ /\./)) {
       print T('Anonymous');
@@ -3886,7 +3875,7 @@ sub GetPermanentAnchor {
   ReleaseLockDir('permanentanchors');
   $PagePermanentAnchors{$id} = 1; # add to the list of anchors in page
   $id = UrlEncode($id);
-  return ScriptLink("action=anchor&id=$id#$id",$text,'definition',$id);
+  return ScriptLink("action=anchor&amp;id=$id#$id",$text,'definition',$id);
 }
 
 sub GetPermanentAnchorLink {
