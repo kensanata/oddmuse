@@ -32,6 +32,8 @@
 
 package OddMuse;
 use strict;
+use CGI;
+use CGI::Carp qw(fatalsToBrowser);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
 # Configuration/constant variables:
@@ -64,7 +66,7 @@ use vars qw(%Page %Section %Text %InterSite %KeptRevisions %IndexHash
 $OpenPageName @KeptList @IndexList $IndexInit $Message $q $Now
 %RecentVisitors @HtmlStack %Referers $Monolithic $ReplaceForm
 %PermanentAnchors %PagePermanentAnchors $CollectingJournal
-$WikiDescription $PrintedHeader);
+$WikiDescription $PrintedHeader %Locks);
 
 # == Configuration ==
 
@@ -206,18 +208,10 @@ sub DoWikiRequest {
   Init();
   DoSurgeProtection();
   if (not $BannedCanRead and UserIsBanned() and not UserIsAdmin()) {
-    DoBannedReading();
-    return;
+    ReportError(T('Reading not allowed: user, ip, or network is blocked.'));
   }
   DoBrowseRequest();
 }
-
-sub DoBannedReading {
-  ReportError(T('Reading not allowed: user, ip, or network is blocked.'));
-}
-
-use CGI;
-use CGI::Carp qw(fatalsToBrowser);
 
 sub Init {
   $FS  = "\x1e";      # The FS character is the RECORD SEPARATOR control char in ASCII
@@ -253,6 +247,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   $IndexInit = 0;      # Must be reset for each request
   $InterSiteInit = 0;
   %InterSite = ();
+  %Locks = ();
   $OpenPageName = '';  # Currently open page
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   CreateDir($DataDir); # Create directory if it doesn't exist
@@ -270,7 +265,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.169 2003/09/28 21:20:18 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.170 2003/09/30 07:45:53 as Exp $');
 }
 
 sub InitCookie {
@@ -1615,16 +1610,10 @@ sub RollbackPossible {
 sub DoRollback {
   my $to = GetParam('to', 0);
   print GetHeader('', T('Rolling back changes'), '');
-  return  if (!UserIsAdminOrError());
-  if (!$to) {
-    ReportError(T('Missing target for rollback.'));
-    return;
-  } elsif (!RollbackPossible($to)) {
-    ReportError(T('Target for rollback is too far back.'));
-    return;
-  } elsif (!RequestLock()) {
-    return;
-  }
+  return unless UserIsAdminOrError();
+  ReportError(T('Missing target for rollback.')) unless $to;
+  ReportError(T('Target for rollback is too far back.')) unless RollbackPossible($to);
+  return unless RequestLock();
   print '<p>';
   foreach my $id (AllPagesList()) {
     OpenPage($id);
@@ -2168,8 +2157,9 @@ sub DiffAddPrefix {
   return $q->div({-class=>$class},$q->p(join('<br>',@lines)));
 }
 
-sub DiffHtmlMarkWords {
+sub DiffHtmlMarkWords { # this code seem brittle and has been known to crash!
   my ($text,$start,$end) = @_;
+  return $text if $end - $start > 50;
   my $first = $start - 1;
   my $words = 1 + $end - $start;
   $text =~ s|^((\S+\s*){$first})((\S+\s*?){$words})|$1<strong class="changes">$3</strong>|;
@@ -2242,9 +2232,7 @@ sub OpenPage {
   } else {
     OpenNewPage($id);
   }
-  if ($Page{'version'} != 3) {
-    UpdatePageVersion();
-  }
+  ReportError(T('Bad page version (or corrupt page).')) if ($Page{'version'} != 3);
   $OpenPageName = $id;
 }
 
@@ -2340,10 +2328,6 @@ sub SetPageCache {
   $Page{"cache_$name"} = $data;
 }
 
-sub UpdatePageVersion {
-  ReportError(T('Bad page version (or corrupt page).'));
-}
-
 sub GetKeepFile {
   my $id = shift;
   return $KeepDir . '/' . GetPageDirectory($id) . "/$id.kp";
@@ -2410,10 +2394,7 @@ sub ExpireKeepFile {
     return;
   }
   return  if (!$anyExpire);  # No sections expired
-  if (!open (OUT, ">$fname")) {
-    ReportError(Ts('cant write %s', $fname) . ": $!");
-    return;
-  }
+  open (OUT, ">$fname") or ReportError(Ts('cant write %s', $fname) . ": $!");
   foreach (@kplist) {
     %tempSection = split(/$FS2/, $_, -1);
     $sectName = $tempSection{'name'};
@@ -2464,10 +2445,12 @@ sub GetTextAtTime {
 
 # == Misc. functions ==
 
-sub ReportError {
-  my ($errmsg) = @_;
+sub ReportError { # fatal!
+  my $errmsg = shift;
   print GetHttpHeader('text/html');
   print $q->h2($errmsg), $q->end_html;
+  map { ReleaseLockDir($_); } keys %Locks;
+  exit (1);
 }
 
 sub ValidId {
@@ -2489,10 +2472,7 @@ sub ValidIdOrDie {
   my $id = shift;
   my $error;
   $error = ValidId($id);
-  if ($error ne '') {
-    ReportError($error);
-    return 0;
-  }
+  ReportError($error) if $error;
   return 1;
 }
 
@@ -2512,18 +2492,19 @@ sub RequestLockDir {
   $lockName = $LockDir . $name;
   $n = 0;
   while (mkdir($lockName, 0555) == 0) {
-    if ($n++ >= $tries) {
-      ReportError(Ts('Could not get %s lock', $name) . ": $!\n")  if $error;
-      return 0;
+    if ($n++ >= $tries and $error) {
+      ReportError(Ts('Could not get %s lock', $name) . ": $!\n");
     }
     sleep($wait);
   }
+  $Locks{$name} = 1;
   return 1;
 }
 
 sub ReleaseLockDir {
   my $name = shift;
   rmdir($LockDir . $name);
+  delete $Locks{$name};
 }
 
 sub RequestLock {
@@ -2536,7 +2517,7 @@ sub ReleaseLock {
 }
 
 sub ForceReleaseLock {
-  my ($pattern) = @_;
+  my $pattern = shift;
   my $forced;
   foreach my $name (glob $pattern) {
     # First try to obtain lock (in case of normal edit lock)
@@ -2742,7 +2723,6 @@ sub DoEdit {
     return;
   } elsif ($upload and not $UploadAllowed and not UserIsAdmin()) {
     ReportError(T('Only administrators can upload files.'));
-    return;
   }
   OpenPage($id);
   OpenDefaultText();
@@ -2766,7 +2746,6 @@ sub DoEdit {
   $upload = $isFile if not defined $upload;
   if ($upload and not $UploadAllowed and not UserIsAdmin()) {
     ReportError(T('Only administrators can upload files.'));
-    return;
   }
   if ($upload) { # shortcut lots of code
     $revision = '';
@@ -2891,7 +2870,6 @@ sub DoDownload {
     my ($type, $data) = ($1, $2);
     if (not grep(/^$type$/, @UploadTypes)) {
       ReportError (Ts('Files of type %s are not allowed.', $type));
-      return;
     }
     print GetHttpHeader($type, $ts);
     require MIME::Base64;
@@ -3292,16 +3270,12 @@ sub DoPost {
   my $id = GetParam('title', '');
   if (!UserCanEdit($id, 1)) {
     ReportError(Ts('Editing not allowed for %s.', $id));
-    return;
   } elsif (($id eq 'SampleUndefinedPage') or ($id eq T('SampleUndefinedPage'))) {
     ReportError(Ts('%s cannot be defined.', $id));
-    return;
   } elsif (($id eq 'Sample_Undefined_Page') or ($id eq T('Sample_Undefined_Page'))) {
     ReportError(Ts('[[%s]] cannot be defined.', $id));
-    return;
   } elsif (grep(/^$id$/, @LockOnCreation) and !UserIsAdmin() and not -f GetPageFile($id)) {
     ReportError(Ts('Only an administrator can create %s', $id));
-    return;
   }
   # Handle raw edits with the meta info on the first line
   my $string = GetParam('text', undef);
@@ -3311,10 +3285,11 @@ sub DoPost {
   if ($raw == 2) {
     if (not $string =~ /^([0-9]+).*\n/) {
       ReportError(Ts('Cannot find timestamp on the first line.'));
-      return;
     }
     $oldtime = $1;
     $string = $';
+  } elsif ($filename and not $UploadAllowed and not UserIsAdmin()) {
+    ReportError(T('Only administrators can upload files.'));
   }
   # Lock before getting old page to prevent races
   return unless RequestLock();
@@ -3331,13 +3306,11 @@ sub DoPost {
     if (not $file and $q->cgi_error) {
       ReleaseLock();
       ReportError (Ts('Transfer Error: %s', $q->cgi_error));
-      return;
     }
     my $type = $q->uploadInfo($filename)->{'Content-Type'};
     if (not grep(/^$type$/, @UploadTypes)) {
       ReleaseLock();
       ReportError (Ts('Files of type %s are not allowed.', $type));
-      return;
     }
     local $/ = undef;   # Read complete files
     eval { $_ = MIME::Base64::encode(<$file>) };
@@ -3380,8 +3353,9 @@ sub DoPost {
     my $conflict = 1;
     if ($UseDiff) {
       # merge all changes that lead from file2 to file3 into file1.
-      $string = MergeRevisions($string, GetTextAtTime($oldtime), $old);
-      $conflict = 0  unless ($string =~ /<<<<<<</ and $string =~ />>>>>>>/);
+      my $new = MergeRevisions($string, GetTextAtTime($oldtime), $old);
+      $conflict = 0 unless ($new =~ /<<<<<<</ and $new =~ />>>>>>>/);
+      $string = $new if $new; # if merge returned '', then just keep the old one
     }
     if ($conflict) {
       ReleaseLock();
@@ -3480,7 +3454,7 @@ sub WriteRcLog {
   my $rc_line = join($FS3, $Now, $id, $summary,
                      $minor, $rhost, '0', $extraTemp);
   if (!open(OUT, ">>$RcFile")) {
-    die(Ts('%s log error:', $RCName) . " $!");
+    ReportError(Ts('%s log error:', $RCName) . " $!");
   }
   print OUT  $rc_line . "\n";
   close(OUT);
@@ -3706,8 +3680,7 @@ sub DoPageLock {
     print $q->p(T('Missing page id to lock/unlock...'));
     return;
   }
-  return  if (!ValidIdOrDie($id));       # Later consider nicer error?
-  $fname = GetLockedPageFile($id);
+  $fname = GetLockedPageFile($id) if ValidIdOrDie($id);
   if (GetParam('set', 1)) {
     WriteStringToFile($fname, 'editing locked.');
   } else {
@@ -3743,11 +3716,9 @@ sub DoSurgeProtection {
 	ReleaseLockDir('visitors');
 	if ($SurgeProtection and DelayRequired($name)) {
 	  ReportError(Ts('Too many connections by %s',$name));
-	  exit;
 	}
       } elsif ($SurgeProtection) {
 	ReportError(Ts('Could not get %s lock', 'visitors'));
-	exit;
       }
     }
   }
