@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.41 2003/04/24 10:33:36 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.42 2003/04/24 17:43:27 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -1424,7 +1424,7 @@ sub GetRcRss {
       $year += 1900;
       $date = sprintf( "%4d-%02d-%02dT%02d:%02d:%02d+00:00",
 	$year, $mon+1, $mday, $hour, $min, $sec);
-      if (($summary ne '') && ($summary ne '*')) {
+      if ($summary ne '') {
 	$description = &QuoteHtml($summary);
       }
       if( $userName ) {
@@ -1491,7 +1491,7 @@ sub GetRcText {
 	$author = &GetAuthorLink($host, '');
       }
       $sum = '';
-      if (($summary ne '') && ($summary ne '*')) {
+      if ($summary ne '') {
 	$summary = $summary;
 	$sum = "[$summary] ";
       }
@@ -1602,7 +1602,7 @@ sub GetHistoryLine {
   $html .= $minor . ' ';
   $html .= &TimeToText($ts) . ' ';
   $html .= T('by') . ' ' . &GetAuthorLink($host, $user) . ' ';
-  if (defined($summary) && ($summary ne '') && ($summary ne '*')) {
+  if (defined($summary) && ($summary ne '')) {
     $summary = &QuoteHtml($summary);   # Thanks Sunir! :-)
     $html .= "<b>[$summary]</b> ";
   }
@@ -1740,8 +1740,8 @@ sub GetHttpHeader {
 }
 
 sub Cookie {
-  my $name = &GetParam('username','*');
-  my $pwd = &GetParam('pwd','*');
+  my $name = &GetParam('username','');
+  my $pwd = &GetParam('pwd','');
   if ($name ne $OldCookie{username} or $pwd ne $OldCookie{pwd}) {
     return "$CookieName=username&$name&pwd&$pwd;expires=Fri, 08-Sep-2010 19:48:23 GMT";
   }
