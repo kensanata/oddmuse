@@ -54,7 +54,7 @@ $RssImageUrl $RssPublisher $RssContributor $RssRights $BannedCanRead
 $SurgeProtection $SurgeProtectionViews $TopLinkBar $LanguageLimit
 $SurgeProtectionTime $DeletedPage %Languages $InterMap $ValidatorLink
 $RefererTracking $RefererTimeLimit $RefererLimit @LockOnCreation
-$RefererFilter $PermanentAnchorsFile $PermanentAnchors
+$RefererFilter $PermanentAnchorsFile $PermanentAnchors @MyRules
 %CookieParameters $NewComment $StyleSheetPage @UserGotoBarPages
 $ConfigPage $ScriptName @MyMacros $CommentsPrefix $AllNetworkFiles
 $UsePathInfo $UploadAllowed @UploadTypes $LastUpdate $PageCluster
@@ -295,7 +295,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.309 2004/01/27 00:25:35 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.310 2004/01/27 01:35:52 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -521,6 +521,7 @@ sub ApplyRules {
       print GetPageOrEditLink($2, $3, 0 , 1); # $3 may be empty
     } elsif (%Smilies && (Clean(SmileyReplace()))) {
     } elsif (eval { local $SIG{__DIE__}; Clean(MyRules()); }) {
+    } elsif (Clean(RunMyRules())) {
     } elsif (m/\G\s*\n(s*\n)+/cg) { # paragraphs: at least two newlines
       Clean(CloseHtmlEnvironments() . '<p>'); # there is another one like this further up
     } elsif (m/\G\s+/cgs) { Clean(' ');
@@ -603,6 +604,15 @@ sub SmileyReplace {
     }
   }
   return $match;
+}
+
+sub RunMyRules {
+  foreach my $sub (@MyRules) {
+    my $result = eval { local $SIG{__DIE__}; &$sub; };
+    SetParam('msg', $@) if $@;
+    return $result if $result ne '';
+  }
+  return '';
 }
 
 sub PrintWikiToHTML {
