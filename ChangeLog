@@ -1,3 +1,10 @@
+2003-08-29  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetRcHtml): Link to older revisions when using the all
+	parameter.
+	(GetRCLink): New function.
+	(PrintFooter): Add new item, using it.
+
 2003-08-21  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (ApplyRules): Extend journal rule to allow reverse parameter.
