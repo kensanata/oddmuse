@@ -1,0 +1,128 @@
+#!/usr/bin/env python
+# wikiupload --- Put a wiki page on an Oddmuse wiki
+# 
+# Copyright (C)  2004  Jorgen Schaefer <forcer@forcix.cx>
+# 
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+import mimetypes, httplib, urllib, re, urlparse, sys, getopt
+from time import time
+
+def main():
+    summary="upload"
+    username=""
+    recent_edit="off"
+    try:
+        opts, args = getopt.getopt(sys.argv[1:],
+                                   "ht:s:u:m:",
+                                   ["help", "summary=", "user=", "minor-edit="])
+    except getopt.GetoptError:
+        usage(sys.stderr)
+        sys.exit(1)
+    if len(args) != 2:
+        usage(sys.stderr)
+        sys.exit(1)
+    for opt, arg in opts:
+        if opt in ("-h", "--help"):
+            usage(sys.stdout)
+        if opt in ("-s", "--summary"):
+            summary = arg
+        if opt in ("-u", "--user"):
+            username = arg
+        if opt in ("-m", "--minor-edit"):
+            recent_edit="on"
+    wikiput(args[1], args[0], summary=summary, username=username, recent_edit=recent_edit)
+
+def usage(out):
+    """Display the usage information for this script.
+
+    Options:
+    out -- The file descriptor where to write the info.
+    """
+    out.write("Usage: wikiupload [OPTIONS] file wikipage\n"
+              "Post the data in the file onto the wikipage described by wikipage.\n"
+              "\n"
+	      "Example: wikiupload foaf.rdf http://your.domain.here/cgi-bin/wiki.pl/FOAF\n"
+              "\n"
+              "Options:\n"
+              " -h --help          Display this help\n"
+              " -s --summary=S     The summary line (default: upload)\n"
+	      " -u --user=U        The username to use (default: none)\n"
+              " -m --minor-edit=B  Whether this is a minor edit (default: no)\n")
+
+def wikiput(where, filename,
+            summary="upload", username="", recent_edit="no"):
+    (host, path, title) = parse_wiki_location(where)
+    content = open(filename, "r").read()
+    files = [['file', filename, content]]
+    params = [[ 'title', title ],
+              [ 'summary', summary ],
+              [ 'username', username ],
+              [ 'recent_edit', recent_edit ]]
+    (content_type, body) = encode_multipart_formdata(params, files);
+    headers = {'Content-Type': content_type}
+    conn = httplib.HTTPConnection(host)
+    conn.request("POST", path, body, headers)
+    response = conn.getresponse()
+    data = response.read()
+    conn.close()
+    if response.status != 302:
+        print "Uploading", filename, get_content_type(filename)
+        print response.status, response.reason
+        print response.read()
+        raise RuntimeError, "We weren't redirected - something went wrong!"
+
+def encode_multipart_formdata(fields, files):
+    """
+    fields is a sequence of (name, value) elements for regular form fields.
+    files is a sequence of (name, filename, value) elements for data to be uploaded as files.
+    Return (content_type, body) ready for httplib.HTTP instance
+    """
+    BOUNDARY = '----------ThIs_Is_tHe_bouNdaRY_$'
+    CRLF = '\r\n'
+    L = []
+    for (key, value) in fields:
+        L.append('--' + BOUNDARY)
+        L.append('Content-Disposition: form-data; name="%s"' % key)
+        L.append('')
+        L.append(value)
+    for (key, filename, value) in files:
+        L.append('--' + BOUNDARY)
+        L.append('Content-Disposition: form-data; name="%s"; filename="%s"' % (key, filename))
+        L.append('Content-Type: %s' % get_content_type(filename))
+        L.append('')
+        L.append(value)
+    L.append('--' + BOUNDARY + '--')
+    L.append('')
+    body = CRLF.join(L)
+    content_type = 'multipart/form-data; boundary=%s' % BOUNDARY
+    return content_type, body
+
+def get_content_type(filename):
+    return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
+
+def parse_wiki_location(where):
+    """Return a tuple of host, path and page name for the wiki page
+    WHERE.
+    """
+    (scheme, host, path, params, query, fragment) = urlparse.urlparse(where)
+    if not query:
+        list = path.split("/")
+	query = list.pop()
+	path = "/".join(list)
+    return (host, path+params, query)
+
+main()
