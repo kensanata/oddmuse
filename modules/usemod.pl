@@ -16,14 +16,13 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.3 2004/07/06 00:53:25 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.4 2004/07/14 14:57:15 as Exp $</p>';
 
 use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml);
 
-# The ---- rule conflicts with the --- rule in markup.pl, therefore
-# use unshift, here.
-
-unshift(@MyRules, \&UsemodRule);
+push(@MyRules, \&UsemodRule);
+# The ---- rule conflicts with the --- rule in markup.pl
+$RuleOrder{\&UsemodRule} = 100;
 
 $RFCPattern = "RFC\\s?(\\d+)";
 $ISBNPattern = 'ISBN:?([0-9- xX]{10,})';
