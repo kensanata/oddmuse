@@ -82,7 +82,7 @@ $HttpCharset = '';  # Charset for pages, default is ISO-8859-1
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.19 2003/03/28 20:33:37 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.20 2003/03/28 21:07:01 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -599,6 +599,18 @@ sub UnquoteHtml {
   $html =~ s/&gt;/>/g;
   $html =~ s/&amp;/&/g;
   return $html;
+}
+
+sub UrlEncode {
+  my @letters = split(//,shift);
+  my @safe = ('a' .. 'z', 'A' .. 'Z', '0' .. '9');
+  foreach my $letter (@letters) {
+    my $pattern = quotemeta($letter);
+    if (not grep(/$pattern/, @safe)) {
+      $letter = sprintf("%%%02x", ord($letter));
+    }
+  }
+  return join('', @letters);
 }
 
 sub IncludeRaw {
@@ -1902,7 +1914,7 @@ sub GetSearchForm {
 }
 
 sub GetValidatorLink {
-  my $uri = &QuoteHtml($q->self_url);
+  my $uri = &UrlEncode($q->self_url);
   return $q->a({-href => 'http://validator.w3.org/check?uri=' . $uri},
 	       T('Validate HTML'))
     . ' '
