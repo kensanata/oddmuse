@@ -276,7 +276,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.273 2003/11/27 22:34:55 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.274 2003/11/29 15:07:39 as Exp $');
 }
 
 sub InitCookie {
@@ -2703,31 +2703,28 @@ sub DoIndex {
   push(@pages, AllPagesList()) if $anchors < 2;
   push(@pages, keys %PermanentAnchors) if $anchors > 0;
   @pages = sort @pages if $anchors > 0;
-  PrintPageList(@pages);
+  print $q->h2(Ts('%s pages found.', ($#pages + 1))), '<p>' unless $raw;
+  map { PrintPage($_); } @pages;
+  print '</p>' unless $raw;
   PrintFooter();
 }
 
-sub PrintPageList {
-  my $raw = GetParam('raw', 0);
+sub PrintPage {
+  my $id = shift;
   my $lang = GetParam('lang', 0);
-  print $q->h2(Ts('%s pages found:', ($#_ + 1))), '<p>' unless $raw;
-  my @pages = @_;
-  foreach my $id (@pages) {
-    if ($lang) {
-      OpenPage ($id);
-      my @languages = split(/,/, $Page{languages});
-      next if (@languages and not grep(/$lang/, @languages));
-    }
-    if ($raw) {
-      print $id, "\n";
-    } else {
-      my ($class, $exists, $title) = ResolveId($id);
-      my $text = $id;
-      $text =~ s/_/ /g;
-      print ScriptLink(UrlEncode($id), $text, $class, '', $title), $q->br();
-    }
+  if ($lang) {
+    OpenPage ($id);
+    my @languages = split(/,/, $Page{languages});
+    next if (@languages and not grep(/$lang/, @languages));
   }
-  print '</p>' unless $raw;
+  if (GetParam('raw', 0)) {
+    print $id, "\n";
+  } else {
+    my ($class, $exists, $title) = ResolveId($id);
+    my $text = $id;
+    $text =~ s/_/ /g;
+    print ScriptLink(UrlEncode($id), $text, $class, '', $title), $q->br();
+  }
 }
 
 sub AllPagesList {
@@ -2766,6 +2763,7 @@ sub AllPagesList {
 sub DoSearch {
   my $string = shift;
   my $replacement = GetParam('replace','');
+  my $raw = GetParam('raw','');
   if ($string eq '') {
     DoIndex();
     return;
@@ -2775,22 +2773,26 @@ sub DoSearch {
     return  if (!UserIsAdminOrError());
     Replace($string,$replacement);
     $string = $replacement;
+  } elsif ($raw) {
+    print GetHttpHeader('text/plain');
   } else {
     print GetHeader('', QuoteHtml(Ts('Search for: %s', $string)), '');
     $ReplaceForm = UserIsAdmin();
     print $q->p(ScriptLink('action=rc;rcfilteronly=' . UrlEncode($string),
 			   Ts('View changes for these pages')));
   }
+  my @results;
   if (GetParam('context',1)) {
-    PrintSearchResults($string,SearchTitleAndBody($string));
+    @results = SearchTitleAndBody($string, \&PrintSearchResult, $string);
   } else {
-    PrintPageList(SearchTitleAndBody($string));
+    @results = SearchTitleAndBody($string, \&PrintPage);
   }
+  print $q->p(Ts('%s pages found.', ($#results + 1))) unless $raw;
   PrintFooter();
 }
 
 sub SearchTitleAndBody {
-  my $string = shift;
+  my ($string, $func, @args) = @_;
   my $and = T('and');
   my $or = T('or');
   my @strings = split(/ +$and +/, $string);
@@ -2814,71 +2816,70 @@ sub SearchTitleAndBody {
     }
     if ($found or $name =~ /$string/i) {
       push(@found, $name);
+      &$func($name, @args) if $func;
     } elsif ($FreeLinks && ($name =~ m/_/)) {
       my $freeName = $name;
       $freeName =~ s/_/ /g;
       if ($freeName =~ /$string/i) {
 	push(@found, $name);
+	&$func($name, @args) if $func;
       }
     }
   }
   return @found;
 }
 
-sub PrintSearchResults {
-  my ($searchstring, @results) = @_ ;
+sub PrintSearchResult {
+  my ($name, $searchstring) = @_;
   my $and = T('and');
   my $or = T('or');
   my $searchstring = join('|', split(/ +(?:$and|$or) +/, $searchstring));
   my ($snippetlen, $maxsnippets) = (100, 4) ; #  these seem nice.
-  print $q->h2(Ts('%s pages found:', ($#results + 1)));
   my $files = ($searchstring =~ /^\^#FILE/); # usually skip files
-  foreach my $name (@results) {
-    OpenPage($name);
-    my $pageText = QuoteHtml($Page{'text'});
-    #  get the page, filter it, remove all tags
-    $pageText =~ s/$FS//g;	# Remove separators (paranoia)
-    $pageText =~ s/[\s]+/ /g;	#  Shrink whitespace
-    $pageText =~ s/([-_=\\*\\.]){10,}/$1$1$1$1$1/g ; # e.g. shrink "----------"
-    my $htmlre = join('|',(@HtmlTags, 'pre', 'nowiki', 'code', 'rss'));
-    $pageText =~ s/\<\/?($htmlre)(\s[^<>]+?)?\>//gi;
-    #  entry header
-    print '<p>' . $q->span({-class=>'result'}, GetPageLink($name)), $q->br();
-    if ($files) {
-      $pageText =~ /^#FILE ([^ ]+)/;
-      print $1;
-    } else {
-      # show a snippet from the top of the document
-      my $j = index($pageText, ' ', $snippetlen); # end on word boundary
-      my $t = substr($pageText, 0, $j);
-      $t =~ s/($searchstring)/<strong>$1<\/strong>/gi;
-      print $t, ' . . .';
-      $pageText = substr($pageText, $j); # to avoid rematching
-      # search for occurrences of searchstring
-      my $jsnippet = 0 ;
-      while ($jsnippet < $maxsnippets && $pageText =~ m/($searchstring)/i) {
-	$jsnippet++;
-	if (($j = index($pageText, $1)) > -1 ) {
-	  # get substr containing (start of) match, ending on word boundaries
-	  my $start = index($pageText, ' ', $j-($snippetlen/2));
-	  $start = 0 if ($start == -1);
-	  my $end = index($pageText, ' ', $j+($snippetlen/2));
-	  $end = length($pageText ) if ($end == -1);
-	  $t = substr($pageText, $start, $end-$start);
-	  # highlight occurrences and tack on to output stream.
-	  $t =~ s/($searchstring)/<strong>$1<\/strong>/gi;
-	  print $t, ' . . .';
-	  # truncate text to avoid rematching the same string.
-	  $pageText = substr($pageText, $end);
-	}
+  OpenPage($name); # should be open already, just making sure!
+  my $pageText = QuoteHtml($Page{'text'});
+  #  get the page, filter it, remove all tags
+  $pageText =~ s/$FS//g;	# Remove separators (paranoia)
+  $pageText =~ s/[\s]+/ /g;	#  Shrink whitespace
+  $pageText =~ s/([-_=\\*\\.]){10,}/$1$1$1$1$1/g ; # e.g. shrink "----------"
+  my $htmlre = join('|',(@HtmlTags, 'pre', 'nowiki', 'code', 'rss'));
+  $pageText =~ s/\<\/?($htmlre)(\s[^<>]+?)?\>//gi;
+  #  entry header
+  print '<p>' . $q->span({-class=>'result'}, GetPageLink($name)), $q->br();
+  if ($files) {
+    $pageText =~ /^#FILE ([^ ]+)/;
+    print $1;
+  } else {
+    # show a snippet from the top of the document
+    my $j = index($pageText, ' ', $snippetlen); # end on word boundary
+    my $t = substr($pageText, 0, $j);
+    $t =~ s/($searchstring)/<strong>$1<\/strong>/gi;
+    print $t, ' . . .';
+    $pageText = substr($pageText, $j); # to avoid rematching
+    # search for occurrences of searchstring
+    my $jsnippet = 0 ;
+    while ($jsnippet < $maxsnippets && $pageText =~ m/($searchstring)/i) {
+      $jsnippet++;
+      if (($j = index($pageText, $1)) > -1 ) {
+	# get substr containing (start of) match, ending on word boundaries
+	my $start = index($pageText, ' ', $j-($snippetlen/2));
+	$start = 0 if ($start == -1);
+	my $end = index($pageText, ' ', $j+($snippetlen/2));
+	$end = length($pageText ) if ($end == -1);
+	$t = substr($pageText, $start, $end-$start);
+	# highlight occurrences and tack on to output stream.
+	$t =~ s/($searchstring)/<strong>$1<\/strong>/gi;
+	print $t, ' . . .';
+	# truncate text to avoid rematching the same string.
+	$pageText = substr($pageText, $end);
       }
     }
-    #  entry trailer
-    print $q->br(), $q->span({-class=>'info'},
-      int((length($pageText)/1024)+1) . 'K - ' . T('last updated') . ' '
-      . TimeToText($Page{ts}) . ' ' . T('by') . ' '
-      . GetAuthorLink($Page{'host'}, $Page{'username'})), '</p>';
   }
+  #  entry trailer
+  print $q->br(), $q->span({-class=>'info'},
+			   int((length($pageText)/1024)+1) . 'K - ' . T('last updated') . ' '
+			   . TimeToText($Page{ts}) . ' ' . T('by') . ' '
+			   . GetAuthorLink($Page{'host'}, $Page{'username'})), '</p>';
 }
 
 sub Replace {
