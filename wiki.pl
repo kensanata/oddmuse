@@ -35,33 +35,33 @@ use strict;
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
 # Configuration/constant variables:
-use vars qw(@RcDays @HtmlTags
-  $TempDir $LockDir $DataDir $KeepDir $PageDir $RefererDir $RcFile
-  $RcOldFile $IndexFile $NoEditFile $BannedHosts $ConfigFile $FullUrl
-  $SiteName $HomePage $LogoUrl $RcDefault $IndentLimit $RecentTop
-  $RecentLink $EditAllowed $UseDiff $UseSubpage $RawHtml $KeepDays
-  $HtmlTags $HtmlLinks $KeepMajor $KeepAuthor $FreeUpper $EmbedWiki
-  $BracketText $UseConfig $UseLookup $AdminPass $EditPass $NetworkFile
-  $BracketWiki $FreeLinks $WikiLinks $FreeLinkPattern $RCName $RunCGI
-  $ShowEdits $LinkPattern $InterLinkPattern $InterSitePattern
-  $UrlProtocols $UrlPattern $ImageExtensions $RFCPattern $ISBNPattern
-  $FS $FS0 $FS1 $FS2 $FS3 $CookieName $SiteBase $StyleSheet
-  $NotFoundPg $FooterNote $EditNote $MaxPost $NewText $HttpCharset
-  $UserGotoBar $VisitorTime $VisitorFile $Visitors %Smilies
-  %SpecialDays $InterWikiMoniker $SiteDescription $RssImageUrl
-  $RssPublisher $RssContributor $RssRights $WikiDescription
-  $BannedCanRead $SurgeProtection $SurgeProtectionViews
-  $SurgeProtectionTime $DeletedPage %Languages $LanguageLimit
-  $ValidatorLink $RefererTracking $RefererTimeLimit $RefererLimit
-  $TopLinkBar $NotifyWeblogs $InterMap @LockOnCreation $RefererFilter
-  $PermanentAnchorsFile $PermanentAnchors);
+
+use vars qw(@RcDays @HtmlTags $TempDir $LockDir $DataDir $KeepDir
+$PageDir $RefererDir $RcFile $RcOldFile $IndexFile $NoEditFile
+$BannedHosts $ConfigFile $FullUrl $SiteName $HomePage $LogoUrl
+$RcDefault $IndentLimit $RecentTop $RecentLink $EditAllowed $UseDiff
+$UseSubpage $RawHtml $KeepDays $HtmlTags $HtmlLinks $KeepMajor
+$KeepAuthor $FreeUpper $EmbedWiki $BracketText $UseConfig $UseLookup
+$AdminPass $EditPass $NetworkFile $BracketWiki $FreeLinks $WikiLinks
+$FreeLinkPattern $RCName $RunCGI $ShowEdits $LinkPattern
+$InterLinkPattern $InterSitePattern $UrlProtocols $UrlPattern
+$ImageExtensions $RFCPattern $ISBNPattern $FS $FS0 $FS1 $FS2 $FS3
+$CookieName $SiteBase $StyleSheet $NotFoundPg $FooterNote $EditNote
+$MaxPost $NewText $HttpCharset $UserGotoBar $VisitorTime $VisitorFile
+$Visitors %Smilies %SpecialDays $InterWikiMoniker $SiteDescription
+$RssImageUrl $RssPublisher $RssContributor $RssRights $WikiDescription
+$BannedCanRead $SurgeProtection $SurgeProtectionViews
+$SurgeProtectionTime $DeletedPage %Languages $LanguageLimit
+$ValidatorLink $RefererTracking $RefererTimeLimit $RefererLimit
+$TopLinkBar $NotifyWeblogs $InterMap @LockOnCreation $RefererFilter
+$PermanentAnchorsFile $PermanentAnchors %CookieParameters);
 
 # Other global variables:
-use vars qw(%Page %Section %Text %InterSite %KeptRevisions
-  %IndexHash %Translate %OldCookie %NewCookie $InterSiteInit
-  $FootnoteNumber $MainPage $OpenPageName @KeptList @IndexList
-  $IndexInit $Message $q $Now $ScriptName %RecentVisitors @HtmlStack
-  %Referers $Monolithic $ReplaceForm  %PermanentAnchors %PagePermanentAnchors);
+use vars qw(%Page %Section %Text %InterSite %KeptRevisions %IndexHash
+%Translate %OldCookie %NewCookie $InterSiteInit $FootnoteNumber
+$MainPage $OpenPageName @KeptList @IndexList $IndexInit $Message $q
+$Now $ScriptName %RecentVisitors @HtmlStack %Referers $Monolithic
+$ReplaceForm %PermanentAnchors %PagePermanentAnchors);
 
 # == Configuration ==
 
@@ -81,7 +81,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.72 2003/05/30 18:04:49 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.73 2003/05/31 02:57:23 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -180,6 +180,11 @@ if (not @HtmlTags) { # don't set if set in the config file
 }
 
 @LockOnCreation = ($BannedHosts, $InterMap, $RefererFilter);
+
+%CookieParameters = ('username' => '',
+		     'password' => '',
+		     'toplinkbar' => $TopLinkBar,
+		     'embed' => $EmbedWiki);
 
 $IndentLimit = 20;                  # Maximum depth of nested lists
 $LanguageLimit = 3;                 # Number of matches req. for each language
@@ -766,28 +771,15 @@ sub GetEditLink { # shortcut
 
 sub ScriptLink {
   my ($action, $text, $class, $name) = @_;
+  my %params;
   if ($action =~ /=/ or !$Monolithic) {
-    $action = InheritParameter('embed', $EmbedWiki, $action);
-    $action = InheritParameter('toplinkbar', $TopLinkBar, $action);
-    return $q->a({-href=>$ScriptName . '?' . $action,
-		  ($class && (-class=>$class)), ($name && (-name=>$name))},
-		 $text);
+    $params{-href} = $ScriptName . '?' . $action;
   } else { # Monolithic and !~ /=/ -- ie. just a page link
-    return $q->a({-href=>'#' . $action}, $text);
+    $params{-href} = '#' . $action;
   }
-}
-
-sub InheritParameter {
-  my ($param, $default, $action) = @_;
-  my $value = GetParam($param, $default);
-  if ($value ne $default) {
-    if ($action =~ /=/) {
-      $action .= "\&$param=$value";
-    } else {
-      $action = "action=browse\&$param=$value&id=" . $action;
-    }
-  }
-  return $action;
+  $params{'-class'} = $class  if $class;
+  $params{'-name'} = $name  if $name;
+  return $q->a(\%params, $text);
 }
 
 sub RFC {
@@ -889,7 +881,7 @@ sub InitCookie {
   undef $q->{'.cookies'};  # Clear cache if it exists (for SpeedyCGI)
   %OldCookie = split(/$FS1/, $q->cookie($CookieName));
   %NewCookie = %OldCookie;
-  # Get username from param or cookie, test it, and move it into the cookie.
+  # Only valid usernames get stored in the new cookie.
   my $name = GetParam('username', '');
   $q->delete('username');
   delete $NewCookie{'username'};
@@ -904,12 +896,22 @@ sub InitCookie {
   } else {
     $NewCookie{'username'} = $name;
   }
-  # Move password into the cookie.
-  my $password = GetParam('password', '');
-  $q->delete('password');
-  delete $NewCookie{'password'};
-  $NewCookie{'password'} = $password if $password;
 }
+
+sub GetParam {
+  my ($name, $default) = @_;
+  my $result;
+  $result = $q->param($name);
+  if (!defined($result)) {
+    if (defined($NewCookie{$name})) {
+      $result = $NewCookie{$name};
+    } else {
+      $result = $default;
+    }
+  }
+  return $result;
+}
+
 
 # == Choosing action
 
@@ -1682,19 +1684,21 @@ sub GetHttpHeader {
 }
 
 sub Cookie {
-  my $name = GetParam('username','');
-  my $pwd = GetParam('pwd','');
-  if ($name ne $OldCookie{username} or $pwd ne $OldCookie{pwd}) {
-    $name = 'username' . $FS1 . $name if $name;
-    $pwd = 'pwd' . $FS1 . $pwd if $pwd;
-    my $cookie = $name;
-    $cookie .= $FS1 if $name and $pwd;
-    $cookie .= $pwd;
-    $cookie = $q->cookie(-name=>$CookieName,
-			 -value=>$cookie,
-			 -expires=>'+2y');
-    $Message .= $q->p(T('Cookie: ') . $cookie);
-    return $cookie;
+  my %params;
+  my $changed = 0;
+  foreach (keys %CookieParameters) {
+    my $default = $CookieParameters{$_};
+    my $value = GetParam($_, $default);
+    $params{$_} = $value  if $value ne $default;
+    $changed = 1  if $value ne $OldCookie{$_} and ($OldCookie{$_} ne '' or $value ne $default);
+  }
+  if ($changed) {
+    my $cookie = join($FS1, map {$_ . $FS1 . $params{$_}} keys(%params));
+    my $result = $q->cookie(-name=>$CookieName,
+			    -value=>$cookie,
+			    -expires=>'+2y');
+    $Message .= $q->p(T('Cookie: ') . $result);
+    return $result;
   }
   return '';
 }
@@ -2659,20 +2663,6 @@ sub CalcTime {
 sub TimeToText {
   my ($t) = @_;
   return CalcDay($t) . ' ' . CalcTime($t);
-}
-
-sub GetParam {
-  my ($name, $default) = @_;
-  my $result;
-  $result = $q->param($name);
-  if (!defined($result)) {
-    if (defined($NewCookie{$name})) {
-      $result = $NewCookie{$name};
-    } else {
-      $result = $default;
-    }
-  }
-  return $result;
 }
 
 sub GetHiddenValue {
