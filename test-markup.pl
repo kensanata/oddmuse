@@ -167,6 +167,14 @@ EOT
 
 test_page(get_page('action=rc'), @Test);
 
+## Attempt to create InterMap page as normal user
+
+@Test = split('\n',<<'EOT');
+Describe the new page here
+EOT
+
+test_page(update_page('InterMap', " OddMuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n", 'required'), @Test);
+
 ## Create InterMap page as admin
 
 @Test = split('\n',<<'EOT');
