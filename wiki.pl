@@ -352,7 +352,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.505 2004/12/26 23:34:05 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.506 2005/01/02 15:52:48 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -401,11 +401,11 @@ sub InitLinkPatterns {
   $QDelim = '(?:"")?';# Optional quote delimiter (removed from the output)
   $WikiWord = '[A-Z]+[a-z\x80-\xff]+[A-Z][A-Za-z\x80-\xff]*';
   $LinkPattern = "($WikiWord)$QDelim";
-  $FreeLinkPattern = "([-,.()' _0-9A-Za-z\x80-\xff]+)$QDelim";
+  $FreeLinkPattern = "([-,.()' _0-9A-Za-z\x80-\xff]+)";
   # Intersites must start with uppercase letter to avoid confusion with URLs.
   $InterSitePattern = '[A-Z\x80-\xff]+[A-Za-z\x80-\xff]+';
   $InterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x80-\xff_=!?#$@~`%&*+\\/:;.,]+[-a-zA-Z0-9\x80-\xff_=#$@~`%&*+\\/])$QDelim";
-  $FreeInterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x80-\xff_=!?#$@~`%&*+\\/:;.,()' ]+)$QDelim"; # plus space and other characters, and no restrictions on the end of the pattern
+  $FreeInterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x80-\xff_=!?#$@~`%&*+\\/:;.,()' ]+)"; # plus space and other characters, and no restrictions on the end of the pattern
   $UrlProtocols = 'http|https|ftp|afs|news|nntp|mid|cid|mailto|wais|prospero|telnet|gopher|irc';
   $UrlProtocols .= '|file'  if $NetworkFile;
   my $UrlChars = '[-a-zA-Z0-9/@=+$_~*.,;:?!\'"()&#%]'; # see RFC 2396
@@ -467,7 +467,7 @@ sub ApplyRules {
 	# <include "uri..."> includes the text of the given URI verbatim
 	Clean(CloseHtmlEnvironments());
 	Dirty($1);
-	my ($oldpos, $type, $uri) = ((pos), $3, $4);
+	my ($oldpos, $type, $uri) = ((pos), $3, UnquoteHtml($4)); # remember, page content is quoted!
 	if ($uri =~ /^$UrlProtocols:/o) {
 	  if ($type eq 'text') {
 	    print $q->pre({class=>"include $uri"},QuoteHtml(GetRaw($uri)));
@@ -502,7 +502,7 @@ sub ApplyRules {
 	Dirty($1);
 	my $oldpos = pos;
 	eval { local $SIG{__DIE__}; binmode(STDOUT, ":utf8"); } if $HttpCharset eq 'UTF-8';
-	print RSS($3 ? $3 : 15, split(/\s+/, $4));
+	print RSS($3 ? $3 : 15, split(/\s+/, UnquoteHtml($4)));
 	eval { local $SIG{__DIE__}; binmode(STDOUT, ":raw"); };
 	print AddHtmlEnvironment('p');
 	pos = $oldpos;
