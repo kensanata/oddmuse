@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.1 2005/01/09 01:42:05 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.2 2005/02/01 20:46:49 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
@@ -153,17 +153,17 @@ Wiki entsperren
 Lock site
 Wiki sperren
 Unlock %s
-
+%s entsperren
 Lock %s
-
+%s sperren
 Administration
-
+Administration
 Actions:
-
+Aktionen:
 Important pages:
-
+Wichtige Seiten:
 To mark a page for deletion, put <strong>%s</strong> on the first line.
-
+Um eine Seite zu löschen, setzt man <strong>%s</strong> auf die erste Zeile.
 [Home]
 [Erste Seite]
 redirected from %s
@@ -207,7 +207,7 @@ Liste aller Änderungen, auch ohne vorhandener Version
 new comment
 Neuer Kommentar
 Homepage URL:
-
+Homepage URL:
 s
 s
 Save
@@ -217,7 +217,7 @@ Vorschau
 Search:
 Suchen:
 f
-
+f
 Replace:
 Ersetzen mit:
 Validate HTML
@@ -262,6 +262,8 @@ Cannot open %s
 %s kann nicht geöffnet werden
 Cannot write %s
 %s kann nicht geschrieben werden
+Cannot create %s
+%s kann nicht erstellt werden
 Could not get %s lock
 Die %s Sperre konnte nicht gesetzt werden.
 This operation may take several seconds...
@@ -339,17 +341,17 @@ Diese Aktion darf nur von Administratoren durchgeführt werden...
 Rule "%1" matched "%2" on this page.
 Auf dieser Seite verstösst "%2" gegen die Regel "%1".
 Without normal pages
-
+Ohne normale Seiten
 Include normal pages
-
+Mit normalen Seiten
 Without permanent anchors
-
+Ohne permanente Anker
 Include permanent anchors
-
+Mit permanenten Ankern
 Without near pages
-
+Ohne Seiten aus der Umgebung
 Include near pages
-
+Mit Seiten aus der Umgebung
 (for %s)
 (für %s)
 %s pages found.
@@ -409,11 +411,11 @@ Bitte überprüfen Sie, ob diese Änderungen überschrieben worden sind.
 Anonymous
 Unbekannt
 Cannot delete the index file %s.
-
+Die Index Datei %s kann nicht gelöscht werden.
 Please check the directory permissions.
-
+Bitte prüfen Sie die Berechtigungen des Verzeichnisses.
 Your changes were not saved.
-
+Ihre Änderungen wurden nicht gespeichert.
 Could not get a lock to merge!
 Sperre zum automatischen Abgleichen zweier Versionen konnte nicht reserviert werden!
 you
@@ -423,7 +425,7 @@ Vorgänger
 other
 Andere Person
 Run Maintenance
-
+Wartungsargeiten
 Maintenance not done.
 Wartungsarbeiten nicht erfolgt.
 (Maintenance can only be done once every 12 hours.)
@@ -461,7 +463,7 @@ Sperre von %s erzeugt.
 Lock for %s removed.
 Sperre von %s aufheben.
 Displaying Wiki Version
-
+Anzeite der Wikiversion
 Show dependencies
 Abhängigkeiten zeigen
 Inter links:
@@ -492,6 +494,8 @@ The page %s does not exist
 Die %s Seite gibt es nicht
 The page %s already exists
 Die %s Seite gibt es schon
+Cannot rename %1 to %2
+%1 kannn nicht zu %2 umbenannt werden
 Renamed to %s
 Wurde auf %s umbenannt
 Renamed from %s
@@ -499,9 +503,9 @@ Ehemals %s
 Renamed %1 to %2.
 Die %1 Seite wurde zu %2 umbenannt
 Immediately delete %s
-
+%s sofort löschen
 Rename %s to:
-
+%s umbenennen zu:
 Cannot highlight the language %s.
 Die Sprache %s kann von diesem Modul nicht eingefärbt werden.
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
@@ -517,9 +521,9 @@ Nächster
 Calendar %s
 Kalender %s
 Comments on 
-
+Kommentare zu 
 Comment on 
-
+Kommentar zu 
 Compilation for %s
 Zusammenstellung für %s
 Compilation tag is missing a regular expression.
@@ -555,11 +559,11 @@ Vorlage ohne Parameter
 The template %s is either empty or does not exist.
 Die %s Vorlage ist entweder leer oder existiert gar nicht.
 %s returned no data.
-
+%s liefert keine Daten.
 Clearing Cache
 Cache wird geleert
 Done.
-
+Fertig.
 Generating Link Database
 Verweis Datenbank wird angelegt
 The 404 handler extension requires the link data extension (links.pl).
@@ -577,15 +581,15 @@ Permalink für "%s"
 Portrait
 Portrait
 You did not answer correctly.
-
+Die Antwort ist falsch.
 All Referrers
 Alle Links auf diesen Wiki
 Referrers
 Links auf diese Seite
 Updating %s
-
+%s wird nachgeführt
 Search term missing.
-
+Suchbegriff fehlt.
 Static Copy
 Statische Kopie
 Back to %s
@@ -617,7 +621,7 @@ Failed to remove %s
 Contents
 Inhaltsverzeichnis
 This page is a translation of %s. 
-
+Diese Seite ist eihe Übersetzung von %s. 
 The translation is up to date.
 Die Übersetztung ist aktuell.
 The translation is outdated.
