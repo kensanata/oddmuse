@@ -1,6 +1,24 @@
+2004-05-24  Alex Schroeder  <alex@confusibombus>
+
+	* wiki.pl (PrintFooter): More spans.
+	(DoSurgeProtection): Report $SurgeProtectionViews and
+	$SurgeProtectionTime when surge protection is triggered.
+
+2004-05-21  Alex Schroeder  <alex@confusibombus>
+
+	* wiki.pl: Run with -w.
+	(GetPageOrEditLink): Reworked usage of ResolveId.
+	(BrowseResolvedPage): Reworked usage of ResolveId.
+	(DoEdit): Copy newText to oldText earlier when previewing so that
+	preview works even when the old version is a file.
+	(PrintPage): Reworked usage of ResolveId.
+	(PrintSearchResultEntry): Reworked usage of ResolveId.
+
 2004-05-18  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoPrintAllPages): Admin-only.
+	(RcHeader): Make all, showedit, and days explicit, so that they
+	can be set and unset even if they are added to %CookieParameters.
 
 2004-05-11  Alex Schroeder  <alex@gnu.org>
 
