@@ -1,3 +1,10 @@
+2003-06-21  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (UrlEncode): Added more safe characters according to RFC
+	2396.
+	(DoBrowseRequest): Use join(' ', $q->keywords) to deal with link
+	that include encoded spaces (%20) instead of underlines.
+
 2003-06-20  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (PingTracker): Switched to blo.gs.
