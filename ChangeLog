@@ -1,3 +1,8 @@
+2003-10-25  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (RSS): Skip contributor if empty.
+	(RSS): Add ' -- ' between page link and summary.
+
 2003-10-24  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (Clean): Return nothing if empty block (due to
