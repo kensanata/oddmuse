@@ -5,6 +5,21 @@
 	$@</p>" seems *very* brittle, so change with care.  It was also
 	impossible to concat the result with the result of a call to
 	ScriptLink.
+	($UseSubpage): Removed.
+	($MainPage): Removed; was used for subpages.
+	($FreeUpper): Removed.
+	(InitRequest): Removed $MainPage.
+	(InitLinkPatterns): Removed $UseSubpage.
+	(GetPageOrEditLink): Removed $MainPage.
+	(GetPageLink): Removed $MainPage.
+	(GetEditLink): Removed $MainPage.
+	(BrowsePage): Removed $MainPage.
+	(GetSearchLink): Removed $MainPage.
+	(GetGotoBar): Removed MainPage handling.
+	(ValidId): Removed $UseSubpage.
+	(GenerateAllPagesList): No longer do subpages.
+	(FreeToNormal): Removed $UseSubpage and $FreeUpper.
+	(DoEdit): Removed $MainPage.
 
 2003-06-05  Alex Schroeder  <alex@gnu.org>
 
