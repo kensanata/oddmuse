@@ -276,7 +276,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.268 2003/11/27 15:37:22 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.269 2003/11/27 15:39:58 as Exp $');
 }
 
 sub InitCookie {
@@ -1374,8 +1374,7 @@ sub GetRc {
     next if $filterOnly and not grep(/^$pagename$/, @filters);
     next if ($userOnly and $userOnly ne $username);
     my @languages = split(/,/, $languages);
-    push (@languages, T('none')) unless @languages;
-    next if ($langFilter and not grep(/$langFilter/, @languages));
+    next if ($langFilter and @languages and not grep(/$langFilter/, @languages));
     next if ($PageCluster and $clusterOnly and $clusterOnly ne $cluster);
     $cluster = '' if $clusterOnly or not $PageCluster; # since now $clusterOnly eq $cluster
     if ($PageCluster and $all < 2 and not $clusterOnly and $cluster) {
@@ -2810,8 +2809,7 @@ sub SearchTitleAndBody {
     next if ($Page{'text'} =~ /^#FILE / and $string !~ /^\^#FILE/); # skip files unless requested
     if ($langFilter) {
       my @languages = split(/,/, $Page{languages});
-      push (@languages, T('none')) unless @languages;
-      next if ($langFilter and not grep(/$langFilter/, @languages));
+      next if ($langFilter and @languages and not grep(/$langFilter/, @languages));
     }
     my $found = 1; # assume found
     foreach my $str (@strings) {
