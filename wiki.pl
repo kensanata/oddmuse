@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.369 2004/04/03 21:50:22 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.370 2004/04/04 17:24:03 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2940,8 +2940,8 @@ sub AllPagesList {
     $IndexHash{$1} = 1;
   }
   $IndexInit = 1;  # Initialized for this run of the script
-  # Try to write out the list for future runs
-  RequestLockDir('index') or return @IndexList; # not fatal
+  # Try to write out the list for future runs.  If file exists and cannot be changed, error!
+  RequestLockDir('index', undef, undef, -f $IndexFile) or return @IndexList;
   WriteStringToFile($IndexFile, join(' ', %IndexHash));
   ReleaseLockDir('index');
   return @IndexList;
