@@ -6,6 +6,7 @@
 	lock always.
 	(UpdateDiffs): No longer use lock parameter.
 	(Save): Make sure the old text is not encoded when it sent to the diff.
+	(SmileyReplace): New class.  Suggested by Björn Lindström.
 
 2003-11-02  Alex Schroeder  <alex@gnu.org>
 
