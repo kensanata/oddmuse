@@ -11,6 +11,8 @@
 	(OpenNewText): Check whether $CommentsPrefix is set before matching.
 	(DoPost): Reorder and rewrite the comment handling code.
 	(PrintJournal): Default regexp now requires the name to start with the ISO date.
+	(PrintFooter): Add link to original if appropriate.
+	(DoPost): Use undefined default $comment to distinguish '' $comment from no $comment.
 
 2003-06-15  Pierre Gaston  <pgas@intracom.gr>, Alex Schroeder  <alex@gnu.org>
 
