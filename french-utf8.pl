@@ -260,9 +260,9 @@ Ce changement est mineur.
 Preview
 Prévisualisation
 Replace this file with text.
-
+Remplacer ce fichier par un texte.
 Replace this text with a file.
-
+Remplacer ce texte par un fichier.
 Preview:
 Prévisualisation
 Preview only, not yet saved
