@@ -1,3 +1,8 @@
+2003-09-18  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ApplyRules): Add optional text parameter to the include
+	markup.
+
 2003-09-13  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetHtmlHeader): Added CSS for div.journal h1.
