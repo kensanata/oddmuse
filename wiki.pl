@@ -279,7 +279,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.226 2003/10/28 18:32:51 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.227 2003/10/28 19:22:28 as Exp $');
 }
 
 sub InitCookie {
@@ -342,10 +342,10 @@ sub InitLinkPatterns {
 
 sub Clean {
   my $block = (shift);
-  return if $block eq '';
+  return 0 if $block eq ''; # "0" must print!
   print $block;
   $Fragment .= $block;
-  return $block;
+  return 1; # if the result of Clean() is used in a test
 }
 
 sub Dirty { # arg 1 is the raw text; the real output must be printed instead
@@ -363,7 +363,7 @@ sub ApplyRules {
   my ($text, $locallinks, $withanchors, $revision) = @_;
   $text =~ s/\r\n/\n/g; # DOS to Unix
   my $state = ''; # quote, list, or normal ('')
-  local $Fragment;# the clean HTML fragment not yet on @Blocks
+  local $Fragment = ''; # the clean HTML fragment not yet on @Blocks
   local @Blocks;  # the list of cached HTML blocks
   local @Flags;   # a list for each block, 1 = dirty, 0 = clean
   my $htmlre = join('|',(@HtmlTags));
@@ -493,8 +493,8 @@ sub ApplyRules {
       # [[Free Link|text]], [[Free Link]]
       Dirty($1);
       print GetPageOrEditLink($2, $3, 0 , 1); # $3 may be empty
-    } elsif (%Smilies && (Clean(SmileyReplace()))) { # $Fragment already set
-    } elsif (eval { local $SIG{__DIE__}; Clean(MyRules()); }) { # dito
+    } elsif (%Smilies && (Clean(SmileyReplace()))) {
+    } elsif (eval { local $SIG{__DIE__}; Clean(MyRules()); }) {
     } elsif (m/\G\s*\n(s*\n)+/cg) { # paragraphs -- whitespace including at least two newlines
       Clean(CloseHtmlEnvironments() . '<p>'); # there is another one like this further up
     } elsif (m/\G\s+/cgs) { Clean(' ');
