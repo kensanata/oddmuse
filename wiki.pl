@@ -348,7 +348,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.458 2004/09/19 22:01:09 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.459 2004/09/29 22:36:50 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1009,7 +1009,7 @@ sub GetEditLink { # shortcut
   $name =~ s/_/ /g;
   my $action = 'action=edit;id=' . UrlEncode($id);
   $action .= ';upload=1' if $upload;
-  return ScriptLink($action, $name, 'edit', undef, T('Click to create this page'), $accesskey);
+  return ScriptLink($action, $name, 'edit', undef, T('Click to edit this page'), $accesskey);
 }
 
 sub ScriptLink {
@@ -2016,6 +2016,7 @@ sub PrintFooter {
   }
   print GetCommentForm($id, $rev, $comment);
   print '<div class="footer">' . $q->hr();
+  print GetGotoBar($id);
   print $q->span({-class=>'edit'}, GetFooterLinks($id, $rev));
   print $q->span({-class=>'admin'}, GetAdminBar($id, $rev)) if UserIsAdmin();
   print $q->span({-class=>'time'}, GetFooterTimestamp($id, $rev));
@@ -2091,40 +2092,39 @@ sub GetAdminBar {
 
 sub GetFooterLinks {
   my ($id, $rev) = @_;
-  my $revisions;
+  my $html;
   if ($id and $rev ne 'history' and $rev ne 'edit') {
     if (UserCanEdit($CommentsPrefix . $id, 0)
 	and $OpenPageName !~ /^$CommentsPrefix/) {
-      $revisions .= ScriptLink(UrlEncode($CommentsPrefix . $OpenPageName),
+      $html .= ScriptLink(UrlEncode($CommentsPrefix . $OpenPageName),
 			       T('Comments on this page'));
     }
-    $revisions .= ' | ' if $revisions;
+    $html .= ' | ' if $html;
     if (UserCanEdit($id, 0)) {
       if ($rev) { # showing old revision
-	$revisions .= GetOldPageLink('edit', $id, $rev,
+	$html .= GetOldPageLink('edit', $id, $rev,
 				     Ts('Edit revision %s of this page', $rev));
       } else { # showing current revision
-	$revisions .= GetEditLink($id, T('Edit text of this page'), undef, T('e'));
+	$html .= GetEditLink($id, T('Edit text of this page'), undef, T('e'));
       }
     } else { # no permission or generated page
-      $revisions .= ScriptLink('action=password', T('This page is read-only'));
+      $html .= ScriptLink('action=password', T('This page is read-only'));
     }
   }
   if ($id and $rev ne 'history') {
-    $revisions .= ' | ' if $revisions;
-    $revisions .= GetHistoryLink($id, T('View other revisions'));
+    $html .= ' | ' if $html;
+    $html .= GetHistoryLink($id, T('View other revisions'));
   }
   if ($rev ne '') {
-    $revisions .= ' | ' if $revisions;
-    $revisions .= GetPageLink($id, T('View current revision'))
+    $html .= ' | ' if $html;
+    $html .= GetPageLink($id, T('View current revision'))
       . ' | ' . GetRCLink($id, T('View all changes'));
   }
   if ($CommentsPrefix and $id =~ /^$CommentsPrefix(.*)/) {
-    $revisions .= ' | ' if $revisions;
-    $revisions .= Ts('Back to %s', GetPageLink($1, $1));
+    $html .= ' | ' if $html;
+    $html .= Ts('Back to %s', GetPageLink($1, $1));
   }
-  my $html =  GetGotoBar($id);
-  $html .= $q->br() . $revisions if $revisions;
+  $html = $q->br() . $html if $html;
   return $html;
 }
 
