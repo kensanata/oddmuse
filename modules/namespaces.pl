@@ -16,10 +16,12 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.4 2004/04/06 22:18:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.5 2004/12/20 04:35:06 as Exp $</p>';
 
 my $NamespacesInit = 0;
 my $NamespacesMain = 'Main'; # to get back to the main namespace
+my $NamespaceRoot = '';
+my $NamespaceCurrent = '';
 
 *OldNamespacesInitVariables = *InitVariables;
 *InitVariables = *NewNamespacesInitVariables;
@@ -30,20 +32,24 @@ sub NewNamespacesInitVariables {
   if (not $InterSiteInit and !$Monolithic and $UsePathInfo) {
     $InterSite{$NamespacesMain} = $ScriptName . '/';
     foreach my $name (glob("$DataDir/*")) {
-      if (-d $name and $name =~ /($InterSitePattern)/ and $name ne $NamespacesMain) {
+      if (-d $name and $name =~ m|/($InterSitePattern)$| and $name ne $NamespacesMain) {
 	$InterSite{$1} = $ScriptName . '/' . $1 . '/';
       }
     }
   }
-  if ($UsePathInfo and not $NamespacesInit
-      # make sure ordinary page names are not matched!
-      and $q->path_info() =~ m|^/($InterSitePattern)(/.*)?|
-      and ($2 or $q->param or $q->keywords)
-      and ($1 ne $NamespacesMain)) {
-    my ($ns, $rest) = ($1, $2);
+  if (($UsePathInfo and not $NamespacesInit
+       # make sure ordinary page names are not matched!
+       and $q->path_info() =~ m|^/($InterSitePattern)(/.*)?|
+       and ($2 or $q->param or $q->keywords)
+       and ($1 ne $NamespacesMain))
+      or
+      (GetParam('ns', '') =~ m/^($InterSitePattern)$/
+       and ($1 ne $NamespacesMain))) {
+    my ($NamespaceCurrent, $rest) = ($1, $2);
     $NamespacesInit = 1;
     # Change some stuff from the original InitVariables call:
-    $DataDir    .= '/' . $ns;
+    $SiteName   .= ' ' . $NamespaceCurrent;
+    $DataDir    .= '/' . $NamespaceCurrent;
     $PageDir     = "$DataDir/page";
     $KeepDir     = "$DataDir/keep";
     $RefererDir  = "$DataDir/referer";
@@ -58,9 +64,10 @@ sub NewNamespacesInitVariables {
     # $ConfigFile -- shared
     # $ModuleDir -- shared
     # $NearDir -- shared
-    $ScriptName .= '/' . $ns;
-    $FullUrl .= '/' . $ns;
-    $WikiDescription .= "<p>Current namespace: $ns</p>";
+    $NamespaceRoot = $ScriptName;
+    $ScriptName .= '/' . $NamespaceCurrent;
+    $FullUrl .= '/' . $NamespaceCurrent;
+    $WikiDescription .= "<p>Current namespace: $NamespaceCurrent</p>";
     # override LastUpdate
     my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size, $atime,$mtime,$ctime,$blksize,$blocks)
       = stat($IndexFile);
@@ -68,5 +75,106 @@ sub NewNamespacesInitVariables {
     CreateDir($DataDir); # Create directory if it doesn't exist
     ReportError(Ts('Could not create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR')
       unless -d $DataDir;
+  } else {
+    $Action{rc} = \&NamespaceBrowseRc;
   }
+}
+
+sub NamespaceBrowseRc {
+  print GetHeader('', T('Recent Changes for All Namespaces'), '');
+  RcHeader();
+  print NamespaceInternalRc(GetParam('limit',100));
+  print GetFilterForm();
+  PrintFooter();
+}
+
+sub NamespaceInternalRc {
+  my $maxitems = shift;
+  my %lines;
+  eval { require XML::RSS;  } or return $q->div({-class=>'rss'},
+						$q->strong(T('XML::RSS is not available on this system.')));
+  # All strings that are concatenated with strings returned by the RSS
+  # feed must be decoded.  Without this decoding, 'diff' and 'history'
+  # translations will be double encoded when printing the result.
+  my $tDiff = T('diff');
+  my $tHistory = T('history');
+  if ($HttpCharset eq 'UTF-8' and ($tDiff ne 'diff' or $tHistory ne 'history')) {
+    eval { local $SIG{__DIE__};
+	   require Encode;
+	   $tDiff = Encode::decode_utf8($tDiff);
+	   $tHistory = Encode::decode_utf8($tHistory);
+	 }
+  }
+  my $wikins = 'http://purl.org/rss/1.0/modules/wiki/';
+  my $rdfns = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
+  my $str;
+  SetParam(GetParam('rsslimit', 'all'));
+  foreach my $site (keys %InterSite) {
+    if ($InterSite{$site} =~ m|^$ScriptName/([^/]*)|) {
+      my $ns = $1;
+      my $data = '';
+      local $ScriptName = $ScriptName;
+      local $RcFile = $RcFile;
+      if ($ns) {
+	my @dirs = split(/\//, $RcFile);
+	my $file = pop @dirs;
+	$RcFile = join('/', @dirs, $ns, $file);
+	$ScriptName .= '/' . $ns;
+      }
+      local *STDOUT;
+      open(STDOUT, '>', \$data) or die "Can't open memory file: $!";
+      DoRc(\&GetRcRss);
+      close(STDOUT);
+      my $rss = new XML::RSS;
+      $str .= $q->p($q->strong(Ts('%s returned no data.',
+				  $q->a({-href=>$ns}, $ns)))) unless $data;
+      eval { local $SIG{__DIE__}; $rss->parse($data); };
+      $str .= $q->p($q->strong(Ts('RSS parsing failed for %s',
+				  $q->a({-href=>$ns}, $ns)) . ': ' . $@)) if $data and $@;
+      $str .= $q->p($q->strong(Ts('No items found in %s.', $q->a({-href=>$ns}, $ns or $NamespacesMain))))
+	unless @{$rss->{items}};
+      foreach my $i (@{$rss->{items}}) {
+	my $line;
+	my $date = $i->{dc}->{date};
+	my $title = $i->{title};
+	my $description = $i->{description};
+	$line .= ' (' . $q->a({-href=>$i->{$wikins}->{diff}}, $tDiff) . ')';
+	$line .= ' (' . $q->a({-href=>$i->{$wikins}->{history}}, $tHistory) . ')';
+	$line .= ' ' . $q->a({-href=>$i->{link}, -title=>$date}, ($ns ? $ns . ':' : '') . $title);
+	my $contributor = $i->{dc}->{contributor};
+	$contributor =~ s/^\s+//;
+	$contributor =~ s/\s+$//;
+	if (!$contributor) {
+	  $contributor = $i->{$rdfns}->{value};
+	}
+	$line .= $q->span({-class=>'contributor'}, $q->span(T(' . . . . ')) . $contributor);
+	$line .= ' ' . $q->strong({-class=>'description'}, '--', $description) if $description;
+	while ($lines{$date}) {
+	  $date .= ' ';
+	}			# make sure this is unique
+	$lines{$date} = $line;
+      }
+    }
+  }
+  my @lines = sort { $b cmp $a } keys %lines;
+  @lines = @lines[0..$maxitems-1] if $maxitems and $#lines > $maxitems;
+  my $date;
+  foreach my $key (@lines) {
+    my $line = $lines{$key};
+    if ($key =~ /(\d\d\d\d(?:-\d?\d)?(?:-\d?\d)?)(?:[T ](\d?\d:\d\d))?/) {
+      my ($day, $time) = ($1, $2);
+      if ($day ne $date) {
+	$str .= '</ul>' if $date; # close ul except for the first time where no open ul exists
+	$date = $day;
+	$str .= $q->p($q->strong($day)) . '<ul>';
+      }
+      $line = $time . ' UTC ' . $line if $time;
+    } elsif (not $date) {
+      $str .= '<ul>'; # if the feed doesn't have any dates we need to start the list anyhow
+      $date = $Now;		# to ensure the list starts only once
+    }
+    $str .= $q->li($line);
+  }
+  $str .= '</ul>' if $date;
+  return $q->div({-class=>'content rss'}, $str);
 }
