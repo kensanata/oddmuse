@@ -1,3 +1,24 @@
+2003-03-28  Alex Schroeder  <alex@gnu.org>
+
+	Tricky update!  Changing the field separator from superscript 3 to
+	an ASCII control character!
+	
+	* wiki.pl (FS0, FS0used): New field separator for the old one, and
+	a new variable to tell us if the old separator has been used.
+	(InitLinkPatterns): The old separator, FS0, is set to \xb3 (the
+	well-known superscript 3), and the new separator, FS, is set to
+	\x1e, the ASCII control character RS, aka. RECORD SEPARATOR.
+	(ReadFile): Convert data read from files from FS0 to FS if
+	necessary when loading.
+	(DoMaintain): More translating, some HTML changes.  Using the new
+	field separator will not work for keep files, since new changes
+	are just appended to the file.  The keep files must be updated,
+	therefore.  This happens during maintenance, so make sure
+	maintenance really gets run!  This also updates the recent changes
+	log files (both old and current).
+	
+	(GetValidatorLink): Use $q->self_url for the validator link.
+
 2003-03-26  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoHistory): Removed extra <tr>.
