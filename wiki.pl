@@ -269,7 +269,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.154 2003/09/23 21:26:37 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.155 2003/09/23 21:46:30 as Exp $');
 }
 
 sub InitCookie {
@@ -977,7 +977,7 @@ sub Ts {
 
 sub DoBrowseRequest {
   if (not $q->param and not ($UsePathInfo and $q->path_info)) {
-    BrowsePage($HomePage, 0, 1);
+    BrowsePage($HomePage);
     return 1;
   }
   my $id = join('_', $q->keywords);
@@ -990,7 +990,7 @@ sub DoBrowseRequest {
     if (($NotFoundPg ne '') && (!-f GetPageFile($id))) {
       $id = $NotFoundPg;
     }
-    BrowsePage($id, 0, 1)  if ValidIdOrDie($id);
+    BrowsePage($id)  if ValidIdOrDie($id);
     return 1;
   }
   $id = GetParam('id', '');
@@ -1071,14 +1071,10 @@ sub DoBrowseRequest {
 # == Browse page ==
 
 sub BrowsePage {
-  my ($id, $raw, $cacheok) = @_;
+  my ($id, $raw) = @_;
   my $rc = (($id eq $RCName) || (T($RCName) eq $id) || (T($id) eq $RCName));
   OpenPage($id);
   OpenDefaultText($id);
-  if ($cacheok and $Page{'ts'} eq $q->http('HTTP_IF_MODIFIED_SINCE')) {
-    print $q->header(-status=>'304 NOT MODIFIED');
-    return;
-  }
   # Handle a single-level redirect
   my $oldId = GetParam('oldid', '');
   if (($oldId eq '') && (substr($Text{'text'}, 0, 10) eq '#REDIRECT ')) {
