@@ -1,3 +1,17 @@
+2004-10-06  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (RSS): Handle list start tag for feeds without dates.
+	(DoSurgeProtection): Verbose error message if the first visitor
+	lock cannot be created.
+
+2004-10-04  Alex Schroeder  <alex@gnu.org>
+
+	* modules/tables.pl: Renamed UsemodTableAttributes to TableAttributes
+
+	* modules/headers.pl: New.
+
+	* modules/page-trail.pl (UpdatePageTrail): Eliminate duplicates.
+
 2004-10-02  Sebastian Blatt  <sblatt@havens.de>
 
 	* modules/dynlogo.pl: Fixed configuration and added example.
