@@ -87,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.119 2003/08/14 13:18:16 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.120 2003/08/15 10:06:49 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -954,7 +954,7 @@ sub DoBrowseRequest {
   }
   $id = join('_', $q->keywords);
   $id = $q->path_info() unless $id;
-  $id =~ s|^/||;
+  $id =~ s|.*/||;
   if ($id) {                    # Just script?PageName
     if ($FreeLinks && (!-f GetPageFile($id))) {
       $id = FreeToNormal($id);
