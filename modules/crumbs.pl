@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: crumbs.pl,v 1.3 2005/03/28 13:09:51 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: crumbs.pl,v 1.4 2005/03/28 13:13:40 as Exp $</p>';
 
 push(@MyRules, \&CrumbsRule);
 $RuleOrder{\&CrumbsRule} = -10; # run before default rules!
@@ -26,11 +26,10 @@ span.crumbs { font-size: smaller; }
 } unless $DefaultStyleSheet =~ /span\.crumbs/; # mod_perl?
 
 sub CrumbsRule {
-  if (not (pos)
+  if (not (pos) # first!
       and (($WikiLinks && /\G($LinkPattern\n)/cgo)
 	   or ($FreeLinks && /\G(\[\[$FreeLinkPattern\]\]\n)/cgo))) {
-    # both pos and $_ will be trashed in some of the subs called below.
-    my $oldpos = pos;
+    my $oldpos = pos; # will be trashed below
     my $cluster = FreeToNormal($2);
     my %seen = ($cluster => 1);
     my @links = ($cluster);
