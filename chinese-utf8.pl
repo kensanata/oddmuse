@@ -17,6 +17,7 @@
 #
 # This translation was last checked for Oddmuse version 1.504.
 #
+$ModulesDescription .= '<p>$Id: chinese-utf8.pl,v 1.16 2004/12/27 01:00:38 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 禁止讀取：使用者、ip 或是網路已被禁止連線。

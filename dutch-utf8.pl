@@ -24,6 +24,7 @@
 #
 # This translation was last checked for Oddmuse version 1.215.
 #
+$ModulesDescription .= '<p>$Id: dutch-utf8.pl,v 1.16 2004/12/27 01:00:38 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 U mag deze pagina niet lezen: uw account op deze Wiki, uw IP of uw netwerk is buitengesloten.

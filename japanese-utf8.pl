@@ -17,6 +17,7 @@
 #
 # This translation was last checked for Oddmuse version 1.215.
 #
+$ModulesDescription .= '<p>$Id: japanese-utf8.pl,v 1.13 2004/12/27 01:00:38 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 
