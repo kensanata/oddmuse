@@ -356,7 +356,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.533 2005/03/06 16:31:59 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.534 2005/03/12 01:00:54 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -3714,9 +3714,9 @@ sub DoPageLock {
   }
   utime time, time, $IndexFile; # touch index file
   if (-f $fname) {
-    print $q->p(Ts('Lock for %s created.', $id));
+    print $q->p(Ts('Lock for %s created.', GetPageLink($id)));
   } else {
-    print $q->p(Ts('Lock for %s removed.', $id));
+    print $q->p(Ts('Lock for %s removed.', GetPageLink($id)));
   }
   PrintFooter();
 }
