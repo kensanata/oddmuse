@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.13 2004/11/27 21:25:07 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.14 2004/12/03 08:45:36 as Exp $</p>';
 
 $DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /table\.user/; # mod_perl?
 table.user { border-style:solid; border-width:thin; }
@@ -110,6 +110,7 @@ sub UsemodRule {
     my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '')
       . AddHtmlEnvironment('h' . $depth);
     $PortraitSupportColorDiv = 0; # after the HTML has been determined.
+    $PortraitSupportColor = 0;
     return $html;
   } elsif ($UseModMarkupInTitles
 	   && m/\G[ \t]*=+\n?/cg
@@ -120,11 +121,12 @@ sub UsemodRule {
     my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '')
       . WikiHeading($2, $3);
     $PortraitSupportColorDiv = 0; # after the HTML has been determined.
+    $PortraitSupportColor = 0;
     return $html;
   }
   # horizontal lines using ----
   elsif ($bol && m/\G(\s*\n)*----+[ \t]*\n?/cg) {
-    return CloseHtmlEnvironments() . $q->hr();
+    return CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '') . $q->hr();
   }
   # tables using || -- the first row of a table
   elsif ($bol && m/\G(\s*\n)*((\|\|)+)([ \t])*(?=.*\|\|[ \t]*(\n|$))/cg) {
