@@ -88,7 +88,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.127 2003/08/18 22:58:13 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.128 2003/08/21 15:48:12 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -384,10 +384,10 @@ sub ApplyRules {
 	}
 	pos = $oldpos; # restore \G after call to ApplyRules
 	DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
-      } elsif (m/\G(\&lt;journal( +(\d*))?( +"(.*)")?\&gt;[ \t]*\n?)/cgi) { # <journal 10 "regexp"> includes 10 pages matching regexp
+      } elsif (m/\G(\&lt;journal( +(\d*))?( +"(.*)")?( +(reverse))?\&gt;[ \t]*\n?)/cgi) { # <journal 10 "regexp"> includes 10 pages matching regexp
 	DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
 	my $oldpos = pos;
-	PrintJournal($3, $5);
+	PrintJournal($3, $5, $7);
 	pos = $oldpos; # restore \G after call to ApplyRules
       } elsif (m/\G(\&lt;rss +"(.*)"\&gt;[ \t]*\n?)/cgi) { # <rss "uri..."> stores the parsed RSS of the given URI
 	my $oldpos = pos;
@@ -677,7 +677,7 @@ sub GetRaw {
 }
 
 sub PrintJournal {
-  my ($num, $regexp) = @_;
+  my ($num, $regexp, $mode) = @_;
   if (!$CollectingJournal) {
     $CollectingJournal = 1;
     $regexp = '^\d\d\d\d-\d\d-\d\d' unless $regexp;
@@ -687,6 +687,9 @@ sub PrintJournal {
       @pages = sort JournalSort @pages;
     } else {
       @pages = sort {$b cmp $a} @pages;
+    }
+    if ($mode eq 'reverse') {
+      @pages = reverse @pages;
     }
     @pages = @pages[0 .. $num - 1] if $#pages >= $num;
     if (@pages) {
