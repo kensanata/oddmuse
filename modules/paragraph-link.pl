@@ -16,9 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: paragraph-link.pl,v 1.2 2004/08/09 04:21:28 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: paragraph-link.pl,v 1.3 2004/10/10 17:46:55 as Exp $</p>';
 
 push(@MyRules, \&ParagraphLinkRule);
+# The [...] rule conflicts with the [new] in portrait-support.pl
+$RuleOrder{\&ParagraphLinkRule} = 100;
 
 sub ParagraphLinkRule {
   if ($bol && m/\G(\[(-)?$FreeLinkPattern\])/cog) {
