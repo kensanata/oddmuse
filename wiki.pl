@@ -278,7 +278,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.222 2003/10/25 13:54:19 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.223 2003/10/25 13:55:43 as Exp $');
 }
 
 sub InitCookie {
@@ -3295,7 +3295,7 @@ sub DoPost {
   my $oldtime = $Page{'ts'};
   my $myoldtime = GetParam('oldtime', ''); # maybe empty!
   # Handle raw edits with the meta info on the first line
-  if ($raw == 2 and $string =~ /^([0-9]+).*\n/) {
+  if (GetParam('raw',0) == 2 and $string =~ /^([0-9]+).*\n/) {
     $myoldtime = $1;
     $string = $';
   }
