@@ -16,14 +16,14 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>partial-journal.pl (v0.1) - Show partial journal pages.</p>';
+$ModulesDescription .= '<p>$Id: partial-journal.pl,v 1.3 2004/12/05 03:55:38 as Exp $</p>';
 
 # Set up some rule so that we can mess with '-- cut --' (change to <hr>)
 push(@MyRules, \&PartialCutRule);
 
 sub PartialCutRule {
   if (m/\G(?<=\n)\s*--\s*cut\s*--\s*(?=\n)/gc) {
-    return CloseHtmlEnvironments() . '<hr class="cut">';
+    return CloseHtmlEnvironments() . '<hr class="cut" />' . AddHtmlEnvironment('p');
   }
   return undef;
 }
