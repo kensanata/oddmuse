@@ -276,7 +276,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.269 2003/11/27 15:39:58 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.270 2003/11/27 15:50:50 as Exp $');
 }
 
 sub InitCookie {
@@ -2722,20 +2722,26 @@ sub DoIndex {
 }
 
 sub PrintPageList {
-  if (GetParam('raw', 0)) {
-    foreach my $id (@_) {
-      print $id, "\n";
+  my $raw = GetParam('raw', 0);
+  my $lang = GetParam('lang', 0);
+  print $q->h2(Ts('%s pages found:', ($#_ + 1))), '<p>' unless $raw;
+  my @pages = @_;
+  foreach my $id (@pages) {
+    if ($lang) {
+      OpenPage ($id);
+      my @languages = split(/,/, $Page{languages});
+      next if (@languages and not grep(/$lang/, @languages));
     }
-  } else {
-    print $q->h2(Ts('%s pages found:', ($#_ + 1))), '<p>';
-    foreach my $id (@_) {
+    if ($raw) {
+      print $id, "\n";
+    } else {
       my ($class, $exists, $title) = ResolveId($id);
       my $text = $id;
       $text =~ s/_/ /g;
       print ScriptLink(UrlEncode($id), $text, $class, '', $title), $q->br();
     }
-    print '</p>' if (not GetParam('raw', 0));
   }
+  print '</p>' if (not GetParam('raw', 0)) unless $raw;
 }
 
 sub AllPagesList {
