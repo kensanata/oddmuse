@@ -43,20 +43,10 @@ geschiedenis
 %s retourneerde geen data, of LWP::UserAgent is niet beschikbaar.
 RSS parsing failed for %s
 Lezen van RSS is niet gelukt voor %s
- . . . .
- . . . .
+ . . . . 
+
 Click to create this page
 Klik hier om deze pagina aan te maken
-http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
-http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
-http://www.amazon.com/exec/obidos/ISBN=%s
-http://www.amazon.com/exec/obidos/ISBN=%s
-alternate
-alternatief
-http://www.pricescan.com/books/BookDetail.asp?isbn=%s
-http://www.pricescan.com/books/BookDetail.asp?isbn=%s
-search
-zoeken
 Invalid action parameter %s
 Ongeldige actieparameter %s
 Invalid URL.
@@ -109,14 +99,14 @@ Toon ook kleine wijzigingen
 %s dagen
 List later changes
 Toon latere veranderingen
+Filters
+Filters
 Username:
 Gebruikersnaam:
 Host:
 Host:
 Language:
 Taal:
-Filters
-Filters
 Go!
 OK
 (minor)
@@ -151,8 +141,8 @@ redirected from %s
 doorverwezen vanaf %s
 Click to search for references to this page
 Klik hier om te zoeken naar verwijzingen naar deze pagina
-Cookie:
-Cookie:
+Cookie: 
+Cookie: 
 Warning
 Waarschuwing
 Database is stored in temporary directory %s
@@ -303,8 +293,8 @@ Replace this file with text.
 Vervang dit bestand door tekst.
 Replace this text with a file.
 Vervang deze tekst door een bestand.
-File to upload:
-Te publiceren bestand:
+File to upload: 
+Te publiceren bestand: 
 Files of type %s are not allowed.
 Bestanden van het type %s zijn niet toegestaan.
 Password
@@ -411,8 +401,8 @@ Main lock obtained.
 De gehele site is vergrendeld.
 Expiring keep files and deleting pages marked for deletion
 Bezig met verwijderen van te oude revisies uit de archieven, en verwijderen van pagina's die daarvoor gemarkeerd zijn
-not deleted:
-niet verwijderd:
+not deleted: 
+niet verwijderd: 
 deleted
 verwijderd
 Moving part of the %s log file.
@@ -479,12 +469,18 @@ Delete page
 Verwijder pagina
 Rename this page to:
 Hernoem deze pagina in:
+Cannot highlight the language %s.
+
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
 The match parameter is missing.
 De parameter 'match' ontbreekt.
 Page Collection for %s
 Paginaverzameling voor %s
+Previous
+
+Next
+
 Calendar %s
 Kalender %s
 Footnotes:
@@ -509,14 +505,20 @@ The 404 handler extension requires the link data extension (links.pl).
 The 404 handler extension requires the link data extension (links.pl).
 Orphan List
 Lijst met Wezen
-Trail:
-Spoor:
+Trail: 
+Spoor: 
 None
 Geen
 Type
 Type
+Permalink to "%s"
+
 Portrait
 Portret
+Static Copy
+
+Alternatively, use one of the following templates:
+
 Thread: %s
 Draad: %s
 ID parameter is missing.
@@ -537,6 +539,24 @@ URL:
 URL:
 Name:
 Naam:
+Failed to remove %s
+
+The translation is up to date.
+
+The translation is outdated.
+
+The page does not exist.
+
+http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
+http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
+http://www.amazon.com/exec/obidos/ISBN=%s
+http://www.amazon.com/exec/obidos/ISBN=%s
+alternate
+alternatief
+http://www.pricescan.com/books/BookDetail.asp?isbn=%s
+http://www.pricescan.com/books/BookDetail.asp?isbn=%s
+search
+zoeken
 Blog
 Blog
 END_OF_TRANSLATION
