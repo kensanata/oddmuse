@@ -350,7 +350,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.491 2004/11/28 18:38:02 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.492 2004/11/30 00:34:26 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -701,7 +701,7 @@ sub PrintWikiToHTML {
   my ($blocks, $flags) = ApplyRules($pageText, 1, $savecache, $revision, 'p'); # p is start tag!
   # local links, anchors if cache ok
   if ($savecache and not $revision and $Page{revision} # don't save revision 0 pages
-      $Page{blocks} ne $blocks and $Page{flags} ne $flags) {
+      and $Page{blocks} ne $blocks and $Page{flags} ne $flags) {
     $Page{blocks} = $blocks;
     $Page{flags} = $flags;
     if ($islocked or RequestLockDir('main')) { # not fatal!
