@@ -1,0 +1,7 @@
+2003-03-21  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ScriptLink): Inherit embed and toplinkbar parameters to
+	local links.
+	(ISBNLink): Make URLs to shops translatable.
+	(GetGotoBar): Add search button.
+
