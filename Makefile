@@ -11,14 +11,17 @@ upload: $(VERSION).tar.gz $(VERSION).tar.gz.sig
 	curl -T $(VERSION).tar.gz -T $(VERSION).tar.gz.sig \
 	ftp://savannah.gnu.org/incoming/savannah/oddmuse/
 
+upload-text: new-utf8.pl
+	wikiupload new-utf8.pl http://www.oddmuse.org/cgi-bin/oddmuse-en/New_Translation_File
+
 $(VERSION).tar.gz:
 	rm -rf $(VERSION)
 	mkdir $(VERSION)
 	cp README FDL GPL ChangeLog wiki.pl $(TRANSLATIONS) $(MODULES) $(VERSION)
 	tar czf $(VERSION).tar.gz $(VERSION)
 
-$(VERSION).tar.gz.sig:
-	gpg --sign -b $(VERSION).tar.gz
+%.tar.gz.sig: %.tar.gz
+	gpg --sign -b $<
 
 update-translations: $(TRANSLATIONS)
 
@@ -37,3 +40,16 @@ install:
 
 test:
 	perl test-markup.pl
+
+package-upload: debian-$(VERSION).tar.gz debian-$(VERSION).tar.gz.sig
+	curl -T debian-$(VERSION).tar.gz -T debian-$(VERSION).tar.gz.sig \
+	ftp://savannah.gnu.org/incoming/savannah/oddmuse/
+
+package: debian-$(VERSION).tar.gz
+	gpg --ascii --encrypt $<
+
+debian-$(VERSION).tar.gz:
+	rm -rf $(VERSION)
+	mkdir $(VERSION)
+	cp README FDL GPL wiki.pl $(VERSION)
+	tar czf $@ $(VERSION)
