@@ -389,6 +389,12 @@ Please check whether you overwrote those changes.
 Tarkista, ylikirjoititko joitakin noista muutoksista.
 Anonymous
 Nimetön
+Cannot delete the index file %s.
+
+Please check the directory permissions.
+
+Your changes were not saved.
+
 Could not get a lock to merge!
 Sivua ei voitu lukita sulautusta varten!
 you
@@ -535,6 +541,8 @@ Template without parameters
 Pohja ilman parametrejä
 The template %s is either empty or does not exist.
 Pohja %s on joko tyhjä tai ei ole olemassa.
+%s returned no data.
+
 Clearing Cache
 Välimuistia tyhjennetään
 Done.
@@ -555,13 +563,13 @@ Permalink to "%s"
 Pysyvä linkki "%s":ään
 Portrait
 Avatar
+You did not answer correctly.
+
 Updating %s
 
-Done.</p>
+Done.</p></div>
 
 Search term missing.
-
-Searching for %s
 
 Static Copy
 Staattinen kopio
@@ -593,6 +601,8 @@ Failed to remove %s
 %s:n poisto epäonnistui
 Contents
 Sisältö
+This page is a translation of %s. 
+
 The translation is up to date.
 Käännös on ajantasainen.
 The translation is outdated.

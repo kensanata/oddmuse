@@ -397,6 +397,12 @@ Please check whether you overwrote those changes.
 Controleer a.u.b. of u die wijzigingen overschreven heeft.
 Anonymous
 Anoniem
+Cannot delete the index file %s.
+
+Please check the directory permissions.
+
+Your changes were not saved.
+
 Could not get a lock to merge!
 Kan de pagina niet vergrendelen voor het samenvoegen
 you
@@ -543,6 +549,8 @@ Template without parameters
 
 The template %s is either empty or does not exist.
 
+%s returned no data.
+
 Clearing Cache
 Bezig met leegmaken van de cache
 Done.
@@ -563,13 +571,13 @@ Permalink to "%s"
 
 Portrait
 Portret
+You did not answer correctly.
+
 Updating %s
 
-Done.</p>
+Done.</p></div>
 
 Search term missing.
-
-Searching for %s
 
 Static Copy
 
@@ -600,6 +608,8 @@ Naam:
 Failed to remove %s
 
 Contents
+
+This page is a translation of %s. 
 
 The translation is up to date.
 

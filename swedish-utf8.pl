@@ -395,6 +395,12 @@ Please check whether you overwrote those changes.
 Kontrollera om du skrev över de ändringarna.
 Anonymous
 Anonym
+Cannot delete the index file %s.
+
+Please check the directory permissions.
+
+Your changes were not saved.
+
 Could not get a lock to merge!
 Kunde inte låsa för att slå samman!
 you
@@ -541,6 +547,8 @@ Template without parameters
 
 The template %s is either empty or does not exist.
 
+%s returned no data.
+
 Clearing Cache
 
 Done.
@@ -561,13 +569,13 @@ Permalink to "%s"
 
 Portrait
 
+You did not answer correctly.
+
 Updating %s
 
-Done.</p>
+Done.</p></div>
 
 Search term missing.
-
-Searching for %s
 
 Static Copy
 
@@ -598,6 +606,8 @@ Name:
 Failed to remove %s
 
 Contents
+
+This page is a translation of %s. 
 
 The translation is up to date.
 
