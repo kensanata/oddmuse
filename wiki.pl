@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.390 2004/04/23 21:02:10 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.391 2004/04/25 12:22:55 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -3548,7 +3548,7 @@ sub DoMaintain {
   print $q->p(T('Main lock obtained.'));
   print '<p>', T('Expiring keep files and deleting pages marked for deletion');
   # Expire all keep files
-  foreach my $name (sort(AllPagesList())) {
+  foreach my $name (AllPagesList()) {
     print $q->br();
     print GetPageLink($name);
     OpenPage($name);
