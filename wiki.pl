@@ -349,7 +349,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.478 2004/11/11 22:41:05 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.479 2004/11/12 22:04:00 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2167,9 +2167,9 @@ sub GetCommentForm {
 }
 
 sub GetFormStart {
-  my $encoding = shift ? 'multipart/form-data' : 'application/x-www-form-urlencoded';
-  my $method = shift ? 'get' : 'post';
-  my $class = shift || $method;
+  my $encoding = (shift) ? 'multipart/form-data' : 'application/x-www-form-urlencoded';
+  my $method = (shift) ? 'get' : 'post';
+  my $class = (shift) || $method;
   return $q->start_form(-method=>$method, -action=>$FullUrl, -enctype=>$encoding);
 }
 
@@ -2233,11 +2233,22 @@ sub GetKeptDiff {
   die 'No old revision' unless $oldRevision; # FIXME
   my %keep = GetKeptRevision($oldRevision);
   return '' unless $keep{text};
-  return GetDiff($keep{text}, $newText);
+  return GetDiff($keep{text}, $newText, $oldRevision);
 }
 
 sub GetDiff {
-  my ($old, $new) = @_;
+  my ($old, $new, $oldRevision) = @_;
+  $old =~ m/^#FILE ([^ \n]+)\n/;
+  my $old_is_file = ($1 ? substr($1, 0, 6) : 0);
+  my $old_is_image = ($old_is_file eq 'image/');
+  $new =~ m/^#FILE ([^ \n]+)\n/;
+  my $new_is_file = ($1 ? substr($1, 0, 6) : 0);
+  my $new_is_image = ($new_is_file eq 'image/');
+  if ($old_is_file or $new_is_file) {
+    return $q->p($q->strong(T('Old revision:')))
+      . $q->div({-class=>'old'}, # don't pring new revision, because that's the one that gets shown!
+		$q->p($old_is_file ? GetDownloadLink($OpenPageName, $old_is_file, $oldRevision) : $old))
+  }
   my ($diff_out, $oldName, $newName);
   $old =~ s/[\r\n]+/\n/g;
   $new =~ s/[\r\n]+/\n/g;
@@ -3907,5 +3918,3 @@ sub DeletePermanentAnchors {
 
 DoWikiRequest()	 if $RunCGI;   # Do everything.
 1; # In case we are loaded from elsewhere
-
-# == End of the OddMuse script. ==
