@@ -30,6 +30,9 @@
 	(WriteStringToFile): Dito.
 	(GetPermanentAnchor): Don't always write permanent anchors, and
 	don't double-encode page ids.
+	(DoRc): Remove timestamp.
+	(RcHeader): Remove computation of lastTs, and simplify the link to
+	"list later changes".
 
 2003-11-02  Alex Schroeder  <alex@gnu.org>
 
