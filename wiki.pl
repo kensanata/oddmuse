@@ -88,7 +88,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.134 2003/08/31 23:22:45 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.135 2003/09/02 22:18:50 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -2727,12 +2727,14 @@ sub FreeToNormal {
 sub DoEdit {
   my ($id, $isConflict, $oldTime, $newText, $preview) = @_;
   my ($header, $userName, $revision, $oldText);
-  my ($summary, $minor, $pageTime);
+  my ($summary, $minor, $pageTime, $rule);
   if (!UserCanEdit($id, 1)) {
     print GetHeader('', T('Editing Denied'), '');
-    if (UserIsBanned()) {
+    if ($rule = UserIsBanned()) { # set $rule
       print $q->p(T('Editing not allowed: user, ip, or network is blocked.'));
       print $q->p(T('Contact the wiki administrator for more information.'));
+      print $q->p(Ts('The rule %s matched for you.', $rule) . ' '
+		  . Ts('See %s for more information.', GetPageLink($BannedHosts)));
     } else {
       print $q->p(Ts('Editing not allowed: %s is read-only.', $SiteName));
     }
@@ -2899,9 +2901,9 @@ sub UserIsBanned {
   $host = GetRemoteHost();
   foreach (split(/\n/, GetPageContent($BannedHosts))) {
     if (/^ ([^ ]+)[ \t]*$/) {  # only read lines with one word after one space
-      my $host = $1;
-      return 1  if ($ip   =~ /$host/i);
-      return 1  if ($host =~ /$host/i);
+      my $rule = $1;
+      return $rule  if ($ip   =~ /$rule/i);
+      return $rule  if ($host =~ /$rule/i);
     }
   }
   return 0;
