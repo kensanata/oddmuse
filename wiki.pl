@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.431 2004/06/27 23:43:04 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.432 2004/06/28 19:35:26 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -434,7 +434,7 @@ sub ApplyRules {
 	     or $HtmlStack[0] eq 'dd' && m/\G(\s*\n)+(\;+)[ \t]*(?=.*\:)/cg) {
       Clean(OpenHtmlEnvironment('dl',length($2))
 	    . AddHtmlEnvironment('dt')); # `:' needs special treatment, later
-    } elsif ($bol && m/\G(\s*\n)*(\=+)[ \t]*(.*?)[ \t]*(=+)[ \t]*\n?/cg) {
+    } elsif ($bol && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg) {
       Clean(CloseHtmlEnvironments() . WikiHeading($2, $3));
     } elsif ($bol && m/\G(\s*\n)*----+[ \t]*\n?/cg) {
       Clean(CloseHtmlEnvironments() . $q->hr());
@@ -2801,8 +2801,9 @@ sub DoDownload {
   my ($text, $revision) = GetTextRevision(GetParam('revision', '')); # maybe revision reset!
   my $ts = $Page{ts};
   if ($text =~ /#FILE ([^ \n]+)\n(.*)/s) {
-    my ($type, $data) = (quotemeta($1), $2);
-    if (@UploadTypes and not grep(/^$type$/, @UploadTypes)) {
+    my ($type, $data) = ($1, $2);
+    my $regexp = quotemeta($type);
+    if (@UploadTypes and not grep(/^$regexp$/, @UploadTypes)) {
       ReportError(Ts('Files of type %s are not allowed.', $type), '415 UNSUPPORTED MEDIA TYPE');
     }
     print GetHttpHeader($type, $ts);
@@ -3298,9 +3299,10 @@ sub DoPost {
     }
     ReportError(T('Browser reports no file info.'), '500 INTERNAL SERVER ERROR')
       unless $q->uploadInfo($filename);
-    my $type = quotemeta($q->uploadInfo($filename)->{'Content-Type'});
+    my $type = $q->uploadInfo($filename)->{'Content-Type'};
+    my $regexp = quotemeta($type);
     ReportError(T('Browser reports no file type.'), '415 UNSUPPORTED MEDIA TYPE') unless $type;
-    if (@UploadTypes and not grep(/^$type$/, @UploadTypes)) {
+    if (@UploadTypes and not grep(/^$regexp$/, @UploadTypes)) {
       ReportError(Ts('Files of type %s are not allowed.', $type), '415 UNSUPPORTED MEDIA TYPE');
     }
     local $/ = undef;	# Read complete files
