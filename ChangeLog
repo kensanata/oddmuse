@@ -1,3 +1,14 @@
+2004-01-02  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (PrintSearchResult): Bugfix.
+	(GetTextRevision): New function, factored out of BrowsePage.
+	(BrowsePage, DoEdit, DoDownload): Use it.
+
+2003-12-31  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (PrintSearchResult): Bugfix -- quote HTML only after all
+	the other stuff has been replaced.
+
 2003-12-30  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (RSS): Better error message when XML::RSS or
