@@ -1,3 +1,10 @@
+2003-05-21  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (InitCookie): Get hash from cookie by splitting the
+	string on $FS1.
+	(Cookie): Use $FS1 to encode the value.
+	(PrintFooter): Call PrintMyContent with $id as the parameter.
+
 2003-05-18  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetHtmlHeader): Add a class to the body; the value of
