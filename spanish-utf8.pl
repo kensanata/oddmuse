@@ -170,8 +170,6 @@ Unlock page
 
 Lock page
 
-Comments on this page
-Comentarios de esta página
 Edit revision %s of this page
 Editar la revisión %s de esta página
 Edit text of this page
@@ -185,8 +183,6 @@ Ver otras revisiones
 View current revision
 Ver revisión actual
 View all changes
-
-Back to %s
 
 new comment
 nuevo comentario
@@ -360,6 +356,8 @@ Complete Content
 Contenido Completo
 The main page is %s.
 La página principal es %s.
+Comments on this page
+Comentarios de esta página
 Editing not allowed for %s.
 No se permite la edición para %s.
 SampleUndefinedPage
@@ -438,9 +436,13 @@ Lock for %s removed.
 Se ha eliminado bloqueo para %s.
 Displaying Wiki Version
 Versión del Wiki
+Show dependencies
+
 Inter links:
 
 Near links:
+
+Show parsed link data
 
 Too many connections by %s
 Demasiadas conexiones de %s
@@ -510,6 +512,8 @@ Cannot find unspammed revision.
 
 Footnotes:
 
+Could not find %1.html template in %2
+
 image: %s
 
 Index
@@ -547,6 +551,8 @@ Permalink to "%s"
 Portrait
 
 Static Copy
+
+Back to %s
 
 Alternatively, use one of the following templates:
 

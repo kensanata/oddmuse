@@ -170,8 +170,6 @@ Unlock page
 
 Lock page
 
-Comments on this page
-Коментари на овој страни
 Edit revision %s of this page
 Уреди верзију %s ове странице
 Edit text of this page
@@ -186,8 +184,6 @@ View current revision
 Прикажи тренутну верзију
 View all changes
 Прикажи све измене
-Back to %s
-
 new comment
 нови коментар
 Homepage URL:
@@ -360,6 +356,8 @@ Complete Content
 Потпуни садржај
 The main page is %s.
 Главна страна је %s.
+Comments on this page
+Коментари на овој страни
 Editing not allowed for %s.
 Уређивање није дозвољено за %s.
 SampleUndefinedPage
@@ -438,9 +436,13 @@ Lock for %s removed.
 Брава за %s је уклоњена.
 Displaying Wiki Version
 Приказујем верзију Викија
+Show dependencies
+
 Inter links:
 
 Near links:
+
+Show parsed link data
 
 Too many connections by %s
 Превише веза од %s
@@ -510,6 +512,8 @@ Cannot find unspammed revision.
 
 Footnotes:
 
+Could not find %1.html template in %2
+
 image: %s
 
 Index
@@ -547,6 +551,8 @@ Permalink to "%s"
 Portrait
 
 Static Copy
+
+Back to %s
 
 Alternatively, use one of the following templates:
 

@@ -177,8 +177,6 @@ Unlock page
 Ontgrendel pagina
 Lock page
 Vergrendel pagina
-Comments on this page
-Commentaar op deze pagina
 Edit revision %s of this page
 Wijzig revisie %s van deze pagina
 Edit text of this page
@@ -193,8 +191,6 @@ View current revision
 Bekijk huidige revisie
 View all changes
 Toon alle wijzigingen
-Back to %s
-Terug naar %s
 new comment
 nieuw commentaar
 Homepage URL:
@@ -367,6 +363,8 @@ Complete Content
 Volledige inhoud
 The main page is %s.
 De hoofdpagina is %s.
+Comments on this page
+Commentaar op deze pagina
 Editing not allowed for %s.
 Het wijzigen van %s is niet toegestaan.
 SampleUndefinedPage
@@ -445,10 +443,14 @@ Lock for %s removed.
 %s is ontgrendeld, en kan nu weer gewijzigd worden.
 Displaying Wiki Version
 Tonen van Wiki-versie
+Show dependencies
+
 Inter links:
 Interkoppelingen:
 Near links:
 Nabije koppelingen:
+Show parsed link data
+
 Too many connections by %s
 Te veel verbindingen met %s
 Please do not fetch more than %1 pages in %2 seconds.
@@ -517,6 +519,8 @@ Cannot find unspammed revision.
 
 Footnotes:
 Voetnoten:
+Could not find %1.html template in %2
+
 image: %s
 afbeelding: %s
 Index
@@ -555,6 +559,8 @@ Portrait
 Portret
 Static Copy
 
+Back to %s
+Terug naar %s
 Alternatively, use one of the following templates:
 
 Thread: %s

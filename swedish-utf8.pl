@@ -175,8 +175,6 @@ Unlock page
 Lås upp sidan
 Lock page
 Lås sidan
-Comments on this page
-Kommentera sidan
 Edit revision %s of this page
 Redigera version %s av den här sidan
 Edit text of this page
@@ -191,8 +189,6 @@ View current revision
 Visa rådande version
 View all changes
 Visa alla ändringar
-Back to %s
-Tillbaka till %s
 new comment
 ny kommentar
 Homepage URL:
@@ -365,6 +361,8 @@ Complete Content
 Fullständigt innehåll
 The main page is %s.
 Huvudsidan är %s.
+Comments on this page
+Kommentera sidan
 Editing not allowed for %s.
 %s kan inte redigeras.
 SampleUndefinedPage
@@ -443,10 +441,14 @@ Lock for %s removed.
 Slog av redigeringslås för för %s.
 Displaying Wiki Version
 Visar Wikiversion
+Show dependencies
+
 Inter links:
 Interlänkar:
 Near links:
 Nära länkar:
+Show parsed link data
+
 Too many connections by %s
 För många anslutningar ifrån %s
 Please do not fetch more than %1 pages in %2 seconds.
@@ -515,6 +517,8 @@ Cannot find unspammed revision.
 
 Footnotes:
 
+Could not find %1.html template in %2
+
 image: %s
 
 Index
@@ -553,6 +557,8 @@ Portrait
 
 Static Copy
 
+Back to %s
+Tillbaka till %s
 Alternatively, use one of the following templates:
 
 Thread: %s

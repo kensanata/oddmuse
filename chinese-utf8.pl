@@ -170,8 +170,6 @@ Unlock page
 頁面解鎖
 Lock page
 頁面鎖定
-Comments on this page
-對本頁發表評論
 Edit revision %s of this page
 編輯本頁的第 %s 版本
 Edit text of this page
@@ -186,8 +184,6 @@ View current revision
 參閱目前版本
 View all changes
 列出所有的修改
-Back to %s
-返回 %s
 new comment
 新的評論
 Homepage URL:
@@ -360,6 +356,8 @@ Complete Content
 完整內容
 The main page is %s.
 首頁是 %s 。
+Comments on this page
+對本頁發表評論
 Editing not allowed for %s.
 不允許編輯 %s 。
 SampleUndefinedPage
@@ -438,10 +436,14 @@ Lock for %s removed.
 已移除 %s 的鎖定。
 Displaying Wiki Version
 顯示 Wiki 的版本
+Show dependencies
+
 Inter links:
 內部連結：
 Near links:
 近端連結：
+Show parsed link data
+
 Too many connections by %s
 太多來自 %s 的連線
 Please do not fetch more than %1 pages in %2 seconds.
@@ -510,6 +512,8 @@ Cannot find unspammed revision.
 
 Footnotes:
 
+Could not find %1.html template in %2
+
 image: %s
 
 Index
@@ -548,6 +552,8 @@ Portrait
 
 Static Copy
 
+Back to %s
+返回 %s
 Alternatively, use one of the following templates:
 
 Thread: %s

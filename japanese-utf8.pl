@@ -170,8 +170,6 @@ Unlock page
 
 Lock page
 
-Comments on this page
-
 Edit revision %s of this page
 
 Edit text of this page
@@ -185,8 +183,6 @@ View other revisions
 View current revision
 
 View all changes
-
-Back to %s
 
 new comment
 
@@ -360,6 +356,8 @@ Complete Content
 
 The main page is %s.
 
+Comments on this page
+
 Editing not allowed for %s.
 
 SampleUndefinedPage
@@ -438,9 +436,13 @@ Lock for %s removed.
 
 Displaying Wiki Version
 
+Show dependencies
+
 Inter links:
 
 Near links:
+
+Show parsed link data
 
 Too many connections by %s
 
@@ -510,6 +512,8 @@ Cannot find unspammed revision.
 
 Footnotes:
 
+Could not find %1.html template in %2
+
 image: %s
 
 Index
@@ -547,6 +551,8 @@ Permalink to "%s"
 Portrait
 
 Static Copy
+
+Back to %s
 
 Alternatively, use one of the following templates:
 

@@ -171,8 +171,6 @@ Unlock page
 
 Lock page
 
-Comments on this page
-Комментарии к этой странице
 Edit revision %s of this page
 Править версию %s этой страницы
 Edit text of this page
@@ -187,8 +185,6 @@ View current revision
 Смотреть текущую версию
 View all changes
 Смотреть все изменения
-Back to %s
-Назад к %s
 new comment
 новый комментарий
 Homepage URL:
@@ -361,6 +357,8 @@ Complete Content
 
 The main page is %s.
 
+Comments on this page
+Комментарии к этой странице
 Editing not allowed for %s.
 Редактирование не разрешено для %s.
 SampleUndefinedPage
@@ -439,9 +437,13 @@ Lock for %s removed.
 
 Displaying Wiki Version
 
+Show dependencies
+
 Inter links:
 
 Near links:
+
+Show parsed link data
 
 Too many connections by %s
 
@@ -511,6 +513,8 @@ Cannot find unspammed revision.
 
 Footnotes:
 
+Could not find %1.html template in %2
+
 image: %s
 
 Index
@@ -549,6 +553,8 @@ Portrait
 
 Static Copy
 
+Back to %s
+Назад к %s
 Alternatively, use one of the following templates:
 
 Thread: %s
