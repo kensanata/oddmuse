@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: index.pl,v 1.1 2004/09/19 01:14:59 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: index.pl,v 1.2 2004/09/19 02:20:49 as Exp $</p>';
 
 $Action{'printable-index'} = \&DoPrintableIndex;
 
@@ -30,8 +30,8 @@ sub DoPrintableIndex {
   foreach my $title (sort keys %hash) {
     print '<div class="letter">';
     print $q->h2($q->a({-name=>$title}, $title));
-    foreach my $page (@{$hash{$title}}) {
-      PrintPage($page);
+    foreach my $id (@{$hash{$title}}) {
+      PrintPage($id);
     }
     print '</div>';
   }
