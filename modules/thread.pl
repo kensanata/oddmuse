@@ -16,25 +16,20 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: thread.pl,v 1.1 2004/03/14 13:00:11 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: thread.pl,v 1.2 2004/03/14 14:02:58 as Exp $</p>';
 
-$Action{getthread} = &ThreadGet;
-$Action{addthread} = &ThreadAdd;
+$Action{getthread} = \&ThreadGet;
+$Action{addthread} = \&ThreadAdd;
 
 sub ThreadGet {
-  my $id = shift;
+  my ($id, $interactive) = @_;
   my $thread = ThreadExtract($id);
-  print GetHtmlHeader(T('Thread: %s', $id), '');
+  print GetHttpHeader('text/html') . GetHtmlHeader(Ts('Thread: %s', $id), '');
+  if (GetParam('interactive', $interactive)) {
+    $thread = ThreadInteractive($id, $thread);
+  }
   ApplyRules($thread);
   print $q->end_html;
-}
-
-sub ThreadAdd {
-  my $id = shift;
-  ReportError(T('ID parameter is missing.'), '400 BAD REQUEST') unless $id;
-  my $url = GetParam('url', '');
-  ReportError(T('URL parameter is missing.'), '400 BAD REQUEST') unless $url;
-  my $parent = GetParam('parent', '');
 }
 
 sub ThreadExtract {
@@ -46,7 +41,91 @@ sub ThreadExtract {
   foreach my $tag ('nowiki', 'pre', 'code') {
     $page =~ s|<$tag>(.*\n)*?</$tag>||gi;
   }
-  ReportError(Ts('Thread %s does not contain a thread.', $id), '404 NOT FOUND')
-    unless $page =~ m/(^|\n)(\*(.*\n)+)/;
-  return $1;
+  if ($page =~ m/(^|\n)(\*(.*\n)+)/) {
+    return $2;
+  } else {
+    ReportError(Ts('Thread %s does not contain a thread.', $id), '404 NOT FOUND');
+  }
+}
+
+sub ThreadInteractive {
+  my ($id, $thread) = @_;
+  my @items = split(/(^|\n)(\*+)/, $thread);
+  my $result;
+  while (@items) {
+    my $level;
+    while (@items and substr($level, 0, 1) ne '*') {
+      $level = shift(@items);
+    }
+    my $rest = shift(@items);
+    if ($rest =~ m/\[$UrlPattern\s+([^\]]+?)\]/) {
+      my $url = UrlEncode($1);
+      my $add = T('Add');
+      my $link = "[$ScriptName?action=addthread;id=$id;url=$url $add]";
+      $result .= $level . ' '. $link . ' ' . $rest . "\n";
+    }
+  }
+  ReportError('Unable to parse thread', '500 INTERNAL SERVER ERROR') unless $result;
+  return $result;
+}
+
+sub ThreadAdd {
+  my $id = shift;
+  ReportError(T('ID parameter is missing.'), '400 BAD REQUEST') unless $id;
+  my $url = GetParam('url', '');
+  ReportError(T('URL parameter is missing.'), '400 BAD REQUEST') unless $url;
+  if (not (GetParam('new', '')) or not(GetParam('name', ''))) {
+    print GetHeader('', Ts('Add to %s thread', $id), '');
+    print $q->div({-class=>'thread'}, '<p>'
+		  . GetFormStart(0, 1)
+		  . GetHiddenValue('action', 'addthread')
+		  . GetHiddenValue('id', $id)
+		  . '<table><tr><td>'
+		  . T('Below:')
+		  . '</td><td>'
+		  . $q->textfield(-name=>'url', -value=>$url,
+				  -size=>100, -maxlength=>500)
+		  . '</td></tr><tr><td>'
+		  . T('URL:')
+		  . '</td><td>'
+		  . $q->textfield(-name=>'new',
+				  -size=>100, -maxlength=>500)
+		  . '</td></tr><tr><td>'
+		  . T('Name:')
+		  . '</td><td>'
+		  . $q->textfield(-name=>'name',
+				  -size=>50, -maxlength=>100)
+		  . '</td></tr></table>'
+		  . '<p>'
+		  . $q->p($q->submit(-name=>'Save', -value=>T('Save')))
+		  . $q->endform());
+    print $q->end_html;
+  } else {
+    my $thread = ThreadExtract($id);
+    my $new = GetParam('new', '');
+    my $name = GetParam('name', '');
+    my @items = split(/(^|\n)(\*+)/, $thread);
+    my $result;
+    while (@items) {
+      my $level;
+      while (@items and substr($level, 0, 1) ne '*') {
+	$level = shift(@items);
+      }
+      my $rest = shift(@items);
+      $rest =~ s/\s+$//;
+      if ($rest =~ m/\[$UrlPattern\s+([^\]]+?)\]/) {
+	my $current = $1;
+	$result .= $level . $rest . "\n";
+	if ($current eq $url) {
+	  $result .= $level . "* [$new $name]\n";
+	}
+      }
+    }
+    # print GetHttpHeader('text/html', $Now) . GetHtmlHeader(Ts('Thread: %s', $id), '');
+    # ApplyRules($result);
+    # print $q->pre($new . "\n" . $result);
+    # print $q->end_html;
+    SetParam('text', $result);
+    DoPost($id);
+  }
 }
