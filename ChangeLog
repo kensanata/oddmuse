@@ -1,3 +1,16 @@
+2003-05-22  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($NotifyWeblogs): Add new variable, defaulting to 0.
+	(DoBrowseRequest): Added new ping action.
+	(DoPost): Call PingWeblogs for major edits if $NotifyWeblogs is set.
+	(PingWeblogs): New.
+	(DoPingWeblogs): New.
+
+	(RFC): Include the RFCLink code.
+	(RFCLink): Removed.
+	(ISBN): Include the ISBNLink code.
+	(ISBNLink): Removed.
+
 2003-05-21  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (InitCookie): Get hash from cookie by splitting the
