@@ -4,6 +4,7 @@
 # Copyright (c) 2003 Erik S-O Johansson and others
 # Copyright (c) 2003 Björn Lindström <bkhl@elektrubadur.se> and
 #                    Björn X Öqvist <zrajm@klingonska.org
+# Copyright (c) 2004 Johan Adler <emacs deleted at Johan's request>
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
@@ -17,9 +18,9 @@
 # This file should be saved into the same folder where the config file
 # resides.  Load it from the config file:
 #
-# do 'swedish-utf8.pl;
+# do 'swedish-utf8.pl';
 #
-# This translation was last checked for OddMuse version 1.226.
+# This translation was last checked for OddMuse version 1.304.
 #
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
@@ -35,13 +36,13 @@ XML::RSS is not available on this system.
 LWP::UserAgent is not available on this system.
 
 diff
-
+skillnad
 history
 historik
  . . . . 
 
 Click to create this page
-
+Klicka för att skapa denna sida
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -101,15 +102,15 @@ Visa alla ändringar
 %s days
 %s dagar
 List later changes
-
+Visa senare ändringar
 Username:
 Användarnamn:
 Host:
-
+Värd:
 Language:
-
+Språk
 Filters
-
+Filter
 Go!
 Sök
 (minor)
@@ -165,7 +166,7 @@ Visa nuvarande version
 View all changes
 Visa alla ändringar
 Back to %s
-
+Tillbaka till %s
 Last edited
 Senast redigerad
 Edited
@@ -181,7 +182,7 @@ Databas sparad i tillfällig katalog %s
 %s seconds
 %s sekunder
 The same page on other sites:
-
+Samma sida på andra siter:
 EditNearLinks
 
 Search:
@@ -193,11 +194,11 @@ Validera HTML
 Validate CSS
 Validera CSS
 Difference (from revision %1 to %2)
-
+Skillnad (från version %1 till %2)
 revision %s
 version %s
 current revision
-nuvarande revision
+nuvarande version
 Difference (from prior %s revision)
 Ändringar (sedan tidigare version %s)
 major
@@ -205,7 +206,7 @@ stor
 minor
 liten
 No diff available.
-Ingen ändring tillgänglig.
+Ingen skillnad tillgänglig.
 Changed:
 Ändrad:
 Removed:
@@ -223,9 +224,9 @@ Det här är version %s
 Cannot save an nameless page.
 Kan inte spara en namnlös sida.
 Cannot open %s
-
+Kan inte öppna %s
 Cannot write %s
-
+Kan inte skriva %s
 Could not get %s lock
 Kunde inte låsa %s
 Unlocking
@@ -307,31 +308,31 @@ Den här funktionen kan bara utföras av adminstratörer...
 Index of all pages
 Index över alla sidor
 all pages
-
+alla sidor
 permanent anchors
-
+permanenta ankare
 near links
-
+nära länkar
 (for %s)
-
+(för %s)
 %s pages found.
-
+%s sidor funna.
 Replaced: %s
 Ersatt: %s
 Search for: %s
 Sök efter: %s
 View changes for these pages
-
+Se ändringar för dessa sidor
 Search sites on the %s as well
-
+Sök siter på %s också
 and
 och
 or
 eller
 Fetching results from %s:
-
+Hämtar resultat från %s:
 Near pages:
-
+Nära sidor:
 last updated
 senast reviderad
 Full Link List
@@ -343,11 +344,11 @@ Huvudsidan är %s.
 Editing not allowed for %s.
 %s kan inte redigeras.
 SampleUndefinedPage
-ProvSida
+OdefinieradExempelsida
 %s cannot be defined.
 %s kan inte definieras.
 Sample_Undefined_Page
-Prov_Sida
+Odefinierad_exempelsida
 [[%s]] cannot be defined.
 [[%s]] kan inte definieras.
 Only an administrator can create %s
@@ -397,7 +398,7 @@ Flyttar del av %s-loggen
 Moving %s log entries.
 Flyttar %s loggnotering.
 Getting page index file for %s.
-
+Hämtar sidindexfil för %s.
 Main lock released.
 Huvudlås avslaget.
 Set or Remove global edit lock
@@ -417,9 +418,9 @@ Slog av redigeringslås för för %s.
 Displaying Wiki Version
 Visar Wikiversion
 Inter links:
-
+Interlänkar:
 Near links:
-
+Nära länkar:
 Too many connections by %s
 För många anslutningar ifrån %s
 Recent Visitors
@@ -431,5 +432,5 @@ Alla som länkat hit
 anchor first defined here: %s
 ankare definierades här först: %s
 Click to search for references to this permanent anchor
-
+Klicka för att söka efter referenser till detta permanenta ankare
 END_OF_TRANSLATION
