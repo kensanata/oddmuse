@@ -1561,11 +1561,11 @@ da <b>foo</b>
 da *foo bar 6*
 da <b>foo bar 6</b>
 _foo_
-<u>foo</u>
+<em style="text-decoration: underline; font-style: normal;">foo</em>
 foo_bar_baz
 foo_bar_baz
 _foo bar 4_
-<u>foo bar 4</u>
+<em style="text-decoration: underline; font-style: normal;">foo bar 4</em>
 this -&gt; that
 this &#x2192; that
 and this...
@@ -1606,11 +1606,11 @@ da <b>foo</b> bar
 da `_**foo**_` bar
 da **foo** bar
 _foo_
-<u>foo</u>
+<em style="text-decoration: underline; font-style: normal;">foo</em>
 foo_bar_baz
 foo_bar_baz
 _foo_bar_ baz
-<u>foo bar</u> baz
+<em style="text-decoration: underline; font-style: normal;">foo bar</em> baz
 and\nfoo\n===\n\nmore\n
 and <h2>foo</h2><p>more</p>
 and\n\nfoo\n===\n\nmore\n
