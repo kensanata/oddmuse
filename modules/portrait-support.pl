@@ -16,13 +16,17 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.13 2004/08/13 02:15:24 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.14 2004/10/10 16:57:48 as Exp $</p>';
 
 push(@MyMacros, sub{ s/\[new::\]/"[new:" . GetParam('username', T('Anonymous'))
 		       . ':' . TimeToText($Now) . "]"/ge });
 push(@MyMacros, sub{ s/\[new(:[^]:]+)\]/"[new$1:" . TimeToText($Now) . "]"/ge });
 
 push(@MyRules, \&PortraitSupportRule);
+
+$DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /div\.one/; # mod_perl?
+div.one { background-color:#eee; padding: 0.1ex 0; }
+EOT
 
 my $MyColor = 0;
 my $MyColorDiv = 0;
