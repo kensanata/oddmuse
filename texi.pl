@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# Texi $Id: texi.pl,v 1.1 2003/04/24 10:34:16 as Exp $
+# Texi $Id: texi.pl,v 1.2 2003/04/24 21:10:02 as Exp $
 # Copyright (C) 2002, 2003  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -38,7 +38,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: texi.pl,v 1.1 2003/04/24 10:34:16 as Exp $';
+  . '<p>$Id: texi.pl,v 1.2 2003/04/24 21:10:02 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -137,6 +137,14 @@ if (not @HtmlTags) { # don't set if set in the config file
   }
 }
 
+%HtmlTagEquivalent = ('b' => 'b',
+		      'i' => 'i',
+		      'u' => 'i',
+		      'em' => 'emph',
+		      'strong' => 'strong',
+		      'tt' => 'code',
+		     );
+
 # == You should not have to change anything below this line. ==
 
 $IndentLimit = 20;                  # Maximum depth of nested lists
@@ -152,12 +160,12 @@ if (-f $ConfigFile) {
 die "No HomePage set.\n" unless $HomePage;
 
 $outdir = $DataDir unless $outdir;
-$outname = 'wiki.texi' unless $outname;
+$outname = 'wiki' unless $outname;
 $outfile = $outdir . '/' . $outname;
 $licensefile = '' unless $licensefile;
 $intro = qq{\\input texinfo \@c -*-texinfo-*-
 \@c %**start of header
-\@setfilename $outname
+\@setfilename $outname.info
 \@settitle $HomePage
 \@ifnottex
 \@node Top, $HomePage, , (dir)
@@ -190,16 +198,16 @@ print "<p>";
 print "Starting<br>\n";
 &process;
 print "Gzipping<br>\n";
-system("/bin/rm", "$outfile.gz");
-system("/bin/gzip", $outfile);
+system("/bin/rm", "$outfile.texi.gz");
+system("/bin/gzip", "$outfile.texi");
 print "Done<br>\n";
-print p("Download ", a({-href=>"/$outname.gz"}, "$outname.gz"));
+print p("Download ", a({-href=>"/$outname.texi.gz"}, "$outname.texi.gz"));
 print end_html;
 
 # MAIN CODE
 
 sub process {
-  open(F,">$outfile");
+  open(F,">$outfile.texi") or die "Can't create output file: $!";
   &readpages($PageDir);
   &InitLinkPatterns;
   &readtexts;
@@ -429,7 +437,7 @@ sub makechapters {
   $prev{$HomePage} = 'Top';
   print "$HomePage is the main page<br>\n";
   foreach my $page (@{$refs{$HomePage}}) {
-    print "Examining $page...";
+    print "Examining $page...<br>\n";
     if ($page =~ /^Category/
        and grep(/^$page$/,@pages)) {
       print "$page is a chapter<br>\n";
@@ -688,7 +696,6 @@ sub InitLinkPatterns {
 # ==== Common wiki markup ====
 sub wiki2texi {
   my ($pageText) = @_;
-
   %SaveUrl = ();
   %SaveNumUrl = ();
   $SaveUrlIndex = 0;
@@ -730,7 +737,7 @@ sub ApplyTexiRules {
       } elsif (m/\G(\s*\n)*(\*+)[ \t]*/cg) {
 	$fragment = &OpenHtmlEnvironment('itemize',length($2)) . "\n\@item ";
       } elsif (m/\G(\s*\n)*(\#+)[ \t]*/cg) {
-	$fragment = &OpenHtmlEnvironment('enumerated',length($2)) . "\n\@item ";
+	$fragment = &OpenHtmlEnvironment('enumerate',length($2)) . "\n\@item ";
       } elsif (m/\G(\s*\n)*(\:+)[ \t]*/cg) {
 	$fragment = &OpenHtmlEnvironment('quotation',length($2));
       } elsif (m/\G(\s*\n)*(\=+)[ \t]*(.*?)[ \t]*(=+)[ \t]*\n?/cg) {
@@ -741,7 +748,7 @@ sub ApplyTexiRules {
 	$fragment = &OpenHtmlEnvironment('example',1) . $2; # always level 1
       } elsif (m/\G(\s*\n)*(\;+)[ \t]*(?=.*\:)/cg) {
 	$fragment = &OpenHtmlEnvironment('table',length($2), '@asis')
-	  . &AddHtmlEnvironment('dt'); # the `:' needs special treatment, later
+	  . "\@item "; # the `:' needs special treatment, later
       } elsif (m/\G(\s*\n)+/cg) {
 	$fragment = &CloseHtmlEnvironments() . "\n\n"; # there is another one like this further down
       } elsif (m/\G(\&lt;include +"(.*)"\&gt;[ \t]*\n?)/cgi) { # <include "uri..."> includes the text of the given URI verbatim
@@ -758,8 +765,8 @@ sub ApplyTexiRules {
       }
     }
     # second block -- remaining hilighting
-    if ($HtmlStack[0] eq 'dt' && m/\G:/cg) {
-      $fragment = &OpenHtmlEnvironment('dd');
+    if ($HtmlStack[0] eq 'table' && m/\G:/cg) {
+      $fragment = "\n";
     } elsif (m/\G\&lt;nowiki\&gt;(.*?)\&lt;\/nowiki\&gt;/cgis) {
       $fragment = $1;
     } elsif (m/\G\&lt;code\&gt;(.*?)\&lt;\/code\&gt;/cgis) {
@@ -869,10 +876,30 @@ sub UnquoteHtml {
   return $html;
 }
 
+sub CloseEnv {
+  my $tag = shift;
+  if (exists $HtmlTagEquivalent{$tag}) {
+    return "}";
+  } else {
+    return "\n\@end " . $tag . "\n";
+  }
+}
+
+sub OpenEnv {
+  my ($tag, $attr) = @_;
+  if ($attr) {
+    return "\n\@$tag $attr\n";
+  } elsif (exists $HtmlTagEquivalent{$tag}) {
+    return '@' . $HtmlTagEquivalent{$tag} . '{';
+  } else {
+    return "\n\@$tag\n";
+  }
+}
+
 sub CloseHtmlEnvironment { # just close the current one
   my $code = shift;
   my $result = shift(@HtmlStack)  if not defined($code) or $HtmlStack[0] eq $code;
-  return "\n\@end $result\n" if $result;
+  return &CloseEnv($result) if $result;
   return "</$code>"; # to recognize the bug
 }
 
@@ -880,48 +907,41 @@ sub AddHtmlEnvironment { # add a new one so that it will be closed!
   my ($code) = @_;
   if ($HtmlStack[0] ne $code) {
     unshift(@HtmlStack, $code);
-    return "\n\@$code\n";
+    return &OpenEnv($code);
   }
   return '';
 }
 
 sub CloseHtmlEnvironments { # close all
   my $text = ''; # always return something
+  my $tag;
   while (@HtmlStack > 0) {
-    $text .= "\n\@end " . shift(@HtmlStack) . "\n";
+    $text .= &CloseEnv(shift(@HtmlStack));
   }
   return $text;
 }
 
 sub OpenHtmlEnvironment { # close the previous one and open a new one instead
   my ($code, $depth, $class) = @_;
-  my $oldCode;
+  my ($oldCode, $tag);
   my $text = ''; # always return something
   $depth = @HtmlStack unless defined($depth);
   while (@HtmlStack > $depth) { # Close tags as needed
-    $text .= "\n\@end " . shift(@HtmlStack) . "\n";
+    $text .= &CloseEnv(shift(@HtmlStack));
   }
   if ($depth > 0) {
     $depth = $IndentLimit  if ($depth > $IndentLimit);
     if (@HtmlStack) {  # Non-empty stack
       $oldCode = shift(@HtmlStack);
       if ($oldCode ne $code) {
-	if ($class) {
-	  $text .= "\n\@end " . shift(@HtmlStack) . "\n\@$code $class\n";
-	} else {
-	  $text .= "\n\@end " . shift(@HtmlStack) . "\n\@$code\n";
-	}
+	$text .= &CloseEnv($oldCode);
+	$text .= &OpenEnv($code, $class);
       }
       unshift(@HtmlStack, $code);
     }
     while (@HtmlStack < $depth) {
       unshift(@HtmlStack, $code);
-      if ($class) {
-	$text .= "\n\@$code $class\n";
-      } else {
-	$text .= "\n\@$code\n";
-      }
-
+      $text .= &OpenEnv($code, $class);
     }
   }
   return $text;
@@ -968,12 +988,14 @@ sub GetUrl {
     # Only do remote file:// links. No file:///c|/windows.
     return $url;
   } elsif ($bracket && !$text) {
-    $text = ++$FootnoteNumber;
-  } elsif (!$text) {
-    $text = $url;
+    return "\@footnote{$url}";
   }
   $url = &UnquoteHtml($url); # links should be unquoted again
-  return "\@uref{$url, $text}";
+  if ($text) {
+    return "\@uref{$url, $text}";
+  } else {
+    return "\@uref{$url}";
+  }
 }
 
 sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result!
@@ -1199,4 +1221,3 @@ sub FreeToNormal {
   }
   return $id;
 }
-
