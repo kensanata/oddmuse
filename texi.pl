@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# Texi $Id: texi.pl,v 1.2 2003/04/24 21:10:02 as Exp $
+# Texi $Id: texi.pl,v 1.3 2003/04/24 21:52:03 as Exp $
 # Copyright (C) 2002, 2003  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -27,37 +27,8 @@ $InterFile   = "$DataDir/intermap"; # Interwiki site->url map
 $ConfigFile  = "$DataDir/config" unless $ConfigFile; # Config file with Perl code to execute
 
 # Basics
-$SiteName    = 'Wiki';     # Name of site (used for titles)
 $HomePage    = 'HomePage'; # Home page (change space to _)
-$CookieName  = 'Wiki';     # Name for this wiki (for multi-wiki sites)
-
-# Fix if defaults do not work
-$SiteBase    = '';  # Full URL for <BASE> header
-$FullUrl     = '';  # Set if the auto-detected URL is wrong
 $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
-$MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
-$WikiDescription =  # Version string
-    '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: texi.pl,v 1.2 2003/04/24 21:10:02 as Exp $';
-
-# EyeCandy
-$StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
-$LogoUrl     = '';  # URL for site logo ('' for no logo)
-$NewText     = '';  # New page text ('' for default message)
-$NotFoundPg  = '';  # Page for not-found links ('' for blank pg)
-
-# Header and Footer, Notes, GotoBar
-$EmbedWiki   = 0;   # 1 = no headers/footers
-$FooterNote  = '';  # HTML for bottom of every page
-$EditNote    = '';  # HTML notice above buttons on edit page
-$UserGotoBar = '';  # HTML added to end of goto bar
-$ValidatorLink = 0; # 1 = Link to the W3C HTML validator service
-
-# HardSecurity
-$EditAllowed = 1;   # 1 = editing allowed,    0 = read-only
-$AdminPass   = '';  # Whitespace separated admin passwords.
-$EditPass    = '';  # Whitespace separated editor passwords.
-$BannedCanRead = 1; # 1 = banned cannot edit, 0 = banned cannot read
 
 # LinkPattern
 $WikiLinks   = 1;   # 1 = LinkPattern is a link
@@ -75,53 +46,9 @@ $NetworkFile = 1;   # 1 = file: is a valid protocol for URLs
 $HtmlTags    = 0;   # 1 = allow some 'unsafe' HTML tags
 $RawHtml     = 0;   # 1 = allow <HTML> environment for raw HTML inclusion
 
-# Diff
-$ENV{PATH}   = '/usr/bin/'; # Path used to find 'diff' and 'merge'
-$UseDiff     = 1;           # 1 = use diff and merge
-
-# Visitors and SurgeProtection
-$SurgeProtection = 1;      # 1 = protect against leeches
-$Visitors    = 1;          # 1 = maintain list of recent visitors
-$VisitorTime = 120 * 60;   # Timespan to remember visitors in seconds
-$SurgeProtectionTime = 10; # Size of the protected window in seconds
-$SurgeProtectionViews = 5; # How many page views to allow in this window
-$RefererTracking = 0;      # Keep track of referrals to your pages
-$RefererTimeLimit = 60 * 60 * 24; # How long referrals shall be remembered
-$RefererLimit = 15;        # How many different referer shall be remembered
-
 # RecentChanges and KeptPages
 $DeletedPage = "DeletedPage";   # Pages starting with this can be deleted
 $RCName      = 'RecentChanges'; # Name of changes page (change space to _)
-@RcDays      = qw(1 3 7 30 90); # Days for links on RecentChanges
-$RcDefault   = 30;  # Default number of RecentChanges days
-$KeepDays    = 14;  # Days to keep old revisions
-$KeepMajor   = 1;   # 1 = keep at least one major rev when expiring pages
-$KeepAuthor  = 1;   # 1 = keep at least one author rev when expiring pages
-$ShowEdits   = 0;   # 1 = major and show minor edits in recent changes
-$UseLookup   = 1;   # 1 = lookup host names instead of using only IP numbers
-$RecentTop   = 1;   # 1 = most recent entries at the top of the list
-$RecentLink  = 1;   # 1 = link to usernames
-
-# RSS
-$InterWikiMoniker = '';    # InterWiki prefix for this wiki for RSS
-$SiteDescription  = '';    # RSS Description of this wiki
-$RssImageUrl      = '';    # URL to image to associate with your RSS feed
-$RssPublisher     = '';    # Name of RSS publisher
-$RssContributor   = '';    # List or description of the contributors
-$RssRights        = '';    # Copyright notice for RSS
-
-# Display short comments below the GotoBar for special days
-# Possible source: http://www.dfat.gov.au/protocol/NationalDayList/
-# Example: %SpecialDays = ('1-1' => 'New Year', '1-2' => 'Next Day');
-%SpecialDays = ();
-
-# Replace regular expressions with inlined images
-# Example: %Smilies = (":-?D(?=\\W)" => '/pics/grin.png');
-%Smilies = ();
-
-# Detect page languages when saving edits
-# Example: %Languages = ('de' => '\b(der|die|das|und|oder)\b');
-%Languages = ();
 
 if (not @HtmlTags) { # don't set if set in the config file
   if ($HtmlTags) {
@@ -225,7 +152,7 @@ sub process {
   &countorphans;
   &removeorphans();
   &countwalkthrough;
-  &fixmenus;
+  # &fixmenus;
   print F $intro;
   &printmastermenu();
   &printorphans;
@@ -689,8 +616,6 @@ sub InitLinkPatterns {
   $UrlProtocols .= '|file'  if $NetworkFile;
   $UrlPattern = "((?:$UrlProtocols):(?://[-a-zA-Z0-9_.]+:[0-9]*)?[-a-zA-Z0-9_=!?#$\@~`%&*+\\/:;.,]+[-a-zA-Z0-9_=#$\@~`%&*+\\/])$QDelim";
   $ImageExtensions = '(gif|jpg|png|bmp|jpeg)';
-  $RFCPattern = "RFC\\s?(\\d+)";
-  $ISBNPattern = 'ISBN:?([0-9- xX]{10,})';
 }
 
 # ==== Common wiki markup ====
@@ -773,10 +698,6 @@ sub ApplyTexiRules {
       $fragment = $q->code($1);
     } elsif ($RawHtml && m/\G\&lt;html\&gt;(.*?)\&lt;\/html\&gt;/cgis) {
       $fragment = &UnquoteHtml($1);
-    } elsif (m/\G$RFCPattern/cg) { # RFC 1234 gets linked
-      $fragment = &RFC($1);
-    } elsif (m/\G$ISBNPattern/cg) { # ISBN 1234567890 gets linked
-      $fragment = &ISBN($1);
     } elsif (m/\G'''/cg) { # traditional wiki syntax with '''strong'''
       if ($HtmlStack[0] eq 'strong') {
 	$fragment = &CloseHtmlEnvironment();
@@ -1006,8 +927,7 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
   $id =~ s|\s*/\s*|/|;  # ...also before/after subpages
   $id =~ s|^/|$MainPage/|;
   $id = &FreeToNormal($id) if $free;
-  &AllPagesList() unless $IndexInit;
-  my $exists = $IndexHash{$id};
+  my $exists = grep(/^$id$/, @pages);
   if (!$text && $exists && $bracket) {
     $text = ++$FootnoteNumber;
   }
@@ -1065,42 +985,6 @@ sub ScriptLink {
   return $text;
 }
 
-sub RFC {
-  my ($num) = @_;
-  return &RFCLink($num);
-}
-
-sub RFCLink {
-  my ($num) = @_;
-  return $q->a({-href=>"http://www.faqs.org/rfcs/rfc${num}.html"}, "RFC $num");
-}
-
-sub ISBN {
-  my ($num) = @_;
-  return &ISBNLink($num);
-}
-
-sub ISBNLink {
-  my ($rawnum) = @_;
-  my ($rawprint, $html, $num, $first, $second, $third); 
-  $num = $rawnum;
-  $rawprint = $rawnum;
-  $rawprint =~ s/ +$//;
-  $num =~ s/[- ]//g;
-  if (length($num) != 10) {
-    return "ISBN $rawnum";
-  }
-  $first  = $q->a({-href => Ts('http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s', $num)},
-		  "ISBN " . $rawprint);
-  $second = $q->a({-href => Ts('http://www.amazon.com/exec/obidos/ISBN=%s', $num)},
-		  T('alternate'));
-  $third  = $q->a({-href => Ts('http://www.pricescan.com/books/BookDetail.asp?isbn=%s', $num)},
-		  T('search'));
-  $html  = "$first ($second, $third)";
-  $html .= ' '  if ($rawnum =~ / $/);  # Add space if old ISBN had space.
-  return $html;
-}
-
 sub WikiHeading {
   my ($pre, $depth, $text) = @_;
   return $pre . "\@heading $text\n";
@@ -1137,67 +1021,6 @@ sub ReadFile {
     return (1, $data);
   }
   return (0, '');
-}
-
-sub AllPagesList {
-  my ($rawIndex, $refresh, $status);
-  $refresh = 0;
-  if ($IndexInit && !$refresh) {
-    # Note for mod_perl: $IndexInit is reset for each query
-    # Eventually consider some timestamp-solution to keep cache?
-    return @IndexList;
-  }
-  if ((!$refresh) && (-f $IndexFile)) {
-    ($status, $rawIndex) = &ReadFile($IndexFile);
-    if ($status) {
-      %IndexHash = split(/\s+/, $rawIndex);
-      @IndexList = sort(keys %IndexHash);
-      $IndexInit = 1;
-      return @IndexList;
-    }
-    # If open fails just refresh the index
-  }
-  @IndexList = ();
-  %IndexHash = ();
-  @IndexList = &GenerateAllPagesList();
-  foreach (@IndexList) {
-    $IndexHash{$_} = 1;
-  }
-  $IndexInit = 1;  # Initialized for this run of the script
-  return @IndexList;
-}
-
-sub GenerateAllPagesList {
-  my (@pages, @dirs, $id, $dir, @pageFiles, @subpageFiles, $subId);
-  @pages = ();
-  # The following was inspired by the FastGlob code by Marc W. Mengel.
-  # Thanks to Bob Showalter for pointing out the improvement.
-  opendir(PAGELIST, $PageDir);
-  @dirs = readdir(PAGELIST);
-  closedir(PAGELIST);
-  @dirs = sort(@dirs);
-  foreach $dir (@dirs) {
-    next  if (($dir eq '.') || ($dir eq '..'));
-    opendir(PAGELIST, "$PageDir/$dir");
-    @pageFiles = readdir(PAGELIST);
-    closedir(PAGELIST);
-    foreach $id (@pageFiles) {
-      next  if (($id eq '.') || ($id eq '..'));
-      if (substr($id, -3) eq '.db') {
-	push(@pages, substr($id, 0, -3));
-      } elsif (substr($id, -4) ne '.lck') {
-	opendir(PAGELIST, "$PageDir/$dir/$id");
-	@subpageFiles = readdir(PAGELIST);
-	closedir(PAGELIST);
-	foreach $subId (@subpageFiles) {
-	  if (substr($subId, -3) eq '.db') {
-	    push(@pages, "$id/" . substr($subId, 0, -3));
-	  }
-	}
-      }
-    }
-  }
-  return sort(@pages);
 }
 
 sub FreeToNormal {
