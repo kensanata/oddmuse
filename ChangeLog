@@ -1,3 +1,11 @@
+2003-10-10  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ExpireKeepFile, WriteStringToFile, AppendStringToFile):
+	Spelling: cant->cannot.
+	(DoPost): Use diff3 for conflict merging, and use a pre block for
+	the conflict itself.
+	(GetPermanentAnchor): New text.
+
 2003-10-07  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (ValidId): Only avoid spaces in filenames when not $FreeLinks.
