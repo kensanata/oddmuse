@@ -287,7 +287,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.292 2004/01/03 16:04:32 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.293 2004/01/03 16:41:53 as Exp $');
 }
 
 sub InitCookie {
@@ -1966,7 +1966,7 @@ sub PrintFooter {
   }
   if ($CommentsPrefix and $id =~ /^$CommentsPrefix(.*)/) {
     $revisions .= ' | ' if $revisions;
-    $revisions .= GetPageLink($1, $1);
+    $revisions .= GetPageLink($1, Ts('Back to %s', $1));
   }
   $html .= $q->br() . $revisions  if $revisions;
   # time stamps
@@ -3137,8 +3137,13 @@ sub DoPrintAllPages {
 sub PrintAllPages {
   my $links = shift;
   my $comments = shift;
+  my $lang = GetParam('lang', 0);
   for my $id (@_) {
     OpenPage($id); # After this call, don't save cache!
+    if ($lang) {
+      my @languages = split(/,/, $Page{languages});
+      next if (@languages and not grep(/$lang/, @languages));
+    }
     print $q->hr . $q->h1($links ? GetPageLink($id) : $q->a({-name=>$id},$id));
     if ($Page{blocks} && $Page{flags} && GetParam('cache', $UseCache)) {
       PrintCache();
