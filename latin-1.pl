@@ -21,16 +21,19 @@ use CGI qw/:standard/;
 use CGI::Carp qw(fatalsToBrowser);
 use Encode;
 
-sub unescape {
-  my $str = shift;
-  $str = decode('utf-8', join('', map { chr(hex($_)) } split(/%/, substr($str, 1))));
-  return uc(join('', map { sprintf("%%%02x", ord($_)) } split(//, encode('latin-1', $str))));
-}
-
 sub translate {
   my $str = shift;
-  $str =~ s/((%[0-9a-f][0-9a-f])+)/unescape($1)/eigo;
-  return $str;
+  $str = decode('utf-8', $str);
+  my @letters = split(//, $str);
+  my @safe = ('a' .. 'z', 'A' .. 'Z', '0' .. '9', '-', '_', '.', '!', '~', '*', "'", '(', ')',
+	      ':', '/');
+  foreach my $letter (@letters) {
+    my $pattern = quotemeta($letter);
+    if (not grep(/$pattern/, @safe)) {
+      $letter = uc(sprintf("%%%02x", ord($letter)));
+    }
+  }
+  return join('', @letters);
 }
 
 if (not param('url')) {
@@ -47,12 +50,11 @@ if (not param('url')) {
   exit;
 }
 
-print CGI::redirect(translate(param('url')));
+my $str = param('url');
 
-# Stuff for testing:
+print redirect(translate($str));
 
-# print 'Communaut%C3%A9Crao', "\n";
-# print translate('Communaut%C3%A9Crao'), "\n";
-# print 'Communaut%E9Crao', "\n";
+# print $str, "\n";
+# print translate($str), "\n";
 
 # perl latin-1.pl url=http://wiki.crao.net/index.php/Communaut%C3%A9Crao
