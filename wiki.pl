@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.405 2004/05/29 01:37:24 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.406 2004/05/29 22:30:45 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -3253,7 +3253,7 @@ sub GetFullLinkList {
 			or $block =~ m/^(\[\[\[$FreeInterLinkPattern\]\]\])$/o
 			or $block =~ m/^($InterLinkPattern)$/o
 			or $block =~ m/^(\[\[$FreeInterLinkPattern\]\])$/o)) {
-	  $links{$raw ? $2 : GetInterLink($2)} = 1 if $InterSite{substr($2,0,index($2, ':'))};
+	  $links{$raw ? $2 : GetInterLink($2, $3)} = 1 if $InterSite{substr($2,0,index($2, ':'))};
 	} elsif ($link
 		 and (($WikiLinks and $block !~ m/!$LinkPattern/o
 		       and ($BracketWiki && $block =~ m/^(\[$LinkPattern\s+([^\]]+?)\])$/o
@@ -3263,7 +3263,7 @@ sub GetFullLinkList {
 			  and ($BracketWiki && $block =~ m/^(\[\[$FreeLinkPattern\|([^\]]+)\]\])$/o
 			       or $block =~ m/^(\[\[\[$FreeLinkPattern\]\]\])$/o
 			       or $block =~ m/^(\[\[$FreeLinkPattern\]\])$/o)))) {
-	  $links{$raw ? $2 : GetPageOrEditLink($2, $2)} = 1;
+	  $links{$raw ? FreeToNormal($2) : GetPageOrEditLink($2, $3)} = 1;
 	} elsif ($url and $block =~ m/^\[$FullUrlPattern\]$/og) {
 	  $links{$raw ? $1 : GetUrl($1)} = 1;
 	}
@@ -3272,7 +3272,7 @@ sub GetFullLinkList {
 	while ($block =~ m/\[$FullUrlPattern\s+[^\]]+?\]/og) { $links{$raw ? $1 : GetUrl($1)} = 1; }
       }
     }
-    @{$result{$name}} = sort map { FreeToNormal($_); } keys %links if %links;
+    @{$result{$name}} = sort keys %links if %links;
   }
   return \%result;
 }
