@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.5 2004/03/28 02:22:44 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.6 2004/03/28 18:11:10 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage);
 
@@ -46,7 +46,7 @@ sub Cal {
     my @matches = grep(/^$date/, @pages);
     my $link;
     if (@matches == 0) {
-      $link = ScriptLink($day, $day, 'wanted' . $class);
+      $link = ScriptLink($date, $day, 'wanted' . $class);
     } elsif (@matches == 1) {
       $link = ScriptLink($matches[0], $day, 'exists exact' . $class);
     } else {
