@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: atom.pl,v 1.7 2004/08/16 01:50:12 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: atom.pl,v 1.8 2004/10/10 15:14:44 as Exp $</p>';
 
 $Action{atom} = \&DoAtom;
 
@@ -42,6 +42,8 @@ sub AtomTag {
 }
 
 sub GetRcAtom {
+  return if $CollectingJournal; # avoid infinite loops
+  local $CollectingJournal = 1;
   # from http://www.ietf.org/internet-drafts/draft-ietf-atompub-format-01.txt
   print <<EOT;
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
