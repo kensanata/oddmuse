@@ -25,11 +25,14 @@ $(VERSION).tar.gz:
 
 update-translations: $(TRANSLATIONS)
 
+upload-translations:
+	cgi-upload $(TRANSLATIONS)
+
 .PHONY: always
 
 *-utf8.pl: always
 	grep '^#' $@ > new-$@
-	perl umtrans.pl wiki.pl $@ >> new-$@ && mv new-$@ $@
+	perl oddtrans -l $@ wiki.pl $(MODULES) >> new-$@ && mv new-$@ $@
 
 deb:
 	equivs-build control
