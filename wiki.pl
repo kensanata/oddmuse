@@ -270,7 +270,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.167 2003/09/27 15:46:45 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.168 2003/09/27 23:54:42 as Exp $');
 }
 
 sub InitCookie {
@@ -347,7 +347,7 @@ sub ApplyRules {
     # first block -- at the beginning of a line.  Note that block level elements eat empty lines to prevent empty p elements.
     undef($fragment);
     if (m/\G(?<=\n)/cg or m/\G^/cg) { # at the beginning of a line
-      if (pos == 0 and m/#FILE ([^ \n]+)\n(.*)/cgs) {
+      if (pos == 0 and m/^#FILE ([^ \n]+)\n(.*)/cgs) {
 	$fragment = Upload($OpenPageName, (substr($1, 0, 6) eq 'image/'), $revision);
       } elsif (m/\G&lt;pre&gt;\n?(.*?\n)&lt;\/pre&gt;[ \t]*\n?/cgs) { # pre must be on column 1
 	$fragment = CloseHtmlEnvironments() . $q->pre({-class=>'real'}, $1);
@@ -1829,7 +1829,8 @@ a.definition:before { content:"[::"; }
 a.definition:after { content:"]"; }
 a.link:before { content:"[##"; }
 a.link:after { content:"]" }
-a.upload:before { content:"link:"; }
+a.upload:before { content:"<"; }
+a.upload:after { content:">"; }
 -->
 EOT
   }
@@ -2761,7 +2762,7 @@ sub DoEdit {
     }
   }
   my $oldText = $Text{'text'};
-  my $isFile = ($oldText =~ m/#FILE ([^ \n]+)\n(.*)/s);
+  my $isFile = ($oldText =~ m/^#FILE ([^ \n]+)\n(.*)/s);
   $upload = $isFile if not defined $upload;
   if ($upload and not $UploadAllowed and not UserIsAdmin()) {
     ReportError(T('Only administrators can upload files.'));
