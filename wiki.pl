@@ -87,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.113 2003/06/21 10:11:51 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.114 2003/06/21 17:42:32 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -951,7 +951,7 @@ sub DoBrowseRequest {
     BrowsePage($HomePage);
     return 1;
   }
-  $id = join(' ', $q->keywords);
+  $id = join('_', $q->keywords);
   $id = $q->path_info() unless $id;
   $id =~ s|^/||;
   if ($id) {                    # Just script?PageName
@@ -2773,9 +2773,7 @@ sub DoEdit {
   print GetTextArea('text', $oldText);
   $summary = GetParam('summary', '');
   print $q->p(T('Summary:'),
-	      $q->textfield(-name=>'summary',
-			    -default=>$summary, -override=>1,
-			    -size=>60, -maxlength=>200));
+	      $q->textfield(-name=>'summary', -default=>$summary, -override=>1, -size=>60));
   if (GetParam('recent_edit') eq 'on') {
     print $q->p($q->checkbox(-name=>'recent_edit', -checked=>1,
 			     -label=>T('This change is a minor edit.')));
