@@ -1,5 +1,6 @@
 # Copyright (C) 2003, 2004  Alex Schroeder <alex@emacswiki.org>
 # Copyright (C) 2004  Haixing Hu <huhaixing@msn.com>
+# Copyright (C) 2004, 2005 Todd Neal <tolchz@tolchz.net>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -39,6 +40,9 @@ use vars qw($LatexDir $LatexLinkDir $LatexExtendPath $LatexSingleDollars);
 my $dvipngPath = "/usr/bin/dvipng";
 my $convertPath = "/usr/bin/convert";
 
+# Set $dispErrors to display LaTeX errors inline on the page.
+my $dispErrors = 1;
+
 # Set $useMD5 to 1 if you want to use MD5 hashes for filenames, set it to 0 to use 
 # a url-encoded hash. If $useMD5 is set and the Digest::MD5 module is not available, 
 # latex.pl falls back to urlencode
@@ -75,7 +79,7 @@ my $eqAbbrev = "Eq. ";
 my $LatexDefaultTemplateName = "$LatexDir/template.latex";
 
 
-$ModulesDescription .= '<p>$Id: latex.pl,v 1.13 2004/10/04 21:27:14 tolchz Exp $</p>';
+$ModulesDescription .= '<p>$Id: latex.pl,v 1.14 2005/03/15 14:50:04 tolchz Exp $</p>';
 
 # Internal Equation counting and referencing variables
 my $eqCounter = 0;
@@ -174,8 +178,9 @@ sub MakeLaTeX {
       }
       chdir ($dir) or return "[Unable to switch to $dir]";
       WriteStringToFile ("srender.tex", $template);
-      qx(latex srender.tex);
-      return "[Illegal LaTeX markup: <pre>$latex</pre>]" if $?;
+      my $errorText = qx(latex srender.tex);
+      return "[Illegal LaTeX markup: <pre>$latex</pre>] <br/> Error: <pre>$errorText</pre>" if ($? && $dispErrors);
+      return "[Illegal LaTeX markup: <pre>$latex</pre>] <br/>" if $?;
       
       my $output;
       
