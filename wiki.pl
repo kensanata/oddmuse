@@ -254,7 +254,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   $InterSiteInit = 0;
   %InterSite = ();
   $OpenPageName = '';  # Currently open page
-  $PrintedHeader = 1;  # Error messages don't print headers unless necessary
+  $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   CreateDir($DataDir); # Create directory if it doesn't exist
   ReportError(Ts('Could not create %s', $DataDir) . ": $!") unless -d $DataDir;
   @UserGotoBarPages = ($HomePage, $RCName) unless @UserGotoBarPages;
@@ -270,7 +270,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.164 2003/09/27 15:01:36 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.165 2003/09/27 15:04:25 as Exp $');
 }
 
 sub InitCookie {
