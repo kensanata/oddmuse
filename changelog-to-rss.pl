@@ -34,7 +34,7 @@ if (not $q->param('url')) {
     $q->start_html('ChangeLog to RSS'),
     $q->h1('ChangeLog to RSS'),
     $q->p('Translates ChangeLog output to RSS ', $output, '.'),
-    $q->p('$Id: changelog-to-rss.pl,v 1.1 2005/01/05 21:12:42 as Exp $: '),
+    $q->p(q{$Id: changelog-to-rss.pl,v 1.2 2005/01/05 21:13:19 as Exp $}),
     $q->start_form(-method=>'GET'),
     $q->p('ChangeLog URL: ', $q->textfield('url', '', 70)),
     $q->p('Limit number of entries returned: ', $q->textfield('limit', '15', 5)),
