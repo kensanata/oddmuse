@@ -270,7 +270,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.163 2003/09/27 14:56:26 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.164 2003/09/27 15:01:36 as Exp $');
 }
 
 sub InitCookie {
@@ -2374,7 +2374,7 @@ sub ExpireKeepFile {
   shift(@kplist)  if ($kplist[0] eq '');  # First can be empty
   return if length(@kplist) < 1;  # Also empty
   %tempSection = split(/$FS2/, $kplist[0], -1);
-  return unless defined($tempSection{'keepts'})); # corrupt?
+  return unless defined($tempSection{'keepts'}); # corrupt?
   $expirets = $Now - ($KeepDays * 24 * 60 * 60);
   return if ($tempSection{'keepts'} >= $expirets);  # Nothing old enough
   $anyExpire = 0;
@@ -3730,7 +3730,7 @@ sub DoSurgeProtection {
       ReadRecentVisitors();
       AddRecentVisitor($name);
       if (RequestLockDir('visitors')) {
-	WriteRecentVisitors() if $lock;
+	WriteRecentVisitors();
 	ReleaseLockDir('visitors');
 	if ($SurgeProtection and DelayRequired($name)) {
 	  ReportError(Ts('Too many connections by %s',$name));
