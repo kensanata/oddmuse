@@ -86,7 +86,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.91 2003/06/10 22:26:21 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.92 2003/06/10 22:53:05 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -264,7 +264,6 @@ sub InitRequest { # Init global session variables for mod_perl!
   $OpenPageName = '';    # Currently open page
   CreateDir($DataDir);  # Create directory if it doesn't exist
   ReportError(Ts('Could not create %s', $DataDir) . ": $!") unless -d $DataDir;
-  $RCName = 'Letzte Aenderungen';
   @UserGotoBarPages = ($HomePage, $RCName) unless @UserGotoBarPages;
   map { $$_ = FreeToNormal($$_); } # convert spaces to underscores on all configurable pagenames
     (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$RefererFilter, \$StyleSheetPage, \$ConfigPage);
