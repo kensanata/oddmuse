@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.6 2004/03/12 11:17:33 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.7 2004/04/03 10:51:21 as Exp $</p>';
 
 *WikiHeading = *NewTocWikiHeading;
 
@@ -47,6 +47,7 @@ sub TocHeadings {
   }
   my $Headings = '';
   my $HeadingsLevel = 1;
+  my $count = 0;
   # try to determine what will end up as a header
   foreach $line (grep(/^\=+.*\=+[ \t]*$/, split(/\n/, $page))) {
     next unless $line =~ /^(\=+)[ \t]*(.*?)[ \t]*\=+[ \t]*$/;
@@ -54,6 +55,7 @@ sub TocHeadings {
     my $text = $2;
     next unless $text;
     my $link = UrlEncode($text);
+    $count++;
     $depth = 2 if $depth < 2;
     $depth = 6 if $depth > 6;
     while ($HeadingsLevel < $depth) {
@@ -70,5 +72,6 @@ sub TocHeadings {
     $Headings .= '</ol>';
     $HeadingsLevel--;
   }
+  return '' if $count <= 2;
   return '<div class="toc">' . $Headings . '</div>' if $Headings;
 }
