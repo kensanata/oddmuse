@@ -3,6 +3,9 @@
 	* wiki.pl ($AllNetworkFiles): New variable.
 	(GetUrl): Allow file:/// if $AllNetworkFiles is set.
 	(ApplyRules): The RSS rule restores pos after calling the RSS sub.
+	($UsePathInfo): New variable.
+	(ScriptLink): Use it.
+	(DoBrowseRequest): Use it.
 
 2003-08-15  Alex Schroeder  <alex@emacswikiorg>
 
