@@ -1,3 +1,9 @@
+2003-05-29  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($RefererFilter): New.
+	(@LockOnCreation): Added it.
+	(UpdateReferers): Take it into account.
+
 2003-05-28  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl ($InterFile): Deleted.
