@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.408 2004/06/02 11:23:07 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.409 2004/06/02 12:23:45 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1165,7 +1165,7 @@ sub ResolveId { # return css class, resolved id, title (eg. for popups), exist-o
     ReadPermanentAnchors() unless $PermanentAnchorsInit;
     my $page = $PermanentAnchors{$id};
     return ('alias', $page . '#' . $id, $page, $exists) # $page used as link title
-      if $page and $page ne $OpenPageName;
+      if $page and $page ne $id;
   }
   return ('local', $id, '', $exists) if $exists;
   NearInit() unless $NearSiteInit;
