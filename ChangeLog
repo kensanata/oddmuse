@@ -3,6 +3,8 @@
 	* wiki.pl (DoPost): Fix raw=2 bug.
 	(GetTextAtTime): Fix bug for rollback action where only the pages
 	were rolled back that were changed at the exact moment!
+	(ApplyRules, GetInterSiteUrl, GetInterLink): Don't always quote
+	interlink pages.
 
 2004-04-11  Alex Schroeder  <alex@gnu.org>
 
