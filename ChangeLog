@@ -1,3 +1,8 @@
+2003-10-04  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (RequestLockDir): Added return back in for the case
+	where no error is reported.
+
 2003-10-03  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (RSS): Reinitialize the RSS parser and the HTTP user
