@@ -139,11 +139,12 @@ sub rc_line {
   while ($page =~ m!<li>(.*?)</li>!g) {
     my $line = $1;
     if ($line =~ /$regexp/) {
+      $passed++;
       return ($1, $2, $3, $4, $5, $6, $7, $8, $9);
     }
   }
+  $failed++;
   print "\nRC Line: Did not find \"", $regexp, '"';
-  print "\n\nPage content:\n", $page, "\n";
 }
 
 
@@ -270,9 +271,20 @@ test_page(get_page('OtherPage'), 'Other cute content 12');
 test_page(get_page('EvilPage'), 'DeletedPage');
 test_page(get_page('AnotherEvilPage'), 'DeletedPage');
 test_page(get_page('InnocentPage'), 'Lamb');
-test_page(get_page('action=rc showedit=1'),
-	  'MinorPage</a>[ .]*test-markup *<strong>-- *Rollback to [^<>]*</strong> *<em>\(minor\)</em></li>',
-	  'NicePage</a>[ .]*test-markup *<strong>-- *Rollback to [^<>]*</strong> *</li>');
+
+my $rc = get_page('action=rc all=1 showedit=1 pwd=foo');
+
+# check all revisions of NicePage in recent changes
+rc_line($rc, '<span class="time">[0-9:]* UTC</span> *\(<span class="new">new</span>\) *\(<a class="rollback" href="http://localhost/wiki.pl\?action=rollback;to=[0-9]*">rollback</a>\) *<a class="revision" href="http://localhost/wiki.pl\?action=browse;id=NicePage;revision=1">NicePage</a>[ .]*test-markup <span class="dash"> \&ndash; </span><strong>good guy one</strong> *');
+rc_line($rc, '<span class="time">[0-9:]* UTC</span> *\(<a class="diff" href="http://localhost/wiki.pl\?action=browse;diff=2;id=NicePage;diffrevision=2">diff</a>\) *\(<a class="rollback" href="http://localhost/wiki.pl\?action=rollback;to=[0-9]*">rollback</a>\) *<a class="revision" href="http://localhost/wiki.pl\?action=browse;id=NicePage;revision=2">NicePage</a>[ .]*test-markup <span class="dash"> \&ndash; </span><strong>good guy two</strong> *');
+rc_line($rc, '<span class="time">[0-9:]* UTC</span> *\(<a class="diff" href="http://localhost/wiki.pl\?action=browse;diff=2;id=NicePage;diffrevision=3">diff</a>\) *\(<a class="rollback" href="http://localhost/wiki.pl\?action=rollback;to=[0-9]*">rollback</a>\) *<a class="revision" href="http://localhost/wiki.pl\?action=browse;id=NicePage;revision=3">NicePage</a>[ .]*test-markup <span class="dash"> \&ndash; </span><strong>vandal one</strong> *');
+rc_line($rc, '<span class="time">[0-9:]* UTC</span> *\(<a class="diff" href="http://localhost/wiki.pl\?action=browse;diff=2;id=NicePage;diffrevision=4">diff</a>\) *\(<a class="rollback" href="http://localhost/wiki.pl\?action=rollback;to=[0-9]*">rollback</a>\) *<a class="revision" href="http://localhost/wiki.pl\?action=browse;id=NicePage;revision=4">NicePage</a>[ .]*test-markup <span class="dash"> \&ndash; </span><strong>vandal two</strong> *');
+rc_line($rc, '<span class="time">[0-9:]* UTC</span> *\(<a class="diff" href="http://localhost/wiki.pl\?action=browse;diff=2;id=NicePage;diffrevision=5">diff</a>\) *\(<a class="rollback" href="http://localhost/wiki.pl\?action=rollback;to=[0-9]*">rollback</a>\) *<a class="revision" href="http://localhost/wiki.pl\?action=browse;id=NicePage;revision=5">NicePage</a>[ .]*test-markup <span class="dash"> \&ndash; </span><strong>Rollback to [-0-9: ]* UTC</strong> *');
+
+# check that the minor spam is reverted with a minor rollback
+rc_line($rc, '<span class="time">[0-9:]* UTC</span> *\(<span class="new">new</span>\) *\(<a class="rollback" href="http://localhost/wiki.pl\?action=rollback;to=[0-9]*">rollback</a>\) *<a class="revision" href="http://localhost/wiki.pl\?action=browse;id=MinorPage;revision=1">MinorPage</a>[ .]*test-markup <span class="dash"> \&ndash; </span><strong>tester</strong> *');
+rc_line($rc, '<span class="time">[0-9:]* UTC</span> *\(<a class="diff" href="http://localhost/wiki.pl\?action=browse;diff=2;id=MinorPage;diffrevision=2">diff</a>\) *\(<a class="rollback" href="http://localhost/wiki.pl\?action=rollback;to=[0-9]*">rollback</a>\) *<a class="revision" href="http://localhost/wiki.pl\?action=browse;id=MinorPage;revision=2">MinorPage</a>[ .]*test-markup <span class="dash"> \&ndash; </span><strong>tester</strong> *<em>\(minor\)</em>');
+rc_line($rc, '<span class="time">[0-9:]* UTC</span> *\(<a class="diff" href="http://localhost/wiki.pl\?action=browse;diff=2;id=MinorPage;diffrevision=3">diff</a>\) *\(<a class="rollback" href="http://localhost/wiki.pl\?action=rollback;to=[0-9]*">rollback</a>\) *<a class="revision" href="http://localhost/wiki.pl\?action=browse;id=MinorPage;revision=3">MinorPage</a>[ .]*test-markup <span class="dash"> \&ndash; </span><strong>Rollback to [-0-9: ]* UTC</strong> *<em>\(minor\)</em>');
 
 # --------------------
 
