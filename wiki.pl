@@ -348,7 +348,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.476 2004/11/01 03:32:49 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.477 2004/11/01 03:38:37 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2157,7 +2157,7 @@ sub GetCommentForm {
 				       -override=>1, -size=>20, -maxlength=>50),
 			 T('Homepage URL:'), ' ',
 			 $q->textfield(-name=>'homepage', -default=>GetParam('homepage', ''),
-				       -override=>1, -size=>20, -maxlength=>50)),
+				       -override=>1, -size=>40, -maxlength=>100)),
 		   $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save')), ' ',
 			 $q->submit(-name=>'Preview', -value=>T('Preview'))),
 		   $q->endform());
