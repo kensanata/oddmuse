@@ -26,7 +26,18 @@ sub DoHtmlTemplate {
   print $html;
 }
 
-# Processing instructions are processed as follows:
+# Some subroutines from the script need a wrapper in order to return a
+# string instead of printing directly.
+sub HtmlTemplateRc {
+  my $result = '';
+  local *STDOUT;
+  open(STDOUT, '>', \$result) or die "Can't open memory file: $!";
+  DoRc(\&GetRcHtml);
+  return $result;
+}
+
+# Processing instructions are processed as Perl code, and its result
+# is substituted.  Examples:
 #
 # <?&foo?> -- This will call the subroutine &foo.  It's return value
 # will be substituted for the processing instruction.
@@ -60,6 +71,31 @@ sub HtmlTemplate {
 	  GetPageOrEditLink($id, $title) . $q->br();
 	} AllPagesList());
 ?>
+    </div>
+    <div class="footer">
+      <hr />
+      <?&GetGotoBar?>
+      <?&GetFooterLinks($id)?>
+    </div>
+  </body>
+</html>};
+  }
+
+  # rc
+  if (GetParam('action', 'browse') eq 'rc') {
+    return q{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <title><?$SiteName?>: Recent Changes</title>
+    <link type="text/css" rel="stylesheet" href="<?$StyleSheet?>" />
+  </head>
+  <body>
+    <div class="header">
+      <img class="logo" src="<?$LogoUrl?>" alt="[<?$HomePage?>]" />
+      <h1>Recent Changes</h1>
+    </div>
+    <div class="content rc">
+<?&HtmlTemplateRc?>
     </div>
     <div class="footer">
       <hr />
