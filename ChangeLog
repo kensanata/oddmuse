@@ -4,6 +4,8 @@
 	unsuccessful call to MyRules).
 	(RcHeader): Inherit rclang as well.
 	(GetRc): Inherit rclang as well.
+	(PrintFooter): Space after the username label.
+	(DoEdit): Space after the username label.
 
 2003-10-24  Alex Schroeder  <alex@gnu.org>
 
