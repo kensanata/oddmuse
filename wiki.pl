@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.363 2004/03/28 17:32:52 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.364 2004/03/31 00:20:52 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1148,12 +1148,12 @@ sub ValidIdOrDie {
 sub ResolveId {
   my $id = shift;
   AllPagesList();
-  return ('local', $id) if $IndexHash{$id}; # page exists
   if ($PermanentAnchors) {
     ReadPermanentAnchors() unless $PermanentAnchorsInit;
     my $anchor = $PermanentAnchors{$id};
     return ('alias', $anchor) if $anchor; # permanent anchor exists
   }
+  return ('local', $id) if $IndexHash{$id}; # page exists
   NearInit() unless $NearSiteInit;
   if ($NearSource{$id}) {
     $NearLinksUsed{$id} = 1;
@@ -3903,7 +3903,7 @@ sub GetPermanentAnchor {
   my $text = $id;
   $text =~ s/_/ /g;
   my ($class, $resolved) = ResolveId($id);
-  if ($class eq 'local' and $resolved ne $OpenPageName) { # exists already
+  if ($resolved ne $OpenPageName and ($class eq 'local' or $class eq 'alias')) { # exists already
     return '[' . Ts('anchor first defined here: %s', GetPageLink($id)) . ']';
   } elsif ($PermanentAnchors{$id} ne $OpenPageName
 	   and RequestLockDir('permanentanchors')) { # not fatal
