@@ -1,3 +1,15 @@
+2004-04-02  Alex Schroeder  <alex@gnu.org>
+
+	* modules/weblog-2.pl (NewWeblog2InitVariables): Switch from
+	gmtime to localtime.
+
+	* modules/weblog-1.pl (NewWeblog1InitVariables): Switch from
+	gmtime to localtime.
+
+	* modules/calendar.pl (Cal): Switch from gmtime to localtime.
+
+	* wiki.pl (ApplyRules): [url] is a dirty rule.
+
 2004-03-31  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (ResolveId): Permanent anchors now take precedence over
