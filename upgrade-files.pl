@@ -16,20 +16,22 @@ $NewFS = "\x1e";
 # override $FS if you want!
 
 print header() . start_html('Upgrading Files'), p;
-print 'Upgrade version: $Id: upgrade-files.pl,v 1.11 2004/05/09 02:01:57 as Exp $', "\n";
+print q{Upgrade version: $Id: upgrade-files.pl,v 1.12 2004/11/01 18:15:47 as Exp $}, "\n";
 if (not param('dir')) {
   print start_form, p, '$DataDir: ', textfield('dir', '/tmp/oddmuse'),
     p, radio_group('separator', ['Oddmuse', 'UseMod 0.92', 'UseMod 1.00',
 				 'UseMod 1.00 with $NewFS set']),
+    p, checkbox('convert', 'checked', 'on', 'Convert Latin-1 to UTF-8'),
     p, submit('Ok'), "\n", end_form;
 } elsif (param('dir') and not param('sure')) {
   print start_form, hidden('sure', 'yes'), hidden('dir', param('dir')),
-    hidden('separator', param('separator')),
+    hidden('separator', param('separator')), hidden('convert', param('convert')),
     p, '$DataDir: ', param('dir'),
     p, 'separator used when reading pages: ',
     join(', ', map { sprintf('0x%x', ord($_)) } split (//, $FS)),
     p, 'separator used when writing pages: ',
     join(', ', map { sprintf('0x%x', ord($_)) } split (//, $NewFS)),
+    p, 'Convert Latin-1 to UTF-8: ', param('convert') ? 'Yes' : 'No',
     p, submit('Confirm'), "\n", end_form;
 } else {
   rewrite(param('dir'));
@@ -76,8 +78,13 @@ sub rewrite {
     my @list = split(/$FS1/, $data);
     my $out = $file;
     $out =~ s/\.kp$// or die "Invalid keep name\n";
+    # We introduce a new variable $dir, here, instead of using $out,
+    # because $out will be part of the filename later on, and the
+    # filename will be converted in write_file.  To convert $out to
+    # utf8 would double-encode the directory part of the filename.
+    my $dir = param('convert') ? utf8($out) : $out;
     print "Creating $out...\n";
-    mkdir($out) or die "Cannot create directory $out\n" unless -d $out;
+    mkdir($dir) or die "Cannot create directory $dir\n" unless -d $dir;
     foreach my $keep (@list) {
       next unless $keep;
       %section = split(/$FS2/, $keep, -1);
@@ -126,9 +133,13 @@ sub read_file {
 }
 
 sub write_file {
-  my $filename = shift;
+  my ($filename, $data) = @_;
+  if (param('convert')) {
+    $filename = utf8($filename);
+    $data = utf8($data);
+  }
   open(F, ">$filename") or die "can't write $filename: $!";
-  print F (shift);
+  print F $data;
   close F;
 }
 
@@ -184,4 +195,23 @@ sub write_keep_file {
   my $file = shift;
   my $data = basic_data();
   write_file($file, $data);
+}
+
+
+# This Latin-1 to UTF-8 conversion was written by Skalman on the
+# Oddmuse Wiki.  He says:  I added a quick, dirty and completely
+# unreadable hack to convert all characters above 0x7F:
+
+#  s/([\x80-\xff])/chr(0xc0+(ord($1)>>6)).chr(ord($1)&0b00111111|0b10000000)/ge;
+
+# Reading the UTF-8 and Unicode FAQ, I convert every character to
+# (binary) 110xxxxx 10xxxxxx where the 'x' marks the bits of the
+# original ISO-8859-1 character. That is: take the two most
+# significant bits of the caracter and add them to 0xC0 (first byte),
+# then replace the first two bits with 10 (second byte).
+
+sub utf8 {
+  $_ = shift;
+  s/([\x80-\xff])/chr(0xc0+(ord($1)>>6)).chr(ord($1)&0b00111111|0b10000000)/ge;
+  return $_;
 }
