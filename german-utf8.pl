@@ -557,4 +557,6 @@ search
 Suchen
 Blog
 Blog
+Contents
+Inhaltsverzeichnis
 END_OF_TRANSLATION
