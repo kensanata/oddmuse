@@ -1,5 +1,9 @@
 2004-02-03  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (Cookie): Eliminate uninitialized variable warning.
+	(ValidId): Added a specific error text if the id is empty. 
+	(DoBrowseRequest): Handle wiki/download/page and wiki/raw/page.
+
 	* forms.pl (FormsRule): Add %this% rule.
 
 2004-02-01  Alex Schroeder  <alex@gnu.org>
