@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: headers.pl,v 1.1 2004/10/04 21:10:56 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: headers.pl,v 1.2 2004/10/16 16:18:30 as Exp $</p>';
 
 push(@MyRules, \&HeadersRule);
 
@@ -43,6 +43,8 @@ sub HeadersRule {
     } else {
       return CloseHtmlEnvironments() . "<h3>$2</h3>";
     }
+  } elsif ($bol && m/\G(\s*\n)*----+[ \t]*\n?/cg) {
+    return CloseHtmlEnvironments() . $q->hr();
   }
   return undef;
 }
