@@ -349,7 +349,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.486 2004/11/22 23:29:01 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.487 2004/11/22 23:33:05 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2106,9 +2106,9 @@ sub GetFooterLinks {
   if ($id and $rev ne 'history' and $rev ne 'edit') {
     if ($CommentsPrefix) {
       if ($OpenPageName =~ /^$CommentsPrefix(.*)/) {
-	push(@elements, GetPageLink(Ts('Back to %s', $1), $1));
+	push(@elements, GetPageLink($1));
       } else {
-	push(@elements, GetPageLink(Ts('Comments on %s', $OpenPageName), $CommentsPrefix . $OpenPageName));
+	push(@elements, GetPageLink($CommentsPrefix . $OpenPageName));
       }
     }
     if (UserCanEdit($id, 0)) {
