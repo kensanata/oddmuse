@@ -20,7 +20,7 @@ use vars qw($PageTrailLength);
 
 $PageTrailLength = 10;
 
-$ModulesDescription .= '<p>$Id: page-trail.pl,v 1.2 2004/01/30 21:35:44 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: page-trail.pl,v 1.3 2004/10/04 20:41:01 as Exp $</p>';
 
 $CookieParameters{trail} = '';
 $InvisibleCookieParameters{trail} = 1;
@@ -38,10 +38,13 @@ sub NewPageTrailBrowsePage {
 sub UpdatePageTrail {
   my $id = shift;
   my $US  = "\x1f";
-  @PageTrail = split(/$US/, GetParam('trail', ''));
-  unshift(@PageTrail, $id);
-  @PageTrail = @PageTrail[0..$PageTrailLength-1] if $PageTrail[$PageTrailLength];
-  SetParam('trail', join($US, @PageTrail));
+  my @trail = ($id);
+  foreach my $page (split(/$US/, GetParam('trail', ''))) {
+    push(@trail, $page) unless $page eq $id;
+  }
+  @trail = @trail[0..$PageTrailLength-1] if $trail[$PageTrailLength];
+  SetParam('trail', join($US, @trail));
+  @PageTrail = @trail;
 }
 
 *OldPageTrailGetGotoBar = *GetGotoBar;
