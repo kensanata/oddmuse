@@ -1,6 +1,8 @@
 2003-10-16  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (RcHeader): Do not double rcclusteronly.
+	(DoBrowseRequest): Simplify call to DoPost.
+	(DoPost): Call FreeToNormal on the pagenamee, and check for validity here.
 
 2003-10-15  Alex Schroeder  <alex@gnu.org>
 
