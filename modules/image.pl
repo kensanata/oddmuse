@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: image.pl,v 1.12 2004/09/05 19:23:24 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: image.pl,v 1.13 2004/09/05 19:40:20 as Exp $</p>';
 
 use vars qw($ImageUrlPath);
 
@@ -28,7 +28,7 @@ push(@MyRules, \&ImageSupportRule);
 
 sub ImageSupportRule {
   my $result = undef;
-  if (m!\G\[\[image(/[a-z]+)?( external)?:$FreeLinkPattern(\|[^\]\|]+)?(\|($FreeLinkPattern|$FullUrlPattern))?\]\]!gc) {
+  if (m!\G\[\[image(/[a-z]+)?( external)?:$FreeLinkPattern(\|[^]|]+)?(\|($FreeLinkPattern|$FullUrlPattern))?\]\]!gc) {
     my $oldpos = pos;
     my $class = 'image';
     $class .= ' ' . substr($1, 1) if $1;
@@ -48,7 +48,6 @@ sub ImageSupportRule {
       $link = $1;
       $class .= ' outside';
     } else {
-      $class .= ' local';
       if (substr($link, 0, 1) eq '/') {
 	# do nothing -- relative URL on the same server
       } elsif ($UsePathInfo and !$Monolithic) {
