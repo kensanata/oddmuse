@@ -58,7 +58,7 @@ $RefererTracking $RefererTimeLimit $RefererLimit $NotifyTracker
 %CookieParameters $NewComment $StyleSheetPage @UserGotoBarPages
 $ConfigPage $ScriptName @MyMacros $CommentsPrefix $AllNetworkFiles
 $UsePathInfo $UploadAllowed @UploadTypes $LastUpdate $PageCluster
-%NotifyJournalPage);
+%NotifyJournalPage %RssInterwikiTranslate);
 
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
@@ -275,7 +275,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.257 2003/11/11 17:21:40 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.258 2003/11/12 13:52:14 as Exp $');
 }
 
 sub InitCookie {
@@ -672,7 +672,7 @@ sub RSS {
   my %lines;
   require XML::RSS;
   require LWP::UserAgent;
-  my $tDiff = T('(diff)');
+  my $tDiff = T('diff');
   my $tHistory = T('history');
   my $wikins = 'http://purl.org/rss/1.0/modules/wiki/';
   my $rdfns = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
@@ -693,41 +693,56 @@ sub RSS {
       if (!$interwiki) {
 	$interwiki = $rss->{channel}->{$rdfns}->{value};
       }
+      $interwiki = $RssInterwikiTranslate{$interwiki} if $RssInterwikiTranslate{$interwiki};
     }
     foreach my $i (@{$rss->{items}}) {
       my $line;
       my $date = $i->{'dc'}->{'date'};
       $date = $i->{'pubdate'} unless $date;
-      $line .= $q->a({-href=>$i->{$wikins}->{diff}}, $tDiff)
+      $line .= ' (' . $q->a({-href=>$i->{$wikins}->{diff}}, $tDiff) . ')'
 	if $i->{$wikins}->{diff};
+      $line .= ' (' . $q->a({-href=>$i->{$wikins}->{history}}, "$tHistory") . ')'
+	if $i->{$wikins}->{history};
       $line .= ' ' . $q->a({-href=>$i->{'link'}, -title=>$date},
 			   $interwiki ? "$interwiki:$i->{'title'}" : "[$i->{'title'}]")
 	if $i->{'title'} and $i->{'link'};
       $line .= ' ' . $q->a({-href=>$i->{guid}, -title=>$date}, $i->{guid})
 	if $i->{guid}; # for RSS 2.0
-      $line .= ' ' . $q->a({-href=>$i->{$wikins}->{history}}, "($tHistory)")
-	if $i->{$wikins}->{history};
-      $line .= ' -- ' . $q->span({-class=>'description'}, $i->{description})
-	if $i->{description};
       my $contributor = $i->{dc}->{contributor};
       $contributor =~ s/^\s+//;
       $contributor =~ s/\s+$//;
       if (!$contributor) {
 	$contributor = $i->{$rdfns}->{value};
       }
-      $line .= $q->span({-class=>'contributor'}, $q->span(' . . . . . ') . $contributor)
+      $line .= $q->span({-class=>'contributor'}, $q->span(T(' . . . . ')) . $contributor)
 	if $contributor;
+      $line .= ' ' . $q->strong({-class=>'description'}, '--', $i->{description})
+	if $i->{description};
       my $key = $date;
       $key = $i->{'title'} unless $key;
       $key = $i->{'guid'} unless $key;
+      while ($lines{$key}) { $key .= ' '; } # make sure this is unique
       $lines{$key} = $line;
     }
   }
   my @lines = sort { $b cmp $a } keys %lines;
   @lines = @lines[0..$maxitems-1] if $maxitems and $#lines > $maxitems;
-  my $str;
-  foreach my $i (@lines) { $str .= $q->li($lines{$i}); }
-  return $q->div({-class=>'rss'}, $q->ul($str));
+  my $str = '<ul>';
+  my $date;
+  foreach my $key (@lines) {
+    my $line = $lines{$key};
+    if ($key =~ /(\d\d\d\d-\d?\d-\d?\d)[T ](\d?\d:\d\d)/) {
+      my ($day, $time) = ($1, $2);
+      if ($day ne $date) {
+	$date = $day;
+	$str .= '</ul>' . $q->p($q->strong($day)) . '<ul>';
+      }
+      $line = $time . ' UTC ' . $line;
+    }
+    $str .= $q->li($line);
+  }
+  $str .= '</ul>';
+  return $q->div({-class=>'rss'}, $str);
 }
 
 sub GetInterLink {
@@ -1383,7 +1398,7 @@ sub GetRcHtml {
   my $all = GetParam('all', 0);
   my $admin = UserIsAdmin();
   my $tEdit = T('(minor)');
-  my $tDiff = T('(diff)');
+  my $tDiff = T('diff');
   my $tHistory = T('history');
   my $tRollback = T('rollback');
   GetRc
@@ -1405,10 +1420,10 @@ sub GetRcHtml {
 	my($pagename, $timestamp, $host, $userName, $summary, $minor, $revision, $languages, $cluster) = @_;
 	$host = QuoteHtml($host);
 	my $author = GetAuthorLink($host, $userName);
-	my $sum = $q->strong('[' . QuoteHtml($summary) . ']')  if $summary;
+	my $sum = $q->strong('--', QuoteHtml($summary))  if $summary;
 	my $edit = $q->em($tEdit)  if $minor;
 	my $lang = '[' . join(', ', @{$languages}) . ']'  if @{$languages};
-	my ($pagelink, $count, $link, $rollback);
+	my ($pagelink, $history, $diff, $rollback);
 	if ($all) {
 	  $pagelink = GetOldPageLink('browse', $pagename, $revision, $pagename, $cluster);
 	  if ($admin and RollbackPossible($timestamp)) {
@@ -1418,19 +1433,19 @@ sub GetRcHtml {
 	  $pagelink = GetOldPageLink('browse', $pagename, $revision, $pagename, $cluster);
 	} else {
 	  $pagelink = GetPageLink($pagename, $cluster);
-	  $count = '(' . GetHistoryLink($pagename, $tHistory) . ')';
+	  $history = '(' . GetHistoryLink($pagename, $tHistory) . ')';
 	}
 	if ($cluster and $PageCluster) {
-	  $link .= GetPageLink($PageCluster) . ':';
+	  $diff .= GetPageLink($PageCluster) . ':';
 	} elsif ($UseDiff and GetParam('diffrclink', 1)) {
 	  if ($all) {
-	    $link .= ScriptLinkDiff(2, $pagename, $tDiff, '', $revision);
+	    $diff .= '(' . ScriptLinkDiff(2, $pagename, $tDiff, '', $revision) . ')';
 	  } else {
-	    $link .= ScriptLinkDiff($minor ? 2 : 1, $pagename, $tDiff, '');
+	    $diff .= '(' . ScriptLinkDiff($minor ? 2 : 1, $pagename, $tDiff, '') . ')';
 	  }
 	}
-	$html .= $q->li($link, $pagelink, CalcTime($timestamp), $rollback,
-			$count, $edit, $sum, $lang, '. . . . .', $author);
+	$html .= $q->li(CalcTime($timestamp), $diff, $history, $rollback, $pagelink,
+			T(' . . . . '), $author, $sum, $lang, $edit);
       },
 	@_;
   $html .= '</ul>' if ($inlist);
@@ -1605,20 +1620,16 @@ sub GetHistoryLine {
   my $revision = $data{revision};
   my $html;
   if (0 == $row) { # current revision
-    $html = GetPageLink($id, Ts('Revision %s', $revision));
+    $html .= GetPageLink($id, Ts('Revision %s', $revision));
   } else {
-    $html = GetOldPageLink('browse', $id, $revision, Ts('Revision %s', $revision));
+    $html .= GetOldPageLink('browse', $id, $revision, Ts('Revision %s', $revision));
   }
-  if ($data{minor}) {
-    $html .= ' ' . $q->i(T('(minor)')) . ' ';
-  } else {
-    $html .= T(' . . . . ');
-  }
-  $html .= TimeToText($data{ts}) . ' ';
+  $html .= T(' . . . . ') . TimeToText($data{ts}) . ' ';
   my $host = $data{host};
   $host = $data{ip} unless $host;
   $html .= T('by') . ' ' . GetAuthorLink($host, $data{username});
-  $html .= ' ' . $q->b('[' . QuoteHtml($data{summary}) . ']') if ($data{summary});
+  $html .= ' ' . $q->strong('--', QuoteHtml($data{summary})) if $data{summary};
+  $html .= ' ' . $q->i(T('(minor)')) . ' ' if $data{minor};
   if ($UseDiff) {
     my %attr1 = (-type=>'radio', -name=>'diffrevision', -value=>$revision);
     $attr1{-checked} = 'checked' if 1==$row;
@@ -2413,7 +2424,7 @@ sub CalcDay {
 
 sub CalcTime {
   my ($sec, $min, $hour, $mday, $mon, $year) = gmtime(shift);
-  return sprintf('%2d:%02d UTC', $hour, $min);
+  return sprintf('%02d:%02d UTC', $hour, $min);
 }
 
 sub CalcTimeSince {
