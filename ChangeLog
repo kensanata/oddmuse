@@ -1,3 +1,28 @@
+2004-06-19  Alex Schroeder  <alex@gnu.org>
+
+	* modules/image.pl (ImageSupportRule): Support external images as
+	well.
+	($ImageUrlPath): New option.
+	(ImageSupportRule): Use alt text as title attribute as well.
+
+	* modules/markup.pl (MarkupRule): Don't use characters directly;
+	use numerical character references instead.  Else this corrupts
+	UTF-8 data!!
+	(MarkupRule): Fix em dash rule.
+
+	* wiki.pl (ApplyRules): Special case ''''' to render correctly.
+	(RunMyRules): Only call MyRules if it is defined.
+	(ApplyRules): Optimize smiley rule.
+	(RunMyRules): Bugfix -- don't add \&MyRules a gazillion times.
+	Optimize -- No eval to catch errors.
+	(ApplyRules): Another optimization -- this one will disable all
+	rules that start with lowercase ascii letters!
+
+2004-06-18  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (RunMyRules): Only run MyRules if it is actually
+	defined.
+
 2004-06-17  Alex Schroeder  <alex@confusibombus>
 
 	* anchors.pl
