@@ -1,4 +1,9 @@
-2003-08-14  Alex Schroeder  <alex@emacswikiorg>
+2003-08-15  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoBrowseRequest): Remove all the stuff up to and
+	including a slash, fixing the problems reported by Roland Gruen.
+
+2003-08-14  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (InitRequest): @HtmlTags are only initialized within
 	this sub in order to read the config files, first.
