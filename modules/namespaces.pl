@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.10 2004/12/21 16:32:33 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.11 2005/01/04 09:40:01 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent $NamespaceRoot);
 
@@ -27,11 +27,9 @@ $NamespaceRoot = '';      # will be automatically set to the original $ScriptNam
 
 my $NamespacesInit = 0;
 
-*OldNamespacesInitVariables = *InitVariables;
-*InitVariables = *NewNamespacesInitVariables;
+push(@MyInitVariables, \&NamespacesInitVariables);
 
-sub NewNamespacesInitVariables {
-  OldNamespacesInitVariables();
+sub NamespacesInitVariables {
   # Do this before changing the $DataDir and $ScriptName
   if (not $InterSiteInit and !$Monolithic and $UsePathInfo) {
     $InterSite{$NamespacesMain} = $ScriptName . '/';
