@@ -1659,7 +1659,6 @@ EOT
 
 run_tests();
 
-*InitVariables = *OldUsemodInitVariables;
 remove_rule(\&UsemodRule);
 
 # --------------------
@@ -1691,7 +1690,6 @@ run_tests();
 
 $UseModSpaceRequired = 1;
 $UseModMarkupInTitles = 0;
-*InitVariables = *OldUsemodInitVariables;
 remove_rule(\&UsemodRule);
 
 # --------------------
@@ -1749,7 +1747,6 @@ EOT
 
 run_tests();
 
-*InitVariables = *OldUsemodInitVariables; # usemod module was loaded before markup module
 remove_rule(\&UsemodRule);
 remove_rule(\&MarkupRule);
 
@@ -1959,7 +1956,6 @@ test_page(get_page('toc_test'),
 	  quotemeta('<h2><a id="toc0">two</a></h2>'),
 	  quotemeta('<h1><a id="toc2">one</a></h1>'));
 
-*InitVariables = *OldUsemodInitVariables; # usemod module was loaded before markup module
 remove_rule(\&UsemodRule);
 remove_rule(\&TocRule);
 *GetHeader = *OldTocGetHeader;
@@ -2062,7 +2058,6 @@ test_page(get_page('headers'),
 	  '<h2><a id="toc1">two</a></h2>', );
 
 remove_rule(\&UsemodRule);
-*InitVariables = *OldUsemodInitVariables;
 remove_rule(\&TocRule);
 *GetHeader = *OldTocGetHeader;
 remove_rule(\&PortraitSupportRule);
@@ -2085,7 +2080,6 @@ add_module('usemod.pl');
 update_page('hr', "one\n----\ntwo\n");
 test_page(get_page('hr'), '<div class="content browse"><p>one </p><hr /><p>two</p></div>');
 remove_rule(\&UsemodRule);
-*InitVariables = *OldUsemodInitVariables;
 
 # headers only
 add_module('headers.pl');
@@ -2114,7 +2108,6 @@ update_page('hr', "one\n----\ntwo\n");
 test_page(get_page('hr'), '<div class="content browse"><p>one </p><hr /><p>two</p></div>');
 unlink('/tmp/oddmuse/modules/usemod.pl') or die "Cannot unlink: $!";
 remove_rule(\&UsemodRule);
-*InitVariables = *OldUsemodInitVariables;
 
 # headers and portrait-support
 add_module('headers.pl');
