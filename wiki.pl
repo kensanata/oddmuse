@@ -350,7 +350,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.490 2004/11/27 19:59:04 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.491 2004/11/28 18:38:02 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -700,7 +700,8 @@ sub PrintWikiToHTML {
   $pageText = QuoteHtml($pageText);
   my ($blocks, $flags) = ApplyRules($pageText, 1, $savecache, $revision, 'p'); # p is start tag!
   # local links, anchors if cache ok
-  if ($savecache and not $revision and $Page{blocks} ne $blocks and $Page{flags} ne $flags) {
+  if ($savecache and not $revision and $Page{revision} # don't save revision 0 pages
+      $Page{blocks} ne $blocks and $Page{flags} ne $flags) {
     $Page{blocks} = $blocks;
     $Page{flags} = $flags;
     if ($islocked or RequestLockDir('main')) { # not fatal!
@@ -1109,7 +1110,7 @@ sub PrintPageDiff { # print diff for open page
 }
 
 sub PageHtml {
-  my $id = shift;
+  my $id = shift; # $id may no longer exist when using action=rss;full=1
   my $result = '';
   local *STDOUT;
   open(STDOUT, '>', \$result) or die "Can't open memory file: $!";
@@ -2440,8 +2441,8 @@ sub GetPageDirectory {
 
 # Always call SavePage within a lock.
 sub SavePage { # updating the cache will not change timestamp and revision!
-  ReportError(T('Cannot save an nameless page.'), '400 BAD REQUEST', 1) unless $OpenPageName;
-  ReportError(T('Cannot save an page without revision.'), '400 BAD REQUEST', 1) unless $Page{revision};
+  ReportError(T('Cannot save a nameless page.'), '400 BAD REQUEST', 1) unless $OpenPageName;
+  ReportError(T('Cannot save a page without revision.'), '400 BAD REQUEST', 1) unless $Page{revision};
   CreatePageDir($PageDir, $OpenPageName);
   WriteStringToFile(GetPageFile($OpenPageName), EncodePage(%Page));
 }
