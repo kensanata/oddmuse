@@ -1,6 +1,23 @@
+2005-01-20  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+
+	* modules/search-freetext.pl (SearchFreeTextTitleAndBody): Handle
+	double-quoted phrases.
+	(SearchFreeTextNewHighlightRegex): Strip double-quotes from terms
+	before highlighting.
+
 2005-01-20  Tilmann Holst   <spam@tholst.de>
 
         * wiki.pl (ReportError): Added missing "start_html"
+
+2005-01-19  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (RSS): Fix rfc 822 date parsing regular expression.
+
+2005-01-10  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+
+	* localnames-server.pl: New.
+	(debug): New.
+	(html): Use CSS to layout.
 
 2005-01-08  Alex Schroeder  <alex@gnu.org>
 
