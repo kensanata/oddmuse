@@ -1310,6 +1310,8 @@ EOT
 
 run_tests();
 
+markup:
+
 print '[markup]';
 
 open(F,'>/tmp/oddmuse/config');
@@ -1426,8 +1428,6 @@ EOT
 
 run_tests();
 
-fixme:
-
 print '[usemod module]';
 
 system('/bin/rm -rf /tmp/oddmuse');
@@ -1512,12 +1512,10 @@ introduction<p></p><table class="user"><tr><td>one</td><td>two</td><td>three</td
  source\n \n etc\n
 <pre> source\n \n etc</pre>
  source\n \n etc\n\nother
-<pre> source\n \n etc\n</pre><p>other</p>
+<pre> source\n \n etc</pre><p>other</p>
 EOT
 
 run_tests();
-
-markup:
 
 print '[markup module]';
 
@@ -1691,6 +1689,43 @@ testing <a class="local" href="http://localhost/test-wrapper.pl/foo">foo</a>.
 EOT
 
 run_tests();
+
+fixme:
+
+print '[image module]';
+
+system('/bin/rm -rf /tmp/oddmuse');
+die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
+mkdir '/tmp/oddmuse';
+mkdir '/tmp/oddmuse/modules';
+open(F,'>/tmp/oddmuse/config');
+print F "\$SurgeProtection = 0;\n";
+close(F);
+symlink('/home/alex/src/oddmuse/modules/image.pl',
+	'/tmp/oddmuse/modules/image.pl') or die "Cannot symlink: $@";
+
+update_page('bar', 'foo');
+
+%Test = split('\n',<<'EOT');
+[[image:foo]]
+[image:foo<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=foo;upload=1">?</a>]
+[[image:bar]]
+<a class="image" href="http://localhost/test-wrapper.pl/bar"><img class="upload" src="http://localhost/test-wrapper.pl/download/bar" alt="bar" /></a>
+[[image:bar|alternative text]]
+<a class="image" href="http://localhost/test-wrapper.pl/bar"><img class="upload" src="http://localhost/test-wrapper.pl/download/bar" alt="alternative text" /></a>
+[[image/left:bar|alternative text]]
+<a class="image left local" href="http://localhost/test-wrapper.pl/bar"><img class="upload" title="alternative text" src="http://localhost/test-wrapper.pl/download/bar" alt="alternative text" /></a>
+[[image:bar|alternative text|foo]]
+<a class="image local" href="http://localhost/test-wrapper.pl/foo"><img class="upload" title="alternative text" src="http://localhost/test-wrapper.pl/download/bar" alt="alternative text" /></a>
+[[image/left:bar|alternative text|foo]]
+<a class="image left local" href="http://localhost/test-wrapper.pl/foo"><img class="upload" title="alternative text" src="http://localhost/test-wrapper.pl/download/bar" alt="alternative text" /></a>
+[[image/left:bar|alternative text|http://www.foo.com/]]
+<a class="image left outside" href="http://www.foo.com/"><img class="upload" title="alternative text" src="http://localhost/test-wrapper.pl/download/bar" alt="alternative text" /></a>
+EOT
+
+run_tests();
+
+exit;
 
 print '[subscriberc module]'; # test together with link-all module
 
