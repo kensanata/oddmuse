@@ -24,7 +24,7 @@
 # This translation was last checked for OddMuse version 1.517.
 # Checked and updated by Johan Adler 050106
 #
-$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.3 2005/01/26 19:57:27 jadler Exp $</p>';
+$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.4 2005/01/27 21:01:54 jadler Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Läsning inte tillåten: användare, ip eller nätverk är blockerat.
@@ -137,7 +137,7 @@ av
 Rolling back changes
 Återställer
 Missing target for rollback.
-Mål för återställning saknas
+Mål för återställning saknas.
 Target for rollback is too far back.
 Mål för återställning för gammalt.
 Rollback to %s
@@ -323,7 +323,7 @@ Skriv text istället för den här filen.
 Replace this text with a file.
 Använd en fil i stället för den här texten.
 File to upload: 
-Fil att ladda upp:
+Fil att ladda upp: 
 Files of type %s are not allowed.
 Filer av typen %s är inte tillåtna.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
@@ -397,7 +397,7 @@ Odefinierad_exempelsida
 [[%s]] cannot be defined.
 [[%s]] kan inte definieras.
 Only an administrator can create %s.
-Bara en administratör kan skapa %s.
+Ednast en administratör kan skapa %s.
 Transfer Error: %s
 Överföringsfel: %s
 Browser reports no file info.
@@ -419,7 +419,7 @@ Anonym
 Cannot delete the index file %s.
 Kan inte radera index-filen %s.
 Please check the directory permissions.
-Vänligen kontrollera biblioteksrättigheter
+Vänligen kontrollera biblioteksrättigheter.
 Your changes were not saved.
 Dina ändringar har inte sparats.
 Could not get a lock to merge!
@@ -447,7 +447,7 @@ ej borttagen:
 deleted
 borttagen
 Moving part of the %s log file.
-Flyttar del av %s-loggen
+Flyttar del av %s-loggen.
 Moving %s log entries.
 Flyttar %s loggnotering.
 Getting page index file for %s.
@@ -505,7 +505,7 @@ Bytt namn till %s
 Renamed from %s
 Bytt namn från %s
 Renamed %1 to %2.
-Bytt namn på %1 till %2
+Bytt namn på %1 till %2.
 Immediately delete %s
 Radera %s direkt
 Rename %s to:
@@ -525,9 +525,9 @@ Nästa
 Calendar %s
 Kalender %s
 Comments on 
-Kommentarer till
+Kommentarer till 
 Comment on 
-Kommentar till
+Kommentar till 
 Compilation for %s
 Sammanställning för %s
 Compilation tag is missing a regular expression.
@@ -585,7 +585,7 @@ Permanentlänk till "%s"
 Portrait
 Porträtt
 You did not answer correctly.
-Du svarade inte korrekt
+Du svarade inte korrekt.
 All Referrers
 Alla som länkat hit
 Referrers
@@ -593,7 +593,7 @@ Sidor som länkat hit
 Updating %s
 Uppdaterar %s
 Search term missing.
-Sökord saknas
+Sökord saknas.
 Static Copy
 Statisk kopia
 Back to %s
@@ -603,15 +603,15 @@ Eller använd en av följande mallar:
 Thread: %s
 Tråd: %s
 ID parameter is missing.
-ID-parametern saknas
+ID-parametern saknas.
 Thread %s does not exist.
-Tråden %s finns inte
+Tråden %s finns inte.
 Page %s does not contain a thread.
-Sidan %s innehåller ingen tråd
+Sidan %s innehåller ingen tråd.
 Add
 Lägg till
 URL parameter is missing.
-URL-parametern saknas
+URL-parametern saknas.
 Add to %s thread
 Lägg till till %s-tråden
 Below:
@@ -625,7 +625,7 @@ Misslyckades med att ta bort %s
 Contents
 Innehåll
 This page is a translation of %s. 
-Denna sida är en översättning av %s.
+Denna sida är en översättning av %s. 
 The translation is up to date.
 Denna översättning är aktuell.
 The translation is outdated.
