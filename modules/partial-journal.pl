@@ -1,4 +1,3 @@
-
 # Copyright (C) 2004  Brock Wilcox <awwaiid@thelackthereof.org>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -26,7 +25,7 @@ sub PartialCutRule {
   if (m/\G(?<=\n)\s*--\s*cut\s*--\s*(?=\n)/gc) {
     return CloseHtmlEnvironments() . '<hr class="cut">';
   }
-  return '';
+  return undef;
 }
 
 *OldPartialPrintJournal = *PrintJournal;
