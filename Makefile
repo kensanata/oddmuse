@@ -45,7 +45,7 @@ install:
 	dpkg -i oddmuse*.deb
 
 test:
-	perl test-markup.pl
+	perl test.pl
 
 package-upload: debian-$(VERSION).tar.gz debian-$(VERSION).tar.gz.sig
 	curl -T "{debian-$(VERSION).tar.gz,debian-$(VERSION).tar.gz.sig}" \
