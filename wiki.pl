@@ -80,7 +80,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.68 2003/05/27 23:24:24 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.69 2003/05/27 23:29:31 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -659,7 +659,7 @@ sub GetSiteUrl { # This trashes the open page data!
     return ''  unless $Page{'revision'} > 0;  # No page, no intermap
     OpenDefaultText();
     foreach (split(/\n/, $Text{'text'})) {
-      if (/^ ($InterSitePattern+)[ \t]+([^ ]+)$/) {
+      if (/^ ($InterSitePattern)[ \t]+([^ ]+)$/) {
 	$InterSite{$1} = $2;
       }
     }
