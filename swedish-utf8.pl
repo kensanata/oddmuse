@@ -22,7 +22,7 @@
 #
 # This translation was last checked for OddMuse version 1.304.
 #
-$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.19 2004/12/27 01:57:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.20 2005/01/07 23:53:49 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Läsning inte tillåten: användare, ip eller nätverk är blockerat.
@@ -142,6 +142,36 @@ Rollback to %s
 Återställning till %s
 %s rolled back
 %s återställd
+Administration
+
+Index of all pages
+Index över alla sidor
+Wiki Version
+Visar Wikiversion
+Unlock Wiki
+Låser upp
+All Referrers
+Alla som länkat hit
+Recent Visitors
+Senaste besökare
+Password
+Lösenord
+Run maintenance
+Utför underhåll
+Unlock site
+Lås upp wikin
+Lock site
+Lås wikin
+Unlock %s
+
+Lock %s
+
+Actions:
+
+Important pages:
+
+To mark a page for deletion, put <strong>%s</strong> on the first line.
+
 [Home]
 [Startsida]
 redirected from %s
@@ -168,16 +198,6 @@ by %s
 av %s
 (diff)
 (ändringar)
-Run maintenance
-Utför underhåll
-Unlock site
-Lås upp wikin
-Lock site
-Lås wikin
-Unlock page
-Lås upp sidan
-Lock page
-Lås sidan
 Edit revision %s of this page
 Redigera version %s av den här sidan
 Edit this page
@@ -253,7 +273,7 @@ Kan inte skriva %s
 Could not get %s lock
 Kunde inte låsa %s
 Unlocking
-Låser upp
+
 This operation may take several seconds...
 Den här funktionen kan ta flera sekunder...
 Forced unlock of %s lock.
@@ -308,8 +328,6 @@ File to upload:
 Fil att ladda upp:
 Files of type %s are not allowed.
 Filer av typen %s är inte tillåtna.
-Password
-Lösenord
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 Ditt lösenord sparas i en cookie om du har cookies påslagna. Cookies kan försvinna om du ansluter från en annan dator, från ett annat konto eller med ett annat program.
 You are currently an administrator on this site.
@@ -330,14 +348,18 @@ This operation is restricted to administrators only...
 Den här funktionen kan bara utföras av adminstratörer...
 Rule "%1" matched "%2" on this page.
 
-Index of all pages
-Index över alla sidor
-all pages
-alla sidor
-permanent anchors
-permanenta ankare
-near links
-nära länkar
+Without normal pages
+
+Include normal pages
+
+Without permanent anchors
+
+Include permanent anchors
+
+Without near pages
+
+Include near pages
+
 (for %s)
 (för: %s)
 %s pages found.
@@ -410,8 +432,8 @@ ancestor
 förfader
 other
 annan
-Maintenance on all pages
-Underhåll av alla sidor
+Run Maintenance
+
 Maintenance not done.
 Underhåll ej slutfört.
 (Maintenance can only be done once every 12 hours.)
@@ -449,7 +471,7 @@ Slog på redigeringslås för %s.
 Lock for %s removed.
 Slog av redigeringslås för för %s.
 Displaying Wiki Version
-Visar Wikiversion
+
 Show dependencies
 
 Inter links:
@@ -464,12 +486,8 @@ Please do not fetch more than %1 pages in %2 seconds.
 
 Check whether the web server can create the directory %s and whether it can create files in it.
 
-Recent Visitors
-Senaste besökare
 Referrers
 Sidor som länkat hit
-All Referrers
-Alla som länkat hit
 anchor first defined here: %s
 ankare definierades här först: %s
 Click to search for references to this permanent anchor
@@ -573,8 +591,6 @@ Portrait
 You did not answer correctly.
 
 Updating %s
-
-Done.
 
 Search term missing.
 
