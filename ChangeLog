@@ -1,3 +1,26 @@
+2003-09-22  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($UploadAllowed, @UploadTypes): New variables.
+	(InitRequest): Uploads are allowed, now.
+	(ApplyRules): New rule to render uploaded files as links or
+	images.
+	(DoBrowseRequest): New download action.
+	(GetHttpHeader): New parameter to offer 24h caching instead of the
+	default 10s.
+	(GetFormStart): New parameter for multipart/form-data required for
+	file uploads.
+	(OpenNewText): Removed newauthor field from the database.
+	(DoEdit, DoPost): Handle uploading of files -- large change!
+	(GetUpload, DoDownload): New functions.
+	(DoRollback, DoSearch): UserIsAdminOrError requires HTTP Headers
+	printed.
+	(Save): Replaced newAuthor parameter with upload parameter.  No
+	diff and no language info is generated for uploads.
+	(DoMaintain): Removed forgotten provision for subpages.
+	(DeletePage): Deleting pages no longer edits the rclog.
+	(EditRecentChanges): Removed.
+	(EditRecentChangesFile): Removed.
+
 2003-09-21  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (OpenHtmlEnvironment): Fix closing of all tags when the
