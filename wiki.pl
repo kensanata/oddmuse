@@ -352,7 +352,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.504 2004/12/22 03:04:00 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.505 2004/12/26 23:34:05 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -840,7 +840,13 @@ sub RSS {
     foreach my $i (@{$rss->{items}}) {
       my $line;
       my $date = $i->{dc}->{date};
-      $date = $i->{pubDate} unless $date;
+      if (not $date and $i->{pubDate}) {
+	$date = $i->{pubDate};
+	my %mon = (Jan=>1, Feb=>2, Mar=>3, Apr=>4, May=>5, Jun=>6,
+		   Jul=>7, Aug=>8, Sep=>9, Oct=>10, Nov=>11, Dec=>12);
+	$date =~ s/^[A-Z][a-z][a-z], (\d\d) ([A-Z][a-z][a-z]) (\d\d(?:\d\d)?)/ # pubDate uses RFC 822
+	  sprintf('%04d-%02d-%02d', ($3 < 100 ? 1900 + $3 : $3), $mon{$2}, $1)/e;
+      }
       $date = sprintf("%03d", $num--) unless $date; # for RSS 0.91 feeds without date, descending
       my $title = $i->{title};
       my $description = $i->{description};
@@ -2795,7 +2801,7 @@ sub DoDownload {
   }
   my ($text, $revision) = GetTextRevision(GetParam('revision', '')); # maybe revision reset!
   my $ts = $Page{ts};
-  if ($text =~ /#FILE ([^ \n]+)\n(.*)/s) {
+  if ($text =~ /^#FILE ([^ \n]+)\n(.*)/s) {
     my ($type, $data) = ($1, $2);
     my $regexp = quotemeta($type);
     if (@UploadTypes and not grep(/^$regexp$/, @UploadTypes)) {
@@ -3760,8 +3766,8 @@ sub WriteRecentVisitors {
   WriteStringToFile($VisitorFile, $data);
 }
 
-sub DoShowVisitors {
-  print GetHeader('', T('Recent Visitors'), '', 1); # no caching
+sub DoShowVisitors { # no caching of this page!
+  print GetHeader('', T('Recent Visitors'), '', 1), $q->start_div({-class=>'content visitors'});
   ReadRecentVisitors();
   print '<p><ul>';
   foreach my $name (sort {@{$RecentVisitors{$b}}[0] <=> @{$RecentVisitors{$a}}[0]} (keys %RecentVisitors)) {
@@ -3775,7 +3781,7 @@ sub DoShowVisitors {
     }
     print $q->li($who . ', ' . CalcTimeSince($total));
   }
-  print '</ul>';
+  print '</ul>' . $q->end_div();
   PrintFooter();
 }
 
@@ -3859,8 +3865,9 @@ sub RefererTrack {
 }
 
 sub DoPrintAllReferers {
-  print GetHeader('', T('All Referrers'), '');
+  print GetHeader('', T('All Referrers'), ''), $q->start_div({-class=>'content refer'});
   PrintAllReferers(AllPagesList());
+  print $q->end_div();
   PrintFooter();
 }
 
