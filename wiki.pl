@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.376 2004/04/11 11:28:16 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.377 2004/04/11 16:18:02 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1761,8 +1761,7 @@ sub DoRollback {
   foreach my $id (AllPagesList()) {
     OpenPage($id);
     my $text = GetTextAtTime($to);
-    OpenDefaultText();
-    if ($text ne $text) {
+    if ($text and $Page{text} ne $text) {
       Save($id, $text, Ts('Rollback to %s', TimeToText($to)), 1,
 	   ($Page{ip} ne $ENV{REMOTE_ADDR}));
       print Ts('%s rolled back', $id), $q->br();
