@@ -38,28 +38,28 @@ local $| = 1;  # Do not buffer output (localized for mod_perl)
 
 # Configuration/constant variables:
 
-use vars qw(@RcDays @HtmlTags $TempDir $LockDir $DataDir $KeepDir
-$PageDir $RefererDir $RcOldFile $IndexFile $BannedContent $NoEditFile
+use vars qw(@RcDays $TempDir $LockDir $DataDir $KeepDir $PageDir
+$RefererDir $RcOldFile $IndexFile $BannedContent $NoEditFile
 $BannedHosts $ConfigFile $FullUrl $SiteName $HomePage $LogoUrl
 $RcDefault $IndentLimit $RecentTop $RecentLink $EditAllowed $UseDiff
-$RawHtml $KeepDays $HtmlTags $HtmlLinks $KeepMajor $EmbedWiki
-$BracketText $UseConfig $UseLookup $AdminPass $EditPass $NetworkFile
-$BracketWiki $FreeLinks $WikiLinks $FreeLinkPattern $RCName $RunCGI
-$ShowEdits $LinkPattern $InterLinkPattern $InterSitePattern $MaxPost
-$UrlPattern $UrlProtocols $ImageExtensions $RFCPattern $ISBNPattern
-$FS $CookieName $SiteBase $StyleSheet $NotFoundPg $FooterNote $NewText
-$EditNote $HttpCharset $UserGotoBar $VisitorTime $VisitorFile $RcFile
-$Visitors %Smilies %SpecialDays $InterWikiMoniker $SiteDescription
-$RssImageUrl $RssPublisher $RssContributor $RssRights $BannedCanRead
-$SurgeProtection $SurgeProtectionViews $TopLinkBar $LanguageLimit
-$SurgeProtectionTime $DeletedPage %Languages $InterMap $ValidatorLink
-$RefererTracking $RefererTimeLimit $RefererLimit @LockOnCreation
-$RefererFilter $PermanentAnchorsFile $PermanentAnchors @MyRules
-%CookieParameters $NewComment $StyleSheetPage @UserGotoBarPages
-$ConfigPage $ScriptName @MyMacros $CommentsPrefix $AllNetworkFiles
-$UsePathInfo $UploadAllowed @UploadTypes $LastUpdate $PageCluster
-$RssInterwikiTranslate $UseCache $ModuleDir $HtmlHeaders $DebugInfo
-%InvisibleCookieParameters $FreeInterLinkPattern $FullUrlPattern);
+$KeepDays $KeepMajor $EmbedWiki $BracketText $UseConfig $UseLookup
+$AdminPass $EditPass $NetworkFile $BracketWiki $FreeLinks $WikiLinks
+$FreeLinkPattern $RCName $RunCGI $ShowEdits $LinkPattern
+$InterLinkPattern $InterSitePattern $MaxPost $UrlPattern $UrlProtocols
+$ImageExtensions $FS $CookieName $SiteBase $StyleSheet $NotFoundPg
+$FooterNote $NewText $EditNote $HttpCharset $UserGotoBar $VisitorTime
+$VisitorFile $RcFile $Visitors %Smilies %SpecialDays $InterWikiMoniker
+$SiteDescription $RssImageUrl $RssPublisher $RssContributor $RssRights
+$BannedCanRead $SurgeProtection $SurgeProtectionViews $TopLinkBar
+$LanguageLimit $SurgeProtectionTime $DeletedPage %Languages $InterMap
+$ValidatorLink $RefererTracking $RefererTimeLimit $RefererLimit
+@LockOnCreation $RefererFilter $PermanentAnchorsFile $PermanentAnchors
+@MyRules %CookieParameters $NewComment $StyleSheetPage
+@UserGotoBarPages $ConfigPage $ScriptName @MyMacros $CommentsPrefix
+$AllNetworkFiles $UsePathInfo $UploadAllowed @UploadTypes $LastUpdate
+$PageCluster $RssInterwikiTranslate $UseCache $ModuleDir $HtmlHeaders
+$DebugInfo %InvisibleCookieParameters $FreeInterLinkPattern
+$FullUrlPattern);
 
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
@@ -116,17 +116,12 @@ $WikiLinks   = 1;   # 1 = LinkPattern is a link
 $FreeLinks   = 1;   # 1 = [[some text]] is a link
 $BracketText = 1;   # 1 = [URL desc] uses a description for the URL
 $BracketWiki = 0;   # 1 = [WikiLink desc] uses a desc for the local link
-$HtmlLinks   = 0;   # 1 = <a href="foo">desc</a> is a link
 $NetworkFile = 1;   # 1 = file: is a valid protocol for URLs
 $AllNetworkFiles = 0; # 1 = file:///foo is allowed -- the default allows only file://foo
 $PermanentAnchors = 1;	 # 1 = [::some text] defines permanent anchors (page aliases)
 $InterMap    = 'InterMap'; # name of the intermap page
 $NearMap     = 'NearMap';  # name of the nearmap page
 $RssInterwikiTranslate = 'RssInterwikiTranslate'; # name of RSS interwiki translation page
-
-# Other TextFormattingRules
-$HtmlTags    = 0;   # 1 = allow some 'unsafe' HTML tags
-$RawHtml     = 0;   # 1 = allow <HTML> environment for raw HTML inclusion
 
 # Diff
 $ENV{PATH}   = '/usr/bin/'; # Path used to find 'diff'
@@ -304,17 +299,8 @@ sub InitVariables {    # Init global session variables for mod_perl!
   map { $$_ = FreeToNormal($$_); } # convert spaces to underscores on all configurable pagenames
     (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$RefererFilter, \$StyleSheetPage,
      \$ConfigPage, \$NotFoundPg, \$NearMap, \$RssInterwikiTranslate, \$BannedContent);
-  if (not @HtmlTags) { # do not override settings in the config file
-    if ($HtmlTags) {   # allow many tags
-      @HtmlTags = qw(b i u font big small sub sup h1 h2 h3 h4 h5 h6 cite code
-		     em s strike strong tt var div center blockquote ol ul dl
-		     table caption br p hr li dt dd tr td th);
-    } else {	       # only allow a very small subset
-      @HtmlTags = qw(b i u em strong tt);
-    }
-  }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.432 2004/06/28 19:35:26 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.433 2004/06/29 00:37:07 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -375,8 +361,6 @@ sub InitLinkPatterns {
   $UrlPattern = "((?:$UrlProtocols):$UrlChars+$EndChars)";
   $FullUrlPattern="((?:$UrlProtocols):$UrlChars+)"; # when used in square brackets
   $ImageExtensions = '(gif|jpg|png|bmp|jpeg)';
-  $RFCPattern = "RFC\\s?(\\d+)";
-  $ISBNPattern = 'ISBN:?([0-9- xX]{10,})';
 }
 
 sub Clean {
@@ -410,7 +394,6 @@ sub ApplyRules {
   local @Blocks;  # the list of cached HTML blocks
   local @Flags;	  # a list for each block, 1 = dirty, 0 = clean
   local @HtmlStack = ();
-  my $htmlre = join('|',(@HtmlTags));
   my $smileyregex = join "|", keys %Smilies;
   $smileyregex = qr/(?=$smileyregex)/;
   local $_ = $text;
@@ -418,34 +401,9 @@ sub ApplyRules {
   my $first = 1;
   while(1) {
     # Block level elements eat empty lines to prevent empty p elements.
-    if ($bol && m/\G&lt;pre&gt;\n?(.*?\n)&lt;\/pre&gt;[ \t]*\n?/cgs) {
-      Clean(CloseHtmlEnvironments() . $q->pre({-class=>'real'}, $1));
-    } elsif ($bol && m/\G(\s*\n)*(\*+)[ \t]+/cg
+    if ($bol && m/\G(\s*\n)*(\*+)[ \t]+/cg
 	     or $HtmlStack[0] eq 'li' && m/\G(\s*\n)+(\*+)[ \t]*/cg) {
       Clean(OpenHtmlEnvironment('ul',length($2)) . AddHtmlEnvironment('li'));
-    } elsif ($bol && m/\G(\s*\n)*(\#+)[ \t]+/cg
-	     or $HtmlStack[0] eq 'li' && m/\G(\s*\n)+(\#+)[ \t]*/cg) {
-      Clean(OpenHtmlEnvironment('ol',length($2)) . AddHtmlEnvironment('li'));
-    } elsif ($bol && m/\G(\s*\n)*(\:+)[ \t]+/cg
-	     or $HtmlStack[0] eq 'dd' && m/\G(\s*\n)+(\:+)[ \t]*/cg) { # blockquote instead?
-      Clean(OpenHtmlEnvironment('dl',length($2), 'quote')
-	    . $q->dt() . AddHtmlEnvironment('dd'));
-    } elsif ($bol && m/\G(\s*\n)*(\;+)[ \t]+(?=.*\:)/cg
-	     or $HtmlStack[0] eq 'dd' && m/\G(\s*\n)+(\;+)[ \t]*(?=.*\:)/cg) {
-      Clean(OpenHtmlEnvironment('dl',length($2))
-	    . AddHtmlEnvironment('dt')); # `:' needs special treatment, later
-    } elsif ($bol && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg) {
-      Clean(CloseHtmlEnvironments() . WikiHeading($2, $3));
-    } elsif ($bol && m/\G(\s*\n)*----+[ \t]*\n?/cg) {
-      Clean(CloseHtmlEnvironments() . $q->hr());
-    } elsif ($bol && m/\G(\s*\n)*(([ \t]+.*\n?)+)/cg) {
-      Clean(OpenHtmlEnvironment('pre',1) . $2); # always level 1
-    } elsif ($bol && m/\G(\s*\n)*((\|\|)+)[ \t]*(?=.*\|\|[ \t]*(\n|$))/cg) {
-      Clean(OpenHtmlEnvironment('table',1,'user') # `||' needs special treatment, later
-	    . AddHtmlEnvironment('tr')
-	    . ((length($2) == 2)
-	       ? AddHtmlEnvironment('td')
-	       : AddHtmlEnvironment('td', 'colspan="' . length($2)/2 . '"')));
     } elsif ($bol && m/\G(\s*\n)+/cg) {
       Clean(CloseHtmlEnvironments() . '<p>');
     } elsif ($bol && m/\G(\&lt;include(\s+(text|with-anchors))?\s+"(.*)"\&gt;[ \t]*\n?)/cgi) {
@@ -482,38 +440,6 @@ sub ApplyRules {
       eval { local $SIG{__DIE__}; binmode(STDOUT, ":raw"); };
       pos = $oldpos;
       # restore \G after call to RSS which uses the LWP module (for older copies of the module?)
-    } elsif (defined $HtmlStack[0] && $HtmlStack[0] eq 'dt'
-	     && m/\G:/cg) {
-      Clean(CloseHtmlEnvironment() . AddHtmlEnvironment('dd'));
-    } elsif (defined $HtmlStack[0] && $HtmlStack[0] eq 'td'
-	     && m/\G[ \t]*((\|\|)+)[ \t]*\n((\|\|)+)[ \t]*/cg) {
-      Clean('</td></tr><tr>' . ((length($3) == 2)
-				? '<td>' : ('<td colspan="' . length($3)/2 . '">')));
-    } elsif (defined $HtmlStack[0] && $HtmlStack[0] eq 'td'
-	     && m/\G[ \t]*((\|\|)+)[ \t]*(?!(\n|$))/cg) { # continued
-      Clean('</td>' . ((length($1) == 2) ? '<td>' : ('<td colspan="' . length($1)/2 . '">')));
-    } elsif (defined $HtmlStack[0] && $HtmlStack[0] eq 'td'
-	     && m/\G[ \t]*((\|\|)+)[ \t]*/cg) { # at the end of the table
-      Clean(CloseHtmlEnvironments());
-    } elsif (m/\G\&lt;nowiki\&gt;(.*?)\&lt;\/nowiki\&gt;/cgis) { Clean($1);
-    } elsif (m/\G\&lt;code\&gt;(.*?)\&lt;\/code\&gt;/cgis) { Clean($q->code($1));
-    } elsif ($RawHtml && m/\G\&lt;html\&gt;(.*?)\&lt;\/html\&gt;/cgis) { Clean(UnquoteHtml($1));
-    } elsif (m/\G$RFCPattern/cog) { Clean(&RFC($1));
-    } elsif (m/\G($ISBNPattern)/cog) { Dirty($1); print ISBN($2);
-    } elsif (defined $HtmlStack[0] && $HtmlStack[1] && $HtmlStack[0] eq 'em'
-	     && $HtmlStack[1] eq 'strong' and m/\G'''''/cg) { # close either of the two
-      Clean(CloseHtmlEnvironment() . CloseHtmlEnvironment());
-    } elsif (m/\G'''/cg) { # traditional wiki syntax for '''strong'''
-      Clean((defined $HtmlStack[0] && $HtmlStack[0] eq 'strong')
-	    ? CloseHtmlEnvironment() : AddHtmlEnvironment('strong'));
-    } elsif (m/\G''/cg) { # traditional wiki syntax for ''emph''
-      Clean((defined $HtmlStack[0] && $HtmlStack[0] eq 'em')
-	    ? CloseHtmlEnvironment() : AddHtmlEnvironment('em'));
-    } elsif (m/\G\&lt;($htmlre)\&gt;/cogi) { Clean(AddHtmlEnvironment($1));
-    } elsif (m/\G\&lt;\/($htmlre)\&gt;/cogi) { Clean(CloseHtmlEnvironment($1));
-    } elsif (m/\G\&lt;($htmlre) *\/\&gt;/cogi) { Clean("<$1 />");
-    } elsif ($HtmlLinks && m/\G\&lt;a(\s[^<>]+?)\&gt;(.*?)\&lt;\/a\&gt;/cgi) { # <a ...>text</a>
-      Clean("<a$1>$2</a>");
     } elsif ($locallinks
 	     and ($BracketText && m/\G(\[$InterLinkPattern\s+([^\]]+?)\])/cog
 		  or $BracketText && m/\G(\[\[$FreeInterLinkPattern\|([^\]]+?)\]\])/cog
@@ -1049,39 +975,6 @@ sub GetDownloadLink {
   } else {
     return ScriptLink($action, $alt, 'upload');
   }
-}
-
-sub RFC {
-  my $num = shift;
-  return $q->a({-href=>"http://www.faqs.org/rfcs/rfc${num}.html"}, "RFC $num");
-}
-
-sub ISBN {
-  my $rawnum = shift;
-  my ($rawprint, $html, $num, $first, $second, $third);
-  $num = $rawnum;
-  $rawprint = $rawnum;
-  $rawprint =~ s/ +$//;
-  $num =~ s/[- ]//g;
-  if (length($num) != 10) {
-    return "ISBN $rawnum";
-  }
-  $first  = $q->a({-href => Ts('http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s', $num)},
-		  "ISBN " . $rawprint);
-  $second = $q->a({-href => Ts('http://www.amazon.com/exec/obidos/ISBN=%s', $num)},
-		  T('alternate'));
-  $third  = $q->a({-href => Ts('http://www.pricescan.com/books/BookDetail.asp?isbn=%s', $num)},
-		  T('search'));
-  $html	 = "$first ($second, $third)";
-  $html .= ' '	if ($rawnum =~ / $/);  # Add space if old ISBN had space.
-  return $html;
-}
-
-sub WikiHeading {
-  my ($depth, $text) = @_;
-  $depth = length($depth);
-  $depth = 6  if ($depth > 6);
-  return "<h$depth>$text</h$depth>";
 }
 
 sub PrintCache { # Use after OpenPage!
@@ -3131,8 +3024,6 @@ sub PrintSearchResult {
   $pageText =~ s/$FS//g;	# Remove separators (paranoia)
   $pageText =~ s/[\s]+/ /g;	#  Shrink whitespace
   $pageText =~ s/([-_=\\*\\.]){10,}/$1$1$1$1$1/g ; # e.g. shrink "----------"
-  my $htmlre = join('|',(@HtmlTags, 'pre', 'nowiki', 'code', 'rss'));
-  $pageText =~ s/\<\/?($htmlre)(\s[^<>]+?)?\>//gi;
   $entry{title} = $name;
   if ($files) {
     $pageText =~ /^#FILE ([^ ]+)/;
