@@ -1,3 +1,18 @@
+2004-04-09  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ScriptLink, GetEditLink, GetFooterLinks): Add accesskey.
+	(GetCommentForm, DoEdit, DoPassword): Add accesskey.
+
+2004-04-07  Alex Schroeder  <alex@gnu.org>
+
+	* modules/namespaces.pl (NewNamespacesInitVariables): Add entries
+	to %InterSite even if we are not in a subwiki right now.
+
+2004-04-06  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (Save): Specify 'time' instead of relying on 'undef', as
+	one user reported that was a problem with his Perl build.
+
 2004-04-05  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (UpdateReferers): Replace $q->url() with $ScriptName,
