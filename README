@@ -1,5 +1,7 @@
-This is the README file distributed together with the
-<nowiki>OddMuse</nowiki> script.
+This is the README file distributed together with the Oddmuse script.
+
+To install the script, copy wiki.pl into your cgi-bin directory.
+This will create a temporary wiki for you.
 
 You will see this text when you install the script as long as the
 homepage (the first link on the navigation bar, just below the title)
