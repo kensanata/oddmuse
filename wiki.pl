@@ -200,7 +200,7 @@ $RefererDir  = "$DataDir/referer";  # Stores referer data
 $TempDir     = "$DataDir/temp";     # Temporary files and locks
 $LockDir     = "$TempDir/lock";     # DB is locked if this exists
 $NoEditFile  = "$DataDir/noedit";   # Indicates that the site is read-only
-$RcFile      = "$DataDir/rc.log";    # New RecentChanges logfile
+$RcFile      = "$DataDir/rc.log";   # New RecentChanges logfile
 $RcOldFile   = "$DataDir/oldrc.log"; # Old RecentChanges logfile
 $IndexFile   = "$DataDir/pageidx";  # List of all pages
 $VisitorFile = "$DataDir/visitors.log"; # List of recent visitors
@@ -293,7 +293,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.306 2004/01/23 01:52:22 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.307 2004/01/24 01:00:16 as Exp $');
 }
 
 sub InitCookie {
@@ -2454,7 +2454,7 @@ sub DoUnlock {
   my $message = '';
   print GetHeader('', T('Unlocking'), '');
   print $q->p(T('This operation may take several seconds...'));
-  for my $lock qw(main diff index merge visitors refer_*) {
+  for my $lock (qw(main diff index merge visitors refer_*)) {
     if (ForceReleaseLock($lock)) {
       $message .= $q->p(Ts('Forced unlock of %s lock.', $lock));
     }
@@ -2975,7 +2975,7 @@ sub PrintSearchResultEntry {
   if (GetParam('raw', 0)) {
     $entry{generator} = $entry{username} . ' ' if $entry{username};
     $entry{generator} .= Ts('from %s', $entry{host}) if $entry{host};
-    foreach my $key qw(title description size last-modified generator username host) {
+    foreach my $key (qw(title description size last-modified generator username host)) {
       print RcTextItem($key, $entry{$key});
     }
     print RcTextItem('link', "$ScriptName?$entry{title}"), "\n";
