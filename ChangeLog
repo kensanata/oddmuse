@@ -4,6 +4,7 @@
 	(ApplyRules): Include local pages using GetPageContent, if possible.
 	(GetRaw): Simplified.
 	(DoPost): Append comment it necessary.
+	(GetRcRss): To normal to free on page titles.
 
 2003-06-15  Pierre Gaston  <pgas@intracom.gr>, Alex Schroeder  <alex@gnu.org>
 
