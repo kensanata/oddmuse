@@ -16,12 +16,13 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.4 2004/07/14 14:57:15 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.5 2004/08/07 00:44:40 as Exp $</p>';
 
 use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml);
 
 push(@MyRules, \&UsemodRule);
-# The ---- rule conflicts with the --- rule in markup.pl
+# The ---- rule conflicts with the --- rule in markup.pl and portrait-support.pl
+# The == heading rule conflicts with the same rule in portrait-support.pl
 $RuleOrder{\&UsemodRule} = 100;
 
 $RFCPattern = "RFC\\s?(\\d+)";
