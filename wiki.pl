@@ -270,7 +270,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.142 2003/09/12 14:37:34 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.143 2003/09/12 14:58:27 as Exp $');
 }
 
 sub InitCookie {
@@ -3423,7 +3423,7 @@ sub DoMaintain {
     OpenDefaultText();
     my $delete = PageDeletable($name);
     if ($delete) {
-      DeletePage($OpenPageName, 1, 1);
+      DeletePage($OpenPageName);
       print ' ' . T('deleted');
     } else {
       ExpireKeepFile();
@@ -3522,7 +3522,7 @@ sub PageDeletable {
 
 # Delete and rename must be done inside locks.
 sub DeletePage {
-  my ($page, $doRC, $doText) = @_;
+  my ($page) = @_;
   my ($fname, $status);
   $page =~ s/ /_/g;
   $page =~ s/\[+//;
@@ -3538,8 +3538,7 @@ sub DeletePage {
   unlink($fname)  if (-f $fname);
   unlink($IndexFile);
   DeletePermanentAnchors();
-  EditRecentChanges(1, $page, '')  if ($doRC);  # Delete page
-  # Currently don't do anything with page text
+  EditRecentChanges(1, $page, '');  # Delete page from rclog files
 }
 
 sub EditRecentChanges {
