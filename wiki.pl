@@ -349,7 +349,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.487 2004/11/22 23:33:05 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.488 2004/11/25 19:03:53 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -3645,6 +3645,8 @@ sub DoShowVersion {
       $q->p('XML::Parser: ', eval { local $SIG{__DIE__}; $XML::Parser::VERSION; }),
       $q->p('diff: ' . (`diff --version` || $!)),
       $q->p('diff3: ' . (`diff3 --version` || $!));
+  } else {
+    print $q->p(ScriptLink('action=version;dependencies=1', T('Show dependencies')));
   }
   if (GetParam('links', 0)) {
     NearInit() unless $NearSiteInit;
@@ -3652,6 +3654,8 @@ sub DoShowVersion {
     print $q->h2(T('Near links:')),
       $q->p(join($q->br(), map { $_ . ': ' . join(', ', @{$NearSource{$_}})}
 		 sort keys %NearSource));
+  } else {
+    print $q->p(ScriptLink('action=version;links=1', T('Show parsed link data')));
   }
   print $q->end_div();
   PrintFooter();
