@@ -274,7 +274,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.202 2003/10/16 12:04:07 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.203 2003/10/17 01:48:12 as Exp $');
 }
 
 sub InitCookie {
@@ -509,6 +509,8 @@ sub ApplyRules {
       # will not get an additional ? if FooBar is undefined.
       DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
       print GetPageOrEditLink($1, '');
+    } elsif ($WikiLinks && m/\G!$LinkPattern/cg) { # ! gets eaten
+      $fragment = $1;
     }  elsif ($withanchors && $PermanentAnchors && m/\G(\[::$FreeLinkPattern\])/cg) { #[::Free Link] permanent anchor create only $withanchors
       DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
       print GetPermanentAnchor($2);
@@ -1270,7 +1272,7 @@ sub RcHeader {
     ($lastTs) = split(/$FS3/, $_[$#_]);
   }
   $lastTs++  if (($Now - $lastTs) > 5);  # Skip last unless very recent
-  my ($showbar, $html, $action);
+  my ($action);
   my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly) =
     map {
       my $val = GetParam($_, '');
@@ -1284,14 +1286,28 @@ sub RcHeader {
   } else {
     $action = "action=rc$action";
   }
-  foreach my $i (@RcDays) {
-    $html .= ' | '  if $showbar;
-    $showbar = 1;
-    $html .= ScriptLink("$action;days=$i", ($i != 1) ? Ts('%s days', $i) : Ts('%s days', $i));
+  my ($all, $edits, $switches) = (GetParam('all',0), GetParam('showedit',0));
+  if ($all and $edits) {
+    $switches = ScriptLink("$action;showedit=1", T('List latest change per page only'))
+      . ' | ' . ScriptLink("$action;all=1", T('List only major changes'));
+    $action .= ';all=1;showedit=1';
+  } elsif ($all) {
+    $switches = ScriptLink("$action", T('List latest change per page only'))
+      . ' | ' . ScriptLink("$action;all=1;showedit=1", T('Include minor changes'));
+    $action .= ';all=1';
+  } elsif ($edits) {
+    $switches = ScriptLink("$action;all=1", T('List all changes'))
+      . ' | ' . ScriptLink("$action", T('List only major changes'));
+    $action .= ';showedit=1';
+  } else {
+    $switches = ScriptLink("$action;all=1", T('List all changes'))
+      . ' | ' . ScriptLink("$action;showedit=1", T('Include minor changes'));
   }
-  print $q->p($html . $q->br()
+  print $q->p(join(' | ', map { ScriptLink("$action;days=$_",
+					   ($_ != 1) ? Ts('%s days', $_) : Ts('%s days', $_));
+			      } @RcDays) . $q->br() . $switches . $q->br()
 	      . ScriptLink("$action;from=$lastTs", T('List new changes starting from'))
-	      . ' ' . TimeToText($lastTs));
+	      . TimeToText($lastTs));
 }
 
 sub GetRc {
