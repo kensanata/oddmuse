@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: markup.pl,v 1.7 2004/06/26 21:19:38 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: markup.pl,v 1.8 2004/06/26 21:25:40 as Exp $</p>';
 
 push(@MyRules, \&MarkupRule);
 my $words = '([A-Za-z\x80-\xff][-A-Za-z0-9\x80-\xff ]*?)';
@@ -40,7 +40,7 @@ sub MarkupRule {
     return '&#x2026;'; # HORIZONTAL ELLIPSIS
   } elsif (m|\G~/|gc) { # fix ~/elisp/ example
     return '~/';
-  } elsif (m|\G(/[-A-Za-z0-9\x80-\xff]+/$words/)|gc) { # fix /usr/bin/ example
+  } elsif (m|\G(/[-A-Za-z0-9\x80-\xff/]+/$words/)|gc) { # fix /usr/share/lib/! example
     return $1;
   }
   return undef;
