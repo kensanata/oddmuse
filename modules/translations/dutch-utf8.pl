@@ -24,7 +24,7 @@
 #
 # This translation was last checked for Oddmuse version 1.215.
 #
-$ModulesDescription .= '<p>$Id: dutch-utf8.pl,v 1.1 2005/01/09 01:42:05 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: dutch-utf8.pl,v 1.2 2005/02/01 21:16:41 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 U mag deze pagina niet lezen: uw account op deze Wiki, uw IP of uw netwerk is buitengesloten.
@@ -270,6 +270,8 @@ Cannot open %s
 Kan %s niet openen
 Cannot write %s
 Kan %s niet wijzigen
+Cannot create %s
+
 Could not get %s lock
 Kan %s niet vergrendelen
 This operation may take several seconds...
@@ -500,6 +502,8 @@ The page %s does not exist
 De pagina %s bestaat niet
 The page %s already exists
 De pagina %s bestaat al
+Cannot rename %1 to %2
+
 Renamed to %s
 Hernoemd in %s
 Renamed from %s

@@ -17,7 +17,7 @@
 #
 # This translation was last checked for Oddmuse version 1.195.
 #
-$ModulesDescription .= '<p>$Id: spanish-utf8.pl,v 1.1 2005/01/09 01:42:05 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: spanish-utf8.pl,v 1.2 2005/02/01 21:16:41 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Consulta no permitida: el usuario, ip o sub-red ha sido bloqueado.
@@ -263,6 +263,8 @@ Cannot open %s
 
 Cannot write %s
 
+Cannot create %s
+
 Could not get %s lock
 
 This operation may take several seconds...
@@ -492,6 +494,8 @@ Renaming %1 to %2.
 The page %s does not exist
 
 The page %s already exists
+
+Cannot rename %1 to %2
 
 Renamed to %s
 

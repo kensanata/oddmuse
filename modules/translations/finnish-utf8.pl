@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: finnish-utf8.pl,v 1.1 2005/01/09 01:42:05 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: finnish-utf8.pl,v 1.2 2005/02/01 21:16:41 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lukeminen ei ole sallittua: käyttäjä, IP tai verkko on estetty.
@@ -262,6 +262,8 @@ Cannot open %s
 Ei voitu avata: %s
 Cannot write %s
 Ei voitu kirjoittaa: %s
+Cannot create %s
+
 Could not get %s lock
 Ei voitu lukita: %s
 This operation may take several seconds...
@@ -492,6 +494,8 @@ The page %s does not exist
 Sivu %s ei ole olemassa
 The page %s already exists
 Sivu %s on jo olemassa
+Cannot rename %1 to %2
+
 Renamed to %s
 Nimi vaihdettu %:ksi
 Renamed from %s
