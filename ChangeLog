@@ -1,3 +1,7 @@
+2004-02-09  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoShowVersion): Print diff and diff3 dependencies.
+
 2004-02-08  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (Init): Use binmode raw for STDOUT.
