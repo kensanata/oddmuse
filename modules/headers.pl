@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: headers.pl,v 1.3 2004/10/19 23:31:05 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: headers.pl,v 1.4 2004/10/19 23:37:17 as Exp $</p>';
 
 push(@MyRules, \&HeadersRule);
 
@@ -29,8 +29,12 @@ push(@MyRules, \&HeadersRule);
 # Normally this is used as an M-dash in the middle of text with no
 # surrounding whitespace---like this.
 #
-# Similarly, the horizontal rule will now require an empty preceding
-# line to work.
+# Similarly, the horizontal rule will *may* require an empty preceding
+# line to work.  Usually this is no problem because if the beginning
+# of the previous line is a word, it will be matched by optimizations
+# in ApplyRules.
+#
+# We'll see how it goes.  ;)
 
 sub HeadersRule {
   my $oldpos = pos;
