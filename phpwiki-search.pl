@@ -23,7 +23,7 @@ use LWP::UserAgent;
 use Encode;
 
 if (not param('url')) {
-  print header(),
+  print header(-charset=>'utf-8'),
     start_html('PHP Wiki Search RSS 3.0'),
     h1('PHP Wiki Search RSS 3.0'),
     p('Translates a PHP Wiki Search result into RSS 3.0 usable by Oddmuse.'),
@@ -36,15 +36,33 @@ if (not param('url')) {
 
 print header(-type=>'text/plain; charset=UTF-8');
 
+my $url = param('url');
+if (param('latin-1')) {
+  $url =~ s/%([0-9a-f][0-9a-f])/chr(hex($1))/ige;
+  $url = encode('latin-1', decode('utf-8', $url));
+  my @letters = split(//, $url);
+  my @safe = ('a' .. 'z', 'A' .. 'Z', '0' .. '9', '-', '_', '.', '!', '~', '*', "'", '(', ')',
+	      ':', '/', '?', ';', '&', '=');
+  foreach my $letter (@letters) {
+    my $pattern = quotemeta($letter);
+    if (not grep(/$pattern/, @safe)) {
+      $letter = uc(sprintf("%%%02x", ord($letter)));
+    }
+  }
+  $url = join('', @letters);
+}
+
 my $ua = new LWP::UserAgent;
-my $request = HTTP::Request->new('GET', param('url'));
+my $request = HTTP::Request->new('GET', $url);
 my $response = $ua->request($request);
 my $data = $response->content;
 $data = encode('utf-8', decode('latin-1', $data)) if param('latin-1');
 
 $data =~ /\<title\>([^<]*)/i;
 print "title: $1\n" if $1;
-print "link: " . param('url') . "\n\n";
+print "link: " . param(url) . "\n";
+print "debug: $url\n"; # FIXME
+print "\n";
 while ($data =~ m|<dt>.*?<a href="([^"]*)".*\n((<dd>.*</dd>\n)*)|g) {
   my ($title, $desc) = ($1, $2);
   $title =~ s/%([0-9a-f][0-9a-f])/chr(hex($1))/ige;
