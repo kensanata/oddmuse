@@ -307,7 +307,7 @@ CommunityWiki:RecentNearChanges
 http://www.usemod.com/cgi-bin/mb.pl\?LionKimbro
 2003-10-24T21:02:53\+00:00
 unified rc for here and meatball
-<span class="contributor"><span> \. \. \. \. \. </span>AlexSchroeder</span>
+<span class="contributor"><span> \. \. \. \. </span>AlexSchroeder</span>
 http://www.emacswiki.org/cgi-bin/community\?action=browse;id=RecentNearChanges;revision=1
 EOT
 
