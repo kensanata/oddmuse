@@ -87,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.105 2003/06/15 21:14:46 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.106 2003/06/16 22:21:39 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -258,8 +258,7 @@ sub InitRequest { # Init global session variables for mod_perl!
   $q->charset($HttpCharset) if $HttpCharset;
   $Now = time;                     # Reset in case script is persistent
   $ReplaceForm = 0;
-  my @ScriptPath = split('/', $q->script_name());
-  $ScriptName = pop(@ScriptPath) unless defined $ScriptName; # Name used in links
+  $ScriptName = $q->url() unless defined $ScriptName; # Name used in links
   $IndexInit = 0;                  # Must be reset for each request
   $InterSiteInit = 0;
   %InterSite = ();
@@ -869,8 +868,10 @@ sub GetEditLink { # shortcut
 sub ScriptLink {
   my ($action, $text, $class, $name) = @_;
   my %params;
-  if ($action =~ /=/ or !$Monolithic) {
+  if ($action =~ /=/) {
     $params{-href} = $ScriptName . '?' . $action;
+  } elsif (!$Monolithic) {
+    $params{-href} = $ScriptName . '/' . $action;
   } else { # Monolithic and !~ /=/ -- ie. just a page link
     $params{-href} = '#' . $action;
   }
@@ -1761,7 +1762,7 @@ EOT
     $html .= '<meta name="robots" content="INDEX,NOFOLLOW">';
   }
   # finish
-  my $theme = GetParam('theme',$q->url(-path_info=>1));
+  my $theme = GetParam('theme',$q->url());
   $html = qq(<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">\n<html>)
     . $q->head($q->title($q->escapeHTML($title)) . $html)
     . '<body class="' . $theme . '">';
@@ -3445,7 +3446,8 @@ sub PingWeblogs {
   if ($q->url(-base=>1) !~ m|^http://localhost|) {
     my $url = UrlEncode($q->url . '/' . $id);
     my $name = UrlEncode($SiteName . ': ' . $id);
-    my $uri = "http://newhome.weblogs.com/pingSiteForm?name=$id&url=$url";
+    # my $uri = "http://newhome.weblogs.com/pingSiteForm?name=$id&url=$url";
+    my $uri = "http://www.blogrolling.com/ping.php?pingform=single;title=$name;url_1=$url;submit=Ping";
     require LWP::UserAgent;
     my $ua = LWP::UserAgent->new;
     my $request = HTTP::Request->new('GET', $uri);
