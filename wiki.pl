@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.348 2004/03/09 01:11:52 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.349 2004/03/09 02:00:23 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -874,7 +874,7 @@ sub GetInterLink {
   } elsif (!$url) {
     return $id;
   } elsif ($bracket && !$text) {
-    $text = $q->span({-title=>$url}, '[' . ++$FootnoteNumber . ']');
+    $text = $q->span('[' . ++$FootnoteNumber . ']');
     $class .= ' number';
   } elsif (!$text) {
     $text = $q->span({-class=>'site'}, $site) . ':' . $q->span({-class=>'page'}, $page);
@@ -901,7 +901,7 @@ sub GetUrl {
     # Only do remote file:// links. No file:///c|/windows.
     return $url;
   } elsif ($bracket && !$text) {
-    $text = $q->span({-title=>$url}, '[' . ++$FootnoteNumber . ']');
+    $text = $q->span('[' . ++$FootnoteNumber . ']');
     $class .= ' number';
   } elsif (!$text) {
     $text = $url;
@@ -921,7 +921,9 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
   $id = FreeToNormal($id);
   my ($class, $exists, $title) = ResolveId($id);
   if (!$text && $exists && $bracket) {
-    $text = $q->span({-title=>$id}, '[' . ++$FootnoteNumber . ']'); # s/_/ /g happens further down!
+    $text = $q->span('[' . ++$FootnoteNumber . ']'); # s/_/ /g happens further down!
+    $title = $id; # override title from ResolveId!
+    $title =~ s/_/ /g if $free;
     $class .= ' number';
   }
   if ($exists) { # don't show brackets if the page is local/anchor/near.
@@ -1954,6 +1956,13 @@ div.sister p { margin-top:0; }
 div.sister img { border:none; }
 div.near { background-color:#EFE; }
 div.near p { margin-top:0; }
+\@media print {
+ body { font:12pt "Courrier" sans-serif; }
+ a:link, a:visited { color:#000; text-decoration:none; font-style:oblique; }
+ a.edit, div.footer, span.gotobar, a.number span { display:none; }
+ a[class="url number"]:after, a[class="inter number"]:after { content:"[" attr(href) "]"; }
+ a[class="local number"]:after { content:"[" attr(title) "]"; }
+}
 -->
 EOT
   }
