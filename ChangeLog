@@ -1,3 +1,19 @@
+2003-05-23  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($ReplaceForm): New global variable.
+	(InitRequest): Set $ReplaceForm to 0.
+	(GetSearchForm): Add a replace item if $ReplaceForm is set.
+	(DoSearch): Call Replace when replacement is given.
+	(Replace): New function.
+	(DoPost): Removed $isEdit and $editTime.  Use $Now instead.  Moved
+	the saving code into Save.
+	(Save): New function.
+	
+	(WriteRcLog): Use $Now instead of $editTime.
+	(ReBrowsePage): Rename $isEdit to $minor.
+	(GetRc, GetRcHtml, GetRcRss, GetRcText, GetRedirectPage): Ditto.
+	(DoEdit, WriteRcLog, UpdateDiffs): Ditto.
+
 2003-05-22  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl ($NotifyWeblogs): Add new variable, defaulting to 0.
