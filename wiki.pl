@@ -81,7 +81,7 @@ $HttpCharset = '';  # Charset for pages, default is ISO-8859-1
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.5 2003/03/21 20:59:10 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.6 2003/03/21 21:00:10 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -94,7 +94,7 @@ $EmbedWiki   = 0;   # 1 = no headers/footers
 $FooterNote  = '';  # HTML for bottom of every page
 $EditNote    = '';  # HTML notice above buttons on edit page
 $UserGotoBar = '';  # HTML added to end of goto bar
-$ValidatorLink = 0; # Link to the W3C HTML validator service
+$ValidatorLink = 0; # 1 = Link to the W3C HTML validator service
 
 # HardSecurity
 $EditAllowed = 1;   # 1 = editing allowed,    0 = read-only
