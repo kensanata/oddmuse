@@ -32,7 +32,6 @@
 
 package OddMuse;
 use strict;
-use bytes;
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
@@ -288,7 +287,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.300 2004/01/08 19:42:17 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.301 2004/01/11 16:56:41 as Exp $');
 }
 
 sub InitCookie {
@@ -442,7 +441,6 @@ sub ApplyRules {
       # <rss "uri..."> stores the parsed RSS of the given URI
       Dirty($1);
       my $oldpos = pos;
-      # the string returned will be converted to latin-1 unless we tell perl
       print RSS($3 ? $3 : 15, split(/ +/, $4));
       pos = $oldpos;
       # restore \G after call to RSS which uses the LWP module (for older copies of the module?)
@@ -701,6 +699,7 @@ sub RSS {
     my $request = HTTP::Request->new('GET', $uri);
     my $response = $ua->request($request);
     my $data = $response->content;
+    eval { local $SIG{__DIE__}; utf8::downgrade($data); };
     eval { local $SIG{__DIE__}; $rss->parse($data); };
     return $q->p($q->strong("[RSS parsing failed for $uri]")) if $@;
     my ($counter, $interwiki);
