@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.415 2004/06/12 11:22:57 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.416 2004/06/13 00:14:23 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -763,8 +763,15 @@ sub RSS {
   my %lines;
   eval { require XML::RSS;  } or return $q->div({-class=>'rss'},
 	 $q->strong(T('XML::RSS is not available on this system.')));
-  my $tDiff = T('diff');
-  my $tHistory = T('history');
+  my $tDiff = T('diff');          # All strings that are concatenated with strings returned
+  my $tHistory = T('history');    # by the RSS feed must be decoded from UTF8 to the internal
+  if ($HttpCharset eq 'UTF-8') {  # representation (ie. it gets the "utf8 flag").  The return
+    eval { local $SIG{__DIE__};   # string is later printed using an utf8 layer.  Without this
+	   require Encode;        # decoding, 'diff' and 'history' translations will be double
+	   $tDiff = Encode::decode_utf8($tDiff);        # encoded.
+	   $tHistory = Encode::decode_utf8($tHistory);
+	 }
+  }
   my $wikins = 'http://purl.org/rss/1.0/modules/wiki/';
   my $rdfns = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
   my $str;
@@ -3645,8 +3652,8 @@ sub DeletePage { # Delete must be done inside locks.
   my $id = shift;
   my $status = ValidId($id);
   return $status if $status;
-  foreach my $fname (GetPageFile($page), GetKeepFiles($page), GetKeepDir($page),
-		     GetRefererFile($page), $IndexFile) {
+  foreach my $fname (GetPageFile($id), GetKeepFiles($id), GetKeepDir($id),
+		     GetRefererFile($id), $IndexFile) {
     unlink($fname) if (-f $fname);
   }
   DeletePermanentAnchors();
