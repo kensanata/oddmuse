@@ -18,7 +18,7 @@
 #
 # This translation was updated for Oddmuse 1.354.
 #
-$ModulesDescription .= '<p>$Id: bulgarian-utf8.pl,v 1.1 2005/01/09 01:42:05 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: bulgarian-utf8.pl,v 1.2 2005/02/01 21:16:41 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Не е разрешено четенето: блокиран потребител, IP адрес или мрежа.
@@ -264,6 +264,8 @@ Cannot open %s
 не може да се отвори: %s
 Cannot write %s
 Не може да се запише: %s
+Cannot create %s
+
 Could not get %s lock
 Не може да се резервират изключителни права върху %s.
 This operation may take several seconds...
@@ -493,6 +495,8 @@ Renaming %1 to %2.
 The page %s does not exist
 
 The page %s already exists
+
+Cannot rename %1 to %2
 
 Renamed to %s
 

@@ -17,7 +17,7 @@
 #
 # This translation was last checked for Oddmuse version 1.504.
 #
-$ModulesDescription .= '<p>$Id: chinese-utf8.pl,v 1.1 2005/01/09 01:42:05 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: chinese-utf8.pl,v 1.2 2005/02/01 21:16:41 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 禁止讀取：使用者、ip 或是網路已被禁止連線。
@@ -263,6 +263,8 @@ Cannot open %s
 無法開啟 %s
 Cannot write %s
 無法寫入 %s
+Cannot create %s
+
 Could not get %s lock
 無法取得 %s 鎖定
 This operation may take several seconds...
@@ -493,6 +495,8 @@ The page %s does not exist
 頁面 %s 不存在
 The page %s already exists
 頁面 %s 已存在
+Cannot rename %1 to %2
+
 Renamed to %s
 更名為 %s
 Renamed from %s
