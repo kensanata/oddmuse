@@ -315,6 +315,8 @@ sub InitVariables {    # Init global session variables for mod_perl!
   $ReplaceForm = 0;    # Only admins may search and replace
   $ScriptName = $q->url() unless defined $ScriptName; # URL used in links
   $FullUrl = $ScriptName unless $FullUrl; # URL used in forms
+  $HtmlHeaders = '<link rel="alternate" type="application/rss+xml" title="RSS" href="'
+    . $ScriptName . '?action=rss" />' unless $HtmlHeaders;
   $Now = time;	       # Reset in case script is persistent
   $LastUpdate = (stat($IndexFile))[9];
   $InterSiteInit = 0;
@@ -350,7 +352,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.493 2004/12/05 03:22:14 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.494 2004/12/05 21:40:46 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -417,13 +419,14 @@ sub Clean {
   my $block = shift;
   return 0 unless defined($block); # "0" must print
   return 1 if $block eq '';        # '' is the result of a dirty rule
-  print $block;
   $Fragment .= $block;
   return 1;
 }
 
 sub Dirty { # arg 1 is the raw text; the real output must be printed instead
   if ($Fragment ne '') {
+    $Fragment =~ s|<p></p>||g; # clean up extra paragraphs (see end of ApplyRules)
+    print $Fragment;
     push(@Blocks, $Fragment);
     push(@Flags, 0);
   }
@@ -522,8 +525,8 @@ sub ApplyRules {
 	Clean($site);
 	pos = (pos) - length($rest) - 1; # skip site, but reparse rest
       } else {
-	print $output; # this is an interlink
 	Dirty($oldmatch);
+	print $output; # this is an interlink
       }
     } elsif ($BracketText && m/\G(\[$FullUrlPattern\s+([^\]]+?)\])/cog
 	    or m/\G(\[$FullUrlPattern\])/cog or m/\G($UrlPattern)/cog) {
@@ -593,6 +596,8 @@ sub ApplyRules {
   # last block -- close it, cache it
   Clean(CloseHtmlEnvironments());
   if ($Fragment ne '') {
+    $Fragment =~ s|<p></p>||g; # clean up extra paragraphs (see end Dirty())
+    print $Fragment;
     push(@Blocks, $Fragment);
     push(@Flags, 0);
   }
@@ -2011,8 +2016,6 @@ sub GetHtmlHeader {
   } else {
     $html .= '<meta name="robots" content="INDEX,NOFOLLOW" />';
   }
-  $html .= '<link rel="alternate" type="application/rss+xml" title="RSS" href="'
-    . $ScriptName . '?action=rss" />';
   # finish
   $html = qq(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n<html>)
     . $q->head($q->title($q->escapeHTML($title)) . $html . $HtmlHeaders)
