@@ -272,10 +272,11 @@ sub DoWikiRequest {
 }
 
 sub ReportError { # fatal!
-  my ($errmsg, $status) = @_;
+  my ($errmsg, $status, $log) = @_;
   print GetHttpHeader('text/html', 1, $status); # no caching
   print $q->h2($errmsg), $q->end_html;
   map { ReleaseLockDir($_); } keys %Locks;
+  WriteStringToFile("$TempDir/error", $q->start_html . $q->h1("$status $errmsg") . $q . $q->end_html) if $log;
   exit (1);
 }
 
@@ -348,7 +349,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.477 2004/11/01 03:38:37 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.478 2004/11/11 22:41:05 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -698,7 +699,7 @@ sub PrintWikiToHTML {
   $pageText = QuoteHtml($pageText);
   my ($blocks, $flags) = ApplyRules($pageText, 1, $savecache, $revision, 'p'); # p is start tag!
   # local links, anchors if cache ok
-  if ($savecache and not $revision) {
+  if ($savecache and not $revision and $Page{blocks} ne $blocks and $Page{flags} ne $flags) {
     $Page{blocks} = $blocks;
     $Page{flags} = $flags;
     if ($islocked or RequestLockDir('main')) { # not fatal!
@@ -1475,7 +1476,7 @@ sub GetFilterForm {
     . $q->Tr($q->td(T('Host:')) . $q->td($q->textfield(-name=>'rchostonly', -size=>20)));
   $table .= $q->Tr($q->td(T('Language:')) . $q->td($q->textfield(-name=>'lang', -size=>10,
     -default=>GetParam('lang', '')))) if %Languages;
-  return GetFormStart() . $q->p($form) . $q->table($table)
+  return GetFormStart(undef, undef, 'filter') . $q->p($form) . $q->table($table)
     . $q->p($q->submit('dofilter', T('Go!'))) . $q->endform;
 }
 
@@ -1762,13 +1763,13 @@ sub DoHistory {
     $html .= GetHistoryLine($id, \%keep, $row++);
   }
   if ($UseDiff) {
-    $html = $q->start_form(-method=>'GET', -action=>$ScriptName)
-          . $q->p( # don't use $q->hidden here, the sticky action value will be used instead
-		  $q->input({-type=>'hidden', -name=>'action', -value=>'browse'})
-		  . $q->input({-type=>'hidden', -name=>'diff', -value=>'1'})
-		  . $q->input({-type=>'hidden', -name=>'id', -value=>$id}))
-	    . $q->table({-class=>'history'}, $html)
-	    . $q->p($q->submit({-name=>T('Compare')})) . $q->end_form();
+    $html = GetFormStart(undef, undef, 'history')
+      . $q->p( # don't use $q->hidden here, the sticky action value will be used instead
+	      $q->input({-type=>'hidden', -name=>'action', -value=>'browse'})
+	      . $q->input({-type=>'hidden', -name=>'diff', -value=>'1'})
+	      . $q->input({-type=>'hidden', -name=>'id', -value=>$id}))
+      . $q->table({-class=>'history'}, $html)
+      . $q->p($q->submit({-name=>T('Compare')})) . $q->end_form();
   }
   print $html;
   PrintFooter($id, 'history');
@@ -2148,7 +2149,7 @@ sub GetCommentForm {
   my ($id, $rev, $comment) = @_;
   if ($CommentsPrefix ne '' and $id and $rev ne 'history' and $rev ne 'edit'
       and $OpenPageName =~ /^$CommentsPrefix/) {
-    return $q->div({-class=>'comment'}, GetFormStart(),
+    return $q->div({-class=>'comment'}, GetFormStart(undef, undef, 'comment'),
 		   $q->p(GetHiddenValue('title', $OpenPageName),
 			 GetHiddenValue('summary' , T('new comment')),
 			 GetTextArea('aftertext', $comment ? $comment : $NewComment)),
@@ -2166,8 +2167,9 @@ sub GetCommentForm {
 }
 
 sub GetFormStart {
-  my $encoding = (shift) ? 'multipart/form-data' : 'application/x-www-form-urlencoded';
-  my $method = (shift) ? 'get' : 'post';
+  my $encoding = shift ? 'multipart/form-data' : 'application/x-www-form-urlencoded';
+  my $method = shift ? 'get' : 'post';
+  my $class = shift || $method;
   return $q->start_form(-method=>$method, -action=>$FullUrl, -enctype=>$encoding);
 }
 
@@ -2182,7 +2184,7 @@ sub GetSearchForm {
     $form .= T('Language:') . ' '
       . $q->textfield(-name=>'lang', -size=>10, -default=>GetParam('lang', '')) . ' ';
   }
-  return GetFormStart(0, 1) . $q->p($form . $q->submit('dosearch', T('Go!'))) . $q->endform;
+  return GetFormStart(0, 1, 'search') . $q->p($form . $q->submit('dosearch', T('Go!'))) . $q->endform;
 }
 
 sub GetValidatorLink {
@@ -2451,7 +2453,8 @@ sub GetPageDirectory {
 
 # Always call SavePage within a lock.
 sub SavePage { # updating the cache will not change timestamp and revision!
-  ReportError(T('Cannot save an nameless page.'), '400 BAD REQUEST') unless $OpenPageName;
+  ReportError(T('Cannot save an nameless page.'), '400 BAD REQUEST', 1) unless $OpenPageName;
+  ReportError(T('Cannot save an page without revision.'), '400 BAD REQUEST', 1) unless $Page{revision};
   CreatePageDir($PageDir, $OpenPageName);
   WriteStringToFile(GetPageFile($OpenPageName), EncodePage(%Page));
 }
@@ -2732,7 +2735,7 @@ sub DoEdit {
     print $q->strong(Ts('Editing old revision %s.', $revision) . '  '
 		     . T('Saving this page will replace the latest revision with this text.'))
   }
-  print GetFormStart($upload),
+  print GetFormStart($upload, undef, $upload ? 'edit upload' : 'edit text'),
     $q->p(GetHiddenValue("title", $id), ($revision ? GetHiddenValue('revision', $revision) : ''),
 	  GetHiddenValue('oldtime', $Page{ts}),
 	  ($upload ? GetUpload() : GetTextArea('text', $oldText)));
@@ -2813,7 +2816,7 @@ sub DoPassword {
     }
   }
   if ($AdminPass or $EditPass) {
-    print GetFormStart(),
+    print GetFormStart(undef, undef, 'password'),
       $q->p(GetHiddenValue('action', 'password'), T('Password:'), ' ',
 	    $q->password_field(-name=>'pwd', -size=>20, -maxlength=>50),
 	    $q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save'))), $q->endform;
