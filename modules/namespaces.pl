@@ -16,39 +16,32 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.2 2004/04/05 17:54:30 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.3 2004/04/05 18:02:00 as Exp $</p>';
 
-*OldNamespacesInterInit = *InterInit;
-*InterInit = *NewNamespacesInterInit;
-
-my $MainScriptName;
-
-sub NewNamespacesInterInit {
-  if (not $InterSiteInit and !$Monolithic and $UsePathInfo) {
-    $InterSite{Main} = $MainScriptName . '/';
-    foreach my $name (glob("$DataDir/*")) {
-      if (-d $name and $name =~ /($InterSitePattern)/) {
-	$InterSite{$1} = $MainScriptName . '/' . $1 . '/';
-      }
-    }
-  }
-  OldNamespacesInterInit();
-}
+my $NamespacesInit = 0;
+my $NamespacesMain = 'Main'; # to get back to the main namespace
 
 *OldNamespacesInitVariables = *InitVariables;
 *InitVariables = *NewNamespacesInitVariables;
 
-my $NamespacesInit = 0;
-
 sub NewNamespacesInitVariables {
   OldNamespacesInitVariables();
-  $MainScriptName = $ScriptName; # override in other namespaces!
   if ($UsePathInfo and not $NamespacesInit
       # make sure ordinary page names are not matched!
       and $q->path_info() =~ m|^/($InterSitePattern)(/.*)?|
-      and ($2 or $q->param or $q->keywords)) {
+      and ($2 or $q->param or $q->keywords)
+      and ($1 ne $NamespacesMain)) {
     my ($ns, $rest) = ($1, $2);
     $NamespacesInit = 1;
+    # Do this before changing the $DataDir and $ScriptName
+    if (not $InterSiteInit and !$Monolithic and $UsePathInfo) {
+      $InterSite{$NamespacesMain} = $ScriptName . '/';
+      foreach my $name (glob("$DataDir/*")) {
+	if (-d $name and $name =~ /($InterSitePattern)/ and $name ne $NamespacesMain) {
+	  $InterSite{$1} = $ScriptName . '/' . $1 . '/';
+	}
+      }
+    }
     # Change some stuff from the original InitVariables call:
     $DataDir    .= '/' . $ns;
     $PageDir     = "$DataDir/page";
@@ -65,7 +58,6 @@ sub NewNamespacesInitVariables {
     # $ConfigFile -- shared
     # $ModuleDir -- shared
     # $NearDir -- shared
-    $MainScriptName = $ScriptName;
     $ScriptName .= '/' . $ns;
     $FullUrl .= '/' . $ns;
     $WikiDescription .= "<p>Current namespace: $ns</p>";
