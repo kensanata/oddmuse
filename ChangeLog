@@ -1,3 +1,13 @@
+2004-03-19  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (PrintWikiToHTML, PrintCache): Start with
+	$FootnoteNumber = 1.
+	(BracketLink): New.
+	(GetInterLink, GetUrl): Use it, and add "outside" class if
+	necessary.
+	(GetPageOrEditLink): Use it.
+	(GetHtmlHeader): Default CSS for a.outside.
+
 2004-03-15  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (InitVariables): Add $RssInterwikiTranslate.
