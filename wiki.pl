@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.37 2003/04/17 00:32:21 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.38 2003/04/18 00:09:57 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -357,14 +357,12 @@ sub ApplyRules {
     # second block -- remaining hilighting
     if ($HtmlStack[0] eq 'dt' && m/\G:/cg) {
       $fragment = &OpenHtmlEnvironment('dd');
-    } elsif ($HtmlStack[0] eq 'td' && m/\G((\|\|)+)\s*(\n|$)/cgm) {
-      $fragment = &CloseHtmlEnvironment() . &CloseHtmlEnvironment(); # close td and tr
-    } elsif ($HtmlStack[0] eq 'td' && m/\G((\|\|)+)/cg) {
-      if (length($1) == 2) {
-	$fragment = '</td><td>';
-      } else {
-	$fragment = '</td><td colspan="' . length($1)/2 . '">';
-      }
+    } elsif ($HtmlStack[0] eq 'td' && m/\G[ \t]*((\|\|)+)[ \t]*\n((\|\|)+)[ \t]*/cgm) {
+      $fragment = '</td></tr><tr>' . ((length($3) == 2) ? '<td>' : ('<td colspan="' . length($3)/2 . '">'));
+    } elsif ($HtmlStack[0] eq 'td' && m/\G[ \t]*((\|\|)+)[ \t]*(?!(\n|$))/cgm) { # continued
+      $fragment = '</td>' . ((length($1) == 2) ? '<td>' : ('<td colspan="' . length($1)/2 . '">'));
+    } elsif ($HtmlStack[0] eq 'td' && m/\G[ \t]*((\|\|)+)[ \t]*/cgm) { # at the end of the table
+      $fragment = &CloseHtmlEnvironments();
     } elsif (m/\G\&lt;nowiki\&gt;(.*?)\&lt;\/nowiki\&gt;/cgis) {
       $fragment = $1;
     } elsif (m/\G\&lt;code\&gt;(.*?)\&lt;\/code\&gt;/cgis) {
