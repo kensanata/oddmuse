@@ -1,4 +1,5 @@
 # Copyright (C) 2003, 2004  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004  Haixing Hu <huhaixing@msn.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,20 +19,13 @@
 
 use vars qw($LatexDir $LatexLinkDir $LatexExtendPath);
 
-$ModulesDescription .= '<p>$Id: latex.pl,v 1.3 2004/02/13 19:54:25 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: latex.pl,v 1.4 2004/04/25 15:17:24 as Exp $</p>';
 
 # PATH must be extended in order to make dvi2bitmap available, and
 # also all the programs that dvi2bitmap may call to do its work
 # (namely mkdir, rm, kpathsea and mktexpk).
 
-# You need /bin since dvi2bitmap uses mkdir and rm that are in /bin
-# And you need /usr/share/texmf/bin to be able to use mktexpk.  And
-# you need /usr/bin because that's where the latex executable is,
-# probably.  This variable is appended to the PATH.  If you compiled
-# dvi2bitmap yourself, you might have to use /usr/local/bin instead of
-# /user/bin!
-
-$LatexExtendPath = ':/usr/share/texmf/bin';
+$LatexExtendPath = ':/usr/share/texmf/bin:/usr/bin:/usr/local/bin';
 
 # $LatexDir must be accessible from the outside as $LatexLinkDir.  The
 # first directory is used to *save* the pictures, the second directory
@@ -42,7 +36,7 @@ $LatexExtendPath = ':/usr/share/texmf/bin';
 # /org/org.emacswiki/htdocs/test is your $DataDir.
 
 $LatexDir    = "$DataDir/latex";
-$LatexLinkDir= "/test/latex";
+$LatexLinkDir= "/wiki/latex";
 
 # You also need a template stored as $DataDir/template.latex.  The
 # template must contain the string <math> where the LaTeX code is
@@ -54,23 +48,25 @@ my $LatexDefaultTemplate = << 'EOT';
 \documentclass[12pt]{article}
 \pagestyle{empty}
 \begin{document}
-\begin{math}
 <math>
-\end{math}
 \end{document}
 EOT
 
 push(@MyRules, \&LatexRule);
 
 sub LatexRule {
-  if (m/\G\$\$(.*?)\$\$/gc) {
-    return &MakeLaTeX($1);
+  if (m/\G\\\[((.|\n)*?)\\\]/gc) {
+    return &MakeLaTeX("\$\$ $1 \$\$", "display math");
+  } elsif (m/\G\$\$((.|\n)*?)\$\$/gc) {
+    return &MakeLaTeX("\$\$ $1 \$\$", "display math");
+  } elsif (m/\G\$((.|\n)*?)\$/gc) {
+    return &MakeLaTeX("\$ $1 \$", "inline math");      
   }
   return '';
 }
 
 sub MakeLaTeX {
-  my ($latex) = @_;
+  my ($latex, $type) = @_;
   $ENV{PATH} .= $LatexExtendPath if $LatexExtendPath and $ENV{PATH} !~ /$LatexExtendPath/;
   $latex = UnquoteHtml($latex); # Change &lt; back to <, for example
   my $hash = UrlEncode($latex);
@@ -78,7 +74,16 @@ sub MakeLaTeX {
   # check cache
   if (-f "$LatexDir/$hash.png"
       and not -z "$LatexDir/$hash.png") {
-    return ("<img border=0 src=\"$LatexLinkDir/$hash.png\" alt=\"$latex\">");
+    if ($type eq "inline math") { # inline math
+      return ("<img class='InlineMath' border=0 "
+              ."src='$LatexLinkDir/$hash.png' alt='$latex'\/>");
+    } elsif ($type eq "display math") { # display math
+      return ("<center><img class='DisplayMath' border=0 "
+             ."src='$LatexLinkDir/$hash.png' alt='$latex'><\/center>");
+    } else {  # latex format
+      return ("<img class='LaTeX' border=0 "
+             ."src='$LatexLinkDir/$hash.png' alt='$latex' \/>");
+    }
   }
   # read template and replace <math>
   mkdir($LatexDir) unless -d $LatexDir;
@@ -100,13 +105,22 @@ sub MakeLaTeX {
   WriteStringToFile ("srender.tex", $template);
   qx(latex srender.tex);
   return "[Illegal LaTeX markup: $latex]" if $?;
-  my $output = qx(dvi2bitmap --output-type png srender.dvi);
-  return "[dvi2bitmap error $? ($output)]" if $?;
+  my $output = qx(dvipng -T tight -bg Transparent srender.dvi);
+  return "[dvipng error $? ($output)]" if $?;
   my $result;
-  if (-f 'srender-page1.png' and not -z 'srender-page1.png') {
-    my $png = ReadFileOrDie("srender-page1.png");
+  if (-f 'srender1.png' and not -z 'srender1.png') {
+    my $png = ReadFileOrDie("srender1.png");
     WriteStringToFile ("$LatexDir/$hash.png", $png);
-    $result = "<img border=0 src=\"$LatexLinkDir/$hash.png\" alt=\"$latex\">";
+    if ($type eq "inline math") {
+      $result = "<img class='InlineMath' border=0 "
+                ."src='$LatexLinkDir/$hash.png' alt='$latex'\/>";
+    } elsif ($type eq "display math") {
+      $result = "<center><img class='DisplayMath' border=0 "
+               ."src='$LatexLinkDir/$hash.png' alt='$latex'><\/center>";    
+    } else { # latex format
+      return ("<img class='LaTeX' border=0 "
+                   ."src='$LatexLinkDir/$hash.png' alt='$latex' \/>");	   
+    }
   } else {
     $result = "[Error retrieving image for $latex]";
   }
