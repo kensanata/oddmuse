@@ -348,7 +348,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.451 2004/09/04 09:14:13 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.452 2004/09/05 19:37:51 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -544,7 +544,7 @@ sub ApplyRules {
       my $bracket = (substr($1, 0, 1) eq '[');
       print GetPageOrEditLink($2, $3, $bracket);
     } elsif ($locallinks && $FreeLinks && (m/\G(\[\[image:$FreeLinkPattern\]\])/cog
-	     or m/\G(\[\[image:$FreeLinkPattern\|([^\]]+)\]\])/cog)) {
+	     or m/\G(\[\[image:$FreeLinkPattern\|([^]|]+)\]\])/cog)) {
       # [[image:Free Link]], [[image:Free Link|alt text]]
       Dirty($1);
       print GetDownloadLink($2, 1, undef, $3);
