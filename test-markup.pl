@@ -414,7 +414,7 @@ update_page('Keith_Jarret', 'Plays with [[Gary Peacock]]'); # link to perm. anch
 update_page('Jack_DeJohnette', 'A friend of [::Gary Peacock]'); # define perm. anchor
 
 test_page(get_page('Miles_Davis'), ('Featuring', 'John Coltrane'));
-test_page(get_page('John_Coltrane'), ('<li>REDIRECT Coltrane'));
+test_page(get_page('John_Coltrane'), ('#REDIRECT Coltrane'));
 test_page(get_page('Sonny_Stitt'),
 	  ('Status: 302', 'Location: .*wiki.pl\?action=browse;oldid=Sonny_Stitt;id=Stitt'));
 test_page(get_page('Keith_Jarret'),
@@ -1253,9 +1253,9 @@ ordinary text
 <dl class="quote"><dt /><dd>one and :)</dd><dt /><dd>two and :) more</dd></dl>
 : one\n\n:two
 <dl class="quote"><dt /><dd>one</dd><dt /><dd>two</dd></dl>
-;one:eins\n;two:zwei
+; one:eins\n;two:zwei
 <dl><dt>one</dt><dd>eins</dd><dt>two</dt><dd>zwei</dd></dl>
-;one:eins\n\n;two:zwei
+; one:eins\n\n;two:zwei
 <dl><dt>one</dt><dd>eins</dd><dt>two</dt><dd>zwei</dd></dl>
 This is ''emphasized''.
 This is <em>emphasized</em>.
