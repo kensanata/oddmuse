@@ -355,7 +355,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.514 2005/01/05 21:27:06 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.515 2005/01/05 22:19:39 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -882,7 +882,8 @@ sub RSS {
       }
       $line .= $q->span({-class=>'contributor'}, $q->span(T(' . . . . ')) . $contributor)
 	if $contributor;
-      $line .= $q->span(' -- ') . $q->strong({-class=>'description'}, $description) if $description;
+      $line .= $q->span({class=>'dash'}, ' &ndash; ') . $q->strong({-class=>'description'}, $description)
+	if $description;
       while ($lines{$date}) { $date .= ' '; } # make sure this is unique
       $lines{$date} = $line;
     }
@@ -899,7 +900,7 @@ sub RSS {
 	$date = $day;
 	$str .= $q->p($q->strong($day)) . '<ul>';
       }
-      $line = $time . ' UTC ' . $line if $time;
+      $line = $q->span({-class=>'time'}, $time . ' UTC ') . $line if $time;
     } elsif (not $date) {
       $str .= '<ul>'; # if the feed doesn't have any dates we need to start the list anyhow
       $date = $Now; # to ensure the list starts only once
@@ -1607,7 +1608,7 @@ sub GetRcHtml {
 	my($pagename, $timestamp, $host, $username, $summary, $minor, $revision, $languages, $cluster) = @_;
 	$host = QuoteHtml($host);
 	my $author = GetAuthorLink($host, $username);
-	my $sum = $q->strong('--', QuoteHtml($summary))	 if $summary;
+	my $sum = $q->span({class=>'dash'}, ' &ndash; ') . $q->strong(QuoteHtml($summary)) if $summary;
 	my $edit = $q->em($tEdit)  if $minor;
 	my $lang = '[' . join(', ', @{$languages}) . ']'  if @{$languages};
 	my ($pagelink, $history, $diff, $rollback);
@@ -1634,8 +1635,8 @@ sub GetRcHtml {
 	    $diff .= '(' . ScriptLinkDiff($minor ? 2 : 1, $pagename, $tDiff, '') . ')';
 	  }
 	}
-	$html .= $q->li(CalcTime($timestamp), $diff, $history, $rollback, $pagelink,
-			T(' . . . . '), $author, $sum, $lang, $edit);
+	$html .= $q->li($q->span({-class=>'time'}, CalcTime($timestamp)), $diff, $history, $rollback,
+			$pagelink, T(' . . . . '), $author, $sum, $lang, $edit);
       },
 	@_;
   $html .= '</ul>' if ($inlist);
