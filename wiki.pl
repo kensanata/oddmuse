@@ -88,7 +88,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.137 2003/09/06 07:20:18 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.138 2003/09/06 12:45:05 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -1735,25 +1735,22 @@ sub GetHtmlHeader {
     $html .= $q->style({-type=>'text/css'},<<EOT);
 <!--
 body { background-color:#FFF; color:#000; }
-a:link { background-color:#FFF; color:#00F; }
-a:visited { background-color:#FFF; color:#A0A; }
-a:active { background-color:#FFF; color:#F00; }
+a:link { color:#00F; }
+a:visited { color:#A0A; }
+a:active { color:#F00; }
 img.logo { float: right; clear: right; border-style:none; }
 div.diff { padding-left:5%; padding-right:5%; }
-div.old { background-color:#FFFFAF; color:#000; }
-div.new { background-color:#CFFFCF; color:#000; }
+div.old { background-color:#FFFFAF; }
+div.new { background-color:#CFFFCF; }
 div.refer { padding-left:5%; padding-right:5%; font-size:smaller; }
-div.message { background-color:#FEE; color:#000; }
+div.message { background-color:#FEE; }
 table.history { border-style:none; }
 td.history { border-style:none; }
 table.user { border-style:solid; border-width:thin; }
 table.user tr td { border-style:solid; border-width:thin; padding:5px; text-align:center; }
 span.result { font-size:larger; }
 span.info { font-size:smaller; font-style:italic; }
-div.rss { background-color:#EEF; color:#000; }
-div.rss a:link { background-color:#EEF; color:#00F; }
-div.rss a:visited { background-color:#EEF; color:#A0A; }
-div.rss a:active { background-color:#EEF; color:#F00; }
+div.rss { background-color:#EEF; }
 a.definition:before { content:"[::"; }
 a.definition:after { content:"]"; }
 a.link:before { content:"[##"; }
