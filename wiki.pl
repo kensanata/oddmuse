@@ -352,7 +352,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.494 2004/12/05 21:40:46 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.495 2004/12/11 23:59:29 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -442,156 +442,163 @@ sub ApplyRules {
   $text =~ s/\r\n/\n/g; # DOS to Unix
   $text =~ s/\n+$//g;    # No trailing paragraphs
   return unless $text;
-  return Clean(GetDownloadLink($OpenPageName, (substr($1, 0, 6) eq 'image/'), $revision))
-    if ($text =~ m/^#FILE ([^ \n]+)\n/);
   local $Fragment = ''; # the clean HTML fragment not yet on @Blocks
   local @Blocks=();     # the list of cached HTML blocks
   local @Flags=();	# a list for each block, 1 = dirty, 0 = clean
   Clean(join('', map { AddHtmlEnvironment($_) } @tags));
-  my $smileyregex = join "|", keys %Smilies;
-  $smileyregex = qr/(?=$smileyregex)/;
-  local $_ = $text;
-  local $bol = 1;
-  local $first = 1;
-  while(1) {
-    # Block level elements eat empty lines to prevent empty p elements.
-    if ($bol && m/\G(\s*\n)*(\*+)[ \t]+/cg
-	     or InElement('li') && m/\G(\s*\n)+(\*+)[ \t]+/cg) {
-      Clean(CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ul',length($2))
-	    . AddHtmlEnvironment('li'));
-    } elsif ($bol && m/\G(\s*\n)+/cg) {
-      Clean(CloseHtmlEnvironments() . AddHtmlEnvironment('p'));
-    } elsif ($bol && m/\G(\&lt;include(\s+(text|with-anchors))?\s+"(.*)"\&gt;[ \t]*\n?)/cgi) {
-      # <include "uri..."> includes the text of the given URI verbatim
-      Clean(CloseHtmlEnvironments());
-      Dirty($1);
-      my ($oldpos, $type, $uri) = ((pos), $3, $4);
-      if ($uri =~ /^$UrlProtocols:/o) {
-	if ($type eq 'text') {
-	  print $q->pre({class=>"include $uri"},QuoteHtml(GetRaw($uri)));
-	} else { # never use local links for remote pages, with a starting tag
-	  print $q->start_div({class=>"include $uri"});
-	  ApplyRules(QuoteHtml(GetRaw($uri)), 0, ($type eq 'with-anchors'), undef, 'p');
-	  print $q->end_div();
-	}
-      } else {
-	if ($type eq 'text') {
-	  print $q->pre({class=>"include $uri"},QuoteHtml(GetPageContent(FreeToNormal($uri))));
-	} else { # with a starting tag
-	  print $q->start_div({class=>"include $uri"});
-          ApplyRules(QuoteHtml(GetPageContent(FreeToNormal($uri))), $locallinks, $withanchors, undef, 'p');
-	  print $q->end_div();
-	}
-      }
-      print AddHtmlEnvironment('p');
-      pos = $oldpos;		# restore \G after call to ApplyRules
-    } elsif ($bol && m/\G(\&lt;journal(\s+(\d*))?(\s+"(.*)")?(\s+(reverse))?\&gt;[ \t]*\n?)/cgi) {
-      # <journal 10 "regexp"> includes 10 pages matching regexp
-      Clean(CloseHtmlEnvironments());
-      Dirty($1);
-      my $oldpos = pos;
-      PrintJournal($3, $5, $7);
-      print AddHtmlEnvironment('p');
-      pos = $oldpos;		# restore \G after call to ApplyRules
-    } elsif ($bol && m/\G(\&lt;rss(\s+(\d*))?\s+(.*?)\&gt;[ \t]*\n?)/cgis) {
-      # <rss "uri..."> stores the parsed RSS of the given URI
-      Clean(CloseHtmlEnvironments());
-      Dirty($1);
-      my $oldpos = pos;
-      eval { local $SIG{__DIE__}; binmode(STDOUT, ":utf8"); } if $HttpCharset eq 'UTF-8';
-      print RSS($3 ? $3 : 15, split(/\s+/, $4));
-      eval { local $SIG{__DIE__}; binmode(STDOUT, ":raw"); };
-      print AddHtmlEnvironment('p');
-      pos = $oldpos;
-      # restore \G after call to RSS which uses the LWP module (for older copies of the module?)
-    } elsif ($locallinks
-	     and ($BracketText && m/\G(\[$InterLinkPattern\s+([^\]]+?)\])/cog
-		  or $BracketText && m/\G(\[\[$FreeInterLinkPattern\|([^\]]+?)\]\])/cog
-		  or m/\G(\[$InterLinkPattern\])/cog or m/\G(\[\[\[$FreeInterLinkPattern\]\]\])/cog
-		  or m/\G($InterLinkPattern)/cog or m/\G(\[\[$FreeInterLinkPattern\]\])/cog)) {
-      # [InterWiki:FooBar text] or [InterWiki:FooBar] or
-      # InterWiki:FooBar or [[InterWiki:foo bar|text]] or
-      # [[InterWiki:foo bar]] or [[[InterWiki:foo bar]]]-- Interlinks
-      # can change when the intermap changes (local config, therefore
-      # depend on $locallinks).  The intermap is only read if
-      # necessary, so if this not an interlink, we have to backtrack a
-      # bit.
-      my $bracket = (substr($1, 0, 1) eq '[') # but \[\[$FreeInterLinkPattern\]\] it not bracket!
-	&& !((substr($1, 0, 2) eq '[[') && (substr($1, 2, 1) ne '[') && index($1, '|') < 0);
-      my $quote = (substr($1, 0, 2) eq '[[');
-      my ($oldmatch, $output) = ($1, GetInterLink($2, $3, $bracket, $quote)); # $3 may be empty
-      if ($oldmatch eq $output) { # no interlink
-	my ($site, $rest) = split(/:/, $oldmatch, 2);
-	Clean($site);
-	pos = (pos) - length($rest) - 1; # skip site, but reparse rest
-      } else {
-	Dirty($oldmatch);
-	print $output; # this is an interlink
-      }
-    } elsif ($BracketText && m/\G(\[$FullUrlPattern\s+([^\]]+?)\])/cog
-	    or m/\G(\[$FullUrlPattern\])/cog or m/\G($UrlPattern)/cog) {
-      # [URL text] makes [text] link to URL, [URL] makes footnotes [1]
-      my $bracket = (substr($1, 0, 1) eq '[');
-      if ($bracket and not $3) { # [URL] is dirty because the number may change
+  if ($text =~ m/^#FILE ([^ \n]+)\n/) {
+    Clean($q->p(T('This page contains an uploaded file:'))
+	  . $q->p(GetDownloadLink($OpenPageName, (substr($1, 0, 6) eq 'image/'), $revision)));
+  } else {
+    my $smileyregex = join "|", keys %Smilies;
+    $smileyregex = qr/(?=$smileyregex)/;
+    local $_ = $text;
+    local $bol = 1;
+    local $first = 1;
+    while (1) {
+      # Block level elements eat empty lines to prevent empty p elements.
+      if ($bol && m/\G(\s*\n)*(\*+)[ \t]+/cg
+	  or InElement('li') && m/\G(\s*\n)+(\*+)[ \t]+/cg) {
+	Clean(CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ul',length($2))
+	      . AddHtmlEnvironment('li'));
+      } elsif ($bol && m/\G(\s*\n)+/cg) {
+	Clean(CloseHtmlEnvironments() . AddHtmlEnvironment('p'));
+      } elsif ($bol && m/\G(\&lt;include(\s+(text|with-anchors))?\s+"(.*)"\&gt;[ \t]*\n?)/cgi) {
+	# <include "uri..."> includes the text of the given URI verbatim
+	Clean(CloseHtmlEnvironments());
 	Dirty($1);
-	print GetUrl($2, '', 1);
-      } else {
-	Clean(GetUrl($2, $3, $bracket, not $bracket)); # $2 may be empty
-      }
-    } elsif ($WikiLinks && m/\G!$LinkPattern/cog) { Clean($1); # ! gets eaten
-    } elsif ($PermanentAnchors && m/\G(\[::$FreeLinkPattern\])/cog) {
-      #[::Free Link] permanent anchor create only $withanchors
-      Dirty($1);
-      if ($withanchors) {
-	print GetPermanentAnchor($2);
-      } else {
-	print $q->span({-class=>'permanentanchor'}, $2);
-      }
-    } elsif ($WikiLinks && $locallinks
-	     && ($BracketWiki && m/\G(\[$LinkPattern\s+([^\]]+?)\])/cog
-		 or m/\G(\[$LinkPattern\])/cog or m/\G($LinkPattern)/cog)) {
-      # [LocalPage text], [LocalPage], LocalPage
-      Dirty($1);
-      my $bracket = (substr($1, 0, 1) eq '[');
-      print GetPageOrEditLink($2, $3, $bracket);
-    } elsif ($locallinks && $FreeLinks && (m/\G(\[\[image:$FreeLinkPattern\]\])/cog
-	     or m/\G(\[\[image:$FreeLinkPattern\|([^]|]+)\]\])/cog)) {
-      # [[image:Free Link]], [[image:Free Link|alt text]]
-      Dirty($1);
-      print GetDownloadLink($2, 1, undef, $3);
-    } elsif ($FreeLinks && $locallinks
-	     && ($BracketWiki && m/\G(\[\[$FreeLinkPattern\|([^\]]+)\]\])/cog
-		 or m/\G(\[\[\[$FreeLinkPattern\]\]\])/cog
-		 or m/\G(\[\[$FreeLinkPattern\]\])/cog)) {
-      # [[Free Link|text]], [[Free Link]]
-      Dirty($1);
-      my $bracket = (substr($1, 0, 3) eq '[[[');
-      print GetPageOrEditLink($2, $3, $bracket, 1); # $3 may be empty
-    } elsif ($bol && m/\G(&lt;&lt;&lt;&lt;&lt;&lt;&lt; )/cg) {
-      my ($str, $count, $limit, $oldpos) = ($1, 0, 100, pos);
-      while (m/\G(.*\n)/cg and $count++ < $limit) {
-	$str .= $1;
-	last if (substr($1, 0, 29) eq '&gt;&gt;&gt;&gt;&gt;&gt;&gt; ');
-      }
-      if ($count >= $limit) {
+	my ($oldpos, $type, $uri) = ((pos), $3, $4);
+	if ($uri =~ /^$UrlProtocols:/o) {
+	  if ($type eq 'text') {
+	    print $q->pre({class=>"include $uri"},QuoteHtml(GetRaw($uri)));
+	  } else { # never use local links for remote pages, with a starting tag
+	    print $q->start_div({class=>"include $uri"});
+	    ApplyRules(QuoteHtml(GetRaw($uri)), 0, ($type eq 'with-anchors'), undef, 'p');
+	    print $q->end_div();
+	  }
+	} else {
+	  if ($type eq 'text') {
+	    print $q->pre({class=>"include $uri"},QuoteHtml(GetPageContent(FreeToNormal($uri))));
+	  } else {		# with a starting tag
+	    print $q->start_div({class=>"include $uri"});
+	    ApplyRules(QuoteHtml(GetPageContent(FreeToNormal($uri))), $locallinks, $withanchors, undef, 'p');
+	    print $q->end_div();
+	  }
+	}
+	print AddHtmlEnvironment('p');
+	pos = $oldpos;		# restore \G after call to ApplyRules
+      } elsif ($bol && m/\G(\&lt;journal(\s+(\d*))?(\s+"(.*)")?(\s+(reverse))?\&gt;[ \t]*\n?)/cgi) {
+	# <journal 10 "regexp"> includes 10 pages matching regexp
+	Clean(CloseHtmlEnvironments());
+	Dirty($1);
+	my $oldpos = pos;
+	PrintJournal($3, $5, $7);
+	print AddHtmlEnvironment('p');
+	pos = $oldpos;		# restore \G after call to ApplyRules
+      } elsif ($bol && m/\G(\&lt;rss(\s+(\d*))?\s+(.*?)\&gt;[ \t]*\n?)/cgis) {
+	# <rss "uri..."> stores the parsed RSS of the given URI
+	Clean(CloseHtmlEnvironments());
+	Dirty($1);
+	my $oldpos = pos;
+	eval { local $SIG{__DIE__}; binmode(STDOUT, ":utf8"); } if $HttpCharset eq 'UTF-8';
+	print RSS($3 ? $3 : 15, split(/\s+/, $4));
+	eval { local $SIG{__DIE__}; binmode(STDOUT, ":raw"); };
+	print AddHtmlEnvironment('p');
 	pos = $oldpos;
-	Clean('&lt;&lt;&lt;&lt;&lt;&lt;&lt; ');
+	# restore \G after call to RSS which uses the LWP module (for older copies of the module?)
+      } elsif ($locallinks
+	       and ($BracketText && m/\G(\[$InterLinkPattern\s+([^\]]+?)\])/cog
+		    or $BracketText && m/\G(\[\[$FreeInterLinkPattern\|([^\]]+?)\]\])/cog
+		    or m/\G(\[$InterLinkPattern\])/cog or m/\G(\[\[\[$FreeInterLinkPattern\]\]\])/cog
+		    or m/\G($InterLinkPattern)/cog or m/\G(\[\[$FreeInterLinkPattern\]\])/cog)) {
+	# [InterWiki:FooBar text] or [InterWiki:FooBar] or
+	# InterWiki:FooBar or [[InterWiki:foo bar|text]] or
+	# [[InterWiki:foo bar]] or [[[InterWiki:foo bar]]]-- Interlinks
+	# can change when the intermap changes (local config, therefore
+	# depend on $locallinks).  The intermap is only read if
+	# necessary, so if this not an interlink, we have to backtrack a
+	# bit.
+	my $bracket = (substr($1, 0, 1) eq '[')	# but \[\[$FreeInterLinkPattern\]\] it not bracket!
+	  && !((substr($1, 0, 2) eq '[[') && (substr($1, 2, 1) ne '[') && index($1, '|') < 0);
+	my $quote = (substr($1, 0, 2) eq '[[');
+	my ($oldmatch, $output) = ($1, GetInterLink($2, $3, $bracket, $quote));	# $3 may be empty
+	if ($oldmatch eq $output) { # no interlink
+	  my ($site, $rest) = split(/:/, $oldmatch, 2);
+	  Clean($site);
+	  pos = (pos) - length($rest) - 1; # skip site, but reparse rest
+	} else {
+	  Dirty($oldmatch);
+	  print $output;	# this is an interlink
+	}
+      } elsif ($BracketText && m/\G(\[$FullUrlPattern\s+([^\]]+?)\])/cog
+	       or m/\G(\[$FullUrlPattern\])/cog or m/\G($UrlPattern)/cog) {
+	# [URL text] makes [text] link to URL, [URL] makes footnotes [1]
+	my $bracket = (substr($1, 0, 1) eq '[');
+	if ($bracket and not $3) { # [URL] is dirty because the number may change
+	  Dirty($1);
+	  print GetUrl($2, '', 1);
+	} else {
+	  Clean(GetUrl($2, $3, $bracket, not $bracket)); # $2 may be empty
+	}
+      } elsif ($WikiLinks && m/\G!$LinkPattern/cog) {
+	Clean($1);		# ! gets eaten
+      } elsif ($PermanentAnchors && m/\G(\[::$FreeLinkPattern\])/cog) {
+	#[::Free Link] permanent anchor create only $withanchors
+	Dirty($1);
+	if ($withanchors) {
+	  print GetPermanentAnchor($2);
+	} else {
+	  print $q->span({-class=>'permanentanchor'}, $2);
+	}
+      } elsif ($WikiLinks && $locallinks
+	       && ($BracketWiki && m/\G(\[$LinkPattern\s+([^\]]+?)\])/cog
+		   or m/\G(\[$LinkPattern\])/cog or m/\G($LinkPattern)/cog)) {
+	# [LocalPage text], [LocalPage], LocalPage
+	Dirty($1);
+	my $bracket = (substr($1, 0, 1) eq '[');
+	print GetPageOrEditLink($2, $3, $bracket);
+      } elsif ($locallinks && $FreeLinks && (m/\G(\[\[image:$FreeLinkPattern\]\])/cog
+					     or m/\G(\[\[image:$FreeLinkPattern\|([^]|]+)\]\])/cog)) {
+	# [[image:Free Link]], [[image:Free Link|alt text]]
+	Dirty($1);
+	print GetDownloadLink($2, 1, undef, $3);
+      } elsif ($FreeLinks && $locallinks
+	       && ($BracketWiki && m/\G(\[\[$FreeLinkPattern\|([^\]]+)\]\])/cog
+		   or m/\G(\[\[\[$FreeLinkPattern\]\]\])/cog
+		   or m/\G(\[\[$FreeLinkPattern\]\])/cog)) {
+	# [[Free Link|text]], [[Free Link]]
+	Dirty($1);
+	my $bracket = (substr($1, 0, 3) eq '[[[');
+	print GetPageOrEditLink($2, $3, $bracket, 1); # $3 may be empty
+      } elsif ($bol && m/\G(&lt;&lt;&lt;&lt;&lt;&lt;&lt; )/cg) {
+	my ($str, $count, $limit, $oldpos) = ($1, 0, 100, pos);
+	while (m/\G(.*\n)/cg and $count++ < $limit) {
+	  $str .= $1;
+	  last if (substr($1, 0, 29) eq '&gt;&gt;&gt;&gt;&gt;&gt;&gt; ');
+	}
+	if ($count >= $limit) {
+	  pos = $oldpos;
+	  Clean('&lt;&lt;&lt;&lt;&lt;&lt;&lt; ');
+	} else {
+	  Clean(CloseHtmlEnvironments() . $q->pre({-class=>'conflict'}, $str) . AddHtmlEnvironment('p'));
+	}
+      } elsif (%Smilies && m/\G$smileyregex/cog && (Clean(SmileyReplace()))) {
+      } elsif (Clean(RunMyRules())) {
+      } elsif (m/\G\s*\n(s*\n)+/cg) { # paragraphs: at least two newlines
+	Clean(CloseHtmlEnvironments() . AddHtmlEnvironment('p')); # another one like this further up
+      } elsif (m/\G\s+/cg) {
+	Clean(' ');
+      } elsif (m/\G([A-Za-z\x80-\xff]+([ \t]+[a-z\x80-\xff]+)*[ \t]+)/cg # multiple words but
+	     or m/\G([A-Za-z\x80-\xff]+)/cg or m/\G(\S)/cg) {
+	Clean($1);		# do not match http://foo
       } else {
-	Clean(CloseHtmlEnvironments() . $q->pre({-class=>'conflict'}, $str) . AddHtmlEnvironment('p'));
+	last;
       }
-    } elsif (%Smilies && m/\G$smileyregex/cog && (Clean(SmileyReplace()))) {
-    } elsif (Clean(RunMyRules())) {
-    } elsif (m/\G\s*\n(s*\n)+/cg) { # paragraphs: at least two newlines
-      Clean(CloseHtmlEnvironments() . AddHtmlEnvironment('p')); # another one like this further up
-    } elsif (m/\G\s+/cg) { Clean(' ');
-    } elsif (m/\G([A-Za-z\x80-\xff]+([ \t]+[a-z\x80-\xff]+)*[ \t]+)/cg # multiple words but
-	     or m/\G([A-Za-z\x80-\xff]+)/cg or m/\G(\S)/cg) { Clean($1); # do not match http://foo
-    } else { last;
+      my $oldpos = pos;	# the following match causes smilies to fail at line beginnings!?
+      $bol = m/\G(?<=\n)/cgs;
+      pos = $oldpos; # therefore restore pos...  reason unknown (Perl v5.8.4).
+      $first = 0;
     }
-    my $oldpos = pos; # the following match causes smilies to fail at line beginnings!?
-    $bol = m/\G(?<=\n)/cgs;
-    pos = $oldpos;    # therefore restore pos...  reason unknown (Perl v5.8.4).
-    $first = 0;
   }
   # last block -- close it, cache it
   Clean(CloseHtmlEnvironments());
@@ -2116,7 +2123,7 @@ sub GetFooterLinks {
 	push(@elements, GetOldPageLink('edit', $id, $rev,
 				       Ts('Edit revision %s of this page', $rev)));
       } else { # showing current revision
-	push(@elements, GetEditLink($id, T('Edit text of this page'), undef, T('e')));
+	push(@elements, GetEditLink($id, T('Edit this page'), undef, T('e')));
       }
     } else { # no permission or generated page
       push(@elements, ScriptLink('action=password', T('This page is read-only')));
