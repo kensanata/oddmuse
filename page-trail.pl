@@ -1,4 +1,4 @@
-# $Id: page-trail.pl,v 1.2 2004/01/25 21:02:12 as Exp $
+# $Id: page-trail.pl,v 1.3 2004/01/25 21:02:41 as Exp $
 
 my $PageTrailLength = 10;
 
@@ -28,7 +28,7 @@ sub UpdatePageTrail {
 
 sub NewGetGotoBar {
   my $bar = OldGetGotoBar(@_);
-  $bar .= $q->span({-class=>'trail'}, $q->br(),
+  $bar .= $q->span({-class=>'trail'}, $q->br(), T('Trail: '),
 		   map { GetPageLink($_) } reverse(@PageTrail))
     if @PageTrail;
   return $bar;
