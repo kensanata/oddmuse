@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.3 2004/03/28 01:53:54 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.4 2004/03/28 02:18:59 as Exp $</p>';
 
 *OldCalendarGetHeader = *GetHeader;
 *GetHeader = *NewCalendarGetHeader;
@@ -73,3 +73,37 @@ sub DoCollect {
   $CollectingJournal = 0;
   PrintFooter();
 }
+
+push(@MyRules, \&CalendarRule);
+
+sub CalendarRule {
+  if (/\Gcalendar:([0-9][0-9][0-9][0-9])/gc) {
+    PrintYearCalendar($1);
+  }
+  return '';
+}
+
+sub PrintYearCalendar {
+  my $year = shift;
+  my @pages = AllPagesList();
+  for $mon ((1..12)) {
+    my $cal = `cal $mon $year`;
+    $cal =~ s|\b( ?\d?\d)\b|
+      {
+       my $day = $1;
+       my $date = sprintf("%d-%02d-%02d", $year, $mon, $day);
+       my @matches = grep(/^$date/, @pages);
+       my $link;
+       if (@matches == 0) {
+         $link = $day;
+       } elsif (@matches == 1) {
+         $link = GetPageLink($matches[0], $day);
+       } else {
+         $link = ScriptLink('action=collect;match=' . $date, $day);
+       }
+       $link;
+      }|ge;
+    print "<pre class=\"cal\">$cal</pre>";
+  }
+}
+
