@@ -43,8 +43,6 @@ print F "\$NetworkFile = 1;\n";
 print F "\$AdminPass = 'foo';\n";
 close(F);
 
-### COMPLEX HTML OUTPUT TESTS
-
 sub update_page {
   my ($id, $text, $summary, $minor, $admin) = @_;
   print '*';
@@ -88,6 +86,35 @@ sub test_page {
   }
   print "\n\nPage content:\n", $page, "\n" if $printpage;
 }
+
+sub run_tests {
+  # translate embedded newlines (other backslashes remain untouched)
+  my %New;
+  foreach (keys %Test) {
+    $Test{$_} =~ s/\\n/\n/g;
+    my $new = $Test{$_};
+    s/\\n/\n/g;
+    $New{$_} = $new;
+  }
+  # Note that the order of tests is not specified!
+  foreach my $input (keys %New) {
+    print '.';
+    open(F,"|perl test-wrapper.pl > $resultfile");
+    print F $input;
+    close F;
+    open(F,$resultfile);
+    my $output = <F>;
+    close F;
+    if ($output eq $New{$input}) {
+      $passed++;
+    } else {
+      $failed++;
+      print "\n\"", $input, '" -> "', $output, '" instead of "', $New{$input}, "\"\n";
+    }
+  }
+}
+
+### COMPLEX HTML OUTPUT TESTS
 
 ## Try to edit BanList
 
@@ -136,7 +163,7 @@ test_page(update_page('BannedHosts', "Foo\nlocalhost\n", 'banning me', 0, 1), @T
 @Test = split('\n',<<'EOT');
 SandBox
 This is a test.
-<h1><a href="wiki.pl\?search=SandBox">SandBox</a></h1>
+<h1><a href="http://localhost/wiki.pl\?search=SandBox">SandBox</a></h1>
 EOT
 
 test_page(update_page('SandBox', 'This is a test.', 'first test'), @Test);
@@ -227,13 +254,13 @@ ordinary text
 * one\n**two
 <ul><li>one <ul><li>two</ul></ul>
 WikiWord
-WikiWord<a href="test-wrapper.pl?action=edit&amp;id=WikiWord">?</a>
+WikiWord<a href="http://localhost/test-wrapper.pl?action=edit&amp;id=WikiWord">?</a>
 WikiWord:
-WikiWord<a href="test-wrapper.pl?action=edit&amp;id=WikiWord">?</a>:
+WikiWord<a href="http://localhost/test-wrapper.pl?action=edit&amp;id=WikiWord">?</a>:
 OddMuse
-OddMuse<a href="test-wrapper.pl?action=edit&amp;id=OddMuse">?</a>
+OddMuse<a href="http://localhost/test-wrapper.pl?action=edit&amp;id=OddMuse">?</a>
 OddMuse:
-OddMuse<a href="test-wrapper.pl?action=edit&amp;id=OddMuse">?</a>:
+OddMuse<a href="http://localhost/test-wrapper.pl?action=edit&amp;id=OddMuse">?</a>:
 OddMuse:test
 <a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test">OddMuse:test</a>
 OddMuse:test: or not
@@ -294,34 +321,38 @@ mailto:alex@emacswiki.org
 <pre> source\n \n etc\n</pre>
  source\n \n etc\n\nother
 <pre> source\n \n etc\n</pre><p>other
+[[SandBox|play here]]
+[[<a href="http://localhost/test-wrapper.pl/SandBox">SandBox</a>|play here]]
+[[Appel|Not a pear]]
+[[Appel|Not a pear]]
 EOT
 
-# Now translate embedded newlines (other backslashes remain untouched)
-my %New;
-foreach (keys %Test) {
-  $Test{$_} =~ s/\\n/\n/g;
-  my $new = $Test{$_};
-  s/\\n/\n/g;
-  $New{$_} = $new;
-}
+run_tests();
 
-# Note that the order of tests is not specified!
+# Create temporary data directory as expected by the script
+# and create a config file in this directory.
 
-foreach my $input (keys %New) {
-  print '.';
-  open(F,"|perl test-wrapper.pl > $resultfile");
-  print F $input;
-  close F;
-  open(F,$resultfile);
-  my $output = <F>;
-  close F;
-  if ($output eq $New{$input}) {
-    $passed++;
-  } else {
-    $failed++;
-    print "\n\"", $input, '" -> "', $output, '" instead of "', $New{$input}, "\"\n";
-  }
-}
+system('/bin/rm -rf /tmp/oddmuse');
+die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
+mkdir '/tmp/oddmuse';
+open(F,'>/tmp/oddmuse/config');
+print F "\$BracketWiki = 1;\n";
+close(F);
+update_page('SandBox', "This page exists.");
+update_page('Banana', "This page exists also.");
+
+%Test = split('\n',<<'EOT');
+[[SandBox|play here]]
+<a href="http://localhost/test-wrapper.pl/SandBox">play here</a>
+[[FooBar|do not play here]]
+[FooBar<a href="http://localhost/test-wrapper.pl?action=edit&amp;id=FooBar">?</a> do not play here]
+[[Banana|Not a pear]]
+<a href="http://localhost/test-wrapper.pl/Banana">Not a pear</a>
+[[Appel|Not a pear]]
+[Appel<a href="http://localhost/test-wrapper.pl?action=edit&amp;id=Appel">?</a> Not a pear]
+EOT
+
+run_tests();
 
 ### END OF TESTS
 
