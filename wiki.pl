@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.52 2003/05/02 06:20:12 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.53 2003/05/02 08:10:32 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -1117,10 +1117,8 @@ sub BrowsePage {
     print '</div>';
   }
   if ($RefererTracking && !$embed) {
-    print '<div class="refer">';
-    print $q->hr()  if (!$embed);
-    print &RefererTrack($id);
-    print '</div>';
+    my $referers = &RefererTrack($id);
+    print $q->div({-class=>'refer'}, $q->hr(), $referers) if $referers;
   }
   print &GetFooter($id, $goodRevision);
 }
