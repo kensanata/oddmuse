@@ -13,6 +13,21 @@
 
 	* wiki.pl (RSS): Use LWP::Parallel::UserAgent if available.
 
+2005-03-25  Flavio Poletti  <frodo72@savannah.gnu.org>
+
+	* wiki.pl (DoDiff): New function with code from GetDiff.  This is
+	the place where diff is actually called.
+	(GetDiff): Moved functionality to DoDiff.  Call it.
+	(DiffMarkWords): Call DoDiff.
+	(DoShowVersion): Only print diff info if $UseDiff == 1; this
+	allows modules overriding DoDiff to set UseDiff to higher values
+	and void invocation of programs while still setting DoDiff to a
+	true value.
+
+	* wiki.pl (DoBrowseRequest): Move functionality to determine page
+	id to GetCurrentRequest.
+	(GetCurrentRequest, GetCurrentPageName): New sub.
+	
 2005-03-24  Alex Schroeder  <alex@gnu.org>
 
 	* modules/namespaces.pl (NamespacesInitVariables): Set
@@ -28,6 +43,11 @@
 	(@MyRules): Initialize with LinkRules.
 	(RunMyRules): Call the various rules with $locallinks and
 	$withanchors parameters.
+
+2005-03-16  Flavio Poletti  <frodo72@savannah.gnu.org>
+
+	* wiki.pl (PrintHtmlDiff): Use $old_is_image instead of
+	$old_is_file when calling GetDownloadLink.
 
 2005-03-12  Alex Schroeder  <alex@gnu.org>
 
