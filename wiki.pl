@@ -350,7 +350,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.472 2004/10/25 23:51:43 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.473 2004/10/31 00:55:20 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -567,7 +567,9 @@ sub ApplyRules {
 	     or m/\G([A-Za-z\x80-\xff]+)/cg or m/\G(\S)/cg) { Clean($1); # do not match http://foo
     } else { last;
     }
+    my $oldpos = pos; # the following match causes smilies to fail at line beginnings!?
     $bol = m/\G(?<=\n)/cgs;
+    pos = $oldpos;    # therefore restore pos...  reason unknown (Perl v5.8.4).
     $first = 0;
   }
   # last block -- close it, cache it
@@ -658,14 +660,11 @@ sub OpenHtmlEnvironment { # close the previous one and open a new one instead
 }
 
 sub SmileyReplace {
-  my $match = undef;
   foreach my $regexp (keys %Smilies) {
     if (m/\G($regexp)/cg) {
-      $match = $q->img({-src=>$Smilies{$regexp}, -alt=>$1, -class=>'smiley'});
-      last;
+      return $q->img({-src=>$Smilies{$regexp}, -alt=>$1, -class=>'smiley'});
     }
   }
-  return $match;
 }
 
 sub RunMyRules {
