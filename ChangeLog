@@ -1,3 +1,7 @@
+2003-05-08  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (BrowsePage): Remove duplicate div class="refer".
+
 2003-05-02  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl ($Debug, $Message): Renamed $Debug to $Message.
