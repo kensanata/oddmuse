@@ -16,12 +16,13 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.34 2005/01/06 11:56:00 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.35 2005/01/06 12:01:41 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalendarUseCal);
 
 $DefaultStyleSheet .= q{
-div.month { margin:0; padding:1ex; font-size:x-small; }
+div.month { margin:0; padding:1ex; font-size:x-small; float:right; }
+div.content div.month { float:none; }
 div.footer { clear:both; }
 div.year div.month { float:left; font-size:medium; }
 div.month pre { margin:0; padding:0 0 0 1ex; background-color:#ffe; width:21ex; }
@@ -137,15 +138,15 @@ sub CalendarRule {
     Clean(CloseHtmlEnvironments() . $q->start_div({-class=>'cal year'}));
     Dirty($1);
     PrintYearCalendar($2);
-    print $q->end_div() . Clean(AddHtmlEnvironment('p'));
+    print $q->end_div();
     pos = $oldpos;
-    return '';
+    return AddHtmlEnvironment('p');
   } elsif (/\G(month:(\d\d\d\d)-(\d\d))/gc) {
     my $oldpos = pos;
     Dirty($1);
-    print CloseHtmlEnvironments() . Cal($2, $3) . Clean(AddHtmlEnvironment('p'));
+    print CloseHtmlEnvironments() . Cal($2, $3);
     pos = $oldpos;
-    return '';
+    return AddHtmlEnvironment('p');
   } elsif (/\G(month:([+-]\d\d?))/gc) {
     my $oldpos = pos;
     Dirty($1);
@@ -155,9 +156,9 @@ sub CalendarRule {
     $mon += 1 + $delta;
     while ($mon < 1) { $year -= 1; $mon += 12; };
     while ($mon > 12) { $year += 1; $mon -= 12; };
-    print CloseHtmlEnvironments() . Cal($year, $mon) . Clean(AddHtmlEnvironment('p'));
+    print CloseHtmlEnvironments() . Cal($year, $mon);
     pos = $oldpos;
-    return '';
+    return AddHtmlEnvironment('p');
   }
   return undef;
 }
