@@ -287,7 +287,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.303 2004/01/19 00:46:11 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.304 2004/01/19 01:23:19 as Exp $');
 }
 
 sub InitCookie {
@@ -1123,14 +1123,14 @@ sub BrowseResolvedPage {
 # == Browse page ==
 
 sub BrowsePage {
-  my ($id, $raw) = @_;
+  my ($id, $raw, $comment) = @_;
   if ($q->http('HTTP_IF_MODIFIED_SINCE') eq gmtime($LastUpdate)
       and GetParam('cache', $UseCache) >= 2) {
     print $q->header(-status=>'304 NOT MODIFIED');
     return;
   }
   OpenPage($id);
-  my ($text, $revision) = GetTextRevision(GetParam('revision', '')); # maybe revision reset!
+  my ($text, $revision) = GetTextRevision(GetParam('revision', ''));
   # handle a single-level redirect
   my $oldId = GetParam('oldid', '');
   if (not $oldId and not $revision and (substr($text, 0, 10) eq '#REDIRECT ')) {
@@ -1168,6 +1168,12 @@ sub BrowsePage {
     PrintWikiToHTML($text, $savecache, $revision); # unlocked, with anchors, unlocked
   }
   print '</div>';
+  if ($comment) {
+    print '<div class="preview">', $q->hr();
+    print $q->h2(T('Preview:'));
+    PrintWikiToHTML(AddComment('', $comment)); # no caching, current revision, unlocked
+    print $q->hr(), $q->h2(T('Preview only, not yet saved')), '</div>';
+  }
   my $embed = GetParam('embed', $EmbedWiki);
   SetParam('rcclusteronly', $id) if GetCluster($text) eq $id;
   if (($id eq $RCName) || (T($RCName) eq $id) || (T($id) eq $RCName)
@@ -1181,7 +1187,7 @@ sub BrowsePage {
     my $referers = RefererTrack($id);
     print $referers if $referers;
   }
-  PrintFooter($id, $revision);
+  PrintFooter($id, $revision, $comment);
 }
 
 sub ReBrowsePage {
@@ -1910,7 +1916,7 @@ EOT
 }
 
 sub PrintFooter {
-  my ($id, $rev) = @_;
+  my ($id, $rev, $comment) = @_;
   if (GetParam('embed', $EmbedWiki)) {
     print $q->end_html;
     return;
@@ -1922,12 +1928,13 @@ sub PrintFooter {
 		    . GetFormStart()
 		    . GetHiddenValue("title", $OpenPageName)
 		    . GetHiddenValue("summary" , T("new comment"))
-		    . GetTextArea('aftertext', $NewComment)
+		    . GetTextArea('aftertext', $comment ? $comment : $NewComment)
 		    . '<p>' . T('Username:') . ' '
 		    . $q->textfield(-name=>'username',
 				    -default=>$userName, -override=>1,
 				    -size=>20, -maxlength=>50)
-		    . $q->p($q->submit(-name=>'Save', -value=>T('Save')))
+		    . $q->p($q->submit(-name=>'Save', -value=>T('Save')) . ' '
+			    . $q->submit(-name=>'Preview', -value=>T('Preview')))
 		    . $q->endform());
     }
   }
@@ -3193,17 +3200,7 @@ sub DoPost {
     eval { $_ = MIME::Base64::encode(<$file>) };
     $string = '#FILE ' . $type . "\n" . $_;
   } else {
-    if ($comment) {
-      $comment =~ s/\r//g;	# Remove "\r"-s (0x0d) from the string
-      $comment =~ s/\s+$//g;    # Remove whitespace at the end
-      if ($comment ne '' and $comment ne $NewComment) {
-	$string = $old  . "----\n" if $old and $old ne "\n";
-	$string .= $comment . "\n\n-- " .  GetParam('username', T('Anonymous'))
-	  . ' ' . TimeToText($Now) . "\n\n";
-      } else {
-	$string = $old;
-      }
-    }
+    $string = AddComment($old, $comment) if $comment;
     # Massage the string
     $string =~ s/\r//g;
     $string .= "\n"  if ($string !~ /\n$/);
@@ -3216,7 +3213,11 @@ sub DoPost {
   my $oldrev = $Page{revision};
   if (GetParam('Preview', '')) {
     ReleaseLock();
-    DoEdit($id, $string, 1);
+    if ($comment) {
+      BrowsePage($id, 0, $comment);
+    } else {
+      DoEdit($id, $string, 1);
+    }
     return;
   } elsif (($old eq $string) or ($oldrev == 0 and $string eq $NewText)) {
     ReleaseLock(); # No changes -- just show the same page again
@@ -3267,6 +3268,19 @@ sub DoPost {
     PingTracker($id);
   }
   ReBrowsePage($id);
+}
+
+sub AddComment {
+  my ($old, $comment) = @_;
+  my $string = $old;
+  $comment =~ s/\r//g;	# Remove "\r"-s (0x0d) from the string
+  $comment =~ s/\s+$//g;    # Remove whitespace at the end
+  if ($comment ne '' and $comment ne $NewComment) {
+    $string .= "----\n" if $string and $string ne "\n";
+    $string .= $comment . "\n\n-- " .  GetParam('username', T('Anonymous'))
+      . ' ' . TimeToText($Now) . "\n\n";
+  }
+  return $string;
 }
 
 sub Save { # call within lock, with opened page
