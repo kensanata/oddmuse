@@ -32,7 +32,10 @@ upload-translations:
 
 *-utf8.pl: always
 	grep '^#' $@ > new-$@
-	perl oddtrans -l $@ wiki.pl $(MODULES) >> new-$@ && mv new-$@ $@
+	wget http://www.oddmuse.org/cgi-bin/oddmuse/raw/$@ -O $@.wiki
+	perl oddtrans -l $@ $@.wiki wiki.pl $(MODULES) >> new-$@ && mv new-$@ $@
+	cvs status $@ | grep 'Status: Up-to-date'
+	wikiput -u cvs -s update http://www.oddmuse.org/cgi-bin/oddmuse/raw/$@ < $@
 
 deb:
 	equivs-build control
