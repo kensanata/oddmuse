@@ -21,7 +21,7 @@ use vars qw($WeblogTextLogo $WeblogXmlLogo);
 $WeblogXmlLogo = '/images/rss.png';
 $WeblogTextLogo = '/images/txt.png';
 
-$ModulesDescription .= '<p>$Id: weblog-1.pl,v 1.3 2004/04/02 01:16:53 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: weblog-1.pl,v 1.4 2004/11/15 00:13:55 as Exp $</p>';
 
 $RefererTracking = 1;
 $CommentsPrefix = 'Comments_on_';
@@ -45,8 +45,7 @@ sub NewWeblog1InitVariables {
     $UserGotoBar .=
       ScriptLink('action=rss',
 		 "<img src=\"$WeblogXmlLogo\" alt=\"XML\" class=\"XML\" />")
-      . ' | '
-      . ScriptLink('action=rc;raw=1',
-		   "<img src=\"$WeblogTextLogo\" alt=\"TXT\" class=\"XML\" />");
+	. ' '. ScriptLink('action=rc;raw=1',
+			  "<img src=\"$WeblogTextLogo\" alt=\"TXT\" class=\"XML\" />");
   }
 }
