@@ -3,15 +3,22 @@
 
 VERSION=oddmuse-$(shell sed -n -e 's/^.*\$$Id: wiki\.pl,v \([0-9.]*\).*$$/\1/p' wiki.pl)
 TRANSLATIONS=$(wildcard [a-z]*-utf8.pl)
+MODULES=$(wildcard modules/*.pl)
 
-dist:
+dist: $(VERSION).tar.gz
+
+upload: $(VERSION).tar.gz $(VERSION).tar.gz.sig
+	curl -T $(VERSION).tar.gz -T $(VERSION).tar.gz.sig \
+	ftp://savannah.gnu.org/incoming/savannah/oddmuse/
+
+$(VERSION).tar.gz:
 	rm -rf $(VERSION)
 	mkdir $(VERSION)
-	cp README FDL GPL ChangeLog wiki.pl $(TRANSLATIONS) $(VERSION)
+	cp README FDL GPL ChangeLog wiki.pl $(TRANSLATIONS) $(MODULES) $(VERSION)
 	tar czf $(VERSION).tar.gz $(VERSION)
 
-upload:
-	scp $(VERSION).tar.gz as@subversions.gnu.org:/upload/oddmuse
+$(VERSION).tar.gz.sig:
+	gpg --sign -b $(VERSION).tar.gz
 
 update-translations: $(TRANSLATIONS)
 
