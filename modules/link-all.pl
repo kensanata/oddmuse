@@ -16,18 +16,21 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: link-all.pl,v 1.3 2004/02/17 22:53:36 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: link-all.pl,v 1.4 2004/06/17 01:13:18 as Exp $</p>';
 
 push(@MyRules, \&LinkAllRule);
 
 sub LinkAllRule {
-  if (/\G(\w+)/gc) {
+  if (/\G([A-Za-z\x80-\xff]+)/gc) {
+    my $oldpos = pos;
     Dirty($1);
     # print the word, or the link to the word
     print LinkAllGetPageLinkIfItExists($1);
+    pos = $oldpos; # protect against changes in pos
     # the block is cached so we don't return anything
+    return '';
   }
-  return '';
+  return undef;
 }
 
 sub LinkAllGetPageLinkIfItExists {

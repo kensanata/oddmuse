@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: footnotes.pl,v 1.3 2004/03/12 19:31:53 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: footnotes.pl,v 1.4 2004/06/17 01:13:18 as Exp $</p>';
 
 my $MyFootnoteCounter = 0;
 my @MyFootnotes = ();
@@ -33,8 +33,9 @@ sub FootnoteRule {
 		 -title=>$2,
 		 -class=>'footnote'},
 		$MyFootnoteCounter);
+    return '';
   }
-  return '';
+  return undef;
 }
 
 *OldFootnotePrintFooter = *PrintFooter;

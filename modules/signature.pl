@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: signature.pl,v 1.3 2004/03/08 00:53:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: signature.pl,v 1.4 2004/06/17 01:13:18 as Exp $</p>';
 
 push(@MyRules, \&SignatureExceptionRule);
 
@@ -34,5 +34,5 @@ sub SignatureExceptionRule {
   } elsif (m/\G!\~\~\~/gc) {
     return '~~~';
   }
-  return '';
+  return undef;
 }

@@ -23,7 +23,7 @@
 # span[lang=de] { background-color:#ffd; }
 # span[lang=it] { background-color:#dfd; }
 
-$ModulesDescription .= '<p>$Id: lang.pl,v 1.5 2004/05/07 22:03:15 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: lang.pl,v 1.6 2004/06/17 01:13:18 as Exp $</p>';
 
 push(@MyRules, \&LangRule);
 
@@ -33,7 +33,7 @@ sub LangRule {
     $html .= "</" . shift(@HtmlStack) . ">"  if $HtmlStack[0] eq 'span';
     return $html . AddHtmlEnvironment('span', "lang=\"$1\"") . "[$1]";
   }
-  return '';
+  return undef;
 }
 
 *OldLangInitCookie = *InitCookie;

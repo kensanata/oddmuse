@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: thread.pl,v 1.4 2004/03/14 16:27:45 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: thread.pl,v 1.5 2004/06/17 01:13:18 as Exp $</p>';
 
 $Action{getthread} = \&ThreadGet;
 $Action{addthread} = \&ThreadAdd;
@@ -29,8 +29,9 @@ sub ThreadRule {
     my $oldpos = pos;
     ThreadGet($2, 1, 1);
     pos = $oldpos;
+    return '';
   }
-  return '';
+  return undef;
 }
 
 sub ThreadGet {
