@@ -274,7 +274,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.194 2003/10/12 16:55:54 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.195 2003/10/12 22:24:33 as Exp $');
 }
 
 sub InitCookie {
@@ -1259,22 +1259,16 @@ sub DoRc {
     ($lastTs) = split(/$FS3/, $fullrc[$#fullrc]);
   }
   $lastTs++  if (($Now - $lastTs) > 5);  # Skip last unless very recent
-  my $idOnly = GetParam('rcidonly', '');
-  if ($idOnly && $showHTML) {
-    print $q->p($q->b('(' . Ts('for %s only', ScriptLink(UrlEncode($idOnly), $idOnly)) . ')'));
-  }
-  my $userOnly = GetParam('rcuseronly', '');
-  if ($userOnly && $showHTML) {
-    print $q->p($q->b('(' . Ts('for %s only', ScriptLink(UrlEncode($userOnly), $userOnly)) . ')'));
-  }
-  my $hostOnly = GetParam('rchostonly', '');
-  if ($hostOnly && $showHTML) {
-    print $q->p($q->b('(' . Ts('for %s only', $hostOnly) . ')'));
-  }
-  my $clusterOnly = GetParam('rcclusteronly', '');
-  if ($clusterOnly && $showHTML) {
-    print $q->p($q->b('(' . Ts('for %s only', ScriptLink(UrlEncode($clusterOnly), $clusterOnly)) . ')'));
-  }
+  my ($idOnly, $userOnly, $hostOnly, $clusterOnly) =
+    map {
+      my $val = GetParam($_, '');
+      if ($val and $showHTML) {
+	my $str = $val;
+	$str = ScriptLink(UrlEncode($val), $val) if ($_ ne 'rchostonly');
+	print $q->p($q->b('(' . Ts('for %s only', $str) . ')'));
+      }
+      $val;
+    } ('rcidonly', 'rcuseronly', 'rchostonly', 'rcclusteronly');
   if($showHTML) {
     my ($showbar, $html, $action);
     if ($clusterOnly) {
@@ -1348,10 +1342,9 @@ sub GetRc {
   my $date = '';
   my $all = GetParam('all', 0);
   my $newtop = GetParam('newtop', $RecentTop);
-  my $idOnly = GetParam('rcidonly', '');
-  my $userOnly = GetParam('rcuseronly', '');
-  my $hostOnly = GetParam('rchostonly', '');
-  my $clusterOnly = GetParam('rcclusteronly', '');
+  my ($idOnly, $userOnly, $hostOnly, $clusterOnly) =
+    map { GetParam($_, ''); }
+      ('rcidonly', 'rcuseronly', 'rchostonly', 'rcclusteronly');
   @outrc = reverse @outrc if ($newtop);
   my @clusters;
   foreach my $rcline (@outrc) {
@@ -3544,6 +3537,8 @@ sub DoMaintain {
       local *STDOUT;
       open (STDOUT, "> /dev/null");
       PrintWikiToHTML($Text{'text'}, 1, '', 1) if ($cache); # cache, current, locked
+      ReadReferers($OpenPageName);
+      WriteReferers($OpenPageName);
     }
   }
   print '</p>';
@@ -3648,11 +3643,10 @@ sub DeletePage { # Delete must be done inside locks.
     print "Delete-Page: page $page is invalid, error is: $status<br>\n";
     return;
   }
-  $fname = GetPageFile($page);
-  unlink($fname)  if (-f $fname);
-  $fname = $KeepDir . '/' . GetPageDirectory($page) .  "/$page.kp";
-  unlink($fname)  if (-f $fname);
-  unlink($IndexFile);
+  foreach my $fname (GetPageFile($page), GetKeepFile($page),
+		     GetRefererFile($page), $IndexFile) {
+    unlink($fname) if (-f $fname);
+  }
   DeletePermanentAnchors();
 }
 
@@ -3816,6 +3810,24 @@ sub ReadReferers {
     my ($status, $data) = ReadFile($file);
     %Referers = split(/$FS1/, $data, -1) if $status;
   }
+  ExpireReferers();
+}
+
+sub ExpireReferers { # no need to save the pruned list if nothing else changes
+  if ($RefererTimeLimit) {
+    foreach (keys %Referers) {
+      if ($Now - $Referers{$_} > $RefererTimeLimit) {
+	delete $Referers{$_};
+      }
+    }
+  }
+  if ($RefererLimit) {
+    my @list = sort {$Referers{$a} cmp $Referers{$b}} keys %Referers;
+    @list = @list[$RefererLimit .. @list-1];
+    foreach (@list) {
+      delete $Referers{$_};
+    }
+  }
 }
 
 sub GetReferers {
@@ -3837,20 +3849,6 @@ sub UpdateReferers {
   my $data = GetRaw($referer);
   return  unless $data =~ /$self/;
   $Referers{$referer} = $Now;
-  if ($RefererTimeLimit) {
-    foreach (keys %Referers) {
-      if ($Now - $Referers{$_} > $RefererTimeLimit) {
-	delete $Referers{$_};
-      }
-    }
-  }
-  if ($RefererLimit) {
-    my @list = sort {$Referers{$a} cmp $Referers{$b}} keys %Referers;
-    @list = @list[$RefererLimit .. @list-1];
-    foreach (@list) {
-      delete $Referers{$_};
-    }
-  }
   return 1;
 }
 
