@@ -82,6 +82,7 @@ $DataDir     = $ENV{WikiDataDir} if $UseConfig and not $DataDir; # Main wiki dir
 $DataDir   = '/tmp/oddmuse' unless $DataDir;
 $ConfigPage  = '' unless $ConfigPage; # config page
 $RunCGI	     = 1  unless defined $RunCGI; # 1 = Run script as CGI instead of being a library
+$RunCGI      = 0  if exists $ENV{MOD_PERL} && !defined Apache->request; # Do not run when using PerlModule
 $UsePathInfo = 1;   # 1 = allow page views using wiki.pl/PageName
 $UseCache    = 2;   # -1 = disabled, 0 = 10s; 1 = partial HTML cache; 2 = HTTP/1.1 caching
 
@@ -237,20 +238,6 @@ div.near p { margin-top:0; }
 
 $IndentLimit = 20;		    # Maximum depth of nested lists
 $LanguageLimit = 3;		    # Number of matches req. for each language
-$PageDir     = "$DataDir/page";	    # Stores page data
-$KeepDir     = "$DataDir/keep";	    # Stores kept (old) page data
-$RefererDir  = "$DataDir/referer";  # Stores referer data
-$TempDir     = "$DataDir/temp";	    # Temporary files and locks
-$LockDir     = "$TempDir/lock";	    # DB is locked if this exists
-$NoEditFile  = "$DataDir/noedit";   # Indicates that the site is read-only
-$RcFile	     = "$DataDir/rc.log";   # New RecentChanges logfile
-$RcOldFile   = "$DataDir/oldrc.log"; # Old RecentChanges logfile
-$IndexFile   = "$DataDir/pageidx";  # List of all pages
-$VisitorFile = "$DataDir/visitors.log"; # List of recent visitors
-$PermanentAnchorsFile = "$DataDir/permanentanchors"; # Store permanent anchors
-$ConfigFile  = "$DataDir/config" unless $ConfigFile; # Config file with Perl code to execute
-$ModuleDir   = "$DataDir/modules" unless $ModuleDir;  # For extensions (ending in .pm or .pl)
-$NearDir     = "$DataDir/near";	    # For page indexes and .png files of other sites
 $SisterSiteLogoUrl = 'file:///tmp/oddmuse/%s.png'; # URL format string for logos
 
 %Action = ( rc => \&BrowseRc,		    rollback => \&DoRollback,
@@ -285,6 +272,7 @@ sub ReportError { # fatal!
 }
 
 sub Init {
+  InitDirConfig();
   $FS  = "\x1e";      # The FS character is the RECORD SEPARATOR control char in ASCII
   $Message = '';      # Warnings and non-fatal errors.
   InitLinkPatterns(); # Link pattern can be changed in config files
@@ -306,6 +294,23 @@ sub Init {
   eval { local $SIG{__DIE__}; binmode(STDOUT, ":raw"); };
   InitVariables();    # Ater config file, to post-process some variables
   InitCookie();	      # After request, because $q is used
+}
+
+sub InitDirConfig {
+  $PageDir     = "$DataDir/page";   # Stores page data
+  $KeepDir     = "$DataDir/keep";   # Stores kept (old) page data
+  $RefererDir  = "$DataDir/referer";   # Stores referer data
+  $TempDir     = "$DataDir/temp";      # Temporary files and locks
+  $LockDir     = "$TempDir/lock";      # DB is locked if this exists
+  $NoEditFile  = "$DataDir/noedit"; # Indicates that the site is read-only
+  $RcFile	     = "$DataDir/rc.log"; # New RecentChanges logfile
+  $RcOldFile   = "$DataDir/oldrc.log";	  # Old RecentChanges logfile
+  $IndexFile   = "$DataDir/pageidx";	  # List of all pages
+  $VisitorFile = "$DataDir/visitors.log"; # List of recent visitors
+  $PermanentAnchorsFile = "$DataDir/permanentanchors"; # Store permanent anchors
+  $ConfigFile  = "$DataDir/config" unless $ConfigFile; # Config file with Perl code to execute
+  $ModuleDir   = "$DataDir/modules" unless $ModuleDir; # For extensions (ending in .pm or .pl)
+  $NearDir     = "$DataDir/near"; # For page indexes and .png files of other sites
 }
 
 sub InitRequest {
@@ -355,7 +360,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.517 2005/01/06 10:25:03 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.518 2005/01/06 23:21:53 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -3997,6 +4002,15 @@ sub DeletePermanentAnchors {
   return unless RequestLockDir('permanentanchors'); # not fatal
   WritePermanentAnchors();
   ReleaseLockDir('permanentanchors');
+}
+
+sub handler
+{
+  my $r = shift;
+  Apache->request($r);
+  $DataDir = $ENV{WikiDataDir} if exists $ENV{WikiDataDir};
+  DoWikiRequest();
+  return 200;
 }
 
 DoWikiRequest()	 if $RunCGI;   # Do everything.
