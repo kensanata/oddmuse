@@ -286,7 +286,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.280 2003/12/27 22:16:19 uid68242 Exp $');
+    . $q->p('$Id: wiki.pl,v 1.281 2003/12/27 22:21:23 uid68242 Exp $');
 }
 
 sub InitCookie {
@@ -2999,7 +2999,7 @@ sub PrintSearchResultEntry {
     my $text = $id;
     $text =~ s/_/ /g;
     $id = UrlEncode($id);
-    $id = 'action=browse;id=' . $id if $id =~ /\//;
+    $id = 'action=browse;id=' . $id if $id =~ /\%2f/;
     my $result = $q->span({-class=>'result'}, ScriptLink($id, $text, $class, '', $title));
     my $description = $entry{description};
     $description = $q->br() . SearchHighlight($description, $regex) if $description;
