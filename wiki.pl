@@ -265,7 +265,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.187 2003/10/09 22:45:32 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.188 2003/10/10 12:59:39 as Exp $');
 }
 
 sub InitCookie {
@@ -958,12 +958,8 @@ sub PrintCache {
 # == Translating ==
 
 sub T {
-  my ($text) = @_;
-  if (1) {   # Later make translation optional?
-    if (defined($Translate{$text}) && ($Translate{$text} ne ''))  {
-      return $Translate{$text};
-    }
-  }
+  my $text = shift;
+  return $Translate{$text} if $Translate{$text};
   return $text;
 }
 
@@ -1073,7 +1069,6 @@ sub DoBrowseRequest {
 
 sub BrowsePage {
   my ($id, $raw) = @_;
-  my $rc = (($id eq $RCName) || (T($RCName) eq $id) || (T($id) eq $RCName));
   OpenPage($id);
   OpenDefaultText($id);
   # Handle a single-level redirect
@@ -1087,7 +1082,6 @@ sub BrowsePage {
       ($id) = ($Text{'text'} =~ /\#REDIRECT\s+(\S+)/);
     }
     if (ValidId($id) eq '') {
-      # Later consider revision in rebrowse?
       ReBrowsePage($id, $oldId, 0);
       return;
     } else {  # Not a valid target, so continue as normal page
@@ -1146,7 +1140,8 @@ sub BrowsePage {
   }
   print '</div>';
   my $embed = GetParam('embed', $EmbedWiki);
-  if ($rc) {
+  if (($id eq $RCName) || (T($RCName) eq $id) || (T($id) eq $RCName)
+      || GetParam('rcclusteronly', '')) {
     print '<div class="rc">';
     print $q->hr()  if (!$embed);
     DoRc(\&GetRcHtml);
@@ -1254,6 +1249,10 @@ sub DoRc {
   if ($hostOnly && $showHTML) {
     print $q->p($q->b('(' . Ts('for %s only', $hostOnly) . ')'));
   }
+  my $clusterOnly = GetParam('rcclusteronly', '');
+  if ($clusterOnly && $showHTML) {
+    print $q->p($q->b('(' . Ts('for %s only', ScriptLink(UrlEncode($clusterOnly), $clusterOnly)) . ')'));
+  }
   if($showHTML) {
     my ($showbar, $html);
     foreach my $i (@RcDays) {
@@ -1268,7 +1267,6 @@ sub DoRc {
 		. ScriptLink("action=rc;from=$lastTs", T('List new changes starting from'))
 		. ' ' . TimeToText($lastTs));
   }
-  # Later consider a binary search?
   my $i = 0;
   while ($i < @fullrc) {  # Optimization: skip old entries quickly
     my ($ts) = split(/$FS3/, $fullrc[$i]);
@@ -1287,7 +1285,6 @@ sub DoRc {
     print $q->p($q->strong(Ts('No updates since %s', TimeToText($starttime))));
   } else {
     splice(@fullrc, 0, $i);  # Remove items before index $i
-    # Later consider an end-time limit (items older than X)
     print &$GetRC(@fullrc);
   }
   print $q->p(Ts('Page generated %s', TimeToText($Now))) if $showHTML;
@@ -1327,24 +1324,37 @@ sub GetRc {
   my $idOnly = GetParam('rcidonly', '');
   my $userOnly = GetParam('rcuseronly', '');
   my $hostOnly = GetParam('rchostonly', '');
+  my $clusterOnly = GetParam('rcclusteronly', '');
   @outrc = reverse @outrc if ($newtop);
+  my @clusters;
   foreach my $rcline (@outrc) {
     my ($ts, $pagename, $summary, $minor, $host, $kind, $extraTemp)
       = split(/$FS3/, $rcline);
-    # Later: need to change $all for new-RC?
-    next  if (not $all and $ts < $changetime{$pagename});
-    next  if ($idOnly and $idOnly ne $pagename);
-    next  if ($hostOnly and $host !~ /$hostOnly/);
+    next if (not $all and $ts < $changetime{$pagename});
+    next if ($idOnly and $idOnly ne $pagename);
+    next if ($hostOnly and $host !~ /$hostOnly/);
     %extra = split(/$FS2/, $extraTemp, -1);
-    next  if ($userOnly and $userOnly ne $extra{'name'});
+    next if ($userOnly and $userOnly ne $extra{'name'});
     @languages = split(/$FS1/, $extra{'languages'});
-    next  if ($langFilter and not grep(/$langFilter/, @languages));
+    next if ($langFilter and not grep(/$langFilter/, @languages));
+    my $cluster = '';
+    my $revision = $extra{'revision'};
+    next if ($clusterOnly and $clusterOnly ne $extra{'cluster'});
+    if ($all < 2 and not $clusterOnly and $extra{'cluster'}) {
+      next if grep(/^$extra{'cluster'}/, @clusters);
+      $cluster = $extra{'cluster'};
+      $pagename = $cluster;
+      $summary = T('Related changes');
+      $minor = 0;
+      $revision = '';
+      push(@clusters, $pagename);
+    }
     if ($date ne CalcDay($ts)) {
       $date = CalcDay($ts);
       &$printDailyTear($date);
     }
     &$printRCLine( $pagename, $ts, $host, $extra{'name'},
-		   $summary, $minor, $extra{'revision'}, \@languages);
+		   $summary, $minor, $revision, \@languages, $cluster);
   }
 }
 
@@ -1373,7 +1383,7 @@ sub GetRcHtml {
     },
       # printRCLine
       sub {
-	my($pagename, $timestamp, $host, $userName, $summary, $minor, $revision, $languages) = @_;
+	my($pagename, $timestamp, $host, $userName, $summary, $minor, $revision, $languages, $cluster) = @_;
 	$host = QuoteHtml($host);
 	my $author = GetAuthorLink($host, $userName);
 	my $sum = $q->strong('[' . QuoteHtml($summary) . ']')  if $summary;
@@ -1381,12 +1391,14 @@ sub GetRcHtml {
 	my $lang = '[' . join(', ', @{$languages}) . ']'  if @{$languages};
 	my ($pagelink, $count, $link, $rollback);
 	if ($all) {
-	  $pagelink = GetOldPageLink('browse', $pagename, $revision, $pagename);
+	  $pagelink = GetOldPageLink('browse', $pagename, $revision, $pagename, $cluster);
 	  if ($admin and RollbackPossible($timestamp)) {
 	    $rollback = '(' . ScriptLink('action=rollback;to=' . $timestamp, $tRollback) . ')';
 	  }
+	} elsif ($cluster) {
+	  $pagelink = GetOldPageLink('browse', $pagename, $revision, $pagename, $cluster);
 	} else {
-	  $pagelink = GetPageLink($pagename);
+	  $pagelink = GetPageLink($pagename, $cluster);
 	  $count = '(' . GetHistoryLink($pagename, $tHistory) . ')';
 	}
 	if ($UseDiff and GetParam('diffrclink', 1)) {
@@ -1424,9 +1436,9 @@ sub GetRcText {
   GetRc
     sub {},
     sub {
-      my($pagename, $timestamp, $host, $userName, $summary, $minor, $revision, $languages) = @_;
+      my($pagename, $timestamp, $host, $userName, $summary, $minor, $revision, $languages, $cluster) = @_;
       my $uri = $ScriptName . (GetParam('all', 0)
-			       ? "?action=browse\&revision=$revision\&id=$pagename"
+			       ? GetPageParameters('browse', $pagename, $revision, $cluster)
 			       : "/$pagename");
       $pagename =~ s/_/ /g;
       print "\n" . RcTextItem('title', $pagename)
@@ -1483,9 +1495,8 @@ sub GetRcRss {
     sub {},
     # printRCLine
     sub {
-      # ignore languages for the moment
-      my( $pagename, $timestamp, $host, $userName, $summary, $minor, $revision ) = @_;
-      my( $description, $author, $status, $importance, $date );
+      my ($pagename, $timestamp, $host, $userName, $summary, $minor, $revision, $languages, $cluster) = @_;
+      my ($description, $author, $status, $importance, $date);
       my ($sec, $min, $hour, $mday, $mon, $year) = gmtime($timestamp);
       my $name = FreeToNormal($pagename);
       $name =~ s/_/ /g;
@@ -1502,11 +1513,11 @@ sub GetRcRss {
       }
       $status = (1 == $revision) ? 'new' : 'updated';
       $importance = $minor ? 'minor' : 'major';
+      my $link = $QuotedFullUrl
+	. '?' . GetPageParameters('browse', $pagename, $revision, $cluster);
       $rss->add_item(
         title         => QuoteHtml($name),
-	link          => $QuotedFullUrl . '?action=browse'
-		                        . ';id=' . $pagename
-		                        . ';revision=' . $revision,
+	link          => $link,
 	description   => $description,
 	dc => {
           date        => $date,
@@ -1523,9 +1534,10 @@ sub GetRcRss {
     },
     # RC Lines
     @_;
-  # Only take the first 15 entries
-  my $limit = GetParam('rsslimit', 15);
-  @{$rss->{'items'}} = @{$rss->{'items'}}[0..$limit-1]  unless $limit == 'all';
+  my $limit = GetParam('rsslimit', 15); # Only take the first 15 entries
+  if ($limit ne 'all' and $#{$rss->{'items'}} > $limit) {
+    @{$rss->{'items'}} = @{$rss->{'items'}}[0..$limit-1];
+  }
   return $rss->as_string;
 }
 
@@ -1646,16 +1658,19 @@ sub DoRollback {
 
 # == HTML and page-oriented functions ==
 
-sub GetOldPageParameters {
-  my ($kind, $id, $revision) = @_;
+sub GetPageParameters {
+  my ($action, $id, $revision, $cluster) = @_;
   $id = FreeToNormal($id) if $FreeLinks;
-  return "action=$kind&revision=$revision&id=" . UrlEncode($id);
+  my $link = "action=$action;id=" . UrlEncode($id);
+  $link .= ";revision=$revision" if $revision;
+  $link .= ";rcclusteronly=$cluster" if $cluster;
+  return $link;
 }
 
 sub GetOldPageLink {
-  my ($kind, $id, $revision, $name) = @_;
+  my ($action, $id, $revision, $name, $cluster) = @_;
   $name =~ s/_/ /g if $FreeLinks;
-  return ScriptLink(GetOldPageParameters($kind, $id, $revision), $name);
+  return ScriptLink(GetPageParameters($action, $id, $revision, $cluster), $name);
 }
 
 sub GetSearchLink {
@@ -3378,7 +3393,7 @@ sub Save { # call within lock, with opened page
   my $languages;
   $languages = GetLanguages($Text{'text'}) unless $upload;
   WriteRcLog($id, $summary, $minor, $Section{'revision'}, $user,
-	      $Section{'host'}, $languages);
+	      $Section{'host'}, $languages, GetCluster($new));
   if ($Page{'revision'} == 1) {
     unlink($IndexFile);  # Regenerate index on next request
     if (grep(/^$id$/, @LockOnCreation)) {
@@ -3403,6 +3418,12 @@ sub GetLanguages {
   return \@result;
 }
 
+sub GetCluster {
+  $_ = shift;
+  return $1 if ($WikiLinks && /^$LinkPattern/);
+  return $1 if ($FreeLinks && m/^\[\[$FreeLinkPattern\]\]/);
+}
+
 sub MergeRevisions { # merge change from file2 to file3 into file1
   my ($file1, $file2, $file3) = @_;
   my ($name1, $name2, $name3) = ("$TempDir/file1", "$TempDir/file2", "$TempDir/file3");
@@ -3420,11 +3441,12 @@ sub MergeRevisions { # merge change from file2 to file3 into file1
 
 # Note: all diff and recent-list operations should be done within locks.
 sub WriteRcLog {
-  my ($id, $summary, $minor, $revision, $name, $rhost, $languages) = @_;
+  my ($id, $summary, $minor, $revision, $name, $rhost, $languages, $cluster) = @_;
   my %extra = ();
   $extra{'name'} = $name  if ($name ne '');
   $extra{'revision'} = $revision if ($revision ne '');
   $extra{'languages'} = join($FS1, @{$languages}) if $languages;
+  $extra{'cluster'} = $cluster if $cluster;
   my $extraTemp = join($FS2, %extra);
   # The two fields at the end of a line are kind and extension-hash
   my $rc_line = join($FS3, $Now, $id, $summary,
@@ -3693,7 +3715,7 @@ sub DoSurgeProtection {
 	if ($SurgeProtection and DelayRequired($name)) {
 	  ReportError(Ts('Too many connections by %s',$name));
 	}
-      } elsif ($SurgeProtection) {
+      } elsif ($SurgeProtection and GetParam('action', '') ne 'unlock') {
 	ReportError(Ts('Could not get %s lock', 'visitors'));
       }
     }
