@@ -1,3 +1,18 @@
+2003-05-30  Pierre Gaston  <pgas@intracom.gr>
+
+	* wiki.pl ($PermanentAnchorsFile, $PermanentAnchors)
+	(%PermanentAnchors, %PagePermanentAnchors): New.
+	(ApplyRules): New rules for global anchors.
+	(GetEditLink): Allow passing of class and name to the link.
+	(DoBrowseRequest): New anchor action.
+	(DoPost): Delete permanent anchors.
+	(DeletePage): Ditto.
+	(ReadPermanentAnchors): New.
+	(WritePermanentAnchors): New.
+	(GetPermanentAnchor): New.
+	(GetPermanentAnchorLink): New.
+	(DeletePermanentAnchors): New.
+
 2003-05-29  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl ($RefererFilter): New.
