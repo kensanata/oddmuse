@@ -87,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.98 2003/06/15 00:09:43 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.99 2003/06/15 00:41:35 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -1428,6 +1428,8 @@ sub GetRcRss {
       my( $pagename, $timestamp, $host, $userName, $summary, $minor, $revision ) = @_;
       my( $description, $author, $status, $importance, $date );
       my ($sec, $min, $hour, $mday, $mon, $year) = gmtime($timestamp);
+      my $name = FreeToNormal($pagename);
+      $name =~ s/_/ /g;
       $year += 1900;
       $date = sprintf( "%4d-%02d-%02dT%02d:%02d:%02d+00:00",
 	$year, $mon+1, $mday, $hour, $min, $sec);
@@ -1442,7 +1444,7 @@ sub GetRcRss {
       $status = (1 == $revision) ? 'new' : 'updated';
       $importance = $minor ? 'minor' : 'major';
       $rss->add_item(
-        title         => QuoteHtml($pagename),
+        title         => QuoteHtml($name),
 	link          => $QuotedFullUrl . '?action=browse'
 		                        . '&amp;id=' . $pagename
 		                        . '&amp;revision=' . $revision,
