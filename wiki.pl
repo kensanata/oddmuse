@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.406 2004/05/29 22:30:45 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.407 2004/05/31 14:18:00 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2020,7 +2020,7 @@ sub PrintFooter {
     return;
   }
   print GetCommentForm($id, $rev, $comment);
-  print '<div class="footer">';
+  print '<div class="footer">' . $q->hr();
   print $q->span({-class=>'edit'}, GetFooterLinks($id, $rev));
   print $q->span({-class=>'admin'}, GetAdminBar($id, $rev)) if UserIsAdmin();
   print $q->span({-class=>'time'}, GetFooterTimestamp($id, $rev));
@@ -2128,7 +2128,7 @@ sub GetFooterLinks {
     $revisions .= ' | ' if $revisions;
     $revisions .= Ts('Back to %s', GetPageLink($1, $1));
   }
-  my $html =  $q->hr() . GetGotoBar($id);
+  my $html =  GetGotoBar($id);
   $html .= $q->br() . $revisions if $revisions;
   return $html;
 }
