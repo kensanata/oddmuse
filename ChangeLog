@@ -1,3 +1,12 @@
+2003-09-20  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ApplyRules, OpenHtmlEnvironment): Rewrote list
+	handling.
+	(GetPageOrEditLink): & -> &amp;
+	(GetEditLink): Ditto.
+	(DoRc): Ditto.
+	(GetPermanentAnchor): Ditto.
+
 2003-09-19  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoMaintain): Delete permanent anchors file and page
