@@ -1,3 +1,10 @@
+2003-06-22  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoHistory): Removed $canEdit.
+	(GetHistoryLine): Ditto.
+	(DoPassword): Removed some newlines.
+	(UserCanEdit): Rewrote more compactly.  Thanks, Pierre, for suggesting it.
+
 2003-06-21  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (UrlEncode): Added more safe characters according to RFC
