@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: admin.pl,v 1.2 2004/05/26 00:43:56 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: admin.pl,v 1.3 2004/05/29 20:51:34 as Exp $</p>';
 
 $Action{delete} = \&AdminPowerDelete;
 $Action{rename} = \&AdminPowerRename;
@@ -52,7 +52,7 @@ sub AdminPowerRename {
   my $fname = GetPageFile($id);
   ReportError(Ts('The page %s does not exist', $id), '400 BAD REQUEST') unless -f $fname;
   my $newfname = GetPageFile($new);
-  ReportError(Ts('The page %s already exists', $new), '400 BAD REQUEST') if -f $new;
+  ReportError(Ts('The page %s already exists', $new), '400 BAD REQUEST') if -f $newfname;
   CreatePageDir($PageDir, $new); # It might not exist yet
   rename($fname, $newfname);
   # keep directory
