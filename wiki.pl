@@ -87,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.102 2003/06/15 19:57:41 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.103 2003/06/15 20:20:42 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -1799,8 +1799,8 @@ sub PrintFooter {
     if (UserCanEdit($CommentsPrefix . $id, 0) and $OpenPageName !~ /^$CommentsPrefix/) {
       $revisions .= ScriptLink($CommentsPrefix . $OpenPageName, T("Comments on this page"));
     }
+    $revisions .= ' | ' if $revisions;
     if (UserCanEdit($id, 0)) {
-      $revisions .= ' | ' if $revisions;
       if ($rev) { # showing old revision
 	$revisions .= GetOldPageLink('edit', $id, $rev,
 				   Ts('Edit revision %s of this page', $rev));
@@ -1818,6 +1818,10 @@ sub PrintFooter {
   if ($rev ne '') {
     $revisions .= ' | ' if $revisions;
     $revisions .= GetPageLink($id, T('View current revision'));
+  }
+  if ($CommentsPrefix and $id =~ /^$CommentsPrefix(.*)/) {
+    $revisions .= ' | ' if $revisions;
+    $revisions .= GetPageLink($1, T('View original'));
   }
   print $q->br() . $revisions  if $revisions;
   # time stamps
@@ -3228,15 +3232,7 @@ sub PrintAllPages {
 # == Posting new pages ==
 
 sub DoPost {
-  my ($editDiff, $old, $newAuthor, $pgtime, $oldrev, $preview, $user);
-  my $string = GetParam('text', undef);
   my $id = GetParam('title', '');
-  my $summary = GetParam('summary', '');
-  my $oldtime = GetParam('oldtime', '');
-  my $raw = GetParam('raw', 0);
-  my $oldconflict = GetParam('oldconflict', '');
-  my $authorAddr = $ENV{REMOTE_ADDR};
-  my $comment = GetParam('aftertext', '');
   if (!UserCanEdit($id, 1)) {
     # This is an internal interface--we don't need to explain
     ReportError(Ts('Editing not allowed for %s.', $id));
@@ -3252,6 +3248,9 @@ sub DoPost {
     return;
   }
   # Handle raw edits with the meta info on the first line
+  my $string = GetParam('text', undef);
+  my $oldtime = GetParam('oldtime', '');
+  my $raw = GetParam('raw', 0);
   if ($raw == 2) {
     if (not $string =~ /^([0-9]+).*\n/) {
       ReportError(Ts('Cannot find timestamp on the first line.'));
@@ -3264,23 +3263,27 @@ sub DoPost {
   RequestLock() or die(T('Could not get main lock'));
   OpenPage($id);
   OpenDefaultText();
-  $old = $Text{'text'};
-  $oldrev = $Section{'revision'};
-  $pgtime = $Section{'ts'};
-  $preview = 0;
+  my $old = $Text{'text'};
+  my $oldrev = $Section{'revision'};
+  my $pgtime = $Section{'ts'};
+  my $preview = 0;
   $preview = 1  if (GetParam('Preview', '') ne '');
-  if ($comment ne '') {
+  my $comment = GetParam('aftertext', undef);
+  if (defined $comment) {
     $comment =~ s/\r//g;  # Remove "\r"-s (0x0d) from the string
-    if ($comment ne $NewComment) {
+    if ($comment ne '' and $comment ne $NewComment) {
       $string = $old  . "----\n" if $old and $old ne "\n";
       $string .= $comment . ' -- ' .  GetParam('username', T('Anonymous'))
 	. ' ' . TimeToText($Now) . "\n\n";
+    } else {
+      $string = $old;
     }
   }
   # Massage the string
   $string =~ s/\r//g;
   $string .= "\n"  if ($string !~ /\n$/);
   $string =~ s/$FS//g;
+  my $summary = GetParam('summary', '');
   $summary =~ s/$FS//g;
   $summary =~ s/[\r\n]//g;
   # rebrowse if no changes
@@ -3289,10 +3292,13 @@ sub DoPost {
     ReBrowsePage($id, '', 1);
     return;
   }
+  my $authorAddr = $ENV{REMOTE_ADDR};
+  my $newAuthor;
   $newAuthor = 1  if ($Section{'ip'} ne $authorAddr);  # hostname fallback
   $newAuthor = 1  if ($oldrev == 0);  # New page
   $newAuthor = 0  if (!$newAuthor);   # Standard flag form, not empty
   # Handle editing conflicts.  If possible, merge automatically.
+  my $oldconflict = GetParam('oldconflict', '');
   if (($oldrev > 0) && ($newAuthor && ($oldtime < $pgtime))) {
     my $conflict = 1;
     if ($UseDiff) {
