@@ -1,3 +1,14 @@
+2004-06-04  Alex Schroeder  <alex@confusibombus>
+
+	* wiki.pl (PrintPage): Use GetPageOrEditLink to print pages.
+
+2004-06-03  Alex Schroeder  <alex@gnu.org>
+
+	* modules/calendar.pl (CalendarRule): The CalendarRule is a dirty
+	rule.
+	(PrintYearCalendar): Handle spacing differently, provide an
+	additional span for CSS.
+
 2004-06-02  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (ResolveId): Do not link achors that are on the same
