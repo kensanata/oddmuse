@@ -37,10 +37,16 @@ history
 
 RSS parsing failed for %s
 
+No items found in %s.
+
  . . . . 
 
 Click to edit this page
 Щелчок - создать эту страницу
+image
+
+download
+
 Invalid action parameter %s
 Некорректный параметр действия %s
 Invalid URL.
@@ -185,6 +191,8 @@ Back to %s
 Назад к %s
 new comment
 новый комментарий
+Homepage URL:
+
 s
 
 Save
@@ -193,6 +201,8 @@ Preview
 Предпросмотр
 Search:
 Поиск:
+f
+
 Replace:
 Замена:
 Validate HTML
@@ -213,6 +223,8 @@ minor
 незначительные
 No diff available.
 Отличий нет.
+Old revision:
+
 Changed:
 Изменилось:
 Removed:
@@ -228,6 +240,8 @@ showing current revision instead
 Showing revision %s
 Показ версии %s
 Cannot save an nameless page.
+
+Cannot save an page without revision.
 
 Cannot open %s
 
@@ -481,6 +495,20 @@ Next
 
 Calendar %s
 
+Compilation for %s
+
+Compilation tag is missing a regular expression.
+
+Despamming pages
+
+Cannot find revision %s.
+
+Revert to revision %1: %2
+
+Marked as %s.
+
+Cannot find unspammed revision.
+
 Footnotes:
 
 image: %s
@@ -495,6 +523,10 @@ Define
 
 Full Link List
 Полный список ссылок
+Template without parameters
+
+The template %s is either empty or does not exist.
+
 Clearing Cache
 
 Done.
@@ -540,6 +572,8 @@ URL:
 Name:
 
 Failed to remove %s
+
+Contents
 
 The translation is up to date.
 
