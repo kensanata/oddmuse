@@ -1,3 +1,9 @@
+2003-11-08  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetRcRss): Provide diff link only if the wiki can handle it.
+	(GetFilterForm): Use a table.
+	(RSS): Handle diff and history links.
+
 2003-11-06  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (%NotifyJournalPage): New variable.
