@@ -36,9 +36,15 @@ history
 
 RSS parsing failed for %s
 
+No items found in %s.
+
  . . . . 
 
 Click to edit this page
+
+image
+
+download
 
 Invalid action parameter %s
 פרמטר שגוי לפעולה: %s
@@ -184,6 +190,8 @@ Back to %s
 
 new comment
 הערה חדשה
+Homepage URL:
+
 s
 
 Save
@@ -192,6 +200,8 @@ Preview
 תצוגה מקדימה
 Search:
 חיפוש:
+f
+
 Replace:
 החלפה:
 Validate HTML
@@ -212,6 +222,8 @@ minor
 קטן
 No diff available.
 לא ניתן להשיג הבדלים
+Old revision:
+
 Changed:
 שונה:
 Removed:
@@ -227,6 +239,8 @@ showing current revision instead
 Showing revision %s
 מציג את גירסה %s
 Cannot save an nameless page.
+
+Cannot save an page without revision.
 
 Cannot open %s
 
@@ -480,6 +494,20 @@ Next
 
 Calendar %s
 
+Compilation for %s
+
+Compilation tag is missing a regular expression.
+
+Despamming pages
+
+Cannot find revision %s.
+
+Revert to revision %1: %2
+
+Marked as %s.
+
+Cannot find unspammed revision.
+
 Footnotes:
 
 image: %s
@@ -494,6 +522,10 @@ Define
 
 Full Link List
 רשימת קישורים מלאה
+Template without parameters
+
+The template %s is either empty or does not exist.
+
 Clearing Cache
 
 Done.
@@ -539,6 +571,8 @@ URL:
 Name:
 
 Failed to remove %s
+
+Contents
 
 The translation is up to date.
 

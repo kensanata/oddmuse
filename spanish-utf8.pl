@@ -36,9 +36,15 @@ historial
 
 RSS parsing failed for %s
 
+No items found in %s.
+
  . . . . 
 
 Click to edit this page
+
+image
+
+download
 
 Invalid action parameter %s
 Parámetro de acción %s inválido
@@ -184,6 +190,8 @@ Back to %s
 
 new comment
 nuevo comentario
+Homepage URL:
+
 s
 
 Save
@@ -192,6 +200,8 @@ Preview
 Previsualización
 Search:
 Buscar:
+f
+
 Replace:
 Reemplazar:
 Validate HTML
@@ -212,6 +222,8 @@ minor
 menor
 No diff available.
 No hoy diffs disponibles.
+Old revision:
+
 Changed:
 Modificado:
 Removed:
@@ -227,6 +239,8 @@ se presenta en su lugar la revisión actual
 Showing revision %s
 La presente es la revisión %s
 Cannot save an nameless page.
+
+Cannot save an page without revision.
 
 Cannot open %s
 
@@ -480,6 +494,20 @@ Next
 
 Calendar %s
 
+Compilation for %s
+
+Compilation tag is missing a regular expression.
+
+Despamming pages
+
+Cannot find revision %s.
+
+Revert to revision %1: %2
+
+Marked as %s.
+
+Cannot find unspammed revision.
+
 Footnotes:
 
 image: %s
@@ -494,6 +522,10 @@ Define
 
 Full Link List
 Lista Completa de Enlaces
+Template without parameters
+
+The template %s is either empty or does not exist.
+
 Clearing Cache
 
 Done.
@@ -539,6 +571,8 @@ URL:
 Name:
 
 Failed to remove %s
+
+Contents
 
 The translation is up to date.
 

@@ -35,10 +35,16 @@ alte Versionen
 Entweder liefert %s liefert keine Daten, oder das LWP::UserAgent Modul ist auf diesem System nicht installiert.
 RSS parsing failed for %s
 Die RSS Daten von %s sind ungültig; sie können nicht verarbeitet werden
+No items found in %s.
+
  . . . . 
  . . . . 
 Click to edit this page
 Hier klicken um die Seite zu bearbeiten
+image
+
+download
+
 Invalid action parameter %s
 Ungültiger action Parameter: %s
 Invalid URL.
@@ -183,6 +189,8 @@ Back to %s
 Zurück zu %s
 new comment
 Neuer Kommentar
+Homepage URL:
+
 s
 s
 Save
@@ -191,6 +199,8 @@ Preview
 Vorschau
 Search:
 Suchen:
+f
+
 Replace:
 Ersetzen mit:
 Validate HTML
@@ -211,6 +221,8 @@ minor
 kleinere
 No diff available.
 Keine Unterschiede vorhanden.
+Old revision:
+
 Changed:
 Geändert:
 Removed:
@@ -227,6 +239,8 @@ Showing revision %s
 Anzeige der alten Version %s
 Cannot save an nameless page.
 Eine Seite ohne Namen kann nicht gespeichert werden.
+Cannot save an page without revision.
+
 Cannot open %s
 %s kann nicht geöffnet werden
 Cannot write %s
@@ -479,6 +493,20 @@ Next
 
 Calendar %s
 Kalender %s
+Compilation for %s
+
+Compilation tag is missing a regular expression.
+
+Despamming pages
+
+Cannot find revision %s.
+
+Revert to revision %1: %2
+
+Marked as %s.
+
+Cannot find unspammed revision.
+
 Footnotes:
 Fussnoten:
 image: %s
@@ -493,6 +521,10 @@ Define
 Definieren
 Full Link List
 Liste aller Verweise
+Template without parameters
+
+The template %s is either empty or does not exist.
+
 Clearing Cache
 Cache wird geleert
 Done.
@@ -539,6 +571,8 @@ Name:
 Name:
 Failed to remove %s
 
+Contents
+Inhaltsverzeichnis
 The translation is up to date.
 
 The translation is outdated.
@@ -557,6 +591,4 @@ search
 Suchen
 Blog
 Blog
-Contents
-Inhaltsverzeichnis
 END_OF_TRANSLATION

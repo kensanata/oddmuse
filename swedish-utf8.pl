@@ -41,10 +41,16 @@ historik
 Antingen returnerade %s inget data, eller s� finns inte LWP::UserAgent tillg�ngligt.
 RSS parsing failed for %s
 Misslyckades med RSS parsningen av %s
+No items found in %s.
+
  . . . . 
 
 Click to edit this page
 Klicka för att skapa den här sidan
+image
+
+download
+
 Invalid action parameter %s
 Ogiltig parameter %s
 Invalid URL.
@@ -189,6 +195,8 @@ Back to %s
 Tillbaka till %s
 new comment
 ny kommentar
+Homepage URL:
+
 s
 s
 Save
@@ -197,6 +205,8 @@ Preview
 Förhandsgranska
 Search:
 Sök:
+f
+
 Replace:
 Ersätt:
 Validate HTML
@@ -217,6 +227,8 @@ minor
 mindre
 No diff available.
 Information om ändring är inte tillgänglig.
+Old revision:
+
 Changed:
 Ändrad:
 Removed:
@@ -233,6 +245,8 @@ Showing revision %s
 Det här är version %s
 Cannot save an nameless page.
 Kan inte spara en namnlös sida.
+Cannot save an page without revision.
+
 Cannot open %s
 Kan inte öppna %s
 Cannot write %s
@@ -485,6 +499,20 @@ Next
 
 Calendar %s
 
+Compilation for %s
+
+Compilation tag is missing a regular expression.
+
+Despamming pages
+
+Cannot find revision %s.
+
+Revert to revision %1: %2
+
+Marked as %s.
+
+Cannot find unspammed revision.
+
 Footnotes:
 
 image: %s
@@ -499,6 +527,10 @@ Define
 
 Full Link List
 Fullständing länklista
+Template without parameters
+
+The template %s is either empty or does not exist.
+
 Clearing Cache
 
 Done.
@@ -544,6 +576,8 @@ URL:
 Name:
 
 Failed to remove %s
+
+Contents
 
 The translation is up to date.
 

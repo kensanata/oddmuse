@@ -36,9 +36,15 @@ history
 
 RSS parsing failed for %s
 
+No items found in %s.
+
  . . . . 
 
 Click to edit this page
+
+image
+
+download
 
 Invalid action parameter %s
 Неисправан параметар акције %s
@@ -184,6 +190,8 @@ Back to %s
 
 new comment
 нови коментар
+Homepage URL:
+
 s
 
 Save
@@ -192,6 +200,8 @@ Preview
 Преглед
 Search:
 Пронађи:
+f
+
 Replace:
 Замени:
 Validate HTML
@@ -212,6 +222,8 @@ minor
 ситна
 No diff available.
 Разлика није доступна.
+Old revision:
+
 Changed:
 Измењено:
 Removed:
@@ -228,6 +240,8 @@ Showing revision %s
 Приказана верзија %s
 Cannot save an nameless page.
 Не могу да снимим безимену страну.
+Cannot save an page without revision.
+
 Cannot open %s
 
 Cannot write %s
@@ -480,6 +494,20 @@ Next
 
 Calendar %s
 
+Compilation for %s
+
+Compilation tag is missing a regular expression.
+
+Despamming pages
+
+Cannot find revision %s.
+
+Revert to revision %1: %2
+
+Marked as %s.
+
+Cannot find unspammed revision.
+
 Footnotes:
 
 image: %s
@@ -494,6 +522,10 @@ Define
 
 Full Link List
 Потпуни списак веза
+Template without parameters
+
+The template %s is either empty or does not exist.
+
 Clearing Cache
 
 Done.
@@ -539,6 +571,8 @@ URL:
 Name:
 
 Failed to remove %s
+
+Contents
 
 The translation is up to date.
 

@@ -37,10 +37,16 @@ history
 
 RSS parsing failed for %s
 
+No items found in %s.
+
  . . . . 
 
 Click to edit this page
 Кликни тук, за да създадеш тази страница
+image
+
+download
+
 Invalid action parameter %s
 Невалидна команда: %s
 Invalid URL.
@@ -185,6 +191,8 @@ Back to %s
 Обратно към %s
 new comment
 Нов коментар
+Homepage URL:
+
 s
 
 Save
@@ -193,6 +201,8 @@ Preview
 Предварителен преглед
 Search:
 Търси:
+f
+
 Replace:
 Замести:
 Validate HTML
@@ -213,6 +223,8 @@ minor
 малка
 No diff available.
 Не са належащи данни за разликите.
+Old revision:
+
 Changed:
 Заместено:
 Removed:
@@ -229,6 +241,8 @@ Showing revision %s
 Ето версия %s
 Cannot save an nameless page.
 Не може да се направи запис на безименна страница.
+Cannot save an page without revision.
+
 Cannot open %s
 не може да се отвори: %s
 Cannot write %s
@@ -481,6 +495,20 @@ Next
 
 Calendar %s
 
+Compilation for %s
+
+Compilation tag is missing a regular expression.
+
+Despamming pages
+
+Cannot find revision %s.
+
+Revert to revision %1: %2
+
+Marked as %s.
+
+Cannot find unspammed revision.
+
 Footnotes:
 
 image: %s
@@ -495,6 +523,10 @@ Define
 
 Full Link List
 Пълен списък на линковете
+Template without parameters
+
+The template %s is either empty or does not exist.
+
 Clearing Cache
 
 Done.
@@ -540,6 +572,8 @@ URL:
 Name:
 
 Failed to remove %s
+
+Contents
 
 The translation is up to date.
 
