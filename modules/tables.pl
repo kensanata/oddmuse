@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tables.pl,v 1.4 2004/10/13 20:11:46 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tables.pl,v 1.5 2004/12/05 04:02:34 as Exp $</p>';
 
 $DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /table\.user/; # mod_perl?
 table.user { border-style:solid; border-width:thin; }
@@ -45,7 +45,7 @@ sub TablesRule {
   }
   # tables using || -- since "next row" was taken care of above, this must be the last row
   elsif (InElement('td') && m/\G[ \t]*((\|\|)+)[ \t]*/cg) {
-    return CloseHtmlEnvironments();
+    return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
   }
   return undef;
 }
