@@ -286,7 +286,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.287 2004/01/02 00:05:25 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.288 2004/01/02 05:26:53 as Exp $');
 }
 
 sub InitCookie {
@@ -1131,15 +1131,13 @@ sub BrowsePage {
     return;
   }
   OpenPage($id);
-  my $text = $Page{text};
-  # Handle a single-level redirect
+  my ($text, $revision) = GetTextRevision(GetParam('revision', '')); # maybe revision reset!
+  # handle a single-level redirect
   my $oldId = GetParam('oldid', '');
-  if (($oldId eq '') && (substr($text, 0, 10) eq '#REDIRECT ')) {
-    if ($FreeLinks and $text =~ /^\#REDIRECT\s+\[\[$FreeLinkPattern\]\]/) {
+  if (not $oldId and not $revision and (substr($text, 0, 10) eq '#REDIRECT ')) {
+    if (($FreeLinks and $text =~ /^\#REDIRECT\s+\[\[$FreeLinkPattern\]\]/)
+	or ($WikiLinks and $text =~ /^\#REDIRECT\s+$LinkPattern/)) {
       ReBrowsePage(FreeToNormal($1), $id);
-      return;
-    } elsif ($WikiLinks and $text =~ /^\#REDIRECT\s+$LinkPattern/) {
-      ReBrowsePage($1, $id);
       return;
     }
   }
@@ -1152,35 +1150,17 @@ sub BrowsePage {
     print $text;
     return;
   }
+  # normal page view
   my $msg = GetParam('msg', '');
   $Message .= $q->p($msg) if $msg; # show message if the page is shown
   SetParam('msg', '');
-  # handle subtitle for old revisions, if these exist, and open keep file
-  my $revision = GetParam('revision', ''); # default empty string
-  $revision =~ s/\D//g; # Remove non-numeric chars
-  my $goodRevision; # empty string if no revision or current revision specified
-  $goodRevision = $revision if $revision ne $Page{revision};
-  if ($goodRevision) {
-    my %keep = GetKeptRevision($goodRevision);
-    if (not %keep) {
-      $goodRevision = ''; # reset if requested revision is not available
-      $Message .= $q->p(Ts('Revision %s not available', $revision)
-			. ' (' . T('showing current revision instead') . ')');
-    } else {
-      $Message .= $q->p(Ts('Showing revision %s', $goodRevision));
-      $text = $keep{text};
-    }
-  }
-  # print header
   print GetHeader($id, QuoteHtml($id), $oldId);
-  # print diff, if required
   my $showDiff = GetParam('diff', 0);
   if ($UseDiff && $showDiff) {
-    my $diffRevision = GetParam('diffrevision', $goodRevision);
+    my $diffRevision = GetParam('diffrevision', $revision);
     PrintHtmlDiff($showDiff, $id, $diffRevision, $revision, $text);
     print $q->hr();
   }
-  # print HTML of the main text
   print '<div class="content">';
   if ($revision eq '' && $Page{blocks} && $Page{flags} && GetParam('cache', $UseCache)) {
     PrintCache();
@@ -1202,7 +1182,7 @@ sub BrowsePage {
     my $referers = RefererTrack($id);
     print $referers if $referers;
   }
-  PrintFooter($id, $goodRevision);
+  PrintFooter($id, $revision);
 }
 
 sub ReBrowsePage {
@@ -2256,6 +2236,20 @@ sub GetTextAtTime {
   return '';
 }
 
+sub GetTextRevision {
+  my ($revision, $quiet) = @_;
+  $revision =~ s/\D//g; # Remove non-numeric chars
+  return $Page{text} unless $revision and $revision ne $Page{revision};
+  my %keep = GetKeptRevision($revision);
+  if (not %keep) {
+    $Message .= $q->p(Ts('Revision %s not available', $revision)
+		      . ' (' . T('showing current revision instead') . ')') unless $quiet;
+    return ($Page{text}, '');
+  }
+  $Message .= $q->p(Ts('Showing revision %s', $revision)) unless $quiet;
+  return ($keep{text}, $revision);
+}
+
 sub GetPageContent {
   my $id = shift;
   AllPagesList(); # set IndexHash
@@ -2551,20 +2545,8 @@ sub DoEdit {
     ReportError(T('Only administrators can upload files.'));
   }
   OpenPage($id);
-  my $text = $Page{text};
-  # Old revision handling (adapted from to BrowsePage!)
-  my $header; # set header only when sure that this is not an upload
-  my $revision = GetParam('revision', '');
-  $revision =~ s/\D//g;  # Remove non-numeric chars
-  if ($revision) {
-    my %keep = GetKeptRevision($revision);
-    if (not %keep) {
-      $revision = ''; # reset if requested revision is not available
-    } else {
-      $text = $keep{text};
-      $header = Ts('Editing revision %s of', $revision) . ' ' . $id;
-    }
-  }
+  my ($text, $revision) = GetTextRevision(GetParam('revision', ''), 1); # maybe revision reset!
+  my $header = Ts('Editing revision %s of', $revision) . ' ' . $id if ($revision);
   my $oldText = $text;
   my $isFile = ($oldText =~ m/^#FILE ([^ \n]+)\n(.*)/s);
   $upload = $isFile if not defined $upload;
@@ -2637,20 +2619,15 @@ sub GetUpload {
 
 sub DoDownload {
   my $id = shift;
-  my $ts;
-  my $revision = GetParam('revision', '');
   OpenPage($id);
-  if ($revision && $revision ne $Page{revision}) {
-    OpenKeptRevisions('text_default');
-    OpenKeptRevision($revision);
-  } else {
-    if ($Page{ts} eq $q->http('HTTP_IF_MODIFIED_SINCE')) {
-      print $q->header(-status=>'304 NOT MODIFIED');
-      return;
-    }
-    $ts = $Page{ts};
+  if ($q->http('HTTP_IF_MODIFIED_SINCE') eq gmtime($Page{revision})
+      and GetParam('cache', $UseCache) >= 2) {
+    print $q->header(-status=>'304 NOT MODIFIED');
+    return;
   }
-  if ($Page{text} =~ /#FILE ([^ \n]+)\n(.*)/s) {
+  my ($text, $revision) = GetTextRevision(GetParam('revision', '')); # maybe revision reset!
+  my $ts = $Page{ts};
+  if ($text =~ /#FILE ([^ \n]+)\n(.*)/s) {
     my ($type, $data) = ($1, $2);
     if (not grep(/^$type$/, @UploadTypes)) {
       ReportError(Ts('Files of type %s are not allowed.', $type));
@@ -2660,7 +2637,7 @@ sub DoDownload {
     print MIME::Base64::decode($data);
   } else {
     print GetHttpHeader('text/plain', $ts);
-    print $Page{text};
+    print $text;
   }
 }
 
