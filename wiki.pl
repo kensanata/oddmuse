@@ -87,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.112 2003/06/20 20:15:23 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.113 2003/06/21 10:11:51 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -656,7 +656,7 @@ sub UnquoteHtml {
 
 sub UrlEncode {
   my @letters = split(//,shift);
-  my @safe = ('a' .. 'z', 'A' .. 'Z', '0' .. '9');
+  my @safe = ('a' .. 'z', 'A' .. 'Z', '0' .. '9', '-', '_', '.', '!', '~', '*', "'", '(', ')');
   foreach my $letter (@letters) {
     my $pattern = quotemeta($letter);
     if (not grep(/$pattern/, @safe)) {
@@ -951,7 +951,7 @@ sub DoBrowseRequest {
     BrowsePage($HomePage);
     return 1;
   }
-  $id = GetParam('keywords', '');
+  $id = join(' ', $q->keywords);
   $id = $q->path_info() unless $id;
   $id =~ s|^/||;
   if ($id) {                    # Just script?PageName
