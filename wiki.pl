@@ -39,11 +39,11 @@ local $| = 1;  # Do not buffer output (localized for mod_perl)
 # Configuration/constant variables:
 
 use vars qw(@RcDays $TempDir $LockDir $DataDir $KeepDir $PageDir
-$RefererDir $RcOldFile $IndexFile $BannedContent $NoEditFile
-$BannedHosts $ConfigFile $FullUrl $SiteName $HomePage $LogoUrl
-$RcDefault $IndentLimit $RecentTop $RecentLink $EditAllowed $UseDiff
-$KeepDays $KeepMajor $EmbedWiki $BracketText $UseConfig $UseLookup
-$AdminPass $EditPass $NetworkFile $BracketWiki $FreeLinks $WikiLinks
+$RcOldFile $IndexFile $BannedContent $NoEditFile $BannedHosts
+$ConfigFile $FullUrl $SiteName $HomePage $LogoUrl $RcDefault
+$IndentLimit $RecentTop $RecentLink $EditAllowed $UseDiff $KeepDays
+$KeepMajor $EmbedWiki $BracketText $UseConfig $UseLookup $AdminPass
+$EditPass $NetworkFile $BracketWiki $FreeLinks $WikiLinks
 $FreeLinkPattern $RCName $RunCGI $ShowEdits $LinkPattern $RssExclude
 $InterLinkPattern $InterSitePattern $MaxPost $UrlPattern $UrlProtocols
 $ImageExtensions $FS $CookieName $SiteBase $StyleSheet $NotFoundPg
@@ -52,8 +52,7 @@ $VisitorFile $RcFile $Visitors %Smilies %SpecialDays $InterWikiMoniker
 $SiteDescription $RssImageUrl $RssPublisher $RssContributor $RssRights
 $BannedCanRead $SurgeProtection $SurgeProtectionViews $TopLinkBar
 $LanguageLimit $SurgeProtectionTime $DeletedPage %Languages $InterMap
-$ValidatorLink $RefererTracking $RefererTimeLimit $RefererLimit
-@LockOnCreation $RefererFilter $PermanentAnchorsFile $PermanentAnchors
+$ValidatorLink @LockOnCreation $PermanentAnchorsFile $PermanentAnchors
 @MyRules %CookieParameters $NewComment $StyleSheetPage $ConfigPage
 @UserGotoBarPages $ScriptName @MyMacros $CommentsPrefix @UploadTypes
 $DefaultStyleSheet $AllNetworkFiles $UsePathInfo $UploadAllowed
@@ -64,8 +63,8 @@ $FreeInterLinkPattern @AdminPages @MyAdminCode @MyInitVariables);
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
 %NewCookie $InterSiteInit $FootnoteNumber $OpenPageName @IndexList
-$IndexInit $Message $q $Now %RecentVisitors @HtmlStack %Referers
-$Monolithic $ReplaceForm %PermanentAnchors %PagePermanentAnchors
+$IndexInit $Message $q $Now %RecentVisitors @HtmlStack $Monolithic
+$ReplaceForm %PermanentAnchors %PagePermanentAnchors
 $CollectingJournal $WikiDescription $PrintedHeader %Locks $Fragment
 @Blocks @Flags %NearSite %NearSource %NearLinksUsed $NearSiteInit
 $NearDir $NearMap $SisterSiteLogoUrl %NearSearch @KnownLocks $first
@@ -73,6 +72,12 @@ $PermanentAnchorsInit $ModulesDescription %RuleOrder %Action $bol
 %RssInterwikiTranslate $RssInterwikiTranslateInit);
 
 # == Configuration ==
+
+if(exists $ENV{MOD_PERL})
+{
+  require Apache;
+  $RunCGI = 0 unless defined Apache->request; # Do not run when using PerlModule
+}
 
 # Can be set outside the script: $DataDir, $UseConfig, $ConfigFile, $ModuleDir, $ConfigPage,
 # $AdminPass, $EditPass, $ScriptName, $FullUrl, $RunCGI.
@@ -82,7 +87,6 @@ $DataDir     = $ENV{WikiDataDir} if $UseConfig and not $DataDir; # Main wiki dir
 $DataDir   = '/tmp/oddmuse' unless $DataDir;
 $ConfigPage  = '' unless $ConfigPage; # config page
 $RunCGI	     = 1  unless defined $RunCGI; # 1 = Run script as CGI instead of being a library
-$RunCGI      = 0  if exists $ENV{MOD_PERL} && !defined Apache->request; # Do not run when using PerlModule
 $UsePathInfo = 1;   # 1 = allow page views using wiki.pl/PageName
 $UseCache    = 2;   # -1 = disabled, 0 = 10s; 1 = partial HTML cache; 2 = HTTP/1.1 caching
 
@@ -134,10 +138,6 @@ $Visitors	      = 1;	# 1 = maintain list of recent visitors
 $VisitorTime	      = 7200;	# Timespan to remember visitors in seconds
 $SurgeProtectionTime  = 20;	# Size of the protected window in seconds
 $SurgeProtectionViews = 10;	# How many page views to allow in this window
-$RefererTracking      = 0;	# Keep track of referrals to your pages
-$RefererTimeLimit     = 86400;	# How long referrals shall be remembered in seconds
-$RefererLimit	      = 15;	# How many different referer shall be remembered
-$RefererFilter = 'ReferrerFilter'; # name of the filter pg
 
 # RecentChanges and KeptPages
 $DeletedPage = 'DeletedPage';	# Pages starting with this can be deleted
@@ -194,7 +194,6 @@ img.logo { float: right; clear: right; border-style:none; }
 div.diff { padding-left:5%; padding-right:5%; }
 div.old { background-color:#FFFFAF; }
 div.new { background-color:#CFFFCF; }
-div.refer { padding-left:5%; padding-right:5%; font-size:smaller; }
 div.message { background-color:#FEE; }
 div.journal h1 { font-size:large; }
 table.history { border-style:none; }
@@ -211,7 +210,7 @@ div.near p { margin-top:0; }
  body { font:12pt sans-serif; }
  a, a:link, a:visited { color:#000; text-decoration:none; font-style:oblique; }
  h1 a, h2 a, h3 a, h4 a { font-style:normal; }
- a.edit, div.footer, div.refer, form, span.gotobar, a.number span { display:none; }
+ a.edit, div.footer, form, span.gotobar, a.number span { display:none; }
  a[class="url number"]:after, a[class="inter number"]:after { content:"[" attr(href) "]"; }
  a[class="local number"]:after { content:"[" attr(title) "]"; }
  img[smiley] { line-height: inherit; }
@@ -230,7 +229,7 @@ div.near p { margin-top:0; }
 # Example: %Languages = ('de' => '\b(der|die|das|und|oder)\b');
 %Languages = ();
 
-@KnownLocks = qw(main diff index merge visitors refer_*); # locks to remove
+@KnownLocks = qw(main diff index merge visitors); # locks to remove
 
 %CookieParameters = (username=>'', pwd=>'', homepage=>'', theme=>'', css=>'', msg=>'',
 		     lang=>'', toplinkbar=>$TopLinkBar, embed=>$EmbedWiki, );
@@ -248,8 +247,7 @@ $SisterSiteLogoUrl = 'file:///tmp/oddmuse/%s.png'; # URL format string for logos
 	    download => \&DoDownload,	    rss => \&DoRss,
 	    unlock => \&DoUnlock,	    password => \&DoPassword,
 	    index => \&DoIndex,		    visitors => \&DoShowVisitors,
-	    refer => \&DoPrintAllReferers,  all => \&DoPrintAllPages,
-	    admin => \&DoAdminPage, );
+	    all => \&DoPrintAllPages,	    admin => \&DoAdminPage, );
 
 # The 'main' program, called at the end of this script file (aka. as handler)
 sub DoWikiRequest {
@@ -299,7 +297,6 @@ sub Init {
 sub InitDirConfig {
   $PageDir     = "$DataDir/page";   # Stores page data
   $KeepDir     = "$DataDir/keep";   # Stores kept (old) page data
-  $RefererDir  = "$DataDir/referer";   # Stores referer data
   $TempDir     = "$DataDir/temp";      # Temporary files and locks
   $LockDir     = "$TempDir/lock";      # DB is locked if this exists
   $NoEditFile  = "$DataDir/noedit"; # Indicates that the site is read-only
@@ -348,19 +345,18 @@ sub InitVariables {    # Init global session variables for mod_perl!
     unless -d $DataDir;
   my $add_space = $CommentsPrefix =~ /[ \t_]$/;
   map { $$_ = FreeToNormal($$_); } # convert spaces to underscores on all configurable pagenames
-    (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$RefererFilter, \$StyleSheetPage, \$NearMap,
-     \$ConfigPage, \$NotFoundPg, \$RssInterwikiTranslate, \$BannedContent, \$RssExclude,
-     \$CommentsPrefix);
+    (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$StyleSheetPage, \$NearMap, \$CommentsPrefix
+     \$ConfigPage, \$NotFoundPg, \$RssInterwikiTranslate, \$BannedContent, \$RssExclude, );
   $CommentsPrefix .= '_' if $add_space;
   @UserGotoBarPages = ($HomePage, $RCName) unless @UserGotoBarPages;
-  my @pages = sort ($BannedHosts, $RefererFilter, $StyleSheetPage, $ConfigPage, $InterMap,
-		    $NearMap, $RssInterwikiTranslate, $BannedContent);
+  my @pages = sort ($BannedHosts, $StyleSheetPage, $ConfigPage, $InterMap, $NearMap,
+		    $RssInterwikiTranslate, $BannedContent);
   @AdminPages = @pages unless @AdminPages;
   @LockOnCreation = @pages unless @LockOnCreation;
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.518 2005/01/06 23:21:53 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.519 2005/01/07 00:41:57 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -1327,18 +1323,13 @@ sub BrowsePage {
     PrintWikiToHTML(AddComment('', $comment)); # no caching, current revision, unlocked
     print $q->hr(), $q->h2(T('Preview only, not yet saved')), $q->end_div();;
   }
-  my $embed = GetParam('embed', $EmbedWiki);
   SetParam('rcclusteronly', $id) if GetCluster($text) eq $id;
   if (($id eq $RCName) || (T($RCName) eq $id) || (T($id) eq $RCName)
       || GetParam('rcclusteronly', '')) {
     print $q->start_div({-class=>'rc'});;
-    print $q->hr()  if (!$embed);
+    print $q->hr()  if not GetParam('embed', $EmbedWiki);
     DoRc(\&GetRcHtml);
     print $q->end_div();
-  }
-  if ($RefererTracking && !$embed) {
-    my $referers = RefererTrack($id);
-    print $referers if $referers;
   }
   PrintFooter($id, $revision, $comment);
 }
@@ -1876,7 +1867,6 @@ sub DoAdminPage {
   my @menu = (ScriptLink('action=index', T('Index of all pages')),
 	      ScriptLink('action=version', T('Wiki Version')),
 	      ScriptLink('action=unlock', T('Unlock Wiki')),
-	      ScriptLink('action=refer', T('All Referrers')),
 	      ScriptLink('action=visitors', T('Recent Visitors')),
 	      ScriptLink('action=password', T('Password')),
 	      ScriptLink('action=maintain', T('Run maintenance')));
@@ -3612,8 +3602,6 @@ sub DoMaintain {
       }
     } else {
       ExpireKeepFiles();
-      ReadReferers($OpenPageName); # clean up even if disabled
-      WriteReferers($OpenPageName);
     }
   }
   print '</p>';
@@ -3677,13 +3665,12 @@ sub PageDeletable {
 sub DeletePage { # Delete must be done inside locks.
   my $id = shift;
   my $status = ValidId($id);
-  return $status if $status;
-  foreach my $fname (GetPageFile($id), GetKeepFiles($id), GetKeepDir($id),
-		     GetRefererFile($id), $IndexFile) {
+  return $status if $status; # this would be the error message
+  foreach my $fname (GetPageFile($id), GetKeepFiles($id), GetKeepDir($id), $IndexFile) {
     unlink($fname) if (-f $fname);
   }
   DeletePermanentAnchors();
-  return '';
+  return ''; # no error
 }
 
 # == Page locking ==
@@ -3858,99 +3845,6 @@ sub DoShowVisitors { # no caching of this page!
   }
   print '</ul>' . $q->end_div();
   PrintFooter();
-}
-
-# == Track Back ==
-
-sub GetRefererFile {
-  my $id = shift;
-  return $RefererDir . '/' . GetPageDirectory($id) . "/$id.rf";
-}
-
-sub ReadReferers {
-  my $file = GetRefererFile(shift);
-  %Referers = ();
-  if (-f $file) {
-    my ($status, $data) = ReadFile($file);
-    %Referers = split(/$FS/, $data, -1) if $status;
-  }
-  ExpireReferers();
-}
-
-sub ExpireReferers { # no need to save the pruned list if nothing else changes
-  if ($RefererTimeLimit) {
-    foreach (keys %Referers) {
-      if ($Now - $Referers{$_} > $RefererTimeLimit) {
-	delete $Referers{$_};
-      }
-    }
-  }
-  if ($RefererLimit) {
-    my @list = sort {$Referers{$a} cmp $Referers{$b}} keys %Referers;
-    @list = @list[$RefererLimit .. @list-1];
-    foreach (@list) {
-      delete $Referers{$_};
-    }
-  }
-}
-
-sub GetReferers {
-  my $result = join(' ', map {
-    my $title = QuoteHtml($_);
-    $title =~ s/\%([0-9a-f][0-9a-f])/chr(hex($1))/egi;
-    $q->a({-href=>$_}, $title); } keys %Referers);
-  return $q->div({-class=>'refer'}, $q->hr(), $q->p(T('Referrers') . ': ' . $result)) if $result;
-}
-
-sub UpdateReferers {
-  my $self = $ScriptName;
-  my $referer = $q->referer();
-  return  unless $referer and $referer !~ /$self/;
-  foreach (split(/\n/,GetPageContent($RefererFilter))) {
-    if (/^ ([^ ]+)[ \t]*$/) {  # only read lines with one word after one space
-      my $regexp = $1;
-      return  if $referer =~ /$regexp/i;
-    }
-  }
-  my $data = GetRaw($referer);
-  return  unless $data =~ /$self/;
-  $Referers{$referer} = $Now;
-  return 1;
-}
-
-sub WriteReferers {
-  my $id = shift;
-  return unless RequestLockDir('refer_' . $id); # not fatal
-  my $data = join($FS, %Referers);
-  my $file = GetRefererFile($id);
-  if ($data) {
-    CreatePageDir($RefererDir, $id);
-    WriteStringToFile($file, $data);
-  } else {
-    unlink $file; # just try it, doesn't matter if it fails
-  }
-  ReleaseLockDir('refer_' . $id);
-}
-
-sub RefererTrack {
-  my $id = shift;
-  ReadReferers($id);
-  WriteReferers($id) if UpdateReferers($id);
-  return GetReferers();
-}
-
-sub DoPrintAllReferers {
-  print GetHeader('', T('All Referrers'), ''), $q->start_div({-class=>'content refer'});
-  PrintAllReferers(AllPagesList());
-  print $q->end_div();
-  PrintFooter();
-}
-
-sub PrintAllReferers {
-  for my $id (@_) {
-    ReadReferers($id);
-    print $q->p(ScriptLink(UrlEncode($id),$id)), GetReferers() if %Referers;
-  }
 }
 
 # == Permanent Anchors ==
