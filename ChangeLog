@@ -1,3 +1,11 @@
+2003-10-27  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($PageCluster): New variable.
+	(GetRc): Only cluster when $PageCluster is set.
+	(GetRcHtml): Only cluster when $PageCluster is set.
+	(GetCluster): Only cluster when $PageCluster is set.  Main page
+	has to stand on its own on the first line.
+
 2003-10-25  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (RSS): Skip contributor if empty.
