@@ -1,3 +1,38 @@
+2003-09-23  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ReportError): Simplified some.
+	(Init): New setup, make sure $MaxPost takes effect.
+	(DoIndex): Simplified some.
+	(PrintSearchResults): Remove subpage specific code.
+	(GetFullLinkList): Simplified some.
+
+2003-09-23  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ApplyRules): Accept two more parameters, with anchors,
+	and revision, use Upload for the picture rule, extend include rule
+	to accept a with-anchors instead of text parameter, two new rules
+	to handle uploaded files, take the new parameters into account.
+	(AddHtmlEnvironment): Simplified slightly.
+	(CloseHtmlEnvironments): Simplified slightly.
+	(PrintWikiToHTML): New parameter cacheok.
+	(Upload): New function.
+	(PrintCache): Use new parameters for ApplyRules.
+	(DoBrowseRequest): Pass new parameters to BrowsePage when
+	appropriate.
+	(BrowsePage): New parameter $cacheok, return 304 NOT MODIFIED if
+	appropriate, pass new parameter to GetHeader.
+	(GetHeader): New parameter timestamp, pass it on to GetHttpHeader.
+	(GetHttpHeader): New parameters modified and cacheok.
+	(GetHtmlHeader): New CSS to downloadable files.
+	(DoEdit): Reset edit box if it used to be a file, only provide
+	upload link if you are allowed to use it, no longer pass 'preview'
+	as a revision to PrintWikiToHTML.
+	(DoDownload): Return 304 NOT MODIFIED if appropriate, pass new
+	parametesr to GetHttpHeader.
+	(PrintAllPages): New parameter comments, to print link to comments
+	page if required.
+	(DoMaintain): New parameters for PrintWikiToHTML.
+
 2003-09-22  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl ($UploadAllowed, @UploadTypes): New variables.
