@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.15 2004/06/15 19:08:45 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.16 2004/06/15 19:11:09 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalendarUseCal);
 
@@ -45,7 +45,7 @@ sub Cal {
   my @pages = AllPagesList();
   my $cal = '';
   if ($CalendarUseCal) {
-    $cal = `cal`;
+    $cal = `cal $mon $year`;
   }
   eval { require Date::Calc;
 	 $cal = Date::Calc::Calendar( $year, $mon ); } unless $cal;
