@@ -82,11 +82,11 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.76 2003/06/01 21:41:29 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.77 2003/06/01 21:54:38 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
-$StyleSheetPage = 'CascadingStyleSheet'; # Page for CSS sheet
+$StyleSheetPage = ''; # Page for CSS sheet
 $LogoUrl     = '';  # URL for site logo ('' for no logo)
 $NotFoundPg  = '';  # Page for not-found links ('' for blank pg)
 $NewText     = "Describe the new page here.\n";  # New page text
@@ -1709,8 +1709,7 @@ sub Cookie {
 
 sub GetHtmlHeader {
   my ($title, $id) = @_;
-  my ($dtd, $html);
-  $html = '';
+  my $html = '';
   $html .= $q->base({-href=>$SiteBase}) if $SiteBase;
   if ($StyleSheet ne '') {
     $html .= qq(<link type="text/css" rel="stylesheet" href="$StyleSheet">\n);
