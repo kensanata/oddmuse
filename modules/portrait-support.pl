@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.18 2004/10/10 17:26:28 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.19 2004/11/27 21:12:20 as Exp $</p>';
 
 push(@MyMacros, sub{ s/\[new::\]/"[new:" . GetParam('username', T('Anonymous'))
 		       . ':' . TimeToText($Now) . "]"/ge });
@@ -55,8 +55,11 @@ div.one {
 }
 EOT
 
+use vars qw($MyColorDiv);
+
+$MyColorDiv = 0;
+
 my $MyColor = 0;
-my $MyColorDiv = 0;
 my %Portraits = ();
 
 sub PortraitSupportRule {
@@ -65,15 +68,6 @@ sub PortraitSupportRule {
       $MyColor = 0;
       my $html = CloseHtmlEnvironments() . ($MyColorDiv ? '</div>' : '')
 	. $q->hr();
-      $MyColorDiv = 0;
-      return $html;
-    } elsif ($bol && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg) {
-      my ($depth, $text) = ($2, $3);
-      $depth = length($depth);
-      $depth = 6  if ($depth > 6);
-      $MyColor = 0;
-      my $html = CloseHtmlEnvironments() . ($MyColorDiv ? '</div>' : '')
-	. "<h$depth>$text</h$depth>";
       $MyColorDiv = 0;
       return $html;
     } elsif ($bol && m/\Gportrait:$UrlPattern/gc) {
