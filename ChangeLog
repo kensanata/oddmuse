@@ -1,3 +1,14 @@
+2003-06-10  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (@UserGotoBarPages): Set to $HomePage and $RcName.
+	(GetGotoBar): Just use @UserGotoBarPages as-is.
+	(DoEdit): Get rid of $editCols, $editRows, and the editcols and
+	editrows parameters.  Call GetTextArea without 'em.
+	(GetTextArea): Hardcode the rows and columns.  Don't use the style
+	attribute.
+	(BrowsePage): The hr before referers is not added here.
+	(RefererTrack): Add the hr here.
+
 2003-06-08  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoWikiRequest): Cannot use $q->p($@) because of some
