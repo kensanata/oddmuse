@@ -249,9 +249,14 @@ sub InitRequest {
 }
 
 sub InitVariables {    # Init global session variables for mod_perl!
-  $Now = time;         # Reset in case script is persistent
   $ReplaceForm = 0;    # Only admins may search and replace
   $ScriptName = $q->url() unless defined $ScriptName; # Name used in links
+  $Now = time;         # Reset in case script is persistent
+  if (not $LastUpdate) { # mod_perl: stat should be unnecessary since LastUpdate persists.
+    my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size, $atime,$mtime,$ctime,$blksize,$blocks)
+      = stat($IndexFile);
+    $LastUpdate = $mtime;
+  }
   $InterSiteInit = 0;
   %InterSite = ();
   %Locks = ();
@@ -273,7 +278,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.213 2003/10/19 22:57:30 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.214 2003/10/20 00:06:26 as Exp $');
 }
 
 sub InitCookie {
@@ -1099,7 +1104,10 @@ sub BrowseResolvedPage {
 
 sub BrowsePage {
   my ($id, $raw) = @_;
-  return if NotModified();
+  if ($q->http('HTTP_IF_MODIFIED_SINCE') eq gmtime($LastUpdate)) {
+    print $q->header(-status=>'304 NOT MODIFIED');
+    return;
+  }
   OpenPage($id);
   OpenDefaultText($id);
   # Handle a single-level redirect
@@ -1184,25 +1192,6 @@ sub ReBrowsePage {
     print GetRedirectPage("action=browse;oldid=$oldId;id=$id", $id);
   } else {
     print GetRedirectPage($id, $id);
-  }
-}
-
-sub NotModified {
-  if (not $LastUpdate) { # mod_perl: stat should be unnecessary since LastUpdate persists.
-    my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size, $atime,$mtime,$ctime,$blksize,$blocks)
-      = stat($IndexFile);
-    $LastUpdate = $mtime;
-  }
-  if ($q->http('HTTP_IF_MODIFIED_SINCE')) {
-    eval {
-      local $SIG{__DIE__};
-      require Time::ParseDate;
-      my $since = Time::ParseDate::parsedate($q->http('HTTP_IF_MODIFIED_SINCE'), NO_RELATIVE => 1);
-      if ($LastUpdate < $since) {
-	print $q->header(-status=>'304 NOT MODIFIED');
-	return 1;
-      }
-    }
   }
 }
 
@@ -1816,9 +1805,8 @@ sub GetHttpHeader {
   return if $PrintedHeader;
   $PrintedHeader = 1;
   my ($type, $modified) = @_;
-  my $now = gmtime($modified or $Now);
-  my %headers = (-last_modified=>$now, -cache_control=>'max-age=10, must-revalidate');
-  $headers{-expires} = '+10s' unless $modified;
+  my $mod = gmtime($modified or $LastUpdate);
+  my %headers = (-last_modified=>$mod, -cache_control=>'max-age=10'); # HTTP/1.1 headers only
   if ($HttpCharset ne '') {
     $headers{-type} = "$type; charset=$HttpCharset";
   } else {
