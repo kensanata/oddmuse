@@ -275,11 +275,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   $ScriptName = $q->url() unless defined $ScriptName; # URL used in links
   $FullUrl = $ScriptName unless $FullUrl; # URL used in forms
   $Now = time;	       # Reset in case script is persistent
-  if (not $LastUpdate) { # mod_perl: stat should be unnecessary since LastUpdate persists.
-    my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size,$atime,$mtime,$ctime,$blksize,$blocks)
-      = stat($IndexFile);
-    $LastUpdate = $mtime;
-  }
+  $LastUpdate = (stat($IndexFile))[9];
   $InterSiteInit = 0;
   %InterSite = ();
   $NearSiteInit = 0;
@@ -290,6 +286,12 @@ sub InitVariables {    # Init global session variables for mod_perl!
   $RssInterwikiTranslateInit = 0;
   %RssInterwikiTranslate = ();
   %Locks = ();
+  $IndexInit =0;
+  @Blocks = ();
+  @Flags = ();
+  $Fragment = '';
+  %RecentVisitors = ();
+  %PagePermanentAnchors = ();
   $OpenPageName = '';  # Currently open page
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   CreateDir($DataDir); # Create directory if it doesn't exist
@@ -300,7 +302,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$RefererFilter, \$StyleSheetPage,
      \$ConfigPage, \$NotFoundPg, \$NearMap, \$RssInterwikiTranslate, \$BannedContent);
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.433 2004/06/29 00:37:07 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.434 2004/07/04 22:50:14 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -391,8 +393,8 @@ sub ApplyRules {
   return Clean(GetDownloadLink($OpenPageName, (substr($1, 0, 6) eq 'image/'), $revision))
     if ($text =~ m/^#FILE ([^ \n]+)\n/);
   local $Fragment = ''; # the clean HTML fragment not yet on @Blocks
-  local @Blocks;  # the list of cached HTML blocks
-  local @Flags;	  # a list for each block, 1 = dirty, 0 = clean
+  local @Blocks=();     # the list of cached HTML blocks
+  local @Flags=();	# a list for each block, 1 = dirty, 0 = clean
   local @HtmlStack = ();
   my $smileyregex = join "|", keys %Smilies;
   $smileyregex = qr/(?=$smileyregex)/;
@@ -680,7 +682,8 @@ sub PrintJournal {
     @pages = @pages[0 .. $num - 1] if $#pages >= $num;
     if (@pages) {
       # Now save information required for saving the cache of the current page.
-      local (%Page, $OpenPageName);
+      local %Page;
+      local $OpenPageName='';
       print '<div class="journal">';
       PrintAllPages(1, 1, @pages);
       print '</div>';
@@ -2263,6 +2266,7 @@ sub OpenPage { # Sets global variables
   if ($IndexHash{$id}) {
     %Page = ParseData(ReadFileOrDie(GetPageFile($id)));
   } else {
+    %Page = ();
     $Page{ts} = $Now;
     $Page{revision} = 0;
     if ($id eq $HomePage and (open(F,'README') or open(F,"$DataDir/README"))) {
@@ -3320,7 +3324,6 @@ sub Save { # call within lock, with opened page
   WriteRcLog($id, $summary, $minor, $revision, $user, $host, $languages, GetCluster($new));
   if ($revision == 1) {
     unlink($IndexFile);	 # Regenerate index on next request
-    $IndexInit = 0; # mod_perl: this variable may persist accross sessions
     if (grep(/^$id$/, @LockOnCreation)) {
       WriteStringToFile(GetLockedPageFile($id), 'editing locked.');
     }
