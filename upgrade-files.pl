@@ -6,7 +6,7 @@
 use CGI qw/:standard/;
 use CGI::Carp qw(fatalsToBrowser);
 print header() . start_html(), p;
-print 'Upgrade version: $Id: upgrade-files.pl,v 1.2 2003/11/02 00:38:14 as Exp $', "\n";
+print 'Upgrade version: $Id: upgrade-files.pl,v 1.3 2003/11/02 02:19:33 as Exp $', "\n";
 if (not param('dir')) {
   print start_form, p,
     '$DataDir: ', textfield('dir', '/tmp/oddmuse'),
@@ -56,7 +56,7 @@ sub rewrite {
       next unless $keep;
       %section = split(/$FS2/, $keep, -1);
       %text = split(/$FS3/, $section{data}, -1);
-      my $current = "$out/$section{'revision'}";
+      my $current = "$out/$section{'revision'}.kp";
       print "Writing $current...\n";
       write_keep_file($current);
     }
