@@ -348,7 +348,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.460 2004/09/29 23:35:36 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.461 2004/10/05 23:15:34 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -855,6 +855,9 @@ sub RSS {
 	$str .= $q->p($q->strong($day)) . '<ul>';
       }
       $line = $time . ' UTC ' . $line if $time;
+    } elsif (not $date) {
+      $str .= '<ul>'; # if the feed doesn't have any dates we need to start the list anyhow
+      $date = $Now; # to ensure the list starts only once
     }
     $str .= $q->li($line);
   }
@@ -3650,7 +3653,8 @@ sub DoSurgeProtection {
 		      '503 SERVICE UNAVAILABLE');
 	}
       } elsif ($SurgeProtection and GetParam('action', '') ne 'unlock') {
-	ReportError(Ts('Could not get %s lock', 'visitors'), '503 SERVICE UNAVAILABLE');
+	ReportError(Ts('Could not get %s lock', 'visitors')
+		    . ': ' . Ts('Check whether the web server can create the directory %s and whether it can create files in it.', $TempDir), '503 SERVICE UNAVAILABLE');
       }
     }
   }
