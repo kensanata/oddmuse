@@ -3,6 +3,7 @@
 	* wiki.pl (%CookieParameters): Added 'css'.
 	(GetHtmlHeader): Use it.
 	(DoHistory): Removed a br tag.
+	(GetHtmlHeader): Encoding multiple style sheets.
 
 2003-09-26  Alex Schroeder  <alex@gnu.org>
 
