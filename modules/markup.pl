@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: markup.pl,v 1.13 2004/09/27 21:38:52 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: markup.pl,v 1.14 2004/12/26 01:44:41 as Exp $</p>';
 
 use vars qw(%MarkupPairs %MarkupSingles %MarkupLines);
 
@@ -85,7 +85,7 @@ sub MarkupTag {
 }
 
 sub MarkupRule {
-  if ($bol and m/$markup_lines_re/gc) {
+  if ($bol and %MarkupLines and m/$markup_lines_re/gc) {
     my ($tag, $str) = ($1, $2);
     $str = $q->span($tag) . $str;
     while (m/$markup_lines_re/gc) {
@@ -93,9 +93,9 @@ sub MarkupRule {
     }
     return MarkupTag($MarkupLines{UnquoteHtml($tag)}, $str);
   }
-  elsif (m/$markup_pairs_re/gc) {
+  elsif (%MarkupPairs and m/$markup_pairs_re/gc) {
     return MarkupTag($MarkupPairs{UnquoteHtml($1)}, $2);
-  } elsif (m/$markup_singles_re/gc) {
+  } elsif (%MarkupSingles and m/$markup_singles_re/gc) {
     return $MarkupSingles{UnquoteHtml($1)};
   } elsif ($MarkupPairs{'/'} and m|\G~/|gc) {
     return '~/'; # fix ~/elisp/ example
