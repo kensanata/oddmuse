@@ -2,6 +2,7 @@
 
 	* wiki.pl (InitRequest): Set the query object charset as suggested
 	by Wei Ching Tang.
+	(GetHistoryLine): Do not anonymize IPs.
 
 2003-04-18  Alex Schroeder  <alex@gnu.org>
 
