@@ -74,13 +74,13 @@ $PermanentAnchorsInit $ModulesDescription);
 # == Configuration ==
 
 # Can be set outside the script: $DataDir, $UseConfig, $ConfigFile,
-# $ConfigPage, $AdminPass, $EditPass, $ScriptName, $FullUrl
+# $ConfigPage, $AdminPass, $EditPass, $ScriptName, $FullUrl, $RunCGI.
 
 $UseConfig   = 1 unless defined $UseConfig; # 1 = load config file in the data directory
 $DataDir     = $ENV{WikiDataDir} if $UseConfig and not $DataDir; # Main wiki directory
 $DataDir   = '/tmp/oddmuse' unless $DataDir;
 $ConfigPage  = '' unless $ConfigPage; # config page
-$RunCGI      = 1;   # 1 = Run script as CGI instead of being a library
+$RunCGI      = 1  unless defined $RunCGI; # 1 = Run script as CGI instead of being a library
 $UsePathInfo = 1;   # 1 = allow page views using wiki.pl/PageName
 $UseCache    = 2;   # 0 = no; 1 = partial HTML cache; 2 = HTTP/1.1 caching
 
@@ -295,13 +295,17 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.312 2004/01/31 00:48:29 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.313 2004/01/31 01:59:03 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
 sub InitCookie {
   undef $q->{'.cookies'};  # Clear cache if it exists (for SpeedyCGI)
-  %OldCookie = split(/$FS/, $q->cookie($CookieName));
+  if ($q->cookie($CookieName)) {
+    %OldCookie = split(/$FS/, $q->cookie($CookieName));
+  } else {
+    %OldCookie = ();
+  }
   %NewCookie = %OldCookie;
   # Only valid usernames get stored in the new cookie.
   my $name = GetParam('username', '');
@@ -385,15 +389,18 @@ sub ApplyRules {
   my ($text, $locallinks, $withanchors, $revision) = @_;
   NearInit() unless $NearSiteInit;
   $text =~ s/\r\n/\n/g; # DOS to Unix
+  return unless $text;
   local $Fragment = ''; # the clean HTML fragment not yet on @Blocks
   local @Blocks;  # the list of cached HTML blocks
   local @Flags;   # a list for each block, 1 = dirty, 0 = clean
+  local @HtmlStack = ();
   my $htmlre = join('|',(@HtmlTags));
   local $_ = $text;
+  my $bol = 1;
+  my $first = 1;
   while(1) {
-    my $bol = m/\G^/cgsm;
     # Block level elements eat empty lines to prevent empty p elements.
-    if (pos == 0 and m/^#FILE ([^ \n]+)\n(.*)/cgs) {
+    if ($first and m/^#FILE ([^ \n]+)\n(.*)/cgs) {
       Clean(Upload($OpenPageName, (substr($1, 0, 6) eq 'image/'), $revision));
     } elsif ($bol && m/\G&lt;pre&gt;\n?(.*?\n)&lt;\/pre&gt;[ \t]*\n?/cgs) {
       Clean(CloseHtmlEnvironments() . $q->pre({-class=>'real'}, $1));
@@ -453,14 +460,18 @@ sub ApplyRules {
       print RSS($3 ? $3 : 15, split(/ +/, $4));
       pos = $oldpos;
       # restore \G after call to RSS which uses the LWP module (for older copies of the module?)
-    } elsif ($HtmlStack[0] eq 'dt' && m/\G:/cg) {
+    } elsif (defined $HtmlStack[0] && $HtmlStack[0] eq 'dt'
+	     && m/\G:/cg) {
       Clean(CloseHtmlEnvironment() . AddHtmlEnvironment('dd'));
-    } elsif ($HtmlStack[0] eq 'td' && m/\G[ \t]*((\|\|)+)[ \t]*\n((\|\|)+)[ \t]*/cg) {
+    } elsif (defined $HtmlStack[0] && $HtmlStack[0] eq 'td'
+	     && m/\G[ \t]*((\|\|)+)[ \t]*\n((\|\|)+)[ \t]*/cg) {
       Clean('</td></tr><tr>' . ((length($3) == 2)
 				? '<td>' : ('<td colspan="' . length($3)/2 . '">')));
-    } elsif ($HtmlStack[0] eq 'td' && m/\G[ \t]*((\|\|)+)[ \t]*(?!(\n|$))/cg) { # continued
+    } elsif (defined $HtmlStack[0] && $HtmlStack[0] eq 'td'
+	     && m/\G[ \t]*((\|\|)+)[ \t]*(?!(\n|$))/cg) { # continued
       Clean('</td>' . ((length($1) == 2) ? '<td>' : ('<td colspan="' . length($1)/2 . '">')));
-    } elsif ($HtmlStack[0] eq 'td' && m/\G[ \t]*((\|\|)+)[ \t]*/cg) { # at the end of the table
+    } elsif (defined $HtmlStack[0] && $HtmlStack[0] eq 'td'
+	     && m/\G[ \t]*((\|\|)+)[ \t]*/cg) { # at the end of the table
       Clean(CloseHtmlEnvironments());
     } elsif (m/\G\&lt;nowiki\&gt;(.*?)\&lt;\/nowiki\&gt;/cgis) { Clean($1);
     } elsif (m/\G\&lt;code\&gt;(.*?)\&lt;\/code\&gt;/cgis) { Clean($q->code($1));
@@ -468,9 +479,11 @@ sub ApplyRules {
     } elsif (m/\G$RFCPattern/cg) { Clean(&RFC($1));
     } elsif (m/\G($ISBNPattern)/cg) { Dirty($1); print ISBN($2);
     } elsif (m/\G'''/cg) { # traditional wiki syntax with '''strong'''
-      Clean(($HtmlStack[0] eq 'strong') ? CloseHtmlEnvironment() : AddHtmlEnvironment('strong'));
+      Clean((defined $HtmlStack[0] && $HtmlStack[0] eq 'strong')
+	    ? CloseHtmlEnvironment() : AddHtmlEnvironment('strong'));
     } elsif (m/\G''/cg) {     #  traditional wiki syntax with ''emph''
-      Clean(($HtmlStack[0] eq 'em') ? CloseHtmlEnvironment() : AddHtmlEnvironment('em'));
+      Clean((defined $HtmlStack[0] && $HtmlStack[0] eq 'em')
+	    ? CloseHtmlEnvironment() : AddHtmlEnvironment('em'));
     } elsif (m/\G\&lt;($htmlre)\&gt;/cgi) { Clean(AddHtmlEnvironment($1));
     } elsif (m/\G\&lt;\/($htmlre)\&gt;/cgi) { Clean(CloseHtmlEnvironment($1));
     } elsif (m/\G\&lt;($htmlre) *\/\&gt;/cgi) { Clean("<$1 />");
@@ -528,6 +541,8 @@ sub ApplyRules {
     } elsif (m/\G(\w+)/cgi or m/\G(\S)/cg) { Clean($1); # one block at a time, consider word<b>!
     } else { last;
     }
+    $bol = m/\G(?<=\n)/cgs;
+    $first = 0;
   }
   # last block -- close it, cache it
   Clean(CloseHtmlEnvironments());
@@ -1142,7 +1157,8 @@ sub BrowseResolvedPage {
 
 sub BrowsePage {
   my ($id, $raw, $comment) = @_;
-  if ($q->http('HTTP_IF_MODIFIED_SINCE') eq gmtime($LastUpdate)
+  if ($q->http('HTTP_IF_MODIFIED_SINCE')
+      and $q->http('HTTP_IF_MODIFIED_SINCE') eq gmtime($LastUpdate)
       and GetParam('cache', $UseCache) >= 2) {
     print $q->header(-status=>'304 NOT MODIFIED');
     return;
@@ -1179,7 +1195,7 @@ sub BrowsePage {
     print $q->hr();
   }
   print '<div class="content">';
-  if ($revision eq '' && $Page{blocks} && $Page{flags} && GetParam('cache', $UseCache)) {
+  if ($revision eq '' and $Page{blocks} and $Page{flags} and GetParam('cache', $UseCache)) {
     PrintCache();
   } else {
     my $savecache = ($Page{revision} > 0 and $revision eq ''); # new page not cached
@@ -1737,8 +1753,8 @@ sub GetSearchLink {
 sub ScriptLinkDiff {
   my ($diff, $id, $text, $new, $old) = @_;
   my $action = 'action=browse;diff=' . $diff . ';id=' . UrlEncode($id);
-  $action .= ";diffrevision=$old"  if ($old ne '');
-  $action .= ";revision=$new"  if ($new ne '');
+  $action .= ";diffrevision=$old"  if ($old and $old ne '');
+  $action .= ";revision=$new"  if ($new and $new ne '');
   return ScriptLink($action, $text);
 }
 
@@ -1842,13 +1858,14 @@ sub GetHttpHeader {
 
 sub Cookie {
   my ($changed, $visible, %params);
-  foreach (keys %CookieParameters) {
-    my $default = $CookieParameters{$_};
-    my $value = GetParam($_, $default);
-    $params{$_} = $value  if $value ne $default;
-    my $change = ($value ne $OldCookie{$_} and ($OldCookie{$_} ne '' or $value ne $default));
-    $visible = 1  if $change and not $InvisibleCookieParameters{$_};
-    $changed = 1  if $change; # note if any parameter changed and needs storing
+  foreach my $key (keys %CookieParameters) {
+    my $default = $CookieParameters{$key};
+    my $value = GetParam($key, $default);
+    $params{$key} = $value  if $value ne $default;
+    my $change = (($value ne $default) # not the default, or changed from something to non-default
+		  or (defined $OldCookie{$key} and $value ne $OldCookie{$key}));
+    $visible = 1 if $change and not $InvisibleCookieParameters{$key};
+    $changed = 1 if $change; # note if any parameter changed and needs storing
   }
   if ($changed) {
     my $cookie = join($FS, %params);
@@ -2256,7 +2273,7 @@ sub GetTextAtTime {
 sub GetTextRevision {
   my ($revision, $quiet) = @_;
   $revision =~ s/\D//g; # Remove non-numeric chars
-  return $Page{text} unless $revision and $revision ne $Page{revision};
+  return ($Page{text}, $revision) unless $revision and $revision ne $Page{revision};
   my %keep = GetKeptRevision($revision);
   if (not %keep) {
     $Message .= $q->p(Ts('Revision %s not available', $revision)
@@ -3357,7 +3374,7 @@ sub GetLanguages {
 
 sub GetCluster {
   $_ = shift;
-  return unless $PageCluster;
+  return '' unless $PageCluster;
   return $1 if ($WikiLinks && /^$LinkPattern\n/)
     or ($FreeLinks && /^\[\[$FreeLinkPattern\]\]\n/);
 }
@@ -3814,7 +3831,7 @@ sub DeletePermanentAnchors {
   ReleaseLockDir('permanentanchors');
 }
 
-DoWikiRequest()  if ($RunCGI && ($_ ne 'nocgi'));   # Do everything.
+DoWikiRequest()  if $RunCGI;   # Do everything.
 1; # In case we are loaded from elsewhere
 
 # == End of the OddMuse script. ==
