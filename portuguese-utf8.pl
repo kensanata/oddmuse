@@ -40,22 +40,12 @@ RSS parsing failed for %s
 
 Click to create this page
 
-http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
-http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
-http://www.amazon.com/exec/obidos/ISBN=%s
-http://www.amazon.de/exec/obidos/ISBN=%s
-alternate
-alternativa
-http://www.pricescan.com/books/BookDetail.asp?isbn=%s
-
-search
-busca
 Invalid action parameter %s
 Parametro de ação inválido %s
 Invalid URL.
 URL inválida.
 Page name is missing
-
+Falta o nome da página
 Page name is too long: %s
 Nome de página é muito longo: %s
 Invalid Page %s
@@ -91,25 +81,25 @@ Atualizações no último %s dia
 for %s only
 para %s apenas
 List latest change per page only
-
+Mostra só as últimas modificações por página
 List all changes
-
+Mostra todas as modificações
 List only major changes
-
+Mostra só as modificações maiores
 Include minor changes
-
+Inclui também as modificações menores
 %s days
 %s dias
 List later changes
-
+Mostra novas modificações
+Filters
+Filtros
 Username:
 Usuário:
 Host:
 
 Language:
-
-Filters
-
+Língua:
 Go!
 Ir!
 (minor)
@@ -117,7 +107,7 @@ Ir!
 rollback
 
 new
-
+novo
 from %s
 de %s
 History of %s
@@ -165,7 +155,7 @@ de %s
 (diff)
 (diff)
 Run maintenance
-
+Manutenção
 Unlock site
 
 Lock site
@@ -175,7 +165,7 @@ Unlock page
 Lock page
 
 Comments on this page
-
+Commentários sobre esta página
 Edit revision %s of this page
 Edite a revisão %s desta página
 Edit text of this page
@@ -293,11 +283,11 @@ Sumário:
 This change is a minor edit.
 Esta atualização é miníma.
 Replace this file with text.
-
+Escrever texto em vez do archivo presente.
 Replace this text with a file.
-
+Usar um archivo em vez do texto presente.
 File to upload: 
-
+Archivo à usar: 
 Files of type %s are not allowed.
 
 Password
@@ -333,7 +323,7 @@ near links
 %s pages found.
 %s páginas encontradas.
 Replaced: %s
-
+Substituído: %s
 Search for: %s
 Buscar por: %s
 View changes for these pages
@@ -347,7 +337,7 @@ ou
 Fetching results from %s:
 Buscando os resultados de %s:
 Near pages:
-
+Páginas próximas:
 last updated
 ultima atualização
 Complete Content
@@ -459,9 +449,9 @@ Deleted %s
 Renaming %1 to %2.
 
 The page %s does not exist
-
+A página %s não existe
 The page %s already exists
-
+A página %s já existe
 Renamed to %s
 
 Renamed from %s
@@ -472,22 +462,28 @@ Delete page
 
 Rename this page to:
 
+Cannot highlight the language %s.
+
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
 
 The match parameter is missing.
 
 Page Collection for %s
 
+Previous
+Prévio
+Next
+Próximo
 Calendar %s
-
+Calendário para %s
 Footnotes:
 
 image: %s
-
+imagem: %s
 Languages:
-
+Línguas:
 Show!
-
+Mostrar!
 Define
 
 Full Link List
@@ -505,10 +501,16 @@ Orphan List
 Trail: 
 
 None
-
+Nenhum
 Type
+Tipo
+Permalink to "%s"
 
 Portrait
+
+Static Copy
+
+Alternatively, use one of the following templates:
 
 Thread: %s
 
@@ -529,7 +531,25 @@ Below:
 URL:
 
 Name:
+Nome:
+Failed to remove %s
 
+The translation is up to date.
+
+The translation is outdated.
+
+The page does not exist.
+Esta página não existe.
+http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
+http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
+http://www.amazon.com/exec/obidos/ISBN=%s
+http://www.amazon.de/exec/obidos/ISBN=%s
+alternate
+alternativa
+http://www.pricescan.com/books/BookDetail.asp?isbn=%s
+
+search
+busca
 Blog
-
+Blog
 END_OF_TRANSLATION
