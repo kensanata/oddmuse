@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: atom.pl,v 1.3 2004/08/11 01:35:17 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: atom.pl,v 1.4 2004/08/11 10:55:20 as Exp $</p>';
 
 $Action{atom} = \&DoAtom;
 
@@ -43,8 +43,10 @@ sub GetRcAtom {
 <?xml-stylesheet href="http://www.blogger.com/styles/atom.css" type="text/css"?>
 <feed version="0.3" xmlns="http://purl.org/atom/ns#">
 EOT
-  print AtomTag('title', $SiteName);
-  print "<link href=\"$ScriptName\" rel=\"alternate\" title=\"$SiteName\" type=\"text/html\" />\n";
+  my $title = $SiteName;
+  my $link = $ScriptName;
+  print AtomTag('title', $title);
+  print "<link href=\"$link\" rel=\"alternate\" title=\"$title\" type=\"text/html\" />\n";
   print AtomTag('author', "<person><name>$RssPublisher</name></person>")
     if $RssPublisher;
   print AtomTag('contributor', "<person><name>$RssContributor</name></person>")
@@ -61,23 +63,23 @@ EOT
   GetRc(sub {},
 	sub {
 	  my ($pagename, $timestamp, $host, $userName, $summary, $minor, $revision, $languages, $cluster) = @_;
-	  my $name = FreeToNormal($pagename);
-	  $name =~ s/_/ /g;
+	  my $title = FreeToNormal($pagename);
+	  $title =~ s/_/ /g;
+	  my $link = $ScriptName . ($UsePathInfo ? '/' : '?') . $pagename;
 	  my $author = $userName;
 	  $author = $host unless $author;
-	  my $link = $ScriptName . ($UsePathInfo ? '/' : '?') . $pagename;
 	  # output
-	  my $entry = "<entry>\n";
-	  print AtomTag('title', $name);
-	  print AtomTag('link', $link);
-	  print AtomTag('author', "<person><name>$author</name></person>");
-	  print AtomTag('modified', AtomTime($timestamp));
-	  print AtomTag('issued', AtomTime($timestamp));
-	  print AtomTag('summary', $summary);
-	  print "<content type=\"text/html\" mode=\"escaped\">\n";
-	  print AtomPage($pagename);
-	  print "\n</content>\n";
-	  print "</entry>\n";
+	  print "<entry>\n",
+	    AtomTag('title', $title),
+	    "<link href=\"$link\" rel=\"alternate\" title=\"$title\" type=\"text/html\" />\n",
+	    AtomTag('author', "<person><name>$author</name></person>"),
+	    AtomTag('modified', AtomTime($timestamp)),
+	    AtomTag('issued', AtomTime($timestamp)),
+	    AtomTag('summary', $summary),
+	    "<content type=\"text/html\" mode=\"escaped\">\n",
+	    AtomPage($pagename),
+	    "\n</content>\n",
+	    "</entry>\n";
 	},
 	@_);
   print "</feed>\n";
