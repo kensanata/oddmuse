@@ -269,7 +269,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.156 2003/09/23 22:24:42 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.157 2003/09/23 23:15:09 as Exp $');
 }
 
 sub InitCookie {
@@ -1122,7 +1122,7 @@ sub BrowsePage {
     }
   }
   # print header
-  print GetHeader($id, QuoteHtml($id), $oldId, $Page{'ts'});
+  print GetHeader($id, QuoteHtml($id), $oldId);
   # print diff, if required
   my $showDiff = GetParam('diff', 0);
   if ($UseDiff && $showDiff) {
@@ -1720,11 +1720,11 @@ sub GetRCLink {
 }
 
 sub GetHeader {
-  my ($id, $title, $oldId, $ts) = @_;
+  my ($id, $title, $oldId) = @_;
   my $result = '';
   my $embed = GetParam('embed', $EmbedWiki);
   my $altText = T('[Home]');
-  $result = GetHttpHeader('text/html', $ts);
+  $result = GetHttpHeader('text/html');
   if ($FreeLinks) {
     $title =~ s/_/ /g;   # Display as spaces
   }
@@ -1761,16 +1761,10 @@ sub GetHeader {
 }
 
 sub GetHttpHeader {
-  my ($type, $modified, $cacheok) = @_;
-  my %headers;
+  my ($type, $modified) = @_;
   my $now = gmtime($modified or $Now);
-  if ($cacheok) {
-    %headers = (-last_modified=>$now, -expires=>'+48h');
-  } elsif ($modified) {
-    %headers = (-last_modified=>$now); # prepare for 304 NOT MODIFIED
-  } else {
-    %headers = (-last_modified=>$now, -expires=>'+10s');
-  }
+  my %headers = (-last_modified=>$now);
+  $headers{-expires} = '+10s' unless $modified;
   if ($HttpCharset ne '') {
     $headers{-type} = "$type; charset=$HttpCharset";
   } else {
@@ -2879,6 +2873,7 @@ sub GetUpload {
 
 sub DoDownload {
   my $id = shift;
+  my $ts;
   my $revision = GetParam('revision', '');
   OpenPage($id);
   if ($revision) {
@@ -2889,6 +2884,7 @@ sub DoDownload {
       print $q->header(-status=>'304 NOT MODIFIED');
       return;
     }
+    $ts = $Page{'ts'};
     OpenDefaultText($id);
   }
   if ($Text{'text'} =~ /#FILE ([^ \n]+)\n(.*)/s) {
@@ -2897,11 +2893,11 @@ sub DoDownload {
       ReportError (Ts('Files of type %s are not allowed.', $type));
       return;
     }
-    print GetHttpHeader($type, $Page{'ts'}, $revision); # cache ok if $revision is given
+    print GetHttpHeader($type, $ts);
     require MIME::Base64;
     print MIME::Base64::decode($data);
   } else {
-    print GetHttpHeader('text/plain', $Page{'ts'}, $revision);
+    print GetHttpHeader('text/plain', $ts);
     print $Text{'text'};
   }
 }
