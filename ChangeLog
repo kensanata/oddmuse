@@ -1,3 +1,9 @@
+2003-10-02  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ApplyRules): Allow uptional maxitems argument for RSS
+	feeds, and allow multiple RSS feeds to be merged.
+	(RSS): Implement it.
+
 2003-09-30  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl: Moved use CGI and use CGI::Carp to the top.
