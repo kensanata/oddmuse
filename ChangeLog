@@ -1,6 +1,13 @@
 2003-10-20  Alex Schroeder  <alex@gnu.org>
 
-	* wiki.pl (NotModified): Protect use of Time::ParseDate with an eval.
+	* wiki.pl (NotModified): Protect use of Time::ParseDate with an
+	eval.
+	(InitVariables): Set $LastUpdate here, if it is not set already.
+	(BrowsePage): Move the remaining code from NotModified here.  No
+	longer use Time::ParseDate.
+	(NotModified): Deleted.
+	(GetHttpHeader): Send $LastUpdate as Last-modified header.  No
+	longer send an Expires header (no support for HTTP/1.0 caching).
 
 2003-10-19  Alex Schroeder  <alex@gnu.org>
 
