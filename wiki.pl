@@ -357,7 +357,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.537 2005/03/25 11:16:24 frodo72 Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.538 2005/03/25 11:40:22 frodo72 Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -1183,21 +1183,39 @@ sub Tss {
 
 # == Choosing action
 
-sub DoBrowseRequest {
-  if (not $q->param and not ($UsePathInfo and $q->path_info)) {
-    my $error = $q->cgi_error;
-    # We can use the error message as the HTTP error code
-    ReportError(Ts('CGI Internal error: %s',$error), $error) if $error;
-    BrowsePage($HomePage);
-    return 1;
-  }
-  my $id = join('_', $q->keywords); # script?p+q -> p_q
+sub GetCurrentRequest { # Adapted from DoBrowseRequest
+  return ($HomePage, '', $q->cgi_error)
+    if (!$q->param && !($UsePathInfo && $q->path_info));
+
+  my ($id, $dirty_id, $error);
+
+  $id = join('_', $q->keywords); # script?p+q -> p_q
   $id = $q->path_info if $UsePathInfo and not $id; # script/p/q -> p/q
-  my $action = lc(GetParam('action', '')); # script?action=foo;id=bar
-  SetParam('raw', 1) if ($id =~ s|raw/||); # script/raw/id
-  $action = 'download' if ($id =~ s|download/|| and not $action); # script/download/id
-  $id =~ s|.*/||; # script/ignore/id (ie. we can embed information in the path!)
+
+  # Save id so far, useful to get info embedded in the path
+  $dirty_id = $id; # Uncleaned id, useful to get info embedded in the path
+
+  $id =~ s|.*/||; # script/ignore/id (ie. we can embed info in the path!)
   $id = GetParam('id', $id); # id=x overrides
+
+  return ($id, $dirty_id, $error);
+}
+
+sub GetCurrentPageName {
+  return $OpenPageName if (defined($OpenPageName) && length($OpenPageName));
+  return (GetCurrentRequest())[0];
+}
+
+sub DoBrowseRequest {
+  my ($id, $dirty_id, $error) = GetCurrentRequest();
+  # We can use the error message as the HTTP error code
+  ReportError(Ts('CGI Internal error: %s',$error), $error) if $error;
+
+  SetParam('raw', 1) if ($dirty_id =~ s|raw/||); # script/raw/id
+
+  my $action = lc(GetParam('action', '')); # script?action=foo;id=bar
+  $action = 'download' if ($dirty_id =~ s|download/|| and not $action); # script/download/id
+
   my $search = GetParam('search', '');
   if ($Action{$action}) {
     &{$Action{$action}}($id);
