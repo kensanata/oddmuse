@@ -1,0 +1,6 @@
+<Location /cgi-bin>
+SetHandler  perl-script
+PerlHandler Apache::Registry
+PerlSendHeader On
+Options +ExecCGI
+</Location>

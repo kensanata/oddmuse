@@ -1,0 +1,5 @@
+I've seen a bug that shows as follows:  <strong class="changes">think
+it belongs anymore.</stron><strong class="changes">g>.
+
+Is DiffHtmlMarkWords called twice for a chunk?
+
