@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.422 2004/06/19 00:02:58 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.423 2004/06/19 01:42:13 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -583,7 +583,7 @@ sub ApplyRules {
     } elsif (m/\G\s*\n(s*\n)+/cg) { # paragraphs: at least two newlines
       Clean(CloseHtmlEnvironments() . '<p>'); # there is another one like this further up
     } elsif (m/\G\s+/cg) { Clean(' ');
-    } elsif (m/\G(\w+)/cg or m/\G(\S)/cg) { Clean($1); # a word at a time, consider word<b>!
+    } elsif (m/\G(\w+([ \t]+[a-z\x80-\xff]\w*)*)/cg or m/\G(\S)/cg) { Clean($1);
     } else { last;
     }
     $bol = m/\G(?<=\n)/cgs;
