@@ -16,15 +16,13 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.8 2004/12/25 16:23:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.9 2004/12/25 16:49:25 as Exp $</p>';
 
 use vars qw($SearchFreeTextNewForm);
 
 $SearchFreeTextNewForm = 1;
 
 $Action{buildindex} = \&SearchFreeTextIndex;
-
-$Action{search} = \&SearchFreeText;
 
 sub SearchFreeTextIndex {
   RequestLockOrError(); # fatal
@@ -47,10 +45,22 @@ sub SearchFreeTextIndex {
   PrintFooter();
 }
 
-sub SearchFreeText {
-  local *SearchTitleAndBody = *SearchFreeTextTitleAndBody;
-  return DoSearch(GetParam('term', ''));
+# override old DoSearch
+
+*SearchFreeTextOldDoSearch = *DoSearch;
+*DoSearch = *SearchFreeTextNewDoSearch;
+
+sub SearchFreeTextNewDoSearch {
+  if (GetParam('old', 0)) {
+    SearchFreeTextOldDoSearch(@_);
+  } else {
+    local *SearchTitleAndBody = *SearchFreeTextTitleAndBody;
+    local *HighlightRegex = *SearchFreeTextNewHighlightRegex;
+    SearchFreeTextOldDoSearch(@_);
+  }
 }
+
+# new search
 
 sub SearchFreeTextTitleAndBody {
   my ($term, $func, @args) = @_;
@@ -70,22 +80,10 @@ sub SearchFreeTextTitleAndBody {
   return @found;
 }
 
-*SearchFreeTextOldHighlightRegex = *HighlightRegex;
-*HighlightRegex = *SearchFreeTextNewHighlightRegex;
+# highlighting changes if new search is used
 
 sub SearchFreeTextNewHighlightRegex {
   return join('|', split(/ /, shift));
-}
-
-*SearchFreeTextOldForm = *GetSearchForm;
-*GetSearchForm = *SearchFreeTextNewForm;
-
-sub SearchFreeTextNewForm {
-  return SearchFreeTextOldForm() unless $SearchFreeTextNewForm;
-  my $form = T('Search:') . ' '
-    . GetHiddenValue('action', 'search')
-    . $q->textfield(-name=>'term', -size=>20, -accesskey=>T('f')) . ' ';
-  return GetFormStart(0, 1, 'search') . $q->p($form . $q->submit('dosearch', T('Go!'))) . $q->endform;
 }
 
 # *SearchFreeTextOldSavePage = *SavePage;
@@ -100,14 +98,3 @@ sub SearchFreeTextNewForm {
 #   $db->index_document($OpenPageName, $Page{text}) # dies with "Document already indexed"!
 #   $db->close_index();
 # }
-
-*SearchFreeTextOldGetSearchLink = *GetSearchLink;
-*GetSearchLink = *SearchFreeTextNewGetSearchLink;
-
-sub SearchFreeTextNewGetSearchLink {
-  my ($text, $class, $name, $title) = @_;
-  my $id = UrlEncode($text);
-  $name = UrlEncode($name);
-  $text =~ s/_/ /g;
-  return ScriptLink('action=search;term=' . $id, $text, $class, $name, $title);
-}
