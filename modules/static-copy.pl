@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.8 2004/10/13 18:30:42 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.9 2004/10/13 19:01:35 as Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -70,7 +70,8 @@ sub StaticScriptLink {
   my ($action, $text, $class, $name, $title, $accesskey) = @_;
   my %params;
   if ($action !~ /=/) {
-    $params{-href} = StaticFileName($action);
+    # the page might not exist, eg. if called via GetAuthorLink
+    $params{-href} = StaticFileName($action) if $IndexHash{$action};
   }
   $params{'-class'} = $class  if $class;
   $params{'-name'} = UrlEncode($name)  if $name;
@@ -177,7 +178,18 @@ EOT
   # content
   print F $q->div({-class=>'content'}, PageHtml($id)); # this reopens the page currently open
   # footer
+  my $links = '';
+  if ($OpenPageName !~ /^$CommentsPrefix/) { # fails if $CommentsPrefix is empty!
+    $links .= ScriptLink(UrlEncode($CommentsPrefix . $OpenPageName),
+			 T('Comments on this page'));
+  }
+  if ($CommentsPrefix and $id =~ /^$CommentsPrefix(.*)/) {
+    $links .= ' | ' if $links;
+    $links .= Ts('Back to %s', GetPageLink($1, $1));
+  }
+  $links = $q->br() . $links if $links;
   print F $q->div({-class=>'footer'}, $q->hr(), $toolbar,
+		  $q->span({-class=>'edit'}, $links),
 		  $q->span({-class=>'time'}, GetFooterTimestamp($id)));
   # finish
   print F '</body></html>';
