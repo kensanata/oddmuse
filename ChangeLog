@@ -1,3 +1,22 @@
+2004-11-11  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ReportError): Add a third parameter to request logging
+	of the error.
+	(SavePage): Request logging when trying to save bogus pages.
+	(PrintWikiToHTML): Only save the page if the cache actually
+	changes.
+	(GetFormStart, DoHistory, GetCommentForm, GetFilterForm)
+	(GetSearchForm, DoEdit, DoPassword): Add form class.
+
+2004-11-01  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl: Use q{...} instead of here-documents in some places.
+	(%CookieParameters): Add homepage parameter.
+	(GetCommentForm): Add homepage input field.
+	(AddComment): Take homepage parameter into account.
+	(ApplyRules): Add rule for merge conflicts.
+	(DoPost): Don't put pre tags around merge conflicts.
+
 2004-10-31  Alex Schroeder  <alex@gnu.org>
 
 	* modules/toc.pl (TocRule): Call TocWikiHeading instead of
