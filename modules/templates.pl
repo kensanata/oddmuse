@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: templates.pl,v 1.1 2004/08/22 16:10:22 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: templates.pl,v 1.2 2004/08/22 16:35:34 as Exp $</p>';
 
 # Any page with a name ending in "Template" is a valid template.
 # When creating a page, the $EditNote is prefixed with a list of
@@ -24,6 +24,10 @@ $ModulesDescription .= '<p>$Id: templates.pl,v 1.1 2004/08/22 16:10:22 as Exp $<
 # The text area is filled with the template.
 
 $Action{'edit'} = \&TemplateDoEdit;
+
+use vars qw($TemplatePattern);
+
+$TemplatePattern = q{Template$}; # strange quoting because of cperl-mode ;)
 
 sub TemplateDoEdit {
   my ($id, $newText, $preview) = @_;
@@ -42,8 +46,11 @@ sub TemplateDoEdit {
 sub TemplateList {
   my $id = shift;
   my @list = map {
-    ScriptLink("action=edit;id=$id;template=$_", $_);
-  } grep(/Template$/, AllPagesList());
+    my $page = $_;
+    my $name = $_;
+    $name =~ s/_/ /g;
+    ScriptLink("action=edit;id=$id;template=$page", $name);
+  } grep(/$TemplatePattern/, AllPagesList());
   return $q->div({-class=>'templates'},
 		 $q->p(T('Alternatively, use one of the following templates:')),
 		 $q->ul($q->li(\@list))) if @list;
