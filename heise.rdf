@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<rdf:RDF
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns="http://my.netscape.com/rdf/simple/0.9/">
+
+<channel>
+ <title>Telepolis News</title>
+ <link>http://www.telepolis.de/</link>
+ <description>Aktuelle Telepolis News Artikel</description>
+</channel>
+	
+<item>
+ <title>Berufsverbot für Mediendesigner?</title>
+ <link>http://www.heise.de/tp/deutsch/inhalt/te/15886/1.html</link>
+</item>	
+<item>
+ <title>Experimentell bestätigt:</title>
+ <link>http://www.heise.de/tp/deutsch/inhalt/lis/15882/1.html</link>
+</item>	
+<item>
+ <title>Clash im Internet?</title>
+ <link>http://www.heise.de/tp/deutsch/special/med/15787/1.html</link>
+</item>	
+<item>
+ <title>Die Einheit der Umma gegen die jüdische Weltmacht</title>
+ <link>http://www.heise.de/tp/deutsch/special/ost/15879/1.html</link>
+</item>	
+<item>
+ <title>Im Krieg mit dem Satan</title>
+ <link>http://www.heise.de/tp/deutsch/inhalt/co/15880/1.html</link>
+</item>	
+<item>
+ <title>Der dritte Mann</title>
+ <link>http://www.heise.de/tp/deutsch/inhalt/co/15876/1.html</link>
+</item>	
+<item>
+ <title>Leicht neben dem Ziel</title>
+ <link>http://www.heise.de/tp/deutsch/inhalt/mein/15867/1.html</link>
+</item>	
+<item>
+ <title>Wale sollten Nordkorea meiden</title>
+ <link>http://www.heise.de/tp/deutsch/inhalt/co/15878/1.html</link>
+</item>	
+<item>
+ <title>Afghanistan-Krieg und Irak-Besatzung haben al-Qaida gestärkt</title>
+ <link>http://www.heise.de/tp/deutsch/inhalt/co/15874/1.html</link>
+</item>	
+<item>
+ <title>Der mit dem Dinosaurier tanzt</title>
+ <link>http://www.heise.de/tp/deutsch/inhalt/lis/15863/1.html</link>
+</item>	
+<item>
+ <title>Terroranschlag überschattet das Genfer Abkommen</title>
+ <link>http://www.heise.de/tp/deutsch/special/ost/15873/1.html</link>
+</item>	
+<item>
+ <title>"Barwatch" in Kanada</title>
+ <link>http://www.heise.de/tp/deutsch/inhalt/te/15871/1.html</link>
+</item>	
+<item>
+ <title>Die Türken kommen!</title>
+ <link>http://www.heise.de/tp/deutsch/special/irak/15870/1.html</link>
+</item>	
+<item>
+ <title>Neue Regelungen zur Telekommunikationsüberwachung</title>
+ <link>http://www.heise.de/tp/deutsch/inhalt/te/15869/1.html</link>
+</item>	
+<item>
+ <title>Ein Lied vom Tod</title>
+ <link>http://www.heise.de/tp/deutsch/inhalt/kino/15862/1.html</link>
+</item>
+</rdf:RDF>
