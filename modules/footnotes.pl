@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: footnotes.pl,v 1.4 2004/06/17 01:13:18 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: footnotes.pl,v 1.5 2004/08/16 01:03:22 as Exp $</p>';
 
 my $MyFootnoteCounter = 0;
 my @MyFootnotes = ();
@@ -44,13 +44,15 @@ sub FootnoteRule {
 sub NewFootnotePrintFooter {
   my @params = @_;
   if ($MyFootnoteCounter) {
-    print '<div class="footnotes">' . $q->hr(), $q->p(T('Footnotes:')) . '<p>';
+    print '<div class="footnotes">' . $q->hr(), $q->p(T('Footnotes:'));
     for (my $i = 1; $i <= $MyFootnoteCounter; $i++) {
-      print "<br />" if $i > 1;
-      print $q->a({-name=>$i, -href=>'#f'.$i}, $i . '.' ) . ' ';
+      # don't use <ol> because we want to link from the number back to
+      # the location
+      print '<p>', $q->a({-name=>$i, -href=>'#f'.$i}, $i . '.' ), ' ';
       ApplyRules(shift(@MyFootnotes), 1);
+      print '</p>';
     }
-    print '</p></div>';
+    print '</div>';
   }
   OldFootnotePrintFooter(@params);
 }
