@@ -87,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.101 2003/06/15 19:53:25 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.102 2003/06/15 19:57:41 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -682,7 +682,7 @@ sub PrintJournal {
   my ($num, $regexp) = @_;
   if (!$CollectingJournal) {
     $CollectingJournal = 1;
-    $regexp = '\d\d\d\d-\d\d-\d\d' unless $regexp;
+    $regexp = '^\d\d\d\d-\d\d-\d\d' unless $regexp;
     $num = 10 unless $num;
     my @pages = (grep(/$regexp/, AllPagesList()));
     if (defined &JournalSort) {
