@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: headers.pl,v 1.6 2004/11/27 21:14:14 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: headers.pl,v 1.7 2004/11/27 21:16:52 as Exp $</p>';
 
 push(@MyRules, \&HeadersRule);
 
@@ -35,6 +35,7 @@ push(@MyRules, \&HeadersRule);
 sub HeadersRule {
   my $oldpos = pos;
   if ($bol && (m/\G((.+?)[ \t]*\n(---+|===+)[ \t]*\n)/gc)) {
+    $PortraitSupportColorDiv = 0;
     if (substr($3,0,1) eq '=') {
       return CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '') . "<h2>$2</h2>";
     } else {
