@@ -2,6 +2,9 @@
 
 	* wiki.pl (%Action): New option.
 	(DoBrowseRequest): Use it.  Major change in how actions are handled!
+	(BrowseResolvedPage): Special treatment for non-existing pages: 'new' status.
+	(BrowsePage, GetHeader): Pass 'new' status on.
+	(GetHttpHeader): Return 404 status code if 'new'.
 
 2004-02-22  Alex Schroeder  <alex@gnu.org>
 
