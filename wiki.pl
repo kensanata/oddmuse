@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.56 2003/05/17 10:07:09 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.57 2003/05/17 14:40:07 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -1763,7 +1763,14 @@ sub Cookie {
   my $name = &GetParam('username','');
   my $pwd = &GetParam('pwd','');
   if ($name ne $OldCookie{username} or $pwd ne $OldCookie{pwd}) {
-    return "$CookieName=username&$name&pwd&$pwd;expires=Fri, 08-Sep-2010 19:48:23 GMT";
+    $name = 'username&' . $name if $name;
+    $pwd = 'pwd&' . $pwd if $pwd;
+    my $cookie = $name;
+    $cookie .= '&' if $name and $pwd;
+    $cookie .= $pwd;
+    $cookie = "$CookieName=$cookie;expires=Fri, 08-Sep-2010 19:48:23 GMT";
+    $Message .= $q->p(T('Cookie: ') . $cookie);
+    return $cookie;
   }
   return '';
 }
