@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.5 2004/10/07 00:22:38 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.6 2004/10/07 01:05:45 as Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -98,8 +98,10 @@ sub StaticGetDownloadLink {
 sub StaticFileName {
   my $id = shift;
   return $StaticFiles{$id} if $StaticFiles{$id}; # cache filenames
-  # don't clober current open page
-  my %hash = ParseData(ReadFileOrDie(GetPageFile($id)));
+  # Don't clober current open page so don't use OpenPage.  UrlDecode
+  # the $id to open the file because when called from
+  # StaticScriptLink, for example, the $action is already encoded.
+  my %hash = ParseData(ReadFileOrDie(GetPageFile(StaticUrlDecode($id))));
   my $ext = '.html';
   if ($hash{text} =~ /#FILE ([^ \n]+)\n(.*)/s) {
     $ext = $StaticMimeTypes{$1};
@@ -107,6 +109,12 @@ sub StaticFileName {
   }
   $StaticFiles{$id} = $id . $ext;
   return $StaticFiles{$id};
+}
+
+sub StaticUrlDecode {
+  my $str = shift;
+  $str =~ s/%([0-9a-f][0-9a-f])/chr(hex($1))/ge;
+  return $str;
 }
 
 sub StaticWriteFile {
