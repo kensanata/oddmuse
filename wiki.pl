@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.30 2003/04/15 00:03:17 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.31 2003/04/15 22:39:16 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -288,7 +288,7 @@ sub InitLinkPatterns {
   $UrlProtocols = 'http|https|ftp|afs|news|nntp|mid|cid|mailto|wais|'
                   . 'prospero|telnet|gopher';
   $UrlProtocols .= '|file'  if $NetworkFile;
-  $UrlPattern = "((?:(?:$UrlProtocols):[^\\]\\s\"<>$FS]+)$QDelim)";
+  $UrlPattern = "((?:$UrlProtocols):(?://[-a-zA-Z0-9_.]+:[0-9]*)?[-a-zA-Z0-9_=!?#$@~`%&*+\\/:;.,]+[-a-zA-Z0-9_=#$@~`%&*+\\/])$QDelim";
   $ImageExtensions = '(gif|jpg|png|bmp|jpeg)';
   $RFCPattern = "RFC\\s?(\\d+)";
   $ISBNPattern = 'ISBN:?([0-9- xX]{10,})';
@@ -428,12 +428,11 @@ sub ApplyRules {
 	&DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
       }
     } elsif ($BracketText && m/\G\[$UrlPattern\s+([^\]]+?)\]/cg) { # [URL text] makes [text] link to URL
-      ($fragment, $rest) = &GetUrl($1, $2, 1, 0); # no rest
+      $fragment = &GetUrl($1, $2, 1, 0);
     } elsif (m/\G\[$UrlPattern\]/cog) { # [URL] makes footnotes [1]
-      ($fragment, $rest) = &GetUrl($1, '', 1, 0); # no rest
+      $fragment = &GetUrl($1, '', 1, 0);
     } elsif (m/\G$UrlPattern/cg) { # plain URLs after all $UrlPattern, such that [$UrlPattern text] has priority
-      ($fragment, $rest) = &GetUrl($1, '', 0, 1);
-      pos = (pos) - length($rest);
+      $fragment = &GetUrl($1, '', 0, 1);
     } elsif ($WikiLinks && $BracketWiki && $locallinks && m/\G(\[$LinkPattern\s+([^\]]+?)\])/cg) { # [LocalPage text]
       $oldmatch = $1;
       print &GetPageOrEditLink($2, $3, 1);
@@ -657,9 +656,10 @@ sub RSS {
       $str .= $q->li($line);
     }
     $str = $q->div({-class=>'rss'},$q->ul($str));
-    if ($HttpCharset eq '' or $HttpCharset eq 'UTF-8') {
+    my $charset = uc($HttpCharset); # charsets are case insensitive
+    if ($charset eq '' or $charset eq 'UTF-8') {
       return $str;
-    } elsif ($HttpCharset eq 'ISO-8859-1') {
+    } elsif ($charset eq 'ISO-8859-1') {
       require Unicode::String;
       my $u = Unicode::String->new($str);
       return $u->latin1;
@@ -668,25 +668,24 @@ sub RSS {
       require Unicode::String;
       require Unicode::Map8;
       my $u = Unicode::String->new($str);
-      my $m = Unicode::Map8->new($HttpCharset);
+      my $m = Unicode::Map8->new($charset);
       return $m->to8($u->ucs2);
     }
   }
 }
 
 sub GetInterLink {
-  my ($str, $text, $bracket) = @_;
-  my ($id, $punct) = &SplitUrlPunct($str);
+  my ($id, $text, $bracket) = @_;
   my ($site, $page) = split(/:/, $id, 2);
   $page =~ s/&amp;/&/g;  # Unquote common URL HTML
   my $url;
   $url = &GetSiteUrl($site) if $page;
   if ($text && $bracket && !$url) {
-    return "[$id $text]$punct";
+    return "[$id $text]";
   } elsif ($bracket && !$url) {
-    return "[$id]$punct";
+    return "[$id]";
   } elsif (!$url) {
-    return $str;
+    return $id;
   } elsif ($bracket && !$text) {
     $text = ++$FootnoteNumber;
   } elsif (!$text) {
@@ -696,7 +695,7 @@ sub GetInterLink {
     $text = "[$text]";
   }
   $url .= $page;
-  return $q->a({-href=>$url}, $text) . $punct;
+  return $q->a({-href=>$url}, $text);
 }
 
 sub GetSiteUrl {
@@ -713,12 +712,11 @@ sub GetSiteUrl {
 }
 
 sub GetUrl {
-  my ($str, $text, $bracket, $images) = @_;
-  my ($url, $punct) = &SplitUrlPunct($str);
+  my ($url, $text, $bracket, $images) = @_;
   if ($NetworkFile && $url =~ m|^file:///|
       or !$NetworkFile && $url =~ m|^file:|) {
     # Only do remote file:// links. No file:///c|/windows.
-    return ($url, $punct);
+    return $url;
   } elsif ($bracket && !$text) {
     $text = ++$FootnoteNumber;
   } elsif (!$text) {
@@ -726,11 +724,11 @@ sub GetUrl {
   }
   $url = &UnquoteHtml($url); # links should be unquoted again
   if ($bracket) {
-    return ($q->a({-href=>$url}, "[$text]"), $punct);
+    return $q->a({-href=>$url}, "[$text]");
   } elsif ($images && $url =~ /^(http:|https:|ftp:).+\.$ImageExtensions$/) {
-    return ($q->img({-src=>$url, -alt=>$url}), $punct);
+    return $q->img({-src=>$url, -alt=>$url});
   } else {
-    return ($q->a({-href=>$url}, $text), $punct);
+    return $q->a({-href=>$url}, $text);
   }
 }
 
@@ -855,36 +853,6 @@ sub ISBNLink {
   return $html;
 }
 
-sub SplitUrlPunct {
-  my ($url) = @_;
-  my ($punct, $done);
-  if ($url =~ s/\"\"$//) {
-    return ($url, '');   # Delete double-quote delimiters here
-  }
-  my $htmlre = join('|',(@HtmlTags));
-  $punct = '';
-  while (!$done) { # at least once
-    if ($url =~ /([^a-zA-Z0-9\/\xc0-\xff]+)$/) {
-      $punct = $1 . $punct;
-      $url =~ s/([^a-zA-Z0-9\/\xc0-\xff]+)$//;
-    } # this possibly eats the last semicolon of a tag, which counts as punctuation, too
-    if ($url =~ /(&lt;\/?($htmlre)&gt)$/ && substr($punct,0,1) eq ';') {
-      $punct = $1 . $punct;
-      $url =~ s/(&lt;\/?($htmlre)&gt)$//;
-    } else {
-      $done = 1;
-    }
-  }
-  return ($url, $punct);
-}
-
-sub StripUrlPunct {
-  my ($url) = @_;
-  my ($junk);
-  ($url, $junk) = &SplitUrlPunct($url);
-  return $url;
-}
-
 sub WikiHeading {
   my ($depth, $text) = @_;
   $depth = length($depth);
@@ -934,6 +902,7 @@ sub InitRequest {
   $CGI::POST_MAX = $MaxPost;
   $CGI::DISABLE_UPLOADS = 1;  # no uploads
   $q = new CGI;
+  $Debug = '';
   $Now = time;                     # Reset in case script is persistent
   my @ScriptPath = split('/', $q->script_name());
   $ScriptName = pop(@ScriptPath);  # Name used in links
@@ -963,16 +932,18 @@ sub InitCookie {
     # do nothing
   } elsif (!$FreeLinks && !($name =~ /^$LinkPattern$/)) {
     $Debug .= Ts('Invalid UserName %s: not saved.', $name);
-    $name = '';
   } elsif ($FreeLinks && (!($name =~ /^$FreeLinkPattern$/))) {
     $Debug .= Ts('Invalid UserName %s: not saved.', $name);
-    $name = '';
   } elsif (length($name) > 50) {  # Too long
     $Debug .= T('UserName must be 50 characters or less: not saved');
-    $name = '';
   } else {
     $NewCookie{'username'} = $name;
   }
+  # Move password into the cookie.
+  my $password = &GetParam('password', '');
+  $q->delete('password');
+  delete $NewCookie{'password'};
+  $NewCookie{'password'} = $password if $password;
 }
 
 # == Choosing action
@@ -1725,6 +1696,7 @@ sub GetHeader {
     $title =~ s/_/ /g;   # Display as spaces
   }
   $result .= &GetHtmlHeader("$SiteName: $title", $id);
+  $result .= $q->div({-class=>'message'}, $Debug) if $Debug;
   return $result  if ($embed);
   if ($oldId ne '') {
     $result .= $q->h3('(' . Ts('redirected from %s',
@@ -1796,6 +1768,7 @@ div.diff { padding-left:5%; padding-right:5%; }
 div.old { background-color:#FFFFAF; color:#000; }
 div.new { background-color:#CFFFCF; color:#000; }
 div.refer { padding-left:5%; padding-right:5%; font-size:smaller; }
+div.message { background-color:#FEE; color:#000; }
 table.history { border-style:none; }
 td.history { border-style:none; }
 table.user { border-style:solid; border-width:thin; }
@@ -3012,7 +2985,6 @@ sub DoPassword {
     print GetHiddenValue('action', 'password'), "\n";
     print $q->p(T('Password:') . ' '
 		. $q->password_field(-name      => 'pwd',
-				     -value     => '*',
 				     -size      => 20,
 				     -maxlength => 50) . "\n");
     print $q->submit(-name  => 'Save',
@@ -3235,7 +3207,7 @@ sub DoLinks {
 
 sub PrintLinkList {
   my ($pagelines, $page, $names, $editlink);
-  my ($link, $rest, @links, %pgExists);
+  my ($link, @links, %pgExists);
   %pgExists = ();
   foreach $page (&AllPagesList()) {
     $pgExists{$page} = 1;
@@ -3247,7 +3219,7 @@ sub PrintLinkList {
     foreach $page (split(' ', $pagelines)) {
       if ($page =~ /\:/) {  # URL or InterWiki form
         if ($page =~ /$UrlPattern/) {
-          ($link, $rest) = &GetUrl($page, '', 0, 0); # ignore rest
+          $link = &GetUrl($page, '', 0, 0);
         } else {
           $link = &GetInterLink($page);
         }
@@ -3338,13 +3310,13 @@ sub GetPageLinks {
   $text =~ s/<code>(.|\n)*?\<\/code>/ /ig;
   if ($interlink) {
     $text =~ s/''+/ /g;  # Quotes can adjacent to inter-site links
-    $text =~ s/$InterLinkPattern/push(@links, &StripUrlPunct($1)), ' '/ge;
+    $text =~ s/$InterLinkPattern/push(@links, $1), ' '/ge;
   } else {
     $text =~ s/$InterLinkPattern/ /g;
   }
   if ($urllink) {
     $text =~ s/''+/ /g;  # Quotes can adjacent to URLs
-    $text =~ s/$UrlPattern/push(@links, &StripUrlPunct($1)), ' '/ge;
+    $text =~ s/$UrlPattern/push(@links, $1), ' '/ge;
   } else {
     $text =~ s/$UrlPattern/ /g;
   }
@@ -3355,7 +3327,7 @@ sub GetPageLinks {
       $text =~ s/\[\[$fl\]\]/push(@links, &FreeToNormal($1)), ' '/ge;
     }
     if ($WikiLinks) {
-      $text =~ s/$LinkPattern/push(@links, &StripUrlPunct($1)), ' '/ge;
+      $text =~ s/$LinkPattern/push(@links, $1), ' '/ge;
     }
   }
   return @links;
