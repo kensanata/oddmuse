@@ -32,9 +32,9 @@ XML::RSS is not available on this system.
 LWP::UserAgent is not available on this system.
 Модулът LWP::UserAgent не е инсталиран на тази система.
 diff
-Разлики
+разлики
 history
-Стари версии
+стари версии
 Click to create this page
 Кликни тук, за да създадеш тази страница
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
@@ -62,11 +62,11 @@ Invalid Page %s (must not end with .lck)
 Page name may not contain space characters: %s
 Името на страницата не може да съдържа интервали: %s
 Preview:
-Преглед:
+Предварителен преглед:
 Preview only, not yet saved
 Предварителен преглед, още не е записано
 Please go on to %s.
-Моля продължете на %s.
+Моля продължи на %s.
 Could not open %s log file
 Не може да се отвори лог-файла: %s
 Error was
@@ -86,9 +86,9 @@ Updates in the last %s day
 for %s only
 само за %s
 List latest change per page only
-Показвай само последната промяна за всяка страница
+Показвай само последната промяна на страниците
 List only major changes
-Покажи само съществени промени
+Покажи само съществените промени
 Include minor changes
 Покажи и малките промени
 List all changes
@@ -96,7 +96,7 @@ List all changes
 %s days
 %s дни
 List later changes
-Покажи по-късни промени
+Покажи по-ранни промени
 Username:
 Потребителско име:
 Host:
@@ -136,7 +136,7 @@ Rollback to %s
 redirected from %s
 Препратка от %s
 Click to search for references to this page
-Търси кой линква към тази страница
+Търси споменавания на това заглавие
 Cookie: 
 Курабийка (Cookie): 
 new comment
@@ -168,7 +168,7 @@ Edited
 by %s
 от %s
 (diff)
-(Разлики)
+(разлики)
 Warning
 Предупреждение
 Database is stored in temporary directory %s
@@ -194,7 +194,7 @@ revision %s
 current revision
 актуална версия
 Difference (from prior %s revision)
-Разлики (с предишна версия %s)
+Разлики (с предишната %s ревизия)
 major
 съществена
 minor
@@ -250,7 +250,7 @@ Editing Denied
 Editing not allowed: user, ip, or network is blocked.
 Редакцията не е разрешена: блокиран потребител, IP адрес или мрежа.
 Contact the wiki administrator for more information.
-За повече информация се свържете с уики-администратора.
+За повече информация се свържи с уики-администратора.
 The rule %s matched for you.
 Правило %s съответства.
 See %s for more information.
@@ -272,17 +272,17 @@ Summary:
 This change is a minor edit.
 Това е малка промяна.
 Replace this file with text.
-Замени този файл с текст.
+Замени този файл с текст
 Replace this text with a file.
-Замени този текст с файл.
+Замени този текст с файл
 File to upload: 
 Файл за качване: 
 Files of type %s are not allowed.
-%s файлове не са разрешени.
+Файлове тип %s не са разрешени.
 Password
 Парола
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
-Паролата се записва в курабийка (cookie), ако те са разрешени. Курабийките могат да се загубят, ако се свързвате от друг компютър или акаунт, или с друг софтуер.
+Паролата се записва в курабийка (cookie), ако те са разрешени. Курабийките могат да се загубят, ако се свързваш от друг компютър или акаунт, или с друг софтуер.
 You are currently an administrator on this site.
 Ти си администратор.
 You are currently an editor on this site.
@@ -290,15 +290,15 @@ You are currently an editor on this site.
 You are a normal user on this site.
 Ти си нормален потребител.
 Your password does not match any of the  administrator or editor passwords.
-Вашата парола не съвпада нито с администраторска, нито с редакторска парола.
+Твоята парола не съвпада нито с администраторската, нито с редакторската парола.
 Password:
 Парола:
 This site does not use admin or editor passwords.
 Тази страница не използва администраторски или редакторски пароли.
 This operation is restricted to site editors only...
-Тази операция може да се извърши само от един редактор
+Тази операция може да се извършва само от редактори.
 This operation is restricted to administrators only...
-Тази операция може да се извърши само от един администратор
+Тази операция може да се извършва само от администратори.
 Index of all pages
 Индекс на всички страници
 all pages
@@ -356,9 +356,9 @@ Browser reports no file type.
 This page was changed by somebody else %s.
 Страницата бе променена от друг (%s).
 The changes conflict.  Please check the page again.
-Промените се застъпват. Моля проверте страницата още веднъж.
+Промените се застъпват. Моля провери страницата още веднъж.
 Please check whether you overwrote those changes.
-Моля проверете, дали няма конфликт между промените.
+Моля провери, дали няма конфликт между промените.
 Anonymous
 Анонимен
 Could not get a lock to merge!
@@ -380,11 +380,11 @@ Maintenance not done.
 (Maintenance can only be done once every 12 hours.)
 (Поддръжка се прави веднъж на 12 часа.)
 Remove the "maintain" file or wait.
-Изтрийте файла "maintain" или изчакайте.
+Изтрий файла "maintain" или изчакай.
 Main lock obtained.
 Защита: придобиване на изключителни права.
 Expiring keep files and deleting pages marked for deletion
-Триене на стари версии и страници маркирани за триене
+Триене на стари версии и страници маркирани за триене.
 deleted
 Файлът бе изтрит
 Moving part of the %s log file.
