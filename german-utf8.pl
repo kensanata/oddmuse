@@ -1,7 +1,7 @@
 # UTF-8 encoded German translation file for use with Oddmuse
 #
-# Copyright (c)  2003  Karl Loncarek <karl@loncarek.de>
-# Copyright (c)  2003  Alex Schröder <alex@oddmuse.org>
+# Copyright (c) 2003  Karl Loncarek <karl@loncarek.de>
+# Copyright (c) 2003  Alex Schröder <alex@oddmuse.org>
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,

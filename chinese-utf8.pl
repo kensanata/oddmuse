@@ -1,4 +1,4 @@
-# UTF-8 encoded Chinese translation file for use with Oddmuse
+# UTF-8 encoded Chinese language file for use with Oddmuse
 #
 # Copyright (c) 2003  wctang <wctang@csie.nctu.edu.tw>.
 #
@@ -6,17 +6,17 @@
 # document under the terms of the GNU Free Documentation License,
 # Version 1.2 or any later version published by the Free Software
 # Foundation; with no Invariant Sections, no Front-Cover Texts, and no
-# Back-Cover Texts.  A copy of the license could be found here:
-# http://www.gnu.org/licenses/fdl.txt
+# Back-Cover Texts.  A copy of the license could be found at:
+# http://www.gnu.org/licenses/fdl.txt.
 #
 # Installation:
 # =============
 # This file should be saved into the same folder where the config file
 # resides.  Load it from the config file:
 #
-# do 'chinese-utf8.pl';
+# do 'chinese-utf8.pl;
 #
-# This translation was last checked for an unknown version of Oddmuse.
+# This translation was last checked for an unknown Oddmuse version.
 #
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
@@ -41,6 +41,16 @@ Invalid action parameter %s
 無效的動作參數 %s
 Invalid URL.
 無效的 URL。
+Page name is too long: %s
+頁面 %s 的名稱太長
+Invalid Page %s
+無效的頁面 %s
+Invalid Page %s (must not end with .db)
+無效的頁面 %s（不允許 ".db" 結尾）
+Invalid Page %s (must not end with .lck)
+無效的頁面 %s（不允許 ".lck" 結尾）
+Page name may not contain space characters: %s
+這個頁面名稱可能沒有包含空白字元：%s
 Revision %s not available
 %s 的版本不存在
 showing current revision instead
@@ -73,26 +83,40 @@ No updates since %s
 自 %s 沒有修改
 Page generated %s
 頁面產生：%s
+Related changes
+
 (minor)
 （次要的）
 (diff)
 （差異）
 history
 歷史記錄
+rollback
+
+Cluster:
+
+from %s
+從 %s
 History of %s
 %s 的歷史記錄
 Compare
 比較
- . . . . 
-……
 Revision %s
 版本記錄 %s
-Edit
-編輯
+ . . . . 
+……
 by
 由
-from %s
-從 %s
+Rolling back changes
+
+Missing target for rollback.
+
+Target for rollback is too far back.
+
+Rollback to %s
+
+%s rolled back
+
 [Home]
 首頁
 redirected from %s
@@ -117,12 +141,16 @@ View other revisions
 觀看其他的版本
 View current revision
 觀看目前的版本
+View all changes
+
 View original
 觀看原本的版本
 Last edited
 最後修改
 Edited
 已編輯
+by %s
+
 Warning
 警告
 Database is stored in temporary directory %s
@@ -141,22 +169,12 @@ Validate CSS
 驗證本頁的 CSS
 Please go on to %s.
 請前往 %s。
-major diff
-主要的修改
-minor diff
-次要的修改
-author diff
-作者修改
 major
 主要的
 minor
 次要的
-author
-作者
 (The revisions are identical or unavailable.)
 （這個版本是完全相同的或是不存在的。）
-no other diffs
-沒有其他的修改了
 No diff available.
 沒有其他的修改了。
 current revision
@@ -181,20 +199,12 @@ to
 到
 Bad page version (or corrupt page).
 錯誤頁面版本（或是損壞的頁面）。
-cant write %s
-無法寫入 %s
-Page name is too long: %s
-頁面 %s 的名稱太長
-Page name may not contain space characters: %s
-這個頁面名稱可能沒有包含空白字元：%s
-Invalid Page %s
-無效的頁面 %s
-Invalid Page %s (must not end with .db)
-無效的頁面 %s（不允許 ".db" 結尾）
-Invalid Page %s (must not end with .lck)
-無效的頁面 %s（不允許 ".lck" 結尾）
-can not make %s
-無法產生 %s
+Cannot save an nameless page.
+
+cannot write %s
+
+Could not get %s lock
+
 Unlocking
 正在開鎖
 This operation may take several seconds...
@@ -205,56 +215,60 @@ No unlock required.
 不需要解除鎖定。
 Can not open %s
 無法開啟 %s
+%s hours ago
+%s 小時前
+1 hour ago
+1 小時前
+%s minutes ago
+%s 分鐘前
+1 minute ago
+1 分鐘前
+%s seconds ago
+%s 秒前
+1 second ago
+1 秒前
+just now
+就是現在
 Editing Denied
 禁止修改。
 Editing not allowed: user, ip, or network is blocked.
 不允許編輯：使用者，ip，或是網路已被攔阻了。
 Contact the wiki administrator for more information.
 通知 wiki 管理者以獲得更多的資訊。
+The rule %s matched for you.
+
+See %s for more information.
+
 Editing not allowed: %s is read-only.
 不允許編輯：%s 是唯讀的。
-Editing %s
-正在編輯 %s
+Only administrators can upload files.
+
 Editing revision %s of
 編輯 %s 版本：
+Editing %s
+正在編輯 %s
 Editing old revision %s.
 編輯先前的 %s 版本。
 Saving this page will replace the latest revision with this text.
 儲存此頁將會取代這份文件的最新版本。
-Edit Conflict!
-編輯衝突！
-(This is a new conflict)
-（這是新的衝突）
-Someone saved this page after you started editing.
-有人在你開始編輯後儲存了這個頁面。
-The top textbox contains the saved text.
-上面的編輯區有這份已儲存的文件。
-Only the text in the top textbox will be saved.
-只有上面的編輯區內的文件會被儲存。
-Scroll down to see your text with conflict markers.
-向下捲動可以看到你所編輯的文件和衝突標記。
-Scroll down to see your edited text.
-向下捲動可以看到你所編輯的文件。
-Last save time:
-最後儲存的時間：
-Current time is:
-目前的時間：
 Summary:
 摘要
 This change is a minor edit.
 這次的修改是次要的修改。
 Preview
 預覽
-This is the text with conflict markers:
-這是含有衝突標記的文件：
-This is the text you submitted:
-這是你提交的文件：
+Replace this file with text.
+
+Replace this text with a file.
+
 Preview:
 預覽：
-NOTE: This preview shows the revision of the other author.
-注意：預覽中出現另一個作者的版本。
 Preview only, not yet saved
 只是預覽，還沒有儲存
+File to upload: 
+
+Files of type %s are not allowed.
+
 Password
 密碼
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
@@ -281,6 +295,10 @@ Replaced: %s
 取代：%s
 Search for: %s
 搜尋：%s
+and
+
+or
+
 %s pages found:
 發現　%s 個頁面：
 last updated
@@ -303,14 +321,28 @@ Sample_Undefined_Page
 [[%s]] 無法定義。
 Only an administrator can create %s
 只有管理者能建立 %s
-Cannot find timestamp on the first line.
-無法發現第一行的 timestamp。
-Could not get main lock
-無法取得主要的鎖定。
+Transfer Error: %s
+
+Browser reports no file info.
+
+Browser reports no file type.
+
 Anonymous
 匿名者
+This page was changed by somebody else %s.
+
+The changes conflict.  Please check the page again.
+
+Please check whether you overwrote those changes.
+
 Could not get a lock to merge!
 無法取得合併的鎖定！
+you
+
+ancestor
+
+other
+
 %s log error:
 %s 記錄錯誤：
 Ping
@@ -329,6 +361,8 @@ Main lock obtained.
 已獲得主要的鎖定。
 Expiring keep files and deleting pages marked for deletion
 清除已過期和標記刪除的檔案
+and refreshing HTML cache
+
 deleted
 刪除
 Moving part of the %s log file.
@@ -367,24 +401,10 @@ Too many connections by %s
 太多來自 %s 的連線
 Recent Visitors
 最近的參觀者
-%s hours ago
-%s 小時前
-1 hour ago
-1 小時前
-%s minutes ago
-%s 分鐘前
-1 minute ago
-1 分鐘前
-%s seconds ago
-%s 秒前
-1 second ago
-1 秒前
-just now
-就是現在
 Referrers
 引述
 All Referrers
 所有的引述
-anchor first defined here
+anchor first defined here: %s
 
 END_OF_TRANSLATION
