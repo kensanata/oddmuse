@@ -120,6 +120,45 @@ sub run_tests {
 my $localhost = 'confusibombus';
 $ENV{'REMOTE_ADDR'} = $localhost;
 
+# Test search
+
+@Test = split('\n',<<'EOT');
+<h1>Search for: fooz</h1>
+<h2>1 pages found:</h2>
+<span class="result"><a href="http://localhost/wiki.pl/SearchAndReplace">SearchAndReplace</a></span>
+This is fooz and this is barz.
+EOT
+
+update_page('SearchAndReplace', 'This is fooz and this is barz.', '', 1);
+test_page(get_page('search=fooz'), @Test);
+
+# Make sure only admins can replace
+
+@Test = split('\n',<<'EOT');
+This operation is restricted to administrators only...
+EOT
+
+test_page(get_page('search=foo replace=bar'), @Test);
+
+# Simple replace
+
+@Test = split('\n',<<'EOT');
+<h1>Replaced: fooz -&gt; fuuz</h1>
+<h2>1 pages found:</h2>
+This is fuuz and this is barz.
+EOT
+
+test_page(get_page('search=fooz replace=fuuz pwd=foo'), @Test);
+
+# Replace with backreferences
+
+@Test = split('\n',<<'EOT');
+This is xfuu and this is xbar.
+EOT
+
+get_page('search=([a-z]%2b)z replace=x%241 pwd=foo');
+get_page('SearchAndReplace', @Test);
+
 ## Check headers especially the quoting of non-ASCII characters.
 
 @Test = split('\n',<<'EOT');
