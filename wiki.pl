@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.345 2004/03/08 20:01:32 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.346 2004/03/08 23:20:45 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -873,7 +873,7 @@ sub GetInterLink {
   } elsif (!$url) {
     return $id;
   } elsif ($bracket && !$text) {
-    $text = ++$FootnoteNumber;
+    $text = $q->span({-class=>'number'}, ++$FootnoteNumber);
   } elsif (!$text) {
     $text = $q->span({-class=>'site'}, $site) . ':' . $q->span({-class=>'page'}, $page);
   }
@@ -899,17 +899,17 @@ sub GetUrl {
     # Only do remote file:// links. No file:///c|/windows.
     return $url;
   } elsif ($bracket && !$text) {
-    $text = ++$FootnoteNumber;
+    $text = $q->span({-class=>'number'}, ++$FootnoteNumber);
   } elsif (!$text) {
     $text = $url;
   }
   $url = UnquoteHtml($url); # links should be unquoted again
   if ($bracket) {
-    return $q->a({-href=>$url}, "[$text]");
+    return $q->a({-href=>$url, -class=>'url number'}, "[$text]");
   } elsif ($images && $url =~ /^(http:|https:|ftp:).+\.$ImageExtensions$/) {
-    return $q->img({-src=>$url, -alt=>$url});
+    return $q->img({-src=>$url, -alt=>$url, -class=>'url'});
   } else {
-    return $q->a({-href=>$url}, $text);
+    return $q->a({-href=>$url, -class=>'url'}, $text);
   }
 }
 
@@ -918,8 +918,8 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
   $id = FreeToNormal($id);
   my ($class, $exists, $title) = ResolveId($id);
   if (!$text && $exists && $bracket) {
-    $text = '[' . ++$FootnoteNumber . ']';
-    $class .= " footnote";
+    $text = '[' . $q->span({-class=>'number'}, ++$FootnoteNumber) . ']';
+    $class .= " number";
   }
   if ($exists) { # don't show brackets if the page is local/anchor/near.
     $text = $id unless $text;
@@ -928,8 +928,7 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
   } else {
     # $free and $bracket usually exclude each other
     # $text and not $bracket exclude each other
-    my $link = ScriptLink('action=edit;id=' . UrlEncode($id), '?', 'edit', '',
-			  T('Click to create this page'));
+    my $link = GetEditLink($id, '?');
     if ($bracket && $text) {
       return "[$id$link $text]";
     } elsif ($bracket) {
@@ -954,7 +953,7 @@ sub GetPageLink { # shortcut
   $id = FreeToNormal($id);
   $name = $id unless $name;
   $name =~ s/_/ /g;
-  return ScriptLink(UrlEncode($id), $name);
+  return ScriptLink(UrlEncode($id), $name, 'local');
 }
 
 sub GetEditLink { # shortcut
@@ -963,7 +962,7 @@ sub GetEditLink { # shortcut
   $name =~ s/_/ /g;
   my $action = 'action=edit;id=' . UrlEncode($id);
   $action .= ';upload=1' if $upload;
-  return ScriptLink($action, $name);
+  return ScriptLink($action, $name, 'edit', '', T('Click to create this page'));
 }
 
 sub ScriptLink {
@@ -1514,7 +1513,8 @@ sub GetRcHtml {
 	if ($all) {
 	  $pagelink = GetOldPageLink('browse', $pagename, $revision, $pagename, $cluster);
 	  if ($admin and RollbackPossible($timestamp)) {
-	    $rollback = '(' . ScriptLink('action=rollback;to=' . $timestamp, $tRollback) . ')';
+	    $rollback = '(' . ScriptLink('action=rollback;to=' . $timestamp,
+					 $tRollback, 'rollback') . ')';
 	  }
 	} elsif ($cluster) {
 	  $pagelink = GetOldPageLink('browse', $pagename, $revision, $pagename, $cluster);
@@ -1761,7 +1761,7 @@ sub GetPageParameters {
 sub GetOldPageLink {
   my ($action, $id, $revision, $name, $cluster) = @_;
   $name =~ s/_/ /g if $FreeLinks;
-  return ScriptLink(GetPageParameters($action, $id, $revision, $cluster), $name);
+  return ScriptLink(GetPageParameters($action, $id, $revision, $cluster), $name, 'revision');
 }
 
 sub GetSearchLink {
@@ -1779,7 +1779,7 @@ sub ScriptLinkDiff {
   my $action = 'action=browse;diff=' . $diff . ';id=' . UrlEncode($id);
   $action .= ";diffrevision=$old"  if ($old and $old ne '');
   $action .= ";revision=$new"  if ($new and $new ne '');
-  return ScriptLink($action, $text);
+  return ScriptLink($action, $text, 'diff');
 }
 
 sub GetAuthorLink {
@@ -1808,7 +1808,7 @@ sub GetHistoryLink {
   if ($FreeLinks) {
     $id =~ s/ /_/g;
   }
-  return ScriptLink('action=history;id=' . UrlEncode($id), $text);
+  return ScriptLink('action=history;id=' . UrlEncode($id), $text, 'history');
 }
 
 sub GetRCLink {
@@ -1816,7 +1816,7 @@ sub GetRCLink {
   if ($FreeLinks) {
     $id =~ s/ /_/g;
   }
-  return ScriptLink('action=rc;all=1;from=1;showedit=1;rcidonly=' . UrlEncode($id), $text);
+  return ScriptLink('action=rc;all=1;from=1;showedit=1;rcidonly=' . UrlEncode($id), $text, 'rc');
 }
 
 sub GetHeader {
@@ -3229,8 +3229,8 @@ sub PrintAllPages {
       PrintWikiToHTML($Page{text}, 1); # save cache, current revision, no main lock
     }
     if ($comments and UserCanEdit($CommentsPrefix . $id, 0) and $id !~ /^$CommentsPrefix/) {
-      print $q->p({-class=>'comment'}, ScriptLink($CommentsPrefix . UrlEncode($id),
-						  T('Comments on this page')));
+      print $q->p({-class=>'comment'},
+		  GetPageLink($CommentsPrefix . $id, T('Comments on this page')));
     }
   }
 }
