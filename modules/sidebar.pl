@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: sidebar.pl,v 1.9 2005/01/04 09:04:05 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: sidebar.pl,v 1.10 2005/01/04 10:01:14 as Exp $</p>';
 
 use vars qw($SidebarName);
 
@@ -25,10 +25,13 @@ use vars qw($SidebarName);
 
 $SidebarName = 'SideBar';
 
-push(@MyInitVariables, # do this later so that the user can customize $SidebarName
-     sub { $SidebarName = FreeToNormal($SidebarName); # spaces to underscores
-	   push(@AdminPages, $SidebarName);
-	 });
+# do this later so that the user can customize $SidebarName
+push(@MyInitVariables, \&SidebarInit);
+
+sub SidebarInit {
+  $SidebarName = FreeToNormal($SidebarName); # spaces to underscores
+  push(@AdminPages, $SidebarName);
+}
 
 *OldSideBarGetHeader = *GetHeader;
 *GetHeader = *NewSideBarGetHeader;
