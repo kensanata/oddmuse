@@ -8,6 +8,8 @@
 	(GetSearchForm, GetFilterForm): Use lang parameter as default.
 	(PrintPageList): Handle lang attribute.
 	(DoIndex): Add lang to the header.
+	(RcHeader, GetRc, SearchTitleAndBody): Rename $langFilter -> $lang;
+	(DoSearch, Replace): Replacement is language sensitive.
 
 	(%CookieParameters): Added 'lang'.
 	(RcHeader, GetFilterForm, GetRc): Changed 'rclang' to 'lang'.
