@@ -1426,6 +1426,8 @@ EOT
 
 run_tests();
 
+fixme:
+
 print '[usemod module]';
 
 system('/bin/rm -rf /tmp/oddmuse');
@@ -1485,10 +1487,22 @@ This is '''strong text containing ''emph'' text'''.
 This is <strong>strong text containing <em>emph</em> text</strong>.
 ||one||
 <table class="user"><tr><td>one</td></tr></table>
+|| one ''two'' ||
+<table class="user"><tr><td align="center">one <em>two</em></td></tr></table>
+|| one two ||
+<table class="user"><tr><td align="center">one two </td></tr></table>
 introduction\n\n||one||two||three||\n||||one two||three||
 introduction<p></p><table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table>
 ||one||two||three||\n||||one two||three||\n\nfooter
 <table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table><p>footer</p>
+||one||two||three||\n||||one two||three||\n\nfooter
+<table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table><p>footer</p>
+|| one|| two|| three||\n|||| one two|| three||\n\nfooter
+<table class="user"><tr><td align="right">one</td><td align="right">two</td><td align="right">three</td></tr><tr><td colspan="2" align="right">one two</td><td align="right">three</td></tr></table><p>footer</p>
+||one ||two ||three ||\n||||one two ||three ||\n\nfooter
+<table class="user"><tr><td align="left">one </td><td align="left">two </td><td align="left">three </td></tr><tr><td colspan="2" align="left">one two </td><td align="left">three </td></tr></table><p>footer</p>
+|| one || two || three ||\n|||| one two || three ||\n\nfooter
+<table class="user"><tr><td align="center">one </td><td align="center">two </td><td align="center">three </td></tr><tr><td colspan="2" align="center">one two </td><td align="center">three </td></tr></table><p>footer</p>
 introduction\n\n||one||two||three||\n||||one two||three||\n\nfooter
 introduction<p></p><table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table><p>footer</p>
  source
@@ -1609,8 +1623,6 @@ EOT
 
 run_tests();
 
-fixme:
-
 print '[anchors module]';
 system('/bin/rm -rf /tmp/oddmuse');
 die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
@@ -1693,7 +1705,7 @@ EOT
 
 run_tests();
 
-print '[toc]';
+print '[toc module]';
 
 system('/bin/rm -rf /tmp/oddmuse');
 die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
