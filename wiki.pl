@@ -59,7 +59,7 @@ $RefererFilter $PermanentAnchorsFile $PermanentAnchors @MyRules
 $ConfigPage $ScriptName @MyMacros $CommentsPrefix $AllNetworkFiles
 $UsePathInfo $UploadAllowed @UploadTypes $LastUpdate $PageCluster
 $RssInterwikiTranslate $UseCache $ModuleDir $HtmlHeaders
-%InvisibleCookieParameters $FreeInterLinkPattern);
+%InvisibleCookieParameters $FreeInterLinkPattern $FullUrlPattern);
 
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.387 2004/04/17 20:30:01 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.388 2004/04/17 22:16:36 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -373,12 +373,13 @@ sub InitLinkPatterns {
   # Intersites must start with uppercase letter to avoid confusion with URLs.
   $InterSitePattern = '[A-Z\x80-\xff]+[A-Za-z\x80-\xff]+';
   $InterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x80-\xff_=!?#$@~`%&*+\\/:;.,]+[-a-zA-Z0-9\x80-\xff_=#$@~`%&*+\\/])$QDelim";
-  $FreeInterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x80-\xff_=!?#$@~`%&*+\\/:;.,()' ]+[-a-zA-Z0-9\x80-\xff_=#$@~`%&*+\\/])$QDelim"; # plus space and other stuff from $FreeLinkPattern
+  $FreeInterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x80-\xff_=!?#$@~`%&*+\\/:;.,()' ]+)$QDelim"; # plus space and other characters, and no restrictions on the end of the pattern
   $UrlProtocols = 'http|https|ftp|afs|news|nntp|mid|cid|mailto|wais|prospero|telnet|gopher|irc';
   $UrlProtocols .= '|file'  if $NetworkFile;
   my $UrlChars = '[-a-zA-Z0-9/@=+$_~*.,;:?!\'"()&#%]'; # see RFC 2396
   my $EndChars = '[-a-zA-Z0-9/@=+$_~*]'; # no punctuation at the end of the url.
   $UrlPattern = "((?:$UrlProtocols):$UrlChars+$EndChars)";
+  $FullUrlPattern="((?:$UrlProtocols):$UrlChars+)"; # when used in square brackets
   $ImageExtensions = '(gif|jpg|png|bmp|jpeg)';
   $RFCPattern = "RFC\\s?(\\d+)";
   $ISBNPattern = 'ISBN:?([0-9- xX]{10,})';
@@ -533,8 +534,8 @@ sub ApplyRules {
 	print $output; # this is an interlink
 	Dirty($oldmatch);
       }
-    } elsif ($BracketText && m/\G(\[$UrlPattern\s+([^\]]+?)\])/cog
-	    or m/\G(\[$UrlPattern\])/cog or m/\G($UrlPattern)/cog) {
+    } elsif ($BracketText && m/\G(\[$FullUrlPattern\s+([^\]]+?)\])/cog
+	    or m/\G(\[$FullUrlPattern\])/cog or m/\G($UrlPattern)/cog) {
       # [URL text] makes [text] link to URL, [URL] makes footnotes [1]
       my $bracket = (substr($1, 0, 1) eq '[');
       if ($bracket and not $3) { # [URL] is dirty because the number may change
@@ -3241,25 +3242,30 @@ sub GetFullLinkList {
     my %links;
     foreach my $block (@blocks) {
       if (shift(@flags)) { # dirty block and interlinks or normal links
-	if ($inter and ($BracketText && $block =~ m/(\[$InterLinkPattern\s+([^\]]+?)\])/o
-			or $block =~ m/(\[$InterLinkPattern\])/o
-			or $block =~ m/($InterLinkPattern)/o)) {
+	if ($inter and ($BracketText && $block =~ m/^(\[$InterLinkPattern\s+([^\]]+?)\])$/o
+			or $BracketText && $block =~ m/^(\[\[$FreeInterLinkPattern\|([^\]]+?)\]\])$/o
+			or $block =~ m/^(\[$InterLinkPattern\])$/o
+			or $block =~ m/^(\[\[\[$FreeInterLinkPattern\]\]\])$/o
+			or $block =~ m/^($InterLinkPattern)$/o
+			or $block =~ m/^(\[\[$FreeInterLinkPattern\]\])$/o)) {
 	  $links{$raw ? $2 : GetInterLink($2)} = 1 if $InterSite{substr($2,0,index($2, ':'))};
 	} elsif ($link
 		 and (($WikiLinks and $block !~ m/!$LinkPattern/o
-		       and ($BracketWiki && $block =~ m/(\[$LinkPattern\s+([^\]]+?)\])/o
-			    or $block =~ m/(\[$LinkPattern\])/o
-			    or $block =~ m/($LinkPattern)/o))
+		       and ($BracketWiki && $block =~ m/^(\[$LinkPattern\s+([^\]]+?)\])$/o
+			    or $block =~ m/^(\[$LinkPattern\])$/o
+			    or $block =~ m/^($LinkPattern)$/o))
 		      or ($FreeLinks
-			  and ($BracketWiki && $block =~ m/(\[\[$FreeLinkPattern\|([^\]]+)\]\])/o
-			       or $block =~ m/(\[\[$FreeLinkPattern\]\])/cg)))) {
+			  and ($BracketWiki && $block =~ m/^(\[\[$FreeLinkPattern\|([^\]]+)\]\])$/o
+			       or $block =~ m/^(\[\[\[$FreeLinkPattern\]\]\])$/o
+			       or $block =~ m/^(\[\[$FreeLinkPattern\]\])$/o)))) {
 	  $links{$raw ? $2 : GetPageOrEditLink($2, $2)} = 1;
 	  $back{$2} = 1;
-	}
-      } elsif ($url) { # clean block and url
-	while ($block =~ m/$UrlPattern/go) {
+	} elsif ($url and $block =~ m/^\[$FullUrlPattern\]$/og) {
 	  $links{$raw ? $1 : GetUrl($1)} = 1;
 	}
+      } elsif ($url) { # clean block and url
+	while ($block =~ m/$UrlPattern/og) { $links{$raw ? $1 : GetUrl($1)} = 1; }
+	while ($block =~ m/\[$FullUrlPattern\s+[^\]]+?\]/og) { $links{$raw ? $1 : GetUrl($1)} = 1; }
       }
     }
     @{$result{$name}} = sort keys %links if %links;
