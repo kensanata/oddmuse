@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.38 2003/04/18 00:09:57 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.39 2003/04/23 09:38:11 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -901,6 +901,7 @@ sub InitRequest {
   $CGI::POST_MAX = $MaxPost;
   $CGI::DISABLE_UPLOADS = 1;  # no uploads
   $q = new CGI;
+  $q->charset($HttpCharset) if $HttpCharset;
   $Debug = '';
   $Now = time;                     # Reset in case script is persistent
   my @ScriptPath = split('/', $q->script_name());
