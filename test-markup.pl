@@ -37,6 +37,7 @@ sub update_page {
   my ($id, $text, $summary, $minor, $admin, @rest) = @_;
   print '*';
   my $pwd = $admin ? 'foo' : 'wrong';
+  $id = UrlEncode($id);
   $text = UrlEncode($text);
   $summary = UrlEncode($summary);
   $minor = $minor ? 'on' : 'off';
