@@ -4,6 +4,7 @@
 	$header = ... if $foo; If not $foo, $header will not be
 	initialized and in a mod_perl environment this caused Oddmuse to
 	keep showing the old header.
+	(CloseHtmlEnvironment): Similar suspicious code.
 
 2004-01-27  Alex Schroeder  <alex@gnu.org>
 
