@@ -3,6 +3,12 @@
 	* wiki.pl (GetInterLink): Add more spans to interlinks.
 	(RSS): Use $RssInterwikiTranslate on the URL if no interwiki was specified.
 	(ApplyRules): RSS rule, fix whitespace splitting that breaks new RSS functionality.
+	(ApplyRules, GetPageOrEditLink): Take brackets correctly into account for free links.
+	(GetPageLink): Don't test for $FreeLinks before applying FreeToNormal.
+	(GetEditLink, BrowseResolvedPage, GetPageParameters): Ditto.
+	(DoPost, GetPermanentAnchor): Ditto.
+	(GetHttpHeader): Don't send last-modified header when $UseCache is less than 2.
+	(PrintFooter): Link to password action when a page is read-only.
 
 2004-03-06  Alex Schroeder  <alex@gnu.org>
 
