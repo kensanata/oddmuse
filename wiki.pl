@@ -350,7 +350,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.492 2004/11/30 00:34:26 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.493 2004/12/05 03:22:14 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -476,11 +476,11 @@ sub ApplyRules {
 	  print $q->pre({class=>"include $uri"},QuoteHtml(GetPageContent(FreeToNormal($uri))));
 	} else { # with a starting tag
 	  print $q->start_div({class=>"include $uri"});
-          ApplyRules(QuoteHtml(GetPageContent(FreeToNormal($uri))),
-		     $locallinks, $withanchors, undef, 'p');
+          ApplyRules(QuoteHtml(GetPageContent(FreeToNormal($uri))), $locallinks, $withanchors, undef, 'p');
 	  print $q->end_div();
 	}
       }
+      print AddHtmlEnvironment('p');
       pos = $oldpos;		# restore \G after call to ApplyRules
     } elsif ($bol && m/\G(\&lt;journal(\s+(\d*))?(\s+"(.*)")?(\s+(reverse))?\&gt;[ \t]*\n?)/cgi) {
       # <journal 10 "regexp"> includes 10 pages matching regexp
@@ -488,6 +488,7 @@ sub ApplyRules {
       Dirty($1);
       my $oldpos = pos;
       PrintJournal($3, $5, $7);
+      print AddHtmlEnvironment('p');
       pos = $oldpos;		# restore \G after call to ApplyRules
     } elsif ($bol && m/\G(\&lt;rss(\s+(\d*))?\s+(.*?)\&gt;[ \t]*\n?)/cgis) {
       # <rss "uri..."> stores the parsed RSS of the given URI
@@ -497,6 +498,7 @@ sub ApplyRules {
       eval { local $SIG{__DIE__}; binmode(STDOUT, ":utf8"); } if $HttpCharset eq 'UTF-8';
       print RSS($3 ? $3 : 15, split(/\s+/, $4));
       eval { local $SIG{__DIE__}; binmode(STDOUT, ":raw"); };
+      print AddHtmlEnvironment('p');
       pos = $oldpos;
       # restore \G after call to RSS which uses the LWP module (for older copies of the module?)
     } elsif ($locallinks
@@ -572,8 +574,7 @@ sub ApplyRules {
 	pos = $oldpos;
 	Clean('&lt;&lt;&lt;&lt;&lt;&lt;&lt; ');
       } else {
-	Clean(CloseHtmlEnvironments() . $q->pre({-class=>'conflict'}, $str)
-	      . AddHtmlEnvironment('p'));
+	Clean(CloseHtmlEnvironments() . $q->pre({-class=>'conflict'}, $str) . AddHtmlEnvironment('p'));
       }
     } elsif (%Smilies && m/\G$smileyregex/cog && (Clean(SmileyReplace()))) {
     } elsif (Clean(RunMyRules())) {
@@ -637,7 +638,7 @@ sub AddHtmlEnvironment { # add a new one so that it will be closed!
   return ''; # always return something
 }
 
-sub CloseHtmlEnvironments { # close all
+sub CloseHtmlEnvironments { # close all -- remember to use AddHtmlEnvironment('p') if required!
   my $text = ''; # always return something
   $text .=  '</' . shift(@HtmlStack) . '>'  while (@HtmlStack > 0);
   return $text;
