@@ -9,6 +9,7 @@
 	(OpenDefaultText): If $id is the homepage, and the revision is 0,
 	attempt to display the README file instead.
 	(BrowsePage): Only use cache when revision not set.
+	(PrintWikiToHTML): Only save cachen when revision not set.
 
 2003-03-21  Alex Schroeder  <alex@gnu.org>
 
