@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.384 2004/04/17 12:31:36 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.385 2004/04/17 13:24:52 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -721,7 +721,7 @@ sub UrlEncode {
 
 sub GetRaw {
   my $uri = shift;
-  require LWP::UserAgent;
+  return unless eval { require LWP::UserAgent; };
   my $ua = LWP::UserAgent->new;
   # consider setting $ua->max_size(50000);
   # consider setting $ua->timeout(20);
@@ -763,21 +763,20 @@ sub RSS {
   my %lines;
   eval { require XML::RSS;  } or return $q->div({-class=>'rss'},
 	 $q->strong(T('XML::RSS is not available on this system.')));
-  eval { require LWP::UserAgent; } or return $q->div({-class=>'rss'},
-	 $q->strong(T('LWP::UserAgent is not available on this system.')));
   my $tDiff = T('diff');
   my $tHistory = T('history');
   my $wikins = 'http://purl.org/rss/1.0/modules/wiki/';
   my $rdfns = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
+  my $str;
   foreach my $uri (@uris) {
     $uri =~ s/^"?(.*?)"?$/$1/;
     my $rss = new XML::RSS;
-    my $ua = new LWP::UserAgent;
-    my $request = HTTP::Request->new('GET', $uri);
-    my $response = $ua->request($request);
-    my $data = $response->content;
+    my $data = GetRaw($uri);
+    $str .= $q->p($q->strong(Ts('%s returned no data, or LWP::UserAgent is not available.',
+				$q->a({-href=>$uri}, $uri)))) unless $data;
     eval { local $SIG{__DIE__}; $rss->parse($data); };
-    return $q->p($q->strong("[RSS parsing failed for $uri: $@]")) if $@;
+    $str .= $q->p($q->strong(Ts('RSS parsing failed for %s',
+				$q->a({-href=>$uri}, $uri)) . ': ' . $@)) if $data and $@;
     my ($counter, $interwiki);
     if (@uris > 1) {
       RssInterwikiTranslateInit() unless $RssInterwikiTranslateInit;
@@ -821,15 +820,15 @@ sub RSS {
   }
   my @lines = sort { $b cmp $a } keys %lines;
   @lines = @lines[0..$maxitems-1] if $maxitems and $#lines > $maxitems;
-  my $str = '<ul>';
   my $date;
   foreach my $key (@lines) {
     my $line = $lines{$key};
     if ($key =~ /(\d\d\d\d(?:-\d?\d)?(?:-\d?\d)?)(?:[T ](\d?\d:\d\d))?/) {
       my ($day, $time) = ($1, $2);
       if ($day ne $date) {
+	$str .= '</ul>' if $date; # close ul except for the first time where no open ul exists
 	$date = $day;
-	$str .= '</ul>' . $q->p($q->strong($day)) . '<ul>';
+	$str .= $q->p($q->strong($day)) . '<ul>';
       }
       $line = $time . ' UTC ' . $line if $time;
     }
@@ -3049,9 +3048,9 @@ sub HighlightRegex {
 
 sub SearchNearPages {
   my $string = shift;
-  my $regex = HighlightRegex($string);
   my %found;
   foreach (@_) { $found{$_} = 1; }; # to avoid using grep on the list
+  my $regex = HighlightRegex($string);
   NearInit();
   if (%NearSearch and GetParam('near', 1) > 1 and GetParam('context',1)) {
     foreach my $site (keys %NearSearch) {
@@ -3059,11 +3058,7 @@ sub SearchNearPages {
       $url =~ s/\%s/UrlEncode($string)/ge or $url .= UrlEncode($string);
       print $q->hr(), $q->p(Ts('Fetching results from %s:', $q->a({-href=>$url}, $site)))
 	unless GetParam('raw', 0);
-      require LWP::UserAgent;
-      my $ua = new LWP::UserAgent;
-      my $request = HTTP::Request->new('GET', $url);
-      my $response = $ua->request($request);
-      my $data = $response->content;
+      my $data = GetRaw($url);
       my @entries = split(/\n\n+/, $data);
       shift @entries; # skip head
       foreach my $entry (@entries) {
@@ -3595,13 +3590,11 @@ sub DoMaintain {
   NearInit() unless $NearSiteInit;
   if (%NearSite) {
     CreateDir($NearDir);
-    require LWP::UserAgent;
     foreach my $site (keys %NearSite) {
       print $q->p(Ts('Getting page index file for %s.', $site));
-      my $ua = LWP::UserAgent->new;
-      my $request = HTTP::Request->new('GET', $NearSite{$site});
-      my $response = $ua->request($request);
-      my $data = $response->content;
+      my $data = GetRaw($NearSite{$site});
+      print $q->p($q->strong(Ts('%s returned no data, or LWP::UserAgent is not available.',
+				$q->a({-href=>$NearSite{$site}}, $NearSite{$site}))));
       WriteStringToFile("$NearDir/$site", $data);
     }
   }
