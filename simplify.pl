@@ -42,9 +42,10 @@ if (not param('url')) {
   exit;
 }
 
-print header(-type=>'text/plain; charset=UTF-8');
-
 my $encoding = param('Latin-1') ? 'ISO-8859-1' : 'UTF-8';
+
+print header(-type=>'text/plain; charset=' . $encoding);
+
 my $rss = new XML::RSS(output=>$output, encoding=>$encoding);
 my $ua = new LWP::UserAgent;
 my $request = HTTP::Request->new('GET', param('url'));
