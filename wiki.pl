@@ -60,7 +60,7 @@ use vars qw(%Page %Section %Text %InterSite %KeptRevisions
   %IndexHash %Translate %OldCookie %NewCookie $InterSiteInit
   $FootnoteNumber $MainPage $OpenPageName @KeptList @IndexList
   $IndexInit $Debug $q $Now $ScriptName %RecentVisitors @HtmlStack
-  %Referers);
+  %Referers $Monolithic);
 
 # == Configuration ==
 
@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.50 2003/04/27 14:51:48 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.51 2003/04/27 21:22:52 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -95,6 +95,7 @@ $NotFoundPg  = '';  # Page for not-found links ('' for blank pg)
 $EmbedWiki   = 0;   # 1 = no headers/footers
 $FooterNote  = '';  # HTML for bottom of every page
 $EditNote    = '';  # HTML notice above buttons on edit page
+$TopLinkBar  = 1;   # 1 = add a goto bar at the top of the page
 $UserGotoBar = '';  # HTML added to end of goto bar
 $ValidatorLink = 0; # 1 = Link to the W3C HTML validator service
 
@@ -797,10 +798,14 @@ sub GetEditLink { # shortcut
 
 sub ScriptLink {
   my ($action, $text) = @_;
-  $action = &InheritParameter('embed', $EmbedWiki, $action);
-  $action = &InheritParameter('toplinkbar', $TopLinkBar, $action);
-  $action = &QuoteHtml($action);
-  return "<a href=\"$ScriptName?$action\">$text</a>";
+  if ($action =~ /=/ or !$Monolithic) {
+    $action = &InheritParameter('embed', $EmbedWiki, $action);
+    $action = &InheritParameter('toplinkbar', $TopLinkBar, $action);
+    $action = &QuoteHtml($action);
+    return $q->a({-href=>$ScriptName . '?' . $action}, $text);
+  } else { # Monolithic and !~ /=/ -- ie. just a page link
+    return $q->a({-href=>'#' . $action}, $text);
+  }
 }
 
 sub InheritParameter {
@@ -994,6 +999,8 @@ sub DoBrowseRequest {
     &DoIndex(&GetParam('raw', 0));
   } elsif ($action eq 'links') {
     &DoLinks();
+  } elsif ($action eq 'all') {
+    &DoPrintAllPages();
   } elsif ($action eq 'maintain') {
     &DoMaintain();
   } elsif ($action eq 'convert') {
@@ -1879,7 +1886,6 @@ sub GetFormStart {
 sub GetGotoBar {
   my ($id) = @_;
   my ($main, $bartext);
-
   $bartext  = &GetPageLink($HomePage);
   if ($id =~ m|/|) {
     $main = $id;
@@ -2549,8 +2555,6 @@ sub ForceReleaseLock {
   my $forced;
   foreach my $name (glob $pattern) {
     # First try to obtain lock (in case of normal edit lock)
-    # 5 tries, 3 second wait, do not die on error
-    # return 1 if any of the globs was forced
     $forced = 1 if !&RequestLockDir($name, 5, 3, 0);
     &ReleaseLockDir($name);  # Release the lock, even if we didn't get it.
   }
@@ -2558,7 +2562,6 @@ sub ForceReleaseLock {
 }
 
 sub RequestDiffLock {
-  # 4 tries, 2 second wait, do not die on error
   return &RequestLockDir('diff', 4, 2, 0);
 }
 
@@ -2567,7 +2570,6 @@ sub ReleaseDiffLock {
 }
 
 sub RequestVisitorsLock {
-  # 4 tries, 2 second wait, do not die on error
   return &RequestLockDir('visitors', 4, 2, 0);
 }
 
@@ -2576,7 +2578,6 @@ sub ReleaseVisitorsLock {
 }
 
 sub RequestMergeLock {
-  # 4 tries, 2 second wait, do not die on error
   return &RequestLockDir('merge', 4, 2, 0);
 }
 
@@ -2585,19 +2586,14 @@ sub ReleaseMergeLock {
 }
 
 sub RequestRefererLock {
-  # 4 tries, 2 second wait, do not die on error
-  my $id = shift;
-  return &RequestLockDir('refer_' . $id, 4, 2, 0);
+  return &RequestLockDir('refer_' . shift, 4, 2, 0);
 }
 
 sub ReleaseRefererLock {
-  my $id = shift;
-  &ReleaseLockDir('refer_' . $id);
+  &ReleaseLockDir('refer_' . shift);
 }
 
-# Index lock is not very important--just return error if not available
 sub RequestIndexLock {
-  # 1 try, 2 second wait, do not die on error
   return &RequestLockDir('index', 1, 2, 0);
 }
 
@@ -2605,28 +2601,14 @@ sub ReleaseIndexLock {
   &ReleaseLockDir('index');
 }
 
-# Note: all diff and recent-list operations should be done within locks.
 sub DoUnlock {
   my $message = '';
   print &GetHeader('', T('Unlocking'), '');
   print $q->p(T('This operation may take several seconds...')) . "\n";
-  if (&ForceReleaseLock('main')) {
-    $message .= $q->p(Ts('Forced unlock of %s lock.', 'main')) . "\n";
-  }
-  if (&ForceReleaseLock('diff')) {
-    $message .= $q->p(Ts('Forced unlock of %s lock.', 'diff')) . "\n";
-  }
-  if (&ForceReleaseLock('index')) {
-    $message .= $q->p(Ts('Forced unlock of %s lock.', 'index')) . "\n";
-  }
-  if (&ForceReleaseLock('merge')) {
-    $message .= $q->p(Ts('Forced unlock of %s lock.', 'merge')) . "\n";
-  }
-  if (&ForceReleaseLock('visitors')) {
-    $message .= $q->p(Ts('Forced unlock of %s lock.', 'visitors')) . "\n";
-  }
-  if (&ForceReleaseLock('refer_*')) {
-    $message .= $q->p(Ts('Forced unlock of %s lock.', 'referer')) . "\n";
+  for my $lock qw(main diff index merge visitors refer_*) {
+    if (&ForceReleaseLock($lock)) {
+      $message .= $q->p(Ts('Forced unlock of %s lock.', $lock)) . "\n";
+    }
   }
   if ($message) {
     print $message;
@@ -3246,33 +3228,29 @@ sub PrintLinkList {
 }
 
 sub GetFullLinkList {
-  my ($name, $unique, $sort, $exists, $empty, $link, $search);
-  my ($pagelink, $interlink, $urllink);
-  my (@found, @links, @newlinks, @pglist, %pgExists, %seen);
-  $unique = &GetParam('unique', 1);
-  $sort = &GetParam('sort', 1);
-  $pagelink = &GetParam('page', 1);
-  $interlink = &GetParam('inter', 0);
-  $urllink = &GetParam('url', 0);
-  $exists = &GetParam('exists', 2);
-  $empty = &GetParam('empty', 0);
-  $search = &GetParam('search', '');
+  my $unique = &GetParam('unique', 1);
+  my $sort = &GetParam('sort', 1);
+  my $pagelink = &GetParam('page', 1);
+  my $interlink = &GetParam('inter', 0);
+  my $urllink = &GetParam('url', 0);
+  my $exists = &GetParam('exists', 2);
+  my $empty = &GetParam('empty', 0);
+  my $search = &GetParam('search', '');
   if (($interlink == 2) || ($urllink == 2)) {
     $pagelink = 0;
   }
-  %pgExists = ();
-  @pglist = &AllPagesList();
-  foreach $name (@pglist) {
+  my (%pgExists, %seen, @found);
+  my @pglist = &AllPagesList();
+  foreach my $name (@pglist) {
     $pgExists{$name} = 1;
   }
-  %seen = ();
-  foreach $name (@pglist) {
-    @newlinks = ();
+  foreach my $name (@pglist) {
+    my @newlinks = ();
     if ($unique != 2) {
       %seen = ();
     }
-    @links = &GetPageLinks($name, $pagelink, $interlink, $urllink);
-    foreach $link (@links) {
+    my @links = &GetPageLinks($name, $pagelink, $interlink, $urllink);
+    foreach my $link (@links) {
       $seen{$link}++;
       if (($unique > 0) && ($seen{$link} != 1)) {
         next;
@@ -3334,6 +3312,30 @@ sub GetPageLinks {
     }
   }
   return @links;
+}
+
+# == Monolithic output ==
+
+sub DoPrintAllPages {
+  $Monolithic = 1; # changes how ScriptLink works
+  print &GetHeader('', T('Complete Content'), '')
+    . $q->p(Ts('The main page is %s.', $q->a({-href=>'#' . $HomePage}, $HomePage)));
+  &PrintAllPages(&AllPagesList());
+  print $q->hr();
+  print &GetMinimumFooter();
+}
+
+sub PrintAllPages {
+  for my $id (@_) {
+    &OpenPage($id);
+    &OpenDefaultText($id);
+    print $q->hr . $q->h1($q->a({-name=>$id},$id));
+    if (&GetPageCache('blocks') && &GetParam('cache',1)) {
+      &PrintCache(&GetPageCache('blocks'));
+    } else {
+      &PrintWikiToHTML($Text{'text'});
+    }
+  }
 }
 
 # == Posting new pages ==
