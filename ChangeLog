@@ -4,6 +4,8 @@
 	(BrowsePage): Small refactoring.
 	(GetRc): Small refactoring.
 	(SaveKeepSection): Small refactoring.
+	(SearchTitleAndBody): Small refactoring.
+	(PrintSearchResults): Small refactoring.
 	(ScriptLinkDiff): Allow new parameter for the old revision to use.
 	(GetRcHtml): Removed rcchangehist parameter which had no effect.
 	If parameter all=1 is given, the diff link uses the new
@@ -13,6 +15,8 @@
 	(GetCacheDiff): Removed author diffs.
 	(ExpireKeepFile): Removed author diffs.
 	(UpdateDiffs): Simplified substantially.  Removed author diffs.
+	(GetSearchLink): Do not url-escape the plus sign used to replace
+	spaces.
 
 2003-09-03  Alex Schroeder  <alex@gnu.org>
 
