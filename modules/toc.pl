@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.5 2004/03/12 11:05:21 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.6 2004/03/12 11:17:33 as Exp $</p>';
 
 *WikiHeading = *NewTocWikiHeading;
 
@@ -42,12 +42,9 @@ sub NewTocGetHeader {
 sub TocHeadings {
   $page = GetPageContent(shift);
   # ignore all the stuff that gets processed anyway
-  foreach ('nowiki', 'pre', 'code') {
-    $page =~ s/<$_>(.*\n)*?+<\/$_>//gi;
+  foreach my $tag ('nowiki', 'pre', 'code') {
+    $page =~ s|<$tag>(.*\n)*?</$tag>||gi;
   }
-  $page =~ s/<nowiki>(.*\n)*<\/nowiki>//gi;
-  $page =~ s/<pre>(.*\n)*<\/pre>//gi;
-  $page =~ s/<code>(.*\n)*<\/code>//gi;
   my $Headings = '';
   my $HeadingsLevel = 1;
   # try to determine what will end up as a header
