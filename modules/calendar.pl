@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.6 2004/03/28 18:11:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.7 2004/03/28 18:14:42 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage);
 
@@ -42,7 +42,7 @@ sub Cal {
     my $day = $1;
     my $date = sprintf("%d-%02d-%02d", $year+1900, $mon+1, $day);
     my $class;
-    $class = 'today' if $day == $mday;
+    $class = ' today' if $day == $mday;
     my @matches = grep(/^$date/, @pages);
     my $link;
     if (@matches == 0) {
