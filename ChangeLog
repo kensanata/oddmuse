@@ -1,3 +1,9 @@
+2004-03-09  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetInterLink, GetUrl, GetPageOrEditLink, GetEditLink)
+	(GetPageLink, GetRcHtml, GetOldPageLink, ScriptLinkDiff)
+	(GetHistoryLink, GetRCLink, PrintAllPages): Use more CSS classes.
+	
 2004-03-08  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl ($RssInterwikiTranslate): New.
