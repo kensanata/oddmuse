@@ -24,7 +24,7 @@
 # If you are running a multilingual site, then you should explicitly
 # load this file from your language-specific config file.
 
-$ModulesDescription .= '<p>$Id: national-days-de.pl,v 1.4 2004/05/15 12:19:40 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: national-days-de.pl,v 1.5 2004/05/31 00:08:15 as Exp $</p>';
 
 %SpecialDays = (
 		'2-16' => 'Litauen: Unabhängigkeitstag',
@@ -53,7 +53,7 @@ $ModulesDescription .= '<p>$Id: national-days-de.pl,v 1.4 2004/05/15 12:19:40 as
 		'5-25' => 'Argentinien: Nationalfeiertag, Jordanien: Unabhängigkeitstag',
 		'5-26' => 'Georgien: Unabhängigkeitstag',
 		'5-28' => 'Aserbeidschan: Nationalfeiertag',
-		'6-1' => 'Samoa: Unabhängigkeitstag': # Samoa: zwei Tage!
+		'6-1' => 'Samoa: Unabhängigkeitstag', # Samoa: zwei Tage!
 		'6-2' => 'Samoa: Unabhängigkeitstag, Italien: Nationalfeiertag',
 		'6-4' => 'Tonga: Nationalfeiertag',
 		'6-5' => 'Dänemark: Nationalfeiertag',
