@@ -270,7 +270,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.149 2003/09/20 11:55:11 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.150 2003/09/21 00:31:56 as Exp $');
 }
 
 sub InitCookie {
@@ -589,7 +589,11 @@ sub OpenHtmlEnvironment { # close the previous one and open a new one instead
   if (@HtmlStack and $found < $depth) { # nested sublist coming up, keep list item
     unshift(@stack, pop(@HtmlStack));
   }
-  while (@HtmlStack) { # close remaining elements
+  if (not $found) { # if starting a new list
+    @HtmlStack = @stack;
+    @stack = ();
+  }
+  while (@HtmlStack) { # close remaining elements (or all elements if a new list)
     $text .=  '</' . shift(@HtmlStack) . '>';
   }
   @HtmlStack = @stack;
@@ -832,7 +836,7 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
   } else {
     # $free and $bracket usually exclude each other
     # $text and not $bracket exclude each other
-    my $link = ScriptLink('action=edit&amp;id=' . UrlEncode($id), '?');
+    my $link = ScriptLink('action=edit;id=' . UrlEncode($id), '?');
     if ($bracket && $text) {
       return "[$id$link $text]";
     } elsif ($bracket) {
@@ -868,7 +872,7 @@ sub GetEditLink { # shortcut
     $id = FreeToNormal($id);
     $name =~ s/_/ /g;
   }
-  return ScriptLink('action=edit&amp;id=' . UrlEncode($id), $name);
+  return ScriptLink('action=edit;id=' . UrlEncode($id), $name);
 }
 
 sub ScriptLink {
@@ -1230,13 +1234,13 @@ sub DoRc {
     foreach my $i (@RcDays) {
       $html .= ' | '  if $showbar;
       $showbar = 1;
-      $html .= ScriptLink("action=rc&amp;days=$i", Ts('%s day' . (($i != 1)?'s':''), $i));
+      $html .= ScriptLink("action=rc;days=$i", Ts('%s day' . (($i != 1)?'s':''), $i));
       # Note: must have two translations (for 'day' and 'days')
       # Following comment line is for translation helper script
       # Ts('%s days', '');
     }
     print $q->p($html . $q->br()
-		. ScriptLink("action=rc&amp;from=$lastTs", T('List new changes starting from'))
+		. ScriptLink("action=rc;from=$lastTs", T('List new changes starting from'))
 		. ' ' . TimeToText($lastTs));
   }
   # Later consider a binary search?
@@ -1472,8 +1476,8 @@ sub GetRcRss {
       $rss->add_item(
         title         => QuoteHtml($name),
 	link          => $QuotedFullUrl . '?action=browse'
-		                        . '&amp;id=' . $pagename
-		                        . '&amp;revision=' . $revision,
+		                        . ';id=' . $pagename
+		                        . ';revision=' . $revision,
 	description   => $description,
 	dc => {
           date        => $date,
@@ -1642,7 +1646,7 @@ sub GetHistoryLink {
   if ($FreeLinks) {
     $id =~ s/ /_/g;
   }
-  return ScriptLink('action=history&amp;id=' . UrlEncode($id), $text);
+  return ScriptLink('action=history;id=' . UrlEncode($id), $text);
 }
 
 sub GetRCLink {
@@ -1650,7 +1654,7 @@ sub GetRCLink {
   if ($FreeLinks) {
     $id =~ s/ /_/g;
   }
-  return ScriptLink('action=rc&amp;all=1&amp;from=1&amp;showedit=1&amp;rcidonly=' . UrlEncode($id), $text);
+  return ScriptLink('action=rc;all=1;from=1;showedit=1;rcidonly=' . UrlEncode($id), $text);
 }
 
 sub GetHeader {
@@ -3875,7 +3879,7 @@ sub GetPermanentAnchor {
   ReleaseLockDir('permanentanchors');
   $PagePermanentAnchors{$id} = 1; # add to the list of anchors in page
   $id = UrlEncode($id);
-  return ScriptLink("action=anchor&amp;id=$id#$id",$text,'definition',$id);
+  return ScriptLink("action=anchor;id=$id#$id",$text,'definition',$id);
 }
 
 sub GetPermanentAnchorLink {
