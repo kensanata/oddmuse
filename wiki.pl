@@ -74,8 +74,8 @@ $PermanentAnchorsInit $ModulesDescription %Action
 
 # == Configuration ==
 
-# Can be set outside the script: $DataDir, $UseConfig, $ConfigFile,
-# $ConfigPage, $AdminPass, $EditPass, $ScriptName, $FullUrl, $RunCGI.
+# Can be set outside the script: $DataDir, $UseConfig, $ConfigFile, $ModuleDir, $ConfigPage,
+# $AdminPass, $EditPass, $ScriptName, $FullUrl, $RunCGI.
 
 $UseConfig   = 1 unless defined $UseConfig; # 1 = load config file in the data directory
 $DataDir     = $ENV{WikiDataDir} if $UseConfig and not $DataDir; # Main wiki directory
@@ -213,7 +213,7 @@ $IndexFile   = "$DataDir/pageidx";  # List of all pages
 $VisitorFile = "$DataDir/visitors.log"; # List of recent visitors
 $PermanentAnchorsFile = "$DataDir/permanentanchors"; # Store permanent anchors
 $ConfigFile  = "$DataDir/config" unless $ConfigFile; # Config file with Perl code to execute
-$ModuleDir   = "$DataDir/modules";  # Directory for extension files (ending in .pm or .pl)
+$ModuleDir   = "$DataDir/modules" unless $ModuleDir;  # For extensions (ending in .pm or .pl)
 $NearDir     = "$DataDir/near";	    # For page indexes and .png files of other sites
 $SisterSiteLogoUrl = 'file:///tmp/oddmuse/%s.png'; # URL format string for logos
 
@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.428 2004/06/25 23:50:18 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.429 2004/06/25 23:58:28 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
