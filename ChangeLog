@@ -1,14 +1,28 @@
+2004-12-25  Alex Schroeder  <alex@gnu.org>
+
+	* test.pl: Calendar tests.
+
+	* modules/search-freetext.pl (SearchFreeTextNewDoSearch): Added
+	$SearchFreeTextNewForm back.
+
 2004-12-25  Alex Schroeder  <alex@confusibombus.emacswiki.org>
 
-	* modules/search-freetext.pl (SearchFreeTextNewGetSearchLink):
-	Replacement for GetSearchLink.
-	(SearchFreeTextIndex): Bugfix.
+	* modules/search-freetext.pl (SearchFreeTextIndex): Bugfix.
+	(SearchFreeTextNewDoSearch): Call old DoSearch, but maybe locally
+	bind SearchTitleAndBody and HighlightRegex.
+	(SearchFreeTextTitleAndBody): SearchTitleAndBody replacement.
+	(SearchFreeTextNewHighlightRegex): HighlightRegex replacement.
+
+	Eventually, a lot of stuff was deleted:
+	($Action{search}): No longer define the search action.
+	(SearchFreeTextNewForm): Deleted.
+	(SearchFreeTextNewGetSearchLink): Replacement for GetSearchLink.
+	(SearchFreeTextNewGetSearchLink): Deleted.
 	(SearchFreeText): No longer take $SearchFreeTextNum and
 	$SearchFreeTextMax into accout.  Instead, hook into the existing
 	search facilities by redefining SearchTitleAndBody and calling
 	DoSearch.
-	(SearchFreeTextTitleAndBody): SearchTitleAndBody replacement.
-	(SearchFreeTextNewHighlightRegex): HighlightRegex replacement.
+	(SearchFreeText): Deleted.
 
 2004-12-22  Alex Schroeder  <alex@gnu.org>
 
