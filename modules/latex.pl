@@ -19,10 +19,10 @@
 
 use vars qw($LatexDir $LatexLinkDir $LatexExtendPath $LatexSingleDollars);
 
-$ModulesDescription .= '<p>$Id: latex.pl,v 1.7 2004/09/29 21:50:32 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: latex.pl,v 1.8 2004/10/03 19:56:01 tolchz Exp $</p>';
 
-# PATH must be extended in order to make dvi2bitmap available, and
-# also all the programs that dvi2bitmap may call to do its work
+# PATH must be extended in order to make dvipng available, and
+# also all the programs that dvipng may call to do its work
 # (namely mkdir, rm, kpathsea and mktexpk).
 
 $LatexExtendPath = ':/usr/share/texmf/bin:/usr/bin:/usr/local/bin';
@@ -42,7 +42,7 @@ $LatexSingleDollars = 0;
 
 # You also need a template stored as $DataDir/template.latex.  The
 # template must contain the string <math> where the LaTeX code is
-# supposed to go.
+# supposed to go.  It will be created on the first run.
 
 my $LatexDefaultTemplateName = "$LatexDir/template.latex";
 
@@ -77,13 +77,13 @@ sub MakeLaTeX {
   if (-f "$LatexDir/$hash.png"
       and not -z "$LatexDir/$hash.png") {
     if ($type eq "inline math") { # inline math
-      return ("<img class='InlineMath' border=0 "
+      return ("<img class='InlineMath' "
               ."src='$LatexLinkDir/$hash.png' alt='$latex'\/>");
     } elsif ($type eq "display math") { # display math
-      return ("<center><img class='DisplayMath' border=0 "
+      return ("<center><img class='DisplayMath' "
              ."src='$LatexLinkDir/$hash.png' alt='$latex'><\/center>");
     } else {  # latex format
-      return ("<img class='LaTeX' border=0 "
+      return ("<img class='LaTeX' "
              ."src='$LatexLinkDir/$hash.png' alt='$latex' \/>");
     }
   }
@@ -114,13 +114,13 @@ sub MakeLaTeX {
     my $png = ReadFileOrDie("srender1.png");
     WriteStringToFile ("$LatexDir/$hash.png", $png);
     if ($type eq "inline math") {
-      $result = "<img class='InlineMath' border=0 "
+      $result = "<img class='InlineMath' "
                 ."src='$LatexLinkDir/$hash.png' alt='$latex'\/>";
     } elsif ($type eq "display math") {
-      $result = "<center><img class='DisplayMath' border=0 "
+      $result = "<center><img class='DisplayMath'"
                ."src='$LatexLinkDir/$hash.png' alt='$latex'><\/center>";    
     } else { # latex format
-      return ("<img class='LaTeX' border=0 "
+      return ("<img class='LaTeX' "
                    ."src='$LatexLinkDir/$hash.png' alt='$latex' \/>");	   
     }
   } else {
