@@ -237,7 +237,7 @@ sub DoWikiRequest {
 
 sub ReportError { # fatal!
   my ($errmsg, $status) = @_;
-  print GetHttpHeader('text/html', 1, undef, $status); # no caching
+  print GetHttpHeader('text/html', 1, $status); # no caching
   print $q->h2($errmsg), $q->end_html;
   map { ReleaseLockDir($_); } keys %Locks;
   exit (1);
@@ -310,7 +310,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.329 2004/02/24 22:33:34 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.330 2004/02/24 22:50:42 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -3225,14 +3225,14 @@ sub DoPost {
     require MIME::Base64;
     my $file = $q->upload('file');
     if (not $file and $q->cgi_error) {
-      ReportError (Ts('Transfer Error: %s', $q->cgi_error), '500 INTERNAL SERVER ERROR');
+      ReportError(Ts('Transfer Error: %s', $q->cgi_error), '500 INTERNAL SERVER ERROR');
     }
     ReportError(T('Browser reports no file info.'), '500 INTERNAL SERVER ERROR')
       unless $q->uploadInfo($filename);
     my $type = $q->uploadInfo($filename)->{'Content-Type'};
     ReportError(T('Browser reports no file type.'), '415 UNSUPPORTED MEDIA TYPE') unless $type;
     if (not grep(/^$type$/, @UploadTypes)) {
-      ReportError (Ts('Files of type %s are not allowed.', $type), '415 UNSUPPORTED MEDIA TYPE');
+      ReportError(Ts('Files of type %s are not allowed.', $type), '415 UNSUPPORTED MEDIA TYPE');
     }
     local $/ = undef;	# Read complete files
     eval { $_ = MIME::Base64::encode(<$file>) };
