@@ -1,3 +1,14 @@
+2003-11-12  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (%RssInterwikiTranslate): New variable.
+	(RSS): Use 'diff' instead of '(diff)' for translating; change
+	order of attributes per line; separate by days if supported, print
+	time if supported; use %RssInterwikiTranslate.
+	(GetRcHtml): Use 'diff' instead of '(diff)' for translating;
+	change order of attributes per line.
+	(GetHistoryLine): Change order of attributes per line.
+	(CalcTime): Use leading zero for hours.
+
 2003-11-11  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoIndex): Add new parameter permanentanchors.
