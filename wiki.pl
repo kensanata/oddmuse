@@ -87,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.117 2003/08/01 22:22:22 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.118 2003/08/14 13:07:49 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -177,16 +177,6 @@ $CommentsPrefix = ''; # prefix for comment pages, eg. 'Comments_on_' to enable
 # Example: %Languages = ('de' => '\b(der|die|das|und|oder)\b');
 %Languages = ();
 
-if (not @HtmlTags) { # don't set if set in the config file
-  if ($HtmlTags) {   # allow many tags
-    @HtmlTags = qw(b i u font big small sub sup h1 h2 h3 h4 h5 h6 cite code
-                   em s strike strong tt var div center blockquote ol ul dl
-                   table caption br p hr li dt dd tr td th);
-  } else {           # only allow a very small subset
-    @HtmlTags = qw(b i u em strong tt);
-  }
-}
-
 @LockOnCreation = ($BannedHosts, $InterMap, $RefererFilter, $StyleSheetPage,
 		   $ConfigPage);
 
@@ -268,6 +258,15 @@ sub InitRequest { # Init global session variables for mod_perl!
   @UserGotoBarPages = ($HomePage, $RCName) unless @UserGotoBarPages;
   map { $$_ = FreeToNormal($$_); } # convert spaces to underscores on all configurable pagenames
     (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$RefererFilter, \$StyleSheetPage, \$ConfigPage);
+  if (not @HtmlTags) { # don't set if set in the config file -- must come after config file is read!
+    if ($HtmlTags) {   # allow many tags
+      @HtmlTags = qw(b i u font big small sub sup h1 h2 h3 h4 h5 h6 cite code
+		     em s strike strong tt var div center blockquote ol ul dl
+		     table caption br p hr li dt dd tr td th);
+    } else {	       # only allow a very small subset
+      @HtmlTags = qw(b i u em strong tt);
+    }
+  }
 }
 
 sub InitCookie {
