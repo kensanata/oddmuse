@@ -183,7 +183,7 @@ $CommentsPrefix = ''; # prefix for comment pages, eg. 'Comments_on_' to enable
 
 @LockOnCreation = ($BannedHosts, $InterMap, $RefererFilter, $StyleSheetPage, $ConfigPage);
 
-%CookieParameters = ('username'=>'', 'pwd'=>'', 'theme'=>'',
+%CookieParameters = ('username'=>'', 'pwd'=>'', 'theme'=>'', 'css'=>'',
 		     'toplinkbar'=>$TopLinkBar, 'embed'=>$EmbedWiki);
 
 $IndentLimit = 20;                  # Maximum depth of nested lists
@@ -269,7 +269,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.159 2003/09/25 22:25:45 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.160 2003/09/26 22:20:55 as Exp $');
 }
 
 sub InitCookie {
@@ -1538,7 +1538,7 @@ sub DoRandom {
 sub DoHistory {
   my $id = shift;
   my ($html, $row);
-  print GetHeader('',QuoteHtml(Ts('History of %s', $id)), '') . '<br>';
+  print GetHeader('',QuoteHtml(Ts('History of %s', $id)), '');
   OpenPage($id);
   OpenDefaultText();
   $html = GetHistoryLine($id, $Page{'text_default'}, $row++);
@@ -1791,11 +1791,14 @@ sub Cookie {
 
 sub GetHtmlHeader {
   my ($title, $id) = @_;
-  my $html = '';
-  $html .= $q->base({-href=>$SiteBase}) if $SiteBase;
-  if ($StyleSheet ne '') {
+  my $html;
+  $html = $q->base({-href=>$SiteBase}) if $SiteBase;
+  my $css = GetParam('css', '');
+  if ($css) {
+    $html .= qq(<link type="text/css" rel="stylesheet" href="$css">);
+  } elsif ($StyleSheet) {
     $html .= qq(<link type="text/css" rel="stylesheet" href="$StyleSheet">);
-  } elsif ($StyleSheetPage ne '') {
+  } elsif ($StyleSheetPage) {
     $html .= $q->style({-type=>'text/css'}, GetPageContent($StyleSheetPage));
   } else {
     $html .= $q->style({-type=>'text/css'},<<EOT);
@@ -1840,10 +1843,9 @@ EOT
     $html .= '<meta name="robots" content="INDEX,NOFOLLOW">';
   }
   # finish
-  my $theme = GetParam('theme',$q->url());
   $html = qq(<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">\n<html>)
     . $q->head($q->title($q->escapeHTML($title)) . $html)
-    . '<body class="' . $theme . '">';
+    . '<body class="' . GetParam('theme', $q->url()) . '">';
   return $html;
 }
 
