@@ -1,3 +1,30 @@
+2004-12-03  Alex Schroeder  <alex@gnu.org>
+
+	* modules/usemod.pl (UsemodRule): Fix hr handling.
+
+	* modules/headers.pl (HeadersRule): Fix hr handling.
+
+	* modules/usemod.pl (UsemodRule): Reset $PortraitSupportColor
+	after headers and hr.
+
+	* modules/toc.pl (TocRule): Reset $PortraitSupportColor after
+	headers.
+
+	* modules/portrait-support.pl ($MyColor, $PortraitSupportColor):
+	$PortraitSupportColor replaces $MyColor.
+	(PortraitSupportRule): Reset color after hr, handle closing div,
+	use $PortraitSupportColor.
+
+	* modules/headers.pl (HeadersRule): Reset $PortraitSupportColor
+	after the header.
+
+	* modules/commentcount.pl (NewCommentcountAddComment): Handle
+	comments and comment.
+	(NewCommentcountScriptLink): Adapt to changes in edit bar.  Add
+	code for configurable plural handling (if num == 1).
+
+	* Makefile (*-utf8.pl): Interface with CVS and wiki.
+
 2004-11-30  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (PrintWikiToHTML): Fix typo.
