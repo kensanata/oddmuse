@@ -1,4 +1,4 @@
-# Copyright (C) 2004  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2005  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,6 +22,14 @@ use vars qw($PageTypesName);
 
 $PageTypesName = 'PageTypes';
 
+# do this later so that the user can customize $SidebarName
+push(@MyInitVariables, \&PageTypeInit);
+
+sub PageTypeInit {
+  $PageTypesName = FreeToNormal($PageTypesName); # spaces to underscores
+  push(@AdminPages, $PageTypesName);
+}
+
 # A page type has to appear as a bullet list item on the page.
 #
 # Example list defining three types:
@@ -34,7 +42,7 @@ $PageTypesName = 'PageTypes';
 # have page clustering enabled (see the manual), then the page type
 # will automatically act as a cluster.
 
-$ModulesDescription .= '<p>$Id: page-type.pl,v 1.2 2004/01/30 21:35:44 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: page-type.pl,v 1.3 2005/01/06 16:34:44 as Exp $</p>';
 
 *OldPageTypeDoPost = *DoPost;
 *DoPost = *NewPageTypeDoPost;
