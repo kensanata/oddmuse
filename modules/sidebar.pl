@@ -33,7 +33,7 @@ sub NewSideBarGetHeader {
   my ($id) = @_;
   print OldSideBarGetHeader(@_);
   print '<div class="sidebar">';
-  PrintWikiToHTML($SideBarName);
+  PrintWikiToHTML(GetPageContent($SidebarName));
   print '</div>';
   return '';
 }
