@@ -352,7 +352,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.498 2004/12/18 15:51:18 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.499 2004/12/19 13:44:31 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1107,7 +1107,7 @@ sub PrintCache { # Use after OpenPage!
 }
 
 sub PrintPageHtml { # print an open page
-  if ($Page{blocks} && $Page{flags} && GetParam('cache', $UseCache)) {
+  if ($Page{blocks} && $Page{flags} && GetParam('cache', $UseCache) > 0) {
     PrintCache();
   } else {
     PrintWikiToHTML($Page{text}, 1); # save cache, current revision, no main lock
@@ -1289,7 +1289,7 @@ sub BrowsePage {
     print $q->hr();
   }
   print $q->start_div({-class=>'content browse'});
-  if ($revision eq '' and $Page{blocks} and $Page{flags} and GetParam('cache', $UseCache)) {
+  if ($revision eq '' and $Page{blocks} and $Page{flags} and GetParam('cache', $UseCache) > 0) {
     PrintCache();
   } else {
     my $savecache = ($Page{revision} > 0 and $revision eq ''); # new page not cached
@@ -2200,6 +2200,13 @@ sub GetGotoBar {
 sub PrintHtmlDiff {
   my ($diffType, $revOld, $revNew, $newText) = @_;
   my ($diffText, $intro);
+  if (not $revOld and GetParam('cache', $UseCache) < 1) {
+    if ($diffType == 1) {
+      $revOld = $Page{'diff-major'};
+    } else {
+      $revOld = $revNew - 1;
+    }
+  }
   if ($revOld) {
     $diffText = GetKeptDiff($newText, $revOld);
     $intro = Tss('Difference (from revision %1 to %2)', $revOld,
@@ -2293,8 +2300,8 @@ sub ImproveDiff { # called within a diff lock
 sub DiffMarkWords {
   my $old = DiffStripPrefix(shift);
   my $new = DiffStripPrefix(shift);
-  WriteStringToFile("$TempDir/a", join("\n",split(/\s+/,$old)));
-  WriteStringToFile("$TempDir/b", join("\n",split(/\s+/,$new)));
+  WriteStringToFile("$TempDir/a", join("\n",split(/\s+/,$old)) . "\n"); # avoid "No newline at end of file"
+  WriteStringToFile("$TempDir/b", join("\n",split(/\s+/,$new)) . "\n");
   my $diff = `diff $TempDir/a $TempDir/b`;
   my $offset = 0; # for every chunk this increases
   while ($diff =~ /^(\d+),?(\d*)([adc])(\d+),?(\d*)$/mg) {
@@ -2329,7 +2336,7 @@ sub DiffAddPrefix {
   return $q->div({-class=>$class},$q->p(join($q->br(), @lines)));
 }
 
-sub DiffHtmlMarkWords { # this code seem brittle and has been known to crash!
+sub DiffHtmlMarkWords { # this code seems brittle and has been known to crash!
   my ($text,$start,$end) = @_;
   return $text if $end - $start > 50 or $end > 100; # don't mark long chunks to avoid crashing
   my $first = $start - 1;
