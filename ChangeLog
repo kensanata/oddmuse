@@ -3,6 +3,8 @@
 	* wiki.pl (GetSearchLink): Do not encode page title.
 	(GetHtmlHeader): Simplified default CSS since the validator seems
 	to be less picky about foreground and background colors.
+	(DoPost): In summaries with multiple lines, replace newline
+	characters with spaces.
 
 2003-09-04  Alex Schroeder  <alex@gnu.org>
 
