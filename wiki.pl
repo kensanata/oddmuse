@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.419 2004/06/17 01:09:48 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.420 2004/06/18 22:29:27 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -499,13 +499,15 @@ sub ApplyRules {
     } elsif ($RawHtml && m/\G\&lt;html\&gt;(.*?)\&lt;\/html\&gt;/cgis) { Clean(UnquoteHtml($1));
     } elsif (m/\G$RFCPattern/cog) { Clean(&RFC($1));
     } elsif (m/\G($ISBNPattern)/cog) { Dirty($1); print ISBN($2);
-    } elsif (defined $HtmlStack[0] && $HtmlStack[0] eq 'em' and m/\G''/cg) { # traditional ''emph''
-      Clean(CloseHtmlEnvironment()); # close '' before closing ''' to deal with '''''five'''''
-    } elsif (m/\G'''/cg) { # traditional wiki syntax with '''strong'''
+    } elsif (defined $HtmlStack[0] && $HtmlStack[1] && $HtmlStack[0] eq 'em'
+	     && $HtmlStack[1] eq 'strong' and m/\G'''''/cg) { # close either of the two
+      Clean(CloseHtmlEnvironment() . CloseHtmlEnvironment());
+    } elsif (m/\G'''/cg) { # traditional wiki syntax for '''strong'''
       Clean((defined $HtmlStack[0] && $HtmlStack[0] eq 'strong')
 	    ? CloseHtmlEnvironment() : AddHtmlEnvironment('strong'));
-    } elsif (m/\G''/cg) { # traditional ''emph'', closing is dealt with above
-      Clean(AddHtmlEnvironment('em'));
+    } elsif (m/\G''/cg) { # traditional wiki syntax for ''emph''
+      Clean((defined $HtmlStack[0] && $HtmlStack[0] eq 'em')
+	    ? CloseHtmlEnvironment() : AddHtmlEnvironment('em'));
     } elsif (m/\G\&lt;($htmlre)\&gt;/cogi) { Clean(AddHtmlEnvironment($1));
     } elsif (m/\G\&lt;\/($htmlre)\&gt;/cogi) { Clean(CloseHtmlEnvironment($1));
     } elsif (m/\G\&lt;($htmlre) *\/\&gt;/cogi) { Clean("<$1 />");
@@ -664,7 +666,8 @@ sub SmileyReplace {
 }
 
 sub RunMyRules {
-  foreach my $sub (@MyRules, \&MyRules) {
+  push(@MyRules, \&MyRules) if defined(&MyRules);
+  foreach my $sub (@MyRules) {
     my $result = eval { local $SIG{__DIE__}; &$sub; };
     SetParam('msg', $@) if $@;
     return $result if defined($result);
