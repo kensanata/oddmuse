@@ -275,7 +275,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.259 2003/11/15 17:13:14 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.260 2003/11/16 13:52:03 as Exp $');
 }
 
 sub InitCookie {
@@ -949,7 +949,7 @@ sub Ts {
 }
 
 sub Tss {
-  my $text = @_[0];
+  my $text = $_[0];
   $text = T($text);
   $text =~ s/\%([1-9])/$_[$1]/ge;
   return $text;
@@ -2846,7 +2846,7 @@ sub PrintSearchResults {
       # show a snippet from the top of the document
       my $j = index($pageText, ' ', $snippetlen); # end on word boundary
       my $t = substr($pageText, 0, $j);
-      $t =~ s/($searchstring)/<strong>\1<\/strong>/gi;
+      $t =~ s/($searchstring)/<strong>$1<\/strong>/gi;
       print $t, ' ', $q->b('...');
       $pageText = substr($pageText, $j); # to avoid rematching
       # search for occurrences of searchstring
@@ -2861,7 +2861,7 @@ sub PrintSearchResults {
 	  $end = length($pageText ) if ($end == -1);
 	  $t = substr($pageText, $start, $end-$start);
 	  # highlight occurrences and tack on to output stream.
-	  $t =~ s/($searchstring)/<strong>\1<\/strong>/gi;
+	  $t =~ s/($searchstring)/<strong>$1<\/strong>/gi;
 	  print $t, ' ', $q->b('...');
 	  # truncate text to avoid rematching the same string.
 	  $pageText = substr($pageText, $end);
