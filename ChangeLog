@@ -3,7 +3,11 @@
 	* wiki.pl (GetValidatorLink): Link to CSS Validator.
 	(GetHtmlHeader): Added CSS foreground color to div tags where only
 	a background was defined, and added body and a links.
-	(UseSubpage): Default to 0 because GNU/Linux would always be a link.
+	(UseSubpage): Default to 0 because GNU/Linux would always be a
+	link.
+	(BrowsePage): Pass $id along to OpenDefaultText.
+	(OpenDefaultText): If $id is the homepage, and the revision is 0,
+	attempt to display the README file instead.
 
 2003-03-21  Alex Schroeder  <alex@gnu.org>
 
