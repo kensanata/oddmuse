@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: paragraph-link.pl,v 1.1 2004/08/07 01:51:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: paragraph-link.pl,v 1.2 2004/08/09 04:21:28 as Exp $</p>';
 
 push(@MyRules, \&ParagraphLinkRule);
 
@@ -28,10 +28,12 @@ sub ParagraphLinkRule {
     my $id = FreeToNormal($orig);
     my $text = $id;
     $text =~ s/_/ /g;
+    my $html = ScriptLink(UrlEncode($id), $invisible ? '' : $text, 'permalink', $id,
+			  Ts('Permalink to "%s"', $orig));
     my ($class, $resolved, $title, $exists) = ResolveId($id);
     if ($class eq 'alias' and $title ne $OpenPageName) {
-      return '[' . Ts('anchor first defined here: %s',
-		      ScriptLink(UrlEncode($resolved), $text, 'alias')) . ']';
+      $html .= ' [' . Ts('anchor first defined here: %s',
+			 ScriptLink(UrlEncode($resolved), $text, 'alias')) . ']';
     } elsif ($PermanentAnchors{$id} ne $OpenPageName
 	     and RequestLockDir('permanentanchors')) { # not fatal
       $PermanentAnchors{$id} = $OpenPageName;
@@ -39,10 +41,10 @@ sub ParagraphLinkRule {
       ReleaseLockDir('permanentanchors');
     }
     $PagePermanentAnchors{$id} = 1; # add to the list of anchors in page
-    my $html = ScriptLink(UrlEncode($id), $invisible ? '' : $text, 'permalink', $id,
-			   Ts('Permalink to "%s"', $orig));
-    $html .= ' [' . Ts('the page %s also exists', ScriptLink("action=browse;anchor=0;id="
-	     . UrlEncode($id), $id, 'local')) . ']' if $exists;
+    $html .= ' [' . Ts('the page %s also exists',
+		       ScriptLink("action=browse;anchor=0;id="
+				  . UrlEncode($id), $id, 'local')) . ']'
+				    if $exists;
     print $html;
     return '';
   }
