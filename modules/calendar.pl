@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.13 2004/06/15 18:46:49 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.14 2004/06/15 18:53:28 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalendarUseCal);
 
@@ -68,10 +68,13 @@ sub Cal {
     }
     $link;
   }|ge;
-  $cal =~ s|(\w+ \d\d\d\d)|{
-    my $day = $1;
+  $cal =~ s|(\w+) (\d\d\d\d)|{
+    my ($month_text, $year_text) = ($1, $2);
     my $date = sprintf("%d-%02d", $year, $mon);
-    ScriptLink('action=collect;match=' . $date, $day,  'local collection month');
+    $q->span({-class=>'title'},
+	     ScriptLink('action=collect;match=' . $date, $month_text,  'local collection month')
+	     . ' '
+	     . ScriptLink('action=calendar;year=' . $year, $year_text,  'local collection year'));
   }|e;
   return "<div class=\"cal month\"><pre>$cal</pre></div>";
 }
