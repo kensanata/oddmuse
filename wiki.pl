@@ -81,7 +81,7 @@ $HttpCharset = '';  # Charset for pages, default is ISO-8859-1
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.3 2003/03/21 20:42:26 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.4 2003/03/21 20:50:31 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -789,6 +789,7 @@ sub ScriptLink {
       $action = 'action=browse&toplinkbar=0&id=' . $action;
     }
   }
+  $action = &QuoteHtml($action);
   return "<a href=\"$ScriptName?$action\">$text</a>";
 }
 
