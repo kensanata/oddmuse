@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.14 2004/10/10 16:57:48 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.15 2004/10/10 17:03:09 as Exp $</p>';
 
 push(@MyMacros, sub{ s/\[new::\]/"[new:" . GetParam('username', T('Anonymous'))
 		       . ':' . TimeToText($Now) . "]"/ge });
@@ -33,61 +33,63 @@ my $MyColorDiv = 0;
 my %Portraits = ();
 
 sub PortraitSupportRule {
-  if ($bol && m/\G(\s*\n)*----+[ \t]*\n?/cg) {
-    $MyColor = 0;
-    my $html = CloseHtmlEnvironments() . ($MyColorDiv ? '</div>' : '')
-      . $q->hr();
-    $MyColorDiv = 0;
-    return $html;
-  } elsif ($bol && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg) {
-    my ($depth, $text) = ($2, $3);
-    $depth = length($depth);
-    $depth = 6  if ($depth > 6);
-    $MyColor = 0;
-    my $html = CloseHtmlEnvironments() . ($MyColorDiv ? '</div>' : '')
-      . "<h$depth>$text</h$depth>";
-    $MyColorDiv = 0;
-    return $html;
-  } elsif (m/\Gportrait:$UrlPattern/gc) {
-    return $q->img({-src=>$1, -alt=>T("Portrait"), -class=>'portrait'});
-  } elsif (m/\G\[new(.*)\]/gc) {
-    my $portrait = '';
-    my ($ignore, $name, $time) = split(/:/, $1, 3);
-    if ($name) {
-      if (not $Portrait{$name}) {
-	my $oldpos = pos;
-	if (GetPageContent($name) =~ m/portrait:$UrlPattern/) {
-	  $Portrait{$name} =
-	    $q->div({-class=>'portrait'},
-		    ScriptLink($name, $q->img({-src=>$1, -alt=>'new: ' . $time,
-					       -class=>'portrait'}),
-			       'newauthor', '', $FS),
-		    $q->br(),
-		    GetPageLink($name));
+  if ($bol) {
+    if (m/\G(\s*\n)*----+[ \t]*\n?/cg) {
+      $MyColor = 0;
+      my $html = CloseHtmlEnvironments() . ($MyColorDiv ? '</div>' : '')
+	. $q->hr();
+      $MyColorDiv = 0;
+      return $html;
+    } elsif ($bol && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg) {
+      my ($depth, $text) = ($2, $3);
+      $depth = length($depth);
+      $depth = 6  if ($depth > 6);
+      $MyColor = 0;
+      my $html = CloseHtmlEnvironments() . ($MyColorDiv ? '</div>' : '')
+	. "<h$depth>$text</h$depth>";
+      $MyColorDiv = 0;
+      return $html;
+    } elsif ($bol && m/\Gportrait:$UrlPattern/gc) {
+      return $q->img({-src=>$1, -alt=>T("Portrait"), -class=>'portrait'});
+    } elsif ($bol && m/\G\[new(.*)\]/gc) {
+      my $portrait = '';
+      my ($ignore, $name, $time) = split(/:/, $1, 3);
+      if ($name) {
+	if (not $Portrait{$name}) {
+	  my $oldpos = pos;
+	  if (GetPageContent($name) =~ m/portrait:$UrlPattern/) {
+	    $Portrait{$name} =
+	      $q->div({-class=>'portrait'},
+		      ScriptLink($name, $q->img({-src=>$1, -alt=>'new: ' . $time,
+						 -class=>'portrait'}),
+				 'newauthor', '', $FS),
+		      $q->br(),
+		      GetPageLink($name));
+	  }
 	}
+	$portrait = $Portrait{$name};
+	$portrait =~ s/$FS/$time/;
       }
-      $portrait = $Portrait{$name};
-      $portrait =~ s/$FS/$time/;
+      my $html = CloseHtmlEnvironments() . ($MyColorDiv ? '</div>' : '');
+      $MyColor = !$MyColor;
+      $html .= '<div class="color ' . ($MyColor ? 'one' : 'two') . '">' . $portrait;
+      $MyColorDiv = 1;
+      return $html;
     }
-    my $html = CloseHtmlEnvironments() . ($MyColorDiv ? '</div>' : '');
-    $MyColor = !$MyColor;
-    $html .= '<div class="color ' . ($MyColor ? 'one' : 'two') . '">' . $portrait;
-    $MyColorDiv = 1;
-    return $html;
   }
   return undef;
 }
 
-*OldPortraitSupportApplyRules = *ApplyRules;
-*ApplyRules = *NewPortraitSupportApplyRules;
+  *OldPortraitSupportApplyRules = *ApplyRules;
+  *ApplyRules = *NewPortraitSupportApplyRules;
 
-sub NewPortraitSupportApplyRules {
-  my ($blocks, $flags) = OldPortraitSupportApplyRules(@_);
-  if ($MyColorDiv) {
-    print '</div>';
-    $blocks .= $FS . '</div>';
-    $flags .= $FS . 0;
-    $MyColorDiv = 0;
+  sub NewPortraitSupportApplyRules {
+    my ($blocks, $flags) = OldPortraitSupportApplyRules(@_);
+    if ($MyColorDiv) {
+      print '</div>';
+      $blocks .= $FS . '</div>';
+      $flags .= $FS . 0;
+      $MyColorDiv = 0;
+    }
+    return ($blocks, $flags);
   }
-  return ($blocks, $flags);
-}
