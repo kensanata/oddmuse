@@ -349,7 +349,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.488 2004/11/25 19:03:53 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.489 2004/11/26 23:54:36 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1655,8 +1655,7 @@ sub GetRcRss {
   my $historyPrefix = $url . QuoteHtml("?action=history;id=");
   my ($sec, $min, $hour, $mday, $mon, $year) = gmtime($Now);
   $year += 1900;
-  my $date = sprintf( "%4d-%02d-%02dT%02d:%02d:%02d+00:00",
-		   $year, $mon+1, $mday, $hour, $min, $sec);
+  my $date = sprintf( "%4d-%02d-%02dT%02d:%02d:%02d+00:00", $year, $mon+1, $mday, $hour, $min, $sec);
   my @excluded = ();
   if (GetParam('exclude', 1)) {
     foreach (split(/\n/, GetPageContent($RssExclude))) {
@@ -1757,8 +1756,7 @@ sub DoHistory {
   OpenPage($id);
   my $row = 0;
   my @html = (GetHistoryLine($id, \%Page, $row++));
-  my @revisions = sort {$b <=> $a} map { m|/([0-9]+).kp$|; $1; } GetKeepFiles($OpenPageName);
-  foreach my $revision (@revisions) {
+  foreach my $revision (GetKeepRevisions($OpenPageName)) {
     my %keep = GetKeptRevision($revision);
     push(@html, GetHistoryLine($id, \%keep, $row++));
   }
@@ -1796,8 +1794,7 @@ sub GetHistoryLine {
     $attr1{-checked} = 'checked' if 1==$row;
     my %attr2 = (-type=>'radio', -name=>'revision', -value=>$revision);
     $attr2{-checked} = 'checked' if 0==$row;
-    $html = $q->Tr($q->td($q->input(\%attr1)), $q->td($q->input(\%attr2)),
-		   $q->td($html));
+    $html = $q->Tr($q->td($q->input(\%attr1)), $q->td($q->input(\%attr2)), $q->td($html));
   } else {
     $html .= $q->br();
   }
@@ -1816,16 +1813,14 @@ sub DoRollback {
   print GetHeader('', T('Rolling back changes'), '');
   return unless UserIsAdminOrError();
   ReportError(T('Missing target for rollback.'), '400 BAD REQUEST') unless $to;
-  ReportError(T('Target for rollback is too far back.'), '400 BAD REQUEST')
-    unless RollbackPossible($to);
+  ReportError(T('Target for rollback is too far back.'), '400 BAD REQUEST') unless RollbackPossible($to);
   RequestLockOrError();
   print $q->start_div({-class=>'content rollback'}) . $q->start_p();
   foreach my $id (AllPagesList()) {
     OpenPage($id);
-    my $text = GetTextAtTime($to);
+    my ($text, $minor) = GetTextAtTime($to);
     if ($text and $Page{text} ne $text) {
-      Save($id, $text, Ts('Rollback to %s', TimeToText($to)), 1,
-	   ($Page{ip} ne $ENV{REMOTE_ADDR}));
+      Save($id, $text, Ts('Rollback to %s', TimeToText($to)), $minor, ($Page{ip} ne $ENV{REMOTE_ADDR}));
       print Ts('%s rolled back', $id), $q->br();
     }
   }
@@ -1932,8 +1927,7 @@ sub GetHeader {
   }
   $result .= $q->div({-class=>'message'}, $Message)  if $Message;
   if ($id ne '') {
-    $result .= $q->h1(GetSearchLink($id, '', '',
-				    T('Click to search for references to this page')));
+    $result .= $q->h1(GetSearchLink($id, '', '', T('Click to search for references to this page')));
   } else {
     $result .= $q->h1($title);
   }
@@ -2368,26 +2362,18 @@ sub OpenPage { # Sets global variables
   $OpenPageName = $id;
 }
 
-sub GetTextAtTime {
+sub GetTextAtTime { # call with opened page
   my $ts = shift;
-  return $Page{text} if $Page{ts} <= $ts; # current page is old enough
-  return $DeletedPage if $Page{revision} == 1 and $Page{ts} > $ts; # created after $ts!
-  my @keeps = GetKeepFiles($OpenPageName);
-  my ($maxts, $result, $newpage);
-  foreach my $keep (@keeps) {
-    my ($status, $data) = ReadFile($keep);
-    next unless $status;
-    my %field = ParseData($data);
-    if ($field{ts} == $ts) {
-      return $field{text};
-    } elsif ($field{ts} < $ts and $field{ts} > $maxts) {
-      $result = $field{text};
-      $maxts = $field{ts};
-    } elsif ($field{ts} > $ts and $field{revision} == 1) {
-      return $DeletedPage; # then the page was created after $ts!
-    }
+  my $minor = $Page{minor};
+  return ($Page{text}, $minor) if $Page{ts} <= $ts; # current page is old enough
+  return ($DeletedPage, $minor) if $Page{revision} == 1 and $Page{ts} > $ts; # created after $ts
+  my %keep = (); # info may be needed after the loop
+  foreach my $revision (GetKeepRevisions($OpenPageName)) {
+    %keep = GetKeptRevision($revision);
+    return ($keep{text}, $minor) if $keep{ts} <= $ts;
   }
-  return $result;
+  return ($DeletedPage, $minor) if $keep{revision} == 1; # then the page was created after $ts!
+  return ($keep{text}, $minor);
 }
 
 sub GetTextRevision {
@@ -2439,6 +2425,10 @@ sub GetKeepFiles {
   return glob(GetKeepDir(shift) . '/*.kp'); # files such as 1.kp, 2.kp, etc.
 }
 
+sub GetKeepRevisions {
+  return sort {$b <=> $a} map { m/([0-9]+)\.kp$/; $1; } GetKeepFiles(shift);
+}
+
 sub GetPageDirectory {
   my $id = shift;
   if ($id =~ /^([a-zA-Z])/) {
@@ -2479,17 +2469,14 @@ sub EscapeNewlines {
   return $_[0];
 }
 
-sub ExpireKeepFiles {
+sub ExpireKeepFiles { # call with opened page
   return unless $KeepDays;
-  my @keeps = GetKeepFiles($OpenPageName);
   my $expirets = $Now - ($KeepDays * 24 * 60 * 60);
-  foreach my $keep (@keeps) {
-    my ($status, $data) = ReadFile($keep);
-    next unless $status; # not fatal
-    my %field = ParseData($data);
-    next if $field{'keep-ts'} >= $expirets;
-    next if $KeepMajor && ($field{revision} == $Page{oldmajor});
-    unlink $keep;
+  foreach my $revision (GetKeepRevisions($OpenPageName)) {
+    my %keep = GetKeptRevision($revision);
+    next if $keep{'keep-ts'} >= $expirets;
+    next if $KeepMajor && ($keep{revision} == $Page{oldmajor});
+    unlink GetKeepFile($OpenPageName, $revision);
   }
 }
 
@@ -3349,7 +3336,7 @@ sub DoPost {
   my $generalwarning = 0;
   if ($newAuthor and $oldtime ne $myoldtime and not $comment) {
     if ($myoldtime) {
-      my $ancestor = GetTextAtTime($myoldtime);
+      my ($ancestor, $minor) = GetTextAtTime($myoldtime);
       if ($ancestor and $old ne $ancestor) {
 	my $new = MergeRevisions($string, $ancestor, $old);
 	if ($new) {
@@ -3445,7 +3432,7 @@ sub GetCluster {
   $_ = shift;
   return '' unless $PageCluster;
   return $1 if ($WikiLinks && /^$LinkPattern\n/)
-    or ($FreeLinks && /^\[\[$FreeLinkPattern\]\]\n/);
+            or ($FreeLinks && /^\[\[$FreeLinkPattern\]\]\n/);
 }
 
 sub MergeRevisions { # merge change from file2 to file3 into file1
@@ -3834,9 +3821,7 @@ sub WriteReferers {
 sub RefererTrack {
   my $id = shift;
   ReadReferers($id);
-  if (UpdateReferers($id)) {
-    WriteReferers($id);
-  }
+  WriteReferers($id) if UpdateReferers($id);
   return GetReferers();
 }
 
@@ -3849,10 +3834,7 @@ sub DoPrintAllReferers {
 sub PrintAllReferers {
   for my $id (@_) {
     ReadReferers($id);
-    if (%Referers) {
-      print $q->p(ScriptLink(UrlEncode($id),$id));
-      print GetReferers();
-    }
+    print $q->p(ScriptLink(UrlEncode($id),$id)), GetReferers() if %Referers;
   }
 }
 
