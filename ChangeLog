@@ -1,3 +1,32 @@
+2004-09-30  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetAdminBar): Moved GetGotoBar($id) out of this sub and
+	renamed $revisions to $html.
+	(PrintFooter): Moved GetGotoBar($id) here.
+	(ApplyRules): Accept @tags parameter to put the first paragraph in
+	a p element.  Pass along p to ApplyRules calls.
+	(PrintWikiToHTML):  Pass along p to ApplyRules calls.
+	(PrintAllPages): Put pages into a separate div.
+
+2004-09-29  Alex Schroeder  <alex@gnu.org>
+
+	* modules/latex.pl (LatexRule): Don't require newlines when using
+	the $$ and $ rules.
+
+2004-09-27  Alex Schroeder  <alex@confusibombus>
+
+	* modules/markup.pl (%MarkupLines): New option.
+	(%MarkupSingles): Unquote HTML.
+	(NewMarkupInitVariables): Use %MarkupLines.
+	(MarkupTag): New, factored out of MarkupRule.
+	(MarkupRule): Use MarkupTag and support %MarkupLines.
+	(MarkupRule): Remove stray call to warn.
+
+2004-09-21  Alex Schroeder  <alex@gnu.org>
+
+	* modules/admin.pl (AdminPowerRename): Use FreeToNormal and
+	ValidOrDie to make sure no invalid filename can be used.
+
 2004-09-19  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (PrintPage): Print title instead of id.
