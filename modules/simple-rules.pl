@@ -2,7 +2,7 @@ use vars qw($StrictSeTextRules);
 
 $StrictSeTextRules = 0;
 
-$ModulesDescription .= '<p>$Id: simple-rules.pl,v 1.3 2004/01/30 13:00:00 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: simple-rules.pl,v 1.4 2004/01/30 13:09:25 as Exp $</p>';
 
 *ApplyRules = *NewSimpleRulesApplyRules;
 
@@ -36,9 +36,9 @@ sub NewSimpleRulesApplyRules {
     if (!$StrictSeTextRules) {
       $block =~ s/\/\/(.+?)\/\//$q->em($1)/seg;
       $block =~ s/__(.+?)__/$q->u($1)/seg;
-      $block =~ s/_(\S+)_/$q->u($1)/seg;
-      $block =~ s/\*(\S+)\*/$q->b($1)/seg;
-      $block =~ s/\/(\S+)\//$q->i($1)/seg;
+      $block =~ s/\*([^* \t]+)\*/$q->b($1)/seg;
+      $block =~ s/\/([^\/ \t]+)\//$q->i($1)/seg;
+      $block =~ s/_([^_ \t]+)_/$q->u($1)/seg;
     }
     if ($locallinks) {
       ($block =~ s/(\[\[$FreeLinkPattern\]\])/
