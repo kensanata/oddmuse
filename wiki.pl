@@ -275,7 +275,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.255 2003/11/11 17:09:05 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.256 2003/11/11 17:19:14 as Exp $');
 }
 
 sub InitCookie {
@@ -2699,19 +2699,22 @@ sub DoIndex {
     print GetHeader('', T('Index of all pages'), '');
     print $q->p($q->b('(including permanent anchors)')) if $anchors == 1;
     print $q->p($q->b('(permanent anchors only)')) if $anchors == 2;
-    ReadPermanentAnchors() if $anchors and not %PermanentAnchors;
+    ReadPermanentAnchors() if $anchors > 0 and not %PermanentAnchors;
     push(@pages, AllPagesList()) if $anchors < 2;
     push(@pages, keys %PermanentAnchors) if $anchors > 0;
+    sort @pages if $anchors > 0;
     PrintPageList(@pages);
     PrintFooter();
   }
 }
 
 sub PrintPageList {
-  my $pagename;
   print $q->h2(Ts('%s pages found:', ($#_ + 1))), '<p>';
-  foreach $pagename (@_) {
-    print GetPageLink($pagename), $q->br();
+  foreach my $id (@_) {
+    my ($class, $exists, $title) = ResolveId($id);
+    my $text = $id;
+    $text =~ s/_/ /g;
+    print ScriptLink(UrlEncode($id), $text, $class, '', $title), $q->br();
   }
   print '</p>';
 }
@@ -2734,7 +2737,7 @@ sub AllPagesList {
   }
   @IndexList = ();
   %IndexHash = ();
-  foreach (sort(glob("$PageDir/*/*.pg"))) { # sort of DoIndex etc.
+  foreach (glob("$PageDir/*/*.pg")) {
     next unless m|/.*/(.+)\.pg$|;
     push @IndexList, $1;
     $IndexHash{$1} = 1;
@@ -3248,7 +3251,7 @@ sub DoMaintain {
     unlink($PermanentAnchorsFile);
   }
   # Expire all keep files
-  foreach my $name (AllPagesList()) {
+  foreach my $name (sort AllPagesList()) {
     print $q->br();
     print GetPageLink($name);
     OpenPage($name);
