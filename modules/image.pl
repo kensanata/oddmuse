@@ -16,22 +16,27 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: image.pl,v 1.5 2004/06/17 09:48:52 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: image.pl,v 1.6 2004/06/19 19:10:31 as Exp $</p>';
 
-push( @MyRules, \&ImageSupportRule );
+use vars qw($ImageUrlPath);
+
+$ImageUrlPath = '/images'; # URL where the images are to be found
+
+push(@MyRules, \&ImageSupportRule);
 
 # [[image/class:page name|alt text|target]]
 
 sub ImageSupportRule {
   my $result = undef;
-  if (m!\G\[\[image(/[a-z]+)?:$FreeLinkPattern(\|[^\]|]+)?(\|[^\]]+)?\]\]!gc) {
+  if (m!\G\[\[image(/[a-z]+)?( external)?:$FreeLinkPattern(\|[^\]|]+)?(\|[^\]]+)?\]\]!gc) {
     my $oldpos = pos;
     my $class = 'image';
     $class .= ' ' . substr($1, 1) if $1;
-    my $name = $2;
-    my $alt = $3 ? substr($3, 1) : T("image: $name");
+    my $external = $2;
+    my $name = $3;
+    my $alt = $4 ? substr($4, 1) : T("image: $name");
     my $link;
-    $link = substr($4, 1) if $4;
+    $link = substr($5, 1) if $5;
     my $id = FreeToNormal($name);
     $link = $id unless $link;
     if ($link =~ /$FullUrlPattern/) {
@@ -48,7 +53,9 @@ sub ImageSupportRule {
       }
     }
     my $src;
-    if ($UsePathInfo) {
+    if ($external) {
+      $src = $ImageUrlPath . '/' . $id;
+    } elsif ($UsePathInfo) {
       $src = $ScriptName . "/download/" . UrlEncode($id);
     } else {
       $src = $ScriptName . "?action=download;id=" . UrlEncode($id);
