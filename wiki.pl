@@ -357,7 +357,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.536 2005/03/18 22:32:16 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.537 2005/03/25 11:16:24 frodo72 Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -2295,6 +2295,20 @@ sub GetKeptDiff {
   return GetDiff($keep{text}, $newText, $oldRevision);
 }
 
+sub DoDiff {	# Actualy call the diff program
+  CreateDir($TempDir);
+  my $oldName = "$TempDir/old";
+  my $newName = "$TempDir/new";
+  RequestLockDir('diff') or return '';
+  WriteStringToFile($oldName, $_[0]);
+  WriteStringToFile($newName, $_[1]);
+  my $diff_out = `diff $oldName $newName`;
+  $diff_out =~ s/\\ No newline.*\n//g;	# Get rid of common complaint.
+  ReleaseLockDir('diff');
+  # No need to unlink temp files--next diff will just overwrite.
+  return $diff_out;
+}
+
 sub GetDiff {
   my ($old, $new, $oldRevision) = @_;
   $old =~ m/^#FILE ([^ \n]+)\n/;
@@ -2302,30 +2316,17 @@ sub GetDiff {
   my $old_is_image = ($old_is_file eq 'image/');
   $new =~ m/^#FILE ([^ \n]+)\n/;
   my $new_is_file = ($1 ? substr($1, 0, 6) : 0);
-  my $new_is_image = ($new_is_file eq 'image/');
   if ($old_is_file or $new_is_file) {
     return $q->p($q->strong(T('Old revision:')))
       . $q->div({-class=>'old'}, # don't pring new revision, because that's the one that gets shown!
-		$q->p($old_is_file ? GetDownloadLink($OpenPageName, $old_is_image, $oldRevision) : $old))
+      $q->p($old_is_file ? GetDownloadLink($OpenPageName, $old_is_image, $oldRevision) : $old))
   }
-  my ($diff_out, $oldName, $newName);
   $old =~ s/[\r\n]+/\n/g;
   $new =~ s/[\r\n]+/\n/g;
-  CreateDir($TempDir);
-  $oldName = "$TempDir/old";
-  $newName = "$TempDir/new";
-  RequestLockDir('diff') or return '';
-  WriteStringToFile($oldName, $old);
-  WriteStringToFile($newName, $new);
-  $diff_out = `diff $oldName $newName`;
-  $diff_out =~ s/\\ No newline.*\n//g;	 # Get rid of common complaint.
-  $diff_out = ImproveDiff($diff_out);
-  ReleaseLockDir('diff');
-  # No need to unlink temp files--next diff will just overwrite.
-  return $diff_out;
+  return ImproveDiff(DoDiff($old, $new));
 }
 
-sub ImproveDiff { # called within a diff lock
+sub ImproveDiff { # NO NEED TO BE called within a diff lock
   my $diff = QuoteHtml(shift);
   $diff =~ tr/\r//d;
   my ($tChanged, $tRemoved, $tAdded);
@@ -2360,9 +2361,8 @@ sub ImproveDiff { # called within a diff lock
 sub DiffMarkWords {
   my $old = DiffStripPrefix(shift);
   my $new = DiffStripPrefix(shift);
-  WriteStringToFile("$TempDir/a", join("\n",split(/\s+/,$old)) . "\n"); # avoid "No newline at end of file"
-  WriteStringToFile("$TempDir/b", join("\n",split(/\s+/,$new)) . "\n");
-  my $diff = `diff $TempDir/a $TempDir/b`;
+  my $diff = DoDiff(join("\n",split(/\s+/,$old)) . "\n",
+                    join("\n",split(/\s+/,$new)) . "\n");
   my $offset = 0; # for every chunk this increases
   while ($diff =~ /^(\d+),?(\d*)([adc])(\d+),?(\d*)$/mg) {
     my ($start1,$end1,$type,$start2,$end2) = ($1,$2,$3,$4,$5);
@@ -3740,9 +3740,11 @@ sub DoShowVersion {
       $q->p('CGI: ', $CGI::VERSION),
       $q->p('LWP::UserAgent ', eval { local $SIG{__DIE__}; require LWP::UserAgent; $LWP::UserAgent::VERSION; }),
       $q->p('XML::RSS: ', eval { local $SIG{__DIE__}; require XML::RSS; $XML::RSS::VERSION; }),
-      $q->p('XML::Parser: ', eval { local $SIG{__DIE__}; $XML::Parser::VERSION; }),
-      $q->p('diff: ' . (`diff --version` || $!)),
+      $q->p('XML::Parser: ', eval { local $SIG{__DIE__}; $XML::Parser::VERSION; });
+    if ($UseDiff == 1) {
+      print $q->p('diff: ' . (`diff --version` || $!)),
       $q->p('diff3: ' . (`diff3 --version` || $!));
+    }
   } else {
     print $q->p(ScriptLink('action=version;dependencies=1', T('Show dependencies')));
   }
