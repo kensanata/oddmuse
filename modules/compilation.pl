@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: compilation.pl,v 1.2 2004/10/23 15:47:27 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: compilation.pl,v 1.3 2004/12/05 03:24:05 as Exp $</p>';
 
 $Action{compilation} = \&DoCompilation;
 
@@ -65,7 +65,7 @@ sub CompilationRule {
     my $oldpos = pos;
     PrintCompilation($3, $5, $7);
     pos = $oldpos;		# restore \G after call to ApplyRules
-    return '';
+    return AddHtmlEnvironment('p');
   }
   return undef;
 }
