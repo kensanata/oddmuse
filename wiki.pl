@@ -59,7 +59,7 @@ $ValidatorLink $RefererTracking $RefererTimeLimit $RefererLimit
 $DefaultStyleSheet $AllNetworkFiles $UsePathInfo $UploadAllowed
 $LastUpdate $PageCluster $RssInterwikiTranslate $UseCache $ModuleDir
 $HtmlHeaders $DebugInfo %InvisibleCookieParameters $FullUrlPattern
-$FreeInterLinkPattern @AdminPages @AdminBlocks);
+$FreeInterLinkPattern @AdminPages @AdminBlocks @MyInitVariables);
 
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
@@ -341,21 +341,26 @@ sub InitVariables {    # Init global session variables for mod_perl!
   CreateDir($DataDir); # Create directory if it doesn't exist
   ReportError(Ts('Could not create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR')
     unless -d $DataDir;
-  @UserGotoBarPages = ($HomePage, $RCName) unless @UserGotoBarPages;
-  @AdminPages = sort ($BannedHosts, $RefererFilter, $StyleSheetPage, $ConfigPage, $InterMap,
-		      $NearMap, $RssInterwikiTranslate, $BannedContent);
-  @LockOnCreation = @AdminPages unless @LockOnCreation;
   my $add_space = $CommentsPrefix =~ /[ \t_]$/;
   map { $$_ = FreeToNormal($$_); } # convert spaces to underscores on all configurable pagenames
     (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$RefererFilter, \$StyleSheetPage, \$NearMap,
      \$ConfigPage, \$NotFoundPg, \$RssInterwikiTranslate, \$BannedContent, \$RssExclude,
      \$CommentsPrefix);
   $CommentsPrefix .= '_' if $add_space;
+  @UserGotoBarPages = ($HomePage, $RCName) unless @UserGotoBarPages;
+  my @pages = sort ($BannedHosts, $RefererFilter, $StyleSheetPage, $ConfigPage, $InterMap,
+		    $NearMap, $RssInterwikiTranslate, $BannedContent);
+  @AdminPages = @pages unless @AdminPages;
+  @LockOnCreation = @pages unless @LockOnCreation;
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.510 2005/01/04 07:43:58 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.511 2005/01/04 08:53:53 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
+  foreach my $sub (@MyInitVariables) {
+    my $result = &$sub;
+    $Message .= $q->p($@) if $@;
+  }
 }
 
 sub InitCookie {
@@ -1883,7 +1888,7 @@ sub DoAdminPage {
   }
   print $q->p(T('Actions:')), $q->ul($q->li(\@menu));
   print $q->p(T('Important pages:')) . $q->ul(map { my $name = $_;
-						    $name ~= s/_/ /g;
+						    $name =~ s/_/ /g;
 						    $q->li(GetPageOrEditLink($_, $name)) if $_;
 						  } @AdminPages);
   foreach my $block (@AdminBlocks) {
@@ -2175,7 +2180,7 @@ sub GetFooterLinks {
   if (GetParam('action', '') ne 'admin') {
     my $action = 'action=admin';
     $action .= ';id=' . $id if $id;
-    push(@elements, ScriptLink($action, T('Administration')))
+    push(@elements, ScriptLink($action, T('Administration'), 'admin'));
   }
   return @elements ? $q->span({-class=>'edit bar'}, $q->br(), @elements) : '';
 }
