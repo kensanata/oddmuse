@@ -86,7 +86,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.90 2003/06/10 22:20:02 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.91 2003/06/10 22:26:21 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -2636,7 +2636,6 @@ sub GetRemoteHost {
 sub FreeToNormal {
   my $id = shift;
   $id =~ s/ /_/g;
-  $id = ucfirst($id);
   if (index($id, '_') > -1) {  # Quick check for any space/underscores
     $id =~ s/__+/_/g;
     $id =~ s/^_//;
