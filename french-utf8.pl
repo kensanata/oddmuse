@@ -20,13 +20,13 @@
 #
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
-Accès interdit: votre serveur, adresse IP ou nom d'utilisateur a été bloqué.
+Accès interdit&nbsp;: votre serveur, adresse IP ou nom d'utilisateur a été bloqué.
 Could not create %s
 Création impossible de %s
 Invalid UserName %s: not saved.
-Nom d'utilisateur non valide %s: pas sauvegardé
+Nom d'utilisateur non valide %s&nbsp;: pas sauvegardé
 UserName must be 50 characters or less: not saved
-Le nom d'utilisateur ne doit pas dépasser 50 caractères: pas sauvegardé
+Le nom d'utilisateur ne doit pas dépasser 50 caractères&nbsp;: pas sauvegardé
 diff
 
 history
@@ -48,7 +48,7 @@ Parmètre d'action invalide %s
 Invalid URL.
 URL non valide
 Page name is too long: %s
-Nom de page trop long: %s
+Nom de page trop long&nbsp;: %s
 Invalid Page %s
 Page non valide %s
 Invalid Page %s (must not end with .db)
@@ -56,7 +56,7 @@ Page non valide %s (elle ne doit pas se terminer par .db)
 Invalid Page %s (must not end with .lck)
 Page non valide %s (elle ne doit pas se terminer par .lck)
 Page name may not contain space characters: %s
-Le nom de la page ne peut pas contenir d'espaces: %s
+Le nom de la page ne peut pas contenir d'espaces&nbsp;: %s
 Revision %s not available
 La version %s n'est pas disponible
 showing current revision instead
@@ -70,7 +70,7 @@ Impossible d'ouvrir le fichier de log %
 Error was
 L'erreur était
 Note: This error is normal if no changes have been made.
-Remarque: Cette erreur est normale si aucune modification n'a été effectuée.
+Remarque&nbsp;: Cette erreur est normale si aucune modification n'a été effectuée.
 Could not open old %s log file
 Impossible d'ouvrir l'ancien fichier de log %
 No updates since %s
@@ -96,7 +96,7 @@ List all changes
 List later changes
 
 Username:
-Nom d'utilisateur:
+Nom d'utilisateur&nbsp;:
 Host:
 
 Language:
@@ -136,7 +136,7 @@ Redirection depuis %s
 Click to search for references to this page
 
 Cookie: 
-Cookie: 
+Cookie&nbsp;: 
 new comment
 nouveau commentaire
 Save
@@ -172,9 +172,9 @@ Base de données stockée dans le repertoire temporaire
 %s seconds
 %s secondes
 Search:
-Rechercher:
+Rechercher&nbsp;:
 Replace:
-Remplacer:
+Remplacer&nbsp;:
 Validate HTML
 Validation du HTML
 Validate CSS
@@ -194,11 +194,11 @@ mineure
 No diff available.
 Pas de diff disponible
 Changed:
-Modifiée:
+Modifiée&nbsp;:
 Removed:
-Suprimée:
+Suprimée&nbsp;:
 Added:
-Ajoutée:
+Ajoutée&nbsp;:
 to
 à
 Cannot save an nameless page.
@@ -234,7 +234,7 @@ a l'instant
 Editing Denied
 Modification interdite
 Editing not allowed: user, ip, or network is blocked.
-Modification interdite: l'utilisateur, l'adresse ip, ou le reseau est bloqué
+Modification interdite&nbsp;: l'utilisateur, l'adresse ip, ou le reseau est bloqué
 Contact the wiki administrator for more information.
 Contactez l'administrateur du wiki pour plus d'information.
 The rule %s matched for you.
@@ -242,7 +242,7 @@ The rule %s matched for you.
 See %s for more information.
 
 Editing not allowed: %s is read-only.
-Modification interdite: %s est en lecture seule
+Modification interdite&nbsp;: %s est en lecture seule
 Only administrators can upload files.
 
 Editing revision %s of
@@ -254,7 +254,7 @@ Modification de l'ancienne version %s.
 Saving this page will replace the latest revision with this text.
 Sauvegarder cette page remplacera la dernière version par ce texte.
 Summary:
-Résumé:
+Résumé&nbsp;:
 This change is a minor edit.
 Ce changement est mineur.
 Preview
@@ -284,7 +284,7 @@ Vous êtes un utilisateur normal sur ce site.
 Your password does not match any of the  administrator or editor passwords.
 Vote mot de passe ne corespond à aucun de ceux des administrateurs ou éditeurs.
 Password:
-Mot de passe:
+Mot de passe&nbsp;:
 This site does not use admin or editor passwords.
 Ce site n'utilise pas de mot de passe pour les administrateurs ou les éditeurs.
 This operation is restricted to site editors only...
@@ -300,11 +300,11 @@ Index de toutes les pages
 (for %s only)
 
 %s pages found:
-%s pages trouvées:
+%s pages trouvées&nbsp;:
 Replaced: %s
-Remplacé: %s
+Remplacé&nbsp;: %s
 Search for: %s
-Rechercher: %s
+Rechercher&nbsp;: %s
 View changes for these pages
 
 and
