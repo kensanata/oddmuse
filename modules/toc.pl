@@ -16,73 +16,105 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.9 2004/08/06 11:50:58 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.10 2004/10/31 17:58:26 groogel Exp $</p>';
 
-push(@MyRules, \&TocRule);
+push( @MyRules, \&TocRule );
+
 # This must come *before* the usemod.pl rules.
-$RuleOrder{\&TocRule} = 90;
+$RuleOrder{ \&TocRule } = 90;
 
 sub TocRule {
-  # headings using =
-  if ($bol && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg) {
-    return CloseHtmlEnvironments() . TocWikiHeading($2, $3);
-  }
-  return undef;
+
+    # copied from usemod.pl
+    # headings using = (with lookahead)
+    if (   $bol
+        && $UseModMarkupInTitles
+        && m/\G(\s*\n)*(\=+)[ \t]*(?=[^=\n]+=)/cg )
+    {
+        my $depth = length($2);
+        $depth = 6 if $depth > 6;
+        return CloseHtmlEnvironments() . AddHtmlEnvironment( 'h' . $depth );
+    } elsif (
+        $UseModMarkupInTitles
+        && m/\G[ \t]*=+\n?/cg
+        && (   InElement('h1')
+            || InElement('h2')
+            || InElement('h3')
+            || InElement('h4')
+            || InElement('h5')
+            || InElement('h6') )
+      )
+    {
+        return CloseHtmlEnvironments();
+    } elsif ( $bol
+        && !$UseModMarkupInTitles
+        && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg )
+    {
+        return CloseHtmlEnvironments() . WikiHeading( $2, $3 );
+    }
+    return undef;
 }
 
 sub TocWikiHeading {
-  my ($depth, $text) = @_;
-  $depth = length($depth);
-  $depth = 6  if ($depth > 6);
-  my $link = UrlEncode($text);
-  return "<h$depth><a name=\"$link\">$text</a></h$depth>";
+    my ( $depth, $text ) = @_;
+    $depth = length($depth);
+    $depth = 6 if ( $depth > 6 );
+    my $link = UrlEncode($text);
+    return "<h$depth><a name=\"$link\">$text</a></h$depth>";
 }
 
 *OldTocGetHeader = *GetHeader;
-*GetHeader = *NewTocGetHeader;
+*GetHeader       = *NewTocGetHeader;
 
 sub NewTocGetHeader {
-  my ($id) = @_;
-  my $result = OldTocGetHeader(@_);
-  # append TOC to header
-  $result .= TocHeadings($id) if $id;
-  return $result;
+    my ($id) = @_;
+    my $result = OldTocGetHeader(@_);
+
+    # append TOC to header
+    $result .= TocHeadings($id) if $id;
+    return $result;
 }
 
 sub TocHeadings {
-  $page = GetPageContent(shift);
-  # ignore all the stuff that gets processed anyway
-  foreach my $tag ('nowiki', 'pre', 'code') {
-    $page =~ s|<$tag>(.*\n)*?</$tag>||gi;
-  }
-  my $Headings = '';
-  my $HeadingsLevel = 1;
-  my $count = 0;
-  # try to determine what will end up as a header
-  foreach $line (grep(/^\=+.*\=+[ \t]*$/, split(/\n/, $page))) {
-    next unless $line =~ /^(\=+)[ \t]*(.*?)[ \t]*\=+[ \t]*$/;
-    my $depth = length($1);
-    my $text = $2;
-    next unless $text;
-    my $link = UrlEncode($text);
-    $text = QuoteHtml($text);
-    $count++;
-    $depth = 2 if $depth < 2;
-    $depth = 6 if $depth > 6;
-    while ($HeadingsLevel < $depth) {
-      $Headings .= '<ol>';
-      $HeadingsLevel++;
+    my $id = shift;
+    $page = GetPageContent($id);
+
+    # ignore all the stuff that gets processed anyway
+    foreach my $tag ( 'nowiki', 'pre', 'code' ) {
+        $page =~ s|<$tag>(.*\n)*?</$tag>||gi;
     }
-    while ($HeadingsLevel > $depth) {
-      $Headings .= '</ol>';
-      $HeadingsLevel--;
+    my $Headings      = "<h2>" . T('Contents') . "</h2>";
+    my $HeadingsLevel = 1;
+    my $count         = 0;
+
+    # try to determine what will end up as a header
+    foreach $line ( grep( /^\=+.*\=+[ \t]*$/, split( /\n/, $page ) ) ) {
+        next unless $line =~ /^(\=+)[ \t]*(.*?)[ \t]*\=+[ \t]*$/;
+        my $depth = length($1);
+        my $text  = $2;
+        next unless $text;
+        my $link = UrlEncode($text);
+        $text = QuoteHtml($text);
+        $count++;
+        $depth = 1 if $depth < 1;
+        $depth = 6 if $depth > 6;
+
+        while ( ( $HeadingsLevel - 1 ) < $depth ) {
+            $Headings .= '<ol>';
+            $HeadingsLevel++;
+        }
+        while ( ( $HeadingsLevel - 1 ) > $depth ) {
+            $Headings .= '</ol>';
+            $HeadingsLevel--;
+        }
+        $Headings .= "<li><a href=\"#$link\">$text</a></li>";
     }
-    $Headings .= "<li><a href=\"#$link\">$text</a></li>";
-  }
-  while ($HeadingsLevel > 1) {
-    $Headings .= '</ol>';
-    $HeadingsLevel--;
-  }
-  return '' if $count <= 2;
-  return '<div class="toc">' . $Headings . '</div>' if $Headings;
+    while ( $HeadingsLevel > 1 ) {
+        $Headings .= '</ol>';
+        $HeadingsLevel--;
+    }
+    return '' if $count <= 2;
+    return '<div class="toc">' . $Headings . '</div>'
+      if $Headings;
 }
+
