@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.14 2004/12/29 00:41:21 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.15 2004/12/29 00:52:27 as Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -109,7 +109,7 @@ sub StaticFileName {
   print "cannot read " . GetPageFile(StaticUrlDecode($id)) . $q->br() unless $status;
   my %hash = ParseData($data);
   my $ext = '.html';
-  if ($hash{text} =~ /^#FILE ([^ \n]+)\n(.*)/s) {
+  if ($hash{text} =~ /^\#FILE ([^ \n]+)\n(.*)/s) {
     $ext = $StaticMimeTypes{$1};
     $ext = '.' . $ext if $ext;
   }
@@ -129,9 +129,11 @@ sub StaticWriteFile {
   my $html = GetParam('html', 1);
   my $filename = StaticFileName($id);
   OpenPage($id);
+  my ($mimetype, $data) = $Page{text} =~ /^\#FILE ([^ \n]+)\n(.*)/s;
+  return unless $html or $data;
   open(F,"> $StaticDir/$filename") or ReportError(Ts('Cannot write %s', $filename));
-  if ($Page{text} =~ /^#FILE ([^ \n]+)\n(.*)/s) {
-    StaticFile($id, $1, $2);
+  if ($data) {
+    StaticFile($id, $mimetype, $data);
   } elsif ($html) {
     StaticHtml($id);
   }
@@ -206,7 +208,7 @@ sub StaticFilesNewDoPost {
   if ($StaticAlways) {
     # always delete
     StaticDeleteFile($OpenPageName);
-    if ($Page{text} =~ /^#FILE / # if a file was uploaded
+    if ($Page{text} =~ /^\#FILE / # if a file was uploaded
 	or $StaticAlways > 1) {
       CreateDir($StaticDir);
       StaticWriteFile($OpenPageName);
