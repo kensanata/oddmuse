@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.1 2004/12/31 18:19:43 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.2 2005/01/01 13:40:31 as Exp $</p>';
 
 # add the same CSS as in tables.pl
 $DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /table\.user/; # mod_perl?
@@ -39,33 +39,46 @@ sub TablesLongRule {
   # a new row is started when a cell is repeated
   # if cells are missing, column spans are created (the first row
   # could use row spans...)
-  if ($bol && m/\G(\s*\n)*(\&lt;table +([A-Za-z\x80-\xff,; ]+)\&gt; *\n)/cgo) {
-    Clean(CloseHtmlEnvironments() . '<table class="user long">');
-    my $str = $2;
-    my @labels = split(/ *[,;] */, $3);
+  if ($bol && m/\G\s*\n*\&lt;table(?:\/([a-z]+))? +([A-Za-z\x80-\xff,;\/ ]+)\&gt; *\n/cgo) {
+    my $class = ' ' . $1 if $1;
+    Clean(CloseHtmlEnvironments() . "<table class=\"user long$class\">");
+    # labels and their default class
+    my %default_class = ();
+    my @labels = map { my ($label, $class) = split /\//;
+		       $default_class{$label} = $class;
+		       $label;
+		     } split(/ *[,;] */, $2);
     my $regexp = join('|', @labels);
+    # read complete table
     my @lines = ();
     while (m/\G(.*\n)/cg) {
       my $line = $1;
       last if substr($line,0,4) eq ('----'); # the rest of this line is ignored!
       push(@lines, $line);
     }
+    # parse lines and print table rows
     my $lastpos = pos;
     my @rows = ();
     my %row = ();
+    my %class = %default_class;
     my $label = '';
+    my $first = 1;
     for my $line (@lines) {
-      if ($line =~ /^($regexp)[:=] *(.*)/o) {
+      if ($line =~ /^($regexp)(?:\/([a-z]+))?[:=] *(.*)/o) {
 	$label = $1;
-	$line = $2;
+	$class = $2;
+	$line = $3;
 	if ($row{$label}) { # repetition of label, we must start a new row
-	  TablesLongRow(\@labels, \%row);
+	  TablesLongRow(\@labels, \%row, \%class, $first);
+	  $first = 0;
 	  %row = ();
+	  %class = %default_class;
 	}
+	$class{$label} = $class if $class;
       }
       $row{$label} .= $line . "\n";
     }
-    TablesLongRow(\@labels, \%row); # don't forget the last row
+    TablesLongRow(\@labels, \%row, \%class, $first); # don't forget the last row
     Clean('</table>');
     pos = $lastpos;
     return '';
@@ -76,15 +89,23 @@ sub TablesLongRule {
 sub TablesLongRow {
   my @labels = @{$_[0]};
   my %row = %{$_[1]};
+  my %class = %{$_[2]};
+  my $first = $_[3];
   Clean('<tr>');
   # first print the old row
   for my $i (0 .. $#labels) {
     next if not $row{$labels[$i]}; # should only happen after previous cellspans
     my $span = 1;
-    while ($span < $#labels and not $row{$labels[$i+$span]}) {
+    while ($span <= $#labels and not $row{$labels[$i+$span]}) {
       $span++;
     }
-    Clean($span > 1 ? "<td colspan=\"$span\">" : '<td>');
+    my $class = $class{$labels[$i]};
+    my $html = '<'
+    $html .= $first ? 'th' : 'td';
+    $html .= " colspan=\"$span\"" if $span > 1;
+    $html .= " class=\"$class\"" if $class;
+    $html .= '>';
+    Clean($html);
 
     # WATCH OUT: here comes the evil magic messing with the internals!
     # first, clean everything up like at the end of ApplyRules
