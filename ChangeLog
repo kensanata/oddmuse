@@ -12,6 +12,9 @@
 	(ReadRecentVisitors): Replaced newline and colon with field separators.
 	(WriteRecentVisitors): Ditto.
 	(GetReferers): Ditto.
+	(DoConvert): Typo.
+	(DoConvert): Typo.
+	(ConvertFile): Typo.
 
 	This undoes all the on-the-fly conversion code, since that was
 	hard to maintain, and had a bug: Keep files of pages that had no
