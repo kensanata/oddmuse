@@ -1,3 +1,21 @@
+2004-12-27  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+
+	* wiki.pl (RSS): Add RFC 822 Parsing for RSS 2.0.
+	(DoDownload): Fix regexp for #FILE.
+	(DoShowVisitors, DoPrintAllReferers): Add content div.
+
+2004-12-26  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+
+	* modules/markup.pl (MarkupRule): More checks to prevent bugs when
+	one of the hashes is empty.
+
+	* modules/static-copy.pl (StaticFileName, StaticWriteFile): Regexp fix.
+	(StaticFilesNewDoPost, StaticNewDeletePage, StaticDeleteFile): New.
+	($StaticUrl): New.
+	(StaticDeleteFile): New.
+	(GetDownloadLink): New, override the one from wiki.pl.
+	(GetDownloadLink): Use StaticFileName.
+
 2004-12-25  Alex Schroeder  <alex@gnu.org>
 
 	* test.pl: Calendar tests.
