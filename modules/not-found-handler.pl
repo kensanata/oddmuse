@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: not-found-handler.pl,v 1.2 2004/06/12 11:27:27 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: not-found-handler.pl,v 1.3 2004/06/12 11:31:04 as Exp $</p>';
 
 use vars qw($NotFoundHandlerDir);
 
@@ -34,7 +34,8 @@ sub NewNotFoundHandlerSave {
     # new page, regenerate all of them
     unlink(glob("$NotFoundHandlerDir/*"));
   } else {
-    unlink("$NotFoundHandlerDir/$id");
+    # unlinke PageName, PageName.en, PageName.de, etc.
+    unlink("$NotFoundHandlerDir/$id", glob("$NotFoundHandlerDir/$id.[a-z][a-z]"));
   }
 }
 
@@ -43,6 +44,7 @@ sub NewNotFoundHandlerSave {
 
 sub NewNotFoundHandlerDeletePage {
   my $id = shift;
-  unlink("$NotFoundHandlerDir/$id");
+  # unlinke PageName, PageName.en, PageName.de, etc.
+  unlink("$NotFoundHandlerDir/$id", glob("$NotFoundHandlerDir/$id.[a-z][a-z]"));
   return OldNotFoundHandlerDeletePage($id);
 }
