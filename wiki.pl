@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.42 2003/04/24 17:43:27 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.43 2003/04/24 21:53:14 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -928,7 +928,7 @@ sub InitCookie {
   my $name = &GetParam('username', '');
   $q->delete('username');
   delete $NewCookie{'username'};
-  if (!$name or $name eq '*') {
+  if (!$name) {
     # do nothing
   } elsif (!$FreeLinks && !($name =~ /^$LinkPattern$/)) {
     $Debug .= Ts('Invalid UserName %s: not saved.', $name);
@@ -1333,7 +1333,7 @@ sub GetRcHtml {
 	$author = &GetAuthorLink($host, '');
       }
       $sum = '';
-      if (($summary ne '') && ($summary ne '*')) {
+      if ($summary ne '') {
 	$summary = &QuoteHtml($summary);
 	$sum = "<strong>[$summary]</strong> ";
       }
