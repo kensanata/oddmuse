@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.9 2004/03/28 19:52:00 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.10 2004/04/02 01:15:28 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage);
 
@@ -37,7 +37,7 @@ sub Cal {
   my $cal = `cal`;
   return unless $cal;
   my @pages = AllPagesList();
-  my ($sec, $min, $hour, $mday, $mon, $year) = gmtime($Now);
+  my ($sec, $min, $hour, $mday, $mon, $year) = localtime($Now);
   $cal =~ s|\b( ?\d?\d)\b|{
     my $day = $1;
     my $date = sprintf("%d-%02d-%02d", $year+1900, $mon+1, $day);
