@@ -1,4 +1,4 @@
-# Copyright (C) 2004  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2005  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: admin.pl,v 1.6 2004/09/20 23:49:02 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: admin.pl,v 1.7 2005/01/05 01:14:36 as Exp $</p>';
 
 $Action{delete} = \&AdminPowerDelete;
 $Action{rename} = \&AdminPowerRename;
@@ -34,19 +34,21 @@ sub AdminPowerDelete {
     print $q->p(GetPageLink($id) . ' ' . T('not deleted: ')) . $status;
   } else {
     print $q->p(GetPageLink($id) . ' ' . T('deleted'));
-    WriteRcLog($id, Ts('Deleted %s', $new), 0, $Page{revision},
+    WriteRcLog($id, Ts('Deleted %s', $id), 0, $Page{revision},
 	       GetParam('username', ''), GetRemoteHost(), $Page{languages},
 	       GetCluster($Page{text}));
   }
+  # Regenerate index on next request
+  unlink($IndexFile);
   ReleaseLock();
   print $q->p(T('Main lock released.'));
   PrintFooter();
 }
 
 sub AdminPowerRename {
-  my $id = GetParam('id', '');
+  my $id = FreeToNormal(GetParam('id', ''));
   ValidIdOrDie($id);
-  my $new = GetParam('new', '');
+  my $new = FreeToNormal(GetParam('new', ''));
   ValidIdOrDie($new);
   print GetHeader('', Tss('Renaming %1 to %2.', $id, $new), '');
   return unless UserIsAdminOrError();
@@ -55,8 +57,7 @@ sub AdminPowerRename {
   # page file -- only check for existing or missing pages here
   my $fname = GetPageFile($id);
   ReportError(Ts('The page %s does not exist', $id), '400 BAD REQUEST') unless -f $fname;
-  my $newfname = FreeToNormal(GetPageFile($new));
-  ValidIdOrDie($newfname);
+  my $newfname = GetPageFile($new);
   ReportError(Ts('The page %s already exists', $new), '400 BAD REQUEST') if -f $newfname;
   CreatePageDir($PageDir, $new); # It might not exist yet
   rename($fname, $newfname);
@@ -82,20 +83,20 @@ sub AdminPowerRename {
   PrintFooter();
 }
 
-*OldAdminPowerGetAdminBar = *GetAdminBar;
-*GetAdminBar = *NewAdminPowerGetAdminBar;
+push(@MyAdminCode, \&AdminPower);
 
-sub NewAdminPowerGetAdminBar {
-  my ($id, $rev) = @_;
-  my $html = OldAdminPowerGetAdminBar(@_);
+sub AdminPower {
+  return unless UserIsAdmin();
+  my ($id, $menuref, $restref) = @_;
+  my $name = $id;
+  $name =~ s/_/ /g;
   if ($id) {
-    $html .= ' | ' . ScriptLink('action=delete;id=' . $id, T('Delete page'));
-    $html .= GetFormStart()
-      . T('Rename this page to:') . ' '
-	. GetHiddenValue('action', 'rename')
-	  . GetHiddenValue('id', $id)
-	    . $q->textfield(-name=>'new', -size=>20)
-	      . $q->submit('Do it');
+    push(@$menuref, ScriptLink('action=delete;id=' . $id, Ts('Immediately delete %s', $name)));
+    push(@$menuref, GetFormStart()
+	 . Ts('Rename %s to:', $name) . ' '
+	 . GetHiddenValue('action', 'rename')
+	 . GetHiddenValue('id', $id)
+	 . $q->textfield(-name=>'new', -size=>20)
+	 . $q->submit('Do it'));
   }
-  return $html;
 }
