@@ -1,3 +1,8 @@
+2003-08-16  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($AllNetworkFiles): New variable.
+	(GetUrl): Allow file:/// if $AllNetworkFiles is set.
+
 2003-08-15  Alex Schroeder  <alex@emacswikiorg>
 
 	* wiki.pl (InitLinkPatterns): Simplify $UrlPattern and take more of
