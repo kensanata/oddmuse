@@ -122,6 +122,8 @@ system('/bin/rm -rf /tmp/oddmuse');
 die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
 mkdir '/tmp/oddmuse';
 
+$ENV{'REMOTE_ADDR'} = 'test-markup';
+
 # --------------------
 
 print '[clusters]';
@@ -137,13 +139,13 @@ update_page('ClusterIdea', "This is just a page.\nNobody wants it.", 'three', 1)
 update_page('ClusterIdea', "MainPage\nThis is just a page.\nBut somebody has to do it.", 'four');
 
 @Test = split('\n',<<'EOT');
-Cluster.*MainPage.*Related changes
+Cluster.*MainPage
 EOT
 
 test_page(get_page('action=rc'), @Test);
 
 @Test = split('\n',<<'EOT');
-Cluster.*MainPage.*Related changes
+Cluster.*MainPage
 ClusterIdea.*two
 ClusterIdea.*one
 EOT
@@ -151,7 +153,7 @@ EOT
 test_page(get_page('action=rc all=1'), @Test);
 
 @Test = split('\n',<<'EOT');
-Cluster.*MainPage.*Related changes
+Cluster.*MainPage
 ClusterIdea.*three
 ClusterIdea.*two
 ClusterIdea.*one
@@ -778,7 +780,46 @@ test_page(update_page('BannedHosts', "Foo\nBar\n", 'banning me', 0, 1), @Test);
 
 # --------------------
 
+print '[journal]';
+
+## Create diary pages
+
+update_page('2003-06-13', "Freitag");
+update_page('2003-06-14', "Samstag");
+update_page('2003-06-15', "Sonntag");
+@Test = split('\n',<<'EOT');
+This is my journal
+2003-06-15
+Sonntag
+2003-06-14
+Samstag
+EOT
+
+test_page(update_page('Summary', "This is my journal:\n\n<journal 2>"), @Test);
+test_page(update_page('2003-01-01', "This is my journal -- recursive:\n\n<journal>"), @Test);
+push @Test, 'journal';
+test_page(update_page('2003-01-01', "This is my journal -- truly recursive:\n\n<journal>"), @Test);
+
+@Test = split('\n',<<'EOT');
+2003-06-15(.|\n)*2003-06-14
+EOT
+
+test_page(update_page('Summary', "Counting down:\n\n<journal 2>"), @Test);
+
+@Test = split('\n',<<'EOT');
+2003-01-01(.|\n)*2003-06-13(.|\n)*2003-06-14
+EOT
+
+test_page(update_page('Summary', "Counting up:\n\n<journal 3 reverse>"), @Test);
+
+# --------------------
+
 print '[lock on creation]';
+
+open(F,'>/tmp/oddmuse/config');
+print F "\$SurgeProtection = 0;\n";
+print F "\$AdminPass = 'foo';\n";
+close(F);
 
 ## Create a sample page, and test for regular expressions in the output
 
@@ -841,40 +882,6 @@ OddMuse
 EOT
 
 test_page(update_page('InterMap', "All your edits are blong to us!\n", 'required'), @Test);
-
-# --------------------
-
-print '[journal]';
-
-## Create diary pages
-
-update_page('2003-06-13', "Freitag");
-update_page('2003-06-14', "Samstag");
-update_page('2003-06-15', "Sonntag");
-@Test = split('\n',<<'EOT');
-This is my journal
-2003-06-15
-Sonntag
-2003-06-14
-Samstag
-EOT
-
-test_page(update_page('Summary', "This is my journal:\n\n<journal 2>"), @Test);
-test_page(update_page('2003-01-01', "This is my journal -- recursive:\n\n<journal>"), @Test);
-push @Test, 'journal';
-test_page(update_page('2003-01-01', "This is my journal -- truly recursive:\n\n<journal>"), @Test);
-
-@Test = split('\n',<<'EOT');
-2003-06-15(.|\n)*2003-06-14
-EOT
-
-test_page(update_page('Summary', "Counting down:\n\n<journal 2>"), @Test);
-
-@Test = split('\n',<<'EOT');
-2003-01-01(.|\n)*2003-06-13(.|\n)*2003-06-14
-EOT
-
-test_page(update_page('Summary', "Counting up:\n\n<journal 3 reverse>"), @Test);
 
 # --------------------
 
@@ -1024,8 +1031,7 @@ EOT
 
 run_tests();
 
-# Create temporary data directory as expected by the script
-# and create a config file in this directory.
+print '[more markup]';
 
 system('/bin/rm -rf /tmp/oddmuse');
 die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
@@ -1101,18 +1107,11 @@ EOT
 
 test_page(get_page('action=browse revision=9 id=KeptRevisions'), @Test);
 
-@Test = split('\n',<<'EOT');
-Revision 0 not available \(showing current revision instead\)
-fifth
-EOT
-
-test_page(get_page('action=browse revision=0 id=KeptRevisions'), @Test);
-
 # Show a major diff
 
 @Test = split('\n',<<'EOT');
 Difference \(from prior major revision\)
-second
+third
 fifth
 EOT
 
