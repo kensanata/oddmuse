@@ -4,6 +4,8 @@
 	(GetFilterForm): Use a table.
 	(RSS): Handle diff and history links.
 	(RSS): Simplified date handling a bit.
+	(Save): Only call UpdateDiffs when the new revision is > 1.
+	(PrintWikiToHTML): Not fatal if we can't get the main lock.
 
 2003-11-06  Alex Schroeder  <alex@gnu.org>
 
