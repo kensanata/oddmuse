@@ -187,6 +187,14 @@ file:///home/foo/tutorial.pdf
 file:///home/foo/tutorial.pdf
 mailto:alex@emacswiki.org
 <a href="mailto:alex@emacswiki.org">mailto:alex@emacswiki.org</a>
+ source
+<pre> source</pre>
+ source\n etc\n
+<pre> source\n etc\n</pre>
+ source\n \n etc\n
+<pre> source\n \n etc\n</pre>
+ source\n \n etc\n\nother
+<pre> source\n \n etc\n</pre><p>other
 EOT
 
 # Now translate embedded newlines (other backslashes remain untouched)
