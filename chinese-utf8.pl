@@ -26,6 +26,8 @@ Invalid UserName %s: not saved.
 無法儲存。無效的使用者名稱 %s
 UserName must be 50 characters or less: not saved
 無法儲存。使用者名稱必需不可多於 50 字元。
+This page contains an uploaded file:
+
 XML::RSS is not available on this system.
 本系統無法使用 XML::RSS 。
 diff
@@ -496,6 +498,10 @@ Next
 
 Calendar %s
 
+Comments on 
+
+Comment on 
+
 Compilation for %s
 
 Compilation tag is missing a regular expression.
@@ -549,6 +555,14 @@ Type
 Permalink to "%s"
 
 Portrait
+
+Updating %s
+
+Done.</p>
+
+Search term missing.
+
+Searching for %s
 
 Static Copy
 

@@ -31,6 +31,8 @@ Invalid UserName %s: not saved.
 Ogiltigt anv√§ndarnamn %s: Ej sparad.
 UserName must be 50 characters or less: not saved
 Anv√§ndarnamn f√•r best√• av h√∂gst 50 tecken: Ej sparad.
+This page contains an uploaded file:
+
 XML::RSS is not available on this system.
 XML::RSS ‰r inte tillg‰ngligt pÂ det h‰r systemet.
 diff
@@ -501,6 +503,10 @@ Next
 
 Calendar %s
 
+Comments on 
+
+Comment on 
+
 Compilation for %s
 
 Compilation tag is missing a regular expression.
@@ -554,6 +560,14 @@ Type
 Permalink to "%s"
 
 Portrait
+
+Updating %s
+
+Done.</p>
+
+Search term missing.
+
+Searching for %s
 
 Static Copy
 

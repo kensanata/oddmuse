@@ -27,6 +27,8 @@ Invalid UserName %s: not saved.
 Hекорректная кличка %s: ничего не записано.
 UserName must be 50 characters or less: not saved
 
+This page contains an uploaded file:
+
 XML::RSS is not available on this system.
 
 diff
@@ -497,6 +499,10 @@ Next
 
 Calendar %s
 
+Comments on 
+
+Comment on 
+
 Compilation for %s
 
 Compilation tag is missing a regular expression.
@@ -550,6 +556,14 @@ Type
 Permalink to "%s"
 
 Portrait
+
+Updating %s
+
+Done.</p>
+
+Search term missing.
+
+Searching for %s
 
 Static Copy
 

@@ -33,6 +33,8 @@ Invalid UserName %s: not saved.
 Niet opgeslagen: de GebruikersNaam %s is ongeldig.
 UserName must be 50 characters or less: not saved
 Niet opgeslagen: de GebruikersNaam mag hoogstens 50 tekens lang zijn.
+This page contains an uploaded file:
+
 XML::RSS is not available on this system.
 XML::RSS is niet beschikbaar op dit systeem.
 diff
@@ -503,6 +505,10 @@ Next
 
 Calendar %s
 Kalender %s
+Comments on 
+
+Comment on 
+
 Compilation for %s
 
 Compilation tag is missing a regular expression.
@@ -557,6 +563,14 @@ Permalink to "%s"
 
 Portrait
 Portret
+Updating %s
+
+Done.</p>
+
+Search term missing.
+
+Searching for %s
+
 Static Copy
 
 Back to %s

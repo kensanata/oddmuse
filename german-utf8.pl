@@ -25,6 +25,8 @@ Invalid UserName %s: not saved.
 Ungültiger Benutzername %s: nicht gespeichert.
 UserName must be 50 characters or less: not saved
 Länge des Benutzernamens maximal 50 Zeichen: nicht gespeichert.
+This page contains an uploaded file:
+
 XML::RSS is not available on this system.
 Das XML::RSS Modul ist auf diesem System nicht installiert.
 diff
@@ -553,6 +555,14 @@ Permalink to "%s"
 Permalink für "%s"
 Portrait
 Portrait
+Updating %s
+
+Done.</p>
+
+Search term missing.
+
+Searching for %s
+
 Static Copy
 Statische Kopie
 Back to %s
