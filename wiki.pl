@@ -274,7 +274,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.201 2003/10/15 23:59:10 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.202 2003/10/16 12:04:07 as Exp $');
 }
 
 sub InitCookie {
@@ -1034,8 +1034,7 @@ sub DoBrowseRequest {
   } elsif (($search ne '') || (GetParam('dosearch', '') ne '')) {
     DoSearch($search);
   } elsif (GetParam('title', '')) {
-    $id = GetParam('title', '');
-    DoPost($id)  if ValidIdOrDie($id);
+    DoPost(GetParam('title', ''));
   } elsif ($action and defined &MyAction) {
     eval { local $SIG{__DIE__}; MyAction(); };
   } else {
@@ -1058,7 +1057,7 @@ sub ValidId {
     return Ts('Invalid Page %s (must not end with .db)', $id)  if ($id =~ m|\.db$|);
     return Ts('Invalid Page %s (must not end with .lck)', $id)  if ($id =~ m|\.lck$|);
   } else {
-    return Ts('Page name may not contain space characters: %s', $id)  if ($id =~ m| |);
+    return Ts('Page name may not contain space characters: %s', $id) if ($id =~ m| |);
     return Ts('Invalid Page %s', $id)  if (!($id =~ /^$LinkPattern$/));
   }
   return '';
@@ -3250,6 +3249,8 @@ sub PrintAllPages {
 
 sub DoPost {
   my $id = shift;
+  $id = FreeToNormal($id) if $FreeLinks;
+  ValidIdOrDie($id);
   if (!UserCanEdit($id, 1)) {
     ReportError(Ts('Editing not allowed for %s.', $id));
   } elsif (($id eq 'SampleUndefinedPage') or ($id eq T('SampleUndefinedPage'))) {
