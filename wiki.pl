@@ -305,7 +305,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.440 2004/08/12 23:42:04 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.441 2004/08/13 00:38:27 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -561,7 +561,7 @@ sub CloseHtmlEnvironmentUntil { # close all environments until you get to $code
 
 sub AddHtmlEnvironment { # add a new one so that it will be closed!
   my ($code, $attr) = @_;
-  if ($HtmlStack[0] ne $code) {
+  if (@HtmlStack and $HtmlStack[0] ne $code) {
     unshift(@HtmlStack, $code);
     return "<$code $attr>" if ($attr);
     return "<$code>";
@@ -1035,7 +1035,7 @@ sub T {
 sub Ts {
   my ($text, $string) = @_;
   $text = T($text);
-  $text =~ s/\%s/$string/;
+  $text =~ s/\%s/$string/ if defined($string);
   return $text;
 }
 
@@ -1082,7 +1082,7 @@ sub DoBrowseRequest {
 
 sub ValidId {
   my $id = shift;
-  return Ts('Page name is missing') unless $id;
+  return T('Page name is missing') unless $id;
   return Ts('Page name is too long: %s', $id)  if (length($id) > 120);
   if ($FreeLinks) {
     $id =~ s/ /_/g;
@@ -1382,7 +1382,7 @@ sub GetFilterForm {
     . $q->Tr($q->td(T('Host:')) . $q->td($q->textfield(-name=>'rchostonly', -size=>20)));
   $table .= $q->Tr($q->td(T('Language:')) . $q->td($q->textfield(-name=>'lang', -size=>10,
     -default=>GetParam('lang', '')))) if %Languages;
-  $form .= $q->strong(T('Filters')) . $q->table($table);
+  $form .= $q->p($q->strong(T('Filters'))) . $q->table($table);
   return $form . $q->submit('dofilter', T('Go!')) . $q->endform;
 }
 
@@ -1481,9 +1481,9 @@ sub GetRcHtml {
     },
       # printRCLine
       sub {
-	my($pagename, $timestamp, $host, $userName, $summary, $minor, $revision, $languages, $cluster) = @_;
+	my($pagename, $timestamp, $host, $username, $summary, $minor, $revision, $languages, $cluster) = @_;
 	$host = QuoteHtml($host);
-	my $author = GetAuthorLink($host, $userName);
+	my $author = GetAuthorLink($host, $username);
 	my $sum = $q->strong('--', QuoteHtml($summary))	 if $summary;
 	my $edit = $q->em($tEdit)  if $minor;
 	my $lang = '[' . join(', ', @{$languages}) . ']'  if @{$languages};
@@ -1539,14 +1539,14 @@ sub GetRcText {
   GetRc
     sub {},
     sub {
-      my($pagename, $timestamp, $host, $userName, $summary, $minor, $revision, $languages, $cluster) = @_;
+      my($pagename, $timestamp, $host, $username, $summary, $minor, $revision, $languages, $cluster) = @_;
       my $link = $ScriptName . (GetParam('all', 0)
 				? GetPageParameters('browse', $pagename, $revision, $cluster)
 				: "/$pagename");
       $pagename =~ s/_/ /g;
       print "\n" . RcTextItem('title', $pagename)
       . RcTextItem('description', $summary)
-      . RcTextItem('generator', $userName ? $userName . ' ' . Ts('from %s', $host) : $host)
+      . RcTextItem('generator', $username ? $username . ' ' . Ts('from %s', $host) : $host)
       . RcTextItem('language', join(', ', @{$languages}))
       . RcTextItem('link', $link)
       . RcTextItem('last-modified', CalcDay($timestamp));
@@ -1602,7 +1602,7 @@ sub GetRcRss {
     sub {},
     # printRCLine
     sub {
-      my ($pagename, $timestamp, $host, $userName, $summary, $minor, $revision, $languages, $cluster) = @_;
+      my ($pagename, $timestamp, $host, $username, $summary, $minor, $revision, $languages, $cluster) = @_;
       return if grep(/$pagename/, @excluded);
       my ($sec, $min, $hour, $mday, $mon, $year) = gmtime($timestamp);
       my $name = FreeToNormal($pagename);
@@ -1614,7 +1614,7 @@ sub GetRcRss {
       $year += 1900;
       my $date = sprintf( "%4d-%02d-%02dT%02d:%02d:%02d+00:00",
 	$year, $mon+1, $mday, $hour, $min, $sec);
-      my $author = QuoteHtml($userName);
+      my $author = QuoteHtml($username);
       $author = $host unless $author;
       my %wiki = ( status      => (1 == $revision) ? 'new' : 'updated',
 		   importance  => $minor ? 'minor' : 'major',
@@ -1678,13 +1678,12 @@ sub DoHistory {
   }
   if ($UseDiff) {
     $html = $q->start_form(-method=>'GET', -action=>$ScriptName)
-      # don't use $q->hidden here, because then the sticky action value is used instead
-      . $q->input({-type=>'hidden', -name=>'action', -value=>'browse'})
-      . $q->input({-type=>'hidden', -name=>'diff', -value=>'1'})
-      . $q->input({-type=>'hidden', -name=>'id', -value=>$id})
-      . $q->table({-class=>'history'}, $html)
-      . $q->submit({-name=>T('Compare')})
-      . $q->end_form();
+          . $q->p( # don't use $q->hidden here, the sticky action value will be used instead
+		  $q->input({-type=>'hidden', -name=>'action', -value=>'browse'})
+		  . $q->input({-type=>'hidden', -name=>'diff', -value=>'1'})
+		  . $q->input({-type=>'hidden', -name=>'id', -value=>$id})
+		  . $q->table({-class=>'history'}, $html)
+		  . $q->submit({-name=>T('Compare')})) . $q->end_form();
   }
   print $html;
   PrintFooter($id, 'history');
@@ -1786,24 +1785,19 @@ sub ScriptLinkDiff {
 }
 
 sub GetAuthorLink {
-  my ($host, $userName) = @_;
-  my ($html, $title, $userNameShow);
-  $userNameShow = $userName;
-  if ($FreeLinks) {
-    $userName	  =~ s/ /_/g;
-    $userNameShow =~ s/_/ /g;
+  my ($host, $username) = @_;
+  $username = FreeToNormal($username);
+  my $name = $username;
+  $name =~ s/ /_/g if $name;
+  if (ValidId($username) ne '') {  # Invalid under current rules
+    $username = '';  # Just pretend it isn't there.
   }
-  if (ValidId($userName) ne '') {  # Invalid under current rules
-    $userName = '';  # Just pretend it isn't there.
+  if ($username and $RecentLink) {
+    return ScriptLink(UrlEncode($username), $name, 'author', undef, Ts('from %s', $host));
+  } elsif ($username) {
+    return $q->span({-class=>'author'}, $name) . ' ' . Ts('from %s', $host);
   }
-  if ($userName and $RecentLink) {
-    $html = ScriptLink(UrlEncode($userName), $userNameShow, 'author', undef, Ts('from %s', $host));
-  } elsif ($userName) {
-    $html = $q->span({-class=>'author'}, $userNameShow) . ' ' . Ts('from %s', $host);
-  } else {
-    $html = $host;
-  }
-  return $html;
+  return $host;
 }
 
 sub GetHistoryLink {
@@ -1916,10 +1910,10 @@ sub GetHtmlHeader {
   my $css = GetParam('css', '');
   if ($css) {
     foreach my $sheet (split(/\s+/, $css)) {
-      $html .= qq(<link type="text/css" rel="stylesheet" href="$sheet">);
+      $html .= qq(<link type="text/css" rel="stylesheet" href="$sheet" />);
     }
   } elsif ($StyleSheet) {
-    $html .= qq(<link type="text/css" rel="stylesheet" href="$StyleSheet">);
+    $html .= qq(<link type="text/css" rel="stylesheet" href="$StyleSheet" />);
   } elsif ($StyleSheetPage) {
     $html .= $q->style({-type=>'text/css'}, GetPageContent($StyleSheetPage));
   } else {
@@ -1976,16 +1970,16 @@ EOT
   # not be followed.
   if (($id eq $RCName) or (T($RCName) eq $id) or (T($id) eq $RCName)
       or (lc (GetParam('action', '')) eq 'index')) {
-    $html .= '<meta name="robots" content="INDEX,FOLLOW">';
+    $html .= '<meta name="robots" content="INDEX,FOLLOW" />';
   } elsif ($id eq '') {
-    $html .= '<meta name="robots" content="NOINDEX,NOFOLLOW">';
+    $html .= '<meta name="robots" content="NOINDEX,NOFOLLOW" />';
   } else {
-    $html .= '<meta name="robots" content="INDEX,NOFOLLOW">';
+    $html .= '<meta name="robots" content="INDEX,NOFOLLOW" />';
   }
   $html .= '<link rel="alternate" type="application/rss+xml" title="RSS" href="'
-    . $ScriptName . '?action=rss">';
+    . $ScriptName . '?action=rss" />';
   # finish
-  $html = qq(<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">\n<html>)
+  $html = qq(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n<html>)
     . $q->head($q->title($q->escapeHTML($title)) . $html . $HtmlHeaders)
     . '<body class="' . GetParam('theme', $ScriptName) . '">';
   return $html;
@@ -2115,18 +2109,16 @@ sub GetCommentForm {
   my ($id, $rev, $comment) = @_;
   if ($CommentsPrefix ne '' and $id and $rev ne 'history' and $rev ne 'edit'
       and $OpenPageName =~ /^$CommentsPrefix/) {
-    return $q->div({-class=>'comment'}, '<p>'
-		   . GetFormStart()
-		   . GetHiddenValue('title', $OpenPageName)
-		   . GetHiddenValue('summary' , T('new comment'))
-		   . GetTextArea('aftertext', $comment ? $comment : $NewComment)
-		   . '<p>' . T('Username:') . ' '
-		   . $q->textfield(-name=>'username',
-				   -default=>GetParam('username', ''), -override=>1,
-				   -size=>20, -maxlength=>50)
-		   . $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save'))
-			   . ' ' . $q->submit(-name=>'Preview', -value=>T('Preview')))
-		   . $q->endform());
+    return $q->div({-class=>'comment'}, GetFormStart(),
+		   $q->p(GetHiddenValue('title', $OpenPageName),
+			 GetHiddenValue('summary' , T('new comment')),
+			 GetTextArea('aftertext', $comment ? $comment : $NewComment)),
+		   $q->p(T('Username:'), ' ',
+			 $q->textfield(-name=>'username', -default=>GetParam('username', ''),
+				       -override=>1, -size=>20, -maxlength=>50)),
+		   $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save')), ' ',
+			 $q->submit(-name=>'Preview', -value=>T('Preview'))),
+		   $q->endform());
   }
   return '';
 }
@@ -2138,8 +2130,7 @@ sub GetFormStart {
 }
 
 sub GetSearchForm {
-  my $form = GetFormStart(0, 1) . T('Search:') . ' '
-    . $q->textfield(-name=>'search', -size=>20) . ' ';
+  my $form = T('Search:') . ' ' . $q->textfield(-name=>'search', -size=>20) . ' ';
   if ($ReplaceForm) {
     $form .= T('Replace:') . ' ' . $q->textfield(-name=>'replace', -size=>20) . ' ';
   }
@@ -2147,7 +2138,7 @@ sub GetSearchForm {
     $form .= T('Language:') . ' '
       . $q->textfield(-name=>'lang', -size=>10, -default=>GetParam('lang', '')) . ' ';
   }
-  return $form . $q->submit('dosearch', T('Go!')) . $q->endform;
+  return GetFormStart(0, 1) . $q->p($form . $q->submit('dosearch', T('Go!'))) . $q->endform;
 }
 
 sub GetValidatorLink {
@@ -2634,6 +2625,7 @@ sub GetRemoteHost {               # when testing, these variables are undefined.
 
 sub FreeToNormal { # trim all spaces and convert them to underlines
   my $id = shift;
+  return '' unless $id;
   $id =~ s/ /_/g;
   if (index($id, '_') > -1) {  # Quick check for any space/underscores
     $id =~ s/__+/_/g;
@@ -2696,18 +2688,13 @@ sub DoEdit {
     print $q->strong(Ts('Editing old revision %s.', $revision) . '  '
 		     . T('Saving this page will replace the latest revision with this text.'))
   }
-  print GetFormStart($upload);
-  print GetHiddenValue("title", $id);
-  print GetHiddenValue('revision', $revision) if $revision;
-  print GetHiddenValue('oldtime', $Page{ts});
-  if ($upload) {
-    print GetUpload();
-  } else {
-    print GetTextArea('text', $oldText);
-  }
+  print GetFormStart($upload),
+    $q->p(GetHiddenValue("title", $id), ($revision ? GetHiddenValue('revision', $revision) : ''),
+	  GetHiddenValue('oldtime', $Page{ts}),
+	  ($upload ? GetUpload() : GetTextArea('text', $oldText)));
   my $summary = GetParam('summary', '');
-  print $q->p(T('Summary:'),
-	      $q->textfield(-name=>'summary', -default=>$summary, -override=>1, -size=>60));
+  print $q->p(T('Summary:'), $q->textfield(-name=>'summary', -default=>$summary,
+					   -override=>1, -size=>60));
   if (GetParam('recent_edit') eq 'on') {
     print $q->p($q->checkbox(-name=>'recent_edit', -checked=>1,
 			     -label=>T('This change is a minor edit.')));
@@ -2716,10 +2703,10 @@ sub DoEdit {
 			     -label=>T('This change is a minor edit.')));
   }
   print T($EditNote) if $EditNote; # Allow translation
-  my $userName = GetParam('username', '');
+  my $username = GetParam('username', '');
   print $q->p(T('Username:') . ' '
 	      . $q->textfield(-name=>'username',
-			      -default=>$userName, -override=>1,
+			      -default=>$username, -override=>1,
 			      -size=>20, -maxlength=>50));
   print $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save'))
 	      . ($upload ? '' :	 ' ' . $q->submit(-name=>'Preview', -value=>T('Preview'))));
@@ -2782,9 +2769,10 @@ sub DoPassword {
     }
   }
   if ($AdminPass or $EditPass) {
-    print GetFormStart() . GetHiddenValue('action', 'password')
-      . $q->p(T('Password:') . ' ' . $q->password_field(-name=>'pwd', -size=>20, -maxlength=>50))
-      . $q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save')) . $q->endform;
+    print GetFormStart(),
+      $q->p(GetHiddenValue('action', 'password'), T('Password:'), ' ',
+	    $q->password_field(-name=>'pwd', -size=>20, -maxlength=>50),
+	    $q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save'))), $q->endform;
   } else {
     print $q->p(T('This site does not use admin or editor passwords.'));
   }
