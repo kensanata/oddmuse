@@ -69,7 +69,7 @@ $Monolithic $ReplaceForm %PermanentAnchors %PagePermanentAnchors
 $CollectingJournal $WikiDescription $PrintedHeader %Locks $Fragment
 @Blocks @Flags %NearSite %NearSource %NearLinksUsed $NearSiteInit
 $NearDir $NearMap $SisterSiteLogoUrl %NearSearch @KnownLocks
-$PermanentAnchorsInit $ModulesDescription %Action
+$PermanentAnchorsInit $ModulesDescription %Action $bol
 %RssInterwikiTranslate $RssInterwikiTranslateInit);
 
 # == Configuration ==
@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.430 2004/06/26 12:11:16 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.431 2004/06/27 23:43:04 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -414,7 +414,7 @@ sub ApplyRules {
   my $smileyregex = join "|", keys %Smilies;
   $smileyregex = qr/(?=$smileyregex)/;
   local $_ = $text;
-  my $bol = 1;
+  local $bol = 1;
   my $first = 1;
   while(1) {
     # Block level elements eat empty lines to prevent empty p elements.
