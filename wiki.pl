@@ -83,7 +83,7 @@ $HttpCharset = '';  # Charset for pages, default is ISO-8859-1
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.21 2003/04/01 12:24:03 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.22 2003/04/01 13:31:43 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -3932,7 +3932,7 @@ sub ReadReferers {
 }
 
 sub GetReferers {
-  my $result = join(' ', map { $q->a({-href=>$_}, $_) } keys %Referers);
+  my $result = join(' ', map { $q->a({-href=>$_}, $_) } map {&QuoteHtml($_)} keys %Referers);
   $result = $q->div({-class=>'refer'}, $q->p(T('Referers') . ': ' . $result)) if $result;
   return $result;
 }
