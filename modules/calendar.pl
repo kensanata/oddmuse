@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.2 2004/01/30 21:35:44 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.3 2004/03/28 01:53:54 as Exp $</p>';
 
 *OldCalendarGetHeader = *GetHeader;
 *GetHeader = *NewCalendarGetHeader;
@@ -31,13 +31,45 @@ sub NewCalendarGetHeader {
 sub Cal {
   my $cal = `cal`;
   return unless $cal;
+  my @pages = AllPagesList();
   my ($sec, $min, $hour, $mday, $mon, $year) = gmtime($Now);
   $cal =~ s|\b( ?\d?\d)\b|{
     my $day = $1;
     my $date = sprintf("%d-%02d-%02d", $year+1900, $mon+1, $day);
-    my $class = ($day == $mday) ? 'today'
-              : ($IndexHash{$date} ? 'exists' : 'wanted');
-    "<a class=\"$class\" href=\"$ScriptName/$date\">$day</a>";
+    my $class;
+    $class = 'today' if $day == $mday;
+    my @matches = grep(/^$date/, @pages);
+    my $link;
+    if (@matches == 0) {
+      $link = ScriptLink($day, $day, 'wanted' . $class);
+    } elsif (@matches == 1) {
+      $link = ScriptLink($matches[0], $day, 'exists exact' . $class);
+    } else {
+      $link = ScriptLink('action=collect;match=' . $date, $day,  'exists collection' . $class);
+    }
+    $link;
     }|ge;
   return "<div class=\"cal\"><pre>$cal</pre></div>";
+}
+
+$Action{collect} = \&DoCollect;
+
+# inspired by journal
+sub DoCollect {
+  my $id = shift;
+  my $match = GetParam('match', '');
+  ReportError(T('The match parameter is missing.')) unless $match;
+  print GetHeader('', Ts('Page Collection for %s', $match), '');
+  my @pages = AllPagesList();
+  my @matches = grep(/^$match/, @pages);
+  if (!$CollectingJournal) {
+    $CollectingJournal = 1;
+    # Now save information required for saving the cache of the current page.
+    local (%Page, $OpenPageName);
+    print '<div class="journal collection">';
+    PrintAllPages(1, 1, @matches);
+    print '</div>';
+  }
+  $CollectingJournal = 0;
+  PrintFooter();
 }
