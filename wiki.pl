@@ -279,7 +279,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.225 2003/10/27 17:25:18 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.226 2003/10/28 18:32:51 as Exp $');
 }
 
 sub InitCookie {
@@ -342,14 +342,14 @@ sub InitLinkPatterns {
 
 sub Clean {
   my $block = (shift);
-  return unless $block;
+  return if $block eq '';
   print $block;
   $Fragment .= $block;
   return $block;
 }
 
 sub Dirty { # arg 1 is the raw text; the real output must be printed instead
-  if ($Fragment) {
+  if ($Fragment ne '') {
     push(@Blocks, $Fragment);
     push(@Flags, 0);
   }
@@ -369,36 +369,37 @@ sub ApplyRules {
   my $htmlre = join('|',(@HtmlTags));
   local $_ = $text;
   while(1) {
+    my $bol = m/\G^/cgsm;
     # Block level elements eat empty lines to prevent empty p elements.
     if (pos == 0 and m/^#FILE ([^ \n]+)\n(.*)/cgs) {
       Clean(Upload($OpenPageName, (substr($1, 0, 6) eq 'image/'), $revision));
-    } elsif (m/\G^&lt;pre&gt;\n?(.*?\n)&lt;\/pre&gt;[ \t]*\n?/cgsm) { # pre must be on column 1
+    } elsif ($bol && m/\G&lt;pre&gt;\n?(.*?\n)&lt;\/pre&gt;[ \t]*\n?/cgs) {
       Clean(CloseHtmlEnvironments() . $q->pre({-class=>'real'}, $1));
-    } elsif (m/\G^(\s*\n)*(\*+)[ \t]*/cgm) {
+    } elsif ($bol && m/\G(\s*\n)*(\*+)[ \t]*/cg) {
       Clean(OpenHtmlEnvironment('ul',length($2)) . AddHtmlEnvironment('li'));
-    } elsif (m/\G^(\s*\n)*(\#+)[ \t]*/cgm) {
+    } elsif ($bol && m/\G(\s*\n)*(\#+)[ \t]*/cg) {
       Clean(OpenHtmlEnvironment('ol',length($2)) . AddHtmlEnvironment('li'));
-    } elsif (m/\G^(\s*\n)*(\:+)[ \t]*/cgm) { # blockquote instead?
+    } elsif ($bol && m/\G(\s*\n)*(\:+)[ \t]*/cg) { # blockquote instead?
       Clean(OpenHtmlEnvironment('dl',length($2), 'quote')
 	    . $q->dt() . AddHtmlEnvironment('dd'));
-    } elsif (m/\G^(\s*\n)*(\=+)[ \t]*(.*?)[ \t]*(=+)[ \t]*\n?/cgm) {
+    } elsif ($bol && m/\G(\s*\n)*(\=+)[ \t]*(.*?)[ \t]*(=+)[ \t]*\n?/cg) {
       Clean(CloseHtmlEnvironments() . WikiHeading($2, $3));
-    } elsif (m/\G^(\s*\n)*----+[ \t]*\n?/cgm) {
+    } elsif ($bol && m/\G(\s*\n)*----+[ \t]*\n?/cg) {
       Clean(CloseHtmlEnvironments() . $q->hr());
-    } elsif (m/\G^(\s*\n)*(([ \t]+.*\n?)+)/cgm) {
+    } elsif ($bol && m/\G(\s*\n)*(([ \t]+.*\n?)+)/cg) {
       Clean(OpenHtmlEnvironment('pre',1) . $2); # always level 1
-    } elsif (m/\G^(\s*\n)*(\;+)[ \t]*(?=.*\:)/cgm) {
+    } elsif ($bol && m/\G(\s*\n)*(\;+)[ \t]*(?=.*\:)/cg) {
       Clean(OpenHtmlEnvironment('dl',length($2))
 	    . AddHtmlEnvironment('dt')); # `:' needs special treatment, later
-    } elsif (m/\G^(\s*\n)*((\|\|)+)[ \t]*(?=.*\|\|[ \t]*$)/cgm) {
+    } elsif ($bol && m/\G(\s*\n)*((\|\|)+)[ \t]*(?=.*\|\|[ \t]*(\n|$))/cg) {
       Clean(OpenHtmlEnvironment('table',1,'user') # `||' needs special treatment, later
 	    . AddHtmlEnvironment('tr')
 	    . ((length($2) == 2)
 	       ? AddHtmlEnvironment('td')
 	       : AddHtmlEnvironment('td', 'colspan="' . length($2)/2 . '"')));
-    } elsif (m/\G^(\s*\n)+/cgm) {
+    } elsif ($bol && m/\G(\s*\n)+/cg) {
       Clean(CloseHtmlEnvironments() . '<p>');
-    } elsif (m/\G^(\&lt;include(\s+(text|with-anchors))?\s+"(.*)"\&gt;[ \t]*\n?)/cgim) {
+    } elsif ($bol && m/\G(\&lt;include(\s+(text|with-anchors))?\s+"(.*)"\&gt;[ \t]*\n?)/cgi) {
       # <include "uri..."> includes the text of the given URI verbatim
       Dirty($1);
       my ($oldpos, $type, $uri) = ((pos), $3, $4);
@@ -417,25 +418,27 @@ sub ApplyRules {
 	}
       }
       pos = $oldpos;		# restore \G after call to ApplyRules
-    } elsif (m/\G^(\&lt;journal(\s+(\d*))?(\s+"(.*)")?(\s+(reverse))?\&gt;[ \t]*\n?)/cgim) {
+    } elsif ($bol && m/\G(\&lt;journal(\s+(\d*))?(\s+"(.*)")?(\s+(reverse))?\&gt;[ \t]*\n?)/cgi) {
       # <journal 10 "regexp"> includes 10 pages matching regexp
       Dirty($1);
       my $oldpos = pos;
       PrintJournal($3, $5, $7);
       pos = $oldpos;		# restore \G after call to ApplyRules
-    } elsif (m/\G^(\&lt;rss(\s+(\d*))?\s+(.*?)\&gt;[ \t]*\n?)/cgism) { # <rss "uri..."> stores the parsed RSS of the given URI
+    } elsif ($bol && m/\G(\&lt;rss(\s+(\d*))?\s+(.*?)\&gt;[ \t]*\n?)/cgis) {
+      # <rss "uri..."> stores the parsed RSS of the given URI
       Dirty($1);
       my $oldpos = pos;
       print &RSS($3 ? $3 : 15, split(/ +/, $4));
-      pos = $oldpos; # restore \G after call to RSS which uses the LWP module (for older copies of the module?)
+      pos = $oldpos;
+      # restore \G after call to RSS which uses the LWP module (for older copies of the module?)
     } elsif ($HtmlStack[0] eq 'dt' && m/\G:/cg) {
       Clean(CloseHtmlEnvironment() . AddHtmlEnvironment('dd'));
-    } elsif ($HtmlStack[0] eq 'td' && m/\G[ \t]*((\|\|)+)[ \t]*\n((\|\|)+)[ \t]*/cgm) {
+    } elsif ($HtmlStack[0] eq 'td' && m/\G[ \t]*((\|\|)+)[ \t]*\n((\|\|)+)[ \t]*/cg) {
       Clean('</td></tr><tr>' . ((length($3) == 2)
 				? '<td>' : ('<td colspan="' . length($3)/2 . '">')));
-    } elsif ($HtmlStack[0] eq 'td' && m/\G[ \t]*((\|\|)+)[ \t]*(?!(\n|$))/cgm) { # continued
+    } elsif ($HtmlStack[0] eq 'td' && m/\G[ \t]*((\|\|)+)[ \t]*(?!(\n|$))/cg) { # continued
       Clean('</td>' . ((length($1) == 2) ? '<td>' : ('<td colspan="' . length($1)/2 . '">')));
-    } elsif ($HtmlStack[0] eq 'td' && m/\G[ \t]*((\|\|)+)[ \t]*/cgm) { # at the end of the table
+    } elsif ($HtmlStack[0] eq 'td' && m/\G[ \t]*((\|\|)+)[ \t]*/cg) { # at the end of the table
       Clean(CloseHtmlEnvironments());
     } elsif (m/\G\&lt;nowiki\&gt;(.*?)\&lt;\/nowiki\&gt;/cgis) { Clean($1);
     } elsif (m/\G\&lt;code\&gt;(.*?)\&lt;\/code\&gt;/cgis) { Clean($q->code($1));
@@ -501,7 +504,7 @@ sub ApplyRules {
   }
   # last block -- close it, cache it
   Clean(CloseHtmlEnvironments());
-  if ($Fragment) {
+  if ($Fragment ne '') {
     push(@Blocks, $Fragment);
     push(@Flags, 0);
   }
@@ -1429,8 +1432,8 @@ sub GetRcText {
 sub GetRcRss {
   $FullUrl = $q->url(-full=>1)  if ($FullUrl eq '');
   my $quotedFullUrl = QuoteHtml($FullUrl);
-  my $diffPrefix = $quotedFullUrl . QuoteHtml("?action=browse\&diff=1\&id=");
-  my $historyPrefix = $quotedFullUrl . QuoteHtml("?action=history\&id=");
+  my $diffPrefix = $quotedFullUrl . QuoteHtml("?action=browse;diff=1;id=");
+  my $historyPrefix = $quotedFullUrl . QuoteHtml("?action=history;id=");
   my $quotedSiteDescription = QuoteHtml($SiteDescription);
   my ($sec, $min, $hour, $mday, $mon, $year) = gmtime($Now);
   $year += 1900;
@@ -1657,9 +1660,9 @@ sub GetSearchLink {
 
 sub ScriptLinkDiff {
   my ($diff, $id, $text, $new, $old) = @_;
-  my $action = 'action=browse&diff=' . $diff . '&id=' . UrlEncode($id);
-  $action .= "&diffrevision=$old"  if ($old ne '');
-  $action .= "&revision=$new"  if ($new ne '');
+  my $action = 'action=browse;diff=' . $diff . ';id=' . UrlEncode($id);
+  $action .= ";diffrevision=$old"  if ($old ne '');
+  $action .= ";revision=$new"  if ($new ne '');
   return ScriptLink($action, $text);
 }
 
@@ -3238,9 +3241,9 @@ sub DoPost {
   my $oldtime = $Page{'ts'};
   my $myoldtime = GetParam('oldtime', ''); # maybe empty!
   # Handle raw edits with the meta info on the first line
-  if (GetParam('raw',0) == 2 and $string =~ /^([0-9]+).*\n/) {
+  if (GetParam('raw',0) == 2 and $string =~ /^([0-9]+).*\n(.*)/s) {
     $myoldtime = $1;
-    $string = $';
+    $string = $2;
   }
   my $generalwarning = 0;
   if ($newAuthor and $oldtime ne $myoldtime) {
