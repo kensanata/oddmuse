@@ -274,7 +274,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.195 2003/10/12 22:24:33 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.196 2003/10/14 22:09:19 as Exp $');
 }
 
 sub InitCookie {
@@ -1195,33 +1195,12 @@ sub DoRcText {
 
 sub DoRc {
   my $GetRC = shift;
-  my $starttime = 0;
   my $showHTML = $GetRC eq \&GetRcHtml; # optimized for HTML
+  my $starttime = 0;
   if (GetParam('from', 0)) {
     $starttime = GetParam('from', 0);
-   if($showHTML) {
-      print $q->h2(Ts('Updates since %s', TimeToText($starttime)));
-    }
   } else {
-    my $daysago = GetParam('days', 0);
-    if ($daysago) {
-      $starttime = $Now - ((24*60*60)*$daysago);
-      if( $showHTML ) {
-	print $q->h2(Ts('Updates in the last %s day'
-			. (($daysago != 1)?'s':''), $daysago));
-      }
-      # Note: must have two translations (for "day" and "days")
-      # Following comment line is for translation helper script
-      # Ts('Updates in the last %s days', '');
-    }
-  }
-  if ($starttime == 0) {
-    $starttime = $Now - ((24*60*60)*$RcDefault);
-    if( $showHTML ) {
-      print $q->h2(Ts('Updates in the last %s day'
-		      . (($RcDefault != 1)?'s':''), $RcDefault));
-    }
-    # Translation of above line is identical to previous version
+    $starttime = $Now - GetParam('days', $RcDefault) * 86400; # 24*60*60
   }
   # Read rclog data (and oldrclog data if needed)
   my $errorText = '';
@@ -1254,40 +1233,7 @@ sub DoRc {
       }
     }
   }
-  my $lastTs = 0;
-  if (@fullrc > 0) {  # Only false if no lines in file
-    ($lastTs) = split(/$FS3/, $fullrc[$#fullrc]);
-  }
-  $lastTs++  if (($Now - $lastTs) > 5);  # Skip last unless very recent
-  my ($idOnly, $userOnly, $hostOnly, $clusterOnly) =
-    map {
-      my $val = GetParam($_, '');
-      if ($val and $showHTML) {
-	my $str = $val;
-	$str = ScriptLink(UrlEncode($val), $val) if ($_ ne 'rchostonly');
-	print $q->p($q->b('(' . Ts('for %s only', $str) . ')'));
-      }
-      $val;
-    } ('rcidonly', 'rcuseronly', 'rchostonly', 'rcclusteronly');
-  if($showHTML) {
-    my ($showbar, $html, $action);
-    if ($clusterOnly) {
-      $action .= GetPageParameters('browse', $clusterOnly, '', $clusterOnly);
-    } else {
-      $action = 'action=rc';
-    }
-    foreach my $i (@RcDays) {
-      $html .= ' | '  if $showbar;
-      $showbar = 1;
-      $html .= ScriptLink("$action;days=$i", Ts('%s day' . (($i != 1)?'s':''), $i));
-      # Note: must have two translations (for 'day' and 'days')
-      # Following comment line is for translation helper script
-      # Ts('%s days', '');
-    }
-    print $q->p($html . $q->br()
-		. ScriptLink("$action;from=$lastTs", T('List new changes starting from'))
-		. ' ' . TimeToText($lastTs));
-  }
+  RcHeader(@fullrc) if $showHTML;
   my $i = 0;
   while ($i < @fullrc) {  # Optimization: skip old entries quickly
     my ($ts) = split(/$FS3/, $fullrc[$i]);
@@ -1309,6 +1255,42 @@ sub DoRc {
     print &$GetRC(@fullrc);
   }
   print $q->p(Ts('Page generated %s', TimeToText($Now))) if $showHTML;
+}
+
+sub RcHeader {
+  if (GetParam('from', 0)) {
+    print $q->h2(Ts('Updates since %s', TimeToText(GetParam('from', 0))));
+  } else {
+    print $q->h2((GetParam('days', $RcDefault) != 1)
+		 ? Ts('Updates in the last %s days', GetParam('days', $RcDefault))
+		 : Ts('Updates in the last %s day', GetParam('days', $RcDefault)))
+  }
+  my $lastTs = 0;
+  if (@_ > 0) {  # Only false if no lines in file
+    ($lastTs) = split(/$FS3/, $_[$#_]);
+  }
+  $lastTs++  if (($Now - $lastTs) > 5);  # Skip last unless very recent
+  my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly) =
+    map {
+      my $val = GetParam($_, '');
+      print $q->p($q->b('(' . Ts('for %s only', $val) . ')')) if $val;
+      $val;
+    }
+      ('rcidonly', 'rcuseronly', 'rchostonly', 'rcclusteronly', 'rcfilteronly');
+  my ($showbar, $html, $action);
+  if ($clusterOnly) {
+    $action .= GetPageParameters('browse', $clusterOnly, '', $clusterOnly);
+  } else {
+    $action = 'action=rc';
+  }
+  foreach my $i (@RcDays) {
+    $html .= ' | '  if $showbar;
+    $showbar = 1;
+    $html .= ScriptLink("$action;days=$i", ($i != 1) ? Ts('%s days', $i) : Ts('%s days', $i));
+  }
+  print $q->p($html . $q->br()
+	      . ScriptLink("$action;from=$lastTs", T('List new changes starting from'))
+	      . ' ' . TimeToText($lastTs));
 }
 
 sub GetRc {
@@ -1341,18 +1323,20 @@ sub GetRc {
   }
   my $date = '';
   my $all = GetParam('all', 0);
-  my $newtop = GetParam('newtop', $RecentTop);
-  my ($idOnly, $userOnly, $hostOnly, $clusterOnly) =
+  my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly) =
     map { GetParam($_, ''); }
-      ('rcidonly', 'rcuseronly', 'rchostonly', 'rcclusteronly');
-  @outrc = reverse @outrc if ($newtop);
+      ('rcidonly', 'rcuseronly', 'rchostonly', 'rcclusteronly', 'rcfilteronly');
+  @outrc = reverse @outrc if GetParam('newtop', $RecentTop);
   my @clusters;
+  my @filters;
+  @filters = SearchTitleAndBody($filterOnly) if $filterOnly;
   foreach my $rcline (@outrc) {
     my ($ts, $pagename, $summary, $minor, $host, $kind, $extraTemp)
       = split(/$FS3/, $rcline);
-    next if (not $all and $ts < $changetime{$pagename});
-    next if ($idOnly and $idOnly ne $pagename);
-    next if ($hostOnly and $host !~ /$hostOnly/);
+    next if not $all and $ts < $changetime{$pagename};
+    next if $idOnly and $idOnly ne $pagename;
+    next if $hostOnly and $host !~ /$hostOnly/;
+    next if $filterOnly and not grep(/^$pagename$/, @filters);
     %extra = split(/$FS2/, $extraTemp, -1);
     next if ($userOnly and $userOnly ne $extra{'name'});
     @languages = split(/$FS1/, $extra{'languages'});
