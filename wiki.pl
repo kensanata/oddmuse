@@ -197,7 +197,7 @@ $HtmlHeaders = '';	# Additional stuff to put in the HTML <head> section
 
 %CookieParameters = (username=>'', pwd=>'', theme=>'', css=>'', msg=>'',
 		     lang=>'', toplinkbar=>$TopLinkBar, embed=>$EmbedWiki, );
-%InvisibleCookieParameters = (msg => 1, );
+%InvisibleCookieParameters = (msg=>1, pwd=>1,);
 
 $IndentLimit = 20;		    # Maximum depth of nested lists
 $LanguageLimit = 3;		    # Number of matches req. for each language
@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.395 2004/05/17 23:28:48 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.396 2004/05/17 23:41:56 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
