@@ -350,7 +350,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.471 2004/10/22 20:57:19 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.472 2004/10/25 23:51:43 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2155,9 +2155,11 @@ sub GetFormStart {
 }
 
 sub GetSearchForm {
-  my $form = T('Search:') . ' ' . $q->textfield(-name=>'search', -size=>20) . ' ';
+  my $form = T('Search:') . ' '
+    . $q->textfield(-name=>'search', -size=>20, -accesskey=>T('f')) . ' ';
   if ($ReplaceForm) {
-    $form .= T('Replace:') . ' ' . $q->textfield(-name=>'replace', -size=>20) . ' ';
+    $form .= T('Replace:') . ' '
+      . $q->textfield(-name=>'replace', -size=>20) . ' ';
   }
   if (%Languages) {
     $form .= T('Language:') . ' '
