@@ -1020,7 +1020,7 @@ OddMuse:test, and foo
 PlanetMath:ZipfsLaw, and foo
 <a class="inter" href="http://planetmath.org/encyclopedia/ZipfsLaw.html"><span class="site">PlanetMath</span>:<span class="page">ZipfsLaw</span></a>, and foo
 [OddMuse:test]
-<a class="inter number" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test">[<span class="number">1</span>]</a>
+<a class="inter number" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"><span>[1]</span></a>
 Foo::Bar
 Foo::Bar
 !WikiLink
@@ -1074,11 +1074,11 @@ http://www.emacswiki.org#
 http://www.emacswiki.org%
 <a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>%
 [http://www.emacswiki.org]
-<a class="url number" href="http://www.emacswiki.org">[<span class="number">1</span>]</a>
+<a class="url number" href="http://www.emacswiki.org"><span>[1]</span></a>
 [http://www.emacswiki.org] and [http://www.emacswiki.org]
-<a class="url number" href="http://www.emacswiki.org">[<span class="number">1</span>]</a> and <a class="url number" href="http://www.emacswiki.org">[<span class="number">2</span>]</a>
+<a class="url number" href="http://www.emacswiki.org"><span>[1]</span></a> and <a class="url number" href="http://www.emacswiki.org"><span>[2]</span></a>
 [http://www.emacswiki.org],
-<a class="url number" href="http://www.emacswiki.org">[<span class="number">1</span>]</a>,
+<a class="url number" href="http://www.emacswiki.org"><span>[1]</span></a>,
 [http://www.emacswiki.org and a label]
 <a class="url" href="http://www.emacswiki.org">[and a label]</a>
 [file://home/foo/tutorial.pdf local link]
@@ -1126,7 +1126,7 @@ image inline: <img class="upload" src="http://localhost/test-wrapper.pl/download
 traditional local link: HomePage, OtherPage
 traditional local link: <a class="local" href="http://localhost/test-wrapper.pl/HomePage">HomePage</a>, OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a>
 traditional local link with extra brackets: [HomePage], [OtherPage]
-traditional local link with extra brackets: <a class="local number" href="http://localhost/test-wrapper.pl/HomePage">[<span class="number">1</span>]</a>, [OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a>]
+traditional local link with extra brackets: <a class="local number" href="http://localhost/test-wrapper.pl/HomePage"><span>[1]</span></a>, [OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a>]
 traditional local link with other text: [HomePage homepage], [OtherPage other page]
 traditional local link with other text: [<a class="local" href="http://localhost/test-wrapper.pl/HomePage">HomePage</a> homepage], [OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a> other page]
 free link: [[home page]], [[other page]]
@@ -1138,13 +1138,13 @@ free link with other text: [[home page|da homepage]], [[other page|da other home
 URL: http://www.oddmuse.org/
 URL: <a class="url" href="http://www.oddmuse.org/">http://www.oddmuse.org/</a>
 URL in brackets: [http://www.oddmuse.org/]
-URL in brackets: <a class="url number" href="http://www.oddmuse.org/">[<span class="number">1</span>]</a>
+URL in brackets: <a class="url number" href="http://www.oddmuse.org/"><span>[1]</span></a>
 URL in brackets with other text: [http://www.oddmuse.org/ oddmuse]
 URL in brackets with other text: <a class="url" href="http://www.oddmuse.org/">[oddmuse]</a>
 URL abbreviation: Oddmuse:Link_Pattern
 URL abbreviation: <a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"><span class="site">Oddmuse</span>:<span class="page">Link_Pattern</span></a>
 URL abbreviation with extra brackets: [Oddmuse:Link_Pattern]
-URL abbreviation with extra brackets: <a class="inter number" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern">[<span class="number">1</span>]</a>
+URL abbreviation with extra brackets: <a class="inter number" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"><span>[1]</span></a>
 URL abbreviation with other text: [Oddmuse:Link_Pattern link patterns]
 URL abbreviation with other text: <a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern">[link patterns]</a>
 EOT
@@ -1159,7 +1159,7 @@ close(F);
 traditional local link: HomePage, OtherPage
 traditional local link: <a class="local" href="http://localhost/test-wrapper.pl/HomePage">HomePage</a>, OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a>
 traditional local link with extra brackets: [HomePage], [OtherPage]
-traditional local link with extra brackets: <a class="local number" href="http://localhost/test-wrapper.pl/HomePage">[<span class="number">1</span>]</a>, [OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a>]
+traditional local link with extra brackets: <a class="local number" href="http://localhost/test-wrapper.pl/HomePage"><span>[1]</span></a>, [OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a>]
 traditional local link with other text: [HomePage homepage], [OtherPage other page]
 traditional local link with other text: <a class="local" href="http://localhost/test-wrapper.pl/HomePage">homepage</a>, [OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a> other page]
 free link: [[home page]], [[other page]]
@@ -1171,13 +1171,13 @@ free link with other text: [home page<a class="edit" title="Click to create this
 URL: http://www.oddmuse.org/
 URL: <a class="url" href="http://www.oddmuse.org/">http://www.oddmuse.org/</a>
 URL in brackets: [http://www.oddmuse.org/]
-URL in brackets: <a class="url number" href="http://www.oddmuse.org/">[<span class="number">1</span>]</a>
+URL in brackets: <a class="url number" href="http://www.oddmuse.org/"><span>[1]</span></a>
 URL in brackets with other text: [http://www.oddmuse.org/ oddmuse]
 URL in brackets with other text: <a class="url" href="http://www.oddmuse.org/">[oddmuse]</a>
 URL abbreviation: Oddmuse:Link_Pattern
 URL abbreviation: <a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"><span class="site">Oddmuse</span>:<span class="page">Link_Pattern</span></a>
 URL abbreviation with extra brackets: [Oddmuse:Link_Pattern]
-URL abbreviation with extra brackets: <a class="inter number" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern">[<span class="number">1</span>]</a>
+URL abbreviation with extra brackets: <a class="inter number" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"><span>[1]</span></a>
 URL abbreviation with other text: [Oddmuse:Link_Pattern link patterns]
 URL abbreviation with other text: <a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern">[link patterns]</a>
 EOT
