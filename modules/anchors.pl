@@ -16,16 +16,16 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: anchors.pl,v 1.12 2004/08/06 22:44:26 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: anchors.pl,v 1.13 2004/08/17 15:00:42 as Exp $</p>';
 
 push(@MyRules, \&AnchorsRule);
 
 sub AnchorsRule {
-  if (m/\G\[\[\#([-a-zA-Z0-9_]+)\]\]/gc) {
-    return $q->a({-href=>"#$1", -class=>'local anchor'}, $1);
-  } elsif ($BracketWiki && m/\G(\[\[$FreeLinkPattern\#([-a-zA-Z0-9_]+)\|([^\]]+)\]\])/cog
-	   or m/\G(\[\[\[$FreeLinkPattern\#([-a-zA-Z0-9_]+)\]\]\])/cog
-	   or m/\G(\[\[$FreeLinkPattern\#([-a-zA-Z0-9_]+)\]\])/cog) {
+  if (m/\G\[\[\#$FreeLinkPattern\]\]/gc) {
+    return $q->a({-href=>'#' . FreeToNormal($1), -class=>'local anchor'}, $1);
+  } elsif ($BracketWiki && m/\G(\[\[$FreeLinkPattern\#$FreeLinkPattern\|([^\]]+)\]\])/cog
+	   or m/\G(\[\[\[$FreeLinkPattern\#$FreeLinkPattern\]\]\])/cog
+	   or m/\G(\[\[$FreeLinkPattern\#$FreeLinkPattern\]\])/cog) {
     # This one is not a dirty rule because the output is always a page
     # link, never an edit link (unlike normal free links).
     my $bracket = (substr($1, 0, 3) eq '[[[');
@@ -43,8 +43,8 @@ sub AnchorsRule {
     $text = $id unless $text;
     $text =~ s/_/ /g;
     return ScriptLink(UrlEncode($id), $text, $class, undef, $title);
-  } elsif (m/\G\[\:([-a-zA-Z0-9_]+)\]/gc) {
-    return $q->a({-name=>"$1", -class=>'anchor'});
+  } elsif (m/\G\[\:$FreeLinkPattern\]/gc) {
+    return $q->a({-name=>FreeToNormal($1), -class=>'anchor'});
   }
   return undef;
 }
