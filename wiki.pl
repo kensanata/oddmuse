@@ -354,7 +354,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.507 2005/01/04 06:27:00 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.508 2005/01/04 06:47:58 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1877,7 +1877,7 @@ sub DoAdminPage {
     }
   }
   print $q->p(T('Actions:')), $q->ul($q->li(\@menu));
-  print $q->p(T('Important pages:')) . $q->ul(map { $q->li(GetPageLink($_)) if $_ } @AdminPages);
+  print $q->p(T('Important pages:')) . $q->ul(map { $q->li(GetPageOrEditLink($_)) if $_ } @AdminPages);
   foreach my $block (@AdminBlocks) {
     print $block;
   }
