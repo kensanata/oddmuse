@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.60 2003/05/18 14:05:23 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.61 2003/05/21 01:16:25 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -891,7 +891,7 @@ sub InitRequest {
 
 sub InitCookie {
   undef $q->{'.cookies'};  # Clear cache if it exists (for SpeedyCGI)
-  %OldCookie = $q->cookie($CookieName);
+  %OldCookie = split(/$FS1/, $q->cookie($CookieName));
   %NewCookie = %OldCookie;
   # Get username from param or cookie, test it, and move it into the cookie.
   my $name = &GetParam('username', '');
@@ -1727,12 +1727,14 @@ sub Cookie {
   my $name = &GetParam('username','');
   my $pwd = &GetParam('pwd','');
   if ($name ne $OldCookie{username} or $pwd ne $OldCookie{pwd}) {
-    $name = 'username&' . $name if $name;
-    $pwd = 'pwd&' . $pwd if $pwd;
+    $name = 'username' . $FS1 . $name if $name;
+    $pwd = 'pwd' . $FS1 . $pwd if $pwd;
     my $cookie = $name;
-    $cookie .= '&' if $name and $pwd;
+    $cookie .= $FS1 if $name and $pwd;
     $cookie .= $pwd;
-    $cookie = "$CookieName=$cookie;expires=Fri, 08-Sep-2010 19:48:23 GMT";
+    $cookie = $q->cookie(-name=>$CookieName,
+			 -value=>$cookie,
+			 -expires=>'+2y');
     $Message .= $q->p(T('Cookie: ') . $cookie);
     return $cookie;
   }
@@ -1852,9 +1854,9 @@ sub PrintFooter {
   print '</div>';
   eval {
     local $SIG{__DIE__};
-    &PrintMyContent();
+    &PrintMyContent($id);
   };
-  print  $q->end_html;
+  print $q->end_html;
 }
 
 sub GetFormStart {
