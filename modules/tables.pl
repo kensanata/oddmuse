@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tables.pl,v 1.3 2004/10/13 19:52:55 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tables.pl,v 1.4 2004/10/13 20:11:46 as Exp $</p>';
 
 $DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /table\.user/; # mod_perl?
 table.user { border-style:solid; border-width:thin; }
@@ -29,17 +29,17 @@ sub TablesRule {
   # tables using || -- the first row of a table
   if ($bol && m/\G(\s*\n)*((\|\|)+)([ \t])*(?=.*\|\|[ \t]*(\n|$))/cg) {
     return OpenHtmlEnvironment('table',1,'user') . AddHtmlEnvironment('tr')
-      . AddHtmlEnvironment('td', TableTableAttributes(length($2)/2, $4));
+      . AddHtmlEnvironment('td', TableAttributes(length($2)/2, $4));
   }
   # tables using || -- end of the row and beginning of the next row
   elsif (InElement('td') && m/\G[ \t]*((\|\|)+)[ \t]*\n((\|\|)+)([ \t]*)/cg) {
-    my $attr = TableTableAttributes(length($3)/2, $5);
+    my $attr = TableAttributes(length($3)/2, $5);
     $attr = " " . $attr if $attr;
     return "</td></tr><tr><td$attr>";
   }
   # tables using || -- an ordinary table cell
   elsif (InElement('td') && m/\G[ \t]*((\|\|)+)([ \t]*)(?!(\n|$))/cg) {
-    my $attr = TableTableAttributes(length($1)/2, $3);
+    my $attr = TableAttributes(length($1)/2, $3);
     $attr = " " . $attr if $attr;
     return "</td><td$attr>";
   }
