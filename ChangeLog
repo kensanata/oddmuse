@@ -4,6 +4,8 @@
 	(GetRcText): No longer treat '*' special.
 	(GetHistoryLine): No longer treat '*' special.
 	(Cookie): No longer treat '*' special.
+	(InitCookie): No longer treat '*' special.
+	(GetRcHtml): No longer treat '*' special.
 
 	* test-texi.pl: New file.
 	
