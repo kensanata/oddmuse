@@ -9,6 +9,7 @@
 	(DoPrintAllPages): Use 0 parameter when calling PrintAllPages.
 	(PrintAllPages): Take extra parameter to say whether to link to
 	the pages or not.
+	(PrintJournal): Slice only if too large.
 
 2003-06-12  Alex Schroeder  <alex@gnu.org>
 
