@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.17 2004/10/10 17:13:02 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.18 2004/10/10 17:26:28 as Exp $</p>';
 
 push(@MyMacros, sub{ s/\[new::\]/"[new:" . GetParam('username', T('Anonymous'))
 		       . ':' . TimeToText($Now) . "]"/ge });
@@ -26,33 +26,29 @@ push(@MyRules, \&PortraitSupportRule);
 
 $DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /div\.one/; # mod_perl?
 img.portrait {
-	float:left; clear:left;
-	background-color:#fff;
+	float: left;
+	clear: left;
+	margin: 1ex;
 	border:#999 1px solid;
-	padding:10px;
-	margin:10px;
 }
 div.footer, div.comment {
-	clear:both;
+	clear: both;
 }
 div.portrait {
-	float:left; clear:left;
-	font-size:xx-small;
-	padding-left:10px;
+	float: left;
+	clear: left;
+	font-size: xx-small;
 }
 div.portrait img.portrait {
-	float:none;
-	margin:10px 10px 0 0;
+	float: none;
+	margin: 0;
 }
 div.portrait a {
-	text-decoration:none;
-	color:#999;
+	text-decoration: none;
+	color: #999;
 }
 div.color {
-	clear:both;
-	min-height:105px;
-	margin:0;
-	padding:0;
+	clear: both;
 }
 div.one {
 	background-color: #ddd;
@@ -111,16 +107,16 @@ sub PortraitSupportRule {
   return undef;
 }
 
-  *OldPortraitSupportApplyRules = *ApplyRules;
-  *ApplyRules = *NewPortraitSupportApplyRules;
+*OldPortraitSupportApplyRules = *ApplyRules;
+*ApplyRules = *NewPortraitSupportApplyRules;
 
-  sub NewPortraitSupportApplyRules {
-    my ($blocks, $flags) = OldPortraitSupportApplyRules(@_);
-    if ($MyColorDiv) {
-      print '</div>';
-      $blocks .= $FS . '</div>';
-      $flags .= $FS . 0;
-      $MyColorDiv = 0;
-    }
-    return ($blocks, $flags);
+sub NewPortraitSupportApplyRules {
+  my ($blocks, $flags) = OldPortraitSupportApplyRules(@_);
+  if ($MyColorDiv) {
+    print '</div>';
+    $blocks .= $FS . '</div>';
+    $flags .= $FS . 0;
+    $MyColorDiv = 0;
   }
+  return ($blocks, $flags);
+}
