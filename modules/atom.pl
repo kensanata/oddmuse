@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: atom.pl,v 1.1 2004/08/11 00:19:43 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: atom.pl,v 1.2 2004/08/11 00:30:45 as Exp $</p>';
 
 $Action{atom} = \&DoAtom;
 
@@ -44,12 +44,12 @@ sub GetRcAtom {
 <feed version="0.3" xmlns="http://purl.org/atom/ns#">
 EOT
   $result .= AtomTag('title', $SiteName);
-  $result .= "<link href=\"$ScriptName\" rel=\"alternate\" title=\"$SiteName\" type=\"text/html\" />";
+  $result .= "<link href=\"$ScriptName\" rel=\"alternate\" title=\"$SiteName\" type=\"text/html\" />\n";
   $result .= AtomTag('author', "<person><name>$RssPublisher</name></person>")
     if $RssPublisher;
   $result .= AtomTag('contributor', "<person><name>$RssContributor</name></person>")
     if $RssContributor;
-  $result .= "<generator url=\"http://www.oddmuse.org/\">Oddmuse</generator>";
+  $result .= "<generator url=\"http://www.oddmuse.org/\">Oddmuse</generator>\n";
   $result .= AtomTag('copyright', $RssRights)
     if $RssRights;
   $result .= <<EOT;
@@ -67,7 +67,7 @@ EOT
 	  $author = $host unless $author;
 	  my $link = $ScriptName . ($UsePathInfo ? '/' : '?') . $pagename;
 	  OpenPage($pagename);
-	  my $content = $Page{text};
+	  my $content = QuoteHtml($Page{text});
 	  # output
 	  $result .= "<entry>\n";
 	  $result .= AtomTag('title', $name);
@@ -76,7 +76,7 @@ EOT
 	  $result .= AtomTag('modified', AtomTime($timestamp));
 	  $result .= AtomTag('issued', AtomTime($timestamp));
 	  $result .= AtomTag('summary', $summary);
-	  $result .= "<content type=\"text/plain\">$content</content>\n" if $content;
+	  $result .= "<content mode=\"escaped\" type=\"text/plain\">$content</content>\n" if $content;
 	  $result .= "</entry>\n";
 	},
 	@_);
