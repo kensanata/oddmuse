@@ -1,6 +1,7 @@
 2003-06-20  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (PingTracker): Switched to blo.gs.
+	(DoPost): Pass $id along.
 
 	* test-markup.pl: Added another set of tests to tests
 	$BracketWiki.
