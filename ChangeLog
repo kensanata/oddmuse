@@ -1,3 +1,23 @@
+2004-06-29  Alex Schroeder  <alex@confusibombus>
+
+	* modules/calendar.pl (Cal): The year can be part of the link for
+	the month, or link to the year calendar.
+	(PrintYearCalendar): When printing the year calendar, the year
+	should not link to the same page.
+
+	* modules/usemod.pl: New.
+
+	* wiki.pl (RFC, ISBN, WikiHeading): Moved to modules/usemod.pl.
+	(PrintSearchResult): No longer strip common HTML tags (since those
+	are now defined in modules/usemod.pl).
+	(ApplyRules): Moved many rules to modules/usemod.pl.
+	(InitLinkPatterns): No longer set $RFCPattern and $ISBNPattern.
+	(InitVariables): No longer set @HtmlTags
+	($RFCPattern, $ISBNPattern, @HtmlTags, $HtmlTags, $HtmlLinks)
+	($RawHtml): Moved to modules/usemod.pl.
+
+	* modules/setext.pl: Unshift rule to the front.
+
 2004-06-28  Alex Schroeder  <alex@confusibombus>
 
 	* wiki.pl (ApplyRules): Don't allow empty headers.
