@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF xmlns="http://purl.org/rss/1.0/"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:admin="http://webns.net/mvcb/"
+	xmlns:cc="http://web.resource.org/cc/"
+	xmlns:mm="http://musicbrainz.org/mm/mm-2.1#">
+<channel rdf:about="http://ws.audioscrobbler.com/rdf/history/kensanata">
+    <title>Audioscrobbler Musical Profile: kensanata</title>
+    <link>http://www.audioscrobbler.com/user/kensanata/</link>
+    <description>kensanata's last played tracks, as recorded by Audioscrobbler.com</description>
+    <cc:license rdf:resource="http://www.creativecommons.org/licenses/by-nc-sa/1.0/" />
+    <dc:creator>kensanata</dc:creator>
+    <dc:date>2004-09-06T19:53:03+00:00</dc:date>
+    <admin:generatorAgent rdf:resource="http://www.audioscrobbler.com/" />
+    <admin:errorReportsTo rdf:resource="mailto:support@audioscrobbler.com"/>
+    <items>
+        <rdf:Seq>
+	            <rdf:li rdf:resource="http://mm.musicbrainz.org/track/MBIDHERE" />
+	            <rdf:li rdf:resource="http://mm.musicbrainz.org/track/MBIDHERE" />
+	            <rdf:li rdf:resource="http://mm.musicbrainz.org/track/MBIDHERE" />
+	            <rdf:li rdf:resource="http://mm.musicbrainz.org/track/MBIDHERE" />
+	            <rdf:li rdf:resource="http://mm.musicbrainz.org/track/MBIDHERE" />
+	            <rdf:li rdf:resource="http://mm.musicbrainz.org/track/MBIDHERE" />
+	            <rdf:li rdf:resource="http://mm.musicbrainz.org/track/MBIDHERE" />
+	            <rdf:li rdf:resource="http://mm.musicbrainz.org/track/MBIDHERE" />
+	            <rdf:li rdf:resource="http://mm.musicbrainz.org/track/MBIDHERE" />
+	            <rdf:li rdf:resource="http://mm.musicbrainz.org/track/MBIDHERE" />
+	        </rdf:Seq>
+    </items>
+</channel>
+
+    <item rdf:about="http://mm.musicbrainz.org/track/MBIDHERE">
+        <link>http://www.audioscrobbler.com/music/Fania+All+Stars/_/Bamboleo</link>
+        <description>Fania All Stars - Bamboleo</description>
+        <guid isPermaLink="false">77@www.audioscrobbler.com/user/kensanata/</guid>
+        <dc:date>2004-09-06T19:47:57+00:00</dc:date>
+        <dc:title>Bamboleo</dc:title>
+        <mm:Artist rdf:about="http://mm.musicbrainz.org/artist/4b61339a-4074-43a6-bf6b-7f9d0d5d530f">
+            <dc:creator>    
+                <dc:title>Fania All Stars</dc:title>
+            </dc:creator>
+        </mm:Artist>
+        <mm:albumlist>
+            <mm:Album rdf:about="http://mm.musicbrainz.org/album/MBIDHERE">
+                <dc:title></dc:title>
+            </mm:Album>
+        </mm:albumlist>
+    </item>
+    <item rdf:about="http://mm.musicbrainz.org/track/MBIDHERE">
+        <link>http://www.audioscrobbler.com/music/Fulanito/_/El+Gato+Volador</link>
+        <description>Fulanito - El Gato Volador</description>
+        <guid isPermaLink="false">76@www.audioscrobbler.com/user/kensanata/</guid>
+        <dc:date>2004-09-06T19:43:16+00:00</dc:date>
+        <dc:title>El Gato Volador</dc:title>
+        <mm:Artist rdf:about="http://mm.musicbrainz.org/artist/fc98d77d-6260-4050-a9ce-9ef3534a867b">
+            <dc:creator>    
+                <dc:title>Fulanito</dc:title>
+            </dc:creator>
+        </mm:Artist>
+        <mm:albumlist>
+            <mm:Album rdf:about="http://mm.musicbrainz.org/album/MBIDHERE">
+                <dc:title></dc:title>
+            </mm:Album>
+        </mm:albumlist>
+    </item>
+    <item rdf:about="http://mm.musicbrainz.org/track/MBIDHERE">
+        <link>http://www.audioscrobbler.com/music/Juan+Luis+Guerra/_/Frio+Frio</link>
+        <description>Juan Luis Guerra - Frio Frio</description>
+        <guid isPermaLink="false">75@www.audioscrobbler.com/user/kensanata/</guid>
+        <dc:date>2004-09-06T19:36:16+00:00</dc:date>
+        <dc:title>Frio Frio</dc:title>
+        <mm:Artist rdf:about="http://mm.musicbrainz.org/artist/">
+            <dc:creator>    
+                <dc:title>Juan Luis Guerra</dc:title>
+            </dc:creator>
+        </mm:Artist>
+        <mm:albumlist>
+            <mm:Album rdf:about="http://mm.musicbrainz.org/album/MBIDHERE">
+                <dc:title></dc:title>
+            </mm:Album>
+        </mm:albumlist>
+    </item>
+    <item rdf:about="http://mm.musicbrainz.org/track/MBIDHERE">
+        <link>http://www.audioscrobbler.com/music/Daddy+Yankee+ft.+Don+Omar/_/Gata+Ganster</link>
+        <description>Daddy Yankee ft. Don Omar - Gata Ganster</description>
+        <guid isPermaLink="false">74@www.audioscrobbler.com/user/kensanata/</guid>
+        <dc:date>2004-09-06T19:32:21+00:00</dc:date>
+        <dc:title>Gata Ganster</dc:title>
+        <mm:Artist rdf:about="http://mm.musicbrainz.org/artist/">
+            <dc:creator>    
+                <dc:title>Daddy Yankee ft. Don Omar</dc:title>
+            </dc:creator>
+        </mm:Artist>
+        <mm:albumlist>
+            <mm:Album rdf:about="http://mm.musicbrainz.org/album/MBIDHERE">
+                <dc:title></dc:title>
+            </mm:Album>
+        </mm:albumlist>
+    </item>
+    <item rdf:about="http://mm.musicbrainz.org/track/MBIDHERE">
+        <link>http://www.audioscrobbler.com/music/Grupo+Niche/_/Las+Mujeres+Estan+De+Moda</link>
+        <description>Grupo Niche - Las Mujeres Estan De Moda</description>
+        <guid isPermaLink="false">73@www.audioscrobbler.com/user/kensanata/</guid>
+        <dc:date>2004-09-06T19:28:12+00:00</dc:date>
+        <dc:title>Las Mujeres Estan De Moda</dc:title>
+        <mm:Artist rdf:about="http://mm.musicbrainz.org/artist/5436ce22-af50-4714-addc-afd5d2efc77f">
+            <dc:creator>    
+                <dc:title>Grupo Niche</dc:title>
+            </dc:creator>
+        </mm:Artist>
+        <mm:albumlist>
+            <mm:Album rdf:about="http://mm.musicbrainz.org/album/MBIDHERE">
+                <dc:title></dc:title>
+            </mm:Album>
+        </mm:albumlist>
+    </item>
+    <item rdf:about="http://mm.musicbrainz.org/track/MBIDHERE">
+        <link>http://www.audioscrobbler.com/track.php?id=8024067&amp;mode=music</link>
+        <description>Marc Anthony &amp; La India - Vivir Lo Nuestro</description>
+        <guid isPermaLink="false">72@www.audioscrobbler.com/user/kensanata/</guid>
+        <dc:date>2004-09-06T19:21:28+00:00</dc:date>
+        <dc:title>Vivir Lo Nuestro</dc:title>
+        <mm:Artist rdf:about="http://mm.musicbrainz.org/artist/">
+            <dc:creator>    
+                <dc:title>Marc Anthony &amp; La India</dc:title>
+            </dc:creator>
+        </mm:Artist>
+        <mm:albumlist>
+            <mm:Album rdf:about="http://mm.musicbrainz.org/album/MBIDHERE">
+                <dc:title></dc:title>
+            </mm:Album>
+        </mm:albumlist>
+    </item>
+    <item rdf:about="http://mm.musicbrainz.org/track/MBIDHERE">
+        <link>http://www.audioscrobbler.com/music/Gilberto+Santarosa+and+Tony+Vega/_/Un+Tipo+Con+Suerte</link>
+        <description>Gilberto Santarosa and Tony Vega - Un Tipo Con Suerte</description>
+        <guid isPermaLink="false">71@www.audioscrobbler.com/user/kensanata/</guid>
+        <dc:date>2004-09-06T19:16:31+00:00</dc:date>
+        <dc:title>Un Tipo Con Suerte</dc:title>
+        <mm:Artist rdf:about="http://mm.musicbrainz.org/artist/">
+            <dc:creator>    
+                <dc:title>Gilberto Santarosa and Tony Vega</dc:title>
+            </dc:creator>
+        </mm:Artist>
+        <mm:albumlist>
+            <mm:Album rdf:about="http://mm.musicbrainz.org/album/MBIDHERE">
+                <dc:title></dc:title>
+            </mm:Album>
+        </mm:albumlist>
+    </item>
+    <item rdf:about="http://mm.musicbrainz.org/track/MBIDHERE">
+        <link>http://www.audioscrobbler.com/music/Adolecentes/_/Amor+mio</link>
+        <description>Adolecentes - Amor mio</description>
+        <guid isPermaLink="false">70@www.audioscrobbler.com/user/kensanata/</guid>
+        <dc:date>2004-09-06T19:11:36+00:00</dc:date>
+        <dc:title>Amor mio</dc:title>
+        <mm:Artist rdf:about="http://mm.musicbrainz.org/artist/">
+            <dc:creator>    
+                <dc:title>Adolecentes</dc:title>
+            </dc:creator>
+        </mm:Artist>
+        <mm:albumlist>
+            <mm:Album rdf:about="http://mm.musicbrainz.org/album/MBIDHERE">
+                <dc:title></dc:title>
+            </mm:Album>
+        </mm:albumlist>
+    </item>
+    <item rdf:about="http://mm.musicbrainz.org/track/MBIDHERE">
+        <link>http://www.audioscrobbler.com/music/puerto+rican+power/_/quiero+volver+con+tigo</link>
+        <description>puerto rican power - quiero volver con tigo</description>
+        <guid isPermaLink="false">69@www.audioscrobbler.com/user/kensanata/</guid>
+        <dc:date>2004-09-06T19:06:21+00:00</dc:date>
+        <dc:title>quiero volver con tigo</dc:title>
+        <mm:Artist rdf:about="http://mm.musicbrainz.org/artist/6c6755b2-627d-4e9c-b4b4-ab96603cf916">
+            <dc:creator>    
+                <dc:title>puerto rican power</dc:title>
+            </dc:creator>
+        </mm:Artist>
+        <mm:albumlist>
+            <mm:Album rdf:about="http://mm.musicbrainz.org/album/MBIDHERE">
+                <dc:title></dc:title>
+            </mm:Album>
+        </mm:albumlist>
+    </item>
+    <item rdf:about="http://mm.musicbrainz.org/track/MBIDHERE">
+        <link>http://www.audioscrobbler.com/music/El+Gran+Combo/_/Salsa+Con+Coco</link>
+        <description>El Gran Combo - Salsa Con Coco</description>
+        <guid isPermaLink="false">68@www.audioscrobbler.com/user/kensanata/</guid>
+        <dc:date>2004-09-06T19:02:46+00:00</dc:date>
+        <dc:title>Salsa Con Coco</dc:title>
+        <mm:Artist rdf:about="http://mm.musicbrainz.org/artist/a34ab81e-a7e0-4d0c-b5f8-2438f104733d">
+            <dc:creator>    
+                <dc:title>El Gran Combo</dc:title>
+            </dc:creator>
+        </mm:Artist>
+        <mm:albumlist>
+            <mm:Album rdf:about="http://mm.musicbrainz.org/album/MBIDHERE">
+                <dc:title></dc:title>
+            </mm:Album>
+        </mm:albumlist>
+    </item>
+</rdf:RDF>
