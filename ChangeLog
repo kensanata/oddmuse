@@ -1,6 +1,21 @@
 2005-01-06  Alex Schroeder  <alex@gnu.org>
 
+	* test.pl: Updated calendar.pl tests.
+
+	* modules/calendar.pl (CalendarRule): Use Clean instead of print
+	for the p element that opens after the dirty blocks.
+
+	* changelog-to-rss: Fix regular expression for filenames.
+	(output): Strip leading br.
+	(output): Only (foo): deserves a newline.
+	(to_date): Days start at 1, not 0.
+
+	* wiki.pl (ApplyRules): Use Clean instead of print for the p
+	element that opens after include, rss, and journal tags.
+	(RSS): Use div instead of strong for descriptions containing HTML.
+
 	* changelog-to-rss (output): Remove leading tabs from log entries.
+	(output): Highlight parentheses.
 
 2005-01-06  Alex Schroeder  <alex@confusibombus.emacswiki.org>
 
