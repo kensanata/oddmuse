@@ -28,7 +28,7 @@ def main():
     recent_edit="off"
     try:
         opts, args = getopt.getopt(sys.argv[1:],
-                                   "ht:s:m:",
+                                   "ht:s:u:m:",
                                    ["help", "summary=", "user=", "minor-edit="])
     except getopt.GetoptError:
         usage(sys.stderr)
@@ -85,6 +85,10 @@ def parse_wiki_location(where):
     WHERE.
     """
     (scheme, host, path, params, query, fragment) = urlparse.urlparse(where)
+    if not query:
+        list = path.split("/")
+	query = list.pop()
+	path = "/".join(list)
     return (host, path+params, query)
 
 main()
