@@ -4,6 +4,8 @@
 	(GetHtmlHeader): The index of all pages gets robot INDEX
 	tagged so that you can submit it to a search engine to spider your
 	entire site, together with your recent changes page.
+	(DoMaintain): Removed useless parameters.
+	(DeletePage): Removed useless parameters.
 
 2003-09-08  Alex Schroeder  <alex@gnu.org>
 
