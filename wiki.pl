@@ -287,7 +287,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.291 2004/01/03 16:02:40 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.292 2004/01/03 16:04:32 as Exp $');
 }
 
 sub InitCookie {
@@ -1966,7 +1966,7 @@ sub PrintFooter {
   }
   if ($CommentsPrefix and $id =~ /^$CommentsPrefix(.*)/) {
     $revisions .= ' | ' if $revisions;
-    $revisions .= GetPageLink($1, T('View commented page'));
+    $revisions .= GetPageLink($1, $1);
   }
   $html .= $q->br() . $revisions  if $revisions;
   # time stamps
