@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: crumbs.pl,v 1.1 2005/03/18 22:32:51 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: crumbs.pl,v 1.2 2005/03/28 13:05:41 as Exp $</p>';
 
 push(@MyRules, \&CrumbsRule);
 $RuleOrder{\&CrumbsRule} = -10; # run before default rules!
@@ -37,7 +37,11 @@ sub CrumbsRule {
     my @links = ($cluster);
     AllPagesList();		# set IndexHash
     while ($cluster) {
-      $cluster = GetCluster(GetPageContent($cluster)); # opening n files is slow!
+      my $text = GetPageContent($cluster); # opening n files is slow!
+      if ($WikiLinks && $text =~ /^$LinkPattern\n/
+	  or $FreeLinks && $text =~ /^\[\[$FreeLinkPattern\]\]\n/) {
+	$cluster = FreeToNormal($1);
+      }
       last if not $cluster or $seen{$cluster};
       $seen{$cluster} = 1;
       push(@links, $cluster);
