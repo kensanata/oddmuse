@@ -348,7 +348,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.457 2004/09/19 01:24:27 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.458 2004/09/19 22:01:09 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2871,7 +2871,10 @@ sub BannedContent {
   foreach (split(/\n/, GetPageContent($BannedContent))) {
     if (/^ ([^ ]+)[ \t]*$/) {  # only read lines with one word after one space
       my $rule = $1;
-      return $rule if ($str =~ /$rule/i);
+      if ($str =~ /($rule)/i) {
+	my $match = $1;
+	return Tss('Rule "%1" matched "%2" on this page.', $rule, $match);
+      }
     }
   }
   return 0;
@@ -3279,8 +3282,7 @@ sub DoPost {
       print GetHeader('', T('Edit Denied'), undef, undef, '403 FORBIDDEN');
       print $q->p(T('The page contains banned text.'));
       print $q->p(T('Contact the wiki administrator for more information.'));
-      print $q->p(Ts('The rule %s matched for you.', $rule) . ' '
-		  . Ts('See %s for more information.', GetPageLink($BannedContent)));
+      print $q->p($rule . ' ' . Ts('See %s for more information.', GetPageLink($BannedContent)));
       ReleaseLock();
       return;
     }
