@@ -16,11 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: image.pl,v 1.14 2004/09/15 22:55:53 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: image.pl,v 1.15 2005/03/01 16:48:01 sblatt Exp $</p>';
 
 use vars qw($ImageUrlPath);
 
-$ImageUrlPath = '/images'; # URL where the images are to be found
+$ImageUrlPath = '/images';      # URL where the images are to be found
 
 push(@MyRules, \&ImageSupportRule);
 
@@ -40,13 +40,13 @@ sub ImageSupportRule {
     # link to the image if no link was given
     if (not $link) {
       if ($external) {
-	if ($name =~ /$FullUrlPattern/) {
-	  $link = $name;
-	} else {
-	  $link = $ImageUrlPath . '/' . UrlEncode($id);
-	}
+        if ($name =~ /$FullUrlPattern/) {
+          $link = $name;
+        } else {
+          $link = $ImageUrlPath . '/' . UrlEncode($id);
+        }
       } else {
-	$link = UrlEncode($id);
+        $link = UrlEncode($id);
       }
     }
     if ($link =~ /$FullUrlPattern/) {
@@ -54,30 +54,37 @@ sub ImageSupportRule {
       $class .= ' outside';
     } else {
       if (substr($link, 0, 1) eq '/') {
-	# do nothing -- relative URL on the same server
+        # do nothing -- relative URL on the same server
       } elsif ($UsePathInfo and !$Monolithic) {
-	$link = $ScriptName . '/' . $link;
+        $link = $ScriptName . '/' . $link;
       } elsif ($Monolithic) {
-	$link = '#' . $link;
+        $link = '#' . $link;
       } else {
-	$link = $ScriptName . '?' . $link;
+        $link = $ScriptName . '?' . $link;
       }
     }
     my $src;
     if ($external) {
       if ($name =~ /$FullUrlPattern/) {
-	$src = $name;
+        $src = $name;
       } else {
-	$src = $ImageUrlPath . '/' . UrlEncode($id);
+        $src = $ImageUrlPath . '/' . UrlEncode($id);
       }
-    } elsif ($UsePathInfo) {
-      $src = $ScriptName . "/download/" . UrlEncode($id);
     } else {
-      $src = $ScriptName . "?action=download;id=" . UrlEncode($id);
+      $src = ImageGetInternalUrl($id);
     }
     $result = $q->img({-src=>$src, -alt=>$alt, -title=>$alt, -class=>'upload'});
     $result = $q->a({-href=>$link, -class=>$class}, $result);
     pos = $oldpos;
   }
   return $result;
+}
+
+# split off to support overriding from Static Extension
+sub ImageGetInternalUrl {
+  my $id = shift;
+  if ($UsePathInfo) {
+    return $ScriptName . "/download/" . UrlEncode($id);
+  }
+  return $ScriptName . "?action=download;id=" . UrlEncode($id);
 }

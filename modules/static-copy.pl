@@ -16,15 +16,15 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.15 2004/12/29 00:52:27 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.16 2005/03/01 16:48:01 sblatt Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
 use vars qw($StaticDir $StaticAlways %StaticMimeTypes $StaticUrl);
 
 $StaticDir = '/tmp/static';
-$StaticUrl = ''; # change this!
-$StaticFilesAlways = 0; # 1 = uploaded files only, 2 = all pages
+$StaticUrl = '';                # change this!
+$StaticFilesAlways = 0;       # 1 = uploaded files only, 2 = all pages
 
 my $StaticMimeTypes = '/etc/mime.types';
 my %StaticFiles;
@@ -51,7 +51,7 @@ sub StaticMimeTypes {
   open(F,$StaticMimeTypes)
     or return ('image/jpeg' => 'jpg', 'image/png' => 'png', );
   while (<F>) {
-    s/\#.*//; # remove comments
+    s/\#.*//;                   # remove comments
     my($type, $ext) = split;
     $hash{$type} = $ext if $ext;
   }
@@ -100,7 +100,7 @@ sub StaticGetDownloadLink {
 
 sub StaticFileName {
   my $id = shift;
-  $id =~ s/#.*//; # remove named anchors for the filename test
+  $id =~ s/#.*//;         # remove named anchors for the filename test
   return $StaticFiles{$id} if $StaticFiles{$id}; # cache filenames
   # Don't clober current open page so don't use OpenPage.  UrlDecode
   # the $id to open the file because when called from
@@ -165,12 +165,12 @@ EOT
   # logo
   if ($LogoUrl) {
     my $logo = $LogoUrl;
-    $logo =~ s|.*/||; # just the filename
+    $logo =~ s|.*/||;           # just the filename
     my $alt = T('[Home]');
     $header .= $q->img({-src=>$logo, -alt=>$alt, -class=>'logo'}) if $logo;
   }
   # top toolbar
-  local $UserGotoBar = ''; # only allow @UserGotoBarPages
+  local $UserGotoBar = '';      # only allow @UserGotoBarPages
   my $toolbar = GetGotoBar($id);
   $header .= $toolbar if GetParam('toplinkbar', $TopLinkBar);
   # title
@@ -186,7 +186,7 @@ EOT
   my $links = '';
   if ($OpenPageName !~ /^$CommentsPrefix/) { # fails if $CommentsPrefix is empty!
     $links .= ScriptLink(UrlEncode($CommentsPrefix . $OpenPageName),
-			 T('Comments on this page'));
+                         T('Comments on this page'));
   }
   if ($CommentsPrefix and $id =~ /^$CommentsPrefix(.*)/) {
     $links .= ' | ' if $links;
@@ -194,8 +194,8 @@ EOT
   }
   $links = $q->br() . $links if $links;
   print F $q->div({-class=>'footer'}, $q->hr(), $toolbar,
-		  $q->span({-class=>'edit'}, $links),
-		  $q->span({-class=>'time'}, GetFooterTimestamp($id)));
+                  $q->span({-class=>'edit'}, $links),
+                  $q->span({-class=>'time'}, GetFooterTimestamp($id)));
   # finish
   print F '</body></html>';
 }
@@ -209,7 +209,7 @@ sub StaticFilesNewDoPost {
     # always delete
     StaticDeleteFile($OpenPageName);
     if ($Page{text} =~ /^\#FILE / # if a file was uploaded
-	or $StaticAlways > 1) {
+        or $StaticAlways > 1) {
       CreateDir($StaticDir);
       StaticWriteFile($OpenPageName);
     }
@@ -230,7 +230,7 @@ sub StaticDeleteFile {
   %StaticMimeTypes = StaticMimeTypes() unless %StaticMimeTypes;
   # we don't care if the files or $StaticDir don't exist -- just delete!
   for my $f (map { "$StaticDir/$id.$_" } (values %StaticMimeTypes, 'html')) {
-    unlink $f; # delete copies with different extensions
+    unlink $f;               # delete copies with different extensions
   }
 }
 
@@ -254,12 +254,12 @@ sub GetDownloadLink {
   if ($image) {
     if ($UsePathInfo and not $revision) {
       if ($StaticAlways and $StaticUrl) {
-	my $url = $StaticUrl;
-	my $img = UrlEncode(StaticFileName($id));
-	$url =~ s/\%s/$img/g or $url .= $img;
-	$action = $url;
+        my $url = $StaticUrl;
+        my $img = UrlEncode(StaticFileName($id));
+        $url =~ s/\%s/$img/g or $url .= $img;
+        $action = $url;
       } else {
-	$action = $ScriptName . '/' . $action;
+        $action = $ScriptName . '/' . $action;
       }
     } else {
       $action = $ScriptName . '?' . $action;
@@ -270,4 +270,20 @@ sub GetDownloadLink {
   } else {
     return ScriptLink($action, $alt, 'upload');
   }
+}
+
+# override function from Image Extension to support advanced image tags
+sub ImageGetInternalUrl{
+  my $id = shift;
+  if ($UsePathInfo) {
+    if ($StaticAlways and $StaticUrl) {
+      my $url = $StaticUrl;
+      my $img = UrlEncode(StaticFileName($id));
+      $url =~ s/\%s/$img/g or $url .= $img;
+      return $url;
+    } else {
+      return $ScriptName . '/download/' . UrlEncode($id);
+    }
+  }
+  return $ScriptName . '?action=download;id=' . UrlEncode($id);
 }
