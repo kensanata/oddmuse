@@ -1,12 +1,12 @@
 #! /usr/bin/perl -w
 
 # This is what I used for testing:
-# cd /tmp; rm -rf org.emacswiki oddmuse; tar xzf ~/Backups/community.tar.gz; ln -s /tmp/org.emacswiki/htdocs/community/ /tmp/oddmuse; perl ~/src/oddmuse/upgrade-files.pl; chgrp www-data -R /tmp/org.emacswiki/htdocs/community/; chmod g+w -R /tmp/org.emacswiki/htdocs/community/
+# cd /tmp; rm -rf org.emacswiki oddmuse; tar xzf ~/Backups/community.tar.gz; ln -s /tmp/org.emacswiki/htdocs/community/ /tmp/oddmuse; perl ~/src/oddmuse/upgrade-files.pl dir=/tmp/oddmuse sure=yes; chgrp www-data -R /tmp/org.emacswiki/htdocs/community/; chmod g+w -R /tmp/org.emacswiki/htdocs/community/
 
 use CGI qw/:standard/;
 use CGI::Carp qw(fatalsToBrowser);
 print header() . start_html(), p;
-print 'Upgrade version: $Id: upgrade-files.pl,v 1.5 2003/11/02 20:44:14 as Exp $', "\n";
+print 'Upgrade version: $Id: upgrade-files.pl,v 1.6 2003/11/16 21:15:20 as Exp $', "\n";
 if (not param('dir')) {
   print start_form, p,
     '$DataDir: ', textfield('dir', '/tmp/oddmuse'),
@@ -96,7 +96,7 @@ sub rewrite {
     write_file($file, $data);
   }
   print '</pre>';
-  print p, "Done.\n" if $done;
+  print p, "Done.\n";
 }
 
 sub read_file {
@@ -141,6 +141,7 @@ sub escape_newlines {
 
 sub basic_data {
   my $data = 'ts: ' . $section{ts} . "\n" if $section{ts};
+  $data .= 'keep-ts: ' . $section{keepts} . "\n" if $section{keepts};
   $data .= 'revision: ' . $section{revision} . "\n" if $page{revision};
   $data .= 'summary: ' . $section{summary} . "\n" if $section{summary};
   $data .= 'username: ' . $section{username} . "\n" if $section{username};
