@@ -16,13 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: header-and-footer-templates.pl,v 1.2 2004/12/25 21:52:38 as Exp $</p>';
-
-# The entire mechanism of how pages are built is now upside down.
-# Instead of writing code that assembles pages, we load templates,
-# that refer to pieces of code.
-#
-# This is the beginning of PHP-in-Perl.  :(
+$ModulesDescription .= '<p>$Id: header-and-footer-templates.pl,v 1.3 2004/12/25 21:54:15 as Exp $</p>';
 
 use vars qw($HtmlTemplateDir);
 use HTML::Template;
