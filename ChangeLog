@@ -1,5 +1,8 @@
 2003-09-19  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (DoMaintain): Delete permanent anchors file and page
+	index when the cache is going to be regenerated.
+
 	* test-markup.pl: Added tests for the cache refresh during
 	maintenance.
 
