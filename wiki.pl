@@ -275,7 +275,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.260 2003/11/16 13:52:03 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.261 2003/11/16 19:08:14 as Exp $');
 }
 
 sub InitCookie {
@@ -3263,7 +3263,7 @@ sub DoMaintain {
     unlink($PermanentAnchorsFile);
   }
   # Expire all keep files
-  foreach my $name (sort AllPagesList()) {
+  foreach my $name (sort(AllPagesList())) {
     print $q->br();
     print GetPageLink($name);
     OpenPage($name);
