@@ -23,7 +23,7 @@ use Encode;
 
 sub translate {
   my $str = shift;
-  $str = decode('utf-8', $str);
+  $str = encode('latin-1', decode('utf-8', $str));
   my @letters = split(//, $str);
   my @safe = ('a' .. 'z', 'A' .. 'Z', '0' .. '9', '-', '_', '.', '!', '~', '*', "'", '(', ')',
 	      ':', '/', '?', ';', '&');
