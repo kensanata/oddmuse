@@ -265,7 +265,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.175 2003/10/03 11:19:46 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.176 2003/10/03 17:53:28 as Exp $');
 }
 
 sub InitCookie {
@@ -398,7 +398,7 @@ sub ApplyRules {
 	my $oldpos = pos;
 	PrintJournal($3, $5, $7);
 	pos = $oldpos; # restore \G after call to ApplyRules
-      } elsif (m/\G(\&lt;rss(\s+(\d*))?\s+"(.*?)"\&gt;[ \t]*\n?)/cgis) { # <rss "uri..."> stores the parsed RSS of the given URI
+      } elsif (m/\G(\&lt;rss(\s+(\d*))?\s+(.*?)\&gt;[ \t]*\n?)/cgis) { # <rss "uri..."> stores the parsed RSS of the given URI
 	my $oldpos = pos;
 	DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
 	print &RSS($3 ? $3 : 15, split(/ +/, $4));
@@ -714,6 +714,7 @@ sub RSS {
   require XML::RSS;
   require LWP::UserAgent;
   foreach my $uri (@uris) {
+    $uri =~ s/^"?(.*)"?$/$1/;
     my $rss = new XML::RSS;
     my $ua = LWP::UserAgent->new;
     my $request = HTTP::Request->new('GET', $uri);
@@ -726,8 +727,16 @@ sub RSS {
     return $q->p($q->strong("[RSS parsing failed for $uri]")) if $@;
     my $counter;
     foreach my $i (@{$rss->{items}}) {
-      my $line = $q->a({-href=>$i->{'link'}, -title=>$i->{'dc'}->{'date'}}, "[$i->{'title'}]");
-      $line .= ' -- ' . $i->{'description'} if $i->{'description'};
+      my $line;
+      $line .= $q->a({-href=>$i->{'link'}, -title=>$i->{'dc'}->{'date'}}, "[$i->{'title'}]")
+	if $i->{'title'};
+      $line .= $q->a({-href=>$i->{'guid'}, -title=>$i->{'dc'}->{'date'}}, $i->{'guid'})
+	if $i->{'guid'}; # for RSS 2.0
+      $line .= ' ' . $q->span({-class=>'description'}, $i->{'description'})
+	if $i->{'description'};
+      $line .= $q->span({-class=>'contributor'}, $q->span(' . . . . . ')
+			. $i->{'dc'}->{'contributor'})
+	if $i->{'dc'}->{'contributor'};
       my $key = $i->{'dc'}->{'date'} or $i->{'title'};
       $lines{$key} = $line;
     }
@@ -735,8 +744,8 @@ sub RSS {
   my @lines = sort { $b cmp $a } keys %lines;
   @lines = @lines[0..$maxitems-1] if $maxitems;
   my $str;
-  foreach my $i (@lines) { $str .= $q->ul($lines{$i}); }
-  $str = $q->div({-class=>'rss'},$str);
+  foreach my $i (@lines) { $str .= $q->li($lines{$i}); }
+  $str = $q->div({-class=>'rss'},$q->ul($str));
   my $charset = uc($HttpCharset); # charsets are case insensitive
   if ($charset eq '' or $charset eq 'UTF-8') {
     return $str;
