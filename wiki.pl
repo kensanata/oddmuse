@@ -71,12 +71,12 @@ $OpenPageName @KeptList @IndexList $IndexInit $Message $q $Now
 
 $UseConfig   = 1 unless defined $UseConfig; # 1 = load config file in the data directory
 $DataDir   = '/tmp/oddmuse' unless $DataDir; # Main wiki directory
-$ConfigPage  = '' unless $ConfigPage; # config page (change space to _)
+$ConfigPage  = '' unless $ConfigPage; # config page
 $RunCGI      = 1;   # 1 = Run script as CGI instead of being a library
 
 # Basics
 $SiteName    = 'Wiki';     # Name of site (used for titles)
-$HomePage    = 'HomePage'; # Home page (change space to _)
+$HomePage    = 'HomePage'; # Home page
 $CookieName  = 'Wiki';     # Name for this wiki (for multi-wiki sites)
 
 # Fix if defaults do not work
@@ -86,7 +86,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.88 2003/06/10 21:41:26 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.89 2003/06/10 22:15:50 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -99,7 +99,7 @@ $NewText     = "Describe the new page here.\n";  # New page text
 $EditAllowed = 1;   # 1 = editing allowed,    0 = read-only
 $AdminPass   = '' unless defined $AdminPass; # Whitespace separated passwords.
 $EditPass    = '' unless defined $EditPass; # Whitespace separated passwords.
-$BannedHosts = 'BannedHosts'; # Page for banned hosts (change space to _)
+$BannedHosts = 'BannedHosts'; # Page for banned hosts
 $BannedCanRead = 1; # 1 = banned cannot edit, 0 = banned cannot read
 
 # LinkPattern
@@ -109,7 +109,7 @@ $BracketText = 1;   # 1 = [URL desc] uses a description for the URL
 $BracketWiki = 0;   # 1 = [WikiLink desc] uses a desc for the local link
 $HtmlLinks   = 0;   # 1 = <a href="foo">desc</a> is a link
 $NetworkFile = 1;   # 1 = file: is a valid protocol for URLs
-$InterMap    = 'InterMap'; # name of the intermap page (change space to _)
+$InterMap    = 'InterMap'; # name of the intermap page
 $PermanentAnchors = 1;   # 1 = [::some text] creates a permanent anchor [##some text] link to the anchor
 
 # TextFormattingRules
@@ -129,11 +129,11 @@ $SurgeProtectionViews = 5; # How many page views to allow in this window
 $RefererTracking = 0;      # Keep track of referrals to your pages
 $RefererTimeLimit = 60 * 60 * 24; # How long referrals shall be remembered
 $RefererLimit = 15;        # How many different referer shall be remembered
-$RefererFilter = 'ReferrerFilter'; # name of the filter pg (change space to _)
+$RefererFilter = 'ReferrerFilter'; # name of the filter pg
 
 # RecentChanges and KeptPages
 $DeletedPage = 'DeletedPage';   # Pages starting with this can be deleted
-$RCName      = 'RecentChanges'; # Name of changes page (change space to _)
+$RCName      = 'RecentChanges'; # Name of changes page
 @RcDays      = qw(1 3 7 30 90); # Days for links on RecentChanges
 $RcDefault   = 30;  # Default number of RecentChanges days
 $KeepDays    = 14;  # Days to keep old revisions
@@ -264,6 +264,9 @@ sub InitRequest { # Init global session variables for mod_perl!
   $OpenPageName = '';    # Currently open page
   CreateDir($DataDir);  # Create directory if it doesn't exist
   ReportError(Ts('Could not create %s', $DataDir) . ": $!") unless -d $DataDir;
+  $RCName = 'Letzte Aenderungen';
+  map { $$_ = FreeToNormal($$_); } # convert spaces to underscores on all configurable pagenames
+    (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$RefererFilter, \$StyleSheetPage, \$ConfigPage);
 }
 
 sub InitCookie {
