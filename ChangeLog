@@ -1,3 +1,26 @@
+2003-10-12  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($SurgeProtectionTime, $SurgeProtectionViews): Doubled
+	defaults.
+	(InitVariables): $NotFoundPg also passed through FreeToNormal.
+	(ApplyRules): Removed rule for pointing to permanent
+	anchors [##like this].
+	(GetPageOrEditLink): Call ResolveId.
+	(DoBrowseRequest): Call BrowseResolvedPage.
+	(DoBrowseRequest): If MyAction is defined, it is called instead of
+	doing the default error reporting.
+	(BrowseResolvedPage): New.
+	(ResolveId): New.
+	(BrowsePage): Simplified #REDIRECT handling.
+	(GetRedirectPage): Removed third parameter since it was unused.
+	(ReBrowsePage): Removed third parameter since it was unused.
+	(DoPost): Removed third parameter since it was unused.
+	(DoRandom): Removed extra parameters from call to ReBrowsePage.
+	(GetSearchLink): Take class and name parameters.
+	(GetHtmlHeader): Removed CSS rules for a.link from the default CSS.
+	(GetPermanentAnchor): Simplified.
+	(GetPermanentAnchor): Removed; use GetSearchLink for rendering.
+
 2003-10-11  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetRcHtml): Don't show "(diff)" link for clusters.

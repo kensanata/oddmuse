@@ -113,7 +113,7 @@ $BracketWiki = 0;   # 1 = [WikiLink desc] uses a desc for the local link
 $HtmlLinks   = 0;   # 1 = <a href="foo">desc</a> is a link
 $NetworkFile = 1;   # 1 = file: is a valid protocol for URLs
 $AllNetworkFiles = 0; # 1 = file:///foo is allowed -- the default allows only file://foo
-$PermanentAnchors = 1;   # 1 = [::some text] creates it and [##some text] link to it
+$PermanentAnchors = 1;   # 1 = [::some text] defines permanent anchors (page aliases)
 $InterMap    = 'InterMap'; # name of the intermap page
 
 # Other TextFormattingRules
@@ -125,14 +125,14 @@ $ENV{PATH}   = '/usr/bin/'; # Path used to find 'diff'
 $UseDiff     = 1;           # 1 = use diff
 
 # Visitors and SurgeProtection
-$SurgeProtection = 1;      # 1 = protect against leeches
-$Visitors        = 1;      # 1 = maintain list of recent visitors
-$VisitorTime   = 120 * 60; # Timespan to remember visitors in seconds
-$SurgeProtectionTime = 10; # Size of the protected window in seconds
-$SurgeProtectionViews = 5; # How many page views to allow in this window
-$RefererTracking = 0;      # Keep track of referrals to your pages
-$RefererTimeLimit = 60 * 60 * 24; # How long referrals shall be remembered
-$RefererLimit = 15;        # How many different referer shall be remembered
+$SurgeProtection      = 1;      # 1 = protect against leeches
+$Visitors             = 1;      # 1 = maintain list of recent visitors
+$VisitorTime          = 7200;   # Timespan to remember visitors in seconds
+$SurgeProtectionTime  = 20;     # Size of the protected window in seconds
+$SurgeProtectionViews = 10;     # How many page views to allow in this window
+$RefererTracking      = 0;      # Keep track of referrals to your pages
+$RefererTimeLimit     = 86400;  # How long referrals shall be remembered in seconds
+$RefererLimit         = 15;     # How many different referer shall be remembered
 $RefererFilter = 'ReferrerFilter'; # name of the filter pg
 
 # RecentChanges and KeptPages
@@ -213,6 +213,14 @@ sub DoWikiRequest {
   DoBrowseRequest();
 }
 
+sub ReportError { # fatal!
+  my $errmsg = shift;
+  print GetHttpHeader('text/html');
+  print $q->h2($errmsg), $q->end_html;
+  map { ReleaseLockDir($_); } keys %Locks;
+  exit (1);
+}
+
 sub Init {
   $FS  = "\x1e";      # The FS character is the RECORD SEPARATOR control char in ASCII
   $FS0 = "\xb3";      # The old FS character is a superscript "3" in Latin-1
@@ -254,7 +262,8 @@ sub InitVariables {    # Init global session variables for mod_perl!
   ReportError(Ts('Could not create %s', $DataDir) . ": $!") unless -d $DataDir;
   @UserGotoBarPages = ($HomePage, $RCName) unless @UserGotoBarPages;
   map { $$_ = FreeToNormal($$_); } # convert spaces to underscores on all configurable pagenames
-    (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$RefererFilter, \$StyleSheetPage, \$ConfigPage);
+    (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$RefererFilter, \$StyleSheetPage,
+     \$ConfigPage, \$NotFoundPg);
   if (not @HtmlTags) { # do not override settings in the config file
     if ($HtmlTags) {   # allow many tags
       @HtmlTags = qw(b i u font big small sub sup h1 h2 h3 h4 h5 h6 cite code
@@ -265,7 +274,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.191 2003/10/10 22:22:18 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.192 2003/10/12 02:37:52 as Exp $');
 }
 
 sub InitCookie {
@@ -503,9 +512,6 @@ sub ApplyRules {
     }  elsif ($withanchors && $PermanentAnchors && m/\G(\[::$FreeLinkPattern\])/cg) { #[::Free Link] permanent anchor create only $withanchors
       DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
       print GetPermanentAnchor($2);
-    } elsif ($PermanentAnchors && m/\G(\[\#\#$FreeLinkPattern\])/cg) { #[##Free Link] permanent anchor link
-      DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
-      print GetPermanentAnchorLink($2);
     } elsif ($FreeLinks && $BracketWiki && $locallinks && m/\G(\[\[$FreeLinkPattern\|([^\]]+)\]\])/cg) { # [[Free Link|text]]
       DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
       print GetPageOrEditLink($2, $3, 0 , 1);
@@ -514,7 +520,7 @@ sub ApplyRules {
       print GetPageOrEditLink($2, '', 0, 1);
     } elsif (%Smilies && ($fragment = SmileyReplace())) {
       # $fragment already set
-    } elsif ( eval {     local $SIG{__DIE__}; $fragment = MyRules(\$block, \@blocks, \@flags); } ) {
+    } elsif (eval { local $SIG{__DIE__}; $fragment = MyRules(\$block, \@blocks, \@flags); } ) {
       # $fragment already set
     } elsif (m/\G\s*\n(s*\n)+/cg) { # paragraphs -- whitespace including at least two newlines
       $fragment = CloseHtmlEnvironments() . '<p>'; # there is another one like this further up
@@ -720,10 +726,7 @@ sub RSS {
     my $request = HTTP::Request->new('GET', $uri);
     my $response = $ua->request($request);
     my $data = $response->content;
-    eval {
-      local $SIG{__DIE__}; # work around some broken XML::Parser stuff
-      $rss->parse($data);
-    };
+    eval { local $SIG{__DIE__}; $rss->parse($data); };
     return $q->p($q->strong("[RSS parsing failed for $uri]")) if $@;
     my $counter;
     foreach my $i (@{$rss->{items}}) {
@@ -824,11 +827,8 @@ sub GetUrl {
 
 sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result!
   my ($id, $text, $bracket, $free) = @_;
-  $id =~ s/^\s+//;      # Trim extra spaces
-  $id =~ s/\s+$//;
-  $id = FreeToNormal($id) if $free;
-  AllPagesList() unless $IndexInit;
-  my $exists = $IndexHash{$id};
+  $id = FreeToNormal($id) if $FreeLinks;
+  my $exists = ResolveId($id);
   if (!$text && $exists && $bracket) {
     $text = ++$FootnoteNumber;
   }
@@ -980,33 +980,12 @@ sub DoBrowseRequest {
   my $id = join('_', $q->keywords);
   $id = $q->path_info() if not $id and $UsePathInfo;
   $id =~ s|.*/||;
-  if ($id) { # Just script?PageName or script/PageName
-    if ($FreeLinks && (!-f GetPageFile($id))) {
-      $id = FreeToNormal($id);
-    }
-    if (($NotFoundPg ne '') && (!-f GetPageFile($id))) {
-      $id = $NotFoundPg;
-    }
-    BrowsePage($id)  if ValidIdOrDie($id);
-    return 1;
-  }
+  return BrowseResolvedPage($id) if $id; # script?PageName or script/PageName
   $id = GetParam('id', '');
   my $action = lc(GetParam('action', ''));
   my $search = GetParam('search', '');
-  if ($action eq 'anchor') {
-    ReadPermanentAnchors();
-    $id = $PermanentAnchors{FreeToNormal($id)};
-    $id = '' unless $id;
-    $action = 'browse'; #not so nice trick to reuse browse
-  }
   if ($action eq 'browse') {
-    if ($FreeLinks && (!-f GetPageFile($id))) {
-      $id = FreeToNormal($id);
-    }
-    if (($NotFoundPg ne '') && (!-f GetPageFile($id))) {
-      $id = $NotFoundPg;
-    }
-    BrowsePage($id, GetParam('raw', 0))  if ValidIdOrDie($id);
+    BrowseResolvedPage($id);
   } elsif ($action eq 'rc') {
     if (GetParam('raw', 0)) {
       DoRcText();
@@ -1056,12 +1035,63 @@ sub DoBrowseRequest {
   } elsif (GetParam('title', '')) {
     $id = GetParam('title', '');
     DoPost($id)  if ValidIdOrDie($id);
+  } elsif ($action and defined &MyAction) {
+    eval { local $SIG{__DIE__}; MyAction(); };
   } else {
     if ($action) {
       ReportError(Ts('Invalid action parameter %s', $action));
     } else {
       ReportError(T('Invalid URL.'));
     }
+  }
+}
+
+# == Id handling ==
+
+sub ValidId {
+  my $id = shift;
+  return Ts('Page name is too long: %s', $id)  if (length($id) > 120);
+  if ($FreeLinks) {
+    $id =~ s/ /_/g;
+    return Ts('Invalid Page %s', $id)  if (!($id =~ m|^$FreeLinkPattern$|));
+    return Ts('Invalid Page %s (must not end with .db)', $id)  if ($id =~ m|\.db$|);
+    return Ts('Invalid Page %s (must not end with .lck)', $id)  if ($id =~ m|\.lck$|);
+  } else {
+    return Ts('Page name may not contain space characters: %s', $id)  if ($id =~ m| |);
+    return Ts('Invalid Page %s', $id)  if (!($id =~ /^$LinkPattern$/));
+  }
+  return '';
+}
+
+sub ValidIdOrDie {
+  my $id = shift;
+  my $error;
+  $error = ValidId($id);
+  ReportError($error) if $error;
+  return 1;
+}
+
+sub ResolveId {
+  my $id = shift;
+  AllPagesList();
+  return $id if $IndexHash{$id}; # page exists
+  if ($PermanentAnchors) {
+    ReadPermanentAnchors();
+    my $anchor = $PermanentAnchors{$id};
+    return $anchor if $anchor; # permanent anchor exists
+  }
+}
+
+sub BrowseResolvedPage {
+  my $id = shift;
+  $id = FreeToNormal($id) if $FreeLinks; # needed even if page does not exist
+  my $resolved = ResolveId($id);
+  if ($resolved and $resolved ne $id) { # an anchor was found instead of a page
+    ReBrowsePage($resolved . '#' . $id);
+  } elsif (not $resolved and $NotFoundPg) { # custom page-not-found message
+    BrowsePage($NotFoundPg);
+  } else {
+    BrowsePage($id, GetParam('raw', 0)) if ValidIdOrDie($id);
   }
 }
 
@@ -1074,19 +1104,12 @@ sub BrowsePage {
   # Handle a single-level redirect
   my $oldId = GetParam('oldid', '');
   if (($oldId eq '') && (substr($Text{'text'}, 0, 10) eq '#REDIRECT ')) {
-    $oldId = $id;
-    if (($FreeLinks) && ($Text{'text'} =~ /\#REDIRECT\s+\[\[.+\]\]/)) {
-      ($id) = ($Text{'text'} =~ /\#REDIRECT\s+\[\[(.+)\]\]/);
-      $id = FreeToNormal($id);
-    } else {
-      ($id) = ($Text{'text'} =~ /\#REDIRECT\s+(\S+)/);
-    }
-    if (ValidId($id) eq '') {
-      ReBrowsePage($id, $oldId, 0);
+    if ($FreeLinks and $Text{'text'} =~ /\#REDIRECT\s+\[\[$FreeLinkPattern\]\]/) {
+      ReBrowsePage(FreeToNormal($1), $id);
       return;
-    } else {  # Not a valid target, so continue as normal page
-      $id = $oldId;
-      $oldId = '';
+    } elsif ($WikiLinks and $Text{'text'} =~ /^$LinkPattern/) {
+      ReBrowsePage($1, $id);
+      return;
     }
   }
   # shortcut if we only need the raw text: no caching, no diffs, no html.
@@ -1155,12 +1178,11 @@ sub BrowsePage {
 }
 
 sub ReBrowsePage {
-  my ($id, $oldId, $minor) = @_;
+  my ($id, $oldId) = @_;
   if ($oldId ne '') {   # Target of #REDIRECT (loop breaking)
-    print GetRedirectPage("action=browse&id=$id&oldid=$oldId",
-                           $id, $minor);
+    print GetRedirectPage("action=browse;oldid=$oldId;id=$id", $id);
   } else {
-    print GetRedirectPage($id, $id, $minor);
+    print GetRedirectPage($id, $id);
   }
 }
 
@@ -1559,7 +1581,7 @@ sub DoRandom {
   my ($id, @pageList);
   @pageList = AllPagesList();
   $id = $pageList[int(rand($#pageList + 1))];
-  ReBrowsePage($id, '', 0);
+  ReBrowsePage($id);
 }
 
 # == History ==
@@ -1681,13 +1703,13 @@ sub GetOldPageLink {
 }
 
 sub GetSearchLink {
-  my $name = shift;
-  my $id = UrlEncode($name);
+  my ($text, $class, $name) = @_;
+  my $id = UrlEncode($text);
   if ($FreeLinks) {
-    $name =~ s/_/ /g;  # Display with spaces
+    $text =~ s/_/ /g;  # Display with spaces
     $id =~ s/_/+/g;    # Search for url-escaped spaces
   }
-  return ScriptLink('search=' . $id, $name);
+  return ScriptLink('search=' . $id, $text, $class, $name);
 }
 
 sub ScriptLinkDiff {
@@ -1853,8 +1875,6 @@ span.info { font-size:smaller; font-style:italic; }
 div.rss { background-color:#EEF; }
 a.definition:before { content:"[::"; }
 a.definition:after { content:"]"; }
-a.link:before { content:"[##"; }
-a.link:after { content:"]" }
 a.upload:before { content:"<"; }
 a.upload:after { content:">"; }
 -->
@@ -1970,10 +1990,7 @@ sub PrintFooter {
     $html .= $q->p(Ts('%s seconds', (time - $Now)));
   }
   print $q->div({-class=>'footer'}, $html);
-  eval {
-    local $SIG{__DIE__};
-    PrintMyContent($id);
-  };
+  eval { local $SIG{__DIE__}; PrintMyContent($id); };
   print $q->end_html;
 }
 
@@ -2009,7 +2026,7 @@ sub GetGotoBar {
 }
 
 sub GetRedirectPage {
-  my ($newid, $name, $minor) = @_;
+  my ($newid, $name) = @_;
   my ($url, $html);
   my ($nameLink);
   # shortcut if we only need the raw text: no redirect.
@@ -2475,39 +2492,6 @@ sub GetTextAtTime {
     }
   }
   return '';
-}
-
-# == Misc. functions ==
-
-sub ReportError { # fatal!
-  my $errmsg = shift;
-  print GetHttpHeader('text/html');
-  print $q->h2($errmsg), $q->end_html;
-  map { ReleaseLockDir($_); } keys %Locks;
-  exit (1);
-}
-
-sub ValidId {
-  my $id = shift;
-  return Ts('Page name is too long: %s', $id)  if (length($id) > 120);
-  if ($FreeLinks) {
-    $id =~ s/ /_/g;
-    return Ts('Invalid Page %s', $id)  if (!($id =~ m|^$FreeLinkPattern$|));
-    return Ts('Invalid Page %s (must not end with .db)', $id)  if ($id =~ m|\.db$|);
-    return Ts('Invalid Page %s (must not end with .lck)', $id)  if ($id =~ m|\.lck$|);
-  } else {
-    return Ts('Page name may not contain space characters: %s', $id)  if ($id =~ m| |);
-    return Ts('Invalid Page %s', $id)  if (!($id =~ /^$LinkPattern$/));
-  }
-  return '';
-}
-
-sub ValidIdOrDie {
-  my $id = shift;
-  my $error;
-  $error = ValidId($id);
-  ReportError($error) if $error;
-  return 1;
 }
 
 # == Lock files ==
@@ -3329,7 +3313,7 @@ sub DoPost {
   my $oldrev = $Section{'revision'};
   if (!$preview && (($old eq $string) or ($oldrev == 0 and $string eq $NewText))) {
     ReleaseLock(); # No changes -- just show the same page again
-    ReBrowsePage($id, '', 1);
+    ReBrowsePage($id);
     return;
   }
   if ($preview) {
@@ -3375,7 +3359,7 @@ sub DoPost {
   if (GetParam('recent_edit', '') ne 'on' and $NotifyTracker) {
     PingTracker($id);
   }
-  ReBrowsePage($id, '', 1);
+  ReBrowsePage($id);
 }
 
 sub Save { # call within lock, with opened page
@@ -3911,17 +3895,12 @@ sub WritePermanentAnchors {
 }
 
 sub GetPermanentAnchor {
-  my ($id) =  @_;
-  $id =~ s/^\s+//;      # Trim extra spaces
-  $id =~ s/\s+$//;
-  $id = FreeToNormal($id);
+  my $id = FreeToNormal(shift); # Trims extra spaces, too
   my $text = $id;
   $text =~ s/_/ /g;
-  ReadPermanentAnchors();
-  if ( $PermanentAnchors{$id} ) {
-    if ($PermanentAnchors{$id} ne $OpenPageName) {
-      return '[' . Ts('anchor first defined here: %s', GetPermanentAnchorLink($id)) . ']';
-    }
+  my $resolved = ResolveId($id);
+  if ($resolved and $resolved ne $OpenPageName) { # exists already
+    return '[' . Ts('anchor first defined here: %s', GetPageLink($id)) . ']';
   } elsif (RequestLockDir('permanentanchors')) { # not fatal
     $PermanentAnchors{$id}=$OpenPageName;
     WritePermanentAnchors();
@@ -3929,23 +3908,7 @@ sub GetPermanentAnchor {
   }
   $PagePermanentAnchors{$id} = 1; # add to the list of anchors in page
   $id = UrlEncode($id);
-  return ScriptLink("action=anchor;id=$id#$id",$text,'definition',$id);
-}
-
-sub GetPermanentAnchorLink {
-  my ($id)=@_;
-  my $text;
-  $id =~ s/^\s+//;      # Trim extra spaces
-  $id =~ s/\s+$//;
-  $id = FreeToNormal($id);
-  $text = $id;
-  $text =~ s/_/ /g;
-  ReadPermanentAnchors();
-  if ( $PermanentAnchors{$id} ) {
-    $id = UrlEncode($id);
-    return ScriptLink("$PermanentAnchors{$id}#$id",$text,'link');
-  }
-  return "[## $id]";
+  return GetSearchLink($id, 'definition', $id);
 }
 
 sub DeletePermanentAnchors {
