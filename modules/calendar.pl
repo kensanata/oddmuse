@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.7 2004/03/28 18:14:42 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.8 2004/03/28 18:30:41 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage);
 
@@ -45,12 +45,12 @@ sub Cal {
     $class = ' today' if $day == $mday;
     my @matches = grep(/^$date/, @pages);
     my $link;
-    if (@matches == 0) {
-      $link = ScriptLink($date, $day, 'wanted' . $class);
-    } elsif (@matches == 1) {
-      $link = ScriptLink($matches[0], $day, 'exists exact' . $class);
+    if (@matches == 0) { # not using GetEditLink because of $class
+      $link = ScriptLink('action=edit;id=' . $date, $day, 'edit' . $class);
+    } elsif (@matches == 1) { # not using GetPageLink because of $class
+      $link = ScriptLink($matches[0], $day, 'local exact' . $class);
     } else {
-      $link = ScriptLink('action=collect;match=' . $date, $day,  'exists collection' . $class);
+      $link = ScriptLink('action=collect;match=' . $date, $day,  'local collection' . $class);
     }
     $link;
     }|ge;
