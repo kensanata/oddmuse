@@ -1,3 +1,9 @@
+2004-07-05  Nikolay A. Fetisov  <naf@monsy.mpei.ac.ru>
+
+	* wiki.pl (InitVariables, ApplyRules, PrintJournal, OpenPage):
+	Initialize some variables.
+	(Save): Reset $IndexInit.
+
 2004-06-29  Alex Schroeder  <alex@confusibombus>
 
 	* modules/calendar.pl (Cal): The year can be part of the link for
