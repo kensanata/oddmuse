@@ -1,8 +1,5 @@
 #! /usr/bin/perl -w
 
-# This is what I used for testing:
-# cd /tmp; rm -rf org.emacswiki oddmuse; tar xzf ~/Backups/community.tar.gz; ln -s /tmp/org.emacswiki/htdocs/community/ /tmp/oddmuse; perl ~/src/oddmuse/upgrade-files.pl dir=/tmp/oddmuse sure=yes; chgrp www-data -R /tmp/org.emacswiki/htdocs/community/; chmod g+w -R /tmp/org.emacswiki/htdocs/community/
-
 use CGI qw/:standard/;
 use CGI::Carp qw(fatalsToBrowser);
 
@@ -19,7 +16,7 @@ $NewFS = "\x1e";
 # override $FS if you want!
 
 print header() . start_html('Upgrading Files'), p;
-print 'Upgrade version: $Id: upgrade-files.pl,v 1.9 2004/02/06 13:52:13 as Exp $', "\n";
+print 'Upgrade version: $Id: upgrade-files.pl,v 1.10 2004/02/06 14:24:19 as Exp $', "\n";
 if (not param('dir')) {
   print start_form, p, '$DataDir: ', textfield('dir', '/tmp/oddmuse'),
     p, radio_group('separator', ['Oddmuse', 'UseMod 0.92', 'UseMod 1.00',
