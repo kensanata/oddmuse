@@ -58,7 +58,7 @@ $RefererTimeLimit $RefererLimit $TopLinkBar $NotifyTracker $InterMap
 @LockOnCreation $RefererFilter $PermanentAnchorsFile $PermanentAnchors
 %CookieParameters $StyleSheetPage @UserGotoBarPages $ConfigPage
 $ScriptName $CommentsPrefix $NewComment $AllNetworkFiles $UsePathInfo
-$UploadAllowed @UploadTypes);
+$UploadAllowed @UploadTypes @MyMacros);
 
 # Other global variables:
 use vars qw(%Page %Section %Text %InterSite %KeptRevisions %IndexHash
@@ -274,7 +274,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.208 2003/10/17 17:25:56 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.209 2003/10/18 11:26:54 as Exp $');
 }
 
 sub InitCookie {
@@ -1036,8 +1036,8 @@ sub DoBrowseRequest {
     DoSearch($search);
   } elsif (GetParam('title', '')) {
     DoPost(GetParam('title', ''));
-  } elsif ($action and defined &MyAction) {
-    eval { local $SIG{__DIE__}; MyAction(); };
+  } elsif ($action and defined &MyActions) {
+    eval { local $SIG{__DIE__}; MyActions(); };
   } else {
     if ($action) {
       ReportError(Ts('Invalid action parameter %s', $action));
@@ -1475,13 +1475,11 @@ sub GetRcText {
 }
 
 sub GetRcRss {
-  my ($QuotedFullUrl, $ChannelAbout, $diffPrefix, $historyPrefix);
-  # Normally get URL from script, but allow override.
   $FullUrl = $q->url(-full=>1)  if ($FullUrl eq '');
-  $QuotedFullUrl = QuoteHtml($FullUrl);
-  $diffPrefix = $QuotedFullUrl . QuoteHtml("?action=browse\&diff=1\&id=");
-  $historyPrefix = $QuotedFullUrl . QuoteHtml("?action=history\&id=");
-  $SiteDescription = QuoteHtml($SiteDescription);
+  my $quotedFullUrl = QuoteHtml($FullUrl);
+  my $diffPrefix = $quotedFullUrl . QuoteHtml("?action=browse\&diff=1\&id=");
+  my $historyPrefix = $quotedFullUrl . QuoteHtml("?action=history\&id=");
+  my $quotedSiteDescription = QuoteHtml($SiteDescription);
   my ($sec, $min, $hour, $mday, $mon, $year) = gmtime($Now);
   $year += 1900;
   my $date = sprintf( "%4d-%02d-%02dT%02d:%02d:%02d+00:00",
@@ -1494,8 +1492,8 @@ sub GetRcRss {
   );
   $rss->channel(
     title         => QuoteHtml($SiteName),
-    link          => $QuotedFullUrl . QuoteHtml("?$RCName"),
-    description   => $SiteDescription,
+    link          => $quotedFullUrl . QuoteHtml("?$RCName"),
+    description   => $quotedSiteDescription,
     dc => {
       publisher   => $RssPublisher,
       contributor => $RssContributor,
@@ -1509,7 +1507,7 @@ sub GetRcRss {
   $rss->image(
     title  => QuoteHtml($SiteName),
     url    => $RssImageUrl,
-    link   => $QuotedFullUrl,
+    link   => $quotedFullUrl,
   );
   # Now call GetRc with some blocks of code as parameters:
   GetRc
@@ -1518,13 +1516,13 @@ sub GetRcRss {
     # printRCLine
     sub {
       my ($pagename, $timestamp, $host, $userName, $summary, $minor, $revision, $languages, $cluster) = @_;
-      my ($description, $author, $status, $importance, $date);
       my ($sec, $min, $hour, $mday, $mon, $year) = gmtime($timestamp);
       my $name = FreeToNormal($pagename);
       $name =~ s/_/ /g;
       $year += 1900;
-      $date = sprintf( "%4d-%02d-%02dT%02d:%02d:%02d+00:00",
+      my $date = sprintf( "%4d-%02d-%02dT%02d:%02d:%02d+00:00",
 	$year, $mon+1, $mday, $hour, $min, $sec);
+      my ($description, $author);
       if ($summary ne '') {
 	$description = QuoteHtml($summary);
       }
@@ -1533,9 +1531,9 @@ sub GetRcRss {
       } else {
 	$author = $host;
       }
-      $status = (1 == $revision) ? 'new' : 'updated';
-      $importance = $minor ? 'minor' : 'major';
-      my $link = $QuotedFullUrl
+      my $status = (1 == $revision) ? 'new' : 'updated';
+      my $importance = $minor ? 'minor' : 'major';
+      my $link = $quotedFullUrl
 	. '?' . GetPageParameters('browse', $pagename, $revision, $cluster);
       $rss->add_item(
         title         => QuoteHtml($name),
@@ -1888,6 +1886,8 @@ EOT
   } else {
     $html .= '<meta name="robots" content="INDEX,NOFOLLOW">';
   }
+  $html .= '<link rel="alternate" type="application/rss+xml" title="RSS" href="'
+    . $ScriptName . '?action=rss">';
   # finish
   $html = qq(<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">\n<html>)
     . $q->head($q->title($q->escapeHTML($title)) . $html)
@@ -3275,7 +3275,6 @@ sub DoPost {
   } elsif (grep(/^$id$/, @LockOnCreation) and !UserIsAdmin() and not -f GetPageFile($id)) {
     ReportError(Ts('Only an administrator can create %s', $id));
   }
-  my $string = GetParam('text', undef);
   my $filename = GetParam('file', undef);
   if ($filename and not $UploadAllowed and not UserIsAdmin()) {
     ReportError(T('Only administrators can upload files.'));
@@ -3285,6 +3284,9 @@ sub DoPost {
   OpenPage($id);
   OpenDefaultText();
   my $old = $Text{'text'};
+  $_ = GetParam('text', undef);
+  foreach my $macro (@MyMacros) { &$macro; }
+  my $string = $_;
   my $preview = 0;
   # Upload file
   if ($filename) {
