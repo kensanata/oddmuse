@@ -1,5 +1,8 @@
 2003-09-19  Alex Schroeder  <alex@gnu.org>
 
+	* test-markup.pl: Added tests for the cache refresh during
+	maintenance.
+
 	* wiki.pl (SavePage): Added error for missing pagenames.
 	(DoSearch): Indicate the replacement text, too.
 	(Replace): Do replacement in an eval so that backreferences work.
