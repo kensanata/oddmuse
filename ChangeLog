@@ -1,7 +1,7 @@
 2004-03-07  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetInterLink): Add more spans to interlinks.
-	(RSS): Append channel title to title attribute of the link.
+	(RSS): Use $RssInterwikiTranslate on the URL if no interwiki was specified.
 
 2004-03-06  Alex Schroeder  <alex@gnu.org>
 
