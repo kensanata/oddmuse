@@ -17,50 +17,43 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: translations.pl,v 1.1 2004/04/29 11:39:04 groogel Exp $</p>';
+$ModulesDescription .= '<p>$Id: translations.pl,v 1.2 2004/12/22 02:35:32 as Exp $</p>';
 
-sub MyRules {
-    if ( m/\G(\&lt;translation +\[\[$FreeLinkPattern\]\] +(\d+)\&gt;[ \t]*)/gc )
-    {
-        Dirty($1);
-        print GetTranslationLink( $2, $3 );
-        return '';
-    }
+push(@MyRules, \&TranslationRule);
+
+sub TranslationRule {
+  if (m/\G(\&lt;translation +\[\[$FreeLinkPattern\]\] +(\d+)\&gt;[ \t]*)/gc) {
+    Dirty($1);
+    print GetTranslationLink($2, $3);
     return '';
+  }
+  return undef;
 }
 
 sub GetCurrentPageRevision {
-    my $id   = shift;
-    my %page = ParseData( ReadFileOrDie( GetPageFile($id) ) );
-    return $page{revision};
+  my $id   = shift;
+  my %page = ParseData(ReadFileOrDie(GetPageFile($id)));
+  return $page{revision};
 }
 
 sub GetTranslationLink {
-    my ( $id, $revision ) = @_;
-    my $result = "";
-    my $currentRevision;
-    $id =~ s/^\s+//;    # Trim extra spaces
-    $id =~ s/\s+$//;
-    $id     = FreeToNormal($id);
-    $result = Ts(
-        'This page is a translation of %s. ',
-        GetPageOrEditLink( $id, '', 0, 1 )
-    );
-    $currentRevision = GetCurrentPageRevision($id);
+  my ($id, $revision) = @_;
+  my $result = "";
+  my $currentRevision;
+  $id =~ s/^\s+//;		# Trim extra spaces
+  $id =~ s/\s+$//;
+  $id     = FreeToNormal($id);
+  $result = Ts('This page is a translation of %s. ', GetPageOrEditLink( $id, '', 0, 1));
+  $currentRevision = GetCurrentPageRevision($id);
 
-    if ( $currentRevision == $revision ) {
-        $result .= T("The translation is up to date.");
-    }
-    elsif ( $currentRevision > $revision ) {
-        $result .= T("The translation is outdated.") . ' '
-          . ScriptLink(
-"action=browse&diff=1&id=$id&revision=$currentRevision&diffrevision=$revision",
-            T("(diff)")
-          );
-    }
-    else {
-        $result .= T("The page does not exist.");
-    }
-    return $result;
+  if ($currentRevision == $revision) {
+    $result .= T("The translation is up to date.");
+  } elsif ( $currentRevision > $revision ) {
+    $result .= T("The translation is outdated.") . ' '
+      . ScriptLink("action=browse&diff=1&id=$id&revision=$currentRevision&diffrevision=$revision",
+		   T("(diff)"));
+  } else {
+    $result .= T("The page does not exist.");
+  }
+  return $result;
 }
-
