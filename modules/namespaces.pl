@@ -16,13 +16,16 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.9 2004/12/21 16:19:59 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.10 2004/12/21 16:32:33 as Exp $</p>';
+
+use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent $NamespaceRoot);
+
+$NamespacesMain = 'Main'; # to get back to the main namespace
+$NamespacesSelf = 'Self'; # for your own namespace
+$NamespaceCurrent = '';   # will be automatically set to the current namespace, if any
+$NamespaceRoot = '';      # will be automatically set to the original $ScriptName
 
 my $NamespacesInit = 0;
-my $NamespacesMain = 'Main'; # to get back to the main namespace
-my $NamespacesSelf = 'Self'; # for your own namespace
-my $NamespaceRoot = '';
-my $NamespaceCurrent = '';
 
 *OldNamespacesInitVariables = *InitVariables;
 *InitVariables = *NewNamespacesInitVariables;
@@ -33,7 +36,10 @@ sub NewNamespacesInitVariables {
   if (not $InterSiteInit and !$Monolithic and $UsePathInfo) {
     $InterSite{$NamespacesMain} = $ScriptName . '/';
     foreach my $name (glob("$DataDir/*")) {
-      if (-d $name and $name =~ m|/($InterSitePattern)$| and $name ne $NamespacesMain) {
+      if (-d $name
+	  and $name =~ m|/($InterSitePattern)$|
+	  and $name ne $NamespacesMain
+	  and $name ne $NamespacesSelf) {
 	$InterSite{$1} = $ScriptName . '/' . $1 . '/';
       }
     }
@@ -43,10 +49,12 @@ sub NewNamespacesInitVariables {
        # make sure ordinary page names are not matched!
        and $q->path_info() =~ m|^/($InterSitePattern)(/.*)?|
        and ($2 or $q->param or $q->keywords)
-       and ($1 ne $NamespacesMain))
+       and ($1 ne $NamespacesMain)
+       and ($1 ne $NamespacesSelf))
       or
       (GetParam('ns', '') =~ m/^($InterSitePattern)$/
-       and ($1 ne $NamespacesMain))) {
+       and ($1 ne $NamespacesMain)
+       and ($1 ne $NamespacesSelf))) {
     $NamespaceCurrent = $1;
     $NamespacesInit = 1;
     # Change some stuff from the original InitVariables call:
