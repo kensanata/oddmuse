@@ -356,7 +356,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.531 2005/02/02 00:09:11 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.532 2005/02/02 22:08:08 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -1180,6 +1180,9 @@ sub Tss {
 
 sub DoBrowseRequest {
   if (not $q->param and not ($UsePathInfo and $q->path_info)) {
+    my $error = $q->cgi_error;
+    # We can use the error message as the HTTP error code
+    ReportError(Ts('CGI Internal error: %s',$error), $error) if $error;
     BrowsePage($HomePage);
     return 1;
   }
