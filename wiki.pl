@@ -247,6 +247,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $ReplaceForm = 0;    # Only admins may search and replace
   $ScriptName = $q->url() unless defined $ScriptName; # Name used in links
+  $FullUrl = $q->url(-full=>1) unless $FullUrl;
   $Now = time;         # Reset in case script is persistent
   if (not $LastUpdate) { # mod_perl: stat should be unnecessary since LastUpdate persists.
     my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size, $atime,$mtime,$ctime,$blksize,$blocks)
@@ -274,7 +275,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.233 2003/11/03 00:55:26 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.234 2003/11/03 01:09:37 as Exp $');
 }
 
 sub InitCookie {
@@ -1426,7 +1427,6 @@ sub GetRcText {
 }
 
 sub GetRcRss {
-  $FullUrl = $q->url(-full=>1)  if ($FullUrl eq '');
   my $quotedFullUrl = QuoteHtml($FullUrl);
   my $diffPrefix = $quotedFullUrl . QuoteHtml("?action=browse;diff=1;id=");
   my $historyPrefix = $quotedFullUrl . QuoteHtml("?action=history;id=");
@@ -1929,7 +1929,7 @@ sub PrintFooter {
 
 sub GetFormStart {
   my $encoding = (shift) ? 'multipart/form-data' : 'application/x-www-form-urlencoded';
-  return $q->start_form(-method=>'post', -action=>$ScriptName, -enctype=>$encoding);
+  return $q->start_form(-method=>'post', -action=>$FullUrl, -enctype=>$encoding);
 }
 
 sub GetSearchForm {
@@ -1968,9 +1968,11 @@ sub GetRedirectPage {
     $html .= Ts('Please go on to %s.', $newid);
     return $html;
   }
-  # Normally get URL from script, but allow override.
-  $FullUrl = $q->url(-full=>1)  if ($FullUrl eq '');
-  $url = $FullUrl . '?' . $newid;
+  if ($UsePathInfo) {
+    $url = $FullUrl . '/' . $newid;
+  } else {
+    $url = $FullUrl . '?' . $newid;
+  }
   $nameLink = $q->a({-href=>$url}, $name);
   # NOTE: do NOT use -method (does not work with old CGI.pm versions)
   # Thanks to Daniel Neri for fixing this problem.
