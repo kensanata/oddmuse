@@ -265,7 +265,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.176 2003/10/03 17:53:28 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.177 2003/10/03 18:18:05 as Exp $');
 }
 
 sub InitCookie {
@@ -742,7 +742,7 @@ sub RSS {
     }
   }
   my @lines = sort { $b cmp $a } keys %lines;
-  @lines = @lines[0..$maxitems-1] if $maxitems;
+  @lines = @lines[0..$maxitems-1] if $maxitems and $#lines > $maxitems;
   my $str;
   foreach my $i (@lines) { $str .= $q->li($lines{$i}); }
   $str = $q->div({-class=>'rss'},$q->ul($str));
@@ -1521,7 +1521,7 @@ sub GetRcRss {
     # RC Lines
     @_;
   # Only take the first 15 entries
-  my $limit = GetParam('rsslimit', 14);
+  my $limit = GetParam('rsslimit', 15);
   @{$rss->{'items'}} = @{$rss->{'items'}}[0..$limit-1]  unless $limit == 'all';
   return $rss->as_string;
 }
