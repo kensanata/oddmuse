@@ -81,7 +81,7 @@ $HttpCharset = '';  # Charset for pages, default is ISO-8859-1
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.13 2003/03/25 09:11:09 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.14 2003/03/25 09:12:48 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -3149,12 +3149,13 @@ sub PrintSearchResults {
       }
     }
     #  entry trailer
-    print $q->br(), $q->span({-class=>'info'},
-			     int((length($pageText)/1024)+1) . 'K - '
-			     . T('last updated') . ' '
-			     . &TimeToText($Section{ts}) . ' ' . T('by') . ' '
-			     . &GetAuthorLink($Section{'host'}, $Section{'username'})
-			     . '</p>';
+    print $q->br(),
+      $q->span({-class=>'info'},
+	       int((length($pageText)/1024)+1) . 'K - '
+	       . T('last updated') . ' '
+	       . &TimeToText($Section{ts}) . ' ' . T('by') . ' '
+	       . &GetAuthorLink($Section{'host'}, $Section{'username'})),
+      '</p>';
   }
 }
 
