@@ -69,7 +69,7 @@ $Monolithic $ReplaceForm %PermanentAnchors %PagePermanentAnchors
 $CollectingJournal $WikiDescription $PrintedHeader %Locks $Fragment
 @Blocks @Flags %NearSite %NearSource %NearLinksUsed $NearSiteInit
 $NearDir $NearMap $SisterSiteLogoUrl %NearSearch @KnownLocks
-$PermanentAnchorsInit $ModulesDescription %Action %ReverseHash
+$PermanentAnchorsInit $ModulesDescription %Action
 %RssInterwikiTranslate $RssInterwikiTranslateInit);
 
 # == Configuration ==
@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.396 2004/05/17 23:41:56 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.397 2004/05/18 20:25:40 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1013,7 +1013,7 @@ sub GetDownloadLink {
   AllPagesList();
   # if the page does not exist
   return '[' . ($image ? 'image' : 'link') . ':' . $name
-    . GetEditLink($id, '?', 1) . ']' unless $ReverseHash{$id};
+    . GetEditLink($id, '?', 1) . ']' unless $IndexHash{$id};
   my $action;
   if ($revision) {
     $action = "action=download;id=" . UrlEncode($id) . ";revision=$revision";
@@ -1165,7 +1165,7 @@ sub ValidIdOrDie {
 sub ResolveId {
   my $id = shift;
   AllPagesList();
-  my $exists = $ReverseHash{$id}; # page exists
+  my $exists = $IndexHash{$id}; # page exists
   if (GetParam('anchor', $PermanentAnchors)) {
     ReadPermanentAnchors() unless $PermanentAnchorsInit;
     my $anchor = $PermanentAnchors{$id};
@@ -1229,7 +1229,7 @@ sub BrowsePage {
   my $msg = GetParam('msg', '');
   $Message .= $q->p($msg) if $msg; # show message if the page is shown
   SetParam('msg', '');
-  print GetHeader($id, QuoteHtml($ReverseHash{$id}), $oldId, undef, $status);
+  print GetHeader($id, QuoteHtml($id), $oldId, undef, $status);
   my $showDiff = GetParam('diff', 0);
   if ($UseDiff && $showDiff) {
     my $diffRevision = GetParam('diffrevision', $revision);
@@ -1881,7 +1881,7 @@ sub GetHeader {
   }
   $result .= $q->div({-class=>'message'}, $Message)  if $Message;
   if ($id ne '') {
-    $result .= $q->h1(GetSearchLink($title, '', '',
+    $result .= $q->h1(GetSearchLink($id, '', '',
 				    T('Click to search for references to this page')));
   } else {
     $result .= $q->h1($title);
@@ -2343,9 +2343,9 @@ sub OpenPage { # Sets global variables
   if ($OpenPageName eq $id) {
     return;
   }
-  AllPagesList(); # set %ReverseHash
-  if ($ReverseHash{$id}) {
-    %Page = ParseData(ReadFileOrDie(GetPageFile($ReverseHash{$id})));
+  AllPagesList(); # set IndexHash
+  if ($IndexHash{$id}) {
+    %Page = ParseData(ReadFileOrDie(GetPageFile($id)));
   } else {
     $Page{ts} = $Now;
     $Page{revision} = 0;
@@ -2399,9 +2399,9 @@ sub GetTextRevision {
 
 sub GetPageContent {
   my $id = shift;
-  AllPagesList(); # set %ReverseHash
-  if ($ReverseHash{$id}) {
-    my %data = ParseData(ReadFileOrDie(GetPageFile($ReverseHash{$id})));
+  AllPagesList(); # set IndexHash
+  if ($IndexHash{$id}) {
+    my %data = ParseData(ReadFileOrDie(GetPageFile($id)));
     return $data{text};
   }
   return '';
@@ -2957,31 +2957,25 @@ sub AllPagesList {
     if ($status) {
       %IndexHash = split(/\s+/, $rawIndex);
       @IndexList = sort(keys %IndexHash);
-      $IndexInit = 1; # If ReadFile failed we will regenerate the index below
+      $IndexInit = 1;
+      return @IndexList;
     }
+    # If open fails just refresh the index
   }
-  if (not $IndexInit) {
-    @IndexList = ();
-    %IndexHash = ();
-    foreach (glob("$PageDir/*/*.pg $PageDir/*/.*.pg")) { # find .dotfiles, too
-      next unless m|/.*/(.+)\.pg$|;
-      push @IndexList, $1;
-      $IndexHash{$1} = 1;
-    }
-    # Try to write out the list for future runs.  If file exists and cannot be changed, error!
-    RequestLockDir('index', undef, undef, -f $IndexFile) or return @IndexList;
-    WriteStringToFile($IndexFile, join(' ', %IndexHash));
-    ReleaseLockDir('index');
+  @IndexList = ();
+  %IndexHash = ();
+  foreach (glob("$PageDir/*/*.pg $PageDir/*/.*.pg")) { # find .dotfiles, too
+    next unless m|/.*/(.+)\.pg$|;
+    push @IndexList, $1;
+    $IndexHash{$1} = 1;
   }
   $IndexInit = 1;  # Initialized for this run of the script
-  map { $ReverseHash{$_} = $_;
-	my $alternate = AlternateName($_);
-	$ReverseHash{$alternate} = $_ unless $ReverseHash{$alternate};
-      } (@IndexList);
+  # Try to write out the list for future runs.  If file exists and cannot be changed, error!
+  RequestLockDir('index', undef, undef, -f $IndexFile) or return @IndexList;
+  WriteStringToFile($IndexFile, join(' ', %IndexHash));
+  ReleaseLockDir('index');
   return @IndexList;
 }
-
-sub AlternateName { lc(shift); }
 
 # == Searching ==
 
