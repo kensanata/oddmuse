@@ -4,6 +4,7 @@
 	(GetHtmlHeader): Use it.
 	(DoHistory): Removed a br tag.
 	(GetHtmlHeader): Encoding multiple style sheets.
+	(PrintHtmlDiff): Fixed extent of the 'diff' div.
 
 2003-09-26  Alex Schroeder  <alex@gnu.org>
 
