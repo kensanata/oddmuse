@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.382 2004/04/12 03:28:53 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.383 2004/04/12 12:51:45 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -524,7 +524,8 @@ sub ApplyRules {
       # bit.
       my $bracket = (substr($1, 0, 1) eq '[') # but \[\[$FreeInterLinkPattern\]\] it not bracket!
 	&& !((substr($1, 0, 2) eq '[[') && (substr($1, 2, 1) ne '[') && index($1, '|') < 0);
-      my ($oldmatch, $output) = ($1, GetInterLink($2, $3, $bracket)); # $3 may be empty
+      my $quote = (substr($1, 0, 2) eq '[[');
+      my ($oldmatch, $output) = ($1, GetInterLink($2, $3, $bracket, $quote)); # $3 may be empty
       if ($oldmatch eq $output) { # no interlink
 	my ($site, $rest) = split(/:/, $oldmatch, 2);
 	Clean($site);
@@ -866,9 +867,9 @@ sub NearInit {
 }
 
 sub GetInterSiteUrl {
-  my ($site, $page) = @_;
+  my ($site, $page, $quote) = @_;
   return unless $page;
-  $page = UrlEncode($page);
+  $page = UrlEncode($page) if $quote; # Foo:bar+baz is not quoted, [[Foo:bar baz]] is quoted.
   my $url = $InterSite{$site} or return;
   $url =~ s/\%s/$page/g or $url .= $page;
   return $url;
@@ -879,10 +880,10 @@ sub BracketLink { # brackets can be removed via CSS
 }
 
 sub GetInterLink {
-  my ($id, $text, $bracket) = @_;
+  my ($id, $text, $bracket, $quote) = @_;
   my ($site, $page) = split(/:/, $id, 2);
   $page =~ s/&amp;/&/g;	 # Unquote common URL HTML
-  my $url = GetInterSiteUrl($site, $page);
+  my $url = GetInterSiteUrl($site, $page, $quote);
   my $class = 'inter';
   if ($text && $bracket && !$url) {
     return "[$id $text]";
