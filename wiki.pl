@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.45 2003/04/26 17:25:23 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.46 2003/04/26 17:29:53 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -3607,13 +3607,11 @@ sub DoConvert {
   &RequestLock() or die(T('Could not get main lock'));
   print '<p>' . T('Main lock obtained.');
   foreach my $name (&AllPagesList()) {
-    print $q->br();
     &ConvertFile (&GetPageFile($name));
     &ConvertFile (&GetKeepFile($name));
     &ConvertFile (&GetRefererFile($name));
   }
   foreach my $name ($RcFile, $RcOldFile, $VisitorFile) {
-    print $q->br();
     &ConvertFile ($name);
   }
   print '</p>';
@@ -3624,7 +3622,7 @@ sub DoConvert {
 
 sub ConvertFile {
   my $file = shift;
-  print $file . ' ';
+  print $q->br() . $file . ' ';
   if (-f $file) {
     my ($status, $data) = &ReadFile($file);
     if ($status) {
