@@ -1,3 +1,8 @@
+2004-08-09  Alex Schroeder  <alex@confusibombus>
+
+	* modules/paragraph-link.pl (ParagraphLinkRule): "anchor first
+	defined here" uses print instead of return.
+
 2004-08-07  Alex Schroeder  <alex@confusibombus>
 
 	* modules/anchors.pl (AnchorsRule): Add support for named anchors
