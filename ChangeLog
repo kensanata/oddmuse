@@ -1,3 +1,9 @@
+2003-08-02  Pierre Gaston  <pgas@intracom.gr>
+
+	* wiki.pl (ApplyRules): Pass $block, @blocks, and @flags to
+	MyRules so that dynamic rules can be written.
+	(DoShowVisitors): Fix typo.
+	
 2003-06-30  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (RcTextItem): New.
