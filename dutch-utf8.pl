@@ -35,12 +35,14 @@ UserName must be 50 characters or less: not saved
 Niet opgeslagen: de GebruikersNaam mag hoogstens 50 tekens lang zijn.
 XML::RSS is not available on this system.
 
-LWP::UserAgent is not available on this system.
-
 diff
 
 history
 geschiedenis
+%s returned no data, or LWP::UserAgent is not available.
+
+RSS parsing failed for %s
+
  . . . . 
 
 Click to create this page
@@ -59,6 +61,8 @@ Invalid action parameter %s
 Ongeldige actieparameter %s
 Invalid URL.
 Ongeldige URL.
+Page name is missing
+
 Page name is too long: %s
 De naam van de pagina is te lang :%s
 Invalid Page %s
@@ -95,12 +99,12 @@ for %s only
 alleen voor %s
 List latest change per page only
 Toon alleen de laatst gewijzigde pagina's
+List all changes
+Toon alle wijzigingen
 List only major changes
 Toon alleen grote wijzigingen
 Include minor changes
 Toon ook kleine wijzigingen
-List all changes
-Toon alle wijzigingen
 %s days
 %s dagen
 List later changes
@@ -119,6 +123,8 @@ OK
 (klein)
 rollback
 ongedaan maken
+new
+
 from %s
 vanaf %s
 History of %s
@@ -147,36 +153,6 @@ Click to search for references to this page
 Klik hier om te zoeken naar verwijzingen naar deze pagina
 Cookie: 
 
-new comment
-nieuw commentaar
-Save
-Opslaan
-Preview
-Voorvertoning
-Comments on this page
-Commentaar op deze pagina
-Edit revision %s of this page
-Wijzig revisie %s van deze pagina
-Edit text of this page
-Wijzig de tekst op deze pagina
-This page is read-only
-Deze pagina kan alleen gelezen worden
-View other revisions
-Bekijk andere revisies
-View current revision
-Bekijk huidige revisie
-View all changes
-Toon alle wijzigingen
-Back to %s
-
-Last edited
-Laatst gewijzigd op
-Edited
-Gewijzigd
-by %s
-door %s
-(diff)
-(verschillen)
 Warning
 Waarschuwing
 Database is stored in temporary directory %s
@@ -187,6 +163,50 @@ The same page on other sites:
 
 EditNearLinks
 
+Last edited
+Laatst gewijzigd op
+Edited
+Gewijzigd
+by %s
+door %s
+(diff)
+(verschillen)
+Run maintenance
+
+Unlock site
+
+Lock site
+
+Unlock page
+
+Lock page
+
+Comments on this page
+Commentaar op deze pagina
+Edit revision %s of this page
+Wijzig revisie %s van deze pagina
+Edit text of this page
+Wijzig de tekst op deze pagina
+e
+
+This page is read-only
+Deze pagina kan alleen gelezen worden
+View other revisions
+Bekijk andere revisies
+View current revision
+Bekijk huidige revisie
+View all changes
+Toon alle wijzigingen
+Back to %s
+
+new comment
+nieuw commentaar
+s
+
+Save
+Opslaan
+Preview
+Voorvertoning
 Search:
 Zoeken naar:
 Replace:
@@ -337,8 +357,6 @@ Near pages:
 
 last updated
 laatst gewijzigd
-Full Link List
-Volledige lijst van koppelingen
 Complete Content
 Volledige inhoud
 The main page is %s.
@@ -353,14 +371,18 @@ Sample_Undefined_Page
 Voorbeeld_Van_Een_Niet_Bestaande_Pagina
 [[%s]] cannot be defined.
 [[%s]] kan niet aangemaakt worden.
-Only an administrator can create %s
-Alleen een beheerder kan %s aanmaken
+Only an administrator can create %s.
+
 Transfer Error: %s
 Fout tijdens overdacht: %s
 Browser reports no file info.
 Uw browser heeft geen informatie over het bestand opgegeven.
 Browser reports no file type.
 Uw browser heeft geen informatie over het bestandstype opgegeven.
+Edit Denied
+
+The page contains banned text.
+
 This page was changed by somebody else %s.
 Deze pagina is gewijzigd door iemand anders %s.
 The changes conflict.  Please check the page again.
@@ -377,10 +399,6 @@ ancestor
 vorige revisie
 other
 ander
-Ping
-Ping
-No response.
-Geen reactie.
 Maintenance on all pages
 Onderhoud van alle pagina's
 Maintenance not done.
@@ -393,6 +411,8 @@ Main lock obtained.
 De gehele site is vergrendeld.
 Expiring keep files and deleting pages marked for deletion
 Bezig met verwijderen van te oude revisies uit de archieven, en verwijderen van pagina's die daarvoor gemarkeerd zijn
+not deleted: 
+
 deleted
 verwijderd
 Moving part of the %s log file.
@@ -425,6 +445,8 @@ Near links:
 
 Too many connections by %s
 Te veel verbindingen met %s
+Please do not fetch more than %1 pages in %2 seconds.
+
 Recent Visitors
 Recente bezoekers
 Referrers
@@ -435,4 +457,86 @@ anchor first defined here: %s
 bladwijzer als eerste hier gedefinieerd: %s
 Click to search for references to this permanent anchor
 Klik hier om te zoeken naar verwijzingen naar deze permanente bladwijzer
+the page %s also exists
+
+Deleting %s
+
+Deleted %s
+
+Renaming %1 to %2.
+
+The page %s does not exist
+
+The page %s already exists
+
+Renamed to %s
+
+Renamed from %s
+
+Renamed %1 to %2.
+
+Delete page
+
+Rename this page to:
+
+Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
+
+The match parameter is missing.
+
+Page Collection for %s
+
+Calendar %s
+
+Footnotes:
+
+image: %s
+
+Languages:
+
+Show!
+
+Define
+
+Full Link List
+Volledige lijst van koppelingen
+Clearing Cache
+
+Done.
+
+Generating Link Database
+
+The 404 handler extension requires the link data extension (links.pl).
+
+Orphan List
+
+Trail: 
+
+None
+
+Type
+
+Portrait
+
+Thread: %s
+
+ID parameter is missing.
+
+Thread %s does not exist.
+
+Page %s does not contain a thread.
+
+Add
+
+URL parameter is missing.
+
+Add to %s thread
+
+Below:
+
+URL:
+
+Name:
+
+Blog
+
 END_OF_TRANSLATION

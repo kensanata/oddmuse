@@ -29,12 +29,14 @@ UserName must be 50 characters or less: not saved
 Le nom d'utilisateur ne doit pas dépasser 50 caractères&nbsp;: pas sauvegardé
 XML::RSS is not available on this system.
 
-LWP::UserAgent is not available on this system.
-
 diff
 diff
 history
 historique
+%s returned no data, or LWP::UserAgent is not available.
+
+RSS parsing failed for %s
+
  . . . . 
  . . . . 
 Click to create this page
@@ -53,6 +55,8 @@ Invalid action parameter %s
 Parmètre d'action invalide %s
 Invalid URL.
 URL non valide
+Page name is missing
+
 Page name is too long: %s
 Nom de page trop long&nbsp;: %s
 Invalid Page %s
@@ -89,12 +93,12 @@ for %s only
 pour %s seulement
 List latest change per page only
 Lister seulement les dernières modifications par page
+List all changes
+Lister toutes les modifications
 List only major changes
 Lister seulement les modifications majeures
 Include minor changes
 Inclure les modifications mineures
-List all changes
-Lister toutes les modifications
 %s days
 %s jours
 List later changes
@@ -112,6 +116,8 @@ Aller !
 (minor)
 (mineur)
 rollback
+
+new
 
 from %s
 depuis %s
@@ -141,36 +147,6 @@ Click to search for references to this page
 Cliquer pour chercher des références vers cette page
 Cookie: 
 Cookie&nbsp;: 
-new comment
-nouveau commentaire
-Save
-Sauvegarder
-Preview
-Prévisualisation
-Comments on this page
-Commentaires sur cette page
-Edit revision %s of this page
-Modifier la version %s de cette page
-Edit text of this page
-Modifier le texte de cette page
-This page is read-only
-Cette page est en lecture seule
-View other revisions
-Voir les autres versions
-View current revision
-Voir la version actuelle
-View all changes
-Voir toutes les modifications
-Back to %s
-
-Last edited
-Dernière modification
-Edited
-Modifié
-by %s
-par %s
-(diff)
-(diff)
 Warning
 ATTENTION
 Database is stored in temporary directory %s
@@ -181,6 +157,50 @@ The same page on other sites:
 
 EditNearLinks
 
+Last edited
+Dernière modification
+Edited
+Modifié
+by %s
+par %s
+(diff)
+(diff)
+Run maintenance
+
+Unlock site
+
+Lock site
+
+Unlock page
+
+Lock page
+
+Comments on this page
+Commentaires sur cette page
+Edit revision %s of this page
+Modifier la version %s de cette page
+Edit text of this page
+Modifier le texte de cette page
+e
+
+This page is read-only
+Cette page est en lecture seule
+View other revisions
+Voir les autres versions
+View current revision
+Voir la version actuelle
+View all changes
+Voir toutes les modifications
+Back to %s
+
+new comment
+nouveau commentaire
+s
+
+Save
+Sauvegarder
+Preview
+Prévisualisation
 Search:
 Rechercher&nbsp;:
 Replace:
@@ -331,8 +351,6 @@ Near pages:
 
 last updated
 dernière mise à jour
-Full Link List
-Liste Complète des Liens
 Complete Content
 Contenu Complet
 The main page is %s.
@@ -347,14 +365,18 @@ Sample_Undefined_Page
 Exemple_De_Page_NonDefinie
 [[%s]] cannot be defined.
 [[%s]] ne peut être défini.
-Only an administrator can create %s
-Seul un administrateur peut créer %s
+Only an administrator can create %s.
+
 Transfer Error: %s
 Erreur de Transfert&nbsp;: %s
 Browser reports no file info.
 Le navigateur signale pas d'information sur le fichier.
 Browser reports no file type.
 Le navigateur signale pas de format de fichier.
+Edit Denied
+
+The page contains banned text.
+
 This page was changed by somebody else %s.
 Cette page a été modifiée par quelqu'un d'autre %s.
 The changes conflict.  Please check the page again.
@@ -371,10 +393,6 @@ ancestor
 ancêtre
 other
 autre
-Ping
-Ping
-No response.
-Pas de réponse.
 Maintenance on all pages
 Maintenance sur toutes les pages
 Maintenance not done.
@@ -387,6 +405,8 @@ Main lock obtained.
 Verrou principal obtenu.
 Expiring keep files and deleting pages marked for deletion
 Expiration des fichiers de cache et suppression des pages marquées pour la suppression
+not deleted: 
+
 deleted
 supprimé
 Moving part of the %s log file.
@@ -419,6 +439,8 @@ Near links:
 
 Too many connections by %s
 Trop de connexions par %s
+Please do not fetch more than %1 pages in %2 seconds.
+
 Recent Visitors
 Derniers Visiteurs
 Referrers
@@ -429,4 +451,86 @@ anchor first defined here: %s
 première ancre définie ici&nbsp;: %s
 Click to search for references to this permanent anchor
 Cliquer pour chercher des références vers cette ancre permanente
+the page %s also exists
+
+Deleting %s
+
+Deleted %s
+
+Renaming %1 to %2.
+
+The page %s does not exist
+
+The page %s already exists
+
+Renamed to %s
+
+Renamed from %s
+
+Renamed %1 to %2.
+
+Delete page
+
+Rename this page to:
+
+Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
+
+The match parameter is missing.
+
+Page Collection for %s
+
+Calendar %s
+
+Footnotes:
+
+image: %s
+
+Languages:
+
+Show!
+
+Define
+
+Full Link List
+Liste Complète des Liens
+Clearing Cache
+
+Done.
+
+Generating Link Database
+
+The 404 handler extension requires the link data extension (links.pl).
+
+Orphan List
+
+Trail: 
+
+None
+
+Type
+
+Portrait
+
+Thread: %s
+
+ID parameter is missing.
+
+Thread %s does not exist.
+
+Page %s does not contain a thread.
+
+Add
+
+URL parameter is missing.
+
+Add to %s thread
+
+Below:
+
+URL:
+
+Name:
+
+Blog
+
 END_OF_TRANSLATION

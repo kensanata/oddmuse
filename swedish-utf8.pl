@@ -33,8 +33,6 @@ UserName must be 50 characters or less: not saved
 Användarnamn får bestå av högst 50 tecken: Ej sparad.
 XML::RSS is not available on this system.
 XML::RSS �r inte tillg�ngligt p� det h�r systemet.
-LWP::UserAgent is not available on this system.
-LWP::UserAgent �r inte tillg�ngligt p� det h�r systemet.
 diff
 ändringar
 history
@@ -43,10 +41,18 @@ historik
 Antingen returnerade %s inget data, eller s� finns inte LWP::UserAgent tillg�ngligt.
 RSS parsing failed for %s
 Misslyckades med RSS parsningen av %s
+ . . . . 
+
 Click to create this page
 Klicka för att skapa den här sidan
+http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
+
+http://www.amazon.com/exec/obidos/ISBN=%s
+
 alternate
 alternativ
+http://www.pricescan.com/books/BookDetail.asp?isbn=%s
+
 search
 sök
 Invalid action parameter %s
@@ -91,12 +97,12 @@ for %s only
 för endast %s
 List latest change per page only
 Visa bara senaste ändring för varje sida
+List all changes
+Visa alla ändringar
 List only major changes
 Visa bara stora ändringar
 Include minor changes
 Visa små ändringar också
-List all changes
-Visa alla ändringar
 %s days
 %s dagar
 List later changes
@@ -115,6 +121,8 @@ Utför
 (mindre)
 rollback
 återställning
+new
+
 from %s
 från %s
 History of %s
@@ -151,6 +159,8 @@ Databas sparad i tillfällig katalog %s
 %s sekunder
 The same page on other sites:
 Samma sida på andra siter:
+EditNearLinks
+
 Last edited
 Senast ändrad
 Edited
@@ -165,6 +175,10 @@ Unlock site
 Lås upp wikin
 Lock site
 Lås wikin
+Unlock page
+Lås upp sidan
+Lock page
+Lås sidan
 Comments on this page
 Kommentera sidan
 Edit revision %s of this page
@@ -175,10 +189,6 @@ e
 r
 This page is read-only
 Sidan är skrivskyddad
-Unlock page
-Lås upp sidan
-Lock page
-Lås sidan
 View other revisions
 Visa andra versioner
 View current revision
@@ -195,12 +205,6 @@ Save
 Spara
 Preview
 Förhandsgranska
-Warning
-Varning
-Database is stored in temporary directory %s
-Databas sparad i tillfällig katalog %s
-%s seconds
-%s sekunder
 Search:
 Sök:
 Replace:
@@ -211,10 +215,10 @@ Validate CSS
 Validera CSS
 Difference (from revision %1 to %2)
 Skillnad (från version %1 till %2)
-current revision
-rådande version
 revision %s
 version %s
+current revision
+rådande version
 Difference (from prior %s revision)
 Förändring (sedan senaste %s revidering)
 major
@@ -351,8 +355,6 @@ Near pages:
 Nära sidor:
 last updated
 senast reviderad
-Full Link List
-Fullständing länklista
 Complete Content
 Fullständigt innehåll
 The main page is %s.
@@ -407,6 +409,8 @@ Main lock obtained.
 Huvudlås påslaget.
 Expiring keep files and deleting pages marked for deletion
 Avlägsnar "keep"-filer och raderar sidor märkta för radering
+not deleted: 
+
 deleted
 borttagen
 Moving part of the %s log file.
@@ -439,6 +443,8 @@ Near links:
 Nära länkar:
 Too many connections by %s
 För många anslutningar ifrån %s
+Please do not fetch more than %1 pages in %2 seconds.
+
 Recent Visitors
 Senaste besökare
 Referrers
@@ -451,4 +457,84 @@ Click to search for references to this permanent anchor
 Klicka för att söka efter referenser till det här permanenta ankaret
 the page %s also exists
 sidan %s finns också
+Deleting %s
+
+Deleted %s
+
+Renaming %1 to %2.
+
+The page %s does not exist
+
+The page %s already exists
+
+Renamed to %s
+
+Renamed from %s
+
+Renamed %1 to %2.
+
+Delete page
+
+Rename this page to:
+
+Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
+
+The match parameter is missing.
+
+Page Collection for %s
+
+Calendar %s
+
+Footnotes:
+
+image: %s
+
+Languages:
+
+Show!
+
+Define
+
+Full Link List
+Fullständing länklista
+Clearing Cache
+
+Done.
+
+Generating Link Database
+
+The 404 handler extension requires the link data extension (links.pl).
+
+Orphan List
+
+Trail: 
+
+None
+
+Type
+
+Portrait
+
+Thread: %s
+
+ID parameter is missing.
+
+Thread %s does not exist.
+
+Page %s does not contain a thread.
+
+Add
+
+URL parameter is missing.
+
+Add to %s thread
+
+Below:
+
+URL:
+
+Name:
+
+Blog
+
 END_OF_TRANSLATION

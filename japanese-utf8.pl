@@ -28,11 +28,13 @@ UserName must be 50 characters or less: not saved
 
 XML::RSS is not available on this system.
 
-LWP::UserAgent is not available on this system.
-
 diff
 
 history
+
+%s returned no data, or LWP::UserAgent is not available.
+
+RSS parsing failed for %s
 
  . . . . 
 
@@ -51,6 +53,8 @@ search
 Invalid action parameter %s
 
 Invalid URL.
+
+Page name is missing
 
 Page name is too long: %s
 
@@ -88,11 +92,11 @@ for %s only
 
 List latest change per page only
 
+List all changes
+
 List only major changes
 
 Include minor changes
-
-List all changes
 
 %s days
 
@@ -111,6 +115,8 @@ Go!
 (minor)
 
 rollback
+
+new
 
 from %s
 
@@ -140,17 +146,41 @@ Click to search for references to this page
 
 Cookie: 
 
-new comment
+Warning
 
-Save
+Database is stored in temporary directory %s
 
-Preview
+%s seconds
+
+The same page on other sites:
+
+EditNearLinks
+
+Last edited
+
+Edited
+
+by %s
+
+(diff)
+
+Run maintenance
+
+Unlock site
+
+Lock site
+
+Unlock page
+
+Lock page
 
 Comments on this page
 
 Edit revision %s of this page
 
 Edit text of this page
+
+e
 
 This page is read-only
 
@@ -162,23 +192,13 @@ View all changes
 
 Back to %s
 
-Last edited
+new comment
 
-Edited
+s
 
-by %s
+Save
 
-(diff)
-
-Warning
-
-Database is stored in temporary directory %s
-
-%s seconds
-
-The same page on other sites:
-
-EditNearLinks
+Preview
 
 Search:
 
@@ -330,8 +350,6 @@ Near pages:
 
 last updated
 
-Full Link List
-
 Complete Content
 
 The main page is %s.
@@ -346,13 +364,17 @@ Sample_Undefined_Page
 
 [[%s]] cannot be defined.
 
-Only an administrator can create %s
+Only an administrator can create %s.
 
 Transfer Error: %s
 
 Browser reports no file info.
 
 Browser reports no file type.
+
+Edit Denied
+
+The page contains banned text.
 
 This page was changed by somebody else %s.
 
@@ -370,10 +392,6 @@ ancestor
 
 other
 
-Ping
-
-No response.
-
 Maintenance on all pages
 
 Maintenance not done.
@@ -385,6 +403,8 @@ Remove the "maintain" file or wait.
 Main lock obtained.
 
 Expiring keep files and deleting pages marked for deletion
+
+not deleted: 
 
 deleted
 
@@ -418,6 +438,8 @@ Near links:
 
 Too many connections by %s
 
+Please do not fetch more than %1 pages in %2 seconds.
+
 Recent Visitors
 
 Referrers
@@ -427,5 +449,87 @@ All Referrers
 anchor first defined here: %s
 
 Click to search for references to this permanent anchor
+
+the page %s also exists
+
+Deleting %s
+
+Deleted %s
+
+Renaming %1 to %2.
+
+The page %s does not exist
+
+The page %s already exists
+
+Renamed to %s
+
+Renamed from %s
+
+Renamed %1 to %2.
+
+Delete page
+
+Rename this page to:
+
+Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
+
+The match parameter is missing.
+
+Page Collection for %s
+
+Calendar %s
+
+Footnotes:
+
+image: %s
+
+Languages:
+
+Show!
+
+Define
+
+Full Link List
+
+Clearing Cache
+
+Done.
+
+Generating Link Database
+
+The 404 handler extension requires the link data extension (links.pl).
+
+Orphan List
+
+Trail: 
+
+None
+
+Type
+
+Portrait
+
+Thread: %s
+
+ID parameter is missing.
+
+Thread %s does not exist.
+
+Page %s does not contain a thread.
+
+Add
+
+URL parameter is missing.
+
+Add to %s thread
+
+Below:
+
+URL:
+
+Name:
+
+Blog
 
 END_OF_TRANSLATION
