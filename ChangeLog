@@ -33,6 +33,9 @@
 	(DoRc): Remove timestamp.
 	(RcHeader): Remove computation of lastTs, and simplify the link to
 	"list later changes".
+	(ReportError): Don't cache errors.
+	(GetHeader): Use $Now if no caching specified.
+	(DoShowVisitors): Don't cache.
 
 2003-11-02  Alex Schroeder  <alex@gnu.org>
 
