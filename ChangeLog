@@ -4,6 +4,7 @@
 	letters:  With UTF-8, \x80-\xff are.
 	(InitLinkPatterns): Fixed @ in UrlPattern.
 	(ApplyRules): Improved handling of space-only lines.
+	(ApplyRules): Convert \r\n to \n before anything else.
 
 2003-04-16  Alex Schroeder  <alex@gnu.org>
 
