@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.6 2004/12/20 05:43:37 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.7 2004/12/20 12:40:48 as Exp $</p>';
 
 my $NamespacesInit = 0;
 my $NamespacesMain = 'Main'; # to get back to the main namespace
@@ -139,8 +139,7 @@ sub NamespaceInternalRc { # code taken from RSS(), maybe refactoring would be po
       DoRc(\&GetRcRss);
       close(STDOUT);
       my $rss = new XML::RSS;
-      $str .= $q->p($q->strong(Ts('%s returned no data.',
-				  $q->a({-href=>$ns}, $ns)))) unless $data;
+      # $str .= $q->p($q->strong(Ts('%s returned no data.', $q->a({-href=>$ns}, $ns)))) unless $data;
       eval { local $SIG{__DIE__}; $rss->parse($data); };
       $str .= $q->p($q->strong(Ts('RSS parsing failed for %s',
 				  $q->a({-href=>$ns}, $ns)) . ': ' . $@)) if $data and $@;
