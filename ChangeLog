@@ -3,6 +3,12 @@
 	* wiki.pl (GetReferers): Convert escapes back to bytes for the
 	title (at least if they use the same coding system it will look
 	good).
+	(ReportError, BrowsePage, GetHeader, GetHttpHeader): Add error status.
+	(DoWikiRequest, InitVariables, DoBrowseRequest, ValidIdOrDie)
+	(BrowseResolvedPage, DoRollback, SavePage, ReadFileOrDie)
+	(WriteStringToFile, AppendStringToFile, RequestLockDir)
+	(DoEdit, DoDownload, UserIsAdminOrError, DoPost)
+	(DoSurgeProtection): Added specific HTTP status codes.
 
 2004-02-23  Alex Schroeder  <alex@gnu.org>
 
