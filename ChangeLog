@@ -1,3 +1,11 @@
+2005-03-01  Sebastian Blatt  <sblatt@havens.de>
+
+	* modules/image.pl (ImageGetInternalUrl): Modified to support
+	overriding of relevant parts from within Static Copy Extension.
+
+	* modules/static-copy.pl (ImageGetInternalUrl): Added Image
+	Extension support.
+
 2005-02-02  Alex Schroeder  <alex@confusibombus.emacswiki.org>
 
 	* wiki.pl (DoBrowseRequest): Added CGI error message suggested by
@@ -7,7 +15,7 @@
 
 	* wikicopy (GetRaw): Warning if GET fails.
 	(PostRaw): Print status code when POST fails.
-	(copy): Don't encode id when posting. 
+	(copy): Don't encode id when posting.
 
 	* wiki.pl (BrowsePage): Report 404 for non-existing pages even
 	when using raw=1.
@@ -144,7 +152,7 @@
 	* wiki.pl (@MyAdminCode): New option.
 	(@AdminBlocks): Removed option.
 	(DoAdminPage): Rewritten to take advantage of the new @MyAdminCode.
-	
+
 	* modules/admin.pl (AdminPowerDelete): Fix log message, unlink
 	$IndexFile.
 	(AdminPowerRename): Call FreeToNormal on both parameters, don't
@@ -537,7 +545,7 @@
 
 	* modules/link-all.pl (NewLinkAllGetGotoBar): Removed vertical
 	bar.
-	
+
 	* wiki.pl (PrintJournal, BrowsePage, GetHeader, PrintFooter,
 	PrintAllPages): Use start_div() and end_div() instead of strings.
 	(DoHistory, DoRollback, DoEdit, DoPassword, DoIndex, DoSearch,
