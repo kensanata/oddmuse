@@ -76,11 +76,11 @@ $CookieName  = 'Wiki';     # Name for this wiki (for multi-wiki sites)
 # Fix if defaults do not work
 $SiteBase    = '';  # Full URL for <BASE> header
 $FullUrl     = '';  # Set if the auto-detected URL is wrong
-$HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
+$HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.65 2003/05/26 18:40:36 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.66 2003/05/26 22:12:50 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
