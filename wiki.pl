@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.351 2004/03/10 20:40:36 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.352 2004/03/12 00:57:32 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1960,10 +1960,12 @@ div.near { background-color:#EFE; }
 div.near p { margin-top:0; }
 \@media print {
  body { font:12pt sans-serif; }
- a:link, a:visited { color:#000; text-decoration:none; font-style:oblique; }
- a.edit, div.footer, span.gotobar, a.number span { display:none; }
+ a, a:link, a:visited { color:#000; text-decoration:none; font-style:oblique; }
+ h1 a, h2 a, h3 a, h4 a { font-style:normal; }
+ a.edit, div.footer, div.refer, form, span.gotobar, a.number span { display:none; }
  a[class="url number"]:after, a[class="inter number"]:after { content:"[" attr(href) "]"; }
  a[class="local number"]:after { content:"[" attr(title) "]"; }
+ img[smiley] { line-height: inherit; }
 }
 -->
 EOT
@@ -2651,6 +2653,12 @@ sub DoEdit {
   }
   $oldText = $newText if $preview;
   print GetHeader('', QuoteHtml($header), '');
+  if ($preview and not $upload) {
+    print '<div class="preview">';
+    print $q->h2(T('Preview:'));
+    PrintWikiToHTML($oldText); # no caching, current revision, unlocked
+    print $q->hr(), $q->h2(T('Preview only, not yet saved')), '</div>';
+  }
   if ($revision) {
     print $q->strong(Ts('Editing old revision %s.', $revision) . '  '
 		     . T('Saving this page will replace the latest revision with this text.'))
@@ -2688,12 +2696,6 @@ sub DoEdit {
     print $q->p(ScriptLink('action=edit;upload=1;id=' . $id, T('Replace this text with a file.')));
   }
   print $q->endform();
-  if ($preview and not $upload) {
-    print '<div class="preview">', $q->hr();
-    print $q->h2(T('Preview:'));
-    PrintWikiToHTML($oldText); # no caching, current revision, unlocked
-    print $q->hr(), $q->h2(T('Preview only, not yet saved')), '</div>';
-  }
   PrintFooter($id, 'edit');
 }
 
