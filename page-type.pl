@@ -10,7 +10,11 @@ my $PageTypesName = 'PageTypes';
 # * bar
 # * quux baz
 
-# $Id: page-type.pl,v 1.1 2004/01/25 19:53:09 as Exp $
+# The page type will be prepended to the beginning of a page.  If you
+# have page clustering enabled (see the manual), then the page type
+# will automatically act as a cluster.
+
+# $Id: page-type.pl,v 1.2 2004/01/25 19:54:26 as Exp $
 
 *OldDoPost = *DoPost;
 *DoPost = *NewDoPost;
