@@ -16,19 +16,20 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: subscriberc.pl,v 1.1 2004/07/14 12:53:54 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: subscriberc.pl,v 1.2 2004/07/14 13:00:04 as Exp $</p>';
 
-push(@MyRules, \&SubscribedRecentChangesRule);
+# put at the front of the list because it conflicts with link-all-words
+unshift(@MyRules, \&SubscribedRecentChangesRule);
 
 sub SubscribedRecentChangesRule {
-  if (m/\GMy\s+subscribed\s+pages:\s*((?:(?:$LinkPattern|\[\[$FreeLinkPattern\]\]),\s*)+)categories:\s*((?:(?:$LinkPattern|\[\[$FreeLinkPattern\]\]),\s*)*(?:$LinkPattern|\[\[$FreeLinkPattern\]\]))/gc) {
-    return Subscribe($1, $4);
-  } elsif (m/\GMy\s+subscribed\s+pages:\s*((?:(?:$LinkPattern|\[\[$FreeLinkPattern\]\]),\s*)*(?:$LinkPattern|\[\[$FreeLinkPattern\]\]))/gc) {
-    return Subscribe($1, '');
-  } elsif (m/\GMy\s+subscribed\s+categories:\s*((?:(?:$LinkPattern|\[\[$FreeLinkPattern\]\]),\s*)*(?:$LinkPattern|\[\[$FreeLinkPattern\]\]))/gc) {
-    return Subscribe('', $1);
-  } elsif (m/\G&lt;br&gt;/gc) {
-    return '<br>';
+  if ($bol) {
+    if (m/\GMy\s+subscribed\s+pages:\s*((?:(?:$LinkPattern|\[\[$FreeLinkPattern\]\]),\s*)+)categories:\s*((?:(?:$LinkPattern|\[\[$FreeLinkPattern\]\]),\s*)*(?:$LinkPattern|\[\[$FreeLinkPattern\]\]))/gc) {
+      return Subscribe($1, $4);
+    } elsif (m/\GMy\s+subscribed\s+pages:\s*((?:(?:$LinkPattern|\[\[$FreeLinkPattern\]\]),\s*)*(?:$LinkPattern|\[\[$FreeLinkPattern\]\]))/gc) {
+      return Subscribe($1, '');
+    } elsif (m/\GMy\s+subscribed\s+categories:\s*((?:(?:$LinkPattern|\[\[$FreeLinkPattern\]\]),\s*)*(?:$LinkPattern|\[\[$FreeLinkPattern\]\]))/gc) {
+      return Subscribe('', $1);
+    }
   }
   return undef;
 }
