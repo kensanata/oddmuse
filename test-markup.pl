@@ -183,6 +183,14 @@ EOT
 
 test_page(update_page('InterMap', " OddMuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n", 'required', 0, 1), @Test);
 
+## Verify the InterMap stayed locked
+
+@Test = split('\n',<<'EOT');
+OddMuse
+EOT
+
+test_page(update_page('InterMap', "All your edits are blong to us!\n", 'required'), @Test);
+
 ### SIMPLE MARKUP TESTS
 
 %Test = split('\n',<<'EOT');
