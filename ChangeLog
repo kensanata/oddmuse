@@ -1,3 +1,33 @@
+2004-11-25  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+
+	* modules/toc.pl (TocHeadings, TocWikiHeading): Use FreeToNormal
+	on the anchor name.
+	(TocWikiHeading): Don't UrlEncode the anchor name.
+
+	* wiki.pl (DoShowVersion): Link to dependencies=1 and links=1.
+
+2004-11-23  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+
+	* modules/html-template.pl (HtmlTemplateRc): Added wrapper
+	function so that action=rc works.
+
+2004-11-23  Alex Schroeder  <alex@gnu.org>
+
+	* modules/html-template.pl: New package prototype.  Browsing and
+	editing works.
+
+	* wiki.pl (GetFooterLinks): Move the "Back to %s" link to the
+	front of the bar.  Put the entire text into the link.  Change
+	"Comments on this page" to "Comments on %s".
+
+2004-11-20  Alex Schroeder  <alex@gnu.org>
+
+	* modules/commentcount.pl (NewCommentcountAddComment)
+	(NewCommentcountScriptLink): Use \d+ as suggested by Fletcher
+	Penney.
+	(NewCommentcountScriptLink): Handle access key as suggested by
+	Fletcher Penney.
+
 2004-11-15  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetAdminBar, GetFooterLinks, GetGotoBar): Add bar
