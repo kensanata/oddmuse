@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.381 2004/04/12 02:30:24 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.382 2004/04/12 03:28:53 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2360,8 +2360,8 @@ sub OpenPage { # Sets global variables
 
 sub GetTextAtTime {
   my $ts = shift;
-  return $DeletedPage if $Page{revision} == 1 and $Page{ts} > $ts; # page is too new!
-  return $Page{text} if $Page{revision} == 1; # there is no older version!
+  return $Page{text} if $Page{ts} <= $ts; # current page is old enough
+  return $DeletedPage if $Page{revision} == 1 and $Page{ts} > $ts; # created after $ts!
   my @keeps = GetKeepFiles($OpenPageName);
   my ($maxts, $result, $newpage);
   foreach my $keep (@keeps) {
