@@ -17,12 +17,22 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+package OddMuse;
+
 my $dir = '/var/www/wiki'; # absolute path to the file cache
 my $origname = '/wiki'; # relative url to the file cache, with trailing slash
 my $script = '/usr/lib/cgi-bin/wiki.pl'; # absolute path to the wiki script
 my $name = '/cgi-bin/wiki.pl'; # relative url to the wiki script
 my @path = split(/\//, $ENV{REDIRECT_URL});
 my $file = $path[$#path];
+
+
+# for dynamic pages
+use vars qw($NotFoundHandlerExceptionsPage);
+$NotFoundHandlerExceptionsPage = 'NoCachePages';
+$RunCGI = 0;
+do $script;
+Init();
 
 # call the wiki for the page missing in the cache.  first set up CGI
 # environment -- see http://localhost/cgi-bin/printenv.  then call the
@@ -50,10 +60,20 @@ $data =~ /((.+:.*\n)*)/;
 my $header = $1;
 # print "<pre>$header</pre>";
 if (not $status) { # ie. 200
-  $data =~ s/^(.*\r\n)+//; # strip header
-  open(G, "> $dir/$file") || print STDERR "can't write $dir/$file: $!\n";
-  print G $data;
-  close(G);
+  my %skip = ();
+  foreach (split(/\n/, GetPageContent($NotFoundHandlerExceptionsPage))) {
+    if (/^ ([^ ]+)[ \t]*$/) {  # only read lines with one word after one space
+      $skip{$1} = 1;
+    }
+  }
+  if (not $skip{$file}) {
+    $data =~ s/^(.*\r\n)+//; # strip header
+    open(G, "> $dir/$file") || print STDERR "can't write $dir/$file: $!\n";
+    print G $data;
+    close(G);
+  }
 }
+
+1;
 
 # cache cleanup has to hook into the wiki!
