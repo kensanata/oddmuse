@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: header-and-footer-templates.pl,v 1.1 2004/12/25 21:41:56 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: header-and-footer-templates.pl,v 1.2 2004/12/25 21:52:38 as Exp $</p>';
 
 # The entire mechanism of how pages are built is now upside down.
 # Instead of writing code that assembles pages, we load templates,
@@ -25,10 +25,11 @@ $ModulesDescription .= '<p>$Id: header-and-footer-templates.pl,v 1.1 2004/12/25 
 # This is the beginning of PHP-in-Perl.  :(
 
 use vars qw($HtmlTemplateDir);
+use HTML::Template;
 
 $HtmlTemplateDir   = "$DataDir/templates";
 
-sub HFTemplateLanguage {
+sub HtmlTemplateLanguage {
   my $requested_language = $q->http('Accept-language');
   my @languages = split(/ *, */, $requested_language);
   my %Lang = ();
@@ -40,7 +41,7 @@ sub HFTemplateLanguage {
   return map { $Lang{$_} } sort { $b <=> $a } keys %Lang;
 }
 
-sub HFHtmlTemplate {
+sub HtmlTemplate {
   my $type = shift;
   # return header.de.html, or header.html, or error.html, or report an error...
   foreach my $f ((map { "$type.$_" } HtmlTemplateLanguage()), $type, "error") {
@@ -61,25 +62,27 @@ sub GetSpecialDays {
 
 sub HeaderTemplate {
   my ($id, $title, $oldId, $nocache, $status) = @_;
-  my $result = GetHttpHeader('text/html', $nocache ? $Now : 0, $status);
   if ($oldId ne '') {
     $Message .= $q->p('(' . Ts('redirected from %s', GetEditLink($oldId, $oldId)) . ')');
   }
-  my $template = HTML::Template->new(filename => HFHtmlTemplate('header'));
+  my $template = HTML::Template->new(filename => HtmlTemplate('header'),
+				     die_on_bad_params => 0);
   $template->param(GOTO_BAR => GetGotoBar($id));
   $template->param(SPECIAL_DAYS => GetSpecialDays());
   $template->param(MESSAGE => $Message);
   $template->param(ID => $id);
   $template->param(TITLE => $title);
   $template->param(SEARCH => GetSearchForm());
-  return $template->output;
+  return GetHttpHeader('text/html', $nocache ? $Now : 0, $status)
+    . $template->output;
 }
 
 *PrintFooter = *PrintFooterTemplate;
 
 sub PrintFooterTemplate {
   my ($id, $rev, $comment) = @_;
-  my $template = HTML::Template->new(filename => HFHtmlTemplate('footer'));
+  my $template = HTML::Template->new(filename => HtmlTemplate('footer'),
+				     die_on_bad_params => 0);
   $template->param(GOTO_BAR => GetGotoBar($id));
   $template->param(SPECIAL_DAYS => GetSpecialDays());
   $template->param(ID => $id);
@@ -90,4 +93,5 @@ sub PrintFooterTemplate {
   $template->param(SEARCH => GetSearchForm());
   $template->param(SISTER_SITES => GetSisterSites($id));
   $template->param(NEAR_LINKS_USED => GetNearLinksUsed($id));
+  print $template->output;
 }
