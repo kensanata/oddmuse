@@ -7,6 +7,8 @@
 	(GetRcRss): Replace & with ; in URLs.
 	(ScriptLinkDiff): Ditto.
 	(DoPost): Optimize regexp matches by working around $'.
+	(Clean, ApplyRules, SmileyReplace): Fix the handling of '' and 0
+	in Clean().
 
 2003-10-27  Alex Schroeder  <alex@gnu.org>
 
