@@ -7,6 +7,11 @@
 	* modules/static-copy.pl (StaticWriteFile): added "chmod 0644" to
 	uploaded static images.
 
+2005-03-06  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+
+	* wiki.pl (ApplyRules): Removed debug warnings that got checked
+	in...
+
 2005-03-01  Sebastian Blatt  <sblatt@havens.de>
 
 	* modules/image.pl (ImageGetInternalUrl): Modified to support
