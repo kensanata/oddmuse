@@ -1,3 +1,7 @@
+2004-03-13  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (RSS): Print "UTC" only when time was provided.
+
 2004-03-12  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetHtmlHeader): Some more default CSS tinkering; hide
