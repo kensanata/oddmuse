@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: markup.pl,v 1.14 2004/12/26 01:44:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: markup.pl,v 1.15 2005/01/04 09:08:32 as Exp $</p>';
 
 use vars qw(%MarkupPairs %MarkupSingles %MarkupLines);
 
@@ -51,21 +51,18 @@ my $markup_pairs_re = '';
 my $markup_singles_re = '';
 my $markup_lines_re = '';
 
-*OldMarkupInitVariables = *InitVariables;
-*InitVariables = *NewMarkupInitVariables;
-
-sub NewMarkupInitVariables {
-  OldMarkupInitVariables();
-  $markup_pairs_re = '\G([' . join('', (map { quotemeta(QuoteHtml($_)) }
-					keys(%MarkupPairs))) . '])';
-  $markup_pairs_re = qr/\G${markup_pairs_re}${words}\1${noword}/;
-  $markup_singles_re = '\G(' . join('|', (map { quotemeta(QuoteHtml($_)) }
-					  keys(%MarkupSingles))) . ')';
-  $markup_singles_re = qr/$markup_singles_re/;
-  $markup_lines_re = '\G(' . join('|', (map { quotemeta(QuoteHtml($_)) }
-					keys(%MarkupLines))) . ')(.*\n?)';
-  $markup_lines_re = qr/$markup_lines_re/;
-}
+push(@MyInitVariables, # do this later so that the user can customize the vars
+     sub {
+       $markup_pairs_re = '\G([' . join('', (map { quotemeta(QuoteHtml($_)) }
+					     keys(%MarkupPairs))) . '])';
+       $markup_pairs_re = qr/\G${markup_pairs_re}${words}\1${noword}/;
+       $markup_singles_re = '\G(' . join('|', (map { quotemeta(QuoteHtml($_)) }
+					       keys(%MarkupSingles))) . ')';
+       $markup_singles_re = qr/$markup_singles_re/;
+       $markup_lines_re = '\G(' . join('|', (map { quotemeta(QuoteHtml($_)) }
+					     keys(%MarkupLines))) . ')(.*\n?)';
+       $markup_lines_re = qr/$markup_lines_re/;
+     });
 
 sub MarkupTag {
   my ($tag, $str) = @_;
