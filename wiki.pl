@@ -349,7 +349,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.482 2004/11/15 00:01:28 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.483 2004/11/15 00:44:24 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2098,7 +2098,7 @@ sub GetAdminBar {
   foreach my $page (@LockOnCreation) {
     push(@elements, GetPageLink($page)) if $page;
   }
-  return $q->span({-class=>'admin'}, @elements) if @elements;
+  return $q->span({-class=>'admin bar'}, @elements) if @elements;
 }
 
 sub GetFooterLinks {
@@ -2131,7 +2131,7 @@ sub GetFooterLinks {
   if ($CommentsPrefix and $id =~ /^$CommentsPrefix(.*)/) {
     push(@elements, Ts('Back to %s', GetPageLink($1, $1)));
   }
-  return @elements ? $q->span({-class=>'edit'}, $q->br(), @elements) : '';
+  return @elements ? $q->span({-class=>'edit bar'}, $q->br(), @elements) : '';
 }
 
 sub GetCommentForm {
@@ -2187,7 +2187,7 @@ sub GetValidatorLink {
 
 sub GetGotoBar {
   my $id = shift;
-  return $q->span({-class=>'gotobar'}, (map { GetPageLink($_) } @UserGotoBarPages), $UserGotoBar);
+  return $q->span({-class=>'gotobar bar'}, (map { GetPageLink($_) } @UserGotoBarPages), $UserGotoBar);
 }
 
 # == Difference markup and HTML ==
