@@ -1,3 +1,11 @@
+2003-12-26  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (HighlightRegex): New.
+	(DoSearch, SearchNearPages, PrintSearchResultEntry): Use it.
+	(PrintSearchResult): Extract HighlightRegex, SearchHighlight and
+	SearchExtract.
+	(SearchHighlight, SearchExtract): New.
+
 2003-12-24  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetRcText): Use link instead of uri.
