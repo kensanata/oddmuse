@@ -18,7 +18,7 @@
 
 use vars qw($LatexDir $LatexLinkDir $LatexExtendPath);
 
-$ModulesDescription .= '<p>$Id: latex.pl,v 1.2 2004/02/13 19:30:12 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: latex.pl,v 1.3 2004/02/13 19:54:25 as Exp $</p>';
 
 # PATH must be extended in order to make dvi2bitmap available, and
 # also all the programs that dvi2bitmap may call to do its work
@@ -31,7 +31,7 @@ $ModulesDescription .= '<p>$Id: latex.pl,v 1.2 2004/02/13 19:30:12 as Exp $</p>'
 # dvi2bitmap yourself, you might have to use /usr/local/bin instead of
 # /user/bin!
 
-$LatexExtendPath = ':/bin:/usr/bin:/usr/share/texmf/bin';
+$LatexExtendPath = ':/usr/share/texmf/bin';
 
 # $LatexDir must be accessible from the outside as $LatexLinkDir.  The
 # first directory is used to *save* the pictures, the second directory
