@@ -270,7 +270,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.168 2003/09/27 23:54:42 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.169 2003/09/28 21:20:18 as Exp $');
 }
 
 sub InitCookie {
@@ -3329,11 +3329,13 @@ sub DoPost {
     require MIME::Base64;
     my $file = $q->upload('file');
     if (not $file and $q->cgi_error) {
+      ReleaseLock();
       ReportError (Ts('Transfer Error: %s', $q->cgi_error));
       return;
     }
     my $type = $q->uploadInfo($filename)->{'Content-Type'};
     if (not grep(/^$type$/, @UploadTypes)) {
+      ReleaseLock();
       ReportError (Ts('Files of type %s are not allowed.', $type));
       return;
     }
