@@ -4,6 +4,7 @@
 	($InterMap): New.
 	(GetSiteUrl): Use it.
 	(UserIsBanned): Fixed regexp.
+	(GetSiteUrl): Use $InterSitePattern.
 
 2003-05-27  Alex Schroeder  <alex@gnu.org>
 
