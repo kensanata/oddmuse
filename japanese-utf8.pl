@@ -27,6 +27,16 @@ Invalid UserName %s: not saved.
 
 UserName must be 50 characters or less: not saved
 
+XML::RSS is not available on this system.
+
+LWP::UserAgent is not available on this system.
+
+diff
+
+history
+
+ . . . . 
+
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -51,11 +61,7 @@ Invalid Page %s (must not end with .lck)
 
 Page name may not contain space characters: %s
 
-Revision %s not available
-
-showing current revision instead
-
-Showing revision %s
+Please go on to %s.
 
 Could not open %s log file
 
@@ -66,8 +72,6 @@ Note: This error is normal if no changes have been made.
 Could not open old %s log file
 
 No updates since %s
-
-Page generated %s
 
 Updates since %s
 
@@ -87,19 +91,21 @@ List all changes
 
 %s days
 
-List new changes starting from
+List later changes
 
-Related changes
+Username:
+
+Host:
+
+Language:
+
+Filters
+
+Go!
 
 (minor)
 
-(diff)
-
-history
-
 rollback
-
-Cluster:
 
 from %s
 
@@ -108,8 +114,6 @@ History of %s
 Compare
 
 Revision %s
-
- . . . . 
 
 by
 
@@ -132,8 +136,6 @@ Click to search for references to this page
 Cookie: 
 
 new comment
-
-Username:
 
 Save
 
@@ -159,43 +161,39 @@ Edited
 
 by %s
 
+(diff)
+
 Warning
 
 Database is stored in temporary directory %s
 
 %s seconds
 
+The same page on other sites:
+
+EditNearLinks
+
 Search:
 
 Replace:
-
-Go!
 
 Validate HTML
 
 Validate CSS
 
-Please go on to %s.
+Difference (from revision %1 to %2)
+
+revision %s
+
+current revision
+
+Difference (from prior %s revision)
 
 major
 
 minor
 
-(The revisions are identical or unavailable.)
-
 No diff available.
-
-current revision
-
-revision %s
-
-Difference (from revision %s
-
- to %s)
-
-No diff available--this is the first %s revision.
-
-Difference (from prior %s revision)
 
 Changed:
 
@@ -205,11 +203,17 @@ Added:
 
 to
 
-Bad page version (or corrupt page).
+Revision %s not available
+
+showing current revision instead
+
+Showing revision %s
 
 Cannot save an nameless page.
 
-cannot write %s
+Cannot open %s
+
+Cannot write %s
 
 Could not get %s lock
 
@@ -220,8 +224,6 @@ This operation may take several seconds...
 Forced unlock of %s lock.
 
 No unlock required.
-
-Can not open %s
 
 %s hours ago
 
@@ -299,17 +301,31 @@ This operation is restricted to administrators only...
 
 Index of all pages
 
+all pages
+
+permanent anchors
+
+near links
+
+(for %s)
+
+%s pages found.
+
 Replaced: %s
 
 Search for: %s
 
 View changes for these pages
 
+Search sites on the %s as well
+
 and
 
 or
 
-%s pages found:
+Fetching results from %s:
+
+Near pages:
 
 last updated
 
@@ -353,8 +369,6 @@ ancestor
 
 other
 
-%s log error:
-
 Ping
 
 No response.
@@ -379,17 +393,9 @@ Moving part of the %s log file.
 
 Moving %s log entries.
 
+Getting page index file for %s.
+
 Main lock released.
-
-Converting all files
-
-No conversion required.
-
-converted
-
-no conversion required
-
-has no file
 
 Set or Remove global edit lock
 
@@ -406,6 +412,10 @@ Lock for %s created.
 Lock for %s removed.
 
 Displaying Wiki Version
+
+Inter links:
+
+Near links:
 
 Too many connections by %s
 

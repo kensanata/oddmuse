@@ -27,6 +27,16 @@ Invalid UserName %s: not saved.
 UserName %s inválido: no ha sido guardado.
 UserName must be 50 characters or less: not saved
 UserName debe tener un tamaño de 50 caracteres o menos: no ha sido guardado.
+XML::RSS is not available on this system.
+
+LWP::UserAgent is not available on this system.
+
+diff
+
+history
+historial
+ . . . . 
+
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -51,18 +61,8 @@ Invalid Page %s (must not end with .lck)
 Página %s Inválida (no debe terminar con la extensión .lck)
 Page name may not contain space characters: %s
 El nombre de la página no puede contener caracteres de espacio: %s
-Revision %s not available
-La revisión %s no está disponible.
-showing current revision instead
-se presenta en su lugar la revisión actual
-Showing revision %s
-La presente es la revisión %s
-Updates since %s
-Actualizaciones desde %s
-Updates in the last %s day
-Actualizaciones en el último %s día
-Updates in the last %s days
-Actualizaciones en los últimos %s días
+Please go on to %s.
+Por favor proceda a %s.
 Could not open %s log file
 No ha sido posible abrir el archivo de registro %s
 Error was
@@ -71,29 +71,41 @@ Note: This error is normal if no changes have been made.
 Nota: Este error es normal si no se han efectuado modificaciones.
 Could not open old %s log file
 No ha sido posible abrir el archivo antiguo de registro %s
-for %s only
-solo para %s
-%s day
-%s día
-%s days
-%s días
-List new changes starting from
-Listar cambios nuevos a partir de
 No updates since %s
 No han habido actualizaciones desde %s
-Page generated %s
-Página generada en %s
-Related changes
+Updates since %s
+Actualizaciones desde %s
+Updates in the last %s days
+Actualizaciones en los últimos %s días
+Updates in the last %s day
+Actualizaciones en el último %s día
+for %s only
+solo para %s
+List latest change per page only
 
+List only major changes
+
+Include minor changes
+
+List all changes
+
+%s days
+%s días
+List later changes
+
+Username:
+
+Host:
+
+Language:
+
+Filters
+
+Go!
+Iniciar
 (minor)
 (menor)
-(diff)
-
-history
-historial
 rollback
-
-Cluster:
 
 from %s
 desde %s
@@ -103,8 +115,6 @@ Compare
 Comparar
 Revision %s
 Revisión %s
- . . . . 
-
 by
 por
 Rolling back changes
@@ -121,12 +131,12 @@ Rollback to %s
 [Inicio]
 redirected from %s
 redireccionado desde %s
+Click to search for references to this page
+
 Cookie: 
 
 new comment
 nuevo comentario
-Username:
-
 Save
 Guardar
 Comments on this page
@@ -151,44 +161,40 @@ Edited
 Editado
 by %s
 
+(diff)
+
 Warning
 Advertencia
 Database is stored in temporary directory %s
 La base de datos se encuentra almacenada temporalmente en el directorio %s
 %s seconds
 %s segundos
+The same page on other sites:
+
+EditNearLinks
+
 Search:
 Buscar:
 Replace:
 Reemplazar:
-Go!
-Iniciar
 Validate HTML
 Validar HTML
 Validate CSS
 Validar CSS
-Please go on to %s.
-Por favor proceda a %s.
+Difference (from revision %1 to %2)
+
+revision %s
+revisión %s
+current revision
+revisión actual
+Difference (from prior %s revision)
+Diferencias (previas a la revisión %s)
 major
 mayor
 minor
 menor
-(The revisions are identical or unavailable.)
-(Las revisiones son idénticas o no están disponibles.)
 No diff available.
 No hoy diffs disponibles.
-current revision
-revisión actual
-revision %s
-revisión %s
-Difference (from revision %s
-Diferencias (de la revisión %s
- to %s)
- a la %s)
-No diff available--this is the first %s revision.
-No hay diffs disponibles--esta es la primera revisión %s.
-Difference (from prior %s revision)
-Diferencias (previas a la revisión %s)
 Changed:
 Modificado:
 Removed:
@@ -197,11 +203,17 @@ Added:
 Agregado:
 to
 a
-Bad page version (or corrupt page).
-Versión incorrecta (o corrupta) de la página.
+Revision %s not available
+La revisión %s no está disponible.
+showing current revision instead
+se presenta en su lugar la revisión actual
+Showing revision %s
+La presente es la revisión %s
 Cannot save an nameless page.
 
-cannot write %s
+Cannot open %s
+
+Cannot write %s
 
 Could not get %s lock
 
@@ -213,8 +225,6 @@ Forced unlock of %s lock.
 Se ha forzado la desactivación del bloqueo %s.
 No unlock required.
 No se requiere una operación de desbloqueo.
-Can not open %s
-No es posible abrir %s
 %s hours ago
 hace %s horas
 1 hour ago
@@ -291,16 +301,32 @@ This operation is restricted to administrators only...
 Esta operación está restringida para su uso por administradores únicamente...
 Index of all pages
 Índice de todas las páginas
+all pages
+
+permanent anchors
+
+near links
+
+(for %s)
+
+%s pages found.
+
 Replaced: %s
 Reemplazado: %s
 Search for: %s
 Buscar por: %s
+View changes for these pages
+
+Search sites on the %s as well
+
 and
 
 or
 
-%s pages found:
-%s páginas encontradas:
+Fetching results from %s:
+
+Near pages:
+
 last updated
 actualizado por última vez
 Full Link List
@@ -343,8 +369,6 @@ ancestor
 
 other
 
-%s log error:
-Error de registro %s:
 Ping
 
 No response.
@@ -369,18 +393,10 @@ Moving part of the %s log file.
 Moviendo parte del archivo de registro %s.
 Moving %s log entries.
 Moviendo %s entradas del registro.
+Getting page index file for %s.
+
 Main lock released.
 Se ha liberado el bloqueo principal.
-Converting all files
-Convirtiendo todos los archivos
-No conversion required.
-No se requiere conversión.
-converted
-convertido
-no conversion required
-no se requiere conversión
-has no file
-no tiene archivo
 Set or Remove global edit lock
 Establecer o Remover el bloqueo global de edición
 Edit lock created.
@@ -397,6 +413,10 @@ Lock for %s removed.
 Se ha eliminado bloqueo para %s.
 Displaying Wiki Version
 Versión del Wiki
+Inter links:
+
+Near links:
+
 Too many connections by %s
 Demasiadas conexiones de %s
 Recent Visitors
@@ -406,5 +426,7 @@ Orígenes
 All Referrers
 Todos los orígenes
 anchor first defined here: %s
+
+Click to search for references to this permanent anchor
 
 END_OF_TRANSLATION

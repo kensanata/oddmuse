@@ -27,6 +27,16 @@ Invalid UserName %s: not saved.
 Hекорректная кличка %s: ничего не записано.
 UserName must be 50 characters or less: not saved
 
+XML::RSS is not available on this system.
+
+LWP::UserAgent is not available on this system.
+
+diff
+
+history
+
+ . . . . 
+
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -51,18 +61,8 @@ Invalid Page %s (must not end with .lck)
 Некорректная страница %s (Некорректная страница %s lck)
 Page name may not contain space characters: %s
 Имя страницы не может содержать пробельные символы: %s
-Revision %s not available
-Версия %s не доступна
-showing current revision instead
-отображение текущей версии вместо
-Showing revision %s
-Показ версии %s
-Updates since %s
-Обновления с %s
-Updates in the last %s day
-Обновления за последний %s день
-Updates in the last %s days
-Обновления за последние %s дней
+Please go on to %s.
+
 Could not open %s log file
 Не возможно открыть файл протокола %s 
 Error was
@@ -71,29 +71,41 @@ Note: This error is normal if no changes have been made.
 Примечание: Эта ошибка - нормально, если не было сделано изменений.
 Could not open old %s log file
 Не возможно открыть старый файл протокола %s 
-for %s only
-только для %s
-%s day
-%s день
-%s days
-%s дней
-List new changes starting from
-Список новых изменений начиная с
 No updates since %s
 Небыло обновлений с %s
-Page generated %s
-Страница сгенерирована %s
-Related changes
+Updates since %s
+Обновления с %s
+Updates in the last %s days
+Обновления за последние %s дней
+Updates in the last %s day
+Обновления за последний %s день
+for %s only
+только для %s
+List latest change per page only
+
+List only major changes
+
+Include minor changes
+
+List all changes
+
+%s days
+%s дней
+List later changes
+
+Username:
+
+Host:
+
+Language:
+
+Filters
+
+Go!
 
 (minor)
 
-(diff)
-(отличия)
-history
-
 rollback
-
-Cluster:
 
 from %s
 с %s
@@ -103,8 +115,6 @@ Compare
 
 Revision %s
 Версия %s
- . . . . 
-
 by
 
 Rolling back changes
@@ -121,11 +131,11 @@ Rollback to %s
 [Домой]
 redirected from %s
 перенаправлено с %s
+Click to search for references to this page
+
 Cookie: 
 
 new comment
-
-Username:
 
 Save
 Сохранить
@@ -151,44 +161,40 @@ Edited
 Правленное
 by %s
 
+(diff)
+(отличия)
 Warning
 Внимание
 Database is stored in temporary directory %s
 База данных сохранена во временной директории %s
 %s seconds
 
+The same page on other sites:
+
+EditNearLinks
+
 Search:
 Поиск:
 Replace:
-
-Go!
 
 Validate HTML
 
 Validate CSS
 
-Please go on to %s.
+Difference (from revision %1 to %2)
 
+revision %s
+
+current revision
+
+Difference (from prior %s revision)
+Отличия (текущей версии от предыдущей - %s)
 major
 основной
 minor
 второстепенный
-(The revisions are identical or unavailable.)
-(Версии идентичны или недоступны.)
 No diff available.
 Отличий нет.
-current revision
-
-revision %s
-
-Difference (from revision %s
-
- to %s)
-
-No diff available--this is the first %s revision.
-Отличий нет - это первая версия %s.
-Difference (from prior %s revision)
-Отличия (текущей версии от предыдущей - %s)
 Changed:
 Изменилось:
 Removed:
@@ -197,11 +203,17 @@ Added:
 Добавлено:
 to
 
-Bad page version (or corrupt page).
-Плохая версия страницы (или испорченая).
+Revision %s not available
+Версия %s не доступна
+showing current revision instead
+отображение текущей версии вместо
+Showing revision %s
+Показ версии %s
 Cannot save an nameless page.
 
-cannot write %s
+Cannot open %s
+
+Cannot write %s
 
 Could not get %s lock
 
@@ -213,8 +225,6 @@ Forced unlock of %s lock.
 
 No unlock required.
 
-Can not open %s
-Невозможно открыть %s
 %s hours ago
 
 1 hour ago
@@ -291,16 +301,32 @@ This operation is restricted to administrators only...
 Эта операция только для администаторов сайта...
 Index of all pages
 Проиндексировать все страницы:
+all pages
+
+permanent anchors
+
+near links
+
+(for %s)
+
+%s pages found.
+
 Replaced: %s
 
 Search for: %s
 Искать: %s
+View changes for these pages
+
+Search sites on the %s as well
+
 and
 
 or
 
-%s pages found:
-%s страницы не найдены:
+Fetching results from %s:
+
+Near pages:
+
 last updated
 
 Full Link List
@@ -343,8 +369,6 @@ ancestor
 
 other
 
-%s log error:
-
 Ping
 
 No response.
@@ -369,17 +393,9 @@ Moving part of the %s log file.
 
 Moving %s log entries.
 
+Getting page index file for %s.
+
 Main lock released.
-
-Converting all files
-
-No conversion required.
-
-converted
-
-no conversion required
-
-has no file
 
 Set or Remove global edit lock
 
@@ -397,6 +413,10 @@ Lock for %s removed.
 
 Displaying Wiki Version
 
+Inter links:
+
+Near links:
+
 Too many connections by %s
 
 Recent Visitors
@@ -406,5 +426,7 @@ Referrers
 All Referrers
 
 anchor first defined here: %s
+
+Click to search for references to this permanent anchor
 
 END_OF_TRANSLATION

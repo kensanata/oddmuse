@@ -22,10 +22,6 @@
 # This translation was last checked for OddMuse version 1.226.
 #
 %Translate = split('\n',<<END_OF_TRANSLATION);
-List latest change per page only
-Visa bara den senaste ändringen för varje sida
-Include minor changes
-Visa även små ändringar
 Reading not allowed: user, ip, or network is blocked.
 Läsning inte tillåten: användare, ip eller nätverk är blockerat.
 Could not create %s
@@ -34,6 +30,16 @@ Invalid UserName %s: not saved.
 Ogiltigt användarnamn %s: Ej sparad.
 UserName must be 50 characters or less: not saved
 Användarnamn får bestå av högst 50 tecken: Ej sparad.
+XML::RSS is not available on this system.
+
+LWP::UserAgent is not available on this system.
+
+diff
+
+history
+historik
+ . . . . 
+
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -58,18 +64,8 @@ Invalid Page %s (must not end with .lck)
 Ogiltig sida %s (får inte sluta med .lck) 
 Page name may not contain space characters: %s
 Sidans namn får inte innehålla mellanslag: %s
-Revision %s not available
-Version %s inte tillgänglig
-showing current revision instead
-visar nuvarande version istället
-Showing revision %s
-Det här är version %s
-Updates since %s
-Ändringar sedan %s
-Updates in the last %s day
-Ändringar den %s senaste dagen
-Updates in the last %s days
-Ändringar de %s senaste dagarna
+Please go on to %s.
+Gå vidare till %s.
 Could not open %s log file
 Kunde inte öppna %s-loggen
 Error was
@@ -78,30 +74,42 @@ Note: This error is normal if no changes have been made.
 Observera: Det här felet är normalt om inga ändringar gjorts.
 Could not open old %s log file
 Kunde inte öppna gammal %s-loggfil
-for %s only
-endast för %s
-%s day
-%s dag
-%s days
-%s dagar
-List new changes starting from
-Lista nya ändringar från och med
 No updates since %s
 Inga ändringar sedan %s
-Page generated %s
-Sidan skapad %s
-Related changes
-Relaterade ändringar
+Updates since %s
+Ändringar sedan %s
+Updates in the last %s days
+Ändringar de %s senaste dagarna
+Updates in the last %s day
+Ändringar den %s senaste dagen
+for %s only
+endast för %s
+List latest change per page only
+Visa bara den senaste ändringen för varje sida
+List only major changes
+Visa bara stora ändringar
+Include minor changes
+Visa även små ändringar
+List all changes
+Visa alla ändringar
+%s days
+%s dagar
+List later changes
+
+Username:
+Användarnamn:
+Host:
+
+Language:
+
+Filters
+
+Go!
+Sök
 (minor)
 (mindre)
-(diff)
-(ändringar)
-history
-historik
 rollback
 återställning
-Cluster:
-Kluster:
 from %s
 från %s
 History of %s
@@ -110,8 +118,6 @@ Compare
 Jämför
 Revision %s
 Version %s
- . . . . 
-
 by
 av
 Rolling back changes
@@ -128,12 +134,12 @@ Rollback to %s
 [Startsida]
 redirected from %s
 omdirigerad från %s
+Click to search for references to this page
+
 Cookie: 
 
 new comment
 ny kommentar
-Username:
-Användarnamn:
 Save
 Spara
 Comments on this page
@@ -158,44 +164,40 @@ Edited
 Redigerad
 by %s
 av %s
+(diff)
+(ändringar)
 Warning
 Varning
 Database is stored in temporary directory %s
 Databas sparad i tillfällig katalog %s
 %s seconds
 %s sekunder
+The same page on other sites:
+
+EditNearLinks
+
 Search:
 Sökning:
 Replace:
 Ersätt:
-Go!
-Sök
 Validate HTML
 Validera HTML
 Validate CSS
 Validera CSS
-Please go on to %s.
-Gå vidare till %s.
+Difference (from revision %1 to %2)
+
+revision %s
+version %s
+current revision
+nuvarande revision
+Difference (from prior %s revision)
+Ändringar (sedan tidigare version %s)
 major
 stor
 minor
 liten
-(The revisions are identical or unavailable.)
-(Versionerna är identiska eller otillgängliga)
 No diff available.
 Ingen ändring tillgänglig.
-current revision
-nuvarande revision
-revision %s
-version %s
-Difference (from revision %s
-Skillnad (mellan revision %s
- to %s)
- och %s)
-No diff available--this is the first %s revision.
-Det finns inga tidigare ändringar -- det här är den första versionen (%s ändring).
-Difference (from prior %s revision)
-Ändringar (sedan tidigare version %s)
 Changed:
 Ändrad:
 Removed:
@@ -204,12 +206,18 @@ Added:
 Tillagd:
 to
 till
-Bad page version (or corrupt page).
-Felaktig version av sidan (eller trasig sida)
+Revision %s not available
+Version %s inte tillgänglig
+showing current revision instead
+visar nuvarande version istället
+Showing revision %s
+Det här är version %s
 Cannot save an nameless page.
 Kan inte spara en namnlös sida.
-cannot write %s
-kan inte skriva %s
+Cannot open %s
+
+Cannot write %s
+
 Could not get %s lock
 Kunde inte låsa %s
 Unlocking
@@ -220,8 +228,6 @@ Forced unlock of %s lock.
 Forcerad upplåsning av %s.
 No unlock required.
 Ingen upplåsning behövs.
-Can not open %s
-Kan inte öppna %s
 %s hours ago
 för %s timmar sedan
 1 hour ago
@@ -298,16 +304,32 @@ This operation is restricted to administrators only...
 Den här funktionen kan bara utföras av adminstratörer...
 Index of all pages
 Index över alla sidor
+all pages
+
+permanent anchors
+
+near links
+
+(for %s)
+
+%s pages found.
+
 Replaced: %s
 Ersatt: %s
 Search for: %s
 Sök efter: %s
+View changes for these pages
+
+Search sites on the %s as well
+
 and
 och
 or
 eller
-%s pages found:
-%s sidor funna:
+Fetching results from %s:
+
+Near pages:
+
 last updated
 senast reviderad
 Full Link List
@@ -350,8 +372,6 @@ ancestor
 förfader
 other
 annan
-%s log error:
-%s logg-fel:
 Ping
 Ping
 No response.
@@ -376,18 +396,10 @@ Moving part of the %s log file.
 Flyttar del av %s-loggen
 Moving %s log entries.
 Flyttar %s loggnotering.
+Getting page index file for %s.
+
 Main lock released.
 Huvudlås avslaget.
-Converting all files
-Konverterar alla filer
-No conversion required.
-Ingen konvertering nödvändig.
-converted
-konverterad
-no conversion required
-ingen konvertering nödvändig
-has no file
-har ingen fil
 Set or Remove global edit lock
 Slå på eller av globalt redigeringslås
 Edit lock created.
@@ -404,6 +416,10 @@ Lock for %s removed.
 Slog av redigeringslås för för %s.
 Displaying Wiki Version
 Visar Wikiversion
+Inter links:
+
+Near links:
+
 Too many connections by %s
 För många anslutningar ifrån %s
 Recent Visitors
@@ -414,8 +430,6 @@ All Referrers
 Alla som länkat hit
 anchor first defined here: %s
 ankare definierades här först: %s
-List all changes
-Visa alla ändringar
-List only major changes
-Visa bara stora ändringar
+Click to search for references to this permanent anchor
+
 END_OF_TRANSLATION

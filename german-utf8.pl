@@ -29,6 +29,10 @@ Invalid UserName %s: not saved.
 Ungültiger Benutzername %s: nicht gespeichert.
 UserName must be 50 characters or less: not saved
 Länge des Benutzernamens maximal 50 Zeichen: nicht gespeichert.
+XML::RSS is not available on this system.
+
+LWP::UserAgent is not available on this system.
+
 diff
 Unterschiede
 history
@@ -59,12 +63,6 @@ Invalid Page %s (must not end with .lck)
 Ungültige Seite %s (Darf nicht mit .lck enden)
 Page name may not contain space characters: %s
 Seitenname darf keine Leerzeichen enthalten: %s
-Revision %s not available
-Version %s nicht verfügbar
-showing current revision instead
-Stattdessen Anzeige der aktuellen Version
-Showing revision %s
-Anzeige Version %s
 Please go on to %s.
 Bitte machen Sie weiter bei %s.
 Could not open %s log file
@@ -173,6 +171,10 @@ Database is stored in temporary directory %s
 Datenbank wird im temporären Verzeichnis %s gespeichert
 %s seconds
 %s Sekunden
+The same page on other sites:
+
+EditNearLinks
+
 Search:
 Suchen:
 Replace:
@@ -203,6 +205,12 @@ Added:
 Eingefügt:
 to
 stattdessen:
+Revision %s not available
+Version %s nicht verfügbar
+showing current revision instead
+Stattdessen Anzeige der aktuellen Version
+Showing revision %s
+Anzeige Version %s
 Cannot save an nameless page.
 Eine Seite ohne Namen kann nicht gespeichert werden.
 Cannot open %s
@@ -295,18 +303,32 @@ This operation is restricted to administrators only...
 Diese Aktion darf nur von Administratoren durchgeführt werden...
 Index of all pages
 Index aller Seiten
-%s pages found:
-%s Seiten gefunden:
+all pages
+
+permanent anchors
+
+near links
+
+(for %s)
+
+%s pages found.
+
 Replaced: %s
 Ersetzt: %s
 Search for: %s
 Suche nach: %s
 View changes for these pages
 Änderungen für diese Seiten
+Search sites on the %s as well
+
 and
 und
 or
 oder
+Fetching results from %s:
+
+Near pages:
+
 last updated
 Zuletzt geändert
 Full Link List
@@ -373,6 +395,8 @@ Moving part of the %s log file.
 Verschiebe einen Teil der Logdatei %s.
 Moving %s log entries.
 Verschiebe %s Log-Einträge.
+Getting page index file for %s.
+
 Main lock released.
 Hauptsperre aufgehoben.
 Set or Remove global edit lock
@@ -391,6 +415,10 @@ Lock for %s removed.
 Sperre von %s aufheben.
 Displaying Wiki Version
 Anzeige der Wiki Version
+Inter links:
+
+Near links:
+
 Too many connections by %s
 Zu viele Verbindungen durch %s
 Recent Visitors
