@@ -1,3 +1,10 @@
+2003-05-28  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($InterFile): Deleted.
+	($InterMap): New.
+	(GetSiteUrl): Use it.
+	(UserIsBanned): Fixed regexp.
+
 2003-05-27  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl ($HttpCharset): Default to UTF-8.
