@@ -87,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.122 2003/08/16 01:35:23 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.123 2003/08/16 02:01:27 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -389,8 +389,10 @@ sub ApplyRules {
 	PrintJournal($3, $5);
 	pos = $oldpos; # restore \G after call to ApplyRules
       } elsif (m/\G(\&lt;rss +"(.*)"\&gt;[ \t]*\n?)/cgi) { # <rss "uri..."> stores the parsed RSS of the given URI
+	my $oldpos = pos;
 	DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
 	print &RSS($2);
+	pos = $oldpos; # restore \G after call to RSS which uses the LWP module (for older copies of the module?)
       }
       if (defined $fragment) {
 	print $fragment;
