@@ -352,7 +352,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.495 2004/12/11 23:59:29 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.496 2004/12/14 01:08:39 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -3391,6 +3391,19 @@ sub AddComment {
 
 sub Save { # call within lock, with opened page
   my ($id, $new, $summary, $minor, $upload) = @_;
+  if ($revision == 1) {
+    if (-e $IndexFile and not unlink($IndexFile)) { # regenerate index on next request
+      SetParam('msg', Ts('Cannot delete the index file %s.', $IndexFile)
+	       . ' ' . T('Please check the directory permissions.')
+	       . ' ' . T('Your changes were not saved.'));
+      return;
+    }
+    if (grep(/^$id$/, @LockOnCreation)) {
+      WriteStringToFile(GetLockedPageFile($id), 'editing locked.');
+    }
+  } else {
+    utime time, time, $IndexFile; # touch index file
+  }
   my $old = $Page{text}; # copy before it gets encoded
   my $user = GetParam('username', '');
   my $host = GetRemoteHost();
@@ -3414,14 +3427,6 @@ sub Save { # call within lock, with opened page
   $Page{languages} = $languages;
   SavePage();
   WriteRcLog($id, $summary, $minor, $revision, $user, $host, $languages, GetCluster($new));
-  if ($revision == 1) {
-    unlink($IndexFile);	 # Regenerate index on next request
-    if (grep(/^$id$/, @LockOnCreation)) {
-      WriteStringToFile(GetLockedPageFile($id), 'editing locked.');
-    }
-  } else {
-    utime time, time, $IndexFile; # touch index file
-  }
   $LastUpdate = $Now; # for mod_perl
 }
 
