@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.349 2004/03/09 02:00:23 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.350 2004/03/09 02:23:06 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1007,7 +1007,9 @@ sub GetDownloadLink {
     } else {
       $action = $ScriptName . '?' . $action;
     }
-    return $q->img({-src=>$action, -alt=>$id, -class=>'upload'});
+    my $result = $q->img({-src=>$action, -alt=>$id, -class=>'upload'});
+    $result = ScriptLink($id, $result, 'upload image') unless $id eq $OpenPageName;
+    return $result;
   } else {
     return ScriptLink($action, $id, 'upload');
   }
