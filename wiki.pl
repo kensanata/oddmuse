@@ -81,7 +81,7 @@ $HttpCharset = '';  # Charset for pages, default is ISO-8859-1
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.14 2003/03/25 09:12:48 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.15 2003/03/25 09:16:17 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -2904,7 +2904,7 @@ sub DoEdit {
   }
   print $q->endform();
   if ($preview) {
-    print $q->hr();
+    print '<div class="preview">', $q->hr();
     print $q->h2(T('Preview:'));
     if ($isConflict) {
       print $q->strong(T('NOTE: This preview shows the revision of the other author.'))
@@ -2913,8 +2913,7 @@ sub DoEdit {
     $MainPage = $id;
     $MainPage =~ s|/.*||;  # Only the main page name (remove subpage)
     &PrintWikiToHTML($oldText, 'preview');
-    print $q->hr();
-    print $q->h2(T('Preview only, not yet saved'));
+    print $q->hr(), $q->h2(T('Preview only, not yet saved')), '</div>';
   }
   print $q->hr();
   print &GetHistoryLink($id, T('View other revisions')) . $q->br();
