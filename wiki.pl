@@ -83,7 +83,7 @@ $HttpCharset = '';  # Charset for pages, default is ISO-8859-1
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.24 2003/04/01 19:04:57 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.25 2003/04/06 15:16:29 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -652,11 +652,11 @@ sub RSS {
     for my $i (@{$rss->{items}}) {
       $counter++;
       last if $counter == $maxitems;
-      my $line = $q->a({-href=>$i->{'link'}},"[$i->{'title'}]");
+      my $line = $q->a({-href=>$i->{'link'},-class=>'rss'},"[$i->{'title'}]");
       $line .= qq{ -- $i->{'description'}} if $i->{'description'};
       $str .= $q->li($line);
     }
-    $str = $q->ul($str);
+    $str = $q->div({-class=>'rss'},$q->ul($str));
     if ($HttpCharset eq '' or $HttpCharset eq 'UTF-8') {
       return $str;
     } elsif ($HttpCharset eq 'ISO-8859-1') {
@@ -1801,6 +1801,10 @@ table.user { border-style:solid; border-width:thin; }
 table.user tr td { border-style:solid; border-width:thin; padding:5px; text-align:center; }
 span.result { font-size:larger; }
 span.info { font-size:smaller; font-style:italic; }
+div.rss { background-color:#EEF; color:#000; }
+div.rss a:link { background-color:#EEF; color:#00F; }
+div.rss a:visited { background-color:#EEF; color:#A0A; }
+div.rss a:active { background-color:#EEF; color:#F00; }
 -->
 EOT
   }
