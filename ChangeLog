@@ -1,5 +1,8 @@
 2004-10-15  Alex Schroeder  <alex@gnu.org>
 
+	* modules/download.pl (DownloadSupportRule): Allow alternate
+	title.
+
 	* wiki.pl (InitVariables): Bugfix -- handle '_' at the endo of
 	$CommentsPrefix as well.
 	(RSS): Warning if feed contains no item (even if no parsing
