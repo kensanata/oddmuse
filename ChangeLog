@@ -16,6 +16,18 @@
 	(GetRedirectPage): No need to set $FullUrl anymore.  Take
 	$UsePathInfo into account.  Suggested by Björn Lindström.
 	(GetDiff): Removed debugging output.
+	(InitRequest): Use binmode on STDOUT for UTF-8 printing of RSS.
+	(RSS): No more encoding and decoding stuff.  Rely on Perl 5.8 to
+	do this.
+	(DoShowVersion): Add more debugging information by using the
+	dependencies parameter.
+	(GetRedirectPage): Only use / when not using query syntax but
+	keyword syntax.
+	(ApplyRules): Use binmode to tell Perl that the RSS output can be
+	printed as UTF-8.  Everywhere else we are just using raw bytes
+	ourselves.
+	(ReadFileOrDie): Use ReportError instead of die.
+	(WriteStringToFile): Dito.
 
 2003-11-02  Alex Schroeder  <alex@gnu.org>
 
