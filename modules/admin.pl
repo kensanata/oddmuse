@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: admin.pl,v 1.7 2005/01/05 01:14:36 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: admin.pl,v 1.8 2005/01/24 17:00:58 as Exp $</p>';
 
 $Action{delete} = \&AdminPowerDelete;
 $Action{rename} = \&AdminPowerRename;
@@ -59,14 +59,28 @@ sub AdminPowerRename {
   ReportError(Ts('The page %s does not exist', $id), '400 BAD REQUEST') unless -f $fname;
   my $newfname = GetPageFile($new);
   ReportError(Ts('The page %s already exists', $new), '400 BAD REQUEST') if -f $newfname;
+  # Regenerate index on next request -- remove this before errors can occur!
+  unlink($IndexFile);
+  # page file
   CreatePageDir($PageDir, $new); # It might not exist yet
-  rename($fname, $newfname);
+  rename($fname, $newfname)
+    or ReportError(Tss('Cannot rename %1 to %2', $fname, $newfname) . ": $!", '500 INTERNAL SERVER ERROR');
   # keep directory
-  CreatePageDir($KeepDir, $new); # It might not exist yet
-  rename(GetKeepDir($id), GetKeepDir($new));
+  my $kdir = GetKeepDir($id);
+  my $newkdir = GetKeepDir($new);
+  CreatePageDir($KeepDir, $new); # It might not exist yet (only the parent directory!)
+  rename($kdir, $newkdir)
+    or ReportError(Tss('Cannot rename %1 to %2', $kdir, $newkdir) . ": $!", '500 INTERNAL SERVER ERROR')
+      if -d $kdir;
   # refer file
-  CreatePageDir($RefererDir, $new); # It might not exist yet
-  rename(GetRefererFile($id), GetRefererFile($new));
+  if (defined(&GetRefererFile)) {
+    my $rdir = GetRefererFile($id);
+    my $newrdir = GetRefererFile($new);
+    CreatePageDir($RefererDir, $new); # It might not exist yet
+    rename($rdir, $newrdir)
+      or ReportError(Tss('Cannot rename %1 to % 2 ', $rdir, $newrdir) . ": $!", '500 INTERNAL SERVER ERROR')
+	if -d $rdir;
+  }
   # RecentChanges
   OpenPage($new);
   WriteRcLog($id, Ts('Renamed to %s', $new), 0, $Page{revision},
@@ -76,8 +90,6 @@ sub AdminPowerRename {
 	     GetParam('username', ''), GetRemoteHost(), $Page{languages},
 	     GetCluster($Page{text}));
   print $q->p(Tss('Renamed %1 to %2.', GetPageLink($id), GetPageLink($new)));
-  # Regenerate index on next request -- remove this before errors can occur!
-  unlink($IndexFile);
   ReleaseLock();
   print $q->p(T('Main lock released.'));
   PrintFooter();
