@@ -1,8 +1,8 @@
 # UTF-8 encoded Dutch language file for use with Oddmuse
 #
-# Copyright (c) 2003  Onno Broekmans <obroekma@angelfire.com>
+# Copyright (c) 2003-2004 Onno Broekmans <onnod@lycos.com>
 #
-# Release 0.1 of this translation
+# Release 2 of this translation
 #
 # This is my first translation of OddMuse, and since I've only just
 # started using OddMuse, I suspect there are still some things that
@@ -34,19 +34,19 @@ Niet opgeslagen: de GebruikersNaam %s is ongeldig.
 UserName must be 50 characters or less: not saved
 Niet opgeslagen: de GebruikersNaam mag hoogstens 50 tekens lang zijn.
 XML::RSS is not available on this system.
-
+XML::RSS is niet beschikbaar op dit systeem.
 diff
-
+diff
 history
 geschiedenis
 %s returned no data, or LWP::UserAgent is not available.
-
+%s retourneerde geen data, of LWP::UserAgent is niet beschikbaar.
 RSS parsing failed for %s
-
- . . . . 
-
+Lezen van RSS is niet gelukt voor %s
+ . . . .
+ . . . .
 Click to create this page
-
+Klik hier om deze pagina aan te maken
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -62,7 +62,7 @@ Ongeldige actieparameter %s
 Invalid URL.
 Ongeldige URL.
 Page name is missing
-
+Geen paginanaam opgegeven
 Page name is too long: %s
 De naam van de pagina is te lang :%s
 Invalid Page %s
@@ -108,15 +108,15 @@ Toon ook kleine wijzigingen
 %s days
 %s dagen
 List later changes
-
+Toon latere veranderingen
 Username:
 Gebruikersnaam:
 Host:
-
+Host:
 Language:
-
+Taal:
 Filters
-
+Filters
 Go!
 OK
 (minor)
@@ -124,7 +124,7 @@ OK
 rollback
 ongedaan maken
 new
-
+nieuw
 from %s
 vanaf %s
 History of %s
@@ -151,8 +151,8 @@ redirected from %s
 doorverwezen vanaf %s
 Click to search for references to this page
 Klik hier om te zoeken naar verwijzingen naar deze pagina
-Cookie: 
-
+Cookie:
+Cookie:
 Warning
 Waarschuwing
 Database is stored in temporary directory %s
@@ -160,9 +160,9 @@ De database is opgeslagen in de tijdelijke map %s
 %s seconds
 %s seconden
 The same page on other sites:
-
+Dezelfde pagina op andere sites:
 EditNearLinks
-
+WijzigNabijeKoppelingen
 Last edited
 Laatst gewijzigd op
 Edited
@@ -172,15 +172,15 @@ door %s
 (diff)
 (verschillen)
 Run maintenance
-
+Voor onderhoud uit
 Unlock site
-
+Ontgrendel site
 Lock site
-
+Vergrendel site
 Unlock page
-
+Ontgrendel pagina
 Lock page
-
+Vergrendel pagina
 Comments on this page
 Commentaar op deze pagina
 Edit revision %s of this page
@@ -188,7 +188,7 @@ Wijzig revisie %s van deze pagina
 Edit text of this page
 Wijzig de tekst op deze pagina
 e
-
+e
 This page is read-only
 Deze pagina kan alleen gelezen worden
 View other revisions
@@ -198,11 +198,11 @@ Bekijk huidige revisie
 View all changes
 Toon alle wijzigingen
 Back to %s
-
+Terug naar %s
 new comment
 nieuw commentaar
 s
-
+s
 Save
 Opslaan
 Preview
@@ -216,7 +216,7 @@ Valideer HTML
 Validate CSS
 Valideer CSS
 Difference (from revision %1 to %2)
-
+Verschil (van revisie %1 naar %2)
 revision %s
 revisie %s
 current revision
@@ -246,9 +246,9 @@ Dit is revisie %s
 Cannot save an nameless page.
 Kan een pagina zonder naam niet opslaan.
 Cannot open %s
-
+Kan %s niet openen
 Cannot write %s
-
+Kan %s niet wijzigen
 Could not get %s lock
 Kan %s niet vergrendelen
 Unlocking
@@ -286,7 +286,7 @@ Zie %s voor meer informatie.
 Editing not allowed: %s is read-only.
 Wijzigen niet toegestaan: %s mag alleen gelezen worden.
 Only administrators can upload files.
-Alleen beheerders kunnen bestanden uploaden.
+Alleen beheerders kunnen bestanden publiceren.
 Editing revision %s of
 Wijzigen van revisie %s van
 Editing %s
@@ -303,8 +303,8 @@ Replace this file with text.
 Vervang dit bestand door tekst.
 Replace this text with a file.
 Vervang deze tekst door een bestand.
-File to upload: 
-
+File to upload:
+Te publiceren bestand:
 Files of type %s are not allowed.
 Bestanden van het type %s zijn niet toegestaan.
 Password
@@ -330,15 +330,15 @@ Deze taak mag alleen uitgevoerd worden door beheerders...
 Index of all pages
 Index van alle pagina's
 all pages
-
+alle pagina's
 permanent anchors
-
+permanente bladwijzers
 near links
-
+nabije koppelingen
 (for %s)
-
+(voor %s)
 %s pages found.
-
+%s pagina's gevonden
 Replaced: %s
 Vervangen door: %s
 Search for: %s
@@ -346,15 +346,15 @@ Gezocht naar: %s
 View changes for these pages
 Toon wijzigingen in deze pagina's
 Search sites on the %s as well
-
+Zoek ook sites op de %s
 and
 en
 or
 of
 Fetching results from %s:
-
+Bezig met ophalen resultaten van %s:
 Near pages:
-
+Nabije pagina's:
 last updated
 laatst gewijzigd
 Complete Content
@@ -372,7 +372,7 @@ Voorbeeld_Van_Een_Niet_Bestaande_Pagina
 [[%s]] cannot be defined.
 [[%s]] kan niet aangemaakt worden.
 Only an administrator can create %s.
-
+Alleen een beheerder kan %s aanmaken.
 Transfer Error: %s
 Fout tijdens overdacht: %s
 Browser reports no file info.
@@ -380,9 +380,9 @@ Uw browser heeft geen informatie over het bestand opgegeven.
 Browser reports no file type.
 Uw browser heeft geen informatie over het bestandstype opgegeven.
 Edit Denied
-
+Wijzigen niet toegestaan
 The page contains banned text.
-
+Deze pagina bevat verbannen tekst.
 This page was changed by somebody else %s.
 Deze pagina is gewijzigd door iemand anders %s.
 The changes conflict.  Please check the page again.
@@ -411,8 +411,8 @@ Main lock obtained.
 De gehele site is vergrendeld.
 Expiring keep files and deleting pages marked for deletion
 Bezig met verwijderen van te oude revisies uit de archieven, en verwijderen van pagina's die daarvoor gemarkeerd zijn
-not deleted: 
-
+not deleted:
+niet verwijderd:
 deleted
 verwijderd
 Moving part of the %s log file.
@@ -420,7 +420,7 @@ Bezig met verplaatsen van een deel van het logboekbestand %s
 Moving %s log entries.
 Bezig met verplaatsen van %s items.
 Getting page index file for %s.
-
+Bezig met ophalen indexbestand voor %s.
 Main lock released.
 De vergrendeling van de gehele site is opgeheven.
 Set or Remove global edit lock
@@ -440,13 +440,13 @@ Lock for %s removed.
 Displaying Wiki Version
 Tonen van Wiki-versie
 Inter links:
-
+Interkoppelingen:
 Near links:
-
+Nabije koppelingen:
 Too many connections by %s
 Te veel verbindingen met %s
 Please do not fetch more than %1 pages in %2 seconds.
-
+Haal a.u.b. niet meer dan %s pagina's op in %2 seconden.
 Recent Visitors
 Recente bezoekers
 Referrers
@@ -458,85 +458,85 @@ bladwijzer als eerste hier gedefinieerd: %s
 Click to search for references to this permanent anchor
 Klik hier om te zoeken naar verwijzingen naar deze permanente bladwijzer
 the page %s also exists
-
+de pagina %s bestaat ook
 Deleting %s
-
+Bezig met verwijderen van %s
 Deleted %s
-
+%s is verwijderd
 Renaming %1 to %2.
-
+Bezig met hernoemen van %1 in %2.
 The page %s does not exist
-
+De pagina %s bestaat niet
 The page %s already exists
-
+De pagina %s bestaat al
 Renamed to %s
-
+Hernoemd in %s
 Renamed from %s
-
+Hernoemd van %s
 Renamed %1 to %2.
-
+%1 hernoemd in %2.
 Delete page
-
+Verwijder pagina
 Rename this page to:
-
+Hernoem deze pagina in:
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
-
+Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
 The match parameter is missing.
-
+De parameter 'match' ontbreekt.
 Page Collection for %s
-
+Paginaverzameling voor %s
 Calendar %s
-
+Kalender %s
 Footnotes:
-
+Voetnoten:
 image: %s
-
+afbeelding: %s
 Languages:
-
+Talen:
 Show!
-
+Tonen!
 Define
-
+Definiëren
 Full Link List
 Volledige lijst van koppelingen
 Clearing Cache
-
+Bezig met leegmaken van de cache
 Done.
-
+Klaar.
 Generating Link Database
-
+Bezig met genereren van Koppelingendatabase
 The 404 handler extension requires the link data extension (links.pl).
-
+The 404 handler extension requires the link data extension (links.pl).
 Orphan List
-
-Trail: 
-
+Lijst met Wezen
+Trail:
+Spoor:
 None
-
+Geen
 Type
-
+Type
 Portrait
-
+Portret
 Thread: %s
-
+Draad: %s
 ID parameter is missing.
-
+Parameter 'ID' ontbreekt.
 Thread %s does not exist.
-
+De draad %s bestaat niet.
 Page %s does not contain a thread.
-
+De pagina %s bevat geen draad.
 Add
-
+Voeg toe
 URL parameter is missing.
-
+Parameter 'URL' ontbreekt.
 Add to %s thread
-
+Voeg toe aan de draad %s
 Below:
-
+Onder:
 URL:
-
+URL:
 Name:
-
+Naam:
 Blog
-
+Blog
 END_OF_TRANSLATION
