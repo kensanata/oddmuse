@@ -81,7 +81,7 @@ $HttpCharset = '';  # Charset for pages, default is ISO-8859-1
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.4 2003/03/21 20:50:31 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.5 2003/03/21 20:59:10 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -1821,9 +1821,6 @@ sub GetFooterText {
     $result .= ' ' . &ScriptLinkDiff(1, $id, T('(diff)'), $rev);
   }
   $result .= $q->br() . &GetSearchForm();
-  if (GetParam('validate', $ValidatorLink)) {
-    $result .= $q->br() . &GetValidatorLink ();
-  }
   if ($DataDir =~ m|/tmp/|) {
     $result .= $q->br() . $q->strong(T('Warning') . ': ')
       . Ts('Database is stored in temporary directory %s', $DataDir);
@@ -1842,6 +1839,9 @@ sub GetMinimumFooter {
   my $text = '';
   if ($FooterNote ne '') {
     $text .= T($FooterNote);  # Allow local translations
+  }
+  if (GetParam('validate', $ValidatorLink)) {
+    $text .= $q->p(&GetValidatorLink());
   }
   if (&GetParam('time',0)) {
     $text .= $q->p(Ts('%s seconds', (time - $Now)));
