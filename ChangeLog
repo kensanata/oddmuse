@@ -2,6 +2,7 @@
 
 	* wiki.pl (DoDownload, DoPost): Only test for MIME type matches if
 	@UploadTypes is not empty.
+	(Upload): Use download/pagename links if possible.
 
 2004-02-24  Alex Schroeder  <alex@gnu.org>
 
