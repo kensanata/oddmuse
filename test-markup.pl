@@ -331,7 +331,7 @@ test_page(get_page('Sonny_Stitt'),
 test_page(get_page('Keith_Jarret'),
 	  ('Plays with', 'wiki.pl/Gary_Peacock', 'Keith Jarret', 'Gary Peacock'));
 test_page(get_page('Gary_Peacock'),
-	  ('Status: 302', 'Location: .*wiki.pl\?Jack_DeJohnette#Gary_Peacock'));
+	  ('Status: 302', 'Location: .*wiki.pl/Jack_DeJohnette#Gary_Peacock'));
 test_page(get_page('Jack_DeJohnette'),
 	  ('A friend of', 'Gary Peacock', 'name="Gary_Peacock"', 'class="definition"',
 	   'title="Click to search for references to this permanent anchor"'));
@@ -718,7 +718,7 @@ test_page(get_page('SearchAndReplace'), @Test);
 Edit <a class="local" href="http://localhost/wiki.pl/Alexander_Schr\%c3\%b6der">Alexander Schröder</a>!
 EOT
 
-test_page(update_page('Alexander_Schr\%c3\%b6der', "Edit [[Alexander Schröder]]!"), @Test);
+test_page(update_page("Alexander_Schröder", "Edit [[Alexander Schröder]]!"), @Test);
 
 # --------------------
 
@@ -896,7 +896,7 @@ close(F);
 
 %Test = split('\n',<<'EOT');
 HAHA!
-<img src="/pics/haha.png" alt="HAHA!" />
+<img class="smiley" src="/pics/haha.png" alt="HAHA!" />
 do not eat 0 from text
 do not eat 0 from text
 ordinary text
