@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.26 2004/10/12 21:08:25 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.27 2004/10/12 21:28:11 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalendarUseCal);
 
@@ -24,11 +24,11 @@ $DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /div\.month/; # mod_p
 div.month { float:right; margin:0; padding-left:1ex; padding-right:1ex; }
 div.footer { clear:both; }
 div.year div.month { float:left; }
-div.cal pre { margin:0; padding:0; background-color:#ffe; }
-div.cal a.edit { text-decoration:none; color:inherit; }
-div.cal a.today { background-color:#fcc; }
+div.month pre { margin:0; padding:0; background-color:#ffe; }
+div.month a.edit { text-decoration:none; color:inherit; }
+div.month a.today { background-color:#fcc; }
 @media print {
-  div.cal { display: none; }
+  div.month { display: none; }
   div.year div.month { display: block; }
 }
 EOT
@@ -42,6 +42,7 @@ $CalendarUseCal = 1;
 sub NewCalendarGetHeader {
   my $header = OldCalendarGetHeader(@_);
   return $header unless $CalendarOnEveryPage;
+  return $header unless GetParam('action', 'browse') eq 'browse';
   my $cal = Cal();
   $header =~ s/<div class="header">/$cal<div class="header">/;
   return $header;
