@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.8 2005/01/02 01:48:40 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.9 2005/01/02 01:54:31 as Exp $</p>';
 
 # add the same CSS as in tables.pl
 $DefaultStyleSheet .= q{
@@ -50,7 +50,7 @@ sub TablesLongRule {
     Clean(CloseHtmlEnvironments() . "<table class=\"user long$class\">");
     # labels and their default class
     my %default_class = ();
-    my @labels = map { my ($label, @classes) = split /\//;
+    my @labels = map { my ($label, @classes) = split m|/|;
 		       $default_class{$label} = join(' ', @classes);
 		       $label;
 		     } split(/ *[,;] */, $2);
@@ -70,9 +70,9 @@ sub TablesLongRule {
     my $label = '';
     my $first = 1;
     for my $line (@lines) {
-      if ($line =~ m|^($regexp)(/[A-Za-z\x80-\xff/]+)?[:=] *(.*)|o) {
+      if ($line =~ m|^($regexp)/?([A-Za-z\x80-\xff/]+)?[:=] *(.*)|o) {
 	$label = $1;
-	$class = join(' ', split(m|/|, $2));
+	$class = join(' ', split(m|/|, $2)); # no leading / therefore no leading space
 	$line = $3;
 	if ($row{$label}) { # repetition of label, we must start a new row
 	  TablesLongRow(\@labels, \%row, \%class, $first);
