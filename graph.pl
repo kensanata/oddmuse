@@ -22,20 +22,25 @@
 # All arguments are optional.
 #
 # Defaults:
-# URL         http://www.emacswiki.org/cgi-bin/wiki?action=links;exists=1;embed=1
-# StartPage   none
+# URL         http://www.emacswiki.org/cgi-bin/wiki?action=links;exists=1;raw=1
+# StartPage   none -- all other options only have effect if this one is set!
 # Depth       2
 # Breadth     4
 # Stop-Regexp ^(Category|SiteMap)
 #
 # The HTML data is cached.  From then on the URL parameter has no effect.
-# To refresh the cache, delete the 'link.html' file.
+# To refresh the cache, delete the 'graph.cache' file.
 #
 # Breadth selects a number of children to include.  These are sorted by
 # number of incoming links.
 #
+# Example usage:
+#   perl graph.pl -> download cache file and produce a graph.dot for the entire wiki
+#   perl graph.pl cache AlexSchroeder -> from the cache, start with AlexSchroeder
+#   springgraph < cache.dot > cache.png
+#
 $uri = $ARGV[0];
-$uri = "http://www.emacswiki.org/cgi-bin/wiki?action=links;exists=1;embed=1" unless $uri;
+$uri = "http://www.emacswiki.org/cgi-bin/wiki?action=links;exists=1;raw=1" unless $uri;
 $start = $ARGV[1];
 $depth = $ARGV[2];
 $depth = 2 unless $depth;
@@ -43,65 +48,59 @@ $breadth = $ARGV[3];
 $breadth = 4 unless $breadth;
 $stop = $ARGV[4];
 $stop = "^(Category|SiteMap)" unless $stop;
-if (-f 'links.html') {
-  print "Reusing links.html -- delete it if you want a fresh one.\n";
+if (-f 'graph.cache') {
+  print "Reusing graph.cache -- delete it if you want a fresh one.\n";
 } else {
-  print "Downloading links.html and saving for reuse.\n";
-  $command = "wget -O links.html $uri";
+  print "Downloading graph.cache and saving for reuse.\n";
+  $command = "wget -O graph.cache $uri";
   print "Using $command\n";
   system(split(/ /, $command)) == 0 or die "Cannot run wget\n";
 }
-undef $/;
-open(F,'links.html') or warn "Cannot read links.html\n";
-print "Reading links.html...\n";
-$_ = <F>;
-close(F);
-print "Munging...\n";
-@temp = split(m|>([^<>]+?)</a>: |);
-shift @temp; # remove crud at the beginning
-while ($key = shift @temp) {
-  $_ = shift @temp;
-  my @links = ();
-  while (/>([^ ][^<>]+?)</g) {
-    push @links, $1;
-  }
-  $page{$key} = \@links; # store list as reference to the list
-}
-print "Scoring...\n";
-foreach $page (sort keys %page) {
-  $linkref = $page{$page};
-  foreach $target (sort @$linkref) {
-    $score{$target}++;
-  }
-}
-open(F,'>links.dot') or warn "Cannot write links.dot\n";
-print "Writing links.dot...\n";
-print F "digraph links {\n";
-if ($start) {
-  print "Starting with $start...\n";
-  $count = 0;
-  @pages = ($start);
-  while ($count++ < $depth) {
-    @current = @pages;
-    foreach (@pages) { $done{$_} = 1; }
-    @pages = ();
-    foreach $page (@current) {
-      $linkref = $page{$page};
-      @links = @$linkref;
-      @links = sort {$score{$a} <=> $score{$b}} @links; # only take pages with highest score
-      @links = @links[0..$breadth-1] if $#links >= $breadth;
-      next if $stop and eval "$page =~ /$stop/"; # no children for stop pages
-      foreach $target (sort @links) {
-	push(@pages, $target) unless $done{$target}; # don't cycle
-	print F "\"$page\" -> \"$target\"\n";
-      }
-    }
-  }
-} else {
+
+if (not $start) {
+  open (F,'<graph.cache') or warn "Cannot read graph.cache\n";
+  print "Reading graph.cache...\n";
+  undef $/;
+  $data = <F>;
+  close (F);
+  open (F,'>graph.dot') or warn "Cannot write graph.dot\n";
+  print "Writing graph.dot...\n";
   print "Using all pages...\n";
-  foreach $page (sort keys %page) {
-    $linkref = $page{$page};
-    foreach $target (sort @$linkref) {
+  print F "digraph links {\n";
+  print F $data;
+  print F "}\n";
+  close (F);
+  exit;
+}
+
+open(F,'graph.cache') or warn "Cannot read graph.cache\n";
+print "Reading graph.cache...\n";
+while($_ = <F>) {
+  if (m/^"(.*?)" -> "(.*?)"$/) {
+    push (@{$page{$1}}, $2);
+    $score{$2}++;
+  }
+}
+close(F);
+open(F,'>graph.dot') or warn "Cannot write graph.dot\n";
+print "Writing graph.dot...\n";
+print F "digraph links {\n";
+print "Starting with $start...\n";
+$count = 0;
+@pages = ($start);
+while ($count++ < $depth) {
+  @current = @pages;
+  foreach (@pages) {
+    $done{$_} = 1;
+  }
+  @pages = ();
+  foreach $page (@current) {
+    @links = @{$page{$page}};
+    @links = sort {$score{$a} <=> $score{$b}} @links; # only take pages with highest score
+    @links = @links[0..$breadth-1] if $#links >= $breadth;
+    next if $stop and eval "$page =~ /$stop/"; # no children for stop pages
+    foreach $target (sort @links) {
+      push(@pages, $target) unless $done{$target}; # don't cycle
       print F "\"$page\" -> \"$target\"\n";
     }
   }

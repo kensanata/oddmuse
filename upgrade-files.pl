@@ -6,7 +6,7 @@
 use CGI qw/:standard/;
 use CGI::Carp qw(fatalsToBrowser);
 print header() . start_html(), p;
-print 'Upgrade version: $Id: upgrade-files.pl,v 1.6 2003/11/16 21:15:20 as Exp $', "\n";
+print 'Upgrade version: $Id: upgrade-files.pl,v 1.7 2003/12/24 04:05:18 uid68242 Exp $', "\n";
 if (not param('dir')) {
   print start_form, p,
     '$DataDir: ', textfield('dir', '/tmp/oddmuse'),
@@ -22,7 +22,8 @@ print end_html();
 
 sub rewrite {
   my ($directory) = @_;
-  $FS  = "\x1e";
+  # $FS  = "\xb3";  -- old separator
+  $FS  = "\x1e"; #  -- new separator
   $FS1 = $FS . "1";
   $FS2 = $FS . "2";
   $FS3 = $FS . "3";
