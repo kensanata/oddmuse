@@ -5,6 +5,7 @@
 	(GetSearchLink, ScriptLinkDiff, GetHistoryLink): Ditto.
 	(PrintFooter, PrintAllReferers): Ditto.
 	(GetPermanentAnchorLink, GetPermanentAnchor): Ditto.
+	(UserCanEdit): Take care of $EditAllowed==2.
 
 2003-06-17  Alex Schroeder  <alex@gnu.org>
 
