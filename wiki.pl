@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.429 2004/06/25 23:58:28 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.430 2004/06/26 12:11:16 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -426,11 +426,11 @@ sub ApplyRules {
     } elsif ($bol && m/\G(\s*\n)*(\#+)[ \t]+/cg
 	     or $HtmlStack[0] eq 'li' && m/\G(\s*\n)+(\#+)[ \t]*/cg) {
       Clean(OpenHtmlEnvironment('ol',length($2)) . AddHtmlEnvironment('li'));
-    } elsif ($bol && m/\G(\s*\n)*(\:+)[ \t]*/cg
+    } elsif ($bol && m/\G(\s*\n)*(\:+)[ \t]+/cg
 	     or $HtmlStack[0] eq 'dd' && m/\G(\s*\n)+(\:+)[ \t]*/cg) { # blockquote instead?
       Clean(OpenHtmlEnvironment('dl',length($2), 'quote')
 	    . $q->dt() . AddHtmlEnvironment('dd'));
-    } elsif ($bol && m/\G(\s*\n)*(\;+)[ \t]*(?=.*\:)/cg
+    } elsif ($bol && m/\G(\s*\n)*(\;+)[ \t]+(?=.*\:)/cg
 	     or $HtmlStack[0] eq 'dd' && m/\G(\s*\n)+(\;+)[ \t]*(?=.*\:)/cg) {
       Clean(OpenHtmlEnvironment('dl',length($2))
 	    . AddHtmlEnvironment('dt')); # `:' needs special treatment, later
