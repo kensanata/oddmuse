@@ -88,7 +88,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.129 2003/08/29 15:49:40 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.130 2003/08/29 16:14:25 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -1641,7 +1641,7 @@ sub GetRCLink {
   if ($FreeLinks) {
     $id =~ s/ /_/g;
   }
-  return ScriptLink('action=rc&amp;all=1&amp;from=1&amp;rcidonly=' . UrlEncode($id), $text);
+  return ScriptLink('action=rc&amp;all=1&amp;from=1&amp;showedit=1&amp;rcidonly=' . UrlEncode($id), $text);
 }
 
 sub GetHeader {
