@@ -1,3 +1,9 @@
+2004-06-21  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetRc): Experimenting with revision clusters: By
+	starting the summary with a page link, you can cluster one
+	revision only.
+
 2004-06-21  Alex Schroeder  <alex@confusibombus>
 
 	* wiki.pl (ApplyRules): New regepx → allow a bit more skipping of
