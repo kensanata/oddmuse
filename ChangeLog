@@ -4,6 +4,8 @@
 	(InitLinkPatterns): Only set $FS and $FS0 if $FS is not set already.
 	(ReadFile): Check wether $FS0 is set before doing anything.
 	(DoMaintain): Ditto.
+	(UrlEncode): New function.
+	(GetValidatorLink): Use it.
 
 	Tricky update!  Changing the field separator from superscript 3 to
 	an ASCII control character!
