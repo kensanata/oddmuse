@@ -6,6 +6,7 @@
 	(DoBrowseRequest): Call DoIndex without raw parameter.
 	(DoIndex): Print header only when no raw parameter; retrieve it here.
 	(GetSearchForm, GetFilterForm): Use lang parameter as default.
+	(PrintPageList): Handle lang attribute.
 
 	(%CookieParameters): Added 'lang'.
 	(RcHeader, GetFilterForm, GetRc): Changed 'rclang' to 'lang'.
