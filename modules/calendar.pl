@@ -16,9 +16,17 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.20 2004/06/29 16:42:09 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.21 2004/09/04 09:16:50 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalendarUseCal);
+
+$DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /div\.month/; # mod_perl?
+div.month { padding:0; margin:0 2ex; }
+body > div.month { float:right; background-color: inherit; border:solid thin; padding:0 1ex; }
+div.year > div.month { float:left; }
+div.footer { clear:both; }
+div.month a.edit { color:inherit; font-weight:inherit; }
+EOT
 
 $CalendarOnEveryPage = 1;
 $CalendarUseCal = 1;
@@ -71,6 +79,7 @@ sub Cal {
   }|ge;
   $cal =~ s|(\w+) (\d\d\d\d)|{
     my ($month_text, $year_text) = ($1, $2);
+    $month_text = T($month_text);
     my $date = sprintf("%d-%02d", $year, $mon);
     if ($unlink_year) {
       $q->span({-class=>'title'}, ScriptLink('action=collect;match=' . $date,
