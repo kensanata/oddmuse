@@ -16,14 +16,14 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: thread.pl,v 1.2 2004/03/14 14:02:58 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: thread.pl,v 1.3 2004/03/14 14:33:05 as Exp $</p>';
 
 $Action{getthread} = \&ThreadGet;
 $Action{addthread} = \&ThreadAdd;
 
 sub ThreadGet {
   my ($id, $interactive) = @_;
-  my $thread = ThreadExtract($id);
+  my ($page, $thread) = ThreadExtract($id);
   print GetHttpHeader('text/html') . GetHtmlHeader(Ts('Thread: %s', $id), '');
   if (GetParam('interactive', $interactive)) {
     $thread = ThreadInteractive($id, $thread);
@@ -41,8 +41,8 @@ sub ThreadExtract {
   foreach my $tag ('nowiki', 'pre', 'code') {
     $page =~ s|<$tag>(.*\n)*?</$tag>||gi;
   }
-  if ($page =~ m/(^|\n)(\*(.*\n)+)/) {
-    return $2;
+  if ($page =~ m/(^|\n)(\*(.+\n)+)/) {
+    return ($page, $2);
   } else {
     ReportError(Ts('Thread %s does not contain a thread.', $id), '404 NOT FOUND');
   }
@@ -101,7 +101,7 @@ sub ThreadAdd {
 		  . $q->endform());
     print $q->end_html;
   } else {
-    my $thread = ThreadExtract($id);
+    my ($page, $thread) = ThreadExtract($id);
     my $new = GetParam('new', '');
     my $name = GetParam('name', '');
     my @items = split(/(^|\n)(\*+)/, $thread);
@@ -125,7 +125,9 @@ sub ThreadAdd {
     # ApplyRules($result);
     # print $q->pre($new . "\n" . $result);
     # print $q->end_html;
-    SetParam('text', $result);
+    $thread = quotemeta($thread);
+    $page =~ s/$thread/$result/;
+    SetParam('text', $page);
     DoPost($id);
   }
 }
