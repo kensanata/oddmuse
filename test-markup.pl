@@ -130,6 +130,98 @@ close(F);
 
 # --------------------
 
+print '[rss]';
+
+use Cwd;
+$dir = cwd;
+$uri = "file://$dir";
+
+@Test = split('\n',<<'EOT');
+PRNewswire: Texas Software Startup, Serenity Systems, Advises Business Users to Get Off Windows
+http://linuxtoday.com/story.php3\?sn=9443
+LinuxPR: MyDesktop Launches Linux Software Section
+http://linuxtoday.com/story.php3\?sn=9442
+LinuxPR: Franklin Institute Science Museum Chooses Linux
+http://linuxtoday.com/story.php3\?sn=9441
+Yellow Dog Linux releases updated am-utils
+http://linuxtoday.com/story.php3\?sn=9440
+LinuxPR: LinuxCare Adds Laser5 Linux To Roster of Supported Linux Distributions
+http://linuxtoday.com/story.php3\?sn=9439
+EOT
+
+update_page('RSS', "<rss $uri/linuxtoday.rdf>");
+test_page(get_page('RSS'), @Test);
+
+@Test = split('\n',<<'EOT');
+Xskat 3.1
+http://freshmeat.net/news/1999/09/01/936224942.html
+Java Test Driver 1.1
+http://freshmeat.net/news/1999/09/01/936224907.html
+WaveLAN/IEEE driver 1.0.1
+http://freshmeat.net/news/1999/09/01/936224545.html
+macfork 1.0
+http://freshmeat.net/news/1999/09/01/936224336.html
+QScheme 0.2.2
+http://freshmeat.net/news/1999/09/01/936223755.html
+CompuPic 4.6 build 1018
+http://freshmeat.net/news/1999/09/01/936223729.html
+eXtace 1.1.16
+http://freshmeat.net/news/1999/09/01/936223709.html
+GTC 0.3
+http://freshmeat.net/news/1999/09/01/936223686.html
+RocketJSP 0.9c
+http://freshmeat.net/news/1999/09/01/936223646.html
+Majik 3D 0.0/M3
+http://freshmeat.net/news/1999/09/01/936223622.html
+EOT
+
+update_page('RSS', "<rss $uri/fm.rdf>");
+test_page(get_page('RSS'), @Test);
+
+@Test = split('\n',<<'EOT');
+GTKeyboard 0.85
+http://freshmeat.net/news/1999/06/21/930003829.html
+EOT
+
+update_page('RSS', "<rss $uri/rss1.0.rdf>");
+test_page(get_page('RSS'), @Test);
+
+@Test = split('\n',<<'EOT');
+Berufsverbot für Mediendesigner?
+http://www.heise.de/tp/deutsch/inhalt/te/15886/1.html
+Experimentell bestätigt:
+http://www.heise.de/tp/deutsch/inhalt/lis/15882/1.html
+Clash im Internet?
+http://www.heise.de/tp/deutsch/special/med/15787/1.html
+Die Einheit der Umma gegen die jüdische Weltmacht
+http://www.heise.de/tp/deutsch/special/ost/15879/1.html
+Im Krieg mit dem Satan
+http://www.heise.de/tp/deutsch/inhalt/co/15880/1.html
+Der dritte Mann
+http://www.heise.de/tp/deutsch/inhalt/co/15876/1.html
+Leicht neben dem Ziel
+http://www.heise.de/tp/deutsch/inhalt/mein/15867/1.html
+Wale sollten Nordkorea meiden
+http://www.heise.de/tp/deutsch/inhalt/co/15878/1.html
+Afghanistan-Krieg und Irak-Besatzung haben al-Qaida gestärkt
+http://www.heise.de/tp/deutsch/inhalt/co/15874/1.html
+Der mit dem Dinosaurier tanzt
+http://www.heise.de/tp/deutsch/inhalt/lis/15863/1.html
+Terroranschlag überschattet das Genfer Abkommen
+http://www.heise.de/tp/deutsch/special/ost/15873/1.html
+"Barwatch" in Kanada
+http://www.heise.de/tp/deutsch/inhalt/te/15871/1.html
+Die Türken kommen!
+http://www.heise.de/tp/deutsch/special/irak/15870/1.html
+Neue Regelungen zur Telekommunikationsüberwachung
+http://www.heise.de/tp/deutsch/inhalt/te/15869/1.html
+Ein Lied vom Tod
+http://www.heise.de/tp/deutsch/inhalt/kino/15862/1.html
+EOT
+
+update_page('RSS', "<rss $uri/heise.rdf>");
+test_page(get_page('RSS'), @Test);
+
 print '[redirection]';
 
 update_page('Miles_Davis', 'Featuring [[John Coltrane]]'); # plain link
@@ -598,11 +690,11 @@ test_page(get_page('SearchAndReplace'), @Test);
 ## Check headers especially the quoting of non-ASCII characters.
 
 @Test = split('\n',<<'EOT');
-<h1><a title="Click to search for references to this page" href="http://localhost/wiki.pl\?search=Alexander\+Schr\%f6der">Alexander Schr�der</a></h1>
-Edit <a href="http://localhost/wiki.pl/Alexander_Schr\%f6der">Alexander Schr�der</a>!
+<h1><a title="Click to search for references to this page" href="http://localhost/wiki.pl\?search=Alexander\+Schr\%c3\%b6der">Alexander Schröder</a></h1>
+Edit <a href="http://localhost/wiki.pl/Alexander_Schr\%c3\%b6der">Alexander Schröder</a>!
 EOT
 
-test_page(update_page('Alexander_Schr\%f6der', "Edit [[Alexander Schr�der]]!"), @Test);
+test_page(update_page('Alexander_Schr\%c3\%b6der', "Edit [[Alexander Schröder]]!"), @Test);
 
 # --------------------
 
