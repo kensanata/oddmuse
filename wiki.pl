@@ -81,7 +81,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.73 2003/05/31 02:57:23 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.74 2003/05/31 13:27:14 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -1733,6 +1733,10 @@ div.rss { background-color:#EEF; color:#000; }
 div.rss a:link { background-color:#EEF; color:#00F; }
 div.rss a:visited { background-color:#EEF; color:#A0A; }
 div.rss a:active { background-color:#EEF; color:#F00; }
+a.permanent_def:before { content:"[::"; }
+a.permanent_def:after { content:"]"; }
+a.permanent_link:before { content:"[##"; }
+a.permanent_link:after { content:"]" }
 -->
 EOT
   }
