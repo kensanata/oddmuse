@@ -1,5 +1,24 @@
 2003-10-04  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (%CookieParameters): Added 'msg'.
+	(BrowsePage): Display the content of the 'msg' parameter, and
+	remove it from the cookie.
+	(Cookie): Changes to the 'msg' parameter only will not cause the
+	cookie to be shown.
+	(Init): Fixed typo in the error message for config pages.
+	(DoEdit): Less parameters.
+	(DoBrowseRequest): Call DoEdit with less parameters.
+	(DoBrowseRequest): Get rid of the oldtime parameter and use Save
+	instead (the name of the save button).  Get rid of raw=2.
+	(PrintFooter): Get rid of oldtime and oldconflict parameters.
+	(DoUnlock): No longer consider the merge lock.
+	(DoEdit): Get rid of conflict handling.
+	(DoPost): Don't handle raw=2.  Get rid of conflict handling.  Just
+	use add the 'msg' parameter to the cookie if somebody else changed
+	the page in the last two minutes.
+
+2003-10-04  Alex Schroeder  <alex@gnu.org>
+
 	* wiki.pl (RequestLockDir): Added return back in for the case
 	where no error is reported.
 	(DoPost): Report errors if the browser does not provide enough
