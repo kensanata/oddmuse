@@ -58,7 +58,7 @@ $RefererTracking $RefererTimeLimit $RefererLimit $NotifyTracker
 %CookieParameters $NewComment $StyleSheetPage @UserGotoBarPages
 $ConfigPage $ScriptName @MyMacros $CommentsPrefix $AllNetworkFiles
 $UsePathInfo $UploadAllowed @UploadTypes $LastUpdate $PageCluster
-%NotifyJournalPage %RssInterwikiTranslate $UseCache);
+%NotifyJournalPage %RssInterwikiTranslate $UseCache $ModuleDir);
 
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
@@ -76,7 +76,8 @@ $PermanentAnchorsInit);
 # $ConfigPage, $AdminPass, $EditPass, $ScriptName, $FullUrl
 
 $UseConfig   = 1 unless defined $UseConfig; # 1 = load config file in the data directory
-$DataDir   = '/tmp/oddmuse' unless $DataDir; # Main wiki directory
+$DataDir     = $ENV{WikiDataDir} if $UseConfig and not $DataDir; # Main wiki directory
+$DataDir   = '/tmp/oddmuse' unless $DataDir;
 $ConfigPage  = '' unless $ConfigPage; # config page
 $RunCGI      = 1;   # 1 = Run script as CGI instead of being a library
 $UsePathInfo = 1;   # 1 = allow page views using wiki.pl/PageName
@@ -207,10 +208,11 @@ $IndexFile   = "$DataDir/pageidx";  # List of all pages
 $VisitorFile = "$DataDir/visitors.log"; # List of recent visitors
 $PermanentAnchorsFile = "$DataDir/permanentanchors"; # Store permanent anchors
 $ConfigFile  = "$DataDir/config" unless $ConfigFile; # Config file with Perl code to execute
+$ModuleDir   = "$DataDir/modules";  # Directory for extension files (ending in .pm or .pl)
 $NearDir     = "$DataDir/near";     # For page indexes and .png files of other sites
 $SisterSiteLogoUrl = 'file:///tmp/oddmuse/%s.png'; # URL format string for logos
 
-# The 'main' program, called at the end of this script file.
+# The 'main' program, called at the end of this script file (aka. as handler)
 sub DoWikiRequest {
   Init();
   DoSurgeProtection();
@@ -232,6 +234,12 @@ sub Init {
   $FS  = "\x1e";      # The FS character is the RECORD SEPARATOR control char in ASCII
   $Message = '';      # Warnings and non-fatal errors.
   InitLinkPatterns(); # Link pattern can be changed in config files
+  if ($UseConfig and $ModuleDir and -d $ModuleDir) {
+    foreach $lib (glob("$ModuleDir/*.pm $ModuleDir/*.pl")) {
+      do $lib;
+      $Message .= CGI::p("$lib: $@") if $@; # no $q exists, yet
+    }
+  }
   if ($UseConfig and $ConfigFile and -f $ConfigFile) {
     do $ConfigFile;
     $Message .= CGI::p("$ConfigFile: $@") if $@; # no $q exists, yet
@@ -287,7 +295,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.304 2004/01/19 01:23:19 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.305 2004/01/23 00:39:39 as Exp $');
 }
 
 sub InitCookie {
