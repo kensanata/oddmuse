@@ -4,6 +4,7 @@
 	(ApplyRules): Removed binmode call, since that led to weird errors
 	in perl 5.8.0 and 5.8.2 when printing large amounts of data (seen
 	when using action=all).
+	(InitRequest): Use binmode :utf8 for the entire session.
 
 2004-01-03  Alex Schroeder  <alex@gnu.org>
 
