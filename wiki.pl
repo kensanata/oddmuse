@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.421 2004/06/18 23:50:57 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.422 2004/06/19 00:02:58 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -668,9 +668,9 @@ sub SmileyReplace {
 }
 
 sub RunMyRules {
-  push(@MyRules, \&MyRules) if defined(&MyRules);
+  unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   foreach my $sub (@MyRules) {
-    my $result = eval { local $SIG{__DIE__}; &$sub; };
+    my $result = &$sub;
     SetParam('msg', $@) if $@;
     return $result if defined($result);
   }
