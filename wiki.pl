@@ -81,7 +81,7 @@ $DataDir     = $ENV{WikiDataDir} if $UseConfig and not $DataDir; # Main wiki dir
 $DataDir   = '/tmp/oddmuse' unless $DataDir;
 $ConfigPage  = '' unless $ConfigPage; # config page
 $RunCGI	     = 1  unless defined $RunCGI; # 1 = Run script as CGI instead of being a library
-$UsePathInfo = 0;   # 1 = allow page views using wiki.pl/PageName
+$UsePathInfo = 1;   # 1 = allow page views using wiki.pl/PageName
 $UseCache    = 2;   # 0 = no; 1 = partial HTML cache; 2 = HTTP/1.1 caching
 
 # Basics
@@ -310,7 +310,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.332 2004/02/28 00:27:17 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.333 2004/02/28 00:36:35 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
