@@ -87,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.114 2003/06/21 17:42:32 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.115 2003/06/21 22:30:41 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -1489,12 +1489,10 @@ sub DoRandom {
 
 sub DoHistory {
   my $id = shift;
-  my ($html, $canEdit, $row, $newText);
+  my ($html, $row, $newText);
   print GetHeader('',QuoteHtml(Ts('History of %s', $id)), '') . '<br>';
   OpenPage($id);
   OpenDefaultText();
-  $canEdit = UserCanEdit($id);
-  $canEdit = 0;  # Turn off direct 'Edit' links
   if( $UseDiff ) {
     print <<EOF ;
 <form action='$ScriptName' METHOD='GET'>
@@ -1504,11 +1502,11 @@ sub DoHistory {
 <table class="history">
 EOF
   }
-  $html = GetHistoryLine($id, $Page{'text_default'}, $canEdit, $row++);
+  $html = GetHistoryLine($id, $Page{'text_default'}, $row++);
   OpenKeptRevisions('text_default');
   foreach (reverse sort {$a <=> $b} keys %KeptRevisions) {
     next  if ($_ eq '');  # (needed?)
-    $html .= GetHistoryLine($id, $KeptRevisions{$_}, $canEdit, $row++);
+    $html .= GetHistoryLine($id, $KeptRevisions{$_}, $row++);
   }
   print $html;
   if( $UseDiff )
@@ -1521,7 +1519,7 @@ EOF
 }
 
 sub GetHistoryLine {
-  my ($id, $section, $canEdit, $row) = @_;
+  my ($id, $section, $row) = @_;
   my ($html, $expirets, $rev, $summary, $host, $user, $ts, $minor);
   my (%sect, %revtext);
   %sect = split(/$FS2/, $section, -1);
@@ -1550,14 +1548,10 @@ sub GetHistoryLine {
   }
   if (0 == $row) { # current revision
     $html .= GetPageLink($id, Ts('Revision %s', $rev)) . ' ';
-    $html .= GetEditLink($id, T('Edit')) . ' '  if $canEdit;
   } else {
     $html .= GetOldPageLink('browse', $id, $rev, Ts('Revision %s', $rev)) . ' ';
-    $html .= GetOldPageLink('edit',   $id, $rev, T('Edit')) . ' '  if $canEdit;
   }
-  $html .= $minor . ' ';
-  $html .= TimeToText($ts) . ' ';
-  $html .= T('by') . ' ' . GetAuthorLink($host, $user) . ' ';
+  $html .= $minor . ' ' . TimeToText($ts) . ' ' . T('by') . ' ' . GetAuthorLink($host, $user) . ' ';
   if (defined($summary) && ($summary ne '')) {
     $summary = QuoteHtml($summary);   # Thanks Sunir! :-)
     $html .= "<b>[$summary]</b> ";
@@ -2823,7 +2817,7 @@ sub GetTextArea {
 
 sub DoPassword {
   print GetHeader('',T('Password'), '');
-  print $q->p(T('Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.')) . "\n";
+  print $q->p(T('Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.'));
   if (UserIsAdmin()) {
     print $q->p(T('You are currently an administrator on this site.'));
   } elsif (UserIsEditor()) {
@@ -2835,16 +2829,9 @@ sub DoPassword {
     }
   }
   if ($AdminPass or $EditPass) {
-    print GetFormStart();
-    print GetHiddenValue('action', 'password'), "\n";
-    print $q->p(T('Password:') . ' '
-		. $q->password_field(-name      => 'pwd',
-				     -size      => 20,
-				     -maxlength => 50) . "\n");
-    print $q->submit(-name  => 'Save',
-		     -value => T('Save'));
-
-    print $q->endform;
+    print GetFormStart() . GetHiddenValue('action', 'password')
+      . $q->p(T('Password:') . ' ' . $q->password_field(-name=>'pwd', -size=>20, -maxlength=>50))
+      . $q->submit(-name=>'Save', -value=>T('Save')) . $q->endform;
   } else {
     print $q->p(T('This site does not use admin or editor passwords.'));
   }
@@ -2870,29 +2857,13 @@ sub UserIsAdminOrError {
 }
 
 sub UserCanEdit {
-  my ($id, $deepCheck) = @_;
-  # Optimized for the 'everyone can edit' case (don't check passwords)
-  if (($id ne '') && (-f GetLockedPageFile($id))) {
-    return 1  if (UserIsAdmin());  # Requires more privledges
-    # Later option for editor-level to edit these pages?
-    return 0;
-  }
-  if (!$EditAllowed) {
-    return 1  if (UserIsEditor());
-    return 0;
-  }
-  if (-f $NoEditFile) {
-    return 1  if (UserIsEditor());
-    return 0;
-  }
-  if ($deepCheck) {   # Deeper but slower checks (not every page)
-    return 1  if (UserIsEditor());
-    return 0  if (UserIsBanned());
-  }
-  if ($EditAllowed == 2) {
-    return 1  if (UserIsEditor() or ($CommentsPrefix and $id =~ /^$CommentsPrefix/));
-    return 0;
-  }
+  my ($id, $editing) = @_;
+  return 1 if UserIsAdmin();
+  return 0 if $id ne '' and -f GetLockedPageFile($id);
+  return 1 if UserIsEditor();
+  return 0 if !$EditAllowed or -f $NoEditFile;
+  return 0 if $editing and UserIsBanned(); # this call is more expensive
+  return 0 if $EditAllowed == 2 and (not $CommentsPrefix or $id !~ /^$CommentsPrefix/);
   return 1;
 }
 
