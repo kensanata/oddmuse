@@ -269,7 +269,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.157 2003/09/23 23:15:09 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.158 2003/09/25 17:41:40 as Exp $');
 }
 
 sub InitCookie {
@@ -1763,7 +1763,7 @@ sub GetHeader {
 sub GetHttpHeader {
   my ($type, $modified) = @_;
   my $now = gmtime($modified or $Now);
-  my %headers = (-last_modified=>$now);
+  my %headers = (-last_modified=>$now, -cache_control=>'max-age=10, must-revalidate');
   $headers{-expires} = '+10s' unless $modified;
   if ($HttpCharset ne '') {
     $headers{-type} = "$type; charset=$HttpCharset";
@@ -2876,7 +2876,8 @@ sub DoDownload {
   my $ts;
   my $revision = GetParam('revision', '');
   OpenPage($id);
-  if ($revision) {
+  OpenDefaultText($id);
+  if ($revision && $revision ne $Section{'revision'}) {
     OpenKeptRevisions('text_default');
     OpenKeptRevision($revision);
   } else {
@@ -2885,7 +2886,6 @@ sub DoDownload {
       return;
     }
     $ts = $Page{'ts'};
-    OpenDefaultText($id);
   }
   if ($Text{'text'} =~ /#FILE ([^ \n]+)\n(.*)/s) {
     my ($type, $data) = ($1, $2);
@@ -3332,8 +3332,8 @@ sub DoPost {
       return;
     }
     local $/ = undef;   # Read complete files
-    my $data = MIME::Base64::encode(<$file>);
-    $string = '#FILE ' . $type . "\n" . $data;
+    eval { $_ = MIME::Base64::encode(<$file>) };
+    $string = '#FILE ' . $type . "\n" . $_;
   } else {
     $preview = 1  if (GetParam('Preview', ''));
     my $comment = GetParam('aftertext', undef);
