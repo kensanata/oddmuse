@@ -5,6 +5,14 @@
 	initialized and in a mod_perl environment this caused Oddmuse to
 	keep showing the old header.
 	(CloseHtmlEnvironment): Similar suspicious code.
+	(InitCookie): Get rid of uninitialized variable warnigs.
+	(ApplyRules): Rewrite handling to avoid using m//m when matching
+	lines, local HtmlStack to get rid of uninitialized variable
+	warnigs.
+	(BrowsePage, ScriptLinkDiff): Get rid of uninitialized variable warnigs.
+	(Cookie, GetTextRevision, GetCluster): Ditto.
+	(DeletePermanentAnchors): Ditto, by removing relying on $_.
+	($RunCGI): Can be set outside the script.
 
 2004-01-27  Alex Schroeder  <alex@gnu.org>
 
