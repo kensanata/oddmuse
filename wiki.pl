@@ -67,7 +67,7 @@ $IndexInit $Message $q $Now %RecentVisitors @HtmlStack $Monolithic
 $ReplaceForm %PermanentAnchors %PagePermanentAnchors
 $CollectingJournal $WikiDescription $PrintedHeader %Locks $Fragment
 @Blocks @Flags %NearSite %NearSource %NearLinksUsed $NearSiteInit
-$NearDir $NearMap $SisterSiteLogoUrl %NearSearch @KnownLocks $first
+$NearDir $NearMap $SisterSiteLogoUrl %NearSearch @KnownLocks
 $PermanentAnchorsInit $ModulesDescription %RuleOrder %Action $bol
 %RssInterwikiTranslate $RssInterwikiTranslateInit);
 
@@ -127,6 +127,7 @@ $PermanentAnchors = 1;	 # 1 = [::some text] defines permanent anchors (page alia
 $InterMap    = 'InterMap'; # name of the intermap page
 $NearMap     = 'NearMap';  # name of the nearmap page
 $RssInterwikiTranslate = 'RssInterwikiTranslate'; # name of RSS interwiki translation page
+@MyRules = (\&LinkRules, ); # default rules that can be overridden
 
 # Diff
 $ENV{PATH}   = '/usr/bin/'; # Path used to find 'diff'
@@ -356,7 +357,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.535 2005/03/16 11:15:23 frodo72 Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.536 2005/03/18 22:32:16 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -462,7 +463,6 @@ sub ApplyRules {
     $smileyregex = qr/(?=$smileyregex)/;
     local $_ = $text;
     local $bol = 1;
-    local $first = 1;
     while (1) {
       # Block level elements eat empty lines to prevent empty p elements.
       if ($bol && m/\G(\s*\n)*(\*+)[ \t]+/cg
@@ -515,70 +515,6 @@ sub ApplyRules {
 	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
 	pos = $oldpos;
 	# restore \G after call to RSS which uses the LWP module (for older copies of the module?)
-      } elsif ($locallinks
-	       and ($BracketText && m/\G(\[$InterLinkPattern\s+([^\]]+?)\])/cog
-		    or $BracketText && m/\G(\[\[$FreeInterLinkPattern\|([^\]]+?)\]\])/cog
-		    or m/\G(\[$InterLinkPattern\])/cog or m/\G(\[\[\[$FreeInterLinkPattern\]\]\])/cog
-		    or m/\G($InterLinkPattern)/cog or m/\G(\[\[$FreeInterLinkPattern\]\])/cog)) {
-	# [InterWiki:FooBar text] or [InterWiki:FooBar] or
-	# InterWiki:FooBar or [[InterWiki:foo bar|text]] or
-	# [[InterWiki:foo bar]] or [[[InterWiki:foo bar]]]-- Interlinks
-	# can change when the intermap changes (local config, therefore
-	# depend on $locallinks).  The intermap is only read if
-	# necessary, so if this not an interlink, we have to backtrack a
-	# bit.
-	my $bracket = (substr($1, 0, 1) eq '[')	# but \[\[$FreeInterLinkPattern\]\] it not bracket!
-	  && !((substr($1, 0, 2) eq '[[') && (substr($1, 2, 1) ne '[') && index($1, '|') < 0);
-	my $quote = (substr($1, 0, 2) eq '[[');
-	my ($oldmatch, $output) = ($1, GetInterLink($2, $3, $bracket, $quote));	# $3 may be empty
-	if ($oldmatch eq $output) { # no interlink
-	  my ($site, $rest) = split(/:/, $oldmatch, 2);
-	  Clean($site);
-	  pos = (pos) - length($rest) - 1; # skip site, but reparse rest
-	} else {
-	  Dirty($oldmatch);
-	  print $output;	# this is an interlink
-	}
-      } elsif ($BracketText && m/\G(\[$FullUrlPattern\s+([^\]]+?)\])/cog
-	       or m/\G(\[$FullUrlPattern\])/cog or m/\G($UrlPattern)/cog) {
-	# [URL text] makes [text] link to URL, [URL] makes footnotes [1]
-	my $bracket = (substr($1, 0, 1) eq '[');
-	if ($bracket and not $3) { # [URL] is dirty because the number may change
-	  Dirty($1);
-	  print GetUrl($2, '', 1);
-	} else {
-	  Clean(GetUrl($2, $3, $bracket, not $bracket)); # $2 may be empty
-	}
-      } elsif ($WikiLinks && m/\G!$LinkPattern/cog) {
-	Clean($1);		# ! gets eaten
-      } elsif ($PermanentAnchors && m/\G(\[::$FreeLinkPattern\])/cog) {
-	#[::Free Link] permanent anchor create only $withanchors
-	Dirty($1);
-	if ($withanchors) {
-	  print GetPermanentAnchor($2);
-	} else {
-	  print $q->span({-class=>'permanentanchor'}, $2);
-	}
-      } elsif ($WikiLinks && $locallinks
-	       && ($BracketWiki && m/\G(\[$LinkPattern\s+([^\]]+?)\])/cog
-		   or m/\G(\[$LinkPattern\])/cog or m/\G($LinkPattern)/cog)) {
-	# [LocalPage text], [LocalPage], LocalPage
-	Dirty($1);
-	my $bracket = (substr($1, 0, 1) eq '[');
-	print GetPageOrEditLink($2, $3, $bracket);
-      } elsif ($locallinks && $FreeLinks && (m/\G(\[\[image:$FreeLinkPattern\]\])/cog
-					     or m/\G(\[\[image:$FreeLinkPattern\|([^]|]+)\]\])/cog)) {
-	# [[image:Free Link]], [[image:Free Link|alt text]]
-	Dirty($1);
-	print GetDownloadLink($2, 1, undef, $3);
-      } elsif ($FreeLinks && $locallinks
-	       && ($BracketWiki && m/\G(\[\[$FreeLinkPattern\|([^\]]+)\]\])/cog
-		   or m/\G(\[\[\[$FreeLinkPattern\]\]\])/cog
-		   or m/\G(\[\[$FreeLinkPattern\]\])/cog)) {
-	# [[Free Link|text]], [[Free Link]]
-	Dirty($1);
-	my $bracket = (substr($1, 0, 3) eq '[[[');
-	print GetPageOrEditLink($2, $3, $bracket, 1); # $3 may be empty
       } elsif ($bol && m/\G(&lt;&lt;&lt;&lt;&lt;&lt;&lt; )/cg) {
 	my ($str, $count, $limit, $oldpos) = ($1, 0, 100, pos);
 	while (m/\G(.*\n)/cg and $count++ < $limit) {
@@ -592,7 +528,7 @@ sub ApplyRules {
 	  Clean(CloseHtmlEnvironments() . $q->pre({-class=>'conflict'}, $str) . AddHtmlEnvironment('p'));
 	}
       } elsif (%Smilies && m/\G$smileyregex/cog && (Clean(SmileyReplace()))) {
-      } elsif (Clean(RunMyRules())) {
+      } elsif (Clean(RunMyRules($locallinks, $withanchors))) {
       } elsif (m/\G\s*\n(\s*\n)+/cg) { # paragraphs: at least two newlines
 	Clean(CloseHtmlEnvironments() . AddHtmlEnvironment('p')); # another one like this further up
       } elsif (m/\G\s+/cg) {
@@ -606,7 +542,6 @@ sub ApplyRules {
       my $oldpos = pos;	# the following match causes smilies to fail at line beginnings!?
       $bol = m/\G(?<=\n)/cgs;
       pos = $oldpos; # therefore restore pos...  reason unknown (Perl v5.8.4).
-      $first = 0;
     }
   }
   # last block -- close it, cache it
@@ -619,6 +554,78 @@ sub ApplyRules {
   }
   # this can be stored in the page cache -- see PrintCache
   return (join($FS, @Blocks), join($FS, @Flags));
+}
+
+sub LinkRules {
+  my ($locallinks, $withanchors) = @_;
+  if ($locallinks
+      and ($BracketText && m/\G(\[$InterLinkPattern\s+([^\]]+?)\])/cog
+	   or $BracketText && m/\G(\[\[$FreeInterLinkPattern\|([^\]]+?)\]\])/cog
+	   or m/\G(\[$InterLinkPattern\])/cog or m/\G(\[\[\[$FreeInterLinkPattern\]\]\])/cog
+	   or m/\G($InterLinkPattern)/cog or m/\G(\[\[$FreeInterLinkPattern\]\])/cog)) {
+    # [InterWiki:FooBar text] or [InterWiki:FooBar] or
+    # InterWiki:FooBar or [[InterWiki:foo bar|text]] or
+    # [[InterWiki:foo bar]] or [[[InterWiki:foo bar]]]-- Interlinks
+    # can change when the intermap changes (local config, therefore
+    # depend on $locallinks).  The intermap is only read if
+    # necessary, so if this not an interlink, we have to backtrack a
+    # bit.
+    my $bracket = (substr($1, 0, 1) eq '[') # but \[\[$FreeInterLinkPattern\]\] it not bracket!
+      && !((substr($1, 0, 2) eq '[[') && (substr($1, 2, 1) ne '[') && index($1, '|') < 0);
+    my $quote = (substr($1, 0, 2) eq '[[');
+    my ($oldmatch, $output) = ($1, GetInterLink($2, $3, $bracket, $quote)); # $3 may be empty
+    if ($oldmatch eq $output) { # no interlink
+      my ($site, $rest) = split(/:/, $oldmatch, 2);
+      Clean($site);
+      pos = (pos) - length($rest) - 1; # skip site, but reparse rest
+    } else {
+      Dirty($oldmatch);
+      print $output;		# this is an interlink
+    }
+  } elsif ($BracketText && m/\G(\[$FullUrlPattern\s+([^\]]+?)\])/cog
+	   or m/\G(\[$FullUrlPattern\])/cog or m/\G($UrlPattern)/cog) {
+    # [URL text] makes [text] link to URL, [URL] makes footnotes [1]
+    my $bracket = (substr($1, 0, 1) eq '[');
+    if ($bracket and not $3) { # [URL] is dirty because the number may change
+      Dirty($1);
+      print GetUrl($2, '', 1);
+    } else {
+      Clean(GetUrl($2, $3, $bracket, not $bracket)); # $2 may be empty
+    }
+  } elsif ($WikiLinks && m/\G!$LinkPattern/cog) {
+    Clean($1);			# ! gets eaten
+  } elsif ($PermanentAnchors && m/\G(\[::$FreeLinkPattern\])/cog) {
+    #[::Free Link] permanent anchor create only $withanchors
+    Dirty($1);
+    if ($withanchors) {
+      print GetPermanentAnchor($2);
+    } else {
+      print $q->span({-class=>'permanentanchor'}, $2);
+    }
+  } elsif ($WikiLinks && $locallinks
+	   && ($BracketWiki && m/\G(\[$LinkPattern\s+([^\]]+?)\])/cog
+	       or m/\G(\[$LinkPattern\])/cog or m/\G($LinkPattern)/cog)) {
+    # [LocalPage text], [LocalPage], LocalPage
+    Dirty($1);
+    my $bracket = (substr($1, 0, 1) eq '[');
+    print GetPageOrEditLink($2, $3, $bracket);
+  } elsif ($locallinks && $FreeLinks && (m/\G(\[\[image:$FreeLinkPattern\]\])/cog
+					 or m/\G(\[\[image:$FreeLinkPattern\|([^]|]+)\]\])/cog)) {
+    # [[image:Free Link]], [[image:Free Link|alt text]]
+    Dirty($1);
+    print GetDownloadLink($2, 1, undef, $3);
+  } elsif ($FreeLinks && $locallinks
+	   && ($BracketWiki && m/\G(\[\[$FreeLinkPattern\|([^\]]+)\]\])/cog
+	       or m/\G(\[\[\[$FreeLinkPattern\]\]\])/cog
+	       or m/\G(\[\[$FreeLinkPattern\]\])/cog)) {
+    # [[Free Link|text]], [[Free Link]]
+    Dirty($1);
+    my $bracket = (substr($1, 0, 3) eq '[[[');
+    print GetPageOrEditLink($2, $3, $bracket, 1); # $3 may be empty
+  } else {
+    return undef; # nothing matched
+  }
+  return ''; # one of the dirty rules matched (and they all are)
 }
 
 sub InElement {
@@ -707,8 +714,9 @@ sub SmileyReplace {
 }
 
 sub RunMyRules {
+  my ($locallinks, $withanchors) = @_;
   foreach my $sub (@MyRules) {
-    my $result = &$sub;
+    my $result = &$sub($locallinks, $withanchors);
     SetParam('msg', $@) if $@;
     return $result if defined($result);
   }
