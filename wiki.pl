@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.413 2004/06/10 12:16:32 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.414 2004/06/12 00:33:28 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -418,22 +418,26 @@ sub ApplyRules {
       Clean(GetDownloadLink($OpenPageName, (substr($1, 0, 6) eq 'image/'), $revision));
     } elsif ($bol && m/\G&lt;pre&gt;\n?(.*?\n)&lt;\/pre&gt;[ \t]*\n?/cgs) {
       Clean(CloseHtmlEnvironments() . $q->pre({-class=>'real'}, $1));
-    } elsif ($bol || $HtmlStack[0] eq 'li' and m/\G(\s*\n)*(\*+)[ \t]*/cg) {
+    } elsif ($bol && m/\G(\s*\n)*(\*+)[ \t]*/cg
+	     or $HtmlStack[0] eq 'li' && m/\G(\s*\n)+(\*+)[ \t]*/cg) {
       Clean(OpenHtmlEnvironment('ul',length($2)) . AddHtmlEnvironment('li'));
-    } elsif ($bol || $HtmlStack[0] eq 'li' and m/\G(\s*\n)*(\#+)[ \t]*/cg) {
+    } elsif ($bol && m/\G(\s*\n)*(\#+)[ \t]*/cg
+	     or $HtmlStack[0] eq 'li' && m/\G(\s*\n)+(\#+)[ \t]*/cg) {
       Clean(OpenHtmlEnvironment('ol',length($2)) . AddHtmlEnvironment('li'));
-    } elsif ($bol || $HtmlStack[0] eq 'dd' and m/\G(\s*\n)*(\:+)[ \t]*/cg) { # blockquote instead?
+    } elsif ($bol && m/\G(\s*\n)*(\:+)[ \t]*/cg
+	     or $HtmlStack[0] eq 'dd' && m/\G(\s*\n)+(\:+)[ \t]*/cg) { # blockquote instead?
       Clean(OpenHtmlEnvironment('dl',length($2), 'quote')
 	    . $q->dt() . AddHtmlEnvironment('dd'));
+    } elsif ($bol && m/\G(\s*\n)*(\;+)[ \t]*(?=.*\:)/cg
+	     or $HtmlStack[0] eq 'dd' && m/\G(\s*\n)+(\;+)[ \t]*(?=.*\:)/cg) {
+      Clean(OpenHtmlEnvironment('dl',length($2))
+	    . AddHtmlEnvironment('dt')); # `:' needs special treatment, later
     } elsif ($bol && m/\G(\s*\n)*(\=+)[ \t]*(.*?)[ \t]*(=+)[ \t]*\n?/cg) {
       Clean(CloseHtmlEnvironments() . WikiHeading($2, $3));
     } elsif ($bol && m/\G(\s*\n)*----+[ \t]*\n?/cg) {
       Clean(CloseHtmlEnvironments() . $q->hr());
     } elsif ($bol && m/\G(\s*\n)*(([ \t]+.*\n?)+)/cg) {
       Clean(OpenHtmlEnvironment('pre',1) . $2); # always level 1
-    } elsif ($bol && m/\G(\s*\n)*(\;+)[ \t]*(?=.*\:)/cg) {
-      Clean(OpenHtmlEnvironment('dl',length($2))
-	    . AddHtmlEnvironment('dt')); # `:' needs special treatment, later
     } elsif ($bol && m/\G(\s*\n)*((\|\|)+)[ \t]*(?=.*\|\|[ \t]*(\n|$))/cg) {
       Clean(OpenHtmlEnvironment('table',1,'user') # `||' needs special treatment, later
 	    . AddHtmlEnvironment('tr')
@@ -1551,7 +1555,9 @@ sub GetRcHtml {
 	if ($cluster and $PageCluster) {
 	  $diff .= GetPageLink($PageCluster) . ':';
 	} elsif ($UseDiff and GetParam('diffrclink', 1)) {
-	  if ($all) {
+	  if ($revision == 1) {
+	    $diff .= '(' . $q->span({-class=>'new'}, T('new')) . ')';
+	  } elsif ($all) {
 	    $diff .= '(' . ScriptLinkDiff(2, $pagename, $tDiff, '', $revision) . ')';
 	  } else {
 	    $diff .= '(' . ScriptLinkDiff($minor ? 2 : 1, $pagename, $tDiff, '') . ')';
