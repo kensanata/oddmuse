@@ -287,7 +287,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.295 2004/01/03 17:13:34 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.296 2004/01/03 19:07:49 as Exp $');
 }
 
 sub InitCookie {
@@ -1966,7 +1966,7 @@ sub PrintFooter {
   }
   if ($CommentsPrefix and $id =~ /^$CommentsPrefix(.*)/) {
     $revisions .= ' | ' if $revisions;
-    $revisions .= GetPageLink($1, Ts('Back to %s', $1));
+    $revisions .= Ts('Back to %s', GetPageLink($1, $1));
   }
   $html .= $q->br() . $revisions  if $revisions;
   # time stamps
@@ -3139,15 +3139,17 @@ sub PrintAllPages {
   my $links = shift;
   my $comments = shift;
   my $lang = GetParam('lang', 0);
+  my $cache = GetParam('cache', $UseCache);
   for my $id (@_) {
-    OpenPage($id); # After this call, don't save cache!
+    OpenPage($id);
     my @languages = split(/,/, $Page{languages});
+    @languages = GetLanguages($Page{text}) unless $cache; # maybe refresh!
     next if $lang and @languages and not grep(/$lang/, @languages);
     print $q->hr . $q->h1($links ? GetPageLink($id) : $q->a({-name=>$id},$id));
-    if ($Page{blocks} && $Page{flags} && GetParam('cache', $UseCache)) {
+    if ($Page{blocks} && $Page{flags} && $cache) {
       PrintCache();
     } else {
-      PrintWikiToHTML($Page{text}, 1); # cache, current, not locked
+      PrintWikiToHTML($Page{text}, 1); # save cache, current revision, no main lock
     }
     if ($comments and UserCanEdit($CommentsPrefix . $id, 0) and $id !~ /^$CommentsPrefix/) {
       print $q->p({-class=>'comment'}, ScriptLink($CommentsPrefix . UrlEncode($id),
@@ -3419,16 +3421,9 @@ sub DoMaintain {
       return;
     }
   }
-  my $cache = GetParam('cache', 0);
   RequestLockOrError();
   print $q->p(T('Main lock obtained.'));
   print '<p>', T('Expiring keep files and deleting pages marked for deletion');
-  if ($cache) {
-    print ' ', T('and refreshing HTML cache');
-    $IndexInit = 0; # mod_perl: this variable may persist accross sessions
-    unlink($IndexFile);
-    unlink($PermanentAnchorsFile);
-  }
   # Expire all keep files
   foreach my $name (sort(AllPagesList())) {
     print $q->br();
@@ -3442,12 +3437,6 @@ sub DoMaintain {
       ExpireKeepFiles();
       ReadReferers($OpenPageName); # clean up even if disabled
       WriteReferers($OpenPageName);
-      if ($cache) {
-	$Page{languages} = GetLanguages($Page{text});
-	local *STDOUT;
-	open (STDOUT, "> /dev/null");
-	PrintWikiToHTML($Page{text}, 1, '', 1) if ($cache); # cache, current, locked
-      }
     }
   }
   print '</p>';
