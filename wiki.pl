@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.401 2004/05/24 21:06:38 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.402 2004/05/26 00:53:21 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2020,7 +2020,7 @@ sub PrintFooter {
   print GetCommentForm($id, $rev, $comment);
   print '<div class="footer">';
   print $q->span({-class=>'edit'}, GetFooterLinks($id, $rev));
-  print $q->span({-class=>'admin'}, GetAdminBar()) if UserIsAdmin();
+  print $q->span({-class=>'admin'}, GetAdminBar($id, $rev)) if UserIsAdmin();
   print $q->span({-class=>'time'}, GetFooterTimestamp($id, $rev));
   print GetSearchForm();
   if ($DataDir =~ m|/tmp/|) {
@@ -2074,11 +2074,17 @@ sub GetFooterTimestamp {
 }
 
 sub GetAdminBar {
+  my ($id, $rev) = @_;
   my $html .= $q->br() . ScriptLink('action=maintain', T('Run maintenance'));
   if (-f "$DataDir/noedit") {
     $html .= ' | ' . ScriptLink('action=editlock;set=0', T('Unlock site'));
   } else {
     $html .= ' | ' . ScriptLink('action=editlock;set=1', T('Lock site'));
+  }
+  if (-f GetLockedPageFile($id)) {
+    $html .= ' | ' . ScriptLink('action=pagelock;set=0;id=' . UrlEncode($id), T('Unlock page'));
+  } else {
+    $html .= ' | ' . ScriptLink('action=pagelock;set=1;id=' . UrlEncode($id), T('Lock page'));
   }
   foreach my $page (@LockOnCreation) {
     $html .= ' | ' . GetPageLink($page) if $page;
@@ -2105,14 +2111,6 @@ sub GetFooterLinks {
       }
     } else { # no permission or generated page
       $revisions .= ScriptLink('action=password', T('This page is read-only'));
-    }
-    if (UserIsAdmin()) {
-      $revisions .= ' | ' if $revisions;
-      if (-f GetLockedPageFile($id)) {
-	$revisions .= ScriptLink('action=pagelock;set=0;id=' . UrlEncode($id), T('Unlock page'));
-      } else {
-	$revisions .= ScriptLink('action=pagelock;set=1;id=' . UrlEncode($id), T('Lock page'));
-      }
     }
   }
   if ($id and $rev ne 'history') {
