@@ -16,23 +16,25 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: markup.pl,v 1.3 2004/06/19 19:02:58 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: markup.pl,v 1.4 2004/06/20 20:41:07 as Exp $</p>';
 
 push(@MyRules, \&MarkupRule);
-
+my $words = '([A-Za-z0-9\x80-\xff][-A-Za-z0-9\x80-\xff ]*?)';
 sub MarkupRule {
-  if (m/\G\*([A-Za-z\x80-\xff][A-Za-z\x80-\xff ]*?)\*/gc) {
+  if (m/\G\*$words\*/goc) {
     return "<b>$1</b>";
-  } elsif (m/\G\/([A-Za-z\x80-\xff][A-Za-z\x80-\xff ]*?)\//gc) {
+  } elsif (m/\G\/$words\//goc) {
     return "<i>$1</i>";
-  } elsif (m/\G_([A-Za-z\x80-\xff][A-Za-z\x80-\xff ]*?)_/gc) {
+  } elsif (m/\G_${words}_/goc) {
     return "<u>$1</u>";
-  } elsif (m/\G~([A-Za-z\x80-\xff][A-Za-z\x80-\xff ]*?)~/gc) {
+  } elsif (m/\G~$words~/goc) {
     return "<em>$1</em>";
   } elsif (m/\G-\&gt; /gc) {
     return '&#x2192; '; # RIGHTWARDS ARROW
-  } elsif (m/\G -- /gc) {
+  } elsif (m/\G---/gc) {
     return '&#x2014;'; # EM DASH
+  } elsif (m/\G-- /gc) { # note that leading space is eaten by wiki.pl!
+    return '&#x2013; '; # EN DASH
   } elsif (m/\G\.\.\./gc) {
     return '&#x2026;'; # HORIZONTAL ELLIPSIS
   }
