@@ -265,7 +265,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.183 2003/10/04 18:23:38 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.184 2003/10/04 19:05:16 as Exp $');
 }
 
 sub InitCookie {
@@ -3404,7 +3404,7 @@ sub MergeRevisions { # merge change from file2 to file3 into file1
   WriteStringToFile($name2, $file2);
   WriteStringToFile($name3, $file3);
   my ($you,$ancestor,$other) = (T('you'), T('ancestor'), T('other'));
-  my $output = `merge -p -L $you -L $ancestor -L $other $name1 $name2 $name3`;
+  my $output = `merge -p -q -L $you -L $ancestor -L $other $name1 $name2 $name3`;
   ReleaseLockDir('merge');
   # No need to unlink temp files--next merge will just overwrite.
   return $output;
