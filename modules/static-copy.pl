@@ -16,17 +16,16 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.10 2004/12/26 00:29:27 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.11 2004/12/26 00:38:36 as Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
-use vars qw($StaticDir $StaticMimeTypes $StaticAlways);
+use vars qw($StaticDir $StaticAlways %StaticMimeTypes);
 
 $StaticDir = '/tmp/static';
-$StaticMimeTypes = '/etc/mime.types';
 $StaticFilesAlways = 0; # 1 = uploaded files only, 2 = all pages
 
-my %StaticMimeTypes;
+my $StaticMimeTypes = '/etc/mime.types';
 my %StaticFiles;
 
 sub DoStatic {
@@ -48,7 +47,8 @@ sub DoStatic {
 sub StaticMimeTypes {
   my %hash;
   # the default mapping matches the default @UploadTypes...
-  open(F,$StaticMimeTypes) or return ('image/jpeg' => 'jpg', 'image/png' => 'png', );
+  open(F,$StaticMimeTypes)
+    or return ('image/jpeg' => 'jpg', 'image/png' => 'png', );
   while (<F>) {
     s/\#.*//; # remove comments
     my($type, $ext) = split;
