@@ -2,9 +2,11 @@
 
 	* wiki.pl (%RssInterwikiTranslate, $RssInterwikiTranslateInit): New
 	(InitVariables): Initialize the two.
-	(RSS): Call RssInterwikiTranslateInit if required.
+	($RssInterwikiTranslate): New.
+	(@LockOnCreation): Lock it upon creation.
 	(RssInterwikiTranslateInit): New.
-
+	(RSS): Call RssInterwikiTranslateInit if required.
+	
 2004-03-07  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetInterLink): Add more spans to interlinks.
