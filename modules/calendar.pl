@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.28 2004/10/12 21:55:21 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.29 2004/10/12 22:09:12 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalendarUseCal);
 
@@ -48,7 +48,8 @@ $CalendarUseCal = 1;
 sub NewCalendarGetHeader {
   my $header = OldCalendarGetHeader(@_);
   return $header unless $CalendarOnEveryPage;
-  return $header unless GetParam('action', 'browse') eq 'browse';
+  my $action = GetParam('action', 'browse');
+  return $header if grep(/^$action$/, ('calendar', 'edit'));
   my $cal = Cal();
   $header =~ s/<div class="header">/$cal<div class="header">/;
   return $header;
