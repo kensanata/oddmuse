@@ -6,6 +6,7 @@
 	(RSS): Remove extra quotes around URIs.  'title' is no longer
 	guaranteed.  Use 'guid' if available.  But it back in a list.
 	(GetRcRss): Default is 15 not 14.
+	(RSS): Take care not to make the list larger!
 
 2003-10-02  Alex Schroeder  <alex@gnu.org>
 
