@@ -52,7 +52,7 @@ use vars qw(@RcDays @HtmlTags
   $SiteDescription $RssImageUrl $RssPublisher $RssContributor
   $RssRights $WikiDescription $BannedCanRead $SurgeProtection
   $SurgeProtectionViews $SurgeProtectionTime $DeletedPage %Languages
-  $LanguageLimit);
+  $LanguageLimit $ValidatorLink);
 
 # Other global variables:
 use vars qw(%Page %Section %Text %InterSite %KeptRevisions
@@ -65,7 +65,7 @@ use vars qw(%Page %Section %Text %InterSite %KeptRevisions
 # All non-default options should be set in the config file in the data
 # directory.
 
-$DataDir   = '/home/alex/WWW/emacswiki/test'; # Main wiki directory
+$DataDir   = '/tmp/oddmuse' unless $DataDir; # Main wiki directory
 $UseConfig   = 1;   # 1 = load config file in the data directory
 $RunCGI      = 1;   # 1 = Run script as CGI instead of being a library
 
@@ -81,7 +81,7 @@ $HttpCharset = '';  # Charset for pages, default is ISO-8859-1
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.2 2003/03/21 15:34:14 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.3 2003/03/21 20:42:26 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -94,6 +94,7 @@ $EmbedWiki   = 0;   # 1 = no headers/footers
 $FooterNote  = '';  # HTML for bottom of every page
 $EditNote    = '';  # HTML notice above buttons on edit page
 $UserGotoBar = '';  # HTML added to end of goto bar
+$ValidatorLink = 0; # Link to the W3C HTML validator service
 
 # HardSecurity
 $EditAllowed = 1;   # 1 = editing allowed,    0 = read-only
@@ -191,7 +192,7 @@ $RcFile      = "$DataDir/rclog";    # New RecentChanges logfile
 $RcOldFile   = "$DataDir/oldrclog"; # Old RecentChanges logfile
 $IndexFile   = "$DataDir/pageidx";  # List of all pages
 $VisitorFile = "$DataDir/visitors"; # List of recent visitors
-$ConfigFile  = "$DataDir/config";   # Config file with Perl code to execute
+$ConfigFile  = "$DataDir/config" unless $ConfigFile; # Config file with Perl code to execute
 
 # The 'main' program, called at the end of this script file.
 sub DoWikiRequest {
@@ -903,11 +904,11 @@ use CGI;
 use CGI::Carp qw(fatalsToBrowser);
 
 sub InitRequest {
-  my @ScriptPath = split('/', "$ENV{SCRIPT_NAME}");
   $CGI::POST_MAX = $MaxPost;
   $CGI::DISABLE_UPLOADS = 1;  # no uploads
   $q = new CGI;
   $Now = time;                     # Reset in case script is persistent
+  my @ScriptPath = split('/', $q->script_name());
   $ScriptName = pop(@ScriptPath);  # Name used in links
   $IndexInit = 0;                  # Must be reset for each request
   $InterSiteInit = 0;
@@ -1807,7 +1808,7 @@ sub GetFooterText {
     $result .= &GetPageLink($id, T('View current revision'));
   }
   if ($Section{'revision'} > 0) {
-    $result .= '<br>';
+    $result .= $q->br();
     if ($rev eq '') {  # Only for most current rev
       $result .= T('Last edited');
     } else {
@@ -1818,11 +1819,13 @@ sub GetFooterText {
   if ($UseDiff) {
     $result .= ' ' . &ScriptLinkDiff(1, $id, T('(diff)'), $rev);
   }
-  $result .= '<br>' . &GetSearchForm();
+  $result .= $q->br() . &GetSearchForm();
+  if (GetParam('validate', $ValidatorLink)) {
+    $result .= $q->br() . &GetValidatorLink ();
+  }
   if ($DataDir =~ m|/tmp/|) {
-    $result .= '<br><b>' . T('Warning') . ':</b> '
-               . Ts('Database is stored in temporary directory %s',
-                    $DataDir) . '<br>';
+    $result .= $q->br() . $q->strong(T('Warning') . ': ')
+      . Ts('Database is stored in temporary directory %s', $DataDir);
   }
   $result .= $q->endform;
   $result .= &GetMinimumFooter();
@@ -1882,6 +1885,15 @@ sub GetSearchForm {
   return T('Search:') . ' '
     . $q->textfield(-name=>'search', -size=>20) . ' '
     . $q->submit('dosearch', T('Go!'));
+}
+
+sub GetValidatorLink {
+  return $q->a({-href => 'http://validator.w3.org/check?uri='
+		. &QuoteHtml('http://'
+			     . $q->server_name() . ':'
+			     . $q->server_port()
+			     . $q->script_name()
+			     . $q->path_info())}, T('Validate HTML'));
 }
 
 sub GetRedirectPage {
