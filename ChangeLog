@@ -1,3 +1,29 @@
+2004-10-10  Alex Schroeder  <alex@confusibombus>
+
+	* modules/paragraph-link.pl: Resolve conflict with
+	portrait-support.pl
+
+	* modules/portrait-support.pl: Set $DefaultStyleSheet.
+	(PortraitSupportRule): All rules work only at the beginning of a
+	line ($bol).
+
+	* modules/journal-rss.pl (DoJournalRss): Use rsslimit instead of
+	num and match instead of regexp, and reverse=1 instead of
+	type=reverse.
+
+	* modules/atom.pl (GetRcAtom): Use $CollectingJournal to
+	avoid infinite loops when including the full RSS.
+
+	* wiki.pl (RSS): Use $CollectingJournal as well.
+	(PrintJournal): Cosmetic.
+
+	* modules/journal-rss.pl (DoJournalRss): Use $CollectingJournal to
+	avoid infinite loops when including the full RSS.
+	(DoJournalRss): Cosmetic.
+
+	* wiki.pl (DoPost): remove "DeletePage" when a comment is added.
+	(PageDeletable): Simplify.
+
 2004-10-08  Alex Schroeder  <alex@gnu.org>
 
 	* modules/static-copy.pl (StaticFileName): Don't die on unreadable
