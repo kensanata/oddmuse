@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.3 2005/01/04 10:15:02 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.4 2005/01/07 01:18:02 as Exp $</p>';
 
 use vars qw($LocalNamesPage);
 
@@ -27,7 +27,7 @@ push(@MyInitVariables, \&LocalNamesInit);
 
 sub LocalNamesInit {
   $LocalNamesPage = FreeToNormal($LocalNamesPage); # spaces to underscores
-  push(@AdminPages, $LocalNamesPage);
+  push(@AdminPages, $LocalNamesPage) unless grep(/$LocalNamesPage/, @AdminPages); # mod_perl!
 }
 
 my %LocalNames = ();
