@@ -16,22 +16,26 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: image.pl,v 1.1 2004/05/31 00:29:07 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: image.pl,v 1.2 2004/05/31 01:08:17 as Exp $</p>';
 
 push( @MyRules, \&ImageSupportRule );
 
 # [[image/class:page name|alt text|target]]
 
 sub ImageSupportRule {
-  if (m!\G\[\[image(/[a-z])?:$FreeLinkPattern(|[^]|])?(|[^]])?\]\]!gc) {
+  my $result = '';
+  if (m!\G\[\[image(/[a-z]+)?:$FreeLinkPattern(\|[^\]|]+)?(\|[^\]]+)?\]\]!gc) {
+    my $oldpos = pos;
     my $class = $1 ? substr($1, 1) : 'image picture';
     my $name = $2;
-    my $alt = substr($3, 1) if $3;
+    my $alt = $3 ? substr($3, 1) : T("image: $name");
     my $link = substr($4, 1) if $4;
     my $id = FreeToNormal($name);
+    $link = $id unless $link;
     my $linkclass;
     if ($link) {
-      if ($link =~ /^$UrlPattern/) {
+      if ($link =~ /$FullUrlPattern/) {
+	$link = $1;
 	$linkclass = 'outside';
       } else {
 	$linkclass = 'local';
@@ -50,9 +54,9 @@ sub ImageSupportRule {
     } else {
       $src = $ScriptName . "?action=download;id=" . UrlEncode($id);
     }
-    my $result = $q->img({-src=>$src, -alt=>$alt, -class=>$class});
+    $result = $q->img({-src=>$src, -alt=>$alt, -class=>$class});
     $result = $q->a({-href=>$link, -class=>$linkclass}, $result) if $link;
-    return $result;
+    pos = $oldpos;
   }
-  return '';
+  return $result;
 }
