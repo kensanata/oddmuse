@@ -1,7 +1,24 @@
+2004-03-31  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ResolveId): Permanent anchors now take precedence over
+	existing pages.
+	(GetPermanentAnchor): Show warning when duplicating an existing
+	permanent anchor.
+
 2004-03-28  Alex Schroeder  <alex@gnu.org>
+
+	* modules/calendar.pl (Cal): Link to the date, not the day, when
+	there are no matches.
+	(PrintYearCalendar): Add div.year class.
+	(Cal): Add div.month class.
+
+	* wiki.pl (InitLinkPatterns): add irc to $UrlProtocols.
 
 	* modules/calendar.pl (Cal): Added support for multiple partial matches.
 	(DoCollect): Added collect action.
+	(CalendarRule): New rule.
+	(PrintYearCalendar): Code to do the work.
+	($CalendarOnEveryPage): New option.
 
 2004-03-20  Alex Schroeder  <alex@gnu.org>
 
