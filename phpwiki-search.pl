@@ -20,6 +20,7 @@
 use CGI qw/:standard/;
 use CGI::Carp qw(fatalsToBrowser);
 use LWP::UserAgent;
+use Encode;
 
 if (not param('url')) {
   print header(),
@@ -27,7 +28,7 @@ if (not param('url')) {
     h1('PHP Wiki Search RSS 3.0'),
     p('Translates a PHP Wiki Search result into RSS 3.0 usable by Oddmuse.'),
     start_form(-method=>'GET'),
-    p('Search URL: ', textfield('url'), submit()),
+    p('Search URL: ', textfield('url', '', 40), checkbox('latin-1'), submit()),
     end_form(),
     end_html();
   exit;
@@ -39,6 +40,7 @@ my $ua = new LWP::UserAgent;
 my $request = HTTP::Request->new('GET', param('url'));
 my $response = $ua->request($request);
 my $data = $response->content;
+$data = encode('utf-8', decode('latin-1', $data)) if param('latin-1');
 
 $data =~ /\<title\>([^<]*)/i;
 print "title: $1\n" if $1;
