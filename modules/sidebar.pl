@@ -30,7 +30,7 @@ $SidebarName = 'SideBar';
 
 $DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /div\.sidebar/; # mod_perl?
 @media screen {
-  body { margin-right: 22ex; border-right: 1px solid #999; }
+  body { margin-right: 22ex; padding-right:1em; border-right: 1px solid #999; }
   div.sidebar { position: absolute; right: 0; width: 20ex; top: 0; }
 }
 @media print {
