@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-# Diese Übersetzung wurde für Oddmuse 1.401 erstellt.
+# Diese Übersetzung wurde für Oddmuse 1.414 erstellt.
 #
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
@@ -117,6 +117,8 @@ Los!
 (Klein)
 rollback
 bis hier alles Rückgängig machen
+new
+neu
 from %s
 von %s
 History of %s
@@ -169,6 +171,10 @@ Unlock site
 Wiki entsperren
 Lock site
 Wiki sperren
+Unlock page
+Seite entsperren
+Lock page
+Seite sperren
 Comments on this page
 Kommentare zu dieser Seite
 Edit revision %s of this page
@@ -179,10 +185,6 @@ e
 e
 This page is read-only
 Diese Seite ist schreibgeschützt
-Unlock page
-Seite entsperren
-Lock page
-Seite sperren
 View other revisions
 Andere Versionen ansehen
 View current revision
@@ -270,7 +272,7 @@ Bearbeitung verweigert
 Editing not allowed: user, ip, or network is blocked.
 Bearbeitung nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
 Contact the wiki administrator for more information.
-Für weitere Informationen setzen Sie sich mit dem WIKI Administrator in Verbindung.
+Für weitere Informationen setzen Sie sich mit dem Wiki Administrator in Verbindung.
 The rule %s matched for you.
 Die Regel %s hat angesprochen.
 See %s for more information.
