@@ -1,3 +1,9 @@
+2004-11-12  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetFormStart): Fix syntax error. (?)
+	(GetKeptDiff): Pass old revision to GetDiff.
+	(GetDiff): Handle situation where old or new revision is a file.
+
 2004-11-11  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (ReportError): Add a third parameter to request logging
