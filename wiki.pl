@@ -59,7 +59,7 @@ $RefererFilter $PermanentAnchorsFile $PermanentAnchors @MyRules
 $ConfigPage $ScriptName @MyMacros $CommentsPrefix $AllNetworkFiles
 $UsePathInfo $UploadAllowed @UploadTypes $LastUpdate $PageCluster
 $RssInterwikiTranslate $UseCache $ModuleDir $HtmlHeaders
-%InvisibleCookieParameters);
+%InvisibleCookieParameters $FreeInterLinkPattern);
 
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.374 2004/04/09 19:33:23 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.375 2004/04/10 12:11:51 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -373,6 +373,7 @@ sub InitLinkPatterns {
   # This avoids confusion with URLs.
   $InterSitePattern = '[A-Z\x80-\xff]+[A-Za-z\x80-\xff]+';
   $InterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x80-\xff_=!?#$@~`%&*+\\/:;.,]+[-a-zA-Z0-9\x80-\xff_=#$@~`%&*+\\/])$QDelim";
+  $FreeInterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x80-\xff_=!?#$@~`%&*+\\/:;., ]+[-a-zA-Z0-9\x80-\xff_=#$@~`%&*+\\/])$QDelim"; # plus space
   $FreeLinkPattern = "([-,.()' _0-9A-Za-z\x80-\xff]+)$QDelim";
   $UrlProtocols = 'http|https|ftp|afs|news|nntp|mid|cid|mailto|wais|prospero|telnet|gopher|irc';
   $UrlProtocols .= '|file'  if $NetworkFile;
@@ -511,11 +512,18 @@ sub ApplyRules {
       Clean("<a$1>$2</a>");
     } elsif ($locallinks
 	     and ($BracketText && m/\G(\[$InterLinkPattern\s+([^\]]+?)\])/cog
-		  or m/\G(\[$InterLinkPattern\])/cog or m/\G($InterLinkPattern)/cog)) {
-      # [InterWiki:FooBar text] or [InterWiki:FooBar] or InterWiki:FooBar -- Interlinks can change
-      # when the intermap changes (local config, therefore depend on $locallinks).  The intermap
-      # is only read if necessary, so if this not an interlink, we have to backtrack a bit.
-      my $bracket = (substr($1, 0, 1) eq '[');
+		  or $BracketText && m/\G(\[\[$FreeInterLinkPattern\|([^\]]+?)\]\])/cog
+		  or m/\G(\[$InterLinkPattern\])/cog or m/\G(\[\[\[$FreeInterLinkPattern\]\]\])/cog
+		  or m/\G($InterLinkPattern)/cog or m/\G(\[\[$FreeInterLinkPattern\]\])/cog)) {
+      # [InterWiki:FooBar text] or [InterWiki:FooBar] or
+      # InterWiki:FooBar or [[InterWiki:foo bar|text]] or
+      # [[InterWiki:foo bar]] or [[[InterWiki:foo bar]]]-- Interlinks
+      # can change when the intermap changes (local config, therefore
+      # depend on $locallinks).  The intermap is only read if
+      # necessary, so if this not an interlink, we have to backtrack a
+      # bit.
+      my $bracket = (substr($1, 0, 1) eq '[') # but \[\[$FreeInterLinkPattern\]\] it not bracket!
+	&& !((substr($1, 0, 2) eq '[[') && (substr($1, 2, 1) ne '[') && index($1, '|') < 0);
       my ($oldmatch, $output) = ($1, GetInterLink($2, $3, $bracket)); # $3 may be empty
       if ($oldmatch eq $output) { # no interlink
 	my ($site, $rest) = split(/:/, $oldmatch, 2);
@@ -860,6 +868,7 @@ sub NearInit {
 sub GetInterSiteUrl {
   my ($site, $page) = @_;
   return unless $page;
+  $page = UrlEncode($page);
   my $url = $InterSite{$site} or return;
   $url =~ s/\%s/$page/g or $url .= $page;
   return $url;
