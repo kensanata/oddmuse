@@ -1,3 +1,8 @@
+2003-10-17  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ApplyRules): Add new ! rule.
+	(RcHeader): Add interface for all and showedit parameters to recent changes.
+	
 2003-10-16  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (RcHeader): Do not double rcclusteronly.
