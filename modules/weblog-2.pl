@@ -18,13 +18,11 @@
 
 use Time::ParseDate;
 
-$ModulesDescription .= '<p>$Id: weblog-2.pl,v 1.3 2004/04/02 01:17:30 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: weblog-2.pl,v 1.4 2005/01/04 09:57:17 as Exp $</p>';
 
-*OldWeblog2InitVariables = *InitVariables;
-*InitVariables = *NewWeblog2InitVariables;
+push(@MyInitVariables, \&WebLog2Init);
 
-sub NewWeblog2InitVariables {
-  OldWeblog2InitVariables();
+sub WebLog2Init {
   my $id = join('_', $q->keywords);
   $id = $q->path_info() unless $id;
   my $current;
