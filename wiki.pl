@@ -310,7 +310,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.331 2004/02/27 23:59:31 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.332 2004/02/28 00:27:17 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -966,12 +966,23 @@ sub ScriptLink {
 sub Upload {
   my ($id, $image, $revision) = @_;
   AllPagesList();
-  my $action = "action=download;id=$id";
-  $action .= ";revision=$revision" if $revision;
-  if (not $IndexHash{$id}) { # page does not exist
-    return '[' . ($image ? 'image' : 'link') . ':' . $id . ']';
-  } elsif ($image) {
-    return $q->img({-src=>"$ScriptName?$action", -alt=>$id, -class=>'upload'});
+  # if the page does not exist
+  return '[' . ($image ? 'image' : 'link') . ':' . $id . ']' unless $IndexHash{$id};
+  my $action;
+  if ($revision) {
+    $action = "action=download;id=$id;revision=$revision";
+  } elsif ($UsePathInfo) {
+    $action = "download/$id";
+  } else {
+    $action = "action=download;id=$id";
+  }
+  if ($image) {
+    if ($UsePathInfo and not $revision) {
+      $action = $ScriptName . '/' . $action;
+    } else {
+      $action = $ScriptName . '?' . $action;
+    }
+    return $q->img({-src=>$action, -alt=>$id, -class=>'upload'});
   } else {
     return ScriptLink($action, $id, 'upload');
   }
