@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: footnotes.pl,v 1.2 2004/01/30 21:35:44 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: footnotes.pl,v 1.3 2004/03/12 19:31:53 as Exp $</p>';
 
 my $MyFootnoteCounter = 0;
 my @MyFootnotes = ();
@@ -24,7 +24,7 @@ my @MyFootnotes = ();
 push(@MyRules, \&FootnoteRule);
 
 sub FootnoteRule {
-  if (m/\G(\[\[\[(.*?)\]\]\])/gcs) {
+  if (m/\G(\{\{(.*?)\}\})/gcs) {
     Dirty($1);
     push(@MyFootnotes,$2);
     $MyFootnoteCounter++;
