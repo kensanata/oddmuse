@@ -153,9 +153,19 @@ test_page(update_page('ConflictTest', "test\ntest\nbar\nend\n", '', '', '', "old
 
 # test conflict during merging -- first get oldtime, then do two conflicting edits
 
-@Test = split('\n',<<'EOT');
-test &lt;&lt;&lt;&lt;&lt;&lt;&lt; you bar <h6></h6>foo &gt;&gt;&gt;&gt;&gt;&gt;&gt; other test end
+my $str = QuoteHtml(<<'EOT');
+test
+<<<<<<< you
+bar
+||||||| ancestor
+test
+=======
+foo
+>>>>>>> other
+test
 EOT
+$str = "\n<pre>\n$str</pre>\n\n";
+@Test = ($str);
 
 update_page('ConflictTest', "test\ntest\ntest\nend\n");
 
