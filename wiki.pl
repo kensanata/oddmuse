@@ -68,7 +68,7 @@ $IndexInit $Message $q $Now %RecentVisitors @HtmlStack %Referers
 $Monolithic $ReplaceForm %PermanentAnchors %PagePermanentAnchors
 $CollectingJournal $WikiDescription $PrintedHeader %Locks $Fragment
 @Blocks @Flags %NearSite %NearSource %NearLinksUsed $NearSiteInit
-$NearDir $NearMap $SisterSiteLogoUrl %NearSearch @KnownLocks
+$NearDir $NearMap $SisterSiteLogoUrl %NearSearch @KnownLocks $first
 $PermanentAnchorsInit $ModulesDescription %RuleOrder %Action $bol
 %RssInterwikiTranslate $RssInterwikiTranslateInit);
 
@@ -348,7 +348,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.455 2004/09/14 23:43:11 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.456 2004/09/16 23:22:21 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -447,7 +447,7 @@ sub ApplyRules {
   $smileyregex = qr/(?=$smileyregex)/;
   local $_ = $text;
   local $bol = 1;
-  my $first = 1;
+  local $first = 1;
   while(1) {
     # Block level elements eat empty lines to prevent empty p elements.
     if ($bol && m/\G(\s*\n)*(\*+)[ \t]+/cg
