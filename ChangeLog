@@ -7,6 +7,10 @@
 	(DoSearch): Add link to filtered recent changes.
 	(RcHeader): Remember rc parameters when printing the header.
 	(BrowsePage): Fix detection of #REDIRECT bug.
+	(ScriptLink): Add title parameter.
+	(GetSearchLink): Add title parameter.
+	(GetHeader): Add title to header.
+	(GetPermanentAnchor): Add title to permanent anchor definition.
 
 2003-10-13  Alex Schroeder  <alex@gnu.org>
 
