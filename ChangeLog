@@ -1,3 +1,23 @@
+2003-04-01  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($RefererDir, $RefererTracking, $RefererTimeLimit)
+	($RefererLimit, %Referers): New variables.
+	(ApplyRules): Use GetRaw instead of IncludeRaw
+	(GetRaw): Renamed from IncludeRaw and without HTML quoting.
+	(BrowsePage): Use more methods from the CGI module, call
+	RefererTrack if appropriate.
+	(DoRc): Use more methods from the CGI module.
+	(GetHtmlHeader): Added new div.
+	(ForceReleaseLock): Do globbing.
+	(RequestRefererLock): New function, creates locks per-page.
+	(ReleaseRefererLock): New function.
+	(DoUnlock): Requires globbing for refer locks.
+	(GetRefererFile): New.
+	(ReadReferers): New.
+	(GetReferers): New.
+	(UpdateReferers): New.
+	(RefererTrack): New.
+
 2003-03-28  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoMaintain): Important bugfix!
