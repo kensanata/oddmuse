@@ -87,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.108 2003/06/18 19:50:48 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.109 2003/06/18 21:33:04 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -98,7 +98,7 @@ $NewText     = "Describe the new page here.\n";  # New page text
 $NewComment  = "Add your comment here.\n";       # New comment text
 
 # HardSecurity
-$EditAllowed = 1;   # 1 = editing allowed,    0 = read-only
+$EditAllowed = 1;   # 0 = no, 1 = yes, 2 = comments only
 $AdminPass   = '' unless defined $AdminPass; # Whitespace separated passwords.
 $EditPass    = '' unless defined $EditPass; # Whitespace separated passwords.
 $BannedHosts = 'BannedHosts'; # Page for banned hosts
@@ -2883,13 +2883,17 @@ sub UserCanEdit {
     return 1  if (UserIsEditor());
     return 0;
   }
-  if (-f "$NoEditFile") {
+  if (-f $NoEditFile) {
     return 1  if (UserIsEditor());
     return 0;
   }
   if ($deepCheck) {   # Deeper but slower checks (not every page)
     return 1  if (UserIsEditor());
     return 0  if (UserIsBanned());
+  }
+  if ($EditAllowed == 2) {
+    return 1  if ($CommentsPrefix and $id and $id =~ /^$CommentsPrefix/);
+    return 0;
   }
   return 1;
 }
