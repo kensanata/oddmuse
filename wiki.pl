@@ -265,7 +265,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.188 2003/10/10 12:59:39 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.189 2003/10/10 13:45:04 as Exp $');
 }
 
 sub InitCookie {
@@ -1254,11 +1254,16 @@ sub DoRc {
     print $q->p($q->b('(' . Ts('for %s only', ScriptLink(UrlEncode($clusterOnly), $clusterOnly)) . ')'));
   }
   if($showHTML) {
-    my ($showbar, $html);
+    my ($showbar, $html, $action);
+    if ($clusterOnly) {
+      $action .= GetPageParameters('browse', $clusterOnly, '', $clusterOnly);
+    } else {
+      $action = 'action=rc';
+    }
     foreach my $i (@RcDays) {
       $html .= ' | '  if $showbar;
       $showbar = 1;
-      $html .= ScriptLink("action=rc;days=$i", Ts('%s day' . (($i != 1)?'s':''), $i));
+      $html .= ScriptLink("$action;days=$i", Ts('%s day' . (($i != 1)?'s':''), $i));
       # Note: must have two translations (for 'day' and 'days')
       # Following comment line is for translation helper script
       # Ts('%s days', '');
