@@ -1,7 +1,15 @@
 2004-01-23  Alex Schroeder  <alex@gnu.org>
 
-	* weblog-tracking.pl (NewSave): Call OldSave instead of Save.
+	The entire weblog notification was moved into a separate module.
 
+	* wiki.pl ($NotifyTracker, %NotifyJournalPage): Removed.
+	(DoBrowseRequest): Removed ping action.
+	(DoPost): Don't call PingTracker anymore.
+	(PingTracker): Moved.
+	(DoPingTracker): Moved.
+	
+	* weblog-tracking.pl (NewSave): Call OldSave instead of Save.
+	
 	* wiki.pl ($DataDir): Allow setting it via the environment
 	variable "WikiDataDir" (for mod_perl).
 	($ModuleDir): New variable.
