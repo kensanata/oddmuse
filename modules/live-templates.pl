@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: live-templates.pl,v 1.2 2004/12/05 03:53:42 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: live-templates.pl,v 1.3 2005/01/25 08:19:44 as Exp $</p>';
 
 push(@MyRules, \&LiveTemplateRule);
 
@@ -38,7 +38,7 @@ sub LiveTemplateRule {
       $text =~ s/\$$key\$/$hash{$key}/g;
     }
     print "<div class=\"template $template\">";
-    ApplyRules($text, 1, 1, undef, 'p');
+    ApplyRules(QuoteHtml($text), 1, 1, undef, 'p');
     pos = $oldpos;
     print '</div>';
     return AddHtmlEnvironment('p');
