@@ -16,9 +16,9 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.12 2004/10/31 19:31:01 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.13 2004/10/31 19:34:15 as Exp $</p>';
 
-push( @MyRules, \&TocRule );
+push(@MyRules, \&TocRule);
 
 # This must come *before* the usemod.pl rules.
 $RuleOrder{ \&TocRule } = 90;
@@ -29,11 +29,11 @@ sub TocRule {
     # headings using = (with lookahead)
     if (   $bol
         && $UseModMarkupInTitles
-        && m/\G(\s*\n)*(\=+)[ \t]*(?=[^=\n]+=)/cg )
+        && m/\G(\s*\n)*(\=+)[ \t]*(?=[^=\n]+=)/cg)
     {
         my $depth = length($2);
         $depth = 6 if $depth > 6;
-        return CloseHtmlEnvironments() . AddHtmlEnvironment( 'h' . $depth );
+        return CloseHtmlEnvironments() . AddHtmlEnvironment('h' . $depth);
     } elsif (
         $UseModMarkupInTitles
         && m/\G[ \t]*=+\n?/cg
@@ -42,23 +42,23 @@ sub TocRule {
             || InElement('h3')
             || InElement('h4')
             || InElement('h5')
-            || InElement('h6') )
+            || InElement('h6'))
       )
     {
         return CloseHtmlEnvironments();
-    } elsif ( $bol
+    } elsif ($bol
         && !$UseModMarkupInTitles
-        && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg )
+        && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg)
     {
-        return CloseHtmlEnvironments() . TocWikiHeading( $2, $3 );
+        return CloseHtmlEnvironments() . TocWikiHeading($2, $3);
     }
     return undef;
 }
 
 sub TocWikiHeading {
-    my ( $depth, $text ) = @_;
+    my ($depth, $text) = @_;
     $depth = length($depth);
-    $depth = 6 if ( $depth > 6 );
+    $depth = 6 if ($depth > 6);
     my $link = UrlEncode($text);
     return "<h$depth><a name=\"$link\">$text</a></h$depth>";
 }
@@ -80,52 +80,53 @@ sub TocHeadings {
     $page = GetPageContent($id);
 
     # ignore all the stuff that gets processed anyway
-    foreach my $tag ( 'nowiki', 'pre', 'code' ) {
+    foreach my $tag ('nowiki', 'pre', 'code') {
         $page =~ s|<$tag>(.*\n)*?</$tag>||gi;
     }
-    my $Headings      = "<h2>" . T('Contents') . "</h2>";
-    my $HeadingsLevel = undef;
+    my $Headings           = "<h2>" . T('Contents') . "</h2>";
+    my $HeadingsLevel      = undef;
     my $HeadingsLevelStart = undef;
-    my $count         = 0;
+    my $count              = 0;
 
     # try to determine what will end up as a header
-    foreach $line ( grep( /^\=+.*\=+[ \t]*$/, split( /\n/, $page ) ) ) {
+    foreach $line (grep(/^\=+.*\=+[ \t]*$/, split(/\n/, $page))) {
         next unless $line =~ /^(\=+)[ \t]*(.*?)[ \t]*\=+[ \t]*$/;
         my $depth = length($1);
         my $text  = $2;
         next unless $text;
         my $link = UrlEncode($text);
         $text = QuoteHtml($text);
-	if (not defined $HeadingsLevelStart) {
-	  # $HeadingsLevel is set to $depth - 1 so that we get an opening of the list.
-	  # We need $HeadingsLevelStart to close all open tags at the end.
-	  $HeadingsLevel = $depth - 1;
-	  $HeadingsLevelStart = $depth - 1;
-	}
+        if (not defined $HeadingsLevelStart) {
+
+    # $HeadingsLevel is set to $depth - 1 so that we get an opening of the list.
+    # We need $HeadingsLevelStart to close all open tags at the end.
+            $HeadingsLevel      = $depth - 1;
+            $HeadingsLevelStart = $depth - 1;
+        }
         $count++;
 
-	# if the first subheading is has depth 2, then
-	# $HeadingsLevelStart is 1, and later subheadings may not be
-	# at level 1 or below.
+        # if the first subheading is has depth 2, then
+        # $HeadingsLevelStart is 1, and later subheadings may not be
+        # at level 1 or below.
         $depth = $HeadingsLevelStart + 1 if $depth <= $HeadingsLevelStart;
         $depth = 6 if $depth > 6;
 
-	# the order of the three expressions is important!
-	while ( $HeadingsLevel > $depth ) {
-	  $Headings .= '</li></ol>';
-	  $HeadingsLevel--;
-	}
-	if ($HeadingsLevel == $depth) {
-	  $Headings .= '</li><li>';
-	}
-        while ( $HeadingsLevel < $depth ) {
+        # the order of the three expressions is important!
+        while ($HeadingsLevel > $depth) {
+            $Headings .= '</li></ol>';
+            $HeadingsLevel--;
+        }
+        if ($HeadingsLevel == $depth) {
+            $Headings .= '</li><li>';
+        }
+        while ($HeadingsLevel < $depth) {
             $Headings .= '<ol><li>';
             $HeadingsLevel++;
         }
         $Headings .= "<a href=\"#$link\">$text</a>";
     }
 
-    while ( $HeadingsLevel > $HeadingsLevelStart ) {
+    while ($HeadingsLevel > $HeadingsLevelStart) {
         $Headings .= '</li></ol>';
         $HeadingsLevel--;
     }
