@@ -83,13 +83,13 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.54 2003/05/08 20:46:21 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.55 2003/05/17 01:50:35 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
 $LogoUrl     = '';  # URL for site logo ('' for no logo)
-$NewText     = '';  # New page text ('' for default message)
 $NotFoundPg  = '';  # Page for not-found links ('' for blank pg)
+$NewText     = 'Describe the new page here.';  # New page text
 
 # Header and Footer, Notes, GotoBar
 $EmbedWiki   = 0;   # 1 = no headers/footers
@@ -1120,7 +1120,7 @@ sub BrowsePage {
     my $referers = &RefererTrack($id);
     print $q->hr() . $referers if $referers;
   }
-  print &GetFooter($id, $goodRevision);
+  &PrintFooter($id, $goodRevision);
 }
 
 sub ReBrowsePage {
@@ -1568,7 +1568,7 @@ EOF
       print "<tr><td align='center'><input type='submit' value='$label'/></td></table></form><hr>";
       &PrintHtmlDiff( 1, $id, '', '', $newText );
    }
-  print &GetFooter($id, 'history');
+  &PrintFooter($id, 'history');
 }
 
 sub GetHistoryLine {
@@ -1818,13 +1818,14 @@ EOT
   return $html;
 }
 
-sub GetFooter {
+sub PrintFooter {
   my ($id, $rev) = @_;
   if (&GetParam('embed', $EmbedWiki)) {
-    return $q->end_html;
+    print $q->end_html;
+    return;
   }
-  my $result = '<div class="footer">';
-  $result .= $q->hr() . &GetGotoBar($id);
+  print '<div class="footer">';
+  print $q->hr() . &GetGotoBar($id);
   # other revisions
   my $revisions;
   if ($id and $rev ne 'history' and $rev ne 'edit') {
@@ -1847,36 +1848,41 @@ sub GetFooter {
     $revisions .= ' | ' if $revisions;
     $revisions .= &GetPageLink($id, T('View current revision'));
   }
-  $result .= $q->br() . $revisions  if $revisions;
+  print $q->br() . $revisions  if $revisions;
   # time stamps
   if ($id and $rev ne 'history' and $rev ne 'edit') {
-    $result .= $q->br();
+    print $q->br();
     if ($rev eq '') {		# Only for most current rev
-      $result .= T('Last edited');
+      print T('Last edited');
     } else {
-      $result .= T('Edited');
+      print T('Edited');
     }
-    $result .= ' ' . &TimeToText($Section{ts});
+    print ' ' . &TimeToText($Section{ts});
     if ($UseDiff) {
-      $result .= ' ' . &ScriptLinkDiff(1, $id, T('(diff)'), $rev);
+      print ' ' . &ScriptLinkDiff(1, $id, T('(diff)'), $rev);
     }
   }
   # search
-  $result .= $q->br() . &GetSearchForm();
+  print $q->br() . &GetSearchForm();
   if ($DataDir =~ m|/tmp/|) {
-    $result .= $q->br() . $q->strong(T('Warning') . ': ')
+    print $q->br() . $q->strong(T('Warning') . ': ')
       . Ts('Database is stored in temporary directory %s', $DataDir);
   }
   if ($FooterNote ne '') {
-    $result .= T($FooterNote);  # Allow local translations
+    print T($FooterNote);  # Allow local translations
   }
   if (GetParam('validate', $ValidatorLink)) {
-    $result .= $q->p(&GetValidatorLink());
+    print $q->p(&GetValidatorLink());
   }
   if (&GetParam('time',0)) {
-    $result .= $q->p(Ts('%s seconds', (time - $Now)));
+    print $q->p(Ts('%s seconds', (time - $Now)));
   }
-  return $result . '</div>' . $q->end_html;
+  print '</div>';
+  eval {
+    local $SIG{__DIE__};
+    &PrintMyContent();
+  };
+  print  $q->end_html;
 }
 
 sub GetFormStart {
@@ -2193,12 +2199,7 @@ sub OpenNewSection {
 sub OpenNewText {
   my ($name) = @_;  # Name of text (usually 'default')
   %Text = ();
-  # Later consider translation of new-page message? (per-user difference?)
-  if ($NewText ne '') {
-    $Text{'text'} = T($NewText);
-  } else {
-    $Text{'text'} = T('Describe the new page here.') . "\n";
-  }
+  $Text{'text'} = T($NewText);
   $Text{'text'} .= "\n"  if (substr($Text{'text'}, -1, 1) ne "\n");
   $Text{'minor'} = 0;      # Default as major edit
   $Text{'newauthor'} = 1;  # Default as new author
@@ -2609,7 +2610,7 @@ sub DoUnlock {
   } else {
     print $q->p(T('No unlock required.'));
   }
-  print &GetFooter();
+  &PrintFooter();
 }
 
 # == File operations
@@ -2819,7 +2820,7 @@ sub DoEdit {
     } else {
       print $q->p(Ts('Editing not allowed: %s is read-only.', $SiteName));
     }
-    print &GetFooter();
+    &PrintFooter();
     return;
   }
   &OpenPage($id);
@@ -2921,7 +2922,7 @@ sub DoEdit {
     &PrintWikiToHTML($oldText, 'preview');
     print $q->hr(), $q->h2(T('Preview only, not yet saved')), '</div>';
   }
-  print &GetFooter($id, 'edit');
+  &PrintFooter($id, 'edit');
 }
 
 sub GetTextArea {
@@ -2970,13 +2971,13 @@ sub DoPassword {
   } else {
     print $q->p(T('This site does not use admin or editor passwords.'));
   }
-  print &GetFooter();
+  &PrintFooter();
 }
 
 sub UserIsEditorOrError {
   if (!&UserIsEditor()) {
     print $q->p(T('This operation is restricted to site editors only...'));
-    print &GetFooter();
+    &PrintFooter();
     return 0;
   }
   return 1;
@@ -2985,7 +2986,7 @@ sub UserIsEditorOrError {
 sub UserIsAdminOrError {
   if (!&UserIsAdmin()) {
     print $q->p(T('This operation is restricted to administrators only...'));
-    print &GetFooter();
+    &PrintFooter();
     return 0;
   }
   return 1;
@@ -3066,7 +3067,7 @@ sub DoIndex {
   print &GetHeader('', T('Index of all pages'), '');
   print '<br>';
   &PrintPageList(&AllPagesList());
-  print &GetFooter();
+  &PrintFooter();
 }
 
 # == Searching ==
@@ -3084,7 +3085,7 @@ sub DoSearch {
   } else {
     &PrintPageList(&SearchTitleAndBody($string));
   }
-  print &GetFooter();
+  &PrintFooter();
 }
 
 sub SearchTitleAndBody {
@@ -3177,7 +3178,7 @@ sub DoLinks {
   print "<pre>\n\n\n\n\n";  # Extra lines to get below the logo
   &PrintLinkList(&GetFullLinkList());
   print "</pre>\n";
-  print &GetFooter();
+  &PrintFooter();
 }
 
 sub PrintLinkList {
@@ -3311,7 +3312,7 @@ sub DoPrintAllPages {
   print &GetHeader('', T('Complete Content'), '')
     . $q->p(Ts('The main page is %s.', $q->a({-href=>'#' . $HomePage}, $HomePage)));
   &PrintAllPages(&AllPagesList());
-  print &GetFooter();
+  &PrintFooter();
 }
 
 sub PrintAllPages {
@@ -3381,8 +3382,8 @@ sub DoPost {
   $pgtime = $Section{'ts'};
   $preview = 0;
   $preview = 1  if (&GetParam('Preview', '') ne '');
-  if (!$preview && ($old eq $string)) {  # No changes (ok for preview)
-    &ReleaseLock();
+  if (!$preview && ($old eq $string or ($oldrev == 1 and $string eq $NewText))) {
+    &ReleaseLock(); # No changes
     &ReBrowsePage($id, '', 1);
     return;
   }
@@ -3531,7 +3532,7 @@ sub DoMaintain {
       print $q->p(T('Maintenance not done.') . ' '
 		  . T('(Maintenance can only be done once every 12 hours.)')
 		  . ' ', T('Remove the "maintain" file or wait.'));
-      print &GetFooter();
+      &PrintFooter();
       return;
     }
   }
@@ -3586,7 +3587,7 @@ sub DoMaintain {
   &WriteStringToFile($fname, 'Maintenance done at ' . &TimeToText($Now));
   &ReleaseLock();
   print $q->p(T('Main lock released.'));
-  print &GetFooter();
+  &PrintFooter();
 }
 
 sub DoConvert {
@@ -3609,7 +3610,7 @@ sub DoConvert {
   print '</p>';
   &ReleaseLock();
   print $q->p(T('Main lock released.'));
-  print &GetFooter();
+  &PrintFooter();
 }
 
 sub ConvertFile {
@@ -3718,7 +3719,7 @@ sub DoEditLock {
   } else {
     print $q->p(T('Edit lock removed.'));
   }
-  print &GetFooter();
+  &PrintFooter();
 }
 
 sub DoPageLock {
@@ -3743,7 +3744,7 @@ sub DoPageLock {
   } else {
     print $q->p(Ts('Lock for %s removed.', $id));
   }
-  print &GetFooter();
+  &PrintFooter();
 }
 
 # == Banning ==
@@ -3765,7 +3766,7 @@ sub DoEditBanned {
 	      . T('^123\.21\.3\. (blocks whole 123.21.3.* IP network)'));
   print &GetTextArea('banlist', $banList, 12, 50);
   print $q->p($q->submit(-name=>T('Save')));
-  print &GetFooter();
+  &PrintFooter();
 }
 
 sub DoUpdateBanned {
@@ -3784,7 +3785,7 @@ sub DoUpdateBanned {
     &WriteStringToFile($fname, $newList);
     print $q->p(T('Updated banned list'));
   }
-  print &GetFooter();
+  &PrintFooter();
 }
 
 # == Version ==
@@ -3792,7 +3793,7 @@ sub DoUpdateBanned {
 sub DoShowVersion {
   print &GetHeader('', T('Displaying Wiki Version'), '');
   print $WikiDescription;
-  print &GetFooter();
+  &PrintFooter();
 }
 
 # == Maintaining a list of recent visitors plus surge protection ==
@@ -3902,7 +3903,7 @@ sub DoShowVisitors {
     print ', ', $str, '</li>';
   }
   print '</ul>';
-  print &GetFooter();
+  &PrintFooter();
 }
 
 # == Track Back ==
