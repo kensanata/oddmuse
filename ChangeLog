@@ -1,3 +1,8 @@
+2004-07-05  Alex Schroeder  <alex@confusibombus>
+
+	* modules/usemod.pl (NewUsemodInitVariables): Bugfix -- call
+	OldUsemodInitVariables().
+
 2004-07-05  Nikolay A. Fetisov  <naf@monsy.mpei.ac.ru>
 
 	* wiki.pl (InitVariables, ApplyRules, PrintJournal, OpenPage):
