@@ -276,7 +276,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.272 2003/11/27 16:24:12 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.273 2003/11/27 22:34:55 as Exp $');
 }
 
 sub InitCookie {
@@ -1494,7 +1494,6 @@ sub GetRcRss {
   my $quotedFullUrl = QuoteHtml($FullUrl);
   my $diffPrefix = $quotedFullUrl . QuoteHtml("?action=browse;diff=1;id=");
   my $historyPrefix = $quotedFullUrl . QuoteHtml("?action=history;id=");
-  my $quotedSiteDescription = QuoteHtml($SiteDescription);
   my ($sec, $min, $hour, $mday, $mon, $year) = gmtime($Now);
   $year += 1900;
   my $date = sprintf( "%4d-%02d-%02dT%02d:%02d:%02d+00:00",
@@ -1508,7 +1507,7 @@ sub GetRcRss {
   $rss->channel(
     title         => QuoteHtml($SiteName),
     link          => $quotedFullUrl . QuoteHtml("?$RCName"),
-    description   => $quotedSiteDescription,
+    description   => QuoteHtml($SiteDescription),
     dc => {
       publisher   => $RssPublisher,
       contributor => $RssContributor,
@@ -1537,34 +1536,20 @@ sub GetRcRss {
       $year += 1900;
       my $date = sprintf( "%4d-%02d-%02dT%02d:%02d:%02d+00:00",
 	$year, $mon+1, $mday, $hour, $min, $sec);
-      my ($description, $author);
-      if ($summary ne '') {
-	$description = QuoteHtml($summary);
-      }
-      if( $userName ) {
-	$author = QuoteHtml($userName);
-      } else {
-	$author = $host;
-      }
-      my $status = (1 == $revision) ? 'new' : 'updated';
-      my $importance = $minor ? 'minor' : 'major';
-      my $link = $quotedFullUrl
-	. '?' . GetPageParameters('browse', $pagename, $revision, $cluster);
-      my %wiki = ( status      => $status,
-		   importance  => $importance,
+      my $author = QuoteHtml($userName);
+      $author = $host unless $author;
+      my %wiki = ( status      => (1 == $revision) ? 'new' : 'updated',
+		   importance  => $minor ? 'minor' : 'major',
 		   version     => $revision,
 		   history     => $historyPrefix . $pagename, );
       $wiki{diff} = $diffPrefix . $pagename if $UseDiff and GetParam('diffrclink', 1);
-      $rss->add_item(
-        title         => QuoteHtml($name),
-	link          => $link,
-	description   => $description,
-	dc => {
-          date        => $date,
-	  contributor => $author,
-	},
-	wiki => \%wiki,
-      );
+      $rss->add_item( title        => QuoteHtml($name),
+		      link         => $quotedFullUrl . '?'
+		      . GetPageParameters('browse', $pagename, $revision, $cluster),
+		      description  => QuoteHtml($summary),
+		      dc => { date        => $date,
+			      contributor => $author, },
+		      wiki => \%wiki, );
     },
     # RC Lines
     @_;
@@ -2797,7 +2782,7 @@ sub DoSearch {
 			   Ts('View changes for these pages')));
   }
   if (GetParam('context',1)) {
-    PrintSearchResults($string,SearchTitleAndBody($string)) ;
+    PrintSearchResults($string,SearchTitleAndBody($string));
   } else {
     PrintPageList(SearchTitleAndBody($string));
   }
@@ -2855,7 +2840,7 @@ sub PrintSearchResults {
     $pageText =~ s/$FS//g;	# Remove separators (paranoia)
     $pageText =~ s/[\s]+/ /g;	#  Shrink whitespace
     $pageText =~ s/([-_=\\*\\.]){10,}/$1$1$1$1$1/g ; # e.g. shrink "----------"
-    my $htmlre = join('|',(@HtmlTags, 'pre', 'nowiki', 'code'));
+    my $htmlre = join('|',(@HtmlTags, 'pre', 'nowiki', 'code', 'rss'));
     $pageText =~ s/\<\/?($htmlre)(\s[^<>]+?)?\>//gi;
     #  entry header
     print '<p>' . $q->span({-class=>'result'}, GetPageLink($name)), $q->br();
@@ -2867,7 +2852,7 @@ sub PrintSearchResults {
       my $j = index($pageText, ' ', $snippetlen); # end on word boundary
       my $t = substr($pageText, 0, $j);
       $t =~ s/($searchstring)/<strong>$1<\/strong>/gi;
-      print $t, ' ', $q->b('...');
+      print $t, ' . . .';
       $pageText = substr($pageText, $j); # to avoid rematching
       # search for occurrences of searchstring
       my $jsnippet = 0 ;
@@ -2882,7 +2867,7 @@ sub PrintSearchResults {
 	  $t = substr($pageText, $start, $end-$start);
 	  # highlight occurrences and tack on to output stream.
 	  $t =~ s/($searchstring)/<strong>$1<\/strong>/gi;
-	  print $t, ' ', $q->b('...');
+	  print $t, ' . . .';
 	  # truncate text to avoid rematching the same string.
 	  $pageText = substr($pageText, $end);
 	}
