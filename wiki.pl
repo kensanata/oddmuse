@@ -207,7 +207,7 @@ div.sister p { margin-top:0; }
 div.sister img { border:none; }
 div.near { background-color:#EFE; }
 div.near p { margin-top:0; }
-\@media print {
+@media print {
  body { font:12pt sans-serif; }
  a, a:link, a:visited { color:#000; text-decoration:none; font-style:oblique; }
  h1 a, h2 a, h3 a, h4 a { font-style:normal; }
@@ -348,7 +348,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.454 2004/09/06 21:52:15 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.455 2004/09/14 23:43:11 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
