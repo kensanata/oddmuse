@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.5 2004/12/20 04:35:06 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.6 2004/12/20 05:43:37 as Exp $</p>';
 
 my $NamespacesInit = 0;
 my $NamespacesMain = 'Main'; # to get back to the main namespace
@@ -37,6 +37,7 @@ sub NewNamespacesInitVariables {
       }
     }
   }
+  $NamespaceCurrent = '';
   if (($UsePathInfo and not $NamespacesInit
        # make sure ordinary page names are not matched!
        and $q->path_info() =~ m|^/($InterSitePattern)(/.*)?|
@@ -45,7 +46,7 @@ sub NewNamespacesInitVariables {
       or
       (GetParam('ns', '') =~ m/^($InterSitePattern)$/
        and ($1 ne $NamespacesMain))) {
-    my ($NamespaceCurrent, $rest) = ($1, $2);
+    $NamespaceCurrent = $1;
     $NamespacesInit = 1;
     # Change some stuff from the original InitVariables call:
     $SiteName   .= ' ' . $NamespaceCurrent;
@@ -75,20 +76,32 @@ sub NewNamespacesInitVariables {
     CreateDir($DataDir); # Create directory if it doesn't exist
     ReportError(Ts('Could not create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR')
       unless -d $DataDir;
+  }
+}
+
+*OldNamespaceDoRc = *DoRc;
+*DoRc = *NewNamespaceDoRc;
+
+sub NewNamespaceDoRc {
+  if ($NamespaceCurrent) {
+    return OldNamespaceDoRc(@_);
   } else {
-    $Action{rc} = \&NamespaceBrowseRc;
+    my $GetRC = shift;
+    if ($GetRC eq \&GetRcHtml) {
+      return NamespaceBrowseRc();
+    } else {
+      return OldNamespaceDoRc($GetRC, @_);
+    }
   }
 }
 
 sub NamespaceBrowseRc {
-  print GetHeader('', T('Recent Changes for All Namespaces'), '');
   RcHeader();
   print NamespaceInternalRc(GetParam('limit',100));
   print GetFilterForm();
-  PrintFooter();
 }
 
-sub NamespaceInternalRc {
+sub NamespaceInternalRc { # code taken from RSS(), maybe refactoring would be possible, but tricky.
   my $maxitems = shift;
   my %lines;
   eval { require XML::RSS;  } or return $q->div({-class=>'rss'},
