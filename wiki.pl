@@ -274,7 +274,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.196 2003/10/14 22:09:19 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.197 2003/10/14 22:39:25 as Exp $');
 }
 
 sub InitCookie {
@@ -2965,7 +2965,8 @@ sub DoSearch {
   } else {
     print GetHeader('', QuoteHtml(Ts('Search for: %s', $string)), '');
     $ReplaceForm = UserIsAdmin(); # only show on new searches for admins
-  }
+    print $q->p(ScriptLink('action=rc;rcfilteronly=' . UrlEncode($string),
+			   Ts('View changes for these pages'))); }
   if (GetParam('context',1)) {
     PrintSearchResults($string,SearchTitleAndBody($string)) ;
   } else {
