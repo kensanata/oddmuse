@@ -8,6 +8,7 @@
 	attribute.
 	(BrowsePage): The hr before referers is not added here.
 	(RefererTrack): Add the hr here.
+	(GetGotoBar): Use FreeToNormal on the link.
 
 2003-06-08  Alex Schroeder  <alex@gnu.org>
 
