@@ -58,7 +58,7 @@ $RefererFilter $PermanentAnchorsFile $PermanentAnchors @MyRules
 %CookieParameters $NewComment $StyleSheetPage @UserGotoBarPages
 $ConfigPage $ScriptName @MyMacros $CommentsPrefix $AllNetworkFiles
 $UsePathInfo $UploadAllowed @UploadTypes $LastUpdate $PageCluster
-%RssInterwikiTranslate $UseCache $ModuleDir
+%RssInterwikiTranslate $UseCache $ModuleDir $HtmlHeaders
 %InvisibleCookieParameters);
 
 # Other global variables:
@@ -154,26 +154,27 @@ $RecentLink  = 1;   # 1 = link to usernames
 $PageCluster = '';  # name of cluster page, eg. 'Cluster' to enable
 
 # RSS and other Weblog Technology
-$InterWikiMoniker = '';    # InterWiki prefix for this wiki for RSS
-$SiteDescription  = '';    # RSS Description of this wiki
-$RssImageUrl      = '';    # URL to image to associate with your RSS feed
-$RssPublisher     = '';    # Name of RSS publisher
-$RssContributor   = '';    # List or description of the contributors
-$RssRights        = '';    # Copyright notice for RSS
+$InterWikiMoniker = ''; # InterWiki prefix for this wiki for RSS
+$SiteDescription  = ''; # RSS Description of this wiki
+$RssImageUrl      = ''; # URL to image to associate with your RSS feed
+$RssPublisher     = ''; # Name of RSS publisher
+$RssContributor   = ''; # List or description of the contributors
+$RssRights        = ''; # Copyright notice for RSS
 
 # File uploads
-$UploadAllowed    = 0;     # 1 = yes, 0 = administrators only
+$UploadAllowed    = 0;  # 1 = yes, 0 = administrators only
 @UploadTypes      = ('image/jpeg', 'image/png'); # MIME types allowed
 
 # Header and Footer, Notes, GotoBar
-$EmbedWiki   = 0;   # 1 = no headers/footers
-$FooterNote  = '';  # HTML for bottom of every page
-$EditNote    = '';  # HTML notice above buttons on edit page
-$TopLinkBar  = 1;   # 1 = add a goto bar at the top of the page
+$EmbedWiki   = 0;       # 1 = no headers/footers
+$FooterNote  = '';      # HTML for bottom of every page
+$EditNote    = '';      # HTML notice above buttons on edit page
+$TopLinkBar  = 1;       # 1 = add a goto bar at the top of the page
 @UserGotoBarPages = (); # List of pagenames
-$UserGotoBar = '';  # HTML added to end of goto bar
-$ValidatorLink = 0; # 1 = Link to the W3C HTML validator service
-$CommentsPrefix = ''; # prefix for comment pages, eg. 'Comments_on_' to enable
+$UserGotoBar = '';      # HTML added to end of goto bar
+$ValidatorLink = 0;     # 1 = Link to the W3C HTML validator service
+$CommentsPrefix = '';   # prefix for comment pages, eg. 'Comments_on_' to enable
+$HtmlHeaders = '';      # Additional stuff to put in the HTML <head> section
 
 # Display short comments below the GotoBar for special days
 # Example: %SpecialDays = ('1-1' => 'New Year', '1-2' => 'Next Day');
@@ -297,7 +298,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.323 2004/02/20 20:22:16 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.324 2004/02/21 14:25:02 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1956,7 +1957,7 @@ EOT
     . $ScriptName . '?action=rss">';
   # finish
   $html = qq(<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">\n<html>)
-    . $q->head($q->title($q->escapeHTML($title)) . $html)
+    . $q->head($q->title($q->escapeHTML($title)) . $html . $HtmlHeaders)
     . '<body class="' . GetParam('theme', $q->url()) . '">';
   return $html;
 }
