@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.3 2004/10/10 15:06:39 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.4 2004/10/10 15:39:16 as Exp $</p>';
 
 $Action{journal} = \&DoJournalRss;
 
@@ -29,16 +29,16 @@ $Action{journal} = \&DoJournalRss;
 sub DoJournalRss {
   return if $CollectingJournal; # avoid infinite loops
   local $CollectingJournal = 1;
-  my $num = GetParam('num', 10);
-  my $regexp = GetParam('regexp', '^\d\d\d\d-\d\d-\d\d');
-  my $mode = GetParam('mode', '');
-  my @pages = (grep(/$regexp/, AllPagesList()));
+  my $num = GetParam('rsslimit', 10);
+  my $match = GetParam('match', '^\d\d\d\d-\d\d-\d\d');
+  my $reverse = GetParam('reverse', 0);
+  my @pages = (grep(/$match/, AllPagesList()));
   if (defined &JournalSort) {
     @pages = sort JournalSort @pages;
   } else {
     @pages = sort {$b cmp $a} @pages;
   }
-  if ($mode eq 'reverse') {
+  if ($reverse) {
     @pages = reverse @pages;
   }
   @pages = @pages[0 .. $num - 1] if $#pages >= $num;
