@@ -1,3 +1,7 @@
+2003-03-26  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoHistory): Removed extra <tr>.
+
 2003-03-25  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetHtmlHeader): New classes.
