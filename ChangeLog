@@ -1,3 +1,8 @@
+2004-12-27  Alex Schroeder  <alex@gnu.org>
+
+	* modules/search-freetext.pl (SearchFreeTextIndex): Take HTML tags
+	out of the text.
+
 2004-12-27  Alex Schroeder  <alex@confusibombus.emacswiki.org>
 
 	* wiki.pl (RSS): Add RFC 822 Parsing for RSS 2.0.
