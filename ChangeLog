@@ -1,3 +1,11 @@
+2004-11-26  Alex Schroeder  <alex@gnu.org>
+
+	* modules/despam.pl (DespamPages): Only check files mentioned in
+	rc.log.
+	(DoDespam): Added list parameter.
+	(DespamPages): Added days parameter.
+	(DespamPage): Added debug parameter.
+
 2004-11-25  Alex Schroeder  <alex@confusibombus.emacswiki.org>
 
 	* modules/toc.pl (TocHeadings, TocWikiHeading): Use FreeToNormal
