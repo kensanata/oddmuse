@@ -45,7 +45,7 @@ use vars qw(@RcDays @HtmlTags
   $EditPass $NetworkFile $BracketWiki $FreeLinks $WikiLinks
   $FreeLinkPattern $RCName $RunCGI $ShowEdits $LinkPattern
   $InterLinkPattern $InterSitePattern $UrlProtocols $UrlPattern
-  $ImageExtensions $RFCPattern $ISBNPattern $FS $FS1 $FS2 $FS3
+  $ImageExtensions $RFCPattern $ISBNPattern $FS $FS0 $FS1 $FS2 $FS3
   $CookieName $SiteBase $StyleSheet $NotFoundPg $FooterNote $EditNote
   $MaxPost $NewText $HttpCharset $UserGotoBar $VisitorTime
   $VisitorFile $Visitors %Smilies %SpecialDays $InterWikiMoniker
@@ -58,7 +58,8 @@ use vars qw(@RcDays @HtmlTags
 use vars qw(%Page %Section %Text %InterSite %KeptRevisions
   %IndexHash %Translate %OldCookie %NewCookie $InterSiteInit
   $FootnoteNumber $MainPage $OpenPageName @KeptList @IndexList
-  $IndexInit $Debug $q $Now $ScriptName %RecentVisitors @HtmlStack);
+  $IndexInit $Debug $q $Now $ScriptName %RecentVisitors @HtmlStack
+  $FS0used);
 
 # == Configuration ==
 
@@ -81,7 +82,7 @@ $HttpCharset = '';  # Charset for pages, default is ISO-8859-1
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.16 2003/03/26 22:55:50 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.17 2003/03/28 19:50:04 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -221,7 +222,8 @@ sub InitLinkPatterns {
   # Allow uses to call this from their config file, so do not run twice.
   return if $FS;
   # Field separators are used in the URL-style patterns below.
-  $FS  = "\xb3";      # The FS character is a superscript "3"
+  $FS  = "\x1e";      # The FS character is the RECORD SEPARATOR control char in ASCII
+  $FS0 = "\xb3";      # The old FS character is a superscript "3" in Latin-1
   $FS1 = $FS . '1';   # The FS values are used to separate fields
   $FS2 = $FS . '2';   # in stored hashtables and other data structures.
   $FS3 = $FS . '3';   # The FS character is not allowed in user data.
@@ -1898,11 +1900,7 @@ sub GetSearchForm {
 }
 
 sub GetValidatorLink {
-  my $uri = &QuoteHtml('http://'
-		       . $q->server_name() . ':'
-		       . $q->server_port()
-		       . $q->script_name()
-		       . $q->path_info());
+  my $uri = &QuoteHtml($q->self_url);
   return $q->a({-href => 'http://validator.w3.org/check?uri=' . $uri},
 	       T('Validate HTML'))
     . ' '
@@ -2615,6 +2613,10 @@ sub ReadFile {
   if (open(IN, "<$fileName")) {
     $data=<IN>;
     close IN;
+    if ($data =~ /$FS0/ and $data !~ /$FS/) {
+      $data =~ s/$FS0/$FS/go;
+      $FS0used = 1;
+    }
     return (1, $data);
   }
   return (0, '');
@@ -3505,33 +3507,41 @@ sub UpdateDiffs {
 sub DoMaintain {
   my ($name, $fname, @rc, @temp, $starttime, $days, $status, $data, $i, $ts);
   print &GetHeader('', T('Maintenance on all pages'), '');
-  print '<br>';
   $fname = "$DataDir/maintain";
   if (!&UserIsAdmin()) {
     if ((-f $fname) && ((-M $fname) < 0.5)) {
-      print T('Maintenance not done.'), ' ';
-      print T('(Maintenance can only be done once every 12 hours.)');
-      print ' ', T('Remove the "maintain" file or wait.');
+      print $q->p(T('Maintenance not done.') . ' '
+		  . T('(Maintenance can only be done once every 12 hours.)')
+		  . ' ', T('Remove the "maintain" file or wait.'));
       print &GetCommonFooter();
       return;
     }
   }
   &RequestLock() or die(T('Could not get main lock'));
+  print $q->p(T('Main lock obtained.'));
+  print '<p>' . T('Expiring keep files and deleting pages marked for deletion');
   # Expire all keep files
   foreach $name (&AllPagesList()) {
-    &OpenPage($name);
-    &OpenDefaultText();
+    print $q->br();
     print '.... '  if ($name =~ m|/|);
     print &GetPageLink($name);
+    $FS0used = 0;
+    &OpenPage($name);
+    if ($FS0used) {
+      print ' ' . T('converting to new field separator');
+      &SavePage(1);
+    }
+    &OpenDefaultText();
     my $delete = &PageDeletable($name);
     if ($delete) {
       &DeletePage($OpenPageName, 1, 1);
-      print ' deleted';
+      print ' ' . T('deleted');
     } else {
-      &ExpireKeepFile();
+      &ExpireKeepFile(); # deals with changing $FS
     }
-    print "<br>\n";
   }
+  print '</p>';
+  print $q->p(Ts('Moving part of the %s log file.', $RCName));
   # Determine the number of days to go back
   $days = 0;
   foreach (@RcDays) {
@@ -3539,31 +3549,48 @@ sub DoMaintain {
   }
   $starttime = $Now - $days * 24 * 60 * 60;
   # Read the current file
-  ($status, $data) = &ReadFile($RcFile);
+  ($status, $data) = &ReadFile($RcFile); # $FS and $FS0 may be mixed!
   if (!$status) {
-    print '<p><strong>' . Ts('Could not open %s log file', $RCName)
-      . ":</strong> $RcFile<p>"
-      . T('Error was') . ":\n<pre>$!</pre>\n" . '<p>'
-      . T('Note: This error is normal if no changes have been made.') . "\n";
+    print $q->p($q->strong(Ts('Could not open %s log file', $RCName) . ':') . ' '
+		. $RcFile)
+      . $q->p(T('Error was') . ':')
+      . $q->pre($!)
+      . $q->p(T('Note: This error is normal if no changes have been made.'));
   }
   # Move the old stuff from rc to temp
   @rc = split(/\n/, $data);
+  foreach (@rc) {
+    /$FS0/ and !/$FS/ and s/$FS0/$FS/ or last;
+  }
   for ($i = 0; $i < @rc ; $i++) {
     ($ts) = split(/$FS3/, $rc[$i]);
     last if ($ts >= $starttime);
   }
+  print $q->p(Ts('Moving %s log entries.', $i));
   @temp = splice(@rc, 0, $i);
-  # Write new files, and backups
-  if (!open(OUT, ">>$RcOldFile")) {
-    die(Ts('%s log error:', $RCName) . " $!");
+  # Perhaps need to convert $RcOldFile, too.  Test by just reading the first line.
+  if (open(IN, "$RcOldFile")) {
+    my $line = <IN>;
+    close(IN);
+    if ($line =~ /$FS0/ and $line !~ /$FS/) {
+      print $q->p(Ts('Converting the old %s log file to the new field separator.', $RCName));
+      my $old_data;
+      ($status, $old_data) = &ReadFile($RcOldFile);
+      if ($status) {
+	&WriteStringToFile($RcOldFile . '.old', $old_data);
+	$old_data =~ s/$FS0/$FS/go;
+	&WriteStringToFile($RcOldFile, $old_data);
+      }
+    }
   }
-  print OUT  join("\n",@temp) . "\n";
-  close(OUT);
+  # Write new files, and backups
+  &AppendStringToFile($RcOldFile, join("\n",@temp) . "\n");
   &WriteStringToFile($RcFile . '.old', $data);
   &WriteStringToFile($RcFile, join("\n",@rc) . "\n");
   # Write timestamp
   &WriteStringToFile($fname, 'Maintenance done at ' . &TimeToText($Now));
   &ReleaseLock();
+  print $q->p(T('Main lock released.'));
   print &GetCommonFooter();
 }
 
