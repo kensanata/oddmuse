@@ -1,8 +1,9 @@
-# $Id: page-trail.pl,v 1.3 2004/01/25 21:02:41 as Exp $
+# $Id: page-trail.pl,v 1.4 2004/01/25 21:04:44 as Exp $
 
 my $PageTrailLength = 10;
 
 $CookieParameters{trail} = '';
+$InvisibleCookieParameters{trail} = 1;
 my @PageTrail;
 
 *OldBrowsePage = *BrowsePage;

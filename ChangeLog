@@ -1,3 +1,8 @@
+2004-01-25  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (%InvisibleCookieParameters): New option.
+	(Cookie): Use it.
+
 2004-01-24  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoUnlock, PrintSearchResultEntry): Use extra
