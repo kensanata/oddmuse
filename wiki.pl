@@ -32,6 +32,7 @@
 
 package OddMuse;
 use strict;
+use bytes;
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
@@ -249,7 +250,6 @@ sub InitRequest {
   $CGI::POST_MAX = $MaxPost;
   $q = new CGI;
   $q->charset($HttpCharset) if $HttpCharset;
-  binmode(STDOUT, ":utf8") if $^V ge v5.8.0 and $HttpCharset eq 'UTF-8';
 }
 
 sub InitVariables {    # Init global session variables for mod_perl!
@@ -288,7 +288,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.299 2004/01/06 03:35:46 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.300 2004/01/08 19:42:17 as Exp $');
 }
 
 sub InitCookie {
@@ -377,7 +377,6 @@ sub ApplyRules {
   my ($text, $locallinks, $withanchors, $revision) = @_;
   NearInit() unless $NearSiteInit;
   $text =~ s/\r\n/\n/g; # DOS to Unix
-  my $state = ''; # quote, list, or normal ('')
   local $Fragment = ''; # the clean HTML fragment not yet on @Blocks
   local @Blocks;  # the list of cached HTML blocks
   local @Flags;   # a list for each block, 1 = dirty, 0 = clean
@@ -2136,14 +2135,8 @@ sub ImproveDiff { # called within a diff lock
 sub DiffMarkWords {
   my $old = DiffStripPrefix(shift);
   my $new = DiffStripPrefix(shift);
-  my $oldwords = join("\n",split(/\s+/,$old));
-  my $newwords = join("\n",split(/\s+/,$new));
-  open(A,">$TempDir/a");
-  open(B,">$TempDir/b");
-  print A $oldwords;
-  print B $newwords;
-  close(A);
-  close(B);
+  WriteStringToFile("$TempDir/a", join("\n",split(/\s+/,$old)));
+  WriteStringToFile("$TempDir/b", join("\n",split(/\s+/,$new)));
   my $diff = `diff $TempDir/a $TempDir/b`;
   my $offset = 0; # for every chunk this increases
   while ($diff =~ /^(\d+),?(\d*)([adc])(\d+),?(\d*)$/mg) {
