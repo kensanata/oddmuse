@@ -350,7 +350,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.469 2004/10/17 14:50:21 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.470 2004/10/19 16:33:15 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1039,8 +1039,8 @@ sub GetDownloadLink {
   my $id = FreeToNormal($name);
   AllPagesList();
   # if the page does not exist
-  return '[' . ($image ? 'image' : 'link') . ':' . $name
-    . GetEditLink($id, '?', 1) . ']' unless $IndexHash{$id};
+  return '[' . ($image ? T('image') : T('download')) . ':' . $name
+    . ']' . GetEditLink($id, '?', 1) unless $IndexHash{$id};
   my $action;
   if ($revision) {
     $action = "action=download;id=" . UrlEncode($id) . ";revision=$revision";
