@@ -1,0 +1,58 @@
+#!/usr/bin/perl
+# Based on umtrans.pl version 1.0 (April 8, 2001) by Clifford Adams.
+# Extracts translation strings from wiki script and extensions.
+
+use Getopt::Std;
+$Getopt::Std::STANDARD_HELP_VERSION = 1;
+
+our($opt_l);
+getopts('hl:');
+
+do $opt_l if $opt_l;
+
+%Translate = ();
+%seen = ();
+
+sub VERSION = "$Id: oddtrans,v 1.1 2004/06/28 21:04:42 as Exp $";
+sub HELP_MESSAGE {
+  my $fh = shift;
+  print $fh <<'EOT';
+NAME
+       oddtrans - translate strings in Oddmuse scripts
+
+SYNOPSIS
+       oddtrans [OPTION]... [FILE]...
+
+DESCRIPTION
+
+       List information about the FILEs (or standard input by
+       default).
+
+       -l, --load
+              load a library from an existing run
+
+EXAMPLES
+
+       oddtrans -l german-utf8.pl wiki.pl modules/*.pl > new-german-utf8.pl
+
+EOT
+}
+
+sub trans {
+  my ($string) = @_;
+  my ($result);
+  $result = '';
+  $result = $Translate{$string}  if (defined($Translate{$string}));
+  return ' '  if ($seen{$string});
+  $seen{$string} = 1;
+  print $string . "\n" . $result . "\n";
+  return ' ';
+}
+
+print '%Translate = split(\'\n\',<<END_OF_TRANSLATION);' . "\n";
+foreach (<>) {
+  s/Ts?s?\(\'([^']+)/&trans($1)/ge;
+  s/Ts?s?\(\"([^"]+)/&trans($1)/ge;
+}
+
+print "END_OF_TRANSLATION\n";
