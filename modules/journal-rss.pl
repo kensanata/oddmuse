@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.4 2004/10/10 15:39:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.5 2004/10/10 20:21:24 as Exp $</p>';
 
 $Action{journal} = \&DoJournalRss;
 
@@ -41,7 +41,19 @@ sub DoJournalRss {
   if ($reverse) {
     @pages = reverse @pages;
   }
-  @pages = @pages[0 .. $num - 1] if $#pages >= $num;
+  # Generate artifical rows in the list to pass to GetRcRss.  We need
+  # to open every single page, because the meta-data ordinarily
+  # available in the rc.log file is not available to us.  This is why
+  # we observe the rsslimit parameter.  Without it, we would have to
+  # open *all* date pages.  This yields to the unfortunate situation
+  # that GetRc can remove some more rows and then the end result will
+  # be smaller than rsslimit.  There is no alternative, however,
+  # unless we copy the entire GetRc code.  We could try to do better
+  # by multiplying $num by a certain factor.  In the *default*
+  # situation, however, this will be inefficient as disk access is
+  # very slow.  In these non-default situations it might make more
+  # sense to require users to explicitly pass a higher rsslimit.
+  @pages = @pages[0 .. $num - 1] if $num ne 'all' and $#pages >= $num;
   my @fullrc = ();
   foreach my $id (@pages) {
     # Now save information required for saving the cache of the current page.
@@ -52,5 +64,8 @@ sub DoJournalRss {
 			   $Page{username}, $Page{revision}, $Page{languages},
 			   GetCluster($Page{text})));
   }
+  # default to showedit=1 because most of these pages will have both
+  # minor *and* major changes.
+  SetParam('showedit', GetParam('showedit', 1));
   print GetHttpHeader('application/rss+xml') . GetRcRss(@fullrc);
 }
