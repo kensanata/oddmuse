@@ -66,7 +66,7 @@ use vars qw(%Page %Section %Text %InterSite %KeptRevisions %IndexHash
 $OpenPageName @KeptList @IndexList $IndexInit $Message $q $Now
 %RecentVisitors @HtmlStack %Referers $Monolithic $ReplaceForm
 %PermanentAnchors %PagePermanentAnchors $CollectingJournal
-$WikiDescription $PrintedHeader %Locks);
+$WikiDescription $PrintedHeader %Locks $Fragment @Blocks @Flags);
 
 # == Configuration ==
 
@@ -278,7 +278,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.215 2003/10/21 19:43:03 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.216 2003/10/24 00:01:15 as Exp $');
 }
 
 sub InitCookie {
@@ -339,223 +339,172 @@ sub InitLinkPatterns {
   $ISBNPattern = 'ISBN:?([0-9- xX]{10,})';
 }
 
+sub Clean {
+  my $block = (shift);
+  print $block;
+  $Fragment .= $block;
+  return $block;
+}
+
+sub Dirty { # arg 1 is the raw text; the real output must be printed instead
+  if ($Fragment) {
+    push(@Blocks, $Fragment);
+    push(@Flags, 0);
+  }
+  push(@Blocks, (shift));
+  push(@Flags, 1);
+  $Fragment = '';
+};
+
 sub ApplyRules {
   # locallinks: apply rules that create links depending on local config (incl. interlink!)
   my ($text, $locallinks, $withanchors, $revision) = @_;
   $text =~ s/\r\n/\n/g; # DOS to Unix
   my $state = ''; # quote, list, or normal ('')
-  my $fragment;   # the current HTML fragment to be printed
-  my $block = ''; # the current HTML block to be cached
-  my @blocks;     # the list of cached HTML blocks
-  my @flags;      # a list for each block, 1 = dirty, 0 = clean
+  local $Fragment;# the clean HTML fragment not yet on @Blocks
+  local @Blocks;  # the list of cached HTML blocks
+  local @Flags;   # a list for each block, 1 = dirty, 0 = clean
   my $htmlre = join('|',(@HtmlTags));
-  my ($oldmatch, $rest);
   local $_ = $text;
   while(1) {
-    # first block -- at the beginning of a line.  Note that block level elements eat empty lines to prevent empty p elements.
-    undef($fragment);
-    if (m/\G(?<=\n)/cg or m/\G^/cg) { # at the beginning of a line
-      if (pos == 0 and m/^#FILE ([^ \n]+)\n(.*)/cgs) {
-	$fragment = Upload($OpenPageName, (substr($1, 0, 6) eq 'image/'), $revision);
-      } elsif (m/\G&lt;pre&gt;\n?(.*?\n)&lt;\/pre&gt;[ \t]*\n?/cgs) { # pre must be on column 1
-	$fragment = CloseHtmlEnvironments() . $q->pre({-class=>'real'}, $1);
-      } elsif (m/\G(\s*\n)*(\*+)[ \t]*/cg) {
-	$fragment = OpenHtmlEnvironment('ul',length($2)) . AddHtmlEnvironment('li');
-      } elsif (m/\G(\s*\n)*(\#+)[ \t]*/cg) {
-	$fragment = OpenHtmlEnvironment('ol',length($2)) . AddHtmlEnvironment('li');
-      } elsif (m/\G(\s*\n)*(\:+)[ \t]*/cg) { # blockquote instead?
-	$fragment = OpenHtmlEnvironment('dl',length($2), 'quote')
-	  . $q->dt() . AddHtmlEnvironment('dd');
-      } elsif (m/\G(\s*\n)*(\=+)[ \t]*(.*?)[ \t]*(=+)[ \t]*\n?/cg) {
-	$fragment = CloseHtmlEnvironments() . WikiHeading($2, $3);
-      } elsif (m/\G(\s*\n)*----+[ \t]*\n?/cg) {
-	$fragment = CloseHtmlEnvironments() . $q->hr();
-      } elsif (m/\G(\s*\n)*(([ \t]+.*\n?)+)/cg) {
-	$fragment = OpenHtmlEnvironment('pre',1) . $2; # always level 1
-      } elsif (m/\G(\s*\n)*(\;+)[ \t]*(?=.*\:)/cg) {
-	$fragment = OpenHtmlEnvironment('dl',length($2))
-	  . AddHtmlEnvironment('dt'); # `:' needs special treatment, later
-      } elsif (m/\G(\s*\n)*((\|\|)+)[ \t]*(?=.*\|\|[ \t]*$)/cgm) {
-	$fragment = OpenHtmlEnvironment('table',1,'user') # `||' needs special treatment, later
-	  . AddHtmlEnvironment('tr');
-	if (length($2) == 2) {
-	  $fragment .= AddHtmlEnvironment('td');
+    # Block level elements eat empty lines to prevent empty p elements.
+    if (pos == 0 and m/^#FILE ([^ \n]+)\n(.*)/cgs) {
+      Clean(Upload($OpenPageName, (substr($1, 0, 6) eq 'image/'), $revision));
+    } elsif (m/\G^&lt;pre&gt;\n?(.*?\n)&lt;\/pre&gt;[ \t]*\n?/cgsm) { # pre must be on column 1
+      Clean(CloseHtmlEnvironments() . $q->pre({-class=>'real'}, $1));
+    } elsif (m/\G^(\s*\n)*(\*+)[ \t]*/cgm) {
+      Clean(OpenHtmlEnvironment('ul',length($2)) . AddHtmlEnvironment('li'));
+    } elsif (m/\G^(\s*\n)*(\#+)[ \t]*/cgm) {
+      Clean(OpenHtmlEnvironment('ol',length($2)) . AddHtmlEnvironment('li'));
+    } elsif (m/\G^(\s*\n)*(\:+)[ \t]*/cgm) { # blockquote instead?
+      Clean(OpenHtmlEnvironment('dl',length($2), 'quote')
+	    . $q->dt() . AddHtmlEnvironment('dd'));
+    } elsif (m/\G^(\s*\n)*(\=+)[ \t]*(.*?)[ \t]*(=+)[ \t]*\n?/cgm) {
+      Clean(CloseHtmlEnvironments() . WikiHeading($2, $3));
+    } elsif (m/\G^(\s*\n)*----+[ \t]*\n?/cgm) {
+      Clean(CloseHtmlEnvironments() . $q->hr());
+    } elsif (m/\G^(\s*\n)*(([ \t]+.*\n?)+)/cgm) {
+      Clean(OpenHtmlEnvironment('pre',1) . $2); # always level 1
+    } elsif (m/\G^(\s*\n)*(\;+)[ \t]*(?=.*\:)/cgm) {
+      Clean(OpenHtmlEnvironment('dl',length($2))
+	    . AddHtmlEnvironment('dt')); # `:' needs special treatment, later
+    } elsif (m/\G^(\s*\n)*((\|\|)+)[ \t]*(?=.*\|\|[ \t]*$)/cgm) {
+      Clean(OpenHtmlEnvironment('table',1,'user') # `||' needs special treatment, later
+	    . AddHtmlEnvironment('tr')
+	    . ((length($2) == 2)
+	       ? AddHtmlEnvironment('td')
+	       : AddHtmlEnvironment('td', 'colspan="' . length($2)/2 . '"')));
+    } elsif (m/\G^(\s*\n)+/cgm) {
+      Clean(CloseHtmlEnvironments() . '<p>');
+    } elsif (m/\G^(\&lt;include(\s+(text|with-anchors))?\s+"(.*)"\&gt;[ \t]*\n?)/cgim) {
+      # <include "uri..."> includes the text of the given URI verbatim
+      Dirty($1);
+      my ($oldpos, $type, $uri) = ((pos), $3, $4);
+      if ($uri =~ /^$UrlProtocols:/) {
+	if ($type eq 'text') {
+	  print $q->pre(QuoteHtml(GetRaw($uri)));
 	} else {
-	  $fragment .= AddHtmlEnvironment('td', 'colspan="' . length($2)/2 . '"');
+	  ApplyRules(QuoteHtml(GetRaw($uri)), 0, ($type eq 'with-anchors')); # no local links
 	}
-      } elsif (m/\G(\s*\n)+/cg) {
-	$fragment = CloseHtmlEnvironments() . '<p>'; # there is another one like this further down
-      } elsif (m/\G(\&lt;include(\s+(text|with-anchors))?\s+"(.*)"\&gt;[ \t]*\n?)/cgi) { # <include "uri..."> includes the text of the given URI verbatim
-	$oldmatch = $1;
-	my $oldpos = pos;
-	my $type = $3;
-	my $uri = $4;
-	if ($uri =~ /^$UrlProtocols:/) {
-	  if ($type eq 'text') {
-	    print $q->pre(QuoteHtml(GetRaw($uri)));
-	  } else {
-	    ApplyRules(QuoteHtml(GetRaw($uri)), 0, ($type eq 'with-anchors')); # no local links
-	  }
+      } else {
+	if ($type eq 'text') {
+	  print $q->pre(QuoteHtml(GetPageContent(FreeToNormal($uri))));
 	} else {
-	  if ($type eq 'text') {
-	    print $q->pre(QuoteHtml(GetPageContent(FreeToNormal($uri))));
-	  } else {
-	    ApplyRules(QuoteHtml(GetPageContent(FreeToNormal($uri))),
-		       $locallinks, $withanchors, $revision);
-	  }
+	  ApplyRules(QuoteHtml(GetPageContent(FreeToNormal($uri))),
+		     $locallinks, $withanchors, $revision);
 	}
-	pos = $oldpos; # restore \G after call to ApplyRules
-	DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
-      } elsif (m/\G(\&lt;journal(\s+(\d*))?(\s+"(.*)")?(\s+(reverse))?\&gt;[ \t]*\n?)/cgi) { # <journal 10 "regexp"> includes 10 pages matching regexp
-	DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
-	my $oldpos = pos;
-	PrintJournal($3, $5, $7);
-	pos = $oldpos; # restore \G after call to ApplyRules
-      } elsif (m/\G(\&lt;rss(\s+(\d*))?\s+(.*?)\&gt;[ \t]*\n?)/cgis) { # <rss "uri..."> stores the parsed RSS of the given URI
-	my $oldpos = pos;
-	DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
-	print &RSS($3 ? $3 : 15, split(/ +/, $4));
-	pos = $oldpos; # restore \G after call to RSS which uses the LWP module (for older copies of the module?)
       }
-      if (defined $fragment) {
-	print $fragment;
-	$block .= $fragment;
-	next; # skipt the remaining tests
-      }
-    }
-    # second block -- remaining hilighting
-    if ($HtmlStack[0] eq 'dt' && m/\G:/cg) {
-      $fragment = CloseHtmlEnvironment() . AddHtmlEnvironment('dd');
+      pos = $oldpos;		# restore \G after call to ApplyRules
+    } elsif (m/\G^(\&lt;journal(\s+(\d*))?(\s+"(.*)")?(\s+(reverse))?\&gt;[ \t]*\n?)/cgim) {
+      # <journal 10 "regexp"> includes 10 pages matching regexp
+      Dirty($1);
+      my $oldpos = pos;
+      PrintJournal($3, $5, $7);
+      pos = $oldpos;		# restore \G after call to ApplyRules
+    } elsif (m/\G^(\&lt;rss(\s+(\d*))?\s+(.*?)\&gt;[ \t]*\n?)/cgism) { # <rss "uri..."> stores the parsed RSS of the given URI
+      Dirty($1);
+      my $oldpos = pos;
+      print &RSS($3 ? $3 : 15, split(/ +/, $4));
+      pos = $oldpos; # restore \G after call to RSS which uses the LWP module (for older copies of the module?)
+    } elsif ($HtmlStack[0] eq 'dt' && m/\G:/cg) {
+      Clean(CloseHtmlEnvironment() . AddHtmlEnvironment('dd'));
     } elsif ($HtmlStack[0] eq 'td' && m/\G[ \t]*((\|\|)+)[ \t]*\n((\|\|)+)[ \t]*/cgm) {
-      $fragment = '</td></tr><tr>' . ((length($3) == 2) ? '<td>' : ('<td colspan="' . length($3)/2 . '">'));
+      Clean('</td></tr><tr>' . ((length($3) == 2)
+				? '<td>' : ('<td colspan="' . length($3)/2 . '">')));
     } elsif ($HtmlStack[0] eq 'td' && m/\G[ \t]*((\|\|)+)[ \t]*(?!(\n|$))/cgm) { # continued
-      $fragment = '</td>' . ((length($1) == 2) ? '<td>' : ('<td colspan="' . length($1)/2 . '">'));
+      Clean('</td>' . ((length($1) == 2) ? '<td>' : ('<td colspan="' . length($1)/2 . '">')));
     } elsif ($HtmlStack[0] eq 'td' && m/\G[ \t]*((\|\|)+)[ \t]*/cgm) { # at the end of the table
-      $fragment = CloseHtmlEnvironments();
-    } elsif (m/\G\&lt;nowiki\&gt;(.*?)\&lt;\/nowiki\&gt;/cgis) {
-      $fragment = $1;
-    } elsif (m/\G\&lt;code\&gt;(.*?)\&lt;\/code\&gt;/cgis) {
-      $fragment = $q->code($1);
-    } elsif ($RawHtml && m/\G\&lt;html\&gt;(.*?)\&lt;\/html\&gt;/cgis) {
-      $fragment = UnquoteHtml($1);
-    } elsif (m/\G$RFCPattern/cg) { # RFC 1234 gets linked
-      $fragment = &RFC($1);
-    } elsif (m/\G($ISBNPattern)/cg) { # ISBN 1234567890 gets linked
-      DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
-      print ISBN($2);
+      Clean(CloseHtmlEnvironments());
+    } elsif (m/\G\&lt;nowiki\&gt;(.*?)\&lt;\/nowiki\&gt;/cgis) { Clean($1);
+    } elsif (m/\G\&lt;code\&gt;(.*?)\&lt;\/code\&gt;/cgis) { Clean($q->code($1));
+    } elsif ($RawHtml && m/\G\&lt;html\&gt;(.*?)\&lt;\/html\&gt;/cgis) { Clean(UnquoteHtml($1));
+    } elsif (m/\G$RFCPattern/cg) { Clean(&RFC($1));
+    } elsif (m/\G($ISBNPattern)/cg) { Dirty($1); print ISBN($2);
     } elsif (m/\G'''/cg) { # traditional wiki syntax with '''strong'''
-      if ($HtmlStack[0] eq 'strong') {
-	$fragment = CloseHtmlEnvironment();
-      } else {
-	$fragment = AddHtmlEnvironment('strong');
-      }
+      Clean(($HtmlStack[0] eq 'strong') ? CloseHtmlEnvironment() : AddHtmlEnvironment('strong'));
     } elsif (m/\G''/cg) {     #  traditional wiki syntax with ''emph''
-      if ($HtmlStack[0] eq 'em') {
-	$fragment = CloseHtmlEnvironment();
-      } else {
-	$fragment = AddHtmlEnvironment('em');
-      }
-    } elsif (m/\G\&lt;($htmlre)\&gt;/cgi) { # opening
-      $fragment = AddHtmlEnvironment($1);
-    } elsif (m/\G\&lt;\/($htmlre)\&gt;/cgi) { # closing tags
-      $fragment = CloseHtmlEnvironment($1);
-    } elsif (m/\G\&lt;($htmlre) *\/\&gt;/cgi) { # empty tags
-      $fragment = "<$1 />";
+      Clean(($HtmlStack[0] eq 'em') ? CloseHtmlEnvironment() : AddHtmlEnvironment('em'));
+    } elsif (m/\G\&lt;($htmlre)\&gt;/cgi) { Clean(AddHtmlEnvironment($1));
+    } elsif (m/\G\&lt;\/($htmlre)\&gt;/cgi) { Clean(CloseHtmlEnvironment($1));
+    } elsif (m/\G\&lt;($htmlre) *\/\&gt;/cgi) { Clean("<$1 />");
     } elsif ($HtmlLinks && m/\G\&lt;a(\s[^<>]+?)\&gt;(.*?)\&lt;\/a\&gt;/cgi) { # <a ...>text</a>
-      $fragment = "<a$1>$2</a>";
-    } elsif ($BracketText && $locallinks && m/\G(\[$InterLinkPattern\s+([^\]]+?)\])/cg) { # [InterLink text]
-      # Interlinks can change when the intermap changes (local config, therefore depend on $locallinks).
-      # The intermap is only read if necessary, so if this not an interlink, we have to backtrack a bit.
-      $oldmatch = $1;
-      $fragment = GetInterLink($2, $3, 1);
-      if ($oldmatch eq $fragment) {
-	($fragment, $rest) = split(/:/, $oldmatch, 2);
-	pos = (pos) - length($rest) - 1;
+      Clean("<a$1>$2</a>");
+    } elsif ($locallinks
+	     and ($BracketText && m/\G(\[$InterLinkPattern\s+([^\]]+?)\])/cg
+		  or m/\G(\[$InterLinkPattern\])/cog or m/\G($InterLinkPattern)/cog)) {
+      # [InterWiki:FooBar text] or [InterWiki:FooBar] or InterWiki:FooBar -- Interlinks can change
+      # when the intermap changes (local config, therefore depend on $locallinks).  The intermap
+      # is only read if necessary, so if this not an interlink, we have to backtrack a bit.
+      my $bracket = (substr($1, 0, 1) eq '[');
+      my ($oldmatch, $output) = ($1, GetInterLink($2, $3, $bracket)); # $3 may be empty
+      if ($oldmatch eq $output) { # no interlink
+	my ($site, $rest) = split(/:/, $oldmatch, 2);
+	Clean($site);
+	pos = (pos) - length($rest) - 1; # skip site, but reparse rest
       } else {
-	print $fragment;
-	DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
+	print $output; # this is an interlink
+	Dirty($oldmatch);
       }
-    } elsif ($locallinks && m/\G(\[$InterLinkPattern\])/cog) { # [InterWiki:FooBar] makes footnotes [1]
-      $oldmatch = $1;
-      $fragment = GetInterLink($2, '', 1);
-      if ($oldmatch eq $fragment) {
-	($fragment, $rest) = split(/:/, $oldmatch, 2);
-	pos = (pos) - length($rest) - 1;
-      } else {
-	print $fragment;
-	DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
-      }
-    } elsif ($locallinks && m/\G$InterLinkPattern/cog) { # InterWiki:FooBar
-      $oldmatch = $1;
-      $fragment = GetInterLink($oldmatch, '', 0);
-      # we have to backtrack a bit.
-      if ($oldmatch eq $fragment) {
-	($fragment, $rest) = split(/:/, $oldmatch, 2);
-	pos = (pos) - length($rest) - 1;
-      } else {
-	print $fragment;
-	DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
-      }
-    } elsif ($BracketText && m/\G\[$UrlPattern\s+([^\]]+?)\]/cg) { # [URL text] makes [text] link to URL
-      $fragment = GetUrl($1, $2, 1, 0);
-    } elsif (m/\G\[$UrlPattern\]/cog) { # [URL] makes footnotes [1]
-      $fragment = GetUrl($1, '', 1, 0);
-    } elsif (m/\G$UrlPattern/cg) { # plain URLs after all $UrlPattern, such that [$UrlPattern text] has priority
-      $fragment = GetUrl($1, '', 0, 1);
-    } elsif ($WikiLinks && $BracketWiki && $locallinks && m/\G(\[$LinkPattern\s+([^\]]+?)\])/cg) { # [LocalPage text]
-      DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
-      print GetPageOrEditLink($2, $3, 1);
-    } elsif ($WikiLinks && $locallinks && m/\G(\[$LinkPattern\])/cg) { # [LocalPage]
-      DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
-      print GetPageOrEditLink($2, '', 1);
-    } elsif ($WikiLinks && $locallinks && m/\G$LinkPattern/cg) { # LocalPage
-      # LinkPattern after all $UrlPattern, such that http//:...?FooBar
-      # will not get an additional ? if FooBar is undefined.
-      DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
-      print GetPageOrEditLink($1, '');
-    } elsif ($WikiLinks && m/\G!$LinkPattern/cg) { # ! gets eaten
-      $fragment = $1;
-    }  elsif ($withanchors && $PermanentAnchors && m/\G(\[::$FreeLinkPattern\])/cg) { #[::Free Link] permanent anchor create only $withanchors
-      DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
+    } elsif ($BracketText && m/\G(\[$UrlPattern\s+([^\]]+?)\])/cg
+	    or m/\G(\[$UrlPattern\])/cog or m/\G($UrlPattern)/cg) {
+      # [URL text] makes [text] link to URL, [URL] makes footnotes [1]
+      my $bracket = (substr($1, 0, 1) eq '[');
+      Clean(GetUrl($2, $3, $bracket, not $bracket)); # $2 may be empty
+    } elsif ($WikiLinks && m/\G!$LinkPattern/cg) { Clean($1); # ! gets eaten
+    } elsif ($withanchors && $PermanentAnchors && m/\G(\[::$FreeLinkPattern\])/cg) {
+      #[::Free Link] permanent anchor create only $withanchors
+      Dirty($1);
       print GetPermanentAnchor($2);
-    } elsif ($FreeLinks && $BracketWiki && $locallinks && m/\G(\[\[$FreeLinkPattern\|([^\]]+)\]\])/cg) { # [[Free Link|text]]
-      DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
-      print GetPageOrEditLink($2, $3, 0 , 1);
-    } elsif ($FreeLinks && $locallinks && m/\G(\[\[$FreeLinkPattern\]\])/cg) { # [[Free Link]]
-      DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
-      print GetPageOrEditLink($2, '', 0, 1);
-    } elsif (%Smilies && ($fragment = SmileyReplace())) {
-      # $fragment already set
-    } elsif (eval { local $SIG{__DIE__}; $fragment = MyRules(\$block, \@blocks, \@flags); } ) {
-      # $fragment already set
+    } elsif ($WikiLinks && $locallinks
+	     && ($BracketWiki && m/\G(\[$LinkPattern\s+([^\]]+?)\])/cg
+		 or m/\G(\[$LinkPattern\])/cg or m/\G($LinkPattern)/cg)) {
+      # [LocalPage text], [LocalPage], LocalPage
+      Dirty($1);
+      my $bracket = (substr($1, 0, 1) eq '[');
+      print GetPageOrEditLink($2, $3, $bracket);
+    } elsif ($FreeLinks && $locallinks
+	     && ($BracketWiki && m/\G(\[\[$FreeLinkPattern\|([^\]]+)\]\])/cg
+		 or m/\G(\[\[$FreeLinkPattern\]\])/cg)) {
+      # [[Free Link|text]], [[Free Link]]
+      Dirty($1);
+      print GetPageOrEditLink($2, $3, 0 , 1); # $3 may be empty
+    } elsif (%Smilies && (Clean(SmileyReplace()))) { # $Fragment already set
+    } elsif (eval { local $SIG{__DIE__}; Clean(MyRules()); }) { # dito
     } elsif (m/\G\s*\n(s*\n)+/cg) { # paragraphs -- whitespace including at least two newlines
-      $fragment = CloseHtmlEnvironments() . '<p>'; # there is another one like this further up
-    } elsif (m/\G\s+/cgs) { # whitespace -- including (max one) newlines due to previous rules
-      $fragment = ' ';
-    } elsif (m/\G(\w+)/cgi) { # word -- cannot use \S here because that eats following markup, too: word<b> for example.
-      $fragment = $1;
-    } elsif (m/\G(\S)/cg) { # punctuation and other stuff, if not matched by previous markup rule.  Gotta move slowly, eg. word.</b>
-      $fragment = $1;
-    } else {
-      last;
-    }
-    if (defined $fragment) {
-      print $fragment;
-      $block .= $fragment;
+      Clean(CloseHtmlEnvironments() . '<p>'); # there is another one like this further up
+    } elsif (m/\G\s+/cgs) { Clean(' ');
+    } elsif (m/\G(\w+)/cgi or m/\G(\S)/cg) { Clean($1); # one block at a time, consider word<b>!
+    } else { last;
     }
   }
   # last block -- close it, cache it
-  $fragment = CloseHtmlEnvironments();
-  if (defined $fragment) {
-    print $fragment;
-    $block .= $fragment;
-  }
-  if ($block) {
-    push(@blocks,$block);
-    push(@flags,0);
+  Clean(CloseHtmlEnvironments());
+  if ($Fragment) {
+    push(@Blocks, $Fragment);
+    push(@Flags, 0);
   }
   # this can be stored in the page cache -- see PrintCache
-  return join($FS3,@blocks) . $FS2 . join($FS3,@flags);
+  return join($FS3,@Blocks) . $FS2 . join($FS3,@Flags);
 }
 
 sub CloseHtmlEnvironment { # just close the current one
@@ -612,18 +561,6 @@ sub OpenHtmlEnvironment { # close the previous one and open a new one instead
     }
   }
   return $text;
-}
-
-sub DirtyBlock {
-  my ($block, $old, $fragment, $blocks, $flags) = @_;
-  if ($$old) {
-    push(@$blocks,$$old);
-    push(@$flags,0);
-    $$old = '';
-  }
-  push(@$blocks,$block);
-  push(@$flags,1);
-  $$fragment = '';
 }
 
 sub SmileyReplace {
