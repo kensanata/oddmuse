@@ -265,7 +265,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.190 2003/10/10 13:49:56 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.191 2003/10/10 22:22:18 as Exp $');
 }
 
 sub InitCookie {
@@ -1406,7 +1406,9 @@ sub GetRcHtml {
 	  $pagelink = GetPageLink($pagename, $cluster);
 	  $count = '(' . GetHistoryLink($pagename, $tHistory) . ')';
 	}
-	if ($UseDiff and GetParam('diffrclink', 1)) {
+	if ($cluster) {
+	  $link .= T('Cluster:');
+	} elsif ($UseDiff and GetParam('diffrclink', 1)) {
 	  if ($all) {
 	    $link .= ScriptLinkDiff(2, $pagename, $tDiff, '', $revision);
 	  } else {

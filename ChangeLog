@@ -1,3 +1,8 @@
+2003-10-11  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetRcHtml): Don't show "(diff)" link for clusters.
+	Show the label "Cluster:" instead.
+
 2003-10-10  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (T): Simplified.
