@@ -356,7 +356,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.534 2005/03/12 01:00:54 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.535 2005/03/16 11:15:23 frodo72 Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -2298,7 +2298,7 @@ sub GetDiff {
   if ($old_is_file or $new_is_file) {
     return $q->p($q->strong(T('Old revision:')))
       . $q->div({-class=>'old'}, # don't pring new revision, because that's the one that gets shown!
-		$q->p($old_is_file ? GetDownloadLink($OpenPageName, $old_is_file, $oldRevision) : $old))
+		$q->p($old_is_file ? GetDownloadLink($OpenPageName, $old_is_image, $oldRevision) : $old))
   }
   my ($diff_out, $oldName, $newName);
   $old =~ s/[\r\n]+/\n/g;
