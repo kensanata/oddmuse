@@ -10,6 +10,14 @@
 	(GetEditLink): Use it.
 	($TopLinkBar): New option.
 	(GetHeader): Use it.
+	($Monolithic): New variable.
+	(ScriptLink): Use it.
+	(DoBrowseRequest): New action 'all'.
+	(DoUnlock): Rewrote using a loop.
+	(GetFullLinkList): Rewrote variable declarations a bit.
+	(ReleaseRefererLock, RequestRefererLock): Avoid declaring a variable for just one call.
+	(DoPrintAllPages): New function.
+	(PrintAllPages): New function.
 
 2003-04-26  Alex Schroeder  <alex@gnu.org>
 
