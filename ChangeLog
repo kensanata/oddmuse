@@ -1,3 +1,7 @@
+2004-02-22  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetAuthorLink): Use ScriptLink to link to author.
+
 2004-02-21  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl ($HtmlHeaders): New option.
