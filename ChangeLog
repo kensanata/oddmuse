@@ -3,6 +3,9 @@
 	* wiki.pl (BrowsePage): Added a div class="content" around the
 	main part.
 	(RSS): Removed unnecessary CSS class for link within RSS divs.
+	(BrowsePage): Do not attempt to open keep file when the requested
+	revision is the current revision.  Use div class="message" for
+	the little message about the revision being displayed.
 
 2003-04-26  Alex Schroeder  <alex@gnu.org>
 
