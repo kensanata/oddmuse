@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.8 2004/07/14 14:55:56 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.9 2004/08/06 11:50:58 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 # This must come *before* the usemod.pl rules.
@@ -65,6 +65,7 @@ sub TocHeadings {
     my $text = $2;
     next unless $text;
     my $link = UrlEncode($text);
+    $text = QuoteHtml($text);
     $count++;
     $depth = 2 if $depth < 2;
     $depth = 6 if $depth > 6;
