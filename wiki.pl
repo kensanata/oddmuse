@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.347 2004/03/09 00:51:24 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.348 2004/03/09 01:11:52 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -874,7 +874,7 @@ sub GetInterLink {
   } elsif (!$url) {
     return $id;
   } elsif ($bracket && !$text) {
-    $text = $q->span('[' . ++$FootnoteNumber . ']'); # so we can hide it for printing
+    $text = $q->span({-title=>$url}, '[' . ++$FootnoteNumber . ']');
     $class .= ' number';
   } elsif (!$text) {
     $text = $q->span({-class=>'site'}, $site) . ':' . $q->span({-class=>'page'}, $page);
@@ -901,7 +901,7 @@ sub GetUrl {
     # Only do remote file:// links. No file:///c|/windows.
     return $url;
   } elsif ($bracket && !$text) {
-    $text = $q->span('[' . ++$FootnoteNumber . ']'); # so we can hide it for printing
+    $text = $q->span({-title=>$url}, '[' . ++$FootnoteNumber . ']');
     $class .= ' number';
   } elsif (!$text) {
     $text = $url;
@@ -921,7 +921,7 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
   $id = FreeToNormal($id);
   my ($class, $exists, $title) = ResolveId($id);
   if (!$text && $exists && $bracket) {
-    $text = $q->span('[' . ++$FootnoteNumber . ']'); # so we can hide it for printing
+    $text = $q->span({-title=>$id}, '[' . ++$FootnoteNumber . ']'); # s/_/ /g happens further down!
     $class .= ' number';
   }
   if ($exists) { # don't show brackets if the page is local/anchor/near.
