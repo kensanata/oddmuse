@@ -24,11 +24,12 @@ from time import time
 def main():
     summary="upload"
     username=""
+    password=""
     recent_edit="off"
     try:
         opts, args = getopt.getopt(sys.argv[1:],
-                                   "ht:s:u:m:",
-                                   ["help", "summary=", "user=", "minor-edit="])
+                                   "ht:s:u:p:m:",
+                                   ["help", "summary=", "user=", "password=", "minor-edit="])
     except getopt.GetoptError:
         usage(sys.stderr)
         sys.exit(1)
@@ -42,9 +43,12 @@ def main():
             summary = arg
         if opt in ("-u", "--user"):
             username = arg
+        if opt in ("-p", "--password"):
+            password = arg
         if opt in ("-m", "--minor-edit"):
             recent_edit="on"
-    wikiput(args[1], args[0], summary=summary, username=username, recent_edit=recent_edit)
+    wikiput(args[1], args[0], summary=summary, username=username, password=password,
+	    recent_edit=recent_edit)
 
 def usage(out):
     """Display the usage information for this script.
@@ -61,16 +65,18 @@ def usage(out):
               " -h --help          Display this help\n"
               " -s --summary=S     The summary line (default: upload)\n"
 	      " -u --user=U        The username to use (default: none)\n"
+	      " -p --password=P    The password to use (default: none)\n"
               " -m --minor-edit=B  Whether this is a minor edit (default: no)\n")
 
 def wikiput(where, filename,
-            summary="upload", username="", recent_edit="no"):
+            summary="upload", username="", password="", recent_edit="no"):
     (host, path, title) = parse_wiki_location(where)
     content = open(filename, "r").read()
     files = [['file', filename, content]]
     params = [[ 'title', title ],
               [ 'summary', summary ],
               [ 'username', username ],
+              [ 'pwd', password ],
               [ 'recent_edit', recent_edit ]]
     (content_type, body) = encode_multipart_formdata(params, files);
     headers = {'Content-Type': content_type}
