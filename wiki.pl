@@ -310,7 +310,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.335 2004/03/07 12:58:17 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.336 2004/03/07 13:32:35 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -473,7 +473,7 @@ sub ApplyRules {
       Dirty($1);
       my $oldpos = pos;
       eval { local $SIG{__DIE__}; binmode(STDOUT, ":utf8"); } if $HttpCharset eq 'UTF-8';
-      print RSS($3 ? $3 : 15, split(/ +/, $4));
+      print RSS($3 ? $3 : 15, split(/\s+/, $4));
       eval { local $SIG{__DIE__}; binmode(STDOUT, ":raw"); };
       pos = $oldpos;
       # restore \G after call to RSS which uses the LWP module (for older copies of the module?)
