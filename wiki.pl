@@ -58,7 +58,7 @@ $RefererTimeLimit $RefererLimit $TopLinkBar $NotifyTracker $InterMap
 @LockOnCreation $RefererFilter $PermanentAnchorsFile $PermanentAnchors
 %CookieParameters $StyleSheetPage @UserGotoBarPages $ConfigPage
 $ScriptName $CommentsPrefix $NewComment $AllNetworkFiles $UsePathInfo
-$UploadAllowed @UploadTypes @MyMacros);
+$UploadAllowed @UploadTypes @MyMacros $LastUpdate);
 
 # Other global variables:
 use vars qw(%Page %Section %Text %InterSite %KeptRevisions %IndexHash
@@ -252,7 +252,6 @@ sub InitVariables {    # Init global session variables for mod_perl!
   $Now = time;         # Reset in case script is persistent
   $ReplaceForm = 0;    # Only admins may search and replace
   $ScriptName = $q->url() unless defined $ScriptName; # Name used in links
-  $IndexInit = 0;      # Must be reset for each request
   $InterSiteInit = 0;
   %InterSite = ();
   %Locks = ();
@@ -274,7 +273,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.211 2003/10/18 23:20:36 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.212 2003/10/19 14:08:56 as Exp $');
 }
 
 sub InitCookie {
@@ -898,7 +897,7 @@ sub ScriptLink {
 
 sub Upload {
   my ($id, $image, $revision) = @_;
-  AllPagesList() unless $IndexInit;
+  AllPagesList();
   my $action = "action=download;id=$id";
   $action .= ";revision=$revision" if $revision;
   if (not $IndexHash{$id}) { # page does not exist
@@ -1100,6 +1099,7 @@ sub BrowseResolvedPage {
 
 sub BrowsePage {
   my ($id, $raw) = @_;
+  return if NotModified();
   OpenPage($id);
   OpenDefaultText($id);
   # Handle a single-level redirect
@@ -1184,6 +1184,23 @@ sub ReBrowsePage {
     print GetRedirectPage("action=browse;oldid=$oldId;id=$id", $id);
   } else {
     print GetRedirectPage($id, $id);
+  }
+}
+
+sub NotModified {
+  if (not $LastUpdate) { # mod_perl: stat should be unnecessary since LastUpdate persists.
+    my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size, $atime,$mtime,$ctime,$blksize,$blocks)
+      = stat($IndexFile);
+    $LastUpdate = $mtime;
+  }
+  if ($q->http('HTTP_IF_MODIFIED_SINCE')) {
+    local $SIG{__DIE__};
+    require Time::ParseDate;
+    my $since = Time::ParseDate::parsedate($q->http('HTTP_IF_MODIFIED_SINCE'), NO_RELATIVE => 1);
+    if ($LastUpdate < $since) {
+      print $q->header(-status=>'304 NOT MODIFIED');
+      return 1;
+    }
   }
 }
 
@@ -2642,8 +2659,6 @@ sub AllPagesList {
   my ($rawIndex, $refresh, $status);
   $refresh = GetParam('refresh', 0);
   if ($IndexInit && !$refresh) {
-    # Note for mod_perl: $IndexInit is reset for each query
-    # Eventually consider some timestamp-solution to keep cache?
     return @IndexList;
   }
   if ((!$refresh) && (-f $IndexFile)) {
@@ -3404,10 +3419,14 @@ sub Save { # call within lock, with opened page
 	      $Section{'host'}, $languages, GetCluster($new));
   if ($Page{'revision'} == 1) {
     unlink($IndexFile);  # Regenerate index on next request
+    $IndexInit = 0; # mod_perl: this variable may persist accross sessions
     if (grep(/^$id$/, @LockOnCreation)) {
       WriteStringToFile(GetLockedPageFile($id), 'editing locked.');
     }
+  } else {
+    utime undef, undef, $IndexFile; # touch index file
   }
+  $LastUpdate = $Now; # for mod_perl
 }
 
 sub GetLanguages {
@@ -3525,10 +3544,13 @@ sub DoMaintain {
   my $cache = GetParam('cache', 0);
   RequestLockOrError();
   print $q->p(T('Main lock obtained.'));
-  print '<p>' . T('Expiring keep files and deleting pages marked for deletion')
-    . ($cache ? ' ' . T('and refreshing HTML cache') : '');
-  unlink($IndexFile) if $cache;
-  unlink($PermanentAnchorsFile) if $cache;
+  print '<p>' . T('Expiring keep files and deleting pages marked for deletion');
+  if ($cache) {
+    print T('and refreshing HTML cache');
+    $IndexInit = 0; # mod_perl: this variable may persist accross sessions
+    unlink($IndexFile);
+    unlink($PermanentAnchorsFile);
+  }
   # Expire all keep files
   foreach my $name (AllPagesList()) {
     print $q->br();
@@ -3541,11 +3563,13 @@ sub DoMaintain {
       print ' ' . T('deleted');
     } else {
       ExpireKeepFile();
-      local *STDOUT;
-      open (STDOUT, "> /dev/null");
-      PrintWikiToHTML($Text{'text'}, 1, '', 1) if ($cache); # cache, current, locked
       ReadReferers($OpenPageName); # clean up even if disabled
       WriteReferers($OpenPageName);
+      if ($cache) {
+	local *STDOUT;
+	open (STDOUT, "> /dev/null");
+	PrintWikiToHTML($Text{'text'}, 1, '', 1) if ($cache); # cache, current, locked
+      }
     }
   }
   print '</p>';
