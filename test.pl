@@ -2060,6 +2060,7 @@ add_module('usemod.pl');
 update_page('hr', "one\n----\ntwo\n");
 test_page(get_page('hr'), '<div class="content browse"><p>one </p><hr /><p>two</p></div>');
 remove_rule(\&UsemodRule);
+*InitVariables = *OldUsemodInitVariables;
 
 # headers only
 add_module('headers.pl');
@@ -2088,6 +2089,8 @@ symlink('/home/alex/src/oddmuse/modules/usemod.pl',
 update_page('hr', "one\n----\ntwo\n");
 test_page(get_page('hr'), '<div class="content browse"><p>one </p><hr /><p>two</p></div>');
 unlink('/tmp/oddmuse/modules/usemod.pl') or die "Cannot unlink: $!";
+remove_rule(\&UsemodRule);
+*InitVariables = *OldUsemodInitVariables;
 
 # headers and portrait-support
 symlink('/home/alex/src/oddmuse/modules/headers.pl',
@@ -2098,6 +2101,61 @@ test_page(get_page('hr'), '<div class="content browse"><h3>one</h3><p>two</p></d
 update_page('hr', "one\n\n----\ntwo\n");
 test_page(get_page('hr'), '<div class="content browse"><p>one</p><hr /><p>two</p></div>');
 unlink('/tmp/oddmuse/modules/headers.pl') or die "Cannot unlink: $!";
+remove_rule(\&HeadersRule);
+
+remove_rule(\&PortraitSupportRule);
+*ApplyRules = *OldPortraitSupportApplyRules;
+
+
+# --------------------
+
+fixme:
+
+print '[calendar]';
+
+clear_pages();
+
+my ($sec, $min, $hour, $mday, $mon, $year) = localtime($Now);
+$mon++;
+$year += 1900;
+my $year_next = $year +1;
+my $year_prev = $year -1;
+my $today = "$year-$mon-$mday";
+$oday = $mday -1;
+$oday += 2 if $oday < 1;
+my $otherday = "$year-$mon-$oday";
+
+add_module('calendar.pl');
+test_page(get_page('action=calendar'),
+	  map {quotemeta; s|\\ \\\?| ?|g; }
+	  '<div class="content cal year"><p class="nav">' # year navigation
+	  . '<a href="http://localhost/wiki.pl?action=calendar;year=' . $year_prev . '">Previous</a> | '
+	  . '<a href="http://localhost/wiki.pl?action=calendar;year=' . $year_next . '">Next</a></p>',
+	  '<div class="cal month"><pre>    <span class="title">' # monthly collection
+	  . '<a class="local collection month" href="http://localhost/wiki.pl?action=collect;match='
+	  . "$year-$mon" . '">',
+	  '<a class="edit today" href="http://localhost/wiki.pl?action=edit;id=' # today day edit
+	  . $today . '"> ?' . $mday . '</a>',
+	  '<a class="edit" href="http://localhost/wiki.pl?action=edit;id=' # other day edit
+	  . $otherday . '"> ?' . $oday . '</a>',
+	  );
+
+update_page("$year-$mon-$mday", "yadda");
+
+test_page(get_page('action=calendar'),
+	  map {quotemeta; s|\\ \\\?| ?|g; }
+	  '<a class="local exact today" href="http://localhost/wiki.pl/' # day exact match
+	  . "$year-$mon-$mday" . '"> ?' . $mday . '</a>');
+
+update_page("$year-$mon-${mday}_more", "more yadda");
+
+test_page(get_page('action=calendar'),
+	  map { $_=quotemeta; s|\\ \\\?| ?|g; $_; }
+	  '<a class="local collection today" href="http://localhost/wiki.pl?action=collect;match=' # day match
+	  . "$year-$mon-$mday" . '"> ?' . $mday . '</a>');
+
+remove_rule(\&CalendarRule);
+*GetHeader = *OldCalendarGetHeader;
 
 ### END OF TESTS
 
