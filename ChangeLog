@@ -1,3 +1,30 @@
+2004-06-17  Alex Schroeder  <alex@confusibombus>
+
+	* anchors.pl
+	* calendar.pl
+	* download.pl
+	* faq.pl
+	* footnotes.pl
+	* forms.pl
+	* headlines.pl
+	* image.pl
+	* lang.pl
+	* latex.pl
+	* link-all.pl
+	* portrait-support.pl
+	* signature.pl
+	* thread.pl
+	* translations.pl: Adapted to the bugfix in the RunMyRules sub.
+
+	* wiki.pl (Clean, SmileyReplace, RunMyRules): Important change in
+	handling rules: Rules are expected to return undef when they did
+	not match, and the empty string if a dirty block was produced.
+	(QuoteHtml, UnquoteHtml): Cosmetic.
+	(ApplyRules): Several changes: 1. Use /o for more pattern matches.
+	2. Don't call MyRules() here, add in RunMyRules instead.
+	3. Removed some superfluous /i and /s options.  4. Fixed handling
+	of ''''' by splitting the '' rule into two separate blocks.
+
 2004-06-15  Alex Schroeder  <alex@confusibombus>
 
 	* modules/calendar.pl (Cal): Accept year and month as parameters.
