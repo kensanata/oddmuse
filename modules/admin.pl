@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: admin.pl,v 1.3 2004/05/29 20:51:34 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: admin.pl,v 1.4 2004/06/12 11:24:57 as Exp $</p>';
 
 $Action{delete} = \&AdminPowerDelete;
 $Action{rename} = \&AdminPowerRename;
@@ -29,11 +29,15 @@ sub AdminPowerDelete {
   RequestLockOrError();
   print $q->p(T('Main lock obtained.'));
   OpenPage($id);
-  WriteRcLog($id, Ts('Deleted %s', $new), 0, $Page{revision},
-	     GetParam('username', ''), GetRemoteHost(), $Page{languages},
-	     GetCluster($Page{text}));
-  DeletePage($id);
-  print $q->p(GetPageLink($id) . ' ' . T('deleted'));
+  my $status = DeletePage($id);
+  if ($status) {
+    print $q->p(GetPageLink($id) . ' ' . T('not deleted: ') . $status;
+  } else {
+    print $q->p(GetPageLink($id) . ' ' . T('deleted'));
+    WriteRcLog($id, Ts('Deleted %s', $new), 0, $Page{revision},
+	       GetParam('username', ''), GetRemoteHost(), $Page{languages},
+	       GetCluster($Page{text}));
+  }
   ReleaseLock();
   print $q->p(T('Main lock released.'));
   PrintFooter();
