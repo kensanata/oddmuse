@@ -167,6 +167,8 @@ test_page(get_page('.dotfile'), 'some content');
 test_page(get_page('action=browse id=.dotfile revision=1'), 'old content');
 test_page(get_page('action=history id=.dotfile'), 'older summary', 'some summary');
 
+# --------------------
+
 print '[rollback]';
 
 open(F,'>/tmp/oddmuse/config');
@@ -174,38 +176,40 @@ print F "\$AdminPass = 'foo';\n";
 print F "\$SurgeProtection = 0;\n";
 close(F);
 
+# old revisions
 update_page('InnocentPage', 'Innocent.', 'good guy zero');
 update_page('NicePage', 'Friendly content.', 'good guy one');
-sleep(1);
-update_page('InnocentPage', 'Lamb.', 'good guy zero');
 update_page('OtherPage', 'Other cute content 1.', 'another good guy');
 update_page('OtherPage', 'Other cute content 2.', 'another good guy');
 update_page('OtherPage', 'Other cute content 3.', 'another good guy');
 update_page('OtherPage', 'Other cute content 4.', 'another good guy');
-sleep(1);
 update_page('OtherPage', 'Other cute content 5.', 'another good guy');
 update_page('OtherPage', 'Other cute content 6.', 'another good guy');
 update_page('OtherPage', 'Other cute content 7.', 'another good guy');
 update_page('OtherPage', 'Other cute content 8.', 'another good guy');
-sleep(1);
 update_page('OtherPage', 'Other cute content 9.', 'another good guy');
 update_page('OtherPage', 'Other cute content 10.', 'another good guy');
 update_page('OtherPage', 'Other cute content 11.', 'another good guy');
+# good revisions -- need a different timestamp than the old revisions!
+sleep(1);
+update_page('InnocentPage', 'Lamb.', 'good guy zero');
 update_page('OtherPage', 'Other cute content 12.', 'another good guy');
+# last good revision -- needs a different timestamp than the good revisions!
 sleep(1);
 update_page('NicePage', 'Nice content.', 'good guy two');
-sleep(2);
+# bad revisions -- need a different timestamp than the last good revision!
+sleep(1);
 update_page('NicePage', 'Evil content.', 'vandal one');
-sleep(2);
 update_page('OtherPage', 'Other evil content.', 'another vandal');
-sleep(2);
 update_page('NicePage', 'Bad content.', 'vandal two');
 update_page('EvilPage', 'Spam!', 'vandal three');
 update_page('AnotherEvilPage', 'More Spam!', 'vandal four');
 update_page('AnotherEvilPage', 'Still More Spam!', 'vandal five');
+
 test_page(get_page('NicePage'), 'Bad content');
 test_page(get_page('InnocentPage'), 'Lamb');
 get_page('action=rc all=1 pwd=foo') =~ /.*action=rollback;to=([0-9]+).*?-- good guy two/;
+
 test_page(get_page("action=rollback to=$1"), 'restricted to administrators');
 test_page(get_page("action=rollback to=$1 pwd=foo"),
 	  'Rolling back changes', 'NicePage rolled back', 'OtherPage rolled back');
@@ -215,6 +219,8 @@ test_page(get_page('EvilPage'), 'DeletedPage');
 test_page(get_page('AnotherEvilPage'), 'DeletedPage');
 test_page(get_page('InnocentPage'), 'Lamb');
 test_page(get_page('action=rc showedit=1'), 'Rollback to ');
+
+# --------------------
 
 print '[clusters]';
 
@@ -565,34 +571,17 @@ $page = get_page('action=rc rcuseronly=berta');
 test_page($page, @Positives);
 test_page_negative($page, @Negatives);
 
-@Positives = split('\n',<<'EOT');
-Mucidobombus.*tarantella
-Bombia.*tango
-EOT
+@Positives = qw(Mucidobombus.*tarantella Bombia.*tango);
 
-@Negatives = split('\n',<<'EOT');
-Confusibombus
-ballet
-Mendacibombus
-samba
-EOT
+@Negatives = qw(Confusibombus ballet Mendacibombus samba);
 
 $page = get_page('action=rc rcuseronly=alex');
 test_page($page, @Positives);
 test_page_negative($page, @Negatives);
 
-@Positives = split('\n',<<'EOT');
-Bombia.*tango
-EOT
+@Positives = qw(Bombia.*tango);
 
-@Negatives = split('\n',<<'EOT');
-Mucidobombus
-tarantella
-Confusibombus
-ballet
-Mendacibombus
-samba
-EOT
+@Negatives = qw(Mucidobombus tarantella Confusibombus ballet Mendacibombus samba);
 
 $page = get_page('action=rc rcidonly=Bombia');
 test_page($page, @Positives);
@@ -600,74 +589,169 @@ test_page_negative($page, @Negatives);
 
 # --------------------
 
+fixme:
+
 print '[conflicts]';
+
+# Using the example files from the diff3 manual
+
+my $lao_file = q{The Way that can be told of is not the eternal Way;
+The name that can be named is not the eternal name.
+The Nameless is the origin of Heaven and Earth;
+The Named is the mother of all things.
+Therefore let there always be non-being,
+  so we may see their subtlety,
+And let there always be being,
+  so we may see their outcome.
+The two are the same,
+But after they are produced,
+  they have different names.
+};
+
+my $lao_file_1 = q{The Tao that can be told of is not the eternal Tao;
+The name that can be named is not the eternal name.
+The Nameless is the origin of Heaven and Earth;
+The Named is the mother of all things.
+Therefore let there always be non-being,
+  so we may see their subtlety,
+And let there always be being,
+  so we may see their outcome.
+The two are the same,
+But after they are produced,
+  they have different names.
+};
+my $lao_file_2 = q{The Way that can be told of is not the eternal Way;
+The name that can be named is not the eternal name.
+The Nameless is the origin of Heaven and Earth;
+The Named is the mother of all things.
+Therefore let there always be non-being,
+  so we may see their simplicity,
+And let there always be being,
+  so we may see the result.
+The two are the same,
+But after they are produced,
+  they have different names.
+};
+
+my $tzu_file = q{The Nameless is the origin of Heaven and Earth;
+The named is the mother of all things.
+
+Therefore let there always be non-being,
+  so we may see their subtlety,
+And let there always be being,
+  so we may see their outcome.
+The two are the same,
+But after they are produced,
+  they have different names.
+They both may be called deep and profound.
+Deeper and more profound,
+The door of all subtleties!
+};
+
+my $tao_file = q{The Way that can be told of is not the eternal Way;
+The name that can be named is not the eternal name.
+The Nameless is the origin of Heaven and Earth;
+The named is the mother of all things.
+
+Therefore let there always be non-being,
+  so we may see their subtlety,
+And let there always be being,
+  so we may see their result.
+The two are the same,
+But after they are produced,
+  they have different names.
+
+  -- The Way of Lao-Tzu, tr. Wing-tsit Chan
+};
+
+
+system('/bin/rm -rf /tmp/oddmuse');
+die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
+mkdir '/tmp/oddmuse';
+open(F,'>/tmp/oddmuse/config');
+print F "\$SurgeProtection = 0;\n";
+close(F);
 
 # simple edit
 
-@Test = split('\n',<<'EOT');
-test test test
-EOT
-
 $ENV{'REMOTE_ADDR'} = 'confusibombus';
-test_page(update_page('ConflictTest', "test\ntest\ntest\n"), @Test);
+test_page(update_page('ConflictTest', $lao_file),
+	  'The Way that can be told of is not the eternal Way');
 
 # edit from another address should result in conflict warning
 
 $ENV{'REMOTE_ADDR'} = 'megabombus';
-test_page(update_page('ConflictTest', "test\ntest\ntest\nend\n"), @Test);
+test_page(update_page('ConflictTest', $tzu_file),
+	  'The Nameless is the origin of Heaven and Earth');
 
-@Test = split('\n',<<'EOT');
-This page was changed by somebody else
-Please check whether you overwrote those changes
-EOT
-
-test_page($redirect, map { UrlEncode($_); } @Test); # test cookie!
+# test cookie!
+test_page($redirect, map { UrlEncode($_); }
+	  ('This page was changed by somebody else',
+           'Please check whether you overwrote those changes'));
 
 # test normal merging -- first get oldtime, then do two conflicting edits
+# we need to wait at least a second after the last test in order to not
+# confuse oddmuse.
 
-@Test = split('\n',<<'EOT');
-foo test bar end
-EOT
+sleep(2);
 
-update_page('ConflictTest', "test\ntest\ntest\nend\n");
+update_page('ConflictTest', $lao_file);
 
 $_ = `perl wiki.pl action=edit id=ConflictTest`;
 /name="oldtime" value="([0-9]+)"/;
 my $oldtime = $1;
 
-$ENV{'REMOTE_ADDR'} = 'confusibombus';
-update_page('ConflictTest', "foo\ntest\ntest\nend\n");
+sleep(2);
 
+$ENV{'REMOTE_ADDR'} = 'confusibombus';
+update_page('ConflictTest', $lao_file_1);
+
+sleep(2);
+
+# merge success has lines from both lao_file_1 and lao_file_2
 $ENV{'REMOTE_ADDR'} = 'megabombus';
-test_page(update_page('ConflictTest', "test\ntest\nbar\nend\n", '', '', '', "oldtime=$oldtime"), @Test);
+test_page(update_page('ConflictTest', $lao_file_2,
+		      '', '', '', "oldtime=$oldtime"),
+	  'The Tao that can be told of',     # file 1
+	  'The name that can be named',      # both
+	  'so we may see their simplicity'); # file 2
 
 # test conflict during merging -- first get oldtime, then do two conflicting edits
 
-$str = QuoteHtml(<<'EOT');
-test
-<<<<<<< you
-bar
-||||||| ancestor
-test
-=======
-foo
->>>>>>> other
-test
-EOT
-$str = "\n<pre>\n$str</pre>\n\n";
-@Test = ($str);
+sleep(2);
 
-update_page('ConflictTest', "test\ntest\ntest\nend\n");
+update_page('ConflictTest', $tzu_file);
 
 $_ = `perl wiki.pl action=edit id=ConflictTest`;
 /name="oldtime" value="([0-9]+)"/;
 $oldtime = $1;
 
+sleep(2);
+
 $ENV{'REMOTE_ADDR'} = 'confusibombus';
-update_page('ConflictTest', "test\nfoo\ntest\nend\n");
+update_page('ConflictTest', $tao_file);
+
+sleep(2);
 
 $ENV{'REMOTE_ADDR'} = 'megabombus';
-test_page(update_page('ConflictTest', "test\nbar\ntest\nend\n", '', '', '', "oldtime=$oldtime"), @Test);
+test_page(update_page('ConflictTest', $lao_file,
+		      '', '', '', "oldtime=$oldtime"),
+	  q{<pre class="conflict">&lt;&lt;&lt;&lt;&lt;&lt;&lt; ancestor
+=======
+The Way that can be told of is not the eternal Way;
+The name that can be named is not the eternal name.
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; other
+</pre>},
+	  q{<pre class="conflict">&lt;&lt;&lt;&lt;&lt;&lt;&lt; you
+||||||| ancestor
+They both may be called deep and profound.
+Deeper and more profound,
+The door of all subtleties!
+=======
+
+  -- The Way of Lao-Tzu, tr. Wing-tsit Chan
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; other
+</pre>});
 
 @Test = split('\n',<<'EOT');
 This page was changed by somebody else
@@ -683,28 +767,32 @@ print F "\$SurgeProtection = 0;\n";
 print F "\$ENV{'PATH'} = '';\n";
 close(F);
 
-@Test = split('\n',<<'EOT');
-test bar test end
-EOT
+sleep(2);
 
-update_page('ConflictTest', "test\ntest\ntest\nend\n");
+update_page('ConflictTest', $lao_file);
 
 $_ = `perl wiki.pl action=edit id=ConflictTest`;
 /name="oldtime" value="([0-9]+)"/;
 $oldtime = $1;
 
+sleep(2);
+
 $ENV{'REMOTE_ADDR'} = 'confusibombus';
-update_page('ConflictTest', "test\nfoo\ntest\nend\n");
+update_page('ConflictTest', $lao_file_1);
 
+sleep(2);
+
+# merge not available -- must look for message
 $ENV{'REMOTE_ADDR'} = 'megabombus';
-test_page(update_page('ConflictTest', "test\nbar\ntest\nend\n", '', '', '', "oldtime=$oldtime"), @Test);
+test_page(update_page('ConflictTest', $lao_file_2,
+		      '', '', '', "oldtime=$oldtime"),
+	  'The Way that can be told of is not the eternal Way',   # file 2
+	  'so we may see their simplicity',                       # file 2
+	  'so we may see the result');                            # file 2
 
-@Test = split('\n',<<'EOT');
-This page was changed by somebody else
-Please check whether you overwrote those changes
-EOT
-
-test_page($redirect, map { UrlEncode($_); } @Test); # test cookie!
+test_page($redirect, map { UrlEncode($_) }
+	  ('This page was changed by somebody else',
+           'Please check whether you overwrote those changes')); # test cookie!
 
 # --------------------
 
@@ -1363,6 +1451,8 @@ EOT
 
 run_tests();
 
+# --------------------
+
 markup:
 
 print '[markup]';
@@ -1480,6 +1570,8 @@ mailto:alex@emacswiki.org
 EOT
 
 run_tests();
+
+# --------------------
 
 print '[usemod module]';
 
@@ -1604,6 +1696,8 @@ EOT
 
 run_tests();
 
+# --------------------
+
 print '[markup module]';
 
 system('/bin/rm -rf /tmp/oddmuse');
@@ -1665,6 +1759,8 @@ EOT
 
 run_tests();
 
+# --------------------
+
 print '[setext module]';
 
 system('/bin/rm -rf /tmp/oddmuse');
@@ -1708,7 +1804,10 @@ EOT
 
 run_tests();
 
+# --------------------
+
 print '[anchors module]';
+
 system('/bin/rm -rf /tmp/oddmuse');
 die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
 mkdir '/tmp/oddmuse';
@@ -1749,6 +1848,8 @@ EOT
 
 run_tests();
 
+# --------------------
+
 print '[link-all module]';
 
 system('/bin/rm -rf /tmp/oddmuse');
@@ -1772,6 +1873,8 @@ testing <a class="local" href="http://localhost/test-wrapper.pl/foo">foo</a>.
 EOT
 
 run_tests();
+
+# --------------------
 
 print '[image module]';
 
@@ -1806,6 +1909,8 @@ EOT
 
 run_tests();
 
+# --------------------
+
 print '[subscriberc module]'; # test together with link-all module
 
 system('/bin/rm -rf /tmp/oddmuse');
@@ -1830,6 +1935,8 @@ My subscribed pages: AlexSchroeder, [[LionKimbro]], [[Foo bar]], categories: Cat
 EOT
 
 run_tests();
+
+# --------------------
 
 print '[toc module]';
 
@@ -1888,7 +1995,7 @@ test_page(get_page('toc_test'),
 	  quotemeta('<h2><a name="two">two</a></h2>'),
 	  quotemeta('<h1><a name="one">one</a></h1>'));
 
-fixme:
+# --------------------
 
 print '[comments]';
 
