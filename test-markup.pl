@@ -138,8 +138,10 @@ print F "\$AdminPass = 'foo';\n";
 print F "\$SurgeProtection = 0;\n";
 close(F);
 
+update_page('InnocentPage', 'Innocent.', 'good guy zero');
 update_page('NicePage', 'Friendly content.', 'good guy one');
 sleep(1);
+update_page('InnocentPage', 'Lamb.', 'good guy zero');
 update_page('OtherPage', 'Other cute content 1.', 'another good guy');
 update_page('OtherPage', 'Other cute content 2.', 'another good guy');
 update_page('OtherPage', 'Other cute content 3.', 'another good guy');
@@ -166,6 +168,7 @@ update_page('EvilPage', 'Spam!', 'vandal three');
 update_page('AnotherEvilPage', 'More Spam!', 'vandal four');
 update_page('AnotherEvilPage', 'Still More Spam!', 'vandal five');
 test_page(get_page('NicePage'), 'Bad content');
+test_page(get_page('InnocentPage'), 'Lamb');
 get_page('action=rc all=1 pwd=foo') =~ /.*action=rollback;to=([0-9]+).*?-- good guy two/;
 test_page(get_page("action=rollback to=$1"), 'restricted to administrators');
 test_page(get_page("action=rollback to=$1 pwd=foo"),
@@ -174,6 +177,7 @@ test_page(get_page('NicePage'), 'Nice content');
 test_page(get_page('OtherPage'), 'Other cute content 12');
 test_page(get_page('EvilPage'), 'DeletedPage');
 test_page(get_page('AnotherEvilPage'), 'DeletedPage');
+test_page(get_page('InnocentPage'), 'Lamb');
 test_page(get_page('action=rc showedit=1'), 'Rollback to ');
 
 print '[clusters]';
