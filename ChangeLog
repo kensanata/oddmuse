@@ -1,3 +1,38 @@
+2004-05-10  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($BannedContent): New option.
+	Add it to @LockOnCreation, apply FreeToNormal.
+	(BannedContent): New sub.
+	(DoPost): Call it.
+
+2004-05-09  Alex Schroeder  <alex@gnu.org>
+
+	* upgrade-files.pl (basic_data): Extract summary from text instead
+	from section.
+
+2004-05-08  Alex Schroeder  <alex@gnu.org>
+
+	* latin-1.pl (translate): Added '?', ';', '&' to the "safe" chars,
+	ie. not encoded chars.
+
+	* modules/lang.pl (NewLangInitCookie): Remember old theme
+	parameters, taking care to separate normal values from language
+	values (exactly two letters).
+	(NewLangGetNearLinksUsed): New hidden parameter so that we know
+	when no languages are set.
+
+2004-04-28  Alex Schroeder  <alex@gnu.org>
+
+	* modules/portrait-support.pl (NewPortraitSupportWikiHeading)
+	(NewPortraitSupportApplyRules): Toggle $MyColor when adding a
+	closing div tag.
+	(PortraitSupportRule): Use CSS to alternate background colors.
+
+2004-04-27  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetUrl): Test for image extension is case-insensitive.
+	(GetHttpHeader): Allow $UseCache = -1.
+
 2004-04-25  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoMaintain): Don't sort the output of AllPagesList(),
