@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.23 2004/09/04 09:41:00 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.24 2004/09/08 23:37:47 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalendarUseCal);
 
@@ -44,13 +44,12 @@ sub NewCalendarGetHeader {
 }
 
 sub Cal {
-  my ($year, $mon, $mday, $unlink_year) = @_; # example: 2004, 12.
-  if (not $mon) {
-    my ($sec, $min, $hour);
-    ($sec, $min, $hour, $mday, $mon, $year) = localtime($Now);
-    $mon += 1;
-    $year += 1900;
-  }
+  my ($year, $mon, $unlink_year) = @_; # example: 2004, 12
+  my ($sec_now, $min_now, $hour_now, $mday_now, $mon_now, $year_now) = localtime($Now);
+  $mon_now += 1;
+  $year_now += 1900;
+  $year = $year_now unless $year;
+  $mon = $mon_now unless $mon;
   my @pages = AllPagesList();
   my $cal = '';
   if ($CalendarUseCal) {
@@ -63,11 +62,11 @@ sub Cal {
   return T('Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.')
     unless $cal;
   $cal =~ s|\b([A-Z][a-z])\b|{ T($1); }|ge;
-  $cal =~ s|\b( ?\d?\d)\b|{
+  $cal =~ s|\b( ?[ 0-9]?[0-9])\b|{
     my $day = $1;
     my $date = sprintf("%d-%02d-%02d", $year, $mon, $day);
-    my $class;
-    $class = ' today' if $day == $mday;
+    my $class = '';
+    $class .= ' today' if $day == $mday_now and $mon == $mon_now and $year == $year_now;
     my @matches = grep(/^$date/, @pages);
     my $link;
     if (@matches == 0) { # not using GetEditLink because of $class
@@ -158,7 +157,7 @@ sub PrintYearCalendar {
 	      ' | ',
 	      ScriptLink('action=calendar;year=' . ($year+1), T('Next')));
   for $mon ((1..12)) {
-    print Cal($year, $mon, undef, 1);
+    print Cal($year, $mon, 1);
   }
   print '</div>';
 }
