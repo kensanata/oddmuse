@@ -140,10 +140,11 @@ die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
 mkdir '/tmp/oddmuse';
 
 use Getopt::Std;
-our($opt_m);
-getopts('m');
+our($opt_m, $opt_x);
+getopts('mx');
 
 goto markup if $opt_m;
+goto fixme if $opt_x;
 
 $ENV{'REMOTE_ADDR'} = 'test-markup';
 
@@ -252,7 +253,7 @@ Updates in the last [0-9]+ days
 diff.*ClusterIdea.*history.*four
 for.*MainPage.*only
 1 day
-action=browse;id=MainPage;rcclusteronly=MainPage;days=1
+action=browse;id=MainPage;rcclusteronly=MainPage;days=1;all=0;showedit=0
 EOT
 
 update_page('MainPage', 'Finally the main page.');
@@ -267,9 +268,9 @@ for.*MainPage.*only
 EOT
 
 test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage showedit=1'),
-	  (@Test, 'action=browse;id=MainPage;rcclusteronly=MainPage;showedit=1;days=1'));
+	  (@Test, 'action=browse;id=MainPage;rcclusteronly=MainPage;days=1;all=0;showedit=1'));
 test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage all=1'),
-	  (@Test, 'action=browse;id=MainPage;rcclusteronly=MainPage;all=1;days=1'));
+	  (@Test, 'action=browse;id=MainPage;rcclusteronly=MainPage;days=1;all=1;showedit=0'));
 
 @Test = split('\n',<<'EOT');
 Finally the main page
@@ -278,7 +279,7 @@ diff.*ClusterIdea.*five
 diff.*ClusterIdea.*four
 for.*MainPage.*only
 1 day
-action=browse;id=MainPage;rcclusteronly=MainPage;all=1;showedit=1;days=1
+action=browse;id=MainPage;rcclusteronly=MainPage;days=1;all=1;showedit=1
 EOT
 
 update_page('ClusterIdea', "MainPage\nSomebody has to do it.", 'five', 1);
@@ -401,6 +402,8 @@ test_page(get_page('RSS'), @Test);
 
 # --------------------
 
+fixme:
+
 print '[redirection]';
 
 update_page('Miles_Davis', 'Featuring [[John Coltrane]]'); # plain link
@@ -414,7 +417,7 @@ test_page(get_page('John_Coltrane'), ('<li>REDIRECT Coltrane'));
 test_page(get_page('Sonny_Stitt'),
 	  ('Status: 302', 'Location: .*wiki.pl\?action=browse;oldid=Sonny_Stitt;id=Stitt'));
 test_page(get_page('Keith_Jarret'),
-	  ('Plays with', 'wiki.pl/Gary_Peacock', 'Keith Jarret', 'Gary Peacock'));
+	  ('Plays with', 'wiki.pl/Jack_DeJohnette#Gary_Peacock', 'Keith Jarret', 'Gary Peacock'));
 test_page(get_page('Gary_Peacock'),
 	  ('Status: 302', 'Location: .*wiki.pl/Jack_DeJohnette#Gary_Peacock'));
 test_page(get_page('Jack_DeJohnette'),
@@ -795,6 +798,11 @@ test_page(update_page("Alexander_Schröder", "Edit [[Alexander Schröder]]!"), @
 
 print '[banning]';
 
+open(F,'>/tmp/oddmuse/config');
+print F "\$AdminPass = 'foo';\n";
+print F "\$SurgeProtection = 0;\n";
+close(F);
+
 ## Edit banned hosts as a normal user should fail
 
 $localhost = 'confusibombus';
@@ -848,6 +856,25 @@ Bar
 EOT
 
 test_page(update_page('BannedHosts', "Foo\nBar\n", 'banning me', 0, 1), @Test);
+
+## Banning content
+
+open(F,'>/tmp/oddmuse/config');
+print F "\$AdminPass = 'foo';\n";
+print F "\$SurgeProtection = 0;\n";
+close(F);
+
+@Test = split('\n',<<'EOT');
+banned text
+wiki administrator
+matched
+See .*BannedContent.* for more information
+EOT
+
+update_page('BannedContent', "cosa\n mafia\nnostra\n", 'one banned word', 0, 1);
+test_page(update_page('CriminalPage', 'This is about the mafia'), 'Describe the new page here');
+test_page($redirect, @Test);
+test_page(update_page('CriminalPage', 'This is about the cosa nostra'), 'cosa nostra');
 
 # --------------------
 
@@ -1047,7 +1074,7 @@ update_page('InterMap', " Oddmuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n
 
 update_page('a', 'Oddmuse:foo(no) [Oddmuse:bar] [Oddmuse:baz text] '
 	    . '[Oddmuse:bar(no)] [Oddmuse:baz(no) text] '
-	    . '[[Oddmuse:foo_(bar)]] [[[Oddmuse:foo_(baz)]]] [[Oddmuse:foo_(quux)|text]]');
+	    . '[[Oddmuse:foo (bar)]] [[[Oddmuse:foo (baz)]]] [[Oddmuse:foo (quux)|text]]');
 
 @Test = split('\n',<<'EOT');
 "a" -> "Oddmuse:foo"
