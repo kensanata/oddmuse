@@ -275,7 +275,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.237 2003/11/03 14:03:24 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.238 2003/11/03 18:39:41 as Exp $');
 }
 
 sub InitCookie {
@@ -1226,7 +1226,6 @@ sub DoRc {
     splice(@fullrc, 0, $i);  # Remove items before index $i
     print &$GetRC(@fullrc);
   }
-  print $q->p(Ts('Page generated %s', TimeToText($Now))) if $showHTML;
 }
 
 sub RcHeader {
@@ -1237,11 +1236,6 @@ sub RcHeader {
 	  ? Ts('Updates in the last %s days', GetParam('days', $RcDefault))
 	  : Ts('Updates in the last %s day', GetParam('days', $RcDefault)))
   }
-  my $lastTs = 0;
-  if (@_ > 0) {  # Only false if no lines in file
-    ($lastTs) = split(/$FS/, $_[$#_]); # just look at the first element
-  }
-  $lastTs++  if (($Now - $lastTs) > 5);  # Skip last unless very recent
   my ($action);
   my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $langFilter) =
     map {
@@ -1279,8 +1273,7 @@ sub RcHeader {
   print $q->p(join(' | ', map { ScriptLink("$action;days=$_",
 		  ($_ != 1) ? Ts('%s days', $_) : Ts('%s days', $_));
 			      } @RcDays) . $q->br() . $switches . $q->br()
-	      . ScriptLink("$action;from=$lastTs",
-	   T('List new changes starting from')) . ' ' . TimeToText($lastTs));
+	      . ScriptLink($action . ';from=' . ($LastUpdate + 1), T('List later changes')));
 }
 
 sub GetRc {
@@ -3565,13 +3558,13 @@ sub GetPermanentAnchor {
   my ($class, $resolved) = ResolveId($id);
   if ($class eq 'local' and $resolved ne $OpenPageName) { # exists already
     return '[' . Ts('anchor first defined here: %s', GetPageLink($id)) . ']';
-  } elsif (RequestLockDir('permanentanchors')) { # not fatal
+  } elsif ($PermanentAnchors{$id} ne $OpenPageName
+	   and RequestLockDir('permanentanchors')) { # not fatal
     $PermanentAnchors{$id}=$OpenPageName;
     WritePermanentAnchors();
     ReleaseLockDir('permanentanchors');
   }
   $PagePermanentAnchors{$id} = 1; # add to the list of anchors in page
-  $id = UrlEncode($id);
   return GetSearchLink($id, 'definition', $id,
 		       T('Click to search for references to this permanent anchor'));
 }
