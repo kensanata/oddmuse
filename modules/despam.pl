@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: despam.pl,v 1.3 2004/11/26 16:13:22 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: despam.pl,v 1.4 2004/11/26 17:10:10 as Exp $</p>';
 
 $Action{despam} = \&DoDespam;
 
@@ -25,15 +25,16 @@ my @DespamRules = ();
 sub DoDespam {
   RequestLockOrError();
   my @pages = DespamPages();
+  my $list = GetParam('list', 0); 
   print GetHeader('', T('Despamming pages'), '') . '<div class="content"><p>';
   foreach my $id (@pages) {
     next if $id eq $BannedContent;
     OpenPage($id);
     my $title = $id;
     $title =~ s/_/ /g;
-    my $rule = DespamBannedContent($Page{text});
+    my $rule = $list || DespamBannedContent($Page{text});
     print GetPageLink($id, $title);
-    DespamPage($rule) if $rule;
+    DespamPage($rule) if $rule and not $list;
     print $q->br();
   }
   print '</p></div>';
@@ -58,11 +59,15 @@ sub DespamBannedContent {
 }
 
 sub DespamPages {
-  # assume that regular maintenance is happening and just read rc.log
+  # Assume that regular maintenance is happening and just read rc.log.
+  # This is not optimized like DoRc().
+  my $starttime = 0;
+  $starttime = $Now - GetParam('days', $RcDefault) * 86400; # 24*60*60
   my $data = ReadFileOrDie($RcFile);
   my %files = (); # use a hash map to make it unique
   foreach my $line (split(/\n/, $data)) {
     my ($ts, $id) = split(/$FS/, $line);
+    next if $ts < $starttime;
     $files{$id} = 1;
   }
   return keys %files;
@@ -80,14 +85,14 @@ sub DespamPage {
     } elsif (not DespamBannedContent($text)) {
       my $summary = Tss('Revert to revision %1: %2', $revision, $rule);
       print ': ' . $summary;
-      Save($OpenPageName, $text, $summary);
+      Save($OpenPageName, $text, $summary) unless GetParam('debug', 0);
       return;
     }
   }
   if (grep(/^1$/, @revisions) or not @revisions) { # if there is no kept revision, yet
     my $summary = Ts($rule). ' ' . Ts('Marked as %s.', $DeletedPage);
     print ': ' . $summary;
-    Save($OpenPageName, $DeletedPage, $summary);
+    Save($OpenPageName, $DeletedPage, $summary) unless GetParam('debug', 0);
   } else {
     print ': ' . T('Cannot find unspammed revision.'. $revision);
   }
