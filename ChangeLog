@@ -1,3 +1,7 @@
+2003-09-28  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoPost): Release lock on errors.
+
 2003-09-27  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (%CookieParameters): Added 'css'.
@@ -21,7 +25,8 @@
 	(WriteReferers): Rewrote lock handling.
 	(GetPermanentAnchor): Rewrote lock handling.
 	(DeletePermanentAnchors): Rewrote lock handling.
-	(RequestLockDir): Print error at all times without relying on a specific errno.
+	(RequestLockDir): Print error at all times without relying on a
+	specific errno.
 	(SearchTitleAndBody): Skip uploaded files.
 	(PrintSearchResults): Show files with MIME-type if search string
 	starts with ^#FILE.
