@@ -1,3 +1,8 @@
+2004-02-23  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (%Action): New option.
+	(DoBrowseRequest): Use it.  Major change in how actions are handled!
+
 2004-02-22  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetAuthorLink): Use ScriptLink to link to author.
