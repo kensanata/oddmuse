@@ -348,7 +348,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.452 2004/09/05 19:37:51 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.453 2004/09/06 19:49:00 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -817,8 +817,6 @@ sub RSS {
       $line .= ' ' . $q->a({-href=>$i->{link}, -title=>$date},
 			   $interwiki ? $interwiki . ':' . $i->{title} : $i->{title})
 	if $i->{title} and $i->{link};
-      $line .= ' ' . $q->a({-href=>$i->{guid}, -title=>$date}, $i->{guid})
-	if $i->{guid}; # for RSS 2.0
       my $contributor = $i->{dc}->{contributor};
       $contributor =~ s/^\s+//;
       $contributor =~ s/\s+$//;
