@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: despam.pl,v 1.2 2004/10/28 01:31:05 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: despam.pl,v 1.3 2004/11/26 16:13:22 as Exp $</p>';
 
 $Action{despam} = \&DoDespam;
 
@@ -58,7 +58,14 @@ sub DespamBannedContent {
 }
 
 sub DespamPages {
-  return AllPagesList(); # only check recently changed pages?
+  # assume that regular maintenance is happening and just read rc.log
+  my $data = ReadFileOrDie($RcFile);
+  my %files = (); # use a hash map to make it unique
+  foreach my $line (split(/\n/, $data)) {
+    my ($ts, $id) = split(/$FS/, $line);
+    $files{$id} = 1;
+  }
+  return keys %files;
 }
 
 sub DespamPage {
