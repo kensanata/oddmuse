@@ -356,7 +356,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.532 2005/02/02 22:08:08 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.533 2005/03/06 16:31:59 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -507,16 +507,13 @@ sub ApplyRules {
       } elsif ($bol && m/\G(\&lt;rss(\s+(\d*))?\s+(.*?)\&gt;[ \t]*\n?)/cgis) {
 	# <rss "uri..."> stores the parsed RSS of the given URI
 	Clean(CloseHtmlEnvironments());
-	warn "before: @HtmlStack";
 	Dirty($1);
 	my $oldpos = pos;
 	eval { local $SIG{__DIE__}; binmode(STDOUT, ":utf8"); } if $HttpCharset eq 'UTF-8';
 	print RSS($3 ? $3 : 15, split(/\s+/, UnquoteHtml($4)));
 	eval { local $SIG{__DIE__}; binmode(STDOUT, ":raw"); };
-	warn "after: @HtmlStack";
 	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
 	pos = $oldpos;
-	warn "finally: @HtmlStack";
 	# restore \G after call to RSS which uses the LWP module (for older copies of the module?)
       } elsif ($locallinks
 	       and ($BracketText && m/\G(\[$InterLinkPattern\s+([^\]]+?)\])/cog
