@@ -172,7 +172,7 @@ Lock page
 頁面鎖定
 Edit revision %s of this page
 編輯本頁的第 %s 版本
-Edit text of this page
+Edit this page
 編輯本頁的文字
 e
 

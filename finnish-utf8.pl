@@ -171,7 +171,7 @@ Lock page
 Lukitse sivu
 Edit revision %s of this page
 Muokkaa tämän sivun versiota %s
-Edit text of this page
+Edit this page
 Muokkaa tätä sivua
 e
 m

@@ -173,7 +173,7 @@ Lock page
 
 Edit revision %s of this page
 Править версию %s этой страницы
-Edit text of this page
+Edit this page
 Редактировать текст этой страницы
 e
 

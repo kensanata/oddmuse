@@ -172,7 +172,7 @@ Lock page
 
 Edit revision %s of this page
 Editar la revisión %s de esta página
-Edit text of this page
+Edit this page
 Editar el contenido de esta página
 e
 

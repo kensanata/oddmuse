@@ -27,6 +27,8 @@ Invalid UserName %s: not saved.
 Невалидно потребителско име %s: нищо не бе записано.
 UserName must be 50 characters or less: not saved
 Дължината на потребителското име не трябва да надвишава 50 знака: нищо не бе записано.
+This page contains an uploaded file:
+
 XML::RSS is not available on this system.
 Модулът XML::RSS не е инсталиран на тази система.
 diff
@@ -173,7 +175,7 @@ Lock page
 
 Edit revision %s of this page
 Редакция на версия %s на тази страница
-Edit text of this page
+Edit this page
 Редакция на тази страница
 e
 
@@ -497,6 +499,10 @@ Next
 
 Calendar %s
 
+Comments on 
+
+Comment on 
+
 Compilation for %s
 
 Compilation tag is missing a regular expression.
@@ -550,6 +556,14 @@ Type
 Permalink to "%s"
 
 Portrait
+
+Updating %s
+
+Done.</p>
+
+Search term missing.
+
+Searching for %s
 
 Static Copy
 

@@ -173,8 +173,8 @@ Lock page
 
 Edit revision %s of this page
 Modifier la version %s de cette page
-Edit text of this page
-Modifier le texte de cette page
+Edit this page
+Modifier cette page
 e
 
 This page is read-only

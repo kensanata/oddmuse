@@ -171,7 +171,7 @@ Lock page
 Seite sperren
 Edit revision %s of this page
 Version %s dieser Seite bearbeiten
-Edit text of this page
+Edit this page
 Diese Seite bearbeiten
 e
 b

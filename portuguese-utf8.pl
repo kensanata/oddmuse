@@ -172,8 +172,8 @@ Lock page
 
 Edit revision %s of this page
 Edite a revisão %s desta página
-Edit text of this page
-Edite o texto desta página
+Edit this page
+Edite esta página
 e
 
 This page is read-only

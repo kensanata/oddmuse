@@ -170,7 +170,7 @@ Lock page
 
 Edit revision %s of this page
 
-Edit text of this page
+Edit this page
 
 e
 

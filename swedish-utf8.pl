@@ -177,7 +177,7 @@ Lock page
 Lås sidan
 Edit revision %s of this page
 Redigera version %s av den här sidan
-Edit text of this page
+Edit this page
 Redigera sidan
 e
 r
