@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.35 2004/12/27 01:57:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.36 2005/01/07 23:58:49 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
@@ -136,6 +136,34 @@ Rollback to %s
 Rückgängig gemacht auf den Stand vom %s
 %s rolled back
 Änderungen für %s rückgängig gemacht
+Index of all pages
+Index aller Seiten
+Wiki Version
+Wiki Version
+Unlock Wiki
+Aufheben der Sperren
+Recent Visitors
+Kürzliche Besucher
+Password
+Passwort
+Run maintenance
+Wartungsarbeiten durchführen
+Unlock site
+Wiki entsperren
+Lock site
+Wiki sperren
+Unlock %s
+
+Lock %s
+
+Administration
+
+Actions:
+
+Important pages:
+
+To mark a page for deletion, put <strong>%s</strong> on the first line.
+
 [Home]
 [Erste Seite]
 redirected from %s
@@ -162,16 +190,6 @@ by %s
 von %s
 (diff)
 (Unterschiede)
-Run maintenance
-Wartungsarbeiten durchführen
-Unlock site
-Wiki entsperren
-Lock site
-Wiki sperren
-Unlock page
-Seite entsperren
-Lock page
-Seite sperren
 Edit revision %s of this page
 Version %s dieser Seite bearbeiten
 Edit this page
@@ -246,8 +264,6 @@ Cannot write %s
 %s kann nicht geschrieben werden
 Could not get %s lock
 Die %s Sperre konnte nicht gesetzt werden.
-Unlocking
-Aufheben der Sperren
 This operation may take several seconds...
 Das könnte einige Sekunden dauern...
 Forced unlock of %s lock.
@@ -302,8 +318,6 @@ File to upload:
 Hochzuladende Datei: 
 Files of type %s are not allowed.
 Der Dateityp %s ist nicht erlaubt.
-Password
-Passwort
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 Ihr Passwort wird in einem Cookie gespeichert, falls Sie Cookies eingeschaltet haben. Cookies können verloren gehen, wenn Sie die Verbindung von einer anderen Maschine, von einem anderen Account oder mit anderer Software herstellen.
 You are currently an administrator on this site.
@@ -324,14 +338,18 @@ This operation is restricted to administrators only...
 Diese Aktion darf nur von Administratoren durchgeführt werden...
 Rule "%1" matched "%2" on this page.
 Auf dieser Seite verstösst "%2" gegen die Regel "%1".
-Index of all pages
-Index aller Seiten
-all pages
-alle Seiten
-permanent anchors
-permanente Anker
-near links
-"nahe" Seiten
+Without normal pages
+
+Include normal pages
+
+Without permanent anchors
+
+Include permanent anchors
+
+Without near pages
+
+Include near pages
+
 (for %s)
 (für %s)
 %s pages found.
@@ -404,8 +422,8 @@ ancestor
 Vorgänger
 other
 Andere Person
-Maintenance on all pages
-Wartungsarbeiten auf allen Seiten
+Run Maintenance
+
 Maintenance not done.
 Wartungsarbeiten nicht erfolgt.
 (Maintenance can only be done once every 12 hours.)
@@ -443,7 +461,7 @@ Sperre von %s erzeugt.
 Lock for %s removed.
 Sperre von %s aufheben.
 Displaying Wiki Version
-Anzeige der Wiki Version
+
 Show dependencies
 Abhängigkeiten zeigen
 Inter links:
@@ -458,12 +476,6 @@ Please do not fetch more than %1 pages in %2 seconds.
 Bitte rufen sie nicht mehr als %1 Seiten in %2 Sekunden auf.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Vielleicht kann der web server das Verzeichnis %s nicht anlegen, oder es wurde schon angelegt, aber der web server kann darin keine neuen Dateien anlegen.
-Recent Visitors
-Kürzliche Besucher
-Referrers
-Links auf diese Seite
-All Referrers
-Alle Links auf diesen Wiki
 anchor first defined here: %s
 Der Anker wurde hier zuerst definiert: %s
 Click to search for references to this permanent anchor
@@ -486,10 +498,10 @@ Renamed from %s
 Ehemals %s
 Renamed %1 to %2.
 Die %1 Seite wurde zu %2 umbenannt
-Delete page
-Seite löschen
-Rename this page to:
-Bennen diese Seite um:
+Immediately delete %s
+
+Rename %s to:
+
 Cannot highlight the language %s.
 Die Sprache %s kann von diesem Modul nicht eingefärbt werden.
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
@@ -547,7 +559,7 @@ Die %s Vorlage ist entweder leer oder existiert gar nicht.
 Clearing Cache
 Cache wird geleert
 Done.
-Fertig.
+
 Generating Link Database
 Verweis Datenbank wird angelegt
 The 404 handler extension requires the link data extension (links.pl).
@@ -566,9 +578,11 @@ Portrait
 Portrait
 You did not answer correctly.
 
+All Referrers
+Alle Links auf diesen Wiki
+Referrers
+Links auf diese Seite
 Updating %s
-
-Done.
 
 Search term missing.
 

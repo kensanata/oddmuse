@@ -18,7 +18,7 @@
 #
 # This translation was last checked for Oddmuse version 1.296.
 #
-$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.24 2004/12/27 01:57:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.25 2005/01/07 23:58:49 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Accès interdit&nbsp;: votre serveur, adresse IP ou nom d'utilisateur a été bloqué.
@@ -138,6 +138,34 @@ Rollback to %s
 
 %s rolled back
 
+Index of all pages
+Index de toutes les pages
+Wiki Version
+Affiche la version du wiki
+Unlock Wiki
+Supression du verrou
+Recent Visitors
+Derniers Visiteurs
+Password
+Mot de passe
+Run maintenance
+
+Unlock site
+
+Lock site
+
+Unlock %s
+
+Lock %s
+
+Administration
+
+Actions:
+
+Important pages:
+
+To mark a page for deletion, put <strong>%s</strong> on the first line.
+
 [Home]
 [Accueil]
 redirected from %s
@@ -164,16 +192,6 @@ by %s
 par %s
 (diff)
 (diff)
-Run maintenance
-
-Unlock site
-
-Lock site
-
-Unlock page
-
-Lock page
-
 Edit revision %s of this page
 Modifier la version %s de cette page
 Edit this page
@@ -248,8 +266,6 @@ Cannot write %s
 Ne peut écrire %s
 Could not get %s lock
 Ne peut obtenir un verrouillage %s
-Unlocking
-Supression du verrou
 This operation may take several seconds...
 Cette opération peut prendre quelques secondes...
 Forced unlock of %s lock.
@@ -304,8 +320,6 @@ File to upload:
 Fichier à téléverser&nbsp;: 
 Files of type %s are not allowed.
 Les fichiers de type %s ne sont pas autorisés.
-Password
-Mot de passe
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 Votre mot de passe est conservé dans un cookie, si cette fonctionnalité est activée dans votre navigateur. Les cookies peuvent être perdus si vous vous reconnectez d'une autre machine, d'un autre compte ou en utilisant un autre logiciel.
 You are currently an administrator on this site.
@@ -326,13 +340,17 @@ This operation is restricted to administrators only...
 Cette opération est réservée aux administrateurs seulement...
 Rule "%1" matched "%2" on this page.
 
-Index of all pages
-Index de toutes les pages
-all pages
-toutes les pages
-permanent anchors
-ancres permanentes
-near links
+Without normal pages
+
+Include normal pages
+
+Without permanent anchors
+
+Include permanent anchors
+
+Without near pages
+
+Include near pages
 
 (for %s)
 (pour %s)
@@ -406,8 +424,8 @@ ancestor
 ancêtre
 other
 autre
-Maintenance on all pages
-Maintenance sur toutes les pages
+Run Maintenance
+
 Maintenance not done.
 Maintenance non effectuée.
 (Maintenance can only be done once every 12 hours.)
@@ -445,7 +463,7 @@ Verrou pour %s créé.
 Lock for %s removed.
 Verrou pour %s enlevé.
 Displaying Wiki Version
-Affiche la version du wiki
+
 Show dependencies
 
 Inter links:
@@ -460,12 +478,6 @@ Please do not fetch more than %1 pages in %2 seconds.
 
 Check whether the web server can create the directory %s and whether it can create files in it.
 
-Recent Visitors
-Derniers Visiteurs
-Referrers
-Introducteurs
-All Referrers
-Tous les Introducteurs
 anchor first defined here: %s
 première ancre définie ici&nbsp;: %s
 Click to search for references to this permanent anchor
@@ -488,9 +500,9 @@ Renamed from %s
 
 Renamed %1 to %2.
 
-Delete page
+Immediately delete %s
 
-Rename this page to:
+Rename %s to:
 
 Cannot highlight the language %s.
 
@@ -568,9 +580,11 @@ Portrait
 
 You did not answer correctly.
 
+All Referrers
+Tous les Introducteurs
+Referrers
+Introducteurs
 Updating %s
-
-Done.
 
 Search term missing.
 
