@@ -64,7 +64,7 @@ use vars qw(%Page %Section %Text %InterSite %KeptRevisions %IndexHash
 $OpenPageName @KeptList @IndexList $IndexInit $Message $q $Now
 %RecentVisitors @HtmlStack %Referers $Monolithic $ReplaceForm
 %PermanentAnchors %PagePermanentAnchors $CollectingJournal
-$WikiDescription);
+$WikiDescription $PrintedHeader);
 
 # == Configuration ==
 
@@ -254,6 +254,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   $InterSiteInit = 0;
   %InterSite = ();
   $OpenPageName = '';  # Currently open page
+  $PrintedHeader = 1;  # Error messages don't print headers unless necessary
   CreateDir($DataDir); # Create directory if it doesn't exist
   ReportError(Ts('Could not create %s', $DataDir) . ": $!") unless -d $DataDir;
   @UserGotoBarPages = ($HomePage, $RCName) unless @UserGotoBarPages;
@@ -269,7 +270,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.162 2003/09/27 09:49:05 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.163 2003/09/27 14:56:26 as Exp $');
 }
 
 sub InitCookie {
@@ -1622,7 +1623,6 @@ sub DoRollback {
     ReportError(T('Target for rollback is too far back.'));
     return;
   } elsif (!RequestLock()) {
-    ReportError(T('Could not get main lock'));
     return;
   }
   print '<p>';
@@ -1755,6 +1755,8 @@ sub GetHeader {
 }
 
 sub GetHttpHeader {
+  return if $PrintedHeader;
+  $PrintedHeader = 1;
   my ($type, $modified) = @_;
   my $now = gmtime($modified or $Now);
   my %headers = (-last_modified=>$now, -cache_control=>'max-age=10, must-revalidate');
@@ -2365,19 +2367,16 @@ sub ExpireKeepFile {
   my ($oldMajor);
   return unless $KeepDays;
   $fname = KeepFileName();
-  return  if (!(-f $fname));
+  return unless -f $fname;
   $data = ReadFileOrDie($fname);
   @kplist = split(/$FS1/, $data, -1);  # -1 keeps trailing null fields
-  return  if (length(@kplist) < 1);  # Also empty
+  return if length(@kplist) < 1;  # Also empty
   shift(@kplist)  if ($kplist[0] eq '');  # First can be empty
-  return  if (length(@kplist) < 1);  # Also empty
+  return if length(@kplist) < 1;  # Also empty
   %tempSection = split(/$FS2/, $kplist[0], -1);
-  if (!defined($tempSection{'keepts'})) {
-#   die('Bad keep file.' . join('|', %tempSection));
-    return;
-  }
+  return unless defined($tempSection{'keepts'})); # corrupt?
   $expirets = $Now - ($KeepDays * 24 * 60 * 60);
-  return  if ($tempSection{'keepts'} >= $expirets);  # Nothing old enough
+  return if ($tempSection{'keepts'} >= $expirets);  # Nothing old enough
   $anyExpire = 0;
   $anyKeep   = 0;
   %keepFlag  = ();
@@ -2410,7 +2409,10 @@ sub ExpireKeepFile {
     return;
   }
   return  if (!$anyExpire);  # No sections expired
-  open (OUT, ">$fname") or die (Ts('cant write %s', $fname) . ": $!");
+  if (!open (OUT, ">$fname")) {
+    ReportError(Ts('cant write %s', $fname) . ": $!");
+    return;
+  }
   foreach (@kplist) {
     %tempSection = split(/$FS2/, $_, -1);
     $sectName = $tempSection{'name'};
@@ -2463,7 +2465,8 @@ sub GetTextAtTime {
 
 sub ReportError {
   my ($errmsg) = @_;
-  print $q->header, '<H2>', $errmsg, '</H2>', $q->end_html;
+  print GetHttpHeader('text/html');
+  print $q->h2($errmsg), $q->end_html;
 }
 
 sub ValidId {
@@ -2500,17 +2503,16 @@ sub GetLockedPageFile {
 }
 
 sub RequestLockDir {
-  my ($name, $tries, $wait, $errorDie) = @_;
+  my ($name, $tries, $wait, $error) = @_;
   my ($lockName, $n);
   $tries = 4 unless $tries;
   $wait = 2 unless $wait;
-  $errorDie = 0 unless $errorDie;
   CreateDir($TempDir);
   $lockName = $LockDir . $name;
   $n = 0;
   while (mkdir($lockName, 0555) == 0) {
     if ($! != 17) {
-      die(Ts('can not make %s', $LockDir) . ": $!\n")  if $errorDie;
+      ReportError(Ts('Could not get %s lock', $LockDir) . ": $!\n")  if $error;
       return 0;
     }
     return 0  if ($n++ >= $tries);
@@ -3109,15 +3111,14 @@ sub PrintPageList {
 
 sub Replace {
   my ($from, $to) = @_;
-  if (RequestLock()) {
-    foreach my $id (AllPagesList()) {
-      OpenPage($id);
-      OpenDefaultText();
-      $_ = $Text{'text'};
-      if (eval "s/$from/$to/gi") { # allows use of backreferences
-	Save($id, $_, $from . ' -> ' . $to, 1,
-	     ($Section{'ip'} ne $ENV{REMOTE_ADDR}));
-      }
+  return unless RequestLock();
+  foreach my $id (AllPagesList()) {
+    OpenPage($id);
+    OpenDefaultText();
+    $_ = $Text{'text'};
+    if (eval "s/$from/$to/gi") { # allows use of backreferences
+      Save($id, $_, $from . ' -> ' . $to, 1,
+	   ($Section{'ip'} ne $ENV{REMOTE_ADDR}));
     }
   }
   ReleaseLock();
@@ -3309,7 +3310,7 @@ sub DoPost {
     $string = $';
   }
   # Lock before getting old page to prevent races
-  RequestLock() or die(T('Could not get main lock'));
+  return unless RequestLock();
   OpenPage($id);
   OpenDefaultText();
   my $old = $Text{'text'};
@@ -3533,7 +3534,7 @@ sub DoMaintain {
     }
   }
   my $cache = GetParam('cache', 0);
-  RequestLock() or die(T('Could not get main lock'));
+  return unless RequestLock();
   print $q->p(T('Main lock obtained.'));
   print '<p>' . T('Expiring keep files and deleting pages marked for deletion')
     . ($cache ? ' ' . T('and refreshing HTML cache') : '');
@@ -3600,8 +3601,8 @@ sub DoConvert {
     print $q->p(T('No conversion required.'));
     return;
   }
-  return  if (!UserIsAdminOrError());
-  RequestLock() or die(T('Could not get main lock'));
+  return unless UserIsAdminOrError();
+  return unless RequestLock();
   print '<p>' . T('Main lock obtained.');
   foreach my $name (AllPagesList()) {
     ConvertFile (GetPageFile($name));
@@ -3726,13 +3727,17 @@ sub DoSurgeProtection {
     my $name = GetParam('username','');
     $name = $ENV{'REMOTE_ADDR'} if not $name and $SurgeProtection;
     if ($name) {
-      RequestLockDir('visitors');
       ReadRecentVisitors();
       AddRecentVisitor($name);
-      WriteRecentVisitors();
-      ReleaseLockDir('visitors');
-      if ($SurgeProtection and DelayRequired($name)) {
-	ReportError(Ts('Too many connections by %s',$name));
+      if (RequestLockDir('visitors')) {
+	WriteRecentVisitors() if $lock;
+	ReleaseLockDir('visitors');
+	if ($SurgeProtection and DelayRequired($name)) {
+	  ReportError(Ts('Too many connections by %s',$name));
+	  exit;
+	}
+      } elsif ($SurgeProtection) {
+	ReportError(Ts('Could not get %s lock', 'visitors'));
 	exit;
       }
     }
@@ -3873,9 +3878,9 @@ sub UpdateReferers {
 
 sub WriteReferers {
   my $id = shift;
+  return unless RequestLockDir('refer_' . $id);
   my $data = join($FS1, map { $_ . $FS1 . $Referers{$_} } keys %Referers);
   my $file = GetRefererFile($id);
-  RequestLockDir('refer_' . $id);
   CreatePageDir($RefererDir, $id);
   WriteStringToFile($file, $data);
   ReleaseLockDir('refer_' . $id);
@@ -3935,18 +3940,16 @@ sub GetPermanentAnchor {
   $id = FreeToNormal($id);
   my $text = $id;
   $text =~ s/_/ /g;
-  RequestLockDir('permanentanchors', 2, 2, 0);
   ReadPermanentAnchors();
   if ( $PermanentAnchors{$id} ) {
     if ($PermanentAnchors{$id} ne $OpenPageName) {
-      ReleaseLockDir('permanentanchors');
       return '[' . T('anchor first defined here') . ': ' . GetPermanentAnchorLink($id) .']';
     }
-  } else {
+  } elsif (RequestLockDir('permanentanchors', 2, 2, 0)) {
     $PermanentAnchors{$id}=$OpenPageName;
-     WritePermanentAnchors();
-   }
-  ReleaseLockDir('permanentanchors');
+    WritePermanentAnchors();
+    ReleaseLockDir('permanentanchors');
+  }
   $PagePermanentAnchors{$id} = 1; # add to the list of anchors in page
   $id = UrlEncode($id);
   return ScriptLink("action=anchor;id=$id#$id",$text,'definition',$id);
@@ -3969,13 +3972,13 @@ sub GetPermanentAnchorLink {
 }
 
 sub DeletePermanentAnchors {
-  RequestLockDir('permanentanchors', 2, 2, 0);
   ReadPermanentAnchors();
   foreach (keys %PermanentAnchors) {
     if ($PermanentAnchors{$_} eq $OpenPageName and !$PagePermanentAnchors{$_}) {
       delete($PermanentAnchors{$_}) ;
     }
   }
+  return unless RequestLockDir('permanentanchors', 2, 2, 0);
   WritePermanentAnchors();
   ReleaseLockDir('permanentanchors');
 }
