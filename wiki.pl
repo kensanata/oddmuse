@@ -55,8 +55,8 @@ $DeletedPage %Languages $LanguageLimit $ValidatorLink $RefererTracking
 $RefererTimeLimit $RefererLimit $TopLinkBar $NotifyTracker $InterMap
 @LockOnCreation $RefererFilter $PermanentAnchorsFile $PermanentAnchors
 %CookieParameters $StyleSheetPage @UserGotoBarPages $ConfigPage
-$ScriptName $CommentsPrefix $NewComment $AllNetworkFiles
-$UsePathInfo $UploadAllowed @UploadTypes);
+$ScriptName $CommentsPrefix $NewComment $AllNetworkFiles $UsePathInfo
+$UploadAllowed @UploadTypes);
 
 # Other global variables:
 use vars qw(%Page %Section %Text %InterSite %KeptRevisions %IndexHash
@@ -111,10 +111,10 @@ $BracketWiki = 0;   # 1 = [WikiLink desc] uses a desc for the local link
 $HtmlLinks   = 0;   # 1 = <a href="foo">desc</a> is a link
 $NetworkFile = 1;   # 1 = file: is a valid protocol for URLs
 $AllNetworkFiles = 0; # 1 = file:///foo is allowed -- the default allows only file://foo
-$PermanentAnchors = 1;   # 1 = [::some text] creates a permanent anchor [##some text] link to the anchor
+$PermanentAnchors = 1;   # 1 = [::some text] creates it and [##some text] link to it
 $InterMap    = 'InterMap'; # name of the intermap page
 
-# TextFormattingRules
+# Other TextFormattingRules
 $HtmlTags    = 0;   # 1 = allow some 'unsafe' HTML tags
 $RawHtml     = 0;   # 1 = allow <HTML> environment for raw HTML inclusion
 
@@ -181,14 +181,10 @@ $CommentsPrefix = ''; # prefix for comment pages, eg. 'Comments_on_' to enable
 # Example: %Languages = ('de' => '\b(der|die|das|und|oder)\b');
 %Languages = ();
 
-@LockOnCreation = ($BannedHosts, $InterMap, $RefererFilter, $StyleSheetPage,
-		   $ConfigPage);
+@LockOnCreation = ($BannedHosts, $InterMap, $RefererFilter, $StyleSheetPage, $ConfigPage);
 
-%CookieParameters = ('username' => '',
-		     'pwd' => '',
-		     'theme' => '',
-		     'toplinkbar' => $TopLinkBar,
-		     'embed' => $EmbedWiki);
+%CookieParameters = ('username'=>'', 'pwd'=>'', 'theme'=>'',
+		     'toplinkbar'=>$TopLinkBar, 'embed'=>$EmbedWiki);
 
 $IndentLimit = 20;                  # Maximum depth of nested lists
 $LanguageLimit = 3;                 # Number of matches req. for each language
@@ -220,8 +216,10 @@ sub DoBannedReading {
   ReportError(T('Reading not allowed: user, ip, or network is blocked.'));
 }
 
+use CGI;
+use CGI::Carp qw(fatalsToBrowser);
+
 sub Init {
-  InitRequest();      # get $q!
   $FS  = "\x1e";      # The FS character is the RECORD SEPARATOR control char in ASCII
   $FS0 = "\xb3";      # The old FS character is a superscript "3" in Latin-1
   $FS1 = $FS . '1';   # The FS values are used to separate fields
@@ -231,9 +229,10 @@ sub Init {
   InitLinkPatterns(); # Link pattern can be changed in config files
   if ($UseConfig and $ConfigFile and -f $ConfigFile) {
     do $ConfigFile;
-    $Message .= $q->p("$ConfigFile: $@") if $@;
-  } # FS character can only be changed in config *file*
-  if ($ConfigPage) {
+    $Message .= CGI::p("$ConfigFile: $@") if $@;
+  }
+  InitRequest();      # get $q
+  if ($ConfigPage) {  # $FS, $HttpCharset, $MaxPost must be set in config file!
     eval GetPageContent($ConfigPage);
     $Message .= $q->("$ConfigPage: $@") if $@;
   }
@@ -241,16 +240,13 @@ sub Init {
   InitCookie();       # After request, because $q is used
 }
 
-use CGI;
-use CGI::Carp qw(fatalsToBrowser);
-
 sub InitRequest {
   $CGI::POST_MAX = $MaxPost;
   $q = new CGI;
+  $q->charset($HttpCharset) if $HttpCharset;
 }
 
 sub InitVariables {    # Init global session variables for mod_perl!
-  $q->charset($HttpCharset) if $HttpCharset;
   $Now = time;         # Reset in case script is persistent
   $ReplaceForm = 0;    # Only admins may search and replace
   $ScriptName = $q->url() unless defined $ScriptName; # Name used in links
@@ -273,7 +269,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.152 2003/09/22 01:43:08 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.153 2003/09/23 20:52:41 as Exp $');
 }
 
 sub InitCookie {
@@ -336,7 +332,7 @@ sub InitLinkPatterns {
 
 sub ApplyRules {
   # locallinks: apply rules that create links depending on local config (incl. interlink!)
-  my ($text, $locallinks) = @_;
+  my ($text, $locallinks, $withanchors, $revision) = @_;
   $text =~ s/\r\n/\n/g; # DOS to Unix
   my $state = ''; # quote, list, or normal ('')
   my $fragment;   # the current HTML fragment to be printed
@@ -351,15 +347,7 @@ sub ApplyRules {
     undef($fragment);
     if (m/\G(?<=\n)/cg or m/\G^/cg) { # at the beginning of a line
       if (pos == 0 and m/#FILE ([^ \n]+)\n(.*)/cgs) {
-	my $oldpos = pos;
-	my ($type, $data) = ($1, $2);
-	if (substr($type, 0, 6) eq 'image/') {
-	  $fragment = $q->img({-src=>$ScriptName . '?action=download;id=' . $OpenPageName,
-			       -alt=>$OpenPageName});
-	} else {
-	  $fragment = ScriptLink('action=download;id=' . $OpenPageName, $OpenPageName);
-	}
-	pos = $oldpos;
+	$fragment = Upload($OpenPageName, (substr($1, 0, 6) eq 'image/'), $revision);
       } elsif (m/\G&lt;pre&gt;\n?(.*?\n)&lt;\/pre&gt;[ \t]*\n?/cgs) { # pre must be on column 1
 	$fragment = CloseHtmlEnvironments() . $q->pre({-class=>'real'}, $1);
       } elsif (m/\G(\s*\n)*(\*+)[ \t]*/cg) {
@@ -388,22 +376,23 @@ sub ApplyRules {
 	}
       } elsif (m/\G(\s*\n)+/cg) {
 	$fragment = CloseHtmlEnvironments() . '<p>'; # there is another one like this further down
-      } elsif (m/\G(\&lt;include( +(text))? +"(.*)"\&gt;[ \t]*\n?)/cgi) { # <include "uri..."> includes the text of the given URI verbatim
+      } elsif (m/\G(\&lt;include( +(text|with-anchors))? +"(.*)"\&gt;[ \t]*\n?)/cgi) { # <include "uri..."> includes the text of the given URI verbatim
 	$oldmatch = $1;
 	my $oldpos = pos;
-	my $raw = $3;
+	my $type = $3;
 	my $uri = $4;
 	if ($uri =~ /^$UrlProtocols:/) {
-	  if ($raw) {
+	  if ($type eq 'text') {
 	    print $q->pre(QuoteHtml(GetRaw($uri)));
 	  } else {
-	    ApplyRules(QuoteHtml(GetRaw($uri)),0);
+	    ApplyRules(QuoteHtml(GetRaw($uri)), 0, ($type eq 'with-anchors')); # no local links
 	  }
 	} else {
-	  if ($raw) {
+	  if ($type eq 'text') {
 	    print $q->pre(QuoteHtml(GetPageContent(FreeToNormal($uri))));
 	  } else {
-	    ApplyRules(QuoteHtml(GetPageContent(FreeToNormal($uri))), 1);
+	    ApplyRules(QuoteHtml(GetPageContent(FreeToNormal($uri))),
+		       $locallinks, $withanchors, $revision);
 	  }
 	}
 	pos = $oldpos; # restore \G after call to ApplyRules
@@ -504,6 +493,12 @@ sub ApplyRules {
       $fragment = GetUrl($1, '', 1, 0);
     } elsif (m/\G$UrlPattern/cg) { # plain URLs after all $UrlPattern, such that [$UrlPattern text] has priority
       $fragment = GetUrl($1, '', 0, 1);
+    } elsif (m/\G(\[image:$FreeLinkPattern\])/cog) { # [image:page] inlines uploaded image
+      DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
+      print Upload($2, 1); # always inline the latest revision
+    } elsif (m/\G(\[link:$FreeLinkPattern\])/cog) { # [link:page] links uploaded file
+      DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
+      print Upload($2, 0); # always link to the latest revision
     } elsif ($WikiLinks && $BracketWiki && $locallinks && m/\G(\[$LinkPattern\s+([^\]]+?)\])/cg) { # [LocalPage text]
       DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
       print GetPageOrEditLink($2, $3, 1);
@@ -515,7 +510,7 @@ sub ApplyRules {
       # will not get an additional ? if FooBar is undefined.
       DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
       print GetPageOrEditLink($1, '');
-    }  elsif ($PermanentAnchors && m/\G(\[::$FreeLinkPattern\])/cg) { #[::Free Link] permanent anchor create
+    }  elsif ($withanchors && $PermanentAnchors && m/\G(\[::$FreeLinkPattern\])/cg) { #[::Free Link] permanent anchor create only $withanchors
       DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
       print GetPermanentAnchor($2);
     } elsif ($PermanentAnchors && m/\G(\[\#\#$FreeLinkPattern\])/cg) { #[##Free Link] permanent anchor link
@@ -572,20 +567,15 @@ sub AddHtmlEnvironment { # add a new one so that it will be closed!
   my ($code, $attr) = @_;
   if ($HtmlStack[0] ne $code) {
     unshift(@HtmlStack, $code);
-    if ($attr) {
-      return "<$code $attr>";
-    } else {
-      return "<$code>";
-    }
+    return "<$code $attr>" if ($attr);
+    return "<$code>";
   }
   return ''; # always return something
 }
 
 sub CloseHtmlEnvironments { # close all
   my $text = ''; # always return something
-  while (@HtmlStack > 0) {
-    $text .=  '</' . shift(@HtmlStack) . '>';
-  }
+  $text .=  '</' . shift(@HtmlStack) . '>'  while (@HtmlStack > 0);
   return $text;
 }
 
@@ -646,12 +636,12 @@ sub SmileyReplace {
 }
 
 sub PrintWikiToHTML {
-  my ($pageText, $revision, $islocked) = @_;
+  my ($pageText, $cacheok, $revision, $islocked) = @_;
   $FootnoteNumber = 0;
-  $pageText =~ s/$FS//g;              # Remove separators (paranoia)
+  $pageText =~ s/$FS//g; # Remove separators (paranoia)
   $pageText = QuoteHtml($pageText);
-  my $cache = ApplyRules($pageText,1);
-  if ($revision eq '') {
+  my $cache = ApplyRules($pageText, 1, $cacheok, $revision); # local links, anchors if cache ok
+  if ($cacheok and not $revision) {
     SetPageCache('blocks', $cache);
     if ($islocked or RequestLock()) {
       SavePage(1);
@@ -720,7 +710,7 @@ sub PrintJournal {
       # Now save information required for saving the cache of the current page.
       local (%Page, $OpenPageName);
       print '<div class="journal">';
-      PrintAllPages(1, @pages);
+      PrintAllPages(1, 1, @pages);
       print '</div>';
     }
     $CollectingJournal = 0;
@@ -903,6 +893,20 @@ sub ScriptLink {
   return $q->a(\%params, $text);
 }
 
+sub Upload {
+  my ($id, $image, $revision) = @_;
+  AllPagesList() unless $IndexInit;
+  my $action = "action=download;id=$id";
+  $action .= ";revision=$revision" if $revision;
+  if (not $IndexHash{$id}) { # page does not exist
+    return '[' . ($image ? 'image' : 'link') . ':' . $id . ']';
+  } elsif ($image) {
+    return $q->img({-src=>"$ScriptName?$action", -alt=>$id, -class=>'upload'});
+  } else {
+    return ScriptLink($action, $id, 'upload');
+  }
+}
+
 sub RFC {
   my $num = shift;
   return $q->a({-href=>"http://www.faqs.org/rfcs/rfc${num}.html"}, "RFC $num");
@@ -943,7 +947,7 @@ sub PrintCache {
   my @flags = split($FS3,$rawflags);
   foreach my $block (@blocks) {
     if (shift(@flags)) {
-      ApplyRules($block,1);
+      ApplyRules($block, 1, 1); # local links, anchors, current revision
     } else {
       print $block;
     }
@@ -973,20 +977,20 @@ sub Ts {
 
 sub DoBrowseRequest {
   if (not $q->param and not ($UsePathInfo and $q->path_info)) {
-    BrowsePage($HomePage);
+    BrowsePage($HomePage, 0, 1);
     return 1;
   }
   my $id = join('_', $q->keywords);
   $id = $q->path_info() if not $id and $UsePathInfo;
   $id =~ s|.*/||;
-  if ($id) {                    # Just script?PageName
+  if ($id) { # Just script?PageName or script/PageName
     if ($FreeLinks && (!-f GetPageFile($id))) {
       $id = FreeToNormal($id);
     }
     if (($NotFoundPg ne '') && (!-f GetPageFile($id))) {
       $id = $NotFoundPg;
     }
-    BrowsePage($id)  if ValidIdOrDie($id);
+    BrowsePage($id, 0, 1)  if ValidIdOrDie($id);
     return 1;
   }
   $id = GetParam('id', '');
@@ -1067,10 +1071,14 @@ sub DoBrowseRequest {
 # == Browse page ==
 
 sub BrowsePage {
-  my ($id, $raw) = @_;
+  my ($id, $raw, $cacheok) = @_;
   my $rc = (($id eq $RCName) || (T($RCName) eq $id) || (T($id) eq $RCName));
   OpenPage($id);
   OpenDefaultText($id);
+  if ($cacheok and $Page{'ts'} eq $q->http('HTTP_IF_MODIFIED_SINCE')) {
+    print $q->header(-status=>'304 NOT MODIFIED');
+    return;
+  }
   # Handle a single-level redirect
   my $oldId = GetParam('oldid', '');
   if (($oldId eq '') && (substr($Text{'text'}, 0, 10) eq '#REDIRECT ')) {
@@ -1118,7 +1126,7 @@ sub BrowsePage {
     }
   }
   # print header
-  print GetHeader($id, QuoteHtml($id), $oldId);
+  print GetHeader($id, QuoteHtml($id), $oldId, $Page{'ts'});
   # print diff, if required
   my $showDiff = GetParam('diff', 0);
   if ($UseDiff && $showDiff) {
@@ -1133,8 +1141,8 @@ sub BrowsePage {
   if ($revision eq '' && GetPageCache('blocks') && GetParam('cache',1)) {
     PrintCache(GetPageCache('blocks'));
   } else {
-    $revision = 'default' if $revision eq '' and $Section{'revision'} == 0;
-    PrintWikiToHTML($Text{'text'}, $revision);
+    my $cache = ($Section{'revision'} > 0 and $revision eq ''); # new page not cached
+    PrintWikiToHTML($Text{'text'}, $cache, $revision); # unlocked, with anchors, unlocked
   }
   print '</div>';
   my $embed = GetParam('embed', $EmbedWiki);
@@ -1716,11 +1724,11 @@ sub GetRCLink {
 }
 
 sub GetHeader {
-  my ($id, $title, $oldId) = @_;
+  my ($id, $title, $oldId, $ts) = @_;
   my $result = '';
   my $embed = GetParam('embed', $EmbedWiki);
   my $altText = T('[Home]');
-  $result = GetHttpHeader();
+  $result = GetHttpHeader('text/html', $ts);
   if ($FreeLinks) {
     $title =~ s/_/ /g;   # Display as spaces
   }
@@ -1757,15 +1765,15 @@ sub GetHeader {
 }
 
 sub GetHttpHeader {
-  my ($type, $nocache) = @_;
-  $type = 'text/html'  unless $type;
-  my $now = gmtime;
+  my ($type, $modified, $cacheok) = @_;
   my %headers;
-  if ($nocache) {
-    %headers = (-expires=>"+24h");
+  my $now = gmtime($modified or $Now);
+  if ($cacheok) {
+    %headers = (-last_modified=>$now, -expires=>'+48h');
+  } elsif ($modified) {
+    %headers = (-last_modified=>$now); # prepare for 304 NOT MODIFIED
   } else {
-    %headers = (-pragma=>'no-cache', -cache_control=>'no-cache',
-		-last_modified=>"$now", -expires=>"+10s");
+    %headers = (-last_modified=>$now, -expires=>'+10s');
   }
   if ($HttpCharset ne '') {
     $headers{-type} = "$type; charset=$HttpCharset";
@@ -1830,6 +1838,7 @@ a.definition:before { content:"[::"; }
 a.definition:after { content:"]"; }
 a.link:before { content:"[##"; }
 a.link:after { content:"]" }
+a.upload:before { content:"link:"; }
 -->
 EOT
   }
@@ -1886,7 +1895,7 @@ sub PrintFooter {
     if (UserCanEdit($CommentsPrefix . $id, 0)
 	and $OpenPageName !~ /^$CommentsPrefix/) {
       $revisions .= ScriptLink($CommentsPrefix . UrlEncode($OpenPageName),
-			       T("Comments on this page"));
+			       T('Comments on this page'));
     }
     $revisions .= ' | ' if $revisions;
     if (UserCanEdit($id, 0)) {
@@ -2776,7 +2785,8 @@ sub DoEdit {
     }
   }
   my $oldText = $Text{'text'};
-  $upload = ($oldText =~ m/#FILE ([^ \n]+)\n(.*)/s) if not defined $upload;
+  my $isFile = ($oldText =~ m/#FILE ([^ \n]+)\n(.*)/s);
+  $upload = $isFile if not defined $upload;
   if ($upload and not $UploadAllowed and not UserIsAdmin()) {
     ReportError(T('Only administrators can upload files.'));
     return;
@@ -2785,8 +2795,10 @@ sub DoEdit {
     $revision = '';
     $isConflict = 0;
     $preview = 0;
+  } elsif ($isFile and not $upload) {
+    $oldText = '';
   }
-  $header = Ts('Editing %s', $id) if $upload or not $header;
+  $header = Ts('Editing %s', $id) if $upload or not $header; # maybe it was set earlier
   if ($preview && !$isConflict) {
     $oldText = $newText;
   }
@@ -2836,7 +2848,7 @@ sub DoEdit {
 			     -label=>T('This change is a minor edit.')));
   }
   if ($EditNote ne '') {
-    print T($EditNote);  # Allow translation, must be a block level element (paragraph, list, table, etc.)
+    print T($EditNote);  # Allow translation
   }
   my $userName = GetParam('username', '');
   print $q->p(T('Username:')
@@ -2847,7 +2859,7 @@ sub DoEdit {
 	      . ($upload ? '' :  ' ' . $q->submit(-name=>'Preview', -value=>T('Preview'))));
   if ($upload) {
     print $q->p(ScriptLink('action=edit;upload=0;id=' . $id, T('Replace this file with text.')));
-  } else {
+  } elsif ($UploadAllowed or UserIsAdmin()) {
     print $q->p(ScriptLink('action=edit;upload=1;id=' . $id, T('Replace this text with a file.')));
   }
   if ($isConflict and not $upload) {
@@ -2867,7 +2879,7 @@ sub DoEdit {
       print $q->strong(T('NOTE: This preview shows the revision of the other author.'))
 	. $q->hr();
     }
-    PrintWikiToHTML($oldText, 'preview');
+    PrintWikiToHTML($oldText); # no caching, current revision, unlocked
     print $q->hr(), $q->h2(T('Preview only, not yet saved')), '</div>';
   }
   PrintFooter($id, 'edit');
@@ -2879,25 +2891,34 @@ sub GetTextArea {
 }
 
 sub GetUpload {
-  return $q->p(T('File to upload: ')
-	       . $q->filefield(-name=>'file', -size=>50, -maxlength=>100));
+  return $q->p(T('File to upload: ') . $q->filefield(-name=>'file', -size=>50, -maxlength=>100));
 }
 
 sub DoDownload {
   my $id = shift;
+  my $revision = GetParam('revision', '');
   OpenPage($id);
-  OpenDefaultText($id);
+  if ($revision) {
+    OpenKeptRevisions('text_default');
+    OpenKeptRevision($revision);
+  } else {
+    if ($Page{'ts'} eq $q->http('HTTP_IF_MODIFIED_SINCE')) {
+      print $q->header(-status=>'304 NOT MODIFIED');
+      return;
+    }
+    OpenDefaultText($id);
+  }
   if ($Text{'text'} =~ /#FILE ([^ \n]+)\n(.*)/s) {
     my ($type, $data) = ($1, $2);
     if (not grep(/^$type$/, @UploadTypes)) {
       ReportError (Ts('Files of type %s are not allowed.', $type));
       return;
     }
-    print GetHttpHeader($type, 1); # increase cache time!
+    print GetHttpHeader($type, $Page{'ts'}, $revision); # cache ok if $revision is given
     require MIME::Base64;
     print MIME::Base64::decode($data);
   } else {
-    print GetHttpHeader('text/plain');
+    print GetHttpHeader('text/plain', $Page{'ts'}, $revision);
     print $Text{'text'};
   }
 }
@@ -3273,12 +3294,13 @@ sub DoPrintAllPages {
   $Monolithic = 1; # changes how ScriptLink works
   print GetHeader('', T('Complete Content'), '')
     . $q->p(Ts('The main page is %s.', $q->a({-href=>'#' . $HomePage}, $HomePage)));
-  PrintAllPages(0, AllPagesList());
+  PrintAllPages(0, 0, AllPagesList());
   PrintFooter();
 }
 
 sub PrintAllPages {
   my $links = shift;
+  my $comments = shift;
   for my $id (@_) {
     OpenPage($id); # After this call, don't save cache!
     OpenDefaultText($id);
@@ -3286,7 +3308,11 @@ sub PrintAllPages {
     if (GetPageCache('blocks') && GetParam('cache',1)) {
       PrintCache(GetPageCache('blocks'));
     } else {
-      PrintWikiToHTML($Text{'text'});
+      PrintWikiToHTML($Text{'text'}, 1); # cache, current, not locked
+    }
+    if ($comments and UserCanEdit($CommentsPrefix . $id, 0) and $id !~ /^$CommentsPrefix/) {
+      print $q->p({-class=>'comment'}, ScriptLink($CommentsPrefix . UrlEncode($id),
+						  T('Comments on this page')));
     }
   }
 }
@@ -3566,7 +3592,7 @@ sub DoMaintain {
       ExpireKeepFile();
       local *STDOUT;
       open (STDOUT, "> /dev/null");
-      PrintWikiToHTML($Text{'text'}, '', 1) if ($cache); # is locked
+      PrintWikiToHTML($Text{'text'}, 1, '', 1) if ($cache); # cache, current, locked
     }
   }
   print '</p>';
