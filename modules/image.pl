@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: image.pl,v 1.11 2004/06/28 21:23:23 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: image.pl,v 1.12 2004/09/05 19:23:24 as Exp $</p>';
 
 use vars qw($ImageUrlPath);
 
@@ -28,7 +28,7 @@ push(@MyRules, \&ImageSupportRule);
 
 sub ImageSupportRule {
   my $result = undef;
-  if (m!\G\[\[image(/[a-z]+)?( external)?:$FreeLinkPattern(\|[^\]|]+)?(\|[^\]]+)?\]\]!gc) {
+  if (m!\G\[\[image(/[a-z]+)?( external)?:$FreeLinkPattern(\|[^\]\|]+)?(\|($FreeLinkPattern|$FullUrlPattern))?\]\]!gc) {
     my $oldpos = pos;
     my $class = 'image';
     $class .= ' ' . substr($1, 1) if $1;
