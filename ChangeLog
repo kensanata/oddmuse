@@ -10,6 +10,8 @@
 	instead of passing the list to PrintSearchResults.
 	(PrintSearchResults): Removed.
 	(PrintSearchResult): New, replaces PrintSearchResults.
+	(DoPost): Some refactoring, and making sure that no there is no
+	conflict warning when a comment is being appended.
 
 2003-11-27  Alex Schroeder  <alex@gnu.org>
 
