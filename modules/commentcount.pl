@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>commentcount.pl (v0.1) - Show how many comments have been made.</p>';
+$ModulesDescription .= '<p>$Id: commentcount.pl,v 1.2 2004/11/20 22:19:17 as Exp $</p>';
 
 *OldCommentcountAddComment = *AddComment;
 *AddComment = *NewCommentcountAddComment;
@@ -29,10 +29,10 @@ sub NewCommentcountAddComment {
     # no comment added
   } else {
     my $num = $new;
-    if($num =~ /=== (\d) Comments\. ===/) {
+    if($num =~ /=== (\d+) Comments\. ===/) {
       $num = $1;
       $num++;
-      $new =~ s/=== (\d) Comments\. ===/=== $num Comments. ===/;
+      $new =~ s/=== (\d+) Comments\. ===/=== $num Comments. ===/;
     } else {
       $new = "=== 1 Comments. ===\n" . $new;
     }
@@ -49,7 +49,7 @@ sub NewCommentcountScriptLink {
     # Add the number of comments here
     my $comments = GetPageContent($action);
     my $num = 0;
-    if($comments =~ /=== (\d) Comments\. ===/) {
+    if($comments =~ /=== (\d+) Comments\. ===/) {
       $num = $1;
     }
     # Plurality!
@@ -58,4 +58,3 @@ sub NewCommentcountScriptLink {
   }
   return OldCommentcountScriptLink($action, $text, $class, $name, $title);
 }
-
