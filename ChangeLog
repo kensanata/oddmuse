@@ -2,6 +2,9 @@
 
 	* wiki.pl (GetHtmlHeader): Fix bug that prevented URL from
 	appearing in the body class.
+	(@UserGotoBarPages): New.
+	(GetGotoBar): Use it.
+	(%CookieParameters): Added 'linkrandom'.
 
 2003-06-01  Alex Schroeder  <alex@gnu.org>
 
