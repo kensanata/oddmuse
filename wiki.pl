@@ -262,7 +262,7 @@ sub DoWikiRequest {
 sub ReportError { # fatal!
   my ($errmsg, $status, $log) = @_;
   print GetHttpHeader('text/html', 1, $status); # no caching
-  print $q->h2($errmsg), $q->end_html;
+  print $q->start_html, $q->h2($errmsg), $q->end_html;
   map { ReleaseLockDir($_); } keys %Locks;
   WriteStringToFile("$TempDir/error", $q->start_html . $q->h1("$status $errmsg")
 		    . $q->Dump . $q->end_html) if $log;
@@ -356,7 +356,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.525 2005/01/19 21:05:11 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.526 2005/01/20 11:45:22 groogel Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
