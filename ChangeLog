@@ -12,6 +12,8 @@
 	permanent_link to link.
 	(GetPermanentAnchor): Changed permanent_def to definition.
 	(GetPermanentAnchorLink): Changed permanent_link to link.
+	($UseConfig): Only set when undefined, so that it can be set to 0
+	in the wrapper.
 
 2003-06-04  Alex Schroeder  <alex@gnu.org>
 
