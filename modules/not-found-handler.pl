@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: not-found-handler.pl,v 1.3 2004/06/12 11:31:04 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: not-found-handler.pl,v 1.4 2004/06/12 11:40:06 as Exp $</p>';
 
 use vars qw($NotFoundHandlerDir);
 
@@ -39,12 +39,13 @@ sub NewNotFoundHandlerSave {
   }
 }
 
-*OldNotFoundHandlerDeletePage = *DeletePage;
-*DeletePage = *NewNotFoundHandlerDeletePage;
+# Need to delete cache after maintenance, because the list of near
+# pages might have changed.
 
-sub NewNotFoundHandlerDeletePage {
-  my $id = shift;
-  # unlinke PageName, PageName.en, PageName.de, etc.
-  unlink("$NotFoundHandlerDir/$id", glob("$NotFoundHandlerDir/$id.[a-z][a-z]"));
-  return OldNotFoundHandlerDeletePage($id);
+*OldNotFoundHandlerDoMaintain = *DoMaintain;
+*DoMaintain = *NewNotFoundHandlerDoMaintain;
+
+sub NewNotFoundHandlerDoMaintain {
+  OldNotFoundHandlerDoMaintain();
+  unlink(glob("$NotFoundHandlerDir/*"));
 }
