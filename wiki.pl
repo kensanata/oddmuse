@@ -275,7 +275,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.235 2003/11/03 01:38:14 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.236 2003/11/03 13:52:29 as Exp $');
 }
 
 sub InitCookie {
@@ -424,7 +424,10 @@ sub ApplyRules {
       # <rss "uri..."> stores the parsed RSS of the given URI
       Dirty($1);
       my $oldpos = pos;
-      print &RSS($3 ? $3 : 15, split(/ +/, $4));
+      # the string returned will be converted to latin-1 unless we tell perl
+      binmode(STDOUT, ":encoding($HttpCharset)");
+      print RSS($3 ? $3 : 15, split(/ +/, $4));
+      binmode(STDOUT, ":raw");
       pos = $oldpos;
       # restore \G after call to RSS which uses the LWP module (for older copies of the module?)
     } elsif ($HtmlStack[0] eq 'dt' && m/\G:/cg) {
@@ -676,17 +679,6 @@ sub RSS {
     my $request = HTTP::Request->new('GET', $uri);
     my $response = $ua->request($request);
     my $data = $response->content;
-    if ($HttpCharset and $data =~ m/^.*encoding="([^"]+)"/ and uc($1) ne uc($HttpCharset)) {
-      eval {
-	local $SIG{__DIE__};
-	my $encoding = uc($1);
-	require Unicode::MapUTF8;
-	$data = Unicode::MapUTF8::to_utf8({-string=>$data, -charset=>$encoding})
-	  unless $encoding eq 'UTF-8';
-	$data = Unicode::MapUTF8::from_utf8({-string =>$data, -charset=>uc($HttpCharset)}) 
-	  unless uc($HttpCharset) eq 'UTF-8';
-      }
-    }
     eval { local $SIG{__DIE__}; $rss->parse($data); };
     return $q->p($q->strong("[RSS parsing failed for $uri]")) if $@;
     my $counter;
@@ -1138,6 +1130,32 @@ sub ReBrowsePage {
   } else {
     print GetRedirectPage($id, $id);
   }
+}
+
+sub GetRedirectPage {
+  my ($action, $name) = @_;
+  my ($url, $html);
+  my ($nameLink);
+  # shortcut if we only need the raw text: no redirect.
+  if (GetParam('raw', 0)) {
+    $html = GetHttpHeader('text/plain');
+    $html .= Ts('Please go on to %s.', $action);
+    return $html;
+  }
+  if ($UsePathInfo and $action !~ /=/) {
+    $url = $FullUrl . '/' . $action;
+  } else {
+    $url = $FullUrl . '?' . $action;
+  }
+  $nameLink = $q->a({-href=>$url}, $name);
+  # NOTE: do NOT use -method (does not work with old CGI.pm versions)
+  # Thanks to Daniel Neri for fixing this problem.
+  my %headers = (-uri=>$url);
+  my $cookie = Cookie();
+  if ($cookie) {
+    $headers{-cookie} = $cookie;
+  }
+  return $q->redirect(%headers);
 }
 
 # == Recent changes and RSS
@@ -1958,32 +1976,6 @@ sub GetGotoBar {
   return $q->span({-class=>'gotobar'}, $bartext);
 }
 
-sub GetRedirectPage {
-  my ($newid, $name) = @_;
-  my ($url, $html);
-  my ($nameLink);
-  # shortcut if we only need the raw text: no redirect.
-  if (GetParam('raw', 0)) {
-    $html = GetHttpHeader('text/plain');
-    $html .= Ts('Please go on to %s.', $newid);
-    return $html;
-  }
-  if ($UsePathInfo) {
-    $url = $FullUrl . '/' . $newid;
-  } else {
-    $url = $FullUrl . '?' . $newid;
-  }
-  $nameLink = $q->a({-href=>$url}, $name);
-  # NOTE: do NOT use -method (does not work with old CGI.pm versions)
-  # Thanks to Daniel Neri for fixing this problem.
-  my %headers = (-uri=>$url);
-  my $cookie = Cookie();
-  if ($cookie) {
-    $headers{-cookie} = $cookie;
-  }
-  return $q->redirect(%headers);
-}
-
 # == Difference markup and HTML ==
 
 sub PrintHtmlDiff {
@@ -2277,21 +2269,23 @@ sub ReadFileOrDie {
   my ($status, $data);
   ($status, $data) = ReadFile($fileName);
   if (!$status) {
-    die(Ts('Can not open %s', $fileName) . ": $!");
+    ReportError(Ts('Cannot open %s', $fileName) . ": $!");
   }
   return $data;
 }
 
 sub WriteStringToFile {
   my ($file, $string) = @_;
-  open (OUT, ">$file") or die(Ts('cannot write %s', $file) . ": $!");
+  open (OUT, ">$file")
+    or ReportError(Ts('Cannot write %s', $file) . ": $!");
   print OUT  $string;
   close(OUT);
 }
 
 sub AppendStringToFile {
   my ($file, $string) = @_;
-  open (OUT, ">>$file") or ReportError(Ts('Cannot write %s', $file) . ": $!");
+  open (OUT, ">>$file")
+    or ReportError(Ts('Cannot write %s', $file) . ": $!");
   print OUT  $string;
   close(OUT);
 }
@@ -3345,6 +3339,11 @@ sub DoPageLock {
 sub DoShowVersion {
   print GetHeader('', T('Displaying Wiki Version'), '');
   print $WikiDescription;
+  if (GetParam('dependencies', 0)) {
+    print $q->p('CGI: ', $CGI::VERSION,
+		'XML::RSS: ', eval { local $SIG{__DIE__}; require XML::RSS; $XML::RSS::VERSION; },
+		'XML::Parser: ', eval { local $SIG{__DIE__}; $XML::Parser::VERSION; }, );
+  }
   PrintFooter();
 }
 
