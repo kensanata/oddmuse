@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: sidebar.pl,v 1.11 2005/01/06 11:35:04 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: sidebar.pl,v 1.12 2005/01/06 23:57:32 as Exp $</p>';
 
 use vars qw($SidebarName);
 
@@ -30,7 +30,7 @@ push(@MyInitVariables, \&SidebarInit);
 
 sub SidebarInit {
   $SidebarName = FreeToNormal($SidebarName); # spaces to underscores
-  push(@AdminPages, $SidebarName);
+  push(@AdminPages, $SidebarName) unless grep(/$SidebarName/, @AdminPages); # mod_perl!
 }
 
 *OldSideBarGetHeader = *GetHeader;
