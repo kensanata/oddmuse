@@ -1,3 +1,10 @@
+2004-02-06  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (Cookie): The cookie is considered to have changed under
+	the following condition: If the value was already set, and the new
+	value is not the same as the old value, or if there was no old
+	value, and the new value is not the default.
+
 2004-02-03  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (Cookie): Eliminate uninitialized variable warning.
