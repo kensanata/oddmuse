@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.33 2003/04/16 23:00:26 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.34 2003/04/16 23:58:58 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -288,7 +288,7 @@ sub InitLinkPatterns {
   $UrlProtocols = 'http|https|ftp|afs|news|nntp|mid|cid|mailto|wais|'
                   . 'prospero|telnet|gopher';
   $UrlProtocols .= '|file'  if $NetworkFile;
-  $UrlPattern = "((?:$UrlProtocols):(?://[-a-zA-Z0-9_.]+:[0-9]*)?[-a-zA-Z0-9_=!?#$@~`%&*+\\/:;.,]+[-a-zA-Z0-9_=#$@~`%&*+\\/])$QDelim";
+  $UrlPattern = "((?:$UrlProtocols):(?://[-a-zA-Z0-9_.]+:[0-9]*)?[-a-zA-Z0-9_=!?#$\@~`%&*+\\/:;.,]+[-a-zA-Z0-9_=#$\@~`%&*+\\/])$QDelim";
   $ImageExtensions = '(gif|jpg|png|bmp|jpeg)';
   $RFCPattern = "RFC\\s?(\\d+)";
   $ISBNPattern = 'ISBN:?([0-9- xX]{10,})';
