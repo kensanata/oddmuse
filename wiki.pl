@@ -287,7 +287,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.297 2004/01/06 00:57:34 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.298 2004/01/06 02:56:11 as Exp $');
 }
 
 sub InitCookie {
@@ -443,9 +443,7 @@ sub ApplyRules {
       Dirty($1);
       my $oldpos = pos;
       # the string returned will be converted to latin-1 unless we tell perl
-      binmode(STDOUT, ":encoding($HttpCharset)");
       print RSS($3 ? $3 : 15, split(/ +/, $4));
-      binmode(STDOUT, ":bytes");
       pos = $oldpos;
       # restore \G after call to RSS which uses the LWP module (for older copies of the module?)
     } elsif ($HtmlStack[0] eq 'dt' && m/\G:/cg) {
