@@ -16,8 +16,6 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-# Diese Übersetzung wurde für Oddmuse 1.414 erstellt.
-#
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
@@ -453,4 +451,84 @@ Click to search for references to this permanent anchor
 Klicken um nach Verweisen auf diesen permanenten Anker zu suchen
 the page %s also exists
 die Seite %s existiert ebenfalls
+Deleting %s
+%s löschen
+Deleted %s
+%s wurde gelöscht
+Renaming %1 to %2.
+Die %1 Seite wird zu %2 umbenannt
+The page %s does not exist
+Die %s Seite gibt es nicht
+The page %s already exists
+Die %s Seite gibt es schon
+Renamed to %s
+Wurde auf %s umbenannt
+Renamed from %s
+Ehemals %s
+Renamed %1 to %2.
+Die %1 Seite wurde zu %2 umbenannt
+Delete page
+Seite löschen
+Rename this page to:
+Bennen diese Seite um:
+Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
+Um einen Kalender zu produzieren fehlt entweder cal(1), Date::Calc(3) oder Date::Pcalc(3).
+The match parameter is missing.
+Der 'match' Parameter fehlt noch.
+Page Collection for %s
+Seitensammlung für %s
+Calendar %s
+Kalender %s
+Footnotes:
+Fussnoten:
+image: %s
+Bild: %s
+Languages:
+Sprachen:
+Show!
+Zeigen!
+Define
+Definieren
+Full Link List
+Liste aller Verweise
+Clearing Cache
+Cache wird geleert
+Done.
+Fertig.
+Generating Link Database
+Verweis Datenbank wird angelegt
+The 404 handler extension requires the link data extension (links.pl).
+Die 404 handler Erweiterung benötigt die Link Data Erweiterung (links.pl).
+Orphan List
+Liste der Waisen
+Trail: 
+Weg: 
+None
+Keiner
+Type
+Typ
+Portrait
+Portrait
+Thread: %s
+Thread: %s
+ID parameter is missing.
+ID Parameter fehlt noch.
+Thread %s does not exist.
+Den %s Thread gibt es nicht.
+Page %s does not contain a thread.
+Die %s Seite enthält keinen Thread.
+Add
+Hinzufügen
+URL parameter is missing.
+URL Parameter fehlt noch.
+Add to %s thread
+Zum %s Thread hinzufügen
+Below:
+Darunter:
+URL:
+URL:
+Name:
+Name:
+Blog
+Blog
 END_OF_TRANSLATION
