@@ -1,3 +1,8 @@
+2003-09-26  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ApplyRules): Removed the [image:foo] and the [link:foo]
+	rules again.
+
 2003-09-25  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetHttpHeader): Use Cache-Control header.
