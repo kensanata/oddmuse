@@ -1,3 +1,30 @@
+2004-07-14  Alex Schroeder  <alex@gnu.org>
+
+	* modules/link-all.pl: Set %RuleOrder.
+
+	* wiki.pl (%RuleOrder): New variable.
+	(RunMyRules): Moved the adding of \&MyRules to @MyRules to InitVariables.
+	(InitVariables): Code from RunMyRules, and use %RuleOrder to order rules.
+
+2004-07-09  Alex Schroeder  <alex@gnu.org>
+
+	* merge-list (Main): Don't filter empty lines.
+
+2004-07-08  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (InitVariables): Set @LockOnCreation here, after
+	translating spaces to underscores, and after reading the config
+	file.
+	(ParseData): Accept a space as the first character as well.
+
+2004-07-06  Alex Schroeder  <alex@gnu.org>
+
+	* modules/usemod.pl (UsemodRule): New regexp for the whitespace
+	prefix rule.
+
+	* wikiput (main): Added user and password option.
+	(parse_wiki_location): Added support for path info.
+
 2004-07-05  Alex Schroeder  <alex@confusibombus>
 
 	* modules/usemod.pl (NewUsemodInitVariables): Bugfix -- call
