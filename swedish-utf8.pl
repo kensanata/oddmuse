@@ -43,18 +43,8 @@ RSS parsing failed for %s
 Misslyckades med RSS parsningen av %s
  . . . . 
 
-Click to create this page
+Click to edit this page
 Klicka för att skapa den här sidan
-http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
-
-http://www.amazon.com/exec/obidos/ISBN=%s
-
-alternate
-alternativ
-http://www.pricescan.com/books/BookDetail.asp?isbn=%s
-
-search
-sök
 Invalid action parameter %s
 Ogiltig parameter %s
 Invalid URL.
@@ -107,14 +97,14 @@ Visa små ändringar också
 %s dagar
 List later changes
 Visa senare ändringar
+Filters
+Sålla
 Username:
 Användare:
 Host:
 Värddator:
 Language:
 Språk
-Filters
-Sålla
 Go!
 Utför
 (minor)
@@ -325,6 +315,8 @@ This operation is restricted to site editors only...
 Den här funktionen kan bara utföras av redaktörer...
 This operation is restricted to administrators only...
 Den här funktionen kan bara utföras av adminstratörer...
+Rule "%1" matched "%2" on this page.
+
 Index of all pages
 Index över alla sidor
 all pages
@@ -445,6 +437,8 @@ Too many connections by %s
 För många anslutningar ifrån %s
 Please do not fetch more than %1 pages in %2 seconds.
 
+Check whether the web server can create the directory %s and whether it can create files in it.
+
 Recent Visitors
 Senaste besökare
 Referrers
@@ -477,17 +471,25 @@ Delete page
 
 Rename this page to:
 
+Cannot highlight the language %s.
+
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
 
 The match parameter is missing.
 
 Page Collection for %s
 
+Previous
+
+Next
+
 Calendar %s
 
 Footnotes:
 
 image: %s
+
+Index
 
 Languages:
 
@@ -513,7 +515,13 @@ None
 
 Type
 
+Permalink to "%s"
+
 Portrait
+
+Static Copy
+
+Alternatively, use one of the following templates:
 
 Thread: %s
 
@@ -535,6 +543,24 @@ URL:
 
 Name:
 
+Failed to remove %s
+
+The translation is up to date.
+
+The translation is outdated.
+
+The page does not exist.
+
+http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
+
+http://www.amazon.com/exec/obidos/ISBN=%s
+
+alternate
+alternativ
+http://www.pricescan.com/books/BookDetail.asp?isbn=%s
+
+search
+sök
 Blog
 
 END_OF_TRANSLATION

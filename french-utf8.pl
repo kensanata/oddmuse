@@ -39,18 +39,8 @@ RSS parsing failed for %s
 
  . . . . 
  . . . . 
-Click to create this page
+Click to edit this page
 
-http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
-
-http://www.amazon.com/exec/obidos/ISBN=%s
-http://www.amazon.fr/exec/obidos/ISBN=%s
-alternate
-Alternative
-http://www.pricescan.com/books/BookDetail.asp?isbn=%s
-
-search
-Recherche
 Invalid action parameter %s
 Parmètre d'action invalide %s
 Invalid URL.
@@ -103,14 +93,14 @@ Inclure les modifications mineures
 %s jours
 List later changes
 Lister les modifications les plus récentes
+Filters
+Filtres
 Username:
 Nom d'utilisateur&nbsp;:
 Host:
 Hôte&nbsp;:
 Language:
 Langue&nbsp;:
-Filters
-Filtres
 Go!
 Aller !
 (minor)
@@ -321,6 +311,8 @@ This operation is restricted to site editors only...
 Cette opération est réservée aux éditeurs du site seulement...
 This operation is restricted to administrators only...
 Cette opération est réservée aux administrateurs seulement...
+Rule "%1" matched "%2" on this page.
+
 Index of all pages
 Index de toutes les pages
 all pages
@@ -441,6 +433,8 @@ Too many connections by %s
 Trop de connexions par %s
 Please do not fetch more than %1 pages in %2 seconds.
 
+Check whether the web server can create the directory %s and whether it can create files in it.
+
 Recent Visitors
 Derniers Visiteurs
 Referrers
@@ -473,17 +467,25 @@ Delete page
 
 Rename this page to:
 
+Cannot highlight the language %s.
+
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
 
 The match parameter is missing.
 
 Page Collection for %s
 
+Previous
+
+Next
+
 Calendar %s
 
 Footnotes:
 
 image: %s
+
+Index
 
 Languages:
 
@@ -509,7 +511,13 @@ None
 
 Type
 
+Permalink to "%s"
+
 Portrait
+
+Static Copy
+
+Alternatively, use one of the following templates:
 
 Thread: %s
 
@@ -531,6 +539,24 @@ URL:
 
 Name:
 
+Failed to remove %s
+
+The translation is up to date.
+
+The translation is outdated.
+
+The page does not exist.
+
+http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
+
+http://www.amazon.com/exec/obidos/ISBN=%s
+http://www.amazon.fr/exec/obidos/ISBN=%s
+alternate
+Alternative
+http://www.pricescan.com/books/BookDetail.asp?isbn=%s
+
+search
+Recherche
 Blog
 
 END_OF_TRANSLATION

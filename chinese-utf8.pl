@@ -38,18 +38,8 @@ RSS parsing failed for %s
 
  . . . . 
 
-Click to create this page
+Click to edit this page
 按下即可建立此頁面
-http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
-
-http://www.amazon.com/exec/obidos/ISBN=%s
-
-alternate
-另一個連結
-http://www.pricescan.com/books/BookDetail.asp?isbn=%s
-
-search
-搜尋
 Invalid action parameter %s
 無效的動作參數 %s
 Invalid URL.
@@ -102,14 +92,14 @@ Include minor changes
 %s 天
 List later changes
 列出最新的修改
+Filters
+過濾器
 Username:
 使用者名稱：
 Host:
 來源主機：
 Language:
 語文：
-Filters
-過濾器
 Go!
 開始！
 (minor)
@@ -320,6 +310,8 @@ This operation is restricted to site editors only...
 這個動作限定只允許編輯者使用…
 This operation is restricted to administrators only...
 這個動作限定只允許管理者使用…
+Rule "%1" matched "%2" on this page.
+
 Index of all pages
 所有頁面的索引
 all pages
@@ -440,6 +432,8 @@ Too many connections by %s
 太多來自 %s 的連線
 Please do not fetch more than %1 pages in %2 seconds.
 
+Check whether the web server can create the directory %s and whether it can create files in it.
+
 Recent Visitors
 近期的參訪者
 Referrers
@@ -472,17 +466,25 @@ Delete page
 
 Rename this page to:
 
+Cannot highlight the language %s.
+
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
 
 The match parameter is missing.
 
 Page Collection for %s
 
+Previous
+
+Next
+
 Calendar %s
 
 Footnotes:
 
 image: %s
+
+Index
 
 Languages:
 
@@ -508,7 +510,13 @@ None
 
 Type
 
+Permalink to "%s"
+
 Portrait
+
+Static Copy
+
+Alternatively, use one of the following templates:
 
 Thread: %s
 
@@ -530,6 +538,24 @@ URL:
 
 Name:
 
+Failed to remove %s
+
+The translation is up to date.
+
+The translation is outdated.
+
+The page does not exist.
+
+http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
+
+http://www.amazon.com/exec/obidos/ISBN=%s
+
+alternate
+另一個連結
+http://www.pricescan.com/books/BookDetail.asp?isbn=%s
+
+search
+搜尋
 Blog
 
 END_OF_TRANSLATION
