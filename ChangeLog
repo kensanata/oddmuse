@@ -1,3 +1,11 @@
+2003-11-27  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetRc): When a page has no languages, it will be
+	assigned the language 'none'.
+	(Save): Save languages as part of the page.
+	(GetLanguages): Return the languages in a string instead of a listref.
+	(WriteRcLog): Use the languages string directly.
+
 2003-11-20  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoShowVersion): Print server software as well.
