@@ -229,7 +229,7 @@ sub Init {
   InitLinkPatterns(); # Link pattern can be changed in config files
   if ($UseConfig and $ConfigFile and -f $ConfigFile) {
     do $ConfigFile;
-    $Message .= CGI::p("$ConfigFile: $@") if $@;
+    $Message .= CGI::p("$ConfigFile: $@") if $@; # no $q exists, yet
   }
   InitRequest();      # get $q
   if ($ConfigPage) {  # $FS, $HttpCharset, $MaxPost must be set in config file!
@@ -269,7 +269,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.153 2003/09/23 20:52:41 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.154 2003/09/23 21:26:37 as Exp $');
 }
 
 sub InitCookie {
@@ -2480,28 +2480,15 @@ sub ReportError {
 
 sub ValidId {
   my $id = shift;
-  if (length($id) > 120) {
-    return Ts('Page name is too long: %s', $id);
-  }
-  if ($id =~ m| |) {
-    return Ts('Page name may not contain space characters: %s', $id);
-  }
+  return Ts('Page name is too long: %s', $id)  if (length($id) > 120);
+  return Ts('Page name may not contain space characters: %s', $id)  if ($id =~ m| |);
   if ($FreeLinks) {
     $id =~ s/ /_/g;
-    if (!($id =~ m|^$FreeLinkPattern$|)) {
-      return Ts('Invalid Page %s', $id);
-    }
-    if ($id =~ m|\.db$|) {
-      return Ts('Invalid Page %s (must not end with .db)', $id);
-    }
-    if ($id =~ m|\.lck$|) {
-      return Ts('Invalid Page %s (must not end with .lck)', $id);
-    }
-    return '';
+    return Ts('Invalid Page %s', $id)  if (!($id =~ m|^$FreeLinkPattern$|));
+    return Ts('Invalid Page %s (must not end with .db)', $id)  if ($id =~ m|\.db$|);
+    return Ts('Invalid Page %s (must not end with .lck)', $id)  if ($id =~ m|\.lck$|);
   } else {
-    if (!($id =~ /^$LinkPattern$/)) {
-      return Ts('Invalid Page %s', $id);
-    }
+    return Ts('Invalid Page %s', $id)  if (!($id =~ /^$LinkPattern$/));
   }
   return '';
 }
@@ -3017,18 +3004,16 @@ sub UserIsEditor {
 # == Index ==
 
 sub DoIndex {
-  my ($raw) = @_;
-  my ($name);
-  if ($raw) {
+  if (shift) {
     print GetHttpHeader('text/plain');
-    foreach $name (AllPagesList()) {
+    foreach my $name (AllPagesList()) {
       print "$name\n"
     }
-    return;
+  } else {
+    print GetHeader('', T('Index of all pages'), '');
+    PrintPageList(AllPagesList());
+    PrintFooter();
   }
-  print GetHeader('', T('Index of all pages'), '');
-  PrintPageList(AllPagesList());
-  PrintFooter();
 }
 
 # == Searching ==
@@ -3081,8 +3066,7 @@ sub PrintSearchResults {
   my ($snippetlen, $maxsnippets) = (100, 4) ; #  these seem nice.
   print $q->h2(Ts('%s pages found:', ($#results + 1)));
   foreach my $name (@results) {
-    #  get the page, filter it, remove all tags (since we're presenting in
-    #  plaintext, not HTML, a la google(tm)).
+    #  get the page, filter it, remove all tags
     OpenPage($name);
     OpenDefaultText();
     my $pageText = QuoteHtml($Text{'text'});
@@ -3092,9 +3076,7 @@ sub PrintSearchResults {
     my $htmlre = join('|',(@HtmlTags, 'pre', 'nowiki', 'code'));
     $pageText =~ s/\<\/?($htmlre)(\s[^<>]+?)?\>//gi;
     #  entry header
-    print '<p>';
-    print '... '  if ($name =~ m|/|);
-    print $q->span({-class=>'result'}, GetPageLink($name)), $q->br();
+    print '<p>' . $q->span({-class=>'result'}, GetPageLink($name)), $q->br();
     #  show a snippet from the top of the document
     my $j = index( $pageText, ' ', $snippetlen ) ;  #  end on word boundary
     print substr( $pageText, 0, $j ), ' ', $q->b('...');
@@ -3119,13 +3101,10 @@ sub PrintSearchResults {
       }
     }
     #  entry trailer
-    print $q->br(),
-      $q->span({-class=>'info'},
-	       int((length($pageText)/1024)+1) . 'K - '
-	       . T('last updated') . ' '
-	       . TimeToText($Section{ts}) . ' ' . T('by') . ' '
-	       . GetAuthorLink($Section{'host'}, $Section{'username'})),
-      '</p>';
+    print $q->br(), $q->span({-class=>'info'},
+      int((length($pageText)/1024)+1) . 'K - ' . T('last updated') . ' '
+      . TimeToText($Section{ts}) . ' ' . T('by') . ' '
+      . GetAuthorLink($Section{'host'}, $Section{'username'})), '</p>';
   }
 }
 
@@ -3226,18 +3205,10 @@ sub GetFullLinkList {
     my @links = GetPageLinks($name, $pagelink, $interlink, $urllink);
     foreach my $link (@links) {
       $seen{$link}++;
-      if (($unique > 0) && ($seen{$link} != 1)) {
-        next;
-      }
-      if (($exists == 0) && ($pgExists{$link} == 1)) {
-        next;
-      }
-      if (($exists == 1) && ($pgExists{$link} != 1)) {
-        next;
-      }
-      if (($search ne '') && !($link =~ /$search/)) {
-        next;
-      }
+      next  if (($unique > 0) && ($seen{$link} != 1));
+      next  if (($exists == 0) && ($pgExists{$link} == 1));
+      next  if (($exists == 1) && ($pgExists{$link} != 1));
+      next  if (($search ne '') && !($link =~ /$search/));
       push(@newlinks, $link);
     }
     @links = @newlinks;
