@@ -1,3 +1,34 @@
+2004-11-15  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetAdminBar, GetFooterLinks, GetGotoBar): Add bar
+	class.
+	(BrowsePage): Remove extra end_div().
+	(DoIndex): Add extra end_div().
+	(GetReferers): Put hr() from RefererTrack inside the div().
+	(RefererTrack): Remove the hr() here and move it to GetReferers.
+	(BrowsePage): Removed content class from the rc div.
+
+	* modules/weblog-1.pl (NewWeblog1InitVariables): Removed vertical
+	bar.
+
+	* modules/link-all.pl (NewLinkAllGetGotoBar): Removed vertical
+	bar.
+	
+	* wiki.pl (PrintJournal, BrowsePage, GetHeader, PrintFooter,
+	PrintAllPages): Use start_div() and end_div() instead of strings.
+	(DoHistory, DoRollback, DoEdit, DoPassword, DoIndex, DoSearch,
+	DoMaintain, DoShowVersion):  Use div.
+	(GetGotoBar): Added $UserGotoBar back.
+
+2004-11-14  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (RcHeader): Removed vertical bars.
+	(PrintFooter): Classes are added in the respective subroutines.
+	(GetNearLinksUsed, GetFooterTimestamp): Don't join the result of a
+	map operation; instead pass it as a list to the CGI module.
+	(GetAdminBar): Removed vertical bars.
+	(GetFooterLinks, GetGotoBar, DoaboutSearch): Removed vertical bars.
+
 2004-11-12  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetFormStart): Fix syntax error. (?)
