@@ -1,3 +1,12 @@
+2003-11-03  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (PrintHtmlDiff): Call GetKeptDiff without lock parameter.
+	(GetKeptDiff): No longer accept lock parameter.
+	(GetDiff): No longer accept lock parameter.  Just use the diff
+	lock always.
+	(UpdateDiffs): No longer use lock parameter.
+	(Save): Make sure the old text is not encoded when it sent to the diff.
+
 2003-11-02  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoHistory): Extract revision numbers from the keep file
