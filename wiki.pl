@@ -273,7 +273,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.212 2003/10/19 14:08:56 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.213 2003/10/19 22:57:30 as Exp $');
 }
 
 sub InitCookie {
@@ -1194,12 +1194,14 @@ sub NotModified {
     $LastUpdate = $mtime;
   }
   if ($q->http('HTTP_IF_MODIFIED_SINCE')) {
-    local $SIG{__DIE__};
-    require Time::ParseDate;
-    my $since = Time::ParseDate::parsedate($q->http('HTTP_IF_MODIFIED_SINCE'), NO_RELATIVE => 1);
-    if ($LastUpdate < $since) {
-      print $q->header(-status=>'304 NOT MODIFIED');
-      return 1;
+    eval {
+      local $SIG{__DIE__};
+      require Time::ParseDate;
+      my $since = Time::ParseDate::parsedate($q->http('HTTP_IF_MODIFIED_SINCE'), NO_RELATIVE => 1);
+      if ($LastUpdate < $since) {
+	print $q->header(-status=>'304 NOT MODIFIED');
+	return 1;
+      }
     }
   }
 }
