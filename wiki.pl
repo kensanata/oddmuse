@@ -39,7 +39,7 @@ local $| = 1;  # Do not buffer output (localized for mod_perl)
 # Configuration/constant variables:
 
 use vars qw(@RcDays @HtmlTags $TempDir $LockDir $DataDir $KeepDir
-$PageDir $RefererDir $RcFile $RcOldFile $IndexFile $NoEditFile
+$PageDir $RefererDir $RcOldFile $IndexFile $BannedContent $NoEditFile
 $BannedHosts $ConfigFile $FullUrl $SiteName $HomePage $LogoUrl
 $RcDefault $IndentLimit $RecentTop $RecentLink $EditAllowed $UseDiff
 $RawHtml $KeepDays $HtmlTags $HtmlLinks $KeepMajor $EmbedWiki
@@ -48,7 +48,7 @@ $BracketWiki $FreeLinks $WikiLinks $FreeLinkPattern $RCName $RunCGI
 $ShowEdits $LinkPattern $InterLinkPattern $InterSitePattern $MaxPost
 $UrlPattern $UrlProtocols $ImageExtensions $RFCPattern $ISBNPattern
 $FS $CookieName $SiteBase $StyleSheet $NotFoundPg $FooterNote $NewText
-$EditNote $HttpCharset $UserGotoBar $VisitorTime $VisitorFile
+$EditNote $HttpCharset $UserGotoBar $VisitorTime $VisitorFile $RcFile
 $Visitors %Smilies %SpecialDays $InterWikiMoniker $SiteDescription
 $RssImageUrl $RssPublisher $RssContributor $RssRights $BannedCanRead
 $SurgeProtection $SurgeProtectionViews $TopLinkBar $LanguageLimit
@@ -109,6 +109,7 @@ $AdminPass   = '' unless defined $AdminPass; # Whitespace separated passwords.
 $EditPass    = '' unless defined $EditPass; # Whitespace separated passwords.
 $BannedHosts = 'BannedHosts'; # Page for banned hosts
 $BannedCanRead = 1; # 1 = banned cannot edit, 0 = banned cannot read
+$BannedContent = 'BannedContent'; # Page for banned content (usually for link-ban)
 
 # LinkPattern
 $WikiLinks   = 1;   # 1 = LinkPattern is a link
@@ -191,7 +192,7 @@ $HtmlHeaders = '';	# Additional stuff to put in the HTML <head> section
 %Languages = ();
 
 @LockOnCreation = ($BannedHosts, $RefererFilter, $StyleSheetPage, $ConfigPage,
-		   $InterMap, $NearMap, $RssInterwikiTranslate);
+		   $InterMap, $NearMap, $RssInterwikiTranslate, $BannedContent);
 @KnownLocks = qw(main diff index merge visitors refer_*); # locks to remove
 
 %CookieParameters = (username=>'', pwd=>'', theme=>'', css=>'', msg=>'',
@@ -303,7 +304,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   @UserGotoBarPages = ($HomePage, $RCName) unless @UserGotoBarPages;
   map { $$_ = FreeToNormal($$_); } # convert spaces to underscores on all configurable pagenames
     (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$RefererFilter, \$StyleSheetPage,
-     \$ConfigPage, \$NotFoundPg, \$NearMap, \$RssInterwikiTranslate);
+     \$ConfigPage, \$NotFoundPg, \$NearMap, \$RssInterwikiTranslate, \$BannedContent);
   if (not @HtmlTags) { # do not override settings in the config file
     if ($HtmlTags) {   # allow many tags
       @HtmlTags = qw(b i u font big small sub sup h1 h2 h3 h4 h5 h6 cite code
@@ -314,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.392 2004/04/26 22:23:51 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.393 2004/05/09 23:10:14 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1914,7 +1915,7 @@ sub Cookie {
     my $value = GetParam($key, $default);
     $params{$key} = $value  if $value ne $default;
     # The  cookie is  considered to  have changed  under  he following
-    # condition: If the value was already set, and the new alue is not
+    # condition: If the value was already set, and the new value is not
     # the same as the old value, or  if there was no old alue, and the
     # new value is not the default.
     my $change = (defined $OldCookie{$key} ? ($value ne $OldCookie{$key}) : ($value ne $default));
@@ -2881,6 +2882,17 @@ sub UserIsEditor {
   return 0;
 }
 
+sub BannedContent {
+  my $str = shift;
+  foreach (split(/\n/, GetPageContent($BannedContent))) {
+    if (/^ ([^ ]+)[ \t]*$/) {  # only read lines with one word after one space
+      my $rule = $1;
+      return $rule if ($str =~ /$rule/i);
+    }
+  }
+  return 0;
+}
+
 # == Index ==
 
 sub DoIndex {
@@ -3324,7 +3336,7 @@ sub DoPost {
   } elsif (($id eq 'Sample_Undefined_Page') or ($id eq T('Sample_Undefined_Page'))) {
     ReportError(Ts('[[%s]] cannot be defined.', $id), '403 FORBIDDEN');
   } elsif (grep(/^$id$/, @LockOnCreation) and !UserIsAdmin() and not -f GetPageFile($id)) {
-    ReportError(Ts('Only an administrator can create %s', $id), '403 FORBIDDEN');
+    ReportError(Ts('Only an administrator can create %s.', $id), '403 FORBIDDEN');
   }
   my $filename = GetParam('file', undef);
   if ($filename and not $UploadAllowed and not UserIsAdmin()) {
@@ -3361,6 +3373,17 @@ sub DoPost {
     $string =~ s/\r//g;
     $string .= "\n"  if ($string !~ /\n$/);
     $string =~ s/$FS//g;
+  }
+  # Banned Content
+  my $rule = BannedContent($string);
+  if ($rule) {
+    print GetHeader('', T('Edit Denied'), undef, undef, '403 FORBIDDEN');
+    print $q->p(T('The page contains banned text.'));
+    print $q->p(T('Contact the wiki administrator for more information.'));
+    print $q->p(Ts('The rule %s matched for you.', $rule) . ' '
+		. Ts('See %s for more information.', GetPageLink($BannedContent)));
+    ReleaseLock();
+    return;
   }
   my $summary = GetParam('summary', '');
   $summary =~ s/$FS//g;
