@@ -1,3 +1,18 @@
+2003-06-05  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoWikiRequest): $UseConfig does not control
+	$ConfigPage.
+	(InitLinkPatterns): Moved FS settings into new sub.
+	(Init): New.
+	(InitRequest): Moved it around in the file.
+	(GetParam): Ditto.
+	(InitCookie): Ditto.  No longer called from InitRequest but from
+	DoWikiRequest directly.
+	(GetHtmlHeader): Changed permanent_def to definition and
+	permanent_link to link.
+	(GetPermanentAnchor): Changed permanent_def to definition.
+	(GetPermanentAnchorLink): Changed permanent_link to link.
+
 2003-06-04  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl ($ConfigPage): New.
