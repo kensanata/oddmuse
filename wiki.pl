@@ -81,7 +81,7 @@ $HttpCharset = '';  # Charset for pages, default is ISO-8859-1
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.8 2003/03/22 02:12:09 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.9 2003/03/22 14:57:01 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -1035,7 +1035,7 @@ sub BrowsePage {
   my ($id, $raw) = @_;
   my $rc = (($id eq $RCName) || (T($RCName) eq $id) || (T($id) eq $RCName));
   &OpenPage($id);
-  &OpenDefaultText();
+  &OpenDefaultText($id);
   # Handle a single-level redirect
   my $oldId = &GetParam('oldid', '');
   if (($oldId eq '') && (substr($Text{'text'}, 0, 10) eq '#REDIRECT ')) {
@@ -2246,7 +2246,15 @@ sub OpenText {
 }
 
 sub OpenDefaultText {
+  my ($id) = @_;
   &OpenText('default');
+  # show README for first timers
+  if ($Section{'revision'} == 0 and $id eq $HomePage
+      and (open(F,'README') or open(F,"$DataDir/README"))) {
+    local $/ = undef;   # Read complete files
+    $Text{'text'} = <F>;
+    close F;
+  }
 }
 
 # Called after OpenKeptRevisions
