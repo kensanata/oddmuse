@@ -23,7 +23,7 @@
 # span[lang=de] { background-color:#ffd; }
 # span[lang=it] { background-color:#dfd; }
 
-$ModulesDescription .= '<p>$Id: lang.pl,v 1.3 2004/03/21 01:45:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: lang.pl,v 1.4 2004/03/21 01:57:57 as Exp $</p>';
 
 push(@MyRules, \&LangRule);
 
@@ -50,7 +50,7 @@ sub NewLangInitCookie {
 
 sub NewLangGetNearLinksUsed {
   my $id = shift;
-  my $html = OldLangGetNearLinksUsed($id, @_);
+  my $html = OldLangGetNearLinksUsed($id);
   my @langs = qw(en de fr it pt);
   my @selected = split(/ /, GetParam('theme', ''));
   $html .= $q->div({-class=>'languages'},
