@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: admin.pl,v 1.4 2004/06/12 11:24:57 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: admin.pl,v 1.5 2004/07/16 01:02:04 sblatt Exp $</p>';
 
 $Action{delete} = \&AdminPowerDelete;
 $Action{rename} = \&AdminPowerRename;
@@ -31,7 +31,7 @@ sub AdminPowerDelete {
   OpenPage($id);
   my $status = DeletePage($id);
   if ($status) {
-    print $q->p(GetPageLink($id) . ' ' . T('not deleted: ') . $status;
+    print $q->p(GetPageLink($id) . ' ' . T('not deleted: ')) . $status;
   } else {
     print $q->p(GetPageLink($id) . ' ' . T('deleted'));
     WriteRcLog($id, Ts('Deleted %s', $new), 0, $Page{revision},
