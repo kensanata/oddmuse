@@ -1,5 +1,7 @@
 2004-12-05  Alex Schroeder  <alex@confusibombus.emacswiki.org>
 
+	* modules/setext.pl (SeTextRule): Fix bug with h3 headers.
+
 	* modules/usemod.pl (UsemodRule): AddHtmlEnvironment('p')
 
 	* modules/toc.pl (TocRule): AddHtmlEnvironment('p')
