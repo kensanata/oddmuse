@@ -274,7 +274,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.192 2003/10/12 02:37:52 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.193 2003/10/12 13:43:13 as Exp $');
 }
 
 sub InitCookie {
@@ -1833,7 +1833,8 @@ sub Cookie {
     my $result = $q->cookie(-name=>$CookieName,
 			    -value=>$cookie,
 			    -expires=>'+2y');
-    $Message .= $q->p(T('Cookie: ') . $result)  if $visible;
+    $Message .= $q->p(T('Cookie: ') . $CookieName . ', '
+		      . join(', ', map {$_ . '=' . $params{$_}} keys(%params))) if $visible;
     return $result;
   }
   return '';
