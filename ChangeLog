@@ -1,3 +1,18 @@
+2003-05-17  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($NewText): Default value in the init section instead of
+	hidden in some subroutine.
+	(OpenNewText): Just use $NewText.
+	(DoPost): If oldrev is 1 and the new text is $NewText, then do not
+	save.
+
+2003-05-17  Pierre Gaston  <pgas@intracom.gr>
+	
+	* wiki.pl: Many subroutines: Replaced print &GetFooter(...) with
+	&PrintFooter(...).
+	(GetFooter, PrintFooter): Renamed GetFooter to PrintFooter, and
+	changed concatenations to prints.
+	
 2003-05-08  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (BrowsePage): Remove duplicate div class="refer".
