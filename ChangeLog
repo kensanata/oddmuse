@@ -4,6 +4,7 @@
 	$HomePage, $RCName, $BannedHosts, $InterMap, $RefererFilter,
 	$StyleSheetPage, and $ConfigPage.
 	(InitRequest): Set @UserGotoBarPages here instead of on startup.
+	(FreeToNormal): No more ucfirst.
 
 2003-06-10  Alex Schroeder  <alex@gnu.org>
 
