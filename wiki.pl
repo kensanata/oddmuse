@@ -305,7 +305,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.443 2004/08/13 01:24:24 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.444 2004/08/13 02:14:10 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -415,6 +415,7 @@ sub ApplyRules {
       Clean(CloseHtmlEnvironments() . AddHtmlEnvironment('p'));
     } elsif ($bol && m/\G(\&lt;include(\s+(text|with-anchors))?\s+"(.*)"\&gt;[ \t]*\n?)/cgi) {
       # <include "uri..."> includes the text of the given URI verbatim
+      Clean(CloseHtmlEnvironments());
       Dirty($1);
       my ($oldpos, $type, $uri) = ((pos), $3, $4);
       if ($uri =~ /^$UrlProtocols:/o) {
@@ -434,12 +435,14 @@ sub ApplyRules {
       pos = $oldpos;		# restore \G after call to ApplyRules
     } elsif ($bol && m/\G(\&lt;journal(\s+(\d*))?(\s+"(.*)")?(\s+(reverse))?\&gt;[ \t]*\n?)/cgi) {
       # <journal 10 "regexp"> includes 10 pages matching regexp
+      Clean(CloseHtmlEnvironments());
       Dirty($1);
       my $oldpos = pos;
       PrintJournal($3, $5, $7);
       pos = $oldpos;		# restore \G after call to ApplyRules
     } elsif ($bol && m/\G(\&lt;rss(\s+(\d*))?\s+(.*?)\&gt;[ \t]*\n?)/cgis) {
       # <rss "uri..."> stores the parsed RSS of the given URI
+      Clean(CloseHtmlEnvironments());
       Dirty($1);
       my $oldpos = pos;
       eval { local $SIG{__DIE__}; binmode(STDOUT, ":utf8"); } if $HttpCharset eq 'UTF-8';
@@ -562,7 +565,7 @@ sub CloseHtmlEnvironmentUntil { # close all environments until you get to $code
 
 sub AddHtmlEnvironment { # add a new one so that it will be closed!
   my ($code, $attr) = @_;
-  if (@HtmlStack and $HtmlStack[0] ne $code) {
+  if (@HtmlStack and $HtmlStack[0] ne $code or not @HtmlStack) {
     unshift(@HtmlStack, $code);
     return "<$code $attr>" if ($attr);
     return "<$code>";
@@ -1383,7 +1386,8 @@ sub RcHeader {
 }
 
 sub GetFilterForm {
-  my $form = GetFormStart() . $q->input({-type=>'hidden', -name=>'action', -value=>'rc'});
+  my $form = $q->strong(T('Filters'));
+  $form .= $q->input({-type=>'hidden', -name=>'action', -value=>'rc'});
   $form .= $q->input({-type=>'hidden', -name=>'all', -value=>1}) if (GetParam('all', 0));
   $form .= $q->input({-type=>'hidden', -name=>'showedit', -value=>1}) if (GetParam('showedit', 0));
   $form .= $q->input({-type=>'hidden', -name=>'days', -value=>GetParam('days', $RcDefault)})
@@ -1393,8 +1397,8 @@ sub GetFilterForm {
     . $q->Tr($q->td(T('Host:')) . $q->td($q->textfield(-name=>'rchostonly', -size=>20)));
   $table .= $q->Tr($q->td(T('Language:')) . $q->td($q->textfield(-name=>'lang', -size=>10,
     -default=>GetParam('lang', '')))) if %Languages;
-  $form .= $q->p($q->strong(T('Filters'))) . $q->table($table);
-  return $form . $q->submit('dofilter', T('Go!')) . $q->endform;
+  return GetFormStart() . $q->p($form) . $q->table($table)
+    . $q->p($q->submit('dofilter', T('Go!'))) . $q->endform;
 }
 
 sub GetRc {
@@ -2222,9 +2226,9 @@ sub ImproveDiff { # called within a diff lock
   while ($#hunks > 0)		# at least one header and a real hunk
     {
       my $header = shift (@hunks);
-      $header =~ s|^(\d+.*c.*)|<p><strong>$tChanged $1</strong>|g
-      or $header =~ s|^(\d+.*d.*)|<p><strong>$tRemoved $1</strong>|g
-      or $header =~ s|^(\d+.*a.*)|<p><strong>$tAdded $1</strong>|g;
+      $header =~ s|^(\d+.*c.*)|<p><strong>$tChanged $1</strong></p>|g
+      or $header =~ s|^(\d+.*d.*)|<p><strong>$tRemoved $1</strong></p>|g
+      or $header =~ s|^(\d+.*a.*)|<p><strong>$tAdded $1</strong></p>|g;
       $result .= $header;
       my $chunk = shift (@hunks);
       my ($old, $new) = split (/^---\n/m, $chunk, 2);
@@ -2278,7 +2282,7 @@ sub DiffAddPrefix {
   for my $line (@lines) {
     $line = $prefix . $line;
   }
-  return $q->div({-class=>$class},$q->p(join('<br>',@lines)));
+  return $q->div({-class=>$class},$q->p(join($q->br(), @lines)));
 }
 
 sub DiffHtmlMarkWords { # this code seem brittle and has been known to crash!
