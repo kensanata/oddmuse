@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.17 2004/06/15 19:40:18 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.18 2004/06/15 19:48:05 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalendarUseCal);
 
@@ -133,9 +133,11 @@ sub CalendarRule {
 sub PrintYearCalendar {
   my $year = shift;
   my @pages = AllPagesList();
+  print '<div class="cal year">';
   for $mon ((1..12)) {
     print Cal($year, $mon);
   }
+  print '</div>';
 }
 
 $Action{calendar} = \&DoYearCalendar;
