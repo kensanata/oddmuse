@@ -315,8 +315,6 @@ sub InitVariables {    # Init global session variables for mod_perl!
   $ReplaceForm = 0;    # Only admins may search and replace
   $ScriptName = $q->url() unless defined $ScriptName; # URL used in links
   $FullUrl = $ScriptName unless $FullUrl; # URL used in forms
-  $HtmlHeaders = '<link rel="alternate" type="application/rss+xml" title="RSS" href="'
-    . $ScriptName . '?action=rss" />' unless $HtmlHeaders;
   $Now = time;	       # Reset in case script is persistent
   $LastUpdate = (stat($IndexFile))[9];
   $InterSiteInit = 0;
@@ -352,7 +350,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.499 2004/12/19 13:44:31 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.500 2004/12/19 14:00:17 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2022,6 +2020,12 @@ sub GetHtmlHeader {
     $html .= '<meta name="robots" content="NOINDEX,NOFOLLOW" />';
   } else {
     $html .= '<meta name="robots" content="INDEX,NOFOLLOW" />';
+  }
+  if (not $HtmlHeaders) {
+    $html .= '<link rel="alternate" type="application/rss+xml" title="' . QuoteHtml($SiteName)
+      . '" href="' . $ScriptName . '?action=rss" />';
+    $html .= '<link rel="alternate" type="application/rss+xml" title="' . QuoteHtml("$SiteName: $id")
+      . '" href="' . $ScriptName . '?action=rss;rcidonly=' . $id . '" />' if $id;
   }
   # finish
   $html = qq(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n<html>)
