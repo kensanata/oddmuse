@@ -352,7 +352,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.503 2004/12/21 00:41:51 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.504 2004/12/22 03:04:00 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -3348,10 +3348,12 @@ sub DoPost {
     return;
   }
   my $newAuthor = 0;
-  if (GetParam('username', '')) { # prefer usernames for potential newAuthor detection
-    $newAuthor = 1 if GetParam('username', '') ne $Page{username};
-  } elsif ($ENV{REMOTE_ADDR} ne $Page{ip}) {
-    $newAuthor = 1;
+  if ($oldrev) { # the first author (no old revision) is not considered to be "new"
+    if (GetParam('username', '')) { # prefer usernames for potential new author detection
+      $newAuthor = 1 if GetParam('username', '') ne $Page{username};
+    } elsif ($ENV{REMOTE_ADDR} ne $Page{ip}) {
+      $newAuthor = 1;
+    }
   }
   my $oldtime = $Page{ts};
   my $myoldtime = GetParam('oldtime', ''); # maybe empty!
