@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: link-all.pl,v 1.5 2004/07/14 14:51:23 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: link-all.pl,v 1.6 2004/11/15 00:12:20 as Exp $</p>';
 
 push(@MyRules, \&LinkAllRule);
 $RuleOrder{\&LinkAllRule} = 1000;
@@ -54,7 +54,7 @@ sub NewLinkAllGetGotoBar {
   my $define = T('Define');
   my $addition = "<a href=\"$ScriptName?action=browse;id=$id;define=1\">$define</a>";
   if (index($UserGotoBar, $addition) < 0) {
-    $UserGotoBar .= ' | ' if $UserGotoBar;
+    $UserGotoBar .= ' ' if $UserGotoBar;
     $UserGotoBar .= $addition;
   }
   return OldLinkAllGetGotoBar();
