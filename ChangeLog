@@ -1,5 +1,21 @@
 2004-06-13  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (DoLinks): Pass parameters onto GetFullLinkList.
+	(GetFullLinkList): Accept parameters instead of using GetParam.
+	Move most of the code to GetLinkList.
+	(GetLinkList): New, extract links from one page only.
+	(ReadPermanentAnchors): Simplified, accept both $FS and space as
+	separator.
+	(WritePermanentAnchors): Use spaces instead of $FS to write the
+	file.
+
+	* modules/not-found-handler.pl ($LinkFile, %LinkDb): New variables.
+	(ReadLinkDb, WriteLinkDb, RefreshLinkDb): New.
+	(DoClearCache, DoLinkDb): New.
+	(NewNotFoundHandlerDoMaintain): Deleted.
+	(NewNotFoundHandlerSave): Use the new functionality.
+	Major rewrite using a link database!
+	
 	* wiki.pl (RSS): Handle encoding of 'diff' and 'history' texts.
 	(DeletePage): Bugfix.
 	(RSS): No longer print square brackets around links to feeds
