@@ -66,7 +66,8 @@ $ReplaceForm %PermanentAnchors %PagePermanentAnchors);
 
 # == Configuration ==
 
-# Can be set outside the script: $DataDir, $UseConfig, $ConfigFile, $ConfigPage
+# Can be set outside the script: $DataDir, $UseConfig, $ConfigFile,
+# $ConfigPage, $AdminPass, $EditPass
 
 $UseConfig   = 1 unless defined $UseConfig; # 1 = load config file in the data directory
 $DataDir   = '/tmp/oddmuse' unless $DataDir; # Main wiki directory
@@ -85,7 +86,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.82 2003/06/05 00:05:00 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.83 2003/06/05 00:10:10 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -105,8 +106,8 @@ $ValidatorLink = 0; # 1 = Link to the W3C HTML validator service
 
 # HardSecurity
 $EditAllowed = 1;   # 1 = editing allowed,    0 = read-only
-$AdminPass   = '';  # Whitespace separated admin passwords.
-$EditPass    = '';  # Whitespace separated editor passwords.
+$AdminPass   = '' unless defined $AdminPass; # Whitespace separated passwords.
+$EditPass    = '' unless defined $EditPass; # Whitespace separated passwords.
 $BannedHosts = 'BannedHosts'; # Page for banned hosts (change space to _)
 $BannedCanRead = 1; # 1 = banned cannot edit, 0 = banned cannot read
 
