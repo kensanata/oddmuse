@@ -1,3 +1,10 @@
+2003-08-15  Alex Schroeder  <alex@emacswikiorg>
+
+	* wiki.pl (InitLinkPatterns): Simplify $UrlPattern and take more of
+	RFC 2396 into account.
+	(ApplyRules): ISBN rule now produces a dirty block.  Cleaned up
+	many other rules to remove extra setting of $oldmatch.
+
 2003-08-15  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoBrowseRequest): Remove all the stuff up to and
