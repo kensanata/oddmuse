@@ -58,7 +58,7 @@ $RefererFilter $PermanentAnchorsFile $PermanentAnchors @MyRules
 %CookieParameters $NewComment $StyleSheetPage @UserGotoBarPages
 $ConfigPage $ScriptName @MyMacros $CommentsPrefix $AllNetworkFiles
 $UsePathInfo $UploadAllowed @UploadTypes $LastUpdate $PageCluster
-%RssInterwikiTranslate $UseCache $ModuleDir $HtmlHeaders
+$RssInterwikiTranslate $UseCache $ModuleDir $HtmlHeaders
 %InvisibleCookieParameters);
 
 # Other global variables:
@@ -69,7 +69,8 @@ $Monolithic $ReplaceForm %PermanentAnchors %PagePermanentAnchors
 $CollectingJournal $WikiDescription $PrintedHeader %Locks $Fragment
 @Blocks @Flags %NearSite %NearSource %NearLinksUsed $NearSiteInit
 $NearDir $NearMap $SisterSiteLogoUrl %NearSearch @KnownLocks
-$PermanentAnchorsInit $ModulesDescription %Action);
+$PermanentAnchorsInit $ModulesDescription %Action
+%RssInterwikiTranslate $RssInterwikiTranslateInit);
 
 # == Configuration ==
 
@@ -120,6 +121,7 @@ $AllNetworkFiles = 0; # 1 = file:///foo is allowed -- the default allows only fi
 $PermanentAnchors = 1;	 # 1 = [::some text] defines permanent anchors (page aliases)
 $InterMap    = 'InterMap'; # name of the intermap page
 $NearMap     = 'NearMap';  # name of the nearmap page
+$RssInterwikiTranslate = 'RssInterwikiTranslate'; # name of RSS interwiki translation page
 
 # Other TextFormattingRules
 $HtmlTags    = 0;   # 1 = allow some 'unsafe' HTML tags
@@ -189,7 +191,7 @@ $HtmlHeaders = '';	# Additional stuff to put in the HTML <head> section
 %Languages = ();
 
 @LockOnCreation = ($BannedHosts, $InterMap, $RefererFilter, $StyleSheetPage,
-		   $ConfigPage, $NearMap, );		  # pages to lock
+		   $ConfigPage, $NearMap, $RssInterwikiTranslate, ); # pages to lock
 @KnownLocks = qw(main diff index merge visitors refer_*); # locks to remove
 
 %CookieParameters = (username=>'', pwd=>'', theme=>'', css=>'', msg=>'',
@@ -290,6 +292,8 @@ sub InitVariables {    # Init global session variables for mod_perl!
   %NearSearch = ();
   %NearSource = ();
   %NearLinksUsed = ();
+  $RssInterwikiTranslateInit = 0;
+  %RssInterwikiTranslate = ();
   %Locks = ();
   $OpenPageName = '';  # Currently open page
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
@@ -310,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.339 2004/03/07 20:37:13 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.340 2004/03/08 01:11:22 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -763,6 +767,7 @@ sub RSS {
     return $q->p($q->strong("[RSS parsing failed for $uri: $@]")) if $@;
     my ($counter, $interwiki);
     if (@uris > 1) {
+      RssInterwikiTranslateInit() unless $RssInterwikiTranslateInit;
       $interwiki = $rss->{channel}->{$wikins}->{interwiki};
       $interwiki =~ s/^\s+//; # when RDF is used, sometimes whitespace remains,
       $interwiki =~ s/\s+$//; # which breaks the test for an existing $interwiki below
@@ -819,6 +824,15 @@ sub RSS {
   }
   $str .= '</ul>';
   return $q->div({-class=>'rss'}, $str);
+}
+
+sub RssInterwikiTranslateInit {
+  $RssInterwikiTranslateInit = 1;
+  foreach (split(/\n/, GetPageContent($RssInterwikiTranslate))) {
+    if (/^ ([^ ]+)[ \t]+([^ ]+)$/) {
+      $RssInterwikiTranslate{$1} = $2;
+    }
+  }
 }
 
 sub NearInit {
