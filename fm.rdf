@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<!DOCTYPE rss PUBLIC "-//Netscape Communications//DTD RSS 0.91//EN"
+"http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91">
+
+<channel>
+<title>freshmeat.net</title>
+<link>http://freshmeat.net</link>
+<description>the one-stop-shop for all your Linux software needs</description>
+<language>en-us</language>
+
+<image>
+<title>freshmeat.net</title>
+<url>http://freshmeat.net/images/fm.mini.jpg</url>
+<link>http://freshmeat.net</link>
+<width>90</width>
+<height>36</height>
+</image>
+
+<item>
+<title>Xskat 3.1</title>
+<link>http://freshmeat.net/news/1999/09/01/936224942.html</link>
+<description>Skatordnung card game, playable against humans or the computer</description>
+</item>
+
+<item>
+<title>Java Test Driver 1.1</title>
+<link>http://freshmeat.net/news/1999/09/01/936224907.html</link>
+<description>Test driver for Java class libraries</description>
+</item>
+
+<item>
+<title>WaveLAN/IEEE driver 1.0.1</title>
+<link>http://freshmeat.net/news/1999/09/01/936224545.html</link>
+<description>Kernel network device driver for WaveLAN/IEEE wireless network card</description>
+</item>
+
+<item>
+<title>macfork 1.0</title>
+<link>http://freshmeat.net/news/1999/09/01/936224336.html</link>
+<description>Macintosh resource fork reader and extracter</description>
+</item>
+
+<item>
+<title>QScheme 0.2.2</title>
+<link>http://freshmeat.net/news/1999/09/01/936223755.html</link>
+<description>Really fast, small and easy to interface Scheme interpreter</description>
+</item>
+
+<item>
+<title>CompuPic 4.6 build 1018</title>
+<link>http://freshmeat.net/news/1999/09/01/936223729.html</link>
+<description>CompuPic Graphical Digital Content and File Manager for Linux</description>
+</item>
+
+<item>
+<title>eXtace 1.1.16</title>
+<link>http://freshmeat.net/news/1999/09/01/936223709.html</link>
+<description>ESD FFT visual plugin, eye-candy</description>
+</item>
+
+<item>
+<title>GTC 0.3</title>
+<link>http://freshmeat.net/news/1999/09/01/936223686.html</link>
+<description>Game Programming Library</description>
+</item>
+
+<item>
+<title>RocketJSP 0.9c</title>
+<link>http://freshmeat.net/news/1999/09/01/936223646.html</link>
+<description>JSP 1.0 Engine</description>
+</item>
+
+<item>
+<title>Majik 3D 0.0/M3</title>
+<link>http://freshmeat.net/news/1999/09/01/936223622.html</link>
+<description>An online role-playing world</description>
+</item>
+
+<textinput>
+<title>quick finder</title>
+<description>Use the text input below to search the freshmeat application database</description>
+<name>query</name>
+<link>http://core.freshmeat.net/search.php3</link>
+</textinput>
+</channel>
+</rss>

@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+      <rdf:RDF
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+      xmlns="http://my.netscape.com/rdf/simple/0.9/">
+
+        <channel>
+          <title>Linux Today</title>
+          <link>http://linuxtoday.com</link>
+          <description>Linux Today News Service</description>
+        </channel>
+
+		<image>
+			<title>Linux Today</title>
+			<url>http://linuxtoday.com/pics/ltnet.gif</url>
+			<link>http://linuxtoday.com</link>
+		</image>
+
+        <item>
+          <title>PRNewswire: Texas Software Startup, Serenity Systems, Advises Business Users to Get Off Windows</title>
+          <link>http://linuxtoday.com/story.php3?sn=9443</link>
+        </item>
+
+        <item>
+          <title>LinuxPR: MyDesktop Launches Linux Software Section</title>
+          <link>http://linuxtoday.com/story.php3?sn=9442</link>
+        </item>
+
+        <item>
+          <title>LinuxPR: Franklin Institute Science Museum Chooses Linux</title>
+          <link>http://linuxtoday.com/story.php3?sn=9441</link>
+        </item>
+
+        <item>
+          <title>Yellow Dog Linux releases updated am-utils</title>
+          <link>http://linuxtoday.com/story.php3?sn=9440</link>
+        </item>
+
+        <item>
+          <title>LinuxPR: LinuxCare Adds Laser5 Linux To Roster of Supported Linux Distributions</title>
+          <link>http://linuxtoday.com/story.php3?sn=9439</link>
+        </item>
+
+
+<textinput>
+<title>Search</title>
+<description>Search Linux Today:</description>
+<name>query</name>
+<link>http://linuxtoday.com/search/search-action.pl</link>
+</textinput>
+</rdf:RDF>
