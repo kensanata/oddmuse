@@ -16,12 +16,18 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.2 2005/01/01 13:40:31 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.3 2005/01/01 13:47:07 as Exp $</p>';
 
 # add the same CSS as in tables.pl
 $DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /table\.user/; # mod_perl?
 table.user { border-style:solid; border-width:thin; }
 table.user tr td { border-style:solid; border-width:thin; padding:5px; }
+table.user th { font-weight:bold; }
+table.user td.r { text-align:right; }
+table.user td.l { text-align:left; }
+table.user td.c { text-align:center; }
+table.user td.j { text-align:justify; }
+table.user td.mark { background-color:yellow; }
 EOT
 
 push(@MyRules, \&TablesLongRule);
