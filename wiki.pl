@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.414 2004/06/12 00:33:28 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.415 2004/06/12 11:22:57 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -3571,8 +3571,12 @@ sub DoMaintain {
     OpenPage($name);
     my $delete = PageDeletable($name);
     if ($delete) {
-      DeletePage($OpenPageName);
-      print ' ' . T('deleted');
+      my $status = DeletePage($OpenPageName);
+      if ($status) {
+	print ' ' . T('not deleted: ') . $status;
+      } else {
+	print ' ' . T('deleted');
+      }
     } else {
       ExpireKeepFiles();
       ReadReferers($OpenPageName); # clean up even if disabled
@@ -3638,21 +3642,15 @@ sub PageDeletable {
 }
 
 sub DeletePage { # Delete must be done inside locks.
-  my ($page) = @_;
-  my ($fname, $status);
-  $page =~ s/ /_/g;
-  $page =~ s/\[+//;
-  $page =~ s/\]+//;
-  $status = ValidId($page);
-  if ($status ne '') {
-    print "DeletePage: page $page is invalid, error is: $status<br>\n";
-    return;
-  }
+  my $id = shift;
+  my $status = ValidId($id);
+  return $status if $status;
   foreach my $fname (GetPageFile($page), GetKeepFiles($page), GetKeepDir($page),
 		     GetRefererFile($page), $IndexFile) {
     unlink($fname) if (-f $fname);
   }
   DeletePermanentAnchors();
+  return '';
 }
 
 # == Page locking ==
