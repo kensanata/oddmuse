@@ -1,4 +1,4 @@
-#! /usr/bin/perl
+#! /usr/bin/perl -w
 # OddMuse (see $WikiDescription below)
 # Copyright (C) 2001, 2002, 2003, 2004	Alex Schroeder <alex@emacswiki.org>
 # ... including lots of patches from the UseModWiki site
@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.398 2004/05/18 20:43:47 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.399 2004/05/21 12:37:15 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -938,17 +938,17 @@ sub GetUrl {
 sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result!
   my ($id, $text, $bracket, $free) = @_;
   $id = FreeToNormal($id);
-  my ($class, $exists, $title) = ResolveId($id);
-  if (!$text && $exists && $bracket) {
+  my ($class, $resolved, $title, $exists) = ResolveId($id);
+  if (!$text && $resolved && $bracket) {
     $text = BracketLink(++$FootnoteNumber); # s/_/ /g happens further down!
     $class .= ' number';
     $title = $id; # override title from ResolveId!
     $title =~ s/_/ /g if $free;
   }
-  if ($exists) { # don't show brackets if the page is local/anchor/near.
+  if ($resolved) { # anchors don't exist as pages, therefore do not use $exists
     $text = $id unless $text;
     $text =~ s/_/ /g if $free;
-    return ScriptLink(UrlEncode($id), $text, $class, undef, $title);
+    return ScriptLink(UrlEncode($resolved), $text, $class, undef, $title);
   } else {
     # $free and $bracket usually exclude each other
     # $text and not $bracket exclude each other
@@ -1162,14 +1162,14 @@ sub ValidIdOrDie {
   return 1;
 }
 
-sub ResolveId {
+sub ResolveId { # return css class, resolved id, title (eg. for popups), exist-or-not
   my $id = shift;
   AllPagesList();
-  my $exists = $IndexHash{$id}; # page exists
-  if (GetParam('anchor', $PermanentAnchors)) {
+  my $exists = $IndexHash{$id}; # if the page exists physically
+  if (GetParam('anchor', $PermanentAnchors)) { # anchors are preferred
     ReadPermanentAnchors() unless $PermanentAnchorsInit;
     my $anchor = $PermanentAnchors{$id};
-    return ('alias', $anchor, '', $exists) if $anchor; # permanent anchor exists
+    return ('alias', $anchor, '', $exists) if $anchor; # probably a matching page does not exist
   }
   return ('local', $id, '', $exists) if $exists;
   NearInit() unless $NearSiteInit;
@@ -1181,7 +1181,7 @@ sub ResolveId {
 
 sub BrowseResolvedPage {
   my $id = FreeToNormal(shift);
-  my ($class, $resolved, $title) = ResolveId($id);
+  my ($class, $resolved, $title, $exists) = ResolveId($id);
   if ($class eq 'near' && not GetParam('rcclusteronly', 0)) {
     print $q->redirect({-uri=>GetInterSiteUrl($title, $resolved)});
   } elsif ($class eq 'alias') { # an anchor was found instead of a page
@@ -1189,7 +1189,7 @@ sub BrowseResolvedPage {
   } elsif (not $resolved and $NotFoundPg) { # custom page-not-found message
     BrowsePage($NotFoundPg);
   } elsif ($resolved) { # an existing page was found
-    BrowsePage($id, GetParam('raw', 0));
+    BrowsePage($resolved, GetParam('raw', 0));
   } else { # new page!
     BrowsePage($id, GetParam('raw', 0), undef, '404 NOT FOUND') if ValidIdOrDie($id);
   }
@@ -2689,7 +2689,7 @@ sub DoEdit {
   }
   OpenPage($id);
   my ($text, $revision) = GetTextRevision(GetParam('revision', ''), 1); # maybe revision reset!
-  my $oldText = $text;
+  my $oldText = $preview ? $newText : $text;
   my $isFile = ($oldText =~ m/^#FILE ([^ \n]+)\n(.*)/s);
   $upload = $isFile if not defined $upload;
   if ($upload and not $UploadAllowed and not UserIsAdmin()) {
@@ -2707,7 +2707,6 @@ sub DoEdit {
   } else {
     $header = Ts('Editing %s', $id);
   }
-  $oldText = $newText if $preview;
   print GetHeader('', QuoteHtml($header), '');
   if ($preview and not $upload) {
     print '<div class="preview">';
@@ -2934,10 +2933,10 @@ sub PrintPage {
       print $id, "\n";
     }
   } else {
-    my ($class, $exists, $title) = ResolveId($id); #FIXME
+    my ($class, $resolved, $title, $exists) = ResolveId($id);
     my $text = $id;
     $text =~ s/_/ /g;
-    print ScriptLink(UrlEncode($id), $text, $class, undef, $title), $q->br();
+    print ScriptLink(UrlEncode($resolved), $text, $class, undef, $title), $q->br();
   }
 }
 
@@ -3137,12 +3136,12 @@ sub PrintSearchResultEntry {
     my $author = GetAuthorLink($entry{host}, $entry{username});
     $author = $entry{generator} unless $author;
     my $id = $entry{title};
-    my ($class, $exists, $title) = ResolveId($id); #FIXME
+    my ($class, $resolved, $title, $exists) = ResolveId($id);
     my $text = $id;
     $text =~ s/_/ /g;
-    $id = UrlEncode($id); # watch out when passing this on!
-    $id = 'action=browse;id=' . $id if $id =~ /\%2f/;
-    my $result = $q->span({-class=>'result'}, ScriptLink($id, $text, $class, undef, $title));
+    my $action = UrlEncode($resolved); # watch out when passing this on!
+    $action = 'action=browse;id=' . $action if $action =~ /\%2f/;
+    my $result = $q->span({-class=>'result'}, ScriptLink($action, $text, $class, undef, $title));
     my $description = $entry{description};
     $description = $q->br() . SearchHighlight($description, $regex) if $description;
     my $info = $entry{size};
@@ -3947,12 +3946,12 @@ sub GetPermanentAnchor {
   my $id = FreeToNormal(shift);
   my $text = $id;
   $text =~ s/_/ /g;
-  my ($class, $resolved, $exists) = ResolveId($id);
+  my ($class, $resolved, $title, $exists) = ResolveId($id);
   if ($resolved ne $OpenPageName and $class eq 'alias') {
     return '[' . Ts('anchor first defined here: %s', GetPageLink($id)) . ']';
   } elsif ($PermanentAnchors{$id} ne $OpenPageName
 	   and RequestLockDir('permanentanchors')) { # not fatal
-    $PermanentAnchors{$id}=$OpenPageName;
+    $PermanentAnchors{$id} = $OpenPageName;
     WritePermanentAnchors();
     ReleaseLockDir('permanentanchors');
   }
