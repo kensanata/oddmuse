@@ -18,7 +18,7 @@
 #
 # do 'german-utf8.pl';
 #
-# Diese Übersetzung wurde für Oddmuse 1.185 erstellt.
+# Diese Übersetzung wurde für Oddmuse 1.195 erstellt.
 #
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
@@ -43,6 +43,16 @@ Invalid action parameter %s
 Ungültiger action Parameter: %s
 Invalid URL.
 Ungültige URL.
+Page name is too long: %s
+Seitenname zu lang: %s
+Invalid Page %s
+Ungültige Seite %s
+Invalid Page %s (must not end with .db)
+Ungültige Seite %s (Darf nicht mit .db enden)
+Invalid Page %s (must not end with .lck)
+Ungültige Seite %s (Darf nicht mit .lck enden)
+Page name may not contain space characters: %s
+Seitenname darf keine Leerzeichen enthalten: %s
 Revision %s not available
 Version %s nicht verfügbar
 showing current revision instead
@@ -75,6 +85,8 @@ No updates since %s
 Keine Änderungen seit %s
 Page generated %s
 Seite erzeugt am %s
+Related changes
+Änderungen auf Seiten in dieser Gruppe
 (minor)
 (Klein)
 (diff)
@@ -83,6 +95,8 @@ history
 alte Versionen
 rollback
 bis hier alles Rückgängig machen
+Cluster:
+Gruppe:
 from %s
 von %s
 History of %s
@@ -191,16 +205,6 @@ Cannot save an nameless page.
 Eine Seite ohne Namen kann nicht gespeichert werden.
 cannot write %s
 Kann %s nicht schreiben
-Page name is too long: %s
-Seitenname zu lang: %s
-Invalid Page %s
-Ungültige Seite %s
-Invalid Page %s (must not end with .db)
-Ungültige Seite %s (Darf nicht mit .db enden)
-Invalid Page %s (must not end with .lck)
-Ungültige Seite %s (Darf nicht mit .lck enden)
-Page name may not contain space characters: %s
-Seitenname darf keine Leerzeichen enthalten: %s
 Could not get %s lock
 Die %s Sperre konnte nicht gesetzt werden.
 Unlocking
@@ -293,6 +297,10 @@ Replaced: %s
 Ersetzt: %s
 Search for: %s
 Suche nach: %s
+and
+und
+or
+oder
 %s pages found:
 %s Seiten gefunden:
 last updated
