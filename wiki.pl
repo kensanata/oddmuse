@@ -356,7 +356,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.522 2005/01/07 08:53:44 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.523 2005/01/07 16:03:26 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -3901,8 +3901,8 @@ sub DeletePermanentAnchors {
 sub handler {
   my $r = shift;
   Apache->request($r);
-  for $var (qw{DataDir UseConfig ConfigFile ModuleDir ConfigPage
-	       AdminPass EditPass ScriptName FullUrl}) {
+  for my $var (qw{DataDir UseConfig ConfigFile ModuleDir ConfigPage
+		  AdminPass EditPass ScriptName FullUrl}) {
     $$var = $ENV{"Wiki$var"} if exists $ENV{"Wiki$var"}; # symbolic references
   }
   DoWikiRequest();
