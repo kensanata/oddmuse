@@ -1,3 +1,7 @@
+2003-09-24  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetRcHtml): Uncommented rollback code.
+
 2003-09-23  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (ReportError): Simplified some.
@@ -5,6 +9,9 @@
 	(DoIndex): Simplified some.
 	(PrintSearchResults): Remove subpage specific code.
 	(GetFullLinkList): Simplified some.
+	(BrowsePage): Removed 304 response, because the status of the
+	page also depends on the status of *other* pages.
+	(DoBrowseRequest): Removed parameters to BrowsePage.
 
 2003-09-23  Alex Schroeder  <alex@gnu.org>
 
