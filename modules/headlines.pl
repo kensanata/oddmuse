@@ -18,7 +18,7 @@
 
 use vars qw($HeadlineNumber);
 
-$ModulesDescription .= '<p>$Id: headlines.pl,v 1.2 2004/02/22 13:20:03 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: headlines.pl,v 1.3 2004/02/22 13:38:12 as Exp $</p>';
 
 push(@MyRules, \&HeadlinesRule);
 
@@ -27,7 +27,7 @@ push(@MyRules, \&HeadlinesRule);
 $HeadlineNumber = 20;
 
 sub HeadlinesRule {
-  if (m/\G(\&lt;headlines\&gt;[ \t]*\n?)/gci) {
+  if (m/\G(\&lt;headlines\&gt;)/gci) {
     Dirty($1);
     HeadlinesPrint();
   }
