@@ -16,11 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.30 2004/12/19 15:12:59 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.31 2004/12/20 06:11:29 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalendarUseCal);
 
-$DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /div\.month/; # mod_perl?
+$DefaultStyleSheet .= q{
 div.month { float:right; margin:0; padding-left:1ex; padding-right:1ex; }
 div.footer { clear:both; }
 div.year div.month { float:left; }
@@ -37,7 +37,7 @@ div.month a[class~="today"][class~="collection"] { background-color:#faf; }
   div.year div.month { display: block; }
   div.year div.month a { display: inline; }
 }
-EOT
+} unless $DefaultStyleSheet =~ /div\.month/; # mod_perl?
 
 $CalendarOnEveryPage = 1;
 $CalendarUseCal = 1;
@@ -121,9 +121,9 @@ sub DoCollect {
     $CollectingJournal = 1;
     # Now save information required for saving the cache of the current page.
     local (%Page, $OpenPageName);
-    print '<div class="journal collection">';
+    print $q->start_div({-class=>'content journal collection'});
     PrintAllPages(1, 1, @matches);
-    print '</div>';
+    print $q->end_div();
   }
   $CollectingJournal = 0;
   PrintFooter();
@@ -134,8 +134,10 @@ push(@MyRules, \&CalendarRule);
 sub CalendarRule {
   if (/\G(calendar:(\d\d\d\d))/gc) {
     my $oldpos = pos;
+    Clean(CloseHtmlEnvironments() . $q->start_div({-class=>'cal year'}));
     Dirty($1);
     PrintYearCalendar($2);
+    print $q->end_div() . AddHtmlEnvironment('p');
     pos = $oldpos;
     return '';
   } elsif (/\G(month:(\d\d\d\d)-(\d\d))/gc) {
@@ -163,15 +165,13 @@ sub CalendarRule {
 sub PrintYearCalendar {
   my $year = shift;
   my @pages = AllPagesList();
-  print CloseHtmlEnvironments() . $q->start_div({-class=>'cal year'});
   print $q->p({-class=>nav},
 	      ScriptLink('action=calendar;year=' . ($year-1), T('Previous')),
-	      ' | ',
+	      '|',
 	      ScriptLink('action=calendar;year=' . ($year+1), T('Next')));
   for $mon ((1..12)) {
     print Cal($year, $mon, 1);
   }
-  print $q->end_div() . AddHtmlEnvironment('p');
 }
 
 $Action{calendar} = \&DoYearCalendar;
@@ -181,6 +181,8 @@ sub DoYearCalendar {
   $year += 1900;
   $year = GetParam('year', $year);
   print GetHeader('', Ts('Calendar %s', $year), '');
+  print $q->start_div({-class=>'content cal year'});
   PrintYearCalendar($year);
+  print $q->end_div();
   PrintFooter();
 }
