@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.379 2004/04/12 01:41:08 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.380 2004/04/12 01:55:32 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2368,8 +2368,9 @@ sub GetTextAtTime {
     my %field = ParseData($data);
     if ($field{ts} == $ts) {
       return $field{text};
-    } elsif ($field{ts} <= $ts and $field{ts} > $maxts) {
+    } elsif ($field{ts} < $ts and $field{ts} > $maxts) {
       $result = $field{text};
+      $maxts = $field{ts};
     }
   }
   return $result;
