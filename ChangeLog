@@ -1,3 +1,15 @@
+2004-04-04  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (AllPagesList): Produce an error if the pageidx file
+	exists and cannot be overwritten.
+
+2004-04-03  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ResolveId): Fix bug when return existing link.
+
+	* modules/toc.pl (TocHeadings): Return nothing if two headings or
+	less.
+
 2004-04-02  Alex Schroeder  <alex@gnu.org>
 
 	* modules/weblog-2.pl (NewWeblog2InitVariables): Switch from
