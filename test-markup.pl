@@ -292,6 +292,8 @@ test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage all=1 showe
 
 # --------------------
 
+fixme:
+
 print '[rss]';
 
 # create simple config file
@@ -303,6 +305,15 @@ close(F);
 use Cwd;
 $dir = cwd;
 $uri = "file://$dir";
+
+# RSS 2.0
+@Test = split('\n',<<'EOT');
+Fania All Stars - Bamboleo
+http://www.audioscrobbler.com/music/Fania\+All\+Stars/_/Bamboleo
+EOT
+
+update_page('RSS', "<rss $uri/kensanata.xml>");
+test_page(get_page('RSS'), @Test);
 
 @Test = split('\n',<<'EOT');
 PRNewswire: Texas Software Startup, Serenity Systems, Advises Business Users to Get Off Windows
@@ -354,41 +365,40 @@ EOT
 update_page('RSS', "<rss $uri/rss1.0.rdf>");
 test_page(get_page('RSS'), @Test);
 
-# @Test = split('\n',<<'EOT');
-# Berufsverbot für Mediendesigner?
-# http://www.heise.de/tp/deutsch/inhalt/te/15886/1.html
-# Experimentell bestätigt:
-# http://www.heise.de/tp/deutsch/inhalt/lis/15882/1.html
-# Clash im Internet?
-# http://www.heise.de/tp/deutsch/special/med/15787/1.html
-# Die Einheit der Umma gegen die jüdische Weltmacht
-# http://www.heise.de/tp/deutsch/special/ost/15879/1.html
-# Im Krieg mit dem Satan
-# http://www.heise.de/tp/deutsch/inhalt/co/15880/1.html
-# Der dritte Mann
-# http://www.heise.de/tp/deutsch/inhalt/co/15876/1.html
-# Leicht neben dem Ziel
-# http://www.heise.de/tp/deutsch/inhalt/mein/15867/1.html
-# Wale sollten Nordkorea meiden
-# http://www.heise.de/tp/deutsch/inhalt/co/15878/1.html
-# Afghanistan-Krieg und Irak-Besatzung haben al-Qaida gestärkt
-# http://www.heise.de/tp/deutsch/inhalt/co/15874/1.html
-# Der mit dem Dinosaurier tanzt
-# http://www.heise.de/tp/deutsch/inhalt/lis/15863/1.html
-# Terroranschlag überschattet das Genfer Abkommen
-# http://www.heise.de/tp/deutsch/special/ost/15873/1.html
-# "Barwatch" in Kanada
-# http://www.heise.de/tp/deutsch/inhalt/te/15871/1.html
-# Die Türken kommen!
-# http://www.heise.de/tp/deutsch/special/irak/15870/1.html
-# Neue Regelungen zur Telekommunikationsüberwachung
-# http://www.heise.de/tp/deutsch/inhalt/te/15869/1.html
-# Ein Lied vom Tod
-# http://www.heise.de/tp/deutsch/inhalt/kino/15862/1.html
-# EOT
+@Test = split('\n',<<'EOT');
+<div class="rss"><ul><li> <a title="999" href="http://www.heise.de/tp/deutsch/inhalt/te/15886/1.html">Berufsverbot für Mediendesigner\?</a></li>
+Experimentell bestätigt:
+http://www.heise.de/tp/deutsch/inhalt/lis/15882/1.html
+Clash im Internet?
+http://www.heise.de/tp/deutsch/special/med/15787/1.html
+Die Einheit der Umma gegen die jüdische Weltmacht
+http://www.heise.de/tp/deutsch/special/ost/15879/1.html
+Im Krieg mit dem Satan
+http://www.heise.de/tp/deutsch/inhalt/co/15880/1.html
+Der dritte Mann
+http://www.heise.de/tp/deutsch/inhalt/co/15876/1.html
+Leicht neben dem Ziel
+http://www.heise.de/tp/deutsch/inhalt/mein/15867/1.html
+Wale sollten Nordkorea meiden
+http://www.heise.de/tp/deutsch/inhalt/co/15878/1.html
+Afghanistan-Krieg und Irak-Besatzung haben al-Qaida gestärkt
+http://www.heise.de/tp/deutsch/inhalt/co/15874/1.html
+Der mit dem Dinosaurier tanzt
+http://www.heise.de/tp/deutsch/inhalt/lis/15863/1.html
+Terroranschlag überschattet das Genfer Abkommen
+http://www.heise.de/tp/deutsch/special/ost/15873/1.html
+"Barwatch" in Kanada
+http://www.heise.de/tp/deutsch/inhalt/te/15871/1.html
+Die Türken kommen!
+http://www.heise.de/tp/deutsch/special/irak/15870/1.html
+Neue Regelungen zur Telekommunikationsüberwachung
+http://www.heise.de/tp/deutsch/inhalt/te/15869/1.html
+Ein Lied vom Tod
+http://www.heise.de/tp/deutsch/inhalt/kino/15862/1.html
+EOT
 
-# update_page('RSS', "<rss $uri/heise.rdf>");
-# test_page(get_page('RSS'), @Test);
+update_page('RSS', "<rss $uri/heise.rdf>");
+test_page(get_page('RSS'), @Test);
 
 # Note, cannot identify BayleShanks as author in the mb.rdf
 @Test = split('\n',<<'EOT');
@@ -733,7 +743,7 @@ test_page(get_page('CacheTest'), @Test);
 # refresh the cache using the all action
 
 @Test = split('\n',<<'EOT');
-This is a WikiLink<a class="edit" title="Click to create this page" href="http://localhost/wiki.pl\?action=edit;id=WikiLink">\?</a>.
+This is a WikiLink<a class="edit" title="Click to edit this page" href="http://localhost/wiki.pl\?action=edit;id=WikiLink">\?</a>.
 EOT
 
 get_page('action=all cache=0');
@@ -1091,7 +1101,7 @@ test_page(update_page('FooBaz', "Try FooBar instead!\n"),
 	  . ' href="http://www.emacswiki.org/cgi-bin/wiki/FooBar">FooBar</a>',
 	  '<div class="near"><p><a class="local"'
 	  . ' href="http://localhost/wiki.pl/EditNearLinks">EditNearLinks</a>:'
-	  . ' <a class="edit" title="Click to create this page"'
+	  . ' <a class="edit" title="Click to edit this page"'
 	  . ' href="http://localhost/wiki.pl?action=edit;id=FooBar">FooBar</a></p></div>'));
 test_page(update_page('FooBar', "Test by AlexSchroeder!\n"),
 	  map { quotemeta } (
@@ -1222,17 +1232,17 @@ file://home/foo/tutorial.pdf
 file:///home/foo/tutorial.pdf
 <a class="url" href="file:///home/foo/tutorial.pdf">file:///home/foo/tutorial.pdf</a>
 image inline: [[image:HomePage]], [[image:OtherPage]]
-image inline: <a class="image" href="http://localhost/test-wrapper.pl/HomePage"><img class="upload" src="http://localhost/test-wrapper.pl/download/HomePage" alt="HomePage" /></a>, [image:OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage;upload=1">?</a>]
+image inline: <a class="image" href="http://localhost/test-wrapper.pl/HomePage"><img class="upload" src="http://localhost/test-wrapper.pl/download/HomePage" alt="HomePage" /></a>, [image:OtherPage<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage;upload=1">?</a>]
 traditional local link: HomePage, OtherPage
-traditional local link: <a class="local" href="http://localhost/test-wrapper.pl/HomePage">HomePage</a>, OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a>
+traditional local link: <a class="local" href="http://localhost/test-wrapper.pl/HomePage">HomePage</a>, OtherPage<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a>
 traditional local link with extra brackets: [HomePage], [OtherPage]
-traditional local link with extra brackets: <a class="local number" title="HomePage" href="http://localhost/test-wrapper.pl/HomePage"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>, [OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a>]
+traditional local link with extra brackets: <a class="local number" title="HomePage" href="http://localhost/test-wrapper.pl/HomePage"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>, [OtherPage<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a>]
 traditional local link with other text: [HomePage homepage], [OtherPage other page]
-traditional local link with other text: [<a class="local" href="http://localhost/test-wrapper.pl/HomePage">HomePage</a> homepage], [OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a> other page]
+traditional local link with other text: [<a class="local" href="http://localhost/test-wrapper.pl/HomePage">HomePage</a> homepage], [OtherPage<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a> other page]
 free link: [[home page]], [[other page]]
-free link: [home page]<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=home_page">?</a>, [other page]<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=other_page">?</a>
+free link: [home page]<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=home_page">?</a>, [other page]<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=other_page">?</a>
 free link with extra brackets: [[[home page]]], [[[other page]]]
-free link with extra brackets: [home_page<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=home_page">?</a>], [other_page<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=other_page">?</a>]
+free link with extra brackets: [home_page<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=home_page">?</a>], [other_page<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=other_page">?</a>]
 free link with other text: [[home page|da homepage]], [[other page|da other homepage]]
 free link with other text: [[home page|da homepage]], [[other page|da other homepage]]
 URL: http://www.oddmuse.org/
@@ -1277,17 +1287,17 @@ close(F);
 
 %Test = split('\n',<<'EOT');
 traditional local link: HomePage, OtherPage
-traditional local link: <a class="local" href="http://localhost/test-wrapper.pl/HomePage">HomePage</a>, OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a>
+traditional local link: <a class="local" href="http://localhost/test-wrapper.pl/HomePage">HomePage</a>, OtherPage<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a>
 traditional local link with extra brackets: [HomePage], [OtherPage]
-traditional local link with extra brackets: <a class="local number" title="HomePage" href="http://localhost/test-wrapper.pl/HomePage"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>, [OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a>]
+traditional local link with extra brackets: <a class="local number" title="HomePage" href="http://localhost/test-wrapper.pl/HomePage"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>, [OtherPage<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a>]
 traditional local link with other text: [HomePage homepage], [OtherPage other page]
-traditional local link with other text: <a class="local" href="http://localhost/test-wrapper.pl/HomePage">homepage</a>, [OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a> other page]
+traditional local link with other text: <a class="local" href="http://localhost/test-wrapper.pl/HomePage">homepage</a>, [OtherPage<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a> other page]
 free link: [[home page]], [[other page]]
-free link: [home page]<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=home_page">?</a>, [other page]<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=other_page">?</a>
+free link: [home page]<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=home_page">?</a>, [other page]<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=other_page">?</a>
 free link with extra brackets: [[[home page]]], [[[other page]]]
-free link with extra brackets: [home_page<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=home_page">?</a>], [other_page<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=other_page">?</a>]
+free link with extra brackets: [home_page<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=home_page">?</a>], [other_page<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=other_page">?</a>]
 free link with other text: [[home page|da homepage]], [[other page|da other homepage]]
-free link with other text: [home page<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=home_page">?</a> da homepage], [other page<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=other_page">?</a> da other homepage]
+free link with other text: [home page<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=home_page">?</a> da homepage], [other page<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=other_page">?</a> da other homepage]
 URL: http://www.oddmuse.org/
 URL: <a class="url" href="http://www.oddmuse.org/">http://www.oddmuse.org/</a>
 URL in brackets: [http://www.oddmuse.org/]
@@ -1347,13 +1357,13 @@ paragraph<p>paragraph</p>
 * one and *\n* two and * more
 <ul><li>one and *</li><li>two and * more</li></ul>
 WikiWord
-WikiWord<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=WikiWord">?</a>
+WikiWord<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=WikiWord">?</a>
 WikiWord:
-WikiWord<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=WikiWord">?</a>:
+WikiWord<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=WikiWord">?</a>:
 OddMuse
-OddMuse<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OddMuse">?</a>
+OddMuse<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=OddMuse">?</a>
 OddMuse:
-OddMuse<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OddMuse">?</a>:
+OddMuse<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=OddMuse">?</a>:
 OddMuse:test
 <a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"><span class="site">OddMuse</span>:<span class="page">test</span></a>
 OddMuse:test: or not
@@ -1371,7 +1381,7 @@ WikiLink
 !foo
 !foo
 ![[Free Link]]
-![Free Link]<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=Free_Link">?</a>
+![Free Link]<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=Free_Link">?</a>
 http://www.emacswiki.org
 <a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>
 <http://www.emacswiki.org>
@@ -1677,7 +1687,7 @@ symlink('/home/alex/src/oddmuse/modules/link-all.pl',
 update_page('foo', 'bar');
 
 test_page(get_page('action=browse id=foo define=1'),
-	  quotemeta('<a class="edit" title="Click to create this page" href="http://localhost/wiki.pl?action=edit;id=bar">bar</a>'));
+	  quotemeta('<a class="edit" title="Click to edit this page" href="http://localhost/wiki.pl?action=edit;id=bar">bar</a>'));
 
 %Test = split('\n',<<'EOT');
 testing foo.
@@ -1702,7 +1712,7 @@ update_page('bar', 'foo');
 
 %Test = split('\n',<<'EOT');
 [[image:foo]]
-[image:foo<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=foo;upload=1">?</a>]
+[image:foo<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=foo;upload=1">?</a>]
 [[image:bar]]
 <a class="image" href="http://localhost/test-wrapper.pl/bar"><img class="upload" src="http://localhost/test-wrapper.pl/download/bar" alt="bar" /></a>
 [[image:bar|alternative text]]
@@ -1718,8 +1728,6 @@ update_page('bar', 'foo');
 EOT
 
 run_tests();
-
-fixme:
 
 print '[subscriberc module]'; # test together with link-all module
 
