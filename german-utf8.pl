@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-# Diese Übersetzung wurde für Oddmuse 1.320 erstellt.
+# Diese Übersetzung wurde für Oddmuse 1.401 erstellt.
 #
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
@@ -29,12 +29,14 @@ UserName must be 50 characters or less: not saved
 Länge des Benutzernamens maximal 50 Zeichen: nicht gespeichert.
 XML::RSS is not available on this system.
 Das XML::RSS Modul ist auf diesem System nicht installiert.
-LWP::UserAgent is not available on this system.
-Das LWP::UserAgent Modul ist auf diesem System nicht installiert.
 diff
 Unterschiede
 history
 alte Versionen
+%s returned no data, or LWP::UserAgent is not available.
+Entweder liefert %s liefert keine Daten, oder das LWP::UserAgent Modul ist auf diesem System nicht installiert.
+RSS parsing failed for %s
+Die RSS Daten von %s sind ungültig; sie können nicht verarbeitet werden
  . . . . 
  . . . . 
 Click to create this page
@@ -46,7 +48,7 @@ http://www.amazon.de/exec/obidos/ISBN=%s
 alternate
 Alternativ
 http://www.pricescan.com/books/BookDetail.asp?isbn=%s
-
+http://de.bookbutler.info/vergleich/%s
 search
 Suchen
 Invalid action parameter %s
@@ -91,12 +93,12 @@ for %s only
 nur für %s
 List latest change per page only
 Nur letzte Änderungen pro Seite
+List all changes
+Alle Änderungen
 List only major changes
 Nur grössere Änderungen
 Include minor changes
 Inklusive kleinere Änderungen
-List all changes
-Alle Änderungen
 %s days
 %s Tage
 List later changes
@@ -143,36 +145,6 @@ Click to search for references to this page
 Klicken um nach Verweisen auf diese Seite zu suchen
 Cookie: 
 Cookie: 
-new comment
-Neuer Kommentar
-Save
-Speichern
-Preview
-Vorschau
-Comments on this page
-Kommentare zu dieser Seite
-Edit revision %s of this page
-Version %s dieser Seite bearbeiten
-Edit text of this page
-Text dieser Seite bearbeiten
-This page is read-only
-Diese Seite ist schreibgeschützt
-View other revisions
-Andere Versionen ansehen
-View current revision
-Aktuelle Version ansehen
-View all changes
-Alle Änderungen ansehen
-Back to %s
-Zurück zu %s
-Last edited
-Zuletzt geändert
-Edited
-Geändert
-by %s
-von %s
-(diff)
-(Unterschiede)
 Warning
 Warnung
 Database is stored in temporary directory %s
@@ -183,6 +155,50 @@ The same page on other sites:
 Dieselbe Seite auf anderen Sites:
 EditNearLinks
 Diese Seiten lokal erstellen
+Last edited
+Zuletzt geändert
+Edited
+Geändert
+by %s
+von %s
+(diff)
+(Unterschiede)
+Run maintenance
+Wartungsarbeiten durchführen
+Unlock site
+Wiki entsperren
+Lock site
+Wiki sperren
+Comments on this page
+Kommentare zu dieser Seite
+Edit revision %s of this page
+Version %s dieser Seite bearbeiten
+Edit text of this page
+Text dieser Seite bearbeiten
+e
+e
+This page is read-only
+Diese Seite ist schreibgeschützt
+Unlock page
+Seite entsperren
+Lock page
+Seite sperren
+View other revisions
+Andere Versionen ansehen
+View current revision
+Aktuelle Version ansehen
+View all changes
+Alle Änderungen ansehen
+Back to %s
+Zurück zu %s
+new comment
+Neuer Kommentar
+s
+s
+Save
+Speichern
+Preview
+Vorschau
 Search:
 Suchen:
 Replace:
@@ -349,14 +365,18 @@ Sample_Undefined_Page
 Beispiel_Einer_Undefinierten_Seite
 [[%s]] cannot be defined.
 [[%s]] kann nicht definiert werden.
-Only an administrator can create %s
-Nur ein Administrator kann %s erstellen
+Only an administrator can create %s.
+Nur ein Administrator can %s erstellen.
 Transfer Error: %s
 Transferfehler: %s
 Browser reports no file info.
 Der Browser hat keine Dateiinformationen geliefert.
 Browser reports no file type.
 Der Browser hat keinen Dateityp geliefert.
+Edit Denied
+Bearbeiten verboten
+The page contains banned text.
+Diese Seite enthält verbotenen Text.
 This page was changed by somebody else %s.
 Diese Seite wurde von einer anderen Person %s verändert
 The changes conflict.  Please check the page again.
@@ -417,6 +437,8 @@ Near links:
 Nahe Links:
 Too many connections by %s
 Zu viele Verbindungen durch %s
+Please do not fetch more than %1 pages in %2 seconds.
+Bitte rufen sie nicht mehr als %1 Seiten in %2 Sekunden auf.
 Recent Visitors
 Kürzliche Besucher
 Referrers
@@ -427,4 +449,6 @@ anchor first defined here: %s
 Der Anker wurde hier zuerst definiert: %s
 Click to search for references to this permanent anchor
 Klicken um nach Verweisen auf diesen permanenten Anker zu suchen
+the page %s also exists
+die Seite %s existiert ebenfalls
 END_OF_TRANSLATION
