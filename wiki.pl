@@ -345,7 +345,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     unless -d $DataDir;
   my $add_space = $CommentsPrefix =~ /[ \t_]$/;
   map { $$_ = FreeToNormal($$_); } # convert spaces to underscores on all configurable pagenames
-    (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$StyleSheetPage, \$NearMap, \$CommentsPrefix
+    (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$StyleSheetPage, \$NearMap, \$CommentsPrefix,
      \$ConfigPage, \$NotFoundPg, \$RssInterwikiTranslate, \$BannedContent, \$RssExclude, );
   $CommentsPrefix .= '_' if $add_space;
   @UserGotoBarPages = ($HomePage, $RCName) unless @UserGotoBarPages;
@@ -356,7 +356,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.519 2005/01/07 00:41:57 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.520 2005/01/07 00:46:23 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
