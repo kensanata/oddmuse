@@ -4,6 +4,7 @@
 	(RcHeader): Add interface for all and showedit parameters to recent changes.
 	(RSS): Rewrote encoding handling (depends on Unicode::MapUTF8, now!).
 	Fixed keyhandling.
+	(WriteReferers): Unlink empty files.
 
 2003-10-16  Alex Schroeder  <alex@gnu.org>
 
