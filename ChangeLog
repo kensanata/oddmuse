@@ -6,6 +6,8 @@
 	($UsePathInfo): New variable.
 	(ScriptLink): Use it.
 	(DoBrowseRequest): Use it.
+	(DoBrowseRequest): Make sure to ignore path_info if $UsePathInfo
+	is not set.
 
 2003-08-15  Alex Schroeder  <alex@emacswikiorg>
 
