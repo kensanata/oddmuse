@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: image.pl,v 1.2 2004/05/31 01:08:17 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: image.pl,v 1.3 2004/05/31 01:21:25 as Exp $</p>';
 
 push( @MyRules, \&ImageSupportRule );
 
@@ -26,7 +26,8 @@ sub ImageSupportRule {
   my $result = '';
   if (m!\G\[\[image(/[a-z]+)?:$FreeLinkPattern(\|[^\]|]+)?(\|[^\]]+)?\]\]!gc) {
     my $oldpos = pos;
-    my $class = $1 ? substr($1, 1) : 'image picture';
+    my $class = 'upload';
+    $class .= ' ' . substr($1, 1) if $1;
     my $name = $2;
     my $alt = $3 ? substr($3, 1) : T("image: $name");
     my $link = substr($4, 1) if $4;
@@ -34,11 +35,12 @@ sub ImageSupportRule {
     $link = $id unless $link;
     my $linkclass;
     if ($link) {
+      $linkclass = 'image ';
       if ($link =~ /$FullUrlPattern/) {
 	$link = $1;
-	$linkclass = 'outside';
+	$linkclass .= 'outside';
       } else {
-	$linkclass = 'local';
+	$linkclass .= 'local';
 	if ($UsePathInfo and !$Monolithic) {
 	  $link = $ScriptName . '/' . $link;
 	} elsif ($Monolithic) {
