@@ -269,7 +269,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.158 2003/09/25 17:41:40 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.159 2003/09/25 22:25:45 as Exp $');
 }
 
 sub InitCookie {
@@ -493,12 +493,6 @@ sub ApplyRules {
       $fragment = GetUrl($1, '', 1, 0);
     } elsif (m/\G$UrlPattern/cg) { # plain URLs after all $UrlPattern, such that [$UrlPattern text] has priority
       $fragment = GetUrl($1, '', 0, 1);
-    } elsif (m/\G(\[image:$FreeLinkPattern\])/cog) { # [image:page] inlines uploaded image
-      DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
-      print Upload($2, 1); # always inline the latest revision
-    } elsif (m/\G(\[link:$FreeLinkPattern\])/cog) { # [link:page] links uploaded file
-      DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
-      print Upload($2, 0); # always link to the latest revision
     } elsif ($WikiLinks && $BracketWiki && $locallinks && m/\G(\[$LinkPattern\s+([^\]]+?)\])/cg) { # [LocalPage text]
       DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
       print GetPageOrEditLink($2, $3, 1);
