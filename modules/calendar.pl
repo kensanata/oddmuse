@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.25 2004/10/12 20:35:05 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.26 2004/10/12 21:08:25 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalendarUseCal);
 
@@ -27,7 +27,10 @@ div.year div.month { float:left; }
 div.cal pre { margin:0; padding:0; background-color:#ffe; }
 div.cal a.edit { text-decoration:none; color:inherit; }
 div.cal a.today { background-color:#fcc; }
-@media print { div.cal { display: none; }}
+@media print {
+  div.cal { display: none; }
+  div.year div.month { display: block; }
+}
 EOT
 
 $CalendarOnEveryPage = 1;
