@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: setext.pl,v 1.8 2004/12/05 04:00:28 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: setext.pl,v 1.9 2004/12/05 14:19:12 as Exp $</p>';
 
 push(@MyRules, \&SeTextRule);
 
@@ -43,7 +43,7 @@ sub SeTextRule {
     if (substr($3,0,1) eq '=') {
       $html .= $q->h2($2);
     } else {
-      $html .= $q->h2($3);
+      $html .= $q->h3($2);
     }
     $PortraitSupportColorDiv = 0;
     return $html . AddHtmlEnvironment('p');
