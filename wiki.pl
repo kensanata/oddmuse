@@ -278,7 +278,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.214 2003/10/20 00:06:26 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.215 2003/10/21 19:43:03 as Exp $');
 }
 
 sub InitCookie {
@@ -325,7 +325,7 @@ sub InitLinkPatterns {
   $LinkPattern = "($WikiWord)$QDelim";
   # Inter-site convention: sites must start with uppercase letter.
   # This avoids confusion with URLs.
-  $InterSitePattern = '[A-Z]+[A-Za-z\x80-\xff]+';
+  $InterSitePattern = '[A-Z\x80-\xff]+[A-Za-z\x80-\xff]+';
   $InterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x80-\xff_=!?#$@~`%&*+\\/:;.,]+[-a-zA-Z0-9\x80-\xff_=#$@~`%&*+\\/])$QDelim";
   $FreeLinkPattern = "([-,.()' _0-9A-Za-z\x80-\xff]+)$QDelim";
   $UrlProtocols = 'http|https|ftp|afs|news|nntp|mid|cid|mailto|wais|'
