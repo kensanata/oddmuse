@@ -265,7 +265,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.173 2003/10/02 21:20:42 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.174 2003/10/02 21:24:36 as Exp $');
 }
 
 sub InitCookie {
@@ -1513,7 +1513,7 @@ sub GetRcRss {
     @_;
   # Only take the first 15 entries
   my $limit = GetParam('rsslimit', 14);
-  @{$rss->{'items'}} = @{$rss->{'items'}}[0..$limit]  unless $limit == 'all';
+  @{$rss->{'items'}} = @{$rss->{'items'}}[0..$limit-1]  unless $limit == 'all';
   return $rss->as_string;
 }
 
