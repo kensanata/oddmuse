@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: image.pl,v 1.8 2004/06/19 19:34:48 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: image.pl,v 1.9 2004/06/19 19:54:17 as Exp $</p>';
 
 use vars qw($ImageUrlPath);
 
@@ -39,9 +39,9 @@ sub ImageSupportRule {
     my $id = FreeToNormal($name);
     if (not $link) {
       if ($external) {
-	$link = $ImageUrlPath . '/' . $id;
+	$link = $ImageUrlPath . '/' . UrlEncode($id);
       } else {
-	$link = $id;
+	$link = UrlEncode($id);
       }
     }
     if ($link =~ /$FullUrlPattern/) {
@@ -61,7 +61,7 @@ sub ImageSupportRule {
     }
     my $src;
     if ($external) {
-      $src = $ImageUrlPath . '/' . $id;
+      $src = $ImageUrlPath . '/' . UrlEncode($id);
     } elsif ($UsePathInfo) {
       $src = $ScriptName . "/download/" . UrlEncode($id);
     } else {
