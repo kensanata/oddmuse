@@ -1,3 +1,23 @@
+2004-09-04  Alex Schroeder  <alex@gnu.org>
+
+	* modules/calendar.pl: Add to $DefaultStyleSheet.
+	(Cal): Translate month names.
+	(Cal): Translate weekdays.
+
+	* wiki.pl ($DefaultStyleSheet): New option.
+	(GetHtmlHeader): Use it.
+
+2004-09-02  Alex Schroeder  <alex@gnu.org>
+
+	* modules/markup.pl (%MarkupPairs): No longer use the u element.
+	Use em with a style attribute instead.
+	(MarkupRule): Handle arrays in %MarkupPairs.
+
+	* wiki.pl (GetUpload): Don't return a p element.
+
+	* modules/setext.pl (SeTextRule): No longer use the u element.
+	Use em with a style attribute instead.
+
 2004-09-01  Alex Schroeder  <alex@gnu.org>
 
 	* modules/usemod.pl (UsemodTableAttributes): New.
