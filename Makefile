@@ -24,7 +24,7 @@ $(VERSION).tar.gz:
 	gpg --sign -b $<
 
 upload-translations: $(TRANSLATIONS)
-	cgi-upload
+	cgi-upload $^
 
 .PHONY: always
 
