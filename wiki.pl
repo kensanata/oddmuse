@@ -275,7 +275,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.256 2003/11/11 17:19:14 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.257 2003/11/11 17:21:40 as Exp $');
 }
 
 sub InitCookie {
@@ -2702,7 +2702,7 @@ sub DoIndex {
     ReadPermanentAnchors() if $anchors > 0 and not %PermanentAnchors;
     push(@pages, AllPagesList()) if $anchors < 2;
     push(@pages, keys %PermanentAnchors) if $anchors > 0;
-    sort @pages if $anchors > 0;
+    @pages = sort @pages if $anchors > 0;
     PrintPageList(@pages);
     PrintFooter();
   }
