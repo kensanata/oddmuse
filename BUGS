@@ -3,3 +3,6 @@ it belongs anymore.</stron><strong class="changes">g>.
 
 Is DiffHtmlMarkWords called twice for a chunk?
 
+It seems that following the diff link from RC to a page that has
+a minor edit at the end will show a minor diff instead of a major
+diff, eventhough it *says* that it will show a major diff!
