@@ -1,3 +1,7 @@
+2005-01-26  Johan Adler <alltid.foo@bar.nyfiken.org>
+
+        * modules/translations/swedish-utf8.pl (translation) Corrected typo in Swedish translation.
+
 2005-01-25  Alex Schroeder  <alex@gnu.org>
 
 	* modules/live-templates.pl (LiveTemplateRule): Quote HTML before
