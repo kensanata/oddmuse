@@ -27,12 +27,12 @@ my $q = new CGI;
 my $url = $q->param('url');
 my $name = $q->param('name');
 
-if ($url and $q->param('pwd') eq $pwd) {
+if ($q->param('list')) {
+  list();
+} elsif ($url and $q->param('pwd') eq $pwd) {
   redefine();
 } elsif ($name) {
   resolve();
-} elsif ($q->param('debug')) {
-  debug();
 } else {
   html();
 }
@@ -44,14 +44,12 @@ sub html {
     $q->p('Reads a definition of', $q->a({-href=>'http://ln.taoriver.net/about.html'}, 'local names'),
 	  'from an URL and saves it.  At the same time it also offers to redirect you to the matching URL,',
 	  'if you query it for a name.'),
-    $q->p(q{$Id: localnames-server.pl,v 1.4 2005/01/09 23:19:44 as Exp $}),
+    $q->p(q{$Id: localnames-server.pl,v 1.5 2005/01/09 23:38:09 as Exp $}),
+    $q->p($q->a({-href=>$q->url . '?list=1'}, 'List of all names')),
     $q->start_form(-method=>'GET'),
-    $q->p({-style=>'width:20ex;'}, 'Redefine from URL:',
-	  $q->textfield('url', '', 70)),
-    $q->p({-style=>'width:20ex;'}, 'Password:',
-	  $q->textfield('pwd', '', 70)),
-    $q->p({-style=>'width:20ex;'}, 'Query name: ',
-	  $q->textfield('name', '', 70)),
+    $q->p('Redefine from URL:', $q->textfield('url', '', 50)),
+    $q->p('Password:', $q->textfield('pwd', '', 50)),
+    $q->p('Query name: ', $q->textfield('name', '', 50)),
     $q->p($q->submit()),
     $q->end_form(),
     $q->end_html();
@@ -136,7 +134,8 @@ sub resolve {
   }
 }
 
-sub debug {
+sub list {
+  print $q->header(-type=>'text/plain; charset=UTF-8');
   tie %LocalNames, "DB_File", $db, O_RDWR|O_CREAT, 0666, $DB_HASH
     or die "Cannot open file '$db': $!\n";
   foreach (keys %LocalNames) {
