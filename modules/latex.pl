@@ -24,18 +24,24 @@
 
 use vars qw($LatexDir $LatexLinkDir $LatexExtendPath $LatexSingleDollars);
 
-# You must set to the path to dvipng
+# You must set this to the full path to dvipng
 my $dvipngPath = "/usr/bin/dvipng";
 
 # Set $useMD5 to 1 to use MD5 hashes for filenames, set it to 0 to use a url-encoded hash
-# If $useMD5 is set and the module is not available, latex.pl falls back on urlencode
+# If $useMD5 is set and the Digest::MD5 module is not available, latex.pl falls back to urlencode
 my $useMD5 = 0;
 
 # PATH must be extended in order to make latex available along with
 # any binaries that it may need to work
 $LatexExtendPath = ':/usr/share/texmf/bin:/usr/bin:/usr/local/bin';
 
+# Allow single dollars signs to escape LaTeX math commands
 $LatexSingleDollars = 0;
+
+# Set $allowPlainTeX to 1 to allow normal LaTeX commands inside of $[ ]$
+# to be executed outside of the math environment.  This should only be done
+# if your wiki is not publically editable because of the possible security risk
+$allowPlainLaTeX = 0;
 
 # $LatexDir must be accessible from the outside as $LatexLinkDir.  The
 # first directory is used to *save* the pictures, the second directory
@@ -57,7 +63,7 @@ my $LatexDefaultTemplateName = "$LatexDir/template.latex";
 
 
 
-$ModulesDescription .= '<p>$Id: latex.pl,v 1.10 2004/10/04 03:58:22 tolchz Exp $</p>';
+$ModulesDescription .= '<p>$Id: latex.pl,v 1.11 2004/10/04 04:15:18 tolchz Exp $</p>';
 
 my $LatexDefaultTemplate = << 'EOT';
 \documentclass[12pt]{article}
@@ -76,7 +82,10 @@ sub LatexRule {
     return &MakeLaTeX("\$\$ $1 \$\$", $LatexSingleDollars ? "display math" : "inline math");
   } elsif ($LatexSingleDollars and m/\G\$((.*\n)*?.*?)\$/gc) {
     return &MakeLaTeX("\$ $1 \$", "inline math");
+  } elsif ($allowPlainLaTeX && m/\G\$\[((.*\n)*?.*?)\]\$/gc) { #Pick up plain LaTeX commands
+    return &MakeLaTeX(" $1 ", "LaTeX");   
   }
+
   return undef;
 }
 
