@@ -348,7 +348,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.459 2004/09/29 22:36:50 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.460 2004/09/29 23:35:36 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -432,7 +432,7 @@ sub Dirty { # arg 1 is the raw text; the real output must be printed instead
 
 sub ApplyRules {
   # locallinks: apply rules that create links depending on local config (incl. interlink!)
-  my ($text, $locallinks, $withanchors, $revision) = @_;
+  my ($text, $locallinks, $withanchors, $revision, @tags) = @_; # $revision is used for images
   NearInit() unless $NearSiteInit;
   $text =~ s/\r\n/\n/g; # DOS to Unix
   $text =~ s/\n+$//g;    # No trailing paragraphs
@@ -442,7 +442,7 @@ sub ApplyRules {
   local $Fragment = ''; # the clean HTML fragment not yet on @Blocks
   local @Blocks=();     # the list of cached HTML blocks
   local @Flags=();	# a list for each block, 1 = dirty, 0 = clean
-  local @HtmlStack = ();
+  Clean(join('', map { AddHtmlEnvironment($_) } @tags));
   my $smileyregex = join "|", keys %Smilies;
   $smileyregex = qr/(?=$smileyregex)/;
   local $_ = $text;
@@ -464,15 +464,15 @@ sub ApplyRules {
       if ($uri =~ /^$UrlProtocols:/o) {
 	if ($type eq 'text') {
 	  print $q->pre(QuoteHtml(GetRaw($uri)));
-	} else {
-	  ApplyRules(QuoteHtml(GetRaw($uri)), 0, ($type eq 'with-anchors')); # no local links
+	} else { # never use local links for remote pages, with a starting tag
+	  ApplyRules(QuoteHtml(GetRaw($uri)), 0, ($type eq 'with-anchors'), undef, 'p');
 	}
       } else {
 	if ($type eq 'text') {
 	  print $q->pre(QuoteHtml(GetPageContent(FreeToNormal($uri))));
-	} else {
+	} else { # with a starting tag
 	  ApplyRules(QuoteHtml(GetPageContent(FreeToNormal($uri))),
-		     $locallinks, $withanchors, $revision);
+		     $locallinks, $withanchors, undef, 'p');
 	}
       }
       pos = $oldpos;		# restore \G after call to ApplyRules
@@ -680,7 +680,7 @@ sub PrintWikiToHTML {
   $FootnoteNumber = 0;
   $pageText =~ s/$FS//g; # Remove separators (paranoia)
   $pageText = QuoteHtml($pageText);
-  my ($blocks, $flags) = ApplyRules($pageText, 1, $savecache, $revision);
+  my ($blocks, $flags) = ApplyRules($pageText, 1, $savecache, $revision, 'p'); # p is start tag!
   # local links, anchors if cache ok
   if ($savecache and not $revision) {
     $Page{blocks} = $blocks;
@@ -1065,7 +1065,7 @@ sub PrintCache { # Use after OpenPage!
   $FootnoteNumber = 0;
   foreach my $block (@blocks) {
     if (shift(@flags)) {
-      ApplyRules($block, 1, 1); # local links, anchors, current revision
+      ApplyRules($block, 1, 1); # local links, anchors, current revision, no start tag
     } else {
       print $block;
     }
@@ -3215,12 +3215,14 @@ sub PrintAllPages {
     my @languages = split(/,/, $Page{languages});
     @languages = GetLanguages($Page{text}) unless GetParam('cache', $UseCache); # maybe refresh!
     next if $lang and @languages and not grep(/$lang/, @languages);
-    print $q->hr . $q->h1($links ? GetPageLink($id) : $q->a({-name=>$id},$id));
+    print '<div class="page">' . $q->hr
+      . $q->h1($links ? GetPageLink($id) : $q->a({-name=>$id},$id));
     PrintPageHtml();
     if ($comments and UserCanEdit($CommentsPrefix . $id, 0) and $id !~ /^$CommentsPrefix/) {
       print $q->p({-class=>'comment'},
 		  GetPageLink($CommentsPrefix . $id, T('Comments on this page')));
     }
+    print '</div>';
   }
 }
 
