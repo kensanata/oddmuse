@@ -295,7 +295,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.316 2004/02/01 11:57:15 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.317 2004/02/03 18:21:25 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1037,10 +1037,12 @@ sub DoBrowseRequest {
   }
   my $id = join('_', $q->keywords);
   $id = $q->path_info() if not $id and $UsePathInfo;
-  $id =~ s|.*/||;
-  return BrowseResolvedPage($id) if $id; # script?PageName or script/PageName
-  $id = GetParam('id', '');
-  my $action = lc(GetParam('action', ''));
+  my $action = lc(GetParam('action', '')); # script?action=foo;id=bar
+  SetParam('raw', 1) if ($id =~ s|raw/||); # script/raw/id
+  $action = 'download' if ($id =~ s|download/|| and not $action); # script/download/id
+  $id =~ s|.*/||; # script/ignore/id
+  return BrowseResolvedPage($id) if $id and not $action; # script?PageName or script/PageName
+  $id = GetParam('id', $id);
   my $search = GetParam('search', '');
   if ($action eq 'browse') {
     BrowseResolvedPage($id);
@@ -1103,6 +1105,7 @@ sub DoBrowseRequest {
 
 sub ValidId {
   my $id = shift;
+  return Ts('Page name is missing') unless $id;
   return Ts('Page name is too long: %s', $id)  if (length($id) > 120);
   if ($FreeLinks) {
     $id =~ s/ /_/g;
@@ -1864,7 +1867,7 @@ sub Cookie {
     my $default = $CookieParameters{$key};
     my $value = GetParam($key, $default);
     $params{$key} = $value  if $value ne $default;
-    my $change = ($value ne $OldCookie{$key} and $value ne $default);
+    my $change = ($value ne ($OldCookie{$key} ? $OldCookie{$key} : '') and $value ne $default);
     $visible = 1 if $change and not $InvisibleCookieParameters{$key};
     $changed = 1 if $change; # note if any parameter changed and needs storing
   }
