@@ -1,3 +1,15 @@
+2004-12-25  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+
+	* modules/search-freetext.pl (SearchFreeTextNewGetSearchLink):
+	Replacement for GetSearchLink.
+	(SearchFreeTextIndex): Bugfix.
+	(SearchFreeText): No longer take $SearchFreeTextNum and
+	$SearchFreeTextMax into accout.  Instead, hook into the existing
+	search facilities by redefining SearchTitleAndBody and calling
+	DoSearch.
+	(SearchFreeTextTitleAndBody): SearchTitleAndBody replacement.
+	(SearchFreeTextNewHighlightRegex): HighlightRegex replacement.
+
 2004-12-22  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoPost): Only determine new authors if there is an old
