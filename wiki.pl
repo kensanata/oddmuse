@@ -348,7 +348,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.453 2004/09/06 19:49:00 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.454 2004/09/06 21:52:15 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -808,15 +808,27 @@ sub RSS {
     foreach my $i (@{$rss->{items}}) {
       my $line;
       my $date = $i->{dc}->{date};
-      $date = $i->{pubdate} unless $date;
+      $date = $i->{pubDate} unless $date;
       $date = sprintf("%03d", $num--) unless $date; # for RSS 0.91 feeds without date, descending
+      my $title = $i->{title};
+      my $description = $i->{description};
+      if (not $title and $description) { # title may be missing in RSS 2.00
+	$title = $description;
+	$description = '';
+      }
+      $title = $i->{link} if not $title and $i->{link}; # if description and title are missing
       $line .= ' (' . $q->a({-href=>$i->{$wikins}->{diff}}, $tDiff) . ')'
 	if $i->{$wikins}->{diff};
       $line .= ' (' . $q->a({-href=>$i->{$wikins}->{history}}, $tHistory) . ')'
 	if $i->{$wikins}->{history};
-      $line .= ' ' . $q->a({-href=>$i->{link}, -title=>$date},
-			   $interwiki ? $interwiki . ':' . $i->{title} : $i->{title})
-	if $i->{title} and $i->{link};
+      if ($title) {
+	if ($i->{link}) {
+	  $line .= ' ' . $q->a({-href=>$i->{link}, -title=>$date},
+			       ($interwiki ? $interwiki . ':' : '') . $title);
+	} else {
+	  $line .= ' ' . $title;
+	}
+      }
       my $contributor = $i->{dc}->{contributor};
       $contributor =~ s/^\s+//;
       $contributor =~ s/\s+$//;
@@ -825,8 +837,7 @@ sub RSS {
       }
       $line .= $q->span({-class=>'contributor'}, $q->span(T(' . . . . ')) . $contributor)
 	if $contributor;
-      $line .= ' ' . $q->strong({-class=>'description'}, '--', $i->{description})
-	if $i->{description};
+      $line .= ' ' . $q->strong({-class=>'description'}, '--', $description) if $description;
       while ($lines{$date}) { $date .= ' '; } # make sure this is unique
       $lines{$date} = $line;
     }
