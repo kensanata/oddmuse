@@ -1,5 +1,8 @@
 2004-10-10  Alex Schroeder  <alex@confusibombus>
 
+	* modules/journal-rss.pl (DoJournalRss): Handle rsslimit=all and
+	default showedit=1.
+
 	* modules/paragraph-link.pl: Resolve conflict with
 	portrait-support.pl
 
