@@ -1,12 +1,14 @@
 2004-03-08  Alex Schroeder  <alex@gnu.org>
 
-	* wiki.pl (%RssInterwikiTranslate, $RssInterwikiTranslateInit): New
-	(InitVariables): Initialize the two.
-	($RssInterwikiTranslate): New.
+	* wiki.pl ($RssInterwikiTranslate): New.
 	(@LockOnCreation): Lock it upon creation.
 	(RssInterwikiTranslateInit): New.
 	(RSS): Call RssInterwikiTranslateInit if required.
+	(%RssInterwikiTranslate, $RssInterwikiTranslateInit):  New
+	(InitVariables): Initialize the two.
 	(PrintFooter): Add lock and unlock links for admins.
+	(Upload, GetDownloadLink, ApplyRules): Renamed from Upload to
+	GetDownloadLink.  Add edit link if image doesn't exist.
 
 2004-03-07  Alex Schroeder  <alex@gnu.org>
 
