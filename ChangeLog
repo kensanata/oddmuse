@@ -12,6 +12,8 @@
 	all actions.
 	(GetHttpHeader, GetRemoteHost): Reorganized to remove -w warning.
 	(GetPermanentAnchor): Handle different info from ResolveId.
+	(GetPageOrEditLink): Don't use the urls returned for nearlinks as
+	scriptlinks.
 
 2004-05-26  Alex Schroeder  <alex@confusibombus>
 
