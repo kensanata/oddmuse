@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.420 2004/06/18 22:29:27 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.421 2004/06/18 23:50:57 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -381,7 +381,7 @@ sub InitLinkPatterns {
 }
 
 sub Clean {
-  my $block = (shift);
+  my $block = shift;
   return 0 unless defined($block); # "0" must print
   return 1 if $block eq '';        # '' is the result of a dirty rule
   print $block;
@@ -410,6 +410,8 @@ sub ApplyRules {
   local @Flags;	  # a list for each block, 1 = dirty, 0 = clean
   local @HtmlStack = ();
   my $htmlre = join('|',(@HtmlTags));
+  my $smileyregex = join "|", keys %Smilies;
+  $smileyregex = qr/(?=$smileyregex)/;
   local $_ = $text;
   my $bol = 1;
   my $first = 1;
@@ -576,7 +578,7 @@ sub ApplyRules {
       Dirty($1);
       my $bracket = (substr($1, 0, 3) eq '[[[');
       print GetPageOrEditLink($2, $3, $bracket, 1); # $3 may be empty
-    } elsif (%Smilies && (Clean(SmileyReplace()))) {
+    } elsif (%Smilies && m/\G$smileyregex/cog && (Clean(SmileyReplace()))) {
     } elsif (Clean(RunMyRules())) {
     } elsif (m/\G\s*\n(s*\n)+/cg) { # paragraphs: at least two newlines
       Clean(CloseHtmlEnvironments() . '<p>'); # there is another one like this further up
