@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.13 2004/12/27 01:58:42 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.14 2005/01/20 20:55:39 as Exp $</p>';
 
 use vars qw($SearchFreeTextNewForm);
 
@@ -72,18 +72,29 @@ sub SearchFreeTextTitleAndBody {
   my $db = new Search::FreeText(-db => ['DB_File', $file]);
   $db->open_index();
   my @found = $db->search($term);
-  foreach (@found) {
+  my @phrases = map { quotemeta } $term =~ m/"([^\"]+)"/g;
+  my @filtered = ();
+ PAGE: foreach (@found) {
     my ($id, $score) = ($_->[0], $_->[1]);
+    if (@phrases) {
+      OpenPage($id);
+      foreach my $phrase (@phrases) {
+	next PAGE unless $Page{text} =~ m/$phrase/;
+      }
+    }
+    push(@filtered, $_);
     &$func($id, @args) if $func;
   }
   $db->close_index();
-  return @found;
+  return @filtered;
 }
 
 # highlighting changes if new search is used
 
 sub SearchFreeTextNewHighlightRegex {
-  return join('|', split(/ /, shift));
+  $_ = shift;
+  s/\"//g;
+  return join('|', split);
 }
 
 # *SearchFreeTextOldSavePage = *SavePage;
