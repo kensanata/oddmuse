@@ -276,7 +276,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.252 2003/11/08 22:37:59 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.253 2003/11/09 18:42:12 as Exp $');
 }
 
 sub InitCookie {
@@ -751,7 +751,7 @@ sub GetInterLink {
   if ($bracket) {
     $text = "[$text]";
   }
-  $url .= $page;
+  $url =~ s/\%s/$page/ or $url .= $page;
   return $q->a({-href=>$url}, $text);
 }
 
