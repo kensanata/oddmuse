@@ -2,6 +2,8 @@
 
 	* wiki.pl (Clean): Return nothing if empty block (due to
 	unsuccessful call to MyRules).
+	(RcHeader): Inherit rclang as well.
+	(GetRc): Inherit rclang as well.
 
 2003-10-24  Alex Schroeder  <alex@gnu.org>
 
