@@ -1,3 +1,10 @@
+2003-06-17  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (InitRequest): ScriptName defaults to $q->url().
+	(ScriptLink): Prefer syntax using path_info().
+	(GetHtmlHeader): Removed ref. to path_info.
+	(PingWeblogs): Switched to blogrolling.com.
+
 2003-06-15  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetRandomLink): Removed.
