@@ -83,7 +83,7 @@ $DataDir   = '/tmp/oddmuse' unless $DataDir;
 $ConfigPage  = '' unless $ConfigPage; # config page
 $RunCGI	     = 1  unless defined $RunCGI; # 1 = Run script as CGI instead of being a library
 $UsePathInfo = 1;   # 1 = allow page views using wiki.pl/PageName
-$UseCache    = 2;   # 0 = no; 1 = partial HTML cache; 2 = HTTP/1.1 caching
+$UseCache    = 2;   # -1 = disabled, 0 = 10s; 1 = partial HTML cache; 2 = HTTP/1.1 caching
 
 # Basics
 $SiteName    = 'Wiki';	   # Name of site (used for titles)
@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.391 2004/04/25 12:22:55 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.392 2004/04/26 22:23:51 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -927,7 +927,7 @@ sub GetUrl {
     $class .= ' outside';
   }
   $url = UnquoteHtml($url); # links should be unquoted again
-  if ($images && $url =~ /^(http:|https:|ftp:).+\.$ImageExtensions$/) {
+  if ($images && $url =~ /^(http:|https:|ftp:).+\.$ImageExtensions$/i) {
     return $q->img({-src=>$url, -alt=>$url, -class=>$class});
   } else {
     return $q->a({-href=>$url, -class=>$class}, $text);
@@ -1894,7 +1894,7 @@ sub GetHttpHeader {
   $PrintedHeader = 1;
   my ($type, $modified, $status) = @_;
   my $mod = gmtime($modified or $LastUpdate);
-  my %headers = (-cache_control=>'max-age=10'); # HTTP/1.1 headers only
+  my %headers = (-cache_control=>($UseCache < 0 ? 'no-cache' : 'max-age=10'));
   $headers{last_modified} = $mod if GetParam('cache', $UseCache) >= 2;
   if ($HttpCharset ne '') {
     $headers{-type} = "$type; charset=$HttpCharset";
