@@ -1,3 +1,9 @@
+2004-02-24  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetReferers): Convert escapes back to bytes for the
+	title (at least if they use the same coding system it will look
+	good).
+
 2004-02-23  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (%Action): New option.
