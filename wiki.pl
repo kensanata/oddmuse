@@ -68,7 +68,7 @@ $IndexInit $Message $q $Now %RecentVisitors @HtmlStack %Referers
 $Monolithic $ReplaceForm %PermanentAnchors %PagePermanentAnchors
 $CollectingJournal $WikiDescription $PrintedHeader %Locks $Fragment
 @Blocks @Flags %NearSite %NearSource %NearLinksUsed $NearSiteInit
-$NearDir $NearMap $SisterSiteLogoUrl %NearSearch
+$NearDir $NearMap $SisterSiteLogoUrl %NearSearch @KnownLocks
 $PermanentAnchorsInit $ModulesDescription);
 
 # == Configuration ==
@@ -188,7 +188,8 @@ $CommentsPrefix = ''; # prefix for comment pages, eg. 'Comments_on_' to enable
 %Languages = ();
 
 @LockOnCreation = ($BannedHosts, $InterMap, $RefererFilter, $StyleSheetPage,
-		   $ConfigPage, $NearMap, );
+		   $ConfigPage, $NearMap, );              # pages to lock
+@KnownLocks = qw(main diff index merge visitors refer_*); # locks to remove
 
 %CookieParameters = ('username'=>'', 'pwd'=>'', 'theme'=>'', 'css'=>'', 'msg'=>'',
 		     'lang'=>'', 'toplinkbar'=>$TopLinkBar, 'embed'=>$EmbedWiki, );
@@ -296,7 +297,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.321 2004/02/09 22:11:15 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.322 2004/02/11 22:33:33 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2495,7 +2496,7 @@ sub DoUnlock {
   my $message = '';
   print GetHeader('', T('Unlocking'), '');
   print $q->p(T('This operation may take several seconds...'));
-  for my $lock (qw(main diff index merge visitors refer_*)) {
+  for my $lock (@KnownLocks) {
     if (ForceReleaseLock($lock)) {
       $message .= $q->p(Ts('Forced unlock of %s lock.', $lock));
     }
