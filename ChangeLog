@@ -3,7 +3,8 @@
 	* wiki.pl (InitRequest): Convert spaces to underscores for
 	$HomePage, $RCName, $BannedHosts, $InterMap, $RefererFilter,
 	$StyleSheetPage, and $ConfigPage.
-	
+	(InitRequest): Set @UserGotoBarPages here instead of on startup.
+
 2003-06-10  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (@UserGotoBarPages): Set to $HomePage and $RcName.
