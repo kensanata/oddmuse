@@ -36,10 +36,16 @@ history
 
 RSS parsing failed for %s
 
+No items found in %s.
+
  . . . . 
 
 Click to edit this page
 按下即可建立此頁面
+image
+
+download
+
 Invalid action parameter %s
 無效的動作參數 %s
 Invalid URL.
@@ -184,6 +190,8 @@ Back to %s
 返回 %s
 new comment
 新的評論
+Homepage URL:
+
 s
 
 Save
@@ -192,6 +200,8 @@ Preview
 預覽
 Search:
 搜尋：
+f
+
 Replace:
 取代：
 Validate HTML
@@ -212,6 +222,8 @@ minor
 次要
 No diff available.
 沒有差異。
+Old revision:
+
 Changed:
 修改：
 Removed:
@@ -228,6 +240,8 @@ Showing revision %s
 顯示第 %s 版
 Cannot save an nameless page.
 無法儲存沒有名稱的頁面。
+Cannot save an page without revision.
+
 Cannot open %s
 無法開啟 %s
 Cannot write %s
@@ -480,6 +494,20 @@ Next
 
 Calendar %s
 
+Compilation for %s
+
+Compilation tag is missing a regular expression.
+
+Despamming pages
+
+Cannot find revision %s.
+
+Revert to revision %1: %2
+
+Marked as %s.
+
+Cannot find unspammed revision.
+
 Footnotes:
 
 image: %s
@@ -494,6 +522,10 @@ Define
 
 Full Link List
 完整連結列表
+Template without parameters
+
+The template %s is either empty or does not exist.
+
 Clearing Cache
 
 Done.
@@ -539,6 +571,8 @@ URL:
 Name:
 
 Failed to remove %s
+
+Contents
 
 The translation is up to date.
 

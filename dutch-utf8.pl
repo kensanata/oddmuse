@@ -43,10 +43,16 @@ geschiedenis
 %s retourneerde geen data, of LWP::UserAgent is niet beschikbaar.
 RSS parsing failed for %s
 Lezen van RSS is niet gelukt voor %s
+No items found in %s.
+
  . . . . 
 
 Click to edit this page
 Klik hier om deze pagina aan te maken
+image
+
+download
+
 Invalid action parameter %s
 Ongeldige actieparameter %s
 Invalid URL.
@@ -191,6 +197,8 @@ Back to %s
 Terug naar %s
 new comment
 nieuw commentaar
+Homepage URL:
+
 s
 s
 Save
@@ -199,6 +207,8 @@ Preview
 Voorvertoning
 Search:
 Zoeken naar:
+f
+
 Replace:
 Vervangen door:
 Validate HTML
@@ -219,6 +229,8 @@ minor
 klein
 No diff available.
 Er is geen verschillenanalyse beschikbaar.
+Old revision:
+
 Changed:
 Veranderd:
 Removed:
@@ -235,6 +247,8 @@ Showing revision %s
 Dit is revisie %s
 Cannot save an nameless page.
 Kan een pagina zonder naam niet opslaan.
+Cannot save an page without revision.
+
 Cannot open %s
 Kan %s niet openen
 Cannot write %s
@@ -487,6 +501,20 @@ Next
 
 Calendar %s
 Kalender %s
+Compilation for %s
+
+Compilation tag is missing a regular expression.
+
+Despamming pages
+
+Cannot find revision %s.
+
+Revert to revision %1: %2
+
+Marked as %s.
+
+Cannot find unspammed revision.
+
 Footnotes:
 Voetnoten:
 image: %s
@@ -501,6 +529,10 @@ Define
 Definiëren
 Full Link List
 Volledige lijst van koppelingen
+Template without parameters
+
+The template %s is either empty or does not exist.
+
 Clearing Cache
 Bezig met leegmaken van de cache
 Done.
@@ -546,6 +578,8 @@ URL:
 Name:
 Naam:
 Failed to remove %s
+
+Contents
 
 The translation is up to date.
 
