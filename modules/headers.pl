@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: headers.pl,v 1.11 2004/12/03 08:47:56 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: headers.pl,v 1.12 2004/12/05 03:51:45 as Exp $</p>';
 
 push(@MyRules, \&HeadersRule);
 
@@ -39,16 +39,16 @@ sub HeadersRule {
     if (substr($3,0,1) eq '=') {
       $html .= $q->h2($2);
     } else {
-      $html .= $q->h2($3);
+      $html .= $q->h3($2);
     }
     $PortraitSupportColorDiv = 0;
     $PortraitSupportColor = 0;
-    return $html;
+    return $html . AddHtmlEnvironment('p');
   } elsif ($bol && m/\G(\s*\n)*----+[ \t]*\n?/cg) {
     my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '') . $q->hr();
     $PortraitSupportColorDiv = 0;
     $PortraitSupportColor = 0;
-    return $html;
+    return $html . AddHtmlEnvironment('p');
   }
   return undef;
 }
