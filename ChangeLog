@@ -1,3 +1,11 @@
+2003-06-08  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoWikiRequest): Cannot use $q->p($@) because of some
+	bad interaction of $@ with CGI.  The resulting "<p>$ConfigFile:
+	$@</p>" seems *very* brittle, so change with care.  It was also
+	impossible to concat the result with the result of a call to
+	ScriptLink.
+
 2003-06-05  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoWikiRequest): $UseConfig does not control
