@@ -275,7 +275,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.258 2003/11/12 13:52:14 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.259 2003/11/15 17:13:14 as Exp $');
 }
 
 sub InitCookie {
@@ -2111,7 +2111,7 @@ sub DiffMarkWords {
   close(A);
   close(B);
   my $diff = `diff $TempDir/a $TempDir/b`;
-  my $offset = 0; # for every chung this increases
+  my $offset = 0; # for every chunk this increases
   while ($diff =~ /^(\d+),?(\d*)([adc])(\d+),?(\d*)$/mg) {
     my ($start1,$end1,$type,$start2,$end2) = ($1,$2,$3,$4,$5);
     # changes are like additons + deletions
@@ -2146,7 +2146,7 @@ sub DiffAddPrefix {
 
 sub DiffHtmlMarkWords { # this code seem brittle and has been known to crash!
   my ($text,$start,$end) = @_;
-  return $text if $end - $start > 50;
+  return $text if $end - $start > 50 or $end > 100; # don't mark long chunks to avoid crashing
   my $first = $start - 1;
   my $words = 1 + $end - $start;
   $text =~ s|^((\S+\s*){$first})((\S+\s*?){$words})|$1<strong class="changes">$3</strong>|;
@@ -2181,6 +2181,7 @@ sub OpenPage { # Sets global variables
       local $/ = undef;
       $Page{text} = <F>;
       close F;
+    } elsif ($CommentsPrefix and $id =~ /^$CommentsPrefix(.*)/) { # do nothing
     } else {
       $Page{text} = $NewText;
     }
