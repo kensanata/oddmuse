@@ -17,7 +17,7 @@
 #
 # This translation was last checked for Oddmuse version 1.504.
 #
-$ModulesDescription .= '<p>$Id: chinese-utf8.pl,v 1.17 2004/12/27 01:45:34 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: chinese-utf8.pl,v 1.18 2004/12/27 01:46:21 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 禁止讀取：使用者、ip 或是網路已被禁止連線。
@@ -543,6 +543,8 @@ Template without parameters
 未指定 template 參數
 The template %s is either empty or does not exist.
 範本 %s 可能為空或不存在。
+%s returned no data.
+
 Clearing Cache
 清除暫存
 Done.
@@ -563,14 +565,14 @@ Permalink to "%s"
 永久連結至 "%s"
 Portrait
 肖像
+You did not answer correctly.
+
 Updating %s
 更新 %s
-Done.</p>
+Done.</p></div>
 
 Search term missing.
 
-Searching for %s
-正在搜尋 %s
 Static Copy
 靜態頁面備份
 Back to %s
@@ -583,8 +585,8 @@ ID parameter is missing.
 未指定 ID 參數。
 Thread %s does not exist.
 討論緒 %s 不存在。
-Thread %s does not contain a thread.
-頁面 %s 中並未包含討論緒。
+Page %s does not contain a thread.
+
 Add
 加入
 URL parameter is missing.
