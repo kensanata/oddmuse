@@ -4,6 +4,9 @@
 	(PingTracker): Use it.
 	(RSS): Print interwiki link if provided and RSS feeds are being merged.
 	(RSS): RDF namespace taken into account.
+	(DoRc): Append filter form.
+	(RcHeader): Fix stickiness of showedit attribute, make days sticky.
+	(GetFilterForm): New.
 
 2003-11-05  Alex Schroeder  <alex@gnu.org>
 
