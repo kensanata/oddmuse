@@ -16,25 +16,39 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: irc.pl,v 1.2 2004/11/26 14:48:21 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: irc.pl,v 1.3 2004/11/27 22:30:59 as Exp $</p>';
 
-use vars qw($IrcRegexp $IrcLinkNick);
+use vars qw($IrcNickRegexp $IrcLinkNick);
 
 push(@MyRules, \&IrcRule);
 $RuleOrder{\&IrcRule} = 200; # after HTML tags in Usemod Markup Extension.
 
-$IrcRegexp = qr{[]a-zA-Z^[;\\`_{}|][]^[;\\`_{}|a-zA-Z0-9-]*};
-$ircLinkNick = 0;
+$IrcNickRegexp = qr{[]a-zA-Z^[;\\`_{}|][]^[;\\`_{}|a-zA-Z0-9-]*};
+$IrcLinkNick = 0;
 
+$DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /div\.irc/; # mod_perl?
+dl.irc dt { width:12ex; float:left; text-align:right; }
+dl.irc dd { margin-left:15ex; }
+EOT
+
+# This adds an extra <br> at the beginning.  Alternatively, add it to
+# the last line, or only add it when required.
 sub IrcRule {
-  if ($bol && m/\G&lt;($IrcRegexp)&gt;/gc) {
+  if ($bol && m/\G&lt;($IrcNickRegexp)&gt;/gc) {
     my $str = $1;
     my $error = ValidId($str);
+    # if we're in a dl, close the open dd but not the dl.  (if we're
+    # not in a dl, that closes all environments.)  then open a dl
+    # unless we're already in a dl.  put the nick in a dt.
+    my $html = CloseHtmlEnvironmentUntil('dd') . OpenHtmlEnvironment('dl', 1, 'irc')
+      . AddHtmlEnvironment('dt');
     if ($error or not $IrcLinkNick) {
-      return $q->br() . '<' . $q->b($str) . '>';
+      $html .= $q->b($str);
     } else {
-      return $q->br() . '<' . GetPageOrEditLink($str) . '>';
+      $html .= GetPageOrEditLink($str);
     }
+    $html .= CloseHtmlEnvironment('dt') . AddHtmlEnvironment('dd');
+    return $html;
   }
   return undef;
 }
