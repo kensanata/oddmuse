@@ -27,3 +27,6 @@ deb:
 install:
 	@echo This only installs the deb file, not the script itself.
 	dpkg -i oddmuse*.deb
+
+test:
+	perl test-markup.pl
