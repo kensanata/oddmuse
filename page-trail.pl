@@ -2,7 +2,7 @@ use vars qw($PageTrailLength);
 
 $PageTrailLength = 10;
 
-$ModulesDescription .= $q->p('$Id: page-trail.pl,v 1.5 2004/01/27 00:27:05 as Exp $');
+$ModulesDescription .= '<p>$Id: page-trail.pl,v 1.6 2004/01/27 01:36:38 as Exp $</p>';
 
 $CookieParameters{trail} = '';
 $InvisibleCookieParameters{trail} = 1;

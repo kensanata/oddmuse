@@ -1,8 +1,8 @@
-$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.2 2004/01/27 00:55:26 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.3 2004/01/27 01:36:38 as Exp $</p>';
 
 push(@MyMacros, sub{ s/\[new(:[^]:]*)\]/"[new$1:" . TimeToText($Now) . "]"/ge });
 
-push(@MyRules, &PortraitSupportRule);
+push(@MyRules, \&PortraitSupportRule);
 
 my $MyColor = 0;
 my $MyColorDiv = 0;
