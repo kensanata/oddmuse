@@ -83,13 +83,13 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.55 2003/05/17 01:50:35 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.56 2003/05/17 10:07:09 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
 $LogoUrl     = '';  # URL for site logo ('' for no logo)
 $NotFoundPg  = '';  # Page for not-found links ('' for blank pg)
-$NewText     = 'Describe the new page here.';  # New page text
+$NewText     = "Describe the new page here.\n";  # New page text
 
 # Header and Footer, Notes, GotoBar
 $EmbedWiki   = 0;   # 1 = no headers/footers
@@ -1073,13 +1073,13 @@ sub BrowsePage {
   # handle subtitle for old revisions, if these exist, and open keep file
   my $openKept = 0;
   my $revision = &GetParam('revision', '');
-  $revision =~ s/\D//g;           # Remove non-numeric chars
-  my $goodRevision = $revision;   # Leave this non-blank only if it exists
+  $revision =~ s/\D//g; # Remove non-numeric chars
+  my $goodRevision = $revision;
   if ($revision ne '' and $revision ne $Section{'revision'}) {
     &OpenKeptRevisions('text_default');
     $openKept = 1;
     if (!defined($KeptRevisions{$revision})) {
-      $goodRevision = '';
+      $goodRevision = ''; # reset if requested revision is not available
       $Message .= $q->p(Ts('Revision %s not available', $revision)
 			. ' (' . T('showing current revision instead') . ')');
     } else {
@@ -1089,7 +1089,7 @@ sub BrowsePage {
   }
   # print header
   print &GetHeader($id, &QuoteHtml($id), $oldId);
-  # gloval variable for some markup rules
+  # global variable for some markup rules
   $MainPage = $id;
   $MainPage =~ s|/.*||;  # Only the main page name (remove subpage)
   # print diff, if required
@@ -1106,6 +1106,7 @@ sub BrowsePage {
   if ($revision eq '' && &GetPageCache('blocks') && &GetParam('cache',1)) {
     &PrintCache(&GetPageCache('blocks'));
   } else {
+    $revision = 'default' if $revision eq '' and $Section{'revision'} == 0;
     &PrintWikiToHTML($Text{'text'}, $revision);
   }
   print '</div>';
@@ -1567,7 +1568,7 @@ EOF
       my $label = T('Compare');
       print "<tr><td align='center'><input type='submit' value='$label'/></td></table></form><hr>";
       &PrintHtmlDiff( 1, $id, '', '', $newText );
-   }
+    }
   &PrintFooter($id, 'history');
 }
 
@@ -3382,7 +3383,8 @@ sub DoPost {
   $pgtime = $Section{'ts'};
   $preview = 0;
   $preview = 1  if (&GetParam('Preview', '') ne '');
-  if (!$preview && ($old eq $string or ($oldrev == 1 and $string eq $NewText))) {
+  if (!$preview && (($old eq $string)
+		    or ($oldrev == 0 and $string eq $NewText))) {
     &ReleaseLock(); # No changes
     &ReBrowsePage($id, '', 1);
     return;
