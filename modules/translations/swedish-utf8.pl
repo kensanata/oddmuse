@@ -1,9 +1,5 @@
-<<<<<<< swedish-utf8.pl
 # -*-mode: fundamental; coding: utf-8;-*-
 # UTF-8 encoded Swedish language file for use with Oddmuse
-=======
-﻿# UTF-8 encoded Swedish language file for use with Oddmuse
->>>>>>> 1.6
 #
 # Copyright (c) 2003 Erik S-O Johansson and others
 # Copyright (c) 2003 Björn Lindström <bkhl@elektrubadur.se> and
@@ -28,7 +24,7 @@
 # This translation was last checked for OddMuse version 1.524.
 # Checked and updated by Johan Adler 050108
 #
-$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.7 2005/02/01 22:40:59 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.8 2005/02/01 22:41:41 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Läsning inte tillåten: användare, ip eller nätverk är blockerat.
