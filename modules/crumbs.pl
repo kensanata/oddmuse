@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: crumbs.pl,v 1.2 2005/03/28 13:05:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: crumbs.pl,v 1.3 2005/03/28 13:09:51 as Exp $</p>';
 
 push(@MyRules, \&CrumbsRule);
 $RuleOrder{\&CrumbsRule} = -10; # run before default rules!
@@ -31,15 +31,14 @@ sub CrumbsRule {
 	   or ($FreeLinks && /\G(\[\[$FreeLinkPattern\]\]\n)/cgo))) {
     # both pos and $_ will be trashed in some of the subs called below.
     my $oldpos = pos;
-    my $oldtext = $_;
-    my $cluster = $2;
+    my $cluster = FreeToNormal($2);
     my %seen = ($cluster => 1);
     my @links = ($cluster);
     AllPagesList();		# set IndexHash
     while ($cluster) {
       my $text = GetPageContent($cluster); # opening n files is slow!
-      if ($WikiLinks && $text =~ /^$LinkPattern\n/
-	  or $FreeLinks && $text =~ /^\[\[$FreeLinkPattern\]\]\n/) {
+      if (($WikiLinks && $text =~ /^$LinkPattern\n/)
+	  or ($FreeLinks && $text =~ /^\[\[$FreeLinkPattern\]\]\n/)) {
 	$cluster = FreeToNormal($1);
       }
       last if not $cluster or $seen{$cluster};
@@ -47,7 +46,6 @@ sub CrumbsRule {
       push(@links, $cluster);
     }
     my $result = $q->span({-class=>'crumbs'}, map { GetPageLink($_) } reverse(@links));
-    $_ = $oldtext;
     pos = $oldpos; # set after $_ is set!
     return $result; # clean rule, will be cached!
   }
