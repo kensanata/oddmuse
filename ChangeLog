@@ -1,6 +1,6 @@
 2003-10-04  Alex Schroeder  <alex@gnu.org>
 
-	(DoUnlock): Added merge back.
+	* wiki.pl (DoUnlock): Added merge back.
 	(DoEdit): Added oldtime back.
 	(DoPost): If new author and oldtime is given, attempt a merge.
 	Use a message if the merge fails.  Use a message if conflict
