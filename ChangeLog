@@ -1,4 +1,26 @@
+2004-12-18  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+
+	* wiki.pl (PrintFooter): Changed 'time' parameter to 'timing' to
+	avoid collision with Timezone Extension.
+
+2004-12-16  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (AddComment): Prefix http:// if necessary.
+	(Save): Moved some variable settings up.
+
+2004-12-15  Alex Schroeder  <alex@gnu.org>
+
+	* modules/search-freetext.pl (SearchFreeText): Added much improved
+	user interface.
+
+2004-12-14  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+
+	* wiki.pl (Save): Handle existing index file that cannot be
+	unlinked.
+
 2004-12-12  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+
+	* wikiput (wikiput): Better error reporting.
 
 	* wiki.pl (ApplyRules): Fix bug that prevented pages containing a
 	file from displaying correctly.
