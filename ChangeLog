@@ -2,6 +2,7 @@
 
 	* wiki.pl (InitRequest): @HtmlTags are only initialized within
 	this sub in order to read the config files, first.
+	(ApplyRules): New rule for empty tags such as <br />.
 
 2003-08-02  Pierre Gaston  <pgas@intracom.gr>
 
