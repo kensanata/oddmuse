@@ -278,7 +278,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.218 2003/10/24 10:55:36 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.219 2003/10/24 19:57:08 as Exp $');
 }
 
 sub InitCookie {
@@ -1859,7 +1859,7 @@ sub PrintFooter {
 		    . GetHiddenValue("summary" , T("new comment"))
 		    . GetHiddenValue("recent_edit", "on")
 		    . GetTextArea('aftertext', $NewComment)
-		    . '<p>' . T('Username:')
+		    . '<p>' . T('Username:') . ' '
 		    . $q->textfield(-name=>'username',
 				    -default=>$userName, -override=>1,
 				    -size=>20, -maxlength=>50)
@@ -2750,7 +2750,7 @@ sub DoEdit {
   }
   print T($EditNote) if $EditNote; # Allow translation
   my $userName = GetParam('username', '');
-  print $q->p(T('Username:')
+  print $q->p(T('Username:') . ' '
 	      . $q->textfield(-name=>'username',
 			      -default=>$userName, -override=>1,
 			      -size=>20, -maxlength=>50));
