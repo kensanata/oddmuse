@@ -1,3 +1,7 @@
+2005-03-12  Alex Schroeder  <alex@alpinobombus.local>
+
+	* wiki.pl (DoPageLock): Add link back to the page.
+
 2005-03-08  Sebastian Blatt  <sblatt@havens.de>
 
 	* modules/static-copy.pl (StaticWriteFile): added "chmod 0644" to
