@@ -1,3 +1,24 @@
+2003-03-25  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetHtmlHeader): New classes.
+	(PrintSearchResults): Removed output variable, print as we search
+	instead of only when searching is done, use CGI functions for HTML
+	tags, translation.
+	(PrintPageList): Use CGI functions for HTML tags.
+	(DoEdit): Added new div with class preview for the preview part.
+
+2003-03-24  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetCommonFooter): Use CGI functions for HTML tags.
+	(DoEdit): Ditto.
+	(DoEdit): Ditto, plus moved preview out of the form for CSS.
+	(DoPageLock): Ditto.
+	(DoPageLock): Ditto.
+	(DoEditBanned): Ditto, and added translations.
+	(DoUpdateBanned): Ditto, and added translations.
+	(DoShowVersion): Translation.
+	(DoShow): Translation.
+
 2003-03-22  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetValidatorLink): Link to CSS Validator.
