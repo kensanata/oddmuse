@@ -295,7 +295,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.313 2004/01/31 01:59:03 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.314 2004/01/31 02:08:17 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -666,7 +666,9 @@ sub UnquoteHtml {
 }
 
 sub UrlEncode {
-  my @letters = split(//,shift);
+  my $str = shift;
+  return '' unless $str;
+  my @letters = split(//, $str);
   my @safe = ('a' .. 'z', 'A' .. 'Z', '0' .. '9', '-', '_', '.', '!', '~', '*', "'", '(', ')');
   foreach my $letter (@letters) {
     my $pattern = quotemeta($letter);
