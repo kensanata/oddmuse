@@ -55,6 +55,8 @@ ordinary text
 ordinary text
 EOT
 
+# Note that the order of tests is not specified!
+
 foreach my $input (keys %Test) {
   print '.';
   open(F,"|perl test-wrapper.pl > $resultfile");
@@ -67,7 +69,7 @@ foreach my $input (keys %Test) {
     $passed++;
   } else {
     $failed++;
-    print "\nTest ", $failed + $passed, ': "', $input, '" -> "', $output, '" instead of "', $Test{$input}, "\"\n";
+    print "\n\"", $input, '" -> "', $output, '" instead of "', $Test{$input}, "\"\n";
   }
 }
 
