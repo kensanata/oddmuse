@@ -16,11 +16,12 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: irc.pl,v 1.1 2004/11/24 22:09:02 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: irc.pl,v 1.2 2004/11/26 14:48:21 as Exp $</p>';
 
 use vars qw($IrcRegexp $IrcLinkNick);
 
 push(@MyRules, \&IrcRule);
+$RuleOrder{\&IrcRule} = 200; # after HTML tags in Usemod Markup Extension.
 
 $IrcRegexp = qr{[]a-zA-Z^[;\\`_{}|][]^[;\\`_{}|a-zA-Z0-9-]*};
 $ircLinkNick = 0;
