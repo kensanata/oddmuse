@@ -53,14 +53,15 @@ use vars qw(@RcDays @HtmlTags
   $BannedCanRead $SurgeProtection $SurgeProtectionViews
   $SurgeProtectionTime $DeletedPage %Languages $LanguageLimit
   $ValidatorLink $RefererTracking $RefererTimeLimit $RefererLimit
-  $TopLinkBar $NotifyWeblogs $InterMap @LockOnCreation $RefererFilter);
+  $TopLinkBar $NotifyWeblogs $InterMap @LockOnCreation $RefererFilter
+  $PermanentAnchorsFile $PermanentAnchors);
 
 # Other global variables:
 use vars qw(%Page %Section %Text %InterSite %KeptRevisions
   %IndexHash %Translate %OldCookie %NewCookie $InterSiteInit
   $FootnoteNumber $MainPage $OpenPageName @KeptList @IndexList
   $IndexInit $Message $q $Now $ScriptName %RecentVisitors @HtmlStack
-  %Referers $Monolithic $ReplaceForm);
+  %Referers $Monolithic $ReplaceForm  %PermanentAnchors %PagePermanentAnchors);
 
 # == Configuration ==
 
@@ -80,7 +81,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.71 2003/05/29 01:13:17 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.72 2003/05/30 18:04:49 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -113,6 +114,7 @@ $HtmlLinks   = 0;   # 1 = <a href="foo">desc</a> is a link
 $UseSubpage  = 0;   # 1 = PageName/SubPage is a link
 $NetworkFile = 1;   # 1 = file: is a valid protocol for URLs
 $InterMap    = 'InterMap'; # name of the intermap page (change space to _)
+$PermanentAnchors = 1;   # 1 = [::some text] creates a permanent anchor [##some text] link to the anchor
 
 # TextFormattingRules
 $HtmlTags    = 0;   # 1 = allow some 'unsafe' HTML tags
@@ -191,6 +193,7 @@ $RcFile      = "$DataDir/rclog";    # New RecentChanges logfile
 $RcOldFile   = "$DataDir/oldrclog"; # Old RecentChanges logfile
 $IndexFile   = "$DataDir/pageidx";  # List of all pages
 $VisitorFile = "$DataDir/visitors"; # List of recent visitors
+$PermanentAnchorsFile = "$DataDir/permanentanchors"; # Store permanent anchors
 $ConfigFile  = "$DataDir/config" unless $ConfigFile; # Config file with Perl code to execute
 
 # The 'main' program, called at the end of this script file.
@@ -402,6 +405,14 @@ sub ApplyRules {
       # will not get an additional ? if FooBar is undefined.
       $oldmatch = $1;
       print GetPageOrEditLink($1, '');
+      DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
+    }  elsif ($PermanentAnchors && m/\G(\[::$FreeLinkPattern\])/cg) { #[::Free Link] permanent anchor create
+      $oldmatch = $1;
+      print GetPermanentAnchor($2);
+      DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
+    } elsif ($PermanentAnchors && m/\G(\[\#\#$FreeLinkPattern\])/cg) { #[##Free Link] permanent anchor link
+      $oldmatch = $1;
+      print GetPermanentAnchorLink($2);
       DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
     } elsif ($FreeLinks && $BracketWiki && $locallinks && m/\G(\[\[$FreeLinkPattern\|([^\]]+)\]\])/cg) { # [[Free Link|text]]
       $oldmatch = $1;
@@ -754,11 +765,13 @@ sub GetEditLink { # shortcut
 }
 
 sub ScriptLink {
-  my ($action, $text) = @_;
+  my ($action, $text, $class, $name) = @_;
   if ($action =~ /=/ or !$Monolithic) {
     $action = InheritParameter('embed', $EmbedWiki, $action);
     $action = InheritParameter('toplinkbar', $TopLinkBar, $action);
-    return $q->a({-href=>$ScriptName . '?' . $action}, $text);
+    return $q->a({-href=>$ScriptName . '?' . $action,
+		  ($class && (-class=>$class)), ($name && (-name=>$name))},
+		 $text);
   } else { # Monolithic and !~ /=/ -- ie. just a page link
     return $q->a({-href=>'#' . $action}, $text);
   }
@@ -920,6 +933,12 @@ sub DoBrowseRequest {
   $action = lc(GetParam('action', ''));
   $id = GetParam('id', '');
   $search = GetParam('search', '');
+  if ($action eq 'anchor') {
+    ReadPermanentAnchors();
+    $id = $PermanentAnchors{FreeToNormal($id)};
+    $id = '' unless $id;
+    $action = 'browse'; #not so nice trick to reuse browse
+  }
   if ($action eq 'browse') {
     if ($FreeLinks && (!-f GetPageFile($id))) {
       $id = FreeToNormal($id);
@@ -3326,6 +3345,7 @@ sub DoPost {
   Save($id, $string, $summary, (GetParam('recent_edit', '') eq 'on'),
 	$newAuthor);
   ReleaseLock();
+  DeletePermanentAnchors();
   ReBrowsePage($id, '', 1);
   if (GetParam('recent_edit', '') ne 'on' and $NotifyWeblogs) {
     PingWeblogs();
@@ -3607,6 +3627,7 @@ sub DeletePage {
   $fname = $KeepDir . '/' . GetPageDirectory($page) .  "/$page.kp";
   unlink($fname)  if (-f $fname);
   unlink($IndexFile);
+  DeletePermanentAnchors();
   EditRecentChanges(1, $page, '')  if ($doRC);  # Delete page
   # Currently don't do anything with page text
 }
@@ -3895,6 +3916,77 @@ sub PrintAllReferers {
       print GetReferers();
     }
   }
+}
+
+# == Permanent Anchors ==
+
+sub ReadPermanentAnchors {
+  my ($status, $data) = ReadFile($PermanentAnchorsFile);
+  %PermanentAnchors = ();
+  return  unless $status;
+  foreach (split(/\n/,$data)) {
+    my @entries = split /$FS/;
+    my $name = $entries[0];
+    $PermanentAnchors{$name} = $entries[1];
+  }
+}
+
+sub WritePermanentAnchors {
+  my $data = '';
+  foreach my $name (keys %PermanentAnchors) {
+    $data .= $name. $FS . $PermanentAnchors{$name} ."\n";
+  }
+  WriteStringToFile($PermanentAnchorsFile, $data);
+}
+
+sub GetPermanentAnchor {
+  my ($id) =  @_;
+  $id =~ s/^\s+//;      # Trim extra spaces
+  $id =~ s/\s+$//;
+  $id = FreeToNormal($id);
+  my $text = $id;
+  $text =~ s/_/ /g;
+  RequestLockDir('permanentanchors', 2, 2, 0);
+  ReadPermanentAnchors();
+  if ( $PermanentAnchors{$id} ) {
+    if ($PermanentAnchors{$id} ne $OpenPageName) {
+      ReleaseLockDir('permanentanchors');
+      return '[' . T('anchor first defined here') . ' ' . GetPermanentAnchorLink($id) .']';
+    }
+  } else {
+    $PermanentAnchors{$id}=$OpenPageName;
+     WritePermanentAnchors();
+   }
+  ReleaseLockDir('permanentanchors');
+  $PagePermanentAnchors{$id} = 1; # add to the list of anchors in page
+  return ScriptLink("action=anchor&id=$id#$id",$text,'permanent_def',$id);
+}
+
+sub GetPermanentAnchorLink {
+  my ($id)=@_;
+  my $text;
+  $id =~ s/^\s+//;      # Trim extra spaces
+  $id =~ s/\s+$//;
+  $id = FreeToNormal($id);
+  $text = $id;
+  $text =~ s/_/ /g;
+  ReadPermanentAnchors();
+  if ( $PermanentAnchors{$id} ) {
+    return ScriptLink("$PermanentAnchors{$id}#$id",$text,'permanent_link');
+  }
+  return "[## $id]";
+}
+
+sub DeletePermanentAnchors {
+  RequestLockDir('permanentanchors', 2, 2, 0);
+  ReadPermanentAnchors();
+  foreach (keys %PermanentAnchors) {
+    if ($PermanentAnchors{$_} eq $OpenPageName and !$PagePermanentAnchors{$_}) {
+      delete($PermanentAnchors{$_}) ;
+    }
+  }
+  WritePermanentAnchors();
+  ReleaseLockDir('permanentanchors');
 }
 
 DoWikiRequest()  if ($RunCGI && ($_ ne 'nocgi'));   # Do everything.
