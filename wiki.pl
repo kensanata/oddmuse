@@ -82,7 +82,7 @@ $HttpCharset = '';  # Charset for pages, default is ISO-8859-1
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.17 2003/03/28 19:50:04 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.18 2003/03/28 20:08:30 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -3560,7 +3560,7 @@ sub DoMaintain {
   # Move the old stuff from rc to temp
   @rc = split(/\n/, $data);
   foreach (@rc) {
-    /$FS0/ and !/$FS/ and s/$FS0/$FS/ or last;
+    /$FS0/ and !/$FS/ and s/$FS0/$FS/go or last;
   }
   for ($i = 0; $i < @rc ; $i++) {
     ($ts) = split(/$FS3/, $rc[$i]);
