@@ -6,7 +6,7 @@
 use CGI qw/:standard/;
 use CGI::Carp qw(fatalsToBrowser);
 print header() . start_html(), p;
-print 'Upgrade version: $Id: upgrade-files.pl,v 1.3 2003/11/02 02:19:33 as Exp $', "\n";
+print 'Upgrade version: $Id: upgrade-files.pl,v 1.4 2003/11/02 17:04:52 as Exp $', "\n";
 if (not param('dir')) {
   print start_form, p,
     '$DataDir: ', textfield('dir', '/tmp/oddmuse'),
@@ -40,6 +40,17 @@ sub rewrite {
     $file =~ s/\.db$/.pg/ or die "Invalid page name\n";
     print "Writing $file...\n";
     write_page_file($file);
+  }
+  print '</pre>';
+  @files = glob("$directory/referer/*/*.rb");
+  print '<pre>';
+  foreach my $file (@files) {
+    print "Reading refer $file...\n";
+    my $data = read_file($file);
+    $data =~ s/$FS1/$FS/g;
+    $file =~ s/\.rb$/.rf/ or die "Invalid page name\n";
+    print "Writing $file...\n";
+    write_file($file, $data);
   }
   print '</pre>';
   @files = glob("$directory/keep/*/*.kp");
