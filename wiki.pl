@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.344 2004/03/08 19:59:49 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.345 2004/03/08 20:01:32 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -983,11 +983,11 @@ sub ScriptLink {
 }
 
 sub GetDownloadLink {
-  my ($id, $image, $revision) = @_;
-  $id = FreeToNormal($id);
+  my ($name, $image, $revision) = @_;
+  my $id = FreeToNormal($name);
   AllPagesList();
   # if the page does not exist
-  return '[' . ($image ? 'image' : 'link') . ':' . $id
+  return '[' . ($image ? 'image' : 'link') . ':' . $name
     . GetEditLink($id, '?', 1) . ']' unless $IndexHash{$id};
   my $action;
   if ($revision) {
