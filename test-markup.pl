@@ -156,7 +156,7 @@ test_page(get_page('CacheTest'), @Test);
 # new refresh the cache
 
 @Test = split('\n',<<'EOT');
-This is a WikiLink<a href="http://localhost/wiki.pl\?action=edit&amp;id=WikiLink">\?</a>.
+This is a WikiLink<a href="http://localhost/wiki.pl\?action=edit;id=WikiLink">\?</a>.
 EOT
 
 get_page('action=maintain cache=1 pwd=foo');
@@ -371,21 +371,33 @@ ordinary text
 \nparagraph
 <p>paragraph
 * one\n*two
-<ul><li>one <li>two</ul>
+<ul><li>one </li><li>two</li></ul>
 # one\n# two
-<ol><li>one <li>two</ol>
+<ol><li>one </li><li>two</li></ol>
 * one\n#two
-<ul><li>one </ul><ol><li>two</ol>
+<ul><li>one </li></ul><ol><li>two</li></ol>
 * one\n**two
-<ul><li>one <ul><li>two</ul></ul>
+<ul><li>one <ul><li>two</li></ul></li></ul>
+* one\n**two\n***three\n*four
+<ul><li>one <ul><li>two <ul><li>three </li></ul></li></ul></li><li>four</li></ul>
+* one\n**two\n***three\n*four\n**five\n*six
+<ul><li>one <ul><li>two <ul><li>three </li></ul></li></ul></li><li>four <ul><li>five </li></ul></li><li>six</li></ul>
+* one\n* two\n** one and two\n** two and three\n* three
+<ul><li>one </li><li>two <ul><li>one and two </li><li>two and three </li></ul></li><li>three</li></ul>
+# one\n# two\n## one and two\n## two and three\n# three
+<ol><li>one </li><li>two <ol><li>one and two </li><li>two and three </li></ol></li><li>three</li></ol>
+: one\n: two\n:: one and two\n:: two and three\n: three
+<dl class="quote"><dt /><dd>one </dd><dt /><dd>two <dl class="quote"><dt /><dd>one and two </dd><dt /><dd>two and three </dd></dl></dd><dt /><dd>three</dd></dl>
+;one:eins\n;two:zwei
+<dl><dt>one</dt><dd>eins </dd><dt>two</dt><dd>zwei</dd></dl>
 WikiWord
-WikiWord<a href="http://localhost/test-wrapper.pl?action=edit&amp;id=WikiWord">?</a>
+WikiWord<a href="http://localhost/test-wrapper.pl?action=edit;id=WikiWord">?</a>
 WikiWord:
-WikiWord<a href="http://localhost/test-wrapper.pl?action=edit&amp;id=WikiWord">?</a>:
+WikiWord<a href="http://localhost/test-wrapper.pl?action=edit;id=WikiWord">?</a>:
 OddMuse
-OddMuse<a href="http://localhost/test-wrapper.pl?action=edit&amp;id=OddMuse">?</a>
+OddMuse<a href="http://localhost/test-wrapper.pl?action=edit;id=OddMuse">?</a>
 OddMuse:
-OddMuse<a href="http://localhost/test-wrapper.pl?action=edit&amp;id=OddMuse">?</a>:
+OddMuse<a href="http://localhost/test-wrapper.pl?action=edit;id=OddMuse">?</a>:
 OddMuse:test
 <a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test">OddMuse:test</a>
 OddMuse:test: or not
@@ -488,11 +500,11 @@ update_page('Banana', "This page exists also.");
 [[SandBox|play here]]
 <a href="http://localhost/test-wrapper.pl/SandBox">play here</a>
 [[FooBar|do not play here]]
-[FooBar<a href="http://localhost/test-wrapper.pl?action=edit&amp;id=FooBar">?</a> do not play here]
+[FooBar<a href="http://localhost/test-wrapper.pl?action=edit;id=FooBar">?</a> do not play here]
 [[Banana|Not a pear]]
 <a href="http://localhost/test-wrapper.pl/Banana">Not a pear</a>
 [[Appel|Not a pear]]
-[Appel<a href="http://localhost/test-wrapper.pl?action=edit&amp;id=Appel">?</a> Not a pear]
+[Appel<a href="http://localhost/test-wrapper.pl?action=edit;id=Appel">?</a> Not a pear]
 file://home/foo/tutorial.pdf
 <a href="file://home/foo/tutorial.pdf">file://home/foo/tutorial.pdf</a>
 file:///home/foo/tutorial.pdf
