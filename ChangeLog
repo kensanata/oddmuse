@@ -1,5 +1,7 @@
 2004-01-23  Alex Schroeder  <alex@gnu.org>
 
+	* weblog-tracking.pl (PingTracker): Added forking on each request.
+
 	The entire weblog notification was moved into a separate module.
 
 	* wiki.pl ($NotifyTracker, %NotifyJournalPage): Removed.
