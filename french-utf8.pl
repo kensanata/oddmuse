@@ -32,7 +32,7 @@ XML::RSS is not available on this system.
 LWP::UserAgent is not available on this system.
 
 diff
-
+diff
 history
 historique
  . . . . 
@@ -40,7 +40,7 @@ historique
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
-
+http://www.amazon.fr/exec/obidos/ISBN=%s
 alternate
 Alternative
 http://www.pricescan.com/books/BookDetail.asp?isbn=%s
@@ -82,25 +82,25 @@ Mises à jour durant le dernier %s jour
 for %s only
 pour %s seulement
 List latest change per page only
-
+Lister seulement les dernières modifications par page
 List only major changes
-
+Lister seulement les modifications majeures
 Include minor changes
-
+Inclure les modifications mineures
 List all changes
-
+Lister toutes les modifications
 %s days
 %s jours
 List later changes
-
+Lister les modifications les plus récentes
 Username:
 Nom d'utilisateur&nbsp;:
 Host:
-
+Hôte&nbsp;:
 Language:
-
+Langue&nbsp;:
 Filters
-
+Filtres
 Go!
 Aller !
 (minor)
@@ -130,9 +130,9 @@ Rollback to %s
 [Home]
 [Accueil]
 redirected from %s
-Redirection depuis %s
+redirigée à partir de %s
 Click to search for references to this page
-
+Cliquer pour chercher des références vers cette page
 Cookie: 
 Cookie&nbsp;: 
 new comment
@@ -152,7 +152,7 @@ Voir les autres versions
 View current revision
 Voir la version actuelle
 View all changes
-
+Voir toutes les modifications
 View original
 Voir l'original
 Last edited
@@ -160,13 +160,13 @@ Dernière modification
 Edited
 Modifié
 by %s
-
+par %s
 (diff)
 (diff)
 Warning
 ATTENTION
 Database is stored in temporary directory %s
-Base de données stockée dans le repertoire temporaire 
+Base de données stockée dans le répertoire temporaire %s
 %s seconds
 %s secondes
 The same page on other sites:
@@ -182,19 +182,19 @@ Validation du HTML
 Validate CSS
 Validation des CSS
 Difference (from revision %1 to %2)
-
+Différence (de la révision %1 à %2)
 revision %s
 Version %s
 current revision
 version actuelle
 Difference (from prior %s revision)
-Différences (depuis les dernières versions %s)
+Différences (à partir des dernières versions %s)
 major
 majeure
 minor
 mineure
 No diff available.
-Pas de diff disponible
+Pas de diff disponible.
 Changed:
 Modifiée&nbsp;:
 Removed:
@@ -210,13 +210,13 @@ Présentation de la version en cours à sa place.
 Showing revision %s
 Présentation de la version %s
 Cannot save an nameless page.
-
+Ne peut pas sauvegarder une page sans nom
 Cannot open %s
-
+Ne peut ouvrir %s
 Cannot write %s
-
+Ne peut écrire %s
 Could not get %s lock
-
+Ne peut obtenir un verrouillage %s
 Unlocking
 Supression du verrou
 This operation may take several seconds...
@@ -224,7 +224,7 @@ Cette opération peut prendre quelques secondes...
 Forced unlock of %s lock.
 Supression forcée du verrou %s.
 No unlock required.
-La suppression du verrour n'est pas necessaire.
+La suppression du verrou n'est pas nécessaire.
 %s hours ago
 il y a %s heures
 1 hour ago
@@ -238,7 +238,7 @@ il y a %s secondes
 1 second ago
 il y a 1 seconde
 just now
-a l'instant
+à l'instant
 Editing Denied
 Modification interdite
 Editing not allowed: user, ip, or network is blocked.
@@ -246,13 +246,13 @@ Modification interdite&nbsp;: l'utilisateur, l'adresse ip, ou le reseau est bloq
 Contact the wiki administrator for more information.
 Contactez l'administrateur du wiki pour plus d'information.
 The rule %s matched for you.
-
+La règle %s a fonctionné pour vous.
 See %s for more information.
-
+Voir %s pour plus d'information
 Editing not allowed: %s is read-only.
 Modification interdite&nbsp;: %s est en lecture seule
 Only administrators can upload files.
-
+Seuls les administrateurs peuvent téléverser des fichiers.
 Editing revision %s of
 Modification de la version %s de
 Editing %s
@@ -264,7 +264,7 @@ Sauvegarder cette page remplacera la dernière version par ce texte.
 Summary:
 Résumé&nbsp;:
 This change is a minor edit.
-Ce changement est mineur.
+Cette modification est mineure.
 Preview
 Prévisualisation
 Replace this file with text.
@@ -272,17 +272,17 @@ Remplacer ce fichier par un texte.
 Replace this text with a file.
 Remplacer ce texte par un fichier.
 Preview:
-Prévisualisation
+Prévisualisation&nbsp;:
 Preview only, not yet saved
 Prévisualisation seulement, pas encore sauvegardée
 File to upload: 
-
+Fichier à téléverser&nbsp;: 
 Files of type %s are not allowed.
-
+Les fichiers de type %s ne sont pas autorisés.
 Password
 Mot de passe
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
-Votre mot de passe est conservé dans un cookie, si cette fonctionnalité est activée dans votre navigateur. Les cookie peuvent être perdus si vous vous reconnectez d'une autre machine, d'un autre compte, ou en utilisant un autre logiciel. 
+Votre mot de passe est conservé dans un cookie, si cette fonctionnalité est activée dans votre navigateur. Les cookies peuvent être perdus si vous vous reconnectez d'une autre machine, d'un autre compte ou en utilisant un autre logiciel.
 You are currently an administrator on this site.
 Vous êtes actuellement administrateur de ce site.
 You are currently an editor on this site.
@@ -302,37 +302,35 @@ Cette opération est réservée aux administrateurs seulement...
 Index of all pages
 Index de toutes les pages
 all pages
-
+toutes les pages
 permanent anchors
-
-near links
-
+ancres permanentes
 (for %s)
-
+(pour %s)
 %s pages found.
-
+%s pages trouvées.
 Replaced: %s
 Remplacé&nbsp;: %s
 Search for: %s
 Rechercher&nbsp;: %s
 View changes for these pages
-
+Voir les modifications pour ces pages
 Search sites on the %s as well
 
 and
-
+et
 or
-
+ou
 Fetching results from %s:
 
 Near pages:
 
 last updated
-Dernière mise à jour
+dernière mise à jour
 Full Link List
-Liste complète des liens
+Liste Complète des Liens
 Complete Content
-Contenu complet
+Contenu Complet
 The main page is %s.
 La page principale est %s.
 Editing not allowed for %s.
@@ -342,33 +340,33 @@ ExempleDePageNonDefinie
 %s cannot be defined.
 %s ne peut être défini.
 Sample_Undefined_Page
-Exemple_De_PageNon_Definie
+Exemple_De_Page_NonDefinie
 [[%s]] cannot be defined.
 [[%s]] ne peut être défini.
 Only an administrator can create %s
 Seul un administrateur peut créer %s
 Transfer Error: %s
-
+Erreur de Transfert&nbsp;: %s
 Browser reports no file info.
-
+Le navigateur signale pas d'information sur le fichier.
 Browser reports no file type.
-
+Le navigateur signale pas de format de fichier.
 Anonymous
 Anonyme
 This page was changed by somebody else %s.
-
+Cette page a été modifiée par quelqu'un d'autre %s.
 The changes conflict.  Please check the page again.
-
+Conflit sur les modifications. SVP vérifiez la page à nouveau.
 Please check whether you overwrote those changes.
-
+SVP vérifiez si vous écrasez ces modifications.
 Could not get a lock to merge!
 Ne peut pas obtenir un verrou pour la fusion !
 you
-
+vous
 ancestor
-
+ancêtre
 other
-
+autre
 Ping
 Ping
 No response.
@@ -382,13 +380,13 @@ Maintenance non effectuée.
 Remove the "maintain" file or wait.
 Enlevez le fichier "maintain" ou patientez.
 Main lock obtained.
-Verrou principal obtenu
+Verrou principal obtenu.
 Expiring keep files and deleting pages marked for deletion
 Expiration des fichiers de cache et suppression des pages marquées pour la suppression
 and refreshing HTML cache
-
+et rafraîchissement du cache HTML
 deleted
-Supprimé
+supprimé
 Moving part of the %s log file.
 Deplace une partie du fichier de log %s.
 Moving %s log entries.
@@ -398,7 +396,7 @@ Getting page index file for %s.
 Main lock released.
 Verrou principal rendu.
 Set or Remove global edit lock
-Positionne ou enlève le verrou global d'édition
+Positionne ou Enlève le verrou global d'édition
 Edit lock created.
 Verrou d'édition créé.
 Edit lock removed.
@@ -420,13 +418,13 @@ Near links:
 Too many connections by %s
 Trop de connections par %s
 Recent Visitors
-Derniers visiteurs
+Derniers Visiteurs
 Referrers
-Referrers
+Introducteurs
 All Referrers
-Tous les referrers
+Tous les Introducteurs
 anchor first defined here: %s
-
+première ancre définie ici&nbsp;: %s
 Click to search for references to this permanent anchor
-
+Cliquer pour chercher des références vers cette ancre permanente
 END_OF_TRANSLATION
