@@ -186,8 +186,6 @@ $HtmlHeaders = '';	# Additional stuff to put in the HTML <head> section
 # Example: %Languages = ('de' => '\b(der|die|das|und|oder)\b');
 %Languages = ();
 
-@LockOnCreation = ($BannedHosts, $RefererFilter, $StyleSheetPage, $ConfigPage,
-		   $InterMap, $NearMap, $RssInterwikiTranslate, $BannedContent);
 @KnownLocks = qw(main diff index merge visitors refer_*); # locks to remove
 
 %CookieParameters = (username=>'', pwd=>'', theme=>'', css=>'', msg=>'',
@@ -298,11 +296,13 @@ sub InitVariables {    # Init global session variables for mod_perl!
   ReportError(Ts('Could not create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR')
     unless -d $DataDir;
   @UserGotoBarPages = ($HomePage, $RCName) unless @UserGotoBarPages;
+  @LockOnCreation = ($BannedHosts, $RefererFilter, $StyleSheetPage, $ConfigPage, $InterMap,
+		     $NearMap, $RssInterwikiTranslate, $BannedContent) unless @LockOnCreation;
   map { $$_ = FreeToNormal($$_); } # convert spaces to underscores on all configurable pagenames
     (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$RefererFilter, \$StyleSheetPage,
      \$ConfigPage, \$NotFoundPg, \$NearMap, \$RssInterwikiTranslate, \$BannedContent);
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.434 2004/07/04 22:50:14 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.435 2004/07/08 16:02:36 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2249,7 +2249,7 @@ sub DiffHtmlMarkWords { # this code seem brittle and has been known to crash!
 sub ParseData {
   my $data = shift;
   my %result;
-  while ($data =~ /(\S+?): (.*?)(?=\n[^\t]|\Z)/sg) {
+  while ($data =~ /(\S+?): (.*?)(?=\n[^ \t]|\Z)/sg) {
     my ($key, $value) = ($1, $2);
     $value =~ s/\n\t/\n/g;
     $result{$key} = $value;
