@@ -356,7 +356,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.527 2005/01/24 17:43:46 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.528 2005/01/31 23:27:03 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -596,7 +596,7 @@ sub ApplyRules {
 	}
       } elsif (%Smilies && m/\G$smileyregex/cog && (Clean(SmileyReplace()))) {
       } elsif (Clean(RunMyRules())) {
-      } elsif (m/\G\s*\n(s*\n)+/cg) { # paragraphs: at least two newlines
+      } elsif (m/\G\s*\n(\s*\n)+/cg) { # paragraphs: at least two newlines
 	Clean(CloseHtmlEnvironments() . AddHtmlEnvironment('p')); # another one like this further up
       } elsif (m/\G\s+/cg) {
 	Clean(' ');
