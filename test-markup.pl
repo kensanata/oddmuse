@@ -1501,6 +1501,8 @@ foo
 <i>foo</i>
 /foo bar 5/
 <i>foo bar 5</i>
+6/22/2004
+6/22/2004
 da *foo*
 da <b>foo</b>
 da *foo bar 6*
