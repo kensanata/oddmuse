@@ -53,7 +53,7 @@ use vars qw(@RcDays @HtmlTags
   $BannedCanRead $SurgeProtection $SurgeProtectionViews
   $SurgeProtectionTime $DeletedPage %Languages $LanguageLimit
   $ValidatorLink $RefererTracking $RefererTimeLimit $RefererLimit
-  $TopLinkBar $NotifyWeblogs $InterMap @LockOnCreation);
+  $TopLinkBar $NotifyWeblogs $InterMap @LockOnCreation $RefererFilter);
 
 # Other global variables:
 use vars qw(%Page %Section %Text %InterSite %KeptRevisions
@@ -80,7 +80,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.70 2003/05/28 00:20:42 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.71 2003/05/29 01:13:17 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -131,6 +131,7 @@ $SurgeProtectionViews = 5; # How many page views to allow in this window
 $RefererTracking = 0;      # Keep track of referrals to your pages
 $RefererTimeLimit = 60 * 60 * 24; # How long referrals shall be remembered
 $RefererLimit = 15;        # How many different referer shall be remembered
+$RefererFilter = 'ReferrerFilter'; # name of the filter pg (change space to _)
 
 # RecentChanges and KeptPages
 $DeletedPage = 'DeletedPage';   # Pages starting with this can be deleted
@@ -176,7 +177,7 @@ if (not @HtmlTags) { # don't set if set in the config file
   }
 }
 
-@LockOnCreation = ($BannedHosts, $InterMap);
+@LockOnCreation = ($BannedHosts, $InterMap, $RefererFilter);
 
 $IndentLimit = 20;                  # Maximum depth of nested lists
 $LanguageLimit = 3;                 # Number of matches req. for each language
@@ -3834,27 +3835,31 @@ sub GetReferers {
 sub UpdateReferers {
   my $self = $q->url();
   my $referer = $q->referer();
-  if ($referer and $referer !~ /$self/) {
-    my $data = GetRaw($referer);
-    if ($data =~ /$self/) {
-      $Referers{$referer} = $Now;
-      if ($RefererTimeLimit) {
-	foreach (keys %Referers) {
-	  if ($Now - $Referers{$_} > $RefererTimeLimit) {
-	    delete $Referers{$_};
-	  }
-	}
-      }
-      if ($RefererLimit) {
-	my @list = sort {$Referers{$a} cmp $Referers{$b}} keys %Referers;
-	@list = @list[$RefererLimit .. @list-1];
-	foreach (@list) {
-	  delete $Referers{$_};
-	}
-      }
-      return 1;
+  return  unless $referer and $referer !~ /$self/;
+  foreach (split(/\n/,GetPageContent($RefererFilter))) {
+    if (/^ ([^ ]+)[ \t]*$/) {  # only read lines with one word after one space
+      my $regexp = $1;
+      return  if $referer =~ /$regexp/i;
     }
   }
+  my $data = GetRaw($referer);
+  return  unless $data =~ /$self/;
+  $Referers{$referer} = $Now;
+  if ($RefererTimeLimit) {
+    foreach (keys %Referers) {
+      if ($Now - $Referers{$_} > $RefererTimeLimit) {
+	delete $Referers{$_};
+      }
+    }
+  }
+  if ($RefererLimit) {
+    my @list = sort {$Referers{$a} cmp $Referers{$b}} keys %Referers;
+    @list = @list[$RefererLimit .. @list-1];
+    foreach (@list) {
+      delete $Referers{$_};
+    }
+  }
+  return 1;
 }
 
 sub WriteReferers {
