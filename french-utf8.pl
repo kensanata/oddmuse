@@ -1,6 +1,6 @@
 # UTF-8 encoded French language file for use with Oddmuse
 #
-# Copyright (c)  2003 Free Software Foundation
+# Copyright (c) 2003  Pierre Gaston
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
