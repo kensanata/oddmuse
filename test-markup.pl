@@ -1203,176 +1203,6 @@ test_page($page, @Test2);
 
 markup:
 
-print '[markup]';
-
-open(F,'>/tmp/oddmuse/config');
-print F "\$NetworkFile = 1;\n";
-print F "\$AdminPass = 'foo';\n";
-print F "\$SurgeProtection = 0;\n";
-print F "\%Smilies = ('HAHA!' => '/pics/haha.png');\n";
-close(F);
-
-update_page('InterMap', " OddMuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n PlanetMath http://planetmath.org/encyclopedia/%s.html", 'required', 0, 1);
-
-%Test = split('\n',<<'EOT');
-HAHA!
-<img class="smiley" src="/pics/haha.png" alt="HAHA!" />
-do not eat 0 from text
-do not eat 0 from text
-ordinary text
-ordinary text
-\nparagraph
-<p>paragraph
-* one\n*two
-<ul><li>one</li><li>two</li></ul>
-* one\n\n*two
-<ul><li>one</li><li>two</li></ul>
-# one\n# two
-<ol><li>one</li><li>two</li></ol>
-* one\n#two
-<ul><li>one</li></ul><ol><li>two</li></ol>
-* one\n**two
-<ul><li>one<ul><li>two</li></ul></li></ul>
-* one\n**two\n***three\n*four
-<ul><li>one<ul><li>two<ul><li>three</li></ul></li></ul></li><li>four</li></ul>
-* one\n**two\n***three\n*four\n**five\n*six
-<ul><li>one<ul><li>two<ul><li>three</li></ul></li></ul></li><li>four<ul><li>five</li></ul></li><li>six</li></ul>
-* one\n* two\n** one and two\n** two and three\n* three
-<ul><li>one</li><li>two<ul><li>one and two</li><li>two and three</li></ul></li><li>three</li></ul>
-* one and *\n* two and * more
-<ul><li>one and *</li><li>two and * more</li></ul>
-# one\n\n#two
-<ol><li>one</li><li>two</li></ol>
-# one\n# two\n## one and two\n## two and three\n# three
-<ol><li>one</li><li>two<ol><li>one and two</li><li>two and three</li></ol></li><li>three</li></ol>
-# one and #\n# two and # more
-<ol><li>one and #</li><li>two and # more</li></ol>
-: one\n: two\n:: one and two\n:: two and three\n: three
-<dl class="quote"><dt /><dd>one</dd><dt /><dd>two<dl class="quote"><dt /><dd>one and two</dd><dt /><dd>two and three</dd></dl></dd><dt /><dd>three</dd></dl>
-: one and :)\n: two and :) more
-<dl class="quote"><dt /><dd>one and :)</dd><dt /><dd>two and :) more</dd></dl>
-: one\n\n:two
-<dl class="quote"><dt /><dd>one</dd><dt /><dd>two</dd></dl>
-; one:eins\n;two:zwei
-<dl><dt>one</dt><dd>eins</dd><dt>two</dt><dd>zwei</dd></dl>
-; one:eins\n\n;two:zwei
-<dl><dt>one</dt><dd>eins</dd><dt>two</dt><dd>zwei</dd></dl>
-This is ''emphasized''.
-This is <em>emphasized</em>.
-This is '''strong'''.
-This is <strong>strong</strong>.
-This is ''longer emphasized'' text.
-This is <em>longer emphasized</em> text.
-This is '''longer strong''' text.
-This is <strong>longer strong</strong> text.
-This is '''''emphasized and bold''''' text.
-This is <strong><em>emphasized and bold</em></strong> text.
-This is ''emphasized '''and bold''''' text.
-This is <em>emphasized <strong>and bold</strong></em> text.
-This is '''bold ''and emphasized''''' text.
-This is <strong>bold <em>and emphasized</em></strong> text.
-This is ''emphasized text containing '''longer strong''' text''.
-This is <em>emphasized text containing <strong>longer strong</strong> text</em>.
-This is '''strong text containing ''emph'' text'''.
-This is <strong>strong text containing <em>emph</em> text</strong>.
-WikiWord
-WikiWord<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=WikiWord">?</a>
-WikiWord:
-WikiWord<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=WikiWord">?</a>:
-OddMuse
-OddMuse<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OddMuse">?</a>
-OddMuse:
-OddMuse<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OddMuse">?</a>:
-OddMuse:test
-<a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"><span class="site">OddMuse</span>:<span class="page">test</span></a>
-OddMuse:test: or not
-<a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"><span class="site">OddMuse</span>:<span class="page">test</span></a>: or not
-OddMuse:test, and foo
-<a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"><span class="site">OddMuse</span>:<span class="page">test</span></a>, and foo
-PlanetMath:ZipfsLaw, and foo
-<a class="inter" href="http://planetmath.org/encyclopedia/ZipfsLaw.html"><span class="site">PlanetMath</span>:<span class="page">ZipfsLaw</span></a>, and foo
-[OddMuse:test]
-<a class="inter number" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>
-Foo::Bar
-Foo::Bar
-!WikiLink
-WikiLink
-!foo
-!foo
-![[Free Link]]
-![Free Link]<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=Free_Link">?</a>
-||one||
-<table class="user"><tr><td>one</td></tr></table>
-introduction\n\n||one||two||three||\n||||one two||three||
-introduction<p><table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table>
-||one||two||three||\n||||one two||three||\n\nfooter
-<table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table><p>footer
-introduction\n\n||one||two||three||\n||||one two||three||\n\nfooter
-introduction<p><table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table><p>footer
-http://www.emacswiki.org
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>
-<http://www.emacswiki.org>
-<<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>>
-http://www.emacswiki.org/
-<a class="url" href="http://www.emacswiki.org/">http://www.emacswiki.org/</a>
-http://www.emacswiki.org.
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>.
-http://www.emacswiki.org,
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>,
-http://www.emacswiki.org;
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>;
-http://www.emacswiki.org:
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>:
-http://www.emacswiki.org?
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>?
-http://www.emacswiki.org/?
-<a class="url" href="http://www.emacswiki.org/">http://www.emacswiki.org/</a>?
-http://www.emacswiki.org!
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>!
-http://www.emacswiki.org'
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>'
-http://www.emacswiki.org"
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>"
-http://www.emacswiki.org!
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>!
-http://www.emacswiki.org(
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>(
-http://www.emacswiki.org)
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>)
-http://www.emacswiki.org&
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>&
-http://www.emacswiki.org#
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>#
-http://www.emacswiki.org%
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>%
-[http://www.emacswiki.org]
-<a class="url number" href="http://www.emacswiki.org"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>
-[http://www.emacswiki.org] and [http://www.emacswiki.org]
-<a class="url number" href="http://www.emacswiki.org"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a> and <a class="url number" href="http://www.emacswiki.org"><span><span class="bracket">[</span>2<span class="bracket">]</span></span></a>
-[http://www.emacswiki.org],
-<a class="url number" href="http://www.emacswiki.org"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>,
-[http://www.emacswiki.org and a label]
-<a class="url outside" href="http://www.emacswiki.org">and a label</a>
-[file://home/foo/tutorial.pdf local link]
-<a class="url outside" href="file://home/foo/tutorial.pdf">local link</a>
-file://home/foo/tutorial.pdf
-<a class="url" href="file://home/foo/tutorial.pdf">file://home/foo/tutorial.pdf</a>
-file:///home/foo/tutorial.pdf
-file:///home/foo/tutorial.pdf
-mailto:alex@emacswiki.org
-<a class="url" href="mailto:alex@emacswiki.org">mailto:alex@emacswiki.org</a>
- source
-<pre> source</pre>
- source\n etc\n
-<pre> source\n etc\n</pre>
- source\n \n etc\n
-<pre> source\n \n etc\n</pre>
- source\n \n etc\n\nother
-<pre> source\n \n etc\n</pre><p>other
-EOT
-
-run_tests();
-
 print '[link pattern]';
 
 system('/bin/rm -rf /tmp/oddmuse');
@@ -1480,6 +1310,195 @@ EOT
 
 run_tests();
 
+print '[markup]';
+
+open(F,'>/tmp/oddmuse/config');
+print F "\$NetworkFile = 1;\n";
+print F "\$AdminPass = 'foo';\n";
+print F "\$SurgeProtection = 0;\n";
+print F "\%Smilies = ('HAHA!' => '/pics/haha.png');\n";
+close(F);
+
+update_page('InterMap', " OddMuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n PlanetMath http://planetmath.org/encyclopedia/%s.html", 'required', 0, 1);
+
+%Test = split('\n',<<'EOT');
+HAHA!
+<img class="smiley" src="/pics/haha.png" alt="HAHA!" />
+do not eat 0 from text
+do not eat 0 from text
+ordinary text
+ordinary text
+\nparagraph
+<p>paragraph
+* one\n*two
+<ul><li>one</li><li>two</li></ul>
+* one\n\n*two
+<ul><li>one</li><li>two</li></ul>
+* one\n**two
+<ul><li>one<ul><li>two</li></ul></li></ul>
+* one\n**two\n***three\n*four
+<ul><li>one<ul><li>two<ul><li>three</li></ul></li></ul></li><li>four</li></ul>
+* one\n**two\n***three\n*four\n**five\n*six
+<ul><li>one<ul><li>two<ul><li>three</li></ul></li></ul></li><li>four<ul><li>five</li></ul></li><li>six</li></ul>
+* one\n* two\n** one and two\n** two and three\n* three
+<ul><li>one</li><li>two<ul><li>one and two</li><li>two and three</li></ul></li><li>three</li></ul>
+* one and *\n* two and * more
+<ul><li>one and *</li><li>two and * more</li></ul>
+WikiWord
+WikiWord<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=WikiWord">?</a>
+WikiWord:
+WikiWord<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=WikiWord">?</a>:
+OddMuse
+OddMuse<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OddMuse">?</a>
+OddMuse:
+OddMuse<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OddMuse">?</a>:
+OddMuse:test
+<a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"><span class="site">OddMuse</span>:<span class="page">test</span></a>
+OddMuse:test: or not
+<a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"><span class="site">OddMuse</span>:<span class="page">test</span></a>: or not
+OddMuse:test, and foo
+<a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"><span class="site">OddMuse</span>:<span class="page">test</span></a>, and foo
+PlanetMath:ZipfsLaw, and foo
+<a class="inter" href="http://planetmath.org/encyclopedia/ZipfsLaw.html"><span class="site">PlanetMath</span>:<span class="page">ZipfsLaw</span></a>, and foo
+[OddMuse:test]
+<a class="inter number" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>
+Foo::Bar
+Foo::Bar
+!WikiLink
+WikiLink
+!foo
+!foo
+![[Free Link]]
+![Free Link]<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=Free_Link">?</a>
+http://www.emacswiki.org
+<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>
+<http://www.emacswiki.org>
+<<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>>
+http://www.emacswiki.org/
+<a class="url" href="http://www.emacswiki.org/">http://www.emacswiki.org/</a>
+http://www.emacswiki.org.
+<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>.
+http://www.emacswiki.org,
+<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>,
+http://www.emacswiki.org;
+<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>;
+http://www.emacswiki.org:
+<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>:
+http://www.emacswiki.org?
+<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>?
+http://www.emacswiki.org/?
+<a class="url" href="http://www.emacswiki.org/">http://www.emacswiki.org/</a>?
+http://www.emacswiki.org!
+<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>!
+http://www.emacswiki.org'
+<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>'
+http://www.emacswiki.org"
+<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>"
+http://www.emacswiki.org!
+<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>!
+http://www.emacswiki.org(
+<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>(
+http://www.emacswiki.org)
+<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>)
+http://www.emacswiki.org&
+<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>&
+http://www.emacswiki.org#
+<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>#
+http://www.emacswiki.org%
+<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>%
+[http://www.emacswiki.org]
+<a class="url number" href="http://www.emacswiki.org"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>
+[http://www.emacswiki.org] and [http://www.emacswiki.org]
+<a class="url number" href="http://www.emacswiki.org"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a> and <a class="url number" href="http://www.emacswiki.org"><span><span class="bracket">[</span>2<span class="bracket">]</span></span></a>
+[http://www.emacswiki.org],
+<a class="url number" href="http://www.emacswiki.org"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>,
+[http://www.emacswiki.org and a label]
+<a class="url outside" href="http://www.emacswiki.org">and a label</a>
+[file://home/foo/tutorial.pdf local link]
+<a class="url outside" href="file://home/foo/tutorial.pdf">local link</a>
+file://home/foo/tutorial.pdf
+<a class="url" href="file://home/foo/tutorial.pdf">file://home/foo/tutorial.pdf</a>
+file:///home/foo/tutorial.pdf
+file:///home/foo/tutorial.pdf
+mailto:alex@emacswiki.org
+<a class="url" href="mailto:alex@emacswiki.org">mailto:alex@emacswiki.org</a>
+EOT
+
+run_tests();
+
+fixme:
+
+print '[usemod module]';
+
+system('/bin/rm -rf /tmp/oddmuse');
+die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
+mkdir '/tmp/oddmuse';
+mkdir '/tmp/oddmuse/modules';
+open(F,'>/tmp/oddmuse/config');
+print F "\$SurgeProtection = 0;\n";
+close(F);
+symlink('/home/alex/src/oddmuse/modules/usemod.pl',
+	'/tmp/oddmuse/modules/usemod.pl') or die "Cannot symlink: $@";
+
+%Test = split('\n',<<'EOT');
+# one\n# two
+<ol><li>one</li><li>two</li></ol>
+* one\n#two
+<ul><li>one</li></ul><ol><li>two</li></ol>
+# one\n\n#two
+<ol><li>one</li><li>two</li></ol>
+# one\n# two\n## one and two\n## two and three\n# three
+<ol><li>one</li><li>two<ol><li>one and two</li><li>two and three</li></ol></li><li>three</li></ol>
+# one and #\n# two and # more
+<ol><li>one and #</li><li>two and # more</li></ol>
+: one\n: two\n:: one and two\n:: two and three\n: three
+<dl class="quote"><dt /><dd>one</dd><dt /><dd>two<dl class="quote"><dt /><dd>one and two</dd><dt /><dd>two and three</dd></dl></dd><dt /><dd>three</dd></dl>
+: one and :)\n: two and :) more
+<dl class="quote"><dt /><dd>one and :)</dd><dt /><dd>two and :) more</dd></dl>
+: one\n\n:two
+<dl class="quote"><dt /><dd>one</dd><dt /><dd>two</dd></dl>
+; one:eins\n;two:zwei
+<dl><dt>one</dt><dd>eins</dd><dt>two</dt><dd>zwei</dd></dl>
+; one:eins\n\n;two:zwei
+<dl><dt>one</dt><dd>eins</dd><dt>two</dt><dd>zwei</dd></dl>
+This is ''emphasized''.
+This is <em>emphasized</em>.
+This is '''strong'''.
+This is <strong>strong</strong>.
+This is ''longer emphasized'' text.
+This is <em>longer emphasized</em> text.
+This is '''longer strong''' text.
+This is <strong>longer strong</strong> text.
+This is '''''emphasized and bold''''' text.
+This is <strong><em>emphasized and bold</em></strong> text.
+This is ''emphasized '''and bold''''' text.
+This is <em>emphasized <strong>and bold</strong></em> text.
+This is '''bold ''and emphasized''''' text.
+This is <strong>bold <em>and emphasized</em></strong> text.
+This is ''emphasized text containing '''longer strong''' text''.
+This is <em>emphasized text containing <strong>longer strong</strong> text</em>.
+This is '''strong text containing ''emph'' text'''.
+This is <strong>strong text containing <em>emph</em> text</strong>.
+||one||
+<table class="user"><tr><td>one</td></tr></table>
+introduction\n\n||one||two||three||\n||||one two||three||
+introduction<p><table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table>
+||one||two||three||\n||||one two||three||\n\nfooter
+<table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table><p>footer
+introduction\n\n||one||two||three||\n||||one two||three||\n\nfooter
+introduction<p><table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table><p>footer
+ source
+<pre> source</pre>
+ source\n etc\n
+<pre> source\n etc\n</pre>
+ source\n \n etc\n
+<pre> source\n \n etc\n</pre>
+ source\n \n etc\n\nother
+<pre> source\n \n etc\n</pre><p>other
+EOT
+
+run_tests();
+
 print '[markup module]';
 
 system('/bin/rm -rf /tmp/oddmuse');
@@ -1491,6 +1510,8 @@ print F "\$SurgeProtection = 0;\n";
 close(F);
 symlink('/home/alex/src/oddmuse/modules/markup.pl',
 	'/tmp/oddmuse/modules/markup.pl') or die "Cannot symlink: $@";
+symlink('/home/alex/src/oddmuse/modules/usemod.pl',
+	'/tmp/oddmuse/modules/usemod.pl') or die "Cannot symlink: $@";
 
 %Test = split('\n',<<'EOT');
 foo
@@ -1536,8 +1557,6 @@ foo <hr />bar
 EOT
 
 run_tests();
-
-fixme:
 
 print '[setext module]';
 
