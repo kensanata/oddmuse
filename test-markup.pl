@@ -122,15 +122,90 @@ system('/bin/rm -rf /tmp/oddmuse');
 die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
 mkdir '/tmp/oddmuse';
 
+# --------------------
+
+print '[clusters]';
+
+open(F,'>/tmp/oddmuse/config');
+print F "\$SurgeProtection = 0;\n";
+print F "\$PageCluster = 'Cluster';\n";
+close(F);
+
+update_page('ClusterIdea', 'This is just a page.', 'one');
+update_page('ClusterIdea', "This is just a page.\nBut somebody has to do it.", 'two');
+update_page('ClusterIdea', "This is just a page.\nNobody wants it.", 'three', 1);
+update_page('ClusterIdea', "MainPage\nThis is just a page.\nBut somebody has to do it.", 'four');
+
+@Test = split('\n',<<'EOT');
+Cluster.*MainPage.*Related changes
+EOT
+
+test_page(get_page('action=rc'), @Test);
+
+@Test = split('\n',<<'EOT');
+Cluster.*MainPage.*Related changes
+ClusterIdea.*two
+ClusterIdea.*one
+EOT
+
+test_page(get_page('action=rc all=1'), @Test);
+
+@Test = split('\n',<<'EOT');
+Cluster.*MainPage.*Related changes
+ClusterIdea.*three
+ClusterIdea.*two
+ClusterIdea.*one
+EOT
+
+test_page(get_page('action=rc all=1 showedit=1'), @Test);
+
+@Test = split('\n',<<'EOT');
+Finally the main page
+Updates in the last [0-9]+ days
+diff.*ClusterIdea.*history.*four
+for.*MainPage.*only
+1 day
+action=browse;id=MainPage;rcclusteronly=MainPage;days=1
+EOT
+
+update_page('MainPage', 'Finally the main page.');
+test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage'), @Test);
+
+@Test = split('\n',<<'EOT');
+Finally the main page
+Updates in the last [0-9]+ days
+diff.*ClusterIdea.*four
+for.*MainPage.*only
+1 day
+EOT
+
+test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage showedit=1'),
+	  (@Test, 'action=browse;id=MainPage;rcclusteronly=MainPage;showedit=1;days=1'));
+test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage all=1'),
+	  (@Test, 'action=browse;id=MainPage;rcclusteronly=MainPage;all=1;days=1'));
+
+@Test = split('\n',<<'EOT');
+Finally the main page
+Updates in the last [0-9]+ days
+diff.*ClusterIdea.*five
+diff.*ClusterIdea.*four
+for.*MainPage.*only
+1 day
+action=browse;id=MainPage;rcclusteronly=MainPage;all=1;showedit=1;days=1
+EOT
+
+update_page('ClusterIdea', "MainPage\nSomebody has to do it.", 'five', 1);
+test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage all=1 showedit=1'), @Test);
+
+# --------------------
+
+print '[rss]';
+
 # create simple config file
 
 open(F,'>/tmp/oddmuse/config');
 print F "\$SurgeProtection = 0;\n";
 close(F);
-
-# --------------------
-
-print '[rss]';
 
 use Cwd;
 $dir = cwd;
@@ -237,6 +312,8 @@ EOT
 update_page('RSS', "<rss $uri/mb.rdf $uri/community.rdf>");
 test_page(get_page('RSS'), @Test);
 
+# --------------------
+
 print '[redirection]';
 
 update_page('Miles_Davis', 'Featuring [[John Coltrane]]'); # plain link
@@ -256,6 +333,8 @@ test_page(get_page('Gary_Peacock'),
 test_page(get_page('Jack_DeJohnette'),
 	  ('A friend of', 'Gary Peacock', 'name="Gary_Peacock"', 'class="definition"',
 	   'title="Click to search for references to this permanent anchor"'));
+
+# --------------------
 
 print '[recent changes]';
 
@@ -418,76 +497,6 @@ EOT
 $page = get_page('action=rc rcidonly=Bombia');
 test_page($page, @Positives);
 test_page_negative($page, @Negatives);
-
-# --------------------
-
-print '[clusters]';
-
-update_page('ClusterIdea', 'This is just a page.', 'one');
-update_page('ClusterIdea', 'This is just a page.\nBut somebody has to do it.', 'two');
-update_page('ClusterIdea', 'This is just a page.\nNobody wants it.', 'three', 1);
-update_page('ClusterIdea', 'MainPage: This is just a page.\nBut somebody has to do it.', 'four');
-
-@Test = split('\n',<<'EOT');
-Cluster:.*MainPage.*Related changes
-EOT
-
-test_page(get_page('action=rc'), @Test);
-
-@Test = split('\n',<<'EOT');
-Cluster:.*MainPage.*Related changes
-ClusterIdea.*two
-ClusterIdea.*one
-EOT
-
-test_page(get_page('action=rc all=1'), @Test);
-
-@Test = split('\n',<<'EOT');
-Cluster:.*MainPage.*Related changes
-ClusterIdea.*three
-ClusterIdea.*two
-ClusterIdea.*one
-EOT
-
-test_page(get_page('action=rc all=1 showedit=1'), @Test);
-
-@Test = split('\n',<<'EOT');
-Finally the main page
-Updates in the last [0-9]+ days
-diff.*ClusterIdea.*history.*four
-for.*MainPage.*only
-1 day
-action=browse;id=MainPage;rcclusteronly=MainPage;days=1
-EOT
-
-update_page('MainPage', 'Finally the main page.');
-test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage'), @Test);
-
-@Test = split('\n',<<'EOT');
-Finally the main page
-Updates in the last [0-9]+ days
-diff.*ClusterIdea.*four
-for.*MainPage.*only
-1 day
-EOT
-
-test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage showedit=1'),
-	  (@Test, 'action=browse;id=MainPage;rcclusteronly=MainPage;showedit=1;days=1'));
-test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage all=1'),
-	  (@Test, 'action=browse;id=MainPage;rcclusteronly=MainPage;all=1;days=1'));
-
-@Test = split('\n',<<'EOT');
-Finally the main page
-Updates in the last [0-9]+ days
-diff.*ClusterIdea.*five
-diff.*ClusterIdea.*four
-for.*MainPage.*only
-1 day
-action=browse;id=MainPage;rcclusteronly=MainPage;all=1;showedit=1;days=1
-EOT
-
-update_page('ClusterIdea', 'MainPage: Somebody has to do it.', 'five', 1);
-test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage all=1 showedit=1'), @Test);
 
 # --------------------
 
