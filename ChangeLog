@@ -1,3 +1,12 @@
+2003-04-14  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ApplyRules): If something looked like an Interlink but
+	was not, and the text contained more than one colon, backtracking
+	got confused.  This bus is fixed.
+	(GetInterLink): Do not reuse $id, removed bogus if condition that
+	was always true.
+	(GetUrl): Do not reuse $url.
+
 2003-04-12  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl ($HttpCharset): Default is 'ISO-8859-1' instead of empty.
