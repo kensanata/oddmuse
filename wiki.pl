@@ -275,7 +275,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.261 2003/11/16 19:08:14 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.262 2003/11/16 21:38:32 as Exp $');
 }
 
 sub InitCookie {
@@ -2259,6 +2259,7 @@ sub SaveKeepFile {
   delete $Page{flags};
   delete $Page{'diff-major'};
   delete $Page{'diff-minor'};
+  $Page{'keep-ts'} = $Now; # expire only $KeepDays from $Now!
   CreateKeepDir($KeepDir, $OpenPageName);
   WriteStringToFile(GetKeepFile($OpenPageName, $Page{revision}), EncodePage(%Page));
 }
@@ -2282,9 +2283,9 @@ sub ExpireKeepFiles {
   my $expirets = $Now - ($KeepDays * 24 * 60 * 60);
   foreach my $keep (@keeps) {
     my ($status, $data) = ReadFile($keep);
-    next unless $status;
+    next unless $status; # not fatal
     my %field = ParseData($data);
-    next if $field{ts} >= $expirets;
+    next if $field{'keep-ts'} >= $expirets;
     next if $KeepMajor && ($field{revision} == $Page{oldmajor});
     unlink $keep;
   }
