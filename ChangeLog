@@ -5,6 +5,10 @@
 	(OpenNewText): Just use $NewText.
 	(DoPost): If oldrev is 1 and the new text is $NewText, then do not
 	save.
+	(BrowsePage): Use a flag for PrintWikiToHTML in order to prevent
+	the creation of new pages due to cache creation for the default
+	text.
+	
 
 2003-05-17  Pierre Gaston  <pgas@intracom.gr>
 	
