@@ -341,7 +341,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   @UserGotoBarPages = ($HomePage, $RCName) unless @UserGotoBarPages;
   @LockOnCreation = ($BannedHosts, $RefererFilter, $StyleSheetPage, $ConfigPage, $InterMap,
 		     $NearMap, $RssInterwikiTranslate, $BannedContent) unless @LockOnCreation;
-  my $add_space = $CommentsPrefix =~ /[ \t]$/;
+  my $add_space = $CommentsPrefix =~ /[ \t_]$/;
   map { $$_ = FreeToNormal($$_); } # convert spaces to underscores on all configurable pagenames
     (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$RefererFilter, \$StyleSheetPage, \$NearMap,
      \$ConfigPage, \$NotFoundPg, \$RssInterwikiTranslate, \$BannedContent, \$RssExclude,
@@ -350,7 +350,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.465 2004/10/13 19:55:19 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.466 2004/10/15 13:26:17 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -807,6 +807,8 @@ sub RSS {
       $interwiki = $RssInterwikiTranslate{$uri} unless $interwiki;
     }
     my $num = 999;
+    $str .= $q->p($q->strong(Ts('No items found in %s.', $q->a({-href=>$uri}, $uri))))
+      unless @{$rss->{items}};
     foreach my $i (@{$rss->{items}}) {
       my $line;
       my $date = $i->{dc}->{date};
