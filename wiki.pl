@@ -278,7 +278,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.223 2003/10/25 13:55:43 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.224 2003/10/25 16:58:59 as Exp $');
 }
 
 sub InitCookie {
@@ -451,7 +451,7 @@ sub ApplyRules {
     } elsif ($HtmlLinks && m/\G\&lt;a(\s[^<>]+?)\&gt;(.*?)\&lt;\/a\&gt;/cgi) { # <a ...>text</a>
       Clean("<a$1>$2</a>");
     } elsif ($locallinks
-	     and ($BracketText && m/\G(\[$InterLinkPattern\s+([^\]]+?)\])/cg
+	     and ($BracketText && m/\G(\[$InterLinkPattern\s+([^\]]+?)\])/cog
 		  or m/\G(\[$InterLinkPattern\])/cog or m/\G($InterLinkPattern)/cog)) {
       # [InterWiki:FooBar text] or [InterWiki:FooBar] or InterWiki:FooBar -- Interlinks can change
       # when the intermap changes (local config, therefore depend on $locallinks).  The intermap
@@ -466,26 +466,26 @@ sub ApplyRules {
 	print $output; # this is an interlink
 	Dirty($oldmatch);
       }
-    } elsif ($BracketText && m/\G(\[$UrlPattern\s+([^\]]+?)\])/cg
-	    or m/\G(\[$UrlPattern\])/cog or m/\G($UrlPattern)/cg) {
+    } elsif ($BracketText && m/\G(\[$UrlPattern\s+([^\]]+?)\])/cog
+	    or m/\G(\[$UrlPattern\])/cog or m/\G($UrlPattern)/cog) {
       # [URL text] makes [text] link to URL, [URL] makes footnotes [1]
       my $bracket = (substr($1, 0, 1) eq '[');
       Clean(GetUrl($2, $3, $bracket, not $bracket)); # $2 may be empty
-    } elsif ($WikiLinks && m/\G!$LinkPattern/cg) { Clean($1); # ! gets eaten
-    } elsif ($withanchors && $PermanentAnchors && m/\G(\[::$FreeLinkPattern\])/cg) {
+    } elsif ($WikiLinks && m/\G!$LinkPattern/cog) { Clean($1); # ! gets eaten
+    } elsif ($withanchors && $PermanentAnchors && m/\G(\[::$FreeLinkPattern\])/cog) {
       #[::Free Link] permanent anchor create only $withanchors
       Dirty($1);
       print GetPermanentAnchor($2);
     } elsif ($WikiLinks && $locallinks
-	     && ($BracketWiki && m/\G(\[$LinkPattern\s+([^\]]+?)\])/cg
-		 or m/\G(\[$LinkPattern\])/cg or m/\G($LinkPattern)/cg)) {
+	     && ($BracketWiki && m/\G(\[$LinkPattern\s+([^\]]+?)\])/cog
+		 or m/\G(\[$LinkPattern\])/cog or m/\G($LinkPattern)/cog)) {
       # [LocalPage text], [LocalPage], LocalPage
       Dirty($1);
       my $bracket = (substr($1, 0, 1) eq '[');
       print GetPageOrEditLink($2, $3, $bracket);
     } elsif ($FreeLinks && $locallinks
-	     && ($BracketWiki && m/\G(\[\[$FreeLinkPattern\|([^\]]+)\]\])/cg
-		 or m/\G(\[\[$FreeLinkPattern\]\])/cg)) {
+	     && ($BracketWiki && m/\G(\[\[$FreeLinkPattern\|([^\]]+)\]\])/cog
+		 or m/\G(\[\[$FreeLinkPattern\]\])/cog)) {
       # [[Free Link|text]], [[Free Link]]
       Dirty($1);
       print GetPageOrEditLink($2, $3, 0 , 1); # $3 may be empty
@@ -2572,7 +2572,6 @@ sub GenerateAllPagesList {
   opendir(PAGELIST, $PageDir);
   @dirs = readdir(PAGELIST);
   closedir(PAGELIST);
-  @dirs = sort(@dirs);
   foreach $dir (@dirs) {
     next  if (($dir eq '.') or ($dir eq '..'));
     opendir(PAGELIST, "$PageDir/$dir");
@@ -2914,6 +2913,15 @@ sub DoIndex {
   }
 }
 
+sub PrintPageList {
+  my $pagename;
+  print $q->h2(Ts('%s pages found:', ($#_ + 1))), '<p>';
+  foreach $pagename (@_) {
+    print GetPageLink($pagename), $q->br();
+  }
+  print '</p>';
+}
+
 # == Searching ==
 
 sub DoSearch {
@@ -3030,15 +3038,6 @@ sub PrintSearchResults {
   }
 }
 
-sub PrintPageList {
-  my $pagename;
-  print $q->h2(Ts('%s pages found:', ($#_ + 1))), '<p>';
-  foreach $pagename (@_) {
-    print GetPageLink($pagename), $q->br();
-  }
-  print '</p>';
-}
-
 sub Replace {
   my ($from, $to) = @_;
   RequestLockOrError(); # fatal
@@ -3057,127 +3056,70 @@ sub Replace {
 # == Links ==
 
 sub DoLinks {
-  print GetHeader('', QuoteHtml(T('Full Link List')), '');
-  PrintLinkList(GetFullLinkList());
-  PrintFooter();
+  if (GetParam('raw', 0)) {
+    print GetHttpHeader('text/plain');
+    PrintLinkList(GetFullLinkList());
+  } else {
+    print GetHeader('', QuoteHtml(T('Full Link List')), '');
+    PrintLinkList(GetFullLinkList());
+    PrintFooter();
+  }
 }
 
 sub PrintLinkList {
-  my ($pagelines, $page, $names, $editlink);
-  my ($link, @links, %pgExists);
-  %pgExists = ();
-  foreach $page (AllPagesList()) {
-    $pgExists{$page} = 1;
-  }
-  $names = GetParam('names', 1);
-  $editlink = GetParam('editlink', 0);
-  foreach $pagelines (@_) {
-    @links = ();
-    foreach $page (split(' ', $pagelines)) {
-      if ($page =~ /\:/) {  # URL or InterWiki form
-        if ($page =~ /$UrlPattern/) {
-          $link = GetUrl($page, '', 0, 0);
-        } else {
-          $link = GetInterLink($page);
-        }
-      } else {
-        if ($pgExists{$page}) {
-          $link = GetPageLink($page);
-        } else {
-          $link = $page;
-          if ($editlink) {
-            $link .= GetEditLink($page, '?');
-          }
-        }
+  my %links = %{(shift)};
+  my $existingonly = GetParam('exists', 0);
+  if (GetParam('raw', 0)) {
+    foreach my $page (sort keys %links) {
+      foreach my $link (@{$links{$page}}) {
+	print "\"$page\" -> \"$link\"\n" if not $existingonly or $IndexHash{$link};
       }
-      push(@links, $link);
     }
-    if ($names) {
-      $links[0] .= ':';
-    } else {
-      shift(@links);
+  } else {
+    foreach my $page (sort keys %links) {
+      print $q->p(GetPageLink($page) . ': ' . join(' ', @{$links{$page}}));
     }
-    print $q->p(join(' ', @links));
   }
 }
 
 sub GetFullLinkList {
-  my $unique = GetParam('unique', 1);
-  my $sort = GetParam('sort', 1);
-  my $pagelink = GetParam('page', 1);
-  my $interlink = GetParam('inter', 0);
-  my $urllink = GetParam('url', 0);
-  my $exists = GetParam('exists', 2);
-  my $empty = GetParam('empty', 0);
-  my $search = GetParam('search', '');
-  if (($interlink == 2) or ($urllink == 2)) {
-    $pagelink = 0;
-  }
-  my (%pgExists, %seen, @found);
   my @pglist = AllPagesList();
+  my %result;
+  my $raw = GetParam('raw', 0);
+  my $url = GetParam('url', 0);
   foreach my $name (@pglist) {
-    $pgExists{$name} = 1;
+    OpenPage($name);
+    my $data = GetPageCache('blocks');
+    my ($rawblocks, $rawflags) = split(/$FS2/, $data);
+    my @blocks = split($FS3,$rawblocks);
+    my @flags = split($FS3,$rawflags);
+    my %links;
+    foreach my $block (@blocks) {
+      if (shift(@flags)) { # dirty blocks
+	if ($url < 2) {    # list normal links
+	  if ($BracketText && $block =~ m/(\[$InterLinkPattern\s+([^\]]+?)\])/o
+	      or $block =~ m/(\[$InterLinkPattern\])/o
+	      or $block =~ m/($InterLinkPattern)/o) {
+	    $links{$raw ? $2 : GetInterLink($2)} = 1;
+	  } elsif (($WikiLinks and $block !~ m/!$LinkPattern/o
+		    and ($BracketWiki && $block =~ m/(\[$LinkPattern\s+([^\]]+?)\])/o
+			 or $block =~ m/(\[$LinkPattern\])/o
+			 or $block =~ m/($LinkPattern)/o))
+		   or ($FreeLinks
+		       and ($BracketWiki && $block =~ m/(\[\[$FreeLinkPattern\|([^\]]+)\]\])/o
+			    or $block =~ m/(\[\[$FreeLinkPattern\]\])/cg))) {
+	    $links{$raw ? $2 : GetPageOrEditLink($2, $2)} = 1;
+	  }
+	}
+      } elsif ($url > 0) { # clean blocks, urls
+	while ($block =~ m/$UrlPattern/go) {
+	  $links{$raw ? $1 : GetUrl($1)} = 1;
+	}
+      }
+    }
+    @{$result{$name}} = sort keys %links if %links;
   }
-  foreach my $name (@pglist) {
-    my @newlinks = ();
-    if ($unique != 2) {
-      %seen = ();
-    }
-    my @links = GetPageLinks($name, $pagelink, $interlink, $urllink);
-    foreach my $link (@links) {
-      $seen{$link}++;
-      next  if (($unique > 0) && ($seen{$link} != 1));
-      next  if (($exists == 0) && ($pgExists{$link} == 1));
-      next  if (($exists == 1) && ($pgExists{$link} != 1));
-      next  if (($search ne '') && !($link =~ /$search/));
-      push(@newlinks, $link);
-    }
-    @links = @newlinks;
-    if ($sort) {
-      @links = sort(@links);
-    }
-    unshift (@links, $name);
-    if ($empty or ($#links > 0)) {  # If only one item, list is empty.
-      push(@found, join(' ', @links));
-    }
-  }
-  return @found;
-}
-
-sub GetPageLinks {
-  my ($name, $pagelink, $interlink, $urllink) = @_;
-  my ($text, @links);
-  @links = ();
-  OpenPage($name);
-  OpenDefaultText();
-  $text = $Text{'text'};
-  $text =~ s/<html>((.|\n)*?)<\/html>/ /ig;
-  $text =~ s/<nowiki>(.|\n)*?\<\/nowiki>/ /ig;
-  $text =~ s/<pre>(.|\n)*?\<\/pre>/ /ig;
-  $text =~ s/<code>(.|\n)*?\<\/code>/ /ig;
-  if ($interlink) {
-    $text =~ s/''+/ /g;  # Quotes can adjacent to inter-site links
-    $text =~ s/$InterLinkPattern/push(@links, $1), ' '/ge;
-  } else {
-    $text =~ s/$InterLinkPattern/ /g;
-  }
-  if ($urllink) {
-    $text =~ s/''+/ /g;  # Quotes can adjacent to URLs
-    $text =~ s/$UrlPattern/push(@links, $1), ' '/ge;
-  } else {
-    $text =~ s/$UrlPattern/ /g;
-  }
-  if ($pagelink) {
-    if ($FreeLinks) {
-      my $fl = $FreeLinkPattern;
-      $text =~ s/\[\[$fl\|[^\]]+\]\]/push(@links, FreeToNormal($1)), ' '/ge;
-      $text =~ s/\[\[$fl\]\]/push(@links, FreeToNormal($1)), ' '/ge;
-    }
-    if ($WikiLinks) {
-      $text =~ s/$LinkPattern/push(@links, $1), ' '/ge;
-    }
-  }
-  return @links;
+  return \%result;
 }
 
 # == Monolithic output ==
