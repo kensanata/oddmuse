@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.409 2004/06/02 12:23:45 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.410 2004/06/04 17:43:20 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -967,7 +967,7 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
   }
 }
 
-sub GetPageLink { # shortcut
+sub GetPageLink { # use if you want to force a link to local pages, whether it exists or not
   my ($id, $name) = @_;
   $id = FreeToNormal($id);
   $name = $id unless $name;
@@ -2933,10 +2933,7 @@ sub PrintPage {
       print $id, "\n";
     }
   } else {
-    my ($class, $resolved, $title, $exists) = ResolveId($id);
-    my $text = $id;
-    $text =~ s/_/ /g;
-    print ScriptLink(UrlEncode($resolved), $text, $class, undef, $title), $q->br();
+    print GetPageOrEditLink($id), $q->br();
   }
 }
 
