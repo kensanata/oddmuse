@@ -2,6 +2,7 @@
 
 	* simplify.pl: Added use encoding 'utf8'; no idea what it does to
 	non-UTF-8 scripts.
+	(munge_rss): different presentation suggested by Björn Lindström.
 
 2004-05-30  Alex Schroeder  <alex@gnu.org>
 
