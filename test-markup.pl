@@ -1121,6 +1121,8 @@ file://home/foo/tutorial.pdf
 <a href="file://home/foo/tutorial.pdf">file://home/foo/tutorial.pdf</a>
 file:///home/foo/tutorial.pdf
 <a href="file:///home/foo/tutorial.pdf">file:///home/foo/tutorial.pdf</a>
+image inline: [[image:HomePage]], [[image:OtherPage]]
+image inline: <img class="upload" src="http://localhost/test-wrapper.pl/download/HomePage" alt="HomePage" />, [image:OtherPage]
 traditional local link: HomePage, OtherPage
 traditional local link: <a class="local" href="http://localhost/test-wrapper.pl/HomePage">HomePage</a>, OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a>
 traditional local link with extra brackets: [HomePage], [OtherPage]
@@ -1154,10 +1156,6 @@ print F "\$BracketWiki = 1;\n";
 close(F);
 
 %Test = split('\n',<<'EOT');
-file://home/foo/tutorial.pdf
-<a href="file://home/foo/tutorial.pdf">file://home/foo/tutorial.pdf</a>
-file:///home/foo/tutorial.pdf
-<a href="file:///home/foo/tutorial.pdf">file:///home/foo/tutorial.pdf</a>
 traditional local link: HomePage, OtherPage
 traditional local link: <a class="local" href="http://localhost/test-wrapper.pl/HomePage">HomePage</a>, OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a>
 traditional local link with extra brackets: [HomePage], [OtherPage]
