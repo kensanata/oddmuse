@@ -16,13 +16,15 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: anchors.pl,v 1.13 2004/08/17 15:00:42 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: anchors.pl,v 1.14 2005/03/31 19:32:21 as Exp $</p>';
 
 push(@MyRules, \&AnchorsRule);
 
 sub AnchorsRule {
   if (m/\G\[\[\#$FreeLinkPattern\]\]/gc) {
     return $q->a({-href=>'#' . FreeToNormal($1), -class=>'local anchor'}, $1);
+  } elsif ($BracketWiki && m/\G\[\[\#$FreeLinkPattern\|([^\]]+)\]\]/gc) {
+    return $q->a({-href=>'#' . FreeToNormal($1), -class=>'local anchor'}, $2);
   } elsif ($BracketWiki && m/\G(\[\[$FreeLinkPattern\#$FreeLinkPattern\|([^\]]+)\]\])/cog
 	   or m/\G(\[\[\[$FreeLinkPattern\#$FreeLinkPattern\]\]\])/cog
 	   or m/\G(\[\[$FreeLinkPattern\#$FreeLinkPattern\]\])/cog) {
