@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: image.pl,v 1.10 2004/06/19 20:30:21 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: image.pl,v 1.11 2004/06/28 21:23:23 as Exp $</p>';
 
 use vars qw($ImageUrlPath);
 
@@ -34,7 +34,7 @@ sub ImageSupportRule {
     $class .= ' ' . substr($1, 1) if $1;
     my $external = $2;
     my $name = $3;
-    my $alt = $4 ? substr($4, 1) : T("image: $name");
+    my $alt = $4 ? substr($4, 1) : T("image: %s", $name);
     my $link = $5 ? substr($5, 1) : '';
     my $id = FreeToNormal($name);
     if (not $link) {
