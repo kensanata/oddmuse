@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.5 2004/08/07 00:44:40 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.6 2004/08/13 02:32:14 as Exp $</p>';
 
 use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml);
 
@@ -66,23 +66,23 @@ sub UsemodRule {
   }
   # numbered lists using #
   elsif ($bol && m/\G(\s*\n)*(\#+)[ \t]+/cg
-	 or $HtmlStack[0] eq 'li' && m/\G(\s*\n)+(\#+)[ \t]*/cg) {
-    return OpenHtmlEnvironment('ol',length($2)) . AddHtmlEnvironment('li');
+	 or InElement('li') && m/\G(\s*\n)+(\#+)[ \t]*/cg) {
+    return CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ol',length($2))
+      . AddHtmlEnvironment('li');
   }
   # indented text using :
   elsif ($bol && m/\G(\s*\n)*(\:+)[ \t]+/cg
-	 or $HtmlStack[0] eq 'dd' && m/\G(\s*\n)+(\:+)[ \t]*/cg) { # blockquote instead?
-    return OpenHtmlEnvironment('dl',length($2), 'quote')
+	 or InElement('dd') && m/\G(\s*\n)+(\:+)[ \t]*/cg) { # blockquote instead?
+    return CloseHtmlEnvironmentUntil('dd') . OpenHtmlEnvironment('dl',length($2), 'quote')
       . $q->dt() . AddHtmlEnvironment('dd');
   }
   # definition lists using ;
   elsif ($bol && m/\G(\s*\n)*(\;+)[ \t]+(?=.*\:)/cg
-	 or $HtmlStack[0] eq 'dd' && m/\G(\s*\n)+(\;+)[ \t]*(?=.*\:)/cg) {
-    return OpenHtmlEnvironment('dl',length($2))
+	 or InElement('dd') && m/\G(\s*\n)+(\;+)[ \t]*(?=.*\:)/cg) {
+    return CloseHtmlEnvironmentUntil('dd') . OpenHtmlEnvironment('dl',length($2))
       . AddHtmlEnvironment('dt'); # `:' needs special treatment, later
-  } elsif (defined $HtmlStack[0] && $HtmlStack[0] eq 'dt'
-	   && m/\G:/cg) {
-    return CloseHtmlEnvironment() . AddHtmlEnvironment('dd');
+  } elsif (InElement('dt', 'dd') and m/\G:[ \t]*/cg) {
+    return CloseHtmlEnvironmentUntil('dt') . CloseHtmlEnvironment() . AddHtmlEnvironment('dd');
   }
   # headings using =
   elsif ($bol && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg) {
@@ -99,16 +99,13 @@ sub UsemodRule {
       . ((length($2) == 2)
 	 ? AddHtmlEnvironment('td')
 	 : AddHtmlEnvironment('td', 'colspan="' . length($2)/2 . '"'));
-  } elsif (defined $HtmlStack[0] && $HtmlStack[0] eq 'td'
-	   && m/\G[ \t]*((\|\|)+)[ \t]*\n((\|\|)+)[ \t]*/cg) {
+  } elsif (InElement('td') && m/\G[ \t]*((\|\|)+)[ \t]*\n((\|\|)+)[ \t]*/cg) { # end row + cont.
     return '</td></tr><tr>' . ((length($3) == 2)
 			       ? '<td>' : ('<td colspan="' . length($3)/2 . '">'));
-  } elsif (defined $HtmlStack[0] && $HtmlStack[0] eq 'td'
-	   && m/\G[ \t]*((\|\|)+)[ \t]*(?!(\n|$))/cg) { # continued
+  } elsif (InElement('td') && m/\G[ \t]*((\|\|)+)[ \t]*(?!(\n|$))/cg) { # next cell
     return '</td>' . ((length($1) == 2) ?
 		      '<td>' : ('<td colspan="' . length($1)/2 . '">'));
-  } elsif (defined $HtmlStack[0] && $HtmlStack[0] eq 'td'
-	   && m/\G[ \t]*((\|\|)+)[ \t]*/cg) { # at the end of the table
+  } elsif (InElement('td') && m/\G[ \t]*((\|\|)+)[ \t]*/cg) { # end row, therefore end of table
     return CloseHtmlEnvironments();
   }
   # RFC
