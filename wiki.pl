@@ -295,7 +295,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.315 2004/01/31 02:19:18 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.316 2004/02/01 11:57:15 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2964,13 +2964,15 @@ sub SearchNearPages {
     }
   }
   if (%NearSource and (GetParam('near', 1) or GetParam('context',1) == 0)) {
-    print $q->hr() . $q->p(T('Near pages:')) unless GetParam('raw', 0);
+    my $intro = 0;
     foreach my $name (sort keys %NearSource) {
       next if $found{$name}; # do not duplicate local pages
       my $freeName = $name;
       $freeName =~ s/_/ /g;
       if (SearchString($string, $freeName)) {
 	$found{$name} = 1;
+	print $q->hr() . $q->p(T('Near pages:')) unless GetParam('raw', 0) or $intro;
+	$intro = 1;
 	PrintPage($name); # without context!
       }
     }
