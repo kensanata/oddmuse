@@ -16,11 +16,12 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.11 2004/06/02 22:24:19 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.12 2004/06/15 14:15:02 as Exp $</p>';
 
-use vars qw($CalendarOnEveryPage);
+use vars qw($CalendarOnEveryPage $CalendarUseCal);
 
 $CalendarOnEveryPage = 1;
+$CalendarUseCal = 1;
 
 *OldCalendarGetHeader = *GetHeader;
 *GetHeader = *NewCalendarGetHeader;
@@ -34,10 +35,17 @@ sub NewCalendarGetHeader {
 }
 
 sub Cal {
-  my $cal = `cal`;
-  return unless $cal;
   my @pages = AllPagesList();
   my ($sec, $min, $hour, $mday, $mon, $year) = localtime($Now);
+  my $cal = '';
+  if ($CalendarUseCal eq 'cal') {
+    $cal = `cal`;
+  }
+  eval { require Date::Calc;
+	 $cal = Date::Calc::Calendar( $year+1900, $mon+1 ); } unless $cal;
+  eval { require Date::Pcalc;
+	 $cal = Date::Pcalc::Calendar( $year+1900, $mon+1 ); } unless $cal;
+  return unless $cal;
   $cal =~ s|\b( ?\d?\d)\b|{
     my $day = $1;
     my $date = sprintf("%d-%02d-%02d", $year+1900, $mon+1, $day);
