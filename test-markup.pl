@@ -487,6 +487,16 @@ ordinary text
 <dl class="quote"><dt /><dd>one </dd><dt /><dd>two <dl class="quote"><dt /><dd>one and two </dd><dt /><dd>two and three </dd></dl></dd><dt /><dd>three</dd></dl>
 ;one:eins\n;two:zwei
 <dl><dt>one</dt><dd>eins </dd><dt>two</dt><dd>zwei</dd></dl>
+This is ''emphasized''.
+This is <em>emphasized</em>.
+This is '''strong'''.
+This is <strong>strong</strong>.
+This is ''longer emphasized'' text.
+This is <em>longer emphasized</em> text.
+This is '''longer strong''' text.
+This is <strong>longer strong</strong> text.
+This is ''emphasized text containing '''longer strong''' text''.
+This is <em>emphasized text containing <strong>longer strong</strong> text</em>.
 WikiWord
 WikiWord<a href="http://localhost/test-wrapper.pl?action=edit;id=WikiWord">?</a>
 WikiWord:
