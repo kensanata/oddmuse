@@ -1046,7 +1046,7 @@ test_page(update_page('InterMap', " OddMuse http://www.emacswiki.org/cgi-bin/odd
 
 @Test = split('\n',<<'EOT');
 OddMuse
-http://www\.emacswiki\.org/cgi-bin/oddmuse\.pl\?
+http://www\.emacswiki\.org/cgi-bin/oddmuse\.pl
 PlanetMath
 http://planetmath\.org/encyclopedia/\%s\.html
 EOT
