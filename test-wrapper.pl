@@ -21,25 +21,12 @@
 # This program reads the input from stdin, applies the markup rules,
 # and prints the output to stdout.
 
+# Example usage: echo test | perl test-wrapper.pl
+
 package OddMuse;
 $_ = 'nocgi';
 do 'wiki.pl';
-
-if ($UseConfig && (-f $ConfigFile)) {
-  do $ConfigFile;
-}
-&InitLinkPatterns();
-$q = new CGI;
-$Now = time;
-my @ScriptPath = split('/', $q->script_name());
-$ScriptName = pop(@ScriptPath);
-$IndexInit = 0;
-$InterSiteInit = 0;
-%InterSite = ();
-$MainPage = '.';
-$OpenPageName = '';
-
+Init();
 undef $/;
-
 $input = <STDIN>;
 &ApplyRules($input,1);
