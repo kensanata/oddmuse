@@ -54,7 +54,8 @@ $BannedCanRead $SurgeProtection $SurgeProtectionViews
 $SurgeProtectionTime $DeletedPage %Languages $LanguageLimit
 $ValidatorLink $RefererTracking $RefererTimeLimit $RefererLimit
 $TopLinkBar $NotifyWeblogs $InterMap @LockOnCreation $RefererFilter
-$PermanentAnchorsFile $PermanentAnchors %CookieParameters);
+$PermanentAnchorsFile $PermanentAnchors %CookieParameters
+$StyleSheetPage);
 
 # Other global variables:
 use vars qw(%Page %Section %Text %InterSite %KeptRevisions %IndexHash
@@ -81,10 +82,11 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.75 2003/05/31 20:16:07 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.76 2003/06/01 21:41:29 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
+$StyleSheetPage = 'CascadingStyleSheet'; # Page for CSS sheet
 $LogoUrl     = '';  # URL for site logo ('' for no logo)
 $NotFoundPg  = '';  # Page for not-found links ('' for blank pg)
 $NewText     = "Describe the new page here.\n";  # New page text
@@ -179,10 +181,11 @@ if (not @HtmlTags) { # don't set if set in the config file
   }
 }
 
-@LockOnCreation = ($BannedHosts, $InterMap, $RefererFilter);
+@LockOnCreation = ($BannedHosts, $InterMap, $RefererFilter, $StyleSheetPage);
 
 %CookieParameters = ('username' => '',
 		     'pwd' => '',
+		     'theme' => '',
 		     'toplinkbar' => $TopLinkBar,
 		     'embed' => $EmbedWiki);
 
@@ -1711,6 +1714,8 @@ sub GetHtmlHeader {
   $html .= $q->base({-href=>$SiteBase}) if $SiteBase;
   if ($StyleSheet ne '') {
     $html .= qq(<link type="text/css" rel="stylesheet" href="$StyleSheet">\n);
+  } elsif ($StyleSheetPage ne '') {
+    $html .= $q->style({-type=>'text/css'}, GetPageContent($StyleSheetPage));
   } else {
     $html .= $q->style({-type=>'text/css'},<<EOT);
 <!--
@@ -1753,9 +1758,10 @@ EOT
     $html .= '<meta name="robots" content="INDEX,NOFOLLOW">';
   }
   # finish
+  my $theme = GetParam('theme','') or $q->url(-path_info=>1);
   $html = qq(<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">\n<html>)
     . $q->head($q->title($q->escapeHTML($title)) . $html)
-    . '<body class="' . $q->url(-path_info=>1) . '">';
+    . '<body class="' . $theme . '">';
   return $html;
 }
 
