@@ -15,19 +15,19 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-# This translation was last checked for Oddmuse version 1.342.
+# This translation was last checked for Oddmuse version 1.504.
 #
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
-禁止讀取：名稱、 ip 或網路已被阻擋。
+禁止讀取：使用者、ip 或是網路已被禁止連線。
 Could not create %s
 無法建立 %s
 Invalid UserName %s: not saved.
 無法儲存。無效的使用者名稱 %s
 UserName must be 50 characters or less: not saved
-無法儲存。使用者名稱必需不可多於 50 字元。
+無法儲存。使用者名稱不可超過 50 個字元。
 This page contains an uploaded file:
-
+本頁包含一個已上傳的檔案：
 XML::RSS is not available on this system.
 本系統無法使用 XML::RSS 。
 diff
@@ -35,19 +35,19 @@ diff
 history
 歷史記錄
 %s returned no data, or LWP::UserAgent is not available.
-
+%s 未回傳資料，或是 LWP::UserAgent 無法使用。
 RSS parsing failed for %s
-
+%s 的 RSS 解析失敗
 No items found in %s.
-
+在 %s 中未發現項目。
  . . . . 
 
 Click to edit this page
-按下即可建立此頁面
+按此即可編輯此頁面
 image
-
+圖像
 download
-
+下載
 Invalid action parameter %s
 無效的動作參數 %s
 Invalid URL.
@@ -59,11 +59,11 @@ Page name is too long: %s
 Invalid Page %s
 無效的頁面名稱 %s
 Invalid Page %s (must not end with .db)
-無效的頁面名稱 %s (不可以用 .db 結尾)
+無效的頁面名稱 %s (不可使用 .db 做為結尾)
 Invalid Page %s (must not end with .lck)
-無效的頁面名稱 %s (不可以用 .lck 結尾)
+無效的頁面名稱 %s (不可使用 .lck 做為結尾)
 Page name may not contain space characters: %s
-頁面名稱不可以包含空白字元： %s
+頁面名稱不可包含空白字元： %s
 Preview:
 預覽：
 Preview only, not yet saved
@@ -71,11 +71,11 @@ Preview only, not yet saved
 Please go on to %s.
 請繼續前住 %s 。
 Could not open %s log file
-無法開啟 %s 記錄檔
+無法開啟記錄檔 %s
 Error was
 錯誤是
 Note: This error is normal if no changes have been made.
-如果還沒有做過任何修改，這個錯誤是正常的。
+如果還沒有做過任何修改的話，則不用理會這個錯誤訊息。
 Could not open old %s log file
 無法開啟舊的 %s 記錄檔
 No updates since %s
@@ -115,7 +115,7 @@ Go!
 rollback
 回復
 new
-
+新增
 from %s
 自 %s
 History of %s
@@ -139,7 +139,7 @@ Rollback to %s
 [Home]
 [首頁]
 redirected from %s
-轉址自 %s
+由 %s 轉址 
 Click to search for references to this page
 按下即可以搜尋參考至本頁的資料
 Cookie: 
@@ -163,11 +163,11 @@ by %s
 (diff)
 (比較差異)
 Run maintenance
-
+執行維護動作
 Unlock site
-
+網站解鎖
 Lock site
-
+網站鎖定
 Unlock page
 頁面解鎖
 Lock page
@@ -175,7 +175,7 @@ Lock page
 Edit revision %s of this page
 編輯本頁的第 %s 版本
 Edit this page
-編輯本頁的文字
+編輯本頁
 e
 
 This page is read-only
@@ -189,7 +189,7 @@ View all changes
 new comment
 新的評論
 Homepage URL:
-
+首頁網址：
 s
 
 Save
@@ -207,13 +207,13 @@ Validate HTML
 Validate CSS
 驗證 CSS
 Difference (from revision %1 to %2)
-差異 (自第 %1 版到%2)
+差異（從第 %1 版到%2）
 revision %s
 第 %s 版
 current revision
 目前的版本
 Difference (from prior %s revision)
-差異 (比較之前的%s版本)
+差異（從先前的第 %s 版本）
 major
 主要
 minor
@@ -221,7 +221,7 @@ minor
 No diff available.
 沒有差異。
 Old revision:
-
+舊版本：
 Changed:
 修改：
 Removed:
@@ -233,13 +233,13 @@ to
 Revision %s not available
 不存在第 %s 版
 showing current revision instead
-現在顯示最新的版本
+顯示最新的版本
 Showing revision %s
 顯示第 %s 版
 Cannot save a nameless page.
 無法儲存沒有名稱的頁面。
 Cannot save a page without revision.
-
+無法儲存沒有版本資訊的頁面。
 Cannot open %s
 無法開啟 %s
 Cannot write %s
@@ -271,7 +271,7 @@ just now
 Editing Denied
 禁止編輯
 Editing not allowed: user, ip, or network is blocked.
-不允許編輯；使用者、ip 或是網路已被阻擋。
+禁止編輯；使用者、ip 或是網路已被禁止連線。
 Contact the wiki administrator for more information.
 請通知 wiki 管理者，以取得更多的資訊。
 The rule %s matched for you.
@@ -279,7 +279,7 @@ The rule %s matched for you.
 See %s for more information.
 請參閱 %s 以取得更多資訊。
 Editing not allowed: %s is read-only.
-不允許編輯； %s 是唯讀的。
+不允許編輯； %s 是唯讀的
 Only administrators can upload files.
 只有管理者可以上傳檔案。
 Editing revision %s of
@@ -323,7 +323,7 @@ This operation is restricted to site editors only...
 This operation is restricted to administrators only...
 這個動作限定只允許管理者使用…
 Rule "%1" matched "%2" on this page.
-
+本頁的 "%2" 符合規則 "%1"。
 Index of all pages
 所有頁面的索引
 all pages
@@ -335,7 +335,7 @@ near links
 (for %s)
 (列出 %s )
 %s pages found.
-找到 %s 頁面。
+找到 %s 個頁面。
 Replaced: %s
 取代：%s
 Search for: %s
@@ -371,7 +371,7 @@ Sample_Undefined_Page
 [[%s]] cannot be defined.
 無法指定 [[%s]] 為頁面名稱。
 Only an administrator can create %s.
-
+只有管理者可以建立 %s 。
 Transfer Error: %s
 傳輸錯誤：%s
 Browser reports no file info.
@@ -379,17 +379,23 @@ Browser reports no file info.
 Browser reports no file type.
 瀏覽器沒有提供檔案型態。
 Edit Denied
-
+禁止編輯
 The page contains banned text.
-
+本頁含有一些禁止出現的文字。
 This page was changed by somebody else %s.
-本頁在 %s已被人修改過。
+本頁在 %s 已被人修改過。
 The changes conflict.  Please check the page again.
 你的修改和他人發生衝突。請再次確認。
 Please check whether you overwrote those changes.
-請確認一下是否你要覆寫這些修改。
+請確認一下是否你要覆蓋這些修改。
 Anonymous
 匿名者
+Cannot delete the index file %s.
+無法刪除索引檔 %s 。
+Please check the directory permissions.
+請確認目錄的權限。
+Your changes were not saved.
+你的變更尚未儲存。
 Could not get a lock to merge!
 在合併時無法取得鎖定！
 you
@@ -411,7 +417,7 @@ Main lock obtained.
 Expiring keep files and deleting pages marked for deletion
 清除過期的庫存檔和刪除已標記的檔案
 not deleted: 
-
+未刪除：
 deleted
 已刪除
 Moving part of the %s log file.
@@ -439,167 +445,171 @@ Lock for %s removed.
 Displaying Wiki Version
 顯示 Wiki 的版本
 Show dependencies
-
+顯示相依函式庫
 Inter links:
 內部連結：
 Near links:
 近端連結：
 Show parsed link data
-
+顯示特殊連結設定
 Too many connections by %s
 太多來自 %s 的連線
 Please do not fetch more than %1 pages in %2 seconds.
-
+請不要在 %2 秒內抓取超過 %1 頁的資料。
 Check whether the web server can create the directory %s and whether it can create files in it.
-
+請確認網站伺服器是否可建立 %s 目錄，並且在其中建立檔案。
 Recent Visitors
-近期的參訪者
+最近的參訪者
 Referrers
 引用者
 All Referrers
 所有的引用者
 anchor first defined here: %s
-%s 錨點已被定義
+錨點已被定義於 %s
 Click to search for references to this permanent anchor
-按下即可搜尋此錨點相關的相關資料
+按下即可搜尋此錨點的相關資料
 the page %s also exists
-
+也存在一個叫 %s 的頁面
 Deleting %s
-
+正在刪除 %s
 Deleted %s
-
+已刪除 %s
 Renaming %1 to %2.
-
+正將 %1 更名為 %2 。
 The page %s does not exist
-
+頁面 %s 不存在
 The page %s already exists
-
+頁面 %s 已存在
 Renamed to %s
-
+更名為 %s
 Renamed from %s
-
+更名自 %s
 Renamed %1 to %2.
-
+已將 %1 更名為 %2 。
 Delete page
-
+刪除頁面
 Rename this page to:
-
+將本頁更名至：
 Cannot highlight the language %s.
-
+無法強調顯示 %s 。
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
-
+缺少下列之一的工具以致無法產生日曆: cal(1), Date::Calc(3), 或 Date::Pcalc(3)
 The match parameter is missing.
-
+未指定 match 參數。
 Page Collection for %s
-
+%s 的頁面彙整
 Previous
-
+向前
 Next
-
+向後
 Calendar %s
-
+%s 年曆
 Comments on 
-
+評論關於
 Comment on 
-
+評論關於
 Compilation for %s
-
+%s 的彙整
 Compilation tag is missing a regular expression.
 
 Despamming pages
-
+正在去除 spam 頁面
 Cannot find revision %s.
-
+無法取得版本 %s 。
 Revert to revision %1: %2
-
+回復至版本 %1: %2 
 Marked as %s.
-
+標記為 %s 。
 Cannot find unspammed revision.
-
+找不到未被 spam 的版本。
 Footnotes:
-
+註解：
 Could not find %1.html template in %2
-
+無法在 %2 找到 %1.html 的範本
 image: %s
-
+圖像: %s
 Index
-
+索引
 Languages:
-
+語文：
 Show!
-
+顯示!
 Define
-
+定義
 Full Link List
 完整連結列表
 Template without parameters
-
+未指定 template 參數
 The template %s is either empty or does not exist.
+範本 %s 可能為空或不存在。
+%s returned no data.
 
 Clearing Cache
-
+清除暫存
 Done.
-
+完成。
 Generating Link Database
-
+產生連結資料庫
 The 404 handler extension requires the link data extension (links.pl).
 
 Orphan List
-
+孤立頁面列表
 Trail: 
-
+行經頁面:
 None
-
+不指定
 Type
-
+類別
 Permalink to "%s"
-
+永久連結至 "%s"
 Portrait
+肖像
+You did not answer correctly.
 
 Updating %s
-
-Done.</p>
+更新 %s
+Done.</p></div>
 
 Search term missing.
 
-Searching for %s
-
 Static Copy
-
+靜態頁面備份
 Back to %s
 返回 %s
 Alternatively, use one of the following templates:
-
+或者，使用下列範本之一:
 Thread: %s
-
+討論緒: %s
 ID parameter is missing.
-
+未指定 ID 參數。
 Thread %s does not exist.
-
+討論緒 %s 不存在。
 Page %s does not contain a thread.
 
 Add
-
+加入
 URL parameter is missing.
-
+未指定 URL 參數。
 Add to %s thread
-
+加入 %s 討論緒
 Below:
-
+討論:
 URL:
-
+網址:
 Name:
-
+姓名:
 Failed to remove %s
-
+無法移除 %s
 Contents
-
+內容
+This page is a translation of %s. 
+本頁是頁面 %s 的翻譯。
 The translation is up to date.
-
+本頁翻譯符合最新的內容。
 The translation is outdated.
-
+本頁翻譯已過期。
 The page does not exist.
-
+頁面不存在。
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s

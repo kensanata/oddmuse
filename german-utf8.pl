@@ -389,6 +389,12 @@ Please check whether you overwrote those changes.
 Bitte überprüfen Sie, ob diese Änderungen überschrieben worden sind.
 Anonymous
 Unbekannt
+Cannot delete the index file %s.
+
+Please check the directory permissions.
+
+Your changes were not saved.
+
 Could not get a lock to merge!
 Sperre zum automatischen Abgleichen zweier Versionen konnte nicht reserviert werden!
 you
@@ -535,6 +541,8 @@ Template without parameters
 Vorlage ohne Parameter
 The template %s is either empty or does not exist.
 Die %s Vorlage ist entweder leer oder existiert gar nicht.
+%s returned no data.
+
 Clearing Cache
 Cache wird geleert
 Done.
@@ -555,13 +563,13 @@ Permalink to "%s"
 Permalink für "%s"
 Portrait
 Portrait
+You did not answer correctly.
+
 Updating %s
 
-Done.</p>
+Done.</p></div>
 
 Search term missing.
-
-Searching for %s
 
 Static Copy
 Statische Kopie
@@ -593,6 +601,8 @@ Failed to remove %s
 %s konnte nicht entfernt werden.
 Contents
 Inhaltsverzeichnis
+This page is a translation of %s. 
+
 The translation is up to date.
 Die Übersetztung ist aktuell.
 The translation is outdated.
