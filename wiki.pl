@@ -86,7 +86,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.89 2003/06/10 22:15:50 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.90 2003/06/10 22:20:02 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -158,7 +158,7 @@ $EmbedWiki   = 0;   # 1 = no headers/footers
 $FooterNote  = '';  # HTML for bottom of every page
 $EditNote    = '';  # HTML notice above buttons on edit page
 $TopLinkBar  = 1;   # 1 = add a goto bar at the top of the page
-@UserGotoBarPages = ($HomePage, $RCName); # List of pagenames
+@UserGotoBarPages = (); # List of pagenames
 $UserGotoBar = '';  # HTML added to end of goto bar
 $ValidatorLink = 0; # 1 = Link to the W3C HTML validator service
 
@@ -265,6 +265,7 @@ sub InitRequest { # Init global session variables for mod_perl!
   CreateDir($DataDir);  # Create directory if it doesn't exist
   ReportError(Ts('Could not create %s', $DataDir) . ": $!") unless -d $DataDir;
   $RCName = 'Letzte Aenderungen';
+  @UserGotoBarPages = ($HomePage, $RCName) unless @UserGotoBarPages;
   map { $$_ = FreeToNormal($$_); } # convert spaces to underscores on all configurable pagenames
     (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$RefererFilter, \$StyleSheetPage, \$ConfigPage);
 }
