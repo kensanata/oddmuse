@@ -16,13 +16,18 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.4 2004/03/28 02:18:59 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.5 2004/03/28 02:22:44 as Exp $</p>';
+
+use vars qw($CalendarOnEveryPage);
+
+$CalendarOnEveryPage = 1;
 
 *OldCalendarGetHeader = *GetHeader;
 *GetHeader = *NewCalendarGetHeader;
 
 sub NewCalendarGetHeader {
   my $header = OldCalendarGetHeader(@_);
+  return $header unless $CalendarOnEveryPage;
   my $cal = Cal();
   $header =~ s/<div class="header">/$cal<div class="header">/;
   return $header;
