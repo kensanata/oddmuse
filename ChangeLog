@@ -6,6 +6,7 @@
 	Use a message if the merge fails.  Use a message if conflict
 	markers are detected.
 	(MergeRevisions): Added back.
+	(MergeRevisions): Redirect stderr output of merge.
 
 2003-10-04  Alex Schroeder  <alex@gnu.org>
 
