@@ -1,9 +1,21 @@
 2003-10-19  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (InitVariables): Do not reset $IndexInit anymore.
+	(Upload): Don't test for $IndexInit before calling AllPagesList.
+	(BrowsePage): Return if NotModified().
+	(NotModified): New.
+	($LastUpdate): New.
+	(Save): Touch $IndexFile in any case, and set $LastUpdate.
+	(DoMaintain): Unset $IndexFile when cleaning the cache.
+	(DoMaintain): Redirect stdout only when required.
+
+2003-10-19  Alex Schroeder  <alex@gnu.org>
+
 	* wiki.pl (GetPageOrEditLink): ResolveId returns more data.
 	(ResolveId): Return more data.
 	(BrowseResolvedPage): Use it.
 	(GetHtmlHeader): Add CSS for a.alias.
+	
 
 2003-10-18  Alex Schroeder  <alex@gnu.org>
 
