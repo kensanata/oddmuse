@@ -1,3 +1,22 @@
+2003-04-26  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($FS0used): Deleted.
+	(DoBrowseRequest): Added convert action.
+	(GetKeepFile): Convenience function added.
+	(KeepFileName): Use it.
+	(ReadFile): Removed on-the-fly separator conversion.
+	(DoMaintain): Removed separator conversion of pages, no conversion
+	of rc entries, no conversion of $RcOldFile.
+	(DoConvert): New function.
+	(ConvertFile): New functtion.
+	(ReadRecentVisitors): Replaced newline and colon with field separators.
+	(WriteRecentVisitors): Ditto.
+	(GetReferers): Ditto.
+
+	This undoes all the on-the-fly conversion code, since that was
+	hard to maintain, and had a bug: Keep files of pages that had no
+	expiry pending did not get converted.
+
 2003-04-24  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetRcRss): No longer treat '*' special.
