@@ -276,7 +276,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.243 2003/11/06 09:08:32 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.244 2003/11/06 16:08:18 as Exp $');
 }
 
 sub InitCookie {
@@ -687,19 +687,25 @@ sub RSS {
       $interwiki = $rss->{channel}->{'http://purl.org/rss/1.0/modules/wiki/'}->{interwiki};
       $interwiki =~ s/^\s+//; # when RDF is used, sometimes whitespace remains,
       $interwiki =~ s/\s+$//; # which breaks the test for an existing $interwiki below
+      if (!$interwiki) {
+	$interwiki = $rss->{channel}->{'http://www.w3.org/1999/02/22-rdf-syntax-ns#'}->{value};
+      }
     }
     foreach my $i (@{$rss->{items}}) {
       my $line;
       $line .= $q->a({-href=>$i->{'link'}, -title=>$i->{'dc'}->{'date'}},
 		     $interwiki ? "$interwiki:$i->{'title'}" : "[$i->{'title'}]")
 	if $i->{'title'};
-      $line .= $q->a({-href=>$i->{'guid'}, -title=>$i->{'dc'}->{'date'}}, $i->{'guid'})
-	if $i->{'guid'}; # for RSS 2.0
-      $line .= ' -- ' . $q->span({-class=>'description'}, $i->{'description'})
-	if $i->{'description'};
-      my $contributor = $i->{'dc'}->{'contributor'};
+      $line .= $q->a({-href=>$i->{guid}, -title=>$i->{dc}->{date}}, $i->{guid})
+	if $i->{guid}; # for RSS 2.0
+      $line .= ' -- ' . $q->span({-class=>'description'}, $i->{description})
+	if $i->{description};
+      my $contributor = $i->{dc}->{contributor};
       $contributor =~ s/^\s+//;
       $contributor =~ s/\s+$//;
+      if (!$contributor) {
+	$contributor = $i->{'http://www.w3.org/1999/02/22-rdf-syntax-ns#'}->{value};
+      }
       $line .= $q->span({-class=>'contributor'}, $q->span(' . . . . . ') . $contributor)
 	if $contributor;
       my $key = $i->{'dc'}->{'date'};
