@@ -190,8 +190,8 @@ $HtmlHeaders = '';	# Additional stuff to put in the HTML <head> section
 # Example: %Languages = ('de' => '\b(der|die|das|und|oder)\b');
 %Languages = ();
 
-@LockOnCreation = ($BannedHosts, $InterMap, $RefererFilter, $StyleSheetPage,
-		   $ConfigPage, $NearMap, $RssInterwikiTranslate, ); # pages to lock
+@LockOnCreation = ($BannedHosts, $RefererFilter, $StyleSheetPage, $ConfigPage,
+		   $InterMap, $NearMap, $RssInterwikiTranslate);
 @KnownLocks = qw(main diff index merge visitors refer_*); # locks to remove
 
 %CookieParameters = (username=>'', pwd=>'', theme=>'', css=>'', msg=>'',
@@ -303,7 +303,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   @UserGotoBarPages = ($HomePage, $RCName) unless @UserGotoBarPages;
   map { $$_ = FreeToNormal($$_); } # convert spaces to underscores on all configurable pagenames
     (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$RefererFilter, \$StyleSheetPage,
-     \$ConfigPage, \$NotFoundPg, \$NearMap, );
+     \$ConfigPage, \$NotFoundPg, \$NearMap, \$RssInterwikiTranslate);
   if (not @HtmlTags) { # do not override settings in the config file
     if ($HtmlTags) {   # allow many tags
       @HtmlTags = qw(b i u font big small sub sup h1 h2 h3 h4 h5 h6 cite code
@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.358 2004/03/15 20:08:08 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.359 2004/03/15 22:30:32 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -565,7 +565,7 @@ sub ApplyRules {
     } elsif (m/\G\s*\n(s*\n)+/cg) { # paragraphs: at least two newlines
       Clean(CloseHtmlEnvironments() . '<p>'); # there is another one like this further up
     } elsif (m/\G\s+/cgs) { Clean(' ');
-    } elsif (m/\G(\w+)/cgi or m/\G(\S)/cg) { Clean($1); # one block at a time, consider word<b>!
+    } elsif (m/\G(\w+)/cgi or m/\G(\S)/cg) { Clean($1); # a word at a time, consider word<b>!
     } else { last;
     }
     $bol = m/\G(?<=\n)/cgs;
@@ -1163,7 +1163,7 @@ sub BrowseResolvedPage {
   if ($class eq 'near' && not GetParam('rcclusteronly', 0)) {
     print $q->redirect({-uri=>GetInterSiteUrl($title, $resolved)});
   } elsif ($class eq 'alias') { # an anchor was found instead of a page
-    ReBrowsePage($resolved . '#' . UrlEncode($id));
+    ReBrowsePage($resolved, undef, $id);
   } elsif (not $resolved and $NotFoundPg) { # custom page-not-found message
     BrowsePage($NotFoundPg);
   } elsif ($resolved) { # an existing page was found
@@ -1190,7 +1190,7 @@ sub BrowsePage {
   if (not $oldId and not $revision and (substr($text, 0, 10) eq '#REDIRECT ')) {
     if (($FreeLinks and $text =~ /^\#REDIRECT\s+\[\[$FreeLinkPattern\]\]/)
 	or ($WikiLinks and $text =~ /^\#REDIRECT\s+$LinkPattern/)) {
-      ReBrowsePage(FreeToNormal($1), $id);
+      ReBrowsePage(FreeToNormal($1), $id); # trim extra whitespace from $1, prevent loops with $id
       return;
     }
   }
@@ -1245,8 +1245,9 @@ sub BrowsePage {
 }
 
 sub ReBrowsePage {
-  my ($id, $oldId) = @_;
-  if ($oldId ne '') {	# Target of #REDIRECT (loop breaking)
+  my ($id, $oldId, $anchor) = map { UrlEncode($_); } @_; # encode before printing URL
+  $id = $id . '#' . $anchor if $anchor; # with anchor
+  if ($oldId) {	# Target of #REDIRECT (loop breaking)
     print GetRedirectPage("action=browse;oldid=$oldId;id=$id", $id);
   } else {
     print GetRedirectPage($id, $id);
@@ -1256,7 +1257,6 @@ sub ReBrowsePage {
 sub GetRedirectPage {
   my ($action, $name) = @_;
   my ($url, $html);
-  my ($nameLink);
   # shortcut if we only need the raw text: no redirect.
   if (GetParam('raw', 0)) {
     $html = GetHttpHeader('text/plain');
@@ -1268,7 +1268,7 @@ sub GetRedirectPage {
   } else {
     $url = $FullUrl . '?' . $action;
   }
-  $nameLink = $q->a({-href=>$url}, $name);
+  my $nameLink = $q->a({-href=>$url}, $name);
   # NOTE: do NOT use -method (does not work with old CGI.pm versions)
   # Thanks to Daniel Neri for fixing this problem.
   my %headers = (-uri=>$url);
@@ -1366,7 +1366,7 @@ sub RcHeader {
 	  ? Ts('Updates in the last %s days', GetParam('days', $RcDefault))
 	  : Ts('Updates in the last %s day', GetParam('days', $RcDefault)))
   }
-  my ($action);
+  my $action;
   my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $lang) =
     map {
       my $val = GetParam($_, '');
@@ -2059,6 +2059,16 @@ sub PrintFooter {
     $revisions .= Ts('Back to %s', GetPageLink($1, $1));
   }
   $html .= $q->br() . $revisions  if $revisions;
+  # admin bar
+  if (UserIsAdmin()) {
+    $html .= $q->br() . ScriptLink('action=maintain', T('Run maintenance'));
+    if (-f "$DataDir/noedit") {
+      $html .= ' | ' . ScriptLink('action=editlock;set=0', T('Unlock site'));
+    } else {
+      $html .= ' | ' . ScriptLink('action=editlock;set=1', T('Lock site'));
+    }
+    foreach my $page (@LockOnCreation) { $html .= ' | ' . GetPageLink($page) if $page; }
+  }
   # time stamps
   if ($id and $rev ne 'history' and $rev ne 'edit') {
     $html .= $q->br();
@@ -3360,7 +3370,7 @@ sub DoPost {
   Save($id, $string, $summary, (GetParam('recent_edit', '') eq 'on'), $filename);
   ReleaseLock();
   DeletePermanentAnchors();
-  ReBrowsePage(UrlEncode($id));
+  ReBrowsePage($id);
 }
 
 sub AddComment {
