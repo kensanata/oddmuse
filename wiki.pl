@@ -295,7 +295,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.311 2004/01/31 00:42:45 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.312 2004/01/31 00:48:29 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -541,7 +541,8 @@ sub ApplyRules {
 
 sub CloseHtmlEnvironment { # just close the current one
   my $code = shift;
-  my $result = shift(@HtmlStack)  if not defined($code) or $HtmlStack[0] eq $code;
+  my $result;
+  $result = shift(@HtmlStack) if not defined($code) or $HtmlStack[0] eq $code;
   return "</$result>" if $result;
   return "&lt;/$code&gt;";
 }
