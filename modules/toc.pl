@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.10 2004/10/31 17:58:26 groogel Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.11 2004/10/31 19:20:45 as Exp $</p>';
 
 push( @MyRules, \&TocRule );
 
@@ -50,7 +50,7 @@ sub TocRule {
         && !$UseModMarkupInTitles
         && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg )
     {
-        return CloseHtmlEnvironments() . WikiHeading( $2, $3 );
+        return CloseHtmlEnvironments() . TocWikiHeading( $2, $3 );
     }
     return undef;
 }
@@ -84,7 +84,8 @@ sub TocHeadings {
         $page =~ s|<$tag>(.*\n)*?</$tag>||gi;
     }
     my $Headings      = "<h2>" . T('Contents') . "</h2>";
-    my $HeadingsLevel = 1;
+    my $HeadingsLevel = undef;
+    my $HeadingsLevelStart = undef;
     my $count         = 0;
 
     # try to determine what will end up as a header
@@ -95,26 +96,40 @@ sub TocHeadings {
         next unless $text;
         my $link = UrlEncode($text);
         $text = QuoteHtml($text);
+	if (not defined $HeadingsLevelStart) {
+	  # $HeadingsLevel is set to $depth - 1 so that we get an opening of the list.
+	  # We need $HeadingsLevelStart to close all open tags at the end.
+	  $HeadingsLevel = $depth - 1;
+	  $HeadingsLevelStart = $depth - 1;
+	}
         $count++;
-        $depth = 1 if $depth < 1;
+
+	# if the first subheading is has depth 2, then
+	# $HeadingsLevelStart is 1, and later subheadings may not be
+	# at level 1 or below.
+        $depth = $HeadingsLevelStart + 1 if $depth <= $HeadingsLevelStart;
         $depth = 6 if $depth > 6;
 
-        while ( ( $HeadingsLevel - 1 ) < $depth ) {
-            $Headings .= '<ol>';
+	# the order of the three expressions is important!
+	while ( $HeadingsLevel > $depth ) {
+	  $Headings .= '</li></ol>';
+	  $HeadingsLevel--;
+	}
+	if ($HeadingsLevel == $depth) {
+	  $Headings .= '</li><li>';
+	}
+        while ( $HeadingsLevel < $depth ) {
+            $Headings .= '<ol><li>';
             $HeadingsLevel++;
         }
-        while ( ( $HeadingsLevel - 1 ) > $depth ) {
-            $Headings .= '</ol>';
-            $HeadingsLevel--;
-        }
-        $Headings .= "<li><a href=\"#$link\">$text</a></li>";
+        $Headings .= "<a href=\"#$link\">$text</a> ($HeadingsLevel / $HeadingsLevelStart)";
     }
-    while ( $HeadingsLevel > 1 ) {
-        $Headings .= '</ol>';
+
+    while ( $HeadingsLevel > $HeadingsLevelStart ) {
+        $Headings .= '</li></ol>';
         $HeadingsLevel--;
     }
     return '' if $count <= 2;
     return '<div class="toc">' . $Headings . '</div>'
       if $Headings;
 }
-
