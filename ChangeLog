@@ -13,6 +13,7 @@
 	(Cookie, GetTextRevision, GetCluster): Ditto.
 	(DeletePermanentAnchors): Ditto, by removing relying on $_.
 	($RunCGI): Can be set outside the script.
+	(Cookie): Fix again.
 
 2004-01-27  Alex Schroeder  <alex@gnu.org>
 
