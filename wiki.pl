@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.46 2003/04/26 17:29:53 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.47 2003/04/27 12:07:55 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -1097,11 +1097,13 @@ sub BrowsePage {
     print $q->hr();
   }
   # print HTML of the main text
+  print '<div class="content">';
   if ($revision eq '' && &GetPageCache('blocks') && &GetParam('cache',1)) {
     &PrintCache(&GetPageCache('blocks'));
   } else {
     &PrintWikiToHTML($Text{'text'}, $revision);
   }
+  print '</div>';
   my $embed = &GetParam('embed', $EmbedWiki);
   print $q->hr()  if (!$embed);
   if ($rc) {
