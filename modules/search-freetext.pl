@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.6 2004/12/21 22:24:34 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.7 2004/12/25 15:52:59 as Exp $</p>';
 
 use vars qw($SearchFreeTextNewForm);
 
@@ -130,3 +130,14 @@ sub SearchFreeTextNewForm {
 #   $db->index_document($OpenPageName, $Page{text}) # dies with "Document already indexed"!
 #   $db->close_index();
 # }
+
+*SearchFreeTextOldGetSearchLink = *GetSearchLink;
+*GetSearchLink = *SearchFreeTextNewGetSearchLink;
+
+sub SearchFreeTextNewGetSearchLink {
+  my ($text, $class, $name, $title) = @_;
+  my $id = UrlEncode($text);
+  $name = UrlEncode($name);
+  $text =~ s/_/ /g;
+  return ScriptLink('action=search;term=' . $id, $text, $class, $name, $title);
+}
