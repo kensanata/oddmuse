@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.10 2004/12/25 16:59:58 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.11 2004/12/25 17:00:26 as Exp $</p>';
 
 use vars qw($SearchFreeTextNewForm);
 
@@ -51,7 +51,7 @@ sub SearchFreeTextIndex {
 *DoSearch = *SearchFreeTextNewDoSearch;
 
 sub SearchFreeTextNewDoSearch {
-  if (GetParam('old', 0) or (GetParam('replace', '')) {
+  if (GetParam('old', 0) or (GetParam('replace', ''))) {
     SearchFreeTextOldDoSearch(@_);
   } else {
     local *SearchTitleAndBody = *SearchFreeTextTitleAndBody;
