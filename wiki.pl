@@ -349,7 +349,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.485 2004/11/15 01:39:15 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.486 2004/11/22 23:29:01 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2104,10 +2104,12 @@ sub GetFooterLinks {
   my ($id, $rev) = @_;
   my @elements;
   if ($id and $rev ne 'history' and $rev ne 'edit') {
-    if (UserCanEdit($CommentsPrefix . $id, 0)
-	and $OpenPageName !~ /^$CommentsPrefix/) { # fails if $CommentsPrefix is empty!
-      push(@elements, ScriptLink(UrlEncode($CommentsPrefix . $OpenPageName),
-				 T('Comments on this page')));
+    if ($CommentsPrefix) {
+      if ($OpenPageName =~ /^$CommentsPrefix(.*)/) {
+	push(@elements, GetPageLink(Ts('Back to %s', $1), $1));
+      } else {
+	push(@elements, GetPageLink(Ts('Comments on %s', $OpenPageName), $CommentsPrefix . $OpenPageName));
+      }
     }
     if (UserCanEdit($id, 0)) {
       if ($rev) { # showing old revision
@@ -2126,9 +2128,6 @@ sub GetFooterLinks {
   if ($rev ne '') {
     push(@elements, GetPageLink($id, T('View current revision')),
 	 GetRCLink($id, T('View all changes')));
-  }
-  if ($CommentsPrefix and $id =~ /^$CommentsPrefix(.*)/) {
-    push(@elements, Ts('Back to %s', GetPageLink($1, $1)));
   }
   return @elements ? $q->span({-class=>'edit bar'}, $q->br(), @elements) : '';
 }
