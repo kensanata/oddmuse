@@ -2,6 +2,7 @@
 
 	* wiki.pl (PingTracker): Switched to blo.gs.
 	(DoPost): Pass $id along.
+	(UserCanEdit): UserIsEditor() overrides $EditAllowed=1.
 
 	* test-markup.pl: Added another set of tests to tests
 	$BracketWiki.
