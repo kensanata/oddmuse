@@ -232,7 +232,7 @@ $SisterSiteLogoUrl = 'file:///tmp/oddmuse/%s.png'; # URL format string for logos
 sub DoWikiRequest {
   Init();
   DoSurgeProtection();
-  if (not $BannedCanRead and UserIsBanned() and not UserIsAdmin()) {
+  if (not $BannedCanRead and UserIsBanned() and not UserIsEditor()) {
     ReportError(T('Reading not allowed: user, ip, or network is blocked.'), '403 FORBIDDEN');
   }
   DoBrowseRequest();
@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.393 2004/05/09 23:10:14 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.394 2004/05/09 23:26:57 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -3375,15 +3375,17 @@ sub DoPost {
     $string =~ s/$FS//g;
   }
   # Banned Content
-  my $rule = BannedContent($string);
-  if ($rule) {
-    print GetHeader('', T('Edit Denied'), undef, undef, '403 FORBIDDEN');
-    print $q->p(T('The page contains banned text.'));
-    print $q->p(T('Contact the wiki administrator for more information.'));
-    print $q->p(Ts('The rule %s matched for you.', $rule) . ' '
-		. Ts('See %s for more information.', GetPageLink($BannedContent)));
-    ReleaseLock();
-    return;
+  if (not UserIsEditor()) {
+    my $rule = BannedContent($string);
+    if ($rule) {
+      print GetHeader('', T('Edit Denied'), undef, undef, '403 FORBIDDEN');
+      print $q->p(T('The page contains banned text.'));
+      print $q->p(T('Contact the wiki administrator for more information.'));
+      print $q->p(Ts('The rule %s matched for you.', $rule) . ' '
+		  . Ts('See %s for more information.', GetPageLink($BannedContent)));
+      ReleaseLock();
+      return;
+    }
   }
   my $summary = GetParam('summary', '');
   $summary =~ s/$FS//g;
