@@ -1,3 +1,4 @@
+#! /usr/bin/perl
 # Copyright (C) 2005  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -24,7 +25,6 @@ use POSIX;
 
 my $q = new CGI;
 my $url = $q->param('url');
-my $pattern = $q->param('pattern');
 
 if (not $url) {
   print $q->header(),
@@ -32,7 +32,7 @@ if (not $url) {
     $q->h1('LocalNames Server'),
     $q->p('Reads a definition of', $q->a({-href=>'http://ln.taoriver.net/about.html'}, 'local names'),
 	  'from an URL and returns a list of names, one per line.  Use the resulting URL for your NearMap.'),
-    $q->p(q{$Id: localnames-server.pl,v 1.1 2005/01/09 22:33:46 as Exp $}),
+    $q->p(q{$Id: localnames-server.pl,v 1.2 2005/01/09 22:49:03 as Exp $}),
     $q->start_form(-method=>'GET'),
     $q->p('LocalNames Definition  URL: ',
 	  $q->textfield('url', '', 70)),
@@ -42,23 +42,22 @@ if (not $url) {
   exit;
 }
 
-my $ua = new LWP::UserAgent;
-my $response = $ua->get($url);
-die $response->status_line unless $response->is_success;
-my $data = $response->content;
-
 print $q->header(-type=>'text/plain; charset=UTF-8');
-print LocalNamesParseDefinition($data);
+print LocalNamesParseDefinition($url);
 
 my %LocalNamesSeen = ();
 my %LocalNames = ();
 
 sub LocalNamesParseDefinition {
-  my ($url) = @_;
+  my $url = shift;
   if (not $LocalNamesSeen{$url}) {
     $LocalNamesSeen{$url} = 1;
+    my $ua = new LWP::UserAgent;
+    my $response = $ua->get($url);
+    die $response->status_line unless $response->is_success;
+    my $data = $response->content;
     my($type, $name, $target);
-    foreach my $line (split(/\n/, GetRaw($url))) {
+    foreach my $line (split(/\n/, $data)) {
       next unless $line;                   # skip empty lines
       next if substr($line, 0, 1) eq '#';  # skip comment
       # split on whitespace, unquote if possible
@@ -80,5 +79,17 @@ sub LocalNamesParseDefinition {
       # undefined pages link to edit pages on the local wiki!
     }
   }
-  # else do nothing -- benn there before
+  # else do nothing -- been there before
+}
+
+sub FreeToNormal { # trim all spaces and convert them to underlines
+  my $id = shift;
+  return '' unless $id;
+  $id =~ s/ /_/g;
+  if (index($id, '_') > -1) {  # Quick check for any space/underscores
+    $id =~ s/__+/_/g;
+    $id =~ s/^_//;
+    $id =~ s/_$//;
+  }
+  return $id;
 }
