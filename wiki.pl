@@ -88,7 +88,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.138 2003/09/06 12:45:05 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.139 2003/09/06 12:55:32 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -3225,7 +3225,7 @@ sub DoPost {
   $string =~ s/$FS//g;
   my $summary = GetParam('summary', '');
   $summary =~ s/$FS//g;
-  $summary =~ s/[\r\n]//g;
+  $summary =~ s/[\r\n]+/ /g;
   # rebrowse if no changes
   if (!$preview && (($old eq $string) or ($oldrev == 0 and $string eq $NewText))) {
     ReleaseLock(); # No changes -- just show the same page again
