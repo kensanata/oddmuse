@@ -265,7 +265,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.180 2003/10/04 13:02:29 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.181 2003/10/04 16:59:57 as Exp $');
 }
 
 sub InitCookie {
@@ -2670,19 +2670,28 @@ sub AllPagesList {
 }
 
 sub CalcDay {
-  my ($ts) = @_;
-  my ($sec, $min, $hour, $mday, $mon, $year) = gmtime($ts);
+  my ($sec, $min, $hour, $mday, $mon, $year) = gmtime(shift);
   return sprintf('%4d-%02d-%02d', $year+1900, $mon+1, $mday);
 }
 
 sub CalcTime {
-  my ($ts) = @_;
-  my ($sec, $min, $hour, $mday, $mon, $year) = gmtime($ts);
+  my ($sec, $min, $hour, $mday, $mon, $year) = gmtime(shift);
   return sprintf('%2d:%02d UTC', $hour, $min);
 }
 
+sub CalcTimeSince {
+  my $total = shift;
+  if    ($total >= 7200) { return Ts('%s hours ago',int($total/3600)) }
+  elsif ($total >= 3600) { return T('1 hour ago'); }
+  elsif ($total >= 120)  { return Ts('%s minutes ago',int($total/60)) }
+  elsif ($total >= 60)   { return T('1 minute ago'); }
+  elsif ($total >= 2)    { return Ts('%s seconds ago',int($total)) }
+  elsif ($total == 1)    { return T('1 second ago'); }
+  else                   { return T('just now'); }
+}
+
 sub TimeToText {
-  my ($t) = @_;
+  my $t = shift;
   return CalcDay($t) . ' ' . CalcTime($t);
 }
 
@@ -3313,8 +3322,8 @@ sub DoPost {
   } elsif ($ENV{REMOTE_ADDR} eq $Section{'ip'}) {
     $newAuthor = 1;
   }
-  if ($newAuthor and ($Now - $Section{'ts'}) < (2 * 60)) { # can't print here because of redirect!
-    $NewCookie{'msg'} = Ts('This page was changed by somebody else %s seconds ago.  Please check if you overwrote those changes.', $Now - $Section{'ts'});
+  if ($newAuthor and ($Now - $Section{'ts'}) < (600)) { # can't print here because of redirect!
+    $NewCookie{'msg'} = Ts('This page was changed by somebody else %s.  Please check if you overwrote those changes.', CalcTimeSince($Now - $Section{'ts'}));
   }
   Save($id, $string, $summary, (GetParam('recent_edit', '') eq 'on'), $filename);
   ReleaseLock();
@@ -3714,21 +3723,13 @@ sub DoShowVisitors {
   foreach my $name (sort {@{$RecentVisitors{$b}}[0] <=> @{$RecentVisitors{$a}}[0]} (keys %RecentVisitors)) {
     my $time = @{$RecentVisitors{$name}}[0];
     my $total = $Now - $time;
-    my $str;
-    if    ($total >= 7200) { $str = Ts('%s hours ago',int($total/3600)) }
-    elsif ($total >= 3600) { $str = T('1 hour ago'); }
-    elsif ($total >= 120)  { $str = Ts('%s minutes ago',int($total/60)) }
-    elsif ($total >= 60)   { $str = T('1 minute ago'); }
-    elsif ($total >= 2)    { $str = Ts('%s seconds ago',int($total)) }
-    elsif ($total == 1)    { $str = T('1 second ago'); }
-    else                   { $str = T('just now'); }
-    print '<li>';
+    my $who;
     if (!$name or ($SurgeProtection and $name =~ /\./)) {
-      print T('Anonymous');
+      $who = T('Anonymous');
     } else {
-      print GetPageLink($name);
+      $who = GetPageLink($name);
     }
-    print ', ', $str, '</li>';
+    print $q->li($who . ', ' . CalcTimeSince($total));
   }
   print '</ul>';
   PrintFooter();
