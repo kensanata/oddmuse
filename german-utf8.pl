@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-# Diese Übersetzung wurde für Oddmuse 1.301 erstellt.
+# Diese Übersetzung wurde für Oddmuse 1.320 erstellt.
 #
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
@@ -53,6 +53,8 @@ Invalid action parameter %s
 Ungültiger action Parameter: %s
 Invalid URL.
 Ungültige URL.
+Page name is missing
+Seitenname fehlt
 Page name is too long: %s
 Seitenname zu lang: %s
 Invalid Page %s
@@ -371,10 +373,6 @@ ancestor
 Vorgänger
 other
 Andere Person
-Ping
-Ping
-No response.
-Keine Antwort.
 Maintenance on all pages
 Wartungsarbeiten auf allen Seiten
 Maintenance not done.
