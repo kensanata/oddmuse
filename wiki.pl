@@ -265,7 +265,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.181 2003/10/04 16:59:57 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.182 2003/10/04 17:38:22 as Exp $');
 }
 
 sub InitCookie {
@@ -2545,7 +2545,7 @@ sub DoUnlock {
   my $message = '';
   print GetHeader('', T('Unlocking'), '');
   print $q->p(T('This operation may take several seconds...')) . "\n";
-  for my $lock (qw(main diff index visitors refer_*)) {
+  for my $lock (qw(main diff index merge visitors refer_*)) {
     if (ForceReleaseLock($lock)) {
       $message .= $q->p(Ts('Forced unlock of %s lock.', $lock)) . "\n";
     }
@@ -2749,7 +2749,6 @@ sub DoEdit {
   }
   OpenPage($id);
   OpenDefaultText();
-  my $pageTime = $Section{'ts'};
   # Old revision handling
   my $header; # set header only when sure that this is not an upload
   my $revision = GetParam('revision', '');
@@ -2786,6 +2785,7 @@ sub DoEdit {
   print GetFormStart($upload);
   print GetHiddenValue("title", $id);
   print GetHiddenValue('revision', $revision) if $revision;
+  print GetHiddenValue('oldtime', $Section{'ts'});
   if ($upload) {
     print GetUpload();
   } else {
@@ -3322,8 +3322,21 @@ sub DoPost {
   } elsif ($ENV{REMOTE_ADDR} eq $Section{'ip'}) {
     $newAuthor = 1;
   }
-  if ($newAuthor and ($Now - $Section{'ts'}) < (600)) { # can't print here because of redirect!
-    $NewCookie{'msg'} = Ts('This page was changed by somebody else %s.  Please check if you overwrote those changes.', CalcTimeSince($Now - $Section{'ts'}));
+  my $oldtime = GetParam('oldtime', '');
+  if ($newAuthor and $oldtime) {
+    my $new = MergeRevisions($string, GetTextAtTime($oldtime), $old);
+    if ($new) {
+      $string = $new;
+      if ($new =~ /<<<<<<</ and $new =~ />>>>>>>/) {
+	$NewCookie{'msg'} = Ts('This page was changed by somebody else %s.',
+			       CalcTimeSince($Now - $Section{'ts'}))
+	  . ' ' . T('The changes conflict.  Please check the page again.');
+      }
+    } elsif (($Now - $Section{'ts'}) < (600)) { # can't print here because of redirect!
+      $NewCookie{'msg'} = Ts('This page was changed by somebody else %s.',
+			     CalcTimeSince($Now - $Section{'ts'}))
+	. ' ' . T('Please check whether you overwrote those changes.');
+    }
   }
   Save($id, $string, $summary, (GetParam('recent_edit', '') eq 'on'), $filename);
   ReleaseLock();
@@ -3379,6 +3392,21 @@ sub GetLanguages {
     }
   }
   return \@result;
+}
+
+sub MergeRevisions { # merge change from file2 to file3 into file1
+  my ($file1, $file2, $file3) = @_;
+  my ($name1, $name2, $name3) = ("$TempDir/file1", "$TempDir/file2", "$TempDir/file3");
+  CreateDir($TempDir);
+  RequestLockDir('merge') or return T('Could not get a lock to merge!');
+  WriteStringToFile($name1, $file1);
+  WriteStringToFile($name2, $file2);
+  WriteStringToFile($name3, $file3);
+  my ($you,$ancestor,$other) = (T('you'), T('ancestor'), T('other'));
+  my $output = `merge -p -L $you -L $ancestor -L $other $name1 $name2 $name3`;
+  ReleaseLockDir('merge');
+  # No need to unlink temp files--next merge will just overwrite.
+  return $output;
 }
 
 # Note: all diff and recent-list operations should be done within locks.
