@@ -276,7 +276,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.245 2003/11/06 18:17:29 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.246 2003/11/08 12:14:34 as Exp $');
 }
 
 sub InitCookie {
@@ -673,6 +673,10 @@ sub RSS {
   my %lines;
   require XML::RSS;
   require LWP::UserAgent;
+  my $tDiff = T('(diff)');
+  my $tHistory = T('history');
+  my $wikins = 'http://purl.org/rss/1.0/modules/wiki/';
+  my $rdfns = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
   foreach my $uri (@uris) {
     $uri =~ s/^"?(.*?)"?$/$1/;
     my $rss = new XML::RSS;
@@ -684,29 +688,33 @@ sub RSS {
     return $q->p($q->strong("[RSS parsing failed for $uri]")) if $@;
     my ($counter, $interwiki);
     if (@uris > 1) {
-      $interwiki = $rss->{channel}->{'http://purl.org/rss/1.0/modules/wiki/'}->{interwiki};
+      $interwiki = $rss->{channel}->{$wikins}->{interwiki};
       $interwiki =~ s/^\s+//; # when RDF is used, sometimes whitespace remains,
       $interwiki =~ s/\s+$//; # which breaks the test for an existing $interwiki below
       if (!$interwiki) {
-	$interwiki = $rss->{channel}->{'http://www.w3.org/1999/02/22-rdf-syntax-ns#'}->{value};
+	$interwiki = $rss->{channel}->{$rdfns}->{value};
       }
     }
     foreach my $i (@{$rss->{items}}) {
       my $line;
-      $line .= $q->a({-href=>$i->{'link'}, -title=>$i->{'dc'}->{'date'}},
-		     $interwiki ? "$interwiki:$i->{'title'}" : "[$i->{'title'}]")
-	if $i->{'title'};
-      $line .= $q->a({-href=>$i->{guid}, -title=>$i->{dc}->{date}}, $i->{guid})
+      $line .= $q->a({-href=>$i->{$wikins}->{diff}}, $tDiff)
+	if $i->{$wikins}->{diff};
+      $line .= ' ' . $q->a({-href=>$i->{'link'}, -title=>$i->{'dc'}->{'date'}},
+			   $interwiki ? "$interwiki:$i->{'title'}" : "[$i->{'title'}]")
+	if $i->{'title'} and $i->{'link'};
+      $line .= ' ' . $q->a({-href=>$i->{guid}, -title=>$i->{dc}->{date}}, $i->{guid})
 	if $i->{guid}; # for RSS 2.0
+      $line .= ' (' . $q->a({-href=>$i->{$wikins}->{history}}, $tHistory) . ')'
+	if $i->{$wikins}->{history};
       $line .= ' -- ' . $q->span({-class=>'description'}, $i->{description})
 	if $i->{description};
       my $contributor = $i->{dc}->{contributor};
       $contributor =~ s/^\s+//;
       $contributor =~ s/\s+$//;
       if (!$contributor) {
-	$contributor = $i->{'http://www.w3.org/1999/02/22-rdf-syntax-ns#'}->{value};
+	$contributor = $i->{$rdfns}->{value};
       }
-      $line .= $q->span({-class=>'contributor'}, $q->span(' . . . . . ') . $contributor)
+      $contributor = $q->span({-class=>'contributor'}, $q->span(' . . . . . ') . $contributor)
 	if $contributor;
       my $key = $i->{'dc'}->{'date'};
       $key = $i->{'pubdate'} unless $key;
@@ -1295,10 +1303,12 @@ sub GetFilterForm {
   $form .= $q->input({-type=>'hidden', -name=>'showedit', -value=>1}) if (GetParam('showedit', 0));
   $form .= $q->input({-type=>'hidden', -name=>'days', -value=>GetParam('days', $RcDefault)})
     if (GetParam('days', $RcDefault) != $RcDefault);
-  $form .= $q->strong(T('Filters')) . $q->br();
-  $form .= T('Username:') . ' ' . $q->textfield(-name=>'rcuseronly', -size=>20);
-  $form .= ' ' . T('Host:') . ' ' . $q->textfield(-name=>'rchostonly', -size=>20);
-  $form .= ' ' . T('Language:') . ' ' . $q->textfield(-name=>'rclang', -size=>10) if %Languages;
+  my $table =
+    $q->Tr($q->td(T('Username:')) . $q->td($q->textfield(-name=>'rcuseronly', -size=>20)))
+    . $q->Tr($q->td(T('Host:')) . $q->td($q->textfield(-name=>'rchostonly', -size=>20)));
+  $table .= $q->Tr($q->td(T('Language:')) . $q->td($q->textfield(-name=>'rclang', -size=>10)))
+    if %Languages;
+  $form .= $q->strong(T('Filters')) . $q->table($table);
   return $form . $q->submit('dofilter', T('Go!')) . $q->endform;
 }
 
@@ -1523,6 +1533,11 @@ sub GetRcRss {
       my $importance = $minor ? 'minor' : 'major';
       my $link = $quotedFullUrl
 	. '?' . GetPageParameters('browse', $pagename, $revision, $cluster);
+      my %wiki = ( status      => $status,
+		   importance  => $importance,
+		   version     => $revision,
+		   history     => $historyPrefix . $pagename, );
+      $wiki{diff} = $diffPrefix . $pagename if $UseDiff and GetParam('diffrclink', 1);
       $rss->add_item(
         title         => QuoteHtml($name),
 	link          => $link,
@@ -1531,13 +1546,7 @@ sub GetRcRss {
           date        => $date,
 	  contributor => $author,
 	},
-	wiki => {
-	  status      => $status,
-	  importance  => $importance,
-	  diff        => $diffPrefix . $pagename,
-	  version     => $revision,
-	  history     => $historyPrefix . $pagename,
-	},
+	wiki => \%wiki,
       );
     },
     # RC Lines
