@@ -1,3 +1,17 @@
+2003-05-26  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($BanListFile): No more banned file.
+	($BannedHosts): New variable for the page name.
+	(DoBrowseRequest): No more editbanned action and edit_ban parameter.
+	(UserIsBanned): Test now opens the $BannedHosts page.
+	(DoPost): Added test such that only admins can create the $BannedHosts file.
+	(Save): When saving the first revision of the $BannedHosts file, lock it.
+	(DoEditBanned): Deleted.
+	(DoUpdateBanned): Deleted.
+
+	(ScriptLink): No more quoting of the action, this happens
+	automatically.
+
 2003-05-24  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (PrintAllReferers): New function.
