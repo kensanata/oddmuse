@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: markup.pl,v 1.12 2004/09/27 21:38:08 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: markup.pl,v 1.13 2004/09/27 21:38:52 as Exp $</p>';
 
 use vars qw(%MarkupPairs %MarkupSingles %MarkupLines);
 
@@ -91,7 +91,6 @@ sub MarkupRule {
     while (m/$markup_lines_re/gc) {
       $str .= $q->span($1) . $2;
     }
-    warn '...' . $MarkupLines{UnquoteHtml($tag)};
     return MarkupTag($MarkupLines{UnquoteHtml($tag)}, $str);
   }
   elsif (m/$markup_pairs_re/gc) {
