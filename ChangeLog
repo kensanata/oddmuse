@@ -1,3 +1,7 @@
+2004-10-28  Alex Schroeder  <alex@confusibombus>
+
+	* modules/despam.pl: New.
+
 2004-10-26  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoSearch): Accesskey 'f'.
