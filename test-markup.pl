@@ -139,6 +139,8 @@ test_page($redirect, map { UrlEncode($_); } @Test); # test cookie!
 foo test bar end
 EOT
 
+update_page('ConflictTest', "test\ntest\ntest\nend\n");
+
 $_ = `perl wiki.pl action=edit id=ConflictTest`;
 /name="oldtime" value="([0-9]+)"/;
 my $oldtime = $1;
@@ -170,6 +172,36 @@ test_page(update_page('ConflictTest', "test\nbar\ntest\nend\n", '', '', '', "old
 @Test = split('\n',<<'EOT');
 This page was changed by somebody else
 The changes conflict
+EOT
+
+test_page($redirect, map { UrlEncode($_); } @Test); # test cookie!
+
+# test conflict during merging without merge! -- first get oldtime, then do two conflicting edits
+
+open(F,'>/tmp/oddmuse/config');
+print F "\$SurgeProtection = 0;\n";
+print F "\$ENV{'PATH'} = '';\n";
+close(F);
+
+@Test = split('\n',<<'EOT');
+test bar test end
+EOT
+
+update_page('ConflictTest', "test\ntest\ntest\nend\n");
+
+$_ = `perl wiki.pl action=edit id=ConflictTest`;
+/name="oldtime" value="([0-9]+)"/;
+my $oldtime = $1;
+
+$ENV{'REMOTE_ADDR'} = 'confusibombus';
+update_page('ConflictTest', "test\nfoo\ntest\nend\n");
+
+$ENV{'REMOTE_ADDR'} = 'megabombus';
+test_page(update_page('ConflictTest', "test\nbar\ntest\nend\n", '', '', '', "oldtime=$oldtime"), @Test);
+
+@Test = split('\n',<<'EOT');
+This page was changed by somebody else
+Please check whether you overwrote those changes
 EOT
 
 test_page($redirect, map { UrlEncode($_); } @Test); # test cookie!
