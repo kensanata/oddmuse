@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: image.pl,v 1.13 2004/09/05 19:40:20 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: image.pl,v 1.14 2004/09/15 22:55:53 as Exp $</p>';
 
 use vars qw($ImageUrlPath);
 
@@ -28,18 +28,23 @@ push(@MyRules, \&ImageSupportRule);
 
 sub ImageSupportRule {
   my $result = undef;
-  if (m!\G\[\[image(/[a-z]+)?( external)?:$FreeLinkPattern(\|[^]|]+)?(\|($FreeLinkPattern|$FullUrlPattern))?\]\]!gc) {
+  if (m!\G\[\[image(/[a-z]+)?( external)?:($FreeLinkPattern|$FullUrlPattern)(\|[^]|]+)?(\|($FreeLinkPattern|$FullUrlPattern))?\]\]!gc) {
     my $oldpos = pos;
     my $class = 'image';
     $class .= ' ' . substr($1, 1) if $1;
     my $external = $2;
     my $name = $3;
-    my $alt = $4 ? substr($4, 1) : T("image: %s", $name);
-    my $link = $5 ? substr($5, 1) : '';
+    my $alt = $6 ? substr($6, 1) : T("image: %s", $name);
+    my $link = $7 ? substr($7, 1) : '';
     my $id = FreeToNormal($name);
+    # link to the image if no link was given
     if (not $link) {
       if ($external) {
-	$link = $ImageUrlPath . '/' . UrlEncode($id);
+	if ($name =~ /$FullUrlPattern/) {
+	  $link = $name;
+	} else {
+	  $link = $ImageUrlPath . '/' . UrlEncode($id);
+	}
       } else {
 	$link = UrlEncode($id);
       }
@@ -60,7 +65,11 @@ sub ImageSupportRule {
     }
     my $src;
     if ($external) {
-      $src = $ImageUrlPath . '/' . UrlEncode($id);
+      if ($name =~ /$FullUrlPattern/) {
+	$src = $name;
+      } else {
+	$src = $ImageUrlPath . '/' . UrlEncode($id);
+      }
     } elsif ($UsePathInfo) {
       $src = $ScriptName . "/download/" . UrlEncode($id);
     } else {
