@@ -265,7 +265,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.174 2003/10/02 21:24:36 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.175 2003/10/03 11:19:46 as Exp $');
 }
 
 sub InitCookie {
@@ -713,9 +713,9 @@ sub RSS {
   my %lines;
   require XML::RSS;
   require LWP::UserAgent;
-  my $rss = new XML::RSS;
-  my $ua = LWP::UserAgent->new;
   foreach my $uri (@uris) {
+    my $rss = new XML::RSS;
+    my $ua = LWP::UserAgent->new;
     my $request = HTTP::Request->new('GET', $uri);
     my $response = $ua->request($request);
     my $data = $response->content;
