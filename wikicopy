@@ -22,14 +22,21 @@ use strict;
 use Getopt::Std;
 use LWP::UserAgent;
 
-my $usage = "$0 [-i URL] [-t SECONDS] SOURCE TARGET\n"
+our $opt_v;
+
+my $usage = "$0 [-i URL] [-d STRING] [-t SECONDS] [SOURCE] TARGET\n"
   . "Where SOURCE and TARGET are the base URLs for the two wikis.\n"
-  . "SECONDS is the number of seconds to wait between requests.\n"
+  . "Provide the page names on STDIN or use -i to point to a page.\n"
   . "URL is the raw URL returning page names if you want to copy it all.\n"
+  . "The list of page names should use the MIME type text/plain."
+  . "SECONDS is the number of seconds to wait between requests.\n"
+  . "If you use -d instead of providing a SOURCE, all the pages\n"
+  . "will be replaced with STRING.\n"
   . "Example:\n\n"
   . "wikicopy -i 'http://www.emacswiki.org/cgi-bin/alex?action=index;raw=1' \\\n"
   . "         http://www.emacswiki.org/cgi-bin/alex \\\n"
-  . "         http://localhost/cgi-bin/wiki.pl\n";
+  . "         http://localhost/cgi-bin/wiki.pl\n"
+  . "cat list.txt | wikicopy -d DeletedPage http://localhost/cgi-bin/wiki.pl\n";
 
 sub UrlEncode {
   my $str = shift;
@@ -49,8 +56,8 @@ sub GetRaw {
   my ($uri) = @_;
   my $ua = LWP::UserAgent->new;
   my $response = $ua->get($uri);
-  my $status = $response->code . ' ' . $response->message;
-  warn "GET $uri failed: $status.\n" unless $response->is_success;
+  print "no response\n" unless $response->code;
+  print "GET ", $response->code, " ", $response->message, "\n" if $opt_v;
   return $response->content if $response->is_success;
 }
 
@@ -63,11 +70,12 @@ sub PostRaw {
 }
 
 sub copy {
-  my ($source, $target, $interval, @pages) = @_;
+  my ($source, $replacement, $target, $interval, @pages) = @_;
   foreach my $id (@pages) {
     print "$id\n";
     my $page = UrlEncode ($id);
-    my $data = GetRaw("$source?action=browse;id=$page;raw=1"); # fix for other wikis
+    # fix URL for other wikis
+    my $data = $replacement || GetRaw("$source?action=browse;id=$page;raw=1");
     next unless $data;
     PostRaw($target, $id, $data);
     sleep($interval);
@@ -75,11 +83,14 @@ sub copy {
 }
 
 sub main {
-  our($opt_i, $opt_t);
-  getopts('i:t:');
+  our($opt_i, $opt_t, $opt_d);
+  getopts('i:t:d:v');
   my $interval = $opt_t ? $opt_t : 5;
-  my ($source, $target) = @ARGV;
-  die $usage unless $target;
+  my $replacement = $opt_d;
+  my ($source, $target);
+  $source = shift(@ARGV) unless $replacement;
+  $target = shift(@ARGV);
+  die $usage if not $target or @ARGV; # not enough or too many
   my @pages = ();
   if ($opt_i) {
     my $data = GetRaw($opt_i);
@@ -87,11 +98,12 @@ sub main {
   } else {
     print "List of pages:\n";
     while (<STDIN>) {
+      chomp;
       push(@pages, $_);
     }
   }
   die "The list of pages is missing.  Did you use -i?\n" unless @pages;
-  copy($source, $target, $interval, @pages);
+  copy($source, $replacement, $target, $interval, @pages);
 }
 
 main();
