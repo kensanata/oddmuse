@@ -21,6 +21,7 @@ use CGI qw/:standard/;
 use CGI::Carp qw(fatalsToBrowser);
 use XML::RSS;
 use LWP::UserAgent;
+use encoding 'utf8';
 
 my $wikins = 'http://purl.org/rss/1.0/modules/wiki/';
 my $rdfns = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
@@ -56,8 +57,11 @@ eval {
 sub munge_rss {
   foreach my $i (@{$rss->{items}}) {
     if ($i->{dc}->{contributor}) {
-      $i->{description} = '(' . $i->{dc}->{contributor} . ') '
-	. $i->{description};
+      if ($i->{description}) {
+	$i->{description} = $i->{description} . ' -- ' . $i->{dc}->{contributor};
+      } else {
+	$i->{description} = '-- ' .$i->{dc}->{contributor};
+      }
     }
     if ($i->{$wikins}->{diff}) {
       $i->{link} = $i->{$wikins}->{diff};
