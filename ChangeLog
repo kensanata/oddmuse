@@ -1,3 +1,14 @@
+2005-03-18  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+
+	* wiki.pl: Removed the global $first variable, since it made no
+	sense when ApplyRules was called for cached HTML fragments.
+	(ApplyRules): Removed $first, moved link rules to new sub, call
+	RunMyRules with $locallinks, $withanchors parameters.
+	(LinkRules): Moved all link rules to new sub.
+	(@MyRules): Initialize with LinkRules.
+	(RunMyRules): Call the various rules with $locallinks and
+	$withanchors parameters.
+
 2005-03-12  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoPageLock): Add link back to the page.
