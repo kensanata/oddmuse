@@ -349,7 +349,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.480 2004/11/14 22:20:28 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.481 2004/11/14 23:56:53 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -768,9 +768,9 @@ sub PrintJournal {
     # Now save information required for saving the cache of the current page.
     local %Page;
     local $OpenPageName='';
-    print '<div class="journal">';
+    print $q->start_div({-class=>'journal'});
     PrintAllPages(1, 1, @pages);
-    print '</div>';
+    print $q->end_div();
   }
 }
 
@@ -1273,33 +1273,34 @@ sub BrowsePage {
     PrintHtmlDiff($showDiff, GetParam('diffrevision', $revision), $revision, $text);
     print $q->hr();
   }
-  print '<div class="content">';
+  print $q->start_div({-class=>'content browse'});
   if ($revision eq '' and $Page{blocks} and $Page{flags} and GetParam('cache', $UseCache)) {
     PrintCache();
   } else {
     my $savecache = ($Page{revision} > 0 and $revision eq ''); # new page not cached
     PrintWikiToHTML($text, $savecache, $revision); # unlocked, with anchors, unlocked
   }
-  print '</div>';
+  print $q->end_div();;
   if ($comment) {
-    print '<div class="preview">', $q->hr();
+    print $q->start_div({-class=>'preview'}), $q->hr();
     print $q->h2(T('Preview:'));
     PrintWikiToHTML(AddComment('', $comment)); # no caching, current revision, unlocked
-    print $q->hr(), $q->h2(T('Preview only, not yet saved')), '</div>';
+    print $q->hr(), $q->h2(T('Preview only, not yet saved')), $q->end_div();;
   }
   my $embed = GetParam('embed', $EmbedWiki);
   SetParam('rcclusteronly', $id) if GetCluster($text) eq $id;
   if (($id eq $RCName) || (T($RCName) eq $id) || (T($id) eq $RCName)
       || GetParam('rcclusteronly', '')) {
-    print '<div class="rc">';
+    print $q->start_div({-class=>'content rc'});;
     print $q->hr()  if (!$embed);
     DoRc(\&GetRcHtml);
-    print '</div>';
+    print $q->end_div();;
   }
   if ($RefererTracking && !$embed) {
     my $referers = RefererTrack($id);
     print $referers if $referers;
   }
+  print $q->end_div();
   PrintFooter($id, $revision, $comment);
 }
 
@@ -1753,25 +1754,25 @@ sub DoRandom {
 sub DoHistory {
   my $id = shift;
   ValidIdOrDie($id);
-  my ($html, $row);
   print GetHeader('',QuoteHtml(Ts('History of %s', $id)), '');
   OpenPage($id);
-  $html = GetHistoryLine($id, \%Page, $row++);
+  my $row = 0;
+  my @html = (GetHistoryLine($id, \%Page, $row++));
   my @revisions = sort {$b <=> $a} map { m|/([0-9]+).kp$|; $1; } GetKeepFiles($OpenPageName);
   foreach my $revision (@revisions) {
     my %keep = GetKeptRevision($revision);
-    $html .= GetHistoryLine($id, \%keep, $row++);
+    push(@html, GetHistoryLine($id, \%keep, $row++));
   }
   if ($UseDiff) {
-    $html = GetFormStart(undef, undef, 'history')
-      . $q->p( # don't use $q->hidden here, the sticky action value will be used instead
-	      $q->input({-type=>'hidden', -name=>'action', -value=>'browse'})
-	      . $q->input({-type=>'hidden', -name=>'diff', -value=>'1'})
-	      . $q->input({-type=>'hidden', -name=>'id', -value=>$id}))
-      . $q->table({-class=>'history'}, $html)
-      . $q->p($q->submit({-name=>T('Compare')})) . $q->end_form();
+    @html = (GetFormStart(undef, undef, 'history'),
+	     $q->p( # don't use $q->hidden here, the sticky action value will be used instead
+		   $q->input({-type=>'hidden', -name=>'action', -value=>'browse'}),
+		   $q->input({-type=>'hidden', -name=>'diff', -value=>'1'}),
+		   $q->input({-type=>'hidden', -name=>'id', -value=>$id})),
+	     $q->table({-class=>'history'}, @html),
+	     $q->p($q->submit({-name=>T('Compare')})), $q->end_form());
   }
-  print $html;
+  print $q->div({-class=>'content history'}, @html);
   PrintFooter($id, 'history');
 }
 
@@ -1819,7 +1820,7 @@ sub DoRollback {
   ReportError(T('Target for rollback is too far back.'), '400 BAD REQUEST')
     unless RollbackPossible($to);
   RequestLockOrError();
-  print '<p>';
+  print $q->start_div({-class=>'content rollback'}) . $q->start_p();
   foreach my $id (AllPagesList()) {
     OpenPage($id);
     my $text = GetTextAtTime($to);
@@ -1829,7 +1830,7 @@ sub DoRollback {
       print Ts('%s rolled back', $id), $q->br();
     }
   }
-  print '</p>';
+  print $q->end_p() . $q->end_div();
   ReleaseLock();
   PrintFooter();
 }
@@ -1904,10 +1905,9 @@ sub GetRCLink {
 
 sub GetHeader {
   my ($id, $title, $oldId, $nocache, $status) = @_;
-  my $result = '';
   my $embed = GetParam('embed', $EmbedWiki);
   my $altText = T('[Home]');
-  $result = GetHttpHeader('text/html', $nocache ? $Now : 0, $status);
+  my $result = GetHttpHeader('text/html', $nocache ? $Now : 0, $status);
   $title =~ s/_/ /g;	 # Display as spaces
   if ($oldId ne '') {
     $Message .= $q->p('(' . Ts('redirected from %s', GetEditLink($oldId, $oldId)) . ')');
@@ -1917,7 +1917,7 @@ sub GetHeader {
     $result .= $q->div({-class=>'header'}, $q->div({-class=>'message'}, $Message))  if $Message;
     return $result;
   }
-  $result .= '<div class="header">';
+  $result .= $q->start_div({-class=>'header'});
   if ((!$embed) && ($LogoUrl ne '')) {
     $result .= ScriptLink($HomePage, $q->img({-src=>$LogoUrl, -alt=>$altText, -class=>'logo'}));
   }
@@ -1938,8 +1938,7 @@ sub GetHeader {
   } else {
     $result .= $q->h1($title);
   }
-  $result .= '</div>';
-  return $result;
+  return $result . $q->end_div();
 }
 
 sub GetHttpHeader {
@@ -2032,12 +2031,10 @@ sub PrintFooter {
     return;
   }
   print GetCommentForm($id, $rev, $comment);
-  print '<div class="footer">' . $q->hr();
-  print GetGotoBar($id);
-  print GetFooterLinks($id, $rev);
+  print $q->start_div({-class=>'footer'}) . $q->hr();
+  print GetGotoBar($id), GetFooterLinks($id, $rev);
   print GetAdminBar($id, $rev) if UserIsAdmin();
-  print GetFooterTimestamp($id, $rev);
-  print GetSearchForm();
+  print GetFooterTimestamp($id, $rev), GetSearchForm();
   if ($DataDir =~ m|/tmp/|) {
     print $q->p($q->strong(T('Warning') . ': ')
 		. Ts('Database is stored in temporary directory %s', $DataDir));
@@ -2045,9 +2042,7 @@ sub PrintFooter {
   print T($FooterNote) if $FooterNote;
   print $q->p(GetValidatorLink()) if GetParam('validate', $ValidatorLink);
   print $q->p(Ts('%s seconds', (time - $Now))) if GetParam('time',0);
-  print '</div>';
-  print GetSisterSites($id);
-  print GetNearLinksUsed($id);
+  print $q->end_div(), GetSisterSites($id), GetNearLinksUsed($id);
   eval { local $SIG{__DIE__}; PrintMyContent($id); };
   print $q->end_html;
 }
@@ -2727,12 +2722,12 @@ sub DoEdit {
   } else {
     $header = Ts('Editing %s', $id);
   }
-  print GetHeader('', QuoteHtml($header), '');
+  print GetHeader('', QuoteHtml($header), ''), $q->start_div({-class=>'content edit'});;
   if ($preview and not $upload) {
-    print '<div class="preview">';
+    print $q->start_div({-class=>'preview'});
     print $q->h2(T('Preview:'));
     PrintWikiToHTML($oldText); # no caching, current revision, unlocked
-    print $q->hr(), $q->h2(T('Preview only, not yet saved')), '</div>';
+    print $q->hr(), $q->h2(T('Preview only, not yet saved')), $q->end_div();
   }
   if ($revision) {
     print $q->strong(Ts('Editing old revision %s.', $revision) . '  '
@@ -2765,7 +2760,7 @@ sub DoEdit {
   } elsif ($UploadAllowed or UserIsAdmin()) {
     print $q->p(ScriptLink('action=edit;upload=1;id=' . UrlEncode($id), T('Replace this text with a file.')));
   }
-  print $q->endform();
+  print $q->endform(), $q->end_div();;
   PrintFooter($id, 'edit');
 }
 
@@ -2806,7 +2801,7 @@ sub DoDownload {
 # == Passwords ==
 
 sub DoPassword {
-  print GetHeader('',T('Password'), '');
+  print GetHeader('',T('Password'), ''), $q->start_div({-class=>'content password'});
   print $q->p(T('Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.'));
   if (UserIsAdmin()) {
     print $q->p(T('You are currently an administrator on this site.'));
@@ -2826,6 +2821,7 @@ sub DoPassword {
   } else {
     print $q->p(T('This site does not use admin or editor passwords.'));
   }
+  print $q->end_div();
   PrintFooter();
 }
 
@@ -2918,7 +2914,7 @@ sub DoIndex {
   if ($raw) {
     print GetHttpHeader('text/plain');
   } else {
-    print GetHeader('', T('Index of all pages'), '');
+    print GetHeader('', T('Index of all pages'), ''), $q->start_div({-class=>'content index'});
     my @for;
     push(@for, T('all pages')) if $pages;
     push(@for, T('permanent anchors')) if $anchors;
@@ -3001,7 +2997,8 @@ sub DoSearch {
     return;
   }
   if ($replacement) {
-    print GetHeader('', QuoteHtml(Ts('Replaced: %s', "$string -> $replacement")), '');
+    print GetHeader('', QuoteHtml(Ts('Replaced: %s', "$string -> $replacement")), ''),
+      $q->start_div({-class=>'content replacement'});
     return  if (!UserIsAdminOrError());
     Replace($string,$replacement);
     $string = $replacement;
@@ -3010,7 +3007,8 @@ sub DoSearch {
     print RcTextItem('title', Ts('Search for: %s', $string)), RcTextItem('date', TimeToText($Now)),
       RcTextItem('link', $q->url(-path_info=>1, -query=>1)), "\n" if GetParam('context',1);
   } else {
-    print GetHeader('', QuoteHtml(Ts('Search for: %s', $string)), '');
+    print GetHeader('', QuoteHtml(Ts('Search for: %s', $string)), ''),
+      $q->start_div({-class=>'content search'});
     $ReplaceForm = UserIsAdmin();
     NearInit();
     my @elements = (ScriptLink('action=rc;rcfilteronly=' . UrlEncode($string),
@@ -3028,7 +3026,7 @@ sub DoSearch {
   }
   @results = SearchNearPages($string, @results) if GetParam('near', 1); # adds more
   if (not $raw) {
-    print $q->p(Ts('%s pages found.', ($#results + 1)));
+    print $q->p(Ts('%s pages found.', ($#results + 1))), $q->end_div();
     PrintFooter();
   }
 }
@@ -3244,14 +3242,14 @@ sub PrintAllPages {
     next if $lang and @languages and not grep(/$lang/, @languages);
     my $title = $id;
     $title =~ s/_/ /g;	 # Display as spaces
-    print '<div class="page">' . $q->hr
+    print $q->start_div({-class=>'page'}) . $q->hr
       . $q->h1($links ? GetPageLink($id, $title) : $q->a({-name=>$id},$title));
     PrintPageHtml();
     if ($comments and UserCanEdit($CommentsPrefix . $id, 0) and $id !~ /^$CommentsPrefix/) {
       print $q->p({-class=>'comment'},
 		  GetPageLink($CommentsPrefix . $id, T('Comments on this page')));
     }
-    print '</div>';
+    print $q->end_div();;
   }
 }
 
@@ -3488,13 +3486,13 @@ sub UpdateDiffs {
 # == Maintenance ==
 
 sub DoMaintain {
-  print GetHeader('', T('Maintenance on all pages'), '');
+  print GetHeader('', T('Maintenance on all pages'), ''), $q->start_div({-class=>'content maintain'});
   my $fname = "$DataDir/maintain";
   if (!UserIsAdmin()) {
     if ((-f $fname) && ((-M $fname) < 0.5)) {
       print $q->p(T('Maintenance not done.') . ' '
 		  . T('(Maintenance can only be done once every 12 hours.)')
-		  . ' ', T('Remove the "maintain" file or wait.'));
+		  . ' ', T('Remove the "maintain" file or wait.')), $q->end_div();
       PrintFooter();
       return;
     }
@@ -3566,7 +3564,7 @@ sub DoMaintain {
   }
   WriteStringToFile($fname, 'Maintenance done at ' . TimeToText($Now));
   ReleaseLock();
-  print $q->p(T('Main lock released.'));
+  print $q->p(T('Main lock released.')), $q->end_div();
   PrintFooter();
 }
 
@@ -3638,7 +3636,7 @@ sub DoPageLock {
 # == Version ==
 
 sub DoShowVersion {
-  print GetHeader('', T('Displaying Wiki Version'), '');
+  print GetHeader('', T('Displaying Wiki Version'), ''), $q->start_div({-class=>'content version'});
   print $WikiDescription;
   if (GetParam('dependencies', 0)) {
     print $q->p($q->server_software()),
@@ -3657,6 +3655,7 @@ sub DoShowVersion {
       $q->p(join($q->br(), map { $_ . ': ' . join(', ', @{$NearSource{$_}})}
 		 sort keys %NearSource));
   }
+  print $q->end_div();
   PrintFooter();
 }
 
