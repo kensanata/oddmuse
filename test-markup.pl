@@ -1073,8 +1073,6 @@ test_page(update_page('InterMap', "All your edits are blong to us!\n", 'required
 
 # --------------------
 
-fixme:
-
 print '[despam module]';
 
 # create simple config file
@@ -1834,6 +1832,8 @@ EOT
 
 run_tests();
 
+fixme:
+
 print '[toc module]';
 
 system('/bin/rm -rf /tmp/oddmuse');
@@ -1854,6 +1854,36 @@ symlink('/home/alex/src/oddmuse/modules/usemod.pl',
 EOT
 
 run_tests();
+
+update_page('toc_test', "bla\n"
+	    . "=one=\n"
+	    . "bla\n"
+	    . "==two==\n"
+	    . "bla\n"
+	    . "==two==\n");
+
+test_page(get_page('toc_test'),
+	  quotemeta('<ol><li><a href="#one">one</a><ol><li><a href="#two">two</a></li><li><a href="#two">two</a></li></ol></li></ol>'));
+
+update_page('toc_test', "bla\n"
+	    . "==two=\n"
+	    . "bla\n"
+	    . "===three==\n"
+	    . "bla\n"
+	    . "==two==\n");
+
+test_page(get_page('toc_test'),
+	  quotemeta('<ol><li><a href="#two">two</a><ol><li><a href="#three">three</a></li></ol></li><li><a href="#two">two</a></li></ol>'));
+
+update_page('toc_test', "bla\n"
+	    . "==two=\n"
+	    . "bla\n"
+	    . "===three==\n"
+	    . "bla\n"
+	    . "=one=\n");
+
+test_page(get_page('toc_test'),
+	  quotemeta('<ol><li><a href="#two">two</a><ol><li><a href="#three">three</a></li></ol></li><li><a href="#one">one</a></li></ol>'));
 
 ### END OF TESTS
 
