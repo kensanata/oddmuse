@@ -6,7 +6,7 @@
 use CGI qw/:standard/;
 use CGI::Carp qw(fatalsToBrowser);
 print header() . start_html(), p;
-print 'Upgrade version: $Id: upgrade-files.pl,v 1.4 2003/11/02 17:04:52 as Exp $', "\n";
+print 'Upgrade version: $Id: upgrade-files.pl,v 1.5 2003/11/02 20:44:14 as Exp $', "\n";
 if (not param('dir')) {
   print start_form, p,
     '$DataDir: ', textfield('dir', '/tmp/oddmuse'),
@@ -90,7 +90,7 @@ sub rewrite {
       $_ = join($FS, $ts, $pagename, $minor, $summary, $host,
 		$extra{name}, $extra{revision}, $extra{languages}, $extra{cluster});
     }
-    $data = join("\n", @rc);
+    $data = join("\n", @rc) . "\n";
     $file =~ s/log$/.log/;
     print "Writing $file...\n";
     write_file($file, $data);
