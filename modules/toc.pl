@@ -16,7 +16,17 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.2 2004/02/09 20:31:19 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.3 2004/02/09 20:38:40 as Exp $</p>';
+
+*WikiHeading = *NewTocWikiHeading;
+
+sub NewWikiHeading {
+  my ($depth, $text) = @_;
+  $depth = length($depth);
+  $depth = 6  if ($depth > 6);
+  my $link = UrlEncode($text);
+  return "<h$depth><a name=\"$link\">$text</a></h$depth>";
+}
 
 *OldTocGetHeader = *GetHeader;
 *GetHeader = *NewTocGetHeader;
@@ -25,7 +35,7 @@ sub NewTocGetHeader {
   my ($id) = @_;
   my $result = OldTocGetHeader(@_);
   # append TOC to header
-  $result .= TocHeadings() if $id;
+  $result .= TocHeadings($id) if $id;
   return $result;
 }
 
@@ -54,7 +64,7 @@ sub TocHeadings {
       $Headings .= '</ol>';
       $HeadingsLevel--;
     }
-    $Headings .= '<li>' . $text . '</li>';
+    $Headings .= "<li><a href=\"#$link\">$text</a></li>";
   }
   while ($HeadingsLevel > 1) {
     $Headings .= '</ol>';
