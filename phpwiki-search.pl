@@ -46,8 +46,11 @@ $data =~ /\<title\>([^<]*)/i;
 print "title: $1\n" if $1;
 print "link: " . param('url') . "\n\n";
 while ($data =~ m|<dt>.*?<a href="([^"]*)".*\n((<dd>.*</dd>\n)*)|g) {
-  print "title: $1\n";
-  $_ = $2;
+  my ($title, $desc) = ($1, $2);
+  $title =~ s/%([0-9a-f][0-9a-f])/chr(hex($1))/ige;
+  $title = encode('utf-8', decode('latin-1', $title)) if param('latin-1');
+  print "title: $title\n";
+  $_ = $desc;
   s|<dd>||g;
   s|<small[^>]*>||g;
   s|<strong[^>]*>||g;
