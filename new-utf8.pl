@@ -1,6 +1,6 @@
-# UTF-8 encoded Japanese translation file for use with Oddmuse
+# UTF-8 encoded FIXME translation file for use with Oddmuse
 #
-# Copyright (c) 2003  ...
+# Copyright (c) 2004  FIXME
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
@@ -14,8 +14,6 @@
 #
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
-#
-# This translation was last checked for Oddmuse version 1.215.
 #
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.

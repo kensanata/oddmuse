@@ -45,7 +45,7 @@ RSS parsing failed for %s
 Lezen van RSS is niet gelukt voor %s
  . . . . 
 
-Click to create this page
+Click to edit this page
 Klik hier om deze pagina aan te maken
 Invalid action parameter %s
 Ongeldige actieparameter %s
@@ -317,6 +317,8 @@ This operation is restricted to site editors only...
 Deze taak mag alleen uitgevoerd worden door redacteuren...
 This operation is restricted to administrators only...
 Deze taak mag alleen uitgevoerd worden door beheerders...
+Rule "%1" matched "%2" on this page.
+
 Index of all pages
 Index van alle pagina's
 all pages
@@ -437,6 +439,8 @@ Too many connections by %s
 Te veel verbindingen met %s
 Please do not fetch more than %1 pages in %2 seconds.
 Haal a.u.b. niet meer dan %s pagina's op in %2 seconden.
+Check whether the web server can create the directory %s and whether it can create files in it.
+
 Recent Visitors
 Recente bezoekers
 Referrers
@@ -487,6 +491,8 @@ Footnotes:
 Voetnoten:
 image: %s
 afbeelding: %s
+Index
+
 Languages:
 Talen:
 Show!

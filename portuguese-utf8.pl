@@ -38,7 +38,7 @@ RSS parsing failed for %s
 
  . . . . 
 
-Click to create this page
+Click to edit this page
 
 Invalid action parameter %s
 Parametro de ação inválido %s
@@ -310,6 +310,8 @@ This operation is restricted to site editors only...
 Essa operação é restrita aos editores do site...
 This operation is restricted to administrators only...
 Essa operação é restrita aos administradores...
+Rule "%1" matched "%2" on this page.
+
 Index of all pages
 Índice de todas as páginas
 all pages
@@ -430,6 +432,8 @@ Too many connections by %s
 Muitas conexões de %s
 Please do not fetch more than %1 pages in %2 seconds.
 Se faz favor não busque mais do que %1 páginas em %2 segundos.
+Check whether the web server can create the directory %s and whether it can create files in it.
+
 Recent Visitors
 Visitantes recentes
 Referrers
@@ -480,6 +484,8 @@ Footnotes:
 
 image: %s
 imagem: %s
+Index
+
 Languages:
 Línguas:
 Show!

@@ -39,18 +39,8 @@ RSS parsing failed for %s
 
  . . . . 
 
-Click to create this page
+Click to edit this page
 Щелчок - создать эту страницу
-http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
-
-http://www.amazon.com/exec/obidos/ISBN=%s
-
-alternate
-альтернативный
-http://www.pricescan.com/books/BookDetail.asp?isbn=%s
-
-search
-поиск
 Invalid action parameter %s
 Некорректный параметр действия %s
 Invalid URL.
@@ -103,14 +93,14 @@ Include minor changes
 %s дней
 List later changes
 Перечислить недавние изменения
+Filters
+Фильтры
 Username:
 Имя пользователя:
 Host:
 Хост:
 Language:
 
-Filters
-Фильтры
 Go!
 Вперёд!
 (minor)
@@ -321,6 +311,8 @@ This operation is restricted to site editors only...
 Эта операция только для редакторов сайта...
 This operation is restricted to administrators only...
 Эта операция только для администаторов сайта...
+Rule "%1" matched "%2" on this page.
+
 Index of all pages
 Каталог всех страниц:
 all pages
@@ -441,6 +433,8 @@ Too many connections by %s
 
 Please do not fetch more than %1 pages in %2 seconds.
 
+Check whether the web server can create the directory %s and whether it can create files in it.
+
 Recent Visitors
 
 Referrers
@@ -473,17 +467,25 @@ Delete page
 
 Rename this page to:
 
+Cannot highlight the language %s.
+
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
 
 The match parameter is missing.
 
 Page Collection for %s
 
+Previous
+
+Next
+
 Calendar %s
 
 Footnotes:
 
 image: %s
+
+Index
 
 Languages:
 
@@ -509,7 +511,13 @@ None
 
 Type
 
+Permalink to "%s"
+
 Portrait
+
+Static Copy
+
+Alternatively, use one of the following templates:
 
 Thread: %s
 
@@ -531,6 +539,24 @@ URL:
 
 Name:
 
+Failed to remove %s
+
+The translation is up to date.
+
+The translation is outdated.
+
+The page does not exist.
+
+http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
+
+http://www.amazon.com/exec/obidos/ISBN=%s
+
+alternate
+альтернативный
+http://www.pricescan.com/books/BookDetail.asp?isbn=%s
+
+search
+поиск
 Blog
 
 END_OF_TRANSLATION

@@ -37,18 +37,8 @@ RSS parsing failed for %s
 Die RSS Daten von %s sind ungültig; sie können nicht verarbeitet werden
  . . . . 
  . . . . 
-Click to create this page
-Hier klicken um die Seite zu erstellen
-http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
-http://www.kelkoo.de/shopbot/search.jsp?from=shopbot&catPath=de%2Fbook&catId=100801&title=&author=&isbn=%s&maxprice=&x=36&y=9
-http://www.amazon.com/exec/obidos/ISBN=%s
-http://www.amazon.de/exec/obidos/ISBN=%s
-alternate
-Alternativ
-http://www.pricescan.com/books/BookDetail.asp?isbn=%s
-http://de.bookbutler.info/vergleich/%s
-search
-Suchen
+Click to edit this page
+Hier klicken um die Seite zu bearbeiten
 Invalid action parameter %s
 Ungültiger action Parameter: %s
 Invalid URL.
@@ -101,14 +91,14 @@ Inklusive kleinere Änderungen
 %s Tage
 List later changes
 Spätere Änderungen
+Filters
+Filter
 Username:
 Benutzername:
 Host:
 Rechner:
 Language:
 Sprache:
-Filters
-Filter
 Go!
 Los!
 (minor)
@@ -319,6 +309,8 @@ This operation is restricted to site editors only...
 Diese Aktion darf nur von Bearbeitern durchgeführt werden...
 This operation is restricted to administrators only...
 Diese Aktion darf nur von Administratoren durchgeführt werden...
+Rule "%1" matched "%2" on this page.
+
 Index of all pages
 Index aller Seiten
 all pages
@@ -439,6 +431,8 @@ Too many connections by %s
 Zu viele Verbindungen durch %s
 Please do not fetch more than %1 pages in %2 seconds.
 Bitte rufen sie nicht mehr als %1 Seiten in %2 Sekunden auf.
+Check whether the web server can create the directory %s and whether it can create files in it.
+
 Recent Visitors
 Kürzliche Besucher
 Referrers
@@ -471,18 +465,26 @@ Delete page
 Seite löschen
 Rename this page to:
 Bennen diese Seite um:
+Cannot highlight the language %s.
+
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
 Um einen Kalender zu produzieren fehlt entweder cal(1), Date::Calc(3) oder Date::Pcalc(3).
 The match parameter is missing.
 Der 'match' Parameter fehlt noch.
 Page Collection for %s
 Seitensammlung für %s
+Previous
+
+Next
+
 Calendar %s
 Kalender %s
 Footnotes:
 Fussnoten:
 image: %s
 Bild: %s
+Index
+
 Languages:
 Sprachen:
 Show!
@@ -507,8 +509,14 @@ None
 Keiner
 Type
 Typ
+Permalink to "%s"
+
 Portrait
 Portrait
+Static Copy
+
+Alternatively, use one of the following templates:
+
 Thread: %s
 Thread: %s
 ID parameter is missing.
@@ -529,6 +537,24 @@ URL:
 URL:
 Name:
 Name:
+Failed to remove %s
+
+The translation is up to date.
+
+The translation is outdated.
+
+The page does not exist.
+
+http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
+http://www.kelkoo.de/shopbot/search.jsp?from=shopbot&catPath=de%2Fbook&catId=100801&title=&author=&isbn=%s&maxprice=&x=36&y=9
+http://www.amazon.com/exec/obidos/ISBN=%s
+http://www.amazon.de/exec/obidos/ISBN=%s
+alternate
+Alternativ
+http://www.pricescan.com/books/BookDetail.asp?isbn=%s
+http://de.bookbutler.info/vergleich/%s
+search
+Suchen
 Blog
 Blog
 END_OF_TRANSLATION

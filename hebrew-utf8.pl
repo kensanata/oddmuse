@@ -38,18 +38,8 @@ RSS parsing failed for %s
 
  . . . . 
 
-Click to create this page
+Click to edit this page
 
-http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
-
-http://www.amazon.com/exec/obidos/ISBN=%s
-
-alternate
-חלופי
-http://www.pricescan.com/books/BookDetail.asp?isbn=%s
-
-search
-חיפוש
 Invalid action parameter %s
 פרמטר שגוי לפעולה: %s
 Invalid URL.
@@ -102,13 +92,13 @@ Include minor changes
 %s ימים
 List later changes
 
+Filters
+
 Username:
 שם משתמש:
 Host:
 
 Language:
-
-Filters
 
 Go!
 חפש!
@@ -320,6 +310,8 @@ This operation is restricted to site editors only...
 פעולה זו מוגבלת לעורכים בלבד...
 This operation is restricted to administrators only...
 פעולה זו מוגבלת למנהלים בלבד...
+Rule "%1" matched "%2" on this page.
+
 Index of all pages
 תוכן כל הדפים:
 all pages
@@ -440,6 +432,8 @@ Too many connections by %s
 יותר מדי חיבורים מ-%s.
 Please do not fetch more than %1 pages in %2 seconds.
 
+Check whether the web server can create the directory %s and whether it can create files in it.
+
 Recent Visitors
 מבקרים מהזמן האחרון
 Referrers
@@ -472,17 +466,25 @@ Delete page
 
 Rename this page to:
 
+Cannot highlight the language %s.
+
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
 
 The match parameter is missing.
 
 Page Collection for %s
 
+Previous
+
+Next
+
 Calendar %s
 
 Footnotes:
 
 image: %s
+
+Index
 
 Languages:
 
@@ -508,7 +510,13 @@ None
 
 Type
 
+Permalink to "%s"
+
 Portrait
+
+Static Copy
+
+Alternatively, use one of the following templates:
 
 Thread: %s
 
@@ -530,6 +538,24 @@ URL:
 
 Name:
 
+Failed to remove %s
+
+The translation is up to date.
+
+The translation is outdated.
+
+The page does not exist.
+
+http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
+
+http://www.amazon.com/exec/obidos/ISBN=%s
+
+alternate
+חלופי
+http://www.pricescan.com/books/BookDetail.asp?isbn=%s
+
+search
+חיפוש
 Blog
 
 END_OF_TRANSLATION
