@@ -33,13 +33,27 @@ my $redirect;
 undef $/;
 $| = 1; # no output buffering
 
+sub url_encode {
+  my $str = shift;
+  return '' unless $str;
+  my @letters = split(//, $str);
+  my @safe = ('a' .. 'z', 'A' .. 'Z', '0' .. '9', '-', '_', '.'); # shell metachars are unsafe
+  foreach my $letter (@letters) {
+    my $pattern = quotemeta($letter);
+    if (not grep(/$pattern/, @safe)) {
+      $letter = sprintf("%%%02x", ord($letter));
+    }
+  }
+  return join('', @letters);
+}
+
 sub update_page {
   my ($id, $text, $summary, $minor, $admin, @rest) = @_;
   print '*';
   my $pwd = $admin ? 'foo' : 'wrong';
-  $id = UrlEncode($id);
-  $text = UrlEncode($text);
-  $summary = UrlEncode($summary);
+  $id = url_encode($id);
+  $text = url_encode($text);
+  $summary = url_encode($summary);
   $minor = $minor ? 'on' : 'off';
   my $rest = join(' ', @rest);
   $redirect = `perl wiki.pl Save=1 title=$id summary=$summary recent_edit=$minor text=$text pwd=$pwd $rest`;
@@ -1018,6 +1032,91 @@ OddMuse
 EOT
 
 test_page(update_page('InterMap', "All your edits are blong to us!\n", 'required'), @Test);
+
+# --------------------
+
+print '[links]';
+
+open(F,'>/tmp/oddmuse/config');
+print F "\$SurgeProtection = 0;\n";
+print F "\$AdminPass = 'foo';\n";
+close(F);
+
+update_page('InterMap', " Oddmuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n",
+	    'required', 0, 1);
+
+update_page('a', 'Oddmuse:foo(no) [Oddmuse:bar] [Oddmuse:baz text] '
+	    . '[Oddmuse:bar(no)] [Oddmuse:baz(no) text] '
+	    . '[[Oddmuse:foo_(bar)]] [[[Oddmuse:foo_(baz)]]] [[Oddmuse:foo_(quux)|text]]');
+
+@Test = split('\n',<<'EOT');
+"a" -> "Oddmuse:foo"
+"a" -> "Oddmuse:bar"
+"a" -> "Oddmuse:baz"
+"a" -> "Oddmuse:foo_\(bar\)"
+"a" -> "Oddmuse:foo_\(baz\)"
+"a" -> "Oddmuse:foo_\(quux\)"
+EOT
+
+test_page_negative(get_page('action=links raw=1'), @Test);
+test_page(get_page('action=links raw=1 inter=1'), @Test);
+
+open(F,'>/tmp/oddmuse/config');
+print F "\$SurgeProtection = 0;\n";
+print F "\$BracketWiki = 0;\n";
+close(F);
+
+update_page('a', '[[b]] [[[c]]] [[d|e]] FooBar [FooBaz] [FooQuux fnord] ');
+
+@Test1 = split('\n',<<'EOT');
+"a" -> "b"
+"a" -> "c"
+"a" -> "FooBar"
+"a" -> "FooBaz"
+"a" -> "FooQuux"
+EOT
+
+@Test2 = split('\n',<<'EOT');
+"a" -> "d"
+EOT
+
+$page = get_page('action=links raw=1');
+test_page($page, @Test1);
+test_page_negative($page, @Test2);
+
+open(F,'>/tmp/oddmuse/config');
+print F "\$SurgeProtection = 0;\n";
+print F "\$BracketWiki = 1;\n";
+print F "\$AdminPass = 'foo';\n";
+close(F);
+
+update_page('a', '[[b]] [[[c]]] [[d|e]] FooBar [FooBaz] [FooQuux fnord] '
+	    . 'http://www.oddmuse.org/ [http://www.emacswiki.org/] '
+	    . '[http://www.communitywiki.org/ cw]');
+
+@Test1 = split('\n',<<'EOT');
+"a" -> "b"
+"a" -> "c"
+"a" -> "d"
+"a" -> "FooBar"
+"a" -> "FooBaz"
+"a" -> "FooQuux"
+EOT
+
+@Test2 = split('\n',<<'EOT');
+"a" -> "http://www.oddmuse.org/"
+"a" -> "http://www.emacswiki.org/"
+"a" -> "http://www.communitywiki.org/"
+EOT
+
+$page = get_page('action=links raw=1');
+test_page($page, @Test1);
+test_page_negative($page, @Test2);
+$page = get_page('action=links raw=1 url=1');
+test_page($page, @Test1, @Test2);
+$page = get_page('action=links raw=1 links=0 url=1');
+test_page_negative($page, @Test1);
+test_page($page, @Test2);
 
 # --------------------
 
