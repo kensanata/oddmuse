@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: forms.pl,v 1.3 2004/10/08 20:07:39 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: forms.pl,v 1.4 2004/12/05 03:24:39 as Exp $</p>';
 
 push(@MyRules, \&FormsRule);
 
@@ -32,7 +32,7 @@ sub FormsRule {
       . $q->input({-type=>'hidden', -name=>$1, -value=>GetParam($1)})/ge;
     print UnquoteHtml($form);
     pos = $oldpos;
-    return '';
+    return AddHtmlEnvironment('p');
   }
   return undef;
 }
