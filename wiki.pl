@@ -355,7 +355,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.516 2005/01/06 07:28:51 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.517 2005/01/06 10:25:03 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -493,7 +493,7 @@ sub ApplyRules {
 	    print $q->end_div();
 	  }
 	}
-	print AddHtmlEnvironment('p');
+	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
 	pos = $oldpos;		# restore \G after call to ApplyRules
       } elsif ($bol && m/\G(\&lt;journal(\s+(\d*))?(\s+"(.*)")?(\s+(reverse))?\&gt;[ \t]*\n?)/cgi) {
 	# <journal 10 "regexp"> includes 10 pages matching regexp
@@ -501,18 +501,21 @@ sub ApplyRules {
 	Dirty($1);
 	my $oldpos = pos;
 	PrintJournal($3, $5, $7);
-	print AddHtmlEnvironment('p');
+	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
 	pos = $oldpos;		# restore \G after call to ApplyRules
       } elsif ($bol && m/\G(\&lt;rss(\s+(\d*))?\s+(.*?)\&gt;[ \t]*\n?)/cgis) {
 	# <rss "uri..."> stores the parsed RSS of the given URI
 	Clean(CloseHtmlEnvironments());
+	warn "before: @HtmlStack";
 	Dirty($1);
 	my $oldpos = pos;
 	eval { local $SIG{__DIE__}; binmode(STDOUT, ":utf8"); } if $HttpCharset eq 'UTF-8';
 	print RSS($3 ? $3 : 15, split(/\s+/, UnquoteHtml($4)));
 	eval { local $SIG{__DIE__}; binmode(STDOUT, ":raw"); };
-	print AddHtmlEnvironment('p');
+	warn "after: @HtmlStack";
+	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
 	pos = $oldpos;
+	warn "finally: @HtmlStack";
 	# restore \G after call to RSS which uses the LWP module (for older copies of the module?)
       } elsif ($locallinks
 	       and ($BracketText && m/\G(\[$InterLinkPattern\s+([^\]]+?)\])/cog
@@ -877,13 +880,15 @@ sub RSS {
       my $contributor = $i->{dc}->{contributor};
       $contributor =~ s/^\s+//;
       $contributor =~ s/\s+$//;
-      if (!$contributor) {
-	$contributor = $i->{$rdfns}->{value};
+      $contributor = $i->{$rdfns}->{value} unless $contributor;
+      $line .= $q->span({-class=>'contributor'}, $q->span(T(' . . . . ')) . $contributor) if $contributor;
+      if ($description) {
+	if ($description =~ /</) {
+	  $line .= $q->div({-class=>'description'}, $description);
+	} else {
+	  $line .= $q->span({class=>'dash'}, ' &ndash; ') . $q->strong({-class=>'description'}, $description);
+	}
       }
-      $line .= $q->span({-class=>'contributor'}, $q->span(T(' . . . . ')) . $contributor)
-	if $contributor;
-      $line .= $q->span({class=>'dash'}, ' &ndash; ') . $q->strong({-class=>'description'}, $description)
-	if $description;
       while ($lines{$date}) { $date .= ' '; } # make sure this is unique
       $lines{$date} = $line;
     }
