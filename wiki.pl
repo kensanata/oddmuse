@@ -82,7 +82,7 @@ $HttpCharset = '';  # Charset for pages, default is ISO-8859-1
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.18 2003/03/28 20:08:30 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.19 2003/03/28 20:33:37 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -222,8 +222,10 @@ sub InitLinkPatterns {
   # Allow uses to call this from their config file, so do not run twice.
   return if $FS;
   # Field separators are used in the URL-style patterns below.
-  $FS  = "\x1e";      # The FS character is the RECORD SEPARATOR control char in ASCII
-  $FS0 = "\xb3";      # The old FS character is a superscript "3" in Latin-1
+  if (!$FS) {
+    $FS  = "\x1e";    # The FS character is the RECORD SEPARATOR control char in ASCII
+    $FS0 = "\xb3";    # The old FS character is a superscript "3" in Latin-1
+  }
   $FS1 = $FS . '1';   # The FS values are used to separate fields
   $FS2 = $FS . '2';   # in stored hashtables and other data structures.
   $FS3 = $FS . '3';   # The FS character is not allowed in user data.
@@ -2613,7 +2615,7 @@ sub ReadFile {
   if (open(IN, "<$fileName")) {
     $data=<IN>;
     close IN;
-    if ($data =~ /$FS0/ and $data !~ /$FS/) {
+    if ($FS0 and $data =~ /$FS0/ and $data !~ /$FS/) {
       $data =~ s/$FS0/$FS/go;
       $FS0used = 1;
     }
@@ -3560,7 +3562,7 @@ sub DoMaintain {
   # Move the old stuff from rc to temp
   @rc = split(/\n/, $data);
   foreach (@rc) {
-    /$FS0/ and !/$FS/ and s/$FS0/$FS/go or last;
+    $FS0 and /$FS0/ and !/$FS/ and s/$FS0/$FS/go or last;
   }
   for ($i = 0; $i < @rc ; $i++) {
     ($ts) = split(/$FS3/, $rc[$i]);
@@ -3572,7 +3574,7 @@ sub DoMaintain {
   if (open(IN, "$RcOldFile")) {
     my $line = <IN>;
     close(IN);
-    if ($line =~ /$FS0/ and $line !~ /$FS/) {
+    if ($FS0 and $line =~ /$FS0/ and $line !~ /$FS/) {
       print $q->p(Ts('Converting the old %s log file to the new field separator.', $RCName));
       my $old_data;
       ($status, $old_data) = &ReadFile($RcOldFile);
