@@ -287,7 +287,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.302 2004/01/19 00:03:47 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.303 2004/01/19 00:46:11 as Exp $');
 }
 
 sub InitCookie {
@@ -1922,7 +1922,6 @@ sub PrintFooter {
 		    . GetFormStart()
 		    . GetHiddenValue("title", $OpenPageName)
 		    . GetHiddenValue("summary" , T("new comment"))
-		    . GetHiddenValue("recent_edit", "on")
 		    . GetTextArea('aftertext', $NewComment)
 		    . '<p>' . T('Username:') . ' '
 		    . $q->textfield(-name=>'username',
