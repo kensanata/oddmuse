@@ -637,29 +637,15 @@ close(F);
 
 # without new edit, the cached version persists
 
-@Test = split('\n',<<'EOT');
-This is a WikiLink.
-EOT
-
 test_page(get_page('CacheTest'), @Test);
 
-# now run maintenance without refreshing the cache
-
-get_page('action=maintain');
-test_page(get_page('CacheTest'), @Test);
-
-# a second maintenance run without admin password has no effect, either
-
-get_page('action=maintain cache=1');
-test_page(get_page('CacheTest'), @Test);
-
-# new refresh the cache
+# refresh the cache using the all action
 
 @Test = split('\n',<<'EOT');
-This is a WikiLink<a href="http://localhost/wiki.pl\?action=edit;id=WikiLink">\?</a>.
+This is a WikiLink<a class="edit" title="Click to create this page" href="http://localhost/wiki.pl\?action=edit;id=WikiLink">\?</a>.
 EOT
 
-get_page('action=maintain cache=1 pwd=foo');
+get_page('action=all cache=0');
 test_page(get_page('CacheTest'), @Test);
 
 # --------------------
@@ -937,13 +923,13 @@ This is <strong>longer strong</strong> text.
 This is ''emphasized text containing '''longer strong''' text''.
 This is <em>emphasized text containing <strong>longer strong</strong> text</em>.
 WikiWord
-WikiWord<a href="http://localhost/test-wrapper.pl?action=edit;id=WikiWord">?</a>
+WikiWord<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=WikiWord">?</a>
 WikiWord:
-WikiWord<a href="http://localhost/test-wrapper.pl?action=edit;id=WikiWord">?</a>:
+WikiWord<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=WikiWord">?</a>:
 OddMuse
-OddMuse<a href="http://localhost/test-wrapper.pl?action=edit;id=OddMuse">?</a>
+OddMuse<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OddMuse">?</a>
 OddMuse:
-OddMuse<a href="http://localhost/test-wrapper.pl?action=edit;id=OddMuse">?</a>:
+OddMuse<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OddMuse">?</a>:
 OddMuse:test
 <a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test">OddMuse:test</a>
 OddMuse:test: or not
@@ -959,7 +945,7 @@ WikiLink
 !foo
 !foo
 ![[Free Link]]
-![Free Link]<a href="http://localhost/test-wrapper.pl?action=edit;id=Free_Link">?</a>
+![Free Link]<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=Free_Link">?</a>
 ||one||
 <table class="user"><tr><td>one</td></tr></table>
 introduction\n\n||one||two||three||\n||||one two||three||
@@ -1053,11 +1039,11 @@ update_page('Banana', "This page exists also.");
 [[SandBox|play here]]
 <a class="local" href="http://localhost/test-wrapper.pl/SandBox">play here</a>
 [[FooBar|do not play here]]
-[FooBar<a href="http://localhost/test-wrapper.pl?action=edit;id=FooBar">?</a> do not play here]
+[FooBar<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=FooBar">?</a> do not play here]
 [[Banana|Not a pear]]
 <a class="local" href="http://localhost/test-wrapper.pl/Banana">Not a pear</a>
 [[Appel|Not a pear]]
-[Appel<a href="http://localhost/test-wrapper.pl?action=edit;id=Appel">?</a> Not a pear]
+[Appel<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=Appel">?</a> Not a pear]
 file://home/foo/tutorial.pdf
 <a href="file://home/foo/tutorial.pdf">file://home/foo/tutorial.pdf</a>
 file:///home/foo/tutorial.pdf
