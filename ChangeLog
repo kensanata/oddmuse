@@ -1,3 +1,14 @@
+2003-10-24  Alex Schroeder  <alex@gnu.org>
+
+	Major rewrite of rules -- if you use DirtyBlock in your config file,
+	then you will have to rewrite your code.
+	
+	* wiki.pl ($Fragment, @Blocks, @Flags): New globals used by ApplyRules.
+	(Clean): New.
+	(Dirty): New.
+	(ApplyRules): Major rewrite, use Clean and Dirty.
+	(DirtyBlock): Deleted.  Any MyRules in config files must be rewritten.
+
 2003-10-21  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (InitLinkPatterns): $InterSitePattern may start with
