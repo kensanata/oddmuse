@@ -18,7 +18,7 @@
 #
 # do 'german-utf8.pl';
 #
-# Diese Übersetzung wurde für Oddmuse 1.215 erstellt.
+# Diese Übersetzung wurde für Oddmuse 1.258 erstellt.
 #
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
@@ -29,6 +29,12 @@ Invalid UserName %s: not saved.
 Ungültiger Benutzername %s: nicht gespeichert.
 UserName must be 50 characters or less: not saved
 Länge des Benutzernamens maximal 50 Zeichen: nicht gespeichert.
+diff
+Unterschiede
+history
+alte Versionen
+ . . . . 
+ . . . . 
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 http://www.kelkoo.de/shopbot/search.jsp?from=shopbot&catPath=de%2Fbook&catId=100801&title=&author=&isbn=%s&maxprice=&x=36&y=9
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -59,6 +65,8 @@ showing current revision instead
 Stattdessen Anzeige der aktuellen Version
 Showing revision %s
 Anzeige Version %s
+Please go on to %s.
+Bitte machen Sie weiter bei %s.
 Could not open %s log file
 Kann Logdatei %s nicht öffnen
 Error was
@@ -69,8 +77,6 @@ Could not open old %s log file
 Konnte alte Logdatei %s nicht öffnen
 No updates since %s
 Keine Änderungen seit %s
-Page generated %s
-Seite erzeugt am %s
 Updates since %s
 Änderungen seit %s
 Updates in the last %s days
@@ -89,20 +95,22 @@ List all changes
 Alle Änderungen
 %s days
 %s Tage
-List new changes starting from
-Neue Änderungen anzeigen seit
-Related changes
-Änderungen auf Seiten in dieser Gruppe
+List later changes
+Spätere Änderungen
+Username:
+Benutzername:
+Host:
+Rechner:
+Language:
+Sprache:
+Filters
+Filter
+Go!
+Los!
 (minor)
 (Klein)
-(diff)
-(Unterschiede)
-history
-alte Versionen
 rollback
 bis hier alles Rückgängig machen
-Cluster:
-Gruppe:
 from %s
 von %s
 History of %s
@@ -111,8 +119,6 @@ Compare
 Vergleichen
 Revision %s
 Version %s
- . . . . 
- . . . . 
 by
 von
 Rolling back changes
@@ -135,8 +141,6 @@ Cookie:
 Cookie: 
 new comment
 Neuer Kommentar
-Username:
-Benutzername:
 Save
 Speichern
 Comments on this page
@@ -161,6 +165,8 @@ Edited
 Geändert
 by %s
 von %s
+(diff)
+(Unterschiede)
 Warning
 Warnung
 Database is stored in temporary directory %s
@@ -171,34 +177,24 @@ Search:
 Suchen:
 Replace:
 Ersetzen mit:
-Go!
-Los!
 Validate HTML
 HTML überprüfen
 Validate CSS
 CSS überprüfen
-Please go on to %s.
-Bitte machen Sie weiter bei %s.
+Difference (from revision %1 to %2)
+Unterschiede (zwischen Version %1 und %2)
+revision %s
+Version %s
+current revision
+Aktuelle Version
+Difference (from prior %s revision)
+(%s Änderungen)
 major
 größere
 minor
 kleinere
-(The revisions are identical or unavailable.)
-(Die Versionen sind identisch oder nicht verfügbar.)
 No diff available.
 Keine Unterschiede vorhanden.
-current revision
-Aktuelle Version
-revision %s
-Version %s
-Difference (from revision %s
-Unterschiede (ab Version %s
- to %s)
- bis %s)
-No diff available--this is the first %s revision.
-Keine Unterschiede vorhanden -- Das ist die erste %s Version
-Difference (from prior %s revision)
-(%s Änderungen)
 Changed:
 Geändert:
 Removed:
@@ -207,12 +203,12 @@ Added:
 Eingefügt:
 to
 stattdessen:
-Bad page version (or corrupt page).
-Falsche Seitenversion (oder defekte Seite).
 Cannot save an nameless page.
 Eine Seite ohne Namen kann nicht gespeichert werden.
-cannot write %s
-Kann %s nicht schreiben
+Cannot open %s
+%s kann nicht geöffnet werden
+Cannot write %s
+%s kann nicht geschrieben werden
 Could not get %s lock
 Die %s Sperre konnte nicht gesetzt werden.
 Unlocking
@@ -223,8 +219,6 @@ Forced unlock of %s lock.
 Erzwungene Aufhebung der Sperre von %s.
 No unlock required.
 Aufhebung der Sperre nicht notwendig.
-Can not open %s
-Kann %s nicht öffnen
 %s hours ago
 %s Stunden vorher
 1 hour ago
@@ -301,6 +295,8 @@ This operation is restricted to administrators only...
 Diese Aktion darf nur von Administratoren durchgeführt werden...
 Index of all pages
 Index aller Seiten
+%s pages found:
+%s Seiten gefunden:
 Replaced: %s
 Ersetzt: %s
 Search for: %s
@@ -311,8 +307,6 @@ and
 und
 or
 oder
-%s pages found:
-%s Seiten gefunden:
 last updated
 Zuletzt geändert
 Full Link List
@@ -355,8 +349,6 @@ ancestor
 Vorgänger
 other
 Andere Person
-%s log error:
-%s Log Fehler:
 Ping
 Ping
 No response.
@@ -383,16 +375,6 @@ Moving %s log entries.
 Verschiebe %s Log-Einträge.
 Main lock released.
 Hauptsperre aufgehoben.
-Converting all files
-Alle Dateien werden konvertiert
-No conversion required.
-Konversion unnötig.
-converted
-konvertiert
-no conversion required
-muss nicht konvertiert werden
-has no file
-hat keine Datei
 Set or Remove global edit lock
 Erzeugen oder Aufheben der globalen Bearbeitungssperre
 Edit lock created.
