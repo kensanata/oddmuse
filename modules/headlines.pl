@@ -18,7 +18,7 @@
 
 use vars qw($HeadlineNumber);
 
-$ModulesDescription .= '<p>$Id: headlines.pl,v 1.6 2004/10/12 22:26:40 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: headlines.pl,v 1.7 2004/12/05 03:52:21 as Exp $</p>';
 
 push(@MyRules, \&HeadlinesRule);
 
@@ -31,7 +31,7 @@ sub HeadlinesRule {
     Clean(CloseHtmlEnvironments());
     Dirty($1);
     HeadlinesPrint();
-    return '';
+    return AddHtmlEnvironment('p');
   }
   return undef;
 }
