@@ -1,4 +1,8 @@
-$ModulesDescription .= '<p>$Id: simple-rules.pl,v 1.2 2004/01/30 11:59:53 as Exp $</p>';
+use vars qw($StrictSeTextRules);
+
+$StrictSeTextRules = 0;
+
+$ModulesDescription .= '<p>$Id: simple-rules.pl,v 1.3 2004/01/30 13:00:00 as Exp $</p>';
 
 *ApplyRules = *NewSimpleRulesApplyRules;
 
@@ -27,8 +31,15 @@ sub NewSimpleRulesApplyRules {
     } else {
       $block = $q->p($block);
     }
-    $block =~ s/\*\*(.+?)\*\*/$q->strong($1)/seg;
     $block =~ s/~(\S+)~/$q->em($1)/eg;
+    $block =~ s/\*\*(.+?)\*\*/$q->strong($1)/seg;
+    if (!$StrictSeTextRules) {
+      $block =~ s/\/\/(.+?)\/\//$q->em($1)/seg;
+      $block =~ s/__(.+?)__/$q->u($1)/seg;
+      $block =~ s/_(\S+)_/$q->u($1)/seg;
+      $block =~ s/\*(\S+)\*/$q->b($1)/seg;
+      $block =~ s/\/(\S+)\//$q->i($1)/seg;
+    }
     if ($locallinks) {
       ($block =~ s/(\[\[$FreeLinkPattern\]\])/
        push (@dirty, $1);
@@ -70,5 +81,11 @@ We also have numbered lists:
 1. We use something like setext...
 2. But we ~extend~ it.
 3. **Really we do!**
+
+The default are non-strict setext rules.
+Therefore we also allow
+//multi-word emphasis// and
+__multi-word underlineing__, and we also
+allow the similar /single/ _word_ *rules*.
 
 I think that's all the rules we [[implemented]].
