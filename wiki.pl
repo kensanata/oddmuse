@@ -279,7 +279,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.227 2003/10/28 19:22:28 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.228 2003/10/28 20:33:32 as Exp $');
 }
 
 sub InitCookie {
@@ -495,7 +495,7 @@ sub ApplyRules {
       print GetPageOrEditLink($2, $3, 0 , 1); # $3 may be empty
     } elsif (%Smilies && (Clean(SmileyReplace()))) {
     } elsif (eval { local $SIG{__DIE__}; Clean(MyRules()); }) {
-    } elsif (m/\G\s*\n(s*\n)+/cg) { # paragraphs -- whitespace including at least two newlines
+    } elsif (m/\G\s*\n(s*\n)+/cg) { # paragraphs: at least two newlines
       Clean(CloseHtmlEnvironments() . '<p>'); # there is another one like this further up
     } elsif (m/\G\s+/cgs) { Clean(' ');
     } elsif (m/\G(\w+)/cgi or m/\G(\S)/cg) { Clean($1); # one block at a time, consider word<b>!
@@ -569,7 +569,7 @@ sub OpenHtmlEnvironment { # close the previous one and open a new one instead
 }
 
 sub SmileyReplace {
-  my $match = 0;
+  my $match = '';
   foreach my $regexp (keys %Smilies) {
     if (m/\G($regexp)/cg) {
       $match = $q->img({-src=>$Smilies{$regexp}, -alt=>$1});
