@@ -270,7 +270,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.145 2003/09/18 09:42:58 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.146 2003/09/19 00:03:58 as Exp $');
 }
 
 sub InitCookie {
@@ -2246,6 +2246,7 @@ sub GetPageCache {
 # Always call SavePage within a lock.
 sub SavePage {
   my $quiet = shift;
+  ReportError(T('Cannot save an nameless page.')) unless $OpenPageName;
   my $file = GetPageFile($OpenPageName);
   if (not $quiet) {
     $Page{'revision'} += 1;    # Number of edited times
@@ -2913,7 +2914,7 @@ sub DoSearch {
   }
   return  if $replacement and !UserIsAdminOrError();
   if ($replacement) {
-    print GetHeader('', QuoteHtml(Ts('Replaced: %s', $string)), '');
+    print GetHeader('', QuoteHtml(Ts('Replaced: %s', "$string -> $replacement")), '');
     Replace($string,$replacement);
     $string = $replacement;
   } else {
@@ -3015,9 +3016,9 @@ sub Replace {
     foreach my $id (AllPagesList()) {
       OpenPage($id);
       OpenDefaultText();
-      my $new = $Text{'text'};
-      if ($new =~ s/$from/$to/gi) {
-	Save($id, $new, $from . ' -> ' . $to, 1,
+      $_ = $Text{'text'};
+      if (eval "s/$from/$to/gi") { # allows use of backreferences
+	Save($id, $_, $from . ' -> ' . $to, 1,
 	     ($Section{'ip'} ne $ENV{REMOTE_ADDR}));
       }
     }
