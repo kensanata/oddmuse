@@ -577,7 +577,7 @@ test_page(get_page('SearchAndReplace'), @Test);
 ## Check headers especially the quoting of non-ASCII characters.
 
 @Test = split('\n',<<'EOT');
-<h1><a href="http://localhost/wiki.pl\?search=Alexander\+Schr\%f6der">Alexander Schröder</a></h1>
+<h1><a title="Click to search for references to this page" href="http://localhost/wiki.pl\?search=Alexander\+Schr\%f6der">Alexander Schröder</a></h1>
 Edit <a href="http://localhost/wiki.pl/Alexander_Schr\%f6der">Alexander Schröder</a>!
 EOT
 
@@ -650,7 +650,7 @@ print '[lock on creation]';
 @Test = split('\n',<<'EOT');
 SandBox
 This is a test.
-<h1><a href="http://localhost/wiki.pl\?search=SandBox">SandBox</a></h1>
+<h1><a title="Click to search for references to this page" href="http://localhost/wiki.pl\?search=SandBox">SandBox</a></h1>
 EOT
 
 test_page(update_page('SandBox', 'This is a test.', 'first test'), @Test);
