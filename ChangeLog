@@ -18,6 +18,7 @@
 	(UpdateReferers): New.
 	(RefererTrack): New.
 	(GetReferers): Quote HTML.
+	(GetInterLink): If no page follows the colon, this is no interlink.
 
 2003-03-28  Alex Schroeder  <alex@gnu.org>
 
