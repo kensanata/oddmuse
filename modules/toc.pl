@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.15 2004/11/25 19:09:54 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.16 2004/11/25 19:49:32 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
@@ -54,7 +54,7 @@ sub TocWikiHeading {
     my ($depth, $text) = @_;
     $depth = length($depth);
     $depth = 6 if ($depth > 6);
-    my $link = UrlEncode(FreeToNormal($text));
+    my $link = FreeToNormal($text);
     return "<h$depth><a name=\"$link\">$text</a></h$depth>";
 }
 
