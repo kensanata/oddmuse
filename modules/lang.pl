@@ -23,7 +23,7 @@
 # span[lang=de] { background-color:#ffd; }
 # span[lang=it] { background-color:#dfd; }
 
-$ModulesDescription .= '<p>$Id: lang.pl,v 1.6 2004/06/17 01:13:18 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: lang.pl,v 1.7 2004/08/13 02:28:22 as Exp $</p>';
 
 push(@MyRules, \&LangRule);
 
@@ -65,13 +65,12 @@ sub NewLangGetNearLinksUsed {
   my $html = OldLangGetNearLinksUsed($id);
   my @langs = qw(en de fr it pt);
   my @selected = split(/ /, GetParam('theme', '')); # may contain elements that are not in @langs!
-  $html .= $q->div({-class=>'languages'},
-		   GetFormStart(),
-		   GetHiddenValue('action', 'browse'),
-		   GetHiddenValue('id', $id),
-		   T('Languages:'), ' ',
-		   $q->checkbox_group('languages', \@langs, \@selected),
-		   $q->hidden('setlang', '1'),
-		   $q->submit('dolang', T('Show!')) . $q->endform);
+  $html .= $q->div({-class=>'languages'}, GetFormStart(),
+		   $q->p(GetHiddenValue('action', 'browse'),
+			 GetHiddenValue('id', $id),
+			 T('Languages:'), ' ',
+			 $q->checkbox_group('languages', \@langs, \@selected),
+			 $q->hidden('setlang', '1'),
+			 $q->submit('dolang', T('Show!'))) . $q->endform);
   return $html;
 }
