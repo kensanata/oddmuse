@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: atom.pl,v 1.6 2004/08/16 01:46:39 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: atom.pl,v 1.7 2004/08/16 01:50:12 as Exp $</p>';
 
 $Action{atom} = \&DoAtom;
 
@@ -88,12 +88,15 @@ EOT
 	    AtomTag('modified', AtomTime($timestamp)),
 	    AtomTag('issued', AtomTime($timestamp)),
 	    AtomTag('summary', QuoteHtml($summary), 1);
-	  print '<content type="application/xhtml+xml">', "\n",
-	    '<div xmlns="http://www.w3.org/1999/xhtml">', "\n";
-	  OpenPage($pagename);
-	  PrintPageDiff();
-	  PrintPageHtml();
-	  print "\n</div>\n</content>\n</entry>\n";
+	  if (GetParam('full', 0)) {
+	    print '<content type="application/xhtml+xml">', "\n",
+	      '<div xmlns="http://www.w3.org/1999/xhtml">', "\n";
+	    OpenPage($pagename);
+	    PrintPageDiff();
+	    PrintPageHtml();
+	    print "\n</div>\n</content>\n";
+	  }
+	  print "</entry>\n";
 	},
 	@_);
   print "</feed>\n";
