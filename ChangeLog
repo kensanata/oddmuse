@@ -1,6 +1,11 @@
+2005-02-01  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ApplyRules): Fix typo found by Flavio Poletti.
+
 2005-01-26  Johan Adler <alltid.foo@bar.nyfiken.org>
 
-        * modules/translations/swedish-utf8.pl (translation) Corrected typo in Swedish translation.
+        * modules/translations/swedish-utf8.pl (translation): Corrected
+	typo in Swedish translation.
 
 2005-01-25  Alex Schroeder  <alex@gnu.org>
 
