@@ -1,3 +1,28 @@
+2004-06-26  Alex Schroeder  <alex@confusibombus>
+
+	* modules/not-found-handler.pl (WriteLinkDb): Removed lock.
+	(DoLinkDb): Added Lock.
+	(RefreshLinkDb): Rewrite.  It was full of bugs.
+	(NewNotFoundHandlerSave): Rewrite.
+	(NotFoundHandlerCacheUpdate): Rewrite.
+
+	* wiki.pl (ApplyRules): Require a space after bullet points (after
+	and #).
+
+	Don't override $ModuleDir if it is already set (since this is used
+	before $ConfigFile is run).
+
+2004-06-23  Alex Schroeder  <alex@gnu.org>
+
+	* modules/markup.pl: A sequence of words may not start with a
+	number in order to prevent "6/22/2004" -> "6<i>22</i>2004" instead
+	of "6/22/2004".
+
+2004-06-22  Alex Schroeder  <alex@confusibombus>
+
+	* wiki.pl (DoPost, DoDownload): Call quotemeta on the MIME type to
+	allow image/svg+xml.
+
 2004-06-21  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetRc): Experimenting with revision clusters: By
