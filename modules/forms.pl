@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: forms.pl,v 1.3 2004/02/03 17:56:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: forms.pl,v 1.1 2004/02/08 13:03:56 as Exp $</p>';
 
 push(@MyRules, \&FormsRule);
 
