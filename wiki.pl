@@ -237,11 +237,11 @@ sub Init {
   InitLinkPatterns(); # Link pattern can be changed in config files
   if ($UseConfig and $ModuleDir and -d $ModuleDir) {
     foreach my $lib (glob("$ModuleDir/*.pm $ModuleDir/*.pl")) {
-      do $lib;
+      do $lib unless $INC{$lib};
       $Message .= CGI::p("$lib: $@") if $@; # no $q exists, yet
     }
   }
-  if ($UseConfig and $ConfigFile and -f $ConfigFile) {
+  if ($UseConfig and $ConfigFile and -f $ConfigFile and not $INC{$ConfigFile}) {
     do $ConfigFile;
     $Message .= CGI::p("$ConfigFile: $@") if $@; # no $q exists, yet
   }
@@ -297,7 +297,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.322 2004/02/11 22:33:33 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.323 2004/02/20 20:22:16 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
