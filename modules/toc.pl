@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.11 2004/10/31 19:20:45 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.12 2004/10/31 19:31:01 as Exp $</p>';
 
 push( @MyRules, \&TocRule );
 
@@ -122,7 +122,7 @@ sub TocHeadings {
             $Headings .= '<ol><li>';
             $HeadingsLevel++;
         }
-        $Headings .= "<a href=\"#$link\">$text</a> ($HeadingsLevel / $HeadingsLevelStart)";
+        $Headings .= "<a href=\"#$link\">$text</a>";
     }
 
     while ( $HeadingsLevel > $HeadingsLevelStart ) {
