@@ -69,7 +69,7 @@ $Monolithic $ReplaceForm %PermanentAnchors %PagePermanentAnchors
 $CollectingJournal $WikiDescription $PrintedHeader %Locks $Fragment
 @Blocks @Flags %NearSite %NearSource %NearLinksUsed $NearSiteInit
 $NearDir $NearMap $SisterSiteLogoUrl %NearSearch
-$PermanentAnchorsInit);
+$PermanentAnchorsInit $ModulesDescription);
 
 # == Configuration ==
 
@@ -295,7 +295,8 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.308 2004/01/25 21:25:52 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.309 2004/01/27 00:25:35 as Exp $');
+  $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
 sub InitCookie {
