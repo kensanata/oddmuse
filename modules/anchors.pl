@@ -16,11 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: anchors.pl,v 1.1 2004/02/09 20:51:40 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: anchors.pl,v 1.2 2004/02/09 21:02:46 as Exp $</p>';
 
 push(@MyRules, \&AnchorsRule);
 
-sub AnchorsRules {
+sub AnchorsRule {
   if (m/\G\[\#([^ ]*)\]/gc) {
     return $q->a({-name=>$1});
   } elsif (m/\G\#([^ ]*)/gc) {
