@@ -81,7 +81,7 @@ $HttpCharset = '';  # Charset for pages, default is ISO-8859-1
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.1 2003/03/21 13:50:35 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.2 2003/03/21 15:34:14 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -773,6 +773,21 @@ sub GetEditLink { # shortcut
 
 sub ScriptLink {
   my ($action, $text) = @_;
+  # inherit some parameters
+  if (not $EmbedWiki and GetParam('embed',0)) {
+    if ($action =~ /=/) {
+      $action .= '&embed=1';
+    } else {
+      $action = 'action=browse&embed=1&id=' . $action;
+    }
+  }
+  if (not GetParam('toplinkbar',1)) {
+    if ($action =~ /=/) {
+      $action .= '&toplinkbar=0';
+    } else {
+      $action = 'action=browse&toplinkbar=0&id=' . $action;
+    }
+  }
   return "<a href=\"$ScriptName?$action\">$text</a>";
 }
 
@@ -801,14 +816,13 @@ sub ISBNLink {
   if (length($num) != 10) {
     return "ISBN $rawnum";
   }
-  $first  = "<a href=\"http://shop.barnesandnoble.com/bookSearch/"
-            . "isbnInquiry.asp?isbn=$num\">";
-  $second = "<a href=\"http://www.amazon.com/exec/obidos/"
-            . "ISBN=$num\">" . T('alternate') . "</a>";
-  $third  = "<a href=\"http://www.pricescan.com/books/"
-            . "BookDetail.asp?isbn=$num\">" . T('search') . "</a>";
-  $html  = $first . "ISBN " . $rawprint . "</a> ";
-  $html .= "($second, $third)";
+  $first  = $q->a({-href => Ts('http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s', $num)},
+		  "ISBN " . $rawprint);
+  $second = $q->a({-href => Ts('http://www.amazon.com/exec/obidos/ISBN=%s', $num)},
+		  T('alternate'));
+  $third  = $q->a({-href => Ts('http://www.pricescan.com/books/BookDetail.asp?isbn=%s', $num)},
+		  T('search'));
+  $html  = "$first ($second, $third)";
   $html .= ' '  if ($rawnum =~ / $/);  # Add space if old ISBN had space.
   return $html;
 }
@@ -1865,12 +1879,11 @@ sub GetGotoBar {
 }
 
 sub GetSearchForm {
-  my ($result);
-
-  $result = T('Search:') . ' ' . $q->textfield(-name=>'search', -size=>20)
-            . &GetHiddenValue('dosearch', 1);
-  return $result;
+  return T('Search:') . ' '
+    . $q->textfield(-name=>'search', -size=>20) . ' '
+    . $q->submit('dosearch', T('Go!'));
 }
+
 sub GetRedirectPage {
   my ($newid, $name, $isEdit) = @_;
   my ($url, $html);
