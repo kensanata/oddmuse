@@ -1,3 +1,5 @@
+$ModulesDescription .= '<p>$Id: simple-rules.pl,v 1.2 2004/01/30 11:59:53 as Exp $</p>';
+
 *ApplyRules = *NewSimpleRulesApplyRules;
 
 sub NewSimpleRulesApplyRules {
