@@ -87,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.116 2003/06/29 23:05:53 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.117 2003/08/01 22:22:22 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -506,7 +506,7 @@ sub ApplyRules {
       DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
     } elsif (%Smilies && ($fragment = SmileyReplace())) {
       # $fragment already set
-    } elsif ( eval {     local $SIG{__DIE__}; $fragment = MyRules(); } ) {
+    } elsif ( eval {     local $SIG{__DIE__}; $fragment = MyRules(\$block, \@blocks, \@flags); } ) {
       # $fragment already set
     } elsif (m/\G\s*\n(s*\n)+/cg) { # paragraphs -- whitespace including at least two newlines
       $fragment = CloseHtmlEnvironments() . '<p>'; # there is another one like this further up
@@ -3777,7 +3777,7 @@ sub DoShowVisitors {
       $str = T('1 minute ago');
     } elsif ($total >= 2) {
       $str = Ts('%s seconds ago',int($total))
-    } elsif ($total = 1) {
+    } elsif ($total == 1) {
       $str = T('1 second ago');
     } else {
       $str = T('just now');
