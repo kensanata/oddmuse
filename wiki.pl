@@ -286,7 +286,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.282 2003/12/28 02:06:31 uid68242 Exp $');
+    . $q->p('$Id: wiki.pl,v 1.283 2003/12/28 12:28:41 uid68242 Exp $');
 }
 
 sub InitCookie {
@@ -712,10 +712,12 @@ sub RSS {
       }
       $interwiki = $RssInterwikiTranslate{$interwiki} if $RssInterwikiTranslate{$interwiki};
     }
+    my $num = 9999;
     foreach my $i (@{$rss->{items}}) {
       my $line;
       my $date = $i->{dc}->{date};
       $date = $i->{pubdate} unless $date;
+      $date = sprintf("%04d", $num--) unless $date; # for RSS 0.91 feeds without date, descending
       $line .= ' (' . $q->a({-href=>$i->{$wikins}->{diff}}, $tDiff) . ')'
 	if $i->{$wikins}->{diff};
       $line .= ' (' . $q->a({-href=>$i->{$wikins}->{history}}, "$tHistory") . ')'
@@ -735,11 +737,8 @@ sub RSS {
 	if $contributor;
       $line .= ' ' . $q->strong({-class=>'description'}, '--', $i->{description})
 	if $i->{description};
-      my $key = $date;
-      $key = $i->{title} unless $key;
-      $key = $i->{guid} unless $key;
-      while ($lines{$key}) { $key .= ' '; } # make sure this is unique
-      $lines{$key} = $line;
+      while ($lines{$date}) { $date .= ' '; } # make sure this is unique
+      $lines{$date} = $line;
     }
   }
   my @lines = sort { $b cmp $a } keys %lines;
