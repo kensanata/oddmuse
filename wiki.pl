@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.364 2004/03/31 00:20:52 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.365 2004/03/31 00:36:07 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1148,7 +1148,7 @@ sub ValidIdOrDie {
 sub ResolveId {
   my $id = shift;
   AllPagesList();
-  if ($PermanentAnchors) {
+  if (GetParam('anchor', $PermanentAnchors)) {
     ReadPermanentAnchors() unless $PermanentAnchorsInit;
     my $anchor = $PermanentAnchors{$id};
     return ('alias', $anchor) if $anchor; # permanent anchor exists
@@ -3903,7 +3903,7 @@ sub GetPermanentAnchor {
   my $text = $id;
   $text =~ s/_/ /g;
   my ($class, $resolved) = ResolveId($id);
-  if ($resolved ne $OpenPageName and ($class eq 'local' or $class eq 'alias')) { # exists already
+  if ($resolved ne $OpenPageName and $class eq 'alias') {
     return '[' . Ts('anchor first defined here: %s', GetPageLink($id)) . ']';
   } elsif ($PermanentAnchors{$id} ne $OpenPageName
 	   and RequestLockDir('permanentanchors')) { # not fatal
@@ -3912,8 +3912,13 @@ sub GetPermanentAnchor {
     ReleaseLockDir('permanentanchors');
   }
   $PagePermanentAnchors{$id} = 1; # add to the list of anchors in page
-  return GetSearchLink($id, 'definition', $id,
-		       T('Click to search for references to this permanent anchor'));
+  my $html = GetSearchLink($id, 'definition', $id,
+			   T('Click to search for references to this permanent anchor'));
+  if ($resolved ne $OpenPageName and $class eq 'local') {
+    $html .= ' [' . Ts('the page %s also exists',
+		       ScriptLink("action=browse;anchor=0;id=$id", $id, $class)) . ']';
+  }
+  return $html;
 }
 
 sub DeletePermanentAnchors {
