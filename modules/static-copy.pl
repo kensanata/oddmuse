@@ -16,13 +16,14 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.11 2004/12/26 00:38:36 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.12 2004/12/26 01:08:21 as Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
-use vars qw($StaticDir $StaticAlways %StaticMimeTypes);
+use vars qw($StaticDir $StaticAlways %StaticMimeTypes $StaticUrl);
 
 $StaticDir = '/tmp/static';
+$StaticUrl = ''; # change this!
 $StaticFilesAlways = 0; # 1 = uploaded files only, 2 = all pages
 
 my $StaticMimeTypes = '/etc/mime.types';
@@ -217,7 +218,7 @@ sub StaticFilesNewDoPost {
 
 sub StaticNewDeletePage {
   my $id = shift;
-  StaticDeleteFile($id);
+  StaticDeleteFile($id) if ($StaticAlways);
   return StaticOldDeletePage($id);
 }
 
@@ -227,5 +228,42 @@ sub StaticDeleteFile {
   # we don't care if the files or $StaticDir don't exist -- just delete!
   for my $f (map { "$StaticDir/$id.$_" } (values %StaticMimeTypes, 'html')) {
     unlink $f; # delete copies with different extensions
+  }
+}
+
+# override the default!
+sub GetStaticDownloadLink {
+  my ($name, $image, $revision, $alt) = @_;
+  $alt = $name unless $alt;
+  my $id = FreeToNormal($name);
+  AllPagesList();
+  # if the page does not exist
+  return '[' . ($image ? T('image') : T('download')) . ':' . $name
+    . ']' . GetEditLink($id, '?', 1) unless $IndexHash{$id};
+  my $action;
+  if ($revision) {
+    $action = "action=download;id=" . UrlEncode($id) . ";revision=$revision";
+  } elsif ($UsePathInfo) {
+    $action = "download/" . UrlEncode($id);
+  } else {
+    $action = "action=download;id=" . UrlEncode($id);
+  }
+  if ($image) {
+    if ($UsePathInfo and not $revision) {
+      if ($StaticAlways and $StaticUrl) {
+	my $url = $StaticUrl;
+	$url =~ s/\%s/$action/g or $url .= $action;
+	$action = $url;
+      } else {
+	$action = $ScriptName . '/' . $action;
+      }
+    } else {
+      $action = $ScriptName . '?' . $action;
+    }
+    my $result = $q->img({-src=>$action, -alt=>$alt, -class=>'upload'});
+    $result = ScriptLink(UrlEncode($id), $result, 'image') unless $id eq $OpenPageName;
+    return $result;
+  } else {
+    return ScriptLink($action, $alt, 'upload');
   }
 }
