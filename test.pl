@@ -134,6 +134,19 @@ sub run_tests {
   }
 }
 
+sub rc_line {
+  my ($page, $regexp) = @_;
+  while ($page =~ m!<li>(.*?)</li>!g) {
+    my $line = $1;
+    if ($line =~ /$regexp/) {
+      return ($1, $2, $3, $4, $5, $6, $7, $8, $9);
+    }
+  }
+  print "\nRC Line: Did not find \"", $regexp, '"';
+  print "\n\nPage content:\n", $page, "\n";
+}
+
+
 sub remove_rule {
   my $rule = shift;
   my @list = ();
@@ -247,11 +260,11 @@ update_page('MinorPage', 'Ramtatam', 'tester', 1);
 
 test_page(get_page('NicePage'), 'Bad content');
 test_page(get_page('InnocentPage'), 'Lamb');
-get_page('action=rc all=1 pwd=foo') =~ /.*action=rollback;to=([0-9]+).*?-- good guy two/;
-
-test_page(get_page("action=rollback to=$1"), 'restricted to administrators');
-test_page(get_page("action=rollback to=$1 pwd=foo"),
+($to) = rc_line(get_page('action=rc all=1 pwd=foo'), 'action=rollback;to=([0-9]+).*good guy two');
+test_page(get_page("action=rollback to=$to"), 'restricted to administrators');
+test_page(get_page("action=rollback to=$to pwd=foo"),
 	  'Rolling back changes', 'NicePage rolled back', 'OtherPage rolled back');
+
 test_page(get_page('NicePage'), 'Nice content');
 test_page(get_page('OtherPage'), 'Other cute content 12');
 test_page(get_page('EvilPage'), 'DeletedPage');
@@ -2147,28 +2160,29 @@ test_page(get_page('action=calendar'),
 	  '<div class="content cal year"><p class="nav">' # year navigation
 	  . '<a href="http://localhost/wiki.pl?action=calendar;year=' . $year_prev . '">Previous</a> | '
 	  . '<a href="http://localhost/wiki.pl?action=calendar;year=' . $year_next . '">Next</a></p>',
-	  '<div class="cal month"><pre>    <span class="title">' # monthly collection
+	   # monthly collection
+	  '<div class="cal month"><pre> ? ? ? ? ?<span class="title">'
 	  . '<a class="local collection month" href="http://localhost/wiki.pl?action=collect;match='
 	  . sprintf("%d-%02d", $year, $mon) . '">',
-	  '<a class="edit today" href="http://localhost/wiki.pl?action=edit;id=' # today day edit
-	  . $today . '"> ?' . sprintf("%2d", $mday) . '</a>',
-	  '<a class="edit" href="http://localhost/wiki.pl?action=edit;id=' # other day edit
-	  . $otherday . '"> ?' . sprintf("%2d", $oday) . '</a>',
+	  # today day edit
+	  "<a class=\"edit today\" href=\"http://localhost/wiki.pl?action=edit;id=$today\"> ? ?$mday</a>",
+	  # other day edit
+	  "<a class=\"edit\" href=\"http://localhost/wiki.pl?action=edit;id=$otherday\"> ? ?$oday</a>",
 	  );
 
 update_page($today, "yadda");
 
 test_page(get_page('action=calendar'),
 	  map { $_ = quotemeta; s|\\ \\\?| ?|g; $_; }
-	  '<a class="local exact today" href="http://localhost/wiki.pl/' # day exact match
-	  . $today . '"> ?' . sprintf("%2d", $mday) . '</a>');
+	  # day exact match
+	  "<a class=\"local exact today\" href=\"http://localhost/wiki.pl/$today\"> ? ?$mday</a>");
 
 update_page("${today}_more", "more yadda");
 
 test_page(get_page('action=calendar'),
 	  map { $_=quotemeta; s|\\ \\\?| ?|g; $_; }
-	  '<a class="local collection today" href="http://localhost/wiki.pl?action=collect;match=' # day match
-	  . $today . '"> ?' . sprintf("%2d", $mday) . '</a>');
+	  # today exact match
+	  "<a class=\"local collection today\" href=\"http://localhost/wiki.pl?action=collect;match=$today\"> ? ?$mday</a>");
 
 remove_rule(\&CalendarRule);
 *GetHeader = *OldCalendarGetHeader;
