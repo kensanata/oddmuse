@@ -287,7 +287,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.289 2004/01/03 14:23:43 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.290 2004/01/03 14:26:27 as Exp $');
 }
 
 sub InitCookie {
@@ -2737,7 +2737,7 @@ sub DoIndex {
   my @pages;
   my $pages = GetParam('pages', 1);
   my $anchors = GetParam('permanentanchors', 1);
-  my $near = GetParam('near', 1);
+  my $near = GetParam('near', 0);
   if ($raw) {
     print GetHttpHeader('text/plain');
   } else {
