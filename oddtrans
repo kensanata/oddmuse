@@ -5,31 +5,35 @@
 use Getopt::Std;
 $Getopt::Std::STANDARD_HELP_VERSION = 1;
 
-our($opt_l);
-getopts('hl:');
+our($opt_l, %Translate);
+
+getopts('l:');
 
 do $opt_l if $opt_l;
 
-%Translate = ();
-%seen = ();
+sub VERSION_MESSAGE {
+  my $fh = shift;
+  print $fh '$Id: oddtrans,v 1.2 2004/06/28 22:07:13 as Exp $' . "\n";
+}
 
-sub VERSION = "$Id: oddtrans,v 1.1 2004/06/28 21:04:42 as Exp $";
 sub HELP_MESSAGE {
   my $fh = shift;
   print $fh <<'EOT';
+
 NAME
-       oddtrans - translate strings in Oddmuse scripts
+       oddtrans - complement translation tables for Oddmuse
 
 SYNOPSIS
-       oddtrans [OPTION]... [FILE]...
+       oddtrans [OPTIONS]... [FILE]...
 
 DESCRIPTION
 
-       List information about the FILEs (or standard input by
-       default).
+       Read all the calls to T(), Ts(), and Tss() from all FILEs, and print
+       them on standard output, followed by their translation (usually the
+       empty string unless you use -l to load a library).
 
-       -l, --load
-              load a library from an existing run
+       -l
+              load a library from a previous run
 
 EXAMPLES
 
@@ -37,6 +41,8 @@ EXAMPLES
 
 EOT
 }
+
+my %seen = ();
 
 sub trans {
   my ($string) = @_;
