@@ -1,5 +1,12 @@
 2004-08-13  Alex Schroeder  <alex@confusibombus>
 
+	* Makefile (package-upload): Fix curl command.
+
+	* modules/usemod.pl (UsemodRule): XHTML conformance, use
+	InElement.
+
+	* modules/lang.pl (NewLangGetNearLinksUsed): XHTML conformance.
+
 	* modules/portrait-support.pl (PortraitSupportRule): Bugfix.
 
 	* wiki.pl (ApplyRules): Close all HTML environments before
