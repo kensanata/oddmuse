@@ -27,12 +27,14 @@ Usuário inválido %s: nada salvo.
 UserName must be 50 characters or less: not saved
 NomeUsuario deve ter 50 caracteres ou menos: nada salvo
 XML::RSS is not available on this system.
-
-LWP::UserAgent is not available on this system.
-
+XML::RSS não existe neste sistema
 diff
-
+diferenças
 history
+história
+%s returned no data, or LWP::UserAgent is not available.
+
+RSS parsing failed for %s
 
  . . . . 
 
@@ -52,6 +54,8 @@ Invalid action parameter %s
 Parametro de ação inválido %s
 Invalid URL.
 URL inválida.
+Page name is missing
+
 Page name is too long: %s
 Nome de página é muito longo: %s
 Invalid Page %s
@@ -88,11 +92,11 @@ for %s only
 para %s apenas
 List latest change per page only
 
+List all changes
+
 List only major changes
 
 Include minor changes
-
-List all changes
 
 %s days
 %s dias
@@ -111,6 +115,8 @@ Ir!
 (minor)
 (mínima)
 rollback
+
+new
 
 from %s
 de %s
@@ -140,36 +146,6 @@ Click to search for references to this page
 
 Cookie: 
 
-new comment
-
-Save
-Salvar
-Preview
-Prever
-Comments on this page
-
-Edit revision %s of this page
-Edite a revisão %s desta página
-Edit text of this page
-Edite o texto desta página
-This page is read-only
-Esta página é apenas para leitura
-View other revisions
-Veja outras revisões
-View current revision
-Veja a versão corrente
-View all changes
-
-Back to %s
-
-Last edited
-Ultima edição
-Edited
-Editado
-by %s
-
-(diff)
-(diff)
 Warning
 Atenção
 Database is stored in temporary directory %s
@@ -177,9 +153,53 @@ Banco de dados é armazenado no diretório temporario %s
 %s seconds
 %s segundos
 The same page on other sites:
-
+A mesma página noutro lado:
 EditNearLinks
 
+Last edited
+Ultima edição
+Edited
+Editado
+by %s
+de %s
+(diff)
+(diff)
+Run maintenance
+
+Unlock site
+
+Lock site
+
+Unlock page
+
+Lock page
+
+Comments on this page
+
+Edit revision %s of this page
+Edite a revisão %s desta página
+Edit text of this page
+Edite o texto desta página
+e
+
+This page is read-only
+Esta página é apenas para leitura
+View other revisions
+Veja outras revisões
+View current revision
+Veja a versão corrente
+View all changes
+Veja todas os câmbios
+Back to %s
+Voltar para %s
+new comment
+Comentário novo
+s
+s
+Save
+Salvar
+Preview
+Prever
 Search:
 Busca:
 Replace:
@@ -189,7 +209,7 @@ Validar HTML
 Validate CSS
 Validar CSS
 Difference (from revision %1 to %2)
-
+Diferença (entre a revisão %1 e %2)
 revision %s
 revisão %s
 current revision
@@ -217,13 +237,13 @@ ao invéz mostrando versão corrente
 Showing revision %s
 Mostrando versão %s
 Cannot save an nameless page.
-
+Não se pode salvar uma página sem nome.
 Cannot open %s
-
+Não foi possível abrir %s
 Cannot write %s
-
+Não foi possível escrever %s
 Could not get %s lock
-
+Não foi possível conseguir a trava %s
 Unlocking
 Destravando
 This operation may take several seconds...
@@ -253,9 +273,9 @@ Edição não permitida: usuário, ip, ou rede está bloqueada.
 Contact the wiki administrator for more information.
 Contate o administrador do wiki para maiores informações.
 The rule %s matched for you.
-
+A regra %s confere para você.
 See %s for more information.
-
+Para mais informações, veja %s.
 Editing not allowed: %s is read-only.
 Edição não permitida: %s is apenas para leitura.
 Only administrators can upload files.
@@ -303,35 +323,33 @@ Essa operação é restrita aos administradores...
 Index of all pages
 Índice de todas as páginas
 all pages
-
+todas as páginas
 permanent anchors
 
 near links
 
 (for %s)
-
+(para %s)
 %s pages found.
-
+%s páginas encontradas.
 Replaced: %s
 
 Search for: %s
 Buscar por: %s
 View changes for these pages
-
+Ver câmbios para estas págians
 Search sites on the %s as well
-
+Estender a busca para os sítios no %s
 and
-
+e
 or
-
+ou
 Fetching results from %s:
-
+Buscando os resultados de %s:
 Near pages:
 
 last updated
 ultima atualização
-Full Link List
-Lista completa de link
 Complete Content
 Conteúdo completo
 The main page is %s.
@@ -346,34 +364,34 @@ Sample_Undefined_Page
 Exemplo_Pagina_Nao_Definida
 [[%s]] cannot be defined.
 [[%s]] não pode ser definida.
-Only an administrator can create %s
-
+Only an administrator can create %s.
+Só administradores podem criar a página %s.
 Transfer Error: %s
 
 Browser reports no file info.
 
 Browser reports no file type.
 
-This page was changed by somebody else %s.
+Edit Denied
 
+The page contains banned text.
+
+This page was changed by somebody else %s.
+Esta página foi editada por outra pessoa %s.
 The changes conflict.  Please check the page again.
 
 Please check whether you overwrote those changes.
-
+Se faz favor controle se você  esses câmbios.
 Anonymous
 Anônimo
 Could not get a lock to merge!
 Não foi possivel pegar a trava para combinar!
 you
-
+o que você escreveu
 ancestor
-
+o que já estava
 other
-
-Ping
-
-No response.
-
+o que a outra pessoa escreveu
 Maintenance on all pages
 Manutenção em todas as páginas
 Maintenance not done.
@@ -386,6 +404,8 @@ Main lock obtained.
 Trava principal obtida.
 Expiring keep files and deleting pages marked for deletion
 Expirando mantém arquivos e deletando páginas marcadas para deletar
+not deleted: 
+não deletado: 
 deleted
 deletado
 Moving part of the %s log file.
@@ -418,6 +438,8 @@ Near links:
 
 Too many connections by %s
 Muitas conexões de %s
+Please do not fetch more than %1 pages in %2 seconds.
+Se faz favor não busque mais do que %1 páginas em %2 segundos.
 Recent Visitors
 Visitantes recentes
 Referrers
@@ -428,4 +450,6 @@ anchor first defined here: %s
 
 Click to search for references to this permanent anchor
 
+the page %s also exists
+a página %s também existe
 END_OF_TRANSLATION
