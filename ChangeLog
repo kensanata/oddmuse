@@ -1,3 +1,7 @@
+2003-10-20  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (NotModified): Protect use of Time::ParseDate with an eval.
+
 2003-10-19  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (InitVariables): Do not reset $IndexInit anymore.
