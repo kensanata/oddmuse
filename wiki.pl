@@ -276,7 +276,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.266 2003/11/27 00:43:42 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.267 2003/11/27 15:33:03 as Exp $');
 }
 
 sub InitCookie {
@@ -989,7 +989,7 @@ sub DoBrowseRequest {
   } elsif ($action eq 'unlock') {
     DoUnlock();
   } elsif ($action eq 'index') {
-    DoIndex(GetParam('raw', 0));
+    DoIndex();
   } elsif ($action eq 'links') {
     DoLinks();
   } elsif ($action eq 'all') {
@@ -1323,8 +1323,8 @@ sub GetFilterForm {
   my $table =
     $q->Tr($q->td(T('Username:')) . $q->td($q->textfield(-name=>'rcuseronly', -size=>20)))
     . $q->Tr($q->td(T('Host:')) . $q->td($q->textfield(-name=>'rchostonly', -size=>20)));
-  $table .= $q->Tr($q->td(T('Language:')) . $q->td($q->textfield(-name=>'lang', -size=>10)))
-    if %Languages;
+  $table .= $q->Tr($q->td(T('Language:')) . $q->td($q->textfield(-name=>'lang', -size=>10,
+    -default=>GetParam('lang', '')))) if %Languages;
   $form .= $q->strong(T('Filters')) . $q->table($table);
   return $form . $q->submit('dofilter', T('Go!')) . $q->endform;
 }
@@ -1374,8 +1374,7 @@ sub GetRc {
     next if $filterOnly and not grep(/^$pagename$/, @filters);
     next if ($userOnly and $userOnly ne $username);
     my @languages = split(/,/, $languages);
-    push (@languages, T('none')) unless @languages; # allow searching for these pages
-    next if ($langFilter and not grep(/$langFilter/, @languages));
+    next if ($langFilter and not grep(/$langFilter/, @languages, T('none')));
     next if ($PageCluster and $clusterOnly and $clusterOnly ne $cluster);
     $cluster = '' if $clusterOnly or not $PageCluster; # since now $clusterOnly eq $cluster
     if ($PageCluster and $all < 2 and not $clusterOnly and $cluster) {
@@ -1998,7 +1997,8 @@ sub GetSearchForm {
     $form .= T('Replace:') . ' ' . $q->textfield(-name=>'replace', -size=>20) . ' ';
   }
   if (%Languages) {
-    $form .= T('Language:') . ' ' . $q->textfield(-name=>'lang', -size=>10) . ' ';
+    $form .= T('Language:') . ' '
+      . $q->textfield(-name=>'lang', -size=>10, -default=>GetParam('lang', '')) . ' ';
   }
   return $form . $q->submit('dosearch', T('Go!')) . $q->endform;
 }
@@ -2705,35 +2705,37 @@ sub UserIsEditor {
 # == Index ==
 
 sub DoIndex {
-  if (shift) {
-    print GetHttpHeader('text/plain');
-    foreach my $name (AllPagesList()) {
-      print "$name\n"
-    }
-  } else {
-    my @pages;
-    my $anchors = GetParam('permanentanchors', 1);
+  my $raw = shift;
+  my @pages;
+  my $anchors = GetParam('permanentanchors', 1);
+  if (not GetParam('raw', 0)) {
     print GetHeader('', T('Index of all pages'), '');
     print $q->p($q->b('(including permanent anchors)')) if $anchors == 1;
     print $q->p($q->b('(permanent anchors only)')) if $anchors == 2;
-    ReadPermanentAnchors() if $anchors > 0 and not %PermanentAnchors;
-    push(@pages, AllPagesList()) if $anchors < 2;
-    push(@pages, keys %PermanentAnchors) if $anchors > 0;
-    @pages = sort @pages if $anchors > 0;
-    PrintPageList(@pages);
-    PrintFooter();
   }
+  ReadPermanentAnchors() if $anchors > 0 and not %PermanentAnchors;
+  push(@pages, AllPagesList()) if $anchors < 2;
+  push(@pages, keys %PermanentAnchors) if $anchors > 0;
+  @pages = sort @pages if $anchors > 0;
+  PrintPageList(@pages);
+  PrintFooter();
 }
 
 sub PrintPageList {
-  print $q->h2(Ts('%s pages found:', ($#_ + 1))), '<p>';
-  foreach my $id (@_) {
-    my ($class, $exists, $title) = ResolveId($id);
-    my $text = $id;
-    $text =~ s/_/ /g;
-    print ScriptLink(UrlEncode($id), $text, $class, '', $title), $q->br();
+  if (GetParam('raw', 0)) {
+    foreach my $id (@_) {
+      print $id, "\n";
+    }
+  } else {
+    print $q->h2(Ts('%s pages found:', ($#_ + 1))), '<p>';
+    foreach my $id (@_) {
+      my ($class, $exists, $title) = ResolveId($id);
+      my $text = $id;
+      $text =~ s/_/ /g;
+      print ScriptLink(UrlEncode($id), $text, $class, '', $title), $q->br();
+    }
+    print '</p>' if (not GetParam('raw', 0));
   }
-  print '</p>';
 }
 
 sub AllPagesList {
@@ -2783,7 +2785,7 @@ sub DoSearch {
     $string = $replacement;
   } else {
     print GetHeader('', QuoteHtml(Ts('Search for: %s', $string)), '');
-    $ReplaceForm = UserIsAdmin(); # only show on new searches for admins
+    $ReplaceForm = UserIsAdmin() and not GetParam('lang', ''); # only for admins and lang indep.
     print $q->p(ScriptLink('action=rc;rcfilteronly=' . UrlEncode($string),
 			   Ts('View changes for these pages')));
   }
@@ -2807,8 +2809,7 @@ sub SearchTitleAndBody {
     next if ($Page{'text'} =~ /^#FILE / and $string !~ /^\^#FILE/); # skip files unless requested
     if ($langFilter) {
       my @languages = split(/,/, $Page{languages});
-      push (@languages, T('none')) unless @languages; # allow searching for these pages
-      next if ($langFilter and not grep(/$langFilter/, @languages));
+      next if ($langFilter and not grep(/$langFilter/, @languages, T('none')));
     }
     my $found = 1; # assume found
     foreach my $str (@strings) {
