@@ -21,19 +21,17 @@ use vars qw{$SmileyDir $SmileyUrlPath};
 $SmileyDir = '/mnt/pics'; # directory with all the smileys
 $SmileyUrlPath = '/pics'; # path where all the smileys can be found (URL)
 
-$ModulesDescription .= '<p>$Id: smiley-dir.pl,v 1.3 2004/02/20 18:23:48 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: smiley-dir.pl,v 1.4 2005/01/04 09:52:44 as Exp $</p>';
 
-*OldSmileyDirInitVariables = *InitVariables;
-*InitVariables = *NewSmileyDirInitVariables;
-
-sub NewSmileyDirInitVariables {
-  OldSmileyDirInitVariables();
-  if (opendir(DIR, $SmileyDir)) {
-    map { if (/^((.*)\.$ImageExtensions$)/ and -f "$SmileyDir/$_") {
-            my $regexp = quotemeta("{$2}");
-	    $Smilies{$regexp} = "$SmileyUrlPath/$1";
-	  }
-        } readdir(DIR);
-    closedir DIR;
-  }
-}
+push(@MyInitVariables,
+     sub {
+       if (opendir(DIR, $SmileyDir)) {
+	 map {
+	   if (/^((.*)\.$ImageExtensions$)/ and -f "$SmileyDir/$_") {
+	     my $regexp = quotemeta("{$2}");
+	     $Smilies{$regexp} = "$SmileyUrlPath/$1";
+	   }
+	 } readdir(DIR);
+	 closedir DIR;
+       }
+     });

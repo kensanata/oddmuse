@@ -21,31 +21,28 @@ use vars qw($WeblogTextLogo $WeblogXmlLogo);
 $WeblogXmlLogo = '/images/rss.png';
 $WeblogTextLogo = '/images/txt.png';
 
-$ModulesDescription .= '<p>$Id: weblog-1.pl,v 1.4 2004/11/15 00:13:55 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: weblog-1.pl,v 1.5 2005/01/04 09:55:27 as Exp $</p>';
 
 $RefererTracking = 1;
 $CommentsPrefix = 'Comments_on_';
 $EditAllowed = 2;
 
-*OldWeblog1InitVariables = *InitVariables;
-*InitVariables = *NewWeblog1InitVariables;
-
-sub NewWeblog1InitVariables {
-  OldWeblog1InitVariables();
-  if (GetParam('blog', 1)) { # language independent!
-    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = localtime(time);
-    $today = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
-    ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = localtime(time - 60*60*24);
-    $yesterday = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
-    # this modification is not mod_perl safe!
-    my $blog = T('Blog');
-    push(@UserGotoBarPages, $blog) unless grep (/^$blog$/, @UserGotoBarPages);
-    push(@UserGotoBarPages, $today) unless grep (/^$today$/, @UserGotoBarPages);
-    push(@UserGotoBarPages, $yesterday) unless grep (/^$yesterday$/, @UserGotoBarPages);
-    $UserGotoBar .=
-      ScriptLink('action=rss',
-		 "<img src=\"$WeblogXmlLogo\" alt=\"XML\" class=\"XML\" />")
-	. ' '. ScriptLink('action=rc;raw=1',
-			  "<img src=\"$WeblogTextLogo\" alt=\"TXT\" class=\"XML\" />");
-  }
-}
+push(@MyInitVariables,
+     sub {
+       if (GetParam('blog', 1)) { # language independent!
+	 my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = localtime(time);
+	 $today = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
+	 ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = localtime(time - 60*60*24);
+	 $yesterday = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
+	 # this modification is not mod_perl safe!
+	 my $blog = T('Blog');
+	 push(@UserGotoBarPages, $blog) unless grep (/^$blog$/, @UserGotoBarPages);
+	 push(@UserGotoBarPages, $today) unless grep (/^$today$/, @UserGotoBarPages);
+	 push(@UserGotoBarPages, $yesterday) unless grep (/^$yesterday$/, @UserGotoBarPages);
+	 $UserGotoBar .=
+	   ScriptLink('action=rss',
+		      "<img src=\"$WeblogXmlLogo\" alt=\"XML\" class=\"XML\" />")
+	     . ' '. ScriptLink('action=rc;raw=1',
+			       "<img src=\"$WeblogTextLogo\" alt=\"TXT\" class=\"XML\" />");
+       }
+     });
