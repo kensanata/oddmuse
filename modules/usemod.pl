@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.17 2004/12/05 21:37:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.18 2005/01/04 09:14:02 as Exp $</p>';
 
 $DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /table\.user/; # mod_perl?
 table.user { border-style:solid; border-width:thin; }
@@ -40,21 +40,18 @@ $HtmlTags    = 0;   # 1 = allow some 'unsafe' HTML tags
 $UseModSpaceRequired = 1;  # 1 = require space after * # : ; for lists.
 $UseModMarkupInTitles = 0; # 1 = may use links and other markup in ==titles==
 
-*OldUsemodInitVariables = *InitVariables;
-*InitVariables = *NewUsemodInitVariables;
-
-sub NewUsemodInitVariables {
-  OldUsemodInitVariables();
-  if (not @HtmlTags) { # do not override settings in the config file
-    if ($HtmlTags) {   # allow many tags
-      @HtmlTags = qw(b i u font big small sub sup h1 h2 h3 h4 h5 h6 cite code
-		     em s strike strong tt var div center blockquote ol ul dl
-		     table caption br p hr li dt dd tr td th);
-    } else {	       # only allow a very small subset
-      @HtmlTags = qw(b i u em strong tt);
-    }
-  }
-}
+push(@MyInitVariables, # do this later so that the user can customize some vars
+     sub {
+       if (not @HtmlTags) { # do not override settings in the config file
+	 if ($HtmlTags) {   # allow many tags
+	   @HtmlTags = qw(b i u font big small sub sup h1 h2 h3 h4 h5 h6 cite code
+			  em s strike strong tt var div center blockquote ol ul dl
+			  table caption br p hr li dt dd tr td th);
+	 } else {	    # only allow a very small subset
+	   @HtmlTags = qw(b i u em strong tt);
+	 }
+       }
+     });
 
 my $htmlre;
 
