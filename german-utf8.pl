@@ -504,7 +504,7 @@ Spam entfernen
 Cannot find revision %s.
 Die Version %s ist verschwunden.
 Revert to revision %1: %2
-Auf Version %1 wegen %2 zurückgesetzt.
+Auf Version %1 zurückgesetzt: %2
 Marked as %s.
 Mit %s markiert. 
 Cannot find unspammed revision.
