@@ -1,5 +1,10 @@
 2003-03-28  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (DoMaintain): Important bugfix!
+	(InitLinkPatterns): Only set $FS and $FS0 if $FS is not set already.
+	(ReadFile): Check wether $FS0 is set before doing anything.
+	(DoMaintain): Ditto.
+
 	Tricky update!  Changing the field separator from superscript 3 to
 	an ASCII control character!
 	
