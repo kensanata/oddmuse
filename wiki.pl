@@ -86,7 +86,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.94 2003/06/13 11:57:12 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.95 2003/06/13 18:25:01 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -191,7 +191,6 @@ if (not @HtmlTags) { # don't set if set in the config file
 		     'pwd' => '',
 		     'theme' => '',
 		     'toplinkbar' => $TopLinkBar,
-		     'linkrandom' => 0,
 		     'embed' => $EmbedWiki);
 
 $IndentLimit = 20;                  # Maximum depth of nested lists
@@ -1587,14 +1586,6 @@ sub ScriptLinkDiff {
   return ScriptLink("action=browse&diff=$diff&id=$id$rev", $text);
 }
 
-sub ScriptLinkTitle {
-  my ($action, $text, $title) = @_;
-  if ($FreeLinks) {
-    $action =~ s/ /_/g;
-  }
-  return "<a href=\"$ScriptName?$action\" title=\"$title\">$text</a>";
-}
-
 sub GetAuthorLink {
   my ($host, $userName) = @_;
   my ($html, $title, $userNameShow);
@@ -1607,10 +1598,12 @@ sub GetAuthorLink {
     $userName = '';  # Just pretend it isn't there.
   }
   if ($userName and $RecentLink) {
-    $html = ScriptLinkTitle($userName, $userNameShow,
-            Ts('from %s', $host));
+    $html = $q->span({-class=>'author'},
+		     $q->a({-href=>"$ScriptName?$userName",
+			    -title=>Ts('from %s', $host)}, $userNameShow));
   } elsif ($userName) {
-    $html = $userNameShow . ' ' . Ts('from %s', $host);
+    $html = $q->span({-class=>'author'}, $userNameShow)
+      . ' ' . Ts('from %s', $host);
   } else {
     $html = $host;
   }
@@ -2784,18 +2777,7 @@ sub DoEdit {
 
 sub GetTextArea {
   my ($name, $text) = @_;
-  if (GetParam('editwide', 1)) {
-    return $q->textarea(-name      => $name,
-			-default   => $text,
-                        -rows      => 25,
-			-columns   => 78,
-			-override  => 1);
-  }
-  return $q->textarea(-name     => $name,
-		      -default  => $text,
-                      -rows     => 25,
-		      -columns  => 78,
-		      -override => 1);
+  return $q->textarea(-name=>$name, -default=>$text, -rows=>25, -columns=>78, -override=>1);
 }
 
 # == Passwords ==
