@@ -286,7 +286,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.278 2003/12/26 13:55:35 uid68242 Exp $');
+    . $q->p('$Id: wiki.pl,v 1.279 2003/12/27 19:34:08 uid68242 Exp $');
 }
 
 sub InitCookie {
@@ -783,12 +783,9 @@ sub NearInit {
 sub GetInterSiteUrl {
   my ($site, $page) = @_;
   return unless $page;
-  my $url = $InterSite{$site};
-  if ($url =~ s/\%s/$page/g) {
-    return $url;
-  } else {
-    return $url . $page;
-  }
+  my $url = $InterSite{$site} or return;
+  $url =~ s/\%s/$page/g or $url .= $page;
+  return $url;
 }
 
 sub GetInterLink {
