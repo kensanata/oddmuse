@@ -279,6 +279,8 @@ introduction\n\n||one||two||three||\n||||one two||three||\n\nfooter
 introduction<p><table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table><p>footer
 http://www.emacswiki.org
 <a href="http://www.emacswiki.org">http://www.emacswiki.org</a>
+<http://www.emacswiki.org>
+<<a href="http://www.emacswiki.org">http://www.emacswiki.org</a>>
 http://www.emacswiki.org/
 <a href="http://www.emacswiki.org/">http://www.emacswiki.org/</a>
 http://www.emacswiki.org.
@@ -287,16 +289,30 @@ http://www.emacswiki.org,
 <a href="http://www.emacswiki.org">http://www.emacswiki.org</a>,
 http://www.emacswiki.org;
 <a href="http://www.emacswiki.org">http://www.emacswiki.org</a>;
-http://www.emacswiki.org!
-<a href="http://www.emacswiki.org">http://www.emacswiki.org</a>!
+http://www.emacswiki.org:
+<a href="http://www.emacswiki.org">http://www.emacswiki.org</a>:
 http://www.emacswiki.org?
 <a href="http://www.emacswiki.org">http://www.emacswiki.org</a>?
 http://www.emacswiki.org/?
 <a href="http://www.emacswiki.org/">http://www.emacswiki.org/</a>?
-"http://www.emacswiki.org".
-"<a href="http://www.emacswiki.org">http://www.emacswiki.org</a>".
-http://www.emacswiki.org,
-<a href="http://www.emacswiki.org">http://www.emacswiki.org</a>,
+http://www.emacswiki.org!
+<a href="http://www.emacswiki.org">http://www.emacswiki.org</a>!
+http://www.emacswiki.org'
+<a href="http://www.emacswiki.org">http://www.emacswiki.org</a>'
+http://www.emacswiki.org"
+<a href="http://www.emacswiki.org">http://www.emacswiki.org</a>"
+http://www.emacswiki.org!
+<a href="http://www.emacswiki.org">http://www.emacswiki.org</a>!
+http://www.emacswiki.org(
+<a href="http://www.emacswiki.org">http://www.emacswiki.org</a>(
+http://www.emacswiki.org)
+<a href="http://www.emacswiki.org">http://www.emacswiki.org</a>)
+http://www.emacswiki.org&
+<a href="http://www.emacswiki.org">http://www.emacswiki.org</a>&
+http://www.emacswiki.org#
+<a href="http://www.emacswiki.org">http://www.emacswiki.org</a>#
+http://www.emacswiki.org%
+<a href="http://www.emacswiki.org">http://www.emacswiki.org</a>%
 [http://www.emacswiki.org]
 <a href="http://www.emacswiki.org">[1]</a>
 [http://www.emacswiki.org] and [http://www.emacswiki.org]
