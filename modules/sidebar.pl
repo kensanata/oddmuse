@@ -17,13 +17,18 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: sidebar.pl,v 1.8 2004/10/13 20:03:04 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: sidebar.pl,v 1.9 2005/01/04 09:04:05 as Exp $</p>';
 
 use vars qw($SidebarName);
 
 # Include this page on every page:
 
 $SidebarName = 'SideBar';
+
+push(@MyInitVariables, # do this later so that the user can customize $SidebarName
+     sub { $SidebarName = FreeToNormal($SidebarName); # spaces to underscores
+	   push(@AdminPages, $SidebarName);
+	 });
 
 *OldSideBarGetHeader = *GetHeader;
 *GetHeader = *NewSideBarGetHeader;
