@@ -1,3 +1,38 @@
+2004-06-13  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (RSS): Handle encoding of 'diff' and 'history' texts.
+	(DeletePage): Bugfix.
+
+2004-06-12  Alex Schroeder  <alex@confusibombus>
+
+	* modules/not-found-handler.pl (NewNotFoundHandlerDeletePage): New
+	function to delete cached copies of pages that are deleted.
+	(NewNotFoundHandlerDeletePage, NewNotFoundHandlerSave): Delete
+	both the page, and the page with language extension due to content
+	negotiation, ie. PageName.en, PageName.de, etc.
+	(NewNotFoundHandlerDeletePage): Deleted again.
+	(NewNotFoundHandlerDoMaintain): New function.
+
+	* modules/admin.pl (AdminPowerDelete): Only write rc log when
+	delete was successful.  Depends on the change to DeletePage in
+	wiki.pl.
+
+	* wiki.pl (ApplyRules): Bugfix, lone *, #, and : in the middle of
+	lines caused the creation of list items.
+	(GetRcHtml): Show '(new)' instead of '(diff)' when revision == 1.
+	(DoMaintain): Handle error reporting from DeletePage here.
+	(DeletePage): Simplified.  Return error string or empty string on
+	success.
+
+2004-06-10  Alex Schroeder  <alex@confusibombus>
+
+	* wiki.pl (ApplyRules): Lists separated by whitespace are
+	joined (affects *, #, and : at the beginning of a line).
+
+2004-06-05  Alex Schroeder  <alex@confusibombus>
+
+	* wiki.pl (GetRedirectPage): Use $ScriptName instead of $FullUrl.
+
 2004-06-04  Alex Schroeder  <alex@confusibombus>
 
 	* wiki.pl (PrintPage): Use GetPageOrEditLink to print pages.
