@@ -276,7 +276,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.271 2003/11/27 15:59:20 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.272 2003/11/27 16:24:12 as Exp $');
 }
 
 sub InitCookie {
@@ -1276,7 +1276,7 @@ sub RcHeader {
 	  : Ts('Updates in the last %s day', GetParam('days', $RcDefault)))
   }
   my ($action);
-  my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $langFilter) =
+  my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $lang) =
     map {
       my $val = GetParam($_, '');
       print $q->p($q->b('(' . Ts('for %s only', $val) . ')')) if $val;
@@ -1357,7 +1357,7 @@ sub GetRc {
   }
   my $date = '';
   my $all = GetParam('all', 0);
-  my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $langFilter) =
+  my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $lang) =
     map { GetParam($_, ''); }
       ('rcidonly', 'rcuseronly', 'rchostonly', 'rcclusteronly',
        'rcfilteronly', 'lang');
@@ -1374,7 +1374,7 @@ sub GetRc {
     next if $filterOnly and not grep(/^$pagename$/, @filters);
     next if ($userOnly and $userOnly ne $username);
     my @languages = split(/,/, $languages);
-    next if ($langFilter and @languages and not grep(/$langFilter/, @languages));
+    next if ($lang and @languages and not grep(/$lang/, @languages));
     next if ($PageCluster and $clusterOnly and $clusterOnly ne $cluster);
     $cluster = '' if $clusterOnly or not $PageCluster; # since now $clusterOnly eq $cluster
     if ($PageCluster and $all < 2 and not $clusterOnly and $cluster) {
@@ -2792,7 +2792,7 @@ sub DoSearch {
     $string = $replacement;
   } else {
     print GetHeader('', QuoteHtml(Ts('Search for: %s', $string)), '');
-    $ReplaceForm = UserIsAdmin() and not GetParam('lang', ''); # only for admins and lang indep.
+    $ReplaceForm = UserIsAdmin();
     print $q->p(ScriptLink('action=rc;rcfilteronly=' . UrlEncode($string),
 			   Ts('View changes for these pages')));
   }
@@ -2810,13 +2810,13 @@ sub SearchTitleAndBody {
   my $or = T('or');
   my @strings = split(/ +$and +/, $string);
   my @found;
-  my $langFilter = GetParam('lang', '');
+  my $lang = GetParam('lang', '');
   foreach my $name (AllPagesList()) {
     OpenPage($name);
     next if ($Page{'text'} =~ /^#FILE / and $string !~ /^\^#FILE/); # skip files unless requested
-    if ($langFilter) {
+    if ($lang) {
       my @languages = split(/,/, $Page{languages});
-      next if ($langFilter and @languages and not grep(/$langFilter/, @languages));
+      next if (@languages and not grep(/$lang/, @languages));
     }
     my $found = 1; # assume found
     foreach my $str (@strings) {
@@ -2898,9 +2898,14 @@ sub PrintSearchResults {
 
 sub Replace {
   my ($from, $to) = @_;
+  my $lang = GetParam('lang', '');
   RequestLockOrError(); # fatal
   foreach my $id (AllPagesList()) {
     OpenPage($id);
+    if ($lang) {
+      my @languages = split(/,/, $Page{languages});
+      next if (@languages and not grep(/$lang/, @languages));
+    }
     $_ = $Page{'text'};
     if (eval "s/$from/$to/gi") { # allows use of backreferences
       Save($id, $_, $from . ' -> ' . $to, 1,
