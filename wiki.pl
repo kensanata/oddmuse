@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.400 2004/05/24 00:58:42 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.401 2004/05/24 21:06:38 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1408,7 +1408,7 @@ sub RcHeader {
   if ($all) {
     $menu = ScriptLink("$action;all=0;showedit=$edits", T('List latest change per page only'));
   } else {
-    $menu = ScriptLink("$action;all=1;showedit=$edits", T('List only major changes'));
+    $menu = ScriptLink("$action;all=1;showedit=$edits", T('List all changes'));
   }
   if ($edits) {
     $menu .= ' | ' . ScriptLink("$action;all=$all;showedit=0", T('List only major changes'));
