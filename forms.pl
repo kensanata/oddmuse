@@ -16,13 +16,13 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: forms.pl,v 1.1 2004/02/02 23:50:47 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: forms.pl,v 1.2 2004/02/03 00:06:38 as Exp $</p>';
 
 push(@MyRules, \&FormsRule);
 
 sub FormsRule {
   if ((-f GetLockedPageFile($OpenPageName))
-      and (/\G(\<form.*?\<\/form\>)/sgc)) {
+      and (/\G(\&lt;form.*?\&lt;\/form\&gt;)/sgc)) {
     my $form = $1;
     my $oldpos = pos;
     Dirty($form);
