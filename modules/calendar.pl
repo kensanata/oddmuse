@@ -16,16 +16,17 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.21 2004/09/04 09:16:50 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.22 2004/09/04 09:28:35 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalendarUseCal);
 
 $DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /div\.month/; # mod_perl?
-div.month { padding:0; margin:0 2ex; }
-body > div.month { float:right; background-color: inherit; border:solid thin; padding:0 1ex; }
-div.year > div.month { float:left; }
+div.month { float:right; margin:0; padding-left:1ex; padding-right:1ex; }
 div.footer { clear:both; }
-div.month a.edit { color:inherit; font-weight:inherit; }
+div.year div.month { float:left; }
+div.cal pre { margin:0; padding:0; background-color:#ffe; }
+div.cal a.edit { text-decoration:none; color:inherit; }
+div.cal a.today { background-color:#fcc; }
 EOT
 
 $CalendarOnEveryPage = 1;
