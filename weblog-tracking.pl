@@ -1,5 +1,7 @@
 # Weblog Tracker Notification Extension
 
+use vars qw(%NotifyJournalPage @NotifyUrlPatterns);
+
 # Put this file in your modules directory.
 
 %NotifyJournalPage = ();
@@ -24,12 +26,12 @@ push (@NotifyUrlPatterns, 'http://ping.blo.gs/?name=$name&url=$url&rssUrl=$rss&d
 
 # You should not need to change anything below this point.
 
-*OldSave = *Save;
-*Save = *NewSave;
+*OldWeblogTrackingSave = *Save;
+*Save = *NewWeblogTrackingSave;
 
-sub NewSave {
+sub NewWeblogTrackingSave {
   my ($id, $new, $summary, $minor, $upload) = @_;
-  OldSave(@_);
+  OldWeblogTrackingSave(@_);
   if (not $minor) {
     PingTracker($id);
   }
