@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.385 2004/04/17 13:24:52 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.386 2004/04/17 20:25:16 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -560,10 +560,11 @@ sub ApplyRules {
       Dirty($1);
       my $bracket = (substr($1, 0, 1) eq '[');
       print GetPageOrEditLink($2, $3, $bracket);
-    } elsif ($locallinks && $FreeLinks && m/\G(\[\[image:$FreeLinkPattern\]\])/cog) {
-      # [[image:Free Link]]
+    } elsif ($locallinks && $FreeLinks && (m/\G(\[\[image:$FreeLinkPattern\]\])/cog
+	     or m/\G(\[\[image:$FreeLinkPattern\|([^\]]+)\]\])/cog)) {
+      # [[image:Free Link]], [[image:Free Link|alt text]]
       Dirty($1);
-      print GetDownloadLink($2, 1);
+      print GetDownloadLink($2, 1, undef, $3);
     } elsif ($FreeLinks && $locallinks
 	     && ($BracketWiki && m/\G(\[\[$FreeLinkPattern\|([^\]]+)\]\])/cog
 		 or m/\G(\[\[\[$FreeLinkPattern\]\]\])/cog
@@ -1005,7 +1006,8 @@ sub ScriptLink {
 }
 
 sub GetDownloadLink {
-  my ($name, $image, $revision) = @_;
+  my ($name, $image, $revision, $alt) = @_;
+  $alt = $name unless $alt;
   my $id = FreeToNormal($name);
   AllPagesList();
   # if the page does not exist
@@ -1025,11 +1027,11 @@ sub GetDownloadLink {
     } else {
       $action = $ScriptName . '?' . $action;
     }
-    my $result = $q->img({-src=>$action, -alt=>$id, -class=>'upload'});
+    my $result = $q->img({-src=>$action, -alt=>$alt, -class=>'upload'});
     $result = ScriptLink(UrlEncode($id), $result, 'image') unless $id eq $OpenPageName;
     return $result;
   } else {
-    return ScriptLink($action, $id, 'upload');
+    return ScriptLink($action, $alt, 'upload');
   }
 }
 
