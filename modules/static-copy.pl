@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.6 2004/10/07 01:05:45 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.7 2004/10/08 20:53:27 as Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -97,11 +97,14 @@ sub StaticGetDownloadLink {
 
 sub StaticFileName {
   my $id = shift;
+  $id =~ s/#.*//; # remove named anchors for the filename test
   return $StaticFiles{$id} if $StaticFiles{$id}; # cache filenames
   # Don't clober current open page so don't use OpenPage.  UrlDecode
   # the $id to open the file because when called from
   # StaticScriptLink, for example, the $action is already encoded.
-  my %hash = ParseData(ReadFileOrDie(GetPageFile(StaticUrlDecode($id))));
+  my ($status, $data) = ReadFile(GetPageFile(StaticUrlDecode($id)));
+  print "cannot read " . GetPageFile(StaticUrlDecode($id)) unless $status;
+  my %hash = ParseData($data);
   my $ext = '.html';
   if ($hash{text} =~ /#FILE ([^ \n]+)\n(.*)/s) {
     $ext = $StaticMimeTypes{$1};
@@ -135,6 +138,7 @@ sub StaticWriteFile {
 sub StaticFile {
   my ($id, $type, $data) = @_;
   require MIME::Base64;
+  binmode(F);
   print F MIME::Base64::decode($data);
 }
 
@@ -150,8 +154,21 @@ rict.dtd">
 <meta http-equiv="content-type" content="text/html; charset=$HttpCharset">
 </head>
 <body>
-<div class="content">
 EOT
+  if ($LogoUrl) {
+    my $logo = $LogoUrl;
+    $logo =~ s|.*/||; # just the filename
+    my $alt = T('[Home]');
+    print F '<div class="header">';
+    print F "<img src=\"$logo\" alt=\"$alt\" class=\"logo\" />";
+    print F '</div>';
+  }
+  if ($SidebarName) {
+    print F '<div class="sidebar">';
+    print F PageHtml($SidebarName);
+    print F '</div>';
+  }
+  print '<div class="content">';
   print F PageHtml($id); # this reopens the page currently open
   print F << "EOT";
 </div>
