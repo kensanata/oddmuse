@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.29 2003/04/13 22:18:16 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.30 2003/04/15 00:03:17 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -356,7 +356,7 @@ sub ApplyRules {
     # second block -- remaining hilighting
     if ($HtmlStack[0] eq 'dt' && m/\G:/cg) {
       $fragment = &OpenHtmlEnvironment('dd');
-    } elsif ($HtmlStack[0] eq 'td' && m/\G((\|\|)+)\s*$/cgm) {
+    } elsif ($HtmlStack[0] eq 'td' && m/\G((\|\|)+)\s*(\n|$)/cgm) {
       $fragment = &CloseHtmlEnvironment() . &CloseHtmlEnvironment(); # close td and tr
     } elsif ($HtmlStack[0] eq 'td' && m/\G((\|\|)+)/cg) {
       if (length($1) == 2) {
