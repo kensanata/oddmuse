@@ -58,7 +58,7 @@ $RefererTracking $RefererTimeLimit $RefererLimit $NotifyTracker
 %CookieParameters $NewComment $StyleSheetPage @UserGotoBarPages
 $ConfigPage $ScriptName @MyMacros $CommentsPrefix $AllNetworkFiles
 $UsePathInfo $UploadAllowed @UploadTypes $LastUpdate $PageCluster
-%NotifyJournalPage %RssInterwikiTranslate);
+%NotifyJournalPage %RssInterwikiTranslate $UseCache);
 
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
@@ -78,6 +78,7 @@ $DataDir   = '/tmp/oddmuse' unless $DataDir; # Main wiki directory
 $ConfigPage  = '' unless $ConfigPage; # config page
 $RunCGI      = 1;   # 1 = Run script as CGI instead of being a library
 $UsePathInfo = 1;   # 1 = allow page views using wiki.pl/PageName
+$UseCache    = 2;   # 0 = no; 1 = partial HTML cache; 2 = HTTP/1.1 caching
 
 # Basics
 $SiteName    = 'Wiki';     # Name of site (used for titles)
@@ -275,7 +276,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.264 2003/11/26 23:59:57 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.265 2003/11/27 00:14:32 as Exp $');
 }
 
 sub InitCookie {
@@ -1081,7 +1082,8 @@ sub BrowseResolvedPage {
 
 sub BrowsePage {
   my ($id, $raw) = @_;
-  if ($q->http('HTTP_IF_MODIFIED_SINCE') eq gmtime($LastUpdate)) {
+  if ($q->http('HTTP_IF_MODIFIED_SINCE') eq gmtime($LastUpdate)
+      and GetParam('cache', $UseCache) >= 2) {
     print $q->header(-status=>'304 NOT MODIFIED');
     return;
   }
@@ -1113,7 +1115,7 @@ sub BrowsePage {
   # handle subtitle for old revisions, if these exist, and open keep file
   my $revision = GetParam('revision', ''); # default empty string
   $revision =~ s/\D//g; # Remove non-numeric chars
-  my $goodRevision; # empty string if no specific revision specified
+  my $goodRevision; # empty string if no revision or current revision specified
   $goodRevision = $revision if $revision ne $Page{'revision'};
   if ($goodRevision) {
     my %keep = GetKeptRevision($goodRevision);
@@ -1137,7 +1139,7 @@ sub BrowsePage {
   }
   # print HTML of the main text
   print '<div class="content">';
-  if ($revision eq '' && $Page{blocks} && $Page{flags} && GetParam('cache',1)) {
+  if ($revision eq '' && $Page{blocks} && $Page{flags} && GetParam('cache', $UseCache)) {
     PrintCache();
   } else {
     my $savecache = ($Page{'revision'} > 0 and $revision eq ''); # new page not cached
@@ -2975,7 +2977,7 @@ sub PrintAllPages {
   for my $id (@_) {
     OpenPage($id); # After this call, don't save cache!
     print $q->hr . $q->h1($links ? GetPageLink($id) : $q->a({-name=>$id},$id));
-    if ($Page{blocks} && $Page{flags} && GetParam('cache',1)) {
+    if ($Page{blocks} && $Page{flags} && GetParam('cache', $UseCache)) {
       PrintCache();
     } else {
       PrintWikiToHTML($Page{'text'}, 1); # cache, current, not locked
