@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.58 2003/05/17 15:07:12 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.59 2003/05/17 15:18:09 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -2572,7 +2572,7 @@ sub DoUnlock {
   my $message = '';
   print &GetHeader('', T('Unlocking'), '');
   print $q->p(T('This operation may take several seconds...')) . "\n";
-  for my $lock qw(main diff index merge visitors refer_*) {
+  for my $lock (qw(main diff index merge visitors refer_*)) {
     if (&ForceReleaseLock($lock)) {
       $message .= $q->p(Ts('Forced unlock of %s lock.', $lock)) . "\n";
     }
