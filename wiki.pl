@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.386 2004/04/17 20:25:16 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.387 2004/04/17 20:30:01 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -369,12 +369,11 @@ sub InitLinkPatterns {
   $QDelim = '(?:"")?';# Optional quote delimiter (removed from the output)
   $WikiWord = '[A-Z]+[a-z\x80-\xff]+[A-Z][A-Za-z\x80-\xff]*';
   $LinkPattern = "($WikiWord)$QDelim";
-  # Inter-site convention: sites must start with uppercase letter.
-  # This avoids confusion with URLs.
+  $FreeLinkPattern = "([-,.()' _0-9A-Za-z\x80-\xff]+)$QDelim";
+  # Intersites must start with uppercase letter to avoid confusion with URLs.
   $InterSitePattern = '[A-Z\x80-\xff]+[A-Za-z\x80-\xff]+';
   $InterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x80-\xff_=!?#$@~`%&*+\\/:;.,]+[-a-zA-Z0-9\x80-\xff_=#$@~`%&*+\\/])$QDelim";
-  $FreeInterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x80-\xff_=!?#$@~`%&*+\\/:;., ]+[-a-zA-Z0-9\x80-\xff_=#$@~`%&*+\\/])$QDelim"; # plus space
-  $FreeLinkPattern = "([-,.()' _0-9A-Za-z\x80-\xff]+)$QDelim";
+  $FreeInterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x80-\xff_=!?#$@~`%&*+\\/:;.,()' ]+[-a-zA-Z0-9\x80-\xff_=#$@~`%&*+\\/])$QDelim"; # plus space and other stuff from $FreeLinkPattern
   $UrlProtocols = 'http|https|ftp|afs|news|nntp|mid|cid|mailto|wais|prospero|telnet|gopher|irc';
   $UrlProtocols .= '|file'  if $NetworkFile;
   my $UrlChars = '[-a-zA-Z0-9/@=+$_~*.,;:?!\'"()&#%]'; # see RFC 2396
