@@ -298,7 +298,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.324 2004/02/21 14:25:02 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.325 2004/02/22 16:03:41 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1779,12 +1779,9 @@ sub GetAuthorLink {
     $userName = '';  # Just pretend it isn't there.
   }
   if ($userName and $RecentLink) {
-    $html = $q->span({-class=>'author'},
-		     $q->a({-href=>"$ScriptName?$userName",
-			    -title=>Ts('from %s', $host)}, $userNameShow));
+    $html = ScriptLink($userName, $userNameShow, 'author', undef, Ts('from %s', $host));
   } elsif ($userName) {
-    $html = $q->span({-class=>'author'}, $userNameShow)
-      . ' ' . Ts('from %s', $host);
+    $html = $q->span({-class=>'author'}, $userNameShow) . ' ' . Ts('from %s', $host);
   } else {
     $html = $host;
   }
