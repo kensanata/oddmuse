@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.361 2004/03/19 15:40:28 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.362 2004/03/21 01:56:20 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -660,7 +660,7 @@ sub RunMyRules {
 
 sub PrintWikiToHTML {
   my ($pageText, $savecache, $revision, $islocked) = @_;
-  $FootnoteNumber = 1;
+  $FootnoteNumber = 0;
   $pageText =~ s/$FS//g; # Remove separators (paranoia)
   $pageText = QuoteHtml($pageText);
   my ($blocks, $flags) = ApplyRules($pageText, 1, $savecache, $revision);
@@ -878,7 +878,7 @@ sub GetInterLink {
   } elsif (!$url) {
     return $id;
   } elsif ($bracket && !$text) {
-    $text = BracketLink($FootnoteNumber++);
+    $text = BracketLink(++$FootnoteNumber);
     $class .= ' number';
   } elsif (!$text) {
     $text = $q->span({-class=>'site'}, $site) . ':' . $q->span({-class=>'page'}, $page);
@@ -905,7 +905,7 @@ sub GetUrl {
     # Only do remote file:// links. No file:///c|/windows.
     return $url;
   } elsif ($bracket && !$text) {
-    $text = BracketLink($FootnoteNumber++);
+    $text = BracketLink(++$FootnoteNumber);
     $class .= ' number';
   } elsif (!$text) {
     $text = $url;
@@ -925,7 +925,7 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
   $id = FreeToNormal($id);
   my ($class, $exists, $title) = ResolveId($id);
   if (!$text && $exists && $bracket) {
-    $text = BracketLink($FootnoteNumber++); # s/_/ /g happens further down!
+    $text = BracketLink(++$FootnoteNumber); # s/_/ /g happens further down!
     $class .= ' number';
     $title = $id; # override title from ResolveId!
     $title =~ s/_/ /g if $free;
@@ -1055,7 +1055,7 @@ sub WikiHeading {
 sub PrintCache { # Use after OpenPage!
   my @blocks = split($FS,$Page{blocks});
   my @flags = split($FS,$Page{flags});
-  $FootnoteNumber = 1;
+  $FootnoteNumber = 0;
   foreach my $block (@blocks) {
     if (shift(@flags)) {
       ApplyRules($block, 1, 1); # local links, anchors, current revision
@@ -2006,25 +2006,77 @@ sub PrintFooter {
     print $q->end_html;
     return;
   }
- if ($CommentsPrefix ne '' and $id and $rev ne 'history' and $rev ne 'edit')  {
-    if ($OpenPageName =~ /^$CommentsPrefix/) {
-      my $userName = GetParam('username', '');
-      print $q->div({-class=>'comment'}, '<p>'
-		    . GetFormStart()
-		    . GetHiddenValue("title", $OpenPageName)
-		    . GetHiddenValue("summary" , T("new comment"))
-		    . GetTextArea('aftertext', $comment ? $comment : $NewComment)
-		    . '<p>' . T('Username:') . ' '
-		    . $q->textfield(-name=>'username',
-				    -default=>$userName, -override=>1,
-				    -size=>20, -maxlength=>50)
-		    . $q->p($q->submit(-name=>'Save', -value=>T('Save')) . ' '
-			    . $q->submit(-name=>'Preview', -value=>T('Preview')))
-		    . $q->endform());
-    }
+  print GetCommentForm($id, $rev, $comment);
+  print '<div class="footer">';
+  print GetFooterLinks($id, $rev);
+  print GetAdminBar() if UserIsAdmin();
+  print GetFooterTimestamp($id, $rev);
+  print GetSearchForm();
+  if ($DataDir =~ m|/tmp/|) {
+    print $q->p($q->strong(T('Warning') . ': ')
+		. Ts('Database is stored in temporary directory %s', $DataDir));
   }
-  my $html = $q->hr() . GetGotoBar($id);
-  # other revisions
+  print T($FooterNote) if $FooterNote;
+  print $q->p(GetValidatorLink()) if GetParam('validate', $ValidatorLink);
+  print $q->p(Ts('%s seconds', (time - $Now))) if GetParam('time',0);
+  print '</div>';
+  print GetSisterSites($id);
+  print GetNearLinksUsed($id);
+  eval { local $SIG{__DIE__}; PrintMyContent($id); };
+  print $q->end_html;
+}
+
+sub GetSisterSites {
+  my $id = shift;
+  NearInit() unless $NearSiteInit;
+  if ($id and $NearSource{$id}) {
+    my $sistersites = T('The same page on other sites:') . $q->br();
+    foreach my $site (@{$NearSource{$id}}) {
+      my $logo = $SisterSiteLogoUrl;
+      $logo =~ s/\%s/$site/g;
+      $sistersites .= $q->a({-href=>GetInterSiteUrl($site, $id), -title=>"$site:$id"},
+		     $q->img({-src=>$logo, -alt=>"$site:$id"}));
+    }
+    return $q->hr(), $q->div({-class=>'sister'}, $q->p($sistersites));
+  }
+  return '';
+}
+
+sub GetNearLinksUsed {
+  if (%NearLinksUsed) {
+    return $q->div({-class=>'near'}, $q->p(GetPageLink(T('EditNearLinks')) . ':',
+                   join(' ', map { GetEditLink($_, $_); } keys %NearLinksUsed)));
+  }
+  return '';
+}
+
+sub GetFooterTimestamp {
+  my ($id, $rev) = @_;
+  if ($id and $rev ne 'history' and $rev ne 'edit') {
+    my $html .= $q->br() . ($rev eq '' ? T('Last edited') : T('Edited'))
+      . ' ' . TimeToText($Page{ts}) . ' '
+      . Ts('by %s', &GetAuthorLink($Page{host}, $Page{username}));
+    $html .= ' ' . ScriptLinkDiff(1, $id, T('(diff)'), $rev) if $UseDiff;
+    return $html;
+  }
+  return '';
+}
+
+sub GetAdminBar {
+  my $html .= $q->br() . ScriptLink('action=maintain', T('Run maintenance'));
+  if (-f "$DataDir/noedit") {
+    $html .= ' | ' . ScriptLink('action=editlock;set=0', T('Unlock site'));
+  } else {
+    $html .= ' | ' . ScriptLink('action=editlock;set=1', T('Lock site'));
+  }
+  foreach my $page (@LockOnCreation) {
+    $html .= ' | ' . GetPageLink($page) if $page;
+  }
+  return $html;
+}
+
+sub GetFooterLinks {
+  my ($id, $rev) = @_;
   my $revisions;
   if ($id and $rev ne 'history' and $rev ne 'edit') {
     if (UserCanEdit($CommentsPrefix . $id, 0)
@@ -2065,62 +2117,29 @@ sub PrintFooter {
     $revisions .= ' | ' if $revisions;
     $revisions .= Ts('Back to %s', GetPageLink($1, $1));
   }
-  $html .= $q->br() . $revisions  if $revisions;
-  # admin bar
-  if (UserIsAdmin()) {
-    $html .= $q->br() . ScriptLink('action=maintain', T('Run maintenance'));
-    if (-f "$DataDir/noedit") {
-      $html .= ' | ' . ScriptLink('action=editlock;set=0', T('Unlock site'));
-    } else {
-      $html .= ' | ' . ScriptLink('action=editlock;set=1', T('Lock site'));
-    }
-    foreach my $page (@LockOnCreation) { $html .= ' | ' . GetPageLink($page) if $page; }
+  my $html =  $q->hr() . GetGotoBar($id);
+  $html .= $q->br() . $revisions if $revisions;
+  return $html;
+}
+
+sub GetCommentForm {
+  my ($id, $rev, $comment) = @_;
+  if ($CommentsPrefix ne '' and $id and $rev ne 'history' and $rev ne 'edit'
+      and $OpenPageName =~ /^$CommentsPrefix/) {
+    return $q->div({-class=>'comment'}, '<p>'
+		   . GetFormStart()
+		   . GetHiddenValue('title', $OpenPageName)
+		   . GetHiddenValue('summary' , T('new comment'))
+		   . GetTextArea('aftertext', $comment ? $comment : $NewComment)
+		   . '<p>' . T('Username:') . ' '
+		   . $q->textfield(-name=>'username',
+				   -default=>GetParam('username', ''), -override=>1,
+				   -size=>20, -maxlength=>50)
+		   . $q->p($q->submit(-name=>'Save', -value=>T('Save')) . ' '
+			   . $q->submit(-name=>'Preview', -value=>T('Preview')))
+		   . $q->endform());
   }
-  # time stamps
-  if ($id and $rev ne 'history' and $rev ne 'edit') {
-    $html .= $q->br();
-    if ($rev eq '') {		# Only for most current rev
-      $html .= T('Last edited');
-    } else {
-      $html .= T('Edited');
-    }
-    $html .= ' ' . TimeToText($Page{ts}) . ' '
-      . Ts('by %s', &GetAuthorLink($Page{host}, $Page{username}));
-    $html .= ' ' . ScriptLinkDiff(1, $id, T('(diff)'), $rev) if $UseDiff;
-  }
-  # search
-  $html .= GetSearchForm();
-  if ($DataDir =~ m|/tmp/|) {
-    $html .= $q->p($q->strong(T('Warning') . ': ')
-		. Ts('Database is stored in temporary directory %s', $DataDir));
-  }
-  if ($FooterNote ne '') {
-    $html .= T($FooterNote);  # Allow local translations
-  }
-  if (GetParam('validate', $ValidatorLink)) {
-    $html .= $q->p(GetValidatorLink());
-  }
-  if (GetParam('time',0)) {
-    $html .= $q->p(Ts('%s seconds', (time - $Now)));
-  }
-  print $q->div({-class=>'footer'}, $html);
-  NearInit() unless $NearSiteInit;
-  if ($id and $NearSource{$id}) {
-    my $html = T('The same page on other sites:') . $q->br();
-    foreach my $site (@{$NearSource{$id}}) {
-      my $logo = $SisterSiteLogoUrl;
-      $logo =~ s/\%s/$site/g;
-      $html .= $q->a({-href=>GetInterSiteUrl($site, $id), -title=>"$site:$id"},
-		     $q->img({-src=>$logo, -alt=>"$site:$id"}));
-    }
-    print $q->hr(), $q->div({-class=>'sister'}, $q->p($html));
-  }
-  if (%NearLinksUsed) {
-    print $q->div({-class=>'near'}, $q->p(GetPageLink(T('EditNearLinks')) . ':',
-      join(' ', map { GetEditLink($_, $_); } keys %NearLinksUsed)));
-  }
-  eval { local $SIG{__DIE__}; PrintMyContent($id); };
-  print $q->end_html;
+  return '';
 }
 
 sub GetFormStart {
