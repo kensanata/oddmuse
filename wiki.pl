@@ -53,7 +53,7 @@ $RssPublisher $RssContributor $RssRights $WikiDescription
 $BannedCanRead $SurgeProtection $SurgeProtectionViews
 $SurgeProtectionTime $DeletedPage %Languages $LanguageLimit
 $ValidatorLink $RefererTracking $RefererTimeLimit $RefererLimit
-$TopLinkBar $NotifyWeblogs $InterMap @LockOnCreation $RefererFilter
+$TopLinkBar $NotifyTracker $InterMap @LockOnCreation $RefererFilter
 $PermanentAnchorsFile $PermanentAnchors %CookieParameters
 $StyleSheetPage @UserGotoBarPages $ConfigPage $ScriptName
 $CommentsPrefix $NewComment);
@@ -87,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.106 2003/06/16 22:21:39 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.107 2003/06/16 23:27:58 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -153,7 +153,7 @@ $RssImageUrl      = '';    # URL to image to associate with your RSS feed
 $RssPublisher     = '';    # Name of RSS publisher
 $RssContributor   = '';    # List or description of the contributors
 $RssRights        = '';    # Copyright notice for RSS
-$NotifyWeblogs    = 0;     # 1 = send pings to weblogs.com for major changes
+$NotifyTracker    = 0;     # 1 = send pings to weblogs.com for major changes
 
 # Header and Footer, Notes, GotoBar
 $EmbedWiki   = 0;   # 1 = no headers/footers
@@ -1023,7 +1023,7 @@ sub DoBrowseRequest {
   } elsif ($action eq 'refer') {
     DoPrintAllReferers();
   } elsif ($action eq 'ping') {
-    DoPingWeblogs();
+    DoPingTracker();
   } elsif (($search ne '') || (GetParam('dosearch', '') ne '')) {
     DoSearch($search);
   } elsif (GetParam('oldtime', '') or (GetParam('raw', 0) == 2)) { # after edit
@@ -3324,10 +3324,10 @@ sub DoPost {
 	$newAuthor);
   ReleaseLock();
   DeletePermanentAnchors();
-  ReBrowsePage($id, '', 1);
-  if (GetParam('recent_edit', '') ne 'on' and $NotifyWeblogs) {
-    PingWeblogs();
+  if (GetParam('recent_edit', '') ne 'on' and $NotifyTracker) {
+    PingTracker();
   }
+  ReBrowsePage($id, '', 1);
 }
 
 sub Save { # call within lock, with opened page
@@ -3439,15 +3439,15 @@ sub UpdateDiffs {
   }
 }
 
-# == Weblogs.Com ==
+# == Weblog Tracking ==
 
-sub PingWeblogs {
+sub PingTracker {
   my $id = shift;
   if ($q->url(-base=>1) !~ m|^http://localhost|) {
     my $url = UrlEncode($q->url . '/' . $id);
     my $name = UrlEncode($SiteName . ': ' . $id);
     # my $uri = "http://newhome.weblogs.com/pingSiteForm?name=$id&url=$url";
-    my $uri = "http://www.blogrolling.com/ping.php?pingform=single;title=$name;url_1=$url;submit=Ping";
+    my $uri = "http://www.blogrolling.com/ping.php?pingform=single&title=$name&url_1=$url&submit=Ping";
     require LWP::UserAgent;
     my $ua = LWP::UserAgent->new;
     my $request = HTTP::Request->new('GET', $uri);
@@ -3455,10 +3455,10 @@ sub PingWeblogs {
   }
 }
 
-sub DoPingWeblogs {
-  print GetHeader('', T('Ping Weblogs.Com'), '');
+sub DoPingTracker {
+  print GetHeader('', T('Ping'), '');
   return  if (!UserIsAdminOrError());
-  my $response = PingWeblogs();
+  my $response = PingTracker(GetParam('id', $RCName));
   if ($response) {
     print $q->pre($response->request->uri, "\n",
 		  $response->status_line, "\n");
