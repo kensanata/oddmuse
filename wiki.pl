@@ -83,7 +83,7 @@ $HttpCharset = '';  # Charset for pages, default is ISO-8859-1
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.22 2003/04/01 13:31:43 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.23 2003/04/01 17:32:04 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -679,7 +679,8 @@ sub GetInterLink {
   my ($id, $punct) = &SplitUrlPunct($id);
   my ($site, $page) = split(/:/, $id, 2);
   $page =~ s/&amp;/&/g;  # Unquote common URL HTML
-  my $url = &GetSiteUrl($site);
+  my $url;
+  $url = &GetSiteUrl($site) if $page;
   if ($text && $bracket && !$url) {
     return "[$id $text]$punct";
   } elsif ($bracket && !$url) {
