@@ -1203,8 +1203,6 @@ test_page($page, @Test2);
 
 # --------------------
 
-markup:
-
 print '[link pattern]';
 
 system('/bin/rm -rf /tmp/oddmuse');
@@ -1505,6 +1503,8 @@ EOT
 
 run_tests();
 
+markup:
+
 print '[markup module]';
 
 system('/bin/rm -rf /tmp/oddmuse');
@@ -1524,6 +1524,8 @@ foo
 foo
 /foo/
 <i>foo</i>
+5km/h or 6km/h
+5km/h or 6km/h
 /foo/ bar
 <i>foo</i> bar
 /foo bar 5/
