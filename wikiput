@@ -90,7 +90,7 @@ def wikiput(where, text, summary="", username="",
     data = response.read()
     conn.close()
     if response.status != 302:
-        raise RuntimeError, "We weren't redirected - something went wrong!"
+        raise RuntimeError, "%s returned %d: %s" % (where, response.status, response.reason)
 
 def parse_wiki_location(where):
     """Return a tuple of host, path and page name for the wiki page
