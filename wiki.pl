@@ -270,7 +270,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.140 2003/09/07 23:21:58 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.141 2003/09/08 20:06:35 as Exp $');
 }
 
 sub InitCookie {
@@ -1211,6 +1211,14 @@ sub DoRc {
   if ($idOnly && $showHTML) {
     print $q->p($q->b('(' . Ts('for %s only', ScriptLink(UrlEncode($idOnly), $idOnly)) . ')'));
   }
+  my $userOnly = GetParam('rcuseronly', '');
+  if ($userOnly && $showHTML) {
+    print $q->p($q->b('(' . Ts('for %s only', ScriptLink(UrlEncode($userOnly), $userOnly)) . ')'));
+  }
+  my $hostOnly = GetParam('rchostonly', '');
+  if ($hostOnly && $showHTML) {
+    print $q->p($q->b('(' . Ts('for %s only', $hostOnly) . ')'));
+  }
   if($showHTML) {
     my ($showbar, $html);
     foreach my $i (@RcDays) {
@@ -1282,6 +1290,8 @@ sub GetRc {
   my $all = GetParam('all', 0);
   my $newtop = GetParam('newtop', $RecentTop);
   my $idOnly = GetParam('rcidonly', '');
+  my $userOnly = GetParam('rcuseronly', '');
+  my $hostOnly = GetParam('rchostonly', '');
   @outrc = reverse @outrc if ($newtop);
   foreach my $rcline (@outrc) {
     my ($ts, $pagename, $summary, $minor, $host, $kind, $extraTemp)
@@ -1289,7 +1299,9 @@ sub GetRc {
     # Later: need to change $all for new-RC?
     next  if (not $all and $ts < $changetime{$pagename});
     next  if ($idOnly and $idOnly ne $pagename);
+    next  if ($hostOnly and $host !~ /$hostOnly/);
     %extra = split(/$FS2/, $extraTemp, -1);
+    next  if ($userOnly and $userOnly ne $extra{'name'});
     @languages = split(/$FS1/, $extra{'languages'});
     next  if ($langFilter and not grep(/$langFilter/, @languages));
     if ($date ne CalcDay($ts)) {
@@ -3323,12 +3335,11 @@ sub MergeRevisions {
 # Note: all diff and recent-list operations should be done within locks.
 sub WriteRcLog {
   my ($id, $summary, $minor, $revision, $name, $rhost, $languages) = @_;
-  my ($extraTemp, %extra);
-  %extra = ();
+  my %extra = ();
   $extra{'name'} = $name  if ($name ne '');
   $extra{'revision'} = $revision if ($revision ne '');
   $extra{'languages'} = join($FS1, @{$languages}) if $languages;
-  $extraTemp = join($FS2, %extra);
+  my $extraTemp = join($FS2, %extra);
   # The two fields at the end of a line are kind and extension-hash
   my $rc_line = join($FS3, $Now, $id, $summary,
                      $minor, $rhost, '0', $extraTemp);
