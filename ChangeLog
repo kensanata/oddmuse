@@ -10,6 +10,11 @@
 	(PrintAllPages): Take extra parameter to say whether to link to
 	the pages or not.
 	(PrintJournal): Slice only if too large.
+	(%CookieParameters): Get rid of linkrandom.
+	(ScriptLinkTitle): Deleted.
+	(GetAuthorLink): Include code from ScriptLinkTitle and add
+	span.author.
+	(GetTextArea): Parameter editwide has no effect anymore.
 
 2003-06-12  Alex Schroeder  <alex@gnu.org>
 
