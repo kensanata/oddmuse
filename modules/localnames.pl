@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.1 2004/07/01 17:48:28 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.2 2004/07/03 01:26:47 as Exp $</p>';
 
 use vars qw($LocalNamesPage);
 
@@ -24,48 +24,36 @@ $LocalNamesPage = 'LocalNames';
 
 my %LocalNames = ();
 
-# This variable has to be set to 0 every time the LocalNamesPage changes.
-# Alternatively, set it to 0 on every request.
-# Setting it to 0 when this file is loaded will break under mod_perl!
+# Just hook into NearLink stuff -- whenever near links are
+# initialized, we initialize as well.  Add our stuff first, because
+# local names have priority over near links.
 
-my $LocalNamesInit;
+*LocalNamesOldNearInit = *NearInit;
+*NearInit = *LocalNamesNewNearInit;
 
-*OldLocalNamesInitVariables = *InitVariables;
-*InitVariables = *NewLocalNamesInitVariables;
-
-sub NewLocalNamesInitVariables {
-  OldLocalNamesInitVariables();
-  $LocalNamesInit = 0;
-}
-
-# Here is the key point: Change ResolveId!
-
-*OldLocalNamesResolveId = *ResolveId;
-*ResolveId = *NewLocalNamesResolveId;
-
-sub NewLocalNamesResolveId {
-  my @args = @_;
-  my @result = OldLocalNamesResolveId(@args);
-  my $id = shift(@args);
-  if (not $#result) {
-    LocalNamesInit() unless $LocalNamesInit;
-    if ($LocalNames{$id}) {
-      # Make sure we're offered to create a local copy of the page.
-      $NearLinksUsed{$id} = 1;
-      # Return source as title attribute, and use 'near' as a return
-      # value, because this gives us the near link treatment in
-      # BrowseResolvedPage.
-      return ('near', $LocalNames{$id}, $LocalNamesPage);
-    }
-  }
-  return @result;
-}
-
-sub LocalNamesInit {
+sub LocalNamesNewNearInit {
   my $data = GetPageContent($LocalNamesPage);
   while ($data =~ m/\[$FullUrlPattern\s+([^\]]+?)\]/go) {
     my ($id, $url) = ($2, $1);
-    $LocalNames{FreeToNormal($id)} = $url;
+    my $page = FreeToNormal($id);
+    # Make sure we're listed in action=index;near=1
+    $LocalNames{$page} = $url;
+    push(@{$NearSource{$page}}, $LocalNamesPage);
+    # %NearSite is for fetching the list of pages -- we don't need that.
   }
-  $LocalNamesInit = 1;
+  LocalNamesOldNearInit();
+}
+
+# Now make sure we resolve correctly:
+
+*OldLocalNamesGetInterSiteUrl = *GetInterSiteUrl;
+*GetInterSiteUrl = *NewLocalNamesGetInterSiteUrl;
+
+sub NewLocalNamesGetInterSiteUrl {
+  my ($site, $page, $quote) = @_;
+  if ($site eq $LocalNamesPage and $LocalNames{$page}) {
+    return $LocalNames{$page}
+  } else {
+    return OldLocalNamesGetInterSiteUrl($site, $page, $quote);
+  }
 }
