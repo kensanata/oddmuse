@@ -265,7 +265,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.189 2003/10/10 13:45:04 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.190 2003/10/10 13:49:56 as Exp $');
 }
 
 sub InitCookie {
@@ -1269,7 +1269,7 @@ sub DoRc {
       # Ts('%s days', '');
     }
     print $q->p($html . $q->br()
-		. ScriptLink("action=rc;from=$lastTs", T('List new changes starting from'))
+		. ScriptLink("$action;from=$lastTs", T('List new changes starting from'))
 		. ' ' . TimeToText($lastTs));
   }
   my $i = 0;
