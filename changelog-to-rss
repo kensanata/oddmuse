@@ -25,16 +25,21 @@ use POSIX;
 
 my $q = new CGI;
 my $url = $q->param('url');
+my $pattern = $q->param('pattern');
 
 if (not $url) {
   print $q->header(),
     $q->start_html('ChangeLog to RSS'),
     $q->h1('ChangeLog to RSS'),
     $q->p('Translates ChangeLog output to RSS 2.0.'),
-    $q->p(q{$Id: changelog-to-rss,v 1.4 2005/01/05 21:54:20 as Exp $}),
+    $q->p(q{$Id: changelog-to-rss,v 1.5 2005/01/05 22:02:47 as Exp $}),
     $q->start_form(-method=>'GET'),
-    $q->p('ChangeLog URL: ', $q->textfield('url', '', 70)),
-    $q->p('Limit number of entries returned: ', $q->textfield('limit', '15', 5)),
+    $q->p('ChangeLog URL: ',
+	  $q->textfield('url', '', 70)),
+    $q->p('Link pattern if available, use %s for the filename: ',
+	  $q->textfield('pattern', '', 70)),
+    $q->p('Limit number of entries returned: ',
+	  $q->textfield('limit', '15', 5)),
     $q->p($q->submit()),
     $q->end_form(),
     $q->end_html();
@@ -89,14 +94,15 @@ sub output {
   $date = to_date($date);
   $author = quote_html($author);
   $log = quote_html($log);
-  $rss .= qq{
-<item>
-<author>$author</author>
-<pubDate>$date</pubDate>
-<title>$file</title>
-<description>$log</description>
-</item>
-};
+  my $link = $pattern;
+  $link =~ s/\%s/$file/g or $link .= $file;
+  $rss .= "<item>\n";
+  $rss .= "<author>$author</author>\n" if $author;
+  $rss .= "<pubDate>$date</pubDate>\n" if $date;
+  $rss .= "<title>$file</title>\n" if $file;
+  $rss .= "<link>$link</link>\n" if $link;
+  $rss .= "<description>$log</description>\n" if $log;
+  $rss .= "</item>\n\n";
 }
 
 sub to_date {
