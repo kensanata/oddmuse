@@ -274,7 +274,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.210 2003/10/18 22:30:54 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.211 2003/10/18 23:20:36 as Exp $');
 }
 
 sub InitCookie {
@@ -3924,8 +3924,8 @@ sub GetPermanentAnchor {
   my $id = FreeToNormal(shift); # Trims extra spaces, too
   my $text = $id;
   $text =~ s/_/ /g;
-  my $resolved = ResolveId($id);
-  if ($resolved and $resolved ne $OpenPageName) { # exists already
+  my ($class, $resolved) = ResolveId($id);
+  if ($class eq 'local' and $resolved ne $OpenPageName) { # exists already
     return '[' . Ts('anchor first defined here: %s', GetPageLink($id)) . ']';
   } elsif (RequestLockDir('permanentanchors')) { # not fatal
     $PermanentAnchors{$id}=$OpenPageName;
