@@ -1,5 +1,10 @@
 2003-10-12  Alex Schroeder  <alex@gnu.org>
 
+	(SearchTitleAndBody): Support "and" and "or".
+	(PrintSearchResults): Support "and" and "or".
+
+2003-10-12  Alex Schroeder  <alex@gnu.org>
+
 	* wiki.pl ($SurgeProtectionTime, $SurgeProtectionViews): Doubled
 	defaults.
 	(InitVariables): $NotFoundPg also passed through FreeToNormal.
