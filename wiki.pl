@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.39 2003/04/23 09:38:11 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.40 2003/04/23 21:02:56 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -1572,7 +1572,6 @@ sub GetHistoryLine {
     $host = $sect{'host'};
   } else {
     $host = $sect{'ip'};
-    $host =~ s/\d+$/xxx/;      # Be somewhat anonymous (if no host)
   }
   $user = $sect{'username'};
   $ts = $sect{'ts'};
