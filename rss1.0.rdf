@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<rdf:RDF
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns="http://purl.org/rss/1.0/"
+ xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:syn="http://purl.org/rss/1.0/modules/syndication/"
+>
+
+<channel rdf:about="http://freshmeat.net">
+<title>freshmeat.net</title>
+<link>http://freshmeat.net</link>
+<description>the one-stop-shop for all your Linux software needs</description>
+<dc:creator>scoop@freshmeat.net</dc:creator>
+<dc:language>en-us</dc:language>
+<dc:subject>Linux Software</dc:subject>
+<dc:publisher>scoop@freshmeat.net</dc:publisher>
+<dc:rights>Copyright 1999, Freshmeat.net</dc:rights>
+<dc:date>2000-08-23T07:00+00:00</dc:date>
+<syn:updatePeriod>hourly</syn:updatePeriod>
+<syn:updateFrequency>1</syn:updateFrequency>
+<syn:updateBase>1901-01-01T00:00+00:00</syn:updateBase>
+<items>
+ <rdf:Seq>
+  <rdf:li rdf:resource="http://freshmeat.net/news/1999/06/21/930003829.html" />
+ </rdf:Seq>
+</items>
+<image rdf:resource="http://freshmeat.net/images/fm.mini.jpg" />
+<textinput rdf:resource="http://core.freshmeat.net/search.php3" />
+</channel>
+
+<image rdf:about="http://freshmeat.net/images/fm.mini.jpg">
+<title>freshmeat.net</title>
+<url>http://freshmeat.net/images/fm.mini.jpg</url>
+<link>http://freshmeat.net</link>
+<dc:creator>G. Raphics (graphics at freshmeat.net)</dc:creator>
+</image>
+
+<item rdf:about="http://freshmeat.net/news/1999/06/21/930003829.html">
+<title>GTKeyboard 0.85</title>
+<link>http://freshmeat.net/news/1999/06/21/930003829.html</link>
+<description>GTKeyboard is a graphical keyboard that ...</description>
+<dc:creator>David Allen (s2mdalle at titan.vcu.edu)</dc:creator>
+<dc:subject>X11/Utilities</dc:subject>
+</item>
+
+<textinput rdf:about="http://core.freshmeat.net/search.php3">
+<title>quick finder</title>
+<description>Use the text input below to search freshmeat</description>
+<name>query</name>
+<link>http://core.freshmeat.net/search.php3</link>
+</textinput>
+
+</rdf:RDF>
