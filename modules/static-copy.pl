@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.7 2004/10/08 20:53:27 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.8 2004/10/13 18:30:42 as Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -103,7 +103,7 @@ sub StaticFileName {
   # the $id to open the file because when called from
   # StaticScriptLink, for example, the $action is already encoded.
   my ($status, $data) = ReadFile(GetPageFile(StaticUrlDecode($id)));
-  print "cannot read " . GetPageFile(StaticUrlDecode($id)) unless $status;
+  print "cannot read " . GetPageFile(StaticUrlDecode($id)) . $q->br() unless $status;
   my %hash = ParseData($data);
   my $ext = '.html';
   if ($hash{text} =~ /#FILE ([^ \n]+)\n(.*)/s) {
@@ -155,24 +155,30 @@ rict.dtd">
 </head>
 <body>
 EOT
+  my $header = '';
+  # logo
   if ($LogoUrl) {
     my $logo = $LogoUrl;
     $logo =~ s|.*/||; # just the filename
     my $alt = T('[Home]');
-    print F '<div class="header">';
-    print F "<img src=\"$logo\" alt=\"$alt\" class=\"logo\" />";
-    print F '</div>';
+    $header .= $q->img({-src=>$logo, -alt=>$alt, -class=>'logo'}) if $logo;
   }
-  if ($SidebarName) {
-    print F '<div class="sidebar">';
-    print F PageHtml($SidebarName);
-    print F '</div>';
-  }
-  print '<div class="content">';
-  print F PageHtml($id); # this reopens the page currently open
-  print F << "EOT";
-</div>
-</body>
-</html>
-EOT
+  # top toolbar
+  local $UserGotoBar = ''; # only allow @UserGotoBarPages
+  my $toolbar = GetGotoBar($id);
+  $header .= $toolbar if GetParam('toplinkbar', $TopLinkBar);
+  # title
+  my $name = $id;
+  $name =~ s|_| |g;
+  $header .= $q->h1($name);
+  print F $q->div({-class=>'header'}, $header);
+  # sidebar, if the module is loaded
+  print F $q->div({-class=>'sidebar'}, PageHtml($SidebarName)) if $SidebarName;
+  # content
+  print F $q->div({-class=>'content'}, PageHtml($id)); # this reopens the page currently open
+  # footer
+  print F $q->div({-class=>'footer'}, $q->hr(), $toolbar,
+		  $q->span({-class=>'time'}, GetFooterTimestamp($id)));
+  # finish
+  print F '</body></html>';
 }
