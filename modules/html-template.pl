@@ -21,7 +21,7 @@ sub DoHtmlTemplate {
   }
   OpenPage($id);
   my $html = HtmlTemplate();
-  $html =~ s/<\?(.*?)\?>/eval $1/eg;
+  $html =~ s/<\?(.*?)\?>/eval $1/egs;
   print GetHttpHeader('text/html');
   print $html;
 }
@@ -49,9 +49,23 @@ sub HtmlTemplate {
   <body>
     <div class="header">
       <img class="logo" src="<?$LogoUrl?>" alt="[<?$HomePage?>]" />
-      <h1><?$OpenPageName?></h1>
+      <h1>List of all pages</h1>
     </div>
-    <?&PageHtml?>
+    <div class="content index">
+<?
+  $q->p(map {
+	  my $id = $_;
+	  my $title = $id;
+	  $title =~ s/_/ /g;
+	  GetPageOrEditLink($id, $title) . $q->br();
+	} AllPagesList());
+?>
+    </div>
+    <div class="footer">
+      <hr />
+      <?&GetGotoBar?>
+      <?&GetFooterLinks($id)?>
+    </div>
   </body>
 </html>};
   }
@@ -74,8 +88,8 @@ sub HtmlTemplate {
             action="<?$FullUrl?>"
             enctype="application/x-www-form-urlencoded">
         <p>
-          <input type="hidden" name="title" value="MusicOfIslam" />
-          <input type="hidden" name="oldtime" value="1101159078" />
+          <input type="hidden" name="title" value="<?$OpenPageName?>" />
+          <input type="hidden" name="oldtime" value="<?$Now?>" />
           <textarea name="text" rows="25" cols="78"><?$Page{text}?></textarea>
         </p>
         <p>
@@ -88,7 +102,7 @@ sub HtmlTemplate {
         </p>
         <p>
           Benutzername:
-          <input type="text" name="username" value="AlexSchroeder" size="20" maxlength="50" />
+          <input type="text" name="username" value="<?GetParam('username', '')?>" size="20" maxlength="50" />
         </p>
         <p>
           <input type="submit" name="Save" value="Speichern" accesskey="s" />
@@ -100,6 +114,11 @@ sub HtmlTemplate {
           </a>
         </p>
       </form>
+    </div>
+    <div class="footer">
+      <hr />
+      <?&GetGotoBar?>
+      <?&GetFooterLinks($id)?>
     </div>
   </body>
 </html>};
