@@ -73,6 +73,22 @@ sub test_page {
   print "\n\nPage content:\n", $page, "\n" if $printpage;
 }
 
+sub test_page_negative {
+  my $page = shift;
+  my $printpage = 0;
+  foreach my $str (@_) {
+    print '.';
+    if ($page =~ /$str/) {
+      $failed++;
+      $printpage = 1;
+      print "\nSimple negative Test: Found \"", $str, '"';
+    } else {
+      $passed++;
+    }
+  }
+  print "\n\nPage content:\n", $page, "\n" if $printpage;
+}
+
 sub run_tests {
   # translate embedded newlines (other backslashes remain untouched)
   my %New;
@@ -111,6 +127,170 @@ mkdir '/tmp/oddmuse';
 open(F,'>/tmp/oddmuse/config');
 print F "\$SurgeProtection = 0;\n";
 close(F);
+
+# --------------------
+
+print '[recent changes]';
+
+$host1 = 'tisch';
+$host2 = 'stuhl';
+$ENV{'REMOTE_ADDR'} = $host1;
+update_page('Mendacibombus', 'This is the place.', 'samba', 0, 0, ('username=berta'));
+update_page('Bombia', 'This is the time.', 'tango', 0, 0, ('username=alex'));
+$ENV{'REMOTE_ADDR'} = $host2;
+update_page('Confusibombus', 'This is order.', 'ballet', 1, 0, ('username=berta'));
+update_page('Mucidobombus', 'This is chaos.', 'tarantella', 0, 0, ('username=alex'));
+
+@Positives = split('\n',<<'EOT');
+for time or place only
+Mendacibombus.*samba
+Bombia.*tango
+EOT
+
+@Negatives = split('\n',<<'EOT');
+Confusibombus
+ballet
+Mucidobombus
+tarantella
+EOT
+
+$page = get_page('action=rc rcfilteronly=time%20or%20place');
+test_page($page, @Positives);
+test_page_negative($page, @Negatives);
+
+@Positives = split('\n',<<'EOT');
+Mucidobombus.*tarantella
+EOT
+
+@Negatives = split('\n',<<'EOT');
+Mendacibombus
+samba
+Bombia
+tango
+Confusibombus
+ballet
+EOT
+
+$page = get_page('action=rc rcfilteronly=order%20or%20chaos');
+test_page($page, @Positives);
+test_page_negative($page, @Negatives);
+
+@Positives = split('\n',<<'EOT');
+EOT
+
+@Negatives = split('\n',<<'EOT');
+Mucidobombus
+tarantella
+Mendacibombus
+samba
+Bombia
+tango
+Confusibombus
+ballet
+EOT
+
+$page = get_page('action=rc rcfilteronly=order%20and%20chaos');
+test_page($page, @Positives);
+test_page_negative($page, @Negatives);
+
+@Positives = split('\n',<<'EOT');
+Mendacibombus.*samba
+Bombia.*tango
+EOT
+
+@Negatives = split('\n',<<'EOT');
+Mucidobombus
+tarantella
+Confusibombus
+ballet
+EOT
+
+$page = get_page('action=rc rchostonly=tisch');
+test_page($page, @Positives);
+test_page_negative($page, @Negatives);
+
+@Positives = split('\n',<<'EOT');
+Mucidobombus.*tarantella
+EOT
+
+@Negatives = split('\n',<<'EOT');
+Confusibombus
+ballet
+Bombia
+tango
+Mendacibombus
+samba
+EOT
+
+$page = get_page('action=rc rchostonly=stuhl'); # no minor edits!
+test_page($page, @Positives);
+test_page_negative($page, @Negatives);
+
+@Positives = split('\n',<<'EOT');
+Mucidobombus.*tarantella
+Confusibombus.*ballet
+EOT
+
+@Negatives = split('\n',<<'EOT');
+Mendacibombus
+samba
+Bombia
+tango
+EOT
+
+$page = get_page('action=rc rchostonly=stuhl showedit=1'); # with minor edits!
+test_page($page, @Positives);
+test_page_negative($page, @Negatives);
+
+@Positives = split('\n',<<'EOT');
+Mendacibombus.*samba
+EOT
+
+@Negatives = split('\n',<<'EOT');
+Mucidobombus
+tarantella
+Bombia
+tango
+Confusibombus
+ballet
+EOT
+
+$page = get_page('action=rc rcuseronly=berta');
+test_page($page, @Positives);
+test_page_negative($page, @Negatives);
+
+@Positives = split('\n',<<'EOT');
+Mucidobombus.*tarantella
+Bombia.*tango
+EOT
+
+@Negatives = split('\n',<<'EOT');
+Confusibombus
+ballet
+Mendacibombus
+samba
+EOT
+
+$page = get_page('action=rc rcuseronly=alex');
+test_page($page, @Positives);
+test_page_negative($page, @Negatives);
+
+@Positives = split('\n',<<'EOT');
+Bombia.*tango
+EOT
+
+@Negatives = split('\n',<<'EOT');
+Mucidobombus
+tarantella
+Confusibombus
+ballet
+Mendacibombus
+samba
+EOT
+
+$page = get_page('action=rc rcidonly=Bombia');
+test_page($page, @Positives);
+test_page_negative($page, @Negatives);
 
 # --------------------
 
@@ -409,7 +589,7 @@ print '[banning]';
 
 ## Edit banned hosts as a normal user should fail
 
-my $localhost = 'confusibombus';
+$localhost = 'confusibombus';
 $ENV{'REMOTE_ADDR'} = $localhost;
 
 @Test = split('\n',<<'EOT');
