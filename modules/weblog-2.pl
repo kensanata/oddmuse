@@ -18,7 +18,7 @@
 
 use Time::ParseDate;
 
-$ModulesDescription .= '<p>$Id: weblog-2.pl,v 1.2 2004/01/30 21:35:44 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: weblog-2.pl,v 1.3 2004/04/02 01:17:30 as Exp $</p>';
 
 *OldWeblog2InitVariables = *InitVariables;
 *InitVariables = *NewWeblog2InitVariables;
@@ -31,9 +31,9 @@ sub NewWeblog2InitVariables {
   ($current, $year, $mon, $mday) = ($id =~ m|^/?((\d\d\d\d)-(\d\d)-(\d\d))|);
   if ($current and $current ne $today) {
     my $time = parsedate($current, GMT => 1);
-    ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = gmtime($time - 60*60*24);
+    ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = localtime($time - 60*60*24);
     my $previous = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
-    ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = gmtime($time + 60*60*24);
+    ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = localtime($time + 60*60*24);
     my $next = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
     push(@UserGotoBarPages,$next) unless grep(/^$next$/, @UserGotoBarPages);
     push(@UserGotoBarPages,$current) unless grep(/^$current$/, @UserGotoBarPages);
