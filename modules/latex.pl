@@ -18,17 +18,24 @@
 #    Boston, MA 02111-1307 USA
 
 # External programs needed
-# dvipng  - http://sourceforge.net/projects/dvipng/
 # LaTeX   - http://www.latex-project.org
 # TeX     - http://www.tug.org/teTeX/
+#
+# And one of : 
+# dvipng  - http://sourceforge.net/projects/dvipng/
+# convert - http://www.imagemagick.org/
 
 use vars qw($LatexDir $LatexLinkDir $LatexExtendPath $LatexSingleDollars);
 
-# You must set this to the full path to dvipng
+# One of the following options must be set correctly to the full path of
+# either dvipng or convert.  If both paths are set correctly, dvipng is used
+# instead of convert
 my $dvipngPath = "/usr/bin/dvipng";
+my $convertPath = "/usr/bin/convert";
 
-# Set $useMD5 to 1 to use MD5 hashes for filenames, set it to 0 to use a url-encoded hash
-# If $useMD5 is set and the Digest::MD5 module is not available, latex.pl falls back to urlencode
+# Set $useMD5 to 1 if you want to use MD5 hashes for filenames, set it to 0 to use 
+# a url-encoded hash. If $useMD5 is set and the Digest::MD5 module is not available, 
+# latex.pl falls back to urlencode
 my $useMD5 = 0;
 
 # PATH must be extended in order to make latex available along with
@@ -54,16 +61,14 @@ $LatexDir    = "$DataDir/latex";
 $LatexLinkDir= "/wiki/latex";
 
 
-
 # You also need a template stored as $DataDir/template.latex.  The
 # template must contain the string <math> where the LaTeX code is
 # supposed to go.  It will be created on the first run.
-
 my $LatexDefaultTemplateName = "$LatexDir/template.latex";
 
 
 
-$ModulesDescription .= '<p>$Id: latex.pl,v 1.11 2004/10/04 04:15:18 tolchz Exp $</p>';
+$ModulesDescription .= '<p>$Id: latex.pl,v 1.12 2004/10/04 15:25:12 tolchz Exp $</p>';
 
 my $LatexDefaultTemplate = << 'EOT';
 \documentclass[12pt]{article}
@@ -93,9 +98,17 @@ sub MakeLaTeX {
   my ($latex, $type) = @_;
   $ENV{PATH} .= $LatexExtendPath if $LatexExtendPath and $ENV{PATH} !~ /$LatexExtendPath/;
 
-  if (not -e $dvipngPath) {
-      return "[Error: dvipng binary not found at $dvipngPath ]";
+  # Select which binary to use for conversion of dvi to images
+  my $useConvert = 0; 
+  if (not -e $dvipngPath) { 
+      if (not -e $convertPath) {
+	  return "[Error: dvipng binary and convert binary not found at $dvipngPath or $converPath ]";
+      }
+      else {  
+	  $useConvert = 1; # Fall back on convert if dvipng is missing and convert exists       
+      }
   }
+
 
   $latex = UnquoteHtml($latex); # Change &lt; back to <, for example
   
@@ -112,6 +125,8 @@ sub MakeLaTeX {
       $hash =~ s/%//g;
   }
   
+
+
   # check cache
   if (-f "$LatexDir/$hash.png"
       and not -z "$LatexDir/$hash.png") {
@@ -126,6 +141,7 @@ sub MakeLaTeX {
              ."src='$LatexLinkDir/$hash.png' alt='$latex' \/>");
     }
   }
+
   # read template and replace <math>
   mkdir($LatexDir) unless -d $LatexDir;
   if (not -f $LatexDefaultTemplateName) {
@@ -146,8 +162,18 @@ sub MakeLaTeX {
   WriteStringToFile ("srender.tex", $template);
   qx(latex srender.tex);
   return "[Illegal LaTeX markup: <pre>$latex</pre>]" if $?;
-  my $output = qx($dvipngPath -T tight -bg Transparent srender.dvi);
-  return "[dvipng error $? ($output)]" if $?;
+
+  my $output;
+  
+  # Use specified binary to convert dvi to png
+  if ($useConvert) { 
+      $output = qx($convertPath -antialias -crop 0x0 -density 120x120 -transparent white srender.dvi srender1.png );
+      return "[convert error $? ($output)]" if $?;
+  } else {
+      $output = qx($dvipngPath -T tight -bg Transparent srender.dvi);
+      return "[dvipng error $? ($output)]" if $?;
+  }
+
   my $result;
   if (-f 'srender1.png' and not -z 'srender1.png') {
     my $png = ReadFileOrDie("srender1.png");
