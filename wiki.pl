@@ -310,7 +310,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.334 2004/03/07 12:10:28 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.335 2004/03/07 12:58:17 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -764,6 +764,7 @@ sub RSS {
 	$interwiki = $rss->{channel}->{$rdfns}->{value};
       }
       $interwiki = $RssInterwikiTranslate{$interwiki} if $RssInterwikiTranslate{$interwiki};
+      $interwiki = $RssInterwikiTranslate{$uri} unless $interwiki;
     }
     my $num = 9999;
     foreach my $i (@{$rss->{items}}) {
@@ -771,7 +772,6 @@ sub RSS {
       my $date = $i->{dc}->{date};
       $date = $i->{pubdate} unless $date;
       $date = sprintf("%04d", $num--) unless $date; # for RSS 0.91 feeds without date, descending
-      $date .= ' -- ' . $rss->{channel}->{title} if $rss->{channel}->{title};
       $line .= ' (' . $q->a({-href=>$i->{$wikins}->{diff}}, $tDiff) . ')'
 	if $i->{$wikins}->{diff};
       $line .= ' (' . $q->a({-href=>$i->{$wikins}->{history}}, "$tHistory") . ')'
