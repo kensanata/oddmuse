@@ -194,6 +194,7 @@ update_page('OtherPage', 'Other cute content 11.', 'another good guy');
 sleep(1);
 update_page('InnocentPage', 'Lamb.', 'good guy zero');
 update_page('OtherPage', 'Other cute content 12.', 'another good guy');
+update_page('MinorPage', 'Dumdidu', 'tester');
 # last good revision -- needs a different timestamp than the good revisions!
 sleep(1);
 update_page('NicePage', 'Nice content.', 'good guy two');
@@ -205,6 +206,7 @@ update_page('NicePage', 'Bad content.', 'vandal two');
 update_page('EvilPage', 'Spam!', 'vandal three');
 update_page('AnotherEvilPage', 'More Spam!', 'vandal four');
 update_page('AnotherEvilPage', 'Still More Spam!', 'vandal five');
+update_page('MinorPage', 'Ramtatam', 'tester', 1);
 
 test_page(get_page('NicePage'), 'Bad content');
 test_page(get_page('InnocentPage'), 'Lamb');
@@ -218,7 +220,9 @@ test_page(get_page('OtherPage'), 'Other cute content 12');
 test_page(get_page('EvilPage'), 'DeletedPage');
 test_page(get_page('AnotherEvilPage'), 'DeletedPage');
 test_page(get_page('InnocentPage'), 'Lamb');
-test_page(get_page('action=rc showedit=1'), 'Rollback to ');
+test_page(get_page('action=rc showedit=1'),
+	  'MinorPage</a>[ .]*test-markup *<strong>-- *Rollback to [^<>]*</strong> *<em>\(minor\)</em></li>',
+	  'NicePage</a>[ .]*test-markup *<strong>-- *Rollback to [^<>]*</strong> *</li>');
 
 # --------------------
 
