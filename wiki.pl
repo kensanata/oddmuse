@@ -276,7 +276,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.242 2003/11/06 09:02:05 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.243 2003/11/06 09:08:32 as Exp $');
 }
 
 sub InitCookie {
@@ -683,8 +683,11 @@ sub RSS {
     eval { local $SIG{__DIE__}; $rss->parse($data); };
     return $q->p($q->strong("[RSS parsing failed for $uri]")) if $@;
     my ($counter, $interwiki);
-    $interwiki = $rss->{channel}->{'http://purl.org/rss/1.0/modules/wiki/'}->{interwiki}
-      if @uris > 1;
+    if (@uris > 1) {
+      $interwiki = $rss->{channel}->{'http://purl.org/rss/1.0/modules/wiki/'}->{interwiki};
+      $interwiki =~ s/^\s+//; # when RDF is used, sometimes whitespace remains,
+      $interwiki =~ s/\s+$//; # which breaks the test for an existing $interwiki below
+    }
     foreach my $i (@{$rss->{items}}) {
       my $line;
       $line .= $q->a({-href=>$i->{'link'}, -title=>$i->{'dc'}->{'date'}},
