@@ -357,7 +357,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.538 2005/03/25 11:40:22 frodo72 Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.539 2005/03/27 01:24:55 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -812,8 +812,10 @@ sub RSS {
   my $maxitems = shift;
   my @uris = @_;
   my %lines;
-  eval { require XML::RSS;  } or return $q->div({-class=>'rss'},
-	 $q->strong(T('XML::RSS is not available on this system.')));
+  if (not eval { require XML::RSS;  }) {
+    my $err = $@;
+    return $q->div({-class=>'rss'}, $q->strong(T('XML::RSS is not available on this system.')),  $err);
+  }
   # All strings that are concatenated with strings returned by the RSS
   # feed must be decoded.  Without this decoding, 'diff' and 'history'
   # translations will be double encoded when printing the result.
@@ -829,74 +831,100 @@ sub RSS {
   my $wikins = 'http://purl.org/rss/1.0/modules/wiki/';
   my $rdfns = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
   my $str;
-  foreach my $uri (@uris) {
-    $uri =~ s/^"?(.*?)"?$/$1/;
-    my $rss = new XML::RSS;
-    my $data = GetRaw($uri);
-    $str .= $q->p($q->strong(Ts('%s returned no data, or LWP::UserAgent is not available.',
-				$q->a({-href=>$uri}, $uri)))) unless $data;
-    eval { local $SIG{__DIE__}; $rss->parse($data); };
-    $str .= $q->p($q->strong(Ts('RSS parsing failed for %s',
-				$q->a({-href=>$uri}, $uri)) . ': ' . $@)) if $data and $@;
-    my ($counter, $interwiki);
-    if (@uris > 1) {
-      RssInterwikiTranslateInit() unless $RssInterwikiTranslateInit;
-      $interwiki = $rss->{channel}->{$wikins}->{interwiki};
-      $interwiki =~ s/^\s+//; # when RDF is used, sometimes whitespace remains,
-      $interwiki =~ s/\s+$//; # which breaks the test for an existing $interwiki below
-      if (!$interwiki) {
-	$interwiki = $rss->{channel}->{$rdfns}->{value};
+  @uris = map { s/^"?(.*?)"?$/$1/; $_; } @uris; # strip quotes of uris
+  my @data;
+  if (@uris > 1) { # try parallel access if available
+    eval {
+      require LWP::Parallel::UserAgent; 
+      my $pua = LWP::Parallel::UserAgent->new();
+      foreach my $uri (@uris) {
+	if (my $res = $pua->register(HTTP::Request->new('GET', $uri))) {
+	  $str .= $res->error_as_HTML;
+	}
       }
-      $interwiki = $RssInterwikiTranslate{$interwiki} if $RssInterwikiTranslate{$interwiki};
-      $interwiki = $RssInterwikiTranslate{$uri} unless $interwiki;
+      @uris = (); # reset because we don't know the order in $entries.
+      my $entries = $pua->wait();
+      foreach (keys %$entries) {
+	push(@uris, $entries->{$_}->response->request->url);
+	push(@data, $entries->{$_}->response->content);
+      }
     }
-    my $num = 999;
-    $str .= $q->p($q->strong(Ts('No items found in %s.', $q->a({-href=>$uri}, $uri))))
-      unless @{$rss->{items}};
-    foreach my $i (@{$rss->{items}}) {
-      my $line;
-      my $date = $i->{dc}->{date};
-      if (not $date and $i->{pubDate}) {
-	$date = $i->{pubDate};
-	my %mon = (Jan=>1, Feb=>2, Mar=>3, Apr=>4, May=>5, Jun=>6,
-		   Jul=>7, Aug=>8, Sep=>9, Oct=>10, Nov=>11, Dec=>12);
-	$date =~ s/^(?:[A-Z][a-z][a-z], )?(\d\d?) ([A-Z][a-z][a-z]) (\d\d(?:\d\d)?)/ # pubDate uses RFC 822
-	  sprintf('%04d-%02d-%02d', ($3 < 100 ? 1900 + $3 : $3), $mon{$2}, $1)/e;
-      }
-      $date = sprintf("%03d", $num--) unless $date; # for RSS 0.91 feeds without date, descending
-      my $title = $i->{title};
-      my $description = $i->{description};
-      if (not $title and $description) { # title may be missing in RSS 2.00
-	$title = $description;
-	$description = '';
-      }
-      $title = $i->{link} if not $title and $i->{link}; # if description and title are missing
-      $line .= ' (' . $q->a({-href=>$i->{$wikins}->{diff}}, $tDiff) . ')'
-	if $i->{$wikins}->{diff};
-      $line .= ' (' . $q->a({-href=>$i->{$wikins}->{history}}, $tHistory) . ')'
-	if $i->{$wikins}->{history};
-      if ($title) {
-	if ($i->{link}) {
-	  $line .= ' ' . $q->a({-href=>$i->{link}, -title=>$date},
-			       ($interwiki ? $interwiki . ':' : '') . $title);
-	} else {
-	  $line .= ' ' . $title;
+  }
+  @data = map { GetRaw($_); } @uris unless @data; # default operation: synchronous fetching
+  foreach my $uri (@uris) {
+    my $data = shift(@data);
+    if (not $data) {
+      $str .= $q->p($q->strong(Ts('%s returned no data, or LWP::UserAgent is not available.',
+				  $q->a({-href=>$uri}, $uri))));
+    } else {
+      my $rss = new XML::RSS;
+      eval { local $SIG{__DIE__}; $rss->parse($data); };
+      if ($@) {
+	$str .= $q->p($q->strong(Ts('RSS parsing failed for %s', $q->a({-href=>$uri}, $uri)) . ': ' . $@));
+      } else {
+	my ($counter, $interwiki);
+	if (@uris > 1) {
+	  RssInterwikiTranslateInit() unless $RssInterwikiTranslateInit;
+	  $interwiki = $rss->{channel}->{$wikins}->{interwiki};
+	  $interwiki =~ s/^\s+//; # when RDF is used, sometimes whitespace remains,
+	  $interwiki =~ s/\s+$//; # which breaks the test for an existing $interwiki below
+	  if (!$interwiki) {
+	    $interwiki = $rss->{channel}->{$rdfns}->{value};
+	  }
+	  $interwiki = $RssInterwikiTranslate{$interwiki} if $RssInterwikiTranslate{$interwiki};
+	  $interwiki = $RssInterwikiTranslate{$uri} unless $interwiki;
+	}
+	my $num = 999;
+	$str .= $q->p($q->strong(Ts('No items found in %s.', $q->a({-href=>$uri}, $uri))))
+	  unless @{$rss->{items}};
+	foreach my $i (@{$rss->{items}}) {
+	  my $line;
+	  my $date = $i->{dc}->{date};
+	  if (not $date and $i->{pubDate}) {
+	    $date = $i->{pubDate};
+	    my %mon = (Jan=>1, Feb=>2, Mar=>3, Apr=>4, May=>5, Jun=>6,
+		       Jul=>7, Aug=>8, Sep=>9, Oct=>10, Nov=>11, Dec=>12);
+	    $date =~ s/^(?:[A-Z][a-z][a-z], )?(\d\d?) ([A-Z][a-z][a-z]) (\d\d(?:\d\d)?)/ # pubDate uses RFC 822
+	      sprintf('%04d-%02d-%02d', ($3 < 100 ? 1900 + $3 : $3), $mon{$2}, $1)/e;
+	  }
+	  $date = sprintf("%03d", $num--) unless $date;	# for RSS 0.91 feeds without date, descending
+	  my $title = $i->{title};
+	  my $description = $i->{description};
+	  if (not $title and $description) { # title may be missing in RSS 2.00
+	    $title = $description;
+	    $description = '';
+	  }
+	  $title = $i->{link} if not $title and $i->{link}; # if description and title are missing
+	  $line .= ' (' . $q->a({-href=>$i->{$wikins}->{diff}}, $tDiff) . ')'
+	    if $i->{$wikins}->{diff};
+	  $line .= ' (' . $q->a({-href=>$i->{$wikins}->{history}}, $tHistory) . ')'
+	    if $i->{$wikins}->{history};
+	  if ($title) {
+	    if ($i->{link}) {
+	      $line .= ' ' . $q->a({-href=>$i->{link}, -title=>$date},
+				   ($interwiki ? $interwiki . ':' : '') . $title);
+	    } else {
+	      $line .= ' ' . $title;
+	    }
+	  }
+	  my $contributor = $i->{dc}->{contributor};
+	  $contributor =~ s/^\s+//;
+	  $contributor =~ s/\s+$//;
+	  $contributor = $i->{$rdfns}->{value} unless $contributor;
+	  $line .= $q->span({-class=>'contributor'}, $q->span(T(' . . . . ')) . $contributor) if $contributor;
+	  if ($description) {
+	    if ($description =~ /</) {
+	      $line .= $q->div({-class=>'description'}, $description);
+	    } else {
+	      $line .= $q->span({class=>'dash'}, ' &ndash; ') . $q->strong({-class=>'description'}, $description);
+	    }
+	  }
+	  while ($lines{$date}) {
+	    $date .= ' ';
+	  }			# make sure this is unique
+	  $lines{$date} = $line;
 	}
       }
-      my $contributor = $i->{dc}->{contributor};
-      $contributor =~ s/^\s+//;
-      $contributor =~ s/\s+$//;
-      $contributor = $i->{$rdfns}->{value} unless $contributor;
-      $line .= $q->span({-class=>'contributor'}, $q->span(T(' . . . . ')) . $contributor) if $contributor;
-      if ($description) {
-	if ($description =~ /</) {
-	  $line .= $q->div({-class=>'description'}, $description);
-	} else {
-	  $line .= $q->span({class=>'dash'}, ' &ndash; ') . $q->strong({-class=>'description'}, $description);
-	}
-      }
-      while ($lines{$date}) { $date .= ' '; } # make sure this is unique
-      $lines{$date} = $line;
     }
   }
   my @lines = sort { $b cmp $a } keys %lines;
