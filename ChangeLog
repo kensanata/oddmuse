@@ -14,6 +14,7 @@
 	(PrintFooter): Add link to original if appropriate.
 	(DoPost): Use undefined default $comment to distinguish '' $comment from no $comment.
 	(DoBrowseRequest): Accept path_info as well as keywords.
+	(PingWeblogs): Use path_info for the URI.
 
 2003-06-15  Pierre Gaston  <pgas@intracom.gr>, Alex Schroeder  <alex@gnu.org>
 
