@@ -131,6 +131,16 @@ test_page(get_page('action=rc'), @Test);
 %Test = split('\n',<<'EOT');
 ordinary text
 ordinary text
+\nparagraph
+<p>paragraph
+* one\n*two
+<ul><li>one <li>two</ul>
+# one\n# two
+<ol><li>one <li>two</ol>
+* one\n#two
+<ul><li>one </ul><ol><li>two</ol>
+* one\n**two
+<ul><li>one <ul><li>two</ul></ul>
 WikiWord
 WikiWord<a href="test-wrapper.pl?action=edit&amp;id=WikiWord">?</a>
 WikiWord:
@@ -149,8 +159,12 @@ Foo::Bar
 Foo::Bar
 ||one||
 <table class="user"><tr><td>one</td></tr></table>
-||one||two||three||\n||||one two||three||\n
-<table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table>
+introduction\n\n||one||two||three||\n||||one two||three||
+introduction<p><table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table>
+||one||two||three||\n||||one two||three||\n\nfooter
+<table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table><p>footer
+introduction\n\n||one||two||three||\n||||one two||three||\n\nfooter
+introduction<p><table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table><p>footer
 http://www.emacswiki.org
 <a href="http://www.emacswiki.org">http://www.emacswiki.org</a>
 http://www.emacswiki.org/
