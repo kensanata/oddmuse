@@ -16,10 +16,10 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: admin.pl,v 1.1 2004/05/25 23:51:07 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: admin.pl,v 1.2 2004/05/26 00:43:56 as Exp $</p>';
 
-$Action{delete} = \$AdminPowerDelete;
-$Action{update} = \$AdminPowerUpdate;
+$Action{delete} = \&AdminPowerDelete;
+$Action{rename} = \&AdminPowerRename;
 
 sub AdminPowerDelete {
   my $id = GetParam('id', '');
@@ -39,12 +39,12 @@ sub AdminPowerDelete {
   PrintFooter();
 }
 
-sub AdminPowerUpdate {
+sub AdminPowerRename {
   my $id = GetParam('id', '');
   ValidIdOrDie($id);
   my $new = GetParam('new', '');
   ValidIdOrDie($new);
-  print GetHeader('', Tss('Renaming %1 to %2.', $id), '');
+  print GetHeader('', Tss('Renaming %1 to %2.', $id, $new), '');
   return unless UserIsAdminOrError();
   RequestLockOrError();
   print $q->p(T('Main lock obtained.'));
@@ -61,17 +61,36 @@ sub AdminPowerUpdate {
   # refer file
   CreatePageDir($RefererDir, $new); # It might not exist yet
   rename(GetRefererFile($id), GetRefererFile($new));
-  # Regenerate index on next request
-  unlink($IndexFile);
   # RecentChanges
-  OpenPage($id);
+  OpenPage($new);
   WriteRcLog($id, Ts('Renamed to %s', $new), 0, $Page{revision},
 	     GetParam('username', ''), GetRemoteHost(), $Page{languages},
 	     GetCluster($Page{text}));
   WriteRcLog($new, Ts('Renamed from %s', $id), 0, $Page{revision},
 	     GetParam('username', ''), GetRemoteHost(), $Page{languages},
 	     GetCluster($Page{text}));
+  print $q->p(Tss('Renamed %1 to %2.', GetPageLink($id), GetPageLink($new)));
+  # Regenerate index on next request -- remove this before errors can occur!
+  unlink($IndexFile);
   ReleaseLock();
   print $q->p(T('Main lock released.'));
   PrintFooter();
+}
+
+*OldAdminPowerGetAdminBar = *GetAdminBar;
+*GetAdminBar = *NewAdminPowerGetAdminBar;
+
+sub NewAdminPowerGetAdminBar {
+  my ($id, $rev) = @_;
+  my $html = OldAdminPowerGetAdminBar(@_);
+  if ($id) {
+    $html .= ' | ' . ScriptLink('action=delete;id=' . $id, T('Delete page'));
+    $html .= GetFormStart()
+      . T('Rename this page to:') . ' '
+	. GetHiddenValue('action', 'rename')
+	  . GetHiddenValue('id', $id)
+	    . $q->textfield(-name=>'new', -size=>20)
+	      . $q->submit('Do it');
+  }
+  return $html;
 }
