@@ -81,7 +81,7 @@ $HttpCharset = '';  # Charset for pages, default is ISO-8859-1
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.7 2003/03/22 01:48:31 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.8 2003/03/22 02:12:09 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -111,7 +111,7 @@ $NonEnglish  = 0;   # 1 = non-ASCII link characters allowed
 $BracketText = 1;   # 1 = [URL desc] uses a description for the URL
 $BracketWiki = 0;   # 1 = [WikiLink desc] uses a desc for the local link
 $HtmlLinks   = 0;   # 1 = <a href="foo">desc</a> is a link
-$UseSubpage  = 1;   # 1 = PageName/SubPage is a link
+$UseSubpage  = 0;   # 1 = PageName/SubPage is a link
 $NetworkFile = 1;   # 1 = file: is a valid protocol for URLs
 
 # TextFormattingRules
@@ -1755,10 +1755,14 @@ sub GetHtmlHeader {
   } else {
     $html .= $q->style({-type=>'text/css'},<<EOT);
 <!--
+body { background-color:#FFF; color:#000; }
+a:link { background-color:#FFF; color:#00F; }
+a:visited { background-color:#FFF; color:#A0A; }
+a:active { background-color:#FFF; color:#F00; }
 img.logo { float: right; clear: right; border-style:none; }
 div.diff { padding-left:5%; padding-right:5%; }
-div.old { background-color:#FFFFAF; }
-div.new { background-color:#CFFFCF; }
+div.old { background-color:#FFFFAF; color:#000; }
+div.new { background-color:#CFFFCF; color:#000; }
 table.history { border-style:none; }
 td.history { border-style:none; }
 table.user { border-style:solid; border-width:thin; }
