@@ -1,7 +1,17 @@
 2004-05-29  Alex Schroeder  <alex@confusibombus>
 
-	* wiki.pl (GetFullLinkList): Removed broken orphans parameter
-	feature and use FreeToNormal on the links collected.
+	* wiki.pl: Removed -w again because it is hell to 'make test'.
+	(GetParam): Simplified (tried to remove -w warning but failed).
+	(UrlEncode): Do not encode '#' as it is forbidden in page names
+	and allows us to return anchors from ResolveId.
+	(ResolveId): UrlEncode resolved for anchors ('alias'), and link to
+	near pages directly ('near').
+	(BrowseResolvedPage): Take changes in ResolveId into account.
+	(ReBrowsePage): No longer accept third argument.
+	(RcHeader): days parameter only added to the menu actions, not to
+	all actions.
+	(GetHttpHeader, GetRemoteHost): Reorganized to remove -w warning.
+	(GetPermanentAnchor): Handle different info from ResolveId.
 
 2004-05-26  Alex Schroeder  <alex@confusibombus>
 
