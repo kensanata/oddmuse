@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.383 2004/04/12 12:51:45 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.384 2004/04/17 12:31:36 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2427,7 +2427,7 @@ sub GetKeepDir {
 }
 
 sub GetKeepFiles {
-  return glob(GetKeepDir(shift) . '/*.kp');
+  return glob(GetKeepDir(shift) . '/*.kp'); # files such as 1.kp, 2.kp, etc.
 }
 
 sub GetPageDirectory {
@@ -2951,7 +2951,7 @@ sub AllPagesList {
   }
   @IndexList = ();
   %IndexHash = ();
-  foreach (glob("$PageDir/*/*.pg")) {
+  foreach (glob("$PageDir/*/*.pg $PageDir/*/.*.pg")) { # find .dotfiles, too
     next unless m|/.*/(.+)\.pg$|;
     push @IndexList, $1;
     $IndexHash{$1} = 1;
