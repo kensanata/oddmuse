@@ -225,8 +225,7 @@ $SisterSiteLogoUrl = 'file:///tmp/oddmuse/%s.png'; # URL format string for logos
 	    download => \&DoDownload,	    rss => \&DoRss,
 	    unlock => \&DoUnlock,	    password => \&DoPassword,
 	    index => \&DoIndex,		    visitors => \&DoShowVisitors,
-	    links => \&DoLinks,		    refer => \&DoPrintAllReferers,
-	    all => \&DoPrintAllPages, );
+	    refer => \&DoPrintAllReferers,  all => \&DoPrintAllPages, );
 
 # The 'main' program, called at the end of this script file (aka. as handler)
 sub DoWikiRequest {
@@ -315,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.423 2004/06/19 01:42:13 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.424 2004/06/20 21:37:16 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -405,6 +404,8 @@ sub ApplyRules {
   NearInit() unless $NearSiteInit;
   $text =~ s/\r\n/\n/g; # DOS to Unix
   return unless $text;
+  return Clean(GetDownloadLink($OpenPageName, (substr($1, 0, 6) eq 'image/'), $revision))
+    if ($text =~ m/^#FILE ([^ \n]+)\n/);
   local $Fragment = ''; # the clean HTML fragment not yet on @Blocks
   local @Blocks;  # the list of cached HTML blocks
   local @Flags;	  # a list for each block, 1 = dirty, 0 = clean
@@ -417,9 +418,7 @@ sub ApplyRules {
   my $first = 1;
   while(1) {
     # Block level elements eat empty lines to prevent empty p elements.
-    if ($first and m/^#FILE ([^ \n]+)\n(.*)/cgs) {
-      Clean(GetDownloadLink($OpenPageName, (substr($1, 0, 6) eq 'image/'), $revision));
-    } elsif ($bol && m/\G&lt;pre&gt;\n?(.*?\n)&lt;\/pre&gt;[ \t]*\n?/cgs) {
+    if ($bol && m/\G&lt;pre&gt;\n?(.*?\n)&lt;\/pre&gt;[ \t]*\n?/cgs) {
       Clean(CloseHtmlEnvironments() . $q->pre({-class=>'real'}, $1));
     } elsif ($bol && m/\G(\s*\n)*(\*+)[ \t]*/cg
 	     or $HtmlStack[0] eq 'li' && m/\G(\s*\n)+(\*+)[ \t]*/cg) {
@@ -583,7 +582,8 @@ sub ApplyRules {
     } elsif (m/\G\s*\n(s*\n)+/cg) { # paragraphs: at least two newlines
       Clean(CloseHtmlEnvironments() . '<p>'); # there is another one like this further up
     } elsif (m/\G\s+/cg) { Clean(' ');
-    } elsif (m/\G(\w+([ \t]+[a-z\x80-\xff]\w*)*)/cg or m/\G(\S)/cg) { Clean($1);
+    } elsif (m/\G(\w+([ \t]+[a-z\x80-\xff]\w*)*[ \t]+)/cg # optimization for multiple words
+	     or m/\G(\w+)/cg or m/\G(\S)/cg) { Clean($1); # but doesn't match http://foo etc
     } else { last;
     }
     $bol = m/\G(?<=\n)/cgs;
@@ -3221,88 +3221,6 @@ sub Replace {
     }
   }
   ReleaseLock();
-}
-
-# == Links ==
-
-sub DoLinks {
-  my @args = (GetParam('raw', 0), GetParam('url', 0), GetParam('inter', 0), GetParam('links', 1));
-  if (GetParam('raw', 0)) {
-    print GetHttpHeader('text/plain');
-    PrintLinkList(GetFullLinkList(@args));
-  } else {
-    print GetHeader('', QuoteHtml(T('Full Link List')), '');
-    PrintLinkList(GetFullLinkList(@args));
-    PrintFooter();
-  }
-}
-
-sub PrintLinkList {
-  my %links = %{(shift)};
-  my $existingonly = GetParam('exists', 0);
-  if (GetParam('raw', 0)) {
-    foreach my $page (sort keys %links) {
-      foreach my $link (@{$links{$page}}) {
-	print "\"$page\" -> \"$link\"\n" if not $existingonly or $IndexHash{$link};
-      }
-    }
-  } else {
-    foreach my $page (sort keys %links) {
-      print $q->p(GetPageLink($page) . ': ' . join(' ', @{$links{$page}}));
-    }
-  }
-}
-
-sub GetFullLinkList { # opens all pages!
-  my ($raw, $url, $inter, $link) = @_;
-  my @pglist = AllPagesList();
-  my %result;
-  InterInit();
-  foreach my $name (@pglist) {
-    OpenPage($name);
-    my @links = GetLinkList($raw, $url, $inter, $link);
-    @{$result{$name}} = @links if @links;
-  }
-  return \%result;
-}
-
-sub GetLinkList { # for the currently open page
-  my ($raw, $url, $inter, $link) = @_;
-  my @blocks = split($FS, $Page{blocks});
-  my @flags = split($FS, $Page{flags});
-  my %links;
-  foreach my $block (@blocks) {
-    if (shift(@flags)) {  # dirty block and interlinks or normal links
-      if ($inter and ($BracketText && $block =~ m/^(\[$InterLinkPattern\s+([^\]]+?)\])$/o
-		      or $BracketText && $block =~ m/^(\[\[$FreeInterLinkPattern\|([^\]]+?)\]\])$/o
-		      or $block =~ m/^(\[$InterLinkPattern\])$/o
-		      or $block =~ m/^(\[\[\[$FreeInterLinkPattern\]\]\])$/o
-		      or $block =~ m/^($InterLinkPattern)$/o
-		      or $block =~ m/^(\[\[$FreeInterLinkPattern\]\])$/o)) {
-	$links{$raw ? $2 : GetInterLink($2, $3)} = 1 if $InterSite{substr($2,0,index($2, ':'))};
-      } elsif ($link
-	       and (($WikiLinks and $block !~ m/!$LinkPattern/o
-		     and ($BracketWiki && $block =~ m/^(\[$LinkPattern\s+([^\]]+?)\])$/o
-			  or $block =~ m/^(\[$LinkPattern\])$/o
-			  or $block =~ m/^($LinkPattern)$/o))
-		    or ($FreeLinks
-			and ($BracketWiki && $block =~ m/^(\[\[$FreeLinkPattern\|([^\]]+)\]\])$/o
-			     or $block =~ m/^(\[\[\[$FreeLinkPattern\]\]\])$/o
-			     or $block =~ m/^(\[\[$FreeLinkPattern\]\])$/o)))) {
-	$links{$raw ? FreeToNormal($2) : GetPageOrEditLink($2, $3)} = 1;
-      } elsif ($url and $block =~ m/^\[$FullUrlPattern\]$/og) {
-	$links{$raw ? $1 : GetUrl($1)} = 1;
-      }
-    } elsif ($url) {		# clean block and url
-      while ($block =~ m/$UrlPattern/og) {
-	$links{$raw ? $1 : GetUrl($1)} = 1;
-      }
-      while ($block =~ m/\[$FullUrlPattern\s+[^\]]+?\]/og) {
-	$links{$raw ? $1 : GetUrl($1)} = 1;
-      }
-    }
-  }
-  return sort keys %links;
 }
 
 # == Monolithic output ==
