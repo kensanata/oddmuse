@@ -6,6 +6,13 @@
 	* modules/static-copy.pl (ImageGetInternalUrl): Added Image
 	Extension support.
 
+2005-02-03  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+
+	* wikicopy: Updated usage.
+	(GetRaw): Always print status.
+	(copy): Handle replacement text.
+	(main): Accept replacement text.
+
 2005-02-02  Alex Schroeder  <alex@confusibombus.emacswiki.org>
 
 	* wiki.pl (DoBrowseRequest): Added CGI error message suggested by
