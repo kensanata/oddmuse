@@ -2,7 +2,7 @@
 # Make sure the CVS keywords for the sed command on the next line are not expanded.
 
 VERSION=oddmuse-$(shell sed -n -e 's/^.*\$$Id: wiki\.pl,v \([0-9.]*\).*$$/\1/p' wiki.pl)
-TRANSLATIONS=$(wildcard [a-z]*-utf8.pl)
+TRANSLATIONS=$(wildcard [a-z]*-utf8.pl$)
 MODULES=$(wildcard modules/*.pl)
 
 dist: $(VERSION).tar.gz
@@ -23,21 +23,30 @@ $(VERSION).tar.gz:
 %.tar.gz.sig: %.tar.gz
 	gpg --sign -b $<
 
-upload-translations: $(TRANSLATIONS)
-	cgi-upload $^
-
-.PHONY: always
-
-*-utf8.pl: always
-	wget http://www.oddmuse.org/cgi-bin/oddmuse/raw/$@ -O $@.wiki
-	cvs status $@ | grep 'Status: Up-to-date'
-	wikiput -u cvs -s update http://www.oddmuse.org/cgi-bin/oddmuse/raw/$@ < $@
+# 1. update-translations (will fetch input from the wiki, and updates files)
+# 2. check changes, cvs commit
+# 3. upload-translations (will verify cvs status, upload scripts, and upload pages)
 
 update-translations: always
 	for f in $(TRANSLATIONS); do \
-		grep '^#' $$f > new-$$f; \
-		perl oddtrans -l $$f $$f.wiki wiki.pl $(MODULES) >> new-$$f && mv new-$$f $$f; \
+		echo $$f...; \
+		sleep 5; \
+		make $$f; \
 	done
+
+upload-translations: always
+	for f in $(TRANSLATIONS); do \
+		cvs status $$f | grep 'Status: Up-to-date'; \
+		wikiput -u cvs -s update http://www.oddmuse.org/cgi-bin/oddmuse/raw/$$f < $$f; \
+		cgi-upload $$f; \
+	done
+
+%-utf8.pl: always
+	wget -q http://www.oddmuse.org/cgi-bin/oddmuse/raw/$@ -O $@.wiki
+	grep '^\(#\|\$$\)' $@ > new-$@
+	perl oddtrans -l $@ $@.wiki wiki.pl $(MODULES) >> new-$@ && mv new-$@ $@
+
+.PHONY: always
 
 deb:
 	equivs-build control
