@@ -350,7 +350,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.467 2004/10/15 14:10:23 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.468 2004/10/16 23:53:18 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -453,7 +453,7 @@ sub ApplyRules {
   while(1) {
     # Block level elements eat empty lines to prevent empty p elements.
     if ($bol && m/\G(\s*\n)*(\*+)[ \t]+/cg
-	     or InElement('li') && m/\G(\s*\n)+(\*+)[ \t]*/cg) {
+	     or InElement('li') && m/\G(\s*\n)+(\*+)[ \t]+/cg) {
       Clean(CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ul',length($2))
 	    . AddHtmlEnvironment('li'));
     } elsif ($bol && m/\G(\s*\n)+/cg) {
