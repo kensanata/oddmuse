@@ -16,17 +16,20 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.4 2004/08/31 15:10:19 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.5 2004/10/07 00:22:38 as Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
-use vars qw($StaticDir);
+use vars qw($StaticDir $StaticMimeTypes);
 
 $StaticDir = '/tmp/static';
+$StaticMimeTypes = '/etc/mime.types';
+
+my %StaticMimeTypes;
+my %StaticFiles;
 
 sub DoStatic {
   return unless UserIsAdminOrError();
-  local *ScriptLink = *StaticScriptLink;
   my $raw = GetParam('raw', 0);
   if ($raw) {
     print GetHttpHeader('text/plain');
@@ -34,41 +37,117 @@ sub DoStatic {
     print GetHeader('', T('Static Copy'), '');
   }
   CreateDir($StaticDir);
-  foreach my $id (AllPagesList()) {
-    print $id, ($raw ? "\n" : $q->br());
-    open(F,"> $StaticDir/$id.html") or ReportError(Ts('Cannot write %s', "$StaticDir/$id"));
-    print F <<"EOT";
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-st\
-rict.dtd">
-<html>
-<head>
-<title>$SiteName: $id</title>
-<link type="text/css" rel="stylesheet" href="static.css" />
-</head>
-<body>
-<div class="content">
-EOT
-    print F PageHtml($id);
-    print F << "EOT";
-</div>
-</body>
-</html>
-EOT
-    close(F);
-  }
+  %StaticMimeTypes = StaticMimeTypes() unless %StaticMimeTypes;
+  %StaticFiles = ();
+  StaticWriteFiles();
   print '</p>' unless $raw;
   PrintFooter() unless $raw;
+}
+
+sub StaticMimeTypes {
+  my %hash;
+  # the default mapping matches the default @UploadTypes...
+  open(F,$StaticMimeTypes) or return ('image/jpeg' => 'jpg', 'image/png' => 'png', );
+  while (<F>) {
+    s/\#.*//; # remove comments
+    my($type, $ext) = split;
+    $hash{$type} = $ext if $ext;
+  }
+  close(F);
+  return %hash;
+}
+
+sub StaticWriteFiles {
+  my $raw = GetParam('raw', 0);
+  local *ScriptLink = *StaticScriptLink;
+  local *GetDownloadLink = *StaticGetDownloadLink;
+  foreach my $id (AllPagesList()) {
+    StaticWriteFile($id);
+  }
 }
 
 sub StaticScriptLink {
   my ($action, $text, $class, $name, $title, $accesskey) = @_;
   my %params;
   if ($action !~ /=/) {
-    $params{-href} = $action . ".html";
+    $params{-href} = StaticFileName($action);
   }
   $params{'-class'} = $class  if $class;
   $params{'-name'} = UrlEncode($name)  if $name;
   $params{'-title'} = $title  if $title;
   $params{'-accesskey'} = $accesskey  if $accesskey;
   return $q->a(\%params, $text);
+}
+
+sub StaticGetDownloadLink {
+  my ($name, $image, $revision, $alt) = @_; # ignore $revision
+  $alt = $name unless $alt;
+  my $id = FreeToNormal($name);
+  AllPagesList();
+  # if the page does not exist
+  return '[' . ($image ? 'image' : 'link') . ':' . $name . ']' unless $IndexHash{$id};
+  if ($image) {
+    my $result = $q->img({-src=>StaticFileName($id), -alt=>$alt, -class=>'upload'});
+    $result = ScriptLink($id, $result, 'image');
+    return $result;
+  } else {
+    return ScriptLink($id, $alt, 'upload');
+  }
+}
+
+sub StaticFileName {
+  my $id = shift;
+  return $StaticFiles{$id} if $StaticFiles{$id}; # cache filenames
+  # don't clober current open page
+  my %hash = ParseData(ReadFileOrDie(GetPageFile($id)));
+  my $ext = '.html';
+  if ($hash{text} =~ /#FILE ([^ \n]+)\n(.*)/s) {
+    $ext = $StaticMimeTypes{$1};
+    $ext = '.' . $ext if $ext;
+  }
+  $StaticFiles{$id} = $id . $ext;
+  return $StaticFiles{$id};
+}
+
+sub StaticWriteFile {
+  my $id = shift;
+  my $raw = GetParam('raw', 0);
+  my $filename = StaticFileName($id);
+  OpenPage($id);
+  open(F,"> $StaticDir/$filename") or ReportError(Ts('Cannot write %s', $filename));
+  if ($Page{text} =~ /#FILE ([^ \n]+)\n(.*)/s) {
+    StaticFile($id, $1, $2);
+  } else {
+    StaticHtml($id);
+  }
+  close(F);
+  print $filename, $raw ? "\n" : $q->br();
+}
+
+sub StaticFile {
+  my ($id, $type, $data) = @_;
+  require MIME::Base64;
+  print F MIME::Base64::decode($data);
+}
+
+sub StaticHtml {
+  my $id = shift;
+  print F <<"EOT";
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-st\
+rict.dtd">
+<html>
+<head>
+<title>$SiteName: $id</title>
+<link type="text/css" rel="stylesheet" href="static.css" />
+<meta http-equiv="content-type" content="text/html; charset=$HttpCharset">
+</head>
+<body>
+<div class="content">
+EOT
+  print F PageHtml($id); # this reopens the page currently open
+  print F << "EOT";
+</div>
+</body>
+</html>
+EOT
 }
