@@ -356,7 +356,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.524 2005/01/08 00:02:41 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.525 2005/01/19 21:05:11 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -855,7 +855,7 @@ sub RSS {
 	$date = $i->{pubDate};
 	my %mon = (Jan=>1, Feb=>2, Mar=>3, Apr=>4, May=>5, Jun=>6,
 		   Jul=>7, Aug=>8, Sep=>9, Oct=>10, Nov=>11, Dec=>12);
-	$date =~ s/^[A-Z][a-z][a-z], (\d\d) ([A-Z][a-z][a-z]) (\d\d(?:\d\d)?)/ # pubDate uses RFC 822
+	$date =~ s/^(?:[A-Z][a-z][a-z], )?(\d\d?) ([A-Z][a-z][a-z]) (\d\d(?:\d\d)?)/ # pubDate uses RFC 822
 	  sprintf('%04d-%02d-%02d', ($3 < 100 ? 1900 + $3 : $3), $mon{$2}, $1)/e;
       }
       $date = sprintf("%03d", $num--) unless $date; # for RSS 0.91 feeds without date, descending
