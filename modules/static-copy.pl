@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.2 2004/08/18 16:51:02 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.3 2004/08/31 15:05:04 as Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -37,7 +37,23 @@ sub DoStatic {
   foreach my $id (AllPagesList()) {
     print $id, ($raw ? "\n" : $q->br());
     open(F,"> $StaticDir/$id.html") or ReportError(Ts('Cannot write %s', "$StaticDir/$id"));
+    print F <<"EOT";
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-st\
+rict.dtd">
+<html>
+<head>
+<title>$SiteName: $id</title>
+<link type="text/css" rel="stylesheet" href="$StyleSheet" />
+</head>
+<body>
+<div class="content">
+EOT
     print F PageHtml($id);
+    print F << "EOT";
+</div>
+</body>
+</html>
+EOT
     close(F);
   }
   print '</p>' unless $raw;
