@@ -23,19 +23,21 @@ $(VERSION).tar.gz:
 %.tar.gz.sig: %.tar.gz
 	gpg --sign -b $<
 
-update-translations: $(TRANSLATIONS)
-
-upload-translations:
-	cgi-upload $(TRANSLATIONS)
+upload-translations: $(TRANSLATIONS)
+	cgi-upload
 
 .PHONY: always
 
 *-utf8.pl: always
-	grep '^#' $@ > new-$@
 	wget http://www.oddmuse.org/cgi-bin/oddmuse/raw/$@ -O $@.wiki
-	perl oddtrans -l $@ $@.wiki wiki.pl $(MODULES) >> new-$@ && mv new-$@ $@
 	cvs status $@ | grep 'Status: Up-to-date'
 	wikiput -u cvs -s update http://www.oddmuse.org/cgi-bin/oddmuse/raw/$@ < $@
+
+update-translations: always
+	for f in $(TRANSLATIONS); do \
+		grep '^#' $$f > new-$$f; \
+		perl oddtrans -l $$f $$f.wiki wiki.pl $(MODULES) >> new-$$f && mv new-$$f $$f; \
+	done
 
 deb:
 	equivs-build control
