@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.352 2004/03/12 00:57:32 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.353 2004/03/12 19:47:32 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -812,7 +812,7 @@ sub RSS {
   my $date;
   foreach my $key (@lines) {
     my $line = $lines{$key};
-    if ($key =~ /(\d\d\d\d-\d?\d-\d?\d)[T ](\d?\d:\d\d)/) {
+    if ($key =~ /(\d\d\d\d(?:-\d?\d)?(?:-\d?\d)?)(?:[T ](\d?\d:\d\d))/) {
       my ($day, $time) = ($1, $2);
       if ($day ne $date) {
 	$date = $day;
