@@ -1,4 +1,3 @@
-
 # Copyright (C) 2004  Brock Wilcox <awwaiid@thelackthereof.org>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -17,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: commentcount.pl,v 1.3 2004/11/20 22:24:25 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: commentcount.pl,v 1.4 2004/11/20 22:25:28 as Exp $</p>';
 
 *OldCommentcountAddComment = *AddComment;
 *AddComment = *NewCommentcountAddComment;
