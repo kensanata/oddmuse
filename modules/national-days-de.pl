@@ -24,21 +24,29 @@
 # If you are running a multilingual site, then you should explicitly
 # load this file from your language-specific config file.
 
-$ModulesDescription .= '<p>$Id: national-days-de.pl,v 1.1 2004/05/15 11:45:26 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: national-days-de.pl,v 1.2 2004/05/15 12:06:03 as Exp $</p>';
 
 %SpecialDays = (
-		'5-15', 'Paraguay, Nationalfeiertag',
-		'5-17', 'Norwegen, Nationalfeiertag',
-		'5-20', 'Kamerun, Nationalfeiertag, Ost-Timor, Unabhängigkeitstag',
-		'5-22', 'Jemen, Nationalfeiertag',
-		'5-24', 'Eritrea, Unabhängigkeitstag',
-		'5-25', 'Argentinien, Nationalfeiertag, Jordanien, Unabhängigkeitstag',
-		'5-26', 'Georgien, Unabhängigkeitstag',
-		'5-28', 'Aserbeidschan, Nationalfeiertag',
-		'6-1', 'Samoa, Unabhängigkeitstag', # Samoa: zwei Tage!
-		'6-2', 'Samoa, Unabhängigkeitstag, Italien, Nationalfeiertag',
-		'6-4', 'Tonga, Nationalfeiertag',
-		'6-5', 'Dänemark, Nationalfeiertag',
-		'6-6', 'Schweden, Nationalfeiertag',
-		'6-10', 'Portugal, Nationalfeiertag',
+		'4-4' => 'Senegal, Unabhängigkeitstag',
+		'4-17' => 'Syrien, Nationalfeiertag',
+		'4-18' => 'Simbabwe, Unabhängigkeitstag',
+		'4-26' => 'Tansania, Nationalfeiertag',
+		'4-27' => 'Südafrika, Nationalfeiertag, Togo, Unabhängigkeitstag',
+		'4-30' => 'Niederlande, Nationalfeiertag',
+		'5-3' => 'Polen, Nationalfeiertag',
+		'5-7' => 'Israel, Nationalfeiertag',
+		'5-15' => 'Paraguay, Nationalfeiertag',
+		'5-17' => 'Norwegen, Nationalfeiertag',
+		'5-20' => 'Kamerun, Nationalfeiertag, Ost-Timor, Unabhängigkeitstag',
+		'5-22' => 'Jemen, Nationalfeiertag',
+		'5-24' => 'Eritrea, Unabhängigkeitstag',
+		'5-25' => 'Argentinien, Nationalfeiertag, Jordanien, Unabhängigkeitstag',
+		'5-26' => 'Georgien, Unabhängigkeitstag',
+		'5-28' => 'Aserbeidschan, Nationalfeiertag',
+		'6-1' => 'Samoa, Unabhängigkeitstag', # Samoa: zwei Tage!
+		'6-2' => 'Samoa, Unabhängigkeitstag, Italien, Nationalfeiertag',
+		'6-4' => 'Tonga, Nationalfeiertag',
+		'6-5' => 'Dänemark, Nationalfeiertag',
+		'6-6' => 'Schweden, Nationalfeiertag',
+		'6-10' => 'Portugal, Nationalfeiertag',
                );
