@@ -234,9 +234,9 @@ showing current revision instead
 se presenta en su lugar la revisión actual
 Showing revision %s
 La presente es la revisión %s
-Cannot save an nameless page.
+Cannot save a nameless page.
 
-Cannot save an page without revision.
+Cannot save a page without revision.
 
 Cannot open %s
 

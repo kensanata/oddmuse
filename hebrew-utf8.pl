@@ -234,9 +234,9 @@ showing current revision instead
 מציג את הגירסה הנוכחית במקומה.
 Showing revision %s
 מציג את גירסה %s
-Cannot save an nameless page.
+Cannot save a nameless page.
 
-Cannot save an page without revision.
+Cannot save a page without revision.
 
 Cannot open %s
 

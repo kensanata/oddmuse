@@ -37,8 +37,8 @@ RSS parsing failed for %s
 RSS-parseri epäonnistui: %s
 No items found in %s.
 No items found in %s.
- . . . .
- . . . .
+ . . . . 
+
 Click to edit this page
 Klikkaa muokataksesi tätä sivua
 image
@@ -139,8 +139,8 @@ redirected from %s
 uudelleenohjattu sivulta %s
 Click to search for references to this page
 Klikkaa hakeaksesi viittauksia tälle sivulle
-Cookie:
-Cookie:
+Cookie: 
+
 Warning
 Varoitus
 Database is stored in temporary directory %s
@@ -169,8 +169,6 @@ Unlock page
 Avaa sivun lukko
 Lock page
 Lukitse sivu
-Comments on this page
-Komentteja tähän sivuun liittyen
 Edit revision %s of this page
 Muokkaa tämän sivun versiota %s
 Edit text of this page
@@ -185,8 +183,6 @@ View current revision
 Näytä nykyisin versio
 View all changes
 Näytä kaikki muutokset
-Back to %s
-Takaisin %s:ään
 new comment
 uusi kommentti
 Homepage URL:
@@ -237,9 +233,9 @@ showing current revision instead
 näytetään nykyinen versio sen sijaan
 Showing revision %s
 Näytetään versio %s
-Cannot save an nameless page.
+Cannot save a nameless page.
 Sivua ei voi tallentaa ilman nimeä.
-Cannot save an page without revision.
+Cannot save a page without revision.
 Sivua ei voi tallentaa ilman versiota.
 Cannot open %s
 Ei voitu avata: %s
@@ -299,8 +295,8 @@ Replace this file with text.
 Korvaa tämä tiedosto tekstillä.
 Replace this text with a file.
 Korvaa tämä teksti tiedostolla.
-File to upload:
-Tallennettava tiedosto:
+File to upload: 
+Tallennettava tiedosto: 
 Files of type %s are not allowed.
 Tyyppiä %s olevat tiedostot eivät ole sallittuja.
 Password
@@ -359,6 +355,8 @@ Complete Content
 Sisältö
 The main page is %s.
 Etusivu on %s.
+Comments on this page
+Komentteja tähän sivuun liittyen
 Editing not allowed for %s.
 Muokkaus ei ole sallittu: %s.
 SampleUndefinedPage
@@ -409,8 +407,8 @@ Main lock obtained.
 Sivuston lukitus aloitettu.
 Expiring keep files and deleting pages marked for deletion
 Eräännytetään keep-tiedostot ja poistetaan poistettaviksi merkityt sivut
-not deleted:
-ei poistettu:
+not deleted: 
+ei poistettu: 
 deleted
 poistettu
 Moving part of the %s log file.
@@ -437,10 +435,14 @@ Lock for %s removed.
 Lukko %s:lle poistettu.
 Displaying Wiki Version
 Wikin versio
+Show dependencies
+
 Inter links:
 Kaukolinkit:
 Near links:
 Lähilinkit:
+Show parsed link data
+
 Too many connections by %s
 Liian monta yhteydenottoa %s:stä
 Please do not fetch more than %1 pages in %2 seconds.
@@ -509,6 +511,8 @@ Cannot find unspammed revision.
 Spam-vapaata versiota ei löydy.
 Footnotes:
 Alaviitteet:
+Could not find %1.html template in %2
+
 image: %s
 kuva: %s
 Index
@@ -535,8 +539,8 @@ The 404 handler extension requires the link data extension (links.pl).
 404-käsittelijä-laajennus vaatii "link data" -laajennuksen (links.pl).
 Orphan List
 Orpojen sivujen lista
-Trail:
-Historia:
+Trail: 
+Historia: 
 None
 Ei yhtään
 Type
@@ -547,6 +551,8 @@ Portrait
 Avatar
 Static Copy
 Staattinen kopio
+Back to %s
+Takaisin %s:ään
 Alternatively, use one of the following templates:
 Vaihtoehtoisesti, käytä yhtä seuraavista pohjista:
 Thread: %s

@@ -234,9 +234,9 @@ showing current revision instead
 現在顯示最新的版本
 Showing revision %s
 顯示第 %s 版
-Cannot save an nameless page.
+Cannot save a nameless page.
 無法儲存沒有名稱的頁面。
-Cannot save an page without revision.
+Cannot save a page without revision.
 
 Cannot open %s
 無法開啟 %s
