@@ -81,7 +81,7 @@ $HttpCharset = '';  # Charset for pages, default is ISO-8859-1
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.11 2003/03/22 15:47:14 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.12 2003/03/24 22:43:09 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -1838,7 +1838,7 @@ sub GetFooterText {
 }
 
 sub GetCommonFooter {
-  return '<hr>' . &GetFormStart() . &GetGotoBar('') .
+  return $q->hr() . &GetFormStart() . &GetGotoBar('') .
          &GetSearchForm() . $q->endform . &GetMinimumFooter();
 }
 
@@ -2806,11 +2806,10 @@ sub DoEdit {
   if (!&UserCanEdit($id, 1)) {
     print &GetHeader('', T('Editing Denied'), '');
     if (&UserIsBanned()) {
-      print T('Editing not allowed: user, ip, or network is blocked.');
-      print '<p>';
-      print T('Contact the wiki administrator for more information.');
+      print $q->p(T('Editing not allowed: user, ip, or network is blocked.'));
+      print $q->p(T('Contact the wiki administrator for more information.'));
     } else {
-      print Ts('Editing not allowed: %s is read-only.', $SiteName);
+      print $q->p(Ts('Editing not allowed: %s is read-only.', $SiteName));
     }
     print &GetCommonFooter();
     return;
@@ -2840,90 +2839,84 @@ sub DoEdit {
   $editCols = &GetParam('editcols', 80);
   print &GetHeader('', &QuoteHtml($header), ''), "\n";
   if ($revision ne '') {
-    print '<b>', Ts('Editing old revision %s.', $revision), '  ',
-      T('Saving this page will replace the latest revision with this text.'),
-      "</b><br>\n";
+    print $q->strong(Ts('Editing old revision %s.', $revision) . '  '
+		   . T('Saving this page will replace the latest revision with this text.'))
   }
   if ($isConflict) {
     $editRows -= 10  if ($editRows > 19);
-    print '<h1>', T('Edit Conflict!'), "</h1>\n";
+    print $q->h1(T('Edit Conflict!'));
     if ($isConflict>1) {
       # The main purpose of a new warning is to display more text
       # and move the save button down from its old location.
-      print '<h2>', T('(This is a new conflict)'), "</h2>\n";
+      print $q->h2(T('(This is a new conflict)'));
     }
-    print '<p><strong>',
-          T('Someone saved this page after you started editing.'), ' ',
-          T('The top textbox contains the saved text.'), ' ',
-          T('Only the text in the top textbox will be saved.'),
-          "</strong><br>\n";
+    print $q->p($q->strong(T('Someone saved this page after you started editing.') . ' '
+			 . T('The top textbox contains the saved text.') . ' '
+			 . T('Only the text in the top textbox will be saved.')));
     if ($UseDiff) {
-      print T('Scroll down to see your text with conflict markers.');
+      print $q->p(T('Scroll down to see your text with conflict markers.'));
     } else {
-      print T('Scroll down to see your edited text.');
+      print $q->p(T('Scroll down to see your edited text.'));
     }
-    print "<br>\n",
-      T('Last save time:'), ' ', &TimeToText($oldTime),
-      ' (', T('Current time is:'), ' ', &TimeToText($Now), ")<br>\n";
+    print $q->p(T('Last save time:') . ' ' . &TimeToText($oldTime)
+		. ' (' . T('Current time is:') . ' ' . &TimeToText($Now) . ')');
   }
   print &GetFormStart();
-  print &GetHiddenValue("title", $id), "\n",
-        &GetHiddenValue("oldtime", $pageTime), "\n",
-        &GetHiddenValue("oldconflict", $isConflict), "\n";
+  print &GetHiddenValue("title", $id),
+        &GetHiddenValue("oldtime", $pageTime),
+        &GetHiddenValue("oldconflict", $isConflict);
   if ($revision ne '') {
-    print &GetHiddenValue('revision', $revision), "\n";
+    print &GetHiddenValue('revision', $revision);
   }
-  print &GetTextArea('text', $oldText, $editRows, $editCols), "\n";
+  print &GetTextArea('text', $oldText, $editRows, $editCols);
   $summary = &GetParam('summary', '');
-  print '<p>', T('Summary:'),
-        $q->textfield(-name=>'summary',
-                      -default=>$summary, -override=>1,
-                      -size=>60, -maxlength=>200), "\n";;
+  print $q->p(T('Summary:'),
+	      $q->textfield(-name=>'summary',
+			    -default=>$summary, -override=>1,
+			    -size=>60, -maxlength=>200));
   if (&GetParam('recent_edit') eq 'on') {
-    print '<p>', $q->checkbox(-name=>'recent_edit', -checked=>1,
-                              -label=>T('This change is a minor edit.')), "\n";
+    print $q->p($q->checkbox(-name=>'recent_edit', -checked=>1,
+			     -label=>T('This change is a minor edit.')));
   } else {
-    print '<p>', $q->checkbox(-name=>'recent_edit',
-                              -label=>T('This change is a minor edit.')), "\n";;
+    print $q->p($q->checkbox(-name=>'recent_edit',
+			     -label=>T('This change is a minor edit.')));
   }
   if ($EditNote ne '') {
-    print T($EditNote), "\n";  # Allow translation
+    print T($EditNote);  # Allow translation, must be a block level element (paragraph, list, table, etc.)
   }
   $userName = &GetParam('username', '');
-  print '<p>', T('Username:'),
-        $q->textfield(-name=>'username',
-		      -default=>$userName, -override=>1,
-		      -size=>20, -maxlength=>50), "\n";
-  print '<p>';
-  print $q->submit(-name=>'Save', -value=>T('Save')), "\n";
-  print $q->submit(-name=>'Preview', -value=>T('Preview')), "\n";
+  print $q->p(T('Username:')
+	      . $q->textfield(-name=>'username',
+			      -default=>$userName, -override=>1,
+			      -size=>20, -maxlength=>50));
+  print $q->p($q->submit(-name=>'Save', -value=>T('Save')) . ' '
+	      . $q->submit(-name=>'Preview', -value=>T('Preview')));
   if ($isConflict) {
-    print '<br><hr><p><strong>';
+    print $q->hr();
     if ($UseDiff) {
-      print T('This is the text with conflict markers:');
+      print $q->p($q->strong(T('This is the text with conflict markers:')));
     } else {
-      print T('This is the text you submitted:');
+      print $q->p($q->strong(T('This is the text you submitted:')));
     }
-    print "</strong>\n<p>",
-      &GetTextArea('newtext', $newText, $editRows, $editCols),
-      "\n";
+    print $q->p(&GetTextArea('newtext', $newText, $editRows, $editCols));
   }
-  print "<br><hr>\n";
+  print $q->endform();
   if ($preview) {
-    print '<h2>', T('Preview:'), "</h2>\n";
+    print $q->hr();
+    print $q->h2(T('Preview:'));
     if ($isConflict) {
-      print '<b>',
-            T('NOTE: This preview shows the revision of the other author.'),
-            "</b><hr>\n";
+      print $q->strong(T('NOTE: This preview shows the revision of the other author.'))
+	. $q->hr();
     }
     $MainPage = $id;
     $MainPage =~ s|/.*||;  # Only the main page name (remove subpage)
-    &PrintWikiToHTML($oldText) . "<br><hr>\n";
-    print '<h2>', T('Preview only, not yet saved'), "</h2>\n";
+    &PrintWikiToHTML($oldText, 'preview');
+    print $q->hr();
+    print $q->h2(T('Preview only, not yet saved'));
   }
-  print &GetHistoryLink($id, T('View other revisions')) . "<br>\n";
+  print $q->hr();
+  print &GetHistoryLink($id, T('View other revisions')) . $q->br();
   print &GetGotoBar($id);
-  print $q->endform;
   print &GetMinimumFooter();
 }
 
@@ -3666,7 +3659,7 @@ sub DoPageLock {
   return  if (!&UserIsAdminOrError());
   $id = &GetParam('id', '');
   if ($id eq '') {
-    print '<p>', T('Missing page id to lock/unlock...');
+    print $q->p(T('Missing page id to lock/unlock...'));
     return;
   }
   return  if (!&ValidIdOrDie($id));       # Later consider nicer error?
@@ -3677,9 +3670,9 @@ sub DoPageLock {
     unlink($fname);
   }
   if (-f $fname) {
-    print '<p>', Ts('Lock for %s created.', $id), '<br>';
+    print $q->p(Ts('Lock for %s created.', $id));
   } else {
-    print '<p>', Ts('Lock for %s removed.', $id), '<br>';
+    print $q->p(Ts('Lock for %s removed.', $id));
   }
   print &GetCommonFooter();
 }
@@ -3688,24 +3681,22 @@ sub DoPageLock {
 
 sub DoEditBanned {
   my ($banList, $status);
-  print &GetHeader('', 'Editing Banned list', '');
+  print &GetHeader('', T('Editing Banned list'), '');
   return  if (!&UserIsAdminOrError());
   ($status, $banList) = &ReadFile("$BanListFile");
   $banList = ''  if (!$status);
   print &GetFormStart();
   print GetHiddenValue('edit_ban', 1), "\n";
-  print "<b>Banned IP/network/host list:</b><br>\n";
-  print "<p>Each entry is either a commented line (starting with #), ",
-        "or a Perl regular expression (matching either an IP address or ",
-        "a hostname).  <b>Note:</b> To test the ban on yourself, you must ",
-        "give up your admin access (remove password from the cookie).";
-  print "<p>Examples:<br>",
-        "\\.foocorp.com\$  (blocks hosts ending with .foocorp.com)<br>",
-        "^123.21.3.9\$  (blocks exact IP address)<br>",
-        "^123.21.3.  (blocks whole 123.21.3.* IP network)<p>";
+  print $q->p($q->strong(T('Banned IP/network/host list:')));
+  print $q->p(T('Each entry is either a commented line (starting with #), or a Perl regular expression (matching either an IP address or a hostname).'));
+  print $q->p($q->strong(T('Note:')) . ' ' . T('To test the ban on yourself, you must give up your admin access (remove password from the cookie).'));
+  print $q->p('Examples:' . $q->br()
+	      . T('\.foocorp.com$ (blocks hosts ending with .foocorp.com)') . $q->br()
+	      . T('^123\.21\.3\.9$ (blocks exact IP address)') . $q->br()
+	      . T('^123\.21\.3\. (blocks whole 123.21.3.* IP network)'));
   print &GetTextArea('banlist', $banList, 12, 50);
-  print '<br>', $q->submit(-name=>'Save'), "\n";
-  print "<hr>\n";
+  print $q->p($q->submit(-name=>T('Save')));
+  print $q->hr();
   print &GetGotoBar('');
   print $q->endform;
   print &GetMinimumFooter();
@@ -3713,19 +3704,19 @@ sub DoEditBanned {
 
 sub DoUpdateBanned {
   my ($newList, $fname);
-  print &GetHeader('', 'Updating Banned list', '');
+  print &GetHeader('', T('Updating Banned list'), '');
   return  if (!&UserIsAdminOrError());
   $fname = "$BanListFile";
   $newList = &GetParam('banlist', '#Empty file');
   if ($newList eq '') {
-    print '<p>Empty banned list or error.';
-    print '<p>Resubmit with at least one space character to remove.';
+    print $q->p(T('Empty banned list or error.'));
+    print $q->p(T('Resubmit with at least one space character to remove.'));
   } elsif ($newList =~ /^\s*$/s) {
     unlink($fname);
-    print '<p>Removed banned list';
+    print $q->p(T('Removed banned list'));
   } else {
     &WriteStringToFile($fname, $newList);
-    print '<p>Updated banned list';
+    print $q->p(T('Updated banned list'));
   }
   print &GetCommonFooter();
 }
@@ -3733,7 +3724,7 @@ sub DoUpdateBanned {
 # == Version ==
 
 sub DoShowVersion {
-  print &GetHeader('', 'Displaying Wiki Version', '');
+  print &GetHeader('', T('Displaying Wiki Version'), '');
   print $WikiDescription;
   print &GetCommonFooter();
 }
@@ -3816,7 +3807,7 @@ sub WriteRecentVisitors {
 }
 
 sub DoShowVisitors {
-  print &GetHeader('', 'Recent Visitors', '');
+  print &GetHeader('', T('Recent Visitors'), '');
   &ReadRecentVisitors();
   print '<p><ul>';
   foreach my $name (sort {@{$RecentVisitors{$b}}[0] <=> @{$RecentVisitors{$a}}[0]} (keys %RecentVisitors)) {
