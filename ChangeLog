@@ -1,5 +1,7 @@
 2003-04-16  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (InitLinkPatterns): Changed InterLinkPattern.
+
 	* test-markup.pl: Added page-level tests.
 
 	* wiki.pl (GetPageLinks): No longer call StripUrlPunct.
