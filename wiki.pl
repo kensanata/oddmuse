@@ -53,7 +53,7 @@ use vars qw(@RcDays @HtmlTags
   $BannedCanRead $SurgeProtection $SurgeProtectionViews
   $SurgeProtectionTime $DeletedPage %Languages $LanguageLimit
   $ValidatorLink $RefererTracking $RefererTimeLimit $RefererLimit
-  $TopLinkBar $NotifyWeblogs $InterMap);
+  $TopLinkBar $NotifyWeblogs $InterMap @LockOnCreation);
 
 # Other global variables:
 use vars qw(%Page %Section %Text %InterSite %KeptRevisions
@@ -80,7 +80,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.69 2003/05/27 23:29:31 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.70 2003/05/28 00:20:42 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -175,6 +175,8 @@ if (not @HtmlTags) { # don't set if set in the config file
     @HtmlTags = qw(b i u em strong tt);
   }
 }
+
+@LockOnCreation = ($BannedHosts, $InterMap);
 
 $IndentLimit = 20;                  # Maximum depth of nested lists
 $LanguageLimit = 3;                 # Number of matches req. for each language
@@ -651,14 +653,11 @@ sub GetInterLink {
   return $q->a({-href=>$url}, $text);
 }
 
-sub GetSiteUrl { # This trashes the open page data!
-  my ($site) = @_;
+sub GetSiteUrl {
+  my $site = shift;
   if (!$InterSiteInit) {
     $InterSiteInit = 1;
-    OpenPage($InterMap);
-    return ''  unless $Page{'revision'} > 0;  # No page, no intermap
-    OpenDefaultText();
-    foreach (split(/\n/, $Text{'text'})) {
+    foreach (split(/\n/, GetPageContent($InterMap))) {
       if (/^ ($InterSitePattern)[ \t]+([^ ]+)$/) {
 	$InterSite{$1} = $2;
       }
@@ -1451,7 +1450,7 @@ sub DoRandom {
 # History
 
 sub DoHistory {
-  my ($id) = @_;
+  my $id = shift;
   my ($html, $canEdit, $row, $newText);
   print GetHeader('',QuoteHtml(Ts('History of %s', $id)), '') . '<br>';
   OpenPage($id);
@@ -1544,7 +1543,7 @@ sub GetOldPageLink {
 }
 
 sub GetSearchLink {
-  my ($id) = @_;
+  my $id = shift;
   my $name = $id;
   $id =~ s|.+/|/|;   # Subpage match: search for just /SubName
   if ($FreeLinks) {
@@ -1823,7 +1822,7 @@ sub GetValidatorLink {
 }
 
 sub GetGotoBar {
-  my ($id) = @_;
+  my $id = shift;
   my ($main, $bartext);
   $bartext  = GetPageLink($HomePage);
   if ($id =~ m|/|) {
@@ -2090,7 +2089,7 @@ sub DiffHtmlMarkWords {
 # == Database (Page, Section, Text, Kept, User) functions ==
 
 sub OpenNewPage {
-  my ($id) = @_;
+  my $id = shift;
   %Page = ();
   $Page{'version'} = 3;      # Data format version
   $Page{'revision'} = 0;     # Number of edited times
@@ -2114,7 +2113,7 @@ sub OpenNewSection {
 }
 
 sub OpenNewText {
-  my ($name) = @_;  # Name of text (usually 'default')
+  my $name = shift;  # Name of text (usually 'default')
   %Text = ();
   $Text{'text'} = T($NewText);
   $Text{'text'} .= "\n"  if (substr($Text{'text'}, -1, 1) ne "\n");
@@ -2125,7 +2124,7 @@ sub OpenNewText {
 }
 
 sub GetPageDirectory {
-  my ($id) = @_;
+  my $id = shift;
   if ($id =~ /^([a-zA-Z])/) {
     return uc($1);
   }
@@ -2133,12 +2132,12 @@ sub GetPageDirectory {
 }
 
 sub GetPageFile {
-  my ($id) = @_;
+  my $id = shift;
   return $PageDir . '/' . GetPageDirectory($id) . "/$id.db";
 }
 
 sub OpenPage {
-  my ($id) = @_;
+  my $id = shift;
   my ($fname, $data);
   if ($OpenPageName eq $id) {
     return;
@@ -2159,7 +2158,7 @@ sub OpenPage {
 }
 
 sub OpenSection {
-  my ($name) = @_;
+  my $name = shift;
   if (!defined($Page{$name})) {
     OpenNewSection($name, '');
   } else {
@@ -2168,7 +2167,7 @@ sub OpenSection {
 }
 
 sub OpenText {
-  my ($name) = @_;
+  my $name = shift;
   if (!defined($Page{"text_$name"})) {
     OpenNewText($name);
   } else {
@@ -2178,7 +2177,7 @@ sub OpenText {
 }
 
 sub OpenDefaultText {
-  my ($id) = @_;
+  my $id = shift;
   OpenText('default');
   # show README for first timers
   if ($Section{'revision'} == 0 and $id eq $HomePage
@@ -2186,6 +2185,18 @@ sub OpenDefaultText {
     local $/ = undef;   # Read complete files
     $Text{'text'} = <F>;
     close F;
+  }
+}
+
+sub GetPageContent {
+  my $id = shift;
+  my $fname = GetPageFile($id);
+  if (-f $fname) {
+    my $data = ReadFileOrDie($fname);
+    my %tempPage = split(/$FS1/, $data, -1);  # -1 keeps trailing null fields
+    my %tempSection = split(/$FS2/, $tempPage{'text_default'}, -1);
+    my %tempText = split(/$FS3/, $tempSection{'data'}, -1);
+    return $tempText{'text'};
   }
 }
 
@@ -2197,7 +2208,7 @@ sub OpenKeptRevision {
 }
 
 sub GetPageCache {
-  my ($name) = @_;
+  my $name = shift;
   return $Page{"cache_$name"};
 }
 
@@ -2224,7 +2235,7 @@ sub SaveSection {
 }
 
 sub SaveText {
-  my ($name) = @_;
+  my $name = shift;
   SaveSection("text_$name", join($FS3, %Text));
 }
 
@@ -2242,7 +2253,7 @@ sub UpdatePageVersion {
 }
 
 sub GetKeepFile {
-  my ($id) = @_;
+  my $id = shift;
   return $KeepDir . '/' . GetPageDirectory($id) . "/$id.kp";
 }
 
@@ -2335,7 +2346,7 @@ sub OpenKeptList {
 }
 
 sub OpenKeptRevisions {
-  my ($name) = @_;  # Name of section
+  my $name = shift;  # Name of section
   my (%tempSection);
   %KeptRevisions = ();
   OpenKeptList();
@@ -2370,7 +2381,7 @@ sub ReportError {
 }
 
 sub ValidId {
-  my ($id) = @_;
+  my $id = shift;
   if (length($id) > 120) {
     return Ts('Page name is too long: %s', $id);
   }
@@ -2414,7 +2425,7 @@ sub ValidId {
 }
 
 sub ValidIdOrDie {
-  my ($id) = @_;
+  my $id = shift;
   my $error;
   $error = ValidId($id);
   if ($error ne '') {
@@ -2427,7 +2438,7 @@ sub ValidIdOrDie {
 # == Lock files ==
 
 sub GetLockedPageFile {
-  my ($id) = @_;
+  my $id = shift;
   return $PageDir . '/' . GetPageDirectory($id) . "/$id.lck";
 }
 
@@ -2452,7 +2463,7 @@ sub RequestLockDir {
 }
 
 sub ReleaseLockDir {
-  my ($name) = @_;
+  my $name = shift;
   rmdir($LockDir . $name);
 }
 
@@ -2665,7 +2676,7 @@ sub GetRemoteHost {
 }
 
 sub FreeToNormal {
-  my ($id) = @_;
+  my $id = shift;
   $id =~ s/ /_/g;
   $id = ucfirst($id);
   if (index($id, '_') > -1) {  # Quick check for any space/underscores
@@ -2895,14 +2906,11 @@ sub UserCanEdit {
   return 1;
 }
 
-sub UserIsBanned { # This trashes the open page data!
-  my ($host, $ip, $data, $status);
-  OpenPage($BannedHosts);
-  return 0  unless $Page{'revision'} > 0;  # No page, no ban
-  OpenDefaultText();
+sub UserIsBanned {
+  my ($host, $ip);
   $ip = $ENV{'REMOTE_ADDR'};
   $host = GetRemoteHost();
-  foreach (split(/\n/, $Text{'text'})) {
+  foreach (split(/\n/, GetPageContent($BannedHosts))) {
     if (/^ ([^ ]+)[ \t]*$/) {  # only read lines with one word after one space
       my $host = $1;
       return 1  if ($ip   =~ /$host/i);
@@ -3255,8 +3263,8 @@ sub DoPost {
   } elsif (($id eq 'Sample_Undefined_Page') or ($id eq T('Sample_Undefined_Page'))) {
     ReportError(Ts('[[%s]] cannot be defined.', $id));
     return;
-  } elsif (($id eq $BannedHosts) and !UserIsAdmin() and not -f GetPageFile($id)) {
-    ReportError(Ts('Only an administrator can create %s', $BannedHosts));
+  } elsif (grep(/^$id$/, @LockOnCreation) and !UserIsAdmin() and not -f GetPageFile($id)) {
+    ReportError(Ts('Only an administrator can create %s', $id));
     return;
   }
   # Handle raw edits with the meta info on the first line
@@ -3350,7 +3358,7 @@ sub Save { # call within lock, with opened page
 	      $Section{'host'}, GetLanguages($Text{'text'}));
   if ($Page{'revision'} == 1) {
     unlink($IndexFile);  # Regenerate index on next request
-    if ($id eq $BannedHosts) {
+    if (grep(/^$id$/, @LockOnCreation)) {
       WriteStringToFile(GetLockedPageFile($id), 'editing locked.');
     }
   }
@@ -3714,7 +3722,7 @@ sub DoSurgeProtection {
 }
 
 sub DelayRequired {
-  my ($name) = @_;
+  my $name = shift;
   my @entries = @{$RecentVisitors{$name}};
   my $ts = $entries[$SurgeProtectionViews - 1];
   return 0 if not $ts;
@@ -3723,7 +3731,7 @@ sub DelayRequired {
 }
 
 sub AddRecentVisitor {
-  my ($name) = @_;
+  my $name = shift;
   my $value = $RecentVisitors{$name};
   my @entries;
   if ($value) {
