@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.340 2004/03/08 01:11:22 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.341 2004/03/08 01:22:56 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2015,6 +2015,14 @@ sub PrintFooter {
       }
     } else { # no permission or generated page
       $revisions .= ScriptLink('action=password', T('This page is read-only'));
+    }
+    if (UserIsAdmin()) {
+      $revisions .= ' | ' if $revisions;
+      if (-f GetLockedPageFile($id)) {
+	$revisions .= ScriptLink('action=pagelock;set=0;id=' . $id, T('Unlock page'));
+      } else {
+	$revisions .= ScriptLink('action=pagelock;set=1;id=', T('Lock page'));
+      }
     }
   }
   if ($id and $rev ne 'history') {
