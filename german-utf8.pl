@@ -18,7 +18,7 @@
 #
 # do 'german-utf8.pl';
 #
-# Diese Übersetzung wurde für Oddmuse 1.195 erstellt.
+# Diese Übersetzung wurde für Oddmuse 1.202 erstellt.
 #
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
@@ -59,12 +59,6 @@ showing current revision instead
 Stattdessen Anzeige der aktuellen Version
 Showing revision %s
 Anzeige Version %s
-Updates since %s
-Änderungen seit %s
-Updates in the last %s day
-Änderungen der letzten %s Tage
-Updates in the last %s days
-Änderungen der letzten %s Tage
 Could not open %s log file
 Kann Logdatei %s nicht öffnen
 Error was
@@ -73,18 +67,22 @@ Note: This error is normal if no changes have been made.
 HINWEIS: Dieser Fehler ist normal, wenn keine Änderungen durchgeführt wurden.
 Could not open old %s log file
 Konnte alte Logdatei %s nicht öffnen
-for %s only
-nur für %s
-%s day
-%s Tag
-%s days
-%s Tage
-List new changes starting from
-Neue Änderungen anzeigen seit
 No updates since %s
 Keine Änderungen seit %s
 Page generated %s
 Seite erzeugt am %s
+Updates since %s
+Änderungen seit %s
+Updates in the last %s days
+Änderungen der letzten %s Tage
+Updates in the last %s day
+Änderungen der letzten %s Tage
+for %s only
+nur für %s
+%s days
+%s Tage
+List new changes starting from
+Neue Änderungen anzeigen seit
 Related changes
 Änderungen auf Seiten in dieser Gruppe
 (minor)
@@ -123,6 +121,8 @@ Rückgängig gemacht auf den Stand vom %s
 [Erste Seite]
 redirected from %s
 Umgeleitet von %s
+Click to search for references to this page
+Klicken um nach Verweisen auf diese Seite zu suchen
 Cookie: 
 Cookie: 
 new comment
@@ -297,6 +297,8 @@ Replaced: %s
 Ersetzt: %s
 Search for: %s
 Suche nach: %s
+View changes for these pages
+Änderungen für diese Seiten
 and
 und
 or
@@ -409,4 +411,6 @@ All Referrers
 Alle Links auf diesen Wiki
 anchor first defined here: %s
 Der Anker wurde hier zuerst definiert: %s
+Click to search for references to this permanent anchor
+Klicken um nach Verweisen auf diesen permanenten Anker zu suchen
 END_OF_TRANSLATION
