@@ -86,7 +86,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.86 2003/06/09 21:55:16 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.87 2003/06/10 21:05:06 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -100,7 +100,7 @@ $EmbedWiki   = 0;   # 1 = no headers/footers
 $FooterNote  = '';  # HTML for bottom of every page
 $EditNote    = '';  # HTML notice above buttons on edit page
 $TopLinkBar  = 1;   # 1 = add a goto bar at the top of the page
-@UserGotoBarPages = (); # List of pagenames, eg. ('HowTo', 'Download')
+@UserGotoBarPages = ($HomePage, $RcName); # List of pagenames
 $UserGotoBar = '';  # HTML added to end of goto bar
 $ValidatorLink = 0; # 1 = Link to the W3C HTML validator service
 
@@ -1077,7 +1077,7 @@ sub BrowsePage {
   }
   if ($RefererTracking && !$embed) {
     my $referers = RefererTrack($id);
-    print $q->hr() . $referers if $referers;
+    print $referers if $referers;
   }
   PrintFooter($id, $goodRevision);
 }
@@ -1828,11 +1828,8 @@ sub GetValidatorLink {
 
 sub GetGotoBar {
   my $id = shift;
-  my  $bartext  = GetPageLink($HomePage);
-  $bartext .= ' | ' . GetPageLink($RCName);
-  $bartext .= ' | ' . GetRandomLink()  if GetParam('linkrandom', 0);
-  $bartext .= ' | ' . join(' | ', map { ScriptLink($_, $_) } @UserGotoBarPages)
-    if @UserGotoBarPages;
+  my $bartext;
+  $bartext .= join(' | ', map { ScriptLink($_, $_) } @UserGotoBarPages);
   $bartext .= ' | ' . $UserGotoBar  if $UserGotoBar ne '';
   return $q->span({-class=>'gotobar'}, $bartext);
 }
@@ -2648,7 +2645,7 @@ sub FreeToNormal {
 
 sub DoEdit {
   my ($id, $isConflict, $oldTime, $newText, $preview) = @_;
-  my ($header, $editRows, $editCols, $userName, $revision, $oldText);
+  my ($header, $userName, $revision, $oldText);
   my ($summary, $minor, $pageTime);
   if (!UserCanEdit($id, 1)) {
     print GetHeader('', T('Editing Denied'), '');
@@ -2682,15 +2679,12 @@ sub DoEdit {
   if ($preview && !$isConflict) {
     $oldText = $newText;
   }
-  $editRows = GetParam('editrows', 24);
-  $editCols = GetParam('editcols', 80);
   print GetHeader('', QuoteHtml($header), ''), "\n";
   if ($revision ne '') {
     print $q->strong(Ts('Editing old revision %s.', $revision) . '  '
 		   . T('Saving this page will replace the latest revision with this text.'))
   }
   if ($isConflict) {
-    $editRows -= 10  if ($editRows > 19);
     print $q->h1(T('Edit Conflict!'));
     if ($isConflict>1) {
       # The main purpose of a new warning is to display more text
@@ -2715,7 +2709,7 @@ sub DoEdit {
   if ($revision ne '') {
     print GetHiddenValue('revision', $revision);
   }
-  print GetTextArea('text', $oldText, $editRows, $editCols);
+  print GetTextArea('text', $oldText);
   $summary = GetParam('summary', '');
   print $q->p(T('Summary:'),
 	      $q->textfield(-name=>'summary',
@@ -2745,7 +2739,7 @@ sub DoEdit {
     } else {
       print $q->p($q->strong(T('This is the text you submitted:')));
     }
-    print $q->p(GetTextArea('newtext', $newText, $editRows, $editCols));
+    print $q->p(GetTextArea('newtext', $newText));
   }
   print $q->endform();
   if ($preview) {
@@ -2762,19 +2756,18 @@ sub DoEdit {
 }
 
 sub GetTextArea {
-  my ($name, $text, $rows, $cols) = @_;
+  my ($name, $text) = @_;
   if (GetParam('editwide', 1)) {
     return $q->textarea(-name      => $name,
 			-default   => $text,
-                        -rows      => $rows,
-			-columns   => $cols,
-			-override  => 1,
-                        -style     => 'width:100%');
+                        -rows      => 25,
+			-columns   => 78,
+			-override  => 1);
   }
   return $q->textarea(-name     => $name,
 		      -default  => $text,
-                      -rows     => $rows,
-		      -columns  => $cols,
+                      -rows     => 25,
+		      -columns  => 78,
 		      -override => 1);
 }
 
@@ -3824,7 +3817,8 @@ sub RefererTrack {
   if (UpdateReferers($id)) {
     WriteReferers($id);
   }
-  return GetReferers();
+  my $refs = GetReferers();
+  return $q->hr() . $refs if $refs;
 }
 
 sub DoPrintAllReferers {
