@@ -25,6 +25,18 @@
 	(WriteRcLog): Don't die; use ReportError instead.
 	(DoPageLock): Don't return after ValidIdOrDie.
 	(DoSurgeProtection): Don't exit after ReportError.
+	(RequestLockOrError): Renamed from RequestLock.
+	(PrintWikiToHTML): Renamed RequestLock.
+	(DoRollback): Renamed RequestLock, don't return.
+	(UserIsAdminOrError): Use ReportError.
+	(Replace): Renamed RequestLock, don't return.
+	(DoPost): Renamed RequestLock, don't return.
+	(DoPost): Don't call ReleaseLock before ReportError.
+	(DoMaintain): Renamed RequestLock, don't return.
+	(DoConvert): Renamed RequestLock, don't return.  Don't return upon
+	failed UserIsAdminOrError.
+	(GetPermanentAnchor): Don't specify separate wait values.
+	(DeletePermanentAnchors): Don't specify separate wait values.
 
 2003-09-28  Alex Schroeder  <alex@gnu.org>
 
