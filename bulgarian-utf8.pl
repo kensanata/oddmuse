@@ -171,8 +171,6 @@ Unlock page
 
 Lock page
 
-Comments on this page
-Коментари към тази страница
 Edit revision %s of this page
 Редакция на версия %s на тази страница
 Edit text of this page
@@ -187,8 +185,6 @@ View current revision
 Виж актуалната версия
 View all changes
 Виж всички промени
-Back to %s
-Обратно към %s
 new comment
 Нов коментар
 Homepage URL:
@@ -361,6 +357,8 @@ Complete Content
 Пълно съдържание
 The main page is %s.
 Главната страница е %s.
+Comments on this page
+Коментари към тази страница
 Editing not allowed for %s.
 Редакция на %s не е разрешена.
 SampleUndefinedPage
@@ -439,10 +437,14 @@ Lock for %s removed.
 Защитата за %s бе отменена.
 Displaying Wiki Version
 Показ на Уики-версия
+Show dependencies
+
 Inter links:
 Интер-линкове:
 Near links:
 Близки линкове:
+Show parsed link data
+
 Too many connections by %s
 Прекалено много връзки с %s
 Please do not fetch more than %1 pages in %2 seconds.
@@ -511,6 +513,8 @@ Cannot find unspammed revision.
 
 Footnotes:
 
+Could not find %1.html template in %2
+
 image: %s
 
 Index
@@ -549,6 +553,8 @@ Portrait
 
 Static Copy
 
+Back to %s
+Обратно към %s
 Alternatively, use one of the following templates:
 
 Thread: %s

@@ -36,7 +36,7 @@ Entweder liefert %s liefert keine Daten, oder das LWP::UserAgent Modul ist auf d
 RSS parsing failed for %s
 Die RSS Daten von %s sind ungültig; sie können nicht verarbeitet werden
 No items found in %s.
-
+%s liefert keine Artikel
  . . . . 
  . . . . 
 Click to edit this page
@@ -169,8 +169,6 @@ Unlock page
 Seite entsperren
 Lock page
 Seite sperren
-Comments on this page
-Kommentare zu dieser Seite
 Edit revision %s of this page
 Version %s dieser Seite bearbeiten
 Edit text of this page
@@ -185,8 +183,6 @@ View current revision
 Zurück zur aktuellen Version
 View all changes
 Liste aller Änderungen, auch ohne vorhandener Version
-Back to %s
-Zurück zu %s
 new comment
 Neuer Kommentar
 Homepage URL:
@@ -359,6 +355,8 @@ Complete Content
 Vollständiger Inhalt
 The main page is %s.
 Die Hauptseite ist %s.
+Comments on this page
+Kommentare zu dieser Seite
 Editing not allowed for %s.
 Das bearbeiten von %s ist nicht erlaubt.
 SampleUndefinedPage
@@ -437,10 +435,14 @@ Lock for %s removed.
 Sperre von %s aufheben.
 Displaying Wiki Version
 Anzeige der Wiki Version
+Show dependencies
+Abhängigkeiten zeigen
 Inter links:
 Inter Links:
 Near links:
 Nahe Links:
+Show parsed link data
+Eingelesene Link Daten anzeigen
 Too many connections by %s
 Zu viele Verbindungen durch %s
 Please do not fetch more than %1 pages in %2 seconds.
@@ -509,6 +511,8 @@ Cannot find unspammed revision.
 Es gibt keine Version ohne Spam.
 Footnotes:
 Fussnoten:
+Could not find %1.html template in %2
+Im Verzeichnis %2 gibt es kein %1.html Template
 image: %s
 Bild: %s
 Index
@@ -547,6 +551,8 @@ Portrait
 Portrait
 Static Copy
 Statische Kopie
+Back to %s
+Zurück zu %s
 Alternatively, use one of the following templates:
 Anderenfalls stehen auch folgende Vorlagen zur Verfügung:
 Thread: %s

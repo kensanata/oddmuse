@@ -170,8 +170,6 @@ Unlock page
 
 Lock page
 
-Comments on this page
-הערות בדף זה
 Edit revision %s of this page
 ערוך את גירסה %s של דף זה
 Edit text of this page
@@ -185,8 +183,6 @@ View other revisions
 View current revision
 הצג את הגירסה העדכנית
 View all changes
-
-Back to %s
 
 new comment
 הערה חדשה
@@ -360,6 +356,8 @@ Complete Content
 תוכן מלא
 The main page is %s.
 הדף הראשי הוא %s.
+Comments on this page
+הערות בדף זה
 Editing not allowed for %s.
 לא ניתן לערוך את %s.
 SampleUndefinedPage
@@ -438,9 +436,13 @@ Lock for %s removed.
 נעילה הוסרה מ-%s.
 Displaying Wiki Version
 מציג את גירסת ה-Wiki.
+Show dependencies
+
 Inter links:
 
 Near links:
+
+Show parsed link data
 
 Too many connections by %s
 יותר מדי חיבורים מ-%s.
@@ -510,6 +512,8 @@ Cannot find unspammed revision.
 
 Footnotes:
 
+Could not find %1.html template in %2
+
 image: %s
 
 Index
@@ -547,6 +551,8 @@ Permalink to "%s"
 Portrait
 
 Static Copy
+
+Back to %s
 
 Alternatively, use one of the following templates:
 
