@@ -81,7 +81,7 @@ $HttpCharset = '';  # Charset for pages, default is ISO-8859-1
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.12 2003/03/24 22:43:09 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.13 2003/03/25 09:11:09 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -1770,6 +1770,8 @@ table.history { border-style:none; }
 td.history { border-style:none; }
 table.user { border-style:solid; border-width:thin; }
 table.user tr td { border-style:solid; border-width:thin; padding:5px; text-align:center; }
+span.result { font-size:larger; }
+span.info { font-size:smaller; font-style:italic; }
 -->
 EOT
   }
@@ -3105,9 +3107,9 @@ sub SearchTitleAndBody {
 
 sub PrintSearchResults {
   my ($searchstring, @results) = @_ ;  #  inputs
-  my ($output, $name, $pageText, $t, $j, $jsnippet, $start, $end, $htmlre);
+  my ($name, $pageText, $t, $j, $jsnippet, $start, $end, $htmlre);
   my ($snippetlen, $maxsnippets) = (100, 4) ; #  these seem nice.
-  print "\n<h2>", ($#results + 1), ' pages found:</h2>';
+  print $q->h2(Ts('%s pages found:', ($#results + 1)));
   foreach $name (@results) {
     #  get the page, filter it, remove all tags (since we're presenting in
     #  plaintext, not HTML, a la google(tm)).
@@ -3120,12 +3122,12 @@ sub PrintSearchResults {
     $htmlre = join('|',(@HtmlTags, 'pre', 'nowiki', 'code'));
     $pageText =~ s/\<\/?($htmlre)(\s[^<>]+?)?\>//gi;
     #  entry header
-    $output = "\n\n" ;
-    $output .= '... '  if ($name =~ m|/|);
-    $output .= '<font size=+1>' . &GetPageLink($name) . "</font><br>\n" ;
+    print '<p>';
+    print '... '  if ($name =~ m|/|);
+    print $q->span({-class=>'result'}, &GetPageLink($name)), $q->br();
     #  show a snippet from the top of the document
     $j = index( $pageText, ' ', $snippetlen ) ;  #  end on word boundary
-    $output .= substr( $pageText, 0, $j ) . ' <b>...</b> ' ;
+    print substr( $pageText, 0, $j ), ' ', $q->b('...');
     $pageText = substr( $pageText, $j ) ;  #  to avoid rematching
     #  search for occurrences of searchstring
     $jsnippet = 0 ;
@@ -3140,29 +3142,30 @@ sub PrintSearchResults {
         $end = length( $pageText )  if ( $end == -1 ) ;
         $t = substr( $pageText, $start, $end-$start ) ;
         #  highlight occurrences and tack on to output stream.
-        $t =~ s/($searchstring)/<b>\1<\/b>/gi ;
-        $output .= $t . ' <b>...</b> ' ;
+        $t =~ s/($searchstring)/<strong>\1<\/strong>/gi ;
+        print $t, ' ', $q->b('...');
         #  truncate text to avoid rematching the same string.
         $pageText = substr( $pageText, $end ) ;
       }
     }
     #  entry trailer
-    $output .= '<br><i><font size=-1>'
-        . int((length($pageText)/1024)+1) . 'K - last updated '
-        . &TimeToText($Section{ts}) . ' by '
-        . &GetAuthorLink($Section{'host'}, $Section{'username'})
-        . '</font></i><br><br>' ;
-    print $output ;
+    print $q->br(), $q->span({-class=>'info'},
+			     int((length($pageText)/1024)+1) . 'K - '
+			     . T('last updated') . ' '
+			     . &TimeToText($Section{ts}) . ' ' . T('by') . ' '
+			     . &GetAuthorLink($Section{'host'}, $Section{'username'})
+			     . '</p>';
   }
 }
 
 sub PrintPageList {
   my $pagename;
-  print '<h2>', Ts('%s pages found:', ($#_ + 1)), "</h2>\n";
+  print $q->h2(Ts('%s pages found:', ($#_ + 1))), '<p>';
   foreach $pagename (@_) {
     print '.... '  if ($pagename =~ m|/|);
-    print &GetPageLink($pagename), "<br>\n";
+    print &GetPageLink($pagename), $q->br();
   }
+  print '</p>';
 }
 
 # == Links ==
