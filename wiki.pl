@@ -350,7 +350,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.470 2004/10/19 16:33:15 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.471 2004/10/22 20:57:19 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -3549,6 +3549,7 @@ sub DoMaintain {
 # == Deleting pages ==
 
 sub PageDeletable {
+  return unless $KeepDays;
   my $expirets = $Now - ($KeepDays * 24 * 60 * 60);
   return 0 unless $Page{ts} < $expirets;
   return $DeletedPage && $Page{text} =~ /^\s*$DeletedPage\b/o;
