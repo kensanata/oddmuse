@@ -1,3 +1,15 @@
+2004-08-19  Alex Schroeder  <alex@confusibombus>
+
+	* wiki.pl (GetRcText): Bugfix for action=rc;raw=1;all=1.
+	(GetRcRss): Use $ScriptName instead of $FullUrl.  Take
+	$UsePathInfo into account.  When the all parameter is not set,
+	don't add revision to the URL.
+
+2004-08-17  Alex Schroeder  <alex@gnu.org>
+
+	* modules/anchors.pl (AnchorsRule): Allow free link pattern for
+	anchor names.
+
 2004-08-16  Alex Schroeder  <alex@gnu.org>
 
 	* modules/atom.pl (AtomTime): Fix format.
