@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: markup.pl,v 1.1 2004/06/17 01:10:15 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: markup.pl,v 1.2 2004/06/19 03:29:19 as Exp $</p>';
 
 push(@MyRules, \&MarkupRule);
 
@@ -30,11 +30,11 @@ sub MarkupRule {
   } elsif (m/\G~([A-Za-z\x80-\xff][A-Za-z\x80-\xff ]*?)~/gc) {
     return "<em>$1</em>";
   } elsif (m/\G-\&gt; /gc) {
-    return chr(0x2192) . ' '; # RIGHTWARDS ARROW
+    return '&#x2192; '; # RIGHTWARDS ARROW
   } elsif (m/\G -- /gc) {
-    return chr(0x2014); # EM DASH
+    return '&#x2014'; # EM DASH
   } elsif (m/\G\.\.\./gc) {
-    return chr(0x2026); # HORIZONTAL ELLIPSIS
+    return '&#x2026;'; # HORIZONTAL ELLIPSIS
   }
   return undef;
 }
