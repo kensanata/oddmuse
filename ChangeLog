@@ -2,6 +2,12 @@
 
 	* wiki.pl (RSS): Print error message when parsing fails.
 	(PrintFooter): Comments are no longer minor edits.
+	(BrowsePage): Implement comment preview.
+	(PrintFooter): Implement comment preview.
+	(DoPost): Put comment munging into new sub AddComment, and call
+	either BrowsePage or Do Edit when previewing depending on whether
+	we are previewing a comment or an edit.
+	(AddComment): New.
 
 2004-01-11  Alex Schroeder  <alex@gnu.org>
 
