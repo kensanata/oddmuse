@@ -17,7 +17,7 @@
 #
 # This translation was last checked for Oddmuse version 1.504.
 #
-$ModulesDescription .= '<p>$Id: chinese-utf8.pl,v 1.18 2004/12/27 01:46:21 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: chinese-utf8.pl,v 1.19 2004/12/27 01:57:35 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 禁止讀取：使用者、ip 或是網路已被禁止連線。
@@ -569,7 +569,7 @@ You did not answer correctly.
 
 Updating %s
 更新 %s
-Done.</p></div>
+Done.
 
 Search term missing.
 

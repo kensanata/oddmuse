@@ -22,7 +22,7 @@
 #
 # This translation was last checked for OddMuse version 1.304.
 #
-$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.18 2004/12/27 01:00:38 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.19 2004/12/27 01:57:35 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Läsning inte tillåten: användare, ip eller nätverk är blockerat.
@@ -574,7 +574,7 @@ You did not answer correctly.
 
 Updating %s
 
-Done.</p></div>
+Done.
 
 Search term missing.
 
