@@ -351,8 +351,6 @@ Near pages:
 Nahe Seiten:
 last updated
 Zuletzt geändert
-Full Link List
-Volle Link-Liste
 Complete Content
 Vollständiger Inhalt
 The main page is %s.
@@ -407,6 +405,8 @@ Main lock obtained.
 Hauptsperre aktiviert.
 Expiring keep files and deleting pages marked for deletion
 Alte Versionen werden aus dem Archiv entfernt und Seiten, die als gelöscht markiert wurden, werden gelöscht
+not deleted: 
+konnte nicht gelöscht werden: 
 deleted
 Datei gelöscht
 Moving part of the %s log file.
