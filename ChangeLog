@@ -1,5 +1,10 @@
 2003-04-24  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (GetRcRss): No longer treat '*' special.
+	(GetRcText): No longer treat '*' special.
+	(GetHistoryLine): No longer treat '*' special.
+	(Cookie): No longer treat '*' special.
+
 	* test-texi.pl: New file.
 	
 	* texi.pl: New file.
