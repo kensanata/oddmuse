@@ -20,7 +20,11 @@ use vars qw($PageTrailLength);
 
 $PageTrailLength = 10;
 
-$ModulesDescription .= '<p>$Id: page-trail.pl,v 1.3 2004/10/04 20:41:01 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: page-trail.pl,v 1.4 2004/10/12 22:03:36 as Exp $</p>';
+
+$DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /span\.trail/; # mod_perl?
+@media print { span.trail { display: none; }}
+EOT
 
 $CookieParameters{trail} = '';
 $InvisibleCookieParameters{trail} = 1;
