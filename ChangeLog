@@ -1,5 +1,12 @@
 2003-06-13  Alex Schroeder  <alex@gnu.org>
 
+	* test-markup.pl: Added Journal tests.
+
+	* test-wrapper.pl: Use the new Init function.
+
+	* test.pl ($UseConfig, $ConfigPage, $AdminPass): Set them.
+
+
 	* wiki.pl ($CollectingJournal): New variable.
 	(DoWikiRequest): Move all the init calls into Init.
 	(Init): Moved all the init calls from DoWikiRequest here.
