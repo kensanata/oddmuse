@@ -16,10 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.8 2004/12/20 12:43:28 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.9 2004/12/21 16:19:59 as Exp $</p>';
 
 my $NamespacesInit = 0;
 my $NamespacesMain = 'Main'; # to get back to the main namespace
+my $NamespacesSelf = 'Self'; # for your own namespace
 my $NamespaceRoot = '';
 my $NamespaceCurrent = '';
 
@@ -77,6 +78,7 @@ sub NewNamespacesInitVariables {
     ReportError(Ts('Could not create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR')
       unless -d $DataDir;
   }
+  $InterSite{$NamespacesSelf} = $ScriptName . '?';
 }
 
 *OldNamespaceDoRc = *DoRc;
