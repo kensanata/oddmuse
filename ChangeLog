@@ -1,3 +1,8 @@
+2005-02-02  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+
+	* wiki.pl (DoBrowseRequest): Added CGI error message suggested by
+	Tim Jenness.
+
 2005-02-02  Alex Schroeder  <alex@gnu.org>
 
 	* wikicopy (GetRaw): Warning if GET fails.
