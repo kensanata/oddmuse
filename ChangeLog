@@ -1,3 +1,16 @@
+2004-10-31  Alex Schroeder  <alex@gnu.org>
+
+	* modules/toc.pl (TocRule): Call TocWikiHeading instead of
+	WikiHeading.
+	(TocHeadings): If the first subtitle is a H1, assume that this is
+	the "start".
+
+2004-10-31  Alex Schroeder  <alex@confusibombus>
+
+	* wiki.pl (ApplyRules): Save pos when determining $bol to fix a
+	bug.
+	(SmileyReplace): Simplified.
+
 2004-10-28  Alex Schroeder  <alex@confusibombus>
 
 	* modules/despam.pl: New.
