@@ -1,13 +1,19 @@
 2003-11-27  Alex Schroeder  <alex@gnu.org>
 
-	* wiki.pl (GetRc): When a page has no languages, it will be
+	* wiki.pl (%CookieParameters): Added 'lang'.
+	(RcHeader, GetFilterForm, GetRc): Changed 'rclang' to 'lang'.
+	(GetSearchForm): Add language textfield.
+	(SearchTitleAndBody): Filter by languages.
+
+	($UseCache): New variable.
+	(BrowsePage): Check it before allowing the use of the cache.
+	(PrintAllPages): Check it before allowing the use of the cache.
+
+	(GetRc): When a page has no languages, it will be
 	assigned the language 'none'.
 	(Save): Save languages as part of the page.
 	(GetLanguages): Return the languages in a string instead of a listref.
 	(WriteRcLog): Use the languages string directly.
-	($UseCache): New variable.
-	(BrowsePage): Check it before allowing the use of the cache.
-	(PrintAllPages): Check it before allowing the use of the cache.
 
 2003-11-20  Alex Schroeder  <alex@gnu.org>
 
