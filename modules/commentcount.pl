@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: commentcount.pl,v 1.2 2004/11/20 22:19:17 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: commentcount.pl,v 1.3 2004/11/20 22:24:25 as Exp $</p>';
 
 *OldCommentcountAddComment = *AddComment;
 *AddComment = *NewCommentcountAddComment;
@@ -44,7 +44,7 @@ sub NewCommentcountAddComment {
 *ScriptLink = *NewCommentcountScriptLink;
 
 sub NewCommentcountScriptLink {
-  my ($action, $text, $class, $name, $title) = @_;
+  my ($action, $text, @rest) = @_;
   if($text eq T('Comments on this page')) {
     # Add the number of comments here
     my $comments = GetPageContent($action);
@@ -56,5 +56,5 @@ sub NewCommentcountScriptLink {
     $text =~ s/Comments/Comment/ if($num == 1);
     $text = $num . ' ' . $text;
   }
-  return OldCommentcountScriptLink($action, $text, $class, $name, $title);
+  return OldCommentcountScriptLink($action, $text, @rest);
 }
