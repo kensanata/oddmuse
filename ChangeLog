@@ -1,3 +1,12 @@
+2004-05-18  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoPrintAllPages): Admin-only.
+
+2004-05-11  Alex Schroeder  <alex@gnu.org>
+
+	* modules/portrait-support.pl (PortraitSupportRule): Better
+	support for text browsers.
+
 2004-05-10  Alex Schroeder  <alex@gnu.org>
 
 	* latin-1.pl (translate): Do not rely on automatic encoding to
