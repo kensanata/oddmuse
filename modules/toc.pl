@@ -16,11 +16,12 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.17 2004/11/27 00:57:15 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.18 2004/11/27 21:18:02 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
-# This must come *before* the usemod.pl rules.
+# This must come *before* the usemod.pl rules and adds support for
+# portrait-support.pl
 $RuleOrder{ \&TocRule } = 90;
 
 my $TocCounter = 0;
@@ -34,8 +35,10 @@ sub TocRule {
         && m/\G(\s*\n)*(\=+)[ \t]*(?=[^=\n]+=)/cg) {
         my $depth = length($2);
         $depth = 6 if $depth > 6;
-        return CloseHtmlEnvironments() . AddHtmlEnvironment('h' . $depth)
-	  . $q->a({-id=>'toc' . $TocCounter++});
+	my $html = CloseHtmlEnvironments() . ($MyColorDiv ? '</div>' : '')
+	  . AddHtmlEnvironment('h' . $depth) . $q->a({-id=>'toc' . $TocCounter++});
+	$PortraitSupportColorDiv = 0; # after the HTML has been determined.
+        return $html;
     } elsif (   $UseModMarkupInTitles
 	     && m/\G[ \t]*=+\n?/cg
 	     && (   InElement('h1')
