@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.29 2004/10/12 22:09:12 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.30 2004/12/19 15:12:59 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalendarUseCal);
 
@@ -141,7 +141,7 @@ sub CalendarRule {
   } elsif (/\G(month:(\d\d\d\d)-(\d\d))/gc) {
     my $oldpos = pos;
     Dirty($1);
-    print Cal($2, $3);
+    print CloseHtmlEnvironments() . Cal($2, $3) . AddHtmlEnvironment('p');
     pos = $oldpos;
     return '';
   } elsif (/\G(month:([+-]\d\d?))/gc) {
@@ -153,7 +153,7 @@ sub CalendarRule {
     $mon += 1 + $delta;
     while ($mon < 1) { $year -= 1; $mon += 12; };
     while ($mon > 12) { $year += 1; $mon -= 12; };
-    print Cal($year, $mon);
+    print CloseHtmlEnvironments() . Cal($year, $mon) . AddHtmlEnvironment('p');
     pos = $oldpos;
     return '';
   }
@@ -163,7 +163,7 @@ sub CalendarRule {
 sub PrintYearCalendar {
   my $year = shift;
   my @pages = AllPagesList();
-  print '<div class="cal year">';
+  print CloseHtmlEnvironments() . $q->start_div({-class=>'cal year'});
   print $q->p({-class=>nav},
 	      ScriptLink('action=calendar;year=' . ($year-1), T('Previous')),
 	      ' | ',
@@ -171,7 +171,7 @@ sub PrintYearCalendar {
   for $mon ((1..12)) {
     print Cal($year, $mon, 1);
   }
-  print '</div>';
+  print $q->end_div() . AddHtmlEnvironment('p');
 }
 
 $Action{calendar} = \&DoYearCalendar;
