@@ -354,7 +354,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.508 2005/01/04 06:47:58 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.509 2005/01/04 07:30:15 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1859,6 +1859,11 @@ sub DoAdminPage {
   my $id = shift;
   print GetHeader('', T('Administration'), ''), $q->start_div({-class=>'content admin'});
   my @menu = (ScriptLink('action=index', T('Index of all pages')),
+	      ScriptLink('action=version', T('Wiki Version')),
+	      ScriptLink('action=unlock', T('Unlock Wiki')),
+	      ScriptLink('action=refer', T('All Referrers')),
+	      ScriptLink('action=visitors', T('Recent Visitors')),
+	      ScriptLink('action=password', T('Password')),
 	      ScriptLink('action=maintain', T('Run maintenance')));
   if (UserIsAdmin()) {
     if (-f "$DataDir/noedit") {
@@ -2644,7 +2649,7 @@ sub ForceReleaseLock {
 
 sub DoUnlock {
   my $message = '';
-  print GetHeader('', T('Unlocking'), '');
+  print GetHeader('', T('Unlock Wiki'), '');
   print $q->p(T('This operation may take several seconds...'));
   for my $lock (@KnownLocks) {
     if (ForceReleaseLock($lock)) {
@@ -3554,7 +3559,7 @@ sub UpdateDiffs {
 # == Maintenance ==
 
 sub DoMaintain {
-  print GetHeader('', T('Maintenance on all pages'), ''), $q->start_div({-class=>'content maintain'});
+  print GetHeader('', T('Run Maintenance'), ''), $q->start_div({-class=>'content maintain'});
   my $fname = "$DataDir/maintain";
   if (!UserIsAdmin()) {
     if ((-f $fname) && ((-M $fname) < 0.5)) {
