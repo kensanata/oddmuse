@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.20 2004/12/03 08:43:33 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.21 2004/12/05 04:03:32 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
@@ -36,7 +36,8 @@ sub TocRule {
         my $depth = length($2);
         $depth = 6 if $depth > 6;
 	my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '')
-	  . AddHtmlEnvironment('h' . $depth) . $q->a({-id=>'toc' . $TocCounter++});
+	  . AddHtmlEnvironment('h' . $depth) . $q->a({-id=>'toc' . $TocCounter++})
+          . AddHtmlEnvironment('p');
 	$PortraitSupportColorDiv = 0; # after the HTML has been determined.
 	$PortraitSupportColor = 0;
         return $html;
@@ -48,7 +49,7 @@ sub TocRule {
 		 || InElement('h4')
 		 || InElement('h5')
 		 || InElement('h6'))) {
-        return CloseHtmlEnvironments();
+        return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
     } elsif ($bol
         && !$UseModMarkupInTitles
         && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg) {
@@ -56,7 +57,7 @@ sub TocRule {
         $depth = 6 if $depth > 6;
 	my $text = $3;
 	my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '') . "<h$depth>"
-	  . $q->a({-id=>'toc' . $TocCounter++}, $text) . "</h$depth>";
+	  . $q->a({-id=>'toc' . $TocCounter++}, $text) . "</h$depth>" . AddHtmlEnvironment('p');
 	$PortraitSupportColorDiv = 0; # after the HTML has been determined.
 	$PortraitSupportColor = 0;
         return $html;
