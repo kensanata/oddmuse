@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.399 2004/05/21 12:37:15 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.400 2004/05/24 00:58:42 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2019,9 +2019,9 @@ sub PrintFooter {
   }
   print GetCommentForm($id, $rev, $comment);
   print '<div class="footer">';
-  print GetFooterLinks($id, $rev);
-  print GetAdminBar() if UserIsAdmin();
-  print GetFooterTimestamp($id, $rev);
+  print $q->span({-class=>'edit'}, GetFooterLinks($id, $rev));
+  print $q->span({-class=>'admin'}, GetAdminBar()) if UserIsAdmin();
+  print $q->span({-class=>'time'}, GetFooterTimestamp($id, $rev));
   print GetSearchForm();
   if ($DataDir =~ m|/tmp/|) {
     print $q->p($q->strong(T('Warning') . ': ')
@@ -3740,7 +3740,10 @@ sub DoSurgeProtection {
 	WriteRecentVisitors();
 	ReleaseLockDir('visitors');
 	if ($SurgeProtection and DelayRequired($name)) {
-	  ReportError(Ts('Too many connections by %s',$name), '503 SERVICE UNAVAILABLE');
+	  ReportError(Ts('Too many connections by %s',$name)
+		      . ': ' . Tss('Please do not fetch more than %1 pages in %2 seconds.',
+				   $SurgeProtectionViews, $SurgeProtectionTime),
+		      '503 SERVICE UNAVAILABLE');
 	}
       } elsif ($SurgeProtection and GetParam('action', '') ne 'unlock') {
 	ReportError(Ts('Could not get %s lock', 'visitors'), '503 SERVICE UNAVAILABLE');
