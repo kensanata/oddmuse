@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.35 2003/04/17 00:17:43 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.36 2003/04/17 00:29:18 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -297,6 +297,7 @@ sub InitLinkPatterns {
 sub ApplyRules {
   # locallinks: apply rules that create links depending on local config (incl. interlink!)
   my ($text, $locallinks) = @_;
+  $text =~ s/\r\n/\n/;
   my $state = ''; # quote, list, or normal ('')
   my $fragment;   # the current HTML fragment to be printed
   my $block = ''; # the current HTML block to be cached
