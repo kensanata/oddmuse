@@ -3,7 +3,11 @@ use vars qw($WeblogTextLogo $WeblogXmlLogo);
 $WeblogXmlLogo = '/images/rss.png';
 $WeblogTextLogo = '/images/txt.png';
 
-$ModulesDescription .= '<p>$Id: weblog-1.pl,v 1.6 2004/01/28 01:22:53 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: weblog-1.pl,v 1.7 2004/01/28 21:13:44 as Exp $</p>';
+
+$RefererTracking = 1;
+$CommentsPrefix = 'Comments_on_';
+$EditAllowed = 2;
 
 *OldWeblog1InitVariables = *InitVariables;
 *InitVariables = *NewWeblog1InitVariables;
