@@ -81,7 +81,7 @@ $DataDir     = $ENV{WikiDataDir} if $UseConfig and not $DataDir; # Main wiki dir
 $DataDir   = '/tmp/oddmuse' unless $DataDir;
 $ConfigPage  = '' unless $ConfigPage; # config page
 $RunCGI	     = 1  unless defined $RunCGI; # 1 = Run script as CGI instead of being a library
-$UsePathInfo = 1;   # 1 = allow page views using wiki.pl/PageName
+$UsePathInfo = 0;   # 1 = allow page views using wiki.pl/PageName
 $UseCache    = 2;   # 0 = no; 1 = partial HTML cache; 2 = HTTP/1.1 caching
 
 # Basics
@@ -163,7 +163,7 @@ $RssRights	  = ''; # Copyright notice for RSS
 
 # File uploads
 $UploadAllowed	  = 0;	# 1 = yes, 0 = administrators only
-@UploadTypes	  = ('image/jpeg', 'image/png'); # MIME types allowed
+@UploadTypes	  = ('image/jpeg', 'image/png'); # MIME types allowed, all allowed if empty list
 
 # Header and Footer, Notes, GotoBar
 $EmbedWiki   = 0;	# 1 = no headers/footers
@@ -310,7 +310,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.330 2004/02/24 22:50:42 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.331 2004/02/27 23:59:31 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2662,7 +2662,7 @@ sub DoDownload {
   my $ts = $Page{ts};
   if ($text =~ /#FILE ([^ \n]+)\n(.*)/s) {
     my ($type, $data) = ($1, $2);
-    if (not grep(/^$type$/, @UploadTypes)) {
+    if (@UploadTypes and not grep(/^$type$/, @UploadTypes)) {
       ReportError(Ts('Files of type %s are not allowed.', $type), '415 UNSUPPORTED MEDIA TYPE');
     }
     print GetHttpHeader($type, $ts);
@@ -3231,7 +3231,7 @@ sub DoPost {
       unless $q->uploadInfo($filename);
     my $type = $q->uploadInfo($filename)->{'Content-Type'};
     ReportError(T('Browser reports no file type.'), '415 UNSUPPORTED MEDIA TYPE') unless $type;
-    if (not grep(/^$type$/, @UploadTypes)) {
+    if (@UploadTypes and not grep(/^$type$/, @UploadTypes)) {
       ReportError(Ts('Files of type %s are not allowed.', $type), '415 UNSUPPORTED MEDIA TYPE');
     }
     local $/ = undef;	# Read complete files
