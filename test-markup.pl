@@ -1954,7 +1954,7 @@ symlink('/home/alex/src/oddmuse/modules/usemod.pl',
 
 %Test = split('\n',<<'EOT');
 == bees: honeymaking ==\n\nMoo.\n
-<h2><a name="bees%3a%20honeymaking">bees: honeymaking</a></h2><p>Moo.</p>
+<h2><a name="bees:_honeymaking">bees: honeymaking</a></h2><p>Moo.</p>
 EOT
 
 run_tests();
