@@ -36,24 +36,24 @@ local $| = 1;  # Do not buffer output (localized for mod_perl)
 
 # Configuration/constant variables:
 use vars qw(@RcDays @HtmlTags
-  $TempDir $LockDir $DataDir $KeepDir $PageDir $RefererDir $InterFile
-  $RcFile $RcOldFile $IndexFile $NoEditFile $BannedHosts $ConfigFile
-  $FullUrl $SiteName $HomePage $LogoUrl $RcDefault $IndentLimit
-  $RecentTop $RecentLink $EditAllowed $UseDiff $UseSubpage $RawHtml
-  $KeepDays $HtmlTags $HtmlLinks $KeepMajor $KeepAuthor $FreeUpper
-  $EmbedWiki $BracketText $UseConfig $UseLookup $AdminPass $EditPass
-  $NetworkFile $BracketWiki $FreeLinks $WikiLinks $FreeLinkPattern
-  $RCName $RunCGI $ShowEdits $LinkPattern $InterLinkPattern
-  $InterSitePattern $UrlProtocols $UrlPattern $ImageExtensions
-  $RFCPattern $ISBNPattern $FS $FS0 $FS1 $FS2 $FS3 $CookieName
-  $SiteBase $StyleSheet $NotFoundPg $FooterNote $EditNote $MaxPost
-  $NewText $HttpCharset $UserGotoBar $VisitorTime $VisitorFile
-  $Visitors %Smilies %SpecialDays $InterWikiMoniker $SiteDescription
-  $RssImageUrl $RssPublisher $RssContributor $RssRights
-  $WikiDescription $BannedCanRead $SurgeProtection
-  $SurgeProtectionViews $SurgeProtectionTime $DeletedPage %Languages
-  $LanguageLimit $ValidatorLink $RefererTracking $RefererTimeLimit
-  $RefererLimit $TopLinkBar $NotifyWeblogs);
+  $TempDir $LockDir $DataDir $KeepDir $PageDir $RefererDir $RcFile
+  $RcOldFile $IndexFile $NoEditFile $BannedHosts $ConfigFile $FullUrl
+  $SiteName $HomePage $LogoUrl $RcDefault $IndentLimit $RecentTop
+  $RecentLink $EditAllowed $UseDiff $UseSubpage $RawHtml $KeepDays
+  $HtmlTags $HtmlLinks $KeepMajor $KeepAuthor $FreeUpper $EmbedWiki
+  $BracketText $UseConfig $UseLookup $AdminPass $EditPass $NetworkFile
+  $BracketWiki $FreeLinks $WikiLinks $FreeLinkPattern $RCName $RunCGI
+  $ShowEdits $LinkPattern $InterLinkPattern $InterSitePattern
+  $UrlProtocols $UrlPattern $ImageExtensions $RFCPattern $ISBNPattern
+  $FS $FS0 $FS1 $FS2 $FS3 $CookieName $SiteBase $StyleSheet
+  $NotFoundPg $FooterNote $EditNote $MaxPost $NewText $HttpCharset
+  $UserGotoBar $VisitorTime $VisitorFile $Visitors %Smilies
+  %SpecialDays $InterWikiMoniker $SiteDescription $RssImageUrl
+  $RssPublisher $RssContributor $RssRights $WikiDescription
+  $BannedCanRead $SurgeProtection $SurgeProtectionViews
+  $SurgeProtectionTime $DeletedPage %Languages $LanguageLimit
+  $ValidatorLink $RefererTracking $RefererTimeLimit $RefererLimit
+  $TopLinkBar $NotifyWeblogs $InterMap);
 
 # Other global variables:
 use vars qw(%Page %Section %Text %InterSite %KeptRevisions
@@ -80,7 +80,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.66 2003/05/26 22:12:50 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.67 2003/05/27 23:09:45 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -100,6 +100,7 @@ $ValidatorLink = 0; # 1 = Link to the W3C HTML validator service
 $EditAllowed = 1;   # 1 = editing allowed,    0 = read-only
 $AdminPass   = '';  # Whitespace separated admin passwords.
 $EditPass    = '';  # Whitespace separated editor passwords.
+$BannedHosts = 'BannedHosts'; # Page for banned hosts (change space to _)
 $BannedCanRead = 1; # 1 = banned cannot edit, 0 = banned cannot read
 
 # LinkPattern
@@ -111,6 +112,7 @@ $BracketWiki = 0;   # 1 = [WikiLink desc] uses a desc for the local link
 $HtmlLinks   = 0;   # 1 = <a href="foo">desc</a> is a link
 $UseSubpage  = 0;   # 1 = PageName/SubPage is a link
 $NetworkFile = 1;   # 1 = file: is a valid protocol for URLs
+$InterMap    = 'InterMap'; # name of the intermap page (change space to _)
 
 # TextFormattingRules
 $HtmlTags    = 0;   # 1 = allow some 'unsafe' HTML tags
@@ -131,7 +133,7 @@ $RefererTimeLimit = 60 * 60 * 24; # How long referrals shall be remembered
 $RefererLimit = 15;        # How many different referer shall be remembered
 
 # RecentChanges and KeptPages
-$DeletedPage = "DeletedPage";   # Pages starting with this can be deleted
+$DeletedPage = 'DeletedPage';   # Pages starting with this can be deleted
 $RCName      = 'RecentChanges'; # Name of changes page (change space to _)
 @RcDays      = qw(1 3 7 30 90); # Days for links on RecentChanges
 $RcDefault   = 30;  # Default number of RecentChanges days
@@ -142,9 +144,6 @@ $ShowEdits   = 0;   # 1 = major and show minor edits in recent changes
 $UseLookup   = 1;   # 1 = lookup host names instead of using only IP numbers
 $RecentTop   = 1;   # 1 = most recent entries at the top of the list
 $RecentLink  = 1;   # 1 = link to usernames
-
-# Banning
-$BannedHosts = 'BannedHosts';  # List of banned hosts and IPs
 
 # RSS and other Weblog Technology
 $InterWikiMoniker = '';    # InterWiki prefix for this wiki for RSS
@@ -185,7 +184,6 @@ $RefererDir  = "$DataDir/referer";  # Stores referer data
 $TempDir     = "$DataDir/temp";     # Temporary files and locks
 $LockDir     = "$TempDir/lock";     # DB is locked if this exists
 $NoEditFile  = "$DataDir/noedit";   # Indicates that the site is read-only
-$InterFile   = "$DataDir/intermap"; # Interwiki site->url map
 $RcFile      = "$DataDir/rclog";    # New RecentChanges logfile
 $RcOldFile   = "$DataDir/oldrclog"; # Old RecentChanges logfile
 $IndexFile   = "$DataDir/pageidx";  # List of all pages
@@ -350,12 +348,10 @@ sub ApplyRules {
     } elsif ($HtmlLinks && m/\G\&lt;a(\s[^<>]+?)\&gt;(.*?)\&lt;\/a\&gt;/cgi) { # <a ...>text</a>
       $fragment = "<a$1>$2</a>";
     } elsif ($BracketText && $locallinks && m/\G(\[$InterLinkPattern\s+([^\]]+?)\])/cg) { # [InterLink text]
-      # Interlinks can change when the intermap file changes (local config, therefore depend on $locallinks).
-      # The intermap file is only read if necessary, so if this not an interlink after all,
-      # we have to backtrack a bit.
+      # Interlinks can change when the intermap changes (local config, therefore depend on $locallinks).
+      # The intermap is only read if necessary, so if this not an interlink, we have to backtrack a bit.
       $oldmatch = $1;
       $fragment = GetInterLink($2, $3, 1);
-      # we may have to backtrack a bit.
       if ($oldmatch eq $fragment) {
 	($fragment, $rest) = split(/:/, $oldmatch, 2);
 	pos = (pos) - length($rest) - 1;
@@ -655,16 +651,20 @@ sub GetInterLink {
   return $q->a({-href=>$url}, $text);
 }
 
-sub GetSiteUrl {
+sub GetSiteUrl { # This trashes the open page data!
   my ($site) = @_;
-  my ($data, $url, $status);
   if (!$InterSiteInit) {
     $InterSiteInit = 1;
-    ($status, $data) = ReadFile($InterFile);
-    return ''  if (!$status);
-    %InterSite = split(/\s+/, $data);  # Later consider defensive code
+    OpenPage($InterMap);
+    return ''  unless $Page{'revision'} > 0;  # No page, no intermap
+    OpenDefaultText();
+    foreach (split(/\n/, $Text{'text'})) {
+      if (/^ ([^ ]+)[ \t]+([^ ]+)$/) {
+	$InterSite{$1} = $2;
+      }
+    }
   }
-  $url = $InterSite{$site}  if (defined($InterSite{$site}));
+  my $url = $InterSite{$site}  if (defined($InterSite{$site}));
   return $url;
 }
 
@@ -2895,7 +2895,7 @@ sub UserCanEdit {
   return 1;
 }
 
-sub UserIsBanned {
+sub UserIsBanned { # This trashes the open page data!
   my ($host, $ip, $data, $status);
   OpenPage($BannedHosts);
   return 0  unless $Page{'revision'} > 0;  # No page, no ban
@@ -2903,7 +2903,7 @@ sub UserIsBanned {
   $ip = $ENV{'REMOTE_ADDR'};
   $host = GetRemoteHost();
   foreach (split(/\n/, $Text{'text'})) {
-    if (/^ ([^ ])+$/) {  # only read lines with one word after one space
+    if (/^ ([^ ]+)[ \t]*$/) {  # only read lines with one word after one space
       my $host = $1;
       return 1  if ($ip   =~ /$host/i);
       return 1  if ($host =~ /$host/i);
