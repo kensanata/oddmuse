@@ -309,7 +309,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.326 2004/02/23 21:56:31 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.327 2004/02/23 22:57:18 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1128,15 +1128,17 @@ sub BrowseResolvedPage {
     ReBrowsePage($resolved . '#' . $id);
   } elsif (not $resolved and $NotFoundPg) { # custom page-not-found message
     BrowsePage($NotFoundPg);
-  } else {
-    BrowsePage($id, GetParam('raw', 0)) if ValidIdOrDie($id);
+  } elsif ($resolved) { # an existing page was found
+    BrowsePage($id, GetParam('raw', 0));
+  } else { # new page!
+    BrowsePage($id, GetParam('raw', 0), undef, 1) if ValidIdOrDie($id);
   }
 }
 
 # == Browse page ==
 
 sub BrowsePage {
-  my ($id, $raw, $comment) = @_;
+  my ($id, $raw, $comment, $new) = @_;
   if ($q->http('HTTP_IF_MODIFIED_SINCE')
       and $q->http('HTTP_IF_MODIFIED_SINCE') eq gmtime($LastUpdate)
       and GetParam('cache', $UseCache) >= 2) {
@@ -1167,7 +1169,7 @@ sub BrowsePage {
   my $msg = GetParam('msg', '');
   $Message .= $q->p($msg) if $msg; # show message if the page is shown
   SetParam('msg', '');
-  print GetHeader($id, QuoteHtml($id), $oldId);
+  print GetHeader($id, QuoteHtml($id), $oldId, undef, $new);
   my $showDiff = GetParam('diff', 0);
   if ($UseDiff && $showDiff) {
     my $diffRevision = GetParam('diffrevision', $revision);
@@ -1785,11 +1787,11 @@ sub GetRCLink {
 }
 
 sub GetHeader {
-  my ($id, $title, $oldId, $nocache) = @_;
+  my ($id, $title, $oldId, $nocache, $new) = @_;
   my $result = '';
   my $embed = GetParam('embed', $EmbedWiki);
   my $altText = T('[Home]');
-  $result = GetHttpHeader('text/html', $nocache ? $Now : 0);
+  $result = GetHttpHeader('text/html', $nocache ? $Now : 0, $new);
   if ($FreeLinks) {
     $title =~ s/_/ /g;	 # Display as spaces
   }
@@ -1829,7 +1831,7 @@ sub GetHeader {
 sub GetHttpHeader {
   return if $PrintedHeader;
   $PrintedHeader = 1;
-  my ($type, $modified) = @_;
+  my ($type, $modified, $new) = @_;
   my $mod = gmtime($modified or $LastUpdate);
   my %headers = (-last_modified=>$mod, -cache_control=>'max-age=10'); # HTTP/1.1 headers only
   if ($HttpCharset ne '') {
@@ -1837,6 +1839,7 @@ sub GetHttpHeader {
   } else {
     $headers{-type} = $type;
   }
+  $headers{-status} = '404 NOT FOUND' if $new;
   my $cookie = Cookie();
   $headers{-cookie} = $cookie  if $cookie;
   return $q->header(%headers);
