@@ -60,7 +60,7 @@ use vars qw(%Page %Section %Text %InterSite %KeptRevisions
   %IndexHash %Translate %OldCookie %NewCookie $InterSiteInit
   $FootnoteNumber $MainPage $OpenPageName @KeptList @IndexList
   $IndexInit $Debug $q $Now $ScriptName %RecentVisitors @HtmlStack
-  $FS0used %Referers);
+  %Referers);
 
 # == Configuration ==
 
@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.43 2003/04/24 21:53:14 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.44 2003/04/26 17:21:42 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -996,6 +996,8 @@ sub DoBrowseRequest {
     &DoLinks();
   } elsif ($action eq 'maintain') {
     &DoMaintain();
+  } elsif ($action eq 'convert') {
+    &DoConvert();
   } elsif ($action eq 'pagelock') {
     &DoPageLock();
   } elsif ($action eq 'editlock') {
@@ -2319,9 +2321,13 @@ sub UpdatePageVersion {
   &ReportError(T('Bad page version (or corrupt page).'));
 }
 
+sub GetKeepFile {
+  my ($id) = @_;
+  return $KeepDir . '/' . &GetPageDirectory($id) . "/$id.kp";
+}
+
 sub KeepFileName {
-  return $KeepDir . '/' . &GetPageDirectory($OpenPageName)
-         . "/$OpenPageName.kp";
+  return GetKeepFile($OpenPageName);
 }
 
 sub SaveKeepSection {
@@ -2637,10 +2643,6 @@ sub ReadFile {
   if (open(IN, "<$fileName")) {
     $data=<IN>;
     close IN;
-    if ($FS0 and $data =~ /$FS0/ and $data !~ /$FS/) {
-      $data =~ s/$FS0/$FS/go;
-      $FS0used = 1;
-    }
     return (1, $data);
   }
   return (0, '');
@@ -3548,19 +3550,14 @@ sub DoMaintain {
     print $q->br();
     print '.... '  if ($name =~ m|/|);
     print &GetPageLink($name);
-    $FS0used = 0;
     &OpenPage($name);
-    if ($FS0used) {
-      print ' ' . T('converting to new field separator');
-      &SavePage(1);
-    }
     &OpenDefaultText();
     my $delete = &PageDeletable($name);
     if ($delete) {
       &DeletePage($OpenPageName, 1, 1);
       print ' ' . T('deleted');
     } else {
-      &ExpireKeepFile(); # deals with changing $FS
+      &ExpireKeepFile();
     }
   }
   print '</p>';
@@ -3572,7 +3569,7 @@ sub DoMaintain {
   }
   $starttime = $Now - $days * 24 * 60 * 60;
   # Read the current file
-  ($status, $data) = &ReadFile($RcFile); # $FS and $FS0 may be mixed!
+  ($status, $data) = &ReadFile($RcFile);
   if (!$status) {
     print $q->p($q->strong(Ts('Could not open %s log file', $RCName) . ':') . ' '
 		. $RcFile)
@@ -3582,30 +3579,12 @@ sub DoMaintain {
   }
   # Move the old stuff from rc to temp
   @rc = split(/\n/, $data);
-  foreach (@rc) {
-    $FS0 and /$FS0/ and !/$FS/ and s/$FS0/$FS/go or last;
-  }
   for ($i = 0; $i < @rc ; $i++) {
     ($ts) = split(/$FS3/, $rc[$i]);
     last if ($ts >= $starttime);
   }
   print $q->p(Ts('Moving %s log entries.', $i));
   @temp = splice(@rc, 0, $i);
-  # Perhaps need to convert $RcOldFile, too.  Test by just reading the first line.
-  if (open(IN, "$RcOldFile")) {
-    my $line = <IN>;
-    close(IN);
-    if ($FS0 and $line =~ /$FS0/ and $line !~ /$FS/) {
-      print $q->p(Ts('Converting the old %s log file to the new field separator.', $RCName));
-      my $old_data;
-      ($status, $old_data) = &ReadFile($RcOldFile);
-      if ($status) {
-	&WriteStringToFile($RcOldFile . '.old', $old_data);
-	$old_data =~ s/$FS0/$FS/go;
-	&WriteStringToFile($RcOldFile, $old_data);
-      }
-    }
-  }
   # Write new files, and backups
   &AppendStringToFile($RcOldFile, join("\n",@temp) . "\n");
   &WriteStringToFile($RcFile . '.old', $data);
@@ -3615,6 +3594,53 @@ sub DoMaintain {
   &ReleaseLock();
   print $q->p(T('Main lock released.'));
   print &GetCommonFooter();
+}
+
+
+sub DoConvert {
+  print &GetHeader('', T('Converting all files'), '');
+  if (!FS0 or $FS0 eq $FS) {
+    print $q->p(T('No conversion required.'));
+    return;
+  }
+  return  if (!&UserIsAdminOrError());
+  &RequestLock() or die(T('Could not get main lock'));
+  print '<p>' . T('Main lock obtained.');
+  foreach my $name (&AllPagesList()) {
+    print $q->br();
+    &ConvertFile (&GetPageFile($name));
+    &ConvertFile (&GetKeepFile($name));
+    &ConvertFile (&GetRefererFile($name));
+  }
+  foreach my $name ($RcFile $RcOldFile $VisitorFile) {
+    print $q->br();
+    &ConvertFile ($name);
+  }
+  print '</p>';
+  &ReleaseLock();
+  print $q->p(T('Main lock released.'));
+  print &GetCommonFooter();
+}
+
+sub ConvertFile {
+  my $file = shift;
+  print $file . ' ';
+  if (-f $file) {
+    my ($status, $data) = &ReadFile($file);
+    if ($status) {
+      if ($data =~ /$FS0/ and $data !~ /$FS/) {
+	$data =~ s/$FS0/$FS/go;
+	&WriteStringToFile($file, $data);
+	print T('converted');
+      } else {
+	print T('no conversion required');
+      }
+    } else {
+      print Ts('Can not open %s', $fileName) . ": $!";
+    }
+  } else {
+    print T('has no file');
+  }
 }
 
 # == Deleting pages ==
@@ -3784,8 +3810,6 @@ sub DoShowVersion {
 
 # == Maintaining a list of recent visitors plus surge protection ==
 
-# Limitations: usernames may not contain : (separator) and . (hosts)
-
 sub DoSurgeProtection {
   if ($SurgeProtection or $Visitors) {
     my $name = &GetParam('username','');
@@ -3832,8 +3856,8 @@ sub ReadRecentVisitors {
   if (!$status) {
     return;
   }
-  foreach (split(/\n/,$data)) {
-    my @entries = split /:/;
+  foreach (split(/$FS1/,$data)) {
+    my @entries = split /$FS2/;
     my $name = shift(@entries);
     $RecentVisitors{$name} = \@entries;
   }
@@ -3849,9 +3873,9 @@ sub WriteRecentVisitors {
       if ($entries[0] >= $limit) {
 	# save the data
 	if ($SurgeProtection) {
-	  $data .= $name . ':' . join(':', @entries[0 .. $SurgeProtectionViews - 1]) . "\n";
+	  $data .= $name . $FS2 . join($FS2, @entries[0 .. $SurgeProtectionViews - 1]) . $FS1;
 	} else {
-	  $data .= $name . ':' . $entries[0] . "\n";
+	  $data .= $name . $FS2 . $entries[0] . $FS1;
 	}
       }
     }
