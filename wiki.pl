@@ -278,7 +278,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.220 2003/10/24 22:20:07 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.221 2003/10/24 22:45:43 as Exp $');
 }
 
 sub InitCookie {
@@ -690,7 +690,7 @@ sub RSS {
 	if $i->{'title'};
       $line .= $q->a({-href=>$i->{'guid'}, -title=>$i->{'dc'}->{'date'}}, $i->{'guid'})
 	if $i->{'guid'}; # for RSS 2.0
-      $line .= ' ' . $q->span({-class=>'description'}, $i->{'description'})
+      $line .= ' -- ' . $q->span({-class=>'description'}, $i->{'description'})
 	if $i->{'description'};
       my $contributor = $i->{'dc'}->{'contributor'};
       $contributor =~ s/^\s+//;
