@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.8 2004/03/28 18:30:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.9 2004/03/28 19:52:00 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage);
 
@@ -54,7 +54,7 @@ sub Cal {
     }
     $link;
     }|ge;
-  return "<div class=\"cal\"><pre>$cal</pre></div>";
+  return "<div class=\"cal month\"><pre>$cal</pre></div>";
 }
 
 $Action{collect} = \&DoCollect;
@@ -108,7 +108,7 @@ sub PrintYearCalendar {
        }
        $link;
       }|ge;
-    print "<pre class=\"cal\">$cal</pre>";
+    print "<pre class=\"cal year\">$cal</pre>";
   }
 }
 
