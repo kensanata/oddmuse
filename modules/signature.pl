@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: signature.pl,v 1.2 2004/03/08 00:51:00 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: signature.pl,v 1.3 2004/03/08 00:53:41 as Exp $</p>';
 
 push(@MyRules, \&SignatureExceptionRule);
 
@@ -24,9 +24,9 @@ push(@MyMacros, sub{ s/(?<![!+])\+\+\+\+/'-- ' . GetParam('username', T('Anonymo
                        . ' ' . TimeToText($Now) /ge });
 push(@MyMacros, sub{ s/(?<![!+])\+\+\+/'-- ' . GetParam('username', T('Anonymous'))/ge });
 
-push(@MyMacros, sub{ s/(?<![!+])\~\~\~\~/'-- ' . GetParam('username', T('Anonymous'))
+push(@MyMacros, sub{ s/(?<![!+])\~\~\~\~/GetParam('username', T('Anonymous'))
                        . ' ' . TimeToText($Now) /ge });
-push(@MyMacros, sub{ s/(?<![!~])\~\~\~/'-- ' . GetParam('username', T('Anonymous'))/ge });
+push(@MyMacros, sub{ s/(?<![!~])\~\~\~/GetParam('username', T('Anonymous'))/ge });
 
 sub SignatureExceptionRule {
   if (m/\G!\+\+\+/gc) {
