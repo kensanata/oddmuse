@@ -88,7 +88,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.125 2003/08/16 12:34:16 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.126 2003/08/17 08:31:15 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -418,9 +418,9 @@ sub ApplyRules {
       $fragment = UnquoteHtml($1);
     } elsif (m/\G$RFCPattern/cg) { # RFC 1234 gets linked
       $fragment = &RFC($1);
-    } elsif (m/\G$ISBNPattern/cg) { # ISBN 1234567890 gets linked
+    } elsif (m/\G($ISBNPattern)/cg) { # ISBN 1234567890 gets linked
       DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
-      print ISBN($1);
+      print ISBN($2);
     } elsif (m/\G'''/cg) { # traditional wiki syntax with '''strong'''
       if ($HtmlStack[0] eq 'strong') {
 	$fragment = CloseHtmlEnvironment();
