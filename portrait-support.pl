@@ -1,4 +1,4 @@
-$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.5 2004/01/28 00:50:17 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.6 2004/01/30 11:47:15 as Exp $</p>';
 
 push(@MyMacros, sub{ s/\[new(:[^]:]*)\]/"[new$1:" . TimeToText($Now) . "]"/ge });
 
@@ -38,6 +38,7 @@ sub PortraitSupportRule {
       . ($MyColor ? "#eee" : "#fff") . '">'
       . '<p><span class="new">[new]</span>' . $portrait;
   }
+  return '';
 }
 
 *OldPortraitSupportWikiHeading = *WikiHeading;
