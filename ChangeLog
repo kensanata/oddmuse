@@ -1,3 +1,45 @@
+2004-11-27  Alex Schroeder  <alex@gnu.org>
+
+	* modules/irc.pl ($IrcRegexp): Renamed to $IrcNickRegexp.
+	(IrcRule): Fixed output, defined default CSS.
+
+	* modules/setext.pl (SeTextRule): Applied changes from headers.pl.
+
+	* modules/usemod.pl (UsemodRule): Added PortraitSupportColorDiv support.
+
+	* modules/toc.pl (TocRule): Added PortraitSupportColorDiv support.
+
+	* modules/headers.pl (HeadersRule): Set $PortraitSupportColorDiv = 0.
+
+	* modules/portrait-support.pl ($MyColorDiv): Renamed to
+	$PortraitSupportColorDiv.
+
+	* modules/headers.pl (HeadersRule): Added PortraitSupportColorDiv
+	support.
+
+	* modules/portrait-support.pl ($MyColorDiv): Export variable.
+	(PortraitSupportRule): Removed handling for headings.  This should
+	be handled by all the other packages that do headings (toc,
+	portrait-support, markup).
+
+	* wiki.pl (ReportError): Use $q->Dump.
+
+2004-11-27  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+
+	* modules/toc.pl ($TocCounter): New variable.
+	(TocRule): Use it to provide an ID to the toc entry.
+	(TocWikiHeading): Deleted.
+	(TocHeadings): Use ID instead of encoded text.
+
+	* wiki.pl (GetTextAtTime): Check whether all changes from now to
+	then are minor or not.  Use GetKeepRevisions.
+	(DoRollback): Save rollbacks as minor or major changes using this
+	info.
+	(DoPost): Take change in GetTextAtTime into account, but do
+	nothing with the new info.
+	(GetKeepRevisions): New.
+	(DoHistory, ExpireKeepFiles): Use GetKeepRevisions.
+
 2004-11-26  Alex Schroeder  <alex@gnu.org>
 
 	* modules/despam.pl (DespamPages): Only check files mentioned in
