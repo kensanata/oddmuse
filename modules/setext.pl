@@ -16,14 +16,9 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: setext.pl,v 1.4 2004/06/28 23:38:11 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: setext.pl,v 1.5 2004/07/14 14:52:36 as Exp $</p>';
 
-# Since the title rule applies to plain words, it will interfere with
-# the 'Link All Words' extension.  Therefore, we don't push the new
-# rule onto the end of the list, we unshift it to the front of the
-# list!
-
-unshift(@MyRules, \&SeTextRule);
+push(@MyRules, \&SeTextRule);
 
 # The trickiest part is the first rule.  It finds titles like the following:
 #
