@@ -10,6 +10,8 @@
 	(DoIndex): Add lang to the header.
 	(RcHeader, GetRc, SearchTitleAndBody): Rename $langFilter -> $lang;
 	(DoSearch, Replace): Replacement is language sensitive.
+	(GetRcRss): Some refactoring.
+	(PrintSearchResults): Elipsis no longer bold.
 
 	(%CookieParameters): Added 'lang'.
 	(RcHeader, GetFilterForm, GetRc): Changed 'rclang' to 'lang'.
