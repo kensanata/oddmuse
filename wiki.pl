@@ -249,6 +249,7 @@ sub Init {
     eval GetPageContent($ConfigPage);
     $Message .= $q->p("$ConfigPage: $@") if $@;
   }
+  eval { local $SIG{__DIE__}; binmode(STDOUT, ":raw"); };
   InitVariables();    # Ater config file, to post-process some variables
   InitCookie();       # After request, because $q is used
 }
@@ -295,7 +296,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.319 2004/02/06 10:01:26 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.320 2004/02/08 15:09:30 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -457,7 +458,9 @@ sub ApplyRules {
       # <rss "uri..."> stores the parsed RSS of the given URI
       Dirty($1);
       my $oldpos = pos;
+      eval { local $SIG{__DIE__}; binmode(STDOUT, ":utf8"); } if $HttpCharset eq 'UTF-8';
       print RSS($3 ? $3 : 15, split(/ +/, $4));
+      eval { local $SIG{__DIE__}; binmode(STDOUT, ":raw"); };
       pos = $oldpos;
       # restore \G after call to RSS which uses the LWP module (for older copies of the module?)
     } elsif (defined $HtmlStack[0] && $HtmlStack[0] eq 'dt'
@@ -736,7 +739,6 @@ sub RSS {
     my $request = HTTP::Request->new('GET', $uri);
     my $response = $ua->request($request);
     my $data = $response->content;
-    eval { local $SIG{__DIE__}; utf8::downgrade($data); };
     eval { local $SIG{__DIE__}; $rss->parse($data); };
     return $q->p($q->strong("[RSS parsing failed for $uri: $@]")) if $@;
     my ($counter, $interwiki);
