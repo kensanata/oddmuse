@@ -1,7 +1,6 @@
 2003-09-01  Alex Schroeder  <alex@gnu.org>
 
-	* wiki.pl (DoMaintain): Don't write a newline if the list is
-	empty.
+	* wiki.pl (DoMaintain): Don't change rclog files if not required.
 
 2003-08-29  Alex Schroeder  <alex@gnu.org>
 
