@@ -87,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.104 2003/06/15 21:08:23 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.105 2003/06/15 21:14:46 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -3441,10 +3441,11 @@ sub UpdateDiffs {
 # == Weblogs.Com ==
 
 sub PingWeblogs {
+  my $id = shift;
   if ($q->url(-base=>1) !~ m|^http://localhost|) {
-    my $url = UrlEncode($q->self_url);
-    my $name = UrlEncode($SiteName);
-    my $uri = "http://newhome.weblogs.com/pingSiteForm?name=$name&url=$url";
+    my $url = UrlEncode($q->url . '/' . $id);
+    my $name = UrlEncode($SiteName . ': ' . $id);
+    my $uri = "http://newhome.weblogs.com/pingSiteForm?name=$id&url=$url";
     require LWP::UserAgent;
     my $ua = LWP::UserAgent->new;
     my $request = HTTP::Request->new('GET', $uri);
