@@ -1,3 +1,7 @@
+2005-01-20  Tilmann Holst   <spam@tholst.de>
+
+        * wiki.pl (ReportError): Added missing "start_html"
+
 2005-01-08  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (handler): Added no strict "refs" pragma after a report
