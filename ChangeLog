@@ -1,4 +1,13 @@
+2004-08-15  Alex Schroeder  <alex@confusibombus>
+
+	* wiki.pl (PrintPageDiff): New.
+	(PageHtml): Call it.
+	(BrowsePage, PrintHtmlDiff): Remove $id from parameters to PrintHtmlDiff.
+	(GetRcRss): UrlEncode $RCName.
+
 2004-08-13  Alex Schroeder  <alex@confusibombus>
+
+	* wiki.pl (DoHistory): XHTML conformance.
 
 	* Makefile (package-upload): Fix curl command.
 
