@@ -88,7 +88,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.136 2003/09/04 19:50:17 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.137 2003/09/06 07:20:18 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -1585,8 +1585,8 @@ sub GetOldPageLink {
 }
 
 sub GetSearchLink {
-  my $id = UrlEncode(shift);
-  my $name = $id;
+  my $name = shift;
+  my $id = UrlEncode($name);
   if ($FreeLinks) {
     $name =~ s/_/ /g;  # Display with spaces
     $id =~ s/_/+/g;    # Search for url-escaped spaces
