@@ -1,0 +1,19 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <title><?$SiteName?>: <?$OpenPageName?></title>
+    <link type="text/css" rel="stylesheet" href="<?$StyleSheet?>" />
+  </head>
+  <body>
+    <div class="header">
+      <img class="logo" src="<?$LogoUrl?>" alt="[<?$HomePage?>]" />
+      <h1><?$OpenPageName?></h1>
+    </div>
+<?&PageHtml($OpenPageName)?>
+    <div class="footer">
+      <hr />
+      <?&GetGotoBar?>
+      <?&GetFooterLinks($id)?>
+    </div>
+  </body>
+</html>
