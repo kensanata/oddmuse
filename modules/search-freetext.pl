@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.5 2004/12/18 16:17:05 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.6 2004/12/21 22:24:34 as Exp $</p>';
 
 use vars qw($SearchFreeTextNewForm);
 
@@ -39,7 +39,7 @@ sub SearchFreeTextIndex {
     OpenPage($name);
     next if ($Page{text} =~ /^#FILE / and $string !~ /^\^#FILE/); # skip files unless requested
     print $name, $q->br();
-    $db->index_document($name, $Page{text});
+    $db->index_document($name, $OpenPageName . ' ' . $Page{text}); # don't forget to add the pagename!
   }
   $db->close_index();
   ReleaseLock();
