@@ -62,7 +62,7 @@ use vars qw(%Page %Section %Text %InterSite %KeptRevisions %IndexHash
 %Translate %OldCookie %NewCookie $InterSiteInit $FootnoteNumber
 $OpenPageName @KeptList @IndexList $IndexInit $Message $q $Now
 %RecentVisitors @HtmlStack %Referers $Monolithic $ReplaceForm
-%PermanentAnchors %PagePermanentAnchors);
+%PermanentAnchors %PagePermanentAnchors $CollectingJournal);
 
 # == Configuration ==
 
@@ -86,7 +86,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.92 2003/06/10 22:53:05 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.93 2003/06/13 01:27:42 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -211,18 +211,7 @@ $ConfigFile  = "$DataDir/config" unless $ConfigFile; # Config file with Perl cod
 
 # The 'main' program, called at the end of this script file.
 sub DoWikiRequest {
-  Init();             # FS character can only be changed in config *file*
-  InitLinkPatterns(); # Link pattern can be changed in config files
-  if ($UseConfig and $ConfigFile and -f $ConfigFile) {
-    do $ConfigFile;
-    $Message .= "<p>$ConfigFile: $@</p>" if $@;
-  }
-  if ($ConfigPage) {
-    eval GetPageContent($ConfigPage);
-    $Message .= "<p>$ConfigPage: $@</p>" if $@;
-  }
-  InitRequest();      # After config files, because $HttpCharset is used
-  InitCookie();       # After request, because $q is used
+  Init();
   DoSurgeProtection();
   if (not $BannedCanRead and UserIsBanned() and not UserIsAdmin()) {
     DoBannedReading();
@@ -242,6 +231,17 @@ sub Init {
   $FS2 = $FS . '2';   # in stored hashtables and other data structures.
   $FS3 = $FS . '3';   # The FS character is not allowed in user data.
   $Message = '';      # Warnings and non-fatal errors.
+  InitLinkPatterns(); # Link pattern can be changed in config files
+  if ($UseConfig and $ConfigFile and -f $ConfigFile) {
+    do $ConfigFile;
+    $Message .= "<p>$ConfigFile: $@</p>" if $@;
+  } # FS character can only be changed in config *file*
+  if ($ConfigPage) {
+    eval GetPageContent($ConfigPage);
+    $Message .= "<p>$ConfigPage: $@</p>" if $@;
+  }
+  InitRequest();      # After config files, because $HttpCharset is used
+  InitCookie();       # After request, because $q is used
 }
 
 # == CGI startup, cookie ==
@@ -373,12 +373,18 @@ sub ApplyRules {
 	$oldmatch = $1;
 	my $oldpos = pos;
 	ApplyRules(QuoteHtml(GetRaw($2)),0);
-	pos = $oldpos;
-	DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags); # parse recursively!
+	pos = $oldpos; # restore \G after call to ApplyRules
+	DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
+      } elsif (m/\G(\&lt;journal( +(\d*))?( +"(.*)")?\&gt;[ \t]*\n?)/cgi) { # <journal 10 "regexp"> includes 10 pages matching regexp
+	$oldmatch = $1;
+	my $oldpos = pos;
+	PrintJournal($3, $5);
+	pos = $oldpos; # restore \G after call to ApplyRules
+	DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
       } elsif (m/\G(\&lt;rss +"(.*)"\&gt;[ \t]*\n?)/cgi) { # <rss "uri..."> stores the parsed RSS of the given URI
 	$oldmatch = $1;
 	print &RSS($2);
-	DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags); # parse recursively!
+	DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
       }
       if (defined $fragment) {
 	print $fragment;
@@ -664,6 +670,25 @@ sub GetRaw {
   my $response = $ua->request($request);
   my $data = $response->content;
   return $data;
+}
+
+sub PrintJournal {
+  my ($num, $regexp) = @_;
+  if (!$CollectingJournal) {
+    $CollectingJournal = 1;
+    $regexp = '\d\d\d\d-\d\d-\d\d' unless $regexp;
+    $num = 10 unless $num;
+    my @pages = sort {$b cmp $a} (grep(/$regexp/, AllPagesList()));
+    @pages = @pages[0 .. $num - 1];
+    if (@pages) {
+      # Now save information required for saving the cache of the current page.
+      local (%Page, $OpenPageName);
+      print '<div class="journal">';
+      PrintAllPages(1, @pages);
+      print '</div>';
+    }
+    $CollectingJournal = 0;
+  }
 }
 
 sub RSS {
@@ -1832,7 +1857,7 @@ sub GetValidatorLink {
 sub GetGotoBar {
   my $id = shift;
   my $bartext;
-  $bartext .= join(' | ', map { ScriptLink(FreeToNormal($_), $_) } @UserGotoBarPages);
+  $bartext .= join(' | ', map { GetPageLink($_) } @UserGotoBarPages);
   $bartext .= ' | ' . $UserGotoBar  if $UserGotoBar ne '';
   return $q->span({-class=>'gotobar'}, $bartext);
 }
@@ -3165,15 +3190,16 @@ sub DoPrintAllPages {
   $Monolithic = 1; # changes how ScriptLink works
   print GetHeader('', T('Complete Content'), '')
     . $q->p(Ts('The main page is %s.', $q->a({-href=>'#' . $HomePage}, $HomePage)));
-  PrintAllPages(AllPagesList());
+  PrintAllPages(0, AllPagesList());
   PrintFooter();
 }
 
 sub PrintAllPages {
+  my $links = shift;
   for my $id (@_) {
-    OpenPage($id);
+    OpenPage($id); # After this call, don't save cache!
     OpenDefaultText($id);
-    print $q->hr . $q->h1($q->a({-name=>$id},$id));
+    print $q->hr . $q->h1($links ? GetPageLink($id) : $q->a({-name=>$id},$id));
     if (GetPageCache('blocks') && GetParam('cache',1)) {
       PrintCache(GetPageCache('blocks'));
     } else {
@@ -3385,9 +3411,9 @@ sub UpdateDiffs {
 
 sub PingWeblogs {
   if ($q->url(-base=>1) !~ m|^http://localhost|) {
-    my $url = $q->url(-path_info=>1);
+    my $url = UrlEncode($q->self_url);
     my $name = UrlEncode($SiteName);
-    my $uri = "http://newhome.weblogs.com/pingSiteForm?name=$name&url=$url%3faction=rc";
+    my $uri = "http://newhome.weblogs.com/pingSiteForm?name=$name&url=$url";
     require LWP::UserAgent;
     my $ua = LWP::UserAgent->new;
     my $request = HTTP::Request->new('GET', $uri);
