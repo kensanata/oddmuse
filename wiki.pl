@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.365 2004/03/31 00:36:07 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.366 2004/03/31 00:50:25 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1148,12 +1148,13 @@ sub ValidIdOrDie {
 sub ResolveId {
   my $id = shift;
   AllPagesList();
+  my $exists = $IndexHash{$id}; # page exists
   if (GetParam('anchor', $PermanentAnchors)) {
     ReadPermanentAnchors() unless $PermanentAnchorsInit;
     my $anchor = $PermanentAnchors{$id};
-    return ('alias', $anchor) if $anchor; # permanent anchor exists
+    return ('alias', $anchor, $exists) if $anchor; # permanent anchor exists
   }
-  return ('local', $id) if $IndexHash{$id}; # page exists
+  return ('local', $id, $exists) if $exists;
   NearInit() unless $NearSiteInit;
   if ($NearSource{$id}) {
     $NearLinksUsed{$id} = 1;
@@ -3902,7 +3903,7 @@ sub GetPermanentAnchor {
   my $id = FreeToNormal(shift);
   my $text = $id;
   $text =~ s/_/ /g;
-  my ($class, $resolved) = ResolveId($id);
+  my ($class, $resolved, $exists) = ResolveId($id);
   if ($resolved ne $OpenPageName and $class eq 'alias') {
     return '[' . Ts('anchor first defined here: %s', GetPageLink($id)) . ']';
   } elsif ($PermanentAnchors{$id} ne $OpenPageName
@@ -3914,10 +3915,8 @@ sub GetPermanentAnchor {
   $PagePermanentAnchors{$id} = 1; # add to the list of anchors in page
   my $html = GetSearchLink($id, 'definition', $id,
 			   T('Click to search for references to this permanent anchor'));
-  if ($resolved ne $OpenPageName and $class eq 'local') {
-    $html .= ' [' . Ts('the page %s also exists',
-		       ScriptLink("action=browse;anchor=0;id=$id", $id, $class)) . ']';
-  }
+  $html .= ' [' . Ts('the page %s also exists', ScriptLink("action=browse;anchor=0;id="
+    . UrlEncode($id), $id, 'local')) . ']' if $exists;
   return $html;
 }
 
