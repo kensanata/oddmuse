@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.32 2003/04/16 00:05:25 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.33 2003/04/16 23:00:26 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -240,7 +240,7 @@ sub InitLinkPatterns {
   if ($NonEnglish) {
     $UpperLetter .= "\xc0-\xde";
     $LowerLetter .= "\xdf-\xff";
-    $AnyLetter   .= "\xc0-\xff";
+    $AnyLetter   .= "\x80-\xff";
   }
   if (!$SimpleLinks) {
     $AnyLetter .= '_0-9';
@@ -264,11 +264,11 @@ sub InitLinkPatterns {
   # Inter-site convention: sites must start with uppercase letter
   # (Uppercase letter avoids confusion with URLs)
   $InterSitePattern = $UpperLetter . $AnyLetter . '+';
-  $InterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\xc0-\xff_=!?#$@~`%&*+\\/:;.,]+[-a-zA-Z0-9\xc0-\xff_=#$@~`%&*+\\/])$QDelim";
+  $InterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x80-\xff_=!?#$@~`%&*+\\/:;.,]+[-a-zA-Z0-9\x80-\xff_=#$@~`%&*+\\/])$QDelim";
   if ($FreeLinks) {
     # Note: the - character must be first in $AnyLetter definition
     if ($NonEnglish) {
-      $AnyLetter = "[-,.()' _0-9A-Za-z\xc0-\xff]";
+      $AnyLetter = "[-,.()' _0-9A-Za-z\x80-\xff]";
     } else {
       $AnyLetter = "[-,.()' _0-9A-Za-z]";
     }
