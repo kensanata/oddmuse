@@ -23,7 +23,7 @@
 # span[lang=de] { background-color:#ffd; }
 # span[lang=it] { background-color:#dfd; }
 
-$ModulesDescription .= '<p>$Id: lang.pl,v 1.1 2004/03/14 17:35:47 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: lang.pl,v 1.2 2004/03/19 23:51:34 as Exp $</p>';
 
 push(@MyRules, \&LangRule);
 
@@ -34,4 +34,31 @@ sub LangRule {
     return $html . AddHtmlEnvironment('span', "lang=\"$1\"") . "[$1]";
   }
   return '';
+}
+
+*OldLangInitCookie = *InitCookie;
+*InitCookie = *NewLangInitCookie;
+
+sub NewLangInitCookie {
+  OldLangInitCookie(@_);
+  my @langs = $q->param('languages');
+  SetParam('theme', join(' ', @langs));
+}
+
+*OldLangPrintFooter = *PrintFooter;
+*PrintFooter = *NewLangPrintFooter;
+
+sub NewLangPrintFooter {
+  my $id = shift;
+  my @args = @_;
+  my @langs = qw(en de fr it pt);
+  my @selected = split(/ /, GetParam('theme', ''));
+  print $q->div({-class=>'languages'},
+                GetFormStart(),
+                GetHiddenValue('action', 'browse'),
+                GetHiddenValue('id', $id),
+                T('Languages:'), ' ',
+                $q->checkbox_group('languages', \@langs, \@selected),
+                $q->submit('dolang', T('Show!')) . $q->endform);
+  OldLangPrintFooter($id, @args);
 }
