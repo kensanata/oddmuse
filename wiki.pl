@@ -58,7 +58,8 @@ $RefererFilter $PermanentAnchorsFile $PermanentAnchors
 %CookieParameters $NewComment $StyleSheetPage @UserGotoBarPages
 $ConfigPage $ScriptName @MyMacros $CommentsPrefix $AllNetworkFiles
 $UsePathInfo $UploadAllowed @UploadTypes $LastUpdate $PageCluster
-%RssInterwikiTranslate $UseCache $ModuleDir);
+%RssInterwikiTranslate $UseCache $ModuleDir
+%InvisibleCookieParameters);
 
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
@@ -190,7 +191,8 @@ $CommentsPrefix = ''; # prefix for comment pages, eg. 'Comments_on_' to enable
 		   $ConfigPage, $NearMap, );
 
 %CookieParameters = ('username'=>'', 'pwd'=>'', 'theme'=>'', 'css'=>'', 'msg'=>'',
-		     'lang'=>'', 'toplinkbar'=>$TopLinkBar, 'embed'=>$EmbedWiki);
+		     'lang'=>'', 'toplinkbar'=>$TopLinkBar, 'embed'=>$EmbedWiki, );
+%InvisibleCookieParameters = ('msg' => 1, );
 
 $IndentLimit = 20;                  # Maximum depth of nested lists
 $LanguageLimit = 3;                 # Number of matches req. for each language
@@ -293,7 +295,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.307 2004/01/24 01:00:16 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.308 2004/01/25 21:25:52 as Exp $');
 }
 
 sub InitCookie {
@@ -1833,7 +1835,7 @@ sub Cookie {
     my $value = GetParam($_, $default);
     $params{$_} = $value  if $value ne $default;
     my $change = ($value ne $OldCookie{$_} and ($OldCookie{$_} ne '' or $value ne $default));
-    $visible = 1  if $change and $_ ne 'msg'; # changes to the msg parameter are invisible
+    $visible = 1  if $change and not $InvisibleCookieParameters{$_};
     $changed = 1  if $change; # note if any parameter changed and needs storing
   }
   if ($changed) {
@@ -3341,7 +3343,7 @@ sub GetCluster {
   $_ = shift;
   return unless $PageCluster;
   return $1 if ($WikiLinks && /^$LinkPattern\n/)
-    or ($FreeLinks && m/^\[\[$FreeLinkPattern\]\]\n/);
+    or ($FreeLinks && /^\[\[$FreeLinkPattern\]\]\n/);
 }
 
 sub MergeRevisions { # merge change from file2 to file3 into file1
