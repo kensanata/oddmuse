@@ -1,3 +1,8 @@
+2004-03-06  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetFormStart): Second parameter to choose GET instead of POST.
+	(GetSearchForm): Choose GET instead of POST.
+
 2004-02-28  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoDownload, DoPost): Only test for MIME type matches if
