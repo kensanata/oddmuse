@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.427 2004/06/22 20:06:55 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.428 2004/06/25 23:50:18 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -420,10 +420,10 @@ sub ApplyRules {
     # Block level elements eat empty lines to prevent empty p elements.
     if ($bol && m/\G&lt;pre&gt;\n?(.*?\n)&lt;\/pre&gt;[ \t]*\n?/cgs) {
       Clean(CloseHtmlEnvironments() . $q->pre({-class=>'real'}, $1));
-    } elsif ($bol && m/\G(\s*\n)*(\*+)[ \t]*/cg
+    } elsif ($bol && m/\G(\s*\n)*(\*+)[ \t]+/cg
 	     or $HtmlStack[0] eq 'li' && m/\G(\s*\n)+(\*+)[ \t]*/cg) {
       Clean(OpenHtmlEnvironment('ul',length($2)) . AddHtmlEnvironment('li'));
-    } elsif ($bol && m/\G(\s*\n)*(\#+)[ \t]*/cg
+    } elsif ($bol && m/\G(\s*\n)*(\#+)[ \t]+/cg
 	     or $HtmlStack[0] eq 'li' && m/\G(\s*\n)+(\#+)[ \t]*/cg) {
       Clean(OpenHtmlEnvironment('ol',length($2)) . AddHtmlEnvironment('li'));
     } elsif ($bol && m/\G(\s*\n)*(\:+)[ \t]*/cg
