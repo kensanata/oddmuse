@@ -222,7 +222,7 @@ kleinere
 No diff available.
 Keine Unterschiede vorhanden.
 Old revision:
-
+Alte Version:
 Changed:
 Geändert:
 Removed:
@@ -240,7 +240,7 @@ Anzeige der alten Version %s
 Cannot save an nameless page.
 Eine Seite ohne Namen kann nicht gespeichert werden.
 Cannot save an page without revision.
-
+Ohne Version kann die Seite nicht gespeichert werden.
 Cannot open %s
 %s kann nicht geöffnet werden
 Cannot write %s
@@ -324,7 +324,7 @@ Diese Aktion darf nur von Bearbeitern durchgeführt werden...
 This operation is restricted to administrators only...
 Diese Aktion darf nur von Administratoren durchgeführt werden...
 Rule "%1" matched "%2" on this page.
-
+Auf dieser Seite verstösst "%2" gegen die Regel "%1".
 Index of all pages
 Index aller Seiten
 all pages
@@ -446,7 +446,7 @@ Zu viele Verbindungen durch %s
 Please do not fetch more than %1 pages in %2 seconds.
 Bitte rufen sie nicht mehr als %1 Seiten in %2 Sekunden auf.
 Check whether the web server can create the directory %s and whether it can create files in it.
-
+Vielleicht kann der web server das Verzeichnis %s nicht anlegen, oder es wurde schon angelegt, aber der web server kann darin keine neuen Dateien anlegen.
 Recent Visitors
 Kürzliche Besucher
 Referrers
@@ -480,7 +480,7 @@ Seite löschen
 Rename this page to:
 Bennen diese Seite um:
 Cannot highlight the language %s.
-
+Die Sprache %s kann von diesem Modul nicht eingefärbt werden.
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
 Um einen Kalender zu produzieren fehlt entweder cal(1), Date::Calc(3) oder Date::Pcalc(3).
 The match parameter is missing.
@@ -488,31 +488,31 @@ Der 'match' Parameter fehlt noch.
 Page Collection for %s
 Seitensammlung für %s
 Previous
-
+Vorheriger
 Next
-
+Nächster
 Calendar %s
 Kalender %s
 Compilation for %s
-
+Zusammenstellung für %s
 Compilation tag is missing a regular expression.
-
+Der tag für die Zusammenstellung benötigt noch ein Suchmuster.
 Despamming pages
-
+Spam entefernen
 Cannot find revision %s.
-
+Die Version %s ist verschwunden.
 Revert to revision %1: %2
-
+Auf Version %1 wegen %2 zurückgesetzt.
 Marked as %s.
-
+Mit %s markiert. 
 Cannot find unspammed revision.
-
+Es gibt keine Version ohne Spam.
 Footnotes:
 Fussnoten:
 image: %s
 Bild: %s
 Index
-
+Index
 Languages:
 Sprachen:
 Show!
@@ -522,9 +522,9 @@ Definieren
 Full Link List
 Liste aller Verweise
 Template without parameters
-
+Vorlage ohne Parameter
 The template %s is either empty or does not exist.
-
+Die %s Vorlage ist entweder leer oder existiert gar nicht.
 Clearing Cache
 Cache wird geleert
 Done.
@@ -542,13 +542,13 @@ Keiner
 Type
 Typ
 Permalink to "%s"
-
+Permalink für "%s"
 Portrait
 Portrait
 Static Copy
-
+Statische Kopie
 Alternatively, use one of the following templates:
-
+Anderenfalls stehen auch folgende Vorlagen zur Verfügung:
 Thread: %s
 Thread: %s
 ID parameter is missing.
@@ -570,15 +570,15 @@ URL:
 Name:
 Name:
 Failed to remove %s
-
+%s konnte nicht entfernt werden.
 Contents
 Inhaltsverzeichnis
 The translation is up to date.
-
+Die Übersetztung ist aktuell.
 The translation is outdated.
-
+Die Übersetzung ist veraltet.
 The page does not exist.
-
+Die Seite existiert nicht.
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 http://www.kelkoo.de/shopbot/search.jsp?from=shopbot&catPath=de%2Fbook&catId=100801&title=&author=&isbn=%s&maxprice=&x=36&y=9
 http://www.amazon.com/exec/obidos/ISBN=%s
