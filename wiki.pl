@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.402 2004/05/26 00:53:21 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.403 2004/05/28 22:50:30 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -3233,7 +3233,7 @@ sub PrintLinkList {
 
 sub GetFullLinkList {
   my @pglist = AllPagesList();
-  my (%result, %back);
+  my %result;
   my $raw = GetParam('raw', 0);
   my $url = GetParam('url', 0);
   my $inter = GetParam('inter', 0);
@@ -3263,7 +3263,6 @@ sub GetFullLinkList {
 			       or $block =~ m/^(\[\[\[$FreeLinkPattern\]\]\])$/o
 			       or $block =~ m/^(\[\[$FreeLinkPattern\]\])$/o)))) {
 	  $links{$raw ? $2 : GetPageOrEditLink($2, $2)} = 1;
-	  $back{$2} = 1;
 	} elsif ($url and $block =~ m/^\[$FullUrlPattern\]$/og) {
 	  $links{$raw ? $1 : GetUrl($1)} = 1;
 	}
@@ -3272,12 +3271,7 @@ sub GetFullLinkList {
 	while ($block =~ m/\[$FullUrlPattern\s+[^\]]+?\]/og) { $links{$raw ? $1 : GetUrl($1)} = 1; }
       }
     }
-    @{$result{$name}} = sort keys %links if %links;
-  }
-  if (GetParam('orphans', 0)) { # show only orphans
-    foreach my $name (keys %result) {
-      delete $result{$name} if $back{$name};
-    }
+    @{$result{$name}} = sort map { FreeToNormal($_); } keys %links if %links;
   }
   return \%result;
 }
