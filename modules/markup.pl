@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: markup.pl,v 1.10 2004/08/18 13:01:48 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: markup.pl,v 1.11 2004/09/02 20:34:52 as Exp $</p>';
 
 use vars qw(%MarkupPairs %MarkupSingles);
 
@@ -26,7 +26,7 @@ $RuleOrder{\&MarkupRule} = 150;
 
 %MarkupPairs = ('*' => 'b',
 		'/' => 'i',
-		'_' => 'u',
+		'_' => ['em', {'style'=>'text-decoration: underline; font-style: normal;'}],
 		'~' => 'em',
 	       );
 
@@ -61,7 +61,19 @@ sub NewMarkupInitVariables {
 
 sub MarkupRule {
   if (m/$markup_pairs_re/gc) {
-    return '<' . $MarkupPairs{$1} . '>' . $2 . '</' . $MarkupPairs{$1} . '>';
+    my ($start, $end);
+    if (ref($MarkupPairs{$1})) {
+      my $arrayref = $MarkupPairs{$1};
+      my ($tag, $hashref) = @{$arrayref};
+      my %hash = %{$hashref};
+      $start = $end = $tag;
+      foreach my $attr (keys %hash) {
+	$start .= ' ' . $attr . '="' . $hash{$attr} . '"';
+      }
+    } else {
+      $start = $end = $MarkupPairs{$1};
+    }
+    return '<' . $start . '>' . $2 . '</' . $end . '>';
   } elsif (m/$markup_singles_re/gc) {
     return $MarkupSingles{$1};
   } elsif ($MarkupPairs{'/'} and m|\G~/|gc) {
