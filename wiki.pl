@@ -282,7 +282,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   $FullUrl = $ScriptName unless $FullUrl; # URL used in forms
   $Now = time;	       # Reset in case script is persistent
   if (not $LastUpdate) { # mod_perl: stat should be unnecessary since LastUpdate persists.
-    my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size, $atime,$mtime,$ctime,$blksize,$blocks)
+    my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size,$atime,$mtime,$ctime,$blksize,$blocks)
       = stat($IndexFile);
     $LastUpdate = $mtime;
   }
@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.410 2004/06/04 17:43:20 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.411 2004/06/04 21:41:30 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
