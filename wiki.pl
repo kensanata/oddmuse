@@ -275,7 +275,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.239 2003/11/03 22:03:52 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.240 2003/11/05 22:29:38 as Exp $');
 }
 
 sub InitCookie {
@@ -3128,7 +3128,8 @@ sub MergeRevisions { # merge change from file2 to file3 into file1
 # Note: all diff and recent-list operations should be done within locks.
 sub WriteRcLog {
   my ($id, $summary, $minor, $revision, $username, $host, $langref, $cluster) = @_;
-  my $languages = join(',', @$langref);
+  my $languages;
+  $languages = join(',', @$langref) if $langref;
   my $rc_line = join($FS, $Now, $id, $minor, $summary, $host,
 		     $username, $revision, $languages, $cluster);
   AppendStringToFile($RcFile, $rc_line . "\n");
