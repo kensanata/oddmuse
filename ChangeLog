@@ -19,6 +19,7 @@
 	(DoSearch, DoLinks, DoPrintAllPages, DoMaintain, DoMaintain)
 	(DoIndex, DoConvert, DoEditLock, DoPageLock, DoEditBanned)
 	(DoUpdateBanned, DoShowVersion, DoShowVisitors): Use GetFooter.
+	(BrowsePage): Print div class=refer only when there are any.
 
 2003-04-27  Alex Schroeder  <alex@gnu.org>
 
