@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.1 2004/06/29 00:37:06 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.2 2004/07/04 23:11:24 as Exp $</p>';
 
 use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml);
 
@@ -36,6 +36,7 @@ $HtmlTags    = 0;   # 1 = allow some 'unsafe' HTML tags
 *InitVariables = *NewUsemodInitVariables;
 
 sub NewUsemodInitVariables {
+  OldUsemodInitVariables();
   if (not @HtmlTags) { # do not override settings in the config file
     if ($HtmlTags) {   # allow many tags
       @HtmlTags = qw(b i u font big small sub sup h1 h2 h3 h4 h5 h6 cite code
