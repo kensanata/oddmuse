@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: live-templates.pl,v 1.1 2004/10/16 00:51:20 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: live-templates.pl,v 1.2 2004/12/05 03:53:42 as Exp $</p>';
 
 push(@MyRules, \&LiveTemplateRule);
 
@@ -33,7 +33,7 @@ sub LiveTemplateRule {
     my %hash = ParseData($data);
     my $text = GetPageContent($template);
     return $q->p($q->strong(Ts('The template %s is either empty or does not exist.',
-			       $template))) unless $text;
+			       $template))) . AddHtmlEnvironment('p') unless $text;
     foreach my $key (keys %hash) {
       $text =~ s/\$$key\$/$hash{$key}/g;
     }
@@ -41,7 +41,7 @@ sub LiveTemplateRule {
     ApplyRules($text, 1, 1, undef, 'p');
     pos = $oldpos;
     print '</div>';
-    return '';
+    return AddHtmlEnvironment('p');
   }
   return undef;
 }
