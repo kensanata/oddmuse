@@ -35,18 +35,14 @@ if (not param('url')) {
       'and it will add dc:contributor to the description.'),
     start_form(-method=>'GET'),
     p('RSS feed: ', textfield('url', '', 70)),
-    p('Change encoding from Latin-1 to UTF-8: ', checkbox('Latin-1')),
     p(submit()),
     end_form(),
     end_html();
   exit;
 }
 
-my $encoding = param('Latin-1') ? 'ISO-8859-1' : 'UTF-8';
-
-print header(-type=>'text/plain; charset=' . $encoding);
-
-my $rss = new XML::RSS(output=>$output, encoding=>$encoding);
+print header(-type=>'text/plain; charset=UTF-8');
+my $rss = new XML::RSS(output=>$output);
 my $ua = new LWP::UserAgent;
 my $request = HTTP::Request->new('GET', param('url'));
 my $response = $ua->request($request);
