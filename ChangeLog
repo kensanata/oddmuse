@@ -1,6 +1,7 @@
 2004-01-19  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (RSS): Print error message when parsing fails.
+	(PrintFooter): Comments are no longer minor edits.
 
 2004-01-11  Alex Schroeder  <alex@gnu.org>
 
