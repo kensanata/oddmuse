@@ -1,5 +1,7 @@
 2004-07-16  Sebastian Blatt  <sblatt@havens.de>
 
+	* modules/admin.pl (AdminPowerDelete): added missing parenthesis
+
 	* modules/throttle.pl: Added. Module to limit the number of
 	parallel Oddmuse instances by keeping track of the script's
 	process ids.
