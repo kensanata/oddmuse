@@ -174,8 +174,7 @@ $UserGotoBar = '';	# HTML added to end of goto bar
 $ValidatorLink = 0;	# 1 = Link to the W3C HTML validator service
 $CommentsPrefix = '';	# prefix for comment pages, eg. 'Comments_on_' to enable
 $HtmlHeaders = '';	# Additional stuff to put in the HTML <head> section
-$DefaultStyleSheet = <<'EOT'; # the <!-- and --> is added at the end
-body { background-color:#FFF; color:#000; }
+$DefaultStyleSheet = q{body { background-color:#FFF; color:#000; }
 textarea { width:100%; }
 a:link { color:#00F; }
 a:visited { color:#A0A; }
@@ -214,8 +213,7 @@ div.near p { margin-top:0; }
  a[class="url number"]:after, a[class="inter number"]:after { content:"[" attr(href) "]"; }
  a[class="local number"]:after { content:"[" attr(title) "]"; }
  img[smiley] { line-height: inherit; }
-}
-EOT
+}}; # the <!-- and --> is added at the end
 
 # Display short comments below the GotoBar for special days
 # Example: %SpecialDays = ('1-1' => 'New Year', '1-2' => 'Next Day');
@@ -231,7 +229,7 @@ EOT
 
 @KnownLocks = qw(main diff index merge visitors refer_*); # locks to remove
 
-%CookieParameters = (username=>'', pwd=>'', theme=>'', css=>'', msg=>'',
+%CookieParameters = (username=>'', pwd=>'', homepage=>'', theme=>'', css=>'', msg=>'',
 		     lang=>'', toplinkbar=>$TopLinkBar, embed=>$EmbedWiki, );
 %InvisibleCookieParameters = (msg=>1, pwd=>1,);
 
@@ -350,7 +348,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.475 2004/10/31 19:55:42 groogel Exp $');
+    . $q->p(q{$Id: wiki.pl,v 1.476 2004/11/01 03:32:49 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -477,7 +475,7 @@ sub ApplyRules {
 	} else { # with a starting tag
 	  print $q->start_div({class=>"include $uri"});
           ApplyRules(QuoteHtml(GetPageContent(FreeToNormal($uri))),
-                   $locallinks, $withanchors, undef, 'p');
+		     $locallinks, $withanchors, undef, 'p');
 	  print $q->end_div();
 	}
       }
@@ -562,6 +560,19 @@ sub ApplyRules {
       Dirty($1);
       my $bracket = (substr($1, 0, 3) eq '[[[');
       print GetPageOrEditLink($2, $3, $bracket, 1); # $3 may be empty
+    } elsif ($bol && m/\G(&lt;&lt;&lt;&lt;&lt;&lt;&lt; )/cg) {
+      my ($str, $count, $limit, $oldpos) = ($1, 0, 100, pos);
+      while (m/\G(.*\n)/cg and $count++ < $limit) {
+	$str .= $1;
+	last if (substr($1, 0, 29) eq '&gt;&gt;&gt;&gt;&gt;&gt;&gt; ');
+      }
+      if ($count >= $limit) {
+	pos = $oldpos;
+	Clean('&lt;&lt;&lt;&lt;&lt;&lt;&lt; ');
+      } else {
+	Clean(CloseHtmlEnvironments() . $q->pre({-class=>'conflict'}, $str)
+	      . AddHtmlEnvironment('p'));
+      }
     } elsif (%Smilies && m/\G$smileyregex/cog && (Clean(SmileyReplace()))) {
     } elsif (Clean(RunMyRules())) {
     } elsif (m/\G\s*\n(s*\n)+/cg) { # paragraphs: at least two newlines
@@ -2143,6 +2154,9 @@ sub GetCommentForm {
 			 GetTextArea('aftertext', $comment ? $comment : $NewComment)),
 		   $q->p(T('Username:'), ' ',
 			 $q->textfield(-name=>'username', -default=>GetParam('username', ''),
+				       -override=>1, -size=>20, -maxlength=>50),
+			 T('Homepage URL:'), ' ',
+			 $q->textfield(-name=>'homepage', -default=>GetParam('homepage', ''),
 				       -override=>1, -size=>20, -maxlength=>50)),
 		   $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save')), ' ',
 			 $q->submit(-name=>'Preview', -value=>T('Preview'))),
@@ -3342,8 +3356,6 @@ sub DoPost {
 	    SetParam('msg', Ts('This page was changed by somebody else %s.',
 			       CalcTimeSince($Now - $Page{ts}))
 		     . ' ' . T('The changes conflict.  Please check the page again.'));
-	    $string =~ s/^<<<<<<</\n\n<pre><<<<<<</mg;
-	    $string =~ s/^>>>>>>>(.*)/>>>>>>>$1\n<\/pre>\n/mg;
 	  } # else no conflict
 	} else { $generalwarning = 1; } # else merge revision didn't work
       } # else nobody changed the page in the mean time (same text)
@@ -3366,9 +3378,11 @@ sub AddComment {
   $comment =~ s/\r//g;	# Remove "\r"-s (0x0d) from the string
   $comment =~ s/\s+$//g;    # Remove whitespace at the end
   if ($comment ne '' and $comment ne $NewComment) {
+    my $author = GetParam('username', T('Anonymous'));
+    my $homepage = GetParam('homepage', '');
+    $author = "[$homepage $author]" if $homepage;
     $string .= "\n----\n\n" if $string and $string ne "\n";
-    $string .= $comment . "\n\n-- " .  GetParam('username', T('Anonymous'))
-      . ' ' . TimeToText($Now) . "\n\n";
+    $string .= $comment . "\n\n-- " . $author . ' ' . TimeToText($Now) . "\n\n";
   }
   return $string;
 }
@@ -3442,8 +3456,7 @@ sub MergeRevisions { # merge change from file2 to file3 into file1
   WriteStringToFile($name3, $file3);
   my ($you,$ancestor,$other) = (T('you'), T('ancestor'), T('other'));
   my $output = `diff3 -m -L $you -L $ancestor -L $other $name1 $name2 $name3`;
-  ReleaseLockDir('merge');
-  # No need to unlink temp files--next merge will just overwrite.
+  ReleaseLockDir('merge'); # don't unlink temp files--next merge will just overwrite.
   return $output;
 }
 
