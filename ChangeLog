@@ -1,3 +1,25 @@
+2004-06-21  Alex Schroeder  <alex@confusibombus>
+
+	* wiki.pl (ApplyRules): New regepx → allow a bit more skipping of
+	words.
+
+2004-06-20  Alex Schroeder  <alex@confusibombus>
+
+	* wiki.pl: Removed link action.
+	(DoLinks, PrintLinkList, GetFullLinkList, GetLinkList): Gone.
+	(ApplyRules): Small cleanup: Moved #FILE rule up, made words
+	optimization less greedy by requiring a trailing space.
+
+	* modules/markup.pl (MarkupRule): Use en dash and em dash, changed
+	patterns slightly.
+
+	* test-markup.pl: Added tests for the markup module.
+
+	* modules/links.pl: Moved DoLinks from the main script into a
+	module.
+
+	* modules/markup.pl (MarkupRule): Numbers are allowed in words.
+
 2004-06-19  Alex Schroeder  <alex@gnu.org>
 
 	* modules/image.pl (ImageSupportRule): Support external images as
@@ -148,7 +170,7 @@
 
 	* simplify.pl: Added use encoding 'utf8'; no idea what it does to
 	non-UTF-8 scripts.
-	(munge_rss): different presentation suggested by Bj�rn Lindstr�m.
+	(munge_rss): different presentation suggested by Björn Lindström.
 
 2004-05-30  Alex Schroeder  <alex@gnu.org>
 
@@ -906,13 +928,13 @@
 	(UpdateDiffs): No longer use lock parameter.
 	(Save): Make sure the old text is not encoded when it sent to the
 	diff.
-	(SmileyReplace): New class.  Suggested by Björn Lindström.
+	(SmileyReplace): New class.  Suggested by BjÃ¶rn LindstrÃ¶m.
 	(InitVariables): Set $FullUrl unless set by user.
 	(GetRcRss): No need to set $FullUrl anymore.
 	(GetFormStart): Use $FullUrl instead of $ScriptName.  Suggested by
-	Björn Lindström to get URL rewriting to work.
+	BjÃ¶rn LindstrÃ¶m to get URL rewriting to work.
 	(GetRedirectPage): No need to set $FullUrl anymore.  Take
-	$UsePathInfo into account.  Suggested by Björn Lindström.
+	$UsePathInfo into account.  Suggested by BjÃ¶rn LindstrÃ¶m.
 	(GetDiff): Removed debugging output.
 	(InitRequest): Use binmode on STDOUT for UTF-8 printing of RSS.
 	(RSS): No more encoding and decoding stuff.  Rely on Perl 5.8 to
