@@ -26,7 +26,6 @@ my $name = '/cgi-bin/wiki.pl'; # relative url to the wiki script
 my @path = split(/\//, $ENV{REDIRECT_URL});
 my $file = $path[$#path];
 
-
 # for dynamic pages
 use vars qw($NotFoundHandlerExceptionsPage);
 $NotFoundHandlerExceptionsPage = 'NoCachePages';
