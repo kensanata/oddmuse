@@ -19,6 +19,7 @@
 	(RefererTrack): New.
 	(GetReferers): Quote HTML.
 	(GetInterLink): If no page follows the colon, this is no interlink.
+	(InitLinkPatterns): The InterLinkPattern may not contain an apostrophe (').
 
 2003-03-28  Alex Schroeder  <alex@gnu.org>
 
