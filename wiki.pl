@@ -37,7 +37,7 @@ local $| = 1;  # Do not buffer output (localized for mod_perl)
 # Configuration/constant variables:
 use vars qw(@RcDays @HtmlTags
   $TempDir $LockDir $DataDir $KeepDir $PageDir $RefererDir $InterFile
-  $RcFile $RcOldFile $IndexFile $NoEditFile $BanListFile $ConfigFile
+  $RcFile $RcOldFile $IndexFile $NoEditFile $BannedHosts $ConfigFile
   $FullUrl $SiteName $HomePage $LogoUrl $RcDefault $IndentLimit
   $RecentTop $RecentLink $EditAllowed $UseDiff $UseSubpage $RawHtml
   $KeepDays $HtmlTags $HtmlLinks $KeepMajor $KeepAuthor $FreeUpper
@@ -80,7 +80,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.64 2003/05/24 10:48:57 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.65 2003/05/26 18:40:36 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -143,6 +143,9 @@ $UseLookup   = 1;   # 1 = lookup host names instead of using only IP numbers
 $RecentTop   = 1;   # 1 = most recent entries at the top of the list
 $RecentLink  = 1;   # 1 = link to usernames
 
+# Banning
+$BannedHosts = 'BannedHosts';  # List of banned hosts and IPs
+
 # RSS and other Weblog Technology
 $InterWikiMoniker = '';    # InterWiki prefix for this wiki for RSS
 $SiteDescription  = '';    # RSS Description of this wiki
@@ -181,7 +184,6 @@ $KeepDir     = "$DataDir/keep";     # Stores kept (old) page data
 $RefererDir  = "$DataDir/referer";  # Stores referer data
 $TempDir     = "$DataDir/temp";     # Temporary files and locks
 $LockDir     = "$TempDir/lock";     # DB is locked if this exists
-$BanListFile = "$DataDir/banlist";  # List of banned hosts and IPs
 $NoEditFile  = "$DataDir/noedit";   # Indicates that the site is read-only
 $InterFile   = "$DataDir/intermap"; # Interwiki site->url map
 $RcFile      = "$DataDir/rclog";    # New RecentChanges logfile
@@ -756,7 +758,6 @@ sub ScriptLink {
   if ($action =~ /=/ or !$Monolithic) {
     $action = InheritParameter('embed', $EmbedWiki, $action);
     $action = InheritParameter('toplinkbar', $TopLinkBar, $action);
-    $action = QuoteHtml($action);
     return $q->a({-href=>$ScriptName . '?' . $action}, $text);
   } else { # Monolithic and !~ /=/ -- ie. just a page link
     return $q->a({-href=>'#' . $action}, $text);
@@ -955,8 +956,6 @@ sub DoBrowseRequest {
     DoPageLock();
   } elsif ($action eq 'editlock') {
     DoEditLock();
-  } elsif ($action eq 'editbanned') {
-    DoEditBanned();
   } elsif ($action eq 'version') {
     DoShowVersion();
   } elsif ($action eq 'rss') {
@@ -969,8 +968,6 @@ sub DoBrowseRequest {
     DoPrintAllReferers();
   } elsif ($action eq 'ping') {
     DoPingWeblogs();
-  } elsif (GetParam('edit_ban', 0)) { # after editbanned
-    DoUpdateBanned();
   } elsif (($search ne '') || (GetParam('dosearch', '') ne '')) {
     DoSearch($search);
   } elsif (GetParam('oldtime', '') or (GetParam('raw', 0) == 2)) { # after edit
@@ -2900,14 +2897,17 @@ sub UserCanEdit {
 
 sub UserIsBanned {
   my ($host, $ip, $data, $status);
-  ($status, $data) = ReadFile("$BanListFile");
-  return 0  if (!$status);  # No file exists, so no ban
+  OpenPage($BannedHosts);
+  return 0  unless $Page{'revision'} > 0;  # No page, no ban
+  OpenDefaultText();
   $ip = $ENV{'REMOTE_ADDR'};
   $host = GetRemoteHost();
-  foreach (split(/\n/, $data)) {
-    next  if ((/^\s*$/) || (/^#/));  # Skip empty, spaces, or comments
-    return 1  if ($ip   =~ /$_/i);
-    return 1  if ($host =~ /$_/i);
+  foreach (split(/\n/, $Text{'text'})) {
+    if (/^ ([^ ])+$/) {  # only read lines with one word after one space
+      my $host = $1;
+      return 1  if ($ip   =~ /$host/i);
+      return 1  if ($host =~ /$host/i);
+    }
   }
   return 0;
 }
@@ -3069,8 +3069,8 @@ sub Replace {
       OpenDefaultText();
       my $new = $Text{'text'};
       if ($new =~ s/$from/$to/gi) {
-	Save ($id, $new, $from . ' -> ' . $to, 1,
-	       ($Section{'ip'} ne $ENV{REMOTE_ADDR}));
+	Save($id, $new, $from . ' -> ' . $to, 1,
+	     ($Section{'ip'} ne $ENV{REMOTE_ADDR}));
       }
     }
   }
@@ -3249,14 +3249,14 @@ sub DoPost {
     # This is an internal interface--we don't need to explain
     ReportError(Ts('Editing not allowed for %s.', $id));
     return;
-  }
-  if (($id eq 'SampleUndefinedPage') || ($id eq T('SampleUndefinedPage'))) {
+  } elsif (($id eq 'SampleUndefinedPage') or ($id eq T('SampleUndefinedPage'))) {
     ReportError(Ts('%s cannot be defined.', $id));
     return;
-  }
-  if (($id eq 'Sample_Undefined_Page')
-      || ($id eq T('Sample_Undefined_Page'))) {
+  } elsif (($id eq 'Sample_Undefined_Page') or ($id eq T('Sample_Undefined_Page'))) {
     ReportError(Ts('[[%s]] cannot be defined.', $id));
+    return;
+  } elsif (($id eq $BannedHosts) and !UserIsAdmin() and not -f GetPageFile($id)) {
+    ReportError(Ts('Only an administrator can create %s', $BannedHosts));
     return;
   }
   # Handle raw edits with the meta info on the first line
@@ -3350,6 +3350,9 @@ sub Save { # call within lock, with opened page
 	      $Section{'host'}, GetLanguages($Text{'text'}));
   if ($Page{'revision'} == 1) {
     unlink($IndexFile);  # Regenerate index on next request
+    if ($id eq $BannedHosts) {
+      WriteStringToFile(GetLockedPageFile($id), 'editing locked.');
+    }
   }
 }
 
@@ -3678,47 +3681,6 @@ sub DoPageLock {
     print $q->p(Ts('Lock for %s created.', $id));
   } else {
     print $q->p(Ts('Lock for %s removed.', $id));
-  }
-  PrintFooter();
-}
-
-# == Banning ==
-
-sub DoEditBanned {
-  my ($banList, $status);
-  print GetHeader('', T('Editing Banned list'), '');
-  return  if (!UserIsAdminOrError());
-  ($status, $banList) = ReadFile("$BanListFile");
-  $banList = ''  if (!$status);
-  print GetFormStart();
-  print GetHiddenValue('edit_ban', 1), "\n";
-  print $q->p($q->strong(T('Banned IP/network/host list:')));
-  print $q->p(T('Each entry is either a commented line (starting with #), or a Perl regular expression (matching either an IP address or a hostname).'));
-  print $q->p($q->strong(T('Note:')) . ' ' . T('To test the ban on yourself, you must give up your admin access (remove password from the cookie).'));
-  print $q->p('Examples:' . $q->br()
-	      . T('\.foocorp.com$ (blocks hosts ending with .foocorp.com)') . $q->br()
-	      . T('^123\.21\.3\.9$ (blocks exact IP address)') . $q->br()
-	      . T('^123\.21\.3\. (blocks whole 123.21.3.* IP network)'));
-  print GetTextArea('banlist', $banList, 12, 50);
-  print $q->p($q->submit(-name=>T('Save')));
-  PrintFooter();
-}
-
-sub DoUpdateBanned {
-  my ($newList, $fname);
-  print GetHeader('', T('Updating Banned list'), '');
-  return  if (!UserIsAdminOrError());
-  $fname = "$BanListFile";
-  $newList = GetParam('banlist', '#Empty file');
-  if ($newList eq '') {
-    print $q->p(T('Empty banned list or error.'));
-    print $q->p(T('Resubmit with at least one space character to remove.'));
-  } elsif ($newList =~ /^\s*$/s) {
-    unlink($fname);
-    print $q->p(T('Removed banned list'));
-  } else {
-    WriteStringToFile($fname, $newList);
-    print $q->p(T('Updated banned list'));
   }
   PrintFooter();
 }
