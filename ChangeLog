@@ -13,6 +13,7 @@
 	(PrintJournal): Default regexp now requires the name to start with the ISO date.
 	(PrintFooter): Add link to original if appropriate.
 	(DoPost): Use undefined default $comment to distinguish '' $comment from no $comment.
+	(DoBrowseRequest): Accept path_info as well as keywords.
 
 2003-06-15  Pierre Gaston  <pgas@intracom.gr>, Alex Schroeder  <alex@gnu.org>
 
