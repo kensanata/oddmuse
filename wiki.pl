@@ -278,7 +278,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.216 2003/10/24 00:01:15 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.217 2003/10/24 00:34:40 as Exp $');
 }
 
 sub InitCookie {
@@ -341,6 +341,7 @@ sub InitLinkPatterns {
 
 sub Clean {
   my $block = (shift);
+  return unless $block;
   print $block;
   $Fragment .= $block;
   return $block;

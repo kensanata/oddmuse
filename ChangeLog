@@ -1,5 +1,10 @@
 2003-10-24  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (Clean): Return nothing if empty block (due to
+	unsuccessful call to MyRules).
+
+2003-10-24  Alex Schroeder  <alex@gnu.org>
+
 	Major rewrite of rules -- if you use DirtyBlock in your config file,
 	then you will have to rewrite your code.
 	
