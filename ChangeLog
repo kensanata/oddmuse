@@ -1,3 +1,11 @@
+2003-06-18  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetPageOrEditLink): UrlEncode all page ids.
+	(GetPageLink, GetEditLink, DoRc, GetOldPageParameters): Ditto.
+	(GetSearchLink, ScriptLinkDiff, GetHistoryLink): Ditto.
+	(PrintFooter, PrintAllReferers): Ditto.
+	(GetPermanentAnchorLink, GetPermanentAnchor): Ditto.
+
 2003-06-17  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (InitRequest): ScriptName defaults to $q->url().
@@ -11,7 +19,6 @@
 	($NotifyWeblogs): Renamed to $NotifyTracker.
 	(DoPingWeblogs): Renamed to DoPingTracker.
 	(PingWeblogs): Renamed to PingTracker.
-
 	
 2003-06-15  Alex Schroeder  <alex@gnu.org>
 
