@@ -274,7 +274,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.232 2003/11/03 00:49:01 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.233 2003/11/03 00:55:26 as Exp $');
 }
 
 sub InitCookie {
@@ -571,7 +571,7 @@ sub SmileyReplace {
   my $match = '';
   foreach my $regexp (keys %Smilies) {
     if (m/\G($regexp)/cg) {
-      $match = $q->img({-src=>$Smilies{$regexp}, -alt=>$1});
+      $match = $q->img({-src=>$Smilies{$regexp}, -alt=>$1, -class=>'smiley'});
       last;
     }
   }
