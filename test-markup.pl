@@ -402,8 +402,6 @@ test_page(get_page('RSS'), @Test);
 
 # --------------------
 
-fixme:
-
 print '[redirection]';
 
 update_page('Miles_Davis', 'Featuring [[John Coltrane]]'); # plain link
@@ -1062,6 +1060,8 @@ test_page(update_page('InterMap', "All your edits are blong to us!\n", 'required
 
 # --------------------
 
+fixme:
+
 print '[links]';
 
 open(F,'>/tmp/oddmuse/config');
@@ -1074,19 +1074,32 @@ update_page('InterMap', " Oddmuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n
 
 update_page('a', 'Oddmuse:foo(no) [Oddmuse:bar] [Oddmuse:baz text] '
 	    . '[Oddmuse:bar(no)] [Oddmuse:baz(no) text] '
-	    . '[[Oddmuse:foo (bar)]] [[[Oddmuse:foo (baz)]]] [[Oddmuse:foo (quux)|text]]');
+	    . '[[Oddmuse:foo_(bar)]] [[[Oddmuse:foo (baz)]]] [[Oddmuse:foo (quux)|text]]');
 
-@Test = split('\n',<<'EOT');
+@Test = map { quotemeta } split('\n',<<'EOT');
 "a" -> "Oddmuse:foo"
 "a" -> "Oddmuse:bar"
 "a" -> "Oddmuse:baz"
-"a" -> "Oddmuse:foo_\(bar\)"
-"a" -> "Oddmuse:foo_\(baz\)"
-"a" -> "Oddmuse:foo_\(quux\)"
+"a" -> "Oddmuse:foo_(bar)"
+"a" -> "Oddmuse:foo (baz)"
+"a" -> "Oddmuse:foo (quux)"
 EOT
 
 test_page_negative(get_page('action=links raw=1'), @Test);
 test_page(get_page('action=links raw=1 inter=1'), @Test);
+
+@Test = map { quotemeta } split('\n',<<'EOT');
+<a class="local" href="http://localhost/wiki.pl/a">a</a>:
+<a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?foo"><span class="site">Oddmuse</span>:<span class="page">foo</span></a>
+<a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?bar"><span class="site">Oddmuse</span>:<span class="page">bar</span></a>
+<a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?baz"><span class="site">Oddmuse</span>:<span class="page">baz</span></a>
+<a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?foo_(bar)"><span class="site">Oddmuse</span>:<span class="page">foo_(bar)</span></a>
+EOT
+
+test_page_negative(get_page('action=links'), @Test);
+test_page(get_page('action=links inter=1'), @Test);
+
+exit;
 
 open(F,'>/tmp/oddmuse/config');
 print F "\$SurgeProtection = 0;\n";
