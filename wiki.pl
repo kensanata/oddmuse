@@ -355,7 +355,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.515 2005/01/05 22:19:39 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.516 2005/01/06 07:28:51 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -2022,6 +2022,10 @@ sub GetHttpHeader {
   $headers{-status} = $status if $status;
   my $cookie = Cookie();
   $headers{-cookie} = $cookie  if $cookie;
+  if ($q->request_method() eq 'HEAD') {
+    print $q->header(%headers);
+    exit; # total shortcut -- HEAD never expects anything other than the header!
+  }
   return $q->header(%headers);
 }
 
