@@ -44,15 +44,17 @@ $data = encode('utf-8', decode('latin-1', $data)) if param('latin-1');
 
 $data =~ /\<title\>([^<]*)/i;
 print "title: $1\n" if $1;
-print "link: " . param('url') . "\n";
-my $previous = '';
-while ($data =~ m|<dt>.*?<a href="([^"]*)".*\n<dd><small class="search-context">(.*?)</small></dd>|g) {
-  if ($previous eq $1) {
-    print "\t$2\n";
-  } else {
-    print "\n";
-    print "title: $1\n";
-    print "description: $2\n";
-  }
-  $previous = $1;
+print "link: " . param('url') . "\n\n";
+while ($data =~ m|<dt>.*?<a href="([^"]*)".*\n((<dd>.*</dd>\n)*)|g) {
+  print "title: $1\n";
+  $_ = $2;
+  s|<dd>||g;
+  s|<small[^>]*>||g;
+  s|<strong[^>]*>||g;
+  s|</strong>||g;
+  s|</small>||g;
+  s|</dd>||g;
+  s|\n|\n\t|g;
+  print "description: $_\n";
+  print "\n";
 }
