@@ -86,7 +86,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.84 2003/06/05 16:25:45 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.85 2003/06/08 00:14:27 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -217,11 +217,11 @@ sub DoWikiRequest {
   InitLinkPatterns(); # Link pattern can be changed in config files
   if ($UseConfig and $ConfigFile and -f $ConfigFile) {
     do $ConfigFile;
-    $Message .= $q->p($@) if $@;
+    $Message .= "<p>$ConfigFile: $@</p>" if $@;
   }
   if ($ConfigPage) {
     eval GetPageContent($ConfigPage);
-    $Message .= $q->p($@) if $@;
+    $Message .= "<p>$ConfigPage: $@</p>" if $@;
   }
   InitRequest();      # After config files, because $HttpCharset is used
   InitCookie();       # After request, because $q is used
@@ -2477,7 +2477,7 @@ sub RequestLockDir {
       die(Ts('can not make %s', $LockDir) . ": $!\n")  if $errorDie;
       return 0;
     }
-    return 0  if ($n++ >= $tries); 
+    return 0  if ($n++ >= $tries);
     sleep($wait);
   }
   return 1;
