@@ -3,7 +3,7 @@ use vars qw($WeblogTextLogo $WeblogXmlLogo);
 $WeblogXmlLogo = '/images/rss.png';
 $WeblogTextLogo = '/images/txt.png';
 
-$ModulesDescription .= '<p>$Id: weblog-1.pl,v 1.4 2004/01/28 01:16:05 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: weblog-1.pl,v 1.5 2004/01/28 01:17:23 as Exp $</p>';
 
 *OldWeblog1InitRequest = *InitRequest;
 *InitRequest = *NewWeblog1InitRequest;
@@ -17,10 +17,10 @@ sub NewWeblog1InitRequest {
     $yesterday = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
     # this modification is not mod_perl safe!
     push(@UserGotoBarPages, T('Blog'), $today, $yesterday);
-    $UserGotoBar .= "<a href=\"$ScriptLink?action=rss\">"
+    $UserGotoBar .= "<a href=\"$ScriptName?action=rss\">"
       . "<img src=\"$WeblogXmlLogo\" alt=\"XML\" class=\"XML\" /></a>"
       . ' | '
-      . "<a href=\"$ScriptLink?action=rc&amp;raw=1\">"
+      . "<a href=\"$ScriptName?action=rc&amp;raw=1\">"
       . "<img src=\"$WeblogTextLogo\" alt=\"TXT\" class=\"XML\" /></a>";
   }
 }
