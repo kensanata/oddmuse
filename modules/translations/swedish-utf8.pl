@@ -1,4 +1,4 @@
-# -*-mode: fundamental; coding: utf-8;-*-
+﻿# -*-mode: fundamental; coding: utf-8;-*-
 # UTF-8 encoded Swedish language file for use with Oddmuse
 #
 # Copyright (c) 2003 Erik S-O Johansson and others
@@ -24,7 +24,7 @@
 # This translation was last checked for OddMuse version 1.517.
 # Checked and updated by Johan Adler 050106
 #
-$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.1 2005/01/09 01:42:05 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.2 2005/01/22 22:10:27 jadler Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Läsning inte tillåten: användare, ip eller nätverk är blockerat.
@@ -45,7 +45,7 @@ historik
 %s returned no data, or LWP::UserAgent is not available.
 Antingen returnerade %s inget data, eller så finns inte LWP::UserAgent tillgängligt.
 RSS parsing failed for %s
-Misslyckades med RSS parsningen av %s
+Misslyckades med RSS tolkningen av %s
 No items found in %s.
 Ingen information funnen i %s.
  . . . . 
@@ -145,11 +145,11 @@ Rollback to %s
 %s rolled back
 %s återställd
 Index of all pages
-Index över alla sidor
+Innehållsförteckning
 Wiki Version
-
+Wikiversion
 Unlock Wiki
-
+Lås upp wiki
 Recent Visitors
 Senaste besökare
 Password
@@ -161,17 +161,17 @@ Lås upp wikin
 Lock site
 Lås wikin
 Unlock %s
-
+Lås upp %s
 Lock %s
-
+Lås %2
 Administration
 
 Actions:
-
+Verktyg:
 Important pages:
-
+Viktiga sidor:
 To mark a page for deletion, put <strong>%s</strong> on the first line.
-
+För att markera en sida för radering, skriv <strong>%s</strong> på första raden.
 [Home]
 [Startsida]
 redirected from %s
@@ -189,7 +189,7 @@ Databas sparad i tillfällig katalog %s
 The same page on other sites:
 Samma sida på andra siter:
 EditNearLinks
-
+Redigera närlänkar
 Last edited
 Senast ändrad
 Edited
@@ -215,7 +215,7 @@ Visa alla ändringar
 new comment
 ny kommentar
 Homepage URL:
-Startsidans URL:
+URL till hemsida:
 s
 s
 Save
@@ -225,7 +225,7 @@ Förhandsgranska
 Search:
 Sök:
 f
-
+k
 Replace:
 Ersätt:
 Validate HTML
@@ -323,7 +323,7 @@ Skriv text istället för den här filen.
 Replace this text with a file.
 Använd en fil i stället för den här texten.
 File to upload: 
-
+Fil att ladda upp:
 Files of type %s are not allowed.
 Filer av typen %s är inte tillåtna.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
@@ -347,17 +347,17 @@ Den här funktionen kan bara utföras av adminstratörer...
 Rule "%1" matched "%2" on this page.
 Regel "%1"  matchade "%2" på denna sida.
 Without normal pages
-
+Utan vanliga sidor
 Include normal pages
-
+Med vanliga sidor
 Without permanent anchors
-
+Utan permanenta ankare
 Include permanent anchors
-
+Med permanenta ankare
 Without near pages
-
+Utan nära sidor
 Include near pages
-
+Med nära sidor
 (for %s)
 (för: %s)
 %s pages found.
@@ -431,7 +431,7 @@ förfader
 other
 annan
 Run Maintenance
-
+Utför underhåll
 Maintenance not done.
 Underhåll ej slutfört.
 (Maintenance can only be done once every 12 hours.)
@@ -443,7 +443,7 @@ Huvudlås påslaget.
 Expiring keep files and deleting pages marked for deletion
 Avlägsnar "keep"-filer och raderar sidor märkta för radering
 not deleted: 
-
+ej borttagen:
 deleted
 borttagen
 Moving part of the %s log file.
@@ -475,7 +475,7 @@ Visa beroenden
 Inter links:
 Interlänkar:
 Near links:
-Nära länkar:
+Närlänkar:
 Show parsed link data
 Visa tolkat länkdata
 Too many connections by %s
@@ -507,9 +507,9 @@ Bytt namn från %s
 Renamed %1 to %2.
 Bytt namn på %1 till %2
 Immediately delete %s
-
+Radera %s direkt
 Rename %s to:
-
+Byt namn på %s till:
 Cannot highlight the language %s.
 Kan ej markera språket %s.
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
@@ -525,9 +525,9 @@ Nästa
 Calendar %s
 Kalender %s
 Comments on 
-
+Kommentarer till
 Comment on 
-
+Kommentar till
 Compilation for %s
 Sammanställning för %s
 Compilation tag is missing a regular expression.
@@ -575,7 +575,7 @@ The 404 handler extension requires the link data extension (links.pl).
 Orphan List
 Lista över övergivna sidor
 Trail: 
-
+Senast: 
 None
 Inga
 Type
@@ -625,7 +625,7 @@ Misslyckades med att ta bort %s
 Contents
 Innehåll
 This page is a translation of %s. 
-
+Denna sida är en översättning av %s.
 The translation is up to date.
 Denna översättning är aktuell.
 The translation is outdated.
