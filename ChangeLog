@@ -1,3 +1,8 @@
+2003-04-11  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetRcText): Added space by Pierre Gaston <pgas@intracom.gr>.
+	(GetCommonFooter): Shortcut when embedded by Pierre Gaston <pgas@intracom.gr>.
+
 2003-04-07  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetUrl): Unquote url, because the entire page text has
