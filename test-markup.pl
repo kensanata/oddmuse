@@ -292,8 +292,6 @@ test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage all=1 showe
 
 # --------------------
 
-fixme:
-
 print '[rss]';
 
 # create simple config file
@@ -1072,6 +1070,54 @@ OddMuse
 EOT
 
 test_page(update_page('InterMap', "All your edits are blong to us!\n", 'required'), @Test);
+
+# --------------------
+
+fixme:
+
+print '[despam module]';
+
+# create simple config file
+
+open(F,'>/tmp/oddmuse/config');
+print F "\$SurgeProtection = 0;\n";
+print F "\$AdminPass = 'foo';\n";
+close(F);
+
+mkdir '/tmp/oddmuse/modules';
+symlink('/home/alex/src/oddmuse/modules/despam.pl',
+	'/tmp/oddmuse/modules/despam.pl') or die "Cannot symlink: $@";
+
+update_page('HilariousPage', "Ordinary text.");
+update_page('HilariousPage', "Hilarious text.");
+update_page('HilariousPage', "Spam from example.com.");
+
+update_page('NoPage', "Spam from example.com.");
+
+update_page('OrdinaryPage', "Spam from example.com.");
+update_page('OrdinaryPage', "Ordinary text.");
+
+update_page('ExpiredPage', "Spam from example.com.");
+update_page('ExpiredPage', "More spam from example.com.");
+update_page('ExpiredPage', "Still more spam from example.com.");
+
+update_page('BannedContent', " example\\.com\n", 'required', 0, 1);
+
+unlink('/tmp/oddmuse/keep/E/ExpiredPage/1.kp') or die "Cannot delete kept revision: $!";
+
+@Test = split('\n',<<'EOT');
+HilariousPage.*Revert to revision 2
+NoPage.*Marked as DeletedPage
+OrdinaryPage
+ExpiredPage.*Cannot find unspammed revision
+EOT
+
+test_page(get_page('action=despam'), @Test);
+test_page(get_page('ExpiredPage'), 'Still more spam');
+test_page(get_page('OrdinaryPage'), 'Ordinary text');
+test_page(get_page('NoPage'), 'DeletedPage');
+test_page(get_page('HilariousPage'), 'Hilarious text');
+test_page(get_page('BannedContent'), 'example\\\.com');
 
 # --------------------
 
