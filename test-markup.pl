@@ -47,6 +47,7 @@ sub url_encode {
   return join('', @letters);
 }
 
+print "* means that a page is being updated\n";
 sub update_page {
   my ($id, $text, $summary, $minor, $admin, @rest) = @_;
   print '*';
@@ -63,6 +64,7 @@ sub update_page {
   return $output;
 }
 
+print "+ means that a page is being retrieved\n";
 sub get_page {
   my ($params) = @_;
   print '+';
@@ -72,6 +74,7 @@ sub get_page {
   return $output;
 }
 
+print ". means a test\n";
 sub test_page {
   my $page = shift;
   my $printpage = 0;
@@ -1062,6 +1065,45 @@ test_page(update_page('InterMap', "All your edits are blong to us!\n", 'required
 
 fixme:
 
+print '[near]';
+
+open(F,'>/tmp/oddmuse/config');
+print F "\$SurgeProtection = 0;\n";
+print F "\$AdminPass = 'foo';\n";
+close(F);
+
+mkdir '/tmp/oddmuse/near';
+open(F,'>/tmp/oddmuse/near/EmacsWiki');
+print F "AlexSchroeder\n";
+print F "FooBar\n";
+close(F);
+
+update_page('InterMap', " EmacsWiki http://www.emacswiki.org/cgi-bin/wiki/%s\n",
+	    'required', 0, 1);
+update_page('NearMap', " EmacsWiki"
+	    . " http://www.emacswiki.org/cgi-bin/emacs?action=index;raw=1"
+	    . " http://www.emacswiki.org/cgi-bin/emacs?search=%s;raw=1;near=0\n",
+	    'required', 0, 1);
+
+test_page(update_page('FooBaz', "Try FooBar instead!\n"),
+	  map { quotemeta } (
+	  '<a class="near" title="EmacsWiki"'
+	  . ' href="http://www.emacswiki.org/cgi-bin/wiki/FooBar">FooBar</a>',
+	  '<div class="near"><p><a class="local"'
+	  . ' href="http://localhost/wiki.pl/EditNearLinks">EditNearLinks</a>:'
+	  . ' <a class="edit" title="Click to create this page"'
+	  . ' href="http://localhost/wiki.pl?action=edit;id=FooBar">FooBar</a></p></div>'));
+test_page(update_page('FooBar', "Test by AlexSchroeder!\n"),
+	  map { quotemeta } (
+	  '<div class="sister"><p>The same page on other sites:<br />'
+	  . '<a title="EmacsWiki:FooBar" href="http://www.emacswiki.org/cgi-bin/wiki/FooBar">'
+	  . '<img src="file:///tmp/oddmuse/EmacsWiki.png" alt="EmacsWiki:FooBar" /></a>'));
+test_page(get_page('search=alexschroeder'),
+	  map { quotemeta } (
+	  '<p>Near pages:</p>',
+	  '<a class="near" title="EmacsWiki"'
+	  . ' href="http://www.emacswiki.org/cgi-bin/wiki/AlexSchroeder">AlexSchroeder</a><br />'));
+
 print '[links]';
 
 open(F,'>/tmp/oddmuse/config');
@@ -1098,8 +1140,6 @@ EOT
 
 test_page_negative(get_page('action=links'), @Test);
 test_page(get_page('action=links inter=1'), @Test);
-
-exit;
 
 open(F,'>/tmp/oddmuse/config');
 print F "\$SurgeProtection = 0;\n";
