@@ -1,4 +1,4 @@
-# UTF-8 encoded Swedish language file for use with Oddmuse
+﻿# UTF-8 encoded Swedish language file for use with Oddmuse
 #
 # Copyright (c) 2003 Erik S-O Johansson and others
 # Copyright (c) 2003 Björn Lindström <bkhl@elektrubadur.se> and
@@ -23,7 +23,7 @@
 # This translation was last checked for OddMuse version 1.517.
 # Checked and updated by Johan Adler 050106
 #
-$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.5 2005/02/01 21:16:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.6 2005/02/01 21:57:38 jadler Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Läsning inte tillåten: användare, ip eller nätverk är blockerat.
@@ -270,7 +270,7 @@ Kan inte öppna %s
 Cannot write %s
 Kan inte skriva %s
 Cannot create %s
-
+Kan inte skapa %s
 Could not get %s lock
 Kunde inte låsa %s
 This operation may take several seconds...
@@ -502,7 +502,7 @@ Sidan %s finnes inte
 The page %s already exists
 Sidan %s finns redan
 Cannot rename %1 to %2
-
+Kan inte byta namn på %1 till %2
 Renamed to %s
 Bytt namn till %s
 Renamed from %s
