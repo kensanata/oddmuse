@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: setext.pl,v 1.6 2004/09/02 20:31:58 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: setext.pl,v 1.7 2004/11/27 21:32:43 as Exp $</p>';
 
 push(@MyRules, \&SeTextRule);
 
@@ -39,11 +39,14 @@ sub SeTextRule {
   if ($bol && ((m/\G((.+?)[ \t]*\n(-+|=+)[ \t]*\n)/gc
 		and (length($2) == length($3)))
 	       or ((pos = $oldpos) and 0))) {
+    my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '');
     if (substr($3,0,1) eq '=') {
-      return CloseHtmlEnvironments() . "<h2>$2</h2>";
+      $html .= $q->h2($2);
     } else {
-      return CloseHtmlEnvironments() . "<h3>$2</h3>";
+      $html .= $q->h2($3);
     }
+    $PortraitSupportColorDiv = 0;
+    return $html;
   } elsif ($bol && m/\G((&gt; .*\n)+)/gc) {
     return "<pre>$1</pre>";
   } elsif (m/\G\*\*($word( $word)*)\*\*/goc) {
