@@ -270,7 +270,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.150 2003/09/21 00:31:56 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.151 2003/09/21 12:03:04 as Exp $');
 }
 
 sub InitCookie {
@@ -1033,6 +1033,8 @@ sub DoBrowseRequest {
     DoPrintAllReferers();
   } elsif ($action eq 'ping') {
     DoPingTracker();
+  } elsif ($action eq 'rollback') {
+    DoRollback();
   } elsif (($search ne '') || (GetParam('dosearch', '') ne '')) {
     DoSearch($search);
   } elsif (GetParam('oldtime', '') or (GetParam('raw', 0) == 2)) { # after edit
@@ -1325,12 +1327,13 @@ sub GetRc {
 
 sub GetRcHtml {
   my ($html, $inlist);
-  # Optimize param fetches out of main loop
+  # Optimize param fetches and translations out of main loop
   my $all = GetParam('all', 0);
-  # Optimize translations out of main loop
-  my $tEdit    = T('(minor)');
-  my $tDiff    = T('(diff)');
+  my $admin = UserIsAdmin();
+  my $tEdit = T('(minor)');
+  my $tDiff = T('(diff)');
   my $tHistory = T('history');
+  my $tRollback = T('rollback');
   GetRc
     # printDailyTear
     sub {
@@ -1348,14 +1351,17 @@ sub GetRcHtml {
       # printRCLine
       sub {
 	my($pagename, $timestamp, $host, $userName, $summary, $minor, $revision, $languages) = @_;
-	my($pagelink, $author, $sum, $edit, $count, $link, $lang);
 	$host = QuoteHtml($host);
-	$author = GetAuthorLink($host, $userName);
-	$sum = $q->strong('[' . QuoteHtml($summary) . ']')  if $summary;
-	$edit = $q->em($tEdit)  if $minor;
-	$lang = '[' . join(', ', @{$languages}) . ']'  if @{$languages};
+	my $author = GetAuthorLink($host, $userName);
+	my $sum = $q->strong('[' . QuoteHtml($summary) . ']')  if $summary;
+	my $edit = $q->em($tEdit)  if $minor;
+	my $lang = '[' . join(', ', @{$languages}) . ']'  if @{$languages};
+	my ($pagelink, $count, $link, $rollback);
 	if ($all) {
 	  $pagelink = GetOldPageLink('browse', $pagename, $revision, $pagename);
+	  if (1) { # $admin and RollbackPossible($timestamp)
+	    $rollback = '(' . ScriptLink('action=rollback;to=' . $timestamp, $tRollback) . ')';
+	  }
 	} else {
 	  $pagelink = GetPageLink($pagename);
 	  $count = '(' . GetHistoryLink($pagename, $tHistory) . ')';
@@ -1367,7 +1373,7 @@ sub GetRcHtml {
 	    $link .= ScriptLinkDiff($minor ? 2 : 1, $pagename, $tDiff, '');
 	  }
 	}
-	$html .= $q->li($link, $pagelink, CalcTime($timestamp),
+	$html .= $q->li($link, $pagelink, CalcTime($timestamp), $rollback,
 			$count, $edit, $sum, $lang, '. . . . .', $author, "\n");
       },
 	@_;
@@ -1514,7 +1520,7 @@ sub DoRandom {
   ReBrowsePage($id, '', 0);
 }
 
-# History
+# == History ==
 
 sub DoHistory {
   my $id = shift;
@@ -1583,6 +1589,43 @@ sub GetHistoryLine {
     $html .= $q->br();
   }
   return $html;
+}
+
+# == Rollback ==
+
+sub RollbackPossible {
+  my $ts = shift;
+  return ($Now - $ts) < $KeepDays * 24 * 60 * 60;
+}
+
+sub DoRollback {
+  my $to = GetParam('to', 0);
+  if (!UserIsAdminOrError()) {
+    return;
+  } elsif (!$to) {
+    ReportError(T('Missing target for rollback.'));
+    return;
+  } elsif (!RollbackPossible($to)) {
+    ReportError(T('Target for rollback is too far back.'));
+    return;
+  } elsif (!RequestLock()) {
+    ReportError(T('Could not get main lock'));
+    return;
+  }
+  print GetHeader('', T('Rolling back changes'), '') . '<p>';
+  foreach my $id (AllPagesList()) {
+    OpenPage($id);
+    my $text = GetTextAtTime($to);
+    OpenDefaultText();
+    if ($Text{'text'} ne $text) {
+      Save($id, $text, Ts('Rollback to %s', TimeToText($to)), 1,
+	   ($Section{'ip'} ne $ENV{REMOTE_ADDR}));
+      print Ts('%s rolled back', $id), $q->br();
+    }
+  }
+  print '</p>';
+  ReleaseLock();
+  PrintFooter();
 }
 
 # == HTML and page-oriented functions ==
@@ -2391,7 +2434,7 @@ sub GetTextAtTime {
   my ($ts) = @_;
   my (%tempSection, %tempText, $revision);
   # OpenPage() was already called
-  OpenKeptList; # sets @KeptList
+  OpenKeptList(); # sets @KeptList
   OpenKeptRevisions('text_default'); # sets $KeptRevisions{<revision>} = <section>
   foreach $revision (keys %KeptRevisions) {
     %tempSection = split(/$FS2/, $KeptRevisions{$revision}, -1);
