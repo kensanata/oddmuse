@@ -25,6 +25,8 @@
 	(SearchTitleAndBody): Skip uploaded files.
 	(PrintSearchResults): Show files with MIME-type if search string
 	starts with ^#FILE.
+	(ApplyRules, DoEdit): Fix #FILE handling.
+	(GetHtmlHeader): Change default StyleSheet for a.upload links.
 
 2003-09-26  Alex Schroeder  <alex@gnu.org>
 
