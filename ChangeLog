@@ -1,3 +1,33 @@
+2004-09-09  Alex Schroeder  <alex@gnu.org>
+
+	* modules/calendar.pl (Cal): Highlight current day in the yearly
+	calendar as well.  No longer accept $mday as a parameter.
+	(PrintYearCalendar): No longer pass $mday parameter.
+
+2004-09-06  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (RSS): Remove guid handling.
+	(RSS): Fix pubDate bug, handle feeds mith titles, description,
+	and/or link.
+
+2004-09-05  Alex Schroeder  <alex@confusibombus>
+
+	* modules/image.pl (ImageSupportRule): Local images don't get the
+	"local" class, because they already have the "image" class, and
+	the default rule in wiki.pl doesn't add the local class, either.
+	They are always local.  We just add the "outside" class when an
+	external URL was given.
+
+	* wiki.pl (ApplyRules): Disallow | in the alternate text of
+	the [[image:page|text]] rule.  It
+	prevented [[image:page|text|page]] from reaching image.pl.
+	(GetDownloadLink): Use 
+
+	* modules/image.pl (ImageSupportRule): Changed regular expression
+	a bit.
+
+	* modules/usemod.pl (UsemodRule): Better matching of indented pre.
+
 2004-09-04  Alex Schroeder  <alex@gnu.org>
 
 	* modules/calendar.pl: Add to $DefaultStyleSheet.
