@@ -31,6 +31,7 @@ $| = 1; # no output buffering
 
 mkdir '/tmp/oddmuse';
 open(F,'>/tmp/oddmuse/config');
+print F "\$NetworkFile = 1;\n";
 close(F);
 open(F,'>/tmp/oddmuse/intermap');
 print F "OddMuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n";
@@ -57,6 +58,40 @@ Foo::Bar
 <table class="user"><tr><td>one</td></tr></table>
 ||one||two||three||\n||||one two||three||\n
 <table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table>
+http://www.emacswiki.org
+<a href="http://www.emacswiki.org">http://www.emacswiki.org</a>
+http://www.emacswiki.org/
+<a href="http://www.emacswiki.org/">http://www.emacswiki.org/</a>
+http://www.emacswiki.org.
+<a href="http://www.emacswiki.org">http://www.emacswiki.org</a>.
+http://www.emacswiki.org,
+<a href="http://www.emacswiki.org">http://www.emacswiki.org</a>,
+http://www.emacswiki.org;
+<a href="http://www.emacswiki.org">http://www.emacswiki.org</a>;
+http://www.emacswiki.org!
+<a href="http://www.emacswiki.org">http://www.emacswiki.org</a>!
+http://www.emacswiki.org?
+<a href="http://www.emacswiki.org">http://www.emacswiki.org</a>?
+http://www.emacswiki.org/?
+<a href="http://www.emacswiki.org/">http://www.emacswiki.org/</a>?
+"http://www.emacswiki.org".
+"<a href="http://www.emacswiki.org">http://www.emacswiki.org</a>".
+http://www.emacswiki.org,
+<a href="http://www.emacswiki.org">http://www.emacswiki.org</a>,
+[http://www.emacswiki.org]
+<a href="http://www.emacswiki.org">[1]</a>
+[http://www.emacswiki.org] and [http://www.emacswiki.org]
+<a href="http://www.emacswiki.org">[1]</a> and <a href="http://www.emacswiki.org">[2]</a>
+[http://www.emacswiki.org],
+<a href="http://www.emacswiki.org">[1]</a>,
+[http://www.emacswiki.org and a label]
+<a href="http://www.emacswiki.org">[and a label]</a>
+[file://home/foo/tutorial.pdf local link]
+<a href="file://home/foo/tutorial.pdf">[local link]</a>
+file://home/foo/tutorial.pdf
+<a href="file://home/foo/tutorial.pdf">file://home/foo/tutorial.pdf</a>
+file:///home/foo/tutorial.pdf
+file:///home/foo/tutorial.pdf
 EOT
 
 # Now translate embedded newlines (other backslashes remain untouched)
