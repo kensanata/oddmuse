@@ -1,4 +1,4 @@
-2005-03-12  Alex Schroeder  <alex@alpinobombus.local>
+2005-03-12  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoPageLock): Add link back to the page.
 
