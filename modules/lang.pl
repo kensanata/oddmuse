@@ -23,7 +23,7 @@
 # span[lang=de] { background-color:#ffd; }
 # span[lang=it] { background-color:#dfd; }
 
-$ModulesDescription .= '<p>$Id: lang.pl,v 1.4 2004/03/21 01:57:57 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: lang.pl,v 1.5 2004/05/07 22:03:15 as Exp $</p>';
 
 push(@MyRules, \&LangRule);
 
@@ -41,8 +41,20 @@ sub LangRule {
 
 sub NewLangInitCookie {
   OldLangInitCookie(@_);
-  my @langs = $q->param('languages');
-  SetParam('theme', join(' ', @langs));
+  if ($q->param('setlang')) {
+    my @old = split(/ /, GetParam('theme', ''));
+    my @old_normal;
+    my @old_languages;
+    foreach $entry (@old) {
+      if (length($entry) == 2) {
+	push(@old_languages, $entry);
+      } else {
+	push(@old_normal, $entry);
+      }
+    }
+    my @new = $q->param('languages');
+    SetParam('theme', join(' ', @old_normal, @new));
+  }
 }
 
 *OldLangGetNearLinksUsed = *GetNearLinksUsed;
@@ -52,13 +64,14 @@ sub NewLangGetNearLinksUsed {
   my $id = shift;
   my $html = OldLangGetNearLinksUsed($id);
   my @langs = qw(en de fr it pt);
-  my @selected = split(/ /, GetParam('theme', ''));
+  my @selected = split(/ /, GetParam('theme', '')); # may contain elements that are not in @langs!
   $html .= $q->div({-class=>'languages'},
 		   GetFormStart(),
 		   GetHiddenValue('action', 'browse'),
 		   GetHiddenValue('id', $id),
 		   T('Languages:'), ' ',
 		   $q->checkbox_group('languages', \@langs, \@selected),
+		   $q->hidden('setlang', '1'),
 		   $q->submit('dolang', T('Show!')) . $q->endform);
   return $html;
 }
