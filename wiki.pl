@@ -269,7 +269,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.160 2003/09/26 22:20:55 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.161 2003/09/26 23:41:26 as Exp $');
 }
 
 sub InitCookie {
@@ -1795,7 +1795,9 @@ sub GetHtmlHeader {
   $html = $q->base({-href=>$SiteBase}) if $SiteBase;
   my $css = GetParam('css', '');
   if ($css) {
-    $html .= qq(<link type="text/css" rel="stylesheet" href="$css">);
+    foreach my $sheet (split(/$FS2/, $css)) {
+      $html .= qq(<link type="text/css" rel="stylesheet" href="$sheet">);
+    }
   } elsif ($StyleSheet) {
     $html .= qq(<link type="text/css" rel="stylesheet" href="$StyleSheet">);
   } elsif ($StyleSheetPage) {
