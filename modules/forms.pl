@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: forms.pl,v 1.2 2004/06/17 01:13:18 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: forms.pl,v 1.3 2004/10/08 20:07:39 as Exp $</p>';
 
 push(@MyRules, \&FormsRule);
 
@@ -25,6 +25,7 @@ sub FormsRule {
       and (/\G(\&lt;form.*?\&lt;\/form\&gt;)/sgc)) {
     my $form = $1;
     my $oldpos = pos;
+    Clean(CloseHtmlEnvironments());
     Dirty($form);
     $form =~ s/\%([a-z]+)\%/GetParam($1)/ge;
     $form =~ s/\$([a-z]+)\$/$q->span({-class=>'param'}, GetParam($1))
