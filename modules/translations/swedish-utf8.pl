@@ -1,4 +1,4 @@
-# -*-mode: fundamental; coding: utf-8;-*-
+﻿# -*-mode: fundamental; coding: utf-8;-*-
 # UTF-8 encoded Swedish language file for use with Oddmuse
 #
 # Copyright (c) 2003 Erik S-O Johansson and others
@@ -21,10 +21,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-# This translation was last checked for OddMuse version 1.524.
-# Checked and updated by Johan Adler 050108
-#
-$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.8 2005/02/01 22:41:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.9 2005/02/05 12:57:43 jadler Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Läsning inte tillåten: användare, ip eller nätverk är blockerat.
@@ -45,7 +42,7 @@ historik
 %s returned no data, or LWP::UserAgent is not available.
 Antingen returnerade %s inget data, eller så finns inte LWP::UserAgent tillgängligt.
 RSS parsing failed for %s
-Misslyckades med RSS parsningen av %s
+Misslyckades med RSS-tolkningen av %s
 No items found in %s.
 Ingen information funnen i %s.
  . . . . 
@@ -137,7 +134,7 @@ av
 Rolling back changes
 Återställer
 Missing target for rollback.
-Mål för återställning saknas
+Mål för återställning saknas.
 Target for rollback is too far back.
 Mål för återställning för gammalt.
 Rollback to %s
@@ -189,7 +186,7 @@ Databas sparad i tillfällig katalog %s
 The same page on other sites:
 Samma sida på andra siter:
 EditNearLinks
-
+Redigera närlänkar
 Last edited
 Senast ändrad
 Edited
@@ -399,7 +396,7 @@ Odefinierad_exempelsida
 [[%s]] cannot be defined.
 [[%s]] kan inte definieras.
 Only an administrator can create %s.
-Bara en administratör kan skapa %s.
+Endast en administratör kan skapa %s.
 Transfer Error: %s
 Överföringsfel: %s
 Browser reports no file info.
@@ -421,7 +418,7 @@ Anonym
 Cannot delete the index file %s.
 Kan inte radera index-filen %s.
 Please check the directory permissions.
-Vänligen kontrollera biblioteksrättigheter
+Vänligen kontrollera biblioteksrättigheter.
 Your changes were not saved.
 Dina ändringar har inte sparats.
 Could not get a lock to merge!
@@ -449,7 +446,7 @@ ej borttagen:
 deleted
 borttagen
 Moving part of the %s log file.
-Flyttar del av %s-loggen
+Flyttar del av %s-loggen.
 Moving %s log entries.
 Flyttar %s loggnotering.
 Getting page index file for %s.
@@ -477,7 +474,7 @@ Visa beroenden
 Inter links:
 Interlänkar:
 Near links:
-Nära länkar:
+Närlänkar:
 Show parsed link data
 Visa tolkat länkdata
 Too many connections by %s
@@ -509,7 +506,7 @@ Bytt namn till %s
 Renamed from %s
 Bytt namn från %s
 Renamed %1 to %2.
-Bytt namn på %1 till %2
+Bytt namn på %1 till %2.
 Immediately delete %s
 Radera %s direkt
 Rename %s to:
@@ -589,7 +586,7 @@ Permanentlänk till "%s"
 Portrait
 Porträtt
 You did not answer correctly.
-Du svarade inte korrekt
+Du svarade inte korrekt.
 All Referrers
 Alla som länkat hit
 Referrers
@@ -597,7 +594,7 @@ Sidor som länkat hit
 Updating %s
 Uppdaterar %s
 Search term missing.
-Sökord saknas
+Sökord saknas.
 Static Copy
 Statisk kopia
 Back to %s
@@ -607,15 +604,15 @@ Eller använd en av följande mallar:
 Thread: %s
 Tråd: %s
 ID parameter is missing.
-ID-parametern saknas
+ID-parametern saknas.
 Thread %s does not exist.
-Tråden %s finns inte
+Tråden %s finns inte.
 Page %s does not contain a thread.
-Sidan %s innehåller ingen tråd
+Sidan %s innehåller ingen tråd.
 Add
 Lägg till
 URL parameter is missing.
-URL-parametern saknas
+URL-parametern saknas.
 Add to %s thread
 Lägg till till %s-tråden
 Below:
@@ -637,13 +634,13 @@ Denna översättning är föråldrad
 The page does not exist.
 Sidan finns inte.
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
-
+http://www.adlibris.se/shop/product.asp?isbn=%s
 http://www.amazon.com/exec/obidos/ISBN=%s
 
 alternate
 alternativ
 http://www.pricescan.com/books/BookDetail.asp?isbn=%s
-
+http://www.bokpris.com/%s
 search
 sök
 Blog
