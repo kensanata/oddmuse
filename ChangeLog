@@ -1,3 +1,17 @@
+2004-01-03  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($PermanentAnchorsInit): New variable.
+	(ResolveId): Use it to ReadPermanentAnchors() only once per
+	session.
+	(ReadPermanentAnchors): Set it.
+	(DeletePermanentAnchors): Use it.
+	(UserIsEditor): Change parameters; permanentanchors=2 no longer
+	works, instead there is links=0 to disable ordinary links; near=1
+	is new to include near links.
+	(GetFullLinkList): Change parameters; url=2 no longer works,
+	instead there is links=0 to disable ordinary links, and inter=1
+	for interlinks.
+
 2004-01-02  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (PrintSearchResult): Bugfix.
