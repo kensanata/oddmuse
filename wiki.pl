@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.355 2004/03/13 18:26:37 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.356 2004/03/15 19:48:58 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -782,7 +782,7 @@ sub RSS {
       my $line;
       my $date = $i->{dc}->{date};
       $date = $i->{pubdate} unless $date;
-      $date = sprintf("%04d", $num--) unless $date; # for RSS 0.91 feeds without date, descending
+      $date = sprintf("%03d", $num--) unless $date; # for RSS 0.91 feeds without date, descending
       $line .= ' (' . $q->a({-href=>$i->{$wikins}->{diff}}, $tDiff) . ')'
 	if $i->{$wikins}->{diff};
       $line .= ' (' . $q->a({-href=>$i->{$wikins}->{history}}, "$tHistory") . ')'
