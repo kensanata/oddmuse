@@ -17,6 +17,7 @@
 	(GetReferers): New.
 	(UpdateReferers): New.
 	(RefererTrack): New.
+	(GetReferers): Quote HTML.
 
 2003-03-28  Alex Schroeder  <alex@gnu.org>
 
