@@ -1,9 +1,24 @@
+2004-09-01  Alex Schroeder  <alex@gnu.org>
+
+	* modules/usemod.pl (UsemodTableAttributes): New.
+	(UsemodRule): Use it.
+
+2004-08-31  Alex Schroeder  <alex@gnu.org>
+
+	* modules/static-copy.pl (DoStatic): Produce valid XHTML.
+
+2004-08-22  Alex Schroeder  <alex@confusibombus>
+
+	* modules/templates.pl ($TemplatePattern): New option.
+	(TemplateList): Translate _ to space when printing links.
+
 2004-08-19  Alex Schroeder  <alex@confusibombus>
 
 	* wiki.pl (GetRcText): Bugfix for action=rc;raw=1;all=1.
 	(GetRcRss): Use $ScriptName instead of $FullUrl.  Take
 	$UsePathInfo into account.  When the all parameter is not set,
 	don't add revision to the URL.
+	(GetAuthorLink): Remove _ from author names.
 
 2004-08-17  Alex Schroeder  <alex@gnu.org>
 
