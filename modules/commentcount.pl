@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: commentcount.pl,v 1.4 2004/11/20 22:25:28 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: commentcount.pl,v 1.5 2004/12/03 08:36:15 as Exp $</p>';
 
 *OldCommentcountAddComment = *AddComment;
 *AddComment = *NewCommentcountAddComment;
@@ -28,12 +28,12 @@ sub NewCommentcountAddComment {
     # no comment added
   } else {
     my $num = $new;
-    if($num =~ /=== (\d+) Comments\. ===/) {
+    if($num =~ /=== (\d+) Comments?\. ===/) {
       $num = $1;
       $num++;
       $new =~ s/=== (\d+) Comments\. ===/=== $num Comments. ===/;
     } else {
-      $new = "=== 1 Comments. ===\n" . $new;
+      $new = "=== 1 Comment. ===\n" . $new;
     }
   }
   return $new;
@@ -44,15 +44,17 @@ sub NewCommentcountAddComment {
 
 sub NewCommentcountScriptLink {
   my ($action, $text, @rest) = @_;
-  if($text eq T('Comments on this page')) {
+  if ($action =~ /^$CommentsPrefix(.*)/) {
     # Add the number of comments here
     my $comments = GetPageContent($action);
     my $num = 0;
-    if($comments =~ /=== (\d+) Comments\. ===/) {
+    if($comments =~ /=== (\d+) Comments?\. ===/) {
       $num = $1;
     }
-    # Plurality!
-    $text =~ s/Comments/Comment/ if($num == 1);
+    # Fix plurals
+    my $plural = T('Comments on ');
+    my $singular = T('Comment on ');
+    $text =~ s/$plural/$singular/ if($num == 1);
     $text = $num . ' ' . $text;
   }
   return OldCommentcountScriptLink($action, $text, @rest);
