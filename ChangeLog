@@ -13,6 +13,8 @@
 	($SimpleLinks, $NonEnglish): Removed.
 	(InitLinkPatterns): Simplified the regexp generating code such
 	that the regexps used are clearer now,
+	(DoUnlock): Added extra level of parenthesis, thanks to Jason
+	Diamond <jason@injektilo.org>
 
 2003-05-17  Pierre Gaston  <pgas@intracom.gr>
 	
