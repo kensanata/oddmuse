@@ -349,7 +349,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.479 2004/11/12 22:04:00 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.480 2004/11/14 22:20:28 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1442,26 +1442,26 @@ sub RcHeader {
   my $days = GetParam('days', $RcDefault);
   my $all = GetParam('all', 0);
   my $edits = GetParam('showedit', 0);
-  my $menu;
+  my @menu;
   if ($all) {
-    $menu = ScriptLink("$action;days=$days;all=0;showedit=$edits",
-		       T('List latest change per page only'));
+    push(@menu, ScriptLink("$action;days=$days;all=0;showedit=$edits",
+			   T('List latest change per page only')));
   } else {
-    $menu = ScriptLink("$action;days=$days;all=1;showedit=$edits",
-		       T('List all changes'));
+    push(@menu, ScriptLink("$action;days=$days;all=1;showedit=$edits",
+			   T('List all changes')));
   }
   if ($edits) {
-    $menu .= ' | ' . ScriptLink("$action;days=$days;all=$all;showedit=0",
-				T('List only major changes'));
+    push(@menu, ScriptLink("$action;days=$days;all=$all;showedit=0",
+			   T('List only major changes')));
   } else {
-    $menu .= ' | ' . ScriptLink("$action;days=$days;all=$all;showedit=1",
-				T('Include minor changes'));
+    push(@menu, ScriptLink("$action;days=$days;all=$all;showedit=1",
+			   T('Include minor changes')));
   }
-  print $q->p(join(' | ', map { ScriptLink("$action;days=$_;all=$all;showedit=$edits",
-					   ($_ != 1) ? Ts('%s days', $_) : Ts('%s days', $_));
-			      } @RcDays) . $q->br() . $menu . $q->br()
-	      . ScriptLink($action . ';from=' . ($LastUpdate + 1) . ";all=$all;showedit=$edits",
-			   T('List later changes')));
+  print $q->p((map { ScriptLink("$action;days=$_;all=$all;showedit=$edits",
+				($_ != 1) ? Ts('%s days', $_) : Ts('%s days', $_));
+		   } @RcDays), $q->br(), @menu, $q->br(),
+	      ScriptLink($action . ';from=' . ($LastUpdate + 1) . ";all=$all;showedit=$edits",
+			 T('List later changes')));
 }
 
 sub GetFilterForm {
@@ -2034,9 +2034,9 @@ sub PrintFooter {
   print GetCommentForm($id, $rev, $comment);
   print '<div class="footer">' . $q->hr();
   print GetGotoBar($id);
-  print $q->span({-class=>'edit'}, GetFooterLinks($id, $rev));
-  print $q->span({-class=>'admin'}, GetAdminBar($id, $rev)) if UserIsAdmin();
-  print $q->span({-class=>'time'}, GetFooterTimestamp($id, $rev));
+  print GetFooterLinks($id, $rev);
+  print GetAdminBar($id, $rev) if UserIsAdmin();
+  print GetFooterTimestamp($id, $rev);
   print GetSearchForm();
   if ($DataDir =~ m|/tmp/|) {
     print $q->p($q->strong(T('Warning') . ': ')
@@ -2071,78 +2071,72 @@ sub GetSisterSites {
 sub GetNearLinksUsed {
   if (%NearLinksUsed) {
     return $q->div({-class=>'near'}, $q->p(GetPageLink(T('EditNearLinks')) . ':',
-                   join(' ', map { GetEditLink($_, $_); } keys %NearLinksUsed)));
+					   map { GetEditLink($_, $_); } keys %NearLinksUsed));
   }
   return '';
 }
 
 sub GetFooterTimestamp {
   my ($id, $rev) = @_;
-  if ($id and $rev ne 'history' and $rev ne 'edit') {
-    my $html .= $q->br() . ($rev eq '' ? T('Last edited') : T('Edited'))
-      . ' ' . TimeToText($Page{ts}) . ' '
-      . Ts('by %s', &GetAuthorLink($Page{host}, $Page{username}));
-    $html .= ' ' . ScriptLinkDiff(1, $id, T('(diff)'), $rev) if $UseDiff;
-    return $html;
+  if ($id and $rev ne 'history' and $rev ne 'edit' and $Page{revision}) {
+    my @elements = ($q->br(), ($rev eq '' ? T('Last edited') : T('Edited')), TimeToText($Page{ts}),
+		    Ts('by %s', GetAuthorLink($Page{host}, $Page{username})));
+    push(@elements, ScriptLinkDiff(1, $id, T('(diff)'), $rev)) if $UseDiff;
+    return $q->span({-class=>'time'}, @elements);
   }
   return '';
 }
 
 sub GetAdminBar {
   my ($id, $rev) = @_;
-  my $html .= $q->br() . ScriptLink('action=maintain', T('Run maintenance'));
+  my @elements = ($q->br(), ScriptLink('action=maintain', T('Run maintenance')));
   if (-f "$DataDir/noedit") {
-    $html .= ' | ' . ScriptLink('action=editlock;set=0', T('Unlock site'));
+    push(@elements, ScriptLink('action=editlock;set=0', T('Unlock site')));
   } else {
-    $html .= ' | ' . ScriptLink('action=editlock;set=1', T('Lock site'));
+    push(@elements, ScriptLink('action=editlock;set=1', T('Lock site')));
   }
   if (-f GetLockedPageFile($id)) {
-    $html .= ' | ' . ScriptLink('action=pagelock;set=0;id=' . UrlEncode($id), T('Unlock page'));
+    push(@elements, ScriptLink('action=pagelock;set=0;id=' . UrlEncode($id), T('Unlock page')));
   } else {
-    $html .= ' | ' . ScriptLink('action=pagelock;set=1;id=' . UrlEncode($id), T('Lock page'));
+    push(@elements, ScriptLink('action=pagelock;set=1;id=' . UrlEncode($id), T('Lock page')));
   }
   foreach my $page (@LockOnCreation) {
-    $html .= ' | ' . GetPageLink($page) if $page;
+    push(@elements, GetPageLink($page)) if $page;
   }
-  return $html;
+  return $q->span({-class=>'admin'}, @elements) if @elements;
 }
 
 sub GetFooterLinks {
   my ($id, $rev) = @_;
-  my $html;
+  my @elements;
   if ($id and $rev ne 'history' and $rev ne 'edit') {
     if (UserCanEdit($CommentsPrefix . $id, 0)
 	and $OpenPageName !~ /^$CommentsPrefix/) { # fails if $CommentsPrefix is empty!
-      $html .= ScriptLink(UrlEncode($CommentsPrefix . $OpenPageName),
-			       T('Comments on this page'));
+      push(@elements, ScriptLink(UrlEncode($CommentsPrefix . $OpenPageName),
+				 T('Comments on this page')));
     }
-    $html .= ' | ' if $html;
     if (UserCanEdit($id, 0)) {
       if ($rev) { # showing old revision
-	$html .= GetOldPageLink('edit', $id, $rev,
-				     Ts('Edit revision %s of this page', $rev));
+	push(@elements, GetOldPageLink('edit', $id, $rev,
+				       Ts('Edit revision %s of this page', $rev)));
       } else { # showing current revision
-	$html .= GetEditLink($id, T('Edit text of this page'), undef, T('e'));
+	push(@elements, GetEditLink($id, T('Edit text of this page'), undef, T('e')));
       }
     } else { # no permission or generated page
-      $html .= ScriptLink('action=password', T('This page is read-only'));
+      push(@elements, ScriptLink('action=password', T('This page is read-only')));
     }
   }
   if ($id and $rev ne 'history') {
-    $html .= ' | ' if $html;
-    $html .= GetHistoryLink($id, T('View other revisions'));
+    push(@elements, GetHistoryLink($id, T('View other revisions')));
   }
   if ($rev ne '') {
-    $html .= ' | ' if $html;
-    $html .= GetPageLink($id, T('View current revision'))
-      . ' | ' . GetRCLink($id, T('View all changes'));
+    push(@elements, GetPageLink($id, T('View current revision')),
+	 GetRCLink($id, T('View all changes')));
   }
   if ($CommentsPrefix and $id =~ /^$CommentsPrefix(.*)/) {
-    $html .= ' | ' if $html;
-    $html .= Ts('Back to %s', GetPageLink($1, $1));
+    push(@elements, Ts('Back to %s', GetPageLink($1, $1)));
   }
-  $html = $q->br() . $html if $html;
-  return $html;
+  return @elements ? $q->span({-class=>'edit'}, $q->br(), @elements) : '';
 }
 
 sub GetCommentForm {
@@ -2198,9 +2192,7 @@ sub GetValidatorLink {
 
 sub GetGotoBar {
   my $id = shift;
-  my $bartext = join(' | ', map { GetPageLink($_) } @UserGotoBarPages);
-  $bartext .= ' | ' . $UserGotoBar  if $UserGotoBar ne '';
-  return $q->span({-class=>'gotobar'}, $bartext);
+  return $q->span({-class=>'gotobar'}, map { GetPageLink($_) } @UserGotoBarPages);
 }
 
 # == Difference markup and HTML ==
@@ -2928,10 +2920,10 @@ sub DoIndex {
   } else {
     print GetHeader('', T('Index of all pages'), '');
     my @for;
-    push (@for, T('all pages')) if $pages;
-    push (@for, T('permanent anchors')) if $anchors;
-    push (@for, T('near links')) if $near;
-    push (@for, GetParam('lang', '')) if GetParam('lang', '');
+    push(@for, T('all pages')) if $pages;
+    push(@for, T('permanent anchors')) if $anchors;
+    push(@for, T('near links')) if $near;
+    push(@for, GetParam('lang', '')) if GetParam('lang', '');
     print $q->p($q->b(Ts('(for %s)', join(', ', @for))));
   }
   ReadPermanentAnchors() if $anchors and not $PermanentAnchorsInit;
@@ -2987,7 +2979,7 @@ sub AllPagesList {
   %IndexHash = ();
   foreach (glob("$PageDir/*/*.pg $PageDir/*/.*.pg")) { # find .dotfiles, too
     next unless m|/.*/(.+)\.pg$|;
-    push @IndexList, $1;
+    push(@IndexList, $1);
     $IndexHash{$1} = 1;
   }
   $IndexInit = 1;  # Initialized for this run of the script
@@ -3021,12 +3013,12 @@ sub DoSearch {
     print GetHeader('', QuoteHtml(Ts('Search for: %s', $string)), '');
     $ReplaceForm = UserIsAdmin();
     NearInit();
-    my $html = ScriptLink('action=rc;rcfilteronly=' . UrlEncode($string),
-			  T('View changes for these pages'));
-    $html .= ' | ' . ScriptLink('near=2;search=' . UrlEncode($string),
-				Ts('Search sites on the %s as well', $NearMap))
+    my @elements = (ScriptLink('action=rc;rcfilteronly=' . UrlEncode($string),
+			       T('View changes for these pages')));
+    push(@elements, ScriptLink('near=2;search=' . UrlEncode($string),
+				Ts('Search sites on the %s as well', $NearMap)))
       if %NearSearch and GetParam('near', 1) < 2;
-    print $q->p($html);
+    print $q->p(@elements);
   }
   my @results;
   if (GetParam('context',1)) {
