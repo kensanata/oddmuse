@@ -1,3 +1,11 @@
+2003-09-21  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (OpenHtmlEnvironment): Fix closing of all tags when the
+	list type changes.
+	(GetPageOrEditLink): Change &amp; to ; to separate parameters.
+	(GetEditLink, DoRc, GetRcRss): Ditto.
+	(GetHistoryLink, GetRCLink, GetPermanentAnchor): Ditto.
+
 2003-09-20  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (ApplyRules, OpenHtmlEnvironment): Rewrote list
