@@ -89,8 +89,8 @@ $CookieName  = 'Wiki';     # Name for this wiki (for multi-wiki sites)
 
 # Fix if defaults do not work
 $SiteBase    = '';  # Full URL for <BASE> header
-$HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
+$HttpCharset = 'UTF-8'; # You are on your own if you change this!
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -249,6 +249,7 @@ sub InitRequest {
   $CGI::POST_MAX = $MaxPost;
   $q = new CGI;
   $q->charset($HttpCharset) if $HttpCharset;
+  binmode(STDOUT, ":utf8") if $^V ge v5.8.0 and $HttpCharset eq 'UTF-8';
 }
 
 sub InitVariables {    # Init global session variables for mod_perl!
@@ -287,7 +288,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.298 2004/01/06 02:56:11 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.299 2004/01/06 03:35:46 as Exp $');
 }
 
 sub InitCookie {
