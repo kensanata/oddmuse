@@ -418,7 +418,7 @@ Inter links:
 Near links:
 
 Too many connections by %s
-Trop de connections par %s
+Trop de connexions par %s
 Recent Visitors
 Derniers Visiteurs
 Referrers
