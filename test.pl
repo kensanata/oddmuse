@@ -344,6 +344,31 @@ $dir = cwd;
 $uri = "file://$dir";
 
 # RSS 2.0
+
+update_page('RSS', "<rss $uri/flickr.xml>");
+test_page(get_page('RSS'),
+	  join('(.|\n)*', # verify the *order* of things.
+	       '<a title="2004-10-14 09:34:47 " '
+	       . 'href="http://www.flickr.com/photos/broccoli/867118/">The Hydra</a>',
+	       '<a title="2004-10-14 09:28:11 " '
+	       . 'href="http://www.flickr.com/photos/broccoli/867075/">The War On Hydra</a>',
+	       '<a title="2004-10-14 05:08:17 " '
+	       . 'href="http://www.flickr.com/photos/seuss/864332/">Nation Demolished</a>',
+	       '<a title="2004-10-13 10:00:34 " '
+	       . 'href="http://www.flickr.com/photos/redking/851171/">Drummers</a>',
+	       '<a title="2004-10-13 10:00:30 " '
+	       . 'href="http://www.flickr.com/photos/redking/851168/">Death</a>',
+	       '<a title="2004-10-13 10:00:27 " '
+	       . 'href="http://www.flickr.com/photos/redking/851167/">Audio Terrorists</a>',
+	       '<a title="2004-10-13 10:00:25 " '
+	       . 'href="http://www.flickr.com/photos/redking/851166/">Crowds</a>',
+	       '<a title="2004-10-13 10:00:22 " '
+	       . 'href="http://www.flickr.com/photos/redking/851165/">Assholes</a>',
+	       '<a title="2004-10-12 23:38:14 " '
+	       . 'href="http://www.flickr.com/photos/bibo/844085/">iraq_saddam03</a>',
+	       '<a title="2004-10-10 10:09:06 " '
+	       . 'href="http://www.flickr.com/photos/theunholytrinity/867312/">brudermann</a>'));
+
 @Test = split('\n',<<'EOT');
 Fania All Stars - Bamboleo
 http://www.audioscrobbler.com/music/Fania\+All\+Stars/_/Bamboleo
@@ -2084,8 +2109,7 @@ update_page('hr', "[new]one\n----\ntwo\n");
 test_page(get_page('hr'), '<div class="content browse"><div class="color one"><p>one </p></div><hr /><p>two</p></div>');
 
 # usemod and portrait-support
-symlink('/home/alex/src/oddmuse/modules/usemod.pl',
-	'/tmp/oddmuse/modules/usemod.pl') or die "Cannot symlink: $!";
+add_module('usemod.pl');
 update_page('hr', "one\n----\ntwo\n");
 test_page(get_page('hr'), '<div class="content browse"><p>one </p><hr /><p>two</p></div>');
 unlink('/tmp/oddmuse/modules/usemod.pl') or die "Cannot unlink: $!";
@@ -2093,8 +2117,7 @@ remove_rule(\&UsemodRule);
 *InitVariables = *OldUsemodInitVariables;
 
 # headers and portrait-support
-symlink('/home/alex/src/oddmuse/modules/headers.pl',
-	'/tmp/oddmuse/modules/headers.pl') or die "Cannot symlink: $!";
+add_module('headers.pl');
 update_page('hr', "one\n----\ntwo\n");
 test_page(get_page('hr'), '<div class="content browse"><h3>one</h3><p>two</p></div>');
 
@@ -2127,7 +2150,7 @@ my $otherday = "$year-$mon-$oday";
 
 add_module('calendar.pl');
 test_page(get_page('action=calendar'),
-	  map {quotemeta; s|\\ \\\?| ?|g; }
+	  map { $_ = quotemeta; s|\\ \\\?| ?|g; $_; }
 	  '<div class="content cal year"><p class="nav">' # year navigation
 	  . '<a href="http://localhost/wiki.pl?action=calendar;year=' . $year_prev . '">Previous</a> | '
 	  . '<a href="http://localhost/wiki.pl?action=calendar;year=' . $year_next . '">Next</a></p>',
@@ -2143,7 +2166,7 @@ test_page(get_page('action=calendar'),
 update_page("$year-$mon-$mday", "yadda");
 
 test_page(get_page('action=calendar'),
-	  map {quotemeta; s|\\ \\\?| ?|g; }
+	  map { $_ = quotemeta; s|\\ \\\?| ?|g; $_; }
 	  '<a class="local exact today" href="http://localhost/wiki.pl/' # day exact match
 	  . "$year-$mon-$mday" . '"> ?' . $mday . '</a>');
 
