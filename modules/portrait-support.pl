@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.16 2004/10/10 17:06:34 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.17 2004/10/10 17:13:02 as Exp $</p>';
 
 push(@MyMacros, sub{ s/\[new::\]/"[new:" . GetParam('username', T('Anonymous'))
 		       . ':' . TimeToText($Now) . "]"/ge });
@@ -31,6 +31,9 @@ img.portrait {
 	border:#999 1px solid;
 	padding:10px;
 	margin:10px;
+}
+div.footer, div.comment {
+	clear:both;
 }
 div.portrait {
 	float:left; clear:left;
@@ -52,7 +55,7 @@ div.color {
 	padding:0;
 }
 div.one {
-	background-color: #efb;
+	background-color: #ddd;
 }
 EOT
 
