@@ -274,7 +274,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.207 2003/10/17 17:18:09 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.208 2003/10/17 17:25:56 as Exp $');
 }
 
 sub InitCookie {
@@ -3541,7 +3541,7 @@ sub DoMaintain {
       local *STDOUT;
       open (STDOUT, "> /dev/null");
       PrintWikiToHTML($Text{'text'}, 1, '', 1) if ($cache); # cache, current, locked
-      ReadReferers($OpenPageName);
+      ReadReferers($OpenPageName); # clean up even if disabled
       WriteReferers($OpenPageName);
     }
   }
