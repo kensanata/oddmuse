@@ -215,7 +215,7 @@ sub DoWikiRequest {
 
 sub ReportError { # fatal!
   my $errmsg = shift;
-  print GetHttpHeader('text/html');
+  print GetHttpHeader('text/html', 1); # no caching
   print $q->h2($errmsg), $q->end_html;
   map { ReleaseLockDir($_); } keys %Locks;
   exit (1);
@@ -275,7 +275,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.238 2003/11/03 18:39:41 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.239 2003/11/03 22:03:52 as Exp $');
 }
 
 sub InitCookie {
@@ -1703,11 +1703,11 @@ sub GetRCLink {
 }
 
 sub GetHeader {
-  my ($id, $title, $oldId) = @_;
+  my ($id, $title, $oldId, $nocache) = @_;
   my $result = '';
   my $embed = GetParam('embed', $EmbedWiki);
   my $altText = T('[Home]');
-  $result = GetHttpHeader('text/html');
+  $result = GetHttpHeader('text/html', $nocache ? $Now : 0);
   if ($FreeLinks) {
     $title =~ s/_/ /g;   # Display as spaces
   }
@@ -3416,7 +3416,7 @@ sub WriteRecentVisitors {
 }
 
 sub DoShowVisitors {
-  print GetHeader('', T('Recent Visitors'), '');
+  print GetHeader('', T('Recent Visitors'), '', 1); # no caching
   ReadRecentVisitors();
   print '<p><ul>';
   foreach my $name (sort {@{$RecentVisitors{$b}}[0] <=> @{$RecentVisitors{$a}}[0]} (keys %RecentVisitors)) {
