@@ -1,3 +1,13 @@
+2005-04-03  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetCurrentRequest): Deleted.
+	(GetCurrentPageName): Deleted.
+	(GetId): New, returns the id as set in the request, like
+	GetCurrentRequest used to do, but don't return a "dirty_id" and
+	"error".  Split info_path and set all parameters with these names
+	to 1.  This is more generic than specialcasing "raw".
+	(DoBrowseRequest): Call GetId.
+
 2005-03-31  Alex Schroeder  <alex@gnu.org>
 
 	* modules/anchors.pl (AnchorsRule): Allow [[#foo|bar]] as
