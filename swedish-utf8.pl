@@ -4,8 +4,9 @@
 # Copyright (c) 2003 Erik S-O Johansson and others
 # Copyright (c) 2003 Björn Lindström <bkhl@elektrubadur.se> and
 #                    Zrajm C Akfohg <zrajm@klingonska.org>
-# Copyright (c) 2004 Johan Adler <emacs deleted at Johan's request>
+# Copyright (c) 2004 Johan Adler <alltid@nyfiken.org>
 # Copyright (c) 2004 Zrajm C Akfohg <zrajm@klingonska.org
+# Copyright (c) 2005 Johan Adler <alltid@nyfiken.org>
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
@@ -20,9 +21,10 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-# This translation was last checked for OddMuse version 1.304.
+# This translation was last checked for OddMuse version 1.517.
+# Checked and updated by Johan Adler 050106
 #
-$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.20 2005/01/07 23:53:49 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.21 2005/01/07 23:55:14 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Läsning inte tillåten: användare, ip eller nätverk är blockerat.
@@ -33,27 +35,27 @@ Ogiltigt användarnamn %s: Ej sparad.
 UserName must be 50 characters or less: not saved
 Användarnamn får bestå av högst 50 tecken: Ej sparad.
 This page contains an uploaded file:
-
+Denna sida innehåller en uppladdad fil:
 XML::RSS is not available on this system.
-XML::RSS �r inte tillg�ngligt p� det h�r systemet.
+XML::RSS inte tillgängligt på det här systemet.
 diff
 ändringar
 history
 historik
 %s returned no data, or LWP::UserAgent is not available.
-Antingen returnerade %s inget data, eller s� finns inte LWP::UserAgent tillg�ngligt.
+Antingen returnerade %s inget data, eller så finns inte LWP::UserAgent tillgängligt.
 RSS parsing failed for %s
 Misslyckades med RSS parsningen av %s
 No items found in %s.
-
- . . . . 
+Ingen information funnen i %s.
+ . . . .
 
 Click to edit this page
-Klicka för att skapa den här sidan
+Klicka för att redigera den här sidan
 image
-
+bild
 download
-
+ladda ned
 Invalid action parameter %s
 Ogiltig parameter %s
 Invalid URL.
@@ -65,9 +67,9 @@ Sidnamn är för långt: %s
 Invalid Page %s
 Ogiltig sida %s
 Invalid Page %s (must not end with .db)
-Ogiltig sida %s (får inte sluta med .db) 
+Ogiltig sida %s (får inte sluta med .db)
 Invalid Page %s (must not end with .lck)
-Ogiltig sida %s (får inte sluta med .lck) 
+Ogiltig sida %s (får inte sluta med .lck)
 Page name may not contain space characters: %s
 Sidans namn får inte innehålla mellanslag: %s
 Preview:
@@ -121,7 +123,7 @@ Utför
 rollback
 återställning
 new
-
+ny
 from %s
 från %s
 History of %s
@@ -137,49 +139,19 @@ Rolling back changes
 Missing target for rollback.
 Mål för återställning saknas
 Target for rollback is too far back.
-Mål för återstållning för gammalt.
+Mål för återställning för gammalt.
 Rollback to %s
 Återställning till %s
 %s rolled back
 %s återställd
-Administration
-
-Index of all pages
-Index över alla sidor
-Wiki Version
-Visar Wikiversion
-Unlock Wiki
-Låser upp
-All Referrers
-Alla som länkat hit
-Recent Visitors
-Senaste besökare
-Password
-Lösenord
-Run maintenance
-Utför underhåll
-Unlock site
-Lås upp wikin
-Lock site
-Lås wikin
-Unlock %s
-
-Lock %s
-
-Actions:
-
-Important pages:
-
-To mark a page for deletion, put <strong>%s</strong> on the first line.
-
 [Home]
 [Startsida]
 redirected from %s
 omdirigerad från %s
 Click to search for references to this page
 Klicka för att söka efter referenser till den här sidan
-Cookie: 
-Cookie: 
+Cookie:
+Cookie:
 Warning
 Varning
 Database is stored in temporary directory %s
@@ -198,6 +170,16 @@ by %s
 av %s
 (diff)
 (ändringar)
+Run maintenance
+Utför underhåll
+Unlock site
+Lås upp wikin
+Lock site
+Lås wikin
+Unlock page
+Lås upp sidan
+Lock page
+Lås sidan
 Edit revision %s of this page
 Redigera version %s av den här sidan
 Edit this page
@@ -215,7 +197,7 @@ Visa alla ändringar
 new comment
 ny kommentar
 Homepage URL:
-
+Startsidans URL:
 s
 s
 Save
@@ -239,7 +221,7 @@ version %s
 current revision
 rådande version
 Difference (from prior %s revision)
-Förändring (sedan senaste %s revidering)
+Förändring (sedan senaste %s version)
 major
 stora
 minor
@@ -247,7 +229,7 @@ mindre
 No diff available.
 Information om ändring är inte tillgänglig.
 Old revision:
-
+Gammal version:
 Changed:
 Ändrad:
 Removed:
@@ -265,7 +247,7 @@ Det här är version %s
 Cannot save a nameless page.
 Kan inte spara en namnlös sida.
 Cannot save a page without revision.
-
+Kan inte spara en sida utan ändringar.
 Cannot open %s
 Kan inte öppna %s
 Cannot write %s
@@ -273,7 +255,7 @@ Kan inte skriva %s
 Could not get %s lock
 Kunde inte låsa %s
 Unlocking
-
+Låser upp
 This operation may take several seconds...
 Den här funktionen kan ta flera sekunder...
 Forced unlock of %s lock.
@@ -324,10 +306,12 @@ Replace this file with text.
 Skriv text istället för den här filen.
 Replace this text with a file.
 Använd en fil i stället för den här texten.
-File to upload: 
+File to upload:
 Fil att ladda upp:
 Files of type %s are not allowed.
 Filer av typen %s är inte tillåtna.
+Password
+Lösenord
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 Ditt lösenord sparas i en cookie om du har cookies påslagna. Cookies kan försvinna om du ansluter från en annan dator, från ett annat konto eller med ett annat program.
 You are currently an administrator on this site.
@@ -347,19 +331,15 @@ Den här funktionen kan bara utföras av redaktörer...
 This operation is restricted to administrators only...
 Den här funktionen kan bara utföras av adminstratörer...
 Rule "%1" matched "%2" on this page.
-
-Without normal pages
-
-Include normal pages
-
-Without permanent anchors
-
-Include permanent anchors
-
-Without near pages
-
-Include near pages
-
+Regel "%1"  matchade "%2" på denna sida.
+Index of all pages
+Index över alla sidor
+all pages
+alla sidor
+permanent anchors
+permanenta ankare
+near links
+nära länkar
 (for %s)
 (för: %s)
 %s pages found.
@@ -387,7 +367,7 @@ Fullständigt innehåll
 The main page is %s.
 Huvudsidan är %s.
 Comments on this page
-Kommentera sidan
+Kommenterarer till denna sida
 Editing not allowed for %s.
 %s kan inte redigeras.
 SampleUndefinedPage
@@ -419,11 +399,11 @@ Kontrollera om du skrev över de ändringarna.
 Anonymous
 Anonym
 Cannot delete the index file %s.
-
+Kan inte radera index-filen %s.
 Please check the directory permissions.
-
+Vänligen kontrollera biblioteksrättigheter
 Your changes were not saved.
-
+Dina ändringar har inte sparats.
 Could not get a lock to merge!
 Kunde inte låsa för att slå samman!
 you
@@ -432,8 +412,8 @@ ancestor
 förfader
 other
 annan
-Run Maintenance
-
+Maintenance on all pages
+Underhåll av alla sidor
 Maintenance not done.
 Underhåll ej slutfört.
 (Maintenance can only be done once every 12 hours.)
@@ -444,8 +424,8 @@ Main lock obtained.
 Huvudlås påslaget.
 Expiring keep files and deleting pages marked for deletion
 Avlägsnar "keep"-filer och raderar sidor märkta för radering
-not deleted: 
-
+not deleted:
+inte borttagen:
 deleted
 borttagen
 Moving part of the %s log file.
@@ -471,23 +451,27 @@ Slog på redigeringslås för %s.
 Lock for %s removed.
 Slog av redigeringslås för för %s.
 Displaying Wiki Version
-
+Visar Wikiversion
 Show dependencies
-
+Visa beroenden
 Inter links:
 Interlänkar:
 Near links:
 Nära länkar:
 Show parsed link data
-
+Visa tolkat länkdata
 Too many connections by %s
 För många anslutningar ifrån %s
 Please do not fetch more than %1 pages in %2 seconds.
-
+Vänligen hämta inte mer än %1 sidor på %2 sekunder.
 Check whether the web server can create the directory %s and whether it can create files in it.
-
+Kontrollera att webservern kan skapa biblioteket %s och att den kan skapa filer i det.
+Recent Visitors
+Senaste besökare
 Referrers
 Sidor som länkat hit
+All Referrers
+Alla som länkat hit
 anchor first defined here: %s
 ankare definierades här först: %s
 Click to search for references to this permanent anchor
@@ -495,143 +479,145 @@ Klicka för att söka efter referenser till det här permanenta ankaret
 the page %s also exists
 sidan %s finns också
 Deleting %s
-
+Tar bort %s
 Deleted %s
-
+Tog bort %s
 Renaming %1 to %2.
-
+Byter namn på %1 till %2.
 The page %s does not exist
-
+Sidan %s finnes inte
 The page %s already exists
-
+Sidan %s finns redan
 Renamed to %s
-
+Bytt namn till %s
 Renamed from %s
-
+Bytt namn från %s
 Renamed %1 to %2.
-
+Bytt namn på %1 till %2
 Delete page
-
+Ta bort sida
 Rename this page to:
-
+Byt namn på denna sida till:
 Cannot highlight the language %s.
-
+Kan ej markera språket %s.
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
-
+Saknar en av cal(1), Date::Calc(3), eller Date::Pcalc(3) för att kunna skapa kalendern.
 The match parameter is missing.
-
+Parametern "match" saknas.
 Page Collection for %s
-
+Sidsamling för %s
 Previous
-
+Föregående
 Next
-
+Nästa
 Calendar %s
-
-Comments on 
-
-Comment on 
-
+Kalender %s
+Comments on
+kommentarer till
+Comment on
+kommentar till
 Compilation for %s
-
+Sammanställning för %s
 Compilation tag is missing a regular expression.
-
+Sammanställnings-taggen saknar en "regular expression".
 Despamming pages
-
+Rensar sidor från skräptexter
 Cannot find revision %s.
-
+Kan inte hitta version %s.
 Revert to revision %1: %2
-
+Återställer till version %1: %2
 Marked as %s.
-
+Markerad som %s.
 Cannot find unspammed revision.
-
+Kan inte finna version utan skräptexter
 Footnotes:
-
+Fotnoter:
 Could not find %1.html template in %2
-
+Kunde inte finna %1.html-mallen i %2
 image: %s
-
+bild: %s
 Index
-
+Innehållsförteckning
 Languages:
-
+Språk:
 Show!
-
+Visa!
 Define
-
+Definiera
 Full Link List
 Fullständing länklista
 Template without parameters
-
+Mall utan parametrar
 The template %s is either empty or does not exist.
-
+Mallen %s är antingen tom eller saknas.
 %s returned no data.
-
+%s returnerade inga data.
 Clearing Cache
-
+Rensar cachen
 Done.
-
+Färdig.
 Generating Link Database
-
+Skapar länkdatabas
 The 404 handler extension requires the link data extension (links.pl).
-
+404-hanterarmodulen kräver länkdatamodulen för att fungera (links.pl).
 Orphan List
-
-Trail: 
-
+Lista över övergivna sidor
+Trail:
+Senast:
 None
-
+Inga
 Type
-
+Sort
 Permalink to "%s"
-
+Permanentlänk till "%s"
 Portrait
-
+Porträtt
 You did not answer correctly.
-
+Du svarade inte korrekt
 Updating %s
-
+Uppdaterar %s
+Done.
+Färdig.
 Search term missing.
-
+Sökord saknas
 Static Copy
-
+Statisk kopia
 Back to %s
 Tillbaka till %s
 Alternatively, use one of the following templates:
-
+Eller använd en av följande mallar:
 Thread: %s
-
+Tråd: %s
 ID parameter is missing.
-
+ID-parametern saknas
 Thread %s does not exist.
-
+Tråden %s finns inte
 Page %s does not contain a thread.
-
+Sidan %s innehåller ingen tråd
 Add
-
+Lägg till
 URL parameter is missing.
-
+URL-parametern saknas
 Add to %s thread
-
+Lägg till till %s-tråden
 Below:
-
+Nedan:
 URL:
-
+URL:
 Name:
-
+Namn:
 Failed to remove %s
-
+Misslyckades med att ta bort %s
 Contents
-
-This page is a translation of %s. 
-
+Innehåll
+This page is a translation of %s.
+Denna sida är en översättning av %s.
 The translation is up to date.
-
+Denna översättning är aktuell.
 The translation is outdated.
-
+Denna översättning är föråldrad
 The page does not exist.
-
+Sidan finns inte.
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -643,5 +629,5 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 search
 sök
 Blog
-
+Blogg
 END_OF_TRANSLATION
