@@ -1499,16 +1499,30 @@ foo
 foo
 /foo/
 <i>foo</i>
+/foo/ bar
+<i>foo</i> bar
 /foo bar 5/
 <i>foo bar 5</i>
 6/22/2004
 6/22/2004
+#!/bin/sh
+#!/bin/sh
+put it in ~/elisp/
+put it in ~/elisp/
+see /usr/bin/
+see /usr/bin/
+to /usr/local/share/perl/!
+to /usr/local/share/perl/!
+we shall laugh/cry/run around naked
+we shall laugh/cry/run around naked
 da *foo*
 da <b>foo</b>
 da *foo bar 6*
 da <b>foo bar 6</b>
 _foo_
 <u>foo</u>
+foo_bar_baz
+foo_bar_baz
 _foo bar 4_
 <u>foo bar 4</u>
 this -&gt; that
