@@ -6,6 +6,10 @@
 	(DoPost): Append comment it necessary.
 	(GetRcRss): To normal to free on page titles.
 	(DoPost): Bugfix: Do not rebrowse if $comment is set.
+	($NewComment): New.
+	(PrintFooter): Use it.
+	(OpenNewText): Check whether $CommentsPrefix is set before matching.
+	(DoPost): Reorder and rewrite the comment handling code.
 
 2003-06-15  Pierre Gaston  <pgas@intracom.gr>, Alex Schroeder  <alex@gnu.org>
 
