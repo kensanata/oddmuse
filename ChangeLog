@@ -1,6 +1,8 @@
 2003-12-28  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoShowVersion): Print Perl version.
+	(RSS): Improved handling of feeds without dates by using a numeric
+	counter when necessary.
 
 2003-12-27  Alex Schroeder  <alex@gnu.org>
 
