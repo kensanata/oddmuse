@@ -1,5 +1,14 @@
 2003-10-04  Alex Schroeder  <alex@gnu.org>
 
+	(DoUnlock): Added merge back.
+	(DoEdit): Added oldtime back.
+	(DoPost): If new author and oldtime is given, attempt a merge.
+	Use a message if the merge fails.  Use a message if conflict
+	markers are detected.
+	(MergeRevisions): Added back.
+
+2003-10-04  Alex Schroeder  <alex@gnu.org>
+
 	* wiki.pl (%CookieParameters): Added 'msg'.
 	(BrowsePage): Display the content of the 'msg' parameter, and
 	remove it from the cookie.
