@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.7 2004/08/31 23:24:59 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.8 2004/09/05 18:44:09 as Exp $</p>';
 
 use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml);
 
@@ -60,9 +60,14 @@ sub UsemodRule {
   elsif (m/\G\&lt;code\&gt;(.*?)\&lt;\/code\&gt;/cgis) { return $q->code($1); }
   # <nowiki> for escaped
   elsif (m/\G\&lt;nowiki\&gt;(.*?)\&lt;\/nowiki\&gt;/cgis) { return $1; }
-  # whitespace for monospaced, preformatted and escaped
-  elsif ($bol && m/\G(\s*\n)*([ \t]+(.+\n)*.*)/cg) {
-    return OpenHtmlEnvironment('pre',1) . $2; # always level 1
+  # whitespace for monospaced, preformatted and escaped, all clean
+  # note that ([ \t]+(.+\n)*.*) seems to crash very long blocks (2000 lines and more)
+  if ($bol && m/\G(\s*\n)*([ \t]+.+)\n?/gc) {
+    my $str = $2;
+    while (m/\G([ \t]+.*)\n?/gc) {
+      $str .= "\n" . $1;
+    }
+    return OpenHtmlEnvironment('pre',1) . $str; # always level 1
   }
   # numbered lists using #
   elsif ($bol && m/\G(\s*\n)*(\#+)[ \t]+/cg
