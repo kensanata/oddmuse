@@ -174,7 +174,8 @@ $UserGotoBar = '';	# HTML added to end of goto bar
 $ValidatorLink = 0;	# 1 = Link to the W3C HTML validator service
 $CommentsPrefix = '';	# prefix for comment pages, eg. 'Comments_on_' to enable
 $HtmlHeaders = '';	# Additional stuff to put in the HTML <head> section
-$DefaultStyleSheet = q{body { background-color:#FFF; color:#000; }
+$DefaultStyleSheet = q{
+body { background-color:#FFF; color:#000; }
 textarea { width:100%; }
 a:link { color:#00F; }
 a:visited { color:#A0A; }
@@ -213,7 +214,8 @@ div.near p { margin-top:0; }
  a[class="url number"]:after, a[class="inter number"]:after { content:"[" attr(href) "]"; }
  a[class="local number"]:after { content:"[" attr(title) "]"; }
  img[smiley] { line-height: inherit; }
-}}; # the <!-- and --> is added at the end
+}
+}; # the <!-- and --> is added at the end
 
 # Display short comments below the GotoBar for special days
 # Example: %SpecialDays = ('1-1' => 'New Year', '1-2' => 'Next Day');
@@ -350,7 +352,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.502 2004/12/19 16:41:42 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.503 2004/12/21 00:41:51 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
