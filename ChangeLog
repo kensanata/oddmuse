@@ -1,3 +1,7 @@
+2005-03-27  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (RSS): Use LWP::Parallel::UserAgent if available.
+
 2005-03-24  Alex Schroeder  <alex@gnu.org>
 
 	* modules/namespaces.pl (NamespacesInitVariables): Set
