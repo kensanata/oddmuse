@@ -66,9 +66,8 @@ sub update_page {
 
 print "+ means that a page is being retrieved\n";
 sub get_page {
-  my ($params) = @_;
   print '+';
-  open(F,"perl wiki.pl $params |");
+  open(F,"perl wiki.pl @_ |");
   my $output = <F>;
   close F;
   return $output;
@@ -1832,8 +1831,6 @@ EOT
 
 run_tests();
 
-fixme:
-
 print '[toc module]';
 
 system('/bin/rm -rf /tmp/oddmuse');
@@ -1863,7 +1860,9 @@ update_page('toc_test', "bla\n"
 	    . "==two==\n");
 
 test_page(get_page('toc_test'),
-	  quotemeta('<ol><li><a href="#one">one</a><ol><li><a href="#two">two</a></li><li><a href="#two">two</a></li></ol></li></ol>'));
+	  quotemeta('<ol><li><a href="#one">one</a><ol><li><a href="#two">two</a></li><li><a href="#two">two</a></li></ol></li></ol>'),
+	  quotemeta('<h1><a name="one">one</a></h1>'),
+	  quotemeta('<h2><a name="two">two</a></h2>'));
 
 update_page('toc_test', "bla\n"
 	    . "==two=\n"
@@ -1873,7 +1872,9 @@ update_page('toc_test', "bla\n"
 	    . "==two==\n");
 
 test_page(get_page('toc_test'),
-	  quotemeta('<ol><li><a href="#two">two</a><ol><li><a href="#three">three</a></li></ol></li><li><a href="#two">two</a></li></ol>'));
+	  quotemeta('<ol><li><a href="#two">two</a><ol><li><a href="#three">three</a></li></ol></li><li><a href="#two">two</a></li></ol>'),
+	  quotemeta('<h2><a name="two">two</a></h2>'),
+	  quotemeta('<h3><a name="three">three</a></h3>'));
 
 update_page('toc_test', "bla\n"
 	    . "==two=\n"
@@ -1883,7 +1884,32 @@ update_page('toc_test', "bla\n"
 	    . "=one=\n");
 
 test_page(get_page('toc_test'),
-	  quotemeta('<ol><li><a href="#two">two</a><ol><li><a href="#three">three</a></li></ol></li><li><a href="#one">one</a></li></ol>'));
+	  quotemeta('<ol><li><a href="#two">two</a><ol><li><a href="#three">three</a></li></ol></li><li><a href="#one">one</a></li></ol>'),
+	  quotemeta('<h2><a name="two">two</a></h2>'),
+	  quotemeta('<h1><a name="one">one</a></h1>'));
+
+fixme:
+
+print '[comments]';
+
+system('/bin/rm -rf /tmp/oddmuse');
+die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
+mkdir '/tmp/oddmuse';
+open(F,'>/tmp/oddmuse/config');
+print F "\$SurgeProtection = 0;\n";
+print F "\$CommentsPrefix = 'Comments on ';\n";
+close(F);
+
+get_page('title=Yadda', 'aftertext=This%20is%20my%20comment.', 'username=Alex');
+test_page(get_page('Yadda'), 'Describe the new page');
+
+get_page('title=Comments_on_Yadda', 'aftertext=This%20is%20my%20comment.', 'username=Alex');
+test_page(get_page('Comments_on_Yadda'), 'This is my comment\.', '-- Alex');
+
+get_page('title=Comments_on_Yadda', 'aftertext=This%20is%20another%20comment.',
+	 'username=Alex', 'homepage=http%3a%2f%2fwww%2eoddmuse%2eorg%2f');
+test_page(get_page('Comments_on_Yadda'), 'This is my comment\.',
+	  '-- <a class="url outside" href="http://www.oddmuse.org/">Alex</a>');
 
 ### END OF TESTS
 
