@@ -274,7 +274,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.199 2003/10/15 15:23:19 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.200 2003/10/15 21:29:59 as Exp $');
 }
 
 sub InitCookie {
@@ -880,7 +880,7 @@ sub GetEditLink { # shortcut
 }
 
 sub ScriptLink {
-  my ($action, $text, $class, $name) = @_;
+  my ($action, $text, $class, $name, $title) = @_;
   my %params;
   if ($UsePathInfo and !$Monolithic and $action !~ /=/) {
     $params{-href} = $ScriptName . '/' . $action;
@@ -891,6 +891,7 @@ sub ScriptLink {
   }
   $params{'-class'} = $class  if $class;
   $params{'-name'} = $name  if $name;
+  $params{'-title'} = $title  if $title;
   return $q->a(\%params, $text);
 }
 
@@ -1681,13 +1682,13 @@ sub GetOldPageLink {
 }
 
 sub GetSearchLink {
-  my ($text, $class, $name) = @_;
+  my ($text, $class, $name, $title) = @_;
   my $id = UrlEncode($text);
   if ($FreeLinks) {
     $text =~ s/_/ /g;  # Display with spaces
     $id =~ s/_/+/g;    # Search for url-escaped spaces
   }
-  return ScriptLink('search=' . $id, $text, $class, $name);
+  return ScriptLink('search=' . $id, $text, $class, $name, $title);
 }
 
 sub ScriptLinkDiff {
@@ -1771,7 +1772,8 @@ sub GetHeader {
   }
   $result .= $q->div({-class=>'message'}, $Message)  if $Message;
   if ($id ne '') {
-    $result .= $q->h1(GetSearchLink($id));
+    $result .= $q->h1(GetSearchLink($id, '', '',
+				    T('Click to search for references to this page')));
   } else {
     $result .= $q->h1($title);
   }
@@ -3909,7 +3911,8 @@ sub GetPermanentAnchor {
   }
   $PagePermanentAnchors{$id} = 1; # add to the list of anchors in page
   $id = UrlEncode($id);
-  return GetSearchLink($id, 'definition', $id);
+  return GetSearchLink($id, 'definition', $id,
+		       T('Click to search for references to this permanent anchor'));
 }
 
 sub DeletePermanentAnchors {
