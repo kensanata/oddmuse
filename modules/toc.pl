@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.18 2004/11/27 21:18:02 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.19 2004/11/27 21:25:20 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
@@ -35,7 +35,7 @@ sub TocRule {
         && m/\G(\s*\n)*(\=+)[ \t]*(?=[^=\n]+=)/cg) {
         my $depth = length($2);
         $depth = 6 if $depth > 6;
-	my $html = CloseHtmlEnvironments() . ($MyColorDiv ? '</div>' : '')
+	my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '')
 	  . AddHtmlEnvironment('h' . $depth) . $q->a({-id=>'toc' . $TocCounter++});
 	$PortraitSupportColorDiv = 0; # after the HTML has been determined.
         return $html;
@@ -54,8 +54,10 @@ sub TocRule {
         my $depth = length($2);
         $depth = 6 if $depth > 6;
 	my $text = $3;
-        return CloseHtmlEnvironments() . "<h$depth>"
+	my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '') . "<h$depth>"
 	  . $q->a({-id=>'toc' . $TocCounter++}, $text) . "</h$depth>";
+	$PortraitSupportColorDiv = 0; # after the HTML has been determined.
+        return $html;
     }
     return undef;
 }
