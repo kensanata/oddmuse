@@ -1,3 +1,16 @@
+2003-11-29  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoIndex): Print how many pages there are in this sub,
+	then call PrintPage on every item in the list instead of passing
+	the list to PrintPageList.
+	(PrintPageList): Removed.
+	(PrintPage): New, replaces PrintPageList.
+	(DoSearch): Print how many pages there are at the end of the list,
+	then call PrintSearchResult or PrintPage on every item in the list
+	instead of passing the list to PrintSearchResults.
+	(PrintSearchResults): Removed.
+	(PrintSearchResult): New, replaces PrintSearchResults.
+
 2003-11-27  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (SearchTitleAndBody, GetRc): Tweaking handling of "none".
