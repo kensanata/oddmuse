@@ -179,7 +179,7 @@ Lock page
 Vergrendel pagina
 Edit revision %s of this page
 Wijzig revisie %s van deze pagina
-Edit text of this page
+Edit this page
 Wijzig de tekst op deze pagina
 e
 e
@@ -530,7 +530,7 @@ Talen:
 Show!
 Tonen!
 Define
-Definiëren
+DefiniÃ«ren
 Full Link List
 Volledige lijst van koppelingen
 Template without parameters

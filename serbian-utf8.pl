@@ -172,7 +172,7 @@ Lock page
 
 Edit revision %s of this page
 Уреди верзију %s ове странице
-Edit text of this page
+Edit this page
 Уреди текст ове странице
 e
 
