@@ -265,7 +265,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.178 2003/10/04 00:57:23 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.179 2003/10/04 01:20:41 as Exp $');
 }
 
 sub InitCookie {
@@ -3314,7 +3314,9 @@ sub DoPost {
     if (not $file and $q->cgi_error) {
       ReportError (Ts('Transfer Error: %s', $q->cgi_error));
     }
+    ReportError(T('Browser reports no file info.')) unless $q->uploadInfo($filename);
     my $type = $q->uploadInfo($filename)->{'Content-Type'};
+    ReportError(T('Browser reports no file type.')) unless $type;
     if (not grep(/^$type$/, @UploadTypes)) {
       ReportError (Ts('Files of type %s are not allowed.', $type));
     }
