@@ -20,6 +20,7 @@
 	(GetHtmlHeader): Removed CSS rules for a.link from the default CSS.
 	(GetPermanentAnchor): Simplified.
 	(GetPermanentAnchor): Removed; use GetSearchLink for rendering.
+	(Cookie): Make the message more readable.
 
 2003-10-11  Alex Schroeder  <alex@gnu.org>
 
