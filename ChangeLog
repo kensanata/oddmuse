@@ -3,6 +3,7 @@
 	* wiki.pl (GetRcRss): Provide diff link only if the wiki can handle it.
 	(GetFilterForm): Use a table.
 	(RSS): Handle diff and history links.
+	(RSS): Simplified date handling a bit.
 
 2003-11-06  Alex Schroeder  <alex@gnu.org>
 
