@@ -1,3 +1,8 @@
+2004-01-27  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($ModulesDescription): New variable.
+	(InitVariables): Use it.
+
 2004-01-25  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (%InvisibleCookieParameters): New option.
