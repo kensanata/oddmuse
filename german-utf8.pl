@@ -256,17 +256,17 @@ Aufhebung der Sperre nicht notwendig.
 %s hours ago
 %s Stunden vorher
 1 hour ago
-Eine Stunde vorher
+eine Stunde vorher
 %s minutes ago
 %s Minuten vorher
 1 minute ago
-Eine Minute vorher
+eine Minute vorher
 %s seconds ago
 %s Sekunden vorher
 1 second ago
-Eine Sekunde vorher
+eine Sekunde vorher
 just now
-Genau jetzt
+genau jetzt
 Editing Denied
 Bearbeitung verweigert
 Editing not allowed: user, ip, or network is blocked.
