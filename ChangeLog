@@ -1,5 +1,11 @@
 2004-12-18  Alex Schroeder  <alex@confusibombus.emacswiki.org>
 
+	* Makefile (upload-translations): Fix bug.
+
+	* modules/search-freetext.pl (SearchFreeTextNewForm): Only use new
+	form if $SearchFreeTextNewForm is set.
+	($SearchFreeTextNewForm): New option.
+
 	* wiki.pl (PrintFooter): Changed 'time' parameter to 'timing' to
 	avoid collision with Timezone Extension.
 
