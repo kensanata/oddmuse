@@ -357,7 +357,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.540 2005/04/03 02:27:37 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.541 2005/04/05 21:10:02 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -2618,7 +2618,7 @@ sub ReadFileOrDie {
 
 sub WriteStringToFile {
   my ($file, $string) = @_;
-  open (OUT, ">$file")
+  open(OUT, ">$file")
     or ReportError(Ts('Cannot write %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
   print OUT  $string;
   close(OUT);
@@ -2626,7 +2626,7 @@ sub WriteStringToFile {
 
 sub AppendStringToFile {
   my ($file, $string) = @_;
-  open (OUT, ">>$file")
+  open(OUT, ">>$file")
     or ReportError(Ts('Cannot write %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
   print OUT  $string;
   close(OUT);
@@ -3098,8 +3098,9 @@ sub AllPagesList {
   %IndexHash = ();
   foreach (glob("$PageDir/*/*.pg $PageDir/*/.*.pg")) { # find .dotfiles, too
     next unless m|/.*/(.+)\.pg$|;
-    push(@IndexList, $1);
-    $IndexHash{$1} = 1;
+    my $id = $1;
+    push(@IndexList, $id);
+    $IndexHash{$id} = 1;
   }
   $IndexInit = 1;  # Initialized for this run of the script
   # Try to write out the list for future runs.  If file exists and cannot be changed, error!
@@ -3534,13 +3535,13 @@ sub Save { # call within lock, with opened page
   SaveKeepFile(); # deletes clean, dirty, diff-major, and diff-minor, encode multiline content
   ExpireKeepFiles();
   $Page{ts} = $Now;
+  $Page{oldmajor} = $Page{revision} unless $minor; # if the new revision is minor, don't update the oldmajor.
   $Page{revision} = $revision;
   $Page{summary} = $summary;
   $Page{username} = $user;
   $Page{ip} = $ENV{REMOTE_ADDR};
   $Page{host} = $host;
   $Page{minor} = $minor;
-  $Page{oldmajor} = $revision unless $minor; # if a minor rev, this stores the last major rev
   $Page{text} = $new; # this is the only multiline content right now, and it is not encoded
   if ($UseDiff and $revision > 1 and not $upload and $old !~ /^#FILE /) {
     UpdateDiffs($id, $old, $new, $minor); # more multiline, non-encoded content
