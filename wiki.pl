@@ -274,7 +274,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.231 2003/11/02 17:32:30 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.232 2003/11/03 00:49:01 as Exp $');
 }
 
 sub InitCookie {
@@ -1988,7 +1988,7 @@ sub PrintHtmlDiff {
   my ($diffType, $id, $revOld, $revNew, $newText) = @_;
   my ($diffText, $intro);
   if ($revOld) {
-    $diffText = GetKeptDiff($newText, $revOld, 1);  # 1 = get lock
+    $diffText = GetKeptDiff($newText, $revOld);
     $intro = Tss('Difference (from revision %1 to %2)', $revOld,
 		 $revNew ? Ts('revision %s', $revNew) : T('current revision'));
   } else {
@@ -2008,37 +2008,35 @@ sub GetCacheDiff {
 }
 
 sub GetKeptDiff {
-  my ($newText, $oldRevision, $lock) = @_;
+  my ($newText, $oldRevision) = @_;
   die 'No old revision' unless $oldRevision; # FIXME
   my %keep = GetKeptRevision($oldRevision);
   return '' unless $keep{text};
-  return GetDiff($keep{text}, $newText, $lock);
+  return GetDiff($keep{text}, $newText);
 }
 
 sub GetDiff {
-  my ($old, $new, $lock) = @_;
+  my ($old, $new) = @_;
   my ($diff_out, $oldName, $newName);
   $old =~ s/[\r\n]+/\n/g;
   $new =~ s/[\r\n]+/\n/g;
   CreateDir($TempDir);
-  $oldName = "$TempDir/old_diff";
-  $newName = "$TempDir/new_diff";
-  if ($lock) {
-    RequestLockDir('diff') or return ''; # not fatal
-    $oldName .= '_locked';
-    $newName .= '_locked';
-  }
+  $oldName = "$TempDir/old";
+  $newName = "$TempDir/new";
+  RequestLockDir('diff') or return '';
   WriteStringToFile($oldName, $old);
   WriteStringToFile($newName, $new);
   $diff_out = `diff $oldName $newName`;
   $diff_out =~ s/\\ No newline.*\n//g;   # Get rid of common complaint.
+  WriteStringToFile("$TempDir/raw", $diff_out); # FIXME
   $diff_out = ImproveDiff($diff_out);
-  ReleaseLockDir('diff') if ($lock);
+  WriteStringToFile("$TempDir/improved", $diff_out); # FIXME
+  ReleaseLockDir('diff');
   # No need to unlink temp files--next diff will just overwrite.
   return $diff_out;
 }
 
-sub ImproveDiff {
+sub ImproveDiff { # called within a diff lock
   my $diff = QuoteHtml(shift);
   $diff =~ tr/\r//d;
   my ($tChanged, $tRemoved, $tAdded);
@@ -3068,12 +3066,12 @@ sub DoPost {
 
 sub Save { # call within lock, with opened page
   my ($id, $new, $summary, $minor, $upload) = @_;
-  SaveKeepFile(); # deletes clean, dirty, diff-major, and diff-minor
-  ExpireKeepFiles();
-  my $old = $Page{'text'};
+  my $old = $Page{'text'}; # copy before it gets encoded
   my $user = GetParam('username', '');
   my $host = GetRemoteHost();
   my $revision = $Page{revision} + 1;
+  SaveKeepFile(); # deletes clean, dirty, diff-major, and diff-minor, encode multiline content
+  ExpireKeepFiles();
   $Page{ts} = $Now;
   $Page{revision} = $revision;
   $Page{summary} = $summary;
@@ -3082,9 +3080,9 @@ sub Save { # call within lock, with opened page
   $Page{host} = $host;
   $Page{minor} = $minor;
   $Page{oldmajor} = $revision unless $minor; # if a minor rev, this stores the last major rev
-  $Page{text} = $new;
+  $Page{text} = $new; # this is the only multiline content right now, and it is not encoded
   if ($UseDiff and not $upload and $old !~ /^#FILE /) {
-    UpdateDiffs($id, $old, $new, $minor);
+    UpdateDiffs($id, $old, $new, $minor); # more multiline, non-encoded content
   }
   SavePage();
   my $languages;
@@ -3151,10 +3149,10 @@ sub WriteRcLog {
 
 sub UpdateDiffs {
   my ($id, $old, $new, $minor) = @_;
-  my $editDiff  = GetDiff($old, $new, 0);     # 0 = already in lock
+  my $editDiff  = GetDiff($old, $new);
   $Page{'diff-minor'} = $editDiff;
   if ($minor and $Page{oldmajor}) {
-    $Page{'diff-major'} = GetKeptDiff($new, $Page{oldmajor}, 0);
+    $Page{'diff-major'} = GetKeptDiff($new, $Page{oldmajor});
   } else {
     $Page{'diff-major'} = '1'; # special value, used in GetCacheDiff
   }
