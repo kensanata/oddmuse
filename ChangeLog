@@ -10,6 +10,8 @@
 	(DoLinks): No longer use pre tags.
 	(PrintLinkList): Add colon after page name if page names are
 	listed.
+	(DoRc): Add rcuseronly and rchostonly parameters.
+	(GetRc): Ditto.
 
 2003-09-06  Alex Schroeder  <alex@gnu.org>
 
