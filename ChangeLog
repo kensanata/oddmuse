@@ -6,6 +6,10 @@
 	(BrowsePage): Do not attempt to open keep file when the requested
 	revision is the current revision.  Use div class="message" for
 	the little message about the revision being displayed.
+	(InheritParameter): New function.
+	(GetEditLink): Use it.
+	($TopLinkBar): New option.
+	(GetHeader): Use it.
 
 2003-04-26  Alex Schroeder  <alex@gnu.org>
 
