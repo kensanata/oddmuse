@@ -125,7 +125,11 @@ system('/bin/rm -rf /tmp/oddmuse');
 die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
 mkdir '/tmp/oddmuse';
 
-# goto markup;
+use Getopt::Std;
+our($opt_m);
+getopts('m');
+
+goto markup if $opt_m;
 
 $ENV{'REMOTE_ADDR'} = 'test-markup';
 
@@ -1173,7 +1177,7 @@ file://home/foo/tutorial.pdf
 file:///home/foo/tutorial.pdf
 <a class="url" href="file:///home/foo/tutorial.pdf">file:///home/foo/tutorial.pdf</a>
 image inline: [[image:HomePage]], [[image:OtherPage]]
-image inline: <a class="upload image" href="http://localhost/test-wrapper.pl/HomePage"><img class="upload" src="http://localhost/test-wrapper.pl/download/HomePage" alt="HomePage" /></a>, [image:OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage;upload=1">?</a>]
+image inline: <a class="image" href="http://localhost/test-wrapper.pl/HomePage"><img class="upload" src="http://localhost/test-wrapper.pl/download/HomePage" alt="HomePage" /></a>, [image:OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage;upload=1">?</a>]
 traditional local link: HomePage, OtherPage
 traditional local link: <a class="local" href="http://localhost/test-wrapper.pl/HomePage">HomePage</a>, OtherPage<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OtherPage">?</a>
 traditional local link with extra brackets: [HomePage], [OtherPage]
@@ -1198,12 +1202,24 @@ URL abbreviation with extra brackets: [Oddmuse:Link_Pattern]
 URL abbreviation with extra brackets: <a class="inter number" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>
 URL abbreviation with other text: [Oddmuse:Link_Pattern link patterns]
 URL abbreviation with other text: <a class="inter outside" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern">link patterns</a>
+URL abbreviation with meta characters: Oddmuse:Link+Pattern
+URL abbreviation with meta characters: <a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link+Pattern"><span class="site">Oddmuse</span>:<span class="page">Link+Pattern</span></a>
+URL abbreviation with meta characters and extra brackets: [Oddmuse:Link+Pattern]
+URL abbreviation with meta characters and extra brackets: <a class="inter number" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link+Pattern"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>
+URL abbreviation with meta characters and other text: [Oddmuse:Link+Pattern link patterns]
+URL abbreviation with meta characters and other text: <a class="inter outside" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link+Pattern">link patterns</a>
 free URL abbreviation: [[Oddmuse:Link Pattern]]
 free URL abbreviation: <a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern"><span class="site">Oddmuse</span>:<span class="page">Link Pattern</span></a>
 free URL abbreviation with extra brackets: [[[Oddmuse:Link Pattern]]]
 free URL abbreviation with extra brackets: <a class="inter number" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>
-free URL abbreviation with other text: [[Oddmuse:Link Pattern|link pattern]]
-free URL abbreviation with other text: <a class="inter outside" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern">link pattern</a>
+free URL abbreviation with other text: [[Oddmuse:Link Pattern|link patterns]]
+free URL abbreviation with other text: <a class="inter outside" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern">link patterns</a>
+free URL abbreviation with meta characters: [[Oddmuse:Link+Pattern]]
+free URL abbreviation with meta characters: <a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%2bPattern"><span class="site">Oddmuse</span>:<span class="page">Link+Pattern</span></a>
+free URL abbreviation with meta characters and extra brackets: [[[Oddmuse:Link+Pattern]]]
+free URL abbreviation with meta characters and extra brackets: <a class="inter number" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%2bPattern"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>
+free URL abbreviation with meta characters and other text: [[Oddmuse:Link+Pattern|link patterns]]
+free URL abbreviation with meta characters and other text: <a class="inter outside" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%2bPattern">link patterns</a>
 EOT
 
 run_tests();
