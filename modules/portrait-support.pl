@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.9 2004/06/17 01:13:18 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.10 2004/08/06 19:54:56 as Exp $</p>';
 
 push(@MyMacros, sub{ s/\[new::\]/"[new:" . GetParam('username', T('Anonymous'))
 		       . ':' . TimeToText($Now) . "]"/ge });
@@ -29,7 +29,16 @@ my $MyColorDiv = 0;
 my %Portraits = ();
 
 sub PortraitSupportRule {
-  if (m/\Gportrait:$UrlPattern/gc) {
+  if ($bol && m/\G(\s*\n)*----+[ \t]*\n?/cg) {
+    $MyColor = 0;
+    return CloseHtmlEnvironments() . ($MyColorDiv ? '</div>' : '') . $q->hr();
+  } elsif ($bol && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg) {
+    my ($depth, $text) = ($2, $3);
+    $depth = length($depth);
+    $depth = 6  if ($depth > 6);
+    $MyColor = 0;
+    return CloseHtmlEnvironments() . ($MyColorDiv ? '</div>' : '') . "<h$depth>$text</h$depth>";
+  } elsif (m/\Gportrait:$UrlPattern/gc) {
     return $q->img({-src=>$1, -alt=>T("Portrait"), -class=>'portrait'});
   } elsif (m/\G\[new(.*)\]/gc) {
     my $portrait;
@@ -59,18 +68,6 @@ sub PortraitSupportRule {
       . '<p>' . $portrait;
   }
   return undef;
-}
-
-*OldPortraitSupportWikiHeading = *WikiHeading;
-*WikiHeading = *NewPortraitSupportWikiHeading;
-
-sub NewPortraitSupportWikiHeading {
-  my $html;
-  if ($MyColorDiv) {
-    $html = '</div>';
-    $MyColorDiv = 0;
-  }
-  return $html . OldPortraitSupportWikiHeading(@_);
 }
 
 *OldPortraitSupportApplyRules = *ApplyRules;
