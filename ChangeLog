@@ -1,3 +1,8 @@
+2004-06-02  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ResolveId): Do not link achors that are on the same
+	page as the their own name.
+
 2004-05-31  Alex Schroeder  <alex@confusibombus>
 
 	* wiki.pl (PrintFooter, GetFooterLinks): Moved hr from inside
