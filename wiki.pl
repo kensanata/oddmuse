@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.389 2004/04/22 00:35:09 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.390 2004/04/23 21:02:10 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -3601,7 +3601,7 @@ sub DoMaintain {
       print $q->p(Ts('Getting page index file for %s.', $site));
       my $data = GetRaw($NearSite{$site});
       print $q->p($q->strong(Ts('%s returned no data, or LWP::UserAgent is not available.',
-				$q->a({-href=>$NearSite{$site}}, $NearSite{$site}))));
+				$q->a({-href=>$NearSite{$site}}, $NearSite{$site})))) unless $data;
       WriteStringToFile("$NearDir/$site", $data);
     }
   }
