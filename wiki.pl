@@ -305,7 +305,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.442 2004/08/13 01:17:22 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.443 2004/08/13 01:24:24 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1025,6 +1025,16 @@ sub PrintPageHtml { # print an open page
   }
 }
 
+sub PageHtml {
+  my $id = shift;
+  my $result = '';
+  local *STDOUT;
+  open(STDOUT, '>', \$result) or die "Can't open memory file: $!";
+  OpenPage($id);
+  PrintPageHtml();
+  return $result;
+}
+
 # == Translating ==
 
 sub T {
@@ -1642,16 +1652,6 @@ sub GetRcRss {
 sub DoRss {
   print GetHttpHeader('application/rss+xml');
   DoRc(\&GetRcRss);
-}
-
-sub PageHtml {
-  my $id = shift;
-  my $result = '';
-  local *STDOUT;
-  open(STDOUT, '>', \$result) or die "Can't open memory file: $!";
-  OpenPage($id);
-  PrintPageHtml();
-  return $result;
 }
 
 # == Random ==
