@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.7 2004/04/28 20:25:18 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.8 2004/05/10 22:08:16 as Exp $</p>';
 
 push(@MyMacros, sub{ s/\[new::\]/"[new:" . GetParam('username', T('Anonymous'))
 		       . ':' . TimeToText($Now) . "]"/ge });
@@ -40,7 +40,8 @@ sub PortraitSupportRule {
 	if (GetPageContent($name) =~ m/portrait:$UrlPattern/) {
 	  $Portrait{$name} =
 	    $q->div({-class=>'portrait'},
-		    ScriptLink($name, $q->img({-src=>$1, -alt=>'', -class=>'portrait'}),
+		    ScriptLink($name, $q->img({-src=>$1, -alt=>'new: ' . $time,
+					       -class=>'portrait'}),
 			       'newauthor', '', $FS),
 		    $q->br(),
 		    GetPageLink($name));
@@ -55,7 +56,7 @@ sub PortraitSupportRule {
     $MyColorDiv = 1;
     return $html . CloseHtmlEnvironments()
       . '<div class="color ' . ($MyColor ? 'one' : 'two') . '">'
-      . '<p><span class="new">[new]</span>' . $portrait;
+      . '<p>' . $portrait;
   }
   return '';
 }
