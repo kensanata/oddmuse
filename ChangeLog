@@ -4,6 +4,7 @@
 	parameter.
 	(GetRCLink): New function.
 	(PrintFooter): Add new item, using it.
+	(GetRCLink): Add showedit=1.
 
 2003-08-21  Alex Schroeder  <alex@gnu.org>
 
