@@ -68,7 +68,7 @@ $OpenPageName @KeptList @IndexList $IndexInit $Message $q $Now
 # == Configuration ==
 
 # Can be set outside the script: $DataDir, $UseConfig, $ConfigFile,
-# $ConfigPage, $AdminPass, $EditPass
+# $ConfigPage, $AdminPass, $EditPass, $ScriptName
 
 $UseConfig   = 1 unless defined $UseConfig; # 1 = load config file in the data directory
 $DataDir   = '/tmp/oddmuse' unless $DataDir; # Main wiki directory
@@ -88,7 +88,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.133 2003/08/31 23:15:02 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.134 2003/08/31 23:22:45 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
