@@ -1480,8 +1480,6 @@ EOT
 
 run_tests();
 
-fixme:
-
 print '[markup module]';
 
 system('/bin/rm -rf /tmp/oddmuse');
@@ -1535,6 +1533,49 @@ foo -- bar
 foo &#x2013; bar
 foo\n----\nbar
 foo <hr />bar
+EOT
+
+run_tests();
+
+fixme:
+
+print '[setext module]';
+
+system('/bin/rm -rf /tmp/oddmuse');
+die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
+mkdir '/tmp/oddmuse';
+mkdir '/tmp/oddmuse/modules';
+open(F,'>/tmp/oddmuse/config');
+print F "\$SurgeProtection = 0;\n";
+close(F);
+symlink('/home/alex/src/oddmuse/modules/setext.pl',
+	'/tmp/oddmuse/modules/setext.pl') or die "Cannot symlink: $@";
+
+%Test = split('\n',<<'EOT');
+foo
+foo
+~foo~
+<i>foo</i>
+da *foo*
+da *foo*
+da **foo** bar
+da <b>foo</b> bar
+da `_**foo**_` bar
+da **foo** bar
+_foo_
+<u>foo</u>
+foo_bar_baz
+foo_bar_baz
+_foo_bar_ baz
+<u>foo bar</u> baz
+and\nfoo\n===\n\nmore\n
+and <h2>foo</h2><p>more 
+and\n\nfoo\n===\n\nmore\n
+and<p><h2>foo</h2><p>more 
+and\nfoo  \n--- \n\nmore\n
+and <h3>foo</h3><p>more 
+and\nfoo\n---\n\nmore\n
+and <h3>foo</h3><p>more 
 EOT
 
 run_tests();
