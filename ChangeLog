@@ -2,6 +2,7 @@
 
 	* wiki.pl (DiffHtmlMarkWords): Be even more restrictive.  If the
 	change extends past the first hundred words, don't mark it.
+	(OpenPage): No text if this a comment page.
 
 2003-11-12  Alex Schroeder  <alex@gnu.org>
 
