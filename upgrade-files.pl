@@ -5,16 +5,35 @@
 
 use CGI qw/:standard/;
 use CGI::Carp qw(fatalsToBrowser);
-print header() . start_html(), p;
-print 'Upgrade version: $Id: upgrade-files.pl,v 1.8 2004/01/17 10:26:47 as Exp $', "\n";
+
+if (param('separator') eq 'UseMod 0.92' or param('separator') eq 'UseMod 1.00') {
+  $FS = "\xb3";
+} elsif (param('separator') eq 'UseMod 1.00 with $NewFS set') {
+  $FS = "\x1e\xff\xfe\x1e";
+} else {
+  $FS = "\x1e";
+}
+
+$NewFS = "\x1e";
+
+# override $FS if you want!
+
+print header() . start_html('Upgrading Files'), p;
+print 'Upgrade version: $Id: upgrade-files.pl,v 1.9 2004/02/06 13:52:13 as Exp $', "\n";
 if (not param('dir')) {
-  print start_form, p,
-    '$DataDir: ', textfield('dir', '/tmp/oddmuse'),
-      p, submit('Ok'), "\n", end_form;
+  print start_form, p, '$DataDir: ', textfield('dir', '/tmp/oddmuse'),
+    p, radio_group('separator', ['Oddmuse', 'UseMod 0.92', 'UseMod 1.00',
+				 'UseMod 1.00 with $NewFS set']),
+    p, submit('Ok'), "\n", end_form;
 } elsif (param('dir') and not param('sure')) {
   print start_form, hidden('sure', 'yes'), hidden('dir', param('dir')),
-    '$DataDir: ', param('dir'),
-      p, submit('Confirm'), "\n", end_form;
+    hidden('separator', param('separator')),
+    p, '$DataDir: ', param('dir'),
+    p, 'separator used when reading pages: ',
+    join(', ', map { sprintf('0x%x', ord($_)) } split (//, $FS)),
+    p, 'separator used when writing pages: ',
+    join(', ', map { sprintf('0x%x', ord($_)) } split (//, $NewFS)),
+    p, submit('Confirm'), "\n", end_form;
 } else {
   rewrite(param('dir'));
 }
@@ -22,8 +41,6 @@ print end_html();
 
 sub rewrite {
   my ($directory) = @_;
-  # $FS  = "\xb3";  -- old separator
-  $FS  = "\x1e"; #  -- new separator
   $FS1 = $FS . "1";
   $FS2 = $FS . "2";
   $FS3 = $FS . "3";
@@ -48,7 +65,7 @@ sub rewrite {
   foreach my $file (@files) {
     print "Reading refer $file...\n";
     my $data = read_file($file);
-    $data =~ s/$FS1/$FS/g;
+    $data =~ s/$FS1/$NewFS/g;
     $file =~ s/\.rb$/.rf/ or die "Invalid page name\n";
     print "Writing $file...\n";
     write_file($file, $data);
@@ -88,7 +105,7 @@ sub rewrite {
 	$extra{$_} = '' unless $extra{$_};
       }
       $extra{languages} =~ s/$FS1/,/g;
-      $_ = join($FS, $ts, $pagename, $minor, $summary, $host,
+      $_ = join($NewFS, $ts, $pagename, $minor, $summary, $host,
 		$extra{name}, $extra{revision}, $extra{languages}, $extra{cluster});
     }
     $data = join("\n", @rc) . "\n";
@@ -123,8 +140,8 @@ sub cache {
   my ($block, $flag) = split(/$FS2/, $_);
   my @blocks = split(/$FS3/, $block);
   my @flags = split(/$FS3/, $flag);
-  return 'blocks: ' . escape_newlines(join($FS, @blocks)) . "\n"
-    . 'flags: ' . escape_newlines(join($FS, @flags)) . "\n";
+  return 'blocks: ' . escape_newlines(join($NewFS, @blocks)) . "\n"
+    . 'flags: ' . escape_newlines(join($NewFS, @flags)) . "\n";
 }
 
 sub escape_newlines {
