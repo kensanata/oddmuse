@@ -87,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.110 2003/06/20 19:14:24 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.111 2003/06/20 19:23:53 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -3328,7 +3328,7 @@ sub DoPost {
   ReleaseLock();
   DeletePermanentAnchors();
   if (GetParam('recent_edit', '') ne 'on' and $NotifyTracker) {
-    PingTracker();
+    PingTracker($id);
   }
   ReBrowsePage($id, '', 1);
 }
