@@ -3,7 +3,8 @@
 	* wiki.pl ($BannedContent): New option.
 	Add it to @LockOnCreation, apply FreeToNormal.
 	(BannedContent): New sub.
-	(DoPost): Call it.
+	(DoPost): Call it, unless user is an editor.
+	(DoWikiRequest): Editors can edit even when banned.
 
 2004-05-09  Alex Schroeder  <alex@gnu.org>
 
