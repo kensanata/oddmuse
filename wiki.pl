@@ -55,7 +55,7 @@ $SurgeProtectionTime $DeletedPage %Languages $LanguageLimit
 $ValidatorLink $RefererTracking $RefererTimeLimit $RefererLimit
 $TopLinkBar $NotifyWeblogs $InterMap @LockOnCreation $RefererFilter
 $PermanentAnchorsFile $PermanentAnchors %CookieParameters
-$StyleSheetPage @UserGotoBarPages);
+$StyleSheetPage @UserGotoBarPages $ConfigPage);
 
 # Other global variables:
 use vars qw(%Page %Section %Text %InterSite %KeptRevisions %IndexHash
@@ -68,6 +68,7 @@ $ReplaceForm %PermanentAnchors %PagePermanentAnchors);
 
 $DataDir   = '/tmp/oddmuse' unless $DataDir; # Main wiki directory
 $UseConfig   = 1;   # 1 = load config file in the data directory
+$ConfigPage  = '';  # # Page for more config (change space to _)
 $RunCGI      = 1;   # 1 = Run script as CGI instead of being a library
 
 # Basics
@@ -82,7 +83,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.79 2003/06/02 20:27:06 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.80 2003/06/04 01:02:03 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -182,7 +183,8 @@ if (not @HtmlTags) { # don't set if set in the config file
   }
 }
 
-@LockOnCreation = ($BannedHosts, $InterMap, $RefererFilter, $StyleSheetPage);
+@LockOnCreation = ($BannedHosts, $InterMap, $RefererFilter, $StyleSheetPage,
+		   $ConfigPage);
 
 %CookieParameters = ('username' => '',
 		     'pwd' => '',
@@ -208,11 +210,14 @@ $ConfigFile  = "$DataDir/config" unless $ConfigFile; # Config file with Perl cod
 
 # The 'main' program, called at the end of this script file.
 sub DoWikiRequest {
-  if ($UseConfig && (-f $ConfigFile)) {
-    do $ConfigFile;  # Later consider error checking?
-  }
+  do $ConfigFile  if $UseConfig and $ConfigFile and -f $ConfigFile;
   InitLinkPatterns();
-  # InitRules();
+  if ($UseConfig and $ConfigPage) {
+    eval GetPageContent($ConfigPage);
+    $Message = $@; # guaranteed to be null if eval succeeded
+  } else {
+    $Message = '';
+  }
   InitRequest() or return;
   DoSurgeProtection();
   if (not $BannedCanRead and UserIsBanned() and not UserIsAdmin()) {
@@ -863,7 +868,6 @@ sub InitRequest {
   $CGI::DISABLE_UPLOADS = 1;  # no uploads
   $q = new CGI;
   $q->charset($HttpCharset) if $HttpCharset;
-  $Message = '';
   $Now = time;                     # Reset in case script is persistent
   $ReplaceForm = 0;
   my @ScriptPath = split('/', $q->script_name());
