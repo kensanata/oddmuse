@@ -1,5 +1,8 @@
 2005-01-07  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (handler): Set all sort of variables from environment
+	variables.
+
 	* modules/referrer-tracking.pl: Moved from wiki.pl.
 	(RefererNewPrintFooter): Removed $RefererTracking.
 
@@ -36,7 +39,7 @@
 
 	* changelog-to-rss: Fix regular expression for filenames.
 	(output): Strip leading br.
-	(output): Only (foo): deserves a newline.
+	(output): Only (foo) followed directly by ':' deserves a newline.
 	(to_date): Days start at 1, not 0.
 
 	* wiki.pl (ApplyRules): Use Clean instead of print for the p
