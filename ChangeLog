@@ -21,6 +21,7 @@
 	(WriteReferers): Rewrote lock handling.
 	(GetPermanentAnchor): Rewrote lock handling.
 	(DeletePermanentAnchors): Rewrote lock handling.
+	(RequestLockDir): Print error at all times without relying on a specific errno.
 
 2003-09-26  Alex Schroeder  <alex@gnu.org>
 
