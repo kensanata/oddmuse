@@ -4,6 +4,12 @@
 	timestamp, so that the number is not recognized as a valid
 	date (year-only) when printing the lines.
 
+	Support for Chinese pages, thanks to Ray and wctang.
+	(GetDownloadLink, BrowseResolvedPage, DoEdit): UrlEncode the page
+	id in the action.
+	(GetSearchLink): UrlEncode the name.
+	(DoPost): UrlEncode the page when calling ReBrowsePage..
+
 2004-03-13  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (RSS): Print "UTC" only when time was provided.
