@@ -275,7 +275,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.234 2003/11/03 01:09:37 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.235 2003/11/03 01:38:14 as Exp $');
 }
 
 sub InitCookie {
@@ -2030,9 +2030,7 @@ sub GetDiff {
   WriteStringToFile($newName, $new);
   $diff_out = `diff $oldName $newName`;
   $diff_out =~ s/\\ No newline.*\n//g;   # Get rid of common complaint.
-  WriteStringToFile("$TempDir/raw", $diff_out); # FIXME
   $diff_out = ImproveDiff($diff_out);
-  WriteStringToFile("$TempDir/improved", $diff_out); # FIXME
   ReleaseLockDir('diff');
   # No need to unlink temp files--next diff will just overwrite.
   return $diff_out;
