@@ -1,6 +1,8 @@
-# $Id: page-trail.pl,v 1.4 2004/01/25 21:04:44 as Exp $
+use vars qw($PageTrailLength);
 
-my $PageTrailLength = 10;
+$PageTrailLength = 10;
+
+$ModulesDescription .= $q->p('$Id: page-trail.pl,v 1.5 2004/01/27 00:27:05 as Exp $');
 
 $CookieParameters{trail} = '';
 $InvisibleCookieParameters{trail} = 1;
