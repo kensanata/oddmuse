@@ -55,7 +55,8 @@ $SurgeProtectionTime $DeletedPage %Languages $LanguageLimit
 $ValidatorLink $RefererTracking $RefererTimeLimit $RefererLimit
 $TopLinkBar $NotifyWeblogs $InterMap @LockOnCreation $RefererFilter
 $PermanentAnchorsFile $PermanentAnchors %CookieParameters
-$StyleSheetPage @UserGotoBarPages $ConfigPage $ScriptName);
+$StyleSheetPage @UserGotoBarPages $ConfigPage $ScriptName
+$CommentsPrefix);
 
 # Other global variables:
 use vars qw(%Page %Section %Text %InterSite %KeptRevisions %IndexHash
@@ -86,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.96 2003/06/13 19:27:18 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.97 2003/06/15 00:00:19 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -161,6 +162,7 @@ $TopLinkBar  = 1;   # 1 = add a goto bar at the top of the page
 @UserGotoBarPages = (); # List of pagenames
 $UserGotoBar = '';  # HTML added to end of goto bar
 $ValidatorLink = 0; # 1 = Link to the W3C HTML validator service
+$CommentsPrefix = ''; # prefix for comment pages, eg. 'Comments_on_' to enable
 
 # Display short comments below the GotoBar for special days
 # Example: %SpecialDays = ('1-1' => 'New Year', '1-2' => 'Next Day');
@@ -371,7 +373,12 @@ sub ApplyRules {
       } elsif (m/\G(\&lt;include +"(.*)"\&gt;[ \t]*\n?)/cgi) { # <include "uri..."> includes the text of the given URI verbatim
 	$oldmatch = $1;
 	my $oldpos = pos;
-	ApplyRules(QuoteHtml(GetRaw($2)),0);
+	my $uri = $2;
+	if ($uri =~ /^$UrlProtocols:/) {
+	  ApplyRules(QuoteHtml(GetRaw($uri)),0);
+	} else {
+	  ApplyRules(QuoteHtml(GetPageContent($uri)), 1);
+	}
 	pos = $oldpos; # restore \G after call to ApplyRules
 	DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
       } elsif (m/\G(\&lt;journal( +(\d*))?( +"(.*)")?\&gt;[ \t]*\n?)/cgi) { # <journal 10 "regexp"> includes 10 pages matching regexp
@@ -660,15 +667,14 @@ sub UrlEncode {
 }
 
 sub GetRaw {
+  my $uri = shift;
   require LWP::UserAgent;
-  my ($uri) = @_;
   my $ua = LWP::UserAgent->new;
   # consider setting $ua->max_size(50000);
   # consider setting $ua->timeout(20);
   my $request = HTTP::Request->new('GET', $uri);
   my $response = $ua->request($request);
-  my $data = $response->content;
-  return $data;
+  return $response->content;
 }
 
 sub PrintJournal {
@@ -1581,10 +1587,6 @@ sub GetSearchLink {
   return ScriptLink("search=$id", $name);
 }
 
-sub GetRandomLink {
-  return ScriptLink('action=random', T('Random Page'));
-}
-
 sub ScriptLinkDiff {
   my ($diff, $id, $text, $rev) = @_;
   $rev = "&revision=$rev"  if ($rev ne '');
@@ -1767,12 +1769,35 @@ sub PrintFooter {
     print $q->end_html;
     return;
   }
+ if ($CommentsPrefix ne '' and $id and $rev ne 'history' and $rev ne 'edit')  {
+    if ($OpenPageName =~ /^$CommentsPrefix/) {
+      my $userName = GetParam('username', '');
+      print $q->div({-class=>'comment'}, '<p>'
+		    . GetFormStart()
+		    . GetHiddenValue("title", $OpenPageName)
+		    . GetHiddenValue("oldtime", $Now + 3600) # one hour
+		    . GetHiddenValue("oldconflict", 0)
+		    . GetHiddenValue("summary" , T("new comment"))
+		    . GetHiddenValue("recent_edit", "on")
+		    . GetTextArea('aftertext', T("Add your comment here"))
+		    . '<p>' . T('Username:')
+		    . $q->textfield(-name=>'username',
+				    -default=>$userName, -override=>1,
+				    -size=>20, -maxlength=>50)
+		    . $q->p($q->submit(-name=>'Save', -value=>T('Save')))
+		    . $q->endform());
+    }
+  }
   print '<div class="footer">';
   print $q->hr() . GetGotoBar($id);
   # other revisions
   my $revisions;
   if ($id and $rev ne 'history' and $rev ne 'edit') {
+    if (UserCanEdit($CommentsPrefix . $id, 0) and $OpenPageName !~ /^$CommentsPrefix/) {
+      $revisions .= ScriptLink($CommentsPrefix . $OpenPageName, T("Comments on this page"));
+    }
     if (UserCanEdit($id, 0)) {
+      $revisions .= ' | ' if $revisions;
       if ($rev) { # showing old revision
 	$revisions .= GetOldPageLink('edit', $id, $rev,
 				   Ts('Edit revision %s of this page', $rev));
@@ -2134,7 +2159,9 @@ sub OpenNewSection {
 sub OpenNewText {
   my $name = shift;  # Name of text (usually 'default')
   %Text = ();
-  $Text{'text'} = T($NewText);
+  if ($OpenPageName !~ /^$CommentsPrefix(.*)/) {
+    $Text{'text'} = T($NewText);
+  }
   $Text{'text'} .= "\n"  if (substr($Text{'text'}, -1, 1) ne "\n");
   $Text{'minor'} = 0;      # Default as major edit
   $Text{'newauthor'} = 1;  # Default as new author
@@ -3206,6 +3233,7 @@ sub DoPost {
   my $raw = GetParam('raw', 0);
   my $oldconflict = GetParam('oldconflict', '');
   my $authorAddr = $ENV{REMOTE_ADDR};
+  my $comment = GetParam('aftertext');
   if (!UserCanEdit($id, 1)) {
     # This is an internal interface--we don't need to explain
     ReportError(Ts('Editing not allowed for %s.', $id));
@@ -3256,8 +3284,13 @@ sub DoPost {
   $newAuthor = 1  if ($Section{'ip'} ne $authorAddr);  # hostname fallback
   $newAuthor = 1  if ($oldrev == 0);  # New page
   $newAuthor = 0  if (!$newAuthor);   # Standard flag form, not empty
+  if ($comment) {                     # Easy submission
+    $string = $old  . "----\n" . $comment;
+    $string .= " -- ".  GetParam('username', T('Anonymous')) . ' '
+      . TimeToText($Now) . "\n\n";
+  }
   # Handle editing conflicts.  If possible, merge automatically.
-  if (($oldrev > 0) && ($newAuthor && ($oldtime != $pgtime))) {
+  if (($oldrev > 0) && ($newAuthor && ($oldtime < $pgtime))) {
     my $conflict = 1;
     if ($UseDiff) {
       # merge all changes that lead from file2 to file3 into file1.
