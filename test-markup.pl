@@ -176,8 +176,6 @@ test_page(get_page('EvilPage'), 'DeletedPage');
 test_page(get_page('AnotherEvilPage'), 'DeletedPage');
 test_page(get_page('action=rc showedit=1'), 'Rollback to ');
 
-exit;
-
 print '[clusters]';
 
 open(F,'>/tmp/oddmuse/config');
