@@ -296,7 +296,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.320 2004/02/08 15:09:30 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.321 2004/02/09 22:11:15 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -3585,11 +3585,13 @@ sub DoShowVersion {
   print GetHeader('', T('Displaying Wiki Version'), '');
   print $WikiDescription;
   if (GetParam('dependencies', 0)) {
-    print $q->p($q->server_software());
-    printf ($q->p('Perl v%vd'), $^V);
-    print $q->p('CGI: ', $CGI::VERSION,
-		'XML::RSS: ', eval { local $SIG{__DIE__}; require XML::RSS; $XML::RSS::VERSION; },
-		'XML::Parser: ', eval { local $SIG{__DIE__}; $XML::Parser::VERSION; }, );
+    print $q->p($q->server_software()),
+      $q->p(sprintf('Perl v%vd', $^V)),
+      $q->p('CGI: ', $CGI::VERSION),
+      $q->p('XML::RSS: ', eval { local $SIG{__DIE__}; require XML::RSS; $XML::RSS::VERSION; }),
+      $q->p('XML::Parser: ', eval { local $SIG{__DIE__}; $XML::Parser::VERSION; }),
+      $q->p('diff: ' . (`diff --version` || $!)),
+      $q->p('diff3: ' . (`diff3 --version` || $!));
   }
   if (GetParam('links', 0)) {
     NearInit() unless $NearSiteInit;
