@@ -1,3 +1,8 @@
+2003-04-07  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetUrl): Unquote url, because the entire page text has
+	already been quoted.
+
 2003-04-06  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (RSS): Added new div for RSS inclusion.
