@@ -1,3 +1,10 @@
+2003-09-25  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetHttpHeader): Use Cache-Control header.
+	(DoDownload): If the revision requested is the same as the current
+	revision there is no need to open the keep file.
+	(DoPost): Do encoding in a separate eval block.
+
 2003-09-24  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetRcHtml): Uncommented rollback code.
