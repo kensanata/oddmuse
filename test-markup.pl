@@ -1063,8 +1063,6 @@ test_page(update_page('InterMap', "All your edits are blong to us!\n", 'required
 
 # --------------------
 
-fixme:
-
 print '[near]';
 
 open(F,'>/tmp/oddmuse/config');
@@ -1110,6 +1108,9 @@ open(F,'>/tmp/oddmuse/config');
 print F "\$SurgeProtection = 0;\n";
 print F "\$AdminPass = 'foo';\n";
 close(F);
+mkdir '/tmp/oddmuse/modules';
+symlink('/home/alex/src/oddmuse/modules/links.pl',
+	'/tmp/oddmuse/modules/links.pl') or die "Cannot symlink: $@";
 
 update_page('InterMap', " Oddmuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n",
 	    'required', 0, 1);
@@ -1264,8 +1265,16 @@ This is ''longer emphasized'' text.
 This is <em>longer emphasized</em> text.
 This is '''longer strong''' text.
 This is <strong>longer strong</strong> text.
+This is '''''emphasized and bold''''' text.
+This is <strong><em>emphasized and bold</em></strong> text.
+This is ''emphasized '''and bold''''' text.
+This is <em>emphasized <strong>and bold</strong></em> text.
+This is '''bold ''and emphasized''''' text.
+This is <strong>bold <em>and emphasized</em></strong> text.
 This is ''emphasized text containing '''longer strong''' text''.
 This is <em>emphasized text containing <strong>longer strong</strong> text</em>.
+This is '''strong text containing ''emph'' text'''.
+This is <strong>strong text containing <em>emph</em> text</strong>.
 WikiWord
 WikiWord<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=WikiWord">?</a>
 WikiWord:
@@ -1398,6 +1407,8 @@ free link with other text: [[home page|da homepage]], [[other page|da other home
 free link with other text: [[home page|da homepage]], [[other page|da other homepage]]
 URL: http://www.oddmuse.org/
 URL: <a class="url" href="http://www.oddmuse.org/">http://www.oddmuse.org/</a>
+URL in text http://www.oddmuse.org/ like this
+URL in text <a class="url" href="http://www.oddmuse.org/">http://www.oddmuse.org/</a> like this
 URL in brackets: [http://www.oddmuse.org/]
 URL in brackets: <a class="url number" href="http://www.oddmuse.org/"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>
 URL in brackets with other text: [http://www.oddmuse.org/ oddmuse]
@@ -1465,6 +1476,49 @@ free URL abbreviation with extra brackets: [[[Oddmuse:Link Pattern]]]
 free URL abbreviation with extra brackets: <a class="inter number" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>
 free URL abbreviation with other text: [[Oddmuse:Link Pattern|link pattern]]
 free URL abbreviation with other text: <a class="inter outside" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern">link pattern</a>
+EOT
+
+run_tests();
+
+fixme:
+
+print '[markup module]';
+
+system('/bin/rm -rf /tmp/oddmuse');
+die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
+mkdir '/tmp/oddmuse';
+mkdir '/tmp/oddmuse/modules';
+open(F,'>/tmp/oddmuse/config');
+print F "\$SurgeProtection = 0;\n";
+close(F);
+symlink('/home/alex/src/oddmuse/modules/markup.pl',
+	'/tmp/oddmuse/modules/markup.pl') or die "Cannot symlink: $@";
+
+%Test = split('\n',<<'EOT');
+foo
+foo
+/foo/
+<i>foo</i>
+/foo bar 5/
+<i>foo bar 5</i>
+da *foo*
+da <b>foo</b>
+da *foo bar 6*
+da <b>foo bar 6</b>
+_foo_
+<u>foo</u>
+_foo bar 4_
+<u>foo bar 4</u>
+this -&gt; that
+this &#x2192; that
+and this...
+and this&#x2026;
+foo---bar
+foo&#x2014;bar
+foo -- bar
+foo &#x2013; bar
+foo\n----\nbar
+foo <hr />bar
 EOT
 
 run_tests();
