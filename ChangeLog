@@ -1,9 +1,12 @@
 2004-03-31  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (ResolveId): Permanent anchors now take precedence over
-	existing pages.
+	existing pages.  Allow override using anchor parameter.
 	(GetPermanentAnchor): Show warning when duplicating an existing
-	permanent anchor.
+	permanent anchor.  Show link when duplicating an existing page.
+	(ResolveId): Return as a third list item whether the page exists
+	even if a permanent anchor is found.
+	(GetPermanentAnchor): Use it.
 
 2004-03-28  Alex Schroeder  <alex@gnu.org>
 
