@@ -88,7 +88,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.132 2003/08/31 23:10:16 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.133 2003/08/31 23:15:02 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -1851,7 +1851,10 @@ sub PrintFooter {
     } else {
       print T('Edited');
     }
-    print ' ' . TimeToText($Section{ts});
+    print ' ' . TimeToText($Section{ts})
+      . ' ' . Ts('by %s', &GetAuthorLink($Section{'host'},
+					 $Section{'username'},
+					 $Section{'id'}));
     if ($UseDiff) {
       print ' ' . ScriptLinkDiff(1, $id, T('(diff)'), $rev);
     }
