@@ -276,7 +276,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.241 2003/11/05 23:37:36 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.242 2003/11/06 09:02:05 as Exp $');
 }
 
 sub InitCookie {
@@ -682,10 +682,13 @@ sub RSS {
     my $data = $response->content;
     eval { local $SIG{__DIE__}; $rss->parse($data); };
     return $q->p($q->strong("[RSS parsing failed for $uri]")) if $@;
-    my $counter;
+    my ($counter, $interwiki);
+    $interwiki = $rss->{channel}->{'http://purl.org/rss/1.0/modules/wiki/'}->{interwiki}
+      if @uris > 1;
     foreach my $i (@{$rss->{items}}) {
       my $line;
-      $line .= $q->a({-href=>$i->{'link'}, -title=>$i->{'dc'}->{'date'}}, "[$i->{'title'}]")
+      $line .= $q->a({-href=>$i->{'link'}, -title=>$i->{'dc'}->{'date'}},
+		     $interwiki ? "$interwiki:$i->{'title'}" : "[$i->{'title'}]")
 	if $i->{'title'};
       $line .= $q->a({-href=>$i->{'guid'}, -title=>$i->{'dc'}->{'date'}}, $i->{'guid'})
 	if $i->{'guid'}; # for RSS 2.0
