@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.373 2004/04/09 19:25:53 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.374 2004/04/09 19:33:23 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2140,8 +2140,8 @@ sub GetCommentForm {
 		   . $q->textfield(-name=>'username',
 				   -default=>GetParam('username', ''), -override=>1,
 				   -size=>20, -maxlength=>50)
-		   . $q->p($q->submit(-name=>'Save', -value=>T('Save')) . ' '
-			   . $q->submit(-name=>'Preview', -value=>T('Preview')))
+		   . $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save'))
+			   . ' ' . $q->submit(-name=>'Preview', -value=>T('Preview')))
 		   . $q->endform());
   }
   return '';
@@ -2730,7 +2730,7 @@ sub DoEdit {
 	      . $q->textfield(-name=>'username',
 			      -default=>$userName, -override=>1,
 			      -size=>20, -maxlength=>50));
-  print $q->p($q->submit(-name=>'Save', -value=>T('Save'))
+  print $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save'))
 	      . ($upload ? '' :	 ' ' . $q->submit(-name=>'Preview', -value=>T('Preview'))));
   if ($upload) {
     print $q->p(ScriptLink('action=edit;upload=0;id=' . UrlEncode($id), T('Replace this file with text.')));
@@ -2792,7 +2792,7 @@ sub DoPassword {
   if ($AdminPass or $EditPass) {
     print GetFormStart() . GetHiddenValue('action', 'password')
       . $q->p(T('Password:') . ' ' . $q->password_field(-name=>'pwd', -size=>20, -maxlength=>50))
-      . $q->submit(-name=>'Save', -value=>T('Save')) . $q->endform;
+      . $q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save')) . $q->endform;
   } else {
     print $q->p(T('This site does not use admin or editor passwords.'));
   }
