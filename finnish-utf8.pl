@@ -16,6 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
+$ModulesDescription .= '<p>$Id: finnish-utf8.pl,v 1.6 2004/12/27 01:00:38 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lukeminen ei ole sallittua: käyttäjä, IP tai verkko on estetty.
