@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.28 2003/04/12 12:40:13 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.29 2003/04/13 22:18:16 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -400,7 +400,7 @@ sub ApplyRules {
       $fragment = &GetInterLink($2, $3, 1);
       # we may have to backtrack a bit.
       if ($oldmatch eq $fragment) {
-	($fragment, $rest) = split(/:/, $oldmatch);
+	($fragment, $rest) = split(/:/, $oldmatch, 2);
 	pos = (pos) - length($rest) - 1;
       } else {
 	print $fragment;
@@ -410,7 +410,7 @@ sub ApplyRules {
       $oldmatch = $1;
       $fragment = &GetInterLink($2, '', 1);
       if ($oldmatch eq $fragment) {
-	($fragment, $rest) = split(/:/, $oldmatch);
+	($fragment, $rest) = split(/:/, $oldmatch, 2);
 	pos = (pos) - length($rest) - 1;
       } else {
 	print $fragment;
@@ -421,7 +421,7 @@ sub ApplyRules {
       $fragment = &GetInterLink($oldmatch, '', 0);
       # we have to backtrack a bit.
       if ($oldmatch eq $fragment) {
-	($fragment, $rest) = split(/:/, $oldmatch);
+	($fragment, $rest) = split(/:/, $oldmatch, 2);
 	pos = (pos) - length($rest) - 1;
       } else {
 	print $fragment;
@@ -675,8 +675,8 @@ sub RSS {
 }
 
 sub GetInterLink {
-  my ($id, $text, $bracket) = @_;
-  my ($id, $punct) = &SplitUrlPunct($id);
+  my ($str, $text, $bracket) = @_;
+  my ($id, $punct) = &SplitUrlPunct($str);
   my ($site, $page) = split(/:/, $id, 2);
   $page =~ s/&amp;/&/g;  # Unquote common URL HTML
   my $url;
@@ -684,9 +684,9 @@ sub GetInterLink {
   if ($text && $bracket && !$url) {
     return "[$id $text]$punct";
   } elsif ($bracket && !$url) {
-    return "[$id]$punct"  if ($url eq '');
+    return "[$id]$punct";
   } elsif (!$url) {
-    return "$id$punct";
+    return $str;
   } elsif ($bracket && !$text) {
     $text = ++$FootnoteNumber;
   } elsif (!$text) {
@@ -713,8 +713,8 @@ sub GetSiteUrl {
 }
 
 sub GetUrl {
-  my ($url, $text, $bracket, $images) = @_;
-  my ($url, $punct) = &SplitUrlPunct($url);
+  my ($str, $text, $bracket, $images) = @_;
+  my ($url, $punct) = &SplitUrlPunct($str);
   if ($NetworkFile && $url =~ m|^file:///|
       or !$NetworkFile && $url =~ m|^file:|) {
     # Only do remote file:// links. No file:///c|/windows.
