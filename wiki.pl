@@ -121,8 +121,8 @@ $HtmlTags    = 0;   # 1 = allow some 'unsafe' HTML tags
 $RawHtml     = 0;   # 1 = allow <HTML> environment for raw HTML inclusion
 
 # Diff
-$ENV{PATH}   = '/usr/bin/'; # Path used to find 'diff' and 'merge'
-$UseDiff     = 1;           # 1 = use diff and merge
+$ENV{PATH}   = '/usr/bin/'; # Path used to find 'diff'
+$UseDiff     = 1;           # 1 = use diff
 
 # Visitors and SurgeProtection
 $SurgeProtection = 1;      # 1 = protect against leeches
@@ -185,7 +185,7 @@ $CommentsPrefix = ''; # prefix for comment pages, eg. 'Comments_on_' to enable
 
 @LockOnCreation = ($BannedHosts, $InterMap, $RefererFilter, $StyleSheetPage, $ConfigPage);
 
-%CookieParameters = ('username'=>'', 'pwd'=>'', 'theme'=>'', 'css'=>'',
+%CookieParameters = ('username'=>'', 'pwd'=>'', 'theme'=>'', 'css'=>'', 'msg'=>'',
 		     'toplinkbar'=>$TopLinkBar, 'embed'=>$EmbedWiki);
 
 $IndentLimit = 20;                  # Maximum depth of nested lists
@@ -228,7 +228,7 @@ sub Init {
   InitRequest();      # get $q
   if ($ConfigPage) {  # $FS, $HttpCharset, $MaxPost must be set in config file!
     eval GetPageContent($ConfigPage);
-    $Message .= $q->("$ConfigPage: $@") if $@;
+    $Message .= $q->p("$ConfigPage: $@") if $@;
   }
   InitVariables();    # Ater config file, to post-process some variables
   InitCookie();       # After request, because $q is used
@@ -265,7 +265,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.179 2003/10/04 01:20:41 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.180 2003/10/04 13:02:29 as Exp $');
 }
 
 sub InitCookie {
@@ -1022,7 +1022,7 @@ sub DoBrowseRequest {
   } elsif ($action eq 'history') {
     DoHistory($id)   if ValidIdOrDie($id);
   } elsif ($action eq 'edit') {
-    DoEdit($id, 0, 0, '', 0)  if ValidIdOrDie($id);
+    DoEdit($id)  if ValidIdOrDie($id);
   } elsif ($action eq 'download') {
     DoDownload($id)  if ValidIdOrDie($id);
   } elsif ($action eq 'unlock') {
@@ -1057,9 +1057,9 @@ sub DoBrowseRequest {
     DoRollback();
   } elsif (($search ne '') || (GetParam('dosearch', '') ne '')) {
     DoSearch($search);
-  } elsif (GetParam('oldtime', '') or (GetParam('raw', 0) == 2)) { # after edit
+  } elsif (GetParam('title', '')) {
     $id = GetParam('title', '');
-    DoPost()  if ValidIdOrDie($id);
+    DoPost($id)  if ValidIdOrDie($id);
   } else {
     if ($action) {
       ReportError(Ts('Invalid action parameter %s', $action));
@@ -1104,6 +1104,9 @@ sub BrowsePage {
     print $Text{'text'};
     return;
   }
+  my $msg = GetParam('msg', '');
+  $Message .= $q->p($msg) if $msg; # show message if the page is shown
+  $NewCookie{'msg'} = '';
   # handle subtitle for old revisions, if these exist, and open keep file
   my $openKept = 0;
   my $revision = GetParam('revision', ''); # default empty string
@@ -1772,20 +1775,21 @@ sub GetHttpHeader {
 }
 
 sub Cookie {
-  my %params;
-  my $changed = 0;
+  my ($changed, $visible, %params);
   foreach (keys %CookieParameters) {
     my $default = $CookieParameters{$_};
     my $value = GetParam($_, $default);
     $params{$_} = $value  if $value ne $default;
-    $changed = 1  if $value ne $OldCookie{$_} and ($OldCookie{$_} ne '' or $value ne $default);
+    my $change = ($value ne $OldCookie{$_} and ($OldCookie{$_} ne '' or $value ne $default));
+    $visible = 1  if $change and $_ ne 'msg'; # changes to the msg parameter are invisible
+    $changed = 1  if $change; # note if any parameter changed and needs storing
   }
   if ($changed) {
     my $cookie = join($FS1, map {$_ . $FS1 . $params{$_}} keys(%params));
     my $result = $q->cookie(-name=>$CookieName,
 			    -value=>$cookie,
 			    -expires=>'+2y');
-    $Message .= $q->p(T('Cookie: ') . $result);
+    $Message .= $q->p(T('Cookie: ') . $result)  if $visible;
     return $result;
   }
   return '';
@@ -1866,8 +1870,6 @@ sub PrintFooter {
       print $q->div({-class=>'comment'}, '<p>'
 		    . GetFormStart()
 		    . GetHiddenValue("title", $OpenPageName)
-		    . GetHiddenValue("oldtime", $Now + 3600) # one hour
-		    . GetHiddenValue("oldconflict", 0)
 		    . GetHiddenValue("summary" , T("new comment"))
 		    . GetHiddenValue("recent_edit", "on")
 		    . GetTextArea('aftertext', $NewComment)
@@ -2002,7 +2004,7 @@ sub GetRedirectPage {
   # NOTE: do NOT use -method (does not work with old CGI.pm versions)
   # Thanks to Daniel Neri for fixing this problem.
   my %headers = (-uri=>$url);
-  my $cookie = Cookie;
+  my $cookie = Cookie();
   if ($cookie) {
     $headers{-cookie} = $cookie;
   }
@@ -2543,7 +2545,7 @@ sub DoUnlock {
   my $message = '';
   print GetHeader('', T('Unlocking'), '');
   print $q->p(T('This operation may take several seconds...')) . "\n";
-  for my $lock (qw(main diff index merge visitors refer_*)) {
+  for my $lock (qw(main diff index visitors refer_*)) {
     if (ForceReleaseLock($lock)) {
       $message .= $q->p(Ts('Forced unlock of %s lock.', $lock)) . "\n";
     }
@@ -2718,7 +2720,7 @@ sub FreeToNormal {
 # == Page-editing and other special-action code ==
 
 sub DoEdit {
-  my ($id, $isConflict, $oldTime, $newText, $preview) = @_;
+  my ($id, $newText, $preview) = @_;
   my $upload = GetParam('upload', undef);
   if (!UserCanEdit($id, 1)) {
     print GetHeader('', T('Editing Denied'), '');
@@ -2761,45 +2763,20 @@ sub DoEdit {
   }
   if ($upload) { # shortcut lots of code
     $revision = '';
-    $isConflict = 0;
     $preview = 0;
   } elsif ($isFile and not $upload) {
     $oldText = '';
   }
   $header = Ts('Editing %s', $id) if $upload or not $header; # maybe it was set earlier
-  if ($preview && !$isConflict) {
-    $oldText = $newText;
-  }
+  $oldText = $newText if $preview;
   print GetHeader('', QuoteHtml($header), '');
-  if ($revision ne '') {
+  if ($revision) {
     print $q->strong(Ts('Editing old revision %s.', $revision) . '  '
-		   . T('Saving this page will replace the latest revision with this text.'))
-  }
-  if ($isConflict) {
-    print $q->h1(T('Edit Conflict!'));
-    if ($isConflict>1) {
-      # The main purpose of a new warning is to display more text
-      # and move the save button down from its old location.
-      print $q->h2(T('(This is a new conflict)'));
-    }
-    print $q->p($q->strong(T('Someone saved this page after you started editing.') . ' '
-			 . T('The top textbox contains the saved text.') . ' '
-			 . T('Only the text in the top textbox will be saved.')));
-    if ($UseDiff) {
-      print $q->p(T('Scroll down to see your text with conflict markers.'));
-    } else {
-      print $q->p(T('Scroll down to see your edited text.'));
-    }
-    print $q->p(T('Last save time:') . ' ' . TimeToText($oldTime)
-		. ' (' . T('Current time is:') . ' ' . TimeToText($Now) . ')');
+		     . T('Saving this page will replace the latest revision with this text.'))
   }
   print GetFormStart($upload);
-  print GetHiddenValue("title", $id),
-        GetHiddenValue("oldtime", $pageTime),
-        GetHiddenValue("oldconflict", $isConflict);
-  if ($revision ne '') {
-    print GetHiddenValue('revision', $revision);
-  }
+  print GetHiddenValue("title", $id);
+  print GetHiddenValue('revision', $revision) if $revision;
   if ($upload) {
     print GetUpload();
   } else {
@@ -2815,9 +2792,7 @@ sub DoEdit {
     print $q->p($q->checkbox(-name=>'recent_edit',
 			     -label=>T('This change is a minor edit.')));
   }
-  if ($EditNote ne '') {
-    print T($EditNote);  # Allow translation
-  }
+  print T($EditNote) if $EditNote; # Allow translation
   my $userName = GetParam('username', '');
   print $q->p(T('Username:')
 	      . $q->textfield(-name=>'username',
@@ -2830,23 +2805,10 @@ sub DoEdit {
   } elsif ($UploadAllowed or UserIsAdmin()) {
     print $q->p(ScriptLink('action=edit;upload=1;id=' . $id, T('Replace this text with a file.')));
   }
-  if ($isConflict and not $upload) {
-    print $q->hr();
-    if ($UseDiff) {
-      print $q->p($q->strong(T('This is the text with conflict markers:')));
-    } else {
-      print $q->p($q->strong(T('This is the text you submitted:')));
-    }
-    print $q->p(GetTextArea('newtext', $newText));
-  }
   print $q->endform();
   if ($preview and not $upload) {
     print '<div class="preview">', $q->hr();
     print $q->h2(T('Preview:'));
-    if ($isConflict) {
-      print $q->strong(T('NOTE: This preview shows the revision of the other author.'))
-	. $q->hr();
-    }
     PrintWikiToHTML($oldText); # no caching, current revision, unlocked
     print $q->hr(), $q->h2(T('Preview only, not yet saved')), '</div>';
   }
@@ -3275,7 +3237,7 @@ sub PrintAllPages {
 # == Posting new pages ==
 
 sub DoPost {
-  my $id = GetParam('title', '');
+  my $id = shift;
   if (!UserCanEdit($id, 1)) {
     ReportError(Ts('Editing not allowed for %s.', $id));
   } elsif (($id eq 'SampleUndefinedPage') or ($id eq T('SampleUndefinedPage'))) {
@@ -3285,18 +3247,9 @@ sub DoPost {
   } elsif (grep(/^$id$/, @LockOnCreation) and !UserIsAdmin() and not -f GetPageFile($id)) {
     ReportError(Ts('Only an administrator can create %s', $id));
   }
-  # Handle raw edits with the meta info on the first line
   my $string = GetParam('text', undef);
   my $filename = GetParam('file', undef);
-  my $oldtime = GetParam('oldtime', '');
-  my $raw = GetParam('raw', 0);
-  if ($raw == 2) {
-    if (not $string =~ /^([0-9]+).*\n/) {
-      ReportError(Ts('Cannot find timestamp on the first line.'));
-    }
-    $oldtime = $1;
-    $string = $';
-  } elsif ($filename and not $UploadAllowed and not UserIsAdmin()) {
+  if ($filename and not $UploadAllowed and not UserIsAdmin()) {
     ReportError(T('Only administrators can upload files.'));
   }
   # Lock before getting old page to prevent races
@@ -3304,8 +3257,6 @@ sub DoPost {
   OpenPage($id);
   OpenDefaultText();
   my $old = $Text{'text'};
-  my $oldrev = $Section{'revision'};
-  my $pgtime = $Section{'ts'};
   my $preview = 0;
   # Upload file
   if ($filename) {
@@ -3345,38 +3296,26 @@ sub DoPost {
   $summary =~ s/$FS//g;
   $summary =~ s/[\r\n]+/ /g;
   # rebrowse if no changes
+  my $oldrev = $Section{'revision'};
   if (!$preview && (($old eq $string) or ($oldrev == 0 and $string eq $NewText))) {
     ReleaseLock(); # No changes -- just show the same page again
     ReBrowsePage($id, '', 1);
     return;
   }
-  my $authorAddr = $ENV{REMOTE_ADDR};
-  my $newAuthor;
-  $newAuthor = 1  if ($Section{'ip'} ne $authorAddr);  # hostname fallback
-  $newAuthor = 1  if ($oldrev == 0);  # New page
-  $newAuthor = 0  if (!$newAuthor);   # Standard flag form, not empty
-  # Handle editing conflicts.  If possible, merge automatically.
-  my $oldconflict = GetParam('oldconflict', '');
-  if (($oldrev > 0) and ($newAuthor and ($oldtime < $pgtime)) and not $filename) {
-    my $conflict = 1;
-    if ($UseDiff) {
-      # merge all changes that lead from file2 to file3 into file1.
-      my $new = MergeRevisions($string, GetTextAtTime($oldtime), $old);
-      $conflict = 0 unless ($new =~ /<<<<<<</ and $new =~ />>>>>>>/);
-      $string = $new if $new; # if merge returned '', then just keep the old one
-    }
-    if ($conflict) {
-      ReleaseLock();
-      DoEdit($id, ($oldconflict > 0 ? 2 : 1), $pgtime, $string, $preview);
-      return;
-    }
-  }
   if ($preview) {
     ReleaseLock();
-    DoEdit($id, 0, $pgtime, $string, 1);
+    DoEdit($id, $string, 1);
     return;
   }
-  # Save page
+  my $newAuthor = 0;
+  if (GetParam('username', '')) { # prefer usernames for potential newAuthor detection
+    $newAuthor = 1 if GetParam('username', '') ne $Section{'username'};
+  } elsif ($ENV{REMOTE_ADDR} eq $Section{'ip'}) {
+    $newAuthor = 1;
+  }
+  if ($newAuthor and ($Now - $Section{'ts'}) < (2 * 60)) { # can't print here because of redirect!
+    $NewCookie{'msg'} = Ts('This page was changed by somebody else %s seconds ago.  Please check if you overwrote those changes.', $Now - $Section{'ts'});
+  }
   Save($id, $string, $summary, (GetParam('recent_edit', '') eq 'on'), $filename);
   ReleaseLock();
   DeletePermanentAnchors();
@@ -3431,23 +3370,6 @@ sub GetLanguages {
     }
   }
   return \@result;
-}
-
-sub MergeRevisions {
-  my ($file1, $file2, $file3) = @_;
-  my ($name1, $name2, $name3, $output);
-  CreateDir($TempDir);
-  $name1 = "$TempDir/file1";
-  $name2 = "$TempDir/file2";
-  $name3 = "$TempDir/file3";
-  RequestLockDir('merge') or return T('Could not get a lock to merge!');
-  WriteStringToFile($name1, $file1);
-  WriteStringToFile($name2, $file2);
-  WriteStringToFile($name3, $file3);
-  $output = `merge -p -L you -L ancestor -L other $name1 $name2 $name3`;
-  ReleaseLockDir('merge');
-  # No need to unlink temp files--next merge will just overwrite.
-  return $output;
 }
 
 # Note: all diff and recent-list operations should be done within locks.
