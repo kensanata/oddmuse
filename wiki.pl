@@ -265,7 +265,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.184 2003/10/04 19:05:16 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.185 2003/10/07 16:42:36 as Exp $');
 }
 
 sub InitCookie {
@@ -1981,8 +1981,7 @@ sub GetValidatorLink {
 
 sub GetGotoBar {
   my $id = shift;
-  my $bartext;
-  $bartext .= join(' | ', map { GetPageLink($_) } @UserGotoBarPages);
+  my $bartext = join(' | ', map { GetPageLink($_) } @UserGotoBarPages);
   $bartext .= ' | ' . $UserGotoBar  if $UserGotoBar ne '';
   return $q->span({-class=>'gotobar'}, $bartext);
 }
@@ -2469,13 +2468,13 @@ sub ReportError { # fatal!
 sub ValidId {
   my $id = shift;
   return Ts('Page name is too long: %s', $id)  if (length($id) > 120);
-  return Ts('Page name may not contain space characters: %s', $id)  if ($id =~ m| |);
   if ($FreeLinks) {
     $id =~ s/ /_/g;
     return Ts('Invalid Page %s', $id)  if (!($id =~ m|^$FreeLinkPattern$|));
     return Ts('Invalid Page %s (must not end with .db)', $id)  if ($id =~ m|\.db$|);
     return Ts('Invalid Page %s (must not end with .lck)', $id)  if ($id =~ m|\.lck$|);
   } else {
+    return Ts('Page name may not contain space characters: %s', $id)  if ($id =~ m| |);
     return Ts('Invalid Page %s', $id)  if (!($id =~ /^$LinkPattern$/));
   }
   return '';
