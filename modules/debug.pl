@@ -3,5 +3,5 @@
 
 sub NewPrintFooter {
   OldPrintFooter(@_);
-  print "Debug Info!";
+  print "Debug Info: $DebugInfo";
 }
