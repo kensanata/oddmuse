@@ -1,4 +1,4 @@
-# Copyright (C) 2004  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2005  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 use Time::ParseDate;
 
-$ModulesDescription .= '<p>$Id: weblog-2.pl,v 1.4 2005/01/04 09:57:17 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: weblog-2.pl,v 1.5 2005/01/06 11:35:04 as Exp $</p>';
 
 push(@MyInitVariables, \&WebLog2Init);
 

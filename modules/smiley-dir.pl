@@ -1,4 +1,4 @@
-# Copyright (C) 2004  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2005  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ use vars qw{$SmileyDir $SmileyUrlPath};
 $SmileyDir = '/mnt/pics'; # directory with all the smileys
 $SmileyUrlPath = '/pics'; # path where all the smileys can be found (URL)
 
-$ModulesDescription .= '<p>$Id: smiley-dir.pl,v 1.5 2005/01/04 09:58:42 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: smiley-dir.pl,v 1.6 2005/01/06 11:35:04 as Exp $</p>';
 
 push(@MyInitVariables, \&SmileyDirInit);
 

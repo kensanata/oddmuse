@@ -1,4 +1,4 @@
-# Copyright (C) 2004  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2005  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.9 2005/01/02 01:54:31 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.10 2005/01/06 11:35:04 as Exp $</p>';
 
 # add the same CSS as in tables.pl
 $DefaultStyleSheet .= q{
