@@ -274,7 +274,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.204 2003/10/17 02:01:47 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.205 2003/10/17 12:23:56 as Exp $');
 }
 
 sub InitCookie {
@@ -724,10 +724,21 @@ sub RSS {
   foreach my $uri (@uris) {
     $uri =~ s/^"?(.*)"?$/$1/;
     my $rss = new XML::RSS;
-    my $ua = LWP::UserAgent->new;
+    my $ua = new LWP::UserAgent;
     my $request = HTTP::Request->new('GET', $uri);
     my $response = $ua->request($request);
     my $data = $response->content;
+    if ($HttpCharset and $data =~ m/^.*encoding="([^"]+)"/ and uc($1) ne uc($HttpCharset)) {
+      eval {
+	local $SIG{__DIE__};
+	my $encoding = uc($1);
+	require Unicode::MapUTF8;
+	$data = Unicode::MapUTF8::to_utf8({-string=>$data, -charset=>$encoding})
+	  unless $encoding eq 'UTF-8';
+	$data = Unicode::MapUTF8::from_utf8({-string =>$data, -charset=>uc($HttpCharset)}) 
+	  unless uc($HttpCharset) eq 'UTF-8';
+      }
+    }
     eval { local $SIG{__DIE__}; $rss->parse($data); };
     return $q->p($q->strong("[RSS parsing failed for $uri]")) if $@;
     my $counter;
@@ -742,7 +753,10 @@ sub RSS {
       $line .= $q->span({-class=>'contributor'}, $q->span(' . . . . . ')
 			. $i->{'dc'}->{'contributor'})
 	if $i->{'dc'}->{'contributor'};
-      my $key = $i->{'dc'}->{'date'} or $i->{'title'};
+      my $key = $i->{'dc'}->{'date'};
+      $key = $i->{'pubdate'} unless $key;
+      $key = $i->{'title'} unless $key;
+      $key = $i->{'guid'} unless $key;
       $lines{$key} = $line;
     }
   }
@@ -750,22 +764,7 @@ sub RSS {
   @lines = @lines[0..$maxitems-1] if $maxitems and $#lines > $maxitems;
   my $str;
   foreach my $i (@lines) { $str .= $q->li($lines{$i}); }
-  $str = $q->div({-class=>'rss'},$q->ul($str));
-  my $charset = uc($HttpCharset); # charsets are case insensitive
-  if ($charset eq '' or $charset eq 'UTF-8') {
-    return $str;
-  } elsif ($charset eq 'ISO-8859-1') {
-    require Unicode::String;
-    my $u = Unicode::String->new($str);
-    return $u->latin1;
-  } else {
-    # FIXME: This is perhaps broken.
-    require Unicode::String;
-    require Unicode::Map8;
-    my $u = Unicode::String->new($str);
-    my $m = Unicode::Map8->new($charset);
-    return $m->to8($u->ucs2);
-  }
+  return $q->div({-class=>'rss'}, $q->ul($str));
 }
 
 sub GetInterLink {
