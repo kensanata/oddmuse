@@ -1,3 +1,16 @@
+2003-09-08  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl: Many little CGI changes, changes of local
+	declarations (coding style), stripped some extra newlines.
+	($WikiDescription): Can no longer be set in the config file.
+	(Init): Restructured.  Call InitRequest at the beginning and
+	InitVariables at the end.
+	(InitRequest): Split into two, InitRequest and InitVariables.
+	(InitVariables): Set $WikiDescription here.
+	(DoLinks): No longer use pre tags.
+	(PrintLinkList): Add colon after page name if page names are
+	listed.
+
 2003-09-06  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetSearchLink): Do not encode page title.
