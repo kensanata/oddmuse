@@ -122,7 +122,7 @@ Neue Seite
 from %s
 von %s
 History of %s
-Historie von %s
+Andere Versionen von %s
 Compare
 Vergleichen
 Revision %s
@@ -180,17 +180,17 @@ Kommentare zu dieser Seite
 Edit revision %s of this page
 Version %s dieser Seite bearbeiten
 Edit text of this page
-Text dieser Seite bearbeiten
+Diese Seite bearbeiten
 e
-e
+b
 This page is read-only
 Diese Seite ist schreibgeschützt
 View other revisions
-Andere Versionen ansehen
+Andere Versionen dieser Seite
 View current revision
-Aktuelle Version ansehen
+Zurück zur aktuellen Version
 View all changes
-Alle Änderungen ansehen
+Liste aller Änderungen, auch ohne vorhandener Version
 Back to %s
 Zurück zu %s
 new comment
@@ -236,7 +236,7 @@ Version %s nicht verfügbar
 showing current revision instead
 Stattdessen Anzeige der aktuellen Version
 Showing revision %s
-Anzeige Version %s
+Anzeige der alten Version %s
 Cannot save an nameless page.
 Eine Seite ohne Namen kann nicht gespeichert werden.
 Cannot open %s
@@ -282,21 +282,21 @@ Bearbeitung nicht erlaubt: %s ist schreibgeschützt.
 Only administrators can upload files.
 Nur Administratoren dürfen Dateien hochladen.
 Editing revision %s of
-Bearbeitung Version %s von
+Bearbeiten der Version %s von
 Editing %s
-Bearbeitung %s
+Bearbeiten von %s
 Editing old revision %s.
-Bearbeitung alte Version %s.
+Hiermit wird die alte Version %s bearbeitet.
 Saving this page will replace the latest revision with this text.
-Das Speichern dieser Seite wird die letzte Version durch diesen Text ersetzen.
+Wird diese Änderung gespeichert, wird dies die aktuelle Version ersetzen. Damit werden die später gemachten Änderungen verloren gehen.
 Summary:
 Zusammenfassung:
 This change is a minor edit.
 Dies ist eine kleinere Änderung.
 Replace this file with text.
-Ersetze diese Datei mit Text.
+Diese Datei durch Text ersetzen.
 Replace this text with a file.
-Ersetze diesen Text mit einer Datei.
+Datei hochladen und den Text durch diese Datei ersetzen.
 File to upload: 
 Hochzuladende Datei: 
 Files of type %s are not allowed.
