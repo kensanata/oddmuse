@@ -1426,8 +1426,6 @@ EOT
 
 run_tests();
 
-fixme:
-
 print '[usemod module]';
 
 system('/bin/rm -rf /tmp/oddmuse');
@@ -1569,6 +1567,8 @@ print F "\$SurgeProtection = 0;\n";
 close(F);
 symlink('/home/alex/src/oddmuse/modules/setext.pl',
 	'/tmp/oddmuse/modules/setext.pl') or die "Cannot symlink: $@";
+symlink('/home/alex/src/oddmuse/modules/link-all.pl',
+	'/tmp/oddmuse/modules/link-all.pl') or die "Cannot symlink: $@";
 
 %Test = split('\n',<<'EOT');
 foo
@@ -1595,6 +1595,70 @@ and\nfoo  \n--- \n\nmore\n
 and <h3>foo</h3><p>more 
 and\nfoo\n---\n\nmore\n
 and <h3>foo</h3><p>more 
+EOT
+
+run_tests();
+
+fixme:
+
+print '[link-all module]';
+
+system('/bin/rm -rf /tmp/oddmuse');
+die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
+mkdir '/tmp/oddmuse';
+mkdir '/tmp/oddmuse/modules';
+open(F,'>/tmp/oddmuse/config');
+print F "\$SurgeProtection = 0;\n";
+close(F);
+symlink('/home/alex/src/oddmuse/modules/link-all.pl',
+	'/tmp/oddmuse/modules/link-all.pl') or die "Cannot symlink: $@";
+symlink('/home/alex/src/oddmuse/modules/markup.pl',
+	'/tmp/oddmuse/modules/markup.pl') or die "Cannot symlink: $@";
+symlink('/home/alex/src/oddmuse/modules/subscriberc.pl',
+	'/tmp/oddmuse/modules/subscriberc.pl') or die "Cannot symlink: $@";
+
+update_page('foo', 'bar');
+
+test_page(get_page('action=browse id=foo define=1'),
+	  quotemeta('<a class="edit" title="Click to create this page" href="http://localhost/wiki.pl?action=edit;id=bar">bar</a>'));
+
+%Test = split('\n',<<'EOT');
+testing foo.
+testing <a class="local" href="http://localhost/test-wrapper.pl/foo">foo</a>.
+EOT
+
+run_tests();
+
+print '[subscriberc module]'; # test together with link-all module
+
+%Test = split('\n',<<'EOT');
+My subscribed pages: AlexSchroeder, [[LionKimbro]], [[Foo bar]].
+<a href="http://localhost/test-wrapper.pl?action=rc;rcfilteronly=^(AlexSchroeder|LionKimbro|Foo_bar)$">My subscribed pages: AlexSchroeder, LionKimbro, Foo bar</a>.
+My subscribed categories: CategoryDecisionMaking, CategoryBar.
+<a href="http://localhost/test-wrapper.pl?action=rc;rcfilteronly=(CategoryDecisionMaking|CategoryBar)">My subscribed categories: CategoryDecisionMaking, CategoryBar</a>.
+My subscribed pages: AlexSchroeder, [[LionKimbro]], [[Foo bar]], categories: CategoryDecisionMaking.
+<a href="http://localhost/test-wrapper.pl?action=rc;rcfilteronly=^(AlexSchroeder|LionKimbro|Foo_bar)$|(CategoryDecisionMaking)">My subscribed pages: AlexSchroeder, LionKimbro, Foo bar, categories: CategoryDecisionMaking</a>.
+EOT
+
+run_tests();
+
+print '[toc]';
+
+system('/bin/rm -rf /tmp/oddmuse');
+die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
+mkdir '/tmp/oddmuse';
+mkdir '/tmp/oddmuse/modules';
+open(F,'>/tmp/oddmuse/config');
+print F "\$SurgeProtection = 0;\n";
+close(F);
+symlink('/home/alex/src/oddmuse/modules/toc.pl',
+	'/tmp/oddmuse/modules/toc.pl') or die "Cannot symlink: $@";
+symlink('/home/alex/src/oddmuse/modules/usemod.pl',
+	'/tmp/oddmuse/modules/usemod.pl') or die "Cannot symlink: $@";
+
+%Test = split('\n',<<'EOT');
+== bees: honeymaking ==\n\nMoo.\n
+<h2><a name="bees%3a%20honeymaking">bees: honeymaking</a></h2><p>Moo. 
 EOT
 
 run_tests();
