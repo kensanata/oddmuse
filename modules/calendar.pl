@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.31 2004/12/20 06:11:29 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.32 2005/01/06 11:23:44 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalendarUseCal);
 
@@ -137,13 +137,13 @@ sub CalendarRule {
     Clean(CloseHtmlEnvironments() . $q->start_div({-class=>'cal year'}));
     Dirty($1);
     PrintYearCalendar($2);
-    print $q->end_div() . AddHtmlEnvironment('p');
+    print $q->end_div() . Clean(AddHtmlEnvironment('p'));
     pos = $oldpos;
     return '';
   } elsif (/\G(month:(\d\d\d\d)-(\d\d))/gc) {
     my $oldpos = pos;
     Dirty($1);
-    print CloseHtmlEnvironments() . Cal($2, $3) . AddHtmlEnvironment('p');
+    print CloseHtmlEnvironments() . Cal($2, $3) . Clean(AddHtmlEnvironment('p'));
     pos = $oldpos;
     return '';
   } elsif (/\G(month:([+-]\d\d?))/gc) {
@@ -155,7 +155,7 @@ sub CalendarRule {
     $mon += 1 + $delta;
     while ($mon < 1) { $year -= 1; $mon += 12; };
     while ($mon > 12) { $year += 1; $mon -= 12; };
-    print CloseHtmlEnvironments() . Cal($year, $mon) . AddHtmlEnvironment('p');
+    print CloseHtmlEnvironments() . Cal($year, $mon) . Clean(AddHtmlEnvironment('p'));
     pos = $oldpos;
     return '';
   }
