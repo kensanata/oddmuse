@@ -40,17 +40,17 @@ use vars qw(@RcDays @HtmlTags
   $RcFile $RcOldFile $IndexFile $NoEditFile $BanListFile $ConfigFile
   $FullUrl $SiteName $HomePage $LogoUrl $RcDefault $IndentLimit
   $RecentTop $RecentLink $EditAllowed $UseDiff $UseSubpage $RawHtml
-  $SimpleLinks $NonEnglish $KeepDays $HtmlTags $HtmlLinks $KeepMajor
-  $KeepAuthor $FreeUpper $EmbedWiki $BracketText $UseConfig $UseLookup
-  $AdminPass $EditPass $NetworkFile $BracketWiki $FreeLinks $WikiLinks
-  $FreeLinkPattern $RCName $RunCGI $ShowEdits $LinkPattern
-  $InterLinkPattern $InterSitePattern $UrlProtocols $UrlPattern
-  $ImageExtensions $RFCPattern $ISBNPattern $FS $FS0 $FS1 $FS2 $FS3
-  $CookieName $SiteBase $StyleSheet $NotFoundPg $FooterNote $EditNote
-  $MaxPost $NewText $HttpCharset $UserGotoBar $VisitorTime
-  $VisitorFile $Visitors %Smilies %SpecialDays $InterWikiMoniker
-  $SiteDescription $RssImageUrl $RssPublisher $RssContributor
-  $RssRights $WikiDescription $BannedCanRead $SurgeProtection
+  $KeepDays $HtmlTags $HtmlLinks $KeepMajor $KeepAuthor $FreeUpper
+  $EmbedWiki $BracketText $UseConfig $UseLookup $AdminPass $EditPass
+  $NetworkFile $BracketWiki $FreeLinks $WikiLinks $FreeLinkPattern
+  $RCName $RunCGI $ShowEdits $LinkPattern $InterLinkPattern
+  $InterSitePattern $UrlProtocols $UrlPattern $ImageExtensions
+  $RFCPattern $ISBNPattern $FS $FS0 $FS1 $FS2 $FS3 $CookieName
+  $SiteBase $StyleSheet $NotFoundPg $FooterNote $EditNote $MaxPost
+  $NewText $HttpCharset $UserGotoBar $VisitorTime $VisitorFile
+  $Visitors %Smilies %SpecialDays $InterWikiMoniker $SiteDescription
+  $RssImageUrl $RssPublisher $RssContributor $RssRights
+  $WikiDescription $BannedCanRead $SurgeProtection
   $SurgeProtectionViews $SurgeProtectionTime $DeletedPage %Languages
   $LanguageLimit $ValidatorLink $RefererTracking $RefererTimeLimit
   $RefererLimit $TopLinkBar);
@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.57 2003/05/17 14:40:07 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.58 2003/05/17 15:07:12 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -109,8 +109,6 @@ $BannedCanRead = 1; # 1 = banned cannot edit, 0 = banned cannot read
 $WikiLinks   = 1;   # 1 = LinkPattern is a link
 $FreeLinks   = 1;   # 1 = [[some text]] is a link
 $FreeUpper   = 0;   # 1 = forces free links to start with upper case
-$SimpleLinks = 0;   # 1 = only letters in links, 0 = allow _ and numbers
-$NonEnglish  = 0;   # 1 = non-ASCII link characters allowed
 $BracketText = 1;   # 1 = [URL desc] uses a description for the URL
 $BracketWiki = 0;   # 1 = [WikiLink desc] uses a desc for the local link
 $HtmlLinks   = 0;   # 1 = <a href="foo">desc</a> is a link
@@ -224,7 +222,7 @@ sub DoBannedReading {
 # == Markup Code ==
 
 sub InitLinkPatterns {
-  my ($UpperLetter, $LowerLetter, $AnyLetter, $LpA, $LpB, $QDelim);
+  my ($UpperLetter, $LowerLetter, $AnyLetter, $WikiWord, $SubPage, $QDelim);
   # Allow uses to call this from their config file, so do not run twice.
   return if $FS;
   # Field separators are used in the URL-style patterns below.
@@ -235,57 +233,23 @@ sub InitLinkPatterns {
   $FS1 = $FS . '1';   # The FS values are used to separate fields
   $FS2 = $FS . '2';   # in stored hashtables and other data structures.
   $FS3 = $FS . '3';   # The FS character is not allowed in user data.
-  $UpperLetter = '[A-Z';
-  $LowerLetter = '[a-z';
-  $AnyLetter   = '[A-Za-z';
-  if ($NonEnglish) {
-    $UpperLetter .= "\xc0-\xde";
-    $LowerLetter .= "\xdf-\xff";
-    $AnyLetter   .= "\x80-\xff";
-  }
-  if (!$SimpleLinks) {
-    $AnyLetter .= '_0-9';
-  }
-  $UpperLetter .= ']'; $LowerLetter .= ']'; $AnyLetter .= ']';
-  # Main link pattern: lowercase between uppercase, then anything
-  $LpA = $UpperLetter . '+' . $LowerLetter . '+' . $UpperLetter
-         . $AnyLetter . '*';
-  # Optional subpage link pattern: uppercase, lowercase, then anything
-  $LpB = $UpperLetter . '+' . $LowerLetter . '+' . $AnyLetter . '*';
+  $QDelim = '(?:"")?';# Optional quote delimiter (removed from the output)
+  $WikiWord = '[A-Z]+[a-z\x80-\xff]+[A-Z][A-Za-z\x80-\xff]*';
+  $SubPage = '[A-Z]+[a-z\x80-\xff]+[A-Za-z\x80-\xff]*';
+  $LinkPattern = "($WikiWord)";
   if ($UseSubpage) {
-    # Loose pattern: If subpage is used, subpage may be simple name
-    $LinkPattern = "((?:(?:$LpA)?\\/$LpB)|$LpA)";
-    # Strict pattern: both sides must be the main LinkPattern
-    # $LinkPattern = "((?:(?:$LpA)?\\/)?$LpA)";
-  } else {
-    $LinkPattern = "($LpA)";
+    $LinkPattern = "((?:(?:$WikiWord)?\\/$SubPage)|$WikiWord)";
   }
-  $QDelim = '(?:"")?';     # Optional quote delimiter (not in output)
   $LinkPattern .= $QDelim;
-  # Inter-site convention: sites must start with uppercase letter
-  # (Uppercase letter avoids confusion with URLs)
-  $InterSitePattern = $UpperLetter . $AnyLetter . '+';
+  # Inter-site convention: sites must start with uppercase letter.
+  # This avoids confusion with URLs.
+  $InterSitePattern = '[A-Z]+[A-Za-z\x80-\xff]+';
   $InterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x80-\xff_=!?#$@~`%&*+\\/:;.,]+[-a-zA-Z0-9\x80-\xff_=#$@~`%&*+\\/])$QDelim";
-  if ($FreeLinks) {
-    # Note: the - character must be first in $AnyLetter definition
-    if ($NonEnglish) {
-      $AnyLetter = "[-,.()' _0-9A-Za-z\x80-\xff]";
-    } else {
-      $AnyLetter = "[-,.()' _0-9A-Za-z]";
-    }
-  }
-  $FreeLinkPattern = "($AnyLetter+)";
+  $FreeLinkPattern = "([-,.()' _0-9A-Za-z\x80-\xff]+)";
   if ($UseSubpage) {
-    $FreeLinkPattern = "((?:(?:$AnyLetter+)?\\/)?$AnyLetter+)";
+    $FreeLinkPattern = "((?:(?:[-,.()' _0-9A-Za-z\x80-\xff]+)?\\/)?[-,.()' _0-9A-Za-z\x80-\xff]+)";
   }
   $FreeLinkPattern .= $QDelim;
-  # Url-style links are delimited by one of:
-  #   1.  Whitespace                           (kept in output)
-  #   2.  Left or right angle-bracket (< or >) (kept in output)
-  #   3.  Right square-bracket (])             (kept in output)
-  #   4.  A single double-quote (")            (kept in output)
-  #   5.  A $FS (field separator) character    (kept in output)
-  #   6.  A double double-quote ("")           (removed from output)
   $UrlProtocols = 'http|https|ftp|afs|news|nntp|mid|cid|mailto|wais|'
                   . 'prospero|telnet|gopher';
   $UrlProtocols .= '|file'  if $NetworkFile;
