@@ -129,7 +129,9 @@ sub run_tests {
       $passed++;
     } else {
       $failed++;
-      print "\n\"", $input, '" -> "', $output, '" instead of "', $New{$input}, "\"\n";
+      print "\n\n---- input:\n", $input,
+	    "\n---- output:\n", $output,
+            "\n---- instead of:\n", $New{$input}, "\n----\n";
     }
   }
 }
@@ -1328,8 +1330,8 @@ do not eat 0 from text
 do not eat 0 from text
 ordinary text
 ordinary text
-\nparagraph
-<p>paragraph
+paragraph\n\nparagraph
+paragraph<p>paragraph</p>
 * one\n*two
 <ul><li>one</li><li>two</li></ul>
 * one\n\n*two
@@ -1439,6 +1441,8 @@ symlink('/home/alex/src/oddmuse/modules/usemod.pl',
 	'/tmp/oddmuse/modules/usemod.pl') or die "Cannot symlink: $@";
 
 %Test = split('\n',<<'EOT');
+* ''one\n** two
+<ul><li><em>one</em><ul><li>two</li></ul></li></ul>
 # one\n# two
 <ol><li>one</li><li>two</li></ol>
 * one\n#two
@@ -1459,6 +1463,10 @@ symlink('/home/alex/src/oddmuse/modules/usemod.pl',
 <dl><dt>one</dt><dd>eins</dd><dt>two</dt><dd>zwei</dd></dl>
 ; one:eins\n\n;two:zwei
 <dl><dt>one</dt><dd>eins</dd><dt>two</dt><dd>zwei</dd></dl>
+; a: b: c\n;; x: y: z
+<dl><dt>a</dt><dd>b: c<dl><dt>x</dt><dd>y: z</dd></dl></dd></dl>
+* foo &lt;b&gt;bold\n* bar &lt;/b&gt;
+<ul><li>foo <b>bold</b></li><li>bar &lt;/b&gt;</li></ul>
 This is ''emphasized''.
 This is <em>emphasized</em>.
 This is '''strong'''.
@@ -1480,19 +1488,19 @@ This is <strong>strong text containing <em>emph</em> text</strong>.
 ||one||
 <table class="user"><tr><td>one</td></tr></table>
 introduction\n\n||one||two||three||\n||||one two||three||
-introduction<p><table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table>
+introduction<p></p><table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table>
 ||one||two||three||\n||||one two||three||\n\nfooter
-<table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table><p>footer
+<table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table><p>footer</p>
 introduction\n\n||one||two||three||\n||||one two||three||\n\nfooter
-introduction<p><table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table><p>footer
+introduction<p></p><table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table><p>footer</p>
  source
 <pre> source</pre>
  source\n etc\n
-<pre> source\n etc\n</pre>
+<pre> source\n etc</pre>
  source\n \n etc\n
-<pre> source\n \n etc\n</pre>
+<pre> source\n \n etc</pre>
  source\n \n etc\n\nother
-<pre> source\n \n etc\n</pre><p>other
+<pre> source\n \n etc\n</pre><p>other</p>
 EOT
 
 run_tests();
@@ -1588,18 +1596,59 @@ foo_bar_baz
 _foo_bar_ baz
 <u>foo bar</u> baz
 and\nfoo\n===\n\nmore\n
-and <h2>foo</h2><p>more 
+and <h2>foo</h2><p>more</p>
 and\n\nfoo\n===\n\nmore\n
-and<p><h2>foo</h2><p>more 
+and<p></p><h2>foo</h2><p>more</p>
 and\nfoo  \n--- \n\nmore\n
-and <h3>foo</h3><p>more 
+and <h3>foo</h3><p>more</p>
 and\nfoo\n---\n\nmore\n
-and <h3>foo</h3><p>more 
+and <h3>foo</h3><p>more</p>
 EOT
 
 run_tests();
 
 fixme:
+
+print '[anchors module]';
+system('/bin/rm -rf /tmp/oddmuse');
+die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
+mkdir '/tmp/oddmuse';
+mkdir '/tmp/oddmuse/modules';
+open(F,'>/tmp/oddmuse/config');
+print F "\$SurgeProtection = 0;\n";
+close(F);
+symlink('/home/alex/src/oddmuse/modules/anchors.pl',
+	'/tmp/oddmuse/modules/anchors.pl') or die "Cannot symlink: $@";
+
+%Test = split('\n',<<'EOT');
+This is a [:day for fun and laughter].
+This is a <a class="anchor" name="day_for_fun_and_laughter" />.
+[[#day for fun and laughter]].
+<a class="local anchor" href="#day_for_fun_and_laughter">day for fun and laughter</a>.
+[[2004-08-17#day for fun and laughter]].
+<a class="local anchor" href="http://localhost/test-wrapper.pl/2004-08-17#day_for_fun_and_laughter">2004-08-17#day for fun and laughter</a>.
+[[[#day for fun and laughter]]].
+[<a class="local anchor" href="#day_for_fun_and_laughter">day for fun and laughter</a>].
+[[[2004-08-17#day for fun and laughter]]].
+<a class="local anchor number" title="2004-08-17#day_for_fun_and_laughter" href="http://localhost/test-wrapper.pl/2004-08-17#day_for_fun_and_laughter"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>.
+[[#day for fun and laughter|boo]].
+[[#day for fun and laughter|boo]].
+[[2004-08-17#day for fun and laughter|boo]].
+[[2004-08-17#day for fun and laughter|boo]].
+EOT
+
+run_tests();
+
+open(F,'>/tmp/oddmuse/config');
+print F "\$BracketWiki = 1;\n";
+close(F);
+
+%Test = split('\n',<<'EOT');
+[[2004-08-17#day for fun and laughter|boo]].
+<a class="local anchor" href="http://localhost/test-wrapper.pl/2004-08-17#day_for_fun_and_laughter">boo</a>.
+EOT
+
+run_tests();
 
 print '[link-all module]';
 
@@ -1658,7 +1707,7 @@ symlink('/home/alex/src/oddmuse/modules/usemod.pl',
 
 %Test = split('\n',<<'EOT');
 == bees: honeymaking ==\n\nMoo.\n
-<h2><a name="bees%3a%20honeymaking">bees: honeymaking</a></h2><p>Moo. 
+<h2><a name="bees%3a%20honeymaking">bees: honeymaking</a></h2><p>Moo.</p>
 EOT
 
 run_tests();
