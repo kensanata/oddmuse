@@ -16,8 +16,10 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.2 2004/01/30 21:35:44 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.3 2004/02/05 17:56:01 as Exp $</p>';
 
+push(@MyMacros, sub{ s/\[new:\]/"[new$1:" . GetParam('username', T('Anonymous'))
+		       . ':' . TimeToText($Now) . "]"/ge });
 push(@MyMacros, sub{ s/\[new(:[^]:]*)\]/"[new$1:" . TimeToText($Now) . "]"/ge });
 
 push(@MyRules, \&PortraitSupportRule);
