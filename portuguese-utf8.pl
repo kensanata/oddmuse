@@ -26,7 +26,7 @@ Não foi possivel criar %s
 Invalid UserName %s: not saved.
 Usuário inválido %s: nada salvo.
 UserName must be 50 characters or less: not saved
-NomeUsuario precisa ter no mínimo 50 caracteres: nada salvo
+NomeUsuario deve ter 50 caracteres ou menos: nada salvo
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 http://www.amazon.com/exec/obidos/ISBN=%s
