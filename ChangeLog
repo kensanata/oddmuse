@@ -2,6 +2,10 @@
 
 	* wiki.pl (InitVariables): Add $RssInterwikiTranslate.
 	(PrintFooter): Added admin bar inspired from UseMod 1.0.
+	(ReBrowsePage): Third parameter is the anchor, UrlEncode all parameters.
+	(DoPost): No longer encode id.
+
+	(BrowseResolvedPage): Add third parameter to call to ReBrowsePage.
 
 	(RSS): Use three-digit numbers to number items without a
 	timestamp, so that the number is not recognized as a valid
