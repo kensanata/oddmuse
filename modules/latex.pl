@@ -24,34 +24,40 @@
 
 use vars qw($LatexDir $LatexLinkDir $LatexExtendPath $LatexSingleDollars);
 
-my $dvipng = "/usr/bin/dvipng";
+# You must set to the path to dvipng
+my $dvipngPath = "/usr/bin/dvipng";
 
-$ModulesDescription .= '<p>$Id: latex.pl,v 1.9 2004/10/04 02:58:29 tolchz Exp $</p>';
+# Set $useMD5 to 1 to use MD5 hashes for filenames, set it to 0 to use a url-encoded hash
+# If $useMD5 is set and the module is not available, latex.pl falls back on urlencode
+my $useMD5 = 0;
 
 # PATH must be extended in order to make latex available along with
-# any binaries that they may need to work
-
+# any binaries that it may need to work
 $LatexExtendPath = ':/usr/share/texmf/bin:/usr/bin:/usr/local/bin';
 
+$LatexSingleDollars = 0;
 
 # $LatexDir must be accessible from the outside as $LatexLinkDir.  The
 # first directory is used to *save* the pictures, the second directory
 # is used to produce the *link* to the pictures.
-
+#
 # Example: You store the images in /org/org.emacswiki/htdocs/test/latex.
 # This directory is reachable from the outside as http://www.emacswiki.org/test/latex/.
 # /org/org.emacswiki/htdocs/test is your $DataDir.
-
 $LatexDir    = "$DataDir/latex";
 $LatexLinkDir= "/wiki/latex";
 
-$LatexSingleDollars = 0;
+
 
 # You also need a template stored as $DataDir/template.latex.  The
 # template must contain the string <math> where the LaTeX code is
 # supposed to go.  It will be created on the first run.
 
 my $LatexDefaultTemplateName = "$LatexDir/template.latex";
+
+
+
+$ModulesDescription .= '<p>$Id: latex.pl,v 1.10 2004/10/04 03:58:22 tolchz Exp $</p>';
 
 my $LatexDefaultTemplate = << 'EOT';
 \documentclass[12pt]{article}
@@ -78,13 +84,25 @@ sub MakeLaTeX {
   my ($latex, $type) = @_;
   $ENV{PATH} .= $LatexExtendPath if $LatexExtendPath and $ENV{PATH} !~ /$LatexExtendPath/;
 
-  if (not -e $dvipng) {
-      return "[Error: dvipng binary not found at $dvipng]";
+  if (not -e $dvipngPath) {
+      return "[Error: dvipng binary not found at $dvipngPath ]";
   }
 
   $latex = UnquoteHtml($latex); # Change &lt; back to <, for example
-  my $hash = UrlEncode($latex);
-  $hash =~ s/%//g;
+  
+
+  # User selects which hash to use
+  my $hash;
+  my $hasMD5;
+  if ($useMD5)  { $hasMD5 = eval "require Digest::MD5;"; }
+  if ($useMD5 && $hasMD5) {
+      $hash = Digest::MD5::md5_base64($latex);
+      $hash =~ s/\//a/g;
+  }  else {
+      $hash = UrlEncode($latex);
+      $hash =~ s/%//g;
+  }
+  
   # check cache
   if (-f "$LatexDir/$hash.png"
       and not -z "$LatexDir/$hash.png") {
@@ -119,7 +137,7 @@ sub MakeLaTeX {
   WriteStringToFile ("srender.tex", $template);
   qx(latex srender.tex);
   return "[Illegal LaTeX markup: <pre>$latex</pre>]" if $?;
-  my $output = qx($dvipng -T tight -bg Transparent srender.dvi);
+  my $output = qx($dvipngPath -T tight -bg Transparent srender.dvi);
   return "[dvipng error $? ($output)]" if $?;
   my $result;
   if (-f 'srender1.png' and not -z 'srender1.png') {
