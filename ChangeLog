@@ -1,3 +1,8 @@
+2003-11-16  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (Tss): @_[0] -> $_[0]
+	(PrintSearchResults): \1 -> $1
+
 2003-11-15  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DiffHtmlMarkWords): Be even more restrictive.  If the
