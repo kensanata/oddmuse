@@ -1,4 +1,33 @@
+2005-01-07  Alex Schroeder  <alex@gnu.org>
+
+	* modules/referrer-tracking.pl: Moved from wiki.pl.
+	(RefererNewPrintFooter): Removed $RefererTracking.
+
+	* changelog-to-rss (output): Handle parentheses on their own.
+
+	* wiki.pl: Moved referrer tracking into a module.  Removed
+	appropriate values from several variables.
+	(InitVariables, BrowsePage): Related changes.
+	(DoAdminPage, DoMaintain, DeletePage): Ditto.
+	(GetRefererFile, ReadReferers, ExpireReferers, GetReferers)
+	(UpdateReferers, WriteReferers, RefererTrack)
+	(DoPrintAllReferers, PrintAllReferers): Removed.
+
+	* modules/page-type.pl (PageTypeInit): Test @AdminPages before
+	pushing something onto the list because of mod_perl.
+
+	* modules/localnames.pl (LocalNamesInit): Test @AdminPages before
+	pushing something onto the list because of mod_perl.
+
+	* wiki.pl: mod_perl stuff, suggested by Ross Thomas.
+	(InitDirConfig): New, set all directories here.
+	(Init): Call it.
+	(handler): New.
+
 2005-01-06  Alex Schroeder  <alex@gnu.org>
+
+	* modules/calendar.pl: Improve $DefaultStyleSheet.
+	(CalendarRule): Return new open p tag instead of using Clean.
 
 	* test.pl: Updated calendar.pl tests.
 
