@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.12 2004/08/13 01:45:58 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.13 2004/08/13 02:15:24 as Exp $</p>';
 
 push(@MyMacros, sub{ s/\[new::\]/"[new:" . GetParam('username', T('Anonymous'))
 		       . ':' . TimeToText($Now) . "]"/ge });
@@ -47,7 +47,7 @@ sub PortraitSupportRule {
   } elsif (m/\Gportrait:$UrlPattern/gc) {
     return $q->img({-src=>$1, -alt=>T("Portrait"), -class=>'portrait'});
   } elsif (m/\G\[new(.*)\]/gc) {
-    my $portrait;
+    my $portrait = '';
     my ($ignore, $name, $time) = split(/:/, $1, 3);
     if ($name) {
       if (not $Portrait{$name}) {
@@ -67,10 +67,9 @@ sub PortraitSupportRule {
     }
     my $html = CloseHtmlEnvironments() . ($MyColorDiv ? '</div>' : '');
     $MyColor = !$MyColor;
-    $html .= '<div class="color ' . ($MyColor ? 'one' : 'two') . '">'
-      . AddHtmlEnvironment('p') . $portrait;
+    $html .= '<div class="color ' . ($MyColor ? 'one' : 'two') . '">' . $portrait;
     $MyColorDiv = 1;
-    return $html ;
+    return $html;
   }
   return undef;
 }
