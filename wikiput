@@ -25,11 +25,13 @@ def main():
     """The main method of the wikiput script."""
     summary=""
     username=""
+    password=""
     recent_edit="off"
     try:
         opts, args = getopt.getopt(sys.argv[1:],
-                                   "ht:s:u:m:",
-                                   ["help", "summary=", "user=", "minor-edit="])
+                                   "ht:s:u:p:m:",
+                                   ["help", "summary=", "user=", "password=",
+				    "minor-edit="])
     except getopt.GetoptError:
         usage(sys.stderr)
         sys.exit(1)
@@ -43,10 +45,13 @@ def main():
             summary = arg
         if opt in ("-u", "--user"):
             username = arg
+        if opt in ("-p", "--password"):
+            password = arg
         if opt in ("-m", "--minor-edit"):
             recent_edit="on"
     text = sys.stdin.read()
-    wikiput(args[0], text, summary=summary, recent_edit=recent_edit)
+    wikiput(args[0], text, summary=summary, username=username,
+	    password=password, recent_edit=recent_edit)
 
 def usage(out):
     """Display the usage information for this script.
@@ -63,13 +68,14 @@ def usage(out):
 	      " -u --user=U        The username to use (default: none)\n"
               " -m --minor-edit=B  Whether this is a minor edit (default: no)\n")
 
-def wikiput(where, text,
-            summary="", username="", recent_edit="no"):
+def wikiput(where, text, summary="", username="", 
+	    password="", recent_edit="no"):
     (host, path, title) = parse_wiki_location(where)
     params = urllib.urlencode({'title': title,
                                'text': text,
                                'summary': summary,
 			       'username': username,
+			       'pwd': password,
                                'recent_edit': recent_edit})
     headers = {'Content-Type': "application/x-www-form-urlencoded"}
     conn = httplib.HTTPConnection(host)
