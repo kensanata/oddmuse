@@ -353,6 +353,7 @@ die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
 mkdir '/tmp/oddmuse';
 open(F,'>/tmp/oddmuse/config');
 print F "\$BracketWiki = 1;\n";
+print F "\$AllNetworkFiles = 1;\n";
 close(F);
 update_page('SandBox', "This page exists.");
 update_page('Banana', "This page exists also.");
@@ -366,6 +367,10 @@ update_page('Banana', "This page exists also.");
 <a href="http://localhost/test-wrapper.pl/Banana">Not a pear</a>
 [[Appel|Not a pear]]
 [Appel<a href="http://localhost/test-wrapper.pl?action=edit&amp;id=Appel">?</a> Not a pear]
+file://home/foo/tutorial.pdf
+<a href="file://home/foo/tutorial.pdf">file://home/foo/tutorial.pdf</a>
+file:///home/foo/tutorial.pdf
+<a href="file:///home/foo/tutorial.pdf">file:///home/foo/tutorial.pdf</a>
 EOT
 
 run_tests();
