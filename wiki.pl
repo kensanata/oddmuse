@@ -310,7 +310,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.336 2004/03/07 13:32:35 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.337 2004/03/07 19:41:30 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -545,10 +545,12 @@ sub ApplyRules {
       print GetPageOrEditLink($2, $3, $bracket);
     } elsif ($FreeLinks && $locallinks
 	     && ($BracketWiki && m/\G(\[\[$FreeLinkPattern\|([^\]]+)\]\])/cog
+		 or m/\G(\[\[\[$FreeLinkPattern\]\]\])/cog
 		 or m/\G(\[\[$FreeLinkPattern\]\])/cog)) {
       # [[Free Link|text]], [[Free Link]]
       Dirty($1);
-      print GetPageOrEditLink($2, $3, 0 , 1); # $3 may be empty
+      my $bracket = (substr($1, 0, 3) eq '[[[');
+      print GetPageOrEditLink($2, $3, $bracket, 1); # $3 may be empty
     } elsif (%Smilies && (Clean(SmileyReplace()))) {
     } elsif (eval { local $SIG{__DIE__}; Clean(MyRules()); }) {
     } elsif (Clean(RunMyRules())) {
@@ -895,15 +897,15 @@ sub GetUrl {
 
 sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result!
   my ($id, $text, $bracket, $free) = @_;
-  $id = FreeToNormal($id) if $FreeLinks;
+  $id = FreeToNormal($id);
   my ($class, $exists, $title) = ResolveId($id);
   if (!$text && $exists && $bracket) {
-    $text = ++$FootnoteNumber;
+    $text = '[' . ++$FootnoteNumber . ']';
+    $class .= " footnote";
   }
-  if ($exists) {
+  if ($exists) { # don't show brackets if the page is local/anchor/near.
     $text = $id unless $text;
     $text =~ s/_/ /g if $free;
-    $text = "[$text]" if $bracket;
     return ScriptLink(UrlEncode($id), $text, $class, '', $title);
   } else {
     # $free and $bracket usually exclude each other
@@ -931,20 +933,16 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
 
 sub GetPageLink { # shortcut
   my ($id, $name) = @_;
+  $id = FreeToNormal($id);
   $name = $id unless $name;
-  if ($FreeLinks) {
-    $id = FreeToNormal($id);
-    $name =~ s/_/ /g;
-  }
+  $name =~ s/_/ /g;
   return ScriptLink(UrlEncode($id), $name);
 }
 
 sub GetEditLink { # shortcut
   my ($id, $name) = @_;
-  if ($FreeLinks) {
-    $id = FreeToNormal($id);
-    $name =~ s/_/ /g;
-  }
+  $id = FreeToNormal($id);
+  $name =~ s/_/ /g;
   return ScriptLink('action=edit;id=' . UrlEncode($id), $name);
 }
 
@@ -1132,8 +1130,7 @@ sub ResolveId {
 }
 
 sub BrowseResolvedPage {
-  my $id = shift;
-  $id = FreeToNormal($id) if $FreeLinks; # needed even if page does not exist
+  my $id = FreeToNormal(shift);
   my ($class, $resolved, $title) = ResolveId($id);
   if ($class eq 'near' && not GetParam('rcclusteronly', 0)) {
     print $q->redirect({-uri=>GetInterSiteUrl($title, $resolved)});
@@ -1732,7 +1729,7 @@ sub DoRollback {
 
 sub GetPageParameters {
   my ($action, $id, $revision, $cluster) = @_;
-  $id = FreeToNormal($id) if $FreeLinks;
+  $id = FreeToNormal($id);
   my $link = "action=$action;id=" . UrlEncode($id);
   $link .= ";revision=$revision" if $revision;
   $link .= ";rcclusteronly=$cluster" if $cluster;
@@ -1847,7 +1844,8 @@ sub GetHttpHeader {
   $PrintedHeader = 1;
   my ($type, $modified, $status) = @_;
   my $mod = gmtime($modified or $LastUpdate);
-  my %headers = (-last_modified=>$mod, -cache_control=>'max-age=10'); # HTTP/1.1 headers only
+  my %headers = (-cache_control=>'max-age=10'); # HTTP/1.1 headers only
+  $headers{last_modified} = $mod if GetParam('cache', $UseCache) >= 2;
   if ($HttpCharset ne '') {
     $headers{-type} = "$type; charset=$HttpCharset";
   } else {
@@ -1997,7 +1995,7 @@ sub PrintFooter {
 	$revisions .= GetEditLink($id, T('Edit text of this page'));
       }
     } else { # no permission or generated page
-      $revisions .= T('This page is read-only');
+      $revisions .= ScriptLink('action=password', T('This page is read-only'));
     }
   }
   if ($id and $rev ne 'history') {
@@ -2554,7 +2552,7 @@ sub GetRemoteHost {
   return $rhost;
 }
 
-sub FreeToNormal {
+sub FreeToNormal { # trim all spaces and convert them to underlines
   my $id = shift;
   $id =~ s/ /_/g;
   if (index($id, '_') > -1) {  # Quick check for any space/underscores
@@ -3210,8 +3208,7 @@ sub PrintAllPages {
 # == Posting new pages ==
 
 sub DoPost {
-  my $id = shift;
-  $id = FreeToNormal($id) if $FreeLinks;
+  my $id = FreeToNormal(shift);
   ValidIdOrDie($id);
   if (!UserCanEdit($id, 1)) {
     ReportError(Ts('Editing not allowed for %s.', $id), '403 FORBIDDEN');
@@ -3820,7 +3817,7 @@ sub WritePermanentAnchors {
 }
 
 sub GetPermanentAnchor {
-  my $id = FreeToNormal(shift); # Trims extra spaces, too
+  my $id = FreeToNormal(shift);
   my $text = $id;
   $text =~ s/_/ /g;
   my ($class, $resolved) = ResolveId($id);
