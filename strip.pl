@@ -1,5 +1,4 @@
 #!/usr/bin/perl
-
 # Copyright (C) 2003  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -21,6 +20,7 @@
 use CGI qw/:standard/;
 use CGI::Carp qw(fatalsToBrowser);
 use LWP::UserAgent;
+use Encode;
 
 if (not param('url')) {
   print header(),
@@ -30,7 +30,7 @@ if (not param('url')) {
       'For example, the HTML &lt;a href="foo.html">bar&lt;/a> will be transformed to',
       'the text "bar".'),
     start_form(-method=>'GET'),
-    p('HTML feed: ', textfield('url'), submit()),
+    p('HTML feed: ', textfield('url', '', 40), checkbox('latin-1'), submit()),
     end_form(),
     end_html();
   exit;
@@ -41,6 +41,7 @@ $ua = LWP::UserAgent->new;
 $request = HTTP::Request->new('GET', param('url'));
 $response = $ua->request($request);
 $data = $response->content;
+$data = encode('utf-8', decode('latin-1', $data)) if param('latin-1');
 $p = HTML::Parser->new(api_version => 3);
 $p->handler( start => \&start_handler, "tagname,self");
 %pages = ();
