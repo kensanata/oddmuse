@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: thread.pl,v 1.5 2004/06/17 01:13:18 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: thread.pl,v 1.6 2004/06/28 21:39:05 as Exp $</p>';
 
 $Action{getthread} = \&ThreadGet;
 $Action{addthread} = \&ThreadAdd;
@@ -57,7 +57,7 @@ sub ThreadExtract {
   if ($page =~ m/(^|\n)(\*(.+\n)+)/) {
     return ($page, $2);
   } else {
-    ReportError(Ts('Thread %s does not contain a thread.', $id), '404 NOT FOUND');
+    ReportError(Ts('Page %s does not contain a thread.', $id), '404 NOT FOUND');
   }
 }
 
