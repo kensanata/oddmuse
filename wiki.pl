@@ -348,7 +348,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.456 2004/09/16 23:22:21 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.457 2004/09/19 01:24:27 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2923,7 +2923,9 @@ sub PrintPage {
       print $id, "\n";
     }
   } else {
-    print GetPageOrEditLink($id), $q->br();
+    my $title = $id;
+    $title =~ s/_/ /g;
+    print GetPageOrEditLink($id, $title), $q->br();
   }
 }
 
