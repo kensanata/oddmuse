@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.22 2004/12/03 08:42:19 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.23 2004/12/05 03:58:44 as Exp $</p>';
 
 push(@MyMacros, sub{ s/\[new::\]/"[new:" . GetParam('username', T('Anonymous'))
 		       . ':' . TimeToText($Now) . "]"/ge });
@@ -66,9 +66,8 @@ sub PortraitSupportRule {
   if ($bol) {
     if (m/\G(\s*\n)*----+[ \t]*\n?/cg) {
       $PortraitSupportColor = 0;
-      my $html = CloseHtmlEnvironments()
-	. ($PortraitSupportColorDiv ? '</div>' : '')
-	. $q->hr({-class=>"portrait"});
+      my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '')
+	. $q->hr() . AddHtmlEnvironment('p');
       $PortraitSupportColorDiv = 0;
       return $html;
     } elsif ($bol && m/\Gportrait:$UrlPattern/gc) {
@@ -82,11 +81,11 @@ sub PortraitSupportRule {
 	  if (GetPageContent($name) =~ m/portrait:$UrlPattern/) {
 	    $Portrait{$name} =
 	      $q->div({-class=>'portrait'},
-		      ScriptLink($name, $q->img({-src=>$1, -alt=>'new: ' . $time,
-						 -class=>'portrait'}),
-				 'newauthor', '', $FS),
-		      $q->br(),
-		      GetPageLink($name));
+		      $q->p(ScriptLink($name, $q->img({-src=>$1, -alt=>'new: ' . $time,
+						       -class=>'portrait'}),
+				       'newauthor', '', $FS),
+			    $q->br(),
+			    GetPageLink($name)));
 	  }
 	}
 	$portrait = $Portrait{$name};
@@ -97,7 +96,7 @@ sub PortraitSupportRule {
       $PortraitSupportColor = !$PortraitSupportColor;
       $html .= '<div class="color '
 	. ($PortraitSupportColor ? 'one' : 'two')
-        . '">' . $portrait;
+        . '">' . $portrait . AddHtmlEnvironment('p');
       $PortraitSupportColorDiv = 1;
       return $html;
     }
