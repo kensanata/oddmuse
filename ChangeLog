@@ -1,6 +1,15 @@
+2005-04-06  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetKeptDiff): Use GetTextRevision instead of
+	duplicating code.
+	(Save): Fix handling of oldmajor by introducing a new key,
+	lastmajor.
+	(UpdateDiffs): Changed argument list, changed to also handle new
+	oldmajor.
+
 2005-04-05  Alex Schroeder  <alex@gnu.org>
 
-	* wiki.pl (Save): Fix handling of $oldmajor.
+	* wiki.pl (Save): Fix handling of oldmajor.
 
 2005-04-03  Alex Schroeder  <alex@gnu.org>
 
