@@ -5,6 +5,10 @@
 	(GetPageOrEditLink): Change &amp; to ; to separate parameters.
 	(GetEditLink, DoRc, GetRcRss): Ditto.
 	(GetHistoryLink, GetRCLink, GetPermanentAnchor): Ditto.
+	(DoBrowseRequest): New action 'rollback'.
+	(GetRcHtml): Show rollback link for administrators.
+	(RollbackPossible): New.
+	(DoRollback): New.
 
 2003-09-20  Alex Schroeder  <alex@gnu.org>
 
