@@ -18,7 +18,7 @@
 #
 # do 'german-utf8.pl';
 #
-# Diese Übersetzung wurde für Oddmuse 1.202 erstellt.
+# Diese Übersetzung wurde für Oddmuse 1.203 erstellt.
 #
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
@@ -79,6 +79,14 @@ Updates in the last %s day
 Änderungen der letzten %s Tage
 for %s only
 nur für %s
+List latest change per page only
+Nur letzte Änderungen pro Seite
+List only major changes
+Nur grössere Änderungen
+Include minor changes
+Inklusive kleinere Änderungen
+List all changes
+Alle Änderungen
 %s days
 %s Tage
 List new changes starting from
