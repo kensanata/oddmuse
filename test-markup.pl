@@ -664,8 +664,6 @@ test_page(get_page('CacheTest'), @Test);
 
 print '[search and replace]';
 
-# create config file
-
 open(F,'>/tmp/oddmuse/config');
 print F "\$NetworkFile = 1;\n";
 print F "\$AdminPass = 'foo';\n";
@@ -882,7 +880,18 @@ test_page(update_page('Summary', "Counting up:\n\n<journal 3 reverse>"), @Test);
 
 print '[markup]';
 
+open(F,'>/tmp/oddmuse/config');
+print F "\$NetworkFile = 1;\n";
+print F "\$AdminPass = 'foo';\n";
+print F "\$SurgeProtection = 0;\n";
+print F "\%Smilies = ('HAHA!' => '/pics/haha.png');\n";
+close(F);
+
 %Test = split('\n',<<'EOT');
+HAHA!
+<img src="/pics/haha.png" alt="HAHA!" />
+do not eat 0 from text
+do not eat 0 from text
 ordinary text
 ordinary text
 \nparagraph
