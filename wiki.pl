@@ -286,7 +286,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.277 2003/12/24 04:05:18 uid68242 Exp $');
+    . $q->p('$Id: wiki.pl,v 1.278 2003/12/26 13:55:35 uid68242 Exp $');
 }
 
 sub InitCookie {
@@ -2863,7 +2863,7 @@ sub DoSearch {
   }
   my @results;
   if (GetParam('context',1)) {
-    @results = SearchTitleAndBody($string, \&PrintSearchResult, $string);
+    @results = SearchTitleAndBody($string, \&PrintSearchResult, HighlightRegex($string));
   } else {
     @results = SearchTitleAndBody($string, \&PrintPage);
   }
@@ -2872,61 +2872,6 @@ sub DoSearch {
     print $q->p(Ts('%s pages found.', ($#results + 1)));
     PrintFooter();
   }
-}
-
-sub SearchString {
-  my ($string, $data) = @_;
-  my $and = T('and');
-  my $or = T('or');
-  my @strings = split(/ +$and +/, $string);
-  foreach my $str (@strings) {
-    my @temp = split(/ +$or +/, $str);
-    $str = join('|', @temp);
-    return 0 unless ($data =~ /$str/i);
-  }
-  return 1;
-}
-
-sub SearchNearPages {
-  my $string = shift;
-  my %found;
-  foreach (@_) { $found{$_} = 1; }; # to avoid using grep on the list
-  NearInit();
-  if (%NearSearch and GetParam('near', 1) > 1 and GetParam('context',1)) {
-    foreach my $site (keys %NearSearch) {
-      my $url = $NearSearch{$site};
-      $url =~ s/\%s/UrlEncode($string)/ge or $url .= UrlEncode($string);
-      print $q->hr(), $q->p(Ts('Fetching results from %s:', $q->a({-href=>$url}, $site)))
-	unless GetParam('raw', 0);
-      require LWP::UserAgent;
-      my $ua = new LWP::UserAgent;
-      my $request = HTTP::Request->new('GET', $url);
-      my $response = $ua->request($request);
-      my $data = $response->content;
-      my @entries = split(/\n\n+/, $data);
-      shift @entries; # skip head
-      foreach my $entry (@entries) {
-	my %entry = ParseData($entry); # need to pass reference
-	my $name = $entry{title};
-	next if $found{$name}; # do not duplicate local pages
-	$found{$name} = 1;
-	PrintSearchResultEntry(\%entry); # with context and full search!
-      }
-    }
-  }
-  if (%NearSource and (GetParam('near', 1) or GetParam('context',1) == 0)) {
-    print $q->hr() . $q->p(T('Near pages:')) unless GetParam('raw', 0);
-    foreach my $name (sort keys %NearSource) {
-      next if $found{$name}; # do not duplicate local pages
-      my $freeName = $name;
-      $freeName =~ s/_/ /g;
-      if (SearchString($string, $freeName)) {
-	$found{$name} = 1;
-	PrintPage($name); # without context!
-      }
-    }
-  }
-  return keys(%found);
 }
 
 sub SearchTitleAndBody {
@@ -2950,38 +2895,72 @@ sub SearchTitleAndBody {
   return @found;
 }
 
-sub PrintSearchResultEntry {
-  my %entry = %{(shift)}; # get value from reference
-  if (GetParam('raw', 0)) {
-    $entry{generator} = $entry{username} . ' ' if $entry{username};
-    $entry{generator} .= Ts('from %s', $entry{host}) if $entry{host};
-    foreach my $key qw(title description size last-modified generator username host) {
-      print RcTextItem($key, $entry{$key});
-    }
-    print RcTextItem('link', "$ScriptName?$entry{title}"), "\n";
-  } else {
-    my $author = GetAuthorLink($entry{host}, $entry{username});
-    $author = $entry{generator} unless $author;
-    my $result = $q->span({-class=>'result'}, GetPageLink($entry{title}));
-    my $description = $entry{description};
-    $description = $q->br() . $description if $description;
-    my $info = $entry{size};
-    $info .= ' - ' if $info;
-    $info .= T('last updated') . ' ' . $entry{'last-modified'} if $entry{'last-modified'};
-    $info .= ' ' . T('by') . ' ' . $author if $author;
-    $info = $q->br() . $q->span({-class=>'info'}, $info) if $info;
-    print $q->p($result, $description, $info);
+sub SearchString {
+  my ($string, $data) = @_;
+  my $and = T('and');
+  my $or = T('or');
+  my @strings = split(/ +$and +/, $string);
+  foreach my $str (@strings) {
+    my @temp = split(/ +$or +/, $str);
+    $str = join('|', @temp);
+    return 0 unless ($data =~ /$str/i);
   }
+  return 1;
+}
+
+sub HighlightRegex {
+  my $and = T('and');
+  my $or = T('or');
+  return join('|', split(/ +(?:$and|$or) +/, shift));
+}
+
+sub SearchNearPages {
+  my $string = shift;
+  my $regex = HighlightRegex($string);
+  my %found;
+  foreach (@_) { $found{$_} = 1; }; # to avoid using grep on the list
+  NearInit();
+  if (%NearSearch and GetParam('near', 1) > 1 and GetParam('context',1)) {
+    foreach my $site (keys %NearSearch) {
+      my $url = $NearSearch{$site};
+      $url =~ s/\%s/UrlEncode($string)/ge or $url .= UrlEncode($string);
+      print $q->hr(), $q->p(Ts('Fetching results from %s:', $q->a({-href=>$url}, $site)))
+	unless GetParam('raw', 0);
+      require LWP::UserAgent;
+      my $ua = new LWP::UserAgent;
+      my $request = HTTP::Request->new('GET', $url);
+      my $response = $ua->request($request);
+      my $data = $response->content;
+      my @entries = split(/\n\n+/, $data);
+      shift @entries; # skip head
+      foreach my $entry (@entries) {
+	my %entry = ParseData($entry); # need to pass reference
+	my $name = $entry{title};
+	next if $found{$name}; # do not duplicate local pages
+	$found{$name} = 1;
+	PrintSearchResultEntry(\%entry, $regex); # with context and full search!
+      }
+    }
+  }
+  if (%NearSource and (GetParam('near', 1) or GetParam('context',1) == 0)) {
+    print $q->hr() . $q->p(T('Near pages:')) unless GetParam('raw', 0);
+    foreach my $name (sort keys %NearSource) {
+      next if $found{$name}; # do not duplicate local pages
+      my $freeName = $name;
+      $freeName =~ s/_/ /g;
+      if (SearchString($string, $freeName)) {
+	$found{$name} = 1;
+	PrintPage($name); # without context!
+      }
+    }
+  }
+  return keys(%found);
 }
 
 sub PrintSearchResult {
-  my ($name, $searchstring) = @_;
+  my ($name, $regex) = @_;
   my $raw = GetParam('raw', 0);
-  my $and = T('and');
-  my $or = T('or');
-  my $searchstring = join('|', split(/ +(?:$and|$or) +/, $searchstring));
-  my ($snippetlen, $maxsnippets) = (100, 4) ; #  these seem nice.
-  my $files = ($searchstring =~ /^\^#FILE/); # usually skip files
+  my $files = ($regex =~ /^\^#FILE/); # usually skip files
   OpenPage($name); # should be open already, just making sure!
   my $pageText = QuoteHtml($Page{text});
   my %entry;
@@ -2996,36 +2975,70 @@ sub PrintSearchResult {
     $pageText =~ /^#FILE ([^ ]+)/;
     $entry{description} = $1;
   } else {
-    # show a snippet from the top of the document
-    my $j = index($pageText, ' ', $snippetlen); # end on word boundary
-    my $t = substr($pageText, 0, $j);
-    $t =~ s/($searchstring)/<strong>$1<\/strong>/gi unless ($raw);
-    $entry{description} = $t . ' . . .';
-    $pageText = substr($pageText, $j); # to avoid rematching
-    # search for occurrences of searchstring
-    my $jsnippet = 0 ;
-    while ($jsnippet < $maxsnippets && $pageText =~ m/($searchstring)/i) {
-      $jsnippet++;
-      if (($j = index($pageText, $1)) > -1 ) {
-	# get substr containing (start of) match, ending on word boundaries
-	my $start = index($pageText, ' ', $j-($snippetlen/2));
-	$start = 0 if ($start == -1);
-	my $end = index($pageText, ' ', $j+($snippetlen/2));
-	$end = length($pageText ) if ($end == -1);
-	$t = substr($pageText, $start, $end-$start);
-	# highlight occurrences and tack on to output stream.
-	$t =~ s/($searchstring)/<strong>$1<\/strong>/gi unless ($raw);
-	$entry{description} .= $t . ' . . .';
-	# truncate text to avoid rematching the same string.
-	$pageText = substr($pageText, $end);
-      }
-    }
+    $entry{description} = SearchExtract($Page{text}, $regex);
   }
   $entry{size} = int((length($pageText)/1024)+1) . 'K';
   $entry{'last-modified'} = TimeToText($Page{ts});
   $entry{username} = $Page{username};
   $entry{host} = $Page{host};
-  PrintSearchResultEntry(\%entry);
+  PrintSearchResultEntry(\%entry, $regex);
+}
+
+sub PrintSearchResultEntry {
+  my %entry = %{(shift)}; # get value from reference
+  my $regex = shift;
+  if (GetParam('raw', 0)) {
+    $entry{generator} = $entry{username} . ' ' if $entry{username};
+    $entry{generator} .= Ts('from %s', $entry{host}) if $entry{host};
+    foreach my $key qw(title description size last-modified generator username host) {
+      print RcTextItem($key, $entry{$key});
+    }
+    print RcTextItem('link', "$ScriptName?$entry{title}"), "\n";
+  } else {
+    my $author = GetAuthorLink($entry{host}, $entry{username});
+    $author = $entry{generator} unless $author;
+    my $result = $q->span({-class=>'result'}, GetPageLink($entry{title}));
+    my $description = $entry{description};
+    $description = $q->br() . SearchHighlight($description, $regex) if $description;
+    my $info = $entry{size};
+    $info .= ' - ' if $info;
+    $info .= T('last updated') . ' ' . $entry{'last-modified'} if $entry{'last-modified'};
+    $info .= ' ' . T('by') . ' ' . $author if $author;
+    $info = $q->br() . $q->span({-class=>'info'}, $info) if $info;
+    print $q->p($result, $description, $info);
+  }
+}
+
+sub SearchHighlight {
+  my ($data, $regex) = @_;
+  $data =~ s/($regex)/<strong>$1<\/strong>/gi;
+  return $data;
+}
+
+sub SearchExtract {
+  my ($data, $string) = @_;
+  my ($snippetlen, $maxsnippets) = (100, 4) ; #  these seem nice.
+  # show a snippet from the beginning of the document
+  my $j = index($data, ' ', $snippetlen); # end on word boundary
+  my $t = substr($data, 0, $j);
+  my $result = $t . ' . . .';
+  $data = substr($data, $j); # to avoid rematching
+  my $jsnippet = 0 ;
+  while ($jsnippet < $maxsnippets && $data =~ m/($string)/i) {
+    $jsnippet++;
+    if (($j = index($data, $1)) > -1 ) {
+      # get substr containing (start of) match, ending on word boundaries
+      my $start = index($data, ' ', $j-($snippetlen/2));
+      $start = 0 if ($start == -1);
+      my $end = index($data, ' ', $j+($snippetlen/2));
+      $end = length($data ) if ($end == -1);
+      $t = substr($data, $start, $end-$start);
+      $result .= $t . ' . . .';
+      # truncate text to avoid rematching the same string.
+      $data = substr($data, $end);
+    }
+  }
+  return $result;
 }
 
 sub Replace {
