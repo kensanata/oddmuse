@@ -1,3 +1,7 @@
+2003-11-09  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetInterLink): Support %s in the interwiki link.
+
 2003-11-08  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetRcRss): Provide diff link only if the wiki can handle it.
