@@ -1,3 +1,5 @@
+$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.2 2004/01/27 00:55:26 as Exp $</p>';
+
 push(@MyMacros, sub{ s/\[new(:[^]:]*)\]/"[new$1:" . TimeToText($Now) . "]"/ge });
 
 push(@MyRules, &PortraitSupportRule);
