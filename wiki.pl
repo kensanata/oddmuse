@@ -79,11 +79,11 @@ $CookieName  = 'Wiki';     # Name for this wiki (for multi-wiki sites)
 # Fix if defaults do not work
 $SiteBase    = '';  # Full URL for <BASE> header
 $FullUrl     = '';  # Set if the auto-detected URL is wrong
-$HttpCharset = '';  # Charset for pages, default is ISO-8859-1
+$HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.27 2003/04/11 11:03:29 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.28 2003/04/12 12:40:13 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -336,13 +336,13 @@ sub ApplyRules {
 	}
       } elsif (m/\G(\s*\n)+/cg) {
 	$fragment = &CloseHtmlEnvironments() . '<p>'; # there is another one like this further down
-      } elsif (m/\G(\&lt;include +"(.*)"\&gt;\s*\n?)/cgi) { # <include "uri..."> includes the text of the given URI verbatim
+      } elsif (m/\G(\&lt;include +"(.*)"\&gt;[ \t]*\n?)/cgi) { # <include "uri..."> includes the text of the given URI verbatim
 	$oldmatch = $1;
 	my $oldpos = pos;
 	&ApplyRules(&QuoteHtml(&GetRaw($2)),0);
 	pos = $oldpos;
 	&DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags); # parse recursively!
-      } elsif (m/\G(\&lt;rss +"(.*)"\&gt;\s*\n?)/cgi) { # <rss "uri..."> stores the parsed RSS of the given URI
+      } elsif (m/\G(\&lt;rss +"(.*)"\&gt;[ \t]*\n?)/cgi) { # <rss "uri..."> stores the parsed RSS of the given URI
 	$oldmatch = $1;
 	print &RSS($2);
 	&DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags); # parse recursively!
@@ -645,7 +645,7 @@ sub RSS {
     $rss->parse($data);
   };
   if ($@) {
-    return "[RSS parsing failed for $uri]";
+    return $q->p($q->strong("[RSS parsing failed for $uri]"));
   } else {
     my $counter = 0;
     my $str;
