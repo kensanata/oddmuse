@@ -1,3 +1,9 @@
+2004-03-12  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetHtmlHeader): Some more default CSS tinkering; hide
+	form and div.refer when printing.
+	(DoEdit): Put preview at the top of the page.
+
 2004-03-10  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetHtmlHeader): Fixed default CSS.
