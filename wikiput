@@ -27,11 +27,12 @@ def main():
     username=""
     password=""
     recent_edit="off"
+    force=0
     try:
         opts, args = getopt.getopt(sys.argv[1:],
-                                   "ht:s:u:p:m:",
-                                   ["help", "summary=", "user=", "password=",
-				    "minor-edit="])
+                                   "hft:s:u:p:m:",
+                                   ["help", "force", "summary=", "user=",
+				    "password=", "minor-edit="])
     except getopt.GetoptError:
         usage(sys.stderr)
         sys.exit(1)
@@ -41,6 +42,8 @@ def main():
     for opt, arg in opts:
         if opt in ("-h", "--help"):
             usage(sys.stdout)
+        if opt in ("-f", "--force"):
+            force = arg
         if opt in ("-s", "--summary"):
             summary = arg
         if opt in ("-u", "--user"):
@@ -50,6 +53,8 @@ def main():
         if opt in ("-m", "--minor-edit"):
             recent_edit="on"
     text = sys.stdin.read()
+    if not text and not force:
+        raise RuntimeError, "No content to post.  Use --force to do it anyway."
     wikiput(args[0], text, summary=summary, username=username,
 	    password=password, recent_edit=recent_edit)
 
@@ -64,6 +69,7 @@ def usage(out):
               "\n"
               "Options:\n"
               " -h --help          Display this help\n"
+              " -f --force         Allow the posting of empty pages (default: no)\n"
               " -s --summary=S     The summary line (default: none)\n"
 	      " -u --user=U        The username to use (default: none)\n"
               " -m --minor-edit=B  Whether this is a minor edit (default: no)\n")
