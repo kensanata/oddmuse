@@ -265,7 +265,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.170 2003/09/30 07:45:53 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.171 2003/09/30 08:09:01 as Exp $');
 }
 
 sub InitCookie {
@@ -633,7 +633,7 @@ sub PrintWikiToHTML {
   my $cache = ApplyRules($pageText, 1, $cacheok, $revision); # local links, anchors if cache ok
   if ($cacheok and not $revision) {
     SetPageCache('blocks', $cache);
-    if ($islocked or RequestLock()) {
+    if ($islocked or RequestLockOrError()) { # unnecessarily fatal when no lock can be obtained
       SavePage(1);
       ReleaseLock() unless $islocked;
     }
@@ -1613,7 +1613,7 @@ sub DoRollback {
   return unless UserIsAdminOrError();
   ReportError(T('Missing target for rollback.')) unless $to;
   ReportError(T('Target for rollback is too far back.')) unless RollbackPossible($to);
-  return unless RequestLock();
+  RequestLockOrError();
   print '<p>';
   foreach my $id (AllPagesList()) {
     OpenPage($id);
@@ -2066,7 +2066,7 @@ sub GetDiff {
   $oldName = "$TempDir/old_diff";
   $newName = "$TempDir/new_diff";
   if ($lock) {
-    RequestLockDir('diff') or return '';
+    RequestLockDir('diff') or return ''; # not fatal
     $oldName .= '_locked';
     $newName .= '_locked';
   }
@@ -2507,7 +2507,7 @@ sub ReleaseLockDir {
   delete $Locks{$name};
 }
 
-sub RequestLock {
+sub RequestLockOrError {
   # 10 tries, 3 second wait, die on error
   return RequestLockDir('main', 10, 3, 1);
 }
@@ -2649,7 +2649,7 @@ sub AllPagesList {
   }
   $IndexInit = 1;  # Initialized for this run of the script
   # Try to write out the list for future runs
-  RequestLockDir('index') or return @IndexList;
+  RequestLockDir('index') or return @IndexList; # not fatal
   WriteStringToFile($IndexFile, join(' ', %IndexHash));
   ReleaseLockDir('index');
   return @IndexList;
@@ -2915,11 +2915,7 @@ sub UserIsEditorOrError {
 }
 
 sub UserIsAdminOrError {
-  if (!UserIsAdmin()) {
-    print $q->p(T('This operation is restricted to administrators only...'));
-    PrintFooter();
-    return 0;
-  }
+  UserIsAdmin() or ReportError(T('This operation is restricted to administrators only...'));
   return 1;
 }
 
@@ -3096,7 +3092,7 @@ sub PrintPageList {
 
 sub Replace {
   my ($from, $to) = @_;
-  return unless RequestLock();
+  RequestLockOrError(); # fatal
   foreach my $id (AllPagesList()) {
     OpenPage($id);
     OpenDefaultText();
@@ -3292,7 +3288,7 @@ sub DoPost {
     ReportError(T('Only administrators can upload files.'));
   }
   # Lock before getting old page to prevent races
-  return unless RequestLock();
+  RequestLockOrError(); # fatal
   OpenPage($id);
   OpenDefaultText();
   my $old = $Text{'text'};
@@ -3304,12 +3300,10 @@ sub DoPost {
     require MIME::Base64;
     my $file = $q->upload('file');
     if (not $file and $q->cgi_error) {
-      ReleaseLock();
       ReportError (Ts('Transfer Error: %s', $q->cgi_error));
     }
     my $type = $q->uploadInfo($filename)->{'Content-Type'};
     if (not grep(/^$type$/, @UploadTypes)) {
-      ReleaseLock();
       ReportError (Ts('Files of type %s are not allowed.', $type));
     }
     local $/ = undef;   # Read complete files
@@ -3517,7 +3511,7 @@ sub DoMaintain {
     }
   }
   my $cache = GetParam('cache', 0);
-  return unless RequestLock();
+  RequestLockOrError();
   print $q->p(T('Main lock obtained.'));
   print '<p>' . T('Expiring keep files and deleting pages marked for deletion')
     . ($cache ? ' ' . T('and refreshing HTML cache') : '');
@@ -3584,8 +3578,8 @@ sub DoConvert {
     print $q->p(T('No conversion required.'));
     return;
   }
-  return unless UserIsAdminOrError();
-  return unless RequestLock();
+  UserIsAdminOrError();
+  RequestLockOrError();
   print '<p>' . T('Main lock obtained.');
   foreach my $name (AllPagesList()) {
     ConvertFile (GetPageFile($name));
@@ -3711,7 +3705,7 @@ sub DoSurgeProtection {
     if ($name) {
       ReadRecentVisitors();
       AddRecentVisitor($name);
-      if (RequestLockDir('visitors')) {
+      if (RequestLockDir('visitors')) { # not fatal
 	WriteRecentVisitors();
 	ReleaseLockDir('visitors');
 	if ($SurgeProtection and DelayRequired($name)) {
@@ -3858,7 +3852,7 @@ sub UpdateReferers {
 
 sub WriteReferers {
   my $id = shift;
-  return unless RequestLockDir('refer_' . $id);
+  return unless RequestLockDir('refer_' . $id); # not fatal
   my $data = join($FS1, map { $_ . $FS1 . $Referers{$_} } keys %Referers);
   my $file = GetRefererFile($id);
   CreatePageDir($RefererDir, $id);
@@ -3925,7 +3919,7 @@ sub GetPermanentAnchor {
     if ($PermanentAnchors{$id} ne $OpenPageName) {
       return '[' . T('anchor first defined here') . ': ' . GetPermanentAnchorLink($id) .']';
     }
-  } elsif (RequestLockDir('permanentanchors', 2, 2, 0)) {
+  } elsif (RequestLockDir('permanentanchors')) { # not fatal
     $PermanentAnchors{$id}=$OpenPageName;
     WritePermanentAnchors();
     ReleaseLockDir('permanentanchors');
@@ -3958,7 +3952,7 @@ sub DeletePermanentAnchors {
       delete($PermanentAnchors{$_}) ;
     }
   }
-  return unless RequestLockDir('permanentanchors', 2, 2, 0);
+  return unless RequestLockDir('permanentanchors'); # not fatal
   WritePermanentAnchors();
   ReleaseLockDir('permanentanchors');
 }
