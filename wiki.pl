@@ -1,6 +1,6 @@
 #! /usr/bin/perl
 # OddMuse (see $WikiDescription below)
-# Copyright (C) 2001, 2002, 2003, 2004	Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2001, 2002, 2003, 2004, 2005  Alex Schroeder <alex@emacswiki.org>
 # ... including lots of patches from the UseModWiki site
 # Copyright (C) 2001, 2002  various authors
 # ... which was based on UseModWiki version 0.92 (April 21, 2001)
@@ -355,7 +355,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.511 2005/01/04 08:53:53 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.512 2005/01/05 00:34:52 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
