@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: anchors.pl,v 1.7 2004/02/09 21:49:14 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: anchors.pl,v 1.8 2004/06/17 01:13:18 as Exp $</p>';
 
 push(@MyRules, \&AnchorsRule);
 
@@ -24,5 +24,5 @@ sub AnchorsRule {
   if (m/\G\[\[\#([-a-zA-Z0-9_]+)\]\]/gc) {
     return $q->a({-href=>"#$1", -class=>'anchor'}, $1);
   }
-  return '';
+  return undef;
 }

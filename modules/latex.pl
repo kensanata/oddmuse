@@ -19,7 +19,7 @@
 
 use vars qw($LatexDir $LatexLinkDir $LatexExtendPath $LatexSingleDollars);
 
-$ModulesDescription .= '<p>$Id: latex.pl,v 1.5 2004/04/25 15:32:45 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: latex.pl,v 1.6 2004/06/17 01:13:18 as Exp $</p>';
 
 # PATH must be extended in order to make dvi2bitmap available, and
 # also all the programs that dvi2bitmap may call to do its work
@@ -64,7 +64,7 @@ sub LatexRule {
   } elsif ($LatexSingleDollars and m/\G\$((.*\n)*?)\$/gc) {
     return &MakeLaTeX("\$ $1 \$", "inline math");
   }
-  return '';
+  return undef;
 }
 
 sub MakeLaTeX {

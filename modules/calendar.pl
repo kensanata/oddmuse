@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.18 2004/06/15 19:48:05 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.19 2004/06/17 01:13:18 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalendarUseCal);
 
@@ -110,11 +110,13 @@ sub CalendarRule {
     Dirty($1);
     PrintYearCalendar($2);
     pos = $oldpos;
+    return '';
   } elsif (/\G(month:(\d\d\d\d)-(\d\d))/gc) {
     my $oldpos = pos;
     Dirty($1);
     print Cal($2, $3);
     pos = $oldpos;
+    return '';
   } elsif (/\G(month:([+-]\d\d?))/gc) {
     my $oldpos = pos;
     Dirty($1);
@@ -126,8 +128,9 @@ sub CalendarRule {
     while ($mon > 12) { $year += 1; $mon -= 12; };
     print Cal($year, $mon);
     pos = $oldpos;
+    return '';
   }
-  return '';
+  return undef;
 }
 
 sub PrintYearCalendar {

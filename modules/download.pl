@@ -6,6 +6,7 @@ sub DownloadSupportRule {
   if (m!\G(\[\[download:$FreeLinkPattern\]\])!gc) {
     Dirty($1);
     print GetDownloadLink($2);
+    return '';
   }
-  return '';
+  return undef;
 }

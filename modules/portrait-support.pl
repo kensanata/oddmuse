@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.8 2004/05/10 22:08:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.9 2004/06/17 01:13:18 as Exp $</p>';
 
 push(@MyMacros, sub{ s/\[new::\]/"[new:" . GetParam('username', T('Anonymous'))
 		       . ':' . TimeToText($Now) . "]"/ge });
@@ -58,7 +58,7 @@ sub PortraitSupportRule {
       . '<div class="color ' . ($MyColor ? 'one' : 'two') . '">'
       . '<p>' . $portrait;
   }
-  return '';
+  return undef;
 }
 
 *OldPortraitSupportWikiHeading = *WikiHeading;
