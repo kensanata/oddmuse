@@ -310,7 +310,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.333 2004/02/28 00:36:35 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.334 2004/03/07 12:10:28 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -771,6 +771,7 @@ sub RSS {
       my $date = $i->{dc}->{date};
       $date = $i->{pubdate} unless $date;
       $date = sprintf("%04d", $num--) unless $date; # for RSS 0.91 feeds without date, descending
+      $date .= ' -- ' . $rss->{channel}->{title} if $rss->{channel}->{title};
       $line .= ' (' . $q->a({-href=>$i->{$wikins}->{diff}}, $tDiff) . ')'
 	if $i->{$wikins}->{diff};
       $line .= ' (' . $q->a({-href=>$i->{$wikins}->{history}}, "$tHistory") . ')'
@@ -854,12 +855,12 @@ sub GetInterLink {
   } elsif ($bracket && !$text) {
     $text = ++$FootnoteNumber;
   } elsif (!$text) {
-    $text = $id;
+    $text = $q->span({-class=>'site'}, $site) . ':' . $q->span({-class=>'page'}, $page);
   }
   if ($bracket) {
     $text = "[$text]";
   }
-  return $q->a({-href=>$url}, $text);
+  return $q->a({-href=>$url, -class=>'inter'}, $text);
 }
 
 sub InterInit {
@@ -2062,11 +2063,13 @@ sub PrintFooter {
 
 sub GetFormStart {
   my $encoding = (shift) ? 'multipart/form-data' : 'application/x-www-form-urlencoded';
-  return $q->start_form(-method=>'post', -action=>$FullUrl, -enctype=>$encoding);
+  my $method = (shift) ? 'get' : 'post';
+  return $q->start_form(-method=>$method, -action=>$FullUrl, -enctype=>$encoding);
 }
 
 sub GetSearchForm {
-  my $form = GetFormStart() . T('Search:') . ' ' . $q->textfield(-name=>'search', -size=>20) . ' ';
+  my $form = GetFormStart(0, 1) . T('Search:') . ' '
+    . $q->textfield(-name=>'search', -size=>20) . ' ';
   if ($ReplaceForm) {
     $form .= T('Replace:') . ' ' . $q->textfield(-name=>'replace', -size=>20) . ' ';
   }
