@@ -16,7 +16,7 @@
 #
 # do 'chinese-utf8.pl;
 #
-# This translation was last checked for an unknown Oddmuse version.
+# This translation was last checked for Oddmuse version 1.195.
 #
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
