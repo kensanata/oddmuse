@@ -355,7 +355,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.513 2005/01/05 01:18:35 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.514 2005/01/05 21:27:06 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -882,7 +882,7 @@ sub RSS {
       }
       $line .= $q->span({-class=>'contributor'}, $q->span(T(' . . . . ')) . $contributor)
 	if $contributor;
-      $line .= ' ' . $q->strong({-class=>'description'}, '--', $description) if $description;
+      $line .= $q->span(' -- ') . $q->strong({-class=>'description'}, $description) if $description;
       while ($lines{$date}) { $date .= ' '; } # make sure this is unique
       $lines{$date} = $line;
     }
