@@ -59,7 +59,7 @@ $ValidatorLink $RefererTracking $RefererTimeLimit $RefererLimit
 $DefaultStyleSheet $AllNetworkFiles $UsePathInfo $UploadAllowed
 $LastUpdate $PageCluster $RssInterwikiTranslate $UseCache $ModuleDir
 $HtmlHeaders $DebugInfo %InvisibleCookieParameters $FullUrlPattern
-$FreeInterLinkPattern @AdminPages @AdminBlocks @MyInitVariables);
+$FreeInterLinkPattern @AdminPages @MyAdminCode @MyInitVariables);
 
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
@@ -355,7 +355,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.512 2005/01/05 00:34:52 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.513 2005/01/05 01:18:35 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -1861,8 +1861,7 @@ sub DoRollback {
 # == Administration ==
 
 sub DoAdminPage {
-  my $id = shift;
-  print GetHeader('', T('Administration'), ''), $q->start_div({-class=>'content admin'});
+  my ($id, @rest) = @_;
   my @menu = (ScriptLink('action=index', T('Index of all pages')),
 	      ScriptLink('action=version', T('Wiki Version')),
 	      ScriptLink('action=unlock', T('Unlock Wiki')),
@@ -1886,16 +1885,18 @@ sub DoAdminPage {
       }
     }
   }
-  print $q->p(T('Actions:')), $q->ul($q->li(\@menu));
-  print $q->p(T('Important pages:')) . $q->ul(map { my $name = $_;
-						    $name =~ s/_/ /g;
-						    $q->li(GetPageOrEditLink($_, $name)) if $_;
-						  } @AdminPages);
-  foreach my $block (@AdminBlocks) {
-    print $block;
+  foreach my $sub (@MyAdminCode) {
+    &$sub($id, \@menu, \@rest);
+    $Message .= $q->p($@) if $@; # since this happens before GetHeader is called, the message will be shown
   }
-  print $q->p(Ts('To mark a page for deletion, put <strong>%s</strong> on the first line.', $DeletedPage)),
-    $q->end_div();
+  print GetHeader('', T('Administration'), ''),
+    $q->div({-class=>'content admin'}, $q->p(T('Actions:')), $q->ul($q->li(\@menu)),
+	    $q->p(T('Important pages:')) . $q->ul(map { my $name = $_;
+							$name =~ s/_/ /g;
+							$q->li(GetPageOrEditLink($_, $name)) if $_;
+						      } @AdminPages),
+	    $q->p(Ts('To mark a page for deletion, put <strong>%s</strong> on the first line.',
+		     $DeletedPage)), @rest);
   PrintFooter();
 }
 
