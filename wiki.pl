@@ -349,7 +349,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.483 2004/11/15 00:44:24 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.484 2004/11/15 01:20:20 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1294,13 +1294,12 @@ sub BrowsePage {
     print $q->start_div({-class=>'content rc'});;
     print $q->hr()  if (!$embed);
     DoRc(\&GetRcHtml);
-    print $q->end_div();;
+    print $q->end_div();
   }
   if ($RefererTracking && !$embed) {
     my $referers = RefererTrack($id);
     print $referers if $referers;
   }
-  print $q->end_div();
   PrintFooter($id, $revision, $comment);
 }
 
@@ -2928,9 +2927,9 @@ sub DoIndex {
   push(@pages, keys %PermanentAnchors) if $anchors;
   push(@pages, keys %NearSource) if $near;
   @pages = sort @pages;
-  print $q->h2(Ts('%s pages found.', ($#pages + 1))), '<p>' unless $raw;
+  print $q->h2(Ts('%s pages found.', ($#pages + 1))), $q->start_p() unless $raw;
   map { PrintPage($_); } @pages;
-  print '</p>' unless $raw;
+  print $q->end_p(), $q->end_div() unless $raw;
   PrintFooter() unless $raw;
 }
 
@@ -3796,8 +3795,7 @@ sub GetReferers {
     my $title = QuoteHtml($_);
     $title =~ s/\%([0-9a-f][0-9a-f])/chr(hex($1))/egi;
     $q->a({-href=>$_}, $title); } keys %Referers);
-  $result = $q->div({-class=>'refer'}, $q->p(T('Referrers') . ': ' . $result)) if $result;
-  return $result;
+  return $q->div({-class=>'refer'}, $q->hr(), $q->p(T('Referrers') . ': ' . $result)) if $result;
 }
 
 sub UpdateReferers {
@@ -3836,8 +3834,7 @@ sub RefererTrack {
   if (UpdateReferers($id)) {
     WriteReferers($id);
   }
-  my $refs = GetReferers();
-  return $q->hr() . $refs if $refs;
+  return GetReferers();
 }
 
 sub DoPrintAllReferers {
