@@ -1,3 +1,11 @@
+2003-05-31  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (%CookieParameters): New.
+	(Cookie): Use it to handle the previously inherited attributes.
+	(ScriptLink): No more inheriting of parameters.
+	(InheritParameter): Removed.
+	(InitCookie): Password parameter handling removed.
+
 2003-05-30  Pierre Gaston  <pgas@intracom.gr>
 
 	* wiki.pl ($PermanentAnchorsFile, $PermanentAnchors)
