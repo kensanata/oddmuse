@@ -88,7 +88,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.135 2003/09/02 22:18:50 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.136 2003/09/04 19:50:17 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -312,8 +312,7 @@ sub InitLinkPatterns {
   my ($UpperLetter, $LowerLetter, $AnyLetter, $WikiWord, $QDelim);
   $QDelim = '(?:"")?';# Optional quote delimiter (removed from the output)
   $WikiWord = '[A-Z]+[a-z\x80-\xff]+[A-Z][A-Za-z\x80-\xff]*';
-  $LinkPattern = "($WikiWord)";
-  $LinkPattern .= $QDelim;
+  $LinkPattern = "($WikiWord)$QDelim";
   # Inter-site convention: sites must start with uppercase letter.
   # This avoids confusion with URLs.
   $InterSitePattern = '[A-Z]+[A-Za-z\x80-\xff]+';
@@ -948,12 +947,11 @@ sub Ts {
 # == Choosing action
 
 sub DoBrowseRequest {
-  my ($id, $action, $text, $search);
   if (not $q->param and not ($UsePathInfo and $q->path_info)) {
     BrowsePage($HomePage);
     return 1;
   }
-  $id = join('_', $q->keywords);
+  my $id = join('_', $q->keywords);
   $id = $q->path_info() if not $id and $UsePathInfo;
   $id =~ s|.*/||;
   if ($id) {                    # Just script?PageName
@@ -966,9 +964,9 @@ sub DoBrowseRequest {
     BrowsePage($id)  if ValidIdOrDie($id);
     return 1;
   }
-  $action = lc(GetParam('action', ''));
   $id = GetParam('id', '');
-  $search = GetParam('search', '');
+  my $action = lc(GetParam('action', ''));
+  my $search = GetParam('search', '');
   if ($action eq 'anchor') {
     ReadPermanentAnchors();
     $id = $PermanentAnchors{FreeToNormal($id)};
@@ -1074,18 +1072,19 @@ sub BrowsePage {
   }
   # handle subtitle for old revisions, if these exist, and open keep file
   my $openKept = 0;
-  my $revision = GetParam('revision', '');
+  my $revision = GetParam('revision', ''); # default empty string
   $revision =~ s/\D//g; # Remove non-numeric chars
-  my $goodRevision = $revision;
-  if ($revision ne '' and $revision ne $Section{'revision'}) {
+  my $goodRevision; # empty string if no specific revision specified
+  $goodRevision = $revision if $revision ne $Section{'revision'};
+  if ($goodRevision ne '') {
     OpenKeptRevisions('text_default');
     $openKept = 1;
-    if (!defined($KeptRevisions{$revision})) {
+    if (!defined($KeptRevisions{$goodRevision})) {
       $goodRevision = ''; # reset if requested revision is not available
       $Message .= $q->p(Ts('Revision %s not available', $revision)
 			. ' (' . T('showing current revision instead') . ')');
     } else {
-      OpenKeptRevision($revision);
+      OpenKeptRevision($goodRevision);
       $Message .= $q->p(Ts('Showing revision %s', $goodRevision));
     }
   }
@@ -1258,39 +1257,37 @@ sub GetRc {
   my $printDailyTear = shift;
   my $printRCLine = shift;
   my @outrc = @_;
-  my ($rcline, $date, $newtop, $showedit, $all, $idOnly, $langFilter);
-  my ($ts, $pagename, $summary, $minor, $host, $kind, $extraTemp);
   my %extra = ();
   my %changetime = ();
   my @languages;
   # Slice minor edits
-  $showedit = GetParam('showedit', $ShowEdits);
-  $langFilter = GetParam('rclang', '');
+  my $showedit = GetParam('showedit', $ShowEdits);
+  my $langFilter = GetParam('rclang', '');
   # Filter out some entries if not showing all changes
   if ($showedit != 1) {
     my @temprc = ();
-    foreach $rcline (@outrc) {
-      ($ts, $pagename, $summary, $minor, $host) = split(/$FS3/, $rcline);
-      if ($showedit == 0) {  # 0 = No edits
+    foreach my $rcline (@outrc) {
+      my ($ts, $pagename, $summary, $minor, $host) = split(/$FS3/, $rcline);
+      if ($showedit == 0) {	# 0 = No edits
 	push(@temprc, $rcline)  if (!$minor);
-      } else {               # 2 = Only edits
+      } else {			# 2 = Only edits
 	push(@temprc, $rcline)  if ($minor);
       }
       $changetime{$pagename} = $ts;
     }
     @outrc = @temprc;
   }
-  foreach $rcline (@outrc) {
-    ($ts, $pagename) = split(/$FS3/, $rcline);
+  foreach my $rcline (@outrc) {
+    my ($ts, $pagename) = split(/$FS3/, $rcline);
     $changetime{$pagename} = $ts;
   }
-  $date = '';
-  $all = GetParam('all', 0);
-  $newtop = GetParam('newtop', $RecentTop);
-  $idOnly = GetParam('rcidonly', '');
+  my $date = '';
+  my $all = GetParam('all', 0);
+  my $newtop = GetParam('newtop', $RecentTop);
+  my $idOnly = GetParam('rcidonly', '');
   @outrc = reverse @outrc if ($newtop);
-  foreach $rcline (@outrc) {
-    ($ts, $pagename, $summary, $minor, $host, $kind, $extraTemp)
+  foreach my $rcline (@outrc) {
+    my ($ts, $pagename, $summary, $minor, $host, $kind, $extraTemp)
       = split(/$FS3/, $rcline);
     # Later: need to change $all for new-RC?
     next  if (not $all and $ts < $changetime{$pagename});
@@ -1311,7 +1308,6 @@ sub GetRcHtml {
   my ($html, $inlist);
   # Optimize param fetches out of main loop
   my $all = GetParam('all', 0);
-  my $rcchangehist = GetParam('rcchangehist', 1);
   # Optimize translations out of main loop
   my $tEdit    = T('(minor)');
   my $tDiff    = T('(diff)');
@@ -1330,32 +1326,32 @@ sub GetRcHtml {
 	$inlist = 1;
       }
     },
-    # printRCLine
-    sub {
-      my($pagename, $timestamp, $host, $userName, $summary, $minor, $revision, $languages) = @_;
-      my($pagelink, $author, $sum, $edit, $count, $link, $lang);
-      $host = QuoteHtml($host);
-      $author = GetAuthorLink($host, $userName);
-      $sum = $q->strong('[' . QuoteHtml($summary) . ']')  if $summary;
-      $edit = $q->em($tEdit)  if $minor;
-      if ($all) {
-	$pagelink = GetOldPageLink('browse', $pagename, $revision, $pagename);
-      } else {
-	$pagelink = GetPageLink($pagename);
-	$count = '(' . GetHistoryLink($pagename, $tHistory) . ')';
-      }
-      $lang = '[' . join(', ', @{$languages}) . ']'  if @{$languages};
-      if ($UseDiff && GetParam('diffrclink', 1)) {
-	if ($minor) {
-	  $link .= ScriptLinkDiff(2, $pagename, $tDiff, ''); # minor
+      # printRCLine
+      sub {
+	my($pagename, $timestamp, $host, $userName, $summary, $minor, $revision, $languages) = @_;
+	my($pagelink, $author, $sum, $edit, $count, $link, $lang);
+	$host = QuoteHtml($host);
+	$author = GetAuthorLink($host, $userName);
+	$sum = $q->strong('[' . QuoteHtml($summary) . ']')  if $summary;
+	$edit = $q->em($tEdit)  if $minor;
+	$lang = '[' . join(', ', @{$languages}) . ']'  if @{$languages};
+	if ($all) {
+	  $pagelink = GetOldPageLink('browse', $pagename, $revision, $pagename);
 	} else {
-	  $link .= ScriptLinkDiff(1, $pagename, $tDiff, ''); # major
+	  $pagelink = GetPageLink($pagename);
+	  $count = '(' . GetHistoryLink($pagename, $tHistory) . ')';
 	}
-      }
-      $html .= $q->li($link, $pagelink, CalcTime($timestamp),
-		      $count, $edit, $sum, $lang, '. . . . .', $author, "\n");
-    },
-    @_;
+	if ($UseDiff and GetParam('diffrclink', 1)) {
+	  if ($all) {
+	    $link .= ScriptLinkDiff(2, $pagename, $tDiff, '', $revision);
+	  } else {
+	    $link .= ScriptLinkDiff($minor ? 2 : 1, $pagename, $tDiff, '');
+	  }
+	}
+	$html .= $q->li($link, $pagelink, CalcTime($timestamp),
+			$count, $edit, $sum, $lang, '. . . . .', $author, "\n");
+      },
+	@_;
   $html .= '</ul>' if ($inlist);
   return $html;
 }
@@ -1589,19 +1585,21 @@ sub GetOldPageLink {
 }
 
 sub GetSearchLink {
-  my $id = shift;
+  my $id = UrlEncode(shift);
   my $name = $id;
   if ($FreeLinks) {
     $name =~ s/_/ /g;  # Display with spaces
     $id =~ s/_/+/g;    # Search for url-escaped spaces
   }
-  return ScriptLink('search=' . UrlEncode($id), $name);
+  return ScriptLink('search=' . $id, $name);
 }
 
 sub ScriptLinkDiff {
-  my ($diff, $id, $text, $rev) = @_;
-  $rev = "&revision=$rev"  if ($rev ne '');
-  return ScriptLink("action=browse&diff=$diff$rev&id=" . UrlEncode($id), $text);
+  my ($diff, $id, $text, $new, $old) = @_;
+  my $action = 'action=browse&diff=' . $diff . '&id=' . UrlEncode($id);
+  $action .= "&diffrevision=$old"  if ($old ne '');
+  $action .= "&revision=$new"  if ($new ne '');
+  return ScriptLink($action, $text);
 }
 
 sub GetAuthorLink {
@@ -1821,7 +1819,7 @@ sub PrintFooter {
     if (UserCanEdit($id, 0)) {
       if ($rev) { # showing old revision
 	$revisions .= GetOldPageLink('edit', $id, $rev,
-				   Ts('Edit revision %s of this page', $rev));
+				     Ts('Edit revision %s of this page', $rev));
       } else { # showing current revision
 	$revisions .= GetEditLink($id, T('Edit text of this page'));
       }
@@ -1942,29 +1940,9 @@ sub GetRedirectPage {
 
 sub PrintHtmlDiff {
   my ($diffType, $id, $revOld, $revNew, $newText) = @_;
-  my ($diffText, $diffTextTwo, $priorName, $links, $usecomma);
-  my ($major, $minor, $author, $useMajor, $useMinor, $useAuthor, $cacheName);
-  $links = '(';
-  $usecomma = 0;
-  $major  = ScriptLinkDiff(1, $id, T('major diff'), '');
-  $minor  = ScriptLinkDiff(2, $id, T('minor diff'), '');
-  $author = ScriptLinkDiff(3, $id, T('author diff'), '');
-  $useMajor  = 1;
-  $useMinor  = 1;
-  $useAuthor = 1;
-  if ($diffType == 1) {
-    $priorName = T('major');
-    $cacheName = 'major';
-    $useMajor  = 0;
-  } elsif ($diffType == 2) {
-    $priorName = T('minor');
-    $cacheName = 'minor';
-    $useMinor  = 0;
-  } elsif ($diffType == 3) {
-    $priorName = T('author');
-    $cacheName = 'author';
-    $useAuthor = 0;
-  }
+  my ($diffText, $diffTextTwo, $links, $usecomma);
+  my $cacheName = ($diffType == 1 ? 'major' : 'minor');
+  my $priorName = ($diffType == 1 ? T('major') : T('minor'));
   if ($revOld ne '') {
     # Note: OpenKeptRevisions must have been done by caller.
     # Later optimize if same as cached revision
@@ -1975,65 +1953,31 @@ sub PrintHtmlDiff {
   } else {
     $diffText  = GetCacheDiff($cacheName);
   }
-  $useMajor  = 0  if ($useMajor  && ($diffText eq GetCacheDiff('major')));
-  $useMinor  = 0  if ($useMinor  && ($diffText eq GetCacheDiff('minor')));
-  $useAuthor = 0  if ($useAuthor && ($diffText eq GetCacheDiff('author')));
-  $useMajor  = 0  if ((!defined(GetPageCache('oldmajor'))) ||
-                      (GetPageCache('oldmajor') < 1));
-  $useAuthor = 0  if ((!defined(GetPageCache('oldauthor'))) ||
-                      (GetPageCache('oldauthor') < 1));
-  if ($useMajor) {
-    $links .= $major;
-    $usecomma = 1;
-  }
-  if ($useMinor) {
-    $links .= ', '  if ($usecomma);
-    $links .= $minor;
-    $usecomma = 1;
-  }
-  if ($useAuthor) {
-    $links .= ', '  if ($usecomma);
-    $links .= $author;
-  }
-  if (!($useMajor || $useMinor || $useAuthor)) {
-    $links .= T('no other diffs');
-  }
-  $links .= ')';
   if ((!defined($diffText)) || ($diffText eq '')) {
     $diffText = T('No diff available.');
   }
-  print '<div class="diff">';
+  my $html;
   if ($revOld ne '') {
     my $currentRevision = T('current revision');
     $currentRevision = Ts('revision %s', $revNew) if $revNew;
-      print '<p><b>'
-      . Ts('Difference (from revision %s', $revOld)
-      . Ts(' to %s)', $currentRevision)
-      . "</b> $links "
-      . $diffText;
+      $html = Ts('Difference (from revision %s', $revOld)
+	. Ts(' to %s)', $currentRevision);
   } else {
     if (($diffType != 2) &&
         ((!defined(GetPageCache("old$cacheName"))) ||
          (GetPageCache("old$cacheName") < 1))) {
-      print '<p><b>'
-	. Ts('No diff available--this is the first %s revision.', $priorName)
-	. "</b> $links";
+      $html = Ts('No diff available--this is the first %s revision.', $priorName);
     } else {
-      print '<p><b>'
-	. Ts('Difference (from prior %s revision)', $priorName)
-        . "</b> $links "
-        . $diffText;
+      $html = Ts('Difference (from prior %s revision)', $priorName);
     }
   }
-  print '</div>';
+  print $q->div({-class=>'diff'}, $q->p($q->b($html))), $diffText;
 }
 
 sub GetCacheDiff {
-  my ($type) = @_;
-  my ($diffText);
-  $diffText = GetPageCache("diff_default_$type");
-  $diffText = GetCacheDiff('minor')  if ($diffText eq '1');
-  $diffText = GetCacheDiff('major')  if ($diffText eq '2');
+  my $type = shift;
+  my $diffText = GetPageCache("diff_default_$type");
+  $diffText = GetCacheDiff('minor')  if ($diffText eq '1'); # if major eq minor diff
   return $diffText;
 }
 
@@ -2338,10 +2282,9 @@ sub KeepFileName {
 
 sub SaveKeepSection {
   my $file = KeepFileName();
-  my $data;
   return  if ($Section{'revision'} < 1);  # Don't keep 'empty' revision
   $Section{'keepts'} = $Now;
-  $data = $FS1 . join($FS2, %Section);
+  my $data = $FS1 . join($FS2, %Section);
   CreatePageDir($KeepDir, $OpenPageName);
   AppendStringToFile($file, $data);
 }
@@ -2349,7 +2292,7 @@ sub SaveKeepSection {
 sub ExpireKeepFile {
   my ($fname, $data, @kplist, %tempSection, $expirets);
   my ($anyExpire, $anyKeep, $expire, %keepFlag, $sectName, $sectRev);
-  my ($oldMajor, $oldAuthor);
+  my ($oldMajor);
   return unless $KeepDays;
   $fname = KeepFileName();
   return  if (!(-f $fname));
@@ -2369,15 +2312,13 @@ sub ExpireKeepFile {
   $anyKeep   = 0;
   %keepFlag  = ();
   $oldMajor  = GetPageCache('oldmajor');
-  $oldAuthor = GetPageCache('oldauthor');
   foreach (reverse @kplist) {
     %tempSection = split(/$FS2/, $_, -1);
     $sectName = $tempSection{'name'};
     $sectRev = $tempSection{'revision'};
     $expire = 0;
     if ($sectName eq 'text_default') {
-      if (($KeepMajor  && ($sectRev == $oldMajor)) ||
-          ($KeepAuthor && ($sectRev == $oldAuthor))) {
+      if (($KeepMajor && ($sectRev == $oldMajor))) {
         $expire = 0;
       } elsif ($tempSection{'keepts'} < $expirets) {
         $expire = 1;
@@ -2976,15 +2917,15 @@ sub DoSearch {
 }
 
 sub SearchTitleAndBody {
-  my ($string) = @_;
-  my ($name, $freeName, @found);
-  foreach $name (AllPagesList()) {
+  my $string = shift;
+  my @found;
+  foreach my $name (AllPagesList()) {
     OpenPage($name);
     OpenDefaultText();
     if (($Text{'text'} =~ /$string/i) || ($name =~ /$string/i)) {
       push(@found, $name);
     } elsif ($FreeLinks && ($name =~ m/_/)) {
-      $freeName = $name;
+      my $freeName = $name;
       $freeName =~ s/_/ /g;
       if ($freeName =~ /$string/i) {
         push(@found, $name);
@@ -2996,40 +2937,39 @@ sub SearchTitleAndBody {
 
 sub PrintSearchResults {
   my ($searchstring, @results) = @_ ;  #  inputs
-  my ($name, $pageText, $t, $j, $jsnippet, $start, $end, $htmlre);
   my ($snippetlen, $maxsnippets) = (100, 4) ; #  these seem nice.
   print $q->h2(Ts('%s pages found:', ($#results + 1)));
-  foreach $name (@results) {
+  foreach my $name (@results) {
     #  get the page, filter it, remove all tags (since we're presenting in
     #  plaintext, not HTML, a la google(tm)).
     OpenPage($name);
     OpenDefaultText();
-    $pageText = QuoteHtml($Text{'text'});
+    my $pageText = QuoteHtml($Text{'text'});
     $pageText =~ s/$FS//g;  # Remove separators (paranoia)
     $pageText =~ s/[\s]+/ /g;  #  Shrink whitespace
     $pageText =~ s/([-_=\\*\\.]){10,}/$1$1$1$1$1/g ; # e.g. shrink "----------"
-    $htmlre = join('|',(@HtmlTags, 'pre', 'nowiki', 'code'));
+    my $htmlre = join('|',(@HtmlTags, 'pre', 'nowiki', 'code'));
     $pageText =~ s/\<\/?($htmlre)(\s[^<>]+?)?\>//gi;
     #  entry header
     print '<p>';
     print '... '  if ($name =~ m|/|);
     print $q->span({-class=>'result'}, GetPageLink($name)), $q->br();
     #  show a snippet from the top of the document
-    $j = index( $pageText, ' ', $snippetlen ) ;  #  end on word boundary
+    my $j = index( $pageText, ' ', $snippetlen ) ;  #  end on word boundary
     print substr( $pageText, 0, $j ), ' ', $q->b('...');
     $pageText = substr( $pageText, $j ) ;  #  to avoid rematching
     #  search for occurrences of searchstring
-    $jsnippet = 0 ;
+    my $jsnippet = 0 ;
     while ( $jsnippet < $maxsnippets
            &&  $pageText =~ m/($searchstring)/i ) {  #  captures match as $1
       $jsnippet++ ;  #  paranoid about looping
       if ( ($j = index( $pageText, $1 )) > -1 ) {  #  get index of match
         #  get substr containing (start of) match, ending on word boundaries
-        $start = index( $pageText, ' ', $j-($snippetlen/2) ) ;
+        my $start = index( $pageText, ' ', $j-($snippetlen/2) ) ;
         $start = 0  if ( $start == -1 ) ;
-        $end = index( $pageText, ' ', $j+($snippetlen/2) ) ;
+        my $end = index( $pageText, ' ', $j+($snippetlen/2) ) ;
         $end = length( $pageText )  if ( $end == -1 ) ;
-        $t = substr( $pageText, $start, $end-$start ) ;
+        my $t = substr( $pageText, $start, $end-$start ) ;
         #  highlight occurrences and tack on to output stream.
         $t =~ s/($searchstring)/<strong>\1<\/strong>/gi ;
         print $t, ' ', $q->b('...');
@@ -3337,13 +3277,10 @@ sub Save { # call within lock, with opened page
   if (!$minor) {
     SetPageCache('oldmajor', $Section{'revision'});
   }
-  if ($newAuthor) {
-    SetPageCache('oldauthor', $Section{'revision'});
-  }
   SaveKeepSection();
   ExpireKeepFile();
   if ($UseDiff) {
-    UpdateDiffs($id, $old, $new, $minor, $newAuthor);
+    UpdateDiffs($id, $old, $new, $minor);
   }
   $Text{'text'} = $new;
   $Text{'minor'} = $minor;
@@ -3416,26 +3353,15 @@ sub WriteRcLog {
 }
 
 sub UpdateDiffs {
-  my ($id, $old, $new, $minor, $newAuthor) = @_;
-  my ($editDiff, $oldMajor, $oldAuthor);
-  $editDiff  = GetDiff($old, $new, 0);     # 0 = already in lock
-  $oldMajor  = GetPageCache('oldmajor');
-  $oldAuthor = GetPageCache('oldauthor');
+  my ($id, $old, $new, $minor) = @_;
+  my $editDiff  = GetDiff($old, $new, 0);     # 0 = already in lock
   SetPageCache('diff_default_minor', $editDiff);
-  if ($minor || !$newAuthor) {
+  my $oldMajor  = GetPageCache('oldmajor');
+  if ($minor) {
     OpenKeptRevisions('text_default');
-  }
-  if (!$minor) {
-    SetPageCache('diff_default_major', '1');
-  } else {
     SetPageCache('diff_default_major', GetKeptDiff($new, $oldMajor, 0));
-  }
-  if ($newAuthor) {
-    SetPageCache('diff_default_author', '1');
-  } elsif ($oldMajor == $oldAuthor) {
-    SetPageCache('diff_default_author', '2');
   } else {
-    SetPageCache('diff_default_author', GetKeptDiff($new, $oldAuthor, 0));
+    SetPageCache('diff_default_major', '1');
   }
 }
 
