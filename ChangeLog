@@ -1,5 +1,22 @@
 2003-10-10  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (T): Simplified.
+	(BrowsePage): Print list of recent changes if parameter
+	rcclusteronly is set.
+	(DoRc): Print header if rcclusteronly is set.
+	(GetRc): Implement page clustering logic.
+	(GetRcHtml, GetRcText, GetRcRss): New parameter cluster.
+	(GetRcRss): Fix bug with less than 15 items in the history.
+	(GetOldPageParameters): Renamed to GetPageParameters.
+	(GetPageParameters, GetOldPageLink): New parameter cluster.
+	(Save): Determine page cluster when saving.
+	(GetCluster): New sub.
+	(WriteRcLog): New parameter cluster.
+	(DoSurgeProtection): Fix bug allowing unlock action if unable to
+	get visitor lock.
+
+2003-10-10  Alex Schroeder  <alex@gnu.org>
+
 	* wiki.pl (ExpireKeepFile, WriteStringToFile, AppendStringToFile):
 	Spelling: cant->cannot.
 	(DoPost): Use diff3 for conflict merging, and use a pre block for
