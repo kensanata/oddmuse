@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.357 2004/03/15 19:56:38 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.358 2004/03/15 20:08:08 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -995,11 +995,11 @@ sub GetDownloadLink {
     . GetEditLink($id, '?', 1) . ']' unless $IndexHash{$id};
   my $action;
   if ($revision) {
-    $action = "action=download;id=$id;revision=$revision";
+    $action = "action=download;id=" . UrlEncode($id) . ";revision=$revision";
   } elsif ($UsePathInfo) {
-    $action = "download/$id";
+    $action = "download/" . UrlEncode($id);
   } else {
-    $action = "action=download;id=$id";
+    $action = "action=download;id=" . UrlEncode($id);
   }
   if ($image) {
     if ($UsePathInfo and not $revision) {
@@ -1163,7 +1163,7 @@ sub BrowseResolvedPage {
   if ($class eq 'near' && not GetParam('rcclusteronly', 0)) {
     print $q->redirect({-uri=>GetInterSiteUrl($title, $resolved)});
   } elsif ($class eq 'alias') { # an anchor was found instead of a page
-    ReBrowsePage($resolved . '#' . $id);
+    ReBrowsePage($resolved . '#' . UrlEncode($id));
   } elsif (not $resolved and $NotFoundPg) { # custom page-not-found message
     BrowsePage($NotFoundPg);
   } elsif ($resolved) { # an existing page was found
@@ -1774,6 +1774,7 @@ sub GetOldPageLink {
 sub GetSearchLink {
   my ($text, $class, $name, $title) = @_;
   my $id = UrlEncode($text);
+  $name = UrlEncode($name);
   if ($FreeLinks) {
     $text =~ s/_/ /g;  # Display with spaces
     $id =~ s/_/+/g;    # Search for url-escaped spaces
@@ -2691,9 +2692,9 @@ sub DoEdit {
   print $q->p($q->submit(-name=>'Save', -value=>T('Save'))
 	      . ($upload ? '' :	 ' ' . $q->submit(-name=>'Preview', -value=>T('Preview'))));
   if ($upload) {
-    print $q->p(ScriptLink('action=edit;upload=0;id=' . $id, T('Replace this file with text.')));
+    print $q->p(ScriptLink('action=edit;upload=0;id=' . UrlEncode($id), T('Replace this file with text.')));
   } elsif ($UploadAllowed or UserIsAdmin()) {
-    print $q->p(ScriptLink('action=edit;upload=1;id=' . $id, T('Replace this text with a file.')));
+    print $q->p(ScriptLink('action=edit;upload=1;id=' . UrlEncode($id), T('Replace this text with a file.')));
   }
   print $q->endform();
   PrintFooter($id, 'edit');
@@ -3359,7 +3360,7 @@ sub DoPost {
   Save($id, $string, $summary, (GetParam('recent_edit', '') eq 'on'), $filename);
   ReleaseLock();
   DeletePermanentAnchors();
-  ReBrowsePage($id);
+  ReBrowsePage(UrlEncode($id));
 }
 
 sub AddComment {
