@@ -140,17 +140,22 @@ close(F);
 
 update_page('NicePage', 'Friendly content.', 'good guy one');
 sleep(2);
+update_page('OtherPage', 'Other cute content.', 'another good guy');
+sleep(2);
 update_page('NicePage', 'Nice content.', 'good guy two');
 sleep(2);
 update_page('NicePage', 'Evil content.', 'vandal one');
+sleep(2);
+update_page('OtherPage', 'Other evil content.', 'another vandal');
 sleep(2);
 update_page('NicePage', 'Bad content.', 'vandal two');
 test_page(get_page('NicePage'), 'Bad content');
 get_page('action=rc all=1 pwd=foo') =~ /.*action=rollback;to=([0-9]+).*?-- good guy two/;
 test_page(get_page("action=rollback to=$1"), 'restricted to administrators');
 test_page(get_page("action=rollback to=$1 pwd=foo"),
-	  'Rolling back changes', 'NicePage rolled back');
+	  'Rolling back changes', 'NicePage rolled back', 'OtherPage rolled back');
 test_page(get_page('NicePage'), 'Nice content');
+test_page(get_page('OtherPage'), 'Other cute content');
 test_page(get_page('action=rc showedit=1'), 'Rollback to ');
 
 print '[clusters]';
