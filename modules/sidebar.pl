@@ -29,9 +29,13 @@ $SidebarName = 'SideBar';
 *GetHeader = *NewSideBarGetHeader;
 
 $DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /div\.sidebar/; # mod_perl?
-div.sidebar { position: absolute; right: 0; width: 20ex; top: 0; }
-@media print { div.sidebar { display: none; }}
-body { margin-right: 22ex; border-right: 1px solid #999; }
+@media screen {
+  body { margin-right: 22ex; border-right: 1px solid #999; }
+  div.sidebar { position: absolute; right: 0; width: 20ex; top: 0; }
+}
+@media print {
+  div.sidebar { display: none; }
+}
 EOT
 
 # this assumes that *all* calls to GetHeader will print!
