@@ -1,4 +1,23 @@
+2003-03-22  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetValidatorLink): Link to CSS Validator.
+	(GetHtmlHeader): Added CSS foreground color to div tags where only
+	a background was defined, and added body and a links.
+	(UseSubpage): Default to 0 because GNU/Linux would always be a link.
+
 2003-03-21  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DataDir): Default value is the temp directory, unless
+	already set.
+	(ConfigFile): Don't set it, if it already has a value.
+	(GetValidatorLink): New subroutine.
+	(GetFooterText): Use it.
+	(ValidatorLink): New option.
+	(InitRequest): Use $q->script_name() instead of
+	"$ENV{SCRIPT_NAME}".
+	(ScriptLink): Quote HTML for actions.
+	(GetMinimumFooter): Move validator link from GetFooterText to
+	GetMinimumFooter.
 
 	* wiki.pl (ScriptLink): Inherit embed and toplinkbar parameters to
 	local links.
