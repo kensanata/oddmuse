@@ -287,7 +287,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.293 2004/01/03 16:41:53 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.294 2004/01/03 16:59:25 as Exp $');
 }
 
 sub InitCookie {
@@ -3130,6 +3130,7 @@ sub DoPrintAllPages {
   $Monolithic = 1; # changes how ScriptLink works
   print GetHeader('', T('Complete Content'), '')
     . $q->p(Ts('The main page is %s.', $q->a({-href=>'#' . $HomePage}, $HomePage)));
+  print $q->p($q->b(Ts('(for %s)', GetParam('lang', 0)))) if GetParam('lang', 0);
   PrintAllPages(0, 0, AllPagesList());
   PrintFooter();
 }
@@ -3140,10 +3141,8 @@ sub PrintAllPages {
   my $lang = GetParam('lang', 0);
   for my $id (@_) {
     OpenPage($id); # After this call, don't save cache!
-    if ($lang) {
-      my @languages = split(/,/, $Page{languages});
-      next if (@languages and not grep(/$lang/, @languages));
-    }
+    my @languages = split(/,/, $Page{languages});
+    next if $lang and @languages and not grep(/$lang/, @languages);
     print $q->hr . $q->h1($links ? GetPageLink($id) : $q->a({-name=>$id},$id));
     if ($Page{blocks} && $Page{flags} && GetParam('cache', $UseCache)) {
       PrintCache();
@@ -3444,6 +3443,7 @@ sub DoMaintain {
       ReadReferers($OpenPageName); # clean up even if disabled
       WriteReferers($OpenPageName);
       if ($cache) {
+	$Page{languages} = GetLanguages($Page{text});
 	local *STDOUT;
 	open (STDOUT, "> /dev/null");
 	PrintWikiToHTML($Page{text}, 1, '', 1) if ($cache); # cache, current, locked
