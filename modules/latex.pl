@@ -17,15 +17,22 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+# External programs needed
+# dvipng  - http://sourceforge.net/projects/dvipng/
+# LaTeX   - http://www.latex-project.org
+# TeX     - http://www.tug.org/teTeX/
+
 use vars qw($LatexDir $LatexLinkDir $LatexExtendPath $LatexSingleDollars);
 
-$ModulesDescription .= '<p>$Id: latex.pl,v 1.8 2004/10/03 19:56:01 tolchz Exp $</p>';
+my $dvipng = "/usr/bin/dvipng";
 
-# PATH must be extended in order to make dvipng available, and
-# also all the programs that dvipng may call to do its work
-# (namely mkdir, rm, kpathsea and mktexpk).
+$ModulesDescription .= '<p>$Id: latex.pl,v 1.9 2004/10/04 02:58:29 tolchz Exp $</p>';
+
+# PATH must be extended in order to make latex available along with
+# any binaries that they may need to work
 
 $LatexExtendPath = ':/usr/share/texmf/bin:/usr/bin:/usr/local/bin';
+
 
 # $LatexDir must be accessible from the outside as $LatexLinkDir.  The
 # first directory is used to *save* the pictures, the second directory
@@ -70,6 +77,11 @@ sub LatexRule {
 sub MakeLaTeX {
   my ($latex, $type) = @_;
   $ENV{PATH} .= $LatexExtendPath if $LatexExtendPath and $ENV{PATH} !~ /$LatexExtendPath/;
+
+  if (not -e $dvipng) {
+      return "[Error: dvipng binary not found at $dvipng]";
+  }
+
   $latex = UnquoteHtml($latex); # Change &lt; back to <, for example
   my $hash = UrlEncode($latex);
   $hash =~ s/%//g;
@@ -106,8 +118,8 @@ sub MakeLaTeX {
   chdir ($dir) or return "[Unable to switch to $dir]";
   WriteStringToFile ("srender.tex", $template);
   qx(latex srender.tex);
-  return "[Illegal LaTeX markup: $latex]" if $?;
-  my $output = qx(dvipng -T tight -bg Transparent srender.dvi);
+  return "[Illegal LaTeX markup: <pre>$latex</pre>]" if $?;
+  my $output = qx($dvipng -T tight -bg Transparent srender.dvi);
   return "[dvipng error $? ($output)]" if $?;
   my $result;
   if (-f 'srender1.png' and not -z 'srender1.png') {
