@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.22 2004/09/04 09:28:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.23 2004/09/04 09:41:00 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalendarUseCal);
 
@@ -62,6 +62,7 @@ sub Cal {
 	 $cal = Date::Pcalc::Calendar( $year, $mon ); } unless $cal;
   return T('Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.')
     unless $cal;
+  $cal =~ s|\b([A-Z][a-z])\b|{ T($1); }|ge;
   $cal =~ s|\b( ?\d?\d)\b|{
     my $day = $1;
     my $date = sprintf("%d-%02d-%02d", $year, $mon, $day);
