@@ -276,7 +276,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.250 2003/11/08 13:54:00 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.251 2003/11/08 22:26:51 as Exp $');
 }
 
 sub InitCookie {
@@ -3104,7 +3104,7 @@ sub Save { # call within lock, with opened page
   $Page{minor} = $minor;
   $Page{oldmajor} = $revision unless $minor; # if a minor rev, this stores the last major rev
   $Page{text} = $new; # this is the only multiline content right now, and it is not encoded
-  if ($UseDiff and not $upload and $old !~ /^#FILE /) {
+  if ($UseDiff and $revision > 1 and not $upload and $old !~ /^#FILE /) {
     UpdateDiffs($id, $old, $new, $minor); # more multiline, non-encoded content
   }
   SavePage();
