@@ -1,3 +1,13 @@
+2004-10-08  Alex Schroeder  <alex@gnu.org>
+
+	* modules/static-copy.pl (StaticFileName): Don't die on unreadable
+	files.
+	(StaticFile): Use binmode.
+	(StaticHtml): Take $LogoUrl and $SidabarName into account.
+
+	* modules/forms.pl (FormsRule): Close HTML environments before
+	starting the form.
+
 2004-10-07  Alex Schroeder  <alex@confusibombus>
 
 	* modules/static-copy.pl: Rewrite to correctly extract and link
