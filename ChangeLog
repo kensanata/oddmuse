@@ -14,6 +14,7 @@
 	(DoIndex): Rework how the subtitle is created.
 	(PrintFooter): Use "Back to X".
 	(PrintAllPages): Allow filtering by language.
+	(DoMaintain): Determine languages, too, if cache.
 
 2004-01-02  Alex Schroeder  <alex@gnu.org>
 
