@@ -10,4 +10,4 @@ dist:
 	tar czf $(VERSION).tar.gz $(VERSION)
 
 upload:
-	scp oddmuse-1.16.tar.gz as@subversions.gnu.org:/upload/oddmuse
+	scp $(VERSION).tar.gz as@subversions.gnu.org:/upload/oddmuse
