@@ -301,9 +301,9 @@ test_page(get_page('RSS'), @Test);
 
 # Note, cannot identify BayleShanks as author in the mb.rdf
 @Test = split('\n',<<'EOT');
-\[LionKimbro\]
+MeatBall:LionKimbro
 2003-10-24T22:49:33\+06:00
-\[RecentNearChanges\]
+CommunityWiki:RecentNearChanges
 http://www.usemod.com/cgi-bin/mb.pl\?LionKimbro
 2003-10-24T21:02:53\+00:00
 unified rc for here and meatball
@@ -871,9 +871,12 @@ test_page(update_page('InterMap', " OddMuse http://www.emacswiki.org/cgi-bin/odd
 
 @Test = split('\n',<<'EOT');
 OddMuse
+http://www\.emacswiki\.org/cgi-bin/oddmuse\.pl\?
+PlanetMath
+http://planetmath\.org/encyclopedia/\%s\.html
 EOT
 
-test_page(update_page('InterMap', " OddMuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n", 'required', 0, 1), @Test);
+test_page(update_page('InterMap', " OddMuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n PlanetMath http://planetmath.org/encyclopedia/%s.html", 'required', 0, 1), @Test);
 
 ## Verify the InterMap stayed locked
 
@@ -947,6 +950,8 @@ OddMuse:test: or not
 <a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test">OddMuse:test</a>: or not
 OddMuse:test, and foo
 <a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test">OddMuse:test</a>, and foo
+PlanetMath:ZipfsLaw, and foo
+<a href="http://planetmath.org/encyclopedia/ZipfsLaw.html">PlanetMath:ZipfsLaw</a>, and foo
 Foo::Bar
 Foo::Bar
 !WikiLink
