@@ -4,20 +4,21 @@
 # cd /tmp; rm -rf org.emacswiki oddmuse; tar xzf ~/Backups/community.tar.gz; ln -s /tmp/org.emacswiki/htdocs/community/ /tmp/oddmuse; perl ~/src/oddmuse/upgrade-files.pl; chgrp www-data -R /tmp/org.emacswiki/htdocs/community/; chmod g+w -R /tmp/org.emacswiki/htdocs/community/
 
 use CGI qw/:standard/;
-print header() . start_html() . '<pre>';
-print 'Upgrade version: $Id: upgrade-files.pl,v 1.1 2003/11/01 23:32:38 as Exp $', "\n";
+use CGI::Carp qw(fatalsToBrowser);
+print header() . start_html(), p;
+print 'Upgrade version: $Id: upgrade-files.pl,v 1.2 2003/11/02 00:38:14 as Exp $', "\n";
 if (not param('dir')) {
-  print start_form,
-    '$DataDir: ', textfield('dir', '/tmp/oddmuse'), "\n",
-    submit('Ok'), "\n", end_form;
+  print start_form, p,
+    '$DataDir: ', textfield('dir', '/tmp/oddmuse'),
+      p, submit('Ok'), "\n", end_form;
 } elsif (param('dir') and not param('sure')) {
   print start_form, hidden('sure', 'yes'), hidden('dir', param('dir')),
-    '$DataDir: ', param('dir'), "\n",
-    submit('Confirm'), "\n", end_form;
+    '$DataDir: ', param('dir'),
+      p, submit('Confirm'), "\n", end_form;
 } else {
   rewrite(param('dir'));
 }
-print '</pre>' . end_html();
+print end_html();
 
 sub rewrite {
   my ($directory) = @_;
@@ -30,6 +31,7 @@ sub rewrite {
     print "$directory does not seem to be a data directory.\n";
     return;
   }
+  print '<pre>';
   foreach my $file (@files) {
     print "Reading page $file...\n";
     %page = split(/$FS1/, read_file($file), -1);
@@ -39,15 +41,17 @@ sub rewrite {
     print "Writing $file...\n";
     write_page_file($file);
   }
+  print '</pre>';
   @files = glob("$directory/keep/*/*.kp");
   foreach my $file (@files) {
+    print '<pre>';
     print "Reading keep $file...\n";
     my $data = read_file($file);
     my @list = split(/$FS1/, $data);
     my $out = $file;
     $out =~ s/\.kp$// or die "Invalid keep name\n";
     print "Creating $out...\n";
-    mkdir($out) or die "Cannot create directory $out\n";
+    mkdir($out) or die "Cannot create directory $out\n" unless -d $out;
     foreach my $keep (@list) {
       next unless $keep;
       %section = split(/$FS2/, $keep, -1);
@@ -56,8 +60,10 @@ sub rewrite {
       print "Writing $current...\n";
       write_keep_file($current);
     }
+    print '</pre>';
   }
   @files = glob("$directory/*rclog");
+  print '<pre>';
   foreach my $file (@files) {
     print "Reading $file...\n";
     my $data = read_file($file);
@@ -78,7 +84,8 @@ sub rewrite {
     print "Writing $file...\n";
     write_file($file, $data);
   }
-  print "Done.\n" if $done;
+  print '</pre>';
+  print p, "Done.\n" if $done;
 }
 
 sub read_file {
@@ -86,17 +93,17 @@ sub read_file {
   my ($data);
   my (%page);
   local $/ = undef;		# Read complete files
-  open(IN, "<$filename") or die "can't read $filename: $!";
-  $data=<IN>;
-  close IN;
+  open(F, "<$filename") or die "can't read $filename: $!";
+  $data=<F>;
+  close F;
   return $data;
 }
 
 sub write_file {
   my $filename = shift;
-  open(OUT, ">$filename") or die "can't read $filename: $!";
-  print OUT (shift);
-  close OUT;
+  open(F, ">$filename") or die "can't read $filename: $!";
+  print F (shift);
+  close F;
 }
 
 sub cache {
