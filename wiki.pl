@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.354 2004/03/12 20:10:55 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.355 2004/03/13 18:26:37 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -818,7 +818,7 @@ sub RSS {
 	$date = $day;
 	$str .= '</ul>' . $q->p($q->strong($day)) . '<ul>';
       }
-      $line = $time . ' UTC ' . $line;
+      $line = $time . ' UTC ' . $line if $time;
     }
     $str .= $q->li($line);
   }
