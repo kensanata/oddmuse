@@ -295,7 +295,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.318 2004/02/05 23:48:48 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.319 2004/02/06 10:01:26 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1867,7 +1867,11 @@ sub Cookie {
     my $default = $CookieParameters{$key};
     my $value = GetParam($key, $default);
     $params{$key} = $value  if $value ne $default;
-    my $change = ($OldCookie{$key} ? ($value ne $OldCookie{$key}) : ($value ne $default));
+    # The  cookie is  considered to  have changed  under  he following
+    # condition: If the value was already set, and the new alue is not
+    # the same as the old value, or  if there was no old alue, and the
+    # new value is not the default.
+    my $change = (defined $OldCookie{$key} ? ($value ne $OldCookie{$key}) : ($value ne $default));
     $visible = 1 if $change and not $InvisibleCookieParameters{$key};
     $changed = 1 if $change; # note if any parameter changed and needs storing
   }
