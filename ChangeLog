@@ -10,6 +10,7 @@
 	(GetHttpHeader): Don't send last-modified header when $UseCache is less than 2.
 	(PrintFooter): Link to password action when a page is read-only.
 	(ApplyRules): Added image inlining.
+	(Upload): Use FreeToNormal on inlined images.
 
 2004-03-06  Alex Schroeder  <alex@gnu.org>
 
