@@ -270,7 +270,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.143 2003/09/12 14:58:27 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.144 2003/09/12 22:29:42 as Exp $');
 }
 
 sub InitCookie {
@@ -1748,6 +1748,7 @@ div.old { background-color:#FFFFAF; }
 div.new { background-color:#CFFFCF; }
 div.refer { padding-left:5%; padding-right:5%; font-size:smaller; }
 div.message { background-color:#FEE; }
+div.journal h1 { font-size:large; }
 table.history { border-style:none; }
 td.history { border-style:none; }
 table.user { border-style:solid; border-width:thin; }
