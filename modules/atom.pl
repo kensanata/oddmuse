@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: atom.pl,v 1.5 2004/08/16 01:24:38 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: atom.pl,v 1.6 2004/08/16 01:46:39 as Exp $</p>';
 
 $Action{atom} = \&DoAtom;
 
@@ -62,19 +62,29 @@ EOT
 </info>
 EOT
   print AtomTag('modified', AtomTime($LastUpdate));
+  my @excluded = ();
+  if (GetParam('exclude', 1)) {
+    foreach (split(/\n/, GetPageContent($RssExclude))) {
+      if (/^ ([^ ]+)[ \t]*$/) {  # only read lines with one word after one space
+	push(@excluded, $1);
+      }
+    }
+  }
   GetRc(sub {},
 	sub {
 	  my ($pagename, $timestamp, $host, $userName, $summary, $minor, $revision, $languages, $cluster) = @_;
+	  return if grep(/$pagename/, @excluded);
 	  my $title = FreeToNormal($pagename);
 	  $title =~ s/_/ /g;
-	  my $link = $ScriptName . ($UsePathInfo ? '/' : '?') . $pagename;
+	  my $link = $ScriptName . ($UsePathInfo ? '/' : '?') . UrlEncode($pagename);
 	  my $author = $userName;
 	  $author = $host unless $author;
 	  # output
 	  print "<entry>\n",
 	    AtomTag('title', QuoteHtml($title), 1),
 	    "<link href=\"$link\" rel=\"alternate\" title=\"$title\" type=\"text/html\"/>\n",
-	    AtomTag('author', AtomTag('name', $author, 1)),
+	    "<id>$link</id>\n",
+	    AtomTag('author', AtomTag('name', $author)),
 	    AtomTag('modified', AtomTime($timestamp)),
 	    AtomTag('issued', AtomTime($timestamp)),
 	    AtomTag('summary', QuoteHtml($summary), 1);
@@ -83,8 +93,7 @@ EOT
 	  OpenPage($pagename);
 	  PrintPageDiff();
 	  PrintPageHtml();
-	  print "\n</content>\n",
-	    "</entry>\n";
+	  print "\n</div>\n</content>\n</entry>\n";
 	},
 	@_);
   print "</feed>\n";
