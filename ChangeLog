@@ -1,3 +1,9 @@
+2004-07-16  Sebastian Blatt  <sblatt@havens.de>
+
+	* modules/throttle.pl: Added. Module to limit the number of
+	parallel Oddmuse instances by keeping track of the script's
+	process ids.
+
 2004-07-14  Alex Schroeder  <alex@gnu.org>
 
 	* modules/link-all.pl: Set %RuleOrder.
@@ -217,7 +223,7 @@
 	(NewNotFoundHandlerDoMaintain): Deleted.
 	(NewNotFoundHandlerSave): Use the new functionality.
 	Major rewrite using a link database!
-	
+
 	* wiki.pl (RSS): Handle encoding of 'diff' and 'history' texts.
 	(DeletePage): Bugfix.
 	(RSS): No longer print square brackets around links to feeds
@@ -676,7 +682,7 @@
 2004-02-03  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (Cookie): Eliminate uninitialized variable warning.
-	(ValidId): Added a specific error text if the id is empty. 
+	(ValidId): Added a specific error text if the id is empty.
 	(DoBrowseRequest): Handle wiki/download/page and wiki/raw/page.
 
 	* forms.pl (FormsRule): Add %this% rule.
@@ -732,9 +738,9 @@
 	(DoPost): Don't call PingTracker anymore.
 	(PingTracker): Moved.
 	(DoPingTracker): Moved.
-	
+
 	* weblog-tracking.pl (NewSave): Call OldSave instead of Save.
-	
+
 	* wiki.pl ($DataDir): Allow setting it via the environment
 	variable "WikiDataDir" (for mod_perl).
 	($ModuleDir): New variable.
@@ -1134,7 +1140,7 @@
 
 	Major rewrite of rules -- if you use DirtyBlock in your config file,
 	then you will have to rewrite your code.
-	
+
 	* wiki.pl ($Fragment, @Blocks, @Flags): New globals used by ApplyRules.
 	(Clean): New.
 	(Dirty): New.
@@ -1174,7 +1180,7 @@
 	(ResolveId): Return more data.
 	(BrowseResolvedPage): Use it.
 	(GetHtmlHeader): Add CSS for a.alias.
-	
+
 
 2003-10-18  Alex Schroeder  <alex@gnu.org>
 
@@ -1669,7 +1675,7 @@
 	* wiki.pl (ApplyRules): Pass $block, @blocks, and @flags to
 	MyRules so that dynamic rules can be written.
 	(DoShowVisitors): Fix typo.
-	
+
 2003-06-30  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (RcTextItem): New.
@@ -1722,7 +1728,7 @@
 	($NotifyWeblogs): Renamed to $NotifyTracker.
 	(DoPingWeblogs): Renamed to DoPingTracker.
 	(PingWeblogs): Renamed to PingTracker.
-	
+
 2003-06-15  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetRandomLink): Removed.
@@ -1948,7 +1954,7 @@
 	(ReleaseVisitorsLock, RequestMergeLock, RequestMergeLock)
 	(ReleaseMergeLock, ReleaseRefererLock, RequestIndexLock)
 	(ReleaseIndexLock): Removed, changed callers.
-	
+
 2003-05-23  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetRcHtml, GetRcText): Cleanup, saving some lines.
@@ -2014,12 +2020,12 @@
 	Diamond <jason@injektilo.org>
 
 2003-05-17  Pierre Gaston  <pgas@intracom.gr>
-	
+
 	* wiki.pl: Many subroutines: Replaced print &GetFooter(...) with
 	&PrintFooter(...).
 	(GetFooter, PrintFooter): Renamed GetFooter to PrintFooter, and
 	changed concatenations to prints.
-	
+
 2003-05-08  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (BrowsePage): Remove duplicate div class="refer".
@@ -2102,7 +2108,7 @@
 	(GetRcHtml): No longer treat '*' special.
 
 	* test-texi.pl: New file.
-	
+
 	* texi.pl: New file.
 
 	* wiki.pl ($FreeUpper): Defaults to 0.
@@ -2217,7 +2223,7 @@
 
 	Tricky update!  Changing the field separator from superscript 3 to
 	an ASCII control character!
-	
+
 	* wiki.pl (FS0, FS0used): New field separator for the old one, and
 	a new variable to tell us if the old separator has been used.
 	(InitLinkPatterns): The old separator, FS0, is set to \xb3 (the
@@ -2231,7 +2237,7 @@
 	therefore.  This happens during maintenance, so make sure
 	maintenance really gets run!  This also updates the recent changes
 	log files (both old and current).
-	
+
 	(GetValidatorLink): Use $q->self_url for the validator link.
 
 2003-03-26  Alex Schroeder  <alex@gnu.org>
