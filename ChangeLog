@@ -2,6 +2,8 @@
 
 	* wiki.pl (RSS): Handle encoding of 'diff' and 'history' texts.
 	(DeletePage): Bugfix.
+	(RSS): No longer print square brackets around links to feeds
+	without interwiki moniker.  This can be added using CSS.
 
 2004-06-12  Alex Schroeder  <alex@confusibombus>
 
