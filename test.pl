@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Copyright (C) 2004  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2005  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -2136,10 +2136,10 @@ $mon++;
 $year += 1900;
 my $year_next = $year +1;
 my $year_prev = $year -1;
-my $today = "$year-$mon-$mday";
+my $today = sprintf("%d-%02d-%02d", $year, $mon, $mday);
 $oday = $mday -1;
 $oday += 2 if $oday < 1;
-my $otherday = "$year-$mon-$oday";
+my $otherday = sprintf("%d-%02d-%02d", $year, $mon, $oday);
 
 add_module('calendar.pl');
 test_page(get_page('action=calendar'),
@@ -2149,26 +2149,26 @@ test_page(get_page('action=calendar'),
 	  . '<a href="http://localhost/wiki.pl?action=calendar;year=' . $year_next . '">Next</a></p>',
 	  '<div class="cal month"><pre>    <span class="title">' # monthly collection
 	  . '<a class="local collection month" href="http://localhost/wiki.pl?action=collect;match='
-	  . "$year-$mon" . '">',
+	  . sprintf("%d-%02d", $year, $mon) . '">',
 	  '<a class="edit today" href="http://localhost/wiki.pl?action=edit;id=' # today day edit
-	  . $today . '"> ?' . $mday . '</a>',
+	  . $today . '"> ?' . sprintf("%2d", $mday) . '</a>',
 	  '<a class="edit" href="http://localhost/wiki.pl?action=edit;id=' # other day edit
-	  . $otherday . '"> ?' . $oday . '</a>',
+	  . $otherday . '"> ?' . sprintf("%2d", $oday) . '</a>',
 	  );
 
-update_page("$year-$mon-$mday", "yadda");
+update_page($today, "yadda");
 
 test_page(get_page('action=calendar'),
 	  map { $_ = quotemeta; s|\\ \\\?| ?|g; $_; }
 	  '<a class="local exact today" href="http://localhost/wiki.pl/' # day exact match
-	  . "$year-$mon-$mday" . '"> ?' . $mday . '</a>');
+	  . $today . '"> ?' . sprintf("%2d", $mday) . '</a>');
 
-update_page("$year-$mon-${mday}_more", "more yadda");
+update_page("${today}_more", "more yadda");
 
 test_page(get_page('action=calendar'),
 	  map { $_=quotemeta; s|\\ \\\?| ?|g; $_; }
 	  '<a class="local collection today" href="http://localhost/wiki.pl?action=collect;match=' # day match
-	  . "$year-$mon-$mday" . '"> ?' . $mday . '</a>');
+	  . $today . '"> ?' . sprintf("%2d", $mday) . '</a>');
 
 remove_rule(\&CalendarRule);
 *GetHeader = *OldCalendarGetHeader;
