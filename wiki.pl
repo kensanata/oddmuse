@@ -58,7 +58,7 @@ $RefererTimeLimit $RefererLimit $TopLinkBar $NotifyTracker $InterMap
 @LockOnCreation $RefererFilter $PermanentAnchorsFile $PermanentAnchors
 %CookieParameters $StyleSheetPage @UserGotoBarPages $ConfigPage
 $ScriptName $CommentsPrefix $NewComment $AllNetworkFiles $UsePathInfo
-$UploadAllowed @UploadTypes @MyMacros $LastUpdate);
+$UploadAllowed @UploadTypes @MyMacros $LastUpdate $PageCluster);
 
 # Other global variables:
 use vars qw(%Page %Section %Text %InterSite %KeptRevisions %IndexHash
@@ -147,6 +147,7 @@ $ShowEdits   = 0;   # 1 = major and show minor edits in recent changes
 $UseLookup   = 1;   # 1 = lookup host names instead of using only IP numbers
 $RecentTop   = 1;   # 1 = most recent entries at the top of the list
 $RecentLink  = 1;   # 1 = link to usernames
+$PageCluster = '';  # name of cluster page, eg. 'Cluster' to enable
 
 # RSS and other Weblog Technology
 $InterWikiMoniker = '';    # InterWiki prefix for this wiki for RSS
@@ -278,7 +279,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.224 2003/10/25 16:58:59 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.225 2003/10/27 17:25:18 as Exp $');
 }
 
 sub InitCookie {
@@ -1310,8 +1311,8 @@ sub GetRc {
     next if ($langFilter and not grep(/$langFilter/, @languages));
     my $cluster = '';
     my $revision = $extra{'revision'};
-    next if ($clusterOnly and $clusterOnly ne $extra{'cluster'});
-    if ($all < 2 and not $clusterOnly and $extra{'cluster'}) {
+    next if ($PageCluster and $clusterOnly and $clusterOnly ne $extra{'cluster'});
+    if ($PageCluster and $all < 2 and not $clusterOnly and $extra{'cluster'}) {
       next if grep(/^$extra{'cluster'}/, @clusters);
       $cluster = $extra{'cluster'};
       $pagename = $cluster;
@@ -1372,8 +1373,8 @@ sub GetRcHtml {
 	  $pagelink = GetPageLink($pagename, $cluster);
 	  $count = '(' . GetHistoryLink($pagename, $tHistory) . ')';
 	}
-	if ($cluster) {
-	  $link .= T('Cluster:');
+	if ($cluster and $PageCluster) {
+	  $link .= GetPageLink($PageCluster) . ':';
 	} elsif ($UseDiff and GetParam('diffrclink', 1)) {
 	  if ($all) {
 	    $link .= ScriptLinkDiff(2, $pagename, $tDiff, '', $revision);
@@ -3327,8 +3328,9 @@ sub GetLanguages {
 
 sub GetCluster {
   $_ = shift;
-  return $1 if ($WikiLinks && /^$LinkPattern/);
-  return $1 if ($FreeLinks && m/^\[\[$FreeLinkPattern\]\]/);
+  return unless $PageCluster;
+  return $1 if ($WikiLinks && /^$LinkPattern\n/)
+    or ($FreeLinks && m/^\[\[$FreeLinkPattern\]\]\n/);
 }
 
 sub MergeRevisions { # merge change from file2 to file3 into file1
