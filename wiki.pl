@@ -55,7 +55,7 @@ $SurgeProtectionTime $DeletedPage %Languages $LanguageLimit
 $ValidatorLink $RefererTracking $RefererTimeLimit $RefererLimit
 $TopLinkBar $NotifyWeblogs $InterMap @LockOnCreation $RefererFilter
 $PermanentAnchorsFile $PermanentAnchors %CookieParameters
-$StyleSheetPage);
+$StyleSheetPage @UserGotoBarPages);
 
 # Other global variables:
 use vars qw(%Page %Section %Text %InterSite %KeptRevisions %IndexHash
@@ -82,7 +82,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.78 2003/06/02 16:57:01 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.79 2003/06/02 20:27:06 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -96,6 +96,7 @@ $EmbedWiki   = 0;   # 1 = no headers/footers
 $FooterNote  = '';  # HTML for bottom of every page
 $EditNote    = '';  # HTML notice above buttons on edit page
 $TopLinkBar  = 1;   # 1 = add a goto bar at the top of the page
+@UserGotoBarPages = (); # List of pagenames, eg. ('HowTo', 'Download')
 $UserGotoBar = '';  # HTML added to end of goto bar
 $ValidatorLink = 0; # 1 = Link to the W3C HTML validator service
 
@@ -187,6 +188,7 @@ if (not @HtmlTags) { # don't set if set in the config file
 		     'pwd' => '',
 		     'theme' => '',
 		     'toplinkbar' => $TopLinkBar,
+		     'linkrandom' => 0,
 		     'embed' => $EmbedWiki);
 
 $IndentLimit = 20;                  # Maximum depth of nested lists
@@ -1865,14 +1867,11 @@ sub GetGotoBar {
     $bartext .= ' | ' . GetPageLink($main);
   }
   $bartext .= ' | ' . GetPageLink($RCName);
-  if (GetParam('linkrandom', 0)) {
-    $bartext .= ' | ' . GetRandomLink();
-  }
-  if ($UserGotoBar ne '') {
-    $bartext .= ' | ' . $UserGotoBar;
-  }
-  $bartext = $q->span({-class=>'gotobar'}, $bartext);
-  return $bartext;
+  $bartext .= ' | ' . GetRandomLink()  if GetParam('linkrandom', 0);
+  $bartext .= ' | ' . join(' | ', map { ScriptLink($_, $_) } @UserGotoBarPages)
+    if @UserGotoBarPages;
+  $bartext .= ' | ' . $UserGotoBar  if $UserGotoBar ne '';
+  return $q->span({-class=>'gotobar'}, $bartext);
 }
 
 sub GetRedirectPage {
