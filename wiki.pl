@@ -265,7 +265,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.182 2003/10/04 17:38:22 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.183 2003/10/04 18:23:38 as Exp $');
 }
 
 sub InitCookie {
@@ -3319,12 +3319,13 @@ sub DoPost {
   my $newAuthor = 0;
   if (GetParam('username', '')) { # prefer usernames for potential newAuthor detection
     $newAuthor = 1 if GetParam('username', '') ne $Section{'username'};
-  } elsif ($ENV{REMOTE_ADDR} eq $Section{'ip'}) {
+  } elsif ($ENV{REMOTE_ADDR} ne $Section{'ip'}) {
     $newAuthor = 1;
   }
   my $oldtime = GetParam('oldtime', '');
-  if ($newAuthor and $oldtime) {
-    my $new = MergeRevisions($string, GetTextAtTime($oldtime), $old);
+  if ($newAuthor) { # can't print warnings here here because of redirect!
+    my $new;
+    $new = MergeRevisions($string, GetTextAtTime($oldtime), $old) if $oldtime;
     if ($new) {
       $string = $new;
       if ($new =~ /<<<<<<</ and $new =~ />>>>>>>/) {
@@ -3332,7 +3333,7 @@ sub DoPost {
 			       CalcTimeSince($Now - $Section{'ts'}))
 	  . ' ' . T('The changes conflict.  Please check the page again.');
       }
-    } elsif (($Now - $Section{'ts'}) < (600)) { # can't print here because of redirect!
+    } elsif (($Now - $Section{'ts'}) < (600)) {
       $NewCookie{'msg'} = Ts('This page was changed by somebody else %s.',
 			     CalcTimeSince($Now - $Section{'ts'}))
 	. ' ' . T('Please check whether you overwrote those changes.');
