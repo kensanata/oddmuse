@@ -309,7 +309,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.327 2004/02/23 22:57:18 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.328 2004/02/23 23:53:31 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -3715,7 +3715,10 @@ sub ExpireReferers { # no need to save the pruned list if nothing else changes
 }
 
 sub GetReferers {
-  my $result = join(' ', map { $q->a({-href=>$_}, QuoteHtml($_)) } keys %Referers);
+  my $result = join(' ', map {
+    my $title = QuoteHtml($_);
+    $title =~ s/\%([0-9a-f][0-9a-f])/chr(hex($1))/egi;
+    $q->a({-href=>$_}, $title); } keys %Referers);
   $result = $q->div({-class=>'refer'}, $q->p(T('Referrers') . ': ' . $result)) if $result;
   return $result;
 }
