@@ -4,7 +4,15 @@
 	(ScriptLink): Prefer syntax using path_info().
 	(GetHtmlHeader): Removed ref. to path_info.
 	(PingWeblogs): Switched to blogrolling.com.
+	(DoPost): Rebrowse after pinging.
+	(PingWeblogs): Use & instead of ; to separate parameters.
+	(DoPingWeblogs): Pass the value of the id parameter or RCName to
+	DoPingWeblogs.
+	($NotifyWeblogs): Renamed to $NotifyTracker.
+	(DoPingWeblogs): Renamed to DoPingTracker.
+	(PingWeblogs): Renamed to PingTracker.
 
+	
 2003-06-15  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetRandomLink): Removed.
