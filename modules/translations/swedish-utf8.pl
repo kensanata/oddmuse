@@ -24,7 +24,7 @@
 # This translation was last checked for OddMuse version 1.517.
 # Checked and updated by Johan Adler 050106
 #
-$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.2 2005/01/22 22:10:27 jadler Exp $</p>';
+$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.3 2005/01/26 19:57:27 jadler Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Läsning inte tillåten: användare, ip eller nätverk är blockerat.
@@ -163,7 +163,7 @@ Lås wikin
 Unlock %s
 Lås upp %s
 Lock %s
-Lås %2
+Lås %s
 Administration
 
 Actions:
