@@ -1,3 +1,66 @@
+2005-01-05  Alex Schroeder  <alex@gnu.org>
+
+	* changelog-to-rss (quote_html): New.
+	(output): Use it.
+	(to_date): Fix RFC 822 format.
+	Use the right MIME type.
+	(output): Use link pattern, conditionalize all elements.
+
+	* wiki.pl (RSS): Take dash out of the strong element with the description.
+
+	* changelog-to-rss.pl: New.
+
+	* wiki.pl (@MyAdminCode): New option.
+	(@AdminBlocks): Removed option.
+	(DoAdminPage): Rewritten to take advantage of the new @MyAdminCode.
+	
+	* modules/admin.pl (AdminPowerDelete): Fix log message, unlink
+	$IndexFile.
+	(AdminPowerRename): Call FreeToNormal on both parameters, don't
+	test the new filename using ValidIdOrDie.
+	(NewAdminPowerGetAdminBar): Deleted.
+	(AdminPower): New, using @MyAdminCode.
+
+2005-01-04  Alex Schroeder  <alex@gnu.org>
+
+	* modules/localnames.pl (LocalNamesInit): Add $SidebarName to
+	@AdminPages.
+
+	* modules/weblog-2.pl: Use @MyInitVariables.
+
+	* modules/weblog-1.pl: Use @MyInitVariables.
+
+	* modules/smiley-dir.pl: Use @MyInitVariables.
+
+	* modules/namespaces.pl: Use @MyInitVariables.
+
+	* test.pl (clear_pages): Removed references to
+	OldUsemodInitVariables.
+
+	* modules/usemod.pl: Use @MyInitVariables.
+
+	* modules/markup.pl: Use @MyInitVariables.
+
+	* modules/sidebar.pl: Add $SidebarName to @AdminPages.
+
+	* wiki.pl (@AdminPages, @AdminBlocks): New options.
+	(%Action): Register admin action.
+	(InitVariables): Set @AdminPages.
+	(DoAdminPage): New.
+	(PrintFooter): No longer print admin bar.
+	(GetAdminBar): Deleted.
+	(GetFooterLinks): Link to admin page.
+	(DoIndex): Add menu for the various parameters.
+	(DoEditLock, DoPageLock): Touch index file (invalidate the cache).
+	(DoAdminPage): Use edit links for non-existing important pages.
+	(DoAdminPage): Add more actions.
+	(DoUnlock, DoMaintain): Changed title.
+	(DoAdminPage): Treat space.
+	(@MyInitVariables): New option.
+	(InitVariables): Use it.
+	(DoAdminPage): Bugfix.
+	(GetFooterLinks): Add class.
+
 2005-01-02  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (InitLinkPatterns): Remove "" delimiter from
