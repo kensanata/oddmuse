@@ -1,3 +1,15 @@
+2004-08-16  Alex Schroeder  <alex@gnu.org>
+
+	* modules/atom.pl (AtomTime): Fix format.
+	(AtomTag): Add escaped parameter.
+	(GetRcAtom): Fix person entities, don't call AtomPage anymore.
+	(AtomPage): Deleted.
+	(GetRcAtom): Take $RssExclude into account, UrlEncode pagenames.
+	(GetRcAtom): Only print content when full=1.
+
+	* modules/footnotes.pl (NewFootnotePrintFooter): Use a <p> for
+	each footnote item, instead of separating them via <br>.
+
 2004-08-15  Alex Schroeder  <alex@confusibombus>
 
 	* wiki.pl (PrintPageDiff): New.
