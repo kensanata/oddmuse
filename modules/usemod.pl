@@ -16,7 +16,12 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.8 2004/09/05 18:44:09 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.9 2004/10/13 19:52:08 as Exp $</p>';
+
+$DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /table\.user/; # mod_perl?
+table.user { border-style:solid; border-width:thin; }
+table.user tr td { border-style:solid; border-width:thin; padding:5px; }
+EOT
 
 use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml);
 
