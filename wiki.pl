@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.370 2004/04/04 17:24:03 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.371 2004/04/05 18:04:42 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1098,29 +1098,28 @@ sub DoBrowseRequest {
     BrowsePage($HomePage);
     return 1;
   }
-  my $id = join('_', $q->keywords);
-  $id = $q->path_info() if not $id and $UsePathInfo;
+  my $id = join('_', $q->keywords); # script?p+q -> p_q
+  $id = $q->path_info if $UsePathInfo and not $id; # script/p/q -> p/q
   my $action = lc(GetParam('action', '')); # script?action=foo;id=bar
   SetParam('raw', 1) if ($id =~ s|raw/||); # script/raw/id
   $action = 'download' if ($id =~ s|download/|| and not $action); # script/download/id
-  $id =~ s|.*/||; # script/ignore/id
-  return BrowseResolvedPage($id) if $id and not $action; # script?PageName or script/PageName
-  $id = GetParam('id', $id);
+  $id =~ s|.*/||; # script/ignore/id (ie. we can embed information in the path!)
+  $id = GetParam('id', $id); # id=x overrides
   my $search = GetParam('search', '');
   if ($Action{$action}) {
     &{$Action{$action}}($id);
   } elsif ($action and defined &MyActions) {
     eval { local $SIG{__DIE__}; MyActions(); };
+  } elsif ($action) {
+    ReportError(Ts('Invalid action parameter %s', $action), '501 NOT IMPLEMENTED');
   } elsif (($search ne '') || (GetParam('dosearch', '') ne '')) {
     DoSearch($search);
   } elsif (GetParam('title', '')) {
     DoPost(GetParam('title', ''));
+  } elsif ($id) {
+    BrowseResolvedPage($id); # default action!
   } else {
-    if ($action) {
-      ReportError(Ts('Invalid action parameter %s', $action), '501 NOT IMPLEMENTED');
-    } else {
-      ReportError(T('Invalid URL.'), '400 BAD REQUEST');
-    }
+    ReportError(T('Invalid URL.'), '400 BAD REQUEST');
   }
 }
 
@@ -2001,7 +2000,7 @@ EOT
   # finish
   $html = qq(<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">\n<html>)
     . $q->head($q->title($q->escapeHTML($title)) . $html . $HtmlHeaders)
-    . '<body class="' . GetParam('theme', $q->url()) . '">';
+    . '<body class="' . GetParam('theme', $ScriptName) . '">';
   return $html;
 }
 
@@ -3827,7 +3826,7 @@ sub GetReferers {
 }
 
 sub UpdateReferers {
-  my $self = $q->url();
+  my $self = $ScriptName;
   my $referer = $q->referer();
   return  unless $referer and $referer !~ /$self/;
   foreach (split(/\n/,GetPageContent($RefererFilter))) {
