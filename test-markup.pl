@@ -1343,14 +1343,14 @@ ordinary text
 paragraph\n\nparagraph
 paragraph<p>paragraph</p>
 * one\n*two
-<ul><li>one</li><li>two</li></ul>
+<ul><li>one *two</li></ul>
 * one\n\n*two
-<ul><li>one</li><li>two</li></ul>
-* one\n**two
+<ul><li>one</li></ul><p>*two</p>
+* one\n** two
 <ul><li>one<ul><li>two</li></ul></li></ul>
-* one\n**two\n***three\n*four
+* one\n** two\n*** three\n* four
 <ul><li>one<ul><li>two<ul><li>three</li></ul></li></ul></li><li>four</li></ul>
-* one\n**two\n***three\n*four\n**five\n*six
+* one\n** two\n*** three\n* four\n** five\n* six
 <ul><li>one<ul><li>two<ul><li>three</li></ul></li></ul></li><li>four<ul><li>five</li></ul></li><li>six</li></ul>
 * one\n* two\n** one and two\n** two and three\n* three
 <ul><li>one</li><li>two<ul><li>one and two</li><li>two and three</li></ul></li><li>three</li></ul>
@@ -1455,10 +1455,10 @@ symlink('/home/alex/src/oddmuse/modules/usemod.pl',
 <ul><li><em>one</em><ul><li>two</li></ul></li></ul>
 # one\n# two
 <ol><li>one</li><li>two</li></ol>
-* one\n#two
+* one\n# two
 <ul><li>one</li></ul><ol><li>two</li></ol>
 # one\n\n#two
-<ol><li>one</li><li>two</li></ol>
+<ol><li>one</li></ol><p>#two</p>
 # one\n# two\n## one and two\n## two and three\n# three
 <ol><li>one</li><li>two<ol><li>one and two</li><li>two and three</li></ol></li><li>three</li></ol>
 # one and #\n# two and # more
@@ -1468,10 +1468,10 @@ symlink('/home/alex/src/oddmuse/modules/usemod.pl',
 : one and :)\n: two and :) more
 <dl class="quote"><dt /><dd>one and :)</dd><dt /><dd>two and :) more</dd></dl>
 : one\n\n:two
-<dl class="quote"><dt /><dd>one</dd><dt /><dd>two</dd></dl>
+<dl class="quote"><dt /><dd>one</dd></dl><p>:two</p>
 ; one:eins\n;two:zwei
-<dl><dt>one</dt><dd>eins</dd><dt>two</dt><dd>zwei</dd></dl>
-; one:eins\n\n;two:zwei
+<dl><dt>one</dt><dd>eins ;two:zwei</dd></dl>
+; one:eins\n\n; two:zwei
 <dl><dt>one</dt><dd>eins</dd><dt>two</dt><dd>zwei</dd></dl>
 ; a: b: c\n;; x: y: z
 <dl><dt>a</dt><dd>b: c<dl><dt>x</dt><dd>y: z</dd></dl></dd></dl>
@@ -1523,6 +1523,40 @@ introduction<p></p><table class="user"><tr><td>one</td><td>two</td><td>three</td
 <pre> source\n \n etc</pre>
  source\n \n etc\n\nother
 <pre> source\n \n etc</pre><p>other</p>
+= title =
+<h1>title</h1>
+==title=
+<h2>title</h2>
+========fnord=
+<h6>fnord</h6>
+== nada\nnada ==
+== nada nada ==
+ == nada ==
+<pre> == nada ==</pre>
+==[[Free Link]]==
+<h2>[[Free Link]]</h2>
+EOT
+
+run_tests();
+
+open(F,'>>/tmp/oddmuse/config');
+print F "\$UseModSpaceRequired = 0;\n";
+print F "\$UseModMarkupInTitles = 1;\n";
+close(F);
+
+%Test = split('\n',<<'EOT');
+*one\n**two
+<ul><li>one<ul><li>two</li></ul></li></ul>
+#one\n##two
+<ol><li>one<ol><li>two</li></ol></li></ol>
+:one\n:two\n::one and two\n::two and three\n:three
+<dl class="quote"><dt /><dd>one</dd><dt /><dd>two<dl class="quote"><dt /><dd>one and two</dd><dt /><dd>two and three</dd></dl></dd><dt /><dd>three</dd></dl>
+;one:eins\n;two:zwei
+<dl><dt>one</dt><dd>eins</dd><dt>two</dt><dd>zwei</dd></dl>
+=='''title'''==
+<h2><strong>title</strong></h2>
+==[[Free Link]]==
+<h2>[Free Link]<a class="edit" title="Click to edit this page" href="http://localhost/test-wrapper.pl?action=edit;id=Free_Link">?</a></h2>
 EOT
 
 run_tests();
