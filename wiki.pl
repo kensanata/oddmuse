@@ -276,7 +276,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.244 2003/11/06 16:08:18 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.245 2003/11/06 18:17:29 as Exp $');
 }
 
 sub InitCookie {
@@ -1239,6 +1239,7 @@ sub DoRc {
     splice(@fullrc, 0, $i);  # Remove items before index $i
     print &$GetRC(@fullrc);
   }
+  print GetFilterForm() if $showHTML;
 }
 
 sub RcHeader {
@@ -1264,29 +1265,41 @@ sub RcHeader {
   } else {
     $action = "action=rc$action";
   }
-  my ($all, $edits, $switches) = (GetParam('all',0), GetParam('showedit',0));
+  my ($all, $edits, $days, $switches) = (GetParam('all', 0), GetParam('showedit', 0));
+  $days = ";days=" . GetParam('days', 0) if GetParam('days', $RcDefault) != $RcDefault;
   if ($all and $edits) {
-    $switches = ScriptLink("$action;showedit=1",
-			   T('List latest change per page only'))
-      . ' | ' . ScriptLink("$action;all=1", T('List only major changes'));
+    $switches = ScriptLink("$action$days;showedit=1", T('List latest change per page only'))
+      . ' | ' . ScriptLink("$action$days;all=1", T('List only major changes'));
     $action .= ';all=1;showedit=1';
   } elsif ($all) {
-    $switches = ScriptLink("$action", T('List latest change per page only'))
-      . ' | ' . ScriptLink("$action;all=1;showedit=1",
-			   T('Include minor changes'));
+    $switches = ScriptLink("$action$days", T('List latest change per page only'))
+      . ' | ' . ScriptLink("$action$days;all=1;showedit=1", T('Include minor changes'));
     $action .= ';all=1';
   } elsif ($edits) {
-    $switches = ScriptLink("$action;all=1", T('List all changes'))
-      . ' | ' . ScriptLink("$action", T('List only major changes'));
+    $switches = ScriptLink("$action$days;all=1;showedit=1", T('List all changes'))
+      . ' | ' . ScriptLink("$action$days", T('List only major changes'));
     $action .= ';showedit=1';
   } else {
-    $switches = ScriptLink("$action;all=1", T('List all changes'))
-      . ' | ' . ScriptLink("$action;showedit=1", T('Include minor changes'));
+    $switches = ScriptLink("$action$days;all=1", T('List all changes'))
+      . ' | ' . ScriptLink("$action$days;showedit=1", T('Include minor changes'));
   }
   print $q->p(join(' | ', map { ScriptLink("$action;days=$_",
-		  ($_ != 1) ? Ts('%s days', $_) : Ts('%s days', $_));
+					   ($_ != 1) ? Ts('%s days', $_) : Ts('%s days', $_));
 			      } @RcDays) . $q->br() . $switches . $q->br()
 	      . ScriptLink($action . ';from=' . ($LastUpdate + 1), T('List later changes')));
+}
+
+sub GetFilterForm {
+  my $form = GetFormStart() . $q->input({-type=>'hidden', -name=>'action', -value=>'rc'});
+  $form .= $q->input({-type=>'hidden', -name=>'all', -value=>1}) if (GetParam('all', 0));
+  $form .= $q->input({-type=>'hidden', -name=>'showedit', -value=>1}) if (GetParam('showedit', 0));
+  $form .= $q->input({-type=>'hidden', -name=>'days', -value=>GetParam('days', $RcDefault)})
+    if (GetParam('days', $RcDefault) != $RcDefault);
+  $form .= $q->strong(T('Filters')) . $q->br();
+  $form .= T('Username:') . ' ' . $q->textfield(-name=>'rcuseronly', -size=>20);
+  $form .= ' ' . T('Host:') . ' ' . $q->textfield(-name=>'rchostonly', -size=>20);
+  $form .= ' ' . T('Language:') . ' ' . $q->textfield(-name=>'rclang', -size=>10) if %Languages;
+  return $form . $q->submit('dofilter', T('Go!')) . $q->endform;
 }
 
 sub GetRc {
