@@ -1,3 +1,22 @@
+2004-09-19  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (PrintPage): Print title instead of id.
+	(BannedContent): Return text matched in the original page.
+	(DoPost): Changed text printed when BannedContent returns text.
+
+2004-09-17  Alex Schroeder  <alex@confusibombus>
+
+	* wiki.pl (ApplyRules): New local variable $first.
+
+2004-09-16  Alex Schroeder  <alex@gnu.org>
+
+	* modules/image.pl (ImageSupportRule): Support full urls for the
+	image.
+
+2004-09-15  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl: Fixed default CSS.
+
 2004-09-09  Alex Schroeder  <alex@gnu.org>
 
 	* modules/calendar.pl (Cal): Highlight current day in the yearly
