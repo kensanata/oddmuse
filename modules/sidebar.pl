@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>sidebar.pl (proto)</p>';
+$ModulesDescription .= '<p>$Id: sidebar.pl,v 1.3 2004/02/22 12:24:20 as Exp $</p>';
 
 use vars qw($SidebarName);
 
