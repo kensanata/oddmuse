@@ -1,5 +1,9 @@
 2005-01-02  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (InitLinkPatterns): Remove "" delimiter from
+	$FreeLinkPattern and $FreeInterLinkPattern.
+	(ApplyRules): Unquote URLs in include and rss rules.
+
 	* modules/tables-long.pl (TablesLongRule): Allow multiple CSS
 	directives.
 
