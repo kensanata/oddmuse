@@ -1,3 +1,7 @@
+# Weblog Tracker Notification Extension
+
+# Put this file in your modules directory.
+
 %NotifyJournalPage = ();
 @NotifyUrlPatterns = ();
 
@@ -51,12 +55,16 @@ sub PingTracker {
     my $rss = UrlEncode($q->url . '?action=rss');
     require LWP::UserAgent;
     foreach $uri (@NotifyUrlPatterns) {
-      $uri =~ s/\$name/$name/g;
-      $uri =~ s/\$url/$url/g;
-      $uri =~ s/\$rss/$rss/g;
-      my $ua = LWP::UserAgent->new;
-      my $request = HTTP::Request->new('GET', $uri);
-      $ua->request($request);
+      my $fork = fork();
+      if (not ($fork > 0)) { # either we're the child or forking failed
+	$uri =~ s/\$name/$name/g;
+	$uri =~ s/\$url/$url/g;
+	$uri =~ s/\$rss/$rss/g;
+	my $ua = LWP::UserAgent->new;
+	my $request = HTTP::Request->new('GET', $uri);
+	$ua->request($request);
+	exit if ($fork == 0); # exit when we're the child
+      }
     }
   }
 }
