@@ -304,7 +304,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.436 2004/07/14 14:50:08 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.437 2004/08/06 13:12:54 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1818,7 +1818,7 @@ sub GetHttpHeader {
   $modified = $LastUpdate unless $modified;
   my $time = $modified ? gmtime($modified) : gmtime;
   my %headers = (-cache_control=>($UseCache < 0 ? 'no-cache' : 'max-age=10'));
-  $headers{last_modified} = $time if GetParam('cache', $UseCache) >= 2;
+  $headers{-last_modified} = $time if GetParam('cache', $UseCache) >= 2;
   if ($HttpCharset ne '') {
     $headers{-type} = "$type; charset=$HttpCharset";
   } else {
