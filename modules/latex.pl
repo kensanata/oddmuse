@@ -18,7 +18,7 @@
 
 use vars qw($LatexDir $LatexLinkDir $LatexExtendPath);
 
-$ModulesDescription .= '<p>$Id: latex.pl,v 1.1 2004/02/13 18:34:18 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: latex.pl,v 1.2 2004/02/13 19:30:12 as Exp $</p>';
 
 # PATH must be extended in order to make dvi2bitmap available, and
 # also all the programs that dvi2bitmap may call to do its work
@@ -27,7 +27,9 @@ $ModulesDescription .= '<p>$Id: latex.pl,v 1.1 2004/02/13 18:34:18 as Exp $</p>'
 # You need /bin since dvi2bitmap uses mkdir and rm that are in /bin
 # And you need /usr/share/texmf/bin to be able to use mktexpk.  And
 # you need /usr/bin because that's where the latex executable is,
-# probably.  This variable is appended to the PATH.
+# probably.  This variable is appended to the PATH.  If you compiled
+# dvi2bitmap yourself, you might have to use /usr/local/bin instead of
+# /user/bin!
 
 $LatexExtendPath = ':/bin:/usr/bin:/usr/share/texmf/bin';
 
@@ -45,6 +47,18 @@ $LatexLinkDir= "/test/latex";
 # You also need a template stored as $DataDir/template.latex.  The
 # template must contain the string <math> where the LaTeX code is
 # supposed to go.
+
+my $LatexDefaultTemplateName = "$LatexDir/template.latex";
+
+my $LatexDefaultTemplate = << 'EOT';
+\documentclass[12pt]{article}
+\pagestyle{empty}
+\begin{document}
+\begin{math}
+<math>
+\end{math}
+\end{document}
+EOT
 
 push(@MyRules, \&LatexRule);
 
@@ -68,10 +82,12 @@ sub MakeLaTeX {
   }
   # read template and replace <math>
   mkdir($LatexDir) unless -d $LatexDir;
-  local $/ = undef;   # Read complete files
-  open (F,"$DataDir/template.latex") or return '[Unable to open template.latex]';
-  my $template = <F>;
-  close F;
+  if (not -f $LatexDefaultTemplateName) {
+    open (F, "> $LatexDefaultTemplateName") or return '[Unable to write template]';
+    print F $LatexDefaultTemplate;
+    close (F);
+  }
+  my $template = ReadFileOrDie($LatexDefaultTemplateName);
   $template =~ s/<math>/$latex/ig;
   #setup rendering directory
   my $dir = "$LatexDir/$hash";
@@ -81,21 +97,15 @@ sub MakeLaTeX {
     mkdir($dir) or return "[Unable to create $dir]";
   }
   chdir ($dir) or return "[Unable to switch to $dir]";
-  open (F, ">srender.tex") or return '[Unable to copy template.latex to working directory]';
-  print F $template;
-  close (F);
+  WriteStringToFile ("srender.tex", $template);
   qx(latex srender.tex);
   return "[Illegal LaTeX markup: $latex]" if $?;
-  qx(dvi2bitmap -t png srender.dvi);
-  return "[dvi2bitmap returned with status: $?]" if $?;
+  my $output = qx(dvi2bitmap --output-type png srender.dvi);
+  return "[dvi2bitmap error $? ($output)]" if $?;
   my $result;
   if (-f 'srender-page1.png' and not -z 'srender-page1.png') {
-    open (F, "srender-page1.png") or return '[Unable to read result image]';
-    my $png = <F>;
-    close (F);
-    open (F, ">$LatexDir/$hash.png") or return '[Unable to copy result image back]';
-    print F $png;
-    close (F);
+    my $png = ReadFileOrDie("srender-page1.png");
+    WriteStringToFile ("$LatexDir/$hash.png", $png);
     $result = "<img border=0 src=\"$LatexLinkDir/$hash.png\" alt=\"$latex\">";
   } else {
     $result = "[Error retrieving image for $latex]";
