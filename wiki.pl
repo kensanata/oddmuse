@@ -352,7 +352,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.497 2004/12/16 18:08:56 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.498 2004/12/18 15:51:18 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2047,7 +2047,7 @@ sub PrintFooter {
   }
   print T($FooterNote) if $FooterNote;
   print $q->p(GetValidatorLink()) if GetParam('validate', $ValidatorLink);
-  print $q->p(Ts('%s seconds', (time - $Now))) if GetParam('time',0);
+  print $q->p(Ts('%s seconds', (time - $Now))) if GetParam('timing',0);
   print $q->end_div(), GetSisterSites($id), GetNearLinksUsed($id);
   eval { local $SIG{__DIE__}; PrintMyContent($id); };
   print $q->end_html;
