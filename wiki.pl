@@ -350,7 +350,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.474 2004/10/31 18:42:52 groogel Exp $');
+    . $q->p('$Id: wiki.pl,v 1.475 2004/10/31 19:55:42 groogel Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -465,7 +465,7 @@ sub ApplyRules {
       my ($oldpos, $type, $uri) = ((pos), $3, $4);
       if ($uri =~ /^$UrlProtocols:/o) {
 	if ($type eq 'text') {
-	  print $q->pre(QuoteHtml(GetRaw($uri)));
+	  print $q->pre({class=>"include $uri"},QuoteHtml(GetRaw($uri)));
 	} else { # never use local links for remote pages, with a starting tag
 	  print $q->start_div({class=>"include $uri"});
 	  ApplyRules(QuoteHtml(GetRaw($uri)), 0, ($type eq 'with-anchors'), undef, 'p');
@@ -473,7 +473,7 @@ sub ApplyRules {
 	}
       } else {
 	if ($type eq 'text') {
-	  print $q->pre(QuoteHtml(GetPageContent(FreeToNormal($uri))));
+	  print $q->pre({class=>"include $uri"},QuoteHtml(GetPageContent(FreeToNormal($uri))));
 	} else { # with a starting tag
 	  print $q->start_div({class=>"include $uri"});
           ApplyRules(QuoteHtml(GetPageContent(FreeToNormal($uri))),
