@@ -270,7 +270,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.141 2003/09/08 20:06:35 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.142 2003/09/12 14:37:34 as Exp $');
 }
 
 sub InitCookie {
@@ -1762,11 +1762,13 @@ a.link:after { content:"]" }
 -->
 EOT
   }
-  # robot FOLLOW tag for RecentChanges only
-  # robot INDEX tag for wiki pages only
-  # Note that we need to allow INDEX for RecentChanges, else new pages
-  # will never be added
-  if (($id eq $RCName) || (T($RCName) eq $id) || (T($id) eq $RCName)) {
+  # INDEX,NOFOLLOW tag for wiki pages only so that the robot doesn't index
+  # history pages.  INDEX,FOLLOW tag for RecentChanges and the index of all
+  # pages.  We need the INDEX here so that the spider comes back to these
+  # pages, since links from ordinary pages to RecentChanges or the index will
+  # not be followed.
+  if (($id eq $RCName) or (T($RCName) eq $id) or (T($id) eq $RCName)
+      or (lc (GetParam('action', '')) eq 'index')) {
     $html .= '<meta name="robots" content="INDEX,FOLLOW">';
   } elsif ($id eq '') {
     $html .= '<meta name="robots" content="NOINDEX,NOFOLLOW">';
@@ -1953,7 +1955,7 @@ sub PrintHtmlDiff {
   } else {
     $diffText  = GetCacheDiff($cacheName);
   }
-  if ((!defined($diffText)) || ($diffText eq '')) {
+  if ((!defined($diffText)) or ($diffText eq '')) {
     $diffText = T('No diff available.');
   }
   my $html;
@@ -1964,7 +1966,7 @@ sub PrintHtmlDiff {
 	. Ts(' to %s)', $currentRevision);
   } else {
     if (($diffType != 2) &&
-        ((!defined(GetPageCache("old$cacheName"))) ||
+        ((!defined(GetPageCache("old$cacheName"))) or
          (GetPageCache("old$cacheName") < 1))) {
       $html = Ts('No diff available--this is the first %s revision.', $priorName);
     } else {
@@ -2569,12 +2571,12 @@ sub GenerateAllPagesList {
   closedir(PAGELIST);
   @dirs = sort(@dirs);
   foreach $dir (@dirs) {
-    next  if (($dir eq '.') || ($dir eq '..'));
+    next  if (($dir eq '.') or ($dir eq '..'));
     opendir(PAGELIST, "$PageDir/$dir");
     @pageFiles = readdir(PAGELIST);
     closedir(PAGELIST);
     foreach $id (@pageFiles) {
-      next  if (($id eq '.') || ($id eq '..'));
+      next  if (($id eq '.') or ($id eq '..'));
       if (substr($id, -3) eq '.db') {
 	push(@pages, substr($id, 0, -3));
       }
@@ -2922,7 +2924,7 @@ sub SearchTitleAndBody {
   foreach my $name (AllPagesList()) {
     OpenPage($name);
     OpenDefaultText();
-    if (($Text{'text'} =~ /$string/i) || ($name =~ /$string/i)) {
+    if (($Text{'text'} =~ /$string/i) or ($name =~ /$string/i)) {
       push(@found, $name);
     } elsif ($FreeLinks && ($name =~ m/_/)) {
       my $freeName = $name;
@@ -3069,7 +3071,7 @@ sub GetFullLinkList {
   my $exists = GetParam('exists', 2);
   my $empty = GetParam('empty', 0);
   my $search = GetParam('search', '');
-  if (($interlink == 2) || ($urllink == 2)) {
+  if (($interlink == 2) or ($urllink == 2)) {
     $pagelink = 0;
   }
   my (%pgExists, %seen, @found);
@@ -3104,7 +3106,7 @@ sub GetFullLinkList {
       @links = sort(@links);
     }
     unshift (@links, $name);
-    if ($empty || ($#links > 0)) {  # If only one item, list is empty.
+    if ($empty or ($#links > 0)) {  # If only one item, list is empty.
       push(@found, join(' ', @links));
     }
   }
