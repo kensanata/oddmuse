@@ -500,7 +500,7 @@ Zusammenstellung für %s
 Compilation tag is missing a regular expression.
 Der tag für die Zusammenstellung benötigt noch ein Suchmuster.
 Despamming pages
-Spam entefernen
+Spam entfernen
 Cannot find revision %s.
 Die Version %s ist verschwunden.
 Revert to revision %1: %2
