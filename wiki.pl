@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.416 2004/06/13 00:14:23 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.417 2004/06/13 00:23:41 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -763,12 +763,15 @@ sub RSS {
   my %lines;
   eval { require XML::RSS;  } or return $q->div({-class=>'rss'},
 	 $q->strong(T('XML::RSS is not available on this system.')));
-  my $tDiff = T('diff');          # All strings that are concatenated with strings returned
-  my $tHistory = T('history');    # by the RSS feed must be decoded from UTF8 to the internal
-  if ($HttpCharset eq 'UTF-8') {  # representation (ie. it gets the "utf8 flag").  The return
-    eval { local $SIG{__DIE__};   # string is later printed using an utf8 layer.  Without this
-	   require Encode;        # decoding, 'diff' and 'history' translations will be double
-	   $tDiff = Encode::decode_utf8($tDiff);        # encoded.
+  # All strings that are concatenated with strings returned by the RSS
+  # feed must be decoded.  Without this decoding, 'diff' and 'history'
+  # translations will be double encoded when printing the result.
+  my $tDiff = T('diff');
+  my $tHistory = T('history');
+  if ($HttpCharset eq 'UTF-8' and ($tDiff ne 'diff' or $tHistory ne 'history')) {
+    eval { local $SIG{__DIE__};
+	   require Encode;
+	   $tDiff = Encode::decode_utf8($tDiff);
 	   $tHistory = Encode::decode_utf8($tHistory);
 	 }
   }
@@ -804,10 +807,10 @@ sub RSS {
       $date = sprintf("%03d", $num--) unless $date; # for RSS 0.91 feeds without date, descending
       $line .= ' (' . $q->a({-href=>$i->{$wikins}->{diff}}, $tDiff) . ')'
 	if $i->{$wikins}->{diff};
-      $line .= ' (' . $q->a({-href=>$i->{$wikins}->{history}}, "$tHistory") . ')'
+      $line .= ' (' . $q->a({-href=>$i->{$wikins}->{history}}, $tHistory) . ')'
 	if $i->{$wikins}->{history};
       $line .= ' ' . $q->a({-href=>$i->{link}, -title=>$date},
-			   $interwiki ? "$interwiki:$i->{title}" : "[$i->{title}]")
+			   $interwiki ? $interwiki . ':' . $i->{title} : $i->{title})
 	if $i->{title} and $i->{link};
       $line .= ' ' . $q->a({-href=>$i->{guid}, -title=>$date}, $i->{guid})
 	if $i->{guid}; # for RSS 2.0
