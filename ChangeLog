@@ -16,6 +16,9 @@
 	(DoPost): Don't handle raw=2.  Get rid of conflict handling.  Just
 	use add the 'msg' parameter to the cookie if somebody else changed
 	the page in the last two minutes.
+	(CalcTimeSince): New, moved from DoShowVisitors.
+	(DoShowVisitors): Call CalcTimeSince.
+	(DoPost): Increase timespan to 10 minutes and call CalcTimeSince.
 
 2003-10-04  Alex Schroeder  <alex@gnu.org>
 
