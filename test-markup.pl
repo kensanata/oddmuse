@@ -362,11 +362,12 @@ Updates in the last [0-9]+ days
 diff.*ClusterIdea.*four
 for.*MainPage.*only
 1 day
-action=browse;id=MainPage;rcclusteronly=MainPage;days=1
 EOT
 
-test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage showedit=1'), @Test);
-test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage all=1'), @Test);
+test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage showedit=1'),
+	  (@Test, 'action=browse;id=MainPage;rcclusteronly=MainPage;showedit=1;days=1'));
+test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage all=1'),
+	  (@Test, 'action=browse;id=MainPage;rcclusteronly=MainPage;all=1;days=1'));
 
 @Test = split('\n',<<'EOT');
 Finally the main page
@@ -375,7 +376,7 @@ diff.*ClusterIdea.*five
 diff.*ClusterIdea.*four
 for.*MainPage.*only
 1 day
-action=browse;id=MainPage;rcclusteronly=MainPage;days=1
+action=browse;id=MainPage;rcclusteronly=MainPage;all=1;showedit=1;days=1
 EOT
 
 update_page('ClusterIdea', 'MainPage: Somebody has to do it.', 'five', 1);
@@ -816,6 +817,12 @@ OddMuse:test, and foo
 <a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test">OddMuse:test</a>, and foo
 Foo::Bar
 Foo::Bar
+!WikiLink
+WikiLink
+!foo
+!foo
+![[Free Link]]
+![Free Link]<a href="http://localhost/test-wrapper.pl?action=edit;id=Free_Link">?</a>
 ||one||
 <table class="user"><tr><td>one</td></tr></table>
 introduction\n\n||one||two||three||\n||||one two||three||
