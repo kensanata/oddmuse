@@ -87,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.115 2003/06/21 22:30:41 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.116 2003/06/29 23:05:53 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -1355,29 +1355,38 @@ sub GetRcHtml {
   return $html;
 }
 
+sub RcTextItem {
+  my ($name, $value) = @_;
+  $value =~ s/\n+$//;
+  $value =~ s/\n+/\n /;
+  return $name . ': ' . $value . "\n" if $value;
+}
+
 sub GetRcText {
   my ($text);
-  my $tEdit = T('(minor)');
   local $RecentLink = 0;
+  print RcTextItem('title', $SiteName)
+    . RcTextItem('description', $SiteDescription)
+    . RcTextItem('link', $ScriptName)
+    . RcTextItem('generator', 'OddMuse')
+    . RcTextItem('creator', $RssPublisher)
+    . RcTextItem('rights', $RssRights);
   # Now call GetRc with some blocks of code as parameters:
   GetRc
-    # printDailyTear
+    sub {},
     sub {
-      $text .= "\n" . (shift) . "\n\n";
+      my($pagename, $timestamp, $host, $userName, $summary, $minor, $revision, $languages) = @_;
+      my $uri = $ScriptName . (GetParam('all', 0)
+			       ? "?action=browse\&revision=$revision\&id=$pagename"
+			       : "/$pagename");
+      $pagename =~ s/_/ /g;
+      print "\n" . RcTextItem('title', $pagename)
+      . RcTextItem('description', $summary)
+      . RcTextItem('generator', $userName ? $userName . ' ' . Ts('from %s', $host) : $host)
+      . RcTextItem('language', join(', ', @{$languages}))
+      . RcTextItem('uri', $uri)
+      . RcTextItem('last-modified', CalcDay($timestamp));
     },
-    # printRCLine
-    sub {
-      my($pagename, $timestamp, $host, $userName, $summary, $minor,
-         $revision, $languages) = @_;
-      my($author, $sum, $edit, $difftype, $lang);
-      $author = GetAuthorLink($host, $userName);
-      $sum = '[' . QuoteHtml($summary) . '] '  if $summary;
-      $edit = $tEdit . ' '  if $minor;
-      $lang = '[' . join(', ', @{$languages}) . '] '  if @{$languages};
-      $text .= $pagename . ' ' . CalcTime($timestamp) . ' ' . $edit . $sum . $lang
-	. '. . . . . ' . $author . "\n";
-    },
-    # RC Lines
     @_;
   return $text;
 }
