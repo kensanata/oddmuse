@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.350 2004/03/09 02:23:06 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.351 2004/03/10 20:40:36 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1959,7 +1959,7 @@ div.sister img { border:none; }
 div.near { background-color:#EFE; }
 div.near p { margin-top:0; }
 \@media print {
- body { font:12pt "Courrier" sans-serif; }
+ body { font:12pt sans-serif; }
  a:link, a:visited { color:#000; text-decoration:none; font-style:oblique; }
  a.edit, div.footer, span.gotobar, a.number span { display:none; }
  a[class="url number"]:after, a[class="inter number"]:after { content:"[" attr(href) "]"; }
