@@ -6,7 +6,8 @@
 	(@LockOnCreation): Lock it upon creation.
 	(RssInterwikiTranslateInit): New.
 	(RSS): Call RssInterwikiTranslateInit if required.
-	
+	(PrintFooter): Add lock and unlock links for admins.
+
 2004-03-07  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetInterLink): Add more spans to interlinks.
