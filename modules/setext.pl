@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: setext.pl,v 1.5 2004/07/14 14:52:36 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: setext.pl,v 1.6 2004/09/02 20:31:58 as Exp $</p>';
 
 push(@MyRules, \&SeTextRule);
 
@@ -51,7 +51,8 @@ sub SeTextRule {
   } elsif (m/\G~$word~/goc) {
     return "<i>$1</i>";
   } elsif (m/\G\b_($word(_$word)*)_\b/goc) {
-    return "<u>" . join(' ', split(/_/, $1)) . "</u>"; # don't clobber pos
+    return '<em style="text-decoration: underline; font-style: normal;">'
+      . join(' ', split(/_/, $1)) . "</em>"; # don't clobber pos
   } elsif (m/\G`_(.+)_`/gc) {
     return $1;
   }
