@@ -1,3 +1,7 @@
+2004-03-10  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetHtmlHeader): Fixed default CSS.
+
 2004-03-09  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetInterLink, GetUrl, GetPageOrEditLink, GetEditLink)
