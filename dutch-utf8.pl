@@ -241,9 +241,9 @@ showing current revision instead
 in plaats daarvan ziet u nu de huidige revisie
 Showing revision %s
 Dit is revisie %s
-Cannot save an nameless page.
+Cannot save a nameless page.
 Kan een pagina zonder naam niet opslaan.
-Cannot save an page without revision.
+Cannot save a page without revision.
 
 Cannot open %s
 Kan %s niet openen

@@ -235,9 +235,9 @@ showing current revision instead
 Présentation de la version en cours à sa place.
 Showing revision %s
 Présentation de la version %s
-Cannot save an nameless page.
-Ne peut pas sauvegarder une page sans nom
-Cannot save an page without revision.
+Cannot save a nameless page.
+
+Cannot save a page without revision.
 
 Cannot open %s
 Ne peut ouvrir %s

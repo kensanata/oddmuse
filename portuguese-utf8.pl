@@ -219,7 +219,7 @@ simples
 No diff available.
 Nenhum diff disponivel.
 Old revision:
-
+Revisão antiga:
 Changed:
 Alterado:
 Removed:
@@ -234,10 +234,10 @@ showing current revision instead
 ao invéz mostrando versão corrente
 Showing revision %s
 Mostrando versão %s
-Cannot save an nameless page.
+Cannot save a nameless page.
 Não se pode salvar uma página sem nome.
-Cannot save an page without revision.
-
+Cannot save a page without revision.
+Não se pode salvar uma página sem revisão.
 Cannot open %s
 Não foi possível abrir %s
 Cannot write %s

@@ -235,9 +235,9 @@ showing current revision instead
 Вместо това, ето актуалната версия
 Showing revision %s
 Ето версия %s
-Cannot save an nameless page.
+Cannot save a nameless page.
 Не може да се направи запис на безименна страница.
-Cannot save an page without revision.
+Cannot save a page without revision.
 
 Cannot open %s
 не може да се отвори: %s

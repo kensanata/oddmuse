@@ -239,9 +239,9 @@ showing current revision instead
 visar rådande version istället
 Showing revision %s
 Det här är version %s
-Cannot save an nameless page.
+Cannot save a nameless page.
 Kan inte spara en namnlös sida.
-Cannot save an page without revision.
+Cannot save a page without revision.
 
 Cannot open %s
 Kan inte öppna %s

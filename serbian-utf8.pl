@@ -234,9 +234,9 @@ showing current revision instead
 уместо тога, користи се тренутна верзија
 Showing revision %s
 Приказана верзија %s
-Cannot save an nameless page.
+Cannot save a nameless page.
 Не могу да снимим безимену страну.
-Cannot save an page without revision.
+Cannot save a page without revision.
 
 Cannot open %s
 

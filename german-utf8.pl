@@ -233,9 +233,9 @@ showing current revision instead
 Stattdessen Anzeige der aktuellen Version
 Showing revision %s
 Anzeige der alten Version %s
-Cannot save an nameless page.
+Cannot save a nameless page.
 Eine Seite ohne Namen kann nicht gespeichert werden.
-Cannot save an page without revision.
+Cannot save a page without revision.
 Ohne Version kann die Seite nicht gespeichert werden.
 Cannot open %s
 %s kann nicht geöffnet werden

@@ -235,9 +235,9 @@ showing current revision instead
 отображение текущей версии вместо
 Showing revision %s
 Показ версии %s
-Cannot save an nameless page.
+Cannot save a nameless page.
 
-Cannot save an page without revision.
+Cannot save a page without revision.
 
 Cannot open %s
 
