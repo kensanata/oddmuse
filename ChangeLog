@@ -6,6 +6,7 @@
 	changes).
 	(DoSearch): Add link to filtered recent changes.
 	(RcHeader): Remember rc parameters when printing the header.
+	(BrowsePage): Fix detection of #REDIRECT bug.
 
 2003-10-13  Alex Schroeder  <alex@gnu.org>
 
