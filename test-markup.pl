@@ -88,6 +88,25 @@ sub test_page {
   print "\n\nPage content:\n", $page, "\n" if $printpage;
 }
 
+
+## Create diary pages
+
+update_page('2003-06-13', "Freitag");
+update_page('2003-06-14', "Samstag");
+update_page('2003-06-15', "Sonntag");
+@Test = split('\n',<<'EOT');
+This is my journal
+2003-06-15
+Sonntag
+2003-06-14
+Samstag
+EOT
+
+test_page(update_page('Summary', "This is my journal:\n\n<journal 2>"), @Test);
+test_page(update_page('2003-01-01', "This is my journal -- recursive:\n\n<journal>"), @Test);
+push @Test, 'journal';
+test_page(update_page('2003-01-01', "This is my journal -- truly recursive:\n\n<journal>"), @Test);
+
 ## Try to edit BanList
 
 @Test = split('\n',<<'EOT');
@@ -176,6 +195,7 @@ EOT
 test_page(update_page('InterMap', " OddMuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n", 'required'), @Test);
 
 ## Create InterMap page as admin
+## The OddMuse intermap entry is required for later tests.
 
 @Test = split('\n',<<'EOT');
 OddMuse
