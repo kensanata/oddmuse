@@ -265,7 +265,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.172 2003/10/02 21:10:01 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.173 2003/10/02 21:20:42 as Exp $');
 }
 
 sub InitCookie {
@@ -372,7 +372,7 @@ sub ApplyRules {
 	}
       } elsif (m/\G(\s*\n)+/cg) {
 	$fragment = CloseHtmlEnvironments() . '<p>'; # there is another one like this further down
-      } elsif (m/\G(\&lt;include( +(text|with-anchors))? +"(.*)"\&gt;[ \t]*\n?)/cgi) { # <include "uri..."> includes the text of the given URI verbatim
+      } elsif (m/\G(\&lt;include(\s+(text|with-anchors))?\s+"(.*)"\&gt;[ \t]*\n?)/cgi) { # <include "uri..."> includes the text of the given URI verbatim
 	$oldmatch = $1;
 	my $oldpos = pos;
 	my $type = $3;
@@ -393,12 +393,12 @@ sub ApplyRules {
 	}
 	pos = $oldpos; # restore \G after call to ApplyRules
 	DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
-      } elsif (m/\G(\&lt;journal( +(\d*))?( +"(.*)")?( +(reverse))?\&gt;[ \t]*\n?)/cgi) { # <journal 10 "regexp"> includes 10 pages matching regexp
+      } elsif (m/\G(\&lt;journal(\s+(\d*))?(\s+"(.*)")?(\s+(reverse))?\&gt;[ \t]*\n?)/cgi) { # <journal 10 "regexp"> includes 10 pages matching regexp
 	DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
 	my $oldpos = pos;
 	PrintJournal($3, $5, $7);
 	pos = $oldpos; # restore \G after call to ApplyRules
-      } elsif (m/\G(\&lt;rss( +(\d*))? +"(.*)"\&gt;[ \t]*\n?)/cgi) { # <rss "uri..."> stores the parsed RSS of the given URI
+      } elsif (m/\G(\&lt;rss(\s+(\d*))?\s+"(.*?)"\&gt;[ \t]*\n?)/cgis) { # <rss "uri..."> stores the parsed RSS of the given URI
 	my $oldpos = pos;
 	DirtyBlock($1, \$block, \$fragment, \@blocks, \@flags);
 	print &RSS($3 ? $3 : 15, split(/ +/, $4));
