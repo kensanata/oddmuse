@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: anchors.pl,v 1.11 2004/08/06 22:19:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: anchors.pl,v 1.12 2004/08/06 22:44:26 as Exp $</p>';
 
 push(@MyRules, \&AnchorsRule);
 
@@ -26,11 +26,12 @@ sub AnchorsRule {
   } elsif ($BracketWiki && m/\G(\[\[$FreeLinkPattern\#([-a-zA-Z0-9_]+)\|([^\]]+)\]\])/cog
 	   or m/\G(\[\[\[$FreeLinkPattern\#([-a-zA-Z0-9_]+)\]\]\])/cog
 	   or m/\G(\[\[$FreeLinkPattern\#([-a-zA-Z0-9_]+)\]\])/cog) {
-    Dirty($1);
+    # This one is not a dirty rule because the output is always a page
+    # link, never an edit link (unlike normal free links).
     my $bracket = (substr($1, 0, 3) eq '[[[');
     my $id = $2 . '#' . $3;
     my $text = $4;
-    my $class = 'local';
+    my $class = 'local anchor';
     my $title = '';
     $id = FreeToNormal($id);
     if (!$text && $bracket) {
