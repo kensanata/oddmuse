@@ -1,3 +1,25 @@
+2004-10-13  Alex Schroeder  <alex@gnu.org>
+
+	* wikiupload (main, usage, wikiput): Add password support.
+
+	* modules/headlines.pl (HeadlinesRule): Clean close HTML
+	environments.
+
+	* modules/calendar.pl (NewCalendarGetHeader): Skip monthly
+	calendar on the yearly calendar and on edit pages.
+
+2004-10-12  Alex Schroeder  <alex@gnu.org>
+
+	* modules/calendar.pl (NewCalendarGetHeader): Show calendar only
+	for browse action.
+
+	* modules/sidebar.pl: $DefaultStyleSheet change to hide sidebar
+	@media print.
+
+	* wiki.pl: $DefaultStyleSheet change for textarea.
+
+	* modules/sidebar.pl: Set $DefaultStyleSheet.
+
 2004-10-10  Alex Schroeder  <alex@confusibombus>
 
 	* modules/journal-rss.pl (DoJournalRss): Handle rsslimit=all and
