@@ -15,14 +15,14 @@
 	* modules/static-copy.pl (ImageGetInternalUrl): Added Image
 	Extension support.
 
-2005-02-03  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+2005-02-03  Alex Schroeder  <alex@emacswiki.org>
 
 	* wikicopy: Updated usage.
 	(GetRaw): Always print status.
 	(copy): Handle replacement text.
 	(main): Accept replacement text.
 
-2005-02-02  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+2005-02-02  Alex Schroeder  <alex@emacswiki.org>
 
 	* wiki.pl (DoBrowseRequest): Added CGI error message suggested by
 	Tim Jenness.
@@ -54,13 +54,13 @@
 
 	* wiki.pl (CreateDir): Add error if mkdir fails.
 
-2005-01-24  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+2005-01-24  Alex Schroeder  <alex@emacswiki.org>
 
 	* modules/admin.pl (AdminPowerRename): Add more tests because
 	ReportError will remove locks before exiting, unlink index file at
 	the beginning.
 
-2005-01-20  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+2005-01-20  Alex Schroeder  <alex@emacswiki.org>
 
 	* modules/search-freetext.pl (SearchFreeTextTitleAndBody): Handle
 	double-quoted phrases.
@@ -75,7 +75,7 @@
 
 	* wiki.pl (RSS): Fix rfc 822 date parsing regular expression.
 
-2005-01-10  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+2005-01-10  Alex Schroeder  <alex@emacswiki.org>
 
 	* localnames-server.pl: New.
 	(debug): New.
@@ -86,7 +86,7 @@
 	* wiki.pl (handler): Added no strict "refs" pragma after a report
 	by Ross Thomas.
 
-2005-01-07  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+2005-01-07  Alex Schroeder  <alex@emacswiki.org>
 
 	* wikicopy (GetRaw, PostRaw): Simplified LWP::UserAgent call.
 	(copy): Get encoding right, test for data.
@@ -146,7 +146,7 @@
 	* changelog-to-rss (output): Remove leading tabs from log entries.
 	(output): Highlight parentheses.
 
-2005-01-06  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+2005-01-06  Alex Schroeder  <alex@emacswiki.org>
 
 	* wiki.pl (GetHttpHeader): Added handling of HEAD requests.
 
@@ -225,7 +225,7 @@
 	* modules/tables-long.pl (TablesLongRule): Allow multiple CSS
 	directives.
 
-2005-01-01  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+2005-01-01  Alex Schroeder  <alex@emacswiki.org>
 
 	* modules/tables-long.pl (TablesLongRule, TablesLongRow): Added
 	CSS and table headers.
@@ -234,7 +234,7 @@
 	(TablesLongRow): Close th elements.
 	(TablesLongRow): Close environments at the end of a cell.
 
-2004-12-29  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+2004-12-29  Alex Schroeder  <alex@emacswiki.org>
 
 	* modules/static-copy.pl (StaticWriteFile): Add support for html=0
 	parameter.
@@ -244,13 +244,13 @@
 	* modules/search-freetext.pl (SearchFreeTextIndex): Take HTML tags
 	out of the text.
 
-2004-12-27  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+2004-12-27  Alex Schroeder  <alex@emacswiki.org>
 
 	* wiki.pl (RSS): Add RFC 822 Parsing for RSS 2.0.
 	(DoDownload): Fix regexp for #FILE.
 	(DoShowVisitors, DoPrintAllReferers): Add content div.
 
-2004-12-26  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+2004-12-26  Alex Schroeder  <alex@emacswiki.org>
 
 	* modules/markup.pl (MarkupRule): More checks to prevent bugs when
 	one of the hashes is empty.
@@ -269,7 +269,7 @@
 	* modules/search-freetext.pl (SearchFreeTextNewDoSearch): Added
 	$SearchFreeTextNewForm back.
 
-2004-12-25  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+2004-12-25  Alex Schroeder  <alex@emacswiki.org>
 
 	* modules/search-freetext.pl (SearchFreeTextIndex): Bugfix.
 	(SearchFreeTextNewDoSearch): Call old DoSearch, but maybe locally
@@ -302,7 +302,7 @@
 	(NewNamespacesInitVariables): Set it.
 	(NewNamespacesInitVariables): Make "Self" forbidden, too.
 
-2004-12-20  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+2004-12-20  Alex Schroeder  <alex@emacswiki.org>
 
 	* modules/namespaces.pl (NamespaceInternalRc): "No items foundin
 	foo" removed.
@@ -323,7 +323,7 @@
 	NewNamespacesInitVariables):  Support for recent changes for all
 	namespaces.
 
-2004-12-19  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+2004-12-19  Alex Schroeder  <alex@emacswiki.org>
 
 	* wiki.pl (Save): Moved automatic lock creation back to after the
 	SavePage call in order to make sure the directory exists.
@@ -342,7 +342,7 @@
 	(GetHtmlHeader): Add site RSS and page RSS if $HtmlHeaders is not
 	set.
 
-2004-12-18  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+2004-12-18  Alex Schroeder  <alex@emacswiki.org>
 
 	* Makefile (upload-translations): Fix bug.
 
@@ -363,23 +363,23 @@
 	* modules/search-freetext.pl (SearchFreeText): Added much improved
 	user interface.
 
-2004-12-14  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+2004-12-14  Alex Schroeder  <alex@emacswiki.org>
 
 	* wiki.pl (Save): Handle existing index file that cannot be
 	unlinked.
 
-2004-12-12  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+2004-12-12  Alex Schroeder  <alex@emacswiki.org>
 
 	* wikiput (wikiput): Better error reporting.
 
 	* wiki.pl (ApplyRules): Fix bug that prevented pages containing a
 	file from displaying correctly.
 
-2004-12-10  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+2004-12-10  Alex Schroeder  <alex@emacswiki.org>
 
 	* modules/search-freetext.pl (SearchFreeText): New form.
 
-2004-12-05  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+2004-12-05  Alex Schroeder  <alex@emacswiki.org>
 
 	* wiki.pl (InitVariables): Use the link to the RSS feed as the
 	default for $HtmlHeaders.
@@ -492,7 +492,7 @@
 
 	* wiki.pl (ReportError): Use $q->Dump.
 
-2004-11-27  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+2004-11-27  Alex Schroeder  <alex@emacswiki.org>
 
 	* modules/toc.pl ($TocCounter): New variable.
 	(TocRule): Use it to provide an ID to the toc entry.
@@ -516,7 +516,7 @@
 	(DespamPages): Added days parameter.
 	(DespamPage): Added debug parameter.
 
-2004-11-25  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+2004-11-25  Alex Schroeder  <alex@emacswiki.org>
 
 	* modules/toc.pl (TocHeadings, TocWikiHeading): Use FreeToNormal
 	on the anchor name.
@@ -524,7 +524,7 @@
 
 	* wiki.pl (DoShowVersion): Link to dependencies=1 and links=1.
 
-2004-11-23  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+2004-11-23  Alex Schroeder  <alex@emacswiki.org>
 
 	* modules/html-template.pl (HtmlTemplateRc): Added wrapper
 	function so that action=rc works.
