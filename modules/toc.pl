@@ -16,11 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.3 2004/02/09 20:38:40 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.4 2004/02/09 20:41:36 as Exp $</p>';
 
 *WikiHeading = *NewTocWikiHeading;
 
-sub NewWikiHeading {
+sub NewTocWikiHeading {
   my ($depth, $text) = @_;
   $depth = length($depth);
   $depth = 6  if ($depth > 6);
