@@ -16,15 +16,15 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: anchors.pl,v 1.9 2004/08/06 20:37:57 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: anchors.pl,v 1.10 2004/08/06 21:47:57 as Exp $</p>';
 
 push(@MyRules, \&AnchorsRule);
 
 sub AnchorsRule {
   if (m/\G\[\[\#([-a-zA-Z0-9_]+)\]\]/gc) {
-    return $q->a({-href=>"#$1", -class=>'anchor'}, $1);
-  } elsif (m/\G\[\[\:([-a-zA-Z0-9_]+)\]\]/gc) {
-    return $q->a({-name=>"#$1", -class=>'anchor definition'}, $1);
+    return $q->a({-href=>"#$1", -class=>'local anchor'}, $1);
+  } elsif (m/\G\[\:([-a-zA-Z0-9_]+)\]/gc) {
+    return $q->a({-name=>"$1", -class=>'anchor'});
   }
   return undef;
 }
