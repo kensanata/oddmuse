@@ -40,16 +40,6 @@ RSS parsing failed for %s
 
 Click to create this page
 
-http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
-
-http://www.amazon.com/exec/obidos/ISBN=%s
-
-alternate
-alternativo
-http://www.pricescan.com/books/BookDetail.asp?isbn=%s
-
-search
-buscar
 Invalid action parameter %s
 Parámetro de acción %s inválido
 Invalid URL.
@@ -102,13 +92,13 @@ Include minor changes
 %s días
 List later changes
 
+Filters
+
 Username:
 
 Host:
 
 Language:
-
-Filters
 
 Go!
 Iniciar
@@ -472,11 +462,17 @@ Delete page
 
 Rename this page to:
 
+Cannot highlight the language %s.
+
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
 
 The match parameter is missing.
 
 Page Collection for %s
+
+Previous
+
+Next
 
 Calendar %s
 
@@ -508,7 +504,13 @@ None
 
 Type
 
+Permalink to "%s"
+
 Portrait
+
+Static Copy
+
+Alternatively, use one of the following templates:
 
 Thread: %s
 
@@ -530,6 +532,24 @@ URL:
 
 Name:
 
+Failed to remove %s
+
+The translation is up to date.
+
+The translation is outdated.
+
+The page does not exist.
+
+http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
+
+http://www.amazon.com/exec/obidos/ISBN=%s
+
+alternate
+alternativo
+http://www.pricescan.com/books/BookDetail.asp?isbn=%s
+
+search
+buscar
 Blog
 
 END_OF_TRANSLATION
