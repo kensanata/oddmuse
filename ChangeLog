@@ -28,6 +28,8 @@
 	ourselves.
 	(ReadFileOrDie): Use ReportError instead of die.
 	(WriteStringToFile): Dito.
+	(GetPermanentAnchor): Don't always write permanent anchors, and
+	don't double-encode page ids.
 
 2003-11-02  Alex Schroeder  <alex@gnu.org>
 
