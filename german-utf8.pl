@@ -322,7 +322,7 @@ Vollständiger Inhalt
 The main page is %s.
 Die Hauptseite ist %s.
 Editing not allowed for %s.
-Bearbeitung von %s nicht erlaubt.
+Das bearbeiten von %s ist nicht erlaubt.
 SampleUndefinedPage
 BeispielEinerUndefiniertenSeite
 %s cannot be defined.
@@ -348,7 +348,7 @@ Die Änderungen beeinträchtigen sich gegenseitig.  Bitte überprüfen Sie die S
 Please check whether you overwrote those changes.
 Bitte überprüfen Sie, ob diese Änderungen überschrieben worden sind.
 Could not get a lock to merge!
-Kann Sperre nicht verbinden!
+Sperre zum automatischen Abgleichen zweier Versionen konnte nicht reserviert werden!
 you
 Sie
 ancestor
@@ -372,7 +372,7 @@ Löschen Sie die Datei "maintain" oder warten Sie.
 Main lock obtained.
 Hauptsperre aktiviert.
 Expiring keep files and deleting pages marked for deletion
-Bringe Keep-Dateien auf neuesten Stand und lösche markierte Seiten
+Alte Versionen werden aus dem Archiv entfernt und Seiten, die als gelöscht markiert wurden, werden gelöscht
 and refreshing HTML cache
 und HTML Cache wird aufgefrischt
 deleted
