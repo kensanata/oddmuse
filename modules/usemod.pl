@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.14 2004/12/03 08:45:36 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.15 2004/12/03 08:48:41 as Exp $</p>';
 
 $DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /table\.user/; # mod_perl?
 table.user { border-style:solid; border-width:thin; }
@@ -126,7 +126,10 @@ sub UsemodRule {
   }
   # horizontal lines using ----
   elsif ($bol && m/\G(\s*\n)*----+[ \t]*\n?/cg) {
-    return CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '') . $q->hr();
+    my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '') . $q->hr();
+    $PortraitSupportColorDiv = 0;
+    $PortraitSupportColor = 0;
+    return $html;
   }
   # tables using || -- the first row of a table
   elsif ($bol && m/\G(\s*\n)*((\|\|)+)([ \t])*(?=.*\|\|[ \t]*(\n|$))/cg) {
