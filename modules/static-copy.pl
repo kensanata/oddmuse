@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.16 2005/03/01 16:48:01 sblatt Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.17 2005/03/09 06:35:54 sblatt Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -138,6 +138,7 @@ sub StaticWriteFile {
     StaticHtml($id);
   }
   close(F);
+  chmod 0644,"$StaticDir/$filename";
   print $filename, $raw ? "\n" : $q->br();
 }
 
