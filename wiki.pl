@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.368 2004/04/02 00:21:48 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.369 2004/04/03 21:50:22 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -1157,9 +1157,9 @@ sub ResolveId {
   if (GetParam('anchor', $PermanentAnchors)) {
     ReadPermanentAnchors() unless $PermanentAnchorsInit;
     my $anchor = $PermanentAnchors{$id};
-    return ('alias', $anchor, $exists) if $anchor; # permanent anchor exists
+    return ('alias', $anchor, '', $exists) if $anchor; # permanent anchor exists
   }
-  return ('local', $id, $exists) if $exists;
+  return ('local', $id, '', $exists) if $exists;
   NearInit() unless $NearSiteInit;
   if ($NearSource{$id}) {
     $NearLinksUsed{$id} = 1;
