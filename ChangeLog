@@ -1,6 +1,10 @@
 2003-11-11  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoIndex): Add new parameter permanentanchors.
+	(DoIndex): Sort pages.
+	(PrintPageList): Use ResolveId to get link class correct.
+	(AllPagesList): Don't sort list.
+	(DoMaintain): Sort pages.
 
 2003-11-10  Alex Schroeder  <alex@gnu.org>
 
