@@ -1,3 +1,7 @@
+2005-04-05  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (Save): Fix handling of $oldmajor.
+
 2005-04-03  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetCurrentRequest): Deleted.
