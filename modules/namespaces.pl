@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.1 2004/04/05 00:37:55 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.2 2004/04/05 17:54:30 as Exp $</p>';
 
 *OldNamespacesInterInit = *InterInit;
 *InterInit = *NewNamespacesInterInit;
@@ -43,16 +43,14 @@ my $NamespacesInit = 0;
 sub NewNamespacesInitVariables {
   OldNamespacesInitVariables();
   $MainScriptName = $ScriptName; # override in other namespaces!
-  $Message .= '<p>Start</p>'; # FIXME
   if ($UsePathInfo and not $NamespacesInit
       # make sure ordinary page names are not matched!
-      and $q->path_info() =~ m|^/($InterSitePattern)(/.*)?|) {
+      and $q->path_info() =~ m|^/($InterSitePattern)(/.*)?|
+      and ($2 or $q->param or $q->keywords)) {
     my ($ns, $rest) = ($1, $2);
-    $Message .= "<p>ns: $ns + $rest</p>"; # FIXME
-    return if (not $rest and not $q->keywords and not $q->param);
     $NamespacesInit = 1;
     # Change some stuff from the original InitVariables call:
-    $DataDir .= '/' . $ns;
+    $DataDir    .= '/' . $ns;
     $PageDir     = "$DataDir/page";
     $KeepDir     = "$DataDir/keep";
     $RefererDir  = "$DataDir/referer";
@@ -70,9 +68,7 @@ sub NewNamespacesInitVariables {
     $MainScriptName = $ScriptName;
     $ScriptName .= '/' . $ns;
     $FullUrl .= '/' . $ns;
-    $Message .= "<p>ScriptName: $ScriptName</p>"; # FIXME
     $WikiDescription .= "<p>Current namespace: $ns</p>";
-    $Message .= "<p>Current namespace: $ns</p>"; # FIXME
     # override LastUpdate
     my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size, $atime,$mtime,$ctime,$blksize,$blocks)
       = stat($IndexFile);
