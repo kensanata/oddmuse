@@ -286,7 +286,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.283 2003/12/28 12:28:41 uid68242 Exp $');
+    . $q->p('$Id: wiki.pl,v 1.284 2003/12/30 20:35:32 as Exp $');
 }
 
 sub InitCookie {
@@ -687,8 +687,10 @@ sub RSS {
   my $maxitems = shift;
   my @uris = @_;
   my %lines;
-  require XML::RSS;
-  require LWP::UserAgent;
+  eval { require XML::RSS;  } or return $q->div({-class=>'rss'},
+         $q->strong(T('XML::RSS is not available on this system.')));
+  eval { require LWP::UserAgent; } or return $q->div({-class=>'rss'},
+         $q->strong(T('LWP::UserAgent is not available on this system.')));
   my $tDiff = T('diff');
   my $tHistory = T('history');
   my $wikins = 'http://purl.org/rss/1.0/modules/wiki/';
