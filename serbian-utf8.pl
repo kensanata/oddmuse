@@ -17,7 +17,7 @@
 #
 # This translation was last checked for Oddmuse version 1.195.
 #
-$ModulesDescription .= '<p>$Id: serbian-utf8.pl,v 1.15 2004/12/27 01:00:38 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: serbian-utf8.pl,v 1.16 2004/12/27 01:57:35 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Читање није дозвољено: приступ за корисника, IP број или мрежу је блокиран.
@@ -569,7 +569,7 @@ You did not answer correctly.
 
 Updating %s
 
-Done.</p></div>
+Done.
 
 Search term missing.
 

@@ -18,7 +18,7 @@
 #
 # This translation was updated for Oddmuse 1.354.
 #
-$ModulesDescription .= '<p>$Id: bulgarian-utf8.pl,v 1.11 2004/12/27 01:00:38 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: bulgarian-utf8.pl,v 1.12 2004/12/27 01:57:35 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Не е разрешено четенето: блокиран потребител, IP адрес или мрежа.
@@ -570,7 +570,7 @@ You did not answer correctly.
 
 Updating %s
 
-Done.</p></div>
+Done.
 
 Search term missing.
 

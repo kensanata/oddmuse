@@ -18,7 +18,7 @@
 #
 # This translation was last checked for Oddmuse version 1.296.
 #
-$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.23 2004/12/27 01:00:38 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.24 2004/12/27 01:57:35 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Accès interdit&nbsp;: votre serveur, adresse IP ou nom d'utilisateur a été bloqué.
@@ -570,7 +570,7 @@ You did not answer correctly.
 
 Updating %s
 
-Done.</p></div>
+Done.
 
 Search term missing.
 
