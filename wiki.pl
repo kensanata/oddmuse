@@ -305,7 +305,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.449 2004/08/19 14:45:57 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.450 2004/09/02 20:38:38 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -2740,7 +2740,7 @@ sub GetTextArea {
 }
 
 sub GetUpload {
-  return $q->p(T('File to upload: ') . $q->filefield(-name=>'file', -size=>50, -maxlength=>100));
+  return T('File to upload: ') . $q->filefield(-name=>'file', -size=>50, -maxlength=>100);
 }
 
 sub DoDownload {
