@@ -1,3 +1,8 @@
+2003-09-01  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoMaintain): Don't write a newline if the list is
+	empty.
+
 2003-08-29  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetRcHtml): Link to older revisions when using the all
