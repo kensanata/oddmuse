@@ -356,7 +356,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.526 2005/01/20 11:45:22 groogel Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.527 2005/01/24 17:43:46 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -2594,7 +2594,9 @@ sub AppendStringToFile {
 
 sub CreateDir {
   my ($newdir) = @_;
-  mkdir($newdir, 0775)	if (!(-d $newdir));
+  return if -d $newdir;
+  mkdir($newdir, 0775)
+    or ReportError(Ts('Cannot create %s', $newdir) . ": $!", '500 INTERNAL SERVER ERROR');
 }
 
 sub CreatePageDir {
