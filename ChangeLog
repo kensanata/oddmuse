@@ -1,3 +1,8 @@
+2003-10-21  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (InitLinkPatterns): $InterSitePattern may start with
+	non-ASCII letters as well.
+
 2003-10-20  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (NotModified): Protect use of Time::ParseDate with an
