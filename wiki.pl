@@ -270,7 +270,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.144 2003/09/12 22:29:42 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.145 2003/09/18 09:42:58 as Exp $');
 }
 
 sub InitCookie {
@@ -374,14 +374,23 @@ sub ApplyRules {
 	}
       } elsif (m/\G(\s*\n)+/cg) {
 	$fragment = CloseHtmlEnvironments() . '<p>'; # there is another one like this further down
-      } elsif (m/\G(\&lt;include +"(.*)"\&gt;[ \t]*\n?)/cgi) { # <include "uri..."> includes the text of the given URI verbatim
+      } elsif (m/\G(\&lt;include( +(text))? +"(.*)"\&gt;[ \t]*\n?)/cgi) { # <include "uri..."> includes the text of the given URI verbatim
 	$oldmatch = $1;
 	my $oldpos = pos;
-	my $uri = $2;
+	my $raw = $3;
+	my $uri = $4;
 	if ($uri =~ /^$UrlProtocols:/) {
-	  ApplyRules(QuoteHtml(GetRaw($uri)),0);
+	  if ($raw) {
+	    print $q->pre(QuoteHtml(GetRaw($uri)));
+	  } else {
+	    ApplyRules(QuoteHtml(GetRaw($uri)),0);
+	  }
 	} else {
-	  ApplyRules(QuoteHtml(GetPageContent(FreeToNormal($uri))), 1);
+	  if ($raw) {
+	    print $q->pre(QuoteHtml(GetPageContent(FreeToNormal($uri))));
+	  } else {
+	    ApplyRules(QuoteHtml(GetPageContent(FreeToNormal($uri))), 1);
+	  }
 	}
 	pos = $oldpos; # restore \G after call to ApplyRules
 	DirtyBlock($oldmatch, \$block, \$fragment, \@blocks, \@flags);
