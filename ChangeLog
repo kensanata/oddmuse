@@ -1,4 +1,10 @@
+2005-01-07  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+
+	* wiki.pl (handler): Typo: Use my.
+
 2005-01-07  Alex Schroeder  <alex@gnu.org>
+
+	* changelog-to-rss (output): Add span.chunk around chunks.
 
 	* wiki.pl (handler): Set all sort of variables from environment
 	variables.
