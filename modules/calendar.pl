@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.10 2004/04/02 01:15:28 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.11 2004/06/02 22:24:19 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage);
 
@@ -82,8 +82,9 @@ sub DoCollect {
 push(@MyRules, \&CalendarRule);
 
 sub CalendarRule {
-  if (/\Gcalendar:([0-9][0-9][0-9][0-9])/gc) {
-    PrintYearCalendar($1);
+  if (/\G(calendar:([0-9][0-9][0-9][0-9]))/gc) {
+    Dirty($1);
+    PrintYearCalendar($2);
   }
   return '';
 }
@@ -93,9 +94,10 @@ sub PrintYearCalendar {
   my @pages = AllPagesList();
   for $mon ((1..12)) {
     my $cal = `cal $mon $year`;
-    $cal =~ s|\b( ?\d?\d)\b|
+    $cal =~ s!((^| )([ 0-9][0-9]))\b!
       {
-       my $day = $1;
+       my $space = $2;
+       my $day = $3;
        my $date = sprintf("%d-%02d-%02d", $year, $mon, $day);
        my @matches = grep(/^$date/, @pages);
        my $link;
@@ -106,8 +108,8 @@ sub PrintYearCalendar {
        } else {
          $link = ScriptLink('action=collect;match=' . $date, $day);
        }
-       $link;
-      }|ge;
+       $q->span({-class=>'day'}, $space . $link);
+      }!mge;
     print "<pre class=\"cal year\">$cal</pre>";
   }
 }
