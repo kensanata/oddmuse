@@ -53,7 +53,7 @@ use vars qw(@RcDays @HtmlTags
   $RssRights $WikiDescription $BannedCanRead $SurgeProtection
   $SurgeProtectionViews $SurgeProtectionTime $DeletedPage %Languages
   $LanguageLimit $ValidatorLink $RefererTracking $RefererTimeLimit
-  $RefererLimit);
+  $RefererLimit $TopLinkBar);
 
 # Other global variables:
 use vars qw(%Page %Section %Text %InterSite %KeptRevisions
@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.49 2003/04/27 14:35:29 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.50 2003/04/27 14:51:48 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -797,23 +797,23 @@ sub GetEditLink { # shortcut
 
 sub ScriptLink {
   my ($action, $text) = @_;
-  # inherit some parameters
-  if (not $EmbedWiki and GetParam('embed',0)) {
-    if ($action =~ /=/) {
-      $action .= '&embed=1';
-    } else {
-      $action = 'action=browse&embed=1&id=' . $action;
-    }
-  }
-  if (not GetParam('toplinkbar',1)) {
-    if ($action =~ /=/) {
-      $action .= '&toplinkbar=0';
-    } else {
-      $action = 'action=browse&toplinkbar=0&id=' . $action;
-    }
-  }
+  $action = &InheritParameter('embed', $EmbedWiki, $action);
+  $action = &InheritParameter('toplinkbar', $TopLinkBar, $action);
   $action = &QuoteHtml($action);
   return "<a href=\"$ScriptName?$action\">$text</a>";
+}
+
+sub InheritParameter {
+  my ($param, $default, $action) = @_;
+  my $value = &GetParam($param, $default);
+  if ($value ne $default) {
+    if ($action =~ /=/) {
+      $action .= "\&$param=$value";
+    } else {
+      $action = "action=browse\&$param=$value&id=" . $action;
+    }
+  }
+  return $action;
 }
 
 sub RFC {
@@ -1714,7 +1714,7 @@ sub GetHeader {
   } else {
     $result .= $q->h1($header . $title);
   }
-  if (&GetParam('toplinkbar', 1)) {
+  if (&GetParam('toplinkbar', $TopLinkBar)) {
     $result .= &GetGotoBar($id) . '<hr>';
   }
   return $result;
