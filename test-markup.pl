@@ -677,7 +677,7 @@ close(F);
 @Test = split('\n',<<'EOT');
 <h1>Search for: fooz</h1>
 <p>1 pages found.</p>
-<span class="result"><a href="http://localhost/wiki.pl/SearchAndReplace">SearchAndReplace</a></span>
+<span class="result"><a class="local" href="http://localhost/wiki.pl/SearchAndReplace">SearchAndReplace</a></span>
 This is <strong>fooz</strong> and this is barz.
 EOT
 
