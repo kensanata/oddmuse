@@ -1,3 +1,8 @@
+2004-01-24  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoUnlock, PrintSearchResultEntry): Use extra
+	parenthesis around the qw() for Perl 5.005.
+
 2004-01-23  Alex Schroeder  <alex@gnu.org>
 
 	* weblog-tracking.pl (PingTracker): Added forking on each request.
