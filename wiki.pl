@@ -276,7 +276,8 @@ sub ReportError { # fatal!
   print GetHttpHeader('text/html', 1, $status); # no caching
   print $q->h2($errmsg), $q->end_html;
   map { ReleaseLockDir($_); } keys %Locks;
-  WriteStringToFile("$TempDir/error", $q->start_html . $q->h1("$status $errmsg") . $q . $q->end_html) if $log;
+  WriteStringToFile("$TempDir/error", $q->start_html . $q->h1("$status $errmsg")
+		    . $q->Dump . $q->end_html) if $log;
   exit (1);
 }
 
@@ -349,7 +350,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.489 2004/11/26 23:54:36 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.490 2004/11/27 19:59:04 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
