@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.4 2004/12/15 00:26:51 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.5 2004/12/18 16:17:05 as Exp $</p>';
+
+use vars qw($SearchFreeTextNewForm);
+
+$SearchFreeTextNewForm = 1;
 
 $Action{buildindex} = \&SearchFreeTextIndex;
 
@@ -107,6 +111,7 @@ sub SearchFreeText {
 *GetSearchForm = *SearchFreeTextNewForm;
 
 sub SearchFreeTextNewForm {
+  return SearchFreeTextOldForm() unless $SearchFreeTextNewForm;
   my $form = T('Search:') . ' '
     . GetHiddenValue('action', 'search')
     . $q->textfield(-name=>'term', -size=>20, -accesskey=>T('f')) . ' ';
