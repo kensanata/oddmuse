@@ -361,7 +361,7 @@ close(F);
 <h1>Search for: fooz</h1>
 <h2>1 pages found:</h2>
 <span class="result"><a href="http://localhost/wiki.pl/SearchAndReplace">SearchAndReplace</a></span>
-This is fooz and this is barz.
+This is <strong>fooz</strong> and this is barz.
 EOT
 
 update_page('SearchAndReplace', 'This is fooz and this is barz.', '', 1);
@@ -380,7 +380,7 @@ test_page(get_page('search=foo replace=bar'), @Test);
 @Test = split('\n',<<'EOT');
 <h1>Replaced: fooz -&gt; fuuz</h1>
 <h2>1 pages found:</h2>
-This is fuuz and this is barz.
+This is <strong>fuuz</strong> and this is barz.
 EOT
 
 test_page(get_page('search=fooz replace=fuuz pwd=foo'), @Test);
