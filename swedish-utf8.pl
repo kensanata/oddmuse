@@ -3,8 +3,9 @@
 #
 # Copyright (c) 2003 Erik S-O Johansson and others
 # Copyright (c) 2003 Björn Lindström <bkhl@elektrubadur.se> and
-#                    Björn X Öqvist <zrajm@klingonska.org
+#                    Zrajm C Akfohg <zrajm@klingonska.org>
 # Copyright (c) 2004 Johan Adler <emacs deleted at Johan's request>
+# Copyright (c) 2004 Zrajm C Akfohg <zrajm@klingonska.org
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
@@ -31,31 +32,29 @@ Ogiltigt användarnamn %s: Ej sparad.
 UserName must be 50 characters or less: not saved
 Användarnamn får bestå av högst 50 tecken: Ej sparad.
 XML::RSS is not available on this system.
-
+XML::RSS �r inte tillg�ngligt p� det h�r systemet.
 LWP::UserAgent is not available on this system.
-
+LWP::UserAgent �r inte tillg�ngligt p� det h�r systemet.
 diff
-skillnad
+ändringar
 history
 historik
- . . . . 
-
+%s returned no data, or LWP::UserAgent is not available.
+Antingen returnerade %s inget data, eller s� finns inte LWP::UserAgent tillg�ngligt.
+RSS parsing failed for %s
+Misslyckades med RSS parsningen av %s
 Click to create this page
-Klicka för att skapa denna sida
-http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
-
-http://www.amazon.com/exec/obidos/ISBN=%s
-
+Klicka för att skapa den här sidan
 alternate
 alternativ
-http://www.pricescan.com/books/BookDetail.asp?isbn=%s
-
 search
 sök
 Invalid action parameter %s
 Ogiltig parameter %s
 Invalid URL.
 Ogiltig URL.
+Page name is missing
+Sidnamn saknas
 Page name is too long: %s
 Sidnamn är för långt: %s
 Invalid Page %s
@@ -89,13 +88,13 @@ Updates in the last %s days
 Updates in the last %s day
 Ändringar den %s senaste dagen
 for %s only
-endast för %s
+för endast %s
 List latest change per page only
-Visa bara den senaste ändringen för varje sida
+Visa bara senaste ändring för varje sida
 List only major changes
 Visa bara stora ändringar
 Include minor changes
-Visa även små ändringar
+Visa små ändringar också
 List all changes
 Visa alla ändringar
 %s days
@@ -103,15 +102,15 @@ Visa alla ändringar
 List later changes
 Visa senare ändringar
 Username:
-Användarnamn:
+Användare:
 Host:
-Värd:
+Värddator:
 Language:
 Språk
 Filters
-Filter
+Sålla
 Go!
-Sök
+Utför
 (minor)
 (mindre)
 rollback
@@ -141,39 +140,9 @@ Rollback to %s
 redirected from %s
 omdirigerad från %s
 Click to search for references to this page
-
+Klicka för att söka efter referenser till den här sidan
 Cookie: 
-
-new comment
-ny kommentar
-Save
-Spara
-Preview
-Förhandsgranska
-Comments on this page
-Kommentarer till den här sidan
-Edit revision %s of this page
-Redigera version %s av den här sidan
-Edit text of this page
-Redigera den här sidan
-This page is read-only
-Den här sidan är skrivskyddad
-View other revisions
-Visa andra versioner
-View current revision
-Visa nuvarande version
-View all changes
-Visa alla ändringar
-Back to %s
-Tillbaka till %s
-Last edited
-Senast redigerad
-Edited
-Redigerad
-by %s
-av %s
-(diff)
-(ändringar)
+Cookie: 
 Warning
 Varning
 Database is stored in temporary directory %s
@@ -182,10 +151,58 @@ Databas sparad i tillfällig katalog %s
 %s sekunder
 The same page on other sites:
 Samma sida på andra siter:
-EditNearLinks
-
+Last edited
+Senast ändrad
+Edited
+Redigerad
+by %s
+av %s
+(diff)
+(ändringar)
+Run maintenance
+Utför underhåll
+Unlock site
+Lås upp wikin
+Lock site
+Lås wikin
+Comments on this page
+Kommentera sidan
+Edit revision %s of this page
+Redigera version %s av den här sidan
+Edit text of this page
+Redigera sidan
+e
+r
+This page is read-only
+Sidan är skrivskyddad
+Unlock page
+Lås upp sidan
+Lock page
+Lås sidan
+View other revisions
+Visa andra versioner
+View current revision
+Visa rådande version
+View all changes
+Visa alla ändringar
+Back to %s
+Tillbaka till %s
+new comment
+ny kommentar
+s
+s
+Save
+Spara
+Preview
+Förhandsgranska
+Warning
+Varning
+Database is stored in temporary directory %s
+Databas sparad i tillfällig katalog %s
+%s seconds
+%s sekunder
 Search:
-Sökning:
+Sök:
 Replace:
 Ersätt:
 Validate HTML
@@ -194,18 +211,18 @@ Validate CSS
 Validera CSS
 Difference (from revision %1 to %2)
 Skillnad (från version %1 till %2)
+current revision
+rådande version
 revision %s
 version %s
-current revision
-nuvarande version
 Difference (from prior %s revision)
-Ändringar (sedan tidigare version %s)
+Förändring (sedan senaste %s revidering)
 major
-stor
+stora
 minor
-liten
+mindre
 No diff available.
-Ingen skillnad tillgänglig.
+Information om ändring är inte tillgänglig.
 Changed:
 Ändrad:
 Removed:
@@ -217,7 +234,7 @@ till
 Revision %s not available
 Version %s inte tillgänglig
 showing current revision instead
-visar nuvarande version istället
+visar rådande version istället
 Showing revision %s
 Det här är version %s
 Cannot save an nameless page.
@@ -275,11 +292,11 @@ Att spara den här sidan kommer att ersätta den senaste versionen med den här 
 Summary:
 Sammanfattning:
 This change is a minor edit.
-Den här förändringen är en mindre ändring.
+Det här är en mindre ändring.
 Replace this file with text.
-Ersätt den här filen med text.
+Skriv text istället för den här filen.
 Replace this text with a file.
-Ersätt den här texten med en fil.
+Använd en fil i stället för den här texten.
 File to upload: 
 Fil att ladda upp:
 Files of type %s are not allowed.
@@ -287,11 +304,11 @@ Filer av typen %s är inte tillåtna.
 Password
 Lösenord
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
-Ditt lösenord sparas i en cookie, om du har cookies tillgängliga. Cookies kan försvinna om du ansluter från en annan dator, från ett annat konto, eller med annan programvara.
+Ditt lösenord sparas i en cookie om du har cookies påslagna. Cookies kan försvinna om du ansluter från en annan dator, från ett annat konto eller med ett annat program.
 You are currently an administrator on this site.
-Du är för närvarande administratör av den här webbplatsen.
+Du är för närvarande administratör för den här webbplatsen.
 You are currently an editor on this site.
-Du är för närvarande redaktör på den här webbplatsen.
+Du är för närvarande redaktör för den här webbplatsen.
 You are a normal user on this site.
 Du är en normal användare på den här webbplatsen.
 Your password does not match any of the  administrator or editor passwords.
@@ -313,9 +330,9 @@ permanenta ankare
 near links
 nära länkar
 (for %s)
-(för %s)
+(för: %s)
 %s pages found.
-%s sidor funna.
+%s sidor.
 Replaced: %s
 Ersatt: %s
 Search for: %s
@@ -350,14 +367,18 @@ Sample_Undefined_Page
 Odefinierad_exempelsida
 [[%s]] cannot be defined.
 [[%s]] kan inte definieras.
-Only an administrator can create %s
-Bara en administratör can skapa %s
+Only an administrator can create %s.
+Bara en administratör kan skapa %s.
 Transfer Error: %s
 Överföringsfel: %s
 Browser reports no file info.
 Webbläsare rapporterar ingen filinformation.
 Browser reports no file type.
 Webbläsare rapporterar ingen filtyp.
+Edit Denied
+Redigering nekas
+The page contains banned text.
+Sidan innehåller otillåten text.
 This page was changed by somebody else %s.
 Den här sidan ändrades av någon annan %s.
 The changes conflict.  Please check the page again.
@@ -374,22 +395,18 @@ ancestor
 förfader
 other
 annan
-Ping
-Ping
-No response.
-Inget svar.
 Maintenance on all pages
 Underhåll av alla sidor
 Maintenance not done.
-Underhåll är inte färdigt.
+Underhåll ej slutfört.
 (Maintenance can only be done once every 12 hours.)
 (Underhåll kan bara utföras en gång var 12:e timme.)
 Remove the "maintain" file or wait.
-Ta bort filen "maintain" eller vänta
+Ta bort "maintain"-filen eller vänta.
 Main lock obtained.
 Huvudlås påslaget.
 Expiring keep files and deleting pages marked for deletion
-
+Avlägsnar "keep"-filer och raderar sidor märkta för radering
 deleted
 borttagen
 Moving part of the %s log file.
@@ -431,5 +448,7 @@ Alla som länkat hit
 anchor first defined here: %s
 ankare definierades här först: %s
 Click to search for references to this permanent anchor
-Klicka för att söka efter referenser till detta permanenta ankare
+Klicka för att söka efter referenser till det här permanenta ankaret
+the page %s also exists
+sidan %s finns också
 END_OF_TRANSLATION
