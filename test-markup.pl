@@ -41,6 +41,7 @@ mkdir '/tmp/oddmuse';
 open(F,'>/tmp/oddmuse/config');
 print F "\$NetworkFile = 1;\n";
 print F "\$AdminPass = 'foo';\n";
+print F "\$SurgeProtection = 0;\n";
 close(F);
 
 sub update_page {
@@ -49,13 +50,13 @@ sub update_page {
   my $pwd = $admin ? 'foo' : 'wrong';
   $text = UrlEncode($text);
   $summary = UrlEncode($summary);
-  $minor = 0 unless $minor;
+  $minor = $minor ? 'on' : 'off';
   open(F,"perl wiki.pl action=edit id=$id pwd=$pwd |");
   my $output = <F>;
   close F;
   $output =~ /name="oldtime" value="([0-9]+)"/;
   my $oldtime = $1;
-  system("perl wiki.pl oldtime=$oldtime title=$id summary=$summary text=$text pwd=$pwd > /dev/null");
+  system("perl wiki.pl oldtime=$oldtime title=$id summary=$summary recent_edit=$minor text=$text pwd=$pwd > /dev/null");
   open(F,"perl wiki.pl action=browse id=$id|");
   my $output = <F>;
   close F;
@@ -64,7 +65,7 @@ sub update_page {
 
 sub get_page {
   my ($params) = @_;
-  print '*';
+  print '+';
   open(F,"perl wiki.pl $params |");
   my $output = <F>;
   close F;
@@ -116,22 +117,43 @@ sub run_tests {
 
 ### COMPLEX HTML OUTPUT TESTS
 
-## Try to edit BanList
+my $localhost = 'confusibombus';
+$ENV{'REMOTE_ADDR'} = $localhost;
+
+## Check headers especially the quoting of non-ASCII characters.
+
+@Test = split('\n',<<'EOT');
+<h1><a href="http://localhost/wiki.pl\?search=Alexander\+Schr\%f6der">Alexander Schröder</a></h1>
+Edit <a href="http://localhost/wiki.pl/Alexander_Schr\%f6der">Alexander Schröder</a>!
+EOT
+
+test_page(update_page('Alexander_Schr\%f6der', "Edit [[Alexander Schröder]]!"), @Test);
+
+## Edit banned hosts as a normal user should fail
 
 @Test = split('\n',<<'EOT');
 Describe the new page here
 EOT
 
-test_page(update_page('BannedHosts', "Foo\nBar\n localhost\n", 'banning me'), @Test);
+test_page(update_page('BannedHosts', "Foo\nBar\n $localhost\n", 'banning me'), @Test);
 
-## Try to edit BanList
+## Edit banned hosts as admin should succeed
 
-@Test = split('\n',<<'EOT');
+@Test = split('\n',<<"EOT");
 Foo
- localhost
+ $localhost
 EOT
 
-test_page(update_page('BannedHosts', "Foo\n localhost\n", 'banning me', 0, 1), @Test);
+test_page(update_page('BannedHosts', "Foo\nBar\n $localhost\n", 'banning me', 0, 1), @Test);
+
+## Edit banned hosts as a normal user should fail
+
+@Test = split('\n',<<"EOT");
+Foo
+ $localhost
+EOT
+
+test_page(update_page('BannedHosts', "Something else.", 'banning me'), @Test);
 
 ## Try to edit another page as a banned user
 
@@ -139,7 +161,7 @@ test_page(update_page('BannedHosts', "Foo\n localhost\n", 'banning me', 0, 1), @
 Describe the new page here
 EOT
 
-test_page(update_page('BannedUser', 'This is a test.', 'banning test'), @Test);
+test_page(update_page('BannedUser', 'This is a test which should fail.', 'banning test'), @Test);
 
 ## Try to edit the same page as a banned user with admin password
 
@@ -153,10 +175,10 @@ test_page(update_page('BannedUser', 'This is a test.', 'banning test', 0, 1), @T
 
 @Test = split('\n',<<'EOT');
 Foo
-localhost
+Bar
 EOT
 
-test_page(update_page('BannedHosts', "Foo\nlocalhost\n", 'banning me', 0, 1), @Test);
+test_page(update_page('BannedHosts', "Foo\nBar\n", 'banning me', 0, 1), @Test);
 
 ## Create a sample page, and test for regular expressions in the output
 
@@ -366,6 +388,7 @@ mkdir '/tmp/oddmuse';
 open(F,'>/tmp/oddmuse/config');
 print F "\$BracketWiki = 1;\n";
 print F "\$AllNetworkFiles = 1;\n";
+print F "\$SurgeProtection = 0;\n";
 close(F);
 update_page('SandBox', "This page exists.");
 update_page('Banana', "This page exists also.");
@@ -386,6 +409,85 @@ file:///home/foo/tutorial.pdf
 EOT
 
 run_tests();
+
+## Test revision and diff stuff
+
+update_page('KeptRevisions', 'first');
+update_page('KeptRevisions', 'second');
+update_page('KeptRevisions', 'third');
+update_page('KeptRevisions', 'fourth', '', 1);
+update_page('KeptRevisions', 'fifth', '', 1);
+
+# Show the current revision
+
+@Test = split('\n',<<'EOT');
+KeptRevisions
+fifth
+EOT
+
+test_page(get_page(KeptRevisions), @Test);
+
+# Show the other revision
+
+@Test = split('\n',<<'EOT');
+Showing revision 2
+second
+EOT
+
+test_page(get_page('action=browse revision=2 id=KeptRevisions'), @Test);
+
+@Test = split('\n',<<'EOT');
+Showing revision 1
+first
+EOT
+
+test_page(get_page('action=browse revision=1 id=KeptRevisions'), @Test);
+
+# Show the current revision if an inexisting revision is asked for
+
+@Test = split('\n',<<'EOT');
+Revision 9 not available \(showing current revision instead\)
+fifth
+EOT
+
+test_page(get_page('action=browse revision=9 id=KeptRevisions'), @Test);
+
+@Test = split('\n',<<'EOT');
+Revision 0 not available \(showing current revision instead\)
+fifth
+EOT
+
+test_page(get_page('action=browse revision=0 id=KeptRevisions'), @Test);
+
+# Show a major diff
+
+@Test = split('\n',<<'EOT');
+Difference \(from prior major revision\)
+second
+fifth
+EOT
+
+test_page(get_page('action=browse diff=1 id=KeptRevisions'), @Test);
+
+# Show a minor diff
+
+@Test = split('\n',<<'EOT');
+Difference \(from prior minor revision\)
+fourth
+fifth
+EOT
+
+test_page(get_page('action=browse diff=2 id=KeptRevisions'), @Test);
+
+# Show a diff from the history page comparing two specific revisions
+
+@Test = split('\n',<<'EOT');
+Difference \(from revision 2 to revision 4\)
+second
+fourth
+EOT
+
+test_page(get_page('action=browse diff=1 revision=4 diffrevision=2 id=KeptRevisions'), @Test);
 
 ### END OF TESTS
 
