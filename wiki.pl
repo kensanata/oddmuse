@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.388 2004/04/17 22:16:36 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.389 2004/04/22 00:35:09 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -3691,6 +3691,7 @@ sub DoShowVersion {
     print $q->p($q->server_software()),
       $q->p(sprintf('Perl v%vd', $^V)),
       $q->p('CGI: ', $CGI::VERSION),
+      $q->p('LWP::UserAgent ', eval { local $SIG{__DIE__}; require LWP::UserAgent; $LWP::UserAgent::VERSION; }),
       $q->p('XML::RSS: ', eval { local $SIG{__DIE__}; require XML::RSS; $XML::RSS::VERSION; }),
       $q->p('XML::Parser: ', eval { local $SIG{__DIE__}; $XML::Parser::VERSION; }),
       $q->p('diff: ' . (`diff --version` || $!)),
