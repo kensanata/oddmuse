@@ -293,6 +293,12 @@ This operation is restricted to administrators only...
 Cette opération est réservée aux administrateurs seulement...
 Index of all pages
 Index de toutes les pages
+(including permanent anchors)
+
+(permanent anchors only)
+
+(for %s only)
+
 %s pages found:
 %s pages trouvées:
 Replaced: %s

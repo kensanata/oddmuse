@@ -1,3 +1,81 @@
+2003-12-24  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetRcText): Use link instead of uri.
+	(PrintFooter): Only print sister sites and edit near links when $id is set.
+	(DoUnlock): Removed surplus parenthesis.
+	(PrintPage): Only use minimal RSS 3.0 when searching.
+	(DoSearch): Add head item for raw output.
+	(SearchNearPages): Skip head item.  Append search string to search url if no %s found.
+	(PrintSearchResultEntry): Use RcTextItem.
+	(DoSearch): Change default to near=1 and offer link to near=2.
+	(SearchNearPages): Change default to near=1.
+	(SearchNearPages): Switched order of near searches.
+	(PrintSearchResultEntry): Only print the info provided.
+
+2003-12-23  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (%NearSearch): New variable.
+	(InitVariables): Init it.
+	(NearInit): Read three fields instead of two from the near map.
+	(PrintFooter): Removed third argument to GetAuthorLink.
+	(PrintPage): If raw and context, use RSS 3.0 format.
+	(DoSearch): Call SearchNearPages, too.
+	(SearchString, SearchNearPages): New.
+	(SearchTitleAndBody): Use SearchString.
+	(PrintSearchResultEntry): New.
+	(PrintSearchResult): Use it.
+
+2003-12-22  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (NearInit): NearSource now uses a list as value.
+	(ResolveId): Resolve to the first source in the list.
+	(PrintFooter): Use list.
+	(BrowseResolvedPage): Use title attribute.
+	(DoShowVersion): More debugging of near links.
+
+2003-12-19  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($SisterSiteLogoUrl): New variable.
+	(PrintFooter): Use it.
+	(GetHtmlHeader): More CSS for div.near and div.sister.
+
+2003-12-18  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($NearSiteInit, %NearSite, %NearSource, %NearLinksUsed,
+	$NearDir, $NearMap): New variables.
+	(@LockOnCreation): Added $NearMap.
+	(InitVariables): Init $NearSiteInit, %NearSite, %NearSource,
+	%NearLinksUsed, $NearMap.
+	(NearInit): New.
+	(ApplyRules): Call NearInit.
+	(InterInit): New.
+	(GetSiteUrl): Moved some code to InterInit, moved rest to
+	GetInterSiteUrl.
+	(GetInterSiteUrl): New, replaces GetSiteUrl.
+	(GetInterLink): Use GetInterSiteUrl.
+	(ResolveId): Added near-link handling.
+	(PrintFooter): Added near-link handling.
+	(DoMaintain): Added near-link handling.
+	(GetHtmlHeader): Added a.near:link and a.near:visited to default
+	stylesheet.
+	(UserCanEdit): No edit when the page is in @LockOnCreation.
+	(DoIndex): Fix raw handling.
+	(DoShowVersion): Added debugging info for interlinks and
+	nearlinks.
+
+2003-12-07  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (BrowsePage): When a page cluster is self-contained, and
+	no rcclusteronly is provided, set the parameter to the page name.
+	(SetParam): New sub.
+	(InitCookie, BrowsePage, DoPost): Use SetParam instead of setting
+	$NewCookie directly.
+
+2003-12-06  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoPost): Fix raw handling.
+	(GetFullLinkList): Implement listing orphans only.
+
 2003-11-29  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoIndex): Print how many pages there are in this sub,

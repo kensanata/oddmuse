@@ -22,13 +22,8 @@ if (@ARGV == 2) {
 sub trans {
   my ($string) = @_;
   my ($result);
-
   $result = '';
-# Uncomment the next line to create a test translation table
-# $result = 'X_' . $string . '_W';
-
   $result = $Translate{$string}  if (defined($Translate{$string}));
-
   return ' '  if ($seen{$string});
   $seen{$string} = 1;
   print $string . "\n" . $result . "\n";
@@ -37,10 +32,8 @@ sub trans {
 
 print '%Translate = split(\'\n\',<<END_OF_TRANSLATION);' . "\n";
 foreach (<>) {
-  s/T\(\'([^']+)/&trans($1)/ge;
-  s/Ts\(\'([^']+)/&trans($1)/ge;
-  s/T\(\"([^"]+)/&trans($1)/ge;
-  s/Ts\(\"([^"]+)/&trans($1)/ge;
+  s/Ts?s?\(\'([^']+)/&trans($1)/ge;
+  s/Ts?s?\(\"([^"]+)/&trans($1)/ge;
 }
 
 print "END_OF_TRANSLATION\n";
