@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.19 2004/06/17 01:13:18 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.20 2004/06/29 16:42:09 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalendarUseCal);
 
@@ -35,7 +35,7 @@ sub NewCalendarGetHeader {
 }
 
 sub Cal {
-  my ($year, $mon, $mday) = @_; # example: 2004, 12.
+  my ($year, $mon, $mday, $unlink_year) = @_; # example: 2004, 12.
   if (not $mon) {
     my ($sec, $min, $hour);
     ($sec, $min, $hour, $mday, $mon, $year) = localtime($Now);
@@ -72,10 +72,15 @@ sub Cal {
   $cal =~ s|(\w+) (\d\d\d\d)|{
     my ($month_text, $year_text) = ($1, $2);
     my $date = sprintf("%d-%02d", $year, $mon);
-    $q->span({-class=>'title'},
-	     ScriptLink('action=collect;match=' . $date, $month_text,  'local collection month')
-	     . ' '
-	     . ScriptLink('action=calendar;year=' . $year, $year_text,  'local collection year'));
+    if ($unlink_year) {
+      $q->span({-class=>'title'}, ScriptLink('action=collect;match=' . $date,
+					     "$month_text $year_text",  'local collection month'));
+    } else {
+      $q->span({-class=>'title'}, ScriptLink('action=collect;match=' . $date,
+					     $month_text,  'local collection month') . ' '
+	       . ScriptLink('action=calendar;year=' . $year,
+			    $year_text,  'local collection year'));
+    }
   }|e;
   return "<div class=\"cal month\"><pre>$cal</pre></div>";
 }
@@ -137,8 +142,12 @@ sub PrintYearCalendar {
   my $year = shift;
   my @pages = AllPagesList();
   print '<div class="cal year">';
+  print $q->p({-class=>nav},
+	      ScriptLink('action=calendar;year=' . ($year-1), T('Previous')),
+	      ' | ',
+	      ScriptLink('action=calendar;year=' . ($year+1), T('Next')));
   for $mon ((1..12)) {
-    print Cal($year, $mon);
+    print Cal($year, $mon, undef, 1);
   }
   print '</div>';
 }
