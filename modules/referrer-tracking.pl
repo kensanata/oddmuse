@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.1 2005/01/07 00:50:34 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.2 2005/01/07 00:54:29 as Exp $</p>';
 
 ## == Setup ==
 
@@ -31,10 +31,9 @@ push(@KnownLocks, "refer_*");
 
 $Action{refer} = \&DoPrintAllReferers;
 
-use vars qw($RefererDir $RefererTracking $RefererTimeLimit
-$RefererLimit $RefererFilter %Referers);
+use vars qw($RefererDir $RefererTimeLimit $RefererLimit $RefererFilter
+%Referers);
 
-$RefererTracking  = 0;	   # Keep track of referrals to your pages
 $RefererTimeLimit = 86400; # How long referrals shall be remembered in seconds
 $RefererLimit	  = 15;	   # How many different referer shall be remembered
 $RefererFilter    = 'ReferrerFilter'; # Name of the filter page
@@ -59,7 +58,7 @@ sub RefererMenu {
 
 sub RefererNewPrintFooter {
   my ($id, $rev, $comment, @rest) = @_;
-  if ($RefererTracking and not GetParam('embed', $EmbedWiki)) {
+  if (not GetParam('embed', $EmbedWiki)) {
     my $referers = RefererTrack($id);
     print $referers if $referers;
   }
@@ -71,7 +70,7 @@ sub RefererNewPrintFooter {
 
 sub RefererNewExpireKeepFiles {
   RefererOldExpireKeepFiles(@_); # call with opened page
-  ReadReferers($OpenPageName);   # clean up even if disabled
+  ReadReferers($OpenPageName);   # clean up reading (expiring) and writing
   WriteReferers($OpenPageName);
 }
 
