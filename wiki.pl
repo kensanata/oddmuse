@@ -287,7 +287,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.294 2004/01/03 16:59:25 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.295 2004/01/03 17:13:34 as Exp $');
 }
 
 sub InitCookie {
@@ -3422,9 +3422,9 @@ sub DoMaintain {
   my $cache = GetParam('cache', 0);
   RequestLockOrError();
   print $q->p(T('Main lock obtained.'));
-  print '<p>' . T('Expiring keep files and deleting pages marked for deletion');
+  print '<p>', T('Expiring keep files and deleting pages marked for deletion');
   if ($cache) {
-    print T('and refreshing HTML cache');
+    print ' ', T('and refreshing HTML cache');
     $IndexInit = 0; # mod_perl: this variable may persist accross sessions
     unlink($IndexFile);
     unlink($PermanentAnchorsFile);
