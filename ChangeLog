@@ -1,3 +1,10 @@
+2004-02-08  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (Init): Use binmode raw for STDOUT.
+	(ApplyRules): Use binmode utf8 for STDOUT if $HttpCharset is
+	'UTF-8' (the default).  Reset to raw immediately.
+	(RSS): Don't downgrade anymore.
+
 2004-02-06  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (Cookie): The cookie is considered to have changed under
