@@ -305,7 +305,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.439 2004/08/12 16:35:37 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.440 2004/08/12 23:42:04 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -407,10 +407,11 @@ sub ApplyRules {
   while(1) {
     # Block level elements eat empty lines to prevent empty p elements.
     if ($bol && m/\G(\s*\n)*(\*+)[ \t]+/cg
-	     or $HtmlStack[0] && $HtmlStack[0] eq 'li' && m/\G(\s*\n)+(\*+)[ \t]*/cg) {
-      Clean(OpenHtmlEnvironment('ul',length($2)) . AddHtmlEnvironment('li'));
+	     or InElement('li') && m/\G(\s*\n)+(\*+)[ \t]*/cg) {
+      Clean(CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ul',length($2))
+	    . AddHtmlEnvironment('li'));
     } elsif ($bol && m/\G(\s*\n)+/cg) {
-      Clean(CloseHtmlEnvironments() . '<p>');
+      Clean(CloseHtmlEnvironments() . AddHtmlEnvironment('p'));
     } elsif ($bol && m/\G(\&lt;include(\s+(text|with-anchors))?\s+"(.*)"\&gt;[ \t]*\n?)/cgi) {
       # <include "uri..."> includes the text of the given URI verbatim
       Dirty($1);
@@ -511,7 +512,7 @@ sub ApplyRules {
     } elsif (%Smilies && m/\G$smileyregex/cog && (Clean(SmileyReplace()))) {
     } elsif (Clean(RunMyRules())) {
     } elsif (m/\G\s*\n(s*\n)+/cg) { # paragraphs: at least two newlines
-      Clean(CloseHtmlEnvironments() . '<p>'); # there is another one like this further up
+      Clean(CloseHtmlEnvironments() . AddHtmlEnvironment('p')); # another one like this further up
     } elsif (m/\G\s+/cg) { Clean(' ');
     } elsif (m/\G([A-Za-z\x80-\xff]+([ \t]+[a-z\x80-\xff]+)*[ \t]+)/cg # multiple words but
 	     or m/\G([A-Za-z\x80-\xff]+)/cg or m/\G(\S)/cg) { Clean($1); # do not match http://foo
@@ -530,12 +531,32 @@ sub ApplyRules {
   return (join($FS, @Blocks), join($FS, @Flags));
 }
 
+sub InElement {
+  my ($code, $limit) = @_; # is $code in @HtmlStack, but not beyond $limit?
+  my @stack = @HtmlStack;
+  while (@stack) {
+    my $tag = shift(@stack);
+    return 1 if $tag eq $code;
+    return 0 if $limit and $tag eq $limit;
+  }
+  return 0;
+}
+
 sub CloseHtmlEnvironment { # just close the current one
   my $code = shift;
   my $result;
   $result = shift(@HtmlStack) if not defined($code) or $HtmlStack[0] eq $code;
   return "</$result>" if $result;
   return "&lt;/$code&gt;";
+}
+
+sub CloseHtmlEnvironmentUntil { # close all environments until you get to $code
+  my $code = shift;
+  my $result = '';
+  while (@HtmlStack and $HtmlStack[0] ne $code) {
+    $result .= '</' . shift(@HtmlStack) . '>';
+  }
+  return $result;
 }
 
 sub AddHtmlEnvironment { # add a new one so that it will be closed!
