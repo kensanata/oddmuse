@@ -1,3 +1,20 @@
+2003-06-13  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($CollectingJournal): New variable.
+	(DoWikiRequest): Move all the init calls into Init.
+	(Init): Moved all the init calls from DoWikiRequest here.
+	(ApplyRules): Added journal rule.
+	(PrintJournal): New.
+	(GetGotoBar): Use GetPageLink.
+	(DoPrintAllPages): Use 0 parameter when calling PrintAllPages.
+	(PrintAllPages): Take extra parameter to say whether to link to
+	the pages or not.
+
+2003-06-12  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (PingWeblogs): Use the edited page instead of the recent
+	changes page for pinging weblogs.com.
+
 2003-06-11  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (InitRequest): Convert spaces to underscores for
