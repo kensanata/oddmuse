@@ -348,7 +348,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.462 2004/10/10 13:46:16 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.463 2004/10/10 15:07:46 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -735,34 +735,34 @@ sub GetRaw {
 }
 
 sub PrintJournal {
+  return if $CollectingJournal; # avoid infinite loops
+  local $CollectingJournal = 1;
   my ($num, $regexp, $mode) = @_;
-  if (!$CollectingJournal) {
-    $CollectingJournal = 1;
-    $regexp = '^\d\d\d\d-\d\d-\d\d' unless $regexp;
-    $num = 10 unless $num;
-    my @pages = (grep(/$regexp/, AllPagesList()));
-    if (defined &JournalSort) {
-      @pages = sort JournalSort @pages;
-    } else {
-      @pages = sort {$b cmp $a} @pages;
-    }
-    if ($mode eq 'reverse') {
-      @pages = reverse @pages;
-    }
-    @pages = @pages[0 .. $num - 1] if $#pages >= $num;
-    if (@pages) {
-      # Now save information required for saving the cache of the current page.
-      local %Page;
-      local $OpenPageName='';
-      print '<div class="journal">';
-      PrintAllPages(1, 1, @pages);
-      print '</div>';
-    }
-    $CollectingJournal = 0;
+  $regexp = '^\d\d\d\d-\d\d-\d\d' unless $regexp;
+  $num = 10 unless $num;
+  my @pages = (grep(/$regexp/, AllPagesList()));
+  if (defined &JournalSort) {
+    @pages = sort JournalSort @pages;
+  } else {
+    @pages = sort {$b cmp $a} @pages;
+  }
+  if ($mode eq 'reverse') {
+    @pages = reverse @pages;
+  }
+  @pages = @pages[0 .. $num - 1] if $#pages >= $num;
+  if (@pages) {
+    # Now save information required for saving the cache of the current page.
+    local %Page;
+    local $OpenPageName='';
+    print '<div class="journal">';
+    PrintAllPages(1, 1, @pages);
+    print '</div>';
   }
 }
 
 sub RSS {
+  return if $CollectingJournal; # avoid infinite loops when using full=1
+  local $CollectingJournal = 1;
   my $maxitems = shift;
   my @uris = @_;
   my %lines;
