@@ -16,12 +16,12 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.4 2005/01/01 13:48:21 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.5 2005/01/01 13:51:22 as Exp $</p>';
 
 # add the same CSS as in tables.pl
 $DefaultStyleSheet .= q{
 table.user { border-style:solid; border-width:thin; }
-table.user tr td { border-style:solid; border-width:thin; padding:5px; }
+table.user td, table.user th { border-style:solid; border-width:thin; padding:5px; }
 table.user th { font-weight:bold; }
 table.user td.r { text-align:right; }
 table.user td.l { text-align:left; }
