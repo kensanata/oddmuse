@@ -1,4 +1,12 @@
+2005-01-08  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (handler): Added no strict "refs" pragma after a report
+	by Ross Thomas.
+
 2005-01-07  Alex Schroeder  <alex@confusibombus.emacswiki.org>
+
+	* wikicopy (GetRaw, PostRaw): Simplified LWP::UserAgent call.
+	(copy): Get encoding right, test for data.
 
 	* wiki.pl (handler): Typo: Use my.
 
