@@ -56,7 +56,7 @@ $ValidatorLink $RefererTracking $RefererTimeLimit $RefererLimit
 $TopLinkBar $NotifyWeblogs $InterMap @LockOnCreation $RefererFilter
 $PermanentAnchorsFile $PermanentAnchors %CookieParameters
 $StyleSheetPage @UserGotoBarPages $ConfigPage $ScriptName
-$CommentsPrefix);
+$CommentsPrefix $NewComment);
 
 # Other global variables:
 use vars qw(%Page %Section %Text %InterSite %KeptRevisions %IndexHash
@@ -87,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.100 2003/06/15 18:26:13 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.101 2003/06/15 19:53:25 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -95,6 +95,7 @@ $StyleSheetPage = ''; # Page for CSS sheet
 $LogoUrl     = '';  # URL for site logo ('' for no logo)
 $NotFoundPg  = '';  # Page for not-found links ('' for blank pg)
 $NewText     = "Describe the new page here.\n";  # New page text
+$NewComment  = "Add your comment here.\n";       # New comment text
 
 # HardSecurity
 $EditAllowed = 1;   # 1 = editing allowed,    0 = read-only
@@ -1781,7 +1782,7 @@ sub PrintFooter {
 		    . GetHiddenValue("oldconflict", 0)
 		    . GetHiddenValue("summary" , T("new comment"))
 		    . GetHiddenValue("recent_edit", "on")
-		    . GetTextArea('aftertext', T("Add your comment here"))
+		    . GetTextArea('aftertext', $NewComment)
 		    . '<p>' . T('Username:')
 		    . $q->textfield(-name=>'username',
 				    -default=>$userName, -override=>1,
@@ -2161,10 +2162,10 @@ sub OpenNewSection {
 sub OpenNewText {
   my $name = shift;  # Name of text (usually 'default')
   %Text = ();
-  if ($OpenPageName !~ /^$CommentsPrefix(.*)/) {
+  if (not $CommentsPrefix or $OpenPageName !~ /^$CommentsPrefix(.*)/) {
     $Text{'text'} = T($NewText);
   }
-  $Text{'text'} .= "\n"  if (substr($Text{'text'}, -1, 1) ne "\n");
+  $Text{'text'} .= "\n"  if $Text{'text'} !~ /^\n$/;
   $Text{'minor'} = 0;      # Default as major edit
   $Text{'newauthor'} = 1;  # Default as new author
   $Text{'summary'} = '';
@@ -3235,7 +3236,7 @@ sub DoPost {
   my $raw = GetParam('raw', 0);
   my $oldconflict = GetParam('oldconflict', '');
   my $authorAddr = $ENV{REMOTE_ADDR};
-  my $comment = GetParam('aftertext');
+  my $comment = GetParam('aftertext', '');
   if (!UserCanEdit($id, 1)) {
     # This is an internal interface--we don't need to explain
     ReportError(Ts('Editing not allowed for %s.', $id));
@@ -3259,17 +3260,8 @@ sub DoPost {
     $oldtime = $1;
     $string = $';
   }
-  $string =~ s/$FS//g;
-  $summary =~ s/$FS//g;
-  $summary =~ s/[\r\n]//g;
-  # Add a newline to the end of the string (if it doesn't have one)
-  $string .= "\n"  if (!($string =~ /\n$/));
-  # Remove "\r"-s (0x0d) from the string
-  $string =~ s/\r//g;
   # Lock before getting old page to prevent races
   RequestLock() or die(T('Could not get main lock'));
-  # Consider extracting lock section into sub, and eval-wrap it?
-  # (A few called routines can die, leaving locks.)
   OpenPage($id);
   OpenDefaultText();
   $old = $Text{'text'};
@@ -3277,20 +3269,29 @@ sub DoPost {
   $pgtime = $Section{'ts'};
   $preview = 0;
   $preview = 1  if (GetParam('Preview', '') ne '');
-  if (!$preview && (($old eq $string and not $comment)
-		    or ($oldrev == 0 and $string eq $NewText))) {
-    ReleaseLock(); # No changes
+  if ($comment ne '') {
+    $comment =~ s/\r//g;  # Remove "\r"-s (0x0d) from the string
+    if ($comment ne $NewComment) {
+      $string = $old  . "----\n" if $old and $old ne "\n";
+      $string .= $comment . ' -- ' .  GetParam('username', T('Anonymous'))
+	. ' ' . TimeToText($Now) . "\n\n";
+    }
+  }
+  # Massage the string
+  $string =~ s/\r//g;
+  $string .= "\n"  if ($string !~ /\n$/);
+  $string =~ s/$FS//g;
+  $summary =~ s/$FS//g;
+  $summary =~ s/[\r\n]//g;
+  # rebrowse if no changes
+  if (!$preview && (($old eq $string) or ($oldrev == 0 and $string eq $NewText))) {
+    ReleaseLock(); # No changes -- just show the same page again
     ReBrowsePage($id, '', 1);
     return;
   }
   $newAuthor = 1  if ($Section{'ip'} ne $authorAddr);  # hostname fallback
   $newAuthor = 1  if ($oldrev == 0);  # New page
   $newAuthor = 0  if (!$newAuthor);   # Standard flag form, not empty
-  if ($comment) {                     # Easy submission
-    $string = $old  . "----\n" . $comment;
-    $string .= " -- ".  GetParam('username', T('Anonymous')) . ' '
-      . TimeToText($Now) . "\n\n";
-  }
   # Handle editing conflicts.  If possible, merge automatically.
   if (($oldrev > 0) && ($newAuthor && ($oldtime < $pgtime))) {
     my $conflict = 1;
