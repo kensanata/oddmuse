@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: link-all.pl,v 1.1 2004/02/17 22:38:44 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: link-all.pl,v 1.2 2004/02/17 22:49:24 as Exp $</p>';
 
 push(@MyRules, \&LinkAllRule);
 
@@ -47,7 +47,10 @@ sub LinkAllGetPageLinkIfItExists {
 
 sub NewLinkAllGetGotoBar {
   my $id = shift;
-  my $addition = "<a href=\"$ScriptName?action=browse;id=$id;define=1\">Define</a>"
-  $UserGotoBar .= $addition unless $UserGotoBar =~ /$addition/;
-  return OldGetGotoBar();
+  my $addition = "<a href=\"$ScriptName?action=browse;id=$id;define=1\">Define</a>";
+  if (index($UserGotoBar, $addition) < 0) {
+    $UserGotoBar .= ' | ' if $UserGotoBar;
+    $UserGotoBar .= $addition;
+  }
+  return OldLinkAllGetGotoBar();
 }
