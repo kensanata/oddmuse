@@ -1,6 +1,7 @@
 2003-09-01  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoMaintain): Don't change rclog files if not required.
+	(PrintFooter): Print username of last author.
 
 2003-08-29  Alex Schroeder  <alex@gnu.org>
 
