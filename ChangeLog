@@ -1,3 +1,10 @@
+2003-06-04  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($ConfigPage): New.
+	(@LockOnCreation): Added it.
+	(DoWikiRequest): Use it, set $Message here for potential error.
+	(InitRequest): Don't set $Message here.
+
 2003-06-02  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetHtmlHeader): Fix bug that prevented URL from
