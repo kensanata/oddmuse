@@ -16,10 +16,10 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: markup.pl,v 1.4 2004/06/20 20:41:07 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: markup.pl,v 1.5 2004/06/23 13:06:37 as Exp $</p>';
 
 push(@MyRules, \&MarkupRule);
-my $words = '([A-Za-z0-9\x80-\xff][-A-Za-z0-9\x80-\xff ]*?)';
+my $words = '([A-Za-z\x80-\xff][-A-Za-z0-9\x80-\xff ]*?)';
 sub MarkupRule {
   if (m/\G\*$words\*/goc) {
     return "<b>$1</b>";
