@@ -16,14 +16,14 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: image.pl,v 1.4 2004/05/31 01:29:59 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: image.pl,v 1.5 2004/06/17 09:48:52 as Exp $</p>';
 
 push( @MyRules, \&ImageSupportRule );
 
 # [[image/class:page name|alt text|target]]
 
 sub ImageSupportRule {
-  my $result = '';
+  my $result = undef;
   if (m!\G\[\[image(/[a-z]+)?:$FreeLinkPattern(\|[^\]|]+)?(\|[^\]]+)?\]\]!gc) {
     my $oldpos = pos;
     my $class = 'image';
