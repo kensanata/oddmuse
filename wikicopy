@@ -46,19 +46,16 @@ sub UrlEncode {
 }
 
 sub GetRaw {
-  my ($uri, $id) = @_;
-  $id = '' unless $id;
+  my ($uri) = @_;
   my $ua = LWP::UserAgent->new;
-  my $response = $ua->get("$uri?action=browse;id=$id;raw=1");
+  my $response = $ua->get($uri);
   return $response->content if $response->is_success;
-  warn "GET $id failed.\n";
-  return;
 }
 
 sub PostRaw {
   my ($uri, $id, $data) = @_;
   my $ua = LWP::UserAgent->new;
-  my $response = $ua->post($uri, {title=>$id, text=>$data, raw=>1});
+  my $response = $ua->post($uri, {title=>$id, text=>$data, raw=>1}); # fix for other wikis
   warn "POST $id failed.\n" unless $response->is_success;
 }
 
@@ -66,7 +63,12 @@ sub copy {
   my ($source, $target, $interval, @pages) = @_;
   foreach my $page (@pages) {
     print $page, "\n";
-    my $data = GetRaw($source, UrlEncode ($page));
+    $page = UrlEncode ($page);
+    my $data = GetRaw("$source?action=browse;id=$page;raw=1"); # fix for other wikis
+    if (not $data) {
+      warn "GET $id returned no data.\n";
+      next;
+    }
     PostRaw($target, $page, $data);
     sleep($interval);
   }
