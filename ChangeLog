@@ -1,3 +1,19 @@
+2004-01-19  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (RSS): Print error message when parsing fails.
+
+2004-01-11  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl: No longer use bytes pragma, because after printing RSS
+	feeds Perl will be messed up and some texts such as Links and text
+	in the footer containing Umlauts will print as bytes instead of
+	UTF-8 strings.  They are double-encoded.
+	(RSS): Use utf::downgrade to downgrade the data received from the
+	network.  This is sad, since printing Latin-1 encoded RSS feeds in
+	a UTF-8 wiki no longer works, but protecting the rest of the page
+	from corruption when an UTF-8 feed is printed in a UTF-8 wiki is
+	more important.
+
 2004-01-08  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DiffMarkWords): Use WriteStringToFile.
