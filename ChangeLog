@@ -6,6 +6,7 @@
 	(InheritParameter): Removed.
 	(InitCookie): Password parameter handling removed.
 	(GetHtmlHeader): Added CSS for permanent anchors.
+	(%CookieParameters): Use pwd instead of password.
 
 2003-05-30  Pierre Gaston  <pgas@intracom.gr>
 
