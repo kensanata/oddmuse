@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.5 2005/01/01 13:51:22 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.6 2005/01/01 13:52:51 as Exp $</p>';
 
 # add the same CSS as in tables.pl
 $DefaultStyleSheet .= q{
@@ -129,7 +129,7 @@ sub TablesLongRow {
     # Clean($row{$labels[$i]});
     # or mark this block as dirty.
 
-    Clean('</td>');
+    Clean('</' . ($first ? 'th' : 'td') . '>');
   }
   Clean('</tr>');
 }
