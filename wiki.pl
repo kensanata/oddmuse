@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 # OddMuse (see $WikiDescription below)
-# Copyright (C) 2001, 2002, 2003  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2001, 2002, 2003, 2004  Alex Schroeder <alex@emacswiki.org>
 # ... including lots of patches from the UseModWiki site
 # Copyright (C) 2001, 2002  various authors
 # ... which was based on UseModWiki version 0.92 (April 21, 2001)
@@ -286,7 +286,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.286 2004/01/01 23:57:50 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.287 2004/01/02 00:05:25 as Exp $');
 }
 
 sub InitCookie {
