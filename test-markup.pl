@@ -112,6 +112,79 @@ open(F,'>/tmp/oddmuse/config');
 print F "\$SurgeProtection = 0;\n";
 close(F);
 
+# --------------------
+
+print '[clusters]';
+
+update_page('ClusterIdea', 'This is just a page.', 'one');
+update_page('ClusterIdea', 'This is just a page.\nBut somebody has to do it.', 'two');
+update_page('ClusterIdea', 'This is just a page.\nNobody wants it.', 'three', 1);
+update_page('ClusterIdea', 'MainPage: This is just a page.\nBut somebody has to do it.', 'four');
+
+@Test = split('\n',<<'EOT');
+Cluster:.*MainPage.*Related changes
+EOT
+
+test_page(get_page('action=rc'), @Test);
+
+@Test = split('\n',<<'EOT');
+Cluster:.*MainPage.*Related changes
+ClusterIdea.*two
+ClusterIdea.*one
+EOT
+
+test_page(get_page('action=rc all=1'), @Test);
+
+@Test = split('\n',<<'EOT');
+Cluster:.*MainPage.*Related changes
+ClusterIdea.*three
+ClusterIdea.*two
+ClusterIdea.*one
+EOT
+
+test_page(get_page('action=rc all=1 showedit=1'), @Test);
+
+@Test = split('\n',<<'EOT');
+Finally the main page
+Updates in the last [0-9]+ days
+diff.*ClusterIdea.*history.*four
+for.*MainPage.*only
+1 day
+action=browse;id=MainPage;rcclusteronly=MainPage;days=1
+EOT
+
+update_page('MainPage', 'Finally the main page.');
+test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage'), @Test);
+
+@Test = split('\n',<<'EOT');
+Finally the main page
+Updates in the last [0-9]+ days
+diff.*ClusterIdea.*four
+for.*MainPage.*only
+1 day
+action=browse;id=MainPage;rcclusteronly=MainPage;days=1
+EOT
+
+test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage showedit=1'), @Test);
+test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage all=1'), @Test);
+
+@Test = split('\n',<<'EOT');
+Finally the main page
+Updates in the last [0-9]+ days
+diff.*ClusterIdea.*five
+diff.*ClusterIdea.*four
+for.*MainPage.*only
+1 day
+action=browse;id=MainPage;rcclusteronly=MainPage;days=1
+EOT
+
+update_page('ClusterIdea', 'MainPage: Somebody has to do it.', 'five', 1);
+test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage all=1 showedit=1'), @Test);
+
+# --------------------
+
+print '[conflicts]';
+
 # simple edit
 
 @Test = split('\n',<<'EOT');
@@ -216,6 +289,10 @@ EOT
 
 test_page($redirect, map { UrlEncode($_); } @Test); # test cookie!
 
+# --------------------
+
+print '[html cache]';
+
 # create config file with WikiLinks=0
 
 open(F,'>/tmp/oddmuse/config');
@@ -266,7 +343,9 @@ EOT
 get_page('action=maintain cache=1 pwd=foo');
 test_page(get_page('CacheTest'), @Test);
 
-### COMPLEX HTML OUTPUT TESTS
+# --------------------
+
+print '[search and replace]';
 
 # create config file
 
@@ -324,6 +403,10 @@ EOT
 
 test_page(update_page('Alexander_Schr\%f6der', "Edit [[Alexander Schröder]]!"), @Test);
 
+# --------------------
+
+print '[banning]';
+
 ## Edit banned hosts as a normal user should fail
 
 my $localhost = 'confusibombus';
@@ -377,6 +460,10 @@ Bar
 EOT
 
 test_page(update_page('BannedHosts', "Foo\nBar\n", 'banning me', 0, 1), @Test);
+
+# --------------------
+
+print '[lock on creation]';
 
 ## Create a sample page, and test for regular expressions in the output
 
@@ -440,6 +527,10 @@ EOT
 
 test_page(update_page('InterMap', "All your edits are blong to us!\n", 'required'), @Test);
 
+# --------------------
+
+print '[journal]';
+
 ## Create diary pages
 
 update_page('2003-06-13', "Freitag");
@@ -470,7 +561,9 @@ EOT
 
 test_page(update_page('Summary', "Counting up:\n\n<journal 3 reverse>"), @Test);
 
-### SIMPLE MARKUP TESTS
+# --------------------
+
+print '[markup]';
 
 %Test = split('\n',<<'EOT');
 ordinary text
@@ -629,6 +722,10 @@ file:///home/foo/tutorial.pdf
 EOT
 
 run_tests();
+
+# --------------------
+
+print '[revisions]';
 
 ## Test revision and diff stuff
 
