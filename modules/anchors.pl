@@ -16,14 +16,12 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: anchors.pl,v 1.3 2004/02/09 21:38:20 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: anchors.pl,v 1.4 2004/02/09 21:40:47 as Exp $</p>';
 
 push(@MyRules, \&AnchorsRule);
 
 sub AnchorsRule {
-  if (m/\G\[\#([-a-zA-Z0-9_]+)\]/gc) {
-    return $q->a({-name=>$1});
-  } elsif (m/\G\[\[(($FreeLinkPattern)?\#[-a-zA-Z0-9_]+)\]\]/gc) {
+  if (m/\G\[\[(($FreeLinkPattern)?\#[-a-zA-Z0-9_]+)\]\]/gc) {
     return $q->a({-href=>"$1", -class=>'anchor'}, $1);
   }
   return '';
