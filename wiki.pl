@@ -176,6 +176,7 @@ $CommentsPrefix = '';	# prefix for comment pages, eg. 'Comments_on_' to enable
 $HtmlHeaders = '';	# Additional stuff to put in the HTML <head> section
 $DefaultStyleSheet = <<'EOT'; # the <!-- and --> is added at the end
 body { background-color:#FFF; color:#000; }
+textarea { width:100%; }
 a:link { color:#00F; }
 a:visited { color:#A0A; }
 a:active { color:#F00; }
@@ -348,7 +349,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.463 2004/10/10 15:07:46 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.464 2004/10/11 23:30:14 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
