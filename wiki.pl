@@ -310,7 +310,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.337 2004/03/07 19:41:30 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.338 2004/03/07 20:32:05 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -543,6 +543,10 @@ sub ApplyRules {
       Dirty($1);
       my $bracket = (substr($1, 0, 1) eq '[');
       print GetPageOrEditLink($2, $3, $bracket);
+    } elsif ($locallinks && $FreeLinks && m/\G(\[\[image:$FreeLinkPattern\]\])/cog) {
+      # [[image:Free Link]]
+      Dirty($1);
+      print Upload($2, 1);
     } elsif ($FreeLinks && $locallinks
 	     && ($BracketWiki && m/\G(\[\[$FreeLinkPattern\|([^\]]+)\]\])/cog
 		 or m/\G(\[\[\[$FreeLinkPattern\]\]\])/cog
