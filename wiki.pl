@@ -67,7 +67,8 @@ $IndexInit $Message $q $Now %RecentVisitors @HtmlStack %Referers
 $Monolithic $ReplaceForm %PermanentAnchors %PagePermanentAnchors
 $CollectingJournal $WikiDescription $PrintedHeader %Locks $Fragment
 @Blocks @Flags %NearSite %NearSource %NearLinksUsed $NearSiteInit
-$NearDir $NearMap $SisterSiteLogoUrl %NearSearch);
+$NearDir $NearMap $SisterSiteLogoUrl %NearSearch
+$PermanentAnchorsInit);
 
 # == Configuration ==
 
@@ -286,7 +287,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.288 2004/01/02 05:26:53 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.289 2004/01/03 14:23:43 as Exp $');
 }
 
 sub InitCookie {
@@ -1095,7 +1096,7 @@ sub ResolveId {
   AllPagesList();
   return ('local', $id) if $IndexHash{$id}; # page exists
   if ($PermanentAnchors) {
-    ReadPermanentAnchors();
+    ReadPermanentAnchors() unless $PermanentAnchorsInit;
     my $anchor = $PermanentAnchors{$id};
     return ('alias', $anchor) if $anchor; # permanent anchor exists
   }
@@ -2734,19 +2735,26 @@ sub UserIsEditor {
 sub DoIndex {
   my $raw = GetParam('raw', 0);
   my @pages;
+  my $pages = GetParam('pages', 1);
   my $anchors = GetParam('permanentanchors', 1);
+  my $near = GetParam('near', 1);
   if ($raw) {
     print GetHttpHeader('text/plain');
   } else {
     print GetHeader('', T('Index of all pages'), '');
-    print $q->p($q->b(T('(including permanent anchors)'))) if $anchors == 1;
-    print $q->p($q->b(T('(permanent anchors only)'))) if $anchors == 2;
-    print $q->p($q->b(Ts('(for %s only)', GetParam('lang', '')))) if GetParam('lang', '');
+    my @for;
+    push (@for, T('all pages')) if $pages;
+    push (@for, T('permanent anchors')) if $anchors;
+    push (@for, T('near links')) if $near;
+    push (@for, GetParam('lang', '')) if GetParam('lang', '');
+    print $q->p($q->b(Ts('(for %s)', join(', ', @for))));
   }
-  ReadPermanentAnchors() if $anchors > 0 and not %PermanentAnchors;
-  push(@pages, AllPagesList()) if $anchors < 2;
-  push(@pages, keys %PermanentAnchors) if $anchors > 0;
-  @pages = sort @pages if $anchors > 0;
+  ReadPermanentAnchors() if $anchors and not $PermanentAnchorsInit;
+  NearInit() if $near and not $NearSiteInit;
+  push(@pages, AllPagesList()) if $pages;
+  push(@pages, keys %PermanentAnchors) if $anchors;
+  push(@pages, keys %NearSource) if $near;
+  @pages = sort @pages;
   print $q->h2(Ts('%s pages found.', ($#pages + 1))), '<p>' unless $raw;
   map { PrintPage($_); } @pages;
   print '</p>' unless $raw;
@@ -3075,30 +3083,32 @@ sub GetFullLinkList {
   my (%result, %back);
   my $raw = GetParam('raw', 0);
   my $url = GetParam('url', 0);
+  my $inter = GetParam('inter', 0);
+  my $link = GetParam('links', 1);
+  InterInit();
   foreach my $name (@pglist) {
     OpenPage($name);
     my @blocks = split($FS, $Page{blocks});
     my @flags = split($FS, $Page{flags});
     my %links;
     foreach my $block (@blocks) {
-      if (shift(@flags)) { # dirty blocks
-	if ($url < 2) {    # list normal links
-	  if ($BracketText && $block =~ m/(\[$InterLinkPattern\s+([^\]]+?)\])/o
-	      or $block =~ m/(\[$InterLinkPattern\])/o
-	      or $block =~ m/($InterLinkPattern)/o) {
-	    $links{$raw ? $2 : GetInterLink($2)} = 1;
-	  } elsif (($WikiLinks and $block !~ m/!$LinkPattern/o
-		    and ($BracketWiki && $block =~ m/(\[$LinkPattern\s+([^\]]+?)\])/o
-			 or $block =~ m/(\[$LinkPattern\])/o
-			 or $block =~ m/($LinkPattern)/o))
-		   or ($FreeLinks
-		       and ($BracketWiki && $block =~ m/(\[\[$FreeLinkPattern\|([^\]]+)\]\])/o
-			    or $block =~ m/(\[\[$FreeLinkPattern\]\])/cg))) {
-	    $links{$raw ? $2 : GetPageOrEditLink($2, $2)} = 1;
-	    $back{$2} = 1;
-	  }
+      if (shift(@flags)) { # dirty block and interlinks or normal links
+	if ($inter and ($BracketText && $block =~ m/(\[$InterLinkPattern\s+([^\]]+?)\])/o
+			or $block =~ m/(\[$InterLinkPattern\])/o
+			or $block =~ m/($InterLinkPattern)/o)) {
+	  $links{$raw ? $2 : GetInterLink($2)} = 1 if $InterSite{substr($2,0,index($2, ':'))};
+	} elsif ($link
+		 and (($WikiLinks and $block !~ m/!$LinkPattern/o
+		       and ($BracketWiki && $block =~ m/(\[$LinkPattern\s+([^\]]+?)\])/o
+			    or $block =~ m/(\[$LinkPattern\])/o
+			    or $block =~ m/($LinkPattern)/o))
+		      or ($FreeLinks
+			  and ($BracketWiki && $block =~ m/(\[\[$FreeLinkPattern\|([^\]]+)\]\])/o
+			       or $block =~ m/(\[\[$FreeLinkPattern\]\])/cg)))) {
+	  $links{$raw ? $2 : GetPageOrEditLink($2, $2)} = 1;
+	  $back{$2} = 1;
 	}
-      } elsif ($url > 0) { # clean blocks, urls
+      } elsif ($url) { # clean block and url
 	while ($block =~ m/$UrlPattern/go) {
 	  $links{$raw ? $1 : GetUrl($1)} = 1;
 	}
@@ -3772,6 +3782,7 @@ sub PrintAllReferers {
 # == Permanent Anchors ==
 
 sub ReadPermanentAnchors {
+  $PermanentAnchorsInit = 1;
   my ($status, $data) = ReadFile($PermanentAnchorsFile);
   %PermanentAnchors = ();
   return  unless $status;
@@ -3809,7 +3820,7 @@ sub GetPermanentAnchor {
 }
 
 sub DeletePermanentAnchors {
-  ReadPermanentAnchors();
+  ReadPermanentAnchors() unless $PermanentAnchorsInit;
   foreach (keys %PermanentAnchors) {
     if ($PermanentAnchors{$_} eq $OpenPageName and !$PagePermanentAnchors{$_}) {
       delete($PermanentAnchors{$_}) ;
