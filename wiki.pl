@@ -56,7 +56,7 @@ $ValidatorLink $RefererTracking $RefererTimeLimit $RefererLimit
 $TopLinkBar $NotifyTracker $InterMap @LockOnCreation $RefererFilter
 $PermanentAnchorsFile $PermanentAnchors %CookieParameters
 $StyleSheetPage @UserGotoBarPages $ConfigPage $ScriptName
-$CommentsPrefix $NewComment);
+$CommentsPrefix $NewComment $AllNetworkFiles);
 
 # Other global variables:
 use vars qw(%Page %Section %Text %InterSite %KeptRevisions %IndexHash
@@ -87,7 +87,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.121 2003/08/16 01:00:39 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.122 2003/08/16 01:35:23 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -111,8 +111,9 @@ $BracketText = 1;   # 1 = [URL desc] uses a description for the URL
 $BracketWiki = 0;   # 1 = [WikiLink desc] uses a desc for the local link
 $HtmlLinks   = 0;   # 1 = <a href="foo">desc</a> is a link
 $NetworkFile = 1;   # 1 = file: is a valid protocol for URLs
-$InterMap    = 'InterMap'; # name of the intermap page
+$AllNetworkFiles = 0; # 1 = file:///foo is allowed -- the default allows only file://foo
 $PermanentAnchors = 1;   # 1 = [::some text] creates a permanent anchor [##some text] link to the anchor
+$InterMap    = 'InterMap'; # name of the intermap page
 
 # TextFormattingRules
 $HtmlTags    = 0;   # 1 = allow some 'unsafe' HTML tags
@@ -781,7 +782,7 @@ sub GetSiteUrl {
 
 sub GetUrl {
   my ($url, $text, $bracket, $images) = @_;
-  if ($NetworkFile && $url =~ m|^file:///|
+  if ($NetworkFile && $url =~ m|^file:///| && !$AllNetworkFiles
       or !$NetworkFile && $url =~ m|^file:|) {
     # Only do remote file:// links. No file:///c|/windows.
     return $url;
