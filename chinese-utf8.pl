@@ -28,12 +28,14 @@ UserName must be 50 characters or less: not saved
 無法儲存。使用者名稱必需不可多於 50 字元。
 XML::RSS is not available on this system.
 本系統無法使用 XML::RSS 。
-LWP::UserAgent is not available on this system.
-本系統無法使用 LWP::UserAgent 。
 diff
 差異
 history
 歷史記錄
+%s returned no data, or LWP::UserAgent is not available.
+
+RSS parsing failed for %s
+
  . . . . 
 
 Click to create this page
@@ -90,12 +92,12 @@ for %s only
 只列出 %s
 List latest change per page only
 只列出每個頁面最新的修改
+List all changes
+列出所有的修改
 List only major changes
 只列出主要的修改
 Include minor changes
 也顯示次要的修改
-List all changes
-列出所有的修改
 %s days
 %s 天
 List later changes
@@ -114,6 +116,8 @@ Go!
 (次要的)
 rollback
 回復
+new
+
 from %s
 自 %s
 History of %s
@@ -142,40 +146,6 @@ Click to search for references to this page
 按下即可以搜尋參考至本頁的資料
 Cookie: 
 
-new comment
-新的評論
-Save
-儲存
-Preview
-預覽
-Comments on this page
-對本頁發表評論
-Edit revision %s of this page
-編輯本頁的第 %s 版本
-Edit text of this page
-編輯本頁的文字
-This page is read-only
-本頁是唯讀的
-Unlock page
-頁面解鎖
-Lock page
-頁面鎖定
-View other revisions
-參閱其他版本
-View current revision
-參閱目前版本
-View all changes
-列出所有的修改
-Back to %s
-返回 %s
-Last edited
-最後編輯於
-Edited
-編輯
-by %s
-由 %s
-(diff)
-(比較差異)
 Warning
 警告
 Database is stored in temporary directory %s
@@ -186,6 +156,50 @@ The same page on other sites:
 其他網站的相同頁面
 EditNearLinks
 
+Last edited
+最後編輯於
+Edited
+編輯
+by %s
+由 %s
+(diff)
+(比較差異)
+Run maintenance
+
+Unlock site
+
+Lock site
+
+Unlock page
+頁面解鎖
+Lock page
+頁面鎖定
+Comments on this page
+對本頁發表評論
+Edit revision %s of this page
+編輯本頁的第 %s 版本
+Edit text of this page
+編輯本頁的文字
+e
+
+This page is read-only
+本頁是唯讀的
+View other revisions
+參閱其他版本
+View current revision
+參閱目前版本
+View all changes
+列出所有的修改
+Back to %s
+返回 %s
+new comment
+新的評論
+s
+
+Save
+儲存
+Preview
+預覽
 Search:
 搜尋：
 Replace:
@@ -336,8 +350,6 @@ Near pages:
 近端頁面：
 last updated
 最後更新於
-Full Link List
-完整連結列表
 Complete Content
 完整內容
 The main page is %s.
@@ -352,14 +364,18 @@ Sample_Undefined_Page
 
 [[%s]] cannot be defined.
 無法指定 [[%s]] 為頁面名稱。
-Only an administrator can create %s
-只有管理者可建立 %s
+Only an administrator can create %s.
+
 Transfer Error: %s
 傳輸錯誤：%s
 Browser reports no file info.
 瀏覽器沒有提供檔案資料。
 Browser reports no file type.
 瀏覽器沒有提供檔案型態。
+Edit Denied
+
+The page contains banned text.
+
 This page was changed by somebody else %s.
 本頁在 %s已被人修改過。
 The changes conflict.  Please check the page again.
@@ -388,6 +404,8 @@ Main lock obtained.
 取得主要鎖定。
 Expiring keep files and deleting pages marked for deletion
 清除過期的庫存檔和刪除已標記的檔案
+not deleted: 
+
 deleted
 已刪除
 Moving part of the %s log file.
@@ -420,6 +438,8 @@ Near links:
 近端連結：
 Too many connections by %s
 太多來自 %s 的連線
+Please do not fetch more than %1 pages in %2 seconds.
+
 Recent Visitors
 近期的參訪者
 Referrers
@@ -430,4 +450,86 @@ anchor first defined here: %s
 %s 錨點已被定義
 Click to search for references to this permanent anchor
 按下即可搜尋此錨點相關的相關資料
+the page %s also exists
+
+Deleting %s
+
+Deleted %s
+
+Renaming %1 to %2.
+
+The page %s does not exist
+
+The page %s already exists
+
+Renamed to %s
+
+Renamed from %s
+
+Renamed %1 to %2.
+
+Delete page
+
+Rename this page to:
+
+Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
+
+The match parameter is missing.
+
+Page Collection for %s
+
+Calendar %s
+
+Footnotes:
+
+image: %s
+
+Languages:
+
+Show!
+
+Define
+
+Full Link List
+完整連結列表
+Clearing Cache
+
+Done.
+
+Generating Link Database
+
+The 404 handler extension requires the link data extension (links.pl).
+
+Orphan List
+
+Trail: 
+
+None
+
+Type
+
+Portrait
+
+Thread: %s
+
+ID parameter is missing.
+
+Thread %s does not exist.
+
+Page %s does not contain a thread.
+
+Add
+
+URL parameter is missing.
+
+Add to %s thread
+
+Below:
+
+URL:
+
+Name:
+
+Blog
+
 END_OF_TRANSLATION

@@ -29,12 +29,16 @@ UserName must be 50 characters or less: not saved
 Дължината на потребителското име не трябва да надвишава 50 знака: нищо не бе записано.
 XML::RSS is not available on this system.
 Модулът XML::RSS не е инсталиран на тази система.
-LWP::UserAgent is not available on this system.
-Модулът LWP::UserAgent не е инсталиран на тази система.
 diff
 разлики
 history
 стари версии
+%s returned no data, or LWP::UserAgent is not available.
+
+RSS parsing failed for %s
+
+ . . . . 
+
 Click to create this page
 Кликни тук, за да създадеш тази страница
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
@@ -51,6 +55,8 @@ Invalid action parameter %s
 Невалидна команда: %s
 Invalid URL.
 Невалидно URL.
+Page name is missing
+
 Page name is too long: %s
 Прекалено дълго име на страница: %s
 Invalid Page %s
@@ -87,12 +93,12 @@ for %s only
 само за %s
 List latest change per page only
 Показвай само последната промяна на страниците
+List all changes
+Покажи всички промени
 List only major changes
 Покажи само съществените промени
 Include minor changes
 Покажи и малките промени
-List all changes
-Покажи всички промени
 %s days
 %s дни
 List later changes
@@ -111,6 +117,8 @@ Go!
 (малка промяна)
 rollback
 връщане на стара весия
+new
+
 from %s
 от %s
 History of %s
@@ -139,36 +147,6 @@ Click to search for references to this page
 Търси споменавания на това заглавие
 Cookie: 
 Курабийка (Cookie): 
-new comment
-Нов коментар
-Save
-Запис
-Preview
-Предварителен преглед
-Comments on this page
-Коментари към тази страница
-Edit revision %s of this page
-Редакция на версия %s на тази страница
-Edit text of this page
-Редакция на тази страница
-This page is read-only
-Тази страница е защитена от промени
-View other revisions
-Виж други версии
-View current revision
-Виж актуалната версия
-View all changes
-Виж всички промени
-Back to %s
-Обратно към %s
-Last edited
-Последна промяна
-Edited
-Променено
-by %s
-от %s
-(diff)
-(разлики)
 Warning
 Предупреждение
 Database is stored in temporary directory %s
@@ -179,6 +157,50 @@ The same page on other sites:
 Същата страница на други места:
 EditNearLinks
 Редакция на близки линкове
+Last edited
+Последна промяна
+Edited
+Променено
+by %s
+от %s
+(diff)
+(разлики)
+Run maintenance
+
+Unlock site
+
+Lock site
+
+Unlock page
+
+Lock page
+
+Comments on this page
+Коментари към тази страница
+Edit revision %s of this page
+Редакция на версия %s на тази страница
+Edit text of this page
+Редакция на тази страница
+e
+
+This page is read-only
+Тази страница е защитена от промени
+View other revisions
+Виж други версии
+View current revision
+Виж актуалната версия
+View all changes
+Виж всички промени
+Back to %s
+Обратно към %s
+new comment
+Нов коментар
+s
+
+Save
+Запис
+Preview
+Предварителен преглед
 Search:
 Търси:
 Replace:
@@ -329,8 +351,6 @@ Near pages:
 Близки страници:
 last updated
 последна промяна
-Full Link List
-Пълен списък на линковете
 Complete Content
 Пълно съдържание
 The main page is %s.
@@ -345,14 +365,18 @@ Sample_Undefined_Page
 Пример_на_недефинирана_страница
 [[%s]] cannot be defined.
 [[%s]] не може да се дефинира.
-Only an administrator can create %s
-Само администратор може да създаде %s
+Only an administrator can create %s.
+
 Transfer Error: %s
 Грешка при трансфера: %s
 Browser reports no file info.
 Браузъра не доставя информация за файла.
 Browser reports no file type.
 Браузъра не доставя вида на файла.
+Edit Denied
+
+The page contains banned text.
+
 This page was changed by somebody else %s.
 Страницата бе променена от друг (%s).
 The changes conflict.  Please check the page again.
@@ -369,10 +393,6 @@ ancestor
 предшественик
 other
 друг
-Ping
-Пинг
-No response.
-Няма отговор.
 Maintenance on all pages
 Поддръжка на всички страници
 Maintenance not done.
@@ -385,6 +405,8 @@ Main lock obtained.
 Защита: придобиване на изключителни права.
 Expiring keep files and deleting pages marked for deletion
 Триене на стари версии и страници маркирани за триене.
+not deleted: 
+
 deleted
 Файлът бе изтрит
 Moving part of the %s log file.
@@ -417,6 +439,8 @@ Near links:
 Близки линкове:
 Too many connections by %s
 Прекалено много връзки с %s
+Please do not fetch more than %1 pages in %2 seconds.
+
 Recent Visitors
 Скорошни посетители
 Referrers
@@ -427,4 +451,86 @@ anchor first defined here: %s
 Точката бе първо дефинирана тук: %s
 Click to search for references to this permanent anchor
 Кликни за търсене на връзки към тази постоянна точка
+the page %s also exists
+
+Deleting %s
+
+Deleted %s
+
+Renaming %1 to %2.
+
+The page %s does not exist
+
+The page %s already exists
+
+Renamed to %s
+
+Renamed from %s
+
+Renamed %1 to %2.
+
+Delete page
+
+Rename this page to:
+
+Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
+
+The match parameter is missing.
+
+Page Collection for %s
+
+Calendar %s
+
+Footnotes:
+
+image: %s
+
+Languages:
+
+Show!
+
+Define
+
+Full Link List
+Пълен списък на линковете
+Clearing Cache
+
+Done.
+
+Generating Link Database
+
+The 404 handler extension requires the link data extension (links.pl).
+
+Orphan List
+
+Trail: 
+
+None
+
+Type
+
+Portrait
+
+Thread: %s
+
+ID parameter is missing.
+
+Thread %s does not exist.
+
+Page %s does not contain a thread.
+
+Add
+
+URL parameter is missing.
+
+Add to %s thread
+
+Below:
+
+URL:
+
+Name:
+
+Blog
+
 END_OF_TRANSLATION

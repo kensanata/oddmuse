@@ -29,12 +29,14 @@ UserName must be 50 characters or less: not saved
 
 XML::RSS is not available on this system.
 
-LWP::UserAgent is not available on this system.
-
 diff
 отличия
 history
 история
+%s returned no data, or LWP::UserAgent is not available.
+
+RSS parsing failed for %s
+
  . . . . 
 
 Click to create this page
@@ -91,12 +93,12 @@ for %s only
 только для %s
 List latest change per page only
 Перечислить только последнее изменение на страницу
+List all changes
+Перечислить все изменения
 List only major changes
 Перечислить только значительные изменения
 Include minor changes
 Включить незначительные изменения
-List all changes
-Перечислить все изменения
 %s days
 %s дней
 List later changes
@@ -115,6 +117,8 @@ Go!
 (незначительные)
 rollback
 откат
+new
+
 from %s
 с %s
 History of %s
@@ -167,6 +171,10 @@ Unlock site
 
 Lock site
 
+Unlock page
+
+Lock page
+
 Comments on this page
 Комментарии к этой странице
 Edit revision %s of this page
@@ -177,10 +185,6 @@ e
 
 This page is read-only
 Эта страница предназначена только для чтения
-Unlock page
-
-Lock page
-
 View other revisions
 Смотреть другие версии
 View current revision
@@ -347,8 +351,6 @@ Near pages:
 
 last updated
 
-Full Link List
-Полный список ссылок
 Complete Content
 
 The main page is %s.
@@ -363,13 +365,17 @@ Sample_Undefined_Page
 Пример_Произвольной_Страницы
 [[%s]] cannot be defined.
 [[%s]] невозможно определить
-Only an administrator can create %s
+Only an administrator can create %s.
 
 Transfer Error: %s
 
 Browser reports no file info.
 
 Browser reports no file type.
+
+Edit Denied
+
+The page contains banned text.
 
 This page was changed by somebody else %s.
 
@@ -398,6 +404,8 @@ Remove the "maintain" file or wait.
 Main lock obtained.
 
 Expiring keep files and deleting pages marked for deletion
+
+not deleted: 
 
 deleted
 
@@ -431,6 +439,8 @@ Near links:
 
 Too many connections by %s
 
+Please do not fetch more than %1 pages in %2 seconds.
+
 Recent Visitors
 
 Referrers
@@ -442,5 +452,85 @@ anchor first defined here: %s
 Click to search for references to this permanent anchor
 
 the page %s also exists
+
+Deleting %s
+
+Deleted %s
+
+Renaming %1 to %2.
+
+The page %s does not exist
+
+The page %s already exists
+
+Renamed to %s
+
+Renamed from %s
+
+Renamed %1 to %2.
+
+Delete page
+
+Rename this page to:
+
+Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
+
+The match parameter is missing.
+
+Page Collection for %s
+
+Calendar %s
+
+Footnotes:
+
+image: %s
+
+Languages:
+
+Show!
+
+Define
+
+Full Link List
+Полный список ссылок
+Clearing Cache
+
+Done.
+
+Generating Link Database
+
+The 404 handler extension requires the link data extension (links.pl).
+
+Orphan List
+
+Trail: 
+
+None
+
+Type
+
+Portrait
+
+Thread: %s
+
+ID parameter is missing.
+
+Thread %s does not exist.
+
+Page %s does not contain a thread.
+
+Add
+
+URL parameter is missing.
+
+Add to %s thread
+
+Below:
+
+URL:
+
+Name:
+
+Blog
 
 END_OF_TRANSLATION

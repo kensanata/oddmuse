@@ -28,12 +28,14 @@ UserName must be 50 characters or less: not saved
 Корисничко име мора имати 50 или мање знакова: није снимљено.
 XML::RSS is not available on this system.
 
-LWP::UserAgent is not available on this system.
-
 diff
 
 history
 историјат
+%s returned no data, or LWP::UserAgent is not available.
+
+RSS parsing failed for %s
+
  . . . . 
 
 Click to create this page
@@ -52,6 +54,8 @@ Invalid action parameter %s
 Неисправан параметар акције %s
 Invalid URL.
 Неисправан URL.
+Page name is missing
+
 Page name is too long: %s
 Име странице је предугачко: %s
 Invalid Page %s
@@ -88,11 +92,11 @@ for %s only
 само за %s
 List latest change per page only
 
+List all changes
+
 List only major changes
 
 Include minor changes
-
-List all changes
 
 %s days
 %s дана
@@ -112,6 +116,8 @@ Go!
 (ситна)
 rollback
 повратак
+new
+
 from %s
 од %s
 History of %s
@@ -140,36 +146,6 @@ Click to search for references to this page
 
 Cookie: 
 Колачић: 
-new comment
-нови коментар
-Save
-Сачувај
-Preview
-Преглед
-Comments on this page
-Коментари на овој страни
-Edit revision %s of this page
-Уреди верзију %s ове странице
-Edit text of this page
-Уреди текст ове странице
-This page is read-only
-Ова страница је само за читање
-View other revisions
-Прикажи остале верзије
-View current revision
-Прикажи тренутну верзију
-View all changes
-Прикажи све измене
-Back to %s
-
-Last edited
-Последње уређивање
-Edited
-Уређено
-by %s
-— %s
-(diff)
-(разлике)
 Warning
 Упозорење
 Database is stored in temporary directory %s
@@ -180,6 +156,50 @@ The same page on other sites:
 
 EditNearLinks
 
+Last edited
+Последње уређивање
+Edited
+Уређено
+by %s
+— %s
+(diff)
+(разлике)
+Run maintenance
+
+Unlock site
+
+Lock site
+
+Unlock page
+
+Lock page
+
+Comments on this page
+Коментари на овој страни
+Edit revision %s of this page
+Уреди верзију %s ове странице
+Edit text of this page
+Уреди текст ове странице
+e
+
+This page is read-only
+Ова страница је само за читање
+View other revisions
+Прикажи остале верзије
+View current revision
+Прикажи тренутну верзију
+View all changes
+Прикажи све измене
+Back to %s
+
+new comment
+нови коментар
+s
+
+Save
+Сачувај
+Preview
+Преглед
 Search:
 Пронађи:
 Replace:
@@ -330,8 +350,6 @@ Near pages:
 
 last updated
 последњи пут ажурирана
-Full Link List
-Потпуни списак веза
 Complete Content
 Потпуни садржај
 The main page is %s.
@@ -346,14 +364,18 @@ Sample_Undefined_Page
 Ненаписана_Страница_За_Пример
 [[%s]] cannot be defined.
 [[%s]] се не може дефинисати.
-Only an administrator can create %s
-Само администратор може да направи %s
+Only an administrator can create %s.
+
 Transfer Error: %s
 Грешка у преносу: %s
 Browser reports no file info.
 Прегледач не пријављује информације о датотеци.
 Browser reports no file type.
 Прегледач не пријављује тип датотеке.
+Edit Denied
+
+The page contains banned text.
+
 This page was changed by somebody else %s.
 Ову страницу је изменио неко други %s.
 The changes conflict.  Please check the page again.
@@ -370,10 +392,6 @@ ancestor
 предак
 other
 други
-Ping
-Пинг
-No response.
-Нема одзива
 Maintenance on all pages
 Одржавање на свим странама
 Maintenance not done.
@@ -386,6 +404,8 @@ Main lock obtained.
 Главна брава је добављена.
 Expiring keep files and deleting pages marked for deletion
 Истичем датотеке чувања и бришем странице означене за брисање
+not deleted: 
+
 deleted
 обрисано
 Moving part of the %s log file.
@@ -418,6 +438,8 @@ Near links:
 
 Too many connections by %s
 Превише веза од %s
+Please do not fetch more than %1 pages in %2 seconds.
+
 Recent Visitors
 Скори посетиоци
 Referrers
@@ -427,5 +449,87 @@ All Referrers
 anchor first defined here: %s
 сидро је прво дефинисано овде: %s
 Click to search for references to this permanent anchor
+
+the page %s also exists
+
+Deleting %s
+
+Deleted %s
+
+Renaming %1 to %2.
+
+The page %s does not exist
+
+The page %s already exists
+
+Renamed to %s
+
+Renamed from %s
+
+Renamed %1 to %2.
+
+Delete page
+
+Rename this page to:
+
+Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
+
+The match parameter is missing.
+
+Page Collection for %s
+
+Calendar %s
+
+Footnotes:
+
+image: %s
+
+Languages:
+
+Show!
+
+Define
+
+Full Link List
+Потпуни списак веза
+Clearing Cache
+
+Done.
+
+Generating Link Database
+
+The 404 handler extension requires the link data extension (links.pl).
+
+Orphan List
+
+Trail: 
+
+None
+
+Type
+
+Portrait
+
+Thread: %s
+
+ID parameter is missing.
+
+Thread %s does not exist.
+
+Page %s does not contain a thread.
+
+Add
+
+URL parameter is missing.
+
+Add to %s thread
+
+Below:
+
+URL:
+
+Name:
+
+Blog
 
 END_OF_TRANSLATION

@@ -28,12 +28,14 @@ UserName must be 50 characters or less: not saved
 שם המשתמש חייב להיות באורך 50 תווים או פחות: לא נשמר
 XML::RSS is not available on this system.
 
-LWP::UserAgent is not available on this system.
-
 diff
 
 history
 היסטוריה
+%s returned no data, or LWP::UserAgent is not available.
+
+RSS parsing failed for %s
+
  . . . . 
 
 Click to create this page
@@ -52,6 +54,8 @@ Invalid action parameter %s
 פרמטר שגוי לפעולה: %s
 Invalid URL.
 כתובת שגויה.
+Page name is missing
+
 Page name is too long: %s
 שם הדף ארוך מדי: %s
 Invalid Page %s
@@ -88,11 +92,11 @@ for %s only
 עבור %s בלבד
 List latest change per page only
 
+List all changes
+
 List only major changes
 
 Include minor changes
-
-List all changes
 
 %s days
 %s ימים
@@ -111,6 +115,8 @@ Go!
 (minor)
 (קטן)
 rollback
+
+new
 
 from %s
 מ %s
@@ -140,36 +146,6 @@ Click to search for references to this page
 
 Cookie: 
 
-new comment
-הערה חדשה
-Save
-שמור
-Preview
-תצוגה מקדימה
-Comments on this page
-הערות בדף זה
-Edit revision %s of this page
-ערוך את גירסה %s של דף זה
-Edit text of this page
-ערוך את הטקסט של דף זה.
-This page is read-only
-דף זה מיועד לקריאה בלבד
-View other revisions
-הצג גרסאות אחרות
-View current revision
-הצג את הגירסה העדכנית
-View all changes
-
-Back to %s
-
-Last edited
-עריכה אחרונה
-Edited
-נערך
-by %s
-
-(diff)
-(הבדלים)
 Warning
 אזהרה
 Database is stored in temporary directory %s
@@ -180,6 +156,50 @@ The same page on other sites:
 
 EditNearLinks
 
+Last edited
+עריכה אחרונה
+Edited
+נערך
+by %s
+
+(diff)
+(הבדלים)
+Run maintenance
+
+Unlock site
+
+Lock site
+
+Unlock page
+
+Lock page
+
+Comments on this page
+הערות בדף זה
+Edit revision %s of this page
+ערוך את גירסה %s של דף זה
+Edit text of this page
+ערוך את הטקסט של דף זה.
+e
+
+This page is read-only
+דף זה מיועד לקריאה בלבד
+View other revisions
+הצג גרסאות אחרות
+View current revision
+הצג את הגירסה העדכנית
+View all changes
+
+Back to %s
+
+new comment
+הערה חדשה
+s
+
+Save
+שמור
+Preview
+תצוגה מקדימה
 Search:
 חיפוש:
 Replace:
@@ -330,8 +350,6 @@ Near pages:
 
 last updated
 עדכון אחרון
-Full Link List
-רשימת קישורים מלאה
 Complete Content
 תוכן מלא
 The main page is %s.
@@ -346,13 +364,17 @@ Sample_Undefined_Page
 דף_לא_מוגדר_לדוגמא
 [[%s]] cannot be defined.
 לא ניתן להגדיר את [[%s]]
-Only an administrator can create %s
-רק מנהל יכול ליצור את %s.
+Only an administrator can create %s.
+
 Transfer Error: %s
 
 Browser reports no file info.
 
 Browser reports no file type.
+
+Edit Denied
+
+The page contains banned text.
 
 This page was changed by somebody else %s.
 
@@ -370,10 +392,6 @@ ancestor
 
 other
 
-Ping
-
-No response.
-אין תגובה.
 Maintenance on all pages
 תחזוקה לכל הדפים.
 Maintenance not done.
@@ -386,6 +404,8 @@ Main lock obtained.
 נעילה ראשית הושגה.
 Expiring keep files and deleting pages marked for deletion
 מוציא קבצי שמירה מתוקפם, ומוחק דפים שסומנו למחיקה
+not deleted: 
+
 deleted
 נמחק
 Moving part of the %s log file.
@@ -418,6 +438,8 @@ Near links:
 
 Too many connections by %s
 יותר מדי חיבורים מ-%s.
+Please do not fetch more than %1 pages in %2 seconds.
+
 Recent Visitors
 מבקרים מהזמן האחרון
 Referrers
@@ -427,5 +449,87 @@ All Referrers
 anchor first defined here: %s
 
 Click to search for references to this permanent anchor
+
+the page %s also exists
+
+Deleting %s
+
+Deleted %s
+
+Renaming %1 to %2.
+
+The page %s does not exist
+
+The page %s already exists
+
+Renamed to %s
+
+Renamed from %s
+
+Renamed %1 to %2.
+
+Delete page
+
+Rename this page to:
+
+Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
+
+The match parameter is missing.
+
+Page Collection for %s
+
+Calendar %s
+
+Footnotes:
+
+image: %s
+
+Languages:
+
+Show!
+
+Define
+
+Full Link List
+רשימת קישורים מלאה
+Clearing Cache
+
+Done.
+
+Generating Link Database
+
+The 404 handler extension requires the link data extension (links.pl).
+
+Orphan List
+
+Trail: 
+
+None
+
+Type
+
+Portrait
+
+Thread: %s
+
+ID parameter is missing.
+
+Thread %s does not exist.
+
+Page %s does not contain a thread.
+
+Add
+
+URL parameter is missing.
+
+Add to %s thread
+
+Below:
+
+URL:
+
+Name:
+
+Blog
 
 END_OF_TRANSLATION

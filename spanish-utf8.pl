@@ -28,12 +28,14 @@ UserName must be 50 characters or less: not saved
 UserName debe tener un tamaño de 50 caracteres o menos: no ha sido guardado.
 XML::RSS is not available on this system.
 
-LWP::UserAgent is not available on this system.
-
 diff
 
 history
 historial
+%s returned no data, or LWP::UserAgent is not available.
+
+RSS parsing failed for %s
+
  . . . . 
 
 Click to create this page
@@ -52,6 +54,8 @@ Invalid action parameter %s
 Parámetro de acción %s inválido
 Invalid URL.
 URL inválida.
+Page name is missing
+
 Page name is too long: %s
 El nombre de la página es demasiado largo: %s
 Invalid Page %s
@@ -88,11 +92,11 @@ for %s only
 solo para %s
 List latest change per page only
 
+List all changes
+
 List only major changes
 
 Include minor changes
-
-List all changes
 
 %s days
 %s días
@@ -111,6 +115,8 @@ Iniciar
 (minor)
 (menor)
 rollback
+
+new
 
 from %s
 desde %s
@@ -140,36 +146,6 @@ Click to search for references to this page
 
 Cookie: 
 
-new comment
-nuevo comentario
-Save
-Guardar
-Preview
-Previsualización
-Comments on this page
-Comentarios de esta página
-Edit revision %s of this page
-Editar la revisión %s de esta página
-Edit text of this page
-Editar el contenido de esta página
-This page is read-only
-Esta página se encuentra en modo de sólo-lectura
-View other revisions
-Ver otras revisiones
-View current revision
-Ver revisión actual
-View all changes
-
-Back to %s
-
-Last edited
-Editado por última vez
-Edited
-Editado
-by %s
-
-(diff)
-
 Warning
 Advertencia
 Database is stored in temporary directory %s
@@ -180,6 +156,50 @@ The same page on other sites:
 
 EditNearLinks
 
+Last edited
+Editado por última vez
+Edited
+Editado
+by %s
+
+(diff)
+
+Run maintenance
+
+Unlock site
+
+Lock site
+
+Unlock page
+
+Lock page
+
+Comments on this page
+Comentarios de esta página
+Edit revision %s of this page
+Editar la revisión %s de esta página
+Edit text of this page
+Editar el contenido de esta página
+e
+
+This page is read-only
+Esta página se encuentra en modo de sólo-lectura
+View other revisions
+Ver otras revisiones
+View current revision
+Ver revisión actual
+View all changes
+
+Back to %s
+
+new comment
+nuevo comentario
+s
+
+Save
+Guardar
+Preview
+Previsualización
 Search:
 Buscar:
 Replace:
@@ -330,8 +350,6 @@ Near pages:
 
 last updated
 actualizado por última vez
-Full Link List
-Lista Completa de Enlaces
 Complete Content
 Contenido Completo
 The main page is %s.
@@ -346,13 +364,17 @@ Sample_Undefined_Page
 Pagina_Ejemplo_Sin_Definir
 [[%s]] cannot be defined.
 [[%s]] no puede ser definida.
-Only an administrator can create %s
-Únicamente un administrador puede crear %s
+Only an administrator can create %s.
+
 Transfer Error: %s
 
 Browser reports no file info.
 
 Browser reports no file type.
+
+Edit Denied
+
+The page contains banned text.
 
 This page was changed by somebody else %s.
 
@@ -370,10 +392,6 @@ ancestor
 
 other
 
-Ping
-
-No response.
-No hubo respuesta.
 Maintenance on all pages
 Mantenimiento en todas las páginas
 Maintenance not done.
@@ -386,6 +404,8 @@ Main lock obtained.
 Se obtuvo el bloqueo principal.
 Expiring keep files and deleting pages marked for deletion
 Expirando los archivos "keep" y eliminando las páginas marcadas para borrado
+not deleted: 
+
 deleted
 eliminado
 Moving part of the %s log file.
@@ -418,6 +438,8 @@ Near links:
 
 Too many connections by %s
 Demasiadas conexiones de %s
+Please do not fetch more than %1 pages in %2 seconds.
+
 Recent Visitors
 Visitantes Recientes
 Referrers
@@ -427,5 +449,87 @@ Todos los orígenes
 anchor first defined here: %s
 
 Click to search for references to this permanent anchor
+
+the page %s also exists
+
+Deleting %s
+
+Deleted %s
+
+Renaming %1 to %2.
+
+The page %s does not exist
+
+The page %s already exists
+
+Renamed to %s
+
+Renamed from %s
+
+Renamed %1 to %2.
+
+Delete page
+
+Rename this page to:
+
+Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
+
+The match parameter is missing.
+
+Page Collection for %s
+
+Calendar %s
+
+Footnotes:
+
+image: %s
+
+Languages:
+
+Show!
+
+Define
+
+Full Link List
+Lista Completa de Enlaces
+Clearing Cache
+
+Done.
+
+Generating Link Database
+
+The 404 handler extension requires the link data extension (links.pl).
+
+Orphan List
+
+Trail: 
+
+None
+
+Type
+
+Portrait
+
+Thread: %s
+
+ID parameter is missing.
+
+Thread %s does not exist.
+
+Page %s does not contain a thread.
+
+Add
+
+URL parameter is missing.
+
+Add to %s thread
+
+Below:
+
+URL:
+
+Name:
+
+Blog
 
 END_OF_TRANSLATION
