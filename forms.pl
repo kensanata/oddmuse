@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: forms.pl,v 1.2 2004/02/03 00:06:38 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: forms.pl,v 1.3 2004/02/03 17:56:10 as Exp $</p>';
 
 push(@MyRules, \&FormsRule);
 
@@ -26,6 +26,7 @@ sub FormsRule {
     my $form = $1;
     my $oldpos = pos;
     Dirty($form);
+    $form =~ s/\%([a-z]+)\%/GetParam($1)/ge;
     $form =~ s/\$([a-z]+)\$/$q->span({-class=>'param'}, GetParam($1))
       . $q->input({-type=>'hidden', -name=>$1, -value=>GetParam($1)})/ge;
     print UnquoteHtml($form);
