@@ -269,7 +269,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.155 2003/09/23 21:46:30 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.156 2003/09/23 22:24:42 as Exp $');
 }
 
 sub InitCookie {
@@ -1378,7 +1378,7 @@ sub GetRcHtml {
 	my ($pagelink, $count, $link, $rollback);
 	if ($all) {
 	  $pagelink = GetOldPageLink('browse', $pagename, $revision, $pagename);
-	  if (1) { # $admin and RollbackPossible($timestamp)
+	  if ($admin and RollbackPossible($timestamp)) {
 	    $rollback = '(' . ScriptLink('action=rollback;to=' . $timestamp, $tRollback) . ')';
 	  }
 	} else {
