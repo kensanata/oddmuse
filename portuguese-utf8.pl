@@ -26,6 +26,8 @@ Invalid UserName %s: not saved.
 Usuário inválido %s: nada salvo.
 UserName must be 50 characters or less: not saved
 NomeUsuario deve ter 50 caracteres ou menos: nada salvo
+This page contains an uploaded file:
+
 XML::RSS is not available on this system.
 XML::RSS não existe neste sistema
 diff
@@ -496,6 +498,10 @@ Next
 Próximo
 Calendar %s
 Calendário para %s
+Comments on 
+
+Comment on 
+
 Compilation for %s
 
 Compilation tag is missing a regular expression.
@@ -549,6 +555,14 @@ Tipo
 Permalink to "%s"
 
 Portrait
+
+Updating %s
+
+Done.</p>
+
+Search term missing.
+
+Searching for %s
 
 Static Copy
 

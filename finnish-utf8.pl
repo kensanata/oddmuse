@@ -25,6 +25,8 @@ Invalid UserName %s: not saved.
 Epäkelpo käyttäjännimi %s: ei tallennettu.
 UserName must be 50 characters or less: not saved
 Käyttäjännimen on oltava alle 50 merkkiä pitkä: ei tallennettu
+This page contains an uploaded file:
+
 XML::RSS is not available on this system.
 XML::RSS ei ole asennettuna tälle palvelimelle.
 diff
@@ -495,6 +497,10 @@ Next
 Seuraava
 Calendar %s
 Kalenteri %s
+Comments on 
+
+Comment on 
+
 Compilation for %s
 
 Compilation tag is missing a regular expression.
@@ -549,6 +555,14 @@ Permalink to "%s"
 Pysyvä linkki "%s":ään
 Portrait
 Avatar
+Updating %s
+
+Done.</p>
+
+Search term missing.
+
+Searching for %s
+
 Static Copy
 Staattinen kopio
 Back to %s
