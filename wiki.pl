@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.418 2004/06/13 14:24:48 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.419 2004/06/17 01:09:48 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -382,10 +382,11 @@ sub InitLinkPatterns {
 
 sub Clean {
   my $block = (shift);
-  return 0 if $block eq ''; # "0" must print!
+  return 0 unless defined($block); # "0" must print
+  return 1 if $block eq '';        # '' is the result of a dirty rule
   print $block;
   $Fragment .= $block;
-  return 1; # if the result of Clean() is used in a test
+  return 1;
 }
 
 sub Dirty { # arg 1 is the raw text; the real output must be printed instead
@@ -450,7 +451,7 @@ sub ApplyRules {
       # <include "uri..."> includes the text of the given URI verbatim
       Dirty($1);
       my ($oldpos, $type, $uri) = ((pos), $3, $4);
-      if ($uri =~ /^$UrlProtocols:/) {
+      if ($uri =~ /^$UrlProtocols:/o) {
 	if ($type eq 'text') {
 	  print $q->pre(QuoteHtml(GetRaw($uri)));
 	} else {
@@ -496,17 +497,18 @@ sub ApplyRules {
     } elsif (m/\G\&lt;nowiki\&gt;(.*?)\&lt;\/nowiki\&gt;/cgis) { Clean($1);
     } elsif (m/\G\&lt;code\&gt;(.*?)\&lt;\/code\&gt;/cgis) { Clean($q->code($1));
     } elsif ($RawHtml && m/\G\&lt;html\&gt;(.*?)\&lt;\/html\&gt;/cgis) { Clean(UnquoteHtml($1));
-    } elsif (m/\G$RFCPattern/cg) { Clean(&RFC($1));
-    } elsif (m/\G($ISBNPattern)/cg) { Dirty($1); print ISBN($2);
+    } elsif (m/\G$RFCPattern/cog) { Clean(&RFC($1));
+    } elsif (m/\G($ISBNPattern)/cog) { Dirty($1); print ISBN($2);
+    } elsif (defined $HtmlStack[0] && $HtmlStack[0] eq 'em' and m/\G''/cg) { # traditional ''emph''
+      Clean(CloseHtmlEnvironment()); # close '' before closing ''' to deal with '''''five'''''
     } elsif (m/\G'''/cg) { # traditional wiki syntax with '''strong'''
       Clean((defined $HtmlStack[0] && $HtmlStack[0] eq 'strong')
 	    ? CloseHtmlEnvironment() : AddHtmlEnvironment('strong'));
-    } elsif (m/\G''/cg) {     #	 traditional wiki syntax with ''emph''
-      Clean((defined $HtmlStack[0] && $HtmlStack[0] eq 'em')
-	    ? CloseHtmlEnvironment() : AddHtmlEnvironment('em'));
-    } elsif (m/\G\&lt;($htmlre)\&gt;/cgi) { Clean(AddHtmlEnvironment($1));
-    } elsif (m/\G\&lt;\/($htmlre)\&gt;/cgi) { Clean(CloseHtmlEnvironment($1));
-    } elsif (m/\G\&lt;($htmlre) *\/\&gt;/cgi) { Clean("<$1 />");
+    } elsif (m/\G''/cg) { # traditional ''emph'', closing is dealt with above
+      Clean(AddHtmlEnvironment('em'));
+    } elsif (m/\G\&lt;($htmlre)\&gt;/cogi) { Clean(AddHtmlEnvironment($1));
+    } elsif (m/\G\&lt;\/($htmlre)\&gt;/cogi) { Clean(CloseHtmlEnvironment($1));
+    } elsif (m/\G\&lt;($htmlre) *\/\&gt;/cogi) { Clean("<$1 />");
     } elsif ($HtmlLinks && m/\G\&lt;a(\s[^<>]+?)\&gt;(.*?)\&lt;\/a\&gt;/cgi) { # <a ...>text</a>
       Clean("<a$1>$2</a>");
     } elsif ($locallinks
@@ -573,12 +575,11 @@ sub ApplyRules {
       my $bracket = (substr($1, 0, 3) eq '[[[');
       print GetPageOrEditLink($2, $3, $bracket, 1); # $3 may be empty
     } elsif (%Smilies && (Clean(SmileyReplace()))) {
-    } elsif (eval { local $SIG{__DIE__}; Clean(MyRules()); }) {
     } elsif (Clean(RunMyRules())) {
     } elsif (m/\G\s*\n(s*\n)+/cg) { # paragraphs: at least two newlines
       Clean(CloseHtmlEnvironments() . '<p>'); # there is another one like this further up
-    } elsif (m/\G\s+/cgs) { Clean(' ');
-    } elsif (m/\G(\w+)/cgi or m/\G(\S)/cg) { Clean($1); # a word at a time, consider word<b>!
+    } elsif (m/\G\s+/cg) { Clean(' ');
+    } elsif (m/\G(\w+)/cg or m/\G(\S)/cg) { Clean($1); # a word at a time, consider word<b>!
     } else { last;
     }
     $bol = m/\G(?<=\n)/cgs;
@@ -652,7 +653,7 @@ sub OpenHtmlEnvironment { # close the previous one and open a new one instead
 }
 
 sub SmileyReplace {
-  my $match = '';
+  my $match = undef;
   foreach my $regexp (keys %Smilies) {
     if (m/\G($regexp)/cg) {
       $match = $q->img({-src=>$Smilies{$regexp}, -alt=>$1, -class=>'smiley'});
@@ -663,12 +664,12 @@ sub SmileyReplace {
 }
 
 sub RunMyRules {
-  foreach my $sub (@MyRules) {
+  foreach my $sub (@MyRules, \&MyRules) {
     my $result = eval { local $SIG{__DIE__}; &$sub; };
     SetParam('msg', $@) if $@;
-    return $result if $result ne '';
+    return $result if defined($result);
   }
-  return '';
+  return undef;
 }
 
 sub PrintWikiToHTML {
@@ -689,7 +690,7 @@ sub PrintWikiToHTML {
 }
 
 sub QuoteHtml {
-  my ($html) = @_;
+  my $html = shift;
   $html =~ s/&/&amp;/g;
   $html =~ s/</&lt;/g;
   $html =~ s/>/&gt;/g;
@@ -698,7 +699,7 @@ sub QuoteHtml {
 }
 
 sub UnquoteHtml {
-  my ($html) = @_;
+  my $html = shift;
   $html =~ s/&lt;/</g;
   $html =~ s/&gt;/>/g;
   $html =~ s/&amp;/&/g;
