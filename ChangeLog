@@ -1,3 +1,8 @@
+2003-08-19  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetReferers): Don't quote HTML in href to avoid having
+	&amp; in the links.
+
 2003-08-17  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (ApplyRules): Fix ISBN rule.
@@ -13,7 +18,7 @@
 	(DoBrowseRequest): Make sure to ignore path_info if $UsePathInfo
 	is not set.
 
-2003-08-15  Alex Schroeder  <alex@emacswikiorg>
+2003-08-15  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (InitLinkPatterns): Simplify $UrlPattern and take more of
 	RFC 2396 into account.
