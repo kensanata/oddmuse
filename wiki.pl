@@ -88,7 +88,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.130 2003/08/29 16:14:25 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.131 2003/08/31 23:03:35 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -3524,9 +3524,9 @@ sub DoMaintain {
   print $q->p(Ts('Moving %s log entries.', $i));
   @temp = splice(@rc, 0, $i);
   # Write new files, and backups
-  AppendStringToFile($RcOldFile, join("\n",@temp) . "\n");
+  AppendStringToFile($RcOldFile, join("\n",@temp) . "\n") if @temp;
   WriteStringToFile($RcFile . '.old', $data);
-  WriteStringToFile($RcFile, join("\n",@rc) . "\n");
+  WriteStringToFile($RcFile, join("\n",@rc) . "\n") if @rc;
   # Write timestamp
   WriteStringToFile($fname, 'Maintenance done at ' . TimeToText($Now));
   ReleaseLock();
