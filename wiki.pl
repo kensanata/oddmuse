@@ -83,7 +83,7 @@ $HttpCharset = 'ISO-8859-1'; # Charset for pages, eg. 'UTF-8'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.31 2003/04/15 22:39:16 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.32 2003/04/16 00:05:25 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -264,7 +264,7 @@ sub InitLinkPatterns {
   # Inter-site convention: sites must start with uppercase letter
   # (Uppercase letter avoids confusion with URLs)
   $InterSitePattern = $UpperLetter . $AnyLetter . '+';
-  $InterLinkPattern = "((?:$InterSitePattern:[^\\]\\s\"\'<>$FS]+)$QDelim)";
+  $InterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\xc0-\xff_=!?#$@~`%&*+\\/:;.,]+[-a-zA-Z0-9\xc0-\xff_=#$@~`%&*+\\/])$QDelim";
   if ($FreeLinks) {
     # Note: the - character must be first in $AnyLetter definition
     if ($NonEnglish) {
