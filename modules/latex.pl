@@ -17,9 +17,9 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-use vars qw($LatexDir $LatexLinkDir $LatexExtendPath);
+use vars qw($LatexDir $LatexLinkDir $LatexExtendPath $LatexSingleDollars);
 
-$ModulesDescription .= '<p>$Id: latex.pl,v 1.4 2004/04/25 15:17:24 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: latex.pl,v 1.5 2004/04/25 15:32:45 as Exp $</p>';
 
 # PATH must be extended in order to make dvi2bitmap available, and
 # also all the programs that dvi2bitmap may call to do its work
@@ -38,6 +38,8 @@ $LatexExtendPath = ':/usr/share/texmf/bin:/usr/bin:/usr/local/bin';
 $LatexDir    = "$DataDir/latex";
 $LatexLinkDir= "/wiki/latex";
 
+$LatexSingleDollars = 0;
+
 # You also need a template stored as $DataDir/template.latex.  The
 # template must contain the string <math> where the LaTeX code is
 # supposed to go.
@@ -55,12 +57,12 @@ EOT
 push(@MyRules, \&LatexRule);
 
 sub LatexRule {
-  if (m/\G\\\[((.|\n)*?)\\\]/gc) {
+  if (m/\G\\\[((.*\n)*?)\\\]/gc) {
     return &MakeLaTeX("\$\$ $1 \$\$", "display math");
-  } elsif (m/\G\$\$((.|\n)*?)\$\$/gc) {
-    return &MakeLaTeX("\$\$ $1 \$\$", "display math");
-  } elsif (m/\G\$((.|\n)*?)\$/gc) {
-    return &MakeLaTeX("\$ $1 \$", "inline math");      
+  } elsif (m/\G\$\$((.*\n)*?)\$\$/gc) {
+    return &MakeLaTeX("\$\$ $1 \$\$", $LatexSingleDollars ? "display math" : "inline math");
+  } elsif ($LatexSingleDollars and m/\G\$((.*\n)*?)\$/gc) {
+    return &MakeLaTeX("\$ $1 \$", "inline math");
   }
   return '';
 }
