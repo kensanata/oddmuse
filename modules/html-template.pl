@@ -1,8 +1,32 @@
+# Copyright (C) 2004  Alex Schroeder <alex@emacswiki.org>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the
+#    Free Software Foundation, Inc.
+#    59 Temple Place, Suite 330
+#    Boston, MA 02111-1307 USA
+
+$ModulesDescription .= '<p>$Id: html-template.pl,v 1.5 2004/11/23 23:26:30 as Exp $</p>';
+
 # The entire mechanism of how pages are built is now upside down.
 # Instead of writing code that assembles pages, we load templates,
 # that refer to pieces of code.
 #
 # This is the beginning of PHP-in-Perl.  :(
+
+use vars qw($HtmlTemplateDir);
+
+$HtmlTemplateDir   = "$DataDir/templates";
 
 *BrowsePage = *DoHtmlTemplate;
 
@@ -19,15 +43,14 @@ sub DoHtmlTemplate {
     print $q->header(-status=>'304 NOT MODIFIED');
     return;
   }
-  OpenPage($id);
-  my $html = HtmlTemplate();
-  $html =~ s/<\?(.*?)\?>/eval $1/egs;
+  OpenPage($id) if $id;
   print GetHttpHeader('text/html');
-  print $html;
+  print GetHtmlTemplate();
 }
 
 # Some subroutines from the script need a wrapper in order to return a
 # string instead of printing directly.
+
 sub HtmlTemplateRc {
   my $result = '';
   local *STDOUT;
@@ -47,137 +70,36 @@ sub HtmlTemplateRc {
 # Since the processing instruction is valid XHTML, the template should
 # be valid XHTML as well.
 
-sub HtmlTemplate {
+sub GetHtmlTemplate {
+  my $template = shift || GetActionHtmlTemplate();
+  my $html = ReadFileOrDie($template);
+  $html =~ s/<\?(.*?)\?>/HtmlTemplateEval($1)/egs;
+  return $html;
+}
 
-  # index
-  if (GetParam('action', 'browse') eq 'index') {
-    return q{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
-  <head>
-    <title><?$SiteName?>: Index of all pages</title>
-    <link type="text/css" rel="stylesheet" href="<?$StyleSheet?>" />
-  </head>
-  <body>
-    <div class="header">
-      <img class="logo" src="<?$LogoUrl?>" alt="[<?$HomePage?>]" />
-      <h1>List of all pages</h1>
-    </div>
-    <div class="content index">
-<?
-  $q->p(map {
-	  my $id = $_;
-	  my $title = $id;
-	  $title =~ s/_/ /g;
-	  GetPageOrEditLink($id, $title) . $q->br();
-	} AllPagesList());
-?>
-    </div>
-    <div class="footer">
-      <hr />
-      <?&GetGotoBar?>
-      <?&GetFooterLinks($id)?>
-    </div>
-  </body>
-</html>};
+sub HtmlTemplateEval {
+  my $code = shift;
+  my $result = eval($code) || $@;
+}
+
+sub GetActionHtmlTemplate {
+  my $action = GetParam('action', 'browse');
+  # return browse.de.html, or browse.html, or error.html, or report an error...
+  foreach my $f ((map { "$action.$_" } HtmlTemplateLanguage()), $action, "error") {
+    return "$HtmlTemplateDir/$f.html" if -r "$HtmlTemplateDir/$f.html";
   }
+  ReportError(Tss('Could not find %1.html template in %2', $action, $HtmlTemplateDir),
+	      '500 INTERNAL SERVER ERROR');
+}
 
-  # rc
-  if (GetParam('action', 'browse') eq 'rc') {
-    return q{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
-  <head>
-    <title><?$SiteName?>: Recent Changes</title>
-    <link type="text/css" rel="stylesheet" href="<?$StyleSheet?>" />
-  </head>
-  <body>
-    <div class="header">
-      <img class="logo" src="<?$LogoUrl?>" alt="[<?$HomePage?>]" />
-      <h1>Recent Changes</h1>
-    </div>
-    <div class="content rc">
-<?&HtmlTemplateRc?>
-    </div>
-    <div class="footer">
-      <hr />
-      <?&GetGotoBar?>
-      <?&GetFooterLinks($id)?>
-    </div>
-  </body>
-</html>};
+sub HtmlTemplateLanguage {
+  my $requested_language = $q->http('Accept-language');
+  my @languages = split(/ *, */, $requested_language);
+  my %Lang = ();
+  foreach $_ (@languages) {
+    my $qual = 1;
+    $qual = $1 if (/q=([0-9.]+)/);
+    $Lang{$qual} = $1 if (/^([-a-z]+)/);
   }
-
-  # edit
-  if (GetParam('action', 'browse') eq 'edit') {
-    return q{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
-  <head>
-    <title><?$SiteName?>: Editing <?$OpenPageName?></title>
-    <link type="text/css" rel="stylesheet" href="<?$StyleSheet?>" />
-  </head>
-  <body>
-    <div class="header">
-      <img class="logo" src="<?$LogoUrl?>" alt="[<?$HomePage?>]" />
-      <h1>Editing <?$OpenPageName?></h1>
-    </div>
-    <div class="content edit">
-      <form method="post"
-            action="<?$FullUrl?>"
-            enctype="application/x-www-form-urlencoded">
-        <p>
-          <input type="hidden" name="title" value="<?$OpenPageName?>" />
-          <input type="hidden" name="oldtime" value="<?$Now?>" />
-          <textarea name="text" rows="25" cols="78"><?$Page{text}?></textarea>
-        </p>
-        <p>
-          Zusammenfassung:
-          <input type="text" name="summary"  size="60" />
-        </p>
-        <p>
-          <input type="checkbox" name="recent_edit" value="on" />
-          Dies ist eine kleinere Änderung.
-        </p>
-        <p>
-          Benutzername:
-          <input type="text" name="username" value="<?GetParam('username', '')?>" size="20" maxlength="50" />
-        </p>
-        <p>
-          <input type="submit" name="Save" value="Speichern" accesskey="s" />
-          <input type="submit" name="Preview" value="Vorschau" />
-        </p>
-        <p>
-          <a href="<?$FullUrl?>?action=edit;upload=1;id=<?$OpenPageName?>">
-            Datei hochladen und den Text durch diese Datei ersetzen.
-          </a>
-        </p>
-      </form>
-    </div>
-    <div class="footer">
-      <hr />
-      <?&GetGotoBar?>
-      <?&GetFooterLinks($id)?>
-    </div>
-  </body>
-</html>};
-  }
-
-  # browse
-  return q{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
-  <head>
-    <title><?$SiteName?>: <?$OpenPageName?></title>
-    <link type="text/css" rel="stylesheet" href="<?$StyleSheet?>" />
-  </head>
-  <body>
-    <div class="header">
-      <img class="logo" src="<?$LogoUrl?>" alt="[<?$HomePage?>]" />
-      <h1><?$OpenPageName?></h1>
-    </div>
-    <?&PageHtml?>
-    <div class="footer">
-      <hr />
-      <?&GetGotoBar?>
-      <?&GetFooterLinks($id)?>
-    </div>
-  </body>
-</html>};
+  return map { $Lang{$_} } sort { $b <=> $a } keys %Lang;
 }
