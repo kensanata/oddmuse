@@ -45,7 +45,7 @@ test:
 	perl test-markup.pl
 
 package-upload: debian-$(VERSION).tar.gz debian-$(VERSION).tar.gz.sig
-	curl -T debian-$(VERSION).tar.gz -T debian-$(VERSION).tar.gz.sig \
+	curl -T "{debian-$(VERSION).tar.gz,debian-$(VERSION).tar.gz.sig}" \
 	ftp://savannah.gnu.org/incoming/savannah/oddmuse/
 
 package: debian-$(VERSION).tar.gz
