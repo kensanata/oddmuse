@@ -1200,6 +1200,8 @@ test_page($page, @Test2);
 
 # --------------------
 
+markup:
+
 print '[markup]';
 
 open(F,'>/tmp/oddmuse/config');
@@ -1221,25 +1223,39 @@ ordinary text
 \nparagraph
 <p>paragraph
 * one\n*two
-<ul><li>one </li><li>two</li></ul>
+<ul><li>one</li><li>two</li></ul>
+* one\n\n*two
+<ul><li>one</li><li>two</li></ul>
 # one\n# two
-<ol><li>one </li><li>two</li></ol>
+<ol><li>one</li><li>two</li></ol>
 * one\n#two
-<ul><li>one </li></ul><ol><li>two</li></ol>
+<ul><li>one</li></ul><ol><li>two</li></ol>
 * one\n**two
-<ul><li>one <ul><li>two</li></ul></li></ul>
+<ul><li>one<ul><li>two</li></ul></li></ul>
 * one\n**two\n***three\n*four
-<ul><li>one <ul><li>two <ul><li>three </li></ul></li></ul></li><li>four</li></ul>
+<ul><li>one<ul><li>two<ul><li>three</li></ul></li></ul></li><li>four</li></ul>
 * one\n**two\n***three\n*four\n**five\n*six
-<ul><li>one <ul><li>two <ul><li>three </li></ul></li></ul></li><li>four <ul><li>five </li></ul></li><li>six</li></ul>
+<ul><li>one<ul><li>two<ul><li>three</li></ul></li></ul></li><li>four<ul><li>five</li></ul></li><li>six</li></ul>
 * one\n* two\n** one and two\n** two and three\n* three
-<ul><li>one </li><li>two <ul><li>one and two </li><li>two and three </li></ul></li><li>three</li></ul>
+<ul><li>one</li><li>two<ul><li>one and two</li><li>two and three</li></ul></li><li>three</li></ul>
+* one and *\n* two and * more
+<ul><li>one and *</li><li>two and * more</li></ul>
+# one\n\n#two
+<ol><li>one</li><li>two</li></ol>
 # one\n# two\n## one and two\n## two and three\n# three
-<ol><li>one </li><li>two <ol><li>one and two </li><li>two and three </li></ol></li><li>three</li></ol>
+<ol><li>one</li><li>two<ol><li>one and two</li><li>two and three</li></ol></li><li>three</li></ol>
+# one and #\n# two and # more
+<ol><li>one and #</li><li>two and # more</li></ol>
 : one\n: two\n:: one and two\n:: two and three\n: three
-<dl class="quote"><dt /><dd>one </dd><dt /><dd>two <dl class="quote"><dt /><dd>one and two </dd><dt /><dd>two and three </dd></dl></dd><dt /><dd>three</dd></dl>
+<dl class="quote"><dt /><dd>one</dd><dt /><dd>two<dl class="quote"><dt /><dd>one and two</dd><dt /><dd>two and three</dd></dl></dd><dt /><dd>three</dd></dl>
+: one and :)\n: two and :) more
+<dl class="quote"><dt /><dd>one and :)</dd><dt /><dd>two and :) more</dd></dl>
+: one\n\n:two
+<dl class="quote"><dt /><dd>one</dd><dt /><dd>two</dd></dl>
 ;one:eins\n;two:zwei
-<dl><dt>one</dt><dd>eins </dd><dt>two</dt><dd>zwei</dd></dl>
+<dl><dt>one</dt><dd>eins</dd><dt>two</dt><dd>zwei</dd></dl>
+;one:eins\n\n;two:zwei
+<dl><dt>one</dt><dd>eins</dd><dt>two</dt><dd>zwei</dd></dl>
 This is ''emphasized''.
 This is <em>emphasized</em>.
 This is '''strong'''.
@@ -1347,8 +1363,6 @@ mailto:alex@emacswiki.org
 EOT
 
 run_tests();
-
-markup:
 
 print '[link pattern]';
 
