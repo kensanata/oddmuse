@@ -16,9 +16,10 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: link-all.pl,v 1.4 2004/06/17 01:13:18 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: link-all.pl,v 1.5 2004/07/14 14:51:23 as Exp $</p>';
 
 push(@MyRules, \&LinkAllRule);
+$RuleOrder{\&LinkAllRule} = 1000;
 
 sub LinkAllRule {
   if (/\G([A-Za-z\x80-\xff]+)/gc) {

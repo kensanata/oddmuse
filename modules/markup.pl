@@ -16,11 +16,15 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: markup.pl,v 1.8 2004/06/26 21:25:40 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: markup.pl,v 1.9 2004/07/14 14:52:10 as Exp $</p>';
 
 push(@MyRules, \&MarkupRule);
+# The ---- rule in usemod.pl conflicts with the --- rule
+$RuleOrder{\&MarkupRule} = 150;
+
 my $words = '([A-Za-z\x80-\xff][-A-Za-z0-9\x80-\xff ]*?)';
 my $noword = '(?=[^-A-Za-z0-9\x80-\xff]|$)'; # zero-width look-ahead assertion
+
 sub MarkupRule {
   if (m/\G\*$words\*$noword/goc) {
     return "<b>$1</b>";
