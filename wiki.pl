@@ -315,7 +315,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.417 2004/06/13 00:23:41 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.418 2004/06/13 14:24:48 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -3220,12 +3220,13 @@ sub Replace {
 # == Links ==
 
 sub DoLinks {
+  my @args = (GetParam('raw', 0), GetParam('url', 0), GetParam('inter', 0), GetParam('links', 1));
   if (GetParam('raw', 0)) {
     print GetHttpHeader('text/plain');
-    PrintLinkList(GetFullLinkList());
+    PrintLinkList(GetFullLinkList(@args));
   } else {
     print GetHeader('', QuoteHtml(T('Full Link List')), '');
-    PrintLinkList(GetFullLinkList());
+    PrintLinkList(GetFullLinkList(@args));
     PrintFooter();
   }
 }
@@ -3246,49 +3247,56 @@ sub PrintLinkList {
   }
 }
 
-sub GetFullLinkList {
+sub GetFullLinkList { # opens all pages!
+  my ($raw, $url, $inter, $link) = @_;
   my @pglist = AllPagesList();
   my %result;
-  my $raw = GetParam('raw', 0);
-  my $url = GetParam('url', 0);
-  my $inter = GetParam('inter', 0);
-  my $link = GetParam('links', 1);
   InterInit();
   foreach my $name (@pglist) {
     OpenPage($name);
-    my @blocks = split($FS, $Page{blocks});
-    my @flags = split($FS, $Page{flags});
-    my %links;
-    foreach my $block (@blocks) {
-      if (shift(@flags)) { # dirty block and interlinks or normal links
-	if ($inter and ($BracketText && $block =~ m/^(\[$InterLinkPattern\s+([^\]]+?)\])$/o
-			or $BracketText && $block =~ m/^(\[\[$FreeInterLinkPattern\|([^\]]+?)\]\])$/o
-			or $block =~ m/^(\[$InterLinkPattern\])$/o
-			or $block =~ m/^(\[\[\[$FreeInterLinkPattern\]\]\])$/o
-			or $block =~ m/^($InterLinkPattern)$/o
-			or $block =~ m/^(\[\[$FreeInterLinkPattern\]\])$/o)) {
-	  $links{$raw ? $2 : GetInterLink($2, $3)} = 1 if $InterSite{substr($2,0,index($2, ':'))};
-	} elsif ($link
-		 and (($WikiLinks and $block !~ m/!$LinkPattern/o
-		       and ($BracketWiki && $block =~ m/^(\[$LinkPattern\s+([^\]]+?)\])$/o
-			    or $block =~ m/^(\[$LinkPattern\])$/o
-			    or $block =~ m/^($LinkPattern)$/o))
-		      or ($FreeLinks
-			  and ($BracketWiki && $block =~ m/^(\[\[$FreeLinkPattern\|([^\]]+)\]\])$/o
-			       or $block =~ m/^(\[\[\[$FreeLinkPattern\]\]\])$/o
-			       or $block =~ m/^(\[\[$FreeLinkPattern\]\])$/o)))) {
-	  $links{$raw ? FreeToNormal($2) : GetPageOrEditLink($2, $3)} = 1;
-	} elsif ($url and $block =~ m/^\[$FullUrlPattern\]$/og) {
-	  $links{$raw ? $1 : GetUrl($1)} = 1;
-	}
-      } elsif ($url) { # clean block and url
-	while ($block =~ m/$UrlPattern/og) { $links{$raw ? $1 : GetUrl($1)} = 1; }
-	while ($block =~ m/\[$FullUrlPattern\s+[^\]]+?\]/og) { $links{$raw ? $1 : GetUrl($1)} = 1; }
-      }
-    }
-    @{$result{$name}} = sort keys %links if %links;
+    my @links = GetLinkList($raw, $url, $inter, $link);
+    @{$result{$name}} = @links if @links;
   }
   return \%result;
+}
+
+sub GetLinkList { # for the currently open page
+  my ($raw, $url, $inter, $link) = @_;
+  my @blocks = split($FS, $Page{blocks});
+  my @flags = split($FS, $Page{flags});
+  my %links;
+  foreach my $block (@blocks) {
+    if (shift(@flags)) {  # dirty block and interlinks or normal links
+      if ($inter and ($BracketText && $block =~ m/^(\[$InterLinkPattern\s+([^\]]+?)\])$/o
+		      or $BracketText && $block =~ m/^(\[\[$FreeInterLinkPattern\|([^\]]+?)\]\])$/o
+		      or $block =~ m/^(\[$InterLinkPattern\])$/o
+		      or $block =~ m/^(\[\[\[$FreeInterLinkPattern\]\]\])$/o
+		      or $block =~ m/^($InterLinkPattern)$/o
+		      or $block =~ m/^(\[\[$FreeInterLinkPattern\]\])$/o)) {
+	$links{$raw ? $2 : GetInterLink($2, $3)} = 1 if $InterSite{substr($2,0,index($2, ':'))};
+      } elsif ($link
+	       and (($WikiLinks and $block !~ m/!$LinkPattern/o
+		     and ($BracketWiki && $block =~ m/^(\[$LinkPattern\s+([^\]]+?)\])$/o
+			  or $block =~ m/^(\[$LinkPattern\])$/o
+			  or $block =~ m/^($LinkPattern)$/o))
+		    or ($FreeLinks
+			and ($BracketWiki && $block =~ m/^(\[\[$FreeLinkPattern\|([^\]]+)\]\])$/o
+			     or $block =~ m/^(\[\[\[$FreeLinkPattern\]\]\])$/o
+			     or $block =~ m/^(\[\[$FreeLinkPattern\]\])$/o)))) {
+	$links{$raw ? FreeToNormal($2) : GetPageOrEditLink($2, $3)} = 1;
+      } elsif ($url and $block =~ m/^\[$FullUrlPattern\]$/og) {
+	$links{$raw ? $1 : GetUrl($1)} = 1;
+      }
+    } elsif ($url) {		# clean block and url
+      while ($block =~ m/$UrlPattern/og) {
+	$links{$raw ? $1 : GetUrl($1)} = 1;
+      }
+      while ($block =~ m/\[$FullUrlPattern\s+[^\]]+?\]/og) {
+	$links{$raw ? $1 : GetUrl($1)} = 1;
+      }
+    }
+  }
+  return sort keys %links;
 }
 
 # == Monolithic output ==
@@ -3933,19 +3941,14 @@ sub PrintAllReferers {
 sub ReadPermanentAnchors {
   $PermanentAnchorsInit = 1;
   my ($status, $data) = ReadFile($PermanentAnchorsFile);
-  %PermanentAnchors = ();
-  return  unless $status;
-  foreach (split(/\n/,$data)) {
-    my @entries = split /$FS/;
-    my $name = $entries[0];
-    $PermanentAnchors{$name} = $entries[1];
-  }
+  return unless $status; # not fatal
+  %PermanentAnchors = split(/\n| |$FS/,$data); # FIXME: $FS was used in 1.417 and earlier
 }
 
 sub WritePermanentAnchors {
   my $data = '';
   foreach my $name (keys %PermanentAnchors) {
-    $data .= $name. $FS . $PermanentAnchors{$name} ."\n";
+    $data .= $name . ' ' . $PermanentAnchors{$name} ."\n";
   }
   WriteStringToFile($PermanentAnchorsFile, $data);
 }
