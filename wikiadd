@@ -1,0 +1,94 @@
+#!/usr/bin/env python
+# wikiadd --- Add a comment to a wiki page on an Oddmuse wiki
+# 
+# Copyright (C)  2004  Jorgen Schaefer <forcer@forcix.cx>
+# Copyright (C)  2004  Alex Schroeder <alex@emacswiki.org>
+# 
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+import httplib, urllib, re, urlparse, sys, getopt
+from time import time
+
+def main():
+    """The main method of the wikiput script."""
+    summary="*"
+    recent_edit="no"
+    try:
+        opts, args = getopt.getopt(sys.argv[1:],
+                                   "ht:s:m:",
+                                   ["help", "summary=", "minor-edit="])
+    except getopt.GetoptError:
+        usage(sys.stderr)
+        sys.exit(1)
+    if len(args) != 1:
+        usage(sys.stderr)
+        sys.exit(1)
+    for opt, arg in opts:
+        if opt in ("-h", "--help"):
+            usage(sys.stdout)
+        if opt in ("-s", "--summary"):
+            summary = arg
+        if opt in ("-m", "--minor-edit"):
+            recent_edit="yes"
+    text = sys.stdin.read()
+    wikiput(args[0], text, summary=summary, recent_edit=recent_edit)
+
+def usage(out):
+    """Display the usage information for this script.
+
+    Options:
+    out -- The file descriptor where to write the info.
+    """
+    out.write("Usage: wikiput [OPTIONS] wikipage\n"
+              "Post the data on stdin on the wikipage described by wikipage.\n"
+              "\n"
+              "Options:\n"
+              " -h --help         Display this help\n"
+              " -s --summary=S    The summary line.\n"
+              " -m --minor-edit=B  Whether this is a minor edit.\n")
+
+def wikiput(where, text,
+            summary="*", recent_edit="no"):
+    """Submit some text to a wiki page.
+
+    Keyword arguments:
+    where       -- A description of the wiki location
+    text        -- The text to submit
+    summary     -- The summary line to use (default *)
+    recent_edit -- Wether this is a minor edit (default no)
+    """
+    (host, path, title) = parse_wiki_location(where)
+    params = urllib.urlencode({'title': title,
+                               'aftertext': text,
+                               'summary': summary,
+                               'recent_edit': recent_edit})
+    headers = {'Content-Type': "application/x-www-form-urlencoded"}
+    conn = httplib.HTTPConnection(host)
+    conn.request("POST", path, params, headers)
+    response = conn.getresponse()
+    data = response.read()
+    conn.close()
+    if response.status != 302:
+        raise RuntimeError, "We weren't redirected - something went wrong!"
+
+def parse_wiki_location(where):
+    """Return a tuple of host, path and page name for the wiki page
+    WHERE.
+    """
+    (scheme, host, path, params, query, fragment) = urlparse.urlparse(where)
+    return (host, path+params, query)
+
+main()
