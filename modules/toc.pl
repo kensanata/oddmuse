@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.13 2004/10/31 19:34:15 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.14 2004/11/01 03:22:46 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
@@ -29,27 +29,22 @@ sub TocRule {
     # headings using = (with lookahead)
     if (   $bol
         && $UseModMarkupInTitles
-        && m/\G(\s*\n)*(\=+)[ \t]*(?=[^=\n]+=)/cg)
-    {
+        && m/\G(\s*\n)*(\=+)[ \t]*(?=[^=\n]+=)/cg) {
         my $depth = length($2);
         $depth = 6 if $depth > 6;
         return CloseHtmlEnvironments() . AddHtmlEnvironment('h' . $depth);
-    } elsif (
-        $UseModMarkupInTitles
-        && m/\G[ \t]*=+\n?/cg
-        && (   InElement('h1')
-            || InElement('h2')
-            || InElement('h3')
-            || InElement('h4')
-            || InElement('h5')
-            || InElement('h6'))
-      )
-    {
+    } elsif (   $UseModMarkupInTitles
+	     && m/\G[ \t]*=+\n?/cg
+	     && (   InElement('h1')
+		 || InElement('h2')
+		 || InElement('h3')
+		 || InElement('h4')
+		 || InElement('h5')
+		 || InElement('h6'))) {
         return CloseHtmlEnvironments();
     } elsif ($bol
         && !$UseModMarkupInTitles
-        && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg)
-    {
+        && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg) {
         return CloseHtmlEnvironments() . TocWikiHeading($2, $3);
     }
     return undef;
