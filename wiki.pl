@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#! /usr/bin/perl
 # OddMuse (see $WikiDescription below)
 # Copyright (C) 2001, 2002, 2003, 2004	Alex Schroeder <alex@emacswiki.org>
 # ... including lots of patches from the UseModWiki site
@@ -314,7 +314,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.371 2004/04/05 18:04:42 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.372 2004/04/06 18:26:15 as Exp $');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
 }
 
@@ -3448,7 +3448,7 @@ sub Save { # call within lock, with opened page
       WriteStringToFile(GetLockedPageFile($id), 'editing locked.');
     }
   } else {
-    utime undef, undef, $IndexFile; # touch index file
+    utime time, time, $IndexFile; # touch index file
   }
   $LastUpdate = $Now; # for mod_perl
 }
