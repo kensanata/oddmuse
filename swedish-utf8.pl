@@ -40,6 +40,8 @@ history
 historik
  . . . . 
 
+Click to create this page
+
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -64,6 +66,10 @@ Invalid Page %s (must not end with .lck)
 Ogiltig sida %s (får inte sluta med .lck) 
 Page name may not contain space characters: %s
 Sidans namn får inte innehålla mellanslag: %s
+Preview:
+Förhandsgranskning:
+Preview only, not yet saved
+Endast förhandsgranskning, ännu inte sparad
 Please go on to %s.
 Gå vidare till %s.
 Could not open %s log file
@@ -142,6 +148,8 @@ new comment
 ny kommentar
 Save
 Spara
+Preview
+Förhandsgranska
 Comments on this page
 Kommentarer till den här sidan
 Edit revision %s of this page
@@ -156,8 +164,8 @@ View current revision
 Visa nuvarande version
 View all changes
 Visa alla ändringar
-View original
-Visa original
+Back to %s
+
 Last edited
 Senast redigerad
 Edited
@@ -268,16 +276,10 @@ Summary:
 Sammanfattning:
 This change is a minor edit.
 Den här förändringen är en mindre ändring.
-Preview
-Förhandsgranska
 Replace this file with text.
 Ersätt den här filen med text.
 Replace this text with a file.
 Ersätt den här texten med en fil.
-Preview:
-Förhandsgranskning:
-Preview only, not yet saved
-Endast förhandsgranskning, ännu inte sparad
 File to upload: 
 Fil att ladda upp:
 Files of type %s are not allowed.
@@ -356,14 +358,14 @@ Browser reports no file info.
 Webbläsare rapporterar ingen filinformation.
 Browser reports no file type.
 Webbläsare rapporterar ingen filtyp.
-Anonymous
-Anonym
 This page was changed by somebody else %s.
 Den här sidan ändrades av någon annan %s.
 The changes conflict.  Please check the page again.
 Ändringarna står i konflikt. Kontrollera sidan igen.
 Please check whether you overwrote those changes.
 Kontrollera om du skrev över de ändringarna.
+Anonymous
+Anonym
 Could not get a lock to merge!
 Kunde inte låsa för att slå samman!
 you
@@ -388,8 +390,6 @@ Main lock obtained.
 Huvudlås påslaget.
 Expiring keep files and deleting pages marked for deletion
 
-and refreshing HTML cache
-och förnyar HTML-cache
 deleted
 borttagen
 Moving part of the %s log file.

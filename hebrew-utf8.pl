@@ -37,6 +37,8 @@ history
 היסטוריה
  . . . . 
 
+Click to create this page
+
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -61,6 +63,10 @@ Invalid Page %s (must not end with .lck)
 דף לא חוקי %s (אסור שיסתיים בסיומת .lck)
 Page name may not contain space characters: %s
 שם הדף אינו יכול להכיל תווי רווח: %s
+Preview:
+תצוגה מקדימה:
+Preview only, not yet saved
+תצוגה מקדימה בלבד, הדף עדיין לא נשמר.
 Please go on to %s.
 בבקשה המשך ל-%s.
 Could not open %s log file
@@ -139,6 +145,8 @@ new comment
 הערה חדשה
 Save
 שמור
+Preview
+תצוגה מקדימה
 Comments on this page
 הערות בדף זה
 Edit revision %s of this page
@@ -153,8 +161,8 @@ View current revision
 הצג את הגירסה העדכנית
 View all changes
 
-View original
-הצג את הגירסה המקורית
+Back to %s
+
 Last edited
 עריכה אחרונה
 Edited
@@ -265,16 +273,10 @@ Summary:
 תקציר:
 This change is a minor edit.
 השינוי שאני מבצע הוא קטן.
-Preview
-תצוגה מקדימה
 Replace this file with text.
 
 Replace this text with a file.
 
-Preview:
-תצוגה מקדימה:
-Preview only, not yet saved
-תצוגה מקדימה בלבד, הדף עדיין לא נשמר.
 File to upload: 
 
 Files of type %s are not allowed.
@@ -353,14 +355,14 @@ Browser reports no file info.
 
 Browser reports no file type.
 
-Anonymous
-אנונימי
 This page was changed by somebody else %s.
 
 The changes conflict.  Please check the page again.
 
 Please check whether you overwrote those changes.
 
+Anonymous
+אנונימי
 Could not get a lock to merge!
 לא ניתן לגרום לנעילה להתמזג!
 you
@@ -385,8 +387,6 @@ Main lock obtained.
 נעילה ראשית הושגה.
 Expiring keep files and deleting pages marked for deletion
 מוציא קבצי שמירה מתוקפם, ומוחק דפים שסומנו למחיקה
-and refreshing HTML cache
-
 deleted
 נמחק
 Moving part of the %s log file.

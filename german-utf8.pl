@@ -65,6 +65,10 @@ Invalid Page %s (must not end with .lck)
 Ungültige Seite %s (Darf nicht mit .lck enden)
 Page name may not contain space characters: %s
 Seitenname darf keine Leerzeichen enthalten: %s
+Preview:
+Vorschau:
+Preview only, not yet saved
+Vorschau, noch nicht gespeichert
 Please go on to %s.
 Bitte machen Sie weiter bei %s.
 Could not open %s log file
@@ -143,6 +147,8 @@ new comment
 Neuer Kommentar
 Save
 Speichern
+Preview
+Vorschau
 Comments on this page
 Kommentare zu dieser Seite
 Edit revision %s of this page
@@ -269,16 +275,10 @@ Summary:
 Zusammenfassung:
 This change is a minor edit.
 Dies ist eine kleinere Änderung.
-Preview
-Vorschau
 Replace this file with text.
 Ersetze diese Datei mit Text.
 Replace this text with a file.
 Ersetze diesen Text mit einer Datei.
-Preview:
-Vorschau:
-Preview only, not yet saved
-Vorschau, noch nicht gespeichert
 File to upload: 
 Hochzuladende Datei: 
 Files of type %s are not allowed.
@@ -357,14 +357,14 @@ Browser reports no file info.
 Der Browser hat keine Dateiinformationen geliefert.
 Browser reports no file type.
 Der Browser hat keinen Dateityp geliefert.
-Anonymous
-Unbekannt
 This page was changed by somebody else %s.
 Diese Seite wurde von einer anderen Person %s verändert
 The changes conflict.  Please check the page again.
 Die Änderungen beeinträchtigen sich gegenseitig.  Bitte überprüfen Sie die Seite nochmals.
 Please check whether you overwrote those changes.
 Bitte überprüfen Sie, ob diese Änderungen überschrieben worden sind.
+Anonymous
+Unbekannt
 Could not get a lock to merge!
 Sperre zum automatischen Abgleichen zweier Versionen konnte nicht reserviert werden!
 you

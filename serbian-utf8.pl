@@ -37,6 +37,8 @@ history
 историјат
  . . . . 
 
+Click to create this page
+
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -61,6 +63,10 @@ Invalid Page %s (must not end with .lck)
 Неисправна страница %s (не сме имати наставак .lck)
 Page name may not contain space characters: %s
 Име странице не може садржати размаке: %s
+Preview:
+Преглед:
+Preview only, not yet saved
+Ово је само преглед, измена још увек није записана
 Please go on to %s.
 Настави до %s.
 Could not open %s log file
@@ -139,6 +145,8 @@ new comment
 нови коментар
 Save
 Сачувај
+Preview
+Преглед
 Comments on this page
 Коментари на овој страни
 Edit revision %s of this page
@@ -153,8 +161,8 @@ View current revision
 Прикажи тренутну верзију
 View all changes
 Прикажи све измене
-View original
-Прикажи првобитно
+Back to %s
+
 Last edited
 Последње уређивање
 Edited
@@ -265,16 +273,10 @@ Summary:
 Сажетак:
 This change is a minor edit.
 Ово је ситна измена.
-Preview
-Преглед
 Replace this file with text.
 Замени ову датотеку текстом.
 Replace this text with a file.
 Замени овај текст датотеком.
-Preview:
-Преглед:
-Preview only, not yet saved
-Ово је само преглед, измена још увек није записана
 File to upload: 
 Датотека коју треба окачити: 
 Files of type %s are not allowed.
@@ -353,14 +355,14 @@ Browser reports no file info.
 Прегледач не пријављује информације о датотеци.
 Browser reports no file type.
 Прегледач не пријављује тип датотеке.
-Anonymous
-Анонимони
 This page was changed by somebody else %s.
 Ову страницу је изменио неко други %s.
 The changes conflict.  Please check the page again.
 Измене су у сукобу. Проверите страну поново.
 Please check whether you overwrote those changes.
 Проверите да нисте пребрисали ове те измене.
+Anonymous
+Анонимони
 Could not get a lock to merge!
 Нисам могао да добавим браву за стапање!
 you
@@ -385,8 +387,6 @@ Main lock obtained.
 Главна брава је добављена.
 Expiring keep files and deleting pages marked for deletion
 Истичем датотеке чувања и бришем странице означене за брисање
-and refreshing HTML cache
-и освежавам HTML кеш
 deleted
 обрисано
 Moving part of the %s log file.

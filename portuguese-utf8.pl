@@ -37,6 +37,8 @@ history
 
  . . . . 
 
+Click to create this page
+
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -61,6 +63,10 @@ Invalid Page %s (must not end with .lck)
 Página %s inválida (não pode terminar com .lck)
 Page name may not contain space characters: %s
 Nome de página não pode conter espaço: %s
+Preview:
+Prever:
+Preview only, not yet saved
+Visualização apenas, nada foi salvo
 Please go on to %s.
 Por favor vá para %s
 Could not open %s log file
@@ -139,6 +145,8 @@ new comment
 
 Save
 Salvar
+Preview
+Prever
 Comments on this page
 
 Edit revision %s of this page
@@ -153,7 +161,7 @@ View current revision
 Veja a versão corrente
 View all changes
 
-View original
+Back to %s
 
 Last edited
 Ultima edição
@@ -265,16 +273,10 @@ Summary:
 Sumário:
 This change is a minor edit.
 Esta atualização é miníma.
-Preview
-Prever
 Replace this file with text.
 
 Replace this text with a file.
 
-Preview:
-Prever:
-Preview only, not yet saved
-Visualização apenas, nada foi salvo
 File to upload: 
 
 Files of type %s are not allowed.
@@ -353,14 +355,14 @@ Browser reports no file info.
 
 Browser reports no file type.
 
-Anonymous
-Anônimo
 This page was changed by somebody else %s.
 
 The changes conflict.  Please check the page again.
 
 Please check whether you overwrote those changes.
 
+Anonymous
+Anônimo
 Could not get a lock to merge!
 Não foi possivel pegar a trava para combinar!
 you
@@ -385,8 +387,6 @@ Main lock obtained.
 Trava principal obtida.
 Expiring keep files and deleting pages marked for deletion
 Expirando mantém arquivos e deletando páginas marcadas para deletar
-and refreshing HTML cache
-
 deleted
 deletado
 Moving part of the %s log file.

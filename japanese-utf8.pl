@@ -37,6 +37,8 @@ history
 
  . . . . 
 
+Click to create this page
+
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -60,6 +62,10 @@ Invalid Page %s (must not end with .db)
 Invalid Page %s (must not end with .lck)
 
 Page name may not contain space characters: %s
+
+Preview:
+
+Preview only, not yet saved
 
 Please go on to %s.
 
@@ -139,6 +145,8 @@ new comment
 
 Save
 
+Preview
+
 Comments on this page
 
 Edit revision %s of this page
@@ -153,7 +161,7 @@ View current revision
 
 View all changes
 
-View original
+Back to %s
 
 Last edited
 
@@ -265,15 +273,9 @@ Summary:
 
 This change is a minor edit.
 
-Preview
-
 Replace this file with text.
 
 Replace this text with a file.
-
-Preview:
-
-Preview only, not yet saved
 
 File to upload: 
 
@@ -353,13 +355,13 @@ Browser reports no file info.
 
 Browser reports no file type.
 
-Anonymous
-
 This page was changed by somebody else %s.
 
 The changes conflict.  Please check the page again.
 
 Please check whether you overwrote those changes.
+
+Anonymous
 
 Could not get a lock to merge!
 
@@ -384,8 +386,6 @@ Remove the "maintain" file or wait.
 Main lock obtained.
 
 Expiring keep files and deleting pages marked for deletion
-
-and refreshing HTML cache
 
 deleted
 

@@ -38,6 +38,8 @@ history
 historique
  . . . . 
  . . . . 
+Click to create this page
+
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -62,6 +64,10 @@ Invalid Page %s (must not end with .lck)
 Page non valide %s (elle ne doit pas se terminer par .lck)
 Page name may not contain space characters: %s
 Le nom de la page ne peut pas contenir d'espaces&nbsp;: %s
+Preview:
+Prévisualisation&nbsp;:
+Preview only, not yet saved
+Prévisualisation seulement, pas encore sauvegardée
 Please go on to %s.
 Svp aller a %s
 Could not open %s log file
@@ -140,6 +146,8 @@ new comment
 nouveau commentaire
 Save
 Sauvegarder
+Preview
+Prévisualisation
 Comments on this page
 Commentaires sur cette page
 Edit revision %s of this page
@@ -266,16 +274,10 @@ Summary:
 Résumé&nbsp;:
 This change is a minor edit.
 Cette modification est mineure.
-Preview
-Prévisualisation
 Replace this file with text.
 Remplacer ce fichier par un texte.
 Replace this text with a file.
 Remplacer ce texte par un fichier.
-Preview:
-Prévisualisation&nbsp;:
-Preview only, not yet saved
-Prévisualisation seulement, pas encore sauvegardée
 File to upload: 
 Fichier à téléverser&nbsp;: 
 Files of type %s are not allowed.
@@ -354,14 +356,14 @@ Browser reports no file info.
 Le navigateur signale pas d'information sur le fichier.
 Browser reports no file type.
 Le navigateur signale pas de format de fichier.
-Anonymous
-Anonyme
 This page was changed by somebody else %s.
 Cette page a été modifiée par quelqu'un d'autre %s.
 The changes conflict.  Please check the page again.
 Conflit sur les modifications. SVP vérifiez la page à nouveau.
 Please check whether you overwrote those changes.
 SVP vérifiez si vous écrasez ces modifications.
+Anonymous
+Anonyme
 Could not get a lock to merge!
 Ne peut pas obtenir un verrou pour la fusion !
 you

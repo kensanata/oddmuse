@@ -37,6 +37,8 @@ history
 歷史記錄
  . . . . 
 ……
+Click to create this page
+
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -61,6 +63,10 @@ Invalid Page %s (must not end with .lck)
 無效的頁面 %s（不允許 ".lck" 結尾）
 Page name may not contain space characters: %s
 這個頁面名稱可能沒有包含空白字元：%s
+Preview:
+預覽：
+Preview only, not yet saved
+只是預覽，還沒有儲存
 Please go on to %s.
 請前往 %s。
 Could not open %s log file
@@ -139,6 +145,8 @@ new comment
 新的評論
 Save
 儲存
+Preview
+預覽
 Comments on this page
 對本頁的評論
 Edit revision %s of this page
@@ -153,8 +161,8 @@ View current revision
 觀看目前的版本
 View all changes
 
-View original
-觀看原本的版本
+Back to %s
+
 Last edited
 最後修改
 Edited
@@ -265,16 +273,10 @@ Summary:
 摘要
 This change is a minor edit.
 這次的修改是次要的修改。
-Preview
-預覽
 Replace this file with text.
 
 Replace this text with a file.
 
-Preview:
-預覽：
-Preview only, not yet saved
-只是預覽，還沒有儲存
 File to upload: 
 
 Files of type %s are not allowed.
@@ -353,14 +355,14 @@ Browser reports no file info.
 
 Browser reports no file type.
 
-Anonymous
-匿名者
 This page was changed by somebody else %s.
 
 The changes conflict.  Please check the page again.
 
 Please check whether you overwrote those changes.
 
+Anonymous
+匿名者
 Could not get a lock to merge!
 無法取得合併的鎖定！
 you
@@ -385,8 +387,6 @@ Main lock obtained.
 已獲得主要的鎖定。
 Expiring keep files and deleting pages marked for deletion
 清除已過期和標記刪除的檔案
-and refreshing HTML cache
-
 deleted
 刪除
 Moving part of the %s log file.
