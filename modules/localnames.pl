@@ -16,11 +16,19 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.2 2004/07/03 01:26:47 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.3 2005/01/04 10:15:02 as Exp $</p>';
 
 use vars qw($LocalNamesPage);
 
 $LocalNamesPage = 'LocalNames';
+
+# do this later so that the user can customize $LocalNamesPage
+push(@MyInitVariables, \&LocalNamesInit);
+
+sub LocalNamesInit {
+  $LocalNamesPage = FreeToNormal($LocalNamesPage); # spaces to underscores
+  push(@AdminPages, $LocalNamesPage);
+}
 
 my %LocalNames = ();
 
