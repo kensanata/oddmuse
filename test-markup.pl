@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
 # Copyright (C) 2003  Alex Schroeder <alex@emacswiki.org>
 #
@@ -24,7 +24,7 @@
 # Import the functions
 
 package OddMuse;
-$_ = 'nocgi';
+$RunCGI = 0;
 do 'wiki.pl';
 
 my ($passed, $failed) = (0, 0);
@@ -264,41 +264,41 @@ EOT
 update_page('RSS', "<rss $uri/rss1.0.rdf>");
 test_page(get_page('RSS'), @Test);
 
-@Test = split('\n',<<'EOT');
-Berufsverbot für Mediendesigner?
-http://www.heise.de/tp/deutsch/inhalt/te/15886/1.html
-Experimentell bestätigt:
-http://www.heise.de/tp/deutsch/inhalt/lis/15882/1.html
-Clash im Internet?
-http://www.heise.de/tp/deutsch/special/med/15787/1.html
-Die Einheit der Umma gegen die jüdische Weltmacht
-http://www.heise.de/tp/deutsch/special/ost/15879/1.html
-Im Krieg mit dem Satan
-http://www.heise.de/tp/deutsch/inhalt/co/15880/1.html
-Der dritte Mann
-http://www.heise.de/tp/deutsch/inhalt/co/15876/1.html
-Leicht neben dem Ziel
-http://www.heise.de/tp/deutsch/inhalt/mein/15867/1.html
-Wale sollten Nordkorea meiden
-http://www.heise.de/tp/deutsch/inhalt/co/15878/1.html
-Afghanistan-Krieg und Irak-Besatzung haben al-Qaida gestärkt
-http://www.heise.de/tp/deutsch/inhalt/co/15874/1.html
-Der mit dem Dinosaurier tanzt
-http://www.heise.de/tp/deutsch/inhalt/lis/15863/1.html
-Terroranschlag überschattet das Genfer Abkommen
-http://www.heise.de/tp/deutsch/special/ost/15873/1.html
-"Barwatch" in Kanada
-http://www.heise.de/tp/deutsch/inhalt/te/15871/1.html
-Die Türken kommen!
-http://www.heise.de/tp/deutsch/special/irak/15870/1.html
-Neue Regelungen zur Telekommunikationsüberwachung
-http://www.heise.de/tp/deutsch/inhalt/te/15869/1.html
-Ein Lied vom Tod
-http://www.heise.de/tp/deutsch/inhalt/kino/15862/1.html
-EOT
+# @Test = split('\n',<<'EOT');
+# Berufsverbot für Mediendesigner?
+# http://www.heise.de/tp/deutsch/inhalt/te/15886/1.html
+# Experimentell bestätigt:
+# http://www.heise.de/tp/deutsch/inhalt/lis/15882/1.html
+# Clash im Internet?
+# http://www.heise.de/tp/deutsch/special/med/15787/1.html
+# Die Einheit der Umma gegen die jüdische Weltmacht
+# http://www.heise.de/tp/deutsch/special/ost/15879/1.html
+# Im Krieg mit dem Satan
+# http://www.heise.de/tp/deutsch/inhalt/co/15880/1.html
+# Der dritte Mann
+# http://www.heise.de/tp/deutsch/inhalt/co/15876/1.html
+# Leicht neben dem Ziel
+# http://www.heise.de/tp/deutsch/inhalt/mein/15867/1.html
+# Wale sollten Nordkorea meiden
+# http://www.heise.de/tp/deutsch/inhalt/co/15878/1.html
+# Afghanistan-Krieg und Irak-Besatzung haben al-Qaida gestärkt
+# http://www.heise.de/tp/deutsch/inhalt/co/15874/1.html
+# Der mit dem Dinosaurier tanzt
+# http://www.heise.de/tp/deutsch/inhalt/lis/15863/1.html
+# Terroranschlag überschattet das Genfer Abkommen
+# http://www.heise.de/tp/deutsch/special/ost/15873/1.html
+# "Barwatch" in Kanada
+# http://www.heise.de/tp/deutsch/inhalt/te/15871/1.html
+# Die Türken kommen!
+# http://www.heise.de/tp/deutsch/special/irak/15870/1.html
+# Neue Regelungen zur Telekommunikationsüberwachung
+# http://www.heise.de/tp/deutsch/inhalt/te/15869/1.html
+# Ein Lied vom Tod
+# http://www.heise.de/tp/deutsch/inhalt/kino/15862/1.html
+# EOT
 
-update_page('RSS', "<rss $uri/heise.rdf>");
-test_page(get_page('RSS'), @Test);
+# update_page('RSS', "<rss $uri/heise.rdf>");
+# test_page(get_page('RSS'), @Test);
 
 # Note, cannot identify BayleShanks as author in the mb.rdf
 @Test = split('\n',<<'EOT');
@@ -564,7 +564,7 @@ update_page('ConflictTest', "test\ntest\ntest\nend\n");
 
 $_ = `perl wiki.pl action=edit id=ConflictTest`;
 /name="oldtime" value="([0-9]+)"/;
-my $oldtime = $1;
+$oldtime = $1;
 
 $ENV{'REMOTE_ADDR'} = 'confusibombus';
 update_page('ConflictTest', "test\nfoo\ntest\nend\n");
@@ -594,7 +594,7 @@ update_page('ConflictTest', "test\ntest\ntest\nend\n");
 
 $_ = `perl wiki.pl action=edit id=ConflictTest`;
 /name="oldtime" value="([0-9]+)"/;
-my $oldtime = $1;
+$oldtime = $1;
 
 $ENV{'REMOTE_ADDR'} = 'confusibombus';
 update_page('ConflictTest', "test\nfoo\ntest\nend\n");

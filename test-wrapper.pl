@@ -24,7 +24,7 @@
 # Example usage: echo test | perl test-wrapper.pl
 
 package OddMuse;
-$_ = 'nocgi';
+$RunCGI = 0;
 do 'wiki.pl';
 Init();
 undef $/;
