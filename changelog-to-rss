@@ -31,7 +31,7 @@ if (not $url) {
     $q->start_html('ChangeLog to RSS'),
     $q->h1('ChangeLog to RSS'),
     $q->p('Translates ChangeLog output to RSS 2.0.'),
-    $q->p(q{$Id: changelog-to-rss,v 1.1 2005/01/05 21:43:15 as Exp $}),
+    $q->p(q{$Id: changelog-to-rss,v 1.2 2005/01/05 21:46:54 as Exp $}),
     $q->start_form(-method=>'GET'),
     $q->p('ChangeLog URL: ', $q->textfield('url', '', 70)),
     $q->p('Limit number of entries returned: ', $q->textfield('limit', '15', 5)),
@@ -86,11 +86,13 @@ print $rss;
 sub output {
   my ($date, $author, $file, $log) = @_;
   return unless $file;
-  my $ts = to_date($date);
+  $date = to_date($date);
+  $author = quote_html($author);
+  $log = quote_html($log);
   $rss .= qq{
 <item>
 <author>$author</author>
-<pubDate>$ts</pubDate>
+<pubDate>$date</pubDate>
 <title>$file</title>
 <description>$log</description>
 </item>
@@ -101,4 +103,13 @@ sub to_date {
   $_ = shift;
   my ($year, $month, $day) = split(/-/);
   return strftime("", 0, 0, 0, $day - 1, $month - 1, $year - 1900);
+}
+
+sub quote_html {
+  $_ = shift;
+  s/&/&amp;/g;
+  s/</&lt;/g;
+  s/>/&gt;/g;
+  s/&amp;([#a-zA-Z0-9]+);/&$1;/g;  # Allow character references
+  return $_;
 }
