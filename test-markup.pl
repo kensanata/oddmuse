@@ -593,8 +593,6 @@ test_page_negative($page, @Negatives);
 
 # --------------------
 
-fixme:
-
 print '[conflicts]';
 
 # Using the example files from the diff3 manual
@@ -1175,7 +1173,7 @@ close(F);
 
 mkdir '/tmp/oddmuse/modules';
 symlink('/home/alex/src/oddmuse/modules/despam.pl',
-	'/tmp/oddmuse/modules/despam.pl') or die "Cannot symlink: $@";
+	'/tmp/oddmuse/modules/despam.pl') or die "Cannot symlink: $!";
 
 update_page('HilariousPage', "Ordinary text.");
 update_page('HilariousPage', "Hilarious text.");
@@ -1257,7 +1255,7 @@ print F "\$AdminPass = 'foo';\n";
 close(F);
 mkdir '/tmp/oddmuse/modules';
 symlink('/home/alex/src/oddmuse/modules/links.pl',
-	'/tmp/oddmuse/modules/links.pl') or die "Cannot symlink: $@";
+	'/tmp/oddmuse/modules/links.pl') or die "Cannot symlink: $!";
 
 update_page('InterMap', " Oddmuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n",
 	    'required', 0, 1);
@@ -1587,7 +1585,7 @@ open(F,'>/tmp/oddmuse/config');
 print F "\$SurgeProtection = 0;\n";
 close(F);
 symlink('/home/alex/src/oddmuse/modules/usemod.pl',
-	'/tmp/oddmuse/modules/usemod.pl') or die "Cannot symlink: $@";
+	'/tmp/oddmuse/modules/usemod.pl') or die "Cannot symlink: $!";
 
 %Test = split('\n',<<'EOT');
 * ''one\n** two
@@ -1712,9 +1710,9 @@ open(F,'>/tmp/oddmuse/config');
 print F "\$SurgeProtection = 0;\n";
 close(F);
 symlink('/home/alex/src/oddmuse/modules/markup.pl',
-	'/tmp/oddmuse/modules/markup.pl') or die "Cannot symlink: $@";
+	'/tmp/oddmuse/modules/markup.pl') or die "Cannot symlink: $!";
 symlink('/home/alex/src/oddmuse/modules/usemod.pl',
-	'/tmp/oddmuse/modules/usemod.pl') or die "Cannot symlink: $@";
+	'/tmp/oddmuse/modules/usemod.pl') or die "Cannot symlink: $!";
 
 %Test = split('\n',<<'EOT');
 foo
@@ -1775,9 +1773,9 @@ open(F,'>/tmp/oddmuse/config');
 print F "\$SurgeProtection = 0;\n";
 close(F);
 symlink('/home/alex/src/oddmuse/modules/setext.pl',
-	'/tmp/oddmuse/modules/setext.pl') or die "Cannot symlink: $@";
+	'/tmp/oddmuse/modules/setext.pl') or die "Cannot symlink: $!";
 symlink('/home/alex/src/oddmuse/modules/link-all.pl',
-	'/tmp/oddmuse/modules/link-all.pl') or die "Cannot symlink: $@";
+	'/tmp/oddmuse/modules/link-all.pl') or die "Cannot symlink: $!";
 
 %Test = split('\n',<<'EOT');
 foo
@@ -1820,7 +1818,7 @@ open(F,'>/tmp/oddmuse/config');
 print F "\$SurgeProtection = 0;\n";
 close(F);
 symlink('/home/alex/src/oddmuse/modules/anchors.pl',
-	'/tmp/oddmuse/modules/anchors.pl') or die "Cannot symlink: $@";
+	'/tmp/oddmuse/modules/anchors.pl') or die "Cannot symlink: $!";
 
 %Test = split('\n',<<'EOT');
 This is a [:day for fun and laughter].
@@ -1864,7 +1862,7 @@ open(F,'>/tmp/oddmuse/config');
 print F "\$SurgeProtection = 0;\n";
 close(F);
 symlink('/home/alex/src/oddmuse/modules/link-all.pl',
-	'/tmp/oddmuse/modules/link-all.pl') or die "Cannot symlink: $@";
+	'/tmp/oddmuse/modules/link-all.pl') or die "Cannot symlink: $!";
 
 update_page('foo', 'bar');
 
@@ -1890,7 +1888,7 @@ open(F,'>/tmp/oddmuse/config');
 print F "\$SurgeProtection = 0;\n";
 close(F);
 symlink('/home/alex/src/oddmuse/modules/image.pl',
-	'/tmp/oddmuse/modules/image.pl') or die "Cannot symlink: $@";
+	'/tmp/oddmuse/modules/image.pl') or die "Cannot symlink: $!";
 
 update_page('bar', 'foo');
 
@@ -1925,7 +1923,7 @@ open(F,'>/tmp/oddmuse/config');
 print F "\$SurgeProtection = 0;\n";
 close(F);
 symlink('/home/alex/src/oddmuse/modules/subscriberc.pl',
-	'/tmp/oddmuse/modules/subscriberc.pl') or die "Cannot symlink: $@";
+	'/tmp/oddmuse/modules/subscriberc.pl') or die "Cannot symlink: $!";
 
 %Test = split('\n',<<'EOT');
 My subscribed pages: AlexSchroeder.
@@ -1952,9 +1950,9 @@ open(F,'>/tmp/oddmuse/config');
 print F "\$SurgeProtection = 0;\n";
 close(F);
 symlink('/home/alex/src/oddmuse/modules/toc.pl',
-	'/tmp/oddmuse/modules/toc.pl') or die "Cannot symlink: $@";
+	'/tmp/oddmuse/modules/toc.pl') or die "Cannot symlink: $!";
 symlink('/home/alex/src/oddmuse/modules/usemod.pl',
-	'/tmp/oddmuse/modules/usemod.pl') or die "Cannot symlink: $@";
+	'/tmp/oddmuse/modules/usemod.pl') or die "Cannot symlink: $!";
 
 %Test = split('\n',<<'EOT');
 == bees: honeymaking ==\n\nMoo.\n
@@ -2021,6 +2019,99 @@ get_page('title=Comments_on_Yadda', 'aftertext=This%20is%20another%20comment.',
 	 'username=Alex', 'homepage=http%3a%2f%2fwww%2eoddmuse%2eorg%2f');
 test_page(get_page('Comments_on_Yadda'), 'This is my comment\.',
 	  '-- <a class="url outside" href="http://www.oddmuse.org/">Alex</a>');
+
+
+# --------------------
+
+fixme:
+
+print '[headers in various modules]';
+
+system('/bin/rm -rf /tmp/oddmuse');
+die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
+mkdir '/tmp/oddmuse';
+mkdir '/tmp/oddmuse/modules';
+open(F,'>/tmp/oddmuse/config');
+print F "\$SurgeProtection = 0;\n";
+close(F);
+
+# without portrait-support
+
+# nothing
+update_page('headers', "== no header ==\n\ntext\n");
+test_page(get_page('headers'), '== no header ==');
+
+# usemod only
+symlink('/home/alex/src/oddmuse/modules/usemod.pl',
+	'/tmp/oddmuse/modules/usemod.pl') or die "Cannot symlink: $!";
+update_page('headers', "== is header ==\n\ntext\n");
+test_page(get_page('headers'), '<h2>is header</h2>');
+unlink('/tmp/oddmuse/modules/usemod.pl') or die "Cannot unlink: $!";
+
+# toc only
+symlink('/home/alex/src/oddmuse/modules/toc.pl',
+	'/tmp/oddmuse/modules/toc.pl') or die "Cannot symlink: $!";
+update_page('headers', "== one ==\ntext\n== two ==\ntext\n== three ==\ntext\n");
+test_page(get_page('headers'),
+	  '<li><a href="#toc0">one</a></li>',
+	  '<li><a href="#toc1">two</a></li>',
+	  '<h2><a id="toc0">one</a></h2>',
+	  '<h2><a id="toc1">two</a></h2>', );
+unlink('/tmp/oddmuse/modules/toc.pl') or die "Cannot unlink: $!";
+
+# headers only
+symlink('/home/alex/src/oddmuse/modules/headers.pl',
+	'/tmp/oddmuse/modules/headers.pl') or die "Cannot symlink: $!";
+update_page('headers', "is header\n=========\n\ntext\n");
+test_page(get_page('headers'), '<h2>is header</h2>');
+unlink('/tmp/oddmuse/modules/headers.pl') or die "Cannot unlink: $!";
+
+# with portrait-support
+
+symlink('/home/alex/src/oddmuse/modules/portrait-support.pl',
+	'/tmp/oddmuse/modules/portrait-support.pl') or die "Cannot symlink: $!";
+
+# nothing
+update_page('headers', "[new]foo\n== no header ==\n\ntext\n");
+test_page(get_page('headers'), '<div class="color one">foo == no header ==<p>text</p></div>');
+
+# usemod only
+symlink('/home/alex/src/oddmuse/modules/usemod.pl',
+	'/tmp/oddmuse/modules/usemod.pl') or die "Cannot symlink: $!";
+update_page('headers', "[new]foo\n== is header ==\n\ntext\n");
+test_page(get_page('headers'), '<div class="color one">foo </div><h2>is header</h2>');
+unlink('/tmp/oddmuse/modules/usemod.pl') or die "Cannot unlink: $!";
+
+# toc only
+symlink('/home/alex/src/oddmuse/modules/toc.pl',
+	'/tmp/oddmuse/modules/toc.pl') or die "Cannot symlink: $!";
+update_page('headers', "[new]foo\n== one ==\ntext\n== two ==\ntext\n== three ==\ntext\n");
+test_page(get_page('headers'),
+	  '<li><a href="#toc0">one</a></li>',
+	  '<li><a href="#toc1">two</a></li>',
+	  '<div class="color one">foo </div><h2><a id="toc0">one</a></h2>',
+	  '<h2><a id="toc1">two</a></h2>', );
+unlink('/tmp/oddmuse/modules/toc.pl') or die "Cannot unlink: $!";
+
+# headers only
+symlink('/home/alex/src/oddmuse/modules/headers.pl',
+	'/tmp/oddmuse/modules/headers.pl') or die "Cannot symlink: $!";
+update_page('headers', "[new]foo\nis header\n=========\n\ntext\n");
+test_page(get_page('headers'), '<div class="color one">foo </div><h2>is header</h2>');
+unlink('/tmp/oddmuse/modules/headers.pl') or die "Cannot unlink: $!";
+
+# portrait-support, toc, and usemod
+
+symlink('/home/alex/src/oddmuse/modules/usemod.pl',
+	'/tmp/oddmuse/modules/usemod.pl') or die "Cannot symlink: $!";
+symlink('/home/alex/src/oddmuse/modules/toc.pl',
+	'/tmp/oddmuse/modules/toc.pl') or die "Cannot symlink: $!";
+update_page('headers', "[new]foo\n== one ==\ntext\n== two ==\ntext\n== three ==\ntext\n");
+test_page(get_page('headers'),
+	  '<li><a href="#toc0">one</a></li>',
+	  '<li><a href="#toc1">two</a></li>',
+	  '<div class="color one">foo </div><h2><a id="toc0">one</a></h2>',
+	  '<h2><a id="toc1">two</a></h2>', );
 
 ### END OF TESTS
 
