@@ -5,6 +5,7 @@
 	(ScriptLink): No more inheriting of parameters.
 	(InheritParameter): Removed.
 	(InitCookie): Password parameter handling removed.
+	(GetHtmlHeader): Added CSS for permanent anchors.
 
 2003-05-30  Pierre Gaston  <pgas@intracom.gr>
 
