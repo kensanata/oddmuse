@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.12 2004/06/15 14:15:02 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.13 2004/06/15 18:46:49 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalendarUseCal);
 
@@ -35,20 +35,26 @@ sub NewCalendarGetHeader {
 }
 
 sub Cal {
+  my ($year, $mon, $mday) = @_; # example: 2004, 12.
+  if (not $mon) {
+    my ($sec, $min, $hour);
+    ($sec, $min, $hour, $mday, $mon, $year) = localtime($Now);
+    $mon += 1;
+    $year += 1900;
+  }
   my @pages = AllPagesList();
-  my ($sec, $min, $hour, $mday, $mon, $year) = localtime($Now);
   my $cal = '';
   if ($CalendarUseCal eq 'cal') {
     $cal = `cal`;
   }
   eval { require Date::Calc;
-	 $cal = Date::Calc::Calendar( $year+1900, $mon+1 ); } unless $cal;
+	 $cal = Date::Calc::Calendar( $year, $mon ); } unless $cal;
   eval { require Date::Pcalc;
-	 $cal = Date::Pcalc::Calendar( $year+1900, $mon+1 ); } unless $cal;
+	 $cal = Date::Pcalc::Calendar( $year, $mon ); } unless $cal;
   return unless $cal;
   $cal =~ s|\b( ?\d?\d)\b|{
     my $day = $1;
-    my $date = sprintf("%d-%02d-%02d", $year+1900, $mon+1, $day);
+    my $date = sprintf("%d-%02d-%02d", $year, $mon, $day);
     my $class;
     $class = ' today' if $day == $mday;
     my @matches = grep(/^$date/, @pages);
@@ -61,7 +67,12 @@ sub Cal {
       $link = ScriptLink('action=collect;match=' . $date, $day,  'local collection' . $class);
     }
     $link;
-    }|ge;
+  }|ge;
+  $cal =~ s|(\w+ \d\d\d\d)|{
+    my $day = $1;
+    my $date = sprintf("%d-%02d", $year, $mon);
+    ScriptLink('action=collect;match=' . $date, $day,  'local collection month');
+  }|e;
   return "<div class=\"cal month\"><pre>$cal</pre></div>";
 }
 
@@ -101,24 +112,17 @@ sub PrintYearCalendar {
   my $year = shift;
   my @pages = AllPagesList();
   for $mon ((1..12)) {
-    my $cal = `cal $mon $year`;
-    $cal =~ s!((^| )([ 0-9][0-9]))\b!
-      {
-       my $space = $2;
-       my $day = $3;
-       my $date = sprintf("%d-%02d-%02d", $year, $mon, $day);
-       my @matches = grep(/^$date/, @pages);
-       my $link;
-       if (@matches == 0) {
-         $link = $day;
-       } elsif (@matches == 1) {
-         $link = GetPageLink($matches[0], $day);
-       } else {
-         $link = ScriptLink('action=collect;match=' . $date, $day);
-       }
-       $q->span({-class=>'day'}, $space . $link);
-      }!mge;
-    print "<pre class=\"cal year\">$cal</pre>";
+    print Cal($year, $mon);
   }
 }
 
+$Action{calendar} = \&DoYearCalendar;
+
+sub DoYearCalendar {
+  my ($sec, $min, $hour, $mday, $mon, $year) = localtime($Now);
+  $year += 1900;
+  $year = GetParam('year', $year);
+  print GetHeader('', Ts('Calendar %s', $year), '');
+  PrintYearCalendar($year);
+  PrintFooter();
+}
