@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: image.pl,v 1.7 2004/06/19 19:29:15 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: image.pl,v 1.8 2004/06/19 19:34:48 as Exp $</p>';
 
 use vars qw($ImageUrlPath);
 
@@ -49,7 +49,9 @@ sub ImageSupportRule {
       $class .= ' outside';
     } else {
       $class .= ' local';
-      if ($UsePathInfo and !$Monolithic) {
+      if (substr($link, 0, 1) eq '/') {
+	# do nothing -- relative URL on the same server
+      } elsif ($UsePathInfo and !$Monolithic) {
 	$link = $ScriptName . '/' . $link;
       } elsif ($Monolithic) {
 	$link = '#' . $link;
