@@ -32,18 +32,6 @@ my $resultfile = "/tmp/test-markup-result-$$";
 undef $/;
 $| = 1; # no output buffering
 
-# Create temporary data directory as expected by the script
-# and create a config file in this directory.
-
-system('/bin/rm -rf /tmp/oddmuse');
-die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
-mkdir '/tmp/oddmuse';
-open(F,'>/tmp/oddmuse/config');
-print F "\$NetworkFile = 1;\n";
-print F "\$AdminPass = 'foo';\n";
-print F "\$SurgeProtection = 0;\n";
-close(F);
-
 sub update_page {
   my ($id, $text, $summary, $minor, $admin) = @_;
   print '*';
@@ -115,10 +103,74 @@ sub run_tests {
   }
 }
 
-### COMPLEX HTML OUTPUT TESTS
+# Create temporary data directory as expected by the script
+
+system('/bin/rm -rf /tmp/oddmuse');
+die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
+mkdir '/tmp/oddmuse';
 
 my $localhost = 'confusibombus';
 $ENV{'REMOTE_ADDR'} = $localhost;
+
+# create config file with WikiLinks=0
+
+open(F,'>/tmp/oddmuse/config');
+print F "\$WikiLinks = 0;\n";
+print F "\$SurgeProtection = 0;\n";
+close(F);
+
+### Maintenance with cache resetting
+
+@Test = split('\n',<<'EOT');
+This is a WikiLink.
+EOT
+
+test_page(update_page('CacheTest', 'This is a WikiLink.', '', 1), @Test);
+
+# create new config file with WikiLinks=1
+
+open(F,'>/tmp/oddmuse/config');
+print F "\$WikiLinks = 1;\n";
+print F "\$AdminPass = 'foo';\n";
+print F "\$SurgeProtection = 0;\n";
+close(F);
+
+# without new edit, the cached version persists
+
+@Test = split('\n',<<'EOT');
+This is a WikiLink.
+EOT
+
+test_page(get_page('CacheTest'), @Test);
+
+# now run maintenance without refreshing the cache
+
+get_page('action=maintain');
+test_page(get_page('CacheTest'), @Test);
+
+# a second maintenance run without admin password has no effect, either
+
+get_page('action=maintain cache=1');
+test_page(get_page('CacheTest'), @Test);
+
+# new refresh the cache
+
+@Test = split('\n',<<'EOT');
+This is a WikiLink<a href="http://localhost/wiki.pl\?action=edit&amp;id=WikiLink">\?</a>.
+EOT
+
+get_page('action=maintain cache=1 pwd=foo');
+test_page(get_page('CacheTest'), @Test);
+
+### COMPLEX HTML OUTPUT TESTS
+
+# create config file
+
+open(F,'>/tmp/oddmuse/config');
+print F "\$NetworkFile = 1;\n";
+print F "\$AdminPass = 'foo';\n";
+print F "\$SurgeProtection = 0;\n";
+close(F);
 
 # Test search
 
@@ -157,7 +209,7 @@ This is xfuu and this is xbar.
 EOT
 
 get_page('search=([a-z]%2b)z replace=x%241 pwd=foo');
-get_page('SearchAndReplace', @Test);
+test_page(get_page('SearchAndReplace'), @Test);
 
 ## Check headers especially the quoting of non-ASCII characters.
 
