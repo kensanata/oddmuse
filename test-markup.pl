@@ -123,6 +123,8 @@ system('/bin/rm -rf /tmp/oddmuse');
 die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
 mkdir '/tmp/oddmuse';
 
+# goto markup;
+
 $ENV{'REMOTE_ADDR'} = 'test-markup';
 
 # --------------------
@@ -801,6 +803,82 @@ test_page(update_page('Summary', "Counting up:\n\n<journal 3 reverse>"), @Test);
 
 # --------------------
 
+print '[revisions]';
+
+## Test revision and diff stuff
+
+update_page('KeptRevisions', 'first');
+update_page('KeptRevisions', 'second');
+update_page('KeptRevisions', 'third');
+update_page('KeptRevisions', 'fourth', '', 1);
+update_page('KeptRevisions', 'fifth', '', 1);
+
+# Show the current revision
+
+@Test = split('\n',<<'EOT');
+KeptRevisions
+fifth
+EOT
+
+test_page(get_page(KeptRevisions), @Test);
+
+# Show the other revision
+
+@Test = split('\n',<<'EOT');
+Showing revision 2
+second
+EOT
+
+test_page(get_page('action=browse revision=2 id=KeptRevisions'), @Test);
+
+@Test = split('\n',<<'EOT');
+Showing revision 1
+first
+EOT
+
+test_page(get_page('action=browse revision=1 id=KeptRevisions'), @Test);
+
+# Show the current revision if an inexisting revision is asked for
+
+@Test = split('\n',<<'EOT');
+Revision 9 not available \(showing current revision instead\)
+fifth
+EOT
+
+test_page(get_page('action=browse revision=9 id=KeptRevisions'), @Test);
+
+# Show a major diff
+
+@Test = split('\n',<<'EOT');
+Difference \(from prior major revision\)
+third
+fifth
+EOT
+
+test_page(get_page('action=browse diff=1 id=KeptRevisions'), @Test);
+
+# Show a minor diff
+
+@Test = split('\n',<<'EOT');
+Difference \(from prior minor revision\)
+fourth
+fifth
+EOT
+
+test_page(get_page('action=browse diff=2 id=KeptRevisions'), @Test);
+
+# Show a diff from the history page comparing two specific revisions
+
+@Test = split('\n',<<'EOT');
+Difference \(from revision 2 to revision 4\)
+second
+fourth
+EOT
+
+test_page(get_page('action=browse diff=1 revision=4 diffrevision=2 id=KeptRevisions'), @Test);
+
+# --------------------
+
 print '[lock on creation]';
 
 open(F,'>/tmp/oddmuse/config');
@@ -875,6 +953,8 @@ test_page(update_page('InterMap', "All your edits are blong to us!\n", 'required
 
 # --------------------
 
+markup:
+
 print '[markup]';
 
 open(F,'>/tmp/oddmuse/config');
@@ -883,6 +963,8 @@ print F "\$AdminPass = 'foo';\n";
 print F "\$SurgeProtection = 0;\n";
 print F "\%Smilies = ('HAHA!' => '/pics/haha.png');\n";
 close(F);
+
+update_page('InterMap', " OddMuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n PlanetMath http://planetmath.org/encyclopedia/%s.html", 'required', 0, 1);
 
 %Test = split('\n',<<'EOT');
 HAHA!
@@ -932,13 +1014,15 @@ OddMuse<a class="edit" title="Click to create this page" href="http://localhost/
 OddMuse:
 OddMuse<a class="edit" title="Click to create this page" href="http://localhost/test-wrapper.pl?action=edit;id=OddMuse">?</a>:
 OddMuse:test
-<a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test">OddMuse:test</a>
+<a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"><span class="site">OddMuse</span>:<span class="page">test</span></a>
 OddMuse:test: or not
-<a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test">OddMuse:test</a>: or not
+<a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"><span class="site">OddMuse</span>:<span class="page">test</span></a>: or not
 OddMuse:test, and foo
-<a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test">OddMuse:test</a>, and foo
+<a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"><span class="site">OddMuse</span>:<span class="page">test</span></a>, and foo
 PlanetMath:ZipfsLaw, and foo
-<a href="http://planetmath.org/encyclopedia/ZipfsLaw.html">PlanetMath:ZipfsLaw</a>, and foo
+<a class="inter" href="http://planetmath.org/encyclopedia/ZipfsLaw.html"><span class="site">PlanetMath</span>:<span class="page">ZipfsLaw</span></a>, and foo
+[OddMuse:test]
+<a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test">[1]</a>
 Foo::Bar
 Foo::Bar
 !WikiLink
@@ -1032,9 +1116,11 @@ open(F,'>/tmp/oddmuse/config');
 print F "\$BracketWiki = 1;\n";
 print F "\$AllNetworkFiles = 1;\n";
 print F "\$SurgeProtection = 0;\n";
+print F "\$AdminPass = 'foo';\n";
 close(F);
 update_page('SandBox', "This page exists.");
 update_page('Banana', "This page exists also.");
+update_page('InterMap', " OddMuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n PlanetMath http://planetmath.org/encyclopedia/%s.html", 'required', 0, 1);
 
 %Test = split('\n',<<'EOT');
 [[SandBox|play here]]
@@ -1049,85 +1135,11 @@ file://home/foo/tutorial.pdf
 <a href="file://home/foo/tutorial.pdf">file://home/foo/tutorial.pdf</a>
 file:///home/foo/tutorial.pdf
 <a href="file:///home/foo/tutorial.pdf">file:///home/foo/tutorial.pdf</a>
+[OddMuse:test this is a test]
+<a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test">[this is a test]</a>
 EOT
 
 run_tests();
-
-# --------------------
-
-print '[revisions]';
-
-## Test revision and diff stuff
-
-update_page('KeptRevisions', 'first');
-update_page('KeptRevisions', 'second');
-update_page('KeptRevisions', 'third');
-update_page('KeptRevisions', 'fourth', '', 1);
-update_page('KeptRevisions', 'fifth', '', 1);
-
-# Show the current revision
-
-@Test = split('\n',<<'EOT');
-KeptRevisions
-fifth
-EOT
-
-test_page(get_page(KeptRevisions), @Test);
-
-# Show the other revision
-
-@Test = split('\n',<<'EOT');
-Showing revision 2
-second
-EOT
-
-test_page(get_page('action=browse revision=2 id=KeptRevisions'), @Test);
-
-@Test = split('\n',<<'EOT');
-Showing revision 1
-first
-EOT
-
-test_page(get_page('action=browse revision=1 id=KeptRevisions'), @Test);
-
-# Show the current revision if an inexisting revision is asked for
-
-@Test = split('\n',<<'EOT');
-Revision 9 not available \(showing current revision instead\)
-fifth
-EOT
-
-test_page(get_page('action=browse revision=9 id=KeptRevisions'), @Test);
-
-# Show a major diff
-
-@Test = split('\n',<<'EOT');
-Difference \(from prior major revision\)
-third
-fifth
-EOT
-
-test_page(get_page('action=browse diff=1 id=KeptRevisions'), @Test);
-
-# Show a minor diff
-
-@Test = split('\n',<<'EOT');
-Difference \(from prior minor revision\)
-fourth
-fifth
-EOT
-
-test_page(get_page('action=browse diff=2 id=KeptRevisions'), @Test);
-
-# Show a diff from the history page comparing two specific revisions
-
-@Test = split('\n',<<'EOT');
-Difference \(from revision 2 to revision 4\)
-second
-fourth
-EOT
-
-test_page(get_page('action=browse diff=1 revision=4 diffrevision=2 id=KeptRevisions'), @Test);
 
 ### END OF TESTS
 
