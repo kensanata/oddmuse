@@ -81,7 +81,7 @@ $HttpCharset = '';  # Charset for pages, default is ISO-8859-1
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.15 2003/03/25 09:16:17 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.16 2003/03/26 22:55:50 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -1541,7 +1541,7 @@ sub DoHistory {
 <input type='hidden' name='action' value='browse'/>
 <input type='hidden' name='diff' value='1'/>
 <input type='hidden' name='id' value='$id'/>
-<table class="history"><tr>
+<table class="history">
 EOF
   }
   $html = &GetHistoryLine($id, $Page{'text_default'}, $canEdit, $row++);
