@@ -3,6 +3,17 @@
 	* wiki.pl (RSS): Skip contributor if empty.
 	(RSS): Add ' -- ' between page link and summary.
 	(DoPost): Handle raw=2 edits again.
+	(GenerateAllPagesList): Don't sort intermediary list.
+	(ApplyRules): Use /o flag for many regular expressions that didn't
+	use it.
+	(GetPageLinks): Deleted.
+	(DoLinks): Allow raw output.
+	(PrintLinkList): exists=1 only works for raw output now, names
+	parameter removed, editlink param removed.
+	(GetFullLinkList): unique, inter, and sort param removed, these
+	settings are default, now.  page and search param removed.  exists
+	param handled in PrintLinkList for raw output only. empty param
+	removed, empty pages are not listed anymore.
 
 2003-10-24  Alex Schroeder  <alex@gnu.org>
 
