@@ -16,14 +16,15 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.9 2004/10/13 19:01:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.10 2004/12/26 00:29:27 as Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
-use vars qw($StaticDir $StaticMimeTypes);
+use vars qw($StaticDir $StaticMimeTypes $StaticAlways);
 
 $StaticDir = '/tmp/static';
 $StaticMimeTypes = '/etc/mime.types';
+$StaticFilesAlways = 0; # 1 = uploaded files only, 2 = all pages
 
 my %StaticMimeTypes;
 my %StaticFiles;
@@ -107,7 +108,7 @@ sub StaticFileName {
   print "cannot read " . GetPageFile(StaticUrlDecode($id)) . $q->br() unless $status;
   my %hash = ParseData($data);
   my $ext = '.html';
-  if ($hash{text} =~ /#FILE ([^ \n]+)\n(.*)/s) {
+  if ($hash{text} =~ /^#FILE ([^ \n]+)\n(.*)/s) {
     $ext = $StaticMimeTypes{$1};
     $ext = '.' . $ext if $ext;
   }
@@ -127,7 +128,7 @@ sub StaticWriteFile {
   my $filename = StaticFileName($id);
   OpenPage($id);
   open(F,"> $StaticDir/$filename") or ReportError(Ts('Cannot write %s', $filename));
-  if ($Page{text} =~ /#FILE ([^ \n]+)\n(.*)/s) {
+  if ($Page{text} =~ /^#FILE ([^ \n]+)\n(.*)/s) {
     StaticFile($id, $1, $2);
   } else {
     StaticHtml($id);
@@ -193,4 +194,38 @@ EOT
 		  $q->span({-class=>'time'}, GetFooterTimestamp($id)));
   # finish
   print F '</body></html>';
+}
+
+*StaticFilesOldDoPost = *DoPost;
+*DoPost = *StaticFilesNewDoPost;
+
+sub StaticFilesNewDoPost {
+  StaticFilesOldDoPost(@_);
+  if ($StaticAlways) {
+    # always delete
+    StaticDeleteFile($OpenPageName);
+    if ($Page{text} =~ /^#FILE / # if a file was uploaded
+	or $StaticAlways > 1) {
+      CreateDir($StaticDir);
+      StaticWriteFile($OpenPageName);
+    }
+  }
+}
+
+*StaticOldDeletePage = *DeletePage;
+*DeletePage = *StaticNewDeletePage;
+
+sub StaticNewDeletePage {
+  my $id = shift;
+  StaticDeleteFile($id);
+  return StaticOldDeletePage($id);
+}
+
+sub StaticDeleteFile {
+  my $id = shift;
+  %StaticMimeTypes = StaticMimeTypes() unless %StaticMimeTypes;
+  # we don't care if the files or $StaticDir don't exist -- just delete!
+  for my $f (map { "$StaticDir/$id.$_" } (values %StaticMimeTypes, 'html')) {
+    unlink $f; # delete copies with different extensions
+  }
 }
