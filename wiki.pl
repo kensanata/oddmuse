@@ -276,7 +276,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
     }
   }
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p('$Id: wiki.pl,v 1.270 2003/11/27 15:50:50 as Exp $');
+    . $q->p('$Id: wiki.pl,v 1.271 2003/11/27 15:59:20 as Exp $');
 }
 
 sub InitCookie {
@@ -2710,8 +2710,9 @@ sub DoIndex {
   my $anchors = GetParam('permanentanchors', 1);
   if (not GetParam('raw', 0)) {
     print GetHeader('', T('Index of all pages'), '');
-    print $q->p($q->b('(including permanent anchors)')) if $anchors == 1;
-    print $q->p($q->b('(permanent anchors only)')) if $anchors == 2;
+    print $q->p($q->b(T('(including permanent anchors)'))) if $anchors == 1;
+    print $q->p($q->b(T('(permanent anchors only)'))) if $anchors == 2;
+    print $q->p($q->b(Ts('(for %s only)', GetParam('lang', '')))) if GetParam('lang', '');
   }
   ReadPermanentAnchors() if $anchors > 0 and not %PermanentAnchors;
   push(@pages, AllPagesList()) if $anchors < 2;
@@ -2741,7 +2742,7 @@ sub PrintPageList {
       print ScriptLink(UrlEncode($id), $text, $class, '', $title), $q->br();
     }
   }
-  print '</p>' if (not GetParam('raw', 0)) unless $raw;
+  print '</p>' unless $raw;
 }
 
 sub AllPagesList {
