@@ -3,6 +3,7 @@
 	* wiki.pl (GetHtmlHeader): Some more default CSS tinkering; hide
 	form and div.refer when printing.
 	(DoEdit): Put preview at the top of the page.
+	(RSS): Parse more dates: Time, day, and month are optional.
 
 2004-03-10  Alex Schroeder  <alex@gnu.org>
 
