@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.1 2004/12/10 16:46:59 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.2 2004/12/10 16:58:30 as Exp $</p>';
 
 $Action{buildindex} = \&SearchFreeTextIndex;
 
@@ -59,4 +59,15 @@ sub SearchFreeText {
   $db->close_index();
   print T('Done.</p>');
   PrintFooter();
+}
+
+*SearchFreeTextOldForm = *GetSearchForm;
+*GetSearchForm = *SearchFreeTextNewForm;
+
+
+sub SearchFreeTextNewForm {
+  my $form = T('Search:') . ' '
+    . GetHiddenValue('action', 'search')
+    . $q->textfield(-name=>'term', -size=>20, -accesskey=>T('f')) . ' ';
+  return GetFormStart(0, 1, 'search') . $q->p($form . $q->submit('dosearch', T('Go!'))) . $q->endform;
 }
