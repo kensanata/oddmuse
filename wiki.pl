@@ -86,7 +86,7 @@ $HttpCharset = 'UTF-8'; # Charset for pages, eg. 'ISO-8859-1'
 $MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
 $WikiDescription =  # Version string
     '<p><a href="http://www.emacswiki.org/cgi-bin/oddmuse.pl">OddMuse</a>'
-  . '<p>$Id: wiki.pl,v 1.93 2003/06/13 01:27:42 as Exp $';
+  . '<p>$Id: wiki.pl,v 1.94 2003/06/13 11:57:12 as Exp $';
 
 # EyeCandy
 $StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
@@ -679,7 +679,7 @@ sub PrintJournal {
     $regexp = '\d\d\d\d-\d\d-\d\d' unless $regexp;
     $num = 10 unless $num;
     my @pages = sort {$b cmp $a} (grep(/$regexp/, AllPagesList()));
-    @pages = @pages[0 .. $num - 1];
+    @pages = @pages[0 .. $num - 1] if $#pages >= $num;
     if (@pages) {
       # Now save information required for saving the cache of the current page.
       local (%Page, $OpenPageName);
