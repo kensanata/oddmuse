@@ -357,7 +357,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.542 2005/04/05 23:01:11 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.543 2005/04/07 16:16:18 frodo72 Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -2294,7 +2294,7 @@ sub PrintHtmlDiff {
   my ($diffText, $intro);
   if (not $revOld and GetParam('cache', $UseCache) < 1) {
     if ($diffType == 1) {
-      $revOld = $Page{'diff-major'};
+      $revOld = $Page{'oldmajor'};
     } else {
       $revOld = $revNew - 1;
     }
