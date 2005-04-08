@@ -1,4 +1,4 @@
-# Copyright (C) 2004  Fletcher T. Penney <fletcher@freeshell.org>
+# Copyright (C) 2004, 2005  Fletcher T. Penney <fletcher@freeshell.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: aawrapperdiv.pl,v 1.1 2005/04/05 21:24:39 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: aawrapperdiv.pl,v 1.2 2005/04/08 21:23:43 fletcherpenney Exp $</p>';
 
 
 *OldGetHeader = *GetHeader;
