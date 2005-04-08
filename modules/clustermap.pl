@@ -16,11 +16,16 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.1 2005/04/05 21:18:57 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.2 2005/04/08 21:01:42 fletcherpenney Exp $</p>';
 
 use vars qw($ClusterMapPage $ClusterMapTOC);
 
 $ClusterMapPage = "ClusterMap" unless defined $ClusterMapPage;
+
+# Don't list the following pages as unclustered
+# By default, journal pages and Comment pages
+$FilterUnclusteredRegExp = '\d\d\d\d-\d\d-\d\d|\d* *Comments on .*'
+	unless defined $FilterUnclusteredRegExp;
 
 $ClusterMapTOC = 1 unless defined $ClusterMapTOC;
 $PrintTOCAnchor = 0;
@@ -175,7 +180,9 @@ sub PrintUnclusteredMap {
 		foreach $page (sort keys %Unclustered) {
 			my $title = $page;
 			$title =~ s/_/ /g;
-			print "<li>" . ScriptLink($page, $title, 'local') . "</li>";
+			if ($title !~ /^($FilterUnclusteredRegExp)$/) {
+				print "<li>" . ScriptLink($page, $title, 'local') . "</li>";
+			}
 		}
 		print "</ul>";
 
