@@ -18,6 +18,8 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use XML::LibXML;
+
 # Import the functions
 
 package OddMuse;
@@ -103,6 +105,90 @@ sub test_page_negative {
   print "\n\nPage content:\n", $page, "\n" if $printpage;
 }
 
+sub xpath_test {
+  my ($page, @tests) = @_;
+  $page =~ s/^.*?<html>/<html>/s; # strip headers
+  my $parser = XML::LibXML->new();
+  my $doc = $parser->parse_string($page);
+  foreach my $test (@tests) {
+    print '.';
+    my $nodelist = $doc->findnodes($test);
+    if ($nodelist->size()) {
+      $passed++;
+    } else {
+      $failed++;
+      $printpage = 1;
+      print "\nXPATH Test: No matches for $test\n";
+      print "$page\n" if length($page) < 300;
+    }
+  }
+}
+
+sub negative_xpath_test {
+  my ($page, @tests) = @_;
+  $page =~ s/^.*?<html>/<html>/s; # strip headers
+  my $parser = XML::LibXML->new();
+  my $doc = $parser->parse_string($page);
+  foreach my $test (@tests) {
+    print '.';
+    my $nodelist = $doc->findnodes($test);
+    if (not $nodelist->size()) {
+      $passed++;
+    } else {
+      $failed++;
+      $printpage = 1;
+      print "\nXPATH Test: Unexpected matches for $test\n";
+    }
+  }
+}
+
+sub xpath_run_tests {
+  # translate embedded newlines (other backslashes remain untouched)
+  my %New;
+  foreach (keys %Test) {
+    $Test{$_} =~ s/\\n/\n/g;
+    my $new = $Test{$_};
+    s/\\n/\n/g;
+    $New{$_} = $new;
+  }
+  # Note that the order of tests is not specified!
+  my $output;
+  foreach my $input (keys %New) {
+    print '.';
+    {
+      local *STDOUT;
+      $output = '';
+      open(STDOUT, '>', \$output) or die "Can't open memory file: $!";
+      $FootnoteNumber = 0;
+      ApplyRules($input, 1);
+    }
+    xpath_test("<div>$output</div>", $New{$input});
+  }
+}
+
+sub test_match {
+  my ($input, @tests) = @_;
+  my $output;
+  foreach my $str (@tests) {
+    print '.';
+    {
+      local *STDOUT;
+      $output = '';
+      open(STDOUT, '>', \$output) or die "Can't open memory file: $!";
+      $FootnoteNumber = 0;
+      ApplyRules($input, 1);
+    }
+    if ($output =~ /$str/) {
+      $passed++;
+    } else {
+      $failed++;
+      $printpage = 1;
+      print "\nNo matches for $str\n";
+      print "$input\n" if length($input) < 200;
+    }
+  }
+}
+
 sub run_tests {
   # translate embedded newlines (other backslashes remain untouched)
   my %New;
@@ -166,7 +252,9 @@ sub remove_rule {
 sub add_module {
   my $mod = shift;
   mkdir $ModuleDir unless -d $ModuleDir;
-  symlink("/mnt/src/oddmuse/modules/$mod", "$ModuleDir/$mod") or die "Cannot symlink $mod: $!"
+  my $dir = `/bin/pwd`;
+  chop($dir);
+  symlink("$dir/modules/$mod", "$ModuleDir/$mod") or die "Cannot symlink $mod: $!"
     unless -l "$ModuleDir/$mod";
   do "$ModuleDir/$mod";
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules;
@@ -208,6 +296,28 @@ goto markup if $opt_m;
 goto fixme if $opt_x;
 
 $ENV{'REMOTE_ADDR'} = 'test-markup';
+
+# --------------------
+
+print '[oldmajor]';
+
+clear_pages();
+update_page('bla', 'one'); # oldmajor is undef, lastmajor is 1
+test_page(get_page('action=browse id=bla diff=1'), 'No diff available', 'one');
+update_page('bla', 'two', '', 1); # oldmajor is undef, lastmajor is 1
+test_page(get_page('action=browse id=bla diff=2'), 'one', 'two');
+update_page('bla', 'three'); # oldmajor is 1, lastmajor is 3
+test_page(get_page('action=browse id=bla diff=1'), 'one', 'three');
+test_page(get_page('action=browse id=bla diff=2'), 'two', 'three');
+update_page('bla', 'four', '', 1); # oldmajor is 1, lastmajor is 3
+test_page(get_page('action=browse id=bla diff=1'), 'one', 'four');
+test_page(get_page('action=browse id=bla diff=2'), 'three', 'four');
+update_page('bla', 'five'); # oldmajor is 3, lastmajor is 5
+test_page(get_page('action=browse id=bla diff=1'), 'three', 'five');
+test_page(get_page('action=browse id=bla diff=2'), 'four', 'five');
+update_page('bla', 'six'); # oldmajor is 5, lastmajor is 6
+test_page(get_page('action=browse id=bla diff=1'), 'five', 'six');
+test_page(get_page('action=browse id=bla diff=2'), 'five', 'six');
 
 # --------------------
 
@@ -368,31 +478,53 @@ use Cwd;
 $dir = cwd;
 $uri = "file://$dir";
 
+# test XML parsing and XPATH search
+$page="<book><a>test</a><a ref=\"two\">for you</a></book>";
+xpath_test($page, 'book', 'descendant::a', 'descendant::a[attribute::ref="two"]', '//a[text()="test"]');
+
+# some xpath tests
+update_page('RSS', "<rss $uri/heise.rdf>");
+$page = get_page('RSS');
+xpath_test($page,
+	   'descendant::a[attribute::title="999"][attribute::href="http://www.heise.de/tp/deutsch/inhalt/te/15886/1.html"][text()="Berufsverbot für Mediendesigner?"]');
+
 # RSS 2.0
 
 update_page('RSS', "<rss $uri/flickr.xml>");
 test_page(get_page('RSS'),
 	  join('(.|\n)*', # verify the *order* of things.
-	       '<a title="2004-10-14 09:34:47 " '
-	       . 'href="http://www.flickr.com/photos/broccoli/867118/">The Hydra</a>',
-	       '<a title="2004-10-14 09:28:11 " '
-	       . 'href="http://www.flickr.com/photos/broccoli/867075/">The War On Hydra</a>',
-	       '<a title="2004-10-14 05:08:17 " '
-	       . 'href="http://www.flickr.com/photos/seuss/864332/">Nation Demolished</a>',
-	       '<a title="2004-10-13 10:00:34 " '
-	       . 'href="http://www.flickr.com/photos/redking/851171/">Drummers</a>',
-	       '<a title="2004-10-13 10:00:30 " '
-	       . 'href="http://www.flickr.com/photos/redking/851168/">Death</a>',
-	       '<a title="2004-10-13 10:00:27 " '
-	       . 'href="http://www.flickr.com/photos/redking/851167/">Audio Terrorists</a>',
-	       '<a title="2004-10-13 10:00:25 " '
-	       . 'href="http://www.flickr.com/photos/redking/851166/">Crowds</a>',
-	       '<a title="2004-10-13 10:00:22 " '
-	       . 'href="http://www.flickr.com/photos/redking/851165/">Assholes</a>',
-	       '<a title="2004-10-12 23:38:14 " '
-	       . 'href="http://www.flickr.com/photos/bibo/844085/">iraq_saddam03</a>',
-	       '<a title="2004-10-10 10:09:06 " '
-	       . 'href="http://www.flickr.com/photos/theunholytrinity/867312/">brudermann</a>'));
+	       'href="http://www.flickr.com/photos/broccoli/867118/"',
+	       'href="http://www.flickr.com/photos/broccoli/867075/"',
+	       'href="http://www.flickr.com/photos/seuss/864332/"',
+	       'href="http://www.flickr.com/photos/redking/851171/"',
+	       'href="http://www.flickr.com/photos/redking/851168/"',
+	       'href="http://www.flickr.com/photos/redking/851167/"',
+	       'href="http://www.flickr.com/photos/redking/851166/"',
+	       'href="http://www.flickr.com/photos/redking/851165/"',
+	       'href="http://www.flickr.com/photos/bibo/844085/"',
+	       'href="http://www.flickr.com/photos/theunholytrinity/867312/"'),
+	  join('(.|\n)*',
+	       'title="2004-10-14 09:34:47 "',
+	       'title="2004-10-14 09:28:11 "',
+	       'title="2004-10-14 05:08:17 "',
+	       'title="2004-10-13 10:00:34 "',
+	       'title="2004-10-13 10:00:30 "',
+	       'title="2004-10-13 10:00:27 "',
+	       'title="2004-10-13 10:00:25 "',
+	       'title="2004-10-13 10:00:22 "',
+	       'title="2004-10-12 23:38:14 "',
+	       'title="2004-10-10 10:09:06 "'),
+	  join('(.|\n)*',
+	       '>The Hydra<',
+	       '>The War On Hydra<',
+	       '>Nation Demolished<',
+	       '>Drummers<',
+	       '>Death<',
+	       '>Audio Terrorists<',
+	       '>Crowds<',
+	       '>Assholes<',
+	       '>iraq_saddam03<',
+	       '>brudermann<'));
 
 @Test = split('\n',<<'EOT');
 Fania All Stars - Bamboleo
@@ -453,7 +585,7 @@ update_page('RSS', "<rss $uri/rss1.0.rdf>");
 test_page(get_page('RSS'), @Test);
 
 @Test = split('\n',<<'EOT');
-<div class="rss"><ul><li> <a title="999" href="http://www.heise.de/tp/deutsch/inhalt/te/15886/1.html">Berufsverbot für Mediendesigner\?</a></li>
+<div class="rss"><ul><li>
 Experimentell bestätigt:
 http://www.heise.de/tp/deutsch/inhalt/lis/15882/1.html
 Clash im Internet?
@@ -483,9 +615,6 @@ http://www.heise.de/tp/deutsch/inhalt/te/15869/1.html
 Ein Lied vom Tod
 http://www.heise.de/tp/deutsch/inhalt/kino/15862/1.html
 EOT
-
-update_page('RSS', "<rss $uri/heise.rdf>");
-test_page(get_page('RSS'), @Test);
 
 # Note, cannot identify BayleShanks as author in the mb.rdf
 @Test = split('\n',<<'EOT');
@@ -880,45 +1009,39 @@ This is a WikiLink.
 EOT
 
 test_page(update_page('CacheTest', 'This is a WikiLink.', '', 1), @Test);
-
 AppendStringToFile($ConfigFile, "\$WikiLinks = 1;\n");
 
 # without new edit, the cached version persists
-
 test_page(get_page('CacheTest'), @Test);
 
 # refresh the cache using the all action
-
-@Test = split('\n',<<'EOT');
-This is a WikiLink<a class="edit" title="Click to edit this page" href="http://localhost/wiki.pl\?action=edit;id=WikiLink">\?</a>.
-EOT
-
 get_page('action=all cache=0');
-test_page(get_page('CacheTest'), @Test);
+
+# now there is a link
+# This is a WikiLink<a class="edit" title="Click to edit this page" href="http://localhost/wiki.pl\?action=edit;id=WikiLink">\?</a>.
+xpath_test(get_page('CacheTest'), '//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/wiki.pl?action=edit;id=WikiLink"][text()="?"]');
 
 # --------------------
 
 print '[search and replace]';
 
+clear_pages();
+add_module('mac.pl');
+
 # Test search
 
-@Test = split('\n',<<'EOT');
-<h1>Search for: fooz</h1>
-<p>1 pages found.</p>
-<span class="result"><a class="local" href="http://localhost/wiki.pl/SearchAndReplace">SearchAndReplace</a></span>
-This is <strong>fooz</strong> and this is barz.
-EOT
-
 update_page('SearchAndReplace', 'This is fooz and this is barz.', '', 1);
-test_page(get_page('search=fooz'), @Test);
+$page = get_page('search=fooz');
+test_page($page,
+	  '<h1>Search for: fooz</h1>',
+	  '<p>1 pages found.</p>',
+	  'This is <strong>fooz</strong> and this is barz.');
+xpath_test($page, '//span[@class="result"]/a[@class="local"][@href="http://localhost/wiki.pl/SearchAndReplace"][text()="SearchAndReplace"]');
 
 # Make sure only admins can replace
 
-@Test = split('\n',<<'EOT');
-This operation is restricted to administrators only...
-EOT
-
-test_page(get_page('search=foo replace=bar'), @Test);
+test_page(get_page('search=foo replace=bar'),
+	  'This operation is restricted to administrators only...');
 
 # Simple replace
 
@@ -941,12 +1064,10 @@ test_page(get_page('SearchAndReplace'), @Test);
 
 ## Check headers especially the quoting of non-ASCII characters.
 
-@Test = split('\n',<<'EOT');
-<h1><a title="Click to search for references to this page" href="http://localhost/wiki.pl\?search=Alexander\+Schr\%c3\%b6der">Alexander Schröder</a></h1>
-Edit <a class="local" href="http://localhost/wiki.pl/Alexander_Schr\%c3\%b6der">Alexander Schröder</a>!
-EOT
-
-test_page(update_page("Alexander_Schröder", "Edit [[Alexander Schröder]]!"), @Test);
+$page = update_page("Alexander_Schröder", "Edit [[Alexander Schröder]]!");
+xpath_test($page,
+	   '//h1/a[@title="Click to search for references to this page"][@href="http://localhost/wiki.pl?search=Alexander+Schr%c3%b6der"][text()="Alexander Schröder"]',
+	   '//a[@class="local"][@href="http://localhost/wiki.pl/Alexander_Schr%c3%b6der"][text()="Alexander Schröder"]');
 
 # --------------------
 
@@ -1106,7 +1227,7 @@ test_page(get_page('action=browse revision=9 id=KeptRevisions'), @Test);
 
 @Test = split('\n',<<'EOT');
 Difference \(from prior major revision\)
-third
+second
 fifth
 EOT
 
@@ -1138,13 +1259,9 @@ print '[lock on creation]';
 
 ## Create a sample page, and test for regular expressions in the output
 
-@Test = split('\n',<<'EOT');
-SandBox
-This is a test.
-<h1><a title="Click to search for references to this page" href="http://localhost/wiki.pl\?search=SandBox">SandBox</a></h1>
-EOT
-
-test_page(update_page('SandBox', 'This is a test.', 'first test'), @Test);
+$page = update_page('SandBox', 'This is a test.', 'first test');
+test_page($page, 'SandBox', 'This is a test.');
+xpath_test($page, '//h1/a[@title="Click to search for references to this page"][@href="http://localhost/wiki.pl?search=SandBox"][text()="SandBox"]');
 
 ## Test RecentChanges
 
@@ -1256,24 +1373,16 @@ update_page('NearMap', " EmacsWiki"
 	    . " http://www.emacswiki.org/cgi-bin/emacs?search=%s;raw=1;near=0\n",
 	    'required', 0, 1);
 
-test_page(update_page('FooBaz', "Try FooBar instead!\n"),
-	  map { quotemeta } (
-	  '<a class="near" title="EmacsWiki"'
-	  . ' href="http://www.emacswiki.org/cgi-bin/wiki/FooBar">FooBar</a>',
-	  '<div class="near"><p><a class="local"'
-	  . ' href="http://localhost/wiki.pl/EditNearLinks">EditNearLinks</a>:'
-	  . ' <a class="edit" title="Click to edit this page"'
-	  . ' href="http://localhost/wiki.pl?action=edit;id=FooBar">FooBar</a></p></div>'));
-test_page(update_page('FooBar', "Test by AlexSchroeder!\n"),
-	  map { quotemeta } (
-	  '<div class="sister"><p>The same page on other sites:<br />'
-	  . '<a title="EmacsWiki:FooBar" href="http://www.emacswiki.org/cgi-bin/wiki/FooBar">'
-	  . '<img src="file:///tmp/oddmuse/EmacsWiki.png" alt="EmacsWiki:FooBar" /></a>'));
-test_page(get_page('search=alexschroeder'),
-	  map { quotemeta } (
-	  '<p>Near pages:</p>',
-	  '<a class="near" title="EmacsWiki"'
-	  . ' href="http://www.emacswiki.org/cgi-bin/wiki/AlexSchroeder">AlexSchroeder</a><br />'));
+xpath_test(update_page('FooBaz', "Try FooBar instead!\n"),
+	   '//a[@class="near"][@title="EmacsWiki"][@href="http://www.emacswiki.org/cgi-bin/wiki/FooBar"][text()="FooBar"]',
+	   '//div[@class="near"]/p/a[@class="local"][@href="http://localhost/wiki.pl/EditNearLinks"][text()="EditNearLinks"]/following-sibling::text()[string()=": "]/following-sibling::a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/wiki.pl?action=edit;id=FooBar"][text()="FooBar"]');
+
+xpath_test(update_page('FooBar', "Test by AlexSchroeder!\n"),
+	  '//div[@class="sister"]/p/a[@title="EmacsWiki:FooBar"][@href="http://www.emacswiki.org/cgi-bin/wiki/FooBar"]/img[@src="file:///tmp/oddmuse/EmacsWiki.png"][@alt="EmacsWiki:FooBar"]');
+
+xpath_test(get_page('search=alexschroeder'),
+	   '//p[text()="Near pages:"]',
+	   '//a[@class="near"][@title="EmacsWiki"][@href="http://www.emacswiki.org/cgi-bin/wiki/AlexSchroeder"][text()="AlexSchroeder"]');
 
 # --------------------
 
@@ -1301,16 +1410,16 @@ EOT
 test_page_negative(get_page('action=links raw=1'), @Test);
 test_page(get_page('action=links raw=1 inter=1'), @Test);
 
-@Test = map { quotemeta } split('\n',<<'EOT');
-<a class="local" href="http://localhost/wiki.pl/a">a</a>:
-<a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?foo"><span class="site">Oddmuse</span>:<span class="page">foo</span></a>
-<a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?bar"><span class="site">Oddmuse</span>:<span class="page">bar</span></a>
-<a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?baz"><span class="site">Oddmuse</span>:<span class="page">baz</span></a>
-<a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?foo_(bar)"><span class="site">Oddmuse</span>:<span class="page">foo_(bar)</span></a>
+@Test = split('\n',<<'EOT');
+//a[@class="local"][@href="http://localhost/wiki.pl/a"][text()="a"]
+//a[@class="inter"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?foo"]/span[@class="site"][text()="Oddmuse"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="foo"]
+//a[@class="inter"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?bar"]/span[@class="site"][text()="Oddmuse"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="bar"]
+//a[@class="inter"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?baz"]/span[@class="site"][text()="Oddmuse"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="baz"]
+//a[@class="inter"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?foo_(bar)"]/span[@class="site"][text()="Oddmuse"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="foo_(bar)"]
 EOT
 
-test_page_negative(get_page('action=links'), @Test);
-test_page(get_page('action=links inter=1'), @Test);
+negative_xpath_test(get_page('action=links'), @Test);
+xpath_test(get_page('action=links inter=1'), @Test);
 
 AppendStringToFile($ConfigFile, "\$BracketWiki = 0;\n");
 
@@ -1364,6 +1473,8 @@ test_page($page, @Test2);
 
 # --------------------
 
+fixme:
+
 print '[link pattern]';
 
 clear_pages();
@@ -1374,99 +1485,127 @@ update_page('InterMap', " Oddmuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n
 
 %Test = split('\n',<<'EOT');
 file://home/foo/tutorial.pdf
-<a class="url" href="file://home/foo/tutorial.pdf">file://home/foo/tutorial.pdf</a>
+//a[@class="url"][@href="file://home/foo/tutorial.pdf"][text()="file://home/foo/tutorial.pdf"]
 file:///home/foo/tutorial.pdf
-<a class="url" href="file:///home/foo/tutorial.pdf">file:///home/foo/tutorial.pdf</a>
-image inline: [[image:HomePage]], [[image:OtherPage]]
-image inline: <a class="image" href="http://localhost/test.pl/HomePage"><img class="upload" src="http://localhost/test.pl/download/HomePage" alt="HomePage" /></a>, [image:OtherPage]<a class="edit" title="Click to edit this page" href="http://localhost/test.pl?action=edit;id=OtherPage;upload=1">?</a>
-traditional local link: HomePage, OtherPage
-traditional local link: <a class="local" href="http://localhost/test.pl/HomePage">HomePage</a>, OtherPage<a class="edit" title="Click to edit this page" href="http://localhost/test.pl?action=edit;id=OtherPage">?</a>
-traditional local link with extra brackets: [HomePage], [OtherPage]
-traditional local link with extra brackets: <a class="local number" title="HomePage" href="http://localhost/test.pl/HomePage"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>, [OtherPage<a class="edit" title="Click to edit this page" href="http://localhost/test.pl?action=edit;id=OtherPage">?</a>]
-traditional local link with other text: [HomePage homepage], [OtherPage other page]
-traditional local link with other text: [<a class="local" href="http://localhost/test.pl/HomePage">HomePage</a> homepage], [OtherPage<a class="edit" title="Click to edit this page" href="http://localhost/test.pl?action=edit;id=OtherPage">?</a> other page]
-free link: [[home page]], [[other page]]
-free link: [home page]<a class="edit" title="Click to edit this page" href="http://localhost/test.pl?action=edit;id=home_page">?</a>, [other page]<a class="edit" title="Click to edit this page" href="http://localhost/test.pl?action=edit;id=other_page">?</a>
-free link with extra brackets: [[[home page]]], [[[other page]]]
-free link with extra brackets: [home_page<a class="edit" title="Click to edit this page" href="http://localhost/test.pl?action=edit;id=home_page">?</a>], [other_page<a class="edit" title="Click to edit this page" href="http://localhost/test.pl?action=edit;id=other_page">?</a>]
-free link with other text: [[home page|da homepage]], [[other page|da other homepage]]
-free link with other text: [[home page|da homepage]], [[other page|da other homepage]]
+//a[@class="url"][@href="file:///home/foo/tutorial.pdf"][text()="file:///home/foo/tutorial.pdf"]
+image inline: [[image:HomePage]]
+//a[@class="image"][@href="http://localhost/test.pl/HomePage"]/img[@class="upload"][@src="http://localhost/test.pl/download/HomePage"][@alt="HomePage"]
+image inline: [[image:OtherPage]]
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=OtherPage;upload=1"][text()="?"]
+traditional local link: HomePage
+//a[@class="local"][@href="http://localhost/test.pl/HomePage"][text()="HomePage"]
+traditional local link: OtherPage
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=OtherPage"][text()="?"]
+traditional local link with extra brackets: [HomePage]
+//a[@class="local number"][@title="HomePage"][@href="http://localhost/test.pl/HomePage"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
+traditional local link with extra brackets: [OtherPage]
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=OtherPage"][text()="?"]
+traditional local link with other text: [HomePage homepage]
+//a[@class="local"][@href="http://localhost/test.pl/HomePage"][text()="HomePage"]
+traditional local link with other text: [OtherPage other page]
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=OtherPage"][text()="?"]
+free link: [[home page]]
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=home_page"][text()="?"]
+free link: [[other page]]
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=other_page"][text()="?"]
+free link with extra brackets: [[[home page]]]
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=home_page"][text()="?"]
+free link with extra brackets: [[[other page]]]
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=other_page"][text()="?"]
+free link with other text: [[home page|da homepage]]
+//text()[string()="free link with other text: [[home page|da homepage]]"]
+free link with other text: [[other page|da other homepage]]
+//text()[string()="free link with other text: [[other page|da other homepage]]"]
 URL: http://www.oddmuse.org/
-URL: <a class="url" href="http://www.oddmuse.org/">http://www.oddmuse.org/</a>
+//a[@class="url"][@href="http://www.oddmuse.org/"][text()="http://www.oddmuse.org/"]
 URL in text http://www.oddmuse.org/ like this
-URL in text <a class="url" href="http://www.oddmuse.org/">http://www.oddmuse.org/</a> like this
+//text()[string()="URL in text "]/following-sibling::a[@class="url"][@href="http://www.oddmuse.org/"][text()="http://www.oddmuse.org/"]/following-sibling::text()[string()=" like this"]
 URL in brackets: [http://www.oddmuse.org/]
-URL in brackets: <a class="url number" href="http://www.oddmuse.org/"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>
+//a[@class="url number"][@href="http://www.oddmuse.org/"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
 URL in brackets with other text: [http://www.oddmuse.org/ oddmuse]
-URL in brackets with other text: <a class="url outside" href="http://www.oddmuse.org/">oddmuse</a>
+//a[@class="url outside"][@href="http://www.oddmuse.org/"][text()="oddmuse"]
 URL abbreviation: Oddmuse:Link_Pattern
-URL abbreviation: <a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"><span class="site">Oddmuse</span>:<span class="page">Link_Pattern</span></a>
+//a[@class="inter"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"]/span[@class="site"][text()="Oddmuse"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="Link_Pattern"]
 URL abbreviation with extra brackets: [Oddmuse:Link_Pattern]
-URL abbreviation with extra brackets: <a class="inter number" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>
+//a[@class="inter number"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
 URL abbreviation with other text: [Oddmuse:Link_Pattern link patterns]
-URL abbreviation with other text: <a class="inter outside" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern">link patterns</a>
+//a[@class="inter outside"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"][text()="link patterns"]
 URL abbreviation with meta characters: Oddmuse:Link+Pattern
-URL abbreviation with meta characters: <a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link+Pattern"><span class="site">Oddmuse</span>:<span class="page">Link+Pattern</span></a>
+//a[@class="inter"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link+Pattern"]/span[@class="site"][text()="Oddmuse"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="Link+Pattern"]
 URL abbreviation with meta characters and extra brackets: [Oddmuse:Link+Pattern]
-URL abbreviation with meta characters and extra brackets: <a class="inter number" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link+Pattern"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>
+//a[@class="inter number"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link+Pattern"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
 URL abbreviation with meta characters and other text: [Oddmuse:Link+Pattern link patterns]
-URL abbreviation with meta characters and other text: <a class="inter outside" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link+Pattern">link patterns</a>
+//a[@class="inter outside"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link+Pattern"][text()="link patterns"]
 free URL abbreviation: [[Oddmuse:Link Pattern]]
-free URL abbreviation: <a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern"><span class="site">Oddmuse</span>:<span class="page">Link Pattern</span></a>
+//a[@class="inter"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern"]/span[@class="site"][text()="Oddmuse"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="Link Pattern"]
 free URL abbreviation with extra brackets: [[[Oddmuse:Link Pattern]]]
-free URL abbreviation with extra brackets: <a class="inter number" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>
+//a[@class="inter number"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
 free URL abbreviation with other text: [[Oddmuse:Link Pattern|link patterns]]
-free URL abbreviation with other text: <a class="inter outside" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern">link patterns</a>
+//a[@class="inter outside"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern"][text()="link patterns"]
 free URL abbreviation with meta characters: [[Oddmuse:Link+Pattern]]
-free URL abbreviation with meta characters: <a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%2bPattern"><span class="site">Oddmuse</span>:<span class="page">Link+Pattern</span></a>
+//a[@class="inter"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%2bPattern"]/span[@class="site"][text()="Oddmuse"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="Link+Pattern"]
 free URL abbreviation with meta characters and extra brackets: [[[Oddmuse:Link+Pattern]]]
-free URL abbreviation with meta characters and extra brackets: <a class="inter number" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%2bPattern"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>
+//a[@class="inter number"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%2bPattern"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
 free URL abbreviation with meta characters and other text: [[Oddmuse:Link+Pattern|link patterns]]
-free URL abbreviation with meta characters and other text: <a class="inter outside" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%2bPattern">link patterns</a>
+//a[@class="inter outside"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%2bPattern"][text()="link patterns"]
 EOT
 
-run_tests();
+xpath_run_tests();
 
 $AllNetworkFiles = 0;
 
 $BracketWiki = 1;
 
 %Test = split('\n',<<'EOT');
-traditional local link: HomePage, OtherPage
-traditional local link: <a class="local" href="http://localhost/test.pl/HomePage">HomePage</a>, OtherPage<a class="edit" title="Click to edit this page" href="http://localhost/test.pl?action=edit;id=OtherPage">?</a>
-traditional local link with extra brackets: [HomePage], [OtherPage]
-traditional local link with extra brackets: <a class="local number" title="HomePage" href="http://localhost/test.pl/HomePage"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>, [OtherPage<a class="edit" title="Click to edit this page" href="http://localhost/test.pl?action=edit;id=OtherPage">?</a>]
-traditional local link with other text: [HomePage homepage], [OtherPage other page]
-traditional local link with other text: <a class="local" href="http://localhost/test.pl/HomePage">homepage</a>, [OtherPage<a class="edit" title="Click to edit this page" href="http://localhost/test.pl?action=edit;id=OtherPage">?</a> other page]
-free link: [[home page]], [[other page]]
-free link: [home page]<a class="edit" title="Click to edit this page" href="http://localhost/test.pl?action=edit;id=home_page">?</a>, [other page]<a class="edit" title="Click to edit this page" href="http://localhost/test.pl?action=edit;id=other_page">?</a>
-free link with extra brackets: [[[home page]]], [[[other page]]]
-free link with extra brackets: [home_page<a class="edit" title="Click to edit this page" href="http://localhost/test.pl?action=edit;id=home_page">?</a>], [other_page<a class="edit" title="Click to edit this page" href="http://localhost/test.pl?action=edit;id=other_page">?</a>]
-free link with other text: [[home page|da homepage]], [[other page|da other homepage]]
-free link with other text: [home page<a class="edit" title="Click to edit this page" href="http://localhost/test.pl?action=edit;id=home_page">?</a> da homepage], [other page<a class="edit" title="Click to edit this page" href="http://localhost/test.pl?action=edit;id=other_page">?</a> da other homepage]
+traditional local link: HomePage
+//a[@class="local"][@href="http://localhost/test.pl/HomePage"][text()="HomePage"]
+traditional local link: OtherPage
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=OtherPage"][text()="?"]
+traditional local link with extra brackets: [HomePage]
+//a[@class="local number"][@title="HomePage"][@href="http://localhost/test.pl/HomePage"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
+traditional local link with extra brackets: [OtherPage]
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=OtherPage"][text()="?"]
+traditional local link with other text: [HomePage homepage]
+//a[@class="local"][@href="http://localhost/test.pl/HomePage"][text()="homepage"]
+traditional local link with other text: [OtherPage other page]
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=OtherPage"][text()="?"]
+free link: [[home page]]
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=home_page"][text()="?"]
+free link: [[other page]]
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=other_page"][text()="?"]
+free link with extra brackets: [[[home page]]]
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=home_page"][text()="?"]
+free link with extra brackets: [[[other page]]]
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=other_page"][text()="?"]
+free link with other text: [[home page|da homepage]]
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=home_page"][text()="?"]
+free link with other text: [[other page|da other homepage]]
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=other_page"][text()="?"]
 URL: http://www.oddmuse.org/
-URL: <a class="url" href="http://www.oddmuse.org/">http://www.oddmuse.org/</a>
+//a[@class="url"][@href="http://www.oddmuse.org/"][text()="http://www.oddmuse.org/"]
 URL in brackets: [http://www.oddmuse.org/]
-URL in brackets: <a class="url number" href="http://www.oddmuse.org/"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>
+//a[@class="url number"][@href="http://www.oddmuse.org/"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
 URL in brackets with other text: [http://www.oddmuse.org/ oddmuse]
-URL in brackets with other text: <a class="url outside" href="http://www.oddmuse.org/">oddmuse</a>
+//a[@class="url outside"][@href="http://www.oddmuse.org/"][text()="oddmuse"]
 URL abbreviation: Oddmuse:Link_Pattern
-URL abbreviation: <a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"><span class="site">Oddmuse</span>:<span class="page">Link_Pattern</span></a>
+//a[@class="inter"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"]/span[@class="site"][text()="Oddmuse"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="Link_Pattern"]
 URL abbreviation with extra brackets: [Oddmuse:Link_Pattern]
-URL abbreviation with extra brackets: <a class="inter number" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>
+//a[@class="inter number"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
 URL abbreviation with other text: [Oddmuse:Link_Pattern link patterns]
-URL abbreviation with other text: <a class="inter outside" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern">link patterns</a>
+//a[@class="inter outside"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"][text()="link patterns"]
 free URL abbreviation: [[Oddmuse:Link Pattern]]
-free URL abbreviation: <a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern"><span class="site">Oddmuse</span>:<span class="page">Link Pattern</span></a>
+//a[@class="inter"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern"]/span[@class="site"][text()="Oddmuse"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="Link Pattern"]
 free URL abbreviation with extra brackets: [[[Oddmuse:Link Pattern]]]
-free URL abbreviation with extra brackets: <a class="inter number" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>
+//a[@class="inter number"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
 free URL abbreviation with other text: [[Oddmuse:Link Pattern|link pattern]]
-free URL abbreviation with other text: <a class="inter outside" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern">link pattern</a>
+//a[@class="inter outside"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern"][text()="link pattern"]
 EOT
 
-run_tests();
+xpath_run_tests();
 
 $BracketWiki = 0;
+
+goto end;
 
 # --------------------
 
@@ -2200,8 +2339,6 @@ remove_rule(\&CalendarRule);
 
 # --------------------
 
-fixme:
-
 print '[crumbs]';
 
 clear_pages();
@@ -2219,5 +2356,8 @@ remove_rule(\&CrumbsRule);
 
 ### END OF TESTS
 
+end:
+
 print "\n";
+print "Skipping lots of tests!\n";
 print "$passed passed, $failed failed.\n";
