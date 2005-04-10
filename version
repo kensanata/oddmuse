@@ -1,0 +1,7 @@
+#!/usr/bin/perl
+use CGI qw/:standard/;
+$q = new CGI;
+print $q->header()
+  . $q->start_html()
+  . $q->p("CGI Version: ", $q->version())
+  . $q->end_html();
