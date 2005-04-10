@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: logbannedcontent.pl,v 1.2 2005/04/08 21:23:43 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: logbannedcontent.pl,v 1.3 2005/04/10 16:57:22 fletcherpenney Exp $</p>';
 
 use vars qw($BannedFile); 
 
@@ -39,7 +39,7 @@ sub LogBannedContent {
 		
 		# Fix for 0's
 		$mon = sprintf("%02d", $mon);
-		$day = sprintf("%02d", $day);
+		$mday = sprintf("%02d", $mday);
 		$sec = sprintf("%02d", $sec);
 		$min = sprintf("%02d", $min);
 		$hr = sprintf("%02d", $hr);
