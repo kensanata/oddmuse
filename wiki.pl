@@ -357,7 +357,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.543 2005/04/07 16:16:18 frodo72 Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.544 2005/04/11 17:38:18 frodo72 Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -455,9 +455,9 @@ sub ApplyRules {
   local @Blocks=();     # the list of cached HTML blocks
   local @Flags=();	# a list for each block, 1 = dirty, 0 = clean
   Clean(join('', map { AddHtmlEnvironment($_) } @tags));
-  if ($text =~ m/^#FILE ([^ \n]+)\n/) {
+  if (my ($type) = TextIsFile($text)) {
     Clean($q->p(T('This page contains an uploaded file:'))
-	  . $q->p(GetDownloadLink($OpenPageName, (substr($1, 0, 6) eq 'image/'), $revision)));
+	  . $q->p(GetDownloadLink($OpenPageName, (substr($type, 0, 6) eq 'image/'), $revision)));
   } else {
     my $smileyregex = join "|", keys %Smilies;
     $smileyregex = qr/(?=$smileyregex)/;
@@ -2343,11 +2343,9 @@ sub DoDiff {	# Actualy call the diff program
 
 sub GetDiff {
   my ($old, $new, $revision) = @_;
-  $old =~ m/^#FILE ([^ \n]+)\n/;
-  my $old_is_file = ($1 ? substr($1, 0, 6) : 0);
-  my $old_is_image = ($old_is_file eq 'image/');
-  $new =~ m/^#FILE ([^ \n]+)\n/;
-  my $new_is_file = ($1 ? substr($1, 0, 6) : 0);
+  my $old_is_file = (TextIsFile($old))[0] || '';
+  my $old_is_image = ($old_is_file =~ /^image\//);
+  my $new_is_file = TextIsFile($new);
   if ($old_is_file or $new_is_file) {
     return $q->p($q->strong(T('Old revision:')))
       . $q->div({-class=>'old'}, # don't pring new revision, because that's the one that gets shown!
@@ -2804,7 +2802,7 @@ sub DoEdit {
   OpenPage($id);
   my ($text, $revision) = GetTextRevision(GetParam('revision', ''), 1); # maybe revision reset!
   my $oldText = $preview ? $newText : $text;
-  my $isFile = ($oldText =~ m/^#FILE ([^ \n]+)\n(.*)/s);
+  my $isFile = TextIsFile($oldText);
   $upload = $isFile if not defined $upload;
   if ($upload and not $UploadAllowed and not UserIsAdmin()) {
     ReportError(T('Only administrators can upload files.'), '403 FORBIDDEN');
@@ -2882,8 +2880,8 @@ sub DoDownload {
   }
   my ($text, $revision) = GetTextRevision(GetParam('revision', '')); # maybe revision reset!
   my $ts = $Page{ts};
-  if ($text =~ /^#FILE ([^ \n]+)\n(.*)/s) {
-    my ($type, $data) = ($1, $2);
+  if (my ($type) = TextIsFile($text)) {
+    my ($data) = $text =~ /^[^\n]*\n(.*)/s;
     my $regexp = quotemeta($type);
     if (@UploadTypes and not grep(/^$regexp$/, @UploadTypes)) {
       ReportError(Ts('Files of type %s are not allowed.', $type), '415 UNSUPPORTED MEDIA TYPE');
@@ -3161,7 +3159,7 @@ sub SearchTitleAndBody {
   my $lang = GetParam('lang', '');
   foreach my $name (AllPagesList()) {
     OpenPage($name);
-    next if ($Page{text} =~ /^#FILE / and $string !~ /^\^#FILE/); # skip files unless requested
+    next if (TextIsFile($Page{text}) and $string !~ /^\^#FILE/); # skip files unless requested
     if ($lang) {
       my @languages = split(/,/, $Page{languages});
       next if (@languages and not grep(/$lang/, @languages));
@@ -3249,8 +3247,7 @@ sub PrintSearchResult {
   $pageText =~ s/([-_=\\*\\.]){10,}/$1$1$1$1$1/g ; # e.g. shrink "----------"
   $entry{title} = $name;
   if ($files) {
-    $pageText =~ /^#FILE ([^ ]+)/;
-    $entry{description} = $1;
+    ($entry{description}) = TextIsFile($pageText);
   } else {
     $entry{description} = SearchExtract(QuoteHtml($pageText), $regex);
   }
@@ -3544,7 +3541,7 @@ sub Save { # call within lock, with opened page
   $Page{host} = $host;
   $Page{minor} = $minor;
   $Page{text} = $new;
-  if ($UseDiff and $revision > 1 and not $upload and $old !~ /^\#FILE /) {
+  if ($UseDiff and $revision > 1 and not $upload and not TextIsFile($old)) {
     UpdateDiffs($old, $new); # sets diff-major and diff-minor}
   }
   my $languages;
@@ -3942,6 +3939,8 @@ sub DeletePermanentAnchors {
   WritePermanentAnchors();
   ReleaseLockDir('permanentanchors');
 }
+
+sub TextIsFile { $_[0] =~ /^#FILE (\S+)$/m }
 
 sub handler {
   my $r = shift;
