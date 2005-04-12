@@ -357,7 +357,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.544 2005/04/11 17:38:18 frodo72 Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.545 2005/04/12 22:27:42 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -585,12 +585,16 @@ sub LinkRules {
   } elsif ($BracketText && m/\G(\[$FullUrlPattern\s+([^\]]+?)\])/cog
 	   or m/\G(\[$FullUrlPattern\])/cog or m/\G($UrlPattern)/cog) {
     # [URL text] makes [text] link to URL, [URL] makes footnotes [1]
-    my $bracket = (substr($1, 0, 1) eq '[');
-    if ($bracket and not $3) { # [URL] is dirty because the number may change
-      Dirty($1);
-      print GetUrl($2, '', 1);
+    my ($str, $url, $text, $bracket, $rest) = ($1, $2, $3, (substr($1, 0, 1) eq '['), '');
+    if ($url =~ /(&lt|&gt|&amp)$/) { # remove trailing partial named entitites and add them as
+      $rest = $1;                    # back again at the end as trailing text.
+      $url =~ s/&(lt|gt|amp)$//;
+    }
+    if ($bracket and not $text) { # [URL] is dirty because the number may change
+      Dirty($str);
+      print GetUrl($url, '', 1), $rest;
     } else {
-      Clean(GetUrl($2, $3, $bracket, not $bracket)); # $2 may be empty
+      Clean(GetUrl($url, $text, $bracket, not $bracket) . $rest); # $text may be empty, no images in brackets
     }
   } elsif ($WikiLinks && m/\G!$LinkPattern/cog) {
     Clean($1);			# ! gets eaten
@@ -1714,7 +1718,7 @@ sub GetRcText {
       . RcTextItem('generator', $username ? $username . ' ' . Ts('from %s', $host) : $host)
       . RcTextItem('language', join(', ', @{$languages}))
       . RcTextItem('link', $link)
-      . RcTextItem('last-modified', CalcDay($timestamp));
+      . RcTextItem('last-modified', TimeToW3($timestamp));
     },
     @_;
   return $text;
@@ -1724,9 +1728,7 @@ sub GetRcRss {
   my $url = QuoteHtml($ScriptName);
   my $diffPrefix = $url . QuoteHtml("?action=browse;diff=1;id=");
   my $historyPrefix = $url . QuoteHtml("?action=history;id=");
-  my ($sec, $min, $hour, $mday, $mon, $year) = gmtime($Now);
-  $year += 1900;
-  my $date = sprintf( "%4d-%02d-%02dT%02d:%02d:%02d+00:00", $year, $mon+1, $mday, $hour, $min, $sec);
+  my $date = TimeToW3($Now);
   my @excluded = ();
   if (GetParam('exclude', 1)) {
     foreach (split(/\n/, GetPageContent($RssExclude))) {
@@ -1768,16 +1770,13 @@ sub GetRcRss {
     sub {
       my ($pagename, $timestamp, $host, $username, $summary, $minor, $revision, $languages, $cluster) = @_;
       return if grep(/$pagename/, @excluded);
-      my ($sec, $min, $hour, $mday, $mon, $year) = gmtime($timestamp);
       my $name = FreeToNormal($pagename);
       $name =~ s/_/ /g;
       if (GetParam('full', 0)) {
 	$name .= ': ' . $summary;
 	$summary = PageHtml($pagename);
       }
-      $year += 1900;
-      my $date = sprintf( "%4d-%02d-%02dT%02d:%02d:%02d+00:00",
-	$year, $mon+1, $mday, $hour, $min, $sec);
+      my $date = TimeToW3($timestamp);
       my $author = QuoteHtml($username);
       $author = $host unless $author;
       my %wiki = ( status      => (1 == $revision) ? 'new' : 'updated',
@@ -2585,7 +2584,7 @@ sub ExpireKeepFiles { # call with opened page
   foreach my $revision (GetKeepRevisions($OpenPageName)) {
     my %keep = GetKeptRevision($revision);
     next if $keep{'keep-ts'} >= $expirets;
-    next if $KeepMajor && ($keep{revision} == $Page{oldmajor});
+    next if $KeepMajor and ($keep{revision} == $Page{oldmajor} or $keep{revision} == $Page{lastmajor});
     unlink GetKeepFile($OpenPageName, $revision);
   }
 }
@@ -2744,6 +2743,11 @@ sub CalcTimeSince {
 sub TimeToText {
   my $t = shift;
   return CalcDay($t) . ' ' . CalcTime($t);
+}
+
+sub TimeToW3 { # Complete date plus hours and minutes: YYYY-MM-DDThh:mmTZD (eg 1997-07-16T19:20+01:00)
+  my $t = shift; # When times are expressed in UTC, use a special UTC designator ("Z").
+  return CalcDay($t) . 'T' . CalcTime($t) . 'Z';
 }
 
 sub GetHiddenValue {
@@ -3767,6 +3771,7 @@ sub DoShowVersion {
   if (GetParam('dependencies', 0)) {
     print $q->p($q->server_software()),
       $q->p(sprintf('Perl v%vd', $^V)),
+      $q->p($ENV{MOD_PERL} ? $ENV{MOD_PERL} : "no mod_perl"),
       $q->p('CGI: ', $CGI::VERSION),
       $q->p('LWP::UserAgent ', eval { local $SIG{__DIE__}; require LWP::UserAgent; $LWP::UserAgent::VERSION; }),
       $q->p('XML::RSS: ', eval { local $SIG{__DIE__}; require XML::RSS; $XML::RSS::VERSION; }),
