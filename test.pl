@@ -105,21 +105,60 @@ sub test_page_negative {
   print "\n\nPage content:\n", $page, "\n" if $printpage;
 }
 
+sub get_text_via_xpath {
+  my ($page, $test) = @_;
+  $page =~ s/^.*?<html>/<html>/s; # strip headers
+  my $parser = XML::LibXML->new();
+  my $doc;
+  eval { $doc = $parser->parse_html_string($page) };
+  if ($@) {
+    print "Could not parse html: ", $page, "\n";
+    $failed += 1;
+  } else {
+    print '.';
+    my $nodelist;
+    eval { $nodelist = $doc->findnodes($test) };
+    if ($@) {
+      $failed++;
+      print "\nXPATH Test: failed to run $test: $@\n";
+    } elsif ($nodelist->size()) {
+      $passed++;
+      return $nodelist->string_value();
+    } else {
+      $failed++;
+      print "\nXPATH Test: No matches for $test\n";
+      $page =~ s/^.*?<body/<body/s;
+      print substr($page,0,30000), "\n";
+    }
+  }
+}
+
+
 sub xpath_test {
   my ($page, @tests) = @_;
   $page =~ s/^.*?<html>/<html>/s; # strip headers
   my $parser = XML::LibXML->new();
-  my $doc = $parser->parse_string($page);
-  foreach my $test (@tests) {
-    print '.';
-    my $nodelist = $doc->findnodes($test);
-    if ($nodelist->size()) {
-      $passed++;
-    } else {
-      $failed++;
-      $printpage = 1;
-      print "\nXPATH Test: No matches for $test\n";
-      print "$page\n" if length($page) < 300;
+  my $doc;
+  eval { $doc = $parser->parse_html_string($page) };
+  if ($@) {
+    print "Could not parse html: ", substr($page,0,100), "\n";
+    $failed += @tests;
+  } else {
+    foreach my $test (@tests) {
+      print '.';
+      my $nodelist;
+      eval { $nodelist = $doc->findnodes($test) };
+      if ($@) {
+	$failed++;
+	print "\nXPATH Test: failed to run $test: $@\n";
+      } elsif ($nodelist->size()) {
+	$passed++;
+      } else {
+	$failed++;
+	print "\nXPATH Test: No matches for $test\n";
+	$page =~ s/^.*?<body/<body/s; # strip
+	print substr($page,0,30000), "\n";
+      }
     }
   }
 }
@@ -128,7 +167,7 @@ sub negative_xpath_test {
   my ($page, @tests) = @_;
   $page =~ s/^.*?<html>/<html>/s; # strip headers
   my $parser = XML::LibXML->new();
-  my $doc = $parser->parse_string($page);
+  my $doc = $parser->parse_html_string($page);
   foreach my $test (@tests) {
     print '.';
     my $nodelist = $doc->findnodes($test);
@@ -141,6 +180,17 @@ sub negative_xpath_test {
     }
   }
 }
+
+sub apply_rules {
+  my $input = shift;
+  local *STDOUT;
+  $output = '';
+  open(STDOUT, '>', \$output) or die "Can't open memory file: $!";
+  $FootnoteNumber = 0;
+  ApplyRules(QuoteHtml($input), 1);
+  return $output;
+}
+
 
 sub xpath_run_tests {
   # translate embedded newlines (other backslashes remain untouched)
@@ -155,29 +205,16 @@ sub xpath_run_tests {
   my $output;
   foreach my $input (keys %New) {
     print '.';
-    {
-      local *STDOUT;
-      $output = '';
-      open(STDOUT, '>', \$output) or die "Can't open memory file: $!";
-      $FootnoteNumber = 0;
-      ApplyRules($input, 1);
-    }
+    my $output = apply_rules($input);
     xpath_test("<div>$output</div>", $New{$input});
   }
 }
 
 sub test_match {
   my ($input, @tests) = @_;
-  my $output;
   foreach my $str (@tests) {
     print '.';
-    {
-      local *STDOUT;
-      $output = '';
-      open(STDOUT, '>', \$output) or die "Can't open memory file: $!";
-      $FootnoteNumber = 0;
-      ApplyRules($input, 1);
-    }
+    my $output = apply_rules($str);
     if ($output =~ /$str/) {
       $passed++;
     } else {
@@ -199,16 +236,9 @@ sub run_tests {
     $New{$_} = $new;
   }
   # Note that the order of tests is not specified!
-  my $output;
   foreach my $input (keys %New) {
     print '.';
-    {
-      local *STDOUT;
-      $output = '';
-      open(STDOUT, '>', \$output) or die "Can't open memory file: $!";
-      $FootnoteNumber = 0;
-      ApplyRules($input, 1);
-    }
+    my $output = apply_rules($input);
     if ($output eq $New{$input}) {
       $passed++;
     } else {
@@ -219,20 +249,6 @@ sub run_tests {
     }
   }
 }
-
-sub rc_line {
-  my ($page, $regexp) = @_;
-  while ($page =~ m!<li>(.*?)</li>!g) {
-    my $line = $1;
-    if ($line =~ /$regexp/) {
-      $passed++;
-      return ($1, $2, $3, $4, $5, $6, $7, $8, $9);
-    }
-  }
-  $failed++;
-  print "\nRC Line: Did not find \"", $regexp, '"';
-}
-
 
 sub remove_rule {
   my $rule = shift;
@@ -282,7 +298,6 @@ sub clear_pages {
   %NearSite = ();
   %NearSearch = ();
 }
-
 
 # Create temporary data directory as expected by the script
 
@@ -371,7 +386,12 @@ update_page('MinorPage', 'Ramtatam', 'tester', 1);
 
 test_page(get_page('NicePage'), 'Bad content');
 test_page(get_page('InnocentPage'), 'Lamb');
-($to) = rc_line(get_page('action=rc all=1 pwd=foo'), 'action=rollback;to=([0-9]+).*good guy two');
+
+$to = get_text_via_xpath(get_page('action=rc all=1 pwd=foo'),
+			 '//strong[text()="good guy two"]/preceding-sibling::a[@class="rollback"]/attribute::href');
+$to =~ /action=rollback;to=([0-9]+)/;
+$to = $1;
+
 test_page(get_page("action=rollback to=$to"), 'restricted to administrators');
 test_page(get_page("action=rollback to=$to pwd=foo"),
 	  'Rolling back changes', 'NicePage rolled back', 'OtherPage rolled back');
@@ -385,16 +405,17 @@ test_page(get_page('InnocentPage'), 'Lamb');
 my $rc = get_page('action=rc all=1 showedit=1 pwd=foo');
 
 # check all revisions of NicePage in recent changes
-rc_line($rc, '<span class="time">[0-9:]* UTC</span> *\(<span class="new">new</span>\) *\(<a class="rollback" href="http://localhost/wiki.pl\?action=rollback;to=[0-9]*">rollback</a>\) *<a class="revision" href="http://localhost/wiki.pl\?action=browse;id=NicePage;revision=1">NicePage</a>[ .]*test-markup <span class="dash"> \&ndash; </span><strong>good guy one</strong> *');
-rc_line($rc, '<span class="time">[0-9:]* UTC</span> *\(<a class="diff" href="http://localhost/wiki.pl\?action=browse;diff=2;id=NicePage;diffrevision=2">diff</a>\) *\(<a class="rollback" href="http://localhost/wiki.pl\?action=rollback;to=[0-9]*">rollback</a>\) *<a class="revision" href="http://localhost/wiki.pl\?action=browse;id=NicePage;revision=2">NicePage</a>[ .]*test-markup <span class="dash"> \&ndash; </span><strong>good guy two</strong> *');
-rc_line($rc, '<span class="time">[0-9:]* UTC</span> *\(<a class="diff" href="http://localhost/wiki.pl\?action=browse;diff=2;id=NicePage;diffrevision=3">diff</a>\) *\(<a class="rollback" href="http://localhost/wiki.pl\?action=rollback;to=[0-9]*">rollback</a>\) *<a class="revision" href="http://localhost/wiki.pl\?action=browse;id=NicePage;revision=3">NicePage</a>[ .]*test-markup <span class="dash"> \&ndash; </span><strong>vandal one</strong> *');
-rc_line($rc, '<span class="time">[0-9:]* UTC</span> *\(<a class="diff" href="http://localhost/wiki.pl\?action=browse;diff=2;id=NicePage;diffrevision=4">diff</a>\) *\(<a class="rollback" href="http://localhost/wiki.pl\?action=rollback;to=[0-9]*">rollback</a>\) *<a class="revision" href="http://localhost/wiki.pl\?action=browse;id=NicePage;revision=4">NicePage</a>[ .]*test-markup <span class="dash"> \&ndash; </span><strong>vandal two</strong> *');
-rc_line($rc, '<span class="time">[0-9:]* UTC</span> *\(<a class="diff" href="http://localhost/wiki.pl\?action=browse;diff=2;id=NicePage;diffrevision=5">diff</a>\) *\(<a class="rollback" href="http://localhost/wiki.pl\?action=rollback;to=[0-9]*">rollback</a>\) *<a class="revision" href="http://localhost/wiki.pl\?action=browse;id=NicePage;revision=5">NicePage</a>[ .]*test-markup <span class="dash"> \&ndash; </span><strong>Rollback to [-0-9: ]* UTC</strong> *');
-
-# check that the minor spam is reverted with a minor rollback
-rc_line($rc, '<span class="time">[0-9:]* UTC</span> *\(<span class="new">new</span>\) *\(<a class="rollback" href="http://localhost/wiki.pl\?action=rollback;to=[0-9]*">rollback</a>\) *<a class="revision" href="http://localhost/wiki.pl\?action=browse;id=MinorPage;revision=1">MinorPage</a>[ .]*test-markup <span class="dash"> \&ndash; </span><strong>tester</strong> *');
-rc_line($rc, '<span class="time">[0-9:]* UTC</span> *\(<a class="diff" href="http://localhost/wiki.pl\?action=browse;diff=2;id=MinorPage;diffrevision=2">diff</a>\) *\(<a class="rollback" href="http://localhost/wiki.pl\?action=rollback;to=[0-9]*">rollback</a>\) *<a class="revision" href="http://localhost/wiki.pl\?action=browse;id=MinorPage;revision=2">MinorPage</a>[ .]*test-markup <span class="dash"> \&ndash; </span><strong>tester</strong> *<em>\(minor\)</em>');
-rc_line($rc, '<span class="time">[0-9:]* UTC</span> *\(<a class="diff" href="http://localhost/wiki.pl\?action=browse;diff=2;id=MinorPage;diffrevision=3">diff</a>\) *\(<a class="rollback" href="http://localhost/wiki.pl\?action=rollback;to=[0-9]*">rollback</a>\) *<a class="revision" href="http://localhost/wiki.pl\?action=browse;id=MinorPage;revision=3">MinorPage</a>[ .]*test-markup <span class="dash"> \&ndash; </span><strong>Rollback to [-0-9: ]* UTC</strong> *<em>\(minor\)</em>');
+xpath_test($rc,
+	'//li/span[@class="time"]/following-sibling::span[@class="new"][text()="new"]/following-sibling::a[@class="rollback"][text()="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=NicePage;revision=1"][text()="NicePage"]/following-sibling::span[@class="dash"]/following-sibling::strong[text()="good guy one"]',
+	'//li/span[@class="time"]/following-sibling::a[@class="diff"][@href="http://localhost/wiki.pl?action=browse;diff=2;id=NicePage;diffrevision=2"][text()="diff"]/following-sibling::a[@class="rollback"][text()="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=NicePage;revision=2"][text()="NicePage"]/following-sibling::span[@class="dash"]/following-sibling::strong[text()="good guy two"]',
+	'//li/span[@class="time"]/following-sibling::a[@class="diff"][@href="http://localhost/wiki.pl?action=browse;diff=2;id=NicePage;diffrevision=3"][text()="diff"]/following-sibling::a[@class="rollback"][text()="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=NicePage;revision=3"][text()="NicePage"]/following-sibling::span[@class="dash"]/following-sibling::strong[text()="vandal one"]',
+	'//li/span[@class="time"]/following-sibling::a[@class="diff"][@href="http://localhost/wiki.pl?action=browse;diff=2;id=NicePage;diffrevision=4"][text()="diff"]/following-sibling::a[@class="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=NicePage;revision=4"][text()="NicePage"]/following-sibling::span[@class="dash"]/following-sibling::strong[text()="vandal two"]',
+	'//li/span[@class="time"]/following-sibling::a[@class="diff"][@href="http://localhost/wiki.pl?action=browse;diff=2;id=NicePage;diffrevision=5"][text()="diff"]/following-sibling::a[@class="rollback"][text()="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=NicePage;revision=5"][text()="NicePage"]/following-sibling::span[@class="dash"]/following-sibling::strong[contains(text(),"Rollback to")]',
+	# check that the minor spam is reverted with a minor rollback
+	'//li/span[@class="time"]/following-sibling::span[@class="new"][text()="new"]/following-sibling::a[@class="rollback"][text()="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=MinorPage;revision=1"][text()="MinorPage"]/following-sibling::span[@class="dash"]/following-sibling::strong[text()="tester"]',
+	'//li/span[@class="time"]/following-sibling::a[@class="diff"][@href="http://localhost/wiki.pl?action=browse;diff=2;id=MinorPage;diffrevision=2"][text()="diff"]/following-sibling::a[@class="rollback"][text()="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=MinorPage;revision=2"][text()="MinorPage"]/following-sibling::span[@class="dash"]/following-sibling::strong[text()="tester"]/following-sibling::em[text()="(minor)"]',
+	   '//li/span[@class="time"]/following-sibling::a[@class="diff"][@href="http://localhost/wiki.pl?action=browse;diff=2;id=MinorPage;diffrevision=3"][text()="diff"]/following-sibling::a[@class="rollback"][text()="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=MinorPage;revision=3"][text()="MinorPage"]/following-sibling::span[@class="dash"]/following-sibling::strong[contains(text(),"Rollback to")]/following-sibling::em[text()="(minor)"]',
+	  );
 
 # --------------------
 
@@ -477,10 +498,6 @@ print '[rss]';
 use Cwd;
 $dir = cwd;
 $uri = "file://$dir";
-
-# test XML parsing and XPATH search
-$page="<book><a>test</a><a ref=\"two\">for you</a></book>";
-xpath_test($page, 'book', 'descendant::a', 'descendant::a[attribute::ref="two"]', '//a[text()="test"]');
 
 # some xpath tests
 update_page('RSS', "<rss $uri/heise.rdf>");
@@ -1473,8 +1490,6 @@ test_page($page, @Test2);
 
 # --------------------
 
-fixme:
-
 print '[link pattern]';
 
 clear_pages();
@@ -1605,8 +1620,6 @@ xpath_run_tests();
 
 $BracketWiki = 0;
 
-goto end;
-
 # --------------------
 
 markup:
@@ -1617,12 +1630,11 @@ clear_pages();
 
 update_page('InterMap', " OddMuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n PlanetMath http://planetmath.org/encyclopedia/%s.html", 'required', 0, 1);
 
+# non links
+
 $NetworkFile = 1;
-%Smilies = ('HAHA!' => '/pics/haha.png');
 
 %Test = split('\n',<<'EOT');
-HAHA!
-<img class="smiley" src="/pics/haha.png" alt="HAHA!" />
 do not eat 0 from text
 do not eat 0 from text
 ordinary text
@@ -1643,87 +1655,98 @@ paragraph<p>paragraph</p>
 <ul><li>one</li><li>two<ul><li>one and two</li><li>two and three</li></ul></li><li>three</li></ul>
 * one and *\n* two and * more
 <ul><li>one and *</li><li>two and * more</li></ul>
-WikiWord
-WikiWord<a class="edit" title="Click to edit this page" href="http://localhost/test.pl?action=edit;id=WikiWord">?</a>
-WikiWord:
-WikiWord<a class="edit" title="Click to edit this page" href="http://localhost/test.pl?action=edit;id=WikiWord">?</a>:
-OddMuse
-OddMuse<a class="edit" title="Click to edit this page" href="http://localhost/test.pl?action=edit;id=OddMuse">?</a>
-OddMuse:
-OddMuse<a class="edit" title="Click to edit this page" href="http://localhost/test.pl?action=edit;id=OddMuse">?</a>:
-OddMuse:test
-<a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"><span class="site">OddMuse</span>:<span class="page">test</span></a>
-OddMuse:test: or not
-<a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"><span class="site">OddMuse</span>:<span class="page">test</span></a>: or not
-OddMuse:test, and foo
-<a class="inter" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"><span class="site">OddMuse</span>:<span class="page">test</span></a>, and foo
-PlanetMath:ZipfsLaw, and foo
-<a class="inter" href="http://planetmath.org/encyclopedia/ZipfsLaw.html"><span class="site">PlanetMath</span>:<span class="page">ZipfsLaw</span></a>, and foo
-[OddMuse:test]
-<a class="inter number" href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>
 Foo::Bar
 Foo::Bar
 !WikiLink
 WikiLink
 !foo
 !foo
-![[Free Link]]
-![Free Link]<a class="edit" title="Click to edit this page" href="http://localhost/test.pl?action=edit;id=Free_Link">?</a>
-http://www.emacswiki.org
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>
-<http://www.emacswiki.org>
-<<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>>
-http://www.emacswiki.org/
-<a class="url" href="http://www.emacswiki.org/">http://www.emacswiki.org/</a>
-http://www.emacswiki.org.
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>.
-http://www.emacswiki.org,
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>,
-http://www.emacswiki.org;
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>;
-http://www.emacswiki.org:
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>:
-http://www.emacswiki.org?
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>?
-http://www.emacswiki.org/?
-<a class="url" href="http://www.emacswiki.org/">http://www.emacswiki.org/</a>?
-http://www.emacswiki.org!
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>!
-http://www.emacswiki.org'
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>'
-http://www.emacswiki.org"
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>"
-http://www.emacswiki.org!
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>!
-http://www.emacswiki.org(
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>(
-http://www.emacswiki.org)
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>)
-http://www.emacswiki.org&
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>&
-http://www.emacswiki.org#
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>#
-http://www.emacswiki.org%
-<a class="url" href="http://www.emacswiki.org">http://www.emacswiki.org</a>%
-[http://www.emacswiki.org]
-<a class="url number" href="http://www.emacswiki.org"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>
-[http://www.emacswiki.org] and [http://www.emacswiki.org]
-<a class="url number" href="http://www.emacswiki.org"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a> and <a class="url number" href="http://www.emacswiki.org"><span><span class="bracket">[</span>2<span class="bracket">]</span></span></a>
-[http://www.emacswiki.org],
-<a class="url number" href="http://www.emacswiki.org"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>,
-[http://www.emacswiki.org and a label]
-<a class="url outside" href="http://www.emacswiki.org">and a label</a>
-[file://home/foo/tutorial.pdf local link]
-<a class="url outside" href="file://home/foo/tutorial.pdf">local link</a>
-file://home/foo/tutorial.pdf
-<a class="url" href="file://home/foo/tutorial.pdf">file://home/foo/tutorial.pdf</a>
 file:///home/foo/tutorial.pdf
 file:///home/foo/tutorial.pdf
-mailto:alex@emacswiki.org
-<a class="url" href="mailto:alex@emacswiki.org">mailto:alex@emacswiki.org</a>
 EOT
 
 run_tests();
+
+# links and other attributes containing attributes
+
+%Smilies = ('HAHA!' => '/pics/haha.png');
+
+%Test = split('\n',<<'EOT');
+HAHA!
+//img[@class="smiley"][@src="/pics/haha.png"][@alt="HAHA!"]
+WikiWord
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=WikiWord"][text()="?"]
+WikiWord:
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=WikiWord"][text()="?"]/following-sibling::text()[string()=":"]
+OddMuse
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=OddMuse"][text()="?"]
+OddMuse:
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=OddMuse"][text()="?"]/following-sibling::text()[string()=":"]
+OddMuse:test
+//a[@class="inter"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"]/span[@class="site"][text()="OddMuse"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="test"]
+OddMuse:test: or not
+//a[@class="inter"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"]/span[@class="site"][text()="OddMuse"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="test"]
+OddMuse:test, and foo
+//a[@class="inter"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"]/span[@class="site"][text()="OddMuse"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="test"]
+PlanetMath:ZipfsLaw, and foo
+//a[@class="inter"][@href="http://planetmath.org/encyclopedia/ZipfsLaw.html"]/span[@class="site"][text()="PlanetMath"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="ZipfsLaw"]
+[OddMuse:test]
+//a[@class="inter number"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
+![[Free Link]]
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=Free_Link"][text()="?"]
+http://www.emacswiki.org
+//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]
+<http://www.emacswiki.org>
+//text()[string()="<"]/following-sibling::a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()=">"]
+http://www.emacswiki.org/
+//a[@class="url"][@href="http://www.emacswiki.org/"][text()="http://www.emacswiki.org/"]
+http://www.emacswiki.org.
+//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="."]
+http://www.emacswiki.org,
+//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()=","]
+http://www.emacswiki.org;
+//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()=";"]
+http://www.emacswiki.org:
+//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()=":"]
+http://www.emacswiki.org?
+//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="?"]
+http://www.emacswiki.org/?
+//a[@class="url"][@href="http://www.emacswiki.org/"][text()="http://www.emacswiki.org/"]/following-sibling::text()[string()="?"]
+http://www.emacswiki.org!
+//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="!"]
+http://www.emacswiki.org'
+//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="'"]
+http://www.emacswiki.org"
+//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()='"']
+http://www.emacswiki.org!
+//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="!"]
+http://www.emacswiki.org(
+//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="("]
+http://www.emacswiki.org)
+//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()=")"]
+http://www.emacswiki.org&
+//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="&"]
+http://www.emacswiki.org#
+//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="#"]
+http://www.emacswiki.org%
+//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="%"]
+[http://www.emacswiki.org]
+//a[@class="url number"][@href="http://www.emacswiki.org"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
+[http://www.emacswiki.org] and [http://www.emacswiki.org]
+//a[@class="url number"][@href="http://www.emacswiki.org"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]/../../following-sibling::text()[string()=" and "]/following-sibling::a[@class="url number"][@href="http://www.emacswiki.org"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="2"]/following-sibling::span[@class="bracket"][text()="]"]
+[http://www.emacswiki.org],
+//a[@class="url number"][@href="http://www.emacswiki.org"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
+[http://www.emacswiki.org and a label]
+//a[@class="url outside"][@href="http://www.emacswiki.org"][text()="and a label"]
+[file://home/foo/tutorial.pdf local link]
+//a[@class="url outside"][@href="file://home/foo/tutorial.pdf"][text()="local link"]
+file://home/foo/tutorial.pdf
+//a[@class="url"][@href="file://home/foo/tutorial.pdf"][text()="file://home/foo/tutorial.pdf"]
+mailto:alex@emacswiki.org
+//a[@class="url"][@href="mailto:alex@emacswiki.org"][text()="mailto:alex@emacswiki.org"]
+EOT
+
+xpath_run_tests();
 
 $NetworkFile = 0;
 
@@ -1846,11 +1869,17 @@ InitVariables();
 <dl><dt>one</dt><dd>eins</dd><dt>two</dt><dd>zwei</dd></dl>
 =='''title'''==
 <h2><strong>title</strong></h2>
-==[[Free Link]]==
-<h2>[Free Link]<a class="edit" title="Click to edit this page" href="http://localhost/test.pl?action=edit;id=Free_Link">?</a></h2>
 EOT
 
 run_tests();
+
+
+%Test = split('\n',<<'EOT');
+==[[Free Link]]==
+//h2/text()[string()="[Free Link]"]/following-sibling::a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=Free_Link"][text()="?"]
+EOT
+
+xpath_run_tests();
 
 $UseModSpaceRequired = 1;
 $UseModMarkupInTitles = 0;
@@ -1963,15 +1992,20 @@ do 'modules/link-all.pl'; # check compatibility
 
 %Test = split('\n',<<'EOT');
 This is a [:day for fun and laughter].
-This is a <a class="anchor" name="day_for_fun_and_laughter" />.
+//a[@class="anchor"][@name="day_for_fun_and_laughter"]
 [[#day for fun and laughter]].
-<a class="local anchor" href="#day_for_fun_and_laughter">day for fun and laughter</a>.
+//a[@class="local anchor"][@href="#day_for_fun_and_laughter"][text()="day for fun and laughter"]
 [[2004-08-17#day for fun and laughter]].
-<a class="local anchor" href="http://localhost/test.pl/2004-08-17#day_for_fun_and_laughter">2004-08-17#day for fun and laughter</a>.
+//a[@class="local anchor"][@href="http://localhost/test.pl/2004-08-17#day_for_fun_and_laughter"][text()="2004-08-17#day for fun and laughter"]
 [[[#day for fun and laughter]]].
-[<a class="local anchor" href="#day_for_fun_and_laughter">day for fun and laughter</a>].
+//text()[string()="["]/following-sibling::a[@class="local anchor"][@href="#day_for_fun_and_laughter"][text()="day for fun and laughter"]/following-sibling::text()[string()="]."]
 [[[2004-08-17#day for fun and laughter]]].
-<a class="local anchor number" title="2004-08-17#day_for_fun_and_laughter" href="http://localhost/test.pl/2004-08-17#day_for_fun_and_laughter"><span><span class="bracket">[</span>1<span class="bracket">]</span></span></a>.
+//a[@class="local anchor number"][@title="2004-08-17#day_for_fun_and_laughter"][@href="http://localhost/test.pl/2004-08-17#day_for_fun_and_laughter"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
+EOT
+
+xpath_run_tests();
+
+%Test = split('\n',<<'EOT');
 [[#day for fun and laughter|boo]].
 [[#day for fun and laughter|boo]].
 [[2004-08-17#day for fun and laughter|boo]].
@@ -1984,10 +2018,10 @@ $BracketWiki = 1;
 
 %Test = split('\n',<<'EOT');
 [[2004-08-17#day for fun and laughter|boo]].
-<a class="local anchor" href="http://localhost/test.pl/2004-08-17#day_for_fun_and_laughter">boo</a>.
+//a[@class="local anchor"][@href="http://localhost/test.pl/2004-08-17#day_for_fun_and_laughter"][text()="boo"]
 EOT
 
-run_tests();
+xpath_run_tests();
 
 $BracketWiki = 0;
 remove_rule(\&AnchorsRule);
@@ -2003,15 +2037,15 @@ add_module('link-all.pl');
 
 update_page('foo', 'link-all for bar');
 
-test_page(get_page('action=browse define=1 id=foo'),
-	  quotemeta('<a class="edit" title="Click to edit this page" href="http://localhost/wiki.pl?action=edit;id=bar">bar</a>'));
+xpath_test(get_page('action=browse define=1 id=foo'),
+	  '//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/wiki.pl?action=edit;id=bar"][text()="bar"]');
 
 %Test = split('\n',<<'EOT');
 testing foo.
-testing <a class="local" href="http://localhost/test.pl/foo">foo</a>.
+//a[@class="local"][@href="http://localhost/test.pl/foo"][text()="foo"]
 EOT
 
-run_tests();
+xpath_run_tests();
 
 *GetGotoBar = *OldLinkAllGetGotoBar;
 remove_rule(\&LinkAllRule);
@@ -2029,22 +2063,22 @@ update_page('bar', 'foo');
 
 %Test = split('\n',<<'EOT');
 [[image:foo]]
-[image:foo]<a class="edit" title="Click to edit this page" href="http://localhost/test.pl?action=edit;id=foo;upload=1">?</a>
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=foo;upload=1"][text()="?"]
 [[image:bar]]
-<a class="image" href="http://localhost/test.pl/bar"><img class="upload" src="http://localhost/test.pl/download/bar" alt="bar" /></a>
+//a[@class="image"][@href="http://localhost/test.pl/bar"]/img[@class="upload"][@src="http://localhost/test.pl/download/bar"][@alt="bar"]
 [[image:bar|alternative text]]
-<a class="image" href="http://localhost/test.pl/bar"><img class="upload" src="http://localhost/test.pl/download/bar" alt="alternative text" /></a>
+//a[@class="image"][@href="http://localhost/test.pl/bar"]/img[@class="upload"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]
 [[image/left:bar|alternative text]]
-<a class="image left" href="http://localhost/test.pl/bar"><img class="upload" title="alternative text" src="http://localhost/test.pl/download/bar" alt="alternative text" /></a>
+//a[@class="image left"][@href="http://localhost/test.pl/bar"]/img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]
 [[image:bar|alternative text|foo]]
-<a class="image" href="http://localhost/test.pl/foo"><img class="upload" title="alternative text" src="http://localhost/test.pl/download/bar" alt="alternative text" /></a>
+//a[@class="image"][@href="http://localhost/test.pl/foo"]/img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]
 [[image/left:bar|alternative text|foo]]
-<a class="image left" href="http://localhost/test.pl/foo"><img class="upload" title="alternative text" src="http://localhost/test.pl/download/bar" alt="alternative text" /></a>
+//a[@class="image left"][@href="http://localhost/test.pl/foo"]/img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]
 [[image/left:bar|alternative text|http://www.foo.com/]]
-<a class="image left outside" href="http://www.foo.com/"><img class="upload" title="alternative text" src="http://localhost/test.pl/download/bar" alt="alternative text" /></a>
+//a[@class="image left outside"][@href="http://www.foo.com/"]/img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]
 EOT
 
-run_tests();
+xpath_run_tests();
 
 remove_rule(\&ImageSupportRule);
 
@@ -2140,8 +2174,9 @@ test_page(get_page('Comments_on_Yadda'), 'This is my comment\.', '-- Alex');
 
 get_page('title=Comments_on_Yadda', 'aftertext=This%20is%20another%20comment.',
 	 'username=Alex', 'homepage=http%3a%2f%2fwww%2eoddmuse%2eorg%2f');
-test_page(get_page('Comments_on_Yadda'), 'This is my comment\.',
-	  '-- <a class="url outside" href="http://www.oddmuse.org/">Alex</a>');
+xpath_test(get_page('Comments_on_Yadda'),
+	   '//p[contains(text(),"This is my comment.")]',
+	   '//a[@class="url outside"][@href="http://www.oddmuse.org/"][text()="Alex"]');
 
 # --------------------
 
@@ -2304,38 +2339,31 @@ $oday += 2 if $oday < 1;
 my $otherday = sprintf("%d-%02d-%02d", $year, $mon, $oday);
 
 add_module('calendar.pl');
-test_page(get_page('action=calendar'),
-	  map { $_ = quotemeta; s|\\ \\\?| ?|g; $_; }
-	  '<div class="content cal year"><p class="nav">' # year navigation
-	  . '<a href="http://localhost/wiki.pl?action=calendar;year=' . $year_prev . '">Previous</a> | '
-	  . '<a href="http://localhost/wiki.pl?action=calendar;year=' . $year_next . '">Next</a></p>',
+xpath_test(get_page('action=calendar'),
+	   # yearly navigation
+	  '//div[@class="content cal year"]/p[@class="nav"]/a[@href="http://localhost/wiki.pl?action=calendar;year=' . $year_prev . '"][text()="Previous"]/following-sibling::text()[string()=" | "]/following-sibling::a[@href="http://localhost/wiki.pl?action=calendar;year=' . $year_next . '"][text()="Next"]',
 	   # monthly collection
-	  '<div class="cal month"><pre> ? ? ? ? ?<span class="title">'
-	  . '<a class="local collection month" href="http://localhost/wiki.pl?action=collect;match='
-	  . sprintf("%d-%02d", $year, $mon) . '">',
+	  '//div[@class="cal month"]/pre/span[@class="title"]/a[@class="local collection month"][@href="http://localhost/wiki.pl?action=collect;match=' . sprintf("%d-%02d", $year, $mon)  . '"]',
 	  # today day edit
-	  "<a class=\"edit today\" href=\"http://localhost/wiki.pl?action=edit;id=$today\"> ? ?$mday</a>",
+	  '//a[@class="edit today"][@href="http://localhost/wiki.pl?action=edit;id=' . $today . '"][normalize-space(text())="' . $mday . '"]',
 	  # other day edit
-	  "<a class=\"edit\" href=\"http://localhost/wiki.pl?action=edit;id=$otherday\"> ? ?$oday</a>",
+	  '//a[@class="edit"][@href="http://localhost/wiki.pl?action=edit;id=' . $otherday . '"][normalize-space(text())="' . $oday . '"]',
 	  );
 
 update_page($today, "yadda");
 
-test_page(get_page('action=calendar'),
-	  map { $_ = quotemeta; s|\\ \\\?| ?|g; $_; }
-	  # day exact match
-	  "<a class=\"local exact today\" href=\"http://localhost/wiki.pl/$today\"> ? ?$mday</a>");
+xpath_test(get_page('action=calendar'),
+	   # day exact match
+	   '//a[@class="local exact today"][@href="http://localhost/wiki.pl/' . $today . '"][normalize-space(text())="' . $mday . '"]');
 
 update_page("${today}_more", "more yadda");
 
-test_page(get_page('action=calendar'),
-	  map { $_=quotemeta; s|\\ \\\?| ?|g; $_; }
+xpath_test(get_page('action=calendar'),
 	  # today exact match
-	  "<a class=\"local collection today\" href=\"http://localhost/wiki.pl?action=collect;match=$today\"> ? ?$mday</a>");
+	  '//a[@class="local collection today"][@href="http://localhost/wiki.pl?action=collect;match=' . $today . '"][normalize-space(text())="' . $mday . '"]');
 
 remove_rule(\&CalendarRule);
 *GetHeader = *OldCalendarGetHeader;
-
 
 # --------------------
 
@@ -2349,8 +2377,8 @@ add_module('crumbs.pl');
 update_page("HomePage", "Has to do with [[Software]].");
 update_page("Software", "[[HomePage]]\n\nCheck out [[Games]].");
 update_page("Games", "[[Software]]\n\nThis is it.");
-test_page(get_page('Games'),
-	  '<p><span class="crumbs"><a class="local" href="http://localhost/wiki.pl/HomePage">HomePage</a> <a class="local" href="http://localhost/wiki.pl/Software">Software</a></span></p>');
+xpath_test(get_page('Games'),
+		'//p/span[@class="crumbs"]/a[@class="local"][@href="http://localhost/wiki.pl/HomePage"][text()="HomePage"]/following-sibling::text()[string()=" "]/following-sibling::a[@class="local"][@href="http://localhost/wiki.pl/Software"][text()="Software"]');
 
 remove_rule(\&CrumbsRule);
 
@@ -2359,5 +2387,4 @@ remove_rule(\&CrumbsRule);
 end:
 
 print "\n";
-print "Skipping lots of tests!\n";
 print "$passed passed, $failed failed.\n";
