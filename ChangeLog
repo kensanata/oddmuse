@@ -1,3 +1,15 @@
+2005-04-13  Alex Schroeder  <alex@gnu.org>
+
+	* Makefile (fix): New convenience target.
+
+	* wiki.pl (LinkRules): Make sure named entities such as < > and &
+	are handled correctly at the end of an URL.
+	(TimeToW3): New.
+	(GetRcText): Use TimeToW3 instead of CalcDay.
+	(GetRcRss): Use TimeToW3 instead of doing it manually.
+	(ExpireKeepFiles): Handle lastmajor like oldmajor.
+	(DoShowVersion): Report mod_perl.
+
 2005-04-06  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetKeptDiff): Use GetTextRevision instead of
