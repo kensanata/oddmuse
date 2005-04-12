@@ -58,6 +58,9 @@ install:
 test:
 	perl test.pl
 
+fix:
+	perl test.pl -x
+
 package-upload: debian-$(VERSION).tar.gz debian-$(VERSION).tar.gz.sig
 	curl -T "{debian-$(VERSION).tar.gz,debian-$(VERSION).tar.gz.sig}" \
 	ftp://savannah.gnu.org/incoming/savannah/oddmuse/
