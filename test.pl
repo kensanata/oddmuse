@@ -19,6 +19,7 @@
 #    Boston, MA 02111-1307 USA
 
 use XML::LibXML;
+use Encode;
 
 # Import the functions
 
@@ -502,8 +503,41 @@ $uri = "file://$dir";
 # some xpath tests
 update_page('RSS', "<rss $uri/heise.rdf>");
 $page = get_page('RSS');
-xpath_test($page,
-	   'descendant::a[attribute::title="999"][attribute::href="http://www.heise.de/tp/deutsch/inhalt/te/15886/1.html"][text()="Berufsverbot für Mediendesigner?"]');
+xpath_test($page, Encode::encode_utf8('//a[@title="999"][@href="http://www.heise.de/tp/deutsch/inhalt/te/15886/1.html"][text()="Berufsverbot für Mediendesigner?"]'));
+
+@Test = split('\n',<<'EOT');
+<div class="rss"><ul><li>
+Experimentell bestätigt:
+http://www.heise.de/tp/deutsch/inhalt/lis/15882/1.html
+Clash im Internet?
+http://www.heise.de/tp/deutsch/special/med/15787/1.html
+Die Einheit der Umma gegen die jüdische Weltmacht
+http://www.heise.de/tp/deutsch/special/ost/15879/1.html
+Im Krieg mit dem Satan
+http://www.heise.de/tp/deutsch/inhalt/co/15880/1.html
+Der dritte Mann
+http://www.heise.de/tp/deutsch/inhalt/co/15876/1.html
+Leicht neben dem Ziel
+http://www.heise.de/tp/deutsch/inhalt/mein/15867/1.html
+Wale sollten Nordkorea meiden
+http://www.heise.de/tp/deutsch/inhalt/co/15878/1.html
+Afghanistan-Krieg und Irak-Besatzung haben al-Qaida gestärkt
+http://www.heise.de/tp/deutsch/inhalt/co/15874/1.html
+Der mit dem Dinosaurier tanzt
+http://www.heise.de/tp/deutsch/inhalt/lis/15863/1.html
+Terroranschlag überschattet das Genfer Abkommen
+http://www.heise.de/tp/deutsch/special/ost/15873/1.html
+"Barwatch" in Kanada
+http://www.heise.de/tp/deutsch/inhalt/te/15871/1.html
+Die Türken kommen!
+http://www.heise.de/tp/deutsch/special/irak/15870/1.html
+Neue Regelungen zur Telekommunikationsüberwachung
+http://www.heise.de/tp/deutsch/inhalt/te/15869/1.html
+Ein Lied vom Tod
+http://www.heise.de/tp/deutsch/inhalt/kino/15862/1.html
+EOT
+
+test_page($page, @Test);
 
 # RSS 2.0
 
@@ -600,38 +634,6 @@ EOT
 
 update_page('RSS', "<rss $uri/rss1.0.rdf>");
 test_page(get_page('RSS'), @Test);
-
-@Test = split('\n',<<'EOT');
-<div class="rss"><ul><li>
-Experimentell bestätigt:
-http://www.heise.de/tp/deutsch/inhalt/lis/15882/1.html
-Clash im Internet?
-http://www.heise.de/tp/deutsch/special/med/15787/1.html
-Die Einheit der Umma gegen die jüdische Weltmacht
-http://www.heise.de/tp/deutsch/special/ost/15879/1.html
-Im Krieg mit dem Satan
-http://www.heise.de/tp/deutsch/inhalt/co/15880/1.html
-Der dritte Mann
-http://www.heise.de/tp/deutsch/inhalt/co/15876/1.html
-Leicht neben dem Ziel
-http://www.heise.de/tp/deutsch/inhalt/mein/15867/1.html
-Wale sollten Nordkorea meiden
-http://www.heise.de/tp/deutsch/inhalt/co/15878/1.html
-Afghanistan-Krieg und Irak-Besatzung haben al-Qaida gestärkt
-http://www.heise.de/tp/deutsch/inhalt/co/15874/1.html
-Der mit dem Dinosaurier tanzt
-http://www.heise.de/tp/deutsch/inhalt/lis/15863/1.html
-Terroranschlag überschattet das Genfer Abkommen
-http://www.heise.de/tp/deutsch/special/ost/15873/1.html
-"Barwatch" in Kanada
-http://www.heise.de/tp/deutsch/inhalt/te/15871/1.html
-Die Türken kommen!
-http://www.heise.de/tp/deutsch/special/irak/15870/1.html
-Neue Regelungen zur Telekommunikationsüberwachung
-http://www.heise.de/tp/deutsch/inhalt/te/15869/1.html
-Ein Lied vom Tod
-http://www.heise.de/tp/deutsch/inhalt/kino/15862/1.html
-EOT
 
 # Note, cannot identify BayleShanks as author in the mb.rdf
 @Test = split('\n',<<'EOT');
@@ -1083,8 +1085,8 @@ test_page(get_page('SearchAndReplace'), @Test);
 
 $page = update_page("Alexander_Schröder", "Edit [[Alexander Schröder]]!");
 xpath_test($page,
-	   '//h1/a[@title="Click to search for references to this page"][@href="http://localhost/wiki.pl?search=Alexander+Schr%c3%b6der"][text()="Alexander Schröder"]',
-	   '//a[@class="local"][@href="http://localhost/wiki.pl/Alexander_Schr%c3%b6der"][text()="Alexander Schröder"]');
+	   Encode::encode_utf8('//h1/a[@title="Click to search for references to this page"][@href="http://localhost/wiki.pl?search=Alexander+Schr%c3%b6der"][text()="Alexander Schröder"]'),
+	   Encode::encode_utf8('//a[@class="local"][@href="http://localhost/wiki.pl/Alexander_Schr%c3%b6der"][text()="Alexander Schröder"]'));
 
 # --------------------
 
