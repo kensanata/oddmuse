@@ -16,10 +16,12 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: login.pl,v 1.1 2005/04/12 21:53:52 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: login.pl,v 1.2 2005/04/12 22:22:07 fletcherpenney Exp $</p>';
 
 use vars qw($RegistrationForm $MinimumPasswordLength $RegistrationsMustBeApproved
-$LoginForm $PasswordFile $PendingPasswordFile);
+$LoginForm $PasswordFile $PendingPasswordFile $RequireLoginToEdit);
+
+push(@MyAdminCode, \&LoginAdminRule);
 
 $EmailRegExp = '[\w\.\-]+@([\w\-]+\.)+[\w]+';
 $UsernameRegExp = '([A-Z][a-z]+){2,}';
@@ -28,6 +30,7 @@ $MinimumPasswordLength = 6 unless defined $MinimumPasswordLength;
 $RegistrationsMustBeApproved = 0 unless defined $RegistrationsMustBeApproved;
 $PasswordFile = "$DataDir/passwords" unless defined $PasswordFile;
 $PendingPasswordFile = "$DataDir/pending" unless defined $PendingPasswordFile;
+$RequireLoginToEdit = 1 unless defined $RequireLoginToEdit;
 
 $RegistrationForm = <<'EOT' unless defined $RegistrationForm;
 <form method="post">
@@ -268,8 +271,9 @@ sub LoginUserCanEdit {
 	if ($user and $pwd) {
 		# If not logged in, return 0.  Otherwise, let Oddmuse decide
 		return 0 unless AuthenticateUser($user, $pwd);
+		return OldUserCanEdit($id, $editing);
 	}
-	return OldUserCanEdit($id, $editing);
+	return 0 if $RequireLoginToEdit;
 }
 
 sub AuthenticateUser {
@@ -285,4 +289,13 @@ sub AuthenticateUser {
 		}
 	}
 	return 0;
+}
+
+sub LoginAdminRule {
+	($id, $menuref, *restref) = @_;
+	
+	push(@$menuref, ScriptLink('action=register', T('Register a new account')));
+	push(@$menuref, ScriptLink('action=login', T('Login')));
+	push(@$menuref, ScriptLink('action=logout', T('Logout')));
+	
 }
