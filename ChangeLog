@@ -10,6 +10,14 @@
 	(ExpireKeepFiles): Handle lastmajor like oldmajor.
 	(DoShowVersion): Report mod_perl.
 
+2005-04-11  Flavio Poletti <frodo72@savannah.gnu.org>
+
+	* wiki.pl (ApplyRules, GetDiff, DoEdit, DoDownload)
+	(SearchTitleAndBody, PrintSearchResult, Save): Concentrated #FILE
+	tests all over the  script inside new function TextIsFile.
+	(TextIsFile): New.
+
+	
 2005-04-06  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetKeptDiff): Use GetTextRevision instead of
