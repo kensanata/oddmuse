@@ -2384,6 +2384,24 @@ xpath_test(get_page('Games'),
 
 remove_rule(\&CrumbsRule);
 
+# --------------------
+
+fixme:
+
+print '[long table]';
+
+clear_pages();
+
+add_module('tables-long.pl');
+
+update_page("TablePage", "<table a,b>\na=a\nb=b\na=one\nb=two\n----\n\nDone.");
+test_page(get_page('TablePage'), '<table class="user long"><tr><th>a</th><th>b</th></tr><tr><td>one</td><td>two</td></tr></table>');
+
+update_page("TablePage", "Here is a table:\n<table a,b>\na=a\nb=b\na=one\ntwo\nand a half\nb=three\na=foo\nb=bar\n----\n\nDone.");
+test_page(get_page('TablePage'), '<p>Here is a table: </p><table class="user long"><tr><th>a</th><th>b</th></tr><tr><td>one two and a half</td><td>three</td></tr><tr><td>foo</td><td>bar</td></tr></table><p>Done.</p>');
+
+remove_rule(\&TablesLongRule);
+
 ### END OF TESTS
 
 end:
