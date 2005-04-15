@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.10 2005/01/06 11:35:04 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.11 2005/04/15 00:57:02 as Exp $</p>';
 
 # add the same CSS as in tables.pl
 $DefaultStyleSheet .= q{
@@ -57,7 +57,7 @@ sub TablesLongRule {
     my $regexp = join('|', @labels);
     # read complete table
     my @lines = ();
-    while (m/\G(.*\n)/cg) {
+    while (m/\G(.*)\n/cg) {
       my $line = $1;
       last if substr($line,0,4) eq ('----'); # the rest of this line is ignored!
       push(@lines, $line);
@@ -102,7 +102,7 @@ sub TablesLongRow {
   for my $i (0 .. $#labels) {
     next if not $row{$labels[$i]}; # should only happen after previous cellspans
     my $span = 1;
-    while ($span <= $#labels and not $row{$labels[$i+$span]}) {
+    while ($span < $#labels and not $row{$labels[$i+$span]}) {
       $span++;
     }
     my $class = $class{$labels[$i]};
