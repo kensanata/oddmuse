@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.11 2005/04/15 00:57:02 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.12 2005/04/16 01:37:25 as Exp $</p>';
 
 # add the same CSS as in tables.pl
 $DefaultStyleSheet .= q{
@@ -45,7 +45,7 @@ sub TablesLongRule {
   # a new row is started when a cell is repeated
   # if cells are missing, column spans are created (the first row
   # could use row spans...)
-  if ($bol && m|\G\s*\n*\&lt;table(/[A-Za-z\x80-\xff/]+)? +([A-Za-z\x80-\xff,;\/ ]+)\&gt; *\n|cgo) {
+  if ($bol && m|\G\s*\n*\&lt;table(/[A-Za-z\x80-\xff/]+)? +([A-Za-z\x80-\xff,;\/ ]+)\&gt; *\n|cg) {
     my $class = join(' ', split(m|/|, $1)); # leading / in $1 will make sure we have leading space
     Clean(CloseHtmlEnvironments() . "<table class=\"user long$class\">");
     # labels and their default class
@@ -70,7 +70,7 @@ sub TablesLongRule {
     my $label = '';
     my $first = 1;
     for my $line (@lines) {
-      if ($line =~ m|^($regexp)/?([A-Za-z\x80-\xff/]+)?[:=] *(.*)|o) {
+      if ($line =~ m|^($regexp)/?([A-Za-z\x80-\xff/]+)?[:=] *(.*)|) { # regexp changes for other tables
 	$label = $1;
 	$class = join(' ', split(m|/|, $2)); # no leading / therefore no leading space
 	$line = $3;
@@ -85,7 +85,7 @@ sub TablesLongRule {
       $row{$label} .= $line . "\n";
     }
     TablesLongRow(\@labels, \%row, \%class, $first); # don't forget the last row
-    Clean('</table>');
+    Clean('</table>' . AddHtmlEnvironment('p'));
     pos = $lastpos;
     return '';
   }
@@ -102,7 +102,7 @@ sub TablesLongRow {
   for my $i (0 .. $#labels) {
     next if not $row{$labels[$i]}; # should only happen after previous cellspans
     my $span = 1;
-    while ($span < $#labels and not $row{$labels[$i+$span]}) {
+    while ($i + $span < $#labels + 1 and not $row{$labels[$i+$span]}) {
       $span++;
     }
     my $class = $class{$labels[$i]};
@@ -115,10 +115,14 @@ sub TablesLongRow {
 
     # WATCH OUT: here comes the evil magic messing with the internals!
     # first, clean everything up like at the end of ApplyRules
-    print $Fragment;
-    push(@Blocks, $Fragment);
-    push(@Flags, 0);
-    $Fragment = '';
+
+    if ($Fragment ne '') {
+      $Fragment =~ s|<p></p>||g; # clean up extra paragraphs (see end Dirty())
+      print $Fragment;
+      push(@Blocks, $Fragment);
+      push(@Flags, 0);
+      $Fragment = '';
+    }
     # call ApplyRules, and *inline* the results
     my ($blocks, $flags) = ApplyRules($row{$labels[$i]}, 1, 1); # local links, anchors
     push(@Blocks, split(/$FS/, $blocks));
