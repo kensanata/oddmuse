@@ -2386,8 +2386,6 @@ remove_rule(\&CrumbsRule);
 
 # --------------------
 
-fixme:
-
 print '[long table]';
 
 clear_pages();
@@ -2401,6 +2399,27 @@ update_page("TablePage", "Here is a table:\n<table a,b>\na=a\nb=b\na=one\ntwo\na
 test_page(get_page('TablePage'), '<p>Here is a table: </p><table class="user long"><tr><th>a</th><th>b</th></tr><tr><td>one two and a half</td><td>three</td></tr><tr><td>foo</td><td>bar</td></tr></table><p>Done. </p><table class="user long"><tr><th>test</th><th>test as well</th></tr><tr><td colspan="2">what we test</td></tr></table><p>the end.</p>');
 
 remove_rule(\&TablesLongRule);
+
+# --------------------
+
+fixme:
+
+print '[tags]';
+
+clear_pages();
+
+add_module('tags.pl');
+
+%Test = split('\n',<<'EOT');
+[[tag:foo bar]]
+//a[@class="outside tag"][@title="Tag"][@href="http://technorati.com/tag/foo%20bar"][@rel="tag"][text()="foo bar"]
+[[tag:foo bar|mu muh!]]
+//a[@class="outside tag"][@title="Tag"][@href="http://technorati.com/tag/foo%20bar"][@rel="tag"][text()="mu muh!"]
+EOT
+
+xpath_run_tests();
+
+remove_rule(\&TagsRule);
 
 ### END OF TESTS
 
