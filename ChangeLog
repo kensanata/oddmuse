@@ -1,3 +1,17 @@
+2005-04-16  Alex Schroeder  <alex@gnu.org>
+
+	* modules/tables-long.pl (TablesLongRule): Fix bug that prevented
+	second table from not showing up if its labels were different.
+	Also fix bug with empty p element.  Also fix bug with unnecessary
+	colspan="2" in the last column.
+
+2005-04-15  Alex Schroeder  <alex@gnu.org>
+
+	* modules/tables-long.pl (TablesLongRule): Handle newlines
+	correctly: avoid duplicating them.
+	(TablesLongRow): Get the label-count right, avoid colspan=2 for
+	the last column.
+
 2005-04-13  Alex Schroeder  <alex@gnu.org>
 
 	* Makefile (fix): New convenience target.
