@@ -16,9 +16,9 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.3 2005/04/08 21:23:43 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.4 2005/04/21 16:17:18 fletcherpenney Exp $</p>';
 
-use vars qw($ClusterMapPage $ClusterMapTOC);
+use vars qw($ClusterMapPage $ClusterMapTOC $FilterUnclusteredRegExp @ClusterMapAdminPages);
 
 $ClusterMapPage = "ClusterMap" unless defined $ClusterMapPage;
 
@@ -27,6 +27,14 @@ $ClusterMapPage = "ClusterMap" unless defined $ClusterMapPage;
 $FilterUnclusteredRegExp = '\d\d\d\d-\d\d-\d\d|\d* *Comments on .*'
 	unless defined $FilterUnclusteredRegExp;
 
+# The following pages are added to the AdminPage list and
+# are not classified as unclustered.
+# They are also added to the Important Pages list on the administration page
+@ClusterMapAdminPages = ( $HomePage, $DeletedPage, $BannedContent,
+	$BannedHosts, $InterMap, $NearMap, $RCName)
+	
+	unless defined @ClusterMapAdminPages;
+	
 $ClusterMapTOC = 1 unless defined $ClusterMapTOC;
 $PrintTOCAnchor = 0;
 
@@ -43,6 +51,9 @@ $Action{unclustered} = \&DoUnclustered;
 
 push(@MyRules, \&ClusterMapRule);
 
+push (@AdminPages, @ClusterMapAdminPages);
+
+
 sub ClusterMapRule {
 	if (/\G^([\n\r]*\&lt;\s*clustermap\s*\&gt;\s*)$/mgc) {
 		Dirty($1);
@@ -50,11 +61,10 @@ sub ClusterMapRule {
 		$oldstr = $_;
 		CreateClusterMap();
 		print "</p>";		# Needed to clean up, but could cause problems
-							# if <clustermap isn't put into a new paragraph
+							# if <clustermap> isn't put into a new paragraph
 		PrintClusterMap();
 		pos = $oldpos;
 		$oldstr =~ s/.*?\&lt;\s*clustermap\s*\&gt;//s;
-#		$oldstr =~ s/.*\&lt;\s*clustermap\s*\&gt;//s;
 		$_ = $oldstr;
 		return '';
 	}
@@ -144,14 +154,21 @@ sub CreateClusterMap {
 		OpenPage($page);
 		my $cluster = GetCluster($Page{text});
 		
-		if ($cluster ne "") {
-			if  ( ($cluster ne $page) 
-			  && ($cluster ne $DeletedPage)) {
-				$ClusterMap{$cluster}{$page} = 1;
-			}
-		} else {
+		next if ($cluster eq $DeletedPage);		# Don't map Deleted Pages
+		
+		if ($cluster eq "") {					# Grab Unclustered Pages
 			$Unclustered{$page} = 1;
+			next;
 		}
+		
+		if ($cluster ne $page) {				# Create Cluster Map
+			$ClusterMap{$cluster}{$page} = 1;
+		}
+	}
+	
+	# Strip out Admin Pages
+	foreach my $page (@AdminPages) {
+		delete($Unclustered{$page});
 	}
 }
 
