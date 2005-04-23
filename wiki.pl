@@ -357,7 +357,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.545 2005/04/12 22:27:42 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.546 2005/04/23 15:33:58 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -3704,6 +3704,7 @@ sub PageDeletable {
   my $expirets = $Now - ($KeepDays * 24 * 60 * 60);
   return 0 unless $Page{ts} < $expirets;
   return $DeletedPage && $Page{text} =~ /^\s*$DeletedPage\b/o;
+  return 1 if not $Page{text};
 }
 
 sub DeletePage { # Delete must be done inside locks.
