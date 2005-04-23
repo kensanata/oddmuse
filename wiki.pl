@@ -357,7 +357,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.546 2005/04/23 15:33:58 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.547 2005/04/23 19:44:51 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -527,7 +527,7 @@ sub ApplyRules {
 	} else {
 	  Clean(CloseHtmlEnvironments() . $q->pre({-class=>'conflict'}, $str) . AddHtmlEnvironment('p'));
 	}
-      } elsif (%Smilies && m/\G$smileyregex/cog && (Clean(SmileyReplace()))) {
+      } elsif (%Smilies && m/\G$smileyregex/cog && Clean(SmileyReplace())) {
       } elsif (Clean(RunMyRules($locallinks, $withanchors))) {
       } elsif (m/\G\s*\n(\s*\n)+/cg) { # paragraphs: at least two newlines
 	Clean(CloseHtmlEnvironments() . AddHtmlEnvironment('p')); # another one like this further up
@@ -540,7 +540,7 @@ sub ApplyRules {
 	last;
       }
       my $oldpos = pos;	# the following match causes smilies to fail at line beginnings!?
-      $bol = m/\G(?<=\n)/cgs;
+      $bol = (substr($_,pos()-1,1) eq "\n");
       pos = $oldpos; # therefore restore pos...  reason unknown (Perl v5.8.4).
     }
   }
