@@ -16,10 +16,46 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: moin.pl,v 1.3 2005/04/23 13:31:28 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: moin.pl,v 1.4 2005/04/23 22:14:56 as Exp $</p>';
 
 push(@MyRules, \&MoinRule);
 $RuleOrder{\&MoinRule} = -10; # run before default rules because of [[BR]]
+
+my %moin_level;   # mapping length of whitespace to indentation level
+my $moin_current; # the current length of whitespace (not the indentation level!)
+
+sub MoinLength {
+  $str = shift;
+  my $oldpos = pos;
+  $str =~ s/\t/       /g;
+  die if pos != $oldpos;
+  return length($str); # the length of whitespace
+}
+
+sub MoinListLevel {
+  my $oldpos = pos;
+  my $length = MoinLength(shift);
+  if (not InElement('li') and not InElement('dd')) { # problematic mixing!
+    %moin_level = ($length => 1);
+    $moin_current = $length;
+  } elsif ($moin_level{$length}) {
+    # return from a sublist or continuing the current list
+    foreach my $ln (keys %moin_level) {
+      delete $moin_level{$ln} if $moin_level{$ln} > $moin_level{$length};
+    }
+    $moin_current = $length;
+  } elsif ($length > $moin_current) {
+    # or entering a new sublist
+    $moin_level{$length} = $moin_level{$moin_current} + 1;
+    $moin_current = $length;
+  } else {
+    # else we've returned to an invalid level - but we know that there is a higher level!
+    $length++ until $moin_level{$length};
+    $moin_current = $length;
+  }
+  pos = $oldpos;
+  return $moin_level{$moin_current}
+}
 
 sub MoinRule {
   # ["free link"]
@@ -40,17 +76,28 @@ sub MoinRule {
   }
   #  * list item
   #   * nested item
-  elsif ($bol && m/\G(\s*\n)*( +)\*[ \t]*/cg
-	 or InElement('li') && m/\G(\s*\n)+( +)\*[ \t]*/cg) {
-    return CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ul',length($2))
+  elsif ($bol && m/\G(\s*\n)*([ \t]+)\*[ \t]*/cg
+	 or InElement('li') && (m/\G(\s*\n)+([ \t]+)\*[ \t]*/cg)) {
+    return CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ul', MoinListLevel($2))
       . AddHtmlEnvironment('li');
   }
   #  1. list item
   #   1. nested item
-  elsif ($bol && m/\G(\s*\n)*( +)1\.[ \t]*/cg
-	 or InElement('li') && m/\G(\s*\n)+( +)1\.[ \t]*/cg) {
-    return CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ol',length($2))
+  elsif ($bol && m/\G(\s*\n)*([ \t]+)1\.[ \t]*/cg
+	 or InElement('li') && m/\G(\s*\n)+([ \t]+)1\.[ \t]*/cg) {
+    return CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ol', MoinListLevel($2))
       . AddHtmlEnvironment('li');
+  }
+  # indented text using whitespace
+  elsif ($bol && m/\G(\s*\n)*([ \t]+)/cg) {
+    my $str = $2;
+    if (MoinLength($str) == $moin_current
+	and (InElement('li') or InElement('dd'))) {
+      return ' ';
+    } else {
+      return CloseHtmlEnvironmentUntil('dd') . OpenHtmlEnvironment('dl', MoinListLevel($str), 'quote')
+	. $q->dt() . AddHtmlEnvironment('dd');
+    }
   }
   # emphasis and strong emphasis using '' and '''
   elsif (defined $HtmlStack[0] && $HtmlStack[1] && $HtmlStack[0] eq 'em'
@@ -65,6 +112,10 @@ sub MoinRule {
   } elsif (m/\G__/cg) { # moin syntax for __underline__
     return (defined $HtmlStack[0] && $HtmlStack[0] eq 'em')
       ? CloseHtmlEnvironment() : AddHtmlEnvironment('em', 'style="text-decoration: underline; font-style: normal;"');
+  }
+  # don't automatically fuse lines
+  elsif (m/\G([ \t]+|[ \t]*\n)/cg) {
+    return ' ';
   }
   return undef;
 }
