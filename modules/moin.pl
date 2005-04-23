@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: moin.pl,v 1.1 2005/04/21 01:28:23 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: moin.pl,v 1.2 2005/04/23 12:54:45 as Exp $</p>';
 
 push(@MyRules, \&MoinRule);
 
@@ -37,8 +37,8 @@ sub MoinRule {
   #   * nested item
   elsif ($bol && m/\G(\s*\n)*( +)\*[ \t]*/cg
 	 or InElement('li') && m/\G(\s*\n)+( +)\*[ \t]*/cg) {
-    return Clean(CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ul',length($2))
-		 . AddHtmlEnvironment('li'));
+    return CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ul',length($2))
+      . AddHtmlEnvironment('li');
   }
   # emphasis and strong emphasis using '' and '''
   elsif (defined $HtmlStack[0] && $HtmlStack[1] && $HtmlStack[0] eq 'em'
