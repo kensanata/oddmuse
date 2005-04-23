@@ -2402,8 +2402,6 @@ remove_rule(\&TablesLongRule);
 
 # --------------------
 
-fixme:
-
 print '[tags]';
 
 clear_pages();
@@ -2420,6 +2418,38 @@ EOT
 xpath_run_tests();
 
 remove_rule(\&TagsRule);
+
+
+# --------------------
+
+fixme:
+
+print '[moin]';
+
+clear_pages();
+
+add_module('moin.pl');
+
+%Test = split('\n',<<'EOT');
+''foo''
+//em[text()="foo"]
+'''bar'''
+//strong[text()="bar"]
+[[foo bar]]
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=foo_bar"][text()="?"]
+["foo bar"]
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=foo_bar"][text()="?"]
+* one\n* two\n** two.one
+//ul/li[text()="one"]/following-sibling::li/text()[string()="two"]/following-sibling::ul/li[text()="two.one"]
+ * one\n * two\n  * two.one
+//ul/li[text()="one"]/following-sibling::li/text()[string()="two"]/following-sibling::ul/li[text()="two.one"]
+{{{\n[[foo bar]]\n}}}
+//pre[@class="real"][text()="[[foo bar]]\n"]
+EOT
+
+xpath_run_tests();
+
+remove_rule(\&MoinRule);
 
 ### END OF TESTS
 
