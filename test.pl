@@ -2445,6 +2445,10 @@ add_module('moin.pl');
 //ul/li[text()="one"]/following-sibling::li/text()[string()="two"]/following-sibling::ul/li[text()="two.one"]
 {{{\n[[foo bar]]\n}}}
 //pre[@class="real"][text()="[[foo bar]]\n"]
+foo\n\nbar\n* one\n * two\n  * two.one
+//p[normalize-space(text())="bar"]/following-sibling::ul/li[text()="one"]/following-sibling::li/text()[string()="two"]/following-sibling::ul/li[text()="two.one"]
+foo[[BR]]bar
+//text()[string()="foo"]/following-sibling::br/following-sibling::text()[string()="bar"]
 EOT
 
 xpath_run_tests();
