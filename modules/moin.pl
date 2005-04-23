@@ -16,9 +16,10 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: moin.pl,v 1.2 2005/04/23 12:54:45 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: moin.pl,v 1.3 2005/04/23 13:31:28 as Exp $</p>';
 
 push(@MyRules, \&MoinRule);
+$RuleOrder{\&MoinRule} = -10; # run before default rules because of [[BR]]
 
 sub MoinRule {
   # ["free link"]
@@ -26,6 +27,10 @@ sub MoinRule {
     Dirty($1);
     print GetPageOrEditLink($2);
     return '';
+  }
+  # [[BR]]
+  elsif (m/\G\[\[BR\]\]/gc) {
+    return $q->br();
   }
   # {{{
   # block
@@ -38,6 +43,13 @@ sub MoinRule {
   elsif ($bol && m/\G(\s*\n)*( +)\*[ \t]*/cg
 	 or InElement('li') && m/\G(\s*\n)+( +)\*[ \t]*/cg) {
     return CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ul',length($2))
+      . AddHtmlEnvironment('li');
+  }
+  #  1. list item
+  #   1. nested item
+  elsif ($bol && m/\G(\s*\n)*( +)1\.[ \t]*/cg
+	 or InElement('li') && m/\G(\s*\n)+( +)1\.[ \t]*/cg) {
+    return CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ol',length($2))
       . AddHtmlEnvironment('li');
   }
   # emphasis and strong emphasis using '' and '''
