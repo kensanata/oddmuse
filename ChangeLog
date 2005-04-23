@@ -1,5 +1,7 @@
 2005-04-23  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (PageDeletable): Delete empty pages, too.
+
 	* modules/moin.pl (MoinRule): Fix moin list rule.
 
 2005-04-16  Alex Schroeder  <alex@gnu.org>
