@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: commentcount.pl,v 1.5 2004/12/03 08:36:15 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: commentcount.pl,v 1.6 2005/04/24 02:58:18 awwaiid Exp $</p>';
 
 *OldCommentcountAddComment = *AddComment;
 *AddComment = *NewCommentcountAddComment;
@@ -31,7 +31,7 @@ sub NewCommentcountAddComment {
     if($num =~ /=== (\d+) Comments?\. ===/) {
       $num = $1;
       $num++;
-      $new =~ s/=== (\d+) Comments\. ===/=== $num Comments. ===/;
+      $new =~ s/=== (\d+) Comments?\. ===/=== $num Comments. ===/;
     } else {
       $new = "=== 1 Comment. ===\n" . $new;
     }
