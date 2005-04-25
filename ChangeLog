@@ -1,6 +1,28 @@
+2005-04-26  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ApplyRules): Removed the final oldpos hack required
+	because now $bol no longer uses regexp matching.
+
+2005-04-25  Alex Schroeder  <alex@gnu.org>
+
+	* modules/namespaces.pl (NewNamespaceDoRc): Expanded a lot, now
+	parsing all the log files recursively instead of doing the RSS
+	thing.
+	(NamespaceBrowseRc, NamespaceInternalRc): Deleted.
+	(NamespaceRcLines): New.  Splices namespace into the rc lines.
+	(NewNamespaceScriptLink): New.  Splices namespace out of the link
+	into the script name.
+
+2005-04-24  Alex Schroeder  <alex@gnu.org>
+
+	* modules/moin.pl (MoinRule): Added alternative whiespace
+	handling, numbered lists, and indented text.
+
 2005-04-23  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (PageDeletable): Delete empty pages, too.
+	(ApplyRules): Changed the way $bol is computed to a substring
+	comparison instead of a regular expression match.
 
 	* modules/moin.pl (MoinRule): Fix moin list rule.
 
