@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.15 2005/04/25 22:21:27 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.16 2005/04/25 23:02:08 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent $NamespaceRoot);
 
@@ -124,6 +124,8 @@ sub NewNamespaceDoRc { # Copy of DoRc
       }
     }
   }
+  # start printing header
+  RcHeader() if $showHTML;
   # now need them line by line, trying to conserve ram instead of
   # optimizing for speed (and slurping them all in).  when opening a
   # rcfile, compare the first timestamp with the starttime.  if any
@@ -138,6 +140,12 @@ sub NewNamespaceDoRc { # Copy of DoRc
       push(@lines, @new);
     }
   }
+  # We need to resort these lines...  <=> forces numerical comparison
+  # which is just what we need here, as the timestamp is the first
+  # part of the line.
+  @lines = sort { $a <=> $b } @lines;
+  # end, printing
+  local *ValidId = *NamespaceValidId;
   if (not @lines && $showHTML) {
     print $q->p($q->strong(Ts('No updates since %s', TimeToText($starttime))));
   } else {
@@ -150,15 +158,17 @@ sub NamespaceRcLines {
   my ($file, $starttime, $ns) = @_;
   open(F,$file) or return (0, ());
   my $line = <F> or return (0, ());
-  my ($ts,$id,$rest) = split(/$FS/, $line); # just look at the first element
+  my ($ts, $pagename, $minor, $summary, $host, $username, $revision, $languages, $cluster) = split(/$FS/, $line);
   my $first = $ts;
   my @result = ();
   while ($ts) {
-    # here we add the namespace to the id, but this will never work,
-    # we need to fix this later in ScriptLink!
-    push(@result, join($FS, $ts, ($ns ? ($ns.'/'.$id) : $id), $rest)) if $ts >= $starttime;
+    # here we add the namespace to the pagename and username, but this
+    # will never work, we need to fix this later in ScriptLink!
+    push(@result, join($FS, $ts, ($ns ? ($ns . '/' . $pagename) : $pagename), $minor, $summary, $host,
+		       ($ns && $username ? ($ns . '/' . $username) : $username), $revision, $languages, $cluster))
+      if $ts >= $starttime;
     $line = <F> or last;
-    ($ts,$id,$rest) = split(/$FS/, $line); # just look at the first element
+    ($ts, $pagename, $minor, $summary, $host, $username, $rest) = split(/$FS/, $line);
   }
   return ($first, @result);
 }
@@ -177,4 +187,9 @@ sub NewNamespaceScriptLink {
     $action = $1 . $3;
   }
   return OldNamespaceScriptLink($action, @rest);
+}
+
+sub NamespaceValidId {
+  # don't do this test when printing recent changes because of the
+  # spliced in slash -- return nothing.
 }
