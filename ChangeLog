@@ -1,5 +1,11 @@
 2005-04-26  Alex Schroeder  <alex@gnu.org>
 
+	* modules/namespaces.pl (NewNamespaceDoRc): Added header back.
+	Correcly sort lines.
+	(NamespaceRcLines): Split into all fields and add namespace to
+	username, too.
+	(NamespaceValidId): New dummy to disable the test.
+
 	* wiki.pl (ApplyRules): Removed the final oldpos hack required
 	because now $bol no longer uses regexp matching.
 
