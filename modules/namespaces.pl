@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.13 2005/03/24 22:49:30 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.14 2005/04/25 21:14:52 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent $NamespaceRoot);
 
@@ -91,111 +91,94 @@ sub NamespacesInitVariables {
 *OldNamespaceDoRc = *DoRc;
 *DoRc = *NewNamespaceDoRc;
 
-sub NewNamespaceDoRc {
-  if ($NamespaceCurrent) {
-    return OldNamespaceDoRc(@_);
+sub NewNamespaceDoRc { # Copy of DoRc
+  my $GetRC = shift;
+  my $showHTML = $GetRC eq \&GetRcHtml; # optimized for HTML
+  my $starttime = 0;
+  if (GetParam('from', 0)) {
+    $starttime = GetParam('from', 0);
   } else {
-    my $GetRC = shift;
-    if ($GetRC eq \&GetRcHtml) {
-      return NamespaceBrowseRc();
-    } else {
-      return OldNamespaceDoRc($GetRC, @_);
+    $starttime = $Now - GetParam('days', $RcDefault) * 86400; # 24*60*60
+  }
+  # get the list of rc.log and oldrc.log files we need.  rcoldfiles is
+  # a mapping from rcfiles to rcoldfiles.
+  my @rcfiles = ();
+  my %rcoldfiles = ();
+  my %namespaces = ();
+  warn "Current NS: $NamespaceCurrent\n";
+  if ($NamespaceCurrent) {
+    push(@rcfiles, $RcFile);
+    $rcoldfiles{$RcFile} = $RcOldFile;
+  } else {
+    push(@rcfiles, $RcFile);
+    $rcoldfiles{$RcFile} = $RcOldFile;
+    # get the namespaces from the intermap instead of parsing the
+    # directory.  this reduces the chances of getting different
+    # results.
+    foreach my $site (keys %InterSite) { 
+      if ($InterSite{$site} =~ m|^$ScriptName/([^/]*)|) {
+	my $ns = $1 or next;
+	my $file = "$DataDir/$ns/rc.log";
+	push(@rcfiles, $file);
+	$namespaces{$file} = $ns;
+	$rcoldfiles{$file} = "$DataDir/$ns/oldrc.log";
+      }
     }
   }
+  warn "Logfiles: @rcfiles\n";
+  # now need them line by line, trying to conserve ram instead of
+  # optimizing for speed (and slurping them all in).  when opening a
+  # rcfile, compare the first timestamp with the starttime.  if any
+  # rcfile exists with no timestamp before the starttime, we need to
+  # open its rcoldfile.
+  @lines = ();
+  foreach my $file (@rcfiles) {
+    my ($ts, @new) = NamespaceRcLines($file, $starttime, $namespaces{$file});
+    push(@lines, @new);
+    if (not $ts or $starttime <= $ts) {
+      ($ts, @new) = NamespaceRcLines($rcoldfiles{$file}, $starttime, $namespaces{$file});
+      push(@lines, @new);
+    }
+  }
+  if (not @lines && $showHTML) {
+    print $q->p($q->strong(Ts('No updates since %s', TimeToText($starttime))));
+  } else {
+    print &$GetRC(@lines);
+  }
+  print GetFilterForm() if $showHTML;
 }
 
-sub NamespaceBrowseRc {
-  RcHeader();
-  print NamespaceInternalRc(GetParam('limit',100));
-  print GetFilterForm();
+sub NamespaceRcLines {
+  my ($file, $starttime, $ns) = @_;
+  warn "Reading $file\n";
+  open(F,$file) or return (0, ());
+  my $line = <F> or return (0, ());
+  my ($ts,$id,$rest) = split(/$FS/, $line); # just look at the first element
+  my $first = $ts;
+  my @result = ();
+  while ($ts) {
+    # here we add the namespace to the id, but this will never work,
+    # we need to fix this later in ScriptLink!
+    push(@result, join($FS, $ts, ($ns ? ($ns.'/'.$id) : $id), $rest)) if $ts >= $starttime;
+    $line = <F> or last;
+    ($ts,$id,$rest) = split(/$FS/, $line); # just look at the first element
+  }
+  warn "Returning $#result lines\n";
+  return ($first, @result);
 }
 
-sub NamespaceInternalRc { # code taken from RSS(), maybe refactoring would be possible, but tricky.
-  my $maxitems = shift;
-  my %lines;
-  eval { require XML::RSS;  } or return $q->div({-class=>'rss'},
-						$q->strong(T('XML::RSS is not available on this system.')));
-  # All strings that are concatenated with strings returned by the RSS
-  # feed must be decoded.  Without this decoding, 'diff' and 'history'
-  # translations will be double encoded when printing the result.
-  my $tDiff = T('diff');
-  my $tHistory = T('history');
-  if ($HttpCharset eq 'UTF-8' and ($tDiff ne 'diff' or $tHistory ne 'history')) {
-    eval { local $SIG{__DIE__};
-	   require Encode;
-	   $tDiff = Encode::decode_utf8($tDiff);
-	   $tHistory = Encode::decode_utf8($tHistory);
-	 }
+*OldNamespaceScriptLink = *ScriptLink;
+*ScriptLink = *NewNamespaceScriptLink;
+
+sub NewNamespaceScriptLink {
+  my ($action, @rest) = @_;
+  local $ScriptName = $ScriptName;
+  if ($action !~ /=/ and $action =~ /(.*?)%2f(.*)/) {
+    $ScriptName .= "/$1";
+    $action = $2;
+  } elsif ($action =~ /(.*=)(.*?)%2f(.*)/) {
+    $ScriptName .= '/' . $2;
+    $action = $1 . $3;
   }
-  my $wikins = 'http://purl.org/rss/1.0/modules/wiki/';
-  my $rdfns = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
-  my $str;
-  SetParam(GetParam('rsslimit', 'all'));
-  foreach my $site (keys %InterSite) {
-    if ($InterSite{$site} =~ m|^$ScriptName/([^/]*)|) {
-      my $ns = $1;
-      my $data = '';
-      local $ScriptName = $ScriptName;
-      local $RcFile = $RcFile;
-      if ($ns) {
-	my @dirs = split(/\//, $RcFile);
-	my $file = pop @dirs;
-	$RcFile = join('/', @dirs, $ns, $file);
-	$ScriptName .= '/' . $ns;
-      }
-      local *STDOUT;
-      open(STDOUT, '>', \$data) or die "Can't open memory file: $!";
-      DoRc(\&GetRcRss);
-      close(STDOUT);
-      my $rss = new XML::RSS;
-      $str .= $q->p($q->strong(Ts('%s returned no data.', $q->a({-href=>$ns}, $ns)))) unless $data;
-      eval { local $SIG{__DIE__}; $rss->parse($data); };
-      $str .= $q->p($q->strong(Ts('RSS parsing failed for %s',
-				  $q->a({-href=>$ns}, $ns)) . ': ' . $@)) if $data and $@;
-      # $str .= $q->p($q->strong(Ts('No items found in %s.', $q->a({-href=>$ns}, $ns or $NamespacesMain))))
-      # unless @{$rss->{items}};
-      foreach my $i (@{$rss->{items}}) {
-	my $line;
-	my $date = $i->{dc}->{date};
-	my $title = $i->{title};
-	my $description = $i->{description};
-	$line .= ' (' . $q->a({-href=>$i->{$wikins}->{diff}}, $tDiff) . ')';
-	$line .= ' (' . $q->a({-href=>$i->{$wikins}->{history}}, $tHistory) . ')';
-	$line .= ' ' . $q->a({-href=>$i->{link}, -title=>$date}, ($ns ? $ns . ':' : '') . $title);
-	my $contributor = $i->{dc}->{contributor};
-	$contributor =~ s/^\s+//;
-	$contributor =~ s/\s+$//;
-	if (!$contributor) {
-	  $contributor = $i->{$rdfns}->{value};
-	}
-	$line .= $q->span({-class=>'contributor'}, $q->span(T(' . . . . ')) . $contributor);
-	$line .= ' ' . $q->strong({-class=>'description'}, '--', $description) if $description;
-	while ($lines{$date}) {
-	  $date .= ' ';
-	}			# make sure this is unique
-	$lines{$date} = $line;
-      }
-    }
-  }
-  my @lines = sort { $b cmp $a } keys %lines;
-  @lines = @lines[0..$maxitems-1] if $maxitems and $#lines > $maxitems;
-  my $date;
-  foreach my $key (@lines) {
-    my $line = $lines{$key};
-    if ($key =~ /(\d\d\d\d(?:-\d?\d)?(?:-\d?\d)?)(?:[T ](\d?\d:\d\d))?/) {
-      my ($day, $time) = ($1, $2);
-      if ($day ne $date) {
-	$str .= '</ul>' if $date; # close ul except for the first time where no open ul exists
-	$date = $day;
-	$str .= $q->p($q->strong($day)) . '<ul>';
-      }
-      $line = $time . ' UTC ' . $line if $time;
-    } elsif (not $date) {
-      $str .= '<ul>'; # if the feed doesn't have any dates we need to start the list anyhow
-      $date = $Now;		# to ensure the list starts only once
-    }
-    $str .= $q->li($line);
-  }
-  $str .= '</ul>' if $date;
-  return $q->div({-class=>'content rss'}, $str);
+  return OldNamespaceScriptLink($action, @rest);
 }
