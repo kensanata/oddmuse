@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.14 2005/04/25 21:14:52 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.15 2005/04/25 22:21:27 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent $NamespaceRoot);
 
@@ -105,7 +105,6 @@ sub NewNamespaceDoRc { # Copy of DoRc
   my @rcfiles = ();
   my %rcoldfiles = ();
   my %namespaces = ();
-  warn "Current NS: $NamespaceCurrent\n";
   if ($NamespaceCurrent) {
     push(@rcfiles, $RcFile);
     $rcoldfiles{$RcFile} = $RcOldFile;
@@ -125,7 +124,6 @@ sub NewNamespaceDoRc { # Copy of DoRc
       }
     }
   }
-  warn "Logfiles: @rcfiles\n";
   # now need them line by line, trying to conserve ram instead of
   # optimizing for speed (and slurping them all in).  when opening a
   # rcfile, compare the first timestamp with the starttime.  if any
@@ -150,7 +148,6 @@ sub NewNamespaceDoRc { # Copy of DoRc
 
 sub NamespaceRcLines {
   my ($file, $starttime, $ns) = @_;
-  warn "Reading $file\n";
   open(F,$file) or return (0, ());
   my $line = <F> or return (0, ());
   my ($ts,$id,$rest) = split(/$FS/, $line); # just look at the first element
@@ -163,7 +160,6 @@ sub NamespaceRcLines {
     $line = <F> or last;
     ($ts,$id,$rest) = split(/$FS/, $line); # just look at the first element
   }
-  warn "Returning $#result lines\n";
   return ($first, @result);
 }
 
