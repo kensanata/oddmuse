@@ -5,6 +5,9 @@
 	(NamespaceRcLines): Split into all fields and add namespace to
 	username, too.
 	(NamespaceValidId): New dummy to disable the test.
+	(NewNamespaceDoRc): Add parameter local to restrict main RC to the
+	local namespace only.  Fixed bug in condition that led to the
+	printing of an HTML fragment when requesting RSS.
 
 	* wiki.pl (ApplyRules): Removed the final oldpos hack required
 	because now $bol no longer uses regexp matching.
