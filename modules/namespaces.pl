@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.16 2005/04/25 23:02:08 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.17 2005/04/26 07:44:30 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent $NamespaceRoot);
 
@@ -105,7 +105,7 @@ sub NewNamespaceDoRc { # Copy of DoRc
   my @rcfiles = ();
   my %rcoldfiles = ();
   my %namespaces = ();
-  if ($NamespaceCurrent) {
+  if ($NamespaceCurrent or GetParam('local', 0)) {
     push(@rcfiles, $RcFile);
     $rcoldfiles{$RcFile} = $RcOldFile;
   } else {
@@ -146,7 +146,7 @@ sub NewNamespaceDoRc { # Copy of DoRc
   @lines = sort { $a <=> $b } @lines;
   # end, printing
   local *ValidId = *NamespaceValidId;
-  if (not @lines && $showHTML) {
+  if (not @lines and $showHTML) {
     print $q->p($q->strong(Ts('No updates since %s', TimeToText($starttime))));
   } else {
     print &$GetRC(@lines);
