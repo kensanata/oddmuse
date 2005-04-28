@@ -1,3 +1,9 @@
+2005-04-29  Ingo Belka  <grimmen@mvnet.de>
+
+	* modules/headlines.pl (HeadlinesRule): Accept optional number of
+	headlines.
+	(HeadlinesPrint): Use dl instead of span+br to print the list.
+
 2005-04-26  Alex Schroeder  <alex@gnu.org>
 
 	* modules/namespaces.pl (NewNamespaceDoRc): Added header back.
