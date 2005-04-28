@@ -1,4 +1,5 @@
 # Copyright (C) 2004  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2005  Ingo Belka <grimmen@mvnet.de>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +19,7 @@
 
 use vars qw($HeadlineNumber);
 
-$ModulesDescription .= '<p>$Id: headlines.pl,v 1.7 2004/12/05 03:52:21 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: headlines.pl,v 1.8 2005/04/28 23:58:17 as Exp $</p>';
 
 push(@MyRules, \&HeadlinesRule);
 
@@ -27,7 +28,8 @@ push(@MyRules, \&HeadlinesRule);
 $HeadlineNumber = 20;
 
 sub HeadlinesRule {
-  if (m/\G(\&lt;headlines\&gt;)/gci) {
+  if (m/\G(\&lt;headlines(:(\d+))?\&gt;)/gci) {
+    if (($3) and ($3>0)) {$HeadlineNumber = $3;};
     Clean(CloseHtmlEnvironments());
     Dirty($1);
     HeadlinesPrint();
@@ -42,16 +44,16 @@ sub HeadlinesPrint {
   @pages = @pages[0 .. $HeadlineNumber - 1] if $#pages >= $HeadlineNumber;
   my $current_date;
   if (@pages) {
-    print '<div class="headlines">';
+    print '<dl class="headlines">';
     foreach my $page (@pages) {
       if ($page =~ /^(\d\d\d\d-\d\d-\d\d)_(.+)/) {
 	my ($date, $title) = ($1, $2);
 	$title =~ s/_/ /g;
-	print '<span class="date">' . $date . '</span><br />' unless $date eq $current_date;
+	print '<dt class="headlinesdate">' . $date . '</dt>' unless $date eq $current_date;
 	$current_date = $date;
-	print ScriptLink($page, $title, 'headline') . '<br />';
+	print '<dd>' . ScriptLink($page, $title, 'headlineslink') . '</dd>';
       }
     }
-    print '</div>';
+    print '</dl>';
   }
 }
