@@ -1,3 +1,14 @@
+2005-04-30  Alex Schroeder  <alex@gnu.org>
+
+	Implementation of DigestedChanges, as inspired by discussion on
+	Meatball.
+	
+	* wiki.pl ($SummaryLines): New option.
+	(DoEdit): If the last edit was less than 24h ago, use its summary
+	as the default.
+	(GetTextArea): Optional parameter for the number of rows added.
+	Default is still 25.
+
 2005-04-29  Ingo Belka  <grimmen@mvnet.de>
 
 	* modules/headlines.pl (HeadlinesRule): Accept optional number of
