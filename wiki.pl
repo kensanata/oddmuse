@@ -39,11 +39,11 @@ local $| = 1;  # Do not buffer output (localized for mod_perl)
 # Configuration/constant variables:
 
 use vars qw(@RcDays $TempDir $LockDir $DataDir $KeepDir $PageDir
-$RcOldFile $IndexFile $BannedContent $NoEditFile $BannedHosts
-$ConfigFile $FullUrl $SiteName $HomePage $LogoUrl $RcDefault
-$IndentLimit $RecentTop $RecentLink $EditAllowed $UseDiff $KeepDays
-$KeepMajor $EmbedWiki $BracketText $UseConfig $UseLookup $AdminPass
-$EditPass $NetworkFile $BracketWiki $FreeLinks $WikiLinks
+$SummaryLines $RcOldFile $IndexFile $BannedContent $NoEditFile
+$BannedHosts $ConfigFile $FullUrl $SiteName $HomePage $LogoUrl
+$RcDefault $IndentLimit $RecentTop $RecentLink $EditAllowed $UseDiff
+$KeepDays $KeepMajor $EmbedWiki $BracketText $UseConfig $UseLookup
+$AdminPass $EditPass $NetworkFile $BracketWiki $FreeLinks $WikiLinks
 $FreeLinkPattern $RCName $RunCGI $ShowEdits $LinkPattern $RssExclude
 $InterLinkPattern $InterSitePattern $MaxPost $UrlPattern $UrlProtocols
 $ImageExtensions $FS $CookieName $SiteBase $StyleSheet $NotFoundPg
@@ -107,6 +107,7 @@ $LogoUrl     = '';  # URL for site logo ('' for no logo)
 $NotFoundPg  = '';  # Page for not-found links ('' for blank pg)
 $NewText     = "Describe the new page here.\n";	 # New page text
 $NewComment  = "Add your comment here.\n";	 # New comment text
+$SummaryLines = 1; # How many lines for the summary
 
 # HardSecurity
 $EditAllowed = 1;   # 0 = no, 1 = yes, 2 = comments only
@@ -357,7 +358,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.548 2005/04/25 22:02:42 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.549 2005/04/30 12:02:51 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -2836,9 +2837,8 @@ sub DoEdit {
     $q->p(GetHiddenValue("title", $id), ($revision ? GetHiddenValue('revision', $revision) : ''),
 	  GetHiddenValue('oldtime', $Page{ts}),
 	  ($upload ? GetUpload() : GetTextArea('text', $oldText)));
-  my $summary = GetParam('summary', '');
-  print $q->p(T('Summary:'), $q->textfield(-name=>'summary', -default=>$summary,
-					   -override=>1, -size=>60));
+  my $summary = GetParam('summary', $Now - $Page{ts} < 24*60*60 ? $Page{summary} : '');
+  print $q->p(T('Summary:'), $q->br(), GetTextArea('summary', $summary, $SummaryLines));
   if (GetParam('recent_edit') eq 'on') {
     print $q->p($q->checkbox(-name=>'recent_edit', -checked=>1,
 			     -label=>T('This change is a minor edit.')));
@@ -2864,8 +2864,8 @@ sub DoEdit {
 }
 
 sub GetTextArea {
-  my ($name, $text) = @_;
-  return $q->textarea(-name=>$name, -default=>$text, -rows=>25, -columns=>78, -override=>1);
+  my ($name, $text, $rows) = @_;
+  return $q->textarea(-name=>$name, -default=>$text, -rows=>$rows||25, -columns=>78, -override=>1);
 }
 
 sub GetUpload {
