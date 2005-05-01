@@ -1,5 +1,9 @@
 2005-05-01  Alex Schroeder  <alex@gnu.org>
 
+	* modules/sidebar.pl (NewSideBarGetHeader): Set $OpenPageName to
+	$SidebarName while rendering the sidebar.  This should enable the
+	form extension on the sidebar.
+
 	* wiki.pl (DoEdit): Use $KeepDays instead of 24h for "summary
 	expiration".
 	($SummaryLines): Remove option again and replace with hard-coded
