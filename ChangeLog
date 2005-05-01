@@ -1,3 +1,10 @@
+2005-05-01  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoEdit): Use $KeepDays instead of 24h for "summary
+	expiration".
+	($SummaryLines): Remove option again and replace with hard-coded
+	two lines.
+	
 2005-04-30  Alex Schroeder  <alex@gnu.org>
 
 	Implementation of DigestedChanges, as inspired by discussion on
