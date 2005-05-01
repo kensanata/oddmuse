@@ -1,5 +1,10 @@
 2005-05-01  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (GetCommentForm): Don't provide summary in the form.
+	(DoPost): Get summary from GetSummary.
+	(GetSummary): New function that takes a substring from aftertext
+	if available.
+
 	* modules/sidebar.pl (NewSideBarGetHeader): Set $OpenPageName to
 	$SidebarName while rendering the sidebar.  This should enable the
 	form extension on the sidebar.
