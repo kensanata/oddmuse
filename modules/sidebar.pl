@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: sidebar.pl,v 1.12 2005/01/06 23:57:32 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: sidebar.pl,v 1.13 2005/05/01 13:01:29 as Exp $</p>';
 
 use vars qw($SidebarName);
 
@@ -33,9 +33,6 @@ sub SidebarInit {
   push(@AdminPages, $SidebarName) unless grep(/$SidebarName/, @AdminPages); # mod_perl!
 }
 
-*OldSideBarGetHeader = *GetHeader;
-*GetHeader = *NewSideBarGetHeader;
-
 $DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /div\.sidebar/; # mod_perl?
 @media screen {
   body { margin-right: 22ex; padding-right:1em; border-right: 1px solid #999; }
@@ -46,10 +43,14 @@ $DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /div\.sidebar/; # mod
 }
 EOT
 
+*OldSideBarGetHeader = *GetHeader;
+*GetHeader = *NewSideBarGetHeader;
+
 # this assumes that *all* calls to GetHeader will print!
 sub NewSideBarGetHeader {
   my ($id) = @_;
   print OldSideBarGetHeader(@_);
+  local $OpenPageName = $SidebarName;
   print '<div class="sidebar">';
   PrintWikiToHTML(GetPageContent($SidebarName));
   print '</div>';
