@@ -2418,10 +2418,7 @@ xpath_run_tests();
 
 remove_rule(\&TagsRule);
 
-
 # --------------------
-
-fixme:
 
 print '[moin]';
 
@@ -2465,6 +2462,31 @@ EOT
 xpath_run_tests();
 
 remove_rule(\&MoinRule);
+
+# --------------------
+
+fixme:
+
+print '[sidebar]'; # + pagelock + forms
+
+clear_pages();
+
+add_module('sidebar.pl');
+
+test_page(update_page('SideBar', 'mu'), '<div class="sidebar"><p>mu</p></div>');
+test_page(get_page('HomePage'), '<div class="sidebar"><p>mu</p></div>');
+
+add_module('forms.pl');
+
+test_page(update_page('SideBar', '<form><h1>mu</h1></form>'), '<div class="sidebar"><p>&lt;form&gt;&lt;h1&gt;mu&lt;/h1&gt;&lt;/form&gt;</p></div>');
+xpath_test(get_page('action=pagelock id=SideBar set=1 pwd=foo'), '//p/text()[string()="Lock for "]/following-sibling::a[@href="http://localhost/wiki.pl/SideBar"][@class="local"][text()="SideBar"]/following-sibling::text()[string()=" created."]');
+test_page(get_page('SideBar'), '<div class="sidebar"><form><h1>mu</h1></form></div>');
+# tricky: should OpenPage be set to "SideBar" or "HomePage" when rendering the sidebar on the homepage?
+# test_page(get_page('HomePage'), '<div class="sidebar"><form><h1>mu</h1></form></div>');
+test_page(get_page('HomePage'), '<div class="sidebar"><p>&lt;form&gt;&lt;h1&gt;mu&lt;/h1&gt;&lt;/form&gt;</p></div>');
+
+*GetHeader = *OldSideBarGetHeader;
+remove_rule(\&FormsRule);
 
 ### END OF TESTS
 
