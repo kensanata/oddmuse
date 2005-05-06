@@ -357,7 +357,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.551 2005/05/01 13:32:56 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.552 2005/05/06 08:46:18 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -3499,12 +3499,12 @@ sub DoPost {
 
 sub GetSummary {
   my $summary = GetParam('summary', '');
-  my $text = GetParam('aftertext', '');
+  my $text = GetParam('aftertext',  '');
+  $text = GetParam('text', '') unless $text or $Page{revision} > 0;
   if (not $summary and $text) {
     $summary = substr($text, 0, 100);
     $summary =~ s/\s*\S*$/ . . ./ if length($text) > 100;
   }
-  $summary = T('new comment') unless $summary;
   $summary =~ s/$FS//g;
   $summary =~ s/[\r\n]+/ /g;
   return $summary;
