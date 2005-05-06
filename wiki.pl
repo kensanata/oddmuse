@@ -357,7 +357,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.552 2005/05/06 08:46:18 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.553 2005/05/06 12:25:39 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -2185,7 +2185,7 @@ sub GetFooterTimestamp {
   if ($id and $rev ne 'history' and $rev ne 'edit' and $Page{revision}) {
     my @elements = ($q->br(), ($rev eq '' ? T('Last edited') : T('Edited')), TimeToText($Page{ts}),
 		    Ts('by %s', GetAuthorLink($Page{host}, $Page{username})));
-    push(@elements, ScriptLinkDiff(1, $id, T('(diff)'), $rev)) if $UseDiff;
+    push(@elements, ScriptLinkDiff(2, $id, T('(diff)'), $rev)) if $UseDiff;
     return $q->span({-class=>'time'}, @elements);
   }
   return '';
