@@ -1,3 +1,8 @@
+2005-05-06  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetSummary): For new pages, use the beginning of the
+	text if no summary was provided.
+
 2005-05-01  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetCommentForm): Don't provide summary in the form.
