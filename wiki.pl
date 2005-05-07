@@ -357,7 +357,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.554 2005/05/07 23:40:48 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.555 2005/05/07 23:43:30 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -1532,10 +1532,10 @@ sub RcHeader {
 			   T('Include minor changes'),'','','','',1));
   }
   print $q->p((map { ScriptLink("$action;days=$_;all=$all;showedit=$edits",
-				($_ != 1) ? Ts('%s days', $_) : Ts('%s days', $_));
+				($_ != 1) ? Ts('%s days', $_) : Ts('%s days', $_),'','','','',1);
 		   } @RcDays), $q->br(), @menu, $q->br(),
 	      ScriptLink($action . ';from=' . ($LastUpdate + 1) . ";all=$all;showedit=$edits",
-			 T('List later changes'),'','','','',1));
+			 T('List later changes')));
 }
 
 sub GetFilterForm {
