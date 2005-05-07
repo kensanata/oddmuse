@@ -357,7 +357,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.553 2005/05/06 12:25:39 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.554 2005/05/07 23:40:48 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -1103,7 +1103,7 @@ sub GetEditLink { # shortcut
 }
 
 sub ScriptLink {
-  my ($action, $text, $class, $name, $title, $accesskey) = @_;
+  my ($action, $text, $class, $name, $title, $accesskey, $nofollow) = @_;
   my %params;
   if ($UsePathInfo and !$Monolithic and $action !~ /=/) {
     $params{-href} = $ScriptName . '/' . $action;
@@ -1116,6 +1116,7 @@ sub ScriptLink {
   $params{'-name'} = UrlEncode($name)  if $name;
   $params{'-title'} = $title  if $title;
   $params{'-accesskey'} = $accesskey  if $accesskey;
+  $params{'-rel'} = 'nofollow'  if $nofollow;
   return $q->a(\%params, $text);
 }
 
@@ -1518,23 +1519,23 @@ sub RcHeader {
   my @menu;
   if ($all) {
     push(@menu, ScriptLink("$action;days=$days;all=0;showedit=$edits",
-			   T('List latest change per page only')));
+			   T('List latest change per page only'),'','','','',1));
   } else {
     push(@menu, ScriptLink("$action;days=$days;all=1;showedit=$edits",
-			   T('List all changes')));
+			   T('List all changes'),'','','','',1));
   }
   if ($edits) {
     push(@menu, ScriptLink("$action;days=$days;all=$all;showedit=0",
-			   T('List only major changes')));
+			   T('List only major changes'),'','','','',1));
   } else {
     push(@menu, ScriptLink("$action;days=$days;all=$all;showedit=1",
-			   T('Include minor changes')));
+			   T('Include minor changes'),'','','','',1));
   }
   print $q->p((map { ScriptLink("$action;days=$_;all=$all;showedit=$edits",
 				($_ != 1) ? Ts('%s days', $_) : Ts('%s days', $_));
 		   } @RcDays), $q->br(), @menu, $q->br(),
 	      ScriptLink($action . ';from=' . ($LastUpdate + 1) . ";all=$all;showedit=$edits",
-			 T('List later changes')));
+			 T('List later changes'),'','','','',1));
 }
 
 sub GetFilterForm {
