@@ -16,17 +16,27 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.14 2005/01/20 20:55:39 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.15 2005/05/07 22:12:34 as Exp $</p>';
 
 use vars qw($SearchFreeTextNewForm);
 
 $SearchFreeTextNewForm = 1;
 
+push(@MyAdminCode, \&SearchFreeTextMenu);
+
+sub SearchFreeTextMenu {
+  my ($id, $menuref, $restref) = @_;
+  push(@$menuref, ScriptLink('action=buildindex', T('Rebuild index for searching')));
+}
+
 $Action{buildindex} = \&SearchFreeTextIndex;
 
 sub SearchFreeTextIndex {
   RequestLockOrError(); # fatal
-  require Search::FreeText;
+  if (not eval { require Search::FreeText;  }) {
+    my $err = $@;
+    ReportError(T('Search::FreeText is not available on this system.'), '500 INTERNAL SERVER ERROR');
+  }
   my $file = $DataDir . '/word.db';
   my $db = new Search::FreeText(-db => ['DB_File', $file]);
   print GetHeader('', QuoteHtml(Ts('Updating %s', $file)), ''),
@@ -62,6 +72,9 @@ sub SearchFreeTextNewDoSearch {
 
 # new search
 
+my $SearchFreeTextNum = 10;  # results per page
+my $SearchFreeTextMax = 10;  # max. number of pages
+
 sub SearchFreeTextTitleAndBody {
   my ($term, $func, @args) = @_;
   ReportError(T('Search term missing.'), '400 BAD REQUEST') unless $term;
@@ -69,11 +82,17 @@ sub SearchFreeTextTitleAndBody {
   my $file = $DataDir . '/word.db';
   my $page = GetParam('page', 1);
   my $context = GetParam('context', 1);
+  my $limit = GetParam('limit', $SearchFreeTextNum);
+  my $max = $page * $limit - 1;
   my $db = new Search::FreeText(-db => ['DB_File', $file]);
+  # get results
   $db->open_index();
   my @found = $db->search($term);
+  $db->close_index();
+  # pmake sure phrases do in fact appear (phrases are multi-word
+  # search terms in "double quotes")
   my @phrases = map { quotemeta } $term =~ m/"([^\"]+)"/g;
-  my @filtered = ();
+  my @result = ();
  PAGE: foreach (@found) {
     my ($id, $score) = ($_->[0], $_->[1]);
     if (@phrases) {
@@ -82,11 +101,40 @@ sub SearchFreeTextTitleAndBody {
 	next PAGE unless $Page{text} =~ m/$phrase/;
       }
     }
-    push(@filtered, $_);
+    push(@result, $id);
+  }
+  # limit to the result page requested
+  $max = @result - 1 if @result -1 < $max;
+  my $count = ($page - 1) * $limit;
+  my @items = @result[($page - 1) * $limit  .. $max];
+  # print links, if this is is really a search
+  if (GetParam('search', '') and @items) {
+    my @links = ();
+    my $pages = int($#result / $limit) + 1;
+    my $prev = '';
+    my $next = '';
+    for my $p (1 .. $pages) {
+      if ($p == $page) {
+	push(@links, $p);
+      } else {
+	my $action = 'search=' . UrlEncode($term);
+	$action .= ';page=' . $p if $p != 1;
+	$action .= ';context=0' unless $context;
+	$action .= ';limit=' . $limit if $limit != $SearchFreeTextNum;
+	push(@links, ScriptLink($action, $p));
+	$prev = $action if ($p == $page - 1);
+	$next = $action if ($p == $page + 1);
+      }
+    }
+    unshift(@links, ScriptLink($prev, T('Previous'))) if $prev;
+    push(@links, ScriptLink($next, T('Next'))) if $next;
+    print $q->p(T('Result pages: '), @links, Ts("(%s results)", $#result + 1));
+  }
+  # print result
+  foreach my $id (@items) {
     &$func($id, @args) if $func;
   }
-  $db->close_index();
-  return @filtered;
+  return @items;
 }
 
 # highlighting changes if new search is used
