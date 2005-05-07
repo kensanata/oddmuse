@@ -6,6 +6,8 @@
 	($SearchFreeTextNum, $SearchFreeTextMax): Reintroduced these
 	variables, but not as options (not configurable).
 	(SearchFreeTextTitleAndBody): Add paging.
+	(SearchFreeTextIndex): Don't allow to rebuild the index more than
+	once every 12h.
 
 2005-05-06  Alex Schroeder  <alex@gnu.org>
 
