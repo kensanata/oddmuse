@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.15 2005/05/07 22:12:34 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.16 2005/05/07 22:25:04 as Exp $</p>';
 
 use vars qw($SearchFreeTextNewForm);
 
@@ -32,15 +32,25 @@ sub SearchFreeTextMenu {
 $Action{buildindex} = \&SearchFreeTextIndex;
 
 sub SearchFreeTextIndex {
-  RequestLockOrError(); # fatal
+  print GetHeader('', T('Rebuilding Index'), ''),
+    $q->start_div({-class=>'content buildindex'} . '<p>');
+  my $fname = "$DataDir/maintain";
   if (not eval { require Search::FreeText;  }) {
     my $err = $@;
     ReportError(T('Search::FreeText is not available on this system.'), '500 INTERNAL SERVER ERROR');
   }
   my $file = $DataDir . '/word.db';
+  if (!UserIsAdmin()) {
+    if ((-f $file) && ((-M $file) < 0.5)) {
+      print $q->p(T('Rebuilding index not done.'),
+		  T('(Rebuilding the index can only be done once every 12 hours.)')),
+	     $q->end_div();
+      PrintFooter();
+      return;
+    }
+  }
+  RequestLockOrError(); # fatal
   my $db = new Search::FreeText(-db => ['DB_File', $file]);
-  print GetHeader('', QuoteHtml(Ts('Updating %s', $file)), ''),
-    $q->start_div({-class=>'content buildindex'} . '<p>');
   $db->open_index();
   $db->clear_index();
   foreach my $name (AllPagesList()) {
