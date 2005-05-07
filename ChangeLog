@@ -1,5 +1,10 @@
 2005-05-08  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (ScriptLink): Add another parameter to generate
+	rel="nofollow" links.
+	(RcHeader): Use nofollow links because RecentChanges is FOLLOW by
+	default.  This might help cut bandwidth.
+	
 	* modules/search-freetext.pl (SearchFreeTextMenu): New, added to
 	@MyAdminCode.
 	(SearchFreeTextIndex): Catch error if module is missing.
