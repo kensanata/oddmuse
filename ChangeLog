@@ -1,6 +1,8 @@
 2005-05-18  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DeletePage): Delete page-lock file, too.
+	(DoEditLock, DoPageLock): Saved a line in each by removing the my
+	declaration at the very beginning.
 
 2005-05-08  Alex Schroeder  <alex@gnu.org>
 
