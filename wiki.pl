@@ -357,7 +357,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.556 2005/05/18 21:21:36 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.557 2005/05/18 21:25:18 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -3729,10 +3729,9 @@ sub DeletePage { # Delete must be done inside locks.
 # == Page locking ==
 
 sub DoEditLock {
-  my ($fname);
   print GetHeader('', T('Set or Remove global edit lock'), '');
   return  if (!UserIsAdminOrError());
-  $fname = "$NoEditFile";
+  my $fname = "$NoEditFile";
   if (GetParam("set", 1)) {
     WriteStringToFile($fname, 'editing locked.');
   } else {
@@ -3748,16 +3747,15 @@ sub DoEditLock {
 }
 
 sub DoPageLock {
-  my ($fname, $id);
   print GetHeader('', T('Set or Remove page edit lock'), '');
   # Consider allowing page lock/unlock at editor level?
   return  if (!UserIsAdminOrError());
-  $id = GetParam('id', '');
+  my $id = GetParam('id', '');
   if ($id eq '') {
     print $q->p(T('Missing page id to lock/unlock...'));
     return;
   }
-  $fname = GetLockedPageFile($id) if ValidIdOrDie($id);
+  my $fname = GetLockedPageFile($id) if ValidIdOrDie($id);
   if (GetParam('set', 1)) {
     WriteStringToFile($fname, 'editing locked.');
   } else {
