@@ -357,7 +357,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.557 2005/05/18 21:25:18 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.558 2005/06/02 07:09:59 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -3421,7 +3421,7 @@ sub DoPost {
     $string = '#FILE ' . $type . "\n" . $_;
   } else {
     $string = AddComment($old, $comment) if $comment;
-    $string =~ s/^$DeletedPage// if $comment;
+    $string =~ s/^$DeletedPage// if $comment; # undelete pages when adding a comment
     # Massage the string
     $string =~ s/\r//g;
     $string .= "\n"  if ($string !~ /\n$/);
@@ -3450,7 +3450,7 @@ sub DoPost {
       DoEdit($id, $string, 1);
     }
     return;
-  } elsif (($old eq $string) or ($oldrev == 0 and $string eq $NewText)) {
+  } elsif (($old eq $string) or ($oldrev == 0 and $string eq $NewText) or ($oldrev == 0 and $string eq "\n")) {
     ReleaseLock(); # No changes -- just show the same page again
     ReBrowsePage($id);
     return;
