@@ -1,3 +1,7 @@
+2005-06-02  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoPost): Don't create empty pages.
+
 2005-05-18  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DeletePage): Delete page-lock file, too.
