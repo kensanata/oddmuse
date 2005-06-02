@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.17 2005/04/26 07:44:30 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.18 2005/06/02 07:43:02 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent $NamespaceRoot);
 
@@ -158,6 +158,7 @@ sub NamespaceRcLines {
   my ($file, $starttime, $ns) = @_;
   open(F,$file) or return (0, ());
   my $line = <F> or return (0, ());
+  chomp($line);
   my ($ts, $pagename, $minor, $summary, $host, $username, $revision, $languages, $cluster) = split(/$FS/, $line);
   my $first = $ts;
   my @result = ();
