@@ -1,3 +1,7 @@
+2005-06-12  Alex Schroeder  <alex@gnu.org>
+
+	* modules/sitemap.pl: New file.
+
 2005-06-02  Alex Schroeder  <alex@gnu.org>
 
 	* modules/namespaces.pl (NamespaceRcLines): Remove trailing
