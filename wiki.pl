@@ -43,7 +43,7 @@ $RcOldFile $IndexFile $BannedContent $NoEditFile $BannedHosts
 $ConfigFile $FullUrl $SiteName $HomePage $LogoUrl $RcDefault
 $IndentLimit $RecentTop $RecentLink $EditAllowed $UseDiff $KeepDays
 $KeepMajor $EmbedWiki $BracketText $UseConfig $UseLookup $AdminPass
-$EditPass $NetworkFile $BracketWiki $FreeLinks $WikiLinks
+$EditPass $NetworkFile $BracketWiki $FreeLinks $WikiLinks $SummaryHours
 $FreeLinkPattern $RCName $RunCGI $ShowEdits $LinkPattern $RssExclude
 $InterLinkPattern $InterSitePattern $MaxPost $UrlPattern $UrlProtocols
 $ImageExtensions $FS $CookieName $SiteBase $StyleSheet $NotFoundPg
@@ -147,6 +147,7 @@ $RCName	     = 'RecentChanges'; # Name of changes page
 $RcDefault   = 30;  # Default number of RecentChanges days
 $KeepDays    = 14;  # Days to keep old revisions
 $KeepMajor   = 1;   # 1 = keep at least one major rev when expiring pages
+$SummaryHours = 4;  # Hours to offer the old subject when editing a page
 $ShowEdits   = 0;   # 1 = major and show minor edits in recent changes
 $UseLookup   = 1;   # 1 = lookup host names instead of using only IP numbers
 $RecentTop   = 1;   # 1 = most recent entries at the top of the list
@@ -357,7 +358,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.558 2005/06/02 07:09:59 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.559 2005/06/15 13:48:03 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -2836,7 +2837,7 @@ sub DoEdit {
     $q->p(GetHiddenValue("title", $id), ($revision ? GetHiddenValue('revision', $revision) : ''),
 	  GetHiddenValue('oldtime', $Page{ts}),
 	  ($upload ? GetUpload() : GetTextArea('text', $oldText)));
-  my $summary = GetParam('summary', $Now - $Page{ts} < ($KeepDays * 24 * 60 * 60) ? $Page{summary} : '');
+  my $summary = GetParam('summary', $Now - $Page{ts} < ($SummaryHours * 60 * 60) ? $Page{summary} : '');
   print $q->p(T('Summary:'), $q->br(), GetTextArea('summary', $summary, 2));
   if (GetParam('recent_edit') eq 'on') {
     print $q->p($q->checkbox(-name=>'recent_edit', -checked=>1,
