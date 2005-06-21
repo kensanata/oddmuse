@@ -359,7 +359,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.560 2005/06/21 21:58:15 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.561 2005/06/21 22:09:20 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -1062,7 +1062,6 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
   if ($resolved) { # anchors don't exist as pages, therefore do not use $exists
     $text = $id unless $text;
     $text =~ s/_/ /g if $free;
-    return $q->a({-class=>$class, -href=>$resolved, -title=>$title}, $text) if $class eq 'near';
     return ScriptLink(UrlEncode($resolved), $text, $class, undef, $title);
   } else {
     # $free and $bracket usually exclude each other
@@ -1107,7 +1106,10 @@ sub GetEditLink { # shortcut
 sub ScriptLink {
   my ($action, $text, $class, $name, $title, $accesskey, $nofollow) = @_;
   my %params;
-  if ($UsePathInfo and !$Monolithic and $action !~ /=/) {
+  if ($action =~ /^http\%3a/) { # for nearlinks and other URLs
+    $action =~ s/%([0-9a-f][0-9a-f])/chr(hex($1))/ge; # undo urlencode
+    $params{-href} = $action;
+  } elsif ($UsePathInfo and !$Monolithic and $action !~ /=/) {
     $params{-href} = $ScriptName . '/' . $action;
   } elsif ($Monolithic) {
     $params{-href} = '#' . $action;
@@ -3278,9 +3280,7 @@ sub PrintSearchResultEntry {
     my ($class, $resolved, $title, $exists) = ResolveId($id);
     my $text = $id;
     $text =~ s/_/ /g;
-    my $action = UrlEncode($resolved); # watch out when passing this on!
-    $action = 'action=browse;id=' . $action if $action =~ /\%2f/;
-    my $result = $q->span({-class=>'result'}, ScriptLink($action, $text, $class, undef, $title));
+    my $result = $q->span({-class=>'result'}, ScriptLink(UrlEncode($resolved), $text, $class, undef, $title));
     my $description = $entry{description};
     $description = $q->br() . SearchHighlight($description, $regex) if $description;
     my $info = $entry{size};
@@ -3347,7 +3347,7 @@ sub Replace {
 
 sub DoPrintAllPages {
   return  if (!UserIsAdminOrError());
-  $Monolithic = 1; # changes how ScriptLink works
+  $Monolithic = 1; # changes ScriptLink
   print GetHeader('', T('Complete Content'), '')
     . $q->p(Ts('The main page is %s.', $q->a({-href=>'#' . $HomePage}, $HomePage)));
   print $q->p($q->b(Ts('(for %s)', GetParam('lang', 0)))) if GetParam('lang', 0);
