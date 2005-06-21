@@ -64,7 +64,7 @@ $FreeInterLinkPattern @AdminPages @MyAdminCode @MyInitVariables);
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
 %NewCookie $InterSiteInit $FootnoteNumber $OpenPageName @IndexList
 $IndexInit $Message $q $Now %RecentVisitors @HtmlStack $Monolithic
-$ReplaceForm %PermanentAnchors %PagePermanentAnchors
+$ReplaceForm %PermanentAnchors %PagePermanentAnchors %MyInc
 $CollectingJournal $WikiDescription $PrintedHeader %Locks $Fragment
 @Blocks @Flags %NearSite %NearSource %NearLinksUsed $NearSiteInit
 $NearDir $NearMap $SisterSiteLogoUrl %NearSearch @KnownLocks
@@ -278,7 +278,8 @@ sub Init {
   InitLinkPatterns(); # Link pattern can be changed in config files
   if ($UseConfig and $ModuleDir and -d $ModuleDir) {
     foreach my $lib (glob("$ModuleDir/*.pm $ModuleDir/*.pl")) {
-      do $lib unless $INC{$lib};
+      do $lib unless $MyInc{$lib};
+      $MyInc{$lib} = 1; # Cannot use %INC in mod_perl settings
       $Message .= CGI::p("$lib: $@") if $@; # no $q exists, yet
     }
   }
@@ -358,7 +359,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.559 2005/06/15 13:48:03 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.560 2005/06/21 21:58:15 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
