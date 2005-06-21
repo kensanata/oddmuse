@@ -1,3 +1,17 @@
+2005-06-22  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetPageOrEditLink): No longer handle near links
+	specially.
+	(ScriptLink): Handle resolved URLs specially, eg. from near links.
+	(PrintSearchResultEntry): Just pass it on to ScriptLink.  Don't
+	test $action for %2f -- I wonder what this was supposed to do?
+
+2005-06-21  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (Init): Maintain %MyInc separate from %INC for mod_perl
+	compatibility.
+	(%MyInc): New variable.
+
 2005-06-15  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl ($SummaryHours): New option.
