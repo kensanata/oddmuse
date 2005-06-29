@@ -1,3 +1,8 @@
+2005-06-29  Alex Schroeder  <alex@gnu.org>
+
+	* modules/namespaces.pl (NamespaceRcLines): Fix handling of
+	cluster and other attributes.
+
 2005-06-22  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetPageOrEditLink): No longer handle near links
