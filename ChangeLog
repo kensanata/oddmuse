@@ -1,5 +1,9 @@
 2005-06-29  Alex Schroeder  <alex@gnu.org>
 
+	* modules/commentcount.pl (NewCommentcountScriptLink): Undo
+	urlencode for the first parameter when using it to get the page
+	content.
+
 	* modules/namespaces.pl (NamespaceRcLines): Fix handling of
 	cluster and other attributes.
 
