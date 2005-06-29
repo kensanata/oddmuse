@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.18 2005/06/02 07:43:02 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.19 2005/06/29 15:58:40 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent $NamespaceRoot);
 
@@ -159,16 +159,17 @@ sub NamespaceRcLines {
   open(F,$file) or return (0, ());
   my $line = <F> or return (0, ());
   chomp($line);
-  my ($ts, $pagename, $minor, $summary, $host, $username, $revision, $languages, $cluster) = split(/$FS/, $line);
+  my ($ts, $pagename, $minor, $summary, $host, $username, $rest) = split(/$FS/, $line);
   my $first = $ts;
   my @result = ();
   while ($ts) {
     # here we add the namespace to the pagename and username, but this
     # will never work, we need to fix this later in ScriptLink!
     push(@result, join($FS, $ts, ($ns ? ($ns . '/' . $pagename) : $pagename), $minor, $summary, $host,
-		       ($ns && $username ? ($ns . '/' . $username) : $username), $revision, $languages, $cluster))
+		       ($ns && $username ? ($ns . '/' . $username) : $username), $rest))
       if $ts >= $starttime;
     $line = <F> or last;
+    chomp($line);
     ($ts, $pagename, $minor, $summary, $host, $username, $rest) = split(/$FS/, $line);
   }
   return ($first, @result);
