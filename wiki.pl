@@ -359,7 +359,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.561 2005/06/21 22:09:20 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.562 2005/06/30 23:57:01 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -2748,8 +2748,9 @@ sub TimeToText {
 }
 
 sub TimeToW3 { # Complete date plus hours and minutes: YYYY-MM-DDThh:mmTZD (eg 1997-07-16T19:20+01:00)
-  my $t = shift; # When times are expressed in UTC, use a special UTC designator ("Z").
-  return CalcDay($t) . 'T' . CalcTime($t) . 'Z';
+  # When times are expressed in UTC, use a special UTC designator ("Z").
+  my ($sec, $min, $hour, $mday, $mon, $year) = gmtime(shift);
+  return sprintf('%4d-%02d-%02dT%02d:%02dZ', $year+1900, $mon+1, $mday, $hour, $min);
 }
 
 sub GetHiddenValue {
