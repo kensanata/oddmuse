@@ -2,7 +2,7 @@
 # Make sure the CVS keywords for the sed command on the next line are not expanded.
 
 VERSION=oddmuse-$(shell sed -n -e 's/^.*\$$Id: wiki\.pl,v \([0-9.]*\).*$$/\1/p' wiki.pl)
-TRANSLATIONS=$(wildcard translations/[a-z]*-utf8.pl$)
+TRANSLATIONS=$(wildcard modules/translations/[a-z]*-utf8.pl$)
 MODULES=$(wildcard modules/*.pl)
 
 dist: $(VERSION).tar.gz
