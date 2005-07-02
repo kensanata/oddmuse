@@ -1,6 +1,6 @@
 # UTF-8 encoded French language file for use with Oddmuse
 #
-# Copyright (c) 2003  Pierre Gaston
+# Copyright (c) 2003, 2005  Pierre Gaston
 # Copyright (c) 2004  Christophe Ducamp
 #
 # Permission is granted to copy, distribute and/or modify this
@@ -18,7 +18,8 @@
 #
 # This translation was last checked for Oddmuse version 1.296.
 #
-$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.2 2005/02/01 21:16:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.3 2005/07/02 00:03:28 as Exp $</p>';
+$s n'a pas retournée de données, ou LWP::UserAgent n'est pas disponible.
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Accès interdit&nbsp;: votre serveur, adresse IP ou nom d'utilisateur a été bloqué.
@@ -29,33 +30,35 @@ Nom d'utilisateur non valide %s&nbsp;: pas sauvegardé
 UserName must be 50 characters or less: not saved
 Le nom d'utilisateur ne doit pas dépasser 50 caractères&nbsp;: pas sauvegardé
 This page contains an uploaded file:
-
+Cette page contient un fichier téléversé.
 XML::RSS is not available on this system.
-
+XML::RSS n'est pas disponible sur ce sytème.
 diff
 diff
 history
 historique
 %s returned no data, or LWP::UserAgent is not available.
-
+ n'a pas retournée de données, ou LWP::UserAgent n'est pas disponible.
 RSS parsing failed for %s
-
+L'analyse du RSS de %s a échouée 
 No items found in %s.
-
+Pas d'objet dans %s.
  . . . . 
  . . . . 
 Click to edit this page
-
+Cliquez pour editer cette page
 image
-
+image
 download
+télécharger
+CGI Internal error: %s
 
 Invalid action parameter %s
 Parmètre d'action invalide %s
 Invalid URL.
 URL non valide
 Page name is missing
-
+Le nom de la page est manquant.
 Page name is too long: %s
 Nom de page trop long&nbsp;: %s
 Invalid Page %s
@@ -115,9 +118,9 @@ Aller !
 (minor)
 (mineur)
 rollback
-
+retour en arrière
 new
-
+nouveau
 from %s
 depuis %s
 History of %s
@@ -129,15 +132,15 @@ Version %s
 by
 par
 Rolling back changes
-
+Retour en arrière en cours
 Missing target for rollback.
-
+Cible manquante pour le retour en arrière.
 Target for rollback is too far back.
-
+La cible du retour en arrière est trop ancienne
 Rollback to %s
-
+Retour à %s
 %s rolled back
-
+Retour en arrière pour %s
 Index of all pages
 Index de toutes les pages
 Wiki Version
@@ -149,23 +152,23 @@ Derniers Visiteurs
 Password
 Mot de passe
 Run maintenance
-
+Lancer la maintenance
 Unlock site
-
+Déverouiller le site
 Lock site
-
+Verouiller le site
 Unlock %s
-
+Déverouiller %s
 Lock %s
-
+Verouiller %s
 Administration
-
+Administration
 Actions:
-
+Actions:
 Important pages:
-
+Pages importantes:
 To mark a page for deletion, put <strong>%s</strong> on the first line.
-
+Pour marquer une page devant être supprimer, ajoutez <strong>%s</strong> à la première ligne
 [Home]
 [Accueil]
 redirected from %s
@@ -181,9 +184,9 @@ Base de données stockée dans le répertoire temporaire %s
 %s seconds
 %s secondes
 The same page on other sites:
-
+La même page sur d'autres sites
 EditNearLinks
-
+Editer les LienDeProximité
 Last edited
 Dernière modification
 Edited
@@ -206,10 +209,8 @@ View current revision
 Voir la version actuelle
 View all changes
 Voir toutes les modifications
-new comment
-nouveau commentaire
 Homepage URL:
-
+Adresse(URL) du site perso
 s
 
 Save
@@ -241,7 +242,7 @@ mineure
 No diff available.
 Pas de diff disponible.
 Old revision:
-
+Ancienne version:
 Changed:
 Modifiée&nbsp;:
 Removed:
@@ -257,15 +258,15 @@ Présentation de la version en cours à sa place.
 Showing revision %s
 Présentation de la version %s
 Cannot save a nameless page.
-
+Impossible de sauvegarder une page sans nom.
 Cannot save a page without revision.
-
+Impossible de sauvegarder une page sans version
 Cannot open %s
 Ne peut ouvrir %s
 Cannot write %s
 Ne peut écrire %s
 Cannot create %s
-
+Impossible de créer %s
 Could not get %s lock
 Ne peut obtenir un verrouillage %s
 This operation may take several seconds...
@@ -341,19 +342,19 @@ Cette opération est réservée aux éditeurs du site seulement...
 This operation is restricted to administrators only...
 Cette opération est réservée aux administrateurs seulement...
 Rule "%1" matched "%2" on this page.
-
+"%2" correspond à la règle "%1" sur cette page.
 Without normal pages
-
+Sans pages normales 
 Include normal pages
-
+Comprend les pages normales
 Without permanent anchors
-
+Sans ancre permanente
 Include permanent anchors
-
+Inclure les ancres permanentes
 Without near pages
-
+Sans les pages à proximité
 Include near pages
-
+Inclure les pages à proximité
 (for %s)
 (pour %s)
 %s pages found.
@@ -365,15 +366,15 @@ Rechercher&nbsp;: %s
 View changes for these pages
 Voir les modifications pour ces pages
 Search sites on the %s as well
-
+Rechercher aussi les sites présents sur %s 
 and
 et
 or
 ou
 Fetching results from %s:
-
+Récupération des résultats à partir de %s en cours
 Near pages:
-
+Pages à proximité
 last updated
 dernière mise à jour
 Complete Content
@@ -393,7 +394,7 @@ Exemple_De_Page_NonDefinie
 [[%s]] cannot be defined.
 [[%s]] ne peut être défini.
 Only an administrator can create %s.
-
+Seul un administrateur peut créer %s.
 Transfer Error: %s
 Erreur de Transfert&nbsp;: %s
 Browser reports no file info.
@@ -401,9 +402,9 @@ Le navigateur signale pas d'information sur le fichier.
 Browser reports no file type.
 Le navigateur signale pas de format de fichier.
 Edit Denied
-
+Modification interdite.
 The page contains banned text.
-
+Cette page contient un texte interdit.
 This page was changed by somebody else %s.
 Cette page a été modifiée par quelqu'un d'autre %s.
 The changes conflict.  Please check the page again.
@@ -413,11 +414,11 @@ SVP vérifiez si vous écrasez ces modifications.
 Anonymous
 Anonyme
 Cannot delete the index file %s.
-
+Impossible de supprimer la page d'index  %s.
 Please check the directory permissions.
-
+Veuillez verifier les permissions des répertoires.
 Your changes were not saved.
-
+Vos changement n'ont pas été sauvegardé
 Could not get a lock to merge!
 Ne peut pas obtenir un verrou pour la fusion !
 you
@@ -427,7 +428,7 @@ ancêtre
 other
 autre
 Run Maintenance
-
+Lancer la maintenance
 Maintenance not done.
 Maintenance non effectuée.
 (Maintenance can only be done once every 12 hours.)
@@ -439,7 +440,7 @@ Verrou principal obtenu.
 Expiring keep files and deleting pages marked for deletion
 Expiration des fichiers de cache et suppression des pages marquées pour la suppression
 not deleted: 
-
+non supprimée:
 deleted
 supprimé
 Moving part of the %s log file.
@@ -447,7 +448,7 @@ Deplace une partie du fichier de log %s.
 Moving %s log entries.
 Déplace %s entrées du log.
 Getting page index file for %s.
-
+Récupération du fichier d'index de %s.
 Main lock released.
 Verrou principal rendu.
 Set or Remove global edit lock
@@ -465,171 +466,237 @@ Verrou pour %s créé.
 Lock for %s removed.
 Verrou pour %s enlevé.
 Displaying Wiki Version
-
+Affichage de la version du Wiki
 Show dependencies
-
+Afficher les dépendances
 Inter links:
-
+InterLiens:
 Near links:
-
+Liens de proximité:
 Show parsed link data
-
+Affcher les données de liens analysées
 Too many connections by %s
 Trop de connexions par %s
 Please do not fetch more than %1 pages in %2 seconds.
-
+Veuillez ne pas télécharger plus de %1 pages toutes les %2 secondes
 Check whether the web server can create the directory %s and whether it can create files in it.
-
+Verifiez si le serveur web peut créer le répertoire %s et s'il peut y créer des fichiers
 anchor first defined here: %s
 première ancre définie ici&nbsp;: %s
 Click to search for references to this permanent anchor
 Cliquer pour chercher des références vers cette ancre permanente
 the page %s also exists
-
+la page %s existe aussi. 
 Deleting %s
-
+supression de %s
 Deleted %s
-
+%s supprimée
 Renaming %1 to %2.
-
+Change  %1 en %2.
 The page %s does not exist
-
+La page %s n'existe pas
 The page %s already exists
-
+La page %s existe déjà
 Cannot rename %1 to %2
-
+Impossible de renommer %1 %2
 Renamed to %s
-
+Renommé  %s
 Renamed from %s
-
+Nom précédent %s
 Renamed %1 to %2.
-
+%1 a été renommée %2
 Immediately delete %s
-
+Supprimer immédiatement %s
 Rename %s to:
-
+Change le nom de %s, nouveau nom:
 Cannot highlight the language %s.
-
+Impossible de surligner la langue %s.
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
-
+cal(1), Date::Calc(3)ou Date::Pcalc(3) manque pour pouvoir créer le calendrier.
 The match parameter is missing.
-
+Le paramètre de correspondance est manquant
 Page Collection for %s
-
+Liste des pages pour %s
 Previous
-
+Précédent
 Next
-
+Suivant
 Calendar %s
+Calendrier %s
+Clustermap
+
+Pages without a Cluster
 
 Comments on 
-
+Commentaires sur
 Comment on 
-
+Commentaire sur
 Compilation for %s
-
+Compilation pour %s
 Compilation tag is missing a regular expression.
-
+Il manque une expression régulière pour l'etiquette de la compilation
 Despamming pages
-
+Suprresion des textes indésirables sur les pages.
 Cannot find revision %s.
-
+Impossible de trouver la version %s.
 Revert to revision %1: %2
-
+Retour à la version %1: %2
 Marked as %s.
-
+Marqué comme %s.
 Cannot find unspammed revision.
-
+Impossible de trouver une version sans texte indésirable.
 Footnotes:
-
+Note de pied de pages
 Could not find %1.html template in %2
-
+Impossible de trouver le modèle %1.html dans %2
 image: %s
-
+image: %s
 Index
-
+Index
 Languages:
-
+Langues:
 Show!
-
+Voir!
 Define
-
+Définir
 Full Link List
 Liste Complète des Liens
 Template without parameters
-
+Modèle sans paramètre
 The template %s is either empty or does not exist.
+Le modèle %s est soit vide soit n'existe pas
+Register for %s
 
-%s returned no data.
+Please choose a username of the form "FirstLast" using your real name.
+
+The passwords do not match.
+
+The password must be at least %s characters.
+
+That email address is invalid.
+
+The username %s has already been registered.
+
+Your registration for %s has been submitted.
+
+  Please allow time for the webmaster to approve your request.
+
+An account was created for %s.
+
+Login to %s
+
+Username and/or password are incorrect.
+
+Logged in as %s.
+
+Logout of %s
+
+Logout of %s?
+
+Logged out of %s
+
+You are now logged out.
+
+Register a new account
+
+Login
+
+Logout
 
 Clearing Cache
-
+Nettoyage du cache.
 Done.
-
+effectué.
 Generating Link Database
-
+Création de la base de donnée de liens
 The 404 handler extension requires the link data extension (links.pl).
+l'extension "404 handler" nécessite une base de donnée de liens (links.pl).
+LocalMap
+
+No page id for action localmap
+
+Requested page %s does not exist
+
+Local Map for %s
+
+view
 
 Orphan List
-
+Liste des pages orphelines
 Trail: 
-
+Trace:
 None
-
+Aucune
 Type
-
+Type
 Permalink to "%s"
-
+Lien permanent vers
 Portrait
-
+Portrait
 You did not answer correctly.
-
+Vous n'aves pas répondu correctement
 All Referrers
 Tous les Introducteurs
 Referrers
 Introducteurs
-Updating %s
+Rebuild index for searching
+
+Rebuilding Index
+
+Search::FreeText is not available on this system.
+
+Rebuilding index not done.
+
+(Rebuilding the index can only be done once every 12 hours.)
 
 Search term missing.
+Terme de la recherche manquant
+Result pages: 
+
+(%s results)
+
+Slideshow:%s
 
 Static Copy
-
+Copie statique
 Back to %s
+Retour à %s
+Tag
 
 Alternatively, use one of the following templates:
-
+Alternativement, utilisez un des modèles suivant
 Thread: %s
-
+Fil: %s
 ID parameter is missing.
-
+Le paramètre ID est manquant. 
 Thread %s does not exist.
-
+Le fil %s n'existe pas.
 Page %s does not contain a thread.
-
+La page %s ne contient pas de fil.
 Add
-
+Ajoutez.
 URL parameter is missing.
-
+Le paramètre URL est manquant
 Add to %s thread
-
+Ajoutez %s au fil
 Below:
-
+en dessous:
 URL:
-
+URL:
 Name:
-
+Nom:
 Failed to remove %s
-
+Impossible de supprimer %s
 Contents
-
+Contenu:
 This page is a translation of %s. 
-
+Cette page est une traduction de %s
 The translation is up to date.
-
+La traduction est à jour
 The translation is outdated.
-
+La traduction n'est pas à jour
 The page does not exist.
-
+La page n'existe pas.
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -641,5 +708,5 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 search
 Recherche
 Blog
-
+Blog
 END_OF_TRANSLATION

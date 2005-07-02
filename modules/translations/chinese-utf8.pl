@@ -17,7 +17,7 @@
 #
 # This translation was last checked for Oddmuse version 1.504.
 #
-$ModulesDescription .= '<p>$Id: chinese-utf8.pl,v 1.2 2005/02/01 21:16:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: chinese-utf8.pl,v 1.3 2005/07/02 00:03:28 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 禁止讀取：使用者、ip 或是網路已被禁止連線。
@@ -49,6 +49,8 @@ image
 圖像
 download
 下載
+CGI Internal error: %s
+
 Invalid action parameter %s
 無效的動作參數 %s
 Invalid URL.
@@ -205,8 +207,6 @@ View current revision
 參閱目前版本
 View all changes
 列出所有的修改
-new comment
-新的評論
 Homepage URL:
 首頁網址：
 s
@@ -521,6 +521,10 @@ Next
 向後
 Calendar %s
 %s 年曆
+Clustermap
+
+Pages without a Cluster
+
 Comments on 
 評論關於
 Comment on 
@@ -559,7 +563,43 @@ Template without parameters
 未指定 template 參數
 The template %s is either empty or does not exist.
 範本 %s 可能為空或不存在。
-%s returned no data.
+Register for %s
+
+Please choose a username of the form "FirstLast" using your real name.
+
+The passwords do not match.
+
+The password must be at least %s characters.
+
+That email address is invalid.
+
+The username %s has already been registered.
+
+Your registration for %s has been submitted.
+
+  Please allow time for the webmaster to approve your request.
+
+An account was created for %s.
+
+Login to %s
+
+Username and/or password are incorrect.
+
+Logged in as %s.
+
+Logout of %s
+
+Logout of %s?
+
+Logged out of %s
+
+You are now logged out.
+
+Register a new account
+
+Login
+
+Logout
 
 Clearing Cache
 清除暫存
@@ -568,6 +608,16 @@ Done.
 Generating Link Database
 產生連結資料庫
 The 404 handler extension requires the link data extension (links.pl).
+
+LocalMap
+
+No page id for action localmap
+
+Requested page %s does not exist
+
+Local Map for %s
+
+view
 
 Orphan List
 孤立頁面列表
@@ -587,14 +637,30 @@ All Referrers
 所有的引用者
 Referrers
 引用者
-Updating %s
-更新 %s
+Rebuild index for searching
+
+Rebuilding Index
+
+Search::FreeText is not available on this system.
+
+Rebuilding index not done.
+
+(Rebuilding the index can only be done once every 12 hours.)
+
 Search term missing.
+
+Result pages: 
+
+(%s results)
+
+Slideshow:%s
 
 Static Copy
 靜態頁面備份
 Back to %s
 返回 %s
+Tag
+
 Alternatively, use one of the following templates:
 或者，使用下列範本之一:
 Thread: %s

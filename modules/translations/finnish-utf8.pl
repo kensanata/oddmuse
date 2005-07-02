@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: finnish-utf8.pl,v 1.2 2005/02/01 21:16:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: finnish-utf8.pl,v 1.3 2005/07/02 00:03:28 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lukeminen ei ole sallittua: käyttäjä, IP tai verkko on estetty.
@@ -48,6 +48,8 @@ image
 kuva
 download
 download
+CGI Internal error: %s
+
 Invalid action parameter %s
 Virheellinen toiminto %s
 Invalid URL.
@@ -204,8 +206,6 @@ View current revision
 Näytä nykyisin versio
 View all changes
 Näytä kaikki muutokset
-new comment
-uusi kommentti
 Homepage URL:
 Kotisivun URL:
 s
@@ -520,6 +520,10 @@ Next
 Seuraava
 Calendar %s
 Kalenteri %s
+Clustermap
+
+Pages without a Cluster
+
 Comments on 
 
 Comment on 
@@ -558,7 +562,43 @@ Template without parameters
 Pohja ilman parametrejä
 The template %s is either empty or does not exist.
 Pohja %s on joko tyhjä tai ei ole olemassa.
-%s returned no data.
+Register for %s
+
+Please choose a username of the form "FirstLast" using your real name.
+
+The passwords do not match.
+
+The password must be at least %s characters.
+
+That email address is invalid.
+
+The username %s has already been registered.
+
+Your registration for %s has been submitted.
+
+  Please allow time for the webmaster to approve your request.
+
+An account was created for %s.
+
+Login to %s
+
+Username and/or password are incorrect.
+
+Logged in as %s.
+
+Logout of %s
+
+Logout of %s?
+
+Logged out of %s
+
+You are now logged out.
+
+Register a new account
+
+Login
+
+Logout
 
 Clearing Cache
 Välimuistia tyhjennetään
@@ -568,6 +608,16 @@ Generating Link Database
 Linkkitietokantaa luodaan
 The 404 handler extension requires the link data extension (links.pl).
 404-käsittelijä-laajennus vaatii "link data" -laajennuksen (links.pl).
+LocalMap
+
+No page id for action localmap
+
+Requested page %s does not exist
+
+Local Map for %s
+
+view
+
 Orphan List
 Orpojen sivujen lista
 Trail: 
@@ -586,14 +636,30 @@ All Referrers
 Kaikki viittaukset
 Referrers
 Viittaukset
-Updating %s
+Rebuild index for searching
+
+Rebuilding Index
+
+Search::FreeText is not available on this system.
+
+Rebuilding index not done.
+
+(Rebuilding the index can only be done once every 12 hours.)
 
 Search term missing.
+
+Result pages: 
+
+(%s results)
+
+Slideshow:%s
 
 Static Copy
 Staattinen kopio
 Back to %s
 Takaisin %s:ään
+Tag
+
 Alternatively, use one of the following templates:
 Vaihtoehtoisesti, käytä yhtä seuraavista pohjista:
 Thread: %s
