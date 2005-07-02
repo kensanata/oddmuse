@@ -18,8 +18,7 @@
 #
 # This translation was last checked for Oddmuse version 1.296.
 #
-$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.4 2005/07/02 14:06:02 as Exp $</p>';
-
+$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.5 2005/07/02 14:35:29 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Accès interdit&nbsp;: votre serveur, adresse IP ou nom d'utilisateur a été bloqué.
@@ -58,9 +57,9 @@ Parmètre d'action invalide %s
 Invalid URL.
 URL non valide
 Page name is missing
-Le nom de la page est manquant.
+Le nom de la page est manquant
 Page name is too long: %s
-Nom de page trop long&nbsp;: %s
+Le nom de la page est trop long&nbsp;: %s
 Invalid Page %s
 Page non valide %s
 Invalid Page %s (must not end with .db)
@@ -74,7 +73,7 @@ Prévisualisation&nbsp;:
 Preview only, not yet saved
 Prévisualisation seulement, pas encore sauvegardée
 Please go on to %s.
-Svp aller a %s
+SVP aller a %s.
 Could not open %s log file
 Impossible d'ouvrir le fichier de log %
 Error was
@@ -114,7 +113,7 @@ Hôte&nbsp;:
 Language:
 Langue&nbsp;:
 Go!
-Aller !
+Allez-y !
 (minor)
 (mineur)
 rollback
@@ -136,7 +135,7 @@ Retour en arrière en cours
 Missing target for rollback.
 Cible manquante pour le retour en arrière.
 Target for rollback is too far back.
-La cible du retour en arrière est trop ancienne
+La cible du retour en arrière est trop ancienne.
 Rollback to %s
 Retour à %s
 %s rolled back
@@ -158,15 +157,15 @@ Déverouiller le site
 Lock site
 Verouiller le site
 Unlock %s
-Déverouiller %s
+Déverrouiller %s
 Lock %s
-Verouiller %s
+Verrouiller %s
 Administration
 Administration
 Actions:
 Actions:
 Important pages:
-Pages importantes:
+Pages importantes :
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 Pour marquer une page devant être supprimer, ajoutez <strong>%s</strong> à la première ligne
 [Home]
@@ -178,15 +177,15 @@ Cliquer pour chercher des références vers cette page
 Cookie: 
 Cookie&nbsp;: 
 Warning
-ATTENTION
+Attention
 Database is stored in temporary directory %s
-Base de données stockée dans le répertoire temporaire %s
+La base de données est stockée dans le répertoire temporaire %s
 %s seconds
 %s secondes
 The same page on other sites:
 La même page sur d'autres sites
 EditNearLinks
-Editer les LienDeProximité
+EditerLiensDeProximité
 Last edited
 Dernière modification
 Edited
@@ -200,7 +199,7 @@ Modifier la version %s de cette page
 Edit this page
 Modifier cette page
 e
-
+e
 This page is read-only
 Cette page est en lecture seule
 View other revisions
@@ -212,7 +211,7 @@ Voir toutes les modifications
 Homepage URL:
 Adresse(URL) du site perso
 s
-
+s
 Save
 Sauvegarder
 Preview
@@ -220,7 +219,7 @@ Prévisualisation
 Search:
 Rechercher&nbsp;:
 f
-
+f
 Replace:
 Remplacer&nbsp;:
 Validate HTML
@@ -230,7 +229,7 @@ Validation des CSS
 Difference (from revision %1 to %2)
 Différence (de la révision %1 à %2)
 revision %s
-Version %s
+version %s
 current revision
 version actuelle
 Difference (from prior %s revision)
@@ -254,17 +253,17 @@ to
 Revision %s not available
 La version %s n'est pas disponible
 showing current revision instead
-Présentation de la version en cours à sa place.
+présentation à la place de la version en cours.
 Showing revision %s
 Présentation de la version %s
 Cannot save a nameless page.
 Impossible de sauvegarder une page sans nom.
 Cannot save a page without revision.
-Impossible de sauvegarder une page sans version
+Impossible de sauvegarder une page sans version.
 Cannot open %s
-Ne peut ouvrir %s
+Ne peut pas ouvrir %s
 Cannot write %s
-Ne peut écrire %s
+Ne peut pas écrire %s
 Cannot create %s
 Impossible de créer %s
 Could not get %s lock
@@ -298,9 +297,9 @@ Contactez l'administrateur du wiki pour plus d'information.
 The rule %s matched for you.
 La règle %s a fonctionné pour vous.
 See %s for more information.
-Voir %s pour plus d'information
+Voir %s pour plus d'information.
 Editing not allowed: %s is read-only.
-Modification interdite&nbsp;: %s est en lecture seule
+Modification interdite&nbsp;: %s est en lecture seule.
 Only administrators can upload files.
 Seuls les administrateurs peuvent téléverser des fichiers.
 Editing revision %s of
@@ -324,7 +323,7 @@ Fichier à téléverser&nbsp;:
 Files of type %s are not allowed.
 Les fichiers de type %s ne sont pas autorisés.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
-Votre mot de passe est conservé dans un cookie, si cette fonctionnalité est activée dans votre navigateur. Les cookies peuvent être perdus si vous vous reconnectez d'une autre machine, d'un autre compte ou en utilisant un autre logiciel.
+Votre mot de passe est conservé dans un cookie, si cette fonctionnalité est activée dans votre navigateur. Les cookies peuvent être perdus si vous vous reconnectez à partir d'une autre machine, d'un autre compte ou en utilisant un autre logiciel.
 You are currently an administrator on this site.
 Vous êtes actuellement administrateur de ce site.
 You are currently an editor on this site.
@@ -332,7 +331,7 @@ Vous êtes actuellement éditeur de ce site.
 You are a normal user on this site.
 Vous êtes un utilisateur normal sur ce site.
 Your password does not match any of the  administrator or editor passwords.
-Vote mot de passe ne corespond à aucun de ceux des administrateurs ou éditeurs.
+Vote mot de passe ne corespond à aucun de ceux des mots de passe administrateurs ou éditeurs.
 Password:
 Mot de passe&nbsp;:
 This site does not use admin or editor passwords.
@@ -374,7 +373,7 @@ ou
 Fetching results from %s:
 Récupération des résultats à partir de %s en cours
 Near pages:
-Pages à proximité
+Pages à proximité :
 last updated
 dernière mise à jour
 Complete Content
@@ -386,11 +385,11 @@ Commentaires sur cette page
 Editing not allowed for %s.
 Edition non autorisée pour %s.
 SampleUndefinedPage
-ExempleDePageNonDefinie
+ExempleDePageNonDéfinie
 %s cannot be defined.
 %s ne peut être défini.
 Sample_Undefined_Page
-Exemple_De_Page_NonDefinie
+Exemple_De_Page_NonDéfinie
 [[%s]] cannot be defined.
 [[%s]] ne peut être défini.
 Only an administrator can create %s.
@@ -402,7 +401,7 @@ Le navigateur signale pas d'information sur le fichier.
 Browser reports no file type.
 Le navigateur signale pas de format de fichier.
 Edit Denied
-Modification interdite.
+Modification interdite
 The page contains banned text.
 Cette page contient un texte interdit.
 This page was changed by somebody else %s.
@@ -410,17 +409,17 @@ Cette page a été modifiée par quelqu'un d'autre %s.
 The changes conflict.  Please check the page again.
 Conflit sur les modifications. SVP vérifiez la page à nouveau.
 Please check whether you overwrote those changes.
-SVP vérifiez si vous écrasez ces modifications.
+SVP vérifiez si vous souhaitez écrase ces modifications.
 Anonymous
 Anonyme
 Cannot delete the index file %s.
-Impossible de supprimer la page d'index  %s.
+Impossible de supprimer le fichier index  %s.
 Please check the directory permissions.
-Veuillez verifier les permissions des répertoires.
+Veuillez vérifier les permissions des répertoires.
 Your changes were not saved.
-Vos changement n'ont pas été sauvegardé
+Vos modifications n'ont pas été sauvegardées
 Could not get a lock to merge!
-Ne peut pas obtenir un verrou pour la fusion !
+Pas pu obtenir de verrouillage pour la fusion !
 you
 vous
 ancestor
@@ -440,7 +439,7 @@ Verrou principal obtenu.
 Expiring keep files and deleting pages marked for deletion
 Expiration des fichiers de cache et suppression des pages marquées pour la suppression
 not deleted: 
-non supprimée:
+non supprimée :
 deleted
 supprimé
 Moving part of the %s log file.
@@ -452,7 +451,7 @@ Récupération du fichier d'index de %s.
 Main lock released.
 Verrou principal rendu.
 Set or Remove global edit lock
-Positionne ou Enlève le verrou global d'édition
+Positionne ou Retire le verrou global d'édition
 Edit lock created.
 Verrou d'édition créé.
 Edit lock removed.
@@ -470,9 +469,9 @@ Affichage de la version du Wiki
 Show dependencies
 Afficher les dépendances
 Inter links:
-InterLiens:
+InterLiens :
 Near links:
-Liens de proximité:
+Liens de proximité :
 Show parsed link data
 Affcher les données de liens analysées
 Too many connections by %s
@@ -486,7 +485,7 @@ première ancre définie ici&nbsp;: %s
 Click to search for references to this permanent anchor
 Cliquer pour chercher des références vers cette ancre permanente
 the page %s also exists
-la page %s existe aussi. 
+la page %s existe aussi 
 Deleting %s
 supression de %s
 Deleted %s
@@ -504,15 +503,15 @@ Renommé  %s
 Renamed from %s
 Nom précédent %s
 Renamed %1 to %2.
-%1 a été renommée %2
+%1 a été renommée en %2.
 Immediately delete %s
 Supprimer immédiatement %s
 Rename %s to:
-Change le nom de %s, nouveau nom:
+Renommer %s en :
 Cannot highlight the language %s.
 Impossible de surligner la langue %s.
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
-cal(1), Date::Calc(3)ou Date::Pcalc(3) manque pour pouvoir créer le calendrier.
+cal(1), Date::Calc(3) ou Date::Pcalc(3) manque pour pouvoir créer le calendrier.
 The match parameter is missing.
 Le paramètre de correspondance est manquant
 Page Collection for %s
@@ -524,9 +523,9 @@ Suivant
 Calendar %s
 Calendrier %s
 Clustermap
-
+Carte du Faisceau
 Pages without a Cluster
-
+Pages sans un Faisceau
 Comments on 
 Commentaires sur
 Comment on 
@@ -540,51 +539,51 @@ Suprresion des textes indésirables sur les pages.
 Cannot find revision %s.
 Impossible de trouver la version %s.
 Revert to revision %1: %2
-Retour à la version %1: %2
+Retour à la version %1 : %2
 Marked as %s.
 Marqué comme %s.
 Cannot find unspammed revision.
 Impossible de trouver une version sans texte indésirable.
 Footnotes:
-Note de pied de pages
+Note de pied de pages :
 Could not find %1.html template in %2
 Impossible de trouver le modèle %1.html dans %2
 image: %s
-image: %s
+image : %s
 Index
 Index
 Languages:
-Langues:
+Langues :
 Show!
-Voir!
+Voir !
 Define
 Définir
 Full Link List
 Liste Complète des Liens
 Template without parameters
-Modèle sans paramètre
+Gabarit sans paramètres
 The template %s is either empty or does not exist.
-Le modèle %s est soit vide soit n'existe pas
+Le gabarit %s est soit vide soit n'existe pas
 Register for %s
-
+Enregistrer pour %s
 Please choose a username of the form "FirstLast" using your real name.
-
+SVP choisissez un nom d'utilisateur sous la forme "PrénomNom" en utilisant votre vrai nom.
 The passwords do not match.
-
+Les mots de passe ne correspondent pas.
 The password must be at least %s characters.
-
+Le mot de passe doit être au moins de %s caractères.
 That email address is invalid.
-
+Cette adresse e-mail n'est pas valide.
 The username %s has already been registered.
-
+Le nom d'utilisateur %s a déjà été enregistré.
 Your registration for %s has been submitted.
-
+Votre enregistrement pour %s a été soumis.
   Please allow time for the webmaster to approve your request.
-
+  SVP, donnez un peu de temps au webmestre pour valider votre demande.
 An account was created for %s.
-
+Un compte a été créé pour %s
 Login to %s
-
+Se connecter sur %s
 Username and/or password are incorrect.
 
 Logged in as %s.
@@ -628,11 +627,11 @@ Trace:
 None
 Aucune
 Type
-Type
+Permalink to "%s"
 Permalink to "%s"
 Lien permanent vers
 Portrait
-Portrait
+You did not answer correctly.
 You did not answer correctly.
 Vous n'aves pas répondu correctement
 All Referrers
@@ -662,7 +661,7 @@ Copie statique
 Back to %s
 Retour à %s
 Tag
-
+Alternatively, use one of the following templates:
 Alternatively, use one of the following templates:
 Alternativement, utilisez un des modèles suivant
 Thread: %s
@@ -708,5 +707,5 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 search
 Recherche
 Blog
-Blog
+
 END_OF_TRANSLATION
