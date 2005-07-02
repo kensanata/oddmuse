@@ -24,7 +24,7 @@
 #
 # This translation was last checked for Oddmuse version 1.215.
 #
-$ModulesDescription .= '<p>$Id: dutch-utf8.pl,v 1.2 2005/02/01 21:16:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: dutch-utf8.pl,v 1.3 2005/07/02 00:03:28 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 U mag deze pagina niet lezen: uw account op deze Wiki, uw IP of uw netwerk is buitengesloten.
@@ -55,6 +55,8 @@ Klik hier om deze pagina aan te maken
 image
 
 download
+
+CGI Internal error: %s
 
 Invalid action parameter %s
 Ongeldige actieparameter %s
@@ -212,8 +214,6 @@ View current revision
 Bekijk huidige revisie
 View all changes
 Toon alle wijzigingen
-new comment
-nieuw commentaar
 Homepage URL:
 
 s
@@ -528,6 +528,10 @@ Next
 
 Calendar %s
 Kalender %s
+Clustermap
+
+Pages without a Cluster
+
 Comments on 
 
 Comment on 
@@ -566,7 +570,43 @@ Template without parameters
 
 The template %s is either empty or does not exist.
 
-%s returned no data.
+Register for %s
+
+Please choose a username of the form "FirstLast" using your real name.
+
+The passwords do not match.
+
+The password must be at least %s characters.
+
+That email address is invalid.
+
+The username %s has already been registered.
+
+Your registration for %s has been submitted.
+
+  Please allow time for the webmaster to approve your request.
+
+An account was created for %s.
+
+Login to %s
+
+Username and/or password are incorrect.
+
+Logged in as %s.
+
+Logout of %s
+
+Logout of %s?
+
+Logged out of %s
+
+You are now logged out.
+
+Register a new account
+
+Login
+
+Logout
 
 Clearing Cache
 Bezig met leegmaken van de cache
@@ -576,6 +616,16 @@ Generating Link Database
 Bezig met genereren van Koppelingendatabase
 The 404 handler extension requires the link data extension (links.pl).
 The 404 handler extension requires the link data extension (links.pl).
+LocalMap
+
+No page id for action localmap
+
+Requested page %s does not exist
+
+Local Map for %s
+
+view
+
 Orphan List
 Lijst met Wezen
 Trail: 
@@ -594,14 +644,30 @@ All Referrers
 Alle verwijzingen
 Referrers
 Verwijzingen
-Updating %s
+Rebuild index for searching
+
+Rebuilding Index
+
+Search::FreeText is not available on this system.
+
+Rebuilding index not done.
+
+(Rebuilding the index can only be done once every 12 hours.)
 
 Search term missing.
+
+Result pages: 
+
+(%s results)
+
+Slideshow:%s
 
 Static Copy
 
 Back to %s
 Terug naar %s
+Tag
+
 Alternatively, use one of the following templates:
 
 Thread: %s

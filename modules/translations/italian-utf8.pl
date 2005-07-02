@@ -15,7 +15,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: italian-utf8.pl,v 1.2 2005/02/01 21:20:08 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: italian-utf8.pl,v 1.3 2005/07/02 00:03:28 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lettura non consentita: l'utente, l'IP o la rete risultano bloccati.
@@ -46,6 +46,8 @@ Cliccare per modificare questa pagina
 image
 immagine
 download
+
+CGI Internal error: %s
 
 Invalid action parameter %s
 Parametro d'azione %s non valido
@@ -203,8 +205,6 @@ View current revision
 Guarda la revisione corrente
 View all changes
 Guarda tutti i cambiamenti
-new comment
-nuovo commento
 Homepage URL:
 
 s
@@ -261,6 +261,8 @@ Cannot open %s
 Impossibile aprire %s
 Cannot write %s
 Impossibile scrivere %s
+Cannot create %s
+
 Could not get %s lock
 Impossibile acquisire il lock %s
 This operation may take several seconds...
@@ -491,6 +493,8 @@ The page %s does not exist
 La pagina %s non esiste
 The page %s already exists
 La pagina %s esiste già
+Cannot rename %1 to %2
+
 Renamed to %s
 Rinominata a %s
 Renamed from %s
@@ -515,6 +519,10 @@ Next
 Successivo
 Calendar %s
 Calendiario %s
+Clustermap
+
+Pages without a Cluster
+
 Comments on 
 Commenti su
 Comment on 
@@ -553,8 +561,44 @@ Template without parameters
 Modello senza parametri
 The template %s is either empty or does not exist.
 Il modello %s è vuoto o non esiste.
-%s returned no data.
-nessun dato da %s.
+Register for %s
+
+Please choose a username of the form "FirstLast" using your real name.
+
+The passwords do not match.
+
+The password must be at least %s characters.
+
+That email address is invalid.
+
+The username %s has already been registered.
+
+Your registration for %s has been submitted.
+
+  Please allow time for the webmaster to approve your request.
+
+An account was created for %s.
+
+Login to %s
+
+Username and/or password are incorrect.
+
+Logged in as %s.
+
+Logout of %s
+
+Logout of %s?
+
+Logged out of %s
+
+You are now logged out.
+
+Register a new account
+
+Login
+
+Logout
+
 Clearing Cache
 Ripulisco la Cache
 Done.
@@ -563,6 +607,16 @@ Generating Link Database
 Genero il database dei collegamenti
 The 404 handler extension requires the link data extension (links.pl).
 L'estensione di gestione 404 richiede l'estensione di dati di collegamento (links.pl).
+LocalMap
+
+No page id for action localmap
+
+Requested page %s does not exist
+
+Local Map for %s
+
+view
+
 Orphan List
 Lista degli orfani
 Trail: 
@@ -581,14 +635,30 @@ All Referrers
 Tutti i referenti
 Referrers
 Referenti
-Updating %s
-Aggiornamento di %s
+Rebuild index for searching
+
+Rebuilding Index
+
+Search::FreeText is not available on this system.
+
+Rebuilding index not done.
+
+(Rebuilding the index can only be done once every 12 hours.)
+
 Search term missing.
 Manca il termine da cercare.
+Result pages: 
+
+(%s results)
+
+Slideshow:%s
+
 Static Copy
 Copia Statica
 Back to %s
 Indietro a %s
+Tag
+
 Alternatively, use one of the following templates:
 In alternativa, utilizzare uno dei seguenti modelli:
 Thread: %s

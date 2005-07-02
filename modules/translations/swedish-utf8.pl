@@ -1,4 +1,4 @@
-﻿# -*-mode: fundamental; coding: utf-8;-*-
+# -*-mode: fundamental; coding: utf-8;-*-
 # UTF-8 encoded Swedish language file for use with Oddmuse
 #
 # Copyright (c) 2003 Erik S-O Johansson and others
@@ -21,7 +21,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.9 2005/02/05 12:57:43 jadler Exp $</p>';
+$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.10 2005/07/02 00:03:28 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Läsning inte tillåten: användare, ip eller nätverk är blockerat.
@@ -53,6 +53,8 @@ image
 bild
 download
 ladda ned
+CGI Internal error: %s
+
 Invalid action parameter %s
 Ogiltig parameter %s
 Invalid URL.
@@ -209,8 +211,6 @@ View current revision
 Visa rådande version
 View all changes
 Visa alla ändringar
-new comment
-ny kommentar
 Homepage URL:
 URL till hemsida:
 s
@@ -525,6 +525,10 @@ Next
 Nästa
 Calendar %s
 Kalender %s
+Clustermap
+
+Pages without a Cluster
+
 Comments on 
 Kommentarer till 
 Comment on 
@@ -563,8 +567,44 @@ Template without parameters
 Mall utan parametrar
 The template %s is either empty or does not exist.
 Mallen %s är antingen tom eller saknas.
-%s returned no data.
-%s returnerade inga data.
+Register for %s
+
+Please choose a username of the form "FirstLast" using your real name.
+
+The passwords do not match.
+
+The password must be at least %s characters.
+
+That email address is invalid.
+
+The username %s has already been registered.
+
+Your registration for %s has been submitted.
+
+  Please allow time for the webmaster to approve your request.
+
+An account was created for %s.
+
+Login to %s
+
+Username and/or password are incorrect.
+
+Logged in as %s.
+
+Logout of %s
+
+Logout of %s?
+
+Logged out of %s
+
+You are now logged out.
+
+Register a new account
+
+Login
+
+Logout
+
 Clearing Cache
 Rensar cachen
 Done.
@@ -573,6 +613,16 @@ Generating Link Database
 Skapar länkdatabas
 The 404 handler extension requires the link data extension (links.pl).
 404-hanterarmodulen kräver länkdatamodulen för att fungera (links.pl).
+LocalMap
+
+No page id for action localmap
+
+Requested page %s does not exist
+
+Local Map for %s
+
+view
+
 Orphan List
 Lista över övergivna sidor
 Trail: 
@@ -591,14 +641,30 @@ All Referrers
 Alla som länkat hit
 Referrers
 Sidor som länkat hit
-Updating %s
-Uppdaterar %s
+Rebuild index for searching
+
+Rebuilding Index
+
+Search::FreeText is not available on this system.
+
+Rebuilding index not done.
+
+(Rebuilding the index can only be done once every 12 hours.)
+
 Search term missing.
 Sökord saknas.
+Result pages: 
+
+(%s results)
+
+Slideshow:%s
+
 Static Copy
 Statisk kopia
 Back to %s
 Tillbaka till %s
+Tag
+
 Alternatively, use one of the following templates:
 Eller använd en av följande mallar:
 Thread: %s

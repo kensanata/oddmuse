@@ -18,7 +18,7 @@
 #
 # This script was last checked for Oddmuse version 1.383.
 #
-$ModulesDescription .= '<p>$Id: russian-utf8.pl,v 1.2 2005/02/01 21:16:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: russian-utf8.pl,v 1.3 2005/07/02 00:03:28 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 
@@ -49,6 +49,8 @@ Click to edit this page
 image
 
 download
+
+CGI Internal error: %s
 
 Invalid action parameter %s
 Некорректный параметр действия %s
@@ -206,8 +208,6 @@ View current revision
 Смотреть текущую версию
 View all changes
 Смотреть все изменения
-new comment
-новый комментарий
 Homepage URL:
 
 s
@@ -522,6 +522,10 @@ Next
 
 Calendar %s
 
+Clustermap
+
+Pages without a Cluster
+
 Comments on 
 
 Comment on 
@@ -560,7 +564,43 @@ Template without parameters
 
 The template %s is either empty or does not exist.
 
-%s returned no data.
+Register for %s
+
+Please choose a username of the form "FirstLast" using your real name.
+
+The passwords do not match.
+
+The password must be at least %s characters.
+
+That email address is invalid.
+
+The username %s has already been registered.
+
+Your registration for %s has been submitted.
+
+  Please allow time for the webmaster to approve your request.
+
+An account was created for %s.
+
+Login to %s
+
+Username and/or password are incorrect.
+
+Logged in as %s.
+
+Logout of %s
+
+Logout of %s?
+
+Logged out of %s
+
+You are now logged out.
+
+Register a new account
+
+Login
+
+Logout
 
 Clearing Cache
 
@@ -569,6 +609,16 @@ Done.
 Generating Link Database
 
 The 404 handler extension requires the link data extension (links.pl).
+
+LocalMap
+
+No page id for action localmap
+
+Requested page %s does not exist
+
+Local Map for %s
+
+view
 
 Orphan List
 
@@ -588,14 +638,30 @@ All Referrers
 
 Referrers
 
-Updating %s
+Rebuild index for searching
+
+Rebuilding Index
+
+Search::FreeText is not available on this system.
+
+Rebuilding index not done.
+
+(Rebuilding the index can only be done once every 12 hours.)
 
 Search term missing.
+
+Result pages: 
+
+(%s results)
+
+Slideshow:%s
 
 Static Copy
 
 Back to %s
 Назад к %s
+Tag
+
 Alternatively, use one of the following templates:
 
 Thread: %s

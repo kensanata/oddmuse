@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.2 2005/02/01 20:46:49 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.3 2005/07/02 00:03:28 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
@@ -27,7 +27,7 @@ Ungültiger Benutzername %s: nicht gespeichert.
 UserName must be 50 characters or less: not saved
 Länge des Benutzernamens maximal 50 Zeichen: nicht gespeichert.
 This page contains an uploaded file:
-
+Diese Seite enthält eine hochgeladene Datei:
 XML::RSS is not available on this system.
 Das XML::RSS Modul ist auf diesem System nicht installiert.
 diff
@@ -47,6 +47,8 @@ Hier klicken um die Seite zu bearbeiten
 image
 
 download
+
+CGI Internal error: %s
 
 Invalid action parameter %s
 Ungültiger action Parameter: %s
@@ -204,8 +206,6 @@ View current revision
 Zurück zur aktuellen Version
 View all changes
 Liste aller Änderungen, auch ohne vorhandener Version
-new comment
-Neuer Kommentar
 Homepage URL:
 Homepage URL:
 s
@@ -520,6 +520,10 @@ Next
 Nächster
 Calendar %s
 Kalender %s
+Clustermap
+
+Pages without a Cluster
+
 Comments on 
 Kommentare zu 
 Comment on 
@@ -558,8 +562,44 @@ Template without parameters
 Vorlage ohne Parameter
 The template %s is either empty or does not exist.
 Die %s Vorlage ist entweder leer oder existiert gar nicht.
-%s returned no data.
-%s liefert keine Daten.
+Register for %s
+
+Please choose a username of the form "FirstLast" using your real name.
+
+The passwords do not match.
+
+The password must be at least %s characters.
+
+That email address is invalid.
+
+The username %s has already been registered.
+
+Your registration for %s has been submitted.
+
+  Please allow time for the webmaster to approve your request.
+
+An account was created for %s.
+
+Login to %s
+
+Username and/or password are incorrect.
+
+Logged in as %s.
+
+Logout of %s
+
+Logout of %s?
+
+Logged out of %s
+
+You are now logged out.
+
+Register a new account
+
+Login
+
+Logout
+
 Clearing Cache
 Cache wird geleert
 Done.
@@ -568,6 +608,16 @@ Generating Link Database
 Verweis Datenbank wird angelegt
 The 404 handler extension requires the link data extension (links.pl).
 Die 404 handler Erweiterung benötigt die Link Data Erweiterung (links.pl).
+LocalMap
+
+No page id for action localmap
+
+Requested page %s does not exist
+
+Local Map for %s
+
+view
+
 Orphan List
 Liste der Waisen
 Trail: 
@@ -586,14 +636,30 @@ All Referrers
 Alle Links auf diesen Wiki
 Referrers
 Links auf diese Seite
-Updating %s
-%s wird nachgeführt
+Rebuild index for searching
+
+Rebuilding Index
+
+Search::FreeText is not available on this system.
+
+Rebuilding index not done.
+
+(Rebuilding the index can only be done once every 12 hours.)
+
 Search term missing.
 Suchbegriff fehlt.
+Result pages: 
+
+(%s results)
+
+Slideshow:%s
+
 Static Copy
 Statische Kopie
 Back to %s
 Zurück zu %s
+Tag
+
 Alternatively, use one of the following templates:
 Anderenfalls stehen auch folgende Vorlagen zur Verfügung:
 Thread: %s
@@ -621,7 +687,7 @@ Failed to remove %s
 Contents
 Inhaltsverzeichnis
 This page is a translation of %s. 
-Diese Seite ist eihe Übersetzung von %s. 
+Diese Seite ist eine Übersetzung von %s. 
 The translation is up to date.
 Die Übersetztung ist aktuell.
 The translation is outdated.
