@@ -18,29 +18,29 @@
 #
 # This translation was last checked for Oddmuse version 1.296.
 #
-$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.6 2005/07/02 14:41:49 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.7 2005/07/02 14:46:32 as Exp $</p>';
 
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
-Accès interdit&nbsp;: votre serveur, adresse IP ou nom d'utilisateur a été bloqué.
+AccÃ¨s interdit&nbsp;: votre serveur, adresse IP ou nom d'utilisateur a Ã©tÃ© bloquÃ©.
 Could not create %s
-Création impossible de %s
+CrÃ©ation impossible de %s
 Invalid UserName %s: not saved.
-Nom d'utilisateur non valide %s&nbsp;: pas sauvegardé
+Nom d'utilisateur non valide %s&nbsp;: pas sauvegardÃ©
 UserName must be 50 characters or less: not saved
-Le nom d'utilisateur ne doit pas dépasser 50 caractères&nbsp;: pas sauvegardé
+Le nom d'utilisateur ne doit pas dÃ©passer 50 caractÃ¨res&nbsp;: pas sauvegardÃ©
 This page contains an uploaded file:
-Cette page contient un fichier téléversé.
+Cette page contient un fichier tÃ©lÃ©versÃ©.
 XML::RSS is not available on this system.
-XML::RSS n'est pas disponible sur ce sytème.
+XML::RSS n'est pas disponible sur ce sytÃ¨me.
 diff
 diff
 history
 historique
 %s returned no data, or LWP::UserAgent is not available.
- n'a pas retournée de données, ou LWP::UserAgent n'est pas disponible.
+ n'a pas retournÃ©e de donnÃ©es, ou LWP::UserAgent n'est pas disponible.
 RSS parsing failed for %s
-L'analyse du RSS de %s a échouée 
+L'analyse du RSS de %s a Ã©chouÃ©e 
 No items found in %s.
 Pas d'objet dans %s.
  . . . . 
@@ -50,11 +50,11 @@ Cliquez pour editer cette page
 image
 image
 download
-télécharger
+tÃ©lÃ©charger
 CGI Internal error: %s
 
 Invalid action parameter %s
-Parmètre d'action invalide %s
+ParmÃ¨tre d'action invalide %s
 Invalid URL.
 URL non valide
 Page name is missing
@@ -70,31 +70,31 @@ Page non valide %s (elle ne doit pas se terminer par .lck)
 Page name may not contain space characters: %s
 Le nom de la page ne peut pas contenir d'espaces&nbsp;: %s
 Preview:
-Prévisualisation&nbsp;:
+PrÃ©visualisation&nbsp;:
 Preview only, not yet saved
-Prévisualisation seulement, pas encore sauvegardée
+PrÃ©visualisation seulement, pas encore sauvegardÃ©e
 Please go on to %s.
 SVP aller a %s.
 Could not open %s log file
 Impossible d'ouvrir le fichier de log %
 Error was
-L'erreur était
+L'erreur Ã©tait
 Note: This error is normal if no changes have been made.
-Remarque&nbsp;: Cette erreur est normale si aucune modification n'a été effectuée.
+Remarque&nbsp;: Cette erreur est normale si aucune modification n'a Ã©tÃ© effectuÃ©e.
 Could not open old %s log file
 Impossible d'ouvrir l'ancien fichier de log %
 No updates since %s
-Aucune mise à jour depuis le %s
+Aucune mise Ã  jour depuis le %s
 Updates since %s
-Mises à hour depuis %s
+Mises Ã  hour depuis %s
 Updates in the last %s days
-Mises à jour durant les derniers %s jours
+Mises Ã  jour durant les derniers %s jours
 Updates in the last %s day
-Mises à jour durant le dernier %s jour
+Mises Ã  jour durant le dernier %s jour
 for %s only
 pour %s seulement
 List latest change per page only
-Lister seulement les dernières modifications par page
+Lister seulement les derniÃ¨res modifications par page
 List all changes
 Lister toutes les modifications
 List only major changes
@@ -104,13 +104,13 @@ Inclure les modifications mineures
 %s days
 %s jours
 List later changes
-Lister les modifications les plus récentes
+Lister les modifications les plus rÃ©centes
 Filters
 Filtres
 Username:
 Nom d'utilisateur&nbsp;:
 Host:
-Hôte&nbsp;:
+HÃ´te&nbsp;:
 Language:
 Langue&nbsp;:
 Go!
@@ -118,7 +118,7 @@ Allez-y !
 (minor)
 (mineur)
 rollback
-retour en arrière
+retour en arriÃ¨re
 new
 nouveau
 from %s
@@ -132,15 +132,15 @@ Version %s
 by
 par
 Rolling back changes
-Retour en arrière en cours
+Retour en arriÃ¨re en cours
 Missing target for rollback.
-Cible manquante pour le retour en arrière.
+Cible manquante pour le retour en arriÃ¨re.
 Target for rollback is too far back.
-La cible du retour en arrière est trop ancienne.
+La cible du retour en arriÃ¨re est trop ancienne.
 Rollback to %s
-Retour à %s
+Retour Ã  %s
 %s rolled back
-Retour en arrière pour %s
+Retour en arriÃ¨re pour %s
 Index of all pages
 Index de toutes les pages
 Wiki Version
@@ -154,11 +154,11 @@ Mot de passe
 Run maintenance
 Lancer la maintenance
 Unlock site
-Déverouiller le site
+DÃ©verouiller le site
 Lock site
 Verouiller le site
 Unlock %s
-Déverrouiller %s
+DÃ©verrouiller %s
 Lock %s
 Verrouiller %s
 Administration
@@ -168,29 +168,29 @@ Actions:
 Important pages:
 Pages importantes :
 To mark a page for deletion, put <strong>%s</strong> on the first line.
-Pour marquer une page devant être supprimer, ajoutez <strong>%s</strong> à la première ligne
+Pour marquer une page devant Ãªtre supprimer, ajoutez <strong>%s</strong> Ã  la premiÃ¨re ligne
 [Home]
 [Accueil]
 redirected from %s
-redirigée à partir de %s
+redirigÃ©e Ã  partir de %s
 Click to search for references to this page
-Cliquer pour chercher des références vers cette page
+Cliquer pour chercher des rÃ©fÃ©rences vers cette page
 Cookie: 
 Cookie&nbsp;: 
 Warning
 Attention
 Database is stored in temporary directory %s
-La base de données est stockée dans le répertoire temporaire %s
+La base de donnÃ©es est stockÃ©e dans le rÃ©pertoire temporaire %s
 %s seconds
 %s secondes
 The same page on other sites:
-La même page sur d'autres sites
+La mÃªme page sur d'autres sites
 EditNearLinks
-EditerLiensDeProximité
+EditerLiensDeProximitÃ©
 Last edited
-Dernière modification
+DerniÃ¨re modification
 Edited
-Modifié
+ModifiÃ©
 by %s
 par %s
 (diff)
@@ -216,7 +216,7 @@ s
 Save
 Sauvegarder
 Preview
-Prévisualisation
+PrÃ©visualisation
 Search:
 Rechercher&nbsp;:
 f
@@ -228,13 +228,13 @@ Validation du HTML
 Validate CSS
 Validation des CSS
 Difference (from revision %1 to %2)
-Différence (de la révision %1 à %2)
+DiffÃ©rence (de la rÃ©vision %1 Ã  %2)
 revision %s
 version %s
 current revision
 version actuelle
 Difference (from prior %s revision)
-Différences (à partir des dernières versions %s)
+DiffÃ©rences (Ã  partir des derniÃ¨res versions %s)
 major
 majeure
 minor
@@ -244,19 +244,19 @@ Pas de diff disponible.
 Old revision:
 Ancienne version:
 Changed:
-Modifiée&nbsp;:
+ModifiÃ©e&nbsp;:
 Removed:
-Suprimée&nbsp;:
+SuprimÃ©e&nbsp;:
 Added:
-Ajoutée&nbsp;:
+AjoutÃ©e&nbsp;:
 to
-à
+Ã 
 Revision %s not available
 La version %s n'est pas disponible
 showing current revision instead
-présentation à la place de la version en cours.
+prÃ©sentation Ã  la place de la version en cours.
 Showing revision %s
-Présentation de la version %s
+PrÃ©sentation de la version %s
 Cannot save a nameless page.
 Impossible de sauvegarder une page sans nom.
 Cannot save a page without revision.
@@ -264,17 +264,17 @@ Impossible de sauvegarder une page sans version.
 Cannot open %s
 Ne peut pas ouvrir %s
 Cannot write %s
-Ne peut pas écrire %s
+Ne peut pas Ã©crire %s
 Cannot create %s
-Impossible de créer %s
+Impossible de crÃ©er %s
 Could not get %s lock
 Ne peut obtenir un verrouillage %s
 This operation may take several seconds...
-Cette opération peut prendre quelques secondes...
+Cette opÃ©ration peut prendre quelques secondes...
 Forced unlock of %s lock.
-Supression forcée du verrou %s.
+Supression forcÃ©e du verrou %s.
 No unlock required.
-La suppression du verrou n'est pas nécessaire.
+La suppression du verrou n'est pas nÃ©cessaire.
 %s hours ago
 il y a %s heures
 1 hour ago
@@ -288,21 +288,21 @@ il y a %s secondes
 1 second ago
 il y a 1 seconde
 just now
-à l'instant
+Ã  l'instant
 Editing Denied
 Modification interdite
 Editing not allowed: user, ip, or network is blocked.
-Modification interdite&nbsp;: l'utilisateur, l'adresse ip, ou le reseau est bloqué
+Modification interdite&nbsp;: l'utilisateur, l'adresse ip, ou le reseau est bloquÃ©
 Contact the wiki administrator for more information.
 Contactez l'administrateur du wiki pour plus d'information.
 The rule %s matched for you.
-La règle %s a fonctionné pour vous.
+La rÃ¨gle %s a fonctionnÃ© pour vous.
 See %s for more information.
 Voir %s pour plus d'information.
 Editing not allowed: %s is read-only.
 Modification interdite&nbsp;: %s est en lecture seule.
 Only administrators can upload files.
-Seuls les administrateurs peuvent téléverser des fichiers.
+Seuls les administrateurs peuvent tÃ©lÃ©verser des fichiers.
 Editing revision %s of
 Modification de la version %s de
 Editing %s
@@ -310,9 +310,9 @@ Modification de %s
 Editing old revision %s.
 Modification de l'ancienne version %s.
 Saving this page will replace the latest revision with this text.
-Sauvegarder cette page remplacera la dernière version par ce texte.
+Sauvegarder cette page remplacera la derniÃ¨re version par ce texte.
 Summary:
-Résumé&nbsp;:
+RÃ©sumÃ©&nbsp;:
 This change is a minor edit.
 Cette modification est mineure.
 Replace this file with text.
@@ -320,29 +320,29 @@ Remplacer ce fichier par un texte.
 Replace this text with a file.
 Remplacer ce texte par un fichier.
 File to upload: 
-Fichier à téléverser&nbsp;: 
+Fichier Ã  tÃ©lÃ©verser&nbsp;: 
 Files of type %s are not allowed.
-Les fichiers de type %s ne sont pas autorisés.
+Les fichiers de type %s ne sont pas autorisÃ©s.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
-Votre mot de passe est conservé dans un cookie, si cette fonctionnalité est activée dans votre navigateur. Les cookies peuvent être perdus si vous vous reconnectez à partir d'une autre machine, d'un autre compte ou en utilisant un autre logiciel.
+Votre mot de passe est conservÃ© dans un cookie, si cette fonctionnalitÃ© est activÃ©e dans votre navigateur. Les cookies peuvent Ãªtre perdus si vous vous reconnectez Ã  partir d'une autre machine, d'un autre compte ou en utilisant un autre logiciel.
 You are currently an administrator on this site.
-Vous êtes actuellement administrateur de ce site.
+Vous Ãªtes actuellement administrateur de ce site.
 You are currently an editor on this site.
-Vous êtes actuellement éditeur de ce site.
+Vous Ãªtes actuellement Ã©diteur de ce site.
 You are a normal user on this site.
-Vous êtes un utilisateur normal sur ce site.
+Vous Ãªtes un utilisateur normal sur ce site.
 Your password does not match any of the  administrator or editor passwords.
-Vote mot de passe ne corespond à aucun de ceux des mots de passe administrateurs ou éditeurs.
+Vote mot de passe ne corespond Ã  aucun de ceux des mots de passe administrateurs ou Ã©diteurs.
 Password:
 Mot de passe&nbsp;:
 This site does not use admin or editor passwords.
-Ce site n'utilise pas de mot de passe pour les administrateurs ou les éditeurs.
+Ce site n'utilise pas de mot de passe pour les administrateurs ou les Ã©diteurs.
 This operation is restricted to site editors only...
-Cette opération est réservée aux éditeurs du site seulement...
+Cette opÃ©ration est rÃ©servÃ©e aux Ã©diteurs du site seulement...
 This operation is restricted to administrators only...
-Cette opération est réservée aux administrateurs seulement...
+Cette opÃ©ration est rÃ©servÃ©e aux administrateurs seulement...
 Rule "%1" matched "%2" on this page.
-"%2" correspond à la règle "%1" sur cette page.
+"%2" correspond Ã  la rÃ¨gle "%1" sur cette page.
 Without normal pages
 Sans pages normales 
 Include normal pages
@@ -352,31 +352,31 @@ Sans ancre permanente
 Include permanent anchors
 Inclure les ancres permanentes
 Without near pages
-Sans les pages à proximité
+Sans les pages Ã  proximitÃ©
 Include near pages
-Inclure les pages à proximité
+Inclure les pages Ã  proximitÃ©
 (for %s)
 (pour %s)
 %s pages found.
-%s pages trouvées.
+%s pages trouvÃ©es.
 Replaced: %s
-Remplacé&nbsp;: %s
+RemplacÃ©&nbsp;: %s
 Search for: %s
 Rechercher&nbsp;: %s
 View changes for these pages
 Voir les modifications pour ces pages
 Search sites on the %s as well
-Rechercher aussi les sites présents sur %s 
+Rechercher aussi les sites prÃ©sents sur %s 
 and
 et
 or
 ou
 Fetching results from %s:
-Récupération des résultats à partir de %s en cours
+RÃ©cupÃ©ration des rÃ©sultats Ã  partir de %s en cours
 Near pages:
-Pages à proximité :
+Pages Ã  proximitÃ© :
 last updated
-dernière mise à jour
+derniÃ¨re mise Ã  jour
 Complete Content
 Contenu Complet
 The main page is %s.
@@ -384,17 +384,17 @@ La page principale est %s.
 Comments on this page
 Commentaires sur cette page
 Editing not allowed for %s.
-Edition non autorisée pour %s.
+Edition non autorisÃ©e pour %s.
 SampleUndefinedPage
-ExempleDePageNonDéfinie
+ExempleDePageNonDÃ©finie
 %s cannot be defined.
-%s ne peut être défini.
+%s ne peut Ãªtre dÃ©fini.
 Sample_Undefined_Page
-Exemple_De_Page_NonDéfinie
+Exemple_De_Page_NonDÃ©finie
 [[%s]] cannot be defined.
-[[%s]] ne peut être défini.
+[[%s]] ne peut Ãªtre dÃ©fini.
 Only an administrator can create %s.
-Seul un administrateur peut créer %s.
+Seul un administrateur peut crÃ©er %s.
 Transfer Error: %s
 Erreur de Transfert&nbsp;: %s
 Browser reports no file info.
@@ -406,119 +406,119 @@ Modification interdite
 The page contains banned text.
 Cette page contient un texte interdit.
 This page was changed by somebody else %s.
-Cette page a été modifiée par quelqu'un d'autre %s.
+Cette page a Ã©tÃ© modifiÃ©e par quelqu'un d'autre %s.
 The changes conflict.  Please check the page again.
-Conflit sur les modifications. SVP vérifiez la page à nouveau.
+Conflit sur les modifications. SVP vÃ©rifiez la page Ã  nouveau.
 Please check whether you overwrote those changes.
-SVP vérifiez si vous souhaitez écrase ces modifications.
+SVP vÃ©rifiez si vous souhaitez Ã©crase ces modifications.
 Anonymous
 Anonyme
 Cannot delete the index file %s.
 Impossible de supprimer le fichier index  %s.
 Please check the directory permissions.
-Veuillez vérifier les permissions des répertoires.
+Veuillez vÃ©rifier les permissions des rÃ©pertoires.
 Your changes were not saved.
-Vos modifications n'ont pas été sauvegardées
+Vos modifications n'ont pas Ã©tÃ© sauvegardÃ©es
 Could not get a lock to merge!
 Pas pu obtenir de verrouillage pour la fusion !
 you
 vous
 ancestor
-ancêtre
+ancÃªtre
 other
 autre
 Run Maintenance
 Lancer la maintenance
 Maintenance not done.
-Maintenance non effectuée.
+Maintenance non effectuÃ©e.
 (Maintenance can only be done once every 12 hours.)
-(La maintenance ne peut être effectuée qu'une fois toutes les 12 heures.)
+(La maintenance ne peut Ãªtre effectuÃ©e qu'une fois toutes les 12 heures.)
 Remove the "maintain" file or wait.
 Enlevez le fichier "maintain" ou patientez.
 Main lock obtained.
 Verrou principal obtenu.
 Expiring keep files and deleting pages marked for deletion
-Expiration des fichiers de cache et suppression des pages marquées pour la suppression
+Expiration des fichiers de cache et suppression des pages marquÃ©es pour la suppression
 not deleted: 
-non supprimée :
+non supprimÃ©e :
 deleted
-supprimé
+supprimÃ©
 Moving part of the %s log file.
 Deplace une partie du fichier de log %s.
 Moving %s log entries.
-Déplace %s entrées du log.
+DÃ©place %s entrÃ©es du log.
 Getting page index file for %s.
-Récupération du fichier d'index de %s.
+RÃ©cupÃ©ration du fichier d'index de %s.
 Main lock released.
 Verrou principal rendu.
 Set or Remove global edit lock
-Positionne ou Retire le verrou global d'édition
+Positionne ou Retire le verrou global d'Ã©dition
 Edit lock created.
-Verrou d'édition créé.
+Verrou d'Ã©dition crÃ©Ã©.
 Edit lock removed.
-Verrou d'édition enlevé.
+Verrou d'Ã©dition enlevÃ©.
 Set or Remove page edit lock
-Positionne ou enlève le verrou d'édition de la page
+Positionne ou enlÃ¨ve le verrou d'Ã©dition de la page
 Missing page id to lock/unlock...
-Id de page manquant pour verrouiller/déverrouiller...
+Id de page manquant pour verrouiller/dÃ©verrouiller...
 Lock for %s created.
-Verrou pour %s créé.
+Verrou pour %s crÃ©Ã©.
 Lock for %s removed.
-Verrou pour %s enlevé.
+Verrou pour %s enlevÃ©.
 Displaying Wiki Version
 Affichage de la version du Wiki
 Show dependencies
-Afficher les dépendances
+Afficher les dÃ©pendances
 Inter links:
 InterLiens :
 Near links:
-Liens de proximité :
+Liens de proximitÃ© :
 Show parsed link data
-Affcher les données de liens analysées
+Affcher les donnÃ©es de liens analysÃ©es
 Too many connections by %s
 Trop de connexions par %s
 Please do not fetch more than %1 pages in %2 seconds.
-Veuillez ne pas télécharger plus de %1 pages toutes les %2 secondes
+Veuillez ne pas tÃ©lÃ©charger plus de %1 pages toutes les %2 secondes
 Check whether the web server can create the directory %s and whether it can create files in it.
-Verifiez si le serveur web peut créer le répertoire %s et s'il peut y créer des fichiers
+Verifiez si le serveur web peut crÃ©er le rÃ©pertoire %s et s'il peut y crÃ©er des fichiers
 anchor first defined here: %s
-première ancre définie ici&nbsp;: %s
+premiÃ¨re ancre dÃ©finie ici&nbsp;: %s
 Click to search for references to this permanent anchor
-Cliquer pour chercher des références vers cette ancre permanente
+Cliquer pour chercher des rÃ©fÃ©rences vers cette ancre permanente
 the page %s also exists
 la page %s existe aussi 
 Deleting %s
 supression de %s
 Deleted %s
-%s supprimée
+%s supprimÃ©e
 Renaming %1 to %2.
 Change  %1 en %2.
 The page %s does not exist
 La page %s n'existe pas
 The page %s already exists
-La page %s existe déjà
+La page %s existe dÃ©jÃ 
 Cannot rename %1 to %2
 Impossible de renommer %1 %2
 Renamed to %s
-Renommé  %s
+RenommÃ©  %s
 Renamed from %s
-Nom précédent %s
+Nom prÃ©cÃ©dent %s
 Renamed %1 to %2.
-%1 a été renommée en %2.
+%1 a Ã©tÃ© renommÃ©e en %2.
 Immediately delete %s
-Supprimer immédiatement %s
+Supprimer immÃ©diatement %s
 Rename %s to:
 Renommer %s en :
 Cannot highlight the language %s.
 Impossible de surligner la langue %s.
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
-cal(1), Date::Calc(3) ou Date::Pcalc(3) manque pour pouvoir créer le calendrier.
+cal(1), Date::Calc(3) ou Date::Pcalc(3) manque pour pouvoir crÃ©er le calendrier.
 The match parameter is missing.
-Le paramètre de correspondance est manquant
+Le paramÃ¨tre de correspondance est manquant
 Page Collection for %s
 Liste des pages pour %s
 Previous
-Précédent
+PrÃ©cÃ©dent
 Next
 Suivant
 Calendar %s
@@ -534,21 +534,21 @@ Commentaire sur
 Compilation for %s
 Compilation pour %s
 Compilation tag is missing a regular expression.
-Il manque une expression régulière pour l'etiquette de la compilation
+Il manque une expression rÃ©guliÃ¨re pour l'etiquette de la compilation
 Despamming pages
-Suprresion des textes indésirables sur les pages.
+Suprresion des textes indÃ©sirables sur les pages.
 Cannot find revision %s.
 Impossible de trouver la version %s.
 Revert to revision %1: %2
-Retour à la version %1 : %2
+Retour Ã  la version %1 : %2
 Marked as %s.
-Marqué comme %s.
+MarquÃ© comme %s.
 Cannot find unspammed revision.
-Impossible de trouver une version sans texte indésirable.
+Impossible de trouver une version sans texte indÃ©sirable.
 Footnotes:
 Note de pied de pages :
 Could not find %1.html template in %2
-Impossible de trouver le modèle %1.html dans %2
+Impossible de trouver le modÃ¨le %1.html dans %2
 image: %s
 image : %s
 Index
@@ -558,66 +558,66 @@ Langues :
 Show!
 Voir !
 Define
-Définir
+DÃ©finir
 Full Link List
-Liste Complète des Liens
+Liste ComplÃ¨te des Liens
 Template without parameters
-Gabarit sans paramètres
+Gabarit sans paramÃ¨tres
 The template %s is either empty or does not exist.
 Le gabarit %s est soit vide soit n'existe pas
 Register for %s
 Enregistrer pour %s
 Please choose a username of the form "FirstLast" using your real name.
-SVP choisissez un nom d'utilisateur sous la forme "PrénomNom" en utilisant votre vrai nom.
+SVP choisissez un nom d'utilisateur sous la forme "PrÃ©nomNom" en utilisant votre vrai nom.
 The passwords do not match.
 Les mots de passe ne correspondent pas.
 The password must be at least %s characters.
-Le mot de passe doit être au moins de %s caractères.
+Le mot de passe doit Ãªtre au moins de %s caractÃ¨res.
 That email address is invalid.
 Cette adresse e-mail n'est pas valide.
 The username %s has already been registered.
-Le nom d'utilisateur %s a déjà été enregistré.
+Le nom d'utilisateur %s a dÃ©jÃ  Ã©tÃ© enregistrÃ©.
 Your registration for %s has been submitted.
-Votre enregistrement pour %s a été soumis.
+Votre enregistrement pour %s a Ã©tÃ© soumis.
   Please allow time for the webmaster to approve your request.
   SVP, donnez un peu de temps au webmestre pour valider votre demande.
 An account was created for %s.
-Un compte a été créé pour %s
+Un compte a Ã©tÃ© crÃ©Ã© pour %s
 Login to %s
 Se connecter sur %s
 
 Username and/or password are incorrect.
 Le nom d'utilisateur et/ou le mot de passe sont incorrects.
 Logged in as %s.
-Connecté comme %s.
+ConnectÃ© comme %s.
 Logout of %s
-Déconnexion de %s
+DÃ©connexion de %s
 Logout of %s?
-Se déconnecter de %s?
+Se dÃ©connecter de %s?
 Logged out of %s
-Déconnecté de %s
+DÃ©connectÃ© de %s
 You are now logged out.
-Vous êtes maintenant déconnecté.
+Vous Ãªtes maintenant dÃ©connectÃ©.
 Register a new account
 Enregistrer un nouveau compte.
 Login
 Se connecter
 Logout
-Se déconnecter
+Se dÃ©connecter
 Clearing Cache
 Nettoyage du cache.
 Done.
-effectué.
+effectuÃ©.
 Generating Link Database
-Création de la base de donnée de liens
+CrÃ©ation de la base de donnÃ©e de liens
 The 404 handler extension requires the link data extension (links.pl).
-l'extension "404 handler" nécessite une base de donnée de liens (links.pl).
+l'extension "404 handler" nÃ©cessite une base de donnÃ©e de liens (links.pl).
 LocalMap
 CarteLocale
 No page id for action localmap
 Aune page id pour actionner la carte locale
 Requested page %s does not exist
-La page demandée %s n'existe pas
+La page demandÃ©e %s n'existe pas
 Local Map for %s
 CarteLocale pour %s
 view
@@ -635,7 +635,7 @@ Lien permanent vers
 Portrait
 Portrait
 You did not answer correctly.
-Vous n'avez pas répondu correctement
+Vous n'avez pas rÃ©pondu correctement
 All Referrers
 Tous les Introducteurs
 Referrers
@@ -645,31 +645,31 @@ Reconstruire l'index pour la recherche
 Rebuilding Index
 Reconstruction de l'Index
 Search::FreeText is not available on this system.
-Chercher::Le TexteLibre n'est pas disponible sur ce système.
+Chercher::Le TexteLibre n'est pas disponible sur ce systÃ¨me.
 Rebuilding index not done.
-Reconstruction index non effectuée.
+Reconstruction index non effectuÃ©e.
 (Rebuilding the index can only be done once every 12 hours.)
-(La reconstruction de l'index ne peut être faite qu'une fois toutes les 12 heures.)
+(La reconstruction de l'index ne peut Ãªtre faite qu'une fois toutes les 12 heures.)
 Search term missing.
 Terme de la recherche manquant
 Result pages: 
-Pages de résultats :
+Pages de rÃ©sultats :
 (%s results)
-(%s résultats)
+(%s rÃ©sultats)
 Slideshow:%s
 Diaporama : %s
 Static Copy
 Copie Statique
 Back to %s
-Retour à %s
+Retour Ã  %s
 Tag
 Tag
 Alternatively, use one of the following templates:
-Alternativement, utilisez un des modèles suivant
+Alternativement, utilisez un des modÃ¨les suivant
 Thread: %s
 Fil: %s
 ID parameter is missing.
-Le paramètre ID est manquant. 
+Le paramÃ¨tre ID est manquant. 
 Thread %s does not exist.
 Le fil %s n'existe pas.
 Page %s does not contain a thread.
@@ -677,7 +677,7 @@ La page %s ne contient pas de fil.
 Add
 Ajoutez
 URL parameter is missing.
-Le paramètre URL est manquant.
+Le paramÃ¨tre URL est manquant.
 Add to %s thread
 Ajoutez %s au fil
 Below:
@@ -693,9 +693,9 @@ Contenus :
 This page is a translation of %s. 
 Cette page est une traduction de %s.
 The translation is up to date.
-La traduction est à jour
+La traduction est Ã  jour
 The translation is outdated.
-La traduction n'est pas à jour.
+La traduction n'est pas Ã  jour.
 The page does not exist.
 La page n'existe pas.
 http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
