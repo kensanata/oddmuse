@@ -22,7 +22,7 @@
 #by wctang <wctang@csie.nctu.edu.tw> and using the tool cnmap
 #(http://search.cpan.org/~qjzhou/Encode-CNMap-0.32/bin/cnmap) by Qing-Jie Zhou <qjzhou@hotmail.com>.
 #
-$ModulesDescription .= '<p>$Id: chinese_cn-utf8.pl,v 1.1 2005/06/30 23:11:21 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: chinese_cn-utf8.pl,v 1.2 2005/07/02 14:33:06 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 禁止读取：使用者、ip 或是网路已被禁止连线。
@@ -54,6 +54,8 @@ image
 图像
 download
 下载
+CGI Internal error: %s
+
 Invalid action parameter %s
 无效的动作参数 %s
 Invalid URL.
@@ -210,8 +212,6 @@ View current revision
 参阅目前版本
 View all changes
 列出所有的修改
-new comment
-新的评论
 Homepage URL:
 首页网址：
 s
@@ -526,6 +526,10 @@ Next
 向后
 Calendar %s
 %s 年历
+Clustermap
+
+Pages without a Cluster
+
 Comments on 
 评论关于
 Comment on 
@@ -564,8 +568,44 @@ Template without parameters
 未指定 template 参数
 The template %s is either empty or does not exist.
 范本 %s 可能为空或不存在。
-%s returned no data.
-%s 未返回数据。
+Register for %s
+
+Please choose a username of the form "FirstLast" using your real name.
+
+The passwords do not match.
+
+The password must be at least %s characters.
+
+That email address is invalid.
+
+The username %s has already been registered.
+
+Your registration for %s has been submitted.
+
+  Please allow time for the webmaster to approve your request.
+
+An account was created for %s.
+
+Login to %s
+
+Username and/or password are incorrect.
+
+Logged in as %s.
+
+Logout of %s
+
+Logout of %s?
+
+Logged out of %s
+
+You are now logged out.
+
+Register a new account
+
+Login
+
+Logout
+
 Clearing Cache
 清除缓存
 Done.
@@ -573,6 +613,16 @@ Done.
 Generating Link Database
 产生连结数据库
 The 404 handler extension requires the link data extension (links.pl).
+
+LocalMap
+
+No page id for action localmap
+
+Requested page %s does not exist
+
+Local Map for %s
+
+view
 
 Orphan List
 孤立页面列表
@@ -592,14 +642,30 @@ All Referrers
 所有的引用者
 Referrers
 引用者
-Updating %s
-更新 %s
+Rebuild index for searching
+
+Rebuilding Index
+
+Search::FreeText is not available on this system.
+
+Rebuilding index not done.
+
+(Rebuilding the index can only be done once every 12 hours.)
+
 Search term missing.
 缺少搜索项。
+Result pages: 
+
+(%s results)
+
+Slideshow:%s
+
 Static Copy
 静态页面备份
 Back to %s
 返回 %s
+Tag
+
 Alternatively, use one of the following templates:
 或者，使用下列范本之一:
 Thread: %s
