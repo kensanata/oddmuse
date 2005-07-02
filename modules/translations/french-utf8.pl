@@ -18,8 +18,8 @@
 #
 # This translation was last checked for Oddmuse version 1.296.
 #
-$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.3 2005/07/02 00:03:28 as Exp $</p>';
-$s n'a pas retournée de données, ou LWP::UserAgent n'est pas disponible.
+$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.4 2005/07/02 14:06:02 as Exp $</p>';
+
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Accès interdit&nbsp;: votre serveur, adresse IP ou nom d'utilisateur a été bloqué.
