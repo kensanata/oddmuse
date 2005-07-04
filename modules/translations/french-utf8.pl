@@ -18,7 +18,7 @@
 #
 # This translation was last checked for Oddmuse version 1.296.
 #
-$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.8 2005/07/04 09:24:27 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.9 2005/07/04 23:09:17 as Exp $</p>';
 
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
@@ -534,9 +534,9 @@ Commentaire sur
 Compilation for %s
 Compilation pour %s
 Compilation tag is missing a regular expression.
-Il manque une expression régulière pour l'etiquette de la compilation
+Il manque une expression régulière pour le tag de compilation
 Despamming pages
-Suprresion des textes indésirables sur les pages.
+Suppresion des textes indésirables sur les pages.
 Cannot find revision %s.
 Impossible de trouver la version %s.
 Revert to revision %1: %2
@@ -546,7 +546,7 @@ Marqué comme %s.
 Cannot find unspammed revision.
 Impossible de trouver une version sans texte indésirable.
 Footnotes:
-Note de pied de pages :
+Note de pied de page :
 Could not find %1.html template in %2
 Impossible de trouver le modèle %1.html dans %2
 image: %s
