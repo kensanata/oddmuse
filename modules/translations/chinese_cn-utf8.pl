@@ -1,5 +1,6 @@
 # UTF-8 encoded Simplified Chinese language file for use with Oddmuse
 #
+# Copyright (c) 2003, 2004  wctang <wctang@csie.nctu.edu.tw>.
 # Copyright (c) 2005  xuzq <xuzq@chinalions.com>.
 #
 # Permission is granted to copy, distribute and/or modify this
@@ -22,7 +23,7 @@
 #by wctang <wctang@csie.nctu.edu.tw> and using the tool cnmap
 #(http://search.cpan.org/~qjzhou/Encode-CNMap-0.32/bin/cnmap) by Qing-Jie Zhou <qjzhou@hotmail.com>.
 #
-$ModulesDescription .= '<p>$Id: chinese_cn-utf8.pl,v 1.2 2005/07/02 14:33:06 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: chinese_cn-utf8.pl,v 1.3 2005/07/04 12:22:13 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 禁止读取：使用者、ip 或是网路已被禁止连线。
