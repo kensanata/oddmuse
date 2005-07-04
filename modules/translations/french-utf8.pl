@@ -18,7 +18,7 @@
 #
 # This translation was last checked for Oddmuse version 1.296.
 #
-$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.7 2005/07/02 14:46:32 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.8 2005/07/04 09:24:27 as Exp $</p>';
 
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
@@ -26,13 +26,13 @@ Accès interdit&nbsp;: votre serveur, adresse IP ou nom d'utilisateur a été bl
 Could not create %s
 Création impossible de %s
 Invalid UserName %s: not saved.
-Nom d'utilisateur non valide %s&nbsp;: pas sauvegardé
+Nom d'utilisateur non valide %s&nbsp;: non sauvegardé.
 UserName must be 50 characters or less: not saved
-Le nom d'utilisateur ne doit pas dépasser 50 caractères&nbsp;: pas sauvegardé
+Le nom d'utilisateur ne doit pas dépasser 50 caractères : non sauvegardé
 This page contains an uploaded file:
-Cette page contient un fichier téléversé.
+Cette page contient un fichier téléversé :
 XML::RSS is not available on this system.
-XML::RSS n'est pas disponible sur ce sytème.
+XML::RSS n'est pas disponible sur ce système.
 diff
 diff
 history
@@ -46,13 +46,13 @@ Pas d'objet dans %s.
  . . . . 
  . . . . 
 Click to edit this page
-Cliquez pour editer cette page
+Cliquez pour éditer cette page
 image
 image
 download
 télécharger
 CGI Internal error: %s
-
+Erreur Interne CGI : %s
 Invalid action parameter %s
 Parmètre d'action invalide %s
 Invalid URL.
@@ -184,7 +184,7 @@ La base de données est stockée dans le répertoire temporaire %s
 %s seconds
 %s secondes
 The same page on other sites:
-La même page sur d'autres sites
+La même page sur d'autres sites :
 EditNearLinks
 EditerLiensDeProximité
 Last edited
@@ -292,7 +292,7 @@ just now
 Editing Denied
 Modification interdite
 Editing not allowed: user, ip, or network is blocked.
-Modification interdite&nbsp;: l'utilisateur, l'adresse ip, ou le reseau est bloqué
+Modification interdite&nbsp;: l'utilisateur, l'adresse ip, ou le reseau est bloqué.
 Contact the wiki administrator for more information.
 Contactez l'administrateur du wiki pour plus d'information.
 The rule %s matched for you.
@@ -564,7 +564,7 @@ Liste Complète des Liens
 Template without parameters
 Gabarit sans paramètres
 The template %s is either empty or does not exist.
-Le gabarit %s est soit vide soit n'existe pas
+Le gabarit %s est soit vide soit n'existe pas.
 Register for %s
 Enregistrer pour %s
 Please choose a username of the form "FirstLast" using your real name.
@@ -665,7 +665,7 @@ Retour à %s
 Tag
 Tag
 Alternatively, use one of the following templates:
-Alternativement, utilisez un des modèles suivant
+Alternativement, utilisez un des modèles suivants :
 Thread: %s
 Fil: %s
 ID parameter is missing.
