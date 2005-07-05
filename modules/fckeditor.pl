@@ -14,9 +14,13 @@
 # along with this program; if not, write to the
 #    Free Software Foundation, Inc.
 #    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+#    Boston, MA 02111-1307 USA,
 
-$ModulesDescription .= '<p>$Id: fckeditor.pl,v 1.1 2005/07/05 22:26:59 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: fckeditor.pl,v 1.2 2005/07/05 23:12:31 as Exp $</p>';
+
+use vars qw($FCKeditorRows);
+
+$FCKeditorRows = 400; # Pixel
 
 push (@MyRules, \&WysiwygRule);
 
@@ -38,8 +42,7 @@ sub WysiwygScript {
   window.onload = function()
   {
     var oFCKeditor = new FCKeditor( 'text' ) ;
-    oFCKeditor.Config['CustomConfigurationsPath'] = '/myconfig.js';
-    oFCKeditor.ToolbarSet = "EmacsWiki" ;
+    oFCKeditor.Height = "$FCKeditorRows" ;
     oFCKeditor.ReplaceTextarea() ;
   }
 </script>
@@ -52,7 +55,7 @@ sub GetTextArea {
   my ($name, $text, $rows) = @_;
   return $q->textarea(-id=>$name, -name=>$name,
 		      -default=>$text,
-		      -rows=>$rows||25,
+		      -rows=>$rows||55,
 		      -columns=>78,
 		      -override=>1);
 }
