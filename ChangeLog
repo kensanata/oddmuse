@@ -2,6 +2,7 @@
 
 	* modules/fckeditor.pl (WysiwygScript): Use an option for the
 	height.
+	(WysiwygRule): Don't allow script tags.
 
 2005-07-04  Alex Schroeder  <alex@gnu.org>
 
