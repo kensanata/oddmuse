@@ -1,3 +1,8 @@
+2005-07-06  Alex Schroeder  <alex@gnu.org>
+
+	* modules/fckeditor.pl (WysiwygScript): Use an option for the
+	height.
+
 2005-07-04  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetHtmlHeader): Don't allow double quotes in the css
