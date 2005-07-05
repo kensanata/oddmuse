@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA,
 
-$ModulesDescription .= '<p>$Id: fckeditor.pl,v 1.2 2005/07/05 23:12:31 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: fckeditor.pl,v 1.3 2005/07/05 23:48:15 as Exp $</p>';
 
 use vars qw($FCKeditorRows);
 
@@ -26,6 +26,8 @@ push (@MyRules, \&WysiwygRule);
 
 sub WysiwygRule {
   if (m/\G(&lt;.*?&gt;)/gc) {
+    return $1 if substr($1,5,6) eq 'script'
+      or substr($1,4,6) eq 'script';
     return UnquoteHtml($1);
   }
   return undef;
