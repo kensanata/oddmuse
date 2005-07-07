@@ -16,11 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA,
 
-$ModulesDescription .= '<p>$Id: fckeditor.pl,v 1.3 2005/07/05 23:48:15 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: fckeditor.pl,v 1.4 2005/07/07 11:28:56 as Exp $</p>';
 
-use vars qw($FCKeditorRows);
+use vars qw($FCKeditorHeight);
 
-$FCKeditorRows = 400; # Pixel
+$FCKeditorHeight = 400; # Pixel
 
 push (@MyRules, \&WysiwygRule);
 
@@ -44,20 +44,10 @@ sub WysiwygScript {
   window.onload = function()
   {
     var oFCKeditor = new FCKeditor( 'text' ) ;
-    oFCKeditor.Height = "$FCKeditorRows" ;
+    oFCKeditor.Height = "$FCKeditorHeight" ;
     oFCKeditor.ReplaceTextarea() ;
   }
 </script>
 };
   }
-}
-
-# add id attribute to textarea
-sub GetTextArea {
-  my ($name, $text, $rows) = @_;
-  return $q->textarea(-id=>$name, -name=>$name,
-		      -default=>$text,
-		      -rows=>$rows||55,
-		      -columns=>78,
-		      -override=>1);
 }
