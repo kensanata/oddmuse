@@ -1,6 +1,9 @@
 2005-07-11  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetTextArea): Add id to textarea.
+	($RssDir, $RssCacheHours): New options.
+	(RSS): Use GetRss.
+	(GetRss, GetRssFile): New.
 
 2005-07-07  Alex Schroeder  <alex@gnu.org>
 
