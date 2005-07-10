@@ -359,7 +359,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.563 2005/07/04 15:45:11 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.564 2005/07/10 23:33:22 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -2870,7 +2870,7 @@ sub DoEdit {
 
 sub GetTextArea {
   my ($name, $text, $rows) = @_;
-  return $q->textarea(-name=>$name, -default=>$text, -rows=>$rows||25, -columns=>78, -override=>1);
+  return $q->textarea(-id=>$name, -name=>$name, -default=>$text, -rows=>$rows||25, -columns=>78, -override=>1);
 }
 
 sub GetUpload {
