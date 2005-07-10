@@ -4,6 +4,7 @@
 	($RssDir, $RssCacheHours): New options.
 	(RSS): Use GetRss.
 	(GetRss, GetRssFile): New.
+	(DoMaintain): Clean files in $RssDir.
 
 2005-07-07  Alex Schroeder  <alex@gnu.org>
 
