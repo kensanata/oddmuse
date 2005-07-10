@@ -1,3 +1,7 @@
+2005-07-11  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetTextArea): Add id to textarea.
+
 2005-07-07  Alex Schroeder  <alex@gnu.org>
 
 	* modules/fckeditor.pl (WysiwygScript): Change $FCKeditorRows to
