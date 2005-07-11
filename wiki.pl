@@ -334,7 +334,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.565 2005/07/11 00:00:31 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.566 2005/07/11 11:13:21 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -937,7 +937,6 @@ sub GetRss {
       foreach (keys %$entries) {
 	my $uri = $entries->{$_}->request->uri;
 	$data{$uri} = $entries->{$_}->response->content;
-	warn "parallel fetch for $uri";
       }
     }
   }
@@ -948,7 +947,6 @@ sub GetRss {
     CreateDir($RssDir);
     foreach my $uri (@need_cache) {
       WriteStringToFile(GetRssFile($uri), $data{$uri});
-      warn "saved $uri cache";
     }
   }
   return $str, %data;
