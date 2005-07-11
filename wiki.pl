@@ -38,27 +38,28 @@ local $| = 1;  # Do not buffer output (localized for mod_perl)
 
 # Configuration/constant variables:
 
-use vars qw(@RcDays $TempDir $LockDir $DataDir $KeepDir $PageDir
-$RcOldFile $IndexFile $BannedContent $NoEditFile $BannedHosts
-$ConfigFile $FullUrl $SiteName $HomePage $LogoUrl $RcDefault
+use vars qw($RssCacheHours @RcDays $TempDir $LockDir $DataDir $KeepDir
+$PageDir $RcOldFile $IndexFile $BannedContent $NoEditFile $BannedHosts
+$ConfigFile $FullUrl $SiteName $HomePage $LogoUrl $RcDefault $RssDir
 $IndentLimit $RecentTop $RecentLink $EditAllowed $UseDiff $KeepDays
 $KeepMajor $EmbedWiki $BracketText $UseConfig $UseLookup $AdminPass
-$EditPass $NetworkFile $BracketWiki $FreeLinks $WikiLinks $SummaryHours
-$FreeLinkPattern $RCName $RunCGI $ShowEdits $LinkPattern $RssExclude
-$InterLinkPattern $InterSitePattern $MaxPost $UrlPattern $UrlProtocols
-$ImageExtensions $FS $CookieName $SiteBase $StyleSheet $NotFoundPg
-$FooterNote $NewText $EditNote $HttpCharset $UserGotoBar $VisitorTime
-$VisitorFile $RcFile $Visitors %Smilies %SpecialDays $InterWikiMoniker
-$SiteDescription $RssImageUrl $RssPublisher $RssContributor $RssRights
-$BannedCanRead $SurgeProtection $SurgeProtectionViews $TopLinkBar
-$LanguageLimit $SurgeProtectionTime $DeletedPage %Languages $InterMap
-$ValidatorLink @LockOnCreation $PermanentAnchorsFile $PermanentAnchors
-@MyRules %CookieParameters $NewComment $StyleSheetPage $ConfigPage
-@UserGotoBarPages $ScriptName @MyMacros $CommentsPrefix @UploadTypes
-$DefaultStyleSheet $AllNetworkFiles $UsePathInfo $UploadAllowed
-$LastUpdate $PageCluster $RssInterwikiTranslate $UseCache $ModuleDir
-$HtmlHeaders $DebugInfo %InvisibleCookieParameters $FullUrlPattern
-$FreeInterLinkPattern @AdminPages @MyAdminCode @MyInitVariables);
+$EditPass $NetworkFile $BracketWiki $FreeLinks $WikiLinks
+$SummaryHours $FreeLinkPattern $RCName $RunCGI $ShowEdits $LinkPattern
+$RssExclude $InterLinkPattern $InterSitePattern $MaxPost $UrlPattern
+$UrlProtocols $ImageExtensions $FS $CookieName $SiteBase $StyleSheet
+$NotFoundPg $FooterNote $NewText $EditNote $HttpCharset $UserGotoBar
+$VisitorTime $VisitorFile $RcFile $Visitors %Smilies %SpecialDays
+$InterWikiMoniker $SiteDescription $RssImageUrl $RssPublisher
+$RssContributor $RssRights $BannedCanRead $SurgeProtection
+$SurgeProtectionViews $TopLinkBar $LanguageLimit $SurgeProtectionTime
+$DeletedPage %Languages $InterMap $ValidatorLink @LockOnCreation
+$PermanentAnchorsFile $PermanentAnchors @MyRules %CookieParameters
+$NewComment $StyleSheetPage $ConfigPage @UserGotoBarPages $ScriptName
+@MyMacros $CommentsPrefix @UploadTypes $DefaultStyleSheet
+$AllNetworkFiles $UsePathInfo $UploadAllowed $LastUpdate $PageCluster
+$RssInterwikiTranslate $UseCache $ModuleDir $HtmlHeaders $DebugInfo
+%InvisibleCookieParameters $FullUrlPattern $FreeInterLinkPattern
+@AdminPages @MyAdminCode @MyInitVariables);
 
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
@@ -87,96 +88,78 @@ $DataDir     = $ENV{WikiDataDir} if $UseConfig and not $DataDir; # Main wiki dir
 $DataDir   = '/tmp/oddmuse' unless $DataDir;
 $ConfigPage  = '' unless $ConfigPage; # config page
 $RunCGI	     = 1  unless defined $RunCGI; # 1 = Run script as CGI instead of being a library
-$UsePathInfo = 1;   # 1 = allow page views using wiki.pl/PageName
-$UseCache    = 2;   # -1 = disabled, 0 = 10s; 1 = partial HTML cache; 2 = HTTP/1.1 caching
-
-# Basics
-$SiteName    = 'Wiki';	   # Name of site (used for titles)
-$HomePage    = 'HomePage'; # Home page
-$CookieName  = 'Wiki';	   # Name for this wiki (for multi-wiki sites)
-
-# Fix if defaults do not work
-$SiteBase    = '';  # Full URL for <BASE> header
-$MaxPost     = 1024 * 210; # Maximum 210K posts (about 200K for pages)
-$HttpCharset = 'UTF-8'; # You are on your own if you change this!
-
-# EyeCandy
-$StyleSheet  = '';  # URL for CSS stylesheet (like '/wiki.css')
-$StyleSheetPage = ''; # Page for CSS sheet
-$LogoUrl     = '';  # URL for site logo ('' for no logo)
-$NotFoundPg  = '';  # Page for not-found links ('' for blank pg)
+$UsePathInfo = 1;               # 1 = allow page views using wiki.pl/PageName
+$UseCache    = 2;               # -1 = disabled, 0 = 10s; 1 = partial HTML cache; 2 = HTTP/1.1 caching
+$SiteName    = 'Wiki';	        # Name of site (used for titles)
+$HomePage    = 'HomePage';      # Home page
+$CookieName  = 'Wiki';	        # Name for this wiki (for multi-wiki sites)
+$SiteBase    = '';              # Full URL for <BASE> header
+$MaxPost     = 1024 * 210;      # Maximum 210K posts (about 200K for pages)
+$HttpCharset = 'UTF-8';         # You are on your own if you change this!
+$StyleSheet  = '';              # URL for CSS stylesheet (like '/wiki.css')
+$StyleSheetPage = '';           # Page for CSS sheet
+$LogoUrl     = '';              # URL for site logo ('' for no logo)
+$NotFoundPg  = '';              # Page for not-found links ('' for blank pg)
 $NewText     = "Describe the new page here.\n";	 # New page text
 $NewComment  = "Add your comment here.\n";	 # New comment text
-
-# HardSecurity
-$EditAllowed = 1;   # 0 = no, 1 = yes, 2 = comments only
+$EditAllowed = 1;               # 0 = no, 1 = yes, 2 = comments only
 $AdminPass   = '' unless defined $AdminPass; # Whitespace separated passwords.
 $EditPass    = '' unless defined $EditPass; # Whitespace separated passwords.
-$BannedHosts = 'BannedHosts'; # Page for banned hosts
-$BannedCanRead = 1; # 1 = banned cannot edit, 0 = banned cannot read
+$BannedHosts = 'BannedHosts';   # Page for banned hosts
+$BannedCanRead = 1;             # 1 = banned cannot edit, 0 = banned cannot read
 $BannedContent = 'BannedContent'; # Page for banned content (usually for link-ban)
-
-# LinkPattern
-$WikiLinks   = 1;   # 1 = LinkPattern is a link
-$FreeLinks   = 1;   # 1 = [[some text]] is a link
-$BracketText = 1;   # 1 = [URL desc] uses a description for the URL
-$BracketWiki = 0;   # 1 = [WikiLink desc] uses a desc for the local link
-$NetworkFile = 1;   # 1 = file: is a valid protocol for URLs
-$AllNetworkFiles = 0; # 1 = file:///foo is allowed -- the default allows only file://foo
-$PermanentAnchors = 1;	 # 1 = [::some text] defines permanent anchors (page aliases)
-$InterMap    = 'InterMap'; # name of the intermap page
-$NearMap     = 'NearMap';  # name of the nearmap page
+$WikiLinks   = 1;               # 1 = LinkPattern is a link
+$FreeLinks   = 1;               # 1 = [[some text]] is a link
+$BracketText = 1;               # 1 = [URL desc] uses a description for the URL
+$BracketWiki = 0;               # 1 = [WikiLink desc] uses a desc for the local link
+$NetworkFile = 1;               # 1 = file: is a valid protocol for URLs
+$AllNetworkFiles = 0;           # 1 = file:///foo is allowed -- the default allows only file://foo
+$PermanentAnchors = 1;	        # 1 = [::some text] defines permanent anchors (page aliases)
+$InterMap    = 'InterMap';      # name of the intermap page
+$NearMap     = 'NearMap';       # name of the nearmap page
 $RssInterwikiTranslate = 'RssInterwikiTranslate'; # name of RSS interwiki translation page
-@MyRules = (\&LinkRules, ); # default rules that can be overridden
-
-# Diff
-$ENV{PATH}   = '/usr/bin/'; # Path used to find 'diff'
-$UseDiff     = 1;	    # 1 = use diff
-
-# Visitors and SurgeProtection
+@MyRules = (\&LinkRules, );     # default rules that can be overridden
+$ENV{PATH}   = '/usr/bin/';     # Path used to find 'diff'
+$UseDiff     = 1;	        # 1 = use diff
 $SurgeProtection      = 1;	# 1 = protect against leeches
 $Visitors	      = 1;	# 1 = maintain list of recent visitors
 $VisitorTime	      = 7200;	# Timespan to remember visitors in seconds
 $SurgeProtectionTime  = 20;	# Size of the protected window in seconds
 $SurgeProtectionViews = 10;	# How many page views to allow in this window
-
-# RecentChanges and KeptPages
 $DeletedPage = 'DeletedPage';	# Pages starting with this can be deleted
 $RCName	     = 'RecentChanges'; # Name of changes page
 @RcDays	     = qw(1 3 7 30 90); # Days for links on RecentChanges
-$RcDefault   = 30;  # Default number of RecentChanges days
-$KeepDays    = 14;  # Days to keep old revisions
-$KeepMajor   = 1;   # 1 = keep at least one major rev when expiring pages
-$SummaryHours = 4;  # Hours to offer the old subject when editing a page
-$ShowEdits   = 0;   # 1 = major and show minor edits in recent changes
-$UseLookup   = 1;   # 1 = lookup host names instead of using only IP numbers
-$RecentTop   = 1;   # 1 = most recent entries at the top of the list
-$RecentLink  = 1;   # 1 = link to usernames
-$PageCluster = '';  # name of cluster page, eg. 'Cluster' to enable
-
-# RSS and other Weblog Technology
-$InterWikiMoniker = ''; # InterWiki prefix for this wiki for RSS
-$SiteDescription  = ''; # RSS Description of this wiki
-$RssImageUrl	  = ''; # URL to image to associate with your RSS feed
-$RssPublisher	  = ''; # Name of RSS publisher
-$RssContributor	  = ''; # List or description of the contributors
-$RssRights	  = ''; # Copyright notice for RSS
+$RcDefault   = 30;              # Default number of RecentChanges days
+$KeepDays    = 14;              # Days to keep old revisions
+$KeepMajor   = 1;               # 1 = keep at least one major rev when expiring pages
+$SummaryHours = 4;              # Hours to offer the old subject when editing a page
+$ShowEdits   = 0;               # 1 = major and show minor edits in recent changes
+$UseLookup   = 1;               # 1 = lookup host names instead of using only IP numbers
+$RecentTop   = 1;               # 1 = most recent entries at the top of the list
+$RecentLink  = 1;               # 1 = link to usernames
+$PageCluster = '';              # name of cluster page, eg. 'Cluster' to enable
+$InterWikiMoniker = '';         # InterWiki prefix for this wiki for RSS
+$SiteDescription  = '';         # RSS Description of this wiki
+$RssImageUrl	  = '';         # URL to image to associate with your RSS feed
+$RssPublisher	  = '';         # Name of RSS publisher
+$RssContributor	  = '';         # List or description of the contributors
+$RssRights	  = '';         # Copyright notice for RSS
 $RssExclude       = 'RssExclude'; # name of the page that lists pages to be excluded from the feed
-
-# File uploads
-$UploadAllowed	  = 0;	# 1 = yes, 0 = administrators only
+$RssCacheHours    =  1;         # How many hours to cache remote RSS files
+$UploadAllowed	  = 0;	        # 1 = yes, 0 = administrators only
 @UploadTypes	  = ('image/jpeg', 'image/png'); # MIME types allowed, all allowed if empty list
-
-# Header and Footer, Notes, GotoBar
-$EmbedWiki   = 0;	# 1 = no headers/footers
-$FooterNote  = '';	# HTML for bottom of every page
-$EditNote    = '';	# HTML notice above buttons on edit page
-$TopLinkBar  = 1;	# 1 = add a goto bar at the top of the page
-@UserGotoBarPages = (); # List of pagenames
-$UserGotoBar = '';	# HTML added to end of goto bar
-$ValidatorLink = 0;	# 1 = Link to the W3C HTML validator service
-$CommentsPrefix = '';	# prefix for comment pages, eg. 'Comments_on_' to enable
-$HtmlHeaders = '';	# Additional stuff to put in the HTML <head> section
+$EmbedWiki   = 0;	        # 1 = no headers/footers
+$FooterNote  = '';	        # HTML for bottom of every page
+$EditNote    = '';	        # HTML notice above buttons on edit page
+$TopLinkBar  = 1;	        # 1 = add a goto bar at the top of the page
+@UserGotoBarPages = ();         # List of pagenames
+$UserGotoBar = '';	        # HTML added to end of goto bar
+$ValidatorLink = 0;	        # 1 = Link to the W3C HTML validator service
+$CommentsPrefix = '';	        # prefix for comment pages, eg. 'Comments_on_' to enable
+$HtmlHeaders = '';	        # Additional stuff to put in the HTML <head> section
+$IndentLimit = 20;	        # Maximum depth of nested lists
+$LanguageLimit = 3;	        # Number of matches req. for each language
+$SisterSiteLogoUrl = 'file:///tmp/oddmuse/%s.png'; # URL format string for logos
 $DefaultStyleSheet = q{
 body { background-color:#FFF; color:#000; }
 textarea { width:100%; }
@@ -222,25 +205,16 @@ div.near p { margin-top:0; }
 # Display short comments below the GotoBar for special days
 # Example: %SpecialDays = ('1-1' => 'New Year', '1-2' => 'Next Day');
 %SpecialDays = ();
-
 # Replace regular expressions with inlined images
 # Example: %Smilies = (":-?D(?=\\W)" => '/pics/grin.png');
 %Smilies = ();
-
 # Detect page languages when saving edits
 # Example: %Languages = ('de' => '\b(der|die|das|und|oder)\b');
 %Languages = ();
-
 @KnownLocks = qw(main diff index merge visitors); # locks to remove
-
 %CookieParameters = (username=>'', pwd=>'', homepage=>'', theme=>'', css=>'', msg=>'',
 		     lang=>'', toplinkbar=>$TopLinkBar, embed=>$EmbedWiki, );
 %InvisibleCookieParameters = (msg=>1, pwd=>1,);
-
-$IndentLimit = 20;		    # Maximum depth of nested lists
-$LanguageLimit = 3;		    # Number of matches req. for each language
-$SisterSiteLogoUrl = 'file:///tmp/oddmuse/%s.png'; # URL format string for logos
-
 %Action = ( rc => \&BrowseRc,		    rollback => \&DoRollback,
 	    browse => \&BrowseResolvedPage, maintain => \&DoMaintain,
 	    random => \&DoRandom,	    pagelock => \&DoPageLock,
@@ -303,7 +277,7 @@ sub InitDirConfig {
   $TempDir     = "$DataDir/temp";      # Temporary files and locks
   $LockDir     = "$TempDir/lock";      # DB is locked if this exists
   $NoEditFile  = "$DataDir/noedit"; # Indicates that the site is read-only
-  $RcFile	     = "$DataDir/rc.log"; # New RecentChanges logfile
+  $RcFile      = "$DataDir/rc.log"; # New RecentChanges logfile
   $RcOldFile   = "$DataDir/oldrc.log";	  # Old RecentChanges logfile
   $IndexFile   = "$DataDir/pageidx";	  # List of all pages
   $VisitorFile = "$DataDir/visitors.log"; # List of recent visitors
@@ -311,6 +285,7 @@ sub InitDirConfig {
   $ConfigFile  = "$DataDir/config" unless $ConfigFile; # Config file with Perl code to execute
   $ModuleDir   = "$DataDir/modules" unless $ModuleDir; # For extensions (ending in .pm or .pl)
   $NearDir     = "$DataDir/near"; # For page indexes and .png files of other sites
+  $RssDir     = "$DataDir/rss"; # For rss feed cache
 }
 
 sub InitRequest {
@@ -359,7 +334,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.564 2005/07/10 23:33:22 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.565 2005/07/11 00:00:31 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -834,29 +809,10 @@ sub RSS {
   }
   my $wikins = 'http://purl.org/rss/1.0/modules/wiki/';
   my $rdfns = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
-  my $str;
   @uris = map { s/^"?(.*?)"?$/$1/; $_; } @uris; # strip quotes of uris
-  my @data;
-  if (@uris > 1) { # try parallel access if available
-    eval {
-      require LWP::Parallel::UserAgent; 
-      my $pua = LWP::Parallel::UserAgent->new();
-      foreach my $uri (@uris) {
-	if (my $res = $pua->register(HTTP::Request->new('GET', $uri))) {
-	  $str .= $res->error_as_HTML;
-	}
-      }
-      @uris = (); # reset because we don't know the order in $entries.
-      my $entries = $pua->wait();
-      foreach (keys %$entries) {
-	push(@uris, $entries->{$_}->response->request->url);
-	push(@data, $entries->{$_}->response->content);
-      }
-    }
-  }
-  @data = map { GetRaw($_); } @uris unless @data; # default operation: synchronous fetching
-  foreach my $uri (@uris) {
-    my $data = shift(@data);
+  my ($str, %data) = GetRss(@uris);
+  foreach my $uri (keys %data) {
+    my $data = $data{$uri};
     if (not $data) {
       $str .= $q->p($q->strong(Ts('%s returned no data, or LWP::UserAgent is not available.',
 				  $q->a({-href=>$uri}, $uri))));
@@ -952,6 +908,54 @@ sub RSS {
   }
   $str .= '</ul>' if $date;
   return $q->div({-class=>'rss'}, $str);
+}
+
+sub GetRss {
+  my %todo = map {$_, GetRssFile($_)} @_;
+  my %data = ();
+  my $str = '';
+  if (GetParam('cache', $UseCache) > 0) {
+    foreach my $uri (keys %todo) { # read cached rss files if possible
+      if ($Now - (stat($todo{$uri}))[9] < $RssCacheHours * 3600) {
+	$data{$uri} = ReadFile($todo{$uri});
+	delete($todo{$uri}); # no need to fetch them below
+      }
+    }
+  }
+  my @need_cache = keys %todo;
+  if (keys %todo > 1) { # try parallel access if available
+    eval { # see code example in LWP::Parallel, not LWP::Parllel::UserAgent (no callbacks here)
+      require LWP::Parallel::UserAgent;
+      my $pua = LWP::Parallel::UserAgent->new();
+      foreach my $uri (keys %todo) {
+	if (my $res = $pua->register(HTTP::Request->new('GET', $uri))) {
+	  $str .= $res->error_as_HTML;
+	}
+      }
+      %todo = (); # because the uris in the response may have changed due to redirects
+      my $entries = $pua->wait();
+      foreach (keys %$entries) {
+	my $uri = $entries->{$_}->request->uri;
+	$data{$uri} = $entries->{$_}->response->content;
+	warn "parallel fetch for $uri";
+      }
+    }
+  }
+  foreach my $uri (keys %todo) { # default operation: synchronous fetching
+    $data{$uri} = GetRaw($uri);
+  }
+  if (GetParam('cache', $UseCache) > 0) {
+    CreateDir($RssDir);
+    foreach my $uri (@need_cache) {
+      WriteStringToFile(GetRssFile($uri), $data{$uri});
+      warn "saved $uri cache";
+    }
+  }
+  return $str, %data;
+}
+
+sub GetRssFile {
+  return $RssDir . '/' . UrlEncode(shift);
 }
 
 sub RssInterwikiTranslateInit {
@@ -3702,6 +3706,12 @@ sub DoMaintain {
 				$q->a({-href=>$NearSite{$site}}, $NearSite{$site})))) unless $data;
       WriteStringToFile("$NearDir/$site", $data);
     }
+  }
+  if (opendir(DIR, $RssDir)) { # cleanup if they should expire anyway
+    foreach (readdir(DIR)) {
+      unlink "$RssDir/$_" if $Now - (stat($_))[9] > $RssCacheHours;
+    }
+    closedir DIR;
   }
   WriteStringToFile($fname, 'Maintenance done at ' . TimeToText($Now));
   ReleaseLock();
