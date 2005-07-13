@@ -1,3 +1,10 @@
+2005-07-14  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ScriptLink): Not only url-encoded "http:" starts a
+	valid URL; any combo of letters followed by a colon (protocol) or
+	any string starting with a slash (relative path) are treated as
+	URL.  This assumes no colons and slashes in page names.
+
 2005-07-13  Alex Schroeder  <alex@gnu.org>
 
 	* modules/dynamic-comments.pl (DynamicCommentsNewGetPageLink):
