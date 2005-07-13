@@ -16,14 +16,17 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: dynamic-comments.pl,v 1.2 2005/07/13 19:25:02 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: dynamic-comments.pl,v 1.3 2005/07/13 19:34:17 as Exp $</p>';
 
 $DefaultStyleSheet .= qq{
 div.commenthidden { display:none; }
 div.commentshown { display:block; background-color:#ffc; padding:1ex; }
 } unless $DefaultStyleSheet =~ /commenthidden/; # mod_perl?
 
-$HtmlHeaders .= qq{
+push(@InitVariables, \&DynamicCommentsAddScript);
+
+sub DynamicCommentsAddScript {
+  $HtmlHeaders .= qq{
 <script type="text/Javascript">
 function togglecomments (id) {
    var elem = document.getElementById(id);
@@ -36,6 +39,7 @@ function togglecomments (id) {
 }
 </script>
 } unless $HtmlHeaders =~ /commenthidden/; # mod_perl?
+}
 
 *DynamicCommentsOldGetPageLink = *GetPageLink;
 *GetPageLink = *DynamicCommentsNewGetPageLink;
