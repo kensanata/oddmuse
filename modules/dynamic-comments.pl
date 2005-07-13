@@ -16,22 +16,22 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: dynamic-comments.pl,v 1.1 2005/07/13 19:16:08 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: dynamic-comments.pl,v 1.2 2005/07/13 19:25:02 as Exp $</p>';
 
 $DefaultStyleSheet .= qq{
-.commenthidden { display:none; }
-.commentshown { display:block; background-color:#ffc; padding:1ex; }
+div.commenthidden { display:none; }
+div.commentshown { display:block; background-color:#ffc; padding:1ex; }
 } unless $DefaultStyleSheet =~ /commenthidden/; # mod_perl?
 
 $HtmlHeaders .= qq{
 <script type="text/Javascript">
-function togglecomments (postid) {
-   var whichpost = document.getElementById(postid);
-   if (whichpost.className=="commentshown") {
-      whichpost.className="commenthidden";
+function togglecomments (id) {
+   var elem = document.getElementById(id);
+   if (elem.className=="commentshown") {
+      elem.className="commenthidden";
    }
    else {
-      whichpost.className="commentshown";
+      elem.className="commentshown";
    }
 }
 </script>
