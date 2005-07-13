@@ -1,3 +1,8 @@
+2005-07-13  Alex Schroeder  <alex@gnu.org>
+
+	* modules/dynamic-comments.pl (DynamicCommentsNewGetPageLink):
+	Offer direct link if no comments exist.
+
 2005-07-11  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetTextArea): Add id to textarea.
