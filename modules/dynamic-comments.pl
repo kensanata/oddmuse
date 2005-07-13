@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: dynamic-comments.pl,v 1.3 2005/07/13 19:34:17 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: dynamic-comments.pl,v 1.4 2005/07/13 19:54:08 as Exp $</p>';
 
 $DefaultStyleSheet .= qq{
 div.commenthidden { display:none; }
@@ -46,14 +46,18 @@ function togglecomments (id) {
 
 sub DynamicCommentsNewGetPageLink {
   my ($id, @rest) = @_;
-  if ($CollectingJournal and $id =~ /^$CommentsPrefix(.*)/) {
-    my $page = $1;
+  if ($CollectingJournal and $id =~ /^$CommentsPrefix/) {
     my $title = $id;
     $title =~ s/_/ /g;
-    return qq{<a href="javascript:togglecomments('$id')">$title</a>}
-      . $q->div({-class=>commenthidden, -id=>$id},
-		PageHtml($page),
-	        DynamicCommentsOldGetPageLink($id, T('Add Comment')));
+    my $page = PageHtml($id);
+    if ($page) {
+      return qq{<a href="javascript:togglecomments('$id')">$title</a>}
+        . $q->div({-class=>commenthidden, -id=>$id},
+                  $page,
+                  DynamicCommentsOldGetPageLink($id, T('Add Comment')));
+    } else {
+      return DynamicCommentsOldGetPageLink($id, T('Add Comment'));
+    }
   } else {
     return DynamicCommentsOldGetPageLink($id, @rest);
   }
