@@ -1,5 +1,8 @@
 2005-07-14  Alex Schroeder  <alex@gnu.org>
 
+	* modules/dynamic-comments.pl (DynamicCommentsNewGetPageLink):
+	Make sure p and div elements are correctly nested.
+
 	* wiki.pl (ScriptLink): Not only url-encoded "http:" starts a
 	valid URL; any combo of letters followed by a colon (protocol) or
 	any string starting with a slash (relative path) are treated as
