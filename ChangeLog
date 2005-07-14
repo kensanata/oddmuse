@@ -1,5 +1,7 @@
 2005-07-14  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (ScriptLink): Use $UrlProtocols for check for URLs.
+
 	* modules/dynamic-comments.pl (DynamicCommentsNewGetPageLink):
 	Make sure p and div elements are correctly nested.
 
