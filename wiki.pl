@@ -334,7 +334,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.567 2005/07/13 22:44:10 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.568 2005/07/14 10:42:29 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -1108,7 +1108,7 @@ sub GetEditLink { # shortcut
 sub ScriptLink {
   my ($action, $text, $class, $name, $title, $accesskey, $nofollow) = @_;
   my %params;
-  if ($action =~ /^[a-z]+\%3a/ or $action =~ /^\%2f/) { # nearlinks and other URLs
+  if ($action =~ /^($UrlProtocols)\%3a/ or $action =~ /^\%2f/) { # nearlinks and other URLs
     $action =~ s/%([0-9a-f][0-9a-f])/chr(hex($1))/ge; # undo urlencode
     $params{-href} = $action;
   } elsif ($UsePathInfo and !$Monolithic and $action !~ /=/) {
