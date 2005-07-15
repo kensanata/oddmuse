@@ -303,17 +303,13 @@ sub clear_pages {
 
 my $str;
 
-use Getopt::Std;
-our($opt_m, $opt_x);
-getopts('mx');
-
-goto markup if $opt_m;
-goto fixme if $opt_x;
+goto $ARGV[0] if $ARGV[0];
 
 $ENV{'REMOTE_ADDR'} = 'test-markup';
 
 # --------------------
 
+oldmajor:
 print '[oldmajor]';
 
 clear_pages();
@@ -336,6 +332,7 @@ test_page(get_page('action=browse id=bla diff=2'), 'five', 'six');
 
 # --------------------
 
+pagenames:
 print '[pagenames]';
 
 clear_pages();
@@ -348,6 +345,7 @@ test_page(get_page('action=history id=.dotfile'), 'older summary', 'some summary
 
 # --------------------
 
+rollback:
 print '[rollback]';
 
 clear_pages();
@@ -419,6 +417,7 @@ xpath_test($rc,
 
 # --------------------
 
+clusters:
 print '[clusters]';
 
 AppendStringToFile($ConfigFile, "\$PageCluster = 'Cluster';\n");
@@ -491,6 +490,7 @@ test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage all=1 showe
 
 # --------------------
 
+rss:
 print '[rss]';
 
 # create simple config file
@@ -651,6 +651,7 @@ test_page(get_page('RSS'), @Test);
 
 # --------------------
 
+redirection:
 print '[redirection]';
 
 update_page('Miles_Davis', 'Featuring [[John Coltrane]]'); # plain link
@@ -673,6 +674,7 @@ test_page(get_page('Jack_DeJohnette'),
 
 # --------------------
 
+recent_changes:
 print '[recent changes]';
 
 $host1 = 'tisch';
@@ -820,6 +822,7 @@ test_page_negative($page, @Negatives);
 
 # --------------------
 
+conflicts:
 print '[conflicts]';
 
 # Using the example files from the diff3 manual
@@ -1016,6 +1019,7 @@ test_page($redirect, map { UrlEncode($_) }
 
 # --------------------
 
+html_cache:
 print '[html cache]';
 
 AppendStringToFile($ConfigFile, "\$WikiLinks = 0;\n");
@@ -1041,6 +1045,7 @@ xpath_test(get_page('CacheTest'), '//a[@class="edit"][@title="Click to edit this
 
 # --------------------
 
+search_and_replace:
 print '[search and replace]';
 
 clear_pages();
@@ -1089,6 +1094,7 @@ xpath_test($page,
 
 # --------------------
 
+banning:
 print '[banning]';
 
 ## Edit banned hosts as a normal user should fail
@@ -1161,6 +1167,7 @@ test_page(update_page('CriminalPage', 'This is about the cosa nostra'), 'cosa no
 
 # --------------------
 
+journal:
 print '[journal]';
 
 ## Create diary pages
@@ -1195,6 +1202,7 @@ test_page(update_page('Summary', "Counting up:\n\n<journal 3 reverse>"), @Test);
 
 # --------------------
 
+revisions:
 print '[revisions]';
 
 clear_pages();
@@ -1273,6 +1281,7 @@ test_page(get_page('action=browse diff=1 revision=4 diffrevision=2 id=KeptRevisi
 
 # --------------------
 
+lock_on_creation:
 print '[lock on creation]';
 
 ## Create a sample page, and test for regular expressions in the output
@@ -1338,6 +1347,7 @@ test_page(update_page('InterMap', "All your edits are blong to us!\n", 'required
 
 # --------------------
 
+despam_module:
 print '[despam module]';
 
 # create simple config file
@@ -1377,6 +1387,7 @@ test_page(get_page('BannedContent'), 'example\\\.com');
 
 # --------------------
 
+near:
 print '[near]';
 
 clear_pages();
@@ -1404,6 +1415,7 @@ xpath_test(get_page('search=alexschroeder'),
 
 # --------------------
 
+links:
 print '[links]';
 
 clear_pages();
@@ -1491,6 +1503,7 @@ test_page($page, @Test2);
 
 # --------------------
 
+link_pattern:
 print '[link pattern]';
 
 clear_pages();
@@ -1624,7 +1637,6 @@ $BracketWiki = 0;
 # --------------------
 
 markup:
-
 print '[markup]';
 
 clear_pages();
@@ -1753,6 +1765,7 @@ $NetworkFile = 0;
 
 # --------------------
 
+usemod_module:
 print '[usemod module]';
 
 do 'modules/usemod.pl';
@@ -1851,6 +1864,7 @@ remove_rule(\&UsemodRule);
 
 # --------------------
 
+usemod_options:
 print '[usemod options]';
 
 # some patterns use options in regular expressions with /o and need to be recompiled
@@ -1888,6 +1902,7 @@ remove_rule(\&UsemodRule);
 
 # --------------------
 
+markup_module:
 print '[markup module]';
 
 do 'modules/usemod.pl';
@@ -1946,6 +1961,7 @@ remove_rule(\&MarkupRule);
 
 # --------------------
 
+setext_module:
 print '[setext module]';
 
 do 'modules/setext.pl';
@@ -1986,6 +2002,7 @@ remove_rule(\&LinkAllRule);
 
 # --------------------
 
+anchors_module:
 print '[anchors module]';
 
 do 'modules/anchors.pl';
@@ -2030,6 +2047,7 @@ remove_rule(\&LinkAllRule);
 
 # --------------------
 
+link_all_module:
 print '[link-all module]';
 
 clear_pages();
@@ -2054,6 +2072,7 @@ remove_module('link-all.pl');
 
 # --------------------
 
+image_module:
 print '[image module]';
 
 do "modules/image.pl";
@@ -2085,6 +2104,7 @@ remove_rule(\&ImageSupportRule);
 
 # --------------------
 
+subscriberc_module:
 print '[subscriberc module]'; # test together with link-all module
 
 add_module('subscriberc.pl');
@@ -2106,6 +2126,7 @@ remove_rule(\&SubscribedRecentChangesRule);
 
 # --------------------
 
+toc_module:
 print '[toc module]';
 
 add_module('toc.pl');
@@ -2161,6 +2182,7 @@ remove_rule(\&TocRule);
 
 # --------------------
 
+comments:
 print '[comments]';
 
 clear_pages();
@@ -2181,6 +2203,7 @@ xpath_test(get_page('Comments_on_Yadda'),
 
 # --------------------
 
+headers:
 print '[headers in various modules]';
 
 clear_pages();
@@ -2265,6 +2288,7 @@ remove_rule(\&PortraitSupportRule);
 
 # --------------------
 
+hr:
 print '[hr in various modules]';
 
 clear_pages();
@@ -2325,6 +2349,7 @@ remove_rule(\&PortraitSupportRule);
 
 # --------------------
 
+calendar:
 print '[calendar]';
 
 clear_pages();
@@ -2368,6 +2393,7 @@ remove_rule(\&CalendarRule);
 
 # --------------------
 
+crumbs:
 print '[crumbs]';
 
 clear_pages();
@@ -2385,6 +2411,7 @@ remove_rule(\&CrumbsRule);
 
 # --------------------
 
+long_table:
 print '[long table]';
 
 clear_pages();
@@ -2401,6 +2428,7 @@ remove_rule(\&TablesLongRule);
 
 # --------------------
 
+tags:
 print '[tags]';
 
 clear_pages();
@@ -2420,6 +2448,7 @@ remove_rule(\&TagsRule);
 
 # --------------------
 
+moin:
 print '[moin]';
 
 clear_pages();
@@ -2465,8 +2494,7 @@ remove_rule(\&MoinRule);
 
 # --------------------
 
-fixme:
-
+sidebar:
 print '[sidebar]'; # + pagelock + forms
 
 clear_pages();
@@ -2481,9 +2509,11 @@ add_module('forms.pl');
 test_page(update_page('SideBar', '<form><h1>mu</h1></form>'), '<div class="sidebar"><p>&lt;form&gt;&lt;h1&gt;mu&lt;/h1&gt;&lt;/form&gt;</p></div>');
 xpath_test(get_page('action=pagelock id=SideBar set=1 pwd=foo'), '//p/text()[string()="Lock for "]/following-sibling::a[@href="http://localhost/wiki.pl/SideBar"][@class="local"][text()="SideBar"]/following-sibling::text()[string()=" created."]');
 test_page(get_page('SideBar'), '<div class="sidebar"><form><h1>mu</h1></form></div>');
-# tricky: should OpenPage be set to "SideBar" or "HomePage" when rendering the sidebar on the homepage?
-# test_page(get_page('HomePage'), '<div class="sidebar"><form><h1>mu</h1></form></div>');
-test_page(get_page('HomePage'), '<div class="sidebar"><p>&lt;form&gt;&lt;h1&gt;mu&lt;/h1&gt;&lt;/form&gt;</p></div>');
+# While rendering the SideBar as part of the HomePage, it should still
+# be considered "locked", and therefore the form should render
+# correctly.
+test_page(get_page('HomePage'), '<div class="sidebar"><form><h1>mu</h1></form></div>');
+# test_page(get_page('HomePage'), '<div class="sidebar"><p>&lt;form&gt;&lt;h1&gt;mu&lt;/h1&gt;&lt;/form&gt;</p></div>');
 
 *GetHeader = *OldSideBarGetHeader;
 remove_rule(\&FormsRule);
