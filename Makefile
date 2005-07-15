@@ -38,7 +38,7 @@ upload-translations: always
 	for f in $(TRANSLATIONS); do \
 		cvs status $$f | grep 'Status: Up-to-date'; \
 		wikiput -u cvs -s update http://www.oddmuse.org/cgi-bin/oddmuse/raw/$$f < $$f; \
-		cgi-upload $$f; \
+		emacswiki-upload-cgi $$f; \
 	done
 
 %-utf8.pl: always
@@ -57,9 +57,6 @@ install:
 
 test:
 	perl test.pl
-
-fix:
-	perl test.pl -x
 
 package-upload: debian-$(VERSION).tar.gz debian-$(VERSION).tar.gz.sig
 	curl -T "{debian-$(VERSION).tar.gz,debian-$(VERSION).tar.gz.sig}" \
