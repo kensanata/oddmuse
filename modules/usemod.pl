@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.20 2005/01/06 11:35:04 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.21 2005/07/15 07:00:43 as Exp $</p>';
 
 $DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /table\.user/; # mod_perl?
 table.user { border-style:solid; border-width:thin; }
@@ -32,7 +32,7 @@ push(@MyRules, \&UsemodRule);
 $RuleOrder{\&UsemodRule} = 100;
 
 $RFCPattern  = 'RFC\\s?(\\d+)';
-$ISBNPattern = 'ISBN:?([0-9- xX]{10,})';
+$ISBNPattern = 'ISBN:?([0-9- xX]{10,14})';
 $HtmlLinks   = 0;   # 1 = <a href="foo">desc</a> is a link
 $RawHtml     = 0;   # 1 = allow <HTML> environment for raw HTML inclusion
 @HtmlTags    = ();  # List of HTML tags.  If not set, determined by $HtmlTags
@@ -214,9 +214,8 @@ sub ISBN {
   $rawprint = $rawnum;
   $rawprint =~ s/ +$//;
   $num =~ s/[- ]//g;
-  if (length($num) != 10) {
-    return "ISBN $rawnum";
-  }
+  $len = length($num);
+  return "ISBN $rawnum" unless $len == 10 or $len == 13 or $len = 14; # be prepared for 2007-01-01
   $first  = $q->a({-href => Ts('http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s', $num)},
 		  "ISBN " . $rawprint);
   $second = $q->a({-href => Ts('http://www.amazon.com/exec/obidos/ISBN=%s', $num)},
