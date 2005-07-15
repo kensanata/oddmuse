@@ -1,3 +1,9 @@
+2005-07-15  Alex Schroeder  <alex@gnu.org>
+
+	* modules/usemod.pl (ISBN): ISBN numbers can be 10-14 digits, in
+	preparation of 2007-01-01 and beyond.
+        http://www.isbn-international.org/en/download/implementation-guidelines-04.pdf
+
 2005-07-14  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (ScriptLink): Use $UrlProtocols for check for URLs.
