@@ -334,7 +334,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.569 2005/07/15 12:02:09 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.570 2005/07/15 12:19:54 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -2884,7 +2884,7 @@ sub DoDownload {
   OpenPage($id) if ValidIdOrDie($id);
   # old files are never stale, current files are stale when the page itself was modified.
   if (GetParam('cache', $UseCache) >= 2 and (GetParam('revision', 0) and $q->http('HTTP_IF_MODIFIED_SINCE')
-					     or $q->http('HTTP_IF_MODIFIED_SINCE') eq gmtime($Page{ts})))) {
+					     or $q->http('HTTP_IF_MODIFIED_SINCE') eq gmtime($Page{ts}))) {
     print $q->header(-status=>'304 NOT MODIFIED');
     return;
   }
