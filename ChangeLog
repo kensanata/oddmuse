@@ -1,3 +1,17 @@
+2005-07-17  Alex Schroeder  <alex@gnu.org>
+
+	See http://www.emacswiki.org/cw-de/WikiModule.
+
+	* wiki.pl (RSS): Accept RSS 2.0 wiki module authorship.
+	(GetRcRss): Use RSS 2.0 with wiki module code.
+	(DoRss): Changed MIME type to application/xml because we're no
+	longer using RDF.
+	(TimeToRFC822): New sub using the POSIX module (which comes
+	bundled with Perl).
+	($RssContributor, $RssPublisher): Removed as they make little
+	sense on a wiki.
+	($RssImageUrl): Default to $LogoUrl.
+
 2005-07-15  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoDownload): Fix download caching.
