@@ -34,32 +34,33 @@ package OddMuse;
 use strict;
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
+use POSIX qw(strftime);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
 # Configuration/constant variables:
 
-use vars qw($RssCacheHours @RcDays $TempDir $LockDir $DataDir $KeepDir
-$PageDir $RcOldFile $IndexFile $BannedContent $NoEditFile $BannedHosts
-$ConfigFile $FullUrl $SiteName $HomePage $LogoUrl $RcDefault $RssDir
-$IndentLimit $RecentTop $RecentLink $EditAllowed $UseDiff $KeepDays
-$KeepMajor $EmbedWiki $BracketText $UseConfig $UseLookup $AdminPass
-$EditPass $NetworkFile $BracketWiki $FreeLinks $WikiLinks
-$SummaryHours $FreeLinkPattern $RCName $RunCGI $ShowEdits $LinkPattern
-$RssExclude $InterLinkPattern $InterSitePattern $MaxPost $UrlPattern
-$UrlProtocols $ImageExtensions $FS $CookieName $SiteBase $StyleSheet
-$NotFoundPg $FooterNote $NewText $EditNote $HttpCharset $UserGotoBar
-$VisitorTime $VisitorFile $RcFile $Visitors %Smilies %SpecialDays
-$InterWikiMoniker $SiteDescription $RssImageUrl $RssPublisher
-$RssContributor $RssRights $BannedCanRead $SurgeProtection
-$SurgeProtectionViews $TopLinkBar $LanguageLimit $SurgeProtectionTime
-$DeletedPage %Languages $InterMap $ValidatorLink @LockOnCreation
-$PermanentAnchorsFile $PermanentAnchors @MyRules %CookieParameters
-$NewComment $StyleSheetPage $ConfigPage @UserGotoBarPages $ScriptName
-@MyMacros $CommentsPrefix @UploadTypes $DefaultStyleSheet
-$AllNetworkFiles $UsePathInfo $UploadAllowed $LastUpdate $PageCluster
-$RssInterwikiTranslate $UseCache $ModuleDir $HtmlHeaders $DebugInfo
-%InvisibleCookieParameters $FullUrlPattern $FreeInterLinkPattern
-@AdminPages @MyAdminCode @MyInitVariables);
+use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir
+$DataDir $KeepDir $PageDir $RcOldFile $IndexFile $BannedContent
+$NoEditFile $BannedHosts $ConfigFile $FullUrl $SiteName $HomePage
+$LogoUrl $RcDefault $RssDir $IndentLimit $RecentTop $RecentLink
+$EditAllowed $UseDiff $KeepDays $KeepMajor $EmbedWiki $BracketText
+$UseConfig $UseLookup $AdminPass $EditPass $NetworkFile $BracketWiki
+$FreeLinks $WikiLinks $SummaryHours $FreeLinkPattern $RCName $RunCGI
+$ShowEdits $LinkPattern $RssExclude $InterLinkPattern $MaxPost
+$UrlPattern $UrlProtocols $ImageExtensions $InterSitePattern $FS
+$CookieName $SiteBase $StyleSheet $NotFoundPg $FooterNote $NewText
+$EditNote $HttpCharset $UserGotoBar $VisitorTime $VisitorFile $RcFile
+$Visitors %Smilies %SpecialDays $InterWikiMoniker $SiteDescription
+$RssImageUrl $RssRights $BannedCanRead $SurgeProtection $TopLinkBar
+$LanguageLimit $SurgeProtectionTime $SurgeProtectionViews $DeletedPage
+%Languages $InterMap $ValidatorLink @LockOnCreation $PermanentAnchors
+$PermanentAnchorsFile @MyRules %CookieParameters @UserGotoBarPages
+$NewComment $StyleSheetPage $ConfigPage $ScriptName @MyMacros
+$CommentsPrefix @UploadTypes $DefaultStyleSheet $AllNetworkFiles
+$UsePathInfo $UploadAllowed $LastUpdate $PageCluster $HtmlHeaders
+$RssInterwikiTranslate $UseCache $ModuleDir $DebugInfo $FullUrlPattern
+%InvisibleCookieParameters $FreeInterLinkPattern @AdminPages
+@MyAdminCode @MyInitVariables);
 
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
@@ -140,10 +141,8 @@ $RecentLink  = 1;               # 1 = link to usernames
 $PageCluster = '';              # name of cluster page, eg. 'Cluster' to enable
 $InterWikiMoniker = '';         # InterWiki prefix for this wiki for RSS
 $SiteDescription  = '';         # RSS Description of this wiki
-$RssImageUrl	  = '';         # URL to image to associate with your RSS feed
-$RssPublisher	  = '';         # Name of RSS publisher
-$RssContributor	  = '';         # List or description of the contributors
-$RssRights	  = '';         # Copyright notice for RSS
+$RssImageUrl	  = $LogoUrl;   # URL to image to associate with your RSS feed
+$RssRights	  = '';         # Copyright notice for RSS, usually an URL to the appropriate text
 $RssExclude       = 'RssExclude'; # name of the page that lists pages to be excluded from the feed
 $RssCacheHours    =  1;         # How many hours to cache remote RSS files
 $UploadAllowed	  = 0;	        # 1 = yes, 0 = administrators only
@@ -334,7 +333,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.570 2005/07/15 12:19:54 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.571 2005/07/17 15:31:03 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -868,6 +867,7 @@ sub RSS {
 	    }
 	  }
 	  my $contributor = $i->{dc}->{contributor};
+	  $contributor = $i->{$wikins}->{username} unless $contributor;
 	  $contributor =~ s/^\s+//;
 	  $contributor =~ s/\s+$//;
 	  $contributor = $i->{$rdfns}->{value} unless $contributor;
@@ -1706,8 +1706,7 @@ sub GetRcText {
   print RcTextItem('title', $SiteName)
     . RcTextItem('description', $SiteDescription)
     . RcTextItem('link', $ScriptName)
-    . RcTextItem('generator', 'OddMuse')
-    . RcTextItem('creator', $RssPublisher)
+    . RcTextItem('generator', 'Oddmuse')
     . RcTextItem('rights', $RssRights);
   # Now call GetRc with some blocks of code as parameters:
   GetRc
@@ -1733,40 +1732,40 @@ sub GetRcRss {
   my $url = QuoteHtml($ScriptName);
   my $diffPrefix = $url . QuoteHtml("?action=browse;diff=1;id=");
   my $historyPrefix = $url . QuoteHtml("?action=history;id=");
-  my $date = TimeToW3($Now);
+  my $date = TimeToRFC822($LastUpdate);
   my @excluded = ();
-  if (GetParam('exclude', 1)) {
+  if (GetParam("exclude", 1)) {
     foreach (split(/\n/, GetPageContent($RssExclude))) {
       if (/^ ([^ ]+)[ \t]*$/) {  # only read lines with one word after one space
 	push(@excluded, $1);
       }
     }
   }
-  require XML::RSS;
-  my $rss = new XML::RSS (version => '1.0', encoding => $HttpCharset);
-  $rss->add_module(
-    prefix => 'wiki',
-    uri	   => 'http://purl.org/rss/1.0/modules/wiki/'
-  );
-  $rss->channel(
-    title	  => QuoteHtml($SiteName),
-    link	  => $url . ($UsePathInfo ? '/' : '?') . UrlEncode($RCName),
-    description	  => QuoteHtml($SiteDescription),
-    dc => {
-      publisher	  => $RssPublisher,
-      contributor => $RssContributor,
-      date	  => $date,
-      rights	  => $RssRights,
-    },
-    wiki => {
-      interwiki	  => $InterWikiMoniker,
-    },
-  );
-  $rss->image(
-    title  => QuoteHtml($SiteName),
-    url	   => $RssImageUrl,
-    link   => $url,
-  );
+  my $limit = GetParam("rsslimit", 15); # Only take the first 15 entries
+  my $count = 0;
+  my $rss = qq{<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+     xmlns:wiki="http://purl.org/rss/1.0/modules/wiki/"
+     xmlns:creativeCommons="http://backend.userland.com/creativeCommonsRssModule">
+<channel>
+<docs>http://blogs.law.harvard.edu/tech/rss</docs>
+};
+  $rss .= "<title>" . QuoteHtml($SiteName) . "</title>\n";
+  $rss .= "<link>" . $url . ($UsePathInfo ? "/" : "?") . UrlEncode($RCName) . "</link>\n";
+  $rss .= "<description>" . QuoteHtml($SiteDescription) . "</description>\n";
+  $rss .= "<pubDate>" . $date. "</pubDate>\n";
+  $rss .= "<lastBuildDate>" . $date . "</lastBuildDate>\n";
+  $rss .= "<generator>Oddmuse</generator>\n";
+  $rss .= "<copyright>" . $RssRights . "</copyright>\n" if $RssRights;
+  $rss .= "<creativeCommons:license>" . $RssLicense . "</creativeCommons:license>\n" if $RssLicense;
+  $rss .= "<wiki:interwiki>" . $InterWikiMoniker . "</wiki:interwiki>\n" if $InterWikiMoniker;
+  if ($RssImageUrl) {
+    $rss .= "<image>\n";
+    $rss .= "<url>" . $RssImageUrl . "</url>\n";
+    $rss .= "<title>" . QuoteHtml($SiteName) . "</title>\n";
+    $rss .= "<link>" . $url . "</link>\n";
+    $rss .= "</image>\n";
+  }
   # Now call GetRc with some blocks of code as parameters:
   GetRc
     # printDailyTear
@@ -1774,43 +1773,42 @@ sub GetRcRss {
     # printRCLine
     sub {
       my ($pagename, $timestamp, $host, $username, $summary, $minor, $revision, $languages, $cluster) = @_;
-      return if grep(/$pagename/, @excluded);
+      return if grep(/$pagename/, @excluded) or $count++ >= $limit;
       my $name = FreeToNormal($pagename);
       $name =~ s/_/ /g;
-      if (GetParam('full', 0)) {
-	$name .= ': ' . $summary;
+      if (GetParam("full", 0)) {
+	$name .= ": " . $summary;
 	$summary = PageHtml($pagename);
       }
-      my $date = TimeToW3($timestamp);
-      my $author = QuoteHtml($username);
-      $author = $host unless $author;
-      my %wiki = ( status      => (1 == $revision) ? 'new' : 'updated',
-		   importance  => $minor ? 'minor' : 'major',
-		   version     => $revision,
-		   history     => $historyPrefix . $pagename, );
-      $wiki{diff} = $diffPrefix . $pagename if $UseDiff and GetParam('diffrclink', 1);
-      $rss->add_item( title	   => QuoteHtml($name),
-		      link	   => $url
-		      . (GetParam('all', 0)
-			 ? '?' . GetPageParameters('browse', $pagename, $revision, $cluster)
-			 : ($UsePathInfo ? '/' : '?') . UrlEncode($pagename)),
-		      description  => QuoteHtml($summary),
-		      dc => { date	  => $date,
-			      contributor => $author, },
-		      wiki => \%wiki, );
+      my $date = TimeToRFC822($timestamp);
+      my $username = QuoteHtml($username);
+      $username = $host unless $username;
+      $rss .= "\n<item>\n";
+      $rss .= "<title>" . QuoteHtml($name) . "</title>\n";
+      $rss .= "<link>" . $url . (GetParam("all", 0)
+				 ? "?" . GetPageParameters("browse", $pagename, $revision, $cluster)
+				 : ($UsePathInfo ? "/" : "?") . UrlEncode($pagename)) . "</link>\n";
+      $rss .= "<description>" . QuoteHtml($summary) . "</description>\n";
+      $rss .= "<pubDate>" . $date . "</pubDate>\n";
+      $rss .= "<comments>" . $url . ($UsePathInfo ? "/" : "?") . $CommentsPrefix . $name . "</comments>\n"
+	if $CommentsPrefix and $pagename !~ /^$CommentsPrefix/;
+      $rss .= "<wiki:username>" . $username . "</wiki:username>\n";
+      $rss .= "<wiki:status>" . (1 == $revision ? "new" : "updated") . "</wiki:status>\n";
+      $rss .= "<wiki:importance>" . ($minor ? "minor" : "major") . "</wiki:importance>\n";
+      $rss .= "<wiki:version>" . $revision . "</wiki:version>\n";
+      $rss .= "<wiki:history>" . $historyPrefix . $pagename . "</wiki:history>\n";
+      $rss .= "<wiki:diff>" . $diffPrefix . $pagename . "</wiki:diff>\n" if $UseDiff and GetParam("diffrclink", 1);
+      $rss .= "</item>\n";
     },
     # RC Lines
     @_;
-  my $limit = GetParam('rsslimit', 15); # Only take the first 15 entries
-  if ($limit ne 'all' and $#{$rss->{items}} > $limit) {
-    @{$rss->{items}} = @{$rss->{items}}[0..$limit-1];
-  }
-  return $rss->as_string;
+  $rss .= "</channel>\n</rss>\n";
+  return $rss;
 }
 
 sub DoRss {
-  print GetHttpHeader('application/rss+xml');
-  DoRc(\&GetRcRss);
+  print GetHttpHeader('application/xml');
+   DoRc(\&GetRcRss);
 }
 
 # == Random ==
@@ -2754,6 +2752,10 @@ sub TimeToW3 { # Complete date plus hours and minutes: YYYY-MM-DDThh:mmTZD (eg 1
   # When times are expressed in UTC, use a special UTC designator ("Z").
   my ($sec, $min, $hour, $mday, $mon, $year) = gmtime(shift);
   return sprintf('%4d-%02d-%02dT%02d:%02dZ', $year+1900, $mon+1, $mday, $hour, $min);
+}
+
+sub TimeToRFC822 { 
+  return strftime "%a, %d %b %Y %T GMT", gmtime(shift); #   Sat, 07 Sep 2002 00:00:01 GMT
 }
 
 sub GetHiddenValue {
