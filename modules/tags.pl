@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tags.pl,v 1.1 2005/04/16 09:01:23 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tags.pl,v 1.2 2005/07/19 12:03:18 as Exp $</p>';
 
 push(@MyRules, \&TagsRule);
 
@@ -29,11 +29,11 @@ sub TagsRule {
       or m/\G(\[\[tag:$FreeLinkPattern\|([^]|]+)\]\])/cog) {
     # [[tag:Free Link]], [[tag:Free Link|alt text]]
     my ($tag, $text) = ($2, $3);
-    return Clean($q->a({-href=>$TagUrl . UrlEncode($tag),
-			-class=>'outside tag',
-			-title=>T('Tag'),
-			-rel=>'tag'
-		       }, $text || $tag));
+    return $q->a({-href=>$TagUrl . UrlEncode($tag),
+		  -class=>'outside tag',
+		  -title=>T('Tag'),
+		  -rel=>'tag'
+		 }, $text || $tag);
   }
   return undef;
 }
