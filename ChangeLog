@@ -1,5 +1,7 @@
 2005-07-19  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (GetRcRss): Fixed some URL encoding issues.
+
 	* modules/tags.pl (TagsRule): Remove Clean() call around returned
 	text.
 
