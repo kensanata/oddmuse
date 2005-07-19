@@ -333,7 +333,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.571 2005/07/17 15:31:03 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.572 2005/07/19 14:02:18 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -1790,14 +1790,15 @@ sub GetRcRss {
 				 : ($UsePathInfo ? "/" : "?") . UrlEncode($pagename)) . "</link>\n";
       $rss .= "<description>" . QuoteHtml($summary) . "</description>\n";
       $rss .= "<pubDate>" . $date . "</pubDate>\n";
-      $rss .= "<comments>" . $url . ($UsePathInfo ? "/" : "?") . $CommentsPrefix . $name . "</comments>\n"
-	if $CommentsPrefix and $pagename !~ /^$CommentsPrefix/;
+      $rss .= "<comments>" . $url . ($UsePathInfo ? "/" : "?") . $CommentsPrefix . UrlEncode($pagename)
+	. "</comments>\n" if $CommentsPrefix and $pagename !~ /^$CommentsPrefix/;
       $rss .= "<wiki:username>" . $username . "</wiki:username>\n";
       $rss .= "<wiki:status>" . (1 == $revision ? "new" : "updated") . "</wiki:status>\n";
       $rss .= "<wiki:importance>" . ($minor ? "minor" : "major") . "</wiki:importance>\n";
       $rss .= "<wiki:version>" . $revision . "</wiki:version>\n";
-      $rss .= "<wiki:history>" . $historyPrefix . $pagename . "</wiki:history>\n";
-      $rss .= "<wiki:diff>" . $diffPrefix . $pagename . "</wiki:diff>\n" if $UseDiff and GetParam("diffrclink", 1);
+      $rss .= "<wiki:history>" . $historyPrefix . UrlEncode($pagename) . "</wiki:history>\n";
+      $rss .= "<wiki:diff>" . $diffPrefix . UrlEncode($pagename) . "</wiki:diff>\n"
+	if $UseDiff and GetParam("diffrclink", 1);
       $rss .= "</item>\n";
     },
     # RC Lines
