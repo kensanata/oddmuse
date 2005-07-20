@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.6 2005/07/20 20:02:19 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.7 2005/07/20 20:05:51 as Exp $</p>';
 
 $Action{journal} = \&DoJournalRss;
 
@@ -67,5 +67,5 @@ sub DoJournalRss {
   # default to showedit=1 because most of these pages will have both
   # minor *and* major changes.
   SetParam('showedit', GetParam('showedit', 1));
-  print GetHttpHeader('application/rss+xml') . GetRcRss(@fullrc);
+  print GetHttpHeader('application/xml') . GetRcRss(@fullrc);
 }
