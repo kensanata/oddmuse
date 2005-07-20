@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.5 2004/10/10 20:21:24 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.6 2005/07/20 20:02:19 as Exp $</p>';
 
 $Action{journal} = \&DoJournalRss;
 
@@ -45,7 +45,7 @@ sub DoJournalRss {
   # to open every single page, because the meta-data ordinarily
   # available in the rc.log file is not available to us.  This is why
   # we observe the rsslimit parameter.  Without it, we would have to
-  # open *all* date pages.  This yields to the unfortunate situation
+  # open *all* date pages.  This leads to the unfortunate situation
   # that GetRc can remove some more rows and then the end result will
   # be smaller than rsslimit.  There is no alternative, however,
   # unless we copy the entire GetRc code.  We could try to do better
