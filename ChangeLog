@@ -1,3 +1,8 @@
+2005-07-20  Alex Schroeder  <alex@gnu.org>
+
+	* modules/journal-rss.pl (DoJournalRss): Switch MIME type to
+	application/xml now that we produce RSS 2.0.
+
 2005-07-19  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetRcRss): Fixed some URL encoding issues.
