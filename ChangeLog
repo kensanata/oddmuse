@@ -1,3 +1,8 @@
+2005-07-21  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetRcRss): A test for $limit eq 'all' got lost in the
+	transition to RSS 2.0 so I added it back.
+
 2005-07-20  Alex Schroeder  <alex@gnu.org>
 
 	* modules/journal-rss.pl (DoJournalRss): Switch MIME type to
