@@ -185,6 +185,7 @@ td.history { border-style:none; }
 span.result { font-size:larger; }
 span.info { font-size:smaller; font-style:italic; }
 div.rss { background-color:#EEF; }
+div.search { background-color:#F1F5FF }
 div.sister { float:left; margin-right:1ex; background-color:#FFF; }
 div.sister p { margin-top:0; }
 div.sister img { border:none; }
@@ -333,7 +334,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.572 2005/07/19 14:02:18 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.573 2005/07/21 09:56:05 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -489,8 +490,16 @@ sub ApplyRules {
 	print RSS($3 ? $3 : 15, split(/\s+/, UnquoteHtml($4)));
 	eval { local $SIG{__DIE__}; binmode(STDOUT, ":raw"); };
 	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
-	pos = $oldpos;
-	# restore \G after call to RSS which uses the LWP module (for older copies of the module?)
+	pos = $oldpos; # restore \G after call to RSS which uses the LWP module
+      } elsif (/\G(&lt;search "(.*?)"&gt;)/cgis) {
+	# <search "regexp">
+	Clean(CloseHtmlEnvironments());
+	Dirty($1);
+	my $oldpos = pos;
+	print $q->start_div({-class=>'search'});
+	SearchTitleAndBody($2, \&PrintSearchResult, HighlightRegex($2));
+	print $q->end_div;
+	pos = $oldpos; # restore \G after searching
       } elsif ($bol && m/\G(&lt;&lt;&lt;&lt;&lt;&lt;&lt; )/cg) {
 	my ($str, $count, $limit, $oldpos) = ($1, 0, 100, pos);
 	while (m/\G(.*\n)/cg and $count++ < $limit) {
@@ -1773,7 +1782,7 @@ sub GetRcRss {
     # printRCLine
     sub {
       my ($pagename, $timestamp, $host, $username, $summary, $minor, $revision, $languages, $cluster) = @_;
-      return if grep(/$pagename/, @excluded) or $count++ >= $limit;
+      return if grep(/$pagename/, @excluded) or ($limit ne 'all' and $count++ >= $limit);
       my $name = FreeToNormal($pagename);
       $name =~ s/_/ /g;
       if (GetParam("full", 0)) {
@@ -1786,12 +1795,13 @@ sub GetRcRss {
       $rss .= "\n<item>\n";
       $rss .= "<title>" . QuoteHtml($name) . "</title>\n";
       $rss .= "<link>" . $url . (GetParam("all", 0)
-				 ? "?" . GetPageParameters("browse", $pagename, $revision, $cluster)
-				 : ($UsePathInfo ? "/" : "?") . UrlEncode($pagename)) . "</link>\n";
+        ? "?" . GetPageParameters("browse", $pagename, $revision, $cluster)
+	: ($UsePathInfo ? "/" : "?") . UrlEncode($pagename)) . "</link>\n";
       $rss .= "<description>" . QuoteHtml($summary) . "</description>\n";
       $rss .= "<pubDate>" . $date . "</pubDate>\n";
-      $rss .= "<comments>" . $url . ($UsePathInfo ? "/" : "?") . $CommentsPrefix . UrlEncode($pagename)
-	. "</comments>\n" if $CommentsPrefix and $pagename !~ /^$CommentsPrefix/;
+      $rss .= "<comments>" . $url . ($UsePathInfo ? "/" : "?")
+	. $CommentsPrefix . UrlEncode($pagename) . "</comments>\n"
+	  if $CommentsPrefix and $pagename !~ /^$CommentsPrefix/;
       $rss .= "<wiki:username>" . $username . "</wiki:username>\n";
       $rss .= "<wiki:status>" . (1 == $revision ? "new" : "updated") . "</wiki:status>\n";
       $rss .= "<wiki:importance>" . ($minor ? "minor" : "major") . "</wiki:importance>\n";
