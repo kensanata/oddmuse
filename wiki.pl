@@ -237,7 +237,7 @@ sub DoWikiRequest {
 
 sub ReportError { # fatal!
   my ($errmsg, $status, $log) = @_;
-  print GetHttpHeader('text/html', 1, $status); # no caching
+  print GetHttpHeader('text/html', 'nocache', $status);
   print $q->start_html, $q->h2($errmsg), $q->end_html;
   map { ReleaseLockDir($_); } keys %Locks;
   WriteStringToFile("$TempDir/error", $q->start_html . $q->h1("$status $errmsg")
@@ -334,7 +334,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.574 2005/07/22 13:46:38 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.575 2005/07/22 16:18:17 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -1245,6 +1245,7 @@ sub GetId {
 sub DoBrowseRequest {
   # We can use the error message as the HTTP error code
   ReportError(Ts('CGI Internal error: %s',$q->cgi_error), $q->cgi_error) if $q->cgi_error;
+  print $q->header(-status=>'304 NOT MODIFIED') and return if PageFresh(); # return value is ignored
   my $id = GetId();
   my $action = lc(GetParam('action', '')); # script?action=foo;id=bar
   $action = 'download' if GetParam('download', '') and not $action; # script/download/id
@@ -1331,12 +1332,6 @@ sub BrowseResolvedPage {
 
 sub BrowsePage {
   my ($id, $raw, $comment, $status) = @_;
-  if ($q->http('HTTP_IF_MODIFIED_SINCE')
-      and $q->http('HTTP_IF_MODIFIED_SINCE') eq gmtime($LastUpdate)
-      and GetParam('cache', $UseCache) >= 2) {
-    print $q->header(-status=>'304 NOT MODIFIED');
-    return;
-  }
   OpenPage($id);
   my ($text, $revision) = GetTextRevision(GetParam('revision', ''));
   # handle a single-level redirect
@@ -1404,10 +1399,9 @@ sub ReBrowsePage {
 sub GetRedirectPage {
   my ($action, $name) = @_;
   my ($url, $html);
-  # shortcut if we only need the raw text: no redirect.
   if (GetParam('raw', 0)) {
     $html = GetHttpHeader('text/plain');
-    $html .= Ts('Please go on to %s.', $action);
+    $html .= Ts('Please go on to %s.', $action); # no redirect
     return $html;
   }
   if ($UsePathInfo and $action !~ /=/) {
@@ -1416,14 +1410,27 @@ sub GetRedirectPage {
     $url = $ScriptName . '?' . $action;
   }
   my $nameLink = $q->a({-href=>$url}, $name);
-  # NOTE: do NOT use -method (does not work with old CGI.pm versions)
-  # Thanks to Daniel Neri for fixing this problem.
   my %headers = (-uri=>$url);
   my $cookie = Cookie();
   if ($cookie) {
     $headers{-cookie} = $cookie;
   }
   return $q->redirect(%headers);
+}
+
+sub PageFresh { # pages can depend on other pages (ie. last update), admin status, and css
+  return 1 if $q->http('HTTP_IF_NONE_MATCH') and GetParam('cache', $UseCache) >= 2
+    and $q->http('HTTP_IF_NONE_MATCH') eq PageEtag();
+}
+
+sub PageEtag {
+  my ($changed, $visible, %params) = CookieData();
+  return join($FS, $LastUpdate, sort(values %params));
+}
+
+sub FileFresh { # old files are never stale, current files are stale when the page was modified
+  return 1 if $q->http('HTTP_IF_NONE_MATCH') and GetParam('cache', $UseCache) >= 2
+    and (GetParam('revision', 0) or $q->http('HTTP_IF_NONE_MATCH') eq $Page{ts});
 }
 
 # == Recent changes and RSS
@@ -1836,7 +1843,7 @@ sub DoRandom {
 sub DoHistory {
   my $id = shift;
   ValidIdOrDie($id);
-  print GetHeader('',QuoteHtml(Ts('History of %s', $id)), '');
+  print GetHeader('',QuoteHtml(Ts('History of %s', $id)));
   OpenPage($id);
   my $row = 0;
   my @html = (GetHistoryLine($id, \%Page, $row++));
@@ -1894,7 +1901,7 @@ sub RollbackPossible {
 
 sub DoRollback {
   my $to = GetParam('to', 0);
-  print GetHeader('', T('Rolling back changes'), '');
+  print GetHeader('', T('Rolling back changes'));
   return unless UserIsAdminOrError();
   ReportError(T('Missing target for rollback.'), '400 BAD REQUEST') unless $to;
   ReportError(T('Target for rollback is too far back.'), '400 BAD REQUEST') unless RollbackPossible($to);
@@ -1943,7 +1950,7 @@ sub DoAdminPage {
     &$sub($id, \@menu, \@rest);
     $Message .= $q->p($@) if $@; # since this happens before GetHeader is called, the message will be shown
   }
-  print GetHeader('', T('Administration'), ''),
+  print GetHeader('', T('Administration')),
     $q->div({-class=>'content admin'}, $q->p(T('Actions:')), $q->ul($q->li(\@menu)),
 	    $q->p(T('Important pages:')) . $q->ul(map { my $name = $_;
 							$name =~ s/_/ /g;
@@ -2026,9 +2033,9 @@ sub GetHeader {
   my ($id, $title, $oldId, $nocache, $status) = @_;
   my $embed = GetParam('embed', $EmbedWiki);
   my $altText = T('[Home]');
-  my $result = GetHttpHeader('text/html', $nocache ? $Now : 0, $status);
+  my $result = GetHttpHeader('text/html', $nocache, $status);
   $title =~ s/_/ /g;	 # Display as spaces
-  if ($oldId ne '') {
+  if ($oldId) {
     $Message .= $q->p('(' . Ts('redirected from %s', GetEditLink($oldId, $oldId)) . ')');
   }
   $result .= GetHtmlHeader("$SiteName: $title", $id);
@@ -2062,11 +2069,10 @@ sub GetHeader {
 sub GetHttpHeader {
   return if $PrintedHeader;
   $PrintedHeader = 1;
-  my ($type, $modified, $status) = @_;
-  $modified = $LastUpdate unless $modified;
-  my $time = $modified ? gmtime($modified) : gmtime;
+  my ($type, $etag, $status) = @_;
+  $etag = PageEtag() unless $etag;
   my %headers = (-cache_control=>($UseCache < 0 ? 'no-cache' : 'max-age=10'));
-  $headers{-last_modified} = $time if GetParam('cache', $UseCache) >= 2;
+  $headers{-etag} = $etag if GetParam('cache', $UseCache) >= 2;
   if ($HttpCharset ne '') {
     $headers{-type} = "$type; charset=$HttpCharset";
   } else {
@@ -2082,7 +2088,7 @@ sub GetHttpHeader {
   return $q->header(%headers);
 }
 
-sub Cookie {
+sub CookieData {
   my ($changed, $visible, %params);
   foreach my $key (keys %CookieParameters) {
     my $default = $CookieParameters{$key};
@@ -2090,12 +2096,17 @@ sub Cookie {
     $params{$key} = $value  if $value ne $default;
     # The  cookie is  considered to  have changed  under  he following
     # condition: If the value was already set, and the new value is not
-    # the same as the old value, or  if there was no old alue, and the
+    # the same as the old value, or  if there was no old value, and the
     # new value is not the default.
     my $change = (defined $OldCookie{$key} ? ($value ne $OldCookie{$key}) : ($value ne $default));
     $visible = 1 if $change and not $InvisibleCookieParameters{$key};
     $changed = 1 if $change; # note if any parameter changed and needs storing
   }
+  return $changed, $visible, %params;
+}
+
+sub Cookie {
+  my ($changed, $visible, %params) = CookieData();
   if ($changed) {
     my $cookie = join($FS, %params);
     my $result = $q->cookie(-name=>$CookieName,
@@ -2288,11 +2299,8 @@ sub GetSearchForm {
 
 sub GetValidatorLink {
   my $uri = UrlEncode($q->self_url);
-  return $q->a({-href => 'http://validator.w3.org/check?uri=' . $uri},
-	       T('Validate HTML'))
-    . ' '
-    . $q->a({-href => 'http://jigsaw.w3.org/css-validator/validator?uri=' . $uri},
-	    T('Validate CSS'));
+  return $q->a({-href => 'http://validator.w3.org/check?uri=' . $uri}, T('Validate HTML')) . ' '
+       . $q->a({-href => 'http://jigsaw.w3.org/css-validator/validator?uri=' . $uri}, T('Validate CSS'));
 }
 
 sub GetGotoBar {
@@ -2716,7 +2724,7 @@ sub ForceReleaseLock {
 
 sub DoUnlock {
   my $message = '';
-  print GetHeader('', T('Unlock Wiki'), '');
+  print GetHeader('', T('Unlock Wiki'));
   print $q->p(T('This operation may take several seconds...'));
   for my $lock (@KnownLocks) {
     if (ForceReleaseLock($lock)) {
@@ -2760,8 +2768,7 @@ sub TimeToText {
 }
 
 sub TimeToW3 { # Complete date plus hours and minutes: YYYY-MM-DDThh:mmTZD (eg 1997-07-16T19:20+01:00)
-  # When times are expressed in UTC, use a special UTC designator ("Z").
-  my ($sec, $min, $hour, $mday, $mon, $year) = gmtime(shift);
+  my ($sec, $min, $hour, $mday, $mon, $year) = gmtime(shift); # use special UTC designator ("Z")
   return sprintf('%4d-%02d-%02dT%02d:%02dZ', $year+1900, $mon+1, $mday, $hour, $min);
 }
 
@@ -2842,7 +2849,7 @@ sub DoEdit {
   } else {
     $header = Ts('Editing %s', $id);
   }
-  print GetHeader('', QuoteHtml($header), ''), $q->start_div({-class=>'content edit'});;
+  print GetHeader('', QuoteHtml($header)), $q->start_div({-class=>'content edit'});;
   if ($preview and not $upload) {
     print $q->start_div({-class=>'preview'});
     print $q->h2(T('Preview:'));
@@ -2895,12 +2902,7 @@ sub GetUpload {
 sub DoDownload {
   my $id = shift;
   OpenPage($id) if ValidIdOrDie($id);
-  # old files are never stale, current files are stale when the page itself was modified.
-  if (GetParam('cache', $UseCache) >= 2 and (GetParam('revision', 0) and $q->http('HTTP_IF_MODIFIED_SINCE')
-					     or $q->http('HTTP_IF_MODIFIED_SINCE') eq gmtime($Page{ts}))) {
-    print $q->header(-status=>'304 NOT MODIFIED');
-    return;
-  }
+  print $q->header(-status=>'304 NOT MODIFIED') and return if FileFresh(); # FileFresh needs an OpenPage!
   my ($text, $revision) = GetTextRevision(GetParam('revision', '')); # maybe revision reset!
   my $ts = $Page{ts};
   if (my ($type) = TextIsFile($text)) {
@@ -2921,7 +2923,7 @@ sub DoDownload {
 # == Passwords ==
 
 sub DoPassword {
-  print GetHeader('',T('Password'), ''), $q->start_div({-class=>'content password'});
+  print GetHeader('',T('Password')), $q->start_div({-class=>'content password'});
   print $q->p(T('Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.'));
   if (UserIsAdmin()) {
     print $q->p(T('You are currently an administrator on this site.'));
@@ -3040,7 +3042,7 @@ sub DoIndex {
   if ($raw) {
     print GetHttpHeader('text/plain');
   } else {
-    print GetHeader('', T('Index of all pages'), ''), $q->start_div({-class=>'content index'});
+    print GetHeader('', T('Index of all pages')), $q->start_div({-class=>'content index'});
     my @menu = ();
     if (%PermanentAnchors or %NearSource) { # only show when there is something to show
       if ($pages) {
@@ -3142,7 +3144,7 @@ sub DoSearch {
     return;
   }
   if ($replacement) {
-    print GetHeader('', QuoteHtml(Ts('Replaced: %s', "$string -> $replacement")), ''),
+    print GetHeader('', QuoteHtml(Ts('Replaced: %s', "$string -> $replacement"))),
       $q->start_div({-class=>'content replacement'});
     return  if (!UserIsAdminOrError());
     Replace($string,$replacement);
@@ -3152,7 +3154,7 @@ sub DoSearch {
     print RcTextItem('title', Ts('Search for: %s', $string)), RcTextItem('date', TimeToText($Now)),
       RcTextItem('link', $q->url(-path_info=>1, -query=>1)), "\n" if GetParam('context',1);
   } else {
-    print GetHeader('', QuoteHtml(Ts('Search for: %s', $string)), ''),
+    print GetHeader('', QuoteHtml(Ts('Search for: %s', $string))),
       $q->start_div({-class=>'content search'});
     $ReplaceForm = UserIsAdmin();
     NearInit();
@@ -3366,7 +3368,7 @@ sub Replace {
 sub DoPrintAllPages {
   return  if (!UserIsAdminOrError());
   $Monolithic = 1; # changes ScriptLink
-  print GetHeader('', T('Complete Content'), '')
+  print GetHeader('', T('Complete Content'))
     . $q->p(Ts('The main page is %s.', $q->a({-href=>'#' . $HomePage}, $HomePage)));
   print $q->p($q->b(Ts('(for %s)', GetParam('lang', 0)))) if GetParam('lang', 0);
   PrintAllPages(0, 0, AllPagesList());
@@ -3645,7 +3647,7 @@ sub UpdateDiffs {
 # == Maintenance ==
 
 sub DoMaintain {
-  print GetHeader('', T('Run Maintenance'), ''), $q->start_div({-class=>'content maintain'});
+  print GetHeader('', T('Run Maintenance')), $q->start_div({-class=>'content maintain'});
   my $fname = "$DataDir/maintain";
   if (!UserIsAdmin()) {
     if ((-f $fname) && ((-M $fname) < 0.5)) {
@@ -3756,7 +3758,7 @@ sub DeletePage { # Delete must be done inside locks.
 # == Page locking ==
 
 sub DoEditLock {
-  print GetHeader('', T('Set or Remove global edit lock'), '');
+  print GetHeader('', T('Set or Remove global edit lock'));
   return  if (!UserIsAdminOrError());
   my $fname = "$NoEditFile";
   if (GetParam("set", 1)) {
@@ -3774,7 +3776,7 @@ sub DoEditLock {
 }
 
 sub DoPageLock {
-  print GetHeader('', T('Set or Remove page edit lock'), '');
+  print GetHeader('', T('Set or Remove page edit lock'));
   # Consider allowing page lock/unlock at editor level?
   return  if (!UserIsAdminOrError());
   my $id = GetParam('id', '');
@@ -3800,7 +3802,7 @@ sub DoPageLock {
 # == Version ==
 
 sub DoShowVersion {
-  print GetHeader('', T('Displaying Wiki Version'), ''), $q->start_div({-class=>'content version'});
+  print GetHeader('', T('Displaying Wiki Version')), $q->start_div({-class=>'content version'});
   print $WikiDescription;
   if (GetParam('dependencies', 0)) {
     print $q->p($q->server_software()),
@@ -3910,7 +3912,7 @@ sub WriteRecentVisitors {
 }
 
 sub DoShowVisitors { # no caching of this page!
-  print GetHeader('', T('Recent Visitors'), '', 1), $q->start_div({-class=>'content visitors'});
+  print GetHeader('', T('Recent Visitors'), '', 'nocache'), $q->start_div({-class=>'content visitors'});
   ReadRecentVisitors();
   print '<p><ul>';
   foreach my $name (sort {@{$RecentVisitors{$b}}[0] <=> @{$RecentVisitors{$a}}[0]} (keys %RecentVisitors)) {
