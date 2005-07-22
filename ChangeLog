@@ -1,5 +1,28 @@
 2005-07-22  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (PageFresh, FileFresh): New, use entity tags instead of
+	if-modified-since.
+	(PageEtag): New, produce entity tag based on LastUpdate and CookieData.
+	(DoDownload): Use FileFresh.
+	(BrowsePage): Cache using code moved to DoBrowseRequest.
+	(DoBrowseRequest): Use PageFresh and return cashed pages for all
+	actions if possible.
+	(GetHttpHeader): Generate entity tag (ETag) for caching instead of
+	last-modified header.
+	(CookieData): New, used by PageEtag.
+	(Cookie): Moved some code to CookieData.
+
+	(GetHeader): Pass the third parameter on to GetGttpHeader.
+	(ReportError): Make clear that we don't want to cache this
+	response in our call to GetHeader using the third parameter in the
+	call to GetHeader.
+	(DoHistory): Refactoring; remove third parameter in call to
+	GetHeader since it was always the empty string.
+	(DoRollback, DoAdminPage): Ditto.
+	(DoUnlock, DoEdit, DoPassword, DoIndex, DoSearch): Ditto.
+	(DoSearch, DoPrintAllPages, DoMaintain, DoEditLock): Ditto.
+	(DoPageLock, DoShowVersion, DoShowVisitors): Ditto.
+
 	* modules/usemod.pl (ISBN): Changed B&N ISBN search URL.
 
 	* wiki.pl (@MyMaintenance): New option.
