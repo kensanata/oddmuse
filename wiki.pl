@@ -60,7 +60,7 @@ $CommentsPrefix @UploadTypes $DefaultStyleSheet $AllNetworkFiles
 $UsePathInfo $UploadAllowed $LastUpdate $PageCluster $HtmlHeaders
 $RssInterwikiTranslate $UseCache $ModuleDir $DebugInfo $FullUrlPattern
 %InvisibleCookieParameters $FreeInterLinkPattern @AdminPages
-@MyAdminCode @MyInitVariables);
+@MyAdminCode @MyInitVariables @MyMaintenance);
 
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
@@ -334,7 +334,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.573 2005/07/21 09:56:05 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.574 2005/07/22 13:46:38 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -3725,6 +3725,7 @@ sub DoMaintain {
     }
     closedir DIR;
   }
+  foreach my $sub (@MyMaintenance) { &$sub; }
   WriteStringToFile($fname, 'Maintenance done at ' . TimeToText($Now));
   ReleaseLock();
   print $q->p(T('Main lock released.')), $q->end_div();
