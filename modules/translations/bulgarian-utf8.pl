@@ -18,7 +18,7 @@
 #
 # This translation was updated for Oddmuse 1.354.
 #
-$ModulesDescription .= '<p>$Id: bulgarian-utf8.pl,v 1.3 2005/07/02 00:02:02 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: bulgarian-utf8.pl,v 1.4 2005/07/24 17:35:05 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Не е разрешено четенето: блокиран потребител, IP адрес или мрежа.
@@ -510,6 +510,12 @@ Rename %s to:
 
 Cannot highlight the language %s.
 
+some action
+
+was here
+
+and read
+
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
 
 The match parameter is missing.
@@ -543,6 +549,10 @@ Revert to revision %1: %2
 Marked as %s.
 
 Cannot find unspammed revision.
+
+Add Comment
+
+javascript:insertcommentarea('$id', '%1', '%2')
 
 Footnotes:
 
@@ -696,8 +706,8 @@ The translation is outdated.
 
 The page does not exist.
 
-http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
-http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
+http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
+
 http://www.amazon.com/exec/obidos/ISBN=%s
 http://www.amazon.com/exec/obidos/ISBN=%s
 alternate

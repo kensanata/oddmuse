@@ -1,7 +1,7 @@
 # UTF-8 encoded German translation file for use with Oddmuse
 #
 # Copyright (c) 2003  Karl Loncarek <karl@loncarek.de>
-# Copyright (c) 2003, 2004  Alex Schröder <alex@emacswiki.org>
+# Copyright (c) 2003, 2004, 2005  Alex Schröder <alex@emacswiki.org>
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.3 2005/07/02 00:03:28 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.4 2005/07/24 17:35:05 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
@@ -49,7 +49,7 @@ image
 download
 
 CGI Internal error: %s
-
+Interner CGI Fehler: %s
 Invalid action parameter %s
 Ungültiger action Parameter: %s
 Invalid URL.
@@ -508,6 +508,12 @@ Rename %s to:
 %s umbenennen zu:
 Cannot highlight the language %s.
 Die Sprache %s kann von diesem Modul nicht eingefärbt werden.
+some action
+Spezialaktion
+was here
+war hier
+and read
+und las
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
 Um einen Kalender zu produzieren fehlt entweder cal(1), Date::Calc(3) oder Date::Pcalc(3).
 The match parameter is missing.
@@ -523,7 +529,7 @@ Kalender %s
 Clustermap
 
 Pages without a Cluster
-
+Seiten ohne Cluster
 Comments on 
 Kommentare zu 
 Comment on 
@@ -542,6 +548,10 @@ Marked as %s.
 Mit %s markiert. 
 Cannot find unspammed revision.
 Es gibt keine Version ohne Spam.
+Add Comment
+Kommentar hinzufügen
+javascript:insertcommentarea('$id', '%1', '%2')
+
 Footnotes:
 Fussnoten:
 Could not find %1.html template in %2
@@ -694,8 +704,8 @@ The translation is outdated.
 Die Übersetzung ist veraltet.
 The page does not exist.
 Die Seite existiert nicht.
-http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
-http://www.kelkoo.de/shopbot/search.jsp?from=shopbot&catPath=de%2Fbook&catId=100801&title=&author=&isbn=%s&maxprice=&x=36&y=9
+http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
+
 http://www.amazon.com/exec/obidos/ISBN=%s
 http://www.amazon.de/exec/obidos/ISBN=%s
 alternate

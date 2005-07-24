@@ -18,8 +18,7 @@
 #
 # This translation was last checked for Oddmuse version 1.296.
 #
-$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.9 2005/07/04 23:09:17 as Exp $</p>';
-
+$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.10 2005/07/24 17:35:05 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Accès interdit&nbsp;: votre serveur, adresse IP ou nom d'utilisateur a été bloqué.
@@ -511,6 +510,12 @@ Rename %s to:
 Renommer %s en :
 Cannot highlight the language %s.
 Impossible de surligner la langue %s.
+some action
+
+was here
+
+and read
+
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
 cal(1), Date::Calc(3) ou Date::Pcalc(3) manque pour pouvoir créer le calendrier.
 The match parameter is missing.
@@ -545,6 +550,10 @@ Marked as %s.
 Marqué comme %s.
 Cannot find unspammed revision.
 Impossible de trouver une version sans texte indésirable.
+Add Comment
+
+javascript:insertcommentarea('$id', '%1', '%2')
+
 Footnotes:
 Note de pied de page :
 Could not find %1.html template in %2
@@ -585,129 +594,128 @@ An account was created for %s.
 Un compte a été créé pour %s
 Login to %s
 Se connecter sur %s
-
 Username and/or password are incorrect.
-Le nom d'utilisateur et/ou le mot de passe sont incorrects.
+
 Logged in as %s.
-Connecté comme %s.
+
 Logout of %s
-Déconnexion de %s
+
 Logout of %s?
-Se déconnecter de %s?
+
 Logged out of %s
-Déconnecté de %s
+
 You are now logged out.
-Vous êtes maintenant déconnecté.
+
 Register a new account
-Enregistrer un nouveau compte.
+
 Login
-Se connecter
+
 Logout
-Se déconnecter
+
 Clearing Cache
-Nettoyage du cache.
+
 Done.
-effectué.
+
 Generating Link Database
-Création de la base de donnée de liens
+
 The 404 handler extension requires the link data extension (links.pl).
-l'extension "404 handler" nécessite une base de donnée de liens (links.pl).
+
 LocalMap
-CarteLocale
+
 No page id for action localmap
-Aune page id pour actionner la carte locale
+
 Requested page %s does not exist
-La page demandée %s n'existe pas
+
 Local Map for %s
-CarteLocale pour %s
+
 view
-voir
+
 Orphan List
-Liste des pages orphelines
+
 Trail: 
-Trace :
+
 None
-Aucune
-Type
+
 Type
 Permalink to "%s"
-Lien permanent vers
-Portrait
+Permalink to "%s"
+
 Portrait
 You did not answer correctly.
-Vous n'avez pas répondu correctement
+You did not answer correctly.
+
 All Referrers
-Tous les Introducteurs
+
 Referrers
-Introducteurs
+
 Rebuild index for searching
-Reconstruire l'index pour la recherche
+
 Rebuilding Index
-Reconstruction de l'Index
+
 Search::FreeText is not available on this system.
-Chercher::Le TexteLibre n'est pas disponible sur ce système.
+
 Rebuilding index not done.
-Reconstruction index non effectuée.
+
 (Rebuilding the index can only be done once every 12 hours.)
-(La reconstruction de l'index ne peut être faite qu'une fois toutes les 12 heures.)
+
 Search term missing.
-Terme de la recherche manquant
+
 Result pages: 
-Pages de résultats :
+
 (%s results)
-(%s résultats)
+
 Slideshow:%s
-Diaporama : %s
+
 Static Copy
-Copie Statique
+
 Back to %s
-Retour à %s
-Tag
+
 Tag
 Alternatively, use one of the following templates:
-Alternativement, utilisez un des modèles suivants :
+Alternatively, use one of the following templates:
+
 Thread: %s
-Fil: %s
+
 ID parameter is missing.
-Le paramètre ID est manquant. 
+
 Thread %s does not exist.
-Le fil %s n'existe pas.
+
 Page %s does not contain a thread.
-La page %s ne contient pas de fil.
+
 Add
-Ajoutez
+
 URL parameter is missing.
-Le paramètre URL est manquant.
+
 Add to %s thread
-Ajoutez %s au fil
+
 Below:
-En-dessous :
+
 URL:
-URL :
+
 Name:
-Nom :
+
 Failed to remove %s
-Impossible de supprimer %s
+
 Contents
-Contenus :
+
 This page is a translation of %s. 
-Cette page est une traduction de %s.
+
 The translation is up to date.
-La traduction est à jour
+
 The translation is outdated.
-La traduction n'est pas à jour.
+
 The page does not exist.
-La page n'existe pas.
-http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
+
+http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
-http://www.amazon.fr/exec/obidos/ISBN=%s
+
 alternate
-Alternative
+
 http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 
 search
-Recherche
+
 Blog
-Blog
+
 END_OF_TRANSLATION

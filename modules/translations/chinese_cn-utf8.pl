@@ -23,7 +23,7 @@
 #by wctang <wctang@csie.nctu.edu.tw> and using the tool cnmap
 #(http://search.cpan.org/~qjzhou/Encode-CNMap-0.32/bin/cnmap) by Qing-Jie Zhou <qjzhou@hotmail.com>.
 #
-$ModulesDescription .= '<p>$Id: chinese_cn-utf8.pl,v 1.3 2005/07/04 12:22:13 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: chinese_cn-utf8.pl,v 1.4 2005/07/24 17:35:05 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 禁止读取：使用者、ip 或是网路已被禁止连线。
@@ -515,6 +515,12 @@ Rename %s to:
 将 %s 重命名为:
 Cannot highlight the language %s.
 无法高亮显示语言 %s 。
+some action
+
+was here
+
+and read
+
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
 缺少下列之一的工具以致无法产生日历: cal(1), Date::Calc(3), 或 Date::Pcalc(3)
 The match parameter is missing.
@@ -549,6 +555,10 @@ Marked as %s.
 标记为 %s 。
 Cannot find unspammed revision.
 找不到未被 spam 的版本。
+Add Comment
+
+javascript:insertcommentarea('$id', '%1', '%2')
+
 Footnotes:
 注解：
 Could not find %1.html template in %2
@@ -701,7 +711,7 @@ The translation is outdated.
 本页翻译已过期。
 The page does not exist.
 页面不存在。
-http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
+http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
 
