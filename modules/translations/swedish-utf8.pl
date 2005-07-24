@@ -21,8 +21,8 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.11 2005/07/24 17:35:05 as Exp $</p>';
-%Translate = split('\n',<<END_OF_TRANSLATION);
+$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.12 2005/07/24 18:31:54 as Exp $</p>';
+%Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Läsning inte tillåten: användare, ip eller nätverk är blockerat.
 Could not create %s
@@ -554,8 +554,6 @@ Markerad som %s.
 Cannot find unspammed revision.
 Kan inte finna version utan skräptexter
 Add Comment
-
-javascript:insertcommentarea('$id', '%1', '%2')
 
 Footnotes:
 Fotnoter:
