@@ -18,7 +18,7 @@
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: big-brother.pl,v 1.3 2005/07/24 16:54:09 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: big-brother.pl,v 1.4 2005/07/24 16:56:12 as Exp $</p>';
 
 my %BigBrotherData;
 
@@ -98,7 +98,7 @@ sub DoBigBrother { # no caching of this page!
     my @times = sort keys %entries;
     $latest{$_} = $times[-1];
   }
-  foreach my $name (sort {$latest{$a} <=> $latest{$b}} keys %latest) {
+  foreach my $name (sort {$latest{$b} <=> $latest{$a}} keys %latest) {
     my $when = CalcTimeSince($Now - $latest{$name});
     my $error = ValidId($name);
     my $who = $name && !$error && $name !~ /\./ ? GetPageLink($name) : T('Anonymous');
