@@ -16,8 +16,8 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.4 2005/07/24 17:35:05 as Exp $</p>';
-%Translate = split('\n',<<END_OF_TRANSLATION);
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.5 2005/07/24 18:31:54 as Exp $</p>';
+%Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
 Could not create %s
@@ -273,19 +273,19 @@ Erzwungene Aufhebung der Sperre von %s.
 No unlock required.
 Aufhebung der Sperre nicht notwendig.
 %s hours ago
-%s Stunden vorher
+vor %s Stunden
 1 hour ago
-eine Stunde vorher
+vor einer Stunde
 %s minutes ago
-%s Minuten vorher
+vor %s Minuten
 1 minute ago
-eine Minute vorher
+vor einer Minute
 %s seconds ago
-%s Sekunden vorher
+vor %s Sekunden
 1 second ago
-eine Sekunde vorher
+vor einer Sekunde
 just now
-genau jetzt
+gerade eben
 Editing Denied
 Bearbeitung verweigert
 Editing not allowed: user, ip, or network is blocked.
@@ -550,8 +550,6 @@ Cannot find unspammed revision.
 Es gibt keine Version ohne Spam.
 Add Comment
 Kommentar hinzufügen
-javascript:insertcommentarea('$id', '%1', '%2')
-
 Footnotes:
 Fussnoten:
 Could not find %1.html template in %2

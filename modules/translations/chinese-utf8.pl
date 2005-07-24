@@ -17,8 +17,8 @@
 #
 # This translation was last checked for Oddmuse version 1.504.
 #
-$ModulesDescription .= '<p>$Id: chinese-utf8.pl,v 1.4 2005/07/24 17:35:05 as Exp $</p>';
-%Translate = split('\n',<<END_OF_TRANSLATION);
+$ModulesDescription .= '<p>$Id: chinese-utf8.pl,v 1.5 2005/07/24 18:31:54 as Exp $</p>';
+%Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 禁止讀取：使用者、ip 或是網路已被禁止連線。
 Could not create %s
@@ -550,8 +550,6 @@ Marked as %s.
 Cannot find unspammed revision.
 找不到未被 spam 的版本。
 Add Comment
-
-javascript:insertcommentarea('$id', '%1', '%2')
 
 Footnotes:
 註解：
