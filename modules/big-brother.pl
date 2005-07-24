@@ -18,7 +18,7 @@
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: big-brother.pl,v 1.1 2005/07/24 15:28:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: big-brother.pl,v 1.2 2005/07/24 16:41:14 as Exp $</p>';
 
 my %BigBrotherData;
 
@@ -27,9 +27,6 @@ my %BigBrotherData;
 #       AddRecentVisitor($name);
 # 	WriteRecentVisitors();
 # 	if ($SurgeProtection and DelayRequired($name))
-
-sub IsDownload {
-}
 
 sub AddRecentVisitor {
   my ($name) = shift;
@@ -56,11 +53,11 @@ sub AddRecentVisitor {
 
 sub DelayRequired {
   my $name = shift;
+  return 0 unless $BigBrotherData{$name};
   my %entries = %{$BigBrotherData{$name}};
   my @times = sort keys %entries;
-  my $ts = $times[0]; # oldest
-  return 0 if not $ts;
-  return 0 if ($Now - $ts) > $SurgeProtectionTime;
+  return 0 if not $times[$SurgeProtectionViews - 1]; # all slots must be filled
+  return 0 if ($Now - $times[0]) > $SurgeProtectionTime;
   return 1;
 }
 
@@ -82,7 +79,8 @@ sub WriteRecentVisitors {
     my @times = sort keys %entries;
     if (not $times[$SurgeProtectionViews - 1]
 	or $times[$SurgeProtectionViews - 1] >= $limit) { # newest is recent enough
-      $data .=  join($FS, $name, map { $_, $entries{$_}} @times[-$SurgeProtectionViews .. -1]) . "\n";
+      @times = @times[-$SurgeProtectionViews .. -1] if $#times > $SurgeProtectionViews;
+      $data .=  join($FS, $name, map { $_, $entries{$_}} @times) . "\n";
     }
   }
   WriteStringToFile($VisitorFile, $data);
