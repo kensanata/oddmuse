@@ -21,7 +21,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.10 2005/07/02 00:03:28 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.11 2005/07/24 17:35:05 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Läsning inte tillåten: användare, ip eller nätverk är blockerat.
@@ -513,6 +513,12 @@ Rename %s to:
 Byt namn på %s till:
 Cannot highlight the language %s.
 Kan ej markera språket %s.
+some action
+
+was here
+
+and read
+
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
 Saknar en av cal(1), Date::Calc(3), eller Date::Pcalc(3) för att kunna skapa kalendern.
 The match parameter is missing.
@@ -547,6 +553,10 @@ Marked as %s.
 Markerad som %s.
 Cannot find unspammed revision.
 Kan inte finna version utan skräptexter
+Add Comment
+
+javascript:insertcommentarea('$id', '%1', '%2')
+
 Footnotes:
 Fotnoter:
 Could not find %1.html template in %2
@@ -699,8 +709,8 @@ The translation is outdated.
 Denna översättning är föråldrad
 The page does not exist.
 Sidan finns inte.
-http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
-http://www.adlibris.se/shop/product.asp?isbn=%s
+http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
+
 http://www.amazon.com/exec/obidos/ISBN=%s
 
 alternate

@@ -15,7 +15,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: italian-utf8.pl,v 1.3 2005/07/02 00:03:28 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: italian-utf8.pl,v 1.4 2005/07/24 17:35:05 as Exp $</p>';
 %Translate = split('\n',<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lettura non consentita: l'utente, l'IP o la rete risultano bloccati.
@@ -507,6 +507,12 @@ Rename %s to:
 Rinomina %s in:
 Cannot highlight the language %s.
 Impossibile evidenziare il linguaggio %s.
+some action
+
+was here
+
+and read
+
 Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
 Uno fra cal(1), Date::Calc(3) o Date::Pcalc(3) deve essere presente per produrre il calendario.
 The match parameter is missing.
@@ -541,6 +547,10 @@ Marked as %s.
 Marcato come %s.
 Cannot find unspammed revision.
 Impossibile trovare una revisione priva di spam.
+Add Comment
+
+javascript:insertcommentarea('$id', '%1', '%2')
+
 Footnotes:
 Note:
 Could not find %1.html template in %2
@@ -693,7 +703,7 @@ The translation is outdated.
 La traduzione è obsoleta.
 The page does not exist.
 La pagina non esiste.
-http://shop.barnesandnoble.com/bookSearch/isbnInquiry.asp?isbn=%s
+http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
 
