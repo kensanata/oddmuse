@@ -1,8 +1,16 @@
+2005-07-25  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoUnlock): Don't cache.
+	(DoIndex): Add pattern parameter.
+
 2005-07-24  Alex Schroeder  <alex@gnu.org>
 
 	* modules/big-brother.pl (IsDownload): Removed.
 	(DelayRequired): Fix array reference.
 	(WriteRecentVisitors): Fix truncation.
+	(DoBigBrother): Don't show names with dots in them -- ie. IP
+	numbers and host names.
+	(DoBigBrother): Reverse sort order.
 
 2005-07-22  Alex Schroeder  <alex@gnu.org>
 
