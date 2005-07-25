@@ -2,6 +2,7 @@
 # wikiupload --- Put a wiki page on an Oddmuse wiki
 # 
 # Copyright (C)  2004  Jorgen Schaefer <forcer@forcix.cx>
+# Copyright (C)  2005  Alex Schroeder <alex@emacswiki.org>
 # 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,6 +18,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
+
+# $Id: wikiupload,v 1.3 2005/07/25 12:04:02 as Exp $
 
 import mimetypes, httplib, urllib, re, urlparse, sys, getopt
 from time import time
@@ -89,7 +92,10 @@ def wikiput(where, filename,
         print "Uploading", filename, get_content_type(filename)
         print response.status, response.reason
         print response.read()
-        raise RuntimeError, "We weren't redirected - something went wrong!"
+	if response.status == 415:
+	    print "Check your MIME types in one of these files:"
+	    print mimetypes.knownfiles
+	sys.exit(1)
 
 def encode_multipart_formdata(fields, files):
     """
