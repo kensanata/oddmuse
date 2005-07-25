@@ -2,6 +2,7 @@
 
 	* wiki.pl (DoUnlock): Don't cache.
 	(DoIndex): Add pattern parameter.
+	(DoIndex): Added pattern form.
 
 2005-07-24  Alex Schroeder  <alex@gnu.org>
 
