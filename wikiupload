@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: wikiupload,v 1.3 2005/07/25 12:04:02 as Exp $
+# $Id: wikiupload,v 1.4 2005/07/25 12:33:03 as Exp $
 
 import mimetypes, httplib, urllib, re, urlparse, sys, getopt
 from time import time
@@ -28,11 +28,12 @@ def main():
     summary="upload"
     username=""
     password=""
+    type=""
     recent_edit="off"
     try:
         opts, args = getopt.getopt(sys.argv[1:],
                                    "ht:s:u:p:m:",
-                                   ["help", "summary=", "user=", "password=", "minor-edit="])
+                                   ["help", "summary=", "user=", "password=", "type=", "minor-edit="])
     except getopt.GetoptError:
         usage(sys.stderr)
         sys.exit(1)
@@ -48,10 +49,12 @@ def main():
             username = arg
         if opt in ("-p", "--password"):
             password = arg
+        if opt in ("-t", "--type"):
+            type = arg
         if opt in ("-m", "--minor-edit"):
             recent_edit="on"
     wikiput(args[1], args[0], summary=summary, username=username, password=password,
-	    recent_edit=recent_edit)
+	    type=type, recent_edit=recent_edit)
 
 def usage(out):
     """Display the usage information for this script.
@@ -69,10 +72,11 @@ def usage(out):
               " -s --summary=S     The summary line (default: upload)\n"
 	      " -u --user=U        The username to use (default: none)\n"
 	      " -p --password=P    The password to use (default: none)\n"
+	      " -t --type=T        The MIME type to use (default: guessed)\n"
               " -m --minor-edit=B  Whether this is a minor edit (default: no)\n")
 
 def wikiput(where, filename,
-            summary="upload", username="", password="", recent_edit="no"):
+            summary="upload", username="", password="", type="", recent_edit="no"):
     (host, path, title) = parse_wiki_location(where)
     content = open(filename, "r").read()
     files = [['file', filename, content]]
@@ -81,7 +85,7 @@ def wikiput(where, filename,
               [ 'username', username ],
               [ 'pwd', password ],
               [ 'recent_edit', recent_edit ]]
-    (content_type, body) = encode_multipart_formdata(params, files);
+    (content_type, body) = encode_multipart_formdata(params, type, files);
     headers = {'Content-Type': content_type}
     conn = httplib.HTTPConnection(host)
     conn.request("POST", path, body, headers)
@@ -89,7 +93,7 @@ def wikiput(where, filename,
     data = response.read()
     conn.close()
     if response.status != 302:
-        print "Uploading", filename, get_content_type(filename)
+        print "Uploading", filename, get_content_type(filename, type)
         print response.status, response.reason
         print response.read()
 	if response.status == 415:
@@ -97,7 +101,7 @@ def wikiput(where, filename,
 	    print mimetypes.knownfiles
 	sys.exit(1)
 
-def encode_multipart_formdata(fields, files):
+def encode_multipart_formdata(fields, type, files):
     """
     fields is a sequence of (name, value) elements for regular form fields.
     files is a sequence of (name, filename, value) elements for data to be uploaded as files.
@@ -114,7 +118,7 @@ def encode_multipart_formdata(fields, files):
     for (key, filename, value) in files:
         L.append('--' + BOUNDARY)
         L.append('Content-Disposition: form-data; name="%s"; filename="%s"' % (key, filename))
-        L.append('Content-Type: %s' % get_content_type(filename))
+        L.append('Content-Type: %s' % get_content_type(filename, type))
         L.append('')
         L.append(value)
     L.append('--' + BOUNDARY + '--')
@@ -123,8 +127,8 @@ def encode_multipart_formdata(fields, files):
     content_type = 'multipart/form-data; boundary=%s' % BOUNDARY
     return content_type, body
 
-def get_content_type(filename):
-    return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
+def get_content_type(filename, type):
+    return type or mimetypes.guess_type(filename)[0] or 'application/octet-stream'
 
 def parse_wiki_location(where):
     """Return a tuple of host, path and page name for the wiki page
