@@ -334,7 +334,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.575 2005/07/22 16:18:17 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.576 2005/07/25 12:41:05 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -2724,7 +2724,7 @@ sub ForceReleaseLock {
 
 sub DoUnlock {
   my $message = '';
-  print GetHeader('', T('Unlock Wiki'));
+  print GetHeader('', T('Unlock Wiki'), undef, 'nocache');
   print $q->p(T('This operation may take several seconds...'));
   for my $lock (@KnownLocks) {
     if (ForceReleaseLock($lock)) {
@@ -3033,11 +3033,13 @@ sub DoIndex {
   my $pages = GetParam('pages', 1);
   my $anchors = GetParam('permanentanchors', 1);
   my $near = GetParam('near', 0);
+  my $pattern = GetParam('pattern', '');
   NearInit() if not $NearSiteInit; # init always to get the menu right
   ReadPermanentAnchors() if $PermanentAnchors and not $PermanentAnchorsInit;
   push(@pages, AllPagesList()) if $pages;
   push(@pages, keys %PermanentAnchors) if $anchors;
   push(@pages, keys %NearSource) if $near;
+  @pages = grep /$pattern/i, @pages if $pattern;
   @pages = sort @pages;
   if ($raw) {
     print GetHttpHeader('text/plain');
