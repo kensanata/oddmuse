@@ -334,7 +334,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.578 2005/07/26 07:16:49 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.579 2005/07/26 07:20:58 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -3075,7 +3075,7 @@ sub DoIndex {
     }
     push(@menu, $q->b(Ts('(for %s)', GetParam('lang', '')))) if GetParam('lang', '');
     push(@menu, $q->br(), GetHiddenValue('action', 'index'), T('Filter:'),
-	 $q->textfield(-name=>'pattern', -size=>20), $q->submit(-value=>T('Go!')));
+	 $q->textfield(-name=>'match', -size=>20), $q->submit(-value=>T('Go!')));
     print GetFormStart(undef, 'get', 'index'), $q->p(@menu), $q->end_form();
   }
   print $q->h2(Ts('%s pages found.', ($#pages + 1))), $q->start_p() unless $raw;
