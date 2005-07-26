@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: subscriberc.pl,v 1.3 2004/07/14 14:54:32 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: subscriberc.pl,v 1.4 2005/07/26 10:21:16 as Exp $</p>';
 
 push(@MyRules, \&SubscribedRecentChangesRule);
 
@@ -50,10 +50,9 @@ sub Subscribe {
       $_;
     }
   } split(/\s*,\s*/, $categories);
-  my $regexp;
-  $regexp .= '^(' . join('|', @pageslist) . ")\$" if @pageslist;
-  $regexp .= '|' if @pageslist and @catlist;
-  $regexp .= '(' . join('|', @catlist) . ')' if @catlist;
+  my ($titlere, $bodyre);
+  $titlere .= '^(' . join('|', @pageslist) . ")\$" if @pageslist;
+  $bodyre .= '\b(' . join('|', @catlist) . ')\b' if @catlist;
   pos = $oldpos;
   my $html = 'My subscribed ';
   return $html unless @pageslist or @catlist;
@@ -62,5 +61,5 @@ sub Subscribe {
   $html .= ', ' if @pageslist and @catlist;
   $html .= 'categories: ' . join(', ', map { s/_/ /g; $_; } @catlist)
     if @catlist;
-  return ScriptLink('action=rc;rcfilteronly=' . $regexp, $html);
+  return ScriptLink("action=rc;rcfilteronly=$bodyre;match=$titlere", $html);
 }
