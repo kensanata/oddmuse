@@ -1,6 +1,9 @@
 2005-07-26  Alex Schroeder  <alex@gnu.org>
 
-	* wiki.pl (DoIndex): Changed pattern parameter to match, so that
+	* wiki.pl (RcHeader, GetFilterForm, GetRc): Add page title filter
+	using the match parameter.  Make the form GET instead of POST.
+
+	(DoIndex): Changed pattern parameter to match, so that
 	it matches the parameter used in the calendar extension.
 	($Visitors, $VisitorTime): Removed.
 	(%Action): Removed visitors action.
@@ -8,6 +11,7 @@
 	(DoSurgeProtection, WriteRecentVisitors): Simplified: No longer
 	take $Visitors into account.
 	(DoShowVisitors): Removed.
+	
 	(RSS, GetRcHtml): Replaced &ndash; with &#8211; for XML conformance.
 	(PageHtml): Accept size limit and error message; return error
 	message instead of HTML if the raw text of the page is too big.
