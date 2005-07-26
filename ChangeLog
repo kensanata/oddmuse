@@ -1,3 +1,14 @@
+2005-07-26  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoIndex): Changed pattern parameter to match, so that
+	it matches the parameter used in the calendar extension.
+	($Visitors, $VisitorTime): Removed.
+	(%Action): Removed visitors action.
+	(DoAdminPage): Removed recent visitors item.
+	(DoSurgeProtection, WriteRecentVisitors): Simplified: No longer
+	take $Visitors into account.
+	(DoShowVisitors): Removed.
+
 2005-07-25  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoUnlock): Don't cache.
