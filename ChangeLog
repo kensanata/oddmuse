@@ -8,6 +8,10 @@
 	(DoSurgeProtection, WriteRecentVisitors): Simplified: No longer
 	take $Visitors into account.
 	(DoShowVisitors): Removed.
+	(RSS, GetRcHtml): Replaced &ndash; with &#8211; for XML conformance.
+	(PageHtml): Accept size limit and error message; return error
+	message instead of HTML if the raw text of the page is too big.
+	(GetRcRss): Pass a limit and a message to PageHtml.
 
 2005-07-25  Alex Schroeder  <alex@gnu.org>
 
