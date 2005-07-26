@@ -332,7 +332,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.580 2005/07/26 08:05:08 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.581 2005/07/26 08:42:21 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -883,7 +883,7 @@ sub RSS {
 	    if ($description =~ /</) {
 	      $line .= $q->div({-class=>'description'}, $description);
 	    } else {
-	      $line .= $q->span({class=>'dash'}, ' &ndash; ') . $q->strong({-class=>'description'}, $description);
+	      $line .= $q->span({class=>'dash'}, ' &#8211; ') . $q->strong({-class=>'description'}, $description);
 	    }
 	  }
 	  while ($lines{$date}) {
@@ -1193,11 +1193,12 @@ sub PrintPageDiff { # print diff for open page
 }
 
 sub PageHtml {
-  my $id = shift; # $id may no longer exist when using action=rss;full=1
+  my ($id, $limit, $error) = @_;
   my $result = '';
   local *STDOUT;
-  open(STDOUT, '>', \$result) or die "Can't open memory file: $!";
   OpenPage($id);
+  return $error if $limit and length($Page{text}) > $limit;
+  open(STDOUT, '>', \$result) or die "Can't open memory file: $!";
   PrintPageDiff();
   PrintPageHtml();
   return $result;
@@ -1672,7 +1673,7 @@ sub GetRcHtml {
 	my($pagename, $timestamp, $host, $username, $summary, $minor, $revision, $languages, $cluster) = @_;
 	$host = QuoteHtml($host);
 	my $author = GetAuthorLink($host, $username);
-	my $sum = $q->span({class=>'dash'}, ' &ndash; ') . $q->strong(QuoteHtml($summary)) if $summary;
+	my $sum = $q->span({class=>'dash'}, ' &#8211; ') . $q->strong(QuoteHtml($summary)) if $summary;
 	my $edit = $q->em($tEdit)  if $minor;
 	my $lang = '[' . join(', ', @{$languages}) . ']'  if @{$languages};
 	my ($pagelink, $history, $diff, $rollback);
@@ -1792,7 +1793,7 @@ sub GetRcRss {
       $name =~ s/_/ /g;
       if (GetParam("full", 0)) {
 	$name .= ": " . $summary;
-	$summary = PageHtml($pagename);
+	$summary = PageHtml($pagename, 50*1024, T('This page is too big to send over RSS.'));
       }
       my $date = TimeToRFC822($timestamp);
       my $username = QuoteHtml($username);
