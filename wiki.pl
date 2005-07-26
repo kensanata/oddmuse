@@ -49,11 +49,11 @@ $FreeLinks $WikiLinks $SummaryHours $FreeLinkPattern $RCName $RunCGI
 $ShowEdits $LinkPattern $RssExclude $InterLinkPattern $MaxPost
 $UrlPattern $UrlProtocols $ImageExtensions $InterSitePattern $FS
 $CookieName $SiteBase $StyleSheet $NotFoundPg $FooterNote $NewText
-$EditNote $HttpCharset $UserGotoBar $VisitorTime $VisitorFile $RcFile
-$Visitors %Smilies %SpecialDays $InterWikiMoniker $SiteDescription
-$RssImageUrl $RssRights $BannedCanRead $SurgeProtection $TopLinkBar
-$LanguageLimit $SurgeProtectionTime $SurgeProtectionViews $DeletedPage
-%Languages $InterMap $ValidatorLink @LockOnCreation $PermanentAnchors
+$EditNote $HttpCharset $UserGotoBar $VisitorFile $RcFile %Smilies
+%SpecialDays $InterWikiMoniker $SiteDescription $RssImageUrl
+$RssRights $BannedCanRead $SurgeProtection $TopLinkBar $LanguageLimit
+$SurgeProtectionTime $SurgeProtectionViews $DeletedPage %Languages
+$InterMap $ValidatorLink @LockOnCreation $PermanentAnchors
 $PermanentAnchorsFile @MyRules %CookieParameters @UserGotoBarPages
 $NewComment $StyleSheetPage $ConfigPage $ScriptName @MyMacros
 $CommentsPrefix @UploadTypes $DefaultStyleSheet $AllNetworkFiles
@@ -123,8 +123,6 @@ $RssInterwikiTranslate = 'RssInterwikiTranslate'; # name of RSS interwiki transl
 $ENV{PATH}   = '/usr/bin/';     # Path used to find 'diff'
 $UseDiff     = 1;	        # 1 = use diff
 $SurgeProtection      = 1;	# 1 = protect against leeches
-$Visitors	      = 1;	# 1 = maintain list of recent visitors
-$VisitorTime	      = 7200;	# Timespan to remember visitors in seconds
 $SurgeProtectionTime  = 20;	# Size of the protected window in seconds
 $SurgeProtectionViews = 10;	# How many page views to allow in this window
 $DeletedPage = 'DeletedPage';	# Pages starting with this can be deleted
@@ -222,8 +220,8 @@ div.near p { margin-top:0; }
 	    edit => \&DoEdit,		    version => \&DoShowVersion,
 	    download => \&DoDownload,	    rss => \&DoRss,
 	    unlock => \&DoUnlock,	    password => \&DoPassword,
-	    index => \&DoIndex,		    visitors => \&DoShowVisitors,
-	    all => \&DoPrintAllPages,	    admin => \&DoAdminPage, );
+	    index => \&DoIndex,		    admin => \&DoAdminPage,
+	    all => \&DoPrintAllPages,	    );
 
 # The 'main' program, called at the end of this script file (aka. as handler)
 sub DoWikiRequest {
@@ -334,7 +332,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.579 2005/07/26 07:20:58 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.580 2005/07/26 08:05:08 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -1927,7 +1925,6 @@ sub DoAdminPage {
   my @menu = (ScriptLink('action=index', T('Index of all pages')),
 	      ScriptLink('action=version', T('Wiki Version')),
 	      ScriptLink('action=unlock', T('Unlock Wiki')),
-	      ScriptLink('action=visitors', T('Recent Visitors')),
 	      ScriptLink('action=password', T('Password')),
 	      ScriptLink('action=maintain', T('Run maintenance')));
   if (UserIsAdmin()) {
@@ -3033,13 +3030,13 @@ sub DoIndex {
   my $pages = GetParam('pages', 1);
   my $anchors = GetParam('permanentanchors', 1);
   my $near = GetParam('near', 0);
-  my $pattern = GetParam('match', '');
+  my $match = GetParam('match', '');
   NearInit() if not $NearSiteInit; # init always to get the menu right
   ReadPermanentAnchors() if $PermanentAnchors and not $PermanentAnchorsInit;
   push(@pages, AllPagesList()) if $pages;
   push(@pages, keys %PermanentAnchors) if $anchors;
   push(@pages, keys %NearSource) if $near;
-  @pages = grep /$pattern/i, @pages if $pattern;
+  @pages = grep /$match/i, @pages if $match;
   @pages = sort @pages;
   if ($raw) {
     print GetHttpHeader('text/plain');
@@ -3048,28 +3045,28 @@ sub DoIndex {
     my @menu = ();
     if (%PermanentAnchors or %NearSource) { # only show when there is something to show
       if ($pages) {
-	push(@menu, ScriptLink("action=index;pages=0;permanentanchors=$anchors;near=$near",
+	push(@menu, ScriptLink("action=index;pages=0;permanentanchors=$anchors;near=$near;match=$match",
 			       T('Without normal pages')));
       } else {
-	push(@menu, ScriptLink("action=index;pages=1;permanentanchors=$anchors;near=$near",
+	push(@menu, ScriptLink("action=index;pages=1;permanentanchors=$anchors;near=$near;match=$match",
 			       T('Include normal pages')));
       }
     }
     if (%PermanentAnchors) { # only show when there is something to show
       if ($anchors) {
-	push(@menu, ScriptLink("action=index;pages=$pages;permanentanchors=0;near=$near",
+	push(@menu, ScriptLink("action=index;pages=$pages;permanentanchors=0;near=$near;match=$match",
 			       T('Without permanent anchors')));
       } else {
-	push(@menu, ScriptLink("action=index;pages=$pages;permanentanchors=1;near=$near",
+	push(@menu, ScriptLink("action=index;pages=$pages;permanentanchors=1;near=$near;match=$match",
 			       T('Include permanent anchors')));
       }
     }
     if (%NearSource) { # only show when there is something to show
       if ($near) {
-	push(@menu, ScriptLink("action=index;pages=$pages;permanentanchors=$anchors;near=0",
+	push(@menu, ScriptLink("action=index;pages=$pages;permanentanchors=$anchors;near=0;match=$match",
 			       T('Without near pages')));
       } else {
-	push(@menu, ScriptLink("action=index;pages=$pages;permanentanchors=$anchors;near=1",
+	push(@menu, ScriptLink("action=index;pages=$pages;permanentanchors=$anchors;near=1;match=$match",
 			       T('Include near pages')));
       }
     }
@@ -3836,29 +3833,27 @@ sub DoShowVersion {
   PrintFooter();
 }
 
-# == Maintaining a list of recent visitors plus surge protection ==
+# == Surge Protection ==
 
 sub DoSurgeProtection {
-  if ($SurgeProtection or $Visitors) {
-    my $name = GetParam('username','');
-    $name = $ENV{'REMOTE_ADDR'} if not $name and $SurgeProtection;
-    if ($name) {
-      ReadRecentVisitors();
-      AddRecentVisitor($name);
-      if (RequestLockDir('visitors')) { # not fatal
-	WriteRecentVisitors();
-	ReleaseLockDir('visitors');
-	if ($SurgeProtection and DelayRequired($name)) {
-	  ReportError(Ts('Too many connections by %s',$name)
-		      . ': ' . Tss('Please do not fetch more than %1 pages in %2 seconds.',
-				   $SurgeProtectionViews, $SurgeProtectionTime),
-		      '503 SERVICE UNAVAILABLE');
-	}
-      } elsif ($SurgeProtection and GetParam('action', '') ne 'unlock') {
-	ReportError(Ts('Could not get %s lock', 'visitors')
-		    . ': ' . Ts('Check whether the web server can create the directory %s and whether it can create files in it.', $TempDir), '503 SERVICE UNAVAILABLE');
-      }
+  return unless $SurgeProtection;
+  my $name = GetParam('username','');
+  $name = $ENV{'REMOTE_ADDR'} if not $name and $SurgeProtection;
+  return unless $name;
+  ReadRecentVisitors();
+  AddRecentVisitor($name);
+  if (RequestLockDir('visitors')) { # not fatal
+    WriteRecentVisitors();
+    ReleaseLockDir('visitors');
+    if (DelayRequired($name)) {
+      ReportError(Ts('Too many connections by %s',$name)
+		  . ': ' . Tss('Please do not fetch more than %1 pages in %2 seconds.',
+			       $SurgeProtectionViews, $SurgeProtectionTime),
+		  '503 SERVICE UNAVAILABLE');
     }
+  } elsif (GetParam('action', '') ne 'unlock') {
+    ReportError(Ts('Could not get %s lock', 'visitors')
+		. ': ' . Ts('Check whether the web server can create the directory %s and whether it can create files in it.', $TempDir), '503 SERVICE UNAVAILABLE');
   }
 }
 
@@ -3897,41 +3892,14 @@ sub ReadRecentVisitors {
 
 sub WriteRecentVisitors {
   my $data = '';
-  my $limit = $Now - $VisitorTime;
+  my $limit = $Now - $SurgeProtectionTime;
   foreach my $name (keys %RecentVisitors) {
-    # for performance, we do not check wether $name is a valid page name
-    if ($SurgeProtection or ($Visitors and $name =~ /\./)) {
-      my @entries = @{$RecentVisitors{$name}};
-      if ($entries[0] >= $limit) {
-	# save the data
-	if ($SurgeProtection) {
-	  $data .=  join($FS, $name, @entries[0 .. $SurgeProtectionViews - 1]) . "\n";
-	} else {
-	  $data .= $name . $FS . $entries[0] . "\n";
-	}
-      }
+    my @entries = @{$RecentVisitors{$name}};
+    if ($entries[0] >= $limit) { # if the most recent one is too old, do not keep
+      $data .=  join($FS, $name, @entries[0 .. $SurgeProtectionViews - 1]) . "\n";
     }
   }
   WriteStringToFile($VisitorFile, $data);
-}
-
-sub DoShowVisitors { # no caching of this page!
-  print GetHeader('', T('Recent Visitors'), '', 'nocache'), $q->start_div({-class=>'content visitors'});
-  ReadRecentVisitors();
-  print '<p><ul>';
-  foreach my $name (sort {@{$RecentVisitors{$b}}[0] <=> @{$RecentVisitors{$a}}[0]} (keys %RecentVisitors)) {
-    my $time = @{$RecentVisitors{$name}}[0];
-    my $total = $Now - $time;
-    my $who;
-    if (!$name or ($SurgeProtection and $name =~ /\./)) {
-      $who = T('Anonymous');
-    } else {
-      $who = GetPageLink($name);
-    }
-    print $q->li($who . ', ' . CalcTimeSince($total));
-  }
-  print '</ul>' . $q->end_div();
-  PrintFooter();
 }
 
 # == Permanent Anchors ==
