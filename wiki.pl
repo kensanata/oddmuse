@@ -332,7 +332,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.581 2005/07/26 08:42:21 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.582 2005/07/26 09:41:23 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -1520,7 +1520,7 @@ sub RcHeader {
 	  : Ts('Updates in the last %s day', GetParam('days', $RcDefault)))
   }
   my $action;
-  my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $lang) =
+  my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $match, $lang) =
     map {
       my $val = GetParam($_, '');
       print $q->p($q->b('(' . Ts('for %s only', $val) . ')')) if $val;
@@ -1528,7 +1528,7 @@ sub RcHeader {
       $val;
     }
       ('rcidonly', 'rcuseronly', 'rchostonly', 'rcclusteronly',
-       'rcfilteronly', 'lang');
+       'rcfilteronly', 'match', 'lang');
   if ($clusterOnly) {
     $action = GetPageParameters('browse', $clusterOnly) . $action;
   } else {
@@ -1566,12 +1566,13 @@ sub GetFilterForm {
   $form .= $q->input({-type=>'hidden', -name=>'showedit', -value=>1}) if (GetParam('showedit', 0));
   $form .= $q->input({-type=>'hidden', -name=>'days', -value=>GetParam('days', $RcDefault)})
     if (GetParam('days', $RcDefault) != $RcDefault);
-  my $table =
-    $q->Tr($q->td(T('Username:')) . $q->td($q->textfield(-name=>'rcuseronly', -size=>20)))
+  my $table = $q->Tr($q->td(T('Title:')) . $q->td($q->textfield(-name=>'match', -size=>20)))
+    . $q->Tr($q->td(T('Title and Body:')) . $q->td($q->textfield(-name=>'rcfilteronly', -size=>20)))
+    . $q->Tr($q->td(T('Username:')) . $q->td($q->textfield(-name=>'rcuseronly', -size=>20)))
     . $q->Tr($q->td(T('Host:')) . $q->td($q->textfield(-name=>'rchostonly', -size=>20)));
   $table .= $q->Tr($q->td(T('Language:')) . $q->td($q->textfield(-name=>'lang', -size=>10,
     -default=>GetParam('lang', '')))) if %Languages;
-  return GetFormStart(undef, undef, 'filter') . $q->p($form) . $q->table($table)
+  return GetFormStart(undef, 'get', 'filter') . $q->p($form) . $q->table($table)
     . $q->p($q->submit('dofilter', T('Go!'))) . $q->endform;
 }
 
@@ -1603,10 +1604,10 @@ sub GetRc {
   }
   my $date = '';
   my $all = GetParam('all', 0);
-  my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $lang) =
+  my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $match, $lang) =
     map { GetParam($_, ''); }
       ('rcidonly', 'rcuseronly', 'rchostonly', 'rcclusteronly',
-       'rcfilteronly', 'lang');
+       'rcfilteronly', 'match', 'lang');
   @outrc = reverse @outrc if GetParam('newtop', $RecentTop);
   my @clusters;
   my @filters;
@@ -1616,7 +1617,8 @@ sub GetRc {
       = split(/$FS/, $rcline);
     next if not $all and $ts < $changetime{$pagename};
     next if $idOnly and $idOnly ne $pagename;
-    next if $hostOnly and $host !~ /$hostOnly/;
+    next if $match and $pagename !~ /$match/i;
+    next if $hostOnly and $host !~ /$hostOnly/i;
     next if $filterOnly and not grep(/^$pagename$/, @filters);
     next if ($userOnly and $userOnly ne $username);
     my @languages = split(/,/, $languages);
