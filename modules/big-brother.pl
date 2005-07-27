@@ -18,7 +18,20 @@
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: big-brother.pl,v 1.4 2005/07/24 16:56:12 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: big-brother.pl,v 1.5 2005/07/27 09:07:22 as Exp $</p>';
+
+use vars qw($VisitorTime);
+
+my $US  = "\x1f";
+
+$VisitorTime = 7200; # keep visitor data arround for 2 hours.
+
+push(@MyAdminCode, \&BigBrotherVisitors);
+
+sub BigBrotherVisitors {
+  my ($id, $menuref, $restref) = @_;
+  push(@$menuref, ScriptLink('action=visitors', Ts('Recent Visitors')));
+}
 
 my %BigBrotherData;
 
@@ -33,20 +46,19 @@ sub AddRecentVisitor {
   my $value = $BigBrotherData{$name};
   my %entries = $value ? %{$value} : ();
   my $action = GetParam('action', 'browse');
-  my $id = join('_', $q->keywords) # script?p+q -> p_q
-    || $UsePathInfo && (split /\//, $q->path_info)[-1]
-    || !$q->param && $HomePage; # script/p/q -> q
+  my $id = GetId(); # script/p/q -> q
+  my $url = $q->url(-path_info=>1,-query=>1);
   my $download = GetParam('action', 'browse') eq 'download'
     || GetParam('download', 0)
     || $q->path_info() =~ m/\/download\//;
   if ($download) {
     # do nothing
   } elsif ($id) {
-    $entries{$Now} = $id;
+    $entries{$Now} = $id . $US . $url;
   } elsif ($action eq 'rss' or $action eq 'rc') {
-    $entries{$Now} = $RCName;
+    $entries{$Now} = $RCName . $US . $url;
   } else {
-    $entries{$Now} = $q->url(-path_info=>1,-query=>1);
+    $entries{$Now} = T('some action') . $US . $url;
   }
   $BigBrotherData{$name} = \%entries;
 }
@@ -103,9 +115,8 @@ sub DoBigBrother { # no caching of this page!
     my $error = ValidId($name);
     my $who = $name && !$error && $name !~ /\./ ? GetPageLink($name) : T('Anonymous');
     my %entries = %{$BigBrotherData{$name}};
-    my $what = join(', ', map { $entries{$_} =~ /^$FullUrlPattern$/
-				? $q->a({-href=>$entries{$_}}, T('some action'))
-				: GetPageLink($entries{$_}) }
+    my $what = join(', ', map { my ($id, $url) = split(/$US/, $entries{$_});
+				$q->a({-href=>$url}, $id); }
 		    sort keys %entries);
     print $q->li($who, T('was here'), $when, T('and read'), $what);
   }
