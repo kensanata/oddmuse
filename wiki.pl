@@ -332,7 +332,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.582 2005/07/26 09:41:23 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.583 2005/07/29 14:45:00 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -2588,11 +2588,10 @@ sub SaveKeepFile {
 }
 
 sub EncodePage {
-  my $data;
-  while (@_) { # don't copy @_ into private variables, use it directly
-    $data .= (shift @_) . ': ' . EscapeNewlines(shift @_) . "\n";
-  }
-  return $data;
+  my @data = @_;
+  my $result;
+  $result .= (shift @data) . ': ' . EscapeNewlines(shift @data) . "\n" while (@data);
+  return $result;
 }
 
 sub EscapeNewlines {
