@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.4 2005/04/21 16:17:18 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.5 2005/07/31 22:57:35 fletcherpenney Exp $</p>';
 
 use vars qw($ClusterMapPage $ClusterMapTOC $FilterUnclusteredRegExp @ClusterMapAdminPages);
 
@@ -122,7 +122,7 @@ sub PrintClusterMap {
 		if ( GetCluster($Page{text}) eq $cluster ) {
 			# Don't display the page name twice if the cluster page is also
 			# a member of the cluster
-			$Page{text} =~ s/^\[*$cluster\]*\n//s;
+			$Page{text} =~ s/^\[*$cluster\]*\n*//s;
 		}
 
 		if ($PrintTOCAnchor) {
@@ -147,8 +147,8 @@ sub PrintClusterMap {
 sub CreateClusterMap {
 	my @pages = AllPagesList();
 	
-    local %Page;
-    local $OpenPageName='';
+	local %Page;
+	local $OpenPageName='';
 	
 	foreach my $page ( @pages) {
 		OpenPage($page);
