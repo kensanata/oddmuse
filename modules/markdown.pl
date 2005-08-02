@@ -35,7 +35,7 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.2 2005/08/01 23:34:52 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.3 2005/08/02 03:13:00 fletcherpenney Exp $</p>';
 
 @MyRules = (\&MarkdownRule);
 
@@ -71,14 +71,17 @@ sub SanitizeSource {
 	$text = shift;
 
 	# We don't want to allow insertion of raw html into Wikis
-	# for security reasons
-	
-	# But this breaks stuff - needs help!!
-	#$text =~ s/\</&lt;/gm;
-	#$text =~ s/\>/&gt;/gm;
+	# for security reasons.
+	# By converting all '<', we preclude inclusion of HTML tags.
+	# We don't have to do the same for '>', which would screw up blockquotes.
+	# Remember, on a wiki, we don't want to allow arbitrary HTML...
+	# (in other words, this is not a bug)
+
+	$text =~ s/\</&lt;/g;
 	
 	return $text;
 }
+
 
 # Replace certain core OddMuse routines for compatibility
 *GetCluster = *MarkdownGetCluster;
@@ -270,6 +273,9 @@ sub NewDoHeaders {
 
 sub NewEncodeCode {
 	my $text = shift;
+	
+	# Undo sanitization of '<'
+	$text =~ s/&lt;/</g;
 	
 	$text = OldEncodeCode($text);
 	
