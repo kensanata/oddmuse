@@ -35,7 +35,7 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.3 2005/08/02 03:13:00 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.4 2005/08/02 23:20:00 fletcherpenney Exp $</p>';
 
 @MyRules = (\&MarkdownRule);
 
@@ -162,12 +162,27 @@ sub DoWikiWords {
 	}xse;
 	
 	# FreeLinks
-	
 	$text =~ s{
 		\[\[($FreeLinkPattern)\]\]
 	}{
 		CreateWikiLink($1)
 	}xsge;
+	
+	# Images - this is too convenient not to support...
+	# Though it doesn't fit with Markdown syntax
+	$text =~ s{
+		(\[\[image:$FreeLinkPattern\]\])	
+	}{
+		GetDownloadLink($2, 1, undef, $3)
+	}xsge;
+
+	$text =~ s{
+		(\[\[image:$FreeLinkPattern\|([^]|]+)\]\])	
+	}{
+		GetDownloadLink($2, 1, undef, $3)
+	}xsge;
+	
+	
 	return $text;
 }
 
