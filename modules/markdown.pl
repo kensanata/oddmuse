@@ -30,12 +30,13 @@
 #	*_RunSpanGamut = *OddMuse::NewRunSpanGamut;
 #	*_DoHeaders = *OddMuse::NewDoHeaders;
 #	*_EncodeCode = *OddMuse::NewEncodeCode;
+#	*_DoAutoLinks = *OddMuse::NewDoAutoLinks;
 
 #	To enable other features, I suggest you also check out:
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.7 2005/08/03 04:03:10 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.8 2005/08/03 04:14:57 fletcherpenney Exp $</p>';
 
 @MyRules = (\&MarkdownRule);
 
@@ -330,5 +331,35 @@ sub AntiSpam {
 		$masked
 	}xsge;
 	
+	return $text;
+}
+
+sub NewDoAutoLinks {
+	my $text = shift;
+	my $temp = "";
+	
+	# In Oddmuse, the < is converted to &lt;
+	$text =~ s{&lt;((https?|ftp):[^'">\s]+)>}{
+		my $url = $1;
+		$temp = $Markdown::g_autolink_string;
+		$temp =~ s/(\$\w+(?:::)?\w*)/"defined $1 ? $1 : ''"/gee;
+		
+		$temp;
+	}gie;
+
+	# Email addresses: <address@domain.foo>
+	$text =~ s{
+		&lt;
+        (?:mailto:)?
+		(
+			[-.\w]+
+			\@
+			[-a-z0-9]+(\.[-a-z0-9]+)*\.[a-z]+
+		)
+		>
+	}{
+		Markdown::_EncodeEmailAddress( Markdown::_UnescapeSpecialChars($1) );
+	}egix;
+
 	return $text;
 }
