@@ -35,7 +35,7 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.6 2005/08/03 01:41:46 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.7 2005/08/03 04:03:10 fletcherpenney Exp $</p>';
 
 @MyRules = (\&MarkdownRule);
 
@@ -72,6 +72,7 @@ sub MarkdownRule {
     
 	$result = UnescapeWikiWords($result);
 	
+	$result = AntiSpam($result);
 
     pos = $pos;
     return $result;
@@ -313,3 +314,21 @@ sub NewEncodeCode {
 	return $text;
 }
 
+
+sub AntiSpam {
+	my $text = shift;
+	my $EmailRegExp = '[\w\.\-]+@([\w\-]+\.)+[\w]+';
+
+	$text =~ s {
+		($EmailRegExp)
+	}{
+		my $masked="";
+		my @decimal = unpack('C*', $1);
+		foreach $i (@decimal) {
+			$masked.="&#".$i.";";
+		}
+		$masked
+	}xsge;
+	
+	return $text;
+}
