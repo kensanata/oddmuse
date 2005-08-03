@@ -35,7 +35,7 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.5 2005/08/03 01:29:34 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.6 2005/08/03 01:41:46 fletcherpenney Exp $</p>';
 
 @MyRules = (\&MarkdownRule);
 
@@ -45,7 +45,7 @@ $TempNoWikiWords = 0;
 
 sub MarkdownRule {
 	# Allow journal pages	
-	if (m/\G(\&lt;journal(\s+(\d*))?(\s+"(.*)")?(\s+(reverse))?\&gt;[ \t]*\n?)/cgi) {
+	if (m/\G(\<journal(\s+(\d*))?(\s+"(.*)")?(\s+(reverse))?\>[ \t]*\n?)/cgi) {
        # <journal 10 "regexp"> includes 10 pages matching regexp
         Clean(CloseHtmlEnvironments());
         Dirty($1);
