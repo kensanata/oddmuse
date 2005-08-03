@@ -36,7 +36,7 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.8 2005/08/03 04:14:57 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.9 2005/08/03 22:13:23 fletcherpenney Exp $</p>';
 
 @MyRules = (\&MarkdownRule);
 
@@ -162,6 +162,20 @@ sub DoWikiWords {
 	my $WikiWord = '[A-Z]+[a-z\x80-\xff]+[A-Z][A-Za-z\x80-\xff]*';
 	my $FreeLinkPattern = "([-,.()' _0-9A-Za-z\x80-\xff]+)";
 
+	# FreeLinks
+	$text =~ s{
+		\[\[($FreeLinkPattern)\]\]
+	}{
+		my $label = $1;
+		$label =~ s{
+			([\s\>])($WikiWord)
+		}{
+			$1 ."\\" . $2
+		}xsge;
+		
+		CreateWikiLink($label)
+	}xsge;
+	
 	# WikiWords
 	$text =~ s{
 		([\s\>])($WikiWord)
@@ -174,13 +188,6 @@ sub DoWikiWords {
 	}{
 		CreateWikiLink($1)
 	}xse;
-	
-	# FreeLinks
-	$text =~ s{
-		\[\[($FreeLinkPattern)\]\]
-	}{
-		CreateWikiLink($1)
-	}xsge;
 	
 	# Images - this is too convenient not to support...
 	# Though it doesn't fit with Markdown syntax
@@ -208,11 +215,15 @@ sub CreateWikiLink {
 		$id =~ s/__+/_/g;
 		$id =~ s/^_//g;
 		$id =~ s/_$//;
+		
 
 	#AllPagesList();
 	#my $exists = $IndexHash{$id};
 
-	my ($class, $resolved, $linktitle, $exists) = ResolveId($id);
+	my $resolvable = $id;
+	$resolvable =~ s/\\//g;
+	
+	my ($class, $resolved, $linktitle, $exists) = ResolveId($resolvable);
 
 
 	if ($resolved) {
