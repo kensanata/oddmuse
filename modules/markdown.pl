@@ -21,22 +21,11 @@
 #	Original MarkdownRule by Alex Schroeder
 #	Remainder by Fletcher Penney
 
-#	NOTE:
-#	In order to enable WikiWords and [[Free Links]] within OddMuse,
-# 	you must insert the following lines (uncommented of course)
-#	near the top of the markdown source (called markdown.pl)
-#	Until I figure out how to do this from within this file, anyways...
-
-#	*_RunSpanGamut = *OddMuse::NewRunSpanGamut;
-#	*_DoHeaders = *OddMuse::NewDoHeaders;
-#	*_EncodeCode = *OddMuse::NewEncodeCode;
-#	*_DoAutoLinks = *OddMuse::NewDoAutoLinks;
-
 #	To enable other features, I suggest you also check out:
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.11 2005/08/03 22:33:30 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.12 2005/08/03 23:50:22 fletcherpenney Exp $</p>';
 
 @MyRules = (\&MarkdownRule);
 
@@ -63,6 +52,12 @@ sub MarkdownRule {
     # fake that we're blosxom!
     $blosxom::version = 1;
     require "$ModuleDir/Markdown/markdown.pl";
+
+	*Markdown::_RunSpanGamut = *NewRunSpanGamut;
+	*Markdown::_DoHeaders = *NewDoHeaders;
+	*Markdown::_EncodeCode = *NewEncodeCode;
+	*Markdown::_DoAutoLinks = *NewDoAutoLinks;
+
     # Set the base url for local links
     $Markdown::g_metadata{'Base Wiki Url'} = $FullUrl;
     
