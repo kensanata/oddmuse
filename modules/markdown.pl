@@ -35,7 +35,7 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.4 2005/08/02 23:20:00 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.5 2005/08/03 01:29:34 fletcherpenney Exp $</p>';
 
 @MyRules = (\&MarkdownRule);
 
@@ -44,6 +44,18 @@ $RuleOrder{\&MarkdownRule} = -10;
 $TempNoWikiWords = 0;
 
 sub MarkdownRule {
+	# Allow journal pages	
+	if (m/\G(\&lt;journal(\s+(\d*))?(\s+"(.*)")?(\s+(reverse))?\&gt;[ \t]*\n?)/cgi) {
+       # <journal 10 "regexp"> includes 10 pages matching regexp
+        Clean(CloseHtmlEnvironments());
+        Dirty($1);
+        my $oldpos = pos;
+        PrintJournal($3, $5, $7);
+        Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
+        pos = $oldpos;          # restore \G after call to ApplyRules
+        return;
+      }
+      
   if (pos == 0) {
     my $pos = length($_); # fake matching entire file
     my $source = $_;
