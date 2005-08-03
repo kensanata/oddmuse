@@ -36,7 +36,7 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.10 2005/08/03 22:27:54 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.11 2005/08/03 22:33:30 fletcherpenney Exp $</p>';
 
 @MyRules = (\&MarkdownRule);
 
@@ -207,6 +207,15 @@ sub DoWikiWords {
 		$link
 	}xsge;
 	
+	# And Same thing for downloads
+	
+	$text =~ s{
+		(\[\[download:$FreeLinkPattern\|?(.*)\]\])
+	}{
+		my $link = GetDownloadLink($2, undef, undef, $3);
+		$link =~ s/_/&#95;/g;
+		$link
+	}xsge;
 	
 	return $text;
 }
