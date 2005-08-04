@@ -25,7 +25,7 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.12 2005/08/03 23:50:22 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.13 2005/08/04 18:41:26 fletcherpenney Exp $</p>';
 
 @MyRules = (\&MarkdownRule);
 
@@ -59,7 +59,7 @@ sub MarkdownRule {
 	*Markdown::_DoAutoLinks = *NewDoAutoLinks;
 
     # Set the base url for local links
-    $Markdown::g_metadata{'Base Wiki Url'} = $FullUrl;
+    $Markdown::g_metadata{'Base Wiki Url'} = $ScriptName;
     
     # Do not allow raw HTML
     $source = SanitizeSource($source);
@@ -178,7 +178,7 @@ sub DoWikiWords {
 		$1 . CreateWikiLink($2)
 	}xsge;
 	
-	# Catch WikiWords at beginning of page
+	# Catch WikiWords at beginning of page (ie PageCluster)
 	$text =~ s{^($WikiWord)
 	}{
 		CreateWikiLink($1)

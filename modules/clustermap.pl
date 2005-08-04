@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.5 2005/07/31 22:57:35 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.6 2005/08/04 18:41:26 fletcherpenney Exp $</p>';
 
 use vars qw($ClusterMapPage $ClusterMapTOC $FilterUnclusteredRegExp @ClusterMapAdminPages);
 
@@ -31,7 +31,7 @@ $FilterUnclusteredRegExp = '\d\d\d\d-\d\d-\d\d|\d* *Comments on .*'
 # are not classified as unclustered.
 # They are also added to the Important Pages list on the administration page
 @ClusterMapAdminPages = ( $HomePage, $DeletedPage, $BannedContent,
-	$BannedHosts, $InterMap, $NearMap, $RCName)
+	$BannedHosts, $InterMap, $NearMap, $RCName, $RssExclude)
 	
 	unless defined @ClusterMapAdminPages;
 	
@@ -155,6 +155,8 @@ sub CreateClusterMap {
 		my $cluster = GetCluster($Page{text});
 		
 		next if ($cluster eq $DeletedPage);		# Don't map Deleted Pages
+		
+		next if (TextIsFile($Page{text}));		# Don't map files
 		
 		if ($cluster eq "") {					# Grab Unclustered Pages
 			$Unclustered{$page} = 1;
