@@ -1,6 +1,9 @@
 # Copyright (C) 2005  Fletcher T. Penney <fletcher@freeshell.org>
 # Copyright (C) 2005  Alex Schroeder <alex@emacswiki.org>
 #
+# Portions of Markdown code Copyright (C) 2004 John Gruber
+# 	<http://daringfireball.net/projects/markdown/>
+#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -25,7 +28,7 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.15 2005/08/06 15:50:12 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.16 2005/08/06 16:08:42 fletcherpenney Exp $</p>';
 
 @MyRules = (\&MarkdownRule);
 
