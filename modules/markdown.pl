@@ -25,7 +25,7 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.14 2005/08/06 15:41:36 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.15 2005/08/06 15:50:12 fletcherpenney Exp $</p>';
 
 @MyRules = (\&MarkdownRule);
 
@@ -151,66 +151,70 @@ sub MarkdownNearInit {
 # Modify the Markdown source to work with OddMuse
 
 sub DoWikiWords {
-	# This is designed for OddMuse in particular
 	
 	my $text = shift;
 	my $WikiWord = '[A-Z]+[a-z\x80-\xff]+[A-Z][A-Za-z\x80-\xff]*';
 	my $FreeLinkPattern = "([-,.()' _0-9A-Za-z\x80-\xff]+)";
 
-	# FreeLinks
-	$text =~ s{
-		\[\[($FreeLinkPattern)\]\]
-	}{
-		my $label = $1;
-		$label =~ s{
-			([\s\>])($WikiWord)
+	if ($FreeLinks) {
+		# FreeLinks
+		$text =~ s{
+			\[\[($FreeLinkPattern)\]\]
 		}{
-			$1 ."\\" . $2
+			my $label = $1;
+			$label =~ s{
+				([\s\>])($WikiWord)
+			}{
+				$1 ."\\" . $2
+			}xsge;
+			
+			CreateWikiLink($label)
+		}xsge;
+
+		# Images - this is too convenient not to support...
+		# Though it doesn't fit with Markdown syntax
+		$text =~ s{
+			(\[\[image:$FreeLinkPattern\]\])	
+		}{
+			my $link = GetDownloadLink($2, 1, undef, $3);
+			$link =~ s/_/&#95;/g;
+			$link
+		}xsge;
+	
+		$text =~ s{
+			(\[\[image:$FreeLinkPattern\|([^]|]+)\]\])	
+		}{
+			my $link = GetDownloadLink($2, 1, undef, $3);
+			$link =~ s/_/&#95;/g;
+			$link
 		}xsge;
 		
-		CreateWikiLink($label)
-	}xsge;
+		# And Same thing for downloads
+		
+		$text =~ s{
+			(\[\[download:$FreeLinkPattern\|?(.*)\]\])
+		}{
+			my $link = GetDownloadLink($2, undef, undef, $3);
+			$link =~ s/_/&#95;/g;
+			$link
+		}xsge;
+	}
 	
 	# WikiWords
-	$text =~ s{
-		([\s\>])($WikiWord)
-	}{
-		$1 . CreateWikiLink($2)
-	}xsge;
+	if ($WikiLinks) {
+		$text =~ s{
+			([\s\>])($WikiWord)
+		}{
+			$1 . CreateWikiLink($2)
+		}xsge;
+		
+		# Catch WikiWords at beginning of page (ie PageCluster)
+		$text =~ s{^($WikiWord)
+		}{
+			CreateWikiLink($1)
+		}xse;
+	}
 	
-	# Catch WikiWords at beginning of page (ie PageCluster)
-	$text =~ s{^($WikiWord)
-	}{
-		CreateWikiLink($1)
-	}xse;
-	
-	# Images - this is too convenient not to support...
-	# Though it doesn't fit with Markdown syntax
-	$text =~ s{
-		(\[\[image:$FreeLinkPattern\]\])	
-	}{
-		my $link = GetDownloadLink($2, 1, undef, $3);
-		$link =~ s/_/&#95;/g;
-		$link
-	}xsge;
-
-	$text =~ s{
-		(\[\[image:$FreeLinkPattern\|([^]|]+)\]\])	
-	}{
-		my $link = GetDownloadLink($2, 1, undef, $3);
-		$link =~ s/_/&#95;/g;
-		$link
-	}xsge;
-	
-	# And Same thing for downloads
-	
-	$text =~ s{
-		(\[\[download:$FreeLinkPattern\|?(.*)\]\])
-	}{
-		my $link = GetDownloadLink($2, undef, undef, $3);
-		$link =~ s/_/&#95;/g;
-		$link
-	}xsge;
 	
 	return $text;
 }
