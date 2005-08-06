@@ -25,7 +25,7 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.13 2005/08/04 18:41:26 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.14 2005/08/06 15:41:36 fletcherpenney Exp $</p>';
 
 @MyRules = (\&MarkdownRule);
 
@@ -381,4 +381,28 @@ sub NewDoAutoLinks {
 	}egix;
 
 	return $text;
+}
+
+
+# Fix problem with validity - Oddmuse forced a page to start with <p>,
+# which screws up Markdown
+
+*PrintWikiToHTML = *MarkdownPrintWikiToHTML;
+
+sub MarkdownPrintWikiToHTML {
+  my ($pageText, $savecache, $revision, $islocked) = @_;
+  $FootnoteNumber = 0;
+  $pageText =~ s/$FS//g; # Remove separators (paranoia)
+  $pageText = QuoteHtml($pageText);
+  my ($blocks, $flags) = ApplyRules($pageText, 1, $savecache, $revision); # p is start tag!
+  # local links, anchors if cache ok
+  if ($savecache and not $revision and $Page{revision} # don't save revision 0 pages
+      and $Page{blocks} ne $blocks and $Page{flags} ne $flags) {
+    $Page{blocks} = $blocks;
+    $Page{flags} = $flags;
+    if ($islocked or RequestLockDir('main')) { # not fatal!
+      SavePage();
+      ReleaseLock() unless $islocked;
+    }
+  }
 }
