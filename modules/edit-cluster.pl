@@ -35,9 +35,17 @@ sub GetRc {
     map { GetParam($_, ''); }
       ('rcidonly', 'rcuseronly', 'rchostonly', 'rcclusteronly',
        'rcfilteronly', 'match', 'lang');
-  my @clusters = $q->param('clusters');
-  warn $#clusters, ' - ', join ', ', @clusters;
-  push (@clusters, $clusterOnly) if $clusterOnly;
+  my @clusters = $q->param('clusters'); # the clusters the user is interested in
+  my $ordinary = 0;
+  my @wanted_clusters = ();
+  foreach (@clusters) {
+    if ($_ eq T('ordinary changes')) {
+      $ordinary = 1;
+    } else {
+      push(@wanted_clusters,$_);
+    }
+  }
+  push (@wanted_clusters, $clusterOnly) if $clusterOnly;
   @outrc = reverse @outrc if GetParam('newtop', $RecentTop);
   my @filters;
   @filters = SearchTitleAndBody($filterOnly) if $filterOnly;
@@ -53,17 +61,24 @@ sub GetRc {
     my @languages = split(/,/, $languages);
     next if ($lang and @languages and not grep(/$lang/, @languages));
     # meatball sumamry clustering
-    if (@clusters) {
-      my %cluster = ();
-      $cluster{$cluster} = 1 if $cluster;
-      while ($summary =~ /^\[(.*)\]/g) {
-	my $group = $1;
-	foreach my $cluster (split(/\s*,\s*/, $group)) {
-	  $cluster{$cluster} = 1;
-	}
+    my %cluster = (); # the clusters of the page
+    $cluster{$cluster} = 1 if $cluster;
+    while ($summary =~ /^\[(.*)\]/g) {
+      my $group = $1;
+      foreach my $cluster (split(/\s*,\s*/, $group)) {
+	$cluster{$cluster} = 1;
       }
+    }
+    # user wants no cluster but page has cluster
+    next if not @wanted_clusters and %cluster;
+    # users wants clusters, so must match with clusters of the page;
+    # if page has no clusters and user wants ordinary pages, skip the
+    # test.
+    if ($ordinary and not %cluster) {
+      # don't skip it
+    } elsif (@wanted_clusters) {
       my $show = 0;
-      foreach my $cluster (@clusters) {
+      foreach my $cluster (@wanted_clusters) {
 	if ($cluster{$cluster}) {
 	  $show = 1;
 	  last;
@@ -85,7 +100,9 @@ sub GetRc {
 
 sub EditClusterNewRcHeader {
   EditClusterOldRcHeader(@_);
-  my @clusters = map { /\* (\S+)/; $1; } grep(/^\* /, split(/\n/, GetPageContent($EditCluster)));
+  my @clusters = ((map { /\* (\S+)/; $1; }
+		   grep(/^\* /, split(/\n/, GetPageContent($EditCluster)))),
+		  T('ordinary changes'));
   return unless @clusters;
   my $action;
   my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $match, $lang) =
