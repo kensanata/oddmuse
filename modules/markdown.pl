@@ -28,7 +28,7 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.16 2005/08/06 16:08:42 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.17 2005/08/15 03:07:18 fletcherpenney Exp $</p>';
 
 @MyRules = (\&MarkdownRule);
 
@@ -74,6 +74,12 @@ sub MarkdownRule {
 	$result = AntiSpam($result);
 
     pos = $pos;
+    
+    # Otherwise, "full" does not work
+    if (GetParam("action",'') eq "rss") {
+    	$result =~ s/\</&lt;/g;
+    	$result =~ s/\>/&gt;/g;    	
+    }
     return $result;
   }
   return undef;
@@ -394,7 +400,9 @@ sub NewDoAutoLinks {
 # Fix problem with validity - Oddmuse forced a page to start with <p>,
 # which screws up Markdown
 
+*OldPrintWikiToHTML = *PrintWikiToHTML;
 *PrintWikiToHTML = *MarkdownPrintWikiToHTML;
+
 
 sub MarkdownPrintWikiToHTML {
   my ($pageText, $savecache, $revision, $islocked) = @_;
