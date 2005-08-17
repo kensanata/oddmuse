@@ -28,21 +28,15 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.19 2005/08/17 23:08:56 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.20 2005/08/17 23:34:25 fletcherpenney Exp $</p>';
 
 @MyRules = (\&MarkdownRule);
 
-push(@MyRules, \&ClusterMapRule);
-
 $RuleOrder{\&MarkdownRule} = -10;
-
-# Add back any particular rules you want here...
-$RuleOrder{\&ClusterMapRule} = -15;
 
 $TempNoWikiWords = 0;
 
 sub MarkdownRule {
-	my $fullLength = length($_);
 	# Allow journal pages	
 	if (m/\G(\<journal(\s+(\d*))?(\s+"(.*)")?(\s+(reverse))?\>[ \t]*\n?)/cgi) {
        # <journal 10 "regexp"> includes 10 pages matching regexp
@@ -54,21 +48,7 @@ sub MarkdownRule {
         pos = $oldpos;          # restore \G after call to ApplyRules
         return;
       }
- 
-	if (m/\G^([\n\r]*\<\s*clustesdsrmap\s*\>\s*)$/cgi) {
-		Dirty($1);
-		my $oldpos = pos;
-		my $oldstr = $_;
-		CreateClusterMap();
-		print "</p>";		# Needed to clean up, but could cause problems
-							# if <clustermap> isn't put into a new paragraph
-		PrintClusterMap();
-		pos = $oldpos;
-		$oldstr =~ s/.*?\<\s*clustermap\s*\>//s;
-		$_ = $oldstr;
-		return;
-	}
-     
+      
   if (pos == 0) {
     my $pos = length($_); # fake matching entire file
     my $source = $_;
@@ -80,10 +60,7 @@ sub MarkdownRule {
 	*Markdown::_DoHeaders = *NewDoHeaders;
 	*Markdown::_EncodeCode = *NewEncodeCode;
 	*Markdown::_DoAutoLinks = *NewDoAutoLinks;
-
-	*OldDoAnchors = *Markdown::_DoAnchors;
-	*Markdown::_DoAnchors = *NewDoAnchors;
-    
+        
     # Do not allow raw HTML
     $source = SanitizeSource($source);
     
@@ -94,7 +71,8 @@ sub MarkdownRule {
 	$result = AntiSpam($result);
 
     pos = $pos;
-    
+
+	# Encode '<' and '>' for RSS feeds
     # Otherwise, "full" does not work
     if (GetParam("action",'') =~ /^(rss|journal)$/) {
     	$result =~ s/\</&lt;/g;
@@ -306,7 +284,7 @@ sub NewRunSpanGamut {
 	# Process anchor and image tags. Images must come first,
 	# because ![foo][f] looks like an anchor.
 	$text = Markdown::_DoImages($text);
-	$text = Markdown::_DoAnchors($text);
+	$text = NewDoAnchors($text);
 
 	# Process WikiWords
 	if (!$TempNoWikiWords) {
@@ -314,7 +292,7 @@ sub NewRunSpanGamut {
 
 		# And then reprocess anchors and images
 		$text = Markdown::_DoImages($text);
-		$text = Markdown::_DoAnchors($text);
+		$text = NewDoAnchors($text);
 	}
 	
 	# Make links out of things like `<http://example.com/>`
@@ -420,9 +398,7 @@ sub NewDoAutoLinks {
 # Fix problem with validity - Oddmuse forced a page to start with <p>,
 # which screws up Markdown
 
-*OldPrintWikiToHTML = *PrintWikiToHTML;
 *PrintWikiToHTML = *MarkdownPrintWikiToHTML;
-
 
 sub MarkdownPrintWikiToHTML {
   my ($pageText, $savecache, $revision, $islocked) = @_;
@@ -460,7 +436,6 @@ sub MarkdownAddComment {
   return $string;
 }
 
-
 sub NewDoAnchors {
 	my $text = shift;
 	my $WikiWord = '[A-Z]+[a-z\x80-\xff]+[A-Z][A-Za-z\x80-\xff]*';
@@ -479,5 +454,5 @@ sub NewDoAnchors {
 		$1 . $2 . $3;
 	}xsge;
 	
-	return OldDoAnchors($text);
+	return Markdown::_DoAnchors($text);
 }
