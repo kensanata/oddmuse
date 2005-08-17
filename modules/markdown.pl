@@ -28,15 +28,21 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.17 2005/08/15 03:07:18 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.18 2005/08/17 13:06:07 fletcherpenney Exp $</p>';
 
 @MyRules = (\&MarkdownRule);
 
+push(@MyRules, \&ClusterMapRule);
+
 $RuleOrder{\&MarkdownRule} = -10;
+
+# Add back any particular rules you want here...
+$RuleOrder{\&ClusterMapRule} = -15;
 
 $TempNoWikiWords = 0;
 
 sub MarkdownRule {
+	my $fullLength = length($_);
 	# Allow journal pages	
 	if (m/\G(\<journal(\s+(\d*))?(\s+"(.*)")?(\s+(reverse))?\>[ \t]*\n?)/cgi) {
        # <journal 10 "regexp"> includes 10 pages matching regexp
@@ -48,7 +54,21 @@ sub MarkdownRule {
         pos = $oldpos;          # restore \G after call to ApplyRules
         return;
       }
-      
+ 
+	if (m/\G^([\n\r]*\<\s*clustesdsrmap\s*\>\s*)$/cgi) {
+		Dirty($1);
+		my $oldpos = pos;
+		my $oldstr = $_;
+		CreateClusterMap();
+		print "</p>";		# Needed to clean up, but could cause problems
+							# if <clustermap> isn't put into a new paragraph
+		PrintClusterMap();
+		pos = $oldpos;
+		$oldstr =~ s/.*?\<\s*clustermap\s*\>//s;
+		$_ = $oldstr;
+		return;
+	}
+     
   if (pos == 0) {
     my $pos = length($_); # fake matching entire file
     my $source = $_;
@@ -60,6 +80,9 @@ sub MarkdownRule {
 	*Markdown::_DoHeaders = *NewDoHeaders;
 	*Markdown::_EncodeCode = *NewEncodeCode;
 	*Markdown::_DoAutoLinks = *NewDoAutoLinks;
+
+	*OldDoAnchors = *Markdown::_DoAnchors;
+	*Markdown::_DoAnchors = *NewDoAnchors;
 
     # Set the base url for local links
     $Markdown::g_metadata{'Base Wiki Url'} = $ScriptName;
@@ -76,7 +99,7 @@ sub MarkdownRule {
     pos = $pos;
     
     # Otherwise, "full" does not work
-    if (GetParam("action",'') eq "rss") {
+    if (GetParam("action",'') =~ /^(rss|journal)$/) {
     	$result =~ s/\</&lt;/g;
     	$result =~ s/\>/&gt;/g;    	
     }
@@ -420,4 +443,44 @@ sub MarkdownPrintWikiToHTML {
       ReleaseLock() unless $islocked;
     }
   }
+}
+
+*AddComment = *MarkdownAddComment;
+
+sub MarkdownAddComment {
+  my ($old, $comment) = @_;
+  my $string = $old;
+  $comment =~ s/\r//g;	# Remove "\r"-s (0x0d) from the string
+  $comment =~ s/\s+$//g;    # Remove whitespace at the end
+  if ($comment ne '' and $comment ne $NewComment) {
+    my $author = GetParam('username', T('Anonymous'));
+    my $homepage = GetParam('homepage', '');
+    $homepage = 'http://' . $homepage if $homepage and not substr($homepage,0,7) eq 'http://';
+    $author = "[$author]($homepage)" if $homepage;
+    $string .= "\n----\n\n" if $string and $string ne "\n";
+    $string .= $comment . "\n\n-- " . $author . ' ' . TimeToText($Now) . "\n\n";
+  }
+  return $string;
+}
+
+
+sub NewDoAnchors {
+	my $text = shift;
+	my $WikiWord = '[A-Z]+[a-z\x80-\xff]+[A-Z][A-Za-z\x80-\xff]*';
+	
+	# Don't treat [WikiWord](url) as a WikiWord
+	$text =~ s{
+		(\[\s*)($WikiWord)(\s*\])
+	}{
+		$1 . "\\" . $2 . $3;
+	}xsge;
+
+	# But do treat FreeLinks properly
+	$text =~ s{
+		(\[\[\s*)\\($WikiWord)(\s*\]\])
+	}{
+		$1 . $2 . $3;
+	}xsge;
+	
+	return OldDoAnchors($text);
 }
