@@ -16,11 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.6 2005/08/04 18:41:26 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.7 2005/08/17 13:42:02 fletcherpenney Exp $</p>';
 
 use vars qw($ClusterMapPage $ClusterMapTOC $FilterUnclusteredRegExp @ClusterMapAdminPages);
 
-$ClusterMapPage = "ClusterMap" unless defined $ClusterMapPage;
+$ClusterMapPage = "Site_Map" unless defined $ClusterMapPage;
 
 # Don't list the following pages as unclustered
 # By default, journal pages and Comment pages
@@ -55,7 +55,7 @@ push (@AdminPages, @ClusterMapAdminPages);
 
 
 sub ClusterMapRule {
-	if (/\G^([\n\r]*\&lt;\s*clustermap\s*\&gt;\s*)$/mgc) {
+	if (/\G^([\n\r]*\<\s*clustermap\s*\>\s*)$/mgc) {
 		Dirty($1);
 		my $oldpos = pos;
 		$oldstr = $_;
@@ -64,7 +64,7 @@ sub ClusterMapRule {
 							# if <clustermap> isn't put into a new paragraph
 		PrintClusterMap();
 		pos = $oldpos;
-		$oldstr =~ s/.*?\&lt;\s*clustermap\s*\&gt;//s;
+		$oldstr =~ s/.*?\<\s*clustermap\s*\>//s;
 		$_ = $oldstr;
 		return '';
 	}
@@ -212,4 +212,21 @@ sub ClusterMapAdminRule {
 	
 	push(@$menuref, ScriptLink('action=clustermap', T('Clustermap')));
 	push(@$menuref, ScriptLink('action=unclustered', T('Pages without a Cluster')));	
+}
+
+*OldBrowseResolvedPage = *BrowseResolvedPage;
+*BrowseResolvedPage = *ClusterMapBrowseResolvedPage;
+
+sub ClusterMapBrowseResolvedPage {
+	my $title = shift;
+	$title =~ s/_/ /g;
+	my $id = FreeToNormal($title);
+	if ($id eq $ClusterMapPage) {
+		CreateClusterMap();
+		print GetHeader('',$title,'');
+		PrintClusterMap();
+		PrintFooter();
+	} else {
+		OldBrowseResolvedPage($id);
+	}
 }
