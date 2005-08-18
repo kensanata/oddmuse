@@ -17,7 +17,7 @@
 #	 59 Temple Place, Suite 330
 #	 Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-hybrid.pl,v 1.1 2005/08/18 22:48:26 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-hybrid.pl,v 1.2 2005/08/18 22:58:43 fletcherpenney Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -156,7 +156,7 @@ sub StaticHtml {
 	# Isolate ourselves
 	local *GetHttpHeader = *StaticGetHttpHeader;
 	local *GetCommentForm = *StaticGetCommentForm;
-	local *GetNearLinksUsed = *StaticGetNearLinksUsed;
+	%NearLinksUsed = ();
 	local %Page;
 	local $OpenPageName='';
 	OpenPage($id);
@@ -336,9 +336,5 @@ sub StaticGetCommentForm {
 }
 
 sub StaticGetHttpHeader {
-	return;
-}
-
-sub StaticGetNearLinksUsed {
 	return;
 }
