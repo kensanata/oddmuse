@@ -1,0 +1,344 @@
+# Copyright (C) 2005  Fletcher T. Penney <fletcher@freeshell.org>
+# Copyright (C) 2004  Alex Schroeder <alex@emacswiki.org>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the
+#	 Free Software Foundation, Inc.
+#	 59 Temple Place, Suite 330
+#	 Boston, MA 02111-1307 USA
+
+$ModulesDescription .= '<p>$Id: static-hybrid.pl,v 1.1 2005/08/18 22:48:26 fletcherpenney Exp $</p>';
+
+$Action{static} = \&DoStatic;
+
+use vars qw($StaticDir $StaticAlways %StaticMimeTypes $StaticUrl
+%StaticLinkedPages @StaticIgnoredPages);
+
+$StaticDir = '' unless defined $StaticDir;
+$StaticUrl = '' unless defined $StaticUrl;	  # change this!
+$StaticAlways = 0 unless defined $StaticFilesAlways;
+		# 1 = uploaded files only, 2 = all pages
+
+my $StaticMimeTypes = '/etc/http/mime.types';
+my %StaticFiles;
+
+my $StaticAction = 0;	# Are we doing action or not?
+my @StaticQueue = ();
+
+sub DoStatic {
+	$StaticAction = 1;
+	return unless UserIsAdminOrError();
+	my $raw = GetParam('raw', 0);
+	if ($raw) {
+		print GetHttpHeader('text/plain');
+	} else {
+		print GetHeader('', T('Static Copy'), '');
+	}
+	CreateDir($StaticDir);
+	%StaticMimeTypes = StaticMimeTypes() unless %StaticMimeTypes;
+	%StaticFiles = ();
+	my $id = GetParam('id', '');
+	if ($id) {
+		local *GetDownloadLink = *StaticGetDownloadLink;
+		StaticWriteFile($id);
+	} else {
+		StaticWriteFiles();
+	}
+	print '</p>' unless $raw;
+	PrintFooter() unless $raw;
+}
+
+sub StaticMimeTypes {
+	my %hash;
+	# the default mapping matches the default @UploadTypes...
+	open(F,$StaticMimeTypes)
+		or return ('image/jpeg' => 'jpg', 'image/png' => 'png', 'image/gif' => 'gif');
+	while (<F>) {
+		s/\#.*//;					# remove comments
+			my($type, $ext) = split;
+		$hash{$type} = $ext if $ext;
+	}
+			close(F);
+		return %hash;
+}
+
+sub StaticWriteFiles {
+	my $raw = GetParam('raw', 0);
+	local *GetDownloadLink = *StaticGetDownloadLink;
+	foreach my $id (AllPagesList()) {
+		SetParam('rcclusteronly',0);
+		if (! grep(/^$id$/,@StaticIgnoredPages)) {
+			StaticWriteFile($id);
+		}
+	}
+}
+
+sub StaticGetDownloadLink {
+	my ($name, $image, $revision, $alt) = @_; # ignore $revision
+	$alt = $name unless $alt;
+	my $id = FreeToNormal($name);
+	AllPagesList();
+	# if the page does not exist
+	return '[' . ($image ? 'image' : 'link') . ':' . $name . ']' unless $IndexHash{$id};
+	if ($image) {
+		my $result = $q->img({-src=>StaticFileName($id), -alt=>$alt, -class=>'upload'});
+		$result = ScriptLink($id, $result, 'image');
+		return $result;
+	} else {
+		return ScriptLink($id, $alt, 'upload');
+	}
+}
+
+sub StaticFileName {
+	my $id = shift;
+	$id =~ s/#.*//;		  # remove named anchors for the filename test
+	return $StaticFiles{$id} if $StaticFiles{$id}; # cache filenames
+	my ($status, $data) = ReadFile(GetPageFile(StaticUrlDecode($id)));
+	print "cannot read " . GetPageFile(StaticUrlDecode($id)) . $q->br() unless $status;
+	my %hash = ParseData($data);
+	my $ext = '.html';
+	if ($hash{text} =~ /^\#FILE ([^ \n]+)\n(.*)/s) {
+		$ext = $StaticMimeTypes{$1};
+		$ext = '.' . $ext if $ext;
+	}
+	$StaticFiles{$id} = $id . $ext;
+	return $StaticFiles{$id};
+}
+
+sub StaticUrlDecode {
+	my $str = shift;
+	$str =~ s/%([0-9a-f][0-9a-f])/chr(hex($1))/ge;
+	return $str;
+}
+
+sub StaticWriteFile {
+	my $id = shift;
+	my $raw = GetParam('raw', 0);
+	my $html = GetParam('html', 1);
+	my $filename = StaticFileName($id);
+	OpenPage($id);
+	my ($mimetype, $data) = $Page{text} =~ /^\#FILE ([^ \n]+)\n(.*)/s;
+	return unless $html or $data;
+	open(F,"> $StaticDir/$filename") or ReportError(Ts('Cannot write %s', $filename));
+	if ($data) {
+		StaticFile($id, $mimetype, $data);
+	} elsif ($html) {
+		StaticHtml($id);
+	}
+	close(F);
+	chmod 0644,"$StaticDir/$filename";
+	print $filename, $raw ? "\n" : $q->br();
+}
+
+sub StaticFile {
+	my ($id, $type, $data) = @_;
+	require MIME::Base64;
+	binmode(F);
+	print F MIME::Base64::decode($data);
+}
+
+sub StaticHtml {
+	my $id = shift;
+	my $title = $id;
+	$title =~ s/_/ /g;
+	my $result = '';
+	
+	# Isolate ourselves
+	local *GetHttpHeader = *StaticGetHttpHeader;
+	local *GetCommentForm = *StaticGetCommentForm;
+	local *GetNearLinksUsed = *StaticGetNearLinksUsed;
+	local %Page;
+	local $OpenPageName='';
+	OpenPage($id);
+	local *STDOUT;
+	open(STDOUT, '>', \$result);
+	local *STDERR;
+	open(STDERR, '>/dev/null');
+
+	# Process the page
+	local $Message = "";
+	# encoding is left off, so fix it:
+	print qq!<?xml version="1.0" encoding="$HttpCharset" ?>!;
+	print GetHeader($id, QuoteHtml($id), undef, "");
+	print $q->start_div({-class=> 'content browse'});
+	PrintWikiToHTML($Page{text},0);
+	print $q->end_div();
+	SetParam('rcclusteronly', $id) if (GetCluster($Page{text}) eq $id);
+	if (($id eq $RCName) || (T($RCName) eq $id) || (T($id) eq $RCName)
+		|| GetParam('rcclusteronly', '')) {
+		print $q->start_div({-class=>'rc'});;
+		print $q->hr()  if not GetParam('embed', $EmbedWiki);
+		DoRc(\&GetRcHtml);
+		print $q->end_div();
+	}
+	PrintFooter($id);
+	print F $result;
+	return;
+}
+
+*StaticFilesOldDoPost = *DoPost;
+*DoPost = *StaticFilesNewDoPost;
+
+sub StaticFilesNewDoPost {
+	StaticFilesOldDoPost(@_);
+	if ($StaticAlways) {
+		# always delete
+		StaticDeleteFile($OpenPageName);
+		if ($Page{text} =~ /^\#FILE / # if a file was uploaded
+			or $StaticAlways > 1) {
+			CreateDir($StaticDir);
+			StaticWriteFile($OpenPageName);
+			AddLinkedFilesToQueue($OpenPageName);
+			StaticWriteLinkedFiles();
+		}
+	}
+}
+
+*StaticOldDeletePage = *DeletePage;
+*DeletePage = *StaticNewDeletePage;
+
+sub StaticNewDeletePage {
+	my $id = shift;
+	StaticDeleteFile($id) if ($StaticAlways);
+	return StaticOldDeletePage($id);
+}
+
+sub StaticDeleteFile {
+	my $id = shift;
+	%StaticMimeTypes = StaticMimeTypes() unless %StaticMimeTypes;
+	# we don't care if the files or $StaticDir don't exist -- just delete!
+	for my $f (map { "$StaticDir/$id.$_" } (values %StaticMimeTypes, 'html')) {
+		unlink $f;				 # delete copies with different extensions
+	}
+}
+
+# override the default!
+sub GetDownloadLink {
+	my ($name, $image, $revision, $alt) = @_;
+	$alt = $name unless $alt;
+	my $id = FreeToNormal($name);
+	AllPagesList();
+	# if the page does not exist
+	return '[' . ($image ? T('image') : T('download')) . ':' . $name
+		. ']' . GetEditLink($id, '?', 1) unless $IndexHash{$id};
+	my $action;
+	if ($revision) {
+		$action = "action=download;id=" . UrlEncode($id) . ";revision=$revision";
+	} elsif ($UsePathInfo) {
+		$action = "download/" . UrlEncode($id);
+	} else {
+		$action = "action=download;id=" . UrlEncode($id);
+	}
+	if ($image) {
+		if ($UsePathInfo and not $revision) {
+			if ($StaticAlways and $StaticUrl) {
+				my $url = $StaticUrl;
+				my $img = UrlEncode(StaticFileName($id));
+				$url =~ s/\%s/$img/g or $url .= $img;
+				$action = $url;
+			} else {
+				$action = $ScriptName . '/' . $action;
+			}
+		} else {
+			$action = $ScriptName . '?' . $action;
+		}
+		my $result = $q->img({-src=>$action, -alt=>$alt, -class=>'upload'});
+		$result = ScriptLink(UrlEncode($id), $result, 'image') unless $id eq $OpenPageName;
+		return $result;
+	} else {
+		return ScriptLink($action, $alt, 'upload');
+	}
+}
+
+# override function from Image Extension to support advanced image tags
+sub ImageGetInternalUrl{
+	my $id = shift;
+	if ($UsePathInfo) {
+		if ($StaticAlways and $StaticUrl) {
+			my $url = $StaticUrl;
+			my $img = UrlEncode(StaticFileName($id));
+			$url =~ s/\%s/$img/g or $url .= $img;
+			return $url;
+		} else {
+			return $ScriptName . '/download/' . UrlEncode($id);
+		}
+	}
+	return $ScriptName . '?action=download;id=' . UrlEncode($id);
+}
+
+
+sub AddLinkedFilesToQueue {
+	my $id = shift;
+	
+	foreach my $pattern (keys %StaticLinkedPages) {
+		if ($id =~ /$pattern/) {
+			push (@StaticQueue,@{$StaticLinkedPages{$pattern}});
+			foreach my $file (@{$StaticLinkedPages{$pattern}}) {
+				AddLinkedFilesToQueue($file);
+			}
+		}
+	}
+	
+	# If you modify a comment page, then update the original
+	# And check for needed updates
+	if ($id =~ /^$CommentsPrefix(.*)/) {
+		my $match = $1;
+		push (@StaticQueue,$match);
+		foreach my $pattern (keys %StaticLinkedPages) {
+			if ($match =~ /$pattern/) {
+				push (@StaticQueue,@{$StaticLinkedPages{$pattern}});
+				foreach my $file (@{$StaticLinkedPages{$pattern}}) {
+					AddLinkedFilesToQueue($file);
+				}
+			}
+		}
+	}
+}
+
+
+sub StaticWriteLinkedFiles {
+	my $raw = GetParam('raw', 0);
+	local *GetDownloadLink = *StaticGetDownloadLink;
+	foreach my $id (@StaticQueue) {
+		StaticWriteFile($id);
+	}
+	
+}
+
+sub StaticGetCommentForm {
+	my ($id, $rev, $comment) = @_;
+	if ($CommentsPrefix ne '' and $id and $rev ne 'history' and $rev ne 'edit'
+		and $OpenPageName =~ /^$CommentsPrefix/) {
+		return $q->div({-class=>'comment'}, GetFormStart(undef, undef, 'comment'),
+					   $q->p(GetHiddenValue('title', $OpenPageName),
+							 GetTextArea('aftertext', $comment ? $comment : $NewComment)),
+					   $q->p(T('Username:'), ' ',
+							 $q->textfield(-name=>'username', -default=>'',
+										   -override=>1, -size=>20, -maxlength=>50),
+							 T('Homepage URL:'), ' ',
+							 $q->textfield(-name=>'homepage', -default=>'',
+										   -override=>1, -size=>40, -maxlength=>100)),
+					   $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save')), ' ',
+							 $q->submit(-name=>'Preview', -value=>T('Preview'))),
+					   $q->endform());
+	}
+	return '';
+}
+
+sub StaticGetHttpHeader {
+	return;
+}
+
+sub StaticGetNearLinksUsed {
+	return;
+}
