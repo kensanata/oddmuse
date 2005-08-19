@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.8 2005/08/19 23:11:44 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.9 2005/08/19 23:46:32 fletcherpenney Exp $</p>';
 
 use vars qw($ClusterMapPage $ClusterMapTOC $FilterUnclusteredRegExp @ClusterMapAdminPages);
 
@@ -116,21 +116,24 @@ sub PrintClusterMap {
 	foreach my $cluster (sort keys %ClusterMap) {
 	    local %Page;
 	    local $OpenPageName='';
+		my $free = $cluster;
+		$free =~ s/_/ /g;
 
 		OpenPage($cluster);
 		
-		if ( GetCluster($Page{text}) eq $cluster ) {
+		if ( FreeToNormal(GetCluster($Page{text})) eq $cluster ) {
 			# Don't display the page name twice if the cluster page is also
 			# a member of the cluster
 			$Page{text} =~ s/^\[*$cluster\]*\n*//s;
+			$Page{text} =~ s/^\[*$free\]*\n*//s;
 		}
 
 		if ($PrintTOCAnchor) {
-			print $q->h1("<a id=\"toc$TOCCount\"></a>" . GetPageOrEditLink($cluster, $cluster));
+			print $q->h1("<a id=\"toc$TOCCount\"></a>" . GetPageOrEditLink($free, $free));
 			$TOCCount++;
 
 		} else {
-			print $q->h1(GetPageOrEditLink($cluster, $cluster));
+			print $q->h1(GetPageOrEditLink($free, $free));
 		}
 		PrintWikiToHTML($Page{text}, 0);
 		
@@ -163,7 +166,7 @@ sub CreateClusterMap {
 			next;
 		}
 		
-		if ($cluster ne $page) {				# Create Cluster Map
+		if ($cluster ne FreeToNormal($page)) {				# Create Cluster Map
 			$ClusterMap{$cluster}{$page} = 1;
 		}
 	}
