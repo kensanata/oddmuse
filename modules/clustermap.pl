@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.7 2005/08/17 13:42:02 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.8 2005/08/19 23:11:44 fletcherpenney Exp $</p>';
 
 use vars qw($ClusterMapPage $ClusterMapTOC $FilterUnclusteredRegExp @ClusterMapAdminPages);
 
@@ -152,7 +152,7 @@ sub CreateClusterMap {
 	
 	foreach my $page ( @pages) {
 		OpenPage($page);
-		my $cluster = GetCluster($Page{text});
+		my $cluster = FreeToNormal(GetCluster($Page{text}));
 		
 		next if ($cluster eq $DeletedPage);		# Don't map Deleted Pages
 		
@@ -229,4 +229,21 @@ sub ClusterMapBrowseResolvedPage {
 	} else {
 		OldBrowseResolvedPage($id);
 	}
+}
+
+*OldPrintWikiToHTML = *PrintWikiToHTML;
+*PrintWikiToHTML = *ClusterMapPrintWikiToHTML;
+
+sub ClusterMapPrintWikiToHTML {
+	my ($pageText, $savecache, $revision, $islocked) = @_;
+
+	# Cause an empty page with the name $ClusterMapPage to
+	# display a map.
+	if (($ClusterMapPage eq $OpenPageName)
+		&& ($pageText =~ /^\s*$/s)){
+		SetParam('rcclusteronly',0);
+		CreateClusterMap();
+		PrintClusterMap();
+	}
+	OldPrintWikiToHTML(@_);
 }

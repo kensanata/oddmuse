@@ -17,7 +17,7 @@
 #	 59 Temple Place, Suite 330
 #	 Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-hybrid.pl,v 1.2 2005/08/18 22:58:43 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-hybrid.pl,v 1.3 2005/08/19 23:13:02 fletcherpenney Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -148,7 +148,7 @@ sub StaticFile {
 }
 
 sub StaticHtml {
-	my $id = shift;
+	my $id = FreeToNormal(shift);
 	my $title = $id;
 	$title =~ s/_/ /g;
 	my $result = '';
@@ -173,7 +173,7 @@ sub StaticHtml {
 	print $q->start_div({-class=> 'content browse'});
 	PrintWikiToHTML($Page{text},0);
 	print $q->end_div();
-	SetParam('rcclusteronly', $id) if (GetCluster($Page{text}) eq $id);
+	SetParam('rcclusteronly', $id) if (FreeToNormal(GetCluster($Page{text})) eq $id);
 	if (($id eq $RCName) || (T($RCName) eq $id) || (T($id) eq $RCName)
 		|| GetParam('rcclusteronly', '')) {
 		print $q->start_div({-class=>'rc'});;
