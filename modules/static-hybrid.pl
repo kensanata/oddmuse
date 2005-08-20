@@ -17,7 +17,7 @@
 #	 59 Temple Place, Suite 330
 #	 Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-hybrid.pl,v 1.3 2005/08/19 23:13:02 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-hybrid.pl,v 1.4 2005/08/20 16:16:11 fletcherpenney Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -153,7 +153,7 @@ sub StaticHtml {
 	$title =~ s/_/ /g;
 	my $result = '';
 	
-	# Isolate ourselves
+	# Isolate our output
 	local *GetHttpHeader = *StaticGetHttpHeader;
 	local *GetCommentForm = *StaticGetCommentForm;
 	%NearLinksUsed = ();
@@ -282,37 +282,43 @@ sub AddLinkedFilesToQueue {
 	
 	foreach my $pattern (keys %StaticLinkedPages) {
 		if ($id =~ /$pattern/) {
-			push (@StaticQueue,@{$StaticLinkedPages{$pattern}});
-			foreach my $file (@{$StaticLinkedPages{$pattern}}) {
-				AddLinkedFilesToQueue($file);
-			}
+			AddNewFilesToQueue(@{$StaticLinkedPages{$pattern}})
 		}
 	}
 	
 	# If you modify a comment page, then update the original
-	# And check for needed updates
+	# And check for recursive updates
 	if ($id =~ /^$CommentsPrefix(.*)/) {
 		my $match = $1;
-		push (@StaticQueue,$match);
-		foreach my $pattern (keys %StaticLinkedPages) {
-			if ($match =~ /$pattern/) {
-				push (@StaticQueue,@{$StaticLinkedPages{$pattern}});
-				foreach my $file (@{$StaticLinkedPages{$pattern}}) {
-					AddLinkedFilesToQueue($file);
-				}
-			}
-		}
+		AddNewFilesToQueue($match);
+	}
+	
+	# If the page added belongs to a cluster, update the cluster's page
+	# and the $ClusterMapPage
+	# especially important with the clustermap module
+	
+	local %Page;
+	local $OpenPageName = '';
+	OpenPage($id);
+	my $cluster = FreeToNormal(GetCluster($Page{text}));
+	
+	if ($cluster ne "" && $cluster ne $id) {
+		AddNewFilesToQueue($cluster);
+		AddNewFilesToQueue($ClusterMapPage);
 	}
 }
 
 
 sub StaticWriteLinkedFiles {
 	my $raw = GetParam('raw', 0);
+	my $writeRC = 0;
 	local *GetDownloadLink = *StaticGetDownloadLink;
 	foreach my $id (@StaticQueue) {
-		StaticWriteFile($id);
+		if (! grep(/^$id$/,@StaticIgnoredPages)) {
+			StaticWriteFile($id);
+			SetParam('rcclusteronly',0);
+		}
 	}
-	
 }
 
 sub StaticGetCommentForm {
@@ -337,4 +343,16 @@ sub StaticGetCommentForm {
 
 sub StaticGetHttpHeader {
 	return;
+}
+
+sub AddNewFilesToQueue {
+	# Add a file to queue, but only if not already there
+	my @ids = @_;
+
+	foreach my $id (@ids) {
+		if (! grep(/^$id$/,@StaticQueue)) {
+			push(@StaticQueue,$id);
+			AddLinkedFilesToQueue($id);
+		}
+	}
 }
