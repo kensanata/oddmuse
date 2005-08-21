@@ -28,7 +28,7 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.20 2005/08/17 23:34:25 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.21 2005/08/21 17:32:32 fletcherpenney Exp $</p>';
 
 @MyRules = (\&MarkdownRule);
 
@@ -103,10 +103,12 @@ sub SanitizeSource {
 *GetCluster = *MarkdownGetCluster;
 
 sub MarkdownGetCluster {
-  $_ = shift;
-  return '' unless $PageCluster;
-  return $1 if ( /^$LinkPattern\n/)
-    or (/^\[\[$FreeLinkPattern\]\]\n/);
+	$_ = shift;
+	return '' unless $PageCluster;
+	if (( /^$LinkPattern\n/)
+		or (/^\[\[$FreeLinkPattern\]\]\n/)) {
+		return $1
+	};
 }
 
 
@@ -305,7 +307,7 @@ sub NewRunSpanGamut {
 	$text = Markdown::_DoItalicsAndBold($text);
 
 	# Do hard breaks:
-	$text =~ s/ {2,}\n/$g_hardbreak/g;
+	$text =~ s/ {2,}\n/$Markdown::g_hardbreak/g;
 
 	return $text;
 }
