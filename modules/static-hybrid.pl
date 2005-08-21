@@ -17,7 +17,7 @@
 #	 59 Temple Place, Suite 330
 #	 Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-hybrid.pl,v 1.4 2005/08/20 16:16:11 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-hybrid.pl,v 1.5 2005/08/21 00:02:04 fletcherpenney Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -126,6 +126,7 @@ sub StaticWriteFile {
 	my $raw = GetParam('raw', 0);
 	my $html = GetParam('html', 1);
 	my $filename = StaticFileName($id);
+
 	OpenPage($id);
 	my ($mimetype, $data) = $Page{text} =~ /^\#FILE ([^ \n]+)\n(.*)/s;
 	return unless $html or $data;
@@ -136,8 +137,12 @@ sub StaticWriteFile {
 		StaticHtml($id);
 	}
 	close(F);
+	warn "StaticWriteFile $id to $filename\n";
 	chmod 0644,"$StaticDir/$filename";
-	print $filename, $raw ? "\n" : $q->br();
+	warn "StaticWriteFile $id to $filename\n";
+	if (GetParam('action','') eq "static") {
+		print $filename, $raw ? "\n" : $q->br();
+	}
 }
 
 sub StaticFile {
@@ -153,13 +158,11 @@ sub StaticHtml {
 	$title =~ s/_/ /g;
 	my $result = '';
 	
-	# Isolate our output
 	local *GetHttpHeader = *StaticGetHttpHeader;
 	local *GetCommentForm = *StaticGetCommentForm;
 	%NearLinksUsed = ();
-	local %Page;
-	local $OpenPageName='';
-	OpenPage($id);
+
+	# Isolate our output
 	local *STDOUT;
 	open(STDOUT, '>', \$result);
 	local *STDERR;
@@ -171,7 +174,7 @@ sub StaticHtml {
 	print qq!<?xml version="1.0" encoding="$HttpCharset" ?>!;
 	print GetHeader($id, QuoteHtml($id), undef, "");
 	print $q->start_div({-class=> 'content browse'});
-	PrintWikiToHTML($Page{text},0);
+	print PageHtml($id);
 	print $q->end_div();
 	SetParam('rcclusteronly', $id) if (FreeToNormal(GetCluster($Page{text})) eq $id);
 	if (($id eq $RCName) || (T($RCName) eq $id) || (T($id) eq $RCName)
@@ -197,6 +200,12 @@ sub StaticFilesNewDoPost {
 		if ($Page{text} =~ /^\#FILE / # if a file was uploaded
 			or $StaticAlways > 1) {
 			CreateDir($StaticDir);
+			# If new Page added, update index
+			if (! $IndexHash{$OpenPageName} ) {
+				push(@IndexList, $OpenPageName);
+				$IndexHash{$OpenPageName} = 1;
+			}
+
 			StaticWriteFile($OpenPageName);
 			AddLinkedFilesToQueue($OpenPageName);
 			StaticWriteLinkedFiles();
@@ -280,6 +289,8 @@ sub ImageGetInternalUrl{
 sub AddLinkedFilesToQueue {
 	my $id = shift;
 	
+	warn "Adding Linked files for $id\n";
+	
 	foreach my $pattern (keys %StaticLinkedPages) {
 		if ($id =~ /$pattern/) {
 			AddNewFilesToQueue(@{$StaticLinkedPages{$pattern}})
@@ -296,7 +307,6 @@ sub AddLinkedFilesToQueue {
 	# If the page added belongs to a cluster, update the cluster's page
 	# and the $ClusterMapPage
 	# especially important with the clustermap module
-	
 	local %Page;
 	local $OpenPageName = '';
 	OpenPage($id);
@@ -313,12 +323,22 @@ sub StaticWriteLinkedFiles {
 	my $raw = GetParam('raw', 0);
 	my $writeRC = 0;
 	local *GetDownloadLink = *StaticGetDownloadLink;
+
+	warn "Print:\n";
+	foreach my $id (@StaticQueue) {
+		warn "\t$id\n";
+	}
+
 	foreach my $id (@StaticQueue) {
 		if (! grep(/^$id$/,@StaticIgnoredPages)) {
+			warn "Saving $id\n";
 			StaticWriteFile($id);
 			SetParam('rcclusteronly',0);
+			warn "Saved $id\n";
 		}
 	}
+	
+	warn "Done saving\n";
 }
 
 sub StaticGetCommentForm {
