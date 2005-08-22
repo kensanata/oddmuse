@@ -1,3 +1,19 @@
+2005-08-22  Alex Schroeder  <alex@gnu.org>
+
+	* modules/usemod.pl (ISBN): Small fix declaring $len.
+
+2005-08-07  Alex Schroeder  <alex@gnu.org>
+
+	* modules/edit-cluster.pl (GetRc): Handle ordinary changes.
+	(EditClusterNewRcHeader): Display checkbox for ordinary changes.
+	(GetRc): Exclude clustered changes if no parameter is given.
+	(EditClusterNewRcHeader): Bugfix.
+
+2005-07-29  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (EncodePage): Don't modify the data in place; make a
+	copy first.
+
 2005-07-27  Alex Schroeder  <alex@gnu.org>
 
 	* modules/big-brother.pl ($US): New separator variable.
