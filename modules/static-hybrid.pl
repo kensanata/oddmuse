@@ -17,7 +17,7 @@
 #	 59 Temple Place, Suite 330
 #	 Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-hybrid.pl,v 1.6 2005/08/22 14:44:44 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-hybrid.pl,v 1.7 2005/08/22 14:52:07 fletcherpenney Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -101,6 +101,7 @@ sub StaticGetDownloadLink {
 
 sub StaticFileName {
 	my $id = shift;
+	$id =~ s/ /_/g;
 	$id =~ s/#.*//;		  # remove named anchors for the filename test
 	return $StaticFiles{$id} if $StaticFiles{$id}; # cache filenames
 	my ($status, $data) = ReadFile(GetPageFile(StaticUrlDecode($id)));
@@ -371,9 +372,8 @@ sub AddNewFilesToQueue {
 
 	foreach my $id (@ids) {
 		if (! grep(/^$id$/,@StaticQueue)) {
-			my $normal = FreeToNormal($id);
-			push(@StaticQueue,$normal);
-			AddLinkedFilesToQueue($normal);
+			push(@StaticQueue,$id);
+			AddLinkedFilesToQueue($id);
 		}
 	}
 }
