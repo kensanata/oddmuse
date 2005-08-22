@@ -17,7 +17,7 @@
 #	 59 Temple Place, Suite 330
 #	 Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-hybrid.pl,v 1.5 2005/08/21 00:02:04 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-hybrid.pl,v 1.6 2005/08/22 14:44:44 fletcherpenney Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -371,8 +371,9 @@ sub AddNewFilesToQueue {
 
 	foreach my $id (@ids) {
 		if (! grep(/^$id$/,@StaticQueue)) {
-			push(@StaticQueue,$id);
-			AddLinkedFilesToQueue($id);
+			my $normal = FreeToNormal($id);
+			push(@StaticQueue,$normal);
+			AddLinkedFilesToQueue($normal);
 		}
 	}
 }
