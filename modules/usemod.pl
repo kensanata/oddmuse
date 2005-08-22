@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.22 2005/07/22 13:45:03 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.23 2005/08/22 19:36:54 as Exp $</p>';
 
 $DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /table\.user/; # mod_perl?
 table.user { border-style:solid; border-width:thin; }
@@ -209,20 +209,19 @@ sub RFC {
 
 sub ISBN {
   my $rawnum = shift;
-  my ($rawprint, $html, $num, $first, $second, $third);
-  $num = $rawnum;
-  $rawprint = $rawnum;
+  my $num = $rawnum;
+  my $rawprint = $rawnum;
   $rawprint =~ s/ +$//;
   $num =~ s/[- ]//g;
-  $len = length($num);
+  my $len = length($num);
   return "ISBN $rawnum" unless $len == 10 or $len == 13 or $len = 14; # be prepared for 2007-01-01
-  $first  = $q->a({-href => Ts('http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s', $num)},
+  my $first  = $q->a({-href => Ts('http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s', $num)},
 		  "ISBN " . $rawprint);
-  $second = $q->a({-href => Ts('http://www.amazon.com/exec/obidos/ISBN=%s', $num)},
+  my $second = $q->a({-href => Ts('http://www.amazon.com/exec/obidos/ISBN=%s', $num)},
 		  T('alternate'));
-  $third  = $q->a({-href => Ts('http://www.pricescan.com/books/BookDetail.asp?isbn=%s', $num)},
+  my $third  = $q->a({-href => Ts('http://www.pricescan.com/books/BookDetail.asp?isbn=%s', $num)},
 		  T('search'));
-  $html	 = "$first ($second, $third)";
+  my $html = "$first ($second, $third)";
   $html .= ' '	if ($rawnum =~ / $/);  # Add space if old ISBN had space.
   return $html;
 }
