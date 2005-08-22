@@ -16,9 +16,9 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: login.pl,v 1.3 2005/08/15 03:07:17 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: login.pl,v 1.4 2005/08/22 00:11:43 fletcherpenney Exp $</p>';
 
-#use vars qw($RegistrationForm $MinimumPasswordLength $RegistrationsMustBeApproved $LoginForm $PasswordFile $PendingPasswordFile $RequireLoginToEdit $ConfirmEmailAddress $ConfirmEmailAddress $UncomfirmedPasswordFile $EmailSenderAddress $EmailCommand $NotifyPendingRegistrations $EmailConfirmationMessage $ResetPasswordMessage $RegistrationForm $LogoutForm $ResetForm $ChangePassForm);
+#use vars qw($RegistrationForm $MinimumPasswordLength $RegistrationsMustBeApproved $LoginForm $PasswordFile $PendingPasswordFile $RequireLoginToEdit $ConfirmEmailAddress $ConfirmEmailAddress $UncomfirmedPasswordFile $EmailSenderAddress $EmailCommand $NotifyPendingRegistrations $EmailConfirmationMessage $ResetPasswordMessage $RegistrationForm $LogoutForm $ResetForm $ChangePassForm $RequireCamelUserName);
 
 my $EncryptedPassword = "";
 
@@ -26,6 +26,7 @@ push(@MyAdminCode, \&LoginAdminRule);
 
 $EmailRegExp = '[\w\.\-]+@([\w\-]+\.)+[\w]+';
 $UsernameRegExp = '([A-Z][a-z]+){2,}';
+$RequireCamelUserName = 0 unless defined $RequireCamelUserName;
 
 $RequireLoginToEdit = 1 unless defined $RequireLoginToEdit;
 $MinimumPasswordLength = 6 unless defined $MinimumPasswordLength;
@@ -212,8 +213,10 @@ sub DoProcessRegistration {
 	my $pwd2 = GetParam('pwd2', '');
 	my $email = GetParam('email', '');
 
-	ReportError(T('Please choose a username of the form "FirstLast" using your real name.'))
+	if ($RequireCamelUserName) {
+		ReportError(T('Please choose a username of the form "FirstLast" using your real name.'))
 		unless ($username =~ /$UsernameRegExp/);
+	}
 	ReportError(T('The passwords do not match.'))
 		unless ($pwd1 eq $pwd2);
 	ReportError(Ts('The password must be at least %s characters.', $MinimumPasswordLength))
