@@ -1,5 +1,11 @@
 2005-08-23  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl ($RssStyleSheet, GetRcRss): New option, use it.
+	(GetHtmlHeader, GetCss): Moved CSS determining code out into
+	separate function.
+	(TextIsFile): Don't use /m for the match (an uploaded file MUST
+	start with #FILE and the MIME type).
+
 	* modules/markup.pl (MarkupForcedPairs): New.
 	(MarkupRule, MarkupInit): Handle new option.
 	(MarkupRule): Fix %MarkupLines handling.
