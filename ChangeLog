@@ -1,5 +1,9 @@
 2005-08-23  Alex Schroeder  <alex@gnu.org>
 
+	* modules/markup.pl (MarkupForcedPairs): New.
+	(MarkupRule, MarkupInit): Handle new option.
+	(MarkupRule): Fix %MarkupLines handling.
+
 	* wiki.pl (DoHistory): Use GET instead of POST for history links.
 	(GetFormStart): Fix class for forms.
 	(GetKeptDiff): Handle identical revisions.
