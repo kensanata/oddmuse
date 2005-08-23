@@ -333,7 +333,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.586 2005/08/23 08:41:10 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.587 2005/08/23 13:00:13 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -3966,7 +3966,7 @@ sub DeletePermanentAnchors {
   ReleaseLockDir('permanentanchors');
 }
 
-sub TextIsFile { $_[0] =~ /^#FILE (\S+)$/ }
+sub TextIsFile { $_[0] =~ /^#FILE (\S+)\n/ }
 
 sub handler {
   my $r = shift;
