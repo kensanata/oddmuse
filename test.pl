@@ -1217,67 +1217,52 @@ update_page('KeptRevisions', 'fifth', '', 1);
 
 # Show the current revision
 
-@Test = split('\n',<<'EOT');
-KeptRevisions
-fifth
-EOT
-
-test_page(get_page(KeptRevisions), @Test);
+test_page(get_page(KeptRevisions),
+	  'KeptRevisions',
+	  'fifth');
 
 # Show the other revision
 
-@Test = split('\n',<<'EOT');
-Showing revision 2
-second
-EOT
+test_page(get_page('action=browse revision=2 id=KeptRevisions'),
+	  'Showing revision 2',
+	  'second');
 
-test_page(get_page('action=browse revision=2 id=KeptRevisions'), @Test);
-
-@Test = split('\n',<<'EOT');
-Showing revision 1
-first
-EOT
-
-test_page(get_page('action=browse revision=1 id=KeptRevisions'), @Test);
+test_page(get_page('action=browse revision=1 id=KeptRevisions'),
+	 'Showing revision 1',
+	  'first');
 
 # Show the current revision if an inexisting revision is asked for
 
-@Test = split('\n',<<'EOT');
-Revision 9 not available \(showing current revision instead\)
-fifth
-EOT
-
-test_page(get_page('action=browse revision=9 id=KeptRevisions'), @Test);
+test_page(get_page('action=browse revision=9 id=KeptRevisions'),
+	  'Revision 9 not available \(showing current revision instead\)',
+	  'fifth');
 
 # Show a major diff
 
-@Test = split('\n',<<'EOT');
-Difference \(from prior major revision\)
-second
-fifth
-EOT
-
-test_page(get_page('action=browse diff=1 id=KeptRevisions'), @Test);
+test_page(get_page('action=browse diff=1 id=KeptRevisions'),
+	  'Difference \(from prior major revision\)',
+	  'second',
+	  'fifth');
 
 # Show a minor diff
 
-@Test = split('\n',<<'EOT');
-Difference \(from prior minor revision\)
-fourth
-fifth
-EOT
-
-test_page(get_page('action=browse diff=2 id=KeptRevisions'), @Test);
+test_page(get_page('action=browse diff=2 id=KeptRevisions'),
+	  'Difference \(from prior minor revision\)',
+	  'fourth',
+	  'fifth');
 
 # Show a diff from the history page comparing two specific revisions
 
-@Test = split('\n',<<'EOT');
-Difference \(from revision 2 to revision 4\)
-second
-fourth
-EOT
+test_page(get_page('action=browse diff=1 revision=4 diffrevision=2 id=KeptRevisions'),
+	  'Difference \(from revision 2 to revision 4\)',
+	  'second',
+	  'fourth');
 
-test_page(get_page('action=browse diff=1 revision=4 diffrevision=2 id=KeptRevisions'), @Test);
+# Show no difference
+update_page('KeptRevisions', 'second');
+test_page(get_page('action=browse diff=1 revision=6 diffrevision=2 id=KeptRevisions'),
+	  'Difference \(from revision 2 to revision 6\)',
+	  'The two revisions are the same');
 
 # --------------------
 
