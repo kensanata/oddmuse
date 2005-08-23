@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: markup.pl,v 1.17 2005/01/06 11:35:04 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: markup.pl,v 1.18 2005/08/23 02:48:13 as Exp $</p>';
 
 use vars qw(%MarkupPairs %MarkupSingles %MarkupLines);
 
@@ -29,6 +29,15 @@ $RuleOrder{\&MarkupRule} = 150;
 		'_' => ['em', {'style'=>'text-decoration: underline; font-style: normal;'}],
 		'~' => 'em',
 	       );
+
+%MarkupForcedPairs = ('{{{|}}}' => ['code', {'style'=>'white-space:pre;'}],
+		      '##' => 'code',
+		      '%%' => 'span',
+		      '**' => 'b',
+		      '//' => 'i',
+		      '__' => ['em', {'style'=>'text-decoration: underline; font-style: normal;'}],
+		      '~~' => 'em',
+		     );
 
 # This could be done using macros, however: If we convert to the
 # numbered entity, the next person editing finds it hard to read.  If
@@ -48,6 +57,7 @@ my $words = '([A-Za-z\x80-\xff][-%.,:;\'"!?0-9 A-Za-z\x80-\xff]*?)';
 my $noword = '(?=[^-0-9A-Za-z\x80-\xff]|$)';
 
 my $markup_pairs_re = '';
+my $markup_forced_pairs_re = '';
 my $markup_singles_re = '';
 my $markup_lines_re = '';
 
@@ -58,6 +68,18 @@ sub MarkupInit {
   $markup_pairs_re = '\G([' . join('', (map { quotemeta(QuoteHtml($_)) }
 					keys(%MarkupPairs))) . '])';
   $markup_pairs_re = qr/\G${markup_pairs_re}${words}\1${noword}/;
+  $markup_forced_pairs_re = '\G(' . join('|', (map { @_=split/\|/;
+							quotemeta(QuoteHtml(shift)) }
+						  keys(%MarkupForcedPairs)))
+    . ')((:?.*?\n?)*?)(' . join('|', (map { @_ = split/\|/;
+				   quotemeta(QuoteHtml(pop)) }
+			     keys(%MarkupForcedPairs))). ')';
+  $markup_forced_pairs_re = qr/\G${markup_forced_pairs_re}/;
+  foreach (keys %MarkupForcedPairs) {
+    if (@_=split/\|/) {
+      $MarkupForcedPairs{(shift)} = $MarkupForcedPairs{$_};
+    }
+  }
   $markup_singles_re = '\G(' . join('|', (map { quotemeta(QuoteHtml($_)) }
 					  keys(%MarkupSingles))) . ')';
   $markup_singles_re = qr/$markup_singles_re/;
@@ -90,9 +112,12 @@ sub MarkupRule {
     while (m/$markup_lines_re/gc) {
       $str .= $q->span($1) . $2;
     }
-    return MarkupTag($MarkupLines{UnquoteHtml($tag)}, $str);
-  }
-  elsif (%MarkupPairs and m/$markup_pairs_re/gc) {
+    return CloseHtmlEnvironments()
+      . MarkupTag($MarkupLines{UnquoteHtml($tag)}, $str)
+      . AddHtmlEnvironment('p');
+  } elsif (%MarkupForcedPairs and m/$markup_forced_pairs_re/gc) {
+    return MarkupTag($MarkupForcedPairs{UnquoteHtml($1)}, $2);
+  } elsif (%MarkupPairs and m/$markup_pairs_re/gc) {
     return MarkupTag($MarkupPairs{UnquoteHtml($1)}, $2);
   } elsif (%MarkupSingles and m/$markup_singles_re/gc) {
     return $MarkupSingles{UnquoteHtml($1)};
