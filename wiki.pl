@@ -333,7 +333,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.585 2005/08/23 07:42:28 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.586 2005/08/23 08:41:10 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -1776,7 +1776,11 @@ sub GetRcRss {
   $rss .= "<lastBuildDate>" . $date . "</lastBuildDate>\n";
   $rss .= "<generator>Oddmuse</generator>\n";
   $rss .= "<copyright>" . $RssRights . "</copyright>\n" if $RssRights;
-  $rss .= "<creativeCommons:license>" . $RssLicense . "</creativeCommons:license>\n" if $RssLicense;
+  if (ref $RssLicense eq 'ARRAY') {
+      $rss .= join('', map {"<creativeCommons:license>$_</creativeCommons:license>\n"} @$RssLicense);
+  } elsif ($RssLicense) {
+    $rss .= "<creativeCommons:license>" . $RssLicense . "</creativeCommons:license>\n";
+  }
   $rss .= "<wiki:interwiki>" . $InterWikiMoniker . "</wiki:interwiki>\n" if $InterWikiMoniker;
   if ($RssImageUrl) {
     $rss .= "<image>\n";
