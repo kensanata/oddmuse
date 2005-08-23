@@ -54,13 +54,13 @@ $EditNote $HttpCharset $UserGotoBar $VisitorFile $RcFile %Smilies
 $RssRights $BannedCanRead $SurgeProtection $TopLinkBar $LanguageLimit
 $SurgeProtectionTime $SurgeProtectionViews $DeletedPage %Languages
 $InterMap $ValidatorLink @LockOnCreation $PermanentAnchors
-$PermanentAnchorsFile @MyRules %CookieParameters @UserGotoBarPages
-$NewComment $StyleSheetPage $ConfigPage $ScriptName @MyMacros
-$CommentsPrefix @UploadTypes $DefaultStyleSheet $AllNetworkFiles
-$UsePathInfo $UploadAllowed $LastUpdate $PageCluster $HtmlHeaders
-$RssInterwikiTranslate $UseCache $ModuleDir $DebugInfo $FullUrlPattern
-%InvisibleCookieParameters $FreeInterLinkPattern @AdminPages
-@MyAdminCode @MyInitVariables @MyMaintenance);
+$RssStyleSheet $PermanentAnchorsFile @MyRules %CookieParameters
+@UserGotoBarPages $NewComment $StyleSheetPage $ConfigPage $ScriptName
+@MyMacros $CommentsPrefix @UploadTypes $DefaultStyleSheet
+$AllNetworkFiles $UsePathInfo $UploadAllowed $LastUpdate $PageCluster
+$HtmlHeaders $RssInterwikiTranslate $UseCache $ModuleDir $DebugInfo
+$FullUrlPattern %InvisibleCookieParameters $FreeInterLinkPattern
+@AdminPages @MyAdminCode @MyInitVariables @MyMaintenance);
 
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
@@ -143,6 +143,7 @@ $RssImageUrl	  = $LogoUrl;   # URL to image to associate with your RSS feed
 $RssRights	  = '';         # Copyright notice for RSS, usually an URL to the appropriate text
 $RssExclude       = 'RssExclude'; # name of the page that lists pages to be excluded from the feed
 $RssCacheHours    =  1;         # How many hours to cache remote RSS files
+$RssStyleSheet    = '';         # External style sheet for RSS files
 $UploadAllowed	  = 0;	        # 1 = yes, 0 = administrators only
 @UploadTypes	  = ('image/jpeg', 'image/png'); # MIME types allowed, all allowed if empty list
 $EmbedWiki   = 0;	        # 1 = no headers/footers
@@ -332,7 +333,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.584 2005/08/23 00:03:14 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.585 2005/08/23 07:42:28 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -1760,8 +1761,9 @@ sub GetRcRss {
   }
   my $limit = GetParam("rsslimit", 15); # Only take the first 15 entries
   my $count = 0;
-  my $rss = qq{<?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"
+  my $rss = qq{<?xml version="1.0" encoding="utf-8"?>};
+  $rss .= qq{<?xml-stylesheet type="text/css" href="$RssStyleSheet" ?>} if $RssStyleSheet;
+  $rss .= qq{<rss version="2.0"
      xmlns:wiki="http://purl.org/rss/1.0/modules/wiki/"
      xmlns:creativeCommons="http://backend.userland.com/creativeCommonsRssModule">
 <channel>
@@ -1827,7 +1829,7 @@ sub GetRcRss {
 
 sub DoRss {
   print GetHttpHeader('application/xml');
-   DoRc(\&GetRcRss);
+  DoRc(\&GetRcRss);
 }
 
 # == Random ==
@@ -2123,19 +2125,7 @@ sub GetHtmlHeader {
   my ($title, $id) = @_;
   my $html;
   $html = $q->base({-href=>$SiteBase}) if $SiteBase;
-  my $css = GetParam('css', '');
-  if ($css) {
-    $css =~ s/".*//; # prevent javascript injection
-    foreach my $sheet (split(/\s+/, $css)) {
-      $html .= qq(<link type="text/css" rel="stylesheet" href="$sheet" />);
-    }
-  } elsif ($StyleSheet) {
-    $html .= qq(<link type="text/css" rel="stylesheet" href="$StyleSheet" />);
-  } elsif ($StyleSheetPage) {
-    $html .= $q->style({-type=>'text/css'}, GetPageContent($StyleSheetPage));
-  } else {
-    $html .= $q->style({-type=>'text/css'}, "<!--$DefaultStyleSheet-->");
-  }
+  $html .= GetCss();
   # INDEX,NOFOLLOW tag for wiki pages only so that the robot doesn't index
   # history pages.  INDEX,FOLLOW tag for RecentChanges and the index of all
   # pages.  We need the INDEX here so that the spider comes back to these
@@ -2160,6 +2150,22 @@ sub GetHtmlHeader {
     . $q->head($q->title($q->escapeHTML($title)) . $html . $HtmlHeaders)
     . '<body class="' . GetParam('theme', $ScriptName) . '">';
   return $html;
+}
+
+sub GetCss {
+  my $css = GetParam('css', '');
+  if ($css) {
+    $css =~ s/".*//; # prevent javascript injection
+    foreach my $sheet (split(/\s+/, $css)) {
+      return qq(<link type="text/css" rel="stylesheet" href="$sheet" />);
+    }
+  } elsif ($StyleSheet) {
+    return qq(<link type="text/css" rel="stylesheet" href="$StyleSheet" />);
+  } elsif ($StyleSheetPage) {
+    return $q->style({-type=>'text/css'}, GetPageContent($StyleSheetPage));
+  } else {
+    return $q->style({-type=>'text/css'}, "<!--$DefaultStyleSheet-->");
+  }
 }
 
 sub PrintFooter {
@@ -3956,7 +3962,7 @@ sub DeletePermanentAnchors {
   ReleaseLockDir('permanentanchors');
 }
 
-sub TextIsFile { $_[0] =~ /^#FILE (\S+)$/m }
+sub TextIsFile { $_[0] =~ /^#FILE (\S+)$/ }
 
 sub handler {
   my $r = shift;
