@@ -1,3 +1,9 @@
+2005-08-23  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoHistory): Use GET instead of POST for history links.
+	(GetFormStart): Fix class for forms.
+	(GetKeptDiff): Handle identical revisions.
+
 2005-08-22  Alex Schroeder  <alex@gnu.org>
 
 	* modules/usemod.pl (ISBN): Small fix declaring $len.
