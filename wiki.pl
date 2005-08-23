@@ -332,7 +332,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.583 2005/07/29 14:45:00 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.584 2005/08/23 00:03:14 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -1853,7 +1853,7 @@ sub DoHistory {
     push(@html, GetHistoryLine($id, \%keep, $row++));
   }
   if ($UseDiff) {
-    @html = (GetFormStart(undef, undef, 'history'),
+    @html = (GetFormStart(undef, 'get', 'history'),
 	     $q->p( # don't use $q->hidden here, the sticky action value will be used instead
 		   $q->input({-type=>'hidden', -name=>'action', -value=>'browse'}),
 		   $q->input({-type=>'hidden', -name=>'diff', -value=>'1'}),
@@ -2279,8 +2279,8 @@ sub GetCommentForm {
 sub GetFormStart {
   my $encoding = (shift) ? 'multipart/form-data' : 'application/x-www-form-urlencoded';
   my $method = (shift) ? 'get' : 'post';
-  my $class = (shift) || $method;
-  return $q->start_form(-method=>$method, -action=>$FullUrl, -enctype=>$encoding);
+  my $class = (shift);
+  return $q->start_form(-method=>$method, -action=>$FullUrl, -enctype=>$encoding, -class=>$class);
 }
 
 sub GetSearchForm {
@@ -2345,6 +2345,7 @@ sub GetKeptDiff {
   $revision = 1 unless $revision;
   my ($old, $rev) = GetTextRevision($revision, 1);
   return '' unless $rev;
+  return T("The two revisions are the same.") if $old eq $new;
   return GetDiff($old, $new, $rev);
 }
 
