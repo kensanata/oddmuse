@@ -5,6 +5,8 @@
 	separate function.
 	(TextIsFile): Don't use /m for the match (an uploaded file MUST
 	start with #FILE and the MIME type).
+	(GetRcRss): Allow multiple licenses using an array ref for
+	$RssLicense.
 
 	* modules/markup.pl (MarkupForcedPairs): New.
 	(MarkupRule, MarkupInit): Handle new option.
