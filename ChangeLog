@@ -1,3 +1,10 @@
+2005-08-25  Alex Schroeder  <alex@gnu.org>
+
+	* modules/toc.pl (TocRule): Move TOC to just before the first
+	header.
+	(NewTocGetHeader): Deleted. 
+	(TocHeadings): No longer take an argument.
+
 2005-08-23  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl ($RssStyleSheet, GetRcRss): New option, use it.
