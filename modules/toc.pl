@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.21 2004/12/05 04:03:32 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.22 2005/08/25 16:27:59 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
@@ -25,9 +25,9 @@ push(@MyRules, \&TocRule);
 $RuleOrder{ \&TocRule } = 90;
 
 my $TocCounter = 0;
+my $TocShown = 0;
 
 sub TocRule {
-
     # copied from usemod.pl
     # headings using = (with lookahead)
     if (   $bol
@@ -35,7 +35,10 @@ sub TocRule {
         && m/\G(\s*\n)*(\=+)[ \t]*(?=[^=\n]+=)/cg) {
         my $depth = length($2);
         $depth = 6 if $depth > 6;
-	my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '')
+	my $html;
+	$html = TocHeadings() unless $TocShown;
+	$TocShown = 1;
+	$html .= CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '')
 	  . AddHtmlEnvironment('h' . $depth) . $q->a({-id=>'toc' . $TocCounter++})
           . AddHtmlEnvironment('p');
 	$PortraitSupportColorDiv = 0; # after the HTML has been determined.
@@ -56,7 +59,10 @@ sub TocRule {
         my $depth = length($2);
         $depth = 6 if $depth > 6;
 	my $text = $3;
-	my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '') . "<h$depth>"
+	my $html;
+	$html = TocHeadings() unless $TocShown;
+	$TocShown = 1;
+	$html .= CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '') . "<h$depth>"
 	  . $q->a({-id=>'toc' . $TocCounter++}, $text) . "</h$depth>" . AddHtmlEnvironment('p');
 	$PortraitSupportColorDiv = 0; # after the HTML has been determined.
 	$PortraitSupportColor = 0;
@@ -65,22 +71,8 @@ sub TocRule {
     return undef;
 }
 
-*OldTocGetHeader = *GetHeader;
-*GetHeader       = *NewTocGetHeader;
-
-sub NewTocGetHeader {
-    my ($id) = @_;
-    my $result = OldTocGetHeader(@_);
-
-    # append TOC to header
-    $result .= TocHeadings($id) if $id;
-    return $result;
-}
-
 sub TocHeadings {
-    my $id = shift;
-    $page = GetPageContent($id);
-
+    my $page = $Page{text}; # work on the page that is currently open!
     # ignore all the stuff that gets processed anyway
     foreach my $tag ('nowiki', 'pre', 'code') {
         $page =~ s|<$tag>(.*\n)*?</$tag>||gi;
@@ -89,7 +81,6 @@ sub TocHeadings {
     my $HeadingsLevel      = undef;
     my $HeadingsLevelStart = undef;
     my $count              = 0;
-
     # try to determine what will end up as a header
     foreach $line (grep(/^\=+.*\=+[ \t]*$/, split(/\n/, $page))) {
         next unless $line =~ /^(\=+)[ \t]*(.*?)[ \t]*\=+[ \t]*$/;
@@ -99,20 +90,17 @@ sub TocHeadings {
         my $link = "toc$count";
         $text = QuoteHtml($text);
         if (not defined $HeadingsLevelStart) {
-
     # $HeadingsLevel is set to $depth - 1 so that we get an opening of the list.
     # We need $HeadingsLevelStart to close all open tags at the end.
             $HeadingsLevel      = $depth - 1;
             $HeadingsLevelStart = $depth - 1;
         }
         $count++;
-
         # if the first subheading is has depth 2, then
         # $HeadingsLevelStart is 1, and later subheadings may not be
         # at level 1 or below.
         $depth = $HeadingsLevelStart + 1 if $depth <= $HeadingsLevelStart;
         $depth = 6 if $depth > 6;
-
         # the order of the three expressions is important!
         while ($HeadingsLevel > $depth) {
             $Headings .= '</li></ol>';
@@ -127,7 +115,6 @@ sub TocHeadings {
         }
         $Headings .= "<a href=\"#$link\">$text</a>";
     }
-
     while ($HeadingsLevel > $HeadingsLevelStart) {
         $Headings .= '</li></ol>';
         $HeadingsLevel--;
