@@ -1,3 +1,7 @@
+2005-08-26  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetRcRss): Allow XSL stylesheets for the RSS feed, too.
+
 2005-08-25  Alex Schroeder  <alex@gnu.org>
 
 	* modules/toc.pl (TocRule): Move TOC to just before the first
