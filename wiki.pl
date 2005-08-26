@@ -333,7 +333,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.588 2005/08/26 20:38:09 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.589 2005/08/26 20:42:58 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -1762,7 +1762,7 @@ sub GetRcRss {
   my $limit = GetParam("rsslimit", 15); # Only take the first 15 entries
   my $count = 0;
   my $rss = qq{<?xml version="1.0" encoding="utf-8"?>};
-  if ($RssStyleSheet ~= /\.(xslt?|xml)$/) {
+  if ($RssStyleSheet =~ /\.(xslt?|xml)$/) {
     $rss .= qq{<?xml-stylesheet type="text/xml" href="$RssStyleSheet" ?>};
   } elsif ($RssStyleSheet) {
     $rss .= qq{<?xml-stylesheet type="text/css" href="$RssStyleSheet" ?>};
