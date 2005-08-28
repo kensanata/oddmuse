@@ -82,12 +82,10 @@ sub get {
     if (OddMuse::FileFresh()) {
       print $q->header( -status         => '304 Not Modified', );
     } else {
-      my $cookie = OddMuse::Cookie();
       print $q->header( -cache_control  => 'max-age=10',
 			-etag           => $OddMuse::Page{ts},
 			-type           => "text/plain; charset=$OddMuse::HttpCharset",
-			-status         => "200 OK",
-		        -cookie         => $cookie);
+			-status         => "200 OK",);
       print $OddMuse::Page{text} unless $head;
     }
   } else {
