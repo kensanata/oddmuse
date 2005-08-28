@@ -17,38 +17,12 @@ sub DavNewDoBrowseRequest {
   $dav->run($q)||DavOldDoBrowseRequest();
 }
 
-#   my $etag = PageEtag();
-#   my $type = 'application/xml';
-#   my %headers = (-cache_control=>($UseCache < 0 ? 'no-cache' : 'max-age=10'));
-#   $headers{-etag} = $etag if GetParam('cache', $UseCache) >= 2;
-#   if ($HttpCharset ne '') {
-#     $headers{-type} = "$type; charset=$HttpCharset";
-#   } else {
-#     $headers{-type} = $type;
-#   }
-
-# sub Dav {
-#   my ($tag, @content) = @_;
-#   my $content = join("\n", @content);
-#   my $nl = ($#content == 1 and length($content) > 40) ? "\n" : "";
-#   return "<D:$tag>$nl$content$nl</D:$tag>\n";
-# }
-
-# sub Link {
-#   return $ScriptName . ($UsePathInfo ? '/' : '?') . shift;
-# }
-
 package OddMuse::DAV;
 use strict;
 use warnings;
 use Encode;
-use HTTP::Date qw(time2str time2isoz);
-use HTTP::Headers;
-use HTTP::Response;
-use HTTP::Request;
-use File::Spec;
-use URI;
 use URI::Escape;
+use HTTP::Date qw(time2str time2isoz);
 use XML::LibXML;
 
 # These are the methods we understand -- but not all of them are truly
