@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.22 2005/08/25 16:27:59 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.23 2005/08/28 17:31:01 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
@@ -28,98 +28,111 @@ my $TocCounter = 0;
 my $TocShown = 0;
 
 sub TocRule {
-    # copied from usemod.pl
-    # headings using = (with lookahead)
-    if (   $bol
-        && $UseModMarkupInTitles
-        && m/\G(\s*\n)*(\=+)[ \t]*(?=[^=\n]+=)/cg) {
-        my $depth = length($2);
-        $depth = 6 if $depth > 6;
-	my $html;
-	$html = TocHeadings() unless $TocShown;
-	$TocShown = 1;
-	$html .= CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '')
-	  . AddHtmlEnvironment('h' . $depth) . $q->a({-id=>'toc' . $TocCounter++})
-          . AddHtmlEnvironment('p');
-	$PortraitSupportColorDiv = 0; # after the HTML has been determined.
-	$PortraitSupportColor = 0;
-        return $html;
-    } elsif (   $UseModMarkupInTitles
-	     && m/\G[ \t]*=+\n?/cg
-	     && (   InElement('h1')
-		 || InElement('h2')
-		 || InElement('h3')
-		 || InElement('h4')
-		 || InElement('h5')
-		 || InElement('h6'))) {
-        return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
-    } elsif ($bol
-        && !$UseModMarkupInTitles
-        && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg) {
-        my $depth = length($2);
-        $depth = 6 if $depth > 6;
-	my $text = $3;
-	my $html;
-	$html = TocHeadings() unless $TocShown;
-	$TocShown = 1;
-	$html .= CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '') . "<h$depth>"
-	  . $q->a({-id=>'toc' . $TocCounter++}, $text) . "</h$depth>" . AddHtmlEnvironment('p');
-	$PortraitSupportColorDiv = 0; # after the HTML has been determined.
-	$PortraitSupportColor = 0;
-        return $html;
-    }
-    return undef;
+  if (m/\G&lt;toc&gt;/gci) {
+    my $html = CloseHtmlEnvironments()
+      . ($PortraitSupportColorDiv ? '</div>' : '');
+    $html .= TocHeadings() unless $TocShown;
+    $html .= AddHtmlEnvironment('p');
+    $TocShown = 1;
+    $PortraitSupportColorDiv = 0; # after the HTML has been determined.
+    $PortraitSupportColor = 0;
+    return $html;
+  } elsif ($bol
+	   && $UseModMarkupInTitles
+	   && m/\G(\s*\n)*(\=+)[ \t]*(?=[^=\n]+=)/cg) {
+    my $depth = length($2);
+    $depth = 6 if $depth > 6;
+    my $html = CloseHtmlEnvironments()
+      . ($PortraitSupportColorDiv ? '</div>' : '');
+    $html .= TocHeadings() unless $TocShown;
+    $html .= AddHtmlEnvironment('h' . $depth)
+      . $q->a({-id=>'toc' . $TocCounter++});
+    $TocShown = 1;
+    $PortraitSupportColorDiv = 0; # after the HTML has been determined.
+    $PortraitSupportColor = 0;
+    return $html;
+  } elsif ($UseModMarkupInTitles
+	   && m/\G[ \t]*=+\n?/cg
+	   && (InElement('h1')
+		|| InElement('h2')
+		|| InElement('h3')
+		|| InElement('h4')
+		|| InElement('h5')
+		|| InElement('h6'))) {
+    return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
+  } elsif ($bol
+	   && !$UseModMarkupInTitles
+	   && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg) {
+    my $depth = length($2);
+    $depth = 6 if $depth > 6;
+    my $text = $3;
+    my $html = CloseHtmlEnvironments()
+      . ($PortraitSupportColorDiv ? '</div>' : '');
+    $html .= TocHeadings() unless $TocShown;
+    $html .= "<h$depth>"
+      . $q->a({-id=>'toc' . $TocCounter++}, $text)
+      . "</h$depth>"
+      . AddHtmlEnvironment('p');
+    $TocShown = 1;
+    $PortraitSupportColorDiv = 0; # after the HTML has been determined.
+    $PortraitSupportColor = 0;
+    return $html;
+  }
+  return undef;
 }
 
 sub TocHeadings {
-    my $page = $Page{text}; # work on the page that is currently open!
-    # ignore all the stuff that gets processed anyway
-    foreach my $tag ('nowiki', 'pre', 'code') {
-        $page =~ s|<$tag>(.*\n)*?</$tag>||gi;
+  my $oldpos = pos;          # make this sub not destroy the value of pos
+  my $page = $Page{text};   # work on the page that is currently open!
+  # ignore all the stuff that gets processed anyway
+  foreach my $tag ('nowiki', 'pre', 'code') {
+    $page =~ s|<$tag>(.*\n)*?</$tag>||gi;
+  }
+  my $Headings           = "<h2>" . T('Contents') . "</h2>";
+  my $HeadingsLevel      = undef;
+  my $HeadingsLevelStart = undef;
+  my $count              = 0;
+  # try to determine what will end up as a header
+  foreach my $line (grep(/^\=+.*\=+[ \t]*$/, split(/\n/, $page))) {
+    next unless $line =~ /^(\=+)[ \t]*(.*?)[ \t]*\=+[ \t]*$/;
+    my $depth = length($1);
+    my $text  = $2;
+    next unless $text;
+    my $link = "toc$count";
+    $text = QuoteHtml($text);
+    if (not defined $HeadingsLevelStart) {
+      # $HeadingsLevel is set to $depth - 1 so that we get an opening
+      # of the list.  We need $HeadingsLevelStart to close all open
+      # tags at the end.
+      $HeadingsLevel      = $depth - 1;
+      $HeadingsLevelStart = $depth - 1;
     }
-    my $Headings           = "<h2>" . T('Contents') . "</h2>";
-    my $HeadingsLevel      = undef;
-    my $HeadingsLevelStart = undef;
-    my $count              = 0;
-    # try to determine what will end up as a header
-    foreach $line (grep(/^\=+.*\=+[ \t]*$/, split(/\n/, $page))) {
-        next unless $line =~ /^(\=+)[ \t]*(.*?)[ \t]*\=+[ \t]*$/;
-        my $depth = length($1);
-        my $text  = $2;
-        next unless $text;
-        my $link = "toc$count";
-        $text = QuoteHtml($text);
-        if (not defined $HeadingsLevelStart) {
-    # $HeadingsLevel is set to $depth - 1 so that we get an opening of the list.
-    # We need $HeadingsLevelStart to close all open tags at the end.
-            $HeadingsLevel      = $depth - 1;
-            $HeadingsLevelStart = $depth - 1;
-        }
-        $count++;
-        # if the first subheading is has depth 2, then
-        # $HeadingsLevelStart is 1, and later subheadings may not be
-        # at level 1 or below.
-        $depth = $HeadingsLevelStart + 1 if $depth <= $HeadingsLevelStart;
-        $depth = 6 if $depth > 6;
-        # the order of the three expressions is important!
-        while ($HeadingsLevel > $depth) {
-            $Headings .= '</li></ol>';
-            $HeadingsLevel--;
-        }
-        if ($HeadingsLevel == $depth) {
-            $Headings .= '</li><li>';
-        }
-        while ($HeadingsLevel < $depth) {
-            $Headings .= '<ol><li>';
-            $HeadingsLevel++;
-        }
-        $Headings .= "<a href=\"#$link\">$text</a>";
+    $count++;
+    # if the first subheading is has depth 2, then
+    # $HeadingsLevelStart is 1, and later subheadings may not be
+    # at level 1 or below.
+    $depth = $HeadingsLevelStart + 1 if $depth <= $HeadingsLevelStart;
+    $depth = 6 if $depth > 6;
+    # the order of the three expressions is important!
+    while ($HeadingsLevel > $depth) {
+      $Headings .= '</li></ol>';
+      $HeadingsLevel--;
     }
-    while ($HeadingsLevel > $HeadingsLevelStart) {
-        $Headings .= '</li></ol>';
-        $HeadingsLevel--;
+    if ($HeadingsLevel == $depth) {
+      $Headings .= '</li><li>';
     }
-    return '' if $count <= 2;
-    return '<div class="toc">' . $Headings . '</div>'
-      if $Headings;
+    while ($HeadingsLevel < $depth) {
+      $Headings .= '<ol><li>';
+      $HeadingsLevel++;
+    }
+    $Headings .= "<a href=\"#$link\">$text</a>";
+  }
+  while ($HeadingsLevel > $HeadingsLevelStart) {
+    $Headings .= '</li></ol>';
+    $HeadingsLevel--;
+  }
+  pos = $oldpos;
+  return '' if $count <= 2;
+  return $q->div({-class=>'toc'}, $Headings)
+    if $Headings;
 }
