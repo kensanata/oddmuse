@@ -1,10 +1,12 @@
 2005-08-28  Alex Schroeder  <alex@gnu.org>
 
 	* modules/toc.pl (TocRule): Added <toc> rule.  Fixed some markup
-	bugs (such that the toc div will now come after the closing of the
+	bugs such that the toc div will now come after the closing of the
 	portrait div instead of nested within.
 	(TocHeadings): Protected pos in order to make this sub usable in
 	TocRule without the pos remembering workaround.
+	($TocAutomatic): New option to control whether the table of
+	contents is inserted automatically.
 
 2005-08-26  Alex Schroeder  <alex@gnu.org>
 
