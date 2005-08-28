@@ -54,19 +54,13 @@ use XML::LibXML;
 # These are the methods we understand -- but not all of them are truly
 # implemented.
 our %implemented = (
-  options  => 1,
-  put      => 1,
   get      => 1,
   head     => 1,
-  post     => 1,
-  delete   => 1,
-  trace    => 1,
-  mkcol    => 1,
+  options  => 1,
   propfind => 1,
-  copy     => 1,
-  lock     => 1,
+  put      => 1,
+  trace    => 1,
   unlock   => 1,
-  move     => 1,
 );
 
 sub new {
@@ -79,12 +73,16 @@ sub new {
 sub run {
   my ($self, $q) = @_;
 
+  my $path   = decode_utf8 uri_unescape $q->path_info;
+  return 0 if $path !~ m|/dav|;
+
   my $method = $q->request_method;
   $method = lc $method;
-  return unless $implemented{$method};
-
-  my $path   = decode_utf8 uri_unescape $q->path_info;
-  return if $path !~ m|/dav|;
+  warn uc $method, " ", $path, "\n";
+  if (not $implemented{$method}) {
+    print $q->header( -status     => '501 Not Implemented', );
+    return 1;
+  }
 
   $self->$method($q);
   return 1;
@@ -110,10 +108,12 @@ sub get {
     if (OddMuse::FileFresh()) {
       print $q->header( -status         => '304 Not Modified', );
     } else {
+      my $cookie = OddMuse::Cookie();
       print $q->header( -cache_control  => 'max-age=10',
 			-etag           => $OddMuse::Page{ts},
 			-type           => "text/plain; charset=$OddMuse::HttpCharset",
-			-status         => "200 OK", );
+			-status         => "200 OK",
+		        -cookie         => $cookie);
       print $OddMuse::Page{text} unless $head;
     }
   } else {
@@ -123,210 +123,16 @@ sub get {
 }
 
 sub put {
-  my ($self, $request, $response) = @_;
-  my $path = decode_utf8 uri_unescape $request->uri->path;
-  my $fs   = $self->filesys;
-
-  $response = HTTP::Response->new(201, "CREATED", $response->headers);
-
-  my $fh = $fs->open_write($path);
-  print $fh $request->content;
-  $fs->close_write($fh);
-
-  return $response;
-}
-
-sub _delete_xml {
-  my ($dom, $path) = @_;
-
-  my $response = $dom->createElement("d:response");
-  $response->appendTextChild("d:href"   => $path);
-  $response->appendTextChild("d:status" => "HTTP/1.1 401 Permission Denied")
-    ;    # *** FIXME ***
-}
-
-sub delete {
-  my ($self, $request, $response) = @_;
-  my $path = decode_utf8 uri_unescape $request->uri->path;
-  my $fs   = $self->filesys;
-
-  if ($request->uri->fragment) {
-    return HTTP::Response->new(404, "NOT FOUND", $response->headers);
-  }
-
-  unless ($fs->test("e", $path)) {
-    return HTTP::Response->new(404, "NOT FOUND", $response->headers);
-  }
-
-  my $dom = XML::LibXML::Document->new("1.0", "utf-8");
-  my @error;
-  foreach my $part (
-    grep { $_ !~ m{/\.\.?$} }
-    map { s{/+}{/}g; $_ }
-    File::Find::Rule::Filesys::Virtual->virtual($fs)->in($path),
-    $path
-    )
-  {
-
-    next unless $fs->test("e", $part);
-
-    if ($fs->test("f", $part)) {
-      push @error, _delete_xml($dom, $part)
-        unless $fs->delete($part);
-    } elsif ($fs->test("d", $part)) {
-      push @error, _delete_xml($dom, $part)
-        unless $fs->rmdir($part);
-    }
-  }
-
-  if (@error) {
-    my $multistatus = $dom->createElement("D:multistatus");
-    $multistatus->setAttribute("xmlns:D", "DAV:");
-
-    $multistatus->addChild($_) foreach @error;
-
-    $response = HTTP::Response->new(207 => "Multi-Status");
-    $response->header("Content-Type" => 'text/xml; charset="utf-8"');
-  } else {
-    $response = HTTP::Response->new(204 => "No Content");
-  }
-  return $response;
-}
-
-sub copy {
-  my ($self, $request, $response) = @_;
-  my $path = decode_utf8 uri_unescape $request->uri->path;
-  my $fs   = $self->filesys;
-
-  my $destination = $request->header('Destination');
-  $destination = URI->new($destination)->path;
-  my $depth     = $request->header('Depth');
-  my $overwrite = $request->header('Overwrite');
-
-  if ($fs->test("f", $path)) {
-    return $self->copy_file($request, $response);
-  }
-
-  # it's a good approximation
-  $depth = 100 if defined $depth && $depth eq 'infinity';
-
-  my @files =
-    map { s{/+}{/}g; $_ }
-    File::Find::Rule::Filesys::Virtual->virtual($fs)->file->maxdepth($depth)
-    ->in($path);
-
-  my @dirs = reverse sort
-    grep { $_ !~ m{/\.\.?$} }
-    map { s{/+}{/}g; $_ }
-    File::Find::Rule::Filesys::Virtual->virtual($fs)
-    ->directory->maxdepth($depth)->in($path);
-
-  push @dirs, $path;
-  foreach my $dir (sort @dirs) {
-    my $destdir = $dir;
-    $destdir =~ s/^$path/$destination/;
-    if ($overwrite eq 'F' && $fs->test("e", $destdir)) {
-      return HTTP::Response->new(401, "ERROR", $response->headers);
-    }
-    $fs->mkdir($destdir);
-  }
-
-  foreach my $file (reverse sort @files) {
-    my $destfile = $file;
-    $destfile =~ s/^$path/$destination/;
-    my $fh = $fs->open_read($file);
-    my $file = join '', <$fh>;
-    $fs->close_read($fh);
-    if ($fs->test("e", $destfile)) {
-      if ($overwrite eq 'T') {
-        $fh = $fs->open_write($destfile);
-        print $fh $file;
-        $fs->close_write($fh);
-      } else {
-      }
-    } else {
-      $fh = $fs->open_write($destfile);
-      print $fh $file;
-      $fs->close_write($fh);
-    }
-  }
-
-  $response = HTTP::Response->new(200, "OK", $response->headers);
-  return $response;
-}
-
-sub copy_file {
-  my ($self, $request, $response) = @_;
-  my $path = decode_utf8 uri_unescape $request->uri->path;
-  my $fs   = $self->filesys;
-
-  my $destination = $request->header('Destination');
-  $destination = URI->new($destination)->path;
-  my $depth     = $request->header('Depth');
-  my $overwrite = $request->header('Overwrite');
-
-  if ($fs->test("d", $destination)) {
-    $response = HTTP::Response->new(204, "NO CONTENT", $response->headers);
-  } elsif ($fs->test("f", $path) && $fs->test("r", $path)) {
-    my $fh = $fs->open_read($path);
-    my $file = join '', <$fh>;
-    $fs->close_read($fh);
-    if ($fs->test("f", $destination)) {
-      if ($overwrite eq 'T') {
-        $fh = $fs->open_write($destination);
-        print $fh $file;
-        $fs->close_write($fh);
-      } else {
-        $response->code(412);
-        $response->message('Precondition Failed');
-      }
-    } else {
-      unless ($fh = $fs->open_write($destination)) {
-        $response->code(409);
-        $response->message('Conflict');
-        return $response;
-      }
-      print $fh $file;
-      $fs->close_write($fh);
-      $response->code(201);
-      $response->message('Created');
-    }
-  } else {
-    $response->code(404);
-    $response->message('Not Found');
-  }
-  return $response;
-}
-
-sub move {
-  my ($self, $request, $response) = @_;
-
-  my $destination = $request->header('Destination');
-  $destination = URI->new($destination)->path;
-  my $destexists = $self->filesys->test("e", $destination);
-
-  $response = $self->copy($request,   $response);
-  $response = $self->delete($request, $response)
-    if $response->is_success;
-
-  $response->code(201) unless $destexists;
-
-  return $response;
-}
-
-sub lock {
   my ($self, $q) = @_;
-  print $q->header( -status         => "412 Precondition Failed", );
+  my $id = OddMuse::GetId();
+  my $text = body();
+  OddMuse::SetParam('text', $text);
+  *OddMuse::ReBrowsePage = *created;
+  OddMuse::DoPost($id);
 }
 
-sub unlock {
-  my ($self, $q) = @_;
-  print $q->header( -status         => "204 No Content", );
-}
-
-sub mkcol {
-  my ($self, $q) = @_;
-  print $q->header( -status         => "403 Forbidden", );
+sub created {
+  print CGI::header( -status         => "201 Created", );
 }
 
 sub propfind {
@@ -356,21 +162,22 @@ sub propfind {
       push @reqprops, [ $node->namespaceURI, $node->localname ];
     }
   }
-  warn "reqprops: " . join(", ", map {join "", @$_} @reqprops) . "\n";
+  # warn "reqprops: " . join(", ", map {join "", @$_} @reqprops) . "\n";
 
   # collection only, all pages, or single page?
   my @pages = OddMuse::AllPagesList();
   if ($q->path_info =~ '^/dav/?$') {
-    warn "collection!\n";
-    if ($depth == 0) {
-      warn "only the collection!\n";
-      @pages = ();
+    # warn "collection!\n";
+    if ($depth eq "0") {
+      # warn "only the collection!\n";
+      @pages = ('');
     } else {
-      warn "all pages!\n";
+      # warn "all pages!\n";
+      unshift(@pages, '');
     }
   } else {
     my $id = OddMuse::GetId();
-    warn "single page, id: $id\n";
+    # warn "single page, id: $id\n";
     if (not $OddMuse::IndexHash{$id}) {
       print $q->header( -status       => "404 Not Found", );
       print $OddMuse::NewText;
@@ -378,7 +185,6 @@ sub propfind {
     }
     @pages = ($id);
   }
-
   print $q->header( -status => "207 Multi-Status", );
 
   my $doc = XML::LibXML::Document->new('1.0', 'utf-8');
@@ -387,27 +193,31 @@ sub propfind {
   $doc->setDocumentElement($multistat);
 
   for my $id (@pages) {
-    OddMuse::OpenPage($id);
-    my $size = length($OddMuse::Page{text});
-    my $mtime = $OddMuse::Page{ts};
-    my $ctime = 0;
+    my ($size, $mtime, $ctime) = ('', '', ''); # undefined for the wiki proper ($id eq '')
+    if ($id) {			# ordinary page
+      OddMuse::OpenPage($id);
+      $size = length($OddMuse::Page{text});
+      $mtime = $OddMuse::Page{ts};
+      $ctime = 0;
 
-    # modified time is stringified human readable HTTP::Date style
-    $mtime = time2str($mtime);
+      # modified time is stringified human readable HTTP::Date style
+      $mtime = time2str($mtime);
 
-    # created time is ISO format
-    # tidy up date format - isoz isn't exactly what we want, but
-    # it's easy to change.
-    $ctime = time2isoz($ctime);
-    $ctime =~ s/ /T/;
-    $ctime =~ s/Z//;
+      # created time is ISO format
+      # tidy up date format - isoz isn't exactly what we want, but
+      # it's easy to change.
+      $ctime = time2isoz($ctime);
+      $ctime =~ s/ /T/;
+      $ctime =~ s/Z//;
 
-    $size ||= '';
+      # force empty strings if undefined
+      $size ||= '';
+    }
 
     my $resp = $doc->createElement('D:response');
     $multistat->addChild($resp);
     my $href = $doc->createElement('D:href');
-    $href->appendText($OddMuse::ScriptName . '/' . uri_escape encode_utf8 $id);
+    $href->appendText($OddMuse::ScriptName . '/dav/' . uri_escape encode_utf8 $id);
     $resp->addChild($href);
     my $okprops = $doc->createElement('D:prop');
     my $nfprops = $doc->createElement('D:prop');
@@ -429,7 +239,7 @@ sub propfind {
           $okprops->addChild($prop);
         } elsif ($ns eq 'DAV:' && $name eq 'getcontenttype') {
           $prop = $doc->createElement('D:getcontenttype');
-	  $prop->appendText('httpd/unix-file');
+	  $prop->appendText('text/plain');
           $okprops->addChild($prop);
         } elsif ($ns eq 'DAV:' && $name eq 'getlastmodified') {
           $prop = $doc->createElement('D:getlastmodified');
@@ -437,6 +247,10 @@ sub propfind {
           $okprops->addChild($prop);
         } elsif ($ns eq 'DAV:' && $name eq 'resourcetype') {
           $prop = $doc->createElement('D:resourcetype');
+          if (not $id) { # change for namespaces later
+            my $col = $doc->createElement('D:collection');
+            $prop->addChild($col);
+          }
           $okprops->addChild($prop);
         } else {
           my $prefix = $prefixes{$ns};
@@ -473,31 +287,16 @@ sub propfind {
       $prop->appendText($size);
       $okprops->addChild($prop);
       $prop = $doc->createElement('D:getcontenttype');
-      $prop->appendText('httpd/unix-file');
+      $prop->appendText('text/plain');
       $okprops->addChild($prop);
       $prop = $doc->createElement('D:getlastmodified');
       $prop->appendText($mtime);
       $okprops->addChild($prop);
-#       do {
-#         $prop = $doc->createElement('D:supportedlock');
-#         for my $n (qw(exclusive shared)) {
-#           my $lock = $doc->createElement('D:lockentry');
-
-#           my $scope = $doc->createElement('D:lockscope');
-#           my $attr  = $doc->createElement('D:' . $n);
-#           $scope->addChild($attr);
-#           $lock->addChild($scope);
-
-#           my $type = $doc->createElement('D:locktype');
-#           $attr = $doc->createElement('D:write');
-#           $type->addChild($attr);
-#           $lock->addChild($type);
-
-#           $prop->addChild($lock);
-#         }
-#         $okprops->addChild($prop);
-#       };
       $prop = $doc->createElement('D:resourcetype');
+      if (not $id) { # change for namespaces later
+	my $col = $doc->createElement('D:collection');
+	$prop->addChild($col);
+      }
       $okprops->addChild($prop);
     }
 
@@ -519,7 +318,7 @@ sub propfind {
       $resp->addChild($propstat);
     }
   }
-
+  # warn $doc->toString(1);
   print $doc->toString(1);
 }
 
