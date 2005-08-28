@@ -1,3 +1,11 @@
+2005-08-28  Alex Schroeder  <alex@gnu.org>
+
+	* modules/toc.pl (TocRule): Added <toc> rule.  Fixed some markup
+	bugs (such that the toc div will now come after the closing of the
+	portrait div instead of nested within.
+	(TocHeadings): Protected pos in order to make this sub usable in
+	TocRule without the pos remembering workaround.
+
 2005-08-26  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetRcRss): Allow XSL stylesheets for the RSS feed, too.
