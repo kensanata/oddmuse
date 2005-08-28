@@ -4,7 +4,7 @@
 # This module is free software; you can redistribute it or modify it
 # under the same terms as Perl itself.
 
-$ModulesDescription .= '<p>$Id: webdav.pl,v 1.5 2005/08/28 20:19:57 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: webdav.pl,v 1.6 2005/08/28 21:04:55 as Exp $</p>';
 
 use CGI;
 # use Data::Dumper;
@@ -54,7 +54,7 @@ sub run {
 
   my $method = $q->request_method;
   $method = lc $method;
-  warn uc $method, " ", $path, "\n";
+  # warn uc $method, " ", $path, "\n";
   if (not $implemented{$method}) {
     print $q->header( -status     => '501 Not Implemented', );
     return 1;
@@ -115,7 +115,7 @@ sub propfind {
   # warn "depth: $depth\n";
 
   my $content = body();
-  warn "content: $content\n";
+  # warn "content: $content\n";
 
   my $parser = XML::LibXML->new;
   my $req;
