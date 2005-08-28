@@ -2127,15 +2127,18 @@ run_tests();
 
 update_page('toc_test', "bla\n"
 	    . "=one=\n"
-	    . "bla\n"
+	    . "blarg\n"
 	    . "==two==\n"
 	    . "bla\n"
-	    . "==two==\n");
+	    . "==two==\n"
+	    . "mu.");
 
 test_page(get_page('toc_test'),
 	  quotemeta('<ol><li><a href="#toc0">one</a><ol><li><a href="#toc1">two</a></li><li><a href="#toc2">two</a></li></ol></li></ol>'),
 	  quotemeta('<h1><a id="toc0">one</a></h1>'),
-	  quotemeta('<h2><a id="toc1">two</a></h2>'));
+	  quotemeta('<h2><a id="toc1">two</a></h2>'),
+	  quotemeta('bla </p><div class="toc"><h2>Contents</h2><ol><li><a '),
+	  quotemeta('two</a></li></ol></li></ol></div><h1><a '),);
 
 update_page('toc_test', "bla\n"
 	    . "==two=\n"
@@ -2150,6 +2153,8 @@ test_page(get_page('toc_test'),
 	  quotemeta('<h3><a id="toc1">three</a></h3>'));
 
 update_page('toc_test', "bla\n"
+	    . "<toc>\n"
+	    . "murks\n"
 	    . "==two=\n"
 	    . "bla\n"
 	    . "===three==\n"
@@ -2159,7 +2164,9 @@ update_page('toc_test', "bla\n"
 test_page(get_page('toc_test'),
 	  quotemeta('<ol><li><a href="#toc0">two</a><ol><li><a href="#toc1">three</a></li></ol></li><li><a href="#toc2">one</a></li></ol>'),
 	  quotemeta('<h2><a id="toc0">two</a></h2>'),
-	  quotemeta('<h1><a id="toc2">one</a></h1>'));
+	  quotemeta('<h1><a id="toc2">one</a></h1>'),
+	  quotemeta('bla </p><div class="toc"><h2>Contents</h2><ol><li><a '),
+	  quotemeta('one</a></li></ol></div><p> murks'),);
 
 remove_rule(\&UsemodRule);
 remove_rule(\&TocRule);
