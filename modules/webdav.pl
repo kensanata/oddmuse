@@ -4,7 +4,7 @@
 # This module is free software; you can redistribute it or modify it
 # under the same terms as Perl itself.
 
-$ModulesDescription .= '<p>$Id: webdav.pl,v 1.8 2005/08/29 20:47:28 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: webdav.pl,v 1.9 2005/08/29 20:58:17 as Exp $</p>';
 
 use CGI;
 # use Data::Dumper;
@@ -100,9 +100,16 @@ sub put {
   my $id = OddMuse::GetId();
   my $type = $ENV{'CONTENT_TYPE'};
   my $text = body();
-  if (not $type and (substr($text,0,4) eq "\377\330\377\340"
-		     or substr($text,0,4) eq "\377\330\377\341")) {
-    $type = "image/jpeg";
+  # hard coded magic based on the specs
+  if (not $type) {
+    if (substr($text,0,4) eq "\377\330\377\340"
+	or substr($text,0,4) eq "\377\330\377\341") {
+      # http://www.itworld.com/nl/unix_insider/07072005/
+      $type = "image/jpeg";
+    } elsif (substr($text,0,8) eq "\211\120\116\107\15\12\32\12") {
+      # http://www.libpng.org/pub/png/spec/1.2/PNG-Structure.html
+      $type = "image/png";
+    }
   }
   # warn $type;
   if ($type and substr($type,0,5) ne 'text/') {
