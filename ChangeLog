@@ -1,4 +1,13 @@
+2005-08-29  Alex Schroeder  <alex@gnu.org>
+
+	* modules/webdav.pl (options): Don't send DAV header, since we're
+	not even a class 1 server.
+	(put): Handle image/jpeg files using magic bytes.
+	(no_content): New.
+
 2005-08-28  Alex Schroeder  <alex@gnu.org>
+
+	* modules/webdav.pl (get): Removed cookie code.
 
 	* modules/toc.pl (TocRule): Added <toc> rule.  Fixed some markup
 	bugs such that the toc div will now come after the closing of the
