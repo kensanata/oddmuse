@@ -4,6 +4,7 @@
 	not even a class 1 server.
 	(put): Handle image/jpeg files using magic bytes.
 	(no_content): New.
+	(put): Add support for image/png.
 
 2005-08-28  Alex Schroeder  <alex@gnu.org>
 
