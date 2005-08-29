@@ -4,7 +4,7 @@
 # This module is free software; you can redistribute it or modify it
 # under the same terms as Perl itself.
 
-$ModulesDescription .= '<p>$Id: webdav.pl,v 1.7 2005/08/29 18:03:05 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: webdav.pl,v 1.8 2005/08/29 20:47:28 as Exp $</p>';
 
 use CGI;
 # use Data::Dumper;
@@ -108,7 +108,7 @@ sub put {
   if ($type and substr($type,0,5) ne 'text/') {
     require MIME::Base64;
     $text = '#FILE ' . $type .  "\n" . MIME::Base64::encode($text);
-    OddMuse::SetParam('summary', Ts('Upload of %s file', $type));
+    OddMuse::SetParam('summary', OddMuse::Ts('Upload of %s file', $type));
   }
   OddMuse::SetParam('text', $text);
   local *OddMuse::ReBrowsePage;
