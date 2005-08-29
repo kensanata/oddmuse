@@ -4,11 +4,10 @@
 # This module is free software; you can redistribute it or modify it
 # under the same terms as Perl itself.
 
-$ModulesDescription .= '<p>$Id: webdav.pl,v 1.6 2005/08/28 21:04:55 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: webdav.pl,v 1.7 2005/08/29 18:03:05 as Exp $</p>';
 
 use CGI;
 # use Data::Dumper;
-
 package OddMuse;
 
 *DavOldDoBrowseRequest = *DoBrowseRequest;
@@ -20,6 +19,7 @@ sub DavNewDoBrowseRequest {
 }
 
 package OddMuse::DAV;
+
 use strict;
 use warnings;
 use Encode;
@@ -66,8 +66,7 @@ sub run {
 
 sub options {
   my ($self, $q) = @_;
-  print $q->header( -DAV            => '1',
-		    -allow          => join(',', map { uc } keys %implemented),
+  print $q->header( -allow          => join(',', map { uc } keys %implemented),
 		    -status         => "200 OK", );
 }
 
@@ -99,10 +98,31 @@ sub get {
 sub put {
   my ($self, $q) = @_;
   my $id = OddMuse::GetId();
+  my $type = $ENV{'CONTENT_TYPE'};
   my $text = body();
+  if (not $type and (substr($text,0,4) eq "\377\330\377\340"
+		     or substr($text,0,4) eq "\377\330\377\341")) {
+    $type = "image/jpeg";
+  }
+  # warn $type;
+  if ($type and substr($type,0,5) ne 'text/') {
+    require MIME::Base64;
+    $text = '#FILE ' . $type .  "\n" . MIME::Base64::encode($text);
+    OddMuse::SetParam('summary', Ts('Upload of %s file', $type));
+  }
   OddMuse::SetParam('text', $text);
-  *OddMuse::ReBrowsePage = *created;
-  OddMuse::DoPost($id);
+  local *OddMuse::ReBrowsePage;
+  OddMuse::AllPagesList();
+  if ($OddMuse::IndexHash{$id}) {
+    *OddMuse::ReBrowsePage = *no_content; # modified existing page
+  } else {
+    *OddMuse::ReBrowsePage = *created; # created new page
+  }
+  OddMuse::DoPost($id); # do the real posting
+}
+
+sub no_content {
+  print CGI::header( -status         => "204 No Content", );
 }
 
 sub created {
