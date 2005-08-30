@@ -17,7 +17,7 @@
 #	 59 Temple Place, Suite 330
 #	 Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-hybrid.pl,v 1.7 2005/08/22 14:52:07 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-hybrid.pl,v 1.8 2005/08/30 23:28:48 fletcherpenney Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -299,10 +299,11 @@ sub AddLinkedFilesToQueue {
 	}
 	
 	# If you modify a comment page, then update the original
-	# And check for recursive updates
+	# Don't check for recursive updates - the only thing that
+	# changed was the CommentCount - no reason to waste time
 	if ($id =~ /^$CommentsPrefix(.*)/) {
 		my $match = $1;
-		AddNewFilesToQueue($match);
+		push(@StaticQueue,$match);
 	}
 	
 	# If the page added belongs to a cluster, update the cluster's page
