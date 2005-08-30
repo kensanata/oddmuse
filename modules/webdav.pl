@@ -4,11 +4,14 @@
 # This module is free software; you can redistribute it or modify it
 # under the same terms as Perl itself.
 
-$ModulesDescription .= '<p>$Id: webdav.pl,v 1.9 2005/08/29 20:58:17 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: webdav.pl,v 1.10 2005/08/30 12:58:41 as Exp $</p>';
+
+use vars qw($WebDavCache);
+
+$WebDavCache = "$DataDir/webdav";
+push(@KnownLocks, 'webdav');
 
 use CGI;
-# use Data::Dumper;
-package OddMuse;
 
 *DavOldDoBrowseRequest = *DoBrowseRequest;
 *DoBrowseRequest = *DavNewDoBrowseRequest;
@@ -18,14 +21,21 @@ sub DavNewDoBrowseRequest {
   $dav->run($q)||DavOldDoBrowseRequest();
 }
 
+*DavOldOpenPage = *OpenPage;
+*OpenPage = *DavNewOpenPage;
+
+sub DavNewOpenPage {
+  DavOldOpenPage(@_);
+  $Page{created} = $Now unless $Page{created} or $Page{revision};
+}
+
 package OddMuse::DAV;
 
 use strict;
 use warnings;
-use Encode;
-use URI::Escape;
 use HTTP::Date qw(time2str time2isoz);
 use XML::LibXML;
+use Digest::MD5 qw(md5_base64);
 
 # These are the methods we understand -- but not all of them are truly
 # implemented.
@@ -49,7 +59,7 @@ sub new {
 sub run {
   my ($self, $q) = @_;
 
-  my $path   = decode_utf8 uri_unescape $q->path_info;
+  my $path   = $q->path_info;
   return 0 if $path !~ m|/dav|;
 
   my $method = $q->request_method;
@@ -154,6 +164,14 @@ sub propfind {
   }
   # warn "req: " . $req->toString;
 
+  # the spec says the the reponse should not be cached...
+  if ($q->http('HTTP_IF_NONE_MATCH') and GetParam('cache', $OddMuse::UseCache) >= 2
+      and $q->http('HTTP_IF_NONE_MATCH') eq md5_base64($OddMuse::LastUpdate
+						       . $req->toString)) {
+    print $q->header( -status       => '304 Not Modified', );
+    return;
+  }
+
   # what properties do we need?
   my $reqinfo;
   my @reqprops;
@@ -186,48 +204,45 @@ sub propfind {
     }
     @pages = ($id);
   }
-  print $q->header( -status => "207 Multi-Status", );
+  print $q->header( -status => "207 Multi-Status",
+		    -etag           => md5_base64($OddMuse::LastUpdate
+						  . $req->toString)
+		  );
 
   my $doc = XML::LibXML::Document->new('1.0', 'utf-8');
   my $multistat = $doc->createElement('D:multistatus');
   $multistat->setAttribute('xmlns:D', 'DAV:');
   $doc->setDocumentElement($multistat);
 
+  my %data = propfind_data();
   for my $id (@pages) {
+    my $title = $id;
+    $title =~ s/_/ /g;
     my ($size, $mtime, $ctime) = ('', '', ''); # undefined for the wiki proper ($id eq '')
-    if ($id) {			# ordinary page
-      OddMuse::OpenPage($id);
-      $size = length($OddMuse::Page{text});
-      $mtime = $OddMuse::Page{ts};
-      $ctime = 0;
-
-      # modified time is stringified human readable HTTP::Date style
-      $mtime = time2str($mtime);
-
-      # created time is ISO format
-      # tidy up date format - isoz isn't exactly what we want, but
-      # it's easy to change.
-      $ctime = time2isoz($ctime);
-      $ctime =~ s/ /T/;
-      $ctime =~ s/Z//;
-
-      # force empty strings if undefined
-      $size ||= '';
-    }
-
+    ($size, $mtime, $ctime) = @{$data{$id}} if $id;
+    my $etag = $mtime; # $mtime is $Page{ts} which is used as etag in GET
+    # modified time is stringified human readable HTTP::Date style
+    $mtime = time2str($mtime);
+    # created time is ISO format
+    # tidy up date format - isoz isn't exactly what we want, but
+    # it's easy to change.
+    $ctime = time2isoz($ctime);
+    $ctime =~ s/ /T/;
+    $ctime =~ s/Z//;
+    # force empty strings if undefined
+    $size ||= '';
     my $resp = $doc->createElement('D:response');
     $multistat->addChild($resp);
     my $href = $doc->createElement('D:href');
-    $href->appendText($OddMuse::ScriptName . '/dav/' . uri_escape encode_utf8 $id);
+    warn $id;
+    $href->appendText($OddMuse::ScriptName . '/dav/' . OddMuse::UrlEncode($id));
     $resp->addChild($href);
     my $okprops = $doc->createElement('D:prop');
     my $nfprops = $doc->createElement('D:prop');
     my $prop;
-
     if ($reqinfo eq 'prop') {
       my %prefixes = ('DAV:' => 'D');
       my $i        = 0;
-
       for my $reqprop (@reqprops) {
         my ($ns, $name) = @$reqprop;
         if ($ns eq 'DAV:' && $name eq 'creationdate') {
@@ -253,18 +268,23 @@ sub propfind {
             $prop->addChild($col);
           }
           $okprops->addChild($prop);
+        } elsif ($ns eq 'DAV:' && $name eq 'displayname') {
+	  $prop = $doc->createElement('D:displayname');
+	  $prop->appendText($title);
+	  $okprops->addChild($prop);
+        } elsif ($ns eq 'DAV:' && $name eq 'getetag') {
+	  $prop = $doc->createElement('D:getetag');
+	  $prop->appendText($etag);
+	  $okprops->addChild($prop);
         } else {
           my $prefix = $prefixes{$ns};
           if (!defined $prefix) {
             $prefix = 'i' . $i++;
-
-            # mod_dav sets <response> 'xmlns' attribute - whatever
+	    # mod_dav sets <response> 'xmlns' attribute - whatever
             #$nfprops->setAttribute("xmlns:$prefix", $ns);
             $resp->setAttribute("xmlns:$prefix", $ns);
-
             $prefixes{$ns} = $prefix;
           }
-
           $prop = $doc->createElement("$prefix:$name");
           $nfprops->addChild($prop);
         }
@@ -279,6 +299,10 @@ sub propfind {
       $prop = $doc->createElement('D:getlastmodified');
       $okprops->addChild($prop);
       $prop = $doc->createElement('D:resourcetype');
+      $okprops->addChild($prop);
+      $prop = $doc->createElement('D:displayname');
+      $okprops->addChild($prop);
+      $prop = $doc->createElement('D:getetag');
       $okprops->addChild($prop);
     } else {
       $prop = $doc->createElement('D:creationdate');
@@ -299,8 +323,14 @@ sub propfind {
 	$prop->addChild($col);
       }
       $okprops->addChild($prop);
-    }
+      $prop = $doc->createElement('D:displayname');
+      $prop->appendText($title);
+      $okprops->addChild($prop);
+      $prop = $doc->createElement('D:getetag');
+      $prop->appendText($etag);
+      $okprops->addChild($prop);
 
+    }
     if ($okprops->hasChildNodes) {
       my $propstat = $doc->createElement('D:propstat');
       $propstat->addChild($okprops);
@@ -309,7 +339,6 @@ sub propfind {
       $propstat->addChild($stat);
       $resp->addChild($propstat);
     }
-
     if ($nfprops->hasChildNodes) {
       my $propstat = $doc->createElement('D:propstat');
       $propstat->addChild($nfprops);
@@ -328,6 +357,32 @@ sub body {
   return <STDIN>;   # can only be read once!
 }
 
-# my $dav = new OddMuse::DAV;
-# my $q = new CGI;
-# print $dav->run($q);
+sub propfind_data {
+  my %data = ();
+  my $update = (stat($OddMuse::WebDavCache))[9];
+  if ($update and $OddMuse::LastUpdate == $update) {
+    my $data = OddMuse::ReadFileOrDie($OddMuse::WebDavCache);
+    map {
+      my ($id, @attr) = split(/$OddMuse::FS/, $_);
+      $data{$id} = \@attr;
+    } split(/\n/, $data);
+  } else {
+    my @pages = OddMuse::AllPagesList();
+    my $cache = '';
+    foreach my $id (@pages) {
+      OddMuse::OpenPage($id);
+      my ($size, $mtime, $ctime);
+      $size = length($OddMuse::Page{text}||0);
+      $mtime = $OddMuse::Page{ts}||0;
+      $ctime = $OddMuse::Page{created}||0;
+      $data{$id} = [$size, $mtime, $ctime];
+      $cache .= join($OddMuse::FS, $id, $size, $mtime, $ctime) . "\n";
+    }
+    if (OddMuse::RequestLockDir('webdav')) { # not fatal
+      OddMuse::WriteStringToFile($OddMuse::WebDavCache, $cache);
+      utime $OddMuse::LastUpdate, $OddMuse::LastUpdate, $OddMuse::WebDavCache; # touch index file
+      OddMuse::ReleaseLockDir('webdav');
+    }
+  }
+  return %data;
+}
