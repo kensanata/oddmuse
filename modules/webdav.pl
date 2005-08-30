@@ -4,7 +4,7 @@
 # This module is free software; you can redistribute it or modify it
 # under the same terms as Perl itself.
 
-$ModulesDescription .= '<p>$Id: webdav.pl,v 1.10 2005/08/30 12:58:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: webdav.pl,v 1.11 2005/08/30 13:38:18 as Exp $</p>';
 
 use vars qw($WebDavCache);
 
@@ -234,7 +234,6 @@ sub propfind {
     my $resp = $doc->createElement('D:response');
     $multistat->addChild($resp);
     my $href = $doc->createElement('D:href');
-    warn $id;
     $href->appendText($OddMuse::ScriptName . '/dav/' . OddMuse::UrlEncode($id));
     $resp->addChild($href);
     my $okprops = $doc->createElement('D:prop');
