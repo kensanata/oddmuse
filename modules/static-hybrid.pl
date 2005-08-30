@@ -17,7 +17,7 @@
 #	 59 Temple Place, Suite 330
 #	 Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-hybrid.pl,v 1.8 2005/08/30 23:28:48 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-hybrid.pl,v 1.9 2005/08/30 23:49:05 fletcherpenney Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -34,6 +34,8 @@ my %StaticFiles;
 
 my $StaticAction = 0;	# Are we doing action or not?
 my @StaticQueue = ();
+
+my $ClusterHasChanged = 0;
 
 sub DoStatic {
 	$StaticAction = 1;
@@ -138,9 +140,7 @@ sub StaticWriteFile {
 		StaticHtml($id);
 	}
 	close(F);
-	warn "StaticWriteFile $id to $filename\n";
 	chmod 0644,"$StaticDir/$filename";
-	warn "StaticWriteFile $id to $filename\n";
 	if (GetParam('action','') eq "static") {
 		print $filename, $raw ? "\n" : $q->br();
 	}
@@ -194,7 +194,14 @@ sub StaticHtml {
 *DoPost = *StaticFilesNewDoPost;
 
 sub StaticFilesNewDoPost {
-	StaticFilesOldDoPost(@_);
+	my $id = FreeToNormal(shift);
+	OpenPage($id);
+	my $old_cluster = FreeToNormal(GetCluster($Page{text}));
+	StaticFilesOldDoPost($id);
+	my $new_cluster = FreeToNormal(GetCluster($Page{text}));
+	
+	$ClusterHasChanged = 1 if ($old_cluster ne $new_cluster);
+	
 	if ($StaticAlways) {
 		# always delete
 		StaticDeleteFile($OpenPageName);
@@ -289,9 +296,7 @@ sub ImageGetInternalUrl{
 
 sub AddLinkedFilesToQueue {
 	my $id = shift;
-	
-	warn "Adding Linked files for $id\n";
-	
+		
 	foreach my $pattern (keys %StaticLinkedPages) {
 		if ($id =~ /$pattern/) {
 			AddNewFilesToQueue(@{$StaticLinkedPages{$pattern}})
@@ -314,9 +319,17 @@ sub AddLinkedFilesToQueue {
 	OpenPage($id);
 	my $cluster = FreeToNormal(GetCluster($Page{text}));
 	
-	if ($cluster ne "" && $cluster ne $id) {
-		AddNewFilesToQueue($cluster);
-		AddNewFilesToQueue($ClusterMapPage);
+	# But only if cluster has changed
+	if ($ClusterHasChanged) {
+		if ($cluster ne "" && $cluster ne $id) {
+			AddNewFilesToQueue($cluster);
+			
+			# If we are using clustermaps then update
+			# ClusterMapPage
+			if ($ClusterMapPage ne "") {
+				AddNewFilesToQueue($ClusterMapPage);
+			}
+		}
 	}
 }
 
@@ -326,21 +339,12 @@ sub StaticWriteLinkedFiles {
 	my $writeRC = 0;
 	local *GetDownloadLink = *StaticGetDownloadLink;
 
-	warn "Print:\n";
-	foreach my $id (@StaticQueue) {
-		warn "\t$id\n";
-	}
-
 	foreach my $id (@StaticQueue) {
 		if (! grep(/^$id$/,@StaticIgnoredPages)) {
-			warn "Saving $id\n";
 			StaticWriteFile($id);
 			SetParam('rcclusteronly',0);
-			warn "Saved $id\n";
 		}
 	}
-	
-	warn "Done saving\n";
 }
 
 sub StaticGetCommentForm {
