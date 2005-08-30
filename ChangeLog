@@ -1,3 +1,13 @@
+2005-08-30  Alex Schroeder  <alex@gnu.org>
+
+	* modules/webdav.pl ($WebDavCache): New option.
+	(propfind_data): Use cached data if appropriate.
+	(propfind): Add support for displayname and getetag properties.
+	Use propfind_data() to cache data.  Add etag to the response even
+	though the RFC says PROPFIND should not be cached.  No longer use
+	libraries for decoding and escaping.
+	(DavNewOpenPage): Add 'created' property to all pages.
+
 2005-08-29  Alex Schroeder  <alex@gnu.org>
 
 	* modules/webdav.pl (options): Don't send DAV header, since we're
