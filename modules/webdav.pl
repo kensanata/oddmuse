@@ -4,7 +4,7 @@
 # This module is free software; you can redistribute it or modify it
 # under the same terms as Perl itself.
 
-$ModulesDescription .= '<p>$Id: webdav.pl,v 1.11 2005/08/30 13:38:18 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: webdav.pl,v 1.12 2005/08/30 20:23:34 as Exp $</p>';
 
 use vars qw($WebDavCache);
 
@@ -347,7 +347,11 @@ sub propfind {
       $resp->addChild($propstat);
     }
   }
-  # warn $doc->toString(1);
+  # The XML Parser handles UTF-8 correctly, but Perl will
+  # automatically convert it to Latin-1 upon printing to STDOUT unless
+  # we use binmode.
+  eval { local $SIG{__DIE__}; binmode(STDOUT, ":utf8"); }
+    if $OddMuse::HttpCharset eq 'UTF-8';
   print $doc->toString(1);
 }
 
