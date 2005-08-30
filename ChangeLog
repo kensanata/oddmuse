@@ -7,6 +7,8 @@
 	though the RFC says PROPFIND should not be cached.  No longer use
 	libraries for decoding and escaping.
 	(DavNewOpenPage): Add 'created' property to all pages.
+	(propfind): Handle UTF-8 correctly because the displayname is not
+	URL encoded.
 
 2005-08-29  Alex Schroeder  <alex@gnu.org>
 
