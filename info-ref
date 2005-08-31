@@ -33,6 +33,12 @@ sub ProcessRequest {
   }
 }
 
+sub ShowForm {
+  print $q->header, $q->start_html,
+    $q->start_form, "Index entry: ", $q->input('find'),
+    $q->submit, $q->end_form, $q->end_html;
+}
+
 sub Find {
   my $str = shift;
   my %map = ();
