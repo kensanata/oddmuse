@@ -1,0 +1,137 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use CGI;
+use LWP::UserAgent;
+use XML::LibXML;
+use URI;
+
+my @indexes = qw(
+  http://www.gnu.org/software/emacs/manual/html_node/Command-Index.html
+  http://www.gnu.org/software/emacs/manual/html_node/Variable-Index.html
+  http://www.gnu.org/software/emacs/manual/html_node/Concep-Index.html
+);
+
+my $db = '/org/org.emacswiki/htdocs/emacs/info-ref.dat';
+
+my $nl = "\n";
+my $fs = "\023";
+my $gs = "\024";
+my $rs = "\025";
+
+my $q = new CGI;
+ProcessRequest();
+
+sub ProcessRequest {
+  if ($q->param('init')) {
+    Initialize();
+  } elsif ($q->param('find')) {
+    Find($q->param('find'));
+  } else {
+    ShowForm();
+  }
+}
+
+sub Find {
+  my $str = shift;
+  my %map = ();
+  my $data = ReadFileOrDie($db);
+  foreach my $line (split(/$nl/, $data)) {
+    my ($key, $rest) = split(/$fs/, $line);
+    $map{$key} = ();
+    foreach my $a (split(/$gs/, $rest)) {
+      my ($link, $label) = split(/$rs/, $a);
+      $map{$key}{$link} = $label;
+    }
+  }
+  my @links = keys %{$map{$str}};
+  if ($#links < 0) {
+    ReportError("No matches found for '$str'", '404 Not Found');
+  } elsif ($#links == 0) {
+    print $q->redirect($links[0]);
+  } else {
+    my @list = map { $q->a({-href=>$_}, $map{$str}{$_}) } @links;
+    print $q->header, $q->h1($str), $q->ol($q->li(\@list));
+  }
+}
+
+sub Initialize {
+  my %map = ();
+  foreach my $url (@indexes) {
+    # determine base URI
+    my $base = URI->new($url);
+    my @segments = $base->path_segments;
+    pop @segments; # drop last one
+    $base->path_segments(@segments);
+    # fetch and parse data
+    my $data = GetRaw($url);
+    my $parser = XML::LibXML->new();
+    my $doc = $parser->parse_html_string($data);
+    my @nodelist = $doc->findnodes('/html/body/ul/li');
+    foreach my $node (@nodelist) {
+      my $text = $node->textContent();
+      my ($key) = split(/: /, $text);
+      my $a = $node->findnodes('descendant::a')->[0];
+      my $label = $a->textContent;
+      my $link = $a->getAttribute('href');
+      my $l = URI->new_abs($link, $base);
+      # print "$key -> $label $l\n";
+      $map{$key} = () unless $map{$key};
+      $map{$key}{$l->canonical} = $label;
+    }
+  }
+  my $data = join($nl, map {
+    my $key = $_;
+    $key . $fs . join($gs, map {
+      my $link = $_;
+      join($rs, $link, $map{$key}{$link});
+    } keys %{$map{$_}})
+  } keys %map);
+  WriteStringToFile($db, $data);
+}
+
+sub GetRaw {
+  my $uri = shift;
+  return unless eval { require LWP::UserAgent; };
+  my $ua = LWP::UserAgent->new;
+  my $response = $ua->get($uri);
+  return $response->content;
+}
+
+sub ReadFile {
+  my ($filename) = @_;
+  my ($data);
+  local $/ = undef;   # Read complete files
+  if (open(IN, "<$filename")) {
+    $data=<IN>;
+    close IN;
+    return (1, $data);
+  }
+  return (0, '');
+}
+
+sub ReadFileOrDie {
+  my ($filename) = @_;
+  my ($status, $data);
+  ($status, $data) = ReadFile($filename);
+  if (!$status) {
+    ReportError("Cannot open $filename: $!", '500 Internal Server Error');
+  }
+  return $data;
+}
+
+sub WriteStringToFile {
+  my ($file, $string) = @_;
+  open(OUT, ">$file")
+    or ReportError("Cannot write $file: $!", '500 Internal Server Error');
+  print OUT  $string;
+  close(OUT);
+}
+
+sub ReportError { # fatal!
+  my ($errmsg, $status, $log) = @_;
+  print $q->header(-status => $status);
+  print $q->start_html, $q->h2($errmsg), $q->end_html;
+  exit (1);
+}
