@@ -10,7 +10,24 @@ use URI;
 my @indexes = qw(
   http://www.gnu.org/software/emacs/manual/html_node/Command-Index.html
   http://www.gnu.org/software/emacs/manual/html_node/Variable-Index.html
-  http://www.gnu.org/software/emacs/manual/html_node/Concep-Index.html
+  http://www.gnu.org/software/emacs/manual/html_node/Concept-Index.html
+  http://www.gnu.org/software/emacs/elisp-manual/html_node/elisp_728.html
+  http://www.gnu.org/software/emacs/elisp-manual/html_node/elisp_729.html
+  http://www.gnu.org/software/emacs/elisp-manual/html_node/elisp_730.html
+  http://www.gnu.org/software/emacs/elisp-manual/html_node/elisp_731.html
+  http://www.gnu.org/software/emacs/elisp-manual/html_node/elisp_732.html
+  http://www.gnu.org/software/emacs/elisp-manual/html_node/elisp_733.html
+  http://www.gnu.org/software/emacs/elisp-manual/html_node/elisp_734.html
+  http://www.gnu.org/software/emacs/elisp-manual/html_node/elisp_735.html
+  http://www.gnu.org/software/emacs/elisp-manual/html_node/elisp_736.html
+  http://www.gnu.org/software/emacs/elisp-manual/html_node/elisp_737.html
+  http://www.gnu.org/software/emacs/elisp-manual/html_node/elisp_738.html
+  http://www.gnu.org/software/emacs/elisp-manual/html_node/elisp_739.html
+  http://www.gnu.org/software/emacs/elisp-manual/html_node/elisp_740.html
+  http://www.gnu.org/software/emacs/elisp-manual/html_node/elisp_741.html
+  http://www.gnu.org/software/emacs/elisp-manual/html_node/elisp_742.html
+  http://www.gnu.org/software/emacs/elisp-manual/html_node/elisp_743.html
+  http://www.gnu.org/software/emacs/elisp-manual/html_node/elisp_744.html
 );
 
 my $db = '/org/org.emacswiki/htdocs/emacs/info-ref.dat';
@@ -64,22 +81,47 @@ sub Find {
 
 sub Initialize {
   my %map = ();
+  print $q->header, $q->start_html;
   foreach my $url (@indexes) {
+    print $q->p($url);;
     # determine base URI
     my $base = URI->new($url);
     # fetch and parse data
     my $data = GetRaw($url);
+    # some markup fixes for the elisp manual
+    $data =~ s/&([<"])/&amp;$1/g;
+    $data =~ s/<([<"])/&lt;$1/g;
+    $data =~ s/="fn_"">/="fn_&quot;">/;
+    $data =~ s/<!DOCTYPE.*?>//;
+    $data =~ s'</?font.*?>''gi;
+    $data =~ s'</table><br></P>'</table><br>';
     my $parser = XML::LibXML->new();
-    my $doc = $parser->parse_html_string($data);
+    my $doc;
+    eval { $doc = $parser->parse_html_string($data); };
+    print $q->p($@) if $@;
+    next if $@;
+    # emacs manual
     my @nodelist = $doc->findnodes('/html/body/ul/li');
     foreach my $node (@nodelist) {
-      my $text = $node->textContent();
+      my $text = $node->textContent;
       my ($key) = split(/: /, $text);
       my $a = $node->findnodes('descendant::a')->[0];
       my $label = $a->textContent;
       my $link = $a->getAttribute('href');
       my $l = URI->new_abs($link, $base);
       # print "$key -> $label $l\n";
+      $map{$key} = () unless $map{$key};
+      $map{$key}{$l->canonical} = $label;
+    }
+    # elisp manual
+    @nodelist = $doc->findnodes('/html/body/table/tbody/tr/td');
+    foreach my $node (@nodelist) {
+      my ($item, $section) = $node->findnodes('descendant::a');
+      my $key = $item->textContent;
+      my $label = $section->textContent;
+      my $link = $item->getAttribute('href');
+      my $l = URI->new_abs($link, $base);
+      print "$key -> $label $l\n";
       $map{$key} = () unless $map{$key};
       $map{$key}{$l->canonical} = $label;
     }
@@ -92,7 +134,7 @@ sub Initialize {
     } keys %{$map{$_}})
   } keys %map);
   WriteStringToFile($db, $data);
-  ReportError('Database initialized', '200 OK');
+  print $q->p('Database initialized'), $q->end_html;
 }
 
 sub GetRaw {
