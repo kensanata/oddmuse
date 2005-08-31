@@ -114,14 +114,15 @@ sub Initialize {
       $map{$key}{$l->canonical} = $label;
     }
     # elisp manual
-    @nodelist = $doc->findnodes('/html/body/table/tbody/tr/td');
+    @nodelist = $doc->findnodes('descendant::table[position()=3]/descendant::tr');
     foreach my $node (@nodelist) {
-      my ($item, $section) = $node->findnodes('descendant::a');
+      my ($item, $section) = $node->findnodes('td/a');
+      next unless $item and $section;
       my $key = $item->textContent;
       my $label = $section->textContent;
       my $link = $item->getAttribute('href');
       my $l = URI->new_abs($link, $base);
-      print "$key -> $label $l\n";
+      # print "$key -> $label $l\n";
       $map{$key} = () unless $map{$key};
       $map{$key}{$l->canonical} = $label;
     }
