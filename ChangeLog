@@ -1,3 +1,10 @@
+2005-08-31  Alex Schroeder  <alex@gnu.org>
+
+	* info-ref (ShowForm): Added form.
+	(ShowForm): Fix input.
+	(Initialize): Don't strip last segment of path.
+	(Initialize): Report successful completion.
+
 2005-08-30  Alex Schroeder  <alex@gnu.org>
 
 	* modules/webdav.pl ($WebDavCache): New option.
