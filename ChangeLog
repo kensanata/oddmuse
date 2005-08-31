@@ -1,9 +1,13 @@
 2005-08-31  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (InitLinkPatterns): Quote $, %, and @ in
+	$InterLinkPattern and $FreeInterLinkPattern.
+
 	* info-ref (ShowForm): Added form.
 	(ShowForm): Fix input.
 	(Initialize): Don't strip last segment of path.
 	(Initialize): Report successful completion.
+	(Initialize): Patches to process old elisp HTML from 2002.
 
 2005-08-30  Alex Schroeder  <alex@gnu.org>
 
