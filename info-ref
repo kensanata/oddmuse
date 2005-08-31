@@ -35,7 +35,7 @@ sub ProcessRequest {
 
 sub ShowForm {
   print $q->header, $q->start_html,
-    $q->start_form, "Index entry: ", $q->input('find'),
+    $q->start_form, "Index entry: ", $q->textfield('find'),
     $q->submit, $q->end_form, $q->end_html;
 }
 
@@ -67,9 +67,6 @@ sub Initialize {
   foreach my $url (@indexes) {
     # determine base URI
     my $base = URI->new($url);
-    my @segments = $base->path_segments;
-    pop @segments; # drop last one
-    $base->path_segments(@segments);
     # fetch and parse data
     my $data = GetRaw($url);
     my $parser = XML::LibXML->new();
@@ -95,6 +92,7 @@ sub Initialize {
     } keys %{$map{$_}})
   } keys %map);
   WriteStringToFile($db, $data);
+  ReportError('Database initialized', '200 OK');
 }
 
 sub GetRaw {
