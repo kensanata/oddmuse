@@ -17,7 +17,7 @@
 #
 # This translation was last checked for Oddmuse version 1.195.
 #
-$ModulesDescription .= '<p>$Id: portuguese-utf8.pl,v 1.5 2005/07/24 18:31:54 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: portuguese-utf8.pl,v 1.6 2005/09/01 06:34:56 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Leitura não permitida: usuário, ip, ou rede está bloqueada.
@@ -46,11 +46,11 @@ No items found in %s.
 Click to edit this page
 
 image
-
+imagem
 download
 
 CGI Internal error: %s
-
+Erro CGI interno: %s
 Invalid action parameter %s
 Parametro de ação inválido %s
 Invalid URL.
@@ -105,6 +105,10 @@ List later changes
 Mostra novas modificações
 Filters
 Filtros
+Title:
+
+Title and Body:
+
 Username:
 Usuário:
 Host:
@@ -121,6 +125,8 @@ new
 novo
 from %s
 de %s
+This page is too big to send over RSS.
+
 History of %s
 Histórico de %s
 Compare
@@ -145,20 +151,18 @@ Wiki Version
 Mostrando versão do Wiki
 Unlock Wiki
 Destravando
-Recent Visitors
-Visitantes recentes
 Password
 Senha
 Run maintenance
 Manutenção
 Unlock site
-
+Desbloquear sítio
 Lock site
-
+Bloquear sítio
 Unlock %s
-
+Desbloquear %s
 Lock %s
-
+Bloquear %s
 Administration
 
 Actions:
@@ -239,6 +243,8 @@ minor
 simples
 No diff available.
 Nenhum diff disponivel.
+The two revisions are the same.
+
 Old revision:
 Revisão antiga:
 Changed:
@@ -355,6 +361,8 @@ Include near pages
 
 (for %s)
 (para %s)
+Filter:
+
 %s pages found.
 %s páginas encontradas.
 Replaced: %s
@@ -509,6 +517,8 @@ Rename %s to:
 
 Cannot highlight the language %s.
 
+Recent Visitors
+Visitantes recentes
 some action
 
 was here
@@ -551,9 +561,15 @@ Cannot find unspammed revision.
 
 Add Comment
 
+ordinary changes
+
 Footnotes:
 
 Could not find %1.html template in %2
+
+Only Editors are allowed to see hidden pages.
+
+Only Admins are allowed to see hidden pages.
 
 image: %s
 imagem: %s
@@ -627,6 +643,10 @@ Local Map for %s
 
 view
 
+Self-ban by %s
+
+You have banned your own IP.
+
 Orphan List
 
 Trail: 
@@ -667,6 +687,10 @@ Static Copy
 
 Back to %s
 Voltar para %s
+Copy to %1 succeeded: %2.
+
+Copy to %1 failed: %2.
+
 Tag
 
 Alternatively, use one of the following templates:
@@ -713,6 +737,8 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 
 search
 busca
+Upload of %s file
+
 Blog
 Blog
 END_OF_TRANSLATION
