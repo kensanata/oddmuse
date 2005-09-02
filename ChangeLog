@@ -1,5 +1,12 @@
 2005-09-02  Alex Schroeder  <alex@gnu.org>
 
+	* modules/markup.pl (%MarkupForcedPairs): Changed definition for
+	triple braces.
+	(@markup_forced_pairs_re): Replaces $markup_forced_pairs_re as
+	internal variable.
+	(MarkupForcedPairs): New.
+	(MarkupInit): Use it to set @markup_forced_pairs_re.
+
 	* wiki.pl (UrlDecode): New.
 	(InitCookie): Decode cookie.
 	(PageEtag, Cookie): Encode cookie.
