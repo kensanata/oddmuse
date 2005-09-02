@@ -333,7 +333,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.590 2005/08/31 13:57:56 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.591 2005/09/02 12:04:44 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -344,7 +344,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
 sub InitCookie {
   undef $q->{'.cookies'};  # Clear cache if it exists (for SpeedyCGI)
   if ($q->cookie($CookieName)) {
-    %OldCookie = split(/$FS/, $q->cookie($CookieName));
+    %OldCookie = split(/$FS/, UrlDecode($q->cookie($CookieName)));
   } else {
     %OldCookie = ();
   }
@@ -756,6 +756,12 @@ sub UrlEncode {
     }
   }
   return join('', @letters);
+}
+
+sub UrlDecode {
+  my $str = shift;
+  $str =~ s/%([0-9a-f][0-9a-f])/chr(hex($1))/ge;
+  return $str;
 }
 
 sub GetRaw {
@@ -1425,7 +1431,7 @@ sub PageFresh { # pages can depend on other pages (ie. last update), admin statu
 
 sub PageEtag {
   my ($changed, $visible, %params) = CookieData();
-  return join($FS, $LastUpdate, sort(values %params));
+  return UrlEncode(join($FS, $LastUpdate, sort(values %params))); # no CTL in field values
 }
 
 sub FileFresh { # old files are never stale, current files are stale when the page was modified
@@ -2118,7 +2124,7 @@ sub CookieData {
 sub Cookie {
   my ($changed, $visible, %params) = CookieData();
   if ($changed) {
-    my $cookie = join($FS, %params);
+    my $cookie = UrlEncode(join($FS, %params)); # no CTL in field values
     my $result = $q->cookie(-name=>$CookieName,
 			    -value=>$cookie,
 			    -expires=>'+2y');
