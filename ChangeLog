@@ -1,4 +1,15 @@
+2005-09-02  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (UrlDecode): New.
+	(InitCookie): Decode cookie.
+	(PageEtag, Cookie): Encode cookie.
+
+	* modules/static-copy.pl (StaticFileName): Use UrlDecode.
+	(StaticUrlDecode): Removed.
+
 2005-08-31  Alex Schroeder  <alex@gnu.org>
+
+	* info-ref (ShowForm): Add CVS keyword.
 
 	* wiki.pl (InitLinkPatterns): Quote $, %, and @ in
 	$InterLinkPattern and $FreeInterLinkPattern.
