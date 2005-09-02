@@ -1937,6 +1937,12 @@ foo -- bar
 foo &#x2013; bar
 foo\n----\nbar
 foo <hr /><p>bar</p>
+foo ##bar+## baz
+foo <code>bar+</code> baz
+foo %%bar+%% baz
+foo <span>bar+</span> baz
+##http://www.example.com##
+<code>http://www.example.com</code>
 EOT
 
 run_tests();
