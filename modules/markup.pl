@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: markup.pl,v 1.18 2005/08/23 02:48:13 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: markup.pl,v 1.19 2005/09/02 21:58:21 as Exp $</p>';
 
 use vars qw(%MarkupPairs %MarkupSingles %MarkupLines);
 
@@ -30,7 +30,7 @@ $RuleOrder{\&MarkupRule} = 150;
 		'~' => 'em',
 	       );
 
-%MarkupForcedPairs = ('{{{|}}}' => ['code', {'style'=>'white-space:pre;'}],
+%MarkupForcedPairs = ('{{{' => ['code', {'style'=>'white-space:pre;'}, '}}}'],
 		      '##' => 'code',
 		      '%%' => 'span',
 		      '**' => 'b',
@@ -57,7 +57,7 @@ my $words = '([A-Za-z\x80-\xff][-%.,:;\'"!?0-9 A-Za-z\x80-\xff]*?)';
 my $noword = '(?=[^-0-9A-Za-z\x80-\xff]|$)';
 
 my $markup_pairs_re = '';
-my $markup_forced_pairs_re = '';
+my @markup_forced_pairs_re = ();
 my $markup_singles_re = '';
 my $markup_lines_re = '';
 
@@ -68,24 +68,30 @@ sub MarkupInit {
   $markup_pairs_re = '\G([' . join('', (map { quotemeta(QuoteHtml($_)) }
 					keys(%MarkupPairs))) . '])';
   $markup_pairs_re = qr/\G${markup_pairs_re}${words}\1${noword}/;
-  $markup_forced_pairs_re = '\G(' . join('|', (map { @_=split/\|/;
-							quotemeta(QuoteHtml(shift)) }
-						  keys(%MarkupForcedPairs)))
-    . ')((:?.*?\n?)*?)(' . join('|', (map { @_ = split/\|/;
-				   quotemeta(QuoteHtml(pop)) }
-			     keys(%MarkupForcedPairs))). ')';
-  $markup_forced_pairs_re = qr/\G${markup_forced_pairs_re}/;
-  foreach (keys %MarkupForcedPairs) {
-    if (@_=split/\|/) {
-      $MarkupForcedPairs{(shift)} = $MarkupForcedPairs{$_};
-    }
-  }
   $markup_singles_re = '\G(' . join('|', (map { quotemeta(QuoteHtml($_)) }
 					  keys(%MarkupSingles))) . ')';
   $markup_singles_re = qr/$markup_singles_re/;
   $markup_lines_re = '\G(' . join('|', (map { quotemeta(QuoteHtml($_)) }
 					keys(%MarkupLines))) . ')(.*\n?)';
   $markup_lines_re = qr/$markup_lines_re/;
+  my (@same_tags, @different_tags);
+  foreach my $start (keys %MarkupForcedPairs) {
+    my $end;
+    if (ref($MarkupForcedPairs{$start})) {
+      my $arrayref = $MarkupForcedPairs{$start};
+      $end = @{$arrayref}[2];
+    }
+    if ($end) {
+      my $re = '\G(' . quotemeta($start) . ')((:?.*?\n?)*?)' . quotemeta($end);
+      push(@markup_forced_pairs_re, qr/$re/);
+    } else {
+      push(@same_tags, quotemeta($start));
+    }
+  }
+  if (@same_tags) {
+    my $re = '\G(' . join('|', @same_tags) . ')((:?.*?\n?)*?)\1';
+    push(@markup_forced_pairs_re, qr/$re/);
+  }
 }
 
 sub MarkupTag {
@@ -115,8 +121,8 @@ sub MarkupRule {
     return CloseHtmlEnvironments()
       . MarkupTag($MarkupLines{UnquoteHtml($tag)}, $str)
       . AddHtmlEnvironment('p');
-  } elsif (%MarkupForcedPairs and m/$markup_forced_pairs_re/gc) {
-    return MarkupTag($MarkupForcedPairs{UnquoteHtml($1)}, $2);
+  } elsif (%MarkupForcedPairs and my $html = MarkupForcedPairs()) {
+    return $html;
   } elsif (%MarkupPairs and m/$markup_pairs_re/gc) {
     return MarkupTag($MarkupPairs{UnquoteHtml($1)}, $2);
   } elsif (%MarkupSingles and m/$markup_singles_re/gc) {
@@ -127,4 +133,13 @@ sub MarkupRule {
     return $1; # fix /usr/share/lib/! example
   }
   return undef;
+}
+
+# I need to build the html here because $1 and $2 are no longer
+# available when returning from this sub.
+sub MarkupForcedPairs {
+  foreach my $re (@markup_forced_pairs_re) {
+    return MarkupTag($MarkupForcedPairs{UnquoteHtml($1)}, $2)
+      if (m/$re/gc);
+  }
 }
