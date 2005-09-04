@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.24 2005/08/28 17:38:22 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.25 2005/09/04 02:21:44 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
@@ -55,13 +55,13 @@ sub TocRule {
     $PortraitSupportColor = 0;
     return $html;
   } elsif ($UseModMarkupInTitles
-	   && m/\G[ \t]*=+\n?/cg
 	   && (InElement('h1')
-		|| InElement('h2')
-		|| InElement('h3')
-		|| InElement('h4')
-		|| InElement('h5')
-		|| InElement('h6'))) {
+	       || InElement('h2')
+	       || InElement('h3')
+	       || InElement('h4')
+	       || InElement('h5')
+	       || InElement('h6'))
+	   && m/\G[ \t]*=+\n?/cg) {
     return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
   } elsif ($bol
 	   && !$UseModMarkupInTitles
