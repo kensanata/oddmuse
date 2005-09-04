@@ -1,0 +1,109 @@
+# Copyright (C) 2005  Alex Schroeder <alex@emacswiki.org>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the
+#    Free Software Foundation, Inc.
+#    59 Temple Place, Suite 330
+#    Boston, MA 02111-1307 USA
+
+$ModulesDescription .= '<p>$Id: weblog-3.pl,v 1.1 2005/09/04 23:39:07 as Exp $</p>';
+
+# Categories
+
+$CategoriesPage = 'Categories';
+
+*CategoriesOldOpenPage = *OpenPage;
+*OpenPage = *CategoriesNewOpenPage;
+
+%Category = (); # fast checking
+@Categories = (); # correct order
+my $CategoryInit = 0;
+
+sub CategoriesNewOpenPage {
+  CategoryInit() unless $CategoryInit;
+  CategoriesOldOpenPage(@_);
+  if ($Page{revision} = 0) {
+    if ($OpenPageName eq $HomePage) {
+      $Page{text} = '<journal>';
+    } elsif ($Category{$OpenPageName}) {
+      $Page{text} = '<journal "\d\d\d\d-\d\d-\d\d.*'
+	. $Category{$OpenPageName}
+	. '">';
+    }
+  }
+}
+
+sub CategoryInit {
+  $CategoryInit = 1;
+  my @paragraphs = split(/\n\n+/, GetPageContent($CategoriesPage));
+  foreach (@paragraphs) {
+    next unless /^\*/;
+    while (/\*.*\[\[(.*)\]\]/g) {
+      $Category{$1} = 1;
+      push(@Categories, $1);
+    }
+    last;
+  }
+}
+
+# New Action
+
+$Action{new} = \&DoCategories;
+
+sub DoCategories {
+  print GetHeader('', T('New')), $q->start_div({-class=>'content categories'}), GetFormStart(undef, 'get', 'cat');
+  my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = gmtime();
+  my $today = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
+  CategoryInit() unless $CategoryInit;
+  print $q->p({-class=>'table'}, map {GetPageLink("$today $_", $_)} @Categories);
+  print $q->p($q->textfield('id', $today));
+  print $q->p(Ts('Edit %s.', GetPageLink($CategoriesPage)));
+  print $q->submit("Go!");
+  print $q->end_form, $q->end_div();
+  PrintFooter();
+}
+
+# Set Goto Bar according to links on the HomePage.
+# Every item should start with exactly one bullet
+# and a link in double square brackets.
+
+*GetGotoBar = * NewGetGotoBar;
+my $GotoBarInit = 0;
+
+sub GotoBarInit {
+  $GotoBarInit = 1;
+  my @paragraphs = split(/\n\n+/, GetPageContent($HomePage));
+  foreach (@paragraphs) {
+    next unless /^\*/;
+    while (/\*.*\[\[(.*)\]\]/g) {
+      push(@UserGotoBarPages, $1);
+    }
+    last;
+  }
+}
+
+sub NewGetGotoBar {
+  my $id = shift;
+  GotoBarInit() unless $GotoBarInit;
+  my @links;
+  foreach my $name (@UserGotoBarPages) {
+    my $page = FreeToNormal($name);
+    if ($id eq $page) {
+      push (@links, T($name));
+    } else {
+      push (@links, GetPageLink($page, T($name)));
+    }
+  }
+  push (@links, ScriptLink('action=new', T('New')));
+  return $q->span({-class=>'gotobar'}, join(' | ', @links));
+}
