@@ -1,5 +1,8 @@
 2005-09-04  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (InitLinkPatterns): Small change to $InterLinkPattern as
+	suggested by Markus Lude.
+
 	* modules/toc.pl (TocRule): Revers order of match and InElement
 	check as suggested by Markus Lude.  Without this patch, single
 	equal signs are eaten when $UseModMarkupInTitles is true.
