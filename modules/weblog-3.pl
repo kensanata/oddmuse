@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: weblog-3.pl,v 1.1 2005/09/04 23:39:07 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: weblog-3.pl,v 1.2 2005/09/04 23:59:52 as Exp $</p>';
 
 # Categories
 
@@ -65,7 +65,7 @@ sub DoCategories {
   my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = gmtime();
   my $today = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
   CategoryInit() unless $CategoryInit;
-  print $q->p({-class=>'table'}, map {GetPageLink("$today $_", $_)} @Categories);
+  print $q->p({-class=>'table'}, map {GetEditLink("$today $_", $_)} @Categories);
   print $q->p($q->textfield('id', $today));
   print $q->p(Ts('Edit %s.', GetPageLink($CategoriesPage)));
   print $q->submit("Go!");
@@ -105,5 +105,10 @@ sub NewGetGotoBar {
     }
   }
   push (@links, ScriptLink('action=new', T('New')));
+  my @parts = split(/_/, GetId());
+  if ($parts[0] =~ /\d\d\d\d-\d\d-\d\d/) {
+    shift(@parts);
+    push(@links, @parts);
+  }
   return $q->span({-class=>'gotobar'}, join(' | ', @links));
 }
