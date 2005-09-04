@@ -333,7 +333,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.591 2005/09/02 12:04:44 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.592 2005/09/04 17:50:22 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -389,7 +389,7 @@ sub InitLinkPatterns {
   $FreeLinkPattern = "([-,.()' _0-9A-Za-z\x80-\xff]+)";
   # Intersites must start with uppercase letter to avoid confusion with URLs.
   $InterSitePattern = '[A-Z\x80-\xff]+[A-Za-z\x80-\xff]+';
-  $InterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x80-\xff_=!?#\$\@~`\%&*+\\/:;.,]+[-a-zA-Z0-9\x80-\xff_=#$@~`%&*+\\/])$QDelim";
+  $InterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x80-\xff_=!?#\$\@~`\%&*+\\/:;.,]*[-a-zA-Z0-9\x80-\xff_=#\$\@~`\%&*+\\/])$QDelim";
   $FreeInterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x80-\xff_=!?#\$\@~`\%&*+\\/:;.,()' ]+)"; # plus space and other characters, and no restrictions on the end of the pattern
   $UrlProtocols = 'http|https|ftp|afs|news|nntp|mid|cid|mailto|wais|prospero|telnet|gopher|irc';
   $UrlProtocols .= '|file'  if $NetworkFile;
