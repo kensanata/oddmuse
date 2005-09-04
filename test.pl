@@ -1869,6 +1869,8 @@ InitVariables();
 <dl><dt>one</dt><dd>eins</dd><dt>two</dt><dd>zwei</dd></dl>
 =='''title'''==
 <h2><strong>title</strong></h2>
+1 \+ 1 = 2
+1 \+ 1 = 2
 EOT
 
 run_tests();
