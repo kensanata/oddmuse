@@ -1,3 +1,13 @@
+2005-09-04  Alex Schroeder  <alex@gnu.org>
+
+	* modules/toc.pl (TocRule): Revers order of match and InElement
+	check as suggested by Markus Lude.  Without this patch, single
+	equal signs are eaten when $UseModMarkupInTitles is true.
+
+	* modules/usemod.pl (UsemodRule): Revers order of match and
+	InElement check as suggested by Markus Lude.  Without this patch,
+	single equal signs are eaten when $UseModMarkupInTitles is true.
+
 2005-09-02  Alex Schroeder  <alex@gnu.org>
 
 	* modules/markup.pl (%MarkupForcedPairs): Changed definition for
