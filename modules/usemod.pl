@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.23 2005/08/22 19:36:54 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.24 2005/09/04 02:18:14 as Exp $</p>';
 
 $DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /table\.user/; # mod_perl?
 table.user { border-style:solid; border-width:thin; }
@@ -112,9 +112,9 @@ sub UsemodRule {
     $PortraitSupportColor = 0;
     return $html;
   } elsif ($UseModMarkupInTitles
-	   && m/\G[ \t]*=+\n?/cg
 	   && (InElement('h1') || InElement('h2') || InElement('h3')
-		|| InElement('h4') || InElement('h5') || InElement('h6'))) {
+	       || InElement('h4') || InElement('h5') || InElement('h6'))
+	   && m/\G[ \t]*=+\n?/cg) {
     return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
   } elsif ($bol && !$UseModMarkupInTitles && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg) {
     my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '')
