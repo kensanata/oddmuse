@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: weblog-3.pl,v 1.4 2005/09/05 19:06:00 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: weblog-3.pl,v 1.5 2005/09/05 20:03:55 as Exp $</p>';
 
 # Categories
 
@@ -97,12 +97,7 @@ sub NewGetGotoBar {
   GotoBarInit() unless $GotoBarInit;
   my @links;
   foreach my $name (@UserGotoBarPages) {
-    my $page = FreeToNormal($name);
-    if ($id eq $page) {
-      push (@links, T($name));
-    } else {
-      push (@links, GetPageLink($page, T($name)));
-    }
+    push (@links, GetPageLink($name, $name));
   }
   my @parts = split(/_/, GetId());
   if ($parts[0] =~ /\d\d\d\d-\d\d-\d\d/) {
@@ -110,5 +105,5 @@ sub NewGetGotoBar {
     push(@links, map {GetPageLink($_)} @parts);
   }
   push (@links, ScriptLink('action=new', T('New')));
-  return $q->span({-class=>'gotobar'}, join(' | ', @links));
+  return $q->span({-class=>'gotobar bar'}, @links);
 }
