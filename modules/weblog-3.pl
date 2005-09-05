@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: weblog-3.pl,v 1.3 2005/09/05 00:06:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: weblog-3.pl,v 1.4 2005/09/05 19:06:00 as Exp $</p>';
 
 # Categories
 
@@ -36,7 +36,7 @@ sub CategoriesNewOpenPage {
     if ($OpenPageName eq $HomePage) {
       $Page{text} = '<journal>';
     } elsif ($Category{$OpenPageName}) {
-      $Page{text} = '<journal "\d\d\d\d-\d\d-\d\d.*'
+      $Page{text} = '<journal "^\d\d\d\d-\d\d-\d\d.*'
 	. $OpenPageName
 	. '">';
     }
