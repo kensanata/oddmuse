@@ -2,6 +2,7 @@
 
 	* modules/weblog-3.pl (NewGetGotoBar): Link to current page as
 	well.  Don't use pipe as separator.
+	(GotoBarInit): First link, not last link is what matters.
 
 	* upgrade-files.pl (rewrite): Added my %page.
 	(read_file): Removed my %page.
