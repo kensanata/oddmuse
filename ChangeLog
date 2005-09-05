@@ -1,3 +1,18 @@
+2005-09-05  Alex Schroeder  <alex@gnu.org>
+
+	* modules/weblog-3.pl (NewGetGotoBar): Link to current page as
+	well.  Don't use pipe as separator.
+
+	* upgrade-files.pl (rewrite): Added my %page.
+	(read_file): Removed my %page.
+
+	* modules/weblog-3.pl (DoCategories): Use GetEditLink instead of
+	GetPageLink.
+	(NewGetGotoBar): Add Categories to GotoBar.
+	(CategoriesNewOpenPage): Bugfix.
+	(NewGetGotoBar): Chnange Order.
+	(CategoriesNewOpenPage): Fix journal regex.
+
 2005-09-04  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (InitLinkPatterns): Small change to $InterLinkPattern as
