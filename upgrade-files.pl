@@ -16,7 +16,7 @@ $NewFS = "\x1e";
 # override $FS if you want!
 
 print header() . start_html('Upgrading Files'), p;
-print q{Upgrade version: $Id: upgrade-files.pl,v 1.12 2004/11/01 18:15:47 as Exp $}, "\n";
+print q{Upgrade version: $Id: upgrade-files.pl,v 1.13 2005/09/05 19:10:57 as Exp $}, "\n";
 if (not param('dir')) {
   print start_form, p, '$DataDir: ', textfield('dir', '/tmp/oddmuse'),
     p, radio_group('separator', ['Oddmuse', 'UseMod 0.92', 'UseMod 1.00',
@@ -51,7 +51,7 @@ sub rewrite {
   print '<pre>';
   foreach my $file (@files) {
     print "Reading page $file...\n";
-    %page = split(/$FS1/, read_file($file), -1);
+    my %page = split(/$FS1/, read_file($file), -1);
     %section = split(/$FS2/, $page{text_default}, -1);
     %text = split(/$FS3/, $section{data}, -1);
     $file =~ s/\.db$/.pg/ or die "Invalid page name\n";
@@ -124,7 +124,6 @@ sub rewrite {
 sub read_file {
   my ($filename) = @_;
   my ($data);
-  my (%page);
   local $/ = undef;		# Read complete files
   open(F, "<$filename") or die "can't read $filename: $!";
   $data=<F>;
