@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: weblog-3.pl,v 1.2 2005/09/04 23:59:52 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: weblog-3.pl,v 1.3 2005/09/05 00:06:16 as Exp $</p>';
 
 # Categories
 
@@ -32,12 +32,12 @@ my $CategoryInit = 0;
 sub CategoriesNewOpenPage {
   CategoryInit() unless $CategoryInit;
   CategoriesOldOpenPage(@_);
-  if ($Page{revision} = 0) {
+  if ($Page{revision} == 0) {
     if ($OpenPageName eq $HomePage) {
       $Page{text} = '<journal>';
     } elsif ($Category{$OpenPageName}) {
       $Page{text} = '<journal "\d\d\d\d-\d\d-\d\d.*'
-	. $Category{$OpenPageName}
+	. $OpenPageName
 	. '">';
     }
   }
@@ -104,11 +104,11 @@ sub NewGetGotoBar {
       push (@links, GetPageLink($page, T($name)));
     }
   }
-  push (@links, ScriptLink('action=new', T('New')));
   my @parts = split(/_/, GetId());
   if ($parts[0] =~ /\d\d\d\d-\d\d-\d\d/) {
     shift(@parts);
-    push(@links, @parts);
+    push(@links, map {GetPageLink($_)} @parts);
   }
+  push (@links, ScriptLink('action=new', T('New')));
   return $q->span({-class=>'gotobar'}, join(' | ', @links));
 }
