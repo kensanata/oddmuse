@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: weblog-3.pl,v 1.7 2005/09/05 20:42:03 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: weblog-3.pl,v 1.8 2005/09/07 19:47:30 as Exp $</p>';
 
 # Categories
 
@@ -35,8 +35,12 @@ sub CategoriesNewOpenPage {
   if ($Page{revision} == 0) {
     if ($OpenPageName eq $HomePage) {
       $Page{text} = '<journal>';
-    } elsif ($Category{$OpenPageName}) {
-      $Page{text} = '<journal "^\d\d\d\d-\d\d-\d\d.*'
+    } elsif (GetParam('tag','') or $Category{$OpenPageName}) {
+      # if the page is either on the categories page, or the tag=1
+      # parameter was added, show a journal
+      $Page{text} = T('Matching pages:')
+	. "\n\n"
+	. '<journal "^\d\d\d\d-\d\d-\d\d.*'
 	. $OpenPageName
 	. '">';
     }
@@ -49,8 +53,9 @@ sub CategoryInit {
   foreach (@paragraphs) {
     next unless /^\*/;
     while (/\*.*\[\[(.*)\]\]/g) {
-      $Category{$1} = 1;
-      push(@Categories, $1);
+      my $id = FreeToNormal($1);
+      $Category{$id} = 1;
+      push(@Categories, $id);
     }
     last;
   }
@@ -61,7 +66,8 @@ sub CategoryInit {
 $Action{new} = \&DoCategories;
 
 sub DoCategories {
-  print GetHeader('', T('New')), $q->start_div({-class=>'content categories'}), GetFormStart(undef, 'get', 'cat');
+  print GetHeader('', T('New')), $q->start_div({-class=>'content categories'}),
+    GetFormStart(undef, 'get', 'cat');
   my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = gmtime();
   my $today = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
   CategoryInit() unless $CategoryInit;
@@ -100,9 +106,21 @@ sub NewGetGotoBar {
     push (@links, GetPageLink($name, $name));
   }
   my @parts = split(/_/, GetId());
+  CategoryInit() unless $CategoryInit;
   if ($parts[0] =~ /\d\d\d\d-\d\d-\d\d/) {
     shift(@parts);
-    push(@links, map {GetPageLink($_)} @parts);
+    push(@links, map {
+      if ($Category{$_}) {
+	$q->a({-href=>$ScriptName . ($UsePathInfo ? '/' : '?') . UrlEncode($_),
+	       -class=>'local tag',
+	       -rel=>'tag'}, $_);
+      } else {
+	# provide tag=1 parameter to tell OpenPage to add journal tag
+	$q->a({-href=>$ScriptName . '?tag=1;action=browse;id=' . UrlEncode($_),
+	       -class=>'local tag',
+	       -rel=>'tag'}, $_);
+      }
+    } @parts);
   }
   push (@links, ScriptLink('action=new', T('New')));
   return $q->span({-class=>'gotobar bar'}, @links);
