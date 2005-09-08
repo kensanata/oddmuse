@@ -28,7 +28,7 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.21 2005/08/21 17:32:32 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.22 2005/09/08 02:07:19 fletcherpenney Exp $</p>';
 
 @MyRules = (\&MarkdownRule);
 
@@ -249,7 +249,7 @@ sub CreateWikiLink {
 
 	if ($resolved) {
 		if ($class eq 'near') {
-			return "[$title]($resolved)";
+			return "[$title](" . UrlEncode($resolved) . ")";
 		}
 		return "[$title](" . UrlEncode($resolved) . ")";
 	} else {

@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: login.pl,v 1.4 2005/08/22 00:11:43 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: login.pl,v 1.5 2005/09/08 02:07:19 fletcherpenney Exp $</p>';
 
 #use vars qw($RegistrationForm $MinimumPasswordLength $RegistrationsMustBeApproved $LoginForm $PasswordFile $PendingPasswordFile $RequireLoginToEdit $ConfirmEmailAddress $ConfirmEmailAddress $UncomfirmedPasswordFile $EmailSenderAddress $EmailCommand $NotifyPendingRegistrations $EmailConfirmationMessage $ResetPasswordMessage $RegistrationForm $LogoutForm $ResetForm $ChangePassForm $RequireCamelUserName);
 
@@ -398,12 +398,15 @@ sub LoginUserCanEdit {
 	my $user = GetParam('username', '');
 	my $pwd  = GetParam('pwd', '');
 
-	if ($user and $pwd) {
-		# If not logged in, return 0.  Otherwise, let Oddmuse decide
-		return 0 unless AuthenticateUser($user, $pwd);
-		return OldUserCanEdit($id, $editing);
+	if ($RequireLoginToEdit) {
+			if ($user and $pwd) {
+					# If not logged in, return 0.  Otherwise, let Oddmuse d$
+					return 0 unless AuthenticateUser($user, $pwd);
+					return OldUserCanEdit($id, $editing);
+			}
+			return 0;
 	}
-	return 0 if $RequireLoginToEdit;
+	return OldUserCanEdit($id, $editing);
 }
 
 sub AuthenticateUser {
