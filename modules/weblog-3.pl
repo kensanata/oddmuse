@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: weblog-3.pl,v 1.8 2005/09/07 19:47:30 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: weblog-3.pl,v 1.9 2005/09/09 16:00:50 as Exp $</p>';
 
 # Categories
 
@@ -123,5 +123,5 @@ sub NewGetGotoBar {
     } @parts);
   }
   push (@links, ScriptLink('action=new', T('New')));
-  return $q->span({-class=>'gotobar bar'}, @links);
+  return $q->span({-class=>'gotobar bar'}, @links, $UserGotoBar);
 }
