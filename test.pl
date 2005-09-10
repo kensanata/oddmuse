@@ -1945,6 +1945,18 @@ foo %%bar+%% baz
 foo <span>bar+</span> baz
 ##http://www.example.com##
 <code>http://www.example.com</code>
+%%http://www.example.com%%
+<span>http://www.example.com</span>
+and **this\nis!** me
+and <b>this\nis!</b> me
+and //this\nis!// me
+and <i>this\nis!</i> me
+and __this\nis!__ me
+and <em style="text-decoration: underline; font-style: normal;">this\nis!</em> me
+and ~~this\nis!~~ me
+and <em>this\nis!</em> me
+um\n{{{code}}} here
+um <code style="white-space:pre;">code</code> here
 EOT
 
 run_tests();
@@ -1957,6 +1969,7 @@ remove_rule(\&MarkupRule);
 setext_module:
 print '[setext module]';
 
+clear_pages(); # link-all will confuse us
 do 'modules/setext.pl';
 do 'modules/link-all.pl';
 
