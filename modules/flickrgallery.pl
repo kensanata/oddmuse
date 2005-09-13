@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: flickrgallery.pl,v 1.1 2005/09/13 00:10:42 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: flickrgallery.pl,v 1.2 2005/09/13 01:30:37 fletcherpenney Exp $</p>';
 
 # NOTE: This API key for Flickr is NOT to be used in any other products
 # INCLUDING derivative works.  The rest of the code can be used as licensed
@@ -46,7 +46,7 @@ push (@MyMarkdownRules, \&MarkdownFlickrGalleryRule);
 $RuleOrder{\&FlickrGalleryRule} = -10;
 
 sub FlickrGalleryRule {
-	if (m/\G(\[\[FlickrSet:(\d+)\]\])/gc) {
+	if (/\G^([\n\r]*\&lt;\s*FlickrSet:\s*(\d+)\s*\&gt;\s*)$/mgc) {
 		return FlickrGallery($2);
 	}
 	
@@ -57,17 +57,17 @@ sub MarkdownFlickrGalleryRule {
 	my $text = shift;
 	
 	$text =~ s{
-		\[\[FlickrSet:(\d+)\]\]
+		^&lt;FlickrSet:\s*(\d+)\s*\>
 	}{
 		FlickrGallery($1);
-	}xsge;
+	}xmge;
 	
 	return $text
 }
 
 sub FlickrGallery {
 	my $id = shift();
-	return "[[FlickrSet:$id]] LWP::UserAgent not available" unless eval {require LWP::UserAgent};
+	return "&lt;FlickrSet:$id&gt; (error LWP::UserAgent not available)" unless eval {require LWP::UserAgent};
 	my $ua = LWP::UserAgent->new;
 	my $result = "";
 	
