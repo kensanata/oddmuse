@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: flickrgallery.pl,v 1.3 2005/09/13 03:35:53 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: flickrgallery.pl,v 1.4 2005/09/13 05:46:37 fletcherpenney Exp $</p>';
 
 # NOTE: This API key for Flickr is NOT to be used in any other products
 # INCLUDING derivative works.  The rest of the code can be used as licensed
@@ -83,12 +83,7 @@ sub FlickrGallery {
 
 	$response->content =~ /\<description\>(.*?)\<\/description\>/;
 	my $description = $1;
-	
-	if ($MarkdownEnabled) {
-		$description =~ s/_/\\_/g;
-		$title =~ s/_/\\_/g;
-	}
-	
+		
 	$result = $FlickrHeaderTemplate;
 
 	$result =~ s/(\$[a-zA-Z\d]+)/"defined $1 ? $1 : ''"/gee;
@@ -129,11 +124,6 @@ sub FlickrPhoto {
 
 	$response->content =~ /\<description\>(.*?)\<\/description\>/;
 	my $description = $1;
-
-	if ($MarkdownEnabled) {
-		$description =~ s/_/\\_/g;
-		$cleanTitle =~ s/_/\\_/g;
-	}
 
 	$response->content =~ /\<url type="photopage"\>(.*?)\<\/url\>/;
 	my $imageurl = $1;
