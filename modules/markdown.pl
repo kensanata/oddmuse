@@ -28,7 +28,11 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.22 2005/09/08 02:07:19 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.23 2005/09/13 00:09:24 fletcherpenney Exp $</p>';
+
+use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled!;
+
+$MarkdownEnabled = 1;
 
 @MyRules = (\&MarkdownRule);
 
@@ -64,6 +68,13 @@ sub MarkdownRule {
     # Do not allow raw HTML
     $source = SanitizeSource($source);
     
+    # Allow other Modules to process raw text before Markdown
+    # This allows modules to be "Markdown Compatible"
+	@MyMarkdownRules = sort {$MarkdownRuleOrder{$a} <=> $MarkdownRuleOrder{$b}} @MyMarkdownRules; # default is 0
+	foreach my $sub (@MyMarkdownRules) {
+		$source = &$sub($source);
+	}	
+
     my $result = Markdown::Markdown($source);
     
 	$result = UnescapeWikiWords($result);
@@ -103,12 +114,10 @@ sub SanitizeSource {
 *GetCluster = *MarkdownGetCluster;
 
 sub MarkdownGetCluster {
-	$_ = shift;
-	return '' unless $PageCluster;
-	if (( /^$LinkPattern\n/)
-		or (/^\[\[$FreeLinkPattern\]\]\n/)) {
-		return $1
-	};
+  $_ = shift;
+  return '' unless $PageCluster;
+  return $1 if ( /^$LinkPattern\n/)
+    or (/^\[\[$FreeLinkPattern\]\]\n/);
 }
 
 
@@ -164,7 +173,7 @@ sub DoWikiWords {
 	my $text = shift;
 	my $WikiWord = '[A-Z]+[a-z\x80-\xff]+[A-Z][A-Za-z\x80-\xff]*';
 	my $FreeLinkPattern = "([-,.()' _0-9A-Za-z\x80-\xff]+)";
-
+	
 	if ($FreeLinks) {
 		# FreeLinks
 		$text =~ s{
@@ -249,7 +258,7 @@ sub CreateWikiLink {
 
 	if ($resolved) {
 		if ($class eq 'near') {
-			return "[$title](" . UrlEncode($resolved) . ")";
+			return "[$title]($resolved)";
 		}
 		return "[$title](" . UrlEncode($resolved) . ")";
 	} else {
@@ -307,7 +316,7 @@ sub NewRunSpanGamut {
 	$text = Markdown::_DoItalicsAndBold($text);
 
 	# Do hard breaks:
-	$text =~ s/ {2,}\n/$Markdown::g_hardbreak/g;
+	$text =~ s/ {2,}\n/$g_hardbreak/g;
 
 	return $text;
 }
