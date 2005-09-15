@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.5 2005/07/24 18:31:54 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.6 2005/09/15 18:09:54 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
@@ -104,6 +104,10 @@ List later changes
 Spätere Änderungen
 Filters
 Filter
+Title:
+Seitenname:
+Title and Body:
+Seitenname und Inhalt:
 Username:
 Benutzername:
 Host:
@@ -120,6 +124,8 @@ new
 Neue Seite
 from %s
 von %s
+This page is too big to send over RSS.
+Diese Seite ist zu gross für RSS.
 History of %s
 Andere Versionen von %s
 Compare
@@ -144,8 +150,6 @@ Wiki Version
 Wiki Version
 Unlock Wiki
 Aufheben der Sperren
-Recent Visitors
-Kürzliche Besucher
 Password
 Passwort
 Run maintenance
@@ -238,6 +242,8 @@ minor
 kleinere
 No diff available.
 Keine Unterschiede vorhanden.
+The two revisions are the same.
+Es gibt keinen Unterschied zwischen den beiden Versionen.
 Old revision:
 Alte Version:
 Changed:
@@ -325,17 +331,17 @@ Ihr Passwort wird in einem Cookie gespeichert, falls Sie Cookies eingeschaltet h
 You are currently an administrator on this site.
 Sie sind momentan ein Administrator auf dieser Webseite.
 You are currently an editor on this site.
-Sie sind momentan ein Bearbeiter auf dieser Webseite.
+Sie sind momentan ein Redaktor auf dieser Webseite.
 You are a normal user on this site.
 Sie sind ein normaler Benutzer auf dieser Webseite.
 Your password does not match any of the  administrator or editor passwords.
-Ihr Passwort stimmt nicht mit einem Administrator- oder Bearbeiter-Passwort überein.
+Ihr Passwort stimmt nicht mit einem Administrator- oder Redaktor-Passwort überein.
 Password:
 Passwort:
 This site does not use admin or editor passwords.
-Diese Webseite verwendet keine Administrator- oder Bearbeiter-Passwörter.
+Diese Webseite verwendet keine Administrator- oder Redaktor-Passwörter.
 This operation is restricted to site editors only...
-Diese Aktion darf nur von Bearbeitern durchgeführt werden...
+Diese Aktion darf nur von Redaktoren durchgeführt werden...
 This operation is restricted to administrators only...
 Diese Aktion darf nur von Administratoren durchgeführt werden...
 Rule "%1" matched "%2" on this page.
@@ -354,6 +360,8 @@ Include near pages
 Mit Seiten aus der Umgebung
 (for %s)
 (für %s)
+Filter:
+Filter:
 %s pages found.
 %s Seiten gefunden.
 Replaced: %s
@@ -425,7 +433,7 @@ Vorgänger
 other
 Andere Person
 Run Maintenance
-Wartungsargeiten
+Wartungsarbeiten
 Maintenance not done.
 Wartungsarbeiten nicht erfolgt.
 (Maintenance can only be done once every 12 hours.)
@@ -508,6 +516,8 @@ Rename %s to:
 %s umbenennen zu:
 Cannot highlight the language %s.
 Die Sprache %s kann von diesem Modul nicht eingefärbt werden.
+Recent Visitors
+Kürzliche Besucher
 some action
 Spezialaktion
 was here
@@ -550,10 +560,16 @@ Cannot find unspammed revision.
 Es gibt keine Version ohne Spam.
 Add Comment
 Kommentar hinzufügen
+ordinary changes
+normale Änderungen
 Footnotes:
 Fussnoten:
 Could not find %1.html template in %2
 Im Verzeichnis %2 gibt es kein %1.html Template
+Only Editors are allowed to see hidden pages.
+Nur Redaktoren dürfen versteckte Seiten sehen.
+Only Admins are allowed to see hidden pages.
+Nur Administratoren dürfen versteckte Seiten sehen.
 image: %s
 Bild: %s
 Index
@@ -571,43 +587,43 @@ Vorlage ohne Parameter
 The template %s is either empty or does not exist.
 Die %s Vorlage ist entweder leer oder existiert gar nicht.
 Register for %s
-
+Anmeldung für %s
 Please choose a username of the form "FirstLast" using your real name.
-
+Bitte verwenden sie ihren Vorname und Nachname ohne Leerzeichen ("VornameNachname") als ihren Benutzernamen.
 The passwords do not match.
-
+Das Passwort stimmt nicht mit der Kopie überein.
 The password must be at least %s characters.
-
+Das Passwort muss mindestens %s Zeichen lang sein.
 That email address is invalid.
-
+Diese Email Adresse ist ungültig.
 The username %s has already been registered.
-
+Der Benutzername %s existiert bereits.
 Your registration for %s has been submitted.
-
+Ihre Anmeldung für den Benutzername %s wurde weitergeleitet.
   Please allow time for the webmaster to approve your request.
-
+  Bitte geben sie dem Webmaster etwas Zeit, um ihre Anmeldung entgegen zu nehmen.
 An account was created for %s.
-
+Der Benutzername %s wurde angelegt.
 Login to %s
-
+Anmeldung für %s
 Username and/or password are incorrect.
-
+Benutzername und/oder Passwort sind falsch.
 Logged in as %s.
-
+%s wurde erfolgreich angemeldet.
 Logout of %s
-
+%s wurde erfolgreich abgemeldet.
 Logout of %s?
-
+Soll %s abgemeldet werden?
 Logged out of %s
-
+%s wurde erfolgreich abgemeldet.
 You are now logged out.
-
+Sie sind nun abgemeldet.
 Register a new account
-
+Neue Anmeldung
 Login
-
+Anmeldung
 Logout
-
+Abmeldung
 Clearing Cache
 Cache wird geleert
 Done.
@@ -619,13 +635,17 @@ Die 404 handler Erweiterung benötigt die Link Data Erweiterung (links.pl).
 LocalMap
 
 No page id for action localmap
-
+Es gibt keine Spezialseite für den localmap Befehle
 Requested page %s does not exist
-
+Die gewünschte Seite %s existiert nicht
 Local Map for %s
 
 view
 
+Self-ban by %s
+%s hat sich selber verbannt.
+You have banned your own IP.
+Sie haben ihre eigene IP Nummer verbannt.
 Orphan List
 Liste der Waisen
 Trail: 
@@ -645,27 +665,31 @@ Alle Links auf diesen Wiki
 Referrers
 Links auf diese Seite
 Rebuild index for searching
-
+Der Index für die Suche wird neu erstellt
 Rebuilding Index
-
+Der Index wird neu erstellt
 Search::FreeText is not available on this system.
-
+Search::FreeText fehlt auf diesem System.
 Rebuilding index not done.
-
+Der Index für die Suche wurde noch nicht neu erstellt.
 (Rebuilding the index can only be done once every 12 hours.)
-
+(Der Index für die Suche kann nur einmal alle zwölf Stunden neu erstellt werden.)
 Search term missing.
-Suchbegriff fehlt.
+Der Suchbegriff fehlt.
 Result pages: 
-
+Resultate: 
 (%s results)
-
+(%s Resultate)
 Slideshow:%s
-
+Diashow:%s
 Static Copy
 Statische Kopie
 Back to %s
 Zurück zu %s
+Copy to %1 succeeded: %2.
+Die %1 Kopie hat funktioniert: %2.
+Copy to %1 failed: %2.
+Die %1 Kopie ist fehlgeschlagen: %2.
 Tag
 
 Alternatively, use one of the following templates:
@@ -712,6 +736,14 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 http://de.bookbutler.info/vergleich/%s
 search
 Suchen
+Upload of %s file
+Hochladen der %s Datei
 Blog
 Blog
+Matching pages:
+Passende Seiten:
+New
+Neu
+Edit %s.
+%s bearbeiten.
 END_OF_TRANSLATION
