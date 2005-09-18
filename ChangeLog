@@ -1,5 +1,9 @@
 2005-09-18  Alex Schroeder  <alex@gnu.org>
 
+	* modules/webdav.pl (lock, unlock): Fake them.
+	(%implemented): List lock.
+	(options): Use DAV: 1 header.
+
 	* modules/referrer-tracking.pl (RefererTrack): No refererrers
 	unless there is a page id they belong to.
 
