@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.2 2005/01/07 00:54:29 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.3 2005/09/18 10:26:57 as Exp $</p>';
 
 ## == Setup ==
 
@@ -160,6 +160,7 @@ sub WriteReferers {
 
 sub RefererTrack {
   my $id = shift;
+  return unless $id;
   ReadReferers($id);
   WriteReferers($id) if UpdateReferers($id);
   return GetReferers();
