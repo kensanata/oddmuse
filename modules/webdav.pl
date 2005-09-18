@@ -4,7 +4,7 @@
 # This module is free software; you can redistribute it or modify it
 # under the same terms as Perl itself.
 
-$ModulesDescription .= '<p>$Id: webdav.pl,v 1.13 2005/09/18 13:12:14 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: webdav.pl,v 1.14 2005/09/18 13:49:53 as Exp $</p>';
 
 use vars qw($WebDavCache);
 
@@ -37,6 +37,8 @@ use HTTP::Date qw(time2str time2isoz);
 use XML::LibXML;
 use Digest::MD5 qw(md5_base64);
 
+my $verbose = 0;
+
 # These are the methods we understand -- but not all of them are truly
 # implemented.
 our %implemented = (
@@ -65,7 +67,7 @@ sub run {
 
   my $method = $q->request_method;
   $method = lc $method;
-  # warn uc $method, " ", $path, "\n";
+  warn uc $method, " ", $path, "\n" if $verbose;
   if (not $implemented{$method}) {
     print $q->header( -status     => '501 Not Implemented', );
     return 1;
@@ -158,17 +160,19 @@ sub body {
 }
 
 sub no_content {
+  warn "RESPONSE: 204\n\n" if $verbose;
   print CGI::header( -status         => "204 No Content", );
 }
 
 sub created {
+  warn "RESPONSE: 201\n\n" if $verbose;
   print CGI::header( -status         => "201 Created", );
 }
 
 sub propfind {
   my ($self, $q) = @_;
   my $depth = $q->http('depth') || "infinity";
-  # warn "depth: $depth\n";
+  warn "depth: $depth\n" if $verbose;
 
   my $content = body();
   # warn "content: $content\n";
@@ -177,7 +181,7 @@ sub propfind {
   my $req;
   eval { $req = $parser->parse_string($content); };
   if ($@) {
-    # warn "RESPONSE: 400\n\n";
+    warn "RESPONSE: 400\n\n" if $verbose;
     print $q->header( -status       => "400 Bad Request", );
     print $@;
     return;
@@ -188,7 +192,7 @@ sub propfind {
   if ($q->http('HTTP_IF_NONE_MATCH') and GetParam('cache', $OddMuse::UseCache) >= 2
       and $q->http('HTTP_IF_NONE_MATCH') eq md5_base64($OddMuse::LastUpdate
 						       . $req->toString)) {
-    # warn "RESPONSE: 304\n\n";
+    warn "RESPONSE: 304\n\n";
     print $q->header( -status       => '304 Not Modified', );
     return;
   }
@@ -219,7 +223,7 @@ sub propfind {
     my $id = OddMuse::GetId();
     # warn "single page, id: $id\n";
     if (not $OddMuse::IndexHash{$id}) {
-      # warn "RESPONSE: 404\n\n";
+      warn "RESPONSE: 404\n\n";
       print $q->header( -status       => "404 Not Found", );
       print $OddMuse::NewText;
       return;
@@ -374,7 +378,7 @@ sub propfind {
   # we use binmode.
   eval { local $SIG{__DIE__}; binmode(STDOUT, ":utf8"); }
     if $OddMuse::HttpCharset eq 'UTF-8';
-  # warn "RESPONSE: 207\n" . $doc->toString(1) . "\n";
+  warn "RESPONSE: 207\n" . $doc->toString(1) . "\n" if $verbose;
   print $doc->toString(1);
 }
 
