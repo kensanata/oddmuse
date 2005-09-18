@@ -4,7 +4,7 @@
 # This module is free software; you can redistribute it or modify it
 # under the same terms as Perl itself.
 
-$ModulesDescription .= '<p>$Id: webdav.pl,v 1.12 2005/08/30 20:23:34 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: webdav.pl,v 1.13 2005/09/18 13:12:14 as Exp $</p>';
 
 use vars qw($WebDavCache);
 
@@ -46,6 +46,7 @@ our %implemented = (
   propfind => 1,
   put      => 1,
   trace    => 1,
+  lock     => 1,
   unlock   => 1,
 );
 
@@ -77,7 +78,18 @@ sub run {
 sub options {
   my ($self, $q) = @_;
   print $q->header( -allow          => join(',', map { uc } keys %implemented),
+		    -DAV            => 1,
 		    -status         => "200 OK", );
+}
+
+sub lock {
+  my ($self, $q) = @_;
+  print $q->header( -status         => "412 Precondition Failed", ); # fake it
+}
+
+sub unlock {
+  my ($self, $q) = @_;
+  print $q->header( -status         => "204 No Content", ); # fake it
 }
 
 sub head {
@@ -138,6 +150,13 @@ sub put {
   OddMuse::DoPost($id); # do the real posting
 }
 
+sub body {
+  local $/; # slurp
+  my $data = <STDIN>; # can only be read once!
+  warn $data;
+  return $data;
+}
+
 sub no_content {
   print CGI::header( -status         => "204 No Content", );
 }
@@ -158,6 +177,7 @@ sub propfind {
   my $req;
   eval { $req = $parser->parse_string($content); };
   if ($@) {
+    # warn "RESPONSE: 400\n\n";
     print $q->header( -status       => "400 Bad Request", );
     print $@;
     return;
@@ -168,6 +188,7 @@ sub propfind {
   if ($q->http('HTTP_IF_NONE_MATCH') and GetParam('cache', $OddMuse::UseCache) >= 2
       and $q->http('HTTP_IF_NONE_MATCH') eq md5_base64($OddMuse::LastUpdate
 						       . $req->toString)) {
+    # warn "RESPONSE: 304\n\n";
     print $q->header( -status       => '304 Not Modified', );
     return;
   }
@@ -198,6 +219,7 @@ sub propfind {
     my $id = OddMuse::GetId();
     # warn "single page, id: $id\n";
     if (not $OddMuse::IndexHash{$id}) {
+      # warn "RESPONSE: 404\n\n";
       print $q->header( -status       => "404 Not Found", );
       print $OddMuse::NewText;
       return;
@@ -352,12 +374,8 @@ sub propfind {
   # we use binmode.
   eval { local $SIG{__DIE__}; binmode(STDOUT, ":utf8"); }
     if $OddMuse::HttpCharset eq 'UTF-8';
+  # warn "RESPONSE: 207\n" . $doc->toString(1) . "\n";
   print $doc->toString(1);
-}
-
-sub body {
-  local $/ = undef; # slurp
-  return <STDIN>;   # can only be read once!
 }
 
 sub propfind_data {
