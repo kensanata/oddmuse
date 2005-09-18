@@ -1,3 +1,30 @@
+2005-09-18  Alex Schroeder  <alex@gnu.org>
+
+	* modules/referrer-tracking.pl (RefererTrack): No refererrers
+	unless there is a page id they belong to.
+
+2005-09-14  Alex Schroeder  <alex@gnu.org>
+
+	* modules/toc.pl (TocRule): Try to avoid empty element shorthand
+	for anchor id when $UseModMarkupInTitles is set.
+
+2005-09-10  Alex Schroeder  <alex@gnu.org>
+
+	* modules/markup.pl (MarkupInit): Simplified code by making it
+	less tight.
+	(MarkupForcedPairs): Removed.
+
+2005-09-09  Alex Schroeder  <alex@gnu.org>
+
+	* modules/weblog-3.pl (NewGetGotoBar): Append $UserGotoBar.
+
+2005-09-07  Alex Schroeder  <alex@gnu.org>
+
+	* modules/weblog-3.pl (CategoriesNewOpenPage): Handle extra tag
+	parameter.
+	(NewGetGotoBar): Add extra tag parameter where necessary.
+	(CategoryInit): Use FreeToNormal on menu entries.
+
 2005-09-05  Alex Schroeder  <alex@gnu.org>
 
 	* modules/weblog-3.pl (NewGetGotoBar): Link to current page as
