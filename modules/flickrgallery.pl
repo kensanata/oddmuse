@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: flickrgallery.pl,v 1.4 2005/09/13 05:46:37 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: flickrgallery.pl,v 1.5 2005/09/18 17:06:16 fletcherpenney Exp $</p>';
 
 # NOTE: This API key for Flickr is NOT to be used in any other products
 # INCLUDING derivative works.  The rest of the code can be used as licensed
@@ -48,14 +48,25 @@ push (@MyMarkdownRules, \&MarkdownFlickrGalleryRule);
 $RuleOrder{\&FlickrGalleryRule} = -10;
 
 sub FlickrGalleryRule {
+	# This code is used when Markdown is not available
 	if (/\G^([\n\r]*\&lt;\s*FlickrSet:\s*(\d+)\s*\&gt;\s*)$/mgc) {
-		return FlickrGallery($2);
+		my $oldpos = pos;
+		my $oldstr = $_;
+		
+		print FlickrGallery($2);
+		
+		pos = $oldpos;
+		
+		$oldstr =~ s/\&lt;\s*FlickrSet:\s*(\d+)\s*\&gt;//s;
+		$_ = $oldstr;
+		return '';
 	}
 	
 	return undef;
 }
 
 sub MarkdownFlickrGalleryRule {
+	# for Markdown only
 	my $text = shift;
 	
 	$text =~ s{
