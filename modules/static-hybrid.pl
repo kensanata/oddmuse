@@ -17,7 +17,7 @@
 #	 59 Temple Place, Suite 330
 #	 Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-hybrid.pl,v 1.9 2005/08/30 23:49:05 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-hybrid.pl,v 1.10 2005/09/19 21:29:30 fletcherpenney Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -36,6 +36,7 @@ my $StaticAction = 0;	# Are we doing action or not?
 my @StaticQueue = ();
 
 my $ClusterHasChanged = 0;
+my $PageBeingSaved = "";
 
 sub DoStatic {
 	$StaticAction = 1;
@@ -215,6 +216,7 @@ sub StaticFilesNewDoPost {
 			}
 
 			StaticWriteFile($OpenPageName);
+			$PageBeingSaved = $OpenPageName;
 			AddLinkedFilesToQueue($OpenPageName);
 			StaticWriteLinkedFiles();
 		}
@@ -319,15 +321,19 @@ sub AddLinkedFilesToQueue {
 	OpenPage($id);
 	my $cluster = FreeToNormal(GetCluster($Page{text}));
 	
-	# But only if cluster has changed
-	if ($ClusterHasChanged) {
+	# Only move up the cluster hierarchy if the page we originally
+	# edited has a cluster
+	if ($PageBeingSaved = $id) {
 		if ($cluster ne "" && $cluster ne $id) {
 			AddNewFilesToQueue($cluster);
 			
 			# If we are using clustermaps then update
 			# ClusterMapPage
-			if ($ClusterMapPage ne "") {
-				AddNewFilesToQueue($ClusterMapPage);
+			# But only if cluster has changed
+			if ($ClusterHasChanged) {
+				if ($ClusterMapPage ne "") {
+					AddNewFilesToQueue($ClusterMapPage);
+				}
 			}
 		}
 	}
