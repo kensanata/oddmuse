@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: flickrgallery.pl,v 1.5 2005/09/18 17:06:16 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: flickrgallery.pl,v 1.6 2005/09/21 20:48:01 fletcherpenney Exp $</p>';
 
 # NOTE: This API key for Flickr is NOT to be used in any other products
 # INCLUDING derivative works.  The rest of the code can be used as licensed
@@ -35,10 +35,22 @@ $FlickrFooterTemplate = '<div class="gallery close"></div></div>' unless defined
 
 $FlickrImageTemplate = '<div class="image"><a href="$imageurl" title="$title"><img src="http://static.flickr.com/$server/$id_$secret$FlickrExtension.jpg" width="$width" height="$height" alt="$title"/></a><div class="text"><p>$cleanTitle<br/><br/>$description</p></div></div>' unless defined $FlickrImageTemplate;
 
-$FlickrExtension = "_s" unless defined $FlickrExtension;
-# s | t | m |  | o
 $FlickrLabel = "Square" unless defined $FlickrLabel;
+$FlickrLabel = ucfirst($FlickrLabel);
+
+%FlickrExtensions = (
+	'Square' => '_s',
+	'Thumbnail' => '_t',
+	'Small' => '_m',
+	'Medium' => '',
+	'Original' => '_o',
+);
+
+$FlickrExtension = $FlickrExtensions{$FlickrLabel};
+
 # Square|Thumbnail|Small|Medium|Original
+
+$size = "Square|Thumbnail|Small|medium|Original";
 
 push (@MyRules, \&FlickrGalleryRule);
 
@@ -49,7 +61,7 @@ $RuleOrder{\&FlickrGalleryRule} = -10;
 
 sub FlickrGalleryRule {
 	# This code is used when Markdown is not available
-	if (/\G^([\n\r]*\&lt;\s*FlickrSet:\s*(\d+)\s*\&gt;\s*)$/mgc) {
+	if (/\G^([\n\r]*\&lt;\s*FlickrSet:\s*(\d+)\s*\&gt;\s*)$/mgci) {
 		my $oldpos = pos;
 		my $oldstr = $_;
 		
@@ -57,7 +69,20 @@ sub FlickrGalleryRule {
 		
 		pos = $oldpos;
 		
-		$oldstr =~ s/\&lt;\s*FlickrSet:\s*(\d+)\s*\&gt;//s;
+		$oldstr =~ s/\&lt;\s*FlickrSet:\s*(\d+)\s*\&gt;//is;
+		$_ = $oldstr;
+		return '';
+	}
+
+	if (/\G^([\n\r]*\&lt;\s*FlickrPhoto:\s*(\d+)\s*([a-z0-9]*?)\s*([s|t|m|o]?)\s*\&gt;\s*)$/mgci) {
+		my $oldpos = pos;
+		my $oldstr = $_;
+		
+		print GetFlickrPhoto($2,$3,$4);
+		
+		pos = $oldpos;
+		
+		$oldstr =~ s/\&lt;\s*FlickrSet:\s*(\d+)\s*($size)?\s*\&gt;//is;
 		$_ = $oldstr;
 		return '';
 	}
@@ -73,7 +98,13 @@ sub MarkdownFlickrGalleryRule {
 		^&lt;FlickrSet:\s*(\d+)\s*\>
 	}{
 		FlickrGallery($1);
-	}xmge;
+	}xmgei;
+
+	$text =~ s{
+		^&lt;FlickrPhoto:\s*(\d+)\s*\s*([a-z0-9]*?)($size)?\s*\>
+	}{
+		GetFlickrPhoto($1,$2,$3);
+	}xmgei;
 	
 	return $text
 }
@@ -82,6 +113,7 @@ sub FlickrGallery {
 	my $id = shift();
 	return "&lt;FlickrSet:$id&gt; (error LWP::UserAgent not available)" unless eval {require LWP::UserAgent};
 	my $ua = LWP::UserAgent->new;
+	$ua->timeout(10);
 	my $result = "";
 	
 	# Get Title and description
@@ -124,6 +156,7 @@ sub FlickrPhoto {
 	my ($id, $secret, $server) = @_;
 	
 	my $ua = LWP::UserAgent->new;
+	$ua->timeout(10);
 	$url = $FlickrBaseUrl . "?method=flickr.photos.getInfo&api_key=" . 
 		$FlickrAPIKey . "&photo_id=" . $id . "&secret=" . $secret;
 
@@ -153,4 +186,26 @@ sub FlickrPhoto {
 	$output =~ s/(\$[a-zA-Z\d]+)/"defined $1 ? $1 : ''"/gee;
 
 	return $output
+}
+
+sub GetFlickrPhoto{
+	my ($id, $secret, $size) = @_;
+	
+	local $FlickrLabel = ucfirst($size) if ($size);
+	local $FlickrExtension = $FlickrExtensions{$FlickrLabel};
+	
+	my $ua = LWP::UserAgent->new;
+	$ua->timeout(10);
+	$url = $FlickrBaseUrl . "?method=flickr.photos.getInfo&api_key=" . 
+		$FlickrAPIKey . "&photo_id=" . $id;
+	
+	$url .= "&secret=" . $secret if ($secret);
+
+	my $response = $ua->get($url);
+	
+	$response->content =~  m/\<photo\s+id=\"(\d+)\"\s+secret=\"(.+?)\"\s+server=\"(\d+)\"/g;
+	$secret = $2;
+	$server = $3;	
+
+	return FlickrPhoto($id,$secret,$server);
 }
