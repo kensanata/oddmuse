@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.16 2005/05/07 22:25:04 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.17 2005/09/24 10:13:01 as Exp $</p>';
 
 use vars qw($SearchFreeTextNewForm);
 
@@ -118,8 +118,8 @@ sub SearchFreeTextTitleAndBody {
   my $count = ($page - 1) * $limit;
   my @items = @result[($page - 1) * $limit  .. $max];
   # print links, if this is is really a search
+  my @links = ();
   if (GetParam('search', '') and @items) {
-    my @links = ();
     my $pages = int($#result / $limit) + 1;
     my $prev = '';
     my $next = '';
@@ -138,11 +138,17 @@ sub SearchFreeTextTitleAndBody {
     }
     unshift(@links, ScriptLink($prev, T('Previous'))) if $prev;
     push(@links, ScriptLink($next, T('Next'))) if $next;
-    print $q->p(T('Result pages: '), @links, Ts("(%s results)", $#result + 1));
+    print $q->p({-class=>'top pages'},
+		T('Result pages: '), @links, Ts("(%s results)", $#result + 1));
   }
   # print result
   foreach my $id (@items) {
     &$func($id, @args) if $func;
+  }
+  # repeat result pages at the bottom
+  if (GetParam('search', '') and @items) {
+    print $q->p({-class=>'bottom pages'},
+		T('Result pages: '), @links, Ts("(%s results)", $#result + 1));
   }
   return @items;
 }
