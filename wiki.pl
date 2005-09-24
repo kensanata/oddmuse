@@ -333,7 +333,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.592 2005/09/04 17:50:22 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.593 2005/09/24 10:08:38 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -3187,7 +3187,7 @@ sub DoSearch {
     push(@elements, ScriptLink('near=2;search=' . UrlEncode($string),
 				Ts('Search sites on the %s as well', $NearMap)))
       if %NearSearch and GetParam('near', 1) < 2;
-    print $q->p(@elements);
+    print $q->p({-class=>'links'}, @elements);
   }
   my @results;
   if (GetParam('context',1)) {
@@ -3197,7 +3197,7 @@ sub DoSearch {
   }
   @results = SearchNearPages($string, @results) if GetParam('near', 1); # adds more
   if (not $raw) {
-    print $q->p(Ts('%s pages found.', ($#results + 1))), $q->end_div();
+    print $q->p({-class=>'result'}, Ts('%s pages found.', ($#results + 1))), $q->end_div();
     PrintFooter();
   }
 }
@@ -3497,8 +3497,7 @@ sub DoPost {
     }
     return;
   } elsif (($old eq $string) or ($oldrev == 0 and $string eq $NewText) or ($oldrev == 0 and $string eq "\n")) {
-    ReleaseLock(); # No changes -- just show the same page again
-    ReBrowsePage($id);
+    ReportError(T('No changes to be saved.'), '400 Bad Request');
     return;
   }
   my $newAuthor = 0;
