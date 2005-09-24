@@ -16,9 +16,9 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: despam.pl,v 1.5 2005/09/24 08:15:42 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: despam.pl,v 1.6 2005/09/24 08:17:05 as Exp $</p>';
 
-push(@MyAdminCode, ＼&DespamMenu);
+push(@MyAdminCode, \&DespamMenu);
 
 sub DespamMenu {
   my ($id, $menuref, $restref) = @_;
