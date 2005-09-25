@@ -336,7 +336,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.598 2005/09/25 19:16:23 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.599 2005/09/25 21:41:40 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -374,7 +374,7 @@ sub GetParam {
   my $result = $q->param($name);
   $result = $NewCookie{$name} unless defined($result); # empty strings are defined!
   $result = $default unless defined($result);
-  return QuoteHtml($result);
+  return QuoteHtml($result); # you need to unquote anything that can have <tags>
 }
 
 sub SetParam {
@@ -3449,10 +3449,10 @@ sub DoPost {
   RequestLockOrError(); # fatal
   OpenPage($id);
   my $old = $Page{text};
-  $_ = GetParam('text', undef);
+  $_ = UnquoteHtml(GetParam('text', undef));
   foreach my $macro (@MyMacros) { &$macro; }
   my $string = $_;
-  my $comment = GetParam('aftertext', undef);
+  my $comment = UnquoteHtml(GetParam('aftertext', undef));
   # Upload file
   if ($filename) {
     require MIME::Base64;
