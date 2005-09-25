@@ -336,7 +336,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.596 2005/09/25 16:11:52 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.597 2005/09/25 18:52:18 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -371,10 +371,10 @@ sub InitCookie {
 
 sub GetParam {
   my ($name, $default) = @_;
-  my $result = QuoteHtml($q->param($name));
+  my $result = $q->param($name);
   $result = $NewCookie{$name} unless defined($result); # empty strings are defined!
   $result = $default unless defined($result);
-  return $result;
+  return QuoteHtml($result);
 }
 
 sub SetParam {
