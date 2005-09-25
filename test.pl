@@ -1957,6 +1957,8 @@ and ~~this\nis!~~ me
 and <em>this\nis!</em> me
 um\n{{{code}}} here
 um <code style="white-space:pre;">code</code> here
+or //this// and\n//that//
+or <i>this</i> and <i>that</i>
 EOT
 
 run_tests();
