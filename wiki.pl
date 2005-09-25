@@ -333,7 +333,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.594 2005/09/25 13:49:11 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.595 2005/09/25 13:52:05 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -3499,7 +3499,7 @@ sub DoPost {
   } elsif ($old eq $string) {
     ReleaseLock(); # No changes -- just show the same page again
     return ReBrowsePage($id);
-  } elsif ($oldrev == 0 and ($string eq $NewText or $string eq "\n"))
+  } elsif ($oldrev == 0 and ($string eq $NewText or $string eq "\n")) {
     ReportError(T('No changes to be saved.'), '400 BAD REQUEST'); # don't fake page creation because of webdav
   }
   my $newAuthor = 0;
