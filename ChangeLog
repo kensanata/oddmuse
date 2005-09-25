@@ -14,6 +14,9 @@
 	variables are set to the empty string instead of being
 	uninitialized.
 	(GetRcRss): Remove extra my $username.
+	(GetParam): Quote HTML after determining the default value.
+	(QuoteHtml, UnquoteHtml): Do not shortcut.
+	(DoPost): Unquote text and aftertext parameters.
 
 	* modules/markup.pl (MarkupRule): Fix multiline problem.
 
