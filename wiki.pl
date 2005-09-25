@@ -119,7 +119,8 @@ $PermanentAnchors = 1;	        # 1 = [::some text] defines permanent anchors (pa
 $InterMap    = 'InterMap';      # name of the intermap page
 $NearMap     = 'NearMap';       # name of the nearmap page
 $RssInterwikiTranslate = 'RssInterwikiTranslate'; # name of RSS interwiki translation page
-@MyRules = (\&LinkRules, );     # default rules that can be overridden
+@MyRules = (\&LinkRules);       # default rules that can be overridden
+$RuleOrder{\&LinkRules} = 0;
 $ENV{PATH}   = '/usr/bin/';     # Path used to find 'diff'
 $UseDiff     = 1;	        # 1 = use diff
 $SurgeProtection      = 1;	# 1 = protect against leeches
@@ -237,7 +238,7 @@ sub DoWikiRequest {
 sub ReportError { # fatal!
   my ($errmsg, $status, $log) = @_;
   print GetHttpHeader('text/html', 'nocache', $status);
-  print $q->start_html, $q->h2($errmsg), $q->end_html;
+  print $q->start_html, $q->h2(QuoteHtml($errmsg)), $q->end_html;
   map { ReleaseLockDir($_); } keys %Locks;
   WriteStringToFile("$TempDir/error", $q->start_html . $q->h1("$status $errmsg")
 		    . $q->Dump . $q->end_html) if $log;
@@ -251,6 +252,8 @@ sub Init {
   InitLinkPatterns(); # Link pattern can be changed in config files
   if ($UseConfig and $ModuleDir and -d $ModuleDir) {
     foreach my $lib (glob("$ModuleDir/*.pm $ModuleDir/*.pl")) {
+      next unless ($lib =~ /^($ModuleDir\/[-\w\d_]+\.p[lm])$/o);
+      $lib = $1; # untaint
       do $lib unless $MyInc{$lib};
       $MyInc{$lib} = 1; # Cannot use %INC in mod_perl settings
       $Message .= CGI::p("$lib: $@") if $@; # no $q exists, yet
@@ -326,14 +329,14 @@ sub InitVariables {    # Init global session variables for mod_perl!
      \$ConfigPage, \$NotFoundPg, \$RssInterwikiTranslate, \$BannedContent, \$RssExclude, );
   $CommentsPrefix .= '_' if $add_space;
   @UserGotoBarPages = ($HomePage, $RCName) unless @UserGotoBarPages;
-  my @pages = sort ($BannedHosts, $StyleSheetPage, $ConfigPage, $InterMap, $NearMap,
+  my @pages = sort($BannedHosts, $StyleSheetPage, $ConfigPage, $InterMap, $NearMap,
 		    $RssInterwikiTranslate, $BannedContent);
   @AdminPages = @pages unless @AdminPages;
   @LockOnCreation = @pages unless @LockOnCreation;
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.595 2005/09/25 13:52:05 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.596 2005/09/25 16:11:52 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -368,7 +371,7 @@ sub InitCookie {
 
 sub GetParam {
   my ($name, $default) = @_;
-  my $result = $q->param($name);
+  my $result = QuoteHtml($q->param($name));
   $result = $NewCookie{$name} unless defined($result); # empty strings are defined!
   $result = $default unless defined($result);
   return $result;
@@ -728,7 +731,7 @@ sub PrintWikiToHTML {
 }
 
 sub QuoteHtml {
-  my $html = shift;
+  my $html = shift or return;
   $html =~ s/&/&amp;/g;
   $html =~ s/</&lt;/g;
   $html =~ s/>/&gt;/g;
@@ -737,7 +740,7 @@ sub QuoteHtml {
 }
 
 sub UnquoteHtml {
-  my $html = shift;
+  my $html = shift or return;
   $html =~ s/&lt;/</g;
   $html =~ s/&gt;/>/g;
   $html =~ s/&amp;/&/g;
@@ -1321,9 +1324,9 @@ sub ResolveId { # return css class, resolved id, title (eg. for popups), exist-o
 sub BrowseResolvedPage {
   my $id = FreeToNormal(shift);
   my ($class, $resolved, $title, $exists) = ResolveId($id);
-  if ($class eq 'near' && not GetParam('rcclusteronly', 0)) { # nearlink (is url)
+  if ($class && $class eq 'near' && not GetParam('rcclusteronly', 0)) { # nearlink (is url)
     print $q->redirect({-uri=>$resolved});
-  } elsif ($class eq 'alias') { # an anchor was found instead of a page
+  } elsif ($class && $class eq 'alias') { # an anchor was found instead of a page
     ReBrowsePage($resolved, undef);
   } elsif (not $resolved and $NotFoundPg) { # custom page-not-found message
     BrowsePage($NotFoundPg);
@@ -1526,7 +1529,7 @@ sub RcHeader {
 	  ? Ts('Updates in the last %s days', GetParam('days', $RcDefault))
 	  : Ts('Updates in the last %s day', GetParam('days', $RcDefault)))
   }
-  my $action;
+  my $action = '';
   my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $match, $lang) =
     map {
       my $val = GetParam($_, '');
@@ -1649,13 +1652,16 @@ sub GetRc {
       $date = CalcDay($ts);
       &$printDailyTear($date);
     }
+    if ($all) {
+      $revision = undef if ($ts == $changetime{$pagename}); # last one without revision
+    }
     &$printRCLine($pagename, $ts, $host, $username, $summary, $minor, $revision,
 		  \@languages, $cluster);
   }
 }
 
 sub GetRcHtml {
-  my ($html, $inlist);
+  my ($html, $inlist) = ();
   # Optimize param fetches and translations out of main loop
   my $all = GetParam('all', 0);
   my $admin = UserIsAdmin();
@@ -1682,10 +1688,10 @@ sub GetRcHtml {
 	my($pagename, $timestamp, $host, $username, $summary, $minor, $revision, $languages, $cluster) = @_;
 	$host = QuoteHtml($host);
 	my $author = GetAuthorLink($host, $username);
-	my $sum = $q->span({class=>'dash'}, ' &#8211; ') . $q->strong(QuoteHtml($summary)) if $summary;
-	my $edit = $q->em($tEdit)  if $minor;
-	my $lang = '[' . join(', ', @{$languages}) . ']'  if @{$languages};
-	my ($pagelink, $history, $diff, $rollback);
+	my $sum = $summary ? $q->span({class=>'dash'}, ' &#8211; ') . $q->strong(QuoteHtml($summary)) : '';
+	my $edit = $minor ? $q->em($tEdit) : '';
+	my $lang = @{$languages} ? '[' . join(', ', @{$languages}) . ']' : '';
+	my ($pagelink, $history, $diff, $rollback) = ();
 	if ($all) {
 	  $pagelink = GetOldPageLink('browse', $pagename, $revision, $pagename, $cluster);
 	  if ($admin and RollbackPossible($timestamp)) {
@@ -1814,7 +1820,7 @@ sub GetRcRss {
 	$summary = PageHtml($pagename, 50*1024, T('This page is too big to send over RSS.'));
       }
       my $date = TimeToRFC822($timestamp);
-      my $username = QuoteHtml($username);
+      $username = QuoteHtml($username);
       $username = $host unless $username;
       $rss .= "\n<item>\n";
       $rss .= "<title>" . QuoteHtml($name) . "</title>\n";
