@@ -1,5 +1,20 @@
 2005-09-25  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (DoPost): Creating empty pages still results in a 400
+	Bad Request error, but saving no changes will result in a 200 Ok.
+	(%RulesOrder): Initialize correctly.
+	(ReportError): QuoteHmlt (maybe not necessary?)
+	(Init): Copy $lib in order to untaint.
+	(GetParam): HtmlQuote all parameters!  <-- major change.
+	(QuoteHtml, UnquoteHtml): Return immediately if $html is empty.
+	(BrowseResolvedPage): Test for undefined $class before comparing.
+	(RcHeader): Initialize $action.
+	(GetRc): No revision for the lastet revision shown for all=1.
+	(GetRcHtml): Inizialize $html and $inlist.  Also make sure other
+	variables are set to the empty string instead of being
+	uninitialized.
+	(GetRcRss): Remove extra my $username.
+
 	* modules/markup.pl (MarkupRule): Fix multiline problem.
 
 2005-09-24  Alex Schroeder  <alex@gnu.org>
