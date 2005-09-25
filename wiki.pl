@@ -336,7 +336,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.599 2005/09/25 21:41:40 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.600 2005/09/25 23:48:44 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -2095,11 +2095,8 @@ sub GetHttpHeader {
   $etag = PageEtag() unless $etag;
   my %headers = (-cache_control=>($UseCache < 0 ? 'no-cache' : 'max-age=10'));
   $headers{-etag} = $etag if GetParam('cache', $UseCache) >= 2;
-  if ($HttpCharset ne '') {
-    $headers{-type} = "$type; charset=$HttpCharset";
-  } else {
-    $headers{-type} = $type;
-  }
+  $headers{-type} = GetParam('mime-type', $type);
+  $headers{-type} .= "; charset=$HttpCharset" if $HttpCharset;
   $headers{-status} = $status if $status;
   my $cookie = Cookie();
   $headers{-cookie} = $cookie  if $cookie;
@@ -2890,7 +2887,8 @@ sub DoEdit {
     $q->p(GetHiddenValue("title", $id), ($revision ? GetHiddenValue('revision', $revision) : ''),
 	  GetHiddenValue('oldtime', $Page{ts}),
 	  ($upload ? GetUpload() : GetTextArea('text', $oldText)));
-  my $summary = GetParam('summary', $Now - $Page{ts} < ($SummaryHours * 60 * 60) ? $Page{summary} : '');
+  my $summary = UnquoteHtml(GetParam('summary', ''))
+    || ($Now - $Page{ts} < ($SummaryHours * 60 * 60) ? $Page{summary} : '');
   print $q->p(T('Summary:'), $q->br(), GetTextArea('summary', $summary, 2));
   if (GetParam('recent_edit') eq 'on') {
     print $q->p($q->checkbox(-name=>'recent_edit', -checked=>1,
@@ -3561,7 +3559,7 @@ sub GetSummary {
   }
   $summary =~ s/$FS//g;
   $summary =~ s/[\r\n]+/ /g;
-  return $summary;
+  return UnquoteHtml($summary);
 }
 
 sub AddComment {
