@@ -1,4 +1,14 @@
+2005-09-25  Alex Schroeder  <alex@gnu.org>
+
+	* modules/markup.pl (MarkupRule): Fix multiline problem.
+
 2005-09-24  Alex Schroeder  <alex@gnu.org>
+
+	* modules/search-freetext.pl (SearchFreeTextTitleAndBody): Added
+	result list at the bottom of the search.  Added p.top and p.bottom
+	to the result pages p.
+
+	* wiki.pl (DoSearch): Added p.result and p.links for div.search.
 
 	* modules/despam.pl (DespamMenu): Added entry to the
 	administration page.
