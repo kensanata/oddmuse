@@ -336,7 +336,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.597 2005/09/25 18:52:18 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.598 2005/09/25 19:16:23 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -731,7 +731,7 @@ sub PrintWikiToHTML {
 }
 
 sub QuoteHtml {
-  my $html = shift or return;
+  my $html = shift;
   $html =~ s/&/&amp;/g;
   $html =~ s/</&lt;/g;
   $html =~ s/>/&gt;/g;
@@ -740,7 +740,7 @@ sub QuoteHtml {
 }
 
 sub UnquoteHtml {
-  my $html = shift or return;
+  my $html = shift;
   $html =~ s/&lt;/</g;
   $html =~ s/&gt;/>/g;
   $html =~ s/&amp;/&/g;
@@ -1327,7 +1327,7 @@ sub BrowseResolvedPage {
   if ($class && $class eq 'near' && not GetParam('rcclusteronly', 0)) { # nearlink (is url)
     print $q->redirect({-uri=>$resolved});
   } elsif ($class && $class eq 'alias') { # an anchor was found instead of a page
-    ReBrowsePage($resolved, undef);
+    ReBrowsePage($resolved);
   } elsif (not $resolved and $NotFoundPg) { # custom page-not-found message
     BrowsePage($NotFoundPg);
   } elsif ($resolved) { # an existing page was found
