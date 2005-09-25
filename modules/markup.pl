@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: markup.pl,v 1.20 2005/09/10 03:18:29 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: markup.pl,v 1.21 2005/09/25 11:14:58 as Exp $</p>';
 
 use vars qw(%MarkupPairs %MarkupSingles %MarkupLines);
 
@@ -116,7 +116,7 @@ sub MarkupRule {
       $end = $data[2] if $data[2];
     }
     $end = quotemeta($end);
-    if ($end and m/\G((:?.*?\n)*.*?)$end/gc) {
+    if ($end and m/\G((:?.*?\n?)*?)$end/gc) {
       return MarkupTag($data, $1);
     } else {
       return $tag;
