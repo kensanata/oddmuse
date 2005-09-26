@@ -336,7 +336,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.600 2005/09/25 23:48:44 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.601 2005/09/26 18:31:53 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -1661,7 +1661,7 @@ sub GetRc {
 }
 
 sub GetRcHtml {
-  my ($html, $inlist) = ();
+  my ($html, $inlist) = ('', 0);
   # Optimize param fetches and translations out of main loop
   my $all = GetParam('all', 0);
   my $admin = UserIsAdmin();
@@ -1691,7 +1691,7 @@ sub GetRcHtml {
 	my $sum = $summary ? $q->span({class=>'dash'}, ' &#8211; ') . $q->strong(QuoteHtml($summary)) : '';
 	my $edit = $minor ? $q->em($tEdit) : '';
 	my $lang = @{$languages} ? '[' . join(', ', @{$languages}) . ']' : '';
-	my ($pagelink, $history, $diff, $rollback) = ();
+	my ($pagelink, $history, $diff, $rollback) = ('', '', '', '');
 	if ($all) {
 	  $pagelink = GetOldPageLink('browse', $pagename, $revision, $pagename, $cluster);
 	  if ($admin and RollbackPossible($timestamp)) {
