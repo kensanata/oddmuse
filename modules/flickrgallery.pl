@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: flickrgallery.pl,v 1.6 2005/09/21 20:48:01 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: flickrgallery.pl,v 1.7 2005/09/28 14:16:00 fletcherpenney Exp $</p>';
 
 # NOTE: This API key for Flickr is NOT to be used in any other products
 # INCLUDING derivative works.  The rest of the code can be used as licensed
@@ -74,7 +74,7 @@ sub FlickrGalleryRule {
 		return '';
 	}
 
-	if (/\G^([\n\r]*\&lt;\s*FlickrPhoto:\s*(\d+)\s*([a-z0-9]*?)\s*([s|t|m|o]?)\s*\&gt;\s*)$/mgci) {
+	if (/\G^([\n\r]*\&lt;\s*FlickrPhoto:\s*(\d+)\s*([a-z0-9]*?)\s*($size)?\s*\&gt;\s*)$/mgci) {
 		my $oldpos = pos;
 		my $oldstr = $_;
 		
@@ -82,7 +82,7 @@ sub FlickrGalleryRule {
 		
 		pos = $oldpos;
 		
-		$oldstr =~ s/\&lt;\s*FlickrSet:\s*(\d+)\s*($size)?\s*\&gt;//is;
+		$oldstr =~ s/\&lt;\s*FlickrPhoto:\s*(\d+)\s*([a-z0-9]*?)\s*($size)?\s*\&gt;//is;
 		$_ = $oldstr;
 		return '';
 	}
@@ -101,7 +101,7 @@ sub MarkdownFlickrGalleryRule {
 	}xmgei;
 
 	$text =~ s{
-		^&lt;FlickrPhoto:\s*(\d+)\s*\s*([a-z0-9]*?)($size)?\s*\>
+		^&lt;FlickrPhoto:\s*(\d+)\s*([a-z0-9]*?)\s*($size)?\s*\>
 	}{
 		GetFlickrPhoto($1,$2,$3);
 	}xmgei;
