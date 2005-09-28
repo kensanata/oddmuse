@@ -1,3 +1,18 @@
+2005-09-28  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (BrowsePage): When the page consists of one clean block
+	only, $Page{flags} is '0', so testing for it yields false.  This
+	caused pages consisting of a single clean block to not be cached.
+	At the same time, there should always be flags when $Page{blocks}
+	is arround, so the test was simply removed.
+
+2005-09-26  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetSummary): UnquoteHtml.
+	(GetHttpHeader): Introduced mime-type parameter.
+	(DoEdit): UnquoteHtml for the summary.
+	(GetRcHtml): Correctly initialize variables.
+
 2005-09-25  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoPost): Creating empty pages still results in a 400
