@@ -336,7 +336,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.601 2005/09/26 18:31:53 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.602 2005/09/28 19:14:05 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -1372,7 +1372,7 @@ sub BrowsePage {
     print $q->hr();
   }
   print $q->start_div({-class=>'content browse'});
-  if ($revision eq '' and $Page{blocks} and $Page{flags} and GetParam('cache', $UseCache) > 0) {
+  if ($revision eq '' and $Page{blocks} and GetParam('cache', $UseCache) > 0) {
     PrintCache();
   } else {
     my $savecache = ($Page{revision} > 0 and $revision eq ''); # new page not cached
