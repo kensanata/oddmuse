@@ -269,8 +269,8 @@ sub Init {
     $Message .= $q->p("$ConfigPage: $@") if $@;
   }
   eval { local $SIG{__DIE__}; binmode(STDOUT, ":raw"); };
-  InitVariables();    # Ater config file, to post-process some variables
-  InitCookie();	      # After request, because $q is used
+  InitCookie();	      # After InitRequest, because $q is used
+  InitVariables();    # After config, to change variables, after InitCookie for GetParam
 }
 
 sub InitDirConfig {
@@ -336,7 +336,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.602 2005/09/28 19:14:05 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.603 2005/09/28 19:50:18 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
