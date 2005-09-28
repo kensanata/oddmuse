@@ -28,7 +28,7 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.23 2005/09/13 00:09:24 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.24 2005/09/28 22:22:44 fletcherpenney Exp $</p>';
 
 use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled!;
 
@@ -39,6 +39,8 @@ $MarkdownEnabled = 1;
 $RuleOrder{\&MarkdownRule} = -10;
 
 $TempNoWikiWords = 0;
+
+$MultiMarkdownEnabled = 0;
 
 sub MarkdownRule {
 	# Allow journal pages	
@@ -59,6 +61,8 @@ sub MarkdownRule {
     # fake that we're blosxom!
     $blosxom::version = 1;
     require "$ModuleDir/Markdown/markdown.pl";
+
+	$MultiMarkdownEnabled = 1 if ($Markdown::VERSION =~ /Multi/);
 
 	*Markdown::_RunSpanGamut = *NewRunSpanGamut;
 	*Markdown::_DoHeaders = *NewDoHeaders;
@@ -292,6 +296,10 @@ sub NewRunSpanGamut {
 
 	$text = Markdown::_EscapeSpecialChars($text);
 
+	if ($MultiMarkdownEnabled) {
+		$text = Markdown::_DoFootnotes($text);
+	}
+	
 	# Process anchor and image tags. Images must come first,
 	# because ![foo][f] looks like an anchor.
 	$text = Markdown::_DoImages($text);
@@ -316,7 +324,7 @@ sub NewRunSpanGamut {
 	$text = Markdown::_DoItalicsAndBold($text);
 
 	# Do hard breaks:
-	$text =~ s/ {2,}\n/$g_hardbreak/g;
+	$text =~ s/ {2,}\n/<br$g_empty_element_suffix/g;
 
 	return $text;
 }
@@ -375,18 +383,11 @@ sub AntiSpam {
 	return $text;
 }
 
+
 sub NewDoAutoLinks {
 	my $text = shift;
-	my $temp = "";
-	
-	# In Oddmuse, the < is converted to &lt;
-	$text =~ s{&lt;((https?|ftp):[^'">\s]+)>}{
-		my $url = $1;
-		$temp = $Markdown::g_autolink_string;
-		$temp =~ s/(\$\w+(?:::)?\w*)/"defined $1 ? $1 : ''"/gee;
-		
-		$temp;
-	}gie;
+
+	$text =~ s{&lt;((https?|ftp):[^'">\s]+)>}{<a href="$1">$1</a>}gi;
 
 	# Email addresses: <address@domain.foo>
 	$text =~ s{
@@ -399,7 +400,7 @@ sub NewDoAutoLinks {
 		)
 		>
 	}{
-		Markdown::_EncodeEmailAddress( Markdown::_UnescapeSpecialChars($1) );
+		Markdown::_EncodeEmailAddress( _UnescapeSpecialChars($1) );
 	}egix;
 
 	return $text;
