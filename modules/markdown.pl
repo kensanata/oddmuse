@@ -28,7 +28,7 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.24 2005/09/28 22:22:44 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.25 2005/09/29 12:10:09 fletcherpenney Exp $</p>';
 
 use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled!;
 
@@ -324,7 +324,7 @@ sub NewRunSpanGamut {
 	$text = Markdown::_DoItalicsAndBold($text);
 
 	# Do hard breaks:
-	$text =~ s/ {2,}\n/<br$g_empty_element_suffix/g;
+	$text =~ s/ {2,}\n/<br \/>\n/g;
 
 	return $text;
 }
