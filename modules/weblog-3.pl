@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: weblog-3.pl,v 1.9 2005/09/09 16:00:50 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: weblog-3.pl,v 1.10 2005/10/01 22:54:09 as Exp $</p>';
 
 # Categories
 
@@ -72,7 +72,7 @@ sub DoCategories {
   my $today = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
   CategoryInit() unless $CategoryInit;
   print $q->p({-class=>'table'}, map {GetEditLink("$today $_", $_)} @Categories);
-  print $q->p($q->textfield('id', $today));
+  print $q->p($q->textfield('id', $today), GetHiddenValue('action', 'edit'));
   print $q->p(Ts('Edit %s.', GetPageLink($CategoriesPage)));
   print $q->submit("Go!");
   print $q->end_form, $q->end_div();
