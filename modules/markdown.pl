@@ -28,7 +28,7 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.25 2005/09/29 12:10:09 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.26 2005/10/02 00:02:57 fletcherpenney Exp $</p>';
 
 use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled!;
 
@@ -400,7 +400,7 @@ sub NewDoAutoLinks {
 		)
 		>
 	}{
-		Markdown::_EncodeEmailAddress( _UnescapeSpecialChars($1) );
+		Markdown::_EncodeEmailAddress( Markdown::_UnescapeSpecialChars($1) );
 	}egix;
 
 	return $text;
