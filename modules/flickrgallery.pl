@@ -1,4 +1,4 @@
-do# Copyright (C) 2005  Fletcher T. Penney <fletcher@freeshell.org>
+# Copyright (C) 2005  Fletcher T. Penney <fletcher@freeshell.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@ do# Copyright (C) 2005  Fletcher T. Penney <fletcher@freeshell.org>
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: flickrgallery.pl,v 1.8 2005/10/03 06:20:18 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: flickrgallery.pl,v 1.9 2005/10/03 06:22:16 fletcherpenney Exp $</p>';
 
 # NOTE: This API key for Flickr is NOT to be used in any other products
 # INCLUDING derivative works.  The rest of the code can be used as licensed
