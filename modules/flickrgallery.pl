@@ -1,4 +1,4 @@
-# Copyright (C) 2005  Fletcher T. Penney <fletcher@freeshell.org>
+do# Copyright (C) 2005  Fletcher T. Penney <fletcher@freeshell.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: flickrgallery.pl,v 1.7 2005/09/28 14:16:00 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: flickrgallery.pl,v 1.8 2005/10/03 06:20:18 fletcherpenney Exp $</p>';
 
 # NOTE: This API key for Flickr is NOT to be used in any other products
 # INCLUDING derivative works.  The rest of the code can be used as licensed
@@ -113,13 +113,14 @@ sub FlickrGallery {
 	my $id = shift();
 	return "&lt;FlickrSet:$id&gt; (error LWP::UserAgent not available)" unless eval {require LWP::UserAgent};
 	my $ua = LWP::UserAgent->new;
-	$ua->timeout(10);
+#	$ua->timeout(10);
 	my $result = "";
 	
 	# Get Title and description
 	my $url = $FlickrBaseUrl . "?method=flickr.photosets.getInfo&api_key=" . 
 		$FlickrAPIKey . "&photoset_id=" . $id;
-	my $response = $ua->get($url);
+#	my $response = $ua->get($url);
+	my $response = $ua->request(HTTP::Request->new(GET=>$url));
 
 	$response->content =~ /\<title\>(.*?)\<\/title\>/;
 	my $title = $1;
@@ -134,7 +135,8 @@ sub FlickrGallery {
 	# Get list of photos and process them
 	$url = $FlickrBaseUrl . "?method=flickr.photosets.getPhotos&api_key=" . 
 		$FlickrAPIKey . "&photoset_id=" . $id;
-	$response = $ua->get($url);
+#	$response = $ua->get($url);
+	$response = $ua->request(HTTP::Request->new(GET=>$url));
 
 	my $xml = $response->content;
 	
@@ -156,11 +158,12 @@ sub FlickrPhoto {
 	my ($id, $secret, $server) = @_;
 	
 	my $ua = LWP::UserAgent->new;
-	$ua->timeout(10);
+#	$ua->timeout(10);
 	$url = $FlickrBaseUrl . "?method=flickr.photos.getInfo&api_key=" . 
 		$FlickrAPIKey . "&photo_id=" . $id . "&secret=" . $secret;
 
-	my $response = $ua->get($url);
+#	my $response = $ua->get($url);
+	my $response = $ua->request(HTTP::Request->new(GET=>$url));
 	
 	$response->content =~ /\<title\>(.*?)\<\/title\>/;
 	my $title = $1;
@@ -175,7 +178,8 @@ sub FlickrPhoto {
 	$url = $FlickrBaseUrl . "?method=flickr.photos.getSizes&api_key=" . 
 		$FlickrAPIKey . "&photo_id=" . $id;
 
-	$response = $ua->get($url);
+#	$response = $ua->get($url);
+	$response = $ua->request(HTTP::Request->new(GET=>$url));
 
 	$response->content =~ /\<size label=\"$FlickrLabel\" width=\"(\d+)\" height=\"(\d+)\"/;
 	my $width = $1;
@@ -195,13 +199,14 @@ sub GetFlickrPhoto{
 	local $FlickrExtension = $FlickrExtensions{$FlickrLabel};
 	
 	my $ua = LWP::UserAgent->new;
-	$ua->timeout(10);
+#	$ua->timeout(10);
 	$url = $FlickrBaseUrl . "?method=flickr.photos.getInfo&api_key=" . 
 		$FlickrAPIKey . "&photo_id=" . $id;
 	
 	$url .= "&secret=" . $secret if ($secret);
 
-	my $response = $ua->get($url);
+#	my $response = $ua->get($url);
+	my $response = $ua->request(HTTP::Request->new(GET=>$url));
 	
 	$response->content =~  m/\<photo\s+id=\"(\d+)\"\s+secret=\"(.+?)\"\s+server=\"(\d+)\"/g;
 	$secret = $2;
