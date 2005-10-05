@@ -56,19 +56,19 @@ $SurgeProtectionTime $SurgeProtectionViews $DeletedPage %Languages
 $InterMap $ValidatorLink @LockOnCreation $PermanentAnchors
 $RssStyleSheet $PermanentAnchorsFile @MyRules %CookieParameters
 @UserGotoBarPages $NewComment $StyleSheetPage $ConfigPage $ScriptName
-@MyMacros $CommentsPrefix @UploadTypes $DefaultStyleSheet
-$AllNetworkFiles $UsePathInfo $UploadAllowed $LastUpdate $PageCluster
-$HtmlHeaders $RssInterwikiTranslate $UseCache $ModuleDir $DebugInfo
-$FullUrlPattern %InvisibleCookieParameters $FreeInterLinkPattern
-@AdminPages @MyAdminCode @MyInitVariables @MyMaintenance);
+@MyMacros $CommentsPrefix @UploadTypes $AllNetworkFiles $UsePathInfo
+$UploadAllowed $LastUpdate $PageCluster $HtmlHeaders
+$RssInterwikiTranslate $UseCache $ModuleDir $DebugInfo $FullUrlPattern
+%InvisibleCookieParameters $FreeInterLinkPattern @AdminPages
+@MyAdminCode @MyInitVariables @MyMaintenance);
 
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
-%NewCookie $InterSiteInit $FootnoteNumber $OpenPageName @IndexList
+%NewCookie $InterInit $FootnoteNumber $OpenPageName @IndexList
 $IndexInit $Message $q $Now %RecentVisitors @HtmlStack $Monolithic
 $ReplaceForm %PermanentAnchors %PagePermanentAnchors %MyInc
 $CollectingJournal $WikiDescription $PrintedHeader %Locks $Fragment
-@Blocks @Flags %NearSite %NearSource %NearLinksUsed $NearSiteInit
+@Blocks @Flags %NearSite %NearSource %NearLinksUsed $NearInit
 $NearDir $NearMap $SisterSiteLogoUrl %NearSearch @KnownLocks
 $PermanentAnchorsInit $ModulesDescription %RuleOrder %Action $bol
 %RssInterwikiTranslate $RssInterwikiTranslateInit);
@@ -98,7 +98,7 @@ $SiteBase    = '';              # Full URL for <BASE> header
 $MaxPost     = 1024 * 210;      # Maximum 210K posts (about 200K for pages)
 $HttpCharset = 'UTF-8';         # You are on your own if you change this!
 $StyleSheet  = '';              # URL for CSS stylesheet (like '/wiki.css')
-$StyleSheetPage = '';           # Page for CSS sheet
+$StyleSheetPage = 'css';        # Page for CSS sheet
 $LogoUrl     = '';              # URL for site logo ('' for no logo)
 $NotFoundPg  = '';              # Page for not-found links ('' for blank pg)
 $NewText     = "Describe the new page here.\n";	 # New page text
@@ -159,49 +159,6 @@ $HtmlHeaders = '';	        # Additional stuff to put in the HTML <head> section
 $IndentLimit = 20;	        # Maximum depth of nested lists
 $LanguageLimit = 3;	        # Number of matches req. for each language
 $SisterSiteLogoUrl = 'file:///tmp/oddmuse/%s.png'; # URL format string for logos
-$DefaultStyleSheet = q{
-body { background-color:#FFF; color:#000; }
-textarea { width:100%; }
-a:link { color:#00F; }
-a:visited { color:#A0A; }
-a:active { color:#F00; }
-a.definition:before { content:"[::"; }
-a.definition:after { content:"]"; }
-a.alias { text-decoration:none; border-bottom: thin dashed; }
-a.near:link { color:#093; }
-a.near:visited { color:#550; }
-a.upload:before { content:"<"; }
-a.upload:after { content:">"; }
-a.outside:before { content:"["; }
-a.outside:after { content:"]"; }
-img.logo { float: right; clear: right; border-style:none; }
-div.diff { padding-left:5%; padding-right:5%; }
-div.old { background-color:#FFFFAF; }
-div.new { background-color:#CFFFCF; }
-div.message { background-color:#FEE; }
-div.journal h1 { font-size:large; }
-table.history { border-style:none; }
-td.history { border-style:none; }
-span.result { font-size:larger; }
-span.info { font-size:smaller; font-style:italic; }
-div.rss { background-color:#EEF; }
-div.search { background-color:#F1F5FF }
-div.sister { float:left; margin-right:1ex; background-color:#FFF; }
-div.sister p { margin-top:0; }
-div.sister img { border:none; }
-div.near { background-color:#EFE; }
-div.near p { margin-top:0; }
-@media print {
- body { font:12pt sans-serif; }
- a, a:link, a:visited { color:#000; text-decoration:none; font-style:oblique; }
- h1 a, h2 a, h3 a, h4 a { font-style:normal; }
- a.edit, div.footer, form, span.gotobar, a.number span { display:none; }
- a[class="url number"]:after, a[class="inter number"]:after { content:"[" attr(href) "]"; }
- a[class="local number"]:after { content:"[" attr(title) "]"; }
- img[smiley] { line-height: inherit; }
-}
-}; # the <!-- and --> is added at the end
-
 # Display short comments below the GotoBar for special days
 # Example: %SpecialDays = ('1-1' => 'New Year', '1-2' => 'Next Day');
 %SpecialDays = ();
@@ -223,7 +180,7 @@ div.near p { margin-top:0; }
 	    download => \&DoDownload,	    rss => \&DoRss,
 	    unlock => \&DoUnlock,	    password => \&DoPassword,
 	    index => \&DoIndex,		    admin => \&DoAdminPage,
-	    all => \&DoPrintAllPages,	    );
+	    all => \&DoPrintAllPages,	    css => \&DoCss, );
 
 # The 'main' program, called at the end of this script file (aka. as handler)
 sub DoWikiRequest {
@@ -236,9 +193,9 @@ sub DoWikiRequest {
 }
 
 sub ReportError { # fatal!
-  my ($errmsg, $status, $log) = @_;
+  my ($errmsg, $status, $log, @html) = @_;
   print GetHttpHeader('text/html', 'nocache', $status);
-  print $q->start_html, $q->h2(QuoteHtml($errmsg)), $q->end_html;
+  print $q->start_html, $q->h2(QuoteHtml($errmsg)), @html, $q->end_html;
   map { ReleaseLockDir($_); } keys %Locks;
   WriteStringToFile("$TempDir/error", $q->start_html . $q->h1("$status $errmsg")
 		    . $q->Dump . $q->end_html) if $log;
@@ -302,25 +259,18 @@ sub InitVariables {    # Init global session variables for mod_perl!
   $FullUrl = $ScriptName unless $FullUrl; # URL used in forms
   $Now = time;	       # Reset in case script is persistent
   $LastUpdate = (stat($IndexFile))[9];
-  $InterSiteInit = 0;
-  %InterSite = ();
-  $NearSiteInit = 0;
-  %NearSite = ();
-  %NearSearch = ();
-  %NearSource = ();
-  %NearLinksUsed = ();
-  $RssInterwikiTranslateInit = 0;
-  %RssInterwikiTranslate = ();
   %Locks = ();
-  $IndexInit =0;
   @Blocks = ();
   @Flags = ();
   $Fragment = '';
   %RecentVisitors = ();
-  %PagePermanentAnchors = ();
+  CreateDir($DataDir); # Create directory if it doesn't exist
+  AllPagesList();      # Ordinary pages, read from $IndexFile (saving it requires $DataDir)
+  NearInit();          # reads $NearMap and includes InterInit (reads $InterMap)
+  PermanentAnchorsInit() if $PermanentAnchors; # reads $PermanentAnchorsFile
+  %NearLinksUsed = (); # List of links used during this request
   $OpenPageName = '';  # Currently open page
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
-  CreateDir($DataDir); # Create directory if it doesn't exist
   ReportError(Ts('Could not create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR')
     unless -d $DataDir;
   my $add_space = $CommentsPrefix =~ /[ \t_]$/;
@@ -336,7 +286,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.603 2005/09/28 19:50:18 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.604 2005/10/05 20:38:12 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -426,7 +376,6 @@ sub Dirty { # arg 1 is the raw text; the real output must be printed instead
 sub ApplyRules {
   # locallinks: apply rules that create links depending on local config (incl. interlink!)
   my ($text, $locallinks, $withanchors, $revision, @tags) = @_; # $revision is used for images
-  NearInit() unless $NearSiteInit;
   $text =~ s/\r\n/\n/g; # DOS to Unix
   $text =~ s/\n+$//g;    # No trailing paragraphs
   return unless $text;
@@ -434,7 +383,9 @@ sub ApplyRules {
   local @Blocks=();     # the list of cached HTML blocks
   local @Flags=();	# a list for each block, 1 = dirty, 0 = clean
   Clean(join('', map { AddHtmlEnvironment($_) } @tags));
-  if (my ($type) = TextIsFile($text)) {
+  if ($OpenPageName eq $StyleSheetPage or $OpenPageName eq $ConfigPage) {
+    Clean($q->pre($text));
+  } elsif (my ($type) = TextIsFile($text)) {
     Clean($q->p(T('This page contains an uploaded file:'))
 	  . $q->p(GetDownloadLink($OpenPageName, (substr($type, 0, 6) eq 'image/'), $revision)));
   } else {
@@ -840,7 +791,7 @@ sub RSS {
       } else {
 	my ($counter, $interwiki);
 	if (@uris > 1) {
-	  RssInterwikiTranslateInit() unless $RssInterwikiTranslateInit;
+	  RssInterwikiTranslateInit(); # not needed anywhere else, therefore not in InitVariables
 	  $interwiki = $rss->{channel}->{$wikins}->{interwiki};
 	  $interwiki =~ s/^\s+//; # when RDF is used, sometimes whitespace remains,
 	  $interwiki =~ s/\s+$//; # which breaks the test for an existing $interwiki below
@@ -974,7 +925,9 @@ sub GetRssFile {
 }
 
 sub RssInterwikiTranslateInit {
-  $RssInterwikiTranslateInit = 1;
+  return if $RssInterwikiTranslateInit;
+  $RssInterwikiTranslateInit = 1; # set to 0 when $RssInterwikiTranslate is saved
+  %RssInterwikiTranslate = ();
   foreach (split(/\n/, GetPageContent($RssInterwikiTranslate))) {
     if (/^ ([^ ]+)[ \t]+([^ ]+)$/) {
       $RssInterwikiTranslate{$1} = $2;
@@ -983,8 +936,12 @@ sub RssInterwikiTranslateInit {
 }
 
 sub NearInit {
-  InterInit() unless $InterSiteInit;
-  $NearSiteInit = 1;
+  InterInit();
+  return if $NearInit;
+  $NearInit = 1; # set to 0 when $NearMap is saved
+  %NearSite = ();
+  %NearSearch = ();
+  %NearSource = ();
   foreach (split(/\n/, GetPageContent($NearMap))) {
     if (/^ ($InterSitePattern)[ \t]+([^ ]+)(?:[ \t]+([^ ]+))?$/) {
       my ($site, $url, $search) = ($1, $2, $3);
@@ -1037,7 +994,9 @@ sub GetInterLink {
 }
 
 sub InterInit {
-  $InterSiteInit = 1;
+  return if $InterInit;
+  %InterSite = ();
+  $InterInit = 1; # set to 0 when $InterMap is saved
   foreach (split(/\n/, GetPageContent($InterMap))) {
     if (/^ ($InterSitePattern)[ \t]+([^ ]+)$/) {
       $InterSite{$1} = $2;
@@ -1147,7 +1106,6 @@ sub GetDownloadLink {
   my ($name, $image, $revision, $alt) = @_;
   $alt = $name unless $alt;
   my $id = FreeToNormal($name);
-  AllPagesList();
   # if the page does not exist
   return '[' . ($image ? T('image') : T('download')) . ':' . $name
     . ']' . GetEditLink($id, '?', 1) unless $IndexHash{$id};
@@ -1304,16 +1262,13 @@ sub ValidIdOrDie {
 
 sub ResolveId { # return css class, resolved id, title (eg. for popups), exist-or-not
   my $id = shift;
-  AllPagesList();
   my $exists = $IndexHash{$id}; # if the page exists physically
   if (GetParam('anchor', $PermanentAnchors)) { # anchors are preferred
-    ReadPermanentAnchors() unless $PermanentAnchorsInit;
     my $page = $PermanentAnchors{$id};
     return ('alias', $page . '#' . $id, $page, $exists) # $page used as link title
       if $page and $page ne $id;
   }
   return ('local', $id, '', $exists) if $exists;
-  NearInit() unless $NearSiteInit;
   if ($NearSource{$id}) {
     $NearLinksUsed{$id} = 1;
     my $site = $NearSource{$id}[0];
@@ -1958,6 +1913,7 @@ sub DoAdminPage {
     } else {
       push(@menu, ScriptLink('action=editlock;set=1', T('Lock site')));
     }
+    push(@menu, ScriptLink('action=css', T('Install CSS'))) unless $StyleSheet;
     if ($id) {
       my $title = $id;
       $title =~ s/_/ /g;
@@ -2067,7 +2023,7 @@ sub GetHeader {
   }
   $result .= $q->start_div({-class=>'header'});
   if ((!$embed) && ($LogoUrl ne '')) {
-    $result .= ScriptLink($HomePage, $q->img({-src=>$LogoUrl, -alt=>$altText, -class=>'logo'}));
+    $result .= ScriptLink($HomePage, $q->img({-src=>$LogoUrl, -alt=>$altText, -class=>'logo'}), 'logo');
   }
   if (GetParam('toplinkbar', $TopLinkBar)) {
     $result .= GetGotoBar($id);
@@ -2178,10 +2134,11 @@ sub GetCss {
     }
   } elsif ($StyleSheet) {
     return qq(<link type="text/css" rel="stylesheet" href="$StyleSheet" />);
-  } elsif ($StyleSheetPage) {
-    return $q->style({-type=>'text/css'}, GetPageContent($StyleSheetPage));
+  } elsif ($IndexHash{$StyleSheetPage}) {
+    $css = "$ScriptName?action=browse;id=" . UrlEncode($StyleSheetPage);
+    return qq(<link type="text/css" rel="stylesheet" href="$css;raw=1;mime-type=text/css" />);
   } else {
-    return $q->style({-type=>'text/css'}, "<!--$DefaultStyleSheet-->");
+    return qq(<link type="text/css" rel="stylesheet" href="http://www.oddmuse.org/oddmuse.css" />);
   }
 }
 
@@ -2209,7 +2166,6 @@ sub PrintFooter {
 
 sub GetSisterSites {
   my $id = shift;
-  NearInit() unless $NearSiteInit;
   if ($id and $NearSource{$id}) {
     my $sistersites = T('The same page on other sites:') . $q->br();
     foreach my $site (@{$NearSource{$id}}) {
@@ -2498,7 +2454,6 @@ sub OpenPage { # Sets global variables
   if ($OpenPageName eq $id) {
     return;
   }
-  AllPagesList(); # set IndexHash
   if ($IndexHash{$id}) {
     %Page = ParseData(ReadFileOrDie(GetPageFile($id)));
   } else {
@@ -2547,7 +2502,6 @@ sub GetTextRevision {
 
 sub GetPageContent {
   my $id = shift;
-  AllPagesList(); # set IndexHash
   if ($IndexHash{$id}) {
     my %data = ParseData(ReadFileOrDie(GetPageFile($id)));
     return $data{text};
@@ -2837,18 +2791,18 @@ sub DoEdit {
   ValidIdOrDie($id);
   my $upload = GetParam('upload', undef);
   if (!UserCanEdit($id, 1)) {
-    print GetHeader('', T('Editing Denied'), undef, undef, '403 FORBIDDEN');
     my $rule = UserIsBanned();
     if ($rule) {
-      print $q->p(T('Editing not allowed: user, ip, or network is blocked.'));
-      print $q->p(T('Contact the wiki administrator for more information.'));
-      print $q->p(Ts('The rule %s matched for you.', $rule) . ' '
-		  . Ts('See %s for more information.', GetPageLink($BannedHosts)));
+      ReportError(T('Edit Denied'), '403 FORBIDDEN', undef,
+		  $q->p(T('Editing not allowed: user, ip, or network is blocked.')),
+		  $q->p(T('Contact the wiki administrator for more information.')),
+		  $q->p(Ts('The rule %s matched for you.', $rule) . ' '
+			. Ts('See %s for more information.', GetPageLink($BannedHosts))));
     } else {
-      print $q->p(Ts('Editing not allowed: %s is read-only.', $SiteName));
+      $id =~ s/_/ /g;
+      ReportError(T('Edit Denied'), '403 FORBIDDEN', undef,
+		  $q->p(Ts('Editing not allowed: %s is read-only.', $id)));
     }
-    PrintFooter();
-    return;
   } elsif ($upload and not $UploadAllowed and not UserIsAdmin()) {
     ReportError(T('Only administrators can upload files.'), '403 FORBIDDEN');
   }
@@ -3058,8 +3012,6 @@ sub DoIndex {
   my $anchors = GetParam('permanentanchors', 1);
   my $near = GetParam('near', 0);
   my $match = GetParam('match', '');
-  NearInit() if not $NearSiteInit; # init always to get the menu right
-  ReadPermanentAnchors() if $PermanentAnchors and not $PermanentAnchorsInit;
   push(@pages, AllPagesList()) if $pages;
   push(@pages, keys %PermanentAnchors) if $anchors;
   push(@pages, keys %NearSource) if $near;
@@ -3140,7 +3092,7 @@ sub AllPagesList {
     if ($status) {
       %IndexHash = split(/\s+/, $rawIndex);
       @IndexList = sort(keys %IndexHash);
-      $IndexInit = 1;
+      $IndexInit = 1; # set to 0 when a new page is saved
       return @IndexList;
     }
     # If open fails just refresh the index
@@ -3153,7 +3105,7 @@ sub AllPagesList {
     push(@IndexList, $id);
     $IndexHash{$id} = 1;
   }
-  $IndexInit = 1;  # Initialized for this run of the script
+  $IndexInit = 1; # set to 0 when a new page is saved
   # Try to write out the list for future runs.  If file exists and cannot be changed, error!
   RequestLockDir('index', undef, undef, -f $IndexFile) or return @IndexList;
   WriteStringToFile($IndexFile, join(' ', %IndexHash));
@@ -3185,7 +3137,6 @@ sub DoSearch {
     print GetHeader('', QuoteHtml(Ts('Search for: %s', $string))),
       $q->start_div({-class=>'content search'});
     $ReplaceForm = UserIsAdmin();
-    NearInit();
     my @elements = (ScriptLink('action=rc;rcfilteronly=' . UrlEncode($string),
 			       T('View changes for these pages')));
     push(@elements, ScriptLink('near=2;search=' . UrlEncode($string),
@@ -3251,7 +3202,6 @@ sub SearchNearPages {
   my %found;
   foreach (@_) { $found{$_} = 1; }; # to avoid using grep on the list
   my $regex = HighlightRegex($string);
-  NearInit();
   if (%NearSearch and GetParam('near', 1) > 1 and GetParam('context',1)) {
     foreach my $site (keys %NearSearch) {
       my $url = $NearSearch{$site};
@@ -3480,14 +3430,11 @@ sub DoPost {
   # Banned Content
   if (not UserIsEditor()) {
     my $rule = BannedContent($string);
-    if ($rule) {
-      print GetHeader('', T('Edit Denied'), undef, undef, '403 FORBIDDEN');
-      print $q->p(T('The page contains banned text.'));
-      print $q->p(T('Contact the wiki administrator for more information.'));
-      print $q->p($rule . ' ' . Ts('See %s for more information.', GetPageLink($BannedContent)));
-      ReleaseLock();
-      return;
-    }
+    ReportError(T('Edit Denied'), '403 FORBIDDEN', undef,
+		$q->p(T('The page contains banned text.')),
+		$q->p(T('Contact the wiki administrator for more information.')),
+		$q->p($rule . ' ' . Ts('See %s for more information.', GetPageLink($BannedContent))))
+      if $rule;
   }
   my $summary = GetSummary();
   # rebrowse if no changes
@@ -3589,9 +3536,12 @@ sub Save { # call within lock, with opened page
 	     . ' ' . T('Please check the directory permissions.')
 	     . ' ' . T('Your changes were not saved.'));
     return;
-  } else {
-    utime time, time, $IndexFile; # touch index file
   }
+  $IndexInit = 0 if $revision == 1;
+  $NearInit = 0 if $id eq $NearMap;
+  $InterInit = 0 if $id eq $InterMap;
+  $RssInterwikiTranslateInit = 0 if $id eq $RssInterwikiTranslate;
+  utime time, time, $IndexFile; # touch index file
   SaveKeepFile(); # deletes blocks, flags, diff-major, and diff-minor, and sets keep-ts
   ExpireKeepFiles();
   $Page{ts} = $Now;
@@ -3612,7 +3562,7 @@ sub Save { # call within lock, with opened page
   $Page{languages} = $languages;
   SavePage();
   if ($revision == 1 and grep(/^$id$/, @LockOnCreation)) {
-    WriteStringToFile(GetLockedPageFile($id), 'editing locked.');
+    WriteStringToFile(GetLockedPageFile($id), '@LockOnCreation');
   }
   WriteRcLog($id, $summary, $minor, $revision, $user, $host, $languages, GetCluster($new));
   $LastUpdate = $Now; # for mod_perl
@@ -3739,7 +3689,6 @@ sub DoMaintain {
     WriteStringToFile($RcFile . '.old', $data);
     WriteStringToFile($RcFile, join("\n",@rc) . "\n");
   }
-  NearInit() unless $NearSiteInit;
   if (%NearSite) {
     CreateDir($NearDir);
     foreach my $site (keys %NearSite) {
@@ -3849,7 +3798,6 @@ sub DoShowVersion {
     print $q->p(ScriptLink('action=version;dependencies=1', T('Show dependencies')));
   }
   if (GetParam('links', 0)) {
-    NearInit() unless $NearSiteInit;
     print $q->h2(T('Inter links:')), $q->p(join(', ', sort keys %InterSite));
     print $q->h2(T('Near links:')),
       $q->p(join($q->br(), map { $_ . ': ' . join(', ', @{$NearSource{$_}})}
@@ -3932,8 +3880,10 @@ sub WriteRecentVisitors {
 
 # == Permanent Anchors ==
 
-sub ReadPermanentAnchors {
-  $PermanentAnchorsInit = 1;
+sub PermanentAnchorsInit {
+  return if $PermanentAnchorsInit;
+  %PagePermanentAnchors = ();
+  $PermanentAnchorsInit = 1; # set to 0 when $PermanentAnchorsFile is saved
   my ($status, $data) = ReadFile($PermanentAnchorsFile);
   return unless $status; # not fatal
   %PermanentAnchors = split(/\n| |$FS/,$data); # FIXME: $FS was used in 1.417 and earlier
@@ -3970,7 +3920,6 @@ sub GetPermanentAnchor {
 }
 
 sub DeletePermanentAnchors {
-  ReadPermanentAnchors() unless $PermanentAnchorsInit;
   foreach (keys %PermanentAnchors) {
     if ($PermanentAnchors{$_} eq $OpenPageName and !$PagePermanentAnchors{$_}) {
       delete($PermanentAnchors{$_}) ;
@@ -3982,6 +3931,22 @@ sub DeletePermanentAnchors {
 }
 
 sub TextIsFile { $_[0] =~ /^#FILE (\S+)\n/ }
+
+sub DoCss {
+  my $css = GetParam('install', '');
+  if ($css) {
+    SetParam('text', GetRaw($css));
+    DoPost($StyleSheetPage);
+  } else {
+    print GetHeader('', T('Install CSS')), $q->start_div({-class=>'content css'});
+    my @css = qw(http://www.emacswiki.org/css/beige-red.css
+	       http://www.emacswiki.org/css/green.css);
+    print $q->p(Ts('Copy one of the following stylesheets to %s:', GetPageLink($StyleSheetPage)));
+    print $q->ul(map {$q->li(ScriptLink("action=css;install=" . UrlEncode($_), $_))} @css);
+    print $q->end_div();
+    PrintFooter();
+  }
+}
 
 sub handler {
   my $r = shift;
