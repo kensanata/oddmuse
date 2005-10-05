@@ -165,8 +165,14 @@ $SisterSiteLogoUrl = 'file:///tmp/oddmuse/%s.png'; # URL format string for logos
 # Replace regular expressions with inlined images
 # Example: %Smilies = (":-?D(?=\\W)" => '/pics/grin.png');
 %Smilies = ();
-@CssList = qw(http://www.emacswiki.org/css/beige-red.css
-	      http://www.emacswiki.org/css/green.css); # List of Oddmuse CSS URLs
+@CssList = qw(http://www.emacswiki.org/css/astrid.css
+	      http://www.emacswiki.org/css/beige-red.css
+	      http://www.emacswiki.org/css/blue.css
+	      http://www.emacswiki.org/css/cali.css
+	      http://www.emacswiki.org/css/green.css
+	      http://www.emacswiki.org/css/hug.css
+	      http://www.emacswiki.org/css/oddmuse.css
+	      http://www.emacswiki.org/css/wikio.css); # List of Oddmuse CSS URLs
 # Detect page languages when saving edits
 # Example: %Languages = ('de' => '\b(der|die|das|und|oder)\b');
 %Languages = ();
@@ -246,7 +252,7 @@ sub InitDirConfig {
   $ConfigFile  = "$DataDir/config" unless $ConfigFile; # Config file with Perl code to execute
   $ModuleDir   = "$DataDir/modules" unless $ModuleDir; # For extensions (ending in .pm or .pl)
   $NearDir     = "$DataDir/near"; # For page indexes and .png files of other sites
-  $RssDir     = "$DataDir/rss"; # For rss feed cache
+  $RssDir      = "$DataDir/rss"; # For rss feed cache
 }
 
 sub InitRequest {
@@ -288,7 +294,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.605 2005/10/05 20:46:06 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.606 2005/10/05 21:00:44 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
