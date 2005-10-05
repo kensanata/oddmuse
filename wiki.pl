@@ -53,7 +53,7 @@ $EditNote $HttpCharset $UserGotoBar $VisitorFile $RcFile %Smilies
 %SpecialDays $InterWikiMoniker $SiteDescription $RssImageUrl
 $RssRights $BannedCanRead $SurgeProtection $TopLinkBar $LanguageLimit
 $SurgeProtectionTime $SurgeProtectionViews $DeletedPage %Languages
-$InterMap $ValidatorLink @LockOnCreation $PermanentAnchors
+$InterMap $ValidatorLink @LockOnCreation $PermanentAnchors @CssList
 $RssStyleSheet $PermanentAnchorsFile @MyRules %CookieParameters
 @UserGotoBarPages $NewComment $StyleSheetPage $ConfigPage $ScriptName
 @MyMacros $CommentsPrefix @UploadTypes $AllNetworkFiles $UsePathInfo
@@ -165,6 +165,8 @@ $SisterSiteLogoUrl = 'file:///tmp/oddmuse/%s.png'; # URL format string for logos
 # Replace regular expressions with inlined images
 # Example: %Smilies = (":-?D(?=\\W)" => '/pics/grin.png');
 %Smilies = ();
+@CssList = qw(http://www.emacswiki.org/css/beige-red.css
+	      http://www.emacswiki.org/css/green.css); # List of Oddmuse CSS URLs
 # Detect page languages when saving edits
 # Example: %Languages = ('de' => '\b(der|die|das|und|oder)\b');
 %Languages = ();
@@ -286,7 +288,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.604 2005/10/05 20:38:12 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.605 2005/10/05 20:46:06 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -3938,12 +3940,10 @@ sub DoCss {
     SetParam('text', GetRaw($css));
     DoPost($StyleSheetPage);
   } else {
-    print GetHeader('', T('Install CSS')), $q->start_div({-class=>'content css'});
-    my @css = qw(http://www.emacswiki.org/css/beige-red.css
-	       http://www.emacswiki.org/css/green.css);
-    print $q->p(Ts('Copy one of the following stylesheets to %s:', GetPageLink($StyleSheetPage)));
-    print $q->ul(map {$q->li(ScriptLink("action=css;install=" . UrlEncode($_), $_))} @css);
-    print $q->end_div();
+    print GetHeader('', T('Install CSS')), $q->start_div({-class=>'content css'}),
+      $q->p(Ts('Copy one of the following stylesheets to %s:', GetPageLink($StyleSheetPage))),
+      $q->ul(map {$q->li(ScriptLink("action=css;install=" . UrlEncode($_), $_))} @CssList),
+      $q->end_div();
     PrintFooter();
   }
 }
