@@ -75,10 +75,11 @@ $PermanentAnchorsInit $ModulesDescription %RuleOrder %Action $bol
 
 # == Configuration ==
 
-if(exists $ENV{MOD_PERL})
-{
-  require Apache;
-  $RunCGI = 0 unless defined Apache->request; # Do not run when using PerlModule
+if (exists $ENV{MOD_PERL}) {
+  use Apache2::RequestRec ();
+  use Apache2::RequestIO ();
+  use Apache2::Const -compile => qw(OK);
+  $RunCGI = 0;
 }
 
 # Can be set outside the script: $DataDir, $UseConfig, $ConfigFile, $ModuleDir, $ConfigPage,
@@ -294,7 +295,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.606 2005/10/05 21:00:44 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.607 2005/10/05 22:01:19 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -3956,14 +3957,13 @@ sub DoCss {
 
 sub handler {
   my $r = shift;
-  Apache->request($r);
   for my $var (qw{DataDir UseConfig ConfigFile ModuleDir ConfigPage
 		  AdminPass EditPass ScriptName FullUrl}) {
     no strict "refs";
     $$var = $ENV{"Wiki$var"} if exists $ENV{"Wiki$var"}; # symbolic references
   }
   DoWikiRequest();
-  return 200;
+  return Apache2::Const::OK;
 }
 
 DoWikiRequest()	 if $RunCGI;   # Do everything.
