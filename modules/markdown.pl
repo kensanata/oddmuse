@@ -28,7 +28,7 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.26 2005/10/02 00:02:57 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.27 2005/10/05 18:16:40 fletcherpenney Exp $</p>';
 
 use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled!;
 
@@ -249,6 +249,8 @@ sub CreateWikiLink {
 		$id =~ s/__+/_/g;
 		$id =~ s/^_//g;
 		$id =~ s/_$//;
+
+	$title =~ s/_/ /g;
 		
 
 	#AllPagesList();
