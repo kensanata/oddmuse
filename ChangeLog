@@ -1,3 +1,60 @@
+2005-10-05  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($InterSiteInit): Renamed to $InterInit.
+	($NearSiteInit): Renamed to NearInit.
+
+	(InitVariables): No longer initialize $InterSiteInit, %InterSite,
+	$NearSiteInit, %NearSite, %NearSearch, %NearSource, $IndexInit,
+	$RssInterwikiTranslateInit, %PagePermanentAnchors,
+	%RssInterwikiTranslate.  Instead, call AllPagesList, NearInit,
+	PermanentAnchorsInit, and move CreateDir before the call to
+	AllPagesList.
+	(RSS): Don't test for $RssInterwikiTranslateInit before calling
+	RssInterwikiTranslateInit.
+	(RssInterwikiTranslateInit, NearInit): Return if already
+	initialized.  Do the reset of global variables here.
+	(InterInit, PermanentAnchorsInit): Ditto.
+	(GetDownloadLink, ResolveId, OpenPage): Don't call AllPagesList.
+	(GetPageContent): Ditto.
+	(ResolveId, DoIndex, DeletePermanentAnchors): Don't call
+	ReadPermanentAnchors.
+	(ResolveId, GetSisterSites, DoIndex): Don't call NearInit.
+	(DoSearch, SearchNearPages, $RssInterwikiTranslateInit): Ditto.
+	(DoShowVersion): Ditto.
+	(Save): Reset $IndexInit, $NearInit, $InterInit, and
+	$RssInterwikiTranslateInit.
+
+	($StyleSheetPage): Default value 'css'.
+	(DoCss): New.
+	(%Action): Added css action.
+	(GetCss): Use the mime-type parameter and separate action if
+	StyleSheetPage exists instead of inlining.
+	(DoAdminPage): Add css action.
+
+	(GetHeader): Add logo class to link.
+
+	(ApplyRules): Don't call NearInit.  Print $StyleSheetPage and
+	$ConfigPage in a pre tag.
+
+2005-10-02  Alex Schroeder  <alex@gnu.org>
+
+	* modules/weblog-3.pl (DoCategories): Go to the edit page when
+	submitting the form.
+
+2005-10-01  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetHeader): Add logo class to the logo link.
+
+2005-09-30  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl: Get rid of $DefaultStyleSheet.
+	(GetCss): Don't use $DefaultStyleSheet; use
+	http://www.oddmuse.org/oddmuse.css instead.
+
+	(ReportError): Support arbitrary HTML fragments as an explanation.
+	(DoEdit, DoPost): Use ReportError to report Edit Denied errors.
+	Don't use the form "Editing Denied".
+
 2005-09-28  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (BrowsePage): When the page consists of one clean block
@@ -5,6 +62,7 @@
 	caused pages consisting of a single clean block to not be cached.
 	At the same time, there should always be flags when $Page{blocks}
 	is arround, so the test was simply removed.
+	(Init): Call InitCookie before calling InitVariables.
 
 2005-09-26  Alex Schroeder  <alex@gnu.org>
 
