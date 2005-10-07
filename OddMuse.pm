@@ -23,7 +23,7 @@ use Apache2::Const -compile => qw(OK);
 package OddMuse;
 
 $RunCGI = 0;
-do 'wiki.pl';
+require 'wiki.pl';
 
 sub handler {
   my $r = shift;
