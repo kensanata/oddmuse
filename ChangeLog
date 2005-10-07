@@ -1,3 +1,8 @@
+2005-10-08  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ApplyRules): Close HTML environments before printing
+	anything on pages containing files.
+
 2005-10-07  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (handler): Removed mod_perl handling code.
