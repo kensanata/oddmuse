@@ -1,5 +1,7 @@
 2005-10-07  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (handler): Removed mod_perl handling code.
+
 	* modules/big-brother.pl (DoBigBrother): Make sure only unique
 	targets are listed.
 
