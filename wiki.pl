@@ -289,7 +289,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.609 2005/10/07 15:04:14 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.610 2005/10/07 23:07:12 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -389,7 +389,7 @@ sub ApplyRules {
   if ($OpenPageName eq $StyleSheetPage or $OpenPageName eq $ConfigPage) {
     Clean($q->pre($text));
   } elsif (my ($type) = TextIsFile($text)) {
-    Clean($q->p(T('This page contains an uploaded file:'))
+    Clean(CloseHtmlEnvironments() . $q->p(T('This page contains an uploaded file:'))
 	  . $q->p(GetDownloadLink($OpenPageName, (substr($type, 0, 6) eq 'image/'), $revision)));
   } else {
     my $smileyregex = join "|", keys %Smilies;
@@ -2260,7 +2260,7 @@ sub GetCommentForm {
 
 sub GetFormStart {
   my ($ignore, $method, $class) = @_;
-  my $method ||= 'post';
+  $method ||= 'post';
   return $q->start_form(-method=>$method, -action=>$FullUrl, -class=>$class);
 }
 
