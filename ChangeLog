@@ -1,3 +1,15 @@
+2005-10-07  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($SummaryDefaultLength): New option as suggested by "ch"
+	on the wiki, default to 150 instead of hard-coding 100.
+	(GetSummary): Use it.
+
+	(GetFormStart): No longer support the first parameter, encoding.
+	Use the default provided by CGI.pm always.  Providing an encoding
+	used to confuse newer versions of CGI.pm, resulting in invalid
+	XHTML.
+	(GetSearchForm, DoEdit): Fix call to GetFormStart.
+
 2005-10-05  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl ($InterSiteInit): Renamed to $InterInit.
@@ -25,6 +37,7 @@
 	$RssInterwikiTranslateInit.
 
 	($StyleSheetPage): Default value 'css'.
+	(@CssList): New.
 	(DoCss): New.
 	(%Action): Added css action.
 	(GetCss): Use the mime-type parameter and separate action if
@@ -36,6 +49,10 @@
 	(ApplyRules): Don't call NearInit.  Print $StyleSheetPage and
 	$ConfigPage in a pre tag.
 
+	Switch to Apache2 and mod_perl2 support!
+	(handler): Don't call Apache->request($r).  Use
+	Apache2::Const::OK.
+	
 2005-10-02  Alex Schroeder  <alex@gnu.org>
 
 	* modules/weblog-3.pl (DoCategories): Go to the edit page when
