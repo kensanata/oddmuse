@@ -60,7 +60,7 @@ $RssStyleSheet $PermanentAnchorsFile @MyRules %CookieParameters
 $UploadAllowed $LastUpdate $PageCluster $HtmlHeaders
 $RssInterwikiTranslate $UseCache $ModuleDir $DebugInfo $FullUrlPattern
 %InvisibleCookieParameters $FreeInterLinkPattern @AdminPages
-@MyAdminCode @MyInitVariables @MyMaintenance);
+@MyAdminCode @MyInitVariables @MyMaintenance $SummaryDefaultLength);
 
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
@@ -134,6 +134,7 @@ $RcDefault   = 30;              # Default number of RecentChanges days
 $KeepDays    = 14;              # Days to keep old revisions
 $KeepMajor   = 1;               # 1 = keep at least one major rev when expiring pages
 $SummaryHours = 4;              # Hours to offer the old subject when editing a page
+$SummaryDefaultLength = 150;    # Length of default text for summary (0 to disable)
 $ShowEdits   = 0;               # 1 = major and show minor edits in recent changes
 $UseLookup   = 1;               # 1 = lookup host names instead of using only IP numbers
 $RecentTop   = 1;               # 1 = most recent entries at the top of the list
@@ -295,7 +296,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.607 2005/10/05 22:01:19 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.608 2005/10/07 12:59:11 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -2265,10 +2266,9 @@ sub GetCommentForm {
 }
 
 sub GetFormStart {
-  my $encoding = (shift) ? 'multipart/form-data' : 'application/x-www-form-urlencoded';
-  my $method = (shift) ? 'get' : 'post';
-  my $class = (shift);
-  return $q->start_form(-method=>$method, -action=>$FullUrl, -enctype=>$encoding, -class=>$class);
+  my ($ignore, $method, $class) = @_;
+  my $method ||= 'post';
+  return $q->start_form(-method=>$method, -action=>$FullUrl, -class=>$class);
 }
 
 sub GetSearchForm {
@@ -2282,7 +2282,7 @@ sub GetSearchForm {
     $form .= T('Language:') . ' '
       . $q->textfield(-name=>'lang', -size=>10, -default=>GetParam('lang', '')) . ' ';
   }
-  return GetFormStart(0, 1, 'search') . $q->p($form . $q->submit('dosearch', T('Go!'))) . $q->endform;
+  return GetFormStart(undef, 'get', 'search') . $q->p($form . $q->submit('dosearch', T('Go!'))) . $q->endform;
 }
 
 sub GetValidatorLink {
@@ -2846,7 +2846,7 @@ sub DoEdit {
     print $q->strong(Ts('Editing old revision %s.', $revision) . '  '
 		     . T('Saving this page will replace the latest revision with this text.'))
   }
-  print GetFormStart($upload, undef, $upload ? 'edit upload' : 'edit text'),
+  print GetFormStart(undef, undef, $upload ? 'edit upload' : 'edit text'),
     $q->p(GetHiddenValue("title", $id), ($revision ? GetHiddenValue('revision', $revision) : ''),
 	  GetHiddenValue('oldtime', $Page{ts}),
 	  ($upload ? GetUpload() : GetTextArea('text', $oldText)));
@@ -3509,9 +3509,9 @@ sub GetSummary {
   my $summary = GetParam('summary', '');
   my $text = GetParam('aftertext',  '');
   $text = GetParam('text', '') unless $text or $Page{revision} > 0;
-  if (not $summary and $text) {
-    $summary = substr($text, 0, 100);
-    $summary =~ s/\s*\S*$/ . . ./ if length($text) > 100;
+  if ($SummaryDefaultLength and not $summary and $text) {
+    $summary = substr($text, 0, $SummaryDefaultLength);
+    $summary =~ s/\s*\S*$/ . . ./ if length($text) > $SummaryDefaultLength;
   }
   $summary =~ s/$FS//g;
   $summary =~ s/[\r\n]+/ /g;
