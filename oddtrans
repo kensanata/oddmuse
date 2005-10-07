@@ -32,7 +32,7 @@ while ($arg =~ /^-l/) {
   $file = shift unless $file;
   die $help unless -f $file;
   %backup = %Translate;
-  do $file;
+  do $file or die "Cannot do $file";
   foreach $key (keys %Translate) {
     $backup{$key} = $Translate{$key};
   }
@@ -54,7 +54,7 @@ sub trans {
   return ' ';
 }
 
-print '%Translate = split(\'\n\',<<END_OF_TRANSLATION);' . "\n";
+print '%Translate = split(/\n/,<<END_OF_TRANSLATION);' . "\n";
 foreach (<>) {
   s/Ts?s?\(\'([^']+)/&trans($1)/ge;
   s/Ts?s?\(\"([^"]+)/&trans($1)/ge;
