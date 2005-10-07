@@ -18,7 +18,7 @@
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: big-brother.pl,v 1.5 2005/07/27 09:07:22 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: big-brother.pl,v 1.6 2005/10/07 13:09:29 as Exp $</p>';
 
 use vars qw($VisitorTime);
 
@@ -115,9 +115,13 @@ sub DoBigBrother { # no caching of this page!
     my $error = ValidId($name);
     my $who = $name && !$error && $name !~ /\./ ? GetPageLink($name) : T('Anonymous');
     my %entries = %{$BigBrotherData{$name}};
+    my %reverse = (); # reverse hash to filter out duplicate targets
+    foreach my $key (keys %entries) {
+      $reverse{$entries{$key}} = $key;
+    }
     my $what = join(', ', map { my ($id, $url) = split(/$US/, $entries{$_});
 				$q->a({-href=>$url}, $id); }
-		    sort keys %entries);
+		    sort values %reverse);
     print $q->li($who, T('was here'), $when, T('and read'), $what);
   }
   print '</ul>' . $q->end_div();
