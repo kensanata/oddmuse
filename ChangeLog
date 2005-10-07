@@ -1,5 +1,8 @@
 2005-10-07  Alex Schroeder  <alex@gnu.org>
 
+	* modules/big-brother.pl (DoBigBrother): Make sure only unique
+	targets are listed.
+
 	* wiki.pl ($SummaryDefaultLength): New option as suggested by "ch"
 	on the wiki, default to 150 instead of hard-coding 100.
 	(GetSummary): Use it.
