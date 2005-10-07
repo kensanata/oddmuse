@@ -1,7 +1,4 @@
 $EditCluster = 'EditCluster';
-$DefaultStyleSheet .= '
-form.edit p + p + p { display:none }
-form.edit p + p + p + p { display:block }';
 
 sub GetRc {
   my $printDailyTear = shift;
@@ -9,24 +6,9 @@ sub GetRc {
   my @outrc = @_;
   my %extra = ();
   my %changetime = ();
-  # Slice minor edits
-  my $showedit = GetParam('showedit', $ShowEdits);
-  # Filter out some entries if not showing all changes
-  if ($showedit != 1) {
-    my @temprc = ();
-    foreach my $rcline (@outrc) {
-      my ($ts, $pagename, $minor) = split(/$FS/, $rcline); # skip remaining fields
-      if ($showedit == 0) {	# 0 = No edits
-	push(@temprc, $rcline)	if (!$minor);
-      } else {			# 2 = Only edits
-	push(@temprc, $rcline)	if ($minor);
-      }
-      $changetime{$pagename} = $ts;
-    }
-    @outrc = @temprc;
-  }
+  # note that minor edits have no effect!
   foreach my $rcline (@outrc) {
-    my ($ts, $pagename, $minor) = split(/$FS/, $rcline);
+    my ($ts, $pagename) = split(/$FS/, $rcline);
     $changetime{$pagename} = $ts;
   }
   my $date = '';
@@ -37,15 +19,15 @@ sub GetRc {
        'rcfilteronly', 'match', 'lang');
   my @clusters = $q->param('clusters'); # the clusters the user is interested in
   my $ordinary = 0;
-  my @wanted_clusters = ();
+  my %wanted_clusters = ();
   foreach (@clusters) {
     if ($_ eq T('ordinary changes')) {
       $ordinary = 1;
     } else {
-      push(@wanted_clusters,$_);
+      $wanted_clusters{$_} = 1;
     }
   }
-  push (@wanted_clusters, $clusterOnly) if $clusterOnly;
+  $wanted_clusters{$clusterOnly} = $clusterOnly;
   @outrc = reverse @outrc if GetParam('newtop', $RecentTop);
   my @filters;
   @filters = SearchTitleAndBody($filterOnly) if $filterOnly;
@@ -60,37 +42,39 @@ sub GetRc {
     next if ($userOnly and $userOnly ne $username);
     my @languages = split(/,/, $languages);
     next if ($lang and @languages and not grep(/$lang/, @languages));
-    # meatball sumamry clustering
+    # meatball summary clustering
     my %cluster = (); # the clusters of the page
     $cluster{$cluster} = 1 if $cluster;
     while ($summary =~ /^\[(.*)\]/g) {
       my $group = $1;
-      foreach my $cluster (split(/\s*,\s*/, $group)) {
-	$cluster{$cluster} = 1;
-      }
+      $group = join(',', sort(split(/\s*,\s*/, $group)));
+      $cluster{$group} = 1;
     }
     # user wants no cluster but page has cluster
-    next if not @wanted_clusters and %cluster;
+    next if not %wanted_clusters and %cluster;
     # users wants clusters, so must match with clusters of the page;
     # if page has no clusters and user wants ordinary pages, skip the
     # test.
     if ($ordinary and not %cluster) {
       # don't skip it
-    } elsif (@wanted_clusters) {
-      my $show = 0;
-      foreach my $cluster (@wanted_clusters) {
-	if ($cluster{$cluster}) {
-	  $show = 1;
-	  last;
+    } elsif (%wanted_clusters) {
+      my $show = 1;
+      foreach my $cluster (keys %cluster) { # assuming "fr,CopyEdit"
+	foreach $member (split(/,/, $cluster)) { # eg. "fr"
+	  if ($cluster{$cluster}) {
+	    $show = 1;
+	    last;
+	  } else {
+	  }
+	  next unless $show;
 	}
       }
-      next unless $show;
     }
     if ($date ne CalcDay($ts)) {
       $date = CalcDay($ts);
       &$printDailyTear($date);
     }
-    &$printRCLine($pagename, $ts, $host, $username, $summary, $minor, $revision,
+    &$printRCLine($pagename, $ts, $host, $username, $summary, 0, $revision,
 		  \@languages, $cluster);
   }
 }
@@ -99,11 +83,13 @@ sub GetRc {
 *RcHeader = *EditClusterNewRcHeader;
 
 sub EditClusterNewRcHeader {
-  EditClusterOldRcHeader(@_);
-  my @clusters = ((map { /\* (\S+)/; $1; }
-		   grep(/^\* /, split(/\n/, GetPageContent($EditCluster)))),
-		  T('ordinary changes'));
-  return unless @clusters;
+  if (GetParam('from', 0)) {
+    print $q->h2(Ts('Updates since %s', TimeToText(GetParam('from', 0))));
+  } else {
+    print $q->h2((GetParam('days', $RcDefault) != 1)
+		 ? Ts('Updates in the last %s days', GetParam('days', $RcDefault))
+		 : Ts('Updates in the last %s day', GetParam('days', $RcDefault)))
+  }
   my $action;
   my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $match, $lang) =
     map {
@@ -114,12 +100,34 @@ sub EditClusterNewRcHeader {
     }
       ('rcidonly', 'rcuseronly', 'rchostonly', 'rcclusteronly',
        'rcfilteronly', 'match', 'lang');
+  if ($clusterOnly) {
+    $action = GetPageParameters('browse', $clusterOnly) . $action;
+  } else {
+    $action = "action=rc$action";
+  }
+  my $days = GetParam('days', $RcDefault);
+  my $all = GetParam('all', 0);
+  my @menu;
+  if ($all) {
+    push(@menu, ScriptLink("$action;days=$days;all=0",
+			   T('List latest change per page only'),'','','','',1));
+  } else {
+    push(@menu, ScriptLink("$action;days=$days;all=1",
+			   T('List all changes'),'','','','',1));
+  }
+  print $q->p((map { ScriptLink("$action;days=$_;all=$all",
+				($_ != 1) ? Ts('%s days', $_) : Ts('%s days', $_),'','','','',1);
+		   } @RcDays), $q->br(), @menu, $q->br(),
+	      ScriptLink($action . ';from=' . ($LastUpdate + 1) . ";all=$all",
+			 T('List later changes')));
+  my @clusters = ((map { /\* (\S+)/; $1; }
+		   grep(/^\* /, split(/\n/, GetPageContent($EditCluster)))),
+		  T('ordinary changes'));
+  return unless @clusters;
   my $form = GetFormStart(undef, 'get') . $q->checkbox_group('clusters', \@clusters);
   $form .= $q->input({-type=>'hidden', -name=>'action', -value=>'rc'});
-  $form .= $q->input({-type=>'hidden', -name=>'all', -value=>1}) if (GetParam('all', 0));
-  $form .= $q->input({-type=>'hidden', -name=>'showedit', -value=>1}) if (GetParam('showedit', 0));
-  $form .= $q->input({-type=>'hidden', -name=>'days', -value=>GetParam('days', $RcDefault)})
-    if (GetParam('days', $RcDefault) != $RcDefault);
+  $form .= $q->input({-type=>'hidden', -name=>'all', -value=>1}) if $all;
+  $form .= $q->input({-type=>'hidden', -name=>'days', -value=>$days}) if $days != $RcDefault;
   $form .= $q->input({-type=>'hidden', -name=>'rcfilteronly', -value=>$rcfilteronly}) if $rcfilteronly;
   $form .= $q->input({-type=>'hidden', -name=>'rcuseronly', -value=>$rcuseronly}) if $rcuseronly;
   $form .= $q->input({-type=>'hidden', -name=>'rchostonly', -value=>$rchostonly}) if $rchostonly;

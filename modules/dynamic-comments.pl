@@ -16,12 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: dynamic-comments.pl,v 1.6 2005/07/17 01:35:43 as Exp $</p>';
-
-$DefaultStyleSheet .= qq{
-div.commenthidden { display:none; }
-div.commentshown { display:block; background-color:#ffc; padding:1ex; }
-} unless $DefaultStyleSheet =~ /commenthidden/; # mod_perl?
+$ModulesDescription .= '<p>$Id: dynamic-comments.pl,v 1.7 2005/10/07 23:23:30 as Exp $</p>';
 
 push(@MyInitVariables, \&DynamicCommentsAddScript);
 
