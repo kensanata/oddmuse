@@ -16,14 +16,10 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: crumbs.pl,v 1.4 2005/03/28 13:13:40 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: crumbs.pl,v 1.5 2005/10/07 23:23:30 as Exp $</p>';
 
 push(@MyRules, \&CrumbsRule);
 $RuleOrder{\&CrumbsRule} = -10; # run before default rules!
-
-$DefaultStyleSheet .= q{
-span.crumbs { font-size: smaller; }
-} unless $DefaultStyleSheet =~ /span\.crumbs/; # mod_perl?
 
 sub CrumbsRule {
   if (not (pos) # first!

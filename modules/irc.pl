@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: irc.pl,v 1.3 2004/11/27 22:30:59 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: irc.pl,v 1.4 2005/10/07 23:23:30 as Exp $</p>';
 
 use vars qw($IrcNickRegexp $IrcLinkNick);
 
@@ -25,11 +25,6 @@ $RuleOrder{\&IrcRule} = 200; # after HTML tags in Usemod Markup Extension.
 
 $IrcNickRegexp = qr{[]a-zA-Z^[;\\`_{}|][]^[;\\`_{}|a-zA-Z0-9-]*};
 $IrcLinkNick = 0;
-
-$DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /div\.irc/; # mod_perl?
-dl.irc dt { width:12ex; float:left; text-align:right; }
-dl.irc dd { margin-left:15ex; }
-EOT
 
 # This adds an extra <br> at the beginning.  Alternatively, add it to
 # the last line, or only add it when required.
