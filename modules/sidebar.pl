@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: sidebar.pl,v 1.13 2005/05/01 13:01:29 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: sidebar.pl,v 1.14 2005/10/09 11:57:52 as Exp $</p>';
 
 use vars qw($SidebarName);
 
@@ -32,16 +32,6 @@ sub SidebarInit {
   $SidebarName = FreeToNormal($SidebarName); # spaces to underscores
   push(@AdminPages, $SidebarName) unless grep(/$SidebarName/, @AdminPages); # mod_perl!
 }
-
-$DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /div\.sidebar/; # mod_perl?
-@media screen {
-  body { margin-right: 22ex; padding-right:1em; border-right: 1px solid #999; }
-  div.sidebar { position: absolute; right: 0; width: 20ex; top: 0; }
-}
-@media print {
-  div.sidebar { display: none; }
-}
-EOT
 
 *OldSideBarGetHeader = *GetHeader;
 *GetHeader = *NewSideBarGetHeader;

@@ -16,19 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.12 2005/04/16 01:37:25 as Exp $</p>';
-
-# add the same CSS as in tables.pl
-$DefaultStyleSheet .= q{
-table.user { border-style:solid; border-width:thin; }
-table.user td, table.user th { border-style:solid; border-width:thin; padding:5px; }
-table.user th { font-weight:bold; }
-table.user td.r { text-align:right; }
-table.user td.l { text-align:left; }
-table.user td.c { text-align:center; }
-table.user td.j { text-align:justify; }
-table.user td.mark { background-color:yellow; }
-} unless $DefaultStyleSheet =~ /table\.user/; # mod_perl?
+$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.13 2005/10/09 11:58:34 as Exp $</p>';
 
 push(@MyRules, \&TablesLongRule);
 
