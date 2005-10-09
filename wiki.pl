@@ -257,25 +257,21 @@ sub InitRequest {
 }
 
 sub InitVariables {    # Init global session variables for mod_perl!
+  $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
+    . $q->p(q{$Id: wiki.pl,v 1.612 2005/10/09 23:44:54 as Exp $});
+  $WikiDescription .= $ModulesDescription if $ModulesDescription;
+  $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
   $ScriptName = $q->url() unless defined $ScriptName; # URL used in links
   $FullUrl = $ScriptName unless $FullUrl; # URL used in forms
   $Now = time;	       # Reset in case script is persistent
-  $LastUpdate = (stat($IndexFile))[9];
+  $LastUpdate = (stat($IndexFile))[9] unless $LastUpdate;
   %Locks = ();
   @Blocks = ();
   @Flags = ();
   $Fragment = '';
   %RecentVisitors = ();
-  CreateDir($DataDir); # Create directory if it doesn't exist
-  AllPagesList();      # Ordinary pages, read from $IndexFile (saving it requires $DataDir)
-  NearInit();          # reads $NearMap and includes InterInit (reads $InterMap)
-  PermanentAnchorsInit() if $PermanentAnchors; # reads $PermanentAnchorsFile
-  %NearLinksUsed = (); # List of links used during this request
   $OpenPageName = '';  # Currently open page
-  $PrintedHeader = 0;  # Error messages don't print headers unless necessary
-  ReportError(Ts('Could not create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR')
-    unless -d $DataDir;
   my $add_space = $CommentsPrefix =~ /[ \t_]$/;
   map { $$_ = FreeToNormal($$_); } # convert spaces to underscores on all configurable pagenames
     (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$StyleSheetPage, \$NearMap, \$CommentsPrefix,
@@ -286,11 +282,15 @@ sub InitVariables {    # Init global session variables for mod_perl!
 		    $RssInterwikiTranslate, $BannedContent);
   @AdminPages = @pages unless @AdminPages;
   @LockOnCreation = @pages unless @LockOnCreation;
+  CreateDir($DataDir); # Create directory if it doesn't exist
+  AllPagesList();      # Ordinary pages, read from $IndexFile (saving it requires $DataDir)
+  NearInit();          # reads $NearMap and includes InterInit (reads $InterMap, requires $InterMap quoting)
+  PermanentAnchorsInit() if $PermanentAnchors; # reads $PermanentAnchorsFile
+  %NearLinksUsed = (); # List of links used during this request
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
-  $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.611 2005/10/09 17:11:04 as Exp $});
-  $WikiDescription .= $ModulesDescription if $ModulesDescription;
+  ReportError(Ts('Could not create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR')
+    unless -d $DataDir;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
     $Message .= $q->p($@) if $@;
