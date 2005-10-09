@@ -16,12 +16,12 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: linebreaks.pl,v 1.1 2004/08/17 14:03:09 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: linebreaks.pl,v 1.2 2005/10/09 00:25:01 as Exp $</p>';
 
 push(@MyRules, \&LineBreakRule);
 
 sub LineBreakRule {
-  if (m/\G\s*\n(s*\n)+/cg) { # paragraphs: at least two newlines
+  if (m/\G\s*\n(\s*\n)+/cg) { # paragraphs: at least two newlines
     return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
   } elsif (m/\G\s*\n/cg) { # line break: one newline
     return $q->br();
