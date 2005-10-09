@@ -16,44 +16,13 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.23 2004/12/05 03:58:44 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.24 2005/10/09 00:55:43 as Exp $</p>';
 
 push(@MyMacros, sub{ s/\[new::\]/"[new:" . GetParam('username', T('Anonymous'))
 		       . ':' . TimeToText($Now) . "]"/ge });
 push(@MyMacros, sub{ s/\[new(:[^]:]+)\]/"[new$1:" . TimeToText($Now) . "]"/ge });
 
 push(@MyRules, \&PortraitSupportRule);
-
-$DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /div\.one/; # mod_perl?
-img.portrait {
-	float: left;
-	clear: left;
-	margin: 1ex;
-	border:#999 1px solid;
-}
-div.footer, div.comment {
-	clear: both;
-}
-div.portrait {
-	float: left;
-	clear: left;
-	font-size: xx-small;
-}
-div.portrait img.portrait {
-	float: none;
-	margin: 0;
-}
-div.portrait a {
-	text-decoration: none;
-	color: #999;
-}
-div.color {
-	clear: both;
-}
-div.one {
-	background-color: #ddd;
-}
-EOT
 
 use vars qw($PortraitSupportColorDiv $PortraitSupportColor);
 
