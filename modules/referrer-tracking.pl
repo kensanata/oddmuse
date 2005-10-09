@@ -16,16 +16,9 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.3 2005/09/18 10:26:57 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.4 2005/10/09 00:55:43 as Exp $</p>';
 
 ## == Setup ==
-
-$DefaultStyleSheet .= q{
-div.refer { padding-left:5%; padding-right:5%; font-size:smaller; }
-@media print {
-  div.refer { display:none; }
-}
-} unless $DefaultStyleSheet =~ /div\.refer/; # mod_perl?
 
 push(@KnownLocks, "refer_*");
 
