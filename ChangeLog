@@ -1,4 +1,20 @@
+2005-10-09  Alex Schroeder  <alex@gnu.org>
+
+	* modules/linebreaks.pl (LineBreakRule): Fixed the same typo we
+	had in the main script many ages ago with a s* instead of \s*.
+
 2005-10-08  Alex Schroeder  <alex@gnu.org>
+
+	* modules/calendar:
+	* modules/crumbs:
+	* modules/dynamic-comments:
+	* modules/irc: Removed $DefaultStyleSheet.
+	
+	* modules/edit-cluster: Removed $DefaultStyleSheet and tons of
+	changes I do not understand anymore.  I don't even know what this
+	module is for.  I should delete it.
+	
+	* OddMuse.pm: Require instead of do wiki.pl.
 
 	* wiki.pl (ApplyRules): Close HTML environments before printing
 	anything on pages containing files.
