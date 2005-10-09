@@ -16,12 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tables.pl,v 1.5 2004/12/05 04:02:34 as Exp $</p>';
-
-$DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /table\.user/; # mod_perl?
-table.user { border-style:solid; border-width:thin; }
-table.user tr td { border-style:solid; border-width:thin; padding:5px; }
-EOT
+$ModulesDescription .= '<p>$Id: tables.pl,v 1.6 2005/10/09 12:01:18 as Exp $</p>';
 
 push(@MyRules, \&TablesRule);
 
