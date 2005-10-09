@@ -1,5 +1,9 @@
 2005-10-09  Alex Schroeder  <alex@gnu.org>
 
+	* modules/referrer-tracking.pl: 
+	* modules/portrait-support.pl: 
+	* modules/page-trail.pl: Removed $DefaultStyleSheet.
+
 	* modules/linebreaks.pl (LineBreakRule): Fixed the same typo we
 	had in the main script many ages ago with a s* instead of \s*.
 
