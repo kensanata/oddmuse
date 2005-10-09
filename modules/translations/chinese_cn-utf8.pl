@@ -23,7 +23,7 @@
 #by wctang <wctang@csie.nctu.edu.tw> and using the tool cnmap
 #(http://search.cpan.org/~qjzhou/Encode-CNMap-0.32/bin/cnmap) by Qing-Jie Zhou <qjzhou@hotmail.com>.
 #
-$ModulesDescription .= '<p>$Id: chinese_cn-utf8.pl,v 1.5 2005/07/24 18:31:54 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: chinese_cn-utf8.pl,v 1.6 2005/10/09 12:48:35 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 禁止读取：使用者、ip 或是网路已被禁止连线。
@@ -111,6 +111,10 @@ List later changes
 列出最新的修改
 Filters
 过滤器
+Title:
+
+Title and Body:
+
 Username:
 使用者名称：
 Host:
@@ -127,6 +131,8 @@ new
 新增
 from %s
 自 %s
+This page is too big to send over RSS.
+
 History of %s
 %s 的历史记录
 Compare
@@ -151,8 +157,6 @@ Wiki Version
 显示 Wiki 的版本
 Unlock Wiki
 解锁
-Recent Visitors
-最近的访问者
 Password
 密码
 Run maintenance
@@ -161,6 +165,8 @@ Unlock site
 网站解锁
 Lock site
 网站锁定
+Install CSS
+
 Unlock %s
 解锁 %s
 Lock %s
@@ -245,6 +251,8 @@ minor
 次要
 No diff available.
 没有差异。
+The two revisions are the same.
+
 Old revision:
 旧版本：
 Changed:
@@ -293,7 +301,7 @@ No unlock required.
 1 秒前
 just now
 就是现在
-Editing Denied
+Edit Denied
 禁止编辑
 Editing not allowed: user, ip, or network is blocked.
 禁止编辑；使用者、ip 或是网路已被禁止连线。
@@ -361,6 +369,8 @@ Include near pages
 包含相邻页面
 (for %s)
 (列出 %s )
+Filter:
+
 %s pages found.
 找到 %s 个页面。
 Replaced: %s
@@ -405,10 +415,10 @@ Browser reports no file info.
 浏览器没有提供文件信息。
 Browser reports no file type.
 浏览器没有提供文件类型。
-Edit Denied
-禁止编辑
 The page contains banned text.
 本页含有一些禁止出现的文字。
+No changes to be saved.
+
 This page was changed by somebody else %s.
 本页在 %s 已被人修改过。
 The changes conflict.  Please check the page again.
@@ -491,6 +501,8 @@ Click to search for references to this permanent anchor
 按下即可搜索此锚点的相关数据
 the page %s also exists
 也存在一个叫 %s 的页面
+Copy one of the following stylesheets to %s:
+
 Deleting %s
 正在删除 %s
 Deleted %s
@@ -515,6 +527,8 @@ Rename %s to:
 将 %s 重命名为:
 Cannot highlight the language %s.
 无法高亮显示语言 %s 。
+Recent Visitors
+最近的访问者
 some action
 
 was here
@@ -557,10 +571,16 @@ Cannot find unspammed revision.
 找不到未被 spam 的版本。
 Add Comment
 
+ordinary changes
+
 Footnotes:
 注解：
 Could not find %1.html template in %2
 无法在 %2 找到 %1.html 的范本
+Only Editors are allowed to see hidden pages.
+
+Only Admins are allowed to see hidden pages.
+
 image: %s
 图像: %s
 Index
@@ -593,6 +613,10 @@ Your registration for %s has been submitted.
 
   Please allow time for the webmaster to approve your request.
 
+  An email has been sent to "%s" with further instructions.
+
+There was an error saving your registration.
+
 An account was created for %s.
 
 Login to %s
@@ -603,7 +627,7 @@ Logged in as %s.
 
 Logout of %s
 
-Logout of %s?
+<p>Logout of %s?</p>
 
 Logged out of %s
 
@@ -614,6 +638,60 @@ Register a new account
 Login
 
 Logout
+
+Who am I?
+
+Forgot your password?
+
+Change your password
+
+Approve pending registrations
+
+Confirm Registration for %s
+
+%s, your registration has been approved. You can now use your password to login and edit this wiki.
+
+Confirmation failed.  Please email %s for help.
+
+Who Am I?
+
+You are logged in as %s.
+
+You are not logged in.
+
+Reset Password
+
+The password for %s was reset.  It has been emailed to the address on file.
+
+There was an error resetting the password for %s
+
+The username "%s" does not exist.
+
+Reset Password for %s
+
+<p>Reset Password?</p>
+
+Change Password for %s
+
+<p>Change Password?</p>
+
+Your current password is incorrect.
+
+Your password has been changed.
+
+Approve Pending Registrations for %s
+
+%s has been approved.
+
+There was an error approving %s.
+
+<ul>
+
+<li>%1 - %2</li>
+
+</ul>
+
+There are no pending registrations.
 
 Clearing Cache
 清除缓存
@@ -632,6 +710,10 @@ Requested page %s does not exist
 Local Map for %s
 
 view
+
+Self-ban by %s
+
+You have banned your own IP.
 
 Orphan List
 孤立页面列表
@@ -673,6 +755,10 @@ Static Copy
 静态页面备份
 Back to %s
 返回 %s
+Copy to %1 succeeded: %2.
+
+Copy to %1 failed: %2.
+
 Tag
 
 Alternatively, use one of the following templates:
@@ -719,6 +805,14 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 
 search
 搜索
+Upload of %s file
+
 Blog
+
+Matching pages:
+
+New
+
+Edit %s.
 
 END_OF_TRANSLATION

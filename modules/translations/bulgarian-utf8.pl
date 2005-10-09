@@ -18,7 +18,7 @@
 #
 # This translation was updated for Oddmuse 1.354.
 #
-$ModulesDescription .= '<p>$Id: bulgarian-utf8.pl,v 1.5 2005/07/24 18:31:54 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: bulgarian-utf8.pl,v 1.6 2005/10/09 12:48:35 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Не е разрешено четенето: блокиран потребител, IP адрес или мрежа.
@@ -106,6 +106,10 @@ List later changes
 Покажи по-ранни промени
 Filters
 Филтри
+Title:
+
+Title and Body:
+
 Username:
 Потребителско име:
 Host:
@@ -122,6 +126,8 @@ new
 
 from %s
 от %s
+This page is too big to send over RSS.
+
 History of %s
 История на %s
 Compare
@@ -146,8 +152,6 @@ Wiki Version
 Показ на Уики-версия
 Unlock Wiki
 Премахване на защити
-Recent Visitors
-Скорошни посетители
 Password
 Парола
 Run maintenance
@@ -155,6 +159,8 @@ Run maintenance
 Unlock site
 
 Lock site
+
+Install CSS
 
 Unlock %s
 
@@ -240,6 +246,8 @@ minor
 малка
 No diff available.
 Не са належащи данни за разликите.
+The two revisions are the same.
+
 Old revision:
 
 Changed:
@@ -288,8 +296,8 @@ No unlock required.
 преди една секунда
 just now
 точно сега
-Editing Denied
-Редакцията не е разрешена
+Edit Denied
+
 Editing not allowed: user, ip, or network is blocked.
 Редакцията не е разрешена: блокиран потребител, IP адрес или мрежа.
 Contact the wiki administrator for more information.
@@ -356,6 +364,8 @@ Include near pages
 
 (for %s)
 (за %s)
+Filter:
+
 %s pages found.
 %s намерени страници.
 Replaced: %s
@@ -400,9 +410,9 @@ Browser reports no file info.
 Браузъра не доставя информация за файла.
 Browser reports no file type.
 Браузъра не доставя вида на файла.
-Edit Denied
-
 The page contains banned text.
+
+No changes to be saved.
 
 This page was changed by somebody else %s.
 Страницата бе променена от друг (%s).
@@ -486,6 +496,8 @@ Click to search for references to this permanent anchor
 Кликни за търсене на връзки към тази постоянна точка
 the page %s also exists
 
+Copy one of the following stylesheets to %s:
+
 Deleting %s
 
 Deleted %s
@@ -510,6 +522,8 @@ Rename %s to:
 
 Cannot highlight the language %s.
 
+Recent Visitors
+Скорошни посетители
 some action
 
 was here
@@ -552,9 +566,15 @@ Cannot find unspammed revision.
 
 Add Comment
 
+ordinary changes
+
 Footnotes:
 
 Could not find %1.html template in %2
+
+Only Editors are allowed to see hidden pages.
+
+Only Admins are allowed to see hidden pages.
 
 image: %s
 
@@ -588,6 +608,10 @@ Your registration for %s has been submitted.
 
   Please allow time for the webmaster to approve your request.
 
+  An email has been sent to "%s" with further instructions.
+
+There was an error saving your registration.
+
 An account was created for %s.
 
 Login to %s
@@ -598,7 +622,7 @@ Logged in as %s.
 
 Logout of %s
 
-Logout of %s?
+<p>Logout of %s?</p>
 
 Logged out of %s
 
@@ -609,6 +633,60 @@ Register a new account
 Login
 
 Logout
+
+Who am I?
+
+Forgot your password?
+
+Change your password
+
+Approve pending registrations
+
+Confirm Registration for %s
+
+%s, your registration has been approved. You can now use your password to login and edit this wiki.
+
+Confirmation failed.  Please email %s for help.
+
+Who Am I?
+
+You are logged in as %s.
+
+You are not logged in.
+
+Reset Password
+
+The password for %s was reset.  It has been emailed to the address on file.
+
+There was an error resetting the password for %s
+
+The username "%s" does not exist.
+
+Reset Password for %s
+
+<p>Reset Password?</p>
+
+Change Password for %s
+
+<p>Change Password?</p>
+
+Your current password is incorrect.
+
+Your password has been changed.
+
+Approve Pending Registrations for %s
+
+%s has been approved.
+
+There was an error approving %s.
+
+<ul>
+
+<li>%1 - %2</li>
+
+</ul>
+
+There are no pending registrations.
 
 Clearing Cache
 
@@ -627,6 +705,10 @@ Requested page %s does not exist
 Local Map for %s
 
 view
+
+Self-ban by %s
+
+You have banned your own IP.
 
 Orphan List
 
@@ -668,6 +750,10 @@ Static Copy
 
 Back to %s
 Обратно към %s
+Copy to %1 succeeded: %2.
+
+Copy to %1 failed: %2.
+
 Tag
 
 Alternatively, use one of the following templates:
@@ -714,6 +800,14 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 search
 търси
+Upload of %s file
+
 Blog
+
+Matching pages:
+
+New
+
+Edit %s.
 
 END_OF_TRANSLATION

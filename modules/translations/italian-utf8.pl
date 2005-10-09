@@ -15,7 +15,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: italian-utf8.pl,v 1.5 2005/07/24 18:31:54 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: italian-utf8.pl,v 1.6 2005/10/09 12:48:35 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lettura non consentita: l'utente, l'IP o la rete risultano bloccati.
@@ -103,6 +103,10 @@ List later changes
 Elenca i cambiamenti successivi
 Filters
 Filtri
+Title:
+
+Title and Body:
+
 Username:
 Nome utente
 Host:
@@ -119,6 +123,8 @@ new
 nuovo
 from %s
 da %s
+This page is too big to send over RSS.
+
 History of %s
 Cronologia di %s
 Compare
@@ -143,8 +149,6 @@ Wiki Version
 Versione Wiki
 Unlock Wiki
 Sblocca la Wiki
-Recent Visitors
-Visitatori recenti
 Password
 
 Run maintenance
@@ -153,6 +157,8 @@ Unlock site
 Sblocca il sito
 Lock site
 Blocca il sito
+Install CSS
+
 Unlock %s
 Sblocca %s
 Lock %s
@@ -237,6 +243,8 @@ minor
 minore
 No diff available.
 Nessun diff disponibile.
+The two revisions are the same.
+
 Old revision:
 Vecchia revisione:
 Changed:
@@ -285,8 +293,8 @@ Nessuno sblocco richiesto.
 1 secondo fa
 just now
 proprio ora
-Editing Denied
-Modifiche non consentite
+Edit Denied
+Modifica non consentita
 Editing not allowed: user, ip, or network is blocked.
 Modifiche non consentite: l'utente, l'IP o la rete sono bloccati.
 Contact the wiki administrator for more information.
@@ -353,6 +361,8 @@ Include near pages
 Includi pagine vicine
 (for %s)
 (per %s)
+Filter:
+
 %s pages found.
 Trovate %s pagine.
 Replaced: %s
@@ -397,10 +407,10 @@ Browser reports no file info.
 Il browser non riporta alcuna informazione sul file.
 Browser reports no file type.
 Il browser non riporta alcun tipo per il file.
-Edit Denied
-Modifica non consentita
 The page contains banned text.
 La pagina contiene testo bandito.
+No changes to be saved.
+
 This page was changed by somebody else %s.
 Questa pagina è stata modificata da qualcun altro %s.
 The changes conflict.  Please check the page again.
@@ -483,6 +493,8 @@ Click to search for references to this permanent anchor
 Clicca per cercare riferimenti a questa ancora permanente
 the page %s also exists
 la pagina %s esiste già
+Copy one of the following stylesheets to %s:
+
 Deleting %s
 Cancello %s
 Deleted %s
@@ -507,6 +519,8 @@ Rename %s to:
 Rinomina %s in:
 Cannot highlight the language %s.
 Impossibile evidenziare il linguaggio %s.
+Recent Visitors
+Visitatori recenti
 some action
 
 was here
@@ -549,10 +563,16 @@ Cannot find unspammed revision.
 Impossibile trovare una revisione priva di spam.
 Add Comment
 
+ordinary changes
+
 Footnotes:
 Note:
 Could not find %1.html template in %2
 Impossibile trovare il modello %1.html in %2
+Only Editors are allowed to see hidden pages.
+
+Only Admins are allowed to see hidden pages.
+
 image: %s
 immagine: %s
 Index
@@ -585,6 +605,10 @@ Your registration for %s has been submitted.
 
   Please allow time for the webmaster to approve your request.
 
+  An email has been sent to "%s" with further instructions.
+
+There was an error saving your registration.
+
 An account was created for %s.
 
 Login to %s
@@ -595,7 +619,7 @@ Logged in as %s.
 
 Logout of %s
 
-Logout of %s?
+<p>Logout of %s?</p>
 
 Logged out of %s
 
@@ -606,6 +630,60 @@ Register a new account
 Login
 
 Logout
+
+Who am I?
+
+Forgot your password?
+
+Change your password
+
+Approve pending registrations
+
+Confirm Registration for %s
+
+%s, your registration has been approved. You can now use your password to login and edit this wiki.
+
+Confirmation failed.  Please email %s for help.
+
+Who Am I?
+
+You are logged in as %s.
+
+You are not logged in.
+
+Reset Password
+
+The password for %s was reset.  It has been emailed to the address on file.
+
+There was an error resetting the password for %s
+
+The username "%s" does not exist.
+
+Reset Password for %s
+
+<p>Reset Password?</p>
+
+Change Password for %s
+
+<p>Change Password?</p>
+
+Your current password is incorrect.
+
+Your password has been changed.
+
+Approve Pending Registrations for %s
+
+%s has been approved.
+
+There was an error approving %s.
+
+<ul>
+
+<li>%1 - %2</li>
+
+</ul>
+
+There are no pending registrations.
 
 Clearing Cache
 Ripulisco la Cache
@@ -624,6 +702,10 @@ Requested page %s does not exist
 Local Map for %s
 
 view
+
+Self-ban by %s
+
+You have banned your own IP.
 
 Orphan List
 Lista degli orfani
@@ -665,6 +747,10 @@ Static Copy
 Copia Statica
 Back to %s
 Indietro a %s
+Copy to %1 succeeded: %2.
+
+Copy to %1 failed: %2.
+
 Tag
 
 Alternatively, use one of the following templates:
@@ -711,6 +797,14 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 
 search
 cerca
+Upload of %s file
+
 Blog
+
+Matching pages:
+
+New
+
+Edit %s.
 
 END_OF_TRANSLATION

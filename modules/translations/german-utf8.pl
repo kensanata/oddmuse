@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.6 2005/09/15 18:09:54 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.7 2005/10/09 12:48:35 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
@@ -158,6 +158,8 @@ Unlock site
 Wiki entsperren
 Lock site
 Wiki sperren
+Install CSS
+
 Unlock %s
 %s entsperren
 Lock %s
@@ -292,8 +294,8 @@ vor %s Sekunden
 vor einer Sekunde
 just now
 gerade eben
-Editing Denied
-Bearbeitung verweigert
+Edit Denied
+Bearbeiten verboten
 Editing not allowed: user, ip, or network is blocked.
 Bearbeitung nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
 Contact the wiki administrator for more information.
@@ -406,10 +408,10 @@ Browser reports no file info.
 Der Browser hat keine Dateiinformationen geliefert.
 Browser reports no file type.
 Der Browser hat keinen Dateityp geliefert.
-Edit Denied
-Bearbeiten verboten
 The page contains banned text.
 Diese Seite enthält verbotenen Text.
+No changes to be saved.
+
 This page was changed by somebody else %s.
 Diese Seite wurde von einer anderen Person %s verändert
 The changes conflict.  Please check the page again.
@@ -492,6 +494,8 @@ Click to search for references to this permanent anchor
 Klicken um nach Verweisen auf diesen permanenten Anker zu suchen
 the page %s also exists
 die Seite %s existiert ebenfalls
+Copy one of the following stylesheets to %s:
+
 Deleting %s
 %s löschen
 Deleted %s
@@ -602,6 +606,10 @@ Your registration for %s has been submitted.
 Ihre Anmeldung für den Benutzername %s wurde weitergeleitet.
   Please allow time for the webmaster to approve your request.
   Bitte geben sie dem Webmaster etwas Zeit, um ihre Anmeldung entgegen zu nehmen.
+  An email has been sent to "%s" with further instructions.
+
+There was an error saving your registration.
+
 An account was created for %s.
 Der Benutzername %s wurde angelegt.
 Login to %s
@@ -612,8 +620,8 @@ Logged in as %s.
 %s wurde erfolgreich angemeldet.
 Logout of %s
 %s wurde erfolgreich abgemeldet.
-Logout of %s?
-Soll %s abgemeldet werden?
+<p>Logout of %s?</p>
+
 Logged out of %s
 %s wurde erfolgreich abgemeldet.
 You are now logged out.
@@ -624,6 +632,60 @@ Login
 Anmeldung
 Logout
 Abmeldung
+Who am I?
+
+Forgot your password?
+
+Change your password
+
+Approve pending registrations
+
+Confirm Registration for %s
+
+%s, your registration has been approved. You can now use your password to login and edit this wiki.
+
+Confirmation failed.  Please email %s for help.
+
+Who Am I?
+
+You are logged in as %s.
+
+You are not logged in.
+
+Reset Password
+
+The password for %s was reset.  It has been emailed to the address on file.
+
+There was an error resetting the password for %s
+
+The username "%s" does not exist.
+
+Reset Password for %s
+
+<p>Reset Password?</p>
+
+Change Password for %s
+
+<p>Change Password?</p>
+
+Your current password is incorrect.
+
+Your password has been changed.
+
+Approve Pending Registrations for %s
+
+%s has been approved.
+
+There was an error approving %s.
+
+<ul>
+
+<li>%1 - %2</li>
+
+</ul>
+
+There are no pending registrations.
+
 Clearing Cache
 Cache wird geleert
 Done.

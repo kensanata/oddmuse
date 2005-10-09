@@ -18,7 +18,7 @@
 #
 # This translation was last checked for Oddmuse version 1.296.
 #
-$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.11 2005/07/24 18:31:54 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.12 2005/10/09 12:48:35 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Accès interdit&nbsp;: votre serveur, adresse IP ou nom d'utilisateur a été bloqué.
@@ -106,6 +106,10 @@ List later changes
 Lister les modifications les plus récentes
 Filters
 Filtres
+Title:
+
+Title and Body:
+
 Username:
 Nom d'utilisateur&nbsp;:
 Host:
@@ -122,6 +126,8 @@ new
 nouveau
 from %s
 depuis %s
+This page is too big to send over RSS.
+
 History of %s
 Historique de %s
 Compare
@@ -146,8 +152,6 @@ Wiki Version
 Affiche la version du wiki
 Unlock Wiki
 Supression du verrou
-Recent Visitors
-Derniers Visiteurs
 Password
 Mot de passe
 Run maintenance
@@ -156,6 +160,8 @@ Unlock site
 Déverouiller le site
 Lock site
 Verouiller le site
+Install CSS
+
 Unlock %s
 Déverrouiller %s
 Lock %s
@@ -240,6 +246,8 @@ minor
 mineure
 No diff available.
 Pas de diff disponible.
+The two revisions are the same.
+
 Old revision:
 Ancienne version:
 Changed:
@@ -288,7 +296,7 @@ il y a %s secondes
 il y a 1 seconde
 just now
 à l'instant
-Editing Denied
+Edit Denied
 Modification interdite
 Editing not allowed: user, ip, or network is blocked.
 Modification interdite&nbsp;: l'utilisateur, l'adresse ip, ou le reseau est bloqué.
@@ -356,6 +364,8 @@ Include near pages
 Inclure les pages à proximité
 (for %s)
 (pour %s)
+Filter:
+
 %s pages found.
 %s pages trouvées.
 Replaced: %s
@@ -400,10 +410,10 @@ Browser reports no file info.
 Le navigateur signale pas d'information sur le fichier.
 Browser reports no file type.
 Le navigateur signale pas de format de fichier.
-Edit Denied
-Modification interdite
 The page contains banned text.
 Cette page contient un texte interdit.
+No changes to be saved.
+
 This page was changed by somebody else %s.
 Cette page a été modifiée par quelqu'un d'autre %s.
 The changes conflict.  Please check the page again.
@@ -486,6 +496,8 @@ Click to search for references to this permanent anchor
 Cliquer pour chercher des références vers cette ancre permanente
 the page %s also exists
 la page %s existe aussi 
+Copy one of the following stylesheets to %s:
+
 Deleting %s
 supression de %s
 Deleted %s
@@ -510,6 +522,8 @@ Rename %s to:
 Renommer %s en :
 Cannot highlight the language %s.
 Impossible de surligner la langue %s.
+Recent Visitors
+Derniers Visiteurs
 some action
 
 was here
@@ -552,10 +566,16 @@ Cannot find unspammed revision.
 Impossible de trouver une version sans texte indésirable.
 Add Comment
 
+ordinary changes
+
 Footnotes:
 Note de pied de page :
 Could not find %1.html template in %2
 Impossible de trouver le modèle %1.html dans %2
+Only Editors are allowed to see hidden pages.
+
+Only Admins are allowed to see hidden pages.
+
 image: %s
 image : %s
 Index
@@ -588,6 +608,10 @@ Your registration for %s has been submitted.
 Votre enregistrement pour %s a été soumis.
   Please allow time for the webmaster to approve your request.
   SVP, donnez un peu de temps au webmestre pour valider votre demande.
+  An email has been sent to "%s" with further instructions.
+
+There was an error saving your registration.
+
 An account was created for %s.
 Un compte a été créé pour %s
 Login to %s
@@ -598,8 +622,8 @@ Logged in as %s.
 Connecté comme %s.
 Logout of %s
 Déconnexion de %s
-Logout of %s?
-Se déconnecter de %s?
+<p>Logout of %s?</p>
+
 Logged out of %s
 Déconnecté de %s
 You are now logged out.
@@ -610,6 +634,60 @@ Login
 Se connecter
 Logout
 Se déconnecter
+Who am I?
+
+Forgot your password?
+
+Change your password
+
+Approve pending registrations
+
+Confirm Registration for %s
+
+%s, your registration has been approved. You can now use your password to login and edit this wiki.
+
+Confirmation failed.  Please email %s for help.
+
+Who Am I?
+
+You are logged in as %s.
+
+You are not logged in.
+
+Reset Password
+
+The password for %s was reset.  It has been emailed to the address on file.
+
+There was an error resetting the password for %s
+
+The username "%s" does not exist.
+
+Reset Password for %s
+
+<p>Reset Password?</p>
+
+Change Password for %s
+
+<p>Change Password?</p>
+
+Your current password is incorrect.
+
+Your password has been changed.
+
+Approve Pending Registrations for %s
+
+%s has been approved.
+
+There was an error approving %s.
+
+<ul>
+
+<li>%1 - %2</li>
+
+</ul>
+
+There are no pending registrations.
+
 Clearing Cache
 Nettoyage du cache.
 Done.
@@ -628,6 +706,10 @@ Local Map for %s
 CarteLocale pour %s
 view
 voir
+Self-ban by %s
+
+You have banned your own IP.
+
 Orphan List
 Liste des pages orphelines
 Trail: 
@@ -668,6 +750,10 @@ Static Copy
 Copie Statique
 Back to %s
 Retour à %s
+Copy to %1 succeeded: %2.
+
+Copy to %1 failed: %2.
+
 Tag
 Tag
 Alternatively, use one of the following templates:
@@ -714,6 +800,14 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 
 search
 Recherche
+Upload of %s file
+
 Blog
 Blog
+Matching pages:
+
+New
+
+Edit %s.
+
 END_OF_TRANSLATION
