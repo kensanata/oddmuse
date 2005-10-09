@@ -21,7 +21,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.12 2005/07/24 18:31:54 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.13 2005/10/09 12:48:35 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Läsning inte tillåten: användare, ip eller nätverk är blockerat.
@@ -109,6 +109,10 @@ List later changes
 Visa senare ändringar
 Filters
 Sålla
+Title:
+
+Title and Body:
+
 Username:
 Användare:
 Host:
@@ -125,6 +129,8 @@ new
 ny
 from %s
 från %s
+This page is too big to send over RSS.
+
 History of %s
 Historik för %s
 Compare
@@ -149,8 +155,6 @@ Wiki Version
 Wikiversion
 Unlock Wiki
 Lås upp wiki
-Recent Visitors
-Senaste besökare
 Password
 Lösenord
 Run maintenance
@@ -159,6 +163,8 @@ Unlock site
 Lås upp wikin
 Lock site
 Lås wikin
+Install CSS
+
 Unlock %s
 Lås upp %s
 Lock %s
@@ -243,6 +249,8 @@ minor
 mindre
 No diff available.
 Information om ändring är inte tillgänglig.
+The two revisions are the same.
+
 Old revision:
 Gammal version:
 Changed:
@@ -291,7 +299,7 @@ för 1 timme sedan
 1 sekund sedan
 just now
 just nu
-Editing Denied
+Edit Denied
 Redigering nekas
 Editing not allowed: user, ip, or network is blocked.
 Redigering inte tillåten: användare, ip-adress eller nätverk är blockerat.
@@ -359,6 +367,8 @@ Include near pages
 Med nära sidor
 (for %s)
 (för: %s)
+Filter:
+
 %s pages found.
 %s sidor.
 Replaced: %s
@@ -403,10 +413,10 @@ Browser reports no file info.
 Webbläsare rapporterar ingen filinformation.
 Browser reports no file type.
 Webbläsare rapporterar ingen filtyp.
-Edit Denied
-Redigering nekas
 The page contains banned text.
 Sidan innehåller otillåten text.
+No changes to be saved.
+
 This page was changed by somebody else %s.
 Den här sidan ändrades av någon annan %s.
 The changes conflict.  Please check the page again.
@@ -489,6 +499,8 @@ Click to search for references to this permanent anchor
 Klicka för att söka efter referenser till det här permanenta ankaret
 the page %s also exists
 sidan %s finns också
+Copy one of the following stylesheets to %s:
+
 Deleting %s
 Tar bort %s
 Deleted %s
@@ -513,6 +525,8 @@ Rename %s to:
 Byt namn på %s till:
 Cannot highlight the language %s.
 Kan ej markera språket %s.
+Recent Visitors
+Senaste besökare
 some action
 
 was here
@@ -555,10 +569,16 @@ Cannot find unspammed revision.
 Kan inte finna version utan skräptexter
 Add Comment
 
+ordinary changes
+
 Footnotes:
 Fotnoter:
 Could not find %1.html template in %2
 Kunde inte finna %1.html-mallen i %2
+Only Editors are allowed to see hidden pages.
+
+Only Admins are allowed to see hidden pages.
+
 image: %s
 bild: %s
 Index
@@ -591,6 +611,10 @@ Your registration for %s has been submitted.
 
   Please allow time for the webmaster to approve your request.
 
+  An email has been sent to "%s" with further instructions.
+
+There was an error saving your registration.
+
 An account was created for %s.
 
 Login to %s
@@ -601,7 +625,7 @@ Logged in as %s.
 
 Logout of %s
 
-Logout of %s?
+<p>Logout of %s?</p>
 
 Logged out of %s
 
@@ -612,6 +636,60 @@ Register a new account
 Login
 
 Logout
+
+Who am I?
+
+Forgot your password?
+
+Change your password
+
+Approve pending registrations
+
+Confirm Registration for %s
+
+%s, your registration has been approved. You can now use your password to login and edit this wiki.
+
+Confirmation failed.  Please email %s for help.
+
+Who Am I?
+
+You are logged in as %s.
+
+You are not logged in.
+
+Reset Password
+
+The password for %s was reset.  It has been emailed to the address on file.
+
+There was an error resetting the password for %s
+
+The username "%s" does not exist.
+
+Reset Password for %s
+
+<p>Reset Password?</p>
+
+Change Password for %s
+
+<p>Change Password?</p>
+
+Your current password is incorrect.
+
+Your password has been changed.
+
+Approve Pending Registrations for %s
+
+%s has been approved.
+
+There was an error approving %s.
+
+<ul>
+
+<li>%1 - %2</li>
+
+</ul>
+
+There are no pending registrations.
 
 Clearing Cache
 Rensar cachen
@@ -630,6 +708,10 @@ Requested page %s does not exist
 Local Map for %s
 
 view
+
+Self-ban by %s
+
+You have banned your own IP.
 
 Orphan List
 Lista över övergivna sidor
@@ -671,6 +753,10 @@ Static Copy
 Statisk kopia
 Back to %s
 Tillbaka till %s
+Copy to %1 succeeded: %2.
+
+Copy to %1 failed: %2.
+
 Tag
 
 Alternatively, use one of the following templates:
@@ -717,6 +803,14 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 http://www.bokpris.com/%s
 search
 sök
+Upload of %s file
+
 Blog
 Blogg
+Matching pages:
+
+New
+
+Edit %s.
+
 END_OF_TRANSLATION

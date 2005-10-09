@@ -24,7 +24,7 @@
 #
 # This translation was last checked for Oddmuse version 1.215.
 #
-$ModulesDescription .= '<p>$Id: dutch-utf8.pl,v 1.5 2005/07/24 18:31:54 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: dutch-utf8.pl,v 1.6 2005/10/09 12:48:35 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 U mag deze pagina niet lezen: uw account op deze Wiki, uw IP of uw netwerk is buitengesloten.
@@ -112,6 +112,10 @@ List later changes
 Toon latere veranderingen
 Filters
 Filters
+Title:
+
+Title and Body:
+
 Username:
 Gebruikersnaam:
 Host:
@@ -128,6 +132,8 @@ new
 nieuw
 from %s
 vanaf %s
+This page is too big to send over RSS.
+
 History of %s
 Geschiedenis van %s
 Compare
@@ -152,8 +158,6 @@ Wiki Version
 Tonen van Wiki-versie
 Unlock Wiki
 Bezig met ontgrendelen
-Recent Visitors
-Recente bezoekers
 Password
 Wachtwoord
 Run maintenance
@@ -162,6 +166,8 @@ Unlock site
 Ontgrendel site
 Lock site
 Vergrendel site
+Install CSS
+
 Unlock %s
 
 Lock %s
@@ -246,6 +252,8 @@ minor
 klein
 No diff available.
 Er is geen verschillenanalyse beschikbaar.
+The two revisions are the same.
+
 Old revision:
 
 Changed:
@@ -294,7 +302,7 @@ Ontgrendelen is niet nodig.
 1 seconde geleden
 just now
 precies op dit moment
-Editing Denied
+Edit Denied
 Wijzigen niet toegestaan
 Editing not allowed: user, ip, or network is blocked.
 U mag deze pagina niet wijzigen: uw account op deze Wiki, uw IP of uw netwerk is buitengesloten.
@@ -362,6 +370,8 @@ Include near pages
 
 (for %s)
 (voor %s)
+Filter:
+
 %s pages found.
 %s pagina's gevonden
 Replaced: %s
@@ -406,10 +416,10 @@ Browser reports no file info.
 Uw browser heeft geen informatie over het bestand opgegeven.
 Browser reports no file type.
 Uw browser heeft geen informatie over het bestandstype opgegeven.
-Edit Denied
-Wijzigen niet toegestaan
 The page contains banned text.
 Deze pagina bevat verbannen tekst.
+No changes to be saved.
+
 This page was changed by somebody else %s.
 Deze pagina is gewijzigd door iemand anders %s.
 The changes conflict.  Please check the page again.
@@ -492,6 +502,8 @@ Click to search for references to this permanent anchor
 Klik hier om te zoeken naar verwijzingen naar deze permanente bladwijzer
 the page %s also exists
 de pagina %s bestaat ook
+Copy one of the following stylesheets to %s:
+
 Deleting %s
 Bezig met verwijderen van %s
 Deleted %s
@@ -516,6 +528,8 @@ Rename %s to:
 
 Cannot highlight the language %s.
 
+Recent Visitors
+Recente bezoekers
 some action
 
 was here
@@ -558,9 +572,15 @@ Cannot find unspammed revision.
 
 Add Comment
 
+ordinary changes
+
 Footnotes:
 Voetnoten:
 Could not find %1.html template in %2
+
+Only Editors are allowed to see hidden pages.
+
+Only Admins are allowed to see hidden pages.
 
 image: %s
 afbeelding: %s
@@ -594,6 +614,10 @@ Your registration for %s has been submitted.
 
   Please allow time for the webmaster to approve your request.
 
+  An email has been sent to "%s" with further instructions.
+
+There was an error saving your registration.
+
 An account was created for %s.
 
 Login to %s
@@ -604,7 +628,7 @@ Logged in as %s.
 
 Logout of %s
 
-Logout of %s?
+<p>Logout of %s?</p>
 
 Logged out of %s
 
@@ -615,6 +639,60 @@ Register a new account
 Login
 
 Logout
+
+Who am I?
+
+Forgot your password?
+
+Change your password
+
+Approve pending registrations
+
+Confirm Registration for %s
+
+%s, your registration has been approved. You can now use your password to login and edit this wiki.
+
+Confirmation failed.  Please email %s for help.
+
+Who Am I?
+
+You are logged in as %s.
+
+You are not logged in.
+
+Reset Password
+
+The password for %s was reset.  It has been emailed to the address on file.
+
+There was an error resetting the password for %s
+
+The username "%s" does not exist.
+
+Reset Password for %s
+
+<p>Reset Password?</p>
+
+Change Password for %s
+
+<p>Change Password?</p>
+
+Your current password is incorrect.
+
+Your password has been changed.
+
+Approve Pending Registrations for %s
+
+%s has been approved.
+
+There was an error approving %s.
+
+<ul>
+
+<li>%1 - %2</li>
+
+</ul>
+
+There are no pending registrations.
 
 Clearing Cache
 Bezig met leegmaken van de cache
@@ -633,6 +711,10 @@ Requested page %s does not exist
 Local Map for %s
 
 view
+
+Self-ban by %s
+
+You have banned your own IP.
 
 Orphan List
 Lijst met Wezen
@@ -674,6 +756,10 @@ Static Copy
 
 Back to %s
 Terug naar %s
+Copy to %1 succeeded: %2.
+
+Copy to %1 failed: %2.
+
 Tag
 
 Alternatively, use one of the following templates:
@@ -720,6 +806,14 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 search
 zoeken
+Upload of %s file
+
 Blog
 Blog
+Matching pages:
+
+New
+
+Edit %s.
+
 END_OF_TRANSLATION

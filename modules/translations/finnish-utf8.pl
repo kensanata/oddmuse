@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: finnish-utf8.pl,v 1.5 2005/07/24 18:31:54 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: finnish-utf8.pl,v 1.6 2005/10/09 12:48:35 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lukeminen ei ole sallittua: käyttäjä, IP tai verkko on estetty.
@@ -104,6 +104,10 @@ List later changes
 Luettele myöhemmät muutokset
 Filters
 Suotimet
+Title:
+
+Title and Body:
+
 Username:
 Käyttäjännimi:
 Host:
@@ -120,6 +124,8 @@ new
 uusi
 from %s
 %s:stä
+This page is too big to send over RSS.
+
 History of %s
 %s:n historia
 Compare
@@ -144,8 +150,6 @@ Wiki Version
 Wikin versio
 Unlock Wiki
 Avataan lukitus
-Recent Visitors
-Viimeisimmät vierailijat
 Password
 Salasana
 Run maintenance
@@ -154,6 +158,8 @@ Unlock site
 Avaa sivuston lukko
 Lock site
 Lukitse sivusto
+Install CSS
+
 Unlock %s
 
 Lock %s
@@ -238,6 +244,8 @@ minor
 korjaus
 No diff available.
 Muutoksien vertailua ei saatavilla.
+The two revisions are the same.
+
 Old revision:
 Vanha versio:
 Changed:
@@ -286,7 +294,7 @@ yhtä minuuttia aiemmin
 yhtä sekuntia aiemmin
 just now
 juuri nyt
-Editing Denied
+Edit Denied
 Muokkaus estetty
 Editing not allowed: user, ip, or network is blocked.
 Muokkaus estetty: käyttäjä, IP tai verkko on estetty.
@@ -354,6 +362,8 @@ Include near pages
 
 (for %s)
 (%s:lle)
+Filter:
+
 %s pages found.
 %s sivua löydetty.
 Replaced: %s
@@ -398,10 +408,10 @@ Browser reports no file info.
 Selain ei ilmoita tiedoston tietoja.
 Browser reports no file type.
 Selain ei ilmoita tiedoston tyyppiä.
-Edit Denied
-Muokkaus estetty
 The page contains banned text.
 Tämä sivu sisältää kielettyä tekstiä.
+No changes to be saved.
+
 This page was changed by somebody else %s.
 Joku muu muokkasi tätä sivua %s.
 The changes conflict.  Please check the page again.
@@ -484,6 +494,8 @@ Click to search for references to this permanent anchor
 Klikkaa etsiäksesi viittauksia tähän pysyvään ankkuriin
 the page %s also exists
 tämä sivu %s on myös olemassa
+Copy one of the following stylesheets to %s:
+
 Deleting %s
 Poistetaan %s
 Deleted %s
@@ -508,6 +520,8 @@ Rename %s to:
 
 Cannot highlight the language %s.
 Kieltä %s ei voida merkitä
+Recent Visitors
+Viimeisimmät vierailijat
 some action
 
 was here
@@ -550,9 +564,15 @@ Cannot find unspammed revision.
 Spam-vapaata versiota ei löydy.
 Add Comment
 
+ordinary changes
+
 Footnotes:
 Alaviitteet:
 Could not find %1.html template in %2
+
+Only Editors are allowed to see hidden pages.
+
+Only Admins are allowed to see hidden pages.
 
 image: %s
 kuva: %s
@@ -586,6 +606,10 @@ Your registration for %s has been submitted.
 
   Please allow time for the webmaster to approve your request.
 
+  An email has been sent to "%s" with further instructions.
+
+There was an error saving your registration.
+
 An account was created for %s.
 
 Login to %s
@@ -596,7 +620,7 @@ Logged in as %s.
 
 Logout of %s
 
-Logout of %s?
+<p>Logout of %s?</p>
 
 Logged out of %s
 
@@ -607,6 +631,60 @@ Register a new account
 Login
 
 Logout
+
+Who am I?
+
+Forgot your password?
+
+Change your password
+
+Approve pending registrations
+
+Confirm Registration for %s
+
+%s, your registration has been approved. You can now use your password to login and edit this wiki.
+
+Confirmation failed.  Please email %s for help.
+
+Who Am I?
+
+You are logged in as %s.
+
+You are not logged in.
+
+Reset Password
+
+The password for %s was reset.  It has been emailed to the address on file.
+
+There was an error resetting the password for %s
+
+The username "%s" does not exist.
+
+Reset Password for %s
+
+<p>Reset Password?</p>
+
+Change Password for %s
+
+<p>Change Password?</p>
+
+Your current password is incorrect.
+
+Your password has been changed.
+
+Approve Pending Registrations for %s
+
+%s has been approved.
+
+There was an error approving %s.
+
+<ul>
+
+<li>%1 - %2</li>
+
+</ul>
+
+There are no pending registrations.
 
 Clearing Cache
 Välimuistia tyhjennetään
@@ -625,6 +703,10 @@ Requested page %s does not exist
 Local Map for %s
 
 view
+
+Self-ban by %s
+
+You have banned your own IP.
 
 Orphan List
 Orpojen sivujen lista
@@ -666,6 +748,10 @@ Static Copy
 Staattinen kopio
 Back to %s
 Takaisin %s:ään
+Copy to %1 succeeded: %2.
+
+Copy to %1 failed: %2.
+
 Tag
 
 Alternatively, use one of the following templates:
@@ -712,6 +798,14 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 search
 haku
+Upload of %s file
+
 Blog
 Blog
+Matching pages:
+
+New
+
+Edit %s.
+
 END_OF_TRANSLATION
