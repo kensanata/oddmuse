@@ -289,7 +289,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.610 2005/10/07 23:07:12 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.611 2005/10/09 17:11:04 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -386,7 +386,7 @@ sub ApplyRules {
   local @Blocks=();     # the list of cached HTML blocks
   local @Flags=();	# a list for each block, 1 = dirty, 0 = clean
   Clean(join('', map { AddHtmlEnvironment($_) } @tags));
-  if ($OpenPageName eq $StyleSheetPage or $OpenPageName eq $ConfigPage) {
+  if ($OpenPageName and ($OpenPageName eq $StyleSheetPage or $OpenPageName eq $ConfigPage)) {
     Clean($q->pre($text));
   } elsif (my ($type) = TextIsFile($text)) {
     Clean(CloseHtmlEnvironments() . $q->p(T('This page contains an uploaded file:'))
@@ -2068,9 +2068,9 @@ sub GetHttpHeader {
 
 sub CookieData {
   my ($changed, $visible, %params);
-  foreach my $key (keys %CookieParameters) {
+  foreach my $key (keys %CookieParameters) { # map { UrlEncode($_) } 
     my $default = $CookieParameters{$key};
-    my $value = GetParam($key, $default);
+    my $value = GetParam($key, $default); # values are URL encoded
     $params{$key} = $value  if $value ne $default;
     # The  cookie is  considered to  have changed  under  he following
     # condition: If the value was already set, and the new value is not
@@ -2084,9 +2084,9 @@ sub CookieData {
 }
 
 sub Cookie {
-  my ($changed, $visible, %params) = CookieData();
+  my ($changed, $visible, %params) = CookieData(); # params are URL encoded
   if ($changed) {
-    my $cookie = UrlEncode(join($FS, %params)); # no CTL in field values
+    my $cookie = join(UrlEncode($FS), %params); # no CTL in field values
     my $result = $q->cookie(-name=>$CookieName,
 			    -value=>$cookie,
 			    -expires=>'+2y');
