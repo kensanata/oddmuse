@@ -1,5 +1,19 @@
 2005-10-09  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (ApplyRules): Test for $OpenPageName before comparing it
+	with $StyleSheetPage or $ConfigPage.
+	(Cookie): Just encode $FS since both keys and values are already
+	encoded in CookieData.
+
+	* modules/markup.pl (MarkupRule): Fix regexp for forced pairs,
+	because it used to crash if no matching end was found for
+	thousands of characters.
+	(MarkupRule): Make sure empty elements are not created, eg ____
+	stays ____ and does not turn into an empty (and thus invisible)
+	element.
+
+	* modules/tables-long.pl: 
+	* modules/sidebar.pl: 
 	* modules/referrer-tracking.pl: 
 	* modules/portrait-support.pl: 
 	* modules/page-trail.pl: Removed $DefaultStyleSheet.
