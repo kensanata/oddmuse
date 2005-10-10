@@ -258,7 +258,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.612 2005/10/09 23:44:54 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.613 2005/10/10 23:28:06 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3720,8 +3720,8 @@ sub PageDeletable {
   return unless $KeepDays;
   my $expirets = $Now - ($KeepDays * 24 * 60 * 60);
   return 0 unless $Page{ts} < $expirets;
-  return $DeletedPage && $Page{text} =~ /^\s*$DeletedPage\b/o;
   return 1 if not $Page{text};
+  return $DeletedPage && $Page{text} =~ /^\s*$DeletedPage\b/o;
 }
 
 sub DeletePage { # Delete must be done inside locks.
