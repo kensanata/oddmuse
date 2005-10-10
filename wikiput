@@ -89,7 +89,7 @@ def wikiput(where, text, summary="", username="",
     response = conn.getresponse()
     data = response.read()
     conn.close()
-    if response.status != 302:
+    if response.status != 302 and response.status != 200:
         raise RuntimeError, "%s returned %d: %s" % (where, response.status, response.reason)
 
 def parse_wiki_location(where):
