@@ -20,7 +20,7 @@
 #
 # This translation was last checked for Oddmuse version 1.195.
 #
-$ModulesDescription .= '<p>$Id: portuguese-utf8.pl,v 1.8 2005/10/10 18:59:54 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: portuguese-utf8.pl,v 1.9 2005/10/10 19:21:25 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Leitura não permitida: utilizador, ip, ou rede está bloqueado(a).
@@ -108,6 +108,10 @@ List later changes
 Mostrar modificações recentes
 Filters
 Filtros
+Title:
+
+Title and Body:
+
 Username:
 Utilizador:
 Host:
@@ -124,6 +128,8 @@ new
 novo
 from %s
 de %s
+This page is too big to send over RSS.
+
 History of %s
 Histórico de %s
 Compare
@@ -148,8 +154,6 @@ Wiki Version
 Versão do Wiki
 Unlock Wiki
 Desbloquear Wiki
-Recent Visitors
-Visitantes recentes
 Password
 Senha
 Run maintenance
@@ -158,6 +162,8 @@ Unlock site
 Desbloquear sítio
 Lock site
 Bloquear sítio
+Install CSS
+
 Unlock %s
 Desbloquear %s
 Lock %s
@@ -242,6 +248,8 @@ minor
 simples
 No diff available.
 Nenhuma dif. disponível.
+The two revisions are the same.
+
 Old revision:
 Revisão antiga:
 Changed:
@@ -290,8 +298,8 @@ há %s segundos
 há 1 segundo
 just now
 agora mesmo
-Editing Denied
-Edição não permitida
+Edit Denied
+Edição Proibida
 Editing not allowed: user, ip, or network is blocked.
 Edição não permitida: utilizador, ip, ou rede está bloqueado(a).
 Contact the wiki administrator for more information.
@@ -358,6 +366,8 @@ Include near pages
 Incluir páginas próximas
 (for %s)
 (para %s)
+Filter:
+
 %s pages found.
 Encontradas %s páginas.
 Replaced: %s
@@ -402,10 +412,10 @@ Browser reports no file info.
 Navegador não encontra informação sobre o ficheiro.
 Browser reports no file type.
 Browser não encontra o tipo do ficheiro.
-Edit Denied
-Edição Proibida
 The page contains banned text.
 Esta página contém texto banido.
+No changes to be saved.
+
 This page was changed by somebody else %s.
 Esta página foi editada por outra pessoa %s.
 The changes conflict.  Please check the page again.
@@ -488,6 +498,8 @@ Click to search for references to this permanent anchor
 Clicar para procurar referências a esta âncora permanente
 the page %s also exists
 a página %s também existe
+Copy one of the following stylesheets to %s:
+
 Deleting %s
 Apagando %s
 Deleted %s
@@ -512,6 +524,8 @@ Rename %s to:
 Renomear %s para:
 Cannot highlight the language %s.
 Impossível destacar a língua %s
+Recent Visitors
+Visitantes recentes
 some action
 alguma acção
 was here
@@ -554,10 +568,16 @@ Cannot find unspammed revision.
 Impossível encontrar revisão sem <i>spam</>.
 Add Comment
 Adicionar comentário
+ordinary changes
+
 Footnotes:
 Notas de rodapé:
 Could not find %1.html template in %2
 Impossível encontrar <i>template</i> %1.html em %2
+Only Editors are allowed to see hidden pages.
+
+Only Admins are allowed to see hidden pages.
+
 image: %s
 imagem: %s
 Index
@@ -588,8 +608,12 @@ The username %s has already been registered.
 O nome de utilizador %s já foi registado
 Your registration for %s has been submitted.
 O seu registo para % foi enviado
-Please allow time for the webmaster to approve your request.
-Por favor aguarde algum tempo que o <i>webmaster</i> aprove o seu pedido.
+  Please allow time for the webmaster to approve your request.
+  Por favor aguarde algum tempo que o <i>webmaster</i> aprove o seu pedido.
+  An email has been sent to "%s" with further instructions.
+
+There was an error saving your registration.
+
 An account was created for %s.
 Foi criada uma conta para %s
 Login to %s
@@ -600,8 +624,8 @@ Logged in as %s.
 Entrou como %s
 Logout of %s
 Sair de %s
-Logout of %s?
-Sair de %s?
+<p>Logout of %s?</p>
+<p>Sair de %s?</p>
 Logged out of %s
 Você saiu de %s
 You are now logged out.
@@ -612,6 +636,60 @@ Login
 Entrar
 Logout
 Sair
+Who am I?
+
+Forgot your password?
+
+Change your password
+
+Approve pending registrations
+
+Confirm Registration for %s
+
+%s, your registration has been approved. You can now use your password to login and edit this wiki.
+
+Confirmation failed.  Please email %s for help.
+
+Who Am I?
+
+You are logged in as %s.
+
+You are not logged in.
+
+Reset Password
+
+The password for %s was reset.  It has been emailed to the address on file.
+
+There was an error resetting the password for %s
+
+The username "%s" does not exist.
+
+Reset Password for %s
+
+<p>Reset Password?</p>
+
+Change Password for %s
+
+<p>Change Password?</p>
+
+Your current password is incorrect.
+
+Your password has been changed.
+
+Approve Pending Registrations for %s
+
+%s has been approved.
+
+There was an error approving %s.
+
+<ul>
+
+<li>%1 - %2</li>
+
+</ul>
+
+There are no pending registrations.
+
 Clearing Cache
 Limpando a Cache
 Done.
@@ -630,6 +708,10 @@ Local Map for %s
 Mapa Local para %S
 view
 ver
+Self-ban by %s
+
+You have banned your own IP.
+
 Orphan List
 Lista de Órfãos
 Trail: 
@@ -670,6 +752,10 @@ Static Copy
 Cópia Estática
 Back to %s
 Voltar para %s
+Copy to %1 succeeded: %2.
+
+Copy to %1 failed: %2.
+
 Tag
 Tag
 Alternatively, use one of the following templates:
@@ -716,7 +802,14 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 
 search
 busca
-Blog
-Blog
-END_OF_TRANSLATION
+Upload of %s file
 
+Blog
+Blog
+Matching pages:
+
+New
+
+Edit %s.
+
+END_OF_TRANSLATION
