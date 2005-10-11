@@ -28,7 +28,7 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.27 2005/10/05 18:16:40 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.28 2005/10/11 18:44:42 fletcherpenney Exp $</p>';
 
 use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled!;
 
@@ -68,7 +68,10 @@ sub MarkdownRule {
 	*Markdown::_DoHeaders = *NewDoHeaders;
 	*Markdown::_EncodeCode = *NewEncodeCode;
 	*Markdown::_DoAutoLinks = *NewDoAutoLinks;
-        
+	
+	# UnquoteHtml - undo what Oddmuse does
+	$source = UnquoteHtml($source);
+	
     # Do not allow raw HTML
     $source = SanitizeSource($source);
     
@@ -124,15 +127,6 @@ sub MarkdownGetCluster {
     or (/^\[\[$FreeLinkPattern\]\]\n/);
 }
 
-
-# Let Markdown handle special characters, rather than OddMuse
-*QuoteHtml = *MarkdownQuoteHtml;
-
-sub MarkdownQuoteHtml {
-	my $html = shift;
-
-	return $html;
-}
 
 
 # Change InterMap/NearLink to match >1 space, rather than exactly one
@@ -225,7 +219,7 @@ sub DoWikiWords {
 	# WikiWords
 	if ($WikiLinks) {
 		$text =~ s{
-			([\s\>])($WikiWord)
+			([\s])($WikiWord)
 		}{
 			$1 . CreateWikiLink($2)
 		}xsge;
