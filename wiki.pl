@@ -258,7 +258,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.613 2005/10/10 23:28:06 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.614 2005/10/11 21:27:42 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -689,7 +689,7 @@ sub QuoteHtml {
   $html =~ s/&/&amp;/g;
   $html =~ s/</&lt;/g;
   $html =~ s/>/&gt;/g;
-  $html =~ s/&amp;([#a-zA-Z0-9]+);/&$1;/g;  # Allow character references
+  $html =~ s/&amp;(#?[a-zA-Z0-9]+);/&$1;/g;  # Allow character references
   return $html;
 }
 
