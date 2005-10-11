@@ -1675,6 +1675,14 @@ WikiLink
 !foo
 file:///home/foo/tutorial.pdf
 file:///home/foo/tutorial.pdf
+named entities: &gt;
+named entities: &gt;
+garbage: &
+garbage: &amp;
+numbered entity: &#123;
+numbered entity: &#123;
+numbered hex entity: &#x123;
+numbered hex entity: &#x123;
 EOT
 
 run_tests();
