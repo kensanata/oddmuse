@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: login.pl,v 1.5 2005/09/08 02:07:19 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: login.pl,v 1.6 2005/10/12 14:34:42 fletcherpenney Exp $</p>';
 
 #use vars qw($RegistrationForm $MinimumPasswordLength $RegistrationsMustBeApproved $LoginForm $PasswordFile $PendingPasswordFile $RequireLoginToEdit $ConfirmEmailAddress $ConfirmEmailAddress $UncomfirmedPasswordFile $EmailSenderAddress $EmailCommand $NotifyPendingRegistrations $EmailConfirmationMessage $ResetPasswordMessage $RegistrationForm $LogoutForm $ResetForm $ChangePassForm $RequireCamelUserName);
 
@@ -231,9 +231,12 @@ sub DoProcessRegistration {
 	if ($RegistrationsMustBeApproved) {
 		if (AddUser($username,$pwd1,$email,$PasswordFileToUse)) {
 			print Ts('Your registration for %s has been submitted.', $SiteName);
-			print T('  Please allow time for the webmaster to approve your request.');
+			print "  ";
+			print T('Please allow time for the webmaster to approve your request.);
+			print "  ";
 			if ($ConfirmEmailAddress) {
-				print Ts('  An email has been sent to "%s" with further instructions.', $email);
+				print Ts('An email has been sent to "%s" with further instructions., $email);
+				print "  ";
 			} else {
 				SendNotification($username);
 			}
@@ -243,8 +246,10 @@ sub DoProcessRegistration {
 	} else {
 		if (AddUser($username, $pwd1, $email,$PasswordFileToUse)) {
 			print Ts('An account was created for %s.',$username);
+			print "  ";
 			if ($ConfirmEmailAddress) {
-				print Ts('  An email has been sent to "%s" with further instructions.', $email);
+				print Ts('An email has been sent to "%s" with further instructions.', $email);
+				print "  ";
 			}
 		} else {
 			ReportError(T('There was an error saving your registration.'));
@@ -295,7 +300,7 @@ sub DoLogout {
 	my $id = shift;
 	print GetHeader('', Ts('Logout of %s', $SiteName), '');
 	print '<div class="content">';
-	print Ts('<p>Logout of %s?</p>',$SiteName);
+	print '<p>' . Ts('Logout of %s?',$SiteName) . '</p>';
     $LogoutForm =~ s/\%([a-z]+)\%/GetParam($1)/ge;
     $LogoutForm =~ s/\$([a-z]+)\$/$q->span({-class=>'param'}, GetParam($1))
       . $q->input({-type=>'hidden', -name=>$1, -value=>GetParam($1)})/ge;
@@ -562,7 +567,7 @@ sub DoResetPassword {
 			PrintFooter();
 			SendResetEmail($email,$newpass);
 		} else {
-			ReportError(Ts('There was an error resetting the password for %s',$username));
+			ReportError(Ts('There was an error resetting the password for %s.',$username));
 		}		
 	} else {
 		ReportError(Ts('The username "%s" does not exist.',$username));
@@ -621,7 +626,7 @@ sub DoReset {
 	my $id = shift;
 	print GetHeader('', Ts('Reset Password for %s', $SiteName), '');
 	print '<div class="content">';
-	print T('<p>Reset Password?</p>');
+	print '<p>' . T('Reset Password?') . '</p>';
     $ResetForm =~ s/\%([a-z]+)\%/GetParam($1)/ge;
     $ResetForm =~ s/\$([a-z]+)\$/$q->span({-class=>'param'}, GetParam($1))
       . $q->input({-type=>'hidden', -name=>$1, -value=>GetParam($1)})/ge;
@@ -646,7 +651,7 @@ sub DoChangePassword {
 	my $id = shift;
 	print GetHeader('', Ts('Change Password for %s', $SiteName), '');
 	print '<div class="content">';
-	print T('<p>Change Password?</p>');
+	print '<p>' . T('Change Password?') . '</p>';
     $ChangePassForm =~ s/\%([a-z]+)\%/GetParam($1)/ge;
     $ChangePassForm =~ s/\$([a-z]+)\$/$q->span({-class=>'param'}, GetParam($1))
       . $q->input({-type=>'hidden', -name=>$1, -value=>GetParam($1)})/ge;
