@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.9 2005/08/19 23:46:32 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.10 2005/10/13 14:01:22 fletcherpenney Exp $</p>';
 
 use vars qw($ClusterMapPage $ClusterMapTOC $FilterUnclusteredRegExp @ClusterMapAdminPages);
 
@@ -227,6 +227,16 @@ sub ClusterMapBrowseResolvedPage {
 	if ($id eq $ClusterMapPage) {
 		CreateClusterMap();
 		print GetHeader('',$title,'');
+	if ($ClusterMapTOC) {
+		my $TOCCount = 0;
+		print '<div class="toc"><h2>Contents</h2><ol>';
+		foreach my $cluster ( sort keys %ClusterMap) {
+			print "<li><a href=\"#toc$TOCCount\">$cluster</a></li>";
+			$TOCCount++;
+		}
+		print '</ol></div>';
+		$PrintTOCAnchor = 1;
+	}
 		PrintClusterMap();
 		PrintFooter();
 	} else {
