@@ -258,7 +258,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.614 2005/10/11 21:27:42 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.615 2005/10/13 22:35:34 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -472,10 +472,12 @@ sub ApplyRules {
       } elsif (Clean(RunMyRules($locallinks, $withanchors))) {
       } elsif (m/\G\s*\n(\s*\n)+/cg) { # paragraphs: at least two newlines
 	Clean(CloseHtmlEnvironments() . AddHtmlEnvironment('p')); # another one like this further up
+      } elsif (m/\G&amp;([a-z]+|#[0-9]+|#x[a-fA-F0-9]+);/cg) { # entity references
+	Clean("&$1;");
       } elsif (m/\G\s+/cg) {
 	Clean(' ');
       } elsif (m/\G([A-Za-z\x80-\xff]+([ \t]+[a-z\x80-\xff]+)*[ \t]+)/cg # multiple words but
-	     or m/\G([A-Za-z\x80-\xff]+)/cg or m/\G(\S)/cg) {
+	       or m/\G([A-Za-z\x80-\xff]+)/cg or m/\G(\S)/cg) {
 	Clean($1);		# do not match http://foo
       } else {
 	last;
@@ -689,7 +691,6 @@ sub QuoteHtml {
   $html =~ s/&/&amp;/g;
   $html =~ s/</&lt;/g;
   $html =~ s/>/&gt;/g;
-  $html =~ s/&amp;(#?[a-zA-Z0-9]+);/&$1;/g;  # Allow character references
   return $html;
 }
 
