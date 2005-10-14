@@ -258,7 +258,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.617 2005/10/13 23:12:08 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.618 2005/10/14 23:58:13 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2262,7 +2262,7 @@ sub GetCommentForm {
 sub GetFormStart {
   my ($ignore, $method, $class) = @_;
   $method ||= 'post';
-  return $q->start_form(-method=>$method, -action=>$FullUrl, -class=>$class);
+  return $q->start_multipart_form(-method=>$method, -action=>$FullUrl, -class=>$class);
 }
 
 sub GetSearchForm {
