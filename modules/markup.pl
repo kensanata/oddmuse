@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: markup.pl,v 1.23 2005/10/09 11:35:50 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: markup.pl,v 1.24 2005/10/14 21:12:55 as Exp $</p>';
 
 use vars qw(%MarkupPairs %MarkupSingles %MarkupLines);
 
@@ -115,13 +115,15 @@ sub MarkupRule {
       my @data = @{$data};
       $end = $data[2] if $data[2];
     }
-    $end = quotemeta($end);
-    if ($end and m/\G((:?.|\n)*?)$end/gc) {
-      if ($1) {
-	return MarkupTag($data, $1);
-      } else {
-	return $tag . $end;
-      }
+    my $endre = quotemeta($end);
+    # may match the empty string, or multiple lines, but may not span
+    # paragraphs.
+    if ($endre and m/\G$endre/gc) {
+      return $tag . $end;
+    } elsif ($tag eq $end && m/\G((:?.+?\n)*?.+?)$endre/gc) { # may not span paragraphs
+      return MarkupTag($data, $1);
+    } elsif ($tag ne $end && m/\G((:?.|\n)+?)$endre/gc) {
+      return MarkupTag($data, $1);
     } else {
       return $tag;
     }
