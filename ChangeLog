@@ -1,3 +1,8 @@
+2005-10-15  Victor Osadci  <vic_site@xhtml.md>
+
+	* modules/translations/romanian-utf8.pl: Translate more strings,
+	mostly error handling.
+	
 2005-10-09  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (ApplyRules): Test for $OpenPageName before comparing it
