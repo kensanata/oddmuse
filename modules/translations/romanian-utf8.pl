@@ -15,20 +15,20 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: romanian-utf8.pl,v 1.1 2005/10/09 12:39:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: romanian-utf8.pl,v 1.2 2005/10/15 12:56:00 victor_os Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
-
+Citirea nu este permisă: utilizatorul, ip-ul sau reţeaua este blocată.
 Could not create %s
-
+Nu am putut crea %s
 Invalid UserName %s: not saved.
-
+Nume incorect %s: nu sa salvat.
 UserName must be 50 characters or less: not saved
-
+Lungimea numelui este de maximum 50 de caractere: nu sa salvat
 This page contains an uploaded file:
 
 XML::RSS is not available on this system.
-
+XML::RSS nu este disponibil pe acest sistem.
 diff
 diferenţe
 history
@@ -38,7 +38,7 @@ istoric
 RSS parsing failed for %s
 
 No items found in %s.
-
+Nici un element găsit în %s.
  . . . . 
 
 Click to edit this page
@@ -52,11 +52,11 @@ CGI Internal error: %s
 Invalid action parameter %s
 
 Invalid URL.
-
+URL incorect.
 Page name is missing
-
+Lipseşte numele paginii.
 Page name is too long: %s
-
+Numele paginii este prea lung: %s
 Invalid Page %s
 
 Invalid Page %s (must not end with .db)
@@ -64,7 +64,7 @@ Invalid Page %s (must not end with .db)
 Invalid Page %s (must not end with .lck)
 
 Page name may not contain space characters: %s
-
+Numele paginii nu poate conţine spaţii: %s
 Preview:
 Previzualizare:
 Preview only, not yet saved
@@ -74,7 +74,7 @@ Please go on to %s.
 Could not open %s log file
 
 Error was
-
+Eroarea a fost
 Note: This error is normal if no changes have been made.
 
 Could not open old %s log file
@@ -110,7 +110,7 @@ Titlu şi Conţinut:
 Username:
 Utilizator:
 Host:
-
+Adresă:
 Language:
 Limbă:
 Go!
@@ -120,7 +120,7 @@ Du-te!
 rollback
 restaurează
 new
-
+nou
 from %s
 de la %s
 History of %s
@@ -154,19 +154,19 @@ Parola
 Run maintenance
 
 Unlock site
-
+Deblochează site-ul
 Lock site
-
+Blochează site-ul
 Unlock %s
-
+Deblochează %s
 Lock %s
-
+Blochează %s
 Administration
 Administrare
 Actions:
 Acţiuni:
 Important pages:
-
+Pagini importante:
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 
 [Home]
@@ -184,7 +184,7 @@ Baza de date este păstrată în directorul temporar %s
 %s seconds
 %s secunde
 The same page on other sites:
-
+Aceiaşi pagină pe alte site-uri:
 EditNearLinks
 
 Last edited
@@ -225,6 +225,8 @@ Replace:
 Înlocuieşte:
 Validate XHTML
 XHTML Valid
+Validate HTML
+HTML Valid
 Validate CSS
 CSS Valid
 Difference (from revision %1 to %2)
@@ -292,7 +294,7 @@ acum
 Editing Denied
 Editarea este interzisă.
 Editing not allowed: user, ip, or network is blocked.
-
+Editarea nu este permisă: utilizatorul, ip-ul sau reţeaua este blocată.
 Contact the wiki administrator for more information.
 Contactaţi administratorul pentru mai multă informaţie.
 The rule %s matched for you.
@@ -332,15 +334,15 @@ Sunteţi editor pe acest site.
 You are a normal user on this site.
 Sunteţi un utilizator obişnuit pe acest site.
 Your password does not match any of the  administrator or editor passwords.
-
+Parola dumneavoastră nu corespunde nici unei parole de administrator sau editor.
 Password:
-Parolă:
+Parola:
 This site does not use admin or editor passwords.
-
+Acest site nu foloseşte parole pentru administrare sau editare.
 This operation is restricted to site editors only...
-
+Această operaţie este permisă numai editorilor...
 This operation is restricted to administrators only...
-
+Această operaţie este permisă numai administratorilor...
 Rule "%1" matched "%2" on this page.
 
 Without normal pages
@@ -404,7 +406,7 @@ Browser reports no file info.
 Browser reports no file type.
 
 Edit Denied
-
+Editarea nu este permisă
 The page contains banned text.
 
 This page was changed by somebody else %s.
@@ -416,7 +418,7 @@ Please check whether you overwrote those changes.
 Anonymous
 Anonim
 Cannot delete the index file %s.
-
+Nu am putut şterge fişierul index %s.
 Please check the directory permissions.
 
 Your changes were not saved.
@@ -444,7 +446,7 @@ Expiring keep files and deleting pages marked for deletion
 not deleted: 
 
 deleted
-
+şters
 Moving part of the %s log file.
 
 Moving %s log entries.
@@ -478,9 +480,9 @@ Near links:
 Show parsed link data
 
 Too many connections by %s
-
+Prea multe conexiuni de la %s
 Please do not fetch more than %1 pages in %2 seconds.
-
+Vă rugăm să nu accesaţi mai mult de %1 pagini în %2 secunde.
 Check whether the web server can create the directory %s and whether it can create files in it.
 
 anchor first defined here: %s
@@ -500,17 +502,17 @@ Pagina %s nu există
 The page %s already exists
 Pagina %s există deja
 Cannot rename %1 to %2
-
+Nu am putut redenumi %1 în %2
 Renamed to %s
-
+Redenumit ca %s
 Renamed from %s
-
+Redenumit de la %s
 Renamed %1 to %2.
-
+Redenumit %1 ca %2
 Immediately delete %s
 
 Rename %s to:
-
+Redenumeşte %s ca:
 Cannot highlight the language %s.
 
 some action
@@ -526,9 +528,9 @@ The match parameter is missing.
 Page Collection for %s
 
 Previous
-
+Precedent
 Next
-
+Următor
 Calendar %s
 
 Clustermap
@@ -556,11 +558,11 @@ Cannot find unspammed revision.
 Add Comment
 Adaugă Comentariu
 Footnotes:
-
+Note de subsol:
 Could not find %1.html template in %2
 
 image: %s
-
+imagine: %s
 Index
 
 Languages:
@@ -700,7 +702,7 @@ Failed to remove %s
 Contents
 Conţinut
 This page is a translation of %s. 
-
+Această pagină este o traducere a %s.
 The translation is up to date.
 
 The translation is outdated.
