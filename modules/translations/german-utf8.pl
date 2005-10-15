@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.7 2005/10/09 12:48:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.8 2005/10/15 22:34:52 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
@@ -273,7 +273,7 @@ Cannot write %s
 Cannot create %s
 %s kann nicht erstellt werden
 Could not get %s lock
-Die %s Sperre konnte nicht gesetzt werden.
+Die %s Sperre konnte nicht gesetzt werden
 This operation may take several seconds...
 Das könnte einige Sekunden dauern...
 Forced unlock of %s lock.
