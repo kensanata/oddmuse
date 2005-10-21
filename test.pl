@@ -2580,6 +2580,35 @@ test_page(get_page('HomePage'), '<div class="sidebar"><form><h1>mu</h1></form></
 *GetHeader = *OldSideBarGetHeader;
 remove_rule(\&FormsRule);
 
+# --------------------
+
+localnames:
+print '[localnames]';
+
+clear_pages();
+
+add_module('localnames.pl');
+
+xpath_test(update_page('LocalNames', '* [http://www.oddmuse.org/ OddMuse]'),
+	   '//ul/li/a[@class="url outside"][@href="http://www.oddmuse.org/"][text()="OddMuse"]');
+
+InitVariables();
+
+%Test = split('\n',<<'EOT');
+[http://www.oddmuse.org/ OddMuse]
+//a[@class="url outside"][@href="http://www.oddmuse.org/"][text()="OddMuse"]
+OddMuse
+//a[@class="near"][@title="LocalNames"][@href="http://www.oddmuse.org/"][text()="OddMuse"]
+EOT
+
+xpath_run_tests();
+
+# now check whether the integration with InitVariables works
+xpath_test(update_page('LocalNamesTest', 'OddMuse'),
+	   '//a[@class="near"][@title="LocalNames"][@href="http://www.oddmuse.org/"][text()="OddMuse"]');
+
+*GetInterSiteUrl = *OldLocalNamesGetInterSiteUrl;
+
 ### END OF TESTS
 
 end:
