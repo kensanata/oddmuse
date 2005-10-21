@@ -16,43 +16,41 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.4 2005/01/07 01:18:02 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.5 2005/10/21 22:54:33 as Exp $</p>';
 
-use vars qw($LocalNamesPage);
+use vars qw($LocalNamesPage $LocalNamesInit %LocalNames);
 
 $LocalNamesPage = 'LocalNames';
 
 # do this later so that the user can customize $LocalNamesPage
 push(@MyInitVariables, \&LocalNamesInit);
 
-sub LocalNamesInit {
-  $LocalNamesPage = FreeToNormal($LocalNamesPage); # spaces to underscores
-  push(@AdminPages, $LocalNamesPage) unless grep(/$LocalNamesPage/, @AdminPages); # mod_perl!
-}
-
-my %LocalNames = ();
-
 # Just hook into NearLink stuff -- whenever near links are
 # initialized, we initialize as well.  Add our stuff first, because
 # local names have priority over near links.
 
-*LocalNamesOldNearInit = *NearInit;
-*NearInit = *LocalNamesNewNearInit;
-
-sub LocalNamesNewNearInit {
+sub LocalNamesInit {
+  return if $LocalNamesInit; # just once, mod_perl!
+  $LocalNamesInit = 1;
+  %LocalNames = ();
+  $LocalNamesPage = FreeToNormal($LocalNamesPage); # spaces to underscores
+  push(@AdminPages, $LocalNamesPage);
   my $data = GetPageContent($LocalNamesPage);
   while ($data =~ m/\[$FullUrlPattern\s+([^\]]+?)\]/go) {
     my ($id, $url) = ($2, $1);
     my $page = FreeToNormal($id);
-    # Make sure we're listed in action=index;near=1
+    # The entries in %NearSource will make sure that ResolveId will
+    # call GetInterSiteUrl for our pages.
     $LocalNames{$page} = $url;
-    push(@{$NearSource{$page}}, $LocalNamesPage);
+    # Add at the front to override near links.
+    unshift(@{$NearSource{$page}}, $LocalNamesPage);
     # %NearSite is for fetching the list of pages -- we don't need that.
+    # %NearSearch is for searching remote sites -- we don't need that.
   }
-  LocalNamesOldNearInit();
 }
 
-# Now make sure we resolve correctly:
+# Allow interlinks: We cannot just use %InterSite, because that would
+# result in the same ULR for $LocalNamesPage all the time.
 
 *OldLocalNamesGetInterSiteUrl = *GetInterSiteUrl;
 *GetInterSiteUrl = *NewLocalNamesGetInterSiteUrl;
