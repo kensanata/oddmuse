@@ -258,7 +258,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.618 2005/10/14 23:58:13 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.619 2005/10/21 08:18:19 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1287,7 +1287,7 @@ sub BrowseResolvedPage {
     print $q->redirect({-uri=>$resolved});
   } elsif ($class && $class eq 'alias') { # an anchor was found instead of a page
     ReBrowsePage($resolved);
-  } elsif (not $resolved and $NotFoundPg) { # custom page-not-found message
+  } elsif (not $resolved and $NotFoundPg and $id !~ /^$CommentsPrefix/) { # custom page-not-found message
     BrowsePage($NotFoundPg);
   } elsif ($resolved) { # an existing page was found
     BrowsePage($resolved, GetParam('raw', 0));
