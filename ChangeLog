@@ -1,7 +1,48 @@
+2005-10-22  Alex Schroeder  <alex@gnu.org>
+
+	* modules/localnames.pl (LocalNamesInit, LocalNamesNewNearInit):
+	Merged LocalNamesNewNearInit with LocalNamesInit.
+	
+2005-10-21  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (BrowseResolvedPage): Visiting non-existing comment
+	pages is ok, even if $NotFoundPg is set.
+
+2005-10-15  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetFormStart): Use start_multipart_form instead of
+	start_form, because CGI.pm 3.04 does not default to the correct
+	encoding for forms.
+
 2005-10-15  Victor Osadci  <vic_site@xhtml.md>
 
 	* modules/translations/romanian-utf8.pl: Translate more strings,
 	mostly error handling.
+
+2005-10-14  Alex Schroeder  <alex@gnu.org>
+
+	* modules/markup.pl (MarkupRule): Prevent forced markup from
+	spanning empty lines when start and end tag are the same.  This is
+	specially tricky when // is used on a file path, for example.
+
+	* wiki.pl (ApplyRules): Add HTML entities to the default rules.
+	(QuoteHtml): No longer unescape HTML entities.
+	(GetSummary): Strip [URL text] from default summaries.
+	(GetSummary): Only limit to default length after stripping URLs.
+
+2005-10-11  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (PageDeletable): Reverse order of statements such that
+	empty pages can be deleted.
+	(QuoteHtml): Make regexp stricter such as not to break the
+	markdown module.
+
+2005-10-10  Alex Schroeder  <alex@gnu.org>
+
+	* wikiput (wikiput): Status code 200 is no error.
+
+	* wiki.pl (InitVariables): Reorder calls so that $InterMap gets
+	translated before it is read.
 	
 2005-10-09  Alex Schroeder  <alex@gnu.org>
 
