@@ -258,7 +258,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.619 2005/10/21 08:18:19 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.620 2005/10/22 00:43:35 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2299,7 +2299,7 @@ sub PrintHtmlDiff {
     if ($diffType == 1) {
       $revOld = $Page{'oldmajor'};
     } else {
-      $revOld = $revNew - 1;
+      $revOld = $revNew - 1 if $revNew;
     }
   }
   if ($revOld) {
