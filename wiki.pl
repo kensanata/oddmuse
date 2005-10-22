@@ -258,7 +258,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.621 2005/10/22 12:25:19 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.622 2005/10/22 14:28:38 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3336,7 +3336,7 @@ sub Replace {
       next if (@languages and not grep(/$lang/, @languages));
     }
     $_ = $Page{text};
-    if (eval "s/$from/$to/gi") { # allows use of backreferences
+    if (eval "s{$from}{$to}gi") { # allows use of backreferences
       Save($id, $_, $from . ' -> ' . $to, 1,
 	   ($Page{ip} ne $ENV{REMOTE_ADDR}));
     }
