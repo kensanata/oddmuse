@@ -3,6 +3,9 @@
 	* wiki.pl (PrintHtmlDiff): Don't use $revNew-1 as the default for
 	the old revision if no new revision was specified, as suggested by
 	Markus Lude on the wiki.
+	(DoSearch): When replacing, quote metacharacters in the
+	replacement text before searching for the replacement.
+	(Replace): Rewrote replacement such as to solve quoting issues.
 
 	* modules/localnames.pl (LocalNamesInit, LocalNamesNewNearInit):
 	Merged LocalNamesNewNearInit with LocalNamesInit.
