@@ -1,5 +1,9 @@
 2005-10-22  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (PrintHtmlDiff): Don't use $revNew-1 as the default for
+	the old revision if no new revision was specified, as suggested by
+	Markus Lude on the wiki.
+
 	* modules/localnames.pl (LocalNamesInit, LocalNamesNewNearInit):
 	Merged LocalNamesNewNearInit with LocalNamesInit.
 	
