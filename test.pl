@@ -1075,7 +1075,7 @@ xpath_test($page, '//span[@class="result"]/a[@class="local"][@href="http://local
 test_page(get_page('search=foo replace=bar'),
 	  'This operation is restricted to administrators only...');
 
-# Simple replace
+# Simple replace where the replacement pattern is found
 
 @Test = split('\n',<<'EOT');
 <h1>Replaced: fooz -&gt; fuuz</h1>
@@ -1085,14 +1085,22 @@ EOT
 
 test_page(get_page('search=fooz replace=fuuz pwd=foo'), @Test);
 
-# Replace with backreferences
+# Replace with backreferences, where the replacement pattern is no longer found
 
-@Test = split('\n',<<'EOT');
-This is xfuu and this is xbar.
-EOT
+test_page(get_page('search=([a-z]%2b)z replace=x%241 pwd=foo'), '0 pages found');
+test_page(get_page('SearchAndReplace'), 'This is xfuu and this is xbar.');
 
-get_page('search=([a-z]%2b)z replace=x%241 pwd=foo');
-test_page(get_page('SearchAndReplace'), @Test);
+# Create an extra page that should not be found
+update_page('NegativeSearchTest', 'this page contains an ab');
+update_page('NegativeSearchTestTwo', 'this page contains another ab');
+test_page(get_page('search=xb replace=[xa]b pwd=foo'), '1 pages found'); # not two ab!
+test_page(get_page('SearchAndReplace'), 'This is xfuu and this is \[xa\]bar.');
+
+# Handle quoting
+test_page(get_page('search=xfuu replace=/fuu/ pwd=foo'), '1 pages found'); # not two ab!
+test_page(get_page('SearchAndReplace'), 'This is /fuu/ and this is \[xa\]bar.');
+test_page(get_page('search=/fuu/ replace={{fuu}} pwd=foo'), '1 pages found');
+test_page(get_page('SearchAndReplace'), 'This is {{fuu}} and this is \[xa\]bar.');
 
 ## Check headers especially the quoting of non-ASCII characters.
 
