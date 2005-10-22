@@ -258,7 +258,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.620 2005/10/22 00:43:35 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.621 2005/10/22 12:25:19 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3131,7 +3131,7 @@ sub DoSearch {
       $q->start_div({-class=>'content replacement'});
     return  if (!UserIsAdminOrError());
     Replace($string,$replacement);
-    $string = $replacement;
+    $string = quotemeta($replacement);
   } elsif ($raw) {
     print GetHttpHeader('text/plain');
     print RcTextItem('title', Ts('Search for: %s', $string)), RcTextItem('date', TimeToText($Now)),
