@@ -258,7 +258,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.623 2005/10/26 18:06:19 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.624 2005/10/26 18:11:41 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2861,7 +2861,7 @@ sub DoEdit {
 			      -default=>$username, -override=>1,
 			      -size=>20, -maxlength=>50));
   print $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save'))
-	      . ($upload ? '' :	 ' ' . $q->submit(-name=>'Preview', -value=>T('Preview'))));
+	      . ($upload ? '' :	 ' ' . $q->submit(-name=>'Preview', -accesskey=>T('p'), -value=>T('Preview'))));
   if ($upload) {
     print $q->p(ScriptLink('action=edit;upload=0;id=' . UrlEncode($id), T('Replace this file with text.')));
   } elsif ($UploadAllowed or UserIsAdmin()) {
