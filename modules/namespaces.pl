@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.19 2005/06/29 15:58:40 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.20 2005/10/27 21:58:49 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent $NamespaceRoot);
 
@@ -30,20 +30,21 @@ my $NamespacesInit = 0;
 push(@MyInitVariables, \&NamespacesInitVariables);
 
 sub NamespacesInitVariables {
+  my %site = ();
   # Do this before changing the $DataDir and $ScriptName
-  if (not $InterSiteInit and !$Monolithic and $UsePathInfo) {
-    $InterSite{$NamespacesMain} = $ScriptName . '/';
+  if (!$Monolithic and $UsePathInfo) {
+    $site{$NamespacesMain} = $ScriptName . '/';
     foreach my $name (glob("$DataDir/*")) {
       if (-d $name
 	  and $name =~ m|/($InterSitePattern)$|
 	  and $name ne $NamespacesMain
 	  and $name ne $NamespacesSelf) {
-	$InterSite{$1} = $ScriptName . '/' . $1 . '/';
+	$site{$1} = $ScriptName . '/' . $1 . '/';
       }
     }
   }
   $NamespaceCurrent = '';
-  if (($UsePathInfo and not $NamespacesInit
+  if (($UsePathInfo
        # make sure ordinary page names are not matched!
        and $q->path_info() =~ m|^/($InterSitePattern)(/.*)?|
        and ($2 or $q->param or $q->keywords)
@@ -54,7 +55,6 @@ sub NamespacesInitVariables {
        and ($1 ne $NamespacesMain)
        and ($1 ne $NamespacesSelf))) {
     $NamespaceCurrent = $1;
-    $NamespacesInit = 1;
     # Change some stuff from the original InitVariables call:
     $SiteName   .= ' ' . $NamespaceCurrent;
     $InterWikiMoniker = $NamespaceCurrent;
@@ -85,7 +85,16 @@ sub NamespacesInitVariables {
     ReportError(Ts('Could not create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR')
       unless -d $DataDir;
   }
-  $InterSite{$NamespacesSelf} = $ScriptName . '?';
+  $site{$NamespacesSelf} = $ScriptName . '?';
+  # reinitialize
+  ReInit();
+  AllPagesList();
+  NearInit();
+  PermanentAnchorsInit() if $PermanentAnchors;
+  # transfer list of sites
+  foreach my $key (keys %site) {
+    $InterSite{$key} = $site{$key} unless $InterSite{$key};
+  }
 }
 
 *OldNamespaceDoRc = *DoRc;
