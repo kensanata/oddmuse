@@ -1,6 +1,7 @@
 /* Copyright 2005  Alex Schroeder <alex@emacswiki.org>
    based on http://simon.incutio.com/archive/2004/05/30/plinks#p-13
-   Copyright 2004  Simon Willison */
+   Copyright 2004  Simon Willison
+*/
 
 function plinkHighlight() {
     if (/#[0-9]+$/.test(document.location)) {
@@ -17,15 +18,31 @@ function addpLinks() {
     if (/=/.test(document.location.href)) {
         return;
     }
+    // find the content div: why is there no xpath?
+    var elem = document.getElementsByTagName('div');
+    var content;
+    div:
+    for (var i = 0; i < elem.length; i++) {
+	var classes = elem[i].getAttribute('class').split(" ");
+	for (var j = 0; j < classes.length; j++) {
+	    if (classes[j] == 'content') {
+		content = elem[i];
+		break div;
+	    }
+	}
+    }
+    // identify all p and li items
     var items = new Array;
-    var elem = document.getElementsByTagName('p');
+    elem = content.getElementsByTagName('p');
     for (var i = 0; i < elem.length; i++) {
 	items.push(elem[i]);
     }
-    elem = document.getElementsByTagName('li');
+    elem = content.getElementsByTagName('li');
     for (var i = 0; i < elem.length; i++) {
 	items.push(elem[i]);
     }
+    // add named anchors at the beginning and a link to that anchor at
+    // the end of all items
     for (var i = 0; i < items.length; i++) {
         var current = items[i];
 	current.setAttribute("id", "p" + i);
