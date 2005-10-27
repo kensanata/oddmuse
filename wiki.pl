@@ -258,7 +258,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.624 2005/10/26 18:11:41 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.625 2005/10/27 22:00:28 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3541,10 +3541,11 @@ sub Save { # call within lock, with opened page
 	     . ' ' . T('Your changes were not saved.'));
     return;
   }
-  $IndexInit = 0 if $revision == 1;
-  $NearInit = 0 if $id eq $NearMap;
-  $InterInit = 0 if $id eq $InterMap;
-  $RssInterwikiTranslateInit = 0 if $id eq $RssInterwikiTranslate;
+  ReInit($id);
+  if ($revision == 1) {
+    $IndexHash{$id} = 1;
+    @IndexList = sort(keys %IndexHash);
+  }
   utime time, time, $IndexFile; # touch index file
   SaveKeepFile(); # deletes blocks, flags, diff-major, and diff-minor, and sets keep-ts
   ExpireKeepFiles();
@@ -3570,6 +3571,14 @@ sub Save { # call within lock, with opened page
   }
   WriteRcLog($id, $summary, $minor, $revision, $user, $host, $languages, GetCluster($new));
   $LastUpdate = $Now; # for mod_perl
+}
+
+sub ReInit {
+  my ($id) = @_;
+  $IndexInit = 0 if not $id;
+  $NearInit = 0 if not $id or $id eq $NearMap;
+  $InterInit = 0 if not $id or $id eq $InterMap;
+  $RssInterwikiTranslateInit = 0 if not $id or $id eq $RssInterwikiTranslate;
 }
 
 sub GetLanguages {
@@ -3734,6 +3743,9 @@ sub DeletePage { # Delete must be done inside locks.
     unlink($fname) if (-f $fname);
   }
   DeletePermanentAnchors();
+  ReInit($id);
+  delete $IndexHash{$id};
+  @IndexList = sort(keys %IndexHash);
   return ''; # no error
 }
 
