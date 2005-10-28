@@ -258,7 +258,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.625 2005/10/27 22:00:28 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.626 2005/10/28 07:55:25 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3579,6 +3579,7 @@ sub ReInit {
   $NearInit = 0 if not $id or $id eq $NearMap;
   $InterInit = 0 if not $id or $id eq $InterMap;
   $RssInterwikiTranslateInit = 0 if not $id or $id eq $RssInterwikiTranslate;
+  $PermanentAnchorsInit = 0 if not $id;
 }
 
 sub GetLanguages {
