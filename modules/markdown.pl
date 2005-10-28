@@ -28,7 +28,7 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.28 2005/10/11 18:44:42 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.29 2005/10/28 21:33:35 fletcherpenney Exp $</p>';
 
 use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled!;
 
@@ -61,8 +61,10 @@ sub MarkdownRule {
     # fake that we're blosxom!
     $blosxom::version = 1;
     require "$ModuleDir/Markdown/markdown.pl";
-
+	
 	$MultiMarkdownEnabled = 1 if ($Markdown::VERSION =~ /Multi/);
+
+	$Markdown::g_use_metadata = 0 if $MultiMarkdownEnabled;
 
 	*Markdown::_RunSpanGamut = *NewRunSpanGamut;
 	*Markdown::_DoHeaders = *NewDoHeaders;
