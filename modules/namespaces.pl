@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.20 2005/10/27 21:58:49 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.21 2005/10/28 08:06:11 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent $NamespaceRoot);
 
@@ -27,7 +27,9 @@ $NamespaceRoot = '';      # will be automatically set to the original $ScriptNam
 
 my $NamespacesInit = 0;
 
-push(@MyInitVariables, \&NamespacesInitVariables);
+# try to do it before any other module starts meddling with the
+# variables (eg. localnames.pl)
+unshift(@MyInitVariables, \&NamespacesInitVariables);
 
 sub NamespacesInitVariables {
   my %site = ();
