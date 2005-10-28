@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.7 2005/10/28 15:20:18 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.8 2005/10/28 15:20:55 as Exp $</p>';
 
 use vars qw($LocalNamesPage $LocalNamesInit %LocalNames);
 
@@ -71,15 +71,4 @@ sub NewLocalNamesGetInterSiteUrl {
   } else {
     return OldLocalNamesGetInterSiteUrl($site, $page, $quote);
   }
-}
-
-$Action{debug} = sub {
-  print "Content-Type: text/plain\n\n";
-  foreach my $page (keys %NearSource) {
-    print $page, ': ', join(", ", @{$NearSource{$page}}), "\n";
-  }
-  print join(", ", ResolveId('Oddmuse')), "\n";
-  print join(", ", keys %LocalNames), "\n";
-  print join(", ", $NearSource{'Oddmuse'}[0], $LocalNamesPage,
-	     GetInterSiteUrl('LocalNames', 'Oddmuse')), "\n";
 }
