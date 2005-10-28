@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.21 2005/10/28 08:06:11 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.22 2005/10/28 14:46:30 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent $NamespaceRoot);
 
@@ -192,7 +192,9 @@ sub NamespaceRcLines {
 sub NewNamespaceScriptLink {
   my ($action, @rest) = @_;
   local $ScriptName = $ScriptName;
-  if ($action !~ /=/ and $action =~ /(.*?)%2f(.*)/) {
+  if ($action !~ /^$FullUrlPattern$/) {
+    # do nothing
+  } elsif ($action !~ /=/ and $action =~ /(.*?)%2f(.*)/) {
     $ScriptName .= "/$1";
     $action = $2;
   } elsif ($action =~ /(.*=)(.*?)%2f(.*)/) {
