@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.5 2005/10/21 22:54:33 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.6 2005/10/28 08:07:39 as Exp $</p>';
 
 use vars qw($LocalNamesPage $LocalNamesInit %LocalNames);
 
@@ -24,6 +24,15 @@ $LocalNamesPage = 'LocalNames';
 
 # do this later so that the user can customize $LocalNamesPage
 push(@MyInitVariables, \&LocalNamesInit);
+
+*OldLocalNamesReInit = *ReInit;
+*ReInit = *NewLocalNamesReInit;
+
+sub NewLocalNamesReInit {
+  my $id = shift;
+  OldLocalNamesReInit($id, @_);
+  $LocalNamesInit = 0 if not $id or $id eq $LocalNamesPage;
+}
 
 # Just hook into NearLink stuff -- whenever near links are
 # initialized, we initialize as well.  Add our stuff first, because
