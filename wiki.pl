@@ -258,7 +258,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.628 2005/10/28 21:10:01 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.629 2005/10/29 16:46:37 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2196,7 +2196,7 @@ sub GetFooterTimestamp {
   if ($id and $rev ne 'history' and $rev ne 'edit' and $Page{revision}) {
     my @elements = ($q->br(), ($rev eq '' ? T('Last edited') : T('Edited')), TimeToText($Page{ts}),
 		    Ts('by %s', GetAuthorLink($Page{host}, $Page{username})));
-    push(@elements, ScriptLinkDiff(2, $id, T('(diff)'), $rev)) if $UseDiff;
+    push(@elements, ScriptLinkDiff(2, $id, T('(diff)'), $rev)) if $UseDiff and $Page{revision} > 1;
     return $q->span({-class=>'time'}, @elements);
   }
   return '';
