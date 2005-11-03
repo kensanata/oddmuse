@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: login.pl,v 1.6 2005/10/12 14:34:42 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: login.pl,v 1.7 2005/11/03 00:21:47 fletcherpenney Exp $</p>';
 
 #use vars qw($RegistrationForm $MinimumPasswordLength $RegistrationsMustBeApproved $LoginForm $PasswordFile $PendingPasswordFile $RequireLoginToEdit $ConfirmEmailAddress $ConfirmEmailAddress $UncomfirmedPasswordFile $EmailSenderAddress $EmailCommand $NotifyPendingRegistrations $EmailConfirmationMessage $ResetPasswordMessage $RegistrationForm $LogoutForm $ResetForm $ChangePassForm $RequireCamelUserName);
 
@@ -232,10 +232,10 @@ sub DoProcessRegistration {
 		if (AddUser($username,$pwd1,$email,$PasswordFileToUse)) {
 			print Ts('Your registration for %s has been submitted.', $SiteName);
 			print "  ";
-			print T('Please allow time for the webmaster to approve your request.);
+			print T('Please allow time for the webmaster to approve your request.');
 			print "  ";
 			if ($ConfirmEmailAddress) {
-				print Ts('An email has been sent to "%s" with further instructions., $email);
+				print Ts('An email has been sent to "%s" with further instructions.', $email);
 				print "  ";
 			} else {
 				SendNotification($username);
