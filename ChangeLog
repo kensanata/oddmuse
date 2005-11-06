@@ -1,4 +1,38 @@
+2005-11-07  Alex Schroeder  <alex@gnu.org>
+
+	* modules/usemod.pl (UsemodRule): Allow attributes in HTML tags as
+	proposed by Peter Gervai.
+
+2005-10-29  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetFooterTimestamp): Don't show diff link for new pages
+	as suggested by Aaron Hawley.
+
+2005-10-28  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (PageDeletable): Empty pages should be deleted, but
+	usually they contain exactly one newline.  All pages consisting of
+	whitespace only shall now be deletable.
+
+	* modules/namespaces.pl (NewNamespaceScriptLink): Do not mangle
+	actions matching $FullUrlPattern, as that breaks localnames.pl.
+
+	* modules/localnames.pl (NewLocalNamesReInit): New.
+
+	* modules/namespaces.pl: Call NamespacesInitVariables as early as
+	possible.
+
+	* wiki.pl (ReInit): Reset $PermanentAnchorsInit if forced.
+
 2005-10-27  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ReInit): New.
+	(Save): Use it.
+	(DeletePage): Use it, and fix IndexHash and IndexList.
+
+	* modules/namespaces.pl (NamespacesInitVariables): Rewrite after
+	the changes to the main script regarding initialization.  Always
+	force a reinit (in a mod_perl context we cannot reuse the info).
 
 	* plinks.js (addpLinks): Only mark up the first div.content in the
 	document.
