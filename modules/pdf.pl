@@ -17,16 +17,16 @@
 #    Boston, MA 02111-1307 USA
 #
 
-$ModulesDescription .= '<p>$Id: pdf.pl,v 1.2 2005/11/06 15:46:00 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: pdf.pl,v 1.3 2005/11/06 16:35:15 fletcherpenney Exp $</p>';
 
 *PdfOldDoBrowseRequest = *DoBrowseRequest;
 *DoBrowseRequest = *PdfDoBrowseRequest;
 
-use vars qw($pdfDirectory $latexCommand $xsltFile $tempBaseDirectory $xsltCommand);
+use vars qw($pdfDirectory $pdfProcessCommand $xsltFile $tempBaseDirectory $xsltCommand);
 
 # These variables must be configured properly!
-$latexCommand 		= "/path/to/your/pdflatexscript"
-						unless defined $latexCommand;
+$pdfProcessCommand 		= "/path/to/your/pdflatexscript"
+						unless defined $pdfProcessCommand;
 # Note - this script will vary from machine to machine
 # The key is to set up pdflatex to use the appropriate texmf folder
 # Also, I recommend running three times, if you use indexing, etc
@@ -44,6 +44,9 @@ $latexCommand 		= "/path/to/your/pdflatexscript"
 # 
 # for filename in "$@"
 # do
+#
+# # Use XSLT to process XHTML to LaTeX
+# /usr/pkg/bin/xsltproc /www/af/f/fletcher/wiki/wikidb/modules/Markdown/xhtml2article.xslt "$filename" > "${filename%.*}.tex"
 # 
 # /usr/pkg/bin/pdflatex "$filename"
 # /usr/pkg/bin/pdflatex "$filename"
@@ -51,10 +54,6 @@ $latexCommand 		= "/path/to/your/pdflatexscript"
 #
 # done
 
-$xsltCommand		= "/path/to/your/xsltproc"
-						unless defined $xsltCommand;
-$xsltFile 			= "$ModuleDir/Markdown/xhtml2article.xslt"
-						unless defined $xsltFile;
 $tempBaseDirectory	= "$ModuleDir/Markdown/temp"
 						unless defined $tempBaseDirectory;
 $pdfDirectory		= "/path/to/your/pdf/directory"
@@ -148,12 +147,9 @@ sub createPDF {
 	open(STDOUT, '>/dev/null');
 	local *STDERR;
 	open(STDERR, '>/dev/null');
-
-	# Process XHMLT to tex
-	system("cd \"$tempDirectory\"; \"$xsltCommand\" \"$xsltFile\" temp.html > temp.tex");
 			
 	# Run latex script and copy pdf to final location
-	system("cd \"$tempDirectory\"; \"$latexCommand\" temp.tex > /dev/null; /bin/cp temp.pdf \"$pdfDirectory/$id.pdf\" ");
+	system("cd \"$tempDirectory\"; \"$pdfProcessCommand\" temp.html > /dev/null; /bin/cp temp.pdf \"$pdfDirectory/$id.pdf\" ");
 }
 
 
