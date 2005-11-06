@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.25 2005/10/09 12:04:48 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.26 2005/11/06 23:51:33 as Exp $</p>';
 
 use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml
 	    $UseModSpaceRequired $UseModMarkupInTitles);
@@ -167,7 +167,7 @@ sub UsemodRule {
     return UnquoteHtml($1);
   }
   # miscellaneous html tags
-  elsif (m/\G\&lt;($htmlre)\&gt;/cogi) { return AddHtmlEnvironment($1); }
+  elsif (m/\G\&lt;($htmlre)(＼s+[^<>]*?)?\&gt;/cogi) { return AddHtmlEnvironment($1, $2); }
   elsif (m/\G\&lt;\/($htmlre)\&gt;/cogi) { return CloseHtmlEnvironment($1); }
   elsif (m/\G\&lt;($htmlre) *\/\&gt;/cogi) { return "<$1 />"; }
   # <a href="...">...</a> for html links
