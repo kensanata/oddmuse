@@ -17,12 +17,12 @@
 #    Boston, MA 02111-1307 USA
 #
 
-$ModulesDescription .= '<p>$Id: pdf.pl,v 1.3 2005/11/06 16:35:15 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: pdf.pl,v 1.4 2005/11/06 18:54:15 fletcherpenney Exp $</p>';
 
 *PdfOldDoBrowseRequest = *DoBrowseRequest;
 *DoBrowseRequest = *PdfDoBrowseRequest;
 
-use vars qw($pdfDirectory $pdfProcessCommand $xsltFile $tempBaseDirectory $xsltCommand);
+use vars qw($pdfDirectory $pdfProcessCommand $tempBaseDirectory);
 
 # These variables must be configured properly!
 $pdfProcessCommand 		= "/path/to/your/pdflatexscript"
@@ -209,4 +209,22 @@ sub PdfNewCreateWikiLink {
 		
 		return $rawlink;
 	}
+}
+
+*PdfOldGetFooterLinks = *GetFooterLinks;
+*GetFooterLinks = *PdfNewGetFooterLinks;
+
+sub PdfNewGetFooterLinks {
+	my ($id, $rev) = @_;
+	my $result = PdfOldGetFooterLinks($id,$rev);	
+
+
+	push(@NoLinkToPdf,"");	
+	foreach my $page (@NoLinkToPdf) {
+		if ($id =~ /^$page$/) {
+			return $result;
+		}
+	}
+	
+	return $result . "<br/>" . ScriptLink("pdf/$id",T('Download this page as PDF'));
 }
