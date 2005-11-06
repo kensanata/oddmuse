@@ -17,6 +17,8 @@
 #    Boston, MA 02111-1307 USA
 #
 
+$ModulesDescription .= '<p>$Id: pdf.pl,v 1.2 2005/11/06 15:46:00 fletcherpenney Exp $</p>';
+
 *PdfOldDoBrowseRequest = *DoBrowseRequest;
 *DoBrowseRequest = *PdfDoBrowseRequest;
 
