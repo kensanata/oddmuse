@@ -1,5 +1,11 @@
 2005-11-07  Alex Schroeder  <alex@gnu.org>
 
+	* modules/namespaces.pl (NewNamespaceScriptLink): Do not mangle
+	actions matching $FullUrlPattern, as that breaks localnames.pl.
+	Since $action is already URL-encoded, however, we do the same test
+	as in ScriptLink: $UrlProtocols followed by the URL-encoded colon:
+	%3a.
+
 	* modules/usemod.pl (UsemodRule): Allow attributes in HTML tags as
 	proposed by Peter Gervai.
 
