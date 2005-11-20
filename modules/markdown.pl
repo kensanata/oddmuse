@@ -28,7 +28,7 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.29 2005/10/28 21:33:35 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.30 2005/11/20 18:50:49 fletcherpenney Exp $</p>';
 
 use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled!;
 
@@ -64,7 +64,11 @@ sub MarkdownRule {
 	
 	$MultiMarkdownEnabled = 1 if ($Markdown::VERSION =~ /Multi/);
 
-	$Markdown::g_use_metadata = 0 if $MultiMarkdownEnabled;
+	if ($MultiMarkdownEnabled) {
+		$Markdown::g_use_metadata = 0;
+		$Markdown::g_use_wikilinks = 0;
+		# $Markdown::g_base_url = $ScriptName;
+	}
 
 	*Markdown::_RunSpanGamut = *NewRunSpanGamut;
 	*Markdown::_DoHeaders = *NewDoHeaders;
@@ -86,7 +90,7 @@ sub MarkdownRule {
 
     my $result = Markdown::Markdown($source);
     
-	$result = UnescapeWikiWords($result);
+	#$result = UnescapeWikiWords($result);
 	
 	$result = AntiSpam($result);
 
@@ -301,7 +305,7 @@ sub NewRunSpanGamut {
 	# Process anchor and image tags. Images must come first,
 	# because ![foo][f] looks like an anchor.
 	$text = Markdown::_DoImages($text);
-	$text = NewDoAnchors($text);
+	$text = Markdown::_DoAnchors($text);
 
 	# Process WikiWords
 	if (!$TempNoWikiWords) {
@@ -309,7 +313,7 @@ sub NewRunSpanGamut {
 
 		# And then reprocess anchors and images
 		$text = Markdown::_DoImages($text);
-		$text = NewDoAnchors($text);
+		$text = Markdown::_DoAnchors($text);
 	}
 	
 	# Make links out of things like `<http://example.com/>`
@@ -446,23 +450,3 @@ sub MarkdownAddComment {
   return $string;
 }
 
-sub NewDoAnchors {
-	my $text = shift;
-	my $WikiWord = '[A-Z]+[a-z\x80-\xff]+[A-Z][A-Za-z\x80-\xff]*';
-	
-	# Don't treat [WikiWord](url) as a WikiWord
-	$text =~ s{
-		(\[\s*)($WikiWord)(\s*\])
-	}{
-		$1 . "\\" . $2 . $3;
-	}xsge;
-
-	# But do treat FreeLinks properly
-	$text =~ s{
-		(\[\[\s*)\\($WikiWord)(\s*\]\])
-	}{
-		$1 . $2 . $3;
-	}xsge;
-	
-	return Markdown::_DoAnchors($text);
-}
