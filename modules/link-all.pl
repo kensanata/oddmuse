@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: link-all.pl,v 1.6 2004/11/15 00:12:20 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: link-all.pl,v 1.6.2.1 2005/12/04 10:31:48 as Exp $</p>';
 
 push(@MyRules, \&LinkAllRule);
 $RuleOrder{\&LinkAllRule} = 1000;
@@ -36,7 +36,6 @@ sub LinkAllRule {
 
 sub LinkAllGetPageLinkIfItExists {
   my $id = shift;
-  AllPagesList() unless $IndexInit;
   if ($IndexHash{$id}) {
     return GetPageLink($id);
   } elsif (GetParam('define', 0)) {

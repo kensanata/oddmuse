@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.37 2005/10/07 23:23:30 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.37.2.1 2005/12/04 10:31:48 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalendarUseCal);
 
@@ -146,7 +146,7 @@ sub CalendarRule {
 sub PrintYearCalendar {
   my $year = shift;
   my @pages = AllPagesList();
-  print $q->p({-class=>nav},
+  print $q->p({-class=>'nav'},
 	      ScriptLink('action=calendar;year=' . ($year-1), T('Previous')),
 	      '|',
 	      ScriptLink('action=calendar;year=' . ($year+1), T('Next')));

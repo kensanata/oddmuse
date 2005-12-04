@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: links.pl,v 1.1 2004/06/20 19:15:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: links.pl,v 1.1.2.1 2005/12/04 10:31:48 as Exp $</p>';
 
 $Action{links} = \&DoLinks;
 
@@ -63,6 +63,7 @@ sub GetFullLinkList { # opens all pages!
 
 sub GetLinkList { # for the currently open page
   my ($raw, $url, $inter, $link) = @_;
+  return () unless $Page{blocks};
   my @blocks = split($FS, $Page{blocks});
   my @flags = split($FS, $Page{flags});
   my %links;

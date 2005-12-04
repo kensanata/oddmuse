@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.13 2005/10/09 11:58:34 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.13.2.1 2005/12/04 10:31:48 as Exp $</p>';
 
 push(@MyRules, \&TablesLongRule);
 
@@ -34,7 +34,8 @@ sub TablesLongRule {
   # if cells are missing, column spans are created (the first row
   # could use row spans...)
   if ($bol && m|\G\s*\n*\&lt;table(/[A-Za-z\x80-\xff/]+)? +([A-Za-z\x80-\xff,;\/ ]+)\&gt; *\n|cg) {
-    my $class = join(' ', split(m|/|, $1)); # leading / in $1 will make sure we have leading space
+    my $class = '';
+    $class = join(' ', split(m|/|, $1)) if $1; # leading / in $1 will make sure we have leading space
     Clean(CloseHtmlEnvironments() . "<table class=\"user long$class\">");
     # labels and their default class
     my %default_class = ();
@@ -60,7 +61,7 @@ sub TablesLongRule {
     for my $line (@lines) {
       if ($line =~ m|^($regexp)/?([A-Za-z\x80-\xff/]+)?[:=] *(.*)|) { # regexp changes for other tables
 	$label = $1;
-	$class = join(' ', split(m|/|, $2)); # no leading / therefore no leading space
+	$class = join(' ', split(m|/|, $2)) if $2; # no leading / therefore no leading space
 	$line = $3;
 	if ($row{$label}) { # repetition of label, we must start a new row
 	  TablesLongRow(\@labels, \%row, \%class, $first);

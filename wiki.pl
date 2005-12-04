@@ -114,8 +114,8 @@ $InterMap    = 'InterMap';      # name of the intermap page
 $NearMap     = 'NearMap';       # name of the nearmap page
 $RssInterwikiTranslate = 'RssInterwikiTranslate'; # name of RSS interwiki translation page
 @MyRules = (\&LinkRules);       # default rules that can be overridden
-$RuleOrder{\&LinkRules} = 0;
-$ENV{PATH}   = '/usr/bin/';     # Path used to find 'diff'
+%RuleOrder = (\&LinkRules => 0);
+$ENV{PATH}   = '/usr/bin';     # Path used to find 'diff'
 $UseDiff     = 1;	        # 1 = use diff
 $SurgeProtection      = 1;	# 1 = protect against leeches
 $SurgeProtectionTime  = 20;	# Size of the protected window in seconds
@@ -258,7 +258,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.629 2005/10/29 16:46:37 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.629.2.1 2005/12/04 10:31:47 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -288,7 +288,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   PermanentAnchorsInit() if $PermanentAnchors; # reads $PermanentAnchorsFile
   %NearLinksUsed = (); # List of links used during this request
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
-  @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
+  @MyRules = sort {($RuleOrder{$a}||0) <=> ($RuleOrder{$b}||0)} @MyRules; # undefined is 0
   ReportError(Ts('Could not create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR')
     unless -d $DataDir;
   foreach my $sub (@MyInitVariables) {
@@ -669,14 +669,15 @@ sub RunMyRules {
 }
 
 sub PrintWikiToHTML {
-  my ($pageText, $savecache, $revision, $islocked) = @_;
+  my ($text, $savecache, $revision, $islocked) = @_;
   $FootnoteNumber = 0;
-  $pageText =~ s/$FS//g; # Remove separators (paranoia)
-  $pageText = QuoteHtml($pageText);
-  my ($blocks, $flags) = ApplyRules($pageText, 1, $savecache, $revision, 'p'); # p is start tag!
+  $text =~ s/$FS//g if $text; # Remove separators (paranoia)
+  $text = QuoteHtml($text);
+  my ($blocks, $flags) = ApplyRules($text, 1, $savecache, $revision, 'p'); # p is start tag!
   # local links, anchors if cache ok
   if ($savecache and not $revision and $Page{revision} # don't save revision 0 pages
-      and $Page{blocks} ne $blocks and $Page{flags} ne $flags) {
+      and $Page{blocks} and $Page{blocks} ne $blocks
+      and $Page{flags} and $Page{flags} ne $flags) {
     $Page{blocks} = $blocks;
     $Page{flags} = $flags;
     if ($islocked or RequestLockDir('main')) { # not fatal!
@@ -688,6 +689,7 @@ sub PrintWikiToHTML {
 
 sub QuoteHtml {
   my $html = shift;
+  return '' unless defined $html;
   $html =~ s/&/&amp;/g;
   $html =~ s/</&lt;/g;
   $html =~ s/>/&gt;/g;
@@ -696,6 +698,7 @@ sub QuoteHtml {
 
 sub UnquoteHtml {
   my $html = shift;
+  return '' unless defined $html;
   $html =~ s/&lt;/</g;
   $html =~ s/&gt;/>/g;
   $html =~ s/&amp;/&/g;
@@ -742,7 +745,7 @@ sub PrintJournal {
   } else {
     @pages = sort {$b cmp $a} @pages;
   }
-  if ($mode eq 'reverse') {
+  if ($mode and $mode eq 'reverse') {
     @pages = reverse @pages;
   }
   @pages = @pages[0 .. $num - 1] if $#pages >= $num;
@@ -840,9 +843,9 @@ sub RSS {
 	  }
 	  my $contributor = $i->{dc}->{contributor};
 	  $contributor = $i->{$wikins}->{username} unless $contributor;
-	  $contributor =~ s/^\s+//;
-	  $contributor =~ s/\s+$//;
 	  $contributor = $i->{$rdfns}->{value} unless $contributor;
+	  $contributor =~ s/^\s+// if $contributor;
+	  $contributor =~ s/\s+$// if $contributor;
 	  $line .= $q->span({-class=>'contributor'}, $q->span(T(' . . . . ')) . $contributor) if $contributor;
 	  if ($description) {
 	    if ($description =~ /</) {
@@ -861,7 +864,7 @@ sub RSS {
   }
   my @lines = sort { $b cmp $a } keys %lines;
   @lines = @lines[0..$maxitems-1] if $maxitems and $#lines > $maxitems;
-  my $date;
+  my $date = '';
   foreach my $key (@lines) {
     my $line = $lines{$key};
     if ($key =~ /(\d\d\d\d(?:-\d?\d)?(?:-\d?\d)?)(?:[T ](\d?\d:\d\d))?/) {
@@ -888,7 +891,8 @@ sub GetRss {
   my $str = '';
   if (GetParam('cache', $UseCache) > 0) {
     foreach my $uri (keys %todo) { # read cached rss files if possible
-      if ($Now - (stat($todo{$uri}))[9] < $RssCacheHours * 3600) {
+      my $ts = (stat($todo{$uri}))[9];
+      if ($ts and $Now - $ts < $RssCacheHours * 3600) {
 	$data{$uri} = ReadFile($todo{$uri});
 	delete($todo{$uri}); # no need to fetch them below
       }
@@ -1227,7 +1231,7 @@ sub DoBrowseRequest {
     eval { local $SIG{__DIE__}; MyActions(); };
   } elsif ($action) {
     ReportError(Ts('Invalid action parameter %s', $action), '501 NOT IMPLEMENTED');
-  } elsif (($search ne '') || (GetParam('dosearch', '') ne '')) {
+  } elsif ($search and $search ne '' || GetParam('dosearch', '') ne '') { # allow search for "0"
     DoSearch($search);
   } elsif (GetParam('title', '')) {
     DoPost(GetParam('title', ''));
@@ -1242,26 +1246,19 @@ sub DoBrowseRequest {
 
 sub ValidId {
   my $id = shift;
-  return T('Page name is missing') unless $id;
-  return Ts('Page name is too long: %s', $id)  if (length($id) > 120);
-  if ($FreeLinks) {
-    $id =~ s/ /_/g;
-    return Ts('Invalid Page %s', $id)  if (!($id =~ m|^$FreeLinkPattern$|));
-    return Ts('Invalid Page %s (must not end with .db)', $id)  if ($id =~ m|\.db$|);
-    return Ts('Invalid Page %s (must not end with .lck)', $id)	if ($id =~ m|\.lck$|);
-  } else {
-    return Ts('Page name may not contain space characters: %s', $id) if ($id =~ m| |);
-    return Ts('Invalid Page %s', $id)  if (!($id =~ /^$LinkPattern$/));
-  }
-  return '';
+  $id =~ s/ /_/g;
+  return (T('Page name is missing')) unless $id;
+  return (Ts('Page name is too long: %s', $id)) if length($id) > 120;
+  return (Ts('Invalid Page %s (must not end with .db)', $id)) if $id =~ m|\.db$|;
+  return (Ts('Invalid Page %s (must not end with .lck)', $id)) if $id =~ m|\.lck$|;
+  return (Ts('Invalid Page %s', $id)) if $FreeLinks ? $id !~ m|^$FreeLinkPattern$| : $id !~ m|^$LinkPattern$|;
+  return ('', $1);
 }
 
 sub ValidIdOrDie {
-  my $id = shift;
-  my $error;
-  $error = ValidId($id);
+  my ($error, $untainted) = ValidId(shift);
   ReportError($error, '400 BAD REQUEST') if $error;
-  return 1;
+  return $untainted;
 }
 
 sub ResolveId { # return css class, resolved id, title (eg. for popups), exist-or-not
@@ -1281,7 +1278,7 @@ sub ResolveId { # return css class, resolved id, title (eg. for popups), exist-o
 }
 
 sub BrowseResolvedPage {
-  my $id = FreeToNormal(shift);
+  my $id = ValidIdOrDie(FreeToNormal(shift));
   my ($class, $resolved, $title, $exists) = ResolveId($id);
   if ($class && $class eq 'near' && not GetParam('rcclusteronly', 0)) { # nearlink (is url)
     print $q->redirect({-uri=>$resolved});
@@ -1292,7 +1289,7 @@ sub BrowseResolvedPage {
   } elsif ($resolved) { # an existing page was found
     BrowsePage($resolved, GetParam('raw', 0));
   } else { # new page!
-    BrowsePage($id, GetParam('raw', 0), undef, '404 NOT FOUND') if ValidIdOrDie($id);
+    BrowsePage($id, GetParam('raw', 0), undef, '404 NOT FOUND');
   }
 }
 
@@ -1304,7 +1301,7 @@ sub BrowsePage {
   my ($text, $revision) = GetTextRevision(GetParam('revision', ''));
   # handle a single-level redirect
   my $oldId = GetParam('oldid', '');
-  if (not $oldId and not $revision and (substr($text, 0, 10) eq '#REDIRECT ')) {
+  if (not $oldId and not $revision and $text and substr($text, 0, 10) eq '#REDIRECT ') {
     if (($FreeLinks and $text =~ /^\#REDIRECT\s+\[\[$FreeLinkPattern\]\]/)
 	or ($WikiLinks and $text =~ /^\#REDIRECT\s+$LinkPattern/)) {
       ReBrowsePage(FreeToNormal($1), $id); # trim extra whitespace from $1, prevent loops with $id
@@ -1393,7 +1390,7 @@ sub PageFresh { # pages can depend on other pages (ie. last update), admin statu
 
 sub PageEtag {
   my ($changed, $visible, %params) = CookieData();
-  return UrlEncode(join($FS, $LastUpdate, sort(values %params))); # no CTL in field values
+  return UrlEncode(join($FS, $LastUpdate||'0', sort(values %params))); # no CTL in field values
 }
 
 sub FileFresh { # old files are never stale, current files are stale when the page was modified
@@ -1612,7 +1609,7 @@ sub GetRc {
       &$printDailyTear($date);
     }
     if ($all) {
-      $revision = undef if ($ts == $changetime{$pagename}); # last one without revision
+      $revision = undef if ($ts and $changetime{$pagename} and $ts == $changetime{$pagename}); # last one
     }
     &$printRCLine($pagename, $ts, $host, $username, $summary, $minor, $revision,
 		  \@languages, $cluster);
@@ -1666,7 +1663,7 @@ sub GetRcHtml {
 	if ($cluster and $PageCluster) {
 	  $diff .= GetPageLink($PageCluster) . ':';
 	} elsif ($UseDiff and GetParam('diffrclink', 1)) {
-	  if ($revision == 1) {
+	  if ($revision and $revision == 1) {
 	    $diff .= '(' . $q->span({-class=>'new'}, T('new')) . ')';
 	  } elsif ($all) {
 	    $diff .= '(' . ScriptLinkDiff(2, $pagename, $tDiff, '', $revision) . ')';
@@ -1823,8 +1820,7 @@ sub DoRandom {
 # == History ==
 
 sub DoHistory {
-  my $id = shift;
-  ValidIdOrDie($id);
+  my $id = ValidIdOrDie(shift);
   print GetHeader('',QuoteHtml(Ts('History of %s', $id)));
   OpenPage($id);
   my $row = 0;
@@ -1893,7 +1889,7 @@ sub DoRollback {
     OpenPage($id);
     my ($text, $minor) = GetTextAtTime($to);
     if ($text and $Page{text} ne $text) {
-      Save($id, $text, Ts('Rollback to %s', TimeToText($to)), $minor, ($Page{ip} ne $ENV{REMOTE_ADDR}));
+      Save($id, $text, Ts('Rollback to %s', TimeToText($to)), $minor, 0);
       print Ts('%s rolled back', $id), $q->br();
     }
   }
@@ -1984,7 +1980,8 @@ sub GetAuthorLink {
   $username = FreeToNormal($username);
   my $name = $username;
   $name =~ s/_/ /g;
-  if (ValidId($username) ne '') {  # Invalid under current rules
+  my ($error) = ValidId($username);
+  if ($error) {  # Invalid under current rules
     $username = '';  # Just pretend it isn't there.
   }
   if ($username and $RecentLink) {
@@ -2060,7 +2057,7 @@ sub GetHttpHeader {
   $headers{-status} = $status if $status;
   my $cookie = Cookie();
   $headers{-cookie} = $cookie  if $cookie;
-  if ($q->request_method() eq 'HEAD') {
+  if ($q->request_method()||'' eq 'HEAD') { # no warning on the command line
     print $q->header(%headers);
     exit; # total shortcut -- HEAD never expects anything other than the header!
   }
@@ -2070,8 +2067,8 @@ sub GetHttpHeader {
 sub CookieData {
   my ($changed, $visible, %params);
   foreach my $key (keys %CookieParameters) { # map { UrlEncode($_) } 
-    my $default = $CookieParameters{$key};
-    my $value = GetParam($key, $default); # values are URL encoded
+    my $default = $CookieParameters{$key} || '';
+    my $value = GetParam($key, $default)  || ''; # values are URL encoded
     $params{$key} = $value  if $value ne $default;
     # The  cookie is  considered to  have changed  under  he following
     # condition: If the value was already set, and the new value is not
@@ -2193,7 +2190,7 @@ sub GetNearLinksUsed {
 
 sub GetFooterTimestamp {
   my ($id, $rev) = @_;
-  if ($id and $rev ne 'history' and $rev ne 'edit' and $Page{revision}) {
+  if ($id and (!$rev or $rev ne 'history' and $rev ne 'edit') and $Page{revision}) {
     my @elements = ($q->br(), ($rev eq '' ? T('Last edited') : T('Edited')), TimeToText($Page{ts}),
 		    Ts('by %s', GetAuthorLink($Page{host}, $Page{username})));
     push(@elements, ScriptLinkDiff(2, $id, T('(diff)'), $rev)) if $UseDiff and $Page{revision} > 1;
@@ -2205,7 +2202,7 @@ sub GetFooterTimestamp {
 sub GetFooterLinks {
   my ($id, $rev) = @_;
   my @elements;
-  if ($id and $rev ne 'history' and $rev ne 'edit') {
+  if ($id and (!$rev or $rev ne 'history' and $rev ne 'edit')) {
     if ($CommentsPrefix) {
       if ($OpenPageName =~ /^$CommentsPrefix(.*)/) {
 	push(@elements, GetPageLink($1));
@@ -2224,10 +2221,10 @@ sub GetFooterLinks {
       push(@elements, ScriptLink('action=password', T('This page is read-only')));
     }
   }
-  if ($id and $rev ne 'history') {
+  if ($id and (!$rev or $rev ne 'history')) {
     push(@elements, GetHistoryLink($id, T('View other revisions')));
   }
-  if ($rev ne '') {
+  if ($rev) {
     push(@elements, GetPageLink($id, T('View current revision')),
 	 GetRCLink($id, T('View all changes')));
   }
@@ -2253,7 +2250,7 @@ sub GetCommentForm {
 			 $q->textfield(-name=>'homepage', -default=>GetParam('homepage', ''),
 				       -override=>1, -size=>40, -maxlength=>100)),
 		   $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save')), ' ',
-			 $q->submit(-name=>'Preview', -accesskey=>T('p'), -value=>T('Preview'))),
+			 $q->submit(-name=>'Preview', -accesskey=>T('p'), -value=>T('Preview'))), # DoPost
 		   $q->endform());
   }
   return '';
@@ -2317,8 +2314,8 @@ sub PrintHtmlDiff {
 
 sub GetCacheDiff {
   my $type = shift;
-  my $diff = $Page{"diff-$type"};
-  $diff = $Page{"diff-minor"} if ($diff eq '1'); # if major eq minor diff
+  my $diff = $Page{"diff-$type"} || '';
+  $diff = $Page{"diff-minor"} if $diff eq '1'; # if major eq minor diff
   return $diff;
 }
 
@@ -2576,8 +2573,8 @@ sub EncodePage {
 }
 
 sub EscapeNewlines {
-  $_[0] =~ s/\n/\n\t/g; # modify original instead of copying
-  return $_[0];
+  $_[0] =~ s/\n/\n\t/g if $_[0]; # modify original instead of copying
+  return $_[0] || '';
 }
 
 sub ExpireKeepFiles { # call with opened page
@@ -2791,7 +2788,7 @@ sub FreeToNormal { # trim all spaces and convert them to underlines
 
 sub DoEdit {
   my ($id, $newText, $preview) = @_;
-  ValidIdOrDie($id);
+  $id = ValidIdOrDie($id);
   my $upload = GetParam('upload', undef);
   if (!UserCanEdit($id, 1)) {
     my $rule = UserIsBanned();
@@ -2861,7 +2858,7 @@ sub DoEdit {
 			      -default=>$username, -override=>1,
 			      -size=>20, -maxlength=>50));
   print $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save'))
-	      . ($upload ? '' :	 ' ' . $q->submit(-name=>'Preview', -accesskey=>T('p'), -value=>T('Preview'))));
+	      . ($upload ? '' :	 ' ' . $q->submit(-name=>'Preview', -accesskey=>T('p'), -value=>T('Preview')))); # DoPost
   if ($upload) {
     print $q->p(ScriptLink('action=edit;upload=0;id=' . UrlEncode($id), T('Replace this file with text.')));
   } elsif ($UploadAllowed or UserIsAdmin()) {
@@ -2881,8 +2878,8 @@ sub GetUpload {
 }
 
 sub DoDownload {
-  my $id = shift;
-  OpenPage($id) if ValidIdOrDie($id);
+  my $id = ValidIdOrDie(shift);
+  OpenPage($id);
   print $q->header(-status=>'304 NOT MODIFIED') and return if FileFresh(); # FileFresh needs an OpenPage!
   my ($text, $revision) = GetTextRevision(GetParam('revision', '')); # maybe revision reset!
   my $ts = $Page{ts};
@@ -2970,12 +2967,12 @@ sub UserIsBanned {
 }
 
 sub UserIsAdmin {
-  return 0  if ($AdminPass eq '');
+  return 0 if ($AdminPass eq '');
   my $pwd = GetParam('pwd', '');
-  return 0  if ($pwd eq '');
+  return 0 unless $pwd;
   foreach (split(/\s+/, $AdminPass)) {
-    next  if ($_ eq '');
-    return 1  if ($pwd eq $_);
+    next if ($_ eq '');
+    return 1 if ($pwd eq $_);
   }
   return 0;
 }
@@ -3245,19 +3242,19 @@ sub PrintSearchResult {
   my $raw = GetParam('raw', 0);
   my $files = ($regex =~ /^\^#FILE/); # usually skip files
   OpenPage($name); # should be open already, just making sure!
-  my $pageText = $Page{text};
+  my $text = $Page{text};
   my %entry;
   #  get the page, filter it, remove all tags
-  $pageText =~ s/$FS//g;	# Remove separators (paranoia)
-  $pageText =~ s/[\s]+/ /g;	#  Shrink whitespace
-  $pageText =~ s/([-_=\\*\\.]){10,}/$1$1$1$1$1/g ; # e.g. shrink "----------"
+  $text =~ s/$FS//g;	# Remove separators (paranoia)
+  $text =~ s/[\s]+/ /g;	#  Shrink whitespace
+  $text =~ s/([-_=\\*\\.]){10,}/$1$1$1$1$1/g ; # e.g. shrink "----------"
   $entry{title} = $name;
   if ($files) {
-    ($entry{description}) = TextIsFile($pageText);
+    ($entry{description}) = TextIsFile($text);
   } else {
-    $entry{description} = SearchExtract(QuoteHtml($pageText), $regex);
+    $entry{description} = SearchExtract(QuoteHtml($text), $regex);
   }
-  $entry{size} = int((length($pageText)/1024)+1) . 'K';
+  $entry{size} = int((length($text)/1024)+1) . 'K';
   $entry{'last-modified'} = TimeToText($Page{ts});
   $entry{username} = $Page{username};
   $entry{host} = $Page{host};
@@ -3326,7 +3323,7 @@ sub SearchExtract {
 }
 
 sub Replace {
-  my ($from, $to) = @_;
+  my ($from, $to) = map {/(.*)/;$1;} @_; # untaint
   my $lang = GetParam('lang', '');
   RequestLockOrError(); # fatal
   foreach my $id (AllPagesList()) {
@@ -3337,8 +3334,7 @@ sub Replace {
     }
     $_ = $Page{text};
     if (eval "s{$from}{$to}gi") { # allows use of backreferences
-      Save($id, $_, $from . ' -> ' . $to, 1,
-	   ($Page{ip} ne $ENV{REMOTE_ADDR}));
+      Save($id, $_, $from . ' -> ' . $to, 1, 0);
     }
   }
   ReleaseLock();
@@ -3381,8 +3377,7 @@ sub PrintAllPages {
 # == Posting new pages ==
 
 sub DoPost {
-  my $id = FreeToNormal(shift);
-  ValidIdOrDie($id);
+  my $id = ValidIdOrDie(FreeToNormal(shift));
   if (!UserCanEdit($id, 1)) {
     ReportError(Ts('Editing not allowed for %s.', $id), '403 FORBIDDEN');
   } elsif (($id eq 'SampleUndefinedPage') or ($id eq T('SampleUndefinedPage'))) {
@@ -3442,7 +3437,7 @@ sub DoPost {
   my $summary = GetSummary();
   # rebrowse if no changes
   my $oldrev = $Page{revision};
-  if (GetParam('Preview', '')) {
+  if (GetParam('Preview', '')) { # Preview button was used
     ReleaseLock();
     if ($comment) {
       BrowsePage($id, 0, $comment);
@@ -3458,16 +3453,14 @@ sub DoPost {
   }
   my $newAuthor = 0;
   if ($oldrev) { # the first author (no old revision) is not considered to be "new"
-    if (GetParam('username', '')) { # prefer usernames for potential new author detection
-      $newAuthor = 1 if GetParam('username', '') ne $Page{username};
-    } elsif ($ENV{REMOTE_ADDR} ne $Page{ip}) {
-      $newAuthor = 1;
-    }
+    # prefer usernames for potential new author detection
+    $newAuthor = 1 if not $Page{username} or $Page{username} ne GetParam('username', '');
+    $newAuthor = 1 if not $ENV{REMOTE_ADDR} or not $Page{ip} or $ENV{REMOTE_ADDR} ne $Page{ip};
   }
   my $oldtime = $Page{ts};
   my $myoldtime = GetParam('oldtime', ''); # maybe empty!
   # Handle raw edits with the meta info on the first line
-  if (GetParam('raw',0) == 2 and $string =~ /^([0-9]+).*\n((.*\n)*.*)/) {
+  if (GetParam('raw', 0) == 2 and $string =~ /^([0-9]+).*\n((.*\n)*.*)/) {
     $myoldtime = $1;
     $string = $2;
   }
@@ -3622,7 +3615,7 @@ sub MergeRevisions { # merge change from file2 to file3 into file1
 # Note: all diff and recent-list operations should be done within locks.
 sub WriteRcLog {
   my ($id, $summary, $minor, $revision, $username, $host, $languages, $cluster) = @_;
-  my $rc_line = join($FS, $Now, $id, $minor, $summary, $host,
+  my $rc_line = join($FS, map { $_||'' } $Now, $id, $minor, $summary, $host,
 		     $username, $revision, $languages, $cluster);
   AppendStringToFile($RcFile, $rc_line . "\n");
 }
@@ -3630,7 +3623,7 @@ sub WriteRcLog {
 sub UpdateDiffs {
   my ($old, $new) = @_;
   $Page{'diff-minor'} = GetDiff($old, $new);
-  if ($Page{revision} - 1 == $Page{oldmajor}) {
+  if ($Page{revision} and $Page{oldmajor} and $Page{revision} - 1 == $Page{oldmajor}) {
     $Page{'diff-major'} = 1; # used in GetCacheDiff to indicate it is the same as in diff-minor
   } else {
     $Page{'diff-major'} = GetKeptDiff($new, $Page{oldmajor});
@@ -3738,8 +3731,8 @@ sub PageDeletable {
 
 sub DeletePage { # Delete must be done inside locks.
   my $id = shift;
-  my $status = ValidId($id);
-  return $status if $status; # this would be the error message
+  my ($error) = ValidId($id);
+  return $error if $error; # this would be the error message
   foreach my $fname (GetPageFile($id), GetKeepFiles($id), GetKeepDir($id), GetLockedPageFile($id), $IndexFile) {
     unlink($fname) if (-f $fname);
   }
@@ -3774,12 +3767,8 @@ sub DoPageLock {
   print GetHeader('', T('Set or Remove page edit lock'));
   # Consider allowing page lock/unlock at editor level?
   return  if (!UserIsAdminOrError());
-  my $id = GetParam('id', '');
-  if ($id eq '') {
-    print $q->p(T('Missing page id to lock/unlock...'));
-    return;
-  }
-  my $fname = GetLockedPageFile($id) if ValidIdOrDie($id);
+  my $id = ValidIdOrDie(GetParam('id', ''));
+  my $fname = GetLockedPageFile($id);
   if (GetParam('set', 1)) {
     WriteStringToFile($fname, 'editing locked.');
   } else {
@@ -3919,7 +3908,8 @@ sub GetPermanentAnchor {
   my $text = $id;
   $text =~ s/_/ /g;
   my ($class, $resolved, $title, $exists) = ResolveId($id);
-  if ($class eq 'alias' and $title ne $OpenPageName) {
+  no warnings 'uninitialized'; # FIXME
+  if ($class and $class eq 'alias' and $title ne $OpenPageName) {
     return '[' . Ts('anchor first defined here: %s',
 		    ScriptLink(UrlEncode($resolved), $text, 'alias')) . ']';
   } elsif ($PermanentAnchors{$id} ne $OpenPageName

@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -wT
 
 # Copyright (C) 2004, 2005  Alex Schroeder <alex@emacswiki.org>
 #
@@ -20,13 +20,15 @@
 
 use XML::LibXML;
 use Encode;
+no warnings 'once';
 
 # Import the functions
 
 package OddMuse;
 $RunCGI = 0;    # don't print HTML on stdout
 $UseConfig = 0; # don't read module files
-do 'wiki.pl';
+push (@INC, '.');
+require 'wiki.pl';
 Init();
 
 my ($passed, $failed) = (0, 0);
@@ -34,6 +36,12 @@ my $resultfile = "/tmp/test-markup-result-$$";
 my $redirect;
 undef $/;
 $| = 1; # no output buffering
+
+sub untaint {
+  my $str = shift;
+  $str =~ /(.*)/s; # match newlines
+  return $1;
+}
 
 sub url_encode {
   my $str = shift;
@@ -51,7 +59,7 @@ sub url_encode {
 
 print "* means that a page is being updated\n";
 sub update_page {
-  my ($id, $text, $summary, $minor, $admin, @rest) = @_;
+  my ($id, $text, $summary, $minor, $admin, @rest) = map { untaint($_) } @_;
   print '*';
   my $pwd = $admin ? 'foo' : 'wrong';
   $id = url_encode($id);
@@ -59,8 +67,8 @@ sub update_page {
   $summary = url_encode($summary);
   $minor = $minor ? 'on' : 'off';
   my $rest = join(' ', @rest);
-  $redirect = `perl wiki.pl Save=1 title=$id summary=$summary recent_edit=$minor text=$text pwd=$pwd $rest`;
-  $output = `perl wiki.pl action=browse id=$id`;
+  $redirect = `perl -wT wiki.pl Save=1 title=$id summary=$summary recent_edit=$minor text=$text pwd=$pwd $rest`;
+  $output = `perl -wT wiki.pl action=browse id=$id`;
   # just in case a new page got created or NearMap or InterMap
   $IndexInit = 0;
   $NearInit = 0;
@@ -73,7 +81,7 @@ sub update_page {
 print "+ means that a page is being retrieved\n";
 sub get_page {
   print '+';
-  open(F,"perl wiki.pl @_ |");
+  open(F,"perl -wT wiki.pl @_ |");
   my $output = <F>;
   close F;
   return $output;
@@ -274,7 +282,7 @@ sub remove_rule {
 sub add_module {
   my $mod = shift;
   mkdir $ModuleDir unless -d $ModuleDir;
-  my $dir = `/bin/pwd`;
+  my $dir = untaint(`/bin/pwd`);
   chop($dir);
   symlink("$dir/modules/$mod", "$ModuleDir/$mod") or die "Cannot symlink $mod: $!"
     unless -l "$ModuleDir/$mod";
@@ -663,6 +671,8 @@ test_page(get_page('RSS'), @Test);
 redirection:
 print '[redirection]';
 
+clear_pages();
+
 update_page('Miles_Davis', 'Featuring [[John Coltrane]]'); # plain link
 update_page('John_Coltrane', '#REDIRECT Coltrane'); # no redirect
 update_page('Sonny_Stitt', '#REDIRECT [[Stitt]]'); # redirect
@@ -834,6 +844,8 @@ test_page_negative($page, @Negatives);
 conflicts:
 print '[conflicts]';
 
+clear_pages();
+
 # Using the example files from the diff3 manual
 
 my $lao_file = q{The Way that can be told of is not the eternal Way;
@@ -932,7 +944,7 @@ sleep(2);
 
 update_page('ConflictTest', $lao_file);
 
-$_ = `perl wiki.pl action=edit id=ConflictTest`;
+$_ = `perl -wT wiki.pl action=edit id=ConflictTest`;
 /name="oldtime" value="([0-9]+)"/;
 my $oldtime = $1;
 
@@ -957,7 +969,7 @@ sleep(2);
 
 update_page('ConflictTest', $tzu_file);
 
-$_ = `perl wiki.pl action=edit id=ConflictTest`;
+$_ = `perl -wT wiki.pl action=edit id=ConflictTest`;
 /name="oldtime" value="([0-9]+)"/;
 $oldtime = $1;
 
@@ -1003,9 +1015,10 @@ sleep(2);
 
 update_page('ConflictTest', $lao_file);
 
-$_ = `perl wiki.pl action=edit id=ConflictTest`;
+$_ = `perl -wT wiki.pl action=edit id=ConflictTest`;
 /name="oldtime" value="([0-9]+)"/;
 $oldtime = $1;
+test_page($oldtime, '^\d+$');
 
 sleep(2);
 
@@ -1792,7 +1805,7 @@ print '[usemod module]';
 
 clear_pages();
 
-do 'modules/usemod.pl';
+add_module('usemod.pl');
 InitVariables();
 
 %Test = split('\n',<<'EOT');
@@ -1892,7 +1905,7 @@ usemod_options:
 print '[usemod options]';
 
 # some patterns use options in regular expressions with /o and need to be recompiled
-do 'modules/usemod.pl';
+add_module('usemod.pl');
 $UseModSpaceRequired = 0;
 $UseModMarkupInTitles = 1;
 InitVariables();
@@ -1931,8 +1944,8 @@ remove_rule(\&UsemodRule);
 markup_module:
 print '[markup module]';
 
-do 'modules/usemod.pl';
-do 'modules/markup.pl';
+add_module('usemod.pl');
+add_module('markup.pl');
 InitVariables();
 
 %Test = split('\n',<<'EOT');
@@ -2023,8 +2036,8 @@ setext_module:
 print '[setext module]';
 
 clear_pages(); # link-all will confuse us
-do 'modules/setext.pl';
-do 'modules/link-all.pl';
+add_module('setext.pl');
+add_module('link-all.pl');
 
 %Test = split('\n',<<'EOT');
 foo
@@ -2064,8 +2077,8 @@ remove_rule(\&LinkAllRule);
 anchors_module:
 print '[anchors module]';
 
-do 'modules/anchors.pl';
-do 'modules/link-all.pl'; # check compatibility
+add_module('anchors.pl');
+add_module('link-all.pl'); # check compatibility
 
 %Test = split('\n',<<'EOT');
 This is a [:day for fun and laughter].
@@ -2134,19 +2147,23 @@ remove_module('link-all.pl');
 image_module:
 print '[image module]';
 
-do "modules/image.pl";
-
 clear_pages();
+
+add_module('image.pl');
 
 update_page('bar', 'foo');
 
 %Test = split('\n',<<'EOT');
 [[image:foo]]
 //a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=foo;upload=1"][text()="?"]
+[[image:foo|text|http://www.oddmuse.org/]]
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=foo;upload=1"][text()="?"]
 [[image:bar]]
-//a[@class="image"][@href="http://localhost/test.pl/bar"]/img[@class="upload"][@src="http://localhost/test.pl/download/bar"][@alt="bar"]
+//a[@class="image"][@href="http://localhost/test.pl/bar"]/img[@class="upload"][@src="http://localhost/test.pl/download/bar"][@alt="image: bar"]
 [[image:bar|alternative text]]
 //a[@class="image"][@href="http://localhost/test.pl/bar"]/img[@class="upload"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]
+[[image:bar|alternative > text]]
+//a[@class="image"][@href="http://localhost/test.pl/bar"]/img[@class="upload"][@src="http://localhost/test.pl/download/bar"][@alt="alternative &gt; text"]
 [[image/left:bar|alternative text]]
 //a[@class="image left"][@href="http://localhost/test.pl/bar"]/img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]
 [[image:bar|alternative text|foo]]
@@ -2160,6 +2177,7 @@ EOT
 xpath_run_tests();
 
 remove_rule(\&ImageSupportRule);
+remove_module('image.pl');
 
 # --------------------
 
@@ -2182,6 +2200,7 @@ EOT
 run_tests();
 
 remove_rule(\&SubscribedRecentChangesRule);
+remove_module('subscriberc.pl');
 
 # --------------------
 
@@ -2245,6 +2264,8 @@ test_page(get_page('toc_test'),
 remove_rule(\&UsemodRule);
 remove_rule(\&TocRule);
 *GetHeader = *OldTocGetHeader;
+remove_module('toc.pl');
+remove_module('usemod.pl');
 
 # --------------------
 
@@ -2285,6 +2306,7 @@ add_module('usemod.pl');
 update_page('headers', "== is header ==\n\ntext\n");
 test_page(get_page('headers'), '<h2>is header</h2>');
 remove_rule(\&UsemodRule);
+remove_module('usemod.pl');
 
 # toc only
 add_module('toc.pl');
@@ -2295,12 +2317,14 @@ test_page(get_page('headers'),
 	  '<h2><a id="toc0">one</a></h2>',
 	  '<h2><a id="toc1">two</a></h2>', );
 remove_rule(\&TocRule);
+remove_module('toc.pl');
 
 # headers only
 add_module('headers.pl');
 update_page('headers', "is header\n=========\n\ntext\n");
 test_page(get_page('headers'), '<h2>is header</h2>');
 remove_rule(\&HeadersRule);
+remove_module('headers.pl');
 
 # --------------------
 
@@ -2355,6 +2379,7 @@ remove_rule(\&TocRule);
 *GetHeader = *OldTocGetHeader;
 remove_rule(\&PortraitSupportRule);
 *ApplyRules = *OldPortraitSupportApplyRules;
+remove_module('portrait-support.pl');
 
 # --------------------
 
@@ -2374,6 +2399,7 @@ add_module('usemod.pl');
 update_page('hr', "one\n----\nthree\n");
 test_page(get_page('hr'), '<div class="content browse"><p>one </p><hr /><p>three</p></div>');
 remove_rule(\&UsemodRule);
+remove_module('usemod.pl');
 
 # headers only
 add_module('headers.pl');
@@ -2383,6 +2409,7 @@ test_page(get_page('hr'), '<div class="content browse"><h3>one</h3><p>two</p></d
 update_page('hr', "one\n\n----\nthree\n");
 test_page(get_page('hr'), '<div class="content browse"><p>one</p><hr /><p>three</p></div>');
 remove_rule(\&HeadersRule);
+remove_module('headers.pl');
 
 # --------------------
 
@@ -2400,8 +2427,8 @@ test_page(get_page('hr'), '<div class="content browse"><div class="color one"><p
 add_module('usemod.pl');
 update_page('hr', "one\n----\nthree\n");
 test_page(get_page('hr'), '<div class="content browse"><p>one </p><hr /><p>three</p></div>');
-unlink('/tmp/oddmuse/modules/usemod.pl') or die "Cannot unlink: $!";
 remove_rule(\&UsemodRule);
+remove_module('usemod.pl');
 
 # headers and portrait-support
 add_module('headers.pl');
@@ -2410,11 +2437,12 @@ test_page(get_page('hr'), '<div class="content browse"><h3>one</h3><p>two</p></d
 
 update_page('hr', "one\n\n----\nthree\n");
 test_page(get_page('hr'), '<div class="content browse"><p>one</p><hr /><p>three</p></div>');
-unlink('/tmp/oddmuse/modules/headers.pl') or die "Cannot unlink: $!";
 remove_rule(\&HeadersRule);
+remove_module('headers.pl');
 
 remove_rule(\&PortraitSupportRule);
 *ApplyRules = *OldPortraitSupportApplyRules;
+remove_module('portrait-support.pl');
 
 
 # --------------------
@@ -2460,6 +2488,7 @@ xpath_test(get_page('action=calendar'),
 
 remove_rule(\&CalendarRule);
 *GetHeader = *OldCalendarGetHeader;
+remove_module('calendar.pl');
 
 # --------------------
 
@@ -2467,7 +2496,6 @@ crumbs:
 print '[crumbs]';
 
 clear_pages();
-AppendStringToFile($ConfigFile, "\$PageCluster = 'Cluster';\n");
 
 add_module('crumbs.pl');
 
@@ -2478,6 +2506,7 @@ xpath_test(get_page('Games'),
 		'//p/span[@class="crumbs"]/a[@class="local"][@href="http://localhost/wiki.pl/HomePage"][text()="HomePage"]/following-sibling::text()[string()=" "]/following-sibling::a[@class="local"][@href="http://localhost/wiki.pl/Software"][text()="Software"]');
 
 remove_rule(\&CrumbsRule);
+remove_module('crumbs.pl');
 
 # --------------------
 

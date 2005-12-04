@@ -16,13 +16,14 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: image.pl,v 1.15 2005/03/01 16:48:01 sblatt Exp $</p>';
+$ModulesDescription .= '<p>$Id: image.pl,v 1.15.2.1 2005/12/04 10:31:48 as Exp $</p>';
 
 use vars qw($ImageUrlPath);
 
 $ImageUrlPath = '/images';      # URL where the images are to be found
 
 push(@MyRules, \&ImageSupportRule);
+$RuleOrder{\&ImageSupportRule} = -1; # run this rule before the default image rule for consistency
 
 # [[image/class:page name|alt text|target]]
 
@@ -34,9 +35,12 @@ sub ImageSupportRule {
     $class .= ' ' . substr($1, 1) if $1;
     my $external = $2;
     my $name = $3;
-    my $alt = $6 ? substr($6, 1) : T("image: %s", $name);
+    my $alt = $6 ? substr($6, 1) : Ts("image: %s", $name); # use name if no alt text is specified
     my $link = $7 ? substr($7, 1) : '';
     my $id = FreeToNormal($name);
+    # short-cut if the page does not exist
+    return '[' . ($image ? T('image') : T('download')) . ':' . $name
+      . ']' . GetEditLink($id, '?', 1) unless $external or $IndexHash{$id};
     # link to the image if no link was given
     if (not $link) {
       if ($external) {
