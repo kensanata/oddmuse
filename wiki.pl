@@ -258,14 +258,16 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.629 2005/10/29 16:46:37 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.630 2005/12/06 15:37:09 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
   $ScriptName = $q->url() unless defined $ScriptName; # URL used in links
   $FullUrl = $ScriptName unless $FullUrl; # URL used in forms
   $Now = time;	       # Reset in case script is persistent
-  $LastUpdate = (stat($IndexFile))[9] unless $LastUpdate;
+  my $ts = (stat($IndexFile))[9]; # always stat for multiple server processes
+  ReInit() if $LastUpdate != $ts; # reinit if another process changed files
+  $LastUpdate = $ts;
   %Locks = ();
   @Blocks = ();
   @Flags = ();
