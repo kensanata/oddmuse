@@ -114,8 +114,8 @@ $InterMap    = 'InterMap';      # name of the intermap page
 $NearMap     = 'NearMap';       # name of the nearmap page
 $RssInterwikiTranslate = 'RssInterwikiTranslate'; # name of RSS interwiki translation page
 @MyRules = (\&LinkRules);       # default rules that can be overridden
-$RuleOrder{\&LinkRules} = 0;
-$ENV{PATH}   = '/usr/bin/';     # Path used to find 'diff'
+%RuleOrder = (\&LinkRules => 0);
+$ENV{PATH}   = '/usr/bin';     # Path used to find 'diff'
 $UseDiff     = 1;	        # 1 = use diff
 $SurgeProtection      = 1;	# 1 = protect against leeches
 $SurgeProtectionTime  = 20;	# Size of the protected window in seconds
@@ -258,7 +258,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.630 2005/12/06 15:37:09 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.631 2005/12/07 13:00:44 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -671,11 +671,11 @@ sub RunMyRules {
 }
 
 sub PrintWikiToHTML {
-  my ($pageText, $savecache, $revision, $islocked) = @_;
+  my ($text, $savecache, $revision, $islocked) = @_;
   $FootnoteNumber = 0;
-  $pageText =~ s/$FS//g; # Remove separators (paranoia)
-  $pageText = QuoteHtml($pageText);
-  my ($blocks, $flags) = ApplyRules($pageText, 1, $savecache, $revision, 'p'); # p is start tag!
+  $text =~ s/$FS//g if $text; # Remove separators (paranoia)
+  $text = QuoteHtml($text);
+  my ($blocks, $flags) = ApplyRules($text, 1, $savecache, $revision, 'p'); # p is start tag!
   # local links, anchors if cache ok
   if ($savecache and not $revision and $Page{revision} # don't save revision 0 pages
       and $Page{blocks} ne $blocks and $Page{flags} ne $flags) {
@@ -1229,7 +1229,7 @@ sub DoBrowseRequest {
     eval { local $SIG{__DIE__}; MyActions(); };
   } elsif ($action) {
     ReportError(Ts('Invalid action parameter %s', $action), '501 NOT IMPLEMENTED');
-  } elsif (($search ne '') || (GetParam('dosearch', '') ne '')) {
+  } elsif (($search ne '') || (GetParam('dosearch', '') ne '')) { # allow search for "0"
     DoSearch($search);
   } elsif (GetParam('title', '')) {
     DoPost(GetParam('title', ''));
@@ -1244,18 +1244,12 @@ sub DoBrowseRequest {
 
 sub ValidId {
   my $id = shift;
+  $id =~ s/ /_/g;
   return T('Page name is missing') unless $id;
-  return Ts('Page name is too long: %s', $id)  if (length($id) > 120);
-  if ($FreeLinks) {
-    $id =~ s/ /_/g;
-    return Ts('Invalid Page %s', $id)  if (!($id =~ m|^$FreeLinkPattern$|));
-    return Ts('Invalid Page %s (must not end with .db)', $id)  if ($id =~ m|\.db$|);
-    return Ts('Invalid Page %s (must not end with .lck)', $id)	if ($id =~ m|\.lck$|);
-  } else {
-    return Ts('Page name may not contain space characters: %s', $id) if ($id =~ m| |);
-    return Ts('Invalid Page %s', $id)  if (!($id =~ /^$LinkPattern$/));
-  }
-  return '';
+  return Ts('Page name is too long: %s', $id) if length($id) > 120;
+  return Ts('Invalid Page %s (must not end with .db)', $id) if $id =~ m|\.db$|;
+  return Ts('Invalid Page %s (must not end with .lck)', $id) if $id =~ m|\.lck$|;
+  return Ts('Invalid Page %s', $id) if $FreeLinks ? $id !~ m|^$FreeLinkPattern$| : $id !~ m|^$LinkPattern$|;
 }
 
 sub ValidIdOrDie {
@@ -2974,10 +2968,10 @@ sub UserIsBanned {
 sub UserIsAdmin {
   return 0  if ($AdminPass eq '');
   my $pwd = GetParam('pwd', '');
-  return 0  if ($pwd eq '');
+  return 0 unless $pwd;
   foreach (split(/\s+/, $AdminPass)) {
-    next  if ($_ eq '');
-    return 1  if ($pwd eq $_);
+    next if $_ eq '';
+    return 1 if $pwd eq $_;
   }
   return 0;
 }
@@ -3247,19 +3241,19 @@ sub PrintSearchResult {
   my $raw = GetParam('raw', 0);
   my $files = ($regex =~ /^\^#FILE/); # usually skip files
   OpenPage($name); # should be open already, just making sure!
-  my $pageText = $Page{text};
+  my $text = $Page{text};
   my %entry;
   #  get the page, filter it, remove all tags
-  $pageText =~ s/$FS//g;	# Remove separators (paranoia)
-  $pageText =~ s/[\s]+/ /g;	#  Shrink whitespace
-  $pageText =~ s/([-_=\\*\\.]){10,}/$1$1$1$1$1/g ; # e.g. shrink "----------"
+  $text =~ s/$FS//g;	# Remove separators (paranoia)
+  $text =~ s/[\s]+/ /g;	#  Shrink whitespace
+  $text =~ s/([-_=\\*\\.]){10,}/$1$1$1$1$1/g ; # e.g. shrink "----------"
   $entry{title} = $name;
   if ($files) {
-    ($entry{description}) = TextIsFile($pageText);
+    ($entry{description}) = TextIsFile($text);
   } else {
-    $entry{description} = SearchExtract(QuoteHtml($pageText), $regex);
+    $entry{description} = SearchExtract(QuoteHtml($text), $regex);
   }
-  $entry{size} = int((length($pageText)/1024)+1) . 'K';
+  $entry{size} = int((length($text)/1024)+1) . 'K';
   $entry{'last-modified'} = TimeToText($Page{ts});
   $entry{username} = $Page{username};
   $entry{host} = $Page{host};
@@ -3444,7 +3438,7 @@ sub DoPost {
   my $summary = GetSummary();
   # rebrowse if no changes
   my $oldrev = $Page{revision};
-  if (GetParam('Preview', '')) {
+  if (GetParam('Preview', '')) { # Preview button was used
     ReleaseLock();
     if ($comment) {
       BrowsePage($id, 0, $comment);
@@ -3460,16 +3454,14 @@ sub DoPost {
   }
   my $newAuthor = 0;
   if ($oldrev) { # the first author (no old revision) is not considered to be "new"
-    if (GetParam('username', '')) { # prefer usernames for potential new author detection
-      $newAuthor = 1 if GetParam('username', '') ne $Page{username};
-    } elsif ($ENV{REMOTE_ADDR} ne $Page{ip}) {
-      $newAuthor = 1;
-    }
+    # prefer usernames for potential new author detection
+    $newAuthor = 1 if not $Page{username} or $Page{username} ne GetParam('username', '');
+    $newAuthor = 1 if not $ENV{REMOTE_ADDR} or not $Page{ip} or $ENV{REMOTE_ADDR} ne $Page{ip};
   }
   my $oldtime = $Page{ts};
   my $myoldtime = GetParam('oldtime', ''); # maybe empty!
   # Handle raw edits with the meta info on the first line
-  if (GetParam('raw',0) == 2 and $string =~ /^([0-9]+).*\n((.*\n)*.*)/) {
+  if (GetParam('raw', 0) == 2 and $string =~ /^([0-9]+).*\n((.*\n)*.*)/) {
     $myoldtime = $1;
     $string = $2;
   }
@@ -3740,8 +3732,8 @@ sub PageDeletable {
 
 sub DeletePage { # Delete must be done inside locks.
   my $id = shift;
-  my $status = ValidId($id);
-  return $status if $status; # this would be the error message
+  my ($error) = ValidId($id);
+  return $error if $error; # this would be the error message
   foreach my $fname (GetPageFile($id), GetKeepFiles($id), GetKeepDir($id), GetLockedPageFile($id), $IndexFile) {
     unlink($fname) if (-f $fname);
   }
@@ -3777,10 +3769,6 @@ sub DoPageLock {
   # Consider allowing page lock/unlock at editor level?
   return  if (!UserIsAdminOrError());
   my $id = GetParam('id', '');
-  if ($id eq '') {
-    print $q->p(T('Missing page id to lock/unlock...'));
-    return;
-  }
   my $fname = GetLockedPageFile($id) if ValidIdOrDie($id);
   if (GetParam('set', 1)) {
     WriteStringToFile($fname, 'editing locked.');
