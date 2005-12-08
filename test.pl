@@ -2244,7 +2244,6 @@ test_page(get_page('toc_test'),
 
 remove_rule(\&UsemodRule);
 remove_rule(\&TocRule);
-*GetHeader = *OldTocGetHeader;
 
 # --------------------
 
@@ -2565,7 +2564,7 @@ remove_rule(\&MoinRule);
 # --------------------
 
 sidebar:
-print '[sidebar]'; # + pagelock + forms
+print '[sidebar]';
 
 clear_pages();
 
@@ -2573,6 +2572,8 @@ add_module('sidebar.pl');
 
 test_page(update_page('SideBar', 'mu'), '<div class="sidebar"><p>mu</p></div>');
 test_page(get_page('HomePage'), '<div class="sidebar"><p>mu</p></div>');
+
+print '[with forms]'; # + pagelock + forms
 
 add_module('forms.pl');
 
@@ -2585,8 +2586,33 @@ test_page(get_page('SideBar'), '<div class="sidebar"><form><h1>mu</h1></form></d
 test_page(get_page('HomePage'), '<div class="sidebar"><form><h1>mu</h1></form></div>');
 # test_page(get_page('HomePage'), '<div class="sidebar"><p>&lt;form&gt;&lt;h1&gt;mu&lt;/h1&gt;&lt;/form&gt;</p></div>');
 
-*GetHeader = *OldSideBarGetHeader;
 remove_rule(\&FormsRule);
+
+print '[with toc]';
+
+add_module('toc.pl');
+
+update_page('SideBar', "bla\n\n"
+	    . "== mu ==\n\n"
+	    . "bla");
+
+update_page('toc_test', "bla\n"
+	    . "<toc>\n"
+	    . "murks\n"
+	    . "==two=\n"
+	    . "bla\n"
+	    . "===three==\n"
+	    . "bla\n"
+	    . "=one=\n");
+
+test_page(get_page('toc_test'),
+	  quotemeta('<ol><li><a href="#toc0">two</a><ol><li><a href="#toc1">three</a></li></ol></li><li><a href="#toc2">one</a></li></ol>'),
+	  quotemeta('<h2><a id="toc0">two</a></h2>'),
+	  quotemeta('<h1><a id="toc2">one</a></h1>'),
+	  quotemeta('bla </p><div class="toc"><h2>Contents</h2><ol><li><a '),
+	  quotemeta('one</a></li></ol></div><p> murks'));
+
+remove_rule(\&TocRule);
 
 # --------------------
 
