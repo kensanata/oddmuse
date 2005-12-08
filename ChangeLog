@@ -1,3 +1,12 @@
+2005-12-08  Alex Schroeder  <alex@gnu.org>
+
+	* modules/toc.pl (TocRule): Only set $TocShown if $TocAutomatic is
+	true, and therefore a table of contents has in fact been shown.
+	This solves the problem of <toc> only working before the first
+	heading (and requiring no headings in the sidebar).
+	(TocRule, TocHeadings): Change how anchor names are determined to
+	rule out conflicts with included pages such as the sidebar.
+
 2005-12-07  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoPageLock): No longer print a separate error if the id
