@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.27 2005/12/08 10:34:49 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.28 2005/12/08 12:42:36 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
@@ -27,10 +27,11 @@ $RuleOrder{ \&TocRule } = 90;
 use vars qw($TocAutomatic);
 
 $TocAutomatic = 1;
-my $TocCounter = 0;
+my $TocCounter = ();
 my $TocShown = 0;
 
 sub TocRule {
+  my $key = $OpenPageName||'toc';
   if (m/\G&lt;toc&gt;/gci) {
     my $html = CloseHtmlEnvironments()
       . ($PortraitSupportColorDiv ? '</div>' : '');
@@ -50,7 +51,7 @@ sub TocRule {
     $html .= TocHeadings() if not $TocShown and $TocAutomatic;
     $TocShown = 1 if $TocAutomatic;
     $html .= AddHtmlEnvironment('h' . $depth)
-      . $q->a({-id=>'toc' . $TocCounter++}, '');
+      . $q->a({-id=>$key . ++$TocCounter{$key}}, '');
     $PortraitSupportColorDiv = 0; # after the HTML has been determined.
     $PortraitSupportColor = 0;
     return $html;
@@ -74,7 +75,7 @@ sub TocRule {
     $html .= TocHeadings() if not $TocShown and $TocAutomatic;
     $TocShown = 1 if $TocAutomatic;
     $html .= "<h$depth>"
-      . $q->a({-id=>'toc' . $TocCounter++}, $text)
+      . $q->a({-id=>$key . ++$TocCounter{$key}}, $text)
       . "</h$depth>"
       . AddHtmlEnvironment('p');
     $PortraitSupportColorDiv = 0; # after the HTML has been determined.
@@ -94,14 +95,14 @@ sub TocHeadings {
   my $Headings           = "<h2>" . T('Contents') . "</h2>";
   my $HeadingsLevel      = undef;
   my $HeadingsLevelStart = undef;
-  my $count              = 0;
+  my $count              = 1;
   # try to determine what will end up as a header
   foreach my $line (grep(/^\=+.*\=+[ \t]*$/, split(/\n/, $page))) {
     next unless $line =~ /^(\=+)[ \t]*(.*?)[ \t]*\=+[ \t]*$/;
     my $depth = length($1);
     my $text  = $2;
     next unless $text;
-    my $link = "toc$count";
+    my $link = ($OpenPageName||'toc') . $count;
     $text = QuoteHtml($text);
     if (not defined $HeadingsLevelStart) {
       # $HeadingsLevel is set to $depth - 1 so that we get an opening
