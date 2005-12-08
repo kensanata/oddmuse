@@ -2194,51 +2194,45 @@ InitVariables();
 
 %Test = split('\n',<<'EOT');
 == make honey ==\n\nMoo.\n
-<h2><a id="toc0">make honey</a></h2><p>Moo.</p>
+<h2><a id="toc1">make honey</a></h2><p>Moo.</p>
 EOT
 
 run_tests();
 
-update_page('toc_test', "bla\n"
-	    . "=one=\n"
-	    . "blarg\n"
-	    . "==two==\n"
-	    . "bla\n"
-	    . "==two==\n"
-	    . "mu.");
-
-test_page(get_page('toc_test'),
-	  quotemeta('<ol><li><a href="#toc0">one</a><ol><li><a href="#toc1">two</a></li><li><a href="#toc2">two</a></li></ol></li></ol>'),
-	  quotemeta('<h1><a id="toc0">one</a></h1>'),
-	  quotemeta('<h2><a id="toc1">two</a></h2>'),
+test_page(update_page('toc', "bla\n"
+		      . "=one=\n"
+		      . "blarg\n"
+		      . "==two==\n"
+		      . "bla\n"
+		      . "==two==\n"
+		      . "mu."),
+	  quotemeta('<ol><li><a href="#toc1">one</a><ol><li><a href="#toc2">two</a></li><li><a href="#toc3">two</a></li></ol></li></ol>'),
+	  quotemeta('<h1><a id="toc1">one</a></h1>'),
+	  quotemeta('<h2><a id="toc2">two</a></h2>'),
 	  quotemeta('bla </p><div class="toc"><h2>Contents</h2><ol><li><a '),
 	  quotemeta('two</a></li></ol></li></ol></div><h1><a '),);
 
-update_page('toc_test', "bla\n"
-	    . "==two=\n"
-	    . "bla\n"
-	    . "===three==\n"
-	    . "bla\n"
-	    . "==two==\n");
+test_page(update_page('toc', "bla\n"
+		      . "==two=\n"
+		      . "bla\n"
+		      . "===three==\n"
+		      . "bla\n"
+		      . "==two==\n"),
+	  quotemeta('<ol><li><a href="#toc1">two</a><ol><li><a href="#toc2">three</a></li></ol></li><li><a href="#toc3">two</a></li></ol>'),
+	  quotemeta('<h2><a id="toc1">two</a></h2>'),
+	  quotemeta('<h3><a id="toc2">three</a></h3>'));
 
-test_page(get_page('toc_test'),
-	  quotemeta('<ol><li><a href="#toc0">two</a><ol><li><a href="#toc1">three</a></li></ol></li><li><a href="#toc2">two</a></li></ol>'),
-	  quotemeta('<h2><a id="toc0">two</a></h2>'),
-	  quotemeta('<h3><a id="toc1">three</a></h3>'));
-
-update_page('toc_test', "bla\n"
-	    . "<toc>\n"
-	    . "murks\n"
-	    . "==two=\n"
-	    . "bla\n"
-	    . "===three==\n"
-	    . "bla\n"
-	    . "=one=\n");
-
-test_page(get_page('toc_test'),
-	  quotemeta('<ol><li><a href="#toc0">two</a><ol><li><a href="#toc1">three</a></li></ol></li><li><a href="#toc2">one</a></li></ol>'),
-	  quotemeta('<h2><a id="toc0">two</a></h2>'),
-	  quotemeta('<h1><a id="toc2">one</a></h1>'),
+test_page(update_page('toc', "bla\n"
+		      . "<toc>\n"
+		      . "murks\n"
+		      . "==two=\n"
+		      . "bla\n"
+		      . "===three==\n"
+		      . "bla\n"
+		      . "=one=\n"),
+	  quotemeta('<ol><li><a href="#toc1">two</a><ol><li><a href="#toc2">three</a></li></ol></li><li><a href="#toc3">one</a></li></ol>'),
+	  quotemeta('<h2><a id="toc1">two</a></h2>'),
+	  quotemeta('<h1><a id="toc3">one</a></h1>'),
 	  quotemeta('bla </p><div class="toc"><h2>Contents</h2><ol><li><a '),
 	  quotemeta('one</a></li></ol></div><p> murks'),);
 
@@ -2289,10 +2283,10 @@ remove_rule(\&UsemodRule);
 add_module('toc.pl');
 update_page('headers', "== one ==\ntext\n== two ==\ntext\n== three ==\ntext\n");
 test_page(get_page('headers'),
-	  '<li><a href="#toc0">one</a></li>',
-	  '<li><a href="#toc1">two</a></li>',
-	  '<h2><a id="toc0">one</a></h2>',
-	  '<h2><a id="toc1">two</a></h2>', );
+	  '<li><a href="#headers1">one</a></li>',
+	  '<li><a href="#headers2">two</a></li>',
+	  '<h2><a id="headers1">one</a></h2>',
+	  '<h2><a id="headers2">two</a></h2>', );
 remove_rule(\&TocRule);
 
 # headers only
@@ -2324,11 +2318,11 @@ update_page('headers', "[new]foo\n== one ==\ntext\n== two ==\ntext\n== three ==\
 test_page(get_page('headers'),
 	  '<div class="content browse"><div class="color one"><p>foo </p></div>', # default to before the header
 	  '<div class="toc"><h2>Contents</h2><ol>',
-	  '<li><a href="#toc0">one</a></li>',
-	  '<li><a href="#toc1">two</a></li>',
-	  '<li><a href="#toc2">three</a></li></ol></div>',
-	  '<h2><a id="toc0">one</a></h2><p>text </p>',
-	  '<h2><a id="toc1">two</a></h2>', );
+	  '<li><a href="#headers1">one</a></li>',
+	  '<li><a href="#headers2">two</a></li>',
+	  '<li><a href="#headers3">three</a></li></ol></div>',
+	  '<h2><a id="headers1">one</a></h2><p>text </p>',
+	  '<h2><a id="headers2">two</a></h2>', );
 remove_rule(\&TocRule);
 
 # headers only
@@ -2343,11 +2337,11 @@ add_module('usemod.pl');
 add_module('toc.pl');
 update_page('headers', "[new]foo\n== one ==\ntext\n== two ==\ntext\n== three ==\ntext\n");
 test_page(get_page('headers'),
-	  '<li><a href="#toc0">one</a></li>',
-	  '<li><a href="#toc1">two</a></li>',
+	  '<li><a href="#headers1">one</a></li>',
+	  '<li><a href="#headers2">two</a></li>',
 	  '<div class="color one"><p>foo </p></div>',
-	  '<h2><a id="toc0">one</a></h2>',
-	  '<h2><a id="toc1">two</a></h2>', );
+	  '<h2><a id="headers1">one</a></h2>',
+	  '<h2><a id="headers2">two</a></h2>', );
 
 remove_rule(\&UsemodRule);
 remove_rule(\&TocRule);
@@ -2585,6 +2579,7 @@ test_page(get_page('SideBar'), '<div class="sidebar"><form><h1>mu</h1></form></d
 # correctly.
 test_page(get_page('HomePage'), '<div class="sidebar"><form><h1>mu</h1></form></div>');
 # test_page(get_page('HomePage'), '<div class="sidebar"><p>&lt;form&gt;&lt;h1&gt;mu&lt;/h1&gt;&lt;/form&gt;</p></div>');
+get_page('action=pagelock id=SideBar set=0 pwd=foo');
 
 remove_rule(\&FormsRule);
 
@@ -2592,27 +2587,29 @@ print '[with toc]';
 
 add_module('toc.pl');
 
+AppendStringToFile($ConfigFile, "\$TocAutomatic = 0;\n");
+
 update_page('SideBar', "bla\n\n"
 	    . "== mu ==\n\n"
 	    . "bla");
 
-update_page('toc_test', "bla\n"
-	    . "<toc>\n"
-	    . "murks\n"
-	    . "==two=\n"
-	    . "bla\n"
-	    . "===three==\n"
-	    . "bla\n"
-	    . "=one=\n");
-
-test_page(get_page('toc_test'),
-	  quotemeta('<ol><li><a href="#toc0">two</a><ol><li><a href="#toc1">three</a></li></ol></li><li><a href="#toc2">one</a></li></ol>'),
-	  quotemeta('<h2><a id="toc0">two</a></h2>'),
-	  quotemeta('<h1><a id="toc2">one</a></h1>'),
+test_page(update_page('toc', "bla\n"
+		      . "<toc>\n"
+		      . "murks\n"
+		      . "==two=\n"
+		      . "bla\n"
+		      . "===three==\n"
+		      . "bla\n"
+		      . "=one=\n"),
+	  quotemeta('<ol><li><a href="#toc1">two</a><ol><li><a href="#toc2">three</a></li></ol></li><li><a href="#toc3">one</a></li></ol>'),
+	  quotemeta('<h2><a id="toc1">two</a></h2>'),
+	  quotemeta('<h1><a id="toc3">one</a></h1>'),
 	  quotemeta('bla </p><div class="toc"><h2>Contents</h2><ol><li><a '),
 	  quotemeta('one</a></li></ol></div><p> murks'));
 
 remove_rule(\&TocRule);
+
+*GetHeader = *OldSideBarGetHeader;
 
 # --------------------
 
