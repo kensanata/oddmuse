@@ -258,7 +258,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.629.2.2 2005/12/11 18:41:00 lude Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.629.2.3 2005/12/11 20:09:12 lude Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -266,7 +266,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   $FullUrl = $ScriptName unless $FullUrl; # URL used in forms
   $Now = time;	       # Reset in case script is persistent
   my $ts = (stat($IndexFile))[9]; # always stat for multiple server processes
-  ReInit() if $LastUpdate != $ts; # reinit if another process changed files
+  ReInit() if ($LastUpdate and $LastUpdate != $ts); # reinit if another process changed files
   $LastUpdate = $ts;
   %Locks = ();
   @Blocks = ();
@@ -1277,6 +1277,7 @@ sub ResolveId { # return css class, resolved id, title (eg. for popups), exist-o
     my $site = $NearSource{$id}[0];
     return ('near', GetInterSiteUrl($site, $id), $site); # return source as title attribute
   }
+  return ('', '', '', '');
 }
 
 sub BrowseResolvedPage {
@@ -1459,6 +1460,7 @@ sub DoRc {
   my $i = 0;
   while ($i < @fullrc) { # Optimization: skip old entries quickly
     my ($ts) = split(/$FS/, $fullrc[$i]); # just look at the first element
+    $ts = 0 unless $ts;
     if ($ts >= $starttime) {
       $i -= 1000  if ($i > 0);
       last;
@@ -1468,6 +1470,7 @@ sub DoRc {
   $i -= 1000  if (($i > 0) && ($i >= @fullrc));
   for (; $i < @fullrc ; $i++) {
     my ($ts) = split(/$FS/, $fullrc[$i]); # just look at the first element
+    $ts = 0 unless $ts;
     last if ($ts >= $starttime);
   }
   if ($i == @fullrc && $showHTML) {
@@ -1611,7 +1614,7 @@ sub GetRc {
       &$printDailyTear($date);
     }
     if ($all) {
-      $revision = undef if ($ts and $changetime{$pagename} and $ts == $changetime{$pagename}); # last one
+      $revision = undef if ($ts and $changetime{$pagename} and $ts == $changetime{$pagename}); # last one without revision
     }
     &$printRCLine($pagename, $ts, $host, $username, $summary, $minor, $revision,
 		  \@languages, $cluster);
@@ -2569,7 +2572,7 @@ sub SaveKeepFile {
 
 sub EncodePage {
   my @data = @_;
-  my $result;
+  my $result = '';
   $result .= (shift @data) . ': ' . EscapeNewlines(shift @data) . "\n" while (@data);
   return $result;
 }
