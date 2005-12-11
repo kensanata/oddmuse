@@ -258,7 +258,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.631 2005/12/07 13:00:44 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.632 2005/12/11 00:43:22 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1244,8 +1244,8 @@ sub DoBrowseRequest {
 
 sub ValidId {
   my $id = shift;
-  $id =~ s/ /_/g;
   return T('Page name is missing') unless $id;
+  $id =~ s/ /_/g;
   return Ts('Page name is too long: %s', $id) if length($id) > 120;
   return Ts('Invalid Page %s (must not end with .db)', $id) if $id =~ m|\.db$|;
   return Ts('Invalid Page %s (must not end with .lck)', $id) if $id =~ m|\.lck$|;
