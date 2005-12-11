@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.8 2005/10/15 22:34:52 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.9 2005/12/11 20:15:29 lude Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
@@ -413,7 +413,7 @@ Diese Seite enthält verbotenen Text.
 No changes to be saved.
 
 This page was changed by somebody else %s.
-Diese Seite wurde von einer anderen Person %s verändert
+Diese Seite wurde von einer anderen Person %s verändert.
 The changes conflict.  Please check the page again.
 Die Änderungen beeinträchtigen sich gegenseitig.  Bitte überprüfen Sie die Seite nochmals.
 Please check whether you overwrote those changes.
