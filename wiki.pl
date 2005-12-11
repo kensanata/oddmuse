@@ -258,14 +258,16 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.629.2.1 2005/12/04 10:31:47 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.629.2.2 2005/12/11 18:41:00 lude Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
   $ScriptName = $q->url() unless defined $ScriptName; # URL used in links
   $FullUrl = $ScriptName unless $FullUrl; # URL used in forms
   $Now = time;	       # Reset in case script is persistent
-  $LastUpdate = (stat($IndexFile))[9] unless $LastUpdate;
+  my $ts = (stat($IndexFile))[9]; # always stat for multiple server processes
+  ReInit() if $LastUpdate != $ts; # reinit if another process changed files
+  $LastUpdate = $ts;
   %Locks = ();
   @Blocks = ();
   @Flags = ();
@@ -1246,8 +1248,8 @@ sub DoBrowseRequest {
 
 sub ValidId {
   my $id = shift;
-  $id =~ s/ /_/g;
   return (T('Page name is missing')) unless $id;
+  $id =~ s/ /_/g;
   return (Ts('Page name is too long: %s', $id)) if length($id) > 120;
   return (Ts('Invalid Page %s (must not end with .db)', $id)) if $id =~ m|\.db$|;
   return (Ts('Invalid Page %s (must not end with .lck)', $id)) if $id =~ m|\.lck$|;
@@ -2971,8 +2973,8 @@ sub UserIsAdmin {
   my $pwd = GetParam('pwd', '');
   return 0 unless $pwd;
   foreach (split(/\s+/, $AdminPass)) {
-    next if ($_ eq '');
-    return 1 if ($pwd eq $_);
+    next if $_ eq '';
+    return 1 if $pwd eq $_;
   }
   return 0;
 }
