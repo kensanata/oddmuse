@@ -1,3 +1,9 @@
+2005-12-13  Alex Schroeder  <alex@gnu.org>
+
+	* modules/tables-long.pl (TablesLongRule): Fix problem with extra
+	hr element or missing last cell if the table was the last thing on
+	the page.
+
 2005-12-11  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (ValidId): Return when $id is undefined before doing a
