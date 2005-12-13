@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.14 2005/12/13 12:48:22 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.15 2005/12/13 22:50:33 as Exp $</p>';
 
 push(@MyRules, \&TablesLongRule);
 
@@ -55,24 +55,32 @@ sub TablesLongRule {
     my @rows = ();
     my %row = ();
     my %class = %default_class;
+    my %rowspan = ();
     my $label = '';
+    my $rowspan = '';
     my $first = 1;
     for my $line (@lines) {
-      if ($line =~ m|^($regexp)/?([A-Za-z\x80-\xff/]+)?[:=] *(.*)|) { # regexp changes for other tables
+      if ($line =~ m|^($regexp)/?([0-9]+)?/?([A-Za-z\x80-\xff/]+)?[:=] *(.*)|) { # regexp changes for other tables
 	$label = $1;
-	$class = join(' ', split(m|/|, $2)); # no leading / therefore no leading space
-	$line = $3;
+	$rowspan = $2;
+	$class = join(' ', split(m|/|, $3)); # no leading / therefore no leading space
+	$line = $4;
 	if ($row{$label}) { # repetition of label, we must start a new row
-	  TablesLongRow(\@labels, \%row, \%class, $first);
+	  TablesLongRow(\@labels, \%row, \%class, \%rowspan, $first);
 	  $first = 0;
 	  %row = ();
 	  %class = %default_class;
+	  foreach my $key (keys %rowspan) {
+	    delete $rowspan{$key} if $rowspan{$key} == 1;
+	    $rowspan{$key}--; # 0 will turn into negative numbers
+	  }
 	}
 	$class{$label} = $class if $class;
+	$rowspan{$label} = $rowspan if $rowspan;
       }
       $row{$label} .= $line . "\n";
     }
-    TablesLongRow(\@labels, \%row, \%class, $first); # don't forget the last row
+    TablesLongRow(\@labels, \%row, \%class, \%rowspan, $first); # don't forget the last row
     Clean('</table>' . AddHtmlEnvironment('p'));
     pos = $lastpos;
     return '';
@@ -84,19 +92,24 @@ sub TablesLongRow {
   my @labels = @{$_[0]};
   my %row = %{$_[1]};
   my %class = %{$_[2]};
-  my $first = $_[3];
+  my %rowspan = %{$_[3]};
+  my $first = $_[4];
   Clean('<tr>');
   # first print the old row
   for my $i (0 .. $#labels) {
     next if not $row{$labels[$i]}; # should only happen after previous cellspans
-    my $span = 1;
-    while ($i + $span < $#labels + 1 and not $row{$labels[$i+$span]}) {
-      $span++;
+    my $colspan = 1;
+    while ($i + $colspan < $#labels + 1
+	   and not $row{$labels[$i+$colspan]}
+	   and not $rowspan{$labels[$i+$colspan]}) {
+      $colspan++;
     }
+    my $rowspan = $rowspan{$labels[$i]};
     my $class = $class{$labels[$i]};
     my $html = '<';
     $html .= $first ? 'th' : 'td';
-    $html .= " colspan=\"$span\"" if $span > 1;
+    $html .= " colspan=\"$colspan\"" if $colspan != 1;
+    $html .= " rowspan=\"$rowspan\"" if defined $rowspan and $rowspan >= 0; # ignore negatives
     $html .= " class=\"$class\"" if $class;
     $html .= '>';
     Clean($html);
