@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.13 2005/10/09 11:58:34 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.14 2005/12/13 12:48:22 as Exp $</p>';
 
 push(@MyRules, \&TablesLongRule);
 
@@ -45,7 +45,7 @@ sub TablesLongRule {
     my $regexp = join('|', @labels);
     # read complete table
     my @lines = ();
-    while (m/\G(.*)\n/cg) {
+    while (m/\G(.*)\n?/cg) { # last line may miss newline
       my $line = $1;
       last if substr($line,0,4) eq ('----'); # the rest of this line is ignored!
       push(@lines, $line);
