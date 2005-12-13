@@ -1,3 +1,8 @@
+2005-12-11  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ValidId): Return when $id is undefined before doing a
+	replacement in order to not get a warning.
+
 2005-12-08  Alex Schroeder  <alex@gnu.org>
 
 	* modules/toc.pl (TocRule): Only set $TocShown if $TocAutomatic is
