@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: aggregate.pl,v 1.1 2005/12/16 12:40:28 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: aggregate.pl,v 1.2 2005/12/16 12:48:27 as Exp $</p>';
 
 push(@MyRules, \&AggregateRule);
 
@@ -25,17 +25,22 @@ sub AggregateRule {
     Clean(CloseHtmlEnvironments());
     Dirty($1);
     my ($oldpos, $old_, $str) = ((pos), $_, $2);
+    print $q->start_div({class=>"aggregate journal"});
     while ($str =~ m/"([^\"&]+)"/g) {
+      my $title = $1;
       local $OpenPageName = FreeToNormal($1);
       my $page = GetPageContent($OpenPageName);
       my $i = index($page, "\n=");
       my $j = index($page, "\n----");
       $page = substr($page, 0, $i) if $i;
       $page = substr($page, 0, $j) if $j;
-      print $q->start_div({class=>"include aggregate $OpenPageName"});
+      $page =~ s/^=.*\n//; # if it starts with a header
+      print $q->start_div({class=>"page"}),
+	$q->h2(GetPageLink($OpenPageName, $title));
       ApplyRules(QuoteHtml($page), 1, 0, undef, 'p');
       print $q->end_div();
     }
+    print $q->end_div();
     Clean(AddHtmlEnvironment('p'));
     pos = $oldpos;
     return '';
