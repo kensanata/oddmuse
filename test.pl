@@ -1116,6 +1116,7 @@ print '[banning]';
 
 ## Edit banned hosts as a normal user should fail
 
+clear_pages();
 $localhost = 'confusibombus';
 $ENV{'REMOTE_ADDR'} = $localhost;
 
@@ -1178,9 +1179,10 @@ See .*BannedContent.* for more information
 EOT
 
 update_page('BannedContent', "cosa\n mafia\nnostra\n", 'one banned word', 0, 1);
-test_page(update_page('CriminalPage', 'This is about the mafia'), 'Describe the new page here');
+test_page(update_page('CriminalPage', 'This is about http://mafia.example.com'), 'Describe the new page here');
 test_page($redirect, @Test);
 test_page(update_page('CriminalPage', 'This is about the cosa nostra'), 'cosa nostra');
+test_page(update_page('CriminalPage', 'This is about the mafia'), 'This is about the mafia'); # not in an url
 
 # --------------------
 
@@ -1351,22 +1353,21 @@ test_page(update_page('InterMap', "All your edits are blong to us!\n", 'required
 despam_module:
 print '[despam module]';
 
-# create simple config file
-
+clear_pages();
 add_module('despam.pl');
 
 update_page('HilariousPage', "Ordinary text.");
 update_page('HilariousPage', "Hilarious text.");
-update_page('HilariousPage', "Spam from example.com.");
+update_page('HilariousPage', "Spam from http://example.com.");
 
-update_page('NoPage', "Spam from example.com.");
+update_page('NoPage', "Spam from http://example.com.");
 
-update_page('OrdinaryPage', "Spam from example.com.");
+update_page('OrdinaryPage', "Spam from http://example.com.");
 update_page('OrdinaryPage', "Ordinary text.");
 
-update_page('ExpiredPage', "Spam from example.com.");
-update_page('ExpiredPage', "More spam from example.com.");
-update_page('ExpiredPage', "Still more spam from example.com.");
+update_page('ExpiredPage', "Spam from http://example.com.");
+update_page('ExpiredPage', "More spam from http://example.com.");
+update_page('ExpiredPage', "Still more spam from http://example.com.");
 
 update_page('BannedContent', " example\\.com\n", 'required', 0, 1);
 
@@ -1841,6 +1842,8 @@ This is <em>emphasized text containing <strong>longer strong</strong> text</em>.
 This is '''strong text containing ''emph'' text'''.
 This is <strong>strong text containing <em>emph</em> text</strong>.
 ||one||
+<table class="user"><tr><td>one</td></tr></table>
+||one|| 
 <table class="user"><tr><td>one</td></tr></table>
 || one ''two'' ||
 <table class="user"><tr><td align="center">one <em>two</em></td></tr></table>
@@ -2480,7 +2483,6 @@ print '[long table]';
 clear_pages();
 
 add_module('tables-long.pl');
-
 
 %Test = split('\n',<<'EOT');
 <table a,b>\na=a\nb=b\na=one\nb=two
