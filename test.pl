@@ -1120,20 +1120,20 @@ $ENV{'REMOTE_ADDR'} = $localhost;
 
 ## Edit banned hosts as a normal user should fail
 
-test_page(update_page('BannedHosts', "# Foo\n#Bar\n $localhost\n", 'banning me'),
+test_page(update_page('BannedHosts', "# Foo\n#Bar\n$localhost\n", 'banning me'),
 	  'Describe the new page here');
 
 ## Edit banned hosts as admin should succeed
 
-test_page(update_page('BannedHosts', "#Foo\n#Bar\n $localhost\n", 'banning me', 0, 1),
+test_page(update_page('BannedHosts', "#Foo\n#Bar\n$localhost\n", 'banning me', 0, 1),
 	  "Foo",
-	  " $localhost");
+	  $localhost);
 
 ## Edit banned hosts as a normal user should fail
 
 test_page(update_page('BannedHosts', "Something else.", 'banning me'),
 	  "Foo",
-	  " $localhost");
+	  $localhost);
 
 ## Try to edit another page as a banned user
 
@@ -1158,10 +1158,12 @@ matched
 See .*BannedContent.* for more information
 EOT
 
-update_page('BannedContent', "# cosa\n mafia\n#nostra\n", 'one banned word', 0, 1);
+update_page('BannedContent', "# cosa\nmafia\n#nostra\n", 'one banned word', 0, 1);
 test_page(update_page('CriminalPage', 'This is about http://mafia.example.com'),
 	  'Describe the new page here');
 test_page($redirect, @Test);
+test_page(update_page('CriminalPage', 'This is about http://nafia.example.com'),
+	  "This is about", "http://nafia.example.com");
 test_page(update_page('CriminalPage', 'This is about the cosa nostra'),
 	  'cosa nostra');
 test_page(update_page('CriminalPage', 'This is about the mafia'),
@@ -1827,7 +1829,7 @@ This is <strong>strong text containing <em>emph</em> text</strong>.
 ||one||
 <table class="user"><tr><td>one</td></tr></table>
 ||one|| 
-<table class="user"><tr><td>one</td></tr></table>
+<table class="user"><tr><td>one</td><td align="left"> </td></tr></table>
 || one ''two'' ||
 <table class="user"><tr><td align="center">one <em>two</em></td></tr></table>
 || one two ||
