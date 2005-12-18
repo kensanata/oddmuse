@@ -2643,6 +2643,18 @@ xpath_test(update_page('LocalNamesTest', 'OddMuse'),
 
 *GetInterSiteUrl = *OldLocalNamesGetInterSiteUrl;
 
+# --------------------
+
+config_page:
+print '[config page]';
+
+clear_pages();
+AppendStringToFile($ConfigFile, "\$ConfigPage = 'Config';\n");
+
+xpath_test(update_page('Config', '@UserGotoBarPages = ("Foo", "Bar");',
+		       'config', 0, 1),
+	   '//div[@class="header"]/span[@class="gotobar bar"]/a[@class="local"][text()="Foo"]/following-sibling::a[@class="local"][text()="Bar"]');
+
 ### END OF TESTS
 
 end:
