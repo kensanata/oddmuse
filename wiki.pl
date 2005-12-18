@@ -57,7 +57,7 @@ $InterMap $ValidatorLink @LockOnCreation $PermanentAnchors @CssList
 $RssStyleSheet $PermanentAnchorsFile @MyRules %CookieParameters
 @UserGotoBarPages $NewComment $StyleSheetPage $ConfigPage $ScriptName
 @MyMacros $CommentsPrefix @UploadTypes $AllNetworkFiles $UsePathInfo
-$UploadAllowed $LastUpdate $PageCluster $HtmlHeaders
+$UploadAllowed $LastUpdate $PageCluster $HtmlHeaders %PlainTextPages
 $RssInterwikiTranslate $UseCache $ModuleDir $DebugInfo $FullUrlPattern
 %InvisibleCookieParameters $FreeInterLinkPattern @AdminPages
 @MyAdminCode @MyInitVariables @MyMaintenance $SummaryDefaultLength);
@@ -258,7 +258,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.633 2005/12/17 18:13:10 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.634 2005/12/18 01:01:57 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -284,9 +284,11 @@ sub InitVariables {    # Init global session variables for mod_perl!
 		    $RssInterwikiTranslate, $BannedContent);
   @AdminPages = @pages unless @AdminPages;
   @LockOnCreation = @pages unless @LockOnCreation;
+  %PlainTextPages = ($BannedHosts => 1, $BannedContent => 1,
+		       $StyleSheetPage => 1, $ConfigPage => 1) unless %PlainTextPages;
   CreateDir($DataDir); # Create directory if it doesn't exist
   AllPagesList();      # Ordinary pages, read from $IndexFile (saving it requires $DataDir)
-  NearInit();          # reads $NearMap and includes InterInit (reads $InterMap, requires $InterMap quoting)
+  NearInit();          # reads $NearMap and includes InterInit (requires $InterMap quoting)
   PermanentAnchorsInit() if $PermanentAnchors; # reads $PermanentAnchorsFile
   %NearLinksUsed = (); # List of links used during this request
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
@@ -388,7 +390,7 @@ sub ApplyRules {
   local @Blocks=();     # the list of cached HTML blocks
   local @Flags=();	# a list for each block, 1 = dirty, 0 = clean
   Clean(join('', map { AddHtmlEnvironment($_) } @tags));
-  if ($OpenPageName and ($OpenPageName eq $StyleSheetPage or $OpenPageName eq $ConfigPage)) {
+  if ($PlainTextPages{$OpenPageName}) {
     Clean($q->pre($text));
   } elsif (my ($type) = TextIsFile($text)) {
     Clean(CloseHtmlEnvironments() . $q->p(T('This page contains an uploaded file:'))
@@ -2956,10 +2958,10 @@ sub UserIsBanned {
   $ip = $ENV{'REMOTE_ADDR'};
   $host = GetRemoteHost();
   foreach (split(/\n/, GetPageContent($BannedHosts))) {
-    if (/^ ([^ ]+)[ \t]*$/) {  # only read lines with one word after one space
-      my $rule = $1;
-      return $rule  if ($ip   =~ /$rule/i);
-      return $rule  if ($host =~ /$rule/i);
+    if (/^[^#]\s*(\S+)/) {  # all lines except empty lines and comments, trim whitespace
+      my $regexp = $1;
+      return $regexp  if ($ip   =~ /$regexp/i);
+      return $regexp  if ($host =~ /$regexp/i);
     }
   }
   return 0;
@@ -2992,11 +2994,11 @@ sub BannedContent {
   my $str = shift;
   my @urls = $str =~ /$FullUrlPattern/g;
   foreach (split(/\n/, GetPageContent($BannedContent))) {
-    if (/^ ([^ ]+)[ \t]*$/) {  # only read lines with one word after one space
-      my $rule = $1;
+    if (/^[^#]\s*(\S+)/) {  # all lines except empty lines and comments, trim whitespace
+      my $regexp = $1;
       foreach my $url (@urls) {
-	if ($url =~ /($rule)/i) {
-	  return Tss('Rule "%1" matched "%2" on this page.', $rule, $url);
+	if ($url =~ /($regexp)/i) {
+	  return Tss('Rule "%1" matched "%2" on this page.', $regexp, $url);
 	}
       }
     }
