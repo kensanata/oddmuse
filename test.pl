@@ -1114,60 +1114,40 @@ xpath_test($page,
 banning:
 print '[banning]';
 
-## Edit banned hosts as a normal user should fail
-
 clear_pages();
 $localhost = 'confusibombus';
 $ENV{'REMOTE_ADDR'} = $localhost;
 
-@Test = split('\n',<<'EOT');
-Describe the new page here
-EOT
+## Edit banned hosts as a normal user should fail
 
-test_page(update_page('BannedHosts', "Foo\nBar\n $localhost\n", 'banning me'), @Test);
+test_page(update_page('BannedHosts', "# Foo\n#Bar\n $localhost\n", 'banning me'),
+	  'Describe the new page here');
 
 ## Edit banned hosts as admin should succeed
 
-@Test = split('\n',<<"EOT");
-Foo
- $localhost
-EOT
-
-test_page(update_page('BannedHosts', "Foo\nBar\n $localhost\n", 'banning me', 0, 1), @Test);
+test_page(update_page('BannedHosts', "#Foo\n#Bar\n $localhost\n", 'banning me', 0, 1),
+	  "Foo",
+	  " $localhost");
 
 ## Edit banned hosts as a normal user should fail
 
-@Test = split('\n',<<"EOT");
-Foo
- $localhost
-EOT
-
-test_page(update_page('BannedHosts', "Something else.", 'banning me'), @Test);
+test_page(update_page('BannedHosts', "Something else.", 'banning me'),
+	  "Foo",
+	  " $localhost");
 
 ## Try to edit another page as a banned user
 
-@Test = split('\n',<<'EOT');
-Describe the new page here
-EOT
-
-test_page(update_page('BannedUser', 'This is a test which should fail.', 'banning test'), @Test);
+test_page(update_page('BannedUser', 'This is a test which should fail.', 'banning test'),
+	  'Describe the new page here');
 
 ## Try to edit the same page as a banned user with admin password
 
-@Test = split('\n',<<'EOT');
-This is a test
-EOT
-
-test_page(update_page('BannedUser', 'This is a test.', 'banning test', 0, 1), @Test);
+test_page(update_page('BannedUser', 'This is a test.', 'banning test', 0, 1),
+	  "This is a test");
 
 ## Unbann myself again, testing the regexp
 
-@Test = split('\n',<<'EOT');
-Foo
-Bar
-EOT
-
-test_page(update_page('BannedHosts', "Foo\nBar\n", 'banning me', 0, 1), @Test);
+test_page(update_page('BannedHosts', "#Foo\n#Bar\n", 'banning me', 0, 1), "Foo", "Bar");
 
 ## Banning content
 
@@ -1178,11 +1158,14 @@ matched
 See .*BannedContent.* for more information
 EOT
 
-update_page('BannedContent', "cosa\n mafia\nnostra\n", 'one banned word', 0, 1);
-test_page(update_page('CriminalPage', 'This is about http://mafia.example.com'), 'Describe the new page here');
+update_page('BannedContent', "# cosa\n mafia\n#nostra\n", 'one banned word', 0, 1);
+test_page(update_page('CriminalPage', 'This is about http://mafia.example.com'),
+	  'Describe the new page here');
 test_page($redirect, @Test);
-test_page(update_page('CriminalPage', 'This is about the cosa nostra'), 'cosa nostra');
-test_page(update_page('CriminalPage', 'This is about the mafia'), 'This is about the mafia'); # not in an url
+test_page(update_page('CriminalPage', 'This is about the cosa nostra'),
+	  'cosa nostra');
+test_page(update_page('CriminalPage', 'This is about the mafia'),
+	  'This is about the mafia'); # not in an url
 
 # --------------------
 
