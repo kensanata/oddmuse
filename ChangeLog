@@ -1,8 +1,22 @@
+2005-12-18  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (BannedContent, UserIsBanned): Changed parsing in order
+	to use http://www.usemod.com/cgi-bin/mb.pl?SharedAntiSpam.
+	(%PlainTextPages, InitVariables): New option.
+	(ApplyRules): Instead of hardcoding StyleSheetPage and ConfigPage,
+	use the new option to return the page as preformatted.
+
+2005-12-17  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (BannedContent): Only check the URLs of the
+	page (ie. filter for $FullUrlPattern first).
+
 2005-12-13  Alex Schroeder  <alex@gnu.org>
 
 	* modules/tables-long.pl (TablesLongRule): Fix problem with extra
 	hr element or missing last cell if the table was the last thing on
 	the page.
+	(TablesLongRule, TablesLongRow): Implement rowspan.
 
 2005-12-11  Alex Schroeder  <alex@gnu.org>
 
