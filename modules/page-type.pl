@@ -42,7 +42,7 @@ sub PageTypeInit {
 # have page clustering enabled (see the manual), then the page type
 # will automatically act as a cluster.
 
-$ModulesDescription .= '<p>$Id: page-type.pl,v 1.4 2005/01/06 23:58:18 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: page-type.pl,v 1.5 2005/12/18 20:25:41 as Exp $</p>';
 
 *OldPageTypeDoPost = *DoPost;
 *DoPost = *NewPageTypeDoPost;
@@ -53,10 +53,12 @@ sub NewPageTypeDoPost {
   if ($type and $type ne T('None')) {
     $type = "[[$type]]" unless $WikiLinks and $type =~ /^$LinkPattern$/;
     my $text = $type . "\n\n" . GetParam('text','');
-    # We can't use SetParam(), because we're trying to override a parameter
-    # used by the script.  GetParam prefers the actual script parameters to
-    # parameters set by the cookie (which is what SetParam manipulates).
-    $q->param(-name=>'text', -value=>$text);
+    # We can't use SetParam(), because we're trying to override a
+    # parameter used by the script.  GetParam prefers the actual
+    # script parameters to parameters set by the cookie (which is what
+    # SetParam manipulates).  We also need to unquote, because
+    # GetParam automatically unquotes.
+    $q->param(-name=>'text', -value=>UnquoteHtml($text));
   }
   OldPageTypeDoPost($id);
 }
