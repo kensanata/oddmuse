@@ -5,6 +5,12 @@
 	(%PlainTextPages, InitVariables): New option.
 	(ApplyRules): Instead of hardcoding StyleSheetPage and ConfigPage,
 	use the new option to return the page as preformatted.
+	(UserIsBanned, BannedContent): Fix regular expressions.
+	(InitVariables): Make sure there's no empty string as a key for
+	%PlainTextPages.  This happens if $ConfigPage is not set, for
+	example.
+	(ApplyRules): Safety check: Make sure $OpenPageName is set before
+	using %PlainTextPages.
 
 2005-12-17  Alex Schroeder  <alex@gnu.org>
 
