@@ -258,7 +258,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.634 2005/12/18 01:01:57 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.635 2005/12/18 14:28:59 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -286,6 +286,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   @LockOnCreation = @pages unless @LockOnCreation;
   %PlainTextPages = ($BannedHosts => 1, $BannedContent => 1,
 		       $StyleSheetPage => 1, $ConfigPage => 1) unless %PlainTextPages;
+  delete $PlainTextPages{''}; # $ConfigPage and others might be empty.
   CreateDir($DataDir); # Create directory if it doesn't exist
   AllPagesList();      # Ordinary pages, read from $IndexFile (saving it requires $DataDir)
   NearInit();          # reads $NearMap and includes InterInit (requires $InterMap quoting)
@@ -390,7 +391,7 @@ sub ApplyRules {
   local @Blocks=();     # the list of cached HTML blocks
   local @Flags=();	# a list for each block, 1 = dirty, 0 = clean
   Clean(join('', map { AddHtmlEnvironment($_) } @tags));
-  if ($PlainTextPages{$OpenPageName}) {
+  if ($OpenPageName and $PlainTextPages{$OpenPageName}) { # there should be no $PlainTextPages{''}
     Clean($q->pre($text));
   } elsif (my ($type) = TextIsFile($text)) {
     Clean(CloseHtmlEnvironments() . $q->p(T('This page contains an uploaded file:'))
@@ -2958,7 +2959,7 @@ sub UserIsBanned {
   $ip = $ENV{'REMOTE_ADDR'};
   $host = GetRemoteHost();
   foreach (split(/\n/, GetPageContent($BannedHosts))) {
-    if (/^[^#]\s*(\S+)/) {  # all lines except empty lines and comments, trim whitespace
+    if (/^\s*([^#]\S+)/) {  # all lines except empty lines and comments, trim whitespace
       my $regexp = $1;
       return $regexp  if ($ip   =~ /$regexp/i);
       return $regexp  if ($host =~ /$regexp/i);
@@ -2994,7 +2995,7 @@ sub BannedContent {
   my $str = shift;
   my @urls = $str =~ /$FullUrlPattern/g;
   foreach (split(/\n/, GetPageContent($BannedContent))) {
-    if (/^[^#]\s*(\S+)/) {  # all lines except empty lines and comments, trim whitespace
+    if (/^\s*([^#]\S+)/) {  # all lines except empty lines and comments, trim whitespace
       my $regexp = $1;
       foreach my $url (@urls) {
 	if ($url =~ /($regexp)/i) {
