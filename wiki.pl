@@ -210,6 +210,14 @@ sub Init {
   $FS  = "\x1e";      # The FS character is the RECORD SEPARATOR control char in ASCII
   $Message = '';      # Warnings and non-fatal errors.
   InitLinkPatterns(); # Link pattern can be changed in config files
+  InitModules();      # Modules come first so that users can change module variables in config
+  InitConfig();       # Config comes as early as possible; remember $q is not available here
+  InitRequest();      # get $q with $MaxPost and $HttpCharset; set these in the config file
+  InitCookie();	      # After InitRequest, because $q is used
+  InitVariables();    # After config, to change variables, after InitCookie for GetParam
+}
+
+sub InitModules {
   if ($UseConfig and $ModuleDir and -d $ModuleDir) {
     foreach my $lib (glob("$ModuleDir/*.pm $ModuleDir/*.pl")) {
       next unless ($lib =~ /^($ModuleDir\/[-\w\d_]+\.p[lm])$/o);
@@ -219,18 +227,19 @@ sub Init {
       $Message .= CGI::p("$lib: $@") if $@; # no $q exists, yet
     }
   }
+}
+
+sub InitConfig {
   if ($UseConfig and $ConfigFile and -f $ConfigFile and not $INC{$ConfigFile}) {
-    do $ConfigFile;
-    $Message .= CGI::p("$ConfigFile: $@") if $@; # no $q exists, yet
+    do $ConfigFile; # these options must be set in a wrapper script or via the environment
+    $Message .= CGI::p("$ConfigFile: $@") if $@; # remember, no $q exists, yet
   }
-  InitRequest();      # get $q
   if ($ConfigPage) {  # $FS, $HttpCharset, $MaxPost must be set in config file!
-    eval GetPageContent($ConfigPage);
-    $Message .= $q->p("$ConfigPage: $@") if $@;
+    my ($status, $data) = ReadFile(GetPageFile(FreeToNormal($ConfigPage)));
+    my %data = ParseData($data); # before InitVariables so GetPageContent won't work
+    eval $data{text} if $data{text};
+    $Message .= CGI::p("$ConfigPage: $@") if $@;
   }
-  eval { local $SIG{__DIE__}; binmode(STDOUT, ":raw"); };
-  InitCookie();	      # After InitRequest, because $q is used
-  InitVariables();    # After config, to change variables, after InitCookie for GetParam
 }
 
 sub InitDirConfig {
@@ -254,11 +263,12 @@ sub InitRequest {
   $CGI::POST_MAX = $MaxPost;
   $q = new CGI;
   $q->charset($HttpCharset) if $HttpCharset;
+  eval { local $SIG{__DIE__}; binmode(STDOUT, ":raw"); }; # we treat input and output as bytes
 }
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.635 2005/12/18 14:28:59 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.636 2005/12/18 19:11:39 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -392,7 +402,7 @@ sub ApplyRules {
   local @Flags=();	# a list for each block, 1 = dirty, 0 = clean
   Clean(join('', map { AddHtmlEnvironment($_) } @tags));
   if ($OpenPageName and $PlainTextPages{$OpenPageName}) { # there should be no $PlainTextPages{''}
-    Clean($q->pre($text));
+    Clean(CloseHtmlEnvironments() . $q->pre($text));
   } elsif (my ($type) = TextIsFile($text)) {
     Clean(CloseHtmlEnvironments() . $q->p(T('This page contains an uploaded file:'))
 	  . $q->p(GetDownloadLink($OpenPageName, (substr($type, 0, 6) eq 'image/'), $revision)));
