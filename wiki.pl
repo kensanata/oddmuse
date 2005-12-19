@@ -268,7 +268,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.636 2005/12/18 19:11:39 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.637 2005/12/19 00:14:47 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1544,12 +1544,17 @@ sub GetFilterForm {
   $form .= $q->input({-type=>'hidden', -name=>'showedit', -value=>1}) if (GetParam('showedit', 0));
   $form .= $q->input({-type=>'hidden', -name=>'days', -value=>GetParam('days', $RcDefault)})
     if (GetParam('days', $RcDefault) != $RcDefault);
-  my $table = $q->Tr($q->td(T('Title:')) . $q->td($q->textfield(-name=>'match', -size=>20)))
-    . $q->Tr($q->td(T('Title and Body:')) . $q->td($q->textfield(-name=>'rcfilteronly', -size=>20)))
-    . $q->Tr($q->td(T('Username:')) . $q->td($q->textfield(-name=>'rcuseronly', -size=>20)))
-    . $q->Tr($q->td(T('Host:')) . $q->td($q->textfield(-name=>'rchostonly', -size=>20)));
-  $table .= $q->Tr($q->td(T('Language:')) . $q->td($q->textfield(-name=>'lang', -size=>10,
-    -default=>GetParam('lang', '')))) if %Languages;
+  my $table = $q->Tr($q->td($q->label({-for=>'rcmatch'}, T('Title:')))
+		     . $q->td($q->textfield(-name=>'match', -id=>'rcmatch', -size=>20)))
+    . $q->Tr($q->td($q->label({-for=>'rcfilteronly'}, T('Title and Body:')))
+	     . $q->td($q->textfield(-name=>'rcfilteronly', -id=>'rcfilteronly', -size=>20)))
+    . $q->Tr($q->td($q->label({-for=>'rcuseronly'}, T('Username:')))
+	     . $q->td($q->textfield(-name=>'rcuseronly', -id=>'rcuseronly', -size=>20)))
+    . $q->Tr($q->td($q->label({-for=>'rchostonly'}, T('Host:')))
+	     . $q->td($q->textfield(-name=>'rchostonly', -id=>'rchostonly', -size=>20)));
+  $table .= $q->Tr($q->td($q->label({-for=>'rclang'}, T('Language:')))
+		   . $q->td($q->textfield(-name=>'lang', -id=>'rclang', -size=>10,
+					  -default=>GetParam('lang', '')))) if %Languages;
   return GetFormStart(undef, 'get', 'filter') . $q->p($form) . $q->table($table)
     . $q->p($q->submit('dofilter', T('Go!'))) . $q->endform;
 }
@@ -2255,11 +2260,11 @@ sub GetCommentForm {
     return $q->div({-class=>'comment'}, GetFormStart(undef, undef, 'comment'),
 		   $q->p(GetHiddenValue('title', $OpenPageName),
 			 GetTextArea('aftertext', $comment ? $comment : $NewComment)),
-		   $q->p(T('Username:'), ' ',
-			 $q->textfield(-name=>'username', -default=>GetParam('username', ''),
+		   $q->p($q->label({-for=>'username'}, T('Username:')), ' ',
+			 $q->textfield(-name=>'username', -id=>'username', -default=>GetParam('username', ''),
 				       -override=>1, -size=>20, -maxlength=>50),
-			 T('Homepage URL:'), ' ',
-			 $q->textfield(-name=>'homepage', -default=>GetParam('homepage', ''),
+			 $q->label({-for=>'homepage'}, T('Homepage URL:')), ' ',
+			 $q->textfield(-name=>'homepage', -id=>'homepage', -default=>GetParam('homepage', ''),
 				       -override=>1, -size=>40, -maxlength=>100)),
 		   $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save')), ' ',
 			 $q->submit(-name=>'Preview', -accesskey=>T('p'), -value=>T('Preview'))),
@@ -2275,15 +2280,15 @@ sub GetFormStart {
 }
 
 sub GetSearchForm {
-  my $form = T('Search:') . ' '
-    . $q->textfield(-name=>'search', -size=>20, -accesskey=>T('f')) . ' ';
+  my $form = $q->label({-for=>'search'}, T('Search:')) . ' '
+    . $q->textfield(-name=>'search', -id=>'search', -size=>20, -accesskey=>T('f')) . ' ';
   if ($ReplaceForm) {
-    $form .= T('Replace:') . ' '
-      . $q->textfield(-name=>'replace', -size=>20) . ' ';
+    $form .= $q->label({-for=>'replace'}, T('Replace:')) . ' '
+      . $q->textfield(-name=>'replace', -id=>'replace', -size=>20) . ' ';
   }
   if (%Languages) {
-    $form .= T('Language:') . ' '
-      . $q->textfield(-name=>'lang', -size=>10, -default=>GetParam('lang', '')) . ' ';
+    $form .= $q->label({-for=>'searchlang'}, T('Language:')) . ' '
+      . $q->textfield(-name=>'lang', -id=>'searchlang', -size=>10, -default=>GetParam('lang', '')) . ' ';
   }
   return GetFormStart(undef, 'get', 'search') . $q->p($form . $q->submit('dosearch', T('Go!'))) . $q->endform;
 }
@@ -2865,10 +2870,9 @@ sub DoEdit {
   }
   print T($EditNote) if $EditNote; # Allow translation
   my $username = GetParam('username', '');
-  print $q->p(T('Username:') . ' '
-	      . $q->textfield(-name=>'username',
-			      -default=>$username, -override=>1,
-			      -size=>20, -maxlength=>50));
+  print $q->p($q->label({-for=>'username'}, T('Username:')) . ' '
+	      . $q->textfield(-name=>'username', -id=>'username', -default=>$username,
+			      -override=>1, -size=>20, -maxlength=>50));
   print $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save'))
 	      . ($upload ? '' :	 ' ' . $q->submit(-name=>'Preview', -accesskey=>T('p'), -value=>T('Preview'))));
   if ($upload) {
@@ -3064,8 +3068,8 @@ sub DoIndex {
       }
     }
     push(@menu, $q->b(Ts('(for %s)', GetParam('lang', '')))) if GetParam('lang', '');
-    push(@menu, $q->br(), GetHiddenValue('action', 'index'), T('Filter:'),
-	 $q->textfield(-name=>'match', -size=>20), $q->submit(-value=>T('Go!')));
+    push(@menu, $q->br(), GetHiddenValue('action', 'index'), $q->label({-for=>'indexmatch'}, T('Filter:')),
+	 $q->textfield(-name=>'match', -id=>'indexmatch', -size=>20), $q->submit(-value=>T('Go!')));
     print GetFormStart(undef, 'get', 'index'), $q->p(@menu), $q->end_form();
   }
   print $q->h2(Ts('%s pages found.', ($#pages + 1))), $q->start_p() unless $raw;
