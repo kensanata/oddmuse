@@ -3,7 +3,7 @@
 	* wiki.pl (GetFilterForm, GetCommentForm, GetSearchForm, DoEdit)
 	(DoIndex): Add labels.
 
-	* modules/tags.pl ($TagsSearchNewForm): New option.
+	* modules/tags.pl ($TagsSearch): New option.
 	(TagsSearchMenu): New, added to @MyAdminCode.
 	(TagsSearchIndex): New, added to %Action.
 	(TagsNewGetSearchForm): New, replaces GetSearchForm.
