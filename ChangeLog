@@ -1,4 +1,20 @@
+2005-12-19  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetFilterForm, GetCommentForm, GetSearchForm, DoEdit)
+	(DoIndex): Add labels.
+
+	* modules/tags.pl ($TagsSearchNewForm): New option.
+	(TagsSearchMenu): New, added to @MyAdminCode.
+	(TagsSearchIndex): New, added to %Action.
+	(TagsNewGetSearchForm): New, replaces GetSearchForm.
+	(TagsSearch): New, added to %Action.
+	(TagsSearchTitleAndBody, TagsSearchNewHighlightRegex): New,
+	modelled on search-freetext.pl.
+
 2005-12-18  Alex Schroeder  <alex@gnu.org>
+
+	* modules/page-type.pl (NewPageTypeDoPost): Unquote HTML when
+	stuffing the text back into the text parameter.
 
 	* wiki.pl (BannedContent, UserIsBanned): Changed parsing in order
 	to use http://www.usemod.com/cgi-bin/mb.pl?SharedAntiSpam.
@@ -11,6 +27,12 @@
 	example.
 	(ApplyRules): Safety check: Make sure $OpenPageName is set before
 	using %PlainTextPages.
+	(Init, InitModules, InitConfig): Moved some code from Init to the
+	new functions.
+	(InitRequest): Moved binmode call here.
+	(InitConfig): Hand coded GetPageContent, because this early $q is
+	not yet available.
+	(ApplyRules): Fix XHTML output.
 
 2005-12-17  Alex Schroeder  <alex@gnu.org>
 
