@@ -16,11 +16,12 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.8 2005/10/28 15:20:55 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.9 2005/12/20 16:01:43 as Exp $</p>';
 
-use vars qw($LocalNamesPage $LocalNamesInit %LocalNames);
+use vars qw($LocalNamesPage $LocalNamesInit %LocalNames $LocalNamesCollect);
 
 $LocalNamesPage = 'LocalNames';
+$LocalNamesCollect = 0;
 
 # do this later so that the user can customize $LocalNamesPage
 push(@MyInitVariables, \&LocalNamesInit);
@@ -46,13 +47,13 @@ sub LocalNamesInit {
   push(@AdminPages, $LocalNamesPage);
   my $data = GetPageContent($LocalNamesPage);
   while ($data =~ m/\[$FullUrlPattern\s+([^\]]+?)\]/go) {
-    my ($id, $url) = ($2, $1);
-    my $page = FreeToNormal($id);
+    my ($page, $url) = ($2, $1);
+    my $id = FreeToNormal($page);
     # The entries in %NearSource will make sure that ResolveId will
     # call GetInterSiteUrl for our pages.
-    $LocalNames{$page} = $url;
+    $LocalNames{$id} = $url;
     # Add at the front to override near links.
-    unshift(@{$NearSource{$page}}, $LocalNamesPage);
+    unshift(@{$NearSource{$id}}, $LocalNamesPage);
     # %NearSite is for fetching the list of pages -- we don't need that.
     # %NearSearch is for searching remote sites -- we don't need that.
   }
@@ -71,4 +72,38 @@ sub NewLocalNamesGetInterSiteUrl {
   } else {
     return OldLocalNamesGetInterSiteUrl($site, $page, $quote);
   }
+}
+
+*LocalNamesOldSave = *Save;
+*Save = *LocalNamesNewSave;
+
+sub LocalNamesNewSave {
+  LocalNamesOldSave(@_);
+  my ($currentid, $text) = @_;
+  # avoid recursion
+  return if $currentid eq $LocalNamesPage or not $LocalNamesCollect;
+  my $currentname = $currentid;
+  $currentname =~ s/_/ /g;
+  OpenPage($LocalNamesPage);
+  my $localnames = $Page{text};
+  while ($text =~ /\[$FullUrlPattern\s+([^\]]+?)\]/g) {
+    my ($page, $url) = ($2, $1);
+    my $id = FreeToNormal($page);
+    # canonical form with trimmed spaces and no underlines
+    $page = $id;
+    $page =~ s/_/ /g;
+    # if the mapping exists already, do nothing
+    next if ($LocalNames{$id} eq $url);
+    # if a different mapping exists already; change the old mapping to the new one
+    # if the change fails (eg. the page name is not in canonical form), don't skip!
+    next if $LocalNames{$id}
+      and $localnames =~ s/\[$LocalNames{$id}\s+$page\]/[$url $page]/g;
+    # add a new entry at the end
+    $localnames .= "\n\n* [$url $page]"
+      . Ts(" -- defined on %s", "[[$currentname]]");
+  }
+  # minor change
+  Save($LocalNamesPage, $localnames,
+       Ts("New names defined on %s", $currentname), 1)
+    unless $localnames eq $Page{text};
 }
