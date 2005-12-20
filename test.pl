@@ -2490,8 +2490,6 @@ run_tests();
 
 remove_rule(\&TablesLongRule);
 
-exit;
-
 # --------------------
 
 tags:
@@ -2640,6 +2638,35 @@ xpath_run_tests();
 # now check whether the integration with InitVariables works
 xpath_test(update_page('LocalNamesTest', 'OddMuse'),
 	   '//a[@class="near"][@title="LocalNames"][@href="http://www.oddmuse.org/"][text()="OddMuse"]');
+
+# verify that automatic update is off by default
+xpath_test(update_page('LocalNamesTest', 'This is an [http://www.example.org/ Example].'),
+	   '//a[@class="url outside"][@href="http://www.example.org/"][text()="Example"]');
+negative_xpath_test(get_page('LocalNames'),
+		    '//ul/li/a[@class="url outside"][@href="http://www.example.org/"][text()="Example"]');
+
+# check automatic update
+AppendStringToFile($ConfigFile, "\$LocalNamesCollect = 1;\n");
+
+xpath_test(update_page('LocalNamesTest', 'This is an [http://www.example.com/ Example].'),
+	   '//a[@class="url outside"][@href="http://www.example.com/"][text()="Example"]');
+xpath_test(get_page('LocalNames'),
+	   '//ul/li/a[@class="url outside"][@href="http://www.example.com/"][text()="Example"]');
+
+$LocalNamesInit = 0;
+LocalNamesInit();
+
+%Test = split('\n',<<'EOT');
+OddMuse
+//a[@class="near"][@title="LocalNames"][@href="http://www.oddmuse.org/"][text()="OddMuse"]
+[[Example]]
+//a[@class="near"][@title="LocalNames"][@href="http://www.example.com/"][text()="Example"]
+EOT
+
+xpath_run_tests();
+
+xpath_test(get_page('action=rc days=1 showedit=1'),
+	   '//a[@class="local"][text()="LocalNames"]/following-sibling::strong[text()="New names defined on LocalNamesTest"]');
 
 *GetInterSiteUrl = *OldLocalNamesGetInterSiteUrl;
 
