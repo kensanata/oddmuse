@@ -1,3 +1,11 @@
+2005-12-20  Alex Schroeder  <alex@gnu.org>
+
+	* modules/localnames.pl (LocalNamesNewSave): New, to automatically
+	add all named external links to LocalNames.
+	($LocalNamesCollect): New option.
+
+	* modules/aggregate.pl (AggregateRule): Add RSS feed.
+
 2005-12-19  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetFilterForm, GetCommentForm, GetSearchForm, DoEdit)
