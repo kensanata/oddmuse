@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: aggregate.pl,v 1.3 2005/12/16 12:53:48 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: aggregate.pl,v 1.4 2005/12/20 00:51:33 as Exp $</p>';
 
 push(@MyRules, \&AggregateRule);
 
@@ -49,4 +49,101 @@ sub AggregateRule {
     return '';
   }
   return undef;
+}
+
+$Action{aggregate} = \&DoAggregate;
+
+sub DoAggregate {
+  print GetHttpHeader('application/xml');
+  my $frontpage = GetParam('id', $HomePage);
+  my $source = GetPageContent($frontpage);
+  my $url = QuoteHtml($ScriptName);
+  my $diffPrefix = $url . QuoteHtml("?action=browse;diff=1;id=");
+  my $historyPrefix = $url . QuoteHtml("?action=history;id=");
+  my $date = TimeToRFC822($LastUpdate);
+  my $rss = qq{<?xml version="1.0" encoding="utf-8"?>};
+  if ($RssStyleSheet =~ /\.(xslt?|xml)$/) {
+    $rss .= qq{<?xml-stylesheet type="text/xml" href="$RssStyleSheet" ?>};
+  } elsif ($RssStyleSheet) {
+    $rss .= qq{<?xml-stylesheet type="text/css" href="$RssStyleSheet" ?>};
+  }
+  $rss .= qq{<rss version="2.0"
+     xmlns:wiki="http://purl.org/rss/1.0/modules/wiki/"
+     xmlns:creativeCommons="http://backend.userland.com/creativeCommonsRssModule">
+<channel>
+<docs>http://blogs.law.harvard.edu/tech/rss</docs>
+};
+  $rss .= "<title>" . QuoteHtml($SiteName) . "</title>\n";
+  $rss .= "<link>" . $url . ($UsePathInfo ? "/" : "?") . UrlEncode($RCName) . "</link>\n";
+  $rss .= "<description>" . QuoteHtml($SiteDescription) . "</description>\n";
+  $rss .= "<pubDate>" . $date. "</pubDate>\n";
+  $rss .= "<lastBuildDate>" . $date . "</lastBuildDate>\n";
+  $rss .= "<generator>Oddmuse</generator>\n";
+  $rss .= "<copyright>" . $RssRights . "</copyright>\n" if $RssRights;
+  if (ref $RssLicense eq 'ARRAY') {
+      $rss .= join('', map {"<creativeCommons:license>$_</creativeCommons:license>\n"} @$RssLicense);
+  } elsif ($RssLicense) {
+    $rss .= "<creativeCommons:license>" . $RssLicense . "</creativeCommons:license>\n";
+  }
+  $rss .= "<wiki:interwiki>" . $InterWikiMoniker . "</wiki:interwiki>\n" if $InterWikiMoniker;
+  if ($RssImageUrl) {
+    $rss .= "<image>\n";
+    $rss .= "<url>" . $RssImageUrl . "</url>\n";
+    $rss .= "<title>" . QuoteHtml($SiteName) . "</title>\n";
+    $rss .= "<link>" . $url . "</link>\n";
+    $rss .= "</image>\n";
+  }
+  my @pages = ();
+  while ($source =~ m/<aggregate\s+((("[^\"&]+"),?\s*)+)>/g) {
+    my $str = $1;
+    while ($str =~ m/"([^\"&]+)"/g) {
+      my $id = $1;
+      my %data = ParseData(ReadFileOrDie(GetPageFile(FreeToNormal($id))));
+      my $page = $data{text};
+      my $size = length($page);
+      my $i = index($page, "\n=");
+      my $j = index($page, "\n----");
+      $page = substr($page, 0, $i) if $i >= 0;
+      $page = substr($page, 0, $j) if $j >= 0;
+      $page =~ s/^=.*\n//; # if it starts with a header
+      my $name = $id;
+      $name =~ s/_/ /g;
+      my $date = TimeToRFC822($data{ts});
+      my $host = $data{host};
+      my $username = $data{username};
+      $username = QuoteHtml($username);
+      $username = $host unless $username;
+      my $minor = $data{minor};
+      my $revision = $data{revision};
+      my $cluster = GetCluster($page);
+      my $description;
+      {
+	local *STDOUT;
+	open(STDOUT, '>', \$description) or die "Can't open memory file: $!";
+	ApplyRules(QuoteHtml($page), 1, 0, undef, 'p');
+      }
+      $description .= $q->p(GetPageLink($id, T('Learn more...')))
+	if length($page) < $size;
+      $rss .= "\n<item>\n";
+      $rss .= "<title>" . QuoteHtml($name) . "</title>\n";
+      $rss .= "<link>" . $url . (GetParam("all", 0)
+        ? "?" . GetPageParameters("browse", $pagename, $revision, $cluster)
+	: ($UsePathInfo ? "/" : "?") . UrlEncode($pagename)) . "</link>\n";
+      $rss .= "<description>" . QuoteHtml($description) . "</description>\n";
+      $rss .= "<pubDate>" . $date . "</pubDate>\n";
+      $rss .= "<comments>" . $url . ($UsePathInfo ? "/" : "?")
+	. $CommentsPrefix . UrlEncode($pagename) . "</comments>\n"
+	  if $CommentsPrefix and $pagename !~ /^$CommentsPrefix/;
+      $rss .= "<wiki:username>" . $username . "</wiki:username>\n";
+      $rss .= "<wiki:status>" . (1 == $revision ? "new" : "updated") . "</wiki:status>\n";
+      $rss .= "<wiki:importance>" . ($minor ? "minor" : "major") . "</wiki:importance>\n";
+      $rss .= "<wiki:version>" . $revision . "</wiki:version>\n";
+      $rss .= "<wiki:history>" . $historyPrefix . UrlEncode($pagename) . "</wiki:history>\n";
+      $rss .= "<wiki:diff>" . $diffPrefix . UrlEncode($pagename) . "</wiki:diff>\n"
+	if $UseDiff and GetParam("diffrclink", 1);
+      $rss .= "</item>\n";
+    }
+    $rss .= "</channel>\n</rss>\n";
+  }
+  print $rss;
 }
