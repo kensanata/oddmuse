@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.9 2005/12/20 16:01:43 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.10 2005/12/22 10:52:16 as Exp $</p>';
 
 use vars qw($LocalNamesPage $LocalNamesInit %LocalNames $LocalNamesCollect);
 
@@ -86,6 +86,7 @@ sub LocalNamesNewSave {
   $currentname =~ s/_/ /g;
   OpenPage($LocalNamesPage);
   my $localnames = $Page{text};
+  my @collection = ();
   while ($text =~ /\[$FullUrlPattern\s+([^\]]+?)\]/g) {
     my ($page, $url) = ($2, $1);
     my $id = FreeToNormal($page);
@@ -94,6 +95,7 @@ sub LocalNamesNewSave {
     $page =~ s/_/ /g;
     # if the mapping exists already, do nothing
     next if ($LocalNames{$id} eq $url);
+    push(@collection, $page);
     # if a different mapping exists already; change the old mapping to the new one
     # if the change fails (eg. the page name is not in canonical form), don't skip!
     next if $LocalNames{$id}
@@ -104,6 +106,11 @@ sub LocalNamesNewSave {
   }
   # minor change
   Save($LocalNamesPage, $localnames,
-       Ts("New names defined on %s", $currentname), 1)
+       Tss("Local names defined on %1: %2", $currentname,
+	   length(@collection > 1)
+	   ? join(', and ',
+		  join(', ', @collection[0 .. $#collection-1]),
+		  @collection[-1])
+	   : @collection), 1)
     unless $localnames eq $Page{text};
 }
