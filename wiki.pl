@@ -268,7 +268,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.637 2005/12/19 00:14:47 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.638 2005/12/22 20:18:13 lude Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -876,7 +876,7 @@ sub RSS {
   }
   my @lines = sort { $b cmp $a } keys %lines;
   @lines = @lines[0..$maxitems-1] if $maxitems and $#lines > $maxitems;
-  my $date;
+  my $date = '';
   foreach my $key (@lines) {
     my $line = $lines{$key};
     if ($key =~ /(\d\d\d\d(?:-\d?\d)?(?:-\d?\d)?)(?:[T ](\d?\d:\d\d))?/) {
@@ -1287,6 +1287,7 @@ sub ResolveId { # return css class, resolved id, title (eg. for popups), exist-o
     my $site = $NearSource{$id}[0];
     return ('near', GetInterSiteUrl($site, $id), $site); # return source as title attribute
   }
+  return ('', '', '', '');
 }
 
 sub BrowseResolvedPage {
@@ -2584,7 +2585,7 @@ sub SaveKeepFile {
 
 sub EncodePage {
   my @data = @_;
-  my $result;
+  my $result = '';
   $result .= (shift @data) . ': ' . EscapeNewlines(shift @data) . "\n" while (@data);
   return $result;
 }
