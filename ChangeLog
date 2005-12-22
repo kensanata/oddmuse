@@ -1,3 +1,8 @@
+2005-12-22  Markus Lude  <lude@informatik.uni-tuebingen.de>
+
+	* wiki.pl (ResolveId): Return defined values.
+	(RSS, EncodePage): Initialize $date and $result to avoid warnings.
+
 2005-12-20  Alex Schroeder  <alex@gnu.org>
 
 	* modules/localnames.pl (LocalNamesNewSave): New, to automatically
