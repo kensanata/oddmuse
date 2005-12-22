@@ -2679,8 +2679,6 @@ update_page('LocalNamesTest', 'This is an [http://www.example.com/ Example] for 
 xpath_test(get_page('action=rc days=1 showedit=1'),
 	   '//a[@class="local"][text()="LocalNames"]/following-sibling::strong[text()="Local names defined on LocalNamesTest: Example, EmacsWiki, and Community Wiki"]');
 
-update_page('LocalNamesTest', 'This is another [http://www.example.com Example] without trailing slash.');
-
 *GetInterSiteUrl = *OldLocalNamesGetInterSiteUrl;
 
 # --------------------
