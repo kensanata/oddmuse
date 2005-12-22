@@ -2666,7 +2666,20 @@ EOT
 xpath_run_tests();
 
 xpath_test(get_page('action=rc days=1 showedit=1'),
-	   '//a[@class="local"][text()="LocalNames"]/following-sibling::strong[text()="New names defined on LocalNamesTest"]');
+	   '//a[@class="local"][text()="LocalNames"]/following-sibling::strong[text()="Local names defined on LocalNamesTest: Example"]');
+
+# more definitions on one page
+update_page('LocalNamesTest', 'This is an [http://www.example.org/ Example] for [http://www.emacswiki.org EmacsWiki].');
+
+xpath_test(get_page('action=rc days=1 showedit=1'),
+	   '//a[@class="local"][text()="LocalNames"]/following-sibling::strong[text()="Local names defined on LocalNamesTest: Example, and EmacsWiki"]');
+
+update_page('LocalNamesTest', 'This is an [http://www.example.com/ Example] for [http://www.emacswiki.org/ EmacsWiki] and [http://communitywiki.org/ Community Wiki].');
+
+xpath_test(get_page('action=rc days=1 showedit=1'),
+	   '//a[@class="local"][text()="LocalNames"]/following-sibling::strong[text()="Local names defined on LocalNamesTest: Example, EmacsWiki, and Community Wiki"]');
+
+update_page('LocalNamesTest', 'This is another [http://www.example.com Example] without trailing slash.');
 
 *GetInterSiteUrl = *OldLocalNamesGetInterSiteUrl;
 
