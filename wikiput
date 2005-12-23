@@ -54,9 +54,11 @@ def main():
             recent_edit="on"
     text = sys.stdin.read()
     if not text and not force:
-        raise RuntimeError, "No content to post.  Use --force to do it anyway."
-    wikiput(args[0], text, summary=summary, username=username,
-	    password=password, recent_edit=recent_edit)
+        sys.stderr.write("No content to post.  Use --force to do it anyway.\n"
+			 + args[0] + "\n")
+    else:
+	wikiput(args[0], text, summary=summary, username=username,
+		password=password, recent_edit=recent_edit)
 
 def usage(out):
     """Display the usage information for this script.
