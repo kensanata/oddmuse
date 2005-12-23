@@ -16,12 +16,14 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.10 2005/12/22 10:52:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.11 2005/12/23 13:52:38 as Exp $</p>';
 
-use vars qw($LocalNamesPage $LocalNamesInit %LocalNames $LocalNamesCollect);
+use vars qw($LocalNamesPage $LocalNamesInit %LocalNames $LocalNamesCollect
+	    $LocalNamesCollectMaxWords);
 
 $LocalNamesPage = 'LocalNames';
 $LocalNamesCollect = 0;
+$LocalNamesCollectMaxWords = 2;
 
 # do this later so that the user can customize $LocalNamesPage
 push(@MyInitVariables, \&LocalNamesInit);
@@ -87,7 +89,7 @@ sub LocalNamesNewSave {
   OpenPage($LocalNamesPage);
   my $localnames = $Page{text};
   my @collection = ();
-  while ($text =~ /\[$FullUrlPattern\s+([^\]]+?)\]/g) {
+  while ($text =~ /\[$FullUrlPattern\s+(([^ \]]+?\s*){1,$LocalNamesCollectMaxWords})\]/g) {
     my ($page, $url) = ($2, $1);
     my $id = FreeToNormal($page);
     # canonical form with trimmed spaces and no underlines
