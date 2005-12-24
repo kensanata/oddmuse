@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tags.pl,v 1.4 2005/12/24 23:25:26 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tags.pl,v 1.5 2005/12/24 23:48:52 as Exp $</p>';
 
 push(@MyRules, \&TagsRule);
 
@@ -101,9 +101,30 @@ sub TagsNewGetSearchForm {
 $Action{'tags'} = \&TagsSearch;
 
 sub TagsSearch {
-  local *SearchTitleAndBody = *TagsSearchTitleAndBody;
-  local *HighlightRegex = *TagsSearchNewHighlightRegex;
-  DoSearch(GetParam('search'));
+  my $string = GetParam('search');
+  my $raw = GetParam('raw','');
+  if ($string eq '') {
+    DoIndex();
+    return;
+  }
+  if ($raw) {
+    print GetHttpHeader('text/plain');
+    print RcTextItem('title', Ts('Tag search for: %s', $string)), RcTextItem('date', TimeToText($Now)),
+      RcTextItem('link', $q->url(-path_info=>1, -query=>1)), "\n" if GetParam('context',1);
+  } else {
+    print GetHeader('', QuoteHtml(Ts('Tag search for: %s', $string))),
+      $q->start_div({-class=>'content tag search'});
+  }
+  my @results;
+  if (GetParam('context',1)) {
+    @results = TagsSearchTitleAndBody($string, \&PrintSearchResult, TagsSearchNewHighlightRegex($string));
+  } else {
+    @results = TagsSearchTitleAndBody($string, \&PrintPage);
+  }
+  if (not $raw) {
+    print $q->p({-class=>'result'}, Ts('%s pages found.', ($#results + 1))), $q->end_div();
+    PrintFooter();
+  }
 }
 
 # new search
