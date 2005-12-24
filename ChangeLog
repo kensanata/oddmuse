@@ -1,3 +1,9 @@
+2005-12-25  Alex Schroeder  <alex@gnu.org>
+
+	* modules/tags.pl (TagsSearch): Removed warning.
+	(TagsSearch): Replaced code with a modified copy of DoSearch to
+	avoid too much hackery around conflicts with search-freetext.txt.
+
 2005-12-24  Alex Schroeder  <alex@gnu.org>
 
 	* raw.pl: Timestamp files after writing them.
