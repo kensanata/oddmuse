@@ -45,4 +45,5 @@ foreach my $file (glob("$PageDir/*/*.pg $PageDir/*/.*.pg")) {
   open(F,"> $RawDir/$page") or die "Cannot write $page raw file: $!";
   print F $result{text};
   close(F);
+  utime $result{text}, $result{ts}, "$RawDir/$page"; # touch file
 };
