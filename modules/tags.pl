@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tags.pl,v 1.3 2005/12/19 00:21:28 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tags.pl,v 1.4 2005/12/24 23:25:26 as Exp $</p>';
 
 push(@MyRules, \&TagsRule);
 
@@ -103,7 +103,6 @@ $Action{'tags'} = \&TagsSearch;
 sub TagsSearch {
   local *SearchTitleAndBody = *TagsSearchTitleAndBody;
   local *HighlightRegex = *TagsSearchNewHighlightRegex;
-  warn "tag search";
   DoSearch(GetParam('search'));
 }
 
