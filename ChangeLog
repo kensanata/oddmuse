@@ -1,3 +1,19 @@
+2005-12-24  Alex Schroeder  <alex@gnu.org>
+
+	* raw.pl: Timestamp files after writing them.
+
+	* wikiput (main): Print target URL in message when empty.
+
+2005-12-23  Alex Schroeder  <alex@gnu.org>
+
+	* modules/localnames.pl ($LocalNamesCollectMaxWords)
+	(LocalNamesNewSave): New option, use it.
+
+2005-12-22  Alex Schroeder  <alex@gnu.org>
+
+	* modules/localnames.pl (LocalNamesNewSave): Note what local names
+	have been added in the summary for the LocalNames page.
+
 2005-12-22  Markus Lude  <lude@informatik.uni-tuebingen.de>
 
 	* wiki.pl (ResolveId): Return defined values.
