@@ -1,7 +1,13 @@
 2005-12-26  Alex Schroeder  <alex@gnu.org>
 
-	* modules/search-freetext.pl (SearchFreeTextTitleAndBody): Correct
-	handling of raw parameter.
+	* modules/search-freetext.pl: Add separate indexing of tags, an a
+	new formatting rule for tags.
+	($SearchFreeTextTagUrl): New option.
+	(SearchFreeTextTagsRule): New Rule.
+	(SearchFreeTextIndex): Index tags in a separate index.
+	(SearchFreeTextTitleAndBody): Correct handling of raw parameter,
+	handle searching for tags, use SearchFreeTextGet helper.
+	(SearchFreeTextGet): New.
 
 2005-12-25  Alex Schroeder  <alex@gnu.org>
 
