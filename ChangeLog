@@ -1,5 +1,11 @@
 2005-12-26  Alex Schroeder  <alex@gnu.org>
 
+	* modules/tags.pl: No more indexing, since this is now handled by
+	the indexed search.
+	(TagsSearchIndex, TagsNewGetSearchForm, TagsSearch)
+	(TagsSearchTitleAndBody, TagsSearchNewHighlightRegex)
+	(TagsSearchMenu): Deleted.
+
 	* modules/search-freetext.pl: Add separate indexing of tags, an a
 	new formatting rule for tags.
 	($SearchFreeTextTagUrl): New option.
