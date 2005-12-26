@@ -16,11 +16,28 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.18 2005/12/26 12:51:12 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.19 2005/12/26 15:15:02 as Exp $</p>';
 
-use vars qw($SearchFreeTextNewForm);
+push(@MyRules, \&SearchFreeTextTagsRule);
 
+use vars qw($SearchFreeTextTagUrl $SearchFreeTextNewForm);
+
+$SearchFreeTextTagUrl = 'http://technorati.com/tag/';
 $SearchFreeTextNewForm = 1;
+
+sub SearchFreeTextTagsRule {
+  if (m/\G(\[\[tag:$FreeLinkPattern\]\])/cog
+      or m/\G(\[\[tag:$FreeLinkPattern\|([^]|]+)\]\])/cog) {
+    # [[tag:Free Link]], [[tag:Free Link|alt text]]
+    my ($tag, $text) = ($2, $3);
+    return $q->a({-href=>$SearchFreeTextTagUrl . UrlEncode($tag),
+		  -class=>'outside tag',
+		  -title=>T('Tag'),
+		  -rel=>'tag'
+		 }, $text || $tag);
+  }
+  return undef;
+}
 
 push(@MyAdminCode, \&SearchFreeTextMenu);
 
@@ -34,14 +51,14 @@ $Action{buildindex} = \&SearchFreeTextIndex;
 sub SearchFreeTextIndex {
   print GetHeader('', T('Rebuilding Index'), ''),
     $q->start_div({-class=>'content buildindex'} . '<p>');
-  my $fname = "$DataDir/maintain";
   if (not eval { require Search::FreeText;  }) {
     my $err = $@;
     ReportError(T('Search::FreeText is not available on this system.'), '500 INTERNAL SERVER ERROR');
   }
-  my $file = $DataDir . '/word.db';
+  my $wordfile = $DataDir . '/word.db';
+  my $tagfile = $DataDir . '/tags.db';
   if (!UserIsAdmin()) {
-    if ((-f $file) && ((-M $file) < 0.5)) {
+    if ((-f $wordfile) && ((-M $wordfile) < 0.5)) {
       print $q->p(T('Rebuilding index not done.'),
 		  T('(Rebuilding the index can only be done once every 12 hours.)')),
 	     $q->end_div();
@@ -50,16 +67,24 @@ sub SearchFreeTextIndex {
     }
   }
   RequestLockOrError(); # fatal
-  my $db = new Search::FreeText(-db => ['DB_File', $file]);
-  $db->open_index();
-  $db->clear_index();
+  my $words = new Search::FreeText(-db => ['DB_File', $wordfile]);
+  $words->open_index();
+  $words->clear_index();
+  my $tags = new Search::FreeText(-db => ['DB_File', $tagfile]);
+  $tags->open_index();
+  $tags->clear_index();
   foreach my $name (AllPagesList()) {
     OpenPage($name);
     next if ($Page{text} =~ /^#FILE /); # skip files
     print $name, $q->br();
-    $db->index_document($name, $OpenPageName . ' ' . $Page{text}); # don't forget to add the pagename!
+    $words->index_document($name, $OpenPageName . ' ' . $Page{text}); # don't forget to add the pagename!
+    my @tags = ($Page{text} =~ m/\[\[tag:$FreeLinkPattern\]\]/g,
+		$Page{text} =~ m/\[\[tag:$FreeLinkPattern\|([^]|]+)\]\]/g);
+    next unless @tags;
+    $tags->index_document($name, join(' ', @tags)); # add tags
   }
-  $db->close_index();
+  $words->close_index();
+  $tags->close_index();
   ReleaseLock();
   print T('Done.') . '</p></div>';
   PrintFooter();
@@ -88,37 +113,37 @@ my $SearchFreeTextMax = 10;  # max. number of pages
 sub SearchFreeTextTitleAndBody {
   my ($term, $func, @args) = @_;
   ReportError(T('Search term missing.'), '400 BAD REQUEST') unless $term;
-  my $raw = GetParam('raw','');
   require Search::FreeText;
-  my $file = $DataDir . '/word.db';
   my $page = GetParam('page', 1);
   my $context = GetParam('context', 1);
   my $limit = GetParam('limit', $SearchFreeTextNum);
   my $max = $page * $limit - 1;
-  my $db = new Search::FreeText(-db => ['DB_File', $file]);
-  # get results
-  $db->open_index();
-  my @found = $db->search($term);
-  $db->close_index();
-  # pmake sure phrases do in fact appear (phrases are multi-word
-  # search terms in "double quotes")
-  my @phrases = map { quotemeta } $term =~ m/"([^\"]+)"/g;
+  my @wanted = $term  =~ m/(".*?"|tag:".*?"|\S+)/g;
+  my @wanted_words = grep(!/^tag:/, @wanted);
+  my @wanted_tags = map { substr($_, 4) } grep(/^tag:/, @wanted);
+  my @words = SearchFreeTextGet($DataDir . '/word.db', @wanted_words);
+  my @tags = SearchFreeTextGet($DataDir . '/tags.db', @wanted_tags);
   my @result = ();
- PAGE: foreach (@found) {
-    my ($id, $score) = ($_->[0], $_->[1]);
-    if (@phrases) {
-      OpenPage($id);
-      foreach my $phrase (@phrases) {
-	next PAGE unless $Page{text} =~ m/$phrase/;
-      }
+  if (not @wanted_words and not @wanted_tags) {
+    # do nothing
+  } elsif (@wanted_words and not @wanted_tags) {
+    @result = @words;
+  } elsif (not @wanted_words and @wanted_tags) {
+    @result = @tags;
+  } else {
+    # only return the pages in @tags if the page also exists in
+    # @words: intersection!
+    my %hash = map { $_ => 1 } @words;
+    foreach my $id (@tags) {
+      push @result, $id if $hash{$id};
     }
-    push(@result, $id);
   }
   # limit to the result page requested
   $max = @result - 1 if @result -1 < $max;
   my $count = ($page - 1) * $limit;
   my @items = @result[($page - 1) * $limit  .. $max];
   # print links, if this is is really a search
+  my $raw = GetParam('raw','');
   my @links = ();
   if (GetParam('search', '') and @items) {
     my $pages = int($#result / $limit) + 1;
@@ -154,6 +179,33 @@ sub SearchFreeTextTitleAndBody {
   return @items;
 }
 
+sub SearchFreeTextGet {
+  my $file = shift;
+  my @wanted = @_;
+  return unless @wanted; # shortcut
+  my @result = ();
+  # open file and get sorted list of arrays with page id and rank.
+  my $db = new Search::FreeText(-db => ['DB_File', $file]);
+  $db->open_index();
+  my @found = $db->search(join(" ", @wanted));
+  $db->close_index();
+  # make sure that all double quoted phrases do in fact all appear.
+  # to do this, we copy page ids from @found.
+  my @phrases = map { quotemeta(substr($_,1,-1)) } grep(/^"/, @wanted);
+ PAGE: foreach (@found) {
+    my ($id, $score) = ($_->[0], $_->[1]);
+    if (@phrases) {
+      OpenPage($id);
+      foreach my $phrase (@phrases) {
+	# don't add it to @found by skipping to the next page
+	next PAGE unless $Page{text} =~ m/$phrase/;
+      }
+    }
+    push(@result, $id); # order is important, so no hashes
+  }
+  return @result;
+}
+
 # highlighting changes if new search is used
 
 sub SearchFreeTextNewHighlightRegex {
@@ -161,16 +213,3 @@ sub SearchFreeTextNewHighlightRegex {
   s/\"//g;
   return join('|', split);
 }
-
-# *SearchFreeTextOldSavePage = *SavePage;
-# *SavePage = *SearchFreeTextNewSavePage;
-
-# sub SearchFreeTextNewSavePage {
-#   SearchFreeTextOldSavePage();
-#   require Search::FreeText;
-#   my $file = $DataDir . '/word.db';
-#   my $db = new Search::FreeText(-db => ['DB_File', $file]);
-#   $db->open_index();
-#   $db->index_document($OpenPageName, $Page{text}) # dies with "Document already indexed"!
-#   $db->close_index();
-# }
