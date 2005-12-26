@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: despam.pl,v 1.6 2005/09/24 08:17:05 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: despam.pl,v 1.7 2005/12/26 23:56:12 as Exp $</p>';
 
 push(@MyAdminCode, \&DespamMenu);
 
@@ -32,8 +32,15 @@ my @DespamRules = ();
 sub DoDespam {
   RequestLockOrError();
   my @pages = DespamPages();
-  my $list = GetParam('list', 0); 
+  my $list = GetParam('list', 0);
   print GetHeader('', T('Despamming pages'), '') . '<div class="content"><p>';
+  # read them only once
+  @DespamRules = map {
+    s/#.*//;  # trim comments
+    s/^\s+//; # trim leading whitespace
+    s/\s+$//; # trim trailing whitespace
+    $_;
+  } split(/\n/, GetPageContent($BannedContent));
   foreach my $id (@pages) {
     next if $id eq $BannedContent;
     OpenPage($id);
@@ -52,13 +59,13 @@ sub DoDespam {
 # Based on BannedContent(), but with caching
 sub DespamBannedContent {
   my $str = shift;
-  @DespamRules = split(/\n/, GetPageContent($BannedContent));
+  my @urls = $str =~ /$FullUrlPattern/g;
   foreach (@DespamRules) {
-    if (/^ ([^ ]+)[ \t]*$/) {  # only read lines with one word after one space
-      my $rule = $1;
-      if ($str =~ /($rule)/i) {
-	my $match = $1;
-	return Tss('Rule "%1" matched "%2" on this page.', $rule, $match);
+    my $regexp = $_;
+    foreach my $url (@urls) {
+      if ($url =~ /($regexp)/i) {
+	return Tss('Rule "%1" matched "%2" on this page.',
+		   QuoteHtml($regexp), $url);
       }
     }
   }
