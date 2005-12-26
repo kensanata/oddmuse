@@ -1,3 +1,8 @@
+2005-12-26  Alex Schroeder  <alex@gnu.org>
+
+	* modules/search-freetext.pl (SearchFreeTextTitleAndBody): Correct
+	handling of raw parameter.
+
 2005-12-25  Alex Schroeder  <alex@gnu.org>
 
 	* modules/tags.pl (TagsSearch): Removed warning.
