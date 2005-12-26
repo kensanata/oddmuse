@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.17 2005/09/24 10:13:01 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.18 2005/12/26 12:51:12 as Exp $</p>';
 
 use vars qw($SearchFreeTextNewForm);
 
@@ -88,6 +88,7 @@ my $SearchFreeTextMax = 10;  # max. number of pages
 sub SearchFreeTextTitleAndBody {
   my ($term, $func, @args) = @_;
   ReportError(T('Search term missing.'), '400 BAD REQUEST') unless $term;
+  my $raw = GetParam('raw','');
   require Search::FreeText;
   my $file = $DataDir . '/word.db';
   my $page = GetParam('page', 1);
@@ -138,8 +139,8 @@ sub SearchFreeTextTitleAndBody {
     }
     unshift(@links, ScriptLink($prev, T('Previous'))) if $prev;
     push(@links, ScriptLink($next, T('Next'))) if $next;
-    print $q->p({-class=>'top pages'},
-		T('Result pages: '), @links, Ts("(%s results)", $#result + 1));
+    print $q->p({-class=>'top pages'}, T('Result pages: '), @links,
+		Ts("(%s results)", $#result + 1)) unless $raw;
   }
   # print result
   foreach my $id (@items) {
@@ -147,8 +148,8 @@ sub SearchFreeTextTitleAndBody {
   }
   # repeat result pages at the bottom
   if (GetParam('search', '') and @items) {
-    print $q->p({-class=>'bottom pages'},
-		T('Result pages: '), @links, Ts("(%s results)", $#result + 1));
+    print $q->p({-class=>'bottom pages'}, T('Result pages: '), @links,
+		Ts("(%s results)", $#result + 1)) unless $raw;
   }
   return @items;
 }
