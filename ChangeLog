@@ -1,3 +1,10 @@
+2005-12-27  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (BannedContent): Fix parsing of rules.
+
+	* modules/despam.pl (DoDespam): Fix caching of rules.
+	(DespamBannedContent): Correctly implement the rules.
+
 2005-12-26  Alex Schroeder  <alex@gnu.org>
 
 	* modules/tags.pl: No more indexing, since this is now handled by
