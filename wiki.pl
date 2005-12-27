@@ -268,7 +268,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.638 2005/12/22 20:18:13 lude Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.639 2005/12/27 00:02:32 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3009,13 +3009,15 @@ sub UserIsEditor {
 sub BannedContent {
   my $str = shift;
   my @urls = $str =~ /$FullUrlPattern/g;
-  foreach (split(/\n/, GetPageContent($BannedContent))) {
-    if (/^\s*([^#]\S+)/) {  # all lines except empty lines and comments, trim whitespace
-      my $regexp = $1;
-      foreach my $url (@urls) {
-	if ($url =~ /($regexp)/i) {
-	  return Tss('Rule "%1" matched "%2" on this page.', $regexp, $url);
-	}
+  foreach (grep /./, map {
+    s/#.*//;  # trim comments
+    s/^\s+//; # trim leading whitespace
+    s/\s+$//; # trim trailing whitespace
+    $_; } split(/\n/, GetPageContent($BannedContent))) {
+    my $regexp = $_;
+    foreach my $url (@urls) {
+      if ($url =~ /($regexp)/i) {
+	return Tss('Rule "%1" matched "%2" on this page.', $regexp, $url);
       }
     }
   }
