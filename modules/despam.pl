@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: despam.pl,v 1.7 2005/12/26 23:56:12 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: despam.pl,v 1.8 2005/12/27 00:00:22 as Exp $</p>';
 
 push(@MyAdminCode, \&DespamMenu);
 
@@ -35,7 +35,7 @@ sub DoDespam {
   my $list = GetParam('list', 0);
   print GetHeader('', T('Despamming pages'), '') . '<div class="content"><p>';
   # read them only once
-  @DespamRules = map {
+  @DespamRules = grep /./, map {
     s/#.*//;  # trim comments
     s/^\s+//; # trim leading whitespace
     s/\s+$//; # trim trailing whitespace
