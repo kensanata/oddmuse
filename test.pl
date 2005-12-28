@@ -1857,7 +1857,7 @@ introduction<table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><
  source\n \n etc\n\nother
 <pre> source\n \n etc</pre><p>other</p>
 = title =
-<h1>title</h1>
+<h2>title</h2>
 ==title=
 <h2>title</h2>
 ========fnord=
@@ -2195,7 +2195,7 @@ test_page(update_page('toc', "bla\n"
 		      . "==two==\n"
 		      . "mu."),
 	  quotemeta('<ol><li><a href="#toc1">one</a><ol><li><a href="#toc2">two</a></li><li><a href="#toc3">two</a></li></ol></li></ol>'),
-	  quotemeta('<h1><a id="toc1">one</a></h1>'),
+	  quotemeta('<h2><a id="toc1">one</a></h2>'),
 	  quotemeta('<h2><a id="toc2">two</a></h2>'),
 	  quotemeta('bla </p><div class="toc"><h2>Contents</h2><ol><li><a '),
 	  quotemeta('two</a></li></ol></li></ol></div><h1><a '),);
@@ -2220,7 +2220,7 @@ test_page(update_page('toc', "bla\n"
 		      . "=one=\n"),
 	  quotemeta('<ol><li><a href="#toc1">two</a><ol><li><a href="#toc2">three</a></li></ol></li><li><a href="#toc3">one</a></li></ol>'),
 	  quotemeta('<h2><a id="toc1">two</a></h2>'),
-	  quotemeta('<h1><a id="toc3">one</a></h1>'),
+	  quotemeta('<h2><a id="toc3">one</a></h2>'),
 	  quotemeta('bla </p><div class="toc"><h2>Contents</h2><ol><li><a '),
 	  quotemeta('one</a></li></ol></div><p> murks'),);
 
@@ -2604,7 +2604,7 @@ test_page(update_page('toc', "bla\n"
 		      . "=one=\n"),
 	  quotemeta('<ol><li><a href="#toc1">two</a><ol><li><a href="#toc2">three</a></li></ol></li><li><a href="#toc3">one</a></li></ol>'),
 	  quotemeta('<h2><a id="toc1">two</a></h2>'),
-	  quotemeta('<h1><a id="toc3">one</a></h1>'),
+	  quotemeta('<h2><a id="toc3">one</a></h>'),
 	  quotemeta('bla </p><div class="toc"><h2>Contents</h2><ol><li><a '),
 	  quotemeta('one</a></li></ol></div><p> murks'));
 
@@ -2678,6 +2678,19 @@ update_page('LocalNamesTest', 'This is an [http://www.example.com/ Example] for 
 
 xpath_test(get_page('action=rc days=1 showedit=1'),
 	   '//a[@class="local"][text()="LocalNames"]/following-sibling::strong[text()="Local names defined on LocalNamesTest: Example, EmacsWiki, and Community Wiki"]');
+
+update_page('LocalNamesTest', 'This is [http://www.example.com/ one Example].');
+xpath_test(get_page('LocalNames'),
+	   '//ul/li/a[@class="url outside"][@href="http://www.example.com/"][text()="one Example"]');
+
+update_page('LocalNamesTest', 'This is [http://www.example.com/ one simple Example].');
+negative_xpath_test(get_page('LocalNames'),
+		    '//ul/li/a[@class="url outside"][@href="http://www.example.com/"][text()="one simple Example"]');
+AppendStringToFile($ConfigFile, "\$LocalNamesCollectMaxWords = 1;\n");
+
+update_page('LocalNamesTest', 'This is [http://www.example.com/ Example one].');
+negative_xpath_test(get_page('LocalNames'),
+		    '//ul/li/a[@class="url outside"][@href="http://www.example.com/"][text()="Example one"]');
 
 *GetInterSiteUrl = *OldLocalNamesGetInterSiteUrl;
 
