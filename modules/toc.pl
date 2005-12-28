@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.28 2005/12/08 12:42:36 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.29 2005/12/28 01:51:28 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
@@ -46,6 +46,7 @@ sub TocRule {
 	   && m/\G(\s*\n)*(\=+)[ \t]*(?=[^=\n]+=)/cg) {
     my $depth = length($2);
     $depth = 6 if $depth > 6;
+    $depth = 2 if $depth < 2;
     my $html = CloseHtmlEnvironments()
       . ($PortraitSupportColorDiv ? '</div>' : '');
     $html .= TocHeadings() if not $TocShown and $TocAutomatic;
@@ -69,6 +70,7 @@ sub TocRule {
 	   && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg) {
     my $depth = length($2);
     $depth = 6 if $depth > 6;
+    $depth = 2 if $depth < 2;
     my $text = $3;
     my $html = CloseHtmlEnvironments()
       . ($PortraitSupportColorDiv ? '</div>' : '');
