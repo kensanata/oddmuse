@@ -2198,7 +2198,7 @@ test_page(update_page('toc', "bla\n"
 	  quotemeta('<h2><a id="toc1">one</a></h2>'),
 	  quotemeta('<h2><a id="toc2">two</a></h2>'),
 	  quotemeta('bla </p><div class="toc"><h2>Contents</h2><ol><li><a '),
-	  quotemeta('two</a></li></ol></li></ol></div><h1><a '),);
+	  quotemeta('two</a></li></ol></li></ol></div><h2><a '),);
 
 test_page(update_page('toc', "bla\n"
 		      . "==two=\n"
