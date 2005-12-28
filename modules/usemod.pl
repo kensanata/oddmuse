@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.26 2005/11/06 23:51:33 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.27 2005/12/28 01:28:04 as Exp $</p>';
 
 use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml
 	    $UseModSpaceRequired $UseModMarkupInTitles);
@@ -101,6 +101,7 @@ sub UsemodRule {
   elsif ($bol && $UseModMarkupInTitles && m/\G(\s*\n)*(\=+)[ \t]*(?=[^=\n]+=)/cg) {
     my $depth = length($2);
     $depth = 6 if $depth > 6;
+    $depth = 2 if $depth < 2;
     my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '')
       . AddHtmlEnvironment('h' . $depth);
     $PortraitSupportColorDiv = 0; # after the HTML has been determined.
@@ -193,7 +194,8 @@ sub UsemodTableAttributes {
 sub WikiHeading {
   my ($depth, $text) = @_;
   $depth = length($depth);
-  $depth = 6  if ($depth > 6);
+  $depth = 6  if $depth > 6;
+  $depth = 2 if $depth < 2;
   return "<h$depth>$text</h$depth>";
 }
 
