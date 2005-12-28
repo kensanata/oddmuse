@@ -2604,7 +2604,7 @@ test_page(update_page('toc', "bla\n"
 		      . "=one=\n"),
 	  quotemeta('<ol><li><a href="#toc1">two</a><ol><li><a href="#toc2">three</a></li></ol></li><li><a href="#toc3">one</a></li></ol>'),
 	  quotemeta('<h2><a id="toc1">two</a></h2>'),
-	  quotemeta('<h2><a id="toc3">one</a></h>'),
+	  quotemeta('<h2><a id="toc3">one</a></h2>'),
 	  quotemeta('bla </p><div class="toc"><h2>Contents</h2><ol><li><a '),
 	  quotemeta('one</a></li></ol></div><p> murks'));
 
