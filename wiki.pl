@@ -268,7 +268,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.639 2005/12/27 00:02:32 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.640 2005/12/28 23:48:36 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2683,7 +2683,9 @@ sub RequestLockDir {
   while (mkdir($lockName, 0555) == 0) {
     if ($n++ >= $tries) {
       return 0 unless $error;
-      ReportError(Ts('Could not get %s lock', $name) . ": $!\n", '503 SERVICE UNAVAILABLE');
+      ReportError(Ts('Could not get %s lock', $name) . ": $!. "
+		  . Ts('The lock was created %s.', CalcTimeSince((stat($_))[9])),
+		  '503 SERVICE UNAVAILABLE');
     }
     sleep($wait);
   }
