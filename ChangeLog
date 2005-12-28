@@ -1,3 +1,12 @@
+2005-12-28  Alex Schroeder  <alex@gnu.org>
+
+	* modules/toc.pl (TocRule): Prevent H1.
+
+	* test.pl: More local names tests, fixed all usemod markup rules
+	that used to result in H1 headers.
+
+	* modules/usemod.pl (UsemodRule, WikiHeading): Prevent H1.
+
 2005-12-27  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (BannedContent): Fix parsing of rules.
