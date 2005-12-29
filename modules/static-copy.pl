@@ -1,4 +1,4 @@
-# Copyright (C) 2004  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2005  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.18 2005/09/02 12:05:48 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.19 2005/12/29 16:02:08 as Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
