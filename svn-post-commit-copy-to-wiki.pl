@@ -103,46 +103,21 @@ my @svnlooklines = &read_from_process($svnlook, 'info', $repos, '-r', $rev);
 my $author = shift @svnlooklines;
 my $date = shift @svnlooklines;
 shift @svnlooklines;
-my @log = map { "$_\n" } @svnlooklines;
-
-# Figure out what directories have changed using svnlook.
-my @dirschanged = &read_from_process($svnlook, 'dirs-changed', $repos, 
-                                     '-r', $rev);
-
-# Lose the trailing slash in the directory names if one exists, except
-# in the case of '/'.
-my $rootchanged = 0;
-for (my $i=0; $i<@dirschanged; ++$i)
-  {
-    if ($dirschanged[$i] eq '/')
-      {
-        $rootchanged = 1;
-      }
-    else
-      {
-        $dirschanged[$i] =~ s#^(.+)[/\\]$#$1#;
-      }
-  }
+my @log = @svnlooklines;
 
 # Figure out what files have changed using svnlook.
 @svnlooklines = &read_from_process($svnlook, 'changed', $repos, '-r', $rev);
 
 # Parse the changed nodes.
-my @paths;
+my @paths = ();
 foreach my $line (@svnlooklines)
   {
-    my $path = '';
-    my $code = '';
-
     # Split the line up into the modification code and path, ignoring
     # property modifications.
     if ($line =~ /^(.).  (.*)$/)
       {
-        $code = $1;
-        $path = $2;
+	push(@paths, $2);
       }
-    # ignore code
-    push(@paths, $path);
   }
 
 ######################################################################
@@ -150,12 +125,14 @@ foreach my $line (@svnlooklines)
 
 foreach my $path (@paths) {
   my $id = basename($path);
-  my $log = join("", @log); # each line in @log ends in newline
+  my $log = join("\n", @log);
+  my @data = &read_from_process($svnlook, 'cat', $repos, $path, '-r', $rev);
+  my $data = join("\n", @data);
   my $ua = LWP::UserAgent->new;
   $ua->post($url, { title=>$id,
 		    username=>$author,
 		    summary=>$log,
-		    text=>[$path]});
+		    text=>$data});
 }
 
 exit 0;
@@ -163,33 +140,7 @@ exit 0;
 sub usage
 {
   warn "@_\n" if @_;
-  die "usage: $0 REPOS REVNUM [[-m regex] [options] [email_addr ...]] ...\n",
-      "options are\n",
-      "  --from email_address  Email address for 'From:' (overrides -h)\n",
-      "  -h hostname           Hostname to append to author for 'From:'\n",
-      "  -l logfile            Append mail contents to this log file\n",
-      "  -m regex              Regular expression to match committed path\n",
-      "  -r email_address      Email address for 'Reply-To:'\n",
-      "  -s subject_prefix     Subject line prefix\n",
-      "\n",
-      "This script supports a single repository with multiple projects,\n",
-      "where each project receives email only for commits that modify that\n",
-      "project.  A project is identified by using the -m command line\n",
-      "with a regular expression argument.  If a commit has a path that\n",
-      "matches the regular expression, then the entire commit matches.\n",
-      "Any of the following -h, -l, -r and -s command line options and\n",
-      "following email addresses are associated with this project.  The\n",
-      "next -m resets the -h, -l, -r and -s command line options and the\n",
-      "list of email addresses.\n",
-      "\n",
-      "To support a single project conveniently, the script initializes\n",
-      "itself with an implicit -m . rule that matches any modifications\n",
-      "to the repository.  Therefore, to use the script for a single\n",
-      "project repository, just use the other comand line options and\n",
-      "a list of email addresses on the command line.  If you do not want\n",
-      "a project that matches the entire repository, then use a -m with a\n",
-      "regular expression before any other command line options or email\n",
-      "addresses.\n";
+  die "usage: $0 REPOS REVNUM URL\n";
 }
 
 # Start a child process safely without using /bin/sh.
@@ -256,3 +207,5 @@ sub read_from_process
       return @output;
     }
 }
+
+
