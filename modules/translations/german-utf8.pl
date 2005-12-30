@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.9 2005/12/11 20:15:29 lude Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.10 2005/12/30 13:33:00 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
@@ -727,7 +727,7 @@ Alle Links auf diesen Wiki
 Referrers
 Links auf diese Seite
 Rebuild index for searching
-Der Index für die Suche wird neu erstellt
+Index für die Suche neu erstellen
 Rebuilding Index
 Der Index wird neu erstellt
 Search::FreeText is not available on this system.
