@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.19 2005/12/26 15:15:02 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.20 2005/12/30 13:31:03 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -77,7 +77,11 @@ sub SearchFreeTextIndex {
     OpenPage($name);
     next if ($Page{text} =~ /^#FILE /); # skip files
     print $name, $q->br();
-    $words->index_document($name, $OpenPageName . ' ' . $Page{text}); # don't forget to add the pagename!
+    # don't forget to add the pagename to the page text, without
+    # underscores
+    my $page = $OpenPageName;
+    $page =~ s/_/ /g;
+    $words->index_document($name, $page . ' ' . $Page{text});
     my @tags = ($Page{text} =~ m/\[\[tag:$FreeLinkPattern\]\]/g,
 		$Page{text} =~ m/\[\[tag:$FreeLinkPattern\|([^]|]+)\]\]/g);
     next unless @tags;
