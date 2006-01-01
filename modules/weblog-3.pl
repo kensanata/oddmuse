@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: weblog-3.pl,v 1.11 2006/01/01 23:44:19 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: weblog-3.pl,v 1.12 2006/01/01 23:46:57 as Exp $</p>';
 
 # Categories
 
@@ -52,7 +52,7 @@ sub CategoryInit {
   my @paragraphs = split(/\n\n+/, GetPageContent($CategoriesPage));
   foreach (@paragraphs) {
     next unless /^\*/;
-    while (/\*.*?\[\[(.*)\]\]/g) {
+    while (/\*.*?\[\[$FreeLinkPattern\]\]/g) {
       my $id = FreeToNormal($1);
       $Category{$id} = 1;
       push(@Categories, $id);
