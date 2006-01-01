@@ -1,3 +1,19 @@
+2006-01-02  Alex Schroeder  <alex@gnu.org>
+
+	* modules/weblog-3.pl (CategoryInit): Use the first link of the
+	list, not the last one.  Use $FreeLinkPattern instead of .* to
+	match.
+
+2005-12-30  Alex Schroeder  <alex@gnu.org>
+
+	* modules/search-freetext.pl (SearchFreeTextIndex): Remove
+	underscores before adding pagename to the indexed content.
+
+2005-12-29  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (RequestLockDir): Print how long since the lock was
+	created.
+
 2005-12-28  Alex Schroeder  <alex@gnu.org>
 
 	* modules/toc.pl (TocRule): Prevent H1.
