@@ -18,11 +18,22 @@
 #    Boston, MA 02111-1307 USA
 
 # This module offers the possibility to restrict viewing of "hidden"
-# pages to only editors and admins.
+# pages to only editors and admins. The restriction may be based
+# on a pattern matching the page id or to a membership to a certain
+# page cluster.
 
-$ModulesDescription .= '<p>$Id: hiddenpages.pl,v 1.1 2005/08/25 06:18:14 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: hiddenpages.pl,v 1.2 2006/01/02 10:15:04 as Exp $</p>';
 
-use vars qw($HiddenPages $HiddenPagesControl);
+use vars qw($HiddenPagesAccess $HiddenPages $HiddenCluster);
+
+
+# $HiddenPagesAccess sets the access level to hidden pages:
+#  0 = Hidden pages visible to all
+#  1 = Editor access required
+#  2 = Admin access required
+# You can override this value in your config file.
+
+$HiddenPagesAccess = 2;
 
 # $HiddenPages is a regular expression to find hidden pages. Default
 # is pages ending in "Hidden". You can override this value in your
@@ -30,15 +41,14 @@ use vars qw($HiddenPages $HiddenPagesControl);
 
 $HiddenPages = 'Hidden$';
 
-# $HiddenPagesAccess sets the access level to hidden pages:
 
-# 0 = Hidden pages visible to all
-# 1 = Editor access required
-# 2 = Admin access required
+# $HiddenCluster is a cluster name for hidden pages. Default
+# is pages in the cluster "HiddenPage". You can override this value in your
+# config file.
 
-# You can override this value in your config file.
+$HiddenCluster = 'HiddenPage';
 
-$HiddenPagesAccess = 2;
+
 
 *OldOpenPage = *OpenPage;
 *OpenPage = *NewOpenPage;
@@ -46,8 +56,21 @@ $HiddenPagesAccess = 2;
 sub NewOpenPage {
     # Get page id/name sent in to OpenPage
     my ($id) = @_;
-    # Check for match
-    if ($id =~ /$HiddenPages/ ) {
+
+    # Shield the Private pages
+    my $hidden = 0;
+
+    # Check for match of HiddenPages
+    if ($id and $id =~ /$HiddenPages/) {
+      $hidden = 1;
+    }
+
+    # Check for match of HiddenCluster
+    elsif ($id and GetCluster(GetPageContent($id)) eq $HiddenCluster) {
+      $hidden = 1;
+    }
+
+    if ($hidden) {
 	# Check the different levels of access
 	if ($HiddenPagesAccess == 1 and not UserIsEditor()) 
 	{
