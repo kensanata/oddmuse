@@ -28,7 +28,7 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.30 2005/11/20 18:50:49 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.31 2006/01/03 01:17:49 fletcherpenney Exp $</p>';
 
 use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled!;
 
@@ -66,7 +66,7 @@ sub MarkdownRule {
 
 	if ($MultiMarkdownEnabled) {
 		$Markdown::g_use_metadata = 0;
-		$Markdown::g_use_wikilinks = 0;
+		$Markdown::g_use_wiki_links = 0;
 		# $Markdown::g_base_url = $ScriptName;
 	}
 
@@ -90,7 +90,7 @@ sub MarkdownRule {
 
     my $result = Markdown::Markdown($source);
     
-	#$result = UnescapeWikiWords($result);
+	$result = UnescapeWikiWords($result);
 	
 	$result = AntiSpam($result);
 
