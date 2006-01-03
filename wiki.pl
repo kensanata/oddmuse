@@ -220,7 +220,7 @@ sub Init {
 sub InitModules {
   if ($UseConfig and $ModuleDir and -d $ModuleDir) {
     foreach my $lib (glob("$ModuleDir/*.pm $ModuleDir/*.pl")) {
-      next unless ($lib =~ /^($ModuleDir\/[-\w\d_]+\.p[lm])$/o);
+      next unless ($lib =~ /^($ModuleDir\/[-\w]+\.p[lm])$/o);
       $lib = $1; # untaint
       do $lib unless $MyInc{$lib};
       $MyInc{$lib} = 1; # Cannot use %INC in mod_perl settings
@@ -268,7 +268,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.640 2005/12/28 23:48:36 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.641 2006/01/03 16:28:05 lude Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2864,7 +2864,7 @@ sub DoEdit {
   my $summary = UnquoteHtml(GetParam('summary', ''))
     || ($Now - $Page{ts} < ($SummaryHours * 60 * 60) ? $Page{summary} : '');
   print $q->p(T('Summary:'), $q->br(), GetTextArea('summary', $summary, 2));
-  if (GetParam('recent_edit') eq 'on') {
+  if (GetParam('recent_edit', '') eq 'on') {
     print $q->p($q->checkbox(-name=>'recent_edit', -checked=>1,
 			     -label=>T('This change is a minor edit.')));
   } else {
