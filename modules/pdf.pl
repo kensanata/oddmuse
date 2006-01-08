@@ -17,7 +17,7 @@
 #    Boston, MA 02111-1307 USA
 #
 
-$ModulesDescription .= '<p>$Id: pdf.pl,v 1.4 2005/11/06 18:54:15 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: pdf.pl,v 1.5 2006/01/08 20:48:00 fletcherpenney Exp $</p>';
 
 *PdfOldDoBrowseRequest = *DoBrowseRequest;
 *DoBrowseRequest = *PdfDoBrowseRequest;
@@ -70,6 +70,13 @@ sub PdfDoBrowseRequest{
 	
 	if (GetParam('pdf','')) {
 
+		# Strip `.pdf` if present
+		# This does cause problems if you have a page name
+		# that ends in `.pdf`...
+                
+		$id =~ s/\.pdf$//;
+
+
 		# Isolate ourselves
 		local %Page;
 		local $OpenPageName = '';
@@ -90,7 +97,7 @@ sub PdfDoBrowseRequest{
 			system ("/bin/rm -rf \"$tempDirectory\"");
 
 			# pdf in place, redirect browser to download
-			my %headers = (-uri=>"$ScriptName/pdf/$id");
+			my %headers = (-uri=>"$ScriptName/pdf/$id.pdf");
 			print $q->redirect(%headers);
 		} else {
 			# Something happened - pdf not in place
@@ -226,5 +233,5 @@ sub PdfNewGetFooterLinks {
 		}
 	}
 	
-	return $result . "<br/>" . ScriptLink("pdf/$id",T('Download this page as PDF'));
+	return $result . "<br/>" . ScriptLink("pdf/$id.pdf",T('Download this page as PDF'));
 }
