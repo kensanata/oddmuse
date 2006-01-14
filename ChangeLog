@@ -1,3 +1,7 @@
+2006-01-14  Alex Schroeder  <alex@gnu.org>
+
+	* modules/search-freetext.pl (SearchFreeTextNewGetRc): New.
+
 2006-01-03  Markus Lude  <lude@informatik.uni-tuebingen.de>
 
 	* wiki.pl (InitModules): simplified pattern.
@@ -5,6 +9,9 @@
 	defined and avoids a warning in the comparison.
 
 2006-01-02  Alex Schroeder  <alex@gnu.org>
+
+	* modules/hiddenpages.pl: Various changes by Guido Jäkel without
+	ChangeLog entries.  ;)
 
 	* modules/weblog-3.pl (CategoryInit): Use the first link of the
 	list, not the last one.  Use $FreeLinkPattern instead of .* to
