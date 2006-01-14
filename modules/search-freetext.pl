@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.20 2005/12/30 13:31:03 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.21 2006/01/14 17:51:56 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -106,6 +106,21 @@ sub SearchFreeTextNewDoSearch {
     local *SearchTitleAndBody = *SearchFreeTextTitleAndBody;
     local *HighlightRegex = *SearchFreeTextNewHighlightRegex;
     SearchFreeTextOldDoSearch(@_);
+  }
+}
+
+# override code for rcfilteronly
+
+*SearchFreeTextOldGetRc = *GetRc;
+*GetRc = *SearchFreeTextNewGetRc;
+
+sub SearchFreeTextNewGetRc {
+  if (GetParam('old', 0)) {
+    SearchFreeTextOldGetRc(@_);
+  } else {
+    local *SearchTitleAndBody = *SearchFreeTextTitleAndBody;
+    local *HighlightRegex = *SearchFreeTextNewHighlightRegex;
+    SearchFreeTextOldGetRc(@_);
   }
 }
 
