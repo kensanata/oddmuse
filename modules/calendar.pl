@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.38 2006/01/21 16:45:56 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.39 2006/01/21 16:49:26 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalendarUseCal);
 
@@ -166,7 +166,8 @@ sub draw_month {
 
     my $month = shift;
     my $year = shift;
-    my @weekday = qw/Su Mo Tu We Th Fr Sa/;
+    my @weekday = (T('Su'), T('Mo'), T('Tu'), T('We'),
+		     T('Th'), T('Fr'), T('Sa'));
     my ($day, $col, $monthdays, $monthplus, $mod);
     my $weekday = zeller(1,$month,$year);
     my $start = 1 - $weekday;
@@ -266,6 +267,9 @@ sub month_days {
 
 sub month_name {
     my $month = shift;
-    my @month_name=('January','February','March','April','May','June','July','August','September','October','November','December');
+    my @month_name = (T('January'), T('February'), T('March'), T('April'),
+		      T('May'), T('June'), T('July'), T('August'),
+		      T('September'), T('October'), T('November'),
+		      T('December'));
     return $month_name[$month-1];
 }
