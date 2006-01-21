@@ -20,7 +20,7 @@
 #
 # This translation was last checked for Oddmuse version 1.195.
 #
-$ModulesDescription .= '<p>$Id: portuguese-utf8.pl,v 1.10 2006/01/21 21:06:00 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: portuguese-utf8.pl,v 1.11 2006/01/21 21:15:53 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Leitura não permitida: utilizador, ip, ou rede está bloqueado(a).
@@ -669,7 +669,7 @@ Entrou como %s
 Logout of %s
 Sair de %s
 Logout of %s?
-
+Logout of %s?
 Logged out of %s
 Você saiu de %s
 You are now logged out.
@@ -681,7 +681,7 @@ Entrar
 Logout
 Sair
 Who am I?
-
+Quem sou eu?
 Forgot your password?
 
 Change your password
