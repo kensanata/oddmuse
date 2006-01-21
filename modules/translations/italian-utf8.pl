@@ -15,7 +15,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: italian-utf8.pl,v 1.6 2005/10/09 12:48:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: italian-utf8.pl,v 1.7 2006/01/21 21:06:00 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lettura non consentita: l'utente, l'IP o la rete risultano bloccati.
@@ -57,14 +57,12 @@ Page name is missing
 Manca il nome della pagina
 Page name is too long: %s
 Nome di pagina troppo lungo: %s
-Invalid Page %s
-Pagina %s non valida
 Invalid Page %s (must not end with .db)
 Pagina %s non valida (non può terminare in .db)
 Invalid Page %s (must not end with .lck)
 Pagina %s non valida (non può terminare in .lck)
-Page name may not contain space characters: %s
-Il nome della pagina non può contenere spazi: %s
+Invalid Page %s
+Pagina %s non valida
 Preview:
 Anteprima:
 Preview only, not yet saved
@@ -217,6 +215,8 @@ s
 
 Save
 Salva
+p
+
 Preview
 Anteprima
 Search:
@@ -273,6 +273,8 @@ Cannot create %s
 
 Could not get %s lock
 Impossibile acquisire il lock %s
+The lock was created %s.
+
 This operation may take several seconds...
 Questa operazione può prendere parecchi secondi...
 Forced unlock of %s lock.
@@ -465,8 +467,6 @@ Edit lock removed.
 Blocco di modifica rilasciato.
 Set or Remove page edit lock
 Imposta o rilascia il blocco di modifica di pagina
-Missing page id to lock/unlock...
-Manca il nome della pagina da bloccare/sbloccare...
 Lock for %s created.
 Blocco per %s creato.
 Lock for %s removed.
@@ -517,6 +517,8 @@ Immediately delete %s
 Cancella %s immediatamente
 Rename %s to:
 Rinomina %s in:
+Learn more...
+
 Cannot highlight the language %s.
 Impossibile evidenziare il linguaggio %s.
 Recent Visitors
@@ -527,8 +529,8 @@ was here
 
 and read
 
-Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
-Uno fra cal(1), Date::Calc(3) o Date::Pcalc(3) deve essere presente per produrre il calendario.
+Only works for years >= 1583 - the beginning of Gregorian calendar!
+
 The match parameter is missing.
 Manca il parametro di match.
 Page Collection for %s
@@ -539,6 +541,44 @@ Next
 Successivo
 Calendar %s
 Calendiario %s
+Su
+
+Mo
+
+Tu
+
+We
+
+Th
+
+Fr
+
+Sa
+
+January
+
+February
+
+March
+
+April
+
+May
+
+June
+
+July
+
+August
+
+September
+
+October
+
+November
+
+December
+
 Clustermap
 
 Pages without a Cluster
@@ -589,6 +629,10 @@ Template without parameters
 Modello senza parametri
 The template %s is either empty or does not exist.
 Il modello %s è vuoto o non esiste.
+ -- defined on %s
+
+Local names defined on %1: %2
+
 Register for %s
 
 Please choose a username of the form "FirstLast" using your real name.
@@ -603,9 +647,9 @@ The username %s has already been registered.
 
 Your registration for %s has been submitted.
 
-  Please allow time for the webmaster to approve your request.
+Please allow time for the webmaster to approve your request.
 
-  An email has been sent to "%s" with further instructions.
+An email has been sent to "%s" with further instructions.
 
 There was an error saving your registration.
 
@@ -619,7 +663,7 @@ Logged in as %s.
 
 Logout of %s
 
-<p>Logout of %s?</p>
+Logout of %s?
 
 Logged out of %s
 
@@ -655,17 +699,17 @@ Reset Password
 
 The password for %s was reset.  It has been emailed to the address on file.
 
-There was an error resetting the password for %s
+There was an error resetting the password for %s.
 
 The username "%s" does not exist.
 
 Reset Password for %s
 
-<p>Reset Password?</p>
+Reset Password?
 
 Change Password for %s
 
-<p>Change Password?</p>
+Change Password?
 
 Your current password is incorrect.
 
@@ -717,6 +761,12 @@ Type
 Tipo
 Permalink to "%s"
 Collegamento permanente a "%s"
+There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
+
+Someone else is generating a pdf for %s.  Please wait a minute and then try again.
+
+Download this page as PDF
+
 Portrait
 Ritratto
 You did not answer correctly.
@@ -725,6 +775,8 @@ All Referrers
 Tutti i referenti
 Referrers
 Referenti
+Tag
+
 Rebuild index for searching
 
 Rebuilding Index
@@ -750,8 +802,6 @@ Indietro a %s
 Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
-
-Tag
 
 Alternatively, use one of the following templates:
 In alternativa, utilizzare uno dei seguenti modelli:

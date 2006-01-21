@@ -15,7 +15,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: romanian-utf8.pl,v 1.2 2005/10/15 12:56:00 victor_os Exp $</p>';
+$ModulesDescription .= '<p>$Id: romanian-utf8.pl,v 1.3 2006/01/21 21:06:00 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Citirea nu este permisă: utilizatorul, ip-ul sau reţeaua este blocată.
@@ -57,14 +57,12 @@ Page name is missing
 Lipseşte numele paginii.
 Page name is too long: %s
 Numele paginii este prea lung: %s
-Invalid Page %s
-
 Invalid Page %s (must not end with .db)
 
 Invalid Page %s (must not end with .lck)
 
-Page name may not contain space characters: %s
-Numele paginii nu poate conţine spaţii: %s
+Invalid Page %s
+
 Preview:
 Previzualizare:
 Preview only, not yet saved
@@ -123,6 +121,8 @@ new
 nou
 from %s
 de la %s
+This page is too big to send over RSS.
+
 History of %s
 Istorcul %s
 Compare
@@ -147,8 +147,6 @@ Wiki Version
 Versiunea Wiki
 Unlock Wiki
 Deblochează Wiki
-Recent Visitors
-Vizitatori Recenţi
 Password
 Parola
 Run maintenance
@@ -157,6 +155,8 @@ Unlock site
 Deblochează site-ul
 Lock site
 Blochează site-ul
+Install CSS
+
 Unlock %s
 Deblochează %s
 Lock %s
@@ -215,6 +215,8 @@ s
 
 Save
 Salvează
+p
+
 Preview
 Previzualizare
 Search:
@@ -223,8 +225,6 @@ f
 
 Replace:
 Înlocuieşte:
-Validate XHTML
-XHTML Valid
 Validate HTML
 HTML Valid
 Validate CSS
@@ -243,6 +243,8 @@ minor
 minoră
 No diff available.
 Nici o diferenţă disponibilă.
+The two revisions are the same.
+
 Old revision:
 Revizia veche:
 Changed:
@@ -271,6 +273,8 @@ Cannot create %s
 
 Could not get %s lock
 
+The lock was created %s.
+
 This operation may take several seconds...
 
 Forced unlock of %s lock.
@@ -291,8 +295,8 @@ cu %s secunde în urmă
 cu 1 secundă în urmă
 just now
 acum
-Editing Denied
-Editarea este interzisă.
+Edit Denied
+Editarea nu este permisă
 Editing not allowed: user, ip, or network is blocked.
 Editarea nu este permisă: utilizatorul, ip-ul sau reţeaua este blocată.
 Contact the wiki administrator for more information.
@@ -357,10 +361,10 @@ Without near pages
 
 Include near pages
 
-Filter:
-Filtru:
 (for %s)
 (pentru %s)
+Filter:
+Filtru:
 %s pages found.
 %s pagini găsite.
 Replaced: %s
@@ -405,9 +409,9 @@ Browser reports no file info.
 
 Browser reports no file type.
 
-Edit Denied
-Editarea nu este permisă
 The page contains banned text.
+
+No changes to be saved.
 
 This page was changed by somebody else %s.
 
@@ -463,8 +467,6 @@ Edit lock removed.
 
 Set or Remove page edit lock
 
-Missing page id to lock/unlock...
-
 Lock for %s created.
 
 Lock for %s removed.
@@ -491,6 +493,8 @@ Click to search for references to this permanent anchor
 
 the page %s also exists
 pagina %s de asemenea există
+Copy one of the following stylesheets to %s:
+
 Deleting %s
 Se şterge %s
 Deleted %s
@@ -513,15 +517,19 @@ Immediately delete %s
 
 Rename %s to:
 Redenumeşte %s ca:
+Learn more...
+
 Cannot highlight the language %s.
 
+Recent Visitors
+Vizitatori Recenţi
 some action
 o acţiune
 was here
 a fost aici
 and read
 şi a citit
-Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
+Only works for years >= 1583 - the beginning of Gregorian calendar!
 
 The match parameter is missing.
 
@@ -532,6 +540,44 @@ Precedent
 Next
 Următor
 Calendar %s
+
+Su
+
+Mo
+
+Tu
+
+We
+
+Th
+
+Fr
+
+Sa
+
+January
+
+February
+
+March
+
+April
+
+May
+
+June
+
+July
+
+August
+
+September
+
+October
+
+November
+
+December
 
 Clustermap
 
@@ -557,9 +603,15 @@ Cannot find unspammed revision.
 
 Add Comment
 Adaugă Comentariu
+ordinary changes
+
 Footnotes:
 Note de subsol:
 Could not find %1.html template in %2
+
+Only Editors are allowed to see hidden pages.
+
+Only Admins are allowed to see hidden pages.
 
 image: %s
 imagine: %s
@@ -577,6 +629,10 @@ Template without parameters
 
 The template %s is either empty or does not exist.
 
+ -- defined on %s
+
+Local names defined on %1: %2
+
 Register for %s
 
 Please choose a username of the form "FirstLast" using your real name.
@@ -591,7 +647,11 @@ The username %s has already been registered.
 
 Your registration for %s has been submitted.
 
-  Please allow time for the webmaster to approve your request.
+Please allow time for the webmaster to approve your request.
+
+An email has been sent to "%s" with further instructions.
+
+There was an error saving your registration.
 
 An account was created for %s.
 
@@ -615,6 +675,60 @@ Login
 
 Logout
 
+Who am I?
+
+Forgot your password?
+
+Change your password
+
+Approve pending registrations
+
+Confirm Registration for %s
+
+%s, your registration has been approved. You can now use your password to login and edit this wiki.
+
+Confirmation failed.  Please email %s for help.
+
+Who Am I?
+
+You are logged in as %s.
+
+You are not logged in.
+
+Reset Password
+
+The password for %s was reset.  It has been emailed to the address on file.
+
+There was an error resetting the password for %s.
+
+The username "%s" does not exist.
+
+Reset Password for %s
+
+Reset Password?
+
+Change Password for %s
+
+Change Password?
+
+Your current password is incorrect.
+
+Your password has been changed.
+
+Approve Pending Registrations for %s
+
+%s has been approved.
+
+There was an error approving %s.
+
+<ul>
+
+<li>%1 - %2</li>
+
+</ul>
+
+There are no pending registrations.
+
 Clearing Cache
 
 Done.
@@ -633,6 +747,10 @@ Local Map for %s
 
 view
 
+Self-ban by %s
+
+You have banned your own IP.
+
 Orphan List
 
 Trail: 
@@ -643,6 +761,12 @@ Type
 Tip
 Permalink to "%s"
 
+There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
+
+Someone else is generating a pdf for %s.  Please wait a minute and then try again.
+
+Download this page as PDF
+
 Portrait
 
 You did not answer correctly.
@@ -650,6 +774,8 @@ You did not answer correctly.
 All Referrers
 
 Referrers
+
+Tag
 
 Rebuild index for searching
 
@@ -673,7 +799,9 @@ Static Copy
 
 Back to %s
 Înapoi la %s
-Tag
+Copy to %1 succeeded: %2.
+
+Copy to %1 failed: %2.
 
 Alternatively, use one of the following templates:
 
@@ -719,12 +847,14 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 
 search
 
+Upload of %s file
+
 Blog
 
-Questions on this page:
-Întrebări pe această pagină:
-Question: 
-Întrebare: 
-Answer: 
-Răspuns: 
+Matching pages:
+
+New
+
+Edit %s.
+
 END_OF_TRANSLATION

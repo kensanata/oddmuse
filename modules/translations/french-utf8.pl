@@ -18,7 +18,7 @@
 #
 # This translation was last checked for Oddmuse version 1.296.
 #
-$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.12 2005/10/09 12:48:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.13 2006/01/21 21:06:00 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Accès interdit&nbsp;: votre serveur, adresse IP ou nom d'utilisateur a été bloqué.
@@ -60,14 +60,12 @@ Page name is missing
 Le nom de la page est manquant
 Page name is too long: %s
 Le nom de la page est trop long&nbsp;: %s
-Invalid Page %s
-Page non valide %s
 Invalid Page %s (must not end with .db)
 Page non valide %s (elle ne doit pas se terminer par .db)
 Invalid Page %s (must not end with .lck)
 Page non valide %s (elle ne doit pas se terminer par .lck)
-Page name may not contain space characters: %s
-Le nom de la page ne peut pas contenir d'espaces&nbsp;: %s
+Invalid Page %s
+Page non valide %s
 Preview:
 Prévisualisation&nbsp;:
 Preview only, not yet saved
@@ -220,6 +218,8 @@ s
 s
 Save
 Sauvegarder
+p
+
 Preview
 Prévisualisation
 Search:
@@ -276,6 +276,8 @@ Cannot create %s
 Impossible de créer %s
 Could not get %s lock
 Ne peut obtenir un verrouillage %s
+The lock was created %s.
+
 This operation may take several seconds...
 Cette opération peut prendre quelques secondes...
 Forced unlock of %s lock.
@@ -468,8 +470,6 @@ Edit lock removed.
 Verrou d'édition enlevé.
 Set or Remove page edit lock
 Positionne ou enlève le verrou d'édition de la page
-Missing page id to lock/unlock...
-Id de page manquant pour verrouiller/déverrouiller...
 Lock for %s created.
 Verrou pour %s créé.
 Lock for %s removed.
@@ -520,6 +520,8 @@ Immediately delete %s
 Supprimer immédiatement %s
 Rename %s to:
 Renommer %s en :
+Learn more...
+
 Cannot highlight the language %s.
 Impossible de surligner la langue %s.
 Recent Visitors
@@ -530,8 +532,8 @@ was here
 
 and read
 
-Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
-cal(1), Date::Calc(3) ou Date::Pcalc(3) manque pour pouvoir créer le calendrier.
+Only works for years >= 1583 - the beginning of Gregorian calendar!
+
 The match parameter is missing.
 Le paramètre de correspondance est manquant
 Page Collection for %s
@@ -542,6 +544,44 @@ Next
 Suivant
 Calendar %s
 Calendrier %s
+Su
+
+Mo
+
+Tu
+
+We
+
+Th
+
+Fr
+
+Sa
+
+January
+
+February
+
+March
+
+April
+
+May
+
+June
+
+July
+
+August
+
+September
+
+October
+
+November
+
+December
+
 Clustermap
 Carte du Faisceau
 Pages without a Cluster
@@ -592,6 +632,10 @@ Template without parameters
 Gabarit sans paramètres
 The template %s is either empty or does not exist.
 Le gabarit %s est soit vide soit n'existe pas.
+ -- defined on %s
+
+Local names defined on %1: %2
+
 Register for %s
 Enregistrer pour %s
 Please choose a username of the form "FirstLast" using your real name.
@@ -606,9 +650,9 @@ The username %s has already been registered.
 Le nom d'utilisateur %s a déjà été enregistré.
 Your registration for %s has been submitted.
 Votre enregistrement pour %s a été soumis.
-  Please allow time for the webmaster to approve your request.
-  SVP, donnez un peu de temps au webmestre pour valider votre demande.
-  An email has been sent to "%s" with further instructions.
+Please allow time for the webmaster to approve your request.
+
+An email has been sent to "%s" with further instructions.
 
 There was an error saving your registration.
 
@@ -622,7 +666,7 @@ Logged in as %s.
 Connecté comme %s.
 Logout of %s
 Déconnexion de %s
-<p>Logout of %s?</p>
+Logout of %s?
 
 Logged out of %s
 Déconnecté de %s
@@ -658,17 +702,17 @@ Reset Password
 
 The password for %s was reset.  It has been emailed to the address on file.
 
-There was an error resetting the password for %s
+There was an error resetting the password for %s.
 
 The username "%s" does not exist.
 
 Reset Password for %s
 
-<p>Reset Password?</p>
+Reset Password?
 
 Change Password for %s
 
-<p>Change Password?</p>
+Change Password?
 
 Your current password is incorrect.
 
@@ -720,6 +764,12 @@ Type
 Type
 Permalink to "%s"
 Lien permanent vers
+There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
+
+Someone else is generating a pdf for %s.  Please wait a minute and then try again.
+
+Download this page as PDF
+
 Portrait
 Portrait
 You did not answer correctly.
@@ -728,6 +778,8 @@ All Referrers
 Tous les Introducteurs
 Referrers
 Introducteurs
+Tag
+Tag
 Rebuild index for searching
 Reconstruire l'index pour la recherche
 Rebuilding Index
@@ -754,8 +806,6 @@ Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
 
-Tag
-Tag
 Alternatively, use one of the following templates:
 Alternativement, utilisez un des modèles suivants :
 Thread: %s

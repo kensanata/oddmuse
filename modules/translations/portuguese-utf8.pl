@@ -20,7 +20,7 @@
 #
 # This translation was last checked for Oddmuse version 1.195.
 #
-$ModulesDescription .= '<p>$Id: portuguese-utf8.pl,v 1.9 2005/10/10 19:21:25 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: portuguese-utf8.pl,v 1.10 2006/01/21 21:06:00 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Leitura não permitida: utilizador, ip, ou rede está bloqueado(a).
@@ -62,14 +62,12 @@ Page name is missing
 Falta o nome da página
 Page name is too long: %s
 Nome de página é muito longo: %s
-Invalid Page %s
-Página %s inválida
 Invalid Page %s (must not end with .db)
 Página %s inválida (não pode terminar com .db)
 Invalid Page %s (must not end with .lck)
 Página %s inválida (não pode terminar com .lck)
-Page name may not contain space characters: %s
-Nome de página não pode conter espaços: %s
+Invalid Page %s
+Página %s inválida
 Preview:
 Prever:
 Preview only, not yet saved
@@ -222,6 +220,8 @@ s
 s
 Save
 Gravar
+p
+
 Preview
 Prever
 Search:
@@ -278,6 +278,8 @@ Cannot create %s
 Impossível criar %s
 Could not get %s lock
 Não foi possível bloquear %s
+The lock was created %s.
+
 This operation may take several seconds...
 Esta operação pode demorar alguns segundos...
 Forced unlock of %s lock.
@@ -470,8 +472,6 @@ Edit lock removed.
 Bloqueio de edição removido.
 Set or Remove page edit lock
 Marque ou Remova bloqueio de edição de páginas
-Missing page id to lock/unlock...
-Faltando id da página para bloquear/desbloquear...
 Lock for %s created.
 Bloqueio para %s criado.
 Lock for %s removed.
@@ -522,6 +522,8 @@ Immediately delete %s
 Apagar %s imediatamente
 Rename %s to:
 Renomear %s para:
+Learn more...
+
 Cannot highlight the language %s.
 Impossível destacar a língua %s
 Recent Visitors
@@ -532,8 +534,8 @@ was here
 foi aqui
 and read
 e ler
-Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
-Falta cal(1), ou Date::Calc(3) ou Date::Pcalc(3) para criar o calendário.
+Only works for years >= 1583 - the beginning of Gregorian calendar!
+
 The match parameter is missing.
 Falta o parâmentro de correspondência
 Page Collection for %s
@@ -544,6 +546,44 @@ Next
 Próximo
 Calendar %s
 Calendário para %s
+Su
+
+Mo
+
+Tu
+
+We
+
+Th
+
+Fr
+
+Sa
+
+January
+
+February
+
+March
+
+April
+
+May
+
+June
+
+July
+
+August
+
+September
+
+October
+
+November
+
+December
+
 Clustermap
 
 Pages without a Cluster
@@ -594,6 +634,10 @@ Template without parameters
 <i>Template</i> sem parâmetros
 The template %s is either empty or does not exist.
 O <i>template</i> está em branco ou não existe.
+ -- defined on %s
+
+Local names defined on %1: %2
+
 Register for %s
 Registar para %s
 Please choose a username of the form "FirstLast" using your real name.
@@ -608,9 +652,9 @@ The username %s has already been registered.
 O nome de utilizador %s já foi registado
 Your registration for %s has been submitted.
 O seu registo para % foi enviado
-  Please allow time for the webmaster to approve your request.
-  Por favor aguarde algum tempo que o <i>webmaster</i> aprove o seu pedido.
-  An email has been sent to "%s" with further instructions.
+Please allow time for the webmaster to approve your request.
+
+An email has been sent to "%s" with further instructions.
 
 There was an error saving your registration.
 
@@ -624,8 +668,8 @@ Logged in as %s.
 Entrou como %s
 Logout of %s
 Sair de %s
-<p>Logout of %s?</p>
-<p>Sair de %s?</p>
+Logout of %s?
+
 Logged out of %s
 Você saiu de %s
 You are now logged out.
@@ -660,17 +704,17 @@ Reset Password
 
 The password for %s was reset.  It has been emailed to the address on file.
 
-There was an error resetting the password for %s
+There was an error resetting the password for %s.
 
 The username "%s" does not exist.
 
 Reset Password for %s
 
-<p>Reset Password?</p>
+Reset Password?
 
 Change Password for %s
 
-<p>Change Password?</p>
+Change Password?
 
 Your current password is incorrect.
 
@@ -722,6 +766,12 @@ Type
 Tipo
 Permalink to "%s"
 <i>Permalink</i> para "%s"
+There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
+
+Someone else is generating a pdf for %s.  Please wait a minute and then try again.
+
+Download this page as PDF
+
 Portrait
 Retrato
 You did not answer correctly.
@@ -730,6 +780,8 @@ All Referrers
 Todos os <i>Referrers</i>
 Referrers
 Referrers
+Tag
+Tag
 Rebuild index for searching
 Reconstruir índice para pesquisa
 Rebuilding Index
@@ -756,8 +808,6 @@ Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
 
-Tag
-Tag
 Alternatively, use one of the following templates:
 Como alternativa, use um dos modelos seguintes:
 Thread: %s
