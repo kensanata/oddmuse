@@ -1,7 +1,7 @@
 # UTF-8 encoded German translation file for use with Oddmuse
 #
 # Copyright (c) 2003  Karl Loncarek <karl@loncarek.de>
-# Copyright (c) 2003, 2004, 2005  Alex Schröder <alex@emacswiki.org>
+# Copyright (c) 2003, 2004, 2005, 2006  Alex Schröder <alex@emacswiki.org>
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.10 2005/12/30 13:33:00 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.11 2006/01/21 17:11:02 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
@@ -45,9 +45,9 @@ No items found in %s.
 Click to edit this page
 Hier klicken um die Seite zu bearbeiten
 image
-
+image
 download
-
+download
 CGI Internal error: %s
 Interner CGI Fehler: %s
 Invalid action parameter %s
@@ -58,14 +58,12 @@ Page name is missing
 Seitenname fehlt
 Page name is too long: %s
 Seitenname zu lang: %s
-Invalid Page %s
-Ungültige Seite %s
 Invalid Page %s (must not end with .db)
 Ungültige Seite %s (Darf nicht mit .db enden)
 Invalid Page %s (must not end with .lck)
 Ungültige Seite %s (Darf nicht mit .lck enden)
-Page name may not contain space characters: %s
-Seitenname darf keine Leerzeichen enthalten: %s
+Invalid Page %s
+Ungültige Seite %s
 Preview:
 Vorschau:
 Preview only, not yet saved
@@ -159,7 +157,7 @@ Wiki entsperren
 Lock site
 Wiki sperren
 Install CSS
-
+CSS installieren
 Unlock %s
 %s entsperren
 Lock %s
@@ -218,6 +216,8 @@ s
 s
 Save
 Speichern
+p
+p
 Preview
 Vorschau
 Search:
@@ -273,7 +273,9 @@ Cannot write %s
 Cannot create %s
 %s kann nicht erstellt werden
 Could not get %s lock
-Die %s Sperre konnte nicht gesetzt werden
+Die %s Sperre konnte nicht gesetzt werden.
+The lock was created %s.
+Die Sperre wurde %s getzt.
 This operation may take several seconds...
 Das könnte einige Sekunden dauern...
 Forced unlock of %s lock.
@@ -411,7 +413,7 @@ Der Browser hat keinen Dateityp geliefert.
 The page contains banned text.
 Diese Seite enthält verbotenen Text.
 No changes to be saved.
-
+Es wurde nichts geändert.
 This page was changed by somebody else %s.
 Diese Seite wurde von einer anderen Person %s verändert.
 The changes conflict.  Please check the page again.
@@ -466,8 +468,6 @@ Edit lock removed.
 Bearbeitungssperre aufgehoben.
 Set or Remove page edit lock
 Erzeugen oder aufheben der Seiten-Bearbeitungssperre
-Missing page id to lock/unlock...
-Fehlende Seiten-ID für die Erzeugung/Aufhebung der Sperre...
 Lock for %s created.
 Sperre von %s erzeugt.
 Lock for %s removed.
@@ -495,7 +495,7 @@ Klicken um nach Verweisen auf diesen permanenten Anker zu suchen
 the page %s also exists
 die Seite %s existiert ebenfalls
 Copy one of the following stylesheets to %s:
-
+Eines der folgenden Style Sheets kann auf die %s Seite kopiert werden:
 Deleting %s
 %s löschen
 Deleted %s
@@ -518,6 +518,8 @@ Immediately delete %s
 %s sofort löschen
 Rename %s to:
 %s umbenennen zu:
+Learn more...
+Mehr dazu...
 Cannot highlight the language %s.
 Die Sprache %s kann von diesem Modul nicht eingefärbt werden.
 Recent Visitors
@@ -528,8 +530,8 @@ was here
 war hier
 and read
 und las
-Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
-Um einen Kalender zu produzieren fehlt entweder cal(1), Date::Calc(3) oder Date::Pcalc(3).
+Only works for years >= 1583 - the beginning of Gregorian calendar!
+Das funktioniert nur für das Jahr 1583 und später. Dazumal wurde der gregorianische Kalender eingeführt
 The match parameter is missing.
 Der 'match' Parameter fehlt noch.
 Page Collection for %s
@@ -540,8 +542,46 @@ Next
 Nächster
 Calendar %s
 Kalender %s
+Su
+So
+Mo
+Mo
+Tu
+Di
+We
+Mi
+Th
+Do
+Fr
+Fr
+Sa
+Sa
+January
+Januar
+February
+Februar
+March
+März
+April
+April
+May
+Mai
+June
+Juni
+July
+Juli
+August
+August
+September
+September
+October
+Oktober
+November
+November
+December
+Dezember
 Clustermap
-
+Clustermap
 Pages without a Cluster
 Seiten ohne Cluster
 Comments on 
@@ -590,6 +630,10 @@ Template without parameters
 Vorlage ohne Parameter
 The template %s is either empty or does not exist.
 Die %s Vorlage ist entweder leer oder existiert gar nicht.
+ -- defined on %s
+ -- definiert auf der Seite %s
+Local names defined on %1: %2
+Der lokale Namen %s wurde auf der Seite %1 definiert
 Register for %s
 Anmeldung für %s
 Please choose a username of the form "FirstLast" using your real name.
@@ -604,12 +648,12 @@ The username %s has already been registered.
 Der Benutzername %s existiert bereits.
 Your registration for %s has been submitted.
 Ihre Anmeldung für den Benutzername %s wurde weitergeleitet.
-  Please allow time for the webmaster to approve your request.
-  Bitte geben sie dem Webmaster etwas Zeit, um ihre Anmeldung entgegen zu nehmen.
-  An email has been sent to "%s" with further instructions.
-
+Please allow time for the webmaster to approve your request.
+Bitte geben Sie dem Webmaster etwas Zeit, um ihr Gesuch zu bewilligen.
+An email has been sent to "%s" with further instructions.
+Eine Email mit weiteren Instruktionen wurde an %s verschickt.
 There was an error saving your registration.
-
+Es gab einen Fehler beim Speichern ihrer Registrierung.
 An account was created for %s.
 Der Benutzername %s wurde angelegt.
 Login to %s
@@ -620,8 +664,8 @@ Logged in as %s.
 %s wurde erfolgreich angemeldet.
 Logout of %s
 %s wurde erfolgreich abgemeldet.
-<p>Logout of %s?</p>
-
+Logout of %s?
+Von %s abmelden?
 Logged out of %s
 %s wurde erfolgreich abgemeldet.
 You are now logged out.
@@ -633,59 +677,59 @@ Anmeldung
 Logout
 Abmeldung
 Who am I?
-
+Wer bin ich?
 Forgot your password?
-
+Passwort vergessen?
 Change your password
-
+Passwort ändern
 Approve pending registrations
-
+Die verbleibenden Gesuche bewilligen
 Confirm Registration for %s
-
+Die Registrierung für %s bestätigen
 %s, your registration has been approved. You can now use your password to login and edit this wiki.
-
+Ihr Gesuch wurde angenommen.  Sie können nun mit ihrem Passwort einsteigen und das Wiki verändern.
 Confirmation failed.  Please email %s for help.
-
+Die Bestätigung ist fehlgeschlagen. Senden sie eine Mail an %s und Hilfe zu erhalten.
 Who Am I?
-
+Wer bin ich?
 You are logged in as %s.
-
+Sie sind als %s angemeldet.
 You are not logged in.
-
+Sie sind nicht angemeldet.
 Reset Password
-
+Passwort zurücksetzen
 The password for %s was reset.  It has been emailed to the address on file.
-
-There was an error resetting the password for %s
-
+Das Passwort für %s wurde zurück gesetzt. Eine entsprechende Email wurde an die dazugehörige Adresse geschickt.
+There was an error resetting the password for %s.
+Das Passwort konnte für %s  wegen einem Fehler nicht gesetzt werden.
 The username "%s" does not exist.
-
+Der Benutzer "%s" existiert nicht.
 Reset Password for %s
-
-<p>Reset Password?</p>
-
+Passwort für %s zurücksetzen
+Reset Password?
+Passwort zurücksetzen?
 Change Password for %s
-
-<p>Change Password?</p>
-
+Das Passwrt für %s zurück setzen
+Change Password?
+Passwort ändern
 Your current password is incorrect.
-
+Das aktuelle Passwort ist nicht korrekt.
 Your password has been changed.
-
+Das Passwort wurde geändert.
 Approve Pending Registrations for %s
-
+Offene Gesuche für %s bestätigen
 %s has been approved.
-
+%s wurde bestätigt.
 There was an error approving %s.
-
+Bei der Bestätigung von %s ist ein Fehler aufgetreten.
 <ul>
-
+<ul>
 <li>%1 - %2</li>
-
+<li>%1 - %2</li>
 </ul>
-
+</ul>
 There are no pending registrations.
-
+Es gibt keine offenen Gesuche.
 Clearing Cache
 Cache wird geleert
 Done.
@@ -718,6 +762,12 @@ Type
 Typ
 Permalink to "%s"
 Permalink für "%s"
+There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
+Es gab einen Fehler beim Generieren der PDF Datei für %s. Bitte teilen Sie dies dem Webmeister mit.  Ein erneuter Versuch, diese Datei zu erhalten, wird nicht funktionieren.
+Someone else is generating a pdf for %s.  Please wait a minute and then try again.
+Gerade eben erstellt jemand eine PDF Datei für %s.  Bitte warten Sie eine Minute und versuchen es dann nochmal.
+Download this page as PDF
+Diese Seite als PDF
 Portrait
 Portrait
 You did not answer correctly.
@@ -726,8 +776,10 @@ All Referrers
 Alle Links auf diesen Wiki
 Referrers
 Links auf diese Seite
+Tag
+Tag
 Rebuild index for searching
-Index für die Suche neu erstellen
+Der Index für die Suche wird neu erstellt
 Rebuilding Index
 Der Index wird neu erstellt
 Search::FreeText is not available on this system.
@@ -752,8 +804,6 @@ Copy to %1 succeeded: %2.
 Die %1 Kopie hat funktioniert: %2.
 Copy to %1 failed: %2.
 Die %1 Kopie ist fehlgeschlagen: %2.
-Tag
-
 Alternatively, use one of the following templates:
 Anderenfalls stehen auch folgende Vorlagen zur Verfügung:
 Thread: %s
