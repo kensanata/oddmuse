@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.11 2006/01/21 17:11:02 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.12 2006/01/21 21:13:53 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
@@ -709,7 +709,7 @@ Passwort für %s zurücksetzen
 Reset Password?
 Passwort zurücksetzen?
 Change Password for %s
-Das Passwrt für %s zurück setzen
+Das Passwort für %s zurück setzen
 Change Password?
 Passwort ändern
 Your current password is incorrect.
