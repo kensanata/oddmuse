@@ -17,7 +17,7 @@
 #
 # This translation was last checked for Oddmuse version 1.195.
 #
-$ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.1 2005/10/10 18:58:42 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.2 2006/01/21 21:06:00 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Leitura não permitida: usuário, ip, ou rede está bloqueada.
@@ -59,14 +59,12 @@ Page name is missing
 Falta o nome da página
 Page name is too long: %s
 Nome de página é muito longo: %s
-Invalid Page %s
-Página %s invália
 Invalid Page %s (must not end with .db)
 Página %s inválida (não pode terminar com .db)
 Invalid Page %s (must not end with .lck)
 Página %s inválida (não pode terminar com .lck)
-Page name may not contain space characters: %s
-Nome de página não pode conter espaço: %s
+Invalid Page %s
+Página %s invália
 Preview:
 Prever:
 Preview only, not yet saved
@@ -219,6 +217,8 @@ s
 s
 Save
 Salvar
+p
+
 Preview
 Prever
 Search:
@@ -275,6 +275,8 @@ Cannot create %s
 
 Could not get %s lock
 Não foi possível conseguir a trava %s
+The lock was created %s.
+
 This operation may take several seconds...
 Essa operação pode demorar alguns segundos...
 Forced unlock of %s lock.
@@ -322,11 +324,11 @@ Sumário:
 This change is a minor edit.
 Esta atualização é miníma.
 Replace this file with text.
-Escrever texto em vez do archivo presente.
+Escrever texto em vez do arquivo presente.
 Replace this text with a file.
-Usar um archivo em vez do texto presente.
+Usar um arquivo em vez do texto presente.
 File to upload: 
-Archivo à usar: 
+Arquivo à usar: 
 Files of type %s are not allowed.
 
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
@@ -467,8 +469,6 @@ Edit lock removed.
 Trava de edição removido.
 Set or Remove page edit lock
 Marque ou Remova trava de ediçao de páginas
-Missing page id to lock/unlock...
-Faltando id da página para travar/destravar...
 Lock for %s created.
 Trava para %s criado.
 Lock for %s removed.
@@ -519,6 +519,8 @@ Immediately delete %s
 
 Rename %s to:
 
+Learn more...
+
 Cannot highlight the language %s.
 
 Recent Visitors
@@ -529,7 +531,7 @@ was here
 
 and read
 
-Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
+Only works for years >= 1583 - the beginning of Gregorian calendar!
 
 The match parameter is missing.
 
@@ -541,6 +543,44 @@ Next
 Próximo
 Calendar %s
 Calendário para %s
+Su
+
+Mo
+
+Tu
+
+We
+
+Th
+
+Fr
+
+Sa
+
+January
+
+February
+
+March
+
+April
+
+May
+
+June
+
+July
+
+August
+
+September
+
+October
+
+November
+
+December
+
 Clustermap
 
 Pages without a Cluster
@@ -591,6 +631,10 @@ Template without parameters
 
 The template %s is either empty or does not exist.
 
+ -- defined on %s
+
+Local names defined on %1: %2
+
 Register for %s
 
 Please choose a username of the form "FirstLast" using your real name.
@@ -605,9 +649,9 @@ The username %s has already been registered.
 
 Your registration for %s has been submitted.
 
-  Please allow time for the webmaster to approve your request.
+Please allow time for the webmaster to approve your request.
 
-  An email has been sent to "%s" with further instructions.
+An email has been sent to "%s" with further instructions.
 
 There was an error saving your registration.
 
@@ -621,7 +665,7 @@ Logged in as %s.
 
 Logout of %s
 
-<p>Logout of %s?</p>
+Logout of %s?
 
 Logged out of %s
 
@@ -657,17 +701,17 @@ Reset Password
 
 The password for %s was reset.  It has been emailed to the address on file.
 
-There was an error resetting the password for %s
+There was an error resetting the password for %s.
 
 The username "%s" does not exist.
 
 Reset Password for %s
 
-<p>Reset Password?</p>
+Reset Password?
 
 Change Password for %s
 
-<p>Change Password?</p>
+Change Password?
 
 Your current password is incorrect.
 
@@ -719,6 +763,12 @@ Type
 Tipo
 Permalink to "%s"
 
+There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
+
+Someone else is generating a pdf for %s.  Please wait a minute and then try again.
+
+Download this page as PDF
+
 Portrait
 
 You did not answer correctly.
@@ -726,6 +776,8 @@ You did not answer correctly.
 All Referrers
 
 Referrers
+
+Tag
 
 Rebuild index for searching
 
@@ -752,8 +804,6 @@ Voltar para %s
 Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
-
-Tag
 
 Alternatively, use one of the following templates:
 

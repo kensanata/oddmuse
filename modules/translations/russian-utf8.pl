@@ -18,7 +18,7 @@
 #
 # This script was last checked for Oddmuse version 1.383.
 #
-$ModulesDescription .= '<p>$Id: russian-utf8.pl,v 1.6 2005/10/09 12:48:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: russian-utf8.pl,v 1.7 2006/01/21 21:06:00 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 
@@ -60,14 +60,12 @@ Page name is missing
 
 Page name is too long: %s
 Имя страницы слишком велико: %s
-Invalid Page %s
-Некорректная страница %s
 Invalid Page %s (must not end with .db)
 Некорректная страница %s (не должна оканчиваться на .db)
 Invalid Page %s (must not end with .lck)
 Некорректная страница %s (Некорректная страница %s lck)
-Page name may not contain space characters: %s
-Имя страницы не может содержать пробельные символы: %s
+Invalid Page %s
+Некорректная страница %s
 Preview:
 Предпросмотр:
 Preview only, not yet saved
@@ -220,6 +218,8 @@ s
 
 Save
 Сохранить
+p
+
 Preview
 Предпросмотр
 Search:
@@ -275,6 +275,8 @@ Cannot write %s
 Cannot create %s
 
 Could not get %s lock
+
+The lock was created %s.
 
 This operation may take several seconds...
 Это может занять несколько секунд, так что не нервничайте
@@ -468,8 +470,6 @@ Edit lock removed.
 
 Set or Remove page edit lock
 
-Missing page id to lock/unlock...
-
 Lock for %s created.
 
 Lock for %s removed.
@@ -520,6 +520,8 @@ Immediately delete %s
 
 Rename %s to:
 
+Learn more...
+
 Cannot highlight the language %s.
 
 Recent Visitors
@@ -530,7 +532,7 @@ was here
 
 and read
 
-Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
+Only works for years >= 1583 - the beginning of Gregorian calendar!
 
 The match parameter is missing.
 
@@ -541,6 +543,44 @@ Previous
 Next
 
 Calendar %s
+
+Su
+
+Mo
+
+Tu
+
+We
+
+Th
+
+Fr
+
+Sa
+
+January
+
+February
+
+March
+
+April
+
+May
+
+June
+
+July
+
+August
+
+September
+
+October
+
+November
+
+December
 
 Clustermap
 
@@ -592,6 +632,10 @@ Template without parameters
 
 The template %s is either empty or does not exist.
 
+ -- defined on %s
+
+Local names defined on %1: %2
+
 Register for %s
 
 Please choose a username of the form "FirstLast" using your real name.
@@ -606,9 +650,9 @@ The username %s has already been registered.
 
 Your registration for %s has been submitted.
 
-  Please allow time for the webmaster to approve your request.
+Please allow time for the webmaster to approve your request.
 
-  An email has been sent to "%s" with further instructions.
+An email has been sent to "%s" with further instructions.
 
 There was an error saving your registration.
 
@@ -622,7 +666,7 @@ Logged in as %s.
 
 Logout of %s
 
-<p>Logout of %s?</p>
+Logout of %s?
 
 Logged out of %s
 
@@ -658,17 +702,17 @@ Reset Password
 
 The password for %s was reset.  It has been emailed to the address on file.
 
-There was an error resetting the password for %s
+There was an error resetting the password for %s.
 
 The username "%s" does not exist.
 
 Reset Password for %s
 
-<p>Reset Password?</p>
+Reset Password?
 
 Change Password for %s
 
-<p>Change Password?</p>
+Change Password?
 
 Your current password is incorrect.
 
@@ -720,6 +764,12 @@ Type
 
 Permalink to "%s"
 
+There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
+
+Someone else is generating a pdf for %s.  Please wait a minute and then try again.
+
+Download this page as PDF
+
 Portrait
 
 You did not answer correctly.
@@ -727,6 +777,8 @@ You did not answer correctly.
 All Referrers
 
 Referrers
+
+Tag
 
 Rebuild index for searching
 
@@ -753,8 +805,6 @@ Back to %s
 Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
-
-Tag
 
 Alternatively, use one of the following templates:
 

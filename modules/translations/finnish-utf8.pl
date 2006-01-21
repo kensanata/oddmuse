@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: finnish-utf8.pl,v 1.6 2005/10/09 12:48:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: finnish-utf8.pl,v 1.7 2006/01/21 21:06:00 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lukeminen ei ole sallittua: käyttäjä, IP tai verkko on estetty.
@@ -58,14 +58,12 @@ Page name is missing
 Sivun nimi puuttuu
 Page name is too long: %s
 Sivun nimi on liian pitkä: %s
-Invalid Page %s
-Virheellinen sivu %s
 Invalid Page %s (must not end with .db)
 Virheellinen sivu %s (pääte ei voi olla .db)
 Invalid Page %s (must not end with .lck)
 Virheellinen sivu %s (pääte ei voi olla .lck)
-Page name may not contain space characters: %s
-Sivun nimi ei voi sisältää välilyöntejä:
+Invalid Page %s
+Virheellinen sivu %s
 Preview:
 Esikatselu:
 Preview only, not yet saved
@@ -218,6 +216,8 @@ s
 t
 Save
 Tallenna
+p
+
 Preview
 Esikatselu
 Search:
@@ -274,6 +274,8 @@ Cannot create %s
 
 Could not get %s lock
 Ei voitu lukita: %s
+The lock was created %s.
+
 This operation may take several seconds...
 Tämä operaatio voi kestää useita sekunteja...
 Forced unlock of %s lock.
@@ -466,8 +468,6 @@ Edit lock removed.
 Muokkauslukitus poistettu.
 Set or Remove page edit lock
 Aseta tai poista sivun muokkauslukitus
-Missing page id to lock/unlock...
-Sivun id puuttu lukitusta/avausta varten...
 Lock for %s created.
 Lukko %s:lle luotu.
 Lock for %s removed.
@@ -518,6 +518,8 @@ Immediately delete %s
 
 Rename %s to:
 
+Learn more...
+
 Cannot highlight the language %s.
 Kieltä %s ei voida merkitä
 Recent Visitors
@@ -528,8 +530,8 @@ was here
 
 and read
 
-Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
-Yksi seuraavista tarvitaan kalenterin luomiseksi: cal(1), Date::Calc(3), or Date::Pcalc(3).
+Only works for years >= 1583 - the beginning of Gregorian calendar!
+
 The match parameter is missing.
 Hakuparametri puuttuu.
 Page Collection for %s
@@ -540,6 +542,44 @@ Next
 Seuraava
 Calendar %s
 Kalenteri %s
+Su
+
+Mo
+
+Tu
+
+We
+
+Th
+
+Fr
+
+Sa
+
+January
+
+February
+
+March
+
+April
+
+May
+
+June
+
+July
+
+August
+
+September
+
+October
+
+November
+
+December
+
 Clustermap
 
 Pages without a Cluster
@@ -590,6 +630,10 @@ Template without parameters
 Pohja ilman parametrejä
 The template %s is either empty or does not exist.
 Pohja %s on joko tyhjä tai ei ole olemassa.
+ -- defined on %s
+
+Local names defined on %1: %2
+
 Register for %s
 
 Please choose a username of the form "FirstLast" using your real name.
@@ -604,9 +648,9 @@ The username %s has already been registered.
 
 Your registration for %s has been submitted.
 
-  Please allow time for the webmaster to approve your request.
+Please allow time for the webmaster to approve your request.
 
-  An email has been sent to "%s" with further instructions.
+An email has been sent to "%s" with further instructions.
 
 There was an error saving your registration.
 
@@ -620,7 +664,7 @@ Logged in as %s.
 
 Logout of %s
 
-<p>Logout of %s?</p>
+Logout of %s?
 
 Logged out of %s
 
@@ -656,17 +700,17 @@ Reset Password
 
 The password for %s was reset.  It has been emailed to the address on file.
 
-There was an error resetting the password for %s
+There was an error resetting the password for %s.
 
 The username "%s" does not exist.
 
 Reset Password for %s
 
-<p>Reset Password?</p>
+Reset Password?
 
 Change Password for %s
 
-<p>Change Password?</p>
+Change Password?
 
 Your current password is incorrect.
 
@@ -718,6 +762,12 @@ Type
 Tyyppi
 Permalink to "%s"
 Pysyvä linkki "%s":ään
+There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
+
+Someone else is generating a pdf for %s.  Please wait a minute and then try again.
+
+Download this page as PDF
+
 Portrait
 Avatar
 You did not answer correctly.
@@ -726,6 +776,8 @@ All Referrers
 Kaikki viittaukset
 Referrers
 Viittaukset
+Tag
+
 Rebuild index for searching
 
 Rebuilding Index
@@ -751,8 +803,6 @@ Takaisin %s:ään
 Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
-
-Tag
 
 Alternatively, use one of the following templates:
 Vaihtoehtoisesti, käytä yhtä seuraavista pohjista:

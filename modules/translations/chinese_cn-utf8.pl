@@ -23,7 +23,7 @@
 #by wctang <wctang@csie.nctu.edu.tw> and using the tool cnmap
 #(http://search.cpan.org/~qjzhou/Encode-CNMap-0.32/bin/cnmap) by Qing-Jie Zhou <qjzhou@hotmail.com>.
 #
-$ModulesDescription .= '<p>$Id: chinese_cn-utf8.pl,v 1.6 2005/10/09 12:48:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: chinese_cn-utf8.pl,v 1.7 2006/01/21 21:06:00 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 禁止读取：使用者、ip 或是网路已被禁止连线。
@@ -65,14 +65,12 @@ Page name is missing
 页面不存在
 Page name is too long: %s
 页面名称太长了： %s
-Invalid Page %s
-无效的页面名称 %s
 Invalid Page %s (must not end with .db)
 无效的页面名称 %s (不可使用 .db 做为结尾)
 Invalid Page %s (must not end with .lck)
 无效的页面名称 %s (不可使用 .lck 做为结尾)
-Page name may not contain space characters: %s
-页面名称不可包含空白字符： %s
+Invalid Page %s
+无效的页面名称 %s
 Preview:
 预览：
 Preview only, not yet saved
@@ -225,6 +223,8 @@ s
 
 Save
 储存
+p
+
 Preview
 预览
 Search:
@@ -281,6 +281,8 @@ Cannot create %s
 无法创建
 Could not get %s lock
 无法取得 %s 锁定
+The lock was created %s.
+
 This operation may take several seconds...
 这个动作可能要花几秒…
 Forced unlock of %s lock.
@@ -473,8 +475,6 @@ Edit lock removed.
 移除编辑锁定。
 Set or Remove page edit lock
 设定或移除页面的编辑锁定
-Missing page id to lock/unlock...
-没有指定要锁定/解锁的页面名称 (id)...
 Lock for %s created.
 已建立 %s 的锁定。
 Lock for %s removed.
@@ -525,6 +525,8 @@ Immediately delete %s
 立即删除 %s
 Rename %s to:
 将 %s 重命名为:
+Learn more...
+
 Cannot highlight the language %s.
 无法高亮显示语言 %s 。
 Recent Visitors
@@ -535,8 +537,8 @@ was here
 
 and read
 
-Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
-缺少下列之一的工具以致无法产生日历: cal(1), Date::Calc(3), 或 Date::Pcalc(3)
+Only works for years >= 1583 - the beginning of Gregorian calendar!
+
 The match parameter is missing.
 未指定 match 参数。
 Page Collection for %s
@@ -547,6 +549,44 @@ Next
 向后
 Calendar %s
 %s 年历
+Su
+
+Mo
+
+Tu
+
+We
+
+Th
+
+Fr
+
+Sa
+
+January
+
+February
+
+March
+
+April
+
+May
+
+June
+
+July
+
+August
+
+September
+
+October
+
+November
+
+December
+
 Clustermap
 
 Pages without a Cluster
@@ -597,6 +637,10 @@ Template without parameters
 未指定 template 参数
 The template %s is either empty or does not exist.
 范本 %s 可能为空或不存在。
+ -- defined on %s
+
+Local names defined on %1: %2
+
 Register for %s
 
 Please choose a username of the form "FirstLast" using your real name.
@@ -611,9 +655,9 @@ The username %s has already been registered.
 
 Your registration for %s has been submitted.
 
-  Please allow time for the webmaster to approve your request.
+Please allow time for the webmaster to approve your request.
 
-  An email has been sent to "%s" with further instructions.
+An email has been sent to "%s" with further instructions.
 
 There was an error saving your registration.
 
@@ -627,7 +671,7 @@ Logged in as %s.
 
 Logout of %s
 
-<p>Logout of %s?</p>
+Logout of %s?
 
 Logged out of %s
 
@@ -663,17 +707,17 @@ Reset Password
 
 The password for %s was reset.  It has been emailed to the address on file.
 
-There was an error resetting the password for %s
+There was an error resetting the password for %s.
 
 The username "%s" does not exist.
 
 Reset Password for %s
 
-<p>Reset Password?</p>
+Reset Password?
 
 Change Password for %s
 
-<p>Change Password?</p>
+Change Password?
 
 Your current password is incorrect.
 
@@ -725,6 +769,12 @@ Type
 类别
 Permalink to "%s"
 永久连结至 "%s"
+There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
+
+Someone else is generating a pdf for %s.  Please wait a minute and then try again.
+
+Download this page as PDF
+
 Portrait
 肖像
 You did not answer correctly.
@@ -733,6 +783,8 @@ All Referrers
 所有的引用者
 Referrers
 引用者
+Tag
+
 Rebuild index for searching
 
 Rebuilding Index
@@ -758,8 +810,6 @@ Back to %s
 Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
-
-Tag
 
 Alternatively, use one of the following templates:
 或者，使用下列范本之一:

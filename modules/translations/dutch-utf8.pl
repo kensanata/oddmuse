@@ -24,7 +24,7 @@
 #
 # This translation was last checked for Oddmuse version 1.215.
 #
-$ModulesDescription .= '<p>$Id: dutch-utf8.pl,v 1.6 2005/10/09 12:48:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: dutch-utf8.pl,v 1.7 2006/01/21 21:06:00 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 U mag deze pagina niet lezen: uw account op deze Wiki, uw IP of uw netwerk is buitengesloten.
@@ -66,14 +66,12 @@ Page name is missing
 Geen paginanaam opgegeven
 Page name is too long: %s
 De naam van de pagina is te lang :%s
-Invalid Page %s
-Ongeldige pagina: %s
 Invalid Page %s (must not end with .db)
 Ongeldige pagina; mag niet eindigen in .db: %s
 Invalid Page %s (must not end with .lck)
 Ongeldige pagina; mag niet eindigen in .lck: %s
-Page name may not contain space characters: %s
-De naam van de pagina mag geen spaties bevatten: %s
+Invalid Page %s
+Ongeldige pagina: %s
 Preview:
 Voorvertoning:
 Preview only, not yet saved
@@ -226,6 +224,8 @@ s
 s
 Save
 Opslaan
+p
+
 Preview
 Voorvertoning
 Search:
@@ -282,6 +282,8 @@ Cannot create %s
 
 Could not get %s lock
 Kan %s niet vergrendelen
+The lock was created %s.
+
 This operation may take several seconds...
 Dit kan een aantal seconden duren...
 Forced unlock of %s lock.
@@ -474,8 +476,6 @@ Edit lock removed.
 De site is ontgrendeld; er kunnen nu weer wijzigingen aangebracht worden.
 Set or Remove page edit lock
 Ver-/ontgrendelen van pagina
-Missing page id to lock/unlock...
-U heeft niet opgegeven welke pagina ver-/ontgrendeld moet worden.
 Lock for %s created.
 %s is vergrendeld, en kan nu niet meer gewijzigd worden.
 Lock for %s removed.
@@ -526,6 +526,8 @@ Immediately delete %s
 
 Rename %s to:
 
+Learn more...
+
 Cannot highlight the language %s.
 
 Recent Visitors
@@ -536,8 +538,8 @@ was here
 
 and read
 
-Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
-Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
+Only works for years >= 1583 - the beginning of Gregorian calendar!
+
 The match parameter is missing.
 De parameter 'match' ontbreekt.
 Page Collection for %s
@@ -548,6 +550,44 @@ Next
 
 Calendar %s
 Kalender %s
+Su
+
+Mo
+
+Tu
+
+We
+
+Th
+
+Fr
+
+Sa
+
+January
+
+February
+
+March
+
+April
+
+May
+
+June
+
+July
+
+August
+
+September
+
+October
+
+November
+
+December
+
 Clustermap
 
 Pages without a Cluster
@@ -598,6 +638,10 @@ Template without parameters
 
 The template %s is either empty or does not exist.
 
+ -- defined on %s
+
+Local names defined on %1: %2
+
 Register for %s
 
 Please choose a username of the form "FirstLast" using your real name.
@@ -612,9 +656,9 @@ The username %s has already been registered.
 
 Your registration for %s has been submitted.
 
-  Please allow time for the webmaster to approve your request.
+Please allow time for the webmaster to approve your request.
 
-  An email has been sent to "%s" with further instructions.
+An email has been sent to "%s" with further instructions.
 
 There was an error saving your registration.
 
@@ -628,7 +672,7 @@ Logged in as %s.
 
 Logout of %s
 
-<p>Logout of %s?</p>
+Logout of %s?
 
 Logged out of %s
 
@@ -664,17 +708,17 @@ Reset Password
 
 The password for %s was reset.  It has been emailed to the address on file.
 
-There was an error resetting the password for %s
+There was an error resetting the password for %s.
 
 The username "%s" does not exist.
 
 Reset Password for %s
 
-<p>Reset Password?</p>
+Reset Password?
 
 Change Password for %s
 
-<p>Change Password?</p>
+Change Password?
 
 Your current password is incorrect.
 
@@ -726,6 +770,12 @@ Type
 Type
 Permalink to "%s"
 
+There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
+
+Someone else is generating a pdf for %s.  Please wait a minute and then try again.
+
+Download this page as PDF
+
 Portrait
 Portret
 You did not answer correctly.
@@ -734,6 +784,8 @@ All Referrers
 Alle verwijzingen
 Referrers
 Verwijzingen
+Tag
+
 Rebuild index for searching
 
 Rebuilding Index
@@ -759,8 +811,6 @@ Terug naar %s
 Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
-
-Tag
 
 Alternatively, use one of the following templates:
 
