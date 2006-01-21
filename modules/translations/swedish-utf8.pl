@@ -21,7 +21,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.13 2005/10/09 12:48:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.14 2006/01/21 21:05:05 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Läsning inte tillåten: användare, ip eller nätverk är blockerat.
@@ -63,14 +63,12 @@ Page name is missing
 Sidnamn saknas
 Page name is too long: %s
 Sidnamn är för långt: %s
-Invalid Page %s
-Ogiltig sida %s
 Invalid Page %s (must not end with .db)
 Ogiltig sida %s (får inte sluta med .db)
 Invalid Page %s (must not end with .lck)
 Ogiltig sida %s (får inte sluta med .lck)
-Page name may not contain space characters: %s
-Sidans namn får inte innehålla mellanslag: %s
+Invalid Page %s
+Ogiltig sida %s
 Preview:
 Förhandsgranskning:
 Preview only, not yet saved
@@ -223,6 +221,8 @@ s
 s
 Save
 Spara
+p
+
 Preview
 Förhandsgranska
 Search:
@@ -279,6 +279,8 @@ Cannot create %s
 Kan inte skapa %s
 Could not get %s lock
 Kunde inte låsa %s
+The lock was created %s.
+
 This operation may take several seconds...
 Den här funktionen kan ta flera sekunder...
 Forced unlock of %s lock.
@@ -471,8 +473,6 @@ Edit lock removed.
 Redigeringslås avslaget.
 Set or Remove page edit lock
 Slå på eller av sidredigeringslås
-Missing page id to lock/unlock...
-Saknar sid-id, kan inte slå på eller av redigeringslås...
 Lock for %s created.
 Slog på redigeringslås för %s.
 Lock for %s removed.
@@ -523,6 +523,8 @@ Immediately delete %s
 Radera %s direkt
 Rename %s to:
 Byt namn på %s till:
+Learn more...
+
 Cannot highlight the language %s.
 Kan ej markera språket %s.
 Recent Visitors
@@ -533,8 +535,8 @@ was here
 
 and read
 
-Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.
-Saknar en av cal(1), Date::Calc(3), eller Date::Pcalc(3) för att kunna skapa kalendern.
+Only works for years >= 1583 - the beginning of Gregorian calendar!
+
 The match parameter is missing.
 Parametern "match" saknas.
 Page Collection for %s
@@ -545,6 +547,44 @@ Next
 Nästa
 Calendar %s
 Kalender %s
+Su
+
+Mo
+
+Tu
+
+We
+
+Th
+
+Fr
+
+Sa
+
+January
+
+February
+
+March
+
+April
+
+May
+
+June
+
+July
+
+August
+
+September
+
+October
+
+November
+
+December
+
 Clustermap
 
 Pages without a Cluster
@@ -595,6 +635,10 @@ Template without parameters
 Mall utan parametrar
 The template %s is either empty or does not exist.
 Mallen %s är antingen tom eller saknas.
+ -- defined on %s
+
+Local names defined on %1: %2
+
 Register for %s
 
 Please choose a username of the form "FirstLast" using your real name.
@@ -609,9 +653,9 @@ The username %s has already been registered.
 
 Your registration for %s has been submitted.
 
-  Please allow time for the webmaster to approve your request.
+Please allow time for the webmaster to approve your request.
 
-  An email has been sent to "%s" with further instructions.
+An email has been sent to "%s" with further instructions.
 
 There was an error saving your registration.
 
@@ -625,7 +669,7 @@ Logged in as %s.
 
 Logout of %s
 
-<p>Logout of %s?</p>
+Logout of %s?
 
 Logged out of %s
 
@@ -661,17 +705,17 @@ Reset Password
 
 The password for %s was reset.  It has been emailed to the address on file.
 
-There was an error resetting the password for %s
+There was an error resetting the password for %s.
 
 The username "%s" does not exist.
 
 Reset Password for %s
 
-<p>Reset Password?</p>
+Reset Password?
 
 Change Password for %s
 
-<p>Change Password?</p>
+Change Password?
 
 Your current password is incorrect.
 
@@ -723,6 +767,12 @@ Type
 Sort
 Permalink to "%s"
 Permanentlänk till "%s"
+There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
+
+Someone else is generating a pdf for %s.  Please wait a minute and then try again.
+
+Download this page as PDF
+
 Portrait
 Porträtt
 You did not answer correctly.
@@ -731,6 +781,8 @@ All Referrers
 Alla som länkat hit
 Referrers
 Sidor som länkat hit
+Tag
+
 Rebuild index for searching
 
 Rebuilding Index
@@ -756,8 +808,6 @@ Tillbaka till %s
 Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
-
-Tag
 
 Alternatively, use one of the following templates:
 Eller använd en av följande mallar:
