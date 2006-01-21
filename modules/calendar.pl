@@ -1,4 +1,5 @@
 # Copyright (C) 2004, 2005  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006  Ingo Belka
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,12 +17,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.37 2005/10/07 23:23:30 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.38 2006/01/21 16:45:56 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalendarUseCal);
 
 $CalendarOnEveryPage = 1;
-$CalendarUseCal = 1;
 
 *OldCalendarGetHeader = *GetHeader;
 *GetHeader = *NewCalendarGetHeader;
@@ -42,18 +42,12 @@ sub Cal {
   $mon_now += 1;
   $year_now += 1900;
   $year = $year_now unless $year;
+  if ($year < 1583) {
+        return T('Only works for years >= 1583 - the beginning of Gregorian calendar!');
+  }
   $mon = $mon_now unless $mon;
   my @pages = AllPagesList();
-  my $cal = '';
-  if ($CalendarUseCal) {
-    $cal = `cal $mon $year`;
-  }
-  eval { require Date::Calc;
-	 $cal = Date::Calc::Calendar( $year, $mon ); } unless $cal;
-  eval { require Date::Pcalc;
-	 $cal = Date::Pcalc::Calendar( $year, $mon ); } unless $cal;
-  return T('Missing one of cal(1), Date::Calc(3), or Date::Pcalc(3) to produce the calendar.')
-    unless $cal;
+  my $cal = draw_month($mon, $year);
   $cal =~ s|\b([A-Z][a-z])\b|{ T($1); }|ge;
   $cal =~ s|\b( ?[ 0-9]?[0-9])\b|{
     my $day = $1;
@@ -166,4 +160,112 @@ sub DoYearCalendar {
   PrintYearCalendar($year);
   print $q->end_div();
   PrintFooter();
+}
+
+sub draw_month {
+
+    my $month = shift;
+    my $year = shift;
+    my @weekday = qw/Su Mo Tu We Th Fr Sa/;
+    my ($day, $col, $monthdays, $monthplus, $mod);
+    my $weekday = zeller(1,$month,$year);
+    my $start = 1 - $weekday;
+    my $space_count = int((28 - length(month_name($month).' '.$year))/2 + 0.5);
+
+    my $output = ' ' x $space_count.month_name($month).' '.$year."\n";
+
+    $col = 0;
+
+    $monthdays = &month_days($month,&leap_year($year));
+
+    if ((($monthdays-$start) < 42) and (($monthdays-$start) > 35)) {
+        $monthplus=41 - ($monthdays-$start);
+    } elsif ((($monthdays-$start)<35) and (($monthdays-$start)>28)) {
+        $monthplus=34 - ($monthdays-$start);
+    } else {
+        $monthplus=0;
+    }
+
+    $output .= join('', map {"  ".$_} @weekday);
+    $output .= "\n";
+    for ($day=$start;$day<=$monthdays+$monthplus;$day++) {
+
+        $col++;
+
+        if (($day < 1) or ($day>$monthdays)) {
+            $output .= '    ';
+        } else {
+            $output .= sprintf("%4d", $day);
+        }
+
+        $mod=($col/7)-int($col/7);
+        if ($mod == 0) {
+            $output .= "\n";
+        }
+    }
+    $output .= "\n";
+    return $output;
+}
+
+
+# formula of Zeller (Julius Christian Johannes Zeller * 1822, + 1899) for countig the day of week
+# only works for all years greater then 1582 the year Pope Gregor has changed the calculation of times
+# from the Julian calendar to the Gregorian calendar
+sub zeller {
+    my $t = shift;
+    my $m = shift;
+    my $year = shift;
+    my ($h,$j,$w);
+
+    $h=int($year/100);
+    $j=$year%100;
+
+    if ($m<3) {
+        $m = $m+10;
+        if ($j==0) {
+            $j=99;
+            $h=$h-1;
+        } else {
+            $j=$j-1;
+        }
+    } else {
+        $m=$m-2;
+    }
+
+    $w = $t + int((2.61 * $m) - 0.2) + $j + int($j/4) + int($h/4) - (2*$h);
+
+    if (($w % 7) >= 0) {
+        $w = $w % 7;
+    } else {
+        $w = 7 - (-1 * ($w % 7));
+    }
+
+    return $w;
+}
+
+sub leap_year {
+    my $year = shift;
+
+    if ((($year % 4)==0) and !((($year % 100)==0) and (($year % 400) != 0))) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+sub month_days {
+    my $month = shift;
+    my $leap_year = shift;
+    my @month_days = (31,28,31,30,31,30,31,31,30,31,30,31);
+    if (($month == 2) and $leap_year) {
+        return $month_days[$month - 1] + 1;
+    } else {
+        return $month_days[$month - 1];
+    }
+}
+
+sub month_name {
+    my $month = shift;
+    my @month_name=('January','February','March','April','May','June','July','August','September','October','November','December');
+    return $month_name[$month-1];
 }
