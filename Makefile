@@ -38,7 +38,7 @@ upload-translations: always
 	for f in $(TRANSLATIONS); do \
 		cvs status $$f | grep 'Status: Up-to-date'; \
 		wikiput -u cvs -s update http://www.oddmuse.org/cgi-bin/oddmuse/raw/$$f < $$f; \
-		emacswiki-upload-cgi $$f; \
+		emacswiki-upload cgi-bin $$f; \
 	done
 
 %-utf8.pl: always
