@@ -1,3 +1,7 @@
+2006-01-25  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetValidatorLink): Use referrer links for validation.
+
 2006-01-21  Alex Schroeder  <alex@gnu.org>
 
 	* modules/translations/german-utf8.pl: Many new translations.
