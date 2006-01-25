@@ -268,7 +268,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.641 2006/01/03 16:28:05 lude Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.642 2006/01/25 13:46:41 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2295,9 +2295,8 @@ sub GetSearchForm {
 }
 
 sub GetValidatorLink {
-  my $uri = UrlEncode($q->self_url);
-  return $q->a({-href => 'http://validator.w3.org/check?uri=' . $uri}, T('Validate HTML')) . ' '
-       . $q->a({-href => 'http://jigsaw.w3.org/css-validator/validator?uri=' . $uri}, T('Validate CSS'));
+  return $q->a({-href => 'http://validator.w3.org/check/referer'}, T('Validate HTML')) . ' '
+       . $q->a({-href => 'http://jigsaw.w3.org/css-validator/check/referer'}, T('Validate CSS'));
 }
 
 sub GetGotoBar {
