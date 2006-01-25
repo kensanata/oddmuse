@@ -1,3 +1,12 @@
+2006-01-21  Alex Schroeder  <alex@gnu.org>
+
+	* modules/translations/german-utf8.pl: Many new translations.
+
+	* modules/calendar.pl ($CalendarUseCal): Removed.
+	(Cal): Use draw_month instead of cal or a Perl module.
+	(draw_month, zeller, leap_year, month_days, month_name): New.
+	(draw_month, month_name): Translate weekdays and month names.
+
 2006-01-14  Alex Schroeder  <alex@gnu.org>
 
 	* modules/search-freetext.pl (SearchFreeTextNewGetRc): New.
