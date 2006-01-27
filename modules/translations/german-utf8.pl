@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.12 2006/01/21 21:13:53 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.13 2006/01/27 08:14:23 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
@@ -633,7 +633,7 @@ Die %s Vorlage ist entweder leer oder existiert gar nicht.
  -- defined on %s
  -- definiert auf der Seite %s
 Local names defined on %1: %2
-Der lokale Namen %s wurde auf der Seite %1 definiert
+Der lokale Namen %2 wurde auf der Seite %1 definiert
 Register for %s
 Anmeldung für %s
 Please choose a username of the form "FirstLast" using your real name.
