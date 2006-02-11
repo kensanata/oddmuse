@@ -1,3 +1,9 @@
+2006-02-11  Ingo Belka  <grimmen@mvnet.de>
+
+	* modules/calendar.pl (Cal): Removed limit on years.
+	(draw_month): Handle 1582-10-04.
+	(zeller): Handle 1582 and years smaller than 1582.
+
 2006-01-25  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetValidatorLink): Use referrer links for validation.
@@ -6,7 +12,9 @@
 
 	* modules/translations/german-utf8.pl: Many new translations.
 
-	* modules/calendar.pl ($CalendarUseCal): Removed.
+	* modules/calendar.pl: Based on a patch by Ingo Belka
+	<grimmen@mvnet.de>.
+	($CalendarUseCal): Removed.
 	(Cal): Use draw_month instead of cal or a Perl module.
 	(draw_month, zeller, leap_year, month_days, month_name): New.
 	(draw_month, month_name): Translate weekdays and month names.
