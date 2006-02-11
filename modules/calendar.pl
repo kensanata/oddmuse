@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.39 2006/01/21 16:49:26 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.40 2006/02/11 17:47:41 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalendarUseCal);
 
@@ -42,9 +42,6 @@ sub Cal {
   $mon_now += 1;
   $year_now += 1900;
   $year = $year_now unless $year;
-  if ($year < 1583) {
-        return T('Only works for years >= 1583 - the beginning of Gregorian calendar!');
-  }
   $mon = $mon_now unless $mon;
   my @pages = AllPagesList();
   my $cal = draw_month($mon, $year);
@@ -203,6 +200,9 @@ sub draw_month {
         if ($mod == 0) {
             $output .= "\n";
         }
+        if ($year==1582 and $month==10 and $day==4) {
+            $day=14;
+        }
     }
     $output .= "\n";
     return $output;
@@ -233,7 +233,32 @@ sub zeller {
         $m=$m-2;
     }
 
-    $w = $t + int((2.61 * $m) - 0.2) + $j + int($j/4) + int($h/4) - (2*$h);
+    if (($year > 0) and ($year < 1582)) {
+        $w = $t + int((2.61 * $m) - 0.2) + $j + int($j/4) + 5 - $h;
+
+    } elsif ($year==1582) {
+
+        if ($m > 10) {
+            $w = $t + int((2.61 * $m) - 0.2) + $j + int($j/4) + 5 - $h;
+
+        } elsif ($m==8) {
+
+            if ($t>=1 and $t<=4) {
+                $w = $t + int((2.61 * $m) - 0.2) + $j + int($j/4) + 5 - $h;
+
+            } elsif ($t>=15) {
+                $w = $t + int((2.61 * $m) - 0.2) + $j + int($j/4) + int($h/4) - (2*$h);
+
+            }
+
+        } elsif ($m <= 10) {
+            $w = $t + int((2.61 * $m) - 0.2) + $j + int($j/4) + int($h/4) - (2*$h);
+        }
+
+    } elsif ($year > 1582) {
+        $w = $t + int((2.61 * $m) - 0.2) + $j + int($j/4) + int($h/4) - (2*$h);
+
+    }
 
     if (($w % 7) >= 0) {
         $w = $w % 7;
