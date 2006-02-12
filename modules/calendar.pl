@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.40 2006/02/11 17:47:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.41 2006/02/12 14:04:32 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalendarUseCal);
 
@@ -152,6 +152,9 @@ sub DoYearCalendar {
   my ($sec, $min, $hour, $mday, $mon, $year) = localtime($Now);
   $year += 1900;
   $year = GetParam('year', $year);
+  if ($year < 1) {
+    return T('Illegal year value: Use 0001-9999');
+  }
   print GetHeader('', Ts('Calendar %s', $year), '');
   print $q->start_div({-class=>'content cal year'});
   PrintYearCalendar($year);
