@@ -1,3 +1,10 @@
+2006-02-12  Alex Schroeder  <alex@gnu.org>
+
+	* modules/calendar.pl (CalendarRule): The start div for the
+	calendar is part of the dirty rule and should not be added to the
+	clean block.  (This resulted in a doubling of the div start tag.)
+	(Cal): Don't allow year 0.
+
 2006-02-11  Victor Osadci  <vic_site@xhtml.md>
 
 	* modules/translations/romanian-utf8.pl: New translations for
