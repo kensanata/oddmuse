@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.41 2006/02/12 14:04:32 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.42 2006/02/12 17:29:23 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalendarUseCal);
 
@@ -42,6 +42,9 @@ sub Cal {
   $mon_now += 1;
   $year_now += 1900;
   $year = $year_now unless $year;
+  if ($year < 1) {
+    return $q->p(T('Illegal year value: Use 0001-9999'));
+  }
   $mon = $mon_now unless $mon;
   my @pages = AllPagesList();
   my $cal = draw_month($mon, $year);
@@ -106,8 +109,9 @@ push(@MyRules, \&CalendarRule);
 sub CalendarRule {
   if (/\G(calendar:(\d\d\d\d))/gc) {
     my $oldpos = pos;
-    Clean(CloseHtmlEnvironments() . $q->start_div({-class=>'cal year'}));
+    Clean(CloseHtmlEnvironments());
     Dirty($1);
+    print $q->start_div({-class=>'cal year'});
     PrintYearCalendar($2);
     print $q->end_div();
     pos = $oldpos;
@@ -152,9 +156,6 @@ sub DoYearCalendar {
   my ($sec, $min, $hour, $mday, $mon, $year) = localtime($Now);
   $year += 1900;
   $year = GetParam('year', $year);
-  if ($year < 1) {
-    return T('Illegal year value: Use 0001-9999');
-  }
   print GetHeader('', Ts('Calendar %s', $year), '');
   print $q->start_div({-class=>'content cal year'});
   PrintYearCalendar($year);
