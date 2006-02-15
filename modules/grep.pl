@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: grep.pl,v 1.1 2006/02/15 07:24:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: grep.pl,v 1.2 2006/02/15 19:08:20 as Exp $</p>';
 
 push(@MyRules, \&GrepRule);
 
@@ -38,15 +38,10 @@ sub GrepRule {
 
 sub PrintGrep {
   my $regexp = shift;
-  my $lang = GetParam('lang', '');
   foreach my $id (AllPagesList()) {
-    OpenPage($id);
-    next if (TextIsFile($Page{text})); # skip files
-    if ($lang) {
-      my @languages = split(/,/, $Page{languages});
-      next if (@languages and not grep(/$lang/, @languages));
-    }
-    while ($Page{text} =~ m{($regexp)}ig) {
+    my $text = GetPageContent($id);
+    next if (TextIsFile($text)); # skip files
+    while ($text =~ m{($regexp)}ig) {
       print $q->li(GetPageLink($id) . ': ' . $1);
     }
   }
