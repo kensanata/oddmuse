@@ -1,0 +1,53 @@
+# Copyright (C) 2004  Alex Schroeder <alex@emacswiki.org>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the
+#    Free Software Foundation, Inc.
+#    59 Temple Place, Suite 330
+#    Boston, MA 02111-1307 USA
+
+$ModulesDescription .= '<p>$Id: grep.pl,v 1.1 2006/02/15 07:24:10 as Exp $</p>';
+
+push(@MyRules, \&GrepRule);
+
+sub GrepRule {
+  if (/\G(&lt;grep "(.*?)"&gt;)/cgis) {
+    # <search "regexp">
+    Clean(CloseHtmlEnvironments());
+    Dirty($1);
+    my $oldpos = pos;
+    my $old_ = $_;
+    print '<ul class="grep">';
+    PrintGrep($2);
+    print '</ul>';
+    $_ = $old_;    # restore \G after searching
+    pos = $oldpos; # restore \G after searching
+  }
+  return undef;
+}
+
+sub PrintGrep {
+  my $regexp = shift;
+  my $lang = GetParam('lang', '');
+  foreach my $id (AllPagesList()) {
+    OpenPage($id);
+    next if (TextIsFile($Page{text})); # skip files
+    if ($lang) {
+      my @languages = split(/,/, $Page{languages});
+      next if (@languages and not grep(/$lang/, @languages));
+    }
+    while ($Page{text} =~ m{($regexp)}ig) {
+      print $q->li(GetPageLink($id) . ': ' . $1);
+    }
+  }
+}
