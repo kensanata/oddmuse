@@ -268,7 +268,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.642 2006/01/25 13:46:41 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.643 2006/02/20 23:32:05 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3179,13 +3179,25 @@ sub DoSearch {
   }
 }
 
+sub PageIsUploadedFile {
+  my $id = shift;
+  return undef if $OpenPageName eq $id;
+  if ($IndexHash{$id}) {
+    my $file = GetPageFile($id);
+    open(FILE, "<$file") or ReportError(Ts('Cannot open %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
+    while (defined($_ = <FILE>) and $_ !~ /^text: (.*)/) {} # read lines until we get to the text key
+    close FILE;
+    return TextIsFile($1);
+  }
+}
+
 sub SearchTitleAndBody {
   my ($string, $func, @args) = @_;
   my @found;
   my $lang = GetParam('lang', '');
   foreach my $name (AllPagesList()) {
-    OpenPage($name);
-    next if (TextIsFile($Page{text}) and $string !~ /^\^#FILE/); # skip files unless requested
+    next if (PageIsUploadedFile($name) and $string !~ /^\^#FILE/); # skip files unless requested
+    OpenPage($name); # this opens a page twice if it is not uploaded, but that's ok
     if ($lang) {
       my @languages = split(/,/, $Page{languages});
       next if (@languages and not grep(/$lang/, @languages));
