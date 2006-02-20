@@ -2,7 +2,7 @@
 
 	* wiki.pl: Don't load whole page when the page contains an
 	uploaded file that should be skipped anyway. This opens ordinary
-	pages twice, but that's ok.
+	pages twice, but that's ok.  Based on a patch by Hawson.
 	(PageIsUploadedFile): New, with specialized file open.
 	(SearchTitleAndBody): Use it to skip files unless requested.
 
