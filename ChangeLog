@@ -1,3 +1,17 @@
+2006-02-21  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl: Don't load whole page when the page contains an
+	uploaded file that should be skipped anyway. This opens ordinary
+	pages twice, but that's ok.
+	(PageIsUploadedFile): New, with specialized file open.
+	(SearchTitleAndBody): Use it to skip files unless requested.
+
+2006-02-15  Alex Schroeder  <alex@gnu.org>
+
+	* modules/grep.pl (GrepRule): No longer use OpenPage, since that
+	corrupts the HTML cache of the last page when rendering it for the
+	first time.  No longer take page language into account.
+
 2006-02-12  Alex Schroeder  <alex@gnu.org>
 
 	* modules/calendar.pl (CalendarRule): The start div for the
