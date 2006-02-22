@@ -16,14 +16,16 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: today.pl,v 1.1 2006/02/22 22:21:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: today.pl,v 1.2 2006/02/22 22:27:27 as Exp $</p>';
 
 # New Action
 
 $Action{new} = \&DoNew;
 
 sub DoNew {
-  my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = gmtime();
-  my $today = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
-  DoEdit($today);
+  my $id = shift;
+  my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = gmtime($time);
+  $today = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
+  $today .= "_" . $id if $id;
+  return DoEdit($today);
 }
