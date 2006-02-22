@@ -1,3 +1,4 @@
+# Copyright (C) 2006  Matthias Dietrich <md (at) plusw (.) de>
 # Copyright (C) 2005  Mathias Dahl <mathias . dahl at gmail dot com>
 # Copyright (C) 2005  Alex Schroeder <alex@emacswiki.org>
 #
@@ -18,68 +19,61 @@
 #    Boston, MA 02111-1307 USA
 
 # This module offers the possibility to restrict viewing of "hidden"
-# pages to only editors and admins. The restriction may be based
+# pages to only editors or admins. The restriction may be based
 # on a pattern matching the page id or to a membership to a certain
 # page cluster.
 
-$ModulesDescription .= '<p>$Id: hiddenpages.pl,v 1.2 2006/01/02 10:15:04 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: hiddenpages.pl,v 1.3 2006/02/22 17:30:26 as Exp $</p>';
 
-use vars qw($HiddenPagesAccess $HiddenPages $HiddenCluster);
-
-
-# $HiddenPagesAccess sets the access level to hidden pages:
-#  0 = Hidden pages visible to all
-#  1 = Editor access required
-#  2 = Admin access required
-# You can override this value in your config file.
-
-$HiddenPagesAccess = 2;
-
-# $HiddenPages is a regular expression to find hidden pages. Default
-# is pages ending in "Hidden". You can override this value in your
-# config file.
-
-$HiddenPages = 'Hidden$';
-
+use vars qw($HiddenCluster $HideEditorPages $HideAdminPages
+$HideRegExEditor $HideRegExAdmin);
 
 # $HiddenCluster is a cluster name for hidden pages. Default
-# is pages in the cluster "HiddenPage". You can override this value in your
-# config file.
+# is pages in the cluster "HiddenPage". You can override this
+# value in your config file.
 
 $HiddenCluster = 'HiddenPage';
 
+# $Hide*Pages sets the access level to hidden pages:
+#  0 = Hidden pages visible to all
+#  1 = Password required
+# You can override this value in your config file.
+# NOTE: Pages for Editors are also visible to Admins!
 
+$HideEditorPages = 1;
+$HideAdminPages = 1;
+
+# $HideRegEx* are regular expressions to find hidden pages. Default is pages
+# ending with "HiddenE" for editors and "Hidden" for admins. You can override
+# this value in your config file.
+
+$HideRegExEditor = 'HiddenE$';
+$HideRegExAdmin = 'Hidden$';
 
 *OldOpenPage = *OpenPage;
 *OpenPage = *NewOpenPage;
 
 sub NewOpenPage {
-    # Get page id/name sent in to OpenPage
-    my ($id) = @_;
+  # Get page id/name sent in to OpenPage
+  my ($id) = @_;
 
-    # Shield the Private pages
-    my $hidden = 0;
+  # Shield the Private pages
+  my $hidden = 0;
 
-    # Check for match of HiddenPages
-    if ($id and $id =~ /$HiddenPages/) {
-      $hidden = 1;
-    }
+  # Check for match of HiddenPages
+  if ($id and $id =~ /$HideRegExEditor/) {
+    $hidden = "edi";
+  } elsif ($id and $id =~ /$HideRegExAdmin/) {
+    $hidden = "adi";
+  }
 
-    # Check for match of HiddenCluster
-    elsif ($id and GetCluster(GetPageContent($id)) eq $HiddenCluster) {
-      $hidden = 1;
-    }
+  # Check the different levels of access
+  if ($hidden eq "edi" && $HideEditorPages == 1 && (!UserIsEditor() && !UserIsAdmin())) {
+    ReportError(T("Only Editors are allowed to see this hidden page."), "401 Not Authorized");
+  } elsif ($hidden eq "adi" && $HideAdminPages == 1 && !UserIsAdmin()) {
+    ReportError(T("Only Admins are allowed to see this hidden page."), "401 Not Authorized");
+  }
 
-    if ($hidden) {
-	# Check the different levels of access
-	if ($HiddenPagesAccess == 1 and not UserIsEditor()) 
-	{
-	    ReportError(T("Only Editors are allowed to see hidden pages."), "401 Not Authorized");
-	} elsif ($HiddenPagesAccess == 2 and not UserIsAdmin()) 
-	{
-	    ReportError(T("Only Admins are allowed to see hidden pages."), "401 Not Authorized");
-	}
-    }
-    # Give control back to OpenPage()
-    OldOpenPage(@_);
+  # Give control back to OpenPage()
+  OldOpenPage(@_);
 }
