@@ -1,3 +1,10 @@
+2006-02-22  Matthias Dietrich  <md (at) plusw (.) de>
+
+	* modules/hiddenpages.pl ($HideEditorPages $HideAdminPages)
+	($HideRegExEditor $HideRegExAdmin): New.
+	($HiddenPages): Deleted.
+	(NewOpenPage): Change to use the new variables.
+
 2006-02-21  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl: Don't load whole page when the page contains an
