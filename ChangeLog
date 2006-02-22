@@ -1,3 +1,7 @@
+2006-02-22  Alex Schroeder  <alex@gnu.org>
+
+	* modules/today.pl (DoNew): Allow the addition of an id parameter.
+
 2006-02-22  Matthias Dietrich  <md (at) plusw (.) de>
 
 	* modules/hiddenpages.pl ($HideEditorPages $HideAdminPages)
