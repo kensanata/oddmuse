@@ -1,3 +1,8 @@
+2006-02-25  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetRaw): Only return content if the response is a
+	success.
+
 2006-02-22  Alex Schroeder  <alex@gnu.org>
 
 	* modules/today.pl (DoNew): Allow the addition of an id parameter.
