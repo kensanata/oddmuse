@@ -268,7 +268,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.643 2006/02/20 23:32:05 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.644 2006/02/25 18:28:23 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -742,7 +742,7 @@ sub GetRaw {
   return unless eval { require LWP::UserAgent; };
   my $ua = LWP::UserAgent->new;
   my $response = $ua->get($uri);
-  return $response->content;
+  return $response->content if $response->is_success;
 }
 
 sub PrintJournal {
