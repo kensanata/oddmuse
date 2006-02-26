@@ -91,4 +91,5 @@ def parse_wiki_location(where):
     (scheme, host, path, params, query, fragment) = urlparse.urlparse(where)
     return (host, path+params, query)
 
-main()
+if __name__ == "__main__":
+    main()

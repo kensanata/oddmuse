@@ -105,4 +105,5 @@ def parse_wiki_location(where):
 	path = "/".join(list)
     return (host, path+params, query)
 
-main()
+if __name__ == "__main__":
+    main()
