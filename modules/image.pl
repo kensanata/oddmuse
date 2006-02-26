@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: image.pl,v 1.15 2005/03/01 16:48:01 sblatt Exp $</p>';
+$ModulesDescription .= '<p>$Id: image.pl,v 1.16 2006/02/26 21:06:33 as Exp $</p>';
 
 use vars qw($ImageUrlPath);
 
@@ -28,15 +28,15 @@ push(@MyRules, \&ImageSupportRule);
 
 sub ImageSupportRule {
   my $result = undef;
-  if (m!\G\[\[image(/[a-z]+)?( external)?:($FreeLinkPattern|$FullUrlPattern)(\|[^]|]+)?(\|($FreeLinkPattern|$FullUrlPattern))?\]\]!gc) {
+  if (m!\G\[\[image((/[a-z]+)*)( external)?:($FreeLinkPattern|$FullUrlPattern)(\|[^]|]+)?(\|($FreeLinkPattern|$FullUrlPattern))?\]\]!gc) {
     my $oldpos = pos;
-    my $class = 'image';
-    $class .= ' ' . substr($1, 1) if $1;
-    my $external = $2;
-    my $name = $3;
-    my $alt = $6 ? substr($6, 1) : T("image: %s", $name);
-    my $link = $7 ? substr($7, 1) : '';
+    my $class = 'image' . $1;
+    my $external = $3;
+    my $name = $4;
+    my $alt = $7 ? substr($7, 1) : T("image: %s", $name);
+    my $link = $8 ? substr($8, 1) : '';
     my $id = FreeToNormal($name);
+    $class =~ s!/! !g;
     # link to the image if no link was given
     if (not $link) {
       if ($external) {
