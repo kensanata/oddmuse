@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: wikiupload,v 1.5 2006/02/26 02:00:54 as Exp $
+# $Id: wikiupload,v 1.6 2006/02/26 03:19:26 as Exp $
 
 import mimetypes, httplib, urllib, re, urlparse, sys, getopt
 from time import time
@@ -78,7 +78,7 @@ def usage(out):
 def wikiput(where, filename,
             summary="upload", username="", password="", type="", recent_edit="no"):
     (host, path, title) = parse_wiki_location(where)
-    content = open(filename, "r").read()
+    content = open(filename, "rb").read()
     files = [['file', filename, content]]
     params = [[ 'title', title ],
               [ 'summary', summary ],
