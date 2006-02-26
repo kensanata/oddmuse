@@ -1,5 +1,7 @@
 2006-02-26  Alex Schroeder  <alex@gnu.org>
 
+	* wikiupload (wikiput): Use binary mode.
+
 	* modules/lang.pl (NewLangGetNearLinksUsed): Don't use
 	GetFormStart, because that resulted in invalid HTML with CGI.pm
 	3.10 on communitywiki.org.
