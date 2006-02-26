@@ -1,3 +1,9 @@
+2006-02-26  Alex Schroeder  <alex@gnu.org>
+
+	* modules/lang.pl (NewLangGetNearLinksUsed): Don't use
+	GetFormStart, because that resulted in invalid HTML with CGI.pm
+	3.10 on communitywiki.org.
+
 2006-02-25  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetRaw): Only return content if the response is a
