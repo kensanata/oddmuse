@@ -1,5 +1,7 @@
 2006-02-26  Alex Schroeder  <alex@gnu.org>
 
+	* modules/image.pl (ImageSupportRule): Allow multiple CSS classes.
+
 	* wikiupload (wikiput): Use binary mode.
 
 	* modules/lang.pl (NewLangGetNearLinksUsed): Don't use
