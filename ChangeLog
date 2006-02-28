@@ -1,3 +1,8 @@
+2006-02-28  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (RequestLockDir): Fix computation of time period for
+	CalcTimeSince.  Use ctime instead of mtime.
+
 2006-02-26  Alex Schroeder  <alex@gnu.org>
 
 	* modules/image.pl (ImageSupportRule): Allow multiple CSS classes.

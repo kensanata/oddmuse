@@ -1295,6 +1295,8 @@ test_page($redirect, 'Status: 503 SERVICE UNAVAILABLE',
 lock_on_creation:
 print '[lock on creation]';
 
+clear_pages();
+
 ## Create a sample page, and test for regular expressions in the output
 
 $page = update_page('SandBox', 'This is a test.', 'first test');
