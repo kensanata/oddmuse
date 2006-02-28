@@ -1284,7 +1284,7 @@ RequestLockDir('main');
 test_page(update_page('TestLock', 'mu!'), 'Describe the new page here');
 test_page($redirect, 'Status: 503 SERVICE UNAVAILABLE',
 	  'Could not get main lock', 'File exists',
-	  'The lock was created just now');
+	  'The lock was created (just now|1 second ago|2 seconds ago)');
 test_page(update_page('TestLock', 'mu!'), 'Describe the new page here');
 test_page($redirect, 'Status: 503 SERVICE UNAVAILABLE',
 	  'Could not get main lock', 'File exists',
