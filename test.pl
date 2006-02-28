@@ -1270,6 +1270,28 @@ test_page(get_page('action=browse diff=1 revision=6 diffrevision=2 id=KeptRevisi
 
 # --------------------
 
+edit_lock:
+print '[edit lock]';
+
+clear_pages();
+test_page(get_page('action=editlock'), 'operation is restricted');
+test_page(get_page('action=editlock pwd=foo'), 'Edit lock created');
+test_page(update_page('TestLock', 'mu!'), quotemeta('<a href="http://localhost/wiki.pl?action=password">This page is read-only</a>'));
+test_page($redirect, '403 FORBIDDEN', 'Editing not allowed for TestLock');
+test_page(get_page('action=editlock set=0'), 'operation is restricted');
+test_page(get_page('action=editlock set=0 pwd=foo'), 'Edit lock removed');
+RequestLockDir('main');
+test_page(update_page('TestLock', 'mu!'), 'Describe the new page here');
+test_page($redirect, 'Status: 503 SERVICE UNAVAILABLE',
+	  'Could not get main lock', 'File exists',
+	  'The lock was created just now');
+test_page(update_page('TestLock', 'mu!'), 'Describe the new page here');
+test_page($redirect, 'Status: 503 SERVICE UNAVAILABLE',
+	  'Could not get main lock', 'File exists',
+	  'The lock was created 3[0-5] seconds ago');
+
+# --------------------
+
 lock_on_creation:
 print '[lock on creation]';
 
@@ -2143,6 +2165,8 @@ update_page('bar', 'foo');
 //a[@class="image left"][@href="http://localhost/test.pl/foo"]/img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]
 [[image/left:bar|alternative text|http://www.foo.com/]]
 //a[@class="image left outside"][@href="http://www.foo.com/"]/img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]
+[[image/left/small:bar|alternative text]]
+//a[@class="image left small"][@href="http://localhost/test.pl/bar"]/img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]
 EOT
 
 xpath_run_tests();
@@ -2706,9 +2730,9 @@ xpath_test(update_page('Config', '@UserGotoBarPages = ("Foo", "Bar");',
 		       'config', 0, 1),
 	   '//div[@class="header"]/span[@class="gotobar bar"]/a[@class="local"][text()="Foo"]/following-sibling::a[@class="local"][text()="Bar"]');
 
-### END OF TESTS
-
 end:
+
+### END OF TESTS
 
 print "\n";
 print "$passed passed, $failed failed.\n";
