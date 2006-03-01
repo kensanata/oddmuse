@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.22 2006/03/01 23:20:17 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.23 2006/03/01 23:27:26 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -122,7 +122,7 @@ sub SearchFreeTextCloud {
     $min = $count{$_} if not $min or $count{$_} < $min;
     # print "$_: $$db{$_}<br />";
   }
-  foreach (sort { $count{$b} <=> $count{$a} } keys %count) {
+  foreach (keys %count) {
     my $n = $count{$_};
     print $q->a({-href  => "$ScriptName?search=tag:$_",
 		 -title => $n,
