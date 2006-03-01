@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.24 2006/03/01 23:28:32 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.25 2006/03/01 23:29:53 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -127,7 +127,7 @@ sub SearchFreeTextCloud {
     print $q->a({-href  => "$ScriptName?search=tag:$_",
 		 -title => $n,
 		 -style => 'font-size: '
-		 . int(100+100*($n-$min)/($max-$min)) . '%;',
+		 . int(80+120*($n-$min)/($max-$min)) . '%;',
 		}, $_), ' ';
   }
   $tags->close_index();
