@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.21 2006/01/14 17:51:56 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.22 2006/03/01 23:20:17 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -43,7 +43,9 @@ push(@MyAdminCode, \&SearchFreeTextMenu);
 
 sub SearchFreeTextMenu {
   my ($id, $menuref, $restref) = @_;
-  push(@$menuref, ScriptLink('action=buildindex', T('Rebuild index for searching')));
+  push(@$menuref,
+       ScriptLink('action=buildindex', T('Rebuild index for searching')),
+       ScriptLink('action=cloud', T('Tag Cloud')));
 }
 
 $Action{buildindex} = \&SearchFreeTextIndex;
@@ -91,6 +93,45 @@ sub SearchFreeTextIndex {
   $tags->close_index();
   ReleaseLock();
   print T('Done.') . '</p></div>';
+  PrintFooter();
+}
+
+$Action{cloud} = \&SearchFreeTextCloud;
+
+sub SearchFreeTextCloud {
+  print GetHeader('', T('Tag Cloud'), ''),
+    $q->start_div({-class=>'content cloud'} . '<p>');
+  if (not eval { require Search::FreeText;  }) {
+    my $err = $@;
+    ReportError(T('Search::FreeText is not available on this system.'), '500 INTERNAL SERVER ERROR');
+  }
+  my $tagfile = $DataDir . '/tags.db';
+  my $tags = new Search::FreeText(-db => ['DB_File', $tagfile]);
+  $tags->open_index();
+  # my @found = $db->search(join(" ", @wanted));
+  my $db = $tags->{_Database};
+  my $max = 0;
+  my $min = 0;
+  my %count = ();
+  # use Data::Dumper;
+  # print Dumper($db), '<br />';
+  foreach (keys %$db) {
+    next if /^[\t ]|[0-9:]/;
+    $count{$_} = split(/;/, $$db{$_});
+    $max = $count{$_} if $count{$_} > $max;
+    $min = $count{$_} if not $min or $count{$_} < $min;
+    # print "$_: $$db{$_}<br />";
+  }
+  foreach (sort { $count{$b} <=> $count{$a} } keys %count) {
+    my $n = $count{$_};
+    print $q->a({-href  => "$ScriptName?search=tag:$_",
+		 -title => $n,
+		 -style => 'font-size: '
+		 . int(100+150*($n-$min)/($max-$min)) . '%;',
+		}, $_), ' ';
+  }
+  $tags->close_index();
+  print '</p></div>';
   PrintFooter();
 }
 
