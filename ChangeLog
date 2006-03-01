@@ -1,3 +1,9 @@
+2006-03-02  Alex Schroeder  <alex@gnu.org>
+
+	* modules/search-freetext.pl (SearchFreeTextMenu): Add tag cloud
+	menu item.
+	(SearchFreeTextIndex): New.
+
 2006-02-28  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (RequestLockDir): Fix computation of time period for
