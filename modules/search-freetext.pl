@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.25 2006/03/01 23:29:53 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.26 2006/03/02 00:58:28 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -122,13 +122,13 @@ sub SearchFreeTextCloud {
     $min = $count{$_} if not $min or $count{$_} < $min;
     # print "$_: $$db{$_}<br />";
   }
-  foreach (keys %count) {
+  foreach (sort keys %count) {
     my $n = $count{$_};
     print $q->a({-href  => "$ScriptName?search=tag:$_",
 		 -title => $n,
 		 -style => 'font-size: '
 		 . int(80+120*($n-$min)/($max-$min)) . '%;',
-		}, $_), ' ';
+		}, $_), T(' ... ');
   }
   $tags->close_index();
   print '</p></div>';
