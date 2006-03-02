@@ -1,8 +1,14 @@
 2006-03-02  Alex Schroeder  <alex@gnu.org>
 
+	* modules/search-freetext.pl (SearchFreeTextCloud): Sort keys,
+	separate by ellipsis.
+
+	* wiki.pl (RequestLockDir): Fix message for existing locks.
+	(DeletePage): Remove keep directory, too.
+
 	* modules/search-freetext.pl (SearchFreeTextMenu): Add tag cloud
 	menu item.
-	(SearchFreeTextIndex): New.
+	(SearchFreeTextCloud): New.
 
 2006-02-28  Alex Schroeder  <alex@gnu.org>
 
