@@ -1,7 +1,12 @@
 2006-03-02  Alex Schroeder  <alex@gnu.org>
 
+	* modules/throttle.pl (CreatePidFile): Put action and id into the
+	pid file.
+
 	* modules/search-freetext.pl (SearchFreeTextCloud): Sort keys,
 	separate by ellipsis.
+	(SearchFreeTextIndex): No longer lock the wiki while indexing.
+	Indexing takes way too long!
 
 	* wiki.pl (RequestLockDir): Fix message for existing locks.
 	(DeletePage): Remove keep directory, too.
