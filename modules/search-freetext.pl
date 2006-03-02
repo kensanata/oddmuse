@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.26 2006/03/02 00:58:28 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.27 2006/03/02 20:26:26 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -68,7 +68,6 @@ sub SearchFreeTextIndex {
       return;
     }
   }
-  RequestLockOrError(); # fatal
   my $words = new Search::FreeText(-db => ['DB_File', $wordfile]);
   $words->open_index();
   $words->clear_index();
@@ -91,7 +90,6 @@ sub SearchFreeTextIndex {
   }
   $words->close_index();
   $tags->close_index();
-  ReleaseLock();
   print T('Done.') . '</p></div>';
   PrintFooter();
 }
