@@ -268,7 +268,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.644 2006/02/25 18:28:23 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.645 2006/03/02 00:52:02 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2673,17 +2673,18 @@ sub GetLockedPageFile {
 
 sub RequestLockDir {
   my ($name, $tries, $wait, $error) = @_;
-  my ($lockName, $n);
+  my ($lock, $n);
   $tries = 4 unless $tries;
   $wait = 2 unless $wait;
   CreateDir($TempDir);
-  $lockName = $LockDir . $name;
+  $lock = $LockDir . $name;
   $n = 0;
-  while (mkdir($lockName, 0555) == 0) {
+  while (mkdir($lock, 0555) == 0) {
     if ($n++ >= $tries) {
       return 0 unless $error;
+      my $ts = (stat($lock))[10];
       ReportError(Ts('Could not get %s lock', $name) . ": $!. "
-		  . Ts('The lock was created %s.', CalcTimeSince((stat($_))[9])),
+		  . Ts('The lock was created %s.', CalcTimeSince($Now - $ts)),
 		  '503 SERVICE UNAVAILABLE');
     }
     sleep($wait);
@@ -3769,8 +3770,9 @@ sub DeletePage { # Delete must be done inside locks.
   my $id = shift;
   my ($error) = ValidId($id);
   return $error if $error; # this would be the error message
-  foreach my $fname (GetPageFile($id), GetKeepFiles($id), GetKeepDir($id), GetLockedPageFile($id), $IndexFile) {
-    unlink($fname) if (-f $fname);
+  foreach my $name (GetPageFile($id), GetKeepFiles($id), GetKeepDir($id), GetLockedPageFile($id), $IndexFile) {
+    unlink $name if -f $name;
+    rmdir $name if -d $name;
   }
   DeletePermanentAnchors();
   ReInit($id);
