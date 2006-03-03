@@ -1,4 +1,4 @@
-# Copyright (C) 2004  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2006  Alex Schroeder <alex@emacswiki.org>
 #               2004  Sebastian Blatt <sblatt@havens.de>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 # $InstanceThrottleLimit by keeping track of the process ids in
 # $InstanceThrottleDir
 
-$ModulesDescription .= '<p>$Id: throttle.pl,v 1.3 2006/03/03 15:51:48 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: throttle.pl,v 1.4 2006/03/03 15:52:54 as Exp $</p>';
 
 use vars qw($InstanceThrottleDir $InstanceThrottleLimit);
 
