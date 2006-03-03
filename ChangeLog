@@ -1,4 +1,11 @@
+2006-03-04  Alex Schroeder  <alex@gnu.org>
+
+	* test.pl (clear_pages): New image tests.
+
 2006-03-03  Alex Schroeder  <alex@gnu.org>
+
+	* modules/image.pl (ImageSupportRule): Unquote HTML for external
+	links.
 
 	* modules/throttle.pl (CreatePidFile): Print all parameters except
 	for the pwd parameter into the pidfile.
