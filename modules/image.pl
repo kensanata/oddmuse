@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: image.pl,v 1.16 2006/02/26 21:06:33 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: image.pl,v 1.17 2006/03/03 22:27:07 as Exp $</p>';
 
 use vars qw($ImageUrlPath);
 
@@ -41,7 +41,7 @@ sub ImageSupportRule {
     if (not $link) {
       if ($external) {
         if ($name =~ /$FullUrlPattern/) {
-          $link = $name;
+          $link = UnquoteHtml($name);
         } else {
           $link = $ImageUrlPath . '/' . UrlEncode($id);
         }
