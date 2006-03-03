@@ -1,3 +1,8 @@
+2006-03-03  Alex Schroeder  <alex@gnu.org>
+
+	* modules/throttle.pl (CreatePidFile): Print all parameters except
+	for the pwd parameter into the pidfile.
+
 2006-03-02  Alex Schroeder  <alex@gnu.org>
 
 	* modules/throttle.pl (CreatePidFile): Put action and id into the
