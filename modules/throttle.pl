@@ -21,7 +21,7 @@
 # $InstanceThrottleLimit by keeping track of the process ids in
 # $InstanceThrottleDir
 
-$ModulesDescription .= '<p>$Id: throttle.pl,v 1.2 2006/03/02 20:55:37 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: throttle.pl,v 1.3 2006/03/03 15:51:48 as Exp $</p>';
 
 use vars qw($InstanceThrottleDir $InstanceThrottleLimit);
 
@@ -63,9 +63,12 @@ sub DoInstanceThrottle {
 
 sub CreatePidFile {
   CreateDir($InstanceThrottleDir);
-  WriteStringToFile("$InstanceThrottleDir/$$",
-                    'action=' . GetParam('action', 'browse')
-                    . ' id=' . GetId());
+  my $data = $q->request_method . ' ' . $q->url(-path_info=>1) . "\n";
+  foreach my $param ($q->param) {
+    next if $param eq 'pwd';
+    $data .= "Param " . $param . "=" . $q->param($param) . "\n";
+  }
+  WriteStringToFile("$InstanceThrottleDir/$$", $data);
 }
 
 sub RemovePidFile {
