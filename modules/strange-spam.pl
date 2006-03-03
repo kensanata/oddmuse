@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>strange-spam.pl 2</p>';
+$ModulesDescription .= '<p>$Id: strange-spam.pl,v 1.2 2006/03/03 16:15:30 as Exp $</p>';
 
 *StrangeOldBannedContent = *BannedContent;
 *BannedContent = *StrangeNewBannedContent;
