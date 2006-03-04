@@ -1,0 +1,520 @@
+    body
+    {
+      background-color: #DDDDDD;
+      font-family: sans-serif;
+      padding: 0px;
+      margin: 0px;
+    }
+    
+    a 
+    { 
+      color: #ba102c;
+      text-decoration: none; 
+      font-weight: bold;
+    }
+    
+    a:hover 
+    {  
+      background-color: #eeeeee;
+    }
+    
+    a:visited
+    {  
+      color: #880011;
+    }
+    
+    a.outside, a[class="url number"]
+    {  
+      text-decoration:underline;
+    }
+    
+    hr
+    {
+      display: none;
+    }
+    
+    h1 
+    {
+      color: #555555;
+      font-size: xx-large;
+      border-bottom: solid #555555;
+    }
+    
+    h2 
+    {
+      color: #555555;
+      font-size: x-large;
+      border-bottom: solid #555555;
+    }
+    
+    h3 
+    {
+      color: #555555;
+      font-size: large;
+      border-bottom: solid #555555;
+    }
+    
+    h4 
+    {
+      color: #555555;
+      font-size: larger;
+      border-bottom: dotted #555555 2px;
+    }
+    
+    h5
+    {
+      color: #555555;
+      font-size: larger;
+    }
+    
+    h6 
+    {
+      color: #555555;
+      font-size: larger;
+    }
+    
+    div.header 
+    { 
+      background-color: #777777;
+      padding: 0px;
+    }
+    
+    div.header span.gotobar
+    { 
+      background-color: #bbbbbb;
+      padding: 3px;
+    }
+    
+    div.header a.local
+    { 
+      text-decoration: none; 
+      font-weight: bold;
+      color: #ba102c;
+      padding: 1px;
+    }
+    
+    div.header a.local:hover
+    { 
+      background-color: #dddddd;
+    }
+    
+    div.header h1
+    {  
+      background-color: #bbbbbb;
+      padding: 5px;
+      border-bottom: 3px dotted #555555;
+    }
+    
+    div.header h1 a
+    {  
+      text-decoration: none; 
+      font-weight: bold;
+    /*   color: #ba102c; */
+      color: #555555;
+      clear: right;
+    }
+    
+    div.header h1 a:hover
+    { 
+      color: #990000;
+      background-color: #bbbbbb;
+    }
+    
+    img 
+    { 
+      border: 0; 
+    }
+    
+    img.logo 
+    { 
+      float: right;
+      margin: 1ex;
+      border: 2px solid black;
+    }
+    
+    div.header .message
+    { 
+      background-color: #cccccc;
+      border: 1px dashed #000000;
+      margin: 15px;
+      padding: 5px;
+    }
+    
+    div.footer
+    {
+      background-color: #aaaaaa;
+      padding: 10px;
+      border-top: 3px solid black;
+      border-bottom: 3px solid black;
+    }
+    
+    div.footer hr 
+    {
+      display:none;
+    }
+    
+    div.footer a.local, div.footer a.edit,
+    div.footer a.history, div.footer a.author,
+    div.footer a.diff, div.footer a.rc
+    { 
+      text-decoration: none; 
+      font-weight: bold;
+      color: #ba102c;
+      padding: 1px;
+      border: 1px;
+    }
+    
+    div.footer a:hover
+    { 
+      background-color: #cccccc;
+    }
+    
+    div.content, div.rc
+    { 
+      padding: 1em;
+    }
+    
+    div.content hr
+    {  
+      color: #555555;
+      background-color: #555555;
+      border: none;
+      height: 2px;
+      display: block;
+    }
+    
+    div.rc hr
+    {  
+      display: none;
+    }
+    
+    pre
+    {  
+      background-color: #eeeeee;
+      border: 2px solid black;
+      padding: 1em;
+    }
+    
+    body > form 
+    {
+      margin: 0 2em;
+    }
+    
+    div.comment
+    {
+      margin: 0 2em;
+    }
+    
+    textarea
+    {
+      background-color: #eeeeee;
+      border: 2px solid #555555;
+      width: 100%; 
+      height: 80%;
+    }
+    
+    textarea:focus
+    {
+      background-color: #ffffff;
+    }
+    
+    input[type="text"], input[type="password"]
+    {
+      color: black;
+      background-color: #eeeeee;
+      border: 2px solid #555555;
+      padding: 3px;
+      font-weight: bold;
+    }
+    
+    input[type="text"]:focus, input[type="password"]:focus
+    { 
+      background-color: #ffffff;
+    }
+    
+    input[type="submit"]
+    {
+      color: #aa0000;
+      font-weight: bold;
+      border: 2px solid #555555;
+      padding: 1px;
+      text-decoration: none;
+      background-color: #eeeeee;
+    }
+    
+    input[type="submit"]:hover, input[type="submit"]:focus
+    {
+      background-color: #ffffff;
+    }
+    
+    div.footer input[type="text"]
+    {
+      color: black;
+      background-color: #cccccc;
+      border: 2px solid #555555;
+      padding: 3px;
+      font-weight: bold;
+    }
+    
+    div.footer input[type="text"]:focus
+    { 
+      background-color: #eeeeee;
+    }
+    
+    div.footer input[type="submit"]
+    {
+      color: #aa0000;
+      font-weight: bold;
+      border: 2px solid #555555;
+      padding: 1px;
+      text-decoration: none;
+      background-color: #cccccc;
+    }
+    
+    div.footer input[type="submit"]:hover, div.footer input[type="submit"]:focus
+    {
+      background-color: #eeeeee;
+    }
+    
+    div.diff
+    { 
+      padding: 1em;
+    }
+    
+    div.diff hr
+    {
+      color: #555555;
+      background-color: #555555;
+      border: none;
+      height: 2px;
+      display: block;
+    }
+    
+    
+    div.old
+    {
+      background-color: #dddddd;
+      border: 2px dashed #555555;
+      padding: 1em;
+    }
+    
+    div.new
+    {
+      padding: 1em;
+      background-color: #eeeeee;
+      border: 2px dashed #555555;
+    }
+    
+    div.rss
+    {
+      background-color: #dddddd;
+      /* border: 2px solid black; */
+      padding: 1em;
+    }
+    
+    img.upload
+    {
+      padding: 1em;
+    }
+    
+    div.color 
+    {
+      padding: 5px;
+      border: 5px;
+    }
+    
+    div.one 
+    {
+      background-color: #d0bbbb;
+      padding: 5px;
+      margin: 5px;
+    }
+    
+    div.two
+    {
+      background-color: #ccc0c0;
+      padding: 5px;
+      margin: 5px;
+    }    div.footer a.local, div.footer a.edit,
+    div.footer a.history, div.footer a.author,
+    div.footer a.diff, div.footer a.rc
+    { 
+      text-decoration: none; 
+      font-weight: bold;
+      color: #ba102c;
+      padding: 1px;
+      border: 1px;
+    }
+    
+    div.footer a:hover
+    { 
+      background-color: #cccccc;
+    }
+    
+    div.content, div.rc
+    { 
+      padding: 1em;
+    }
+    
+    div.content hr
+    {  
+      color: #555555;
+      background-color: #555555;
+      border: none;
+      height: 2px;
+      display: block;
+    }
+    
+    div.rc hr
+    {  
+      display: none;
+    }
+    
+    pre
+    {  
+      background-color: #eeeeee;
+      border: 2px solid black;
+      padding: 1em;
+    }
+    
+    body > form 
+    {
+      margin: 0 2em;
+    }
+    
+    div.comment
+    {
+      margin: 0 2em;
+    }
+    
+    textarea
+    {
+      background-color: #eeeeee;
+      border: 2px solid #555555;
+      width: 100%; 
+      height: 80%;
+    }
+    
+    textarea:focus
+    {
+      background-color: #ffffff;
+    }
+    
+    input[type="text"], input[type="password"]
+    {
+      color: black;
+      background-color: #eeeeee;
+      border: 2px solid #555555;
+      padding: 3px;
+      font-weight: bold;
+    }
+    
+    input[type="text"]:focus, input[type="password"]:focus
+    { 
+      background-color: #ffffff;
+    }
+    
+    input[type="submit"]
+    {
+      color: #aa0000;
+      font-weight: bold;
+      border: 2px solid #555555;
+      padding: 1px;
+      text-decoration: none;
+      background-color: #eeeeee;
+    }
+    
+    input[type="submit"]:hover, input[type="submit"]:focus
+    {
+      background-color: #ffffff;
+    }
+    
+    div.footer input[type="text"]
+    {
+      color: black;
+      background-color: #cccccc;
+      border: 2px solid #555555;
+      padding: 3px;
+      font-weight: bold;
+    }
+    
+    div.footer input[type="text"]:focus
+    { 
+      background-color: #eeeeee;
+    }
+    
+    div.footer input[type="submit"]
+    {
+      color: #aa0000;
+      font-weight: bold;
+      border: 2px solid #555555;
+      padding: 1px;
+      text-decoration: none;
+      background-color: #cccccc;
+    }
+    
+    div.footer input[type="submit"]:hover, div.footer input[type="submit"]:focus
+    {
+      background-color: #eeeeee;
+    }
+    
+    div.diff
+    { 
+      padding: 1em;
+    }
+    
+    div.diff hr
+    {
+      color: #555555;
+      background-color: #555555;
+      border: none;
+      height: 2px;
+      display: block;
+    }
+    
+    
+    div.old
+    {
+      background-color: #dddddd;
+      border: 2px dashed #555555;
+      padding: 1em;
+    }
+    
+    div.new
+    {
+      padding: 1em;
+      background-color: #eeeeee;
+      border: 2px dashed #555555;
+    }
+    
+    div.rss
+    {
+      background-color: #dddddd;
+      /* border: 2px solid black; */
+      padding: 1em;
+    }
+    
+    img.upload
+    {
+      padding: 1em;
+    }
+    
+    div.color 
+    {
+      padding: 5px;
+      border: 5px;
+    }
+    
+    div.one 
+    {
+      background-color: #d0bbbb;
+      padding: 5px;
+      margin: 5px;
+    }
+    
+    div.two
+    {
+      background-color: #ccc0c0;
+      padding: 5px;
+      margin: 5px;
+    }

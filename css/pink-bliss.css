@@ -1,0 +1,186 @@
+body {
+    background-color: #ffe4e4;
+    color: #606;
+    font-size: 14pt;
+    font-family: Geneva, Verdana, Arial, sans-serif;
+    margin: 0;
+    padding: 20px 30px;
+    border: 10px solid #f36;
+}
+
+img.logo {
+    float: right;
+    border: 
+}
+
+img.logo, div.footer hr {
+    border: 1px solid #e09;
+}
+
+a:hover {
+    background-color: #fff5f5;
+}
+
+/* headers */
+
+div.header, div.footer, div.near {
+    font-family: Abadi MT Condensed Light, Arial Narrow, Arial, sans-serif;
+    font-size: 16px;
+}
+
+div.header h1 {
+    margin-top: 30px;
+}
+
+/* underlining using border-bottom */
+h1 {
+    border-bottom: 5px solid #000;
+    padding: 2px;
+    margin: 0px;
+    margin-bottom: 8px;
+}
+
+h2 {
+    padding-top: 2ex;
+    margin-top: 3em;
+    border-bottom: 2px solid #000000;
+    clear:both;
+}
+
+h3 {
+    padding: 2px;
+    margin-top: 5em;
+    border-bottom: 1px dashed #000;
+    clear:both;
+}
+
+h4 {
+    padding:2px;
+    margin-top:3em;
+    text-decoration:underline;
+    clear:both;
+}
+
+hr { clear:both; }
+
+h1, h2, h3,
+h1 a, h2 a, h3 a, h4 a,
+h1 a:visited, h2 a:visited, h3 a:visited, h4 a:visited {
+    color:#f36;
+}
+h1, h2 {
+    border-bottom: 2px solid #936;
+}
+h3 {
+    border-bottom: 1px dashed #936;
+}
+
+h1, h2, h3, h4 { font-family:Skia, Verdana, sans-serif; }
+h1 { font-size:xx-large; }
+h2 { font-size:x-large; }
+h3 { font-size:large; }
+h4 { font-size:large; }
+
+/* headers in the journal are smaller */
+div.journal h1 { font-size:large; clear:both; }
+div.journal h2 { font-size:medium; }
+div.journal h3 { font-size:medium; }
+div.journal h4 { font-size:medium; }
+div.journal hr { display:none; }
+
+/* Links */
+
+a { text-decoration:none; font-weight:bold; color:#e33; }
+div.header a, div.footer a, div.near a { font-weight: normal; }
+a:visited { color:#c66; }
+a[class="url outside"]:before { content:"\2197"; }
+a.near:link { color:#093; }
+a.near:visited { color:#550; }
+a.near:active { color:#0F0; }
+
+/* near links */
+div.near { background-color: inherit; }
+a.near:link { color: #c90; }
+a.near:visited { color: #cc0; }
+
+/* Table of Contents */
+div.toc {
+    font-size: 9pt;
+    border: 1px solid #e09;
+    margin: 20px;
+    padding: 0 10px;
+}
+div.toc h2 {
+    padding-top: 0;
+    font-size: 14pt;
+}
+
+/* Sister Sites */
+
+div.sister { margin-right:1ex; background-color:inherit; }
+div.sister p { margin-top:0; }
+div.sister hr { display:none; }
+div.sister img { border:none; background-color:#ffe; }
+
+/* Portraits */
+
+div.color {
+    clear:left;
+}
+div.one {
+    background-color:#fcc;
+    padding: 0.1ex 1ex;
+}
+img.portrait {
+    float:left;
+    clear:left;
+    background-color:#fff;
+    border:#999 1px solid;
+    	padding:10px;
+    margin:10px;
+}
+li {
+    margin-left:1em;
+}
+div.portrait {
+    float:left;
+    clear:left;
+    font-size:xx-small;
+    padding-left:10px;
+}
+div.portrait + p {
+    min-height:70px;
+}
+div.portrait img.portrait {
+    float:none;
+    margin:10px 10px 0 0;
+}
+div.portrait a {
+    text-decoration:none;
+    color:#999;
+}
+
+dl.irc dt {
+    width:12ex;
+    float:left;
+    text-align:right;
+}
+dl.irc dd {
+    margin-left:15ex;
+}
+
+/* sister site background */
+div.sister img {
+    background-color: inherit;
+}
+
+/* bold is too close for bold fonts */
+a {
+    letter-spacing: 0.1ex;
+}
+div.rc strong {
+    font-weight: normal;
+}
+
+/* comments */
+div.commentshown { background-color:#fff5f5; padding: 0 1ex; }

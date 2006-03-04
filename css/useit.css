@@ -1,0 +1,72 @@
+body {
+    font-family: Verdana, Arial, Helvetica, Geneva, SunSans-Regular, sans-serif;
+    background: white;
+    color: black;
+}
+code {
+    font-family: "Courier New", Courier, Monaco, monospace;
+}
+pre {
+    font-family: "Courier New", Courier, Monaco, monospace;
+}
+hr {
+    color: gray;
+}
+div.footer span.gotobar, div.footer span.gotobar + br {
+    display:none;
+}
+span.gotobar {
+    font-size: small;
+    display: block;
+    background: #FFFF66;
+    font-family: Verdana, Arial, Helvetica, Geneva, SunSans-Regular, sans-serif;
+    background: #FFFF66;
+    border-style: none none solid none;
+    border-width: thin;
+    margin: 0;
+    padding: 0.7ex;
+    top: 1ex;
+    left: 1ex;
+}
+span.gotobar a:first-child { 
+    font-weight:bold;
+}
+span.gotobar a:first-child:visited {
+    color:blue;
+}
+img.logo {
+    max-height: 3ex;
+    max-width: 3ex;
+    border: 0;
+    float: right;
+    margin: 0.2ex;
+}
+div.footer form {
+    position:absolute;
+    top: 1.6ex;
+    right: 6ex;
+    font-size: smaller;
+}
+div.footer form input[name=lang] {
+    max-width: 2em;
+}
+table.densetable {
+    font-size: 80%;
+}
+h1, h2, h3, h4, h5, h6 {
+    font-family: Verdana, Arial, Helvetica, Geneva, SunSans-Regular, sans-serif;
+    text-decoration: underline;
+}
+h1 a {
+    color: black;
+}
+h4 {
+    margin-bottom: 0.5em;
+}
+h5, h6 {
+    margin-bottom: 0.2em;
+}
+a.definition {
+    color: black;
+    font-weight: bold;
+}

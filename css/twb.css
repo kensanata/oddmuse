@@ -1,0 +1,47 @@
+/* use a traditional typesetting style */
+p, dd { text-align:justify; }
+p { margin-top:0; margin-bottom:0; }
+p+p { text-indent:1em; }
+
+/* argh, just throw out browser's margins and uses our own */
+table, ol, ul, p, h1, h2, h3, h4 { margin:0; }
+html { margin:0.2em; }
+body { margin:0.0em; }
+table, ol, ul { margin-left:1.4em; }
+*+table, *+ul, *+ol, *+div  { margin-top: 0.6em; }
+table+p, ul+p, ol+p, div+p  { margin-top: 0.6em; }
+h1, h2, h3, h4 { margin-top: 0.6em; }
+td, th { padding-left:0.5em; padding-right:0.5em; }
+caption  { margin-top: 0.6em; }
+
+/* use faces from the manuscript */
+body  { font-family:Times New Roman, Times, serif; font-weight:medium; font-size:1.0em; font-style:normal; }
+h1, h2, h3 { font-family:Helvetica, sans; font-weight:bold; }
+h1    { font-size:2.0em; font-style:normal; }
+h2    { font-size:1.4em; font-style:normal; }
+h3    { font-size:1.2em; font-style:italic; }
+h3 > em { font-style:normal; }
+/* the exercise titles are a bit of a hack */
+div > p:first-child > em:first-child > strong:first-child,
+div.exercise > p:first-child > em:first-child > strong:first-child,
+div.dialogue > em:first-child > strong:first-child,
+div.lesson-goals > strong:first-child,
+div.culture-point > strong:first-child      { font-family:Helvetica, sans; }
+table caption { font-family:Times New Roman, Times, serif; font-weight:bold; font-style:italic; }
+div.lesson-goals,
+div.culture-point { font-family:Helvetica, sans; }
+th { font-weight:normal; font-style:italic; }
+
+/* the first column in a dialogue is the speaker, which should be small caps */
+div.dialogue > table tr > td:first-child { font-variant:small-caps; }
+
+/* the book title and author are just h1s, I'm afraid */
+h1.title { font-size:3em; text-align:center; margin-top:0em; }
+h1.author { font-size:2.2em; text-align:center; margin-top:0em; }
+
+// div { border: 1px solid grey; margin:1px; margin-left:1em; margin-right:1em; }
+div.culture-point, div.lesson-goals { border:2px solid black; padding:0.2em; }
+
+td { vertical-align:top; }
+th { text-align:left; }
+// .vocabulary { -moz-column-width:20em; -moz-column-gap:1.5em; }

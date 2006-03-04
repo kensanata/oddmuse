@@ -1,0 +1,235 @@
+/* [Default Theme] */
+
+img {
+    border-style:none;
+}
+img.upload {
+    background: inherit;
+    border: 1px solid #aaa;
+    padding: 5px;
+}
+img.logo {
+    float: right;
+    clear: right;
+}
+div.diff {
+    padding-left:5%;
+    padding-right:5%;
+}
+div.old {
+    background-color:#FFFFAF;
+}
+div.new {
+    background-color:#CFFFCF;
+}
+div.refer {
+    padding-left:  5%;
+    padding-right: 5%;
+    font-size:     80%;
+}
+div.message {
+    background-color:#FEE;
+}
+div.sister {
+    float:left;
+    margin-right:1ex;
+    background-color:#fff;
+}
+div.sister p {
+    margin-top:0;
+}
+div.sister hr {
+    display:none;
+}
+div.near {
+    background-color:#efe;
+}
+div.near p {
+    margin-top: 0;
+}
+
+/* get rid of useless "10 results found" when using indexed search. */
+div.search p.result { display:none; }
+
+form.tiny, form.tiny p {
+    display:inline;
+    white-space:nowrap;
+}
+form.tiny input {
+    margin:       0.1em;
+    width:        10em;
+    font-size:    80%;
+    font-family:  inherit;
+}
+
+/* portrait support */
+
+div.color {
+    clear:left;
+}
+div.one {
+    background-color:#eee;
+    padding: 0.1ex 0;
+}
+img.portrait {
+    float:left;
+    clear:left;
+    background-color:#fff;
+    border:#999 1px solid;
+    	padding:10px;
+    margin:10px;
+}
+div.portrait {
+    float:     left;
+    clear:     left;
+    font-size: xx-small;
+    padding-left: 10px;
+}
+div.portrait + p {
+    min-height:70px;
+}
+div.portrait img.portrait {
+    float:none;
+    margin:10px 10px 0 0;
+}
+div.portrait a {
+    text-decoration:none;
+    color:#999;
+}
+
+dl.irc dt {
+    width:15ex;
+    float:left;
+    text-align:right;
+    clear:left;
+}
+dl.irc dt span.time { display:none; }
+dl.irc dd {
+    margin-left:17ex;
+}
+
+table.history {
+    border-style:none;
+}
+td.history {
+    border-style:none;
+}
+span.result {
+    font-size:larger;
+}
+span.info {
+    font-size:smaller;
+    font-style:italic;
+}
+div.rss {
+    background-color:#EEF;
+}
+
+.left { float:left; margin-right:1em; }
+.right { float:right; margin-left:1em; }
+
+a.definition {
+    color:#000;
+    text-decoration:none;
+    border-bottom:dashed 1px;
+}
+a.alias {
+    text-decoration:none;
+    border-bottom:dashed 1px;
+}
+a.near:link {
+    color:#093;
+}
+a.near:visited {
+    color:#550;
+}
+a.tag:before {
+    content:"\2601\ ";
+}
+
+/* cal */
+
+pre.cal {
+    float:left;
+    margin:3ex;
+    height:20ex;
+}
+pre.cal a {
+    text-decoration:none;
+    font-weight:bold;
+}
+pre.cal a:hover {
+    background-color:#eef;
+}
+h2, h3, h4, h5, h6, hr, div.footer {
+    clear:both;
+}
+div.footer {
+    margin-top: 2em;
+}
+
+
+/* printable index */
+
+div.letter br {
+    display: none;
+}
+div.letter h2 {
+    clear: both;
+    padding-top: 2ex;
+    border-bottom: solid 1px;
+}
+div.letter > a {
+    display: block;
+    width: 40ex;
+    float: left;
+    border:none;
+}
+
+textarea[name="text"] {
+    width:100%;
+    height:80%;
+}
+textarea[name="summary"] {
+    width:100%;
+    height:3em;
+}
+div.comment textarea {
+    height:10em;
+}
+
+/* calendar */
+
+div.month {
+    padding:0;
+    margin:0 2ex;
+}
+
+div.year div.month {
+    float:left;
+}
+
+div.month a {
+    text-decoration:none;;
+}
+
+div.month a.edit {
+    color:inherit;
+}
+
+div.month a.local {
+    font-weight:bold;
+}
+
+/* highlighting */
+
+/* Equivalent to Output::HTML */
+
+span.linecomment  { color: green; }
+span.blockcomment { color: green; }
+span.prepro       { color: purple; }
+span.select       { font-weight: bold; }
+span.quote        { color: blue; }
+span.category_1   { color: teal; }
+span.category_2   { color: blue; }
+span.category_3   { color: blue; }

@@ -1,0 +1,142 @@
+/* Some of this is based on a CSS by Damien Elmes from
+   http://repose.cx/core.css
+   It was in turn based on http://www.fantasy-coders.de/ruby/rubyStyle.css */
+
+img.logo { float: right; clear: right; border-style:none; }
+div.diff { padding-left:5%; padding-right:5% }
+div.old { background-color:#FFFFAF }
+div.new { background-color:#CFFFCF}
+div.refer { padding-left:5%; padding-right:5%; font-size:smaller; }
+table.history { border-style:none; }
+td.history { border-style:none; }
+table.user { border-style:solid; border-width:thin; width:90%; margin-left:5%; }
+table.user tr td { border-style:solid; border-width:thin;
+                   padding:5px; text-align:center; }
+img {
+    border: #777777 1px solid;
+    padding: 0.5em;
+    margin-left: 1em;
+    margin-right: 2em;
+    background-color: #e6e6e6;
+    color: black;
+}
+img.smiley {
+    border:none;
+    padding:0;
+    margin:0;
+    background:#fff;
+    color:#000;
+}    
+
+div.header img, div.footer img { border:0; padding:0; margin:0; }
+
+span.author {
+    color: #501;
+}
+
+@media print {
+    span.gotobar { display:none; }
+    div.refer { display:none; }
+    div.footer { display:none; }
+}
+
+body {
+ font-family: Verdana, Arial, Helvetica, sans-serif;
+ background:#fff;
+ margin:auto;
+ padding:5%;
+ padding-top:2%;
+ margin:0px;
+}
+ 
+a {
+ text-decoration:none;
+ font-weight:bold;
+ color:#c00;
+}
+
+a:visited {
+ color:#c55;
+}
+
+body.magenta a {
+ color:#639;
+}
+
+a:hover {
+ background:#000000;
+ color:#FFFFFF;
+}
+
+p a.definition {
+ color:#666;
+ font-size: 22px;
+ padding: 2px;
+ margin-top: 5px;
+ border-bottom: 2px solid #000000;
+ text-decoration:none;
+ display:block; 
+}
+
+p a.definition:hover {
+ background:#000000;
+ color:#FFFFFF;
+}
+
+h1 a {
+ color:#666;
+}
+
+h2 a {
+ color:#666;
+}
+
+h3 a {
+ color:#666;
+}
+
+h4 a {
+ color:#666;
+}
+
+h1 { 
+ font-size: 48px;
+ color:#666;
+ border-bottom: 5px solid #000;
+ padding: 2px;
+ margin: 0px;
+ margin-bottom: 8px;
+}
+
+h2 { 
+ color:#666;
+ font-size: 22px;
+ padding: 2px;
+ margin-top: 5px;
+ border-bottom: 2px solid #000000;
+}
+
+h3 { 
+ color:#666;
+ font-size: 18px;
+ padding: 2px;
+ margin-top: 5px;
+ border-bottom: 1px dashed #000;
+}
+
+h4 { 
+ color:#666;
+ font-size: 18px;
+ padding: 2px;
+ margin-top: 5px;
+}
+
+pre {
+    border: #777777 1px solid;
+    padding: 0.5em;
+    margin-left: 1em;
+    margin-right: 2em;
+    white-space: pre;
+    background-color: #e6e6e6;
+    color: black;
+}
