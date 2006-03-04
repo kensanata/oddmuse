@@ -1,21 +1,34 @@
-/* Authors: Murray Altheim (2004), Alex Schroeder (2004, 2005, 2006)
+/* Authors: Murray Altheim (2004), Alex Schroeder (2004, 2005, 2006),
+   Bayle Shanks (2006), Lion Kimbro (2006).
 
-   This file is in the public domain.
+This file is in the public domain.
+
+* To start using this, visit http://www.communitywiki.org/en/FrontPage?css=http%3A%2F%2Fwww.communitywiki.org%2Fen%3Faction%3Dbrowse%3Bid%3DCommunityMaintainedCss%3Braw%3D1%3Bmime-type%3Dtext%2Fcss 
+* To stop using this, visit http://www.communitywiki.org/en/FrontPage?css=
 
 */
 
 html, body { /* hue 84 */
+    /* Default color for text. It doesn't appear that many places,
+       but you'll see it in Recent Changes summary comments, and
+       you'll see it in the languages at the bottom of the place;
+       It seeps out, here and there. */
     color:#000;
+    /* This is the main light green background color. */
     background-color:#def4b5;
     margin:0;
     padding:0;
 }
-
+ 
+/* This is not used in all that many places. */
 body.gray {
     background-color:#d5e0c5;
 }
+ 
+/* The next section includes some funky selectors.
+   See http://www.w3.org/TR/REC-CSS2/selector.html for more. */
 
-div.content, div.rc, body > form, div.footnotes {
+div.content, div.rc, body > form, div.footnotes, div.edit text {
     margin: 1em;
 }
 
@@ -23,8 +36,11 @@ div.content, div.rc, body > form, div.footnotes {
     vertical-align:top;
 }
 
-br + p.result { display: none; }
-
+/* The following statement hides the result count at the end
+   of a search page (since most of the time the result per page
+   is 10. */
+ br + p.result { display: none; }
+ 
 body.brown a { color:#550; text-decoration:none; }
 
 a { color:#272; text-decoration:none; font-weight:bold; }
@@ -57,7 +73,7 @@ li:hover a.plink, li a:hover.plink {
     color: #a020f0; /* purple */
 }
 
-body.arrows a.near:before, body.arrows a.outside:before { content:"↗"; }
+body.arrows a.near:before, body.arrows a.outside:before { content:"\2197"; }
 body.arrows a.near, body.arrows a.outside { text-decoration:none; }
 
 /* add every specific a here */
@@ -76,15 +92,24 @@ div.header {
 }
 
 div.sidebar {
-    float:       right;
-    width:         20%;
-    padding:  3em 0.5em 1em 0.5em;
-    margin:         0 0 0 1em;
-    font-size: small;
-    border-left: 1px dashed #517005;
-    border-bottom: 1px dashed #517005;
-    text-align:  right;
-    background-color: inherit;
+    float:    right;
+    width:    15%;
+    padding:  0 0.5em 0 1em;
+    margin:   1em 0 1em 5em;
+    font-size: x-small;
+    border:   3px solid #000;
+    text-align:  left;
+    background-color: #dea;
+}
+
+div.sidebar h2 {
+    font-weight: bold;
+    font-size:   small;
+    color:       #000;
+    background-color: #dea;
+    padding:     0;
+    margin-right: 7%;
+    border-bottom: 1px solid #ab7;
 }
 
 div.sidebar ul, div.sidebar li {
@@ -97,6 +122,10 @@ div.sidebar a:before {
     content:"";
 }
 
+div.sidebar a {
+    font-weight: normal;
+}
+
 h3 {
     font-weight:bold;
     font-size:medium;
@@ -104,16 +133,6 @@ h3 {
     color:#fff;
     background:#84d600;
     padding:0.3ex;
-}
-
-div.sidebar h2 {
-    font-weight: bold;
-    font-size:   medium;
-    color:       #fff;
-    background:  #84d600;
-    padding:       0.3ex 1ex;
-    margin-left:  -0.4em; /* cancel div padding but leave border intact */
-    margin-right: -0.5em;
 }
 
 div.header span.gotobar {
@@ -449,7 +468,19 @@ status, version, diff, history, importance {
         display: none;
 }
 
+/* 
+
+== Printing ==
+
+"@media print" is special: Everything in this section only applies
+when the page is printed (or during print preview).  More information:
+   
+* http://www.w3.org/TR/css3-mediaqueries/
+
+*/
+
 @media print {
+    /* When printing, turn off a bunch of stuff. */
     div.header span.gotobar { display:none; }
     span.specialdays { display:none; }
     div.refer { display:none; }
@@ -459,6 +490,7 @@ status, version, diff, history, importance {
     div.languages { display:none; }
     div.message { display:none; }
     img.logo { display:none; }
+
     /* portraits */
     div.portrait {
 	margin:0;
@@ -477,6 +509,10 @@ status, version, diff, history, importance {
 	background: inherit;
     }
 }
+
+/*
+== Languages stuff ==
+*/
 
 div.languages {
     border-top:1px solid;
