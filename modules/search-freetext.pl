@@ -16,7 +16,31 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.27 2006/03/02 20:26:26 as Exp $</p>';
+package OddMuse::Tokenize;
+
+sub new {
+    my ($classname, @args) = @_;
+    my $class = ref($classname) || $classname;
+    my $self = { @args };
+    $self = bless $self, $class;
+    $self->initialize();
+    return $self;
+};
+
+sub initialize {
+  my ($self) = @_;
+};
+
+sub process {
+  my ($self, $oldwords) = @_;
+  my $string = join("\n", @$oldwords);
+  my @words = split(/\s+/, $string);
+  return \@words;
+};
+
+package OddMuse;
+
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.28 2006/03/04 22:30:42 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -68,10 +92,10 @@ sub SearchFreeTextIndex {
       return;
     }
   }
-  my $words = new Search::FreeText(-db => ['DB_File', $wordfile]);
+  my $words = SearchFreeTextDB($wordfile);
   $words->open_index();
   $words->clear_index();
-  my $tags = new Search::FreeText(-db => ['DB_File', $tagfile]);
+  my $tags = SearchFreeTextDB($tagfile, 1);
   $tags->open_index();
   $tags->clear_index();
   foreach my $name (AllPagesList()) {
@@ -104,7 +128,7 @@ sub SearchFreeTextCloud {
     ReportError(T('Search::FreeText is not available on this system.'), '500 INTERNAL SERVER ERROR');
   }
   my $tagfile = $DataDir . '/tags.db';
-  my $tags = new Search::FreeText(-db => ['DB_File', $tagfile]);
+  my $tags = SearchFreeTextDB($tagfile, 1);
   $tags->open_index();
   # my @found = $db->search(join(" ", @wanted));
   my $db = $tags->{_Database};
@@ -179,8 +203,10 @@ sub SearchFreeTextTitleAndBody {
   my @wanted = $term  =~ m/(".*?"|tag:".*?"|\S+)/g;
   my @wanted_words = grep(!/^tag:/, @wanted);
   my @wanted_tags = map { substr($_, 4) } grep(/^tag:/, @wanted);
-  my @words = SearchFreeTextGet($DataDir . '/word.db', @wanted_words);
-  my @tags = SearchFreeTextGet($DataDir . '/tags.db', @wanted_tags);
+  my @words = SearchFreeTextGet(SearchFreeTextDB($DataDir . '/word.db'),
+				@wanted_words);
+  my @tags = SearchFreeTextGet(SearchFreeTextDB($DataDir . '/tags.db', 1),
+			       @wanted_tags);
   my @result = ();
   if (not @wanted_words and not @wanted_tags) {
     # do nothing
@@ -238,12 +264,10 @@ sub SearchFreeTextTitleAndBody {
 }
 
 sub SearchFreeTextGet {
-  my $file = shift;
-  my @wanted = @_;
+  my ($db, @wanted) = @_;
   return unless @wanted; # shortcut
   my @result = ();
   # open file and get sorted list of arrays with page id and rank.
-  my $db = new Search::FreeText(-db => ['DB_File', $file]);
   $db->open_index();
   my @found = $db->search(join(" ", @wanted));
   $db->close_index();
@@ -262,6 +286,19 @@ sub SearchFreeTextGet {
     push(@result, $id); # order is important, so no hashes
   }
   return @result;
+}
+
+sub SearchFreeTextDB {
+  my ($file, $special_filters) = @_;
+  my $db = new Search::FreeText(-db => ['DB_File', $file]);
+  if ($special_filters) {
+    my $search = $db->{LexicalAnalyser}->{-search};
+    my $tokenizer = new OddMuse::Tokenize(-search => $search);
+    my @filters = ($tokenizer);
+    $db->{LexicalAnalyser}->{-filters} = [ qw(OddMuse::Tokenize)];
+    $db->{LexicalAnalyser}->{_Filters} = \@filters;
+  }
+  return $db;
 }
 
 # highlighting changes if new search is used
