@@ -34,13 +34,13 @@ sub initialize {
 sub process {
   my ($self, $oldwords) = @_;
   my $string = join("\n", @$oldwords);
-  my @words = split(/\s+/, $string);
+  my @words = ($string =~ /[A-Za-z0-9\x80-\xff]+/g);
   return \@words;
 };
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.29 2006/03/04 22:49:28 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.30 2006/03/04 23:04:12 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
