@@ -40,7 +40,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.28 2006/03/04 22:30:42 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.29 2006/03/04 22:49:28 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -95,7 +95,7 @@ sub SearchFreeTextIndex {
   my $words = SearchFreeTextDB($wordfile);
   $words->open_index();
   $words->clear_index();
-  my $tags = SearchFreeTextDB($tagfile, 1);
+  my $tags = SearchFreeTextDB($tagfile);
   $tags->open_index();
   $tags->clear_index();
   foreach my $name (AllPagesList()) {
@@ -128,7 +128,7 @@ sub SearchFreeTextCloud {
     ReportError(T('Search::FreeText is not available on this system.'), '500 INTERNAL SERVER ERROR');
   }
   my $tagfile = $DataDir . '/tags.db';
-  my $tags = SearchFreeTextDB($tagfile, 1);
+  my $tags = SearchFreeTextDB($tagfile);
   $tags->open_index();
   # my @found = $db->search(join(" ", @wanted));
   my $db = $tags->{_Database};
@@ -187,6 +187,11 @@ sub SearchFreeTextNewGetRc {
   }
 }
 
+# override the standard printing of results
+*SearchResultCount = *SearchFreeTextNop;
+
+sub SearchFreeTextNop { '' };
+
 # new search
 
 my $SearchFreeTextNum = 10;  # results per page
@@ -205,7 +210,7 @@ sub SearchFreeTextTitleAndBody {
   my @wanted_tags = map { substr($_, 4) } grep(/^tag:/, @wanted);
   my @words = SearchFreeTextGet(SearchFreeTextDB($DataDir . '/word.db'),
 				@wanted_words);
-  my @tags = SearchFreeTextGet(SearchFreeTextDB($DataDir . '/tags.db', 1),
+  my @tags = SearchFreeTextGet(SearchFreeTextDB($DataDir . '/tags.db'),
 			       @wanted_tags);
   my @result = ();
   if (not @wanted_words and not @wanted_tags) {
@@ -289,15 +294,19 @@ sub SearchFreeTextGet {
 }
 
 sub SearchFreeTextDB {
-  my ($file, $special_filters) = @_;
+  my ($file) = @_;
   my $db = new Search::FreeText(-db => ['DB_File', $file]);
-  if ($special_filters) {
-    my $search = $db->{LexicalAnalyser}->{-search};
-    my $tokenizer = new OddMuse::Tokenize(-search => $search);
-    my @filters = ($tokenizer);
-    $db->{LexicalAnalyser}->{-filters} = [ qw(OddMuse::Tokenize)];
-    $db->{LexicalAnalyser}->{_Filters} = \@filters;
-  }
+  # The following is terrible hacking because we cannot pass an
+  # internal filter along to the constructor. If you look at
+  # LexicalAnalyser's initialize method, you'll see that it will
+  # require the appropriate file (which we don't have). So we hook
+  # into the internals, here. Terrible. This hack tested on
+  # Search::FreeText 0.05.
+  my $search = $db->{LexicalAnalyser}->{-search};
+  my $tokenizer = new OddMuse::Tokenize(-search => $search);
+  my @filters = ($tokenizer);
+  $db->{LexicalAnalyser}->{-filters} = [ qw(OddMuse::Tokenize)];
+  $db->{LexicalAnalyser}->{_Filters} = \@filters;
   return $db;
 }
 
