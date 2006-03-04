@@ -1,0 +1,208 @@
+html, body { color:#000; background:#fefefe }
+body[class="http://oddwiki.taoriver.net/wiki.pl"] {
+    background:#FEE;
+}
+textarea { width:100%; }
+a:active { color:#F00; }
+
+h1 { font-weight:bold; font-size:x-large; border-bottom:solid;
+     margin-top:3ex; margin-bottom:3ex; clear:left; }
+h1 a { text-decoration:none; color:#000; }
+h1 a:hover { background:#ddd; }
+h2 { font-weight:bold; font-size:larger; clear:left;
+     color:#fff; background:#27b; padding:0.7ex; }
+h2 a { text-decoration:none; color:#fff; }
+h2 a:hover { background:#49c; }
+h3 { font-weight:bold; font-size:medium; clear:left;
+     color:#fff; background:#5af; padding:0.7ex; }
+h3 a { text-decoration:none; color:#fff; }
+
+a.definition {
+    text-decoration:none; color:#000;
+    border-bottom:thin dashed;
+}
+a.definition:hover { background:#ddd; }
+
+p a.definition {
+    font-weight:bold; font-size:larger; 
+    color:#fff; background:#27b; padding:0.7ex;
+    text-decoration:none; display:block; margin-bottom:1ex;
+    border-bottom:none;
+}
+p a.definition:hover { background:#49c; }
+
+a.alias { text-decoration:none; border-bottom: thin dashed; }
+a.near:link { color:#093; }
+a.near:visited { color:#550; }
+a.footnote { font-size:50%; vertical-align:super }
+
+div.footnotes hr {
+    border:none;
+    color:black;
+    background-color:#000;
+    height:1px; 
+    margin-top:2ex;
+}
+
+div.footnotes hr + p {
+    font-weight:bold;
+}
+
+div.footer {
+    margin-top:3ex;
+    padding-bottom:1ex;
+    margin-bottom:1ex;
+    background-color:#fff;
+    border-bottom:solid;
+}
+
+div.footer hr {
+    border:none;
+    color:black;
+    background-color:#000;
+    height:2px; 
+    margin-top:2ex;
+}
+
+div.rc { margin-top:4ex; }
+div.rc hr { display:none; }
+
+div.old { background-color:#ffd; }
+div.new { background-color:#dfd; }
+div.diff { padding-left:2ex; padding-right:2ex; border-style:dashed; 
+           margin-left:5%; margin-right:5%; margin-bottom:5ex; }
+div.diff + hr { display: none }
+div.refer { padding-left:5%; padding-right:5%; font-size:smaller; }
+div.rss { background-color:#eef; }
+div.message  { background-color:#fee; color:#f00; border:solid #f00;
+               font-weight:bold; padding-left:1em; margin:1em; }
+div.sister { float:left; padding-right:1ex; background-color:#fff; }
+div.sister p { margin-top:0; }
+div.sister hr { display:none; }
+div.near { background-color:#efe; }
+div.near p { margin-top: 0; }
+div.footer + hr { display:none; }
+
+div.journal hr { display:none; }
+div.journal h1, div.journal h2, div.journal h3, div.journal h4 { font-size:medium; border:0; }
+
+span.description { font-weight:bold; }
+/* span.new { display:none; } */
+
+table.user { border-style:dotted; border-width:thin; padding:1ex;
+             margin-bottom:1ex; width:90%; margin-left:5%; }
+table.user tr td { padding-left:1em; padding-right:1em; }
+
+dt { font-weight:bold; }
+li { margin-bottom:0.5ex; }
+
+img { border:0; }
+pre, img.upload {
+    border: #777 1px solid; padding: 0.5em;
+    margin-left: 1em; margin-right: 2em;
+    white-space: pre;
+    background-color: #e6e6e6; color: black;
+}
+img.logo { 
+    float:right; clear:right; background-color:#fff;
+    border:#999 1px solid; padding:1ex; margin:0;
+}
+img.portrait {
+    float:left; clear:left;
+    background-color:#fff;
+    border:#999 1px solid;
+    padding:10px;
+    margin:10px;
+}
+div.portrait {
+    float:left; clear:left;
+    font-size:xx-small;
+    padding-left:10px;
+}
+div.portrait img.portrait {
+    float:none;
+    margin:10px 10px 0 0;
+}
+div.portrait a {
+    text-decoration:none;
+    color:#999;
+}
+div.color {
+    clear:both;
+    min-height:105px;
+}
+div.one {
+	background-color: #eee;
+}
+div.two {
+	background-color: #fff;
+}
+hr { display:block; clear:both; }
+
+@media screen {
+    body { margin-right: 22ex; padding-right:1em; border-right: 1px solid #999; }
+    div.sidebar { position: absolute; right: 1ex; width: 20ex; top: 0; }
+    div.sidebar ul { padding-left:1em; }
+}
+
+div.month { margin:0; padding:0; font-size:x-small; }
+div.footer { clear:both; }
+div.year div.month { float:left; font-size:medium; padding:1ex; }
+div.month pre { margin:0; padding:0 0 0 1ex; background-color:#ffe; width:21ex; }
+div.month a { text-decoration:none; color:inherit; }
+div.month span.title a { background-color:inherit; }
+div.month a.exact { background-color:#eef; }
+div.month a.collection { background-color:#ccf; }
+div.month a.today { background-color:#fcc; }
+div.month a[class~="today"][class~="exact"] { background-color:#fcf; }
+div.month a[class~="today"][class~="collection"] { background-color:#faf; }
+@media print {
+  div.month { display: none; }
+  div.year div.month { display: block; }
+  div.year div.month a { display: inline; }
+}
+
+@media print {
+    span.gotobar { display:none; }
+    span.specialdays { display:none; }
+    div.sidebar { display:none; }
+    div.refer { display:none; }
+    div.footer { display:none; }
+    div.near { display:none; }
+    div.sister { display:none; }
+    div.languages { display:none; }
+}
+
+div.languages { border-top:1px solid; clear:both; }
+div.languages form { margin-top:1ex; }
+
+span[lang=en] { background-color:#ddf; }
+span[lang=fr] { background-color:#fdd; }
+span[lang=de] { background-color:#ffd; }
+span[lang=it] { background-color:#dfd; }
+span[lang=pt] { background-color:#bfb; }
+span[lang=es] { background-color:#fec; }
+span[lang=sv] { background-color:#adf; }
+
+body.simple div.footer p.note { display:none; }
+body.simple div.footer span.gotobar + br { display:none; }
+body.simple div.footer span.gotobar { display:none; }
+body.simple div.sister { display:none; }
+body.simple div.near { display:none; }
+body.simple div.languages { display:none; }
+
+body.explicit a.near[title=MeatBall]:before { content:"MeatBall:"; }
+body.explicit a.near[title=WikiFeatures]:before { content:"WikiFeatures:"; }
+
+body.nolang span[lang] { background-color:#fff; }
+
+body[class~=en] span[lang] { display:none; }
+body[class~=de] span[lang] { display:none; }
+body[class~=fr] span[lang] { display:none; }
+body[class~=it] span[lang] { display:none; }
+body[class~=pt] span[lang] { display:none; }
+body[class~=en] span[lang=en] { display:inline; }
+body[class~=de] span[lang=de] { display:inline; }
+body[class~=fr] span[lang=fr] { display:inline; }
+body[class~=it] span[lang=it] { display:inline; }
+body[class~=pt] span[lang=pt] { display:inline; }

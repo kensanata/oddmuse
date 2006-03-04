@@ -1,0 +1,189 @@
+/* don't show the name of the page */
+
+div.header {
+	display:none;
+}
+
+/* the first h2 header is the title of the document */
+
+div.content > h2:first-child {
+	font-size:x-large;
+	font-weight:bold;
+	text-align:center;
+	display:block;
+}
+
+/* invert author and address italics */
+
+div.Author {
+	text-align:center;
+	font-style:italic;
+	font-size:smaller;
+}
+
+div.Author i {
+	font-style:normal;
+	font-size:medium;
+}
+
+/* printed smaller, and no "AUTHOR" heading, no numbering */
+
+div.Author, div.Abstract, div.Keywords {
+	font-size:smaller;
+}
+
+div.Author h2 {
+	display:none;
+}
+
+div.Abstract h2, div.Keywords h2 {
+	display:block;
+	font-size:medium;
+}
+
+/* typical headers are all the same size and bold, h2 is uppercased, h3 is not */
+
+h2, div.footnotes hr + p {
+	text-transform:uppercase;
+    font-size:large;
+	font-weight:bold;
+}
+
+h3 {
+	font-size:large;
+	font-weight:bold;
+}
+
+/* main text */
+
+body {
+    font:12pt "Times New Roman", serif;
+    text-align:justify;
+}
+
+div.footnotes {
+	text-align:left;
+}
+
+/* images */
+
+img {
+	border:none;
+}
+
+img[smiley] {
+    display:none;
+}
+
+div.Image a.image {
+	display:block;
+	padding:2ex;
+}
+
+div.Image h2 {
+	display:none;
+}
+
+/* this should keep image and caption together, but it seems not to work. */
+
+div.Image {
+	page-break-inside:avoid;
+}
+
+/* link look like ordinary text */
+
+a.number span {
+    display:none;
+}
+
+@media screen {
+    body {
+        padding:10ex;
+    }
+    div.header {
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	margin: 0;
+	padding: 0;
+	vertical-align: top;
+	color:#aaa;
+	font-size: 10pt;
+    }
+    div.header h1 {
+	margin: 0;
+	padding: 0;
+	font-size: inherit;
+	
+    }
+    div.header a {
+	text-decoration: none;
+    }	
+    div.footer, div.refer, a, a.number:link, a.number:visited,
+    div.content + form, span.gotobar {
+	color:#aaa;
+    }
+    div.content a, div.footnotes a, div.rc a {
+	color:#000;
+	text-decoration:none;
+    }
+}
+
+@media print {
+	a.edit, div.footer, div.refer, a.number,
+	div.content + form, span.gotobar {
+		display:none;
+	}
+	a, a:link, a:visited {
+		color:#000;
+		text-decoration:none;
+	}
+}
+
+a[class="url number"]:after,
+a[class="inter number"]:after {
+    content:"[" attr(href) "]";
+}
+
+a[class="local number"]:after {
+    content:"[" attr(title) "]";
+}
+
+/* footnotes */
+
+a.footnote:before {
+    content:"[";
+}
+
+a.footnote:after {
+    content:"]";
+}
+
+div.footnotes a + a[class="url outside"]:after {
+    content: ", <" attr(href) ">";
+}
+
+div.footnotes a + a[class="url"]:before {
+    content: "<";
+}
+
+div.footnotes a + a[class="url"]:after {
+    content: ">";
+}
+
+div.footnotes hr {
+    display:none;
+}
+
+div.footnotes p {
+    padding-left:3em;
+    text-indent:-3em;
+}
+
+/* must come at the end */
+
+div.content a:hover {
+	color:#000;
+	background-color:#999;
+}

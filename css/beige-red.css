@@ -1,0 +1,516 @@
+body, rss {
+    font-family: Garamond, "Bookman Old Style", serif;
+    font-size: 16pt;
+    line-height: 20pt;
+    background-color:#ffe;
+    color:#630;
+    margin:1em 3em;
+    padding:0;
+}
+
+/* headings: we can use larger sizes if we use a lighter color  */
+
+h1, h2, h3, title {
+    font-weight:normal;
+}
+h1, channel title {
+    font-family: Skia, "Garamond", "Bookman Old Style", serif;
+    font-size: 24pt;
+    margin:  1em 0 0.5em 0;
+    padding: 0.4em 0;
+    color:   #666;
+}
+h2 {
+    font-family: Skia, "Lucida Grande", sans-serif;
+    font-size: 18pt;
+    margin:  2em 0 0 0;
+    padding: 0;
+    color:   #555;
+}
+h3 {
+    font-size:  inherit;
+    font-weight: bold;
+    padding:    0;
+    margin:     0;
+    clear:      both;
+}
+
+/* headers in the journal are smaller */
+
+div.journal h1, item title {
+    font-size:     inherit;
+    padding:       0;
+    clear:         both;
+    border-bottom: 1px solid #000;
+}
+div.journal h2 {
+    font-family: inherit;
+    font-size:   inherit;
+}
+div.journal h3 {
+    font-family: inherit;
+    font-size:   inherit;
+    font-weight: inherit;
+    font-style:  italic;
+}
+div.journal hr {
+    display:none;
+}
+
+/* Links in headings appear on journal pages. */
+
+h1 a, h2 a, h3 a {
+    color:#666;
+    font-weight: normal;
+} 
+h1 a:visited, h2 a:visited, h3 a:visited {
+    color: inherit;
+}
+
+/* stop floating content from flowing over the footer */
+
+hr {
+    clear: both;
+}
+
+/* the distance between links in the navigation bars */
+
+span.bar a {
+    margin-right: 1ex;
+}
+
+/* search box in the top bar */
+
+form.tiny, form.tiny p {
+    display:inline;
+    white-space:nowrap;
+}
+form.tiny input {
+    padding:0;
+    width:10ex;
+    font-size:10px;
+}
+
+/* code */
+
+pre, code, tt {
+    font-family: "Andale Mono", Monaco, "Courrier New", monospace;
+    font-size: 16px;
+    line-height: 19px;
+}
+
+/* styling for divs that will be invisible when printing
+   when printing. */
+
+div.header, div.footer, div.near {
+    font-family: "Abadi MT Condensed Light", "Arial Narrow", Arial, sans-serif;
+    font-size: 12pt;
+    line-height: 13pt;
+
+}
+div.rc li {
+    line-height: 18pt;
+}
+div.rc li + li {
+    margin-top: 1em;
+}
+div.rc li strong, table.history strong {
+    font-weight: inherit;
+}
+div.diff {
+    padding-left:  5%;
+    padding-right: 5%;
+    font-size:     12pt;
+    line-height:   14pt;
+    color:         #000;
+
+}
+div.old {
+    background-color: #ffffaf;
+}
+div.new {
+    background-color: #cfffcf;
+}
+
+div.refer {
+    padding-left:  5%;
+    padding-right: 5%;
+    font-size:     12pt;
+    line-height:   13pt;
+}
+
+div.message {
+    background-color:#fee;
+    color:#000;
+}
+
+img.xml {
+    border:none;
+    padding:1px;
+}
+
+div.sister {
+    margin-right:1ex;
+    background-color:inherit;
+}
+div.sister p {
+    margin-top:0;
+}
+div.sister hr {
+    display:none;
+}
+div.sister img {
+    border:none;
+    background-color:#ffe;
+}
+
+div.near {
+    background-color:#efe;
+}
+
+div.sidebar {
+    float:right;
+    border:1px dotted #000;
+    padding:0 1em;
+}
+div.sidebar ul {
+    padding-left:1em;
+}
+
+/* replacements, features */
+
+del {
+    color: #666;
+}
+ins {
+    color: #b33;
+    text-decoration: none;
+}
+acronym, abbr {
+    letter-spacing:0.1em;
+    font-variant:small-caps;
+}
+
+/* Links */
+
+a {
+    text-decoration:none;
+    color:#e33;
+}
+a:visited {
+    color:#c66;
+}
+a[class="url outside"]:before {
+    content:"\2197";
+}
+a:hover {
+    background-color:#dfd;
+}
+a.near:link {
+    color:#093;
+}
+a.near:visited {
+    color:#550;
+}
+a.near:active {
+    color:#0F0;
+}
+a cite { font:inherit; }
+a.book, a.movie { font:inherit; text-decoration:underline; }
+/* browser borkage */
+textarea[name="text"] { width:99%; height:80%; }
+textarea[name="summary"] { width:99%; height:3em; }
+/* comments */
+textarea[name="aftertext"] { width:99%; height:10em; }
+div.commentshown {
+    background-color:#ffc;
+    padding-bottom:1ex;
+}
+div.commenthidden {
+    display:none;
+}
+div.commentshown {
+    display:block;
+}
+p.comment {
+    margin-bottom: 0;
+}
+/* cal */
+div.month { padding:0; margin:0 2ex; }
+body > div.month {
+    float:right;
+    background-color: inherit;
+    border:solid thin;
+    padding:0 1ex;
+}
+div.year > div.month {
+    float:left;
+}
+div.footer {
+    clear:both;
+}
+div.month a.edit {
+    color:inherit;
+    font-weight:inherit;
+}
+
+/* history tables and other tables */
+table.history {
+    border:   none;
+}
+td.history {
+    border:   none;
+}
+
+table.user {
+    border:      none;
+    text-align:  center;
+}
+table.user tr td {
+    border:   none;
+    padding:  0.5em;
+}
+table.user tr th {
+    border:   none;
+    padding:  0.5em;
+}
+table.arab tr th {
+    font-weight:normal;
+    text-align:left;
+    vertical-align:top;
+}
+table.arab, table.arab tr th, table.arab tr td {
+    border:none;
+}
+th.nobreak {
+    white-space:nowrap;
+}
+table.full { width:99%; margin-left:1px; }
+table.j td, table.j th, td.j, th.j, .j { text-align:justify; }
+table.l td, table.l th, td.l, th.l, .l { text-align:left; }
+table.r td, table.r th, td.r, th.r, .r { text-align:right; }
+table.c td, table.c th, td.c, th.c, .c { text-align:center; }
+
+form table td { padding:5px; }
+
+/* lists */
+dd { padding-bottom:0.5ex; }
+dl.inside dt { float:left; }
+/* search */
+div.search span.result { font-size:larger; }
+div.search span.info { font-size:smaller; font-style:italic; }
+div.search p.result { display:none; }
+
+img.portrait {
+    float:right;
+    margin:1em;
+    padding:1em;
+    border:1px dotted #000;
+    background-color:#fff;
+}
+
+img.logo {
+    float:   right;
+    margin:  0;
+    padding: 0;
+    border:  1px solid #000;
+    background-color:#ffe;
+}
+
+/* portrait */
+
+div.left { float:left; margin:1em; padding: 0.5em; border:1px dotted; }
+div.left p { display:table-cell; }
+div.left p + p { display:table-caption; caption-side:bottom; }
+
+p.table a { float:left; width:20ex; }
+p.table + p { clear:both; }
+
+/* hanging indents
+
+div.content p {
+    padding: 0;
+    margin: 0;
+}
+div.content p + p {
+    text-indent: 1em;
+}
+div.content p.comment {
+    margin-top: 1em;
+    text-indent: 0;
+} */
+
+/* no bleeding */
+
+div.content, div.rc {
+    overflow:hidden;
+}
+
+/* images */
+
+div.content a img, div.journal a img {
+    margin:1em; padding: 0.5em; border:1px dotted;
+}
+div.content a.outside img, div.journal a.outside img {
+    border:1px solid;
+}
+div.content a.inline img, div.journal a.inline img,
+div.content li a.image img, div.journal li a.image img { 
+    margin:0; padding:0; border:none;
+}
+
+.left { float:left; }
+.right { float:right; }
+table.aside {
+    float:right;
+    width:40%;
+    margin-left: 1em;
+    padding: 1ex;
+    border: 1px dotted #666;
+}
+table.aside td {
+    text-align:left;
+}
+
+dl.irc dt { width:20ex; float:left; text-align:right; clear:left; }
+dl.irc dt span.time { float:left; }
+dl.irc dd { margin-left:22ex; }
+
+/* legacy for right: left: pic: normal: piclink: piclink-left: piclink-right: rules */
+div.right { float:right; margin:1em; padding: 0.5em; border:1px dotted; }
+div.right p { display:table-cell; }
+div.right p + p { display:table-caption; caption-side:bottom; }
+div.pic { border:1px dotted; padding:0.5em; }
+div.pic div { display:inline; margin:1ex; }
+div.pic div p { display:table-cell; }
+div.pic div p + p { display:table-caption; caption-side:bottom; }
+
+@media print {
+    body {
+	font-size:   12pt;
+	line-height: 13pt;
+	color:       #000;
+    }
+    
+    /* hide all the crap */
+    div.diff, div.diff+hr, div.refer, div.near, div.sister, div.cal,
+    div.footer, span.specialdays, span.gotobar, a.edit, a.number span,
+    div.rc form, form.tiny, p.comment {
+	display:none;
+    }
+    /* All links get the arrow. */
+    div.content a:before {
+	content:"\2192";
+    }
+    div.content a.image:before,
+    div.content a.url:before {
+	content:"";
+    }
+    /* no difference */
+    pre, code, tt {
+	font-size: inherit;
+	line-height: inherit;
+    }
+    /* no dotted underlines */ 
+    acronym, abbr {
+	border: none;
+	text-decoration: none;
+    }
+    /* headings */
+    h1 {
+	font-family: Garamond, Verdana, serif;
+	color:       inherit;
+	margin-top:  2em;
+    }
+    h2 {
+	color:inherit;
+	margin: 1em 0;
+	font-variant: small-caps;
+    }
+    h3 {
+	font-weight:inherit;
+	font-style:italic;
+	color:inherit;
+	margin: 1em 0;
+    }
+    h1 a, h2 a, h3 a {
+	color: inherit;
+    }
+    div.journal h1 a:visited,
+    div.journal h2 a:visited,
+    div.journal h3 a:visited {
+	color: inherit;
+    }
+
+    /* except for journal titles and page titles */
+    div.content h1 a:before, div.content h2 a:before,
+    div.content h3 a:before {
+	content: "";
+    }
+    /* and book and movie links */
+    div.content a.book:before, div.content a.movie:before {
+	content: "";
+    }
+    div.content a.book, div.content a.movie {
+	text-decoration: none;
+    }
+    a cite {
+	font-style: italic;
+    }
+    /* links with square brackets instead of colors */
+    a[class="url number"]:after, a[class="inter number"]:after {
+	content:"[" attr(href) "]";
+    }
+    a[class="local number"]:after {
+	content:"[" attr(title) "]";
+    }
+    a[class="near"]:after {
+	content:" [" attr(title) "]";
+    }
+    a, a:visited, a.near:link, a.near:visited {
+	color: inherit;
+    }
+}
+
+/* rss */
+channel * { display: block; }
+
+channel title {
+    margin-top: 30pt;
+}
+copyright {
+    font-size: 14pt;
+    line-height: 16pt;
+    margin-top: 1em;
+}
+channel > link:before {
+    font-size: 18pt;
+    display: block;
+    margin: 1em;
+    padding: 0.5em;
+    content: "This is an RSS feed, designed to be read in a feed reader.";
+    color: red;
+    border: 1px solid red;
+}
+link, license {
+    font-size: 11pt;
+    margin-bottom: 9pt;
+}
+username:before { content: "Last edited by "; }
+username:after { content: "."; }
+generator:before { content: "Feed generated by "; }
+generator:after { content: "."; }
+channel description {
+    font-weight: bold;
+}
+item description {
+    font-style: italic;
+    font-weight: normal;
+    margin-bottom: 1em;
+}
+docs, language,
+pubDate, lastBuildDate, ttl, guid, category, comments,
+docs, image title, image link,
+status, version, diff, history, importance {
+    display: none;
+}

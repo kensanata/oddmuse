@@ -1,0 +1,277 @@
+body {
+    margin: 0px 0px 20px 0px;
+    padding: 30px 40px;
+    background: #FFF;		
+    font-family: "Lucida Grande", Verdana, Geneva, Arial, sans-serif;
+    font-size: small;
+}
+
+/* grey underlined links that turn black as you are about to click */
+
+a {
+    color: #707070;
+    background-color: inherit;
+    text-decoration: none;
+}
+div.content a {
+    text-decoration: underline;
+}
+a:link {
+    color: #707070;
+    background-color: inherit;
+}
+a:visited {
+    color: #707070;
+    background-color: inherit;
+}
+a:active {
+    color: #000000;
+    background-color: inherit;
+}
+a:hover {
+    color: #000000;
+    background-color: inherit;
+}
+a.near:link { color: #036; background-color: inherit; }
+a.near:visited { color: #69c; background-color: inherit; }
+a.near:active { color: #390; background-color: inherit; }
+a.near:hover { color: #390; background-color: inherit; }
+
+a[class="url outside"]:before { content: "\2197"; }
+body.safari a[class="url outside"]:before { content: url(http://www.emacswiki.org/alex/pics/arrow.png); }
+
+/* goto bar, navigation bar, etc. */
+
+span.bar a { margin-right: 1ex; }
+
+/* logo on the right */
+
+img.logo {
+    float: right;
+    padding: 0;
+    border: 1px solid #000;
+}
+
+/* headers */
+
+h1, h2, h3 {
+    margin: 0px;
+    padding: 0px;
+    font-weight: normal;
+    line-height: normal;
+    clear: both;
+}
+
+/* dashed line and whitespace after the title */
+div.header h1 {
+    font-size: 28pt;
+    font-family: "Century Gothic", "Gill Sans", Helvetica, sans-serif;
+    font-weight: 100;
+    letter-spacing: 0.07em;
+    margin-top: 30px;
+    padding-bottom: 30px;
+    margin-bottom: 30px;
+    border-bottom: 1px dashed #333;
+}
+
+div.header h1 a {
+    color: inherit;
+    background-color: inherit;
+}
+
+/* add a dashed line and whitespace before subheadings */
+h2 {
+    margin-top: 2em;
+    padding-top: 2em;
+    border-top: 1px dashed #333;
+}
+
+/* after a subheading, no whitespace */
+h2 + p, h3 + p {
+    margin-top: 0;
+}
+
+/* when the subheading starts the page, no dashed line and whitespace,
+   because that is already added by the header. */
+h2:first-child {
+    padding-top: 0;
+    border: none;
+}
+
+/* major subtitles blue and not underlined, both for journals and normal pages.
+   within journals, do not use a horizontal line to separate entries. */
+
+h2, div.journal h1 {
+    font-size: inherit;
+    font-weight: bold;
+}
+
+h3, div.journal h1 a {
+    color: #009;
+    background-color: inherit;
+    text-decoration: none;
+}
+
+hr {
+    border: none;
+    margin: 2em;
+}
+
+/* table on the new page */
+
+p.table a { float: left; width: 20ex; }
+p.table + p { clear: both; padding-top: 10px; }
+
+/* edit pages */
+
+textarea[name="text"] { width: 100%; height: 80%; }
+textarea[name="summary"] { width: 100%; height: 3em; }
+
+/* comments */
+
+textarea[name="aftertext"] {
+    width: 100%;
+    height: 10em;
+    margin: 1em 0;
+}
+div.commentshown {
+    font-size: smaller;
+    padding: 0 2em 1ex 2em;
+}
+div.commentshown hr {
+    margin: 1em;
+}
+div.commenthidden { display: none; }
+div.commentshown { display: block; }
+p.comment { font-size: x-small; }
+
+/* cal */
+div.month {
+    padding: 0;
+    margin: 0 2ex;
+}
+div.month a {
+    text-decoration: none;
+}
+/* pre gets different colors below */
+div.month pre {
+    color: inherit;
+    background-color: inherit;
+}
+body div.month {
+    float: right;
+    padding: 0 1ex;
+}
+div.year div.month {
+    float: left;
+    padding: 0;
+}
+div.month a.edit {
+    color: inherit;
+    background-color: inherit;
+    font-weight: inherit;
+}
+
+/* images, styles to use for the image extension */
+
+a.image img { 
+    border: none;
+}
+a.left {
+    float: left;
+    margin: 20px;
+}
+a.right {
+    float: right;
+    margin: 20px;
+}
+
+/* code */
+
+pre {
+    font-family: "Andale Mono", Monaco, "Courrier New", monospace;
+    margin: 1em 0;
+    padding: 1em 2em;
+    color: #000;
+    background-color: #ddd;
+}
+
+/* diff */
+
+div.diff { padding-left: 5%; padding-right: 5%; }
+div.old { background-color: #FFFFAF; color: #000; }
+div.new { background-color: #CFFFCF; color: #000; }
+
+/* header stuff */
+
+div.message { background-color: #FEE; color: #000; }
+
+/* footer stuff */
+
+div.footer {
+    clear: both;
+    font-size: smaller;
+}
+div.footer + hr {
+    border: none;
+    margin: 10px;
+}
+
+div.sister {
+    font-size: smaller;
+    margin-right: 1ex;
+}
+div.sister p {
+    margin-top: 0;
+}
+div.sister hr {
+    display: none;
+}
+div.sister img {
+    border: none;
+    vertical-align: top;
+    margin-right: 20px;
+}
+
+div.near {
+    font-size: smaller;
+}
+
+div.refer hr {
+    display: none; 
+}
+div.refer {
+    margin-top: 50px;
+    padding-left: 1ex;
+    border-left: 0.6ex solid #aaa;
+    font-size: smaller;
+    clear: both;
+}
+
+/* sidebar */
+
+div.sidebar {
+    float: right;
+    border: 1px dotted #000;
+    padding: 0 1em;
+}
+div.sidebar ul {
+    padding-left: 1em;
+}
+
+/* printing */
+
+@media print {
+    div.diff, div.diff+hr, div.refer, div.near, div.sister, div.cal, div.footer,
+    span.specialdays, span.gotobar, a.edit, a.number span,
+    div.rc form { display: none; }
+    body { font: 12pt "Neep", "Arial", sans-serif; color: #000; }
+    a:link, a:visited { color: #000; text-decoration: none; font-style: oblique; }
+    a[class="url number"]:after, a[class="inter number"]:after { content: "[" attr(href) "]"; }
+    a[class="local number"]:after { content: "[" attr(title) "]"; }
+    a.near { font-weight: normal; text-decoration: none; font-style: oblique; }
+    a.near:link, a.near:visited, a.near:active, a.near:hover {
+	color: inherit; background-color: inherit;
+    }
+    a[class="near"]:after { content: " [" attr(title) "]"; }
+}

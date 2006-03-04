@@ -1,0 +1,122 @@
+/* Originally from Earle Martin, as seen on
+   http://downlode.org/log/2005-01-14/Mu_License,
+   Adapted by Alex Schroeder for Oddmuse.
+   Alex's changes available under the Mu License:
+
+       If you are asking what license this is released under,
+       you are asking the wrong question.
+*/
+
+body
+{
+  margin: 10px;
+  background: #002;
+  color: #fff;
+  font-family: Trebuchet MS, serif;
+}
+
+a:link,a:visited,a:active
+{
+  background: transparent;
+  color: #6c9;
+  text-decoration: none;
+}
+
+a:hover
+{
+  border-bottom: 1px dotted #6c9
+}
+
+blockquote
+{
+  border-left: 1px solid #fff;
+  padding-left: 10px;
+  margin-left: 20px;
+}
+
+div.sidebar { float:right; border:1px dotted #000; padding:0 1em; }
+div.sidebar ul { padding-left:1em; }
+
+hr { clear:both; }
+
+div.content {
+  width: 75ex;
+  border: 1px solid #fff;
+  padding: 20px;
+  color: #fff;
+  background: #333;
+}
+
+body.bigger div.content { width:100ex; }
+
+div.edit { border:none; background:inherit; width:100%; }
+div.edit textarea { width:95%; color:#fff; background:#333; }
+input[name=summary] { width:80%; }
+
+div.old { background-color: #633; }
+div.new { background-color: #364; }
+
+div.year { border:none; background:inherit; }
+div.month { padding:0; margin:0 2ex; }
+body > div.month {
+    float:right;
+    background-color:inherit;
+    border:solid thin;
+    padding:0 1ex;
+}
+div.year > div.month { float:left; }
+div.footer { clear:both; }
+div.month a.edit { color:inherit; font-weight:inherit; }
+img.logo {
+    border:1px solid #fff;
+    float:right;
+    margin:0;
+    padding:2px;
+}
+
+div.color { clear:left; }
+div.one { background-color:#444; padding: 0.1ex 0; }
+img.portrait {
+    float:left;
+    clear:left;
+    background-color:#000;
+    border:#fff 1px solid;
+    padding:1px;
+    margin:10px;
+}
+li { margin-left:1em; }
+div.portrait { float:left;
+    clear:left;
+    font-size:xx-small;
+    padding-left:10px;
+}
+div.portrait + p { min-height:70px; }
+div.portrait img.portrait { float:none; margin:10px 10px 0 0; }
+div.portrait a { text-decoration:none; color:#999; }
+
+dl.irc dt { width:12ex; float:left; text-align:right; }
+dl.irc dd { margin-left:15ex; }
+
+table.history { border-style:none; }
+td.history { border-style:none; }
+table.user { border-style:solid; border-width:thin; }
+table.user tr td {
+    border-style:solid;
+    border-width:thin;
+    padding:5px;
+    text-align:center;
+}
+span.result { font-size:larger; }
+span.info { font-size:smaller; font-style:italic; }
+div.rss { border:1px dashed; padding:0 1em;}
+/* 
+ * a.definition:before { content:"[::"; }
+ * a.definition:after { content:"]"; }
+ * a.link:before { content:"[##"; }
+ * a.link:after { content:"]" }
+ */
+a.definition { border-bottom:dashed 1px; }
+a.alias { text-decoration:none; border-bottom:dashed 1px; }
+a.near { text-decoration: underline; }
+div.journal h1 { font-size: large }
+dd, li { margin-bottom:0.5ex; }
