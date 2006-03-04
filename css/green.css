@@ -1,0 +1,539 @@
+/* Authors: Murray Altheim (2004), Alex Schroeder (2004, 2005, 2006)
+
+   This file is in the public domain.
+
+*/
+
+html, body { /* hue 84 */
+    color:#000;
+    background-color:#def4b5;
+    margin:0;
+    padding:0;
+}
+
+body.gray {
+    background-color:#d5e0c5;
+}
+
+div.content, div.rc, body > form, div.footnotes {
+    margin: 1em;
+}
+
+.XML {
+    vertical-align:top;
+}
+
+br + p.result { display: none; }
+
+body.brown a { color:#550; text-decoration:none; }
+
+a { color:#272; text-decoration:none; font-weight:bold; }
+a:active { color:#f00; }
+a:visited { color:#550; }
+a.near, a.outside, a[class="url number"] {
+    text-decoration:underline;
+    font-weight:bold;
+}
+a.tag:before { content:"\2601\ "; }
+a.tag { text-decoration:none; }
+div.search p.links a { padding-right:2ex; }
+a.number { text-decoration:none; }
+a.alias { text-decoration:none; border-bottom: thin dashed; }
+a.footnote { font-size:50%; vertical-align:super }
+span.bar a { margin-right:1ex; }
+
+p.plink, li.plink {
+    border: 2px solid #c8a8ff;
+    padding: 2px;
+}
+p a.plink, li a.plink {
+    display:none;
+}
+p:hover a.plink, p a:hover.plink,
+li:hover a.plink, li a:hover.plink {
+    text-decoration: none;
+    display: inline;
+    position:absolute;
+    color: #a020f0; /* purple */
+}
+
+body.arrows a.near:before, body.arrows a.outside:before { content:"↗"; }
+body.arrows a.near, body.arrows a.outside { text-decoration:none; }
+
+/* add every specific a here */
+div.header h1 a:hover, h1 a:hover, h2 a:hover, h3 a:hover { color: #fbb; }
+a.definition:hover, a.near:hover, a:hover { color:#f00; }
+
+dl.irc dt { width:20ex; float:left; text-align:right; clear:left; }
+dl.irc dt span.time { float:left; }
+dl.irc dd { margin-left:22ex; }
+
+div.header {
+    background-color : #becc92;
+    margin:                  0;
+    padding:                 0;
+    height: 6em;
+}
+
+div.sidebar {
+    float:       right;
+    width:         20%;
+    padding:  3em 0.5em 1em 0.5em;
+    margin:         0 0 0 1em;
+    font-size: small;
+    border-left: 1px dashed #517005;
+    border-bottom: 1px dashed #517005;
+    text-align:  right;
+    background-color: inherit;
+}
+
+div.sidebar ul, div.sidebar li {
+    display:block;
+    margin:0;
+    padding:0;
+}
+
+div.sidebar a:before {
+    content:"";
+}
+
+h3 {
+    font-weight:bold;
+    font-size:medium;
+    clear:left;
+    color:#fff;
+    background:#84d600;
+    padding:0.3ex;
+}
+
+div.sidebar h2 {
+    font-weight: bold;
+    font-size:   medium;
+    color:       #fff;
+    background:  #84d600;
+    padding:       0.3ex 1ex;
+    margin-left:  -0.4em; /* cancel div padding but leave border intact */
+    margin-right: -0.5em;
+}
+
+div.header span.gotobar {
+    display:block;
+    padding:1ex;
+}
+div.message {
+    position: absolute;
+    top: 1.5em;
+    left:0;
+    right:0;
+    background-color:#fee;
+    color:#f00;
+    border:solid #f00;
+    font-weight:bold;
+    padding:0.1em 0 0.1em 1em;
+    z-index: 5;
+}
+div.message p {
+    display:inline;
+}
+div.header h1 {
+    position:   absolute;
+    top: 1.5em;
+    left:0;
+    right:0;
+    background-color:#517005;
+    font-family: "Tahoma", "Arial", "Helvetica", sans-serif;
+    font-size:xx-large;
+    border-bottom:2px dotted #87a036;
+    margin-top: 0;
+    padding: 0.125em 0.5em;
+}
+
+div.header h1 a {
+    text-decoration:none; 
+    color : #ffffff ;
+}
+
+img.logo { 
+    position:absolute;
+    top:1ex;
+    right:1ex;
+    border:none;
+    z-index:10;
+}
+
+.right {
+    float:right;
+}
+
+.left {
+    float:left;
+}
+
+a.small img {
+    max-width:300px;
+}
+
+h1 {
+    font-weight:bold;
+    font-size:larger;
+    clear:left;
+    color:#fff;
+    background:#69aa00;
+    padding:0.7ex;
+    text-decoration:none;
+}
+
+span.specialdays { 
+    margin-left : 1em ;
+    color : #4c6b1b ;
+    font-style : italic ;
+}
+
+h2 {
+    font-weight:bold;
+    font-size:larger;
+    color:#fff;
+    background:#69aa00;
+    padding:0.7ex;
+}
+h2 a, div.journal h1 a {
+    text-decoration:none; color:#fff;
+}
+h3 {
+    font-weight:bold; font-size:medium; clear:left;
+    color:#fff; background:#84d600; padding:0.7ex;
+}
+h3 a, div.journal h2 a {
+    text-decoration:none; color:#fff;
+}
+
+span.permanentanchor, a.definition {
+    text-decoration:none; color:#000;
+    border-bottom:thin dashed;
+}
+
+p > a.definition, p > span.permanentanchor {
+    font-weight:bold; font-size:larger;
+    color:#fff; background:#84d600; padding:0.7ex;
+    text-decoration:none; display:block; margin-bottom:1ex;
+    border-bottom:none;
+}
+
+div.footnotes hr {
+    border:none;
+    color:black;
+    background-color:#000;
+    height:1px; 
+    margin-top:2ex;
+}
+
+div.footnotes hr + p {
+    font-weight:bold;
+}
+
+div.footer {
+    background-color:#becc92;
+    border-bottom:solid;
+    clear:    both;
+    margin:  3em 0 0 0;
+    padding:  1ex;
+    border-top:2px solid;
+    color:black;
+}
+
+div.footer hr {
+    display:none;
+}
+
+div.rc { margin-top:4ex; }
+div.rc hr { display:none; }
+
+div.old { background-color:#ffd; }
+div.new { background-color:#dfd; }
+div.diff {
+    padding-left:2ex;
+    padding-right:2ex;
+    border-style:dashed;
+    width: 66%;
+    margin:1em 2em;
+}
+div.diff + hr {
+    display: none;
+}
+div.refer {
+    padding-left:5%;
+    padding-right:5%;
+}
+div.refer hr {
+    display: none;
+}
+div.rss { background-color:#ce9; }
+body.gray div.rss {
+    background-color:#dec;
+}
+div.sister {
+    float:left;
+    margin-right:1ex;
+    padding-right:1ex;
+    border-right:1px dashed;
+}
+div.sister p { padding:1ex; margin:0; }
+div.sister hr { display:none; }
+div.near { padding:1ex; margin:0; }
+div.near p { margin: 0; }
+div.footer + hr { display:none; }
+
+div.journal hr { display:none; }
+div.journal h1, div.journal h2, div.journal h3, div.journal h4 {
+    font-size:medium;
+    border:0;
+}
+
+span.description { font-weight:bold; }
+span.new { display:inline; font-weight:bold; }
+
+table.user { border-collapse:collapse; border:thin dotted; padding:1ex;
+    margin-bottom:1ex; width:inherit; margin:0 5%; }
+table.user tr td { padding: 0.5ex 1em; border: thin dotted; text-align:left; }
+
+dt { font-weight:bold; }
+dd, li {
+    margin-bottom: 0.5ex;
+    margin-left: 2em;
+}
+dl, ol, ul { margin-left:0em; }
+
+textarea#text { width:75%; height:70%; }
+textarea#summary { width:75%; height:10%; }
+
+img { border:0; }
+pre, img.upload {
+    border: #777 1px solid; padding: 0.5em;
+    margin-left: 1em; margin-right: 2em;
+    white-space: pre;
+    background-color: #fff; color: black;
+    overflow: hidden;
+}
+a.smiley img.upload {
+    border:none;
+    margin:0;
+    padding:0;
+    background-color:inherit;
+}
+img.portrait {
+    float:left; clear:left;
+    background-color:#fff;
+    border:#999 1px solid;
+    padding:10px;
+    margin:10px;
+}
+div.portrait {
+    float:left; clear:left;
+    font-size:xx-small;
+    padding-left:10px;
+}
+div.portrait img.portrait {
+    float:none;
+    margin:10px 10px 0 0;
+}
+div.portrait a {
+    text-decoration:none;
+    color:#999;
+}
+div.color {
+    clear: left;
+    min-height:105px;
+    margin:0;
+    padding:0;
+}
+div.one {
+    background-color: #efb;
+}
+hr {
+    display:block;
+    clear: left;
+}
+
+div.month {
+    float:left;
+    margin:3ex;
+    height:15ex;
+}
+div.month pre {
+    background-color:inherit;
+    border:none;
+    padding:0;
+    margin:0;
+}
+div.month a.edit { 
+    font-weight:normal;
+    color:#000;
+}
+
+rss {
+    color:#000;
+    margin:0;
+    padding:0;
+    background-color:#def4b5;
+}
+docs {
+    position: absolute;
+    top:0;
+    left:0;
+    right:0;
+    font-size: xx-large;
+    height: 1.5em;
+    color: #becc92; /* invisible */
+    background-color: #becc92;
+}
+
+channel * {
+    display: block;
+}
+
+/* if IE can't parse this, no problem */
+channel > title {
+    font-family: "Tahoma", "Arial", "Helvetica", sans-serif;
+}
+    
+title {
+    background-color:#517005;
+    font-size:xx-large;
+    font-weight:bold;
+    margin-top: 1.5em;
+    padding: 0.125em 0.5em;
+    border-bottom:2px dotted #87a036;
+    color:#fff;
+}
+item title {
+    background-color:#69aa00;
+    font-size: medium;
+    margin: 0 0 0 1em;
+    padding:0.7ex 0.5em;
+}
+
+copyright {
+    font-size: smaller;
+    margin: 1em 4em;
+}
+channel > link:before {
+    font-size: x-large;
+    display: block;
+    margin: 1em;
+    padding: 0.5em;
+    content: "This is an RSS feed, designed to be read in a feed reader.";
+    color: red;
+    border: 1px solid red;
+}
+link, license {
+    font-size: smaller;
+    margin: 1em 2em;
+}
+username, description, generator, interwiki { margin: 1em; }
+username:before { content: "Last edited by "; }
+username:after { content: "."; }
+generator:before { content: "Feed generated by "; }
+generator:after { content: "."; }
+channel description {
+        font-weight: bold;
+}
+item description {
+    font-style: italic;
+    font-weight: normal;
+    margin: 1em;
+}
+language,
+pubDate, lastBuildDate, ttl, guid, category, comments,
+image title, image link,
+status, version, diff, history, importance {
+        display: none;
+}
+
+@media print {
+    div.header span.gotobar { display:none; }
+    span.specialdays { display:none; }
+    div.refer { display:none; }
+    div.footer { display:none; }
+    div.near { display:none; }
+    div.sister { display:none; }
+    div.languages { display:none; }
+    div.message { display:none; }
+    img.logo { display:none; }
+    /* portraits */
+    div.portrait {
+	margin:0;
+	padding:0;
+	font-size:inherit;
+	float:none;
+	display:inline;
+    }
+    div.portrait + * { display:inline; }
+    div.portrait p { margin:0; padding:0; display:inline; }
+    div.portrait a.newauthor, div.portrait br { display:none; }
+    div.portrait a.local:after { content:": "; }
+    div.portrait a.local { color:inherit; }
+    div.color {
+	min-height:0;
+	background: inherit;
+    }
+}
+
+div.languages {
+    border-top:1px solid;
+    clear:both;
+}
+div.languages form {
+    margin: 1em 1ex 3em 1ex;
+}
+
+span[lang=en], .en { background-color:#ddf; }
+span[lang=fr], .fr { background-color:#fdd; }
+span[lang=de], .de { background-color:#ffd; }
+span[lang=it], .it { background-color:#dfd; }
+span[lang=pt], .pt { background-color:#bfb; }
+span[lang=es], .es { background-color:#fec; }
+span[lang=sv], .sv { background-color:#adf; }
+
+body.simple div.footer p.note { display:none; }
+body.simple div.footer span.gotobar + br { display:none; }
+body.simple div.footer span.gotobar { display:none; }
+body.simple div.sister { display:none; }
+body.simple div.near { display:none; }
+body.simple div.languages { display:none; }
+
+body.explicit a.near[title=MeatBall]:before { content:"MeatBall:"; }
+body.explicit a.near[title=WikiFeatures]:before { content:"WikiFeatures:"; }
+body.explicit a.near[title=CraoWiki]:before { content:"CraoWiki:"; }
+body.explicit a.near[title=InterWiki]:before { content:"InterWiki:"; }
+body.explicit a.near[title=OpenMeatballWiki]:before { content:"OpenMeatballWiki:"; }
+
+body.nolang span[lang] { background-color:inherit; }
+
+body[class~=en] span[lang] { display:none; }
+body[class~=de] span[lang] { display:none; }
+body[class~=fr] span[lang] { display:none; }
+body[class~=it] span[lang] { display:none; }
+body[class~=pt] span[lang] { display:none; }
+body[class~=en] span[lang=en] { display:inline; }
+body[class~=de] span[lang=de] { display:inline; }
+body[class~=fr] span[lang=fr] { display:inline; }
+body[class~=it] span[lang=it] { display:inline; }
+body[class~=pt] span[lang=pt] { display:inline; }
+
+span.debug { display:none; }
+
+table.aside {
+    float: right;
+    width: 20ex;
+    padding: 0;
+    margin: 0 0 0 2ex;
+    border: 1px dashed #666;
+}
+
+.aside ul {
+    padding: 0;
+}
+
+table.aside tr td, table.aside tr th {
+    border: none;
+}
