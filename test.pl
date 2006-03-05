@@ -2152,6 +2152,13 @@ clear_pages();
 
 update_page('bar', 'foo');
 
+# %Test = split('\n',<<'EOT');
+# EOT
+
+# xpath_run_tests();
+
+# exit;
+
 %Test = split('\n',<<'EOT');
 [[image:foo]]
 //a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=foo;upload=1"][text()="?"]
@@ -2159,16 +2166,26 @@ update_page('bar', 'foo');
 //a[@class="image"][@href="http://localhost/test.pl/bar"]/img[@class="upload"][@src="http://localhost/test.pl/download/bar"][@alt="bar"]
 [[image:bar|alternative text]]
 //a[@class="image"][@href="http://localhost/test.pl/bar"]/img[@class="upload"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]
-[[image/left:bar|alternative text]]
-//a[@class="image left"][@href="http://localhost/test.pl/bar"]/img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]
 [[image:bar|alternative text|foo]]
 //a[@class="image"][@href="http://localhost/test.pl/foo"]/img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]
 [[image/left:bar|alternative text|foo]]
 //a[@class="image left"][@href="http://localhost/test.pl/foo"]/img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]
-[[image/left:bar|alternative text|http://www.foo.com/]]
-//a[@class="image left outside"][@href="http://www.foo.com/"]/img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]
+[[image external:http://example.org/wiki?a=1&b=2]]
+//a[@class="image outside"][@href="http://example.org/wiki?a=1&b=2"]/img[@class="upload"][@title=""][@src="http://example.org/wiki?a=1&b=2"][@alt=""]
 [[image/left/small:bar|alternative text]]
 //a[@class="image left small"][@href="http://localhost/test.pl/bar"]/img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]
+[[image external:http://example.org/wiki?a=1&b=2|foo|http://example.org/wiki?a=4&b=3]]
+//a[@class="image outside"][@href="http://example.org/wiki?a=4&b=3"]/img[@class="upload"][@title="foo"][@src="http://example.org/wiki?a=1&b=2"][@alt="foo"]
+[[image/right:bar|alternative text]]
+//a[@class="image right"][@href="http://localhost/test.pl/bar"]/img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]
+[[image/left:bar|alternative text|http://www.foo.com/]]
+//a[@class="image left outside"][@href="http://www.foo.com/"]/img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]
+[[image/left/small:bar|alternative text|http://www.foo.com/|more text|http://www.bar.com/]]
+//a[@class="image left small outside"][@href="http://www.foo.com/"][img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]]/following-sibling::br/following-sibling::span[@class="caption"]/a[@class="image left small outside"][@href="http://www.bar.com/"][text()="more text"]
+[[image/left/small:bar|alternative text|http://www.foo.com/|more text|bar]]
+//a[@class="image left small outside"][@href="http://www.foo.com/"][img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]]/following-sibling::br/following-sibling::span[@class="caption"]/a[@class="image left small"][@href="http://localhost/test.pl/bar"][text()="more text"]
+[[image:http://www.example.com/]]
+//a[@class="image outside"][@href="http://www.example.com/"]/img[@class="upload"][@title="image: http://www.example.com/"][@src="http://www.example.com/"][@alt="image: http://www.example.com/"]
 EOT
 
 xpath_run_tests();
