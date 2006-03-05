@@ -2,6 +2,7 @@
 
 	* modules/image.pl (ImageGetExternalUrl): New.
 	(ImageSupportRule): Use it. Handle caption and reference.
+	Simplified use of "external".
 
 	* modules/search-freetext.pl (process): Use limited set of bytes
 	to recognize words.
