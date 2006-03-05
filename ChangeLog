@@ -1,4 +1,28 @@
+2006-03-05  Alex Schroeder  <alex@gnu.org>
+
+	* modules/image.pl (ImageGetExternalUrl): New.
+	(ImageSupportRule): Use it. Handle caption and reference.
+
+	* modules/search-freetext.pl (process): Use limited set of bytes
+	to recognize words.
+
 2006-03-04  Alex Schroeder  <alex@gnu.org>
+
+	* modules/search-freetext.pl (SearchFreeTextNop): Override
+	SearchResultCount.
+	(SearchFreeTextDB): Don't make the special tokenizer optional. By
+	default Oddmuse will not do stemming, stop lists, etc.
+
+	* wiki.pl (SearchResultCount): New.
+	(DoSearch): Use it.
+
+	* modules/search-freetext.pl (OddMuse::Tokenize): New class for
+	tokenization of tags.
+	(SearchFreeTextDB): New.
+	(SearchFreeTextIndex, SearchFreeTextCloud)
+	(SearchFreeTextTitleAndBody): Use it.
+	(SearchFreeTextGet): Receive database as a parameter instead of a
+	file.
 
 	* test.pl (clear_pages): New image tests.
 
