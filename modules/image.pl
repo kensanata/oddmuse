@@ -1,4 +1,4 @@
-# Copyright (C) 2004  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2005, 2006  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: image.pl,v 1.20 2006/03/03 23:04:47 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: image.pl,v 1.21 2006/03/05 16:19:29 as Exp $</p>';
 
 use vars qw($ImageUrlPath);
 
@@ -28,40 +28,36 @@ push(@MyRules, \&ImageSupportRule);
 
 sub ImageSupportRule {
   my $result = undef;
-  if (m!\G\[\[image((/[a-z]+)*)( external)?:($FreeLinkPattern|$FullUrlPattern)(\|[^]|]+)?(\|($FreeLinkPattern|$FullUrlPattern))?\]\]!gc) {
+  if (m!\G\[\[image((/[a-z]+)*)( external)?:($FreeLinkPattern|$FullUrlPattern)(\|[^]|]+)?(\|($FreeLinkPattern|$FullUrlPattern))?(\|[^]|]+)?(\|($FreeLinkPattern|$FullUrlPattern))?\]\]!gc) {
     my $oldpos = pos;
     my $class = 'image' . $1;
     my $external = $3;
     my $name = $4;
     my $alt = $7 ? substr($7, 1) : $external ? "" : Ts("image: %s", $name);
     my $link = $8 ? substr($8, 1) : '';
+    my $caption = $12 ? substr($12, 1) : '';
+    my $reference = $14;
+#     my $count = 1;
+#     foreach my $s ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) {
+#       warn $count++, ': ', $s;
+#     }
     my $id = FreeToNormal($name);
     $class =~ s!/! !g;
+    my $linkclass = $class;
     # link to the image if no link was given
     if (not $link) {
       if ($external) {
         if ($name =~ /$FullUrlPattern/) {
-          $link = UnquoteHtml($name);
+	  ($link, $linkclass) = ImageGetExternalUrl($name, $linkclass);
         } else {
+	  # not an outside link!
           $link = $ImageUrlPath . '/' . UrlEncode($id);
         }
       } else {
-        $link = UrlEncode($id);
+        ($link, $linkclass) = ImageGetExternalUrl($id, $linkclass);
       }
-    }
-    if ($link =~ /$FullUrlPattern/) {
-      $link = UnquoteHtml($link);
-      $class .= ' outside';
     } else {
-      if (substr($link, 0, 1) eq '/') {
-        # do nothing -- relative URL on the same server
-      } elsif ($UsePathInfo and !$Monolithic) {
-        $link = $ScriptName . '/' . $link;
-      } elsif ($Monolithic) {
-        $link = '#' . $link;
-      } else {
-        $link = $ScriptName . '?' . $link;
-      }
+      ($link, $linkclass) = ImageGetExternalUrl($link, $linkclass);
     }
     my $src;
     if ($external) {
@@ -74,10 +70,38 @@ sub ImageSupportRule {
       $src = ImageGetInternalUrl($id);
     }
     $result = $q->img({-src=>$src, -alt=>$alt, -title=>$alt, -class=>'upload'});
-    $result = $q->a({-href=>$link, -class=>$class}, $result);
+    $result = $q->a({-href=>$link, -class=>$linkclass}, $result);
+    if ($caption) {
+      if ($reference) {
+	my $refclass = $class;
+	($reference, $refclass) = ImageGetExternalUrl($reference, $refclass);
+	$caption = $q->a({-href=>$reference, -class=>$refclass}, $caption);
+      }
+      $result .= $q->br() . $q->span({-class=>'caption'}, $caption);
+      $result = $q->div({-class=>$class}, $result);
+    }
     pos = $oldpos;
   }
   return $result;
+}
+
+sub ImageGetExternalUrl {
+  my ($link, $class) = @_;
+  if ($link =~ /$FullUrlPattern/) {
+    $link = UnquoteHtml($link);
+    $class .= ' outside';
+  } else {
+    if (substr($link, 0, 1) eq '/') {
+      # do nothing -- relative URL on the same server
+    } elsif ($UsePathInfo and !$Monolithic) {
+      $link = $ScriptName . '/' . $link;
+    } elsif ($Monolithic) {
+      $link = '#' . $link;
+    } else {
+      $link = $ScriptName . '?' . $link;
+    }
+  }
+  return ($link, $class);
 }
 
 # split off to support overriding from Static Extension
