@@ -218,16 +218,17 @@ sub xpath_run_tests {
 
 sub test_match {
   my ($input, @tests) = @_;
+  my $output = apply_rules($input);
   foreach my $str (@tests) {
     print '.';
-    my $output = apply_rules($str);
     if ($output =~ /$str/) {
       $passed++;
     } else {
       $failed++;
       $printpage = 1;
-      print "\nNo matches for $str\n";
-      print "$input\n" if length($input) < 200;
+      print "\n\n---- input:\n", $input,
+	    "\n---- output:\n", $output,
+            "\n---- instead of:\n", $str, "\n----\n";
     }
   }
 }
@@ -2023,24 +2024,40 @@ ____ and __
 i think //the paragraph should be the limit\n\nright?//
 i think //the paragraph should be the limit<p>right?//</p>
 'hi'
-‘hi’
+&#x2018;hi&#x2019;
 say 'hi' to mom
-say ‘hi’ to mom
+say &#x2018;hi&#x2019; to mom
 say 'hi!' to mom
-say ‘hi!’ to mom
+say &#x2018;hi!&#x2019; to mom
 i'm tired
-i’m tired
+i&#x2019;m tired
 "hi"
-“hi”
+&#x201c;hi&#x201d;
 say "hi" to mom
-say “hi” to mom
+say &#x201c;hi&#x201d; to mom
 say "hi!" to mom
-say “hi!” to mom
+say &#x201c;hi!&#x201d; to mom
 i"m tired
 i"m tired
 EOT
 
 run_tests();
+
+$MarkupQuotes = 0;
+test_match(q{"Get lost!", they say, and I answer: "I'm not 'lost'!"},
+	  q{"Get lost!", they say, and I answer: "I'm not 'lost'!"});
+$MarkupQuotes = 1;
+test_match(q{"Get lost!", they say, and I answer: "I'm not 'lost'!"},
+	  q{&#x201c;Get lost!&#x201d;, they say, and I answer: &#x201c;I&#x2019;m not &#x2018;lost&#x2019;!&#x201d;});
+$MarkupQuotes = 2;
+test_match(q{"Get lost!", they say, and I answer: "I'm not 'lost'!"},
+	  q{&#x00ab;Get lost!&#x00bb;, they say, and I answer: &#x00ab;I&#x2019;m not &#x2039;lost&#x203a;!&#x00bb;});
+$MarkupQuotes = 3;
+test_match(q{"Get lost!", they say, and I answer: "I'm not 'lost'!"},
+	  q{&#x00bb;Get lost!&#x00ab;, they say, and I answer: &#x00bb;I&#x2019;m not &#x203a;lost&#x2039;!&#x00ab;});
+$MarkupQuotes = 4;
+test_match(q{"Get lost!", they say, and I answer: "I'm not 'lost'!"},
+	  q{&#x201e;Get lost!&#x201c;, they say, and I answer: &#x201e;I&#x2019;m not &#x201a;lost&#x2018;!&#x201c;});
 
 remove_rule(\&UsemodRule);
 remove_rule(\&MarkupRule);
