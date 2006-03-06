@@ -16,11 +16,17 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: markup.pl,v 1.27 2006/03/06 00:27:08 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: markup.pl,v 1.28 2006/03/06 01:53:29 as Exp $</p>';
 
-use vars qw(%MarkupPairs %MarkupSingles %MarkupLines $MarkupQuotes);
+use vars qw(%MarkupPairs %MarkupSingles %MarkupLines $MarkupQuotes $MarkupQuoteTable);
 
 $MarkupQuotes = 1;
+$MarkupQuoteTable = [["'", "'", '"', '"'], # 0
+		     ['&#x2018;', '&#x2019;', '&#x201d;', '&#x201c;', '&#x2019;'], # 1
+		     ['&#x2039;', '&#x203a;', '&#x00bb;', '&#x00ab;', '&#x2019;'], # 2
+		     ['&#x203a;', '&#x2039;', '&#x00ab;', '&#x00bb;', '&#x2019;'], # 3
+		     ['&#x201a;', '&#x2018;', '&#x201c;', '&#x201e;', '&#x2019;'], # 4
+		    ];
 
 push(@MyRules, \&MarkupRule);
 # The ---- rule in usemod.pl conflicts with the --- rule
@@ -139,18 +145,19 @@ sub MarkupRule {
     return $1; # fix /usr/share/lib/! example
   } elsif ($MarkupQuotes and (m/\G"(?=[[:space:][:punct:]])/cg
 			      or m/\G"\z/cg)) {
-    return '&#x201d;';
+    return $MarkupQuoteTable->[$MarkupQuotes]->[2];
   } elsif ($MarkupQuotes and (m/\G(?<=[[:space:][:punct:]])"/cg
 			      or pos == 0 and m/\G"/cg)) {
-    return '&#x201c;';
+    return $MarkupQuoteTable->[$MarkupQuotes]->[3];
   } elsif ($MarkupQuotes and pos == 0 and m/\G'/cg) {
-    return '&#x2018;';
-  } elsif ($MarkupQuotes and (m/\G(?<![[:space:][:punct:]])'/cg
-			      or m/\G'(?=[[:space:][:punct:]])/cg
+    return $MarkupQuoteTable->[$MarkupQuotes]->[0];
+  } elsif ($MarkupQuotes and (m/\G'(?=[[:space:][:punct:]])/cg
 			      or m/\G'\z/cg)) {
-    return '&#x2019;';
+    return $MarkupQuoteTable->[$MarkupQuotes]->[1];
+  } elsif ($MarkupQuotes and m/\G(?<![[:space:][:punct:]])'/cg) {
+    return $MarkupQuoteTable->[$MarkupQuotes]->[4];
   } elsif ($MarkupQuotes and m/\G(?<=[[:space:][:punct:]])'/cg) {
-    return '&#x2018;';
+    return $MarkupQuoteTable->[$MarkupQuotes]->[0];
   }
   return undef;
 }
