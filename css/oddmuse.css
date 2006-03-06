@@ -29,6 +29,8 @@ img {
 }
 div.image span.caption {
     margin: 0 1em;
+    text-align: center;
+    display: block;
 }
 li img, img.smiley {
     border:none;
