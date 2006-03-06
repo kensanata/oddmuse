@@ -1,3 +1,13 @@
+2006-03-06  Alex Schroeder  <alex@gnu.org>
+
+	* modules/image.pl (ImageSupportRule): Handle spaces in external
+	names.
+
+	* modules/markup.pl (MarkupRule): Handle quotes.
+	($MarkupQuotes): New.
+	($MarkupQuoteTable): New.
+	(MarkupRule): Use them.
+
 2006-03-05  Alex Schroeder  <alex@gnu.org>
 
 	* modules/image.pl (ImageGetExternalUrl): New.
