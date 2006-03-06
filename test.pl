@@ -2022,6 +2022,22 @@ ____ and __
 //// and //
 i think //the paragraph should be the limit\n\nright?//
 i think //the paragraph should be the limit<p>right?//</p>
+'hi'
+‘hi’
+say 'hi' to mom
+say ‘hi’ to mom
+say 'hi!' to mom
+say ‘hi!’ to mom
+i'm tired
+i’m tired
+"hi"
+“hi”
+say "hi" to mom
+say “hi” to mom
+say "hi!" to mom
+say “hi!” to mom
+i"m tired
+i"m tired
 EOT
 
 run_tests();
