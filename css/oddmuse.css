@@ -45,6 +45,8 @@ div.header img, div.footer img { border:0; padding:0; margin:0; }
 div.left .left, div.right .right {
     float:none;
 }
+.center { text-align:center; }
+
 span.author {
     color: #501;
 }
