@@ -27,9 +27,6 @@ img {
     background-color: #e6e6e6;
     color: black;
 }
-div.image {
-    text-align: center;
-}
 div.image span.caption {
     margin: 0 1em;
 }
