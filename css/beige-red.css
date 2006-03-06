@@ -148,7 +148,12 @@ img.xml {
     border:none;
     padding:1px;
 }
-
+a.small img {
+    max-width:300px;
+}
+a.large img {
+    max-width:600px;
+}
 div.sister {
     margin-right:1ex;
     background-color:inherit;
@@ -361,6 +366,10 @@ div.content li a.image img, div.journal li a.image img {
 
 .left { float:left; }
 .right { float:right; }
+div.left .left, div.right .right {
+    float:none;
+}
+.center { text-align:center; }
 table.aside {
     float:right;
     width:40%;
