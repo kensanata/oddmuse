@@ -16,11 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: markup.pl,v 1.25 2006/03/06 00:14:22 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: markup.pl,v 1.26 2006/03/06 00:26:50 as Exp $</p>';
 
 use vars qw(%MarkupPairs %MarkupSingles %MarkupLines $MarkupQuotes);
 
-$MarkupQuotes = $HttpCharset eq 'UTF-8';
+$MarkupQuotes = 1;
 
 push(@MyRules, \&MarkupRule);
 # The ---- rule in usemod.pl conflicts with the --- rule
@@ -139,18 +139,18 @@ sub MarkupRule {
     return $1; # fix /usr/share/lib/! example
   } elsif ($MarkupQuotes and (m/\G"(?=[[:space:][:punct:]])/cg
 			      or m/\G"\z/cg)) {
-    return "”";
+    return '&#x201d;';
   } elsif ($MarkupQuotes and (m/\G(?<=[[:space:][:punct:]])"/cg
 			      or pos == 0 and m/\G"/cg)) {
-    return "“";
+    return '&#x201c;';
   } elsif ($MarkupQuotes and pos == 0 and m/\G'/cg) {
-    return "‘";
+    return '&#x2018;';
   } elsif ($MarkupQuotes and (m/\G(?<![[:space:][:punct:]])'/cg
 			      or m/\G'(?=[[:space:][:punct:]])/cg
 			      or m/\G'\z/cg)) {
-    return "’";
+    return '&#x2019;';
   } elsif ($MarkupQuotes and m/\G(?<=[[:space:][:punct:]])'/cg) {
-    return "‘";
+    return '&#x2018;';
   }
   return undef;
 }
