@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: image.pl,v 1.23 2006/03/06 14:19:56 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: image.pl,v 1.24 2006/03/06 15:36:53 as Exp $</p>';
 
 use vars qw($ImageUrlPath);
 
@@ -28,12 +28,15 @@ push(@MyRules, \&ImageSupportRule);
 
 sub ImageSupportRule {
   my $result = undef;
-  if (m!\G\[\[image((/[a-z]+)*)( external)?:($FreeLinkPattern|$FullUrlPattern)(\|[^]|]+)?(\|($FreeLinkPattern|$FullUrlPattern))?(\|[^]|]+)?(\|($FreeLinkPattern|$FullUrlPattern))?\]\]!gc) {
+  if (m!\G\[\[image((/[a-z]+)*)( external)?:($FreeLinkPattern|$FullUrlPattern)(\|[^]|]+)?(\|($FreeLinkPattern|$FullUrlPattern|))?(\|[^]|]+)?(\|($FreeLinkPattern|$FullUrlPattern))?\]\]!gc) {
     my $oldpos = pos;
     my $class = 'image' . $1;
     my $external = $3;
     my $name = $4;
-    my $alt = $7 ? substr($7, 1) : $external ? "" : Ts("image: %s", $name);
+    # Don't generate an alt text if none was specified, since the rule
+    # forces you to pick an alt text if you're going to provide a
+    # link target.
+    my $alt = $7 ? substr($7, 1) : '';
     my $link = $8 ? substr($8, 1) : '';
     my $caption = $12 ? substr($12, 1) : '';
     my $reference = $14;
