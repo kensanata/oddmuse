@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: image.pl,v 1.22 2006/03/05 16:47:44 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: image.pl,v 1.23 2006/03/06 14:19:56 as Exp $</p>';
 
 use vars qw($ImageUrlPath);
 
@@ -51,7 +51,7 @@ sub ImageSupportRule {
 	  ($link, $linkclass) = ImageGetExternalUrl($name, $linkclass);
         } else {
 	  # not an outside link!
-          $link = $ImageUrlPath . '/' . UrlEncode($id);
+          $link = $ImageUrlPath . '/' . UrlEncode($name);
         }
       } else {
         ($link, $linkclass) = ImageGetExternalUrl($id, $linkclass);
@@ -63,7 +63,7 @@ sub ImageSupportRule {
     if ($name =~ /$FullUrlPattern/) {
       $src = UnquoteHtml($name);
     } elsif ($external) {
-      $src = $ImageUrlPath . '/' . UrlEncode($id);
+      $src = $ImageUrlPath . '/' . UrlEncode($name);
     } else {
       $src = ImageGetInternalUrl($id);
     }
