@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: markup.pl,v 1.28 2006/03/06 01:53:29 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: markup.pl,v 1.29 2006/03/11 18:10:43 as Exp $</p>';
 
 use vars qw(%MarkupPairs %MarkupSingles %MarkupLines $MarkupQuotes $MarkupQuoteTable);
 
@@ -143,11 +143,13 @@ sub MarkupRule {
     return '~/'; # fix ~/elisp/ example
   } elsif ($MarkupPairs{'/'} and m|\G(/[-A-Za-z0-9\x80-\xff/]+/$words/)|gc) {
     return $1; # fix /usr/share/lib/! example
+  } elsif ($MarkupQuotes and (m/\G(?<=[[:space:]])"/cg
+			      or pos == 0 and m/\G"/cg)) {
+    return $MarkupQuoteTable->[$MarkupQuotes]->[3];
   } elsif ($MarkupQuotes and (m/\G"(?=[[:space:][:punct:]])/cg
 			      or m/\G"\z/cg)) {
     return $MarkupQuoteTable->[$MarkupQuotes]->[2];
-  } elsif ($MarkupQuotes and (m/\G(?<=[[:space:][:punct:]])"/cg
-			      or pos == 0 and m/\G"/cg)) {
+  } elsif ($MarkupQuotes and (m/\G(?<=[[:punct:]])"/cg)) {
     return $MarkupQuoteTable->[$MarkupQuotes]->[3];
   } elsif ($MarkupQuotes and pos == 0 and m/\G'/cg) {
     return $MarkupQuoteTable->[$MarkupQuotes]->[0];
