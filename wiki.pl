@@ -268,7 +268,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.645 2006/03/02 00:52:02 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.646 2006/03/11 20:04:41 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3174,11 +3174,11 @@ sub DoSearch {
     @results = SearchTitleAndBody($string, \&PrintPage);
   }
   @results = SearchNearPages($string, @results) if GetParam('near', 1); # adds more
-  if (not $raw) {
-    print $q->p({-class=>'result'}, Ts('%s pages found.', ($#results + 1))), $q->end_div();
-    PrintFooter();
-  }
+  print SearchResultCount($#results + 1), $q->end_div() unless $raw;
+  PrintFooter() unless $raw;
 }
+
+sub SearchResultCount { $q->p({-class=>'result'}, Ts('%s pages found.', (shift))); }
 
 sub PageIsUploadedFile {
   my $id = shift;
