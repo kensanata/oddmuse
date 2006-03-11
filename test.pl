@@ -2039,6 +2039,8 @@ say "hi!" to mom
 say &#x201c;hi!&#x201d; to mom
 i"m tired
 i"m tired
+He said, "[w]hen I voice complaints..."
+He said, &#x201c;[w]hen I voice complaints&#x2026;&#x201d;
 EOT
 
 run_tests();
