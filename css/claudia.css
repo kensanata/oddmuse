@@ -149,17 +149,21 @@ div.header h1 {
 
 @media print
 {
-    body { font-size:12pt; color:black; }
+    body {
+	font-size:10pt;
+	color:black;
+	margin:0;
+	border:none;
+    }
     pre, code, tt { font-size:8pt; font-family: Courrier, monospace;} 
     h1, h2, h3, h4, h5 { font-size:14pt; color:black; }
-    h1 { font-size: 18pt; padding: 0; }
+    h1 { font-size: 16pt; padding: 0; }
     h1, h2 { border:none; }
     h1 a { color:black; }
     a { text-decoration:none; color:black; }
     div.header span.gotobar { display:none; }
     span.specialdays { display:none; }
-    div.refer { display:none; }
-    div.footer { display:none; }
-    div.near { display:none; }
-    div.sister { display:none; }
+    div.refer, div.footer, div.near, div.sister, div.sidebar {
+	display:none;
+    }
 }
