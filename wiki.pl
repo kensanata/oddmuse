@@ -268,7 +268,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.646 2006/03/11 20:04:41 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.647 2006/03/14 21:56:16 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -748,9 +748,10 @@ sub GetRaw {
 sub PrintJournal {
   return if $CollectingJournal; # avoid infinite loops
   local $CollectingJournal = 1;
-  my ($num, $regexp, $mode) = @_;
+  my ($num, $regexp, $mode, $offset) = @_;
   $regexp = '^\d\d\d\d-\d\d-\d\d' unless $regexp;
   $num = 10 unless $num;
+  $offset = 0 unless $offset;
   my @pages = (grep(/$regexp/, AllPagesList()));
   if (defined &JournalSort) {
     @pages = sort JournalSort @pages;
@@ -760,12 +761,14 @@ sub PrintJournal {
   if ($mode eq 'reverse') {
     @pages = reverse @pages;
   }
-  @pages = @pages[0 .. $num - 1] if $#pages >= $num;
+  return unless $pages[$offset]; # not enough pages
+  my $max = ($#pages < $offset + $num) ? $#pages : ($offset + $num);
+  @pages = @pages[$offset .. $max - 1];
   if (@pages) {
     # Now save information required for saving the cache of the current page.
     local %Page;
     local $OpenPageName='';
-    print $q->start_div({-class=>'journal'});
+    print $q->start_div({-class=>'journal'}) . $q->comment("$FullUrl $num $regexp $mode $offset");
     PrintAllPages(1, 1, @pages);
     print $q->end_div();
   }
