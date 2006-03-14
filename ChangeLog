@@ -1,5 +1,7 @@
 2006-03-14  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (PrintJournal): Handle offset parameter and comment.
+
 	* modules/aggregate.pl (DoAggregate): Add frontpage title to
 	channel title. Add page id to links.
 
