@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: aggregate.pl,v 1.4 2005/12/20 00:51:33 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: aggregate.pl,v 1.5 2006/03/14 21:53:51 as Exp $</p>';
 
 push(@MyRules, \&AggregateRule);
 
@@ -56,6 +56,8 @@ $Action{aggregate} = \&DoAggregate;
 sub DoAggregate {
   print GetHttpHeader('application/xml');
   my $frontpage = GetParam('id', $HomePage);
+  my $title = $frontpage;
+  $title =~ s/_/ /g;
   my $source = GetPageContent($frontpage);
   my $url = QuoteHtml($ScriptName);
   my $diffPrefix = $url . QuoteHtml("?action=browse;diff=1;id=");
@@ -73,8 +75,8 @@ sub DoAggregate {
 <channel>
 <docs>http://blogs.law.harvard.edu/tech/rss</docs>
 };
-  $rss .= "<title>" . QuoteHtml($SiteName) . "</title>\n";
-  $rss .= "<link>" . $url . ($UsePathInfo ? "/" : "?") . UrlEncode($RCName) . "</link>\n";
+  $rss .= "<title>" . QuoteHtml("$SiteName: $title") . "</title>\n";
+  $rss .= "<link>" . $url . ($UsePathInfo ? "/" : "?") . UrlEncode($frontpage) . "</link>\n";
   $rss .= "<description>" . QuoteHtml($SiteDescription) . "</description>\n";
   $rss .= "<pubDate>" . $date. "</pubDate>\n";
   $rss .= "<lastBuildDate>" . $date . "</lastBuildDate>\n";
@@ -127,19 +129,19 @@ sub DoAggregate {
       $rss .= "\n<item>\n";
       $rss .= "<title>" . QuoteHtml($name) . "</title>\n";
       $rss .= "<link>" . $url . (GetParam("all", 0)
-        ? "?" . GetPageParameters("browse", $pagename, $revision, $cluster)
-	: ($UsePathInfo ? "/" : "?") . UrlEncode($pagename)) . "</link>\n";
+        ? "?" . GetPageParameters("browse", $id, $revision, $cluster)
+	: ($UsePathInfo ? "/" : "?") . UrlEncode($id)) . "</link>\n";
       $rss .= "<description>" . QuoteHtml($description) . "</description>\n";
       $rss .= "<pubDate>" . $date . "</pubDate>\n";
       $rss .= "<comments>" . $url . ($UsePathInfo ? "/" : "?")
-	. $CommentsPrefix . UrlEncode($pagename) . "</comments>\n"
-	  if $CommentsPrefix and $pagename !~ /^$CommentsPrefix/;
+	. $CommentsPrefix . UrlEncode($id) . "</comments>\n"
+	  if $CommentsPrefix and $id !~ /^$CommentsPrefix/;
       $rss .= "<wiki:username>" . $username . "</wiki:username>\n";
       $rss .= "<wiki:status>" . (1 == $revision ? "new" : "updated") . "</wiki:status>\n";
       $rss .= "<wiki:importance>" . ($minor ? "minor" : "major") . "</wiki:importance>\n";
       $rss .= "<wiki:version>" . $revision . "</wiki:version>\n";
-      $rss .= "<wiki:history>" . $historyPrefix . UrlEncode($pagename) . "</wiki:history>\n";
-      $rss .= "<wiki:diff>" . $diffPrefix . UrlEncode($pagename) . "</wiki:diff>\n"
+      $rss .= "<wiki:history>" . $historyPrefix . UrlEncode($id) . "</wiki:history>\n";
+      $rss .= "<wiki:diff>" . $diffPrefix . UrlEncode($id) . "</wiki:diff>\n"
 	if $UseDiff and GetParam("diffrclink", 1);
       $rss .= "</item>\n";
     }
