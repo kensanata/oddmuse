@@ -1,0 +1,56 @@
+#!/bin/bash
+# wikiimg --- Get and put SVG and PNG files to Oddmuse wikis
+# 
+# Copyright (C)  2006  Alex Schroeder <alex@emacswiki.org>
+# 
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+if [ -z "$2" ]; then
+    echo Usage:
+    echo
+    echo image get PageName -- gets PageName from the wiki and saves
+    echo it as PageName.svg in the current directory.
+    echo
+    echo image put PageName -- saves PageName.svg as PageNameSource
+    echo and PageName.png as PageNameImage. You are responsible for
+    echo exporting the SVG file as PNG when you are done.
+    exit
+fi
+
+WIKI=http://www.communitywiki.org/en
+USER=`id -un`
+WIKIUSER=${WIKIUSER:-USER}
+
+case $1 in
+    get)
+	F=`basename "$2" Image`.svg
+	wget -O $F $WIKI/$2
+	;;
+    put)
+	for f in "$2.svg" "$2.png"; do 
+	    if [ ! -f "$f" ]; then
+		echo There is no file called $f
+		exit
+	    fi
+	done
+	wikiupload -u "$WIKIUSER" "$2.png" "$WIKI/${2}Image"
+	wikiupload -t "image/svg+xml" -u "$WIKIUSER" \
+	    "$2.svg" "$WIKI/${2}Source"
+	;;
+    *)
+	echo You must use either get or put as first parameter.
+	exit
+esac
