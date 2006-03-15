@@ -37,18 +37,24 @@ WIKIUSER=${WIKIUSER:-USER}
 case $1 in
     get)
 	F=`basename "$2" Image`.svg
-	wget -O $F $WIKI/$2
+	# make sure both are accepted
+	IMG=`basename "$2" Image`Image
+	wget -O $F $WIKI/$IMG
 	;;
     put)
-	for f in "$2.svg" "$2.png"; do 
+	# make sure all are accepted
+	PAGE=$2
+	PAGE=`basename $PAGE .svg`
+	PAGE=`basename $PAGE .png`
+	for f in "$PAGE.svg" "$PAGE.png"; do 
 	    if [ ! -f "$f" ]; then
 		echo There is no file called $f
 		exit
 	    fi
 	done
-	wikiupload -u "$WIKIUSER" "$2.png" "$WIKI/${2}Image"
+	wikiupload -u "$WIKIUSER" "$PAGE.png" "$WIKI/${PAGE}Image"
 	wikiupload -t "image/svg+xml" -u "$WIKIUSER" \
-	    "$2.svg" "$WIKI/${2}Source"
+	    "$PAGE.svg" "$WIKI/${PAGE}Source"
 	;;
     *)
 	echo You must use either get or put as first parameter.
