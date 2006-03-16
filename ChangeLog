@@ -1,3 +1,7 @@
+2006-03-17  Alex Schroeder  <alex@gnu.org>
+
+	* modules/localnames.pl (LocalNamesNewSave): Bugfix.
+
 2006-03-16  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetRcRss): Use title parameter to title the RSS feed if
