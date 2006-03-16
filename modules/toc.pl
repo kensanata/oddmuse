@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.29 2005/12/28 01:51:28 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.30 2006/03/16 19:22:53 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
@@ -51,8 +51,8 @@ sub TocRule {
       . ($PortraitSupportColorDiv ? '</div>' : '');
     $html .= TocHeadings() if not $TocShown and $TocAutomatic;
     $TocShown = 1 if $TocAutomatic;
-    $html .= AddHtmlEnvironment('h' . $depth)
-      . $q->a({-id=>$key . ++$TocCounter{$key}}, '');
+    my $TocKey = $key . ++$TocCounter{$key};
+    $html .= AddHtmlEnvironment('h' . $depth, qq{id="$TocKey"});
     $PortraitSupportColorDiv = 0; # after the HTML has been determined.
     $PortraitSupportColor = 0;
     return $html;
@@ -76,9 +76,8 @@ sub TocRule {
       . ($PortraitSupportColorDiv ? '</div>' : '');
     $html .= TocHeadings() if not $TocShown and $TocAutomatic;
     $TocShown = 1 if $TocAutomatic;
-    $html .= "<h$depth>"
-      . $q->a({-id=>$key . ++$TocCounter{$key}}, $text)
-      . "</h$depth>"
+    my $TocKey = $key . ++$TocCounter{$key};
+    $html .= qq{<h$depth id="$TocKey">$text</h$depth>}
       . AddHtmlEnvironment('p');
     $PortraitSupportColorDiv = 0; # after the HTML has been determined.
     $PortraitSupportColor = 0;
