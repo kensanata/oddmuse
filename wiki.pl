@@ -268,7 +268,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.647 2006/03/14 21:56:16 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.648 2006/03/16 19:31:47 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1762,7 +1762,7 @@ sub GetRcRss {
 <channel>
 <docs>http://blogs.law.harvard.edu/tech/rss</docs>
 };
-  $rss .= "<title>" . QuoteHtml($SiteName) . "</title>\n";
+  $rss .= "<title>" .  QuoteHtml($SiteName) . ': ' . GetParam('title', QuoteHtml($RCName)) . "</title>\n";
   $rss .= "<link>" . $url . ($UsePathInfo ? "/" : "?") . UrlEncode($RCName) . "</link>\n";
   $rss .= "<description>" . QuoteHtml($SiteDescription) . "</description>\n";
   $rss .= "<pubDate>" . $date. "</pubDate>\n";
