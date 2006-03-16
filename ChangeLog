@@ -1,3 +1,8 @@
+2006-03-16  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetRcRss): Use title parameter to title the RSS feed if
+	provided.
+
 2006-03-16  Perry Nguyen  <pfnguyen@hanhuy.com>
 
 	* modules/toc.pl (TocRule): Skip the a element inside headings.
