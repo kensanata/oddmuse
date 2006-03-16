@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.11 2005/12/23 13:52:38 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.12 2006/03/16 23:36:43 as Exp $</p>';
 
 use vars qw($LocalNamesPage $LocalNamesInit %LocalNames $LocalNamesCollect
 	    $LocalNamesCollectMaxWords);
@@ -88,16 +88,25 @@ sub LocalNamesNewSave {
   $currentname =~ s/_/ /g;
   OpenPage($LocalNamesPage);
   my $localnames = $Page{text};
-  my @collection = ();
+  my %map = ();
   while ($text =~ /\[$FullUrlPattern\s+(([^ \]]+?\s*){1,$LocalNamesCollectMaxWords})\]/g) {
     my ($page, $url) = ($2, $1);
     my $id = FreeToNormal($page);
+    $map{$id} = () unless defined $map{$id};
+    $map{$id}{$url} = 1;
+  }
+  my %collection = ();
+  foreach my $id (keys %map) {
     # canonical form with trimmed spaces and no underlines
-    $page = $id;
+    my $page = $id;
     $page =~ s/_/ /g;
-    # if the mapping exists already, do nothing
-    next if ($LocalNames{$id} eq $url);
-    push(@collection, $page);
+    # skip if the mapping from id to url already defined matches at
+    # least one of the definitions on the current page.
+    next if $map{$id}{$LocalNames{$id}};
+    $collection{$page} = 1;
+    # pick a random url from the list
+    my @urls = keys %{$map{$id}};
+    my $url = $urls[0];
     # if a different mapping exists already; change the old mapping to the new one
     # if the change fails (eg. the page name is not in canonical form), don't skip!
     next if $LocalNames{$id}
@@ -105,8 +114,10 @@ sub LocalNamesNewSave {
     # add a new entry at the end
     $localnames .= "\n\n* [$url $page]"
       . Ts(" -- defined on %s", "[[$currentname]]");
+    $LocalNames{$id} = $url; # prevent multiple additions
   }
   # minor change
+  my @collection = keys %collection;
   Save($LocalNamesPage, $localnames,
        Tss("Local names defined on %1: %2", $currentname,
 	   length(@collection > 1)
