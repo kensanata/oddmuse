@@ -1,3 +1,7 @@
+2006-03-16  Perry Nguyen  <pfnguyen@hanhuy.com>
+
+	* modules/toc.pl (TocRule): Skip the a element inside headings.
+
 2006-03-14  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (PrintJournal): Handle offset parameter and comment.
