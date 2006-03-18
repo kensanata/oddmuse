@@ -1,3 +1,16 @@
+2006-03-18  Alex Schroeder  <alex@gnu.org>
+
+	* Makefile (test): Add beep at the end.
+
+	* modules/localnames.pl (LocalNamesNewSave): Sort list of defined
+	names to facilitate testing.
+
+	* modules/portrait-support.pl (PortraitSupportRule): Allow
+	indentation of [new] tags.
+
+	* wiki.pl (GetRcRss): Use GetPageParameters if all or a change in
+	the cluster, just as in GetRcHtml.
+
 2006-03-17  Alex Schroeder  <alex@gnu.org>
 
 	* modules/localnames.pl (LocalNamesNewSave): Bugfix.
