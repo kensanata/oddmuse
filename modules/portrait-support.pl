@@ -1,4 +1,4 @@
-# Copyright (C) 2004  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2005, 2006  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.24 2005/10/09 00:55:43 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: portrait-support.pl,v 1.25 2006/03/18 19:51:58 as Exp $</p>';
 
 push(@MyMacros, sub{ s/\[new::\]/"[new:" . GetParam('username', T('Anonymous'))
 		       . ':' . TimeToText($Now) . "]"/ge });
@@ -41,15 +41,16 @@ sub PortraitSupportRule {
       return $html;
     } elsif ($bol && m/\Gportrait:$UrlPattern/gc) {
       return $q->img({-src=>$1, -alt=>T("Portrait"), -class=>'portrait'});
-    } elsif ($bol && m/\G\[new(.*)\]/gc) {
+    } elsif ($bol && m/\G(:*)\[new(.*)\]/gc) {
       my $portrait = '';
-      my ($ignore, $name, $time) = split(/:/, $1, 3);
+      my $depth = length($1);
+      my ($ignore, $name, $time) = split(/:/, $2, 3);
       if ($name) {
 	if (not $Portrait{$name}) {
 	  my $oldpos = pos;
 	  if (GetPageContent($name) =~ m/portrait:$UrlPattern/) {
 	    $Portrait{$name} =
-	      $q->div({-class=>'portrait'},
+	      $q->div({-class=>"portrait"},
 		      $q->p(ScriptLink($name, $q->img({-src=>$1, -alt=>'new: ' . $time,
 						       -class=>'portrait'}),
 				       'newauthor', '', $FS),
@@ -65,6 +66,7 @@ sub PortraitSupportRule {
       $PortraitSupportColor = !$PortraitSupportColor;
       $html .= '<div class="color '
 	. ($PortraitSupportColor ? 'one' : 'two')
+	. ' level' . $depth
         . '">' . $portrait . AddHtmlEnvironment('p');
       $PortraitSupportColorDiv = 1;
       return $html;
