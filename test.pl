@@ -2311,7 +2311,7 @@ InitVariables();
 
 %Test = split('\n',<<'EOT');
 == make honey ==\n\nMoo.\n
-<h2><a id="toc1">make honey</a></h2><p>Moo.</p>
+<h2 id="toc1">make honey</h2><p>Moo.</p>
 EOT
 
 run_tests();
@@ -2324,10 +2324,10 @@ test_page(update_page('toc', "bla\n"
 		      . "==two==\n"
 		      . "mu."),
 	  quotemeta('<ol><li><a href="#toc1">one</a><ol><li><a href="#toc2">two</a></li><li><a href="#toc3">two</a></li></ol></li></ol>'),
-	  quotemeta('<h2><a id="toc1">one</a></h2>'),
-	  quotemeta('<h2><a id="toc2">two</a></h2>'),
+	  quotemeta('<h2 id="toc1">one</h2>'),
+	  quotemeta('<h2 id="toc2">two</h2>'),
 	  quotemeta('bla </p><div class="toc"><h2>Contents</h2><ol><li><a '),
-	  quotemeta('two</a></li></ol></li></ol></div><h2><a '),);
+	  quotemeta('two</a></li></ol></li></ol></div><h2 id="toc1">one</h2>'),);
 
 test_page(update_page('toc', "bla\n"
 		      . "==two=\n"
@@ -2336,8 +2336,8 @@ test_page(update_page('toc', "bla\n"
 		      . "bla\n"
 		      . "==two==\n"),
 	  quotemeta('<ol><li><a href="#toc1">two</a><ol><li><a href="#toc2">three</a></li></ol></li><li><a href="#toc3">two</a></li></ol>'),
-	  quotemeta('<h2><a id="toc1">two</a></h2>'),
-	  quotemeta('<h3><a id="toc2">three</a></h3>'));
+	  quotemeta('<h2 id="toc1">two</h2>'),
+	  quotemeta('<h3 id="toc2">three</h3>'));
 
 test_page(update_page('toc', "bla\n"
 		      . "<toc>\n"
@@ -2348,8 +2348,8 @@ test_page(update_page('toc', "bla\n"
 		      . "bla\n"
 		      . "=one=\n"),
 	  quotemeta('<ol><li><a href="#toc1">two</a><ol><li><a href="#toc2">three</a></li></ol></li><li><a href="#toc3">one</a></li></ol>'),
-	  quotemeta('<h2><a id="toc1">two</a></h2>'),
-	  quotemeta('<h2><a id="toc3">one</a></h2>'),
+	  quotemeta('<h2 id="toc1">two</h2>'),
+	  quotemeta('<h2 id="toc3">one</h2>'),
 	  quotemeta('bla </p><div class="toc"><h2>Contents</h2><ol><li><a '),
 	  quotemeta('one</a></li></ol></div><p> murks'),);
 
@@ -2402,8 +2402,8 @@ update_page('headers', "== one ==\ntext\n== two ==\ntext\n== three ==\ntext\n");
 test_page(get_page('headers'),
 	  '<li><a href="#headers1">one</a></li>',
 	  '<li><a href="#headers2">two</a></li>',
-	  '<h2><a id="headers1">one</a></h2>',
-	  '<h2><a id="headers2">two</a></h2>', );
+	  '<h2 id="headers1">one</h2>',
+	  '<h2 id="headers2">two</h2>', );
 remove_rule(\&TocRule);
 
 # headers only
@@ -2421,31 +2421,31 @@ add_module('portrait-support.pl');
 
 # nothing
 update_page('headers', "[new]foo\n== no header ==\n\ntext\n");
-test_page(get_page('headers'), '<div class="color one"><p>foo == no header ==</p><p>text</p></div>');
+test_page(get_page('headers'), '<div class="color one level0"><p>foo == no header ==</p><p>text</p></div>');
 
 # usemod only
 add_module('usemod.pl');
 update_page('headers', "[new]foo\n== is header ==\n\ntext\n");
-test_page(get_page('headers'), '<div class="color one"><p>foo </p></div><h2>is header</h2>');
+test_page(get_page('headers'), '<div class="color one level0"><p>foo </p></div><h2>is header</h2>');
 remove_rule(\&UsemodRule);
 
 # toc only
 add_module('toc.pl');
 update_page('headers', "[new]foo\n== one ==\ntext\n== two ==\ntext\n== three ==\ntext\n");
 test_page(get_page('headers'),
-	  '<div class="content browse"><div class="color one"><p>foo </p></div>', # default to before the header
+	  '<div class="content browse"><div class="color one level0"><p>foo </p></div>', # default to before the header
 	  '<div class="toc"><h2>Contents</h2><ol>',
 	  '<li><a href="#headers1">one</a></li>',
 	  '<li><a href="#headers2">two</a></li>',
 	  '<li><a href="#headers3">three</a></li></ol></div>',
-	  '<h2><a id="headers1">one</a></h2><p>text </p>',
-	  '<h2><a id="headers2">two</a></h2>', );
+	  '<h2 id="headers1">one</h2><p>text </p>',
+	  '<h2 id="headers2">two</h2>', );
 remove_rule(\&TocRule);
 
 # headers only
 add_module('headers.pl');
 update_page('headers', "[new]foo\nis header\n=========\n\ntext\n");
-test_page(get_page('headers'), '<div class="color one"><p>foo </p></div><h2>is header</h2>');
+test_page(get_page('headers'), '<div class="color one level0"><p>foo </p></div><h2>is header</h2>');
 remove_rule(\&HeadersRule);
 
 # portrait-support, toc, and usemod
@@ -2456,9 +2456,20 @@ update_page('headers', "[new]foo\n== one ==\ntext\n== two ==\ntext\n== three ==\
 test_page(get_page('headers'),
 	  '<li><a href="#headers1">one</a></li>',
 	  '<li><a href="#headers2">two</a></li>',
-	  '<div class="color one"><p>foo </p></div>',
-	  '<h2><a id="headers1">one</a></h2>',
-	  '<h2><a id="headers2">two</a></h2>', );
+	  '<div class="color one level0"><p>foo </p></div>',
+	  '<h2 id="headers1">one</h2>',
+	  '<h2 id="headers2">two</h2>', );
+
+%Test = split('\n',<<'EOT');
+[new]\nfoo
+<div class="color one level0"><p> foo</p></div>
+:[new]\nfoo
+<div class="color two level1"><p> foo</p></div>
+::[new]\nfoo
+<div class="color one level2"><p> foo</p></div>
+EOT
+
+run_tests();
 
 remove_rule(\&UsemodRule);
 remove_rule(\&TocRule);
@@ -2504,7 +2515,7 @@ add_module('portrait-support.pl');
 
 # just portrait-support
 update_page('hr', "[new]one\n----\ntwo\n");
-test_page(get_page('hr'), '<div class="content browse"><div class="color one"><p>one </p></div><hr /><p>two</p></div>');
+test_page(get_page('hr'), '<div class="content browse"><div class="color one level0"><p>one </p></div><hr /><p>two</p></div>');
 
 # usemod and portrait-support
 add_module('usemod.pl');
@@ -2732,8 +2743,8 @@ test_page(update_page('toc', "bla\n"
 		      . "bla\n"
 		      . "=one=\n"),
 	  quotemeta('<ol><li><a href="#toc1">two</a><ol><li><a href="#toc2">three</a></li></ol></li><li><a href="#toc3">one</a></li></ol>'),
-	  quotemeta('<h2><a id="toc1">two</a></h2>'),
-	  quotemeta('<h2><a id="toc3">one</a></h2>'),
+	  quotemeta('<h2 id="toc1">two</h2>'),
+	  quotemeta('<h2 id="toc3">one</h2>'),
 	  quotemeta('bla </p><div class="toc"><h2>Contents</h2><ol><li><a '),
 	  quotemeta('one</a></li></ol></div><p> murks'));
 
@@ -2801,12 +2812,12 @@ xpath_test(get_page('action=rc days=1 showedit=1'),
 update_page('LocalNamesTest', 'This is an [http://www.example.org/ Example] for [http://www.emacswiki.org EmacsWiki].');
 
 xpath_test(get_page('action=rc days=1 showedit=1'),
-	   '//a[@class="local"][text()="LocalNames"]/following-sibling::strong[text()="Local names defined on LocalNamesTest: Example, and EmacsWiki"]');
+	   '//a[@class="local"][text()="LocalNames"]/following-sibling::strong[text()="Local names defined on LocalNamesTest: EmacsWiki, and Example"]');
 
 update_page('LocalNamesTest', 'This is an [http://www.example.com/ Example] for [http://www.emacswiki.org/ EmacsWiki] and [http://communitywiki.org/ Community Wiki].');
 
 xpath_test(get_page('action=rc days=1 showedit=1'),
-	   '//a[@class="local"][text()="LocalNames"]/following-sibling::strong[text()="Local names defined on LocalNamesTest: Example, EmacsWiki, and Community Wiki"]');
+	   '//a[@class="local"][text()="LocalNames"]/following-sibling::strong[text()="Local names defined on LocalNamesTest: Community Wiki, EmacsWiki, and Example"]');
 
 update_page('LocalNamesTest', 'This is [http://www.example.com/ one Example].');
 xpath_test(get_page('LocalNames'),
