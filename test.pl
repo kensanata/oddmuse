@@ -498,6 +498,8 @@ EOT
 update_page('ClusterIdea', "MainPage\nSomebody has to do it.", 'five', 1);
 test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage all=1 showedit=1'), @Test);
 
+test_page(get_page('action=rss'), 'action=browse;id=MainPage;rcclusteronly=MainPage');
+
 # --------------------
 
 rss:
