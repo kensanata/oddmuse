@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.12 2006/03/16 23:36:43 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.13 2006/03/18 19:52:53 as Exp $</p>';
 
 use vars qw($LocalNamesPage $LocalNamesInit %LocalNames $LocalNamesCollect
 	    $LocalNamesCollectMaxWords);
@@ -117,7 +117,7 @@ sub LocalNamesNewSave {
     $LocalNames{$id} = $url; # prevent multiple additions
   }
   # minor change
-  my @collection = keys %collection;
+  my @collection = sort keys %collection;
   Save($LocalNamesPage, $localnames,
        Tss("Local names defined on %1: %2", $currentname,
 	   length(@collection > 1)
