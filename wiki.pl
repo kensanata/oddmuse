@@ -268,7 +268,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.649 2006/03/18 17:18:16 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.650 2006/03/19 00:33:26 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1127,6 +1127,7 @@ sub ScriptLink {
 sub GetDownloadLink {
   my ($name, $image, $revision, $alt) = @_;
   $alt = $name unless $alt;
+  $alt =~ s/_/ /g;
   my $id = FreeToNormal($name);
   # if the page does not exist
   return '[' . ($image ? T('image') : T('download')) . ':' . $name
@@ -3189,9 +3190,9 @@ sub PageIsUploadedFile {
   if ($IndexHash{$id}) {
     my $file = GetPageFile($id);
     open(FILE, "<$file") or ReportError(Ts('Cannot open %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
-    while (defined($_ = <FILE>) and $_ !~ /^text: (.*)/) {} # read lines until we get to the text key
+    while (defined($_ = <FILE>) and $_ !~ /^text: /) {} # read lines until we get to the text key
     close FILE;
-    return TextIsFile($1);
+    return TextIsFile(substr($_,6)); # pass "#FILE image/png\n" to the test
   }
 }
 
