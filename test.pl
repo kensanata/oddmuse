@@ -2846,6 +2846,22 @@ xpath_test(update_page('Config', '@UserGotoBarPages = ("Foo", "Bar");',
 		       'config', 0, 1),
 	   '//div[@class="header"]/span[@class="gotobar bar"]/a[@class="local"][text()="Foo"]/following-sibling::a[@class="local"][text()="Bar"]');
 
+# --------------------
+
+upload:
+print '[upload]';
+
+clear_pages();
+AppendStringToFile($ConfigFile, "\$UploadAllowed = 1;\n");
+
+$page = update_page('alex pic', "#FILE image/png\niVBORw0KGgoAAAA");
+test_page($page, 'This page contains an uploaded file:');
+xpath_test($page, '//img[@class="upload"][@src="http://localhost/wiki.pl/download/alex_pic"][@alt="alex pic"]');
+test_page_negative($page, 'AAAA');
+test_page_negative(get_page('search=AAA'), 'alex_pic');
+
+# --------------------
+
 end:
 
 ### END OF TESTS
