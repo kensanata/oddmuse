@@ -1,3 +1,8 @@
+2006-03-19  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetDownloadLink): Convert underlines to spaces in the alt-text.
+	(PageIsUploadedFile): Make sure files are in fact skipped.
+
 2006-03-18  Alex Schroeder  <alex@gnu.org>
 
 	* Makefile (test): Add beep at the end.
