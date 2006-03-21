@@ -1,3 +1,7 @@
+2006-03-21  Alex Schroeder  <alex@gnu.org>
+
+	* modules/gotobar.pl (GotobarInit): Set $HomePage, too.
+
 2006-03-19  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetDownloadLink): Convert underlines to spaces in the alt-text.
