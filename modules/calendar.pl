@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.43 2006/03/22 08:28:28 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.44 2006/03/22 22:36:13 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalAsTable);
 
@@ -43,6 +43,7 @@ sub Cal {
   $mon_now += 1;
   $mon = $mon_now unless $mon;
   $year_now += 1900;
+  $year = $year_now unless $year;
   if ($year < 1) {
     return $q->p(T('Illegal year value: Use 0001-9999'));
   }
@@ -284,9 +285,9 @@ sub month_days {
 
 sub month_name {
     my $month = shift;
-    my @month_name = (T('January'), T('February'), T('March'), T('April'),
-		      T('May'), T('June'), T('July'), T('August'),
-		      T('September'), T('October'), T('November'),
-		      T('December'));
+    my @month_name = ('January', 'February', 'March', 'April',
+		      'May', 'June', 'July', 'August',
+		      'September', 'October', 'November',
+		      'December');
     return $month_name[$month-1];
 }
