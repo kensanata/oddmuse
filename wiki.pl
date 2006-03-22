@@ -50,7 +50,7 @@ $ShowEdits $LinkPattern $RssExclude $InterLinkPattern $MaxPost
 $UrlPattern $UrlProtocols $ImageExtensions $InterSitePattern $FS
 $CookieName $SiteBase $StyleSheet $NotFoundPg $FooterNote $NewText
 $EditNote $HttpCharset $UserGotoBar $VisitorFile $RcFile %Smilies
-%SpecialDays $InterWikiMoniker $SiteDescription $RssImageUrl
+%SpecialDays $InterWikiMoniker $SiteDescription $RssImageUrl $ReadMe
 $RssRights $BannedCanRead $SurgeProtection $TopLinkBar $LanguageLimit
 $SurgeProtectionTime $SurgeProtectionViews $DeletedPage %Languages
 $InterMap $ValidatorLink @LockOnCreation $PermanentAnchors @CssList
@@ -81,6 +81,7 @@ $PermanentAnchorsInit $ModulesDescription %RuleOrder %Action $bol
 $UseConfig   = 1 unless defined $UseConfig; # 1 = load config file in the data directory
 $DataDir     = $ENV{WikiDataDir} if $UseConfig and not $DataDir; # Main wiki directory
 $DataDir   = '/tmp/oddmuse' unless $DataDir;
+$ReadMe      = 'README';        # default file in the DataDir for the HomePage
 $ConfigPage  = '' unless $ConfigPage; # config page
 $RunCGI	     = 1  unless defined $RunCGI; # 1 = Run script as CGI instead of being a library
 $UsePathInfo = 1;               # 1 = allow page views using wiki.pl/PageName
@@ -268,7 +269,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.650 2006/03/19 00:33:26 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.651 2006/03/22 00:04:06 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2481,7 +2482,7 @@ sub OpenPage { # Sets global variables
     %Page = ();
     $Page{ts} = $Now;
     $Page{revision} = 0;
-    if ($id eq $HomePage and (open(F,'README') or open(F,"$DataDir/README"))) {
+    if ($id eq $HomePage and (open(F, $ReadMe) or open(F,"$DataDir/$ReadMe"))) {
       local $/ = undef;
       $Page{text} = <F>;
       close F;
