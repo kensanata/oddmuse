@@ -71,7 +71,7 @@ $CollectingJournal $WikiDescription $PrintedHeader %Locks $Fragment
 @Blocks @Flags %NearSite %NearSource %NearLinksUsed $NearInit
 $NearDir $NearMap $SisterSiteLogoUrl %NearSearch @KnownLocks
 $PermanentAnchorsInit $ModulesDescription %RuleOrder %Action $bol
-%RssInterwikiTranslate $RssInterwikiTranslateInit);
+%RssInterwikiTranslate $RssInterwikiTranslateInit %Includes);
 
 # == Configuration ==
 
@@ -269,7 +269,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.652 2006/03/22 00:24:36 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.653 2006/03/22 22:12:04 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -434,13 +434,17 @@ sub ApplyRules {
 	    print $q->end_div();
 	  }
 	} else {
+	  $Includes{$OpenPageName} = 1;
 	  local $OpenPageName = FreeToNormal($uri);
 	  if ($type eq 'text') {
-	    print $q->pre({class=>"include $uri"},QuoteHtml(GetPageContent($OpenPageName)));
-	  } else {		# with a starting tag
-	    print $q->start_div({class=>"include $uri"});
+	    print $q->pre({class=>"include $OpenPageName"},QuoteHtml(GetPageContent($OpenPageName)));
+	  } elsif (not $Includes{$OpenPageName}) { # with a starting tag, watch out for recursion
+	    print $q->start_div({class=>"include $OpenPageName"});
 	    ApplyRules(QuoteHtml(GetPageContent($OpenPageName)), $locallinks, $withanchors, undef, 'p');
 	    print $q->end_div();
+	    delete $Includes{$OpenPageName};
+	  } else {
+	    print $q->strong(Ts('Recursive include of %s!', $OpenPageName));
 	  }
 	}
 	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
@@ -3798,11 +3802,7 @@ sub DoEditLock {
     unlink($fname);
   }
   utime time, time, $IndexFile; # touch index file
-  if (-f $fname) {
-    print $q->p(T('Edit lock created.'));
-  } else {
-    print $q->p(T('Edit lock removed.'));
-  }
+  print $q->p(-f $fname ? T('Edit lock created.') : T('Edit lock removed.'));
   PrintFooter();
 }
 
@@ -3818,11 +3818,8 @@ sub DoPageLock {
     unlink($fname);
   }
   utime time, time, $IndexFile; # touch index file
-  if (-f $fname) {
-    print $q->p(Ts('Lock for %s created.', GetPageLink($id)));
-  } else {
-    print $q->p(Ts('Lock for %s removed.', GetPageLink($id)));
-  }
+  print $q->p(-f $fname ? Ts('Lock for %s created.', GetPageLink($id))
+	      : Ts('Lock for %s removed.', GetPageLink($id)));
   PrintFooter();
 }
 
