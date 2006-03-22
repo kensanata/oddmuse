@@ -17,11 +17,12 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.42 2006/02/12 17:29:23 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.43 2006/03/22 08:28:28 as Exp $</p>';
 
-use vars qw($CalendarOnEveryPage $CalendarUseCal);
+use vars qw($CalendarOnEveryPage $CalAsTable);
 
 $CalendarOnEveryPage = 1;
+$CalAsTable = 0; 
 
 *OldCalendarGetHeader = *GetHeader;
 *GetHeader = *NewCalendarGetHeader;
@@ -40,12 +41,11 @@ sub Cal {
   my ($year, $mon, $unlink_year) = @_; # example: 2004, 12
   my ($sec_now, $min_now, $hour_now, $mday_now, $mon_now, $year_now) = localtime($Now);
   $mon_now += 1;
+  $mon = $mon_now unless $mon;
   $year_now += 1900;
-  $year = $year_now unless $year;
   if ($year < 1) {
     return $q->p(T('Illegal year value: Use 0001-9999'));
   }
-  $mon = $mon_now unless $mon;
   my @pages = AllPagesList();
   my $cal = draw_month($mon, $year);
   $cal =~ s|\b([A-Z][a-z])\b|{ T($1); }|ge;
@@ -111,9 +111,7 @@ sub CalendarRule {
     my $oldpos = pos;
     Clean(CloseHtmlEnvironments());
     Dirty($1);
-    print $q->start_div({-class=>'cal year'});
     PrintYearCalendar($2);
-    print $q->end_div();
     pos = $oldpos;
     return AddHtmlEnvironment('p');
   } elsif (/\G(month:(\d\d\d\d)-(\d\d))/gc) {
@@ -145,8 +143,19 @@ sub PrintYearCalendar {
 	      ScriptLink('action=calendar;year=' . ($year-1), T('Previous')),
 	      '|',
 	      ScriptLink('action=calendar;year=' . ($year+1), T('Next')));
-  for $mon ((1..12)) {
-    print Cal($year, $mon, 1);
+  if ($CalAsTable) {
+      print '<table><tr>';
+      for $mon ((1..12)) {
+        print '<td>'.Cal($year, $mon, 1).'</td>';
+        if (($mon==3) or ($mon==6) or ($mon==9)) {
+            print '</tr><tr>';
+        }
+      }
+      print '</tr></table>';
+  } else {
+      for $mon ((1..12)) {
+        print Cal($year, $mon, 1);
+      }
   }
 }
 
@@ -156,6 +165,7 @@ sub DoYearCalendar {
   my ($sec, $min, $hour, $mday, $mon, $year) = localtime($Now);
   $year += 1900;
   $year = GetParam('year', $year);
+
   print GetHeader('', Ts('Calendar %s', $year), '');
   print $q->start_div({-class=>'content cal year'});
   PrintYearCalendar($year);
@@ -164,7 +174,6 @@ sub DoYearCalendar {
 }
 
 sub draw_month {
-
     my $month = shift;
     my $year = shift;
     my @weekday = (T('Su'), T('Mo'), T('Tu'), T('We'),
@@ -173,13 +182,10 @@ sub draw_month {
     my $weekday = zeller(1,$month,$year);
     my $start = 1 - $weekday;
     my $space_count = int((28 - length(month_name($month).' '.$year))/2 + 0.5);
-
-    my $output = ' ' x $space_count.month_name($month).' '.$year."\n";
-
+    # the Cal()-sub needs a 4 digit year working right
+    my $output = ' ' x $space_count.month_name($month).' '.sprintf("%04u",$year)."\n";
     $col = 0;
-
     $monthdays = &month_days($month,&leap_year($year));
-
     if ((($monthdays-$start) < 42) and (($monthdays-$start) > 35)) {
         $monthplus=41 - ($monthdays-$start);
     } elsif ((($monthdays-$start)<35) and (($monthdays-$start)>28)) {
@@ -187,19 +193,15 @@ sub draw_month {
     } else {
         $monthplus=0;
     }
-
     $output .= join('', map {"  ".$_} @weekday);
     $output .= "\n";
     for ($day=$start;$day<=$monthdays+$monthplus;$day++) {
-
         $col++;
-
         if (($day < 1) or ($day>$monthdays)) {
             $output .= '    ';
         } else {
             $output .= sprintf("%4d", $day);
         }
-
         $mod=($col/7)-int($col/7);
         if ($mod == 0) {
             $output .= "\n";
@@ -208,23 +210,21 @@ sub draw_month {
             $day=14;
         }
     }
-    $output .= "\n";
+    $output .= "\n" x (8 - ($output =~ tr/\n//)); # every month has to have 8 lines as output
     return $output;
 }
 
 
 # formula of Zeller (Julius Christian Johannes Zeller * 1822, + 1899) for countig the day of week
-# only works for all years greater then 1582 the year Pope Gregor has changed the calculation of times
-# from the Julian calendar to the Gregorian calendar
+# only works for all years greater then 0 and can handle 1582 the year Pope Gregor has changed the 
+# calculation of times from the Julian calendar to the Gregorian calendar
 sub zeller {
     my $t = shift;
     my $m = shift;
     my $year = shift;
     my ($h,$j,$w);
-
     $h=int($year/100);
     $j=$year%100;
-
     if ($m<3) {
         $m = $m+10;
         if ($j==0) {
@@ -236,40 +236,28 @@ sub zeller {
     } else {
         $m=$m-2;
     }
-
     if (($year > 0) and ($year < 1582)) {
         $w = $t + int((2.61 * $m) - 0.2) + $j + int($j/4) + 5 - $h;
-
     } elsif ($year==1582) {
-
         if ($m > 10) {
             $w = $t + int((2.61 * $m) - 0.2) + $j + int($j/4) + 5 - $h;
-
         } elsif ($m==8) {
-
             if ($t>=1 and $t<=4) {
                 $w = $t + int((2.61 * $m) - 0.2) + $j + int($j/4) + 5 - $h;
-
             } elsif ($t>=15) {
                 $w = $t + int((2.61 * $m) - 0.2) + $j + int($j/4) + int($h/4) - (2*$h);
-
             }
-
         } elsif ($m <= 10) {
             $w = $t + int((2.61 * $m) - 0.2) + $j + int($j/4) + int($h/4) - (2*$h);
         }
-
     } elsif ($year > 1582) {
         $w = $t + int((2.61 * $m) - 0.2) + $j + int($j/4) + int($h/4) - (2*$h);
-
     }
-
     if (($w % 7) >= 0) {
         $w = $w % 7;
     } else {
         $w = 7 - (-1 * ($w % 7));
     }
-
     return $w;
 }
 
