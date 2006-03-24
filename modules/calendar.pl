@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.44 2006/03/22 22:36:13 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.45 2006/03/24 06:44:45 ingob Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalAsTable);
 
@@ -182,9 +182,9 @@ sub draw_month {
     my ($day, $col, $monthdays, $monthplus, $mod);
     my $weekday = zeller(1,$month,$year);
     my $start = 1 - $weekday;
-    my $space_count = int((28 - length(month_name($month).' '.$year))/2 + 0.5);
+    my $space_count = int((21 - length(month_name($month).' '.sprintf("%04u",$year)))/2 + 0.5);
     # the Cal()-sub needs a 4 digit year working right
-    my $output = ' ' x $space_count.month_name($month).' '.sprintf("%04u",$year)."\n";
+    my $output = (' ' x $space_count).month_name($month).' '.sprintf("%04u",$year)."\n";
     $col = 0;
     $monthdays = &month_days($month,&leap_year($year));
     if ((($monthdays-$start) < 42) and (($monthdays-$start) > 35)) {
@@ -194,14 +194,14 @@ sub draw_month {
     } else {
         $monthplus=0;
     }
-    $output .= join('', map {"  ".$_} @weekday);
+    $output .= join('', map {" ".$_} @weekday);
     $output .= "\n";
     for ($day=$start;$day<=$monthdays+$monthplus;$day++) {
         $col++;
         if (($day < 1) or ($day>$monthdays)) {
-            $output .= '    ';
+            $output .= '   ';
         } else {
-            $output .= sprintf("%4d", $day);
+            $output .= sprintf("%3d", $day);
         }
         $mod=($col/7)-int($col/7);
         if ($mod == 0) {
@@ -214,7 +214,6 @@ sub draw_month {
     $output .= "\n" x (8 - ($output =~ tr/\n//)); # every month has to have 8 lines as output
     return $output;
 }
-
 
 # formula of Zeller (Julius Christian Johannes Zeller * 1822, + 1899) for countig the day of week
 # only works for all years greater then 0 and can handle 1582 the year Pope Gregor has changed the 
