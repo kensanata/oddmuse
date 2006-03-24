@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.45 2006/03/24 06:44:45 ingob Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.46 2006/03/24 15:11:42 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalAsTable);
 
@@ -49,7 +49,6 @@ sub Cal {
   }
   my @pages = AllPagesList();
   my $cal = draw_month($mon, $year);
-  $cal =~ s|\b([A-Z][a-z])\b|{ T($1); }|ge;
   $cal =~ s|\b( ?[ 0-9]?[0-9])\b|{
     my $day = $1;
     my $date = sprintf("%d-%02d-%02d", $year, $mon, $day);
@@ -68,7 +67,6 @@ sub Cal {
   }|ge;
   $cal =~ s|(\w+) (\d\d\d\d)|{
     my ($month_text, $year_text) = ($1, $2);
-    $month_text = T($month_text);
     my $date = sprintf("%d-%02d", $year, $mon);
     if ($unlink_year) {
       $q->span({-class=>'title'}, ScriptLink('action=collect;match=' . $date,
@@ -284,9 +282,9 @@ sub month_days {
 
 sub month_name {
     my $month = shift;
-    my @month_name = ('January', 'February', 'March', 'April',
-		      'May', 'June', 'July', 'August',
-		      'September', 'October', 'November',
-		      'December');
+    my @month_name = (T('January'), T('February'), T('March'), T('April'),
+		      T('May'), T('June'), T('July'), T('August'),
+		      T('September'), T('October'), T('November'),
+		      T('December'));
     return $month_name[$month-1];
 }
