@@ -1,4 +1,16 @@
+2006-03-24  Alex Schroeder  <alex@gnu.org>
+
+	* modules/calendar.pl (Cal): No double translation.
+	(month_name): Translate here instead of in Cal, because this
+	allows us to extract the English month names and put them into the
+	translation files.
+
 2006-03-22  Alex Schroeder  <alex@gnu.org>
+
+	* modules/calendar.pl (Cal): Use default year if no month is
+	given.
+	(month_name): Don't translate month names here, they are
+	translated in Cal.
 
 	* wiki.pl (%Includes): New variable.
 	(ApplyRules): Use it to prevent loops when including local pages.
