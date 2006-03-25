@@ -269,7 +269,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.653 2006/03/22 22:12:04 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.654 2006/03/25 23:12:32 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3472,15 +3472,15 @@ sub DoPost {
     $string =~ s/$FS//g;
   }
   # Banned Content
+  my $summary = GetSummary();
   if (not UserIsEditor()) {
-    my $rule = BannedContent($string);
+    my $rule = BannedContent($string) || BannedContent($summary);
     ReportError(T('Edit Denied'), '403 FORBIDDEN', undef,
 		$q->p(T('The page contains banned text.')),
 		$q->p(T('Contact the wiki administrator for more information.')),
 		$q->p($rule . ' ' . Ts('See %s for more information.', GetPageLink($BannedContent))))
       if $rule;
   }
-  my $summary = GetSummary();
   # rebrowse if no changes
   my $oldrev = $Page{revision};
   if (GetParam('Preview', '')) { # Preview button was used
