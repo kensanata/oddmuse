@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.46 2006/03/24 15:11:42 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.47 2006/03/25 23:07:04 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalAsTable);
 
@@ -65,7 +65,7 @@ sub Cal {
     }
     $link;
   }|ge;
-  $cal =~ s|(\w+) (\d\d\d\d)|{
+  $cal =~ s|(\S+) (\d\d\d\d)|{
     my ($month_text, $year_text) = ($1, $2);
     my $date = sprintf("%d-%02d", $year, $mon);
     if ($unlink_year) {
