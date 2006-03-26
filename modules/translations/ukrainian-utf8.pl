@@ -1,4 +1,4 @@
-# UTF-8 encoded FIXME translation file for use with Oddmuse
+# UTF-8 encoded Ukrainian translation file for use with Oddmuse
 #
 # Copyright (c) 2006  FIXME
 #
@@ -15,7 +15,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: ukrainian-utf8.pl,v 1.1 2006/03/24 15:20:01 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: ukrainian-utf8.pl,v 1.2 2006/03/26 15:31:04 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 
