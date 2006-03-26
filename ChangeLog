@@ -1,3 +1,15 @@
+2006-03-26  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoPost): Check summary for banned content, too.
+
+	As suggested by Ryan Liu:
+	(ScriptLink): Don't URL-encode the name attribute.
+	(GetRcRss): Use $HttpCharset instead of UTF-8.
+	(GetHeader): URL-encode the homepage target.
+
+	* modules/calendar.pl (Cal): Replace \w+ by \S+ because Oddmuse
+	cannot rely on locale information being correct.
+
 2006-03-24  Alex Schroeder  <alex@gnu.org>
 
 	* modules/calendar.pl (Cal): No double translation.
