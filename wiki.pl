@@ -269,7 +269,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.654 2006/03/25 23:12:32 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.655 2006/03/26 11:56:29 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1122,7 +1122,7 @@ sub ScriptLink {
     $params{-href} = $ScriptName . '?' . $action;
   }
   $params{'-class'} = $class  if $class;
-  $params{'-name'} = UrlEncode($name)  if $name;
+  $params{'-name'} = $name  if $name;
   $params{'-title'} = $title  if $title;
   $params{'-accesskey'} = $accesskey  if $accesskey;
   $params{'-rel'} = 'nofollow'  if $nofollow;
@@ -1756,7 +1756,7 @@ sub GetRcRss {
   }
   my $limit = GetParam("rsslimit", 15); # Only take the first 15 entries
   my $count = 0;
-  my $rss = qq{<?xml version="1.0" encoding="utf-8"?>};
+  my $rss = qq{<?xml version="1.0" encoding="$HttpCharset"?>};
   if ($RssStyleSheet =~ /\.(xslt?|xml)$/) {
     $rss .= qq{<?xml-stylesheet type="text/xml" href="$RssStyleSheet" ?>};
   } elsif ($RssStyleSheet) {
@@ -2051,7 +2051,7 @@ sub GetHeader {
   }
   $result .= $q->start_div({-class=>'header'});
   if ((!$embed) && ($LogoUrl ne '')) {
-    $result .= ScriptLink($HomePage, $q->img({-src=>$LogoUrl, -alt=>$altText, -class=>'logo'}), 'logo');
+    $result .= ScriptLink(UrlEncode($HomePage), $q->img({-src=>$LogoUrl, -alt=>$altText, -class=>'logo'}), 'logo');
   }
   if (GetParam('toplinkbar', $TopLinkBar)) {
     $result .= GetGotoBar($id);
