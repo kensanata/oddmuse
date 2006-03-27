@@ -17,12 +17,13 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.47 2006/03/25 23:07:04 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.48 2006/03/27 04:54:18 ingob Exp $</p>';
 
-use vars qw($CalendarOnEveryPage $CalAsTable);
+use vars qw($CalendarOnEveryPage $CalAsTable $CalStartMonday);
 
-$CalendarOnEveryPage = 1;
-$CalAsTable = 0; 
+$CalendarOnEveryPage = 0;   # 1=on every page is a month-div situated in the header, use css to control
+$CalAsTable = 1;            # 0=every month-div is "free", 1=every month-div is caught in a table, use css to control
+$CalStartMonday = 1;        # 0=week starts with Su, 1=week starts with Mo
 
 *OldCalendarGetHeader = *GetHeader;
 *GetHeader = *NewCalendarGetHeader;
@@ -179,6 +180,15 @@ sub draw_month {
 		     T('Th'), T('Fr'), T('Sa'));
     my ($day, $col, $monthdays, $monthplus, $mod);
     my $weekday = zeller(1,$month,$year);
+    # select the starting day for the week
+    if ($CalStartMonday){
+        push @weekday, shift @weekday;
+        if ($weekday) {
+            $weekday = $weekday -1;
+        } else {
+            $weekday = 6;
+        }
+    }
     my $start = 1 - $weekday;
     my $space_count = int((21 - length(month_name($month).' '.sprintf("%04u",$year)))/2 + 0.5);
     # the Cal()-sub needs a 4 digit year working right
