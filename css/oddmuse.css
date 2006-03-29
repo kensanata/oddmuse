@@ -57,6 +57,8 @@ body {
     background:#fff;
     padding:2% 5%;
     margin:0;
+    font-family: "Bookman Old Style", "Times New Roman", serif;
+    font-size: 12pt;
 }
 
 a {
@@ -64,8 +66,41 @@ a {
     font-weight:bold;
     color:#c00;
 }
-
 a:visited { color:#c55; }
+
+.rc .author {
+    font-weight: normal;
+    color: #666;
+}
+.rc .author:after {
+    content:"\n";
+}
+.rc .dash {
+    display: none;
+}
+.rc strong {
+    font-weight: normal;
+    color: inherit;
+    display: block;
+}
+.rc li {
+    position:relative;
+    padding-right: 5em;
+}
+.rc .lang {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1;
+}
+.rc .type {
+    position: absolute;
+    top: 1.16em; /* don't forget line-height */
+    right: 0;
+    z-index: 2;
+    background:#fff; /* covers language if no summary */
+    padding: 0.1em 0 0.1em 1em;
+}
 
 div.header h1 a:hover, h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover,
 a:hover, span.caption a.image:hover {
