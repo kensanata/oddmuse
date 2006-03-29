@@ -72,9 +72,6 @@ a:visited { color:#c55; }
     font-weight: normal;
     color: #666;
 }
-.rc .author:after {
-    content:"\n";
-}
 .rc .dash {
     display: none;
 }
@@ -164,6 +161,7 @@ pre {
     background-color: #e6e6e6;
     color: black;
     overflow:hidden;
+    font-size: smaller;
 }
 
 body.magenta a { color:#639; }
