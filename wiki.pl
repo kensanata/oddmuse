@@ -269,7 +269,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.655 2006/03/26 11:56:29 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.656 2006/03/29 20:17:25 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1672,8 +1672,8 @@ sub GetRcHtml {
 	$host = QuoteHtml($host);
 	my $author = GetAuthorLink($host, $username);
 	my $sum = $summary ? $q->span({class=>'dash'}, ' &#8211; ') . $q->strong(QuoteHtml($summary)) : '';
-	my $edit = $minor ? $q->em($tEdit) : '';
-	my $lang = @{$languages} ? '[' . join(', ', @{$languages}) . ']' : '';
+	my $edit = $minor ? $q->em({class=>'type'}, $tEdit) : '';
+	my $lang = @{$languages} ? $q->span({class=>'lang'}, '[' . join(', ', @{$languages}) . ']') : '';
 	my ($pagelink, $history, $diff, $rollback) = ('', '', '', '');
 	if ($all) {
 	  $pagelink = GetOldPageLink('browse', $pagename, $revision, $pagename, $cluster);
