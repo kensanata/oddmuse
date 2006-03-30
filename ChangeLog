@@ -1,3 +1,15 @@
+2006-03-31  Alex Schroeder  <alex@gnu.org>
+
+	* modules/namespaces.pl (NamespacesInitVariables): Check namespace
+	parameter for validity and complain if it is not valid. We can't
+	do that with path_info, but this is good enough, because it allows
+	us to verify namespaces typed into forms (eg. from
+	Oddwiki:Startup).
+
+2006-03-29  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetRcHtml): Two more CSS classes.
+
 2006-03-26  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoPost): Check summary for banned content, too.
