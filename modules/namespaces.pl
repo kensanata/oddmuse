@@ -1,4 +1,4 @@
-# Copyright (C) 2004, 2005  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2005, 2006  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.23 2005/11/07 00:46:15 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.24 2006/03/30 22:38:30 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent $NamespaceRoot);
 
@@ -46,6 +46,9 @@ sub NamespacesInitVariables {
     }
   }
   $NamespaceCurrent = '';
+  my $ns = GetParam('ns', '');
+  ReportError(Ts('%s is not a legal name for a namespace', $ns))
+    if $ns and $ns !~ m/^($InterSitePattern)$/;
   if (($UsePathInfo
        # make sure ordinary page names are not matched!
        and $q->path_info() =~ m|^/($InterSitePattern)(/.*)?|
@@ -53,7 +56,7 @@ sub NamespacesInitVariables {
        and ($1 ne $NamespacesMain)
        and ($1 ne $NamespacesSelf))
       or
-      (GetParam('ns', '') =~ m/^($InterSitePattern)$/
+      ($ns =~ m/^($InterSitePattern)$/
        and ($1 ne $NamespacesMain)
        and ($1 ne $NamespacesSelf))) {
     $NamespaceCurrent = $1;
