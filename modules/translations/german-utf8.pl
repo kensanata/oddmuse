@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.13 2006/01/27 08:14:23 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.14 2006/04/01 22:13:30 lude Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
@@ -275,7 +275,7 @@ Cannot create %s
 Could not get %s lock
 Die %s Sperre konnte nicht gesetzt werden.
 The lock was created %s.
-Die Sperre wurde %s getzt.
+Die Sperre wurde %s gesetzt.
 This operation may take several seconds...
 Das könnte einige Sekunden dauern...
 Forced unlock of %s lock.
@@ -687,9 +687,9 @@ Die verbleibenden Gesuche bewilligen
 Confirm Registration for %s
 Die Registrierung für %s bestätigen
 %s, your registration has been approved. You can now use your password to login and edit this wiki.
-Ihr Gesuch wurde angenommen.  Sie können nun mit ihrem Passwort einsteigen und das Wiki verändern.
+Ihr Gesuch wurde angenommen. Sie können nun mit ihrem Passwort einsteigen und das Wiki verändern.
 Confirmation failed.  Please email %s for help.
-Die Bestätigung ist fehlgeschlagen. Senden sie eine Mail an %s und Hilfe zu erhalten.
+Die Bestätigung ist fehlgeschlagen. Senden sie eine Mail an %s um Hilfe zu erhalten.
 Who Am I?
 Wer bin ich?
 You are logged in as %s.
@@ -699,9 +699,9 @@ Sie sind nicht angemeldet.
 Reset Password
 Passwort zurücksetzen
 The password for %s was reset.  It has been emailed to the address on file.
-Das Passwort für %s wurde zurück gesetzt. Eine entsprechende Email wurde an die dazugehörige Adresse geschickt.
+Das Passwort für %s wurde zurückgesetzt. Eine entsprechende Email wurde an die dazugehörige Adresse geschickt.
 There was an error resetting the password for %s.
-Das Passwort konnte für %s  wegen einem Fehler nicht gesetzt werden.
+Das Passwort konnte für %s wegen einem Fehler nicht gesetzt werden.
 The username "%s" does not exist.
 Der Benutzer "%s" existiert nicht.
 Reset Password for %s
@@ -709,7 +709,7 @@ Passwort für %s zurücksetzen
 Reset Password?
 Passwort zurücksetzen?
 Change Password for %s
-Das Passwort für %s zurück setzen
+Das Passwort für %s zurücksetzen
 Change Password?
 Passwort ändern
 Your current password is incorrect.
