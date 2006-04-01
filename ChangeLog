@@ -1,3 +1,7 @@
+2006-04-02  Markus Lude  <lude@informatik.uni-tuebingen.de>
+
+	* modules/translations/german-utf8.pl: Fixed some messages
+
 2006-03-31  Alex Schroeder  <alex@gnu.org>
 
 	* modules/namespaces.pl (NamespacesInitVariables): Check namespace
