@@ -28,7 +28,7 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.31 2006/01/03 01:17:49 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.32 2006/04/01 00:52:15 fletcherpenney Exp $</p>';
 
 use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled!;
 
@@ -117,7 +117,8 @@ sub SanitizeSource {
 	# Remember, on a wiki, we don't want to allow arbitrary HTML...
 	# (in other words, this is not a bug)
 
-	$text =~ s/\</&lt;/g;
+	# But we do want to allow the use of '<' around links in Markdown
+	$text =~ s/\<(?!http:)/&lt;/g;
 	
 	return $text;
 }
