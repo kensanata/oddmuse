@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.6 2006/04/02 18:08:42 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.7 2006/04/02 19:29:10 as Exp $</p>';
 
 use LWP::UserAgent;
 
@@ -141,7 +141,7 @@ sub UpdateReferers {
   my $ua = LWP::UserAgent->new;
   my $response = $ua->get($referer);
   return unless $response->is_success and $response->content =~ /$self/;
-  my $charset = $response->content_encoding;
+  my ($charset) = $response->header("Content-Type") =~ /charset=([^\s";]*)/;
   $Referers{$referer} = "$Now $charset"; # numerical comparisons still work!
   return 1;
 }
