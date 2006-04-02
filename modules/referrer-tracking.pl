@@ -1,4 +1,4 @@
-# Copyright (C) 2004, 2005  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2005, 2006  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,9 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.4 2005/10/09 00:55:43 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.5 2006/04/02 17:24:29 as Exp $</p>';
+
+use LWP::UserAgent;
 
 ## == Setup ==
 
@@ -116,9 +118,13 @@ sub ExpireReferers { # no need to save the pruned list if nothing else changes
 sub GetReferers {
   my $result = join(' ', map {
     my $title = QuoteHtml($_);
-    $title =~ s/\%([0-9a-f][0-9a-f])/chr(hex($1))/egi;
-    $q->a({-href=>$_}, $title); } keys %Referers);
-  return $q->div({-class=>'refer'}, $q->hr(), $q->p(T('Referrers') . ': ' . $result)) if $result;
+    my ($ts, $charset) = split(/ /, $Referers{$_});
+    $title =~ s/\%([0-9a-f][0-9a-f])/chr(hex($1))/egi
+      if lc($charset) eq lc($HttpCharset);
+    $q->a({-href=>$_}, $title);
+  } keys %Referers);
+  return $q->div({-class=>'refer'}, $q->hr(), $q->p(T('Referrers') . ': ' . $result))
+    if $result;
 }
 
 sub UpdateReferers {
@@ -131,9 +137,11 @@ sub UpdateReferers {
       return  if $referer =~ /$regexp/i;
     }
   }
-  my $data = GetRaw($referer);
-  return  unless $data =~ /$self/;
-  $Referers{$referer} = $Now;
+  my $ua = LWP::UserAgent->new;
+  my $response = $ua->get($referer);
+  return unless $response->is_success and $response->content =~ /$self/;
+  my $charset = $response->content_encoding;
+  $Referers{$referer} = "$Now $charset"; # numerical comparisons still work!
   return 1;
 }
 
