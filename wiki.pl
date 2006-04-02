@@ -269,7 +269,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.656 2006/03/29 20:17:25 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.657 2006/04/02 21:47:30 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3744,7 +3744,8 @@ sub DoMaintain {
   }
   if (%NearSite) {
     CreateDir($NearDir);
-    foreach my $site (keys %NearSite) {
+    foreach my $site (keys %NearSite) { # skip if less than 12h old and caching allowed (the default)
+      next if GetParam('cache', $UseCache) > 0 and -f "$NearDir/$site" and -M "$NearDir/$site" < 0.5;
       print $q->p(Ts('Getting page index file for %s.', $site));
       my $data = GetRaw($NearSite{$site});
       print $q->p($q->strong(Ts('%s returned no data, or LWP::UserAgent is not available.',
