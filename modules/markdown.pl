@@ -28,7 +28,7 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.32 2006/04/01 00:52:15 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.33 2006/04/04 01:16:05 fletcherpenney Exp $</p>';
 
 use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled!;
 
@@ -73,7 +73,9 @@ sub MarkdownRule {
 	*Markdown::_RunSpanGamut = *NewRunSpanGamut;
 	*Markdown::_DoHeaders = *NewDoHeaders;
 	*Markdown::_EncodeCode = *NewEncodeCode;
-	*Markdown::_DoAutoLinks = *NewDoAutoLinks;
+
+	# removed for '<' vs '&lt;' issues
+	#*Markdown::_DoAutoLinks = *NewDoAutoLinks; 
 	
 	# UnquoteHtml - undo what Oddmuse does
 	$source = UnquoteHtml($source);
@@ -118,7 +120,7 @@ sub SanitizeSource {
 	# (in other words, this is not a bug)
 
 	# But we do want to allow the use of '<' around links in Markdown
-	$text =~ s/\<(?!http:)/&lt;/g;
+	$text =~ s/\<(?!(https?|ftp|mailto):)/&lt;/g;
 	
 	return $text;
 }
@@ -390,7 +392,7 @@ sub AntiSpam {
 sub NewDoAutoLinks {
 	my $text = shift;
 
-	$text =~ s{&lt;((https?|ftp):[^'">\s]+)>}{<a href="$1">$1</a>}gi;
+	$text =~ s{\<((https?|ftp):[^'">\s]+)>}{<a href="$1">$1</a>}gi;
 
 	# Email addresses: <address@domain.foo>
 	$text =~ s{
