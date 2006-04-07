@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: gotobar.pl,v 1.3 2006/03/21 00:37:46 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: gotobar.pl,v 1.4 2006/04/07 07:30:24 as Exp $</p>';
 
 use vars qw($GotobarName);
 
@@ -34,11 +34,21 @@ sub GotobarInit {
     OpenPage($GotobarName);
     return if $DeletedPage && $Page{text} =~ /^\s*$DeletedPage\b/o;
     @UserGotoBarPages = ();
-    while ($Page{text} =~ m/($LinkPattern|\[\[$FreeLinkPattern\]\])/og) {
-      push(@UserGotoBarPages, $2||$3);
+    $UserGotoBar = '';
+    while ($Page{text} =~ m/($LinkPattern|\[\[$FreeLinkPattern\]\]|\[\[$FreeLinkPattern\|([^\]]+)\]\]|\[$InterLinkPattern\s+([^\]]+?)\])/og) {
+      if ($2||$3) {
+	push(@UserGotoBarPages, $2||$3);
+      } elsif ($4) {
+	$UserGotoBar .= ' ' if $UserGotoBar;
+	$UserGotoBar .= GetPageLink($4, $5);
+      } elsif ($6) {
+	$UserGotoBar .= ' ' if $UserGotoBar;
+	$UserGotoBar .= GetInterLink($6, $7);
+      }
     }
     @UserGotoBarPages = map { FreeToNormal($_) } @UserGotoBarPages;
     $HomePage = $UserGotoBarPages[0] if $UserGotoBarPages[0];
     $RCName = $UserGotoBarPages[1] if $UserGotoBarPages[1];
   }
 }
+
