@@ -1,3 +1,20 @@
+2006-04-07  Alex Schroeder  <alex@gnu.org>
+
+	* modules/gotobar.pl (GotobarInit): Recognize more links: [[foo
+	bar|blarg blarg]] and [Foo:Moo blarg argh].
+
+2006-04-02  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoMaintain): Don't fetch files from near sites if the
+	files are less than 12h old.
+
+	* modules/referrer-tracking.pl (GetReferers): Only decode the
+	title if the referrer charset is the same as the local charset.
+	(UpdateReferers): Store charset.
+	(GetReferers): Extract valid URL using $FullUrlPattern just to be
+	safe.
+	(UpdateReferers): Extract charset from the content-type.
+
 2006-04-02  Markus Lude  <lude@informatik.uni-tuebingen.de>
 
 	* modules/translations/german-utf8.pl: Fixed some messages
