@@ -1,3 +1,8 @@
+2006-04-15  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (PrintJournal): Fix problem with missing last post if
+	less than ten pages were available.
+
 2006-04-07  Alex Schroeder  <alex@gnu.org>
 
 	* modules/gotobar.pl (GotobarInit): Recognize more links: [[foo
