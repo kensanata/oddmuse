@@ -269,7 +269,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.657 2006/04/02 21:47:30 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.658 2006/04/14 22:39:37 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -767,8 +767,8 @@ sub PrintJournal {
     @pages = reverse @pages;
   }
   return unless $pages[$offset]; # not enough pages
-  my $max = ($#pages < $offset + $num) ? $#pages : ($offset + $num);
-  @pages = @pages[$offset .. $max - 1];
+  my $max = ($#pages < $offset + $num) ? $#pages : ($offset + $num - 1);
+  @pages = @pages[$offset .. $max];
   if (@pages) {
     # Now save information required for saving the cache of the current page.
     local %Page;
