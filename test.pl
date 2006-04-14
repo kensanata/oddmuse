@@ -1222,9 +1222,11 @@ print '[journal]';
 
 ## Create diary pages
 
+clear_pages();
 update_page('2003-06-13', "Freitag");
 update_page('2003-06-14', "Samstag");
 update_page('2003-06-15', "Sonntag");
+
 @Test = split('\n',<<'EOT');
 This is my journal
 2003-06-15
@@ -1238,17 +1240,19 @@ test_page(update_page('2003-01-01', "This is my journal -- recursive:\n\n<journa
 push @Test, 'journal';
 test_page(update_page('2003-01-01', "This is my journal -- truly recursive:\n\n<journal>"), @Test);
 
-@Test = split('\n',<<'EOT');
-2003-06-15(.|\n)*2003-06-14
-EOT
+test_page(update_page('Summary', "Counting down:\n\n<journal 2>"),
+	  '2003-06-15(.|\n)*2003-06-14');
 
-test_page(update_page('Summary', "Counting down:\n\n<journal 2>"), @Test);
+test_page(update_page('Summary', "Counting up:\n\n<journal 3 reverse>"),
+	  '2003-01-01(.|\n)*2003-06-13(.|\n)*2003-06-14');
 
-@Test = split('\n',<<'EOT');
-2003-01-01(.|\n)*2003-06-13(.|\n)*2003-06-14
-EOT
+test_page(update_page('Summary', "Counting down:\n\n<journal>"),
+	  '2003-06-15(.|\n)*2003-06-14(.|\n)*2003-06-13(.|\n)*2003-01-01');
 
-test_page(update_page('Summary', "Counting up:\n\n<journal 3 reverse>"), @Test);
+test_page(update_page('Summary', "Counting up:\n\n<journal reverse>"),
+	  '2003-01-01(.|\n)*2003-06-13(.|\n)*2003-06-14(.|\n)*2003-06-15');
+
+exit;
 
 # --------------------
 
