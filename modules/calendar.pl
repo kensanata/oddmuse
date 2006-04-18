@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.49 2006/03/27 04:56:11 ingob Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.50 2006/04/18 11:39:12 ingob Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalAsTable $CalStartMonday);
 
@@ -50,7 +50,7 @@ sub Cal {
   }
   my @pages = AllPagesList();
   my $cal = draw_month($mon, $year);
-  $cal =~ s|\b( ?[ 0-9]?[0-9])\b|{
+  $cal =~ s|( {1,2}\d{1,2})\b|{
     my $day = $1;
     my $date = sprintf("%d-%02d-%02d", $year, $mon, $day);
     my $class = '';
