@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.24 2006/03/30 22:38:30 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.25 2006/04/20 19:22:50 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent $NamespaceRoot);
 
@@ -81,6 +81,7 @@ sub NamespacesInitVariables {
     $NamespaceRoot = $ScriptName;
     $ScriptName .= '/' . $NamespaceCurrent;
     $FullUrl .= '/' . $NamespaceCurrent;
+    $StaticDir .= '/' . $NamespaceCurrent; # from static-copy.pl
     $WikiDescription .= "<p>Current namespace: $NamespaceCurrent</p>";
     # override LastUpdate
     my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size, $atime,$mtime,$ctime,$blksize,$blocks)
