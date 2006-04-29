@@ -1,3 +1,7 @@
+2006-04-30  Alex Schroeder  <alex@gnu.org>
+
+	* modules/toc-headers.pl: New.
+
 2006-04-29  Alex Schroeder  <alex@gnu.org>
 
 	* wikiput (usage): Document -p parameter.
