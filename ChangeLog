@@ -1,3 +1,13 @@
+2006-04-29  Alex Schroeder  <alex@gnu.org>
+
+	* modules/today.pl (DoNew): Fix bug when used together with
+	namespaces.pl.
+
+2006-04-20  Alex Schroeder  <alex@gnu.org>
+
+	* modules/namespaces.pl (NamespacesInitVariables): Set $StaticDir
+	and $StaticUrl, too.
+
 2006-04-17  Alex Schroeder  <alex@gnu.org>
 
 	* modules/gotobar.pl (GotobarInit): No longer use
