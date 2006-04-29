@@ -1,5 +1,7 @@
 2006-04-29  Alex Schroeder  <alex@gnu.org>
 
+	* wikiput (usage): Document -p parameter.
+
 	* modules/today.pl (DoNew): Fix bug when used together with
 	namespaces.pl.
 
