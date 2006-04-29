@@ -74,6 +74,7 @@ def usage(out):
               " -f --force         Allow the posting of empty pages (default: no)\n"
               " -s --summary=S     The summary line (default: none)\n"
 	      " -u --user=U        The username to use (default: none)\n"
+	      " -p --password=P    The password to use (default: none)\n"
               " -m --minor-edit=B  Whether this is a minor edit (default: no)\n")
 
 def wikiput(where, text, summary="", username="", 
