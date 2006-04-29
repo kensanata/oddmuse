@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: today.pl,v 1.3 2006/02/22 22:28:42 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: today.pl,v 1.4 2006/04/29 17:11:23 as Exp $</p>';
 
 # New Action
 
@@ -24,8 +24,20 @@ $Action{new} = \&DoNew;
 
 sub DoNew {
   my $id = shift;
+  # GetId() returns "SandWiki" for the following URL:
+  # http://www.communitywiki.org/odd/SandWiki?action=new.
+  if ($UsePathInfo and $NamespaceCurrent
+      and $id eq $NamespaceCurrent
+      and GetParam($NamespaceCurrent, 0) == 0
+      and not GetParam('id', '')) {
+    # Undo this unless we're getting
+    # http://www.communitywiki.org/odd/SandWiki/SandWiki?action=new or
+    # http://www.communitywiki.org/odd/SandWiki?action=new;id=SandWiki.
+    $id = '';
+  }
   my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = gmtime($Now);
   $today = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
   $today .= "_" . $id if $id;
   return DoEdit($today);
 }
+
