@@ -18,7 +18,7 @@
 #
 # This translation was updated for Oddmuse 1.354.
 #
-$ModulesDescription .= '<p>$Id: bulgarian-utf8.pl,v 1.7 2006/01/21 21:06:00 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: bulgarian-utf8.pl,v 1.8 2006/05/10 22:52:16 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Не е разрешено четенето: блокиран потребител, IP адрес или мрежа.
@@ -29,6 +29,8 @@ Invalid UserName %s: not saved.
 UserName must be 50 characters or less: not saved
 Дължината на потребителското име не трябва да надвишава 50 знака: нищо не бе записано.
 This page contains an uploaded file:
+
+Recursive include of %s!
 
 XML::RSS is not available on this system.
 Модулът XML::RSS не е инсталиран на тази система.
@@ -532,7 +534,7 @@ was here
 
 and read
 
-Only works for years >= 1583 - the beginning of Gregorian calendar!
+Illegal year value: Use 0001-9999
 
 The match parameter is missing.
 
@@ -612,11 +614,9 @@ Footnotes:
 
 Could not find %1.html template in %2
 
-Only Editors are allowed to see hidden pages.
+Only Editors are allowed to see this hidden page.
 
-Only Admins are allowed to see hidden pages.
-
-image: %s
+Only Admins are allowed to see this hidden page.
 
 Index
 
@@ -732,6 +732,8 @@ There was an error approving %s.
 
 There are no pending registrations.
 
+%s is not a legal name for a namespace
+
 Clearing Cache
 
 Done.
@@ -782,13 +784,15 @@ Tag
 
 Rebuild index for searching
 
-Rebuilding Index
+Tag Cloud
 
 Search::FreeText is not available on this system.
 
 Rebuilding index not done.
 
 (Rebuilding the index can only be done once every 12 hours.)
+
+ ... 
 
 Search term missing.
 

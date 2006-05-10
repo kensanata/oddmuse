@@ -23,7 +23,7 @@
 #by wctang <wctang@csie.nctu.edu.tw> and using the tool cnmap
 #(http://search.cpan.org/~qjzhou/Encode-CNMap-0.32/bin/cnmap) by Qing-Jie Zhou <qjzhou@hotmail.com>.
 #
-$ModulesDescription .= '<p>$Id: chinese_cn-utf8.pl,v 1.7 2006/01/21 21:06:00 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: chinese_cn-utf8.pl,v 1.8 2006/05/10 22:52:16 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 禁止读取：使用者、ip 或是网路已被禁止连线。
@@ -35,6 +35,8 @@ UserName must be 50 characters or less: not saved
 无法储存。使用者名称不可超过 50 个字符。
 This page contains an uploaded file:
 本页包含一个已上传的文件：
+Recursive include of %s!
+
 XML::RSS is not available on this system.
 本系统无法使用 XML::RSS 。
 diff
@@ -537,7 +539,7 @@ was here
 
 and read
 
-Only works for years >= 1583 - the beginning of Gregorian calendar!
+Illegal year value: Use 0001-9999
 
 The match parameter is missing.
 未指定 match 参数。
@@ -617,12 +619,10 @@ Footnotes:
 注解：
 Could not find %1.html template in %2
 无法在 %2 找到 %1.html 的范本
-Only Editors are allowed to see hidden pages.
+Only Editors are allowed to see this hidden page.
 
-Only Admins are allowed to see hidden pages.
+Only Admins are allowed to see this hidden page.
 
-image: %s
-图像: %s
 Index
 索引
 Languages:
@@ -737,6 +737,8 @@ There was an error approving %s.
 
 There are no pending registrations.
 
+%s is not a legal name for a namespace
+
 Clearing Cache
 清除缓存
 Done.
@@ -787,13 +789,15 @@ Tag
 
 Rebuild index for searching
 
-Rebuilding Index
+Tag Cloud
 
 Search::FreeText is not available on this system.
 
 Rebuilding index not done.
 
 (Rebuilding the index can only be done once every 12 hours.)
+
+ ... 
 
 Search term missing.
 缺少搜索项。

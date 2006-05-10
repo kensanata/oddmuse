@@ -18,10 +18,10 @@
 #
 # This translation was last checked for Oddmuse version 1.296.
 #
-$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.13 2006/01/21 21:06:00 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.14 2006/05/10 22:52:16 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
-Accès interdit&nbsp;: votre serveur, adresse IP ou nom d'utilisateur a été bloqué.
+Accès interdit&nbsp;: l'utilisateur, l'IP ou le réseau est bloqué.
 Could not create %s
 Création impossible de %s
 Invalid UserName %s: not saved.
@@ -30,6 +30,8 @@ UserName must be 50 characters or less: not saved
 Le nom d'utilisateur ne doit pas dépasser 50 caractères : non sauvegardé
 This page contains an uploaded file:
 Cette page contient un fichier téléversé :
+Recursive include of %s!
+
 XML::RSS is not available on this system.
 XML::RSS n'est pas disponible sur ce système.
 diff
@@ -37,11 +39,11 @@ diff
 history
 historique
 %s returned no data, or LWP::UserAgent is not available.
- n'a pas retournée de données, ou LWP::UserAgent n'est pas disponible.
+%s n'a pas retourné de données, ou LWP::UserAgent n'est pas disponible.
 RSS parsing failed for %s
-L'analyse du RSS de %s a échouée 
+L'analyse du RSS de %s a échoué 
 No items found in %s.
-Pas d'objet dans %s.
+Pas d'objets trouvés dans %s.
  . . . . 
  . . . . 
 Click to edit this page
@@ -61,9 +63,9 @@ Le nom de la page est manquant
 Page name is too long: %s
 Le nom de la page est trop long&nbsp;: %s
 Invalid Page %s (must not end with .db)
-Page non valide %s (elle ne doit pas se terminer par .db)
+Page non valide %s (ne doit pas se terminer par .db)
 Invalid Page %s (must not end with .lck)
-Page non valide %s (elle ne doit pas se terminer par .lck)
+Page non valide %s (ne doit pas se terminer par .lck)
 Invalid Page %s
 Page non valide %s
 Preview:
@@ -105,13 +107,13 @@ Lister les modifications les plus récentes
 Filters
 Filtres
 Title:
-
+Titre :
 Title and Body:
-
+Titre et Corps :
 Username:
-Nom d'utilisateur&nbsp;:
+Nom d'utilisateur :
 Host:
-Hôte&nbsp;:
+Hôte :
 Language:
 Langue&nbsp;:
 Go!
@@ -125,17 +127,17 @@ nouveau
 from %s
 depuis %s
 This page is too big to send over RSS.
-
+Cette page est trop grosse pour être envoyée sur RSS
 History of %s
 Historique de %s
 Compare
-Comparaison
+Comparer
 Revision %s
 Version %s
 by
 par
 Rolling back changes
-Retour en arrière en cours
+Réinitialisation en cours
 Missing target for rollback.
 Cible manquante pour le retour en arrière.
 Target for rollback is too far back.
@@ -159,7 +161,7 @@ Déverouiller le site
 Lock site
 Verouiller le site
 Install CSS
-
+Installer CSS
 Unlock %s
 Déverrouiller %s
 Lock %s
@@ -167,11 +169,11 @@ Verrouiller %s
 Administration
 Administration
 Actions:
-Actions:
+Actions :
 Important pages:
 Pages importantes :
 To mark a page for deletion, put <strong>%s</strong> on the first line.
-Pour marquer une page devant être supprimer, ajoutez <strong>%s</strong> à la première ligne
+Pour marquer une page devant être supprimée, ajoutez <strong>%s</strong> à la première ligne
 [Home]
 [Accueil]
 redirected from %s
@@ -219,7 +221,7 @@ s
 Save
 Sauvegarder
 p
-
+p
 Preview
 Prévisualisation
 Search:
@@ -229,17 +231,17 @@ f
 Replace:
 Remplacer&nbsp;:
 Validate HTML
-Validation du HTML
+Valider HTML
 Validate CSS
-Validation des CSS
+Valider CSS
 Difference (from revision %1 to %2)
 Différence (de la révision %1 à %2)
 revision %s
-version %s
+révision %s
 current revision
-version actuelle
+révision actuelle
 Difference (from prior %s revision)
-Différences (à partir des dernières versions %s)
+Différence (à partir des dernières versions %s)
 major
 majeure
 minor
@@ -247,9 +249,9 @@ mineure
 No diff available.
 Pas de diff disponible.
 The two revisions are the same.
-
+Les deux révisions sont les mêmes.
 Old revision:
-Ancienne version:
+Ancienne révision:
 Changed:
 Modifiée&nbsp;:
 Removed:
@@ -277,7 +279,7 @@ Impossible de créer %s
 Could not get %s lock
 Ne peut obtenir un verrouillage %s
 The lock was created %s.
-
+Le verrouillage a été créé %s.
 This operation may take several seconds...
 Cette opération peut prendre quelques secondes...
 Forced unlock of %s lock.
@@ -323,7 +325,7 @@ Sauvegarder cette page remplacera la dernière version par ce texte.
 Summary:
 Résumé&nbsp;:
 This change is a minor edit.
-Cette modification est mineure.
+Cette modification est une édition mineure.
 Replace this file with text.
 Remplacer ce fichier par un texte.
 Replace this text with a file.
@@ -339,7 +341,7 @@ Vous êtes actuellement administrateur de ce site.
 You are currently an editor on this site.
 Vous êtes actuellement éditeur de ce site.
 You are a normal user on this site.
-Vous êtes un utilisateur normal sur ce site.
+Vous êtes un utilisateur normal de ce site.
 Your password does not match any of the  administrator or editor passwords.
 Vote mot de passe ne corespond à aucun de ceux des mots de passe administrateurs ou éditeurs.
 Password:
@@ -351,23 +353,23 @@ Cette opération est réservée aux éditeurs du site seulement...
 This operation is restricted to administrators only...
 Cette opération est réservée aux administrateurs seulement...
 Rule "%1" matched "%2" on this page.
-"%2" correspond à la règle "%1" sur cette page.
+La règle "%1" correspondait à "%2" sur cette page.
 Without normal pages
 Sans pages normales 
 Include normal pages
 Comprend les pages normales
 Without permanent anchors
-Sans ancre permanente
+Sans ancres permanentes
 Include permanent anchors
 Inclure les ancres permanentes
 Without near pages
-Sans les pages à proximité
+Sans pages de proximité
 Include near pages
-Inclure les pages à proximité
+Inclure les pages de proximité
 (for %s)
 (pour %s)
 Filter:
-
+Filtre :
 %s pages found.
 %s pages trouvées.
 Replaced: %s
@@ -383,7 +385,7 @@ et
 or
 ou
 Fetching results from %s:
-Récupération des résultats à partir de %s en cours
+Récupération des résultats à partir de %s :
 Near pages:
 Pages à proximité :
 last updated
@@ -415,13 +417,13 @@ Le navigateur signale pas de format de fichier.
 The page contains banned text.
 Cette page contient un texte interdit.
 No changes to be saved.
-
+Aucun changement à sauvegarder.
 This page was changed by somebody else %s.
 Cette page a été modifiée par quelqu'un d'autre %s.
 The changes conflict.  Please check the page again.
 Conflit sur les modifications. SVP vérifiez la page à nouveau.
 Please check whether you overwrote those changes.
-SVP vérifiez si vous souhaitez écrase ces modifications.
+SVP vérifiez si vous avez écrasé ces modifications.
 Anonymous
 Anonyme
 Cannot delete the index file %s.
@@ -489,7 +491,7 @@ Trop de connexions par %s
 Please do not fetch more than %1 pages in %2 seconds.
 Veuillez ne pas télécharger plus de %1 pages toutes les %2 secondes
 Check whether the web server can create the directory %s and whether it can create files in it.
-Verifiez si le serveur web peut créer le répertoire %s et s'il peut y créer des fichiers
+Verifiez si le serveur web peut créer le répertoire %s et s'il peut créer des fichiers dedans.
 anchor first defined here: %s
 première ancre définie ici&nbsp;: %s
 Click to search for references to this permanent anchor
@@ -497,9 +499,9 @@ Cliquer pour chercher des références vers cette ancre permanente
 the page %s also exists
 la page %s existe aussi 
 Copy one of the following stylesheets to %s:
-
+Copier une des feuilles de style suivantes sur %s.
 Deleting %s
-supression de %s
+Supression de %s
 Deleted %s
 %s supprimée
 Renaming %1 to %2.
@@ -509,11 +511,11 @@ La page %s n'existe pas
 The page %s already exists
 La page %s existe déjà
 Cannot rename %1 to %2
-Impossible de renommer %1 %2
+Impossible de renommer %1 en %2
 Renamed to %s
-Renommé  %s
+Renommé  en %s
 Renamed from %s
-Nom précédent %s
+Renommé à partir de %s
 Renamed %1 to %2.
 %1 a été renommée en %2.
 Immediately delete %s
@@ -521,21 +523,21 @@ Supprimer immédiatement %s
 Rename %s to:
 Renommer %s en :
 Learn more...
-
+En savoir plus...
 Cannot highlight the language %s.
 Impossible de surligner la langue %s.
 Recent Visitors
 Derniers Visiteurs
 some action
-
+quelque action
 was here
-
+était ici
 and read
-
-Only works for years >= 1583 - the beginning of Gregorian calendar!
+et a lu
+Illegal year value: Use 0001-9999
 
 The match parameter is missing.
-Le paramètre de correspondance est manquant
+Le paramètre de correspondance est manquant.
 Page Collection for %s
 Liste des pages pour %s
 Previous
@@ -545,47 +547,47 @@ Suivant
 Calendar %s
 Calendrier %s
 Su
-
+Di
 Mo
-
+Lu
 Tu
-
+Ma
 We
-
+Me
 Th
-
+Je
 Fr
-
+Ve
 Sa
-
+Sa
 January
-
+Janvier
 February
-
+Février
 March
-
+Mars
 April
-
+Avril
 May
-
+Mai
 June
-
+Juin
 July
-
+Juillet
 August
-
+Août
 September
-
+Septembre
 October
-
+Octobre
 November
-
+Novembre
 December
-
+Décembre
 Clustermap
 Carte du Faisceau
 Pages without a Cluster
-Pages sans un Faisceau
+Pages sans Faisceau
 Comments on 
 Commentaires sur
 Comment on 
@@ -593,9 +595,9 @@ Commentaire sur
 Compilation for %s
 Compilation pour %s
 Compilation tag is missing a regular expression.
-Il manque une expression régulière pour le tag de compilation
+Une expression régulière manque au tag de compilation.
 Despamming pages
-Suppresion des textes indésirables sur les pages.
+Suppression des textes indésirables sur les pages.
 Cannot find revision %s.
 Impossible de trouver la version %s.
 Revert to revision %1: %2
@@ -605,19 +607,17 @@ Marqué comme %s.
 Cannot find unspammed revision.
 Impossible de trouver une version sans texte indésirable.
 Add Comment
-
+Ajouter Commentaire
 ordinary changes
-
+modifications ordinaires
 Footnotes:
-Note de pied de page :
+Notes de pied de page :
 Could not find %1.html template in %2
 Impossible de trouver le modèle %1.html dans %2
-Only Editors are allowed to see hidden pages.
+Only Editors are allowed to see this hidden page.
 
-Only Admins are allowed to see hidden pages.
+Only Admins are allowed to see this hidden page.
 
-image: %s
-image : %s
 Index
 Index
 Languages:
@@ -633,9 +633,9 @@ Gabarit sans paramètres
 The template %s is either empty or does not exist.
 Le gabarit %s est soit vide soit n'existe pas.
  -- defined on %s
-
+ -- défini sur %s
 Local names defined on %1: %2
-
+Noms locaux définis sur %1 : %2
 Register for %s
 Enregistrer pour %s
 Please choose a username of the form "FirstLast" using your real name.
@@ -651,11 +651,11 @@ Le nom d'utilisateur %s a déjà été enregistré.
 Your registration for %s has been submitted.
 Votre enregistrement pour %s a été soumis.
 Please allow time for the webmaster to approve your request.
-
+SVP accordez un peu de temps au webmestre pour valider votre demande.
 An email has been sent to "%s" with further instructions.
-
+Un email a été envoyé à "%s" pour de plus amples instructions.
 There was an error saving your registration.
-
+Il y a eu une erreur au moment de sauvegarder votre enregistrement.
 An account was created for %s.
 Un compte a été créé pour %s
 Login to %s
@@ -663,11 +663,11 @@ Se connecter sur %s
 Username and/or password are incorrect.
 Le nom d'utilisateur et/ou le mot de passe sont incorrects.
 Logged in as %s.
-Connecté comme %s.
+Connecté sous %s.
 Logout of %s
 Déconnexion de %s
 Logout of %s?
-
+Déconnexion de %s ?
 Logged out of %s
 Déconnecté de %s
 You are now logged out.
@@ -679,71 +679,73 @@ Se connecter
 Logout
 Se déconnecter
 Who am I?
-
+Qui suis-je ?
 Forgot your password?
-
+Mot de passe oublié ?
 Change your password
-
+Changer votre mot de passe
 Approve pending registrations
-
+Accepter les enregistrements en attente
 Confirm Registration for %s
-
+Confirmation d'Enregistrement pour %s
 %s, your registration has been approved. You can now use your password to login and edit this wiki.
-
+%s, votre enregistrement a été accepté. Vous pouvez désormais utiliser votre mot de passe pour vous connecter et éditer ce wiki.
 Confirmation failed.  Please email %s for help.
-
+Echec sur la confirmation. SVP envoyez un email à %s pour de l'aide.
 Who Am I?
-
+Qui suis-je ?
 You are logged in as %s.
-
+Vous êtes connecté en tant que %s.
 You are not logged in.
-
+Vous n'êtes pas connecté.
 Reset Password
-
+Réinitialiser le mot de passe.
 The password for %s was reset.  It has been emailed to the address on file.
-
+Le mot de passe pour %s a été réinitialisé. Il a été envoyé à l'adresse sur le fichier.
 There was an error resetting the password for %s.
-
+Il y a eu une erreur de réinitialisation du mot de passe pour %s.
 The username "%s" does not exist.
-
+Le nom d'utilisateur "%s" n'existe pas.
 Reset Password for %s
-
+Réinitialiser le mot de passe pour %s
 Reset Password?
-
+Réinitialisation Mot de Passe ?
 Change Password for %s
-
+Modification Mot de Passe pour %s
 Change Password?
-
+Modification Mot de Passe ?
 Your current password is incorrect.
-
+Votre Mot de Passe est incorrect.
 Your password has been changed.
-
+Votre mot de passe a été modifié.
 Approve Pending Registrations for %s
-
+Accepter les Enregistrements en Attente pour %s
 %s has been approved.
-
+%s a été accepté.
 There was an error approving %s.
-
+Il y a eu une erreur à accepter %s.
 <ul>
-
+<ul>
 <li>%1 - %2</li>
-
+<li>%1 - %2</li>
 </ul>
-
+</ul>
 There are no pending registrations.
+Il n'y a pas d'enregistrements en attente.
+%s is not a legal name for a namespace
 
 Clearing Cache
 Nettoyage du cache.
 Done.
-effectué.
+Effectué.
 Generating Link Database
-Création de la base de donnée de liens
+Création de la base de données de liens
 The 404 handler extension requires the link data extension (links.pl).
-l'extension "404 handler" nécessite une base de donnée de liens (links.pl).
+L'extension "404 handler" nécessite une base de données de liens (links.pl).
 LocalMap
 CarteLocale
 No page id for action localmap
-Aune page id pour actionner la carte locale
+Aucune page id pour actionner la carte locale
 Requested page %s does not exist
 La page demandée %s n'existe pas
 Local Map for %s
@@ -751,11 +753,11 @@ CarteLocale pour %s
 view
 voir
 Self-ban by %s
-
+Auto-bannissement par %s
 You have banned your own IP.
-
+Vous avez banni votre propre IP.
 Orphan List
-Liste des pages orphelines
+Liste Orpheline
 Trail: 
 Trace :
 None
@@ -763,17 +765,17 @@ Aucune
 Type
 Type
 Permalink to "%s"
-Lien permanent vers
+Lien permanent vers "%s"
 There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
-
+Il y a eu une erreur en générant le pdf pour %s. SVP, rendez-compte de cela au webmestre, mais n'essayez pas de télécharger à nouveau, car cela ne fonctionnera pas.
 Someone else is generating a pdf for %s.  Please wait a minute and then try again.
-
+Quelqu'un d'autre est en train de générer un pdf pour %S. SVP, attendez une minute puis essayez de nouveau.
 Download this page as PDF
-
+Télécharger cette page au format PDF
 Portrait
 Portrait
 You did not answer correctly.
-Vous n'avez pas répondu correctement
+Vous n'avez pas répondu correctement.
 All Referrers
 Tous les Introducteurs
 Referrers
@@ -782,16 +784,18 @@ Tag
 Tag
 Rebuild index for searching
 Reconstruire l'index pour la recherche
-Rebuilding Index
-Reconstruction de l'Index
+Tag Cloud
+
 Search::FreeText is not available on this system.
-Chercher::Le TexteLibre n'est pas disponible sur ce système.
+Chercher::TexteLibre n'est pas disponible sur ce système.
 Rebuilding index not done.
 Reconstruction index non effectuée.
 (Rebuilding the index can only be done once every 12 hours.)
 (La reconstruction de l'index ne peut être faite qu'une fois toutes les 12 heures.)
+ ... 
+
 Search term missing.
-Terme de la recherche manquant
+Terme de la recherche manquant.
 Result pages: 
 Pages de résultats :
 (%s results)
@@ -803,9 +807,9 @@ Copie Statique
 Back to %s
 Retour à %s
 Copy to %1 succeeded: %2.
-
+Copie vers %1 réussie : %2.
 Copy to %1 failed: %2.
-
+Copie vers %1 échouée : %2.
 Alternatively, use one of the following templates:
 Alternativement, utilisez un des modèles suivants :
 Thread: %s
@@ -817,11 +821,11 @@ Le fil %s n'existe pas.
 Page %s does not contain a thread.
 La page %s ne contient pas de fil.
 Add
-Ajoutez
+Ajouter
 URL parameter is missing.
 Le paramètre URL est manquant.
 Add to %s thread
-Ajoutez %s au fil
+Ajouter %s au fil
 Below:
 En-dessous :
 URL:
@@ -831,11 +835,11 @@ Nom :
 Failed to remove %s
 Impossible de supprimer %s
 Contents
-Contenus :
+Contenus
 This page is a translation of %s. 
 Cette page est une traduction de %s.
 The translation is up to date.
-La traduction est à jour
+La traduction est à jour.
 The translation is outdated.
 La traduction n'est pas à jour.
 The page does not exist.
@@ -849,15 +853,15 @@ Alternative
 http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 
 search
-Recherche
+chercher
 Upload of %s file
-
+Téléversement du fichier %s
 Blog
 Blog
 Matching pages:
-
+Pages correspondantes :
 New
-
+Nouveau 
 Edit %s.
-
+Editer %s.
 END_OF_TRANSLATION

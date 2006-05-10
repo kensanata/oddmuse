@@ -15,7 +15,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: polish-utf8.pl,v 1.1 2006/05/09 20:29:24 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: polish-utf8.pl,v 1.2 2006/05/10 22:52:16 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Nie wolno Ci czytać tej strony: użytkownik, numer ip lub sieć jest zablokowana.
@@ -27,6 +27,8 @@ UserName must be 50 characters or less: not saved
 NazwaUżytkownika musi mieć nie więcej niż 50 znaków: nie zapisane.
 This page contains an uploaded file:
 Ta strona zawiera wgrany plik:
+Recursive include of %s!
+
 XML::RSS is not available on this system.
 XML::RSS niedostępne na tym systemie.
 diff
@@ -112,7 +114,7 @@ Komputer:
 Language:
 Język:
 Go!
-Wio!
+Szukaj
 (minor)
 (drobna)
 rollback
@@ -529,8 +531,8 @@ was here
 był tutaj
 and read
 i czytał
-Only works for years >= 1583 - the beginning of Gregorian calendar!
-Działa tylko dla lat nie mniejszych niż 1583 - początku kalendarza gregoriańskiego!
+Illegal year value: Use 0001-9999
+
 The match parameter is missing.
 Parametr dopasowania brakuje.
 Page Collection for %s
@@ -609,12 +611,10 @@ Footnotes:
 Przypisy:
 Could not find %1.html template in %2
 Nie można znaleźć szablonu %1.html w %2
-Only Editors are allowed to see hidden pages.
-Tylko edytorzy mogą oglądać ukryte strony.
-Only Admins are allowed to see hidden pages.
-Tylko administratorzy mogą oglądać ukryte strony.
-image: %s
-obrazek: %s
+Only Editors are allowed to see this hidden page.
+
+Only Admins are allowed to see this hidden page.
+
 Index
 Indeks
 Languages:
@@ -729,6 +729,8 @@ Nastąpił błąd przy potwierdzaniu %s.
 </ul>
 There are no pending registrations.
 Nie ma oczekujących rejestracji.
+%s is not a legal name for a namespace
+
 Clearing Cache
 Czyszczenie pamięci podręcznej
 Done.
@@ -779,14 +781,16 @@ Tag
 Znaczniki
 Rebuild index for searching
 Przebuduj indeks przeszukiwania
-Rebuilding Index
-Przebudowywanie indeksu
+Tag Cloud
+
 Search::FreeText is not available on this system.
 Search::FreeText jest niedostępny w tym systemie.
 Rebuilding index not done.
 Przebudowywanie indeksu nie zakończone.
 (Rebuilding the index can only be done once every 12 hours.)
 (Przebudowa indeksu może być dokonana raz na 12 godzin).
+ ... 
+
 Search term missing.
 Brak frazy wyszukiwania.
 Result pages: 

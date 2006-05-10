@@ -15,7 +15,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: new-utf8.pl,v 1.8 2006/03/24 15:12:48 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: new-utf8.pl,v 1.9 2006/05/10 22:52:16 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 
@@ -729,6 +729,8 @@ There was an error approving %s.
 
 There are no pending registrations.
 
+%s is not a legal name for a namespace
+
 Clearing Cache
 
 Done.
@@ -780,8 +782,6 @@ Tag
 Rebuild index for searching
 
 Tag Cloud
-
-Rebuilding Index
 
 Search::FreeText is not available on this system.
 
