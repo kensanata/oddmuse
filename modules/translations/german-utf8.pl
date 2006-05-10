@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.14 2006/04/01 22:13:30 lude Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.15 2006/05/10 22:52:16 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
@@ -28,6 +28,8 @@ UserName must be 50 characters or less: not saved
 Länge des Benutzernamens maximal 50 Zeichen: nicht gespeichert.
 This page contains an uploaded file:
 Diese Seite enthält eine hochgeladene Datei:
+Recursive include of %s!
+%s wird rekursiv eingelesen!
 XML::RSS is not available on this system.
 Das XML::RSS Modul ist auf diesem System nicht installiert.
 diff
@@ -530,8 +532,8 @@ was here
 war hier
 and read
 und las
-Only works for years >= 1583 - the beginning of Gregorian calendar!
-Das funktioniert nur für das Jahr 1583 und später. Dazumal wurde der gregorianische Kalender eingeführt
+Illegal year value: Use 0001-9999
+Nur Jahreszahlen im Bereich 0001-9999 sind hier erlaubt
 The match parameter is missing.
 Der 'match' Parameter fehlt noch.
 Page Collection for %s
@@ -730,6 +732,8 @@ Bei der Bestätigung von %s ist ein Fehler aufgetreten.
 </ul>
 There are no pending registrations.
 Es gibt keine offenen Gesuche.
+%s is not a legal name for a namespace
+%s ist ein ungültiger Name für einen Namensraum
 Clearing Cache
 Cache wird geleert
 Done.
@@ -780,14 +784,16 @@ Tag
 Tag
 Rebuild index for searching
 Der Index für die Suche wird neu erstellt
-Rebuilding Index
-Der Index wird neu erstellt
+Tag Cloud
+Tag Wolke
 Search::FreeText is not available on this system.
 Search::FreeText fehlt auf diesem System.
 Rebuilding index not done.
 Der Index für die Suche wurde noch nicht neu erstellt.
 (Rebuilding the index can only be done once every 12 hours.)
 (Der Index für die Suche kann nur einmal alle zwölf Stunden neu erstellt werden.)
+ ... 
+ … 
 Search term missing.
 Der Suchbegriff fehlt.
 Result pages: 

@@ -2,6 +2,7 @@
 #
 # Copyright (c) 2003  Zajcev Evgeny
 # Copyright (C) 2004  Andrei Bulava <abulava@users.sourceforge.net>
+# Copyright (C) 2006  Igor Afanasyev <afan@mail.ru>
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
@@ -16,9 +17,9 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-# This script was last checked for Oddmuse version 1.383.
+# This script was last checked for Oddmuse version 1.658.
 #
-$ModulesDescription .= '<p>$Id: russian-utf8.pl,v 1.7 2006/01/21 21:06:00 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: russian-utf8.pl,v 1.8 2006/05/10 22:52:16 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 
@@ -29,6 +30,8 @@ Hекорректная кличка %s: ничего не записано.
 UserName must be 50 characters or less: not saved
 
 This page contains an uploaded file:
+
+Recursive include of %s!
 
 XML::RSS is not available on this system.
 
@@ -51,25 +54,25 @@ image
 download
 
 CGI Internal error: %s
-
+Внутренняя ошибка CGI: %s
 Invalid action parameter %s
 Некорректный параметр действия %s
 Invalid URL.
 Некорректный URL.
 Page name is missing
-
+Отсутствует имя страницы
 Page name is too long: %s
-Имя страницы слишком велико: %s
+Слишком длинное имя страницы: %s
 Invalid Page %s (must not end with .db)
 Некорректная страница %s (не должна оканчиваться на .db)
 Invalid Page %s (must not end with .lck)
-Некорректная страница %s (Некорректная страница %s lck)
+Некорректная страница %s (не должна оканчиваться на .lck)
 Invalid Page %s
 Некорректная страница %s
 Preview:
-Предпросмотр:
+Предварительный просмотр:
 Preview only, not yet saved
-Только предпросмотр - пока ничего не записано
+Только предварительный просмотр - пока ничего не сохранено
 Please go on to %s.
 
 Could not open %s log file
@@ -93,29 +96,29 @@ for %s only
 List latest change per page only
 Перечислить только последнее изменение на страницу
 List all changes
-Перечислить все изменения
+Показать все изменения
 List only major changes
-Перечислить только значительные изменения
+Показать только существенные изменения
 Include minor changes
-Включить незначительные изменения
+Включить несущественные изменения
 %s days
 %s дней
 List later changes
-Перечислить недавние изменения
+Показать недавние изменения
 Filters
 Фильтры
 Title:
-
+Заголовок:
 Title and Body:
-
+Заголовок и содержимое:
 Username:
 Имя пользователя:
 Host:
-Хост:
+Сервер:
 Language:
-
+Язык:
 Go!
-Вперёд!
+Вперед!
 (minor)
 (незначительные)
 rollback
@@ -125,7 +128,7 @@ new
 from %s
 с %s
 This page is too big to send over RSS.
-
+Эта страница слишком велика для трансляции в RSS.
 History of %s
 История %s
 Compare
@@ -145,57 +148,57 @@ Rollback to %s
 %s rolled back
 
 Index of all pages
-Каталог всех страниц:
+Каталог страниц
 Wiki Version
-
+Версия Wiki
 Unlock Wiki
-
+Разблокировка Wiki
 Password
 Пароль
 Run maintenance
-
+Запустить процедуру техобслуживания
 Unlock site
-
+Разблокировать сайт для редактирования другими
 Lock site
-
+Блокировать сайт от редактирования другими
 Install CSS
-
+Загрузить CSS-стиль
 Unlock %s
-
+Разблокировать %s
 Lock %s
-
+Блокировать %s
 Administration
-
+Администрирование
 Actions:
-
+Действия:
 Important pages:
-
+Служебные страницы:
 To mark a page for deletion, put <strong>%s</strong> on the first line.
-
+Чтобы пометить любую страницу к удалению, поместите <strong>%s</strong> первой строкой страницы.
 [Home]
 [Домой]
 redirected from %s
 перенаправлено с %s
 Click to search for references to this page
-Щелчок - искать ссылки на эту страницу
+Щелкните для поиска ссылок на эту страницу
 Cookie: 
-
+Кука:
 Warning
 Внимание
 Database is stored in temporary directory %s
 База данных сохранена во временной директории %s
 %s seconds
-
+%s секунд
 The same page on other sites:
 
 EditNearLinks
 
 Last edited
-Последнее редактирование
+Редактировалось в последний раз 
 Edited
 Правленное
 by %s
-
+пользователем %s
 (diff)
 (отличия)
 Edit revision %s of this page
@@ -239,13 +242,13 @@ revision %s
 current revision
 текущей версии
 Difference (from prior %s revision)
-Отличия (текущей версии от предыдущей - %s)
+Отличия от предыдущей версии %s
 major
-значительные
+существенные
 minor
-незначительные
+несущественные
 No diff available.
-Отличий нет.
+Функция сравнения (diff) недоступна.
 The two revisions are the same.
 
 Old revision:
@@ -279,11 +282,11 @@ Could not get %s lock
 The lock was created %s.
 
 This operation may take several seconds...
-Это может занять несколько секунд, так что не нервничайте
+Эта операция может занять несколько секунд...
 Forced unlock of %s lock.
 
 No unlock required.
-
+Разблокировка не требуется.
 %s hours ago
 
 1 hour ago
@@ -329,17 +332,17 @@ Replace this file with text.
 Replace this text with a file.
 Заменить этот текст файлом.
 File to upload: 
-
+Файл для загрузки:
 Files of type %s are not allowed.
-
+Загрузка файлов типа "%s" не разрешена.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
-Ваш пароль сохраняется в cookie, если cookies у вас включены. Cookies могут быть потеряны, если вы подключаетесь с другого компьютера, с другой учётной записи, или используя другое программное обеспечение.
+Ваш пароль сохраняется в куке (cookie), если поддержка кук в браузере включена. При подключении с другого компьютера, с другой учётной записи или из другого браузера вам придется вводить пароль заново.
 You are currently an administrator on this site.
-Теперь вы - администратор на этом сайте.
+Сейчас вы имеете права администратора.
 You are currently an editor on this site.
-Теперь вы - редактор на этом сайте.
+Сейчас вы имеете права редактора.
 You are a normal user on this site.
-Вы - обычный пользователь на этом сайте.
+Сейчас вы имеете права обычного пользователя.
 Your password does not match any of the  administrator or editor passwords.
 Ваш пароль не совпадает с паролями администратора или редактора.
 Password:
@@ -347,9 +350,9 @@ Password:
 This site does not use admin or editor passwords.
 Этот сайт не использует пароли администратора или редактора.
 This operation is restricted to site editors only...
-Эта операция только для редакторов сайта...
+Эта операция доступна только для редакторов сайта...
 This operation is restricted to administrators only...
-Эта операция только для администаторов сайта...
+Эта операция доступна только для администаторов сайта...
 Rule "%1" matched "%2" on this page.
 
 Without normal pages
@@ -367,15 +370,15 @@ Include near pages
 (for %s)
 (%s)
 Filter:
-
+Фильтр:
 %s pages found.
-Найдено %s страниц.
+Найдено %s страниц
 Replaced: %s
 
 Search for: %s
 Искать: %s
 View changes for these pages
-Смотреть изменения этих страниц
+Посмотреть изменения для этих страниц
 Search sites on the %s as well
 
 and
@@ -439,21 +442,21 @@ ancestor
 other
 
 Run Maintenance
-
+Процедура техобслуживания
 Maintenance not done.
-
+Техобслуживание не выполнено.
 (Maintenance can only be done once every 12 hours.)
-
+(Техобслуживание может выполняться раз в 12 часов, не чаще).
 Remove the "maintain" file or wait.
-
+Удалите файл "maintain" или подождите
 Main lock obtained.
-
+Блокировка сайта установлена.
 Expiring keep files and deleting pages marked for deletion
-
+Удаление устаревших версий страниц и страниц, явно помеченных к удалению
 not deleted: 
-
+не удалена:
 deleted
-
+удалена
 Moving part of the %s log file.
 
 Moving %s log entries.
@@ -461,33 +464,33 @@ Moving %s log entries.
 Getting page index file for %s.
 
 Main lock released.
-
+Блокировка сайта снята.
 Set or Remove global edit lock
-
+Установка или снятие глобальной блокировки на редактирование
 Edit lock created.
-
+Блокировка на редактирование установлена.
 Edit lock removed.
-
+Блокировка на редактирование снята.
 Set or Remove page edit lock
-
+Установка или снятие блокировки на редактирование данной страницы
 Lock for %s created.
-
+Блокировка на %s установлена.
 Lock for %s removed.
-
+Блокировка на %s снята.
 Displaying Wiki Version
-
+Версия Wiki
 Show dependencies
-
+Показать используемые библиотеки и модули
 Inter links:
 
 Near links:
 
 Show parsed link data
-
+Показать данные о препроцессинге ссылок
 Too many connections by %s
 
 Please do not fetch more than %1 pages in %2 seconds.
-
+Пожалйуста, не запрашивайте более %1 страниц в течение %2 секунд.
 Check whether the web server can create the directory %s and whether it can create files in it.
 
 anchor first defined here: %s
@@ -497,7 +500,7 @@ Click to search for references to this permanent anchor
 the page %s also exists
 
 Copy one of the following stylesheets to %s:
-
+Выберите один из перечисленных стилей для копирования в %s
 Deleting %s
 
 Deleted %s
@@ -532,7 +535,7 @@ was here
 
 and read
 
-Only works for years >= 1583 - the beginning of Gregorian calendar!
+Illegal year value: Use 0001-9999
 
 The match parameter is missing.
 
@@ -612,11 +615,9 @@ Footnotes:
 
 Could not find %1.html template in %2
 
-Only Editors are allowed to see hidden pages.
+Only Editors are allowed to see this hidden page.
 
-Only Admins are allowed to see hidden pages.
-
-image: %s
+Only Admins are allowed to see this hidden page.
 
 Index
 
@@ -732,6 +733,8 @@ There was an error approving %s.
 
 There are no pending registrations.
 
+%s is not a legal name for a namespace
+
 Clearing Cache
 
 Done.
@@ -782,13 +785,15 @@ Tag
 
 Rebuild index for searching
 
-Rebuilding Index
+Tag Cloud
 
 Search::FreeText is not available on this system.
 
 Rebuilding index not done.
 
 (Rebuilding the index can only be done once every 12 hours.)
+
+ ... 
 
 Search term missing.
 

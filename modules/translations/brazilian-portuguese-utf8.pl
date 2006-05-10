@@ -17,7 +17,7 @@
 #
 # This translation was last checked for Oddmuse version 1.195.
 #
-$ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.2 2006/01/21 21:06:00 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.3 2006/05/10 22:52:16 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Leitura não permitida: usuário, ip, ou rede está bloqueada.
@@ -28,13 +28,15 @@ Usuário inválido %s: nada salvo.
 UserName must be 50 characters or less: not saved
 NomeUsuario deve ter 50 caracteres ou menos: nada salvo
 This page contains an uploaded file:
+Esta página contém um arquivo carregado:
+Recursive include of %s!
 
 XML::RSS is not available on this system.
 XML::RSS não existe neste sistema
 diff
 diferenças
 history
-história
+histórico
 %s returned no data, or LWP::UserAgent is not available.
 
 RSS parsing failed for %s
@@ -44,13 +46,13 @@ No items found in %s.
  . . . . 
 
 Click to edit this page
-
+Clique para editar esta página
 image
 imagem
 download
-
+download
 CGI Internal error: %s
-Erro CGI interno: %s
+Erro interno de CGI : %s
 Invalid action parameter %s
 Parametro de ação inválido %s
 Invalid URL.
@@ -76,9 +78,9 @@ Não foi possivel abrir o arquivo %s de log
 Error was
 Erro foi
 Note: This error is normal if no changes have been made.
-NOTA: Esse erro é normal se nenhuma alteração foi feita.
+Obaservação: Esse erro é normal se nenhuma alteração foi feita.
 Could not open old %s log file
-Não foi possivel abrir o antigo arquivo %s de log
+Não foi possível abrir o antigo arquivo %s de log
 No updates since %s
 Nenhuma atualização desde %s
 Updates since %s
@@ -104,9 +106,9 @@ Mostra novas modificações
 Filters
 Filtros
 Title:
-
+Título
 Title and Body:
-
+Título e Corpo:
 Username:
 Usuário:
 Host:
@@ -118,13 +120,13 @@ Ir!
 (minor)
 (mínima)
 rollback
-
+desfazer
 new
 novo
 from %s
 de %s
 This page is too big to send over RSS.
-
+Esta página é grande demais para enviar por RSS.
 History of %s
 Histórico de %s
 Compare
@@ -134,21 +136,21 @@ Revisão %s
 by
 por
 Rolling back changes
-
+Desfazendo mudanças
 Missing target for rollback.
-
+Faltou alvo para desfazer mudança.
 Target for rollback is too far back.
-
+Alvo para desfazer mudança é muito antigo.
 Rollback to %s
-
+Desfazer para %s
 %s rolled back
-
+%s desfeito
 Index of all pages
 Índice de todas as páginas
 Wiki Version
-Mostrando versão do Wiki
+Versão do Wiki
 Unlock Wiki
-Destravando
+Desbloquear Wiki
 Password
 Senha
 Run maintenance
@@ -158,27 +160,27 @@ Desbloquear sítio
 Lock site
 Bloquear sítio
 Install CSS
-
+Instalar CSS
 Unlock %s
 Desbloquear %s
 Lock %s
 Bloquear %s
 Administration
-
+Administração
 Actions:
-
+Ações
 Important pages:
-
+Páginas importantes:
 To mark a page for deletion, put <strong>%s</strong> on the first line.
-
+Para marcar uma página para exclusão, escreva <strong>%s</strong> na primeira linha
 [Home]
 [Ínicio]
 redirected from %s
 redirecionado de %s
 Click to search for references to this page
-
+Clique para buscar referência a esta página
 Cookie: 
-
+Cookie:
 Warning
 Atenção
 Database is stored in temporary directory %s
@@ -198,19 +200,19 @@ de %s
 (diff)
 (diff)
 Edit revision %s of this page
-Edite a revisão %s desta página
+Editar a revisão %s desta página
 Edit this page
-Edite esta página
+Editar esta página
 e
 
 This page is read-only
 Esta página é apenas para leitura
 View other revisions
-Veja outras revisões
+Ver outras revisões
 View current revision
-Veja a versão corrente
+Ver a versão corrente
 View all changes
-Veja todas os câmbios
+Ver todas as mudanças
 Homepage URL:
 
 s
@@ -222,11 +224,11 @@ p
 Preview
 Prever
 Search:
-Busca:
+Buscar:
 f
 
 Replace:
-
+Substituir:
 Validate HTML
 Validar HTML
 Validate CSS
@@ -246,7 +248,7 @@ simples
 No diff available.
 Nenhum diff disponivel.
 The two revisions are the same.
-
+As duas revisões são idênticas
 Old revision:
 Revisão antiga:
 Changed:
@@ -272,33 +274,33 @@ Não foi possível abrir %s
 Cannot write %s
 Não foi possível escrever %s
 Cannot create %s
-
+Não foi possível criar %s
 Could not get %s lock
 Não foi possível conseguir a trava %s
 The lock was created %s.
-
+O bloqueio foi criado %s.
 This operation may take several seconds...
 Essa operação pode demorar alguns segundos...
 Forced unlock of %s lock.
-Trava forcada de %s
+Desbloqueio forcado de %s
 No unlock required.
-Nenhum destravamento necessário.
+Nenhum desbloqueio necessário.
 %s hours ago
-%s horas atras
+%s horas atrás
 1 hour ago
-1 hora atras
+1 hora atrás
 %s minutes ago
-%s minutos atras
+%s minutos atrás
 1 minute ago
-1 minuto atras
+1 minuto atrás
 %s seconds ago
-%s segundos atras
+%s segundos atrás
 1 second ago
-1 segundo atras
+1 segundo atrás
 just now
 agora
 Edit Denied
-
+Edição negada
 Editing not allowed: user, ip, or network is blocked.
 Edição não permitida: usuário, ip, ou rede está bloqueada.
 Contact the wiki administrator for more information.
@@ -310,7 +312,7 @@ Para mais informações, veja %s.
 Editing not allowed: %s is read-only.
 Edição não permitida: %s is apenas para leitura.
 Only administrators can upload files.
-
+Somente administradores podem carregar arquivos.
 Editing revision %s of
 Editando revisão %s de
 Editing %s
@@ -330,7 +332,7 @@ Usar um arquivo em vez do texto presente.
 File to upload: 
 Arquivo à usar: 
 Files of type %s are not allowed.
-
+Arquivos do tipo %s não são permitidos.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 Sua senha é salva em um cookie, caso esteja ativado no seu navegador. Cookies podem se perder se você conectar de outra maquina, outra conta, ou outro software.
 You are currently an administrator on this site.
@@ -366,7 +368,7 @@ Include near pages
 (for %s)
 (para %s)
 Filter:
-
+Filtro:
 %s pages found.
 %s páginas encontradas.
 Replaced: %s
@@ -406,7 +408,7 @@ Exemplo_Pagina_Nao_Definida
 Only an administrator can create %s.
 Só administradores podem criar a página %s.
 Transfer Error: %s
-
+Erro de transferência: %s
 Browser reports no file info.
 
 Browser reports no file type.
@@ -414,7 +416,7 @@ Browser reports no file type.
 The page contains banned text.
 
 No changes to be saved.
-
+Nenhuma mudança para ser salva.
 This page was changed by somebody else %s.
 Esta página foi editada por outra pessoa %s.
 The changes conflict.  Please check the page again.
@@ -424,13 +426,13 @@ Se faz favor controle se você  esses câmbios.
 Anonymous
 Anônimo
 Cannot delete the index file %s.
-
+Não foi possível excluir o arquivo de índice %s.
 Please check the directory permissions.
-
+Cheque as permissões do diretório.
 Your changes were not saved.
-
+Suas mudanças não foram salvas
 Could not get a lock to merge!
-Não foi possivel pegar a trava para combinar!
+Não foi possivel bloquear para combinar!
 you
 o que você escreveu
 ancestor
@@ -438,7 +440,7 @@ o que já estava
 other
 o que a outra pessoa escreveu
 Run Maintenance
-
+Executar Manutenção
 Maintenance not done.
 Manutenção não concluída.
 (Maintenance can only be done once every 12 hours.)
@@ -450,9 +452,9 @@ Trava principal obtida.
 Expiring keep files and deleting pages marked for deletion
 Expirando mantém arquivos e deletando páginas marcadas para deletar
 not deleted: 
-não deletado: 
+não excluído: 
 deleted
-deletado
+excluído
 Moving part of the %s log file.
 Movendo parte de %s arquivo de log.
 Moving %s log entries.
@@ -474,9 +476,9 @@ Trava para %s criado.
 Lock for %s removed.
 Trava para %s removido:
 Displaying Wiki Version
-
+Mostrando a versão do Wiki
 Show dependencies
-
+Mostrar dependências
 Inter links:
 
 Near links:
@@ -498,31 +500,31 @@ a página %s também existe
 Copy one of the following stylesheets to %s:
 
 Deleting %s
-
+Excluindo %s
 Deleted %s
-
+Excluído
 Renaming %1 to %2.
-
+Renomeando %1 para %2.
 The page %s does not exist
 A página %s não existe
 The page %s already exists
 A página %s já existe
 Cannot rename %1 to %2
-
+Não foi possível renomear %1 para %2
 Renamed to %s
-
+Renomeado para %s
 Renamed from %s
-
+Renomeado de %s
 Renamed %1 to %2.
-
+Renomeado %1 para %2
 Immediately delete %s
-
+Excluir imadiatamente %s
 Rename %s to:
-
+Renomear %s para:
 Learn more...
-
+Leia mais...
 Cannot highlight the language %s.
-
+Não foi possível destacar a linguagem %s.
 Recent Visitors
 Visitantes recentes
 some action
@@ -531,7 +533,7 @@ was here
 
 and read
 
-Only works for years >= 1583 - the beginning of Gregorian calendar!
+Illegal year value: Use 0001-9999
 
 The match parameter is missing.
 
@@ -544,51 +546,51 @@ Próximo
 Calendar %s
 Calendário para %s
 Su
-
+Do
 Mo
-
+Se
 Tu
-
+Te
 We
-
+Qu
 Th
-
+Qu
 Fr
-
+Se
 Sa
-
+Sa
 January
-
+Janeiro
 February
-
+Fevereiro
 March
-
+Março
 April
-
+Abril
 May
-
+Maio
 June
-
+Junho
 July
-
+Julho
 August
-
+Agosto
 September
-
+Setembro
 October
-
+Outubro
 November
-
+Novembro
 December
-
+Dezembro
 Clustermap
 
 Pages without a Cluster
 
 Comments on 
-
+Comentários sobre 
 Comment on 
-
+Comentar sobre 
 Compilation for %s
 
 Compilation tag is missing a regular expression.
@@ -598,25 +600,23 @@ Despamming pages
 Cannot find revision %s.
 
 Revert to revision %1: %2
-
+Reverter para revisão %1: %2
 Marked as %s.
-
+Marcado como %s.
 Cannot find unspammed revision.
 
 Add Comment
-
+Adicionar Comentário
 ordinary changes
 
 Footnotes:
-
+Notas de rodapé: 
 Could not find %1.html template in %2
 
-Only Editors are allowed to see hidden pages.
+Only Editors are allowed to see this hidden page.
 
-Only Admins are allowed to see hidden pages.
+Only Admins are allowed to see this hidden page.
 
-image: %s
-imagem: %s
 Index
 
 Languages:
@@ -638,15 +638,15 @@ Local names defined on %1: %2
 Register for %s
 
 Please choose a username of the form "FirstLast" using your real name.
-
+Escolha um nome de usuário da forma "NomeSobrenome" usando o seu nome verdadeiro.
 The passwords do not match.
-
+As senhas não são iguais.
 The password must be at least %s characters.
-
+A senha dever ter no mínimo %s caracteres.
 That email address is invalid.
-
+Este endereço de email é inválido.
 The username %s has already been registered.
-
+O nome de usuário %s já foi registrado.
 Your registration for %s has been submitted.
 
 Please allow time for the webmaster to approve your request.
@@ -660,7 +660,7 @@ An account was created for %s.
 Login to %s
 
 Username and/or password are incorrect.
-
+Nome de usuário e/ou senha inválidos.
 Logged in as %s.
 
 Logout of %s
@@ -680,19 +680,19 @@ Logout
 Who am I?
 
 Forgot your password?
-
+Esqueceu sua senha?
 Change your password
-
+Mudar sua senha
 Approve pending registrations
-
+Aprovar rsgistros pendentes
 Confirm Registration for %s
-
+Confirmar resgistro para %s
 %s, your registration has been approved. You can now use your password to login and edit this wiki.
 
 Confirmation failed.  Please email %s for help.
 
 Who Am I?
-
+Quem sou eu?
 You are logged in as %s.
 
 You are not logged in.
@@ -720,7 +720,7 @@ Your password has been changed.
 Approve Pending Registrations for %s
 
 %s has been approved.
-
+%s foi aprovado.
 There was an error approving %s.
 
 <ul>
@@ -730,6 +730,8 @@ There was an error approving %s.
 </ul>
 
 There are no pending registrations.
+Não há registros pendentes.
+%s is not a legal name for a namespace
 
 Clearing Cache
 
@@ -756,7 +758,7 @@ You have banned your own IP.
 Orphan List
 
 Trail: 
-
+Rastro: 
 None
 Nenhum
 Type
@@ -768,9 +770,9 @@ There was an error generating the pdf for %s.  Please report this to webmaster, 
 Someone else is generating a pdf for %s.  Please wait a minute and then try again.
 
 Download this page as PDF
-
+Baixar esta página como PDF
 Portrait
-
+Retrato
 You did not answer correctly.
 
 All Referrers
@@ -781,7 +783,7 @@ Tag
 
 Rebuild index for searching
 
-Rebuilding Index
+Tag Cloud
 
 Search::FreeText is not available on this system.
 
@@ -789,10 +791,12 @@ Rebuilding index not done.
 
 (Rebuilding the index can only be done once every 12 hours.)
 
+ ... 
+
 Search term missing.
-
+Faltou o termo para a busca.
 Result pages: 
-
+Páginas de resultado: 
 (%s results)
 
 Slideshow:%s
@@ -816,27 +820,27 @@ Thread %s does not exist.
 Page %s does not contain a thread.
 
 Add
-
+Adicionar
 URL parameter is missing.
 
 Add to %s thread
 
 Below:
-
+Abaixo:
 URL:
-
+URL:
 Name:
 Nome:
 Failed to remove %s
-
+Falha ao remover %s
 Contents
-
+Conteúdo
 This page is a translation of %s. 
-
+Esta página é uma tradução de %s. 
 The translation is up to date.
-
+A tradução está atualizada.
 The translation is outdated.
-
+A tradução está desatualizada.
 The page does not exist.
 Esta página não existe.
 http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
@@ -856,7 +860,7 @@ Blog
 Matching pages:
 
 New
-
+Novo
 Edit %s.
-
+Editar %s.
 END_OF_TRANSLATION

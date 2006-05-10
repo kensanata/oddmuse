@@ -24,7 +24,7 @@
 #
 # This translation was last checked for Oddmuse version 1.215.
 #
-$ModulesDescription .= '<p>$Id: dutch-utf8.pl,v 1.7 2006/01/21 21:06:00 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: dutch-utf8.pl,v 1.8 2006/05/10 22:52:16 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 U mag deze pagina niet lezen: uw account op deze Wiki, uw IP of uw netwerk is buitengesloten.
@@ -35,6 +35,8 @@ Niet opgeslagen: de GebruikersNaam %s is ongeldig.
 UserName must be 50 characters or less: not saved
 Niet opgeslagen: de GebruikersNaam mag hoogstens 50 tekens lang zijn.
 This page contains an uploaded file:
+
+Recursive include of %s!
 
 XML::RSS is not available on this system.
 XML::RSS is niet beschikbaar op dit systeem.
@@ -538,7 +540,7 @@ was here
 
 and read
 
-Only works for years >= 1583 - the beginning of Gregorian calendar!
+Illegal year value: Use 0001-9999
 
 The match parameter is missing.
 De parameter 'match' ontbreekt.
@@ -618,12 +620,10 @@ Footnotes:
 Voetnoten:
 Could not find %1.html template in %2
 
-Only Editors are allowed to see hidden pages.
+Only Editors are allowed to see this hidden page.
 
-Only Admins are allowed to see hidden pages.
+Only Admins are allowed to see this hidden page.
 
-image: %s
-afbeelding: %s
 Index
 
 Languages:
@@ -738,6 +738,8 @@ There was an error approving %s.
 
 There are no pending registrations.
 
+%s is not a legal name for a namespace
+
 Clearing Cache
 Bezig met leegmaken van de cache
 Done.
@@ -788,13 +790,15 @@ Tag
 
 Rebuild index for searching
 
-Rebuilding Index
+Tag Cloud
 
 Search::FreeText is not available on this system.
 
 Rebuilding index not done.
 
 (Rebuilding the index can only be done once every 12 hours.)
+
+ ... 
 
 Search term missing.
 

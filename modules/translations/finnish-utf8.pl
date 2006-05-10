@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: finnish-utf8.pl,v 1.7 2006/01/21 21:06:00 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: finnish-utf8.pl,v 1.8 2006/05/10 22:52:16 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lukeminen ei ole sallittua: käyttäjä, IP tai verkko on estetty.
@@ -27,6 +27,8 @@ Epäkelpo käyttäjännimi %s: ei tallennettu.
 UserName must be 50 characters or less: not saved
 Käyttäjännimen on oltava alle 50 merkkiä pitkä: ei tallennettu
 This page contains an uploaded file:
+
+Recursive include of %s!
 
 XML::RSS is not available on this system.
 XML::RSS ei ole asennettuna tälle palvelimelle.
@@ -530,7 +532,7 @@ was here
 
 and read
 
-Only works for years >= 1583 - the beginning of Gregorian calendar!
+Illegal year value: Use 0001-9999
 
 The match parameter is missing.
 Hakuparametri puuttuu.
@@ -610,12 +612,10 @@ Footnotes:
 Alaviitteet:
 Could not find %1.html template in %2
 
-Only Editors are allowed to see hidden pages.
+Only Editors are allowed to see this hidden page.
 
-Only Admins are allowed to see hidden pages.
+Only Admins are allowed to see this hidden page.
 
-image: %s
-kuva: %s
 Index
 Sisällysluettelo
 Languages:
@@ -730,6 +730,8 @@ There was an error approving %s.
 
 There are no pending registrations.
 
+%s is not a legal name for a namespace
+
 Clearing Cache
 Välimuistia tyhjennetään
 Done.
@@ -780,13 +782,15 @@ Tag
 
 Rebuild index for searching
 
-Rebuilding Index
+Tag Cloud
 
 Search::FreeText is not available on this system.
 
 Rebuilding index not done.
 
 (Rebuilding the index can only be done once every 12 hours.)
+
+ ... 
 
 Search term missing.
 

@@ -20,7 +20,7 @@
 #
 # This translation was last checked for Oddmuse version 1.195.
 #
-$ModulesDescription .= '<p>$Id: portuguese-utf8.pl,v 1.11 2006/01/21 21:15:53 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: portuguese-utf8.pl,v 1.12 2006/05/10 22:52:16 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Leitura não permitida: utilizador, ip, ou rede está bloqueado(a).
@@ -32,6 +32,8 @@ UserName must be 50 characters or less: not saved
 NomeUtilizador deve ter 50 caracteres ou menos: nada salvo
 This page contains an uploaded file:
 Esta página contém um ficheiro enviado:
+Recursive include of %s!
+
 XML::RSS is not available on this system.
 XML::RSS não existe neste sistema
 diff
@@ -534,7 +536,7 @@ was here
 foi aqui
 and read
 e ler
-Only works for years >= 1583 - the beginning of Gregorian calendar!
+Illegal year value: Use 0001-9999
 
 The match parameter is missing.
 Falta o parâmentro de correspondência
@@ -614,12 +616,10 @@ Footnotes:
 Notas de rodapé:
 Could not find %1.html template in %2
 Impossível encontrar <i>template</i> %1.html em %2
-Only Editors are allowed to see hidden pages.
+Only Editors are allowed to see this hidden page.
 
-Only Admins are allowed to see hidden pages.
+Only Admins are allowed to see this hidden page.
 
-image: %s
-imagem: %s
 Index
 Índice
 Languages:
@@ -669,7 +669,7 @@ Entrou como %s
 Logout of %s
 Sair de %s
 Logout of %s?
-Logout of %s?
+
 Logged out of %s
 Você saiu de %s
 You are now logged out.
@@ -681,7 +681,7 @@ Entrar
 Logout
 Sair
 Who am I?
-Quem sou eu?
+
 Forgot your password?
 
 Change your password
@@ -734,6 +734,8 @@ There was an error approving %s.
 
 There are no pending registrations.
 
+%s is not a legal name for a namespace
+
 Clearing Cache
 Limpando a Cache
 Done.
@@ -784,14 +786,16 @@ Tag
 Tag
 Rebuild index for searching
 Reconstruir índice para pesquisa
-Rebuilding Index
-Reconstruindo Índece
+Tag Cloud
+
 Search::FreeText is not available on this system.
 Busca::TextoLivre não está disponível neste sistema.
 Rebuilding index not done.
 Reconstrução do índice não realizada.
 (Rebuilding the index can only be done once every 12 hours.)
 (A reconstrução do índice só pode ser feita de 12 em 12 horas.)
+ ... 
+
 Search term missing.
 Falta termo de pesquisa.
 Result pages: 

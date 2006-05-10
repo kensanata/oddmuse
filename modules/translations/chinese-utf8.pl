@@ -17,7 +17,7 @@
 #
 # This translation was last checked for Oddmuse version 1.504.
 #
-$ModulesDescription .= '<p>$Id: chinese-utf8.pl,v 1.7 2006/01/21 21:06:00 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: chinese-utf8.pl,v 1.8 2006/05/10 22:52:16 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 禁止讀取：使用者、ip 或是網路已被禁止連線。
@@ -29,6 +29,8 @@ UserName must be 50 characters or less: not saved
 無法儲存。使用者名稱不可超過 50 個字元。
 This page contains an uploaded file:
 本頁包含一個已上傳的檔案：
+Recursive include of %s!
+
 XML::RSS is not available on this system.
 本系統無法使用 XML::RSS 。
 diff
@@ -531,7 +533,7 @@ was here
 
 and read
 
-Only works for years >= 1583 - the beginning of Gregorian calendar!
+Illegal year value: Use 0001-9999
 
 The match parameter is missing.
 未指定 match 參數。
@@ -611,12 +613,10 @@ Footnotes:
 註解：
 Could not find %1.html template in %2
 無法在 %2 找到 %1.html 的範本
-Only Editors are allowed to see hidden pages.
+Only Editors are allowed to see this hidden page.
 
-Only Admins are allowed to see hidden pages.
+Only Admins are allowed to see this hidden page.
 
-image: %s
-圖像: %s
 Index
 索引
 Languages:
@@ -731,6 +731,8 @@ There was an error approving %s.
 
 There are no pending registrations.
 
+%s is not a legal name for a namespace
+
 Clearing Cache
 清除暫存
 Done.
@@ -781,13 +783,15 @@ Tag
 
 Rebuild index for searching
 
-Rebuilding Index
+Tag Cloud
 
 Search::FreeText is not available on this system.
 
 Rebuilding index not done.
 
 (Rebuilding the index can only be done once every 12 hours.)
+
+ ... 
 
 Search term missing.
 

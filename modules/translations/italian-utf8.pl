@@ -15,7 +15,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: italian-utf8.pl,v 1.7 2006/01/21 21:06:00 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: italian-utf8.pl,v 1.8 2006/05/10 22:52:16 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lettura non consentita: l'utente, l'IP o la rete risultano bloccati.
@@ -27,6 +27,8 @@ UserName must be 50 characters or less: not saved
 Lo UserName deve avere al massimo 50 caratteri: nessun salvataggio
 This page contains an uploaded file:
 Questa pagina contiene un file:
+Recursive include of %s!
+
 XML::RSS is not available on this system.
 Il modulo Perl XML:RSS non è disponibile su questo sistema.
 diff
@@ -529,7 +531,7 @@ was here
 
 and read
 
-Only works for years >= 1583 - the beginning of Gregorian calendar!
+Illegal year value: Use 0001-9999
 
 The match parameter is missing.
 Manca il parametro di match.
@@ -609,12 +611,10 @@ Footnotes:
 Note:
 Could not find %1.html template in %2
 Impossibile trovare il modello %1.html in %2
-Only Editors are allowed to see hidden pages.
+Only Editors are allowed to see this hidden page.
 
-Only Admins are allowed to see hidden pages.
+Only Admins are allowed to see this hidden page.
 
-image: %s
-immagine: %s
 Index
 Indice
 Languages:
@@ -729,6 +729,8 @@ There was an error approving %s.
 
 There are no pending registrations.
 
+%s is not a legal name for a namespace
+
 Clearing Cache
 Ripulisco la Cache
 Done.
@@ -779,13 +781,15 @@ Tag
 
 Rebuild index for searching
 
-Rebuilding Index
+Tag Cloud
 
 Search::FreeText is not available on this system.
 
 Rebuilding index not done.
 
 (Rebuilding the index can only be done once every 12 hours.)
+
+ ... 
 
 Search term missing.
 Manca il termine da cercare.

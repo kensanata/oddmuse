@@ -4,9 +4,8 @@
 # Copyright (c) 2003 Erik S-O Johansson and others
 # Copyright (c) 2003 Björn Lindström <bkhl@elektrubadur.se> and
 #                    Zrajm C Akfohg <zrajm@klingonska.org>
-# Copyright (c) 2004 Johan Adler <alltid@nyfiken.org>
-# Copyright (c) 2004 Zrajm C Akfohg <zrajm@klingonska.org
-# Copyright (c) 2005 Johan Adler <alltid@nyfiken.org>
+# Copyright (c) 2004-06 Johan Adler <alltid@nyfiken.org>
+# Copyright (c) 2004 Zrajm C Akfohg <zrajm@klingonska.org>
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
@@ -21,7 +20,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.14 2006/01/21 21:05:05 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.15 2006/05/10 22:52:16 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Läsning inte tillåten: användare, ip eller nätverk är blockerat.
@@ -33,6 +32,8 @@ UserName must be 50 characters or less: not saved
 Användarnamn får bestå av högst 50 tecken: Ej sparad.
 This page contains an uploaded file:
 Denna sida innehåller en uppladdad fil:
+Recursive include of %s!
+
 XML::RSS is not available on this system.
 XML::RSS inte tillgängligt på det här systemet.
 diff
@@ -54,7 +55,7 @@ bild
 download
 ladda ned
 CGI Internal error: %s
-
+Internt CGI-fel: %s
 Invalid action parameter %s
 Ogiltig parameter %s
 Invalid URL.
@@ -108,9 +109,9 @@ Visa senare ändringar
 Filters
 Sålla
 Title:
-
+Titel:
 Title and Body:
-
+Titel och innehåll:
 Username:
 Användare:
 Host:
@@ -128,7 +129,7 @@ ny
 from %s
 från %s
 This page is too big to send over RSS.
-
+Denna sida är för stor för att sändas över RSS.
 History of %s
 Historik för %s
 Compare
@@ -162,7 +163,7 @@ Lås upp wikin
 Lock site
 Lås wikin
 Install CSS
-
+Installera CSS
 Unlock %s
 Lås upp %s
 Lock %s
@@ -222,7 +223,7 @@ s
 Save
 Spara
 p
-
+f
 Preview
 Förhandsgranska
 Search:
@@ -250,7 +251,7 @@ mindre
 No diff available.
 Information om ändring är inte tillgänglig.
 The two revisions are the same.
-
+De två versionerna är identiska.
 Old revision:
 Gammal version:
 Changed:
@@ -280,7 +281,7 @@ Kan inte skapa %s
 Could not get %s lock
 Kunde inte låsa %s
 The lock was created %s.
-
+Låset skapades %s.
 This operation may take several seconds...
 Den här funktionen kan ta flera sekunder...
 Forced unlock of %s lock.
@@ -292,13 +293,13 @@ för %s timmar sedan
 1 hour ago
 för 1 timme sedan
 %s minutes ago
-%s minuter sedan
+för %s minuter sedan
 1 minute ago
-1 minut sedan
+för 1 minut sedan
 %s seconds ago
-%s sekunder sedan
+för %s sekunder sedan
 1 second ago
-1 sekund sedan
+för 1 sekund sedan
 just now
 just nu
 Edit Denied
@@ -314,7 +315,7 @@ Se %s för mer information.
 Editing not allowed: %s is read-only.
 Redigering är inte tillåten: %s är skrivskyddad.
 Only administrators can upload files.
-Bara administratörer kan ladda upp filer.
+Endast administratörer kan ladda upp filer.
 Editing revision %s of
 Redigerar version %s av
 Editing %s
@@ -418,7 +419,7 @@ Webbläsare rapporterar ingen filtyp.
 The page contains banned text.
 Sidan innehåller otillåten text.
 No changes to be saved.
-
+Inga ändringar att spara.
 This page was changed by somebody else %s.
 Den här sidan ändrades av någon annan %s.
 The changes conflict.  Please check the page again.
@@ -494,13 +495,13 @@ Vänligen hämta inte mer än %1 sidor på %2 sekunder.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Kontrollera att webservern kan skapa biblioteket %s och att den kan skapa filer i det.
 anchor first defined here: %s
-ankare definierades här först: %s
+ankare definierades först här: %s
 Click to search for references to this permanent anchor
 Klicka för att söka efter referenser till det här permanenta ankaret
 the page %s also exists
 sidan %s finns också
 Copy one of the following stylesheets to %s:
-
+Kopiera en av följande 'stylesheets' till %s:
 Deleting %s
 Tar bort %s
 Deleted %s
@@ -524,18 +525,18 @@ Radera %s direkt
 Rename %s to:
 Byt namn på %s till:
 Learn more...
-
+Läs mer...
 Cannot highlight the language %s.
 Kan ej markera språket %s.
 Recent Visitors
 Senaste besökare
 some action
-
+gjorde något
 was here
-
+var här
 and read
-
-Only works for years >= 1583 - the beginning of Gregorian calendar!
+och läste
+Illegal year value: Use 0001-9999
 
 The match parameter is missing.
 Parametern "match" saknas.
@@ -548,47 +549,47 @@ Nästa
 Calendar %s
 Kalender %s
 Su
-
+Sö
 Mo
-
+Må
 Tu
-
+Ti
 We
-
+On
 Th
-
+To
 Fr
 
 Sa
-
+Lö
 January
-
+januari
 February
-
+februari
 March
-
+mars
 April
-
+april
 May
-
+maj
 June
-
+juni
 July
-
+juli
 August
-
+augusti
 September
-
+september
 October
-
+oktober
 November
-
+november
 December
-
+december
 Clustermap
-
+Klusterkarta
 Pages without a Cluster
-
+Sidor utan kluster
 Comments on 
 Kommentarer till 
 Comment on 
@@ -608,19 +609,17 @@ Markerad som %s.
 Cannot find unspammed revision.
 Kan inte finna version utan skräptexter
 Add Comment
-
+Lägg till kommentar
 ordinary changes
-
+vanliga ändringar
 Footnotes:
 Fotnoter:
 Could not find %1.html template in %2
 Kunde inte finna %1.html-mallen i %2
-Only Editors are allowed to see hidden pages.
+Only Editors are allowed to see this hidden page.
 
-Only Admins are allowed to see hidden pages.
+Only Admins are allowed to see this hidden page.
 
-image: %s
-bild: %s
 Index
 Innehållsförteckning
 Languages:
@@ -636,9 +635,9 @@ Mall utan parametrar
 The template %s is either empty or does not exist.
 Mallen %s är antingen tom eller saknas.
  -- defined on %s
-
+ -- definierad på %s
 Local names defined on %1: %2
-
+Lokala namn definierade på %1: %2
 Register for %s
 
 Please choose a username of the form "FirstLast" using your real name.
@@ -735,6 +734,8 @@ There was an error approving %s.
 
 There are no pending registrations.
 
+%s is not a legal name for a namespace
+
 Clearing Cache
 Rensar cachen
 Done.
@@ -785,13 +786,15 @@ Tag
 
 Rebuild index for searching
 
-Rebuilding Index
+Tag Cloud
 
 Search::FreeText is not available on this system.
 
 Rebuilding index not done.
 
 (Rebuilding the index can only be done once every 12 hours.)
+
+ ... 
 
 Search term missing.
 Sökord saknas.
