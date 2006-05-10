@@ -1,4 +1,4 @@
-# Copyright (C) 2004, 2005  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2005, 2006  Alex Schroeder <alex@emacswiki.org>
 # Copyright (C) 2006  Ingo Belka
 #
 # This program is free software; you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.50 2006/04/18 11:39:12 ingob Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.51 2006/05/10 20:04:06 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalAsTable $CalStartMonday);
 
@@ -39,7 +39,7 @@ sub NewCalendarGetHeader {
 }
 
 sub Cal {
-  my ($year, $mon, $unlink_year) = @_; # example: 2004, 12
+  my ($year, $mon, $unlink_year, $id) = @_; # example: 2004, 12
   my ($sec_now, $min_now, $hour_now, $mday_now, $mon_now, $year_now) = localtime($Now);
   $mon_now += 1;
   $mon = $mon_now unless $mon;
@@ -53,6 +53,7 @@ sub Cal {
   $cal =~ s|( {1,2}\d{1,2})\b|{
     my $day = $1;
     my $date = sprintf("%d-%02d-%02d", $year, $mon, $day);
+    $date .= '_' . UrlEncode(FreeToNormal($id)) if $id;
     my $class = '';
     $class .= ' today' if $day == $mday_now and $mon == $mon_now and $year == $year_now;
     my @matches = grep(/^$date/, @pages);
@@ -120,16 +121,18 @@ sub CalendarRule {
     print CloseHtmlEnvironments() . Cal($2, $3);
     pos = $oldpos;
     return AddHtmlEnvironment('p');
-  } elsif (/\G(month:([+-]\d\d?))/gc) {
+  } elsif (/\G(month:([+-]\d\d?))/gc
+	  or /\G(\[\[month:([+-]\d\d?) $FreeLinkPattern\]\])/gc) {
     my $oldpos = pos;
     Dirty($1);
     my $delta = $2;
+    my $id = $3;
     my ($sec, $min, $hour, $mday, $mon, $year) = localtime($Now);
     $year += 1900;
     $mon += 1 + $delta;
     while ($mon < 1) { $year -= 1; $mon += 12; };
     while ($mon > 12) { $year += 1; $mon -= 12; };
-    print CloseHtmlEnvironments() . Cal($year, $mon);
+    print CloseHtmlEnvironments() . Cal($year, $mon, undef, $id);
     pos = $oldpos;
     return AddHtmlEnvironment('p');
   }
