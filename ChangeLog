@@ -1,3 +1,8 @@
+2006-05-16  Victor Osadci  <vic_site@xhtml.md>
+
+	* modules/translations/romanian-utf8.pl: Add back the strings that
+	were accidentally removed with the previous commit.
+
 2006-04-30  Alex Schroeder  <alex@gnu.org>
 
 	* modules/toc-headers.pl: New.
