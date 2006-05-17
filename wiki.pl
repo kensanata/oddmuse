@@ -269,7 +269,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.658 2006/04/14 22:39:37 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.659 2006/05/17 11:51:41 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1002,7 +1002,7 @@ sub GetInterLink {
   my ($site, $page) = split(/:/, $id, 2);
   $page =~ s/&amp;/&/g;	 # Unquote common URL HTML
   my $url = GetInterSiteUrl($site, $page, $quote);
-  my $class = 'inter';
+  my $class = 'inter ' . $site;
   if ($text && $bracket && !$url) {
     return "[$id $text]";
   } elsif ($bracket && !$url) {
@@ -1743,8 +1743,8 @@ sub GetRcText {
 
 sub GetRcRss {
   my $url = QuoteHtml($ScriptName);
-  my $diffPrefix = $url . QuoteHtml("?action=browse;diff=1;id=");
-  my $historyPrefix = $url . QuoteHtml("?action=history;id=");
+  my $diffPrefix = $url . "?action=browse;diff=1;id=";
+  my $historyPrefix = $url . "?action=history;id=";
   my $date = TimeToRFC822($LastUpdate);
   my @excluded = ();
   if (GetParam("exclude", 1)) {
