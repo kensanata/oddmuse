@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: today.pl,v 1.4 2006/04/29 17:11:23 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: today.pl,v 1.5 2006/05/20 15:22:32 as Exp $</p>';
 
 # New Action
 
@@ -38,6 +38,6 @@ sub DoNew {
   my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = gmtime($Now);
   $today = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
   $today .= "_" . $id if $id;
+  $today .= sprintf("_%02dh%02d", $hour, $min) if GetParam('hour', 0);
   return DoEdit($today);
 }
-
