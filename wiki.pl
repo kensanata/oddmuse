@@ -269,7 +269,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.659 2006/05/17 11:51:41 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.660 2006/05/20 16:20:10 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -471,11 +471,12 @@ sub ApplyRules {
 	# <search "regexp">
 	Clean(CloseHtmlEnvironments());
 	Dirty($1);
-	my $oldpos = pos;
+	my ($oldpos, $old_) = (pos, $_);
 	print $q->start_div({-class=>'search'});
 	SearchTitleAndBody($2, \&PrintSearchResult, HighlightRegex($2));
 	print $q->end_div;
-	pos = $oldpos; # restore \G after searching
+	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
+	($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
       } elsif ($bol && m/\G(&lt;&lt;&lt;&lt;&lt;&lt;&lt; )/cg) {
 	my ($str, $count, $limit, $oldpos) = ($1, 0, 100, pos);
 	while (m/\G(.*\n)/cg and $count++ < $limit) {
