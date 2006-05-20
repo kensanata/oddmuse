@@ -1155,6 +1155,13 @@ xpath_test($page,
 	   Encode::encode_utf8('//h1/a[@title="Click to search for references to this page"][@href="http://localhost/wiki.pl?search=Alexander+Schr%c3%b6der"][text()="Alexander Schröder"]'),
 	   Encode::encode_utf8('//a[@class="local"][@href="http://localhost/wiki.pl/Alexander_Schr%c3%b6der"][text()="Alexander Schröder"]'));
 
+xpath_test(update_page('IncludeSearch',
+		       "first line\n<search \"ab\">\nlast line"),
+	   '//p[text()="first line "]', # note the NL -> SPC
+	   '//div[@class="search"]/p/span[@class="result"]/a[@class="local"][@href="http://localhost/wiki.pl/NegativeSearchTest"][text()="NegativeSearchTest"]',
+	   '//div[@class="search"]/p/span[@class="result"]/a[@class="local"][@href="http://localhost/wiki.pl/NegativeSearchTestTwo"][text()="NegativeSearchTestTwo"]',
+	  '//p[text()=" last line"]'); # note the NL -> SPC
+
 # --------------------
 
 banning:
@@ -1251,8 +1258,6 @@ test_page(update_page('Summary', "Counting down:\n\n<journal>"),
 
 test_page(update_page('Summary', "Counting up:\n\n<journal reverse>"),
 	  '2003-01-01(.|\n)*2003-06-13(.|\n)*2003-06-14(.|\n)*2003-06-15');
-
-exit;
 
 # --------------------
 
@@ -2239,7 +2244,6 @@ update_page('bar', 'foo');
 %Test = split('\n',<<'EOT');
 EOT
 xpath_run_tests();
-# exit;
 
 %Test = split('\n',<<'EOT');
 [[image:foo]]
