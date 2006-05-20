@@ -1,7 +1,24 @@
+2006-05-20  Alex Schroeder  <alex@gnu.org>
+
+	* modules/today.pl (DoNew): Add hour parameter.
+
+2006-05-17  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetRcRss): Removed two unnecessary QuoteHtml calls.
+	(GetInterLink): Add the site to the class.
+
 2006-05-16  Victor Osadci  <vic_site@xhtml.md>
 
 	* modules/translations/romanian-utf8.pl: Add back the strings that
 	were accidentally removed with the previous commit.
+
+2006-05-10  Alex Schroeder  <alex@gnu.org>
+
+	* modules/calendar.pl ($CalStartMonday): New option.
+	(draw_month): Use it.
+	(Cal): Accept a new parameter, id.
+	(CalendarRule): New pattern, [[month:+n foo bar]], and pass new
+	parameter to Cal.
 
 2006-04-30  Alex Schroeder  <alex@gnu.org>
 
