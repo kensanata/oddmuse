@@ -1,3 +1,12 @@
+2006-05-24  Alex Schroeder  <alex@gnu.org>
+
+	* modules/today.pl (DoNew): Move to date_time_topic format.
+
+2006-05-21  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ApplyRules): Make it so that <search "foo"> only works
+	at the beginning of the line.
+
 2006-05-20  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (ApplyRules): Save $_ while processing search and add
