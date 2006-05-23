@@ -269,7 +269,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.661 2006/05/20 23:17:06 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.662 2006/05/23 22:33:59 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -467,11 +467,12 @@ sub ApplyRules {
 	eval { local $SIG{__DIE__}; binmode(STDOUT, ":raw"); };
 	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
 	pos = $oldpos; # restore \G after call to RSS which uses the LWP module
-      } elsif ($bol && /\G(&lt;search "(.*?)"&gt;)/cgis) {
+      } elsif (/\G(&lt;search "(.*?)"&gt;)/cgis) {
 	# <search "regexp">
 	Clean(CloseHtmlEnvironments());
 	Dirty($1);
 	my ($oldpos, $old_) = (pos, $_);
+	local ($OpenPageName, %Page);
 	print $q->start_div({-class=>'search'});
 	SearchTitleAndBody($2, \&PrintSearchResult, HighlightRegex($2));
 	print $q->end_div;
