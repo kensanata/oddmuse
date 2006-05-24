@@ -60,7 +60,12 @@ body {
     font-family: "Bookman Old Style", "Times New Roman", serif;
     font-size: 12pt;
 }
-
+body.large {
+    font-size:18pt;
+}
+body.sans {
+    font-family: "DejaVu", "Verdana", sans;
+}
 a {
     text-decoration:none;
     font-weight:bold;
