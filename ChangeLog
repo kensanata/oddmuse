@@ -1,3 +1,7 @@
+2006-05-25  Markus Lude  <lude@informatik.uni-tuebingen.de>
+
+	* wiki.pl (InitModules): module names may contain a further dot
+
 2006-05-24  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (ApplyRules): Localize $OpenPageName and %Page before

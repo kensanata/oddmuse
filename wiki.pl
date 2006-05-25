@@ -220,7 +220,7 @@ sub Init {
 sub InitModules {
   if ($UseConfig and $ModuleDir and -d $ModuleDir) {
     foreach my $lib (glob("$ModuleDir/*.pm $ModuleDir/*.pl")) {
-      next unless ($lib =~ /^($ModuleDir\/[-\w]+\.p[lm])$/o);
+      next unless ($lib =~ /^($ModuleDir\/[-\w.]+\.p[lm])$/o);
       $lib = $1; # untaint
       do $lib unless $MyInc{$lib};
       $MyInc{$lib} = 1; # Cannot use %INC in mod_perl settings
@@ -269,7 +269,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.662 2006/05/23 22:33:59 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.663 2006/05/25 16:55:50 lude Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
