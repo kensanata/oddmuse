@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.31 2006/05/26 07:35:43 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.32 2006/05/26 07:48:33 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
@@ -90,9 +90,11 @@ sub TocHeadings {
   my $oldpos = pos;          # make this sub not destroy the value of pos
   my $page = $Page{text};   # work on the page that is currently open!
   # ignore all the stuff that gets processed anyway
-  $page =~ s!<nowiki>.*?</nowiki>!!gis;
-  $page =~ s!<code>.*?</code>!!gis;
-  $page =~ s!(^|\n)<pre>.*?</pre>!!gis;
+  $page =~ s!<nowiki>.*?</nowiki>!!gis if defined &UsemodRule;
+  $page =~ s!<code>.*?</code>!!gis if defined &UsemodRule;
+  $page =~ s!(^|\n)<pre>.*?</pre>!!gis if defined &UsemodRule;
+  $page =~ s!##.*?##!!gis if defined &MarkupRule;
+  $page =~ s!%%.*?%%!!gis if defined &MarkupRule;
   my $Headings           = "<h2>" . T('Contents') . "</h2>";
   my $HeadingsLevel      = undef;
   my $HeadingsLevelStart = undef;
