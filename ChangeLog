@@ -1,6 +1,7 @@
 2006-05-26  Alex Schroeder  <alex@gnu.org>
 
-	* modules/toc.pl (TocHeadings): Fix usemod escaping rules.
+	* modules/toc.pl (TocHeadings): Fix usemod escaping rules, add
+	markup module escaping rules.
 
 2006-05-25  Markus Lude  <lude@informatik.uni-tuebingen.de>
 
