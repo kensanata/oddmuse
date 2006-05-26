@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.30 2006/03/16 19:22:53 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.31 2006/05/26 07:35:43 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
@@ -90,20 +90,26 @@ sub TocHeadings {
   my $oldpos = pos;          # make this sub not destroy the value of pos
   my $page = $Page{text};   # work on the page that is currently open!
   # ignore all the stuff that gets processed anyway
-  foreach my $tag ('nowiki', 'pre', 'code') {
-    $page =~ s|<$tag>(.*\n)*?</$tag>||gi;
-  }
+  $page =~ s!<nowiki>.*?</nowiki>!!gis;
+  $page =~ s!<code>.*?</code>!!gis;
+  $page =~ s!(^|\n)<pre>.*?</pre>!!gis;
   my $Headings           = "<h2>" . T('Contents') . "</h2>";
   my $HeadingsLevel      = undef;
   my $HeadingsLevelStart = undef;
   my $count              = 1;
   # try to determine what will end up as a header
-  foreach my $line (grep(/^\=+.*\=+[ \t]*$/, split(/\n/, $page))) {
-    next unless $line =~ /^(\=+)[ \t]*(.*?)[ \t]*\=+[ \t]*$/;
-    my $depth = length($1);
-    my $text  = $2;
+  foreach my $line (grep(/^(=|<h\d>)/, split(/\n/, $page))) {
+    my ($depth, $text, $link);
+    if ($line =~ /^(\=+)[ \t]*(.*?)[ \t]*\=+[ \t]*$/) {
+      $depth = length($1);
+      $link = ($OpenPageName||'toc') . $count;
+      $text  = $2;
+    } elsif ($line =~ /^<h(\d)><a id\="(.+)">[ \t]*(.*?)[ \t]*<\/a><\/h\1>[ \t]*$/) {
+      $depth = $1;
+      $link  = $2;
+      $text  = $3;
+    }
     next unless $text;
-    my $link = ($OpenPageName||'toc') . $count;
     $text = QuoteHtml($text);
     if (not defined $HeadingsLevelStart) {
       # $HeadingsLevel is set to $depth - 1 so that we get an opening
