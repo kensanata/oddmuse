@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.4 2006/05/26 23:08:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.5 2006/05/26 23:13:55 as Exp $</p>';
 
 use vars qw(@QuestionaskerQuestions
 	    $QuestionaskerRequiredList);
@@ -100,7 +100,7 @@ sub QuestionaskerGetQuestion {
 sub QuestionaskerException {
   my $id = shift;
   return 0 unless $QuestionaskerRequiredList and $id;
-  my $data = GetPageContent($id);
+  my $data = GetPageContent($QuestionaskerRequiredList);
   if ($WikiLinks) {
     while ($data =~ /$LinkPattern/g) {
       return 1 if FreeToNormal($1) eq $id;
