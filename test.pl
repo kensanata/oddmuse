@@ -2361,6 +2361,27 @@ test_page(update_page('toc', "bla\n"
 	  quotemeta('bla </p><div class="toc"><h2>Contents</h2><ol><li><a '),
 	  quotemeta('one</a></li></ol></div><p> murks'),);
 
+test_page(update_page('toc', "bla\n"
+		      . "=one=\n"
+		      . "blarg\n"
+		      . "==two==\n"
+		      . "<nowiki>bla\n"
+		      . "==two==\n"
+		      . "mu.</nowiki>\n"
+		      . "<nowiki>bla\n"
+		      . "==two==\n"
+		      . "mu.</nowiki>\n"
+		      . "yadda <code>bla\n"
+		      . "==two==\n"
+		      . "mu.</code>\n"
+		      . "yadda <pre> has no effect! \n"
+		      . "=one=\n"
+		      . "blarg </pre>\n"),
+	  quotemeta('<ol><li><a href="#toc1">one</a><ol><li><a href="#toc2">two</a></li></ol></li><li><a href="#toc3">one</a></li></ol>'),
+	  quotemeta('<h2 id="toc1">one</h2>'),
+	  quotemeta('<h2 id="toc2">two</h2>'),
+	  quotemeta('<h2 id="toc3">one</h2>'),);
+
 remove_rule(\&UsemodRule);
 remove_rule(\&TocRule);
 
