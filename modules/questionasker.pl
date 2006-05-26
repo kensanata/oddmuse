@@ -1,4 +1,5 @@
 # Copyright (C) 2004  Brock Wilcox <awwaiid@thelackthereof.org>
+# Copyright (C) 2006  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,50 +17,41 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>questionasker.pl (v1.1) - Answer a question to save the page.</p>';
+$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.4 2006/05/26 23:08:16 as Exp $</p>';
 
-use vars qw( @QuestionaskerQuestions $QuestionaskerBypass);
+use vars qw(@QuestionaskerQuestions
+	    $QuestionaskerRequiredList);
 
-# Yes, this does what it sounds like it does... bypasses this whole thing
-$QuestionaskerBypass = 'awwaiid';
+# The page name for exceptions, if defined. Every page linked to via
+# WikiWord or [[free link]] is considered to be a page which needs
+# questions asked. All other pages do not require questions asked. If
+# not set, then all pages need questions asked.
+$QuestionaskerRequiredList = '';
 
-@QuestionaskerQuestions = (
-  #['What is the first letter of this question?' => sub { shift =~ /W/i }],
-
-  #['How many letters are in the word "four"?' => sub { shift =~ /4|four/i }],
-
-  #['Tell me any number between 1 and 10' => sub { $a=shift; ($a > 0 && $a < 11) }],
-
-  ["Name a popular programming language<br>
-    whose name is four letters long and starts with<br>
-    a 'P' and ends in an 'L'" =>
-    sub { shift =~ /perl/i }],
-
-  ["How many lives does a cat have?" => sub { shift =~ /9|nine/i }],
-
-  ["This old man came _____ home" => sub { shift =~ /rolling/i }],
-
-  ["Why is a raven like a writing desk?<br>
-    Just kidding. What is 2 + 4?" => sub { shift =~ /6|six/i }],
-
-);
+@QuestionaskerQuestions =
+  (['What is the first letter of this question?' => sub { shift =~ /W/i }],
+   ['How many letters are in the word "four"?' => sub { shift =~ /4|four/i }],
+   ['Tell me any number between 1 and 10' => sub { shift =~ /^([1-9]|10|one|two|three|four|five|six|seven|eight|nine|ten)$/ }],
+   ["How many lives does a cat have?" => sub { shift =~ /9|nine/i }],
+   ["What is 2 + 4?" => sub { shift =~ /6|six/i }],
+  );
 
 *OldQuestionaskerDoPost = *DoPost;
 *DoPost = *NewQuestionaskerDoPost;
 
 sub NewQuestionaskerDoPost {
   my(@params) = @_;
+  my $id = FreeToNormal(shift);
   my $question_num = GetParam('question_num', undef);
   my $answer = GetParam('answer', undef);
-  my $bypass = GetParam('bypass', undef);
-
-  unless($bypass eq $QuestionaskerBypass || $QuestionaskerQuestions[$question_num][1]($answer)) {
-      print GetHeader('', T('Edit Denied'), undef, undef, '403 FORBIDDEN');
-      print $q->p(T('You did not answer correctly.'));
-      print $q->p(T('Contact the wiki administrator for more information.'));
-      return;
+  unless(QuestionaskerException($id)
+	 or UserIsAdmin()
+	 or $QuestionaskerQuestions[$question_num][1]($answer)) {
+    print GetHeader('', T('Edit Denied'), undef, undef, '403 FORBIDDEN');
+    print $q->p(T('You did not answer correctly.'));
+    print $q->p(T('Contact the wiki administrator for more information.'));
+    return;
   }
-
   return (OldQuestionaskerDoPost(@params));
 }
 
@@ -85,9 +77,11 @@ sub NewQuestionaskerGetCommentForm {
 }
 
 sub NewQuestionaskerGetFormStart {
+  my $id = FreeToNormal(GetParam('id', ''));
   *GetFormStart = *OldQuestionaskerGetFormStart;
   my $retval = OldQuestionaskerGetFormStart(@_);
-  $retval .= QuestionaskerGetQuestion();
+  $retval .= QuestionaskerGetQuestion()
+    unless QuestionaskerException($id) or UserIsAdmin();
   return $retval;
 }
 
@@ -103,4 +97,19 @@ sub QuestionaskerGetQuestion {
   return $retval;
 }
 
-
+sub QuestionaskerException {
+  my $id = shift;
+  return 0 unless $QuestionaskerRequiredList and $id;
+  my $data = GetPageContent($id);
+  if ($WikiLinks) {
+    while ($data =~ /$LinkPattern/g) {
+      return 1 if FreeToNormal($1) eq $id;
+    }
+  }
+  if ($FreeLinks) {
+    while ($data =~ /\[\[$FreeLinkPattern\]\]/g) {
+      return 1 if FreeToNormal($1) eq $id;
+    }
+  }
+  return 0;
+}
