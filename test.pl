@@ -2313,6 +2313,7 @@ remove_rule(\&SubscribedRecentChangesRule);
 toc_module:
 print '[toc module]';
 
+clear_pages();
 add_module('toc.pl');
 add_module('usemod.pl');
 InitVariables();
@@ -2375,14 +2376,42 @@ test_page(update_page('toc', "bla\n"
 		      . "==two==\n"
 		      . "mu.</code>\n"
 		      . "yadda <pre> has no effect! \n"
+		      . "##bla\n"
+		      . "==three==\n"
+		      . "mu.##\n"
 		      . "=one=\n"
 		      . "blarg </pre>\n"),
-	  quotemeta('<ol><li><a href="#toc1">one</a><ol><li><a href="#toc2">two</a></li></ol></li><li><a href="#toc3">one</a></li></ol>'),
+	  quotemeta('<ol><li><a href="#toc1">one</a><ol><li><a href="#toc2">two</a></li><li><a href="#toc3">three</a></li></ol></li><li><a href="#toc4">one</a></li></ol>'),
 	  quotemeta('<h2 id="toc1">one</h2>'),
 	  quotemeta('<h2 id="toc2">two</h2>'),
-	  quotemeta('<h2 id="toc3">one</h2>'),);
+	  quotemeta('<h2 id="toc3">three</h2>'),
+	  quotemeta('<h2 id="toc4">one</h2>'),);
 
 remove_rule(\&UsemodRule);
+remove_rule(\&TocRule);
+
+clear_pages();
+add_module('toc.pl');
+add_module('markup.pl');
+InitVariables();
+
+test_page(update_page('toc', "bla\n"
+		      . "=one=\n"
+		      . "blarg\n"
+		      . "<code>bla\n"
+		      . "=two=\n"
+		      . "mu.</code>\n"
+		      . "##bla\n"
+		      . "=three=\n"
+		      . "mu.##\n"
+		      . "=four=\n"
+		      . "blarg\n"),
+	  quotemeta('<ol><li><a href="#toc1">one</a></li><li><a href="#toc2">two</a></li><li><a href="#toc3">four</a></li></ol>'),
+	  quotemeta('<h2 id="toc1">one</h2>'),
+	  quotemeta('<h2 id="toc2">two</h2>'),
+	  quotemeta('<h2 id="toc3">four</h2>'),);
+
+remove_rule(\&MarkupRule);
 remove_rule(\&TocRule);
 
 # --------------------
