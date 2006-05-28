@@ -23,7 +23,7 @@ use Getopt::Std;
 use LWP::UserAgent;
 
 my $usage = "$0 TARGET PAGENAME\n"
-  . "Where TARGET is the base URL for the wiki.\n"  
+  . "Where TARGET is the base URL for the wiki.\n"
   . "PAGENAME is the name of the page to be modified.\n"
   . "Example:\n"
   . "echo this will be appended | $0 http://localhost/cgi-bin/wiki.pl \"My Cool Page\"\n\n";
@@ -57,18 +57,18 @@ sub PostRaw {
 }
 
 sub append {
-	my ($target, $page) = @_;  
+	my ($target, $page) = @_;
         $page =~ s/ /_/g;
 	$page = UrlEncode ($page);
 	my $data = GetRaw("$target?action=browse;id=$page;raw=1"); # fix for other wikis
 	$data .= <STDIN>;
-	PostRaw($target, $page, $data);    
+	PostRaw($target, $page, $data);
 }
 
 sub main {
-  my ($target, $page) = @ARGV;  
-  die $usage unless $target;	
-  die $usage unless $page;	
+  my ($target, $page) = @ARGV;
+  die $usage unless $target;
+  die $usage unless $page;
   append($target, $page);
 }
 
