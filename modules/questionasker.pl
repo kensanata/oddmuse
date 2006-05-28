@@ -17,17 +17,15 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.6 2006/05/26 23:18:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.7 2006/05/28 22:20:21 as Exp $</p>';
 
 use vars qw(@QuestionaskerQuestions
-	    $QuestionaskerRequiredList);
+	    $QuestionaskerRequiredList
+	    %QuestionaskerProtectedForms);
 
-# The page name for exceptions, if defined. Every page linked to via
-# WikiWord or [[free link]] is considered to be a page which needs
-# questions asked. All other pages do not require questions asked. If
-# not set, then all pages need questions asked.
-$QuestionaskerRequiredList = '';
-
+# A list of arrays. The first element in each array is a string, the
+# question to be asked. The second element is a subroutine which is
+# passed the answer as the first argument.
 @QuestionaskerQuestions =
   (['What is the first letter of this question?' => sub { shift =~ /W/i }],
    ['How many letters are in the word "four"?' => sub { shift =~ /4|four/i }],
@@ -36,15 +34,26 @@ $QuestionaskerRequiredList = '';
    ["What is 2 + 4?" => sub { shift =~ /6|six/i }],
   );
 
+# The page name for exceptions, if defined. Every page linked to via
+# WikiWord or [[free link]] is considered to be a page which needs
+# questions asked. All other pages do not require questions asked. If
+# not set, then all pages need questions asked.
+$QuestionaskerRequiredList = '';
+
+# Forms using one of the following classes are protected.
+%QuestionaskerProtectedForms = ('comment' => 1,
+				'edit upload' => 1,
+				'edit text' => 1,);
+
 *OldQuestionaskerDoPost = *DoPost;
 *DoPost = *NewQuestionaskerDoPost;
 
 sub NewQuestionaskerDoPost {
   my(@params) = @_;
-  my $id = FreeToNormal(shift);
+  my $id = FreeToNormal(GetParam('title', undef));
   my $question_num = GetParam('question_num', undef);
   my $answer = GetParam('answer', undef);
-  unless(QuestionaskerException($id)
+  unless (QuestionaskerException($id)
 	 or UserIsAdmin()
 	 or $QuestionaskerQuestions[$question_num][1]($answer)) {
     print GetHeader('', T('Edit Denied'), undef, undef, '403 FORBIDDEN');
@@ -55,46 +64,28 @@ sub NewQuestionaskerDoPost {
   return (OldQuestionaskerDoPost(@params));
 }
 
-*OldQuestionaskerGetCommentForm = *GetCommentForm;
-*GetCommentForm = *NewQuestionaskerGetCommentForm;
-
-*OldQuestionaskerDoEdit = *DoEdit;
-*DoEdit = *NewQuestionaskerDoEdit;
-$Action{edit} = \&DoEdit;
-
-sub NewQuestionaskerDoEdit {
-  *OldQuestionaskerGetFormStart = *GetFormStart;
-  *GetFormStart = *NewQuestionaskerGetFormStart;
-  OldQuestionaskerDoEdit(@_);
-}
-
-sub NewQuestionaskerGetCommentForm {
-  *OldQuestionaskerGetFormStart = *GetFormStart;
-  *GetFormStart = *NewQuestionaskerGetFormStart;
-  my $retval = OldQuestionaskerGetCommentForm(@_);
-  *GetFormStart = *OldQuestionaskerGetFormStart;
-  return $retval;
-}
+*OldQuestionaskerGetFormStart = *GetFormStart;
+*GetFormStart = *NewQuestionaskerGetFormStart;
 
 sub NewQuestionaskerGetFormStart {
-  my $id = FreeToNormal(GetParam('id', ''));
-  *GetFormStart = *OldQuestionaskerGetFormStart;
-  my $retval = OldQuestionaskerGetFormStart(@_);
-  $retval .= QuestionaskerGetQuestion()
-    unless QuestionaskerException($id) or UserIsAdmin();
-  return $retval;
+  my ($ignore, $method, $class) = @_;
+  my $form = OldQuestionaskerGetFormStart(@_);
+  if ($QuestionaskerProtectedForms{$class}
+      and not QuestionaskerException(GetId())
+      and not UserIsAdmin()) {
+    $form .= QuestionaskerGetQuestion();
+  }
+  return $form;
 }
 
 sub QuestionaskerGetQuestion {
   my $question_number = int(rand(scalar(@QuestionaskerQuestions)));
-  $retval .= "<p>To save this page you must answer this question:";
-  $retval .= "<blockquote>";
-  $retval .= $QuestionaskerQuestions[$question_number][0];
-  $retval .= "<br/>";
-  $retval .= "<input type=text name=answer />";
-  $retval .= "<input type=hidden name=question_num value=$question_number />";
-  $retval .= "</blockquote></p>";
-  return $retval;
+  return $q->div({-class=>'question'},
+		 $q->p(T('To save this page you must answer this question:')),
+		 $q->blockquote($q->p($QuestionaskerQuestions[$question_number][0]),
+				$q->p($q->input({-type=>'text', -name=>'answer'}),
+				      $q->input({-type=>'hidden', -name=>'question_num',
+						 -value=>$question_number}))));
 }
 
 sub QuestionaskerException {
