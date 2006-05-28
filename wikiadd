@@ -52,8 +52,9 @@ def usage(out):
     Options:
     out -- The file descriptor where to write the info.
     """
-    out.write("Usage: wikiput [OPTIONS] wikipage\n"
-              "Post the data on stdin on the wikipage described by wikipage.\n"
+    out.write("Usage: wikiadd [OPTIONS] wikipage\n"
+              "Post the data on stdin on the wikipage described by wikipage\n"
+	      "as a comment.\n"
               "\n"
               "Options:\n"
               " -h --help         Display this help\n"
