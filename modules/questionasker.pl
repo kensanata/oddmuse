@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.7 2006/05/28 22:20:21 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.8 2006/05/28 22:28:48 as Exp $</p>';
 
 use vars qw(@QuestionaskerQuestions
 	    $QuestionaskerRequiredList
@@ -44,6 +44,13 @@ $QuestionaskerRequiredList = '';
 %QuestionaskerProtectedForms = ('comment' => 1,
 				'edit upload' => 1,
 				'edit text' => 1,);
+
+push(@MyInitVariables, \&QuestionaskerInit);
+
+sub QuestionaskerInit {
+  $QuestionaskerRequiredList = FreeToNormal($QuestionaskerRequiredList);
+  push (@AdminPages, $QuestionaskerRequiredList);
+}
 
 *OldQuestionaskerDoPost = *DoPost;
 *DoPost = *NewQuestionaskerDoPost;
