@@ -57,12 +57,12 @@ sub PostRaw {
 }
 
 sub append {
-	my ($target, $page) = @_;
-        $page =~ s/ /_/g;
-	$page = UrlEncode ($page);
-	my $data = GetRaw("$target?action=browse;id=$page;raw=1"); # fix for other wikis
-	$data .= <STDIN>;
-	PostRaw($target, $page, $data);
+  my ($target, $page) = @_;
+  $page =~ s/ /_/g;
+  $page = UrlEncode ($page);
+  my $data = GetRaw("$target?action=browse;id=$page;raw=1"); # fix for other wikis
+  $data .= <STDIN>;
+  PostRaw($target, $page, $data);
 }
 
 sub main {
