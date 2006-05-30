@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.8 2006/05/28 22:28:48 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.9 2006/05/30 20:05:14 as Exp $</p>';
 
 use vars qw(@QuestionaskerQuestions
 	    $QuestionaskerRequiredList
@@ -27,11 +27,11 @@ use vars qw(@QuestionaskerQuestions
 # question to be asked. The second element is a subroutine which is
 # passed the answer as the first argument.
 @QuestionaskerQuestions =
-  (['What is the first letter of this question?' => sub { shift =~ /W/i }],
-   ['How many letters are in the word "four"?' => sub { shift =~ /4|four/i }],
-   ['Tell me any number between 1 and 10' => sub { shift =~ /^([1-9]|10|one|two|three|four|five|six|seven|eight|nine|ten)$/ }],
-   ["How many lives does a cat have?" => sub { shift =~ /9|nine/i }],
-   ["What is 2 + 4?" => sub { shift =~ /6|six/i }],
+  (['What is the first letter of this question?' => sub { shift =~ /^\s*W\s*$/i }],
+   ['How many letters are in the word "four"?' => sub { shift =~ /^\s*(4|four)\s*$/i }],
+   ['Tell me any number between 1 and 10' => sub { shift =~ /^\s*([1-9]|10|one|two|three|four|five|six|seven|eight|nine|ten)\s*$/ }],
+   ["How many lives does a cat have?" => sub { shift =~ /^\s*(9|nine)\s*$/i }],
+   ["What is 2 + 4?" => sub { shift =~ /^\s*(6|six)\s*$/i }],
   );
 
 # The page name for exceptions, if defined. Every page linked to via
@@ -58,14 +58,18 @@ sub QuestionaskerInit {
 sub NewQuestionaskerDoPost {
   my(@params) = @_;
   my $id = FreeToNormal(GetParam('title', undef));
+  my $preview = GetParam('Preview', undef); # case matters!
   my $question_num = GetParam('question_num', undef);
   my $answer = GetParam('answer', undef);
-  unless (QuestionaskerException($id)
-	 or UserIsAdmin()
-	 or $QuestionaskerQuestions[$question_num][1]($answer)) {
+  unless (UserIsAdmin()
+	  or $preview
+	  or $QuestionaskerQuestions[$question_num][1]($answer)
+	  or QuestionaskerException($id)) {
     print GetHeader('', T('Edit Denied'), undef, undef, '403 FORBIDDEN');
     print $q->p(T('You did not answer correctly.'));
     print $q->p(T('Contact the wiki administrator for more information.'));
+    PrintFooter();
+    warn "Q: '$QuestionaskerQuestions[$question_num][0]', A: '$answer'\n";
     return;
   }
   return (OldQuestionaskerDoPost(@params));
