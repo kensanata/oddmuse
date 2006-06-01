@@ -1,3 +1,47 @@
+2006-06-02  Alex Schroeder  <alex@gnu.org>
+
+	* wikicopy: Extended doc string.
+	(main, copy, PostRaw): Add support for -u and -p.
+	(RequestAgent): Private specialization of LWP::UserAgent using the
+	-w option.
+	(GetRaw, PostRaw): Use it.
+	(main): Add -w option.
+
+2006-05-30  Alex Schroeder  <alex@gnu.org>
+
+	* modules/questionasker.pl (NewQuestionaskerDoPost): No answer
+	required for previews. Log all questions and answers. Print
+	footer.
+	(@QuestionaskerQuestions): Make default questions harder to answer
+	such that pasting spam into the answer field does not have a high
+	chance of answering the question.
+
+2006-05-29  Alex Schroeder  <alex@gnu.org>
+
+	* modules/questionasker.pl: Simplified code.
+	(NewQuestionaskerDoPost): Extract id from the title parameter.
+	(%QuestionaskerProtectedForms): New option.
+	(NewQuestionaskerGetFormStart): Use it.
+	(QuestionaskerGetQuestion): Use CGI.pm functions to create HTML.
+	Make valid HTML.
+	(QuestionaskerInit): New sub to add $QuestionaskerRequiredList to
+	@AdminPages.
+
+2006-05-28  Alex Schroeder  <alex@gnu.org>
+
+	* wikiadd (usage): Doc string.
+
+2006-05-27  Alex Schroeder  <alex@gnu.org>
+
+	* modules/questionasker.pl ($QuestionaskerBypass): Undocumented
+	option removed.
+	(NewQuestionaskerDoPost): Removed bypass.
+	(@QuestionaskerQuestions): Uncommented some questions, removed
+	some others.
+	(QuestionaskerException): New.
+	(NewQuestionaskerGetFormStart): No questions asked for admins.
+	Check for exceptions.
+
 2006-05-26  Alex Schroeder  <alex@gnu.org>
 
 	* modules/toc.pl (TocHeadings): Fix usemod escaping rules, add
