@@ -24,19 +24,41 @@ use LWP::UserAgent;
 
 our $opt_v;
 
-my $usage = "$0 [-i URL] [-d STRING] [-t SECONDS] [SOURCE] TARGET\n"
-  . "Where SOURCE and TARGET are the base URLs for the two wikis.\n"
-  . "Provide the page names on STDIN or use -i to point to a page.\n"
-  . "URL is the raw URL returning page names if you want to copy it all.\n"
-  . "The list of page names should use the MIME type text/plain."
-  . "SECONDS is the number of seconds to wait between requests.\n"
-  . "If you use -d instead of providing a SOURCE, all the pages\n"
-  . "will be replaced with STRING.\n"
-  . "Example:\n\n"
-  . "wikicopy -i 'http://www.emacswiki.org/cgi-bin/alex?action=index;raw=1' \\\n"
-  . "         http://www.emacswiki.org/cgi-bin/alex \\\n"
-  . "         http://localhost/cgi-bin/wiki.pl\n"
-  . "cat list.txt | wikicopy -d DeletedPage http://localhost/cgi-bin/wiki.pl\n";
+my $usage = qq{$0 [-i URL] [-d STRING] [-t SECONDS]
+\t[-u USERNAME] [-p PASSWORD] [SOURCE] TARGET
+
+SOURCE and TARGET are the base URLs for the two wikis.  Visiting these
+two URLs should show you the respective homepages.
+
+Provide the page names to copy on STDIN or use -i to point to a page.
+You can use the index action with the raw parameter from the source
+wiki to copy all the pages. See example below.
+
+The list of page names should use the MIME type text/plain.
+
+By default, wikicopy will copy a page every five seconds. Use -t to
+override this. SECONDS is the number of seconds to wait between
+requests.
+
+If you use -d instead of providing a SOURCE, all the pages will be
+replaced with STRING. This is useful when replacing the page content
+with "DeletedPage", for example.
+
+Your copies on the target wiki will show up on the list of changes as
+anonymous edits. If you want to provide a username, you can use -u to
+do so.
+
+If you want to copy pages to a locked wiki or if you need to overwrite
+locked target pages, you need to provide a password using -p.
+
+Examples:
+
+wikicopy -i 'http://www.emacswiki.org/cgi-bin/alex?action=index;raw=1' \\
+         http://www.emacswiki.org/cgi-bin/alex \\
+         http://localhost/cgi-bin/wiki.pl
+
+cat list.txt | wikicopy -d DeletedPage http://localhost/cgi-bin/wiki.pl
+};
 
 sub UrlEncode {
   my $str = shift;
@@ -62,31 +84,35 @@ sub GetRaw {
 }
 
 sub PostRaw {
-  my ($uri, $id, $data) = @_;
+  my ($uri, $id, $data, $username, $password) = @_;
   my $ua = LWP::UserAgent->new;
-  my $response = $ua->post($uri, {title=>$id, text=>$data, raw=>1}); # fix for other wikis
+  my $response = $ua->post($uri, {title=>$id, text=>$data, raw=>1,
+				  username=>$username, pwd=>$password});
   my $status = $response->code . ' ' . $response->message;
   warn "POST $id failed: $status.\n" unless $response->is_success;
 }
 
 sub copy {
-  my ($source, $replacement, $target, $interval, @pages) = @_;
+  my ($source, $replacement, $target, $interval, $username, $password,
+      @pages) = @_;
   foreach my $id (@pages) {
     print "$id\n";
     my $page = UrlEncode ($id);
     # fix URL for other wikis
     my $data = $replacement || GetRaw("$source?action=browse;id=$page;raw=1");
     next unless $data;
-    PostRaw($target, $id, $data);
+    PostRaw($target, $id, $data, $username, $password);
     sleep($interval);
   }
 }
 
 sub main {
-  our($opt_i, $opt_t, $opt_d);
-  getopts('i:t:d:v');
+  our($opt_i, $opt_t, $opt_d, $opt_u, $opt_p);
+  getopts('i:t:d:v:u:p');
   my $interval = $opt_t ? $opt_t : 5;
   my $replacement = $opt_d;
+  my $username = $opt_u;
+  my $password = $opt_p;
   my ($source, $target);
   $source = shift(@ARGV) unless $replacement;
   $target = shift(@ARGV);
@@ -103,7 +129,8 @@ sub main {
     }
   }
   die "The list of pages is missing.  Did you use -i?\n" unless @pages;
-  copy($source, $replacement, $target, $interval, @pages);
+  copy($source, $replacement, $target, $interval, $username, $password,
+       @pages);
 }
 
 main();
