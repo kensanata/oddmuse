@@ -41,7 +41,8 @@ our ($opt_v, $opt_w);
 }
 
 my $usage = qq{$0 [-i URL] [-d STRING] [-t SECONDS]
-\t[-u USERNAME] [-p PASSWORD] [SOURCE] TARGET
+\t[-u USERNAME] [-p PASSWORD] [-w USERNAME:PASSWORD]
+\t[SOURCE] TARGET
 
 SOURCE and TARGET are the base URLs for the two wikis.  Visiting these
 two URLs should show you the respective homepages.
@@ -67,13 +68,24 @@ do so.
 If you want to copy pages to a locked wiki or if you need to overwrite
 locked target pages, you need to provide a password using -p.
 
+On the other hand, if your wiki is protected by so-called "basic
+authentication" -- that is, if you need to provide a username and
+password before you can even view the site -- then you can pass
+those along using the -w option. Separate username and password
+using a colon.
+
 Examples:
 
 wikicopy -i 'http://www.emacswiki.org/cgi-bin/alex?action=index;raw=1' \\
          http://www.emacswiki.org/cgi-bin/alex \\
          http://localhost/cgi-bin/wiki.pl
 
-cat list.txt | wikicopy -d DeletedPage http://localhost/cgi-bin/wiki.pl
+wikicopy -d DeletedPage http://localhost/cgi-bin/wiki.pl < list.txt
+
+wikicopy -v -u 'ElGordo' -w 'simple:mind' \\
+	 -i 'http://www.communitywiki.org/odd/LosAngelesEcoVillage?action=index;raw=1' \\
+         'http://www.communitywiki.org/odd/LosAngelesEcoVillage' \\
+         'http://www.tentacle.net/~eeio/cgi/wiki.cgi'
 };
 
 sub UrlEncode {
