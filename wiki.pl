@@ -269,7 +269,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.663 2006/05/25 16:55:50 lude Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.664 2006/06/04 23:54:13 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1982,7 +1982,7 @@ sub GetPageParameters {
 
 sub GetOldPageLink {
   my ($action, $id, $revision, $name, $cluster) = @_;
-  $name =~ s/_/ /g if $FreeLinks;
+  $name =~ s/_/ /g;
   return ScriptLink(GetPageParameters($action, $id, $revision, $cluster), $name, 'revision');
 }
 
@@ -1990,10 +1990,8 @@ sub GetSearchLink {
   my ($text, $class, $name, $title) = @_;
   my $id = UrlEncode($text);
   $name = UrlEncode($name);
-  if ($FreeLinks) {
-    $text =~ s/_/ /g;  # Display with spaces
-    $id =~ s/_/+/g;    # Search for url-escaped spaces
-  }
+  $text =~ s/_/ /g;  # Display with spaces
+  $id =~ s/_/+/g;    # Search for url-escaped spaces
   return ScriptLink('search=' . $id, $text, $class, $name, $title);
 }
 
@@ -2023,17 +2021,13 @@ sub GetAuthorLink {
 
 sub GetHistoryLink {
   my ($id, $text) = @_;
-  if ($FreeLinks) {
-    $id =~ s/ /_/g;
-  }
+  $id =~ s/ /_/g;
   return ScriptLink('action=history;id=' . UrlEncode($id), $text, 'history');
 }
 
 sub GetRCLink {
   my ($id, $text) = @_;
-  if ($FreeLinks) {
-    $id =~ s/ /_/g;
-  }
+  $id =~ s/ /_/g;
   return ScriptLink('action=rc;all=1;from=1;showedit=1;rcidonly=' . UrlEncode($id), $text, 'rc');
 }
 
@@ -2269,7 +2263,7 @@ sub GetCommentForm {
   my ($id, $rev, $comment) = @_;
   if ($CommentsPrefix ne '' and $id and $rev ne 'history' and $rev ne 'edit'
       and $OpenPageName =~ /^$CommentsPrefix/) {
-    return $q->div({-class=>'comment'}, GetFormStart(undef, undef, 'comment'),
+    return $q->div({-class=>'comment'}, GetFormStart(undef, undef, 'comment'), # protected by questionasker
 		   $q->p(GetHiddenValue('title', $OpenPageName),
 			 GetTextArea('aftertext', $comment ? $comment : $NewComment)),
 		   $q->p($q->label({-for=>'username'}, T('Username:')), ' ',
@@ -2868,7 +2862,7 @@ sub DoEdit {
     print $q->strong(Ts('Editing old revision %s.', $revision) . '  '
 		     . T('Saving this page will replace the latest revision with this text.'))
   }
-  print GetFormStart(undef, undef, $upload ? 'edit upload' : 'edit text'),
+  print GetFormStart(undef, undef, $upload ? 'edit upload' : 'edit text'), # protected by questionasker
     $q->p(GetHiddenValue("title", $id), ($revision ? GetHiddenValue('revision', $revision) : ''),
 	  GetHiddenValue('oldtime', $Page{ts}),
 	  ($upload ? GetUpload() : GetTextArea('text', $oldText)));
