@@ -1,4 +1,4 @@
-# Copyright (C) 2005  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2005, 2006  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,19 +16,23 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: aggregate.pl,v 1.5 2006/03/14 21:53:51 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: aggregate.pl,v 1.6 2006/06/04 23:03:22 as Exp $</p>';
 
 push(@MyRules, \&AggregateRule);
 
 sub AggregateRule {
-  if ($bol && m/\G(&lt;aggregate\s+((("[^\"&]+"),?\s*)+)&gt;)/gc) {
+  if ($bol && m/\G(&lt;aggregate\s+((("[^\"&]+",?\s*)+)|search\s+"(.+?)")&gt;)/gc) {
     Clean(CloseHtmlEnvironments());
     Dirty($1);
-    my ($oldpos, $old_, $str) = ((pos), $_, $2);
+    my ($oldpos, $old_, $str, $search) = ((pos), $_, $3, $5);
+    local ($OpenPageName, %Page);
     print $q->start_div({class=>"aggregate journal"});
-    while ($str =~ m/"([^\"&]+)"/g) {
-      my $title = $1;
-      local $OpenPageName = FreeToNormal($1);
+    my @pages = ();
+    @pages = $str =~ m/"([^\"&]+)"/g if $str;
+    @pages = SearchTitleAndBody($search) if $search;
+    foreach my $id (@pages) {
+      my $title = $id;
+      local $OpenPageName = FreeToNormal($id);
       my $page = GetPageContent($OpenPageName);
       my $size = length($page);
       my $i = index($page, "\n=");
@@ -45,7 +49,7 @@ sub AggregateRule {
     }
     print $q->end_div();
     Clean(AddHtmlEnvironment('p'));
-    pos = $oldpos;
+    ($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
     return '';
   }
   return undef;
@@ -95,11 +99,12 @@ sub DoAggregate {
     $rss .= "<link>" . $url . "</link>\n";
     $rss .= "</image>\n";
   }
-  my @pages = ();
-  while ($source =~ m/<aggregate\s+((("[^\"&]+"),?\s*)+)>/g) {
-    my $str = $1;
-    while ($str =~ m/"([^\"&]+)"/g) {
-      my $id = $1;
+  while ($source =~ m/<aggregate\s+((("[^\"&]+",?\s*)+)|search\s+"(.+?)")>/g) {
+    my ($str, $search) = ($1, $5);
+    my @pages = ();
+    @pages = $str =~ m/"([^\"&]+)"/g if $str;
+    @pages = SearchTitleAndBody($search) if $search;
+    foreach my $id (@pages) {
       my %data = ParseData(ReadFileOrDie(GetPageFile(FreeToNormal($id))));
       my $page = $data{text};
       my $size = length($page);
