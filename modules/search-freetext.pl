@@ -1,4 +1,4 @@
-# Copyright (C) 2004  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2006  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -40,14 +40,13 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.30 2006/03/04 23:04:12 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.31 2006/06/04 23:51:18 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
-use vars qw($SearchFreeTextTagUrl $SearchFreeTextNewForm);
+use vars qw($SearchFreeTextTagUrl);
 
 $SearchFreeTextTagUrl = 'http://technorati.com/tag/';
-$SearchFreeTextNewForm = 1;
 
 sub SearchFreeTextTagsRule {
   if (m/\G(\[\[tag:$FreeLinkPattern\]\])/cog
@@ -75,20 +74,18 @@ sub SearchFreeTextMenu {
 $Action{buildindex} = \&SearchFreeTextIndex;
 
 sub SearchFreeTextIndex {
-  print GetHeader('', T('Rebuilding Index'), ''),
-    $q->start_div({-class=>'content buildindex'} . '<p>');
   if (not eval { require Search::FreeText;  }) {
-    my $err = $@;
-    ReportError(T('Search::FreeText is not available on this system.'), '500 INTERNAL SERVER ERROR');
+    print GetHttpHeader('text/plain', 'nocache', '500 INTERNAL SERVER ERROR');
+    print T('Search::FreeText is not available on this system.') ."\n";
+    return;
   }
+  print GetHttpHeader('text/plain');
   my $wordfile = $DataDir . '/word.db';
   my $tagfile = $DataDir . '/tags.db';
   if (!UserIsAdmin()) {
     if ((-f $wordfile) && ((-M $wordfile) < 0.5)) {
-      print $q->p(T('Rebuilding index not done.'),
-		  T('(Rebuilding the index can only be done once every 12 hours.)')),
-	     $q->end_div();
-      PrintFooter();
+      print T('Rebuilding index not done.'), "\n",
+	T('(Rebuilding the index can only be done once every 12 hours.)'), "\n";
       return;
     }
   }
@@ -101,7 +98,7 @@ sub SearchFreeTextIndex {
   foreach my $name (AllPagesList()) {
     OpenPage($name);
     next if ($Page{text} =~ /^#FILE /); # skip files
-    print $name, $q->br();
+    print $name, "\n";
     # don't forget to add the pagename to the page text, without
     # underscores
     my $page = $OpenPageName;
@@ -114,8 +111,7 @@ sub SearchFreeTextIndex {
   }
   $words->close_index();
   $tags->close_index();
-  print T('Done.') . '</p></div>';
-  PrintFooter();
+  print T('Done.'), "\n";
 }
 
 $Action{cloud} = \&SearchFreeTextCloud;
@@ -157,36 +153,6 @@ sub SearchFreeTextCloud {
   PrintFooter();
 }
 
-# override old DoSearch
-
-*SearchFreeTextOldDoSearch = *DoSearch;
-*DoSearch = *SearchFreeTextNewDoSearch;
-
-sub SearchFreeTextNewDoSearch {
-  if (GetParam('old', 0) or (GetParam('replace', '')) or not $SearchFreeTextNewForm) {
-    SearchFreeTextOldDoSearch(@_);
-  } else {
-    local *SearchTitleAndBody = *SearchFreeTextTitleAndBody;
-    local *HighlightRegex = *SearchFreeTextNewHighlightRegex;
-    SearchFreeTextOldDoSearch(@_);
-  }
-}
-
-# override code for rcfilteronly
-
-*SearchFreeTextOldGetRc = *GetRc;
-*GetRc = *SearchFreeTextNewGetRc;
-
-sub SearchFreeTextNewGetRc {
-  if (GetParam('old', 0)) {
-    SearchFreeTextOldGetRc(@_);
-  } else {
-    local *SearchTitleAndBody = *SearchFreeTextTitleAndBody;
-    local *HighlightRegex = *SearchFreeTextNewHighlightRegex;
-    SearchFreeTextOldGetRc(@_);
-  }
-}
-
 # override the standard printing of results
 *SearchResultCount = *SearchFreeTextNop;
 
@@ -197,7 +163,11 @@ sub SearchFreeTextNop { '' };
 my $SearchFreeTextNum = 10;  # results per page
 my $SearchFreeTextMax = 10;  # max. number of pages
 
-sub SearchFreeTextTitleAndBody {
+*OldSearchFreeTextTitleAndBody = *SearchTitleAndBody;
+*SearchTitleAndBody = *NewSearchFreeTextTitleAndBody;
+
+sub NewSearchFreeTextTitleAndBody {
+  return OldSearchFreeTextTitleAndBody(@_) if GetParam('old', 0);
   my ($term, $func, @args) = @_;
   ReportError(T('Search term missing.'), '400 BAD REQUEST') unless $term;
   require Search::FreeText;
@@ -312,7 +282,11 @@ sub SearchFreeTextDB {
 
 # highlighting changes if new search is used
 
-sub SearchFreeTextNewHighlightRegex {
+*OldSearchFreeTextNewHighlightRegex = *HighlightRegex;
+*HighlightRegex = *NewSearchFreeTextNewHighlightRegex;
+
+sub NewSearchFreeTextNewHighlightRegex {
+  return OldSearchFreeTextNewHighlightRegex(@_) if GetParam('old', 0);
   $_ = shift;
   s/\"//g;
   return join('|', split);
