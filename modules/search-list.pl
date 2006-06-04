@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-list.pl,v 1.2 2006/06/04 22:39:04 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-list.pl,v 1.3 2006/06/04 22:40:08 as Exp $</p>';
 
 push(@MyRules, \&SearchListRule);
 
@@ -25,7 +25,7 @@ sub SearchListSort {
 }
 
 sub SearchListRule {
-  if (/\G(&lt;search list "(.*?)"&gt;)/cgis) {
+  if ($bol && /\G(&lt;search list "(.*?)"&gt;)/cgis) {
     # <search list "regexp">
     Clean(CloseHtmlEnvironments());
     Dirty($1);
