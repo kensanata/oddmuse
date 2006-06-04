@@ -1,3 +1,11 @@
+2006-06-05  Alex Schroeder  <alex@gnu.org>
+
+	* modules/search-list.pl (SearchListRule): Sort if requested. Use
+	PageSort() if defined.
+
+	* modules/aggregate.pl (AggregateRule, DoAggregate): Allow search
+	expressions as well.
+
 2006-06-02  Alex Schroeder  <alex@gnu.org>
 
 	* wikicopy: Extended doc string.
