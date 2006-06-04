@@ -16,13 +16,9 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-list.pl,v 1.3 2006/06/04 22:40:08 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-list.pl,v 1.4 2006/06/04 23:36:52 as Exp $</p>';
 
 push(@MyRules, \&SearchListRule);
-
-sub SearchListSort {
-  return sort @_;
-}
 
 sub SearchListRule {
   if ($bol && /\G(&lt;search list "(.*?)"&gt;)/cgis) {
@@ -36,7 +32,13 @@ sub SearchListRule {
     foreach my $id (SearchTitleAndBody($2)) {
       $hash{$id} = 1 unless $id eq $original; # skip the page with the query
     }
-    my @found = map { $q->li(GetPageOrEditLink($_)) } SearchListSort(keys %hash);
+    my @found = keys %hash;
+    if (defined &PageSort) {
+      @found = sort PageSort @found;
+    } else {
+      @found = sort(@found);
+    }
+    @found = map { $q->li(GetPageOrEditLink($_)) } @found;
     print $q->start_div({-class=>'search list'}),
       $q->ul(@found), $q->end_div;
     Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
