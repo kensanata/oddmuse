@@ -1,5 +1,20 @@
 2006-06-05  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (GetOldPageLink, GetSearchLink, GetHistoryLink)
+	(GetRCLink): Removed test for $FreeLinks before translating space
+	to underline.
+
+	* modules/search-freetext.pl ($SearchFreeTextNewForm): Removed.
+	(SearchFreeTextIndex): Plain text response.
+	(SearchFreeTextNewDoSearch): Removed.
+	(SearchFreeTextNewGetRc): Removed.
+	(NewSearchFreeTextTitleAndBody): Renamed from
+	SearchFreeTextTitleAndBody, call OldSearchFreeTextTitleAndBody if
+	the old parameter is set.
+	(NewSearchFreeTextNewHighlightRegex): Renamed from
+	SearchFreeTextNewHighlightRegex, call
+	OldSearchFreeTextNewHighlightRegex if the old parameter is set.
+
 	* modules/search-list.pl (SearchListRule): Sort if requested. Use
 	PageSort() if defined.
 
