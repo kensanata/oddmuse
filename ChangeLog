@@ -1,8 +1,14 @@
 2006-06-05  Alex Schroeder  <alex@gnu.org>
 
+	* modules/questionasker.pl (NewQuestionaskerDoPost): No more
+	logging of Q&A.
+
+	* modules/search-list.pl (SearchListRule): Use <list>.
+
 	* wiki.pl (GetOldPageLink, GetSearchLink, GetHistoryLink)
 	(GetRCLink): Removed test for $FreeLinks before translating space
 	to underline.
+	(ApplyRules): <search foo> no longer requires double quotes.
 
 	* modules/search-freetext.pl ($SearchFreeTextNewForm): Removed.
 	(SearchFreeTextIndex): Plain text response.
