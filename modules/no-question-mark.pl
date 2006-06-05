@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: no-question-mark.pl,v 1.1 2006/06/05 21:51:20 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: no-question-mark.pl,v 1.2 2006/06/05 21:53:31 as Exp $</p>';
 
 sub GetPageOrEditLink {
   my ($id, $text, $bracket, $free) = @_;
@@ -35,5 +35,35 @@ sub GetPageOrEditLink {
     return ScriptLink(UrlEncode($resolved), $text, $class, undef, $title);
   } else {
     return GetEditLink($id, $text);
+  }
+}
+
+sub GetDownloadLink {
+  my ($name, $image, $revision, $alt) = @_;
+  $alt = $name unless $alt;
+  $alt =~ s/_/ /g;
+  my $id = FreeToNormal($name);
+  # if the page does not exist
+  return GetEditLink($id, ($image ? T('image') : T('download')) . ':' . $name, 1)
+    unless $IndexHash{$id};
+  my $action;
+  if ($revision) {
+    $action = "action=download;id=" . UrlEncode($id) . ";revision=$revision";
+  } elsif ($UsePathInfo) {
+    $action = "download/" . UrlEncode($id);
+  } else {
+    $action = "action=download;id=" . UrlEncode($id);
+  }
+  if ($image) {
+    if ($UsePathInfo and not $revision) {
+      $action = $ScriptName . '/' . $action;
+    } else {
+      $action = $ScriptName . '?' . $action;
+    }
+    my $result = $q->img({-src=>$action, -alt=>$alt, -class=>'upload'});
+    $result = ScriptLink(UrlEncode($id), $result, 'image') unless $id eq $OpenPageName;
+    return $result;
+  } else {
+    return ScriptLink($action, $alt, 'upload');
   }
 }
