@@ -16,13 +16,13 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-list.pl,v 1.4 2006/06/04 23:36:52 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-list.pl,v 1.5 2006/06/05 00:04:27 as Exp $</p>';
 
 push(@MyRules, \&SearchListRule);
 
 sub SearchListRule {
-  if ($bol && /\G(&lt;search list "(.*?)"&gt;)/cgis) {
-    # <search list "regexp">
+  if ($bol && /\G(&lt;search list (.*?)&gt;)/cgis) {
+    # <search list regexp>
     Clean(CloseHtmlEnvironments());
     Dirty($1);
     my ($oldpos, $old_) = (pos, $_);
