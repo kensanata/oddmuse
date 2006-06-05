@@ -17,9 +17,10 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.10 2006/06/05 20:21:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.11 2006/06/05 21:28:14 as Exp $</p>';
 
 use vars qw(@QuestionaskerQuestions
+	    $QuestionaskerRememberAnswer
 	    $QuestionaskerRequiredList
 	    %QuestionaskerProtectedForms);
 
@@ -40,6 +41,10 @@ use vars qw(@QuestionaskerQuestions
 # not set, then all pages need questions asked.
 $QuestionaskerRequiredList = '';
 
+# If a user answers a question correctly, remember this in the cookie
+# and don't ask any further questions.
+$QuestionaskerRememberAnswer = 1;
+
 # Forms using one of the following classes are protected.
 %QuestionaskerProtectedForms = ('comment' => 1,
 				'edit upload' => 1,
@@ -50,6 +55,8 @@ push(@MyInitVariables, \&QuestionaskerInit);
 sub QuestionaskerInit {
   $QuestionaskerRequiredList = FreeToNormal($QuestionaskerRequiredList);
   push (@AdminPages, $QuestionaskerRequiredList);
+  $CookieParameters{question} = '';
+  $InvisibleCookieParameters{question} = 1;
 }
 
 *OldQuestionaskerDoPost = *DoPost;
@@ -62,6 +69,7 @@ sub NewQuestionaskerDoPost {
   my $question_num = GetParam('question_num', undef);
   my $answer = GetParam('answer', undef);
   unless (UserIsAdmin()
+	  or $QuestionaskerRememberAnswer && GetParam('question', 0)
 	  or $preview
 	  or $QuestionaskerQuestions[$question_num][1]($answer)
 	  or QuestionaskerException($id)) {
@@ -73,6 +81,7 @@ sub NewQuestionaskerDoPost {
     # warn "Q: '$QuestionaskerQuestions[$question_num][0]', A: '$answer'\n";
     return;
   }
+  SetParam('question', 1) unless GetParam('question', 0);
   return (OldQuestionaskerDoPost(@params));
 }
 
@@ -84,6 +93,7 @@ sub NewQuestionaskerGetFormStart {
   my $form = OldQuestionaskerGetFormStart(@_);
   if ($QuestionaskerProtectedForms{$class}
       and not QuestionaskerException(GetId())
+      and not $QuestionaskerRememberAnswer && GetParam('question', 0)
       and not UserIsAdmin()) {
     $form .= QuestionaskerGetQuestion();
   }
