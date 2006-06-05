@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.9 2006/05/30 20:05:14 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.10 2006/06/05 20:21:35 as Exp $</p>';
 
 use vars qw(@QuestionaskerQuestions
 	    $QuestionaskerRequiredList
@@ -69,7 +69,8 @@ sub NewQuestionaskerDoPost {
     print $q->p(T('You did not answer correctly.'));
     print $q->p(T('Contact the wiki administrator for more information.'));
     PrintFooter();
-    warn "Q: '$QuestionaskerQuestions[$question_num][0]', A: '$answer'\n";
+    # logging to the error log file of the server
+    # warn "Q: '$QuestionaskerQuestions[$question_num][0]', A: '$answer'\n";
     return;
   }
   return (OldQuestionaskerDoPost(@params));
