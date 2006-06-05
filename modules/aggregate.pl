@@ -16,15 +16,15 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: aggregate.pl,v 1.7 2006/06/04 23:35:49 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: aggregate.pl,v 1.8 2006/06/05 00:03:20 as Exp $</p>';
 
 push(@MyRules, \&AggregateRule);
 
 sub AggregateRule {
-  if ($bol && m/\G(&lt;aggregate\s+((("[^\"&]+",?\s*)+)|search\s+"(.+?)"(\s+sort)?)&gt;)/gc) {
+  if ($bol && m/\G(&lt;aggregate\s+((("[^\"&]+",?\s*)+)|(sort\s+)?search\s+(.+?))&gt;)/gc) {
     Clean(CloseHtmlEnvironments());
     Dirty($1);
-    my ($oldpos, $old_, $str, $search, $sort) = ((pos), $_, $3, $5, $6);
+    my ($oldpos, $old_, $str, $sort, $search) = ((pos), $_, $3, $5, $6);
     local ($OpenPageName, %Page);
     print $q->start_div({class=>"aggregate journal"});
     my @pages = ();
@@ -106,8 +106,8 @@ sub DoAggregate {
     $rss .= "<link>" . $url . "</link>\n";
     $rss .= "</image>\n";
   }
-  while ($source =~ m/<aggregate\s+((("[^\"&]+",?\s*)+)|search\s+"(.+?)"(\s+sort)?)>/g) {
-    my ($str, $search, $sort) = ($1, $5, $6);
+  while ($source =~ m/<aggregate\s+((("[^\"&]+",?\s*)+)|(sort\s+)?search\s+(.+?))>/g) {
+    my ($str, $sort, $search) = ($1, $5, $6);
     my @pages = ();
     @pages = $str =~ m/"([^\"&]+)"/g if $str;
     @pages = SearchTitleAndBody($search) if $search;
