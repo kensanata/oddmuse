@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-list.pl,v 1.7 2006/06/06 20:15:27 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-list.pl,v 1.8 2006/06/06 22:59:21 as Exp $</p>';
 
 push(@MyRules, \&SearchListRule);
 
@@ -28,7 +28,7 @@ sub SearchListRule {
     my ($oldpos, $old_) = (pos, $_);
     my $original = $OpenPageName;
     local ($OpenPageName, %Page);
-    my $hash;
+    my %hash = ();
     foreach my $id (SearchTitleAndBody($2)) {
       $hash{$id} = 1 unless $id eq $original; # skip the page with the query
     }
