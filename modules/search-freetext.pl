@@ -40,7 +40,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.31 2006/06/04 23:51:18 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.32 2006/06/06 22:41:35 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -178,9 +178,9 @@ sub NewSearchFreeTextTitleAndBody {
   my @wanted = $term  =~ m/(".*?"|tag:".*?"|\S+)/g;
   my @wanted_words = grep(!/^tag:/, @wanted);
   my @wanted_tags = map { substr($_, 4) } grep(/^tag:/, @wanted);
-  my @words = SearchFreeTextGet(SearchFreeTextDB($DataDir . '/word.db'),
+  my @words = SearchFreeTextGet(SearchFreeTextDB($DataDir . '/word.db'), 0,
 				@wanted_words);
-  my @tags = SearchFreeTextGet(SearchFreeTextDB($DataDir . '/tags.db'),
+  my @tags = SearchFreeTextGet(SearchFreeTextDB($DataDir . '/tags.db'), 1,
 			       @wanted_tags);
   my @result = ();
   if (not @wanted_words and not @wanted_tags) {
@@ -239,7 +239,7 @@ sub NewSearchFreeTextTitleAndBody {
 }
 
 sub SearchFreeTextGet {
-  my ($db, @wanted) = @_;
+  my ($db, $tags, @wanted) = @_;
   return unless @wanted; # shortcut
   my @result = ();
   # open file and get sorted list of arrays with page id and rank.
@@ -249,6 +249,7 @@ sub SearchFreeTextGet {
   # make sure that all double quoted phrases do in fact all appear.
   # to do this, we copy page ids from @found.
   my @phrases = map { quotemeta(substr($_,1,-1)) } grep(/^"/, @wanted);
+  @phrases = map { "\[\[tag:$_\]\]" } @phrases if $tags;
  PAGE: foreach (@found) {
     my ($id, $score) = ($_->[0], $_->[1]);
     if (@phrases) {
