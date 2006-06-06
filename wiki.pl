@@ -106,16 +106,14 @@ $BannedContent = 'BannedContent'; # Page for banned content (usually for link-ba
 $WikiLinks   = 1;               # 1 = LinkPattern is a link
 $FreeLinks   = 1;               # 1 = [[some text]] is a link
 $BracketText = 1;               # 1 = [URL desc] uses a description for the URL
-$BracketWiki = 0;               # 1 = [WikiLink desc] uses a desc for the local link
+$BracketWiki = 1;               # 1 = [WikiLink desc] uses a desc for the local link
 $NetworkFile = 1;               # 1 = file: is a valid protocol for URLs
 $AllNetworkFiles = 0;           # 1 = file:///foo is allowed -- the default allows only file://foo
 $PermanentAnchors = 1;	        # 1 = [::some text] defines permanent anchors (page aliases)
 $InterMap    = 'InterMap';      # name of the intermap page
 $NearMap     = 'NearMap';       # name of the nearmap page
 $RssInterwikiTranslate = 'RssInterwikiTranslate'; # name of RSS interwiki translation page
-@MyRules = (\&LinkRules);       # default rules that can be overridden
-%RuleOrder = (\&LinkRules => 0);
-$ENV{PATH}   = '/usr/bin';     # Path used to find 'diff'
+$ENV{PATH}   = '/usr/bin';      # Path used to find 'diff'
 $UseDiff     = 1;	        # 1 = use diff
 $SurgeProtection      = 1;	# 1 = protect against leeches
 $SurgeProtectionTime  = 20;	# Size of the protected window in seconds
@@ -184,6 +182,8 @@ $SisterSiteLogoUrl = 'file:///tmp/oddmuse/%s.png'; # URL format string for logos
 	    unlock => \&DoUnlock,	    password => \&DoPassword,
 	    index => \&DoIndex,		    admin => \&DoAdminPage,
 	    all => \&DoPrintAllPages,	    css => \&DoCss, );
+@MyRules = (\&LinkRules); # don't set this variable, add to it!
+%RuleOrder = (\&LinkRules => 0);
 
 # The 'main' program, called at the end of this script file (aka. as handler)
 sub DoWikiRequest {
@@ -269,7 +269,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.665 2006/06/05 00:12:57 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.666 2006/06/06 19:32:56 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
