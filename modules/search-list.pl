@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-list.pl,v 1.6 2006/06/05 00:17:01 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-list.pl,v 1.7 2006/06/06 20:15:27 as Exp $</p>';
 
 push(@MyRules, \&SearchListRule);
 
@@ -38,7 +38,7 @@ sub SearchListRule {
     } else {
       @found = sort(@found);
     }
-    @found = map { $q->li(GetPageOrEditLink($_)) } @found;
+    @found = map { $q->li(GetPageLink($_)) } @found;
     print $q->start_div({-class=>'search list'}),
       $q->ul(@found), $q->end_div;
     Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
