@@ -40,7 +40,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.32 2006/06/06 22:41:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.33 2006/06/06 22:56:53 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -249,7 +249,7 @@ sub SearchFreeTextGet {
   # make sure that all double quoted phrases do in fact all appear.
   # to do this, we copy page ids from @found.
   my @phrases = map { quotemeta(substr($_,1,-1)) } grep(/^"/, @wanted);
-  @phrases = map { "\[\[tag:$_\]\]" } @phrases if $tags;
+  @phrases = map { "\\[\\[tag:$_\\]\\]" } @phrases if $tags;
  PAGE: foreach (@found) {
     my ($id, $score) = ($_->[0], $_->[1]);
     if (@phrases) {
