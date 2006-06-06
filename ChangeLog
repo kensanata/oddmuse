@@ -1,7 +1,31 @@
+2006-06-07  Alex Schroeder  <alex@gnu.org>
+
+	* modules/search-list.pl (SearchListRule): Initialize %hash
+	correctly.
+
+	* modules/search-freetext.pl (SearchFreeTextGet): Add parameter to
+	search for phrases as tags.
+	(NewSearchFreeTextTitleAndBody): Pass new parameter to
+	SearchFreeTextGet.
+
+2006-06-06  Alex Schroeder  <alex@gnu.org>
+
+	* modules/search-list.pl (SearchListRule): Use GetPageLink.
+
+	* wiki.pl ($BracketWiki): Default to 1.
+
 2006-06-05  Alex Schroeder  <alex@gnu.org>
+
+	* modules/no-question-mark.pl (GetDownloadLink): New.
 
 	* modules/questionasker.pl (NewQuestionaskerDoPost): No more
 	logging of Q&A.
+	($QuestionaskerRememberAnswer): New option.
+	(QuestionaskerInit): Add question parameter to cookie.
+	(NewQuestionaskerDoPost): Set question parameter in cookie if
+	answered correctly.
+	(NewQuestionaskerDoPost, NewQuestionaskerGetFormStart): Use new
+	option and parameter from cookie.
 
 	* modules/search-list.pl (SearchListRule): Use <list>.
 
