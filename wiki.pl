@@ -65,13 +65,13 @@ $RssInterwikiTranslate $UseCache $ModuleDir $DebugInfo $FullUrlPattern
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
 %NewCookie $InterInit $FootnoteNumber $OpenPageName @IndexList
-$IndexInit $Message $q $Now %RecentVisitors @HtmlStack $Monolithic
-$ReplaceForm %PermanentAnchors %PagePermanentAnchors %MyInc
-$CollectingJournal $WikiDescription $PrintedHeader %Locks $Fragment
-@Blocks @Flags %NearSite %NearSource %NearLinksUsed $NearInit
-$NearDir $NearMap $SisterSiteLogoUrl %NearSearch @KnownLocks
-$PermanentAnchorsInit $ModulesDescription %RuleOrder %Action $bol
-%RssInterwikiTranslate $RssInterwikiTranslateInit %Includes);
+$IndexInit $Message $q $Now %RecentVisitors @HtmlStack $ReplaceForm
+%PermanentAnchors %PagePermanentAnchors %MyInc $CollectingJournal
+$WikiDescription $PrintedHeader %Locks $Fragment @Blocks @Flags
+%NearSite %NearSource %NearLinksUsed $NearInit $NearDir $NearMap
+$SisterSiteLogoUrl %NearSearch @KnownLocks $PermanentAnchorsInit
+$ModulesDescription %RuleOrder %Action $bol %RssInterwikiTranslate
+$RssInterwikiTranslateInit %Includes);
 
 # == Configuration ==
 
@@ -181,7 +181,7 @@ $SisterSiteLogoUrl = 'file:///tmp/oddmuse/%s.png'; # URL format string for logos
 	    download => \&DoDownload,	    rss => \&DoRss,
 	    unlock => \&DoUnlock,	    password => \&DoPassword,
 	    index => \&DoIndex,		    admin => \&DoAdminPage,
-	    all => \&DoPrintAllPages,	    css => \&DoCss, );
+	    clear => \&DoClearCache,	    css => \&DoCss, );
 @MyRules = (\&LinkRules); # don't set this variable, add to it!
 %RuleOrder = (\&LinkRules => 0);
 
@@ -269,7 +269,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.666 2006/06/06 19:32:56 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.667 2006/06/07 23:09:57 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -708,6 +708,21 @@ sub PrintWikiToHTML {
   }
 }
 
+sub DoClearCache {
+  return unless UserIsAdminOrError();
+  print GetHttpHeader('text/plain');
+  RequestLockOrError();
+  foreach my $id (AllPagesList()) {
+    OpenPage($id);
+    delete $Page{blocks};
+    delete $Page{flags};
+    SavePage();
+    print $id, "\n";
+  }
+  ReleaseLock();
+  PrintFooter();
+}
+
 sub QuoteHtml {
   my $html = shift;
   $html =~ s/&/&amp;/g;
@@ -744,6 +759,12 @@ sub UrlDecode {
   return $str;
 }
 
+sub QuoteRegexp {
+  my $re = shift;
+  $re =~ s/([\\\[\]\$()^.])/\\$1/g;
+  return $re;
+}
+
 sub GetRaw {
   my $uri = shift;
   return unless eval { require LWP::UserAgent; };
@@ -778,6 +799,27 @@ sub PrintJournal {
     print $q->start_div({-class=>'journal'}) . $q->comment("$FullUrl $num $regexp $mode $offset");
     PrintAllPages(1, 1, @pages);
     print $q->end_div();
+  }
+}
+
+sub PrintAllPages {
+  my $links = shift;
+  my $comments = shift;
+  my $lang = GetParam('lang', 0);
+  for my $id (@_) {
+    OpenPage($id);
+    my @languages = split(/,/, $Page{languages});
+    next if $lang and @languages and not grep(/$lang/, @languages);
+    my $title = $id;
+    $title =~ s/_/ /g;	 # Display as spaces
+    print $q->start_div({-class=>'page'}) . $q->hr
+      . $q->h1($links ? GetPageLink($id, $title) : $q->a({-name=>$id},$title));
+    PrintPageHtml();
+    if ($comments and UserCanEdit($CommentsPrefix . $id, 0) and $id !~ /^$CommentsPrefix/) {
+      print $q->p({-class=>'comment'},
+		  GetPageLink($CommentsPrefix . $id, T('Comments on this page')));
+    }
+    print $q->end_div();;
   }
 }
 
@@ -1116,10 +1158,8 @@ sub ScriptLink {
   if ($action =~ /^($UrlProtocols)\%3a/ or $action =~ /^\%2f/) { # nearlinks and other URLs
     $action =~ s/%([0-9a-f][0-9a-f])/chr(hex($1))/ge; # undo urlencode
     $params{-href} = $action;
-  } elsif ($UsePathInfo and !$Monolithic and $action !~ /=/) {
+  } elsif ($UsePathInfo and $action !~ /=/) {
     $params{-href} = $ScriptName . '/' . $action;
-  } elsif ($Monolithic) {
-    $params{-href} = '#' . $action;
   } else {
     $params{-href} = $ScriptName . '?' . $action;
   }
@@ -1938,6 +1978,7 @@ sub DoAdminPage {
 	      ScriptLink('action=password', T('Password')),
 	      ScriptLink('action=maintain', T('Run maintenance')));
   if (UserIsAdmin()) {
+    push(@menu, ScriptLink('action=clear', T('Clear Cache')));
     if (-f "$DataDir/noedit") {
       push(@menu, ScriptLink('action=editlock;set=0', T('Unlock site')));
     } else {
@@ -1988,7 +2029,7 @@ sub GetOldPageLink {
 
 sub GetSearchLink {
   my ($text, $class, $name, $title) = @_;
-  my $id = UrlEncode($text);
+  my $id = UrlEncode(QuoteRegexp($text));
   $name = UrlEncode($name);
   $text =~ s/_/ /g;  # Display with spaces
   $id =~ s/_/+/g;    # Search for url-escaped spaces
@@ -3152,9 +3193,9 @@ sub DoSearch {
     return;
   }
   if ($replacement) {
+    return unless UserIsAdminOrError();
     print GetHeader('', QuoteHtml(Ts('Replaced: %s', "$string -> $replacement"))),
       $q->start_div({-class=>'content replacement'});
-    return  if (!UserIsAdminOrError());
     Replace($string,$replacement);
     $string = quotemeta($replacement);
   } elsif ($raw) {
@@ -3379,40 +3420,6 @@ sub Replace {
     }
   }
   ReleaseLock();
-}
-
-# == Monolithic output ==
-
-sub DoPrintAllPages {
-  return  if (!UserIsAdminOrError());
-  $Monolithic = 1; # changes ScriptLink
-  print GetHeader('', T('Complete Content'))
-    . $q->p(Ts('The main page is %s.', $q->a({-href=>'#' . $HomePage}, $HomePage)));
-  print $q->p($q->b(Ts('(for %s)', GetParam('lang', 0)))) if GetParam('lang', 0);
-  PrintAllPages(0, 0, AllPagesList());
-  PrintFooter();
-}
-
-sub PrintAllPages {
-  my $links = shift;
-  my $comments = shift;
-  my $lang = GetParam('lang', 0);
-  for my $id (@_) {
-    OpenPage($id);
-    my @languages = split(/,/, $Page{languages});
-    @languages = GetLanguages($Page{text}) unless GetParam('cache', $UseCache); # maybe refresh!
-    next if $lang and @languages and not grep(/$lang/, @languages);
-    my $title = $id;
-    $title =~ s/_/ /g;	 # Display as spaces
-    print $q->start_div({-class=>'page'}) . $q->hr
-      . $q->h1($links ? GetPageLink($id, $title) : $q->a({-name=>$id},$title));
-    PrintPageHtml();
-    if ($comments and UserCanEdit($CommentsPrefix . $id, 0) and $id !~ /^$CommentsPrefix/) {
-      print $q->p({-class=>'comment'},
-		  GetPageLink($CommentsPrefix . $id, T('Comments on this page')));
-    }
-    print $q->end_div();;
-  }
 }
 
 # == Posting new pages ==
@@ -3790,8 +3797,8 @@ sub DeletePage { # Delete must be done inside locks.
 # == Page locking ==
 
 sub DoEditLock {
+  return unless UserIsAdminOrError();
   print GetHeader('', T('Set or Remove global edit lock'));
-  return  if (!UserIsAdminOrError());
   my $fname = "$NoEditFile";
   if (GetParam("set", 1)) {
     WriteStringToFile($fname, 'editing locked.');
@@ -3804,9 +3811,8 @@ sub DoEditLock {
 }
 
 sub DoPageLock {
+  return unless UserIsAdminOrError();
   print GetHeader('', T('Set or Remove page edit lock'));
-  # Consider allowing page lock/unlock at editor level?
-  return  if (!UserIsAdminOrError());
   my $id = GetParam('id', '');
   my $fname = GetLockedPageFile($id) if ValidIdOrDie($id);
   if (GetParam('set', 1)) {
