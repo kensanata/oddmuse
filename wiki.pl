@@ -269,7 +269,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.669 2006/06/08 21:42:31 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.670 2006/06/08 22:05:07 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3250,7 +3250,7 @@ sub SearchTitleAndBody {
     }
     my $freeName = $name;
     $freeName =~ s/_/ /g;
-    if (SearchString($string, $Page{text}) or SearchString($string, $freeName)) {
+    if (SearchString($string, $freeName . "\n" . $Page{text})) {
       push(@found, $name);
       &$func($name, @args) if $func;
     }
