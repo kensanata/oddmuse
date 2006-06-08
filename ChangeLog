@@ -1,3 +1,40 @@
+2006-06-09  Alex Schroeder  <alex@gnu.org>
+
+	* modules/search-freetext.pl (process): Lowercase new words.
+	(SearchFreeTextIndex): UrlEncode keys because internal data
+	structure uses commas, so page names with commas get corrupted.
+	(SearchFreeTextCloud): UrlDecode keys.
+	(SearchFreeTextGet): No longer quotemata phrases (since backlinks
+	have quoted regular expressions automatically. Concatenate display
+	title and body before checking for phrases. UrlDecode keys.
+	(SearchFreeTextGet): QuoteRegexp search terms unless they appear
+	to be quoted already.
+
+	* wiki.pl (SearchTitleAndBody): Concatenate title and body and
+	call SearchString once instead of once for each.
+
+2006-06-08  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoClearCache): Add real HTML output instead of
+	plain/text.
+	(SearchString): Get rid of 'and' and 'or', instead use double
+	quotes to check for phrases.
+	(DoSearch, DoMaintain, DoShowVersion, DoSurgeProtection): Trim
+	some space.
+	(GetSearchLink): Add double-quotes around title so that titles
+	with spaces in them will be searched correctly.
+
+	* modules/publish.pl (DoPublish): Send password along.
+
+	* wiki.pl ($Monolithic, DoPrintAllPages): Removed all action.
+	(ScriptLink): Got rid of $Monolithic.
+	(DoClearCache): Added clear action.
+	(DoAdminPage): Added clear action to menu.
+	(QuoteRegexp): New.
+	(GetSearchLink): Use it.
+	(DoSearch, DoEditLock, DoPageLock): Print error before printing
+	the header.
+
 2006-06-07  Alex Schroeder  <alex@gnu.org>
 
 	* modules/search-list.pl (SearchListRule): Initialize %hash
