@@ -269,7 +269,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.667 2006/06/07 23:09:57 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.668 2006/06/08 21:16:06 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -710,15 +710,17 @@ sub PrintWikiToHTML {
 
 sub DoClearCache {
   return unless UserIsAdminOrError();
-  print GetHttpHeader('text/plain');
   RequestLockOrError();
+  print GetHttpHeader('', T('Clear Cache')), $q->start_div({-class=>'content clear'}),
+    $q->p(T('Main lock obtained.')), '<p>';
   foreach my $id (AllPagesList()) {
     OpenPage($id);
     delete $Page{blocks};
     delete $Page{flags};
     SavePage();
-    print $id, "\n";
+    print $q->br(), GetPageLink($id);
   }
+  print '</p>', $q->end_div();
   ReleaseLock();
   PrintFooter();
 }
@@ -3199,17 +3201,14 @@ sub DoSearch {
     Replace($string,$replacement);
     $string = quotemeta($replacement);
   } elsif ($raw) {
-    print GetHttpHeader('text/plain');
-    print RcTextItem('title', Ts('Search for: %s', $string)), RcTextItem('date', TimeToText($Now)),
-      RcTextItem('link', $q->url(-path_info=>1, -query=>1)), "\n" if GetParam('context',1);
+    print GetHttpHeader('text/plain'), RcTextItem('title', Ts('Search for: %s', $string)),
+      RcTextItem('date', TimeToText($Now)), RcTextItem('link', $q->url(-path_info=>1, -query=>1)), "\n"
+	if GetParam('context',1);
   } else {
-    print GetHeader('', QuoteHtml(Ts('Search for: %s', $string))),
-      $q->start_div({-class=>'content search'});
+    print GetHeader('', QuoteHtml(Ts('Search for: %s', $string))), $q->start_div({-class=>'content search'});
     $ReplaceForm = UserIsAdmin();
-    my @elements = (ScriptLink('action=rc;rcfilteronly=' . UrlEncode($string),
-			       T('View changes for these pages')));
-    push(@elements, ScriptLink('near=2;search=' . UrlEncode($string),
-				Ts('Search sites on the %s as well', $NearMap)))
+    my @elements = (ScriptLink('action=rc;rcfilteronly=' . UrlEncode($string), T('View changes for these pages')));
+    push(@elements, ScriptLink('near=2;search=' . UrlEncode($string), Ts('Search sites on the %s as well', $NearMap)))
       if %NearSearch and GetParam('near', 1) < 2;
     print $q->p({-class=>'links'}, @elements);
   }
@@ -3261,12 +3260,8 @@ sub SearchTitleAndBody {
 
 sub SearchString {
   my ($string, $data) = @_;
-  my $and = T('and');
-  my $or = T('or');
-  my @strings = split(/ +$and +/, $string);
+  my @strings = grep /./, $string =~ /"([^"]+)"|(\S+)/g;
   foreach my $str (@strings) {
-    my @temp = split(/ +$or +/, $str);
-    $str = join('|', @temp);
     return 0 unless ($data =~ /$str/i);
   }
   return 1;
@@ -3686,35 +3681,27 @@ sub DoMaintain {
   my $fname = "$DataDir/maintain";
   if (!UserIsAdmin()) {
     if ((-f $fname) && ((-M $fname) < 0.5)) {
-      print $q->p(T('Maintenance not done.') . ' '
-		  . T('(Maintenance can only be done once every 12 hours.)')
+      print $q->p(T('Maintenance not done.') . ' ' . T('(Maintenance can only be done once every 12 hours.)')
 		  . ' ', T('Remove the "maintain" file or wait.')), $q->end_div();
       PrintFooter();
       return;
     }
   }
   RequestLockOrError();
-  print $q->p(T('Main lock obtained.'));
-  print '<p>', T('Expiring keep files and deleting pages marked for deletion');
+  print $q->p(T('Main lock obtained.')), '<p>', T('Expiring keep files and deleting pages marked for deletion');
   # Expire all keep files
   foreach my $name (AllPagesList()) {
-    print $q->br();
-    print GetPageLink($name);
+    print $q->br(), GetPageLink($name);
     OpenPage($name);
     my $delete = PageDeletable($name);
     if ($delete) {
       my $status = DeletePage($OpenPageName);
-      if ($status) {
-	print ' ' . T('not deleted: ') . $status;
-      } else {
-	print ' ' . T('deleted');
-      }
+      print ' ' . ($status ? T('not deleted: ') . $status : T('deleted'));
     } else {
       ExpireKeepFiles();
     }
   }
-  print '</p>';
-  print $q->p(Ts('Moving part of the %s log file.', $RCName));
+  print '</p>', $q->p(Ts('Moving part of the %s log file.', $RCName));
   # Determine the number of days to go back
   my $days = 0;
   foreach (@RcDays) {
@@ -3724,11 +3711,8 @@ sub DoMaintain {
   # Read the current file
   my ($status, $data) = ReadFile($RcFile);
   if (!$status) {
-    print $q->p($q->strong(Ts('Could not open %s log file', $RCName) . ':') . ' '
-		. $RcFile)
-      . $q->p(T('Error was') . ':')
-      . $q->pre($!)
-      . $q->p(T('Note: This error is normal if no changes have been made.'));
+    print $q->p($q->strong(Ts('Could not open %s log file', $RCName) . ':') . ' '. $RcFile),
+      $q->p(T('Error was') . ':'), $q->pre($!), $q->p(T('Note: This error is normal if no changes have been made.'));
   }
   # Move the old stuff from rc to temp
   my @rc = split(/\n/, $data);
@@ -3832,25 +3816,20 @@ sub DoShowVersion {
   print GetHeader('', T('Displaying Wiki Version')), $q->start_div({-class=>'content version'});
   print $WikiDescription;
   if (GetParam('dependencies', 0)) {
-    print $q->p($q->server_software()),
-      $q->p(sprintf('Perl v%vd', $^V)),
-      $q->p($ENV{MOD_PERL} ? $ENV{MOD_PERL} : "no mod_perl"),
-      $q->p('CGI: ', $CGI::VERSION),
+    print $q->p($q->server_software()), $q->p(sprintf('Perl v%vd', $^V)),
+      $q->p($ENV{MOD_PERL} ? $ENV{MOD_PERL} : "no mod_perl"), $q->p('CGI: ', $CGI::VERSION),
       $q->p('LWP::UserAgent ', eval { local $SIG{__DIE__}; require LWP::UserAgent; $LWP::UserAgent::VERSION; }),
       $q->p('XML::RSS: ', eval { local $SIG{__DIE__}; require XML::RSS; $XML::RSS::VERSION; }),
       $q->p('XML::Parser: ', eval { local $SIG{__DIE__}; $XML::Parser::VERSION; });
     if ($UseDiff == 1) {
-      print $q->p('diff: ' . (`diff --version` || $!)),
-      $q->p('diff3: ' . (`diff3 --version` || $!));
+      print $q->p('diff: ' . (`diff --version` || $!)), $q->p('diff3: ' . (`diff3 --version` || $!));
     }
   } else {
     print $q->p(ScriptLink('action=version;dependencies=1', T('Show dependencies')));
   }
   if (GetParam('links', 0)) {
-    print $q->h2(T('Inter links:')), $q->p(join(', ', sort keys %InterSite));
-    print $q->h2(T('Near links:')),
-      $q->p(join($q->br(), map { $_ . ': ' . join(', ', @{$NearSource{$_}})}
-		 sort keys %NearSource));
+    print $q->h2(T('Inter links:')), $q->p(join(', ', sort keys %InterSite)),
+      $q->h2(T('Near links:')), $q->p(join($q->br(), map { $_ . ': ' . join(', ', @{$NearSource{$_}})} sort keys %NearSource));
   } else {
     print $q->p(ScriptLink('action=version;links=1', T('Show parsed link data')));
   }
@@ -3877,8 +3856,7 @@ sub DoSurgeProtection {
 		  '503 SERVICE UNAVAILABLE');
     }
   } elsif (GetParam('action', '') ne 'unlock') {
-    ReportError(Ts('Could not get %s lock', 'visitors')
-		. ': ' . Ts('Check whether the web server can create the directory %s and whether it can create files in it.', $TempDir), '503 SERVICE UNAVAILABLE');
+    ReportError(Ts('Could not get %s lock', 'visitors') . ': ' . Ts('Check whether the web server can create the directory %s and whether it can create files in it.', $TempDir), '503 SERVICE UNAVAILABLE');
   }
 }
 
