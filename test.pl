@@ -708,6 +708,7 @@ delete $Action{aggregate};
 
 redirection:
 print '[redirection]';
+clear_pages();
 
 update_page('Miles_Davis', 'Featuring [[John Coltrane]]'); # plain link
 update_page('John_Coltrane', '#REDIRECT Coltrane'); # no redirect
@@ -731,6 +732,7 @@ test_page(get_page('Jack_DeJohnette'),
 
 recent_changes:
 print '[recent changes]';
+clear_pages();
 
 $host1 = 'tisch';
 $host2 = 'stuhl';
@@ -771,7 +773,7 @@ Confusibombus
 ballet
 EOT
 
-$page = get_page('action=rc rcfilteronly=order%20or%20chaos');
+$page = get_page('action=rc rcfilteronly=order\|chaos');
 test_page($page, @Positives);
 test_page_negative($page, @Negatives);
 
@@ -789,7 +791,7 @@ Confusibombus
 ballet
 EOT
 
-$page = get_page('action=rc rcfilteronly=order%20and%20chaos');
+$page = get_page('action=rc rcfilteronly=order%20chaos');
 test_page($page, @Positives);
 test_page_negative($page, @Negatives);
 
