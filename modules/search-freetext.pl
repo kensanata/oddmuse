@@ -40,7 +40,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.34 2006/06/08 22:33:36 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.35 2006/06/08 22:47:49 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -247,9 +247,11 @@ sub SearchFreeTextGet {
   $db->open_index();
   my @found = $db->search(join(" ", @wanted));
   $db->close_index();
-  # make sure that all double quoted phrases do in fact all appear.
-  # to do this, we copy page ids from @found.
-  my @phrases = map { substr($_,1,-1) } grep(/^"/, @wanted);
+  # Make sure that all double quoted phrases do in fact all appear. To
+  # do this, we copy page ids from @found. Quote potential regular
+  # expressions in search strings. Backlink searches are already
+  # quoted, however -- thus only do it if no backslash is found.
+  my @phrases = map { $_ = substr($_,1,-1); $_ = QuoteRegexp($_) unless index('\\', $_); $_; } grep(/^"/, @wanted);
   @phrases = map { "\\[\\[tag:$_\\]\\]" } @phrases if $tags;
  PAGE: foreach (@found) {
     my ($id, $score) = (UrlDecode($_->[0]), $_->[1]);
