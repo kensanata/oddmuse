@@ -40,7 +40,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.35 2006/06/08 22:47:49 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.36 2006/06/08 23:39:16 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -127,14 +127,13 @@ sub SearchFreeTextCloud {
   my $tagfile = $DataDir . '/tags.db';
   my $tags = SearchFreeTextDB($tagfile);
   $tags->open_index();
-  # my @found = $db->search(join(" ", @wanted));
   my $db = $tags->{_Database};
   my $max = 0;
   my $min = 0;
   my %count = ();
   # use Data::Dumper;
   # print Dumper($db), '<br />';
-  foreach (map { UrlDecode } keys %$db) {
+  foreach (keys %$db) {
     next if /^[\t ]|[0-9:]/;
     $count{$_} = split(/;/, $$db{$_});
     $max = $count{$_} if $count{$_} > $max;
@@ -143,7 +142,7 @@ sub SearchFreeTextCloud {
   }
   foreach (sort keys %count) {
     my $n = $count{$_};
-    print $q->a({-href  => "$ScriptName?search=tag:$_",
+    print $q->a({-href  => "$ScriptName?search=tag:" . UrlEncode($_),
 		 -title => $n,
 		 -style => 'font-size: '
 		 . int(80+120*($n-$min)/($max-$min)) . '%;',
