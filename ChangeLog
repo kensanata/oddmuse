@@ -9,6 +9,7 @@
 	title and body before checking for phrases. UrlDecode keys.
 	(SearchFreeTextGet): QuoteRegexp search terms unless they appear
 	to be quoted already.
+	(SearchFreeTextCloud): Fix URL encoding stuff.
 
 	* wiki.pl (SearchTitleAndBody): Concatenate title and body and
 	call SearchString once instead of once for each.
