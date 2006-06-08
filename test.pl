@@ -1121,7 +1121,7 @@ xpath_test($page, '//span[@class="result"]/a[@class="local"][@href="http://local
 # Brackets in the page name
 
 test_page(update_page('Search (and replace)', 'Muu'),
-	  'search=Search\+%5c\(and\+replace%5c\)');
+	  'search=%22Search\+%5c\(and\+replace%5c\)%22');
 
 # Make sure only admins can replace
 
@@ -1159,7 +1159,7 @@ test_page(get_page('SearchAndReplace'), 'This is {{fuu}} and this is \[xa\]bar.'
 
 $page = update_page("Alexander_Schröder", "Edit [[Alexander Schröder]]!");
 xpath_test($page,
-	   Encode::encode_utf8('//h1/a[@title="Click to search for references to this page"][@href="http://localhost/wiki.pl?search=Alexander+Schr%c3%b6der"][text()="Alexander Schröder"]'),
+	   Encode::encode_utf8('//h1/a[@title="Click to search for references to this page"][@href="http://localhost/wiki.pl?search=%22Alexander+Schr%c3%b6der%22"][text()="Alexander Schröder"]'),
 	   Encode::encode_utf8('//a[@class="local"][@href="http://localhost/wiki.pl/Alexander_Schr%c3%b6der"][text()="Alexander Schröder"]'));
 
 xpath_test(update_page('IncludeSearch',
