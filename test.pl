@@ -742,7 +742,7 @@ update_page('Confusibombus', 'This is order.', 'ballet', 1, 0, ('username=berta'
 update_page('Mucidobombus', 'This is chaos.', 'tarantella', 0, 0, ('username=alex'));
 
 @Positives = split('\n',<<'EOT');
-for time or place only
+for time\|place only
 Mendacibombus.*samba
 Bombia.*tango
 EOT
@@ -754,7 +754,7 @@ Mucidobombus
 tarantella
 EOT
 
-$page = get_page('action=rc rcfilteronly=time%20or%20place');
+$page = get_page('action=rc rcfilteronly=time\|place');
 test_page($page, @Positives);
 test_page_negative($page, @Negatives);
 
@@ -1091,8 +1091,8 @@ test_page(update_page('CacheTest', $str, '', 1), $str);
 AppendStringToFile($ConfigFile, "\$WikiLinks = 1;\n");
 test_page(get_page('CacheTest'), $str);
 
-# refresh the cache using the all action
-test_page(get_page('action=all cache=0 pwd=foo'), $str, 'Complete Content');
+# refresh the cache
+test_page(get_page('action=clear pwd=foo'), 'Clear Cache');
 
 # now there is a link
 # This is a WikiLink<a class="edit" title="Click to edit this page" href="http://localhost/wiki.pl\?action=edit;id=WikiLink">\?</a>.
@@ -1115,6 +1115,11 @@ test_page($page,
 	  '<p class="result">1 pages found.</p>',
 	  'This is <strong>fooz</strong> and this is barz.');
 xpath_test($page, '//span[@class="result"]/a[@class="local"][@href="http://localhost/wiki.pl/SearchAndReplace"][text()="SearchAndReplace"]');
+
+# Brackets in the page name
+
+test_page(update_page('Search (and replace)', 'Muu'),
+	  'search=Search\+%5c\(and\+replace%5c\)');
 
 # Make sure only admins can replace
 
@@ -1580,6 +1585,7 @@ $AllNetworkFiles = 1;
 update_page('HomePage', "This page exists.");
 update_page('InterMap', " Oddmuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n PlanetMath http://planetmath.org/encyclopedia/%s.html", 'required', 0, 1);
 $InterInit = 0;
+$BracketWiki = 0; # old default
 InitVariables();
 
 %Test = split('\n',<<'EOT');
@@ -1652,7 +1658,6 @@ EOT
 xpath_run_tests();
 
 $AllNetworkFiles = 0;
-
 $BracketWiki = 1;
 
 %Test = split('\n',<<'EOT');
