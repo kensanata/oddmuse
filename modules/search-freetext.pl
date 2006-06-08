@@ -34,13 +34,13 @@ sub initialize {
 sub process {
   my ($self, $oldwords) = @_;
   my $string = join("\n", @$oldwords);
-  my @words = ($string =~ /[A-Za-z0-9\x80-\xff]+/g);
+  my @words = map { lc } ($string =~ /[A-Za-z0-9\x80-\xff]+/g);
   return \@words;
 };
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.33 2006/06/06 22:56:53 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.34 2006/06/08 22:33:36 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -103,11 +103,12 @@ sub SearchFreeTextIndex {
     # underscores
     my $page = $OpenPageName;
     $page =~ s/_/ /g;
-    $words->index_document($name, $page . ' ' . $Page{text});
+    # UrlEncode key because the internal datastructure uses commas, for example.
+    $words->index_document(UrlEncode($name), $page . ' ' . $Page{text});
     my @tags = ($Page{text} =~ m/\[\[tag:$FreeLinkPattern\]\]/g,
 		$Page{text} =~ m/\[\[tag:$FreeLinkPattern\|([^]|]+)\]\]/g);
     next unless @tags;
-    $tags->index_document($name, join(' ', @tags)); # add tags
+    $tags->index_document(UrlEncode($name), join(' ', @tags)); # add tags
   }
   $words->close_index();
   $tags->close_index();
@@ -133,7 +134,7 @@ sub SearchFreeTextCloud {
   my %count = ();
   # use Data::Dumper;
   # print Dumper($db), '<br />';
-  foreach (keys %$db) {
+  foreach (map { UrlDecode } keys %$db) {
     next if /^[\t ]|[0-9:]/;
     $count{$_} = split(/;/, $$db{$_});
     $max = $count{$_} if $count{$_} > $max;
@@ -248,15 +249,18 @@ sub SearchFreeTextGet {
   $db->close_index();
   # make sure that all double quoted phrases do in fact all appear.
   # to do this, we copy page ids from @found.
-  my @phrases = map { quotemeta(substr($_,1,-1)) } grep(/^"/, @wanted);
+  my @phrases = map { substr($_,1,-1) } grep(/^"/, @wanted);
   @phrases = map { "\\[\\[tag:$_\\]\\]" } @phrases if $tags;
  PAGE: foreach (@found) {
-    my ($id, $score) = ($_->[0], $_->[1]);
+    my ($id, $score) = (UrlDecode($_->[0]), $_->[1]);
     if (@phrases) {
       OpenPage($id);
+      my $text = $OpenPageName;
+      $text =~ s/_/ /g;
+      $text .= "\n" . $Page{text};
       foreach my $phrase (@phrases) {
 	# don't add it to @found by skipping to the next page
-	next PAGE unless $Page{text} =~ m/$phrase/;
+	next PAGE unless $text =~ m/$phrase/;
       }
     }
     push(@result, $id); # order is important, so no hashes
