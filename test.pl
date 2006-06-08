@@ -2949,6 +2949,34 @@ test_page(update_page('bar', '<include "foo_moo">'),
 
 # --------------------
 
+indexed_search:
+print '[indexed search]';
+
+clear_pages();
+add_module('search-freetext.pl');
+
+update_page('Search (and replace)', 'Muu, or moo.');
+update_page('To be, or not to be', 'That is the question.');
+get_page('action=buildindex pwd=foo');
+test_page(get_page('search=Search+replace raw=1'),
+	  quotemeta('Search_(and_replace)'));
+test_page(get_page('search=search raw=1'),
+	  quotemeta('Search_(and_replace)'));
+test_page(get_page('search=SEARCH raw=1'),
+	  quotemeta('Search_(and_replace)'));
+test_page(get_page('search=Search\+%5c\(and\+replace%5c\) raw=1'),
+	  quotemeta('Search_(and_replace)'));
+test_page(get_page('search=%22Search\+%5c\(and\+replace%5c\)%22 raw=1'),
+	  quotemeta('Search_(and_replace)'));
+test_page(get_page('search=moo+foo raw=1'),
+	  quotemeta('Search_(and_replace)'));
+test_page(get_page('search=To+be%2c+or+not+to+be raw=1'),
+	  quotemeta('To_be,_or_not_to_be'));
+test_page(get_page('search=%22To+be%2c+or+not+to+be%22 raw=1'),
+	  quotemeta('To_be,_or_not_to_be'));
+
+# --------------------
+
 end:
 
 ### END OF TESTS
