@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: publish.pl,v 1.1 2006/06/06 16:45:04 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: publish.pl,v 1.2 2006/06/08 07:51:58 as Exp $</p>';
 
 use vars qw($PublishTargetUrl);
 
@@ -54,6 +54,7 @@ sub DoPublish {
 		 raw=>1,
 		 username=>$Page{username},
 		 summary=>$Page{summary},
+		 pwd=>GetParam('pwd',''),
 	       );
   $params{recent_edit} = 'on' if $Page{minor};
   my $response = $ua->post($PublishTargetUrl, \%params);
