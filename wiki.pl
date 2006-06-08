@@ -269,7 +269,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.668 2006/06/08 21:16:06 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.669 2006/06/08 21:42:31 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2031,7 +2031,7 @@ sub GetOldPageLink {
 
 sub GetSearchLink {
   my ($text, $class, $name, $title) = @_;
-  my $id = UrlEncode(QuoteRegexp($text));
+  my $id = UrlEncode(QuoteRegexp('"' . $text . '"'));
   $name = UrlEncode($name);
   $text =~ s/_/ /g;  # Display with spaces
   $id =~ s/_/+/g;    # Search for url-escaped spaces
