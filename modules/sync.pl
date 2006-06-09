@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: sync.pl,v 1.1 2005/07/29 14:48:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: sync.pl,v 1.2 2006/06/09 08:03:20 as Exp $</p>';
 
 push(@MyRules, \&SyncRule);
 
@@ -55,6 +55,7 @@ sub SyncNewSave {
 		   text=>$data,
 		   raw=>1,
 		   username=>$user,
+		   pwd=>GetParam('pwd',''),
 		   summary=>$summary, );
     $params{recent_edit} = 'on' if $minor;
     my $response = $ua->post($uri, \%params);
