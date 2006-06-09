@@ -1,4 +1,4 @@
-# Copyright (C) 2005  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2005, 2006  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: sync.pl,v 1.2 2006/06/09 08:03:20 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: sync.pl,v 1.3 2006/06/09 08:09:24 as Exp $</p>';
 
 push(@MyRules, \&SyncRule);
 
