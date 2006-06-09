@@ -269,7 +269,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.670 2006/06/08 22:05:07 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.671 2006/06/09 07:45:27 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -711,7 +711,7 @@ sub PrintWikiToHTML {
 sub DoClearCache {
   return unless UserIsAdminOrError();
   RequestLockOrError();
-  print GetHttpHeader('', T('Clear Cache')), $q->start_div({-class=>'content clear'}),
+  print GetHeader('', T('Clear Cache')), $q->start_div({-class=>'content clear'}),
     $q->p(T('Main lock obtained.')), '<p>';
   foreach my $id (AllPagesList()) {
     OpenPage($id);
@@ -720,7 +720,7 @@ sub DoClearCache {
     SavePage();
     print $q->br(), GetPageLink($id);
   }
-  print '</p>', $q->end_div();
+  print '</p>', $q->p(T('Main lock released.')), $q->end_div();
   ReleaseLock();
   PrintFooter();
 }
