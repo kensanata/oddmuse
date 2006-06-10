@@ -1,3 +1,26 @@
+2006-06-11  Alex Schroeder  <alex@gnu.org>
+
+	* modules/search-freetext.pl (SearchFreeTextIndex): Index MIME
+	type of uploaded files, too.
+
+	* wiki.pl (SearchTitleAndBody): Search MIME type of uploaded
+	files, too.
+
+	* modules/search-freetext.pl (SearchFreeTextIndex): No longer skip
+	files, but index only the page name for the word index, and index
+	everything after the encoded part for the tag index, since there
+	may be tags there.
+	(NewSearchFreePrintFooter): Print tags below uploaded file if tagged,
+	allow retagging of images when editing an uploaded file.
+	(SearchFreeDoTag): New action for retagging of uploaded files.
+
+	* wiki.pl (DoClearCache): Touch index file after clearing the
+	cache.
+	(SearchTitleAndBody): Allow searching of page titles for uploaded
+	files.
+	(PrintSearchResult): If an uploaded file is part of the result,
+	print it. Do away with the ^#FILE speciality.
+
 2006-06-10  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (ApplyRules, PrintJournal): Extend journal tag with
