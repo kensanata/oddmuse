@@ -40,7 +40,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.37 2006/06/10 22:44:11 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.38 2006/06/10 23:04:34 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -105,13 +105,13 @@ sub SearchFreeTextIndex {
     # UrlEncode key because the internal datastructure uses commas, for example.
     my @tags = ($Page{text} =~ m/\[\[tag:$FreeLinkPattern\]\]/g,
 		$Page{text} =~ m/\[\[tag:$FreeLinkPattern\|([^]|]+)\]\]/g);
-    next unless @tags;
     # add tags, even for files
     $tags->index_document(UrlEncode($name), join(' ', @tags)) if @tags;
     # no word index for files
     my $text = $page;
-    $text .= ' ' . $Page{text} unless TextIsFile($Page{text});
-    $words->index_document(UrlEncode($name), $page . ' ' . $Page{text});
+    my ($type) = TextIsFile($Page{text});
+    $text .= ' ' . $type||$Page{text};
+    $words->index_document(UrlEncode($name), $text);
   }
   $words->close_index();
   $tags->close_index();
