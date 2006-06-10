@@ -269,7 +269,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.673 2006/06/10 22:31:46 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.674 2006/06/10 23:03:18 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3243,10 +3243,10 @@ sub SearchTitleAndBody {
   my @found;
   my $lang = GetParam('lang', '');
   foreach my $id (AllPagesList()) {
-    my $text = '';
     my $name = $id;
     $name =~ s/_/ /g;
-    if (not PageIsUploadedFile($id)) { # don't search body of uploaded files
+    my ($text) = PageIsUploadedFile($id); # set to mime-type if this is an uploaded file
+    if (not $text) { # not uploaded file, therefore allow searching of page body
       OpenPage($id); # this opens a page twice if it is not uploaded, but that's ok
       if ($lang) {
 	my @languages = split(/,/, $Page{languages});
