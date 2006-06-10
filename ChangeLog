@@ -1,4 +1,14 @@
+2006-06-10  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ApplyRules, PrintJournal): Extend journal tag with
+	search.
+
 2006-06-09  Alex Schroeder  <alex@gnu.org>
+
+	* modules/sync.pl (SyncNewSave): Pass password along.
+
+	* wiki.pl (DoClearCache): Changed GetHttpHeader to GetHeader,
+	thanks to Ingo Belka for spotting it.
 
 	* modules/search-freetext.pl (process): Lowercase new words.
 	(SearchFreeTextIndex): UrlEncode keys because internal data
