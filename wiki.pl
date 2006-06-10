@@ -269,7 +269,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.672 2006/06/10 18:10:02 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.673 2006/06/10 22:31:46 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -721,6 +721,7 @@ sub DoClearCache {
     print $q->br(), GetPageLink($id);
   }
   print '</p>', $q->p(T('Main lock released.')), $q->end_div();
+  utime time, time, $IndexFile; # touch index file
   ReleaseLock();
   PrintFooter();
 }
@@ -2894,7 +2895,7 @@ sub DoEdit {
   } else {
     $header = Ts('Editing %s', $id);
   }
-  print GetHeader('', QuoteHtml($header)), $q->start_div({-class=>'content edit'});;
+  print GetHeader('', QuoteHtml($header)), $q->start_div({-class=>'content edit'});
   if ($preview and not $upload) {
     print $q->start_div({-class=>'preview'});
     print $q->h2(T('Preview:'));
@@ -3241,18 +3242,21 @@ sub SearchTitleAndBody {
   my ($string, $func, @args) = @_;
   my @found;
   my $lang = GetParam('lang', '');
-  foreach my $name (AllPagesList()) {
-    next if (PageIsUploadedFile($name) and $string !~ /^\^#FILE/); # skip files unless requested
-    OpenPage($name); # this opens a page twice if it is not uploaded, but that's ok
-    if ($lang) {
-      my @languages = split(/,/, $Page{languages});
-      next if (@languages and not grep(/$lang/, @languages));
+  foreach my $id (AllPagesList()) {
+    my $text = '';
+    my $name = $id;
+    $name =~ s/_/ /g;
+    if (not PageIsUploadedFile($id)) { # don't search body of uploaded files
+      OpenPage($id); # this opens a page twice if it is not uploaded, but that's ok
+      if ($lang) {
+	my @languages = split(/,/, $Page{languages});
+	next if (@languages and not grep(/$lang/, @languages));
+      }
+      $text = $Page{text};
     }
-    my $freeName = $name;
-    $freeName =~ s/_/ /g;
-    if (SearchString($string, $freeName . "\n" . $Page{text})) {
-      push(@found, $name);
-      &$func($name, @args) if $func;
+    if (SearchString($string, $name . "\n" . $text)) {
+      push(@found, $id);
+      &$func($id, @args) if $func;
     }
   }
   return @found;
@@ -3316,20 +3320,16 @@ sub SearchNearPages {
 sub PrintSearchResult {
   my ($name, $regex) = @_;
   my $raw = GetParam('raw', 0);
-  my $files = ($regex =~ /^\^#FILE/); # usually skip files
   OpenPage($name); # should be open already, just making sure!
   my $text = $Page{text};
+  my ($type) = TextIsFile($text); # MIME type if an uploaded file
   my %entry;
   #  get the page, filter it, remove all tags
   $text =~ s/$FS//g;	# Remove separators (paranoia)
   $text =~ s/[\s]+/ /g;	#  Shrink whitespace
   $text =~ s/([-_=\\*\\.]){10,}/$1$1$1$1$1/g ; # e.g. shrink "----------"
   $entry{title} = $name;
-  if ($files) {
-    ($entry{description}) = TextIsFile($text);
-  } else {
-    $entry{description} = SearchExtract(QuoteHtml($text), $regex);
-  }
+  $entry{description} =  $type || SearchExtract(QuoteHtml($text), $regex);
   $entry{size} = int((length($text)/1024)+1) . 'K';
   $entry{'last-modified'} = TimeToText($Page{ts});
   $entry{username} = $Page{username};
