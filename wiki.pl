@@ -269,7 +269,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.671 2006/06/09 07:45:27 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.672 2006/06/10 18:10:02 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -449,12 +449,12 @@ sub ApplyRules {
 	}
 	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
 	pos = $oldpos;		# restore \G after call to ApplyRules
-      } elsif ($bol && m/\G(\&lt;journal(\s+(\d*))?(\s+"(.*)")?(\s+(reverse))?\&gt;[ \t]*\n?)/cgi) {
+      } elsif ($bol && m/\G(\&lt;journal(\s+(\d*))?(\s+"(.*)")?(\s+(reverse))?(\s+search\s+(.*))?\&gt;[ \t]*\n?)/cgi) {
 	# <journal 10 "regexp"> includes 10 pages matching regexp
 	Clean(CloseHtmlEnvironments());
 	Dirty($1);
 	my $oldpos = pos;
-	PrintJournal($3, $5, $7);
+	PrintJournal($3, $5, $7, 0, $9); # no offset
 	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
 	pos = $oldpos;		# restore \G after call to ApplyRules
       } elsif ($bol && m/\G(\&lt;rss(\s+(\d*))?\s+(.*?)\&gt;[ \t]*\n?)/cgis) {
@@ -778,11 +778,11 @@ sub GetRaw {
 sub PrintJournal {
   return if $CollectingJournal; # avoid infinite loops
   local $CollectingJournal = 1;
-  my ($num, $regexp, $mode, $offset) = @_;
+  my ($num, $regexp, $mode, $offset, $search) = @_;
   $regexp = '^\d\d\d\d-\d\d-\d\d' unless $regexp;
   $num = 10 unless $num;
   $offset = 0 unless $offset;
-  my @pages = (grep(/$regexp/, AllPagesList()));
+  my @pages = (grep(/$regexp/, $search ? SearchTitleAndBody($search) : AllPagesList()));
   if (defined &JournalSort) {
     @pages = sort JournalSort @pages;
   } else {
