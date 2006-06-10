@@ -40,7 +40,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.36 2006/06/08 23:39:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.37 2006/06/10 22:44:11 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -97,18 +97,21 @@ sub SearchFreeTextIndex {
   $tags->clear_index();
   foreach my $name (AllPagesList()) {
     OpenPage($name);
-    next if ($Page{text} =~ /^#FILE /); # skip files
     print $name, "\n";
     # don't forget to add the pagename to the page text, without
     # underscores
     my $page = $OpenPageName;
     $page =~ s/_/ /g;
     # UrlEncode key because the internal datastructure uses commas, for example.
-    $words->index_document(UrlEncode($name), $page . ' ' . $Page{text});
     my @tags = ($Page{text} =~ m/\[\[tag:$FreeLinkPattern\]\]/g,
 		$Page{text} =~ m/\[\[tag:$FreeLinkPattern\|([^]|]+)\]\]/g);
     next unless @tags;
-    $tags->index_document(UrlEncode($name), join(' ', @tags)); # add tags
+    # add tags, even for files
+    $tags->index_document(UrlEncode($name), join(' ', @tags)) if @tags;
+    # no word index for files
+    my $text = $page;
+    $text .= ' ' . $Page{text} unless TextIsFile($Page{text});
+    $words->index_document(UrlEncode($name), $page . ' ' . $Page{text});
   }
   $words->close_index();
   $tags->close_index();
@@ -296,4 +299,47 @@ sub NewSearchFreeTextNewHighlightRegex {
   $_ = shift;
   s/\"//g;
   return join('|', split);
+}
+
+# tagging of uploaded files
+
+*OldSearchFreePrintFooter = *PrintFooter;
+*PrintFooter = *NewSearchFreePrintFooter;
+
+sub NewSearchFreePrintFooter {
+  my ($id, $rev, $comment) = @_;
+  if (defined &SearchFreeTextTagsRule and TextIsFile($Page{text})) {
+    my @tags = $Page{text} =~ /\[\[tag:$FreeLinkPattern\]\]/g;
+    if ($rev eq 'edit') {
+      print $q->div({-class=>'edit tags'}, GetFormStart(),
+		    $q->p(GetHiddenValue('id', $id), GetHiddenValue('action', 'retag'),
+			  T('Tags:'), $q->br(), GetTextArea('tags', join(' ', @tags), 2),
+			  $q->br(), $q->submit(-name=>'Save', -value=>T('Save'))),
+		    $q->endform());
+    } elsif ($id and @tags) {
+      print $q->div({-class=>'tags'},
+		    $q->p(T('Tags: '), map { $_ = "\[\[tag:$_\]\]";
+					     SearchFreeTextTagsRule(); } @tags));
+    }
+  }
+  OldSearchFreePrintFooter(@_);
+}
+
+$Action{retag} = \&SearchFreeDoTag;
+
+sub SearchFreeDoTag {
+  my $id = shift;
+  my $name = $id;
+  $name =~ s/_/ /g;
+  my $tags = GetParam('tags', '');
+  my $summary = Ts('Tags: %s.', $tags) || T('No tags');
+  $tags = join(' ', map { "\[\[tag:$_\]\]" } split(' ', $tags));
+  OpenPage($id);
+  my $text = $Page{text};
+  $text =~ s/\[\[tag:$FreeLinkPattern\]\]\s*//g; # remove all existing tags
+  $text =~ s/\n\nTags: /\n\nTags: $tags/ or $text .= "\n\nTags: $tags" if $tags;
+  RequestLockOrError(); # fatal
+  Save($id, $text, $summary, 0, 1); # treat as upload: no diffs and no language
+  ReleaseLock();
+  ReBrowsePage($id);
 }
