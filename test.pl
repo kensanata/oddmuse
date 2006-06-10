@@ -1363,7 +1363,7 @@ clear_pages();
 
 $page = update_page('SandBox', 'This is a test.', 'first test');
 test_page($page, 'SandBox', 'This is a test.');
-xpath_test($page, '//h1/a[@title="Click to search for references to this page"][@href="http://localhost/wiki.pl?search=SandBox"][text()="SandBox"]');
+xpath_test($page, '//h1/a[@title="Click to search for references to this page"][@href="http://localhost/wiki.pl?search=%22SandBox%22"][text()="SandBox"]');
 
 ## Test RecentChanges
 
@@ -2923,7 +2923,9 @@ $page = update_page('alex pic', "#FILE image/png\niVBORw0KGgoAAAA");
 test_page($page, 'This page contains an uploaded file:');
 xpath_test($page, '//img[@class="upload"][@src="http://localhost/wiki.pl/download/alex_pic"][@alt="alex pic"]');
 test_page_negative($page, 'AAAA');
-test_page_negative(get_page('search=AAA'), 'alex_pic');
+test_page_negative(get_page('search=AAA raw=1'), 'alex_pic');
+test_page(get_page('search=alex raw=1'), 'alex_pic', 'image/png');
+test_page(get_page('search=png raw=1'), 'alex_pic', 'image/png');
 
 # --------------------
 
@@ -2953,11 +2955,28 @@ indexed_search:
 print '[indexed search]';
 
 clear_pages();
+AppendStringToFile($ConfigFile, "\$UploadAllowed = 1;\n");
 add_module('search-freetext.pl');
 
 update_page('Search (and replace)', 'Muu, or moo. [[tag:test]] [[tag:Öl]]');
 update_page('To be, or not to be', 'That is the question. (Right?) [[tag:test]] [[tag:quote]]');
+update_page('alex pic', "#FILE image/png\niVBORw0KGgoAAAA");
+
 get_page('action=buildindex pwd=foo');
+
+test_page_negative(get_page('search=AAA raw=1'), 'alex_pic');
+test_page(get_page('search=alex raw=1'), 'alex_pic', 'image/png');
+test_page(get_page('search=png raw=1'), 'alex_pic', 'image/png');
+get_page('action=retag id=alex_pic tags=drink%20food');
+xpath_test(get_page('alex_pic'),
+	   '//div[@class="tags"]/p/a[@rel="tag"]',
+	   '//a[@class="outside tag"][@rel="tag"][@title="Tag"][@href="http://technorati.com/tag/drink"][text()="drink"]',
+	   '//a[@class="outside tag"][@rel="tag"][@title="Tag"][@href="http://technorati.com/tag/food"][text()="food"]',
+	  );
+xpath_test(get_page('action=edit id=alex_pic'),
+	   '//div[@class="edit tags"]/form/p/textarea[text()="drink food"]',
+	  );
+
 test_page(get_page('search=Search+replace raw=1'),
 	  quotemeta('Search_(and_replace)'));
 test_page(get_page('search=search raw=1'),
