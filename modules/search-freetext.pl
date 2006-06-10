@@ -40,7 +40,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.38 2006/06/10 23:04:34 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.39 2006/06/10 23:57:03 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -108,9 +108,9 @@ sub SearchFreeTextIndex {
     # add tags, even for files
     $tags->index_document(UrlEncode($name), join(' ', @tags)) if @tags;
     # no word index for files
-    my $text = $page;
+    my $text = $page . ' ';
     my ($type) = TextIsFile($Page{text});
-    $text .= ' ' . $type||$Page{text};
+    $text .= $type ? $type : $Page{text};
     $words->index_document(UrlEncode($name), $text);
   }
   $words->close_index();
