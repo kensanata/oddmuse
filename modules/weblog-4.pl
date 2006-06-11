@@ -16,10 +16,10 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: weblog-4.pl,v 1.5 2006/06/11 15:22:02 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: weblog-4.pl,v 1.6 2006/06/11 15:22:36 as Exp $</p>';
 
 push(@MyInitVariables, sub {
-       $SearchFreeTextTagUrl = $ScriptName . '?tags=1;id=';
+       $SearchFreeTextTagUrl = $ScriptName . '?action=browse;tags=1;id=';
 });
 
 push(@MyAdminCode, \&BlogMenu);
