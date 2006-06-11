@@ -16,10 +16,10 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: weblog-4.pl,v 1.6 2006/06/11 15:22:36 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: weblog-4.pl,v 1.7 2006/06/11 15:25:30 as Exp $</p>';
 
 push(@MyInitVariables, sub {
-       $SearchFreeTextTagUrl = $ScriptName . '?action=browse;tags=1;id=';
+       $SearchFreeTextTagUrl = $ScriptName . '?action=browse;tag=1;id=';
 });
 
 push(@MyAdminCode, \&BlogMenu);
@@ -43,10 +43,7 @@ sub BlogNewOpenPage {
       # if the page is either on the categories page, or the tag=1
       # parameter was added, show a journal
       $Page{text} = T('Matching pages:')
-	. "\n\n"
-	. '<journal "^\d\d\d\d-\d\d-\d\d.*'
-	. $OpenPageName
-	. '">';
+	. "\n\n<journal tag:$OpenPageName>";
     }
   }
 }
