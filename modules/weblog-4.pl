@@ -16,9 +16,14 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: weblog-4.pl,v 1.2 2006/06/11 15:10:50 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: weblog-4.pl,v 1.3 2006/06/11 15:13:30 as Exp $</p>';
 
-@UserGotoBar = ScriptLink('action=new', T('New'));
+push(@MyAdminCode, \&BlogMenu);
+
+sub BlogMenu {
+  my ($id, $menuref, $restref) = @_;
+  push(@$menuref, ScriptLink('action=new', T('New')));
+}
 
 # Default page content copied from weblog-3.pl.
 
