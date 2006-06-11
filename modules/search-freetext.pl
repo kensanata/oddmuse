@@ -40,7 +40,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.39 2006/06/10 23:57:03 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.40 2006/06/11 15:51:42 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -339,7 +339,7 @@ sub SearchFreeDoTag {
   $text =~ s/\[\[tag:$FreeLinkPattern\]\]\s*//g; # remove all existing tags
   $text =~ s/\n\nTags: /\n\nTags: $tags/ or $text .= "\n\nTags: $tags" if $tags;
   RequestLockOrError(); # fatal
-  Save($id, $text, $summary, 0, 1); # treat as upload: no diffs and no language
+  Save($id, $text, $summary, 1, 1); # treat as upload: no diffs and no language
   ReleaseLock();
   ReBrowsePage($id);
 }
