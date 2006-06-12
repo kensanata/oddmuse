@@ -269,7 +269,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.674 2006/06/10 23:03:18 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.675 2006/06/12 19:54:21 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -746,12 +746,9 @@ sub UrlEncode {
   my $str = shift;
   return '' unless $str;
   my @letters = split(//, $str);
-  my @safe = ('a' .. 'z', 'A' .. 'Z', '0' .. '9', '-', '_', '.', '!', '~', '*', "'", '(', ')', '#');
+  my %safe = map {$_ => 1} ('a' .. 'z', 'A' .. 'Z', '0' .. '9', '-', '_', '.', '!', '~', '*', "'", '(', ')', '#');
   foreach my $letter (@letters) {
-    my $pattern = quotemeta($letter);
-    if (not grep(/$pattern/, @safe)) {
-      $letter = sprintf("%%%02x", ord($letter));
-    }
+    $letter = sprintf("%%%02x", ord($letter)) unless $safe{$letter};
   }
   return join('', @letters);
 }
@@ -1647,9 +1644,8 @@ sub GetRc {
       ('rcidonly', 'rcuseronly', 'rchostonly', 'rcclusteronly',
        'rcfilteronly', 'match', 'lang');
   @outrc = reverse @outrc if GetParam('newtop', $RecentTop);
-  my @clusters;
-  my @filters;
-  @filters = SearchTitleAndBody($filterOnly) if $filterOnly;
+  my %seen = ();
+  my %match = $filterOnly ? map { $_ => 1 } SearchTitleAndBody($filterOnly) : ();
   foreach my $rcline (@outrc) {
     my ($ts, $pagename, $minor, $summary, $host, $username, $revision, $languages, $cluster)
       = split(/$FS/, $rcline);
@@ -1657,21 +1653,21 @@ sub GetRc {
     next if $idOnly and $idOnly ne $pagename;
     next if $match and $pagename !~ /$match/i;
     next if $hostOnly and $host !~ /$hostOnly/i;
-    next if $filterOnly and not grep(/^$pagename$/, @filters);
+    next if $filterOnly and not $match{$pagename};
     next if ($userOnly and $userOnly ne $username);
     my @languages = split(/,/, $languages);
-    next if ($lang and @languages and not grep(/$lang/, @languages));
+    next if $lang and @languages and not grep(/$lang/, @languages);
     if ($PageCluster) {
       ($cluster, $summary) = ($1, $2) if $summary =~ /^\[\[$FreeLinkPattern\]\] ?: *(.*)/
 	or $summary =~ /^$LinkPattern ?: *(.*)/;
       next if ($clusterOnly and $clusterOnly ne $cluster);
       $cluster = '' if $clusterOnly; # don't show cluster if $clusterOnly eq $cluster
       if ($all < 2 and not $clusterOnly and $cluster) {
-	next if grep(/^$cluster$/, @clusters);
+	next if $seen{$cluster};
+	$seen{$pagename} = 1;
 	$summary = "$pagename: $summary"; # print the cluster instead of the page
 	$pagename = $cluster;
 	$revision = '';
-	push(@clusters, $pagename);
       }
     } else {
       $cluster = '';
@@ -1791,11 +1787,11 @@ sub GetRcRss {
   my $diffPrefix = $url . "?action=browse;diff=1;id=";
   my $historyPrefix = $url . "?action=history;id=";
   my $date = TimeToRFC822($LastUpdate);
-  my @excluded = ();
+  my %excluded = ();
   if (GetParam("exclude", 1)) {
     foreach (split(/\n/, GetPageContent($RssExclude))) {
       if (/^ ([^ ]+)[ \t]*$/) {  # only read lines with one word after one space
-	push(@excluded, $1);
+	$excluded{$1} = 1;
       }
     }
   }
@@ -1840,7 +1836,7 @@ sub GetRcRss {
     # printRCLine
     sub {
       my ($pagename, $timestamp, $host, $username, $summary, $minor, $revision, $languages, $cluster) = @_;
-      return if grep(/$pagename/, @excluded) or ($limit ne 'all' and $count++ >= $limit);
+      return if $excluded{$pagename} or ($limit ne 'all' and $count++ >= $limit);
       my $name = FreeToNormal($pagename);
       $name =~ s/_/ /g;
       if (GetParam("full", 0)) {
@@ -2953,10 +2949,9 @@ sub DoDownload {
   my $ts = $Page{ts};
   if (my ($type) = TextIsFile($text)) {
     my ($data) = $text =~ /^[^\n]*\n(.*)/s;
-    my $regexp = quotemeta($type);
-    if (@UploadTypes and not grep(/^$regexp$/, @UploadTypes)) {
-      ReportError(Ts('Files of type %s are not allowed.', $type), '415 UNSUPPORTED MEDIA TYPE');
-    }
+    my %allowed = map {$_ => 1} @UploadTypes;
+    ReportError(Ts('Files of type %s are not allowed.', $type), '415 UNSUPPORTED MEDIA TYPE')
+      if @UploadTypes and not $allowed{$type};
     print GetHttpHeader($type, $ts);
     require MIME::Base64;
     print MIME::Base64::decode($data);
@@ -3264,7 +3259,7 @@ sub SearchTitleAndBody {
 
 sub SearchString {
   my ($string, $data) = @_;
-  my @strings = grep /./, $string =~ /"([^"]+)"|(\S+)/g;
+  my @strings = grep /./, $string =~ /"([^"]+)"|(\S+)/g; # skip null entries
   foreach my $str (@strings) {
     return 0 unless ($data =~ /$str/i);
   }
@@ -3279,8 +3274,7 @@ sub HighlightRegex {
 
 sub SearchNearPages {
   my $string = shift;
-  my %found;
-  foreach (@_) { $found{$_} = 1; }; # to avoid using grep on the list
+  my %found = map {$_ => 1} @_;
   my $regex = HighlightRegex($string);
   if (%NearSearch and GetParam('near', 1) > 1 and GetParam('context',1)) {
     foreach my $site (keys %NearSearch) {
@@ -3453,11 +3447,10 @@ sub DoPost {
     ReportError(T('Browser reports no file info.'), '500 INTERNAL SERVER ERROR')
       unless $q->uploadInfo($filename);
     my $type = $q->uploadInfo($filename)->{'Content-Type'};
-    my $regexp = quotemeta($type);
     ReportError(T('Browser reports no file type.'), '415 UNSUPPORTED MEDIA TYPE') unless $type;
-    if (@UploadTypes and not grep(/^$regexp$/, @UploadTypes)) {
-      ReportError(Ts('Files of type %s are not allowed.', $type), '415 UNSUPPORTED MEDIA TYPE');
-    }
+    my %allowed = map {$_ => 1} @UploadTypes;
+    ReportError(Ts('Files of type %s are not allowed.', $type), '415 UNSUPPORTED MEDIA TYPE')
+      if @UploadTypes and not $allowed{$type};
     local $/ = undef;	# Read complete files
     eval { $_ = MIME::Base64::encode(<$file>) };
     $string = '#FILE ' . $type . "\n" . $_;
