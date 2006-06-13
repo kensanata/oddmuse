@@ -269,7 +269,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.675 2006/06/12 19:54:21 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.676 2006/06/13 19:15:21 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -397,7 +397,7 @@ sub ApplyRules {
   my ($text, $locallinks, $withanchors, $revision, @tags) = @_; # $revision is used for images
   $text =~ s/\r\n/\n/g; # DOS to Unix
   $text =~ s/\n+$//g;    # No trailing paragraphs
-  return unless $text;
+  return unless $text ne ''; # allow the text '0'
   local $Fragment = ''; # the clean HTML fragment not yet on @Blocks
   local @Blocks=();     # the list of cached HTML blocks
   local @Flags=();	# a list for each block, 1 = dirty, 0 = clean
@@ -449,7 +449,7 @@ sub ApplyRules {
 	}
 	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
 	pos = $oldpos;		# restore \G after call to ApplyRules
-      } elsif ($bol && m/\G(\&lt;journal(\s+(\d*))?(\s+"(.*)")?(\s+(reverse))?(\s+search\s+(.*))?\&gt;[ \t]*\n?)/cgi) {
+      } elsif ($bol && m/\G(\&lt;journal(\s+(\d*))?(\s+"(.*?)")?(\s+(reverse))?(\s+search\s+(.*))?\&gt;[ \t]*\n?)/cgi) {
 	# <journal 10 "regexp"> includes 10 pages matching regexp
 	Clean(CloseHtmlEnvironments());
 	Dirty($1);
