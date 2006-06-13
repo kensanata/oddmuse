@@ -2625,7 +2625,7 @@ xpath_test(get_page('action=calendar'),
 	   # yearly navigation
 	  '//div[@class="content cal year"]/p[@class="nav"]/a[@href="http://localhost/wiki.pl?action=calendar;year=' . $year_prev . '"][text()="Previous"]/following-sibling::text()[string()=" | "]/following-sibling::a[@href="http://localhost/wiki.pl?action=calendar;year=' . $year_next . '"][text()="Next"]',
 	   # monthly collection
-	  '//div[@class="cal month"]/pre/span[@class="title"]/a[@class="local collection month"][@href="http://localhost/wiki.pl?action=collect;match=' . sprintf("%d-%02d", $year, $mon)  . '"]',
+	  '//div[@class="cal month"]/pre/span[@class="title"]/a[@class="local collection month"][@href="http://localhost/wiki.pl?action=collect;match=%5e' . sprintf("%d-%02d", $year, $mon)  . '"]',
 	  # today day edit
 	  '//a[@class="edit today"][@href="http://localhost/wiki.pl?action=edit;id=' . $today . '"][normalize-space(text())="' . $mday . '"]',
 	  # other day edit
@@ -2642,7 +2642,7 @@ update_page("${today}_more", "more yadda");
 
 xpath_test(get_page('action=calendar'),
 	  # today exact match
-	  '//a[@class="local collection today"][@href="http://localhost/wiki.pl?action=collect;match=' . $today . '"][normalize-space(text())="' . $mday . '"]');
+	  '//a[@class="local collection today"][@href="http://localhost/wiki.pl?action=collect;match=%5e' . $today . '"][normalize-space(text())="' . $mday . '"]');
 
 remove_rule(\&CalendarRule);
 *GetHeader = *OldCalendarGetHeader;
