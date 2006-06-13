@@ -1,5 +1,10 @@
 2006-06-13  Alex Schroeder  <alex@gnu.org>
 
+	* modules/calendar.pl (Cal): Pass %5e (^) at the beginning of
+	match explicitly.
+	(DoCollect): No longer automatically assume that match starts with
+	^ and add handling of search parameter.
+
 	* wiki.pl (ApplyRules): Allow "0" as page text.
 	(ApplyRules): Make search pattern in <journal> less greedy. 
 
