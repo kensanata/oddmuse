@@ -2977,6 +2977,18 @@ xpath_test(get_page('action=edit id=alex_pic'),
 	   '//div[@class="edit tags"]/form/p/textarea[text()="drink food"]',
 	  );
 
+# index the retagging and test journal with search
+get_page('action=buildindex pwd=foo');
+# uses iso date regexp on page titles by default
+test_page(update_page('JournalTest', '<journal search tag:drink>'),
+	  '<div class="content browse"></div>');
+xpath_test(update_page('JournalTest', '<journal "." search tag:drink>'),
+	   '//div[@class="content browse"]/div[@class="journal"]/div[@class="page"]/h1/a[@class="local"][text()="alex pic"]',
+	   '//div[@class="content browse"]/div[@class="journal"]/div[@class="page"]/p/img[@class="upload"][@alt="alex pic"][@src="http://localhost/wiki.pl/download/alex_pic"]');
+xpath_test(update_page('JournalTest', '<journal "." search tag:"drink">'),
+	   '//div[@class="content browse"]/div[@class="journal"]/div[@class="page"]/h1/a[@class="local"][text()="alex pic"]',
+	   '//div[@class="content browse"]/div[@class="journal"]/div[@class="page"]/p/img[@class="upload"][@alt="alex pic"][@src="http://localhost/wiki.pl/download/alex_pic"]');
+
 test_page(get_page('search=Search+replace raw=1'),
 	  quotemeta('Search_(and_replace)'));
 test_page(get_page('search=search raw=1'),
