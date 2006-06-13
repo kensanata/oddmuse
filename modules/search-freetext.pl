@@ -40,7 +40,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.44 2006/06/12 20:01:09 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.45 2006/06/13 19:40:29 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -231,7 +231,7 @@ sub NewSearchFreeTextTitleAndBody {
     unshift(@links, ScriptLink($prev, T('Previous'))) if $prev;
     push(@links, ScriptLink($next, T('Next'))) if $next;
     print $q->p({-class=>'top pages'}, T('Result pages: '), @links,
-		Ts("(%s results)", $#result + 1)) unless $raw;
+		Ts("(%s results)", $#result + 1)) if $func and not $raw;
   }
   # print result
   foreach my $id (@items) {
@@ -240,7 +240,7 @@ sub NewSearchFreeTextTitleAndBody {
   # repeat result pages at the bottom
   if (GetParam('search', '') and @items) {
     print $q->p({-class=>'bottom pages'}, T('Result pages: '), @links,
-		Ts("(%s results)", $#result + 1)) unless $raw;
+		Ts("(%s results)", $#result + 1)) if $func and not $raw;
   }
   return @items;
 }
