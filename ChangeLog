@@ -1,4 +1,33 @@
+2006-06-13  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ApplyRules): Allow "0" as page text.
+	(ApplyRules): Make search pattern in <journal> less greedy. 
+
+	* modules/age.pl ($AgeParameter): New.
+	(NewAgeGetHeader): Use it.
+
+2006-06-12  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (UrlEncode): Simplify using a hash instead of a list to
+	avoid grepping through the same list repeatedly.
+	(GetRc): Simplify use of rcfilteronly parameter and rcclusteronly
+	using a hash as above.
+	(GetRcRss): Simplify excluding of pages using a hash as above.
+	(DoDownload, DoPost): Simplify test for allowed MIME types using a
+	hash as above.
+	(SearchNearPages): Simplify using a hash as above.
+
+	* modules/search-freetext.pl (NewSearchFreeTextTitleAndBody): Do
+	not apply limit when building a journal using search, or when
+	filtering recent changes or rss feed.
+
 2006-06-11  Alex Schroeder  <alex@gnu.org>
+
+	* modules/search-freetext.pl (SearchFreeDoTag): Retagging is a
+	minor change.
+
+	* modules/weblog-4.pl (BlogMenu): New.
+	(BlogNewOpenPage): Use tag search to build journal.
 
 	* modules/search-freetext.pl (SearchFreeTextIndex): Index MIME
 	type of uploaded files, too.
