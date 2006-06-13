@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: age.pl,v 1.3 2006/06/13 13:42:33 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: age.pl,v 1.4 2006/06/13 13:47:01 as Exp $</p>';
 
 use vars qw(%AgeEffect);
 
@@ -35,7 +35,7 @@ sub NewAgeGetHeader {
   return $header unless $Page{ts}; # open page required
   my $age = $Now - $Page{ts};
   my $theme = '';
-  for my $seconds (sort {$a <=> $b} keys %AgeEffect) {
+  for my $seconds (sort {$b <=> $a} keys %AgeEffect) {
     if ($age > $seconds) {
       $theme = $AgeEffect{$seconds};
       last;
