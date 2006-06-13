@@ -16,9 +16,9 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: age.pl,v 1.4 2006/06/13 13:47:01 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: age.pl,v 1.5 2006/06/13 18:01:57 as Exp $</p>';
 
-use vars qw(%AgeEffect);
+use vars qw(%AgeEffect $AgeParameter);
 
 # map page age to theme
 %AgeEffect = (60*60*24 => 'day',
@@ -27,13 +27,17 @@ use vars qw(%AgeEffect);
 	      60*60*24*365 => 'year',
 	     );
 
+# attribute in the page file to use as the timestamp -- use 'created'
+# if using creationdate.pl.
+$AgeParameter = 'ts';
+
 *OldAgeGetHeader = *GetHeader;
 *GetHeader = *NewAgeGetHeader;
 
 sub NewAgeGetHeader {
   my $header = OldAgeGetHeader(@_);
-  return $header unless $Page{ts}; # open page required
-  my $age = $Now - $Page{ts};
+  return $header unless $Page{$AgeParameter}; # open page required
+  my $age = $Now - $Page{$AgeParameter};
   my $theme = '';
   for my $seconds (sort {$b <=> $a} keys %AgeEffect) {
     if ($age > $seconds) {
