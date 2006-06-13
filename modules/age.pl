@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: age.pl,v 1.1 2006/06/13 13:13:21 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: age.pl,v 1.2 2006/06/13 13:28:33 as Exp $</p>';
 
 use vars qw(%AgeEffect);
 
@@ -29,8 +29,6 @@ use vars qw(%AgeEffect);
 
 *OldAgeGetHeader = *GetHeader;
 *GetHeader = *NewAgeGetHeader;
-
-push(@MyInitVariables, \&AgeTheme);
 
 sub NewAgeGetHeader {
   my $header = OldAgeGetHeader(@_);
