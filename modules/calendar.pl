@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.51 2006/05/10 20:04:06 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.52 2006/06/13 19:31:39 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalAsTable $CalStartMonday);
 
@@ -63,7 +63,7 @@ sub Cal {
     } elsif (@matches == 1) { # not using GetPageLink because of $class
       $link = ScriptLink($matches[0], $day, 'local exact' . $class);
     } else {
-      $link = ScriptLink('action=collect;match=' . $date, $day,  'local collection' . $class);
+      $link = ScriptLink('action=collect;match=%5e' . $date, $day,  'local collection' . $class);
     }
     $link;
   }|ge;
@@ -71,10 +71,10 @@ sub Cal {
     my ($month_text, $year_text) = ($1, $2);
     my $date = sprintf("%d-%02d", $year, $mon);
     if ($unlink_year) {
-      $q->span({-class=>'title'}, ScriptLink('action=collect;match=' . $date,
+      $q->span({-class=>'title'}, ScriptLink('action=collect;match=%5e' . $date,
 					     "$month_text $year_text",  'local collection month'));
     } else {
-      $q->span({-class=>'title'}, ScriptLink('action=collect;match=' . $date,
+      $q->span({-class=>'title'}, ScriptLink('action=collect;match=%5e' . $date,
 					     $month_text,  'local collection month') . ' '
 	       . ScriptLink('action=calendar;year=' . $year,
 			    $year_text,  'local collection year'));
@@ -89,16 +89,18 @@ $Action{collect} = \&DoCollect;
 sub DoCollect {
   my $id = shift;
   my $match = GetParam('match', '');
-  ReportError(T('The match parameter is missing.')) unless $match;
-  print GetHeader('', Ts('Page Collection for %s', $match), '');
-  my @pages = AllPagesList();
-  my @matches = grep(/^$match/, @pages);
+  my $search = GetParam('search', '');
+  ReportError(T('The match parameter is missing.')) unless $match or $search;
+  print GetHeader('', Ts('Page Collection for %s', $match||$search), '');
+  my @pages = (grep(/$match/, $search
+		    ? SearchTitleAndBody($search)
+		    : AllPagesList()));
   if (!$CollectingJournal) {
     $CollectingJournal = 1;
     # Now save information required for saving the cache of the current page.
     local (%Page, $OpenPageName);
     print $q->start_div({-class=>'content journal collection'});
-    PrintAllPages(1, 1, @matches);
+    PrintAllPages(1, 1, @pages);
     print $q->end_div();
   }
   $CollectingJournal = 0;
