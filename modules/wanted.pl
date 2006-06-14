@@ -1,8 +1,8 @@
 package OddMuse;
 
-use vars qw($WantedPageName);
+use vars qw($WantedPageName $WantedPageNameFilter $WantedPageReferrerFilter);
 
-$ModulesDescription .= '<p>$Id: wanted.pl,v 1.1 2006/06/09 07:23:00 skrap Exp $</p>';
+$ModulesDescription .= '<p>$Id: wanted.pl,v 1.2 2006/06/14 18:25:04 skrap Exp $</p>';
 
 
 push(@MyAdminCode, \&WantedAction);
@@ -18,7 +18,9 @@ sub PrintWantedData
 	my %links = %{(GetFullLinkList(1,0,0,1))};
 	my %wanted;
 	foreach my $page (sort keys %links) {
+		next if defined $WantedPageReferrerFilter and ($page =~ m/$WantedPageReferrerFilter/);
 		foreach my $link (@{$links{$page}}) {
+			next if defined $WantedPageNameFilter and ($link =~ m/$WantedPageNameFilter/);
 			push @{$wanted{$link}}, $page if not $IndexHash{$link};
 		}
 	}
