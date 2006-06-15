@@ -269,7 +269,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.676 2006/06/13 19:15:21 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.677 2006/06/15 10:06:43 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -717,6 +717,8 @@ sub DoClearCache {
     OpenPage($id);
     delete $Page{blocks};
     delete $Page{flags};
+    delete $Page{languages};
+    $Page{languages} = GetLanguages($Page{blocks}) unless TextIsFile($Page{blocks});
     SavePage();
     print $q->br(), GetPageLink($id);
   }
