@@ -1273,6 +1273,9 @@ $page = update_page('Summary', "Testing the limit of two:\n\n<journal>");
 test_page($page, '2003-06-15', '2003-06-14');
 test_page_negative($page, '2003-06-13', '2003-01-01');
 
+test_page(get_page('action=browse id=Summary pwd=foo'),
+	  '2003-06-15(.|\n)*2003-06-14(.|\n)*2003-06-13(.|\n)*2003-01-01');
+
 # --------------------
 
 revisions:
