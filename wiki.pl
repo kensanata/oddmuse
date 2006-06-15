@@ -60,7 +60,8 @@ $RssStyleSheet $PermanentAnchorsFile @MyRules %CookieParameters
 $UploadAllowed $LastUpdate $PageCluster $HtmlHeaders %PlainTextPages
 $RssInterwikiTranslate $UseCache $ModuleDir $DebugInfo $FullUrlPattern
 %InvisibleCookieParameters $FreeInterLinkPattern @AdminPages
-@MyAdminCode @MyInitVariables @MyMaintenance $SummaryDefaultLength);
+@MyAdminCode @MyInitVariables @MyMaintenance $SummaryDefaultLength
+$JournalLimit);
 
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
@@ -151,6 +152,7 @@ $CommentsPrefix = '';	        # prefix for comment pages, eg. 'Comments_on_' to 
 $HtmlHeaders = '';	        # Additional stuff to put in the HTML <head> section
 $IndentLimit = 20;	        # Maximum depth of nested lists
 $LanguageLimit = 3;	        # Number of matches req. for each language
+$JournalLimit = 200;            # how many pages can be collected in one go?
 $SisterSiteLogoUrl = 'file:///tmp/oddmuse/%s.png'; # URL format string for logos
 # Display short comments below the GotoBar for special days
 # Example: %SpecialDays = ('1-1' => 'New Year', '1-2' => 'Next Day');
@@ -269,7 +271,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.677 2006/06/15 10:06:43 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.678 2006/06/15 12:05:34 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -808,7 +810,8 @@ sub PrintAllPages {
   my $links = shift;
   my $comments = shift;
   my $lang = GetParam('lang', 0);
-  for my $id (@_) {
+  my @pages = @_[0 .. $JournalLimit - 1];
+  for my $id (@pages) {
     OpenPage($id);
     my @languages = split(/,/, $Page{languages});
     next if $lang and @languages and not grep(/$lang/, @languages);
