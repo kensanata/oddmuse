@@ -1237,6 +1237,7 @@ print '[journal]';
 ## Create diary pages
 
 clear_pages();
+
 update_page('2003-06-13', "Freitag");
 update_page('2003-06-14', "Samstag");
 update_page('2003-06-15', "Sonntag");
@@ -1265,6 +1266,12 @@ test_page(update_page('Summary', "Counting down:\n\n<journal>"),
 
 test_page(update_page('Summary', "Counting up:\n\n<journal reverse>"),
 	  '2003-01-01(.|\n)*2003-06-13(.|\n)*2003-06-14(.|\n)*2003-06-15');
+
+AppendStringToFile($ConfigFile, "\$JournalLimit = 2;\n");
+
+$page = update_page('Summary', "Testing the limit of two:\n\n<journal>");
+test_page($page, '2003-06-15', '2003-06-14');
+test_page_negative($page, '2003-06-13', '2003-01-01');
 
 # --------------------
 
