@@ -271,7 +271,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.678 2006/06/15 12:05:34 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.679 2006/06/15 12:11:20 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -810,7 +810,8 @@ sub PrintAllPages {
   my $links = shift;
   my $comments = shift;
   my $lang = GetParam('lang', 0);
-  my @pages = @_[0 .. $JournalLimit - 1];
+  my @pages = @_;
+  @pages = @pages[0 .. $JournalLimit - 1] unless UserIsAdmin();
   for my $id (@pages) {
     OpenPage($id);
     my @languages = split(/,/, $Page{languages});
