@@ -1261,13 +1261,14 @@ test_page(update_page('Summary', "Counting down:\n\n<journal 2>"),
 test_page(update_page('Summary', "Counting up:\n\n<journal 3 reverse>"),
 	  '2003-01-01(.|\n)*2003-06-13(.|\n)*2003-06-14');
 
-test_page(update_page('Summary', "Counting down:\n\n<journal>"),
-	  '2003-06-15(.|\n)*2003-06-14(.|\n)*2003-06-13(.|\n)*2003-01-01');
+$page = update_page('Summary', "Counting down:\n\n<journal>");
+test_page($page, '2003-06-15(.|\n)*2003-06-14(.|\n)*2003-06-13(.|\n)*2003-01-01');
+negative_xpath_test($page, '//h1/a[not(text())]');
 
 test_page(update_page('Summary', "Counting up:\n\n<journal reverse>"),
 	  '2003-01-01(.|\n)*2003-06-13(.|\n)*2003-06-14(.|\n)*2003-06-15');
 
-AppendStringToFile($ConfigFile, "\$JournalLimit = 2;\n");
+AppendStringToFile($ConfigFile, "\$JournalLimit = 2;\n\$ComentsPrefix = 'Talk about ';\n");
 
 $page = update_page('Summary', "Testing the limit of two:\n\n<journal>");
 test_page($page, '2003-06-15', '2003-06-14');
