@@ -16,14 +16,43 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.13 2006/03/18 19:52:53 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.14 2006/07/02 11:05:33 as Exp $</p>';
 
 use vars qw($LocalNamesPage $LocalNamesInit %LocalNames $LocalNamesCollect
-	    $LocalNamesCollectMaxWords);
+	    $LocalNamesCollectMaxWords $LnDir $LnCacheHours);
 
 $LocalNamesPage = 'LocalNames';
 $LocalNamesCollect = 0;
 $LocalNamesCollectMaxWords = 2;
+# LN caching is written very similar to the RSS file caching
+$LnDir = "$DataDir/ln";
+$LnCacheHours = 12;
+
+sub GetLnFile {
+  return $LnDir . '/' . UrlEncode(shift);
+}
+
+push (MyMaintenance, \&LnMaintenance);
+
+sub LnMaintenance {
+  if (opendir(DIR, $RssDir)) { # cleanup if they should expire anyway
+    foreach (readdir(DIR)) {
+      unlink "$RssDir/$_" if $Now - (stat($_))[9] > $LnCacheHours * 3600;
+    }
+    closedir DIR;
+  }
+}
+
+# render [[ln:url]] as something clickable
+push(@MyRules, \&LocalNamesRule);
+
+sub LocalNamesRule {
+  if (m/\G\[\[ln:$FullUrlPattern\s*([^\]]*)\]\]/cog) {
+    # [[ln:url text]], [[ln:url]]
+    return $q->a({-class=>'url outside ln', -href=>$1}, $2||$1);
+  }
+  return undef;
+}
 
 # do this later so that the user can customize $LocalNamesPage
 push(@MyInitVariables, \&LocalNamesInit);
@@ -58,6 +87,78 @@ sub LocalNamesInit {
     unshift(@{$NearSource{$id}}, $LocalNamesPage);
     # %NearSite is for fetching the list of pages -- we don't need that.
     # %NearSearch is for searching remote sites -- we don't need that.
+  }
+  # Now read data from ln links, checking cache if possible. For all
+  # URLs not in the cache or with invalid cache, fetch the file again,
+  # and save it in the cache.
+  my @ln = $data =~ m/\[\[ln:$FullUrlPattern\]\]/go;
+  my %todo = map {$_, GetLnFile($_)} @ln;
+  my %data = ();
+  if (GetParam('cache', $UseCache) > 0) {
+    foreach my $uri (keys %todo) { # read cached rss files if possible
+      if ($Now - (stat($todo{$uri}))[9] < $LnCacheHours * 3600) {
+	$data{$uri} = ReadFile($todo{$uri});
+	delete($todo{$uri}); # no need to fetch them below
+      }
+    }
+  }
+  my @need_cache = keys %todo;
+  if (keys %todo > 1) { # try parallel access if available
+    eval { # see code example in LWP::Parallel, not LWP::Parllel::UserAgent (no callbacks here)
+      require LWP::Parallel::UserAgent;
+      my $pua = LWP::Parallel::UserAgent->new();
+      foreach my $uri (keys %todo) {
+	if (my $res = $pua->register(HTTP::Request->new('GET', $uri))) {
+	  warn $res->error_as_HTML;
+	}
+      }
+      %todo = (); # because the uris in the response may have changed due to redirects
+      my $entries = $pua->wait();
+      foreach (keys %$entries) {
+	my $uri = $entries->{$_}->request->uri;
+	$data{$uri} = $entries->{$_}->response->content;
+      }
+    }
+  }
+  foreach my $uri (keys %todo) { # default operation: synchronous fetching
+    $data{$uri} = GetRaw($uri);
+  }
+  if (GetParam('cache', $UseCache) > 0) {
+    CreateDir($LnDir);
+    foreach my $uri (@need_cache) {
+      WriteStringToFile(GetLnFile($uri), $data{$uri});
+    }
+  }
+  # go through the urls in the right order, this time
+  foreach my $ln (@ln) {
+    foreach my $line (split(/\n/, $data{$ln})) {
+      if ($line =~ /^LN "$FreeLinkPattern" "$FullUrlPattern"$/g) {
+	my ($name, $url) = ($1, $2);
+	# We ignore the spec at
+	# http://ln.taoriver.net/spec-1.2.html#Syntax when it comes to
+	# the names we allow, since Oddmuse will have to do the
+	# [[name]] thing!
+	my $id = FreeToNormal($name);
+	# Only store this, if not already stored!
+	if (not $LocalNames{$id}) {
+	  # The entries in %NearSource will make sure that ResolveId will
+	  # call GetInterSiteUrl for our pages.
+	  $LocalNames{$id} = $url;
+	  # Add at the front to override near links.
+	  unshift(@{$NearSource{$id}}, $LocalNamesPage);
+	  # %NearSite is for fetching the list of pages -- we don't need that.
+	  # %NearSearch is for searching remote sites -- we don't need that.
+	}
+      }
+      # elsif ($line =~ /^NS "(.*)" "$FullUrlPattern"$/g) {
+      # }
+    }
+  }
+  if (GetParam('cache', $UseCache) > 0) {
+    CreateDir($LnDir);
+    foreach my $uri (@need_cache) {
+      WriteStringToFile(GetLnFile($uri), $data{$uri});
+    }
   }
 }
 
