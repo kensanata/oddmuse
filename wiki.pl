@@ -271,7 +271,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.681 2006/06/23 06:38:14 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.682 2006/07/02 09:12:46 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3741,7 +3741,7 @@ sub DoMaintain {
   }
   if (opendir(DIR, $RssDir)) { # cleanup if they should expire anyway
     foreach (readdir(DIR)) {
-      unlink "$RssDir/$_" if $Now - (stat($_))[9] > $RssCacheHours;
+      unlink "$RssDir/$_" if $Now - (stat($_))[9] > $RssCacheHours * 3600;
     }
     closedir DIR;
   }
