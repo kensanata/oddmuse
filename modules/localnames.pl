@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.18 2006/07/02 12:04:03 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.19 2006/07/02 12:11:52 as Exp $</p>';
 
 use vars qw($LocalNamesPage $LocalNamesInit %LocalNames $LocalNamesCollect
 	    $LocalNamesCollectMaxWords $LnDir $LnCacheHours);
@@ -131,7 +131,7 @@ sub LocalNamesInit {
   }
   # go through the urls in the right order, this time
   foreach my $ln (@ln) {
-    foreach my $line (split(/\n/, $data{$ln})) {
+    foreach my $line (split(/[\r\n]+/, $data{$ln})) {
       if ($line =~ /^LN "$FreeLinkPattern" "$FullUrlPattern"$/) {
 	my ($name, $url) = ($1, $2);
 	# We ignore the spec at
