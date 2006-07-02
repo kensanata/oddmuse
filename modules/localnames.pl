@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.15 2006/07/02 11:20:56 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.16 2006/07/02 11:24:24 as Exp $</p>';
 
 use vars qw($LocalNamesPage $LocalNamesInit %LocalNames $LocalNamesCollect
 	    $LocalNamesCollectMaxWords $LnDir $LnCacheHours);
@@ -91,7 +91,7 @@ sub LocalNamesInit {
   # Now read data from ln links, checking cache if possible. For all
   # URLs not in the cache or with invalid cache, fetch the file again,
   # and save it in the cache.
-  my @ln = $data =~ m/\[\[ln:$FullUrlPattern\]\]/go;
+  my @ln = $data =~ m/\[\[ln:$FullUrlPattern[^\]]*\]\]/go;
   my %todo = map {$_, GetLnFile($_)} @ln;
   my %data = ();
   if (GetParam('cache', $UseCache) > 0) {
