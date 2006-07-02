@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.14 2006/07/02 11:05:33 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.15 2006/07/02 11:20:56 as Exp $</p>';
 
 use vars qw($LocalNamesPage $LocalNamesInit %LocalNames $LocalNamesCollect
 	    $LocalNamesCollectMaxWords $LnDir $LnCacheHours);
@@ -152,12 +152,6 @@ sub LocalNamesInit {
       }
       # elsif ($line =~ /^NS "(.*)" "$FullUrlPattern"$/g) {
       # }
-    }
-  }
-  if (GetParam('cache', $UseCache) > 0) {
-    CreateDir($LnDir);
-    foreach my $uri (@need_cache) {
-      WriteStringToFile(GetLnFile($uri), $data{$uri});
     }
   }
 }
