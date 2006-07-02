@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.23 2006/07/02 12:32:19 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.24 2006/07/02 18:49:28 as Exp $</p>';
 
 use vars qw($LocalNamesPage $LocalNamesInit %LocalNames $LocalNamesCollect
 	    $LocalNamesCollectMaxWords $LnDir $LnCacheHours);
@@ -133,9 +133,9 @@ sub LocalNamesInit {
   foreach my $ln (@ln) {
     my ($previous_type, $previous_url);
     foreach my $line (split(/[\r\n]+/, $data{$ln})) {
-      if ($line =~ /^LN\s+"$FreeLinkPattern"\s+(:?"$FullUrlPattern"|\.)$/
+      if ($line =~ /^LN\s+"$FreeLinkPattern"\s+(?:"$FullUrlPattern"|\.)$/
 	  or $previous_type eq 'LN'
-	  and $line =~ /^\.\s+"$FreeLinkPattern"\s+(:?"$FullUrlPattern"|\.)$/) {
+	  and $line =~ /^\.\s+"$FreeLinkPattern"\s+(?:"$FullUrlPattern"|\.)$/) {
 	my ($name, $url) = ($1, $2);
 	$url = $previous_url if not $url and $previous_url;
 	$previous_url = $url;
