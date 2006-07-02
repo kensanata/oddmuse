@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.24 2006/07/02 18:49:28 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.25 2006/07/02 23:17:40 as Exp $</p>';
 
 use vars qw($LocalNamesPage $LocalNamesInit %LocalNames $LocalNamesCollect
 	    $LocalNamesCollectMaxWords $LnDir $LnCacheHours);
@@ -229,4 +229,40 @@ sub LocalNamesNewSave {
 		  @collection[-1])
 	   : @collection), 1)
     unless $localnames eq $Page{text};
+}
+
+$Action{ln} = \&DoLocalNames;
+
+sub DoLocalNames {
+  print GetHttpHeader('text/plain');
+  print "X VERSION 1.2\n";
+  print "# Local Pages\n";
+  foreach my $id (AllPagesList()) {
+    my $title = $id;
+    $title =~ s/_/ /g;
+    my $url = $ScriptName . ($UsePathInfo ? '/' : '?') . $id;
+    print qq{LN "$title" "$url"\n};
+  }
+  if (GetParam('expand', 0)) {
+    print "# Local names defined on $LocalNamesPage:\n";
+    my $data = GetPageContent($LocalNamesPage);
+    while ($data =~ m/\[$FullUrlPattern\s+([^\]]+?)\]/go) {
+      my ($title, $url) = ($2, $1);
+      my $id = FreeToNormal($title);
+      print qq{LN "$title" "$url"\n};
+    }
+    print "# Namespace delegations defined on $LocalNamesPage:\n";
+    while ($data =~ m/\[\[ln:$FullUrlPattern([^\]]*)?\]\]/go) {
+      my ($title, $url) = ($2, $1);
+      my $id = FreeToNormal($title);
+      print qq{NS "$title" "$url"\n};
+    }
+  } else {
+    print "# Local names defined on $LocalNamesPage:\n";
+    foreach my $id (keys %LocalNames) {
+      my $title = $id;
+      $title =~ s/_/ /g;
+      print qq{LN "$title" "$LocalNames{$id}"\n};
+    }
+  }
 }
