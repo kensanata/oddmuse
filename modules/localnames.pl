@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.20 2006/07/02 12:17:12 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.21 2006/07/02 12:23:32 as Exp $</p>';
 
 use vars qw($LocalNamesPage $LocalNamesInit %LocalNames $LocalNamesCollect
 	    $LocalNamesCollectMaxWords $LnDir $LnCacheHours);
@@ -131,14 +131,14 @@ sub LocalNamesInit {
   }
   # go through the urls in the right order, this time
   foreach my $ln (@ln) {
-    my ($previous_name, $previous_url);
+    my ($previous_type, $previous_url);
     foreach my $line (split(/[\r\n]+/, $data{$ln})) {
-      if ($line =~ /^LN "$FreeLinkPattern" "$FullUrlPattern"$/) {
+      if ($line =~ /^LN "$FreeLinkPattern" "($FullUrlPattern|\.)"$/
+	 or $previous_type eq 'LN' and $line =~ /^\. "$FreeLinkPattern" "($FullUrlPattern|\.)"$/) {
 	my ($name, $url) = ($1, $2);
-	$name = $previous_name if $name eq "." and $previous_name;
 	$url = $previous_url if $url eq "." and $previous_url;
-	$previous_name = $name;
 	$previous_url = $url;
+	$previous_type = 'LN';
 	# We ignore the spec at
 	# http://ln.taoriver.net/spec-1.2.html#Syntax when it comes to
 	# the names we allow, since Oddmuse will have to do the
@@ -154,6 +154,8 @@ sub LocalNamesInit {
 	  # %NearSite is for fetching the list of pages -- we don't need that.
 	  # %NearSearch is for searching remote sites -- we don't need that.
 	}
+      } else {
+	$previous_type = undef;
       }
       # elsif ($line =~ /^NS "(.*)" "$FullUrlPattern"$/g) {
       # }
