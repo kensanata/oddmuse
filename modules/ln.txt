@@ -1,0 +1,8 @@
+X VERSION 1.1
+LN "my website" "http://www.speakeasy.org/~lion/"
+LN "my blog" "http://lion.taoriver.net/"
+LN "Bootstrap Institute" "http://www.bootstrap.org/"
+LN "cyborg" "http://www.williamgibsonbooks.com/archive/2003_01_28_archive.asp"
+
+NS "python" "http://www.python.org/moin/LibraryReferencesNames?action=raw"
+NS "java" "http://greg.vario.us/names/Java%20Libraries.names"
