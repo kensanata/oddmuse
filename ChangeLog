@@ -1,4 +1,39 @@
+2006-07-10  Alexander Dulaunoy
+
+	* wikiappend (PostRaw, append, main): Add username and password.
+
+2006-07-03  Alex Schroeder  <alex@gnu.org>
+
+	* modules/localnames.pl (DoLocalNames): New.
+
+2006-07-02  Alex Schroeder  <alex@gnu.org>
+
+	* modules/localnames.pl ($LnDir, $LnCacheHours, GetLnFile,
+	LnMaintenance, LocalNamesRule): New.
+	(LocalNamesInit): Handle LN references.
+	(LocalNamesInit): Remove code duplication.
+	(LocalNamesInit): Accept [[ln:url]] without text.
+	(LocalNamesInit): Handle mixed DOS/Unix EOL.
+	(LocalNamesInit): Fix regular expression.
+
+	* wiki.pl (DoMaintain): Fix freshness check for RSS files.
+
+2006-06-23  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (PermanentAnchorsInit): Initialize %PermanentAnchors,
+	too.
+
+2006-06-15  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoClearCache): Reidentify languages.
+	($JournalLimit): New option.
+	(PrintAllPages): Use it.
+
 2006-06-13  Alex Schroeder  <alex@gnu.org>
+
+	* modules/search-freetext.pl (NewSearchFreeTextTitleAndBody): Only
+	print top and bottom page counters if a function was provided (and
+	thus output is (probably) printed.
 
 	* modules/calendar.pl (Cal): Pass %5e (^) at the beginning of
 	match explicitly.
