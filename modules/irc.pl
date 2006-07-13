@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: irc.pl,v 1.4 2005/10/07 23:23:30 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: irc.pl,v 1.5 2006/07/13 12:35:24 as Exp $</p>';
 
 use vars qw($IrcNickRegexp $IrcLinkNick);
 
@@ -29,18 +29,19 @@ $IrcLinkNick = 0;
 # This adds an extra <br> at the beginning.  Alternatively, add it to
 # the last line, or only add it when required.
 sub IrcRule {
-  if ($bol && m/\G&lt;($IrcNickRegexp)&gt;/gc) {
-    my $str = $1;
-    my $error = ValidId($str);
+  if ($bol && m/\G\[?(\d\d?:\d\d(?:am|pm)?)\]??\s*&lt;($IrcNickRegexp)&gt;/gc) {
+    my ($time, $nick) = ($1, $2);
+    my ($error) = ValidId($nick);
     # if we're in a dl, close the open dd but not the dl.  (if we're
     # not in a dl, that closes all environments.)  then open a dl
     # unless we're already in a dl.  put the nick in a dt.
     my $html = CloseHtmlEnvironmentUntil('dd') . OpenHtmlEnvironment('dl', 1, 'irc')
       . AddHtmlEnvironment('dt');
+    $html .= $q->span({-class=>'time'}, $time, ' ') if $time;
     if ($error or not $IrcLinkNick) {
-      $html .= $q->b($str);
+      $html .= $q->b($nick);
     } else {
-      $html .= GetPageOrEditLink($str);
+      $html .= GetPageOrEditLink($nick);
     }
     $html .= CloseHtmlEnvironment('dt') . AddHtmlEnvironment('dd');
     return $html;
