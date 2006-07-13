@@ -21,17 +21,14 @@ div.header h1 a, div.journal h1 a {
 h1, h2, item title {
     font-size:      larger;
     font-weight:    normal; /* inherit not supported by IE */
-    font-variant:   small-caps;
     letter-spacing: 0.1em;
-    margin-top:     5em;
-    margin-bottom:  2em;
+    margin: 2em 0 1em 0;
 }
 h3 {
     font-size:     medium;
     font-weight:   normal;
     font-style:    italic;
-    margin-top:    3em;
-    margin-bottom: 1em;
+    margin: 2em 0 1em 0;
 }
 a:link {
     color:#00F;
@@ -455,6 +452,15 @@ body.big {
 }
 body.big div.toc {
     font-family: "Lucida Sans", sans-serif;
+}
+body.typo div.content h1, body.typo div.content > h2 {
+    font-variant:   small-caps;
+    margin-top:     5em;
+    margin-bottom:  2em;
+}
+body.typo h3 {
+    margin-top:    3em;
+    margin-bottom: 1em;
 }
 
 /* rss */
