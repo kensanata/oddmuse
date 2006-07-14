@@ -1,4 +1,15 @@
+2006-07-14  Alex Schroeder  <alex@gnu.org>
+
+	* modules/headers.pl: Set the rule order to 95.
+
+	* modules/toc.pl (TocHeadings): Transform headers.pl headers into
+	usemod.pl headers so that the TOC can be generated correctly.
+
 2006-07-13  Alex Schroeder  <alex@gnu.org>
+
+	* modules/toc.pl (TocRule): Support headers markup headers if
+	headers.pl is loaded. Only support usemod markup headers if
+	usemod.pl is loaded.
 
 	* modules/irc.pl (IrcRule): Add more variants.
 
