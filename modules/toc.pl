@@ -16,12 +16,12 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.33 2006/06/04 21:31:27 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.34 2006/07/14 07:16:59 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
-# This must come *before* the usemod.pl rules and adds support for
-# portrait-support.pl
+# This must come *before* either headers.pl or the usemod.pl rules and
+# adds support for portrait-support.pl
 $RuleOrder{ \&TocRule } = 90;
 
 use vars qw($TocAutomatic);
@@ -65,13 +65,27 @@ sub TocRule {
 	       || InElement('h6'))
 	   && m/\G[ \t]*=+\n?/cg) {
     return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
-  } elsif ($bol
+  } elsif ($bol && defined(&UsemodRule)
 	   && !$UseModMarkupInTitles
 	   && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg) {
     my $depth = length($2);
     $depth = 6 if $depth > 6;
     $depth = 2 if $depth < 2;
     my $text = $3;
+    my $html = CloseHtmlEnvironments()
+      . ($PortraitSupportColorDiv ? '</div>' : '');
+    $html .= TocHeadings() if not $TocShown and $TocAutomatic;
+    $TocShown = 1 if $TocAutomatic;
+    my $TocKey = $key . ++$TocCounter{$key};
+    $html .= qq{<h$depth id="$TocKey">$text</h$depth>}
+      . AddHtmlEnvironment('p');
+    $PortraitSupportColorDiv = 0; # after the HTML has been determined.
+    $PortraitSupportColor = 0;
+    return $html;
+  } elsif ($bol && defined(&HeadersRule)
+	   && (m/\G((.+?)[ \t]*\n(---+|===+)[ \t]*\n)/gc)) {
+    my $depth = substr($3,0,1) eq '=' ? 2 : 3;
+    my $text = $2;
     my $html = CloseHtmlEnvironments()
       . ($PortraitSupportColorDiv ? '</div>' : '');
     $html .= TocHeadings() if not $TocShown and $TocAutomatic;
@@ -95,6 +109,9 @@ sub TocHeadings {
   $page =~ s!(^|\n)<pre>.*?</pre>!!gis if defined &UsemodRule;
   $page =~ s!##.*?##!!gis if defined &MarkupRule;
   $page =~ s!%%.*?%%!!gis if defined &MarkupRule;
+  # transform headers markup to usemod markup to 
+  $page =~ s!(.+?)[ \t]*\n===+[ \t]*\n!== $1 =\n!gi if defined &HeadersRule;
+  $page =~ s!(.+?)[ \t]*\n---+[ \t]*\n!=== $1 =\n!gi if defined &HeadersRule;
   my $Headings           = "<h2>" . T('Contents') . "</h2>";
   my $HeadingsLevel      = undef;
   my $HeadingsLevelStart = undef;
