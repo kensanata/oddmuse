@@ -2405,13 +2405,7 @@ test_page(update_page('toc', "bla\n"
 	  quotemeta('<h2 id="toc3">three</h2>'),
 	  quotemeta('<h2 id="toc4">one</h2>'),);
 
-remove_rule(\&UsemodRule);
-remove_rule(\&TocRule);
-
-clear_pages();
-add_module('toc.pl');
 add_module('markup.pl');
-InitVariables();
 
 test_page(update_page('toc', "bla\n"
 		      . "=one=\n"
@@ -2424,11 +2418,11 @@ test_page(update_page('toc', "bla\n"
 		      . "mu.##\n"
 		      . "=four=\n"
 		      . "blarg\n"),
-	  quotemeta('<ol><li><a href="#toc1">one</a></li><li><a href="#toc2">two</a></li><li><a href="#toc3">four</a></li></ol>'),
+	  quotemeta('<ol><li><a href="#toc1">one</a></li><li><a href="#toc2">four</a></li></ol>'),
 	  quotemeta('<h2 id="toc1">one</h2>'),
-	  quotemeta('<h2 id="toc2">two</h2>'),
-	  quotemeta('<h2 id="toc3">four</h2>'),);
+	  quotemeta('<h2 id="toc2">four</h2>'),);
 
+remove_rule(\&UsemodRule);
 remove_rule(\&MarkupRule);
 remove_rule(\&TocRule);
 
@@ -2470,9 +2464,8 @@ test_page(get_page('headers'), '== no header ==');
 add_module('usemod.pl');
 update_page('headers', "== is header ==\n\ntext\n");
 test_page(get_page('headers'), '<h2>is header</h2>');
-remove_rule(\&UsemodRule);
 
-# toc only
+# toc + usemod only
 add_module('toc.pl');
 update_page('headers', "== one ==\ntext\n== two ==\ntext\n== three ==\ntext\n");
 test_page(get_page('headers'),
@@ -2480,16 +2473,31 @@ test_page(get_page('headers'),
 	  '<li><a href="#headers2">two</a></li>',
 	  '<h2 id="headers1">one</h2>',
 	  '<h2 id="headers2">two</h2>', );
+remove_module('usemod.pl');
+remove_rule(\&UsemodRule);
+
+# toc + headers
+add_module('headers.pl');
+update_page('headers', "one\n===\ntext\ntwo\n---\ntext\nthree\n====\ntext\n");
+test_page(get_page('headers'),
+	  '<li><a href="#headers1">one</a>',
+	  '<ol><li><a href="#headers2">two</a></li></ol>',
+	  '<li><a href="#headers3">three</a></li>',
+	  '<h2 id="headers1">one</h2>',
+	  '<h3 id="headers2">two</h3>',
+	  '<h2 id="headers3">three</h2>', );
+remove_module('toc.pl');
 remove_rule(\&TocRule);
 
 # headers only
-add_module('headers.pl');
 update_page('headers', "is header\n=========\n\ntext\n");
 test_page(get_page('headers'), '<h2>is header</h2>');
+remove_module('headers.pl');
 remove_rule(\&HeadersRule);
 
 # --------------------
 
+with_portrait_support:
 print '[with portrait support]';
 
 clear_pages();
@@ -2503,9 +2511,8 @@ test_page(get_page('headers'), '<div class="color one level0"><p>foo == no heade
 add_module('usemod.pl');
 update_page('headers', "[new]foo\n== is header ==\n\ntext\n");
 test_page(get_page('headers'), '<div class="color one level0"><p>foo </p></div><h2>is header</h2>');
-remove_rule(\&UsemodRule);
 
-# toc only
+# usemod + toc only
 add_module('toc.pl');
 update_page('headers', "[new]foo\n== one ==\ntext\n== two ==\ntext\n== three ==\ntext\n");
 test_page(get_page('headers'),
@@ -2516,12 +2523,16 @@ test_page(get_page('headers'),
 	  '<li><a href="#headers3">three</a></li></ol></div>',
 	  '<h2 id="headers1">one</h2><p>text </p>',
 	  '<h2 id="headers2">two</h2>', );
+remove_module('toc.pl');
 remove_rule(\&TocRule);
+remove_module('usemod.pl');
+remove_rule(\&UsemodRule);
 
 # headers only
 add_module('headers.pl');
 update_page('headers', "[new]foo\nis header\n=========\n\ntext\n");
 test_page(get_page('headers'), '<div class="color one level0"><p>foo </p></div><h2>is header</h2>');
+remove_module('headers.pl');
 remove_rule(\&HeadersRule);
 
 # portrait-support, toc, and usemod
@@ -2803,6 +2814,7 @@ remove_rule(\&FormsRule);
 print '[with toc]';
 
 add_module('toc.pl');
+add_module('usemod.pl');
 
 AppendStringToFile($ConfigFile, "\$TocAutomatic = 0;\n");
 
@@ -2825,6 +2837,7 @@ test_page(update_page('toc', "bla\n"
 	  quotemeta('one</a></li></ol></div><p> murks'));
 
 remove_rule(\&TocRule);
+remove_rule(\&UsemodRule);
 
 *GetHeader = *OldSideBarGetHeader;
 
@@ -2834,11 +2847,18 @@ localnames:
 print '[localnames]';
 
 clear_pages();
+use Cwd;
+$dir = cwd;
+$uri = "file://$dir";
 
 add_module('localnames.pl');
 
-xpath_test(update_page('LocalNames', '* [http://www.oddmuse.org/ OddMuse]'),
-	   '//ul/li/a[@class="url outside"][@href="http://www.oddmuse.org/"][text()="OddMuse"]');
+xpath_test(update_page('LocalNames', "* [http://www.oddmuse.org/ OddMuse]\n"
+		       . "* [[ln:$uri/ln.txt]]\n"
+		       . "* [[ln:$uri/ln.txt Lion's Namespace]]\n"),
+	   '//ul/li/a[@class="url outside"][@href="http://www.oddmuse.org/"][text()="OddMuse"]',
+	   '//ul/li/a[@class="url outside ln"][@href="' . $uri . '/ln.txt"][text()="' . $uri . '/ln.txt"]',
+	   '//ul/li/a[@class="url outside ln"][@href="' . $uri . '/ln.txt"][text()="Lion\'s Namespace"]');
 
 InitVariables();
 
@@ -2852,8 +2872,9 @@ EOT
 xpath_run_tests();
 
 # now check whether the integration with InitVariables works
-xpath_test(update_page('LocalNamesTest', 'OddMuse'),
-	   '//a[@class="near"][@title="LocalNames"][@href="http://www.oddmuse.org/"][text()="OddMuse"]');
+xpath_test(update_page('LocalNamesTest', 'OddMuse [[my blog]]'),
+	   '//a[@class="near"][@title="LocalNames"][@href="http://www.oddmuse.org/"][text()="OddMuse"]',
+	   '//a[@class="near"][@title="LocalNames"][@href="http://lion.taoriver.net/"][text()="my blog"]');
 
 # verify that automatic update is off by default
 xpath_test(update_page('LocalNamesTest', 'This is an [http://www.example.org/ Example].'),
