@@ -16,9 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: headers.pl,v 1.12 2004/12/05 03:51:45 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: headers.pl,v 1.13 2006/07/14 09:51:12 as Exp $</p>';
 
+# After toc.pl but before usemod.pl
 push(@MyRules, \&HeadersRule);
+$RuleOrder{ \&HeadersRule } = 95;
 
 # The trickiest part is the first rule.  It finds titles like the following:
 #
