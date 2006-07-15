@@ -53,7 +53,7 @@ $EditNote $HttpCharset $UserGotoBar $VisitorFile $RcFile %Smilies
 %SpecialDays $InterWikiMoniker $SiteDescription $RssImageUrl $ReadMe
 $RssRights $BannedCanRead $SurgeProtection $TopLinkBar $LanguageLimit
 $SurgeProtectionTime $SurgeProtectionViews $DeletedPage %Languages
-$InterMap $ValidatorLink @LockOnCreation $PermanentAnchors @CssList
+$InterMap $ValidatorLink %LockOnCreation $PermanentAnchors @CssList
 $RssStyleSheet $PermanentAnchorsFile @MyRules %CookieParameters
 @UserGotoBarPages $NewComment $StyleSheetPage $ConfigPage $ScriptName
 @MyMacros $CommentsPrefix @UploadTypes $AllNetworkFiles $UsePathInfo
@@ -271,7 +271,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.682 2006/07/02 09:12:46 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.683 2006/07/15 22:19:40 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -296,7 +296,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   my @pages = sort($BannedHosts, $StyleSheetPage, $ConfigPage, $InterMap, $NearMap,
 		    $RssInterwikiTranslate, $BannedContent);
   @AdminPages = @pages unless @AdminPages;
-  @LockOnCreation = @pages unless @LockOnCreation;
+  %LockOnCreation = map { $_ => 1} @pages unless %LockOnCreation;
   %PlainTextPages = ($BannedHosts => 1, $BannedContent => 1,
 		       $StyleSheetPage => 1, $ConfigPage => 1) unless %PlainTextPages;
   delete $PlainTextPages{''}; # $ConfigPage and others might be empty.
@@ -3013,7 +3013,7 @@ sub UserCanEdit {
   my ($id, $editing) = @_;
   return 1 if UserIsAdmin();
   return 0 if $id ne '' and -f GetLockedPageFile($id);
-  return 0 if grep(/^$id$/, @LockOnCreation);
+  return 0 if $LockOnCreation{$id};
   return 1 if UserIsEditor();
   return 0 if !$EditAllowed or -f $NoEditFile;
   return 0 if $editing and UserIsBanned(); # this call is more expensive
@@ -3428,7 +3428,7 @@ sub DoPost {
     ReportError(Ts('%s cannot be defined.', $id), '403 FORBIDDEN');
   } elsif (($id eq 'Sample_Undefined_Page') or ($id eq T('Sample_Undefined_Page'))) {
     ReportError(Ts('[[%s]] cannot be defined.', $id), '403 FORBIDDEN');
-  } elsif (grep(/^$id$/, @LockOnCreation) and !UserIsAdmin() and not -f GetPageFile($id)) {
+  } elsif ($LockOnCreation{$id} and !UserIsAdmin() and not -f GetPageFile($id)) {
     ReportError(Ts('Only an administrator can create %s.', $id), '403 FORBIDDEN');
   }
   my $filename = GetParam('file', undef);
@@ -3602,8 +3602,8 @@ sub Save { # call within lock, with opened page
   $languages = GetLanguages($new) unless $upload;
   $Page{languages} = $languages;
   SavePage();
-  if ($revision == 1 and grep(/^$id$/, @LockOnCreation)) {
-    WriteStringToFile(GetLockedPageFile($id), '@LockOnCreation');
+  if ($revision == 1 and $LockOnCreation{$id}) {
+    WriteStringToFile(GetLockedPageFile($id), 'LockOnCreation');
   }
   WriteRcLog($id, $summary, $minor, $revision, $user, $host, $languages, GetCluster($new));
   $LastUpdate = $Now; # for mod_perl
