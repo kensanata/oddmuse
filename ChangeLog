@@ -1,3 +1,32 @@
+2006-07-16  Alex Schroeder  <alex@gnu.org>
+
+	* modules/strange-spam.pl ($StrangeBannedContent): New option.
+	(StrangeNewBannedContent): Read regular expressions from a page.
+	(StrangeBannedContentInit): New.
+
+	* wiki.pl (InitVariables, UserCanEdit, DoPost, Save): Replaced
+	@LockOnCreation with %LockOnCreation.
+	(InitVariables, DoAdminPage): Replaced @AdminPages with
+	%AdminPages.
+
+	* modules/sidebar.pl (SidebarInit): Replaced @AdminPages with
+	%AdminPages.
+
+	* modules/referrer-tracking.pl (RefererInit): Replaced @AdminPages
+	with %AdminPages.
+
+	* modules/questionasker.pl (QuestionaskerInit): Replaced
+	@AdminPages with %AdminPages.
+
+	* modules/page-type.pl (PageTypeInit): Replaced @AdminPages with
+	%AdminPages.
+
+	* modules/localnames.pl (LocalNamesInit): Replaced @AdminPages
+	with %AdminPages.
+
+	* modules/gotobar.pl (GotobarInit): Replaced @AdminPages with
+	%AdminPages.
+
 2006-07-14  Alex Schroeder  <alex@gnu.org>
 
 	* modules/headers.pl: Set the rule order to 95.
