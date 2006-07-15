@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: strange-spam.pl,v 1.3 2006/07/15 22:11:08 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: strange-spam.pl,v 1.4 2006/07/15 23:14:43 as Exp $</p>';
 
 use vars qw($StrangeBannedContent);
 
@@ -27,6 +27,12 @@ $StrangeBannedContent = 'StrangeBannedContent';
 
 # copy scalar
 $BannedContent = $StrangeOldBannedContent;
+
+push(@MyInitVariables, \&StrangeBannedContentInit);
+
+sub StrangeBannedContentInit {
+  $LockOnCreation{$StrangeBannedContent} = 1;
+}
 
 sub StrangeNewBannedContent {
   my $str = shift;
