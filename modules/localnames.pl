@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.25 2006/07/02 23:17:40 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.26 2006/07/15 23:13:14 as Exp $</p>';
 
 use vars qw($LocalNamesPage $LocalNamesInit %LocalNames $LocalNamesCollect
 	    $LocalNamesCollectMaxWords $LnDir $LnCacheHours);
@@ -75,7 +75,7 @@ sub LocalNamesInit {
   $LocalNamesInit = 1;
   %LocalNames = ();
   $LocalNamesPage = FreeToNormal($LocalNamesPage); # spaces to underscores
-  push(@AdminPages, $LocalNamesPage);
+  $AdminPages{$LocalNamesPage} = 1;
   my $data = GetPageContent($LocalNamesPage);
   while ($data =~ m/\[$FullUrlPattern\s+([^\]]+?)\]/go) {
     my ($page, $url) = ($2, $1);
