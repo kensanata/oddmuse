@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: strange-spam.pl,v 1.2 2006/03/03 16:15:30 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: strange-spam.pl,v 1.3 2006/07/15 22:11:08 as Exp $</p>';
+
+use vars qw($StrangeBannedContent);
+
+$StrangeBannedContent = 'StrangeBannedContent';
 
 *StrangeOldBannedContent = *BannedContent;
 *BannedContent = *StrangeNewBannedContent;
@@ -27,10 +31,17 @@ $BannedContent = $StrangeOldBannedContent;
 sub StrangeNewBannedContent {
   my $str = shift;
   my $rule = StrangeOldBannedContent($str, @_);
-  $rule = StrangeOldBannedContent(GetParam('summary',''), @_)
-    if not $rule and GetParam('summary','');
   return $rule if $rule;
-  return "Hey, this looks like the useless spam on communitywiki.org!"
-    if index($str, 'rel="itsok"') >= 0;
+  foreach (grep /./, map {
+    s/#.*//;  # trim comments
+    s/^\s+//; # trim leading whitespace
+    s/\s+$//; # trim trailing whitespace
+    $_; } split(/\n/, GetPageContent($StrangeBannedContent))) {
+    my $regexp = $_;
+    next unless $regexp; # skip empty strings
+    if ($str =~ /($regexp)/i) {
+      return Tss('Rule "%1" matched "%2" on this page.', $regexp, $1);
+    }
+  }
   return 0;
 }
