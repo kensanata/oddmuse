@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: gotobar.pl,v 1.5 2006/04/17 14:36:08 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: gotobar.pl,v 1.6 2006/07/15 23:12:35 as Exp $</p>';
 
 use vars qw($GotobarName);
 
@@ -29,7 +29,7 @@ push(@MyInitVariables, \&GotobarInit);
 
 sub GotobarInit {
   $GotobarName = FreeToNormal($GotobarName); # spaces to underscores
-  push(@AdminPages, $GotobarName) unless grep(/$GotobarName/, @AdminPages); # mod_perl!
+  $AdminPages{$GotobarName} = 1;
   if ($IndexHash{$GotobarName}) {
     OpenPage($GotobarName);
     return if $DeletedPage && $Page{text} =~ /^\s*$DeletedPage\b/o;
