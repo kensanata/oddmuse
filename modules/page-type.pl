@@ -27,7 +27,7 @@ push(@MyInitVariables, \&PageTypeInit);
 
 sub PageTypeInit {
   $PageTypesName = FreeToNormal($PageTypesName); # spaces to underscores
-  push(@AdminPages, $PageTypesName) unless grep(/$PageTypesName/, @AdminPages); # mod_perl!
+  $AdminPages{$PageTypesName} = 1; # mod_perl!
 }
 
 # A page type has to appear as a bullet list item on the page.
@@ -42,7 +42,7 @@ sub PageTypeInit {
 # have page clustering enabled (see the manual), then the page type
 # will automatically act as a cluster.
 
-$ModulesDescription .= '<p>$Id: page-type.pl,v 1.5 2005/12/18 20:25:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: page-type.pl,v 1.6 2006/07/15 23:13:37 as Exp $</p>';
 
 *OldPageTypeDoPost = *DoPost;
 *DoPost = *NewPageTypeDoPost;
