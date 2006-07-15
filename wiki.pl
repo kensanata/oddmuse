@@ -59,7 +59,7 @@ $RssStyleSheet $PermanentAnchorsFile @MyRules %CookieParameters
 @MyMacros $CommentsPrefix @UploadTypes $AllNetworkFiles $UsePathInfo
 $UploadAllowed $LastUpdate $PageCluster $HtmlHeaders %PlainTextPages
 $RssInterwikiTranslate $UseCache $ModuleDir $DebugInfo $FullUrlPattern
-%InvisibleCookieParameters $FreeInterLinkPattern @AdminPages
+%InvisibleCookieParameters $FreeInterLinkPattern %AdminPages
 @MyAdminCode @MyInitVariables @MyMaintenance $SummaryDefaultLength
 $JournalLimit);
 
@@ -271,7 +271,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.683 2006/07/15 22:19:40 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.684 2006/07/15 22:29:54 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -295,7 +295,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   @UserGotoBarPages = ($HomePage, $RCName) unless @UserGotoBarPages;
   my @pages = sort($BannedHosts, $StyleSheetPage, $ConfigPage, $InterMap, $NearMap,
 		    $RssInterwikiTranslate, $BannedContent);
-  @AdminPages = @pages unless @AdminPages;
+  %AdminPages = map { $_ => 1} @pages unless %AdminPages;
   %LockOnCreation = map { $_ => 1} @pages unless %LockOnCreation;
   %PlainTextPages = ($BannedHosts => 1, $BannedContent => 1,
 		       $StyleSheetPage => 1, $ConfigPage => 1) unless %PlainTextPages;
@@ -2009,7 +2009,7 @@ sub DoAdminPage {
 	    $q->p(T('Important pages:')) . $q->ul(map { my $name = $_;
 							$name =~ s/_/ /g;
 							$q->li(GetPageOrEditLink($_, $name)) if $_;
-						      } @AdminPages),
+						      } keys %AdminPages),
 	    $q->p(Ts('To mark a page for deletion, put <strong>%s</strong> on the first line.',
 		     $DeletedPage)), @rest);
   PrintFooter();
