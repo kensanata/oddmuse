@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.8 2006/04/02 19:48:53 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.9 2006/07/15 23:14:22 as Exp $</p>';
 
 use LWP::UserAgent;
 
@@ -35,7 +35,7 @@ push(@MyInitVariables, \&RefererInit);
 
 sub RefererInit {
   $RefererFilter = FreeToNormal($RefererFilter); # spaces to underscores
-  push(@AdminPages, $RefererFilter) unless grep(/$RefererFilter/, @AdminPages); # mod_perl!
+  $AdminPages{$RefererFilter} = 1;
   $RefererDir  = "$DataDir/referer"; # Stores referer data
 }
 
