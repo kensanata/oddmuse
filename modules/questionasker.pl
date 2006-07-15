@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.11 2006/06/05 21:28:14 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.12 2006/07/15 23:14:02 as Exp $</p>';
 
 use vars qw(@QuestionaskerQuestions
 	    $QuestionaskerRememberAnswer
@@ -54,7 +54,7 @@ push(@MyInitVariables, \&QuestionaskerInit);
 
 sub QuestionaskerInit {
   $QuestionaskerRequiredList = FreeToNormal($QuestionaskerRequiredList);
-  push (@AdminPages, $QuestionaskerRequiredList);
+  $AdminPages{$QuestionaskerRequiredList} = 1;
   $CookieParameters{question} = '';
   $InvisibleCookieParameters{question} = 1;
 }
