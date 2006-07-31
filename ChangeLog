@@ -1,3 +1,8 @@
+2006-07-31  Alex Schroeder  <alex@gnu.org>
+
+	* modules/irc.pl (IrcRule): Fix regular expression as suggested by
+	Jonah on the website. Also, strip a single space after the nick.
+
 2006-07-16  Alex Schroeder  <alex@gnu.org>
 
 	* modules/strange-spam.pl ($StrangeBannedContent): New option.
