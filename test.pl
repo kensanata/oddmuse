@@ -3068,6 +3068,31 @@ xpath_test(get_page('action=all pwd=foo'),
 
 # --------------------
 
+irc:
+print '[irc]';
+
+clear_pages();
+add_module('irc.pl');
+
+%Test = split('\n',<<'EOT');
+<kensanata> foo
+<dl class="irc"><dt><b>kensanata</b></dt><dd>foo</dd></dl>
+16:45 <kensanata> foo
+<dl class="irc"><dt><span class="time">16:45  </span><b>kensanata</b></dt><dd>foo</dd></dl>
+[16:45] <kensanata> foo
+<dl class="irc"><dt><span class="time">16:45  </span><b>kensanata</b></dt><dd>foo</dd></dl>
+16:45am <kensanata> foo
+<dl class="irc"><dt><span class="time">16:45am  </span><b>kensanata</b></dt><dd>foo</dd></dl>
+[16:45am] <kensanata> foo
+<dl class="irc"><dt><span class="time">16:45am  </span><b>kensanata</b></dt><dd>foo</dd></dl>
+EOT
+
+run_tests();
+
+remove_rule(\&IrcRule);
+
+# --------------------
+
 end:
 
 ### END OF TESTS
