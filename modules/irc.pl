@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: irc.pl,v 1.6 2006/07/31 20:11:54 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: irc.pl,v 1.7 2006/07/31 20:24:59 as Exp $</p>';
 
 use vars qw($IrcNickRegexp $IrcLinkNick);
 
@@ -29,7 +29,7 @@ $IrcLinkNick = 0;
 # This adds an extra <br> at the beginning.  Alternatively, add it to
 # the last line, or only add it when required.
 sub IrcRule {
-  if ($bol && m/\G(?:\[?(\d\d?:\d\d(?:am|pm)?)\]?)?\s*&lt;($IrcNickRegexp)&gt;/gc) {
+  if ($bol && m/\G(?:\[?(\d\d?:\d\d(?:am|pm)?)\]?)?\s*&lt;($IrcNickRegexp)&gt; ?/gc) {
     my ($time, $nick) = ($1, $2);
     my ($error) = ValidId($nick);
     # if we're in a dl, close the open dd but not the dl.  (if we're
