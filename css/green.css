@@ -188,6 +188,15 @@ img.logo {
     float:left;
 }
 
+div.right .right, div.left .left {
+    float: none;
+}
+
+span.caption {
+    display:block;
+    margin: 0 1em 1em 1em;
+}
+
 a.small img {
     max-width:300px;
 }
@@ -362,11 +371,23 @@ div.portrait a {
 div.color {
     clear: left;
     min-height:105px;
-    margin:0;
-    padding:0;
+    margin: 0;
+    padding: 0;
 }
 div.one {
     background-color: #efb;
+}
+div.level0, div.level0 div.portrait {
+    margin-left: 0;
+}
+div.level1, div.level1 div.portrait {
+    margin-left: 4em;
+}
+div.level2, div.level2 div.portrait {
+    margin-left: 8em;
+}
+div.level3, div.level3 div.portrait {
+    margin-left: 12em;
 }
 hr {
     display:block;
