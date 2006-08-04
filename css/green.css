@@ -85,7 +85,7 @@ dl.irc dt span.time { float:left; }
 dl.irc dd { margin-left:22ex; }
 
 div.header {
-    background-color : #becc92;
+    background-color: #becc92;
     margin:                  0;
     padding:                 0;
     height: 6em;
@@ -169,7 +169,7 @@ div.header h1 {
 
 div.header h1 a {
     text-decoration:none; 
-    color : #ffffff ;
+    color: #ffffff;
 }
 
 img.logo { 
@@ -212,9 +212,9 @@ h1 {
 }
 
 span.specialdays { 
-    margin-left : 1em ;
-    color : #4c6b1b ;
-    font-style : italic ;
+    margin-left: 1em;
+    color: #4c6b1b;
+    font-style: italic;
 }
 
 h2 {
