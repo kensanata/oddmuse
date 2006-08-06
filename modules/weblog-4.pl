@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: weblog-4.pl,v 1.8 2006/06/11 15:35:42 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: weblog-4.pl,v 1.9 2006/08/06 11:56:40 as Exp $</p>';
 
 push(@MyInitVariables, sub {
        $SearchFreeTextTagUrl = $ScriptName . '?action=browse;tag=1;id=';
@@ -26,7 +26,7 @@ push(@MyAdminCode, \&BlogMenu);
 
 sub BlogMenu {
   my ($id, $menuref, $restref) = @_;
-  push(@$menuref, ScriptLink('action=new', T('New')));
+  push(@$menuref, ScriptLink('action=new', T('New'), 'new'));
 }
 
 # Default page content copied from weblog-3.pl.
