@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: login.pl,v 1.7 2005/11/03 00:21:47 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: login.pl,v 1.8 2006/08/06 11:47:14 as Exp $</p>';
 
 #use vars qw($RegistrationForm $MinimumPasswordLength $RegistrationsMustBeApproved $LoginForm $PasswordFile $PendingPasswordFile $RequireLoginToEdit $ConfirmEmailAddress $ConfirmEmailAddress $UncomfirmedPasswordFile $EmailSenderAddress $EmailCommand $NotifyPendingRegistrations $EmailConfirmationMessage $ResetPasswordMessage $RegistrationForm $LogoutForm $ResetForm $ChangePassForm $RequireCamelUserName);
 
@@ -435,15 +435,15 @@ sub AuthenticateUser {
 sub LoginAdminRule {
 	($id, $menuref, *restref) = @_;
 	
-	push(@$menuref, ScriptLink('action=register', T('Register a new account')));
-	push(@$menuref, ScriptLink('action=login', T('Login')));
-	push(@$menuref, ScriptLink('action=logout', T('Logout')));
-	push(@$menuref, ScriptLink('action=whoami', T('Who am I?')));
-	push(@$menuref, ScriptLink('action=reset', T('Forgot your password?')));
-	push(@$menuref, ScriptLink('action=change', T('Change your password')));
+	push(@$menuref, ScriptLink('action=register', T('Register a new account'), 'register'));
+	push(@$menuref, ScriptLink('action=login', T('Login'), 'login'));
+	push(@$menuref, ScriptLink('action=logout', T('Logout'), 'logout'));
+	push(@$menuref, ScriptLink('action=whoami', T('Who am I?'), 'whoami'));
+	push(@$menuref, ScriptLink('action=reset', T('Forgot your password?'), 'reset'));
+	push(@$menuref, ScriptLink('action=change', T('Change your password'), 'change'));
 	
 	if (UserIsAdmin()) {
-		push(@$menuref, ScriptLink('action=approve_pending', T('Approve pending registrations')));
+		push(@$menuref, ScriptLink('action=approve_pending', T('Approve pending registrations'), 'approve'));
 	}
 }
 
