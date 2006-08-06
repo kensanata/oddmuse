@@ -40,7 +40,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.46 2006/08/06 11:48:33 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.47 2006/08/06 12:49:35 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -148,7 +148,7 @@ sub SearchFreeTextCloud {
     print $q->a({-href  => "$ScriptName?search=tag:" . UrlEncode($_),
 		 -title => $n,
 		 -style => 'font-size: '
-		 . int(80+120*($n-$min)/($max-$min)) . '%;',
+		 . int(80+120*($max == $min ? 1 : ($n-$min)/($max-$min))) . '%;',
 		}, $_), T(' ... ');
   }
   $tags->close_index();
