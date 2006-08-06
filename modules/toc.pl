@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.34 2006/07/14 07:16:59 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.35 2006/08/06 23:18:14 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
@@ -27,10 +27,12 @@ $RuleOrder{ \&TocRule } = 90;
 use vars qw($TocAutomatic);
 
 $TocAutomatic = 1;
-my $TocCounter = ();
+my %TocCounter = ();
 my $TocShown = 0;
 
 sub TocRule {
+  # Using such a key makes sure that we're not getting confused by
+  # headings in the sidebar.
   my $key = $OpenPageName||'toc';
   if (m/\G&lt;toc&gt;/gci) {
     my $html = CloseHtmlEnvironments()
@@ -101,6 +103,13 @@ sub TocRule {
 }
 
 sub TocHeadings {
+  # Using such a key makes sure that we're not getting confused by
+  # headings in the sidebar. If we're rendering the headings inside
+  # the sidebar, we want to refer to the headings in the real page.
+  # $OpenPageName points to the $SidebarName, however, so that the
+  # forms extension works. That's why we have a separate variable
+  # being used, here.
+  my $key = $SideBarOpenPageName||$OpenPageName||'toc';
   my $oldpos = pos;          # make this sub not destroy the value of pos
   my $page = $Page{text};   # work on the page that is currently open!
   # ignore all the stuff that gets processed anyway
@@ -121,7 +130,7 @@ sub TocHeadings {
     my ($depth, $text, $link);
     if ($line =~ /^(\=+)[ \t]*(.*?)[ \t]*\=+[ \t]*$/) {
       $depth = length($1);
-      $link = ($OpenPageName||'toc') . $count;
+      $link = $key . $count;
       $text  = $2;
     } elsif ($line =~ /^<h(\d)><a id\="(.+)">[ \t]*(.*?)[ \t]*<\/a><\/h\1>[ \t]*$/) {
       $depth = $1;
