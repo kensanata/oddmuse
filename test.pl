@@ -1349,7 +1349,8 @@ print '[edit lock]';
 clear_pages();
 test_page(get_page('action=editlock'), 'operation is restricted');
 test_page(get_page('action=editlock pwd=foo'), 'Edit lock created');
-test_page(update_page('TestLock', 'mu!'), quotemeta('<a href="http://localhost/wiki.pl?action=password">This page is read-only</a>'));
+xpath_test(update_page('TestLock', 'mu!'),
+	   '//a[@href="http://localhost/wiki.pl?action=password"][@class="password"][text()="This page is read-only"]');
 test_page($redirect, '403 FORBIDDEN', 'Editing not allowed for TestLock');
 test_page(get_page('action=editlock set=0'), 'operation is restricted');
 test_page(get_page('action=editlock set=0 pwd=foo'), 'Edit lock removed');
@@ -1603,9 +1604,9 @@ InitVariables();
 
 %Test = split('\n',<<'EOT');
 file://home/foo/tutorial.pdf
-//a[@class="url"][@href="file://home/foo/tutorial.pdf"][text()="file://home/foo/tutorial.pdf"]
+//a[@class="url file"][@href="file://home/foo/tutorial.pdf"][text()="file://home/foo/tutorial.pdf"]
 file:///home/foo/tutorial.pdf
-//a[@class="url"][@href="file:///home/foo/tutorial.pdf"][text()="file:///home/foo/tutorial.pdf"]
+//a[@class="url file"][@href="file:///home/foo/tutorial.pdf"][text()="file:///home/foo/tutorial.pdf"]
 image inline: [[image:HomePage]]
 //a[@class="image"][@href="http://localhost/test.pl/HomePage"]/img[@class="upload"][@src="http://localhost/test.pl/download/HomePage"][@alt="HomePage"]
 image inline: [[image:OtherPage]]
@@ -1635,13 +1636,13 @@ free link with other text: [[home page|da homepage]]
 free link with other text: [[other page|da other homepage]]
 //text()[string()="free link with other text: [[other page|da other homepage]]"]
 URL: http://www.oddmuse.org/
-//a[@class="url"][@href="http://www.oddmuse.org/"][text()="http://www.oddmuse.org/"]
+//a[@class="url http"][@href="http://www.oddmuse.org/"][text()="http://www.oddmuse.org/"]
 URL in text http://www.oddmuse.org/ like this
-//text()[string()="URL in text "]/following-sibling::a[@class="url"][@href="http://www.oddmuse.org/"][text()="http://www.oddmuse.org/"]/following-sibling::text()[string()=" like this"]
+//text()[string()="URL in text "]/following-sibling::a[@class="url http"][@href="http://www.oddmuse.org/"][text()="http://www.oddmuse.org/"]/following-sibling::text()[string()=" like this"]
 URL in brackets: [http://www.oddmuse.org/]
-//a[@class="url number"][@href="http://www.oddmuse.org/"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
+//a[@class="url http number"][@href="http://www.oddmuse.org/"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
 URL in brackets with other text: [http://www.oddmuse.org/ oddmuse]
-//a[@class="url outside"][@href="http://www.oddmuse.org/"][text()="oddmuse"]
+//a[@class="url http outside"][@href="http://www.oddmuse.org/"][text()="oddmuse"]
 URL abbreviation: Oddmuse:Link_Pattern
 //a[@class="inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"]/span[@class="site"][text()="Oddmuse"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="Link_Pattern"]
 URL abbreviation with extra brackets: [Oddmuse:Link_Pattern]
@@ -1699,11 +1700,11 @@ free link with other text: [[home page|da homepage]]
 free link with other text: [[other page|da other homepage]]
 //a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=other_page"][text()="?"]
 URL: http://www.oddmuse.org/
-//a[@class="url"][@href="http://www.oddmuse.org/"][text()="http://www.oddmuse.org/"]
+//a[@class="url http"][@href="http://www.oddmuse.org/"][text()="http://www.oddmuse.org/"]
 URL in brackets: [http://www.oddmuse.org/]
-//a[@class="url number"][@href="http://www.oddmuse.org/"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
+//a[@class="url http number"][@href="http://www.oddmuse.org/"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
 URL in brackets with other text: [http://www.oddmuse.org/ oddmuse]
-//a[@class="url outside"][@href="http://www.oddmuse.org/"][text()="oddmuse"]
+//a[@class="url http outside"][@href="http://www.oddmuse.org/"][text()="oddmuse"]
 URL abbreviation: Oddmuse:Link_Pattern
 //a[@class="inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"]/span[@class="site"][text()="Oddmuse"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="Link_Pattern"]
 URL abbreviation with extra brackets: [Oddmuse:Link_Pattern]
@@ -1787,11 +1788,17 @@ test_page(update_page('entity', 'quoted named entity: &amp;copy;'),
 
 # links and other attributes containing attributes
 
-%Smilies = ('HAHA!' => '/pics/haha.png');
+%Smilies = ('HAHA!' => '/pics/haha.png',
+	    '&lt;3' => '/pics/heart.png',
+	    ':"\(' => '/pics/cat.png');
 
 %Test = split('\n',<<'EOT');
 HAHA!
 //img[@class="smiley"][@src="/pics/haha.png"][@alt="HAHA!"]
+i <3 you
+//img[@class="smiley"][@src="/pics/heart.png"][@alt="<3"]
+:"(
+//img[@class="smiley"][@src="/pics/cat.png"][@alt=':"(']
 WikiWord
 //a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=WikiWord"][text()="?"]
 WikiWord:
@@ -1813,55 +1820,55 @@ PlanetMath:ZipfsLaw, and foo
 ![[Free Link]]
 //a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=Free_Link"][text()="?"]
 http://www.emacswiki.org
-//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]
+//a[@class="url http"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]
 <http://www.emacswiki.org>
-//text()[string()="<"]/following-sibling::a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()=">"]
+//text()[string()="<"]/following-sibling::a[@class="url http"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()=">"]
 http://www.emacswiki.org/
-//a[@class="url"][@href="http://www.emacswiki.org/"][text()="http://www.emacswiki.org/"]
+//a[@class="url http"][@href="http://www.emacswiki.org/"][text()="http://www.emacswiki.org/"]
 http://www.emacswiki.org.
-//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="."]
+//a[@class="url http"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="."]
 http://www.emacswiki.org,
-//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()=","]
+//a[@class="url http"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()=","]
 http://www.emacswiki.org;
-//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()=";"]
+//a[@class="url http"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()=";"]
 http://www.emacswiki.org:
-//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()=":"]
+//a[@class="url http"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()=":"]
 http://www.emacswiki.org?
-//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="?"]
+//a[@class="url http"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="?"]
 http://www.emacswiki.org/?
-//a[@class="url"][@href="http://www.emacswiki.org/"][text()="http://www.emacswiki.org/"]/following-sibling::text()[string()="?"]
+//a[@class="url http"][@href="http://www.emacswiki.org/"][text()="http://www.emacswiki.org/"]/following-sibling::text()[string()="?"]
 http://www.emacswiki.org!
-//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="!"]
+//a[@class="url http"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="!"]
 http://www.emacswiki.org'
-//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="'"]
+//a[@class="url http"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="'"]
 http://www.emacswiki.org"
-//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()='"']
+//a[@class="url http"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()='"']
 http://www.emacswiki.org!
-//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="!"]
+//a[@class="url http"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="!"]
 http://www.emacswiki.org(
-//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="("]
+//a[@class="url http"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="("]
 http://www.emacswiki.org)
-//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()=")"]
+//a[@class="url http"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()=")"]
 http://www.emacswiki.org&
-//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="&"]
+//a[@class="url http"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="&"]
 http://www.emacswiki.org#
-//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="#"]
+//a[@class="url http"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="#"]
 http://www.emacswiki.org%
-//a[@class="url"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="%"]
+//a[@class="url http"][@href="http://www.emacswiki.org"][text()="http://www.emacswiki.org"]/following-sibling::text()[string()="%"]
 [http://www.emacswiki.org]
-//a[@class="url number"][@href="http://www.emacswiki.org"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
+//a[@class="url http number"][@href="http://www.emacswiki.org"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
 [http://www.emacswiki.org] and [http://www.emacswiki.org]
-//a[@class="url number"][@href="http://www.emacswiki.org"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]/../../following-sibling::text()[string()=" and "]/following-sibling::a[@class="url number"][@href="http://www.emacswiki.org"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="2"]/following-sibling::span[@class="bracket"][text()="]"]
+//a[@class="url http number"][@href="http://www.emacswiki.org"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]/../../following-sibling::text()[string()=" and "]/following-sibling::a[@class="url http number"][@href="http://www.emacswiki.org"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="2"]/following-sibling::span[@class="bracket"][text()="]"]
 [http://www.emacswiki.org],
-//a[@class="url number"][@href="http://www.emacswiki.org"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
+//a[@class="url http number"][@href="http://www.emacswiki.org"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
 [http://www.emacswiki.org and a label]
-//a[@class="url outside"][@href="http://www.emacswiki.org"][text()="and a label"]
+//a[@class="url http outside"][@href="http://www.emacswiki.org"][text()="and a label"]
 [file://home/foo/tutorial.pdf local link]
-//a[@class="url outside"][@href="file://home/foo/tutorial.pdf"][text()="local link"]
+//a[@class="url file outside"][@href="file://home/foo/tutorial.pdf"][text()="local link"]
 file://home/foo/tutorial.pdf
-//a[@class="url"][@href="file://home/foo/tutorial.pdf"][text()="file://home/foo/tutorial.pdf"]
+//a[@class="url file"][@href="file://home/foo/tutorial.pdf"][text()="file://home/foo/tutorial.pdf"]
 mailto:alex@emacswiki.org
-//a[@class="url"][@href="mailto:alex@emacswiki.org"][text()="mailto:alex@emacswiki.org"]
+//a[@class="url mailto"][@href="mailto:alex@emacswiki.org"][text()="mailto:alex@emacswiki.org"]
 EOT
 
 xpath_run_tests();
@@ -2445,7 +2452,7 @@ get_page('title=Comments_on_Yadda', 'aftertext=This%20is%20another%20comment.',
 	 'username=Alex', 'homepage=http%3a%2f%2fwww%2eoddmuse%2eorg%2f');
 xpath_test(get_page('Comments_on_Yadda'),
 	   '//p[contains(text(),"This is my comment.")]',
-	   '//a[@class="url outside"][@href="http://www.oddmuse.org/"][text()="Alex"]');
+	   '//a[@class="url http outside"][@href="http://www.oddmuse.org/"][text()="Alex"]');
 
 # --------------------
 
@@ -2797,6 +2804,49 @@ add_module('sidebar.pl');
 test_page(update_page('SideBar', 'mu'), '<div class="sidebar"><p>mu</p></div>');
 test_page(get_page('HomePage'), '<div class="sidebar"><p>mu</p></div>');
 
+print '[with toc]';
+
+add_module('toc.pl');
+add_module('usemod.pl');
+
+AppendStringToFile($ConfigFile, "\$TocAutomatic = 0;\n");
+
+update_page('SideBar', "bla\n\n"
+	    . "== mu ==\n\n"
+	    . "bla");
+
+test_page(update_page('test', "bla\n"
+		      . "<toc>\n"
+		      . "murks\n"
+		      . "==two=\n"
+		      . "bla\n"
+		      . "===three==\n"
+		      . "bla\n"
+		      . "=one=\n"),
+	  quotemeta('<ol><li><a href="#test1">two</a><ol><li><a href="#test2">three</a></li></ol></li><li><a href="#test3">one</a></li></ol>'),
+	  quotemeta('<h2 id="SideBar1">mu</h2>'),
+	  quotemeta('<h2 id="test1">two</h2>'),
+	  quotemeta('<h2 id="test3">one</h2>'),
+	  quotemeta('bla </p><div class="toc"><h2>Contents</h2><ol><li><a '),
+	  quotemeta('one</a></li></ol></div><p> murks'));
+
+update_page('SideBar', "<toc>");
+test_page(update_page('test', "bla\n"
+		      . "murks\n"
+		      . "==two=\n"
+		      . "bla\n"
+		      . "===three==\n"
+		      . "bla\n"
+		      . "=one=\n"),
+	  quotemeta('<ol><li><a href="#test1">two</a><ol><li><a href="#test2">three</a></li></ol></li><li><a href="#test3">one</a></li></ol>'),
+	  quotemeta('<h2 id="test1">two</h2>'),
+	  quotemeta('<h2 id="test3">one</h2>'),
+	  quotemeta('<div class="sidebar"><div class="toc"><h2>Contents</h2><ol><li><a '),
+	  quotemeta('one</a></li></ol></div></div><div class="content browse"><p>'));
+
+remove_rule(\&TocRule);
+remove_rule(\&UsemodRule);
+
 print '[with forms]'; # + pagelock + forms
 
 add_module('forms.pl');
@@ -2812,34 +2862,6 @@ test_page(get_page('HomePage'), '<div class="sidebar"><form><h1>mu</h1></form></
 get_page('action=pagelock id=SideBar set=0 pwd=foo');
 
 remove_rule(\&FormsRule);
-
-print '[with toc]';
-
-add_module('toc.pl');
-add_module('usemod.pl');
-
-AppendStringToFile($ConfigFile, "\$TocAutomatic = 0;\n");
-
-update_page('SideBar', "bla\n\n"
-	    . "== mu ==\n\n"
-	    . "bla");
-
-test_page(update_page('toc', "bla\n"
-		      . "<toc>\n"
-		      . "murks\n"
-		      . "==two=\n"
-		      . "bla\n"
-		      . "===three==\n"
-		      . "bla\n"
-		      . "=one=\n"),
-	  quotemeta('<ol><li><a href="#toc1">two</a><ol><li><a href="#toc2">three</a></li></ol></li><li><a href="#toc3">one</a></li></ol>'),
-	  quotemeta('<h2 id="toc1">two</h2>'),
-	  quotemeta('<h2 id="toc3">one</h2>'),
-	  quotemeta('bla </p><div class="toc"><h2>Contents</h2><ol><li><a '),
-	  quotemeta('one</a></li></ol></div><p> murks'));
-
-remove_rule(\&TocRule);
-remove_rule(\&UsemodRule);
 
 *GetHeader = *OldSideBarGetHeader;
 
@@ -2858,7 +2880,7 @@ add_module('localnames.pl');
 xpath_test(update_page('LocalNames', "* [http://www.oddmuse.org/ OddMuse]\n"
 		       . "* [[ln:$uri/ln.txt]]\n"
 		       . "* [[ln:$uri/ln.txt Lion's Namespace]]\n"),
-	   '//ul/li/a[@class="url outside"][@href="http://www.oddmuse.org/"][text()="OddMuse"]',
+	   '//ul/li/a[@class="url http outside"][@href="http://www.oddmuse.org/"][text()="OddMuse"]',
 	   '//ul/li/a[@class="url outside ln"][@href="' . $uri . '/ln.txt"][text()="' . $uri . '/ln.txt"]',
 	   '//ul/li/a[@class="url outside ln"][@href="' . $uri . '/ln.txt"][text()="Lion\'s Namespace"]');
 
@@ -2866,7 +2888,7 @@ InitVariables();
 
 %Test = split('\n',<<'EOT');
 [http://www.oddmuse.org/ OddMuse]
-//a[@class="url outside"][@href="http://www.oddmuse.org/"][text()="OddMuse"]
+//a[@class="url http outside"][@href="http://www.oddmuse.org/"][text()="OddMuse"]
 OddMuse
 //a[@class="near"][@title="LocalNames"][@href="http://www.oddmuse.org/"][text()="OddMuse"]
 EOT
@@ -2880,17 +2902,17 @@ xpath_test(update_page('LocalNamesTest', 'OddMuse [[my blog]]'),
 
 # verify that automatic update is off by default
 xpath_test(update_page('LocalNamesTest', 'This is an [http://www.example.org/ Example].'),
-	   '//a[@class="url outside"][@href="http://www.example.org/"][text()="Example"]');
+	   '//a[@class="url http outside"][@href="http://www.example.org/"][text()="Example"]');
 negative_xpath_test(get_page('LocalNames'),
-		    '//ul/li/a[@class="url outside"][@href="http://www.example.org/"][text()="Example"]');
+		    '//ul/li/a[@class="url http outside"][@href="http://www.example.org/"][text()="Example"]');
 
 # check automatic update
 AppendStringToFile($ConfigFile, "\$LocalNamesCollect = 1;\n");
 
 xpath_test(update_page('LocalNamesTest', 'This is an [http://www.example.com/ Example].'),
-	   '//a[@class="url outside"][@href="http://www.example.com/"][text()="Example"]');
+	   '//a[@class="url http outside"][@href="http://www.example.com/"][text()="Example"]');
 xpath_test(get_page('LocalNames'),
-	   '//ul/li/a[@class="url outside"][@href="http://www.example.com/"][text()="Example"]');
+	   '//ul/li/a[@class="url http outside"][@href="http://www.example.com/"][text()="Example"]');
 
 $LocalNamesInit = 0;
 LocalNamesInit();
@@ -2920,16 +2942,16 @@ xpath_test(get_page('action=rc days=1 showedit=1'),
 
 update_page('LocalNamesTest', 'This is [http://www.example.com/ one Example].');
 xpath_test(get_page('LocalNames'),
-	   '//ul/li/a[@class="url outside"][@href="http://www.example.com/"][text()="one Example"]');
+	   '//ul/li/a[@class="url http outside"][@href="http://www.example.com/"][text()="one Example"]');
 
 update_page('LocalNamesTest', 'This is [http://www.example.com/ one simple Example].');
 negative_xpath_test(get_page('LocalNames'),
-		    '//ul/li/a[@class="url outside"][@href="http://www.example.com/"][text()="one simple Example"]');
+		    '//ul/li/a[@class="url http outside"][@href="http://www.example.com/"][text()="one simple Example"]');
 AppendStringToFile($ConfigFile, "\$LocalNamesCollectMaxWords = 1;\n");
 
 update_page('LocalNamesTest', 'This is [http://www.example.com/ Example one].');
 negative_xpath_test(get_page('LocalNames'),
-		    '//ul/li/a[@class="url outside"][@href="http://www.example.com/"][text()="Example one"]');
+		    '//ul/li/a[@class="url http outside"][@href="http://www.example.com/"][text()="Example one"]');
 
 *GetInterSiteUrl = *OldLocalNamesGetInterSiteUrl;
 
