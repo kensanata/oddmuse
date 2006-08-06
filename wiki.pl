@@ -271,7 +271,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.684 2006/07/15 22:29:54 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.685 2006/08/06 11:43:46 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -429,7 +429,7 @@ sub ApplyRules {
 	my ($oldpos, $type, $uri) = ((pos), $3, UnquoteHtml($4)); # remember, page content is quoted!
 	if ($uri =~ /^$UrlProtocols:/o) {
 	  if ($type eq 'text') {
-	    print $q->pre({class=>"include $uri"},QuoteHtml(GetRaw($uri)));
+	    print $q->pre({class=>"include $uri"}, QuoteHtml(GetRaw($uri)));
 	  } else { # never use local links for remote pages, with a starting tag
 	    print $q->start_div({class=>"include $uri"});
 	    ApplyRules(QuoteHtml(GetRaw($uri)), 0, ($type eq 'with-anchors'), undef, 'p');
@@ -1083,7 +1083,8 @@ sub InterInit {
 
 sub GetUrl {
   my ($url, $text, $bracket, $images) = @_;
-  my $class = 'url';
+  $url ~= /^($UrlProtocols)/;
+  my $class = "url $1";
   if ($NetworkFile && $url =~ m|^file:///| && !$AllNetworkFiles
       or !$NetworkFile && $url =~ m|^file:|) {
     # Only do remote file:// links. No file:///c|/windows.
@@ -1142,11 +1143,12 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
 }
 
 sub GetPageLink { # use if you want to force a link to local pages, whether it exists or not
-  my ($id, $name) = @_;
+  my ($id, $name, $class) = @_;
   $id = FreeToNormal($id);
   $name = $id unless $name;
   $name =~ s/_/ /g;
-  return ScriptLink(UrlEncode($id), $name, 'local');
+  $class .= ' ' if $class;
+  return ScriptLink(UrlEncode($id), $name, $class . 'local');
 }
 
 sub GetEditLink { # shortcut
@@ -1977,26 +1979,26 @@ sub DoRollback {
 
 sub DoAdminPage {
   my ($id, @rest) = @_;
-  my @menu = (ScriptLink('action=index', T('Index of all pages')),
-	      ScriptLink('action=version', T('Wiki Version')),
-	      ScriptLink('action=unlock', T('Unlock Wiki')),
-	      ScriptLink('action=password', T('Password')),
-	      ScriptLink('action=maintain', T('Run maintenance')));
+  my @menu = (ScriptLink('action=index', T('Index of all pages'), 'index'),
+	      ScriptLink('action=version', T('Wiki Version'), 'version'),
+	      ScriptLink('action=unlock', T('Unlock Wiki'), 'unlock'),
+	      ScriptLink('action=password', T('Password'), 'password'),
+	      ScriptLink('action=maintain', T('Run maintenance'), 'maintain'));
   if (UserIsAdmin()) {
-    push(@menu, ScriptLink('action=clear', T('Clear Cache')));
+    push(@menu, ScriptLink('action=clear', T('Clear Cache'), 'clear'));
     if (-f "$DataDir/noedit") {
-      push(@menu, ScriptLink('action=editlock;set=0', T('Unlock site')));
+      push(@menu, ScriptLink('action=editlock;set=0', T('Unlock site'), 'editlock 0'));
     } else {
-      push(@menu, ScriptLink('action=editlock;set=1', T('Lock site')));
+      push(@menu, ScriptLink('action=editlock;set=1', T('Lock site'), 'editlock 1'));
     }
-    push(@menu, ScriptLink('action=css', T('Install CSS'))) unless $StyleSheet;
+    push(@menu, ScriptLink('action=css', T('Install CSS'), 'css')) unless $StyleSheet;
     if ($id) {
       my $title = $id;
       $title =~ s/_/ /g;
       if (-f GetLockedPageFile($id)) {
-	push(@menu, ScriptLink('action=pagelock;set=0;id=' . UrlEncode($id), Ts('Unlock %s', $title)));
+	push(@menu, ScriptLink('action=pagelock;set=0;id=' . UrlEncode($id), Ts('Unlock %s', $title), 'pagelock 0'));
       } else {
-	push(@menu, ScriptLink('action=pagelock;set=1;id=' . UrlEncode($id), Ts('Lock %s', $title)));
+	push(@menu, ScriptLink('action=pagelock;set=1;id=' . UrlEncode($id), Ts('Lock %s', $title), 'pagelock 1'));
       }
     }
   }
@@ -2274,9 +2276,9 @@ sub GetFooterLinks {
   if ($id and $rev ne 'history' and $rev ne 'edit') {
     if ($CommentsPrefix) {
       if ($OpenPageName =~ /^$CommentsPrefix(.*)/) {
-	push(@elements, GetPageLink($1));
+	push(@elements, GetPageLink($1, undef, 'original'));
       } else {
-	push(@elements, GetPageLink($CommentsPrefix . $OpenPageName));
+	push(@elements, GetPageLink($CommentsPrefix . $OpenPageName, undef, 'comment'));
       }
     }
     if (UserCanEdit($id, 0)) {
@@ -2287,7 +2289,7 @@ sub GetFooterLinks {
 	push(@elements, GetEditLink($id, T('Edit this page'), undef, T('e')));
       }
     } else { # no permission or generated page
-      push(@elements, ScriptLink('action=password', T('This page is read-only')));
+      push(@elements, ScriptLink('action=password', T('This page is read-only'), 'password'));
     }
   }
   if ($id and $rev ne 'history') {
