@@ -271,7 +271,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.685 2006/08/06 11:43:46 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.686 2006/08/06 13:04:16 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1083,7 +1083,7 @@ sub InterInit {
 
 sub GetUrl {
   my ($url, $text, $bracket, $images) = @_;
-  $url ~= /^($UrlProtocols)/;
+  $url =~ /^($UrlProtocols)/;
   my $class = "url $1";
   if ($NetworkFile && $url =~ m|^file:///| && !$AllNetworkFiles
       or !$NetworkFile && $url =~ m|^file:|) {
