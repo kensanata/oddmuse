@@ -18,7 +18,7 @@
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: big-brother.pl,v 1.6 2005/10/07 13:09:29 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: big-brother.pl,v 1.7 2006/08/06 11:45:42 as Exp $</p>';
 
 use vars qw($VisitorTime);
 
@@ -30,7 +30,7 @@ push(@MyAdminCode, \&BigBrotherVisitors);
 
 sub BigBrotherVisitors {
   my ($id, $menuref, $restref) = @_;
-  push(@$menuref, ScriptLink('action=visitors', Ts('Recent Visitors')));
+  push(@$menuref, ScriptLink('action=visitors', Ts('Recent Visitors'), 'visitors'));
 }
 
 my %BigBrotherData;
