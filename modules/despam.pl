@@ -16,13 +16,13 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: despam.pl,v 1.8 2005/12/27 00:00:22 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: despam.pl,v 1.9 2006/08/06 11:46:39 as Exp $</p>';
 
 push(@MyAdminCode, \&DespamMenu);
 
 sub DespamMenu {
   my ($id, $menuref, $restref) = @_;
-  push(@$menuref, ScriptLink('action=despam', T('Despamming pages')));
+  push(@$menuref, ScriptLink('action=despam', T('Despamming pages'), 'despam'));
 }
 
 $Action{despam} = \&DoDespam;
