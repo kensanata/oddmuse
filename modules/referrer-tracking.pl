@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.9 2006/07/15 23:14:22 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.10 2006/08/06 11:48:07 as Exp $</p>';
 
 use LWP::UserAgent;
 
@@ -43,7 +43,7 @@ push(@MyAdminCode, \&RefererMenu);
 
 sub RefererMenu {
   my ($id, $menuref, $restref) = @_;
-  push(@$menuref, ScriptLink('action=refer', T('All Referrers')));
+  push(@$menuref, ScriptLink('action=refer', T('All Referrers'), 'refer'));
 }
 
 *RefererOldPrintFooter = *PrintFooter;
