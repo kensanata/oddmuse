@@ -1,3 +1,35 @@
+2006-08-06  Alex Schroeder  <alex@gnu.org>
+
+	* modules/weblog-4.pl (BlogMenu): Add class to menu entry.
+
+	* modules/wanted.pl (WantedAction): Add class to menu entry.
+
+	* modules/search-freetext.pl (SearchFreeTextMenu): Add class to
+	menu entries.
+
+	* modules/referrer-tracking.pl (RefererMenu): Add class to menu
+	entry.
+
+	* modules/publish.pl (PublishMenu): Add class to menu entry.
+
+	* modules/login.pl (LoginAdminRule): Add class to menu entries.
+
+	* modules/despam.pl (DespamMenu): Add class to menu entry.
+
+	* modules/clustermap.pl (ClusterMapAdminRule): Add class to menu
+	entries.
+
+	* modules/big-brother.pl (BigBrotherVisitors): Add class to menu
+	entry.
+
+	* modules/admin.pl (AdminPower): Add class to menu entries and add
+	label for input field.
+
+	* wiki.pl (GetUrl): Add URL protocol as class.
+	(GetPageLink): Add class parameter.
+	(DoAdminPage): Add class to all menu entries.
+	(GetFooterLinks): Add class to the links.
+
 2006-07-31  Alex Schroeder  <alex@gnu.org>
 
 	* modules/irc.pl (IrcRule): Fix regular expression as suggested by
