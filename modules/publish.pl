@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: publish.pl,v 1.2 2006/06/08 07:51:58 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: publish.pl,v 1.3 2006/08/06 11:47:40 as Exp $</p>';
 
 use vars qw($PublishTargetUrl);
 
@@ -32,7 +32,7 @@ sub PublishMenu {
   $name =~ s/_/ /g;
   if ($id and $PublishTargetUrl) {
     push(@$menuref, ScriptLink('action=publish;id=' . $id,
-			       Ts('Publish %s', $name)));
+			       Ts('Publish %s', $name), 'publish'));
   }
 }
 
