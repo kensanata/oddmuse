@@ -40,7 +40,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.45 2006/06/13 19:40:29 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.46 2006/08/06 11:48:33 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -67,8 +67,8 @@ push(@MyAdminCode, \&SearchFreeTextMenu);
 sub SearchFreeTextMenu {
   my ($id, $menuref, $restref) = @_;
   push(@$menuref,
-       ScriptLink('action=buildindex', T('Rebuild index for searching')),
-       ScriptLink('action=cloud', T('Tag Cloud')));
+       ScriptLink('action=buildindex', T('Rebuild index for searching'), 'buildindex'),
+       ScriptLink('action=cloud', T('Tag Cloud'), 'cloud'));
 }
 
 $Action{buildindex} = \&SearchFreeTextIndex;
