@@ -1,4 +1,21 @@
+2006-08-07  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (SmileyReplace): HTML Unquote alt text of smilies.
+
+	* modules/sidebar.pl ($SideBarOpenPageName): New.
+	(NewSideBarGetHeader): Set it.
+
+	* modules/toc.pl (TocHeadings): Use $SideBarOpenPageName if set;
+	set $key.
+	(TocHeadings): Use $key.
+
+
 2006-08-06  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetUrl): Typo.
+
+	* modules/search-freetext.pl (SearchFreeTextCloud): Catch when
+	every tag appears exactly once, ie. $min == $max == 1.
 
 	* modules/weblog-4.pl (BlogMenu): Add class to menu entry.
 
