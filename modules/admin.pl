@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: admin.pl,v 1.10 2005/02/01 20:53:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: admin.pl,v 1.11 2006/08/06 11:44:55 as Exp $</p>';
 
 $Action{delete} = \&AdminPowerDelete;
 $Action{rename} = \&AdminPowerRename;
@@ -103,9 +103,9 @@ sub AdminPower {
   my $name = $id;
   $name =~ s/_/ /g;
   if ($id) {
-    push(@$menuref, ScriptLink('action=delete;id=' . $id, Ts('Immediately delete %s', $name)));
+    push(@$menuref, ScriptLink('action=delete;id=' . $id, Ts('Immediately delete %s', $name), 'delete'));
     push(@$menuref, GetFormStart()
-	 . Ts('Rename %s to:', $name) . ' '
+	 . $q->label({-for=>'new'}, Ts('Rename %s to:', $name) . ' ')
 	 . GetHiddenValue('action', 'rename')
 	 . GetHiddenValue('id', $id)
 	 . $q->textfield(-name=>'new', -size=>20)
