@@ -20,7 +20,7 @@ package OddMuse;
 
 use vars qw($WantedPageName $WantedPageNameFilter $WantedPageReferrerFilter);
 
-$ModulesDescription .= '<p>$Id: wanted.pl,v 1.3 2006/06/14 18:26:24 skrap Exp $</p>';
+$ModulesDescription .= '<p>$Id: wanted.pl,v 1.4 2006/08/06 11:50:02 as Exp $</p>';
 
 
 push(@MyAdminCode, \&WantedAction);
@@ -28,7 +28,7 @@ push(@MyAdminCode, \&WantedAction);
 sub WantedAction 
 {
 	my ($id, $menuref, $restref) = @_;
-	push(@$menuref, ScriptLink('action=wanted', Ts('Wanted Pages')));
+	push(@$menuref, ScriptLink('action=wanted', Ts('Wanted Pages'), 'wanted'));
 }
 
 sub PrintWantedData
