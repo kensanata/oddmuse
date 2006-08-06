@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.11 2005/10/13 14:09:40 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.12 2006/08/06 11:46:12 as Exp $</p>';
 
 use vars qw($ClusterMapPage $ClusterMapTOC $FilterUnclusteredRegExp @ClusterMapAdminPages);
 
@@ -213,8 +213,8 @@ sub PrintUnclusteredMap {
 sub ClusterMapAdminRule {
 	($id, $menuref, *restref) = @_;
 	
-	push(@$menuref, ScriptLink('action=clustermap', T('Clustermap')));
-	push(@$menuref, ScriptLink('action=unclustered', T('Pages without a Cluster')));	
+	push(@$menuref, ScriptLink('action=clustermap', T('Clustermap'), 'clustermap'));
+	push(@$menuref, ScriptLink('action=unclustered', T('Pages without a Cluster'), 'unclustered'));
 }
 
 *OldBrowseResolvedPage = *BrowseResolvedPage;
