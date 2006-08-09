@@ -1,4 +1,4 @@
-# Copyright (C) 2004, 2005  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2005, 2006  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,15 +16,15 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.19 2005/12/29 16:02:08 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.20 2006/08/09 18:21:23 as Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
 use vars qw($StaticDir $StaticAlways %StaticMimeTypes $StaticUrl);
 
 $StaticDir = '/tmp/static';
-$StaticUrl = '';                # change this!
-$StaticFilesAlways = 0;       # 1 = uploaded files only, 2 = all pages
+$StaticUrl = '';           # change this!
+$StaticAlways = 0;         # 1 = uploaded files only, 2 = all pages
 
 my $StaticMimeTypes = '/etc/mime.types';
 my %StaticFiles;
