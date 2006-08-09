@@ -16,19 +16,19 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: config.pl,v 1.1 2006/08/09 16:19:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: config.pl,v 1.2 2006/08/09 18:59:06 as Exp $</p>';
 
 $Action{config} = \&DoConfig;
 $Action{clone} = \&DoClone;
 
 sub DoConfig {
   print GetHttpHeader('text/plain') . qq{# Wiki Config
-# Source Wiki: $SiteName
+# Source Wiki: $SiteName <$ScriptName>
 # } . TimeToText($Now) . qq{
 \$AdminPass = "";
 \$EditPass = "";
 };
-  print "# $ARGV[0]\n";
+  my $source = GetRaw('http://www.emacswiki.org/scripts/current');
   foreach my $var qw($HomePage $MaxPost $HttpCharset $StyleSheet
 		     $StyleSheetPage $NotFoundPg $NewText $NewComment
 		     $EditAllowed $BannedHosts $BannedCanRead
@@ -49,6 +49,60 @@ sub DoConfig {
 		     $IndentLimit $LanguageLimit $JournalLimit
 		     $SisterSiteLogoUrl %SpecialDays %Smilies
 		     %Languages) {
-    print "$var = q{" . eval($var) . "};\n";
+    my $default = undef;
+    my $re = quotemeta($var);
+    if ($source =~ m!\n$re\s*=\s*(\d+(\s*[*+-/]\s*\d+)*|'[^']*'|"[^"]*"|\(.*?\)|qw\(.*?\))\s*;!) {
+      $default = $1;
+    }
+    $type = substr($var, 0, 1);
+    if ($type eq '$') {
+      my $val = eval($var);
+      print "$var = " . ConfigStr($val) . "; # default: $default\n"
+	if $val ne eval($default);
+    } elsif ($type eq '@') {
+      my @list = eval($var);
+      my @default = eval($default);
+      print "$var = (", join(', ', map { ConfigStr($_) } @list)
+	. "); # default: $default\n"
+	unless ConfigListEqual(\@list, \@default);
+    } elsif ($type eq '%') {
+      my %hash = eval($var);
+      my @default = eval($default);
+      print "$var = (", join(', ', map { ConfigStr($_)
+					   . ' => ' . ConfigStr($hash{$_})}
+			     keys %hash) . "); # default: $default\n"
+	unless ConfigHashEqual(\%hash, \%default);;
+    }
   }
+  print "# Done!\n";
+}
+
+sub ConfigStr {
+  $_ = shift;
+  if (m/^\d+$/) {
+    $_;
+  } elsif (m/'/) {
+    "q{$_}";
+  } else {
+    "'$_'";
+  }
+}
+
+sub ConfigListEqual {
+  my ($a, $b) = @_;
+  return 0 if @$a != @$b;
+  for ($i = 0; $i < @$a; $i++) {
+    return 0 unless @$a[$i] eq @$b[$i];
+  }
+  return 1;
+}
+
+sub ConfigHashEqual {
+  my ($a, $b) = @_;
+  return 0 unless ConfigListEqual([keys %$a], [keys %$b]);
+  foreach my $key (keys %$a) {
+    next if $$a{$key} eq $$b{$key};
+    return 0;
+  }
+  return 1;
 }
