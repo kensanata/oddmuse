@@ -82,16 +82,6 @@ form table td {
 }
 table.anmeldung td { border-style:none; padding:1ex;}
 
-div.header span.gotobar { 
-    margin-bottom:1em;
-    padding-bottom:3px;
-    border-bottom:thin solid #000;
-    font-weight:bold;
-    display:block;
-}
-div.header span.gotobar a {
- text-decoration:none;
-}
 span.result { font-size:larger; }
 span.info { font-size:smaller; font-style:italic; }
 
@@ -108,44 +98,70 @@ div.pic table.rechts { float:right; }
 div.pic table.links { float:left; }
 
 /* fussbereich unsichtbar ausser fuer admin */
+
 div.footer { display:none; }
-body.admin div.footer { display:block; margin-left:1em; }
+body.admin div.footer { display:block; }
 div.content + hr { display:none; }
 
 div.refer { display:none; }
 
 body.admin div.refer { display:block; }
 
-body {
-    margin:0 0 0 22ex;
-    border-left:2px solid DarkOliveGreen;
-    padding:0;
-}
-div.content {
-    padding:2ex;
-}
-div.sidebar {
-    display:block;
-    font-size:small;
-    position:absolute;
-    top:2ex;
-    left:1ex;
-}
-div.sidebar ul { padding:0; margin:0; }
-div.sidebar li { list-style-type:none; }
-div.header span.gotobar { display:none; }
+/* header */
+
 div.header {
     background-color:LemonChiffon;
     margin:0;
     padding:0;
     border-bottom: 2px solid DarkKhaki;
+    width: 100%;
+    text-align: center;
 }
 div.header h1 {
-    margin:none;
-    padding:1ex 1ex 0 1ex;
-    border:none;
-    font-size:32pt;
+    margin: none;
+    padding: 1ex 1ex 0 1ex;
+    border: none;
+    font-size: 32pt;
 }
+
+/* body and content layout: leave big margin on the left. */
+
+html, body {
+    margin: 0;
+    padding:0;
+}
+div.content, div.footer {
+    margin:0 0 0 25ex;
+    padding:2ex;
+}
+
+/* no gotobar */
+
+div.header span.gotobar { display:none; }
+
+/* sidebar */
+
+div.sidebar {
+    display:block;
+    font-size:small;
+    position:absolute;
+    top:30ex;
+    left:1ex;
+    text-align: right;
+}
+div.sidebar ul {
+    padding:0;
+    margin:0;
+}
+div.sidebar li {
+    list-style-type:none;
+    padding: 0.2em;
+}
+div.sidebar a {
+    text-decoration: none;
+}
+
+/* printing */
 
 @media print
 {
