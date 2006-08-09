@@ -271,7 +271,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.687 2006/08/06 23:20:34 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.688 2006/08/09 15:16:17 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2462,24 +2462,29 @@ sub ImproveDiff { # NO NEED TO BE called within a diff lock
 sub DiffMarkWords {
   my $old = DiffStripPrefix(shift);
   my $new = DiffStripPrefix(shift);
-  my $diff = DoDiff(join("\n",split(/\s+/,$old)) . "\n",
-                    join("\n",split(/\s+/,$new)) . "\n");
-  my $offset = 0; # for every chunk this increases
-  while ($diff =~ /^(\d+),?(\d*)([adc])(\d+),?(\d*)$/mg) {
-    my ($start1,$end1,$type,$start2,$end2) = ($1,$2,$3,$4,$5);
-    # changes are like additons + deletions
+  my @diffs = grep(/^\d/, split(/\n/, DoDiff(join("\n",split(/\s+|\b/,$old)) . "\n",
+					     join("\n",split(/\s+|\b/,$new)) . "\n")));
+  foreach my $diff (reverse @diffs) { # so that new html tags don't confuse word counts
+    my ($start1,$end1,$type,$start2,$end2) = $diff =~ /^(\d+),?(\d*)([adc])(\d+),?(\d*)$/mg;
     if ($type eq 'd' or $type eq 'c') {
       $end1 = $start1 unless $end1;
-      $old = DiffHtmlMarkWords($old,$start1+$offset,$end1+$offset);
+      $old = DiffHtmlMarkWords($old,$start1,$end1);
     }
     if ($type eq 'a' or $type eq 'c') {
       $end2 = $start2 unless $end2;
-      $new = DiffHtmlMarkWords($new,$start2+$offset,$end2+$offset);
+      $new = DiffHtmlMarkWords($new,$start2,$end2);
     }
-    $offset++;
   }
   return (DiffAddPrefix($old, '&lt; ', 'old'),
 	  DiffAddPrefix($new, '&gt; ', 'new'));
+}
+
+sub DiffHtmlMarkWords {
+  my ($text,$start,$end) = @_;
+  my @fragments = split(/(\s+|\b)/, $text);
+  splice(@fragments, 2 * ($start - 1), 0, '<strong class="changes">');
+  splice(@fragments, 2 * $end, 0, '</strong>');
+  return join('', @fragments);
 }
 
 sub DiffStripPrefix {
@@ -2495,15 +2500,6 @@ sub DiffAddPrefix {
     $line = $prefix . $line;
   }
   return $q->div({-class=>$class},$q->p(join($q->br(), @lines)));
-}
-
-sub DiffHtmlMarkWords { # this code seems brittle and has been known to crash!
-  my ($text,$start,$end) = @_;
-  return $text if $end - $start > 50 or $end > 100; # don't mark long chunks to avoid crashing
-  my $first = $start - 1;
-  my $words = 1 + $end - $start;
-  $text =~ s|^((\S+\s*){$first})((\S+\s*?){$words})|$1<strong class="changes">$3</strong>|;
-  return $text;
 }
 
 # == Database functions ==
