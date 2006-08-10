@@ -1,0 +1,3 @@
+apt-get install perl-modules \
+  libwww-perl libxml-rss-perl \
+  diff libcgi-fast-perl
