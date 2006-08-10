@@ -118,8 +118,11 @@ div.header {
     text-align: center;
 }
 div.header h1 {
+    background-image: url("/pics/ornament-breit.png");
+    background-repeat: repeat-x;
+    background-position: 0 2px;
     margin: none;
-    padding: 1ex 1ex 0 1ex;
+    padding: 1.5ex 1ex 0 1ex;
     border: none;
     font-size: 32pt;
 }
