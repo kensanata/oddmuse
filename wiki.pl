@@ -271,7 +271,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.689 2006/08/10 09:10:50 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.690 2006/08/10 10:31:04 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2232,7 +2232,7 @@ sub PrintFooter {
   print $q->p(GetValidatorLink()) if GetParam('validate', $ValidatorLink);
   print $q->p(Ts('%s seconds', (time - $Now))) if GetParam('timing',0);
   print $q->end_div(), GetSisterSites($id), GetNearLinksUsed($id);
-  eval { local $SIG{__DIE__}; PrintMyContent($id); };
+  PrintMyContent($id) if defined(&PrintMyContent);
   print $q->end_html;
 }
 
