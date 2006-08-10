@@ -232,7 +232,7 @@ sub InitModules {
 }
 
 sub InitConfig {
-  if ($UseConfig and $ConfigFile and -f $ConfigFile and not $INC{$ConfigFile}) {
+  if ($UseConfig and $ConfigFile and not $INC{$ConfigFile} and -f $ConfigFile) {
     do $ConfigFile; # these options must be set in a wrapper script or via the environment
     $Message .= CGI::p("$ConfigFile: $@") if $@; # remember, no $q exists, yet
   }
@@ -264,14 +264,14 @@ sub InitDirConfig {
 
 sub InitRequest {
   $CGI::POST_MAX = $MaxPost;
-  $q = new CGI;
+  $q = new CGI unless $q;
   $q->charset($HttpCharset) if $HttpCharset;
   eval { local $SIG{__DIE__}; binmode(STDOUT, ":raw"); }; # we treat input and output as bytes
 }
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.688 2006/08/09 15:16:17 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.689 2006/08/10 09:10:50 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
