@@ -1,3 +1,7 @@
-apt-get install perl-modules \
-  libwww-perl libxml-rss-perl \
-  diff libcgi-fast-perl
+#!/bin/sh
+# minimum
+apt-get install perl-modules
+# recommended
+apt-get install diff libwww-perl libxml-rss-perl
+# optional
+apt-get install libcgi-fast-perl
