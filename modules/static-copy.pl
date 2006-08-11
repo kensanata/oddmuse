@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.20 2006/08/09 18:21:23 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.21 2006/08/11 21:20:00 as Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -38,7 +38,6 @@ sub DoStatic {
     print GetHeader('', T('Static Copy'), '');
   }
   CreateDir($StaticDir);
-  %StaticMimeTypes = StaticMimeTypes() unless %StaticMimeTypes;
   %StaticFiles = ();
   StaticWriteFiles();
   print '</p>' unless $raw;
@@ -110,6 +109,7 @@ sub StaticFileName {
   my %hash = ParseData($data);
   my $ext = '.html';
   if ($hash{text} =~ /^\#FILE ([^ \n]+)\n(.*)/s) {
+    %StaticMimeTypes = StaticMimeTypes() unless %StaticMimeTypes;
     $ext = $StaticMimeTypes{$1};
     $ext = '.' . $ext if $ext;
   }
