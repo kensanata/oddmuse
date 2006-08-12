@@ -271,7 +271,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.696 2006/08/12 23:15:05 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.697 2006/08/12 23:23:23 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1504,7 +1504,7 @@ sub DoRc {
     }
   }
   RcHeader(@fullrc) if $showHTML;
-  if (not $#fullrc and $showHTML) {
+  if (@fullrc == 0 and $showHTML) {
     print $q->p($q->strong(Ts('No updates since %s', TimeToText($starttime))));
   } else {
     print &$GetRC(@fullrc);
@@ -1517,7 +1517,7 @@ sub GetRcLines {
   my ($status, $fileData) = ReadFile($RcFile); # read rc.log, errors are not fatal
   my @fullrc = split(/\n/, $fileData);
   my $firstTs = 0;
-  ($firstTs) = split(/$FS/, $fullrc[0]) if $#fullrc > 0; # just look at the first timestamp
+  ($firstTs) = split(/$FS/, $fullrc[0]) if @fullrc > 0; # just look at the first timestamp
   if (($firstTs == 0) || ($starttime <= $firstTs)) { # read oldrc.log if necessary
     my ($status, $oldFileData) = ReadFile($RcOldFile); # again, errors are not fatal
     @fullrc = split(/\n/, $oldFileData . $fileData) if $status; # concatenate the file data!
@@ -1949,7 +1949,7 @@ sub RollbackPossible {
 
 sub DoRollback {
   my @ids = @_;
-  if (not $#ids) {
+  if (@ids == 0) {
     my %ids = map { my ($ts, $id) = split(/$FS/); $id => 1 }
       GetRcLines($Now - $KeepDays * 86400); # 24*60*60
     @ids = keys %ids;
