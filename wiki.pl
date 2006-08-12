@@ -271,7 +271,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.691 2006/08/12 01:03:39 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.692 2006/08/12 01:34:26 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1672,7 +1672,7 @@ sub GetRc {
       $cluster = '' if $clusterOnly; # don't show cluster if $clusterOnly eq $cluster
       if ($all < 2 and not $clusterOnly and $cluster) {
 	next if $seen{$cluster};
-	$seen{$pagename} = 1;
+	$seen{$cluster} = 1;
 	$summary = "$pagename: $summary"; # print the cluster instead of the page
 	$pagename = $cluster;
 	$revision = '';
@@ -3534,13 +3534,13 @@ sub DoPost {
 }
 
 sub GetSummary {
-  my $summary = GetParam('summary', '');
   my $text = GetParam('aftertext',  '');
   $text = GetParam('text', '') unless $text or $Page{revision} > 0;
-  $summary = substr($text, 0, $SummaryDefaultLength) if $SummaryDefaultLength;
+  my $summary = GetParam('summary', $text);
+  $summary = substr($summary, 0, $SummaryDefaultLength) if $SummaryDefaultLength;
   $summary =~ s/$FS//g;
   $summary =~ s/[\r\n]+/ /g;
-  $summary =~ s/\[$FullUrlPattern\s+(.*?)\]/$2/g;
+  $summary =~ s/\[$FullUrlPattern\s+(.*?)\]/$2/g; # fix common annoyance when copying text to summary
   $summary =~ s/\s*\S*$/ . . ./ if $SummaryDefaultLength and length($text) > $SummaryDefaultLength;
   return UnquoteHtml($summary);
 }
