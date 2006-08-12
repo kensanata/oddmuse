@@ -271,7 +271,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.695 2006/08/12 23:07:47 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.696 2006/08/12 23:15:05 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1944,14 +1944,14 @@ sub GetHistoryLine {
 
 sub RollbackPossible {
   my $ts = shift;
-  return ($Now - $ts) < $KeepDays * 24 * 60 * 60;
+  return ($Now - $ts) < $KeepDays * 86400; # 24*60*60
 }
 
 sub DoRollback {
   my @ids = @_;
   if (not $#ids) {
     my %ids = map { my ($ts, $id) = split(/$FS/); $id => 1 }
-      GetRcLines($Now - $KeepDays * 24 * 60 * 60);
+      GetRcLines($Now - $KeepDays * 86400); # 24*60*60
     @ids = keys %ids;
   }
   my $to = GetParam('to', 0);
@@ -2645,7 +2645,7 @@ sub EscapeNewlines {
 
 sub ExpireKeepFiles { # call with opened page
   return unless $KeepDays;
-  my $expirets = $Now - ($KeepDays * 24 * 60 * 60);
+  my $expirets = $Now - ($KeepDays * 86400); # 24*60*60
   foreach my $revision (GetKeepRevisions($OpenPageName)) {
     my %keep = GetKeptRevision($revision);
     next if $keep{'keep-ts'} >= $expirets;
@@ -2911,7 +2911,7 @@ sub DoEdit {
 	  GetHiddenValue('oldtime', $Page{ts}),
 	  ($upload ? GetUpload() : GetTextArea('text', $oldText)));
   my $summary = UnquoteHtml(GetParam('summary', ''))
-    || ($Now - $Page{ts} < ($SummaryHours * 60 * 60) ? $Page{summary} : '');
+    || ($Now - $Page{ts} < ($SummaryHours * 3600) ? $Page{summary} : '');
   print $q->p(T('Summary:'), $q->br(), GetTextArea('summary', $summary, 2));
   if (GetParam('recent_edit', '') eq 'on') {
     print $q->p($q->checkbox(-name=>'recent_edit', -checked=>1,
@@ -3703,7 +3703,7 @@ sub DoMaintain {
   foreach (@RcDays) {
     $days = $_ if $_ > $days;
   }
-  my $starttime = $Now - $days * 24 * 60 * 60;
+  my $starttime = $Now - $days * 86400; # 24*60*60
   # Read the current file
   my ($status, $data) = ReadFile($RcFile);
   if (!$status) {
@@ -3753,7 +3753,7 @@ sub DoMaintain {
 
 sub PageDeletable {
   return unless $KeepDays;
-  my $expirets = $Now - ($KeepDays * 24 * 60 * 60);
+  my $expirets = $Now - ($KeepDays * 86400); # 24*60*60
   return 0 unless $Page{ts} < $expirets;
   return 1 if $Page{text} =~ /^\s*$/; # only whitespace is also to be deleted
   return $DeletedPage && substr($Page{text}, 0, length($DeletedPage)) eq $DeletedPage; # no regexp!
