@@ -271,7 +271,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.692 2006/08/12 01:34:26 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.693 2006/08/12 02:35:05 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1540,10 +1540,18 @@ sub DoRc {
     my ($ts) = split(/$FS/, $fullrc[$i]); # just look at the first element
     last if ($ts >= $starttime);
   }
+  splice(@fullrc, 0, $i);  # Remove items before index $i
+  if (not GetParam('all', '')) { # strip rollbacks
+    my ($target, $end);
+    for ($i = @fullrc; $i; $i--) {
+      my ($ts, $pagename, $rest) = split(/$FS/, $fullrc[$i]);
+      $target = $rest, $end = $i if $pagename eq '[[rollback]]'; # marker left by DoRollback()
+      splice(@fullrc, $i + 1, $end - $i - 1), $target = 0  if $ts <= $target;
+    }
+  }
   if ($i == @fullrc && $showHTML) {
     print $q->p($q->strong(Ts('No updates since %s', TimeToText($starttime))));
   } else {
-    splice(@fullrc, 0, $i);  # Remove items before index $i
     print &$GetRC(@fullrc);
   }
   print GetFilterForm() if $showHTML;
@@ -1970,6 +1978,7 @@ sub DoRollback {
       print Ts('%s rolled back', $id), $q->br();
     }
   }
+  WriteRcLog('[[rollback]]', '', $to); # leave marker for DoRc()
   print $q->end_p() . $q->end_div();
   ReleaseLock();
   PrintFooter();
@@ -3536,7 +3545,7 @@ sub DoPost {
 sub GetSummary {
   my $text = GetParam('aftertext',  '');
   $text = GetParam('text', '') unless $text or $Page{revision} > 0;
-  my $summary = GetParam('summary', $text);
+  my $summary = GetParam('summary', '') || $text; # GetParam('summary', $text) doesn't work because '' is defined
   $summary = substr($summary, 0, $SummaryDefaultLength) if $SummaryDefaultLength;
   $summary =~ s/$FS//g;
   $summary =~ s/[\r\n]+/ /g;
