@@ -271,7 +271,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.693 2006/08/12 02:35:05 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.694 2006/08/12 19:51:50 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1494,38 +1494,34 @@ sub DoRc {
   } else {
     $starttime = $Now - GetParam('days', $RcDefault) * 86400; # 24*60*60
   }
-  # Read rclog data (and oldrclog data if needed)
-  my $errorText = '';
-  my ($status, $fileData) = ReadFile($RcFile);
-  if (!$status) {
-    # Save error text if needed.
-    $errorText = $q->p($q->strong(Ts('Could not open %s log file', $RCName)
-				  . ':') . ' ' . $RcFile)
-      . $q->p(T('Error was') . ':')
-      . $q->pre($!)
-      . $q->p(T('Note: This error is normal if no changes have been made.'));
-  }
-  my @fullrc = split(/\n/, $fileData);
-  my $firstTs = 0;
-  if (@fullrc > 0) {  # Only false if no lines in file
-    ($firstTs) = split(/$FS/, $fullrc[0]); # just look at the first element
-  }
-  if (($firstTs == 0) || ($starttime <= $firstTs)) {
-    my ($status, $oldFileData) = ReadFile($RcOldFile);
-    if ($status) {
-      @fullrc = split(/\n/, $oldFileData . $fileData);
-    } else {
-      if ($errorText ne '') {  # could not open either rclog file
-	print $errorText;
-	print $q->p($q->strong(Ts('Could not open old %s log file', $RCName)
-				  . ':') . ' ' . $RcOldFile)
-	  . $q->p(T('Error was') . ':')
-	  . $q->pre($!);
-	return;
-      }
+  my @fullrc = GetRcLines($starttime);
+  if (not GetParam('all', '')) { # strip rollbacks
+    my ($target, $end);
+    for (my $i = @fullrc; $i; $i--) {
+      my ($ts, $pagename, $rest) = split(/$FS/, $fullrc[$i]);
+      $target = $rest, $end = $i if $pagename eq '[[rollback]]'; # marker left by DoRollback()
+      splice(@fullrc, $i + 1, $end - $i - 1), $target = 0  if $ts <= $target;
     }
   }
   RcHeader(@fullrc) if $showHTML;
+  if (not @fullrc && $showHTML) {
+    print $q->p($q->strong(Ts('No updates since %s', TimeToText($starttime))));
+  } else {
+    print &$GetRC(@fullrc);
+  }
+  print GetFilterForm() if $showHTML;
+}
+
+sub GetRcLines {
+  my $starttime = shift;
+  my ($status, $fileData) = ReadFile($RcFile); # read rc.log, errors are not fatal
+  my @fullrc = split(/\n/, $fileData);
+  my $firstTs = 0;
+  ($firstTs) = split(/$FS/, $fullrc[0]) if $#fullrc > 0; # just look at the first timestamp
+  if (($firstTs == 0) || ($starttime <= $firstTs)) { # read oldrc.log if necessary
+    my ($status, $oldFileData) = ReadFile($RcOldFile); # again, errors are not fatal
+    @fullrc = split(/\n/, $oldFileData . $fileData) if $status; # concatenate the file data!
+  }
   my $i = 0;
   while ($i < @fullrc) { # Optimization: skip old entries quickly
     my ($ts) = split(/$FS/, $fullrc[$i]); # just look at the first element
@@ -1541,20 +1537,7 @@ sub DoRc {
     last if ($ts >= $starttime);
   }
   splice(@fullrc, 0, $i);  # Remove items before index $i
-  if (not GetParam('all', '')) { # strip rollbacks
-    my ($target, $end);
-    for ($i = @fullrc; $i; $i--) {
-      my ($ts, $pagename, $rest) = split(/$FS/, $fullrc[$i]);
-      $target = $rest, $end = $i if $pagename eq '[[rollback]]'; # marker left by DoRollback()
-      splice(@fullrc, $i + 1, $end - $i - 1), $target = 0  if $ts <= $target;
-    }
-  }
-  if ($i == @fullrc && $showHTML) {
-    print $q->p($q->strong(Ts('No updates since %s', TimeToText($starttime))));
-  } else {
-    print &$GetRC(@fullrc);
-  }
-  print GetFilterForm() if $showHTML;
+  return @fullrc;
 }
 
 sub RcHeader {
@@ -1705,10 +1688,6 @@ sub GetRcHtml {
   # Optimize param fetches and translations out of main loop
   my $all = GetParam('all', 0);
   my $admin = UserIsAdmin();
-  my $tEdit = T('(minor)');
-  my $tDiff = T('diff');
-  my $tHistory = T('history');
-  my $tRollback = T('rollback');
   GetRc
     # printDailyTear
     sub {
@@ -1729,20 +1708,20 @@ sub GetRcHtml {
 	$host = QuoteHtml($host);
 	my $author = GetAuthorLink($host, $username);
 	my $sum = $summary ? $q->span({class=>'dash'}, ' &#8211; ') . $q->strong(QuoteHtml($summary)) : '';
-	my $edit = $minor ? $q->em({class=>'type'}, $tEdit) : '';
+	my $edit = $minor ? $q->em({class=>'type'}, T('(minor)')) : '';
 	my $lang = @{$languages} ? $q->span({class=>'lang'}, '[' . join(', ', @{$languages}) . ']') : '';
 	my ($pagelink, $history, $diff, $rollback) = ('', '', '', '');
 	if ($all) {
 	  $pagelink = GetOldPageLink('browse', $pagename, $revision, $pagename, $cluster);
 	  if ($admin and RollbackPossible($timestamp)) {
 	    $rollback = '(' . ScriptLink('action=rollback;to=' . $timestamp,
-					 $tRollback, 'rollback') . ')';
+					 T('rollback'), 'rollback') . ')';
 	  }
 	} elsif ($cluster) {
 	  $pagelink = GetOldPageLink('browse', $pagename, $revision, $pagename, $cluster);
 	} else {
 	  $pagelink = GetPageLink($pagename, $cluster);
-	  $history = '(' . GetHistoryLink($pagename, $tHistory) . ')';
+	  $history = '(' . GetHistoryLink($pagename, T('history')) . ')';
 	}
 	if ($cluster and $PageCluster) {
 	  $diff .= GetPageLink($PageCluster) . ':';
@@ -1750,9 +1729,9 @@ sub GetRcHtml {
 	  if ($revision == 1) {
 	    $diff .= '(' . $q->span({-class=>'new'}, T('new')) . ')';
 	  } elsif ($all) {
-	    $diff .= '(' . ScriptLinkDiff(2, $pagename, $tDiff, '', $revision) . ')';
+	    $diff .= '(' . ScriptLinkDiff(2, $pagename, T('diff'), '', $revision) . ')';
 	  } else {
-	    $diff .= '(' . ScriptLinkDiff($minor ? 2 : 1, $pagename, $tDiff, '') . ')';
+	    $diff .= '(' . ScriptLinkDiff($minor ? 2 : 1, $pagename, T('diff'), '') . ')';
 	  }
 	}
 	$html .= $q->li($q->span({-class=>'time'}, CalcTime($timestamp)), $diff, $history, $rollback,
@@ -1909,10 +1888,11 @@ sub DoHistory {
   print GetHeader('',QuoteHtml(Ts('History of %s', $id)));
   OpenPage($id);
   my $row = 0;
-  my @html = (GetHistoryLine($id, \%Page, $row++));
+  my $edit = UserCanEdit($id, 0);
+  my @html = (GetHistoryLine($id, \%Page, $row++, $edit));
   foreach my $revision (GetKeepRevisions($OpenPageName)) {
     my %keep = GetKeptRevision($revision);
-    push(@html, GetHistoryLine($id, \%keep, $row++));
+    push(@html, GetHistoryLine($id, \%keep, $row++, $edit));
   }
   if ($UseDiff) {
     @html = (GetFormStart(undef, 'get', 'history'),
@@ -1923,26 +1903,30 @@ sub DoHistory {
 	     $q->table({-class=>'history'}, @html),
 	     $q->p($q->submit({-name=>T('Compare')})), $q->end_form());
   }
+  push(@html, $q->p(ScriptLink('title=' . UrlEncode($id) . ';text=' . UrlEncode($DeletedPage) . ';summary='
+			       . UrlEncode(T('Deleted')), T('Mark this page for deletion')))) if $KeepDays and $edit;
   print $q->div({-class=>'content history'}, @html);
   PrintFooter($id, 'history');
 }
 
 sub GetHistoryLine {
-  my ($id, $dataref, $row) = @_;
+  my ($id, $dataref, $row, $edit) = @_;
   my %data = %$dataref;
   my $revision = $data{revision};
-  my $html;
+  my $html = TimeToText($data{ts});
   if (0 == $row) { # current revision
-    $html .= GetPageLink($id, Ts('Revision %s', $revision));
+    $html .= ' (' . T('current') . ')' if $edit;
+    $html .= ' ' . GetPageLink($id, Ts('Revision %s', $revision));
   } else {
+    $html .= ' (' . ScriptLink("action=rollback;to=$data{ts};id=$id",
+			      T('rollback'), 'rollback') . ')' if $edit;
     $html .= GetOldPageLink('browse', $id, $revision, Ts('Revision %s', $revision));
   }
-  $html .= T(' . . . . ') . TimeToText($data{ts}) . ' ';
   my $host = $data{host};
   $host = $data{ip} unless $host;
-  $html .= T('by') . ' ' . GetAuthorLink($host, $data{username});
-  $html .= ' ' . $q->strong('--', QuoteHtml($data{summary})) if $data{summary};
-  $html .= ' ' . $q->i(T('(minor)')) . ' ' if $data{minor};
+  $html .= T(' . . . . ') . GetAuthorLink($host, $data{username});
+  $html .= $q->span({class=>'dash'}, ' &#8211; ') . $q->strong(QuoteHtml($data{summary})) if $data{summary};
+  $html .= ' ' . $q->em({class=>'type'}, T('(minor)')) . ' ' if $data{minor};
   if ($UseDiff) {
     my %attr1 = (-type=>'radio', -name=>'diffrevision', -value=>$revision);
     $attr1{-checked} = 'checked' if 1==$row;
@@ -1963,6 +1947,12 @@ sub RollbackPossible {
 }
 
 sub DoRollback {
+  my @ids = @_;
+  if (not $#ids) {
+    my %ids = map { my ($ts, $id) = split(/$FS/); $id => 1 }
+      GetRcLines($Now - $KeepDays * 24 * 60 * 60);
+    @ids = keys %ids;
+  }
   my $to = GetParam('to', 0);
   print GetHeader('', T('Rolling back changes'));
   return unless UserIsAdminOrError();
@@ -1970,7 +1960,7 @@ sub DoRollback {
   ReportError(T('Target for rollback is too far back.'), '400 BAD REQUEST') unless RollbackPossible($to);
   RequestLockOrError();
   print $q->start_div({-class=>'content rollback'}) . $q->start_p();
-  foreach my $id (AllPagesList()) {
+  foreach my $id (@ids) {
     OpenPage($id);
     my ($text, $minor) = GetTextAtTime($to);
     if ($text and $Page{text} ne $text) {
@@ -2937,9 +2927,9 @@ sub DoEdit {
   print $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save'))
 	      . ($upload ? '' :	 ' ' . $q->submit(-name=>'Preview', -accesskey=>T('p'), -value=>T('Preview'))));
   if ($upload) {
-    print $q->p(ScriptLink('action=edit;upload=0;id=' . UrlEncode($id), T('Replace this file with text.')));
+    print $q->p(ScriptLink('action=edit;upload=0;id=' . UrlEncode($id), T('Replace this file with text')));
   } elsif ($UploadAllowed or UserIsAdmin()) {
-    print $q->p(ScriptLink('action=edit;upload=1;id=' . UrlEncode($id), T('Replace this text with a file.')));
+    print $q->p(ScriptLink('action=edit;upload=1;id=' . UrlEncode($id), T('Replace this text with a file')));
   }
   print $q->endform(), $q->end_div();;
   PrintFooter($id, 'edit');
@@ -3469,7 +3459,8 @@ sub DoPost {
     $string = '#FILE ' . $type . "\n" . $_;
   } else {
     $string = AddComment($old, $comment) if $comment;
-    $string =~ s/^$DeletedPage// if $comment; # undelete pages when adding a comment
+    $string = substr($string, length($DeletedPage)) # undelete pages when adding a comment
+      if $comment and substr($string, 0, length($DeletedPage)) eq $DeletedPage; # no regexp!
     # Massage the string
     $string =~ s/\r//g;
     $string .= "\n"  if ($string !~ /\n$/);
@@ -3764,7 +3755,7 @@ sub PageDeletable {
   my $expirets = $Now - ($KeepDays * 24 * 60 * 60);
   return 0 unless $Page{ts} < $expirets;
   return 1 if $Page{text} =~ /^\s*$/; # only whitespace is also to be deleted
-  return $DeletedPage && $Page{text} =~ /^\s*$DeletedPage\b/o;
+  return $DeletedPage && substr($Page{text}, 0, length($DeletedPage)) eq $DeletedPage; # no regexp!
 }
 
 sub DeletePage { # Delete must be done inside locks.
