@@ -271,7 +271,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.690 2006/08/10 10:31:04 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.691 2006/08/12 01:03:39 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3537,13 +3537,11 @@ sub GetSummary {
   my $summary = GetParam('summary', '');
   my $text = GetParam('aftertext',  '');
   $text = GetParam('text', '') unless $text or $Page{revision} > 0;
-  if ($SummaryDefaultLength and not $summary and $text) {
-    $summary =~ s/\[$FullUrlPattern(\s*[^\]]*?)\]/$2/g;
-    $summary = substr($text, 0, $SummaryDefaultLength);
-    $summary =~ s/\s*\S*$/ . . ./ if length($text) > $SummaryDefaultLength;
-  }
+  $summary = substr($text, 0, $SummaryDefaultLength) if $SummaryDefaultLength;
   $summary =~ s/$FS//g;
   $summary =~ s/[\r\n]+/ /g;
+  $summary =~ s/\[$FullUrlPattern\s+(.*?)\]/$2/g;
+  $summary =~ s/\s*\S*$/ . . ./ if $SummaryDefaultLength and length($text) > $SummaryDefaultLength;
   return UnquoteHtml($summary);
 }
 
