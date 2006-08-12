@@ -271,7 +271,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.694 2006/08/12 19:51:50 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.695 2006/08/12 23:07:47 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1504,7 +1504,7 @@ sub DoRc {
     }
   }
   RcHeader(@fullrc) if $showHTML;
-  if (not @fullrc && $showHTML) {
+  if (not $#fullrc and $showHTML) {
     print $q->p($q->strong(Ts('No updates since %s', TimeToText($starttime))));
   } else {
     print &$GetRC(@fullrc);
@@ -1913,6 +1913,7 @@ sub GetHistoryLine {
   my ($id, $dataref, $row, $edit) = @_;
   my %data = %$dataref;
   my $revision = $data{revision};
+  return $q->p(T('No other revisions available')) unless $revision;
   my $html = TimeToText($data{ts});
   if (0 == $row) { # current revision
     $html .= ' (' . T('current') . ')' if $edit;
@@ -1920,7 +1921,7 @@ sub GetHistoryLine {
   } else {
     $html .= ' (' . ScriptLink("action=rollback;to=$data{ts};id=$id",
 			      T('rollback'), 'rollback') . ')' if $edit;
-    $html .= GetOldPageLink('browse', $id, $revision, Ts('Revision %s', $revision));
+    $html .= ' ' . GetOldPageLink('browse', $id, $revision, Ts('Revision %s', $revision));
   }
   my $host = $data{host};
   $host = $data{ip} unless $host;
