@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.21 2006/08/11 21:20:00 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.22 2006/08/13 23:10:49 as Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -84,11 +84,12 @@ sub StaticScriptLink {
 sub StaticGetDownloadLink {
   my ($name, $image, $revision, $alt) = @_; # ignore $revision
   $alt = $name unless $alt;
+  $alt =~ s/_/ /g;
   my $id = FreeToNormal($name);
-  AllPagesList();
   # if the page does not exist
   return '[' . ($image ? 'image' : 'link') . ':' . $name . ']' unless $IndexHash{$id};
   if ($image) {
+    return StaticFileName($id) if $image == 2;
     my $result = $q->img({-src=>StaticFileName($id), -alt=>$alt, -class=>'upload'});
     $result = ScriptLink($id, $result, 'image');
     return $result;
@@ -259,6 +260,7 @@ sub GetDownloadLink {
     } else {
       $action = $ScriptName . '?' . $action;
     }
+    return $action if $image == 2;
     my $result = $q->img({-src=>$action, -alt=>$alt, -class=>'upload'});
     $result = ScriptLink(UrlEncode($id), $result, 'image') unless $id eq $OpenPageName;
     return $result;
