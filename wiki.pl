@@ -271,7 +271,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.700 2006/08/13 00:38:45 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.701 2006/08/13 22:36:29 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1201,6 +1201,7 @@ sub GetDownloadLink {
     } else {
       $action = $ScriptName . '?' . $action;
     }
+    return $action if $image == 2;
     my $result = $q->img({-src=>$action, -alt=>$alt, -class=>'upload'});
     $result = ScriptLink(UrlEncode($id), $result, 'image') unless $id eq $OpenPageName;
     return $result;
@@ -2062,7 +2063,7 @@ sub GetAuthorLink {
   $username = FreeToNormal($username);
   my $name = $username;
   $name =~ s/_/ /g;
-  if (ValidId($username) ne '') {  # Invalid under current rules
+  if (ValidId($username) ne '') {  # ValidId() returns error string
     $username = '';  # Just pretend it isn't there.
   }
   if ($username and $RecentLink) {
@@ -2088,7 +2089,7 @@ sub GetRCLink {
 sub GetHeader {
   my ($id, $title, $oldId, $nocache, $status) = @_;
   my $embed = GetParam('embed', $EmbedWiki);
-  my $altText = T('[Home]');
+  my $alt = T('[Home]');
   my $result = GetHttpHeader('text/html', $nocache, $status);
   $title =~ s/_/ /g;	 # Display as spaces
   if ($oldId) {
@@ -2100,8 +2101,9 @@ sub GetHeader {
     return $result;
   }
   $result .= $q->start_div({-class=>'header'});
-  if ((!$embed) && ($LogoUrl ne '')) {
-    $result .= ScriptLink(UrlEncode($HomePage), $q->img({-src=>$LogoUrl, -alt=>$altText, -class=>'logo'}), 'logo');
+  if (not $embed and $LogoUrl) {
+    my $url = $IndexHash{$LogoUrl} ? GetDownloadLink($LogoUrl, 2) : $LogoUrl;
+    $result .= ScriptLink(UrlEncode($HomePage), $q->img({-src=>$url, -alt=>$alt, -class=>'logo'}), 'logo');
   }
   if (GetParam('toplinkbar', $TopLinkBar)) {
     $result .= GetGotoBar($id);
@@ -3767,8 +3769,7 @@ sub PageDeletable {
 
 sub DeletePage { # Delete must be done inside locks.
   my $id = shift;
-  my ($error) = ValidId($id);
-  return $error if $error; # this would be the error message
+  ValidIdOrDie($id);
   foreach my $name (GetPageFile($id), GetKeepFiles($id), GetKeepDir($id), GetLockedPageFile($id), $IndexFile) {
     unlink $name if -f $name;
     rmdir $name if -d $name;
