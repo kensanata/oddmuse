@@ -271,7 +271,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.701 2006/08/13 22:36:29 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.702 2006/08/13 23:45:12 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3970,7 +3970,7 @@ sub DoCss {
   } else {
     print GetHeader('', T('Install CSS')), $q->start_div({-class=>'content css'}),
       $q->p(Ts('Copy one of the following stylesheets to %s:', GetPageLink($StyleSheetPage))),
-      $q->ul(map {$q->li(ScriptLink("action=css;install=" . UrlEncode($_), $_))} @CssList),
+      $q->ul(map {$q->li(ScriptLink("action=css;install=$_", $_))} @CssList),
       $q->end_div();
     PrintFooter();
   }
