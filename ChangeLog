@@ -1,4 +1,60 @@
+2006-08-13  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoRc): Fix test for existing changes.
+	(GetHistoryLine): Report missing other revisions instead of
+	showing the fake "revision 0" entry. Add whitespace.
+	(PageDeletable, DoMaintain, DoEdit, ExpireKeepFiles, DoRollback)
+	(RollbackPossible): Replaced 24*60*60 with 86400 and 60*60 with
+	3600.
+	(DoRc): Fix off-by-one error, again.
+	(GetRcLines, DoRollback): Fix off-by-one error as well.
+	(DoRollback): Reorder error messages. Fix test for ids.
+	(DoHistory): Offer page delete link only if a revision exists to
+	be deleted.
+
+2006-08-12  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetSummary): Fixed summary post-processing so that [URL
+	text] really does get replaced by text.
+	(GetRc): Fix clusters in recent changes.
+	(DoRc): Remove rc lines of rolled back changes.
+	(DoRollback): Leave marker for DoRc.
+
+	(DoRc): Moved RC file reading into new function called GetRcLines.
+	(GetRcLines): New. No longer generate warnings when reading empty
+	rc files (as is usual when creating a new wiki).
+	(DoRollback): Optimize by calling GetRcLines and parsing the
+	result instead of checking all pages. Allow rollback of single
+	pages.
+	(DoHistory): Pass new parameter to GetHistoryLine. Add link to
+	delete current page at the bottom.
+	(GetHistoryLine): Accept new parameter, and add rollback links
+	when appropriate.
+
+	(GetRcHtml): Simplify translation handling.
+	(DoEdit): Changed text of the file/text replacement link at the
+	bottom. Did this for all translation files, too!
+
+	(DoPost, PageDeletable): Don't treat $DeletedPage like a regular
+	expression.
+
+2006-08-10  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (InitConfig): Don't test for existing config file if it
+	was already loaded.
+	(InitRequest): Only get a new CGI object if we don't have one
+	already. Does this break mod_perl?
+	(PrintFooter): No longer protect the call to PrintMyContent.
+	Instead, test whether it is defined before calling it.
+
 2006-08-09  Alex Schroeder  <alex@gnu.org>
+
+	* modules/config.pl (DoConfig): Add URL, compare with original at
+	http://www.emacswiki.org/scripts/current to figure out the default
+	values.
+	(ConfigStr, ConfigListEqual, ConfigHashEqual): New.
+
+	* modules/static-copy.pl: Fix typo in init code.
 
 	* wiki.pl (DiffMarkWords, DiffHtmlMarkWords): Changed how
 	highlighting works. Should be much robuster now, and no longer
