@@ -271,7 +271,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.698 2006/08/12 23:43:58 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.699 2006/08/13 00:08:12 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1904,7 +1904,8 @@ sub DoHistory {
 	     $q->p($q->submit({-name=>T('Compare')})), $q->end_form());
   }
   push(@html, $q->p(ScriptLink('title=' . UrlEncode($id) . ';text=' . UrlEncode($DeletedPage) . ';summary='
-			       . UrlEncode(T('Deleted')), T('Mark this page for deletion')))) if $KeepDays and $edit;
+			       . UrlEncode(T('Deleted')), T('Mark this page for deletion'))))
+    if $KeepDays and $edit and $Page{revision};
   print $q->div({-class=>'content history'}, @html);
   PrintFooter($id, 'history');
 }
