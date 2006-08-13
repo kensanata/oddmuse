@@ -546,8 +546,10 @@ test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage all=1 showe
 test_page(get_page('action=rss'), 'action=browse;id=MainPage;rcclusteronly=MainPage');
 
 update_page('OtherIdea', "MainPage\nThis is another page.\n", 'new page in cluster');
-test_page(get_page('action=rc raw=1'), 'title: MainPage', 'description: OtherIdea: new page in cluster',
-	 'description: main summary');
+$page = get_page('action=rc raw=1');
+test_page($page, 'title: MainPage', 'description: OtherIdea: new page in cluster',
+	  'description: main summary');
+test_page_negative($page, 'ClusterIdea');
 
 # --------------------
 
