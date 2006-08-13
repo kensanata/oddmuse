@@ -11,6 +11,8 @@
 	(DoRollback): Reorder error messages. Fix test for ids.
 	(DoHistory): Offer page delete link only if a revision exists to
 	be deleted.
+	(DoHistory): Pass timestamp reference to GetHistoryLine.
+	(GetHistoryLine): Use timestamp reference to group entries by day.
 
 2006-08-12  Alex Schroeder  <alex@gnu.org>
 
