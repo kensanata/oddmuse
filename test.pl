@@ -390,7 +390,7 @@ update_page('NicePage', 'Bad content.', 'vandal two');
 update_page('EvilPage', 'Spam!', 'vandal three');
 update_page('AnotherEvilPage', 'More Spam!', 'vandal four');
 update_page('AnotherEvilPage', 'Still More Spam!', 'vandal five');
-update_page('MinorPage', 'Ramtatam', 'tester', 1);
+update_page('MinorPage', 'Ramtatam', 'testerror', 1);
 
 test_page(get_page('NicePage'), 'Bad content');
 test_page(get_page('InnocentPage'), 'Lamb');
@@ -421,14 +421,75 @@ xpath_test($rc,
 	'//li/span[@class="time"]/following-sibling::a[@class="diff"][@href="http://localhost/wiki.pl?action=browse;diff=2;id=NicePage"][text()="diff"]/following-sibling::a[@class="rollback"][text()="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=NicePage"][text()="NicePage"]/following-sibling::span[@class="dash"]/following-sibling::strong[contains(text(),"Rollback to")]',
 	# check that the minor spam is reverted with a minor rollback
 	'//li/span[@class="time"]/following-sibling::span[@class="new"][text()="new"]/following-sibling::a[@class="rollback"][text()="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=MinorPage;revision=1"][text()="MinorPage"]/following-sibling::span[@class="dash"]/following-sibling::strong[text()="tester"]',
-	'//li/span[@class="time"]/following-sibling::a[@class="diff"][@href="http://localhost/wiki.pl?action=browse;diff=2;id=MinorPage;diffrevision=2"][text()="diff"]/following-sibling::a[@class="rollback"][text()="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=MinorPage;revision=2"][text()="MinorPage"]/following-sibling::span[@class="dash"]/following-sibling::strong[text()="tester"]/following-sibling::em[text()="(minor)"]',
+	'//li/span[@class="time"]/following-sibling::a[@class="diff"][@href="http://localhost/wiki.pl?action=browse;diff=2;id=MinorPage;diffrevision=2"][text()="diff"]/following-sibling::a[@class="rollback"][text()="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=MinorPage;revision=2"][text()="MinorPage"]/following-sibling::span[@class="dash"]/following-sibling::strong[text()="testerror"]/following-sibling::em[text()="(minor)"]',
 	   '//li/span[@class="time"]/following-sibling::a[@class="diff"][@href="http://localhost/wiki.pl?action=browse;diff=2;id=MinorPage"][text()="diff"]/following-sibling::a[@class="rollback"][text()="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=MinorPage"][text()="MinorPage"]/following-sibling::span[@class="dash"]/following-sibling::strong[contains(text(),"Rollback to")]/following-sibling::em[text()="(minor)"]',
 	  );
+
+# test that ordinary RC doesn't show the rollback stuff
+test_page(get_page('action=rc raw=1'),
+	  "title: NicePage\ndescription: good guy two\n",
+	  "title: MinorPage\ndescription: tester\n",
+	  "title: OtherPage\ndescription: another good guy\n",
+	  "title: InnocentPage\ndescription: good guy zero\n",
+	  );
+
+# --------------------
+
+history:
+print '[history]';
+
+clear_pages();
+
+$page = get_page('action=history id=hist');
+test_page($page,
+	  'No other revisions available',
+	  'View current revision',
+	  'View all changes');
+test_page_negative($page,
+		   'View other revisions',
+		   'Mark this page for deletion');
+
+test_page(update_page('hist', 'testing', 'test summary'),
+	  'testing',
+	  'action=history',
+	  'View other revisions');
+$page = get_page('action=history id=hist');
+test_page($page,
+	  'test summary',
+	  'View current revision',
+	  'View all changes',
+	  'current',
+	  'Mark this page for deletion');
+test_page_negative($page,
+		   'No other revisions available',
+		   'View other revisions',
+		   'rollback');
+
+test_page(update_page('hist', 'Tesla', 'Power'),
+	  'Tesla',
+	  'action=history',
+	  'View other revisions');
+$page = get_page('action=history id=hist');
+test_page($page,
+	  'test summary',
+	  'Power',
+	  'View current revision',
+	  'View all changes',
+	  'current',
+	  'rollback',
+	  'action=rollback;to=',
+	  'Mark this page for deletion');
+test_page_negative($page,
+		   'Tesla',
+		   'No other revisions available',
+		   'View other revisions');
 
 # --------------------
 
 clusters:
 print '[clusters]';
+
+clear_pages();
 
 AppendStringToFile($ConfigFile, "\$PageCluster = 'Cluster';\n");
 
@@ -437,28 +498,12 @@ update_page('ClusterIdea', "This is just a page.\nBut somebody has to do it.", '
 update_page('ClusterIdea', "This is just a page.\nNobody wants it.", 'three', 1);
 update_page('ClusterIdea', "MainPage\nThis is just a page.\nBut somebody has to do it.", 'four');
 
-@Test = split('\n',<<'EOT');
-Cluster.*MainPage
-EOT
+test_page(get_page('action=rc'), 'Cluster.*MainPage');
 
-test_page(get_page('action=rc'), @Test);
+test_page(get_page('action=rc all=1'), qw(Cluster.*MainPage ClusterIdea.*two ClusterIdea.*one));
 
-@Test = split('\n',<<'EOT');
-Cluster.*MainPage
-ClusterIdea.*two
-ClusterIdea.*one
-EOT
-
-test_page(get_page('action=rc all=1'), @Test);
-
-@Test = split('\n',<<'EOT');
-Cluster.*MainPage
-ClusterIdea.*three
-ClusterIdea.*two
-ClusterIdea.*one
-EOT
-
-test_page(get_page('action=rc all=1 showedit=1'), @Test);
+test_page(get_page('action=rc all=1 showedit=1'), qw(Cluster.*MainPage ClusterIdea.*three
+						     ClusterIdea.*two ClusterIdea.*one));
 
 @Test = split('\n',<<'EOT');
 Finally the main page
@@ -469,7 +514,7 @@ for.*MainPage.*only
 action=browse;id=MainPage;rcclusteronly=MainPage;days=1;all=0;showedit=0
 EOT
 
-update_page('MainPage', 'Finally the main page.');
+update_page('MainPage', 'Finally the main page.', 'main summary');
 test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage'), @Test);
 
 @Test = split('\n',<<'EOT');
@@ -499,6 +544,10 @@ update_page('ClusterIdea', "MainPage\nSomebody has to do it.", 'five', 1);
 test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage all=1 showedit=1'), @Test);
 
 test_page(get_page('action=rss'), 'action=browse;id=MainPage;rcclusteronly=MainPage');
+
+update_page('OtherIdea', "MainPage\nThis is another page.\n", 'new page in cluster');
+test_page(get_page('action=rc raw=1'), 'title: MainPage', 'description: OtherIdea: new page in cluster',
+	 'description: main summary');
 
 # --------------------
 
@@ -727,6 +776,15 @@ test_page(get_page('Gary_Peacock'),
 test_page(get_page('Jack_DeJohnette'),
 	  ('A friend of', 'Gary Peacock', 'name="Gary_Peacock"', 'class="definition"',
 	   'title="Click to search for references to this permanent anchor"'));
+
+# --------------------
+
+summary:
+print '[summary]';
+clear_pages();
+
+update_page('sum', 'some [http://example.com content]');
+test_page(get_page('action=rc raw=1'), 'description: some content');
 
 # --------------------
 
