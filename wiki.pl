@@ -271,7 +271,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.699 2006/08/13 00:08:12 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.700 2006/08/13 00:38:45 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1889,10 +1889,11 @@ sub DoHistory {
   OpenPage($id);
   my $row = 0;
   my $edit = UserCanEdit($id, 0);
-  my @html = (GetHistoryLine($id, \%Page, $row++, $edit));
+  my $ts;
+  my @html = (GetHistoryLine($id, \%Page, $row++, $edit, \$ts));
   foreach my $revision (GetKeepRevisions($OpenPageName)) {
     my %keep = GetKeptRevision($revision);
-    push(@html, GetHistoryLine($id, \%keep, $row++, $edit));
+    push(@html, GetHistoryLine($id, \%keep, $row++, $edit, \$ts));
   }
   if ($UseDiff) {
     @html = (GetFormStart(undef, 'get', 'history'),
@@ -1911,11 +1912,14 @@ sub DoHistory {
 }
 
 sub GetHistoryLine {
-  my ($id, $dataref, $row, $edit) = @_;
+  my ($id, $dataref, $row, $edit, $tsref) = @_;
   my %data = %$dataref;
   my $revision = $data{revision};
   return $q->p(T('No other revisions available')) unless $revision;
-  my $html = TimeToText($data{ts});
+  my $date = CalcDay($data{ts});
+  my $newday = ($date ne $$tsref);
+  $$tsref = $date if $newday;
+  my $html = CalcTime($data{ts});
   if (0 == $row) { # current revision
     $html .= ' (' . T('current') . ')' if $edit;
     $html .= ' ' . GetPageLink($id, Ts('Revision %s', $revision));
@@ -1935,8 +1939,10 @@ sub GetHistoryLine {
     my %attr2 = (-type=>'radio', -name=>'revision', -value=>$revision);
     $attr2{-checked} = 'checked' if 0==$row;
     $html = $q->Tr($q->td($q->input(\%attr1)), $q->td($q->input(\%attr2)), $q->td($html));
+    $html = $q->Tr($q->td({-colspan=>3}, $q->strong($date))) . $html if $newday;
   } else {
     $html .= $q->br();
+    $html = $q->strong($date) . $q->br() . $html if $newday;
   }
   return $html;
 }
