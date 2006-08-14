@@ -1,3 +1,26 @@
+2006-08-14  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl: New contrib action.
+	(DoContributors): New.
+	(GetFooterLinks): Added appropriate link to contrib action.
+	(DoContributors): List unique usernames only.
+
+	* modules/search-freetext.pl (SearchFreeTextCloud): Fix start div.
+	Don't skip tags containing numbers or a colon.
+
+	* wiki.pl (DoCss): No need to URL encode the URLs in @CssList.
+
+	* modules/static-copy.pl (StaticScriptLink): Remove unnecessary call to AllPagesList.
+	(StaticGetDownloadLink): Strip underlines from alt texts, return
+	URL only when requested (matches changes in wiki.pl's GetDownloadLink.
+	(GetDownloadLink): Ditto.
+
+	* wiki.pl (GetDownloadLink): Allow to retrieve download URL only.
+	(GetHeader): Renamed variable for alt text. Use pagename as
+	$LogoUrl if possible.
+
+	(DeletePage): Use ValidIdOrDie to check $id.
+
 2006-08-13  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoRc): Fix test for existing changes.
