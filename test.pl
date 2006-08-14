@@ -3113,7 +3113,7 @@ AppendStringToFile($ConfigFile, "\$UploadAllowed = 1;\n");
 add_module('search-freetext.pl');
 
 update_page('Search (and replace)', 'Muu, or moo. [[tag:test]] [[tag:Öl]]');
-update_page('To be, or not to be', 'That is the question. (Right?) [[tag:test]] [[tag:quote]]');
+update_page('To be, or not to be', 'That is the question. (Right?) [[tag:test]] [[tag:BE3]]');
 update_page('alex pic', "#FILE image/png\niVBORw0KGgoAAAA");
 
 get_page('action=buildindex pwd=foo');
@@ -3163,12 +3163,12 @@ test_page(get_page('search="%22(Right%3F)%22" raw=1'),
 	  quotemeta('To_be,_or_not_to_be'));
 test_page(get_page('search=tag:test raw=1'),
 	  quotemeta('To_be,_or_not_to_be'), quotemeta('Search_(and_replace)'));
-test_page(get_page('search=tag:quote raw=1'),
+test_page(get_page('search=tag:be3 raw=1'),
 	  quotemeta('To_be,_or_not_to_be'));
 test_page(get_page('search=tag:%c3%96l raw=1'),
 	  quotemeta('Search_(and_replace)'));
 test_page(get_page('action=cloud'),
-	  'search=tag:%c3%96l', 'search=tag:test', 'search=tag:quote');
+	  'search=tag:%c3%96l', 'search=tag:test', 'search=tag:be3');
 
 # --------------------
 
