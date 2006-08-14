@@ -79,14 +79,18 @@ div.rc { padding: 1ex; }
 div.rc hr { display: none; }
 
 textarea {
-	width: 100%;
-	height: 80%;
+    width: 100%;
+    height: 80%;
     border: 1px solid #333;
     background-color: #edead7;
 }
 
 textarea[name="aftertext"] {
 	height: 10em;
+}
+
+textarea[name="summary"] {
+    height:3em;
 }
 
 pre {
