@@ -272,7 +272,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.703 2006/08/14 19:43:06 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.704 2006/08/14 20:53:35 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1954,8 +1954,8 @@ sub DoContributors {
   ValidIdOrDie($id);
   print GetHeader('', Ts('Contributors to %s', $id));
   my %h = map { my ($ts, $pagename, $minor, $summary, $host, $username) = split(/$FS/, $_);
-		GetAuthorLink($host, $username) => 1; } GetRcLines(1);
-  print $q->p(sort keys %h);
+                $username => 1; } GetRcLines(1);
+  print $q->p(map { GetPageLink($_) } sort(keys %h));
   PrintFooter();
 }
 
