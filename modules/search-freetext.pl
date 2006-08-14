@@ -40,7 +40,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.48 2006/08/14 10:49:51 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.49 2006/08/14 11:17:19 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -137,7 +137,8 @@ sub SearchFreeTextCloud {
   # use Data::Dumper;
   # print Dumper($db), '<br />';
   foreach (keys %$db) {
-    next if /^[\t ]|[0-9:]/;
+    # next if /^[\t ]|[0-9:]/;
+    next if /^[\t ]/;
     $count{$_} = split(/;/, $$db{$_});
     $max = $count{$_} if $count{$_} > $max;
     $min = $count{$_} if not $min or $count{$_} < $min;
