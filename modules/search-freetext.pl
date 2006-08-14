@@ -40,7 +40,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.47 2006/08/06 12:49:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.48 2006/08/14 10:49:51 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -122,7 +122,7 @@ $Action{cloud} = \&SearchFreeTextCloud;
 
 sub SearchFreeTextCloud {
   print GetHeader('', T('Tag Cloud'), ''),
-    $q->start_div({-class=>'content cloud'} . '<p>');
+    $q->start_div({-class=>'content cloud'}) . '<p>';
   if (not eval { require Search::FreeText;  }) {
     my $err = $@;
     ReportError(T('Search::FreeText is not available on this system.'), '500 INTERNAL SERVER ERROR');
