@@ -1,3 +1,9 @@
+2006-08-15  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoContributors): Fix bug, allow no page id at all.
+	(DoRollback): Only admins can do mass rollback, but every user can
+	do single rollbacks. Link to pages in the listing.
+
 2006-08-14  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl: New contrib action.
