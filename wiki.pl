@@ -272,7 +272,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.705 2006/08/14 23:21:35 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.706 2006/08/14 23:27:54 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1966,9 +1966,9 @@ sub RollbackPossible {
 }
 
 sub DoRollback {
-  return unless UserIsAdminOrError();
   my @ids = @_;
   if (not $ids[0]) { # cannot just use list length because of ('')
+    return unless UserIsAdminOrError(); # only admins can do mass changes
     my %ids = map { my ($ts, $id) = split(/$FS/); $id => 1; }
       GetRcLines($Now - $KeepDays * 86400); # 24*60*60
     @ids = keys %ids;
