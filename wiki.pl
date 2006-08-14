@@ -183,7 +183,8 @@ $SisterSiteLogoUrl = 'file:///tmp/oddmuse/%s.png'; # URL format string for logos
 	    download => \&DoDownload,	    rss => \&DoRss,
 	    unlock => \&DoUnlock,	    password => \&DoPassword,
 	    index => \&DoIndex,		    admin => \&DoAdminPage,
-	    clear => \&DoClearCache,	    css => \&DoCss, );
+	    clear => \&DoClearCache,	    css => \&DoCss,
+	    contrib => \&DoContributors, );
 @MyRules = (\&LinkRules); # don't set this variable, add to it!
 %RuleOrder = (\&LinkRules => 0);
 
@@ -271,7 +272,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.702 2006/08/13 23:45:12 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.703 2006/08/14 19:43:06 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1948,6 +1949,16 @@ sub GetHistoryLine {
   return $html;
 }
 
+sub DoContributors {
+  my $id = shift;
+  ValidIdOrDie($id);
+  print GetHeader('', Ts('Contributors to %s', $id));
+  my %h = map { my ($ts, $pagename, $minor, $summary, $host, $username) = split(/$FS/, $_);
+		GetAuthorLink($host, $username) => 1; } GetRcLines(1);
+  print $q->p(sort keys %h);
+  PrintFooter();
+}
+
 # == Rollback ==
 
 sub RollbackPossible {
@@ -2291,8 +2302,7 @@ sub GetFooterLinks {
     }
     if (UserCanEdit($id, 0)) {
       if ($rev) { # showing old revision
-	push(@elements, GetOldPageLink('edit', $id, $rev,
-				       Ts('Edit revision %s of this page', $rev)));
+	push(@elements, GetOldPageLink('edit', $id, $rev, Ts('Edit revision %s of this page', $rev)));
       } else { # showing current revision
 	push(@elements, GetEditLink($id, T('Edit this page'), undef, T('e')));
       }
@@ -2300,13 +2310,11 @@ sub GetFooterLinks {
       push(@elements, ScriptLink('action=password', T('This page is read-only'), 'password'));
     }
   }
-  if ($id and $rev ne 'history') {
-    push(@elements, GetHistoryLink($id, T('View other revisions')));
-  }
-  if ($rev ne '') {
-    push(@elements, GetPageLink($id, T('View current revision')),
-	 GetRCLink($id, T('View all changes')));
-  }
+  push(@elements, GetHistoryLink($id, T('View other revisions'))) if $id and $rev ne 'history';
+  push(@elements, GetPageLink($id, T('View current revision')),
+       GetRCLink($id, T('View all changes'))) if $rev ne '';
+  push(@elements, ScriptLink("action=contrib;id=" . UrlEncode($id), T('View contributors'), 'contrib'))
+    if $id and $rev eq 'history';
   if (GetParam('action', '') ne 'admin') {
     my $action = 'action=admin';
     $action .= ';id=' . $id if $id;
