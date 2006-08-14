@@ -272,7 +272,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.711 2006/08/14 23:53:06 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.712 2006/08/14 23:55:38 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1497,12 +1497,12 @@ sub DoRc {
     $starttime = $Now - GetParam('days', $RcDefault) * 86400; # 24*60*60
   }
   my @fullrc = GetRcLines($starttime);
-  if (not GetParam('all', '')) { # strip rollbacks
+  if (not GetParam('all', '')) { # strip rollbacks, [[rollback]] is a marker left by DoRollback()
     my ($target, $end);
     for (my $i = @fullrc; $i; $i--) {
       my ($ts, $pagename, $rest) = split(/$FS/, $fullrc[$i]);
       splice(@fullrc, $i, $end - $i + 1), $target = 0  if $ts <= $target;
-      $target = $rest, $end = $i if $pagename eq '[[rollback]]'; # marker left by DoRollback()
+      $target = $rest, $end = $i if $pagename eq '[[rollback]]' and (not $target or $rest < $target);
     }
   } else {
     for (my $i = @fullrc; $i; $i--) {
