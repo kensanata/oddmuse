@@ -272,7 +272,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.712 2006/08/14 23:55:38 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.713 2006/08/15 00:01:01 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1971,16 +1971,19 @@ sub RollbackPossible {
 }
 
 sub DoRollback {
-  my @ids = @_;
-  if (not $ids[0]) { # cannot just use list length because of ('')
+  my $page = shift;
+  my $to = GetParam('to', 0);
+  ReportError(T('Missing target for rollback.'), '400 BAD REQUEST') unless $to;
+  ReportError(T('Target for rollback is too far back.'), '400 BAD REQUEST') unless RollbackPossible($to);
+  my @ids = ();
+  if (not $page) { # cannot just use list length because of ('')
     return unless UserIsAdminOrError(); # only admins can do mass changes
     my %ids = map { my ($ts, $id) = split(/$FS/); $id => 1; }
       GetRcLines($Now - $KeepDays * 86400); # 24*60*60
     @ids = keys %ids;
+  } else {
+    @ids = ($page);
   }
-  my $to = GetParam('to', 0);
-  ReportError(T('Missing target for rollback.'), '400 BAD REQUEST') unless $to;
-  ReportError(T('Target for rollback is too far back.'), '400 BAD REQUEST') unless RollbackPossible($to);
   RequestLockOrError();
   print GetHeader('', T('Rolling back changes')), $q->start_div({-class=>'content rollback'}), $q->start_p();
   foreach my $id (@ids) {
@@ -1991,7 +1994,7 @@ sub DoRollback {
       print Ts('%s rolled back', GetPageLink($id)), $q->br();
     }
   }
-  WriteRcLog('[[rollback]]', '', $to); # leave marker for DoRc()
+  WriteRcLog('[[rollback]]', '', $to) unless $page; # leave marker for DoRc() if mass rollback
   print $q->end_p() . $q->end_div();
   ReleaseLock();
   PrintFooter();
