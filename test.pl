@@ -448,7 +448,6 @@ test_page_negative($page,
 		   "EvilPage",
 		   "AnotherEvilPage",
 		  );
-exit;
 
 # --------------------
 
