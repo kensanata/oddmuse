@@ -272,7 +272,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.714 2006/08/15 01:52:19 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.715 2006/08/15 09:05:36 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1932,7 +1932,7 @@ sub GetHistoryLine {
     $html .= ' ' . GetPageLink($id, Ts('Revision %s', $revision));
   } else {
     $html .= ' (' . ScriptLink("action=rollback;to=$data{ts};id=$id",
-			      T('rollback'), 'rollback') . ')' if $edit;
+			       T('rollback'), 'rollback') . ')' if $edit;
     $html .= ' ' . GetOldPageLink('browse', $id, $revision, Ts('Revision %s', $revision));
   }
   my $host = $data{host};
@@ -1974,7 +1974,7 @@ sub DoRollback {
   my $page = shift;
   my $to = GetParam('to', 0);
   ReportError(T('Missing target for rollback.'), '400 BAD REQUEST') unless $to;
-  ReportError(T('Target for rollback is too far back.'), '400 BAD REQUEST') unless RollbackPossible($to);
+  ReportError(T('Target for rollback is too far back.'), '400 BAD REQUEST') unless $page or RollbackPossible($to);
   my @ids = ();
   if (not $page) { # cannot just use list length because of ('')
     return unless UserIsAdminOrError(); # only admins can do mass changes
@@ -1988,10 +1988,10 @@ sub DoRollback {
   print GetHeader('', T('Rolling back changes')), $q->start_div({-class=>'content rollback'}), $q->start_p();
   foreach my $id (@ids) {
     OpenPage($id);
-    my ($text, $minor) = GetTextAtTime($to);
+    my ($text, $minor, $ts) = GetTextAtTime($to);
     if ($text and $Page{text} ne $text) {
       Save($id, $text, Ts('Rollback to %s', TimeToText($to)), $minor, ($Page{ip} ne $ENV{REMOTE_ADDR}));
-      print Ts('%s rolled back', GetPageLink($id)), $q->br();
+      print Ts('%s rolled back', GetPageLink($id)), ($ts ? ' ' . Ts('to %s', TimeToText($to)) : ''), $q->br();
     }
   }
   WriteRcLog('[[rollback]]', '', $to) unless $page; # leave marker for DoRc() if mass rollback
@@ -2564,15 +2564,15 @@ sub OpenPage { # Sets global variables
 sub GetTextAtTime { # call with opened page
   my $ts = shift;
   my $minor = $Page{minor};
-  return ($Page{text}, $minor) if $Page{ts} <= $ts; # current page is old enough
-  return ($DeletedPage, $minor) if $Page{revision} == 1 and $Page{ts} > $ts; # created after $ts
+  return ($Page{text}, $minor, 0) if $Page{ts} <= $ts; # current page is old enough
+  return ($DeletedPage, $minor, 0) if $Page{revision} == 1 and $Page{ts} > $ts; # created after $ts
   my %keep = (); # info may be needed after the loop
   foreach my $revision (GetKeepRevisions($OpenPageName)) {
     %keep = GetKeptRevision($revision);
-    return ($keep{text}, $minor) if $keep{ts} <= $ts;
+    return ($keep{text}, $minor, 0) if $keep{ts} <= $ts;
   }
-  return ($DeletedPage, $minor) if $keep{revision} == 1; # then the page was created after $ts!
-  return ($keep{text}, $minor);
+  return ($DeletedPage, $minor, 0) if $keep{revision} == 1; # then the page was created after $ts!
+  return ($keep{text}, $minor, $keep{ts}); # the oldest revision available is not old enough
 }
 
 sub GetTextRevision {
