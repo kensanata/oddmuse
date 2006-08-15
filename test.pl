@@ -323,15 +323,31 @@ oldmajor:
 print '[oldmajor]';
 
 clear_pages();
+# start with minor
+update_page('bar', 'one', '', 1); # oldmajor is undef, lastmajor is undef
+test_page(get_page('action=browse id=bar diff=1'), 'No diff available', 'one');
+test_page(get_page('action=browse id=bar diff=2'), 'No diff available', 'one');
+update_page('bar', 'two', '', 1); # oldmajor is undef, lastmajor is undef
+test_page(get_page('action=browse id=bar diff=1'), 'one', 'two');
+test_page(get_page('action=browse id=bar diff=2'), 'one', 'two');
+update_page('bar', 'three'); # oldmajor is undef, lastmajor is 3
+test_page(get_page('action=browse id=bar diff=1'), 'one', 'three');
+test_page(get_page('action=browse id=bar diff=2'), 'two', 'three');
+update_page('bar', 'four'); # oldmajor is 3, lastmajor is 4
+test_page(get_page('action=browse id=bar diff=1'), 'three', 'four');
+test_page(get_page('action=browse id=bar diff=2'), 'three', 'four');
+# start with major
 update_page('bla', 'one'); # oldmajor is undef, lastmajor is 1
 test_page(get_page('action=browse id=bla diff=1'), 'No diff available', 'one');
+test_page(get_page('action=browse id=bla diff=2'), 'No diff available', 'one');
 update_page('bla', 'two', '', 1); # oldmajor is undef, lastmajor is 1
+test_page(get_page('action=browse id=bla diff=1'), 'one', 'two');
 test_page(get_page('action=browse id=bla diff=2'), 'one', 'two');
 update_page('bla', 'three'); # oldmajor is 1, lastmajor is 3
 test_page(get_page('action=browse id=bla diff=1'), 'one', 'three');
 test_page(get_page('action=browse id=bla diff=2'), 'two', 'three');
 update_page('bla', 'four', '', 1); # oldmajor is 1, lastmajor is 3
-test_page(get_page('action=browse id=bla diff=1'), 'one', 'four');
+test_page(get_page('action=browse id=bla diff=1'), 'one', 'three');
 test_page(get_page('action=browse id=bla diff=2'), 'three', 'four');
 update_page('bla', 'five'); # oldmajor is 3, lastmajor is 5
 test_page(get_page('action=browse id=bla diff=1'), 'three', 'five');
