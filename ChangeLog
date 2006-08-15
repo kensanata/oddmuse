@@ -1,11 +1,17 @@
 2006-08-15  Alex Schroeder  <alex@gnu.org>
 
+	* modules/strange-spam.pl (StrangeBannedContentInit): Make it a
+	plain text page, too.
+	(StrangeNewBannedContent): Quote HTML in regexp.
+
 	* wiki.pl (DoContributors): Fix bug, allow no page id at all.
 	(DoRollback): Only admins can do mass rollback, but every user can
 	do single rollbacks. Link to pages in the listing. Only leave
-	marker when doing mass rollback.
+	marker when doing mass rollback. If an id is provided, don't check
+	the time window: Just roll back as far as possible.
 	(DoRc): Splice [[rollback]] marker, too. Fix another off-by-one
 	error when skipping rollbacks.
+	(GetTextAtTime): Return a timestamp if no perfect match is found.
 
 2006-08-14  Alex Schroeder  <alex@gnu.org>
 
