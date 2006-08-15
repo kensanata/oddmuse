@@ -272,7 +272,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.715 2006/08/15 09:05:36 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.716 2006/08/15 15:24:02 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3683,12 +3683,13 @@ sub WriteRcLog {
   AppendStringToFile($RcFile, $rc_line . "\n");
 }
 
-sub UpdateDiffs {
+sub UpdateDiffs { # this could be optimized, but isn't frequent enough
   my ($old, $new) = @_;
-  $Page{'diff-minor'} = GetDiff($old, $new);
-  if ($Page{revision} - 1 == $Page{oldmajor}) {
-    $Page{'diff-major'} = 1; # used in GetCacheDiff to indicate it is the same as in diff-minor
-  } else {
+  $Page{'diff-minor'} = GetDiff($old, $new); # create new diff-minor
+  if ($Page{revision} - 1 == $Page{oldmajor} or $Page{revision} == 2) {
+    $Page{'diff-major'} = 1; # for GetCacheDiff: diff-major eq new diff-minor
+  } else { # lastmajor != revision
+    ($new) = GetTextRevision($Page{lastmajor}, 1); # no need to test $rev
     $Page{'diff-major'} = GetKeptDiff($new, $Page{oldmajor});
   }
 }
