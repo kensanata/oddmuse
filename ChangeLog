@@ -2,7 +2,10 @@
 
 	* wiki.pl (DoContributors): Fix bug, allow no page id at all.
 	(DoRollback): Only admins can do mass rollback, but every user can
-	do single rollbacks. Link to pages in the listing.
+	do single rollbacks. Link to pages in the listing. Only leave
+	marker when doing mass rollback.
+	(DoRc): Splice [[rollback]] marker, too. Fix another off-by-one
+	error when skipping rollbacks.
 
 2006-08-14  Alex Schroeder  <alex@gnu.org>
 
