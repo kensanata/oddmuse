@@ -402,7 +402,12 @@ $to = $1;
 
 test_page(get_page("action=rollback to=$to"), 'restricted to administrators');
 test_page(get_page("action=rollback to=$to pwd=foo"),
-	  'Rolling back changes', 'NicePage rolled back', 'OtherPage rolled back');
+	  'Rolling back changes',
+	  'EvilPage</a> rolled back',
+	  'AnotherEvilPage</a> rolled back',
+	  'MinorPage</a> rolled back',
+	  'NicePage</a> rolled back',
+	  'OtherPage</a> rolled back');
 
 test_page(get_page('NicePage'), 'Nice content');
 test_page(get_page('OtherPage'), 'Other cute content 12');
@@ -426,12 +431,24 @@ xpath_test($rc,
 	  );
 
 # test that ordinary RC doesn't show the rollback stuff
-test_page(get_page('action=rc raw=1'),
+update_page('Yoga', 'Ommmm', 'peace');
+
+yoga:
+$page = get_page('action=rc raw=1');
+test_page($page,
 	  "title: NicePage\ndescription: good guy two\n",
 	  "title: MinorPage\ndescription: tester\n",
 	  "title: OtherPage\ndescription: another good guy\n",
 	  "title: InnocentPage\ndescription: good guy zero\n",
+	  "title: Yoga\ndescription: peace\n",
 	  );
+test_page_negative($page,
+		   "rollback",
+		   "Rollback",
+		   "EvilPage",
+		   "AnotherEvilPage",
+		  );
+exit;
 
 # --------------------
 
