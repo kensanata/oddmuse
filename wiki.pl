@@ -272,7 +272,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.717 2006/08/17 10:08:53 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.718 2006/08/17 10:15:35 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2385,32 +2385,32 @@ sub GetGotoBar {
 # == Difference markup and HTML ==
 
 sub PrintHtmlDiff {
-  my ($diffType, $revOld, $revNew, $newText) = @_;
-  my ($diffText, $intro);
-  if (not $revOld and (not $Page{"diff-$type"} or GetParam('cache', $UseCache) < 1)) {
-    if ($diffType == 1) {
-      $revOld = $Page{'lastmajor'} - 1;
-    } elsif ($revNew) {
-      $revOld = $revNew - 1;
+  my ($type, $old, $new, $text) = @_;
+  if (not $old and (not $Page{"diff-$type"} or GetParam('cache', $UseCache) < 1)) {
+    if ($type == 1) {
+      $old = $Page{'lastmajor'} - 1;
+    } elsif ($new) {
+      $old = $new - 1;
     } else {
-      $revOld = $Page{'revision'} - 1;
+      $old = $Page{'revision'} - 1;
     }
   }
-  if ($revOld) {
-    $diffText = GetKeptDiff($newText, $revOld);
-    $intro = Tss('Difference between revision %1 and %2', $revOld,
-		 $revNew ? Ts('revision %s', $revNew) : T('current revision'));
+  my ($diff, $intro);
+  if ($old) {
+    $diff = GetKeptDiff($text, $old);
+    $intro = Tss('Difference between revision %1 and %2', $old,
+		 $new ? Ts('revision %s', $new) : T('current revision'));
   } else {
-    $diffText = GetCacheDiff($diffType == 1 ? 'major' : 'minor');
-    if ($diffType == 1 and $Page{'lastmajor'} != $Page{'revision'}) {
+    $diff = GetCacheDiff($type == 1 ? 'major' : 'minor');
+    if ($type == 1 and $Page{'lastmajor'} != $Page{'revision'}) {
       $intro = Ts('Last major edit (%s)', ScriptLinkDiff(1, $OpenPageName, T('later minor edits'),
 							 undef, $Page{'lastmajor'}||1));
     } else {
       $intro = T('Last edit');
     }
   }
-  $diffText = T('No diff available.') unless $diffText;
-  print $q->div({-class=>'diff'}, $q->p($q->b($intro)), $diffText);
+  $diff = T('No diff available.') unless $diff;
+  print $q->div({-class=>'diff'}, $q->p($q->b($intro)), $diff);
 }
 
 sub GetCacheDiff {
