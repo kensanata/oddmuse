@@ -40,7 +40,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.49 2006/08/14 11:17:19 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.50 2006/08/17 14:06:04 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -323,8 +323,8 @@ sub NewSearchFreePrintFooter {
 		    $q->endform());
     } elsif ($id and @tags) {
       print $q->div({-class=>'tags'},
-		    $q->p(T('Tags: '), map { $_ = "\[\[tag:$_\]\]";
-					     SearchFreeTextTagsRule(); } @tags));
+		    $q->p(T('Tags:'), map { $_ = "\[\[tag:$_\]\]";
+					    SearchFreeTextTagsRule(); } @tags));
     }
   }
   OldSearchFreePrintFooter(@_);
