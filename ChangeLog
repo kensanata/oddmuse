@@ -1,4 +1,23 @@
+2006-08-17  Alex Schroeder  <alex@gnu.org>
+
+	* upgrade-files.pl (basic_data): No longer set oldmajor.
+
+	* wiki.pl (DoRc): Allow rollback=1 to see rollbacks.
+	(DoRollback): Rollback to empty pages is allowed. Print message
+	when only one page is to be rolled back and the two revisions are
+	the same.
+	(PrintHtmlDiff): Change messages used when displaying the diff.
+	Get rid of oldmajor. Show link to later minor edits when showing
+	last major edit diff.
+	(GetDiff): Changed s///g to s///ge.
+	(ExpireKeepFiles): Get rid of oldmajor.
+	(Save): Pass old diff on to UpdateDiffs. Get rid of oldmajor. Only
+	call UpdateDiffs if UseCache > 1.
+	(UpdateDiffs): Simplify. Get rid of oldmajor.
+
 2006-08-15  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (UpdateDiffs): Fix minor/major edit diffs.
 
 	* modules/strange-spam.pl (StrangeBannedContentInit): Make it a
 	plain text page, too.
