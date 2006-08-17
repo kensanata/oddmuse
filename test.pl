@@ -399,8 +399,13 @@ test_page(get_page('action=browse revision=9 id=KeptRevisions'),
 	  'Revision 9 not available \(showing current revision instead\)',
 	  'fifth');
 
-# Show a diff from the history page comparing two specific revisions
+# Disable cache and request the correct last major diff
+test_page(get_page('action=browse diff=1 id=KeptRevisions cache=0'),
+	  'Difference between revision 2 and revision 3',
+	  'second',
+	  'third');
 
+# Show a diff from the history page comparing two specific revisions
 test_page(get_page('action=browse diff=1 revision=4 diffrevision=2 id=KeptRevisions'),
 	  'Difference between revision 2 and revision 4',
 	  'second',
