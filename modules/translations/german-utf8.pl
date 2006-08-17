@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.15 2006/05/10 22:52:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.16 2006/08/17 14:01:09 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
@@ -30,6 +30,14 @@ This page contains an uploaded file:
 Diese Seite enthält eine hochgeladene Datei:
 Recursive include of %s!
 %s wird rekursiv eingelesen!
+Clear Cache
+Cache löschen
+Main lock obtained.
+Hauptsperre aktiviert.
+Main lock released.
+Hauptsperre aufgehoben.
+Comments on this page
+Kommentare zu dieser Seite
 XML::RSS is not available on this system.
 Das XML::RSS Modul ist auf diesem System nicht installiert.
 diff
@@ -72,14 +80,6 @@ Preview only, not yet saved
 Vorschau, noch nicht gespeichert
 Please go on to %s.
 Bitte machen Sie weiter bei %s.
-Could not open %s log file
-Kann Logdatei %s nicht öffnen
-Error was
-Fehler war
-Note: This error is normal if no changes have been made.
-HINWEIS: Dieser Fehler ist normal, wenn keine Änderungen durchgeführt wurden.
-Could not open old %s log file
-Konnte alte Logdatei %s nicht öffnen
 No updates since %s
 Keine Änderungen seit %s
 Updates since %s
@@ -130,20 +130,32 @@ History of %s
 Andere Versionen von %s
 Compare
 Vergleichen
+Deleted
+Gelöscht
+Mark this page for deletion
+Diese Seite als gelöscht markieren
+No other revisions available
+Keine andere Versionen vorhanden
+current
+aktuell
 Revision %s
 Version %s
-by
-von
-Rolling back changes
-Änderungen werden rückgängig gemacht
+Contributors to %s
+Mitautoren für %s
 Missing target for rollback.
 Das Stichdatum fehlt.
 Target for rollback is too far back.
 Das Stichdatum liegt zu weit zurück.
+Rolling back changes
+Änderungen werden rückgängig gemacht
+The two revisions are the same.
+Es gibt keinen Unterschied zwischen den beiden Versionen.
 Rollback to %s
 Rückgängig gemacht auf den Stand vom %s
 %s rolled back
 Änderungen für %s rückgängig gemacht
+to %s
+auf den Stand von %s
 Index of all pages
 Index aller Seiten
 Wiki Version
@@ -212,6 +224,8 @@ View current revision
 Zurück zur aktuellen Version
 View all changes
 Liste aller Änderungen, auch ohne vorhandener Version
+View contributors
+Liste aller Mitautoren
 Homepage URL:
 Homepage URL:
 s
@@ -232,32 +246,30 @@ Validate HTML
 HTML überprüfen
 Validate CSS
 CSS überprüfen
-Difference (from revision %1 to %2)
+Last edit
+Letzte Änderung
+Difference between revision %1 and %2
 Unterschiede (zwischen Version %1 und %2)
 revision %s
 Version %s
 current revision
-Aktuelle Version
-Difference (from prior %s revision)
-(%s Änderungen)
-major
-größere
-minor
-kleinere
+der aktuellen Version
+Last major edit (%s)
+Letzte grössere Änderung (%s)
+later minor edits
+spätere kleine Änderungen
 No diff available.
 Keine Unterschiede vorhanden.
-The two revisions are the same.
-Es gibt keinen Unterschied zwischen den beiden Versionen.
 Old revision:
 Alte Version:
 Changed:
 Geändert:
-Removed:
+Deleted:
 Gelöscht:
 Added:
 Eingefügt:
 to
-stattdessen:
+zu
 Revision %s not available
 Version %s nicht verfügbar
 showing current revision instead
@@ -324,10 +336,10 @@ Summary:
 Zusammenfassung:
 This change is a minor edit.
 Dies ist eine kleinere Änderung.
-Replace this file with text.
-Diese Datei durch Text ersetzen.
-Replace this text with a file.
-Datei hochladen und den Text durch diese Datei ersetzen.
+Replace this file with text
+Diese Datei durch Text ersetzen
+Replace this text with a file
+Datei hochladen und den Text durch diese Datei ersetzen
 File to upload: 
 Hochzuladende Datei: 
 Files of type %s are not allowed.
@@ -388,12 +400,8 @@ Near pages:
 Nahe Seiten:
 last updated
 Zuletzt geändert
-Complete Content
-Vollständiger Inhalt
-The main page is %s.
-Die Hauptseite ist %s.
-Comments on this page
-Kommentare zu dieser Seite
+by
+von
 Editing not allowed for %s.
 Das bearbeiten von %s ist nicht erlaubt.
 SampleUndefinedPage
@@ -446,8 +454,6 @@ Wartungsarbeiten nicht erfolgt.
 (Wartungsarbeiten können frühestens alle 12 Stunden durchgeführt werden.)
 Remove the "maintain" file or wait.
 Löschen Sie die Datei "maintain" oder warten Sie.
-Main lock obtained.
-Hauptsperre aktiviert.
 Expiring keep files and deleting pages marked for deletion
 Alte Versionen werden aus dem Archiv entfernt und Seiten, die als gelöscht markiert wurden, werden gelöscht
 not deleted: 
@@ -456,12 +462,16 @@ deleted
 Datei gelöscht
 Moving part of the %s log file.
 Verschiebe einen Teil der Logdatei %s.
+Could not open %s log file
+Kann Logdatei %s nicht öffnen
+Error was
+Fehler war
+Note: This error is normal if no changes have been made.
+HINWEIS: Dieser Fehler ist normal, wenn keine Änderungen durchgeführt wurden.
 Moving %s log entries.
 Verschiebe %s Log-Einträge.
 Getting page index file for %s.
 Hole den Seitenindex für %s.
-Main lock released.
-Hauptsperre aufgehoben.
 Set or Remove global edit lock
 Erzeugen oder Aufheben der globalen Bearbeitungssperre
 Edit lock created.
@@ -522,6 +532,10 @@ Rename %s to:
 %s umbenennen zu:
 Learn more...
 Mehr dazu...
+Complete Content
+Vollständiger Inhalt
+The main page is %s.
+Die Hauptseite ist %s.
 Cannot highlight the language %s.
 Die Sprache %s kann von diesem Modul nicht eingefärbt werden.
 Recent Visitors
@@ -612,12 +626,10 @@ Footnotes:
 Fussnoten:
 Could not find %1.html template in %2
 Im Verzeichnis %2 gibt es kein %1.html Template
-Only Editors are allowed to see hidden pages.
-Nur Redaktoren dürfen versteckte Seiten sehen.
-Only Admins are allowed to see hidden pages.
-Nur Administratoren dürfen versteckte Seiten sehen.
-image: %s
-Bild: %s
+Only Editors are allowed to see this hidden page.
+Nur Editoren dürfen diese versteckte Seite sehen.
+Only Admins are allowed to see this hidden page.
+Nur Administratoren dürfen diese versteckte Seite sehen.
 Index
 Index
 Languages:
@@ -743,15 +755,15 @@ Verweis Datenbank wird angelegt
 The 404 handler extension requires the link data extension (links.pl).
 Die 404 handler Erweiterung benötigt die Link Data Erweiterung (links.pl).
 LocalMap
-
+Lokale Karte
 No page id for action localmap
 Es gibt keine Spezialseite für den localmap Befehle
 Requested page %s does not exist
 Die gewünschte Seite %s existiert nicht
 Local Map for %s
-
+Lokale Karte für %s
 view
-
+prüfen
 Self-ban by %s
 %s hat sich selber verbannt.
 You have banned your own IP.
@@ -774,8 +786,16 @@ Download this page as PDF
 Diese Seite als PDF
 Portrait
 Portrait
+Publish %s
+%s publizieren
+No target wiki was specified in the config file.
+In der Konfigurationsdatei wurde kein Publikationsziel festgelegt.
+The target wiki was misconfigured.
+Das Publikationsziel wurde nicht korrekt konfiguriert.
 You did not answer correctly.
 Die Antwort ist falsch.
+To save this page you must answer this question:
+Um diese Seite abzuspeichern, müssen Sie folgende Frage beantworten:
 All Referrers
 Alle Links auf diesen Wiki
 Referrers
@@ -800,6 +820,12 @@ Result pages:
 Resultate: 
 (%s results)
 (%s Resultate)
+Tags:
+
+Tags: %s.
+
+No tags
+Keine Tags
 Slideshow:%s
 Diashow:%s
 Static Copy
@@ -854,6 +880,12 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 http://de.bookbutler.info/vergleich/%s
 search
 Suchen
+Wanted Pages
+Gewünschte Seiten
+%s pages
+%s Seiten
+%s, referenced from:
+%s, referenziert von:
 Upload of %s file
 Hochladen der %s Datei
 Blog
@@ -864,4 +896,6 @@ New
 Neu
 Edit %s.
 %s bearbeiten.
+Title: 
+Titel: 
 END_OF_TRANSLATION
