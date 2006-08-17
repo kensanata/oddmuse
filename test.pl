@@ -319,55 +319,119 @@ $ENV{'REMOTE_ADDR'} = 'test-markup';
 
 # --------------------
 
-oldmajor:
-print '[oldmajor]';
+major:
+print '[major]';
 
 clear_pages();
 # start with minor
-update_page('bar', 'one', '', 1); # oldmajor is undef, lastmajor is undef
-test_page(get_page('action=browse id=bar diff=1'), 'No diff available', 'one');
-test_page(get_page('action=browse id=bar diff=2'), 'No diff available', 'one');
-update_page('bar', 'two', '', 1); # oldmajor is undef, lastmajor is undef
-test_page(get_page('action=browse id=bar diff=1'), 'one', 'two');
-test_page(get_page('action=browse id=bar diff=2'), 'one', 'two');
-update_page('bar', 'three'); # oldmajor is undef, lastmajor is 3
-test_page(get_page('action=browse id=bar diff=1'), 'one', 'three');
-test_page(get_page('action=browse id=bar diff=2'), 'two', 'three');
-update_page('bar', 'four'); # oldmajor is 3, lastmajor is 4
-test_page(get_page('action=browse id=bar diff=1'), 'three', 'four');
-test_page(get_page('action=browse id=bar diff=2'), 'three', 'four');
+update_page('bar', 'one', '', 1); # lastmajor is undef
+test_page(get_page('action=browse id=bar diff=1'), 'No diff available', 'one', 'Last major edit',
+	  'diff=1;id=bar;diffrevision=1');
+test_page(get_page('action=browse id=bar diff=2'), 'No diff available', 'one', 'Last edit');
+update_page('bar', 'two', '', 1); # lastmajor is undef
+test_page(get_page('action=browse id=bar diff=1'), 'No diff available', 'two', 'Last major edit',
+	  'diff=1;id=bar;diffrevision=1');
+test_page(get_page('action=browse id=bar diff=2'), 'one', 'two', 'Last edit');
+update_page('bar', 'three'); # lastmajor is 3
+test_page(get_page('action=browse id=bar diff=1'), 'two', 'three', 'Last edit');
+test_page(get_page('action=browse id=bar diff=2'), 'two', 'three', 'Last edit');
+update_page('bar', 'four'); # lastmajor is 4
+test_page(get_page('action=browse id=bar diff=1'), 'three', 'four', 'Last edit');
+test_page(get_page('action=browse id=bar diff=2'), 'three', 'four', 'Last edit');
 # start with major
-update_page('bla', 'one'); # oldmajor is undef, lastmajor is 1
-test_page(get_page('action=browse id=bla diff=1'), 'No diff available', 'one');
-test_page(get_page('action=browse id=bla diff=2'), 'No diff available', 'one');
-update_page('bla', 'two', '', 1); # oldmajor is undef, lastmajor is 1
-test_page(get_page('action=browse id=bla diff=1'), 'one', 'two');
-test_page(get_page('action=browse id=bla diff=2'), 'one', 'two');
-update_page('bla', 'three'); # oldmajor is 1, lastmajor is 3
-test_page(get_page('action=browse id=bla diff=1'), 'one', 'three');
-test_page(get_page('action=browse id=bla diff=2'), 'two', 'three');
-update_page('bla', 'four', '', 1); # oldmajor is 1, lastmajor is 3
-test_page(get_page('action=browse id=bla diff=1'), 'one', 'three');
-test_page(get_page('action=browse id=bla diff=2'), 'three', 'four');
-update_page('bla', 'five'); # oldmajor is 3, lastmajor is 5
-test_page(get_page('action=browse id=bla diff=1'), 'three', 'five');
-test_page(get_page('action=browse id=bla diff=2'), 'four', 'five');
-update_page('bla', 'six'); # oldmajor is 5, lastmajor is 6
-test_page(get_page('action=browse id=bla diff=1'), 'five', 'six');
-test_page(get_page('action=browse id=bla diff=2'), 'five', 'six');
+major1:
+clear_pages();
+update_page('bla', 'one'); # lastmajor is 1
+test_page(get_page('action=browse id=bla diff=1'), 'No diff available', 'one', 'Last edit');
+test_page(get_page('action=browse id=bla diff=2'), 'No diff available', 'one', 'Last edit');
+update_page('bla', 'two', '', 1); # lastmajor is 1
+test_page(get_page('action=browse id=bla diff=1'), 'No diff available', 'two', 'Last major edit',
+	  'diff=1;id=bla;diffrevision=1');
+test_page(get_page('action=browse id=bla diff=2'), 'one', 'two', 'Last edit');
+update_page('bla', 'three'); # lastmajor is 3
+test_page(get_page('action=browse id=bla diff=1'), 'two', 'three', 'Last edit');
+test_page(get_page('action=browse id=bla diff=2'), 'two', 'three', 'Last edit');
+update_page('bla', 'four', '', 1); # lastmajor is 3
+test_page(get_page('action=browse id=bla diff=1'), 'two', 'three', 'Last major edit',
+	  'diff=1;id=bla;diffrevision=3');
+test_page(get_page('action=browse id=bla diff=2'), 'three', 'four', 'Last edit');
+update_page('bla', 'five'); # lastmajor is 5
+test_page(get_page('action=browse id=bla diff=1'), 'four', 'five', 'Last edit');
+test_page(get_page('action=browse id=bla diff=2'), 'four', 'five', 'Last edit');
+update_page('bla', 'six'); # lastmajor is 6
+test_page(get_page('action=browse id=bla diff=1'), 'five', 'six', 'Last edit');
+test_page(get_page('action=browse id=bla diff=2'), 'five', 'six', 'Last edit');
 
 # --------------------
 
-pagenames:
-print '[pagenames]';
+revisions:
+print '[revisions]';
 
 clear_pages();
 
-update_page('.dotfile', 'old content', 'older summary');
-update_page('.dotfile', 'some content', 'some summary');
-test_page(get_page('.dotfile'), 'some content');
-test_page(get_page('action=browse id=.dotfile revision=1'), 'old content');
-test_page(get_page('action=history id=.dotfile'), 'older summary', 'some summary');
+## Test revision and diff stuff
+
+update_page('KeptRevisions', 'first');
+update_page('KeptRevisions', 'second');
+update_page('KeptRevisions', 'third');
+update_page('KeptRevisions', 'fourth', '', 1);
+update_page('KeptRevisions', 'fifth', '', 1);
+
+# Show the current revision
+
+test_page(get_page(KeptRevisions),
+	  'KeptRevisions',
+	  'fifth');
+
+# Show the other revision
+
+test_page(get_page('action=browse revision=2 id=KeptRevisions'),
+	  'Showing revision 2',
+	  'second');
+
+test_page(get_page('action=browse revision=1 id=KeptRevisions'),
+	 'Showing revision 1',
+	  'first');
+
+# Show the current revision if an inexisting revision is asked for
+
+test_page(get_page('action=browse revision=9 id=KeptRevisions'),
+	  'Revision 9 not available \(showing current revision instead\)',
+	  'fifth');
+
+# Show a diff from the history page comparing two specific revisions
+
+test_page(get_page('action=browse diff=1 revision=4 diffrevision=2 id=KeptRevisions'),
+	  'Difference between revision 2 and revision 4',
+	  'second',
+	  'fourth');
+
+# Show no difference
+update_page('KeptRevisions', 'second');
+test_page(get_page('action=browse diff=1 revision=6 diffrevision=2 id=KeptRevisions'),
+	  'Difference between revision 2 and revision 6',
+	  'The two revisions are the same');
+
+# --------------------
+
+diff:
+print '[diff]';
+
+clear_pages();
+
+# Highlighting differences
+update_page('xah', "When we judge people in society, often, we can see people's true nature not by the official defenses and behaviors, but by looking at the statistics (past records) of their behavior and the circumstances it happens.\n"
+	    . "For example, when we look at the leader in human history. Great many of them have caused thousands and millions of intentional deaths. Some of these leaders are hated by many, yet great many of them are adored and admired and respected... (ok, i'm digressing...)\n");
+update_page('xah', "When we judge people in society, often, we can see people's true nature not by the official defenses and behaviors, but by looking at some subtleties, and also the statistics (past records) of their behavior and the circumstances they were in.\n"
+	    . "For example, when we look at leaders in history. Great many of them have caused thousands and millions of intentional deaths. Some of these leaders are hated by many, yet great many of them are adored and admired and respected... (ok, i'm digressing...)\n");
+test_page(get_page('action=browse diff=1 id=xah'),
+	  '<strong class="changes">it happens</strong>',
+	  '<strong class="changes">the leader</strong>',
+	  '<strong class="changes">human</strong>',
+	  '<strong class="changes">some subtleties, and also</strong>',
+	  '<strong class="changes">they were in</strong>',
+	  '<strong class="changes">leaders</strong>',
+	 );
 
 # --------------------
 
@@ -515,6 +579,19 @@ test_page_negative($page,
 		   'Tesla',
 		   'No other revisions available',
 		   'View other revisions');
+
+# --------------------
+
+pagenames:
+print '[pagenames]';
+
+clear_pages();
+
+update_page('.dotfile', 'old content', 'older summary');
+update_page('.dotfile', 'some content', 'some summary');
+test_page(get_page('.dotfile'), 'some content');
+test_page(get_page('action=browse id=.dotfile revision=1'), 'old content');
+test_page(get_page('action=history id=.dotfile'), 'older summary', 'some summary');
 
 # --------------------
 
@@ -1368,91 +1445,6 @@ test_page_negative($page, '2003-06-13', '2003-01-01');
 
 test_page(get_page('action=browse id=Summary pwd=foo'),
 	  '2003-06-15(.|\n)*2003-06-14(.|\n)*2003-06-13(.|\n)*2003-01-01');
-
-# --------------------
-
-revisions:
-print '[revisions]';
-
-clear_pages();
-
-## Test revision and diff stuff
-
-update_page('KeptRevisions', 'first');
-update_page('KeptRevisions', 'second');
-update_page('KeptRevisions', 'third');
-update_page('KeptRevisions', 'fourth', '', 1);
-update_page('KeptRevisions', 'fifth', '', 1);
-
-# Show the current revision
-
-test_page(get_page(KeptRevisions),
-	  'KeptRevisions',
-	  'fifth');
-
-# Show the other revision
-
-test_page(get_page('action=browse revision=2 id=KeptRevisions'),
-	  'Showing revision 2',
-	  'second');
-
-test_page(get_page('action=browse revision=1 id=KeptRevisions'),
-	 'Showing revision 1',
-	  'first');
-
-# Show the current revision if an inexisting revision is asked for
-
-test_page(get_page('action=browse revision=9 id=KeptRevisions'),
-	  'Revision 9 not available \(showing current revision instead\)',
-	  'fifth');
-
-# Show a major diff
-
-test_page(get_page('action=browse diff=1 id=KeptRevisions'),
-	  'Difference \(from prior major revision\)',
-	  'second',
-	  'fifth');
-
-# Show a minor diff
-
-test_page(get_page('action=browse diff=2 id=KeptRevisions'),
-	  'Difference \(from prior minor revision\)',
-	  'fourth',
-	  'fifth');
-
-# Show a diff from the history page comparing two specific revisions
-
-test_page(get_page('action=browse diff=1 revision=4 diffrevision=2 id=KeptRevisions'),
-	  'Difference \(from revision 2 to revision 4\)',
-	  'second',
-	  'fourth');
-
-# Show no difference
-update_page('KeptRevisions', 'second');
-test_page(get_page('action=browse diff=1 revision=6 diffrevision=2 id=KeptRevisions'),
-	  'Difference \(from revision 2 to revision 6\)',
-	  'The two revisions are the same');
-
-# --------------------
-
-diff:
-print '[diff]';
-
-clear_pages();
-
-# Highlighting differences
-update_page('xah', "When we judge people in society, often, we can see people's true nature not by the official defenses and behaviors, but by looking at the statistics (past records) of their behavior and the circumstances it happens.\n"
-	    . "For example, when we look at the leader in human history. Great many of them have caused thousands and millions of intentional deaths. Some of these leaders are hated by many, yet great many of them are adored and admired and respected... (ok, i'm digressing...)\n");
-update_page('xah', "When we judge people in society, often, we can see people's true nature not by the official defenses and behaviors, but by looking at some subtleties, and also the statistics (past records) of their behavior and the circumstances they were in.\n"
-	    . "For example, when we look at leaders in history. Great many of them have caused thousands and millions of intentional deaths. Some of these leaders are hated by many, yet great many of them are adored and admired and respected... (ok, i'm digressing...)\n");
-test_page(get_page('action=browse diff=1 id=xah'),
-	  '<strong class="changes">it happens</strong>',
-	  '<strong class="changes">the leader</strong>',
-	  '<strong class="changes">human</strong>',
-	  '<strong class="changes">some subtleties, and also</strong>',
-	  '<strong class="changes">they were in</strong>',
-	  '<strong class="changes">leaders</strong>',
-	 );
 
 # --------------------
 
