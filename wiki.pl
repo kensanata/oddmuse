@@ -272,7 +272,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.720 2006/08/17 12:59:13 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.721 2006/08/17 14:05:32 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2408,6 +2408,7 @@ sub PrintHtmlDiff {
     $intro = Ts('Last major edit (%s)', ScriptLinkDiff(1, $OpenPageName, T('later minor edits'),
 						       undef, $Page{lastmajor}||1));
   }
+  $diff =~ s!<p><strong>(.*?)</strong></p>!'<p><strong>' . T($1) . '</strong></p>'!ge;
   $diff = T('No diff available.') unless $diff;
   print $q->div({-class=>'diff'}, $q->p($q->b($intro)), $diff);
 }
@@ -2465,15 +2466,15 @@ sub ImproveDiff { # NO NEED TO BE called within a diff lock
   while ($#hunks > 0)		# at least one header and a real hunk
     {
       my $header = shift (@hunks);
-      $header =~ s|^(\d+.*c.*)|$q->p($q->strong(T('Changed:')))|ge
-      or $header =~ s|^(\d+.*d.*)|$q->p($q->strong(T('Deleted:')))|ge
-      or $header =~ s|^(\d+.*a.*)|$q->p($q->strong(T('Added:')))|ge;
+      $header =~ s|^(\d+.*c.*)|<p><strong>Changed:</strong></p>| # T('Changed:')
+      or $header =~ s|^(\d+.*d.*)|<p><strong>Deleted:</strong></p>| # T('Deleted:')
+      or $header =~ s|^(\d+.*a.*)|<p><strong>Added:</strong></p>|; # T('Added:')
       $result .= $header;
       my $chunk = shift (@hunks);
-      my ($old, $new) = split (/^---\n/m, $chunk, 2);
+      my ($old, $new) = split (/\n---\n/, $chunk, 2);
       if ($old and $new) {
 	($old, $new) = DiffMarkWords($old, $new);
-	$result .= $old . $q->p(T('to')) . "\n" . $new;
+	$result .= "$old<p><strong>to</strong></p>\n$new"; # T('to')
       } else {
 	if (substr($chunk,0,2) eq '&g') {
 	  $result .= DiffAddPrefix(DiffStripPrefix($chunk), '&gt; ', 'new');
