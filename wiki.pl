@@ -272,7 +272,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.719 2006/08/17 10:29:29 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.720 2006/08/17 12:59:13 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2391,20 +2391,22 @@ sub PrintHtmlDiff {
   # compute old revision if cache is disabled or no cached diff is available
   if (not $old and not $diff or GetParam('cache', $UseCache) < 1) {
     if ($type == 1) {
-      $old = $Page{'lastmajor'} - 1;
+      $old = $Page{lastmajor} - 1;
+      ($text, $new) = GetTextRevision($Page{lastmajor}, 1)
+	unless $new or $Page{lastmajor} == $Page{revision};
     } elsif ($new) {
       $old = $new - 1;
     } else {
-      $old = $Page{'revision'} - 1;
+      $old = $Page{revision} - 1;
     }
   }
   if ($old > 0) { # generate diff if the computed old revision makes sense
     $diff = GetKeptDiff($text, $old);
     $intro = Tss('Difference between revision %1 and %2', $old,
 		 $new ? Ts('revision %s', $new) : T('current revision'));
-  } elsif ($type == 1 and $Page{'lastmajor'} != $Page{'revision'}) {
+  } elsif ($type == 1 and $Page{lastmajor} != $Page{revision}) {
     $intro = Ts('Last major edit (%s)', ScriptLinkDiff(1, $OpenPageName, T('later minor edits'),
-						       undef, $Page{'lastmajor'}||1));
+						       undef, $Page{lastmajor}||1));
   }
   $diff = T('No diff available.') unless $diff;
   print $q->div({-class=>'diff'}, $q->p($q->b($intro)), $diff);
