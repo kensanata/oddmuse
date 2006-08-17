@@ -272,7 +272,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.716 2006/08/15 15:24:02 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.717 2006/08/17 10:08:53 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1497,12 +1497,12 @@ sub DoRc {
     $starttime = $Now - GetParam('days', $RcDefault) * 86400; # 24*60*60
   }
   my @fullrc = GetRcLines($starttime);
-  if (not GetParam('all', '')) { # strip rollbacks, [[rollback]] is a marker left by DoRollback()
+  if (not GetParam('all', '') or GetParam('rollback', '')) { # strip rollbacks
     my ($target, $end);
     for (my $i = @fullrc; $i; $i--) {
       my ($ts, $pagename, $rest) = split(/$FS/, $fullrc[$i]);
       splice(@fullrc, $i + 1, $end - $i), $target = 0  if $ts <= $target;
-      $target = $rest, $end = $i if $pagename eq '[[rollback]]' and (not $target or $rest < $target);
+      $target = $rest, $end = $i if $pagename eq '[[rollback]]' and (not $target or $rest < $target); # marker
     }
   } else {
     for (my $i = @fullrc; $i; $i--) {
@@ -1989,7 +1989,9 @@ sub DoRollback {
   foreach my $id (@ids) {
     OpenPage($id);
     my ($text, $minor, $ts) = GetTextAtTime($to);
-    if ($text and $Page{text} ne $text) {
+    if ($Page{text} eq $text) {
+      print T("The two revisions are the same.") if $id; # no message when doing mass revert
+    } else {
       Save($id, $text, Ts('Rollback to %s', TimeToText($to)), $minor, ($Page{ip} ne $ENV{REMOTE_ADDR}));
       print Ts('%s rolled back', GetPageLink($id)), ($ts ? ' ' . Ts('to %s', TimeToText($to)) : ''), $q->br();
     }
@@ -2385,21 +2387,27 @@ sub GetGotoBar {
 sub PrintHtmlDiff {
   my ($diffType, $revOld, $revNew, $newText) = @_;
   my ($diffText, $intro);
-  if (not $revOld and GetParam('cache', $UseCache) < 1) {
+  if (not $revOld and (not $Page{"diff-$type"} or GetParam('cache', $UseCache) < 1)) {
     if ($diffType == 1) {
-      $revOld = $Page{'oldmajor'};
+      $revOld = $Page{'lastmajor'} - 1;
+    } elsif ($revNew) {
+      $revOld = $revNew - 1;
     } else {
-      $revOld = $revNew - 1 if $revNew;
+      $revOld = $Page{'revision'} - 1;
     }
   }
   if ($revOld) {
     $diffText = GetKeptDiff($newText, $revOld);
-    $intro = Tss('Difference (from revision %1 to %2)', $revOld,
+    $intro = Tss('Difference between revision %1 and %2', $revOld,
 		 $revNew ? Ts('revision %s', $revNew) : T('current revision'));
   } else {
     $diffText = GetCacheDiff($diffType == 1 ? 'major' : 'minor');
-    $intro = Ts('Difference (from prior %s revision)',
-		$diffType == 1 ? T('major') : T('minor'));
+    if ($diffType == 1 and $Page{'lastmajor'} != $Page{'revision'}) {
+      $intro = Ts('Last major edit (%s)', ScriptLinkDiff(1, $OpenPageName, T('later minor edits'),
+							 undef, $Page{'lastmajor'}||1));
+    } else {
+      $intro = T('Last edit');
+    }
   }
   $diffText = T('No diff available.') unless $diffText;
   print $q->div({-class=>'diff'}, $q->p($q->b($intro)), $diffText);
@@ -2453,18 +2461,14 @@ sub GetDiff {
 sub ImproveDiff { # NO NEED TO BE called within a diff lock
   my $diff = QuoteHtml(shift);
   $diff =~ tr/\r//d;
-  my ($tChanged, $tRemoved, $tAdded);
-  $tChanged = T('Changed:');
-  $tRemoved = T('Removed:');
-  $tAdded   = T('Added:');
   my @hunks = split (/^(\d+,?\d*[adc]\d+,?\d*\n)/m, $diff);
   my $result = shift (@hunks);	# intro
   while ($#hunks > 0)		# at least one header and a real hunk
     {
       my $header = shift (@hunks);
-      $header =~ s|^(\d+.*c.*)|<p><strong>$tChanged $1</strong></p>|g
-      or $header =~ s|^(\d+.*d.*)|<p><strong>$tRemoved $1</strong></p>|g
-      or $header =~ s|^(\d+.*a.*)|<p><strong>$tAdded $1</strong></p>|g;
+      $header =~ s|^(\d+.*c.*)|$q->p($q->strong(T('Changed:')))|ge
+      or $header =~ s|^(\d+.*d.*)|$q->p($q->strong(T('Deleted:')))|ge
+      or $header =~ s|^(\d+.*a.*)|$q->p($q->strong(T('Added:')))|ge;
       $result .= $header;
       my $chunk = shift (@hunks);
       my ($old, $new) = split (/^---\n/m, $chunk, 2);
@@ -2672,7 +2676,7 @@ sub ExpireKeepFiles { # call with opened page
   foreach my $revision (GetKeepRevisions($OpenPageName)) {
     my %keep = GetKeptRevision($revision);
     next if $keep{'keep-ts'} >= $expirets;
-    next if $KeepMajor and ($keep{revision} == $Page{oldmajor} or $keep{revision} == $Page{lastmajor});
+    next if $KeepMajor and $keep{revision} == $Page{lastmajor};
     unlink GetKeepFile($OpenPageName, $revision);
   }
 }
@@ -3591,6 +3595,7 @@ sub Save { # call within lock, with opened page
   my $host = GetRemoteHost();
   my $revision = $Page{revision} + 1;
   my $old = $Page{text};
+  my $olddiff = $Page{'diff-major'} == '1' ? $Page{'diff-minor'} : $Page{'diff-major'};
   if ($revision == 1 and -e $IndexFile and not unlink($IndexFile)) { # regenerate index on next request
     SetParam('msg', Ts('Cannot delete the index file %s.', $IndexFile)
 	     . ' ' . T('Please check the directory permissions.')
@@ -3606,7 +3611,6 @@ sub Save { # call within lock, with opened page
   SaveKeepFile(); # deletes blocks, flags, diff-major, and diff-minor, and sets keep-ts
   ExpireKeepFiles();
   $Page{ts} = $Now;
-  $Page{oldmajor} = $Page{lastmajor} unless $minor;
   $Page{lastmajor} = $revision unless $minor;
   $Page{revision} = $revision;
   $Page{summary} = $summary;
@@ -3615,8 +3619,8 @@ sub Save { # call within lock, with opened page
   $Page{host} = $host;
   $Page{minor} = $minor;
   $Page{text} = $new;
-  if ($UseDiff and $revision > 1 and not $upload and not TextIsFile($old)) {
-    UpdateDiffs($old, $new); # sets diff-major and diff-minor}
+  if ($UseDiff and $UseCache > 1 and $revision > 1 and not $upload and not TextIsFile($old)) {
+    UpdateDiffs($old, $new, $olddiff); # sets diff-major and diff-minor
   }
   my $languages;
   $languages = GetLanguages($new) unless $upload;
@@ -3684,14 +3688,10 @@ sub WriteRcLog {
 }
 
 sub UpdateDiffs { # this could be optimized, but isn't frequent enough
-  my ($old, $new) = @_;
+  my ($old, $new, $olddiff) = @_;
   $Page{'diff-minor'} = GetDiff($old, $new); # create new diff-minor
-  if ($Page{revision} - 1 == $Page{oldmajor} or $Page{revision} == 2) {
-    $Page{'diff-major'} = 1; # for GetCacheDiff: diff-major eq new diff-minor
-  } else { # lastmajor != revision
-    ($new) = GetTextRevision($Page{lastmajor}, 1); # no need to test $rev
-    $Page{'diff-major'} = GetKeptDiff($new, $Page{oldmajor});
-  }
+  # 1 is a special value for GetCacheDiff telling it to use diff-minor
+  $Page{'diff-major'} = $Page{lastmajor} == $Page{revision} ? 1 : $olddiff;
 }
 
 # == Maintenance ==
