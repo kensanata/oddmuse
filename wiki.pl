@@ -272,7 +272,7 @@ sub InitRequest {
 
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.718 2006/08/17 10:15:35 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.719 2006/08/17 10:29:29 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2386,7 +2386,10 @@ sub GetGotoBar {
 
 sub PrintHtmlDiff {
   my ($type, $old, $new, $text) = @_;
-  if (not $old and (not $Page{"diff-$type"} or GetParam('cache', $UseCache) < 1)) {
+  my $intro = T('Last edit');
+  my $diff = GetCacheDiff($type == 1 ? 'major' : 'minor');
+  # compute old revision if cache is disabled or no cached diff is available
+  if (not $old and not $diff or GetParam('cache', $UseCache) < 1) {
     if ($type == 1) {
       $old = $Page{'lastmajor'} - 1;
     } elsif ($new) {
@@ -2395,19 +2398,13 @@ sub PrintHtmlDiff {
       $old = $Page{'revision'} - 1;
     }
   }
-  my ($diff, $intro);
-  if ($old) {
+  if ($old > 0) { # generate diff if the computed old revision makes sense
     $diff = GetKeptDiff($text, $old);
     $intro = Tss('Difference between revision %1 and %2', $old,
 		 $new ? Ts('revision %s', $new) : T('current revision'));
-  } else {
-    $diff = GetCacheDiff($type == 1 ? 'major' : 'minor');
-    if ($type == 1 and $Page{'lastmajor'} != $Page{'revision'}) {
-      $intro = Ts('Last major edit (%s)', ScriptLinkDiff(1, $OpenPageName, T('later minor edits'),
-							 undef, $Page{'lastmajor'}||1));
-    } else {
-      $intro = T('Last edit');
-    }
+  } elsif ($type == 1 and $Page{'lastmajor'} != $Page{'revision'}) {
+    $intro = Ts('Last major edit (%s)', ScriptLinkDiff(1, $OpenPageName, T('later minor edits'),
+						       undef, $Page{'lastmajor'}||1));
   }
   $diff = T('No diff available.') unless $diff;
   print $q->div({-class=>'diff'}, $q->p($q->b($intro)), $diff);
