@@ -20,7 +20,7 @@ package OddMuse;
 
 use vars qw($WantedPageName $WantedPageNameFilter $WantedPageReferrerFilter);
 
-$ModulesDescription .= '<p>$Id: wanted.pl,v 1.4 2006/08/06 11:50:02 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: wanted.pl,v 1.5 2006/08/17 13:59:29 as Exp $</p>';
 
 
 push(@MyAdminCode, \&WantedAction);
@@ -42,7 +42,7 @@ sub PrintWantedData
 			push @{$wanted{$link}}, $page if not $IndexHash{$link};
 		}
 	}
-	print $q->p( sprintf( T('%d Pages'), scalar keys %wanted) );
+	print $q->p(Ts('%s pages', scalar keys %wanted));
 	foreach my $page (sort keys %wanted) {
 		my @references = map {GetPageLink($_)} (sort @{$wanted{$page}});
 		my $pageLink = sprintf( T('%s, referenced from:'), GetEditLink($page,$page) );
