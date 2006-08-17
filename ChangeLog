@@ -1,5 +1,12 @@
 2006-08-17  Alex Schroeder  <alex@gnu.org>
 
+	* modules/search-freetext.pl (NewSearchFreePrintFooter): Small
+	translation issue, remove trailing whitespace from a key.
+
+	* wiki.pl (PrintHtmlDiff): Translate diff fragments such as
+	added/changed/deleted.
+	(ImproveDiff): No longer translate diff fragments here.
+
 	* modules/wanted.pl (PrintWantedData): Use Ts() instead of
 	T(sprintf()).
 
