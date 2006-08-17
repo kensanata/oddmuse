@@ -16,7 +16,7 @@ $NewFS = "\x1e";
 # override $FS if you want!
 
 print header() . start_html('Upgrading Files'), p;
-print q{Upgrade version: $Id: upgrade-files.pl,v 1.13 2005/09/05 19:10:57 as Exp $}, "\n";
+print q{Upgrade version: $Id: upgrade-files.pl,v 1.14 2006/08/17 10:58:13 as Exp $}, "\n";
 if (not param('dir')) {
   print start_form, p, '$DataDir: ', textfield('dir', '/tmp/oddmuse'),
     p, radio_group('separator', ['Oddmuse', 'UseMod 0.92', 'UseMod 1.00',
@@ -174,7 +174,7 @@ sub basic_data {
   $data .= 'ip: ' . $section{ip} . "\n" if $section{ip};
   $data .= 'host: ' . $section{host} . "\n" if $section{host};
   $data .= 'minor: ' . $text{minor} . "\n" if $text{minor};
-  $data .= 'oldmajor: ' . $page{cache_oldmajor} . "\n" if $page{cache_oldmajor};
+  # $data .= 'oldmajor: ' . $page{cache_oldmajor} . "\n" if $page{cache_oldmajor};
   $data .= 'text: ' . escape_newlines($text{text}) . "\n";
   return $data;
 }
