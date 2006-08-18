@@ -273,7 +273,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.722 2006/08/18 11:37:23 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.723 2006/08/18 11:38:22 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1327,7 +1327,7 @@ sub ValidId { # hack alert: returns error message if invalid, and unfortunately 
 
 sub ValidIdOrDie {
   my $id = shift;
-  my $error ValidId($id);
+  my $error = ValidId($id);
   ReportError($error, '400 BAD REQUEST') if $error;
   return 1;
 }
