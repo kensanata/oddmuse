@@ -1,3 +1,21 @@
+2006-08-18  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($Counter): New variable for Fast::CGI info.
+	(InitVariables): Add counter if the script is being called
+	multiple times.
+	(RcHeader): Add view-rollback link.
+	(PrintAllPages, ValidIdOrDie, DoRandom): Simplified.
+	(DoRc, GetRcLines): Moved stripping of rollbacks from DoRc to
+	GetRcLines. Add parameter to GetRcLines.
+	(DoRollback): Add parameter to GetRcLines call in order to not
+	strip rollbacks. Fix bug which caused message printing at all
+	times. Check UserCanEdit before saving.
+	(RcHeader, GetRc): Use rcmatch instead of match parameter.
+	(GetHistoryLink, GetRCLink): Use FreeToNormal.
+	(UserCanEdit): Added test for sample undefined page.
+	(DoPost): Removed unnecessary tests, as these are caught by
+	UserCanEdit.
+
 2006-08-17  Alex Schroeder  <alex@gnu.org>
 
 	* modules/search-freetext.pl (NewSearchFreePrintFooter): Small
