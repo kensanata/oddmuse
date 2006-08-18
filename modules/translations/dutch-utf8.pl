@@ -24,10 +24,12 @@
 #
 # This translation was last checked for Oddmuse version 1.215.
 #
-$ModulesDescription .= '<p>$Id: dutch-utf8.pl,v 1.8 2006/05/10 22:52:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: dutch-utf8.pl,v 1.9 2006/08/18 22:46:10 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 U mag deze pagina niet lezen: uw account op deze Wiki, uw IP of uw netwerk is buitengesloten.
+%s calls
+
 Could not create %s
 Kan %s niet aanmaken
 Invalid UserName %s: not saved.
@@ -38,6 +40,14 @@ This page contains an uploaded file:
 
 Recursive include of %s!
 
+Clear Cache
+
+Main lock obtained.
+De gehele site is vergrendeld.
+Main lock released.
+De vergrendeling van de gehele site is opgeheven.
+Comments on this page
+Commentaar op deze pagina
 XML::RSS is not available on this system.
 XML::RSS is niet beschikbaar op dit systeem.
 diff
@@ -80,14 +90,6 @@ Preview only, not yet saved
 Dit is slechts een voorvertoning; er is nog niets opgeslagen!
 Please go on to %s.
 Ga a.u.b. verder naar %s.
-Could not open %s log file
-Kan logboekbestand %s niet openen
-Error was
-De fout is
-Note: This error is normal if no changes have been made.
-NB: Deze foutmelding is gebruikelijk als er geen wijzigingen zijn gemaakt.
-Could not open old %s log file
-Kan oude logboekbestand %s niet openen
 No updates since %s
 Geen wijzigingen sinds %s
 Updates since %s
@@ -102,6 +104,10 @@ List latest change per page only
 Toon alleen de laatst gewijzigde pagina's
 List all changes
 Toon alle wijzigingen
+Skip rollbacks
+
+Include rollbacks
+
 List only major changes
 Toon alleen grote wijzigingen
 Include minor changes
@@ -138,20 +144,34 @@ History of %s
 Geschiedenis van %s
 Compare
 Vergelijk
+Deleted
+
+Mark this page for deletion
+
+No other revisions available
+
+current
+
 Revision %s
 Revisie %s
-by
-door
-Rolling back changes
-Bezig met ongedaan maken van wijzigingen
+Contributors to %s
+
 Missing target for rollback.
 U heeft niet opegegeven tot hoever de wijzigingen ongedaan moeten worden gemaakt.
 Target for rollback is too far back.
 De staat waarin de pagina moet worden teruggebracht is van te lang geleden.
+Rolling back changes
+Bezig met ongedaan maken van wijzigingen
+The two revisions are the same.
+
+Editing not allowed for %s.
+Het wijzigen van %s is niet toegestaan.
 Rollback to %s
 Wijzigingen ongedaan maken tot %s
 %s rolled back
 %s is in de oorspronkelijke staat teruggebracht
+to %s
+
 Index of all pages
 Index van alle pagina's
 Wiki Version
@@ -220,6 +240,8 @@ View current revision
 Bekijk huidige revisie
 View all changes
 Toon alle wijzigingen
+View contributors
+
 Homepage URL:
 
 s
@@ -240,28 +262,26 @@ Validate HTML
 Valideer HTML
 Validate CSS
 Valideer CSS
-Difference (from revision %1 to %2)
+Last edit
+
+Difference between revision %1 and %2
 Verschil (van revisie %1 naar %2)
 revision %s
 revisie %s
 current revision
 huidige revisie
-Difference (from prior %s revision)
-Verschil (tussen deze revisie en vorige revisie %s)
-major
-groot
-minor
-klein
+Last major edit (%s)
+
+later minor edits
+
 No diff available.
 Er is geen verschillenanalyse beschikbaar.
-The two revisions are the same.
-
 Old revision:
 
 Changed:
 Veranderd:
-Removed:
-Verwijderd:
+Deleted:
+
 Added:
 Toegevoegd:
 to
@@ -332,10 +352,10 @@ Summary:
 Samenvatting:
 This change is a minor edit.
 Dit is slechts een kleine wijziging.
-Replace this file with text.
-Vervang dit bestand door tekst.
-Replace this text with a file.
-Vervang deze tekst door een bestand.
+Replace this file with text
+Vervang dit bestand door tekst
+Replace this text with a file
+Vervang deze tekst door een bestand
 File to upload: 
 Te publiceren bestand: 
 Files of type %s are not allowed.
@@ -358,6 +378,10 @@ This operation is restricted to site editors only...
 Deze taak mag alleen uitgevoerd worden door redacteuren...
 This operation is restricted to administrators only...
 Deze taak mag alleen uitgevoerd worden door beheerders...
+SampleUndefinedPage
+VoorbeeldVanEenNietBestaandePagina
+Sample_Undefined_Page
+Voorbeeld_Van_Een_Niet_Bestaande_Pagina
 Rule "%1" matched "%2" on this page.
 
 Without normal pages
@@ -396,24 +420,8 @@ Near pages:
 Nabije pagina's:
 last updated
 laatst gewijzigd
-Complete Content
-Volledige inhoud
-The main page is %s.
-De hoofdpagina is %s.
-Comments on this page
-Commentaar op deze pagina
-Editing not allowed for %s.
-Het wijzigen van %s is niet toegestaan.
-SampleUndefinedPage
-VoorbeeldVanEenNietBestaandePagina
-%s cannot be defined.
-%s kan niet aangemaakt worden.
-Sample_Undefined_Page
-Voorbeeld_Van_Een_Niet_Bestaande_Pagina
-[[%s]] cannot be defined.
-[[%s]] kan niet aangemaakt worden.
-Only an administrator can create %s.
-Alleen een beheerder kan %s aanmaken.
+by
+door
 Transfer Error: %s
 Fout tijdens overdacht: %s
 Browser reports no file info.
@@ -454,8 +462,6 @@ Er is geen onderhoud gepleegd.
 (Onderhoud kan slechts eens in de 12 uur uitgevoerd worden.)
 Remove the "maintain" file or wait.
 Verwijder het bestand "maintain" of wacht.
-Main lock obtained.
-De gehele site is vergrendeld.
 Expiring keep files and deleting pages marked for deletion
 Bezig met verwijderen van te oude revisies uit de archieven, en verwijderen van pagina's die daarvoor gemarkeerd zijn
 not deleted: 
@@ -464,12 +470,16 @@ deleted
 verwijderd
 Moving part of the %s log file.
 Bezig met verplaatsen van een deel van het logboekbestand %s
+Could not open %s log file
+Kan logboekbestand %s niet openen
+Error was
+De fout is
+Note: This error is normal if no changes have been made.
+NB: Deze foutmelding is gebruikelijk als er geen wijzigingen zijn gemaakt.
 Moving %s log entries.
 Bezig met verplaatsen van %s items.
 Getting page index file for %s.
 Bezig met ophalen indexbestand voor %s.
-Main lock released.
-De vergrendeling van de gehele site is opgeheven.
 Set or Remove global edit lock
 Ver-/ontgrendelen van de gehele site
 Edit lock created.
@@ -530,6 +540,10 @@ Rename %s to:
 
 Learn more...
 
+Complete Content
+Volledige inhoud
+The main page is %s.
+De hoofdpagina is %s.
 Cannot highlight the language %s.
 
 Recent Visitors
@@ -780,7 +794,15 @@ Download this page as PDF
 
 Portrait
 Portret
+Publish %s
+
+No target wiki was specified in the config file.
+
+The target wiki was misconfigured.
+
 You did not answer correctly.
+
+To save this page you must answer this question:
 
 All Referrers
 Alle verwijzingen
@@ -805,6 +827,12 @@ Search term missing.
 Result pages: 
 
 (%s results)
+
+Tags:
+
+Tags: %s.
+
+No tags
 
 Slideshow:%s
 
@@ -860,6 +888,12 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 search
 zoeken
+Wanted Pages
+
+%s pages
+
+%s, referenced from:
+
 Upload of %s file
 
 Blog
@@ -869,5 +903,9 @@ Matching pages:
 New
 
 Edit %s.
+
+Title: 
+
+Tags: 
 
 END_OF_TRANSLATION

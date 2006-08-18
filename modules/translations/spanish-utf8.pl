@@ -17,10 +17,12 @@
 #
 # This translation was last checked for Oddmuse version 1.195.
 #
-$ModulesDescription .= '<p>$Id: spanish-utf8.pl,v 1.8 2006/05/10 22:52:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: spanish-utf8.pl,v 1.9 2006/08/18 22:46:10 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Consulta no permitida: el usuario, ip o sub-red ha sido bloqueado.
+%s calls
+
 Could not create %s
 No ha sido posible crear %s
 Invalid UserName %s: not saved.
@@ -31,6 +33,14 @@ This page contains an uploaded file:
 
 Recursive include of %s!
 
+Clear Cache
+
+Main lock obtained.
+Se obtuvo el bloqueo principal.
+Main lock released.
+Se ha liberado el bloqueo principal.
+Comments on this page
+Comentarios de esta página
 XML::RSS is not available on this system.
 
 diff
@@ -73,14 +83,6 @@ Preview only, not yet saved
 Esta es únicamente una vista previa; no ha sido guardada aun.
 Please go on to %s.
 Por favor proceda a %s.
-Could not open %s log file
-No ha sido posible abrir el archivo de registro %s
-Error was
-El error fue
-Note: This error is normal if no changes have been made.
-Nota: Este error es normal si no se han efectuado modificaciones.
-Could not open old %s log file
-No ha sido posible abrir el archivo antiguo de registro %s
 No updates since %s
 No han habido actualizaciones desde %s
 Updates since %s
@@ -94,6 +96,10 @@ solo para %s
 List latest change per page only
 
 List all changes
+
+Skip rollbacks
+
+Include rollbacks
 
 List only major changes
 
@@ -131,19 +137,33 @@ History of %s
 Historial de %s
 Compare
 Comparar
+Deleted
+
+Mark this page for deletion
+
+No other revisions available
+
+current
+
 Revision %s
 Revisión %s
-by
-por
-Rolling back changes
+Contributors to %s
 
 Missing target for rollback.
 
 Target for rollback is too far back.
 
+Rolling back changes
+
+The two revisions are the same.
+
+Editing not allowed for %s.
+No se permite la edición para %s.
 Rollback to %s
 
 %s rolled back
+
+to %s
 
 Index of all pages
 Índice de todas las páginas
@@ -213,6 +233,8 @@ View current revision
 Ver revisión actual
 View all changes
 
+View contributors
+
 Homepage URL:
 
 s
@@ -233,28 +255,26 @@ Validate HTML
 Validar HTML
 Validate CSS
 Validar CSS
-Difference (from revision %1 to %2)
+Last edit
+
+Difference between revision %1 and %2
 
 revision %s
 revisión %s
 current revision
 revisión actual
-Difference (from prior %s revision)
-Diferencias (previas a la revisión %s)
-major
-mayor
-minor
-menor
+Last major edit (%s)
+
+later minor edits
+
 No diff available.
 No hoy diffs disponibles.
-The two revisions are the same.
-
 Old revision:
 
 Changed:
 Modificado:
-Removed:
-Eliminado:
+Deleted:
+
 Added:
 Agregado:
 to
@@ -325,9 +345,9 @@ Summary:
 Resumen:
 This change is a minor edit.
 Este cambio es solo una edición menor.
-Replace this file with text.
+Replace this file with text
 
-Replace this text with a file.
+Replace this text with a file
 
 File to upload: 
 
@@ -351,6 +371,10 @@ This operation is restricted to site editors only...
 Esta operación está restringida para su uso por editores únicamente...
 This operation is restricted to administrators only...
 Esta operación está restringida para su uso por administradores únicamente...
+SampleUndefinedPage
+PaginaEjemploSinDefinir
+Sample_Undefined_Page
+Pagina_Ejemplo_Sin_Definir
 Rule "%1" matched "%2" on this page.
 
 Without normal pages
@@ -389,24 +413,8 @@ Near pages:
 
 last updated
 actualizado por última vez
-Complete Content
-Contenido Completo
-The main page is %s.
-La página principal es %s.
-Comments on this page
-Comentarios de esta página
-Editing not allowed for %s.
-No se permite la edición para %s.
-SampleUndefinedPage
-PaginaEjemploSinDefinir
-%s cannot be defined.
-%s no puede ser definida.
-Sample_Undefined_Page
-Pagina_Ejemplo_Sin_Definir
-[[%s]] cannot be defined.
-[[%s]] no puede ser definida.
-Only an administrator can create %s.
-
+by
+por
 Transfer Error: %s
 
 Browser reports no file info.
@@ -447,8 +455,6 @@ El mantenimiento no se ha realizado.
 (El mantenimiento solo puede realizarse cada 12 horas.)
 Remove the "maintain" file or wait.
 Elimine el archivo "maintain" o espere.
-Main lock obtained.
-Se obtuvo el bloqueo principal.
 Expiring keep files and deleting pages marked for deletion
 Expirando los archivos "keep" y eliminando las páginas marcadas para borrado
 not deleted: 
@@ -457,12 +463,16 @@ deleted
 eliminado
 Moving part of the %s log file.
 Moviendo parte del archivo de registro %s.
+Could not open %s log file
+No ha sido posible abrir el archivo de registro %s
+Error was
+El error fue
+Note: This error is normal if no changes have been made.
+Nota: Este error es normal si no se han efectuado modificaciones.
 Moving %s log entries.
 Moviendo %s entradas del registro.
 Getting page index file for %s.
 
-Main lock released.
-Se ha liberado el bloqueo principal.
 Set or Remove global edit lock
 Establecer o Remover el bloqueo global de edición
 Edit lock created.
@@ -523,6 +533,10 @@ Rename %s to:
 
 Learn more...
 
+Complete Content
+Contenido Completo
+The main page is %s.
+La página principal es %s.
 Cannot highlight the language %s.
 
 Recent Visitors
@@ -773,7 +787,15 @@ Download this page as PDF
 
 Portrait
 
+Publish %s
+
+No target wiki was specified in the config file.
+
+The target wiki was misconfigured.
+
 You did not answer correctly.
+
+To save this page you must answer this question:
 
 All Referrers
 Todos los orígenes
@@ -798,6 +820,12 @@ Search term missing.
 Result pages: 
 
 (%s results)
+
+Tags:
+
+Tags: %s.
+
+No tags
 
 Slideshow:%s
 
@@ -853,6 +881,12 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 
 search
 buscar
+Wanted Pages
+
+%s pages
+
+%s, referenced from:
+
 Upload of %s file
 
 Blog
@@ -862,5 +896,9 @@ Matching pages:
 New
 
 Edit %s.
+
+Title: 
+
+Tags: 
 
 END_OF_TRANSLATION

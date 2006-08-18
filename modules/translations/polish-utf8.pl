@@ -15,10 +15,12 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: polish-utf8.pl,v 1.2 2006/05/10 22:52:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: polish-utf8.pl,v 1.3 2006/08/18 22:46:10 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Nie wolno Ci czytać tej strony: użytkownik, numer ip lub sieć jest zablokowana.
+%s calls
+
 Could not create %s
 Nie można utworzyć %s
 Invalid UserName %s: not saved.
@@ -29,6 +31,14 @@ This page contains an uploaded file:
 Ta strona zawiera wgrany plik:
 Recursive include of %s!
 
+Clear Cache
+
+Main lock obtained.
+Uzyskano główną blokadę.
+Main lock released.
+Zwolniono główną blokadę.
+Comments on this page
+Komentarze na tej stronie
 XML::RSS is not available on this system.
 XML::RSS niedostępne na tym systemie.
 diff
@@ -71,14 +81,6 @@ Preview only, not yet saved
 Tylko podgląd, jeszcze nie zapisane
 Please go on to %s.
 Proszę przejść do %s.
-Could not open %s log file
-Nie można otworzyć pliku logów %s.
-Error was
-Błędem było
-Note: This error is normal if no changes have been made.
-Uwaga: Ten błąd jest normalny jeśli nie było żadnych zmian.
-Could not open old %s log file
-Nie można odtworzyć starego pliku logów %s.
 No updates since %s
 Zadnych zmian od %s
 Updates since %s
@@ -93,6 +95,10 @@ List latest change per page only
 Wyświetl tylko ostatnią zmianę dla każdej strony
 List all changes
 Wyświetl wszystkie zmiany
+Skip rollbacks
+
+Include rollbacks
+
 List only major changes
 Wyświetl tylko istotne zmiany
 Include minor changes
@@ -122,27 +128,41 @@ cofnij
 new
 nowa
 from %s
-od %s
+z %s
 This page is too big to send over RSS.
 Ta strona jest zbyt duża żeby ją wysłać przez RSS.
 History of %s
 Historia %s
 Compare
 Porównaj
+Deleted
+
+Mark this page for deletion
+
+No other revisions available
+
+current
+
 Revision %s
 Wersja %s
-by
-autorstwa
-Rolling back changes
-Cofam zmiany
+Contributors to %s
+
 Missing target for rollback.
 Nie ma czego cofać
 Target for rollback is too far back.
 Zbyt stare aby cofnąć
+Rolling back changes
+Cofam zmiany
+The two revisions are the same.
+Te dwie wersje są identyczne.
+Editing not allowed for %s.
+Edycja %s niedozwolona.
 Rollback to %s
 Cofam do %s
 %s rolled back
 %s cofnięte
+to %s
+
 Index of all pages
 Spis wszystkich stron
 Wiki Version
@@ -194,7 +214,7 @@ Ostatnio edytowane
 Edited
 Edytowane
 by %s
-przez
+przez %s
 (diff)
 (różnice)
 Edit revision %s of this page
@@ -211,6 +231,8 @@ View current revision
 Zobacz aktualną wersję
 View all changes
 Zobacz wszystkie zmiany
+View contributors
+
 Homepage URL:
 URL strony domowej:
 s
@@ -231,28 +253,26 @@ Validate HTML
 Sprawdź HTML
 Validate CSS
 Sprawdż CSS
-Difference (from revision %1 to %2)
+Last edit
+
+Difference between revision %1 and %2
 Różnice (pomiędzy wersjami %1 i %2)
 revision %s
 wersja %s
 current revision
 aktualna wersja
-Difference (from prior %s revision)
-Różnice (sprzed wersji %s)
-major
-istotna
-minor
-drobna
+Last major edit (%s)
+
+later minor edits
+
 No diff available.
 Różnice niedostępne.
-The two revisions are the same.
-Te dwie wersje są identyczne.
 Old revision:
 Stara wersja:
 Changed:
 Zmienione:
-Removed:
-Usunięte:
+Deleted:
+
 Added:
 Dodane:
 to
@@ -323,10 +343,10 @@ Summary:
 Streszczenie:
 This change is a minor edit.
 Ta zmiana jest drobna.
-Replace this file with text.
-Zastąp ten plik tekstem.
-Replace this text with a file.
-Zastęp ten tekst plikiem.
+Replace this file with text
+Zastąp ten plik tekstem
+Replace this text with a file
+Zastęp ten tekst plikiem
 File to upload: 
 Plik do wgrania:
 Files of type %s are not allowed.
@@ -349,6 +369,10 @@ This operation is restricted to site editors only...
 Ta operacja jest dozwolona tylko dla edytorów strony.,,
 This operation is restricted to administrators only...
 Ta operacje jest dozwolona tylko dla administratorów strony...
+SampleUndefinedPage
+PrzykładNiezdefioniwanejStrony
+Sample_Undefined_Page
+Przykład_Niezdefiniowanej_Strony
 Rule "%1" matched "%2" on this page.
 Reguła "%1" pasuje do "%2" na tej stronie.
 Without normal pages
@@ -387,24 +411,8 @@ Near pages:
 Bliskie strony:
 last updated
 ostatnio zmieniane
-Complete Content
-Całkowita zawartość
-The main page is %s.
-Główną stroną %s.
-Comments on this page
-Komentarze na tej stronie
-Editing not allowed for %s.
-Edycja %s niedozwolona.
-SampleUndefinedPage
-PrzykładNiezdefioniwanejStrony
-%s cannot be defined.
-Nie można zdefiniować %s.
-Sample_Undefined_Page
-Przykład_Niezdefiniowanej_Strony
-[[%s]] cannot be defined.
-Nie można zdefiniować [[%s]].
-Only an administrator can create %s.
-Tylko administrator może utworzyć %s.
+by
+autorstwa
 Transfer Error: %s
 Bląd przesyłania: %s
 Browser reports no file info.
@@ -445,8 +453,6 @@ Konserwacja nie przeprowadzona.
 (Konserwacja może być przeprowadzona tylko raz na 12 godzin).
 Remove the "maintain" file or wait.
 Usuń plik "maintain" lub czekaj.
-Main lock obtained.
-Uzyskano główną blokadę.
 Expiring keep files and deleting pages marked for deletion
 Przedawnianie plików staroci i usuwanie stron zaznaczonych do usunięcia
 not deleted: 
@@ -455,12 +461,16 @@ deleted
 skasowane
 Moving part of the %s log file.
 Przenoszenie części pliku logów %s.
+Could not open %s log file
+Nie można otworzyć pliku logów %s.
+Error was
+Błędem było
+Note: This error is normal if no changes have been made.
+Uwaga: Ten błąd jest normalny jeśli nie było żadnych zmian.
 Moving %s log entries.
 Przenoszenie %s wpisów logów.
 Getting page index file for %s.
 Pobieranie pliku indeksu dla %s.
-Main lock released.
-Zwolniono główną blokadę.
 Set or Remove global edit lock
 Ustaw lub zwolnij globalną blokadę edycji
 Edit lock created.
@@ -521,6 +531,10 @@ Rename %s to:
 Zmień nazwę %s na:
 Learn more...
 Dowiedz się więcej...
+Complete Content
+Całkowita zawartość
+The main page is %s.
+Główną stroną %s.
 Cannot highlight the language %s.
 Nie można pokolorować źródła dla języka %s.
 Recent Visitors
@@ -544,19 +558,19 @@ Następny
 Calendar %s
 Kalendarz %s
 Su
-nie
+ni
 Mo
-pon
+po
 Tu
-wto
+wt
 We
-śro
+śr
 Th
-czw
+cz
 Fr
-pią
+pi
 Sa
-sob
+so
 January
 styczeń
 February
@@ -771,8 +785,16 @@ Download this page as PDF
 Pobierz tę stronę jako PDF
 Portrait
 Portret
+Publish %s
+
+No target wiki was specified in the config file.
+
+The target wiki was misconfigured.
+
 You did not answer correctly.
 Nie odpowiedziałes poprawnie.
+To save this page you must answer this question:
+
 All Referrers
 Wszystkie odniesienia
 Referrers
@@ -797,6 +819,12 @@ Result pages:
 Strony wyniku:
 (%s results)
 (%s wyników)
+Tags:
+
+Tags: %s.
+
+No tags
+
 Slideshow:%s
 Pokaz slajdów: %s
 Static Copy
@@ -851,6 +879,12 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 search
 szukanie
+Wanted Pages
+
+%s pages
+
+%s, referenced from:
+
 Upload of %s file
 Wgranie pliku %s
 Blog
@@ -861,4 +895,8 @@ New
 Nowy
 Edit %s.
 Edycja %s.
+Title: 
+
+Tags: 
+
 END_OF_TRANSLATION

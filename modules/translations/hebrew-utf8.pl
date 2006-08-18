@@ -17,9 +17,11 @@
 #
 # This translation was last checked for Oddmuse version 1.195.
 #
-$ModulesDescription .= '<p>$Id: hebrew-utf8.pl,v 1.8 2006/05/10 22:52:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: hebrew-utf8.pl,v 1.9 2006/08/18 22:46:10 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
+
+%s calls
 
 Could not create %s
 לא ניתן ליצור את %s
@@ -31,6 +33,14 @@ This page contains an uploaded file:
 
 Recursive include of %s!
 
+Clear Cache
+
+Main lock obtained.
+נעילה ראשית הושגה.
+Main lock released.
+נעילה ראשית שוחררה.
+Comments on this page
+הערות בדף זה
 XML::RSS is not available on this system.
 
 diff
@@ -73,14 +83,6 @@ Preview only, not yet saved
 תצוגה מקדימה בלבד, הדף עדיין לא נשמר.
 Please go on to %s.
 בבקשה המשך ל-%s.
-Could not open %s log file
-לא ניתן לפתוח את קובץ היומן %s
-Error was
-השגיאה היתה
-Note: This error is normal if no changes have been made.
-הערה: שגיאה זו היא רגילה אם לא בוצעו שינויים.
-Could not open old %s log file
-לא ניתן לפתוח את קובץ היומן הישן %s
 No updates since %s
 אין עדכונים מאז %s
 Updates since %s
@@ -94,6 +96,10 @@ for %s only
 List latest change per page only
 
 List all changes
+
+Skip rollbacks
+
+Include rollbacks
 
 List only major changes
 
@@ -131,19 +137,33 @@ History of %s
 היסטוריה של %s
 Compare
 השוואה
+Deleted
+
+Mark this page for deletion
+
+No other revisions available
+
+current
+
 Revision %s
 עדכון %s
-by
-על-ידי
-Rolling back changes
+Contributors to %s
 
 Missing target for rollback.
 
 Target for rollback is too far back.
 
+Rolling back changes
+
+The two revisions are the same.
+
+Editing not allowed for %s.
+לא ניתן לערוך את %s.
 Rollback to %s
 
 %s rolled back
+
+to %s
 
 Index of all pages
 תוכן כל הדפים:
@@ -213,6 +233,8 @@ View current revision
 הצג את הגירסה העדכנית
 View all changes
 
+View contributors
+
 Homepage URL:
 
 s
@@ -233,28 +255,26 @@ Validate HTML
 אמת HTML
 Validate CSS
 אמת CSS
-Difference (from revision %1 to %2)
+Last edit
+
+Difference between revision %1 and %2
 
 revision %s
 עדכון %s
 current revision
 גירסה נוכחית
-Difference (from prior %s revision)
-הבדל (מגירסה %s הקודמת(
-major
-גדול
-minor
-קטן
+Last major edit (%s)
+
+later minor edits
+
 No diff available.
 לא ניתן להשיג הבדלים
-The two revisions are the same.
-
 Old revision:
 
 Changed:
 שונה:
-Removed:
-הוסר:
+Deleted:
+
 Added:
 התווסף:
 to
@@ -325,9 +345,9 @@ Summary:
 תקציר:
 This change is a minor edit.
 השינוי שאני מבצע הוא קטן.
-Replace this file with text.
+Replace this file with text
 
-Replace this text with a file.
+Replace this text with a file
 
 File to upload: 
 
@@ -351,6 +371,10 @@ This operation is restricted to site editors only...
 פעולה זו מוגבלת לעורכים בלבד...
 This operation is restricted to administrators only...
 פעולה זו מוגבלת למנהלים בלבד...
+SampleUndefinedPage
+
+Sample_Undefined_Page
+דף_לא_מוגדר_לדוגמא
 Rule "%1" matched "%2" on this page.
 
 Without normal pages
@@ -389,24 +413,8 @@ Near pages:
 
 last updated
 עדכון אחרון
-Complete Content
-תוכן מלא
-The main page is %s.
-הדף הראשי הוא %s.
-Comments on this page
-הערות בדף זה
-Editing not allowed for %s.
-לא ניתן לערוך את %s.
-SampleUndefinedPage
-
-%s cannot be defined.
-לא ניתן להגדיר את %s
-Sample_Undefined_Page
-דף_לא_מוגדר_לדוגמא
-[[%s]] cannot be defined.
-לא ניתן להגדיר את [[%s]]
-Only an administrator can create %s.
-
+by
+על-ידי
 Transfer Error: %s
 
 Browser reports no file info.
@@ -447,8 +455,6 @@ Maintenance not done.
 (ניתן לבצע תחזוקה רק מדי 12 שעות.)
 Remove the "maintain" file or wait.
 הסר את הקובץ "maintain" או המתן.
-Main lock obtained.
-נעילה ראשית הושגה.
 Expiring keep files and deleting pages marked for deletion
 מוציא קבצי שמירה מתוקפם, ומוחק דפים שסומנו למחיקה
 not deleted: 
@@ -457,12 +463,16 @@ deleted
 נמחק
 Moving part of the %s log file.
 מזיז חלק מקובץ היומן %s.
+Could not open %s log file
+לא ניתן לפתוח את קובץ היומן %s
+Error was
+השגיאה היתה
+Note: This error is normal if no changes have been made.
+הערה: שגיאה זו היא רגילה אם לא בוצעו שינויים.
 Moving %s log entries.
 מזיז %s ערכי יומן.
 Getting page index file for %s.
 
-Main lock released.
-נעילה ראשית שוחררה.
 Set or Remove global edit lock
 קבע או הסר נעילת עריכה גלובלית
 Edit lock created.
@@ -523,6 +533,10 @@ Rename %s to:
 
 Learn more...
 
+Complete Content
+תוכן מלא
+The main page is %s.
+הדף הראשי הוא %s.
 Cannot highlight the language %s.
 
 Recent Visitors
@@ -773,7 +787,15 @@ Download this page as PDF
 
 Portrait
 
+Publish %s
+
+No target wiki was specified in the config file.
+
+The target wiki was misconfigured.
+
 You did not answer correctly.
+
+To save this page you must answer this question:
 
 All Referrers
 כל המפנים
@@ -798,6 +820,12 @@ Search term missing.
 Result pages: 
 
 (%s results)
+
+Tags:
+
+Tags: %s.
+
+No tags
 
 Slideshow:%s
 
@@ -853,6 +881,12 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 
 search
 חיפוש
+Wanted Pages
+
+%s pages
+
+%s, referenced from:
+
 Upload of %s file
 
 Blog
@@ -862,5 +896,9 @@ Matching pages:
 New
 
 Edit %s.
+
+Title: 
+
+Tags: 
 
 END_OF_TRANSLATION

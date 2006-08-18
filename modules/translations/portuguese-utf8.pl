@@ -20,10 +20,12 @@
 #
 # This translation was last checked for Oddmuse version 1.195.
 #
-$ModulesDescription .= '<p>$Id: portuguese-utf8.pl,v 1.12 2006/05/10 22:52:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: portuguese-utf8.pl,v 1.13 2006/08/18 22:46:10 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Leitura não permitida: utilizador, ip, ou rede está bloqueado(a).
+%s calls
+
 Could not create %s
 Não foi possivel criar %s
 Invalid UserName %s: not saved.
@@ -34,6 +36,14 @@ This page contains an uploaded file:
 Esta página contém um ficheiro enviado:
 Recursive include of %s!
 
+Clear Cache
+
+Main lock obtained.
+Bloqueio principal efectuado.
+Main lock released.
+Bloqueio principal libertado.
+Comments on this page
+Comentários sobre esta página
 XML::RSS is not available on this system.
 XML::RSS não existe neste sistema
 diff
@@ -76,14 +86,6 @@ Preview only, not yet saved
 Visualização apenas, nada foi gravado
 Please go on to %s.
 Por favor vá para %s
-Could not open %s log file
-Não foi possivel abrir o arquivo %s de log
-Error was
-Erro foi
-Note: This error is normal if no changes have been made.
-NOTA: Este erro é normal se nenhuma alteração foi feita.
-Could not open old %s log file
-Não foi possivel abrir o antigo arquivo %s de log
 No updates since %s
 Nenhuma actualização desde %s
 Updates since %s
@@ -98,6 +100,10 @@ List latest change per page only
 Mostrar só as últimas modificações por página
 List all changes
 Mostrar todas as modificações
+Skip rollbacks
+
+Include rollbacks
+
 List only major changes
 Mostrar só as modificações maiores
 Include minor changes
@@ -134,19 +140,33 @@ History of %s
 Histórico de %s
 Compare
 Comparar
+Deleted
+
+Mark this page for deletion
+
+No other revisions available
+
+current
+
 Revision %s
 Revisão %s
-by
-por
-Rolling back changes
+Contributors to %s
 
 Missing target for rollback.
 
 Target for rollback is too far back.
 
+Rolling back changes
+
+The two revisions are the same.
+
+Editing not allowed for %s.
+Edição não permitida para %s.
 Rollback to %s
 
 %s rolled back
+
+to %s
 
 Index of all pages
 Índice de todas as páginas
@@ -216,6 +236,8 @@ View current revision
 Ver a versão actual
 View all changes
 Ver todas as alterações
+View contributors
+
 Homepage URL:
 URL da página de entrada
 s
@@ -236,28 +258,26 @@ Validate HTML
 Validar HTML
 Validate CSS
 Validar CSS
-Difference (from revision %1 to %2)
+Last edit
+
+Difference between revision %1 and %2
 Diferença (entre a revisão %1 e %2)
 revision %s
 revisão %s
 current revision
 versão actual
-Difference (from prior %s revision)
-Diferença (relativamennte à %s revisão)
-major
-importante
-minor
-simples
+Last major edit (%s)
+
+later minor edits
+
 No diff available.
 Nenhuma dif. disponível.
-The two revisions are the same.
-
 Old revision:
 Revisão antiga:
 Changed:
 Alterado:
-Removed:
-Removido:
+Deleted:
+
 Added:
 Adicionado:
 to
@@ -328,10 +348,10 @@ Summary:
 Sumário:
 This change is a minor edit.
 Esta actualização é miníma.
-Replace this file with text.
-Substituir este ficheiro por texto.
-Replace this text with a file.
-Substituir este texto por um ficheiro.
+Replace this file with text
+Substituir este ficheiro por texto
+Replace this text with a file
+Substituir este texto por um ficheiro
 File to upload: 
 Arquivo a enviar: 
 Files of type %s are not allowed.
@@ -354,6 +374,10 @@ This operation is restricted to site editors only...
 Esta operação é destinada apenas aos editores do sítio...
 This operation is restricted to administrators only...
 Esta operação é destinada apenas aos administradores...
+SampleUndefinedPage
+ExemploPaginaNaoDefinida
+Sample_Undefined_Page
+Exemplo_Pagina_Nao_Definida
 Rule "%1" matched "%2" on this page.
 A regra "%1" coincide com a "%2" nesta página.
 Without normal pages
@@ -392,24 +416,8 @@ Near pages:
 Páginas próximas:
 last updated
 última actualização
-Complete Content
-Conteúdo completo
-The main page is %s.
-A página principal é %s.
-Comments on this page
-Comentários sobre esta página
-Editing not allowed for %s.
-Edição não permitida para %s.
-SampleUndefinedPage
-ExemploPaginaNaoDefinida
-%s cannot be defined.
-%s não pode ser definida.
-Sample_Undefined_Page
-Exemplo_Pagina_Nao_Definida
-[[%s]] cannot be defined.
-[[%s]] não pode ser definida.
-Only an administrator can create %s.
-Só os administradores podem criar a página %s.
+by
+por
 Transfer Error: %s
 Erro de transferência: %s
 Browser reports no file info.
@@ -450,8 +458,6 @@ Manutenção não concluída.
 (Manutenção pode ser feita apenas de 12 em 12 horas.)
 Remove the "maintain" file or wait.
 Remover o arquivo "manter" ou esperar.
-Main lock obtained.
-Bloqueio principal efectuado.
 Expiring keep files and deleting pages marked for deletion
 Expirando arquivos a manter e apagando páginas marcadas para apagar
 not deleted: 
@@ -460,12 +466,16 @@ deleted
 apagado
 Moving part of the %s log file.
 Movendo parte do arquivo %s de log.
+Could not open %s log file
+Não foi possivel abrir o arquivo %s de log
+Error was
+Erro foi
+Note: This error is normal if no changes have been made.
+NOTA: Este erro é normal se nenhuma alteração foi feita.
 Moving %s log entries.
 Movendo entradas de log %s.
 Getting page index file for %s.
 
-Main lock released.
-Bloqueio principal libertado.
 Set or Remove global edit lock
 Marque ou Remova bloqueio global de edição
 Edit lock created.
@@ -526,6 +536,10 @@ Rename %s to:
 Renomear %s para:
 Learn more...
 
+Complete Content
+Conteúdo completo
+The main page is %s.
+A página principal é %s.
 Cannot highlight the language %s.
 Impossível destacar a língua %s
 Recent Visitors
@@ -776,8 +790,16 @@ Download this page as PDF
 
 Portrait
 Retrato
+Publish %s
+
+No target wiki was specified in the config file.
+
+The target wiki was misconfigured.
+
 You did not answer correctly.
 Não respondeu correctamente.
+To save this page you must answer this question:
+
 All Referrers
 Todos os <i>Referrers</i>
 Referrers
@@ -802,6 +824,12 @@ Result pages:
 Páginas de resultados:
 (%s results)
 (%s resultados)
+Tags:
+
+Tags: %s.
+
+No tags
+
 Slideshow:%s
 Slideshow:%s
 Static Copy
@@ -856,6 +884,12 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 
 search
 busca
+Wanted Pages
+
+%s pages
+
+%s, referenced from:
+
 Upload of %s file
 
 Blog
@@ -865,5 +899,9 @@ Matching pages:
 New
 
 Edit %s.
+
+Title: 
+
+Tags: 
 
 END_OF_TRANSLATION

@@ -15,9 +15,11 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: new-utf8.pl,v 1.9 2006/05/10 22:52:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: new-utf8.pl,v 1.10 2006/08/18 22:46:10 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
+
+%s calls
 
 Could not create %s
 
@@ -28,6 +30,14 @@ UserName must be 50 characters or less: not saved
 This page contains an uploaded file:
 
 Recursive include of %s!
+
+Clear Cache
+
+Main lock obtained.
+
+Main lock released.
+
+Comments on this page
 
 XML::RSS is not available on this system.
 
@@ -71,14 +81,6 @@ Preview only, not yet saved
 
 Please go on to %s.
 
-Could not open %s log file
-
-Error was
-
-Note: This error is normal if no changes have been made.
-
-Could not open old %s log file
-
 No updates since %s
 
 Updates since %s
@@ -92,6 +94,10 @@ for %s only
 List latest change per page only
 
 List all changes
+
+Skip rollbacks
+
+Include rollbacks
 
 List only major changes
 
@@ -129,19 +135,33 @@ History of %s
 
 Compare
 
+Deleted
+
+Mark this page for deletion
+
+No other revisions available
+
+current
+
 Revision %s
 
-by
-
-Rolling back changes
+Contributors to %s
 
 Missing target for rollback.
 
 Target for rollback is too far back.
 
+Rolling back changes
+
+The two revisions are the same.
+
+Editing not allowed for %s.
+
 Rollback to %s
 
 %s rolled back
+
+to %s
 
 Index of all pages
 
@@ -211,6 +231,8 @@ View current revision
 
 View all changes
 
+View contributors
+
 Homepage URL:
 
 s
@@ -231,27 +253,25 @@ Validate HTML
 
 Validate CSS
 
-Difference (from revision %1 to %2)
+Last edit
+
+Difference between revision %1 and %2
 
 revision %s
 
 current revision
 
-Difference (from prior %s revision)
+Last major edit (%s)
 
-major
-
-minor
+later minor edits
 
 No diff available.
-
-The two revisions are the same.
 
 Old revision:
 
 Changed:
 
-Removed:
+Deleted:
 
 Added:
 
@@ -323,9 +343,9 @@ Summary:
 
 This change is a minor edit.
 
-Replace this file with text.
+Replace this file with text
 
-Replace this text with a file.
+Replace this text with a file
 
 File to upload: 
 
@@ -348,6 +368,10 @@ This site does not use admin or editor passwords.
 This operation is restricted to site editors only...
 
 This operation is restricted to administrators only...
+
+SampleUndefinedPage
+
+Sample_Undefined_Page
 
 Rule "%1" matched "%2" on this page.
 
@@ -387,23 +411,7 @@ Near pages:
 
 last updated
 
-Complete Content
-
-The main page is %s.
-
-Comments on this page
-
-Editing not allowed for %s.
-
-SampleUndefinedPage
-
-%s cannot be defined.
-
-Sample_Undefined_Page
-
-[[%s]] cannot be defined.
-
-Only an administrator can create %s.
+by
 
 Transfer Error: %s
 
@@ -445,8 +453,6 @@ Maintenance not done.
 
 Remove the "maintain" file or wait.
 
-Main lock obtained.
-
 Expiring keep files and deleting pages marked for deletion
 
 not deleted: 
@@ -455,11 +461,15 @@ deleted
 
 Moving part of the %s log file.
 
+Could not open %s log file
+
+Error was
+
+Note: This error is normal if no changes have been made.
+
 Moving %s log entries.
 
 Getting page index file for %s.
-
-Main lock released.
 
 Set or Remove global edit lock
 
@@ -520,6 +530,10 @@ Immediately delete %s
 Rename %s to:
 
 Learn more...
+
+Complete Content
+
+The main page is %s.
 
 Cannot highlight the language %s.
 
@@ -771,7 +785,15 @@ Download this page as PDF
 
 Portrait
 
+Publish %s
+
+No target wiki was specified in the config file.
+
+The target wiki was misconfigured.
+
 You did not answer correctly.
+
+To save this page you must answer this question:
 
 All Referrers
 
@@ -796,6 +818,12 @@ Search term missing.
 Result pages: 
 
 (%s results)
+
+Tags:
+
+Tags: %s.
+
+No tags
 
 Slideshow:%s
 
@@ -851,6 +879,12 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 
 search
 
+Wanted Pages
+
+%s pages
+
+%s, referenced from:
+
 Upload of %s file
 
 Blog
@@ -860,5 +894,9 @@ Matching pages:
 New
 
 Edit %s.
+
+Title: 
+
+Tags: 
 
 END_OF_TRANSLATION

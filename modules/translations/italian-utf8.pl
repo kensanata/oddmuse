@@ -15,10 +15,12 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: italian-utf8.pl,v 1.8 2006/05/10 22:52:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: italian-utf8.pl,v 1.9 2006/08/18 22:46:10 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lettura non consentita: l'utente, l'IP o la rete risultano bloccati.
+%s calls
+
 Could not create %s
 Impossibile creare %s
 Invalid UserName %s: not saved.
@@ -29,6 +31,14 @@ This page contains an uploaded file:
 Questa pagina contiene un file:
 Recursive include of %s!
 
+Clear Cache
+
+Main lock obtained.
+Blocco principale (main) ottenuto.
+Main lock released.
+Blocco principale (main) rilasciato.
+Comments on this page
+Commenti su questa pagina
 XML::RSS is not available on this system.
 Il modulo Perl XML:RSS non è disponibile su questo sistema.
 diff
@@ -71,14 +81,6 @@ Preview only, not yet saved
 Solo anteprima, ancora nessun salvataggio
 Please go on to %s.
 Per favore procedere a %s.
-Could not open %s log file
-Impossibile aprire il log file %s
-Error was
-L'errore è
-Note: This error is normal if no changes have been made.
-Nota: questo errore è normale se non sono stati apportati cambiamenti.
-Could not open old %s log file
-Impossibile aprire il vecchio file di log %s
 No updates since %s
 Nessuna modifica da %s
 Updates since %s
@@ -93,6 +95,10 @@ List latest change per page only
 Elenca solo le ultime modifiche per pagina
 List all changes
 Elenca tutte le modifiche
+Skip rollbacks
+
+Include rollbacks
+
 List only major changes
 Elenca solo le modifiche maggiori
 Include minor changes
@@ -129,19 +135,33 @@ History of %s
 Cronologia di %s
 Compare
 Confronta
+Deleted
+
+Mark this page for deletion
+
+No other revisions available
+
+current
+
 Revision %s
 Revisione %s
-by
-da
-Rolling back changes
-Annullando le modifiche
+Contributors to %s
+
 Missing target for rollback.
 Obiettivo per il rollback mancante.
 Target for rollback is too far back.
 L'obiettivo per il rollback è troppo indietro.
+Rolling back changes
+Annullando le modifiche
+The two revisions are the same.
+
+Editing not allowed for %s.
+Modifiche non consentite per %s.
 Rollback to %s
 Rollback a %s
 %s rolled back
+
+to %s
 
 Index of all pages
 Indice di tutte le pagine
@@ -211,6 +231,8 @@ View current revision
 Guarda la revisione corrente
 View all changes
 Guarda tutti i cambiamenti
+View contributors
+
 Homepage URL:
 
 s
@@ -231,28 +253,26 @@ Validate HTML
 Convalida HTML
 Validate CSS
 Convalida CSS
-Difference (from revision %1 to %2)
+Last edit
+
+Difference between revision %1 and %2
 Differenza (dalla revisione %1 alla %2)
 revision %s
 revisione %s
 current revision
 revisione corrente
-Difference (from prior %s revision)
-Differenza (dalla revisione precedente %s)
-major
-maggiore
-minor
-minore
+Last major edit (%s)
+
+later minor edits
+
 No diff available.
 Nessun diff disponibile.
-The two revisions are the same.
-
 Old revision:
 Vecchia revisione:
 Changed:
 Cambiato:
-Removed:
-Rimosso:
+Deleted:
+
 Added:
 Aggiunto:
 to
@@ -323,10 +343,10 @@ Summary:
 Sunto:
 This change is a minor edit.
 Questa è una modifica minore.
-Replace this file with text.
-Rimpiazza questo file con un testo.
-Replace this text with a file.
-Rimpiazza questo testo con un file.
+Replace this file with text
+Rimpiazza questo file con un testo
+Replace this text with a file
+Rimpiazza questo testo con un file
 File to upload: 
 File da inviare:
 Files of type %s are not allowed.
@@ -349,6 +369,10 @@ This operation is restricted to site editors only...
 Questa operazione è consentita ai soli editor...
 This operation is restricted to administrators only...
 Questa operazione è consentita ai soli amministratori...
+SampleUndefinedPage
+PaginaEsempioIndefinita
+Sample_Undefined_Page
+Pagina_Esempio_Indefinita
 Rule "%1" matched "%2" on this page.
 La regola "%1" include "%2" su questa pagina.
 Without normal pages
@@ -387,24 +411,8 @@ Near pages:
 Pagine vicine:
 last updated
 modificato l'ultima volta
-Complete Content
-Contenuto completo
-The main page is %s.
-La pagina principale è %s.
-Comments on this page
-Commenti su questa pagina
-Editing not allowed for %s.
-Modifiche non consentite per %s.
-SampleUndefinedPage
-PaginaEsempioIndefinita
-%s cannot be defined.
-%s non può essere definito.
-Sample_Undefined_Page
-Pagina_Esempio_Indefinita
-[[%s]] cannot be defined.
-[[%s]] non può essere definita.
-Only an administrator can create %s.
-Solo un amministratore può creare %s.
+by
+da
 Transfer Error: %s
 Errore di trasferimento: %s
 Browser reports no file info.
@@ -445,8 +453,6 @@ Mantenimento non effettuato.
 (Il mantenimento può essere effettuato al più una volta ogni 12 ore)
 Remove the "maintain" file or wait.
 Rimuovere il file "maintain" o attendere.
-Main lock obtained.
-Blocco principale (main) ottenuto.
 Expiring keep files and deleting pages marked for deletion
 Eliminazione delle versioni obsolete e delle pagine marcate per la cancellazione
 not deleted: 
@@ -455,12 +461,16 @@ deleted
 cancellati
 Moving part of the %s log file.
 Spostamento di parte del file di log %s.
+Could not open %s log file
+Impossibile aprire il log file %s
+Error was
+L'errore è
+Note: This error is normal if no changes have been made.
+Nota: questo errore è normale se non sono stati apportati cambiamenti.
 Moving %s log entries.
 Spostamento di %s elementi di log.
 Getting page index file for %s.
 Raccolta del file di indice di pagina per %s.
-Main lock released.
-Blocco principale (main) rilasciato.
 Set or Remove global edit lock
 Imposta o rilascia il blocco globale di modifica
 Edit lock created.
@@ -521,6 +531,10 @@ Rename %s to:
 Rinomina %s in:
 Learn more...
 
+Complete Content
+Contenuto completo
+The main page is %s.
+La pagina principale è %s.
 Cannot highlight the language %s.
 Impossibile evidenziare il linguaggio %s.
 Recent Visitors
@@ -771,8 +785,16 @@ Download this page as PDF
 
 Portrait
 Ritratto
+Publish %s
+
+No target wiki was specified in the config file.
+
+The target wiki was misconfigured.
+
 You did not answer correctly.
 Risposta errata.
+To save this page you must answer this question:
+
 All Referrers
 Tutti i referenti
 Referrers
@@ -796,6 +818,12 @@ Manca il termine da cercare.
 Result pages: 
 
 (%s results)
+
+Tags:
+
+Tags: %s.
+
+No tags
 
 Slideshow:%s
 
@@ -851,6 +879,12 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 
 search
 cerca
+Wanted Pages
+
+%s pages
+
+%s, referenced from:
+
 Upload of %s file
 
 Blog
@@ -860,5 +894,9 @@ Matching pages:
 New
 
 Edit %s.
+
+Title: 
+
+Tags: 
 
 END_OF_TRANSLATION

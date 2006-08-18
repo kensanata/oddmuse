@@ -15,10 +15,12 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: romanian-utf8.pl,v 1.6 2006/05/16 19:08:48 victor_os Exp $</p>';
+$ModulesDescription .= '<p>$Id: romanian-utf8.pl,v 1.7 2006/08/18 22:46:10 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Citirea nu este permisă: utilizatorul, ip-ul sau reţeaua este blocată.
+%s calls
+
 Could not create %s
 Nu am putut crea %s
 Invalid UserName %s: not saved.
@@ -29,6 +31,14 @@ This page contains an uploaded file:
 
 Recursive include of %s!
 
+Clear Cache
+
+Main lock obtained.
+
+Main lock released.
+
+Comments on this page
+Comentarii la această pagină.
 XML::RSS is not available on this system.
 XML::RSS nu este disponibil pe acest sistem.
 diff
@@ -36,9 +46,9 @@ diferenţe
 history
 istoric
 %s returned no data, or LWP::UserAgent is not available.
-%s nu a returnat date, sau LWP::UserAgent nu este disponibil.
+
 RSS parsing failed for %s
-Nu a reuşit parcurgerea RSS pentru %s
+
 No items found in %s.
 Nici un element găsit în %s.
  . . . . 
@@ -48,11 +58,11 @@ Editează această pagină
 image
 imagine
 download
-descarcă
+
 CGI Internal error: %s
-Eroare internă CGI: %s
+
 Invalid action parameter %s
-Parametrul %s pentru acţiune nu este valid
+
 Invalid URL.
 URL incorect.
 Page name is missing
@@ -60,25 +70,17 @@ Lipseşte numele paginii.
 Page name is too long: %s
 Numele paginii este prea lung: %s
 Invalid Page %s (must not end with .db)
-Pagina %s nu este validă (nu se poate termina cu .db)
+
 Invalid Page %s (must not end with .lck)
-Pagina %s nu este validă (nu se poate termina cu .lck)
+
 Invalid Page %s
-Pagina %s nu este validă
+
 Preview:
 Previzualizare:
 Preview only, not yet saved
 Previzualizare, pagina nu a fost încă salvată
 Please go on to %s.
-Vă rugăm să continuaţi la %s.
-Could not open %s log file
-Fişierul cu înregistrări %s nu a putut fi deschis
-Error was
-Eroarea a fost
-Note: This error is normal if no changes have been made.
-Notă: Această eroare este normală dacă nu au fost făcute modificări.
-Could not open old %s log file
-Fişierul cu înregistrări vechi %s nu a putut fi deschis
+
 No updates since %s
 Nici o modificare de la %s
 Updates since %s
@@ -93,6 +95,10 @@ List latest change per page only
 
 List all changes
 Arată toate modificările
+Skip rollbacks
+
+Include rollbacks
+
 List only major changes
 Arată numai modificările majore
 Include minor changes
@@ -124,24 +130,38 @@ nou
 from %s
 de la %s
 This page is too big to send over RSS.
-Această pagină este prea voluminoasă pentru a putea fi trimisă prin RSS.
+
 History of %s
 Istorcul %s
 Compare
 Compară
+Deleted
+
+Mark this page for deletion
+
+No other revisions available
+
+current
+
 Revision %s
 Revizia %s
-by
-de către
-Rolling back changes
+Contributors to %s
 
 Missing target for rollback.
 
 Target for rollback is too far back.
 
+Rolling back changes
+
+The two revisions are the same.
+
+Editing not allowed for %s.
+Editarea nu este permisă pentru %s
 Rollback to %s
 
 %s rolled back
+
+to %s
 
 Index of all pages
 Indexul tuturor paginilor
@@ -158,7 +178,7 @@ Deblochează site-ul
 Lock site
 Blochează site-ul
 Install CSS
-Instalare CSS
+
 Unlock %s
 Deblochează %s
 Lock %s
@@ -170,7 +190,7 @@ Acţiuni:
 Important pages:
 Pagini importante:
 To mark a page for deletion, put <strong>%s</strong> on the first line.
-Pentru a marca o pagină pentru a fiştearsă, puneţi <strong>%s</strong> pe primul rând.
+
 [Home]
 [Acasă]
 redirected from %s
@@ -211,8 +231,10 @@ View current revision
 Vezi revizia curentă
 View all changes
 Vezi toate modificările
+View contributors
+
 Homepage URL:
-Adresa paginii personale.
+
 s
 
 Save
@@ -231,28 +253,26 @@ Validate HTML
 HTML Valid
 Validate CSS
 CSS Valid
-Difference (from revision %1 to %2)
+Last edit
+
+Difference between revision %1 and %2
 Diferenţe (între revizia %1 şi %2)
 revision %s
 revizia %s
 current revision
 revizia curentă
-Difference (from prior %s revision)
-Diferenţe (dinainte de revizia %s)
-major
-majoră
-minor
-minoră
+Last major edit (%s)
+
+later minor edits
+
 No diff available.
 Nici o diferenţă disponibilă.
-The two revisions are the same.
-Cele două revizii sunt identice.
 Old revision:
 Revizia veche:
 Changed:
 Modificat:
-Removed:
-Şters:
+Deleted:
+
 Added:
 Adăugat:
 to
@@ -260,25 +280,25 @@ ca
 Revision %s not available
 Revizia %s nu este disponibilă
 showing current revision instead
-arată revizia curentă în loc
+
 Showing revision %s
-Arată revizia %s
+
 Cannot save a nameless page.
-Nu pot salva o pagină fără nume.
+
 Cannot save a page without revision.
-Nu pot salva o pagină fără revizie.
+
 Cannot open %s
-Nu pot deschide %s
+
 Cannot write %s
-Nu pot scrie %s
+
 Cannot create %s
-Nu pot crea %s
+
 Could not get %s lock
 
 The lock was created %s.
 
 This operation may take several seconds...
-Această operaţie poate dura mai multe secunde...
+
 Forced unlock of %s lock.
 
 No unlock required.
@@ -323,16 +343,16 @@ Summary:
 Sumar:
 This change is a minor edit.
 Această modificare este una minoră.
-Replace this file with text.
-Înlocuieşte acest fişier cu text.
-Replace this text with a file.
-Înlocuieşte acest text cu un fişier.
+Replace this file with text
+Înlocuieşte acest fişier cu text
+Replace this text with a file
+Înlocuieşte acest text cu un fişier
 File to upload: 
 Fişier pentru adăugare.
 Files of type %s are not allowed.
 Fişierele de tipul %s nu sunt permise.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
-Parola dumneavoastră este salvată într-un cookie, dacă aveţi activat suportul cookie. Aceste cookie se pot pierde dacă vă conectaţi de la alt terminal, cu alt cont, sau alt program.
+
 You are currently an administrator on this site.
 Sunteţi administrator pe acest site.
 You are currently an editor on this site.
@@ -349,6 +369,10 @@ This operation is restricted to site editors only...
 Această operaţie este permisă numai editorilor...
 This operation is restricted to administrators only...
 Această operaţie este permisă numai administratorilor...
+SampleUndefinedPage
+
+Sample_Undefined_Page
+
 Rule "%1" matched "%2" on this page.
 
 Without normal pages
@@ -387,24 +411,8 @@ Near pages:
 
 last updated
 editată pe
-Complete Content
-
-The main page is %s.
-Pagina principală este %s.
-Comments on this page
-Comentarii la această pagină.
-Editing not allowed for %s.
-Editarea nu este permisă pentru %s
-SampleUndefinedPage
-
-%s cannot be defined.
-
-Sample_Undefined_Page
-
-[[%s]] cannot be defined.
-
-Only an administrator can create %s.
-Numai un administrator poate crea %s.
+by
+de către
 Transfer Error: %s
 Eroare la Transfer: %s
 Browser reports no file info.
@@ -416,7 +424,7 @@ The page contains banned text.
 No changes to be saved.
 
 This page was changed by somebody else %s.
-Această pagină a fost modificată de altcineva %s.
+
 The changes conflict.  Please check the page again.
 
 Please check whether you overwrote those changes.
@@ -426,7 +434,7 @@ Anonim
 Cannot delete the index file %s.
 Nu am putut şterge fişierul index %s.
 Please check the directory permissions.
-Vă rog să verificaţi permisiunile directorului.
+
 Your changes were not saved.
 Modificările nu au fost salvate.
 Could not get a lock to merge!
@@ -445,8 +453,6 @@ Maintenance not done.
 
 Remove the "maintain" file or wait.
 
-Main lock obtained.
-
 Expiring keep files and deleting pages marked for deletion
 
 not deleted: 
@@ -455,11 +461,15 @@ deleted
 şters
 Moving part of the %s log file.
 
+Could not open %s log file
+
+Error was
+Eroarea a fost
+Note: This error is normal if no changes have been made.
+
 Moving %s log entries.
 
 Getting page index file for %s.
-
-Main lock released.
 
 Set or Remove global edit lock
 
@@ -521,6 +531,10 @@ Rename %s to:
 Redenumeşte %s ca:
 Learn more...
 
+Complete Content
+
+The main page is %s.
+Pagina principală este %s.
 Cannot highlight the language %s.
 
 Recent Visitors
@@ -542,45 +556,45 @@ Precedent
 Next
 Următor
 Calendar %s
-Calendar %s
+
 Su
-Du
+
 Mo
-Lu
+
 Tu
-Ma
+
 We
-Mi
+
 Th
-Jo
+
 Fr
-Vi
+
 Sa
-Sî
+
 January
-Ianuarie
+
 February
-Februarie
+
 March
-Martie
+
 April
-Aprilie
+
 May
-Mai
+
 June
-Iunie
+
 July
-Iulie
+
 August
-August
+
 September
-Septembrie
+
 October
-Octombrie
+
 November
-Noiembrie
+
 December
-Decembrie
+
 Clustermap
 
 Pages without a Cluster
@@ -596,11 +610,11 @@ Compilation tag is missing a regular expression.
 Despamming pages
 
 Cannot find revision %s.
-Revizia %s nu a putut fi găsită.
+
 Revert to revision %1: %2
-Revenire la revizia %1: %2
+
 Marked as %s.
-Marcat ca %s.
+
 Cannot find unspammed revision.
 
 Add Comment
@@ -642,7 +656,7 @@ Parolele nu se potrivesc.
 The password must be at least %s characters.
 Lungimea parolei trebuie să fie de cel puţin %s caractere.
 That email address is invalid.
-Adresa de email nu este validă.
+
 The username %s has already been registered.
 
 Your registration for %s has been submitted.
@@ -696,7 +710,7 @@ You are logged in as %s.
 You are not logged in.
 
 Reset Password
-Resetează Parola
+
 The password for %s was reset.  It has been emailed to the address on file.
 
 There was an error resetting the password for %s.
@@ -744,7 +758,7 @@ LocalMap
 No page id for action localmap
 
 Requested page %s does not exist
-Pagina %s nu există
+
 Local Map for %s
 
 view
@@ -771,7 +785,15 @@ Download this page as PDF
 
 Portrait
 
+Publish %s
+
+No target wiki was specified in the config file.
+
+The target wiki was misconfigured.
+
 You did not answer correctly.
+
+To save this page you must answer this question:
 
 All Referrers
 
@@ -797,10 +819,16 @@ Result pages:
 
 (%s results)
 (%s rezultate)
+Tags:
+
+Tags: %s.
+
+No tags
+
 Slideshow:%s
 
 Static Copy
-Copie Statică
+
 Back to %s
 Înapoi la %s
 Copy to %1 succeeded: %2.
@@ -836,9 +864,9 @@ Conţinut
 This page is a translation of %s. 
 Această pagină este o traducere a %s.
 The translation is up to date.
-Traducerea este curentă.
+
 The translation is outdated.
-Traducerea nu este curentă.
+
 The page does not exist.
 Pagina nu există.
 http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
@@ -851,6 +879,12 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 
 search
 
+Wanted Pages
+
+%s pages
+
+%s, referenced from:
+
 Upload of %s file
 
 Blog
@@ -860,5 +894,9 @@ Matching pages:
 New
 
 Edit %s.
+
+Title: 
+
+Tags: 
 
 END_OF_TRANSLATION

@@ -15,10 +15,12 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: ukrainian-utf8.pl,v 1.3 2006/05/10 22:52:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: ukrainian-utf8.pl,v 1.4 2006/08/18 22:46:10 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Не дозволено читати: користувач, IP, або мережа заблоковані.
+%s calls
+
 Could not create %s
 Не вдалось створити %s
 Invalid UserName %s: not saved.
@@ -29,6 +31,14 @@ This page contains an uploaded file:
 Ця сторінка містить завантажений файл:
 Recursive include of %s!
 Рекурсивне включення %s!
+Clear Cache
+
+Main lock obtained.
+Отримано основний замок.
+Main lock released.
+Знято основний блок.
+Comments on this page
+Коментарі до цієї сторінки
 XML::RSS is not available on this system.
 XML::RSS не доступний на цій системі.
 diff
@@ -71,14 +81,6 @@ Preview only, not yet saved
 Тільки попередній перегляд, ще не збережено
 Please go on to %s.
 Будь ласка, перейдіть на %s.
-Could not open %s log file
-Не вдалось відкрити файл протоколювання %s
-Error was
-Помилка була
-Note: This error is normal if no changes have been made.
-Примітка: Ця помилка припустима, якщо не було зроблено жодних змін.
-Could not open old %s log file
-Не вдалось відкрити файл протоколювання %s
 No updates since %s
 Жодних оновлень від %s
 Updates since %s
@@ -93,6 +95,10 @@ List latest change per page only
 Перелічити останні змінни лише по кожній сторінці
 List all changes
 Перелічити всі зміни
+Skip rollbacks
+
+Include rollbacks
+
 List only major changes
 Перелічити лише значні зміни
 Include minor changes
@@ -129,20 +135,34 @@ History of %s
 Історія %s
 Compare
 Порівняти
+Deleted
+
+Mark this page for deletion
+
+No other revisions available
+
+current
+
 Revision %s
 Версія %s
-by
+Contributors to %s
 
-Rolling back changes
-Скасовую зміни
 Missing target for rollback.
 Відсутня ціль для скасування змін.
 Target for rollback is too far back.
 Ціль для скасування змін занадто далека.
+Rolling back changes
+Скасовую зміни
+The two revisions are the same.
+Дві версії однакові.
+Editing not allowed for %s.
+Редагування не дозволено для %s.
 Rollback to %s
 Повернути до %s
 %s rolled back
 %s скасовані зміни
+to %s
+
 Index of all pages
 Покажчик зі всіх сторінок
 Wiki Version
@@ -211,6 +231,8 @@ View current revision
 Дивитись поточну версію
 View all changes
 Дивитись всі зміни
+View contributors
+
 Homepage URL:
 Стартовий URL:
 s
@@ -231,28 +253,26 @@ Validate HTML
 Перевірити HTML
 Validate CSS
 Перевірити CSS
-Difference (from revision %1 to %2)
+Last edit
+
+Difference between revision %1 and %2
 Різниця (між версією %1 до %2)
 revision %s
 версія %s
 current revision
 поточна версія
-Difference (from prior %s revision)
-Різниця (від попередньої версії %s)
-major
-значна
-minor
-незначна
+Last major edit (%s)
+
+later minor edits
+
 No diff available.
 Різниці не доступні.
-The two revisions are the same.
-Дві версії однакові.
 Old revision:
 Стара версія:
 Changed:
 Змінено:
-Removed:
-Видалено:
+Deleted:
+
 Added:
 Додано:
 to
@@ -323,10 +343,10 @@ Summary:
 Підсумок:
 This change is a minor edit.
 Ця зміна є незначною.
-Replace this file with text.
-Замінити цей файл текстом.
-Replace this text with a file.
-Замінити цей текст файлом.
+Replace this file with text
+Замінити цей файл текстом
+Replace this text with a file
+Замінити цей текст файлом
 File to upload: 
 Файл для завантаження:
 Files of type %s are not allowed.
@@ -349,6 +369,10 @@ This operation is restricted to site editors only...
 Операцію дозволено виконувати лише редакторам...
 This operation is restricted to administrators only...
 Операцію дозволено виконувати лише адміністраторам...
+SampleUndefinedPage
+
+Sample_Undefined_Page
+
 Rule "%1" matched "%2" on this page.
 На цій сторінці "%2" відповідає правилу "%1"
 Without normal pages
@@ -387,24 +411,8 @@ Near pages:
 Подібні сторінки:
 last updated
 востаннє оновлено
-Complete Content
-Повний зміст
-The main page is %s.
-%s - основна сторінка.
-Comments on this page
-Коментарі до цієї сторінки
-Editing not allowed for %s.
-Редагування не дозволено для %s.
-SampleUndefinedPage
+by
 
-%s cannot be defined.
-%s не можна визначити.
-Sample_Undefined_Page
-
-[[%s]] cannot be defined.
-[[%s]] не може бути визначено.
-Only an administrator can create %s.
-Тільки адміністратор може створити %s.
 Transfer Error: %s
 Помилка при передачі даних: %s
 Browser reports no file info.
@@ -445,8 +453,6 @@ Maintenance not done.
 (Поточна профілактика може запускатись кожні 12 годин.)
 Remove the "maintain" file or wait.
 Видаліть файл "maintain" або зачекайте.
-Main lock obtained.
-Отримано основний замок.
 Expiring keep files and deleting pages marked for deletion
 
 not deleted: 
@@ -455,12 +461,16 @@ deleted
 видалено
 Moving part of the %s log file.
 Переміщення частини файлу журанала %s.
+Could not open %s log file
+Не вдалось відкрити файл протоколювання %s
+Error was
+Помилка була
+Note: This error is normal if no changes have been made.
+Примітка: Ця помилка припустима, якщо не було зроблено жодних змін.
 Moving %s log entries.
 
 Getting page index file for %s.
 
-Main lock released.
-Знято основний блок.
 Set or Remove global edit lock
 Встановити або Видалити глобальний блок редагування
 Edit lock created.
@@ -521,6 +531,10 @@ Rename %s to:
 Змінити ім'я %s на:
 Learn more...
 Дізнатись більше...
+Complete Content
+Повний зміст
+The main page is %s.
+%s - основна сторінка.
 Cannot highlight the language %s.
 Не можу підсвічувати мову %s.
 Recent Visitors
@@ -771,8 +785,16 @@ Download this page as PDF
 Скачати цю сторінку в форматі PDF
 Portrait
 
+Publish %s
+
+No target wiki was specified in the config file.
+
+The target wiki was misconfigured.
+
 You did not answer correctly.
 Ви відповили невірно.
+To save this page you must answer this question:
+
 All Referrers
 
 Referrers
@@ -797,6 +819,12 @@ Result pages:
 Результати пошуку:
 (%s results)
 (%s результатів)
+Tags:
+
+Tags: %s.
+
+No tags
+
 Slideshow:%s
 Показ слайдів: %s
 Static Copy
@@ -851,6 +879,12 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 
 search
 пошук
+Wanted Pages
+
+%s pages
+
+%s, referenced from:
+
 Upload of %s file
 Завантаження файла %s
 Blog
@@ -861,4 +895,8 @@ New
 Нова
 Edit %s.
 Редагувати %s.
+Title: 
+
+Tags: 
+
 END_OF_TRANSLATION
