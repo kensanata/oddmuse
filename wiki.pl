@@ -273,7 +273,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.723 2006/08/18 11:38:22 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.724 2006/08/18 11:57:37 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1986,7 +1986,9 @@ sub DoRollback {
     OpenPage($id);
     my ($text, $minor, $ts) = GetTextAtTime($to);
     if ($Page{text} eq $text) {
-      print T("The two revisions are the same.") if $page; # no message when doing mass revert
+      print T("The two revisions are the same."), $q->br() if $page; # no message when doing mass revert
+    } elsif (!UserCanEdit($id, 1)) {
+      print Ts('Editing not allowed for %s.', $id), $q->br();
     } else {
       Save($id, $text, Ts('Rollback to %s', TimeToText($to)), $minor, ($Page{ip} ne $ENV{REMOTE_ADDR}));
       print Ts('%s rolled back', GetPageLink($id)), ($ts ? ' ' . Ts('to %s', TimeToText($to)) : ''), $q->br();
@@ -3030,6 +3032,8 @@ sub UserIsAdminOrError {
 
 sub UserCanEdit {
   my ($id, $editing) = @_;
+  return 0 if $id eq 'SampleUndefinedPage' or $id eq T('SampleUndefinedPage')
+    or $id eq 'Sample_Undefined_Page' or $id eq T('Sample_Undefined_Page');
   return 1 if UserIsAdmin();
   return 0 if $id ne '' and -f GetLockedPageFile($id);
   return 0 if $LockOnCreation{$id};
@@ -3441,15 +3445,7 @@ sub Replace {
 sub DoPost {
   my $id = FreeToNormal(shift);
   ValidIdOrDie($id);
-  if (!UserCanEdit($id, 1)) {
-    ReportError(Ts('Editing not allowed for %s.', $id), '403 FORBIDDEN');
-  } elsif (($id eq 'SampleUndefinedPage') or ($id eq T('SampleUndefinedPage'))) {
-    ReportError(Ts('%s cannot be defined.', $id), '403 FORBIDDEN');
-  } elsif (($id eq 'Sample_Undefined_Page') or ($id eq T('Sample_Undefined_Page'))) {
-    ReportError(Ts('[[%s]] cannot be defined.', $id), '403 FORBIDDEN');
-  } elsif ($LockOnCreation{$id} and !UserIsAdmin() and not -f GetPageFile($id)) {
-    ReportError(Ts('Only an administrator can create %s.', $id), '403 FORBIDDEN');
-  }
+  ReportError(Ts('Editing not allowed for %s.', $id), '403 FORBIDDEN') unless UserCanEdit($id, 1);
   my $filename = GetParam('file', undef);
   if ($filename and not $UploadAllowed and not UserIsAdmin()) {
     ReportError(T('Only administrators can upload files.'), '403 FORBIDDEN');
