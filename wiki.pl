@@ -273,7 +273,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.725 2006/08/18 12:17:53 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.726 2006/08/18 16:14:28 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3552,10 +3552,9 @@ sub DoPost {
 }
 
 sub GetSummary {
-  my $text = GetParam('aftertext',  '');
-  $text = GetParam('text', '') unless $text or $Page{revision} > 0;
-  my $summary = GetParam('summary', '') || $text; # GetParam('summary', $text) doesn't work because '' is defined
-  $summary = substr($summary, 0, $SummaryDefaultLength) if $SummaryDefaultLength;
+  my $text = GetParam('aftertext',  '') || $Page{revision} > 0 ? '' : GetParam('text', '');
+  $text = substr($text, 0, $SummaryDefaultLength) if $SummaryDefaultLength;
+  my $summary = GetParam('summary', '') || $text; # not GetParam('summary', $text) work because '' is defined
   $summary =~ s/$FS//g;
   $summary =~ s/[\r\n]+/ /g;
   $summary =~ s/\[$FullUrlPattern\s+(.*?)\]/$2/g; # fix common annoyance when copying text to summary
