@@ -58,7 +58,7 @@ $RssStyleSheet $PermanentAnchorsFile @MyRules %CookieParameters
 @UserGotoBarPages $NewComment $StyleSheetPage $ConfigPage $ScriptName
 @MyMacros $CommentsPrefix @UploadTypes $AllNetworkFiles $UsePathInfo
 $UploadAllowed $LastUpdate $PageCluster $HtmlHeaders %PlainTextPages
-$RssInterwikiTranslate $UseCache $ModuleDir $DebugInfo $FullUrlPattern
+$RssInterwikiTranslate $UseCache $ModuleDir $Counter $FullUrlPattern
 %InvisibleCookieParameters $FreeInterLinkPattern %AdminPages
 @MyAdminCode @MyInitVariables @MyMaintenance $SummaryDefaultLength
 $JournalLimit);
@@ -271,8 +271,9 @@ sub InitRequest {
 }
 
 sub InitVariables {    # Init global session variables for mod_perl!
-  $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'))
-    . $q->p(q{$Id: wiki.pl,v 1.721 2006/08/17 14:05:32 as Exp $});
+  $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
+			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
+    . $q->p(q{$Id: wiki.pl,v 1.722 2006/08/18 11:37:23 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -808,10 +809,8 @@ sub PrintJournal {
 }
 
 sub PrintAllPages {
-  my $links = shift;
-  my $comments = shift;
+  my ($links, $comments, @pages) = @_;
   my $lang = GetParam('lang', 0);
-  my @pages = @_;
   @pages = @pages[0 .. $JournalLimit - 1] if $#pages >= $JournalLimit and not UserIsAdmin();
   for my $id (@pages) {
     OpenPage($id);
@@ -1316,7 +1315,7 @@ sub DoBrowseRequest {
 
 # == Id handling ==
 
-sub ValidId {
+sub ValidId { # hack alert: returns error message if invalid, and unfortunately the empty string if valid!
   my $id = shift;
   return T('Page name is missing') unless $id;
   $id =~ s/ /_/g;
@@ -1328,8 +1327,7 @@ sub ValidId {
 
 sub ValidIdOrDie {
   my $id = shift;
-  my $error;
-  $error = ValidId($id);
+  my $error ValidId($id);
   ReportError($error, '400 BAD REQUEST') if $error;
   return 1;
 }
@@ -1457,6 +1455,11 @@ sub GetRedirectPage {
   return $q->redirect(%headers);
 }
 
+sub DoRandom {
+  my @pages = AllPagesList();
+  ReBrowsePage($pages[int(rand($#pages + 1))]);
+}
+
 sub PageFresh { # pages can depend on other pages (ie. last update), admin status, and css
   return 1 if $q->http('HTTP_IF_NONE_MATCH') and GetParam('cache', $UseCache) >= 2
     and $q->http('HTTP_IF_NONE_MATCH') eq PageEtag();
@@ -1496,20 +1499,7 @@ sub DoRc {
   } else {
     $starttime = $Now - GetParam('days', $RcDefault) * 86400; # 24*60*60
   }
-  my @fullrc = GetRcLines($starttime);
-  if (not GetParam('all', '') or GetParam('rollback', '')) { # strip rollbacks
-    my ($target, $end);
-    for (my $i = @fullrc; $i; $i--) {
-      my ($ts, $pagename, $rest) = split(/$FS/, $fullrc[$i]);
-      splice(@fullrc, $i + 1, $end - $i), $target = 0  if $ts <= $target;
-      $target = $rest, $end = $i if $pagename eq '[[rollback]]' and (not $target or $rest < $target); # marker
-    }
-  } else {
-    for (my $i = @fullrc; $i; $i--) {
-      my ($ts, $pagename) = split(/$FS/, $fullrc[$i]);
-      splice(@fullrc, $i, 1) if $pagename eq '[[rollback]]'; # marker left by DoRollback()
-    }
-  }
+  my @fullrc = GetRcLines($starttime, GetParam('all', '') or GetParam('rollback', ''));
   RcHeader(@fullrc) if $showHTML;
   if (@fullrc == 0 and $showHTML) {
     print $q->p($q->strong(Ts('No updates since %s', TimeToText($starttime))));
@@ -1520,7 +1510,7 @@ sub DoRc {
 }
 
 sub GetRcLines {
-  my $starttime = shift;
+  my ($starttime, $rollbacks) = @_;
   my ($status, $fileData) = ReadFile($RcFile); # read rc.log, errors are not fatal
   my @fullrc = split(/\n/, $fileData);
   my $firstTs = 0;
@@ -1544,6 +1534,19 @@ sub GetRcLines {
     last if ($ts >= $starttime);
   }
   splice(@fullrc, 0, $i);  # Remove items before index $i
+  if (not $rollbacks) { # strip rollbacks
+    my ($target, $end);
+    for (my $i = @fullrc; $i; $i--) {
+      my ($ts, $pagename, $rest) = split(/$FS/, $fullrc[$i]);
+      splice(@fullrc, $i + 1, $end - $i), $target = 0  if $ts <= $target;
+      $target = $rest, $end = $i if $pagename eq '[[rollback]]' and (not $target or $rest < $target); # marker
+    }
+  } else { # just strip the marker left by DoRollback()
+    for (my $i = @fullrc; $i; $i--) {
+      my ($ts, $pagename) = split(/$FS/, $fullrc[$i]);
+      splice(@fullrc, $i, 1) if $pagename eq '[[rollback]]';
+    }
+  }
   return @fullrc;
 }
 
@@ -1564,7 +1567,7 @@ sub RcHeader {
       $val;
     }
       ('rcidonly', 'rcuseronly', 'rchostonly', 'rcclusteronly',
-       'rcfilteronly', 'match', 'lang');
+       'rcfilteronly', 'rcmatch', 'lang');
   if ($clusterOnly) {
     $action = GetPageParameters('browse', $clusterOnly) . $action;
   } else {
@@ -1573,6 +1576,7 @@ sub RcHeader {
   my $days = GetParam('days', $RcDefault);
   my $all = GetParam('all', 0);
   my $edits = GetParam('showedit', 0);
+  my $rollback = GetParam('rollback', 0);
   my @menu;
   if ($all) {
     push(@menu, ScriptLink("$action;days=$days;all=0;showedit=$edits",
@@ -1580,6 +1584,13 @@ sub RcHeader {
   } else {
     push(@menu, ScriptLink("$action;days=$days;all=1;showedit=$edits",
 			   T('List all changes'),'','','','',1));
+    if ($rollback) {
+      push(@menu, ScriptLink("$action;days=$days;all=0;rollback=0;showedit=$edits",
+			     T('Skip rollbacks'),'','','','',1));
+    } else {
+      push(@menu, ScriptLink("$action;days=$days;all=0;rollback=1;showedit=$edits",
+			     T('Include rollbacks'),'','','','',1));
+    }
   }
   if ($edits) {
     push(@menu, ScriptLink("$action;days=$days;all=$all;showedit=0",
@@ -1602,14 +1613,10 @@ sub GetFilterForm {
   $form .= $q->input({-type=>'hidden', -name=>'showedit', -value=>1}) if (GetParam('showedit', 0));
   $form .= $q->input({-type=>'hidden', -name=>'days', -value=>GetParam('days', $RcDefault)})
     if (GetParam('days', $RcDefault) != $RcDefault);
-  my $table = $q->Tr($q->td($q->label({-for=>'rcmatch'}, T('Title:')))
-		     . $q->td($q->textfield(-name=>'match', -id=>'rcmatch', -size=>20)))
-    . $q->Tr($q->td($q->label({-for=>'rcfilteronly'}, T('Title and Body:')))
-	     . $q->td($q->textfield(-name=>'rcfilteronly', -id=>'rcfilteronly', -size=>20)))
-    . $q->Tr($q->td($q->label({-for=>'rcuseronly'}, T('Username:')))
-	     . $q->td($q->textfield(-name=>'rcuseronly', -id=>'rcuseronly', -size=>20)))
-    . $q->Tr($q->td($q->label({-for=>'rchostonly'}, T('Host:')))
-	     . $q->td($q->textfield(-name=>'rchostonly', -id=>'rchostonly', -size=>20)));
+  my %h = ('rcmatch' => T('Title:'), 'rcfilteronly' => T('Title and Body:'),
+	   'rcuseronly' => T('Username:'), 'rchostonly' => T('Host:'));
+  my $table = join('', map { $q->Tr($q->td($q->label({-for=>$_}, $h{$_})),
+				    $q->td($q->textfield(-name=>$_, -id=>$_, -size=>20))) } keys %h);
   $table .= $q->Tr($q->td($q->label({-for=>'rclang'}, T('Language:')))
 		   . $q->td($q->textfield(-name=>'lang', -id=>'rclang', -size=>10,
 					  -default=>GetParam('lang', '')))) if %Languages;
@@ -1648,7 +1655,7 @@ sub GetRc {
   my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $match, $lang) =
     map { GetParam($_, ''); }
       ('rcidonly', 'rcuseronly', 'rchostonly', 'rcclusteronly',
-       'rcfilteronly', 'match', 'lang');
+       'rcfilteronly', 'rcmatch', 'lang');
   @outrc = reverse @outrc if GetParam('newtop', $RecentTop);
   my %seen = ();
   my %match = $filterOnly ? map { $_ => 1 } SearchTitleAndBody($filterOnly) : ();
@@ -1878,16 +1885,7 @@ sub DoRss {
   DoRc(\&GetRcRss);
 }
 
-# == Random ==
-
-sub DoRandom {
-  my ($id, @pageList);
-  @pageList = AllPagesList();
-  $id = $pageList[int(rand($#pageList + 1))];
-  ReBrowsePage($id);
-}
-
-# == History ==
+# == History & Rollback ==
 
 sub DoHistory {
   my $id = shift;
@@ -1963,8 +1961,6 @@ sub DoContributors {
   PrintFooter();
 }
 
-# == Rollback ==
-
 sub RollbackPossible {
   my $ts = shift;
   return ($Now - $ts) < $KeepDays * 86400; # 24*60*60
@@ -1978,8 +1974,8 @@ sub DoRollback {
   my @ids = ();
   if (not $page) { # cannot just use list length because of ('')
     return unless UserIsAdminOrError(); # only admins can do mass changes
-    my %ids = map { my ($ts, $id) = split(/$FS/); $id => 1; }
-      GetRcLines($Now - $KeepDays * 86400); # 24*60*60
+    my %ids = map { my ($ts, $id) = split(/$FS/); $id => 1; } # make unique via hash
+      GetRcLines($Now - $KeepDays * 86400, 1); # 24*60*60
     @ids = keys %ids;
   } else {
     @ids = ($page);
@@ -1990,7 +1986,7 @@ sub DoRollback {
     OpenPage($id);
     my ($text, $minor, $ts) = GetTextAtTime($to);
     if ($Page{text} eq $text) {
-      print T("The two revisions are the same.") if $id; # no message when doing mass revert
+      print T("The two revisions are the same.") if $page; # no message when doing mass revert
     } else {
       Save($id, $text, Ts('Rollback to %s', TimeToText($to)), $minor, ($Page{ip} ne $ENV{REMOTE_ADDR}));
       print Ts('%s rolled back', GetPageLink($id)), ($ts ? ' ' . Ts('to %s', TimeToText($to)) : ''), $q->br();
@@ -2096,14 +2092,12 @@ sub GetAuthorLink {
 
 sub GetHistoryLink {
   my ($id, $text) = @_;
-  $id =~ s/ /_/g;
-  return ScriptLink('action=history;id=' . UrlEncode($id), $text, 'history');
+  return ScriptLink('action=history;id=' . UrlEncode(FreeToNormal($id)), $text, 'history');
 }
 
 sub GetRCLink {
   my ($id, $text) = @_;
-  $id =~ s/ /_/g;
-  return ScriptLink('action=rc;all=1;from=1;showedit=1;rcidonly=' . UrlEncode($id), $text, 'rc');
+  return ScriptLink('action=rc;all=1;from=1;showedit=1;rcidonly=' . UrlEncode(FreeToNormal($id)), $text, 'rc');
 }
 
 sub GetHeader {
@@ -3105,11 +3099,11 @@ sub BannedContent {
 
 sub DoIndex {
   my $raw = GetParam('raw', 0);
-  my @pages;
   my $pages = GetParam('pages', 1);
   my $anchors = GetParam('permanentanchors', 1);
   my $near = GetParam('near', 0);
   my $match = GetParam('match', '');
+  my @pages;
   push(@pages, AllPagesList()) if $pages;
   push(@pages, keys %PermanentAnchors) if $anchors;
   push(@pages, keys %NearSource) if $near;
