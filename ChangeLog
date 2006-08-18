@@ -15,6 +15,7 @@
 	(UserCanEdit): Added test for sample undefined page.
 	(DoPost): Removed unnecessary tests, as these are caught by
 	UserCanEdit.
+	(GetSummary): Don't truncate the real summary!
 
 2006-08-17  Alex Schroeder  <alex@gnu.org>
 
