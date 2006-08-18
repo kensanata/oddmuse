@@ -1,3 +1,13 @@
+2006-08-19  Alex Schroeder  <alex@gnu.org>
+
+	* modules/markup.pl (%MarkupForcedPairs): Use pre for {{{ ... }}}
+	instead of faking it with code. Define a hash telling us which
+	useful subset of HTML elements are block elements.
+	(MarkupTag): Close HTML environment and restart paragraph if a
+	block element.
+	(MarkupRule): Match trailing whitespace on a line if a block
+	element.
+
 2006-08-18  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl ($Counter): New variable for Fast::CGI info.
