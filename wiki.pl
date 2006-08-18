@@ -273,7 +273,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.724 2006/08/18 11:57:37 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.725 2006/08/18 12:17:53 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1499,7 +1499,7 @@ sub DoRc {
   } else {
     $starttime = $Now - GetParam('days', $RcDefault) * 86400; # 24*60*60
   }
-  my @fullrc = GetRcLines($starttime, GetParam('all', '') or GetParam('rollback', ''));
+  my @fullrc = GetRcLines($starttime, (GetParam('all', 0) or GetParam('rollback', 0)));
   RcHeader(@fullrc) if $showHTML;
   if (@fullrc == 0 and $showHTML) {
     print $q->p($q->strong(Ts('No updates since %s', TimeToText($starttime))));
