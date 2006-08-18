@@ -17,10 +17,12 @@
 #
 # This translation was last checked for Oddmuse version 1.195.
 #
-$ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.3 2006/05/10 22:52:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.4 2006/08/18 22:46:10 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Leitura não permitida: usuário, ip, ou rede está bloqueada.
+%s calls
+
 Could not create %s
 Não foi possivel criar %s
 Invalid UserName %s: not saved.
@@ -31,6 +33,14 @@ This page contains an uploaded file:
 Esta página contém um arquivo carregado:
 Recursive include of %s!
 
+Clear Cache
+
+Main lock obtained.
+Trava principal obtida.
+Main lock released.
+Trava principal liberado.
+Comments on this page
+Commentários sobre esta página
 XML::RSS is not available on this system.
 XML::RSS não existe neste sistema
 diff
@@ -73,14 +83,6 @@ Preview only, not yet saved
 Visualização apenas, nada foi salvo
 Please go on to %s.
 Por favor vá para %s
-Could not open %s log file
-Não foi possivel abrir o arquivo %s de log
-Error was
-Erro foi
-Note: This error is normal if no changes have been made.
-Obaservação: Esse erro é normal se nenhuma alteração foi feita.
-Could not open old %s log file
-Não foi possível abrir o antigo arquivo %s de log
 No updates since %s
 Nenhuma atualização desde %s
 Updates since %s
@@ -95,6 +97,10 @@ List latest change per page only
 Mostra só as últimas modificações por página
 List all changes
 Mostra todas as modificações
+Skip rollbacks
+
+Include rollbacks
+
 List only major changes
 Mostra só as modificações maiores
 Include minor changes
@@ -131,20 +137,34 @@ History of %s
 Histórico de %s
 Compare
 Comparar
+Deleted
+
+Mark this page for deletion
+
+No other revisions available
+
+current
+
 Revision %s
 Revisão %s
-by
-por
-Rolling back changes
-Desfazendo mudanças
+Contributors to %s
+
 Missing target for rollback.
 Faltou alvo para desfazer mudança.
 Target for rollback is too far back.
 Alvo para desfazer mudança é muito antigo.
+Rolling back changes
+Desfazendo mudanças
+The two revisions are the same.
+As duas revisões são idênticas
+Editing not allowed for %s.
+Edição não permitida para %s.
 Rollback to %s
 Desfazer para %s
 %s rolled back
 %s desfeito
+to %s
+
 Index of all pages
 Índice de todas as páginas
 Wiki Version
@@ -213,6 +233,8 @@ View current revision
 Ver a versão corrente
 View all changes
 Ver todas as mudanças
+View contributors
+
 Homepage URL:
 
 s
@@ -233,28 +255,26 @@ Validate HTML
 Validar HTML
 Validate CSS
 Validar CSS
-Difference (from revision %1 to %2)
+Last edit
+
+Difference between revision %1 and %2
 Diferença (entre a revisão %1 e %2)
 revision %s
 revisão %s
 current revision
 versão corrente
-Difference (from prior %s revision)
-Diferença (anterior à %s revisão)
-major
-importante
-minor
-simples
+Last major edit (%s)
+
+later minor edits
+
 No diff available.
 Nenhum diff disponivel.
-The two revisions are the same.
-As duas revisões são idênticas
 Old revision:
 Revisão antiga:
 Changed:
 Alterado:
-Removed:
-Removido:
+Deleted:
+
 Added:
 Adicionado:
 to
@@ -325,10 +345,10 @@ Summary:
 Sumário:
 This change is a minor edit.
 Esta atualização é miníma.
-Replace this file with text.
-Escrever texto em vez do arquivo presente.
-Replace this text with a file.
-Usar um arquivo em vez do texto presente.
+Replace this file with text
+Escrever texto em vez do arquivo presente
+Replace this text with a file
+Usar um arquivo em vez do texto presente
 File to upload: 
 Arquivo à usar: 
 Files of type %s are not allowed.
@@ -351,6 +371,10 @@ This operation is restricted to site editors only...
 Essa operação é restrita aos editores do site...
 This operation is restricted to administrators only...
 Essa operação é restrita aos administradores...
+SampleUndefinedPage
+ExemploPaginaNaoDefinida
+Sample_Undefined_Page
+Exemplo_Pagina_Nao_Definida
 Rule "%1" matched "%2" on this page.
 
 Without normal pages
@@ -389,24 +413,8 @@ Near pages:
 Páginas próximas:
 last updated
 ultima atualização
-Complete Content
-Conteúdo completo
-The main page is %s.
-A página principal é %s.
-Comments on this page
-Commentários sobre esta página
-Editing not allowed for %s.
-Edição não permitida para %s.
-SampleUndefinedPage
-ExemploPaginaNaoDefinida
-%s cannot be defined.
-%s não pode ser definida.
-Sample_Undefined_Page
-Exemplo_Pagina_Nao_Definida
-[[%s]] cannot be defined.
-[[%s]] não pode ser definida.
-Only an administrator can create %s.
-Só administradores podem criar a página %s.
+by
+por
 Transfer Error: %s
 Erro de transferência: %s
 Browser reports no file info.
@@ -447,8 +455,6 @@ Manutenção não concluída.
 (Manutenção pode ser feita apenas a cada 12 horas.)
 Remove the "maintain" file or wait.
 Romove o arquivo "manter" ou esperar.
-Main lock obtained.
-Trava principal obtida.
 Expiring keep files and deleting pages marked for deletion
 Expirando mantém arquivos e deletando páginas marcadas para deletar
 not deleted: 
@@ -457,12 +463,16 @@ deleted
 excluído
 Moving part of the %s log file.
 Movendo parte de %s arquivo de log.
+Could not open %s log file
+Não foi possivel abrir o arquivo %s de log
+Error was
+Erro foi
+Note: This error is normal if no changes have been made.
+Obaservação: Esse erro é normal se nenhuma alteração foi feita.
 Moving %s log entries.
 Movendo %s entrada de log.
 Getting page index file for %s.
 
-Main lock released.
-Trava principal liberado.
 Set or Remove global edit lock
 Marque ou Remova trava global de edição
 Edit lock created.
@@ -523,6 +533,10 @@ Rename %s to:
 Renomear %s para:
 Learn more...
 Leia mais...
+Complete Content
+Conteúdo completo
+The main page is %s.
+A página principal é %s.
 Cannot highlight the language %s.
 Não foi possível destacar a linguagem %s.
 Recent Visitors
@@ -773,7 +787,15 @@ Download this page as PDF
 Baixar esta página como PDF
 Portrait
 Retrato
+Publish %s
+
+No target wiki was specified in the config file.
+
+The target wiki was misconfigured.
+
 You did not answer correctly.
+
+To save this page you must answer this question:
 
 All Referrers
 
@@ -798,6 +820,12 @@ Faltou o termo para a busca.
 Result pages: 
 Páginas de resultado: 
 (%s results)
+
+Tags:
+
+Tags: %s.
+
+No tags
 
 Slideshow:%s
 
@@ -853,6 +881,12 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 
 search
 busca
+Wanted Pages
+
+%s pages
+
+%s, referenced from:
+
 Upload of %s file
 
 Blog
@@ -863,4 +897,8 @@ New
 Novo
 Edit %s.
 Editar %s.
+Title: 
+
+Tags: 
+
 END_OF_TRANSLATION

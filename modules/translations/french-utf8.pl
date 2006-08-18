@@ -18,10 +18,12 @@
 #
 # This translation was last checked for Oddmuse version 1.296.
 #
-$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.14 2006/05/10 22:52:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.15 2006/08/18 22:46:10 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Accès interdit&nbsp;: l'utilisateur, l'IP ou le réseau est bloqué.
+%s calls
+
 Could not create %s
 Création impossible de %s
 Invalid UserName %s: not saved.
@@ -31,7 +33,15 @@ Le nom d'utilisateur ne doit pas dépasser 50 caractères : non sauvegardé
 This page contains an uploaded file:
 Cette page contient un fichier téléversé :
 Recursive include of %s!
+Inclusion par récursivité de %s !
+Clear Cache
 
+Main lock obtained.
+Verrou principal obtenu.
+Main lock released.
+Verrou principal rendu.
+Comments on this page
+Commentaires sur cette page
 XML::RSS is not available on this system.
 XML::RSS n'est pas disponible sur ce système.
 diff
@@ -74,14 +84,6 @@ Preview only, not yet saved
 Prévisualisation seulement, pas encore sauvegardée
 Please go on to %s.
 SVP aller a %s.
-Could not open %s log file
-Impossible d'ouvrir le fichier de log %
-Error was
-L'erreur était
-Note: This error is normal if no changes have been made.
-Remarque&nbsp;: Cette erreur est normale si aucune modification n'a été effectuée.
-Could not open old %s log file
-Impossible d'ouvrir l'ancien fichier de log %
 No updates since %s
 Aucune mise à jour depuis le %s
 Updates since %s
@@ -96,6 +98,10 @@ List latest change per page only
 Lister seulement les dernières modifications par page
 List all changes
 Lister toutes les modifications
+Skip rollbacks
+
+Include rollbacks
+
 List only major changes
 Lister seulement les modifications majeures
 Include minor changes
@@ -132,20 +138,34 @@ History of %s
 Historique de %s
 Compare
 Comparer
+Deleted
+
+Mark this page for deletion
+
+No other revisions available
+
+current
+
 Revision %s
 Version %s
-by
-par
-Rolling back changes
-Réinitialisation en cours
+Contributors to %s
+
 Missing target for rollback.
 Cible manquante pour le retour en arrière.
 Target for rollback is too far back.
 La cible du retour en arrière est trop ancienne.
+Rolling back changes
+Réinitialisation en cours
+The two revisions are the same.
+Les deux révisions sont les mêmes.
+Editing not allowed for %s.
+Edition non autorisée pour %s.
 Rollback to %s
 Retour à %s
 %s rolled back
 Retour en arrière pour %s
+to %s
+
 Index of all pages
 Index de toutes les pages
 Wiki Version
@@ -214,6 +234,8 @@ View current revision
 Voir la version actuelle
 View all changes
 Voir toutes les modifications
+View contributors
+
 Homepage URL:
 Adresse(URL) du site perso
 s
@@ -234,28 +256,26 @@ Validate HTML
 Valider HTML
 Validate CSS
 Valider CSS
-Difference (from revision %1 to %2)
+Last edit
+
+Difference between revision %1 and %2
 Différence (de la révision %1 à %2)
 revision %s
 révision %s
 current revision
 révision actuelle
-Difference (from prior %s revision)
-Différence (à partir des dernières versions %s)
-major
-majeure
-minor
-mineure
+Last major edit (%s)
+
+later minor edits
+
 No diff available.
 Pas de diff disponible.
-The two revisions are the same.
-Les deux révisions sont les mêmes.
 Old revision:
 Ancienne révision:
 Changed:
 Modifiée&nbsp;:
-Removed:
-Suprimée&nbsp;:
+Deleted:
+
 Added:
 Ajoutée&nbsp;:
 to
@@ -326,10 +346,10 @@ Summary:
 Résumé&nbsp;:
 This change is a minor edit.
 Cette modification est une édition mineure.
-Replace this file with text.
-Remplacer ce fichier par un texte.
-Replace this text with a file.
-Remplacer ce texte par un fichier.
+Replace this file with text
+Remplacer ce fichier par un texte
+Replace this text with a file
+Remplacer ce texte par un fichier
 File to upload: 
 Fichier à téléverser&nbsp;: 
 Files of type %s are not allowed.
@@ -352,6 +372,10 @@ This operation is restricted to site editors only...
 Cette opération est réservée aux éditeurs du site seulement...
 This operation is restricted to administrators only...
 Cette opération est réservée aux administrateurs seulement...
+SampleUndefinedPage
+ExempleDePageNonDéfinie
+Sample_Undefined_Page
+Exemple_De_Page_NonDéfinie
 Rule "%1" matched "%2" on this page.
 La règle "%1" correspondait à "%2" sur cette page.
 Without normal pages
@@ -390,24 +414,8 @@ Near pages:
 Pages à proximité :
 last updated
 dernière mise à jour
-Complete Content
-Contenu Complet
-The main page is %s.
-La page principale est %s.
-Comments on this page
-Commentaires sur cette page
-Editing not allowed for %s.
-Edition non autorisée pour %s.
-SampleUndefinedPage
-ExempleDePageNonDéfinie
-%s cannot be defined.
-%s ne peut être défini.
-Sample_Undefined_Page
-Exemple_De_Page_NonDéfinie
-[[%s]] cannot be defined.
-[[%s]] ne peut être défini.
-Only an administrator can create %s.
-Seul un administrateur peut créer %s.
+by
+par
 Transfer Error: %s
 Erreur de Transfert&nbsp;: %s
 Browser reports no file info.
@@ -448,8 +456,6 @@ Maintenance non effectuée.
 (La maintenance ne peut être effectuée qu'une fois toutes les 12 heures.)
 Remove the "maintain" file or wait.
 Enlevez le fichier "maintain" ou patientez.
-Main lock obtained.
-Verrou principal obtenu.
 Expiring keep files and deleting pages marked for deletion
 Expiration des fichiers de cache et suppression des pages marquées pour la suppression
 not deleted: 
@@ -458,12 +464,16 @@ deleted
 supprimé
 Moving part of the %s log file.
 Deplace une partie du fichier de log %s.
+Could not open %s log file
+Impossible d'ouvrir le fichier de log %
+Error was
+L'erreur était
+Note: This error is normal if no changes have been made.
+Remarque&nbsp;: Cette erreur est normale si aucune modification n'a été effectuée.
 Moving %s log entries.
 Déplace %s entrées du log.
 Getting page index file for %s.
 Récupération du fichier d'index de %s.
-Main lock released.
-Verrou principal rendu.
 Set or Remove global edit lock
 Positionne ou Retire le verrou global d'édition
 Edit lock created.
@@ -524,6 +534,10 @@ Rename %s to:
 Renommer %s en :
 Learn more...
 En savoir plus...
+Complete Content
+Contenu Complet
+The main page is %s.
+La page principale est %s.
 Cannot highlight the language %s.
 Impossible de surligner la langue %s.
 Recent Visitors
@@ -615,9 +629,9 @@ Notes de pied de page :
 Could not find %1.html template in %2
 Impossible de trouver le modèle %1.html dans %2
 Only Editors are allowed to see this hidden page.
-
+Seuls les Editeurs ont l'autorisation de voir cette page cachée.
 Only Admins are allowed to see this hidden page.
-
+Seuls les Administrateurs ont l'autorisation de voir cette page cachée.
 Index
 Index
 Languages:
@@ -774,8 +788,16 @@ Download this page as PDF
 Télécharger cette page au format PDF
 Portrait
 Portrait
+Publish %s
+
+No target wiki was specified in the config file.
+
+The target wiki was misconfigured.
+
 You did not answer correctly.
 Vous n'avez pas répondu correctement.
+To save this page you must answer this question:
+
 All Referrers
 Tous les Introducteurs
 Referrers
@@ -785,7 +807,7 @@ Tag
 Rebuild index for searching
 Reconstruire l'index pour la recherche
 Tag Cloud
-
+Nuage de Tags
 Search::FreeText is not available on this system.
 Chercher::TexteLibre n'est pas disponible sur ce système.
 Rebuilding index not done.
@@ -793,13 +815,19 @@ Reconstruction index non effectuée.
 (Rebuilding the index can only be done once every 12 hours.)
 (La reconstruction de l'index ne peut être faite qu'une fois toutes les 12 heures.)
  ... 
-
+ ...
 Search term missing.
 Terme de la recherche manquant.
 Result pages: 
 Pages de résultats :
 (%s results)
 (%s résultats)
+Tags:
+
+Tags: %s.
+
+No tags
+
 Slideshow:%s
 Diaporama : %s
 Static Copy
@@ -854,6 +882,12 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 
 search
 chercher
+Wanted Pages
+
+%s pages
+
+%s, referenced from:
+
 Upload of %s file
 Téléversement du fichier %s
 Blog
@@ -864,4 +898,8 @@ New
 Nouveau 
 Edit %s.
 Editer %s.
+Title: 
+
+Tags: 
+
 END_OF_TRANSLATION

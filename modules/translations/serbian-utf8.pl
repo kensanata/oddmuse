@@ -17,10 +17,12 @@
 #
 # This translation was last checked for Oddmuse version 1.195.
 #
-$ModulesDescription .= '<p>$Id: serbian-utf8.pl,v 1.8 2006/05/10 22:52:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: serbian-utf8.pl,v 1.9 2006/08/18 22:46:10 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Читање није дозвољено: приступ за корисника, IP број или мрежу је блокиран.
+%s calls
+
 Could not create %s
 Не могу да направим %s
 Invalid UserName %s: not saved.
@@ -31,6 +33,14 @@ This page contains an uploaded file:
 
 Recursive include of %s!
 
+Clear Cache
+
+Main lock obtained.
+Главна брава је добављена.
+Main lock released.
+Главна брава је отпуштена.
+Comments on this page
+Коментари на овој страни
 XML::RSS is not available on this system.
 
 diff
@@ -73,14 +83,6 @@ Preview only, not yet saved
 Ово је само преглед, измена још увек није записана
 Please go on to %s.
 Настави до %s.
-Could not open %s log file
-Нисам могао да отворим дневничку датотеку %s
-Error was
-Грешка
-Note: This error is normal if no changes have been made.
-Пажња: Ова грешка је уобичајена уколико ништа нисте изменили.
-Could not open old %s log file
-Нисам могао да отворим стару дневничку датотеку %s
 No updates since %s
 Нема измена од %s
 Updates since %s
@@ -94,6 +96,10 @@ for %s only
 List latest change per page only
 
 List all changes
+
+Skip rollbacks
+
+Include rollbacks
 
 List only major changes
 
@@ -131,20 +137,34 @@ History of %s
 Историјат за %s
 Compare
 Упореди
+Deleted
+
+Mark this page for deletion
+
+No other revisions available
+
+current
+
 Revision %s
 Верзија %s
-by
-—
-Rolling back changes
-Враћам измене
+Contributors to %s
+
 Missing target for rollback.
 Недостаје циљ за повратак.
 Target for rollback is too far back.
 Циљ за повратак је предалеко уназад.
+Rolling back changes
+Враћам измене
+The two revisions are the same.
+
+Editing not allowed for %s.
+Уређивање није дозвољено за %s.
 Rollback to %s
 Повратак на %s
 %s rolled back
 %s је враћен
+to %s
+
 Index of all pages
 Списак свих страна:
 Wiki Version
@@ -213,6 +233,8 @@ View current revision
 Прикажи тренутну верзију
 View all changes
 Прикажи све измене
+View contributors
+
 Homepage URL:
 
 s
@@ -233,28 +255,26 @@ Validate HTML
 Провери HTML
 Validate CSS
 Провери CSS
-Difference (from revision %1 to %2)
+Last edit
+
+Difference between revision %1 and %2
 
 revision %s
 верзија %s
 current revision
 текућа верзија
-Difference (from prior %s revision)
-Разлика (текућа верзија у односу на претходну - %s)
-major
-крупна
-minor
-ситна
+Last major edit (%s)
+
+later minor edits
+
 No diff available.
 Разлика није доступна.
-The two revisions are the same.
-
 Old revision:
 
 Changed:
 Измењено:
-Removed:
-Уклоњено:
+Deleted:
+
 Added:
 Додато:
 to
@@ -325,10 +345,10 @@ Summary:
 Сажетак:
 This change is a minor edit.
 Ово је ситна измена.
-Replace this file with text.
-Замени ову датотеку текстом.
-Replace this text with a file.
-Замени овај текст датотеком.
+Replace this file with text
+Замени ову датотеку текстом
+Replace this text with a file
+Замени овај текст датотеком
 File to upload: 
 Датотека коју треба окачити: 
 Files of type %s are not allowed.
@@ -351,6 +371,10 @@ This operation is restricted to site editors only...
 Ово смеју да раде само уредници сајта...
 This operation is restricted to administrators only...
 Ово сме да ради само администратор...
+SampleUndefinedPage
+НенаписанаСтраницаЗаПример
+Sample_Undefined_Page
+Ненаписана_Страница_За_Пример
 Rule "%1" matched "%2" on this page.
 
 Without normal pages
@@ -389,24 +413,8 @@ Near pages:
 
 last updated
 последњи пут ажурирана
-Complete Content
-Потпуни садржај
-The main page is %s.
-Главна страна је %s.
-Comments on this page
-Коментари на овој страни
-Editing not allowed for %s.
-Уређивање није дозвољено за %s.
-SampleUndefinedPage
-НенаписанаСтраницаЗаПример
-%s cannot be defined.
-%s се не може дефинисати.
-Sample_Undefined_Page
-Ненаписана_Страница_За_Пример
-[[%s]] cannot be defined.
-[[%s]] се не може дефинисати.
-Only an administrator can create %s.
-
+by
+—
 Transfer Error: %s
 Грешка у преносу: %s
 Browser reports no file info.
@@ -447,8 +455,6 @@ Maintenance not done.
 (Одржавање може да се уради једном сваких 13 часова.)
 Remove the "maintain" file or wait.
 Уклони датотеку одржавања или чекај.
-Main lock obtained.
-Главна брава је добављена.
 Expiring keep files and deleting pages marked for deletion
 Истичем датотеке чувања и бришем странице означене за брисање
 not deleted: 
@@ -457,12 +463,16 @@ deleted
 обрисано
 Moving part of the %s log file.
 Премештам део дневничке датотеке %s.
+Could not open %s log file
+Нисам могао да отворим дневничку датотеку %s
+Error was
+Грешка
+Note: This error is normal if no changes have been made.
+Пажња: Ова грешка је уобичајена уколико ништа нисте изменили.
 Moving %s log entries.
 Премештам %s дневничких ставки.
 Getting page index file for %s.
 
-Main lock released.
-Главна брава је отпуштена.
 Set or Remove global edit lock
 Постави или уклони глобалну браву за уређивање
 Edit lock created.
@@ -523,6 +533,10 @@ Rename %s to:
 
 Learn more...
 
+Complete Content
+Потпуни садржај
+The main page is %s.
+Главна страна је %s.
 Cannot highlight the language %s.
 
 Recent Visitors
@@ -773,7 +787,15 @@ Download this page as PDF
 
 Portrait
 
+Publish %s
+
+No target wiki was specified in the config file.
+
+The target wiki was misconfigured.
+
 You did not answer correctly.
+
+To save this page you must answer this question:
 
 All Referrers
 Све референце
@@ -798,6 +820,12 @@ Search term missing.
 Result pages: 
 
 (%s results)
+
+Tags:
+
+Tags: %s.
+
+No tags
 
 Slideshow:%s
 
@@ -853,6 +881,12 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 
 search
 претрага
+Wanted Pages
+
+%s pages
+
+%s, referenced from:
+
 Upload of %s file
 
 Blog
@@ -862,5 +896,9 @@ Matching pages:
 New
 
 Edit %s.
+
+Title: 
+
+Tags: 
 
 END_OF_TRANSLATION

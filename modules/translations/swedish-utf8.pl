@@ -20,10 +20,12 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.15 2006/05/10 22:52:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.16 2006/08/18 22:46:10 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Läsning inte tillåten: användare, ip eller nätverk är blockerat.
+%s calls
+
 Could not create %s
 Kunde inte skapa %s
 Invalid UserName %s: not saved.
@@ -34,6 +36,14 @@ This page contains an uploaded file:
 Denna sida innehåller en uppladdad fil:
 Recursive include of %s!
 
+Clear Cache
+
+Main lock obtained.
+Huvudlås påslaget.
+Main lock released.
+Huvudlås avslaget.
+Comments on this page
+Kommenterarer till denna sida
 XML::RSS is not available on this system.
 XML::RSS inte tillgängligt på det här systemet.
 diff
@@ -76,14 +86,6 @@ Preview only, not yet saved
 Endast förhandsgranskning, ännu inte sparad
 Please go on to %s.
 Gå vidare till %s.
-Could not open %s log file
-Kunde inte öppna %s-loggen
-Error was
-Felet var
-Note: This error is normal if no changes have been made.
-Observera: Det här felet är normalt om inga ändringar gjorts.
-Could not open old %s log file
-Kunde inte öppna gammal %s-loggfil
 No updates since %s
 Inga ändringar sedan %s
 Updates since %s
@@ -98,6 +100,10 @@ List latest change per page only
 Visa bara senaste ändring för varje sida
 List all changes
 Visa alla ändringar
+Skip rollbacks
+
+Include rollbacks
+
 List only major changes
 Visa bara stora ändringar
 Include minor changes
@@ -134,20 +140,34 @@ History of %s
 Historik för %s
 Compare
 Jämför
+Deleted
+
+Mark this page for deletion
+
+No other revisions available
+
+current
+
 Revision %s
 Version %s
-by
-av
-Rolling back changes
-Återställer
+Contributors to %s
+
 Missing target for rollback.
 Mål för återställning saknas.
 Target for rollback is too far back.
 Mål för återställning för gammalt.
+Rolling back changes
+Återställer
+The two revisions are the same.
+De två versionerna är identiska.
+Editing not allowed for %s.
+%s kan inte redigeras.
 Rollback to %s
 Återställning till %s
 %s rolled back
 %s återställd
+to %s
+
 Index of all pages
 Innehållsförteckning
 Wiki Version
@@ -216,6 +236,8 @@ View current revision
 Visa rådande version
 View all changes
 Visa alla ändringar
+View contributors
+
 Homepage URL:
 URL till hemsida:
 s
@@ -236,28 +258,26 @@ Validate HTML
 Validera HTML
 Validate CSS
 Validera CSS
-Difference (from revision %1 to %2)
+Last edit
+
+Difference between revision %1 and %2
 Skillnad (från version %1 till %2)
 revision %s
 version %s
 current revision
 rådande version
-Difference (from prior %s revision)
-Förändring (sedan senaste %s version)
-major
-stora
-minor
-mindre
+Last major edit (%s)
+
+later minor edits
+
 No diff available.
 Information om ändring är inte tillgänglig.
-The two revisions are the same.
-De två versionerna är identiska.
 Old revision:
 Gammal version:
 Changed:
 Ändrad:
-Removed:
-Borttagen:
+Deleted:
+
 Added:
 Tillagd:
 to
@@ -328,10 +348,10 @@ Summary:
 Sammanfattning:
 This change is a minor edit.
 Det här är en mindre ändring.
-Replace this file with text.
-Skriv text istället för den här filen.
-Replace this text with a file.
-Använd en fil i stället för den här texten.
+Replace this file with text
+Skriv text istället för den här filen
+Replace this text with a file
+Använd en fil i stället för den här texten
 File to upload: 
 Fil att ladda upp: 
 Files of type %s are not allowed.
@@ -354,6 +374,10 @@ This operation is restricted to site editors only...
 Den här funktionen kan bara utföras av redaktörer...
 This operation is restricted to administrators only...
 Den här funktionen kan bara utföras av adminstratörer...
+SampleUndefinedPage
+OdefinieradExempelsida
+Sample_Undefined_Page
+Odefinierad_exempelsida
 Rule "%1" matched "%2" on this page.
 Regel "%1"  matchade "%2" på denna sida.
 Without normal pages
@@ -392,24 +416,8 @@ Near pages:
 Nära sidor:
 last updated
 senast reviderad
-Complete Content
-Fullständigt innehåll
-The main page is %s.
-Huvudsidan är %s.
-Comments on this page
-Kommenterarer till denna sida
-Editing not allowed for %s.
-%s kan inte redigeras.
-SampleUndefinedPage
-OdefinieradExempelsida
-%s cannot be defined.
-%s kan inte definieras.
-Sample_Undefined_Page
-Odefinierad_exempelsida
-[[%s]] cannot be defined.
-[[%s]] kan inte definieras.
-Only an administrator can create %s.
-Endast en administratör kan skapa %s.
+by
+av
 Transfer Error: %s
 Överföringsfel: %s
 Browser reports no file info.
@@ -450,8 +458,6 @@ Underhåll ej slutfört.
 (Underhåll kan bara utföras en gång var 12:e timme.)
 Remove the "maintain" file or wait.
 Ta bort "maintain"-filen eller vänta.
-Main lock obtained.
-Huvudlås påslaget.
 Expiring keep files and deleting pages marked for deletion
 Avlägsnar "keep"-filer och raderar sidor märkta för radering
 not deleted: 
@@ -460,12 +466,16 @@ deleted
 borttagen
 Moving part of the %s log file.
 Flyttar del av %s-loggen.
+Could not open %s log file
+Kunde inte öppna %s-loggen
+Error was
+Felet var
+Note: This error is normal if no changes have been made.
+Observera: Det här felet är normalt om inga ändringar gjorts.
 Moving %s log entries.
 Flyttar %s loggnotering.
 Getting page index file for %s.
 Hämtar sidindexfil för %s.
-Main lock released.
-Huvudlås avslaget.
 Set or Remove global edit lock
 Slå på eller av globalt redigeringslås
 Edit lock created.
@@ -526,6 +536,10 @@ Rename %s to:
 Byt namn på %s till:
 Learn more...
 Läs mer...
+Complete Content
+Fullständigt innehåll
+The main page is %s.
+Huvudsidan är %s.
 Cannot highlight the language %s.
 Kan ej markera språket %s.
 Recent Visitors
@@ -776,8 +790,16 @@ Download this page as PDF
 
 Portrait
 Porträtt
+Publish %s
+
+No target wiki was specified in the config file.
+
+The target wiki was misconfigured.
+
 You did not answer correctly.
 Du svarade inte korrekt.
+To save this page you must answer this question:
+
 All Referrers
 Alla som länkat hit
 Referrers
@@ -801,6 +823,12 @@ Sökord saknas.
 Result pages: 
 
 (%s results)
+
+Tags:
+
+Tags: %s.
+
+No tags
 
 Slideshow:%s
 
@@ -856,6 +884,12 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 http://www.bokpris.com/%s
 search
 sök
+Wanted Pages
+
+%s pages
+
+%s, referenced from:
+
 Upload of %s file
 
 Blog
@@ -865,5 +899,9 @@ Matching pages:
 New
 
 Edit %s.
+
+Title: 
+
+Tags: 
 
 END_OF_TRANSLATION

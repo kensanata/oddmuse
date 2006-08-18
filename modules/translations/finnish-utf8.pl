@@ -16,10 +16,12 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: finnish-utf8.pl,v 1.8 2006/05/10 22:52:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: finnish-utf8.pl,v 1.9 2006/08/18 22:46:10 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lukeminen ei ole sallittua: käyttäjä, IP tai verkko on estetty.
+%s calls
+
 Could not create %s
 %s:ää ei voitu luoda
 Invalid UserName %s: not saved.
@@ -30,6 +32,14 @@ This page contains an uploaded file:
 
 Recursive include of %s!
 
+Clear Cache
+
+Main lock obtained.
+Sivuston lukitus aloitettu.
+Main lock released.
+Sivuston lukitus avattu.
+Comments on this page
+Komentteja tähän sivuun liittyen
 XML::RSS is not available on this system.
 XML::RSS ei ole asennettuna tälle palvelimelle.
 diff
@@ -72,14 +82,6 @@ Preview only, not yet saved
 Pelkkä esikatselu, sivua ei ole tallennettu vielä
 Please go on to %s.
 Siirtykää sivulle %s, kiitos.
-Could not open %s log file
-Lokitiedostoa %s ei voitu avata
-Error was
-Virhe oli
-Note: This error is normal if no changes have been made.
-Huom: Tämä virhe on normaali, jos muutoksia ei ole tehty.
-Could not open old %s log file
-Vanhaa lokitiedostoa %s ei voitu avata
 No updates since %s
 Ei päivityksiä %s jälkeen
 Updates since %s
@@ -94,6 +96,10 @@ List latest change per page only
 Luettele viimeisimmät muutokset kullekin sivulle
 List all changes
 Luettele kaikki muutokset
+Skip rollbacks
+
+Include rollbacks
+
 List only major changes
 Luettele vain tärkeimmät muutokset
 Include minor changes
@@ -130,20 +136,34 @@ History of %s
 %s:n historia
 Compare
 Vertaa
+Deleted
+
+Mark this page for deletion
+
+No other revisions available
+
+current
+
 Revision %s
 Versio %s
-by
+Contributors to %s
 
-Rolling back changes
-Sivua palautetaan
 Missing target for rollback.
 Palautuksen kohde puuttuu.
 Target for rollback is too far back.
 Palautuksen kohde on liian kaukana.
+Rolling back changes
+Sivua palautetaan
+The two revisions are the same.
+
+Editing not allowed for %s.
+Muokkaus ei ole sallittu: %s.
 Rollback to %s
 Palautus %s:ään
 %s rolled back
 %s palautettu
+to %s
+
 Index of all pages
 Sivuston sisällysluettelo
 Wiki Version
@@ -212,6 +232,8 @@ View current revision
 Näytä nykyisin versio
 View all changes
 Näytä kaikki muutokset
+View contributors
+
 Homepage URL:
 Kotisivun URL:
 s
@@ -232,28 +254,26 @@ Validate HTML
 Tarkista HTML
 Validate CSS
 Tarkista CSS
-Difference (from revision %1 to %2)
+Last edit
+
+Difference between revision %1 and %2
 Muutokset (versioiden %1 ja %2 välillä)
 revision %s
 versio %s
 current revision
 nykyinen versio
-Difference (from prior %s revision)
-Muutokset (aiempaan versioon %s)
-major
-muokkaus
-minor
-korjaus
+Last major edit (%s)
+
+later minor edits
+
 No diff available.
 Muutoksien vertailua ei saatavilla.
-The two revisions are the same.
-
 Old revision:
 Vanha versio:
 Changed:
 Muokattu:
-Removed:
-Poistettu:
+Deleted:
+
 Added:
 Lisätty:
 to
@@ -324,10 +344,10 @@ Summary:
 Yhteenveto:
 This change is a minor edit.
 Tämä on pieni korjaus.
-Replace this file with text.
-Korvaa tämä tiedosto tekstillä.
-Replace this text with a file.
-Korvaa tämä teksti tiedostolla.
+Replace this file with text
+Korvaa tämä tiedosto tekstillä
+Replace this text with a file
+Korvaa tämä teksti tiedostolla
 File to upload: 
 Tallennettava tiedosto: 
 Files of type %s are not allowed.
@@ -350,6 +370,10 @@ This operation is restricted to site editors only...
 Tämä toiminto on rajoitettu sivuston toimittajille...
 This operation is restricted to administrators only...
 Tämä toiminto on rajoitettu sivuston ylläpitäjille...
+SampleUndefinedPage
+EsimerkkiSivu
+Sample_Undefined_Page
+Esimerkki_Sivu
 Rule "%1" matched "%2" on this page.
 Sääntö "%1" sopi "%2":teen tällä sivulla.
 Without normal pages
@@ -388,24 +412,8 @@ Near pages:
 Lähisivut:
 last updated
 viimeksi päivitetty
-Complete Content
-Sisältö
-The main page is %s.
-Etusivu on %s.
-Comments on this page
-Komentteja tähän sivuun liittyen
-Editing not allowed for %s.
-Muokkaus ei ole sallittu: %s.
-SampleUndefinedPage
-EsimerkkiSivu
-%s cannot be defined.
-%s ei voida määrittää
-Sample_Undefined_Page
-Esimerkki_Sivu
-[[%s]] cannot be defined.
-[[%s]] ei voida määrittää.
-Only an administrator can create %s.
-Vain ylläpito voi luoda %s.
+by
+
 Transfer Error: %s
 Virhe siirrossa: %s
 Browser reports no file info.
@@ -446,8 +454,6 @@ Ylläpitoa ei suoritettu.
 Ylläpitotoiminto voidaan suorittaa vain kerran 12 tunnissa.)
 Remove the "maintain" file or wait.
 Poista "maintain" -tiedosto tai odota.
-Main lock obtained.
-Sivuston lukitus aloitettu.
 Expiring keep files and deleting pages marked for deletion
 Eräännytetään keep-tiedostot ja poistetaan poistettaviksi merkityt sivut
 not deleted: 
@@ -456,12 +462,16 @@ deleted
 poistettu
 Moving part of the %s log file.
 Siirretään osa %s lokitiedostosta.
+Could not open %s log file
+Lokitiedostoa %s ei voitu avata
+Error was
+Virhe oli
+Note: This error is normal if no changes have been made.
+Huom: Tämä virhe on normaali, jos muutoksia ei ole tehty.
 Moving %s log entries.
 Siirretään %s kirjausta.
 Getting page index file for %s.
 Haetaan sivun indeksitiedosto %s.
-Main lock released.
-Sivuston lukitus avattu.
 Set or Remove global edit lock
 Aseta tai poista sivuston muokkauslukitus
 Edit lock created.
@@ -522,6 +532,10 @@ Rename %s to:
 
 Learn more...
 
+Complete Content
+Sisältö
+The main page is %s.
+Etusivu on %s.
 Cannot highlight the language %s.
 Kieltä %s ei voida merkitä
 Recent Visitors
@@ -772,7 +786,15 @@ Download this page as PDF
 
 Portrait
 Avatar
+Publish %s
+
+No target wiki was specified in the config file.
+
+The target wiki was misconfigured.
+
 You did not answer correctly.
+
+To save this page you must answer this question:
 
 All Referrers
 Kaikki viittaukset
@@ -797,6 +819,12 @@ Search term missing.
 Result pages: 
 
 (%s results)
+
+Tags:
+
+Tags: %s.
+
+No tags
 
 Slideshow:%s
 
@@ -852,6 +880,12 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 search
 haku
+Wanted Pages
+
+%s pages
+
+%s, referenced from:
+
 Upload of %s file
 
 Blog
@@ -861,5 +895,9 @@ Matching pages:
 New
 
 Edit %s.
+
+Title: 
+
+Tags: 
 
 END_OF_TRANSLATION

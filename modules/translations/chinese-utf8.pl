@@ -17,10 +17,12 @@
 #
 # This translation was last checked for Oddmuse version 1.504.
 #
-$ModulesDescription .= '<p>$Id: chinese-utf8.pl,v 1.8 2006/05/10 22:52:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: chinese-utf8.pl,v 1.9 2006/08/18 22:46:10 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 禁止讀取：使用者、ip 或是網路已被禁止連線。
+%s calls
+
 Could not create %s
 無法建立 %s
 Invalid UserName %s: not saved.
@@ -31,6 +33,14 @@ This page contains an uploaded file:
 本頁包含一個已上傳的檔案：
 Recursive include of %s!
 
+Clear Cache
+
+Main lock obtained.
+取得主要鎖定。
+Main lock released.
+釋放主要鎖定。
+Comments on this page
+對本頁發表評論
 XML::RSS is not available on this system.
 本系統無法使用 XML::RSS 。
 diff
@@ -73,14 +83,6 @@ Preview only, not yet saved
 現在是預覽模式，尚未儲存
 Please go on to %s.
 請繼續前住 %s 。
-Could not open %s log file
-無法開啟記錄檔 %s
-Error was
-錯誤是
-Note: This error is normal if no changes have been made.
-如果還沒有做過任何修改的話，則不用理會這個錯誤訊息。
-Could not open old %s log file
-無法開啟舊的 %s 記錄檔
 No updates since %s
 自 %s 以來沒有修改
 Updates since %s
@@ -95,6 +97,10 @@ List latest change per page only
 只列出每個頁面最新的修改
 List all changes
 列出所有的修改
+Skip rollbacks
+
+Include rollbacks
+
 List only major changes
 只列出主要的修改
 Include minor changes
@@ -131,20 +137,34 @@ History of %s
 %s 的歷史記錄
 Compare
 比較
+Deleted
+
+Mark this page for deletion
+
+No other revisions available
+
+current
+
 Revision %s
 第 %s 版本
-by
-由
-Rolling back changes
-回復修改
+Contributors to %s
+
 Missing target for rollback.
 找不到要回復的目標
 Target for rollback is too far back.
 要回復的目標已太久以前了。
+Rolling back changes
+回復修改
+The two revisions are the same.
+
+Editing not allowed for %s.
+不允許編輯 %s 。
 Rollback to %s
 回復至 %s
 %s rolled back
 %s 已回復
+to %s
+
 Index of all pages
 所有頁面的索引
 Wiki Version
@@ -213,6 +233,8 @@ View current revision
 參閱目前版本
 View all changes
 列出所有的修改
+View contributors
+
 Homepage URL:
 首頁網址：
 s
@@ -233,28 +255,26 @@ Validate HTML
 驗證 HTML
 Validate CSS
 驗證 CSS
-Difference (from revision %1 to %2)
+Last edit
+
+Difference between revision %1 and %2
 差異（從第 %1 版到%2）
 revision %s
 第 %s 版
 current revision
 目前的版本
-Difference (from prior %s revision)
-差異（從先前的第 %s 版本）
-major
-主要
-minor
-次要
+Last major edit (%s)
+
+later minor edits
+
 No diff available.
 沒有差異。
-The two revisions are the same.
-
 Old revision:
 舊版本：
 Changed:
 修改：
-Removed:
-刪除：
+Deleted:
+
 Added:
 增加：
 to
@@ -325,10 +345,10 @@ Summary:
 摘要：
 This change is a minor edit.
 這次的修改是次要的。
-Replace this file with text.
-用文字來取代本檔。
-Replace this text with a file.
-用檔案來取代本文。
+Replace this file with text
+用文字來取代本檔
+Replace this text with a file
+用檔案來取代本文
 File to upload: 
 要上傳的檔案：
 Files of type %s are not allowed.
@@ -351,6 +371,10 @@ This operation is restricted to site editors only...
 這個動作限定只允許編輯者使用…
 This operation is restricted to administrators only...
 這個動作限定只允許管理者使用…
+SampleUndefinedPage
+
+Sample_Undefined_Page
+
 Rule "%1" matched "%2" on this page.
 本頁的 "%2" 符合規則 "%1"。
 Without normal pages
@@ -389,24 +413,8 @@ Near pages:
 近端頁面：
 last updated
 最後更新於
-Complete Content
-完整內容
-The main page is %s.
-首頁是 %s 。
-Comments on this page
-對本頁發表評論
-Editing not allowed for %s.
-不允許編輯 %s 。
-SampleUndefinedPage
-
-%s cannot be defined.
-無法指定 %s 為頁面名稱。
-Sample_Undefined_Page
-
-[[%s]] cannot be defined.
-無法指定 [[%s]] 為頁面名稱。
-Only an administrator can create %s.
-只有管理者可以建立 %s 。
+by
+由
 Transfer Error: %s
 傳輸錯誤：%s
 Browser reports no file info.
@@ -447,8 +455,6 @@ Maintenance not done.
 (管理每 12 小時只能進行一次。)
 Remove the "maintain" file or wait.
 移除 "maintain" 檔，或等時間到了再進行。
-Main lock obtained.
-取得主要鎖定。
 Expiring keep files and deleting pages marked for deletion
 清除過期的庫存檔和刪除已標記的檔案
 not deleted: 
@@ -457,12 +463,16 @@ deleted
 已刪除
 Moving part of the %s log file.
 移除部分在 %s 記錄檔中的資料。
+Could not open %s log file
+無法開啟記錄檔 %s
+Error was
+錯誤是
+Note: This error is normal if no changes have been made.
+如果還沒有做過任何修改的話，則不用理會這個錯誤訊息。
 Moving %s log entries.
 移除了 %s 個記錄項目。
 Getting page index file for %s.
 自 %s 取得頁面索引資料。
-Main lock released.
-釋放主要鎖定。
 Set or Remove global edit lock
 設定或移除整個網站的編輯鎖定
 Edit lock created.
@@ -523,6 +533,10 @@ Rename %s to:
 
 Learn more...
 
+Complete Content
+完整內容
+The main page is %s.
+首頁是 %s 。
 Cannot highlight the language %s.
 無法強調顯示 %s 。
 Recent Visitors
@@ -773,7 +787,15 @@ Download this page as PDF
 
 Portrait
 肖像
+Publish %s
+
+No target wiki was specified in the config file.
+
+The target wiki was misconfigured.
+
 You did not answer correctly.
+
+To save this page you must answer this question:
 
 All Referrers
 所有的引用者
@@ -798,6 +820,12 @@ Search term missing.
 Result pages: 
 
 (%s results)
+
+Tags:
+
+Tags: %s.
+
+No tags
 
 Slideshow:%s
 
@@ -853,6 +881,12 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 
 search
 搜尋
+Wanted Pages
+
+%s pages
+
+%s, referenced from:
+
 Upload of %s file
 
 Blog
@@ -862,5 +896,9 @@ Matching pages:
 New
 
 Edit %s.
+
+Title: 
+
+Tags: 
 
 END_OF_TRANSLATION

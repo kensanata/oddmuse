@@ -16,10 +16,12 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.16 2006/08/17 14:01:09 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.17 2006/08/18 22:46:10 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
+%s calls
+%s Aufrufe
 Could not create %s
 Konnte %s nicht erzeugen
 Invalid UserName %s: not saved.
@@ -94,6 +96,10 @@ List latest change per page only
 Nur letzte Änderungen pro Seite
 List all changes
 Alle Änderungen
+Skip rollbacks
+Rückgängig gemachte Änderungen ausblenden
+Include rollbacks
+Rückgängig gemachte Änderungen trotzdem zeigen
 List only major changes
 Nur grössere Änderungen
 Include minor changes
@@ -150,6 +156,8 @@ Rolling back changes
 Änderungen werden rückgängig gemacht
 The two revisions are the same.
 Es gibt keinen Unterschied zwischen den beiden Versionen.
+Editing not allowed for %s.
+Das bearbeiten von %s ist nicht erlaubt.
 Rollback to %s
 Rückgängig gemacht auf den Stand vom %s
 %s rolled back
@@ -249,11 +257,11 @@ CSS überprüfen
 Last edit
 Letzte Änderung
 Difference between revision %1 and %2
-Unterschiede (zwischen Version %1 und %2)
+Unterschiede zwischen Version %1 und %2
 revision %s
 Version %s
 current revision
-der aktuellen Version
+Aktuelle Version
 Last major edit (%s)
 Letzte grössere Änderung (%s)
 later minor edits
@@ -269,7 +277,7 @@ Gelöscht:
 Added:
 Eingefügt:
 to
-zu
+stattdessen:
 Revision %s not available
 Version %s nicht verfügbar
 showing current revision instead
@@ -362,6 +370,10 @@ This operation is restricted to site editors only...
 Diese Aktion darf nur von Redaktoren durchgeführt werden...
 This operation is restricted to administrators only...
 Diese Aktion darf nur von Administratoren durchgeführt werden...
+SampleUndefinedPage
+BeispielEinerUndefiniertenSeite
+Sample_Undefined_Page
+Beispiel_Einer_Undefinierten_Seite
 Rule "%1" matched "%2" on this page.
 Auf dieser Seite verstösst "%2" gegen die Regel "%1".
 Without normal pages
@@ -402,18 +414,6 @@ last updated
 Zuletzt geändert
 by
 von
-Editing not allowed for %s.
-Das bearbeiten von %s ist nicht erlaubt.
-SampleUndefinedPage
-BeispielEinerUndefiniertenSeite
-%s cannot be defined.
-%s kann nicht definiert werden.
-Sample_Undefined_Page
-Beispiel_Einer_Undefinierten_Seite
-[[%s]] cannot be defined.
-[[%s]] kann nicht definiert werden.
-Only an administrator can create %s.
-Nur ein Administrator can %s erstellen.
 Transfer Error: %s
 Transferfehler: %s
 Browser reports no file info.
@@ -755,15 +755,15 @@ Verweis Datenbank wird angelegt
 The 404 handler extension requires the link data extension (links.pl).
 Die 404 handler Erweiterung benötigt die Link Data Erweiterung (links.pl).
 LocalMap
-Lokale Karte
+
 No page id for action localmap
 Es gibt keine Spezialseite für den localmap Befehle
 Requested page %s does not exist
 Die gewünschte Seite %s existiert nicht
 Local Map for %s
-Lokale Karte für %s
+
 view
-prüfen
+
 Self-ban by %s
 %s hat sich selber verbannt.
 You have banned your own IP.
@@ -898,4 +898,6 @@ Edit %s.
 %s bearbeiten.
 Title: 
 Titel: 
+Tags: 
+
 END_OF_TRANSLATION

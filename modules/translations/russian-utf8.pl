@@ -19,9 +19,11 @@
 #
 # This script was last checked for Oddmuse version 1.658.
 #
-$ModulesDescription .= '<p>$Id: russian-utf8.pl,v 1.8 2006/05/10 22:52:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: russian-utf8.pl,v 1.9 2006/08/18 22:46:10 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
+
+%s calls
 
 Could not create %s
 Невозможно создать %s
@@ -33,6 +35,14 @@ This page contains an uploaded file:
 
 Recursive include of %s!
 
+Clear Cache
+
+Main lock obtained.
+Блокировка сайта установлена.
+Main lock released.
+Блокировка сайта снята.
+Comments on this page
+Комментарии к этой странице
 XML::RSS is not available on this system.
 
 diff
@@ -75,14 +85,6 @@ Preview only, not yet saved
 Только предварительный просмотр - пока ничего не сохранено
 Please go on to %s.
 
-Could not open %s log file
-Не возможно открыть файл протокола %s 
-Error was
-Были ошибки 
-Note: This error is normal if no changes have been made.
-Примечание: Эта ошибка - нормально, если не было сделано изменений.
-Could not open old %s log file
-Не возможно открыть старый файл протокола %s 
 No updates since %s
 Не было обновлений с %s
 Updates since %s
@@ -97,6 +99,10 @@ List latest change per page only
 Перечислить только последнее изменение на страницу
 List all changes
 Показать все изменения
+Skip rollbacks
+
+Include rollbacks
+
 List only major changes
 Показать только существенные изменения
 Include minor changes
@@ -133,19 +139,33 @@ History of %s
 История %s
 Compare
 Сравнить
+Deleted
+
+Mark this page for deletion
+
+No other revisions available
+
+current
+
 Revision %s
 Версия %s
-by
-
-Rolling back changes
+Contributors to %s
 
 Missing target for rollback.
 
 Target for rollback is too far back.
 
+Rolling back changes
+
+The two revisions are the same.
+
+Editing not allowed for %s.
+Редактирование не разрешено для %s.
 Rollback to %s
 
 %s rolled back
+
+to %s
 
 Index of all pages
 Каталог страниц
@@ -215,6 +235,8 @@ View current revision
 Смотреть текущую версию
 View all changes
 Смотреть все изменения
+View contributors
+
 Homepage URL:
 
 s
@@ -235,28 +257,26 @@ Validate HTML
 
 Validate CSS
 
-Difference (from revision %1 to %2)
+Last edit
+
+Difference between revision %1 and %2
 Отличия (от версии %1 до %2)
 revision %s
 версии %s
 current revision
 текущей версии
-Difference (from prior %s revision)
-Отличия от предыдущей версии %s
-major
-существенные
-minor
-несущественные
+Last major edit (%s)
+
+later minor edits
+
 No diff available.
 Функция сравнения (diff) недоступна.
-The two revisions are the same.
-
 Old revision:
 
 Changed:
 Изменилось:
-Removed:
-Удалено:
+Deleted:
+
 Added:
 Добавлено:
 to
@@ -327,10 +347,10 @@ Summary:
 Итого:
 This change is a minor edit.
 Это изменение является незначительной правкой.
-Replace this file with text.
-Заменить этот файл текстом.
-Replace this text with a file.
-Заменить этот текст файлом.
+Replace this file with text
+Заменить этот файл текстом
+Replace this text with a file
+Заменить этот текст файлом
 File to upload: 
 Файл для загрузки:
 Files of type %s are not allowed.
@@ -353,6 +373,10 @@ This operation is restricted to site editors only...
 Эта операция доступна только для редакторов сайта...
 This operation is restricted to administrators only...
 Эта операция доступна только для администаторов сайта...
+SampleUndefinedPage
+ПримерПроизвольнойСтраницы
+Sample_Undefined_Page
+Пример_Произвольной_Страницы
 Rule "%1" matched "%2" on this page.
 
 Without normal pages
@@ -391,23 +415,7 @@ Near pages:
 
 last updated
 
-Complete Content
-
-The main page is %s.
-
-Comments on this page
-Комментарии к этой странице
-Editing not allowed for %s.
-Редактирование не разрешено для %s.
-SampleUndefinedPage
-ПримерПроизвольнойСтраницы
-%s cannot be defined.
-%s невозможно определить.
-Sample_Undefined_Page
-Пример_Произвольной_Страницы
-[[%s]] cannot be defined.
-[[%s]] невозможно определить
-Only an administrator can create %s.
+by
 
 Transfer Error: %s
 
@@ -449,8 +457,6 @@ Maintenance not done.
 (Техобслуживание может выполняться раз в 12 часов, не чаще).
 Remove the "maintain" file or wait.
 Удалите файл "maintain" или подождите
-Main lock obtained.
-Блокировка сайта установлена.
 Expiring keep files and deleting pages marked for deletion
 Удаление устаревших версий страниц и страниц, явно помеченных к удалению
 not deleted: 
@@ -459,12 +465,16 @@ deleted
 удалена
 Moving part of the %s log file.
 
+Could not open %s log file
+Не возможно открыть файл протокола %s 
+Error was
+Были ошибки 
+Note: This error is normal if no changes have been made.
+Примечание: Эта ошибка - нормально, если не было сделано изменений.
 Moving %s log entries.
 
 Getting page index file for %s.
 
-Main lock released.
-Блокировка сайта снята.
 Set or Remove global edit lock
 Установка или снятие глобальной блокировки на редактирование
 Edit lock created.
@@ -524,6 +534,10 @@ Immediately delete %s
 Rename %s to:
 
 Learn more...
+
+Complete Content
+
+The main page is %s.
 
 Cannot highlight the language %s.
 
@@ -775,7 +789,15 @@ Download this page as PDF
 
 Portrait
 
+Publish %s
+
+No target wiki was specified in the config file.
+
+The target wiki was misconfigured.
+
 You did not answer correctly.
+
+To save this page you must answer this question:
 
 All Referrers
 
@@ -800,6 +822,12 @@ Search term missing.
 Result pages: 
 
 (%s results)
+
+Tags:
+
+Tags: %s.
+
+No tags
 
 Slideshow:%s
 
@@ -855,6 +883,12 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 
 search
 поиск
+Wanted Pages
+
+%s pages
+
+%s, referenced from:
+
 Upload of %s file
 
 Blog
@@ -864,5 +898,9 @@ Matching pages:
 New
 
 Edit %s.
+
+Title: 
+
+Tags: 
 
 END_OF_TRANSLATION
