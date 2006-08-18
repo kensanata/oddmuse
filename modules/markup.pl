@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: markup.pl,v 1.29 2006/03/11 18:10:43 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: markup.pl,v 1.30 2006/08/18 23:57:36 as Exp $</p>';
 
 use vars qw(%MarkupPairs %MarkupSingles %MarkupLines $MarkupQuotes $MarkupQuoteTable);
 
@@ -38,7 +38,7 @@ $RuleOrder{\&MarkupRule} = 150;
 		'~' => 'em',
 	       );
 
-%MarkupForcedPairs = ('{{{' => ['code', {'style'=>'white-space:pre;'}, '}}}'],
+%MarkupForcedPairs = ('{{{' => ['pre', undef, '}}}'],
 		      '##' => 'code',
 		      '%%' => 'span',
 		      '**' => 'b',
@@ -68,6 +68,12 @@ my $markup_pairs_re = '';
 my $markup_forced_pairs_re = '';
 my $markup_singles_re = '';
 my $markup_lines_re = '';
+
+# do not add all block elements, because not all of them make sense,
+# as they cannot be nested -- thus it would not be possible to put
+# list items inside a list element, for example.
+my %block_element = map { $_ => 1 } qw(p blockquote address div h1 h2
+				       h3 h4 h5 h6 pre);
 
 # do this later so that the user can customize the vars
 push(@MyInitVariables, \&MarkupInit);
@@ -101,7 +107,10 @@ sub MarkupTag {
   } else {
     $start = $end = $tag;
   }
-  return '<' . $start . '>' . $str . '</' . $end . '>';
+  my $result = "<$start>$str</$end>";
+  $result = CloseHtmlEnvironments() . $result . AddHtmlEnvironment('p')
+    if $block_element{$start};
+  return $result;
 }
 
 sub MarkupRule {
@@ -116,14 +125,17 @@ sub MarkupRule {
       . AddHtmlEnvironment('p');
   } elsif (%MarkupForcedPairs and m/$markup_forced_pairs_re/gc) {
     my $tag = $1;
+    my $start = $tag;
     my $end = $tag;
     # handle different end tag
     my $data = $MarkupForcedPairs{UnquoteHtml($tag)};
     if (ref($data)) {
       my @data = @{$data};
+      $start = $data[0] if $data[0];
       $end = $data[2] if $data[2];
     }
     my $endre = quotemeta($end);
+    $endre .= '[ \t]*\n?' if $block_element{$start}; # skip trailing whitespace if block
     # may match the empty string, or multiple lines, but may not span
     # paragraphs.
     if ($endre and m/\G$endre/gc) {
