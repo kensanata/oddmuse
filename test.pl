@@ -500,7 +500,7 @@ test_page(get_page('EvilPage'), 'DeletedPage');
 test_page(get_page('AnotherEvilPage'), 'DeletedPage');
 test_page(get_page('InnocentPage'), 'Lamb');
 
-my $rc = get_page('action=rc all=1 showedit=1 pwd=foo');
+my $rc = get_page('action=rc all=1 showedit=1 pwd=foo'); # this includes rollback info and rollback links
 
 # check all revisions of NicePage in recent changes
 xpath_test($rc,
@@ -518,7 +518,6 @@ xpath_test($rc,
 # test that ordinary RC doesn't show the rollback stuff
 update_page('Yoga', 'Ommmm', 'peace');
 
-yoga:
 $page = get_page('action=rc raw=1');
 test_page($page,
 	  "title: NicePage\ndescription: good guy two\n",
@@ -550,13 +549,13 @@ test_page_negative($page,
 		   'View other revisions',
 		   'Mark this page for deletion');
 
-test_page(update_page('hist', 'testing', 'test summary'),
+test_page(update_page('hist', 'testing', 'test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary'),
 	  'testing',
 	  'action=history',
 	  'View other revisions');
 $page = get_page('action=history id=hist');
 test_page($page,
-	  'test summary',
+	  'test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary',
 	  'View current revision',
 	  'View all changes',
 	  'current',
