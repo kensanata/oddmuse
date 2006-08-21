@@ -1,0 +1,41 @@
+#!/usr/bin/perl
+# Copyright (C) 2006  Alex Schroeder <alex@emacswiki.org>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the
+#    Free Software Foundation, Inc.
+#    59 Temple Place, Suite 330
+#    Boston, MA 02111-1307 USA
+use Time::ParseDate;
+while (<STDIN>) {
+  m/^(\S+) \S+ \S+ \[(.*?)\] "(.*?)" (\d+)/ or die "Cannot parse:\n$_";
+  $ip = $1;
+  $ts = $2;
+  $url = $3;
+  $code = $4;
+  $time = parsedate($ts);
+  $total++;
+  if ($url =~ /action=([a-z]+)/) {
+    $action = $1;
+    } else {
+    $action = 'browse'; # default action
+  }
+  $action .= " [$code]";
+  $count{$action}++;
+  $latest{$action} = $ts; # assuming chronological order in the log file
+}
+@result = sort {$count{$b} <=> $count{$a}} keys %count;
+foreach $action (@result) {
+  printf "%20s %10d   %3d%%    %s\n", $action, $count{$action}, 100* $count{$action} / $total,
+    $latest{$action};
+}
