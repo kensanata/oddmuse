@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.27 2006/08/24 18:23:36 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.28 2006/08/24 18:32:53 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent $NamespaceRoot);
 
@@ -131,7 +131,7 @@ sub NewNamespaceDoRc { # Copy of DoRc
     # get the namespaces from the intermap instead of parsing the
     # directory.  this reduces the chances of getting different
     # results.
-    foreach my $site (keys %InterSite) { 
+    foreach my $site (keys %InterSite) {
       if ($InterSite{$site} =~ m|^$ScriptName/([^/]*)|) {
 	my $ns = $1 or next;
 	my $file = "$DataDir/$ns/rc.log";
@@ -183,7 +183,7 @@ sub NamespaceRcLines {
     # here we add the namespace to the pagename and username, but this
     # will never work, we need to fix this later in ScriptLink!
     push(@result, join($FS, $ts, ($ns ? ($ns . '/' . $pagename) : $pagename), $minor, $summary, $host,
-		       ($ns && $username ? ($ns . '/' . $username) : $username), $rest))
+                       ($ns && $username ? ($ns . '/' . $username) : $username), $rest))
       if $ts >= $starttime;
     $line = <F> or last;
     chomp($line);
@@ -191,16 +191,18 @@ sub NamespaceRcLines {
   }
   if (GetParam('all', 0) or GetParam('rollback', 0)) { # include rollbacks
     # just strip the marker left by DoRollback()
-    for (my $i = @fullrc; $i; $i--) {
-      my ($ts, $pagename) = split(/$FS/, $fullrc[$i]);
-      splice(@fullrc, $i, 1) if $pagename eq '[[rollback]]';
+    for (my $i = @result; $i; $i--) {
+      my ($ts, $pagename) = split(/$FS/, $result[$i]);
+      splice(@result, $i, 1) if $pagename eq '[[rollback]]';
     }
   } else {
     my ($target, $end);
-    for (my $i = @fullrc; $i; $i--) {
-      my ($ts, $pagename, $rest) = split(/$FS/, $fullrc[$i]);
-      splice(@fullrc, $i + 1, $end - $i), $target = 0  if $ts <= $target;
-      $target = $rest, $end = $i if $pagename eq $ns . '/[[rollback]]' and (not $target or $rest < $target); # marker
+    for (my $i = @result; $i; $i--) {
+      my ($ts, $pagename, $rest) = split(/$FS/, $result[$i]);
+      splice(@result, $i + 1, $end - $i), $target = 0  if $ts <= $target;
+      $target = $rest, $end = $i
+        if $pagename eq ($ns ? ($ns . '/') : '') . '[[rollback]]'
+          and (not $target or $rest < $target); # marker
     }
   }
   return ($first, @result);
