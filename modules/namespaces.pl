@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.26 2006/04/20 19:59:27 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.27 2006/08/24 18:23:36 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent $NamespaceRoot);
 
@@ -188,6 +188,20 @@ sub NamespaceRcLines {
     $line = <F> or last;
     chomp($line);
     ($ts, $pagename, $minor, $summary, $host, $username, $rest) = split(/$FS/, $line);
+  }
+  if (GetParam('all', 0) or GetParam('rollback', 0)) { # include rollbacks
+    # just strip the marker left by DoRollback()
+    for (my $i = @fullrc; $i; $i--) {
+      my ($ts, $pagename) = split(/$FS/, $fullrc[$i]);
+      splice(@fullrc, $i, 1) if $pagename eq '[[rollback]]';
+    }
+  } else {
+    my ($target, $end);
+    for (my $i = @fullrc; $i; $i--) {
+      my ($ts, $pagename, $rest) = split(/$FS/, $fullrc[$i]);
+      splice(@fullrc, $i + 1, $end - $i), $target = 0  if $ts <= $target;
+      $target = $rest, $end = $i if $pagename eq $ns . '/[[rollback]]' and (not $target or $rest < $target); # marker
+    }
   }
   return ($first, @result);
 }
