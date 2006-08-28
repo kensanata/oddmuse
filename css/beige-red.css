@@ -322,15 +322,6 @@ img.logo {
     background-color:#ffe;
 }
 
-/* portrait */
-
-div.left { float:left; margin:1em; padding: 0.5em; border:1px dotted; }
-div.left p { display:table-cell; }
-div.left p + p { display:table-caption; caption-side:bottom; }
-
-p.table a { float:left; width:20ex; }
-p.table + p { clear:both; }
-
 /* hanging indents
 
 div.content p {
@@ -391,8 +382,17 @@ dl.irc dt { width:20ex; float:left; text-align:right; clear:left; }
 dl.irc dt span.time { float:left; }
 dl.irc dd { margin-left:22ex; }
 
+/* portrait */
+
+div.left { float:left; margin:1em; padding: 0.5em; }
+div.left p { display:table-cell; }
+div.left p + p { display:table-caption; caption-side:bottom; }
+
+p.table a { float:left; width:20ex; }
+p.table + p { clear:both; }
+
 /* legacy for right: left: pic: normal: piclink: piclink-left: piclink-right: rules */
-div.right { float:right; margin:1em; padding: 0.5em; border:1px dotted; }
+div.right { float:right; margin:1em; padding: 0.5em; }
 div.right p { display:table-cell; }
 div.right p + p { display:table-caption; caption-side:bottom; }
 div.pic { border:1px dotted; padding:0.5em; }
