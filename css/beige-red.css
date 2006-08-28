@@ -12,6 +12,7 @@ body, rss {
 
 h1, h2, h3, title {
     font-weight:normal;
+    line-height: 100%;
 }
 h1, channel title {
     font-family: Skia, "Garamond", "Bookman Old Style", serif;
