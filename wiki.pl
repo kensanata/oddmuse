@@ -1,6 +1,6 @@
 #! /usr/bin/perl
 # OddMuse (see $WikiDescription below)
-# Copyright (C) 2001, 2002, 2003, 2004, 2005  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006  Alex Schroeder <alex@emacswiki.org>
 # ... including lots of patches from the UseModWiki site
 # Copyright (C) 2001, 2002  various authors
 # ... which was based on UseModWiki version 0.92 (April 21, 2001)
@@ -273,7 +273,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.726 2006/08/18 16:14:28 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.727 2006/08/30 00:42:30 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -816,8 +816,7 @@ sub PrintAllPages {
     OpenPage($id);
     my @languages = split(/,/, $Page{languages});
     next if $lang and @languages and not grep(/$lang/, @languages);
-    my $title = $id;
-    $title =~ s/_/ /g;	 # Display as spaces
+    my $title = NormalToFree($id);
     print $q->start_div({-class=>'page'}) . $q->hr
       . $q->h1($links ? GetPageLink($id, $title) : $q->a({-name=>$id},$title));
     PrintPageHtml();
@@ -1110,14 +1109,12 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
   $id = FreeToNormal($id);
   my ($class, $resolved, $title, $exists) = ResolveId($id);
   if (!$text && $resolved && $bracket) {
-    $text = BracketLink(++$FootnoteNumber); # s/_/ /g happens further down!
+    $text = BracketLink(++$FootnoteNumber);
     $class .= ' number';
-    $title = $id; # override title
-    $title =~ s/_/ /g if $free;
+    $title = NormalToFree($id);
   }
   if ($resolved) { # anchors don't exist as pages, therefore do not use $exists
-    $text = $id unless $text;
-    $text =~ s/_/ /g if $free;
+    $text = NormalToFree($id) unless $text;
     return ScriptLink(UrlEncode($resolved), $text, $class, undef, $title);
   } else {
     # $free and $bracket usually exclude each other
@@ -1128,14 +1125,12 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
     } elsif ($bracket) {
       return "[$id$link]";
     } elsif ($free && $text) {
-      $id =~ s/_/ /g;
-      $text =~ s/_/ /g;
+      $text = NormalToFree($id);
       return "[$id$link $text]";
     } elsif ($free) {
       $text = $id;
       $text = "[$text]" if $text =~ /_/;
-      $text =~ s/_/ /g;
-      return $text . $link;
+      return NormalToFree($text) . $link;
     } else { # plain, no text
       return $id . $link;
     }
@@ -1146,18 +1141,16 @@ sub GetPageLink { # use if you want to force a link to local pages, whether it e
   my ($id, $name, $class) = @_;
   $id = FreeToNormal($id);
   $name = $id unless $name;
-  $name =~ s/_/ /g;
   $class .= ' ' if $class;
-  return ScriptLink(UrlEncode($id), $name, $class . 'local');
+  return ScriptLink(UrlEncode($id), NormalToFree($name), $class . 'local');
 }
 
 sub GetEditLink { # shortcut
   my ($id, $name, $upload, $accesskey) = @_;
   $id = FreeToNormal($id);
-  $name =~ s/_/ /g;
   my $action = 'action=edit;id=' . UrlEncode($id);
   $action .= ';upload=1' if $upload;
-  return ScriptLink($action, $name, 'edit', undef, T('Click to edit this page'), $accesskey);
+  return ScriptLink($action, NormalToFree($name), 'edit', undef, T('Click to edit this page'), $accesskey);
 }
 
 sub ScriptLink {
@@ -1182,7 +1175,6 @@ sub ScriptLink {
 sub GetDownloadLink {
   my ($name, $image, $revision, $alt) = @_;
   $alt = $name unless $alt;
-  $alt =~ s/_/ /g;
   my $id = FreeToNormal($name);
   # if the page does not exist
   return '[' . ($image ? T('image') : T('download')) . ':' . $name
@@ -1202,11 +1194,11 @@ sub GetDownloadLink {
       $action = $ScriptName . '?' . $action;
     }
     return $action if $image == 2;
-    my $result = $q->img({-src=>$action, -alt=>$alt, -class=>'upload'});
+    my $result = $q->img({-src=>$action, -alt=>NormalToFree($alt), -class=>'upload'});
     $result = ScriptLink(UrlEncode($id), $result, 'image') unless $id eq $OpenPageName;
     return $result;
   } else {
-    return ScriptLink($action, $alt, 'upload');
+    return ScriptLink($action, NormalToFree($alt), 'upload');
   }
 }
 
@@ -1316,9 +1308,8 @@ sub DoBrowseRequest {
 # == Id handling ==
 
 sub ValidId { # hack alert: returns error message if invalid, and unfortunately the empty string if valid!
-  my $id = shift;
+  my $id = FreeToNormal(shift);
   return T('Page name is missing') unless $id;
-  $id =~ s/ /_/g;
   return Ts('Page name is too long: %s', $id) if length($id) > 120;
   return Ts('Invalid Page %s (must not end with .db)', $id) if $id =~ m|\.db$|;
   return Ts('Invalid Page %s (must not end with .lck)', $id) if $id =~ m|\.lck$|;
@@ -1779,8 +1770,7 @@ sub GetRcText {
       my $link = $ScriptName . (GetParam('all', 0)
 				? '?' . GetPageParameters('browse', $pagename, $revision, $cluster)
 				: ($UsePathInfo ? '/' : '?') . $pagename);
-      $pagename =~ s/_/ /g;
-      print "\n" . RcTextItem('title', $pagename)
+      print "\n" . RcTextItem('title', NormalToFree($pagename))
       . RcTextItem('description', $summary)
       . RcTextItem('generator', $username ? $username . ' ' . Ts('from %s', $host) : $host)
       . RcTextItem('language', join(', ', @{$languages}))
@@ -1846,8 +1836,7 @@ sub GetRcRss {
     sub {
       my ($pagename, $timestamp, $host, $username, $summary, $minor, $revision, $languages, $cluster) = @_;
       return if $excluded{$pagename} or ($limit ne 'all' and $count++ >= $limit);
-      my $name = FreeToNormal($pagename);
-      $name =~ s/_/ /g;
+      my $name = NormalToFree($pagename);
       if (GetParam("full", 0)) {
 	$name .= ": " . $summary;
 	$summary = PageHtml($pagename, 50*1024, T('This page is too big to send over RSS.'));
@@ -1893,12 +1882,12 @@ sub DoHistory {
   print GetHeader('',QuoteHtml(Ts('History of %s', $id)));
   OpenPage($id);
   my $row = 0;
-  my $edit = UserCanEdit($id, 0);
+  my $rollback = UserCanEdit($id, 0) && (GetParam('username', '') or UserIsEditor());
   my $ts;
-  my @html = (GetHistoryLine($id, \%Page, $row++, $edit, \$ts));
+  my @html = (GetHistoryLine($id, \%Page, $row++, $rollback, \$ts));
   foreach my $revision (GetKeepRevisions($OpenPageName)) {
     my %keep = GetKeptRevision($revision);
-    push(@html, GetHistoryLine($id, \%keep, $row++, $edit, \$ts));
+    push(@html, GetHistoryLine($id, \%keep, $row++, $rollback, \$ts));
   }
   if ($UseDiff) {
     @html = (GetFormStart(undef, 'get', 'history'),
@@ -1911,13 +1900,13 @@ sub DoHistory {
   }
   push(@html, $q->p(ScriptLink('title=' . UrlEncode($id) . ';text=' . UrlEncode($DeletedPage) . ';summary='
 			       . UrlEncode(T('Deleted')), T('Mark this page for deletion'))))
-    if $KeepDays and $edit and $Page{revision};
+    if $KeepDays and $rollback and $Page{revision};
   print $q->div({-class=>'content history'}, @html);
   PrintFooter($id, 'history');
 }
 
 sub GetHistoryLine {
-  my ($id, $dataref, $row, $edit, $tsref) = @_;
+  my ($id, $dataref, $row, $rollback, $tsref) = @_;
   my %data = %$dataref;
   my $revision = $data{revision};
   return $q->p(T('No other revisions available')) unless $revision;
@@ -1926,11 +1915,11 @@ sub GetHistoryLine {
   $$tsref = $date if $newday;
   my $html = CalcTime($data{ts});
   if (0 == $row) { # current revision
-    $html .= ' (' . T('current') . ')' if $edit;
+    $html .= ' (' . T('current') . ')' if $rollback;
     $html .= ' ' . GetPageLink($id, Ts('Revision %s', $revision));
   } else {
     $html .= ' (' . ScriptLink("action=rollback;to=$data{ts};id=$id",
-			       T('rollback'), 'rollback') . ')' if $edit;
+			       T('rollback'), 'rollback') . ')' if $rollback;
     $html .= ' ' . GetOldPageLink('browse', $id, $revision, Ts('Revision %s', $revision));
   }
   my $host = $data{host};
@@ -1971,6 +1960,7 @@ sub DoRollback {
   my $to = GetParam('to', 0);
   ReportError(T('Missing target for rollback.'), '400 BAD REQUEST') unless $to;
   ReportError(T('Target for rollback is too far back.'), '400 BAD REQUEST') unless $page or RollbackPossible($to);
+  ReportError(T('A username is required for ordinary users.'), '403 FORBIDDEN') unless GetParam('username', '') or UserIsEditor();
   my @ids = ();
   if (not $page) { # cannot just use list length because of ('')
     return unless UserIsAdminOrError(); # only admins can do mass changes
@@ -2018,8 +2008,7 @@ sub DoAdminPage {
     }
     push(@menu, ScriptLink('action=css', T('Install CSS'), 'css')) unless $StyleSheet;
     if ($id) {
-      my $title = $id;
-      $title =~ s/_/ /g;
+      my $title = NormalToFree($id);
       if (-f GetLockedPageFile($id)) {
 	push(@menu, ScriptLink('action=pagelock;set=0;id=' . UrlEncode($id), Ts('Unlock %s', $title), 'pagelock 0'));
       } else {
@@ -2033,9 +2022,7 @@ sub DoAdminPage {
   }
   print GetHeader('', T('Administration')),
     $q->div({-class=>'content admin'}, $q->p(T('Actions:')), $q->ul($q->li(\@menu)),
-	    $q->p(T('Important pages:')) . $q->ul(map { my $name = $_;
-							$name =~ s/_/ /g;
-							$q->li(GetPageOrEditLink($_, $name)) if $_;
+	    $q->p(T('Important pages:')) . $q->ul(map { $q->li(GetPageOrEditLink($_, NormalToFree($_))) if $_;
 						      } keys %AdminPages),
 	    $q->p(Ts('To mark a page for deletion, put <strong>%s</strong> on the first line.',
 		     $DeletedPage)), @rest);
@@ -2055,15 +2042,14 @@ sub GetPageParameters {
 
 sub GetOldPageLink {
   my ($action, $id, $revision, $name, $cluster) = @_;
-  $name =~ s/_/ /g;
-  return ScriptLink(GetPageParameters($action, $id, $revision, $cluster), $name, 'revision');
+  return ScriptLink(GetPageParameters($action, $id, $revision, $cluster), NormalToFree($name), 'revision');
 }
 
 sub GetSearchLink {
   my ($text, $class, $name, $title) = @_;
   my $id = UrlEncode(QuoteRegexp('"' . $text . '"'));
   $name = UrlEncode($name);
-  $text =~ s/_/ /g;  # Display with spaces
+  $text = NormalToFree($text);
   $id =~ s/_/+/g;    # Search for url-escaped spaces
   return ScriptLink('search=' . $id, $text, $class, $name, $title);
 }
@@ -2079,8 +2065,7 @@ sub ScriptLinkDiff {
 sub GetAuthorLink {
   my ($host, $username) = @_;
   $username = FreeToNormal($username);
-  my $name = $username;
-  $name =~ s/_/ /g;
+  my $name = NormalToFree($username);
   if (ValidId($username) ne '') {  # ValidId() returns error string
     $username = '';  # Just pretend it isn't there.
   }
@@ -2107,7 +2092,7 @@ sub GetHeader {
   my $embed = GetParam('embed', $EmbedWiki);
   my $alt = T('[Home]');
   my $result = GetHttpHeader('text/html', $nocache, $status);
-  $title =~ s/_/ /g;	 # Display as spaces
+  $title = NormalToFree($title);
   if ($oldId) {
     $Message .= $q->p('(' . Ts('redirected from %s', GetEditLink($oldId, $oldId)) . ')');
   }
@@ -2876,6 +2861,12 @@ sub FreeToNormal { # trim all spaces and convert them to underlines
   return $id;
 }
 
+sub NormalToFree {
+  my $title = shift;
+  $title =~ s/_/ /g;
+  return $title;
+}
+
 # == Page-editing and other special-action code ==
 
 sub DoEdit {
@@ -2891,9 +2882,8 @@ sub DoEdit {
 		  $q->p(Ts('The rule %s matched for you.', $rule) . ' '
 			. Ts('See %s for more information.', GetPageLink($BannedHosts))));
     } else {
-      $id =~ s/_/ /g;
       ReportError(T('Edit Denied'), '403 FORBIDDEN', undef,
-		  $q->p(Ts('Editing not allowed: %s is read-only.', $id)));
+		  $q->p(Ts('Editing not allowed: %s is read-only.', NormalToFree($id))));
     }
   } elsif ($upload and not $UploadAllowed and not UserIsAdmin()) {
     ReportError(T('Only administrators can upload files.'), '403 FORBIDDEN');
@@ -3016,11 +3006,8 @@ sub DoPassword {
 }
 
 sub UserIsEditorOrError {
-  if (!UserIsEditor()) {
-    print $q->p(T('This operation is restricted to site editors only...'));
-    PrintFooter();
-    return 0;
-  }
+  UserIsEditor()
+    or ReportError(T('This operation is restricted to site editors only...'), '403 FORBIDDEN');
   return 1;
 }
 
@@ -3059,24 +3046,20 @@ sub UserIsBanned {
 }
 
 sub UserIsAdmin {
-  return 0  if ($AdminPass eq '');
+  return 0 if $AdminPass eq '';
   my $pwd = GetParam('pwd', '');
-  return 0 unless $pwd;
   foreach (split(/\s+/, $AdminPass)) {
-    next if $_ eq '';
     return 1 if $pwd eq $_;
   }
   return 0;
 }
 
 sub UserIsEditor {
-  return 1  if (UserIsAdmin());		# Admin includes editor
-  return 0  if ($EditPass eq '');
-  my $pwd = GetParam('pwd', '');	# Used for both
-  return 0  if ($pwd eq '');
+  return 1 if UserIsAdmin(); # Admin includes editor
+  return 0 if $EditPass eq '';
+  my $pwd = GetParam('pwd', ''); # Used for both passwords
   foreach (split(/\s+/, $EditPass)) {
-    next  if ($_ eq '');
-    return 1  if ($pwd eq $_);
+    return 1 if $pwd eq $_;
   }
   return 0;
 }
@@ -3171,9 +3154,7 @@ sub PrintPage {
       print $id, "\n";
     }
   } else {
-    my $title = $id;
-    $title =~ s/_/ /g;
-    print GetPageOrEditLink($id, $title), $q->br();
+    print GetPageOrEditLink($id, NormalToFree($id)), $q->br();
   }
 }
 
@@ -3267,8 +3248,7 @@ sub SearchTitleAndBody {
   my @found;
   my $lang = GetParam('lang', '');
   foreach my $id (AllPagesList()) {
-    my $name = $id;
-    $name =~ s/_/ /g;
+    my $name = NormalToFree($id);
     my ($text) = PageIsUploadedFile($id); # set to mime-type if this is an uploaded file
     if (not $text) { # not uploaded file, therefore allow searching of page body
       OpenPage($id); # this opens a page twice if it is not uploaded, but that's ok
@@ -3327,9 +3307,7 @@ sub SearchNearPages {
     my $intro = 0;
     foreach my $name (sort keys %NearSource) {
       next if $found{$name}; # do not duplicate local pages
-      my $freeName = $name;
-      $freeName =~ s/_/ /g;
-      if (SearchString($string, $freeName)) {
+      if (SearchString($string, NormalToFree($name))) {
 	$found{$name} = 1;
 	print $q->hr() . $q->p(T('Near pages:')) unless GetParam('raw', 0) or $intro;
 	$intro = 1;
@@ -3375,8 +3353,7 @@ sub PrintSearchResultEntry {
     $author = $entry{generator} unless $author;
     my $id = $entry{title};
     my ($class, $resolved, $title, $exists) = ResolveId($id);
-    my $text = $id;
-    $text =~ s/_/ /g;
+    my $text = NormalToFree($id);
     my $result = $q->span({-class=>'result'}, ScriptLink(UrlEncode($resolved), $text, $class, undef, $title));
     my $description = $entry{description};
     $description = $q->br() . SearchHighlight($description, $regex) if $description;
@@ -3934,8 +3911,7 @@ sub WritePermanentAnchors {
 
 sub GetPermanentAnchor {
   my $id = FreeToNormal(shift);
-  my $text = $id;
-  $text =~ s/_/ /g;
+  my $text = NormalToFree($id);
   my ($class, $resolved, $title, $exists) = ResolveId($id);
   if ($class eq 'alias' and $title ne $OpenPageName) {
     return '[' . Ts('anchor first defined here: %s',
