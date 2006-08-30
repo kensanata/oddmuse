@@ -273,7 +273,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.728 2006/08/30 00:51:08 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.729 2006/08/30 01:22:57 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1476,7 +1476,7 @@ sub PrintRc { # called while browsing any page to append rc to the RecentChanges
   my $title = $id;
   print GetHeader('', Ts('All changes for %s',GetParam('id', $RCName))) if $standalone;
   if ($standalone or $id eq $RCName or T($RCName) eq $id || T($id) eq $RCName
-      or GetParam('cluster', '')) {
+      or GetParam('rcclusteronly', '')) {
     print $q->start_div({-class=>'rc'});
     print $q->hr() unless $standalone or GetParam('embed', $EmbedWiki);
     DoRc(\&GetRcHtml);
