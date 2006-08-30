@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Copyright (C) 2004, 2005  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2005, 2006  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -485,7 +485,8 @@ $to = get_text_via_xpath(get_page('action=rc all=1 pwd=foo'),
 $to =~ /action=rollback;to=([0-9]+)/;
 $to = $1;
 
-test_page(get_page("action=rollback to=$to"), 'restricted to administrators');
+test_page(get_page("action=rollback to=$to"), 'username is required');
+test_page(get_page("action=rollback to=$to username=me"), 'restricted to administrators');
 test_page(get_page("action=rollback to=$to pwd=foo"),
 	  'Rolling back changes',
 	  'EvilPage</a> rolled back',
@@ -553,7 +554,10 @@ test_page(update_page('hist', 'testing', 'test summary test summary test summary
 	  'testing',
 	  'action=history',
 	  'View other revisions');
-$page = get_page('action=history id=hist');
+
+test_page_negative(get_page('action=history id=hist'),
+		   'Mark this page for deletion');
+$page = get_page('action=history id=hist username=me');
 test_page($page,
 	  'test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary test summary',
 	  'View current revision',
@@ -569,7 +573,7 @@ test_page(update_page('hist', 'Tesla', 'Power'),
 	  'Tesla',
 	  'action=history',
 	  'View other revisions');
-$page = get_page('action=history id=hist');
+$page = get_page('action=history id=hist username=me');
 test_page($page,
 	  'test summary',
 	  'Power',
@@ -891,6 +895,10 @@ test_page(get_page('Gary_Peacock'),
 test_page(get_page('Jack_DeJohnette'),
 	  ('A friend of', 'Gary Peacock', 'name="Gary_Peacock"', 'class="definition"',
 	   'title="Click to search for references to this permanent anchor"'));
+test_page(update_page('Jack_DeJohnette', 'A friend of Gary Peacock.'),
+	  'A friend of Gary Peacock.');
+test_page(get_page('Keith_Jarret'),
+	  ('wiki.pl\?action=edit;id=Gary_Peacock'));
 
 # --------------------
 
@@ -2445,7 +2453,7 @@ remove_rule(\&ImageSupportRule);
 
 # --------------------
 
-subscriberc_module:
+subscriberc:
 print '[subscriberc module]'; # test together with link-all module
 
 add_module('subscriberc.pl');
