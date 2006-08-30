@@ -1,6 +1,10 @@
 2006-08-30  Alex Schroeder  <alex@gnu.org>
 
-	* wiki.pl (PrintAllPages, GetPageOrEditLink, GetPageLink)
+	* wiki.pl (BrowsePage): Moved some code into PrintRc.
+	(BrowseRc): Use PrintRc as well.
+	(PrintRc): New.
+
+	(PrintAllPages, GetPageOrEditLink, GetPageLink)
 	(GetEditLink, GetDownloadLink, GetRcText, GetRcRss, )
 	(DoAdminPage, GetOldPageLink, GetSearchLink, GetAuthorLink)
 	(GetHeader, DoEdit, PrintPage, SearchTitleAndBody)
