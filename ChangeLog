@@ -1,3 +1,36 @@
+2006-08-30  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (PrintAllPages, GetPageOrEditLink, GetPageLink)
+	(GetEditLink, GetDownloadLink, GetRcText, GetRcRss, )
+	(DoAdminPage, GetOldPageLink, GetSearchLink, GetAuthorLink)
+	(GetHeader, DoEdit, PrintPage, SearchTitleAndBody)
+	(SearchNearPages, PrintSearchResultEntry, GetPermanentAnchor): Use
+	NormalToFree instead of s/_/ /g.
+	(NormalToFree): New.
+
+	(UserIsEditor, UserIsAdmin): Simplify.
+	(UserIsEditorOrError): Use ReportError.
+
+	(DoRollback): Require a username (because of bots disregarding
+	robot instructions).
+	(DoHistory, GetHistoryLine): Make sure that you need either a
+	password or a username to see rollback links.
+
+2006-08-24  Alex Schroeder  <alex@gnu.org>
+
+	* modules/namespaces.pl (NamespaceRcLines): Implement rollback
+	skipping, too.
+
+2006-08-21  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (BrowsePage, PrintRc): Moved RC printing to new sub
+	PrintRc. When using "View all changes" on a page, the title will
+	show the id of the page instead of "RecentChanges" (based on the
+	rcidonly parameter).
+	(BrowseRc): Call PrintRc instead of BrowsePage.
+	(UserIsEditorOrError): Use ReportError.
+	(UserIsAdmin, UserIsEditor): Simplified.
+
 2006-08-19  Alex Schroeder  <alex@gnu.org>
 
 	* modules/markup.pl (%MarkupForcedPairs): Use pre for {{{ ... }}}
