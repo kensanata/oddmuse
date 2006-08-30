@@ -273,7 +273,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.729 2006/08/30 01:22:57 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.730 2006/08/30 13:39:56 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1565,9 +1565,7 @@ sub RcHeader {
       print $q->p($q->b('(' . Ts('for %s only', $val) . ')')) if $val;
       $action .= ";$_=$val" if $val; # remember these parameters later!
       $val;
-    }
-      ('rcidonly', 'rcuseronly', 'rchostonly', 'rcclusteronly',
-       'rcfilteronly', 'rcmatch', 'lang');
+    } qw(rcidonly rcuseronly rchostonly rcclusteronly rcfilteronly match lang);
   if ($clusterOnly) {
     $action = GetPageParameters('browse', $clusterOnly) . $action;
   } else {
@@ -1613,7 +1611,7 @@ sub GetFilterForm {
   $form .= $q->input({-type=>'hidden', -name=>'showedit', -value=>1}) if (GetParam('showedit', 0));
   $form .= $q->input({-type=>'hidden', -name=>'days', -value=>GetParam('days', $RcDefault)})
     if (GetParam('days', $RcDefault) != $RcDefault);
-  my %h = ('rcmatch' => T('Title:'), 'rcfilteronly' => T('Title and Body:'),
+  my %h = ('match' => T('Title:'), 'rcfilteronly' => T('Title and Body:'),
 	   'rcuseronly' => T('Username:'), 'rchostonly' => T('Host:'));
   my $table = join('', map { $q->Tr($q->td($q->label({-for=>$_}, $h{$_})),
 				    $q->td($q->textfield(-name=>$_, -id=>$_, -size=>20))) } keys %h);
@@ -1653,9 +1651,8 @@ sub GetRc {
   my $date = '';
   my $all = GetParam('all', 0);
   my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $match, $lang) =
-    map { GetParam($_, ''); }
-      ('rcidonly', 'rcuseronly', 'rchostonly', 'rcclusteronly',
-       'rcfilteronly', 'rcmatch', 'lang');
+    map { GetParam($_, ''); } qw(rcidonly rcuseronly rchostonly rcclusteronly
+				 rcfilteronly match lang);
   @outrc = reverse @outrc if GetParam('newtop', $RecentTop);
   my %seen = ();
   my %match = $filterOnly ? map { $_ => 1 } SearchTitleAndBody($filterOnly) : ();
