@@ -3,6 +3,8 @@
 	* wiki.pl (BrowsePage): Moved some code into PrintRc.
 	(BrowseRc): Use PrintRc as well.
 	(PrintRc): New.
+	(RcHeader, GetFilterForm, GetRc): Revert previous unplanned
+	change: Use match instead of rcmatch.
 
 	(PrintAllPages, GetPageOrEditLink, GetPageLink)
 	(GetEditLink, GetDownloadLink, GetRcText, GetRcRss, )
