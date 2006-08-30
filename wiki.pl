@@ -273,7 +273,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.727 2006/08/30 00:42:30 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.728 2006/08/30 00:51:08 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1404,14 +1404,8 @@ sub BrowsePage {
     PrintWikiToHTML(AddComment('', $comment)); # no caching, current revision, unlocked
     print $q->hr(), $q->h2(T('Preview only, not yet saved')), $q->end_div();;
   }
-  SetParam('rcclusteronly', $id) if GetCluster($text) eq $id;
-  if (($id eq $RCName) || (T($RCName) eq $id) || (T($id) eq $RCName)
-      || GetParam('rcclusteronly', '')) {
-    print $q->start_div({-class=>'rc'});;
-    print $q->hr()  if not GetParam('embed', $EmbedWiki);
-    DoRc(\&GetRcHtml);
-    print $q->end_div();
-  }
+  SetParam('rcclusteronly', $id) if GetCluster($text) eq $id; # automatically filter by cluster
+  PrintRc($id);
   PrintFooter($id, $revision, $comment);
 }
 
@@ -1469,11 +1463,26 @@ sub FileFresh { # old files are never stale, current files are stale when the pa
 # == Recent changes and RSS
 
 sub BrowseRc {
+  my $id = shift;
   if (GetParam('raw', 0)) {
     DoRcText();
   } else {
-    BrowsePage($RCName);
+    PrintRc($id, 1);
   }
+}
+
+sub PrintRc { # called while browsing any page to append rc to the RecentChanges page
+  my ($id, $standalone) = @_;
+  my $title = $id;
+  print GetHeader('', Ts('All changes for %s',GetParam('id', $RCName))) if $standalone;
+  if ($standalone or $id eq $RCName or T($RCName) eq $id || T($id) eq $RCName
+      or GetParam('cluster', '')) {
+    print $q->start_div({-class=>'rc'});
+    print $q->hr() unless $standalone or GetParam('embed', $EmbedWiki);
+    DoRc(\&GetRcHtml);
+    print $q->end_div();
+  }
+  PrintFooter($id) if $standalone;
 }
 
 sub DoRcText {
