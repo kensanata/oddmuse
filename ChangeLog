@@ -1,3 +1,21 @@
+2006-08-31  Alex Schroeder  <alex@gnu.org>
+
+	* Makefile (upload): Upload oddmuse-inkscape tarball, too.
+	($(UPLOADVERSION).tar.gz): Build oddmuse-inkscape tarball.
+	(UPLOADVERSION, INKSCAPE): New file lists.
+
+	* wiki.pl (GetId): If no id parameter was given, use the title
+	parameter.
+	(DoBrowseRequest): If a title parameter was given, but the Cancel
+	button was used, don't call DoPost().
+	(DoEdit): Add a Cancel button.
+
+	* inkscape/svg2oddmuse.sh: No longer use width, height,
+	etc. Use --export-area-drawing instead. Print errors to stderr, so
+	that Inkscape will show them.
+
+	* modules/markup.pl: Add newline after {{{ for preformatted block.
+
 2006-08-30  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (BrowsePage): Moved some code into PrintRc.
