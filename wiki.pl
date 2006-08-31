@@ -273,7 +273,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.730 2006/08/30 13:39:56 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.731 2006/08/31 18:18:38 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1277,7 +1277,7 @@ sub GetId {
       SetParam($p, 1); # script/p/q -> p=1
     }
   }
-  return GetParam('id', $id); # id=x overrides
+  return GetParam('id', GetParam('title', $id)); # id=x or title=x override
 }
 
 sub DoBrowseRequest {
@@ -1296,7 +1296,7 @@ sub DoBrowseRequest {
     ReportError(Ts('Invalid action parameter %s', $action), '501 NOT IMPLEMENTED');
   } elsif (($search ne '') || (GetParam('dosearch', '') ne '')) { # allow search for "0"
     DoSearch($search);
-  } elsif (GetParam('title', '')) {
+  } elsif (GetParam('title', '') and not GetParam('Cancel', '')) {
     DoPost(GetParam('title', ''));
   } elsif ($id) {
     BrowseResolvedPage($id); # default action!
@@ -2944,8 +2944,9 @@ sub DoEdit {
   print $q->p($q->label({-for=>'username'}, T('Username:')) . ' '
 	      . $q->textfield(-name=>'username', -id=>'username', -default=>$username,
 			      -override=>1, -size=>20, -maxlength=>50));
-  print $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save'))
-	      . ($upload ? '' :	 ' ' . $q->submit(-name=>'Preview', -accesskey=>T('p'), -value=>T('Preview'))));
+  print $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save')),
+	      ($upload ? '' : ' ' . $q->submit(-name=>'Preview', -accesskey=>T('p'), -value=>T('Preview'))),
+	      ' ', $q->submit(-name=>'Cancel', -value=>T('Cancel')));
   if ($upload) {
     print $q->p(ScriptLink('action=edit;upload=0;id=' . UrlEncode($id), T('Replace this file with text')));
   } elsif ($UploadAllowed or UserIsAdmin()) {
