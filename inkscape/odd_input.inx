@@ -1,0 +1,14 @@
+<inkscape-extension>
+    <name>Oddwiki Input</name>
+    <id>org.inkscape.input.odd</id>
+    <dependency type="executable" location="extensions">oddmuse2svg.sh</dependency>
+    <input>
+        <extension>.odd</extension>
+        <mimetype>text/plain</mimetype>
+        <filetypename>Oddmuse Wiki GET (*.odd)</filetypename>
+        <filetypetooltip>Oddmuse Wiki proxy (SVG, PNG of Drawing)</filetypetooltip>
+    </input>
+    <script>
+        <command reldir="extensions">oddmuse2svg.sh</command>
+    </script>
+</inkscape-extension>
