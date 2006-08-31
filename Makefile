@@ -2,14 +2,18 @@
 # Make sure the CVS keywords for the sed command on the next line are not expanded.
 
 VERSION=oddmuse-$(shell sed -n -e 's/^.*\$$Id: wiki\.pl,v \([0-9.]*\).*$$/\1/p' wiki.pl)
+UPLOADVERSION=oddmuse-inkscape-$(shell sed -n -e 's/^.*\$$Id: wikiupload,v \([0-9.]*\).*$$/\1/p' wikiupload)
 TRANSLATIONS=$(wildcard modules/translations/[a-z]*-utf8.pl$)
 MODULES=$(wildcard modules/*.pl)
+INKSCAPE=GPL $(wildcard inkscape/*.py inkscape/*.inx inkscape/*.sh)
 
 dist: $(VERSION).tar.gz
 
-upload: $(VERSION).tar.gz $(VERSION).tar.gz.sig
-	curl -T $(VERSION).tar.gz      ftp://savannah.gnu.org/incoming/savannah/oddmuse/
-	curl -T $(VERSION).tar.gz.sig  ftp://savannah.gnu.org/incoming/savannah/oddmuse/
+upload: $(VERSION).tar.gz $(VERSION).tar.gz.sig \
+	$(UPLOADVERSION).tar.gz $(UPLOADVERSION).tar.gz.sig
+	for f in $^; do \
+		curl -T $$f ftp://savannah.gnu.org/incoming/savannah/oddmuse/; \
+	done
 
 upload-text: new-utf8.pl
 	wikiupload new-utf8.pl http://www.oddmuse.org/cgi-bin/oddmuse-en/New_Translation_File
@@ -19,6 +23,13 @@ $(VERSION).tar.gz:
 	mkdir $(VERSION)
 	cp README FDL GPL ChangeLog wiki.pl $(TRANSLATIONS) $(MODULES) $(VERSION)
 	tar czf $(VERSION).tar.gz $(VERSION)
+
+$(UPLOADVERSION).tar.gz: $(INKSCAPE)
+	rm -rf $(UPLOADVERSION)
+	mkdir $(UPLOADVERSION)
+	cp $^ $(UPLOADVERSION)
+	cp wikiupload $(UPLOADVERSION)/oddmuse-upload.py
+	tar czf $(UPLOADVERSION).tar.gz $(UPLOADVERSION)
 
 %.tar.gz.sig: %.tar.gz
 	gpg --sign -b $<
