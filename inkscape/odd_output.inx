@@ -1,0 +1,16 @@
+<inkscape-extension>
+    <name>Oddwiki Output</name>
+    <id>org.inkscape.output.odd</id>
+    <dependency type="executable" location="extensions">svg2oddmuse.sh</dependency>
+    <output>
+        <extension>.odd</extension>
+        <mimetype>image/x-svgz</mimetype>
+        <filetypename>Oddmuse Wiki POST (*.odd)</filetypename>
+        <filetypetooltip>Oddmuse Wiki proxy (SVG, PNG of Drawing)</filetypetooltip>
+          <dataloss>FALSE</dataloss>
+    </output>
+    <script>
+        <command reldir="extensions">svg2oddmuse.sh</command>
+                <helper_extension>org.inkscape.output.svg.inkscape</helper_extension>
+    </script>
+</inkscape-extension>
