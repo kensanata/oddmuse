@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: markup.pl,v 1.30 2006/08/18 23:57:36 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: markup.pl,v 1.31 2006/08/31 09:11:58 as Exp $</p>';
 
 use vars qw(%MarkupPairs %MarkupSingles %MarkupLines $MarkupQuotes $MarkupQuoteTable);
 
@@ -38,7 +38,7 @@ $RuleOrder{\&MarkupRule} = 150;
 		'~' => 'em',
 	       );
 
-%MarkupForcedPairs = ('{{{' => ['pre', undef, '}}}'],
+%MarkupForcedPairs = ("{{{\n" => ['pre', undef, '}}}'],
 		      '##' => 'code',
 		      '%%' => 'span',
 		      '**' => 'b',
