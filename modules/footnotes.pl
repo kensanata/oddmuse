@@ -16,12 +16,14 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: footnotes.pl,v 1.5 2004/08/16 01:03:22 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: footnotes.pl,v 1.6 2006/08/31 09:08:42 as Exp $</p>';
 
 my $MyFootnoteCounter = 0;
 my @MyFootnotes = ();
 
 push(@MyRules, \&FootnoteRule);
+# The rule conflicts with the {{{ }}} preformatted block.
+$RuleOrder{\&FootnoteRule} = 160;
 
 sub FootnoteRule {
   if (m/\G(\{\{(.*?)\}\})/gcs) {
