@@ -1,0 +1,123 @@
+#! /usr/bin/perl
+# Copyright (C) 2006  Alex Schroeder <alex@emacswiki.org>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the
+#    Free Software Foundation, Inc.
+#    59 Temple Place, Suite 330
+#    Boston, MA 02111-1307 USA
+
+use Time::ParseDate;
+use Term::ProgressBar;
+
+my $PageDir = 'page';
+my $LogFile = 'access.log';
+my $ReportFile = 'ave-vs-popularity.csv';
+my $Now = time;
+my $Verbose = 1;
+
+# $UrlFilter must match the requested URL, and $1 must be the pagename
+my $FreeLinkPattern = "([-,.()' _0-9A-Za-z\x80-\xff]+)";
+my $UrlFilter = "^/(?:cw|en|de|fr)[/?]$FreeLinkPattern\$";
+warn "URL filter: $UrlFilter\n";
+
+# namespaces
+# my $InterSitePattern = '[A-Z\x80-\xff]+[A-Za-z\x80-\xff]+';
+
+sub ParseLogLine {
+  my $line = shift;
+  my %result;
+  $line =~ m/"(\S+)\s+(\S+)\s+HTTP\/[10.]+"\s+(\d+)/ or die "Cannot parse:\n$_";
+  my $type = $1;
+  my $url = $2;
+  my $code = $3;
+  return unless $type eq 'GET';
+  return unless $code == 200; # Forget 304 Not Modified
+  return $1 if $url =~ m!$UrlFilter!;
+  # namespaces
+  # return $url if $url =~ m!^/odd/$InterSitePattern/$FreeLinkPattern$!;
+  return;
+}
+
+sub ParseData {
+  my $data = shift;
+  my %result;
+  while ($data =~ /(\S+?): (.*?)(?=\n[^ \t]|\Z)/sg) {
+    my ($key, $value) = ($1, $2);
+    $value =~ s/\n\t/\n/g;
+    $result{$key} = $value;
+  }
+  return %result;
+}
+
+my %Age = ();
+my %Hits = ();
+
+sub ParseLog {
+  my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size,
+      $atime,$mtime,$ctime,$blksize,$blocks)
+    = stat($LogFile);
+  my $progress = Term::ProgressBar->new({name  => 'Log',
+					 count => $size,
+					 ETA   => linear, });
+  $progress->max_update_rate(1);
+  my $next_update = 0;
+  my $count = 0;
+  open(F, $LogFile) or die "Cannot read $Logfile: $!";
+  while ($_ = <F>) {
+    $count += length;
+    my $page = ParseLogLine($_);
+    next unless $page;
+    $Hits{$page}++;
+    $next_update = $progress->update($count) if $count++ >= $next_update;
+  }
+  close(F);
+  $progress->update($size) if $size >= $next_update;
+}
+
+sub ParsePages {
+  # include dotfiles!
+  my @files = glob("$PageDir/C/*.pg $PageDir/*/.*.pg");
+  my $progress = Term::ProgressBar->new({name  => 'Pages',
+					 count => $#files,
+					 ETA   => linear, });
+  $progress->max_update_rate(1);
+  my $next_update = 0;
+  my $count = 0;
+  foreach my $file (@files) {
+    next unless $file =~ m|/.*/(.+)\.pg$|;
+    my $page = $1;
+    local $/ = undef;		# Read complete files
+    open(F, $file) or die "Cannot read $page file: $!";
+    my $data = <F>;
+    close(F);
+    my %result = ParseData($data);
+    my $days = ($Now - $result{ts}) / (24 * 60 * 60);
+    $Age{$page} = $days;
+    $next_update = $progress->update($count) if $count++ >= $next_update;
+  }
+  $progress->update($#files) if $#files >= $next_update;
+}
+
+sub WriteReport {
+  open(F, "> $ReportFile") or die "Cannot write $ReportFile: $!";
+  print F "Days,Hits,Name\n";
+  for my $page (keys %Age) {
+    print F "$Age{$page},$Hits{$page},$page\n";
+  }
+  close(F);
+}
+
+ParseLog();
+ParsePages();
+WriteReport();
