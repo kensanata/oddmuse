@@ -273,7 +273,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.731 2006/08/31 18:18:38 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.732 2006/09/01 23:45:44 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1036,7 +1036,7 @@ sub NearInit {
 sub GetInterSiteUrl {
   my ($site, $page, $quote) = @_;
   return unless $page;
-  $page = UrlEncode($page) if $quote; # Foo:bar+baz is not quoted, [[Foo:bar baz]] is quoted.
+  $page = join('/', map { UrlEncode($_) } split(/\//, $page)) if $quote; # Foo:bar+baz is not quoted, [[Foo:bar baz]] is.
   my $url = $InterSite{$site} or return;
   $url =~ s/\%s/$page/g or $url .= $page;
   return $url;
