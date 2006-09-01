@@ -19,10 +19,12 @@
 
 use Time::ParseDate;
 use Term::ProgressBar;
+use Encode;
+use Unicode::Normalize;
 
 my $PageDir = 'page';
 my $LogFile = 'access.log';
-my $ReportFile = 'ave-vs-popularity.csv';
+my $ReportFile = 'age-vs-popularity.csv';
 my $Now = time;
 my $Verbose = 1;
 
@@ -34,12 +36,18 @@ warn "URL filter: $UrlFilter\n";
 # namespaces
 # my $InterSitePattern = '[A-Z\x80-\xff]+[A-Za-z\x80-\xff]+';
 
+sub UrlDecode {
+  my $str = shift;
+  $str =~ s/%([0-9a-f][0-9a-f])/chr(hex($1))/ge;
+  return $str;
+}
+
 sub ParseLogLine {
   my $line = shift;
   my %result;
   $line =~ m/"(\S+)\s+(\S+)\s+HTTP\/[10.]+"\s+(\d+)/ or die "Cannot parse:\n$_";
   my $type = $1;
-  my $url = $2;
+  my $url = UrlDecode($2);
   my $code = $3;
   return unless $type eq 'GET';
   return unless $code == 200; # Forget 304 Not Modified
@@ -87,7 +95,7 @@ sub ParseLog {
 
 sub ParsePages {
   # include dotfiles!
-  my @files = glob("$PageDir/C/*.pg $PageDir/*/.*.pg");
+  my @files = glob("$PageDir/*/*.pg $PageDir/*/.*.pg");
   my $progress = Term::ProgressBar->new({name  => 'Pages',
 					 count => $#files,
 					 ETA   => linear, });
@@ -96,8 +104,8 @@ sub ParsePages {
   my $count = 0;
   foreach my $file (@files) {
     next unless $file =~ m|/.*/(.+)\.pg$|;
-    my $page = $1;
-    local $/ = undef;		# Read complete files
+    my $page = encode_utf8(NFC(decode_utf8($1))); # normalize on HFS+ filesystems
+    local $/ = undef; # Read complete files
     open(F, $file) or die "Cannot read $page file: $!";
     my $data = <F>;
     close(F);
