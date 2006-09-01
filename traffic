@@ -18,10 +18,10 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 #
-# $Id: traffic,v 1.1 2006/09/01 11:11:44 as Exp $</p>'
+# $Id: traffic,v 1.2 2006/09/01 11:14:34 as Exp $</p>'
 
 while (<STDIN>) {
-  m/\[.*?\] ".*?" \d+ (\d+)/ or die "Cannot parse:\n$_";
-  $bytes += $1;
+  # 304 responses have - as bytes
+  $bytes += $1 if m/\[.*?\] ".*?" \d+ (\d+)/;
 }
 printf "%d %dK %.1fM %.2fG\n", $bytes, $bytes/1024, $bytes/1024000, $bytes/1024000000;
