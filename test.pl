@@ -2397,7 +2397,7 @@ remove_module('link-all.pl');
 
 # --------------------
 
-image_module:
+images:
 print '[image module]';
 
 do "modules/image.pl";
@@ -2405,6 +2405,8 @@ do "modules/image.pl";
 clear_pages();
 
 update_page('bar', 'foo');
+update_page('InterMap', " Oddmuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n",
+	    'required', 0, 1);
 
 %Test = split('\n',<<'EOT');
 EOT
@@ -2445,6 +2447,18 @@ xpath_run_tests();
 //a[@class="image"][@href="/images/foo"]/img[@class="upload"][@title="moo"][@src="/images/foo"][@alt="moo"]
 [[image external:foo|moo||the caption]]
 //div[@class="image"]/a[@class="image"][@href="/images/foo"][img[@class="upload"][@title="moo"][@src="/images/foo"][@alt="moo"]]/following-sibling::br/following-sibling::span[@class="caption"][text()="the caption"]
+[[image:foo/bar|moo||the caption]]
+//div[@class="image"]/a[@class="image"][@href="/images/foo/bar"][img[@class="upload"][@title="moo"][@src="/images/foo/bar"][@alt="moo"]]/following-sibling::br/following-sibling::span[@class="caption"][text()="the caption"]
+[[image:foo/bar|moo|baz|the caption]]
+//div[@class="image"]/a[@class="image"][@href="http://localhost/test.pl/baz"][img[@class="upload"][@title="moo"][@src="/images/foo/bar"][@alt="moo"]]/following-sibling::br/following-sibling::span[@class="caption"][text()="the caption"]
+[[image:Oddmuse:foo/bar|moo|Oddmuse:baz/zz|the caption]]
+//div[@class="image"]/a[@class="image inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?baz/zz"][img[@class="upload"][@title="moo"][@src="http://www.emacswiki.org/cgi-bin/oddmuse.pl?foo/bar"][@alt="moo"]]/following-sibling::br/following-sibling::span[@class="caption"][text()="the caption"]
+[[image:Oddmuse:foo/bar|moo|Oddmuse:baz/zz|the caption|Oddmuse:quux]]
+//div[@class="image"]/a[@class="image inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?baz/zz"][img[@class="upload"][@title="moo"][@src="http://www.emacswiki.org/cgi-bin/oddmuse.pl?foo/bar"][@alt="moo"]]/following-sibling::br/following-sibling::span[@class="caption"][a[@class="image inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?quux"][text()="the caption"]]
+[[image:Oddmuse:the foo|moo|Oddmuse:the baz|the caption|Oddmuse:the quux]]
+//div[@class="image"]/a[@class="image inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?the%20baz"][img[@class="upload"][@title="moo"][@src="http://www.emacswiki.org/cgi-bin/oddmuse.pl?the%20foo"][@alt="moo"]]/following-sibling::br/following-sibling::span[@class="caption"][a[@class="image inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?the%20quux"][text()="the caption"]]
+[[image:Oddmuse:Alex Schröder]]
+//div/a[@class="image inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Alex%20Schr%c3%b6der"][img[@class="upload"][@src="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Alex%20Schr%c3%b6der"]]
 EOT
 
 xpath_run_tests();
