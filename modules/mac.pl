@@ -16,10 +16,10 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: mac.pl,v 1.1 2005/04/05 23:45:59 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: mac.pl,v 1.2 2006/09/02 01:14:31 as Exp $</p>';
 
 use Encode;
-use Unicode::Normalize ;
+use Unicode::Normalize;
 
 *OldAllPagesList = *AllPagesList;
 *AllPagesList = *NewAllPagesList;

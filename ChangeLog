@@ -1,3 +1,11 @@
+2006-09-02  Alex Schroeder  <alex@gnu.org>
+
+	* modules/image.pl (ImageSupportRule, ImageGetExternalUrl): Allow
+	interlinks and directories as well.
+	(ImageUrlEncode): New.
+
+	* wiki.pl (GetInterSiteUrl): Don't quote slashes.
+
 2006-08-31  Alex Schroeder  <alex@gnu.org>
 
 	* Makefile (upload): Upload oddmuse-inkscape tarball, too.
