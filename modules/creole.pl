@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.1 2006/09/03 23:22:20 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.2 2006/09/03 23:43:45 as Exp $</p>';
 
 push(@MyRules, \&CreoleRule);
 
@@ -66,17 +66,17 @@ sub CreoleRule {
 	 && m/\G=+[ \t]*\n?/cg) {
     return '';
   }
-  # ending headings
-  elsif ($bol && defined $HtmlStack[0] && $heading{$HtmlStack[0]}) {
-    return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
-  }
   # paragraphs: at least two newlines
   elsif (m/\G\s*\n(\s*\n)+/cg) {
     return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
   }
-  # line break: one newline
+  # line break: one newline, or close a heading
   elsif (m/\G\s*\n/cg) {
-    return $q->br();
+    if (defined $HtmlStack[0] && $heading{$HtmlStack[0]}) {
+      return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
+    } else {
+      return $q->br();
+    }
   }
   # preformatted
   elsif ($bol && m/\G\{\{\{\n?(.*?\n)\}\}\}[ \t]*\n?/cgs) {
