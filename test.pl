@@ -3271,6 +3271,63 @@ remove_rule(\&IrcRule);
 
 # --------------------
 
+creole:
+print '[creole]';
+
+clear_pages();
+add_module('creole.pl');
+
+%Test = split('\n',<<'EOT');
+# one
+<ol><li>one</li></ol>
+- one
+<ul><li>one</li></ul>
+**bold**
+<strong>bold</strong>
+//italic//
+<em>italic</em>
+**//bold italic**//italic
+<strong><em>bold italic</em></strong><em>italic</em>
+//**bold italic//**bold
+<em><strong>bold italic</strong></em><strong>bold</strong>
+= foo
+= foo
+== foo
+<h2>foo</h2>
+=== foo
+<h3>foo</h3>
+==== foo
+<h4>foo</h4>
+===== foo
+===== foo
+== foo ==
+<h2>foo </h2>
+foo\n\nbar
+foo<p>bar</p>
+foo\nbar
+foo<br />bar
+{{{\nfoo\n}}}
+<pre class="real">foo\n</pre>
+{{{\nfoo}}}
+<span class="nowiki">\nfoo</span>
+foo {{{bar}}}
+foo <span class="nowiki">bar</span>
+----
+<hr />
+-----
+<hr />
+~~~~
+<hr />
+____
+<hr />
+EOT
+
+run_tests();
+
+remove_rule(\&CreoleRule);
+
+# --------------------
+
 end:
 
 ### END OF TESTS
