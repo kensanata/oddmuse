@@ -1,3 +1,7 @@
+2006-09-04  Alex Schroeder  <alex@gnu.org>
+
+	* modules/creole.pl: New file.
+
 2006-09-02  Alex Schroeder  <alex@gnu.org>
 
 	* modules/image.pl (ImageSupportRule, ImageGetExternalUrl): Allow
