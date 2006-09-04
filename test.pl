@@ -3302,6 +3302,8 @@ add_module('creole.pl');
 ===== foo
 == foo ==
 <h2>foo </h2>
+== foo\nbar
+<h2>foo</h2><p>bar</p>
 foo\n\nbar
 foo<p>bar</p>
 foo\nbar
@@ -3323,6 +3325,23 @@ ____
 EOT
 
 run_tests();
+
+update_page('link', 'test');
+
+%Test = split('\n',<<'EOT');
+[[http://www.wikicreole.org/|Visit the WikiCreole website]]
+//a[@class="url http outside"][@href="http://www.wikicreole.org/"][text()="Visit the WikiCreole website"]
+[[http://www.wikicreole.org/|Visit the\nWikiCreole website]]
+//a[@class="url http outside"][@href="http://www.wikicreole.org/"][text()="Visit the\nWikiCreole website"]
+[[link]]
+//a[text()="link"]
+[[link|Go to my page]]
+//a[@class="local"][@href="http://localhost/test.pl/link"][text()="Go to my page"]
+[[link|Go to\nmy page]]
+//a[@class="local"][@href="http://localhost/test.pl/link"][text()="Go to\nmy page"]
+EOT
+
+xpath_run_tests();
 
 remove_rule(\&CreoleRule);
 
