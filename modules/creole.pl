@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.4 2006/09/04 01:38:03 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.5 2006/09/04 12:20:32 as Exp $</p>';
 
 push(@MyRules, \&CreoleRule);
 # [[link|{{Image:foo}}]] conflicts with default link rule
@@ -132,9 +132,7 @@ sub CreoleRule {
   }
   # horizontal line
   # ----
-  # ~~~~
-  # ____
-  elsif ($bol && m/(----+|~~~~+|____+)[ \t]*\n?/cg) {
+  elsif ($bol && m/----+[ \t]*\n?/cg) {
     return CloseHtmlEnvironments() . $q->hr()
       . AddHtmlEnvironment('p');
   }
