@@ -3,6 +3,7 @@
 	* modules/creole.pl: New file.
 	(CreoleRule): Fix linebreak ending a heading.
 	(CreoleRule): Added lots of image rules.
+	(CreoleRule): Fix list items.
 
 2006-09-02  Alex Schroeder  <alex@gnu.org>
 
