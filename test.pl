@@ -3280,8 +3280,14 @@ add_module('creole.pl');
 %Test = split('\n',<<'EOT');
 # one
 <ol><li>one</li></ol>
+# one\n# two
+<ol><li>one</li><li>two</li></ol>
+# one\n\n# two
+<ol><li>one</li><li>two</li></ol>
 - one
 <ul><li>one</li></ul>
+# one\n- two
+<ol><li>one</li></ol><ul><li>two</li></ul>
 **bold**
 <strong>bold</strong>
 //italic//
@@ -3327,6 +3333,7 @@ EOT
 run_tests();
 
 update_page('link', 'test');
+update_page('pic', 'test');
 
 %Test = split('\n',<<'EOT');
 [[http://www.wikicreole.org/|Visit the WikiCreole website]]
@@ -3339,6 +3346,16 @@ update_page('link', 'test');
 //a[@class="local"][@href="http://localhost/test.pl/link"][text()="Go to my page"]
 [[link|Go to\nmy page]]
 //a[@class="local"][@href="http://localhost/test.pl/link"][text()="Go to\nmy page"]
+{{Image:pic}}
+//a[@class="image"][@href="http://localhost/test.pl/pic"][img[@class="upload"][@src="http://localhost/test.pl/download/pic"][@alt="pic"]]
+[[link|{{Image:pic}}]]
+//a[@class="image"][@href="http://localhost/test.pl/link"][img[@class="upload"][@src="http://localhost/test.pl/download/pic"][@alt="link"]]
+[[http://example.com/|{{Image:pic}}]]
+//a[@class="image outside"][@href="http://example.com/"][img[@class="upload"][@src="http://localhost/test.pl/download/pic"][@alt="pic"]]
+{{Image:http://example.com/}}
+//a[@class="image outside"][@href="http://example.com/"][img[@class="url outside"][@src="http://example.com/"]]
+[[http://example.com/|{{Image:http://mu.org/}}]]
+//a[@class="image outside"][@href="http://example.com/"][img[@class="url outside"][@src="http://mu.org/"]]
 EOT
 
 xpath_run_tests();
