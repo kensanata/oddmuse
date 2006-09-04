@@ -16,9 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.2 2006/09/03 23:43:45 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.3 2006/09/04 01:12:58 as Exp $</p>';
 
 push(@MyRules, \&CreoleRule);
+# [[link|{{Image:foo}}]] conflicts with default link rule
+$RuleOrder{\&CreoleRule} = -10;
 
 sub CreoleRule {
   my %heading = qw(h2 1 h3 1 h4 1);
@@ -78,14 +80,53 @@ sub CreoleRule {
       return $q->br();
     }
   }
+  # {{{
   # preformatted
+  # }}}
   elsif ($bol && m/\G\{\{\{\n?(.*?\n)\}\}\}[ \t]*\n?/cgs) {
     return CloseHtmlEnvironments() . $q->pre({-class=>'real'}, $1)
       . AddHtmlEnvironment('p');
   }
-  # unformatted
+  # {{{unformatted}}}
   elsif (m/\G\{\{\{(.*?)\}\}\}/cgs) {
     return $q->span({-class=>'nowiki'}, $1);
+  }
+  # {{Image:pic}}
+  elsif (m/\G(\{\{Image:$FreeLinkPattern\}\})/cgs) {
+    Dirty($1);
+    return GetDownloadLink($2, 1);
+  }
+  # {{Image:url}}
+  elsif (m/\G\{\{Image:$FullUrlPattern\}\}/cgs) {
+    return $q->a({-href=>$1,
+		  -class=>'image outside'},
+		 $q->img({-src=>$1,
+			  -class=>'url outside'}));
+  }
+  # link: [[link|{{Image:pic}}]]
+  elsif (m/\G\[\[$FreeLinkPattern\|\{\{Image:$FreeLinkPattern\}\}\]\]/cgs) {
+    return ScriptLink($1, $q->img({-src=>GetDownloadLink($2, 2),
+				   -alt=>NormalToFree($1),
+				   -class=>'upload'}),
+		      'image');
+  }
+  # link: [[url|{{Image:pic}}]]
+  elsif (m/\G\[\[$FullUrlPattern\|\{\{Image:$FreeLinkPattern\}\}\]\]/cgs) {
+    return $q->a({-href=>$1, -class=>'image outside'},
+		 $q->img({-src=>GetDownloadLink($2, 2),
+			  -class=>'upload',
+			  -alt=>$2}));
+  }
+  # link: [[url|{{Image:url}}]]
+  elsif (m/\G\[\[$FullUrlPattern\|\{\{Image:$FullUrlPattern\}\}\]\]/cgs) {
+    return $q->a({-href=>$1, -class=>'image outside'},
+		 $q->img({-src=>$2,
+			  -class=>'url outside',
+			  -alt=>$2}));
+  }
+  # link: [[url|text]]
+  elsif (m/\G\[\[$FullUrlPattern\|([^]]+)?\]\]/cgs) {
+    return GetUrl($1, $2, 1);
   }
   # horizontal line
   # ----
