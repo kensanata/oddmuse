@@ -3317,7 +3317,11 @@ add_module('creole.pl');
 ==== foo
 <h4>foo</h4>
 ===== foo
-===== foo
+<h5>foo</h5>
+====== foo
+<h6>foo</h6>
+======= foo
+======= foo
 == foo ==
 <h2>foo </h2>
 == foo\nbar
