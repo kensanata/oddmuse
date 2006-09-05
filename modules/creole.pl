@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.7 2006/09/05 14:34:06 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.8 2006/09/05 14:48:21 as Exp $</p>';
 
 push(@MyRules, \&CreoleRule);
 # [[link|{{Image:foo}}]] conflicts with default link rule
@@ -110,6 +110,13 @@ sub CreoleRule {
     return ScriptLink($1, $q->img({-src=>GetDownloadLink($2, 2),
 				   -alt=>NormalToFree($1),
 				   -class=>'upload'}),
+		      'image');
+  }
+  # link: [[link|{{url}}]]
+  elsif (m/\G\[\[$FreeLinkPattern\|\{\{$FullUrlPattern\}\}\]\]/cgos) {
+    return ScriptLink($1, $q->img({-src=>$2,
+				   -class=>'url outside',
+				   -alt=>$1}),
 		      'image');
   }
   # link: [[url|{{pic}}]]
