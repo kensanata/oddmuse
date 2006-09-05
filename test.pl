@@ -3350,6 +3350,8 @@ update_page('pic', 'test');
 //a[@class="image"][@href="http://localhost/test.pl/pic"][img[@class="upload"][@src="http://localhost/test.pl/download/pic"][@alt="pic"]]
 [[link|{{pic}}]]
 //a[@class="image"][@href="http://localhost/test.pl/link"][img[@class="upload"][@src="http://localhost/test.pl/download/pic"][@alt="link"]]
+[[link|{{http://example.com/}}]]
+//a[@class="image"][@href="http://localhost/test.pl/link"][img[@class="url outside"][@src="http://example.com/"][@alt="link"]]
 [[http://example.com/|{{pic}}]]
 //a[@class="image outside"][@href="http://example.com/"][img[@class="upload"][@src="http://localhost/test.pl/download/pic"][@alt="pic"]]
 {{http://example.com/}}
