@@ -3282,13 +3282,23 @@ add_module('creole.pl');
 %Test = split('\n',<<'EOT');
 # one
 <ol><li>one</li></ol>
+ # one
+<ol><li>one</li></ol>
+   #   one
+<ol><li>one</li></ol>
 # one\n# two
 <ol><li>one</li><li>two</li></ol>
 # one\n\n# two
 <ol><li>one</li><li>two</li></ol>
 - one
 <ul><li>one</li></ul>
+  - one
+<ul><li>one</li></ul>
+  *  one
+<ul><li>one</li></ul>
 # one\n- two
+<ol><li>one</li></ol><ul><li>two</li></ul>
+  #  one\n  - two
 <ol><li>one</li></ol><ul><li>two</li></ul>
 **bold**
 <strong>bold</strong>
