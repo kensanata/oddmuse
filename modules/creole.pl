@@ -16,14 +16,14 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.9 2006/09/05 20:00:51 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.10 2006/09/05 20:33:29 as Exp $</p>';
 
 push(@MyRules, \&CreoleRule);
 # [[link|{{Image:foo}}]] conflicts with default link rule
 $RuleOrder{\&CreoleRule} = -10;
 
 sub CreoleRule {
-  my %heading = qw(h2 1 h3 1 h4 1);
+  my %heading = map {$_=>1} qw(h2 h3 h4 h5 h6);
   # # number list
   if ($bol && m/\G\s*#[ \t]+/cg
       or InElement('li') && m/\G\s*\n[ \t]*#[ \t]+/cg) {
@@ -61,8 +61,8 @@ sub CreoleRule {
   # == Level 1 (Largest)
   # === Level 2
   # ==== Level 3
-  elsif ($bol && m/\G(\s*\n)*(===?=?)[ \t]/cg) {
-    my $tag = 'h' . length($2); # h2-h4
+  elsif ($bol && m/\G(\s*\n)*(={2,6})[ \t]/cg) {
+    my $tag = 'h' . length($2);
     return CloseHtmlEnvironments() . AddHtmlEnvironment($tag);
   }
   # eat trailing ==
