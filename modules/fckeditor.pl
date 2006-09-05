@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA,
 
-$ModulesDescription .= '<p>$Id: fckeditor.pl,v 1.6 2006/09/05 13:21:03 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: fckeditor.pl,v 1.7 2006/09/05 13:53:50 as Exp $</p>';
 
 use vars qw($FCKeditorHeight);
 
@@ -59,12 +59,17 @@ sub NewFckImproveDiff {
   my $old = OldFckImproveDiff(@_);
   my $new = '';
   my $protected = 0;
+  # fix diff inserting change boundaries inside tags
+  $old =~ s!&<strong class="changes">([a-z]+);!</strong>&$1;!g;
+  $old =~ s!&</strong>([a-z]+);!</strong>&$1;!g;
+  # unquote named html entities
+  $old =~ s/\&amp;([a-z]+);/&$1;/g;
   foreach my $str (split(/(<strong class="changes">|<\/strong>)/, $old)) {
     # Don't remove HTML tags affected by changes.
     $protected = 1 if $str eq '<strong class="changes">';
-    # strip html tags (and don't get confused with the < and > created
+    # strip html tags and don't get confused with the < and > created
     # by diff!
-    $str =~ s/\&lt;\/?[a-z]+.*?\&gt;//g unless $protected;
+    $str =~ s/\&lt;.*?\&gt;//g unless $protected;
     $protected = 0 if $str eq '</strong>';
     $new .= $str;
   }
