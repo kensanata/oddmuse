@@ -3346,15 +3346,15 @@ update_page('pic', 'test');
 //a[@class="local"][@href="http://localhost/test.pl/link"][text()="Go to my page"]
 [[link|Go to\nmy page]]
 //a[@class="local"][@href="http://localhost/test.pl/link"][text()="Go to\nmy page"]
-{{Image:pic}}
+{{pic}}
 //a[@class="image"][@href="http://localhost/test.pl/pic"][img[@class="upload"][@src="http://localhost/test.pl/download/pic"][@alt="pic"]]
-[[link|{{Image:pic}}]]
+[[link|{{pic}}]]
 //a[@class="image"][@href="http://localhost/test.pl/link"][img[@class="upload"][@src="http://localhost/test.pl/download/pic"][@alt="link"]]
-[[http://example.com/|{{Image:pic}}]]
+[[http://example.com/|{{pic}}]]
 //a[@class="image outside"][@href="http://example.com/"][img[@class="upload"][@src="http://localhost/test.pl/download/pic"][@alt="pic"]]
-{{Image:http://example.com/}}
+{{http://example.com/}}
 //a[@class="image outside"][@href="http://example.com/"][img[@class="url outside"][@src="http://example.com/"]]
-[[http://example.com/|{{Image:http://mu.org/}}]]
+[[http://example.com/|{{http://mu.org/}}]]
 //a[@class="image outside"][@href="http://example.com/"][img[@class="url outside"][@src="http://mu.org/"]]
 EOT
 
