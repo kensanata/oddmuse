@@ -1,6 +1,6 @@
 2006-09-05  Alex Schroeder  <alex@gnu.org>
 
-	* modules/creole.pl (CreoleRule): Allow trailing whitespace for
+	* modules/creole.pl (CreoleRule): Allow leading whitespace for
 	lists.
 
 2006-09-05  Alex Schroeder  <alex@gnu.org>
