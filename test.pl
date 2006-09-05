@@ -3334,6 +3334,8 @@ update_page('link', 'test');
 update_page('pic', 'test');
 
 %Test = split('\n',<<'EOT');
+[[http://www.wikicreole.org/]]
+//a[@class="url http outside"][@href="http://www.wikicreole.org/"][text()="http://www.wikicreole.org/"]
 [[http://www.wikicreole.org/|Visit the WikiCreole website]]
 //a[@class="url http outside"][@href="http://www.wikicreole.org/"][text()="Visit the WikiCreole website"]
 [[http://www.wikicreole.org/|Visit the\nWikiCreole website]]
