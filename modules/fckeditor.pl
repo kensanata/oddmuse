@@ -16,11 +16,12 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA,
 
-$ModulesDescription .= '<p>$Id: fckeditor.pl,v 1.4 2005/07/07 11:28:56 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: fckeditor.pl,v 1.5 2006/09/05 11:54:46 as Exp $</p>';
 
-use vars qw($FCKeditorHeight);
+use vars qw($FCKeditorHeight $FCKdiff);
 
 $FCKeditorHeight = 400; # Pixel
+$FCKdiff = 1; # 1 = strip HTML tags before running diff
 
 push (@MyRules, \&WysiwygRule);
 
@@ -50,4 +51,16 @@ sub WysiwygScript {
 </script>
 };
   }
+}
+
+*OldFckGetDiff = *GetDiff;
+*GetDiff = *NewFckGetDiff;
+
+sub NewFckGetDiff {
+  my ($old, $new, $revision) = @_;
+  if ($FCKdiff) {
+    $old =~ s/<.*?>//g;
+    $new =~ s/<.*?>//g;
+  }
+  return OldFckGetDiff($old, $new, $revision);
 }
