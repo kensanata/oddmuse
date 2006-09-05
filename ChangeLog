@@ -1,9 +1,17 @@
+2006-09-05  Alex Schroeder  <alex@gnu.org>
+
+	* modules/fckeditor.pl ($FCKdiff): New option.
+	(NewFckGetDiff): New.
+
+	* modules/creole.pl (CreoleRule): Support [[url]] pattern, add /o.
+
 2006-09-04  Alex Schroeder  <alex@gnu.org>
 
 	* modules/creole.pl: New file.
 	(CreoleRule): Fix linebreak ending a heading.
 	(CreoleRule): Added lots of image rules.
 	(CreoleRule): Fix list items.
+	(CreoleRule): Remove alternative hr markup.
 
 2006-09-02  Alex Schroeder  <alex@gnu.org>
 
