@@ -16,12 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA,
 
-$ModulesDescription .= '<p>$Id: fckeditor.pl,v 1.5 2006/09/05 11:54:46 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: fckeditor.pl,v 1.6 2006/09/05 13:21:03 as Exp $</p>';
 
-use vars qw($FCKeditorHeight $FCKdiff);
+use vars qw($FCKeditorHeight);
 
 $FCKeditorHeight = 400; # Pixel
-$FCKdiff = 1; # 1 = strip HTML tags before running diff
 
 push (@MyRules, \&WysiwygRule);
 
@@ -53,14 +52,21 @@ sub WysiwygScript {
   }
 }
 
-*OldFckGetDiff = *GetDiff;
-*GetDiff = *NewFckGetDiff;
+*OldFckImproveDiff = *ImproveDiff;
+*ImproveDiff = *NewFckImproveDiff;
 
-sub NewFckGetDiff {
-  my ($old, $new, $revision) = @_;
-  if ($FCKdiff) {
-    $old =~ s/<.*?>//g;
-    $new =~ s/<.*?>//g;
+sub NewFckImproveDiff {
+  my $old = OldFckImproveDiff(@_);
+  my $new = '';
+  my $protected = 0;
+  foreach my $str (split(/(<strong class="changes">|<\/strong>)/, $old)) {
+    # Don't remove HTML tags affected by changes.
+    $protected = 1 if $str eq '<strong class="changes">';
+    # strip html tags (and don't get confused with the < and > created
+    # by diff!
+    $str =~ s/\&lt;\/?[a-z]+.*?\&gt;//g unless $protected;
+    $protected = 0 if $str eq '</strong>';
+    $new .= $str;
   }
-  return OldFckGetDiff($old, $new, $revision);
+  return $new;
 }
