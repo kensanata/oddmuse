@@ -1,5 +1,16 @@
 2006-09-05  Alex Schroeder  <alex@gnu.org>
 
+	* modules/creole.pl (CreoleRule): Allow trailing whitespace for
+	lists.
+
+2006-08-11  Alex Schroeder  <alex@gnu.org>
+
+	* modules/static-copy.pl (DoStatic, StaticFileName): Don't set
+	%StaticMimeTypes in DoStatic, as this has no effect here when
+	GetDownloadLink is called. StaticFileName is the right place.
+
+2006-09-05  Alex Schroeder  <alex@gnu.org>
+
 	* modules/fckeditor.pl ($FCKdiff): New option.
 	(NewFckGetDiff): New.
 
@@ -166,9 +177,11 @@
 
 	* wiki.pl (DoCss): No need to URL encode the URLs in @CssList.
 
-	* modules/static-copy.pl (StaticScriptLink): Remove unnecessary call to AllPagesList.
+	* modules/static-copy.pl (StaticScriptLink): Remove unnecessary
+	call to AllPagesList.
 	(StaticGetDownloadLink): Strip underlines from alt texts, return
-	URL only when requested (matches changes in wiki.pl's GetDownloadLink.
+	URL only when requested (matches changes in wiki.pl's
+	GetDownloadLink.
 	(GetDownloadLink): Ditto.
 
 	* wiki.pl (GetDownloadLink): Allow to retrieve download URL only.
