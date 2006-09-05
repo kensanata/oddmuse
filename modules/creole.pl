@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.5 2006/09/04 12:20:32 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.6 2006/09/05 10:05:19 as Exp $</p>';
 
 push(@MyRules, \&CreoleRule);
 # [[link|{{Image:foo}}]] conflicts with default link rule
@@ -94,41 +94,41 @@ sub CreoleRule {
     return $q->span({-class=>'nowiki'}, $1);
   }
   # {{Image:pic}}
-  elsif (m/\G(\{\{Image:$FreeLinkPattern\}\})/cgs) {
+  elsif (m/\G(\{\{Image:$FreeLinkPattern\}\})/cgos) {
     Dirty($1);
     return GetDownloadLink($2, 1);
   }
   # {{Image:url}}
-  elsif (m/\G\{\{Image:$FullUrlPattern\}\}/cgs) {
+  elsif (m/\G\{\{Image:$FullUrlPattern\}\}/cgos) {
     return $q->a({-href=>$1,
 		  -class=>'image outside'},
 		 $q->img({-src=>$1,
 			  -class=>'url outside'}));
   }
   # link: [[link|{{Image:pic}}]]
-  elsif (m/\G\[\[$FreeLinkPattern\|\{\{Image:$FreeLinkPattern\}\}\]\]/cgs) {
+  elsif (m/\G\[\[$FreeLinkPattern\|\{\{Image:$FreeLinkPattern\}\}\]\]/cgos) {
     return ScriptLink($1, $q->img({-src=>GetDownloadLink($2, 2),
 				   -alt=>NormalToFree($1),
 				   -class=>'upload'}),
 		      'image');
   }
   # link: [[url|{{Image:pic}}]]
-  elsif (m/\G\[\[$FullUrlPattern\|\{\{Image:$FreeLinkPattern\}\}\]\]/cgs) {
+  elsif (m/\G\[\[$FullUrlPattern\|\{\{Image:$FreeLinkPattern\}\}\]\]/cgos) {
     return $q->a({-href=>$1, -class=>'image outside'},
 		 $q->img({-src=>GetDownloadLink($2, 2),
 			  -class=>'upload',
 			  -alt=>$2}));
   }
   # link: [[url|{{Image:url}}]]
-  elsif (m/\G\[\[$FullUrlPattern\|\{\{Image:$FullUrlPattern\}\}\]\]/cgs) {
+  elsif (m/\G\[\[$FullUrlPattern\|\{\{Image:$FullUrlPattern\}\}\]\]/cgos) {
     return $q->a({-href=>$1, -class=>'image outside'},
 		 $q->img({-src=>$2,
 			  -class=>'url outside',
 			  -alt=>$2}));
   }
-  # link: [[url|text]]
-  elsif (m/\G\[\[$FullUrlPattern\|([^]]+)?\]\]/cgs) {
-    return GetUrl($1, $2, 1);
+  # link: [[url]] and [[url|text]]
+  elsif (m/\G\[\[$FullUrlPattern(\|([^]]+))?\]\]/cgos) {
+    return GetUrl($1, $3||$1, 1);
   }
   # horizontal line
   # ----
