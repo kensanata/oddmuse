@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA,
 
-$ModulesDescription .= '<p>$Id: fckeditor.pl,v 1.7 2006/09/05 13:53:50 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: fckeditor.pl,v 1.8 2006/09/05 14:12:22 as Exp $</p>';
 
 use vars qw($FCKeditorHeight);
 
@@ -48,6 +48,9 @@ sub WysiwygScript {
     oFCKeditor.ReplaceTextarea() ;
   }
 </script>
+<style type="text/css">
+input[name="Preview"] { display: none; }
+</style>
 };
   }
 }
