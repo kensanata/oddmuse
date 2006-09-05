@@ -3,12 +3,6 @@
 	* modules/creole.pl (CreoleRule): Allow trailing whitespace for
 	lists.
 
-2006-08-11  Alex Schroeder  <alex@gnu.org>
-
-	* modules/static-copy.pl (DoStatic, StaticFileName): Don't set
-	%StaticMimeTypes in DoStatic, as this has no effect here when
-	GetDownloadLink is called. StaticFileName is the right place.
-
 2006-09-05  Alex Schroeder  <alex@gnu.org>
 
 	* modules/fckeditor.pl ($FCKdiff): New option.
@@ -231,6 +225,12 @@
 
 	(DoPost, PageDeletable): Don't treat $DeletedPage like a regular
 	expression.
+
+2006-08-11  Alex Schroeder  <alex@gnu.org>
+
+	* modules/static-copy.pl (DoStatic, StaticFileName): Don't set
+	%StaticMimeTypes in DoStatic, as this has no effect here when
+	GetDownloadLink is called. StaticFileName is the right place.
 
 2006-08-10  Alex Schroeder  <alex@gnu.org>
 
