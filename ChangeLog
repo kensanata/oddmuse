@@ -1,3 +1,8 @@
+2006-09-07  Alex Schroeder  <alex@gnu.org>
+
+	* modules/creole.pl (CreoleRule): Eat more list characters.
+	(CreoleRule): Use code for inline unprocessed.
+
 2006-09-06  Alex Schroeder  <alex@gnu.org>
 
 	* modules/usemod.pl (UsemodRule): Changed an if into an elsif.
