@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.10 2006/09/05 20:33:29 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.11 2006/09/07 01:35:11 as Exp $</p>';
 
 push(@MyRules, \&CreoleRule);
 # [[link|{{Image:foo}}]] conflicts with default link rule
@@ -26,13 +26,13 @@ sub CreoleRule {
   my %heading = map {$_=>1} qw(h2 h3 h4 h5 h6);
   # # number list
   if ($bol && m/\G\s*#[ \t]+/cg
-      or InElement('li') && m/\G\s*\n[ \t]*#[ \t]+/cg) {
+      or InElement('li') && m/\G\s*\n[ \t]*#+[ \t]+/cg) {
     return CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ol', 1)
       . AddHtmlEnvironment('li');
   }
   # - and * bullet list
   elsif ($bol && m/\G\s*[*-][ \t]+/cg
-      or InElement('li') && m/\G\s*\n[ \t]*[*-][ \t]+/cg) {
+      or InElement('li') && m/\G\s*\n[ \t]*[*-]+[ \t]+/cg) {
     return CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ul', 1)
       . AddHtmlEnvironment('li');
   }
