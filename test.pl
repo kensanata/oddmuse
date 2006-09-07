@@ -3279,6 +3279,8 @@ print '[creole]';
 clear_pages();
 add_module('creole.pl');
 
+$BracketWiki = 1;
+
 %Test = split('\n',<<'EOT');
 # one
 <ol><li>one</li></ol>
@@ -3333,9 +3335,9 @@ foo<br />bar
 {{{\nfoo\n}}}
 <pre class="real">foo\n</pre>
 {{{\nfoo}}}
-<span class="nowiki">\nfoo</span>
+<code>\nfoo</code>
 foo {{{bar}}}
-foo <span class="nowiki">bar</span>
+foo <code>bar</code>
 ----
 <hr />
 -----  
@@ -3362,6 +3364,8 @@ update_page('pic', 'test');
 //a[@class="local"][@href="http://localhost/test.pl/link"][text()="Go to\nmy page"]
 {{pic}}
 //a[@class="image"][@href="http://localhost/test.pl/pic"][img[@class="upload"][@src="http://localhost/test.pl/download/pic"][@alt="pic"]]
+{{http://example.com/}}
+//a[@class="image"][@href="http://example.com/"][img[@class="url outside"][@src="http://example.com/"][@alt="http://example.com/"]]
 [[link|{{pic}}]]
 //a[@class="image"][@href="http://localhost/test.pl/link"][img[@class="upload"][@src="http://localhost/test.pl/download/pic"][@alt="link"]]
 [[link|{{http://example.com/}}]]
