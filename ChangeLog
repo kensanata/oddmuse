@@ -1,5 +1,8 @@
 2006-09-07  Alex Schroeder  <alex@gnu.org>
 
+	* modules/throttle.pl (DoInstanceThrottle): Longer message do go
+	along with the "Too many instances" error.
+
 	* modules/creole.pl (CreoleRule): Eat more list characters.
 	(CreoleRule): Use code for inline unprocessed.
 
