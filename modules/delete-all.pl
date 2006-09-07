@@ -16,13 +16,17 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: delete-all.pl,v 1.2 2006/09/07 20:08:59 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: delete-all.pl,v 1.3 2006/09/07 20:37:29 as Exp $</p>';
+
+use vars qw($DeletedAge);
+
+$DeleteAge = 172800; # 2*24*60*60
 
 *OldDelPageDeletable = *PageDeletable;
 *PageDeletable = *NewDelPageDeletable;
 
 # All pages will be deleted after two days of inactivity!
 sub NewDelPageDeletable {
-  return 1 if $Now - $Page{ts} > 172800; # 2*24*60*60
+  return 1 if $Now - $Page{ts} > $DeleteAge;
   return OldDelPageDeletable(@_);
 }
