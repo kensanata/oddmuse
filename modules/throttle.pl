@@ -21,7 +21,7 @@
 # $InstanceThrottleLimit by keeping track of the process ids in
 # $InstanceThrottleDir
 
-$ModulesDescription .= '<p>$Id: throttle.pl,v 1.4 2006/03/03 15:52:54 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: throttle.pl,v 1.5 2006/09/07 17:44:02 as Exp $</p>';
 
 use vars qw($InstanceThrottleDir $InstanceThrottleLimit);
 
@@ -55,9 +55,11 @@ sub DoInstanceThrottle {
   my $zombies = grep /^0$/,
     (map {/(\d+)$/ and kill 0,$1 or unlink and 0} @pids);
   if (scalar(@pids)-$zombies >= $InstanceThrottleLimit) {
-    ReportError(T(sprintf('Too many instances.  Only %d allowed.',
-                          $InstanceThrottleLimit)),
-                '503 Service Unavailable');
+    ReportError(Ts('Too many instances.  Only %s allowed.',
+		   $InstanceThrottleLimit),
+                '503 Service Unavailable',
+	       undef,
+	       $q->p(T('Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.')));
   }
 }
 
