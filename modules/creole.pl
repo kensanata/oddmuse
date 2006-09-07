@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.11 2006/09/07 01:35:11 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.12 2006/09/07 01:37:31 as Exp $</p>';
 
 push(@MyRules, \&CreoleRule);
 # [[link|{{Image:foo}}]] conflicts with default link rule
@@ -91,7 +91,7 @@ sub CreoleRule {
   }
   # {{{unformatted}}}
   elsif (m/\G\{\{\{(.*?)\}\}\}/cgs) {
-    return $q->span({-class=>'nowiki'}, $1);
+    return $q->code($1);
   }
   # {{pic}}
   elsif (m/\G(\{\{$FreeLinkPattern\}\})/cgos) {
