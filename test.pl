@@ -3302,12 +3302,18 @@ $BracketWiki = 1;
 <ol><li>one</li></ol><ul><li>two</li></ul>
   #  one\n  - two
 <ol><li>one</li></ol><ul><li>two</li></ul>
+- Item 1\n- Item 2\n-- Item 2.1\n-- Item 2.2
+<ul><li>Item 1</li><li>Item 2<ul><li>Item 2.1</li><li>Item 2.2</li></ul></li></ul>
+* one\n** two\n*** three\n* four
+<ul><li>one<ul><li>two<ul><li>three</li></ul></li></ul></li><li>four</li></ul>
+this is **bold**
+this is <strong>bold</strong>
 **bold**
-<strong>bold</strong>
+<ul><li>*bold<strong></strong></li></ul>
 //italic//
 <em>italic</em>
-**//bold italic**//italic
-<strong><em>bold italic</em></strong><em>italic</em>
+this is **//bold italic**//italic
+this is <strong><em>bold italic</em></strong><em>italic</em>
 //**bold italic//**bold
 <em><strong>bold italic</strong></em><strong>bold</strong>
 = foo
@@ -3323,11 +3329,15 @@ $BracketWiki = 1;
 ====== foo
 <h6>foo</h6>
 ======= foo
-======= foo
+<h6>foo</h6>
 == foo ==
-<h2>foo </h2>
+<h2>foo</h2>
+== foo = =
+<h2>foo =</h2>
 == foo\nbar
 <h2>foo</h2><p>bar</p>
+== [[foo]]
+<h2>[[foo]]</h2>
 foo\n\nbar
 foo<p>bar</p>
 foo\nbar
@@ -3342,7 +3352,14 @@ foo <code>bar</code>
 <hr />
 -----  
 <hr />
+----\nfoo
+<hr /><p>foo</p>
 EOT
+
+# Mixed lists are not supported
+# - Item 1\n- Item 2\n## Item 2.1\n## Item 2.2
+# <ul><li>Item 1</li><li>Item 2<ol><li>Item 2.1</li><li>Item 2.2</li></ol></li></ul>
+
 
 run_tests();
 
