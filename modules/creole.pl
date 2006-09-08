@@ -16,24 +16,32 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.12 2006/09/07 01:37:31 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.13 2006/09/08 20:35:32 as Exp $</p>';
 
 push(@MyRules, \&CreoleRule);
 # [[link|{{Image:foo}}]] conflicts with default link rule
 $RuleOrder{\&CreoleRule} = -10;
 
 sub CreoleRule {
-  my %heading = map {$_=>1} qw(h2 h3 h4 h5 h6);
+  # horizontal line
+  # ----
+  # (must come before unnumbered lists using dashes)
+  if ($bol && m/----+[ \t]*\n?/cg) {
+    return CloseHtmlEnvironments() . $q->hr()
+      . AddHtmlEnvironment('p');
+  }
   # # number list
-  if ($bol && m/\G\s*#[ \t]+/cg
-      or InElement('li') && m/\G\s*\n[ \t]*#+[ \t]+/cg) {
-    return CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ol', 1)
+  elsif ($bol && m/\G\s*(#+)[ \t]*/cg
+      or InElement('li') && m/\G\s*\n[ \t]*(#+)[ \t]*/cg) {
+    return CloseHtmlEnvironmentUntil('li')
+      . OpenHtmlEnvironment('ol', length($1))
       . AddHtmlEnvironment('li');
   }
   # - and * bullet list
-  elsif ($bol && m/\G\s*[*-][ \t]+/cg
-      or InElement('li') && m/\G\s*\n[ \t]*[*-]+[ \t]+/cg) {
-    return CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ul', 1)
+  elsif ($bol && m/\G\s*([*-])[ \t]*/cg
+      or InElement('li') && m/\G\s*\n[ \t]*([*-]+)[ \t]*/cg) {
+    return CloseHtmlEnvironmentUntil('li')
+      . OpenHtmlEnvironment('ul', length($1))
       . AddHtmlEnvironment('li');
   }
   # //**bold italic//**bold
@@ -61,26 +69,22 @@ sub CreoleRule {
   # == Level 1 (Largest)
   # === Level 2
   # ==== Level 3
-  elsif ($bol && m/\G(\s*\n)*(={2,6})[ \t]/cg) {
-    my $tag = 'h' . length($2);
-    return CloseHtmlEnvironments() . AddHtmlEnvironment($tag);
-  }
-  # eat trailing ==
-  elsif (defined $HtmlStack[0] && $heading{$HtmlStack[0]}
-	 && m/\G=+[ \t]*\n?/cg) {
-    return '';
+  # Too bad those are not the only ones allowed... :(
+  elsif ($bol && m/\G(\s*\n)*(==+)[ \t]*(.*?)[ \t]*=*[ \t]*(\n|\Z)/cg) {
+    my $depth = length($2);
+    $depth = 6 if $depth > 6;
+    $depth = 2 if $depth < 2;
+    my $text = $3;
+    return CloseHtmlEnvironments() . "<h$depth>$text</h$depth>"
+      . AddHtmlEnvironment('p');
   }
   # paragraphs: at least two newlines
   elsif (m/\G\s*\n(\s*\n)+/cg) {
     return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
   }
-  # line break: one newline, or close a heading
+  # line break: one newline
   elsif (m/\G\s*\n/cg) {
-    if (defined $HtmlStack[0] && $heading{$HtmlStack[0]}) {
-      return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
-    } else {
-      return $q->br();
-    }
+    return $q->br();
   }
   # {{{
   # preformatted
@@ -136,12 +140,6 @@ sub CreoleRule {
   # link: [[url]] and [[url|text]]
   elsif (m/\G\[\[$FullUrlPattern(\|([^]]+))?\]\]/cgos) {
     return GetUrl($1, $3||$1, 1);
-  }
-  # horizontal line
-  # ----
-  elsif ($bol && m/----+[ \t]*\n?/cg) {
-    return CloseHtmlEnvironments() . $q->hr()
-      . AddHtmlEnvironment('p');
   }
   return undef;
 }
