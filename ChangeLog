@@ -1,4 +1,18 @@
+2006-09-11  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (PrintPageHtml): Allow skipping using page=0.
+	(GetRcRss): Cosmetics.
+	(InitVariables): Add $RsExclude to %AdminPages.
+	(PrintPageDiff): Print hr only if pages will follow.
+
+2006-09-08  Alex Schroeder  <alex@gnu.org>
+
+	* modules/creole.pl (CreoleRule): No markup within headings. No
+	space required after list item character.
+
 2006-09-07  Alex Schroeder  <alex@gnu.org>
+
+	* modules/delete-all.pl ($DeleteAge): New option.
 
 	* modules/throttle.pl (DoInstanceThrottle): Longer message do go
 	along with the "Too many instances" error.
