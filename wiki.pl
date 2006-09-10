@@ -273,7 +273,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.733 2006/09/10 22:50:31 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.734 2006/09/10 23:01:14 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -297,7 +297,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   @UserGotoBarPages = ($HomePage, $RCName) unless @UserGotoBarPages;
   my @pages = sort($BannedHosts, $StyleSheetPage, $ConfigPage, $InterMap, $NearMap,
 		    $RssInterwikiTranslate, $BannedContent);
-  %AdminPages = map { $_ => 1} @pages unless %AdminPages;
+  %AdminPages = map { $_ => 1} @pages, $RssExclude unless %AdminPages;
   %LockOnCreation = map { $_ => 1} @pages unless %LockOnCreation;
   %PlainTextPages = ($BannedHosts => 1, $BannedContent => 1,
 		       $StyleSheetPage => 1, $ConfigPage => 1) unless %PlainTextPages;
@@ -1228,7 +1228,7 @@ sub PrintPageDiff { # print diff for open page
   my $diff = GetParam('diff', 0);
   if ($UseDiff && $diff) {
     PrintHtmlDiff($diff);
-    print $q->hr();
+    print $q->hr() if GetParam('page', 1);
   }
 }
 
@@ -1844,7 +1844,7 @@ sub GetRcRss {
       my ($pagename, $timestamp, $host, $username, $summary, $minor, $revision, $languages, $cluster) = @_;
       return if $excluded{$pagename} or ($limit ne 'all' and $count++ >= $limit);
       my $name = NormalToFree($pagename);
-      if (GetParam('full', 0) or GetParam('page', 0) or GetParam('diff', 0)) {
+      if (GetParam('full', 0)) {
 	$name .= ': ' . $summary;
 	$summary = PageHtml($pagename, 50*1024, T('This page is too big to send over RSS.'));
       }
