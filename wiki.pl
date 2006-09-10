@@ -273,7 +273,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.732 2006/09/01 23:45:44 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.733 2006/09/10 22:50:31 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -650,7 +650,7 @@ sub OpenHtmlEnvironment { # close the previous one and open a new one instead
   my $found = 0;
   while (@HtmlStack and $found < $depth) { # determine new stack
     my $tag = pop(@HtmlStack);
-    $found++ if $tag eq $code;
+    $found++ if $tag eq $code; # this ignores that ul and ol can be equivalent for nesting purposes
     unshift(@stack,$tag);
   }
   if (@HtmlStack and $found < $depth) { # nested sublist coming up, keep list item
@@ -670,7 +670,7 @@ sub OpenHtmlEnvironment { # close the previous one and open a new one instead
     if ($class) {
       $text .= "<$code class=\"$class\">";
     } else {
-      $text .= "<$code>";
+      $text .= "<$code>"; # this ignores that ul and ol cannot nest without li elements
     }
   }
   return $text;
@@ -1216,6 +1216,7 @@ sub PrintCache { # Use after OpenPage!
 }
 
 sub PrintPageHtml { # print an open page
+  return unless GetParam('page', 1);
   if ($Page{blocks} && $Page{flags} && GetParam('cache', $UseCache) > 0) {
     PrintCache();
   } else {
@@ -1843,8 +1844,8 @@ sub GetRcRss {
       my ($pagename, $timestamp, $host, $username, $summary, $minor, $revision, $languages, $cluster) = @_;
       return if $excluded{$pagename} or ($limit ne 'all' and $count++ >= $limit);
       my $name = NormalToFree($pagename);
-      if (GetParam("full", 0)) {
-	$name .= ": " . $summary;
+      if (GetParam('full', 0) or GetParam('page', 0) or GetParam('diff', 0)) {
+	$name .= ': ' . $summary;
 	$summary = PageHtml($pagename, 50*1024, T('This page is too big to send over RSS.'));
       }
       my $date = TimeToRFC822($timestamp);
@@ -1852,21 +1853,21 @@ sub GetRcRss {
       $username = $host unless $username;
       $rss .= "\n<item>\n";
       $rss .= "<title>" . QuoteHtml($name) . "</title>\n";
-      $rss .= "<link>" . $url . (GetParam("all", $cluster)
-        ? "?" . GetPageParameters("browse", $pagename, $revision, $cluster)
-	: ($UsePathInfo ? "/" : "?") . UrlEncode($pagename)) . "</link>\n";
+      $rss .= "<link>" . $url . (GetParam('all', $cluster)
+        ? "?" . GetPageParameters('browse', $pagename, $revision, $cluster)
+	: ($UsePathInfo ? '/' : '?') . UrlEncode($pagename)) . "</link>\n";
       $rss .= "<description>" . QuoteHtml($summary) . "</description>\n";
       $rss .= "<pubDate>" . $date . "</pubDate>\n";
-      $rss .= "<comments>" . $url . ($UsePathInfo ? "/" : "?")
+      $rss .= "<comments>" . $url . ($UsePathInfo ? '/' : '?')
 	. $CommentsPrefix . UrlEncode($pagename) . "</comments>\n"
 	  if $CommentsPrefix and $pagename !~ /^$CommentsPrefix/;
       $rss .= "<wiki:username>" . $username . "</wiki:username>\n";
-      $rss .= "<wiki:status>" . (1 == $revision ? "new" : "updated") . "</wiki:status>\n";
-      $rss .= "<wiki:importance>" . ($minor ? "minor" : "major") . "</wiki:importance>\n";
+      $rss .= "<wiki:status>" . (1 == $revision ? 'new' : 'updated') . "</wiki:status>\n";
+      $rss .= "<wiki:importance>" . ($minor ? 'minor' : 'major') . "</wiki:importance>\n";
       $rss .= "<wiki:version>" . $revision . "</wiki:version>\n";
       $rss .= "<wiki:history>" . $historyPrefix . UrlEncode($pagename) . "</wiki:history>\n";
       $rss .= "<wiki:diff>" . $diffPrefix . UrlEncode($pagename) . "</wiki:diff>\n"
-	if $UseDiff and GetParam("diffrclink", 1);
+	if $UseDiff and GetParam('diffrclink', 1);
       $rss .= "</item>\n";
     },
     # RC Lines
