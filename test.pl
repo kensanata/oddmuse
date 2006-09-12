@@ -3352,8 +3352,14 @@ foo <code>bar</code>
 <hr />
 -----  
 <hr />
+  -----
+<ul><li>----</li></ul>
+foo -----
+foo -----
 ----\nfoo
 <hr /><p>foo</p>
+foo\n----
+foo<hr />
 EOT
 
 # Mixed lists are not supported
