@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.13 2006/09/08 20:35:32 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.14 2006/09/12 13:31:21 as Exp $</p>';
 
 push(@MyRules, \&CreoleRule);
 # [[link|{{Image:foo}}]] conflicts with default link rule
@@ -26,7 +26,7 @@ sub CreoleRule {
   # horizontal line
   # ----
   # (must come before unnumbered lists using dashes)
-  if ($bol && m/----+[ \t]*\n?/cg) {
+  if ($bol && m/\G(\s*\n)*----+[ \t]*\n?/cg or m/\G\s*\n----+[ \t]*\n?/cg ) {
     return CloseHtmlEnvironments() . $q->hr()
       . AddHtmlEnvironment('p');
   }
@@ -57,12 +57,14 @@ sub CreoleRule {
 	 && $HtmlStack[1] eq 'strong'
 	 && m/\G\*\*/cg) {
     return CloseHtmlEnvironment() . CloseHtmlEnvironment();
+  }
   # **bold**
-  } elsif (m/\G\*\*/cg) {
+  elsif (m/\G\*\*/cg) {
     return (defined $HtmlStack[0] && $HtmlStack[0] eq 'strong')
       ? CloseHtmlEnvironment() : AddHtmlEnvironment('strong');
+  }
   # //italic//
-  } elsif (m/\G\/\//cg) {
+  elsif (m/\G\/\//cg) {
     return (defined $HtmlStack[0] && $HtmlStack[0] eq 'em')
       ? CloseHtmlEnvironment() : AddHtmlEnvironment('em');
   }
