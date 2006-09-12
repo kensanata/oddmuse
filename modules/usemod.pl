@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.28 2006/03/18 19:51:09 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.29 2006/09/12 16:39:35 as Exp $</p>';
 
 use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml
 	    $UseModSpaceRequired $UseModMarkupInTitles);
@@ -65,7 +65,7 @@ sub UsemodRule {
   elsif (m/\G\&lt;nowiki\&gt;(.*?)\&lt;\/nowiki\&gt;/cgis) { return $1; }
   # whitespace for monospaced, preformatted and escaped, all clean
   # note that ([ \t]+(.+\n)*.*) seems to crash very long blocks (2000 lines and more)
-  if ($bol && m/\G(\s*\n)*([ \t]+.+)\n?/gc) {
+  elsif ($bol && m/\G(\s*\n)*([ \t]+.+)\n?/gc) {
     my $str = $2;
     while (m/\G([ \t]+.*)\n?/gc) {
       $str .= "\n" . $1;
