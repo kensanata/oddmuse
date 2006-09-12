@@ -4,7 +4,7 @@
 # This module is free software; you can redistribute it or modify it
 # under the same terms as Perl itself.
 
-$ModulesDescription .= '<p>$Id: webdav.pl,v 1.14 2005/09/18 13:49:53 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: webdav.pl,v 1.15 2006/09/12 16:39:58 as Exp $</p>';
 
 use vars qw($WebDavCache);
 
@@ -155,7 +155,7 @@ sub put {
 sub body {
   local $/; # slurp
   my $data = <STDIN>; # can only be read once!
-  warn $data;
+  # warn $data;
   return $data;
 }
 
