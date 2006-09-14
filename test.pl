@@ -257,6 +257,32 @@ sub run_tests {
   }
 }
 
+sub run_macro_tests {
+  # translate embedded newlines (other backslashes remain untouched)
+  my %New;
+  foreach (keys %Test) {
+    $Test{$_} =~ s/\\n/\n/g;
+    my $new = $Test{$_};
+    s/\\n/\n/g;
+    $New{$_} = $new;
+  }
+  # Note that the order of tests is not specified!
+  foreach my $input (keys %New) {
+    print '.';
+    $_ = $input;
+    foreach my $macro (@MyMacros) { &$macro; }
+    my $output = $_;
+    if ($output eq $New{$input}) {
+      $passed++;
+    } else {
+      $failed++;
+      print "\n\n---- input:\n", $input,
+	    "\n---- output:\n", $output,
+            "\n---- instead of:\n", $New{$input}, "\n----\n";
+    }
+  }
+}
+
 sub remove_rule {
   my $rule = shift;
   my @list = ();
@@ -3408,6 +3434,25 @@ EOT
 xpath_run_tests();
 
 remove_rule(\&CreoleRule);
+
+# --------------------
+
+tex:
+print '[tex]';
+
+clear_pages();
+add_module('tex.pl');
+
+%Test = split('\n',<<'EOT');
+4\times 7
+4×7
+right\copyright
+right©
+a\infty b
+a∞b
+EOT
+
+run_macro_tests();
 
 # --------------------
 
