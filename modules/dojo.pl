@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA,
 
-$ModulesDescription .= '<p>$Id: dojo.pl,v 1.2 2006/09/14 00:04:33 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: dojo.pl,v 1.3 2006/09/14 00:05:21 as Exp $</p>';
 
 use vars qw(@DojoGroups);
 
@@ -51,7 +51,7 @@ sub NewWysiwygGetTextArea {
   if ($name =~ /text/) {
     return $q->textarea(-id=>$name, -name=>$name, -default=>$text,
 			-rows=>$rows||25, -columns=>78, -override=>1,
-			-dojoType=>'Editor', -style=>'min-height:5em'
+			-dojoType=>'Editor',
 		        -items=>join(';|;', @DojoGroups));
   } else {
     return OldWysiwygGetTextArea(@_);
