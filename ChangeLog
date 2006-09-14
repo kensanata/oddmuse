@@ -1,4 +1,10 @@
+2006-09-14  Alex Schroeder  <alex@gnu.org>
+
+	* modules/tex.pl: Fix regular expression.
+
 2006-09-12  Alex Schroeder  <alex@gnu.org>
+
+	* modules/webdav.pl (body): Comment warning.
 
 	* modules/creole.pl (CreoleRule): Fix hr rule.
 
