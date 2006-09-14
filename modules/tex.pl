@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tex.pl,v 1.1 2006/09/14 00:10:04 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tex.pl,v 1.2 2006/09/14 17:47:03 as Exp $</p>';
 
 use vars qw($TeXInit);
 
@@ -166,5 +166,5 @@ _0 ₀ _1 ₁ _2 ₂ _3 ₃ _4 ₄ _5 ₅ _6 ₆ _7 ₇ _8 ₈ _9 ₉ _= ₌ \~ 
 \textdiscount ⁒ \textestimated ℮ \textopenbullet ◦ \textlquill ⁅
 \textrquill ⁆ \textcircledP ℗ \textreferencemark ※ );
 
-my $re = '(' . join('|', map {quotemeta} keys %h) . ')\s';
+my $re = '(' . join('|', map {quotemeta} keys %h) . ')(\s|\b)';
 push(@MyMacros, sub {s/$re/$h{$1}/go});
