@@ -1,7 +1,6 @@
 #!/usr/bin/perl
 
-do 'test.pl';
-
+require 't/test.pl';
 package OddMuse;
 
 use XML::Atom::Client;
