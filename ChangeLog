@@ -1,3 +1,9 @@
+2006-09-18  Alex Schroeder  <alex@gnu.org>
+
+	* modules/atom.pl (DoAtom): Use /atom/info for the info document.
+	Both /atom and /atom/feed should return the feed. /atom/full
+	should return the feed including page content.
+
 2006-09-14  Alex Schroeder  <alex@gnu.org>
 
 	* modules/tex.pl: Fix regular expression.
