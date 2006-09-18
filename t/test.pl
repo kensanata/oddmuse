@@ -18,18 +18,19 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+package OddMuse;
+use lib '.';
 use XML::LibXML;
 use Encode;
+use Test::More tests => 95;
 
 # Import the functions
 
-package OddMuse;
 $RunCGI = 0;    # don't print HTML on stdout
 $UseConfig = 0; # don't read module files
-do 'wiki.pl';
+require 'wiki.pl';
 Init();
 
-my ($passed, $failed) = (0, 0);
 my $resultfile = "/tmp/test-markup-result-$$";
 my $redirect;
 undef $/;
@@ -49,10 +50,8 @@ sub url_encode {
   return join('', @letters);
 }
 
-print "* means that a page is being updated\n";
 sub update_page {
   my ($id, $text, $summary, $minor, $admin, @rest) = @_;
-  print '*';
   my $pwd = $admin ? 'foo' : 'wrong';
   $id = url_encode($id);
   $text = url_encode($text);
@@ -70,46 +69,25 @@ sub update_page {
   return $output;
 }
 
-print "+ means that a page is being retrieved\n";
 sub get_page {
-  print '+';
   open(F,"perl wiki.pl @_ |");
   my $output = <F>;
   close F;
   return $output;
 }
 
-print ". means a test\n";
 sub test_page {
   my $page = shift;
-  my $printpage = 0;
   foreach my $str (@_) {
-    print '.';
-    if ($page =~ /$str/) {
-      $passed++;
-    } else {
-      $failed++;
-      $printpage = 1;
-      print "\nSimple Test: Did not find \"", $str, '"';
-    }
+    like($page, qr($str), $str);
   }
-  print "\n\nPage content:\n", $page, "\n" if $printpage;
 }
 
 sub test_page_negative {
   my $page = shift;
-  my $printpage = 0;
   foreach my $str (@_) {
-    print '.';
-    if ($page =~ /$str/) {
-      $failed++;
-      $printpage = 1;
-      print "\nSimple negative Test: Found \"", $str, '"';
-    } else {
-      $passed++;
-    }
+    unlike($page, qr($str), $str);
   }
-  print "\n\nPage content:\n", $page, "\n" if $printpage;
 }
 
 sub get_text_via_xpath {
@@ -147,24 +125,16 @@ sub xpath_test {
   my $parser = XML::LibXML->new();
   my $doc;
   eval { $doc = $parser->parse_html_string($page) };
-  if ($@) {
-    print "Could not parse html: ", substr($page,0,100), "\n";
-    $failed += @tests;
-  } else {
-    foreach my $test (@tests) {
-      print '.';
-      my $nodelist;
-      eval { $nodelist = $doc->findnodes($test) };
-      if ($@) {
-	$failed++;
-	print "\nXPATH Test: failed to run $test: $@\n";
-      } elsif ($nodelist->size()) {
-	$passed++;
-      } else {
-	$failed++;
-	print "\nXPATH Test: No matches for $test\n";
+  ok(!$@, name($page)) or diag($@);
+  foreach my $test (@tests) {
+    my $nodelist;
+    eval { $nodelist = $doc->findnodes($test) };
+    if ($@) {
+      fail("$test: $@");
+    } else {
+      if (not ok($nodelist->size(), name($test))) {
 	$page =~ s/^.*?<body/<body/s; # strip
-	print substr($page,0,30000), "\n";
+	diag("No Matches\n", substr($page,0,30000));
       }
     }
   }
@@ -233,27 +203,20 @@ sub test_match {
   }
 }
 
+sub name {
+  $_ = shift;
+  s/\n/\\n/g;
+  $_ = substr($_, 0, 60) . '...' if length > 63;
+  return $_;
+}
+
 sub run_tests {
   # translate embedded newlines (other backslashes remain untouched)
-  my %New;
-  foreach (keys %Test) {
-    $Test{$_} =~ s/\\n/\n/g;
-    my $new = $Test{$_};
-    s/\\n/\n/g;
-    $New{$_} = $new;
-  }
+  my %test = map { s/\\n/\n/g; $_; } @_;
   # Note that the order of tests is not specified!
-  foreach my $input (keys %New) {
-    print '.';
+  foreach my $input (keys %test) {
     my $output = apply_rules($input);
-    if ($output eq $New{$input}) {
-      $passed++;
-    } else {
-      $failed++;
-      print "\n\n---- input:\n", $input,
-	    "\n---- output:\n", $output,
-            "\n---- instead of:\n", $New{$input}, "\n----\n";
-    }
+    is($output, $test{$input}, name($input));
   }
 }
 
