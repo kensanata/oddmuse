@@ -21,7 +21,7 @@
 
 use MLDBM qw( DB_File Storable );
 
-$ModulesDescription .= '<p>$Id: backlinkage.pl,v 1.1 2006/09/12 17:25:30 xterminus Exp $</p>';
+$ModulesDescription .= '<p>$Id: backlinkage.pl,v 1.2 2006/09/18 17:52:59 xterminus Exp $</p>';
 
 push(@MyAdminCode, \&BacklinksMenu);
 
@@ -39,8 +39,8 @@ sub BuildBacklinkDatabase {
     print GetHttpHeader('text/plain');
     my $backfile = $DataDir . '/backlinks.db';
     unlink $backfile; # Remove old database
-    tie %backhash, 'MLDBM', $backfile, O_CREAT|O_RDWR, 0644 or die "Cannot open file $backfile $!\n";
-    
+    tie %backhash, 'MLDBM', $backfile or die "Cannot open file $backfile $!\n";
+
     foreach my $name (AllPagesList()) {
         OpenPage($name);
         my $page = $OpenPageName;
