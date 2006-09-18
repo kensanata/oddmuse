@@ -20,7 +20,7 @@ use XML::Atom::Entry;
 use XML::Atom::Link;
 use XML::Atom::Person;
 
-$ModulesDescription .= '<p>$Id: atom.pl,v 1.9 2006/09/18 00:07:47 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: atom.pl,v 1.10 2006/09/18 09:04:19 as Exp $</p>';
 
 push(@MyInitVariables, \&AtomInit);
 
@@ -34,9 +34,8 @@ sub DoAtom {
   my $id = shift;
   if ($q->request_method eq 'POST') {
     DoAtomSave('POST');
-  } elsif (GetParam('feed', 0) or $id eq 'feed') {
-    print GetHttpHeader('application/atom+xml');
-    DoRc(\&GetRcAtom);
+  } elsif (GetParam('info', 0) or $id eq 'info') {
+    DoAtomIntrospection();
   } elsif (GetParam('wiki', 0)) {
     if ($q->request_method eq 'PUT') {
       DoAtomSave('PUT', $id);
@@ -46,7 +45,9 @@ sub DoAtom {
       DoAtomGet($id);
     }
   } else {
-    DoAtomIntrospection();
+    SetParam($id, 1); # /atom/full should work, too
+    print GetHttpHeader('application/atom+xml');
+    DoRc(\&GetRcAtom);
   }
 }
 
