@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: smarttitles.pl,v 1.1 2006/09/18 15:54:13 xterminus Exp $</p>';
+$ModulesDescription .= '<p>$Id: smarttitles.pl,v 1.2 2006/09/18 16:07:39 xterminus Exp $</p>';
 
 push(@MyRules, \&StripTitlesRule);
 
@@ -33,18 +33,21 @@ sub StripTitlesRule {
 sub NewSmartGetHeader {
     my ($id, $title, $oldId, $nocache, $status, $rev) = @_;
     my $header = OldSmartGetHeader(@_);
-    
+
+    return $header unless $id;    
     OpenPage($id);
     $Page{text} =~ m/\#TITLE[ \t]+(.*?)\s*\n+/cg;
     my $smarttitle = $1;
+    
   
     if ($smarttitle) {
         my $OldGetHtmlHeader = '>' . $id . '</a>';
         my $NewGetHtmlHeader = '>' . $smarttitle . '</a>';
-        $header =~ s/$OldGetHtmlHeader/$NewGetHtmlHeader/gc;
+        $header =~ s/$OldGetHtmlHeader/$NewGetHtmlHeader/g;
+
         my $OldTitle = '<title>' . $SiteName . ': ' . $title . '</title>';
         my $NewTitle = '<title>' . $SiteName . ': ' . $smarttitle . '</title>';
-        $header =~ s/$OldTitle/$NewTitle/gc;
+        $header =~ s/$OldTitle/$NewTitle/;
     }
     return $header;
 }
