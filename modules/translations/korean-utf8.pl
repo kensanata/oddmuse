@@ -15,7 +15,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: korean-utf8.pl,v 1.1 2006/09/11 07:35:32 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: korean-utf8.pl,v 1.2 2006/09/18 11:13:24 joonhwan Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 읽기가 허락되지 않습니다: 사용자아이디, ip, 또는 네트웍이 접근거부되었습니다.
@@ -538,7 +538,7 @@ The main page is %s.
 Cannot highlight the language %s.
 %s 언어에 대해서 구문강조를 할 수 없습니다.
 Recent Visitors
-
+최근 방문자들
 some action
 
 was here
@@ -612,25 +612,25 @@ Despamming pages
 Cannot find revision %s.
 리비젼 %s를 찾을 수 없습니다.
 Revert to revision %1: %2
-
+%1 리비전으로 복귀: %2
 Marked as %s.
-
+%s 로 마크(Mark)됨
 Cannot find unspammed revision.
-
+스팸제거된 리비전을 찾을 수 없습니다.
 Add Comment
 
 ordinary changes
-
+일상적인 변경들
 Footnotes:
-
+꼬릿말:
 Could not find %1.html template in %2
-
+%1.html 템플릿을 %s 에서 찾지 못했습니다.
 Only Editors are allowed to see this hidden page.
-
+편집자만이 이 숨겨진 페이지를 볼 수 있습니다.
 Only Admins are allowed to see this hidden page.
-
+관리자만이 이 숨겨진 페이지를 볼 수 있습니다.
 Index
-
+인덱스
 Languages:
 언어:
 Show!
@@ -650,19 +650,19 @@ Local names defined on %1: %2
 Register for %s
 
 Please choose a username of the form "FirstLast" using your real name.
-
+자신의 이름을 "CheolSoo"와 같은 형태로 선택해 주세요.
 The passwords do not match.
-
+패스워드가 일치하지 않습니다.
 The password must be at least %s characters.
-
+패스워드는 적어도 %s 글자 이상이어야 합니다.
 That email address is invalid.
-
+이메일 주소가 유효하지 않습니다.
 The username %s has already been registered.
-
+사용자 %s 는 이미 등록되어 있습니다.
 Your registration for %s has been submitted.
-
+%s 로 등록요청되었습니다.
 Please allow time for the webmaster to approve your request.
-
+웹마스터가 요청을 수락하기 위해서는 시간이 필요합니다.
 An email has been sent to "%s" with further instructions.
 
 There was an error saving your registration.
