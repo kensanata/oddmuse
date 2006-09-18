@@ -16,12 +16,12 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: smarttitles.pl,v 1.2 2006/09/18 16:07:39 xterminus Exp $</p>';
+$ModulesDescription .= '<p>$Id: smarttitles.pl,v 1.3 2006/09/18 17:31:36 xterminus Exp $</p>';
 
 push(@MyRules, \&StripTitlesRule);
 
 sub StripTitlesRule {
-    if ( m/\G#TITLE[ \t]+(.*?)\s*\n+/cg  ) {
+    if ( m/\G#TITLE[ \t]+(.*?)\s*\n+/cg ) {
             return undef;
     }
     return undef;
@@ -36,9 +36,8 @@ sub NewSmartGetHeader {
 
     return $header unless $id;    
     OpenPage($id);
-    $Page{text} =~ m/\#TITLE[ \t]+(.*?)\s*\n+/cg;
+    $Page{text} =~ m/\#TITLE[ \t]+(.*?)\s*\n+/;
     my $smarttitle = $1;
-    
   
     if ($smarttitle) {
         my $OldGetHtmlHeader = '>' . $id . '</a>';
