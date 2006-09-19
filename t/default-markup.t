@@ -1,6 +1,6 @@
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 58;
+use Test::More tests => 59;
 
 clear_pages();
 
