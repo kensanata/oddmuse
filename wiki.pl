@@ -205,7 +205,7 @@ sub ReportError { # fatal!
   map { ReleaseLockDir($_); } keys %Locks;
   WriteStringToFile("$TempDir/error", $q->start_html . $q->h1("$status $errmsg")
 		    . $q->Dump . $q->end_html) if $log;
-  exit (1);
+  exit; # Don't return non-zero so that FCGI does not warn about abnormal exit
 }
 
 sub Init {
@@ -273,7 +273,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.734 2006/09/10 23:01:14 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.735 2006/09/19 21:02:01 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1811,7 +1811,7 @@ sub GetRcRss {
   }
   $rss .= qq{<rss version="2.0"
      xmlns:wiki="http://purl.org/rss/1.0/modules/wiki/"
-     xmlns:creativeCommons="http://backend.userland.com/creativeCommonsRssModule">
+     xmlns:cc="http://backend.userland.com/creativeCommonsRssModule">
 <channel>
 <docs>http://blogs.law.harvard.edu/tech/rss</docs>
 };
@@ -1822,11 +1822,8 @@ sub GetRcRss {
   $rss .= "<lastBuildDate>" . $date . "</lastBuildDate>\n";
   $rss .= "<generator>Oddmuse</generator>\n";
   $rss .= "<copyright>" . $RssRights . "</copyright>\n" if $RssRights;
-  if (ref $RssLicense eq 'ARRAY') {
-      $rss .= join('', map {"<creativeCommons:license>$_</creativeCommons:license>\n"} @$RssLicense);
-  } elsif ($RssLicense) {
-    $rss .= "<creativeCommons:license>" . $RssLicense . "</creativeCommons:license>\n";
-  }
+  $rss .= join('', map {"<cc:license>" . QuoteHtml($_) . "</cc:license>\n"}
+	       (ref $RssLicense eq 'ARRAY' ? @$RssLicense : $RssLicense));
   $rss .= "<wiki:interwiki>" . $InterWikiMoniker . "</wiki:interwiki>\n" if $InterWikiMoniker;
   if ($RssImageUrl) {
     $rss .= "<image>\n";
