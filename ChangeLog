@@ -1,5 +1,8 @@
 2006-09-19  Alex Schroeder  <alex@gnu.org>
 
+	* t/test.pl (test_page, test_page_negative): Use name() for the
+	test name.
+
 	* t/default-markup.t: Don't reset $NetworkFile = 0 at the end, as
 	each *.t file runs in a separate process.
 
