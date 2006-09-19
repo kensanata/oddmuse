@@ -125,7 +125,7 @@ sub xpath_test {
   my $doc;
  SKIP: {
     eval { $doc = $parser->parse_html_string($page) };
-    skip "Cannot parse ".name($page).": $@", $#tests + 1 if $@;
+    skip("Cannot parse ".name($page).": $@", $#tests + 1) if $@;
     foreach my $test (@tests) {
       my $nodelist;
       eval { $nodelist = $doc->findnodes($test) };
