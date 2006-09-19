@@ -22,7 +22,6 @@ package OddMuse;
 use lib '.';
 use XML::LibXML;
 use Encode;
-use Test::More tests => 95;
 
 # Import the functions
 
@@ -124,17 +123,19 @@ sub xpath_test {
   $page =~ s/^.*?<html>/<html>/s; # strip headers
   my $parser = XML::LibXML->new();
   my $doc;
-  eval { $doc = $parser->parse_html_string($page) };
-  ok(!$@, name($page)) or diag($@);
-  foreach my $test (@tests) {
-    my $nodelist;
-    eval { $nodelist = $doc->findnodes($test) };
-    if ($@) {
-      fail("$test: $@");
-    } else {
-      if (not ok($nodelist->size(), name($test))) {
-	$page =~ s/^.*?<body/<body/s; # strip
-	diag("No Matches\n", substr($page,0,30000));
+ SKIP: {
+    eval { $doc = $parser->parse_html_string($page) };
+    skip "Cannot parse ".name($page).": $@", $#tests + 1 if $@;
+    foreach my $test (@tests) {
+      my $nodelist;
+      eval { $nodelist = $doc->findnodes($test) };
+      if ($@) {
+	fail("$test: $@");
+      } else {
+	if (not ok($nodelist->size(), name($test))) {
+	  $page =~ s/^.*?<body/<body/s; # strip
+	    diag("No Matches\n", substr($page,0,30000));
+	}
       }
     }
   }
@@ -171,18 +172,12 @@ sub apply_rules {
 
 sub xpath_run_tests {
   # translate embedded newlines (other backslashes remain untouched)
-  my %New;
-  foreach (keys %Test) {
-    $Test{$_} =~ s/\\n/\n/g;
-    my $new = $Test{$_};
-    s/\\n/\n/g;
-    $New{$_} = $new;
-  }
+  my %test = map { s/\\n/\n/g; $_; } @_;
   # Note that the order of tests is not specified!
   my $output;
-  foreach my $input (keys %New) {
+  foreach my $input (keys %test) {
     my $output = apply_rules($input);
-    xpath_test("<div>$output</div>", $New{$input});
+    xpath_test("<div>$output</div>", $test{$input});
   }
 }
 
@@ -222,27 +217,12 @@ sub run_tests {
 
 sub run_macro_tests {
   # translate embedded newlines (other backslashes remain untouched)
-  my %New;
-  foreach (keys %Test) {
-    $Test{$_} =~ s/\\n/\n/g;
-    my $new = $Test{$_};
-    s/\\n/\n/g;
-    $New{$_} = $new;
-  }
+  my %test = map { s/\\n/\n/g; $_; } @_;
   # Note that the order of tests is not specified!
-  foreach my $input (keys %New) {
-    print '.';
+  foreach my $input (keys %test) {
     $_ = $input;
     foreach my $macro (@MyMacros) { &$macro; }
-    my $output = $_;
-    if ($output eq $New{$input}) {
-      $passed++;
-    } else {
-      $failed++;
-      print "\n\n---- input:\n", $input,
-	    "\n---- output:\n", $output,
-            "\n---- instead of:\n", $New{$input}, "\n----\n";
-    }
+    is($_, $test{$input}, $input);
   }
 }
 
