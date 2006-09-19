@@ -78,7 +78,7 @@ sub get_page {
 sub test_page {
   my $page = shift;
   foreach my $str (@_) {
-    like($page, qr($str), $str);
+    like($page, qr($str), name($str));
   }
 }
 
