@@ -36,7 +36,7 @@ EOT
 
 # Replace with backreferences, where the replacement pattern is no longer found
 
-test_page(get_page('search=([a-z]%2b)z replace=x%241 pwd=foo'), '0 pages found');
+test_page(get_page('"search=([a-z]%2b)z" replace=x%241 pwd=foo'), '0 pages found');
 test_page(get_page('SearchAndReplace'), 'This is xfuu and this is xbar.');
 
 # Create an extra page that should not be found
