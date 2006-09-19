@@ -4,11 +4,11 @@
 	test name.
 	(xpath_do, xpath_test, negative_xpath_test): Move the common stuff
 	in both tests into a third sub.
+	(get_text_via_xpath): Replaced with xpath_test.
+	(xpath_run_tests, run_tests): Run tests in order.
 
 	* t/default-markup.t: Don't reset $NetworkFile = 0 at the end, as
 	each *.t file runs in a separate process.
-
-	* t/test.pl (xpath_run_tests, run_tests): Run tests in order.
 
 	* Makefile (test): Replace call to test.pl with a Test::Harness
 	call.
