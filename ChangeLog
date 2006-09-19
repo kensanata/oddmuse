@@ -2,6 +2,8 @@
 
 	* t/test.pl (test_page, test_page_negative): Use name() for the
 	test name.
+	(xpath_do, xpath_test, negative_xpath_test): Move the common stuff
+	in both tests into a third sub.
 
 	* t/default-markup.t: Don't reset $NetworkFile = 0 at the end, as
 	each *.t file runs in a separate process.
