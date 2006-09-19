@@ -67,6 +67,9 @@ install:
 	dpkg -i oddmuse*.deb
 
 test:
+	perl -e 'use Test::Harness; $$Test::Harness::switches = ""; runtests @ARGV;' t/*.t
+
+oldtest:
 	perl test.pl
 	echo -e "\007"
 
