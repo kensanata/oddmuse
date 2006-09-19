@@ -142,5 +142,3 @@ file://home/foo/tutorial.pdf
 mailto:alex@emacswiki.org
 //a[@class="url mailto"][@href="mailto:alex@emacswiki.org"][text()="mailto:alex@emacswiki.org"]
 EOT
-
-$NetworkFile = 0;
