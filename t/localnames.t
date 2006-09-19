@@ -1,13 +1,13 @@
 require 't/test.pl';
 package OddMuse;
 use Test::More tests => 19;
+
 use Cwd;
-
-clear_pages();
-
 $dir = cwd;
 $uri = "file://$dir";
 $uri =~ s/ /%20/g; # for cygdrive stuff including spaces
+
+clear_pages();
 
 add_module('localnames.pl');
 
