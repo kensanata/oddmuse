@@ -4,7 +4,6 @@ use Test::More tests => 33;
 
 clear_pages();
 
-diag('Creating lots of pages...');
 # old revisions
 update_page('InnocentPage', 'Innocent.', 'good guy zero');
 update_page('NicePage', 'Friendly content.', 'good guy one');
@@ -20,8 +19,6 @@ update_page('OtherPage', 'Other cute content 9.', 'another good guy');
 update_page('OtherPage', 'Other cute content 10.', 'another good guy');
 update_page('OtherPage', 'Other cute content 11.', 'another good guy');
 
-diag('Half way there...');
-
 # good revisions -- need a different timestamp than the old revisions!
 sleep(1);
 update_page('InnocentPage', 'Lamb.', 'good guy zero');
@@ -35,7 +32,6 @@ update_page('NicePage', 'Nice content.', 'good guy two');
 # bad revisions -- need a different timestamp than the last good revision!
 sleep(1);
 
-diag('Nearly done...');
 update_page('NicePage', 'Evil content.', 'vandal one');
 update_page('OtherPage', 'Other evil content.', 'another vandal');
 update_page('NicePage', 'Bad content.', 'vandal two');
