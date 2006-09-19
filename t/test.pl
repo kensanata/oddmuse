@@ -172,12 +172,11 @@ sub apply_rules {
 
 sub xpath_run_tests {
   # translate embedded newlines (other backslashes remain untouched)
-  my %test = map { s/\\n/\n/g; $_; } @_;
-  # Note that the order of tests is not specified!
-  my $output;
-  foreach my $input (keys %test) {
-    my $output = apply_rules($input);
-    xpath_test("<div>$output</div>", $test{$input});
+  my @tests = map { s/\\n/\n/g; $_; } @_;
+  my ($input, $output);
+  while (($input, $output, @tests) = @tests) {
+    my $result = apply_rules($input);
+    xpath_test("<div>$result</div>", $output);
   }
 }
 
@@ -207,11 +206,11 @@ sub name {
 
 sub run_tests {
   # translate embedded newlines (other backslashes remain untouched)
-  my %test = map { s/\\n/\n/g; $_; } @_;
-  # Note that the order of tests is not specified!
-  foreach my $input (keys %test) {
-    my $output = apply_rules($input);
-    is($output, $test{$input}, name($input));
+  my @tests = map { s/\\n/\n/g; $_; } @_;
+  my ($input, $output);
+  while (($input, $output, @tests) = @tests) {
+    my $result = apply_rules($input);
+    is($result, $output, name($input));
   }
 }
 
