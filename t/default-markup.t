@@ -1,5 +1,6 @@
 require 't/test.pl';
 package OddMuse;
+use Test::More tests => 58;
 
 clear_pages();
 
@@ -63,7 +64,7 @@ test_page(update_page('entity', 'quoted named entity: &amp;copy;'),
 	    '&lt;3' => '/pics/heart.png',
 	    ':"\(' => '/pics/cat.png');
 
-%Test = split('\n',<<'EOT');
+xpath_run_tests(split('\n',<<'EOT'));
 HAHA!
 //img[@class="smiley"][@src="/pics/haha.png"][@alt="HAHA!"]
 i <3 you
@@ -141,7 +142,5 @@ file://home/foo/tutorial.pdf
 mailto:alex@emacswiki.org
 //a[@class="url mailto"][@href="mailto:alex@emacswiki.org"][text()="mailto:alex@emacswiki.org"]
 EOT
-
-xpath_run_tests();
 
 $NetworkFile = 0;
