@@ -30,8 +30,10 @@ $UseConfig = 0; # don't read module files
 require 'wiki.pl';
 Init();
 
+use vars qw($redirect);
+
 my $resultfile = "/tmp/test-markup-result-$$";
-my $redirect;
+
 undef $/;
 $| = 1; # no output buffering
 
