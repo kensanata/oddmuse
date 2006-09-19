@@ -20,7 +20,7 @@ use XML::Atom::Entry;
 use XML::Atom::Link;
 use XML::Atom::Person;
 
-$ModulesDescription .= '<p>$Id: atom.pl,v 1.10 2006/09/18 09:04:19 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: atom.pl,v 1.11 2006/09/19 21:05:43 as Exp $</p>';
 
 push(@MyInitVariables, \&AtomInit);
 
@@ -118,6 +118,8 @@ sub GetRcAtom {
 	. (GetParam('all', $cluster)
 	   ? QuoteHtml($ScriptName) . "?" . GetPageParameters('browse', $pagename, $revision, $cluster)
 	   : $url . UrlEncode($pagename)) . qq{"/>\n};
+      $feed .= AtomLink("$ScriptName/atom/wiki/$id");
+
       $feed .= AtomTag('summary', QuoteHtml($summary));
       $feed .= qq{<content type="xhtml">\n<div xmlns="http://www.w3.org/1999/xhtml">\n}
 	. PageHtml($pagename, 50*1024,$q->div(T('This page is too big to send over RSS.')))
