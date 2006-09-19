@@ -75,6 +75,52 @@ sub get_page {
   return $output;
 }
 
+sub name {
+  $_ = shift;
+  s/\n/\\n/g;
+  $_ = substr($_, 0, 60) . '...' if length > 63;
+  return $_;
+}
+
+sub newlines {
+  my @strings = @_;
+  return map { s/\\n/\n/g; $_; } @strings;
+}
+
+# alternating input and output strings for applying rules
+sub run_tests {
+  # translate embedded newlines (other backslashes remain untouched)
+  my @tests = newlines(@_);
+  my ($input, $output);
+  while (($input, $output, @tests) = @tests) {
+    my $result = apply_rules($input);
+    is($result, $output, name($input));
+  }
+}
+
+sub apply_rules {
+  my $input = shift;
+  local *STDOUT;
+  $output = '';
+  open(STDOUT, '>', \$output) or die "Can't open memory file: $!";
+  $FootnoteNumber = 0;
+  ApplyRules(QuoteHtml($input), 1);
+  return $output;
+}
+
+# alternating input and output strings for applying macros instead of rules
+sub run_macro_tests {
+  # translate embedded newlines (other backslashes remain untouched)
+  my %test = map { s/\\n/\n/g; $_; } @_;
+  # Note that the order of tests is not specified!
+  foreach my $input (keys %test) {
+    $_ = $input;
+    foreach my $macro (@MyMacros) { &$macro; }
+    is($_, $test{$input}, $input);
+  }
+}
+
+# one string, many tests
 sub test_page {
   my $page = shift;
   foreach my $str (@_) {
@@ -82,6 +128,7 @@ sub test_page {
   }
 }
 
+# one string, many negative tests
 sub test_page_negative {
   my $page = shift;
   foreach my $str (@_) {
@@ -147,69 +194,13 @@ sub negative_xpath_test {
   xpath_do(sub { shift == 0; }, "Unexpected Matches\n", @_);
 }
 
-sub apply_rules {
-  my $input = shift;
-  local *STDOUT;
-  $output = '';
-  open(STDOUT, '>', \$output) or die "Can't open memory file: $!";
-  $FootnoteNumber = 0;
-  ApplyRules(QuoteHtml($input), 1);
-  return $output;
-}
-
-
 sub xpath_run_tests {
   # translate embedded newlines (other backslashes remain untouched)
-  my @tests = map { s/\\n/\n/g; $_; } @_;
+  my @tests = newlines(@_);
   my ($input, $output);
   while (($input, $output, @tests) = @tests) {
     my $result = apply_rules($input);
     xpath_test("<div>$result</div>", $output);
-  }
-}
-
-sub test_match {
-  my ($input, @tests) = @_;
-  my $output = apply_rules($input);
-  foreach my $str (@tests) {
-    print '.';
-    if ($output =~ /$str/) {
-      $passed++;
-    } else {
-      $failed++;
-      $printpage = 1;
-      print "\n\n---- input:\n", $input,
-	    "\n---- output:\n", $output,
-            "\n---- instead of:\n", $str, "\n----\n";
-    }
-  }
-}
-
-sub name {
-  $_ = shift;
-  s/\n/\\n/g;
-  $_ = substr($_, 0, 60) . '...' if length > 63;
-  return $_;
-}
-
-sub run_tests {
-  # translate embedded newlines (other backslashes remain untouched)
-  my @tests = map { s/\\n/\n/g; $_; } @_;
-  my ($input, $output);
-  while (($input, $output, @tests) = @tests) {
-    my $result = apply_rules($input);
-    is($result, $output, name($input));
-  }
-}
-
-sub run_macro_tests {
-  # translate embedded newlines (other backslashes remain untouched)
-  my %test = map { s/\\n/\n/g; $_; } @_;
-  # Note that the order of tests is not specified!
-  foreach my $input (keys %test) {
-    $_ = $input;
-    foreach my $macro (@MyMacros) { &$macro; }
-    is($_, $test{$input}, $input);
   }
 }
 
