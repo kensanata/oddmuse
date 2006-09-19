@@ -85,7 +85,7 @@ sub test_page {
 sub test_page_negative {
   my $page = shift;
   foreach my $str (@_) {
-    unlike($page, qr($str), $str);
+    unlike($page, qr($str), name($str));
   }
 }
 
