@@ -117,9 +117,8 @@ sub get_text_via_xpath {
   }
 }
 
-
-sub xpath_test {
-  my ($page, @tests) = @_;
+sub xpath_do {
+  my ($check, $message, $page, @tests) = @_;
   $page =~ s/^.*?<html>/<html>/s; # strip headers
   my $parser = XML::LibXML->new();
   my $doc;
@@ -131,32 +130,21 @@ sub xpath_test {
       eval { $nodelist = $doc->findnodes($test) };
       if ($@) {
 	fail("$test: $@");
-      } else {
-	if (not ok($nodelist->size(), name($test))) {
-	  $page =~ s/^.*?<body/<body/s; # strip
-	    diag("No Matches\n", substr($page,0,30000));
-	}
+      } elsif (!ok(&$check($nodelist->size()), name($test))) {
+	$page =~ s/^.*?<body/<body/s;
+	diag($message, substr($page,0,30000));
       }
     }
   }
 }
 
+
+sub xpath_test {
+  xpath_do(sub { shift > 0; }, "No Matches\n", @_);
+}
+
 sub negative_xpath_test {
-  my ($page, @tests) = @_;
-  $page =~ s/^.*?<html>/<html>/s; # strip headers
-  my $parser = XML::LibXML->new();
-  my $doc = $parser->parse_html_string($page);
-  foreach my $test (@tests) {
-    print '.';
-    my $nodelist = $doc->findnodes($test);
-    if (not $nodelist->size()) {
-      $passed++;
-    } else {
-      $failed++;
-      $printpage = 1;
-      print "\nXPATH Test: Unexpected matches for $test\n";
-    }
-  }
+  xpath_do(sub { shift == 0; }, "Unexpected Matches\n", @_);
 }
 
 sub apply_rules {
