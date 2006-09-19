@@ -1,0 +1,106 @@
+
+
+
+
+  Writing Tests
+  =============
+
+  Here's how to write tests.
+
+  1. Create a new file in the t directory, called foo.t. Start with
+     the following two lines:
+
+	require 't/test.pl';
+	package OddMuse;
+	use Test::More tests => $num
+	clear_pages();
+
+     This will load the testing library, make all its functions
+     available to you, announce that you plan to make $num tests, and
+     clear all the pages from the test wiki.
+
+     The test wiki will be created in /tmp/oddmuse.
+
+  2. The wiki is accessed via the command line only. You don't need to
+     have your code installed on a webserver! Just run the test from
+     the parent directory:
+
+	perl t/foo.t
+
+  3. Write $num tests. :)
+
+
+
+  update_page
+  -----------
+  
+  $page = update_page($pagename, $content);
+  update_page($pagename, $content, $summary, $minor, $admin, @rest);
+
+  @rest is a list of parameter=value string pairs:
+
+  @rest = ('username=joe', 'ns=Moore');
+
+
+
+  run_tests
+  ---------
+
+  run_tests(split('\n', <<'EOT'));
+  input1
+  output1
+  input2
+  output2
+  EOT
+
+  Newline excapes \n in the input and output are translated to real
+  newlines when running the tests.
+
+  Checks @MyRules.
+
+
+
+  test_page
+  ---------
+
+  test_page($string, $regexp1, $regexp2, ...);
+  test_page(update_page($pagename, $content), $re1, $re2);
+
+  Tests any string for regular expression matches.
+
+
+
+  xpath_run_tests
+  ---------------
+
+  xpath_run_tests(split('\n',<<'EOT'));
+  $input1
+  $xpath1
+  $input2
+  $xpath2
+  EOT
+
+  Checks @MyRules. XPath is harder to write, but is ideal when the
+  output contains tags with more than one attribute, since the order
+  of attributes is undefined. And you don't even have to test for all
+  the attributes.
+
+  Example:
+
+  WikiWord
+  //a[@class="edit"][@title="Click to edit this page"]
+
+
+
+  run_macro_tests
+  ---------------
+
+  run_macro_tests(split('\n',<<'EOT'));
+  $input1
+  $output2
+  $input2
+  $output2
+  EOT
+
+  Tests @MyMacros.
+  
