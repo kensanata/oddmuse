@@ -1,5 +1,10 @@
 2006-09-19  Alex Schroeder  <alex@gnu.org>
 
+	* t/default-markup.t: Don't reset $NetworkFile = 0 at the end, as
+	each *.t file runs in a separate process.
+
+	* t/test.pl (xpath_run_tests, run_tests): Run tests in order.
+
 	* Makefile (test): Replace call to test.pl with a Test::Harness
 	call.
 	(oldtest): Keep the old tests until migrated.
