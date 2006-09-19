@@ -136,39 +136,12 @@ sub test_page_negative {
   }
 }
 
-sub get_text_via_xpath {
-  my ($page, $test) = @_;
-  $page =~ s/^.*?<html>/<html>/s; # strip headers
-  my $parser = XML::LibXML->new();
-  my $doc;
-  eval { $doc = $parser->parse_html_string($page) };
-  if ($@) {
-    print "Could not parse html: $@\n", $page, "\n\n";
-    $failed += 1;
-  } else {
-    print '.';
-    my $nodelist;
-    eval { $nodelist = $doc->findnodes($test) };
-    if ($@) {
-      $failed++;
-      print "\nXPATH Test: failed to run $test: $@\n";
-    } elsif ($nodelist->size()) {
-      $passed++;
-      return $nodelist->string_value();
-    } else {
-      $failed++;
-      print "\nXPATH Test: No matches for $test\n";
-      $page =~ s/^.*?<body/<body/s;
-      print substr($page,0,30000), "\n";
-    }
-  }
-}
-
 sub xpath_do {
   my ($check, $message, $page, @tests) = @_;
   $page =~ s/^.*?<html>/<html>/s; # strip headers
   my $parser = XML::LibXML->new();
   my $doc;
+  my $result;
  SKIP: {
     eval { $doc = $parser->parse_html_string($page) };
     skip("Cannot parse ".name($page).": $@", $#tests + 1) if $@;
@@ -177,14 +150,16 @@ sub xpath_do {
       eval { $nodelist = $doc->findnodes($test) };
       if ($@) {
 	fail("$test: $@");
-      } elsif (!ok(&$check($nodelist->size()), name($test))) {
+      } elsif (ok(&$check($nodelist->size()), name($test))) {
+	$result .= $nodelist->string_value();
+      } else {
 	$page =~ s/^.*?<body/<body/s;
 	diag($message, substr($page,0,30000));
       }
     }
   }
+  return $result; # return string_value() of all found nodes
 }
-
 
 sub xpath_test {
   xpath_do(sub { shift > 0; }, "No Matches\n", @_);
