@@ -69,10 +69,6 @@ install:
 test:
 	perl -e 'use Test::Harness; $$Test::Harness::switches = ""; runtests @ARGV;' t/*.t
 
-oldtest:
-	perl test.pl
-	echo -e "\007"
-
 package-upload: debian-$(VERSION).tar.gz debian-$(VERSION).tar.gz.sig
 	curl -T "{debian-$(VERSION).tar.gz,debian-$(VERSION).tar.gz.sig}" \
 	ftp://savannah.gnu.org/incoming/savannah/oddmuse/
