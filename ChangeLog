@@ -1,5 +1,11 @@
 2006-09-19  Alex Schroeder  <alex@gnu.org>
 
+	* modules/atom.pl (GetRcAtom): Add link element.
+
+	* wiki.pl (GetRcRss): Use cc for the creative commons namespace.
+	(ReportError): Don't return non-zero so that FCGI does not warn
+	about abnormal exit.
+
 	* t/test.pl (test_page, test_page_negative): Use name() for the
 	test name.
 	(xpath_do, xpath_test, negative_xpath_test): Move the common stuff
