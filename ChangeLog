@@ -1,7 +1,19 @@
+2006-09-21  Alex Schroeder  <alex@gnu.org>
+
+	* t/test.pl (update_page): Add quotes around the arguments.
+
+	* wiki.pl (QuoteHtml): Replace control characters with space.
+	(PageHtml): Print diff if possible, even if the page itself is too
+	large.
+	(GetRcRss): Conditionalize some prints to avoid empty elements.
+	(TimeToRFC822): Rewrote to not use sprintf such as to avoid
+	localized names.
+
 2006-09-20  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetCommentForm): Don't show comment form when the
 	comment page is locked.
+	(PageHtml): At least return the diff if small enough.
 
 2006-09-19  Alex Schroeder  <alex@gnu.org>
 
