@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 5;
+use Test::More tests => 7;
 clear_pages();
 
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
@@ -34,3 +34,8 @@ get_page('title=Comments_on_Yadda', 'aftertext=This%20is%20another%20comment.',
 xpath_test(get_page('Comments_on_Yadda'),
 	   '//p[contains(text(),"This is my comment.")]',
 	   '//a[@class="url http outside"][@href="http://www.oddmuse.org/"][text()="Alex"]');
+
+my $textarea = '//textarea[@name="aftertext"][@id="aftertext"]';
+xpath_test(get_page('Comments_on_Yadda'), $textarea);
+get_page('action=pagelock set=1 id=Comments_on_Yadda pwd=foo');
+negative_xpath_test(get_page('Comments_on_Yadda'), $textarea);
