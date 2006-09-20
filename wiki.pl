@@ -273,7 +273,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.736 2006/09/20 17:43:08 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.737 2006/09/20 18:27:13 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1237,10 +1237,12 @@ sub PageHtml {
   my $result = '';
   local *STDOUT;
   OpenPage($id);
-  return $error if $limit and length($Page{text}) > $limit;
   open(STDOUT, '>', \$result) or die "Can't open memory file: $!";
   PrintPageDiff();
+  return $error if $limit and length($result) > $limit;
+  my $diff = $result;
   PrintPageHtml();
+  return $diff . $q->p($error) if $limit and length($result) > $limit;
   return $result;
 }
 
