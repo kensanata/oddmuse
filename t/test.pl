@@ -57,7 +57,7 @@ sub update_page {
   $summary = url_encode($summary);
   $minor = $minor ? 'on' : 'off';
   my $rest = join(' ', @rest);
-  $redirect = `perl wiki.pl Save=1 title=$id summary=$summary recent_edit=$minor text=$text pwd=$pwd $rest`;
+  $redirect = `perl wiki.pl 'Save=1' 'title=$id' 'summary=$summary' 'recent_edit=$minor' 'text=$text' 'pwd=$pwd' $rest`;
   $output = `perl wiki.pl action=browse id=$id`;
   # just in case a new page got created or NearMap or InterMap
   $IndexInit = 0;
