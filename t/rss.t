@@ -18,20 +18,26 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 82;
+use Test::More tests => 86;
 
 clear_pages();
 
-update_page('big', 'foo foo foo');
-test_page(get_page('action=rss'), '<description>foo foo foo</description>');
+update_page('big', 'foofoo');
+test_page(get_page('action=rss full=1'), '<title>big: foo foo</title>');
+update_page('big', 'foo foo foo', '<mu>');
+test_page(get_page('action=rss'), '<description>&lt;mu&gt;</description>');
 test_page(get_page('action=rss full=1'), 'foo foo foo');
 test_page(get_page('action=rss full=1 diff=1'), '&lt;div class="diff"&gt;');
 update_page('big', 'x' x 49000);
 test_page(get_page('action=rss full=1'), 'xxxxxx');
 test_page(get_page('action=rss full=1 diff=1'), 'too big to send over RSS');
-update_page('big', 'x' x 55000);
+
+update_page('big', 'x' x 55000, 'big edit');
 test_page_negative(get_page('action=rss full=1'), 'xxxxxx');
 test_page(get_page('action=rss full=1'), 'too big to send over RSS');
+update_page('big', "mee too\n" x 2 . 'x' x 55000);
+test_page(get_page('action=rss full=1'), 'too big to send over RSS');
+test_page(get_page('action=rss full=1 diff=1'), 'mee too', 'too big to send over RSS');
 
 SKIP: {
 
