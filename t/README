@@ -146,22 +146,21 @@
   xpath_run_tests
   ---------------
 
+  This is the equivalent of run_tests using XPath instead of simple
+  string comparison.  It takes a list of alternating input and xpath
+  tests, applies rules (and thus @MyRules) to the input and applies
+  the test to the output.
+
     xpath_run_tests(split('\n',<<'EOT'));
-    $input1
-    $xpath1
-    $input2
-    $xpath2
-    EOT
-
-  Checks @MyRules. XPath is harder to write, but is ideal when the
-  output contains tags with more than one attribute, since the order
-  of attributes is undefined. And you don't even have to test for all
-  the attributes.
-
-  Example:
-
     WikiWord
     //a[@class="edit"][@title="Click to edit this page"]
+    This is a [:day for fun and laughter].
+    //a[@class="anchor"][@name="day_for_fun_and_laughter"]
+    EOT
+
+  XPath is harder to write, but is ideal when the output contains tags
+  with more than one attribute, since the order of attributes is
+  undefined. And you don't even have to test for all the attributes.
 
 
 
