@@ -18,7 +18,20 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 75;
+use Test::More tests => 82;
+
+clear_pages();
+
+update_page('big', 'foo foo foo');
+test_page(get_page('action=rss'), '<description>foo foo foo</description>');
+test_page(get_page('action=rss full=1'), 'foo foo foo');
+test_page(get_page('action=rss full=1 diff=1'), '&lt;div class="diff"&gt;');
+update_page('big', 'x' x 49000);
+test_page(get_page('action=rss full=1'), 'xxxxxx');
+test_page(get_page('action=rss full=1 diff=1'), 'too big to send over RSS');
+update_page('big', 'x' x 55000);
+test_page_negative(get_page('action=rss full=1'), 'xxxxxx');
+test_page(get_page('action=rss full=1'), 'too big to send over RSS');
 
 SKIP: {
 
@@ -32,8 +45,6 @@ SKIP: {
   $dir = cwd;
   $uri = "file://$dir";
   $uri =~ s/ /%20/g;		# for cygdrive stuff including spaces
-
-  clear_pages();
 
   # some xpath tests
   update_page('RSS', "<rss $uri/heise.rdf>");
