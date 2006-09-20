@@ -1,3 +1,8 @@
+2006-09-20  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetCommentForm): Don't show comment form when the
+	comment page is locked.
+
 2006-09-19  Alex Schroeder  <alex@gnu.org>
 
 	* modules/atom.pl (GetRcAtom): Add link element.
