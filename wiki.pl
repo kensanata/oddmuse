@@ -34,7 +34,6 @@ package OddMuse;
 use strict;
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
-use POSIX qw(strftime);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
 # Configuration/constant variables:
@@ -273,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.737 2006/09/20 18:27:13 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.738 2006/09/20 22:43:43 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -737,6 +736,7 @@ sub QuoteHtml {
   $html =~ s/&/&amp;/g;
   $html =~ s/</&lt;/g;
   $html =~ s/>/&gt;/g;
+  $html =~ s/[\x00-\x08\x0b\x0c\x0e-\x1f]/ /g; # legal xml: #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
   return $html;
 }
 
@@ -1819,13 +1819,13 @@ sub GetRcRss {
 };
   $rss .= "<title>" .  QuoteHtml($SiteName) . ': ' . GetParam('title', QuoteHtml($RCName)) . "</title>\n";
   $rss .= "<link>" . $url . ($UsePathInfo ? "/" : "?") . UrlEncode($RCName) . "</link>\n";
-  $rss .= "<description>" . QuoteHtml($SiteDescription) . "</description>\n";
+  $rss .= "<description>" . QuoteHtml($SiteDescription) . "</description>\n" if $SiteDescription;
   $rss .= "<pubDate>" . $date. "</pubDate>\n";
   $rss .= "<lastBuildDate>" . $date . "</lastBuildDate>\n";
   $rss .= "<generator>Oddmuse</generator>\n";
   $rss .= "<copyright>" . $RssRights . "</copyright>\n" if $RssRights;
   $rss .= join('', map {"<cc:license>" . QuoteHtml($_) . "</cc:license>\n"}
-	       (ref $RssLicense eq 'ARRAY' ? @$RssLicense : $RssLicense));
+	       (ref $RssLicense eq 'ARRAY' ? @$RssLicense : $RssLicense)) if $RssLicense;
   $rss .= "<wiki:interwiki>" . $InterWikiMoniker . "</wiki:interwiki>\n" if $InterWikiMoniker;
   if ($RssImageUrl) {
     $rss .= "<image>\n";
@@ -1844,7 +1844,7 @@ sub GetRcRss {
       return if $excluded{$pagename} or ($limit ne 'all' and $count++ >= $limit);
       my $name = NormalToFree($pagename);
       if (GetParam('full', 0)) {
-	$name .= ': ' . $summary;
+	$name .= T(': ') . $summary if $summary;
 	$summary = PageHtml($pagename, 50*1024, T('This page is too big to send over RSS.'));
       }
       my $date = TimeToRFC822($timestamp);
@@ -1855,12 +1855,12 @@ sub GetRcRss {
       $rss .= "<link>" . $url . (GetParam('all', $cluster)
         ? "?" . GetPageParameters('browse', $pagename, $revision, $cluster)
 	: ($UsePathInfo ? '/' : '?') . UrlEncode($pagename)) . "</link>\n";
-      $rss .= "<description>" . QuoteHtml($summary) . "</description>\n";
+      $rss .= "<description>" . QuoteHtml($summary) . "</description>\n" if $summary;
       $rss .= "<pubDate>" . $date . "</pubDate>\n";
       $rss .= "<comments>" . $url . ($UsePathInfo ? '/' : '?')
 	. $CommentsPrefix . UrlEncode($pagename) . "</comments>\n"
 	  if $CommentsPrefix and $pagename !~ /^$CommentsPrefix/;
-      $rss .= "<wiki:username>" . $username . "</wiki:username>\n";
+      $rss .= "<wiki:username>" . $username . "</wiki:username>\n" if $username;
       $rss .= "<wiki:status>" . (1 == $revision ? 'new' : 'updated') . "</wiki:status>\n";
       $rss .= "<wiki:importance>" . ($minor ? 'minor' : 'major') . "</wiki:importance>\n";
       $rss .= "<wiki:version>" . $revision . "</wiki:version>\n";
@@ -2833,7 +2833,9 @@ sub TimeToW3 { # Complete date plus hours and minutes: YYYY-MM-DDThh:mmTZD (eg 1
 }
 
 sub TimeToRFC822 { 
-  return strftime "%a, %d %b %Y %T GMT", gmtime(shift); #   Sat, 07 Sep 2002 00:00:01 GMT
+  my ($sec, $min, $hour, $mday, $mon, $year, $wday) = gmtime(shift); # Sat, 07 Sep 2002 00:00:01 GMT
+  return sprintf("%s, %02d %s %04d %02d:%02d:%02d GMT", qw(Sun Mon Tue Wed Thu Fri Sat)[$wday], $mday,
+		 qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec)[$mon], $year+1900, $hour, $min, $sec);
 }
 
 sub GetHiddenValue {
