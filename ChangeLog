@@ -1,3 +1,7 @@
+2006-09-23  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetSummary): Fix aftertext modifies summary.
+
 2006-09-21  Alex Schroeder  <alex@gnu.org>
 
 	* t/test.pl (update_page): Add quotes around the arguments.
