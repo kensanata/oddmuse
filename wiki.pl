@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.738 2006/09/20 22:43:43 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.739 2006/09/22 23:34:53 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3538,7 +3538,7 @@ sub DoPost {
 }
 
 sub GetSummary {
-  my $text = GetParam('aftertext',  '') || $Page{revision} > 0 ? '' : GetParam('text', '');
+  my $text = GetParam('aftertext',  $Page{revision} > 0 ? '' : GetParam('text', ''));
   $text = substr($text, 0, $SummaryDefaultLength) if $SummaryDefaultLength;
   my $summary = GetParam('summary', '') || $text; # not GetParam('summary', $text) work because '' is defined
   $summary =~ s/$FS//g;
