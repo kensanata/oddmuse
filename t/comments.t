@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 7;
+use Test::More tests => 10;
 clear_pages();
 
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
@@ -28,6 +28,8 @@ test_page(get_page('Yadda'), 'Describe the new page');
 
 get_page('title=Comments_on_Yadda', 'aftertext=This%20is%20my%20comment.', 'username=Alex');
 test_page(get_page('Comments_on_Yadda'), 'This is my comment\.', '-- Alex');
+test_page(get_page('action=rc raw=1'), 'title: Comments on Yadda',
+	  'description: This is my comment.', 'generator: Alex');
 
 get_page('title=Comments_on_Yadda', 'aftertext=This%20is%20another%20comment.',
 	 'username=Alex', 'homepage=http%3a%2f%2fwww%2eoddmuse%2eorg%2f');
