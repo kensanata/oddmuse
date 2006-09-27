@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.739 2006/09/22 23:34:53 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.740 2006/09/27 20:15:34 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2927,35 +2927,36 @@ sub DoEdit {
     print $q->strong(Ts('Editing old revision %s.', $revision) . '  '
 		     . T('Saving this page will replace the latest revision with this text.'))
   }
-  print GetFormStart(undef, undef, $upload ? 'edit upload' : 'edit text'), # protected by questionasker
-    $q->p(GetHiddenValue("title", $id), ($revision ? GetHiddenValue('revision', $revision) : ''),
-	  GetHiddenValue('oldtime', $Page{ts}),
-	  ($upload ? GetUpload() : GetTextArea('text', $oldText)));
+  print GetEditForm($id, $upload, $oldText, $revision);
+  PrintFooter($id, 'edit');
+}
+
+sub GetEditForm {
+  my ($id, $upload, $oldText, $revision) = @_;
+  my $html = GetFormStart(undef, undef, $upload ? 'edit upload' : 'edit text') # protected by questionasker
+    . $q->p(GetHiddenValue("title", $id), ($revision ? GetHiddenValue('revision', $revision) : ''),
+	    GetHiddenValue('oldtime', $Page{ts}),
+	    ($upload ? GetUpload() : GetTextArea('text', $oldText)));
   my $summary = UnquoteHtml(GetParam('summary', ''))
     || ($Now - $Page{ts} < ($SummaryHours * 3600) ? $Page{summary} : '');
-  print $q->p(T('Summary:'), $q->br(), GetTextArea('summary', $summary, 2));
-  if (GetParam('recent_edit', '') eq 'on') {
-    print $q->p($q->checkbox(-name=>'recent_edit', -checked=>1,
-			     -label=>T('This change is a minor edit.')));
-  } else {
-    print $q->p($q->checkbox(-name=>'recent_edit',
-			     -label=>T('This change is a minor edit.')));
-  }
-  print T($EditNote) if $EditNote; # Allow translation
+  $html .= $q->p(T('Summary:'), $q->br(), GetTextArea('summary', $summary, 2))
+    . $q->p($q->checkbox(-name=>'recent_edit', -checked=>(GetParam('recent_edit', '') eq 'on'),
+			 -label=>T('This change is a minor edit.')));
+  $html .= T($EditNote) if $EditNote; # Allow translation
   my $username = GetParam('username', '');
-  print $q->p($q->label({-for=>'username'}, T('Username:')) . ' '
-	      . $q->textfield(-name=>'username', -id=>'username', -default=>$username,
-			      -override=>1, -size=>20, -maxlength=>50));
-  print $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save')),
-	      ($upload ? '' : ' ' . $q->submit(-name=>'Preview', -accesskey=>T('p'), -value=>T('Preview'))),
-	      ' ', $q->submit(-name=>'Cancel', -value=>T('Cancel')));
+  $html .= $q->p($q->label({-for=>'username'}, T('Username:')) . ' '
+		 . $q->textfield(-name=>'username', -id=>'username', -default=>$username,
+				 -override=>1, -size=>20, -maxlength=>50))
+    . $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save')),
+	    ($upload ? '' : ' ' . $q->submit(-name=>'Preview', -accesskey=>T('p'), -value=>T('Preview'))),
+	    ' ', $q->submit(-name=>'Cancel', -value=>T('Cancel')));
   if ($upload) {
-    print $q->p(ScriptLink('action=edit;upload=0;id=' . UrlEncode($id), T('Replace this file with text')));
+    $html .= $q->p(ScriptLink('action=edit;upload=0;id=' . UrlEncode($id), T('Replace this file with text')));
   } elsif ($UploadAllowed or UserIsAdmin()) {
-    print $q->p(ScriptLink('action=edit;upload=1;id=' . UrlEncode($id), T('Replace this text with a file')));
+    $html .= $q->p(ScriptLink('action=edit;upload=1;id=' . UrlEncode($id), T('Replace this text with a file')));
   }
-  print $q->endform(), $q->end_div();;
-  PrintFooter($id, 'edit');
+  $html .= $q->endform(), $q->end_div();
+  return $html;
 }
 
 sub GetTextArea {
