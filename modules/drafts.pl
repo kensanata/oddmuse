@@ -65,4 +65,3 @@ sub DraftNewGetEditForm {
   $html =~ s!(<input[^>]*name="Cancel"[^>]*>)!$1 $draft_button!;
   return $html;
 }
-=
