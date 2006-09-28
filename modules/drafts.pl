@@ -49,7 +49,7 @@ sub DoDraft {
     $Message .= $q->p(T('Draft recovered'));
     DoEdit($data{id}, $data{text}, 1);
   } else {
-    ReportError(T('No draft available to recover'));
+    ReportError(T('No draft available to recover'), '404 NOT FOUND');
   }
 }
 
@@ -64,4 +64,26 @@ sub DraftNewGetEditForm {
   my $draft_button = $q->submit(-name=>'Draft', -value=>T('Save Draft'));
   $html =~ s!(<input[^>]*name="Cancel"[^>]*>)!$1 $draft_button!;
   return $html;
+}
+
+# cleanup
+
+push(@MyMaintenance, \&DraftCleanup);
+
+sub DraftCleanup {
+  print '<p>' . T('Draft Cleanup');
+  foreach my $draft (glob("$DraftDir/* $DraftDir/.*")) {
+    next if $draft =~ m!/\.\.?$!;
+    my $ts = (stat($draft))[10];
+    if ($Now - $ts < 1209600) { # 14*24*60*60
+      print $q->br(), Tss("%1 was created %2 and was kept",
+		$draft, CalcTimeSince($Now - $ts));
+    } elsif (unlink($draft) == 1) {
+      print $q->br(), Tss("%1 was created %2 and was deleted",
+		$draft, CalcTimeSince($Now - $ts));
+    } else {
+      print $q->br(), Ts('Unable to delete draft %s', $draft);
+    }
+  }
+  print '</p>';
 }
