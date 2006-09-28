@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 15;
+use Test::More tests => 22;
 clear_pages();
 
 # No draft button by default
@@ -52,3 +52,26 @@ test_page(get_page('action=draft username=Alex'), 'Preview', 'foo', 'HomePage');
 test_page(get_page('action=draft username=Alex'), 'No draft available to recover',
 	  'Status: 404');
 
+# Saving second draft
+get_page('title=HomePage text=foo username=Alex Draft=1');
+get_page('title=HomePage text=foo username=Berta Draft=1');
+
+# Ordinary maintenance deletes nothing
+$page = get_page('action=maintain');
+test_page($page, 'was kept');
+test_page_negative($page, 'was deleted');
+
+# Date back one file
+utime($Now-1300000, $Now-1300000, "$DraftDir/Berta");
+# Second maintenance requires admin password and deletes one draft
+$page = get_page('action=maintain pwd=foo');
+test_page($page, 'Alex was created [^<>]* ago and was kept');
+test_page_negative($page, 'Berta was created [^<>]* ago and was deleted');
+ok(-f "$DraftDir/Alex", "$DraftDir/Alex is still there");
+ok(! -f "$DraftDir/Berta", "$DraftDir/Berta is gone");
+
+# Date back the other file
+utime($Now-1300000, $Now-1300000, "$DraftDir/Alex");
+
+# Second maintenance requires admin password and deletes one draft
+test_page(get_page('action=maintain pwd=foo'), 'Alex was created [^<>]* ago and was deleted');
