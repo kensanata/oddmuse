@@ -81,6 +81,9 @@
 
 2006-09-06  Alex Schroeder  <alex@gnu.org>
 
+	* modules/creole.pl (CreoleRule): Allow leading whitespace for
+	lists.
+	(CreoleRule): Support H2-H6.
 	* modules/usemod.pl (UsemodRule): Changed an if into an elsif.
 
 2006-09-05  Alex Schroeder  <alex@gnu.org>
