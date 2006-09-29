@@ -47,9 +47,20 @@ EOT
 
 
 # now check whether the integration with InitVariables works
-xpath_test(update_page('LocalNamesTest', 'OddMuse [[my blog]]'),
-	   '//a[@class="near"][@title="LocalNames"][@href="http://www.oddmuse.org/"][text()="OddMuse"]',
-	   '//a[@class="near"][@title="LocalNames"][@href="http://lion.taoriver.net/"][text()="my blog"]');
+$page = update_page('LocalNamesTest', 'OddMuse [[my blog]]');
+xpath_test($page, '//a[@class="near"][@title="LocalNames"][@href="http://www.oddmuse.org/"][text()="OddMuse"]');
+
+SKIP: {
+
+  eval {
+    require LWP::UserAgent;
+  };
+
+  skip "LWP::UserAgent not installed", 1 if $@;
+
+  xpath_test($page, '//a[@class="near"][@title="LocalNames"][@href="http://lion.taoriver.net/"][text()="my blog"]');
+
+}
 
 # verify that automatic update is off by default
 xpath_test(update_page('LocalNamesTest', 'This is an [http://www.example.org/ Example].'),
