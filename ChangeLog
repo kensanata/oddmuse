@@ -1,3 +1,15 @@
+2006-09-28  Alex Schroeder  <alex@gnu.org>
+
+	* modules/drafts.pl (DoDraft): Added status code to error.
+	(DraftNewGetEditForm): New.
+	(DraftCleanup): Use mtime instead of ctime when deleting files.
+
+2006-09-27  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoEdit, GetEditForm): Moved code from DoEdit into the
+	new GetEditForm, which returns a string that can be modified by
+	wrapper code.
+
 2006-09-23  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetSummary): Fix aftertext modifies summary.
