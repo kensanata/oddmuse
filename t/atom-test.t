@@ -19,10 +19,16 @@
 require 't/test.pl';
 package OddMuse;
 
-use LWP::UserAgent;
 use Test::More tests => 42;
 
 SKIP: {
+
+  eval {
+    require LWP::UserAgent;
+  };
+
+  skip "LWP::UserAgent not installed", 42 if $@;
+
 
   eval {
     require XML::Atom::Client;
