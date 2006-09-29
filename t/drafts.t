@@ -66,8 +66,8 @@ test_page_negative($page, 'was deleted');
 utime($Now-1300000, $Now-1300000, "$DraftDir/.berta");
 # Second maintenance requires admin password and deletes one draft
 $page = get_page('action=maintain pwd=foo');
-test_page($page, 'Alex was last modified [^<>]* ago and was kept');
-test_page($page, '.berta was last modified [^<>]* ago and was deleted');
+test_page($page, 'Alex was last modified [^<>]* and was kept');
+test_page($page, '.berta was last modified [^<>]* and was deleted');
 ok(-f "$DraftDir/Alex", "$DraftDir/Alex is still there");
 ok(! -f "$DraftDir/.berta", "$DraftDir/.berta is gone");
 
