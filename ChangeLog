@@ -1,6 +1,8 @@
 2006-09-30  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoCss): Report missing LWP::UserAgent or wrong URL.
+	(GetCommentForm): Pass comment parameter to UserCanEdit();
+	(UserCanEdit): New comment parameter, enable $EditAllowed = 3.
 
 2006-09-28  Alex Schroeder  <alex@gnu.org>
 
