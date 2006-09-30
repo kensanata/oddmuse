@@ -18,10 +18,51 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 10;
+use Test::More tests => 26;
 clear_pages();
 
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
+
+# $EditAllowed
+
+xpath_test(get_page('Test'),
+	   '//a[@class="comment local"][@href="http://localhost/wiki.pl/Comments_on_Test"][text()="Comments on Test"]',
+	   '//a[@class="edit"][@href="http://localhost/wiki.pl?action=edit;id=Test"][text()="Edit this page"]');
+xpath_test(get_page('Comments_on_Test'),
+	   '//a[@class="original local"][@href="http://localhost/wiki.pl/Test"][text()="Test"]',
+	   '//a[@class="edit"][@href="http://localhost/wiki.pl?action=edit;id=Comments_on_Test"][text()="Edit this page"]',
+	   '//textarea[@name="aftertext"]');
+
+AppendStringToFile($ConfigFile, "\$EditAllowed = 0;\n");
+
+xpath_test(get_page('Test'),
+	   '//a[@class="password"][@href="http://localhost/wiki.pl?action=password"][text()="This page is read-only"]');
+$page = get_page('Comments_on_Test');
+xpath_test($page,
+	   '//a[@class="password"][@href="http://localhost/wiki.pl?action=password"][text()="This page is read-only"]');
+negative_xpath_test($page, '//textarea[@name="aftertext"]');
+
+AppendStringToFile($ConfigFile, "\$EditAllowed = 2;\n");
+
+xpath_test(get_page('Test'),
+	   '//a[@class="password"][@href="http://localhost/wiki.pl?action=password"][text()="This page is read-only"]');
+xpath_test(get_page('Comments_on_Test'),
+	   '//a[@class="original local"][@href="http://localhost/wiki.pl/Test"][text()="Test"]',
+	   '//a[@class="edit"][@href="http://localhost/wiki.pl?action=edit;id=Comments_on_Test"][text()="Edit this page"]',
+	   '//textarea[@name="aftertext"]');
+
+AppendStringToFile($ConfigFile, "\$EditAllowed = 3;\n");
+
+xpath_test(get_page('Test'),
+	   '//a[@class="password"][@href="http://localhost/wiki.pl?action=password"][text()="This page is read-only"]');
+xpath_test(get_page('Comments_on_Test'),
+	   '//a[@class="original local"][@href="http://localhost/wiki.pl/Test"][text()="Test"]',
+	   '//a[@class="password"][@href="http://localhost/wiki.pl?action=password"][text()="This page is read-only"]',
+	   '//textarea[@name="aftertext"]');
+
+# Other tests
+
+AppendStringToFile($ConfigFile, "\$EditAllowed = 1;\n");
 
 get_page('title=Yadda', 'aftertext=This%20is%20my%20comment.', 'username=Alex');
 test_page(get_page('Yadda'), 'Describe the new page');
