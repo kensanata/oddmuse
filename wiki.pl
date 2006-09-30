@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.740 2006/09/27 20:15:34 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.741 2006/09/30 18:03:25 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3956,7 +3956,10 @@ sub TextIsFile { $_[0] =~ /^#FILE (\S+)\n/ }
 sub DoCss {
   my $css = GetParam('install', '');
   if ($css) {
-    SetParam('text', GetRaw($css));
+    my $data = GetRaw($css);
+    ReportError(Ts('%s returned no data, or LWP::UserAgent is not available.', $css),
+		'500 INTERNAL SERVER ERROR') unless $data;
+    SetParam('text', $data);
     DoPost($StyleSheetPage);
   } else {
     print GetHeader('', T('Install CSS')), $q->start_div({-class=>'content css'}),
