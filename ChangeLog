@@ -1,3 +1,7 @@
+2006-09-30  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoCss): Report missing LWP::UserAgent or wrong URL.
+
 2006-09-28  Alex Schroeder  <alex@gnu.org>
 
 	* modules/drafts.pl (DoDraft): Added status code to error.
