@@ -97,7 +97,7 @@ $LogoUrl     = '';              # URL for site logo ('' for no logo)
 $NotFoundPg  = '';              # Page for not-found links ('' for blank pg)
 $NewText     = "Describe the new page here.\n";	 # New page text
 $NewComment  = "Add your comment here.\n";	 # New comment text
-$EditAllowed = 1;               # 0 = no, 1 = yes, 2 = comments only
+$EditAllowed = 1;               # 0 = no, 1 = yes, 2 = comments pages only, 3 = comments only
 $AdminPass   = '' unless defined $AdminPass; # Whitespace separated passwords.
 $EditPass    = '' unless defined $EditPass; # Whitespace separated passwords.
 $BannedHosts = 'BannedHosts';   # Page for banned hosts
@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.741 2006/09/30 18:03:25 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.742 2006/09/30 20:09:19 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2322,7 +2322,7 @@ sub GetFooterLinks {
 sub GetCommentForm {
   my ($id, $rev, $comment) = @_;
   if ($CommentsPrefix ne '' and $id and $rev ne 'history' and $rev ne 'edit'
-      and $id =~ /^$CommentsPrefix/ and UserCanEdit($id, 0)) {
+      and $id =~ /^$CommentsPrefix/ and UserCanEdit($id, 0, 1)) {
     return $q->div({-class=>'comment'}, GetFormStart(undef, undef, 'comment'), # protected by questionasker
 		   $q->p(GetHiddenValue('title', $OpenPageName),
 			 GetTextArea('aftertext', $comment ? $comment : $NewComment)),
@@ -3028,7 +3028,7 @@ sub UserIsAdminOrError {
 }
 
 sub UserCanEdit {
-  my ($id, $editing) = @_;
+  my ($id, $editing, $comment) = @_;
   return 0 if $id eq 'SampleUndefinedPage' or $id eq T('SampleUndefinedPage')
     or $id eq 'Sample_Undefined_Page' or $id eq T('Sample_Undefined_Page');
   return 1 if UserIsAdmin();
@@ -3037,7 +3037,9 @@ sub UserCanEdit {
   return 1 if UserIsEditor();
   return 0 if !$EditAllowed or -f $NoEditFile;
   return 0 if $editing and UserIsBanned(); # this call is more expensive
-  return 0 if $EditAllowed == 2 and (not $CommentsPrefix or $id !~ /^$CommentsPrefix/);
+  return 0 if $EditAllowed >= 2 and (not $CommentsPrefix or $id !~ /^$CommentsPrefix/);
+  return 1 if $EditAllowed >= 3 and ($comment or (GetParam('aftertext', '') and not GetParam('text', '')));
+  return 0 if $EditAllowed >= 3;
   return 1;
 }
 
