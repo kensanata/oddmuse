@@ -1,3 +1,9 @@
+2006-10-01  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoPost): Rearranged tests such that MIME type is tested
+	even when uploading a file via text posting.
+	(DoPost): Only check mime type when one was provided.
+
 2006-09-30  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoCss): Report missing LWP::UserAgent or wrong URL.
