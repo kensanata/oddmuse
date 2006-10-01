@@ -22,6 +22,8 @@ use Test::More tests => 5;
 
 clear_pages();
 
+AppendStringToFile($ConfigFile, "\$UploadAllowed = 1;\n");
+
 test_page_negative(get_page('HomePage'), 'logo');
 AppendStringToFile($ConfigFile, "\$LogoUrl = '/pic/logo.png';\n");
 xpath_test(get_page('HomePage'), '//a[@class="logo"]/img[@class="logo"][@src="/pic/logo.png"][@alt="[Home]"]');
