@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.743 2006/10/01 08:25:23 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.744 2006/10/01 15:45:47 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3472,7 +3472,7 @@ sub DoPost {
   }
   my %allowed = map {$_ => 1} @UploadTypes;
   ReportError(Ts('Files of type %s are not allowed.', $type), '415 UNSUPPORTED MEDIA TYPE')
-    if @UploadTypes and not $allowed{$type};
+    if @UploadTypes and $type and not $allowed{$type};
   # Banned Content
   my $summary = GetSummary();
   if (not UserIsEditor()) {
