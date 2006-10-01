@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.742 2006/09/30 20:09:19 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.743 2006/10/01 08:25:23 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3435,10 +3435,6 @@ sub DoPost {
   my $id = FreeToNormal(shift);
   ValidIdOrDie($id);
   ReportError(Ts('Editing not allowed for %s.', $id), '403 FORBIDDEN') unless UserCanEdit($id, 1);
-  my $filename = GetParam('file', undef);
-  if ($filename and not $UploadAllowed and not UserIsAdmin()) {
-    ReportError(T('Only administrators can upload files.'), '403 FORBIDDEN');
-  }
   # Lock before getting old page to prevent races
   RequestLockOrError(); # fatal
   OpenPage($id);
@@ -3446,23 +3442,24 @@ sub DoPost {
   $_ = UnquoteHtml(GetParam('text', undef));
   foreach my $macro (@MyMacros) { &$macro; }
   my $string = $_;
+  my ($type) = TextIsFile($string); # MIME type if an uploaded file
+  my $filename = GetParam('file', undef);
+  if (($filename or $type) and not $UploadAllowed and not UserIsAdmin()) {
+    ReportError(T('Only administrators can upload files.'), '403 FORBIDDEN');
+  }
   my $comment = UnquoteHtml(GetParam('aftertext', undef));
   # Upload file
   if ($filename) {
-    require MIME::Base64;
     my $file = $q->upload('file');
     if (not $file and $q->cgi_error) {
       ReportError(Ts('Transfer Error: %s', $q->cgi_error), '500 INTERNAL SERVER ERROR');
     }
     ReportError(T('Browser reports no file info.'), '500 INTERNAL SERVER ERROR')
       unless $q->uploadInfo($filename);
-    my $type = $q->uploadInfo($filename)->{'Content-Type'};
+    $type = $q->uploadInfo($filename)->{'Content-Type'};
     ReportError(T('Browser reports no file type.'), '415 UNSUPPORTED MEDIA TYPE') unless $type;
-    my %allowed = map {$_ => 1} @UploadTypes;
-    ReportError(Ts('Files of type %s are not allowed.', $type), '415 UNSUPPORTED MEDIA TYPE')
-      if @UploadTypes and not $allowed{$type};
     local $/ = undef;	# Read complete files
-    eval { $_ = MIME::Base64::encode(<$file>) };
+    eval { require MIME::Base64; $_ = MIME::Base64::encode(<$file>) };
     $string = '#FILE ' . $type . "\n" . $_;
   } else {
     $string = AddComment($old, $comment) if $comment;
@@ -3473,6 +3470,9 @@ sub DoPost {
     $string .= "\n"  if ($string !~ /\n$/);
     $string =~ s/$FS//g;
   }
+  my %allowed = map {$_ => 1} @UploadTypes;
+  ReportError(Ts('Files of type %s are not allowed.', $type), '415 UNSUPPORTED MEDIA TYPE')
+    if @UploadTypes and not $allowed{$type};
   # Banned Content
   my $summary = GetSummary();
   if (not UserIsEditor()) {
