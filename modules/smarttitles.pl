@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: smarttitles.pl,v 1.4 2006/09/22 04:36:00 xterminus Exp $</p>';
+$ModulesDescription .= '<p>$Id: smarttitles.pl,v 1.5 2006/10/01 04:26:11 xterminus Exp $</p>';
 
 push(@MyRules, \&StripTitlesRule);
 
@@ -25,6 +25,15 @@ sub StripTitlesRule {
             return undef;
     }
     return undef;
+}
+
+push( @MyRules, \&StripSubTitlesRule );
+
+sub StripSubTitlesRule {
+    if ( m/\G#SUBTITLE[ \t]+(.*?)\s*\n+/cg ) {
+      return undef;
+    }
+  return undef;
 }
 
 *OldSmartGetHeader = *GetHeader;
@@ -37,9 +46,9 @@ sub NewSmartGetHeader {
 
     return $header unless $id;    
     OpenPage($id);
-    $Page{text} =~ m/\#TITLE[ \t]+(.*?)\s*\n+/;
-    my $smarttitle = $1;
-  
+ 
+    my ( $smarttitle ) = ( $Page{ text } =~ /\#TITLE[ \t]+(.*?)\s*\n+/ );    
+ 
     if ($smarttitle) {
         my $OldGetHtmlHeader = '>' . $title . '</a>';
         my $NewGetHtmlHeader = '>' . $smarttitle . '</a>';
@@ -49,5 +58,15 @@ sub NewSmartGetHeader {
         my $NewTitle = '<title>' . $SiteName . ': ' . $smarttitle . '</title>';
         $header =~ s/$OldTitle/$NewTitle/;
     }
+    
+    my ( $subtitle ) = ( $Page{ text } =~ m/\#SUBTITLE[ \t]+(.*?)\s*\n+/ );
+
+    if ( $subtitle ) {
+        my $OldSubGetHtmlHeader = '</a></h1>';
+        my $NewSubGetHtmlHeader =
+          '</a></h1><p class="subtitle">' . $subtitle . '</p>';
+        $header =~ s/$OldSubGetHtmlHeader/$NewSubGetHtmlHeader/g;
+    }
+
     return $header;
 }
