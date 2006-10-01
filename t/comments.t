@@ -18,47 +18,64 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 26;
+use Test::More tests => 35;
 clear_pages();
 
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
 
 # $EditAllowed
 
-xpath_test(get_page('Test'),
+$page = update_page('Test', 'Can edit page by default');
+test_page($page, 'Can edit page by default');
+xpath_test($page,
 	   '//a[@class="comment local"][@href="http://localhost/wiki.pl/Comments_on_Test"][text()="Comments on Test"]',
 	   '//a[@class="edit"][@href="http://localhost/wiki.pl?action=edit;id=Test"][text()="Edit this page"]');
-xpath_test(get_page('Comments_on_Test'),
+$page = update_page('Comments_on_Test', 'Can edit comment by default');
+test_page($page, 'Can edit comment by default');
+xpath_test($page,
 	   '//a[@class="original local"][@href="http://localhost/wiki.pl/Test"][text()="Test"]',
 	   '//a[@class="edit"][@href="http://localhost/wiki.pl?action=edit;id=Comments_on_Test"][text()="Edit this page"]',
 	   '//textarea[@name="aftertext"]');
 
 AppendStringToFile($ConfigFile, "\$EditAllowed = 0;\n");
 
-xpath_test(get_page('Test'),
+$page = update_page('Test', 'Cannot edit page with edit allowed eq 0');
+test_page($page, 'Can edit page by default');
+xpath_test($page,
 	   '//a[@class="password"][@href="http://localhost/wiki.pl?action=password"][text()="This page is read-only"]');
-$page = get_page('Comments_on_Test');
+$page = update_page('Comments_on_Test', 'Cannot edit comments with edit allowed eq 0');
+test_page($page, 'Can edit comment by default');
 xpath_test($page,
 	   '//a[@class="password"][@href="http://localhost/wiki.pl?action=password"][text()="This page is read-only"]');
 negative_xpath_test($page, '//textarea[@name="aftertext"]');
 
 AppendStringToFile($ConfigFile, "\$EditAllowed = 2;\n");
 
-xpath_test(get_page('Test'),
+$page = update_page('Test', 'Cannot edit page with edit allowed eq 2');
+test_page($page, 'Can edit page by default');
+xpath_test($page,
 	   '//a[@class="password"][@href="http://localhost/wiki.pl?action=password"][text()="This page is read-only"]');
-xpath_test(get_page('Comments_on_Test'),
+$page = update_page('Comments_on_Test', 'Can edit comments with edit allowed eq 2');
+test_page($page, 'Can edit comments with edit allowed eq 2');
+xpath_test($page,
 	   '//a[@class="original local"][@href="http://localhost/wiki.pl/Test"][text()="Test"]',
 	   '//a[@class="edit"][@href="http://localhost/wiki.pl?action=edit;id=Comments_on_Test"][text()="Edit this page"]',
 	   '//textarea[@name="aftertext"]');
 
 AppendStringToFile($ConfigFile, "\$EditAllowed = 3;\n");
 
-xpath_test(get_page('Test'),
+$page = update_page('Test', 'Cannot edit page with edit allowed = 3');
+test_page($page, 'Can edit page by default');
+xpath_test($page,
 	   '//a[@class="password"][@href="http://localhost/wiki.pl?action=password"][text()="This page is read-only"]');
-xpath_test(get_page('Comments_on_Test'),
+$page = update_page('Comments_on_Test', 'Can edit comments with edit allowed eq 3');
+test_page($page, 'Can edit comments with edit allowed eq 2');
+xpath_test($page,
 	   '//a[@class="original local"][@href="http://localhost/wiki.pl/Test"][text()="Test"]',
 	   '//a[@class="password"][@href="http://localhost/wiki.pl?action=password"][text()="This page is read-only"]',
 	   '//textarea[@name="aftertext"]');
+$page = update_page('Comments_on_Test', '', '', '', '', 'aftertext=Can%20add%20comments%20with%20edit%20allowed%20eq%203');
+test_page($page, 'Can add comments with edit allowed eq 3');
 
 # Other tests
 
