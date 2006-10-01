@@ -20,11 +20,13 @@
 # ie: http://search.cpan.org/CPAN/authors/id/C/CH/CHAMAS/MLDBM-2.01.tar.gz
 
 use MLDBM qw( DB_File Storable );
+$ModulesDescription .= '<p>$Id: backlinkage.pl,v 1.3 2006/10/01 04:26:11 xterminus Exp $</p>';
 
-$ModulesDescription .= '<p>$Id: backlinkage.pl,v 1.2 2006/09/18 17:52:59 xterminus Exp $</p>';
+my $debug=1;             # Set Text Output Verbosity when compiling
+my $backfile = $DataDir . '/backlinks.db';  # Where data lives
 
+# Stuff buildback action into admin menu.
 push(@MyAdminCode, \&BacklinksMenu);
-
 sub BacklinksMenu {
     my ($id, $menuref, $restref) = @_;
     push(@$menuref,
@@ -32,48 +34,71 @@ sub BacklinksMenu {
     );
 }
 
+# Build Database, called my oddmuse uri action
 $Action{buildback} = \&BuildBacklinkDatabase;
 sub BuildBacklinkDatabase {
-    my %backhash;
-
     print GetHttpHeader('text/plain');
-    my $backfile = $DataDir . '/backlinks.db';
     unlink $backfile; # Remove old database
-    tie %backhash, 'MLDBM', $backfile or die "Cannot open file $backfile $!\n";
+    tie my %backhash, 'MLDBM', $backfile or die "Cannot open file $backfile $!\n";
+    log1("Starting Database Store Process ... please wait\n\n");
 
     foreach my $name (AllPagesList()) {
+        log3("Opening $name ... \n");
         OpenPage($name);
-        my $page = $OpenPageName;
-        $page =~ s/_/ /g;
-        
-        my $count = 1; 
-        my @wikilinks = ($Page{text} =~ m/$LinkPattern/g);
-        print "Searching $name ... \n";
-        foreach my $links (@wikilinks) {
-                my ($class, $resolved, $title, $exists) = ResolveId($links);
-                if ($exists) {
-                        my $linkage = "link" . $count++;
-                        print "\tFound one, saving link to $resolved\n";
-                        my $tmp = $backhash{$name};     # Retrieve value
-                        $tmp->{$linkage} = $resolved;   # Now add hash to ref
-                        $backhash{$name} = $tmp;        # Store Value
-                }
+        my @backlinks =  BacklinkProcess($name,$Page{text});
+
+        my $hash = $backhash{$name};    # Declare Hash Ref
+        my $backlinkcount = 0;          # Used to create link key
+        foreach my $link (@backlinks) {
+            $backlinkcount++;
+            $hash->{'link' . $backlinkcount} = $link;
+        }
+        log2("$backlinkcount Links found in $name\n") if $backlinkcount;
+        $backhash{$name} = $hash;       # Store Hash data in HoH    
+    } 
+  
+    if ($debug >= 3) {
+        log4("Printing dump of USABLE Data we stored, sorted and neat\n");
+        for my $source (sort keys %backhash) {
+            for my $role (sort keys %{ $backhash{$source} }) {
+                log4("\n\$HoH\{\'$source\'\}\{\'$role\'\} = \"$backhash{$source}{$role}\"");
+            }
         }
     }
     untie %backhash;
-    print "Done. \n";
+    log1("Done. \n");
+
 }
 
+# Used to filter though page text to find links, ensure there is only 1 link per destination
+# per page, and then return an array of backlinks.
+sub BacklinkProcess {
+    my $name = $_[0];
+    my $text = $_[1];
+    my %seen = ();
+    my @backlinks;
+    my @wikilinks = ($text =~ m/$LinkPattern/g);
+
+    foreach my $links (@wikilinks) {
+        my ($class, $resolved, $title, $exists) = ResolveId($links);
+        if ($exists) {
+            push (@backlinks,$resolved) unless (($seen{$resolved}++) or ($resolved eq $name));
+        }
+    } 
+    return @backlinks;
+}
+
+# Function used by user to display backlinks in proper html.
 sub GetBackLink {
-    my (%BackHash, @backlinks, @unpopped, @alldone);
+    my (@backlinks, @unpopped, @alldone);
     my $id = $_[0];
-    if (!$BacklinkBanned) { $BacklinkBanned = "HomePage|ScratchPad"; }
+    
     use vars qw($BacklinkBanned);
-    my $backfile = $DataDir . '/backlinks.db';
-    tie %BackHash, 'MLDBM', $backfile, O_CREAT|O_RDWR, 0644 or die "Cannot open file $backfile $!\n";
+    $BacklinkBanned = "HomePage|ScratchPad" if !$BacklinkBanned;
+    tie my %backhash, 'MLDBM', $backfile, O_CREAT|O_RDWR, 0644 or die "Cannot open file $backfile $!\n";
 
     # Search database for matches
-    while ( ($source, $hashes) = each %BackHash ) {
+    while ( ($source, $hashes) = each %backhash ) {
         while ( ($key, $value) = each %$hashes ) {
             if ($id =~ /$value/) {
                 push (@backlinks, $source);
@@ -82,11 +107,8 @@ sub GetBackLink {
     }
     untie %backhash;
 
-    # Remove dupes
-    my @uniqed = grep !$seen{$_}++, @backlinks;
-
-    # Make backlinks back into links
-    foreach my $backlink (@uniqed) {
+    # Render backlinks into html links
+    foreach my $backlink (@backlinks) {
             my ($class, $resolved, $title, $exists) = ResolveId($backlink);
             if (($resolved ne $id) && ($resolved !~ /^($BacklinkBanned)$/)) {
                 push(@unpopped, ScriptLink(UrlEncode($resolved), $resolved, $class . ' backlink', undef, T('Internal Page: ' . $resolved)));
@@ -94,7 +116,7 @@ sub GetBackLink {
     }
     
     my $arraycount = @unpopped;
-    if ($arraycount eq 0) { return }
+    return if !$arraycount; # Dont bother with the rest if empty results
    
     # Pop and Push data to make it look good (no trailing commas) 
     my $temp = pop(@unpopped);
@@ -103,4 +125,31 @@ sub GetBackLink {
     }
     push(@alldone, $temp);  # And push last entry back in
     print $q->div({-class=>'docmeta'}, $q->h2(T('Pages that link to this page')), @alldone);
+}
+
+# Debug functions, all expect a string as input, and print it if the debug level is high enough.
+# This allows for increasing levels of verbosity for runtime commenting.
+
+sub log1 { # Very little info (only outputs if error - great for scripts)
+    return if (($debug < 1) or ($debug == 4));
+    my $msg = shift;
+    print "$msg";
+}
+
+sub log2 { # Info Messages
+    return if (($debug < 2) or ($debug == 4));
+    my $msg = shift;
+    print "$msg";
+}
+
+sub log3 { # More Info for the curious
+    return if (($debug < 3) or ($debug == 4));
+    my $msg = shift;
+    print "$msg";
+}
+
+sub log4 {  # Dump all sorts of garbage (usally data structures)
+    return if ($debug < 4);
+    my $msg = shift;
+    print "$msg";
 }
