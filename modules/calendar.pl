@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.52 2006/06/13 19:31:39 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.53 2006/10/04 15:12:10 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalAsTable $CalStartMonday);
 
@@ -40,6 +40,7 @@ sub NewCalendarGetHeader {
 
 sub Cal {
   my ($year, $mon, $unlink_year, $id) = @_; # example: 2004, 12
+  $id = FreeToNormal($id);
   my ($sec_now, $min_now, $hour_now, $mday_now, $mon_now, $year_now) = localtime($Now);
   $mon_now += 1;
   $mon = $mon_now unless $mon;
@@ -50,24 +51,27 @@ sub Cal {
   }
   my @pages = AllPagesList();
   my $cal = draw_month($mon, $year);
-  $cal =~ s|( {1,2}\d{1,2})\b|{
+  $cal =~ s{( {1,2}\d{1,2})\b}{{
     my $day = $1;
     my $date = sprintf("%d-%02d-%02d", $year, $mon, $day);
-    $date .= '_' . UrlEncode(FreeToNormal($id)) if $id;
+    my $re = "^$date";
+    $re .= ".*$id" if $id;
+    my $page = $date;
+    $page .= "_$id" if $id;
     my $class = '';
     $class .= ' today' if $day == $mday_now and $mon == $mon_now and $year == $year_now;
-    my @matches = grep(/^$date/, @pages);
+    my @matches = grep(/$re/, @pages);
     my $link;
     if (@matches == 0) { # not using GetEditLink because of $class
-      $link = ScriptLink('action=edit;id=' . $date, $day, 'edit' . $class);
+      $link = ScriptLink('action=edit;id=' . UrlEncode($page), $day, 'edit' . $class);
     } elsif (@matches == 1) { # not using GetPageLink because of $class
       $link = ScriptLink($matches[0], $day, 'local exact' . $class);
     } else {
-      $link = ScriptLink('action=collect;match=%5e' . $date, $day,  'local collection' . $class);
+      $link = ScriptLink('action=collect;match=' . UrlEncode($re), $day,  'local collection' . $class);
     }
     $link;
-  }|ge;
-  $cal =~ s|(\S+) (\d\d\d\d)|{
+  }}ge;
+  $cal =~ s{(\S+) (\d\d\d\d)}{{
     my ($month_text, $year_text) = ($1, $2);
     my $date = sprintf("%d-%02d", $year, $mon);
     if ($unlink_year) {
@@ -79,7 +83,7 @@ sub Cal {
 	       . ScriptLink('action=calendar;year=' . $year,
 			    $year_text,  'local collection year'));
     }
-  }|e;
+  }}e;
   return "<div class=\"cal month\"><pre>$cal</pre></div>";
 }
 
