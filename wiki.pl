@@ -183,7 +183,7 @@ $SisterSiteLogoUrl = 'file:///tmp/oddmuse/%s.png'; # URL format string for logos
 	    unlock => \&DoUnlock,	    password => \&DoPassword,
 	    index => \&DoIndex,		    admin => \&DoAdminPage,
 	    clear => \&DoClearCache,	    css => \&DoCss,
-	    contrib => \&DoContributors, );
+	    contrib => \&DoContributors,    journal => \&DoJournal, );
 @MyRules = (\&LinkRules); # don't set this variable, add to it!
 %RuleOrder = (\&LinkRules => 0);
 
@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.744 2006/10/01 15:45:47 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.745 2006/10/05 22:58:10 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -779,6 +779,12 @@ sub GetRaw {
   return $response->content if $response->is_success;
 }
 
+sub DoJournal {
+  print GetHeader(undef, T('Journal'));
+  PrintJournal(map { GetParam($_, ''); } qw(num regexp mode offset));
+  PrintFooter();
+}
+
 sub PrintJournal {
   return if $CollectingJournal; # avoid infinite loops
   local $CollectingJournal = 1;
@@ -796,7 +802,8 @@ sub PrintJournal {
     @pages = reverse @pages;
   }
   return unless $pages[$offset]; # not enough pages
-  my $max = ($#pages < $offset + $num) ? $#pages : ($offset + $num - 1);
+  my $more = ($#pages >= $offset + $num);
+  my $max = $more ? ($offset + $num - 1) : $#pages;
   @pages = @pages[$offset .. $max];
   if (@pages) {
     # Now save information required for saving the cache of the current page.
@@ -805,6 +812,8 @@ sub PrintJournal {
     print $q->start_div({-class=>'journal'}) . $q->comment("$FullUrl $num $regexp $mode $offset");
     PrintAllPages(1, 1, @pages);
     print $q->end_div();
+    print ScriptLink("action=journal;num=$num;regexp=$regexp;mode=$mode;offset=" . ($offset + $num),
+		     T('More...'), 'more') if $more;
   }
 }
 
@@ -817,8 +826,8 @@ sub PrintAllPages {
     my @languages = split(/,/, $Page{languages});
     next if $lang and @languages and not grep(/$lang/, @languages);
     my $title = NormalToFree($id);
-    print $q->start_div({-class=>'page'}) . $q->hr
-      . $q->h1($links ? GetPageLink($id, $title) : $q->a({-name=>$id},$title));
+    print $q->start_div({-class=>'page'}),
+      $q->h1($links ? GetPageLink($id, $title) : $q->a({-name=>$id},$title));
     PrintPageHtml();
     if ($comments and UserCanEdit($CommentsPrefix . $id, 0) and $id !~ /^$CommentsPrefix/) {
       print $q->p({-class=>'comment'},
