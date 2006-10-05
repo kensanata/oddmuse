@@ -183,7 +183,7 @@ $SisterSiteLogoUrl = 'file:///tmp/oddmuse/%s.png'; # URL format string for logos
 	    unlock => \&DoUnlock,	    password => \&DoPassword,
 	    index => \&DoIndex,		    admin => \&DoAdminPage,
 	    clear => \&DoClearCache,	    css => \&DoCss,
-	    contrib => \&DoContributors,    journal => \&DoJournal, );
+	    contrib => \&DoContributors,    more => \&DoJournal, );
 @MyRules = (\&LinkRules); # don't set this variable, add to it!
 %RuleOrder = (\&LinkRules => 0);
 
@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.745 2006/10/05 22:58:10 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.746 2006/10/05 23:16:10 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
