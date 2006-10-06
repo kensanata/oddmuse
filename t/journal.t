@@ -18,45 +18,65 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 26;
+use Test::More tests => 32;
 
 clear_pages();
 
-update_page('2003-06-13', "Freitag");
-update_page('2003-06-14', "Samstag");
-update_page('2003-06-15', "Sonntag");
+$today = CalcDay($Now);
+$tomorrow = CalcDay($Now + 24*60*60);
+$yesterday = CalcDay($Now - 24*60*60);
+$beforeyesterday = CalcDay($Now - 2*24*60*60);
 
-@Test = split('\n',<<'EOT');
-This is my journal
-2003-06-15
-Sonntag
-2003-06-14
-Samstag
-EOT
+update_page($yesterday, "Freitag");
+update_page($today, "Samstag");
+update_page($tomorrow, "Sonntag");
 
-test_page(update_page('Summary', "This is my journal:\n\n<journal 2>"), @Test);
-test_page(update_page('2003-01-01', "This is my journal -- recursive:\n\n<journal>"), @Test);
-push @Test, 'journal';
-test_page(update_page('2003-01-01', "This is my journal -- truly recursive:\n\n<journal>"), @Test);
+# auch die reihenfolge wird getestet
+@test = ('This is my journal', $today, 'Samstag', $tomorrow,
+	 'Sonntag', "$tomorrow.*$today");
 
-test_page(update_page('Summary', "Counting down:\n\n<journal 2>"),
-	  '2003-06-15(.|\n)*2003-06-14');
+# check that the limit is taken into account
+$page = update_page('Summary', "This is my journal:\n\n<journal 2>");
+test_page($page, @test);
+test_page_negative($page, $yesterday);
+# catch loops
+test_page(update_page($beforeyesterday, "This is my journal -- recursive:\n\n<journal>"), @test);
 
 test_page(update_page('Summary', "Counting up:\n\n<journal 3 reverse>"),
-	  '2003-01-01(.|\n)*2003-06-13(.|\n)*2003-06-14');
+	  "$beforeyesterday.*$yesterday.*$today");
 
+# now check all pages
 $page = update_page('Summary', "Counting down:\n\n<journal>");
-test_page($page, '2003-06-15(.|\n)*2003-06-14(.|\n)*2003-06-13(.|\n)*2003-01-01');
+test_page($page, "$tomorrow.*$today.*$yesterday.*$beforeyesterday");
+
+# make sure there are no empty pages being printed (this used to be a bug)
 negative_xpath_test($page, '//h1/a[not(text())]');
 
+# check reverse order
 test_page(update_page('Summary', "Counting up:\n\n<journal reverse>"),
-	  '2003-01-01(.|\n)*2003-06-13(.|\n)*2003-06-14(.|\n)*2003-06-15');
+	   "$beforeyesterday.*$yesterday.*$today.*$tomorrow");
 
-AppendStringToFile($ConfigFile, "\$JournalLimit = 2;\n\$ComentsPrefix = 'Talk about ';\n");
+# check past; use xpath because $today will also match "Last edited ... by ..."
+$page = update_page('Summary', "Only past pages:\n\n<journal past>");
+xpath_test($page, "//a[text()='$yesterday']",
+	   "//a[text()='$beforeyesterday']");
+negative_xpath_test($page, "//a[text()='$today']",
+		    "//a[text()='$tomorrow']");
 
+# check future
+$page = update_page('Summary', "Only future pages:\n\n<journal future>");
+xpath_test($page, "//a[text()='$tomorrow']");
+negative_xpath_test($page, "//a[text()='$today']",
+		    "//a[text()='$yesterday']",
+		    "//a[text()='$beforeyesterday']");
+
+# check $JournalLimit option and comments
+AppendStringToFile($ConfigFile, "\$JournalLimit = 2;\n\$CommentsPrefix = 'Talk about ';\n");
 $page = update_page('Summary', "Testing the limit of two:\n\n<journal>");
-test_page($page, '2003-06-15', '2003-06-14');
-test_page_negative($page, '2003-06-13', '2003-01-01');
+test_page($page, $tomorrow, "Talk_about_$tomorrow", $today, "Talk_about_$today");
+test_page_negative($page, $yesterday, $beforeyesterday);
 
+# $JournalLimit does not apply to admins
 test_page(get_page('action=browse id=Summary pwd=foo'),
-	  '2003-06-15(.|\n)*2003-06-14(.|\n)*2003-06-13(.|\n)*2003-01-01');
+	  "$tomorrow.*$today.*$yesterday.*$beforeyesterday");
+
