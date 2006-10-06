@@ -132,7 +132,7 @@ sub test_page {
 sub test_page_negative {
   my $page = shift;
   foreach my $str (@_) {
-    unlike($page, qr($str), name($str));
+    unlike($page, qr($str), name("not $str"));
   }
 }
 
@@ -149,8 +149,8 @@ sub xpath_do {
       my $nodelist;
       eval { $nodelist = $doc->findnodes($test) };
       if ($@) {
-	fail("$test: $@");
-      } elsif (ok(&$check($nodelist->size()), name($test))) {
+	fail(&$check(1) ? "$test: $@" : "not $test: $@");
+      } elsif (ok(&$check($nodelist->size()), name(&$check(1) ? $test : "not $test"))) {
 	$result .= $nodelist->string_value();
       } else {
 	$page =~ s/^.*?<body/<body/s;
