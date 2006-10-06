@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.8 2006/10/06 09:54:39 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.9 2006/10/06 09:57:29 as Exp $</p>';
 
 $Action{journal} = \&DoJournalRss;
 
@@ -32,6 +32,8 @@ sub DoJournalRss {
   my $num = GetParam('rsslimit', 10);
   my $match = GetParam('match', '^\d\d\d\d-\d\d-\d\d');
   my $reverse = GetParam('reverse', 0);
+  my $past = GetParam('past', 0);
+  my $future = GetParam('future', 0);
   my @pages = (grep(/$match/, AllPagesList()));
   if (defined &JournalSort) {
     @pages = sort JournalSort @pages;
@@ -41,18 +43,19 @@ sub DoJournalRss {
   if ($reverse) {
     @pages = reverse @pages;
   }
-  if ($mode eq 'reverse' or $mode eq 'future') {
+  # xor: if both future and reverse, do not reverse
+  if ($reverse xor $future) {
     @pages = reverse @pages;
   }
   my $today = CalcDay($Now);
-  if ($mode eq 'future') {
+  if ($future) {
     for (my $i = 0; $i < @pages; $i++) {
       if ($pages[$i] gt $today) {
 	@pages = @pages[$i..$#pages];
 	last;
       }
     }
-  } elsif ($mode eq 'past') {
+  } elsif ($past) {
     for (my $i = 0; $i < @pages; $i++) {
       if ($pages[$i] lt $today) {
 	@pages = @pages[$i..$#pages];
