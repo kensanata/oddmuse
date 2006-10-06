@@ -3,9 +3,6 @@
 	* t/test.pl (test_page_negative, xpath_do): Print a "not" prefix
 	for negative tests.
 
-	* modules/journal-rss.pl (DoJournalRss): Handle past and future
-	keywords.
-
 	* wiki.pl (%Action): Added more.
 	(DoJournal): New, calls PrintJournal.
 	(PrintJournal): Addd "More..." link if appropriate. No longer
