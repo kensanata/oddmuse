@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.7 2005/07/20 20:05:51 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.8 2006/10/06 09:54:39 as Exp $</p>';
 
 $Action{journal} = \&DoJournalRss;
 
@@ -40,6 +40,25 @@ sub DoJournalRss {
   }
   if ($reverse) {
     @pages = reverse @pages;
+  }
+  if ($mode eq 'reverse' or $mode eq 'future') {
+    @pages = reverse @pages;
+  }
+  my $today = CalcDay($Now);
+  if ($mode eq 'future') {
+    for (my $i = 0; $i < @pages; $i++) {
+      if ($pages[$i] gt $today) {
+	@pages = @pages[$i..$#pages];
+	last;
+      }
+    }
+  } elsif ($mode eq 'past') {
+    for (my $i = 0; $i < @pages; $i++) {
+      if ($pages[$i] lt $today) {
+	@pages = @pages[$i..$#pages];
+	last;
+      }
+    }
   }
   # Generate artifical rows in the list to pass to GetRcRss.  We need
   # to open every single page, because the meta-data ordinarily
