@@ -71,7 +71,7 @@ $WikiDescription $PrintedHeader %Locks $Fragment @Blocks @Flags
 %NearSite %NearSource %NearLinksUsed $NearInit $NearDir $NearMap
 $SisterSiteLogoUrl %NearSearch @KnownLocks $PermanentAnchorsInit
 $ModulesDescription %RuleOrder %Action $bol %RssInterwikiTranslate
-$RssInterwikiTranslateInit %Includes);
+$RssInterwikiTranslateInit %Includes $Today);
 
 # == Configuration ==
 
@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.747 2006/10/05 23:23:43 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.748 2006/10/07 12:29:06 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -452,7 +452,7 @@ sub ApplyRules {
 	}
 	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
 	pos = $oldpos;		# restore \G after call to ApplyRules
-      } elsif ($bol && m/\G(\&lt;journal(\s+(\d*))?(\s+"(.*?)")?(\s+(reverse))?(\s+search\s+(.*))?\&gt;[ \t]*\n?)/cgi) {
+      } elsif ($bol && m/\G(\&lt;journal(\s+(\d*))?(\s+"(.*?)")?(\s+(reverse|past|future))?(\s+search\s+(.*))?\&gt;[ \t]*\n?)/cgi) {
 	# <journal 10 "regexp"> includes 10 pages matching regexp
 	Clean(CloseHtmlEnvironments());
 	Dirty($1);
@@ -785,6 +785,8 @@ sub DoJournal {
   PrintFooter();
 }
 
+sub JournalSort { $b cmp $a }
+
 sub PrintJournal {
   return if $CollectingJournal; # avoid infinite loops
   local $CollectingJournal = 1;
@@ -792,14 +794,27 @@ sub PrintJournal {
   $regexp = '^\d\d\d\d-\d\d-\d\d' unless $regexp;
   $num = 10 unless $num;
   $offset = 0 unless $offset;
-  my @pages = (grep(/$regexp/, $search ? SearchTitleAndBody($search) : AllPagesList()));
-  if (defined &JournalSort) {
-    @pages = sort JournalSort @pages;
-  } else {
-    @pages = sort {$b cmp $a} @pages;
-  }
-  if ($mode eq 'reverse') {
+  my @pages = sort JournalSort (grep(/$regexp/, $search ? SearchTitleAndBody($search) : AllPagesList()));
+  if ($mode eq 'reverse' or $mode eq 'future') {
     @pages = reverse @pages;
+  }
+  $b = defined($Today) ? $Today : CalcDay($Now);
+  if ($mode eq 'future') {
+    for (my $i = 0; $i < @pages; $i++) {
+      $a = $pages[$i];
+      if (JournalSort() == -1) {
+	@pages = @pages[$i..$#pages];
+	last;
+      }
+    }
+  } elsif ($mode eq 'past') {
+    for (my $i = 0; $i < @pages; $i++) {
+      $a = $pages[$i];
+      if (JournalSort() == 1) {
+	@pages = @pages[$i..$#pages];
+	last;
+      }
+    }
   }
   return unless $pages[$offset]; # not enough pages
   my $more = ($#pages >= $offset + $num);
@@ -809,7 +824,7 @@ sub PrintJournal {
     # Now save information required for saving the cache of the current page.
     local %Page;
     local $OpenPageName='';
-    print $q->start_div({-class=>'journal'}) . $q->comment("$FullUrl $num $regexp $mode $offset");
+    print $q->start_div({-class=>'journal'});
     PrintAllPages(1, 1, @pages);
     print $q->end_div();
     print ScriptLink("action=more;num=$num;regexp=$regexp;mode=$mode;offset=" . ($offset + $num),
@@ -3551,12 +3566,13 @@ sub DoPost {
 
 sub GetSummary {
   my $text = GetParam('aftertext',  $Page{revision} > 0 ? '' : GetParam('text', ''));
-  $text = substr($text, 0, $SummaryDefaultLength) if $SummaryDefaultLength;
+  if ($SummaryDefaultLength and length($text) > $SummaryDefaultLength) {
+    $text = substr($text, 0, $SummaryDefaultLength);
+    $text =~ s/\s*\S*$/ . . ./;
+  }
   my $summary = GetParam('summary', '') || $text; # not GetParam('summary', $text) work because '' is defined
-  $summary =~ s/$FS//g;
-  $summary =~ s/[\r\n]+/ /g;
+  $summary =~ s/$FS|[\r\n]+/ /g; # remove linebreaks and separator characters
   $summary =~ s/\[$FullUrlPattern\s+(.*?)\]/$2/g; # fix common annoyance when copying text to summary
-  $summary =~ s/\s*\S*$/ . . ./ if $SummaryDefaultLength and length($text) > $SummaryDefaultLength;
   return UnquoteHtml($summary);
 }
 
@@ -3878,13 +3894,8 @@ sub DelayRequired {
 sub AddRecentVisitor {
   my $name = shift;
   my $value = $RecentVisitors{$name};
-  my @entries;
-  if ($value) {
-    @entries = @{$value};
-    unshift(@entries, $Now);
-  } else {
-    @entries = ($Now);
-  }
+  my @entries = ($Now);
+  push(@entries, @{$value}) if $value;
   $RecentVisitors{$name} = \@entries;
 }
 
