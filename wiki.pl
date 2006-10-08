@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.748 2006/10/07 12:29:06 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.749 2006/10/08 00:24:54 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2542,14 +2542,22 @@ sub DiffAddPrefix {
 
 # == Database functions ==
 
-sub ParseData {
-  my $data = shift;
+sub ParseData {         # called a lot during search, so it was optimized
+  my $data = shift;     # by eliminating non-trivial regular expressions
   my %result;
-  while ($data =~ /(\S+?): (.*?)(?=\n[^ \t]|\Z)/sg) {
-    my ($key, $value) = ($1, $2);
-    $value =~ s/\n\t/\n/g;
-    $result{$key} = $value;
+  my $end = index($data, ': ');
+  my $key = substr($data, 0, $end);
+  my $start = $end += 2; # skip ': '
+  while ($end = index($data, "\n", $end) + 1) { # include \n
+    next if substr($data, $end, 1) eq "\t";     # continue after \n\t
+    $result{$key} = substr($data, $start, $end - $start - 1); # strip last \n
+    $start = index($data, ': ', $end); # starting at $end begins the new key
+    last if $start == -1;
+    $key = substr($data, $end, $start - $end);
+    $end = $start += 2; # skip ': '
   }
+  $result{$key} .= substr($data, $end, -1); # strip last \n
+  foreach (keys %result) { $result{$_} =~ s/\n\t/\n/g };
   return %result;
 }
 
@@ -3646,17 +3654,12 @@ sub ReInit {
 }
 
 sub GetLanguages {
-  my ($text) = @_;
+  my $text = shift;
   my @result;
   my $count;
-  for my $lang (keys %Languages) {
-    $count = 0;
-    while ($text =~ /$Languages{$lang}/ig) {
-      if (++$count > $LanguageLimit) {
-	push(@result, $lang);
-	last;
-      }
-    }
+  for my $lang (sort keys %Languages) {
+    my @matches = $text =~ /$Languages{$lang}/ig;
+    push(@result, $lang) if $#matches >= $LanguageLimit;
   }
   return join(',', @result);
 }
@@ -3886,9 +3889,7 @@ sub DelayRequired {
   my $name = shift;
   my @entries = @{$RecentVisitors{$name}};
   my $ts = $entries[$SurgeProtectionViews - 1];
-  return 0 if not $ts;
-  return 0 if ($Now - $ts) > $SurgeProtectionTime;
-  return 1;
+  return ($Now - $ts) < $SurgeProtectionTime;
 }
 
 sub AddRecentVisitor {
