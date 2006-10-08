@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.749 2006/10/08 00:24:54 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.750 2006/10/08 12:57:58 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -889,7 +889,7 @@ sub RSS {
       if ($@) {
 	$str .= $q->p($q->strong(Ts('RSS parsing failed for %s', $q->a({-href=>$uri}, $uri)) . ': ' . $@));
       } else {
-	my ($counter, $interwiki);
+	my $interwiki;
 	if (@uris > 1) {
 	  RssInterwikiTranslateInit(); # not needed anywhere else, therefore not in InitVariables
 	  $interwiki = $rss->{channel}->{$wikins}->{interwiki};
