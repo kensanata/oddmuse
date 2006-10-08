@@ -1,3 +1,26 @@
+2006-10-08  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DelayRequired): Simplified.
+	(GetLanguages): Simplified.
+	(ParseData): Hand-written to optimize for speed. By getting rid of
+	some regular expressions used for parsing, the code is now more
+	than 10x faster. This is important for default searching, and for
+	indexed search using double-quotes.
+
+2006-10-07  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ApplyRules, PrintJournal): Add past and future
+	keywords.
+	(PrintJournal): Removed comment with journal metadata because the
+	attempt to write an AJAX "more" implementation for journals using
+	journal.js has been abandoned.
+	($Today): New option.
+	(JournalSort): Add one-liner explicitly so that we don't need to
+	test using defined later.
+	(GetSummary): Fix code that added " . . . " to summaries that are
+	being cut off.
+	(AddRecentVisitor): Simplified.
+
 2006-10-06  Alex Schroeder  <alex@gnu.org>
 
 	* t/test.pl (test_page_negative, xpath_do): Print a "not" prefix
