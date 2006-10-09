@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: load-lang.pl,v 1.2 2006/10/09 10:18:57 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: load-lang.pl,v 1.3 2006/10/09 10:34:34 as Exp $</p>';
 
 my %library= ('bg' => 'bulgarian-utf8.pl',
 	      'de' => 'german-utf8.pl',
@@ -47,6 +47,8 @@ sub LoadLanguage {
     $Lang{$qual} = $1 if (/^([-a-z]+)/);
   }
   my @prefs = sort { $b <=> $a } keys %Lang;
+  my $lang = GetParam('lang', '');
+  unshift (@prefs, $lang) if $lang;
   # my $html = "input: $requested_language"
   #   . "\nResult: " . join(', ', map { "$_ ($Lang{$_})" } @prefs);
   # print header, start_html, pre($html), end_html; exit;
@@ -66,3 +68,5 @@ sub LoadLanguage {
     }
   }
 }
+
+push(@MyInitVariables, \&LoadLanguage);
