@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: load-lang.pl,v 1.3 2006/10/09 10:34:34 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: load-lang.pl,v 1.4 2006/10/09 12:49:44 as Exp $</p>';
 
 my %library= ('bg' => 'bulgarian-utf8.pl',
 	      'de' => 'german-utf8.pl',
@@ -46,13 +46,14 @@ sub LoadLanguage {
     $qual = $1 if (/q=([0-9.]+)/);
     $Lang{$qual} = $1 if (/^([-a-z]+)/);
   }
-  my @prefs = sort { $b <=> $a } keys %Lang;
   my $lang = GetParam('lang', '');
-  unshift (@prefs, $lang) if $lang;
+  $Lang{2} = $lang if $lang;
+  my @prefs = sort { $b <=> $a } keys %Lang;
   # my $html = "input: $requested_language"
   #   . "\nResult: " . join(', ', map { "$_ ($Lang{$_})" } @prefs);
   # print header, start_html, pre($html), end_html; exit;
   foreach $_ (@prefs) {
+    last if $_ eq 'en'; # the default
     my $file = $library{$Lang{$_}};
     if (-r $file) {
       do $file;
