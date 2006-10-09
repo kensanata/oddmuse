@@ -6,6 +6,7 @@
 	some regular expressions used for parsing, the code is now more
 	than 10x faster. This is important for default searching, and for
 	indexed search using double-quotes.
+	(RSS): Eliminate unused variable $counter.
 
 2006-10-07  Alex Schroeder  <alex@gnu.org>
 
