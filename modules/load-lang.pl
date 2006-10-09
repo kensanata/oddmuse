@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: load-lang.pl,v 1.1 2006/05/09 20:37:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: load-lang.pl,v 1.2 2006/10/09 10:18:57 as Exp $</p>';
 
 my %library= ('bg' => 'bulgarian-utf8.pl',
 	      'de' => 'german-utf8.pl',
@@ -47,24 +47,22 @@ sub LoadLanguage {
     $Lang{$qual} = $1 if (/^([-a-z]+)/);
   }
   my @prefs = sort { $b <=> $a } keys %Lang;
-  my $html = "input: $requested_language"
-    . "\nResult: " . join(', ', map { "$_ ($Lang{$_})" } @prefs);
+  # my $html = "input: $requested_language"
+  #   . "\nResult: " . join(', ', map { "$_ ($Lang{$_})" } @prefs);
   # print header, start_html, pre($html), end_html; exit;
   foreach $_ (@prefs) {
     my $file = $library{$Lang{$_}};
     if (-r $file) {
       do $file;
+      do "$ConfigFile-$Lang{$_}" if -r "$ConfigFile-$Lang{$_}";
       my $f;
       if ($NamespaceCurrent) {
 	$f = "$DataDir/../README.$Lang{$_}";
       } else {
 	$f = "$DataDir/README.$Lang{$_}";
       }
-      $ReadMe = $f if -f $f;
+      $ReadMe = $f if -r $f;
       last;
     }
   }
 }
-
-push(@MyInitVariables, \&LoadLanguage);
-
