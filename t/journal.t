@@ -79,4 +79,3 @@ test_page_negative($page, $yesterday, $beforeyesterday);
 # $JournalLimit does not apply to admins
 test_page(get_page('action=browse id=Summary pwd=foo'),
 	  "$tomorrow.*$today.*$yesterday.*$beforeyesterday");
-
