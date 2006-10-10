@@ -1,3 +1,18 @@
+2006-10-10  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (InitVariables, ReInit): Reorganized initialization.
+	Functions get called in ReInit, and the various $*Init variables
+	were removed.
+	(RssInterwikiTranslateInit, NearInit, InterInit, AllPagesList):
+	Get rid of $*Init variables.
+	(AllPagesList): Move the reading of all existing pages inside the
+	lock to prevent race conditions.
+	(Save): Make sure to use the same timestamp for all variables.
+	(GetPermanentAnchor): Reread the file inside the lock to prevent
+	race conditions.
+
+	* t/test.pl (update_page): Fix reinitialization.
+
 2006-10-08  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DelayRequired): Simplified.

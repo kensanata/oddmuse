@@ -39,9 +39,7 @@ test_page(update_page('SandBox', 'This is another test.', 'second test'),
 
 ## Test RecentChanges
 
-test_page(get_page('action=rc'),
-	  'RecentChanges',
-	  'second test');
+test_page(get_page('action=rc'), 'RecentChanges', 'second test');
 
 ## Attempt to create InterMap page as normal user
 
