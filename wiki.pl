@@ -64,14 +64,13 @@ $JournalLimit);
 
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
-%NewCookie $InterInit $FootnoteNumber $OpenPageName @IndexList
-$IndexInit $Message $q $Now %RecentVisitors @HtmlStack $ReplaceForm
-%PermanentAnchors %PagePermanentAnchors %MyInc $CollectingJournal
-$WikiDescription $PrintedHeader %Locks $Fragment @Blocks @Flags
-%NearSite %NearSource %NearLinksUsed $NearInit $NearDir $NearMap
-$SisterSiteLogoUrl %NearSearch @KnownLocks $PermanentAnchorsInit
-$ModulesDescription %RuleOrder %Action $bol %RssInterwikiTranslate
-$RssInterwikiTranslateInit %Includes $Today);
+%NewCookie $FootnoteNumber $OpenPageName @IndexList $Message $q $Now
+%RecentVisitors @HtmlStack $ReplaceForm %PermanentAnchors
+%PagePermanentAnchors %MyInc $CollectingJournal $WikiDescription
+$PrintedHeader %Locks $Fragment @Blocks @Flags %NearSite %NearSource
+%NearLinksUsed $NearDir $NearMap $SisterSiteLogoUrl %NearSearch
+@KnownLocks $ModulesDescription %RuleOrder %Action $bol
+%RssInterwikiTranslate %Includes $Today);
 
 # == Configuration ==
 
@@ -110,9 +109,9 @@ $BracketWiki = 1;               # 1 = [WikiLink desc] uses a desc for the local 
 $NetworkFile = 1;               # 1 = file: is a valid protocol for URLs
 $AllNetworkFiles = 0;           # 1 = file:///foo is allowed -- the default allows only file://foo
 $PermanentAnchors = 1;	        # 1 = [::some text] defines permanent anchors (page aliases)
-$InterMap    = 'InterMap';      # name of the intermap page
-$NearMap     = 'NearMap';       # name of the nearmap page
-$RssInterwikiTranslate = 'RssInterwikiTranslate'; # name of RSS interwiki translation page
+$InterMap    = 'InterMap';      # name of the intermap page, '' = disable
+$NearMap     = 'NearMap';       # name of the nearmap page, '' = disable
+$RssInterwikiTranslate = 'RssInterwikiTranslate'; # name of RSS interwiki translation page, '' = disable
 $ENV{PATH}   = '/usr/bin';      # Path used to find 'diff'
 $UseDiff     = 1;	        # 1 = use diff
 $SurgeProtection      = 1;	# 1 = protect against leeches
@@ -272,16 +271,12 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.750 2006/10/08 12:57:58 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.751 2006/10/10 01:22:24 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
   $ScriptName = $q->url() unless defined $ScriptName; # URL used in links
   $FullUrl = $ScriptName unless $FullUrl; # URL used in forms
-  $Now = time;	       # Reset in case script is persistent
-  my $ts = (stat($IndexFile))[9]; # always stat for multiple server processes
-  ReInit() if $LastUpdate != $ts; # reinit if another process changed files
-  $LastUpdate = $ts;
   %Locks = ();
   @Blocks = ();
   @Flags = ();
@@ -302,9 +297,10 @@ sub InitVariables {    # Init global session variables for mod_perl!
 		       $StyleSheetPage => 1, $ConfigPage => 1) unless %PlainTextPages;
   delete $PlainTextPages{''}; # $ConfigPage and others might be empty.
   CreateDir($DataDir); # Create directory if it doesn't exist
-  AllPagesList();      # Ordinary pages, read from $IndexFile (saving it requires $DataDir)
-  NearInit();          # reads $NearMap and includes InterInit (requires $InterMap quoting)
-  PermanentAnchorsInit() if $PermanentAnchors; # reads $PermanentAnchorsFile
+  $Now = time;	       # Reset in case script is persistent
+  my $ts = (stat($IndexFile))[9]; # always stat for multiple server processes
+  ReInit() if not $ts or $LastUpdate != $ts; # reinit if another process changed files (requires $DataDir)
+  $LastUpdate = $ts;
   %NearLinksUsed = (); # List of links used during this request
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
@@ -314,6 +310,15 @@ sub InitVariables {    # Init global session variables for mod_perl!
     my $result = &$sub;
     $Message .= $q->p($@) if $@;
   }
+}
+
+sub ReInit {      # init everything we need if we want to link to stuff
+  my $id = shift; # when saving a page, what to do depends on the page being saved
+  AllPagesList() if not $id;
+  InterInit() if $InterMap and (not $id or $id eq $InterMap);
+  NearInit() if $NearMap and (not $id or $id eq $NearMap);
+  PermanentAnchorsInit() if $PermanentAnchors and not $id;
+  %RssInterwikiTranslate = () if not $id or $id eq $RssInterwikiTranslate; # special since rarely used
 }
 
 sub InitCookie {
@@ -891,7 +896,7 @@ sub RSS {
       } else {
 	my $interwiki;
 	if (@uris > 1) {
-	  RssInterwikiTranslateInit(); # not needed anywhere else, therefore not in InitVariables
+	  RssInterwikiTranslateInit(); # not needed anywhere else thus init only now and not in ReInit
 	  $interwiki = $rss->{channel}->{$wikins}->{interwiki};
 	  $interwiki =~ s/^\s+//; # when RDF is used, sometimes whitespace remains,
 	  $interwiki =~ s/\s+$//; # which breaks the test for an existing $interwiki below
@@ -1025,8 +1030,7 @@ sub GetRssFile {
 }
 
 sub RssInterwikiTranslateInit {
-  return if $RssInterwikiTranslateInit;
-  $RssInterwikiTranslateInit = 1; # set to 0 when $RssInterwikiTranslate is saved
+  return unless $RssInterwikiTranslate;
   %RssInterwikiTranslate = ();
   foreach (split(/\n/, GetPageContent($RssInterwikiTranslate))) {
     if (/^ ([^ ]+)[ \t]+([^ ]+)$/) {
@@ -1036,9 +1040,6 @@ sub RssInterwikiTranslateInit {
 }
 
 sub NearInit {
-  InterInit();
-  return if $NearInit;
-  $NearInit = 1; # set to 0 when $NearMap is saved
   %NearSite = ();
   %NearSearch = ();
   %NearSource = ();
@@ -1094,9 +1095,7 @@ sub GetInterLink {
 }
 
 sub InterInit {
-  return if $InterInit;
   %InterSite = ();
-  $InterInit = 1; # set to 0 when $InterMap is saved
   foreach (split(/\n/, GetPageContent($InterMap))) {
     if (/^ ($InterSitePattern)[ \t]+([^ ]+)$/) {
       $InterSite{$1} = $2;
@@ -3203,34 +3202,29 @@ sub PrintPage {
 }
 
 sub AllPagesList {
-  my ($rawIndex, $refresh, $status);
-  $refresh = GetParam('refresh', 0);
-  if ($IndexInit && !$refresh) {
-    return @IndexList;
-  }
-  if ((!$refresh) && (-f $IndexFile)) {
-    ($status, $rawIndex) = ReadFile($IndexFile);
+  my $refresh = GetParam('refresh', 0);
+  return @IndexList if @IndexList and not $refresh;
+  if (not $refresh and -f $IndexFile) {
+    my ($status, $rawIndex) = ReadFile($IndexFile); # not fatal
     if ($status) {
       %IndexHash = split(/\s+/, $rawIndex);
       @IndexList = sort(keys %IndexHash);
-      $IndexInit = 1; # set to 0 when a new page is saved
       return @IndexList;
     }
     # If open fails just refresh the index
   }
   @IndexList = ();
   %IndexHash = ();
+  # Try to write out the list for future runs.  If file exists and cannot be changed, error!
+  my $locked = RequestLockDir('index', undef, undef, -f $IndexFile);
   foreach (glob("$PageDir/*/*.pg $PageDir/*/.*.pg")) { # find .dotfiles, too
     next unless m|/.*/(.+)\.pg$|;
     my $id = $1;
     push(@IndexList, $id);
     $IndexHash{$id} = 1;
   }
-  $IndexInit = 1; # set to 0 when a new page is saved
-  # Try to write out the list for future runs.  If file exists and cannot be changed, error!
-  RequestLockDir('index', undef, undef, -f $IndexFile) or return @IndexList;
-  WriteStringToFile($IndexFile, join(' ', %IndexHash));
-  ReleaseLockDir('index');
+  WriteStringToFile($IndexFile, join(' ', %IndexHash)) if $locked;
+  ReleaseLockDir('index') if $locked;
   return @IndexList;
 }
 
@@ -3614,11 +3608,9 @@ sub Save { # call within lock, with opened page
     return;
   }
   ReInit($id);
-  if ($revision == 1) {
-    $IndexHash{$id} = 1;
-    @IndexList = sort(keys %IndexHash);
-  }
-  utime time, time, $IndexFile; # touch index file
+  my $ts = time;
+  utime $ts, $ts, $IndexFile; # touch index file
+  $LastUpdate = $Now = $ts;
   SaveKeepFile(); # deletes blocks, flags, diff-major, and diff-minor, and sets keep-ts
   ExpireKeepFiles();
   $Page{ts} = $Now;
@@ -3641,16 +3633,10 @@ sub Save { # call within lock, with opened page
     WriteStringToFile(GetLockedPageFile($id), 'LockOnCreation');
   }
   WriteRcLog($id, $summary, $minor, $revision, $user, $host, $languages, GetCluster($new));
-  $LastUpdate = $Now; # for mod_perl
-}
-
-sub ReInit {
-  my $id = shift;
-  $IndexInit = 0 if not $id;
-  $NearInit = 0 if not $id or $id eq $NearMap;
-  $InterInit = 0 if not $id or $id eq $InterMap;
-  $RssInterwikiTranslateInit = 0 if not $id or $id eq $RssInterwikiTranslate;
-  $PermanentAnchorsInit = 0 if not $id;
+  if ($revision == 1) {
+    $IndexHash{$id} = 1;
+    @IndexList = sort(keys %IndexHash);
+  }
 }
 
 sub GetLanguages {
@@ -3926,9 +3912,7 @@ sub WriteRecentVisitors {
 # == Permanent Anchors ==
 
 sub PermanentAnchorsInit {
-  return if $PermanentAnchorsInit;
   %PagePermanentAnchors = %PermanentAnchors = ();
-  $PermanentAnchorsInit = 1; # set to 0 when $PermanentAnchorsFile is saved
   my ($status, $data) = ReadFile($PermanentAnchorsFile);
   return unless $status; # not fatal
   %PermanentAnchors = split(/\n| |$FS/,$data); # FIXME: $FS was used in 1.417 and earlier
@@ -3949,8 +3933,11 @@ sub GetPermanentAnchor {
   if ($class eq 'alias' and $title ne $OpenPageName) {
     return '[' . Ts('anchor first defined here: %s',
 		    ScriptLink(UrlEncode($resolved), $text, 'alias')) . ']';
-  } elsif ($PermanentAnchors{$id} ne $OpenPageName
-	   and RequestLockDir('permanentanchors')) { # not fatal
+  } elsif ($PermanentAnchors{$id} ne $OpenPageName    # not fatal
+	   and RequestLockDir('permanentanchors')) {
+    # Somebody may have added a permanent anchor in the mean time. Comparing $LastUpdate to the
+    # $IndexFile mtime does not work for subsecond changes and updates are rare, so just read! 
+    PermanentAnchorsInit();
     $PermanentAnchors{$id} = $OpenPageName;
     WritePermanentAnchors();
     ReleaseLockDir('permanentanchors');
