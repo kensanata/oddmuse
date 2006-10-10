@@ -23,8 +23,6 @@ use Test::More tests => 59;
 clear_pages();
 
 update_page('InterMap', " OddMuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n PlanetMath http://planetmath.org/encyclopedia/%s.html", 'required', 0, 1);
-$InterInit = 0;
-InitVariables();
 
 # non links
 
