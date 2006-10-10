@@ -1,5 +1,10 @@
 2006-10-10  Alex Schroeder  <alex@gnu.org>
 
+	* modules/load-lang.pl (LoadLanguage): Change controlling
+	parameter from 'lang' to 'interface' because the interface
+	language should be independent from the filter language for search
+	and recent changes.
+
 	* wiki.pl (InitVariables, ReInit): Reorganized initialization.
 	Functions get called in ReInit, and the various $*Init variables
 	were removed.
@@ -12,6 +17,14 @@
 	race conditions.
 
 	* t/test.pl (update_page): Fix reinitialization.
+
+2006-10-09  Alex Schroeder  <alex@gnu.org>
+
+	* modules/load-lang.pl (LoadLanguage): Load language-specific
+	config file if it exists.
+	(LoadLanguage): Consider en the default language (no translation
+	file and no extra config file to be loaded), use lang paramater if
+	available (already stored in the cookie).
 
 2006-10-08  Alex Schroeder  <alex@gnu.org>
 
