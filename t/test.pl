@@ -59,10 +59,12 @@ sub update_page {
   my $rest = join(' ', @rest);
   $redirect = `perl wiki.pl 'Save=1' 'title=$id' 'summary=$summary' 'recent_edit=$minor' 'text=$text' 'pwd=$pwd' $rest`;
   $output = `perl wiki.pl action=browse id=$id`;
-  # just in case a new page got created or NearMap or InterMap
-  $IndexHash{$id} = 1;
-  @IndexList = sort(keys %IndexHash);
-  ReInit($id); # if $id eq $InterMap, we need it to be in the $IndexHash before running ReInit()
+  if ($output =~ /^Status: 302 /) {
+    # just in case a new page got created or NearMap or InterMap
+    $IndexHash{$id} = 1;
+    @IndexList = sort(keys %IndexHash);
+    ReInit($id); # if $id eq $InterMap, we need it to be in the $IndexHash before running ReInit()
+  }
   return $output;
 }
 
