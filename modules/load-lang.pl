@@ -16,7 +16,9 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: load-lang.pl,v 1.4 2006/10/09 12:49:44 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: load-lang.pl,v 1.5 2006/10/10 10:07:11 as Exp $</p>';
+
+$CookieParameters{interface} = '';
 
 my %library= ('bg' => 'bulgarian-utf8.pl',
 	      'de' => 'german-utf8.pl',
@@ -46,7 +48,7 @@ sub LoadLanguage {
     $qual = $1 if (/q=([0-9.]+)/);
     $Lang{$qual} = $1 if (/^([-a-z]+)/);
   }
-  my $lang = GetParam('lang', '');
+  my $lang = GetParam('interface', '');
   $Lang{2} = $lang if $lang;
   my @prefs = sort { $b <=> $a } keys %Lang;
   # my $html = "input: $requested_language"
