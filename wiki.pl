@@ -271,7 +271,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.751 2006/10/10 01:22:24 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.752 2006/10/10 10:36:01 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2175,7 +2175,7 @@ sub GetHttpHeader {
 
 sub CookieData {
   my ($changed, $visible, %params);
-  foreach my $key (keys %CookieParameters) { # map { UrlEncode($_) } 
+  foreach my $key (keys %CookieParameters) { # map { UrlEncode($_) }
     my $default = $CookieParameters{$key};
     my $value = GetParam($key, $default); # values are URL encoded
     $params{$key} = $value  if $value ne $default;
@@ -2863,7 +2863,7 @@ sub TimeToW3 { # Complete date plus hours and minutes: YYYY-MM-DDThh:mmTZD (eg 1
   return sprintf('%4d-%02d-%02dT%02d:%02dZ', $year+1900, $mon+1, $mday, $hour, $min);
 }
 
-sub TimeToRFC822 { 
+sub TimeToRFC822 {
   my ($sec, $min, $hour, $mday, $mon, $year, $wday) = gmtime(shift); # Sat, 07 Sep 2002 00:00:01 GMT
   return sprintf("%s, %02d %s %04d %02d:%02d:%02d GMT", qw(Sun Mon Tue Wed Thu Fri Sat)[$wday], $mday,
 		 qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec)[$mon], $year+1900, $hour, $min, $sec);
@@ -3936,7 +3936,7 @@ sub GetPermanentAnchor {
   } elsif ($PermanentAnchors{$id} ne $OpenPageName    # not fatal
 	   and RequestLockDir('permanentanchors')) {
     # Somebody may have added a permanent anchor in the mean time. Comparing $LastUpdate to the
-    # $IndexFile mtime does not work for subsecond changes and updates are rare, so just read! 
+    # $IndexFile mtime does not work for subsecond changes and updates are rare, so just read!
     PermanentAnchorsInit();
     $PermanentAnchors{$id} = $OpenPageName;
     WritePermanentAnchors();
