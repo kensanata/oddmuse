@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: load-lang.pl,v 1.5 2006/10/10 10:07:11 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: load-lang.pl,v 1.6 2006/10/10 10:23:58 as Exp $</p>';
 
 $CookieParameters{interface} = '';
 
@@ -51,11 +51,13 @@ sub LoadLanguage {
   my $lang = GetParam('interface', '');
   $Lang{2} = $lang if $lang;
   my @prefs = sort { $b <=> $a } keys %Lang;
-  # my $html = "input: $requested_language"
-  #   . "\nResult: " . join(', ', map { "$_ ($Lang{$_})" } @prefs);
-  # print header, start_html, pre($html), end_html; exit;
+  # print ($q->header . $q->start_html
+  #      . $q->pre("input: $requested_language\n"
+  #                . "Result: "
+  #                . join(', ', map { "$_ ($Lang{$_})" } @prefs))
+  #      . $q->end_html) && exit if GetParam('debug', '');
   foreach $_ (@prefs) {
-    last if $_ eq 'en'; # the default
+    last if $Lang{$_} eq 'en'; # the default
     my $file = $library{$Lang{$_}};
     if (-r $file) {
       do $file;
