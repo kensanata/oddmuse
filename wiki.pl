@@ -271,7 +271,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.753 2006/10/11 11:14:44 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.754 2006/10/11 12:23:20 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -832,8 +832,8 @@ sub PrintJournal {
     print $q->start_div({-class=>'journal'});
     PrintAllPages(1, 1, @pages);
     print $q->end_div();
-    print ScriptLink("action=more;num=$num;regexp=$regexp;search=$search;mode=$mode;offset=" . ($offset + $num),
-		     T('More...'), 'more') if $more;
+    print ScriptLink("action=more;num=$num;regexp=$regexp;search=$search;mode=$mode;offset="
+		     . ($offset + $num), T('More...'), 'more') if $more;
   }
 }
 
