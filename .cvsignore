@@ -1,0 +1,9 @@
+.DS_Store
+oddmuse-1.*
+oddmuse-inkscape-1.*
+*.patch
+*.patch.gz
+*.diff
+*.diff.gz
+Mac/Source/CGI-Executables/current
+Mac/Source/CGI-Executables/Modules
