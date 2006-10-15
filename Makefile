@@ -6,11 +6,14 @@ UPLOADVERSION=oddmuse-inkscape-$(shell sed -n -e 's/^.*\$$Id: wikiupload,v \([0-
 TRANSLATIONS=$(wildcard modules/translations/[a-z]*-utf8.pl$)
 MODULES=$(wildcard modules/*.pl)
 INKSCAPE=GPL $(wildcard inkscape/*.py inkscape/*.inx inkscape/*.sh)
+PACKAGEMAKER=/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker
+PWD=$(shell pwd)
 
 dist: $(VERSION).tar.gz
 
 upload: $(VERSION).tar.gz $(VERSION).tar.gz.sig \
-	$(UPLOADVERSION).tar.gz $(UPLOADVERSION).tar.gz.sig
+	$(VERSION).dmg $(VERSION).dmg.sig \
+	$(UPLOADVERSION).tar.gz $(UPLOADVERSION).tar.gz.sig \
 	for f in $^; do \
 		curl -T $$f ftp://savannah.gnu.org/incoming/savannah/oddmuse/; \
 	done
@@ -22,17 +25,30 @@ $(VERSION).tar.gz:
 	rm -rf $(VERSION)
 	mkdir $(VERSION)
 	cp README FDL GPL ChangeLog wiki.pl $(TRANSLATIONS) $(MODULES) $(VERSION)
-	tar czf $(VERSION).tar.gz $(VERSION)
+	tar czf $@ $(VERSION)
 
 $(UPLOADVERSION).tar.gz: $(INKSCAPE)
 	rm -rf $(UPLOADVERSION)
 	mkdir $(UPLOADVERSION)
 	cp $^ $(UPLOADVERSION)
 	cp wikiupload $(UPLOADVERSION)/oddmuse-upload.py
-	tar czf $(UPLOADVERSION).tar.gz $(UPLOADVERSION)
+	tar czf $@ $(UPLOADVERSION)
 
-%.tar.gz.sig: %.tar.gz
+%.sig: %
 	gpg --sign -b $<
+
+$(VERSION).pkg: wiki.pl
+	if test -x $(PACKAGEMAKER); then \
+		sudo cp wiki.pl Mac/Source/CGI-Executables; \
+		$(PACKAGEMAKER) -build \
+			-p $(PWD)/$@ \
+			-i $(PWD)/Mac/Info.plist \
+			-d $(PWD)/Mac/Description.plist \
+			-f $(PWD)/Mac/Source; \
+	fi;
+
+$(VERSION).dmg: $(VERSION).pkg
+	hdiutil create -srcfolder $< -fs HFS+ -volname "Oddmuse" $@
 
 # 1. update-translations (will fetch input from the wiki, and updates files)
 # 2. check changes, cvs commit
