@@ -24,7 +24,7 @@
 # If you are running a multilingual site, then you should explicitly
 # load this file from your language-specific config file.
 
-$ModulesDescription .= '<p>$Id: national-days-de.pl,v 1.7 2006/03/11 20:05:48 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: national-days-de.pl,v 1.8 2006/10/16 10:26:17 as Exp $</p>';
 
 %SpecialDays = (
   '1-1' => 'Haiti: Erlangung der Unabhängigkeit 1804, Kuba: Jahrestag der Revolution 1959, Sudan: Erlangung der Unabhängigkeit 1956',
@@ -59,6 +59,7 @@ $ModulesDescription .= '<p>$Id: national-days-de.pl,v 1.7 2006/03/11 20:05:48 as
   '4-16' => 'Dänemark: im Ausland der Geburtstag der regierenden Königin Margrethe II. (1940)',
   '4-17' => 'Syrien: Abzug der letzten französischen Mandatstruppen 1946',
   '4-18' => 'Simbabwe: Erlangung der Unabhängigkeit',
+  '4-19' => 'Jahrestag der Papstwahl (Benedikt XVI.)',
   '4-26' => 'Tansania: Jahrestag der Vereinigung von Tanganjika und Sansibar 1964',
   '4-27' => 'Afghanistan: Tag der Revolution, Sierra Leone: Erlangung der Unabhängigkeit 1961, Südafrika: Tag der ersten freien Wahlen 1994, Togo: Erlangung der Unabhängigkeit 1960',
   '4-30' => 'Niederlande: Königinnentag',
@@ -141,7 +142,7 @@ $ModulesDescription .= '<p>$Id: national-days-de.pl,v 1.7 2006/03/11 20:05:48 as
   '10-10' => 'Fidschi: Erlangung der Unabhängigkeit 1970, Taiwan: Tag der republikanischen Revolte gegen die Mandschu-Dynastie 1911 bzw. Tag der Staatsgründung',
   '10-12' => 'Spanien: Gedenktag an die Entdeckung Amerikas 1492, Äquatorial Guinea: Erlangung der Unabhängigkeit 1968',
   '10-14' => 'Jemen: Revolutionstag (Süd-Jemen) 1963',
-  '10-16' => 'Vatikanstaat: Jahrestag der Wahl des aktuellen Papstes (Johannes Paul II.)',
+# '10-16' => 'Vatikanstaat: Jahrestag der Wahl des letzte nPapstes (Johannes Paul II.)',
   '10-2' => 'Guinea: Erklärung der Unabhängigkeit 1958',
   '10-21' => 'Somalia: Nationalfeiertag',
   '10-23' => 'Ungarn: Gedenktag für den Volksaufstand 1956 sowie Erklärung der Unabhängigkeit 1989',
