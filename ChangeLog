@@ -1,3 +1,9 @@
+2006-10-11  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoJournal): Pass search parameter along to
+	PrintJournal.
+	(PrintJournal): Pass search parameter along to "More..." link.
+
 2006-10-10  Alex Schroeder  <alex@gnu.org>
 
 	* modules/load-lang.pl (LoadLanguage): Change controlling
