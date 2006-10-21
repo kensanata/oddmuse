@@ -5,5 +5,4 @@ oddmuse-inkscape-1.*
 *.patch.gz
 *.diff
 *.diff.gz
-Mac/Source/CGI-Executables/current
-Mac/Source/CGI-Executables/Modules
+Mac/pkg
