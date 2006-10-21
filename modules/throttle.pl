@@ -21,13 +21,12 @@
 # $InstanceThrottleLimit by keeping track of the process ids in
 # $InstanceThrottleDir
 
-$ModulesDescription .= '<p>$Id: throttle.pl,v 1.5 2006/09/07 17:44:02 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: throttle.pl,v 1.6 2006/10/21 18:51:40 as Exp $</p>';
 
 use vars qw($InstanceThrottleDir $InstanceThrottleLimit);
 
 $InstanceThrottleDir = $DataDir."/pids"; # directory for pid files
 $InstanceThrottleLimit = 2; # maximum number of parallel processes
-
 
 *OldDoSurgeProtection = *DoSurgeProtection;
 *DoSurgeProtection = *NewDoSurgeProtection;
@@ -75,6 +74,6 @@ sub CreatePidFile {
 
 sub RemovePidFile {
   my $file = "$InstanceThrottleDir/$$";
-  unlink $file or
-    ReportError(Ts('Failed to remove %s', $file),'500 INTERNAL SERVER ERROR');
+  # not fatal
+  unlink $file;
 }
