@@ -13,7 +13,7 @@ dist: $(VERSION).tar.gz
 
 upload: $(VERSION).tar.gz $(VERSION).tar.gz.sig \
 	$(VERSION).dmg $(VERSION).dmg.sig \
-	$(UPLOADVERSION).tar.gz $(UPLOADVERSION).tar.gz.sig \
+	$(UPLOADVERSION).tar.gz $(UPLOADVERSION).tar.gz.sig
 	for f in $^; do \
 		curl -T $$f ftp://savannah.gnu.org/incoming/savannah/oddmuse/; \
 	done
@@ -37,14 +37,35 @@ $(UPLOADVERSION).tar.gz: $(INKSCAPE)
 %.sig: %
 	gpg --sign -b $<
 
+# Make sure to copy the files into a new directory so that the CVS
+#subdirectory are not inlcuded in the .pkg. And fix permissions. Skip
+#if we can't run PackageMaker. All cp commands need sudo because on a
+#second run the directories will already exist.
 $(VERSION).pkg: wiki.pl
 	if test -x $(PACKAGEMAKER); then \
-		sudo cp wiki.pl Mac/Source/CGI-Executables; \
+		mkdir -p Mac/pkg/CGI-Executables; \
+		sudo cp wiki.pl Mac/pkg/CGI-Executables/current; \
+		sudo cp Mac/wiki Mac/pkg/CGI-Executables/wiki; \
+		sudo chown -R root:admin Mac/pkg/CGI-Executables; \
+		sudo chmod 644 Mac/pkg/CGI-Executables/current; \
+		sudo chmod 755 Mac/pkg/CGI-Executables/wiki; \
+		mkdir -p Mac/pkg/Oddmuse; \
+		sudo cp Mac/config Mac/pkg/Oddmuse; \
+		sudo chown www:admin Mac/pkg/Oddmuse; \
+		sudo chmod 775 Mac/pkg/Oddmuse; \
+		sudo chown root:admin Mac/pkg/Oddmuse/config; \
+		sudo chmod 664 Mac/pkg/Oddmuse/config; \
+		mkdir -p Mac/pkg/Oddmuse/modules; \
+		sudo cp modules/mac.pl Mac/pkg/Oddmuse/modules; \
+		sudo cp modules/creole.pl Mac/pkg/Oddmuse/modules; \
+		sudo chown -R root:admin Mac/pkg/Oddmuse/modules; \
+		sudo chmod 775 Mac/pkg/Oddmuse/modules; \
+		sudo chmod 644 Mac/pkg/Oddmuse/modules/*; \
 		$(PACKAGEMAKER) -build \
 			-p $(PWD)/$@ \
 			-i $(PWD)/Mac/Info.plist \
 			-d $(PWD)/Mac/Description.plist \
-			-f $(PWD)/Mac/Source; \
+			-f $(PWD)/Mac/pkg; \
 	fi;
 
 $(VERSION).dmg: $(VERSION).pkg
