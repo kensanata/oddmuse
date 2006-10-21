@@ -198,11 +198,12 @@ sub DoWikiRequest {
 
 sub ReportError { # fatal!
   my ($errmsg, $status, $log, @html) = @_;
+  $q = new CGI unless $q; # make sure we can report errors before InitRequest
   print GetHttpHeader('text/html', 'nocache', $status);
   print $q->start_html, $q->h2(QuoteHtml($errmsg)), @html, $q->end_html;
-  map { ReleaseLockDir($_); } keys %Locks;
   WriteStringToFile("$TempDir/error", $q->start_html . $q->h1("$status $errmsg")
 		    . $q->Dump . $q->end_html) if $log;
+  map { ReleaseLockDir($_); } keys %Locks;
   exit; # Don't return non-zero so that FCGI does not warn about abnormal exit
 }
 
@@ -271,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.754 2006/10/11 12:23:20 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.755 2006/10/21 21:35:35 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
