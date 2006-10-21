@@ -1,5 +1,8 @@
 2006-10-21  Alex Schroeder  <alex@gnu.org>
 
+	* Makefile: Added rule to build package and disk-image for Mac OSX
+	releases.
+
 	* wiki.pl (ReportError): Write lock before releasing the locks and
 	define $q if it is not defined so we can report errors before
 	InitRequest, as suggested by Péter Szabó.
