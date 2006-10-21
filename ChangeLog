@@ -1,5 +1,9 @@
 2006-10-21  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (ReportError): Write lock before releasing the locks and
+	define $q if it is not defined so we can report errors before
+	InitRequest, as suggested by Péter Szabó.
+
 	* modules/throttle.pl (RemovePidFile): Removed error message if
 	the pid file can no longer be found.
 
