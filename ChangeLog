@@ -1,3 +1,16 @@
+2006-10-21  Alex Schroeder  <alex@gnu.org>
+
+	* modules/throttle.pl (RemovePidFile): Removed error message if
+	the pid file can no longer be found.
+
+2006-10-15  Alex Schroeder  <alex@gnu.org>
+
+	* Makefile: Added rules to make .pkg and .dmg, changed some rules
+	to refer to $@.
+	(PACKAGEMAKER): New.
+	(PWD): New.
+	(upload): Add .dmg and .dmg.sig.
+	
 2006-10-11  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoJournal): Pass search parameter along to
