@@ -92,8 +92,7 @@ $(VERSION).tgz: wiki.pl modules/creole.pl Mac/config Mac/wiki
 	sudo chown -R 0:0 Slack/var Slack/install
 	sudo chgrp 99 Slack/var/www/cgi-bin/wiki
 	sudo chmod 644 Slack/var/www/cgi-bin/current
-	sudo chgrp -R 99 Slack/var/www/wiki/modules
-	sudo chmod 775 Slack/var/www/wiki/modules
+	sudo chmod 775 Slack/var/www/cgi-bin/wiki
 	cd Slack && tar czf ../$@ var install
 
 # 1. update-translations (will fetch input from the wiki, and updates files)
