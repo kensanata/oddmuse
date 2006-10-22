@@ -1,7 +1,8 @@
 # The Makefile is only for developpers wanting to prepare the tarball.
 # Make sure the CVS keywords for the sed command on the next line are not expanded.
 
-VERSION=oddmuse-$(shell sed -n -e 's/^.*\$$Id: wiki\.pl,v \([0-9.]*\).*$$/\1/p' wiki.pl)
+VERSION_NO=$(shell sed -n -e 's/^.*\$$Id: wiki\.pl,v \([0-9.]*\).*$$/\1/p' wiki.pl)
+VERSION=oddmuse-$(VERSION_NO)
 UPLOADVERSION=oddmuse-inkscape-$(shell sed -n -e 's/^.*\$$Id: wikiupload,v \([0-9.]*\).*$$/\1/p' wikiupload)
 TRANSLATIONS=$(wildcard modules/translations/[a-z]*-utf8.pl$)
 MODULES=$(wildcard modules/*.pl)
@@ -13,6 +14,7 @@ dist: $(VERSION).tar.gz
 
 upload: $(VERSION).tar.gz $(VERSION).tar.gz.sig \
 	$(VERSION).dmg $(VERSION).dmg.sig \
+	$(VERSION).tgz $(VERSION).tgz.sig \
 	$(UPLOADVERSION).tar.gz $(UPLOADVERSION).tar.gz.sig
 	for f in $^; do \
 		curl -T $$f ftp://savannah.gnu.org/incoming/savannah/oddmuse/; \
@@ -37,11 +39,13 @@ $(UPLOADVERSION).tar.gz: $(INKSCAPE)
 %.sig: %
 	gpg --sign -b $<
 
+# OSX: .pkg is the package, and .dmg is the disk image.
+
 # Make sure to copy the files into a new directory so that the CVS
 #subdirectory are not inlcuded in the .pkg. And fix permissions. Skip
 #if we can't run PackageMaker. All cp commands need sudo because on a
 #second run the directories will already exist.
-$(VERSION).pkg: wiki.pl
+$(VERSION).pkg: wiki.pl modules/creole.pl Mac/config Mac/wiki
 	if test -x $(PACKAGEMAKER); then \
 		mkdir -p Mac/pkg/CGI-Executables; \
 		sudo cp wiki.pl Mac/pkg/CGI-Executables/current; \
@@ -70,6 +74,27 @@ $(VERSION).pkg: wiki.pl
 
 $(VERSION).dmg: $(VERSION).pkg
 	hdiutil create -srcfolder $< -fs HFS+ -volname "Oddmuse" $@
+
+# Slackware: .tgz are .tar.gz files used by the installer
+# Slackware webserver is run by nobody uid/gid 99/99.
+
+$(VERSION).tgz: wiki.pl modules/creole.pl Mac/config Mac/wiki
+	sudo rm -rf Slack/var Slack/install
+	mkdir -p Slack/var/www/wiki/modules
+	mkdir -p Slack/var/www/cgi-bin
+	mkdir -p Slack/install
+	sudo cp Mac/config Slack/var/www/wiki
+	sudo cp Mac/wiki Slack/var/www/cgi-bin
+	sudo cp README Slack/var/www/wiki
+	sudo cp modules/creole.pl Slack/var/www/wiki/modules
+	sudo cp wiki.pl Slack/var/www/cgi-bin/current
+	sudo sed -e 's/VERSION/$(VERSION_NO)/' < Slack/slack-desc > Slack/install/slack-desc
+	sudo chown -R 0:0 Slack/var Slack/install
+	sudo chgrp 99 Slack/var/www/cgi-bin/wiki
+	sudo chmod 644 Slack/var/www/cgi-bin/current
+	sudo chgrp -R 99 Slack/var/www/wiki/modules
+	sudo chmod 775 Slack/var/www/wiki/modules
+	cd Slack && tar czf ../$@ var install
 
 # 1. update-translations (will fetch input from the wiki, and updates files)
 # 2. check changes, cvs commit
