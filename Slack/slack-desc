@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.  Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in.  You must
+# make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':'.
+
+    |-----handy-ruler------------------------------------------------------|
+oddmuse: Oddmuse VERSION
+oddmuse: 
+oddmuse: Oddmuse is the name of the wiki engine being further developed by
+oddmuse: Alex Schröder. The wiki engine consists of one big Perl script.
+oddmuse: When installed on a web host, the script generates a wiki -- a
+oddmuse: web site where users can read pages, change pages, add new pages,
+oddmuse: and delete old pages. All pages are accessed via the script.
+oddmuse: 
+oddmuse: This package will also install the Creole markup extension.
+oddmuse: 
+oddmuse: Package created by Alex Schröder
