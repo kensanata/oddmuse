@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.24 2006/10/25 11:23:44 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.25 2006/10/25 11:30:31 as Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -156,11 +156,11 @@ sub StaticHtml {
 <head>
 <title>$SiteName: $id</title>
 <link type="text/css" rel="stylesheet" href="static.css" />
-<meta http-equiv="refresh" content="5; url=$target">
+<meta http-equiv="refresh" content="0; url=$target">
 <meta http-equiv="content-type" content="text/html; charset=$HttpCharset">
 </head>
 <body>
-<p>Redirected to <a href="$target">$id</a>.</p>
+<p>Redirected to <a href="$target">$1</a>.</p>
 </body>
 </html>
 EOT
