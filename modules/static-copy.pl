@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.22 2006/08/13 23:10:49 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.23 2006/10/25 11:16:24 as Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -145,10 +145,29 @@ sub StaticFile {
 }
 
 sub StaticHtml {
-  my $id = shift;
+  my $id = shift; # assume open page
+  # redirect
+  if (($FreeLinks and $Page{text} =~ /^\#REDIRECT\s+\[\[$FreeLinkPattern\]\]/)
+      or ($WikiLinks and $Page{text} =~ /^\#REDIRECT\s+$LinkPattern/)) {
+    my $target = StaticFileName($id);
+    print F <<"EOT";
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>$SiteName: $id</title>
+<link type="text/css" rel="stylesheet" href="static.css" />
+<meta http-equiv="refresh" content="5; url=$target">
+<meta http-equiv="content-type" content="text/html; charset=$HttpCharset">
+</head>
+<body>
+<p>Redirected to <a href="$target">$id</a>.</p>
+</body>
+</html>
+EOT
+    return;
+  }
   print F <<"EOT";
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-st\
-rict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
 <title>$SiteName: $id</title>
