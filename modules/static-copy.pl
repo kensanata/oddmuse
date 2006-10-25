@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.23 2006/10/25 11:16:24 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.24 2006/10/25 11:23:44 as Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -149,7 +149,7 @@ sub StaticHtml {
   # redirect
   if (($FreeLinks and $Page{text} =~ /^\#REDIRECT\s+\[\[$FreeLinkPattern\]\]/)
       or ($WikiLinks and $Page{text} =~ /^\#REDIRECT\s+$LinkPattern/)) {
-    my $target = StaticFileName($id);
+    my $target = StaticFileName($1);
     print F <<"EOT";
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
