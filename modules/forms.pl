@@ -16,23 +16,26 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: forms.pl,v 1.4 2004/12/05 03:24:39 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: forms.pl,v 1.5 2006/10/29 08:24:03 as Exp $</p>';
 
 push(@MyRules, \&FormsRule);
 
 sub FormsRule {
-  if ((-f GetLockedPageFile($OpenPageName))
-      and (/\G(\&lt;form.*?\&lt;\/form\&gt;)/sgc)) {
-    my $form = $1;
-    my $oldpos = pos;
-    Clean(CloseHtmlEnvironments());
-    Dirty($form);
-    $form =~ s/\%([a-z]+)\%/GetParam($1)/ge;
-    $form =~ s/\$([a-z]+)\$/$q->span({-class=>'param'}, GetParam($1))
-      . $q->input({-type=>'hidden', -name=>$1, -value=>GetParam($1)})/ge;
-    print UnquoteHtml($form);
-    pos = $oldpos;
-    return AddHtmlEnvironment('p');
+  if (-f GetLockedPageFile($OpenPageName)) {
+    if (/\G(\&lt;(form|div).*?\&lt;\/form\&gt;)/cgs) {
+      my $form = $1;
+      my $oldpos = pos;
+      Clean(CloseHtmlEnvironments());
+      Dirty($form);
+      $form =~ s/\%([a-z]+)\%/GetParam($1)/ge;
+      $form =~ s/\$([a-z]+)\$/$q->span({-class=>'param'}, GetParam($1))
+	. $q->input({-type=>'hidden', -name=>$1, -value=>GetParam($1)})/ge;
+      print UnquoteHtml($form);
+      pos = $oldpos;
+      return AddHtmlEnvironment('p');
+    } elsif (m/\G\&lt;html\&gt;(.*?)\&lt;\/html\&gt;/cgs) {
+      return UnquoteHtml($1);
+    }
   }
   return undef;
 }
