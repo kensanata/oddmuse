@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: sabifoo.pl,v 1.4 2006/10/31 15:15:05 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: sabifoo.pl,v 1.5 2006/10/31 15:16:56 as Exp $</p>';
 
 push(@MyInitVariables, \&SabiFooInit);
 
@@ -30,7 +30,7 @@ sub SabiFooInit {
       $title = $1;
       $text = $2;
     }
-    # base summary on the stuff added this time only
+    # base summary on the text added this time only, without title
     my $summary = $text;
     $summary = substr($summary, 0, $SummaryDefaultLength);
     $summary =~ s/\s*\S*$/ . . ./;
