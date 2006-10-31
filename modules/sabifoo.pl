@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: sabifoo.pl,v 1.2 2006/10/31 11:46:13 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: sabifoo.pl,v 1.3 2006/10/31 15:07:26 as Exp $</p>';
 
 push(@MyInitVariables, \&SabiFooInit);
 
@@ -34,10 +34,14 @@ sub SabiFooInit {
     if ($IndexHash{$title}) {
       $text = GetPageContent($title) . "\n\n" . $text;
     }
+    my $summary = $text;
+    $summary = substr($summary, 0, $SummaryDefaultLength);
+    $summary =~ s/\s*\S*$/ . . ./;
     my $username = GetParam('sabifoo_author');
     $username =~ s/@.*//;
     SetParam('title', $title);
     SetParam('text', $text);
     SetParam('username', $username);
+    SetParam('summary', $summary);
   }
 }
