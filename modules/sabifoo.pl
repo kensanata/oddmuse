@@ -16,21 +16,21 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: sabifoo.pl,v 1.1 2006/10/31 10:59:09 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: sabifoo.pl,v 1.2 2006/10/31 11:46:13 as Exp $</p>';
 
 push(@MyInitVariables, \&SabiFooInit);
 
 sub SabiFooInit {
-  my $text = GetParam('sabifoo_message', '');
+  my $text = UnquoteHtml(GetParam('sabifoo_message', ''));
   if ($text) {
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = gmtime();
     my $today = sprintf("%02d-%02d-%02d", $year + 1900, $mon + 1, $mday);
-    my $title = $today;
+    my $title = '';
     if ($text =~ m/^\s*==\s*(.*?)\s*==\s*(.*)/) {
-      ($title, $text) = ($1, $2);
-      $title = $today . ' ' . $title;
+      $title = $1;
+      $text = $2;
     }
-    $title = FreeToNormal($title);
+    $title = FreeToNormal($today . ' ' . $title);
     if ($IndexHash{$title}) {
       $text = GetPageContent($title) . "\n\n" . $text;
     }
