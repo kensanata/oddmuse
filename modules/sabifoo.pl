@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: sabifoo.pl,v 1.6 2006/10/31 15:18:54 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: sabifoo.pl,v 1.7 2006/10/31 15:43:15 as Exp $</p>';
 
 push(@MyInitVariables, \&SabiFooInit);
 
@@ -32,7 +32,7 @@ sub SabiFooInit {
     }
     # base summary on the text added this time only, without title
     my $summary = $text;
-    íf (length($summary) > $SummaryDefaultLength) {
+    if (length($summary) > $SummaryDefaultLength) {
       $summary = substr($summary, 0, $SummaryDefaultLength);
       $summary =~ s/\s*\S*$/ . . ./;
     }
@@ -46,6 +46,6 @@ sub SabiFooInit {
     SetParam('title', $title);
     SetParam('text', $text);
     SetParam('username', $username);
-    SetParam('summary', $summary);
+    SetParam('summary', 'x' . $summary);
   }
 }
