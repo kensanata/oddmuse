@@ -1,6 +1,7 @@
 # UTF-8 encoded Brazilian Portuguese language file for use with Oddmuse
 #
 # Copyright (c) 2003  Marcelo Toledo <rw@locked.org>.
+# Copyright (c) 2006 Hélio Nunes <dedalu@dedalu.art.br>.
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
@@ -15,9 +16,9 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-# This translation was last checked for Oddmuse version 1.195.
+# This translation was last checked for Oddmuse version 1.753.
 #
-$ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.5 2006/11/03 21:25:02 dedalu Exp $</p>';
+$ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.6 2006/11/03 21:55:17 dedalu Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Leitura não permitida: usuário, ip ou rede bloqueados.
