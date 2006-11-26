@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 53;
+use Test::More tests => 59;
 clear_pages();
 
 add_module('creole.pl');
@@ -140,4 +140,16 @@ http://www.wikicreole.org/.
 //a[@class="image outside"][@href="http://example.com/"][img[@class="url outside"][@src="http://example.com/"]]
 [[http://example.com/|{{http://mu.org/}}]]
 //a[@class="image outside"][@href="http://example.com/"][img[@class="url outside"][@src="http://mu.org/"]]
+{{pic|a description}}
+//a[@class="image"][@href="http://localhost/test.pl/pic"][img[@class="upload"][@src="http://localhost/test.pl/download/pic"][@alt="a description"]]
+[[link|{{pic|a description}}]]
+//a[@class="image"][@href="http://localhost/test.pl/link"][img[@class="upload"][@src="http://localhost/test.pl/download/pic"][@alt="a description"]]
+[[link|{{http://example.com/|a description}}]]
+//a[@class="image"][@href="http://localhost/test.pl/link"][img[@class="url outside"][@src="http://example.com/"][@alt="a description"]]
+[[http://example.com/|{{pic|a description}}]]
+//a[@class="image outside"][@href="http://example.com/"][img[@class="upload"][@src="http://localhost/test.pl/download/pic"][@alt="a description"]]
+{{http://example.com/|a description}}
+//a[@class="image outside"][@href="http://example.com/"][img[@class="url outside"][@src="http://example.com/"][@alt="a description"]]
+[[http://example.com/|{{http://mu.org/|a description}}]]
+//a[@class="image outside"][@href="http://example.com/"][img[@class="url outside"][@src="http://mu.org/"][@alt="a description"]]
 EOT
