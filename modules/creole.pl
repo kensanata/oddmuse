@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.14 2006/09/12 13:31:21 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.15 2006/11/26 11:03:20 as Exp $</p>';
 
 push(@MyRules, \&CreoleRule);
 # [[link|{{Image:foo}}]] conflicts with default link rule
@@ -100,44 +100,46 @@ sub CreoleRule {
     return $q->code($1);
   }
   # {{pic}}
-  elsif (m/\G(\{\{$FreeLinkPattern\}\})/cgos) {
+  elsif (m/\G(\{\{$FreeLinkPattern(\|.+)?\}\})/cgos) {
     Dirty($1);
-    return GetDownloadLink($2, 1);
+    my $alt = substr($3,1); # FIXME: inlining this gives "substr outside of string" error
+    return GetDownloadLink($2, 1, undef, $alt);
   }
   # {{url}}
-  elsif (m/\G\{\{$FullUrlPattern\}\}/cgos) {
+  elsif (m/\G\{\{$FullUrlPattern(\|.+)?\}\}/cgos) {
     return $q->a({-href=>$1,
 		  -class=>'image outside'},
 		 $q->img({-src=>$1,
+			  -alt=>substr($2,1),
 			  -class=>'url outside'}));
   }
   # link: [[link|{{pic}}]]
-  elsif (m/\G\[\[$FreeLinkPattern\|\{\{$FreeLinkPattern\}\}\]\]/cgos) {
+  elsif (m/\G\[\[$FreeLinkPattern\|\{\{$FreeLinkPattern(\|.+)?\}\}\]\]/cgos) {
     return ScriptLink($1, $q->img({-src=>GetDownloadLink($2, 2),
-				   -alt=>NormalToFree($1),
+				   -alt=>substr($3,1)||NormalToFree($1),
 				   -class=>'upload'}),
 		      'image');
   }
   # link: [[link|{{url}}]]
-  elsif (m/\G\[\[$FreeLinkPattern\|\{\{$FullUrlPattern\}\}\]\]/cgos) {
+  elsif (m/\G\[\[$FreeLinkPattern\|\{\{$FullUrlPattern(\|.+)?\}\}\]\]/cgos) {
     return ScriptLink($1, $q->img({-src=>$2,
 				   -class=>'url outside',
-				   -alt=>$1}),
+				   -alt=>substr($3,1)||$1}),
 		      'image');
   }
   # link: [[url|{{pic}}]]
-  elsif (m/\G\[\[$FullUrlPattern\|\{\{$FreeLinkPattern\}\}\]\]/cgos) {
+  elsif (m/\G\[\[$FullUrlPattern\|\{\{$FreeLinkPattern(\|.+)?\}\}\]\]/cgos) {
     return $q->a({-href=>$1, -class=>'image outside'},
 		 $q->img({-src=>GetDownloadLink($2, 2),
 			  -class=>'upload',
-			  -alt=>$2}));
+			  -alt=>substr($3,1)||$2}));
   }
   # link: [[url|{{url}}]]
-  elsif (m/\G\[\[$FullUrlPattern\|\{\{$FullUrlPattern\}\}\]\]/cgos) {
+  elsif (m/\G\[\[$FullUrlPattern\|\{\{$FullUrlPattern(\|.+)?\}\}\]\]/cgos) {
     return $q->a({-href=>$1, -class=>'image outside'},
 		 $q->img({-src=>$2,
 			  -class=>'url outside',
-			  -alt=>$2}));
+			  -alt=>substr($3,1)}));
   }
   # link: [[url]] and [[url|text]]
   elsif (m/\G\[\[$FullUrlPattern(\|([^]]+))?\]\]/cgos) {
