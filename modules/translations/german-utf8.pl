@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.18 2006/10/30 11:19:17 ingob Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.19 2006/11/27 19:53:35 lude Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
@@ -157,7 +157,7 @@ Rolling back changes
 The two revisions are the same.
 Es gibt keinen Unterschied zwischen den beiden Versionen.
 Editing not allowed for %s.
-Das bearbeiten von %s ist nicht erlaubt.
+Das Bearbeiten von %s ist nicht erlaubt.
 Rollback to %s
 Rückgängig gemacht auf den Stand vom %s
 %s rolled back
@@ -865,7 +865,7 @@ Inhaltsverzeichnis
 This page is a translation of %s. 
 Diese Seite ist eine Übersetzung von %s. 
 The translation is up to date.
-Die Übersetztung ist aktuell.
+Die Übersetzung ist aktuell.
 The translation is outdated.
 Die Übersetzung ist veraltet.
 The page does not exist.
