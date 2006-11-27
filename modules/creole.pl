@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.15 2006/11/26 11:03:20 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.16 2006/11/27 20:59:51 as Exp $</p>';
 
 push(@MyRules, \&CreoleRule);
 # [[link|{{Image:foo}}]] conflicts with default link rule
@@ -25,24 +25,9 @@ $RuleOrder{\&CreoleRule} = -10;
 sub CreoleRule {
   # horizontal line
   # ----
-  # (must come before unnumbered lists using dashes)
-  if ($bol && m/\G(\s*\n)*----+[ \t]*\n?/cg or m/\G\s*\n----+[ \t]*\n?/cg ) {
+  if ($bol && m/\G(\s*\n)*[ \t]*----+[ \t]*\n?/cg or m/\G\s*\n----+[ \t]*\n?/cg ) {
     return CloseHtmlEnvironments() . $q->hr()
       . AddHtmlEnvironment('p');
-  }
-  # # number list
-  elsif ($bol && m/\G\s*(#+)[ \t]*/cg
-      or InElement('li') && m/\G\s*\n[ \t]*(#+)[ \t]*/cg) {
-    return CloseHtmlEnvironmentUntil('li')
-      . OpenHtmlEnvironment('ol', length($1))
-      . AddHtmlEnvironment('li');
-  }
-  # - and * bullet list
-  elsif ($bol && m/\G\s*([*-])[ \t]*/cg
-      or InElement('li') && m/\G\s*\n[ \t]*([*-]+)[ \t]*/cg) {
-    return CloseHtmlEnvironmentUntil('li')
-      . OpenHtmlEnvironment('ul', length($1))
-      . AddHtmlEnvironment('li');
   }
   # //**bold italic//**bold
   elsif (defined $HtmlStack[0] && defined $HtmlStack[1]
@@ -59,7 +44,7 @@ sub CreoleRule {
     return CloseHtmlEnvironment() . CloseHtmlEnvironment();
   }
   # **bold**
-  elsif (m/\G\*\*/cg) {
+  elsif (m/\G\*\*/cg and not ($bol && InElement('li'))) {
     return (defined $HtmlStack[0] && $HtmlStack[0] eq 'strong')
       ? CloseHtmlEnvironment() : AddHtmlEnvironment('strong');
   }
@@ -67,6 +52,20 @@ sub CreoleRule {
   elsif (m/\G\/\//cg) {
     return (defined $HtmlStack[0] && $HtmlStack[0] eq 'em')
       ? CloseHtmlEnvironment() : AddHtmlEnvironment('em');
+  }
+  # # number list
+  elsif ($bol && m/\G\s*(#)[ \t]*/cg
+      or InElement('li') && m/\G\s*\n[ \t]*(#+)[ \t]*/cg) {
+    return CloseHtmlEnvironmentUntil('li')
+      . OpenHtmlEnvironment('ol', length($1))
+      . AddHtmlEnvironment('li');
+  }
+  # * bullet list
+  elsif ($bol && m/\G\s*(\*)[ \t]*/cg
+      or InElement('li') && m/\G\s*\n[ \t]*(\*+)[ \t]*/cg) {
+    return CloseHtmlEnvironmentUntil('li')
+      . OpenHtmlEnvironment('ul', length($1))
+      . AddHtmlEnvironment('li');
   }
   # == Level 1 (Largest)
   # === Level 2
