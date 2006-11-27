@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 59;
+use Test::More tests => 57;
 clear_pages();
 
 add_module('creole.pl');
@@ -34,24 +34,20 @@ run_tests(split('\n',<<'EOT'));
 <ol><li>one</li><li>two</li></ol>
 # one\n\n# two
 <ol><li>one</li><li>two</li></ol>
-- one
-<ul><li>one</li></ul>
-  - one
-<ul><li>one</li></ul>
   *  one
 <ul><li>one</li></ul>
-# one\n- two
-<ol><li>one</li></ol><ul><li>two</li></ul>
-  #  one\n  - two
-<ol><li>one</li></ol><ul><li>two</li></ul>
-- Item 1\n- Item 2\n-- Item 2.1\n-- Item 2.2
-<ul><li>Item 1</li><li>Item 2<ul><li>Item 2.1</li><li>Item 2.2</li></ul></li></ul>
 * one\n** two\n*** three\n* four
+<ul><li>one<ul><li>two<ul><li>three</li></ul></li></ul></li><li>four</li></ul>
+ * one\n ** two\n *** three\n * four
 <ul><li>one<ul><li>two<ul><li>three</li></ul></li></ul></li><li>four</li></ul>
 this is **bold**
 this is <strong>bold</strong>
 **bold**
-<ul><li>*bold<strong></strong></li></ul>
+<strong>bold</strong>
+*item\n**item**
+<ul><li>item<ul><li>item<strong></strong></li></ul></li></ul>
+*item\n* **item**
+<ul><li>item</li><li><strong>item</strong></li></ul>
 //italic//
 <em>italic</em>
 this is **//bold italic**//italic
@@ -95,7 +91,7 @@ foo <code>bar</code>
 -----  
 <hr />
   -----
-<ul><li>----</li></ul>
+<hr />
 foo -----
 foo -----
 ----\nfoo
