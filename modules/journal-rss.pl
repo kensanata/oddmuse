@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.11 2006/12/12 14:53:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.12 2006/12/12 15:17:59 as Exp $</p>';
 
 $Action{journal} = \&DoJournalRss;
 
@@ -64,6 +64,7 @@ sub DoJournalRss {
 	and not GetParam('ts', 0)
 	and $id =~ /^(\d\d\d\d)-(\d\d)-(\d\d)/) {
       require POSIX;
+      local $ENV{TZ} = ''; # force GMT for mktime!
       $Page{ts} = POSIX::mktime(0, 0, 0, $3, $2 - 1, $1 - 1900);
     }
     unshift (@fullrc, join($FS, $Page{ts}, $id, $Page{minor}, $Page{summary}, $Page{host},
