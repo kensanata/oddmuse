@@ -1,3 +1,12 @@
+2006-12-12  Alex Schroeder  <alex@gnu.org>
+
+	* modules/journal-rss.pl (DoJournalRss): In the default case, use
+	the date extracted from the page title to compute the pubDate we
+	will report. This makes more sense when the wiki feed is
+	incorporated into a planet, where all pages are sorted by pubDate.
+	Last edit date will look strange. You can still override it using
+	ts=1.
+
 2006-11-27  Alex Schroeder  <alex@gnu.org>
 
 	* modules/creole.pl (CreoleRule): Improved heuristics allowing
