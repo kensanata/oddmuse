@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.10 2006/10/06 14:53:54 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.11 2006/12/12 14:53:41 as Exp $</p>';
 
 $Action{journal} = \&DoJournalRss;
 
@@ -60,6 +60,12 @@ sub DoJournalRss {
     local %Page;
     local $OpenPageName='';
     OpenPage($id);
+    if (GetParam('match', '^\d\d\d\d-\d\d-\d\d') eq '^\d\d\d\d-\d\d-\d\d'
+	and not GetParam('ts', 0)
+	and $id =~ /^(\d\d\d\d)-(\d\d)-(\d\d)/) {
+      require POSIX;
+      $Page{ts} = POSIX::mktime(0, 0, 0, $3, $2 - 1, $1 - 1900);
+    }
     unshift (@fullrc, join($FS, $Page{ts}, $id, $Page{minor}, $Page{summary}, $Page{host},
 			   $Page{username}, $Page{revision}, $Page{languages},
 			   GetCluster($Page{text})));
