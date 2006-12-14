@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.53 2006/10/04 15:12:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.54 2006/12/14 12:13:14 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalAsTable $CalStartMonday);
 
@@ -123,13 +123,15 @@ sub CalendarRule {
     return AddHtmlEnvironment('p');
   } elsif (/\G(month:(\d\d\d\d)-(\d\d))/gc) {
     my $oldpos = pos;
+    Clean(CloseHtmlEnvironments());
     Dirty($1);
-    print CloseHtmlEnvironments() . Cal($2, $3);
+    print Cal($2, $3);
     pos = $oldpos;
     return AddHtmlEnvironment('p');
   } elsif (/\G(month:([+-]\d\d?))/gc
 	  or /\G(\[\[month:([+-]\d\d?) $FreeLinkPattern\]\])/gc) {
     my $oldpos = pos;
+    Clean(CloseHtmlEnvironments());
     Dirty($1);
     my $delta = $2;
     my $id = $3;
@@ -138,7 +140,7 @@ sub CalendarRule {
     $mon += 1 + $delta;
     while ($mon < 1) { $year -= 1; $mon += 12; };
     while ($mon > 12) { $year += 1; $mon -= 12; };
-    print CloseHtmlEnvironments() . Cal($year, $mon, undef, $id);
+    print Cal($year, $mon, undef, $id);
     pos = $oldpos;
     return AddHtmlEnvironment('p');
   }
