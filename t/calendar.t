@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 6;
+use Test::More tests => 12;
 clear_pages();
 
 my ($sec, $min, $hour, $mday, $mon, $year) = localtime($Now);
@@ -32,6 +32,18 @@ $oday += 2 if $oday < 1;
 my $otherday = sprintf("%d-%02d-%02d", $year, $mon, $oday);
 
 add_module('calendar.pl');
+
+test_page(update_page("with_cal", "zulu\n\ncalendar:2006\n\nwarrior\n"),
+	  '<p>zulu</p><p class="nav">',
+	  '</pre></div><p>warrior</p></div><div class="footer">');
+
+test_page(update_page("with_cal", "zulu\n\nmonth:2006-09\n\nwarrior\n"),
+	  '<p>zulu</p><div class="cal month"><pre>',
+	  '</pre></div><p>warrior</p></div><div class="footer">');
+
+test_page(update_page("with_cal", "zulu\n\nmonth:+0\n\nwarrior\n"),
+	  '<p>zulu</p><div class="cal month"><pre>',
+	  '</pre></div><p>warrior</p></div><div class="footer">');
 
 xpath_test(get_page('action=calendar'),
 	   # yearly navigation
