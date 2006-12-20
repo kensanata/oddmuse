@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: searchtags.pl,v 1.1 2006/12/20 16:48:40 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: searchtags.pl,v 1.2 2006/12/20 16:52:25 as Exp $</p>';
 
 push(@MyRules, \&SearchTagRule);
 
@@ -25,7 +25,7 @@ sub SearchTagRule {
     my $tag_text = $1;
     my @tags = split /,\s*/, $tag_text;
     @tags = map {
-      qq{<a href="?search=Tags:\\s*($_|.*,\\s*$_)(,|\\\$)">$_</a>}
+      qq{<a href="?search=Tags:\\s*($_|.*,\\s*$_)(,|\\\n)">$_</a>}
     } @tags;
     $tags = join ', ', @tags;
     return "<div class=taglist>Tags: $tags</div>";
