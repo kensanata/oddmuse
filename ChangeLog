@@ -1,3 +1,12 @@
+2006-12-21  Alex Schroeder  <alex@gnu.org>
+
+	* modules/journal-rss.pl (DoJournalRss): Undo last change where
+	the date is retrieved from the date in the header. Instead, the
+	date of the last major edit is used.
+
+	* wiki.pl (GetHistoryLink): Pass anchor=0 along to the history
+	page if necessary.
+
 2006-12-12  Alex Schroeder  <alex@gnu.org>
 
 	* modules/journal-rss.pl (DoJournalRss): In the default case, use
