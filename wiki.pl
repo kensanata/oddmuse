@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.756 2006/12/21 17:49:10 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.757 2006/12/21 17:54:26 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2109,9 +2109,9 @@ sub GetAuthorLink {
 
 sub GetHistoryLink {
   my ($id, $text) = @_;
-  my $html = ScriptLink('action=history;id=' . UrlEncode(FreeToNormal($id)), $text, 'history');
-  $html .= ';anchor=0' if $PermanentAnchors and not GetParam('anchor', $PermanentAnchors);
-  return $html;
+  my $action = 'action=history;id=' . UrlEncode(FreeToNormal($id));
+  $action .= ';anchor=0' if $PermanentAnchors and not GetParam('anchor', $PermanentAnchors);
+  return ScriptLink($action, $text, 'history');
 }
 
 sub GetRCLink {
