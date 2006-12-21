@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.12 2006/12/12 15:17:59 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.13 2006/12/21 21:40:19 as Exp $</p>';
 
 $Action{journal} = \&DoJournalRss;
 
@@ -58,14 +58,13 @@ sub DoJournalRss {
   foreach my $id (@pages) {
     # Now save information required for saving the cache of the current page.
     local %Page;
-    local $OpenPageName='';
+    local $OpenPageName = '';
     OpenPage($id);
-    if (GetParam('match', '^\d\d\d\d-\d\d-\d\d') eq '^\d\d\d\d-\d\d-\d\d'
-	and not GetParam('ts', 0)
-	and $id =~ /^(\d\d\d\d)-(\d\d)-(\d\d)/) {
-      require POSIX;
-      local $ENV{TZ} = ''; # force GMT for mktime!
-      $Page{ts} = POSIX::mktime(0, 0, 0, $3, $2 - 1, $1 - 1900);
+    # If this is a minor edit, get the timestamp of the last major
+    # edit.
+    if ($Page{minor}) {
+      my %keep = GetKeptRevision($Page{lastmajor});
+      $Page{ts} = keep{ts};
     }
     unshift (@fullrc, join($FS, $Page{ts}, $id, $Page{minor}, $Page{summary}, $Page{host},
 			   $Page{username}, $Page{revision}, $Page{languages},
