@@ -1,4 +1,4 @@
-# Copyright (C) 2004  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2006  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.13 2006/12/21 21:40:19 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.14 2006/12/21 21:56:34 as Exp $</p>';
 
 $Action{journal} = \&DoJournalRss;
 
@@ -64,7 +64,7 @@ sub DoJournalRss {
     # edit.
     if ($Page{minor}) {
       my %keep = GetKeptRevision($Page{lastmajor});
-      $Page{ts} = keep{ts};
+      $Page{ts} = $keep{ts};
     }
     unshift (@fullrc, join($FS, $Page{ts}, $id, $Page{minor}, $Page{summary}, $Page{host},
 			   $Page{username}, $Page{revision}, $Page{languages},
