@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.28 2006/08/24 18:32:53 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.29 2006/12/22 15:27:17 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent $NamespaceRoot);
 
@@ -24,8 +24,6 @@ $NamespacesMain = 'Main'; # to get back to the main namespace
 $NamespacesSelf = 'Self'; # for your own namespace
 $NamespaceCurrent = '';   # will be automatically set to the current namespace, if any
 $NamespaceRoot = '';      # will be automatically set to the original $ScriptName
-
-my $NamespacesInit = 0;
 
 # try to do it before any other module starts meddling with the
 # variables (eg. localnames.pl)
@@ -95,10 +93,8 @@ sub NamespacesInitVariables {
   }
   $site{$NamespacesSelf} = $ScriptName . '?';
   # reinitialize
+  @IndexList = ();
   ReInit();
-  AllPagesList();
-  NearInit();
-  PermanentAnchorsInit() if $PermanentAnchors;
   # transfer list of sites
   foreach my $key (keys %site) {
     $InterSite{$key} = $site{$key} unless $InterSite{$key};
