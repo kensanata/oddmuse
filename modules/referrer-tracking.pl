@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.10 2006/08/06 11:48:07 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.11 2006/12/22 01:27:48 as Exp $</p>';
 
 use LWP::UserAgent;
 
@@ -138,7 +138,7 @@ sub GetReferers {
       if lc($charset) eq lc($HttpCharset); # decode if possible
     $q->a({-href=>$_}, $title);
   } keys %Referers);
-  return $q->div({-class=>'refer'}, $q->hr(), $q->p(T('Referrers') . ': ' . $result))
+  return $q->div({-class=>'refer'}, $q->p(T('Referrers') . ': ' . $result))
     if $result;
 }
 
@@ -192,6 +192,8 @@ sub DoPrintAllReferers {
 sub PrintAllReferers {
   for my $id (@_) {
     ReadReferers($id);
-    print $q->p(ScriptLink(UrlEncode($id),$id)), GetReferers() if %Referers;
+    print $q->div({-class=>'page'},
+		  $q->p(ScriptLink(UrlEncode($id),$id)),
+		  GetReferers()) if %Referers;
   }
 }
