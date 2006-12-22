@@ -1,3 +1,23 @@
+2006-12-22  Alex Schroeder  <alex@gnu.org>
+
+	* modules/forms.pl (FormsRule): Remove <div> rule an extra
+	grouping from regexp.
+
+	* wiki.pl (PrintRc): Changed RCName printing to avoid "All changes
+	for RecentChanges".
+
+	* t/test.pl (update_page): Pass $rest to the output command as
+	well, because of the ns parameter when testing namespaces.
+
+	* modules/namespaces.pl: Get rid of $NamespacesInit.
+	(NamespacesInitVariables): Get rid of various Init() calls because
+	they are all handled in ReInit(). Reset @IndexList so that
+	AllPagesList will actually do something.
+
+	* modules/referrer-tracking.pl (PrintAllReferers): Add div.page
+	around each page entry.
+	(GetReferers): Removed HR.
+
 2006-12-21  Alex Schroeder  <alex@gnu.org>
 
 	* modules/journal-rss.pl (DoJournalRss): Undo last change where
@@ -6,6 +26,12 @@
 
 	* wiki.pl (GetHistoryLink): Pass anchor=0 along to the history
 	page if necessary.
+
+2006-12-14  Alex Schroeder  <alex@gnu.org>
+
+	* modules/calendar.pl (CalendarRule): Move
+	Clean(CloseHtmlEnvironments()) in front of the call to Dirty() so
+	that the closing p tag belongs to the clean block.
 
 2006-12-12  Alex Schroeder  <alex@gnu.org>
 
