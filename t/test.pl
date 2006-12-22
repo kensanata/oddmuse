@@ -58,7 +58,7 @@ sub update_page {
   $minor = $minor ? 'on' : 'off';
   my $rest = join(' ', @rest);
   $redirect = `perl wiki.pl 'Save=1' 'title=$id' 'summary=$summary' 'recent_edit=$minor' 'text=$text' 'pwd=$pwd' $rest`;
-  $output = `perl wiki.pl action=browse id=$id`;
+  $output = `perl wiki.pl action=browse id=$id $rest`;
   if ($redirect =~ /^Status: 302 /) {
     # just in case a new page got created or NearMap or InterMap
     $IndexHash{$id} = 1;
