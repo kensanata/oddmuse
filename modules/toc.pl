@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.36 2006/10/30 11:19:17 ingob Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.37 2006/12/27 22:06:30 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
@@ -26,7 +26,7 @@ $RuleOrder{ \&TocRule } = 90;
 
 use vars qw($TocAutomatic);
 
-$TocAutomatic = 0;
+$TocAutomatic = 1;
 my %TocCounter = ();
 my $TocShown = 0;
 
