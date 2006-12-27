@@ -1,3 +1,8 @@
+2006-12-27  Alex Schroeder  <alex@gnu.org>
+
+	* modules/toc.pl ($TocAutomatic): Reset the default to 1, so that
+	all the relevant tests don't fail.
+
 2006-12-22  Alex Schroeder  <alex@gnu.org>
 
 	* modules/forms.pl (FormsRule): Remove <div> rule an extra
