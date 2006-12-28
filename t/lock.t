@@ -36,4 +36,4 @@ test_page($redirect, 'Status: 503 SERVICE UNAVAILABLE',
 test_page(update_page('TestLock', 'mu!'), 'Describe the new page here');
 test_page($redirect, 'Status: 503 SERVICE UNAVAILABLE',
 	  'Could not get main lock', 'File exists',
-	  'The lock was created 3[0-5] seconds ago');
+	  'The lock was created \d+ seconds ago');
