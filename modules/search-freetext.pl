@@ -40,7 +40,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.50 2006/08/17 14:06:04 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.51 2006/12/31 11:10:10 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -89,10 +89,10 @@ sub SearchFreeTextIndex {
       return;
     }
   }
-  my $words = SearchFreeTextDB($wordfile);
+  my $words = SearchFreeTextDB($wordfile . ".new");
   $words->open_index();
   $words->clear_index();
-  my $tags = SearchFreeTextDB($tagfile);
+  my $tags = SearchFreeTextDB($tagfile . ".new");
   $tags->open_index();
   $tags->clear_index();
   foreach my $name (AllPagesList()) {
@@ -115,6 +115,8 @@ sub SearchFreeTextIndex {
   }
   $words->close_index();
   $tags->close_index();
+  rename($wordfile . ".new", $wordfile);
+  rename($tagfile . ".new", $tagfile);
   print T('Done.'), "\n";
 }
 
