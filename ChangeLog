@@ -1,3 +1,9 @@
+2006-12-31  Alex Schroeder  <alex@gnu.org>
+
+	* modules/search-freetext.pl (SearchFreeTextIndex): Use temporary
+	files while building the index, and use rename at the end to
+	replace the current files with the new files.
+
 2006-12-27  Alex Schroeder  <alex@gnu.org>
 
 	* modules/toc.pl ($TocAutomatic): Reset the default to 1, so that
