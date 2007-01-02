@@ -6,7 +6,7 @@
   Here's how to write tests.
 
   1. Create a new file in the t directory, called foo.t. Start with
-     the following two lines:
+     the following lines:
 
 	require 't/test.pl';
 	package OddMuse;
