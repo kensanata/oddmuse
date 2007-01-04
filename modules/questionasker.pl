@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.12 2006/07/15 23:14:02 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.13 2007/01/04 10:51:11 as Exp $</p>';
 
 use vars qw(@QuestionaskerQuestions
 	    $QuestionaskerRememberAnswer
@@ -75,6 +75,7 @@ sub NewQuestionaskerDoPost {
 	  or QuestionaskerException($id)) {
     print GetHeader('', T('Edit Denied'), undef, undef, '403 FORBIDDEN');
     print $q->p(T('You did not answer correctly.'));
+    print $q->p(T('Use the back button to return the previous page and try again.'));
     print $q->p(T('Contact the wiki administrator for more information.'));
     PrintFooter();
     # logging to the error log file of the server
