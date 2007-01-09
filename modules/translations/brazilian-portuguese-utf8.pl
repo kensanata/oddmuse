@@ -1,7 +1,7 @@
 # UTF-8 encoded Brazilian Portuguese language file for use with Oddmuse
 #
 # Copyright (c) 2003  Marcelo Toledo <rw@locked.org>.
-# Copyright (c) 2006 Hélio Nunes <dedalu@dedalu.art.br>.
+# Copyright (c) 2006, 2007  Hélio Nunes <dedalu@dedalu.art.br>.
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
@@ -18,7 +18,7 @@
 #
 # This translation was last checked for Oddmuse version 1.753.
 #
-$ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.6 2006/11/03 21:55:17 dedalu Exp $</p>';
+$ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.7 2007/01/09 00:30:09 dedalu Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Leitura não permitida: usuário, ip ou rede bloqueados.
@@ -616,6 +616,10 @@ November
 Novembro
 December
 Dezembro
+set %s
+marcar %s
+unset %s
+desmarcar %s
 Clustermap
 MapaCluster
 Pages without a Cluster
@@ -786,6 +790,8 @@ There are no pending registrations.
 Não há registros pendentes.
 %s is not a legal name for a namespace
 %s não é um nome legal para um espaço de nomes
+ (create locally)
+ (criar localmente)
 Clearing Cache
 Limpando Cache
 Done.
@@ -834,6 +840,8 @@ The target wiki was misconfigured.
 O wiki alvo está mal configurado.
 You did not answer correctly.
 Você não respondeu corretamente à pergunta.
+Use the back button to return the previous page and try again.
+Use o botão retornar para voltar à página anterior e tentar novamente.
 To save this page you must answer this question:
 Para salvar essa página você deve responder a esta pergunta:
 Referrers
