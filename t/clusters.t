@@ -27,6 +27,7 @@ AppendStringToFile($ConfigFile, "\$PageCluster = 'Cluster';\n");
 update_page('ClusterIdea', 'This is just a page.', 'one');
 update_page('ClusterIdea', "This is just a page.\nBut somebody has to do it.", 'two');
 update_page('ClusterIdea', "This is just a page.\nNobody wants it.", 'three', 1);
+sleep(1); # make sure the next revision has a different timestamp
 update_page('ClusterIdea', "MainPage\nThis is just a page.\nBut somebody has to do it.", 'four');
 
 test_page(get_page('action=rc'), 'Cluster.*MainPage');
