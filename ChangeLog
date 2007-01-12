@@ -1,5 +1,8 @@
 2007-01-12  Alex Schroeder  <alex@gnu.org>
 
+	* modules/creole.pl (CreoleRule): Added simple tables.
+	(CreoleRule): New.
+
 	* wiki.pl (GetRcLines, GetRc, GetRcHtml, GetRcText, GetRcRss):
 	Changed $pagename to $id and $timestamp to $ts.
 	(GetOldPageLink, GetRcRss): Pass $last to GetPageParameters.
