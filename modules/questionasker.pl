@@ -1,5 +1,5 @@
 # Copyright (C) 2004  Brock Wilcox <awwaiid@thelackthereof.org>
-# Copyright (C) 2006  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006, 2007  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.13 2007/01/04 10:51:11 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.14 2007/01/12 02:05:27 as Exp $</p>';
 
 use vars qw(@QuestionaskerQuestions
 	    $QuestionaskerRememberAnswer
