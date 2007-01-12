@@ -1,4 +1,4 @@
-# Copyright (C) 2006  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006, 2007  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.16 2006/11/27 20:59:51 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.17 2007/01/12 02:40:42 as Exp $</p>';
 
 push(@MyRules, \&CreoleRule);
 # [[link|{{Image:foo}}]] conflicts with default link rule
@@ -79,6 +79,25 @@ sub CreoleRule {
     return CloseHtmlEnvironments() . "<h$depth>$text</h$depth>"
       . AddHtmlEnvironment('p');
   }
+  # tables using | -- the first row of a table
+  if ($bol && m/\G(\s*\n)*((\|)+)([ \t])*/cg) {
+    return OpenHtmlEnvironment('table',1,'user') . AddHtmlEnvironment('tr')
+      . AddHtmlEnvironment('td', TableAttributes(length($2), $4));
+  }
+  # tables using | -- end of the row, don't insert <br>
+  elsif (InElement('td') && (m/\G\|?[ \t]*(\n|$)/cg)) {
+    return '';
+  }
+  # tables using | -- an ordinary table cell
+  elsif (InElement('td') && m/\G[ \t]*(\|+)([ \t]*)/cg) {
+    my $attr = TableAttributes(length($1), $2);
+    $attr = " " . $attr if $attr;
+    return "</td><td$attr>";
+  }
+  # tables using || -- since "next row" was taken care of above, this must be the last row
+#   elsif (InElement('td') && m/\G[ \t]*((\|\|)+)[ \t]*/cg) {
+#     return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
+#   }
   # paragraphs: at least two newlines
   elsif (m/\G\s*\n(\s*\n)+/cg) {
     return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
@@ -145,4 +164,17 @@ sub CreoleRule {
     return GetUrl($1, $3||$1, 1);
   }
   return undef;
+}
+
+sub TableAttributes {
+  my ($span, $left, $right) = @_;
+  my $attr = '';
+  $attr = "colspan=\"$span\"" if ($span != 1);
+  m/\G(?=.*?([ \t]*)\|)/ and $right = $1 unless $right;
+  $attr .= ' ' if ($attr and ($left or $right));
+  if ($left and $right) { $attr .= 'align="center"' }
+  elsif ($left) { $attr .= 'align="right"' }
+  # this is the default:
+  # elsif ($right) { $attr .= 'align="left"' }
+  return $attr;
 }
