@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.37 2006/12/27 22:06:30 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.38 2007/01/12 20:57:48 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
@@ -67,9 +67,9 @@ sub TocRule {
 	       || InElement('h6'))
 	   && m/\G[ \t]*=+\n?/cg) {
     return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
-  } elsif ($bol && defined(&UsemodRule)
+  } elsif ($bol && (defined(&UsemodRule) || defined(&CreoleRule))
 	   && !$UseModMarkupInTitles
-	   && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg) {
+	   && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=*)[ \t]*(\n|$)/cg) {
     my $depth = length($2);
     $depth = 6 if $depth > 6;
     $depth = 2 if $depth < 2;
