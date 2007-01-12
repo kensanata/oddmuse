@@ -1,3 +1,26 @@
+2007-01-12  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetRcLines, GetRc, GetRcHtml, GetRcText, GetRcRss):
+	Changed $pagename to $id and $timestamp to $ts.
+	(GetOldPageLink, GetRcRss): Pass $last to GetPageParameters.
+	(GetPageParameters): Don't add revision parameter if $last.
+	(GetRcRss, GetRcText, GetRcHtml): Accept $last for printRCLine sub.
+
+2007-01-11  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (BrowseRc): Pass $RCName along.
+	(GetRcLines): Fix off-by one error. Count down from $#fullrc
+	instead of @fullrc.
+	(GetRc): No longer pass an undefined revision to &$printRCLine;
+	instead, pass the changetime as an additional $last parameter.
+	(GetRcHtml): Add logic using $rollback_was_possible and
+	$rollback_is_possible to add a last rollback link to the entry
+	after the last one within the timewindow. In calls to
+	GetOldPageLink and ScriptLinkDiff, make the test by comparing
+	$last to $timestamp when $all is set.
+	(RollbackPossible): If $ts is $LastUpdate, no rollback is possible
+	-- these are the last changes.
+
 2006-12-31  Alex Schroeder  <alex@gnu.org>
 
 	* modules/search-freetext.pl (SearchFreeTextIndex): Use temporary
