@@ -1,5 +1,13 @@
 2007-01-12  Alex Schroeder  <alex@gnu.org>
 
+	* modules/creole.pl (CreoleHeadingRule, CreoleRule): Moved
+	headings into separate rule with a very different priority so that
+	the rule from toc.pl can override it. 
+
+	* modules/toc.pl (TocRule): Make it compatible with creole.pl.
+
+2007-01-12  Alex Schroeder  <alex@gnu.org>
+
 	* modules/creole.pl (CreoleRule): Added simple tables.
 	(CreoleRule): New.
 
@@ -23,6 +31,11 @@
 	$last to $timestamp when $all is set.
 	(RollbackPossible): If $ts is $LastUpdate, no rollback is possible
 	-- these are the last changes.
+
+2007-01-04  Alex Schroeder  <alex@gnu.org>
+
+	* modules/questionasker.pl (NewQuestionaskerDoPost): Added 'Use
+	the back button to return the previous page and try again.'
 
 2006-12-31  Alex Schroeder  <alex@gnu.org>
 
