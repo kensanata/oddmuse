@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.758 2006/12/22 15:39:19 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.759 2007/01/12 01:33:15 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1494,13 +1494,13 @@ sub BrowseRc {
   if (GetParam('raw', 0)) {
     DoRcText();
   } else {
-    PrintRc($id, 1);
+    PrintRc($id || $RCName, 1);
   }
 }
 
 sub PrintRc { # called while browsing any page to append rc to the RecentChanges page
   my ($id, $standalone) = @_;
-  my $rc = ($id eq $RCName or T($RCName) eq $id or T($id) eq $RCName);
+  my $rc = ($id eq $RCName or $id eq T($RCName) or T($id) eq $RCName);
   print GetHeader('', $rc ? $id : Ts('All changes for %s', $id)) if $standalone;
   if ($standalone or $rc or GetParam('rcclusteronly', '')) {
     print $q->start_div({-class=>'rc'});
@@ -1562,15 +1562,15 @@ sub GetRcLines {
   splice(@fullrc, 0, $i);  # Remove items before index $i
   if (not $rollbacks) { # strip rollbacks
     my ($target, $end);
-    for (my $i = @fullrc; $i; $i--) {
-      my ($ts, $pagename, $rest) = split(/$FS/, $fullrc[$i]);
+    for (my $i = $#fullrc; $i; $i--) {
+      my ($ts, $id, $rest) = split(/$FS/, $fullrc[$i]);
       splice(@fullrc, $i + 1, $end - $i), $target = 0  if $ts <= $target;
-      $target = $rest, $end = $i if $pagename eq '[[rollback]]' and (not $target or $rest < $target); # marker
+      $target = $rest, $end = $i if $id eq '[[rollback]]' and (not $target or $rest < $target); # marker
     }
   } else { # just strip the marker left by DoRollback()
-    for (my $i = @fullrc; $i; $i--) {
-      my ($ts, $pagename) = split(/$FS/, $fullrc[$i]);
-      splice(@fullrc, $i, 1) if $pagename eq '[[rollback]]';
+    for (my $i = $#fullrc; $i; $i--) {
+      my ($ts, $id) = split(/$FS/, $fullrc[$i]);
+      splice(@fullrc, $i, 1) if $id eq '[[rollback]]';
     }
   }
   return @fullrc;
@@ -1660,19 +1660,19 @@ sub GetRc {
   if ($showedit != 1) {
     my @temprc = ();
     foreach my $rcline (@outrc) {
-      my ($ts, $pagename, $minor) = split(/$FS/, $rcline); # skip remaining fields
+      my ($ts, $id, $minor) = split(/$FS/, $rcline); # skip remaining fields
       if ($showedit == 0) {	# 0 = No edits
 	push(@temprc, $rcline)	if (!$minor);
       } else {			# 2 = Only edits
 	push(@temprc, $rcline)	if ($minor);
       }
-      $changetime{$pagename} = $ts;
+      $changetime{$id} = $ts;
     }
     @outrc = @temprc;
   }
   foreach my $rcline (@outrc) {
-    my ($ts, $pagename, $minor) = split(/$FS/, $rcline);
-    $changetime{$pagename} = $ts;
+    my ($ts, $id, $minor) = split(/$FS/, $rcline);
+    $changetime{$id} = $ts;
   }
   my $date = '';
   my $all = GetParam('all', 0);
@@ -1683,13 +1683,13 @@ sub GetRc {
   my %seen = ();
   my %match = $filterOnly ? map { $_ => 1 } SearchTitleAndBody($filterOnly) : ();
   foreach my $rcline (@outrc) {
-    my ($ts, $pagename, $minor, $summary, $host, $username, $revision, $languages, $cluster)
+    my ($ts, $id, $minor, $summary, $host, $username, $revision, $languages, $cluster)
       = split(/$FS/, $rcline);
-    next if not $all and $ts < $changetime{$pagename};
-    next if $idOnly and $idOnly ne $pagename;
-    next if $match and $pagename !~ /$match/i;
+    next if not $all and $ts < $changetime{$id};
+    next if $idOnly and $idOnly ne $id;
+    next if $match and $id !~ /$match/i;
     next if $hostOnly and $host !~ /$hostOnly/i;
-    next if $filterOnly and not $match{$pagename};
+    next if $filterOnly and not $match{$id};
     next if ($userOnly and $userOnly ne $username);
     my @languages = split(/,/, $languages);
     next if $lang and @languages and not grep(/$lang/, @languages);
@@ -1701,8 +1701,8 @@ sub GetRc {
       if ($all < 2 and not $clusterOnly and $cluster) {
 	next if $seen{$cluster};
 	$seen{$cluster} = 1;
-	$summary = "$pagename: $summary"; # print the cluster instead of the page
-	$pagename = $cluster;
+	$summary = "$id: $summary"; # print the cluster instead of the page
+	$id = $cluster;
 	$revision = '';
       }
     } else {
@@ -1712,11 +1712,8 @@ sub GetRc {
       $date = CalcDay($ts);
       &$printDailyTear($date);
     }
-    if ($all) {
-      $revision = undef if ($ts == $changetime{$pagename}); # last one without revision
-    }
-    &$printRCLine($pagename, $ts, $host, $username, $summary, $minor, $revision,
-		  \@languages, $cluster);
+    &$printRCLine($id, $ts, $host, $username, $summary, $minor, $revision,
+		  \@languages, $cluster, $ts == $changetime{$id});
   }
 }
 
@@ -1725,6 +1722,7 @@ sub GetRcHtml {
   # Optimize param fetches and translations out of main loop
   my $all = GetParam('all', 0);
   my $admin = UserIsAdmin();
+  my $rollback_was_possible = 0;
   GetRc
     # printDailyTear
     sub {
@@ -1741,7 +1739,8 @@ sub GetRcHtml {
     },
       # printRCLine
       sub {
-	my($pagename, $timestamp, $host, $username, $summary, $minor, $revision, $languages, $cluster) = @_;
+	my($id, $ts, $host, $username, $summary, $minor, $revision, $languages, $cluster, $last) = @_;
+	my $all_revision = $last ? undef : $revision; # no revision for the last one
 	$host = QuoteHtml($host);
 	my $author = GetAuthorLink($host, $username);
 	my $sum = $summary ? $q->span({class=>'dash'}, ' &#8211; ') . $q->strong(QuoteHtml($summary)) : '';
@@ -1749,16 +1748,20 @@ sub GetRcHtml {
 	my $lang = @{$languages} ? $q->span({class=>'lang'}, '[' . join(', ', @{$languages}) . ']') : '';
 	my ($pagelink, $history, $diff, $rollback) = ('', '', '', '');
 	if ($all) {
-	  $pagelink = GetOldPageLink('browse', $pagename, $revision, $pagename, $cluster);
-	  if ($admin and RollbackPossible($timestamp)) {
-	    $rollback = '(' . ScriptLink('action=rollback;to=' . $timestamp,
+	  $pagelink = GetOldPageLink('browse', $id, $all_revision, $id, $cluster);
+	  my $rollback_is_possible = RollbackPossible($ts);
+	  if ($admin and ($rollback_is_possible or $rollback_was_possible)) {
+	    $rollback = '(' . ScriptLink('action=rollback;to=' . $ts,
 					 T('rollback'), 'rollback') . ')';
+	    $rollback_was_possible = $rollback_is_possible;
+	  } else {
+	    $rollback_was_possible = 0;
 	  }
 	} elsif ($cluster) {
-	  $pagelink = GetOldPageLink('browse', $pagename, $revision, $pagename, $cluster);
+	  $pagelink = GetOldPageLink('browse', $id, $revision, $id, $cluster);
 	} else {
-	  $pagelink = GetPageLink($pagename, $cluster);
-	  $history = '(' . GetHistoryLink($pagename, T('history')) . ')';
+	  $pagelink = GetPageLink($id, $cluster);
+	  $history = '(' . GetHistoryLink($id, T('history')) . ')';
 	}
 	if ($cluster and $PageCluster) {
 	  $diff .= GetPageLink($PageCluster) . ':';
@@ -1766,12 +1769,12 @@ sub GetRcHtml {
 	  if ($revision == 1) {
 	    $diff .= '(' . $q->span({-class=>'new'}, T('new')) . ')';
 	  } elsif ($all) {
-	    $diff .= '(' . ScriptLinkDiff(2, $pagename, T('diff'), '', $revision) . ')';
+	    $diff .= '(' . ScriptLinkDiff(2, $id, T('diff'), '', $all_revision) . ')';
 	  } else {
-	    $diff .= '(' . ScriptLinkDiff($minor ? 2 : 1, $pagename, T('diff'), '') . ')';
+	    $diff .= '(' . ScriptLinkDiff($minor ? 2 : 1, $id, T('diff'), '') . ')';
 	  }
 	}
-	$html .= $q->li($q->span({-class=>'time'}, CalcTime($timestamp)), $diff, $history, $rollback,
+	$html .= $q->li($q->span({-class=>'time'}, CalcTime($ts)), $diff, $history, $rollback,
 			$pagelink, T(' . . . . '), $author, $sum, $lang, $edit);
       },
 	@_;
@@ -1798,16 +1801,16 @@ sub GetRcText {
   GetRc
     sub {},
     sub {
-      my($pagename, $timestamp, $host, $username, $summary, $minor, $revision, $languages, $cluster) = @_;
-      my $link = $ScriptName . (GetParam('all', 0)
-				? '?' . GetPageParameters('browse', $pagename, $revision, $cluster)
-				: ($UsePathInfo ? '/' : '?') . $pagename);
-      print "\n" . RcTextItem('title', NormalToFree($pagename))
+      my($id, $ts, $host, $username, $summary, $minor, $revision, $languages, $cluster, $last) = @_;
+      my $link = $ScriptName . (GetParam('all', 0) && $last
+	? '?' . GetPageParameters('browse', $id, $revision, $cluster, $last)
+	: ($UsePathInfo ? '/' : '?') . $id);
+      print "\n" . RcTextItem('title', NormalToFree($id))
       . RcTextItem('description', $summary)
       . RcTextItem('generator', $username ? $username . ' ' . Ts('from %s', $host) : $host)
       . RcTextItem('language', join(', ', @{$languages}))
       . RcTextItem('link', $link)
-      . RcTextItem('last-modified', TimeToW3($timestamp));
+      . RcTextItem('last-modified', TimeToW3($ts));
     },
     @_;
   return $text;
@@ -1863,32 +1866,32 @@ sub GetRcRss {
     sub {},
     # printRCLine
     sub {
-      my ($pagename, $timestamp, $host, $username, $summary, $minor, $revision, $languages, $cluster) = @_;
-      return if $excluded{$pagename} or ($limit ne 'all' and $count++ >= $limit);
-      my $name = NormalToFree($pagename);
+      my ($id, $ts, $host, $username, $summary, $minor, $revision, $languages, $cluster, $last) = @_;
+      return if $excluded{$id} or ($limit ne 'all' and $count++ >= $limit);
+      my $name = NormalToFree($id);
       if (GetParam('full', 0)) {
 	$name .= T(': ') . $summary if $summary;
-	$summary = PageHtml($pagename, 50*1024, T('This page is too big to send over RSS.'));
+	$summary = PageHtml($id, 50*1024, T('This page is too big to send over RSS.'));
       }
-      my $date = TimeToRFC822($timestamp);
+      my $date = TimeToRFC822($ts);
       $username = QuoteHtml($username);
       $username = $host unless $username;
       $rss .= "\n<item>\n";
       $rss .= "<title>" . QuoteHtml($name) . "</title>\n";
       $rss .= "<link>" . $url . (GetParam('all', $cluster)
-        ? "?" . GetPageParameters('browse', $pagename, $revision, $cluster)
-	: ($UsePathInfo ? '/' : '?') . UrlEncode($pagename)) . "</link>\n";
+        ? "?" . GetPageParameters('browse', $id, $revision, $cluster, $last)
+	: ($UsePathInfo ? '/' : '?') . UrlEncode($id)) . "</link>\n";
       $rss .= "<description>" . QuoteHtml($summary) . "</description>\n" if $summary;
       $rss .= "<pubDate>" . $date . "</pubDate>\n";
       $rss .= "<comments>" . $url . ($UsePathInfo ? '/' : '?')
-	. $CommentsPrefix . UrlEncode($pagename) . "</comments>\n"
-	  if $CommentsPrefix and $pagename !~ /^$CommentsPrefix/;
+	. $CommentsPrefix . UrlEncode($id) . "</comments>\n"
+	  if $CommentsPrefix and $id !~ /^$CommentsPrefix/;
       $rss .= "<wiki:username>" . $username . "</wiki:username>\n" if $username;
       $rss .= "<wiki:status>" . (1 == $revision ? 'new' : 'updated') . "</wiki:status>\n";
       $rss .= "<wiki:importance>" . ($minor ? 'minor' : 'major') . "</wiki:importance>\n";
       $rss .= "<wiki:version>" . $revision . "</wiki:version>\n";
-      $rss .= "<wiki:history>" . $historyPrefix . UrlEncode($pagename) . "</wiki:history>\n";
-      $rss .= "<wiki:diff>" . $diffPrefix . UrlEncode($pagename) . "</wiki:diff>\n"
+      $rss .= "<wiki:history>" . $historyPrefix . UrlEncode($id) . "</wiki:history>\n";
+      $rss .= "<wiki:diff>" . $diffPrefix . UrlEncode($id) . "</wiki:diff>\n"
 	if $UseDiff and GetParam('diffrclink', 1);
       $rss .= "</item>\n";
     },
@@ -1980,8 +1983,8 @@ sub DoContributors {
 }
 
 sub RollbackPossible {
-  my $ts = shift;
-  return ($Now - $ts) < $KeepDays * 86400; # 24*60*60
+  my $ts = shift; # there can be no rollback to the most recent change(s) made (1s resolution!)
+  return $ts != $LastUpdate && ($Now - $ts) < $KeepDays * 86400; # 24*60*60
 }
 
 sub DoRollback {
@@ -2061,17 +2064,18 @@ sub DoAdminPage {
 # == HTML and page-oriented functions ==
 
 sub GetPageParameters {
-  my ($action, $id, $revision, $cluster) = @_;
+  my ($action, $id, $revision, $cluster, $last) = @_;
   $id = FreeToNormal($id);
   my $link = "action=$action;id=" . UrlEncode($id);
-  $link .= ";revision=$revision" if $revision;
+  $link .= ";revision=$revision" if $revision and not $last;
   $link .= ';rcclusteronly=' . UrlEncode($cluster) if $cluster;
   return $link;
 }
 
 sub GetOldPageLink {
-  my ($action, $id, $revision, $name, $cluster) = @_;
-  return ScriptLink(GetPageParameters($action, $id, $revision, $cluster), NormalToFree($name), 'revision');
+  my ($action, $id, $revision, $name, $cluster, $last) = @_;
+  return ScriptLink(GetPageParameters($action, $id, $revision, $cluster, $last), NormalToFree($name),
+		    'revision');
 }
 
 sub GetSearchLink {
