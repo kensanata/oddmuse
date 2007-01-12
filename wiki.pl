@@ -1,6 +1,6 @@
 #! /usr/bin/perl
 # OddMuse (see $WikiDescription below)
-# Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007  Alex Schroeder <alex@emacswiki.org>
 # ... including lots of patches from the UseModWiki site
 # Copyright (C) 2001, 2002  various authors
 # ... which was based on UseModWiki version 0.92 (April 21, 2001)
@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.759 2007/01/12 01:33:15 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.760 2007/01/12 02:00:44 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
