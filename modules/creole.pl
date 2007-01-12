@@ -16,11 +16,29 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.17 2007/01/12 02:40:42 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.18 2007/01/12 20:59:02 as Exp $</p>';
 
 push(@MyRules, \&CreoleRule);
 # [[link|{{Image:foo}}]] conflicts with default link rule
 $RuleOrder{\&CreoleRule} = -10;
+# == headings rule must come after the TocRule
+$RuleOrder{\&CreoleHeadingRule} = 100;
+
+sub CreoleHeadingRule {
+  # == Level 1 (Largest)
+  # === Level 2
+  # ==== Level 3
+  # Too bad those are not the only ones allowed... :(
+  if ($bol && m/\G(\s*\n)*(==+)[ \t]*(.*?)[ \t]*=*[ \t]*(\n|\Z)/cg) {
+    my $depth = length($2);
+    $depth = 6 if $depth > 6;
+    $depth = 2 if $depth < 2;
+    my $text = $3;
+    return CloseHtmlEnvironments() . "<h$depth>$text</h$depth>"
+      . AddHtmlEnvironment('p');
+  }
+  return undef;
+}
 
 sub CreoleRule {
   # horizontal line
@@ -67,20 +85,8 @@ sub CreoleRule {
       . OpenHtmlEnvironment('ul', length($1))
       . AddHtmlEnvironment('li');
   }
-  # == Level 1 (Largest)
-  # === Level 2
-  # ==== Level 3
-  # Too bad those are not the only ones allowed... :(
-  elsif ($bol && m/\G(\s*\n)*(==+)[ \t]*(.*?)[ \t]*=*[ \t]*(\n|\Z)/cg) {
-    my $depth = length($2);
-    $depth = 6 if $depth > 6;
-    $depth = 2 if $depth < 2;
-    my $text = $3;
-    return CloseHtmlEnvironments() . "<h$depth>$text</h$depth>"
-      . AddHtmlEnvironment('p');
-  }
   # tables using | -- the first row of a table
-  if ($bol && m/\G(\s*\n)*((\|)+)([ \t])*/cg) {
+  elsif ($bol && m/\G(\s*\n)*((\|)+)([ \t])*/cg) {
     return OpenHtmlEnvironment('table',1,'user') . AddHtmlEnvironment('tr')
       . AddHtmlEnvironment('td', TableAttributes(length($2), $4));
   }
