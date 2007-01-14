@@ -1,5 +1,12 @@
 2007-01-14  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (BannedContent, DoPost): Move message "See ... for more
+	information" from DoPost to BannedContent, so that strange-spam.pl
+	can provide a different link target.
+
+	* modules/strange-spam.pl (StrangeNewBannedContent): Extract
+	strange banned content comment and display it, if possible.
+
 	* modules/creole.pl: Add CreoleHeadingRule to MyRules.
 
 	* wiki.pl (BannedContent): Extract banned content comment and
