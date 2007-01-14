@@ -1,8 +1,12 @@
 2007-01-14  Alex Schroeder  <alex@gnu.org>
 
+	* modules/strange-spam.pl (StrangeNewBannedContent): Fix
+	whitespace-handling in regexp parsing.
+
 	* wiki.pl (BannedContent, DoPost): Move message "See ... for more
 	information" from DoPost to BannedContent, so that strange-spam.pl
 	can provide a different link target.
+	(BannedContent): Fix whitespace-handling in regexp parsing.
 
 	* modules/strange-spam.pl (StrangeNewBannedContent): Extract
 	strange banned content comment and display it, if possible.
