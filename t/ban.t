@@ -58,7 +58,7 @@ test_page(update_page('BannedHosts', "#Foo\n#Bar\n", 'banning me', 0, 1), "Foo",
 
 ## Banning content
 
-update_page('BannedContent', "# cosa\nmafia # 2007-01-14 crime\n#nostra\n", 'one banned word', 0, 1);
+update_page('BannedContent', "# cosa\nma ?fia # 2007-01-14 crime\n#nostra\n", 'one banned word', 0, 1);
 test_page(update_page('CriminalPage', 'This is about http://mafia.example.com'),
 	  'Describe the new page here');
 
@@ -78,10 +78,10 @@ test_page(update_page('CriminalPage', 'This is about the mafia'),
 
 add_module('strange-spam.pl');
 
-update_page('StrangeBannedContent', "<?pompoko>? # 2007-01-14 tanuki power",
+update_page('StrangeBannedContent', "<?pom ?poko>? # 2007-01-14 tanuki power",
 	    '', 0, 1);
 test_page(update_page('TanukiPage', 'I was here!! <pompoko>'),
 	  'Describe the new page here');
 test_page($redirect, 'Reason: tanuki power',
 	  'See .*StrangeBannedContent.* for more information',
-	  'Rule "&lt;\?pompoko&gt;\?" matched "&lt;pompoko&gt;" on this page');
+	  'Rule "&lt;\?pom \?poko&gt;\?" matched "&lt;pompoko&gt;" on this page');
