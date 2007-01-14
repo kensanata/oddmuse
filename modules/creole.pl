@@ -16,9 +16,9 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.18 2007/01/12 20:59:02 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.19 2007/01/14 13:44:24 as Exp $</p>';
 
-push(@MyRules, \&CreoleRule);
+push(@MyRules, \&CreoleRule, \&CreoleHeadingRule);
 # [[link|{{Image:foo}}]] conflicts with default link rule
 $RuleOrder{\&CreoleRule} = -10;
 # == headings rule must come after the TocRule
