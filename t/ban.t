@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 19;
+use Test::More tests => 23;
 
 clear_pages();
 
@@ -62,13 +62,12 @@ update_page('BannedContent', "# cosa\nmafia # 2007-01-14 crime\n#nostra\n", 'one
 test_page(update_page('CriminalPage', 'This is about http://mafia.example.com'),
 	  'Describe the new page here');
 
-test_page($redirect, split('\n',<<'EOT'));
-banned text
-wiki administrator
-matched
-See .*BannedContent.* for more information
-Reason: crime
-EOT
+test_page($redirect,
+	  'banned text',
+	  'wiki administrator',
+	  'matched',
+	  'See .*BannedContent.* for more information',
+	  'Reason: crime');
 
 test_page(update_page('CriminalPage', 'This is about http://nafia.example.com'),
 	  "This is about", "http://nafia.example.com");
@@ -76,3 +75,13 @@ test_page(update_page('CriminalPage', 'This is about the cosa nostra'),
 	  'cosa nostra');
 test_page(update_page('CriminalPage', 'This is about the mafia'),
 	  'This is about the mafia'); # not in an url
+
+add_module('strange-spam.pl');
+
+update_page('StrangeBannedContent', "<?pompoko>? # 2007-01-14 tanuki power",
+	    '', 0, 1);
+test_page(update_page('TanukiPage', 'I was here!! <pompoko>'),
+	  'Describe the new page here');
+test_page($redirect, 'Reason: tanuki power',
+	  'See .*StrangeBannedContent.* for more information',
+	  'Rule "&lt;\?pompoko&gt;\?" matched "&lt;pompoko&gt;" on this page');
