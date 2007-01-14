@@ -1,4 +1,4 @@
-# Copyright (C) 2006  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006, 2007  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 18;
+use Test::More tests => 19;
 
 clear_pages();
 
@@ -58,7 +58,7 @@ test_page(update_page('BannedHosts', "#Foo\n#Bar\n", 'banning me', 0, 1), "Foo",
 
 ## Banning content
 
-update_page('BannedContent', "# cosa\nmafia\n#nostra\n", 'one banned word', 0, 1);
+update_page('BannedContent', "# cosa\nmafia # 2007-01-14 crime\n#nostra\n", 'one banned word', 0, 1);
 test_page(update_page('CriminalPage', 'This is about http://mafia.example.com'),
 	  'Describe the new page here');
 
@@ -67,6 +67,7 @@ banned text
 wiki administrator
 matched
 See .*BannedContent.* for more information
+Reason: crime
 EOT
 
 test_page(update_page('CriminalPage', 'This is about http://nafia.example.com'),
