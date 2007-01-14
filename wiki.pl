@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.761 2007/01/14 13:43:06 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.762 2007/01/14 16:05:35 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3122,7 +3122,8 @@ sub BannedContent {
     foreach my $url (@urls) {
       if ($url =~ /($regexp)/i) {
 	return Tss('Rule "%1" matched "%2" on this page.', $regexp, $url) . ' '
-	  . ($comment ? Ts('Reason: %s', $comment) : T('Reason unknown.'));
+	  . ($comment ? Ts('Reason: %s.', $comment) : T('Reason unknown.')) . ' '
+	  . Ts('See %s for more information.', GetPageLink($BannedContent));
       }
     }
   }
@@ -3507,11 +3508,8 @@ sub DoPost {
   my $summary = GetSummary();
   if (not UserIsEditor()) {
     my $rule = BannedContent($string) || BannedContent($summary);
-    ReportError(T('Edit Denied'), '403 FORBIDDEN', undef,
-		$q->p(T('The page contains banned text.')),
-		$q->p(T('Contact the wiki administrator for more information.')),
-		$q->p($rule . ' ' . Ts('See %s for more information.', GetPageLink($BannedContent))))
-      if $rule;
+    ReportError(T('Edit Denied'), '403 FORBIDDEN', undef, $q->p(T('The page contains banned text.')),
+		$q->p(T('Contact the wiki administrator for more information.')), $q->p($rule)) if $rule;
   }
   # rebrowse if no changes
   my $oldrev = $Page{revision};
