@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: strange-spam.pl,v 1.11 2007/01/14 16:03:25 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: strange-spam.pl,v 1.12 2007/01/14 16:22:18 as Exp $</p>';
 
 use vars qw($StrangeBannedContent);
 
@@ -41,7 +41,7 @@ sub StrangeNewBannedContent {
   my $rule = StrangeOldBannedContent($str, @_);
   return $rule if $rule;
   foreach (split(/\n/, GetPageContent($StrangeBannedContent))) {
-    next unless m/^\s*([^# \t]+)\s*(#\s*(\d\d\d\d-\d\d-\d\d\s*)?(.*))?/;
+    next unless m/^\s*([^#]+?)\s*(#\s*(\d\d\d\d-\d\d-\d\d\s*)?(.*))?$/;
     my ($regexp, $comment) = ($1, $4);
     if ($str =~ /($regexp)/i) {
       my $match = $1;
