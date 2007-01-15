@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.763 2007/01/14 16:21:24 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.764 2007/01/15 13:19:48 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2964,7 +2964,7 @@ sub DoEdit {
     print $q->strong(Ts('Editing old revision %s.', $revision) . '  '
 		     . T('Saving this page will replace the latest revision with this text.'))
   }
-  print GetEditForm($id, $upload, $oldText, $revision);
+  print GetEditForm($id, $upload, $oldText, $revision), $q->end_div();
   PrintFooter($id, 'edit');
 }
 
