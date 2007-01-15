@@ -1,3 +1,7 @@
+2007-01-15  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoEdit): Add an extra closing div.
+
 2007-01-14  Alex Schroeder  <alex@gnu.org>
 
 	* modules/strange-spam.pl (StrangeNewBannedContent): Fix
