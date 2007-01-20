@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.764 2007/01/15 13:19:48 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.765 2007/01/20 00:51:26 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2589,7 +2589,7 @@ sub OpenPage { # Sets global variables
   $OpenPageName = $id;
 }
 
-sub GetTextAtTime { # call with opened page
+sub GetTextAtTime { # call with opened page, return $minor if all pages between now and $ts are minor!
   my $ts = shift;
   my $minor = $Page{minor};
   return ($Page{text}, $minor, 0) if $Page{ts} <= $ts; # current page is old enough
@@ -2597,6 +2597,7 @@ sub GetTextAtTime { # call with opened page
   my %keep = (); # info may be needed after the loop
   foreach my $revision (GetKeepRevisions($OpenPageName)) {
     %keep = GetKeptRevision($revision);
+    $minor = 0 unless $keep{minor};
     return ($keep{text}, $minor, 0) if $keep{ts} <= $ts;
   }
   return ($DeletedPage, $minor, 0) if $keep{revision} == 1; # then the page was created after $ts!
@@ -3543,7 +3544,7 @@ sub DoPost {
   my $generalwarning = 0;
   if ($newAuthor and $oldtime ne $myoldtime and not $comment) {
     if ($myoldtime) {
-      my ($ancestor, $minor) = GetTextAtTime($myoldtime);
+      my ($ancestor) = GetTextAtTime($myoldtime);
       if ($ancestor and $old ne $ancestor) {
 	my $new = MergeRevisions($string, $ancestor, $old);
 	if ($new) {
