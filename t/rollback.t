@@ -18,11 +18,30 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 37;
+use Test::More tests => 42;
 
 clear_pages();
 WriteStringToFile($RcFile, "1FirstPage1\n");
 AppendStringToFile($RcFile, "2SecondPage1\n");
+
+# reproduce a particular bug from emacswiki.org -- more tests below
+update_page('SiteMap', 'initial entry');
+sleep(1);
+update_page('SiteMap', 'last good entry was a minor edit', '', 1);
+ok(get_page('action=browse id=SiteMap raw=2')
+   =~ /(\d+) # Do not delete this line/,
+   'raw=2 returns timestamp');
+$to = $1;
+ok($to, 'timestamp stored');
+sleep(1);
+update_page('SiteMap', 'vandal overwrites with major edit');
+update_page('SiteMap', 'gnome attemps wrong fix with minor edit', '', 1);
+test_page(get_page("action=rollback to=$to pwd=foo"),
+	  'Rolling back changes', 'SiteMap</a> rolled back');
+OpenPage('SiteMap');
+isnt($Page{minor}, 1, 'Rollback is a major edit');
+is($Page{text}, "last good entry was a minor edit\n", 'Rollback successful');
+
 # old revisions
 update_page('InnocentPage', 'Innocent.', 'good guy zero');
 update_page('NicePage', 'Friendly content.', 'good guy one');
