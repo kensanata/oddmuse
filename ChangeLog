@@ -3,6 +3,8 @@
 	* wiki.pl (GetTextAtTime): Make sure we note any major revision
 	between now and the target timestamp.
 	(DoPost): Ignore second return value of GetTextAtTime.
+	(GetTextAtTime): Don't take major revisions into account if they
+	are older than the timestamp.
 
 2007-01-15  Alex Schroeder  <alex@gnu.org>
 
