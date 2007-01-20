@@ -18,13 +18,14 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 42;
+use Test::More tests => 43;
 
 clear_pages();
 WriteStringToFile($RcFile, "1FirstPage1\n");
 AppendStringToFile($RcFile, "2SecondPage1\n");
 
-# reproduce a particular bug from emacswiki.org -- more tests below
+# reproduce a particular bug from emacswiki.org
+clear_pages();
 update_page('SiteMap', 'initial entry');
 sleep(1);
 update_page('SiteMap', 'last good entry was a minor edit', '', 1);
@@ -41,6 +42,11 @@ test_page(get_page("action=rollback to=$to pwd=foo"),
 OpenPage('SiteMap');
 isnt($Page{minor}, 1, 'Rollback is a major edit');
 is($Page{text}, "last good entry was a minor edit\n", 'Rollback successful');
+
+# new set of tests
+clear_pages();
+WriteStringToFile($RcFile, "1FirstPage1\n");
+AppendStringToFile($RcFile, "2SecondPage1\n");
 
 # old revisions
 update_page('InnocentPage', 'Innocent.', 'good guy zero');
