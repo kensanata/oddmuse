@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.765 2007/01/20 00:51:26 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.766 2007/01/20 01:18:39 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2597,7 +2597,7 @@ sub GetTextAtTime { # call with opened page, return $minor if all pages between 
   my %keep = (); # info may be needed after the loop
   foreach my $revision (GetKeepRevisions($OpenPageName)) {
     %keep = GetKeptRevision($revision);
-    $minor = 0 unless $keep{minor};
+    $minor = 0 if not $keep{minor} and $keep{ts} >= $ts; # ignore keep{minor} if keep{ts} is too old
     return ($keep{text}, $minor, 0) if $keep{ts} <= $ts;
   }
   return ($DeletedPage, $minor, 0) if $keep{revision} == 1; # then the page was created after $ts!
