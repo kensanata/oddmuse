@@ -1,3 +1,9 @@
+2007-01-20  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetTextAtTime): Make sure we note any major revision
+	between now and the target timestamp.
+	(DoPost): Ignore second return value of GetTextAtTime.
+
 2007-01-15  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoEdit): Add an extra closing div.
