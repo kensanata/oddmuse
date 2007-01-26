@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.766 2007/01/20 01:18:39 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.767 2007/01/26 22:17:16 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1978,7 +1978,7 @@ sub DoContributors {
   print GetHeader('', Ts('Contributors to %s', $id || $SiteName));
   my %h = map { my ($ts, $pagename, $minor, $summary, $host, $username) = split(/$FS/, $_);
                 $username => 1 if not $id or $pagename eq $id; } GetRcLines(1);
-  print $q->p(map { GetPageLink($_) } sort(keys %h));
+  print $q->div({-class=>'content contrib'}, $q->p(map { GetPageLink($_) } sort(keys %h)));
   PrintFooter();
 }
 
