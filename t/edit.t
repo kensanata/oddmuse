@@ -18,11 +18,13 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 2;
+use Test::More tests => 4;
 
 clear_pages();
 
 xpath_test(get_page('action=edit id=NewPage'),
 	   '//textarea[@name="text"][@id="text"][contains(text(), "Describe the new page here.")]',
-	   '//div[@class="content edit"]/following-sibling::div[@class="footer"]',
+	   '//div[@class="wrapper"]/div[@class="content edit"]',
+	   '//div[@class="content edit"]/following-sibling::div[@class="wrapper close"]',
+	   '//div[@class="wrapper"]/following-sibling::div[@class="footer"]',
 	  );
