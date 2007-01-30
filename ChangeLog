@@ -1,3 +1,11 @@
+2007-01-30  Alex Schroeder  <alex@gnu.org>
+
+	* modules/bbcode.pl: New file.
+
+2007-01-26  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoContributors): Add div.
+
 2007-01-20  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetTextAtTime): Make sure we note any major revision
