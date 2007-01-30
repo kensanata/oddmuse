@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.767 2007/01/26 22:17:16 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.768 2007/01/30 20:58:26 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2157,7 +2157,7 @@ sub GetHeader {
   } else {
     $result .= $q->h1($title);
   }
-  return $result . $q->end_div();
+  return $result . $q->end_div() . $q->start_div({-class=>'wrapper'});
 }
 
 sub GetHttpHeader {
@@ -2264,10 +2264,9 @@ sub PrintFooter {
     print $q->end_html;
     return;
   }
-  print GetCommentForm($id, $rev, $comment);
-  print $q->start_div({-class=>'footer'}) . $q->hr();
-  print GetGotoBar($id), GetFooterLinks($id, $rev);
-  print GetFooterTimestamp($id, $rev), GetSearchForm();
+  print GetCommentForm($id, $rev, $comment), $q->div({-class=>'wrapper close'}),
+    $q->end_div(), $q->start_div({-class=>'footer'}), $q->hr(), GetGotoBar($id),
+    GetFooterLinks($id, $rev), GetFooterTimestamp($id, $rev), GetSearchForm();
   if ($DataDir =~ m|/tmp/|) {
     print $q->p($q->strong(T('Warning') . ': ')
 		. Ts('Database is stored in temporary directory %s', $DataDir));
