@@ -3,6 +3,7 @@
 	* wiki.pl (GetHeader): Put all the content into a div.wrapper.
 	(PrintFooter): Put a div.close at the end of the content, and
 	close div.wrapper.
+	(PrintFooter): Cannot minimize div.
 
 	* modules/bbcode.pl: New file.
 
