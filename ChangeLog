@@ -1,5 +1,9 @@
 2007-01-30  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (GetHeader): Put all the content into a div.wrapper.
+	(PrintFooter): Put a div.close at the end of the content, and
+	close div.wrapper.
+
 	* modules/bbcode.pl: New file.
 
 2007-01-26  Alex Schroeder  <alex@gnu.org>
