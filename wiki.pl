@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.769 2007/01/30 22:06:27 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.770 2007/01/30 22:10:04 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2265,7 +2265,7 @@ sub PrintFooter {
     return;
   }
   print GetCommentForm($id, $rev, $comment),
-    $q->div_start({-class=>'wrapper close'}), $q->end_div(), $q->end_div(),
+    $q->start_div({-class=>'wrapper close'}), $q->end_div(), $q->end_div(),
     $q->start_div({-class=>'footer'}), $q->hr(), GetGotoBar($id),
     GetFooterLinks($id, $rev), GetFooterTimestamp($id, $rev), GetSearchForm();
   if ($DataDir =~ m|/tmp/|) {
