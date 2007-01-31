@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 7;
+use Test::More tests => 15;
 
 clear_pages();
 
@@ -39,4 +39,23 @@ run_tests(split('\n',<<'EOT'));
 [size=test]this text is two sizes larger than normal[/size]
 [font=courier]this text is in the courier font[/font]
 <span style="font-family: courier;">this text is in the courier font</span>
+[url]yadda
+[url]yadda
+[quote]quoted text[/quote]
+<blockquote><p>quoted text</p></blockquote>
+[quote]first paragraph\n\nsecond paragraph[/quote]
+<blockquote><p>first paragraph</p><p>second paragraph</p></blockquote>
+[code]monospaced text[/code]
+<pre>monospaced text</pre>
+[code]monospaced\n\n text[/code]
+<pre>monospaced\n\n text</pre>
+EOT
+
+xpath_run_tests(split('\n',<<'EOT'));
+[url]http://wikipedia.org[/url]
+//a[@class="url http"][@href="http://wikipedia.org"][text()="http://wikipedia.org"]
+[url=http://wikipedia.org]Wikipedia[/url]
+//a[@class="url http"][@href="http://wikipedia.org"][text()="Wikipedia"]
+[img]http://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Wikipedia-logo.png/150px-Wikipedia-logo.png[/img]
+//img[@class="url http"][@src="http://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Wikipedia-logo.png/150px-Wikipedia-logo.png"]
 EOT
