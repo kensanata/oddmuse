@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: bbcode.pl,v 1.2 2007/01/31 08:23:19 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: bbcode.pl,v 1.3 2007/01/31 08:31:34 as Exp $</p>';
 
 push(@MyRules, \&bbCodeRule);
 
@@ -74,6 +74,14 @@ sub bbCodeRule {
       return CloseHtmlEnvironments() . "</$translate{$tag}>"; }
     else {
       return $bbcode;
+    }
+  } elsif (/\G(:-?[()])/cg) { # smiley fallback
+    if (substr($1,-1) eq ')') {
+      # '☺' 0009786 00263a WHITE SMILING FACE, So, 0, ON, N,
+      return '&#x263a;';
+    } else {
+      # '☹' 0009785 002639 WHITE FROWNING FACE, So, 0, ON, N,
+      return '&#x2639;';
     }
   }
   return undef;
