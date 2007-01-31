@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.770 2007/01/30 22:10:04 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.771 2007/01/31 08:16:06 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -325,7 +325,7 @@ sub ReInit {      # init everything we need if we want to link to stuff
 sub InitCookie {
   undef $q->{'.cookies'};  # Clear cache if it exists (for SpeedyCGI)
   if ($q->cookie($CookieName)) {
-    %OldCookie = split(/$FS/, UrlDecode($q->cookie($CookieName)));
+    %OldCookie = split(/$FS/o, UrlDecode($q->cookie($CookieName)));
   } else {
     %OldCookie = ();
   }
@@ -336,9 +336,9 @@ sub InitCookie {
   delete $NewCookie{username};
   if (!$name) {
     # do nothing
-  } elsif (!$FreeLinks && !($name =~ /^$LinkPattern$/)) {
+  } elsif (!$FreeLinks && !($name =~ /^$LinkPattern$/o)) {
     $Message .= $q->p(Ts('Invalid UserName %s: not saved.', $name));
-  } elsif ($FreeLinks && (!($name =~ /^$FreeLinkPattern$/))) {
+  } elsif ($FreeLinks && (!($name =~ /^$FreeLinkPattern$/o))) {
     $Message .= $q->p(Ts('Invalid UserName %s: not saved.', $name));
   } elsif (length($name) > 50) {  # Too long
     $Message .= $q->p(T('UserName must be 50 characters or less: not saved'));
@@ -702,7 +702,7 @@ sub RunMyRules {
 sub PrintWikiToHTML {
   my ($text, $savecache, $revision, $islocked) = @_;
   $FootnoteNumber = 0;
-  $text =~ s/$FS//g if $text; # Remove separators (paranoia)
+  $text =~ s/$FS//go if $text; # Remove separators (paranoia)
   $text = QuoteHtml($text);
   my ($blocks, $flags) = ApplyRules($text, 1, $savecache, $revision, 'p'); # p is start tag!
   # local links, anchors if cache ok
@@ -850,7 +850,7 @@ sub PrintAllPages {
     print $q->start_div({-class=>'page'}),
       $q->h1($links ? GetPageLink($id, $title) : $q->a({-name=>$id},$title));
     PrintPageHtml();
-    if ($comments and UserCanEdit($CommentsPrefix . $id, 0) and $id !~ /^$CommentsPrefix/) {
+    if ($comments and UserCanEdit($CommentsPrefix . $id, 0) and $id !~ /^$CommentsPrefix/o) {
       print $q->p({-class=>'comment'},
 		  GetPageLink($CommentsPrefix . $id, T('Comments on this page')));
     }
@@ -1374,7 +1374,7 @@ sub BrowseResolvedPage {
     print $q->redirect({-uri=>$resolved});
   } elsif ($class && $class eq 'alias') { # an anchor was found instead of a page
     ReBrowsePage($resolved);
-  } elsif (not $resolved and $NotFoundPg and $id !~ /^$CommentsPrefix/) { # custom page-not-found message
+  } elsif (not $resolved and $NotFoundPg and $id !~ /^$CommentsPrefix/o) { # custom page-not-found message
     BrowsePage($NotFoundPg);
   } elsif ($resolved) { # an existing page was found
     BrowsePage($resolved, GetParam('raw', 0));
@@ -1540,14 +1540,14 @@ sub GetRcLines {
   my ($status, $fileData) = ReadFile($RcFile); # read rc.log, errors are not fatal
   my @fullrc = split(/\n/, $fileData);
   my $firstTs = 0;
-  ($firstTs) = split(/$FS/, $fullrc[0]) if @fullrc > 0; # just look at the first timestamp
+  ($firstTs) = split(/$FS/o, $fullrc[0]) if @fullrc > 0; # just look at the first timestamp
   if (($firstTs == 0) || ($starttime <= $firstTs)) { # read oldrc.log if necessary
     my ($status, $oldFileData) = ReadFile($RcOldFile); # again, errors are not fatal
     @fullrc = split(/\n/, $oldFileData . $fileData) if $status; # concatenate the file data!
   }
   my $i = 0;
   while ($i < @fullrc) { # Optimization: skip old entries quickly
-    my ($ts) = split(/$FS/, $fullrc[$i]); # just look at the first element
+    my ($ts) = split(/$FS/o, $fullrc[$i]); # just look at the first element
     if ($ts >= $starttime) {
       $i -= 1000  if ($i > 0);
       last;
@@ -1556,20 +1556,20 @@ sub GetRcLines {
   }
   $i -= 1000  if (($i > 0) && ($i >= @fullrc));
   for (; $i < @fullrc ; $i++) {
-    my ($ts) = split(/$FS/, $fullrc[$i]); # just look at the first element
+    my ($ts) = split(/$FS/o, $fullrc[$i]); # just look at the first element
     last if ($ts >= $starttime);
   }
   splice(@fullrc, 0, $i);  # Remove items before index $i
   if (not $rollbacks) { # strip rollbacks
     my ($target, $end);
     for (my $i = $#fullrc; $i; $i--) {
-      my ($ts, $id, $rest) = split(/$FS/, $fullrc[$i]);
+      my ($ts, $id, $rest) = split(/$FS/o, $fullrc[$i]);
       splice(@fullrc, $i + 1, $end - $i), $target = 0  if $ts <= $target;
       $target = $rest, $end = $i if $id eq '[[rollback]]' and (not $target or $rest < $target); # marker
     }
   } else { # just strip the marker left by DoRollback()
     for (my $i = $#fullrc; $i; $i--) {
-      my ($ts, $id) = split(/$FS/, $fullrc[$i]);
+      my ($ts, $id) = split(/$FS/o, $fullrc[$i]);
       splice(@fullrc, $i, 1) if $id eq '[[rollback]]';
     }
   }
@@ -1660,7 +1660,7 @@ sub GetRc {
   if ($showedit != 1) {
     my @temprc = ();
     foreach my $rcline (@outrc) {
-      my ($ts, $id, $minor) = split(/$FS/, $rcline); # skip remaining fields
+      my ($ts, $id, $minor) = split(/$FS/o, $rcline); # skip remaining fields
       if ($showedit == 0) {	# 0 = No edits
 	push(@temprc, $rcline)	if (!$minor);
       } else {			# 2 = Only edits
@@ -1671,7 +1671,7 @@ sub GetRc {
     @outrc = @temprc;
   }
   foreach my $rcline (@outrc) {
-    my ($ts, $id, $minor) = split(/$FS/, $rcline);
+    my ($ts, $id, $minor) = split(/$FS/o, $rcline);
     $changetime{$id} = $ts;
   }
   my $date = '';
@@ -1684,7 +1684,7 @@ sub GetRc {
   my %match = $filterOnly ? map { $_ => 1 } SearchTitleAndBody($filterOnly) : ();
   foreach my $rcline (@outrc) {
     my ($ts, $id, $minor, $summary, $host, $username, $revision, $languages, $cluster)
-      = split(/$FS/, $rcline);
+      = split(/$FS/o, $rcline);
     next if not $all and $ts < $changetime{$id};
     next if $idOnly and $idOnly ne $id;
     next if $match and $id !~ /$match/i;
@@ -1695,7 +1695,7 @@ sub GetRc {
     next if $lang and @languages and not grep(/$lang/, @languages);
     if ($PageCluster) {
       ($cluster, $summary) = ($1, $2) if $summary =~ /^\[\[$FreeLinkPattern\]\] ?: *(.*)/
-	or $summary =~ /^$LinkPattern ?: *(.*)/;
+	or $summary =~ /^$LinkPattern ?: *(.*)/o;
       next if ($clusterOnly and $clusterOnly ne $cluster);
       $cluster = '' if $clusterOnly; # don't show cluster if $clusterOnly eq $cluster
       if ($all < 2 and not $clusterOnly and $cluster) {
@@ -1885,7 +1885,7 @@ sub GetRcRss {
       $rss .= "<pubDate>" . $date . "</pubDate>\n";
       $rss .= "<comments>" . $url . ($UsePathInfo ? '/' : '?')
 	. $CommentsPrefix . UrlEncode($id) . "</comments>\n"
-	  if $CommentsPrefix and $id !~ /^$CommentsPrefix/;
+	  if $CommentsPrefix and $id !~ /^$CommentsPrefix/o;
       $rss .= "<wiki:username>" . $username . "</wiki:username>\n" if $username;
       $rss .= "<wiki:status>" . (1 == $revision ? 'new' : 'updated') . "</wiki:status>\n";
       $rss .= "<wiki:importance>" . ($minor ? 'minor' : 'major') . "</wiki:importance>\n";
@@ -1976,7 +1976,7 @@ sub GetHistoryLine {
 sub DoContributors {
   my $id = shift;
   print GetHeader('', Ts('Contributors to %s', $id || $SiteName));
-  my %h = map { my ($ts, $pagename, $minor, $summary, $host, $username) = split(/$FS/, $_);
+  my %h = map { my ($ts, $pagename, $minor, $summary, $host, $username) = split(/$FS/o, $_);
                 $username => 1 if not $id or $pagename eq $id; } GetRcLines(1);
   print $q->div({-class=>'content contrib'}, $q->p(map { GetPageLink($_) } sort(keys %h)));
   PrintFooter();
@@ -1996,7 +1996,7 @@ sub DoRollback {
   my @ids = ();
   if (not $page) { # cannot just use list length because of ('')
     return unless UserIsAdminOrError(); # only admins can do mass changes
-    my %ids = map { my ($ts, $id) = split(/$FS/); $id => 1; } # make unique via hash
+    my %ids = map { my ($ts, $id) = split(/$FS/o); $id => 1; } # make unique via hash
       GetRcLines($Now - $KeepDays * 86400, 1); # 24*60*60
     @ids = keys %ids;
   } else {
@@ -2319,7 +2319,7 @@ sub GetFooterLinks {
   my @elements;
   if ($id and $rev ne 'history' and $rev ne 'edit') {
     if ($CommentsPrefix) {
-      if ($OpenPageName =~ /^$CommentsPrefix(.*)/) {
+      if ($OpenPageName =~ /^$CommentsPrefix(.*)/o) {
 	push(@elements, GetPageLink($1, undef, 'original'));
       } else {
 	push(@elements, GetPageLink($CommentsPrefix . $OpenPageName, undef, 'comment'));
@@ -2351,7 +2351,7 @@ sub GetFooterLinks {
 sub GetCommentForm {
   my ($id, $rev, $comment) = @_;
   if ($CommentsPrefix ne '' and $id and $rev ne 'history' and $rev ne 'edit'
-      and $id =~ /^$CommentsPrefix/ and UserCanEdit($id, 0, 1)) {
+      and $id =~ /^$CommentsPrefix/o and UserCanEdit($id, 0, 1)) {
     return $q->div({-class=>'comment'}, GetFormStart(undef, undef, 'comment'), # protected by questionasker
 		   $q->p(GetHiddenValue('title', $OpenPageName),
 			 GetTextArea('aftertext', $comment ? $comment : $NewComment)),
@@ -2581,7 +2581,7 @@ sub OpenPage { # Sets global variables
       local $/ = undef;
       $Page{text} = <F>;
       close F;
-    } elsif ($CommentsPrefix and $id =~ /^$CommentsPrefix(.*)/) { # do nothing
+    } elsif ($CommentsPrefix and $id =~ /^$CommentsPrefix(.*)/o) { # do nothing
     } else {
       $Page{text} = $NewText;
     }
@@ -3075,7 +3075,7 @@ sub UserCanEdit {
   return 1 if UserIsEditor();
   return 0 if !$EditAllowed or -f $NoEditFile;
   return 0 if $editing and UserIsBanned(); # this call is more expensive
-  return 0 if $EditAllowed >= 2 and (not $CommentsPrefix or $id !~ /^$CommentsPrefix/);
+  return 0 if $EditAllowed >= 2 and (not $CommentsPrefix or $id !~ /^$CommentsPrefix/o);
   return 1 if $EditAllowed >= 3 and ($comment or (GetParam('aftertext', '') and not GetParam('text', '')));
   return 0 if $EditAllowed >= 3;
   return 1;
@@ -3116,7 +3116,7 @@ sub UserIsEditor {
 
 sub BannedContent {
   my $str = shift;
-  my @urls = $str =~ /$FullUrlPattern/g;
+  my @urls = $str =~ /$FullUrlPattern/go;
   foreach (split(/\n/, GetPageContent($BannedContent))) {
     next unless m/^\s*([^#]+?)\s*(#\s*(\d\d\d\d-\d\d-\d\d\s*)?(.*))?$/;
     my ($regexp, $comment) = ($1, $4);
@@ -3370,7 +3370,7 @@ sub PrintSearchResult {
   my ($type) = TextIsFile($text); # MIME type if an uploaded file
   my %entry;
   #  get the page, filter it, remove all tags
-  $text =~ s/$FS//g;	# Remove separators (paranoia)
+  $text =~ s/$FS//go;	# Remove separators (paranoia)
   $text =~ s/[\s]+/ /g;	#  Shrink whitespace
   $text =~ s/([-_=\\*\\.]){10,}/$1$1$1$1$1/g ; # e.g. shrink "----------"
   $entry{title} = $name;
@@ -3500,7 +3500,7 @@ sub DoPost {
     # Massage the string
     $string =~ s/\r//g;
     $string .= "\n"  if ($string !~ /\n$/);
-    $string =~ s/$FS//g;
+    $string =~ s/$FS//go;
   }
   my %allowed = map {$_ => 1} @UploadTypes;
   ReportError(Ts('Files of type %s are not allowed.', $type), '415 UNSUPPORTED MEDIA TYPE')
@@ -3576,8 +3576,8 @@ sub GetSummary {
     $text =~ s/\s*\S*$/ . . ./;
   }
   my $summary = GetParam('summary', '') || $text; # not GetParam('summary', $text) work because '' is defined
-  $summary =~ s/$FS|[\r\n]+/ /g; # remove linebreaks and separator characters
-  $summary =~ s/\[$FullUrlPattern\s+(.*?)\]/$2/g; # fix common annoyance when copying text to summary
+  $summary =~ s/$FS|[\r\n]+/ /go; # remove linebreaks and separator characters
+  $summary =~ s/\[$FullUrlPattern\s+(.*?)\]/$2/go; # fix common annoyance when copying text to summary
   return UnquoteHtml($summary);
 }
 
@@ -3656,8 +3656,8 @@ sub GetLanguages {
 sub GetCluster {
   $_ = shift;
   return '' unless $PageCluster;
-  return $1 if ($WikiLinks && /^$LinkPattern\n/)
-            or ($FreeLinks && /^\[\[$FreeLinkPattern\]\]\n/);
+  return $1 if ($WikiLinks && /^$LinkPattern\n/o)
+            or ($FreeLinks && /^\[\[$FreeLinkPattern\]\]\n/o);
 }
 
 sub MergeRevisions { # merge change from file2 to file3 into file1
@@ -3733,7 +3733,7 @@ sub DoMaintain {
   my @rc = split(/\n/, $data);
   my $i;
   for ($i = 0; $i < @rc ; $i++) {
-    my ($ts) = split(/$FS/, $rc[$i]);
+    my ($ts) = split(/$FS/o, $rc[$i]);
     last if ($ts >= $starttime);
   }
   print $q->p(Ts('Moving %s log entries.', $i));
@@ -3894,7 +3894,7 @@ sub ReadRecentVisitors {
   %RecentVisitors = ();
   return  unless $status;
   foreach (split(/\n/,$data)) {
-    my @entries = split /$FS/;
+    my @entries = split /$FS/o;
     my $name = shift(@entries);
     $RecentVisitors{$name} = \@entries if $name;
   }
