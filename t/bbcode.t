@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 17;
+use Test::More tests => 26;
 
 clear_pages();
 
@@ -45,14 +45,30 @@ run_tests(split('\n',<<'EOT'));
 <blockquote><p>quoted text</p></blockquote>
 [quote]first paragraph\n\nsecond paragraph[/quote]
 <blockquote><p>first paragraph</p><p>second paragraph</p></blockquote>
+[quote]quoted text[/quote]\nmore text
+<blockquote><p>quoted text</p></blockquote><p>more text</p>
+[quote]quoted text[/quote]\n more text
+<blockquote><p>quoted text</p></blockquote><p> more text</p>
 [code]monospaced text[/code]
 <pre>monospaced text</pre>
 [code]monospaced\n\n text[/code]
 <pre>monospaced\n\n text</pre>
+[code]monospaced text[/code]\nmore text
+<pre>monospaced text</pre><p>more text</p>
+[code]monospaced text[/code]\n more text
+<pre>monospaced text</pre><p> more text</p>
 :) :-) :( :-(
 &#x263a; &#x263a; &#x2639; &#x2639;
 :smile: :happy: :frown: :sad:
 &#x263a; &#x263a; &#x2639; &#x2639;
+foo\n[h1]blarg
+foo <h1>blarg</h1>
+foo[h2]blarg[/h2]fnord
+foo<h2>blarg</h2><p>fnord</p>
+[h3]blarg [i]moo[/i][/h3]
+<h3>blarg <i>moo</i></h3>
+[h5][h6]blarg[/h6]foo
+<h5></h5><h6>blarg</h6><p>foo</p>
 EOT
 
 xpath_run_tests(split('\n',<<'EOT'));
@@ -62,4 +78,6 @@ xpath_run_tests(split('\n',<<'EOT'));
 //a[@class="url http"][@href="http://wikipedia.org"][text()="Wikipedia"]
 [img]http://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Wikipedia-logo.png/150px-Wikipedia-logo.png[/img]
 //img[@class="url http"][@src="http://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Wikipedia-logo.png/150px-Wikipedia-logo.png"]
+[H4][url=http://example.org]mu[/url][/h4]
+//h4/a[@class="url http"][@href="http://example.org"][text()="mu"]
 EOT
