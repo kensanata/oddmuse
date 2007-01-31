@@ -1,3 +1,15 @@
+2007-01-31  Alex Schroeder  <alex@gnu.org>
+
+	* modules/bbcode.pl (bbCodeRule): Added support for url, img,
+	quote, and code.
+
+	* wiki.pl (InitCookie, PrintWikiToHTML, PrintAllPages)
+	(BrowseResolvedPage, GetRcLines, GetRc, GetRcRss)
+	(DoContributors, DoRollback, GetFooterLinks, GetCommentForm)
+	(OpenPage, UserCanEdit, BannedContent, PrintSearchResult)
+	(DoPost, GetSummary, GetCluster, DoMaintain, ReadRecentVisitors):
+	Add /o to m//, s///, grep, and split calls where appropriate.
+
 2007-01-30  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetHeader): Put all the content into a div.wrapper.
