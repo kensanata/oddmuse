@@ -16,16 +16,17 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: bbcode.pl,v 1.4 2007/01/31 08:35:27 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: bbcode.pl,v 1.5 2007/01/31 23:49:38 as Exp $</p>';
 
 push(@MyRules, \&bbCodeRule);
 
 use vars qw($bbBlock);
+my %bbTitle = qw(h1 1 h2 1 h3 1 h4 1 h5 1 h6 1);
 
 sub bbCodeRule {
-  if (/\G(\[([a-z]+)(?:=([^]]+))?\])/cgi) {
+  if (/\G(\[([a-z][a-z1-6]*)(?:=([^]]+))?\])/cgi) {
     my $bbcode = $1;
-    my $tag = $2;
+    my $tag = lc($2);
     my $option = $3;
     if ($tag eq 'b') { 
       return AddHtmlEnvironment('b'); }
@@ -59,34 +60,44 @@ sub bbCodeRule {
       $html .= "<blockquote>";
       $bbBlock = 'blockquote';
       return $html . AddHtmlEnvironment('p'); }
-    elsif ($tag eq 'code' and /\G((?:.*\n)*?.*?)\[\/code\]/cgi) {
-      return CloseHtmlEnvironments() . $q->pre($1); }
-    return $bbcode;
-  } elsif (/\G(\[\/([a-z]+)\])/cgi) {
+    elsif ($tag eq 'code' and /\G((?:.*\n)*?.*?)\[\/code\](.*\n)*/cgi) {
+      return CloseHtmlEnvironments() . $q->pre($1) . AddHtmlEnvironment('p'); }
+    elsif ($bbTitle{$tag}) {
+      return CloseHtmlEnvironments() . AddHtmlEnvironment($tag); }
+    # no opening tag after all
+    return $bbcode; }
+  # closing tags
+  elsif (/\G(\[\/([a-z][a-z1-6]*)\])/cgi) {
     my $bbcode = $1;
-    my $tag = $2;
+    my $tag = lc($2);
     %translate = qw{b b i i u em color em size em font span url a
-		    quote blockquote};
-    if (InElement($translate{$tag})) {
-      return CloseHtmlEnvironmentUntil($translate{$tag}); }
+		    quote blockquote h1 h1 h2 h2 h3 h3 h4 h4 h5 h5
+		    h6 h6};
+    if (@HtmlStack and $HtmlStack[0] eq $translate{$tag}) {
+      my $html = CloseHtmlEnvironment();
+      $html .= AddHtmlEnvironment('p') unless @HtmlStack;
+      return $html; }
+    # block quoting
     elsif ($bbBlock eq $translate{$tag}) {
+      /\G(.*\n)*/cg;
       $bbBlock = undef;
-      return CloseHtmlEnvironments() . "</$translate{$tag}>"; }
+      return CloseHtmlEnvironments() . "</$translate{$tag}>"
+	. AddHtmlEnvironment('p'); }
+    # no closing tag after all
     else {
-      return $bbcode;
-    }
-  } elsif (/\G(:-?[()])/cg) { # smiley fallback
+      return $bbcode; }}
+  # smiley
+  elsif (/\G(:-?[()])/cg) {
     if (substr($1,-1) eq ')') {
       # '☺' 0009786 00263a WHITE SMILING FACE, So, 0, ON, N,
-      return '&#x263a;';
-    } else {
+      return '&#x263a;'; }
+    else {
       # '☹' 0009785 002639 WHITE FROWNING FACE, So, 0, ON, N,
-      return '&#x2639;';
-    }
-  } elsif (/\G:(?:smile|happy):/cg) {
-    return '&#x263a;';
-  } elsif (/\G:(?:sad|frown):/cg) {
-    return '&#x2639;';
-  }
+      return '&#x2639;'; }}
+  elsif (/\G:(?:smile|happy):/cg) {
+    return '&#x263a;'; }
+  elsif (/\G:(?:sad|frown):/cg) {
+    return '&#x2639;'; }
+  # no match
   return undef;
 }
