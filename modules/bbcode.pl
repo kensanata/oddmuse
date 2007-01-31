@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: bbcode.pl,v 1.3 2007/01/31 08:31:34 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: bbcode.pl,v 1.4 2007/01/31 08:35:27 as Exp $</p>';
 
 push(@MyRules, \&bbCodeRule);
 
@@ -83,6 +83,10 @@ sub bbCodeRule {
       # '☹' 0009785 002639 WHITE FROWNING FACE, So, 0, ON, N,
       return '&#x2639;';
     }
+  } elsif (/\G:(?:smile|happy):/cg) {
+    return '&#x263a;';
+  } elsif (/\G:(?:sad|frown):/cg) {
+    return '&#x2639;';
   }
   return undef;
 }
