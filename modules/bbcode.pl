@@ -16,9 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: bbcode.pl,v 1.1 2007/01/30 15:36:05 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: bbcode.pl,v 1.2 2007/01/31 08:23:19 as Exp $</p>';
 
 push(@MyRules, \&bbCodeRule);
+
+use vars qw($bbBlock);
 
 sub bbCodeRule {
   if (/\G(\[([a-z]+)(?:=([^]]+))?\])/cgi) {
@@ -42,15 +44,34 @@ sub bbCodeRule {
 				. qq{font-style: normal;"}); }
     elsif ($tag eq 'font') {
       return AddHtmlEnvironment('span', qq{style="font-family: $option;"}); }
-    else {
-      return $bbcode;
-    }
+    elsif ($tag eq 'url') {
+      if ($option) {
+	$option =~ /^($UrlProtocols)/o;
+	my $class = "url $1";
+	return AddHtmlEnvironment('a', qq{href="$option" class="$class"}); }
+      elsif (/\G$FullUrlPattern\s*\[\/url\]/cogi) {
+	return GetUrl($1); }}
+    elsif ($tag eq 'img' and /\G$FullUrlPattern\s*\[\/img\]/cogi) {
+      return GetUrl($1, undef, undef, 1); } # force image
+    elsif ($tag eq 'quote') {
+      my $html = CloseHtmlEnvironments();
+      $html .= "</$bbBlock>" if $bbBlock;
+      $html .= "<blockquote>";
+      $bbBlock = 'blockquote';
+      return $html . AddHtmlEnvironment('p'); }
+    elsif ($tag eq 'code' and /\G((?:.*\n)*?.*?)\[\/code\]/cgi) {
+      return CloseHtmlEnvironments() . $q->pre($1); }
+    return $bbcode;
   } elsif (/\G(\[\/([a-z]+)\])/cgi) {
     my $bbcode = $1;
     my $tag = $2;
-    %translate = qw{b b i i u em color em size em font span};
-    if (defined $HtmlStack[0] && $HtmlStack[0] eq $translate{$tag}) {
-      return CloseHtmlEnvironment(); }
+    %translate = qw{b b i i u em color em size em font span url a
+		    quote blockquote};
+    if (InElement($translate{$tag})) {
+      return CloseHtmlEnvironmentUntil($translate{$tag}); }
+    elsif ($bbBlock eq $translate{$tag}) {
+      $bbBlock = undef;
+      return CloseHtmlEnvironments() . "</$translate{$tag}>"; }
     else {
       return $bbcode;
     }
