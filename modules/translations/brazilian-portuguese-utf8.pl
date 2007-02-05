@@ -18,7 +18,7 @@
 #
 # This translation was last checked for Oddmuse version 1.753.
 #
-$ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.8 2007/02/05 13:19:44 dedalu Exp $</p>';
+$ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.9 2007/02/05 13:54:38 dedalu Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Leitura não permitida: usuário, ip ou rede bloqueados.
@@ -151,11 +151,11 @@ Excluída
 Mark this page for deletion
 Marcar essa página para exclusão
 No other revisions available
-Outras revisões não disponíveis
+Outras versões não disponíveis
 current
-corrente
+atual
 Revision %s
-Revisão %s
+Versão %s
 Contributors to %s
 Colaboradores para %s
 Missing target for rollback.
@@ -167,7 +167,7 @@ Um nome de usuário é requerido para usuários normais.
 Rolling back changes
 Desfazendo alterações
 The two revisions are the same.
-As duas revisões são idênticas.
+As duas versões são idênticas.
 Editing not allowed for %s.
 Edição não permitida para %s.
 Rollback to %s
@@ -231,7 +231,7 @@ por %s
 (diff)
 (diferença)
 Edit revision %s of this page
-Editar a revisão %s dessa página
+Editar a versão %s dessa página
 Edit this page
 Editar essa página
 e
@@ -239,9 +239,9 @@ e
 This page is read-only
 Essa página é apenas para leitura
 View other revisions
-Ver outras revisões
+Ver outras versões
 View current revision
-Ver a revisão corrente
+Ver a versão atual
 View all changes
 Ver todas as alterações
 View contributors
@@ -269,11 +269,11 @@ Validar CSS
 Last edit
 Última edição
 Difference between revision %1 and %2
-Diferença (entre a revisão %1 e %2)
+Diferença (entre versão %1 e %2)
 revision %s
-revisão %s
+versão %s
 current revision
-revisão corrente
+versão atual
 Last major edit (%s)
 Última edição maior (%s)
 later minor edits
@@ -281,7 +281,7 @@ later minor edits
 No diff available.
 Nenhum diff disponível.
 Old revision:
-Revisão antiga:
+Versão antiga:
 Changed:
 Alterado:
 Deleted:
@@ -291,15 +291,15 @@ Adicionado:
 to
 para
 Revision %s not available
-Revisão %s não disponível
+Versão %s não disponível
 showing current revision instead
-mostrando, em vez, a revisão corrente
+mostrando, em vez, a versão atual
 Showing revision %s
-Mostrando revisão %s
+Mostrando versão %s
 Cannot save a nameless page.
 Impossível salvar uma página sem nome.
 Cannot save a page without revision.
-Impossível salvar uma página sem revisão.
+Impossível salvar uma página sem versão.
 Cannot open %s
 Não foi possível abrir %s
 Cannot write %s
@@ -345,13 +345,13 @@ Edição não permitida: %s é apenas para leitura.
 Only administrators can upload files.
 Somente administradores podem enviar arquivos.
 Editing revision %s of
-Editando revisão %s de
+Editando versão %s de
 Editing %s
 Editando %s
 Editing old revision %s.
-Editando revisão antiga %s.
+Editando versão antiga %s.
 Saving this page will replace the latest revision with this text.
-Salvar essa página irá substituir a ultima revisão com esse texto.
+Salvar essa página irá substituir a última versão com esse texto.
 Summary:
 Sumário:
 This change is a minor edit.
@@ -639,13 +639,13 @@ Falta expressão regular na etiqueta de compilação.
 Despamming pages
 Limpar spam das páginas
 Cannot find revision %s.
-Não foi possível localizar a revisão %s.
+Não foi possível localizar a versão %s.
 Revert to revision %1: %2
-Reverter para revisão %1: %2
+Reverter para versão %1: %2
 Marked as %s.
 Marcado como %s.
 Cannot find unspammed revision.
-Não foi possível localizar revisão sem spam.
+Não foi possível localizar versão sem spam.
 Recover Draft
 Recuperar Rascunho
 No text to save
