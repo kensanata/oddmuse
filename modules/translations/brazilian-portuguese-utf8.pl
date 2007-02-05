@@ -18,7 +18,7 @@
 #
 # This translation was last checked for Oddmuse version 1.753.
 #
-$ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.7 2007/01/09 00:30:09 dedalu Exp $</p>';
+$ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.8 2007/02/05 13:19:44 dedalu Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Leitura não permitida: usuário, ip ou rede bloqueados.
@@ -390,6 +390,10 @@ Sample_Undefined_Page
 Exemplo_Página_Não_Definida
 Rule "%1" matched "%2" on this page.
 Regra "%1" coincidiu com "%2" nessa página.
+Reason: %s.
+Causa: %s.
+Reason unknown.
+Causa desconhecida.
 Without normal pages
 Ocultar páginas normais
 Include normal pages
@@ -876,6 +880,8 @@ No tags
 Não há etiquetas.
 Slideshow:%s
 Apresentação de slides:%s
+Index of all small pages
+Índice de todas as páginas pequenas
 Static Copy
 Cópia Estática
 Back to %s
