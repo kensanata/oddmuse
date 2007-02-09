@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.39 2007/01/14 16:30:09 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.40 2007/02/09 21:52:45 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
@@ -27,13 +27,23 @@ $RuleOrder{ \&TocRule } = 90;
 use vars qw($TocAutomatic);
 
 $TocAutomatic = 1;
-my %TocCounter = ();
 my $TocShown = 0;
+my ($TocCounter, $TocPage);
+
+push(@MyInitVariables, \&TocInit);
+
+sub TocInit {
+  $TocPage = GetId(); # only do this for the "main" page
+  $TocCounter = 0;
+}
+
+# If we're rendering the headings inside the sidebar, we want to refer
+# to the headings in the real page. $OpenPageName points to the
+# $SidebarName, however, so that the forms extension works. That's why
+# we have a separate variable being used, here.
 
 sub TocRule {
-  # Using such a key makes sure that we're not getting confused by
-  # headings in the sidebar.
-  my $key = $OpenPageName||'toc';
+  my $key = $TocPage eq $OpenPageName || $OpenPageName eq '';
   if (m/\G&lt;toc&gt;/gci) {
     my $html = CloseHtmlEnvironments()
       . ($PortraitSupportColorDiv ? '</div>' : '');
@@ -53,8 +63,12 @@ sub TocRule {
       . ($PortraitSupportColorDiv ? '</div>' : '');
     $html .= TocHeadings() if not $TocShown and $TocAutomatic;
     $TocShown = 1 if $TocAutomatic;
-    my $TocKey = $key . ++$TocCounter{$key};
-    $html .= AddHtmlEnvironment('h' . $depth, qq{id="$TocKey"});
+    if ($key) {
+      $TocCounter++;
+      $html .= AddHtmlEnvironment('h' . $depth, qq{id="toc$TocCounter"});
+    } else {
+      $html .= AddHtmlEnvironment('h' . $depth);
+    }
     $PortraitSupportColorDiv = 0; # after the HTML has been determined.
     $PortraitSupportColor = 0;
     return $html;
@@ -78,9 +92,13 @@ sub TocRule {
       . ($PortraitSupportColorDiv ? '</div>' : '');
     $html .= TocHeadings() if not $TocShown and $TocAutomatic;
     $TocShown = 1 if $TocAutomatic;
-    my $TocKey = $key . ++$TocCounter{$key};
-    $html .= qq{<h$depth id="$TocKey">$text</h$depth>}
-      . AddHtmlEnvironment('p');
+    if ($key) {
+      $TocCounter++;
+      $html .= qq{<h$depth id="toc$TocCounter">$text</h$depth>};
+    } else {
+      $html .= qq{<h$depth>$text</h$depth>};
+    }
+    $html .= AddHtmlEnvironment('p');
     $PortraitSupportColorDiv = 0; # after the HTML has been determined.
     $PortraitSupportColor = 0;
     return $html;
@@ -92,9 +110,13 @@ sub TocRule {
       . ($PortraitSupportColorDiv ? '</div>' : '');
     $html .= TocHeadings() if not $TocShown and $TocAutomatic;
     $TocShown = 1 if $TocAutomatic;
-    my $TocKey = $key . ++$TocCounter{$key};
-    $html .= qq{<h$depth id="$TocKey">$text</h$depth>}
-      . AddHtmlEnvironment('p');
+    if ($key) {
+      $TocCounter++;
+      $html .= qq{<h$depth id="toc$TocCounter">$text</h$depth>};
+    } else {
+      $html .= qq{<h$depth>$text</h$depth>};
+    }
+    $html .= AddHtmlEnvironment('p');
     $PortraitSupportColorDiv = 0; # after the HTML has been determined.
     $PortraitSupportColor = 0;
     return $html;
@@ -103,13 +125,7 @@ sub TocRule {
 }
 
 sub TocHeadings {
-  # Using such a key makes sure that we're not getting confused by
-  # headings in the sidebar. If we're rendering the headings inside
-  # the sidebar, we want to refer to the headings in the real page.
-  # $OpenPageName points to the $SidebarName, however, so that the
-  # forms extension works. That's why we have a separate variable
-  # being used, here.
-  my $key = $SideBarOpenPageName||$OpenPageName||'toc';
+  my $key = 'toc';
   my $oldpos = pos;          # make this sub not destroy the value of pos
   my $page = $Page{text};   # work on the page that is currently open!
   # ignore all the stuff that gets processed anyway
