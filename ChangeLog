@@ -1,3 +1,8 @@
+2007-02-09  Alex Schroeder  <alex@gnu.org>
+
+	* modules/image.pl (ImageSupportRule): Add a
+	CloseHtmlEnvironments() call if the image has a caption.
+
 2007-02-01  Alex Schroeder  <alex@gnu.org>
 
 	* modules/bbcode.pl (bbCodeRule): Support for h1-h6.
