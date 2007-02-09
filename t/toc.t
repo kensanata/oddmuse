@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 22;
+use Test::More tests => 23;
 
 clear_pages();
 
@@ -27,9 +27,13 @@ add_module('usemod.pl');
 
 InitVariables(); # do this after loading usemod.pl!
 
+# Note that we're not calling TocInit between tests, so we rely on
+# them being run in order.
 run_tests(split('\n',<<'EOT'));
 == make honey ==\n\nMoo.\n
 <h2 id="toc1">make honey</h2><p>Moo.</p>
+== make honey ==\nMoo.\n== make honey ==\nMoo.\n
+<h2 id="toc2">make honey</h2><p>Moo. </p><h2 id="toc3">make honey</h2><p>Moo.</p>
 EOT
 
 test_page(update_page('toc', "bla\n"
