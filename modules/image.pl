@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: image.pl,v 1.25 2006/09/01 23:46:53 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: image.pl,v 1.26 2007/02/09 00:37:29 as Exp $</p>';
 
 use vars qw($ImageUrlPath);
 
@@ -68,7 +68,7 @@ sub ImageSupportRule {
 	$caption = $q->a({-href=>$reference, -class=>$refclass}, $caption);
       }
       $result .= $q->br() . $q->span({-class=>'caption'}, $caption);
-      $result = $q->div({-class=>$class}, $result);
+      $result = CloseHtmlEnvironments() . $q->div({-class=>$class}, $result);
     }
     pos = $oldpos;
   }
