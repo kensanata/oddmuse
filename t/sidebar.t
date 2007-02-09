@@ -46,10 +46,10 @@ test_page(update_page('test', "bla\n"
 		      . "===three==\n"
 		      . "bla\n"
 		      . "=one=\n"),
-	  quotemeta('<ol><li><a href="#test1">two</a><ol><li><a href="#test2">three</a></li></ol></li><li><a href="#test3">one</a></li></ol>'),
-	  quotemeta('<h2 id="SideBar1">mu</h2>'),
-	  quotemeta('<h2 id="test1">two</h2>'),
-	  quotemeta('<h2 id="test3">one</h2>'),
+	  quotemeta('<ol><li><a href="#toc1">two</a><ol><li><a href="#toc2">three</a></li></ol></li><li><a href="#toc3">one</a></li></ol>'),
+	  quotemeta('<h2>mu</h2>'),
+	  quotemeta('<h2 id="toc1">two</h2>'),
+	  quotemeta('<h2 id="toc3">one</h2>'),
 	  quotemeta('bla </p><div class="toc"><h2>Contents</h2><ol><li><a '),
 	  quotemeta('one</a></li></ol></div><p> murks'));
 
@@ -61,9 +61,9 @@ test_page(update_page('test', "bla\n"
 		      . "===three==\n"
 		      . "bla\n"
 		      . "=one=\n"),
-	  quotemeta('<ol><li><a href="#test1">two</a><ol><li><a href="#test2">three</a></li></ol></li><li><a href="#test3">one</a></li></ol>'),
-	  quotemeta('<h2 id="test1">two</h2>'),
-	  quotemeta('<h2 id="test3">one</h2>'),
+	  quotemeta('<ol><li><a href="#toc1">two</a><ol><li><a href="#toc2">three</a></li></ol></li><li><a href="#toc3">one</a></li></ol>'),
+	  quotemeta('<h2 id="toc1">two</h2>'),
+	  quotemeta('<h2 id="toc3">one</h2>'),
 	  quotemeta('<div class="sidebar"><div class="toc"><h2>Contents</h2><ol><li><a '),
 	  quotemeta('one</a></li></ol></div></div><div class="content browse"><p>'));
 
