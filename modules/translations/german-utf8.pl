@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.19 2006/11/27 19:53:35 lude Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.20 2007/02/09 10:15:45 ingob Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
@@ -900,4 +900,6 @@ Title:
 Titel: 
 Tags: 
 
+More...
+Weiterblättern...
 END_OF_TRANSLATION
