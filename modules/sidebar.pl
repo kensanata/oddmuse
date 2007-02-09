@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: sidebar.pl,v 1.16 2006/08/06 23:18:08 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: sidebar.pl,v 1.17 2007/02/09 21:51:09 as Exp $</p>';
 
 use vars qw($SidebarName $SideBarOpenPageName);
 
@@ -43,9 +43,6 @@ sub NewSideBarGetHeader {
   # While rendering, OpenPageName must point to the sidebar, so that
   # the form extension which checks whether the current page is locked
   # will check the SideBar lock and not the real page's lock.
-  # On the other hand, when the sidebar contains a <toc>, the
-  # generated toc should point to the headers of the real page.
-  local $SideBarOpenPageName = $OpenPageName;
   local $OpenPageName = $SidebarName;
   print '<div class="sidebar">';
   # This makes sure that $Page{text} remains undisturbed.
