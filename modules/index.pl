@@ -1,4 +1,4 @@
-# Copyright (C) 2004  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2007  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: index.pl,v 1.2 2004/09/19 02:20:49 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: index.pl,v 1.3 2007/02/12 21:17:32 as Exp $</p>';
 
 $Action{'printable-index'} = \&DoPrintableIndex;
 
@@ -41,13 +41,9 @@ sub DoPrintableIndex {
 # Mostly DoIndex() without the printing.
 sub PrintableIndexPages {
   my @pages;
-  my $pages = GetParam('pages', 1);
-  my $anchors = GetParam('permanentanchors', 1);
-  my $near = GetParam('near', 0);
-  ReadPermanentAnchors() if $anchors and not $PermanentAnchorsInit;
-  NearInit() if $near and not $NearSiteInit;
-  push(@pages, AllPagesList()) if $pages;
-  push(@pages, keys %PermanentAnchors) if $anchors;
-  push(@pages, keys %NearSource) if $near;
-  return @pages;
+  push(@pages, AllPagesList()) if GetParam('pages', 1);
+  push(@pages, keys %PermanentAnchors) if GetParam('permanentanchors', 1);
+  push(@pages, keys %NearSource) if GetParam('near', 0);
+  @pages = grep /$match/i, @pages if GetParam('match', '');
+  return sort @pages;
 }
