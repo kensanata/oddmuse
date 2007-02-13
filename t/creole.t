@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 61;
+use Test::More tests => 63;
 clear_pages();
 
 add_module('creole.pl');
@@ -79,7 +79,7 @@ this is <strong><em>bold italic</em></strong><em>italic</em>
 foo\n\nbar
 foo<p>bar</p>
 foo\nbar
-foo<br />bar
+foo bar
 {{{\nfoo\n}}}
 <pre class="real">foo\n</pre>
 {{{\nfoo}}}
@@ -98,6 +98,8 @@ foo -----
 <hr /><p>foo</p>
 foo\n----
 foo<hr />
+|a\\b|\n|c
+<table class="user"><tr><td>a<br />b</td></tr><tr><td>c</td></tr></table>
 |a|b|c\n|d|e|f
 <table class="user"><tr><td>a</td><td>b</td><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr></table>
 |a|b|c|\n|d|e|f|
@@ -106,6 +108,13 @@ foo<hr />
 <table class="user"><tr><td align="right">a</td><td align="right">b</td><td align="right">c</td></tr><tr><td align="center">d </td><td align="center">e </td><td align="center">f </td></tr></table>
 |a||c\n||e|f
 <table class="user"><tr><td>a</td><td colspan="2">c</td></tr><tr><td colspan="2">e</td><td>f</td></tr></table>
+EOT
+
+$CreoleLineBreaks = 1;
+
+run_tests(split('\n',<<'EOT'));
+foo\nbar
+foo<br />bar
 EOT
 
 # Mixed lists are not supported
