@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.12 2006/08/06 11:46:12 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.13 2007/02/13 00:22:47 fletcherpenney Exp $</p>';
 
 use vars qw($ClusterMapPage $ClusterMapTOC $FilterUnclusteredRegExp @ClusterMapAdminPages);
 
@@ -51,8 +51,9 @@ $Action{unclustered} = \&DoUnclustered;
 
 push(@MyRules, \&ClusterMapRule);
 
-push (@AdminPages, @ClusterMapAdminPages);
-
+foreach (@ClusterMapAdminPages){
+	$AdminPages{$_} = 1;
+}
 
 sub ClusterMapRule {
 	if (/\G^([\n\r]*\<\s*clustermap\s*\>\s*)$/mgc) {
