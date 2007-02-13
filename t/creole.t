@@ -55,7 +55,7 @@ this is <strong><em>bold italic</em></strong><em>italic</em>
 //**bold italic//**bold
 <em><strong>bold italic</strong></em><strong>bold</strong>
 = foo
-= foo
+<h1>foo</h1>
 == foo
 <h2>foo</h2>
 === foo
