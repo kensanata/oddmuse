@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.21 2007/02/13 11:51:01 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.22 2007/02/13 11:52:23 as Exp $</p>';
 
 use vars qw($CreoleLineBreaks);
 
@@ -30,14 +30,10 @@ $RuleOrder{\&CreoleRule} = -10;
 $RuleOrder{\&CreoleHeadingRule} = 100;
 
 sub CreoleHeadingRule {
-  # == Level 1 (Largest)
-  # === Level 2
-  # ==== Level 3
-  # Too bad those are not the only ones allowed... :(
-  if ($bol && m/\G(\s*\n)*(==+)[ \t]*(.*?)[ \t]*=*[ \t]*(\n|\Z)/cg) {
+  # = to ====== for h1 to h6
+  if ($bol && m/\G(\s*\n)*(=+)[ \t]*(.*?)[ \t]*=*[ \t]*(\n|\Z)/cg) {
     my $depth = length($2);
     $depth = 6 if $depth > 6;
-    $depth = 2 if $depth < 2;
     my $text = $3;
     return CloseHtmlEnvironments() . "<h$depth>$text</h$depth>"
       . AddHtmlEnvironment('p');
