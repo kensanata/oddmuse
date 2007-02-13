@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.13 2007/02/13 00:22:47 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.14 2007/02/13 00:35:07 fletcherpenney Exp $</p>';
 
 use vars qw($ClusterMapPage $ClusterMapTOC $FilterUnclusteredRegExp @ClusterMapAdminPages);
 
@@ -228,17 +228,19 @@ sub ClusterMapBrowseResolvedPage {
 	if ($id eq $ClusterMapPage) {
 		CreateClusterMap();
 		print GetHeader('',$title,'');
-	if ($ClusterMapTOC) {
-		my $TOCCount = 0;
-		print '<div class="toc"><h2>Contents</h2><ol>';
-		foreach my $cluster ( sort keys %ClusterMap) {
-			print "<li><a href=\"#toc$TOCCount\">$cluster</a></li>";
-			$TOCCount++;
+		print '<div class="content">';	
+		if ($ClusterMapTOC) {
+			my $TOCCount = 0;
+			print '<div class="toc"><h2>Contents</h2><ol>';
+			foreach my $cluster ( sort keys %ClusterMap) {
+				print "<li><a href=\"#toc$TOCCount\">$cluster</a></li>";
+				$TOCCount++;
+			}
+			print '</ol></div>';
+			$PrintTOCAnchor = 1;
 		}
-		print '</ol></div>';
-		$PrintTOCAnchor = 1;
-	}
 		PrintClusterMap();
+		print '</div>';	
 		PrintFooter();
 	} else {
 		OldBrowseResolvedPage($id);
@@ -257,17 +259,19 @@ sub ClusterMapPrintWikiToHTML {
 		&& ($pageText =~ /^\s*$/s)){
 		SetParam('rcclusteronly',0);
 		CreateClusterMap();
-	if ($ClusterMapTOC) {
-		my $TOCCount = 0;
-		print '<div class="toc"><h2>Contents</h2><ol>';
-		foreach my $cluster ( sort keys %ClusterMap) {
-			print "<li><a href=\"#toc$TOCCount\">$cluster</a></li>";
-			$TOCCount++;
+		print '<div class="content">';	
+		if ($ClusterMapTOC) {
+			my $TOCCount = 0;
+			print '<div class="toc"><h2>Contents</h2><ol>';
+			foreach my $cluster ( sort keys %ClusterMap) {
+				print "<li><a href=\"#toc$TOCCount\">$cluster</a></li>";
+				$TOCCount++;
+			}
+			print '</ol></div>';
+			$PrintTOCAnchor = 1;
 		}
-		print '</ol></div>';
-		$PrintTOCAnchor = 1;
-	}
 		PrintClusterMap();
+		print '</div>';	
 	}
 	OldPrintWikiToHTML(@_);
 }
