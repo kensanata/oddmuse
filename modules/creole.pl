@@ -16,7 +16,12 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.19 2007/01/14 13:44:24 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.20 2007/02/13 11:49:58 as Exp $</p>';
+
+use vars qw($CreoleLineBreaks);
+
+# single newlines don't insert a linebreak
+$CreoleLineBreaks = 0;
 
 push(@MyRules, \&CreoleRule, \&CreoleHeadingRule);
 # [[link|{{Image:foo}}]] conflicts with default link rule
@@ -109,7 +114,7 @@ sub CreoleRule {
     return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
   }
   # line break: one newline
-  elsif (m/\G\s*\n/cg) {
+  elsif ($CreoleLineBreaks && m/\G\s*\n/cg) {
     return $q->br();
   }
   # {{{
