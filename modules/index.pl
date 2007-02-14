@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: index.pl,v 1.3 2007/02/12 21:17:32 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: index.pl,v 1.4 2007/02/14 09:25:18 as Exp $</p>';
 
 $Action{'printable-index'} = \&DoPrintableIndex;
 
@@ -25,6 +25,7 @@ sub DoPrintableIndex {
   my @pages = PrintableIndexPages();
   my %hash;
   map { push(@{$hash{GetPageDirectory($_)}}, $_); } @pages;
+  print '<div class="content printable index">';
   print $q->p($q->a({-name=>"top"}),
 	      map { $q->a({-href=>"#$_"}, $_); } sort keys %hash);
   foreach my $title (sort keys %hash) {
@@ -35,6 +36,7 @@ sub DoPrintableIndex {
     }
     print '</div>';
   }
+  print '</div>';
   PrintFooter();
 }
 
