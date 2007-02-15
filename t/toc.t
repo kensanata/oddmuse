@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 23;
+use Test::More tests => 24;
 
 clear_pages();
 
@@ -35,6 +35,16 @@ run_tests(split('\n',<<'EOT'));
 == make honey ==\nMoo.\n== make honey ==\nMoo.\n
 <h2 id="toc2">make honey</h2><p>Moo. </p><h2 id="toc3">make honey</h2><p>Moo.</p>
 EOT
+
+test_page(update_page('toc', "bla\n"
+		      . "<toc/fnord/mu>\n"
+		      . "murks\n"
+		      . "==two=\n"
+		      . "bla\n"
+		      . "===three==\n"
+		      . "bla\n"
+		      . "=one=\n"),
+	  quotemeta('<div class="toc fnord mu">'));
 
 test_page(update_page('toc', "bla\n"
 		      . "=one=\n"
