@@ -99,6 +99,9 @@ div.toc {
     line-height: 90%;
     font-family: sans-serif;
 }
+div.toc.dense li {
+    display: inline;
+}  
 div.toc h2 {
     margin:    0;
     padding-top: 1em;
