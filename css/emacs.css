@@ -58,6 +58,10 @@ div.diff {
     padding-left:5%;
     padding-right:5%;
 }
+div.diff p b {
+    font-size: 150%;
+    font-weight: normal;
+}
 div.old {
     background-color:#FFFFAF;
 }
@@ -174,6 +178,9 @@ dl.irc dd {
 
 table.history {
     border-style:none;
+}
+table.history td[colspan="3"] {
+    padding: 1em 0;
 }
 td.history {
     border-style:none;
