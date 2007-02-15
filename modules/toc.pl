@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.40 2007/02/09 21:52:45 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.41 2007/02/15 21:58:02 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
@@ -44,10 +44,10 @@ sub TocInit {
 
 sub TocRule {
   my $key = $TocPage eq $OpenPageName || $OpenPageName eq '';
-  if (m/\G&lt;toc&gt;/gci) {
+  if (m!\G&lt;toc(/[A-Za-z\x80-\xff/]+)?&gt;!gci) {
     my $html = CloseHtmlEnvironments()
       . ($PortraitSupportColorDiv ? '</div>' : '');
-    $html .= TocHeadings() unless $TocShown;
+    $html .= TocHeadings(split(m|/|, $1)) unless $TocShown;
     $html .= AddHtmlEnvironment('p');
     $TocShown = 1;
     $PortraitSupportColorDiv = 0; # after the HTML has been determined.
@@ -125,6 +125,7 @@ sub TocRule {
 }
 
 sub TocHeadings {
+  my $class = 'toc' . join(' ', @_);
   my $key = 'toc';
   my $oldpos = pos;          # make this sub not destroy the value of pos
   my $page = $Page{text};   # work on the page that is currently open!
@@ -188,6 +189,6 @@ sub TocHeadings {
   }
   pos = $oldpos;
   return '' if $count <= 2;
-  return $q->div({-class=>'toc'}, $Headings)
+  return $q->div({-class=>$class}, $Headings)
     if $Headings;
 }
