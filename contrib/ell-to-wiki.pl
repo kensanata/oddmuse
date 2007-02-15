@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+# -*- coding: utf-8 -*-
 
 # Copyright (C) 2004  Alex Schroeder <alex@emacswiki.org>
 # Copyright (C) 2007  Vinicius José Latorre <viniciusjl at ig.com.br>
@@ -19,54 +20,52 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-# $Id: ell-to-wiki.pl,v 1.2 2007/02/09 20:05:02 as Exp $
+# $Id: ell-to-wiki.pl,v 1.3 2007/02/15 21:27:37 as Exp $
 
 use LWP::UserAgent;
 use XML::Parser;
 
 sub GetRaw {
-  my $uri = shift;
-  my $ua = LWP::UserAgent->new;
-  my $request = HTTP::Request->new('GET', $uri);
-  my $response = $ua->request($request);
-  return $response->content;
+    my $uri = shift;
+    my $ua = LWP::UserAgent->new;
+    my $request = HTTP::Request->new('GET', $uri);
+    my $response = $ua->request($request);
+    return $response->content;
 }
 
 
 {
-  package MySubs;
-  my %index = {};
-  sub StartTag {
-    my ($e, $name) = @_;
-    if ($name eq 'entry') {
-      my $key = uc(substr($_{filename}, 0, 1));
-      unless (exists $index{$key}) {
-	$index{$key} = 1;
-	print "[:$key]\n= $key =\n\n";
-      }
-      print "[$_{site} $_{filename}] -- $_{description} (by $_{contact})\n\n";
-    } elsif ($name eq 'date') {
-      print "/Timestamp:/ ";
+    package MySubs;
+    sub StartTag {
+	my ($e, $name) = @_;
+	my %index = {};
+	if ($name eq 'entry') {
+	    my $key = uc(substr($_{filename}, 0, 1));
+	    unless (exists $index{$key}) {
+		$index{$key} = 1;
+		print "= $key =\n\n";
+	    }
+	    print "[$_{site} $_{filename}] --- $_{description} (by $_{contact})\n\n";
+	} elsif ($name eq 'date') {
+	    print "/Timestamp:/ ";
+	}
     }
-  }
-  sub EndTag {
-    my ($e, $name) = @_;
-    if ($name eq 'date') {
-      print "\nThis page is based on the EmacsLispList by StephenEglen and updated automatically.\n\n*Do not edit.*\n\n";
-      print "/Index:/ [[#5]] [[#A]] [[#B]] [[#C]] [[#D]] [[#E]] [[#F]] [[#G]] [[#H]] [[#I]] [[#J]] [[#K]] [[#L]]";
-      print " [[#M]] [[#N]] [[#O]] [[#P]] [[#Q]] [[#R]] [[#S]] [[#T]] [[#U]] [[#V]] [[#W]] [[#X]] [[#Y]] [[#Z]]\n\n";
+    sub EndTag {
+	my ($e, $name) = @_;
+	if ($name eq 'date') {
+	    print "\nThis page is based on the EmacsLispList by StephenEglen and updated automatically.\n\n*Do not edit.*\n\n";
+	}
     }
-  }
-  sub Text {
-    print $_ if $_;
-  }
+    sub Text {
+	print $_ if $_;
+    }
 }
 
 sub parse {
-  my $data = GetRaw('http://anc.ed.ac.uk/~stephen/emacs/ell.xml');
-  my $parser = new XML::Parser(Style => 'Stream', Pkg => 'MySubs');
-  binmode(STDOUT, ':utf8');
-  $parser->parse($data);
+    my $data = GetRaw('http://anc.ed.ac.uk/~stephen/emacs/ell.xml');
+    my $parser = new XML::Parser(Style => 'Stream', Pkg => 'MySubs');
+    binmode(STDOUT, ':utf8');
+    $parser->parse($data);
 }
 
 parse();
