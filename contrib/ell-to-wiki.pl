@@ -20,7 +20,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-# $Id: ell-to-wiki.pl,v 1.3 2007/02/15 21:27:37 as Exp $
+# $Id: ell-to-wiki.pl,v 1.4 2007/02/15 21:31:01 as Exp $
 
 use LWP::UserAgent;
 use XML::Parser;
@@ -36,9 +36,9 @@ sub GetRaw {
 
 {
     package MySubs;
+    my %index = {};
     sub StartTag {
 	my ($e, $name) = @_;
-	my %index = {};
 	if ($name eq 'entry') {
 	    my $key = uc(substr($_{filename}, 0, 1));
 	    unless (exists $index{$key}) {
