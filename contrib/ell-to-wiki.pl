@@ -20,7 +20,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-# $Id: ell-to-wiki.pl,v 1.4 2007/02/15 21:31:01 as Exp $
+# $Id: ell-to-wiki.pl,v 1.5 2007/02/15 22:00:26 as Exp $
 
 use LWP::UserAgent;
 use XML::Parser;
@@ -47,13 +47,13 @@ sub GetRaw {
 	    }
 	    print "[$_{site} $_{filename}] --- $_{description} (by $_{contact})\n\n";
 	} elsif ($name eq 'date') {
-	    print "/Timestamp:/ ";
+	    print "Timestamp: ";
 	}
     }
     sub EndTag {
 	my ($e, $name) = @_;
 	if ($name eq 'date') {
-	    print "\nThis page is based on the EmacsLispList by StephenEglen and updated automatically.\n\n*Do not edit.*\n\n";
+	    print "\nThis page is based on the EmacsLispList by StephenEglen and updated automatically.\n\n*Do not edit.*\n\n<toc/dense>\n\n";
 	}
     }
     sub Text {
