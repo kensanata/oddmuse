@@ -17,7 +17,7 @@
 #	 59 Temple Place, Suite 330
 #	 Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-hybrid.pl,v 1.10 2005/09/19 21:29:30 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-hybrid.pl,v 1.11 2007/02/15 14:30:49 fletcherpenney Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -142,7 +142,7 @@ sub StaticWriteFile {
 	}
 	close(F);
 	chmod 0644,"$StaticDir/$filename";
-	if (GetParam('action','') eq "static") {
+	if (lc(GetParam('action','')) eq "static") {
 		print $filename, $raw ? "\n" : $q->br();
 	}
 }
@@ -387,4 +387,48 @@ sub AddNewFilesToQueue {
 			AddLinkedFilesToQueue($id);
 		}
 	}
+}
+
+# Make rollback compatible
+
+*StaticOldDoRollback = *DoRollback;
+*DoRollback = *StaticNewDoRollback;
+$Action{rollback} = \&StaticNewDoRollback;
+
+# Delete the static file so that changes made during a rollback are propogated
+
+sub StaticNewDoRollback {
+  my $page = shift;
+  my $to = GetParam('to', 0);
+  ReportError(T('Missing target for rollback.'), '400 BAD REQUEST') unless $to;
+  ReportError(T('Target for rollback is too far back.'), '400 BAD REQUEST') unless $page or RollbackPossible($to);
+  ReportError(T('A username is required for ordinary users.'), '403 FORBIDDEN') unless GetParam('username', '') or UserIsEditor();
+  my @ids = ();
+  if (not $page) { # cannot just use list length because of ('')
+    return unless UserIsAdminOrError(); # only admins can do mass changes
+    my %ids = map { my ($ts, $id) = split(/$FS/o); $id => 1; } # make unique via hash
+      GetRcLines($Now - $KeepDays * 86400, 1); # 24*60*60
+    @ids = keys %ids;
+  } else {
+    @ids = ($page);
+  }
+  RequestLockOrError();
+  print GetHeader('', T('Rolling back changes')), $q->start_div({-class=>'content rollback'}), $q->start_p();
+  foreach my $id (@ids) {
+    OpenPage($id);
+    my ($text, $minor, $ts) = GetTextAtTime($to);
+    if ($Page{text} eq $text) {
+      print T("The two revisions are the same."), $q->br() if $page; # no message when doing mass revert
+    } elsif (!UserCanEdit($id, 1)) {
+      print Ts('Editing not allowed for %s.', $id), $q->br();
+    } else {
+      Save($id, $text, Ts('Rollback to %s', TimeToText($to)), $minor, ($Page{ip} ne $ENV{REMOTE_ADDR}));
+     	StaticDeleteFile($id);
+		print Ts('%s rolled back', GetPageLink($id)), ($ts ? ' ' . Ts('to %s', TimeToText($to)) : ''), $q->br();
+    }
+  }
+  WriteRcLog('[[rollback]]', '', $to) unless $page; # leave marker for DoRc() if mass rollback
+  print $q->end_p() . $q->end_div();
+  ReleaseLock();
+  PrintFooter();
 }
