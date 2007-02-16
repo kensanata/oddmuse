@@ -17,7 +17,7 @@
 #	 59 Temple Place, Suite 330
 #	 Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-hybrid.pl,v 1.11 2007/02/15 14:30:49 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-hybrid.pl,v 1.12 2007/02/16 01:25:33 fletcherpenney Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -431,4 +431,34 @@ sub StaticNewDoRollback {
   print $q->end_p() . $q->end_div();
   ReleaseLock();
   PrintFooter();
+}
+
+*StaticOldDespamPage = *DespamPage;
+*DespamPage = *StaticNewDespamPage;
+
+sub StaticNewDespamPage {
+  my $rule = shift;
+  # from DoHistory()
+  my @revisions = sort {$b <=> $a} map { m|/([0-9]+).kp$|; $1; } GetKeepFiles($OpenPageName);
+  foreach my $revision (@revisions) { # remember the last revision checked
+    my ($text, $rev) = GetTextRevision($revision, 1); # quiet
+    if (not $rev) {
+      print ': ' . Ts('Cannot find revision %s.', $revision);
+      return;
+    } elsif (not DespamBannedContent($text)) {
+      my $summary = Tss('Revert to revision %1: %2', $revision, $rule);
+      print ': ' . $summary;
+      Save($OpenPageName, $text, $summary) unless GetParam('debug', 0);
+		StaticDeleteFile($OpenPageName);
+      return;
+    }
+  }
+  if (grep(/^1$/, @revisions) or not @revisions) { # if there is no kept revision, yet
+    my $summary = Ts($rule). ' ' . Ts('Marked as %s.', $DeletedPage);
+    print ': ' . $summary;
+    Save($OpenPageName, $DeletedPage, $summary) unless GetParam('debug', 0);
+	StaticDeleteFile($OpenPageName);
+  } else {
+    print ': ' . T('Cannot find unspammed revision.'. $revision);
+  }
 }
