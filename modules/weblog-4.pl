@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: weblog-4.pl,v 1.9 2006/08/06 11:56:40 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: weblog-4.pl,v 1.10 2007/02/20 00:14:30 as Exp $</p>';
 
 push(@MyInitVariables, sub {
        $SearchFreeTextTagUrl = $ScriptName . '?action=browse;tag=1;id=';
@@ -62,7 +62,8 @@ sub DoCategories {
       GetFormStart(undef, 'get', 'cat');
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = gmtime();
     my $today = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
-    print $q->p(T('Title: '), $q->textfield('id', $today),
+    print $q->p(T('Title: '),
+		qq{<input type="text" name="id" value="$today" tabindex="1" />},
 		GetHiddenValue('action', 'new'));
     print $q->p(T('Tags: '), $q->textfield('tags'));
     print $q->p($q->submit(T('Go!')));
