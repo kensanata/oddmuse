@@ -1,3 +1,9 @@
+2007-02-20  Alex Schroeder  <aschroeder@localhost>
+
+	* modules/journal-rss.pl (DoJournalRss): Protect call to
+	GetKeptRevision using eval for cases where the old revision is no
+	longer available.
+
 2007-02-14  Alex Schroeder  <aschroeder@localhost>
 
 	* modules/index.pl (DoPrintableIndex): Added a content div around
