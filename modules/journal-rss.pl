@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.14 2006/12/21 21:56:34 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.15 2007/02/20 14:08:21 as Exp $</p>';
 
 $Action{journal} = \&DoJournalRss;
 
@@ -63,8 +63,12 @@ sub DoJournalRss {
     # If this is a minor edit, get the timestamp of the last major
     # edit.
     if ($Page{minor}) {
-      my %keep = GetKeptRevision($Page{lastmajor});
-      $Page{ts} = $keep{ts};
+      # Perhaps the old kept revision is gone due to $KeepMajor=0 or
+      # admin.pl...
+      eval {
+	my %keep = GetKeptRevision($Page{lastmajor});
+	$Page{ts} = $keep{ts};
+      }
     }
     unshift (@fullrc, join($FS, $Page{ts}, $id, $Page{minor}, $Page{summary}, $Page{host},
 			   $Page{username}, $Page{revision}, $Page{languages},
