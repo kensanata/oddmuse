@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: weblog-4.pl,v 1.11 2007/02/20 00:22:51 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: weblog-4.pl,v 1.12 2007/02/20 00:26:59 as Exp $</p>';
 
 push(@MyInitVariables, sub {
        $SearchFreeTextTagUrl = $ScriptName . '?action=browse;tag=1;id=';
@@ -68,7 +68,7 @@ sub DoCategories {
 		GetHiddenValue('action', 'new'));
     print $q->p(T('Tags: '),
 		qq{<input type="text" name="tags" tabindex="2" />});
-    print $q->p(qq{<input type="submit" name="$go" tabindex="3" />}));
+    print $q->p(qq{<input type="submit" name="$go" tabindex="3" />});
     print $q->end_form, $q->end_div();
     PrintFooter();
   }
