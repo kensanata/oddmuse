@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: sistersites.pl,v 1.1 2007/02/22 10:57:50 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: sistersites.pl,v 1.2 2007/02/22 11:02:13 as Exp $</p>';
 
 $Action{'sisterpages'} = \&DoSisterPages;
 
@@ -24,7 +24,7 @@ sub DoSisterPages {
   print GetHttpHeader('text/plain');
   my @pages = SisterPages();
   foreach my $id (@pages) {
-    print $ScriptName . ($UsePathInfo ? '/' : '?') . $id
+    print $ScriptName . ($UsePathInfo ? '/' : '?') . UrlEncode($id)
       . ' ' . NormalToFree($id) . "\n";
   }
 }
