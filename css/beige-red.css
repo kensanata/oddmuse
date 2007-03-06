@@ -115,7 +115,7 @@ div.rc li {
 div.rc li + li {
     margin-top: 1em;
 }
-div.rc li strong, table.history strong {
+div.rc li strong, table.history strong, strong.description {
     font-weight: inherit;
 }
 div.diff {
