@@ -28,19 +28,13 @@
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.33 2006/04/04 01:16:05 fletcherpenney Exp $</p>';
-
-use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled!;
-
-$MarkdownEnabled = 1;
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.34 2007/03/10 22:20:47 fletcherpenney Exp $</p>';
 
 @MyRules = (\&MarkdownRule);
 
 $RuleOrder{\&MarkdownRule} = -10;
 
 $TempNoWikiWords = 0;
-
-$MultiMarkdownEnabled = 0;
 
 sub MarkdownRule {
 	# Allow journal pages	
@@ -61,35 +55,16 @@ sub MarkdownRule {
     # fake that we're blosxom!
     $blosxom::version = 1;
     require "$ModuleDir/Markdown/markdown.pl";
-	
-	$MultiMarkdownEnabled = 1 if ($Markdown::VERSION =~ /Multi/);
-
-	if ($MultiMarkdownEnabled) {
-		$Markdown::g_use_metadata = 0;
-		$Markdown::g_use_wiki_links = 0;
-		# $Markdown::g_base_url = $ScriptName;
-	}
 
 	*Markdown::_RunSpanGamut = *NewRunSpanGamut;
 	*Markdown::_DoHeaders = *NewDoHeaders;
 	*Markdown::_EncodeCode = *NewEncodeCode;
+	*Markdown::_DoAutoLinks = *NewDoAutoLinks;
+    *Markdown::_ParseMetaData = *NewParseMetaData;
 
-	# removed for '<' vs '&lt;' issues
-	#*Markdown::_DoAutoLinks = *NewDoAutoLinks; 
-	
-	# UnquoteHtml - undo what Oddmuse does
-	$source = UnquoteHtml($source);
-	
     # Do not allow raw HTML
     $source = SanitizeSource($source);
     
-    # Allow other Modules to process raw text before Markdown
-    # This allows modules to be "Markdown Compatible"
-	@MyMarkdownRules = sort {$MarkdownRuleOrder{$a} <=> $MarkdownRuleOrder{$b}} @MyMarkdownRules; # default is 0
-	foreach my $sub (@MyMarkdownRules) {
-		$source = &$sub($source);
-	}	
-
     my $result = Markdown::Markdown($source);
     
 	$result = UnescapeWikiWords($result);
@@ -119,8 +94,7 @@ sub SanitizeSource {
 	# Remember, on a wiki, we don't want to allow arbitrary HTML...
 	# (in other words, this is not a bug)
 
-	# But we do want to allow the use of '<' around links in Markdown
-	$text =~ s/\<(?!(https?|ftp|mailto):)/&lt;/g;
+	$text =~ s/\</&lt;/g;
 	
 	return $text;
 }
@@ -130,12 +104,23 @@ sub SanitizeSource {
 *GetCluster = *MarkdownGetCluster;
 
 sub MarkdownGetCluster {
-  $_ = shift;
-  return '' unless $PageCluster;
-  return $1 if ( /^$LinkPattern\n/)
-    or (/^\[\[$FreeLinkPattern\]\]\n/);
+	$_ = shift;
+	return '' unless $PageCluster;
+	if (( /^$LinkPattern\n/)
+		or (/^\[\[$FreeLinkPattern\]\]\n/)) {
+		return $1
+	};
 }
 
+
+# Let Markdown handle special characters, rather than OddMuse
+*QuoteHtml = *MarkdownQuoteHtml;
+
+sub MarkdownQuoteHtml {
+	my $html = shift;
+
+	return $html;
+}
 
 
 # Change InterMap/NearLink to match >1 space, rather than exactly one
@@ -180,7 +165,7 @@ sub DoWikiWords {
 	my $text = shift;
 	my $WikiWord = '[A-Z]+[a-z\x80-\xff]+[A-Z][A-Za-z\x80-\xff]*';
 	my $FreeLinkPattern = "([-,.()' _0-9A-Za-z\x80-\xff]+)";
-	
+
 	if ($FreeLinks) {
 		# FreeLinks
 		$text =~ s{
@@ -228,7 +213,7 @@ sub DoWikiWords {
 	# WikiWords
 	if ($WikiLinks) {
 		$text =~ s{
-			([\s])($WikiWord)
+			([\s\>])($WikiWord)
 		}{
 			$1 . CreateWikiLink($2)
 		}xsge;
@@ -252,8 +237,6 @@ sub CreateWikiLink {
 		$id =~ s/__+/_/g;
 		$id =~ s/^_//g;
 		$id =~ s/_$//;
-
-	$title =~ s/_/ /g;
 		
 
 	#AllPagesList();
@@ -267,9 +250,9 @@ sub CreateWikiLink {
 
 	if ($resolved) {
 		if ($class eq 'near') {
-			return "[$title]($resolved)";
+			return "[$title]($ScriptName/$resolved)";
 		}
-		return "[$title](" . UrlEncode($resolved) . ")";
+		return "[$title]($ScriptName/" . UrlEncode($resolved) . ")";
 	} else {
 		if ($title =~ / /) {
 			return "[$title]\[?]($ScriptName/?action=edit;id=$id)";
@@ -301,14 +284,10 @@ sub NewRunSpanGamut {
 
 	$text = Markdown::_EscapeSpecialChars($text);
 
-	if ($MultiMarkdownEnabled) {
-		$text = Markdown::_DoFootnotes($text);
-	}
-	
 	# Process anchor and image tags. Images must come first,
 	# because ![foo][f] looks like an anchor.
 	$text = Markdown::_DoImages($text);
-	$text = Markdown::_DoAnchors($text);
+	$text = NewDoAnchors($text);
 
 	# Process WikiWords
 	if (!$TempNoWikiWords) {
@@ -316,7 +295,7 @@ sub NewRunSpanGamut {
 
 		# And then reprocess anchors and images
 		$text = Markdown::_DoImages($text);
-		$text = Markdown::_DoAnchors($text);
+		$text = NewDoAnchors($text);
 	}
 	
 	# Make links out of things like `<http://example.com/>`
@@ -329,7 +308,7 @@ sub NewRunSpanGamut {
 	$text = Markdown::_DoItalicsAndBold($text);
 
 	# Do hard breaks:
-	$text =~ s/ {2,}\n/<br \/>\n/g;
+	$text =~ s/ {2,}\n/$Markdown::g_hardbreak/g;
 
 	return $text;
 }
@@ -388,11 +367,18 @@ sub AntiSpam {
 	return $text;
 }
 
-
 sub NewDoAutoLinks {
 	my $text = shift;
-
-	$text =~ s{\<((https?|ftp):[^'">\s]+)>}{<a href="$1">$1</a>}gi;
+	my $temp = "";
+	
+	# In Oddmuse, the < is converted to &lt;
+	$text =~ s{&lt;((https?|ftp):[^'">\s]+)>}{
+		my $url = $1;
+		$temp = $Markdown::g_autolink_string;
+		$temp =~ s/(\$\w+(?:::)?\w*)/"defined $1 ? $1 : ''"/gee;
+		
+		$temp;
+	}gie;
 
 	# Email addresses: <address@domain.foo>
 	$text =~ s{
@@ -453,3 +439,30 @@ sub MarkdownAddComment {
   return $string;
 }
 
+sub NewDoAnchors {
+	my $text = shift;
+	my $WikiWord = '[A-Z]+[a-z\x80-\xff]+[A-Z][A-Za-z\x80-\xff]*';
+	
+	# Don't treat [WikiWord](url) as a WikiWord
+	$text =~ s{
+		(\[\s*)($WikiWord)(\s*\])
+	}{
+		$1 . "\\" . $2 . $3;
+	}xsge;
+
+	# But do treat FreeLinks properly
+	$text =~ s{
+		(\[\[\s*)\\($WikiWord)(\s*\]\])
+	}{
+		$1 . $2 . $3;
+	}xsge;
+	
+	return Markdown::_DoAnchors($text);
+}
+
+sub NewParseMetaData {
+	# Attempting to parse metadata screws up Oddmuse
+	# if there is a colon in the first line (or a link)
+	my $text = shift;
+	return $text;
+}
