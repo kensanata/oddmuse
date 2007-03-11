@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.773 2007/02/19 18:57:09 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.774 2007/03/11 03:45:56 fletcherpenney Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1431,7 +1431,7 @@ sub BrowsePage {
     PrintWikiToHTML(AddComment('', $comment)); # no caching, current revision, unlocked
     print $q->hr(), $q->h2(T('Preview only, not yet saved')), $q->end_div();;
   }
-  SetParam('rcclusteronly', $id) if GetCluster($text) eq $id; # automatically filter by cluster
+  SetParam('rcclusteronly', $id) if FreeToNormal(GetCluster($text)) eq $id; # automatically filter by cluster
   PrintRc($id);
   PrintFooter($id, $revision, $comment);
 }
