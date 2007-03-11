@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.14 2007/02/13 00:35:07 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.15 2007/03/11 04:17:05 fletcherpenney Exp $</p>';
 
 use vars qw($ClusterMapPage $ClusterMapTOC $FilterUnclusteredRegExp @ClusterMapAdminPages);
 
@@ -85,8 +85,9 @@ sub DoClusterMap {
 	CreateClusterMap();
 	if ($ClusterMapTOC) {
 		my $TOCCount = 0;
-		print '<div class="toc"><h2>Contents</h2><ol>';
+		print '<div class="toc"><h2>Categories</h2><ol>';
 		foreach my $cluster ( sort keys %ClusterMap) {
+			$cluster =~ s/_/ /g;
 			print "<li><a href=\"#toc$TOCCount\">$cluster</a></li>";
 			$TOCCount++;
 		}
@@ -231,8 +232,9 @@ sub ClusterMapBrowseResolvedPage {
 		print '<div class="content">';	
 		if ($ClusterMapTOC) {
 			my $TOCCount = 0;
-			print '<div class="toc"><h2>Contents</h2><ol>';
+			print '<div class="toc"><h2>Categories</h2><ol>';
 			foreach my $cluster ( sort keys %ClusterMap) {
+				$cluster =~ s/_/ /g;
 				print "<li><a href=\"#toc$TOCCount\">$cluster</a></li>";
 				$TOCCount++;
 			}
