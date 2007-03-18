@@ -8,6 +8,22 @@
 	GetKeptRevision using eval for cases where the old revision is no
 	longer available.
 
+2007-02-20  Alex Schroeder  <alex@gnu.org>
+
+	* modules/weblog-4.pl (DoCategories): Use tabindex=1 for the title
+	field, tabindex=2 for the tags field, and tabindex=3 for the
+	submit button.
+
+2007-02-19  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (BannedContent): Ignore malformed regular expressions in
+	on the page.
+
+2007-02-15  Alex Schroeder  <alex@gnu.org>
+
+	* modules/toc.pl (TocRule, TocHeadings): Accept classes for <toc>
+	tag.
+
 2007-02-14  Alex Schroeder  <aschroeder@localhost>
 
 	* modules/index.pl (DoPrintableIndex): Added a content div around
@@ -18,6 +34,11 @@
 	* modules/creole.pl (CreoleRule, $CreoleLineBreaks): New.
 	(CreoleRule): Support \\.
 	(CreoleHeadingRule): Support = for h1.
+
+2007-02-12  Alex Schroeder  <alex@gnu.org>
+
+	* modules/index.pl (PrintableIndexPages): Simplify, get rid of
+	extra initialization, sort.
 
 2007-02-09  Alex Schroeder  <alex@gnu.org>
 
