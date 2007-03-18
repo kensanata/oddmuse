@@ -56,9 +56,9 @@ test_page(update_page('BannedUser', 'This is a test.', 'banning test', 0, 1),
 
 test_page(update_page('BannedHosts', "#Foo\n#Bar\n", 'banning me', 0, 1), "Foo", "Bar");
 
-## Banning content
+## Banning content, including a malformed regexp
 
-update_page('BannedContent', "# cosa\nma ?fia # 2007-01-14 crime\n#nostra\n", 'one banned word', 0, 1);
+update_page('BannedContent', "# cosa\nma ?fia # 2007-01-14 crime\n#nostra\n(huh?\n", 'one banned word', 0, 1);
 test_page(update_page('CriminalPage', 'This is about http://mafia.example.com'),
 	  'Describe the new page here');
 
