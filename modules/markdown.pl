@@ -1,4 +1,4 @@
-# Copyright (C) 2005  Fletcher T. Penney <fletcher@freeshell.org>
+# Copyright (C) 2005-2007  Fletcher T. Penney <fletcher@fletcherpenney.net>
 # Copyright (C) 2005  Alex Schroeder <alex@emacswiki.org>
 #
 # Portions of Markdown code Copyright (C) 2004 John Gruber
@@ -25,12 +25,12 @@
 #	Remainder by Fletcher Penney
 
 #	To enable other features, I suggest you also check out:
-#	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
+#	MultiMarkdown <http://fletcherpenney.net/MultiMarkdown>
 
 #	Requires MultiMarkdown 2.0.a2 or higher
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.36 2007/04/02 15:23:38 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.37 2007/04/02 16:10:19 fletcherpenney Exp $</p>';
 
 use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled $SmartyPantsEnabled!;
 
@@ -453,21 +453,7 @@ sub MarkdownAddComment {
 sub NewDoAnchors {
 	my $text = shift;
 	my $WikiWord = '[A-Z]+[a-z\x80-\xff]+[A-Z][A-Za-z\x80-\xff]*';
-	
-	# Don't treat [WikiWord](url) as a WikiWord
-	$text =~ s{
-		(\[\s*)($WikiWord)(\s*\])
-	}{
-		$1 . "\\" . $2 . $3;
-	}xsge;
-
-	# But do treat FreeLinks properly
-	$text =~ s{
-		(\[\[\s*)\\($WikiWord)(\s*\]\])
-	}{
-		$1 . $2 . $3;
-	}xsge;
-	
+		
 	return Markdown::_DoAnchors($text);
 }
 
