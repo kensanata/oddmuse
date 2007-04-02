@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: flickrgallery.pl,v 1.9 2005/10/03 06:22:16 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: flickrgallery.pl,v 1.10 2007/04/02 15:02:09 fletcherpenney Exp $</p>';
 
 # NOTE: This API key for Flickr is NOT to be used in any other products
 # INCLUDING derivative works.  The rest of the code can be used as licensed
@@ -24,6 +24,7 @@ $FlickrAPIKey = "a8d5ba0d878e08847ccc8b150e52a859";
 
 use vars qw($FlickrBaseUrl $FlickrHeaderTemplate $FlickrFooterTemplate $FlickrImageTemplate $FlickrExtension $FlickrLabel);
 
+use LWP;
 
 $FlickrBaseUrl = "http://www.flickr.com/services/rest/" unless defined $FlickrBaseUrl;
 
