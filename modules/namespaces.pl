@@ -16,14 +16,16 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.29 2006/12/22 15:27:17 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.30 2007/04/02 17:05:39 as Exp $</p>';
 
-use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent $NamespaceRoot);
+use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent $NamespaceRoot $NamespaceSlashing);
 
 $NamespacesMain = 'Main'; # to get back to the main namespace
 $NamespacesSelf = 'Self'; # for your own namespace
 $NamespaceCurrent = '';   # will be automatically set to the current namespace, if any
 $NamespaceRoot = '';      # will be automatically set to the original $ScriptName
+
+$NamespaceSlashing = 0;   # When set, UrlEncode will immediately decode the / added by NamespaceRcLines
 
 # try to do it before any other module starts meddling with the
 # variables (eg. localnames.pl)
@@ -36,8 +38,8 @@ sub NamespacesInitVariables {
     $site{$NamespacesMain} = $ScriptName . '/';
     foreach my $name (glob("$DataDir/*")) {
       if (-d $name
-	  and $name =~ m|/($InterSitePattern)$|
-	  and $name ne $NamespacesMain
+	    and $name =~ m|/($InterSitePattern)$|
+	    and $name ne $NamespacesMain
 	  and $name ne $NamespacesSelf) {
 	$site{$1} = $ScriptName . '/' . $1 . '/';
       }
@@ -68,7 +70,7 @@ sub NamespacesInitVariables {
     $TempDir     = "$DataDir/temp";
     $LockDir     = "$TempDir/lock";
     $NoEditFile  = "$DataDir/noedit";
-    $RcFile	 = "$DataDir/rc.log";
+    $RcFile = "$DataDir/rc.log";
     $RcOldFile   = "$DataDir/oldrc.log";
     $IndexFile   = "$DataDir/pageidx";
     $VisitorFile = "$DataDir/visitors.log";
@@ -159,6 +161,7 @@ sub NewNamespaceDoRc { # Copy of DoRc
   @lines = sort { $a <=> $b } @lines;
   # end, printing
   local *ValidId = *NamespaceValidId;
+  local $NamespaceSlashing = 1;
   if (not @lines and $showHTML) {
     print $q->p($q->strong(Ts('No updates since %s', TimeToText($starttime))));
   } else {
@@ -202,6 +205,15 @@ sub NamespaceRcLines {
     }
   }
   return ($first, @result);
+}
+
+*OldNamespaceUrlEncode = *UrlEncode;
+*UrlEncode = *NewNamespaceUrlEncode;
+
+sub NewNamespaceUrlEncode {
+  my $result = OldNamespaceUrlEncode(@_);
+  $result =~ s/\%2f/\// if $NamespaceSlashing; # just one should be enough
+  return $result;
 }
 
 *OldNamespaceScriptLink = *ScriptLink;
