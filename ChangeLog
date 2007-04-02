@@ -1,3 +1,9 @@
+2007-04-02  Alex Schroeder  <alex@gnu.org>
+
+	* modules/namespaces.pl ($NamespaceSlashing): New variable.
+	(NewNamespaceDoRc): Set it.
+	(NewNamespaceUrlEncode): Wrapper around UrlEncode() that uses it.
+
 2007-02-22  Alex Schroeder  <aschroeder@localhost>
 
 	* modules/sistersites.pl (DoSisterPages): Url encode the page id.
