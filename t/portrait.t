@@ -41,11 +41,11 @@ test_page(get_page('headers'),
 	  # default to before the header
 	  '<div class="content browse"><div class="color one level0"><p>foo </p></div>',
 	  '<div class="toc"><h2>Contents</h2><ol>',
-	  '<li><a href="#headers1">one</a></li>',
-	  '<li><a href="#headers2">two</a></li>',
-	  '<li><a href="#headers3">three</a></li></ol></div>',
-	  '<h2 id="headers1">one</h2><p>text </p>',
-	  '<h2 id="headers2">two</h2>', );
+	  '<li><a href="#toc1">one</a></li>',
+	  '<li><a href="#toc2">two</a></li>',
+	  '<li><a href="#toc3">three</a></li></ol></div>',
+	  '<h2 id="toc1">one</h2><p>text </p>',
+	  '<h2 id="toc2">two</h2>', );
 remove_module('toc.pl');
 remove_rule(\&TocRule);
 remove_module('usemod.pl');
@@ -64,11 +64,11 @@ add_module('usemod.pl');
 add_module('toc.pl');
 update_page('headers', "[new]foo\n== one ==\ntext\n== two ==\ntext\n== three ==\ntext\n");
 test_page(get_page('headers'),
-	  '<li><a href="#headers1">one</a></li>',
-	  '<li><a href="#headers2">two</a></li>',
+	  '<li><a href="#toc1">one</a></li>',
+	  '<li><a href="#toc2">two</a></li>',
 	  '<div class="color one level0"><p>foo </p></div>',
-	  '<h2 id="headers1">one</h2>',
-	  '<h2 id="headers2">two</h2>', );
+	  '<h2 id="toc1">one</h2>',
+	  '<h2 id="toc2">two</h2>', );
 
 run_tests(split('\n',<<'EOT'));
 [new]\nfoo
