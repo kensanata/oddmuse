@@ -18,12 +18,12 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 4;
+use Test::More tests => 9;
 
 clear_pages();
 
 update_page('link', 'some [http://example.com content]');
-update_page('long', q{This program is free software;
+update_page('long', q{This program is >>free<< software;
 you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published
 by the Free Software Foundation; either version 2 of
@@ -32,4 +32,17 @@ test_page(get_page('action=rc raw=1'),
 	  'description: some content',
 	  "software; you",
 	  "the terms",
-	  "Free \\. \\. \\.\n");
+	  "is >>free<< software",
+	  "Public License as \\. \\. \\.\n");
+test_page(get_page('action=rss'),
+	  "is &gt;&gt;free&lt;&lt; software");
+
+# second edit doesn't automatically set a summary
+update_page('link', 'fnord');
+test_page_negative(get_page('action=rc raw=1'),
+	  "description: some content",
+	  "description: fnord");
+# explicit setting of the summary works
+update_page('link', 'bonk', 'bunk');
+test_page(get_page('action=rc raw=1'),
+	  "description: bunk");
