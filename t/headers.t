@@ -37,10 +37,10 @@ test_page(get_page('headers'), '<h2>is header</h2>');
 add_module('toc.pl');
 update_page('headers', "== one ==\ntext\n== two ==\ntext\n== three ==\ntext\n");
 test_page(get_page('headers'),
-	  '<li><a href="#headers1">one</a></li>',
-	  '<li><a href="#headers2">two</a></li>',
-	  '<h2 id="headers1">one</h2>',
-	  '<h2 id="headers2">two</h2>', );
+	  '<li><a href="#toc1">one</a></li>',
+	  '<li><a href="#toc2">two</a></li>',
+	  '<h2 id="toc1">one</h2>',
+	  '<h2 id="toc2">two</h2>', );
 remove_module('usemod.pl');
 remove_rule(\&UsemodRule);
 
@@ -48,12 +48,12 @@ remove_rule(\&UsemodRule);
 add_module('headers.pl');
 update_page('headers', "one\n===\ntext\ntwo\n---\ntext\nthree\n====\ntext\n");
 test_page(get_page('headers'),
-	  '<li><a href="#headers1">one</a>',
-	  '<ol><li><a href="#headers2">two</a></li></ol>',
-	  '<li><a href="#headers3">three</a></li>',
-	  '<h2 id="headers1">one</h2>',
-	  '<h3 id="headers2">two</h3>',
-	  '<h2 id="headers3">three</h2>', );
+	  '<li><a href="#toc1">one</a>',
+	  '<ol><li><a href="#toc2">two</a></li></ol>',
+	  '<li><a href="#toc3">three</a></li>',
+	  '<h2 id="toc1">one</h2>',
+	  '<h3 id="toc2">two</h3>',
+	  '<h2 id="toc3">three</h2>', );
 remove_module('toc.pl');
 remove_rule(\&TocRule);
 
