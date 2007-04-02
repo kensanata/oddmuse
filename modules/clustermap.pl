@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.15 2007/03/11 04:17:05 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.16 2007/04/02 14:45:00 fletcherpenney Exp $</p>';
 
 use vars qw($ClusterMapPage $ClusterMapTOC $FilterUnclusteredRegExp @ClusterMapAdminPages);
 
@@ -126,8 +126,7 @@ sub PrintClusterMap {
 		if ( FreeToNormal(GetCluster($Page{text})) eq $cluster ) {
 			# Don't display the page name twice if the cluster page is also
 			# a member of the cluster
-			$Page{text} =~ s/^\[*$cluster\]*\n*//s;
-			$Page{text} =~ s/^\[*$free\]*\n*//s;
+			$Page{text} =~ s/^\[*($cluster|$free)\]*\n*//s;
 		}
 
 		if ($PrintTOCAnchor) {
