@@ -30,11 +30,12 @@
 #	Requires MultiMarkdown 2.0.a2 or higher
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.35 2007/04/02 15:00:56 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.36 2007/04/02 15:23:38 fletcherpenney Exp $</p>';
 
-use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled!;
+use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled $SmartyPantsEnabled!;
 
 $MarkdownEnabled = 1;
+$SmartyPantsEnabled = 1;
 
 @MyRules = (\&MarkdownRule);
 
@@ -60,7 +61,7 @@ sub MarkdownRule {
     my $source = $_;
     # fake that we're blosxom!
     $blosxom::version = 1;
-    require "$ModuleDir/Markdown/markdown.pl";
+    require "$ModuleDir/Markdown/MultiMarkdown.pl";
 
 	*Markdown::_RunSpanGamut = *NewRunSpanGamut;
 	*Markdown::_DoHeaders = *NewDoHeaders;
@@ -79,7 +80,12 @@ sub MarkdownRule {
 	}
 	
     my $result = Markdown::Markdown($source);
-    
+ 
+	if ($SmartyPantsEnabled) {
+		require "$ModuleDir/Markdown/SmartyPants.pl";
+		$result = SmartyPants::SmartyPants($result,"2",undef);
+	}
+   
 	$result = UnescapeWikiWords($result);
 	
 	$result = AntiSpam($result);
