@@ -27,8 +27,14 @@
 #	To enable other features, I suggest you also check out:
 #	MultiMarkdown <http://fletcher.freeshell.org/wiki/MultiMarkdown>
 
+#	Requires MultiMarkdown 2.0.a2 or higher
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.34 2007/03/10 22:20:47 fletcherpenney Exp $</p>';
+
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.35 2007/04/02 15:00:56 fletcherpenney Exp $</p>';
+
+use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled!;
+
+$MarkdownEnabled = 1;
 
 @MyRules = (\&MarkdownRule);
 
@@ -65,6 +71,13 @@ sub MarkdownRule {
     # Do not allow raw HTML
     $source = SanitizeSource($source);
     
+	# Allow other Modules to process raw text before Markdown
+	# This allows other modules to be "Markdown Compatible"
+	@MyMarkdownRules = sort {$MarkdownRuleOrder{$a} <=> $MarkdownRuleOrder{$b}} @MyMarkdownRules; # default is 0
+	foreach my $sub (@MyMarkdownRules) {
+		$source = &$sub($source);
+	}
+	
     my $result = Markdown::Markdown($source);
     
 	$result = UnescapeWikiWords($result);
@@ -282,7 +295,7 @@ sub NewRunSpanGamut {
 	
 	$text = Markdown::_DoCodeSpans($text);
 
-	$text = Markdown::_EscapeSpecialChars($text);
+	$text = Markdown::_EscapeSpecialCharsWithinTagAttributes($text);
 
 	# Process anchor and image tags. Images must come first,
 	# because ![foo][f] looks like an anchor.
@@ -369,16 +382,8 @@ sub AntiSpam {
 
 sub NewDoAutoLinks {
 	my $text = shift;
-	my $temp = "";
-	
-	# In Oddmuse, the < is converted to &lt;
-	$text =~ s{&lt;((https?|ftp):[^'">\s]+)>}{
-		my $url = $1;
-		$temp = $Markdown::g_autolink_string;
-		$temp =~ s/(\$\w+(?:::)?\w*)/"defined $1 ? $1 : ''"/gee;
-		
-		$temp;
-	}gie;
+
+	$text =~ s{&lt;((https?|ftp|dict):[^'">\s]+)>}{<a href="$1">$1</a>}gi;
 
 	# Email addresses: <address@domain.foo>
 	$text =~ s{
