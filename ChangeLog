@@ -1,3 +1,7 @@
+2007-04-03  Alex Schroeder  <aschroeder@localhost>
+
+	* wiki.pl (ApplyRules, RSS): Add error class to error messages.
+
 2007-04-02  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetSummary): Fix double HTML quoting for default texts.
