@@ -1,6 +1,8 @@
 2007-04-03  Alex Schroeder  <aschroeder@localhost>
 
 	* wiki.pl (ApplyRules, RSS): Add error class to error messages.
+	Put the error messages on the surrounding p element, and add one,
+	if it does not already exist.
 
 2007-04-02  Alex Schroeder  <alex@gnu.org>
 
