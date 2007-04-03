@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.776 2007/04/03 17:07:10 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.777 2007/04/03 17:29:44 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -453,7 +453,7 @@ sub ApplyRules {
 	    print $q->end_div();
 	    delete $Includes{$OpenPageName};
 	  } else {
-	    print $q->strong({-class=>'error'}, Ts('Recursive include of %s!', $OpenPageName));
+	    print $q->p({-class=>'error'}, $q->strong(Ts('Recursive include of %s!', $OpenPageName)));
 	  }
 	}
 	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
@@ -866,7 +866,7 @@ sub RSS {
   my %lines;
   if (not eval { require XML::RSS;  }) {
     my $err = $@;
-    return $q->div({-class=>'rss'}, $q->strong({-class=>'error'}, T('XML::RSS is not available on this system.')),  $err);
+    return $q->div({-class=>'rss'}, $q->p({-class=>'error'}, $q->strong(T('XML::RSS is not available on this system.')),  $err));
   }
   # All strings that are concatenated with strings returned by the RSS
   # feed must be decoded.  Without this decoding, 'diff' and 'history'
@@ -887,13 +887,13 @@ sub RSS {
   foreach my $uri (keys %data) {
     my $data = $data{$uri};
     if (not $data) {
-      $str .= $q->p($q->strong({-class=>'error'}, Ts('%s returned no data, or LWP::UserAgent is not available.',
+      $str .= $q->p({-class=>'error'}, $q->strong(Ts('%s returned no data, or LWP::UserAgent is not available.',
 				  $q->a({-href=>$uri}, $uri))));
     } else {
       my $rss = new XML::RSS;
       eval { local $SIG{__DIE__}; $rss->parse($data); };
       if ($@) {
-	$str .= $q->p($q->strong({-class=>'error'}, Ts('RSS parsing failed for %s', $q->a({-href=>$uri}, $uri)) . ': ' . $@));
+	$str .= $q->p({-class=>'error'}, $q->strong(Ts('RSS parsing failed for %s', $q->a({-href=>$uri}, $uri)) . ': ' . $@));
       } else {
 	my $interwiki;
 	if (@uris > 1) {
@@ -908,7 +908,7 @@ sub RSS {
 	  $interwiki = $RssInterwikiTranslate{$uri} unless $interwiki;
 	}
 	my $num = 999;
-	$str .= $q->p($q->strong({-class=>'error'}, Ts('No items found in %s.', $q->a({-href=>$uri}, $uri))))
+	$str .= $q->p({-class=>'error'}, $q->strong(Ts('No items found in %s.', $q->a({-href=>$uri}, $uri))))
 	  unless @{$rss->{items}};
 	foreach my $i (@{$rss->{items}}) {
 	  my $line;
