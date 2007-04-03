@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 63;
+use Test::More tests => 65;
 clear_pages();
 
 add_module('creole.pl');
@@ -104,6 +104,10 @@ foo<hr />
 <table class="user"><tr><td>a</td><td>b</td><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr></table>
 |a|b|c|\n|d|e|f|
 <table class="user"><tr><td>a</td><td>b</td><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr></table>
+|=a|=b|=c|\n|d|e|f|
+<table class="user"><tr><th>a</th><th>b</th><th>c</th></tr><tr><td>d</td><td>e</td><td>f</td></tr></table>
+|=a|b|c|\n|=d|e|f|
+<table class="user"><tr><th>a</th><td>b</td><td>c</td></tr><tr><th>d</th><td>e</td><td>f</td></tr></table>
 | a| b| c\n| d | e | f |
 <table class="user"><tr><td align="right">a</td><td align="right">b</td><td align="right">c</td></tr><tr><td align="center">d </td><td align="center">e </td><td align="center">f </td></tr></table>
 |a||c\n||e|f
