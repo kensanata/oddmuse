@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.22 2007/02/13 11:52:23 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.23 2007/04/03 21:30:13 as Exp $</p>';
 
 use vars qw($CreoleLineBreaks);
 
@@ -87,24 +87,21 @@ sub CreoleRule {
       . AddHtmlEnvironment('li');
   }
   # tables using | -- the first row of a table
-  elsif ($bol && m/\G(\s*\n)*((\|)+)([ \t])*/cg) {
+  elsif ($bol && m/\G(\s*\n)*((\|)+)(=)?([ \t])*/cg) {
     return OpenHtmlEnvironment('table',1,'user') . AddHtmlEnvironment('tr')
-      . AddHtmlEnvironment('td', TableAttributes(length($2), $4));
+      . AddHtmlEnvironment(($4 ? 'th' : 'td'), TableAttributes(length($2), $5));
   }
   # tables using | -- end of the row, don't insert <br>
-  elsif (InElement('td') && (m/\G\|?[ \t]*(\n|$)/cg)) {
+  elsif (InElement('td') || InElement('th')
+	 and (m/\G\|?[ \t]*(\n|$)/cg)) {
     return '';
   }
   # tables using | -- an ordinary table cell
-  elsif (InElement('td') && m/\G[ \t]*(\|+)([ \t]*)/cg) {
-    my $attr = TableAttributes(length($1), $2);
-    $attr = " " . $attr if $attr;
-    return "</td><td$attr>";
+  elsif (InElement('td') || InElement('th')
+	 and m/\G[ \t]*(\|+)(=)?([ \t]*)/cg) {
+    return CloseHtmlEnvironmentUntil('tr')
+      . AddHtmlEnvironment(($2 ? 'th' : 'td'), TableAttributes(length($1), $3));
   }
-  # tables using || -- since "next row" was taken care of above, this must be the last row
-#   elsif (InElement('td') && m/\G[ \t]*((\|\|)+)[ \t]*/cg) {
-#     return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
-#   }
   # paragraphs: at least two newlines
   elsif (m/\G\s*\n(\s*\n)+/cg) {
     return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
