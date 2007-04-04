@@ -1,6 +1,7 @@
 2007-04-04  Alex Schroeder  <aschroeder@localhost>
 
 	* modules/creole.pl (CreoleRule): New Table code.
+	Make image within links regexp non-greedy.
 
 2007-04-03  Alex Schroeder  <alex@gnu.org>
 
