@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.24 2007/04/03 21:39:40 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.25 2007/04/04 10:59:25 as Exp $</p>';
 
 use vars qw($CreoleLineBreaks);
 
@@ -86,21 +86,23 @@ sub CreoleRule {
       . OpenHtmlEnvironment('ul', length($1))
       . AddHtmlEnvironment('li');
   }
-  # tables using | -- the first row of a table
-  elsif ($bol && m/\G(\s*\n)*((\|)+)(=)?([ \t])*/cg) {
-    return OpenHtmlEnvironment('table',1,'user') . AddHtmlEnvironment('tr')
-      . AddHtmlEnvironment(($4 ? 'th' : 'td'), TableAttributes(length($2), $5));
-  }
-  # tables using | -- end of the row, don't insert <br>
+  # tables using | -- end of the row or table
   elsif (InElement('td') || InElement('th')
-	 and (m/\G\|?[ \t]*(\n|$)/cg)) {
-    return '';
+	 and (m/\G[ \t]*\|?[ \t]*(\n)?(\n|$)/cg)) {
+    if ($1) {
+      return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
+    } else {
+      return CloseHtmlEnvironmentUntil('table');
+    }
   }
   # tables using | -- an ordinary table cell
-  elsif (InElement('td') || InElement('th')
-	 and m/\G[ \t]*(\|+)(=)?([ \t]*)/cg) {
-    return CloseHtmlEnvironmentUntil('tr')
-      . AddHtmlEnvironment(($2 ? 'th' : 'td'), TableAttributes(length($1), $3));
+  elsif (m/\G[ \t]*(\|+)(=)?([ \t]*)/cg) {
+    my $html = '';
+    $html .= OpenHtmlEnvironment('table',1,'user') unless InElement('table');
+    $html .= AddHtmlEnvironment('tr') unless InElement('tr');
+    $html .= CloseHtmlEnvironmentUntil('tr') if InElement('td') || InElement('th');
+    $html .= AddHtmlEnvironment(($2 ? 'th' : 'td'), TableAttributes(length($1), $3));
+    return $html;
   }
   # paragraphs: at least two newlines
   elsif (m/\G\s*\n(\s*\n)+/cg) {
