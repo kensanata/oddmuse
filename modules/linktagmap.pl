@@ -19,18 +19,22 @@
 # Based on code of tagmap.pl module by Fletcher T. Penney
 # and searchtags.pl module by Brock Wilcox
 
-$ModulesDescription .= '<p>$Id: linktagmap.pl,v 1.1 2007/04/04 07:07:28 uvizhe Exp $</p>';
+$ModulesDescription .= '<p>$Id: linktagmap.pl,v 1.2 2007/04/04 07:39:19 uvizhe Exp $</p>';
 
 use vars qw($LinkTagMark $LinkDescMark $LinkTagClass $LinkDescClass $LinkTagMapPage);
 
+# Tags and descripton are embraced with this sequences
 $LinkTagMark = '%T%' unless defined $LinkTagMark;
 $LinkDescMark = '%D%' unless defined $LinkDescMark;
 
+# In output html these will be values for property "class" of SPAN tag
 $LinkTagClass = "lntag" unless defined $LinkTagClass;
 $LinkDescClass = "lndesc" unless defined $LinkDescClass;
 
+# Wiki page, where links will be present in a structured way
 $LinkTagMapPage = "LinkTagMap" unless defined $LinkTagMapPage;
 
+# The same output with wiki.pl?action=linktagmap
 $Action{linktagmap} = \&DoLinkTagMap;
 
 push (@MyRules, \&LinkTagRule, \&LinkDescriptionRule);
