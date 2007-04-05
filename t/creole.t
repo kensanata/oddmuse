@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 66;
+use Test::More tests => 69;
 clear_pages();
 
 add_module('creole.pl');
@@ -39,6 +39,12 @@ run_tests(split('\n',<<'EOT'));
 * one\n** two\n*** three\n* four
 <ul><li>one<ul><li>two<ul><li>three</li></ul></li></ul></li><li>four</li></ul>
  * one\n ** two\n *** three\n * four
+<ul><li>one<ul><li>two<ul><li>three</li></ul></li></ul></li><li>four</li></ul>
+  -  one
+<ul><li>one</li></ul>
+- one\n-- two\n--- three\n- four
+<ul><li>one<ul><li>two<ul><li>three</li></ul></li></ul></li><li>four</li></ul>
+ - one\n -- two\n --- three\n - four
 <ul><li>one<ul><li>two<ul><li>three</li></ul></li></ul></li><li>four</li></ul>
 this is **bold**
 this is <strong>bold</strong>
