@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.777 2007/04/03 17:29:44 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.778 2007/04/08 23:06:49 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1400,7 +1400,7 @@ sub BrowsePage {
   }
   # shortcut if we only need the raw text: no caching, no diffs, no html.
   if ($raw) {
-    print GetHttpHeader('text/plain', undef, $IndexHash{$id} ? undef : '404 NOT FOUND');
+    print GetHttpHeader('text/plain', $Page{ts}, $IndexHash{$id} ? undef : '404 NOT FOUND');
     if ($raw == 2) {
       print $Page{ts} . " # Do not delete this line when editing!\n";
     }
