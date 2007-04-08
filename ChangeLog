@@ -1,3 +1,8 @@
+2007-04-09  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (BrowsePage): Use the page timestamp as the Etag for raw
+	page browsing.
+
 2007-04-04  Alex Schroeder  <aschroeder@localhost>
 
 	* modules/creole.pl (CreoleRule): New Table code.
@@ -7,6 +12,8 @@
 
 	* modules/creole.pl (CreoleRule): Implement Creole 0.5 table
 	headers.
+	(CreoleRule): Remove leading space if used to "quote" closing
+	preformatting sequence.
 
 2007-04-03  Alex Schroeder  <aschroeder@localhost>
 
