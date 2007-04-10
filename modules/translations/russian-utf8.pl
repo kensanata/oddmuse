@@ -3,6 +3,7 @@
 # Copyright (c) 2003  Zajcev Evgeny
 # Copyright (C) 2004  Andrei Bulava <abulava@users.sourceforge.net>
 # Copyright (C) 2006  Igor Afanasyev <afan@mail.ru>
+# Copyright (c) 2007  Alexander Uvizhev <uvizhe@yandex.ru>
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
@@ -19,24 +20,24 @@
 #
 # This script was last checked for Oddmuse version 1.658.
 #
-$ModulesDescription .= '<p>$Id: russian-utf8.pl,v 1.9 2006/08/18 22:46:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: russian-utf8.pl,v 1.10 2007/04/10 10:30:34 uvizhe Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
-
+Просмотр недоступен: имя пользователя, IP-адрес или сеть заблокированы.
 %s calls
 
 Could not create %s
 Невозможно создать %s
 Invalid UserName %s: not saved.
-Hекорректная кличка %s: ничего не записано.
+Hекорректное имя пользователя %s: не сохранено.
 UserName must be 50 characters or less: not saved
-
+Имя пользователя не может содержать больше 50 символов: не сохранено
 This page contains an uploaded file:
 
 Recursive include of %s!
 
 Clear Cache
-
+Очистить кэш
 Main lock obtained.
 Блокировка сайта установлена.
 Main lock released.
@@ -46,7 +47,7 @@ Comments on this page
 XML::RSS is not available on this system.
 
 diff
-отличия
+изменения
 history
 история
 %s returned no data, or LWP::UserAgent is not available.
@@ -58,11 +59,11 @@ No items found in %s.
  . . . . 
 
 Click to edit this page
-Щелчок - создать эту страницу
+Щелчок - редактировать эту страницу
 image
-
+изображение
 download
-
+загрузить
 CGI Internal error: %s
 Внутренняя ошибка CGI: %s
 Invalid action parameter %s
@@ -142,11 +143,11 @@ Compare
 Deleted
 
 Mark this page for deletion
-
+Удалить эту страницу
 No other revisions available
 
 current
-
+текущая
 Revision %s
 Версия %s
 Contributors to %s
@@ -156,17 +157,17 @@ Missing target for rollback.
 Target for rollback is too far back.
 
 Rolling back changes
-
+Откат изменений
 The two revisions are the same.
-
+Заданы одинаковые версии страницы
 Editing not allowed for %s.
 Редактирование не разрешено для %s.
 Rollback to %s
-
+Откат до %s
 %s rolled back
-
+%s восстановлена
 to %s
-
+до %s
 Index of all pages
 Каталог страниц
 Wiki Version
@@ -214,23 +215,23 @@ The same page on other sites:
 EditNearLinks
 
 Last edited
-Редактировалось в последний раз 
+Редактировалось последний раз 
 Edited
 Правленное
 by %s
 пользователем %s
 (diff)
-(отличия)
+(изменения)
 Edit revision %s of this page
 Править версию %s этой страницы
 Edit this page
-Редактировать текст этой страницы
+Редактировать
 e
 
 This page is read-only
 Эта страница предназначена только для чтения
 View other revisions
-Смотреть другие версии
+История
 View current revision
 Смотреть текущую версию
 View all changes
@@ -245,6 +246,8 @@ Save
 Сохранить
 p
 
+Cancel
+Отмена
 Preview
 Предпросмотр
 Search:
@@ -260,7 +263,7 @@ Validate CSS
 Last edit
 
 Difference between revision %1 and %2
-Отличия (от версии %1 до %2)
+Отличия (версии %1 от %2)
 revision %s
 версии %s
 current revision
@@ -276,13 +279,13 @@ Old revision:
 Changed:
 Изменилось:
 Deleted:
-
+Удалено:
 Added:
 Добавлено:
 to
-
+на
 Revision %s not available
-Версия %s не доступна
+Версия %s недоступна
 showing current revision instead
 отображение текущей версии вместо
 Showing revision %s
@@ -344,7 +347,7 @@ Editing old revision %s.
 Saving this page will replace the latest revision with this text.
 Сохранение этой страницы заменит последнюю версию на этот текст.
 Summary:
-Итого:
+Описание:
 This change is a minor edit.
 Это изменение является незначительной правкой.
 Replace this file with text
@@ -562,19 +565,19 @@ Next
 Calendar %s
 
 Su
-
+Вс
 Mo
-
+Пн
 Tu
-
+Вт
 We
-
+Ср
 Th
-
+Чт
 Fr
-
+Пт
 Sa
-
+Сб
 January
 
 February
