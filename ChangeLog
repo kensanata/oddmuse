@@ -1,3 +1,8 @@
+2007-04-10  Alexander Uvizhev  <uvizhe@yandex.ru>
+
+        * modules/translations/russian-utf8.pl: New translations and some
+	correction.
+
 2007-04-09  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (BrowsePage): Use the page timestamp as the Etag for raw
