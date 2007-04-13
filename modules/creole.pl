@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.27 2007/04/05 07:30:13 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.28 2007/04/13 23:27:16 as Exp $</p>';
 
 use vars qw($CreoleLineBreaks);
 
@@ -130,7 +130,8 @@ sub CreoleRule {
   elsif (m/\G(\{\{$FreeLinkPattern(\|.+?)?\}\})/cgos) {
     Dirty($1);
     my $alt = substr($3,1); # FIXME: inlining this gives "substr outside of string" error
-    return GetDownloadLink($2, 1, undef, $alt);
+    print GetDownloadLink($2, 1, undef, $alt);
+    return '';
   }
   # {{url}}
   elsif (m/\G\{\{$FullUrlPattern(\|.+?)?\}\}/cgos) {
