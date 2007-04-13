@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 69;
+use Test::More tests => 72;
 clear_pages();
 
 add_module('creole.pl');
@@ -178,3 +178,12 @@ http://www.wikicreole.org/.
 [[http://example.com/|{{http://mu.org/|a description}}]]
 //a[@class="image outside"][@href="http://example.com/"][img[@class="url outside"][@src="http://mu.org/"][@alt="a description"]]
 EOT
+
+xpath_test(update_page('test','{{pic}}'),
+	   '//a[@class="image"][@href="http://localhost/wiki.pl/pic"][img[@class="upload"][@src="http://localhost/wiki.pl/download/pic"][@alt="pic"]]');
+# Make sure not problem exists with caching
+$page = get_page('test');
+xpath_test($page,
+	   '//a[@class="image"][@href="http://localhost/wiki.pl/pic"][img[@class="upload"][@src="http://localhost/wiki.pl/download/pic"][@alt="pic"]]');
+negative_xpath_test($page,
+		    '//a[@class="image"]/following-sibling::a[@class="image"]');
