@@ -18,10 +18,9 @@
 #
 # Based on code of tagmap.pl module by Fletcher T. Penney
 # and searchtags.pl module by Brock Wilcox
+$ModulesDescription .= '<p>$Id: linktagmap.pl,v 1.3 2007/04/18 11:29:21 uvizhe Exp $</p>';
 
-$ModulesDescription .= '<p>$Id: linktagmap.pl,v 1.2 2007/04/04 07:39:19 uvizhe Exp $</p>';
-
-use vars qw($LinkTagMark $LinkDescMark $LinkTagClass $LinkDescClass $LinkTagMapPage);
+use vars qw($LinkTagMark $LinkDescMark $LinkTagClass $LinkDescClass $LinkTagMapPage $FreeLinkPattern $FullUrlPattern);
 
 # Tags and descripton are embraced with this sequences
 $LinkTagMark = '%T%' unless defined $LinkTagMark;
@@ -39,27 +38,26 @@ $Action{linktagmap} = \&DoLinkTagMap;
 
 push (@MyRules, \&LinkTagRule, \&LinkDescriptionRule);
 
-my %TagList = ();
 my $TagXML;
 
-sub LinkTagRule {
+sub LinkTagRule { # Process link tags on a page
 
-    if ( m/\G$LinkTagMark(.*?)$LinkTagMark/gc) {
-        my @linktags = split /,\s*/, $1;
-        @linktags = map {
-            qq{<a href="$LinkTagMapPage#$_">$_</a>};
+    if ( m/\G$LinkTagMark(.*?)$LinkTagMark/gc) {      # find tags
+        my @linktags = split /,\s*/, $1;              # push them in array
+        @linktags = map {                             # and print html output:
+            qq{<a href="$LinkTagMapPage#$_">$_</a>};  # each tag is a link to correspondent anchor on the $LinkTagMapPage
         } @linktags;
         $linktags = join ', ', @linktags;
-        return qq{<span class="$LinkTagClass">$linktags</span>};
+        return qq{<span class="$LinkTagClass">$linktags</span>}; # tags are put in SPAN block
     }
     return undef;
 
 }
 
-sub LinkDescriptionRule {
+sub LinkDescriptionRule { # Process link descriptions on a page
 
-    if ( m/\G$LinkDescMark(.*?)$LinkDescMark/gc) {
-        return qq{<span class="$LinkDescClass">$1</span>};
+    if ( m/\G$LinkDescMark(.*?)$LinkDescMark/gc) {          # find description
+        return qq{<span class="$LinkDescClass">$1</span>};  # put it in SPAN block
     }
     return undef;
 
@@ -67,7 +65,7 @@ sub LinkDescriptionRule {
 
 sub DoLinkTagMap {
 
-print GetHeader('',$LinkTagMapPage,'');
+    print GetHeader('',$LinkTagMapPage,'');
 
     CreateLinkTagMap();
 
@@ -81,27 +79,24 @@ print GetHeader('',$LinkTagMapPage,'');
 
 }
 
-sub CreateLinkTagMap { 
+sub CreateLinkTagMap { # Create an input XML for TagCategorizer
 
     my @pages = AllPagesList();
 
     local %Page;
     local $OpenPageName='';
+
     $TagXML .= "<taglist>\n";
 
     foreach my $page (@pages) {
-        OpenPage($page);
-        my @links = GetLinks($Page{text});
-    	foreach my $link (@links) {
-        	my @tags = GetLinkTags($link);
-            my $count = @tags;
-            if ($count != 0) {
-	    	$link =~ s/([fh]t{1,2}ps?\:\/\/.+?)\]+.*?($LinkTagMark.+?$LinkTagMark)($LinkDescMark.+?$LinkDescMark)?/$1$3/;
-                $TagXML .= "<object><id>$link</id>\n";
-
-                foreach (@tags) {
-                    $TagXML .= "<tag>$_</tag>";
-                    $TagList{$_} = 1;
+        OpenPage($page);                    # open page
+        my @links = GetLinks($Page{text});  # find links
+       	foreach my $link (@links) {
+            my @tags = GetLinkTags($link->{tags});  # process tags for each link
+            if ($#tags >= 0) {
+                $TagXML .= "<object><id>$link->{url}|$link->{url_text}|$link->{description}</id>\n";  # put everything in 'id' block
+                foreach (@tags) {                                                                     # except of tags
+                    $TagXML .= "<tag>$_</tag>";                                                       # which are in 'tag' blocks
                 }
                 $TagXML .= "\n</object>\n";
             }
@@ -115,9 +110,9 @@ sub PrintLinkTagMap {
 
     do "$ModuleDir/TagCategorizer/TagCategorizer.pl";
 
-    my $result = TagCategorizer::ProcessXML($TagXML);
+    my $result = TagCategorizer::ProcessXML($TagXML);  # get an output XML from TagCategorizer
 
-    $result =~ s/\<tagHierarchy\>/<ul>/;
+    $result =~ s/\<tagHierarchy\>/<ul>/;               # and convert it to html
     $result =~ s/\<\/tagHierarchy\>/<\/ul>/;
 
     $result =~ s{
@@ -130,39 +125,32 @@ sub PrintLinkTagMap {
 
     $result =~ s/\<\/tag\>/<\/ul>/g;
     $result =~ s{
-        <object>(.*?)(\|(.*?))?($LinkDescMark(.+?)$LinkDescMark)?</object>
+        <object>$FullUrlPattern\|$FreeLinkPattern?\|(.*?)</object>  # divide 'object' block content
     }{
-        my $id = $1;
-        my $name = $3;
-        my $description = $5;
-        "<li><a href=\"$id\">$name</a> <span class=\"$LinkDescClass\">$description</span></li>";
+        my $url = $1;                                               # to url,
+        my $name = $2; if ( length $name == 0 ) { $name = $url; }   # name (if present)
+        my $description = $3;                                       # and description
+        "<li><a href=\"$url\">$name</a> <span class=\"$LinkDescClass\">$description</span></li>";
     }xsge;
     print $result;
 
 }
 
-sub GetLinks {
+sub GetLinks { # Search a page for links
 
     my $text = shift;
     my @links;
-    while ($text =~ /([fh]t{1,2}ps?\:\/\/.+?)\s*($LinkTagMark.+?$LinkTagMark)\s*($LinkDescMark.+?$LinkDescMark)?/gc) {
-        push @links, $1.$2.$3;
+    while ($text =~ /\[{0,2}$FullUrlPattern\s*\|?\s*$FreeLinkPattern?\]{0,2}\s*$LinkTagMark(.+?)$LinkTagMark\s*($LinkDescMark(.+?)$LinkDescMark)?/gc) {
+        push @links, { url => $1, url_text => $2, tags => $3, description => $5 };  # push found links' attributes to an array of hashes
     }
     return @links;
 
 }
-sub GetLinkTags {
+sub GetLinkTags { # Retrieve tags (if present) from links
 
-    my $link = shift;
+    my $tags = shift;
     my @tags;
-
-    # strip [[.*?]] bits, then split on spaces
-    if ($link =~ /$LinkTagMark\s*(.*)$LinkTagMark/m) {
-        my $tagstring = $1;
-        @tags = split /,\s*/, $tagstring;
-    } else {
-        return;
-    }
+    @tags = split /\s*,\s*/, $tags;
     return @tags;
 
 }
@@ -188,9 +176,9 @@ sub LinkTagMapBrowseResolvedPage {
 
 sub LinkTagMapPrintWikiToHTML {
 
-    my ($pageText, $savecache, $revision, $islocked) = @_;
+    my ($pageText) = @_;
 
-    # Cause an empty page with the name $ClusterMapPage to
+    # Cause an empty page with the name $LinkTagMapPage to
     # display a map.
     if (($LinkTagMapPage eq $OpenPageName)
         && ($pageText =~ /^\s*$/s)){
