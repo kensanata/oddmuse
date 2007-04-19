@@ -18,6 +18,11 @@
 	* wiki.pl (BrowsePage): Use the page timestamp as the Etag for raw
 	page browsing.
 
+2007-04-05  Alex Schroeder  <alex@gnu.org>
+
+	* modules/creole.pl (CreoleRule): Support hyphen for bullet list
+	items.
+
 2007-04-04  Alex Schroeder  <aschroeder@localhost>
 
 	* modules/creole.pl (CreoleRule): New Table code.
