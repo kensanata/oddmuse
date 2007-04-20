@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.779 2007/04/20 18:14:50 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.780 2007/04/20 20:24:04 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3673,7 +3673,7 @@ sub MergeRevisions { # merge change from file2 to file3 into file1
   WriteStringToFile($name2, $file2);
   WriteStringToFile($name3, $file3);
   my ($you,$ancestor,$other) = (T('you'), T('ancestor'), T('other'));
-  my $output = `diff3 -m -L $you -L $ancestor -L $other $name1 $name2 $name3`;
+  my $output = `diff3 -m -L "$you" -L "$ancestor" -L "$other" $name1 $name2 $name3`;
   ReleaseLockDir('merge'); # don't unlink temp files--next merge will just overwrite.
   return $output;
 }
