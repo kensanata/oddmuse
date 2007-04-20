@@ -1,3 +1,9 @@
+2007-04-20  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoContributors): Rewrite to avoid garbage entries.
+	(MergeRevisions): Put the texts in double quotes in order to
+	support translations containing spaces.
+
 2007-04-18  Alexander Uvizhev  <uvizhe@yandex.ru>
 
 	* modules/linktagmap.pl: Many changes. This module now works
