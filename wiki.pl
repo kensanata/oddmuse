@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.778 2007/04/08 23:06:49 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.779 2007/04/20 18:14:50 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1976,9 +1976,12 @@ sub GetHistoryLine {
 sub DoContributors {
   my $id = shift;
   print GetHeader('', Ts('Contributors to %s', $id || $SiteName));
-  my %h = map { my ($ts, $pagename, $minor, $summary, $host, $username) = split(/$FS/o, $_);
-                $username => 1 if not $id or $pagename eq $id; } GetRcLines(1);
-  print $q->div({-class=>'content contrib'}, $q->p(map { GetPageLink($_) } sort(keys %h)));
+  my %contrib = ();
+  for (GetRcLines(1)) {
+    my ($ts, $pagename, $minor, $summary, $host, $username) = split(/$FS/o, $_);
+    $contrib{$username}++ if $username and (not $id or $pagename eq $id);
+  }
+  print $q->div({-class=>'content contrib'}, $q->p(map { GetPageLink($_) } sort(keys %contrib)));
   PrintFooter();
 }
 
