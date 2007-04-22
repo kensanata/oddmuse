@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.28 2007/04/13 23:27:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.29 2007/04/22 07:52:02 as Exp $</p>';
 
 use vars qw($CreoleLineBreaks);
 
@@ -80,9 +80,11 @@ sub CreoleRule {
       . AddHtmlEnvironment('li');
   }
   # * bullet list
-  # - bullet list
-  elsif ($bol && m/\G\s*([*-])[ \t]*/cg
-      or InElement('li') && m/\G\s*\n[ \t]*([*-]+)[ \t]*/cg) {
+  # - bullet list (not nested, requires space)
+  elsif ($bol && (m/\G\s*(\*)[ \t]*/cg
+		  || m/\G\s*(-)[ \t]+/cg)
+	 or InElement('li') && (m/\G\s*\n[ \t]*(\*+)[ \t]*/cg
+				|| m/\G\s*\n[ \t]*(-)[ \t]+/cg)) {
     return CloseHtmlEnvironmentUntil('li')
       . OpenHtmlEnvironment('ul', length($1))
       . AddHtmlEnvironment('li');
