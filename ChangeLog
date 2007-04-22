@@ -1,3 +1,8 @@
+2007-04-22  Alex Schroeder  <alex@gnu.org>
+
+	* modules/creole.pl (CreoleRule): Require space after dash and
+	don't allow nesting of dashes used for bullet lists.
+
 2007-04-20  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoContributors): Rewrite to avoid garbage entries.
