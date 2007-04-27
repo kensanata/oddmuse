@@ -1,6 +1,7 @@
 # UTF-8 encoded polish translation file for use with Oddmuse
 #
 # Copyright (c) 2006 Radomir Dopieralski
+# Copyright (c) 2007 Marcin Borkowski
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
@@ -15,12 +16,12 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: polish-utf8.pl,v 1.3 2006/08/18 22:46:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: polish-utf8.pl,v 1.4 2007/04/27 21:48:40 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Nie wolno Ci czytać tej strony: użytkownik, numer ip lub sieć jest zablokowana.
 %s calls
-
+%s odwołań
 Could not create %s
 Nie można utworzyć %s
 Invalid UserName %s: not saved.
@@ -30,13 +31,17 @@ NazwaUżytkownika musi mieć nie więcej niż 50 znaków: nie zapisane.
 This page contains an uploaded file:
 Ta strona zawiera wgrany plik:
 Recursive include of %s!
-
+Rekurencyjna inkluzja %s!
 Clear Cache
-
+Wyczyść Cache
 Main lock obtained.
 Uzyskano główną blokadę.
 Main lock released.
 Zwolniono główną blokadę.
+Journal
+
+More...
+
 Comments on this page
 Komentarze na tej stronie
 XML::RSS is not available on this system.
@@ -48,7 +53,7 @@ historia
 %s returned no data, or LWP::UserAgent is not available.
 %s nie zwrócił danych lub LWP:UserAgent jest niedostępny.
 RSS parsing failed for %s
-Prasowanie RSS nie powiodło się dla %s
+Parsowanie RSS nie powiodło się dla %s
 No items found in %s.
 Nie znaleziono elementów w %s.
  . . . . 
@@ -81,6 +86,8 @@ Preview only, not yet saved
 Tylko podgląd, jeszcze nie zapisane
 Please go on to %s.
 Proszę przejść do %s.
+All changes for %s
+
 No updates since %s
 Zadnych zmian od %s
 Updates since %s
@@ -96,9 +103,9 @@ Wyświetl tylko ostatnią zmianę dla każdej strony
 List all changes
 Wyświetl wszystkie zmiany
 Skip rollbacks
-
+Pomiń cofnięcia
 Include rollbacks
-
+Uwzględnij cofnięcia
 List only major changes
 Wyświetl tylko istotne zmiany
 Include minor changes
@@ -112,7 +119,7 @@ Filtry
 Title:
 Tytuł:
 Title and Body:
-Tytuł i teskt:
+Tytuł i tekst:
 Username:
 Użytkownik:
 Host:
@@ -129,28 +136,32 @@ new
 nowa
 from %s
 z %s
+: 
+
 This page is too big to send over RSS.
-Ta strona jest zbyt duża żeby ją wysłać przez RSS.
+Ta strona jest zbyt duża, żeby ją wysłać przez RSS.
 History of %s
 Historia %s
 Compare
 Porównaj
 Deleted
-
+Usunięta
 Mark this page for deletion
-
+Zaznacz tę stronę do usunięcia
 No other revisions available
-
+Nie ma dostępnych innych wersji
 current
-
+aktualna
 Revision %s
 Wersja %s
 Contributors to %s
-
+Współautorzy %s
 Missing target for rollback.
 Nie ma czego cofać
 Target for rollback is too far back.
-Zbyt stare aby cofnąć
+Zbyt stare, aby cofnąć
+A username is required for ordinary users.
+
 Rolling back changes
 Cofam zmiany
 The two revisions are the same.
@@ -162,7 +173,7 @@ Cofam do %s
 %s rolled back
 %s cofnięte
 to %s
-
+do %s
 Index of all pages
 Spis wszystkich stron
 Wiki Version
@@ -174,9 +185,9 @@ Hasło
 Run maintenance
 Przeprowadź konserwację
 Unlock site
-Odblokuj strony
+Odblokuj serwis
 Lock site
-Zablokuj strony
+Zablokuj serwis
 Install CSS
 Zainstaluj CSS
 Unlock %s
@@ -196,7 +207,7 @@ Aby zaznaczyć stronę do usunięcia, wpisz <strong>%s</strong> w pierwszej lini
 redirected from %s
 przekierowano z %s
 Click to search for references to this page
-Kliknij aby szukać odniesień do tej strony
+Kliknij, aby szukać odniesień do tej strony
 Cookie: 
 Ciasteczko:
 Warning
@@ -232,7 +243,7 @@ Zobacz aktualną wersję
 View all changes
 Zobacz wszystkie zmiany
 View contributors
-
+Zobacz współautorów
 Homepage URL:
 URL strony domowej:
 s
@@ -254,7 +265,7 @@ Sprawdź HTML
 Validate CSS
 Sprawdż CSS
 Last edit
-
+Ostatnia edycja
 Difference between revision %1 and %2
 Różnice (pomiędzy wersjami %1 i %2)
 revision %s
@@ -262,9 +273,9 @@ wersja %s
 current revision
 aktualna wersja
 Last major edit (%s)
-
+Ostatnia główna edycja
 later minor edits
-
+Ostatnia pomniejsza edycja
 No diff available.
 Różnice niedostępne.
 Old revision:
@@ -272,7 +283,7 @@ Stara wersja:
 Changed:
 Zmienione:
 Deleted:
-
+Skasowane:
 Added:
 Dodane:
 to
@@ -284,7 +295,7 @@ pokazuję aktualną wersję zamiast niej
 Showing revision %s
 Wyświetlana wersja %s
 Cannot save a nameless page.
-Nie można zapisać bezimiennej strony.
+Nie można zapisać strony bez nazwy.
 Cannot save a page without revision.
 Nie można zapisać strony bez wersji.
 Cannot open %s
@@ -316,7 +327,7 @@ Odblokowanie nie jest konieczne.
 1 second ago
 1 sekundę temu
 just now
-właśnie przed chwilką
+przed chwilką
 Edit Denied
 Edycja Niedozwolona
 Editing not allowed: user, ip, or network is blocked.
@@ -343,10 +354,12 @@ Summary:
 Streszczenie:
 This change is a minor edit.
 Ta zmiana jest drobna.
+Cancel
+
 Replace this file with text
 Zastąp ten plik tekstem
 Replace this text with a file
-Zastęp ten tekst plikiem
+Zastąp ten tekst plikiem
 File to upload: 
 Plik do wgrania:
 Files of type %s are not allowed.
@@ -356,7 +369,7 @@ Twoje hasło jest zapisane w ciasteczku, jeśli masz włączoną ich obsługę. 
 You are currently an administrator on this site.
 Jesteś obecnie administratorem tej strony.
 You are currently an editor on this site.
-Jesteś obecnie edytorem tej strony.
+Jesteś obecnie redaktorem tej strony.
 You are a normal user on this site.
 Jesteś zwyczajnym użytkownikiem.
 Your password does not match any of the  administrator or editor passwords.
@@ -364,17 +377,21 @@ Twoje hasło nie pasuje do żadnego z haseł edytora ani administratora.
 Password:
 Hasło:
 This site does not use admin or editor passwords.
-Ta strona nie używa haseł edytora ani administratora.
+Ta strona nie używa haseł redaktora ani administratora.
 This operation is restricted to site editors only...
-Ta operacja jest dozwolona tylko dla edytorów strony.,,
+Ta operacja jest dozwolona tylko dla redaktorów strony.,,
 This operation is restricted to administrators only...
-Ta operacje jest dozwolona tylko dla administratorów strony...
+Ta operacja jest dozwolona tylko dla administratorów strony...
 SampleUndefinedPage
-PrzykładNiezdefioniwanejStrony
+PrzykładNiezdefiniowanejStrony
 Sample_Undefined_Page
 Przykład_Niezdefiniowanej_Strony
 Rule "%1" matched "%2" on this page.
 Reguła "%1" pasuje do "%2" na tej stronie.
+Reason: %s.
+
+Reason unknown.
+
 Without normal pages
 Bez zwykłych stron
 Include normal pages
@@ -426,7 +443,7 @@ Nie ma żadnych zmian do zapisania.
 This page was changed by somebody else %s.
 Ta strona została zmieniona przez kogoś innego.
 The changes conflict.  Please check the page again.
-Zmiany konfliktują. Proszę sprawdzić stronę ponownie.
+Wystąpił konflikt zmian. Proszę sprawdzić stronę ponownie.
 Please check whether you overwrote those changes.
 Prosze sprawdzić, czy nadpisałeś te zmiany.
 Anonymous
@@ -438,7 +455,7 @@ Proszę sprawdzić uprawnienia do katalogu.
 Your changes were not saved.
 Twoje zmiany nie zostały zapisane.
 Could not get a lock to merge!
-Nie można uzyskać blokady aby połączyć zmiany.
+Nie można uzyskać blokady, aby połączyć zmiany.
 you
 ty
 ancestor
@@ -466,7 +483,7 @@ Nie można otworzyć pliku logów %s.
 Error was
 Błędem było
 Note: This error is normal if no changes have been made.
-Uwaga: Ten błąd jest normalny jeśli nie było żadnych zmian.
+Uwaga: Ten błąd jest normalny, jeśli nie było żadnych zmian.
 Moving %s log entries.
 Przenoszenie %s wpisów logów.
 Getting page index file for %s.
@@ -484,7 +501,7 @@ Ustawiono blokadę dla %s
 Lock for %s removed.
 Zwolniono blokadę dla %s
 Displaying Wiki Version
-Wyświetlanie Wersji Wiki
+Wyświetlanie wersji Wiki
 Show dependencies
 Pokaż zależności
 Inter links:
@@ -492,11 +509,11 @@ Wewnętrze odnośniki:
 Near links:
 Bliskie odnośniki:
 Show parsed link data
-Pokaż sprasowane dane odnośników
+Pokaż sparsowane dane odnośników
 Too many connections by %s
 Zbyt dużo połączeń z %s
 Please do not fetch more than %1 pages in %2 seconds.
-Proszę nie pobierać więcej, niż %1 stron w ciągu %2 sekund.
+Proszę nie pobierać więcej niż %1 stron w ciągu %2 sekund.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Sprawdź czy serwer WWW może utworzyć katalog %s, oraz czy może tworzyć w nim pliki.
 anchor first defined here: %s
@@ -534,7 +551,13 @@ Dowiedz się więcej...
 Complete Content
 Całkowita zawartość
 The main page is %s.
-Główną stroną %s.
+Główną stroną jest %s.
+Rebuild BackLink database
+
+Internal Page: 
+
+Pages that link to this page
+
 Cannot highlight the language %s.
 Nie można pokolorować źródła dla języka %s.
 Recent Visitors
@@ -546,9 +569,9 @@ był tutaj
 and read
 i czytał
 Illegal year value: Use 0001-9999
-
+Niedozwolony rok: Użyj 0001-9999
 The match parameter is missing.
-Parametr dopasowania brakuje.
+Brakuje parametru dopasowania.
 Page Collection for %s
 Zbiór stron dla %s
 Previous
@@ -558,9 +581,9 @@ Następny
 Calendar %s
 Kalendarz %s
 Su
-ni
+nd
 Mo
-po
+pn
 Tu
 wt
 We
@@ -568,7 +591,7 @@ We
 Th
 cz
 Fr
-pi
+pt
 Sa
 so
 January
@@ -595,6 +618,10 @@ November
 listopad
 December
 grudzień
+set %s
+
+unset %s
+
 Clustermap
 Mapa klastrów
 Pages without a Cluster
@@ -602,11 +629,11 @@ Strony bez klastra
 Comments on 
 Komentarze na
 Comment on 
-Skomentuj na temat 
+Skomentuj 
 Compilation for %s
 Kompilacja dla %s
 Compilation tag is missing a regular expression.
-Brak znacznika kompilacji w wyrażeniu regularnym.
+Brak wyrażenia regularnego w znaczniku kompilacji.
 Despamming pages
 Odspamowywanie stron
 Cannot find revision %s.
@@ -617,6 +644,26 @@ Marked as %s.
 Oznaczony jako %s.
 Cannot find unspammed revision.
 Nie można znaleźć czystej wersji.
+Recover Draft
+
+No text to save
+
+Draft saved
+
+Draft recovered
+
+No draft available to recover
+
+Save Draft
+
+Draft Cleanup
+
+%1 was last modified %2 and was kept
+
+%1 was last modified %2 and was deleted
+
+Unable to delete draft %s
+
 Add Comment
 Dodaj komentarz
 ordinary changes
@@ -626,9 +673,9 @@ Przypisy:
 Could not find %1.html template in %2
 Nie można znaleźć szablonu %1.html w %2
 Only Editors are allowed to see this hidden page.
-
+Tylko redaktorom wolno oglądać tę ukrytą stronę.
 Only Admins are allowed to see this hidden page.
-
+Tylko administratorom wolno oglądać tę ukrytą stronę.
 Index
 Indeks
 Languages:
@@ -642,7 +689,7 @@ Pełna lista odnośników
 Template without parameters
 Szablon bez parametrów
 The template %s is either empty or does not exist.
-Szablon %s jest albo pusty, albo nie istnieje.
+Szablon %s albo jest pusty, albo nie istnieje.
  -- defined on %s
  -- zdefiniowane na %s
 Local names defined on %1: %2
@@ -660,13 +707,13 @@ Adres poczty elektronicznej jest niepoprawny.
 The username %s has already been registered.
 Nazwa użytkownika %s jest już zarejestrowana.
 Your registration for %s has been submitted.
-Twoja rejestracja dla %s zostałą złożona.
+Twoja rejestracja dla %s została wysłana.
 Please allow time for the webmaster to approve your request.
 Proszę dać administratorowi czas na potwierdzenie.
 An email has been sent to "%s" with further instructions.
 Wysłano e-mail do "%s" z dalszymi instrukcjami.
 There was an error saving your registration.
-Wystąpił błąd podczas zpisywania rejestracji.
+Wystąpił błąd podczas zapisywania rejestracji.
 An account was created for %s.
 Konto dla %s zostało utworzone.
 Login to %s
@@ -700,9 +747,9 @@ Potwierdź oczekujące rejestracje
 Confirm Registration for %s
 Potwierdź rejestrację dla %s
 %s, your registration has been approved. You can now use your password to login and edit this wiki.
-%s, twoja rejestracja została potwierdzona. Możesz teraz użyć swojego hasła żeby się zalogować i edytować to wiki.
+%s, twoja rejestracja została potwierdzona. Możesz teraz użyć swojego hasła, żeby się zalogować i edytować to wiki.
 Confirmation failed.  Please email %s for help.
-Potwierdzenie nie powiodło się. Proszę wysłać e-maila do %s aby uzyskać pomoc.
+Potwierdzenie nie powiodło się. Proszę wysłać e-maila do %s, aby uzyskać pomoc.
 Who Am I?
 Kim jestem?
 You are logged in as %s.
@@ -718,7 +765,7 @@ Nastąpił błąd podczas resetowania hasła dla %s.
 The username "%s" does not exist.
 Nazwa użytkonika "%s" nie istnieje.
 Reset Password for %s
-Zrestuj hasło dla %s
+Zresetuj hasło dla %s
 Reset Password?
 Zresetować hasło?
 Change Password for %s
@@ -728,7 +775,7 @@ Zmienić hasło?
 Your current password is incorrect.
 Twoje obecne hasło jest nieprawidłowe.
 Your password has been changed.
-Twoje hasłó zostało zmienione.
+Twoje hasło zostało zmienione.
 Approve Pending Registrations for %s
 Potwierdź oczekujące rejestracje dla %s
 %s has been approved.
@@ -744,6 +791,8 @@ Nastąpił błąd przy potwierdzaniu %s.
 There are no pending registrations.
 Nie ma oczekujących rejestracji.
 %s is not a legal name for a namespace
+%s nie jest dozwoloną nazwą przestrzeni nazw
+ (create locally)
 
 Clearing Cache
 Czyszczenie pamięci podręcznej
@@ -756,9 +805,9 @@ Rozszerzenie obsługi 404 wymaga rozszerzenia danych o odnośnikach (links.pl).
 LocalMap
 MapaLokalna
 No page id for action localmap
-Nie ma id strony dla akcji mapy lokalnej
+Nie ma identyfikatora strony dla działania mapy lokalnej
 Requested page %s does not exist
-Rządana strona %s nie istnieje
+Żądana strona %s nie istnieje
 Local Map for %s
 Mapa lokalna dla %s
 view
@@ -786,25 +835,27 @@ Pobierz tę stronę jako PDF
 Portrait
 Portret
 Publish %s
-
+Opublikuj %s
 No target wiki was specified in the config file.
-
+Docelowa wiki nie została określona w pliku konfiguracji.
 The target wiki was misconfigured.
-
+Docelowa wiki jest źle skonfigurowana.
 You did not answer correctly.
 Nie odpowiedziałes poprawnie.
-To save this page you must answer this question:
+Use the back button to return the previous page and try again.
 
-All Referrers
-Wszystkie odniesienia
+To save this page you must answer this question:
+Aby zapisać tę stronę, musisz odpowiedzieć na pytanie:
 Referrers
 Odniesienia
+All Referrers
+Wszystkie odniesienia
 Tag
 Znaczniki
 Rebuild index for searching
 Przebuduj indeks przeszukiwania
 Tag Cloud
-
+Chmura znaczników
 Search::FreeText is not available on this system.
 Search::FreeText jest niedostępny w tym systemie.
 Rebuilding index not done.
@@ -812,7 +863,7 @@ Przebudowywanie indeksu nie zakończone.
 (Rebuilding the index can only be done once every 12 hours.)
 (Przebudowa indeksu może być dokonana raz na 12 godzin).
  ... 
-
+ ... 
 Search term missing.
 Brak frazy wyszukiwania.
 Result pages: 
@@ -820,13 +871,15 @@ Strony wyniku:
 (%s results)
 (%s wyników)
 Tags:
-
+Znaczniki:
 Tags: %s.
-
+Znaczniki: %s.
 No tags
-
+Brak znaczników
 Slideshow:%s
 Pokaz slajdów: %s
+Index of all small pages
+
 Static Copy
 Kopia Statyczna
 Back to %s
@@ -857,8 +910,10 @@ URL:
 URL:
 Name:
 Nazwa:
-Failed to remove %s
-Nie można usunąć %s
+Too many instances.  Only %s allowed.
+
+Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
+
 Contents
 Zawartość
 This page is a translation of %s. 
@@ -880,11 +935,11 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 search
 szukanie
 Wanted Pages
-
+Porządane strony
 %s pages
-
+%s stron
 %s, referenced from:
-
+%s, wspomniana na:
 Upload of %s file
 Wgranie pliku %s
 Blog
@@ -896,7 +951,7 @@ Nowy
 Edit %s.
 Edycja %s.
 Title: 
-
+Tytuł:
 Tags: 
-
+Znaczniki:
 END_OF_TRANSLATION
