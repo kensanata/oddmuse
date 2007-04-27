@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.780 2007/04/20 20:24:04 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.781 2007/04/27 21:44:24 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -850,7 +850,7 @@ sub PrintAllPages {
     print $q->start_div({-class=>'page'}),
       $q->h1($links ? GetPageLink($id, $title) : $q->a({-name=>$id},$title));
     PrintPageHtml();
-    if ($comments and UserCanEdit($CommentsPrefix . $id, 0) and $id !~ /^$CommentsPrefix/o) {
+    if ($comments and $id !~ /^$CommentsPrefix/o) {
       print $q->p({-class=>'comment'},
 		  GetPageLink($CommentsPrefix . $id, T('Comments on this page')));
     }
