@@ -3,6 +3,12 @@
 	* wiki.pl (PrintAllPages): Print link to comment pages even if
 	these cannot be edited, as suggested by Marcin Borkowski.
 
+2007-04-23  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (Save): We need to reset %IndexHash and @IndexList when
+	a page is created to force systems running FCGI to recreate the
+	pageidx file. This is necessary to communicate between processes.
+
 2007-04-22  Alex Schroeder  <alex@gnu.org>
 
 	* modules/creole.pl (CreoleRule): Require space after dash and
