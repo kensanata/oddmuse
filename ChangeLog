@@ -1,3 +1,13 @@
+2007-05-29  Alex Schroeder  <alex@gnu.org>
+
+	Some changes suggested by Radomir Dopieralski <oddmuse@sheep.art.pl>.
+	
+	* wiki.pl (ReportError): Add two newlines at the end and exit with
+	an error code.
+	(GetHttpHeader): Print two newlines at the end if only a HEAD
+	request was sent.
+	(GetId): Return HomePage if path_info is just a slash (/).
+
 2007-04-27  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (PrintAllPages): Print link to comment pages even if
