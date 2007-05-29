@@ -199,10 +199,10 @@ sub DoWikiRequest {
 sub ReportError { # fatal!
   my ($errmsg, $status, $log, @html) = @_;
   $q = new CGI unless $q; # make sure we can report errors before InitRequest
-  print GetHttpHeader('text/html', 'nocache', $status);
-  print $q->start_html, $q->h2(QuoteHtml($errmsg)), @html, $q->end_html, "\n\n"; # newlines for FCGI
-  WriteStringToFile("$TempDir/error", $q->start_html . $q->h1("$status $errmsg")
-		    . $q->Dump . $q->end_html) if $log;
+  print GetHttpHeader('text/html', 'nocache', $status), GetHtmlHeader(T('Error')),
+    $q->start_div({class=>"error"}), $q->h1(QuoteHtml($errmsg)), @html, $q->end_div,
+    $q->end_html, "\n\n"; # newlines for FCGI because of exit()
+  WriteStringToFile("$TempDir/error", '<body>' . $q->h1("$status $errmsg") . $q->Dump) if $log;
   map { ReleaseLockDir($_); } keys %Locks;
   exit (2);
 }
@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.783 2007/05/29 12:21:15 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.784 2007/05/29 13:26:04 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2176,7 +2176,7 @@ sub GetHttpHeader {
   my $cookie = Cookie();
   $headers{-cookie} = $cookie  if $cookie;
   if ($q->request_method() eq 'HEAD') {
-    print $q->header(%headers), "\n\n"; # add newlines for FCGI
+    print $q->header(%headers), "\n\n"; # add newlines for FCGI because of exit()
     exit; # total shortcut -- HEAD never expects anything other than the header!
   }
   return $q->header(%headers);
@@ -2244,21 +2244,12 @@ sub GetHtmlHeader {
   return $html;
 }
 
-sub GetCss {
-  my $css = GetParam('css', '');
-  if ($css) {
-    $css =~ s/".*//; # prevent javascript injection
-    foreach my $sheet (split(/\s+/, $css)) {
-      return qq(<link type="text/css" rel="stylesheet" href="$sheet" />);
-    }
-  } elsif ($StyleSheet) {
-    return qq(<link type="text/css" rel="stylesheet" href="$StyleSheet" />);
-  } elsif ($IndexHash{$StyleSheetPage}) {
-    $css = "$ScriptName?action=browse;id=" . UrlEncode($StyleSheetPage);
-    return qq(<link type="text/css" rel="stylesheet" href="$css;raw=1;mime-type=text/css" />);
-  } else {
-    return qq(<link type="text/css" rel="stylesheet" href="http://www.oddmuse.org/oddmuse.css" />);
-  }
+sub GetCss { # prevent javascript injection
+  my @css = map { s/".*//; $_; } split(/\s+/, GetParam('css', ''));
+  push (@css, $StyleSheet) if $StyleSheet;
+  push (@css, "$ScriptName?action=browse;id=" . UrlEncode($StyleSheetPage)) if $IndexHash{$StyleSheetPage};
+  push (@css, 'http://www.oddmuse.org/oddmuse.css') unless @css;
+  return join('', map { qq(<link type="text/css" rel="stylesheet" href="$_" />) } @css);
 }
 
 sub PrintFooter {
