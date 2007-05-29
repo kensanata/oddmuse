@@ -200,11 +200,11 @@ sub ReportError { # fatal!
   my ($errmsg, $status, $log, @html) = @_;
   $q = new CGI unless $q; # make sure we can report errors before InitRequest
   print GetHttpHeader('text/html', 'nocache', $status);
-  print $q->start_html, $q->h2(QuoteHtml($errmsg)), @html, $q->end_html;
+  print $q->start_html, $q->h2(QuoteHtml($errmsg)), @html, $q->end_html, "\n\n"; # newlines for FCGI
   WriteStringToFile("$TempDir/error", $q->start_html . $q->h1("$status $errmsg")
 		    . $q->Dump . $q->end_html) if $log;
   map { ReleaseLockDir($_); } keys %Locks;
-  exit; # Don't return non-zero so that FCGI does not warn about abnormal exit
+  exit (2);
 }
 
 sub Init {
@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.782 2007/05/10 15:38:10 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.783 2007/05/29 12:21:15 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1295,7 +1295,7 @@ sub Tss {
 # == Choosing action
 
 sub GetId {
-  return $HomePage if (!$q->param && !($UsePathInfo && $q->path_info));
+  return $HomePage if !$q->param && !($UsePathInfo && $q->path_info && $q->path_info ne "/");
   my $id = join('_', $q->keywords); # script?p+q -> p_q
   if ($UsePathInfo) {
     my @path = split(/\//, $q->path_info);
@@ -2176,7 +2176,7 @@ sub GetHttpHeader {
   my $cookie = Cookie();
   $headers{-cookie} = $cookie  if $cookie;
   if ($q->request_method() eq 'HEAD') {
-    print $q->header(%headers);
+    print $q->header(%headers), "\n\n"; # add newlines for FCGI
     exit; # total shortcut -- HEAD never expects anything other than the header!
   }
   return $q->header(%headers);
