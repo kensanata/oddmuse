@@ -60,7 +60,7 @@ $UploadAllowed $LastUpdate $PageCluster $HtmlHeaders %PlainTextPages
 $RssInterwikiTranslate $UseCache $ModuleDir $Counter $FullUrlPattern
 %InvisibleCookieParameters $FreeInterLinkPattern %AdminPages
 @MyAdminCode @MyInitVariables @MyMaintenance $SummaryDefaultLength
-$JournalLimit);
+$JournalLimit $UseQuestionmark);
 
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
@@ -104,6 +104,7 @@ $BannedCanRead = 1;             # 1 = banned cannot edit, 0 = banned cannot read
 $BannedContent = 'BannedContent'; # Page for banned content (usually for link-ban)
 $WikiLinks   = 1;               # 1 = LinkPattern is a link
 $FreeLinks   = 1;               # 1 = [[some text]] is a link
+$UseQuestionmark = 1;           # 1 = append questionmark to links to nonexisting pages
 $BracketText = 1;               # 1 = [URL desc] uses a description for the URL
 $BracketWiki = 1;               # 1 = [WikiLink desc] uses a desc for the local link
 $NetworkFile = 1;               # 1 = file: is a valid protocol for URLs
@@ -272,7 +273,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.784 2007/05/29 13:26:04 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.785 2007/05/30 10:58:11 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -583,7 +584,7 @@ sub LinkRules {
 	       or m/\G(\[$LinkPattern\])/cog or m/\G($LinkPattern)/cog)) {
     # [LocalPage text], [LocalPage], LocalPage
     Dirty($1);
-    my $bracket = (substr($1, 0, 1) eq '[');
+    my $bracket = (substr($1, 0, 1) eq '[' and not $3);
     print GetPageOrEditLink($2, $3, $bracket);
   } elsif ($locallinks && $FreeLinks && (m/\G(\[\[image:$FreeLinkPattern\]\])/cog
 					 or m/\G(\[\[image:$FreeLinkPattern\|([^]|]+)\]\])/cog)) {
@@ -1137,27 +1138,16 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
     $class .= ' number';
     $title = NormalToFree($id);
   }
+  my $link = $text||NormalToFree($id);
   if ($resolved) { # anchors don't exist as pages, therefore do not use $exists
-    $text = NormalToFree($id) unless $text;
-    return ScriptLink(UrlEncode($resolved), $text, $class, undef, $title);
-  } else {
-    # $free and $bracket usually exclude each other
-    # $text and not $bracket exclude each other
-    my $link = GetEditLink($id, '?');
-    if ($bracket && $text) {
-      return "[$id$link $text]";
-    } elsif ($bracket) {
-      return "[$id$link]";
-    } elsif ($free && $text) {
-      $text = NormalToFree($id);
-      return "[$id$link $text]";
-    } elsif ($free) {
-      $text = $id;
-      $text = "[$text]" if $text =~ /_/;
-      return NormalToFree($text) . $link;
-    } else { # plain, no text
-      return $id . $link;
-    }
+    return ScriptLink(UrlEncode($resolved), $link, $class, undef, $title);
+  } else { # reproduce markup if $UseQuestionmark
+    return GetEditLink($id, $bracket ? "[$link]" : $link) if not $UseQuestionmark;
+    $link = $id . GetEditLink($id, '?');
+    $link .= ($free ? '|' : ' ') . $text if $text and $text ne $id;
+    $link = "[[$link]]" if $free;
+    $link = "[$link]" if $bracket or not $free and $text;
+    return $link;
   }
 }
 
@@ -1201,8 +1191,9 @@ sub GetDownloadLink {
   $alt = $name unless $alt;
   my $id = FreeToNormal($name);
   # if the page does not exist
-  return '[' . ($image ? T('image') : T('download')) . ':' . $name
-    . ']' . GetEditLink($id, '?', 1) unless $IndexHash{$id};
+  return '[[' . ($image ? T('image') : T('download')) . ':'
+    . ($UseQuestionmark ? $name . GetEditLink($id, '?', 1) : GetEditLink($id, $name, 1)) . ']]'
+    unless $IndexHash{$id};
   my $action;
   if ($revision) {
     $action = "action=download;id=" . UrlEncode($id) . ";revision=$revision";
