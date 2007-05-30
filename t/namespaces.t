@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 16;
+use Test::More tests => 22;
 clear_pages();
 
 add_module('namespaces.pl');
@@ -49,3 +49,14 @@ test_page(get_page('action=rc raw=1 ns=Muu'),
 	  'description: muu ns');
 test_page_negative(get_page('action=rc raw=1 ns=Muu'),
 	  'description: main ns');
+# add two more edits so that RC will show diff links
+update_page('Test', 'Another Muuu!', 'main ns');
+update_page('Test', 'Another Mooo!', 'muu ns', undef, undef, 'ns=Muu');
+xpath_test(get_page('action=rc'),
+	   '//a[@class="local"][@href="http://localhost/wiki.pl/Test"][text()="Test"]',
+	   '//a[@class="history"][@href="http://localhost/wiki.pl?action=history;id=Test"][text()="history"]',
+	   '//a[@class="diff"][@href="http://localhost/wiki.pl?action=browse;diff=1;id=Test"][text()="diff"]',
+	   '//a[@class="local"][@href="http://localhost/wiki.pl/Muu/Test"][text()="Muu/Test"]',
+	   '//a[@class="history"][@href="http://localhost/wiki.pl/Muu?action=history;id=Test"][text()="history"]',
+	   '//a[@class="diff"][@href="http://localhost/wiki.pl/Muu?action=browse;diff=1;id=Test"][text()="diff"]',
+	  );
