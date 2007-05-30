@@ -273,7 +273,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.785 2007/05/30 10:58:11 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.786 2007/05/30 11:13:39 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1191,7 +1191,7 @@ sub GetDownloadLink {
   $alt = $name unless $alt;
   my $id = FreeToNormal($name);
   # if the page does not exist
-  return '[[' . ($image ? T('image') : T('download')) . ':'
+  return '[[' . ($image ? 'image' : 'download') . ':'
     . ($UseQuestionmark ? $name . GetEditLink($id, '?', 1) : GetEditLink($id, $name, 1)) . ']]'
     unless $IndexHash{$id};
   my $action;
