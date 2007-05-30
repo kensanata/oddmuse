@@ -46,5 +46,5 @@ EOT
 
 xpath_run_tests(split('\n',<<'EOT'));
 ==[[Free Link]]==
-//h2/text()[string()="[Free Link]"]/following-sibling::a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=Free_Link"][text()="?"]
+//h2/text()[string()="[[Free_Link"]/following-sibling::a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=Free_Link"][text()="?"]/following-sibling::text()[string()="]]"]
 EOT
