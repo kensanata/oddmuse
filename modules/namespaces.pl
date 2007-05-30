@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.30 2007/04/02 17:05:39 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.31 2007/05/30 08:05:09 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent $NamespaceRoot $NamespaceSlashing);
 
@@ -224,10 +224,7 @@ sub NewNamespaceScriptLink {
   local $ScriptName = $ScriptName;
   if ($action =~ /^($UrlProtocols)\%3a/) { # URL-encoded URL
     # do nothing
-  } elsif ($action !~ /=/ and $action =~ /(.*?)%2f(.*)/) {
-    $ScriptName .= "/$1";
-    $action = $2;
-  } elsif ($action =~ /(.*=)(.*?)%2f(.*)/) {
+  } elsif ($action =~ /(.*?)\b($InterSitePattern)\/(.*)/) {
     $ScriptName .= '/' . $2;
     $action = $1 . $3;
   }
