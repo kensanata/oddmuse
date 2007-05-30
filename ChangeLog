@@ -1,11 +1,22 @@
+2007-05-30  Alex Schroeder  <alex@gnu.org>
+
+	* modules/namespaces.pl (NewNamespaceScriptLink): Make the rule
+	that hacks the namespace prefix more generic, and adapt it to
+	NewNamespaceUrlEncode which already removes %2f from the URL.
+
 2007-05-29  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetCss): Rewritten more tersely and allow it to return
+	the first URL only.
+	(ReportError): Rewrite GetHtmlHeader and using a div with the
+	error class to allow styling.
 
 	Some changes suggested by Radomir Dopieralski <oddmuse@sheep.art.pl>.
 	
 	* wiki.pl (ReportError): Add two newlines at the end and exit with
-	an error code.
+	an error code because of the call to exit().
 	(GetHttpHeader): Print two newlines at the end if only a HEAD
-	request was sent.
+	request was sent because of the call to exit().
 	(GetId): Return HomePage if path_info is just a slash (/).
 
 2007-04-27  Alex Schroeder  <alex@gnu.org>
