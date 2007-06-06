@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 72;
+use Test::More tests => 73;
 clear_pages();
 
 add_module('creole.pl');
@@ -133,8 +133,10 @@ EOT
 # - Item 1\n- Item 2\n## Item 2.1\n## Item 2.2
 # <ul><li>Item 1</li><li>Item 2<ol><li>Item 2.1</li><li>Item 2.2</li></ol></li></ul>
 
+update_page('InterMap', " Ohana http://www.wikiohana.org/\n", 0, 0, 1);
 update_page('link', 'test');
 update_page('pic', 'test');
+ReInit();
 
 xpath_run_tests(split('\n',<<'EOT'));
 [[http://www.wikicreole.org/]]
@@ -177,6 +179,8 @@ http://www.wikicreole.org/.
 //a[@class="image outside"][@href="http://example.com/"][img[@class="url outside"][@src="http://example.com/"][@alt="a description"]]
 [[http://example.com/|{{http://mu.org/|a description}}]]
 //a[@class="image outside"][@href="http://example.com/"][img[@class="url outside"][@src="http://mu.org/"][@alt="a description"]]
+[[Ohana:WikiFamily]]
+//a[@class="inter Ohana"][@href="http://www.wikiohana.org/WikiFamily"]/span[@class="site"][text()="Ohana"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="WikiFamily"]
 EOT
 
 xpath_test(update_page('test','{{pic}}'),
