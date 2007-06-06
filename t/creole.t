@@ -180,7 +180,7 @@ http://www.wikicreole.org/.
 [[http://example.com/|{{http://mu.org/|a description}}]]
 //a[@class="image outside"][@href="http://example.com/"][img[@class="url outside"][@src="http://mu.org/"][@alt="a description"]]
 [[Ohana:WikiFamily]]
-//a[@class="inter Ohana"][@href="http://www.wikiohana.org/WikiFamily"]/span[@class="site"][text()="Ohana"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="WikiFamily"]
+//div/child::node()[1]/self::a[@class="inter Ohana"][@href="http://www.wikiohana.org/WikiFamily"]/span[@class="site"][text()="Ohana"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="WikiFamily"]
 EOT
 
 xpath_test(update_page('test','{{pic}}'),
