@@ -192,7 +192,8 @@ sub DoWikiRequest {
   Init();
   DoSurgeProtection();
   if (not $BannedCanRead and UserIsBanned() and not UserIsEditor()) {
-    ReportError(T('Reading not allowed: user, ip, or network is blocked.'), '403 FORBIDDEN');
+    ReportError(T('Reading not allowed: user, ip, or network is blocked.'), '403 FORBIDDEN',
+		0, $q->p(ScriptLink('action=password', T('Login'), 'password')));
   }
   DoBrowseRequest();
 }
@@ -273,7 +274,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.787 2007/05/31 12:24:00 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.788 2007/06/07 08:47:30 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3068,6 +3069,7 @@ sub UserCanEdit {
 }
 
 sub UserIsBanned {
+  return 0 if GetParam('action', '') eq 'password'; # login is always ok
   my ($host, $ip);
   $ip = $ENV{'REMOTE_ADDR'};
   $host = GetRemoteHost();
