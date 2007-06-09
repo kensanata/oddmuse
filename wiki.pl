@@ -60,7 +60,7 @@ $UploadAllowed $LastUpdate $PageCluster $HtmlHeaders %PlainTextPages
 $RssInterwikiTranslate $UseCache $ModuleDir $Counter $FullUrlPattern
 %InvisibleCookieParameters $FreeInterLinkPattern %AdminPages
 @MyAdminCode @MyInitVariables @MyMaintenance $SummaryDefaultLength
-$JournalLimit $UseQuestionmark);
+$JournalLimit $UseQuestionmark $LockExpiration %LockExpires);
 
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
@@ -171,6 +171,8 @@ $SisterSiteLogoUrl = 'file:///tmp/oddmuse/%s.png'; # URL format string for logos
 # Example: %Languages = ('de' => '\b(der|die|das|und|oder)\b');
 %Languages = ();
 @KnownLocks = qw(main diff index merge visitors); # locks to remove
+$LockExpiration = 60; # How long before expirable locks are expired
+%LockExpires = qw(diff index merge visitors); # locks to expire after some time
 %CookieParameters = (username=>'', pwd=>'', homepage=>'', theme=>'', css=>'', msg=>'',
 		     lang=>'', toplinkbar=>$TopLinkBar, embed=>$EmbedWiki, );
 %InvisibleCookieParameters = (msg=>1, pwd=>1,);
@@ -274,7 +276,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.788 2007/06/07 08:47:30 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.789 2007/06/09 23:30:51 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2769,8 +2771,12 @@ sub RequestLockDir {
   $n = 0;
   while (mkdir($lock, 0555) == 0) {
     if ($n++ >= $tries) {
-      return 0 unless $error;
       my $ts = (stat($lock))[10];
+      if ($ts > $LockExpiration and $LockExpires{$name}) {
+	ReleaseLockDir($name);          # expire lock
+	return 1 if RequestLockDir(@_); # and try again
+      }                                 # else fail as appropriate
+      return 0 unless $error;
       ReportError(Ts('Could not get %s lock', $name) . ": $!. "
 		  . Ts('The lock was created %s.', CalcTimeSince($Now - $ts)),
 		  '503 SERVICE UNAVAILABLE');
@@ -2782,9 +2788,9 @@ sub RequestLockDir {
 }
 
 sub ReleaseLockDir {
-  my $name = shift;
-  rmdir($LockDir . $name);
-  delete $Locks{$name};
+  my $name = shift;        # We don't check whether we succeeded.
+  rmdir($LockDir . $name); # Before fixing, make sure we only call this
+  delete $Locks{$name};    # when we know the lock exists.
 }
 
 sub RequestLockOrError {
