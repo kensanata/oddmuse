@@ -1,4 +1,32 @@
+2007-06-11  Alex Schroeder  <alex@gnu.org>
+
+	* modules/despam.pl (DespamMenu): Add "List spammed pages".
+	(InitDespamRules): New, moved @DespamRules init here.
+	(DoDespam): Add despam CSS class. Get rid of @pages. Use InitDespamRules.
+	(DoSpam): New.
+
+2007-06-10  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($LockExpiration, %LockExpires): New options.
+	(RequestLockDir): Use them.
+
+2007-06-07  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoWikiRequest): Provide login link if banned.
+	(UserIsBanned): The password page is always visible.
+
+2007-05-31  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetCss): Fix bug introduced by latest change that broke
+	the use of StyleSheetPage.
+
 2007-05-30  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($UseQuestionmark): New option.
+	(LinkRules): Fix $bracket for [WikiWord text].
+	(GetPageOrEditLink, GetDownloadLink): Changed display of edit
+	links and implement !$UseQuestionmark code.
+	(GetDownloadLink): No longer translate the image: prefix.
 
 	* modules/namespaces.pl (NewNamespaceScriptLink): Make the rule
 	that hacks the namespace prefix more generic, and adapt it to
