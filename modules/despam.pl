@@ -1,4 +1,4 @@
-# Copyright (C) 2004, 2007  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2005, 2006, 2007  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: despam.pl,v 1.10 2007/06/10 23:07:34 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: despam.pl,v 1.11 2007/06/10 23:08:26 as Exp $</p>';
 
 push(@MyAdminCode, \&DespamMenu);
 
