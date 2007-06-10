@@ -2,8 +2,13 @@
 
 	* modules/despam.pl (DespamMenu): Add "List spammed pages".
 	(InitDespamRules): New, moved @DespamRules init here.
-	(DoDespam): Add despam CSS class. Get rid of @pages. Use InitDespamRules.
+	(DoDespam): Add despam CSS class. Get rid of @pages. Use
+	InitDespamRules.
 	(DoSpam): New.
+	(@DespamStrangeRules): New.
+	(DespamRule): Moved rule extraction here.
+	(InitDespamRules, DespamBannedContent): Use StrangeBannedContent,
+	if available.
 
 2007-06-10  Alex Schroeder  <alex@gnu.org>
 
