@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: despam.pl,v 1.12 2007/06/10 23:21:14 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: despam.pl,v 1.13 2007/06/10 23:46:31 as Exp $</p>';
 
 push(@MyAdminCode, \&DespamMenu);
 
@@ -54,12 +54,10 @@ sub DoDespam {
   print GetHeader('', T('Despamming pages'), '') . '<div class="despam content"><p>';
   InitDespamRules();
   foreach my $id (DespamPages()) {
-    next if $id eq $BannedContent;
+    next if $id eq $BannedContent or $id eq $StrangeBannedContent;
     OpenPage($id);
-    my $title = $id;
-    $title =~ s/_/ /g;
     my $rule = $list || DespamBannedContent($Page{text});
-    print GetPageLink($id, $title);
+    print GetPageLink($id, NormalToFree($id));
     DespamPage($rule) if $rule and not $list;
     print $q->br();
   }
@@ -74,7 +72,7 @@ sub DoSpam {
   print GetHeader('', T('Spammed pages'), '') . '<div class="spam content"><p>';
   InitDespamRules();
   foreach my $id (AllPagesList()) {
-    next if $id eq $BannedContent;
+    next if $id eq $BannedContent or $id eq $StrangeBannedContent;
     OpenPage($id);
     my $rule = DespamBannedContent($Page{text});
     next unless $rule;
