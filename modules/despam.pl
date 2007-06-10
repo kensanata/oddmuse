@@ -1,4 +1,4 @@
-# Copyright (C) 2004  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2007  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,24 +16,19 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: despam.pl,v 1.9 2006/08/06 11:46:39 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: despam.pl,v 1.10 2007/06/10 23:07:34 as Exp $</p>';
 
 push(@MyAdminCode, \&DespamMenu);
 
 sub DespamMenu {
   my ($id, $menuref, $restref) = @_;
+  push(@$menuref, ScriptLink('action=spam', T('List spammed pages'), 'spam'));
   push(@$menuref, ScriptLink('action=despam', T('Despamming pages'), 'despam'));
 }
 
-$Action{despam} = \&DoDespam;
-
 my @DespamRules = ();
 
-sub DoDespam {
-  RequestLockOrError();
-  my @pages = DespamPages();
-  my $list = GetParam('list', 0);
-  print GetHeader('', T('Despamming pages'), '') . '<div class="content"><p>';
+sub InitDespamRules {
   # read them only once
   @DespamRules = grep /./, map {
     s/#.*//;  # trim comments
@@ -41,7 +36,16 @@ sub DoDespam {
     s/\s+$//; # trim trailing whitespace
     $_;
   } split(/\n/, GetPageContent($BannedContent));
-  foreach my $id (@pages) {
+}
+
+$Action{despam} = \&DoDespam;
+
+sub DoDespam {
+  RequestLockOrError();
+  my $list = GetParam('list', 0);
+  print GetHeader('', T('Despamming pages'), '') . '<div class="despam content"><p>';
+  InitDespamRules();
+  foreach my $id (DespamPages()) {
     next if $id eq $BannedContent;
     OpenPage($id);
     my $title = $id;
@@ -54,6 +58,22 @@ sub DoDespam {
   print '</p></div>';
   PrintFooter();
   ReleaseLock();
+}
+
+$Action{spam} = \&DoSpam;
+
+sub DoSpam {
+  print GetHeader('', T('Spammed pages'), '') . '<div class="spam content"><p>';
+  InitDespamRules();
+  foreach my $id (AllPagesList()) {
+    next if $id eq $BannedContent;
+    OpenPage($id);
+    my $rule = DespamBannedContent($Page{text});
+    next unless $rule;
+    print GetPageLink($id, NormalToFree($id)), ' ', $rule, $q->br();
+  }
+  print '</p></div>';
+  PrintFooter();
 }
 
 # Based on BannedContent(), but with caching
