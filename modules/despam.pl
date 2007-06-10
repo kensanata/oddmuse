@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: despam.pl,v 1.11 2007/06/10 23:08:26 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: despam.pl,v 1.12 2007/06/10 23:21:14 as Exp $</p>';
 
 push(@MyAdminCode, \&DespamMenu);
 
@@ -27,15 +27,23 @@ sub DespamMenu {
 }
 
 my @DespamRules = ();
+my @DespamStrangeRules = ();
+
+sub DespamRule {
+  $_ = shift;
+  s/#.*//;  # trim comments
+  s/^\s+//; # trim leading whitespace
+  s/\s+$//; # trim trailing whitespace
+  return $_;
+}
 
 sub InitDespamRules {
   # read them only once
-  @DespamRules = grep /./, map {
-    s/#.*//;  # trim comments
-    s/^\s+//; # trim leading whitespace
-    s/\s+$//; # trim trailing whitespace
-    $_;
-  } split(/\n/, GetPageContent($BannedContent));
+  @DespamRules = grep /./, map { DespamRule($_) }
+    split(/\n/, GetPageContent($BannedContent));
+  @DespamStrangeRules = grep /./, map { DespamRule($_) }
+    split(/\n/, GetPageContent($StrangeBannedContent))
+      if $IndexHash{$StrangeBannedContent};
 }
 
 $Action{despam} = \&DoDespam;
@@ -87,6 +95,14 @@ sub DespamBannedContent {
 	return Tss('Rule "%1" matched "%2" on this page.',
 		   QuoteHtml($regexp), $url);
       }
+    }
+  }
+  foreach (@DespamStrangeRules) {
+    my $regexp = $_;
+    if ($str =~ /($regexp)/i) {
+      my $match = $1;
+      return Tss('Rule "%1" matched "%2" on this page.',
+		 QuoteHtml($regexp), QuoteHtml($match));
     }
   }
   return 0;
