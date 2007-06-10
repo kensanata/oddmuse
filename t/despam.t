@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 9;
+use Test::More tests => 13;
 
 clear_pages();
 
@@ -42,12 +42,13 @@ update_page('BannedContent', " example\\.com\n", 'required', 0, 1);
 unlink('/tmp/oddmuse/keep/E/ExpiredPage/1.kp')
   or die "Cannot delete kept revision: $!";
 
-test_page(get_page('action=despam'), split('\n',<<'EOT'));
-HilariousPage.*Revert to revision 2
-NoPage.*Marked as DeletedPage
-OrdinaryPage
-ExpiredPage.*Cannot find unspammed revision
-EOT
+my $page = get_page('action=spam');
+test_page($page, 'HilariousPage', 'NoPage', 'ExpiredPage');
+test_page_negative($page, 'OrdinaryPage');
+
+test_page(get_page('action=despam'), 'HilariousPage.*Revert to revision 2',
+	  'NoPage.*Marked as DeletedPage', 'OrdinaryPage',
+	  'ExpiredPage.*Cannot find unspammed revision');
 
 test_page(get_page('ExpiredPage'), 'Still more spam');
 test_page(get_page('OrdinaryPage'), 'Ordinary text');
