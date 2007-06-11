@@ -276,7 +276,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.790 2007/06/10 00:51:19 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.791 2007/06/11 00:37:49 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2160,10 +2160,10 @@ sub GetHeader {
 sub GetHttpHeader {
   return if $PrintedHeader;
   $PrintedHeader = 1;
-  my ($type, $etag, $status) = @_;
-  $etag = PageEtag() unless $etag;
+  my ($type, $ts, $status) = @_; # $ts is undef, a ts, or 'nocache'
   my %headers = (-cache_control=>($UseCache < 0 ? 'no-cache' : 'max-age=10'));
-  $headers{-etag} = $etag if GetParam('cache', $UseCache) >= 2;
+  $headers{-etag} = $ts || PageEtag() if GetParam('cache', $UseCache) >= 2;
+  $headers{'-last-modified'} = TimeToW3($ts) if defined($ts) and $ts ne 'nocache'; # RFC 2616 section 13.3.4
   $headers{-type} = GetParam('mime-type', $type);
   $headers{-type} .= "; charset=$HttpCharset" if $HttpCharset;
   $headers{-status} = $status if $status;
