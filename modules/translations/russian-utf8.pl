@@ -20,7 +20,7 @@
 #
 # This script was last checked for Oddmuse version 1.658.
 #
-$ModulesDescription .= '<p>$Id: russian-utf8.pl,v 1.10 2007/04/10 10:30:34 uvizhe Exp $</p>';
+$ModulesDescription .= '<p>$Id: russian-utf8.pl,v 1.11 2007/06/15 09:27:29 uvizhe Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Просмотр недоступен: имя пользователя, IP-адрес или сеть заблокированы.
@@ -101,13 +101,13 @@ List latest change per page only
 List all changes
 Показать все изменения
 Skip rollbacks
-
+Не показывать откаты
 Include rollbacks
-
+Включая откаты
 List only major changes
 Показать только существенные изменения
 Include minor changes
-Включить несущественные изменения
+Включая несущественные изменения
 %s days
 %s дней
 List later changes
@@ -325,7 +325,7 @@ No unlock required.
 just now
 
 Edit Denied
-
+Редактирование отклонено
 Editing not allowed: user, ip, or network is blocked.
 Редактирование не разрешено: пользователь, IP или сеть заблокированы.
 Contact the wiki administrator for more information.
@@ -427,23 +427,23 @@ Browser reports no file info.
 Browser reports no file type.
 
 The page contains banned text.
-
+Страница содержит запрещенный текст.
 No changes to be saved.
-
+Нечего сохранить.
 This page was changed by somebody else %s.
-
+Страница была изменена кем-то %s.
 The changes conflict.  Please check the page again.
-
+Изменения конфликтуют. Проверьте страницу снова.
 Please check whether you overwrote those changes.
 
 Anonymous
-
+Аноним
 Cannot delete the index file %s.
 
 Please check the directory permissions.
-
+Проверьте разрешения этой директории.
 Your changes were not saved.
-
+Ваши изменения не были сохранены.
 Could not get a lock to merge!
 
 you
@@ -559,11 +559,11 @@ The match parameter is missing.
 Page Collection for %s
 
 Previous
-
+Назад
 Next
-
+Вперед
 Calendar %s
-
+Календарь за %s год
 Su
 Вс
 Mo
@@ -579,37 +579,37 @@ Fr
 Sa
 Сб
 January
-
+Январь
 February
-
+Февраль
 March
-
+Март
 April
-
+Апрель
 May
-
+Май
 June
-
+Июнь
 July
-
+Июль
 August
-
+Август
 September
-
+Сентябрь
 October
-
+Октябрь
 November
-
+Ноябрь
 December
-
+Декабрь
 Clustermap
-
+Кластеры
 Pages without a Cluster
-
+Некластеризованые страницы
 Comments on 
-
+Комментарии к
 Comment on 
-
+Комментарий к
 Compilation for %s
 
 Compilation tag is missing a regular expression.
@@ -625,7 +625,7 @@ Marked as %s.
 Cannot find unspammed revision.
 
 Add Comment
-
+Комментировать
 ordinary changes
 
 Footnotes:
