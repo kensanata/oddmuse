@@ -18,9 +18,9 @@
 #
 # Based on code of tagmap.pl module by Fletcher T. Penney
 # and searchtags.pl module by Brock Wilcox
-$ModulesDescription .= '<p>$Id: linktagmap.pl,v 1.3 2007/04/18 11:29:21 uvizhe Exp $</p>';
+$ModulesDescription .= '<p>$Id: linktagmap.pl,v 1.4 2007/06/15 09:26:37 uvizhe Exp $</p>';
 
-use vars qw($LinkTagMark $LinkDescMark $LinkTagClass $LinkDescClass $LinkTagMapPage $FreeLinkPattern $FullUrlPattern);
+use vars qw($LinkTagMark $LinkDescMark $LinkTagClass $LinkDescClass $LinkTagMapPage $FreeLinkPattern $FullUrlPattern $LinkTagSearchTitle);
 
 # Tags and descripton are embraced with this sequences
 $LinkTagMark = '%T%' unless defined $LinkTagMark;
@@ -36,18 +36,22 @@ $LinkTagMapPage = "LinkTagMap" unless defined $LinkTagMapPage;
 # The same output with wiki.pl?action=linktagmap
 $Action{linktagmap} = \&DoLinkTagMap;
 
-push (@MyRules, \&LinkTagRule, \&LinkDescriptionRule);
+# Action to search and show all links with specified tag
+$Action{linktagsearch} = \&DoLinkTagSearch;
 
-my $TagXML;
+# Header of a search result
+$LinkTagSearchTitle = "Links with tag %s";
+
+push (@MyRules, \&LinkTagRule, \&LinkDescriptionRule);
 
 sub LinkTagRule { # Process link tags on a page
 
     if ( m/\G$LinkTagMark(.*?)$LinkTagMark/gc) {      # find tags
         my @linktags = split /,\s*/, $1;              # push them in array
-        @linktags = map {                             # and print html output:
-            qq{<a href="$LinkTagMapPage#$_">$_</a>};  # each tag is a link to correspondent anchor on the $LinkTagMapPage
+        @linktags = map {                             # and generate html output:
+            qq{<a href="$ScriptName?action=linktagsearch;tag=$_">$_</a>};  # each tag is a link to search all links with that tag
         } @linktags;
-        $linktags = join ', ', @linktags;
+        my $linktags = join ', ', @linktags;
         return qq{<span class="$LinkTagClass">$linktags</span>}; # tags are put in SPAN block
     }
     return undef;
@@ -67,11 +71,11 @@ sub DoLinkTagMap {
 
     print GetHeader('',$LinkTagMapPage,'');
 
-    CreateLinkTagMap();
+    my $TagXML = GenerateLinkTagMap();
 
     print '<div class="content">';
 
-    PrintLinkTagMap();
+    PrintLinkTagMap($TagXML);
 
     print '</div>';
 
@@ -79,24 +83,75 @@ sub DoLinkTagMap {
 
 }
 
-sub CreateLinkTagMap { # Create an input XML for TagCategorizer
+sub DoLinkTagSearch {
+    
+    my $searchedtag = GetParam('tag');  # get tag parameter
+    my $header = Ts($LinkTagSearchTitle, $searchedtag);  # modify page title with requested tag
+    print GetHeader('',$header,'');  # print title
+
+    print '<div class="content">';
+
+    my $SearchResult = GenerateSearchResult($searchedtag);
+    
+    print $SearchResult;
+    print '</div>';
+    PrintFooter();
+
+}
+
+sub GenerateSearchResult {
+
+    my $searchedtag = shift @_;
 
     my @pages = AllPagesList();
 
     local %Page;
     local $OpenPageName='';
 
-    $TagXML .= "<taglist>\n";
+    my $SearchResult .= "<ul>";
 
     foreach my $page (@pages) {
-        OpenPage($page);                    # open page
+        OpenPage($page);                    # open a page
+        my @links = GetLinks($Page{text});  # find links
+        foreach my $link (@links) {
+            my @tags = GetLinkTags($link->{tags});  # collect tags in an array
+            foreach (@tags) {
+                if (/$searchedtag/) {
+                    my @linktags = split /,\s*/, $link->{tags};   # push tags in an array
+                    @linktags = map {                             # and print html output:
+                        qq{<a href="$ScriptName?action=linktagsearch;tag=$_">$_</a>};  # each tag is a link to search all links with that tag
+                    } @linktags;
+                    my $linktags = join ', ', @linktags;
+                    if ( length $link->{name} == 0 ) { $link->{name} = $link->{url}; }  # if link has no name we use url instead
+                    $SearchResult .= "<li><a href=\"$link->{url}\">$link->{name}</a><span class=\"$LinkTagClass\">$linktags</span><span class=\"$LinkDescClass\">$link->{description}</span></li>";
+                }
+            }
+        }
+    }
+    $SearchResult .= "</ul>";
+
+    return $SearchResult;
+
+}
+
+sub GenerateLinkTagMap { # Generate an input XML for TagCategorizer
+
+    my @pages = AllPagesList();
+
+    local %Page;
+    local $OpenPageName='';
+
+    my $TagXML .= "<taglist>\n";
+
+    foreach my $page (@pages) {
+        OpenPage($page);                    # open a page
         my @links = GetLinks($Page{text});  # find links
        	foreach my $link (@links) {
-            my @tags = GetLinkTags($link->{tags});  # process tags for each link
+            my @tags = GetLinkTags($link->{tags});  # collect tags in an array
             if ($#tags >= 0) {
-                $TagXML .= "<object><id>$link->{url}|$link->{url_text}|$link->{description}</id>\n";  # put everything in 'id' block
-                foreach (@tags) {                                                                     # except of tags
-                    $TagXML .= "<tag>$_</tag>";                                                       # which are in 'tag' blocks
+                $TagXML .= "<object><id>$link->{url}|$link->{name}|$link->{description}</id>\n";  # put everything in 'id' block
+                foreach (@tags) {                                                                 # except of tags
+                    $TagXML .= "<tag>$_</tag>";                                                   # which are in 'tag' blocks
                 }
                 $TagXML .= "\n</object>\n";
             }
@@ -104,9 +159,13 @@ sub CreateLinkTagMap { # Create an input XML for TagCategorizer
     }
     $TagXML .= "</taglist>\n";
 
+    return $TagXML;
+
 }
 
 sub PrintLinkTagMap {
+
+    my $TagXML = shift @_;
 
     do "$ModuleDir/TagCategorizer/TagCategorizer.pl";
 
@@ -128,7 +187,7 @@ sub PrintLinkTagMap {
         <object>$FullUrlPattern\|$FreeLinkPattern?\|(.*?)</object>  # divide 'object' block content
     }{
         my $url = $1;                                               # to url,
-        my $name = $2; if ( length $name == 0 ) { $name = $url; }   # name (if present)
+        my $name = $2; if ( length $name == 0 ) { $name = $url; }   # name (if not present use url instead)
         my $description = $3;                                       # and description
         "<li><a href=\"$url\">$name</a> <span class=\"$LinkDescClass\">$description</span></li>";
     }xsge;
@@ -141,12 +200,12 @@ sub GetLinks { # Search a page for links
     my $text = shift;
     my @links;
     while ($text =~ /\[{0,2}$FullUrlPattern\s*\|?\s*$FreeLinkPattern?\]{0,2}\s*$LinkTagMark(.+?)$LinkTagMark\s*($LinkDescMark(.+?)$LinkDescMark)?/gc) {
-        push @links, { url => $1, url_text => $2, tags => $3, description => $5 };  # push found links' attributes to an array of hashes
+        push @links, { url => $1, name => $2, tags => $3, description => $5 };  # push found links' attributes to an array of hashes
     }
     return @links;
 
 }
-sub GetLinkTags { # Retrieve tags (if present) from links
+sub GetLinkTags { # Retrieve tags (if present) from a link
 
     my $tags = shift;
     my @tags;
