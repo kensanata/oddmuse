@@ -1,3 +1,13 @@
+2007-06-15   Alexander Uvizhev  <uvizhe@yandex.ru>
+
+	* modules/linktagmap.pl: New action 'linktagsearch'.
+	($TagXML): Now used everywhere as private variable.
+	(LinkTagRule): Tags now link to '?action=linktagsearch'.
+	(GenerateLinkTagMap): Renamed from CreateLinkTagMap.
+	(DoLinkTagSearch, GenerateSearchResult): New.
+	($LinkTagSearchTitle): New option.
+	* modules/translations/russian-utf8.pl: Slightly updated
+
 2007-06-11  Alex Schroeder  <alex@gnu.org>
 
 	* modules/despam.pl (DespamMenu): Add "List spammed pages".
