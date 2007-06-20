@@ -1,3 +1,8 @@
+2007-06-20  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetRcLines): Fix test in for loop as reported by
+	Radomir Dopieralski.
+
 2007-06-15   Alexander Uvizhev  <uvizhe@yandex.ru>
 
 	* modules/linktagmap.pl: New action 'linktagsearch'.
@@ -10,6 +15,10 @@
 
 2007-06-11  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (GetHttpHeader): Use the second parameter as a
+	timestamp, if defined and not 'nocache'. This allows us to set a
+	last-modified date whenever we have one.
+
 	* modules/despam.pl (DespamMenu): Add "List spammed pages".
 	(InitDespamRules): New, moved @DespamRules init here.
 	(DoDespam): Add despam CSS class. Get rid of @pages. Use
@@ -19,6 +28,7 @@
 	(DespamRule): Moved rule extraction here.
 	(InitDespamRules, DespamBannedContent): Use StrangeBannedContent,
 	if available.
+	(DoDespam, DoSpam): Skip $StrangeBannedContent when despamming.
 
 2007-06-10  Alex Schroeder  <alex@gnu.org>
 
