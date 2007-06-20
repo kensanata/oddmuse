@@ -1,4 +1,4 @@
-# Copyright (C) 2006  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006, 2007  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,9 +18,18 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 61;
+use Test::More tests => 63;
 
 clear_pages();
+
+# First, make sure it handles empty log files and very old log files
+# with nothing appropriate in them.
+
+test_page(get_page('action=rc raw=1'), 'title: Wiki');
+WriteStringToFile($RcFile, "1${FS}test${FS}${FS}test${FS}${FS}${FS}1${FS}${FS}\n");
+test_page(get_page('action=rc raw=1'), 'title: Wiki');
+
+# More elaborate tests for the filters
 
 $host1 = 'tisch';
 $host2 = 'stuhl';
