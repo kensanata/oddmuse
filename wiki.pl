@@ -276,7 +276,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.792 2007/06/11 00:53:33 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.793 2007/06/20 14:04:00 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1556,13 +1556,13 @@ sub GetRcLines {
   splice(@fullrc, 0, $i);  # Remove items before index $i
   if (not $rollbacks) { # strip rollbacks
     my ($target, $end);
-    for (my $i = $#fullrc; $i; $i--) {
+    for (my $i = $#fullrc; $i >= 0; $i--) {
       my ($ts, $id, $rest) = split(/$FS/o, $fullrc[$i]);
       splice(@fullrc, $i + 1, $end - $i), $target = 0  if $ts <= $target;
       $target = $rest, $end = $i if $id eq '[[rollback]]' and (not $target or $rest < $target); # marker
     }
   } else { # just strip the marker left by DoRollback()
-    for (my $i = $#fullrc; $i; $i--) {
+    for (my $i = $#fullrc; $i >= 0; $i--) {
       my ($ts, $id) = split(/$FS/o, $fullrc[$i]);
       splice(@fullrc, $i, 1) if $id eq '[[rollback]]';
     }
