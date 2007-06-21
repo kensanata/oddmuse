@@ -276,7 +276,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.793 2007/06/20 14:04:00 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.794 2007/06/21 20:03:14 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2343,7 +2343,7 @@ sub GetCommentForm {
       and $id =~ /^$CommentsPrefix/o and UserCanEdit($id, 0, 1)) {
     return $q->div({-class=>'comment'}, GetFormStart(undef, undef, 'comment'), # protected by questionasker
 		   $q->p(GetHiddenValue('title', $OpenPageName),
-			 GetTextArea('aftertext', $comment ? $comment : $NewComment)),
+			 GetTextArea('aftertext', $comment ? $comment : $NewComment)), $EditNote,
 		   $q->p($q->label({-for=>'username'}, T('Username:')), ' ',
 			 $q->textfield(-name=>'username', -id=>'username', -default=>GetParam('username', ''),
 				       -override=>1, -size=>20, -maxlength=>50),
