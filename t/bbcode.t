@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 26;
+use Test::More tests => 27;
 
 clear_pages();
 
@@ -49,6 +49,8 @@ run_tests(split('\n',<<'EOT'));
 <blockquote><p>quoted text</p></blockquote><p>more text</p>
 [quote]quoted text[/quote]\n more text
 <blockquote><p>quoted text</p></blockquote><p> more text</p>
+[quote]quoted\ntext\n[/quote]\n more text\n
+<blockquote><p>quoted text </p></blockquote><p> more text</p>
 [code]monospaced text[/code]
 <pre>monospaced text</pre>
 [code]monospaced\n\n text[/code]
