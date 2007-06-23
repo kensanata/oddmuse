@@ -1,3 +1,7 @@
+2007-06-23  Alex Schroeder  <alex@gnu.org>
+
+	* t/bbcode.t: Added another quote test.
+
 2007-06-20  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetRcLines): Fix test in for loop as reported by
