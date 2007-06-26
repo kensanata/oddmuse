@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: aggregate.pl,v 1.8 2006/06/05 00:03:20 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: aggregate.pl,v 1.9 2007/06/26 09:40:41 as Exp $</p>';
 
 push(@MyRules, \&AggregateRule);
 
@@ -25,6 +25,7 @@ sub AggregateRule {
     Clean(CloseHtmlEnvironments());
     Dirty($1);
     my ($oldpos, $old_, $str, $sort, $search) = ((pos), $_, $3, $5, $6);
+    my $master = $OpenPageName;
     local ($OpenPageName, %Page);
     print $q->start_div({class=>"aggregate journal"});
     my @pages = ();
@@ -38,6 +39,7 @@ sub AggregateRule {
       }
     }
     foreach my $id (@pages) {
+      next if $id eq $master;
       my $title = $id;
       local $OpenPageName = FreeToNormal($id);
       my $page = GetPageContent($OpenPageName);
