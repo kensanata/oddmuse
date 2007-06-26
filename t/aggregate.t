@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 20;
+use Test::More tests => 24;
 
 clear_pages();
 add_module('aggregate.pl');
@@ -54,3 +54,15 @@ test_page($page, '<title>NicePage</title>',
 	  '<title>Wiki: Front Page</title>',
 	  '<link>http://localhost/wiki.pl/Front_Page</link>',
 	 );
+
+# check for infinite loops
+
+update_page('Front_Page', q{Hello!
+<aggregate search off-topic>
+The End.});
+
+$page = get_page('Front_Page');
+xpath_test($page, '//div[@class="content browse"]/p[text()="Hello! "]',
+	   '//div[@class="aggregate journal"]/div[@class="page"]/h2/a[@class="local"][text()="OtherPage"]',
+	   '//div[@class="page"]/p[text()="This is off-topic."]',
+	   '//div[@class="content browse"]/p[text()=" The End."]');
