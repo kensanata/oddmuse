@@ -1,3 +1,8 @@
+2007-06-26  Alex Schroeder  <alex@gnu.org>
+
+	* modules/aggregate.pl (AggregateRule): Prevent infinite loops
+	when searching.
+
 2007-06-23  Alex Schroeder  <alex@gnu.org>
 
 	* t/bbcode.t: Added another quote test.
