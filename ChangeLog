@@ -1,11 +1,25 @@
+2007-06-30  Alex Schroeder  <alex@gnu.org>
+
+	Implement follow-up functionality for RecentChanges; make RSS
+	feeds explicit by linking to the RSS feed of the current
+	RecentChanges.
+	
+	* wiki.pl (RcHeader): Added RSS links and handle followup parameter.
+	(GetFilterForm): Make sure the form fields are shown in the
+	correct order every time instead of being random. Add followup field.
+	(GetRc): Handle followup.
+
+	Start working on tighter integration of functionality and
+	interface. Disabling functionality should disable that part of the
+	interface, if possible.
+	
+	* wiki.pl (GetFooterLinks): Only print history, contrib, and admin
+	links if the action is still defined.
+
 2007-06-26  Alex Schroeder  <alex@gnu.org>
 
 	* modules/aggregate.pl (AggregateRule): Prevent infinite loops
 	when searching.
-
-2007-06-23  Alex Schroeder  <alex@gnu.org>
-
-	* t/bbcode.t: Added another quote test.
 
 2007-06-20  Alex Schroeder  <alex@gnu.org>
 
