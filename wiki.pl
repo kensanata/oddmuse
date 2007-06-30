@@ -276,7 +276,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.794 2007/06/21 20:03:14 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.795 2007/06/30 12:33:18 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1578,23 +1578,24 @@ sub RcHeader {
 	  ? Ts('Updates in the last %s days', GetParam('days', $RcDefault))
 	  : Ts('Updates in the last %s day', GetParam('days', $RcDefault)))
   }
+  my $days = GetParam('days', $RcDefault);
+  my $all = GetParam('all', 0);
+  my $edits = GetParam('showedit', 0);
+  my $rollback = GetParam('rollback', 0);
   my $action = '';
-  my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $match, $lang) =
+  my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $match, $lang, $followup) =
     map {
       my $val = GetParam($_, '');
       print $q->p($q->b('(' . Ts('for %s only', $val) . ')')) if $val;
       $action .= ";$_=$val" if $val; # remember these parameters later!
       $val;
-    } qw(rcidonly rcuseronly rchostonly rcclusteronly rcfilteronly match lang);
+    } qw(rcidonly rcuseronly rchostonly rcclusteronly rcfilteronly match lang followup);
+  my $rss = "action=rss$action;days=$days;all=$all;showedit=$edits";
   if ($clusterOnly) {
     $action = GetPageParameters('browse', $clusterOnly) . $action;
   } else {
     $action = "action=rc$action";
   }
-  my $days = GetParam('days', $RcDefault);
-  my $all = GetParam('all', 0);
-  my $edits = GetParam('showedit', 0);
-  my $rollback = GetParam('rollback', 0);
   my @menu;
   if ($all) {
     push(@menu, ScriptLink("$action;days=$days;all=0;showedit=$edits",
@@ -1621,7 +1622,9 @@ sub RcHeader {
 				($_ != 1) ? Ts('%s days', $_) : Ts('%s days', $_),'','','','',1);
 		   } @RcDays), $q->br(), @menu, $q->br(),
 	      ScriptLink($action . ';from=' . ($LastUpdate + 1) . ";all=$all;showedit=$edits",
-			 T('List later changes')));
+			 T('List later changes')), ScriptLink($rss, T('RSS'), 'rss nopages nodiff'),
+	      ScriptLink("$rss;full=1", T('RSS with pages'), 'rss pages nodiff'),
+	      ScriptLink("$rss;full=1;diff=1", T('RSS with pages and diff'), 'rss pages diff'));
 }
 
 sub GetFilterForm {
@@ -1631,16 +1634,19 @@ sub GetFilterForm {
   $form .= $q->input({-type=>'hidden', -name=>'showedit', -value=>1}) if (GetParam('showedit', 0));
   $form .= $q->input({-type=>'hidden', -name=>'days', -value=>GetParam('days', $RcDefault)})
     if (GetParam('days', $RcDefault) != $RcDefault);
-  my %h = ('match' => T('Title:'), 'rcfilteronly' => T('Title and Body:'),
-	   'rcuseronly' => T('Username:'), 'rchostonly' => T('Host:'));
-  my $table = join('', map { $q->Tr($q->td($q->label({-for=>$_}, $h{$_})),
-				    $q->td($q->textfield(-name=>$_, -id=>$_, -size=>20))) } keys %h);
+  my $table = '';
+  foreach my $h (['match' => T('Title:')], ['rcfilteronly' => T('Title and Body:')],
+		 ['rcuseronly' => T('Username:')], ['rchostonly' => T('Host:')],
+		 ['followup' => T('Follow up to:')]) {
+    $table .= $q->Tr($q->td($q->label({-for=>$h->[0]}, $h->[1])),
+		     $q->td($q->textfield(-name=>$h->[0], -id=>$h->[0], -size=>20)));
+  }
   $table .= $q->Tr($q->td($q->label({-for=>'rclang'}, T('Language:')))
 		   . $q->td($q->textfield(-name=>'lang', -id=>'rclang', -size=>10,
 					  -default=>GetParam('lang', '')))) if %Languages;
   return GetFormStart(undef, 'get', 'filter') . $q->p($form) . $q->table($table)
     . $q->p($q->submit('dofilter', T('Go!'))) . $q->endform;
-}
+ }
 
 sub GetRc {
   my $printDailyTear = shift;
@@ -1664,15 +1670,17 @@ sub GetRc {
     }
     @outrc = @temprc;
   }
-  foreach my $rcline (@outrc) {
-    my ($ts, $id, $minor) = split(/$FS/o, $rcline);
-    $changetime{$id} = $ts;
-  }
   my $date = '';
   my $all = GetParam('all', 0);
-  my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $match, $lang) =
+  my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $match, $lang, $followup) =
     map { GetParam($_, ''); } qw(rcidonly rcuseronly rchostonly rcclusteronly
-				 rcfilteronly match lang);
+				 rcfilteronly match lang followup);
+  my %following = ();
+  foreach my $rcline (@outrc) { # from oldest to newest
+    my ($ts, $id, $minor, $summary, $host, $username) = split(/$FS/o, $rcline);
+    $changetime{$id} = $ts;
+    $following{$id} = $ts if $followup and $followup eq $username;
+  }
   @outrc = reverse @outrc if GetParam('newtop', $RecentTop);
   my %seen = ();
   my %match = $filterOnly ? map { $_ => 1 } SearchTitleAndBody($filterOnly) : ();
@@ -1681,10 +1689,11 @@ sub GetRc {
       = split(/$FS/o, $rcline);
     next if not $all and $ts < $changetime{$id};
     next if $idOnly and $idOnly ne $id;
-    next if $match and $id !~ /$match/i;
-    next if $hostOnly and $host !~ /$hostOnly/i;
     next if $filterOnly and not $match{$id};
     next if ($userOnly and $userOnly ne $username);
+    next if $followup and (not $following{$id} or $ts <= $following{$id});
+    next if $match and $id !~ /$match/i;
+    next if $hostOnly and $host !~ /$hostOnly/i;
     my @languages = split(/,/, $languages);
     next if $lang and @languages and not grep(/$lang/, @languages);
     if ($PageCluster) {
@@ -2324,12 +2333,12 @@ sub GetFooterLinks {
       push(@elements, ScriptLink('action=password', T('This page is read-only'), 'password'));
     }
   }
-  push(@elements, GetHistoryLink($id, T('View other revisions'))) if $id and $rev ne 'history';
+  push(@elements, GetHistoryLink($id, T('View other revisions'))) if $Action{history} and $id and $rev ne 'history';
   push(@elements, GetPageLink($id, T('View current revision')),
-       GetRCLink($id, T('View all changes'))) if $rev ne '';
+       GetRCLink($id, T('View all changes'))) if $Action{history} and $rev ne '';
   push(@elements, ScriptLink("action=contrib;id=" . UrlEncode($id), T('View contributors'), 'contrib'))
-    if $id and $rev eq 'history';
-  if (GetParam('action', '') ne 'admin') {
+    if $Action{contrib} and $id and $rev eq 'history';
+  if ($Action{admin} and GetParam('action', '') ne 'admin') {
     my $action = 'action=admin';
     $action .= ';id=' . $id if $id;
     push(@elements, ScriptLink($action, T('Administration'), 'admin'));
