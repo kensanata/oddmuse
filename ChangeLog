@@ -25,6 +25,10 @@
 	* modules/aggregate.pl (AggregateRule): Prevent infinite loops
 	when searching.
 
+2007-06-21  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetCommentForm): Add $EditNote to comments, too.
+
 2007-06-20  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetRcLines): Fix test in for loop as reported by
