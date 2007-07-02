@@ -276,7 +276,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.796 2007/06/30 22:47:04 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.797 2007/07/02 11:59:22 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1792,30 +1792,23 @@ sub RcTextItem {
   return $name . ': ' . $value . "\n" if $value;
 }
 
+sub RcTextRevision {
+  my($id, $ts, $host, $username, $summary, $minor, $revision, $languages, $cluster, $last) = @_;
+  my $link = $ScriptName . (GetParam('all', 0) && ! $last
+			    ? '?' . GetPageParameters('browse', $id, $revision, $cluster, $last)
+			    : ($UsePathInfo ? '/' : '?') . $id);
+  print "\n", RcTextItem('title', NormalToFree($id)), RcTextItem('description', $summary),
+    RcTextItem('generator', $username ? $username . ' ' . Ts('from %s', $host) : $host),
+    RcTextItem('language', join(', ', @{$languages})), RcTextItem('link', $link),
+    RcTextItem('last-modified', TimeToW3($ts)), RcTextItem('revision', $revision);
+}
+
 sub GetRcText {
-  my ($text);
+  my $text;
   local $RecentLink = 0;
-  print RcTextItem('title', $SiteName)
-    . RcTextItem('description', $SiteDescription)
-    . RcTextItem('link', $ScriptName)
-    . RcTextItem('generator', 'Oddmuse')
-    . RcTextItem('rights', $RssRights);
-  # Now call GetRc with some blocks of code as parameters:
-  GetRc
-    sub {},
-    sub {
-      my($id, $ts, $host, $username, $summary, $minor, $revision, $languages, $cluster, $last) = @_;
-      my $link = $ScriptName . (GetParam('all', 0) && $last
-	? '?' . GetPageParameters('browse', $id, $revision, $cluster, $last)
-	: ($UsePathInfo ? '/' : '?') . $id);
-      print "\n" . RcTextItem('title', NormalToFree($id))
-      . RcTextItem('description', $summary)
-      . RcTextItem('generator', $username ? $username . ' ' . Ts('from %s', $host) : $host)
-      . RcTextItem('language', join(', ', @{$languages}))
-      . RcTextItem('link', $link)
-      . RcTextItem('last-modified', TimeToW3($ts));
-    },
-    @_;
+  print RcTextItem('title', $SiteName), RcTextItem('description', $SiteDescription),
+    RcTextItem('link', $ScriptName), RcTextItem('generator', 'Oddmuse'), RcTextItem('rights', $RssRights);
+  GetRc(sub {}, \&RcTextRevision, @_);
   return $text;
 }
 
@@ -1914,30 +1907,44 @@ sub DoRss {
 sub DoHistory {
   my $id = shift;
   ValidIdOrDie($id);
-  print GetHeader('',QuoteHtml(Ts('History of %s', $id)));
   OpenPage($id);
-  my $row = 0;
-  my $rollback = UserCanEdit($id, 0) && (GetParam('username', '') or UserIsEditor());
-  my $ts;
-  my @html = (GetHistoryLine($id, \%Page, $row++, $rollback, \$ts));
-  foreach my $revision (GetKeepRevisions($OpenPageName)) {
-    my %keep = GetKeptRevision($revision);
-    push(@html, GetHistoryLine($id, \%keep, $row++, $rollback, \$ts));
-  }
-  if ($UseDiff) {
+  if (GetParam('raw', 0)) {
+    print GetHttpHeader('text/plain'), RcTextItem('title', Ts('History of %s', NormalToFree($OpenPageName))),
+      RcTextItem('date', TimeToText($Now)), RcTextItem('link', $q->url(-path_info=>1, -query=>1)),
+      RcTextItem('generator', 'Oddmuse');
+    SetParam('all', 1);
+    my @languages = split(/,/, $Page{languages});
+    RcTextRevision($id, $Page{ts}, $Page{host}, $Page{username}, $Page{summary}, $Page{minor},
+		   $Page{revision}, \@languages, undef, 1);
+    foreach my $revision (GetKeepRevisions($OpenPageName)) {
+      my %keep = GetKeptRevision($revision);
+      @languages = split(/,/, $keep{languages});
+      RcTextRevision($id, $keep{ts}, $keep{host}, $keep{username}, $keep{summary}, $keep{minor},
+		     $keep{revision}, \@languages);
+    }
+  } else {
+    print GetHeader('',QuoteHtml(Ts('History of %s', $id)));
+    my $row = 0;
+    my $rollback = UserCanEdit($id, 0) && (GetParam('username', '') or UserIsEditor());
+    my $ts;
+    my @html = (GetHistoryLine($id, \%Page, $row++, $rollback, \$ts));
+    foreach my $revision (GetKeepRevisions($OpenPageName)) {
+      my %keep = GetKeptRevision($revision);
+      push(@html, GetHistoryLine($id, \%keep, $row++, $rollback, \$ts));
+    }
     @html = (GetFormStart(undef, 'get', 'history'),
 	     $q->p( # don't use $q->hidden here, the sticky action value will be used instead
 		   $q->input({-type=>'hidden', -name=>'action', -value=>'browse'}),
 		   $q->input({-type=>'hidden', -name=>'diff', -value=>'1'}),
 		   $q->input({-type=>'hidden', -name=>'id', -value=>$id})),
 	     $q->table({-class=>'history'}, @html),
-	     $q->p($q->submit({-name=>T('Compare')})), $q->end_form());
+	     $q->p($q->submit({-name=>T('Compare')})), $q->end_form()) if $UseDiff;
+    push(@html, $q->p(ScriptLink('title=' . UrlEncode($id) . ';text=' . UrlEncode($DeletedPage) . ';summary='
+				 . UrlEncode(T('Deleted')), T('Mark this page for deletion'))))
+      if $KeepDays and $rollback and $Page{revision};
+    print $q->div({-class=>'content history'}, @html);
+    PrintFooter($id, 'history');
   }
-  push(@html, $q->p(ScriptLink('title=' . UrlEncode($id) . ';text=' . UrlEncode($DeletedPage) . ';summary='
-			       . UrlEncode(T('Deleted')), T('Mark this page for deletion'))))
-    if $KeepDays and $rollback and $Page{revision};
-  print $q->div({-class=>'content history'}, @html);
-  PrintFooter($id, 'history');
 }
 
 sub GetHistoryLine {
@@ -3650,7 +3657,6 @@ sub Save { # call within lock, with opened page
 sub GetLanguages {
   my $text = shift;
   my @result;
-  my $count;
   for my $lang (sort keys %Languages) {
     my @matches = $text =~ /$Languages{$lang}/ig;
     push(@result, $lang) if $#matches >= $LanguageLimit;
