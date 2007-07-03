@@ -276,7 +276,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.797 2007/07/02 11:59:22 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.798 2007/07/03 10:40:51 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2258,7 +2258,7 @@ sub GetCss { # prevent javascript injection
   my @css = map { s/".*//; $_; } split(/\s+/, GetParam('css', ''));
   push (@css, $StyleSheet) if $StyleSheet;
   push (@css, "$ScriptName?action=browse;id=" . UrlEncode($StyleSheetPage) . ";raw=1;mime-type=text/css")
-    if $IndexHash{$StyleSheetPage};
+    if $IndexHash{$StyleSheetPage} and not @css;
   push (@css, 'http://www.oddmuse.org/oddmuse.css') unless @css;
   return join('', map { qq(<link type="text/css" rel="stylesheet" href="$_" />) } @css);
 }
