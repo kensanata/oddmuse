@@ -1,4 +1,4 @@
-# Copyright (C) 2006  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006, 2007  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 23;
+use Test::More tests => 26;
 
 clear_pages();
 
@@ -49,11 +49,17 @@ xpath_run_tests(split('\n',<<'EOT'));
 //a[@class="image right"][@href="http://localhost/test.pl/bar"]/img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]
 [[image/left:bar|alternative text|http://www.foo.com/]]
 //a[@class="image left outside"][@href="http://www.foo.com/"]/img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]
+[[image/left:bar|alternative text|http://www.foo.com/ ]]
+//a[@class="image left outside"][@href="http://www.foo.com/"]/img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]
 [[image/left/small:bar|alternative text|http://www.foo.com/|more text|http://www.bar.com/]]
 //a[@class="image left small outside"][@href="http://www.foo.com/"][img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]]/following-sibling::br/following-sibling::span[@class="caption"]/a[@class="image left small outside"][@href="http://www.bar.com/"][text()="more text"]
 [[image/left/small:bar|alternative text|http://www.foo.com/|more text|bar]]
 //a[@class="image left small outside"][@href="http://www.foo.com/"][img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]]/following-sibling::br/following-sibling::span[@class="caption"]/a[@class="image left small"][@href="http://localhost/test.pl/bar"][text()="more text"]
 [[image:http://www.example.com/]]
+//a[@class="image outside"][@href="http://www.example.com/"]/img[@class="upload"][@title=""][@src="http://www.example.com/"][@alt=""]
+[[image:http://www.example.com/ ]]
+//a[@class="image outside"][@href="http://www.example.com/"]/img[@class="upload"][@title=""][@src="http://www.example.com/"][@alt=""]
+[[image: http://www.example.com/]]
 //a[@class="image outside"][@href="http://www.example.com/"]/img[@class="upload"][@title=""][@src="http://www.example.com/"][@alt=""]
 [[image external:foo]]
 //a[@class="image"][@href="/images/foo"]/img[@class="upload"][@title=""][@src="/images/foo"][@alt=""]
