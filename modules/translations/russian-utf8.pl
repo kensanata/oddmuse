@@ -20,7 +20,7 @@
 #
 # This script was last checked for Oddmuse version 1.658.
 #
-$ModulesDescription .= '<p>$Id: russian-utf8.pl,v 1.11 2007/06/15 09:27:29 uvizhe Exp $</p>';
+$ModulesDescription .= '<p>$Id: russian-utf8.pl,v 1.12 2007/07/03 07:28:21 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Просмотр недоступен: имя пользователя, IP-адрес или сеть заблокированы.
@@ -59,7 +59,7 @@ No items found in %s.
  . . . . 
 
 Click to edit this page
-Щелчок - редактировать эту страницу
+Щелкните, чтобы править
 image
 изображение
 download
