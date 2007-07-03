@@ -1,4 +1,4 @@
-# Copyright (C) 2004, 2005, 2006  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2005, 2006, 2007  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: image.pl,v 1.26 2007/02/09 00:37:29 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: image.pl,v 1.27 2007/07/03 07:19:35 as Exp $</p>';
 
 use vars qw($ImageUrlPath);
 
@@ -28,7 +28,7 @@ push(@MyRules, \&ImageSupportRule);
 
 sub ImageSupportRule {
   my $result = undef;
-  if (m!\G\[\[image((/[a-z]+)*)( external)?:([^]|]+)(\|[^]|]+)?(\|[^]|]*)?(\|[^]|]*)?(\|[^]|]*)?\]\]!gc) {
+  if (m!\G\[\[image((/[a-z]+)*)( external)?:\s*([^]|]+?)\s*(\|[^]|]+?)?\s*(\|[^]|]*?)?\s*(\|[^]|]*?)?\s*(\|[^]|]*?)?\s*\]\]!gc) {
     my $oldpos = pos;
     my $class = 'image' . $1;
     my $external = $3;
