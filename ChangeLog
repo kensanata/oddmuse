@@ -1,8 +1,10 @@
 2007-07-04  Alex Schroeder  <alex@gnu.org>
 
 	* modules/archive.pl (NewArchiveGetHeader): Provide different
-	results depending on whether calendar.pl is installed or not.
-
+	results depending on whether calendar.pl is installed or not. Add
+	paragraph and span with "Archive". Reverse order, add number of
+	articles in brackets.
+	
 	* wiki.pl (RcTextItem): Don't get confused by revision 0.
 
 2007-07-03  Alex Schroeder  <alex@gnu.org>
