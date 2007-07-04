@@ -276,7 +276,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.798 2007/07/03 10:40:51 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.799 2007/07/04 10:35:51 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1789,7 +1789,7 @@ sub RcTextItem {
   my ($name, $value) = @_;
   $value =~ s/\n+$//;
   $value =~ s/\n+/\n /;
-  return $name . ': ' . $value . "\n" if $value;
+  return $value ? $name . ': ' . $value . "\n" : '';
 }
 
 sub RcTextRevision {
