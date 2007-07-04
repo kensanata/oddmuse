@@ -1,0 +1,42 @@
+# Copyright (C) 2007  Alex Schroeder <alex@emacswiki.org>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the
+#    Free Software Foundation, Inc.
+#    59 Temple Place, Suite 330
+#    Boston, MA 02111-1307 USA
+
+$ModulesDescription .= '<p>$Id: archive.pl,v 1.1 2007/07/04 14:17:08 as Exp $</p>';
+
+*OldArchiveGetHeader = *GetHeader;
+*GetHeader = *NewArchiveGetHeader;
+
+# this assumes that *all* calls to GetHeader will print!
+sub NewArchiveGetHeader {
+  my ($id) = @_;
+  print OldArchiveGetHeader(@_);
+  my %dates = ();
+  for (AllPagesList()) {
+    $dates{$1} = 1 if /^(\d\d\d\d-\d\d)-\d\d/;
+  }
+  print $q->div({-class=>'archive'},
+		map {
+		  my ($year, $month) = split(/-/, $_);
+		  ScriptLink('action=collect;match=' . UrlEncode("^$year-$month"),
+			     defined(&month_name)
+			     ? month_name($month) . ' ' . $year
+			     : "$year-$month"
+			    );
+		} sort keys %dates);
+  return '';
+}
