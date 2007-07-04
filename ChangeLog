@@ -1,3 +1,19 @@
+2007-07-04  Alex Schroeder  <alex@gnu.org>
+
+	* modules/archive.pl (NewArchiveGetHeader): Provide different
+	results depending on whether calendar.pl is installed or not.
+
+	* wiki.pl (RcTextItem): Don't get confused by revision 0.
+
+2007-07-03  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetCss): Make sure the css parameter replaces the
+	StyleSheetPage instead of adding to it. This fixes a bug
+	introduced in revision 1.784.
+
+	* modules/image.pl (ImageSupportRule): Handle extra whitespace in
+	some positions.
+
 2007-07-02  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetRcText, RcTextRevision): Moved code out of GetRcText
