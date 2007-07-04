@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: archive.pl,v 1.3 2007/07/04 14:52:44 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: archive.pl,v 1.4 2007/07/04 20:14:44 as Exp $</p>';
 
 *OldArchiveGetHeader = *GetHeader;
 *GetHeader = *NewArchiveGetHeader;
@@ -27,19 +27,20 @@ sub NewArchiveGetHeader {
   print OldArchiveGetHeader(@_);
   my %dates = ();
   for (AllPagesList()) {
-    $dates{$1} = 1 if /^(\d\d\d\d-\d\d)-\d\d/;
+    $dates{$1}++ if /^(\d\d\d\d-\d\d)-\d\d/;
   }
   print $q->div({-class=>'archive'},
 		$q->p($q->span(T('Archive:')),
 		      map {
-			my ($year, $month) = split(/-/, $_);
+			$key = $_;
+			my ($year, $month) = split(/-/, $key);
 			if (defined(&month_name)) {
 			  ScriptLink('action=collect;match=' . UrlEncode("^$year-$month"),
-				     month_name($month) . ' ' . $year);
+				     month_name($month) . " $year ($dates{$key})");
 			} else {
 			  ScriptLink('action=index;match=' . UrlEncode("^$year-$month"),
-				     "$year-$month");
+				     "$year-$month ($dates{$key})");
 			}
-		      } sort keys %dates));
+		      } sort { $b <=> $a } keys %dates));
   return '';
 }
