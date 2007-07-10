@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.29 2007/04/22 07:52:02 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.30 2007/07/10 13:30:10 as Exp $</p>';
 
 use vars qw($CreoleLineBreaks);
 
@@ -125,7 +125,7 @@ sub CreoleRule {
       . AddHtmlEnvironment('p');
   }
   # {{{unformatted}}}
-  elsif (m/\G\{\{\{(.*?)\}\}\}/cgs) {
+  elsif (m/\G\{\{\{(.*?}*)\}\}\}/cgs) {
     return $q->code($1);
   }
   # {{pic}}
