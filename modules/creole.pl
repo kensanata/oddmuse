@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.30 2007/07/10 13:30:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.31 2007/07/10 13:31:22 as Exp $</p>';
 
 use vars qw($CreoleLineBreaks);
 
@@ -44,7 +44,8 @@ sub CreoleHeadingRule {
 sub CreoleRule {
   # horizontal line
   # ----
-  if ($bol && m/\G(\s*\n)*[ \t]*----+[ \t]*\n?/cg or m/\G\s*\n----+[ \t]*\n?/cg ) {
+  if ($bol && m/\G(\s*\n)*[ \t]*----+[ \t]*\n?/cg
+      or m/\G\s*\n----+[ \t]*\n?/cg ) {
     return CloseHtmlEnvironments() . $q->hr()
       . AddHtmlEnvironment('p');
   }
@@ -103,8 +104,10 @@ sub CreoleRule {
     my $html = '';
     $html .= OpenHtmlEnvironment('table',1,'user') unless InElement('table');
     $html .= AddHtmlEnvironment('tr') unless InElement('tr');
-    $html .= CloseHtmlEnvironmentUntil('tr') if InElement('td') || InElement('th');
-    $html .= AddHtmlEnvironment(($2 ? 'th' : 'td'), TableAttributes(length($1), $3));
+    $html .= CloseHtmlEnvironmentUntil('tr')
+      if InElement('td') || InElement('th');
+    $html .= AddHtmlEnvironment(($2 ? 'th' : 'td'),
+				TableAttributes(length($1), $3));
     return $html;
   }
   # paragraphs: at least two newlines
@@ -131,7 +134,8 @@ sub CreoleRule {
   # {{pic}}
   elsif (m/\G(\{\{$FreeLinkPattern(\|.+?)?\}\})/cgos) {
     Dirty($1);
-    my $alt = substr($3,1); # FIXME: inlining this gives "substr outside of string" error
+    # FIXME: inlining this gives "substr outside of string" error
+    my $alt = substr($3,1);
     print GetDownloadLink($2, 1, undef, $alt);
     return '';
   }
