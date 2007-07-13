@@ -1,0 +1,191 @@
+#!/usr/bin/perl
+# Copyright (C) 2005, 2006, 2007  Alex Schroeder <alex@emacswiki.org>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the
+#    Free Software Foundation, Inc.
+#    59 Temple Place, Suite 330
+#    Boston, MA 02111-1307 USA
+
+use strict;
+use warnings;
+use CGI ;
+use CGI::Carp qw(fatalsToBrowser);
+use LWP::UserAgent;
+use XML::LibXML;
+use URI;
+
+my %indexes = (
+	       'http://www.gnu.org/software/emacs/manual/html_node/emacs/Command-Index.html'
+	       => 'GNU Emacs manual, Command and Function Index',
+	       'http://www.gnu.org/software/emacs/manual/html_node/emacs/Variable-Index.html'
+	       => 'GNU Emacs manual, Variable Index',
+	       'http://www.gnu.org/software/emacs/manual/html_node/emacs/Concept-Index.html'
+	       => 'GNU Emacs manual, Concept Index',
+	       'http://www.gnu.org/software/emacs/manual/html_node/emacs/index.html'
+	       => 'GNU Emacs manual, Top Menu',
+	       'http://www.gnu.org/software/emacs/manual/html_node/elisp/Index.html'
+	       => 'GNU Emacs Lisp reference manual, Index',
+	       'http://www.gnu.org/software/emacs/manual/html_node/elisp/index.html'
+	       => 'GNU Emacs Lisp reference manual, Top Menu',
+	      );
+
+my $db = '/org/org.emacswiki/htdocs/emacs/info-ref.dat';
+
+my $nl = "\n";
+my $fs = "\023";
+my $gs = "\024";
+my $rs = "\025";
+
+my $q = new CGI;
+ProcessRequest();
+
+sub ProcessRequest {
+  if ($q->param('init')) {
+    Initialize();
+  } elsif ($q->param('find')) {
+    Find($q->param('find'));
+  } else {
+    ShowForm();
+  }
+}
+
+sub ShowForm {
+  print $q->header, $q->start_html,
+    $q->start_form, "Index entry: ", $q->textfield('find'), $q->submit, $q->end_form,
+    $q->p('$Id: info-ref,v 1.1 2007/07/13 23:20:57 as Exp $'),
+    $q->end_html;
+}
+
+sub Find {
+  my $str = shift;
+  my %map = ();
+  my $data = ReadFileOrDie($db);
+  foreach my $line (split(/$nl/, $data)) {
+    my ($key, $rest) = split(/$fs/, $line);
+    $map{$key} = ();
+    foreach my $a (split(/$gs/, $rest)) {
+      my ($link, $label) = split(/$rs/, $a);
+      $map{$key}{$link} = $label;
+    }
+  }
+  my @links = keys %{$map{$str}};
+  if ($#links < 0) {
+    ReportError("No matches found for '$str'", '404 Not Found');
+  } elsif ($#links == 0) {
+    print $q->redirect($links[0]);
+  } else {
+    my @list = map { $q->a({-href=>$_}, $map{$str}{$_}) } @links;
+    print $q->header, $q->h1($str), $q->ol($q->li(\@list));
+  }
+}
+
+sub Initialize {
+  my %map = ();
+  print $q->header, $q->start_html;
+  foreach my $url (keys %indexes) {
+    print $q->p($url);;
+    # determine base URI
+    my $base = URI->new($url);
+    # fetch and parse data
+    my $data = GetRaw($url);
+    # some markup fixes for the elisp manual
+#     $data =~ s/&([<"])/&amp;$1/g;
+#     $data =~ s/<([<"])/&lt;$1/g;
+#     $data =~ s/="fn_"">/="fn_&quot;">/;
+#     $data =~ s/<!DOCTYPE.*?>//;
+#     $data =~ s'</?font.*?>''gi;
+#     $data =~ s'</table><br></P>'</table><br>';
+    my $parser = XML::LibXML->new();
+    my $doc;
+    eval { $doc = $parser->parse_html_string($data); };
+    print $q->p($@) if $@;
+    next if $@;
+    my @nodelist = $doc->findnodes('/html/body/ul/li/a');
+    foreach my $node (@nodelist) {
+      my $key = $node->textContent;
+      my $href = $node->getAttribute('href');
+      my $link = URI->new_abs($href, $base);
+      # print "$key -> $label $l\n";
+      $map{$key} = () unless $map{$key};
+      $map{$key}{$link->canonical} = $indexes{$url};
+    }
+    # elisp manual
+#     @nodelist = $doc->findnodes('descendant::table[position()=3]/descendant::tr');
+#     foreach my $node (@nodelist) {
+#       my ($item, $section) = $node->findnodes('td/a');
+#       next unless $item and $section;
+#       my $key = $item->textContent;
+#       my $label = $section->textContent;
+#       my $link = $item->getAttribute('href');
+#       my $l = URI->new_abs($link, $base);
+#       # print "$key -> $label $l\n";
+#       $map{$key} = () unless $map{$key};
+#       $map{$key}{$l->canonical} = $label;
+#     }
+  }
+  my $data = join($nl, map {
+    my $key = $_;
+    $key . $fs . join($gs, map {
+      my $link = $_;
+      join($rs, $link, $map{$key}{$link});
+    } keys %{$map{$_}})
+  } keys %map);
+  WriteStringToFile($db, $data);
+  print $q->p('Database initialized'), $q->end_html;
+}
+
+sub GetRaw {
+  my $uri = shift;
+  return unless eval { require LWP::UserAgent; };
+  my $ua = LWP::UserAgent->new;
+  my $response = $ua->get($uri);
+  return $response->content;
+}
+
+sub ReadFile {
+  my ($filename) = @_;
+  my ($data);
+  local $/ = undef;   # Read complete files
+  if (open(IN, "<$filename")) {
+    $data=<IN>;
+    close IN;
+    return (1, $data);
+  }
+  return (0, '');
+}
+
+sub ReadFileOrDie {
+  my ($filename) = @_;
+  my ($status, $data);
+  ($status, $data) = ReadFile($filename);
+  if (!$status) {
+    ReportError("Cannot open $filename: $!", '500 Internal Server Error');
+  }
+  return $data;
+}
+
+sub WriteStringToFile {
+  my ($file, $string) = @_;
+  open(OUT, ">$file")
+    or ReportError("Cannot write $file: $!", '500 Internal Server Error');
+  print OUT  $string;
+  close(OUT);
+}
+
+sub ReportError { # fatal!
+  my ($errmsg, $status, $log) = @_;
+  print $q->header(-status => $status);
+  print $q->start_html, $q->h2($errmsg), $q->end_html;
+  exit (1);
+}
