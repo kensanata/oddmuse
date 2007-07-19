@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 73;
+use Test::More tests => 79;
 clear_pages();
 
 add_module('creole.pl');
@@ -94,6 +94,10 @@ foo bar
 <code>\nfoo</code>
 foo {{{bar}}}
 foo <code>bar</code>
+foo {{{{bar}}}}
+foo <code>{bar}</code>
+foo {{{*bar*}}}
+foo <code>*bar*</code>
 ----
 <hr />
 -----  
@@ -120,6 +124,8 @@ foo<hr />
 <table class="user"><tr><td align="right">a</td><td align="right">b</td><td align="right">c</td></tr><tr><td align="center">d </td><td align="center">e </td><td align="center">f </td></tr></table>
 |a||c\n||e|f
 <table class="user"><tr><td>a</td><td colspan="2">c</td></tr><tr><td colspan="2">e</td><td>f</td></tr></table>
+|a
+<table class="user"><tr><td>a</td></tr></table>
 EOT
 
 $CreoleLineBreaks = 1;
@@ -149,6 +155,8 @@ http://www.wikicreole.org/.
 //a[@class="url http outside"][@href="http://www.wikicreole.org/"][text()="Visit the WikiCreole website"]
 [[http://www.wikicreole.org/|Visit the\nWikiCreole website]]
 //a[@class="url http outside"][@href="http://www.wikicreole.org/"][text()="Visit the\nWikiCreole website"]
+[[http://www.wikicreole.org/ | Visit the WikiCreole website]]
+//a[@class="url http outside"][@href="http://www.wikicreole.org/"][text()="Visit the WikiCreole website"]
 [[link]]
 //a[text()="link"]
 [[link|Go to my page]]
@@ -181,6 +189,10 @@ http://www.wikicreole.org/.
 //a[@class="image outside"][@href="http://example.com/"][img[@class="url outside"][@src="http://mu.org/"][@alt="a description"]]
 [[Ohana:WikiFamily]]
 //div/child::node()[1]/self::a[@class="inter Ohana"][@href="http://www.wikiohana.org/WikiFamily"]/span[@class="site"][text()="Ohana"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="WikiFamily"]
+|[[http://www.wikicreole.org/|Visit the WikiCreole website]]
+//table[@class="user"]/tr/td/a[@class="url http outside"][@href="http://www.wikicreole.org/"][text()="Visit the WikiCreole website"]
+|[[http://www.wikicreole.org/| Visit the WikiCreole website]]
+//table[@class="user"]/tr/td/a[@class="url http outside"][@href="http://www.wikicreole.org/"][text()="Visit the WikiCreole website"]
 EOT
 
 xpath_test(update_page('test','{{pic}}'),
