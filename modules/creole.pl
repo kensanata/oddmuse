@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.31 2007/07/10 13:31:22 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.32 2007/07/19 23:39:34 as Exp $</p>';
 
 use vars qw($CreoleLineBreaks);
 
@@ -140,7 +140,7 @@ sub CreoleRule {
     return '';
   }
   # {{url}}
-  elsif (m/\G\{\{$FullUrlPattern(\|.+?)?\}\}/cgos) {
+  elsif (m/\G\{\{$FullUrlPattern\s*(\|.+?)?\}\}/cgos) {
     return $q->a({-href=>$1,
 		  -class=>'image outside'},
 		 $q->img({-src=>$1,
@@ -155,28 +155,28 @@ sub CreoleRule {
 		      'image');
   }
   # link: [[link|{{url}}]]
-  elsif (m/\G\[\[$FreeLinkPattern\|\{\{$FullUrlPattern(\|.+?)?\}\}\]\]/cgos) {
+  elsif (m/\G\[\[$FreeLinkPattern\|\{\{$FullUrlPattern\s*(\|.+?)?\}\}\]\]/cgos) {
     return ScriptLink($1, $q->img({-src=>$2,
 				   -class=>'url outside',
 				   -alt=>substr($3,1)||$1}),
 		      'image');
   }
   # link: [[url|{{pic}}]]
-  elsif (m/\G\[\[$FullUrlPattern\|\{\{$FreeLinkPattern(\|.+?)?\}\}\]\]/cgos) {
+  elsif (m/\G\[\[$FullUrlPattern\s*\|\{\{$FreeLinkPattern(\|.+?)?\}\}\]\]/cgos) {
     return $q->a({-href=>$1, -class=>'image outside'},
 		 $q->img({-src=>GetDownloadLink($2, 2),
 			  -class=>'upload',
 			  -alt=>substr($3,1)||$2}));
   }
   # link: [[url|{{url}}]]
-  elsif (m/\G\[\[$FullUrlPattern\|\{\{$FullUrlPattern(\|.+?)?\}\}\]\]/cgos) {
+  elsif (m/\G\[\[$FullUrlPattern\s*\|\{\{$FullUrlPattern\s*(\|.+?)?\}\}\]\]/cgos) {
     return $q->a({-href=>$1, -class=>'image outside'},
 		 $q->img({-src=>$2,
 			  -class=>'url outside',
 			  -alt=>substr($3,1)}));
   }
   # link: [[url]] and [[url|text]]
-  elsif (m/\G\[\[$FullUrlPattern(\|([^]]+))?\]\]/cgos) {
+  elsif (m/\G\[\[$FullUrlPattern\s*(\|\s*([^]]+))?\]\]/cgos) {
     return GetUrl($1, $3||$1, 1);
   }
   return undef;
