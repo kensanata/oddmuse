@@ -1,5 +1,17 @@
 2007-07-20  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (GetSearchForm): Add delete checkbox.
+	(PrintSearchResult): Call PrintPage if the context parameter is
+	set.
+	(Replace): Return the list of pages changed.
+	(DoSearch): Handle delete checkbox. Ignore context parameter here
+	and call PrintSearchResult always. Use Unicode right arrow instead
+	of ->. Use the list of changed pages returned from Replace() to
+	print the result for replacements.
+
+	* t/search.t: Added three more tests to test for replacements with
+	the empty string.
+
 	* modules/creole.pl (CreoleRule): Be more tolerant with whitespace
 	following $FullUrlPattern.
 
