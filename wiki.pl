@@ -276,7 +276,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.800 2007/07/10 13:28:03 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.801 2007/07/20 07:20:58 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2384,7 +2384,8 @@ sub GetSearchForm {
     . $q->textfield(-name=>'search', -id=>'search', -size=>20, -accesskey=>T('f')) . ' ';
   if ($ReplaceForm) {
     $form .= $q->label({-for=>'replace'}, T('Replace:')) . ' '
-      . $q->textfield(-name=>'replace', -id=>'replace', -size=>20) . ' ';
+      . $q->textfield(-name=>'replace', -id=>'replace', -size=>20) . ' '
+	. $q->checkbox(-name=>'delete', -label=>T('Delete')) . ' ';
   }
   if (%Languages) {
     $form .= $q->label({-for=>'searchlang'}, T('Language:')) . ' '
@@ -3249,37 +3250,32 @@ sub AllPagesList {
 
 sub DoSearch {
   my $string = shift;
-  my $replacement = GetParam('replace','');
+  return DoIndex() if $string eq '';
+  my $replacement = GetParam('replace',undef);
   my $raw = GetParam('raw','');
-  if ($string eq '') {
-    DoIndex();
-    return;
-  }
-  if ($replacement) {
-    return unless UserIsAdminOrError();
-    print GetHeader('', QuoteHtml(Ts('Replaced: %s', "$string -> $replacement"))),
-      $q->start_div({-class=>'content replacement'});
-    Replace($string,$replacement);
-    $string = quotemeta($replacement);
-  } elsif ($raw) {
-    print GetHttpHeader('text/plain'), RcTextItem('title', Ts('Search for: %s', $string)),
-      RcTextItem('date', TimeToText($Now)), RcTextItem('link', $q->url(-path_info=>1, -query=>1)), "\n"
-	if GetParam('context',1);
-  } else {
-    print GetHeader('', QuoteHtml(Ts('Search for: %s', $string))), $q->start_div({-class=>'content search'});
-    $ReplaceForm = UserIsAdmin();
-    my @elements = (ScriptLink('action=rc;rcfilteronly=' . UrlEncode($string), T('View changes for these pages')));
-    push(@elements, ScriptLink('near=2;search=' . UrlEncode($string), Ts('Search sites on the %s as well', $NearMap)))
-      if %NearSearch and GetParam('near', 1) < 2;
-    print $q->p({-class=>'links'}, @elements);
-  }
   my @results;
-  if (GetParam('context',1)) {
-    @results = SearchTitleAndBody($string, \&PrintSearchResult, HighlightRegex($string));
+  if ($replacement or GetParam('delete', 0)) {
+    return unless UserIsAdminOrError();
+    print GetHeader('', Ts('Replaced: %s', QuoteHtml($string) . " &#x2192; " . QuoteHtml($replacement))),
+      $q->start_div({-class=>'content replacement'});
+    @results = Replace($string,$replacement);
+    foreach (@results) { PrintSearchResult($_, HighlightRegex($replacement||$string)) };
   } else {
-    @results = SearchTitleAndBody($string, \&PrintPage);
+    if ($raw) {
+      print GetHttpHeader('text/plain'), RcTextItem('title', Ts('Search for: %s', $string)),
+	RcTextItem('date', TimeToText($Now)), RcTextItem('link', $q->url(-path_info=>1, -query=>1)), "\n"
+	  if GetParam('context', 1);
+    } else {
+      print GetHeader('', QuoteHtml(Ts('Search for: %s', $string))), $q->start_div({-class=>'content search'});
+      $ReplaceForm = UserIsAdmin();
+      my @elements = (ScriptLink('action=rc;rcfilteronly=' . UrlEncode($string), T('View changes for these pages')));
+      push(@elements, ScriptLink('near=2;search=' . UrlEncode($string), Ts('Search sites on the %s as well', $NearMap)))
+	if %NearSearch and GetParam('near', 1) < 2;
+      print $q->p({-class=>'links'}, @elements);
+    }
+    @results = SearchTitleAndBody($string, \&PrintSearchResult, HighlightRegex($string));
+    @results = SearchNearPages($string, @results) if GetParam('near', 1); # adds more
   }
-  @results = SearchNearPages($string, @results) if GetParam('near', 1); # adds more
   print SearchResultCount($#results + 1), $q->end_div() unless $raw;
   PrintFooter() unless $raw;
 }
@@ -3375,6 +3371,7 @@ sub SearchNearPages {
 
 sub PrintSearchResult {
   my ($name, $regex) = @_;
+  return PrintPage($name) if not GetParam('context',1);
   my $raw = GetParam('raw', 0);
   OpenPage($name); # should be open already, just making sure!
   my $text = $Page{text};
@@ -3456,6 +3453,7 @@ sub SearchExtract {
 sub Replace {
   my ($from, $to) = @_;
   my $lang = GetParam('lang', '');
+  my @result;
   RequestLockOrError(); # fatal
   foreach my $id (AllPagesList()) {
     OpenPage($id);
@@ -3465,11 +3463,13 @@ sub Replace {
     }
     $_ = $Page{text};
     if (eval "s{$from}{$to}gi") { # allows use of backreferences
+      push (@result, $id);
       Save($id, $_, $from . ' -> ' . $to, 1,
 	   ($Page{ip} ne $ENV{REMOTE_ADDR}));
     }
   }
   ReleaseLock();
+  return @result;
 }
 
 # == Posting new pages ==
