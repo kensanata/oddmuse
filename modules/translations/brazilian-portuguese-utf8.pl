@@ -18,10 +18,14 @@
 #
 # This translation was last checked for Oddmuse version 1.753.
 #
-$ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.9 2007/02/05 13:54:38 dedalu Exp $</p>';
+$ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.10 2007/07/24 05:26:48 dedalu Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Leitura não permitida: usuário, ip ou rede bloqueados.
+Login
+Entrar
+Error
+Erro
 %s calls
 %s chamadas
 Could not create %s
@@ -62,10 +66,6 @@ Nenhum ítem encontrado em %s.
  . . . . 
 Click to edit this page
 Clique para editar essa página
-image
-imagem
-download
-baixar
 CGI Internal error: %s
 Erro interno de CGI : %s
 Invalid action parameter %s
@@ -116,6 +116,12 @@ Incluir também as alterações menores
 %s dias
 List later changes
 Listar as últimas alterações
+RSS
+RSS
+RSS with pages
+RSS com páginas
+RSS with pages and diff
+RSS com páginas e diferenças
 Filters
 Filtros
 Title:
@@ -126,6 +132,8 @@ Username:
 Usuário:
 Host:
 Máquina:
+Follow up to:
+Continuação de:
 Language:
 Idioma:
 Go!
@@ -262,6 +270,8 @@ f
 f
 Replace:
 Substituir:
+Delete
+Excluir
 Validate HTML
 Validar HTML
 Validate CSS
@@ -554,6 +564,8 @@ Complete Content
 Conteúdo completo
 The main page is %s.
 A página principal é %s.
+Archive:
+Arquivar:
 Rebuild BackLink database
 Recriar banco de dados LinkRetorno
 Internal Page: 
@@ -636,8 +648,12 @@ Compilation for %s
 Compilação para %s
 Compilation tag is missing a regular expression.
 Falta expressão regular na etiqueta de compilação.
+List spammed pages
+Listar páginas com spam
 Despamming pages
 Limpar spam das páginas
+Spammed pages
+Páginas com spam
 Cannot find revision %s.
 Não foi possível localizar a versão %s.
 Revert to revision %1: %2
@@ -670,6 +686,8 @@ Add Comment
 Adicionar Comentário
 ordinary changes
 alterações normais
+Matching page names:
+Coincidindo com os nomes de página:
 Footnotes:
 Notas de rodapé: 
 Could not find %1.html template in %2
@@ -734,8 +752,6 @@ You are now logged out.
 Agora você saiu.
 Register a new account
 Registrar uma nova conta
-Login
-Entrar
 Logout
 Sair
 Who am I?
@@ -796,6 +812,10 @@ Não há registros pendentes.
 %s não é um nome legal para um espaço de nomes
  (create locally)
  (criar localmente)
+image
+imagem
+download
+baixar
 Clearing Cache
 Limpando Cache
 Done.
