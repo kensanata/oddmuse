@@ -18,7 +18,7 @@
 #
 # This translation was last checked for Oddmuse version 1.753.
 #
-$ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.10 2007/07/24 05:26:48 dedalu Exp $</p>';
+$ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.11 2007/07/24 05:54:40 dedalu Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Leitura não permitida: usuário, ip ou rede bloqueados.
@@ -133,7 +133,7 @@ Usuário:
 Host:
 Máquina:
 Follow up to:
-Continuação de:
+Depois do usuário:
 Language:
 Idioma:
 Go!
