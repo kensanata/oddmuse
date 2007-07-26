@@ -1,4 +1,5 @@
 # Copyright (C) 2005  Fletcher T. Penney <fletcher@freeshell.org>
+# Copyright (c) 2007  Alexander Uvizhev <uvizhe@yandex.ru>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,19 +17,88 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tagmap.pl,v 1.1 2005/11/06 03:34:41 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: tagmap.pl,v 1.2 2007/07/26 10:46:52 uvizhe Exp $</p>';
 
-use vars qw($TagMapPage $TagString);
+use vars qw($TagMapPage $TagMark $TagClass $TagString $TagSearchTitle);
 
 $TagMapPage = "TagMap" unless defined $TagMapPage;
 
-$TagString = "Tags" unless defined $TagString;
+# Page tags are identified by this mark (input mark)
+$TagMark = "Tags:" unless defined $TagMark;
+
+# Page tags enclosed in DIV block of this class
+$TagClass = "tags" unless defined $TagClass;
+
+# This string precedes tags on page (output mark)
+$TagString = "Tags: " unless defined $TagString;
 
 $Action{tagmap} = \&DoTagMap;
+
+$Action{tagsearch} = \&DoTagSearch;
+
+$TagSearchTitle = "Pages with tag %s";
+
+push (@MyRules, \&TagRule);
 
 my %TagList = ();
 my $TagXML;
 
+sub TagRule { # Process page tags on a page
+
+    if ( m/\G$TagMark\s*(.*)/gc) {  # find page tags
+        my @tags = split /,\s*/, $1;  # push them in array
+        @tags = map {                 # and generate html output:
+            qq{<a href="$ScriptName?action=tagsearch;tag=$_">$_</a>};  # each tag is a link to search all pages with that tag
+        } @tags;
+        my $tags = join ', ', @tags;
+        return qq{<div class="$TagClass">$TagString$tags</div>}; # tags are put in DIV block
+    }
+    return undef;
+
+}
+
+sub DoTagSearch {
+
+    my $searchedtag = GetParam('tag');  # get tag parameter
+    my $header = Ts($TagSearchTitle, $searchedtag);  # modify page title with requested tag
+    print GetHeader('',$header,'');  # print title
+
+    print '<div class="content">';
+    
+    my $SearchResult = GenerateSearchResult($searchedtag);
+    
+    print $SearchResult;
+    print '</div>';
+    PrintFooter();
+
+}
+
+sub GenerateSearchResult {
+    
+    my $searchedtag = shift @_;
+    
+    my @pages = AllPagesList();
+    
+    local %Page;
+    local $OpenPageName='';
+    
+    my $SearchResult .= "<ul>";
+
+    foreach my $page (@pages) {
+        OpenPage($page);                    # open a page
+        my @tags = GetTags($Page{text});    # collect tags in an array
+            foreach (@tags) {
+                if (/$searchedtag/) {
+                    my $name = NormalToFree($page);
+                    $SearchResult .= "<li><a href=\"$ScriptName/$page\">$name</a>: $Page{summary}</li>";  # list of pages with their summaries
+            }
+        }
+    }
+    $SearchResult .= "</ul>";
+
+    return $SearchResult;
+
+}
 
 sub DoTagMap {
 	
@@ -37,6 +107,7 @@ sub DoTagMap {
 	CreateTagMap();
 	
 	print '<div class="content">';
+
 	PrintTagMap();
 	
 	print '</div>';
@@ -45,7 +116,7 @@ sub DoTagMap {
 }
 
 
-sub CreateTagMap{
+sub CreateTagMap {
 	my @pages = AllPagesList();
 	
 	local %Page;
@@ -73,11 +144,10 @@ sub CreateTagMap{
 	
 }
 
-sub PrintTagMap{
-	require "$ModuleDir/TagCategorizer/TagCategorizer.pl";
+sub PrintTagMap {
+	do "$ModuleDir/TagCategorizer/TagCategorizer.pl";
 
 	my $result = TagCategorizer::ProcessXML($TagXML);
-	
 	$result =~ s/\<tagHierarchy\>/<ul>/;
 	$result =~ s/\<\/tagHierarchy\>/<\/ul>/;
 	
@@ -101,23 +171,19 @@ sub PrintTagMap{
 	print $result;		
 }
 
-sub GetTags{
+sub GetTags {
 	my $text = shift;
 	my @tags;
-	
+
 	# strip [[.*?]] bits, then split on spaces
 
-	if ($text =~ /^$TagString:(.*)$/m) {
+	if ($text =~ /^$TagMark\s*(.*)$/m) {
 		my $tagstring = $1;
-		while ($tagstring =~ s/\[\[(.*?)\]\]//) {
-			push (@tags, $1) if ($1 !~ /^\s*$/);
-		}
-		foreach (split (/ +/, $tagstring)) {
-			push (@tags, $_) if ($_ !~ /^\s*$/);
-		}
+		@tags = split /,\s*/, $tagstring;
 	} else {
 		return;
 	}
+	
 	return @tags;
 }
 
