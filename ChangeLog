@@ -1,3 +1,10 @@
+2007-08-04  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetRcRss, RssItem): Rearrange code, move the RssItem generation
+	out to a new function. Required for module/enclosure.pl.
+
+	* modules/today.pl (Today): New.
+
 2007-07-20  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetSearchForm): Add delete checkbox.
