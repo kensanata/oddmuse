@@ -16,9 +16,19 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: today.pl,v 1.6 2006/05/23 22:31:20 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: today.pl,v 1.7 2007/08/03 23:08:43 as Exp $</p>';
 
 # New Action
+
+push(@MyAdminCode, \&TodayMenu);
+
+sub TodayMenu {
+  my ($id, $menuref, $restref) = @_;
+  push(@$menuref,
+       ScriptLink('action=new',
+		  T('Create a new page for today'),
+		  'today'));
+}
 
 $Action{new} = \&DoNew;
 
