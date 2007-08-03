@@ -1,4 +1,4 @@
-# Copyright (C) 2006  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006, 2007  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 23;
+use Test::More tests => 26;
 
 clear_pages();
 
@@ -47,27 +47,35 @@ test_page(get_page('search=foo replace=bar'),
 # Simple replace where the replacement pattern is found
 
 test_page(get_page('search=fooz replace=fuuz pwd=foo'), split('\n',<<'EOT'));
-<h1>Replaced: fooz -&gt; fuuz</h1>
+<h1>Replaced: fooz &#x2192; fuuz</h1>
 <p class="result">1 pages found.</p>
 This is <strong>fuuz</strong> and this is barz.
 EOT
 
+# Replace with empty string
+
+test_page(get_page('search=this%20is%20 replace= pwd=foo'), split('\n',<<'EOT'));
+<h1>Replaced: this is  &#x2192; </h1>
+<p class="result">1 pages found.</p>
+fuuz and barz.
+EOT
+
 # Replace with backreferences, where the replacement pattern is no longer found
 
-test_page(get_page('"search=([a-z]%2b)z" replace=x%241 pwd=foo'), '0 pages found');
-test_page(get_page('SearchAndReplace'), 'This is xfuu and this is xbar.');
+test_page(get_page('"search=([a-z]%2b)z" replace=x%241 pwd=foo'), '1 pages found');
+test_page(get_page('SearchAndReplace'), 'xfuu and xbar.');
 
 # Create an extra page that should not be found
 update_page('NegativeSearchTest', 'this page contains an ab');
 update_page('NegativeSearchTestTwo', 'this page contains another ab');
 test_page(get_page('search=xb replace=[xa]b pwd=foo'), '1 pages found'); # not two ab!
-test_page(get_page('SearchAndReplace'), 'This is xfuu and this is \[xa\]bar.');
+test_page(get_page('SearchAndReplace'), 'xfuu and \[xa\]bar.');
 
 # Handle quoting
 test_page(get_page('search=xfuu replace=/fuu/ pwd=foo'), '1 pages found'); # not two ab!
-test_page(get_page('SearchAndReplace'), 'This is /fuu/ and this is \[xa\]bar.');
+test_page(get_page('SearchAndReplace'), '/fuu/ and \[xa\]bar.');
 test_page(get_page('search=/fuu/ replace={{fuu}} pwd=foo'), '1 pages found');
-test_page(get_page('SearchAndReplace'), 'This is {{fuu}} and this is \[xa\]bar.');
+test_page(get_page('SearchAndReplace'), '{{fuu}} and \[xa\]bar.');
 
 ## Check headers especially the quoting of non-ASCII characters.
 
