@@ -276,7 +276,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.801 2007/07/20 07:20:58 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.802 2007/08/03 23:47:42 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1649,9 +1649,9 @@ sub GetFilterForm {
  }
 
 sub GetRc {
-  my $printDailyTear = shift;
-  my $printRCLine = shift;
-  my @outrc = @_;
+  my $printDailyTear = shift; # code reference
+  my $printRCLine = shift;    # code reference
+  my @outrc = @_;             # the remaining parameters are rc lines
   my %extra = ();
   my %changetime = ();
   # Slice minor edits
@@ -1814,8 +1814,6 @@ sub GetRcText {
 
 sub GetRcRss {
   my $url = QuoteHtml($ScriptName);
-  my $diffPrefix = $url . "?action=browse;diff=1;id=";
-  my $historyPrefix = $url . "?action=history;id=";
   my $date = TimeToRFC822($LastUpdate);
   my %excluded = ();
   if (GetParam("exclude", 1)) {
@@ -1825,8 +1823,6 @@ sub GetRcRss {
       }
     }
   }
-  my $limit = GetParam("rsslimit", 15); # Only take the first 15 entries
-  my $count = 0;
   my $rss = qq{<?xml version="1.0" encoding="$HttpCharset"?>};
   if ($RssStyleSheet =~ /\.(xslt?|xml)$/) {
     $rss .= qq{<?xml-stylesheet type="text/xml" href="$RssStyleSheet" ?>};
@@ -1856,45 +1852,45 @@ sub GetRcRss {
     $rss .= "<link>" . $url . "</link>\n";
     $rss .= "</image>\n";
   }
-  # Now call GetRc with some blocks of code as parameters:
-  GetRc
-    # printDailyTear
-    sub {},
-    # printRCLine
-    sub {
-      my ($id, $ts, $host, $username, $summary, $minor, $revision, $languages, $cluster, $last) = @_;
-      return if $excluded{$id} or ($limit ne 'all' and $count++ >= $limit);
-      my $name = NormalToFree($id);
-      if (GetParam('full', 0)) {
-	$name .= T(': ') . $summary if $summary;
-	$summary = PageHtml($id, 50*1024, T('This page is too big to send over RSS.'));
-      }
-      my $date = TimeToRFC822($ts);
-      $username = QuoteHtml($username);
-      $username = $host unless $username;
-      $rss .= "\n<item>\n";
-      $rss .= "<title>" . QuoteHtml($name) . "</title>\n";
-      $rss .= "<link>" . $url . (GetParam('all', $cluster)
-        ? "?" . GetPageParameters('browse', $id, $revision, $cluster, $last)
-	: ($UsePathInfo ? '/' : '?') . UrlEncode($id)) . "</link>\n";
-      $rss .= "<description>" . QuoteHtml($summary) . "</description>\n" if $summary;
-      $rss .= "<pubDate>" . $date . "</pubDate>\n";
-      $rss .= "<comments>" . $url . ($UsePathInfo ? '/' : '?')
-	. $CommentsPrefix . UrlEncode($id) . "</comments>\n"
-	  if $CommentsPrefix and $id !~ /^$CommentsPrefix/o;
-      $rss .= "<wiki:username>" . $username . "</wiki:username>\n" if $username;
-      $rss .= "<wiki:status>" . (1 == $revision ? 'new' : 'updated') . "</wiki:status>\n";
-      $rss .= "<wiki:importance>" . ($minor ? 'minor' : 'major') . "</wiki:importance>\n";
-      $rss .= "<wiki:version>" . $revision . "</wiki:version>\n";
-      $rss .= "<wiki:history>" . $historyPrefix . UrlEncode($id) . "</wiki:history>\n";
-      $rss .= "<wiki:diff>" . $diffPrefix . UrlEncode($id) . "</wiki:diff>\n"
-	if $UseDiff and GetParam('diffrclink', 1);
-      $rss .= "</item>\n";
-    },
-    # RC Lines
-    @_;
+  my $limit = GetParam("rsslimit", 15); # Only take the first 15 entries
+  my $count = 0;
+  GetRc(sub {}, sub {
+	  my $id = shift;
+	  return if $excluded{$id} or ($limit ne 'all' and $count++ >= $limit);
+	  $rss .= "\n" . RssItem($id, @_, $url);
+	}, @_);
   $rss .= "</channel>\n</rss>\n";
   return $rss;
+}
+
+sub RssItem {
+  my ($id, $ts, $host, $username, $summary, $minor, $revision, $languages, $cluster, $last, $url) = @_;
+  my $name = NormalToFree($id);
+  if (GetParam('full', 0)) {
+    $name .= T(': ') . $summary if $summary;
+    $summary = PageHtml($id, 50*1024, T('This page is too big to send over RSS.'));
+  }
+  my $date = TimeToRFC822($ts);
+  $username = QuoteHtml($username);
+  $username = $host unless $username;
+  my $rss = "<item>\n";
+  $rss .= "<title>" . QuoteHtml($name) . "</title>\n";
+  $rss .= "<link>" . $url . (GetParam('all', $cluster)
+			     ? "?" . GetPageParameters('browse', $id, $revision, $cluster, $last)
+			     : ($UsePathInfo ? '/' : '?') . UrlEncode($id)) . "</link>\n";
+  $rss .= "<description>" . QuoteHtml($summary) . "</description>\n" if $summary;
+  $rss .= "<pubDate>" . $date . "</pubDate>\n";
+  $rss .= "<comments>" . $url . ($UsePathInfo ? '/' : '?')
+    . $CommentsPrefix . UrlEncode($id) . "</comments>\n"
+      if $CommentsPrefix and $id !~ /^$CommentsPrefix/o;
+  $rss .= "<wiki:username>" . $username . "</wiki:username>\n" if $username;
+  $rss .= "<wiki:status>" . (1 == $revision ? 'new' : 'updated') . "</wiki:status>\n";
+  $rss .= "<wiki:importance>" . ($minor ? 'minor' : 'major') . "</wiki:importance>\n";
+  $rss .= "<wiki:version>" . $revision . "</wiki:version>\n";
+  $rss .= "<wiki:history>" . $url . "?action=history;id=" . UrlEncode($id) . "</wiki:history>\n";
+  $rss .= "<wiki:diff>" . $url . "?action=browse;diff=1;id=" . UrlEncode($id) . "</wiki:diff>\n"
+    if $UseDiff and GetParam('diffrclink', 1);
+  return $rss . "</item>\n";
 }
 
 sub DoRss {
