@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 24;
+use Test::More tests => 27;
 
 clear_pages();
 
@@ -124,3 +124,12 @@ test_page(update_page('toc', "bla\n"
 	  quotemeta('<ol><li><a href="#toc1">one</a></li><li><a href="#toc2">four</a></li></ol>'),
 	  quotemeta('<h2 id="toc1">one</h2>'),
 	  quotemeta('<h2 id="toc2">four</h2>'),);
+
+test_page(update_page('toc', "bla\n"
+		      . "=one=\n"
+		      . "blarg ##<code>## and <code>##</code>\n"
+		      . "=two=\n"
+		      . "blarg ##</code>##\n"),
+	  quotemeta('<ol><li><a href="#toc1">one</a></li><li><a href="#toc2">two</a></li></ol>'),
+	  quotemeta('<h2 id="toc1">one</h2>'),
+	  quotemeta('<h2 id="toc2">two</h2>'),);
