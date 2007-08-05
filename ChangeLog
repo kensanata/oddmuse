@@ -1,3 +1,7 @@
+2007-08-05  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (InitLinkPatterns): Added feed to $UrlProtocols.
+
 2007-08-04  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetRcRss, RssItem): Rearrange code, move the RssItem generation
