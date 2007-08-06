@@ -18,7 +18,7 @@
 #
 # Based on code of tagmap.pl module by Fletcher T. Penney
 # and searchtags.pl module by Brock Wilcox
-$ModulesDescription .= '<p>$Id: linktagmap.pl,v 1.4 2007/06/15 09:26:37 uvizhe Exp $</p>';
+$ModulesDescription .= '<p>$Id: linktagmap.pl,v 1.5 2007/08/06 10:54:04 uvizhe Exp $</p>';
 
 use vars qw($LinkTagMark $LinkDescMark $LinkTagClass $LinkDescClass $LinkTagMapPage $FreeLinkPattern $FullUrlPattern $LinkTagSearchTitle);
 
@@ -49,7 +49,7 @@ sub LinkTagRule { # Process link tags on a page
     if ( m/\G$LinkTagMark(.*?)$LinkTagMark/gc) {      # find tags
         my @linktags = split /,\s*/, $1;              # push them in array
         @linktags = map {                             # and generate html output:
-            qq{<a href="$ScriptName?action=linktagsearch;tag=$_">$_</a>};  # each tag is a link to search all links with that tag
+            qq{<a href="$ScriptName?action=linktagsearch;linktag=$_">$_</a>};  # each tag is a link to search all links with that tag
         } @linktags;
         my $linktags = join ', ', @linktags;
         return qq{<span class="$LinkTagClass">$linktags</span>}; # tags are put in SPAN block
@@ -85,13 +85,13 @@ sub DoLinkTagMap {
 
 sub DoLinkTagSearch {
     
-    my $searchedtag = GetParam('tag');  # get tag parameter
+    my $searchedtag = GetParam('linktag');  # get tag parameter
     my $header = Ts($LinkTagSearchTitle, $searchedtag);  # modify page title with requested tag
     print GetHeader('',$header,'');  # print title
 
     print '<div class="content">';
 
-    my $SearchResult = GenerateSearchResult($searchedtag);
+    my $SearchResult = GenerateLinkSearchResult($searchedtag);
     
     print $SearchResult;
     print '</div>';
@@ -99,7 +99,7 @@ sub DoLinkTagSearch {
 
 }
 
-sub GenerateSearchResult {
+sub GenerateLinkSearchResult {
 
     my $searchedtag = shift @_;
 
@@ -119,7 +119,7 @@ sub GenerateSearchResult {
                 if (/$searchedtag/) {
                     my @linktags = split /,\s*/, $link->{tags};   # push tags in an array
                     @linktags = map {                             # and print html output:
-                        qq{<a href="$ScriptName?action=linktagsearch;tag=$_">$_</a>};  # each tag is a link to search all links with that tag
+                        qq{<a href="$ScriptName?action=linktagsearch;linktag=$_">$_</a>};  # each tag is a link to search all links with that tag
                     } @linktags;
                     my $linktags = join ', ', @linktags;
                     if ( length $link->{name} == 0 ) { $link->{name} = $link->{url}; }  # if link has no name we use url instead
