@@ -1,6 +1,7 @@
 2007-08-11  Alex Schroeder  <alex@gnu.org>
 
 	* modules/searchtags.pl (SearchTagRule): Fix handling of spaces.
+	Fix XHTML.
 
 2007-08-06 Alexander Uvizhev  <uvizhe@yandex.ru>
 
