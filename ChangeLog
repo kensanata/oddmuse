@@ -1,3 +1,7 @@
+2007-08-11  Alex Schroeder  <alex@gnu.org>
+
+	* modules/searchtags.pl (SearchTagRule): Fix handling of spaces.
+
 2007-08-06 Alexander Uvizhev  <uvizhe@yandex.ru>
 
 	* modules/linktagmap.pl: "tag" parameter renamed to "linktag".
