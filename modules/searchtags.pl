@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: searchtags.pl,v 1.4 2007/08/11 10:11:57 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: searchtags.pl,v 1.5 2007/08/11 10:48:19 as Exp $</p>';
 
 push(@MyRules, \&SearchTagRule);
 
@@ -32,7 +32,9 @@ sub SearchTagRule {
       ScriptLink("search=Tags:\\s*($encoded|.*,\\s*$encoded)(,|\\n)", $name);
     } @tags;
     $tags = join ', ', @tags;
-    return "<div class=taglist>Tags: $tags</div>";
+    return CloseHtmlEnvironments()
+      . "<div class=taglist>Tags: $tags</div>"
+      . AddHtmlEnvironment('p');
   }
   return undef;
 }
