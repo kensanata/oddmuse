@@ -177,7 +177,7 @@
 	     '//a[@class="local"][@href="#bar"][text()="bar"]',
 	     '//h1/a[@name="bar"][text()="bar"]')
 
-  And the same thing for negavtive matches, of course:
+  And the same thing for negative matches, of course:
 
     negative_xpath_test($page, '//h1/a[not(text())]');
 
