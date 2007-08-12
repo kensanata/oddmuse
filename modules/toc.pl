@@ -16,19 +16,21 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.41 2007/02/15 21:58:02 as Exp $</p>';
+$ModulesDescription .= '<p>XXX $Id: toc.pl,v 1.42 2007/08/12 23:43:15 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
 # This must come *before* either headers.pl or the usemod.pl rules and
 # adds support for portrait-support.pl
-$RuleOrder{ \&TocRule } = 90;
+$RuleOrder{\&TocRule} = 90;
 
-use vars qw($TocAutomatic);
+use vars qw($TocAutomatic $TocProcessing $TocShown $TocCounter);
 
+$TocCounter = 0;
 $TocAutomatic = 1;
-my $TocShown = 0;
-my ($TocCounter, $TocPage);
+$TocProcessing = 0;
+$TocShown = 0;
+my $TocPage;
 
 push(@MyInitVariables, \&TocInit);
 
@@ -125,36 +127,24 @@ sub TocRule {
 }
 
 sub TocHeadings {
+  # avoid recursion
+  return '' if $TocProcessing;
+  local $TocProcessing = 1;
+  local $TocShown = 0;
+  local $TocCounter;
+  # don't mess up \G
+  my ($oldpos, $old_) = (pos, $_);
   my $class = 'toc' . join(' ', @_);
   my $key = 'toc';
-  my $oldpos = pos;          # make this sub not destroy the value of pos
-  my $page = $Page{text};   # work on the page that is currently open!
-  # ignore all the stuff that gets processed anyway
-  $page =~ s!<nowiki>.*?</nowiki>!!gis if defined &UsemodRule;
-  $page =~ s!<code>.*?</code>!!gis if defined &UsemodRule;
-  $page =~ s!(^|\n)<pre>.*?</pre>!!gis if defined &UsemodRule;
-  $page =~ s!##.*?##!!gis if defined &MarkupRule;
-  $page =~ s!%%.*?%%!!gis if defined &MarkupRule;
-  # transform headers markup to usemod markup to 
-  $page =~ s!(.+?)[ \t]*\n===+[ \t]*\n!== $1 =\n!gi if defined &HeadersRule;
-  $page =~ s!(.+?)[ \t]*\n---+[ \t]*\n!=== $1 =\n!gi if defined &HeadersRule;
-  my $Headings           = "<h2>" . T('Contents') . "</h2>";
+  # double rendering
+  my $html = PageHtml($OpenPageName);
+  my $Headings = $q->h2(T('Contents'));
   my $HeadingsLevel      = undef;
   my $HeadingsLevelStart = undef;
-  my $count              = 1;
-  # try to determine what will end up as a header
-  foreach my $line (grep(/^(=|<h\d>)/, split(/\n/, $page))) {
-    my ($depth, $text, $link);
-    if ($line =~ /^(\=+)[ \t]*(.*?)[ \t]*\=+[ \t]*$/) {
-      $depth = length($1);
-      $link = $key . $count;
-      $text  = $2;
-    } elsif ($line =~ /^<h(\d)><a id\="(.+)">[ \t]*(.*?)[ \t]*<\/a><\/h\1>[ \t]*$/) {
-      $depth = $1;
-      $link  = $2;
-      $text  = $3;
-    }
-    next unless $text;
+  my $count = 1;
+  while ($html =~ m!<h([1-6]) id=[^>]*>(.*?)</h[1-6]>!g) {
+    my ($depth, $text) = ($1, $2);
+    my $link = $key . $count;
     $text = QuoteHtml($text);
     if (not defined $HeadingsLevelStart) {
       # $HeadingsLevel is set to $depth - 1 so that we get an opening
@@ -187,8 +177,8 @@ sub TocHeadings {
     $Headings .= '</li></ol>';
     $HeadingsLevel--;
   }
-  pos = $oldpos;
+  ($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
+  $TocProcessing = 0;
   return '' if $count <= 2;
-  return $q->div({-class=>$class}, $Headings)
-    if $Headings;
+  return $q->div({-class=>$class}, $Headings) if $Headings;
 }
