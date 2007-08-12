@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.25 2006/10/25 11:30:31 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.26 2007/08/12 11:37:01 as Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -215,15 +215,16 @@ EOT
   print F '</body></html>';
 }
 
-*StaticFilesOldDoPost = *DoPost;
-*DoPost = *StaticFilesNewDoPost;
+*StaticFilesOldSave = *Save;
+*Save = *StaticFilesNewSave;
 
-sub StaticFilesNewDoPost {
-  StaticFilesOldDoPost(@_);
+sub StaticFilesNewSave {
+  my ($id, $new) = @_;
+  StaticFilesOldSave(@_);
   if ($StaticAlways) {
     # always delete
-    StaticDeleteFile($OpenPageName);
-    if ($Page{text} =~ /^\#FILE / # if a file was uploaded
+    StaticDeleteFile($id);
+    if ($new =~ /^\#FILE / # if a file was uploaded
         or $StaticAlways > 1) {
       CreateDir($StaticDir);
       StaticWriteFile($OpenPageName);
