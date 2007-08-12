@@ -1,3 +1,11 @@
+2007-08-13  Alex Schroeder  <alex@gnu.org>
+
+	* modules/toc.pl (TocHeadings): Major overhaul using a call to
+	PageHtml() to generate the HTML of the page without table of
+	contents, extracting the generated HTML headings, producing the
+	table of contents, and finish generating the real HTML of the
+	page.
+
 2007-08-12  Alex Schroeder  <alex@gnu.org>
 
 	* modules/static-copy.pl (StaticFilesNewDoPost,
