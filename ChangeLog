@@ -14,7 +14,7 @@
 2007-08-06 Alexander Uvizhev  <uvizhe@yandex.ru>
 
 	* modules/linktagmap.pl: "tag" parameter renamed to "linktag".
-	(GenerateSearchResult): Renamed to GenerateLinkSearchResult becouse of
+	(GenerateSearchResult): Renamed to GenerateLinkSearchResult because of
 	conflict with the same named subroutine in tagmap module.
 
 2007-08-05  Alex Schroeder  <alex@gnu.org>
