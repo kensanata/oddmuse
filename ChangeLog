@@ -1,3 +1,11 @@
+2007-08-12  Alex Schroeder  <alex@gnu.org>
+
+	* modules/static-copy.pl (StaticFilesNewDoPost,
+	StaticFilesNewSave): Replace one by the other. We now hook into
+	Save() instead of DoPost() because this will make sure that static
+	files are recreated when a rollback from a text to an uploaded
+	file happens.
+
 2007-08-11  Alex Schroeder  <alex@gnu.org>
 
 	* modules/searchtags.pl (SearchTagRule): Fix handling of spaces.
