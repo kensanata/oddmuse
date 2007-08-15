@@ -54,7 +54,7 @@ EOT
 
 # Replace with empty string
 
-test_page(get_page('search=this%20is%20 replace= pwd=foo'), split('\n',<<'EOT'));
+test_page(get_page('search=this%20is%20 replace= pwd=foo delete=1'), split('\n',<<'EOT'));
 <h1>Replaced: this is  &#x2192; </h1>
 <p class="result">1 pages found.</p>
 fuuz and barz.
