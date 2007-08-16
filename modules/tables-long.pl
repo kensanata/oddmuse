@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.15 2005/12/13 22:50:33 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.16 2007/08/16 21:56:35 as Exp $</p>';
 
 push(@MyRules, \&TablesLongRule);
 
@@ -124,7 +124,8 @@ sub TablesLongRow {
       push(@Flags, 0);
       $Fragment = '';
     }
-    # call ApplyRules, and *inline* the results
+    # call ApplyRules, and *inline* the results; ignoring $PortraitSupportColorDiv
+    local $PortraitSupportColorDiv;
     my ($blocks, $flags) = ApplyRules($row{$labels[$i]}, 1, 1); # local links, anchors
     push(@Blocks, split(/$FS/, $blocks));
     push(@Flags, split(/$FS/, $flags));
