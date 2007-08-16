@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 8;
+use Test::More tests => 14;
 clear_pages();
 
 add_module('tables-long.pl');
@@ -41,3 +41,17 @@ Here is a table: <table class="user long"><tr><th>a</th><th>b</th></tr><tr><td>o
 <table a, b, c>\na:0\nb:1\nc:00\n----\n
 <table class="user long"><tr><th>0</th><th>1</th><th>00</th></tr></table>
 EOT
+
+add_module('portrait-support.pl');
+
+xpath_test(update_page('portrait', "[new]\nparagraph\n<table a, b>\n"
+		       . "a: first heading\n" . "b: second heading\n"
+		       . "a: first cell\n" . "b: second cell\n"
+		       . "----\n"
+		       . "new paragraph"),
+	   '//p[text()=" paragraph "]',
+	   '//table/tr/th[text()="first heading"]',
+	   '//table/tr/th[text()="second heading"]',
+	   '//table/tr/td[text()="first cell"]',
+	   '//table/tr/td[text()="second cell"]',
+	   '//p[text()="new paragraph"]', );
