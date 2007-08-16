@@ -1,3 +1,7 @@
+2007-08-16  Alex Schroeder  <alex@gnu.org>
+
+	* modules/enclosure.pl (EnclosureRule): Removed unused $result.
+
 2007-08-13  Alex Schroeder  <alex@gnu.org>
 
 	* modules/toc.pl (TocHeadings): Major overhaul using a call to
