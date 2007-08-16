@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: enclosure.pl,v 1.1 2007/08/03 16:01:20 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: enclosure.pl,v 1.2 2007/08/16 19:59:13 as Exp $</p>';
 
 use vars qw(@Enclosures);
 
@@ -24,7 +24,6 @@ push(@MyRules, \&EnclosureRule);
 # [[enclosure:url|size in bytes|mime type]]
 
 sub EnclosureRule {
-  my $result = undef;
   if (m!\G\[\[enclosure:\s*$FreeLinkPattern(\|([^\]]+))?\]\]!ogci) {
     my $id = FreeToNormal($1);
     # Make sure we don't add duplicates; we will add non-existing
@@ -45,7 +44,6 @@ sub NewEnclosurePrintWikiToHTML {
   $Page{enclosures} = '';
   return OldEnclosurePrintWikiToHTML(@_);
 }
-
 
 * OldEnclosureRssItem = *RssItem;
 * RssItem = *NewEnclosureRssItem;
