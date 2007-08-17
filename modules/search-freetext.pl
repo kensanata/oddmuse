@@ -40,7 +40,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.52 2007/08/17 12:25:06 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.53 2007/08/17 12:26:50 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -203,6 +203,7 @@ sub NewSearchFreeTextTitleAndBody {
       push @result, $id if $hash{$id};
     }
   }
+  my $raw = GetParam('raw','');
   # limit to the result page requested
   $max = @result - 1 if @result -1 < $max;
   my $count = ($page - 1) * $limit;
@@ -212,7 +213,6 @@ sub NewSearchFreeTextTitleAndBody {
       or GetParam('action', 'browse') eq 'rc'      # filtering recent changes or the
       or GetParam('action', 'browse') eq 'rss';    # rss feed.
   # print links, if this is is really a search
-  my $raw = GetParam('raw','');
   my @links = ();
   if (GetParam('search', '') and @items) {
     my $pages = int($#result / $limit) + 1;
