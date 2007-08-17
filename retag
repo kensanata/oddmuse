@@ -1,0 +1,184 @@
+#!/usr/bin/perl -w
+#
+# Copyright (C) 2007  Alex Schroeder <alex@gnu.org>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+require LWP;
+use Getopt::Std;
+
+our ($opt_v, $opt_w, $opt_f);
+
+# We make our own specialization of LWP::UserAgent that asks for
+# user/password if document is protected.
+{
+  package RequestAgent;
+  @ISA = qw(LWP::UserAgent);
+
+  sub new {
+    my $self = LWP::UserAgent::new(@_);
+    $self;
+  }
+
+  sub get_basic_credentials {
+    my($self, $realm, $uri) = @_;
+    return split(':', $main::opt_w, 2);
+  }
+}
+
+my $usage = qq{$0 [-i URL] [-t SECONDS]
+\t[-u USERNAME] [-p PASSWORD] [-w USERNAME:PASSWORD]
+\t[-f FORMAT] [-a TAG] [-d TAG] [TARGET]
+
+TARGET is the base URL for the wiki. Visiting this URL should show you
+its homepage.
+
+You add a TAG using -a and delete it using -d. Multiple tags can be
+separated by a space or a comma.
+
+FORMAT defaults to [[tag:TheTag]]. If you use just words, specify -f1.
+
+Provide the page names to retag on STDIN or use -i to point to a page.
+You can use the index action with the raw parameter. See example
+below.
+
+The list of page names should use the MIME type text/plain.
+
+By default, retag will tag a page every five seconds. Use -t to
+override this. SECONDS is the number of seconds to wait between
+requests.
+
+The edits will show up on the list of changes as anonymous edits. If
+you want to provide a USERNAME, you can use -u to do so.
+
+If you want to tag pages on a locked wiki, you need to provide a
+PASSWORD using -p.
+
+On the other hand, if your wiki is protected by so-called "basic
+authentication" -- that is, if you need to provide a username and
+password before you can even view the site -- then you can pass those
+along using the -w option. Separate username and password using a
+colon.
+
+Example:
+
+retag -i 'http://www.emacswiki.org/cgi-bin/alex?search=tag%3Akitsunemori+2006+2007;context=0;raw=1' \\
+      -u AlexSchroeder -a MondayGroup http://www.emacswiki.org/cgi-bin/alex
+};
+
+sub UrlEncode {
+  my $str = shift;
+  return '' unless $str;
+  my @letters = split(//, $str);
+  my @safe = ('a' .. 'z', 'A' .. 'Z', '0' .. '9', '-', '_', '.', '!', '~', '*', "'", '(', ')', '#');
+  foreach my $letter (@letters) {
+    my $pattern = quotemeta($letter);
+    if (not grep(/$pattern/, @safe)) {
+      $letter = sprintf("%%%02x", ord($letter));
+    }
+  }
+  return join('', @letters);
+}
+
+sub GetRaw {
+  my ($uri) = @_;
+  my $ua = RequestAgent->new;
+  my $response = $ua->get($uri);
+  print "no response\n" unless $response->code;
+  print "GET ", $response->code, " ", $response->message, "\n" if $opt_v;
+  return $response->content if $response->is_success;
+}
+
+my $FreeLinkPattern = "([-,.()' _0-9A-Za-z\x80-\xff]+)";
+
+sub PostRaw {
+  my ($uri, $id, $data, $username, $password) = @_;
+  my $ua = RequestAgent->new;
+  my $response = $ua->post($uri, {title=>$id, text=>$data, raw=>1,
+				  username=>$username, pwd=>$password});
+  my $status = $response->code . ' ' . $response->message;
+  warn "POST $id failed: $status.\n" unless $response->is_success;
+}
+
+sub tag {
+  my ($target, $interval, $username, $password,
+      $pageref, $addref, $delref) = @_;
+  my %tags = map { $_ => 1 } @$addref;
+  foreach my $id (@$pageref) {
+    print "$id\n";
+    my $page = UrlEncode ($id);
+    # fix URL for other wikis
+    my $data = GetRaw("$target?action=browse;id=$page;raw=1");
+    # The current code does not remove tags sprinkled all over the
+    # page. The code will in fact add those tags to the final tagline.
+    if ($data =~ /\n\nTags: (.*)/) {
+      my $tags = $1;
+      if ($opt_f) {
+	foreach my $tag (split /,\s*/, $1) {
+	  $tags{$tag} = 1;
+	}
+      } else {
+	while ($tags =~ /\[\[tag:$FreeLinkPattern(\|[^]|]+)?\]\]/ogi) {
+	  $tags{$1} = 1;
+	}
+      }
+      foreach my $tag (@$delref) {
+	delete $tags{$tag};
+      }
+    }
+    my $newtags;
+    if ($opt_f) {
+      $newtags = join(', ', sort keys %tags);
+    } else {
+      $newtags = join(' ', map { "\[\[tag:$_\]\]" } sort keys %tags);
+    }
+    # The code will not remove the tagline if the last tag is removed.
+    # It will add a tagline if there is none.
+    $data =~ s/\n\nTags: .*/\n\nTags: $newtags/ or $data .= "\n\nTags: $newtags";
+    PostRaw($target, $id, $data, $username, $password);
+    sleep($interval);
+  }
+}
+
+sub main {
+  our($opt_h, $opt_i, $opt_t, $opt_d, $opt_u, $opt_p);
+  getopts('hvi:t:u:p:w:a:d:f:');
+  die $usage if $opt_h;
+  die "Missing tags to add or delete. Use -a TAG or -d TAG.\n"
+    unless $opt_a or $opt_d;
+  my $interval = $opt_t ? $opt_t : 5;
+  my (@add, @delete);
+  @add = split(/[ ,]+/, $opt_a) if $opt_a;
+  @delete = split(/[ ,]+/, $opt_d) if $opt_d;
+  my $username = $opt_u;
+  my $password = $opt_p;
+  my $target = shift(@ARGV);
+  die "You need to provide exactly one target URL. Use -h for more help.\n"
+    unless $target and not @ARGV;
+  my @pages = ();
+  if ($opt_i) {
+    my $data = GetRaw($opt_i);
+    @pages = split(/\n/, $data);
+  } else {
+    print "List of pages:\n";
+    while (<STDIN>) {
+      chomp;
+      push(@pages, $_);
+    }
+  }
+  die "The list of pages is missing.  Use -i.\n" unless @pages;
+  tag($target, $interval, $username, $password, \@pages, \@add, \@delete);
+}
+
+main();
