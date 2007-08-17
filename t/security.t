@@ -15,8 +15,10 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 1;
+use Test::More tests => 2;
 clear_pages();
 
 test_page(get_page(q{'search=<script>alert("Owned!")</script>'}),
-	  'Search for: &lt;script&gt;alert("Owned!")&lt;/script&gt;');
+	  quotemeta('Search for: &lt;script&gt;alert("Owned!")&lt;/script&gt;'));
+test_page(get_page(q{'search=<alex>;replace=<berta>;pwd=foo'}),
+	  quotemeta('Replaced: &lt;alex&gt; &#x2192; &lt;berta&gt;'));
