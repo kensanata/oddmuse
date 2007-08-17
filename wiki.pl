@@ -273,7 +273,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.805 2007/08/17 01:32:40 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.806 2007/08/17 12:39:42 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3255,9 +3255,9 @@ sub DoSearch {
     foreach (@results) { PrintSearchResult($_, HighlightRegex($replacement||$string)) };
   } else {
     if ($raw) {
-      print GetHttpHeader('text/plain'), RcTextItem('title', Ts('Search for: %s', $string)),
-	RcTextItem('date', TimeToText($Now)), RcTextItem('link', $q->url(-path_info=>1, -query=>1)), "\n"
-	  if GetParam('context', 1);
+      print GetHttpHeader('text/plain');
+      print RcTextItem('title', Ts('Search for: %s', $string)),	RcTextItem('date', TimeToText($Now)),
+	RcTextItem('link', $q->url(-path_info=>1, -query=>1)), "\n" if GetParam('context', 1);
     } else {
       print GetHeader('', Ts('Search for: %s', $string)), $q->start_div({-class=>'content search'});
       $ReplaceForm = UserIsAdmin();
