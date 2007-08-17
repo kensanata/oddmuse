@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 30;
+use Test::More tests => 31;
 
 SKIP: {
   eval { require Search::FreeText };
@@ -64,7 +64,9 @@ SKIP: {
   test_page(get_page('search=search raw=1'),
 	    quotemeta('Search_(and_replace)'));
   test_page(get_page('search=SEARCH raw=1'),
-	    quotemeta('Search_(and_replace)'));
+	    quotemeta('title: Search_(and_replace)'));
+  test_page(get_page('search=SEARCH raw=1 context=0'),
+	    '^' . quotemeta('Search_(and_replace)') . '$');
   test_page(get_page('search=Search\+%5c\(and\+replace%5c\) raw=1'),
 	    quotemeta('Search_(and_replace)'));
   test_page(get_page('search=%22Search\+%5c\(and\+replace%5c\)%22 raw=1'),
