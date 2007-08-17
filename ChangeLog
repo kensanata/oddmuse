@@ -1,4 +1,12 @@
+2007-08-17  Alex Schroeder  <alex@gnu.org>
+
+	* modules/toc.pl (TocInit): Moved some init code here.
+
 2007-08-16  Alex Schroeder  <alex@gnu.org>
+
+	* modules/tables-long.pl (TablesLongRow): Localize
+	$PortraitSupportColorDiv to prevent closing divs to appear inside
+	table cells.
 
 	* modules/enclosure.pl (EnclosureRule): Removed unused $result.
 
