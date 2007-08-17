@@ -273,7 +273,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.804 2007/08/11 10:34:41 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.805 2007/08/17 01:32:40 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3249,7 +3249,7 @@ sub DoSearch {
   my @results;
   if ($replacement or GetParam('delete', 0)) {
     return unless UserIsAdminOrError();
-    print GetHeader('', Ts('Replaced: %s', QuoteHtml($string) . " &#x2192; " . QuoteHtml($replacement))),
+    print GetHeader('', Ts('Replaced: %s', $string . " &#x2192; " . $replacement)),
       $q->start_div({-class=>'content replacement'});
     @results = Replace($string,$replacement);
     foreach (@results) { PrintSearchResult($_, HighlightRegex($replacement||$string)) };
@@ -3259,7 +3259,7 @@ sub DoSearch {
 	RcTextItem('date', TimeToText($Now)), RcTextItem('link', $q->url(-path_info=>1, -query=>1)), "\n"
 	  if GetParam('context', 1);
     } else {
-      print GetHeader('', QuoteHtml(Ts('Search for: %s', $string))), $q->start_div({-class=>'content search'});
+      print GetHeader('', Ts('Search for: %s', $string)), $q->start_div({-class=>'content search'});
       $ReplaceForm = UserIsAdmin();
       my @elements = (ScriptLink('action=rc;rcfilteronly=' . UrlEncode($string), T('View changes for these pages')));
       push(@elements, ScriptLink('near=2;search=' . UrlEncode($string), Ts('Search sites on the %s as well', $NearMap)))
