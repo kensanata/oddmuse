@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.14 2007/01/12 02:05:27 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.15 2007/08/17 00:26:35 as Exp $</p>';
 
 use vars qw(@QuestionaskerQuestions
 	    $QuestionaskerRememberAnswer
@@ -31,7 +31,7 @@ use vars qw(@QuestionaskerQuestions
   (['What is the first letter of this question?' => sub { shift =~ /^\s*W\s*$/i }],
    ['How many letters are in the word "four"?' => sub { shift =~ /^\s*(4|four)\s*$/i }],
    ['Tell me any number between 1 and 10' => sub { shift =~ /^\s*([1-9]|10|one|two|three|four|five|six|seven|eight|nine|ten)\s*$/ }],
-   ["How many lives does a cat have?" => sub { shift =~ /^\s*(9|nine)\s*$/i }],
+   ["How many lives does a cat have?" => sub { shift =~ /^\s*(7|seven|9|nine)\s*$/i }],
    ["What is 2 + 4?" => sub { shift =~ /^\s*(6|six)\s*$/i }],
   );
 
