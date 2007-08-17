@@ -40,7 +40,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.51 2006/12/31 11:10:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.52 2007/08/17 12:25:06 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -208,7 +208,7 @@ sub NewSearchFreeTextTitleAndBody {
   my $count = ($page - 1) * $limit;
   my @items = @result;
   @items = @items[($page - 1) * $limit  .. $max]
-    unless $CollectingJournal                      # no limit when building a journal,
+    unless $CollectingJournal or $raw              # no limit when building a journal,
       or GetParam('action', 'browse') eq 'rc'      # filtering recent changes or the
       or GetParam('action', 'browse') eq 'rss';    # rss feed.
   # print links, if this is is really a search
