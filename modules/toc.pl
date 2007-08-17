@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>XXX $Id: toc.pl,v 1.42 2007/08/12 23:43:15 as Exp $</p>';
+$ModulesDescription .= '<p>XXX $Id: toc.pl,v 1.43 2007/08/17 00:24:14 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
@@ -26,10 +26,7 @@ $RuleOrder{\&TocRule} = 90;
 
 use vars qw($TocAutomatic $TocProcessing $TocShown $TocCounter);
 
-$TocCounter = 0;
 $TocAutomatic = 1;
-$TocProcessing = 0;
-$TocShown = 0;
 my $TocPage;
 
 push(@MyInitVariables, \&TocInit);
@@ -37,6 +34,8 @@ push(@MyInitVariables, \&TocInit);
 sub TocInit {
   $TocPage = GetId(); # only do this for the "main" page
   $TocCounter = 0;
+  $TocProcessing = 0;
+  $TocShown = 0;
 }
 
 # If we're rendering the headings inside the sidebar, we want to refer
@@ -130,8 +129,7 @@ sub TocHeadings {
   # avoid recursion
   return '' if $TocProcessing;
   local $TocProcessing = 1;
-  local $TocShown = 0;
-  local $TocCounter;
+  local $TocCounter; # these numbers must be temporary
   # don't mess up \G
   my ($oldpos, $old_) = (pos, $_);
   my $class = 'toc' . join(' ', @_);
@@ -178,7 +176,6 @@ sub TocHeadings {
     $HeadingsLevel--;
   }
   ($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
-  $TocProcessing = 0;
   return '' if $count <= 2;
   return $q->div({-class=>$class}, $Headings) if $Headings;
 }
