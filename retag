@@ -106,6 +106,7 @@ sub PostRaw {
   my ($uri, $id, $data, $username, $password) = @_;
   my $ua = RequestAgent->new;
   my $response = $ua->post($uri, {title=>$id, text=>$data, raw=>1,
+				  question=>1, recent_edit=>'on',
 				  username=>$username, pwd=>$password});
   my $status = $response->code . ' ' . $response->message;
   warn "POST $id failed: $status.\n" unless $response->is_success;
@@ -114,12 +115,12 @@ sub PostRaw {
 sub tag {
   my ($target, $interval, $username, $password,
       $pageref, $addref, $delref) = @_;
-  my %tags = map { $_ => 1 } @$addref;
   foreach my $id (@$pageref) {
     print "$id\n";
     my $page = UrlEncode ($id);
-    # fix URL for other wikis
     my $data = GetRaw("$target?action=browse;id=$page;raw=1");
+    # Every page starts with a new copy.
+    my %tags = map { $_ => 1 } @$addref;
     # The current code does not remove tags sprinkled all over the
     # page. The code will in fact add those tags to the final tagline.
     if ($data =~ /\n\nTags: (.*)/) {
