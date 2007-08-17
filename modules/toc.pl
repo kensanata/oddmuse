@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>XXX $Id: toc.pl,v 1.45 2007/08/17 00:35:59 as Exp $</p>';
+$ModulesDescription .= '<p>XXX $Id: toc.pl,v 1.46 2007/08/17 16:03:09 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
@@ -29,7 +29,7 @@ my $TocPage;
 push(@MyInitVariables, \&TocInit);
 
 sub TocInit {
-  $TocPage = GetId(); # only do this for the "main" page
+  $TocPage = GetId(); # this is the TOC target
   $TocCounter = 0;
   $TocProcessing = 0;
   $TocShown = 0;
@@ -41,7 +41,11 @@ sub TocInit {
 # we have a separate variable being used, here.
 
 sub TocRule {
-  my $key = $TocPage eq $OpenPageName || $OpenPageName eq '';
+  # When rendering a heading in the SideBar, $TocPage will be ne
+  # $OpenPageBar, making sure that this heading doesn't get an id
+  # attribute. The test for an empty $OpenPageName serves to
+  # facilitate tests.
+  my $id_required = ($TocPage eq $OpenPageName || $OpenPageName eq '');
   if (m!\G&lt;toc(/[A-Za-z\x80-\xff/]+)?&gt;!gci) {
     my $html = CloseHtmlEnvironments()
       . ($PortraitSupportColorDiv ? '</div>' : '');
@@ -61,7 +65,7 @@ sub TocRule {
       . ($PortraitSupportColorDiv ? '</div>' : '');
     $html .= TocHeadings() if not $TocShown and $TocAutomatic;
     $TocShown = 1 if $TocAutomatic;
-    if ($key) {
+    if ($id_required) {
       $TocCounter++;
       $html .= AddHtmlEnvironment('h' . $depth, qq{id="toc$TocCounter"});
     } else {
@@ -90,7 +94,7 @@ sub TocRule {
       . ($PortraitSupportColorDiv ? '</div>' : '');
     $html .= TocHeadings() if not $TocShown and $TocAutomatic;
     $TocShown = 1 if $TocAutomatic;
-    if ($key) {
+    if ($id_required) {
       $TocCounter++;
       $html .= qq{<h$depth id="toc$TocCounter">$text</h$depth>};
     } else {
@@ -108,7 +112,7 @@ sub TocRule {
       . ($PortraitSupportColorDiv ? '</div>' : '');
     $html .= TocHeadings() if not $TocShown and $TocAutomatic;
     $TocShown = 1 if $TocAutomatic;
-    if ($key) {
+    if ($id_required) {
       $TocCounter++;
       $html .= qq{<h$depth id="toc$TocCounter">$text</h$depth>};
     } else {
@@ -132,7 +136,7 @@ sub TocHeadings {
   my $class = 'toc' . join(' ', @_);
   my $key = 'toc';
   # double rendering
-  my $html = PageHtml($OpenPageName);
+  my $html = PageHtml($TocPage);
   my $Headings = $q->h2(T('Contents'));
   my $HeadingsLevel      = undef;
   my $HeadingsLevelStart = undef;
