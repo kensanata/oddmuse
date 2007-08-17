@@ -1,5 +1,8 @@
 2007-08-17  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (DoSearch): No longer HtmlQuote the search and replace
+	strings in order to avoid double-encoding.
+
 	* modules/questionasker.pl: Allow seven lives for cats.
 
 	* modules/toc.pl (TocInit): Moved some init code here.
