@@ -1,5 +1,9 @@
 2007-08-17  Alex Schroeder  <alex@gnu.org>
 
+	* modules/toc.pl (TocRule): Add explanation. Renamed $key to
+	$id_required.
+	(TocHeadings): Use $TocPage as the template for the TOC.
+
 	* wiki.pl (DoSearch): No longer HtmlQuote the search and replace
 	strings in order to avoid double-encoding.
 
