@@ -2,7 +2,7 @@
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation; either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -12,9 +12,9 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 require 't/test.pl';
 package OddMuse;
@@ -35,8 +35,7 @@ test_page(get_page('headers'), '<h2>is header</h2>');
 
 # toc + usemod only
 add_module('toc.pl');
-update_page('headers', "== one ==\ntext\n== two ==\ntext\n== three ==\ntext\n");
-test_page(get_page('headers'),
+test_page(update_page('headers', "== one ==\ntext\n== two ==\ntext\n== three ==\ntext\n"),
 	  '<li><a href="#toc1">one</a></li>',
 	  '<li><a href="#toc2">two</a></li>',
 	  '<h2 id="toc1">one</h2>',
@@ -46,8 +45,7 @@ remove_rule(\&UsemodRule);
 
 # toc + headers
 add_module('headers.pl');
-update_page('headers', "one\n===\ntext\ntwo\n---\ntext\nthree\n====\ntext\n");
-test_page(get_page('headers'),
+test_page(update_page('headers', "one\n===\ntext\ntwo\n---\ntext\nthree\n====\ntext\n"),
 	  '<li><a href="#toc1">one</a>',
 	  '<ol><li><a href="#toc2">two</a></li></ol>',
 	  '<li><a href="#toc3">three</a></li>',
