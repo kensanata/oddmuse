@@ -11,12 +11,9 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#
-# You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>XXX $Id: toc.pl,v 1.44 2007/08/17 00:28:10 as Exp $</p>';
+$ModulesDescription .= '<p>XXX $Id: toc.pl,v 1.45 2007/08/17 00:35:59 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
