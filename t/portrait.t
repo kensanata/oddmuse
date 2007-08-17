@@ -32,9 +32,7 @@ test_page(get_page('headers'), '<div class="color one level0"><p>foo </p></div><
 
 # usemod + toc only
 add_module('toc.pl');
-update_page('headers',
-	    "[new]foo\n== one ==\ntext\n== two ==\ntext\n== three ==\ntext\n");
-test_page(get_page('headers'),
+test_page(update_page('headers', "[new]foo\n== one ==\ntext\n== two ==\ntext\n== three ==\ntext\n"),
 	  # default to before the header
 	  '<div class="content browse"><div class="color one level0"><p>foo </p></div>',
 	  '<div class="toc"><h2>Contents</h2><ol>',
@@ -59,8 +57,7 @@ remove_rule(\&HeadersRule);
 
 add_module('usemod.pl');
 add_module('toc.pl');
-update_page('headers', "[new]foo\n== one ==\ntext\n== two ==\ntext\n== three ==\ntext\n");
-test_page(get_page('headers'),
+test_page(update_page('headers', "[new]foo\n== one ==\ntext\n== two ==\ntext\n== three ==\ntext\n"),
 	  '<li><a href="#toc1">one</a></li>',
 	  '<li><a href="#toc2">two</a></li>',
 	  '<div class="color one level0"><p>foo </p></div>',
