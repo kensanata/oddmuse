@@ -28,7 +28,7 @@ $result = xpath_test($page, '//div[@class="taglist"]/a[text()="Two Words"]/@href
 $result =~ m/(search=.*)/;
 $action = $1;
 
-test_page(get_page("'$action' raw=1 context=0"), '^One$');
+test_page(get_page("'$action' raw=1 context=0"), "\nOne\n");
 
 # Make sure subsets such as "Words" vs. "Two Words" are not found.
 
@@ -37,4 +37,4 @@ $result = xpath_test($page, '//div[@class="taglist"]/a[text()="Words"]/@href');
 $result =~ m/(search=.*)/;
 $action = $1;
 
-test_page(get_page("'$action' raw=1 context=0"), '^Two$');
+test_page(get_page("'$action' raw=1 context=0"), "\nTwo");
