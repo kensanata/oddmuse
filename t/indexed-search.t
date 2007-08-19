@@ -66,7 +66,7 @@ SKIP: {
   test_page(get_page('search=SEARCH raw=1'),
 	    quotemeta('title: Search_(and_replace)'));
   test_page(get_page('search=SEARCH raw=1 context=0'),
-	    '^' . quotemeta('Search_(and_replace)') . '$');
+	    "\n" . quotemeta('Search_(and_replace)') . "\n");
   test_page(get_page('search=Search\+%5c\(and\+replace%5c\) raw=1'),
 	    quotemeta('Search_(and_replace)'));
   test_page(get_page('search=%22Search\+%5c\(and\+replace%5c\)%22 raw=1'),
