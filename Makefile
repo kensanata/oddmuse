@@ -113,10 +113,16 @@ upload-translations: always
 		emacswiki-upload cgi-bin $$f; \
 	done
 
+# The curl variant tries to save bandwidth usage. Alternative:
+# wget -q http://www.oddmuse.org/cgi-bin/oddmuse/raw/$$f -O $@.wiki
+
 %-utf8.pl: always
-	f=`basename $@` && wget -q http://www.oddmuse.org/cgi-bin/oddmuse/raw/$$f -O $@.wiki
+	f=`basename $@` \
+	&& curl --time-cond $@.wiki --remote-time --output $@.wiki \
+           http://www.oddmuse.org/cgi-bin/oddmuse/raw/$$f
 	grep '^\(#\|\$$\)' $@.wiki > $@-new
-	perl oddtrans -l $@ -l $@.wiki wiki.pl $(MODULES) >> $@-new && mv $@-new $@
+	perl oddtrans -l $@ -l $@.wiki wiki.pl $(MODULES) \
+	>> $@-new && mv $@-new $@
 
 .PHONY: always
 
