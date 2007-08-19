@@ -24,10 +24,14 @@
 #
 # This translation was last checked for Oddmuse version 1.215.
 #
-$ModulesDescription .= '<p>$Id: dutch-utf8.pl,v 1.9 2006/08/18 22:46:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: dutch-utf8.pl,v 1.10 2007/08/19 11:42:07 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 U mag deze pagina niet lezen: uw account op deze Wiki, uw IP of uw netwerk is buitengesloten.
+Login
+
+Error
+
 %s calls
 
 Could not create %s
@@ -46,6 +50,10 @@ Main lock obtained.
 De gehele site is vergrendeld.
 Main lock released.
 De vergrendeling van de gehele site is opgeheven.
+Journal
+
+More...
+
 Comments on this page
 Commentaar op deze pagina
 XML::RSS is not available on this system.
@@ -64,10 +72,6 @@ No items found in %s.
 
 Click to edit this page
 Klik hier om deze pagina aan te maken
-image
-
-download
-
 CGI Internal error: %s
 
 Invalid action parameter %s
@@ -90,6 +94,8 @@ Preview only, not yet saved
 Dit is slechts een voorvertoning; er is nog niets opgeslagen!
 Please go on to %s.
 Ga a.u.b. verder naar %s.
+All changes for %s
+
 No updates since %s
 Geen wijzigingen sinds %s
 Updates since %s
@@ -116,6 +122,12 @@ Toon ook kleine wijzigingen
 %s dagen
 List later changes
 Toon latere veranderingen
+RSS
+
+RSS with pages
+
+RSS with pages and diff
+
 Filters
 Filters
 Title:
@@ -126,6 +138,8 @@ Username:
 Gebruikersnaam:
 Host:
 Host:
+Follow up to:
+
 Language:
 Taal:
 Go!
@@ -138,6 +152,8 @@ new
 nieuw
 from %s
 vanaf %s
+: 
+
 This page is too big to send over RSS.
 
 History of %s
@@ -160,6 +176,8 @@ Missing target for rollback.
 U heeft niet opegegeven tot hoever de wijzigingen ongedaan moeten worden gemaakt.
 Target for rollback is too far back.
 De staat waarin de pagina moet worden teruggebracht is van te lang geleden.
+A username is required for ordinary users.
+
 Rolling back changes
 Bezig met ongedaan maken van wijzigingen
 The two revisions are the same.
@@ -258,6 +276,8 @@ f
 
 Replace:
 Vervangen door:
+Delete
+
 Validate HTML
 Valideer HTML
 Validate CSS
@@ -352,6 +372,8 @@ Summary:
 Samenvatting:
 This change is a minor edit.
 Dit is slechts een kleine wijziging.
+Cancel
+
 Replace this file with text
 Vervang dit bestand door tekst
 Replace this text with a file
@@ -383,6 +405,10 @@ VoorbeeldVanEenNietBestaandePagina
 Sample_Undefined_Page
 Voorbeeld_Van_Een_Niet_Bestaande_Pagina
 Rule "%1" matched "%2" on this page.
+
+Reason: %s.
+
+Reason unknown.
 
 Without normal pages
 
@@ -544,6 +570,14 @@ Complete Content
 Volledige inhoud
 The main page is %s.
 De hoofdpagina is %s.
+Archive:
+
+Rebuild BackLink database
+
+Internal Page: 
+
+Pages that link to this page
+
 Cannot highlight the language %s.
 
 Recent Visitors
@@ -604,6 +638,10 @@ November
 
 December
 
+set %s
+
+unset %s
+
 Clustermap
 
 Pages without a Cluster
@@ -616,7 +654,11 @@ Compilation for %s
 
 Compilation tag is missing a regular expression.
 
+List spammed pages
+
 Despamming pages
+
+Spammed pages
 
 Cannot find revision %s.
 
@@ -626,9 +668,31 @@ Marked as %s.
 
 Cannot find unspammed revision.
 
+Recover Draft
+
+No text to save
+
+Draft saved
+
+Draft recovered
+
+No draft available to recover
+
+Save Draft
+
+Draft Cleanup
+
+%1 was last modified %2 and was kept
+
+%1 was last modified %2 and was deleted
+
+Unable to delete draft %s
+
 Add Comment
 
 ordinary changes
+
+Matching page names:
 
 Footnotes:
 Voetnoten:
@@ -694,8 +758,6 @@ You are now logged out.
 
 Register a new account
 
-Login
-
 Logout
 
 Who am I?
@@ -754,6 +816,12 @@ There are no pending registrations.
 
 %s is not a legal name for a namespace
 
+ (create locally)
+
+image
+
+download
+
 Clearing Cache
 Bezig met leegmaken van de cache
 Done.
@@ -802,12 +870,14 @@ The target wiki was misconfigured.
 
 You did not answer correctly.
 
+Use the back button to return the previous page and try again.
+
 To save this page you must answer this question:
 
-All Referrers
-Alle verwijzingen
 Referrers
 Verwijzingen
+All Referrers
+Alle verwijzingen
 Tag
 
 Rebuild index for searching
@@ -835,6 +905,8 @@ Tags: %s.
 No tags
 
 Slideshow:%s
+
+Index of all small pages
 
 Static Copy
 
@@ -866,9 +938,13 @@ URL:
 URL:
 Name:
 Naam:
-Failed to remove %s
+Too many instances.  Only %s allowed.
+
+Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 
 Contents
+
+Create a new page for today
 
 This page is a translation of %s. 
 

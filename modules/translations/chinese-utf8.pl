@@ -17,10 +17,14 @@
 #
 # This translation was last checked for Oddmuse version 1.504.
 #
-$ModulesDescription .= '<p>$Id: chinese-utf8.pl,v 1.9 2006/08/18 22:46:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: chinese-utf8.pl,v 1.10 2007/08/19 11:42:07 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 禁止讀取：使用者、ip 或是網路已被禁止連線。
+Login
+
+Error
+
 %s calls
 
 Could not create %s
@@ -39,6 +43,10 @@ Main lock obtained.
 取得主要鎖定。
 Main lock released.
 釋放主要鎖定。
+Journal
+
+More...
+
 Comments on this page
 對本頁發表評論
 XML::RSS is not available on this system.
@@ -57,10 +65,6 @@ No items found in %s.
 
 Click to edit this page
 按此即可編輯此頁面
-image
-圖像
-download
-下載
 CGI Internal error: %s
 
 Invalid action parameter %s
@@ -83,6 +87,8 @@ Preview only, not yet saved
 現在是預覽模式，尚未儲存
 Please go on to %s.
 請繼續前住 %s 。
+All changes for %s
+
 No updates since %s
 自 %s 以來沒有修改
 Updates since %s
@@ -109,6 +115,12 @@ Include minor changes
 %s 天
 List later changes
 列出最新的修改
+RSS
+
+RSS with pages
+
+RSS with pages and diff
+
 Filters
 過濾器
 Title:
@@ -119,6 +131,8 @@ Username:
 使用者名稱：
 Host:
 來源主機：
+Follow up to:
+
 Language:
 語文：
 Go!
@@ -131,6 +145,8 @@ new
 新增
 from %s
 自 %s
+: 
+
 This page is too big to send over RSS.
 
 History of %s
@@ -153,6 +169,8 @@ Missing target for rollback.
 找不到要回復的目標
 Target for rollback is too far back.
 要回復的目標已太久以前了。
+A username is required for ordinary users.
+
 Rolling back changes
 回復修改
 The two revisions are the same.
@@ -251,6 +269,8 @@ f
 
 Replace:
 取代：
+Delete
+
 Validate HTML
 驗證 HTML
 Validate CSS
@@ -345,6 +365,8 @@ Summary:
 摘要：
 This change is a minor edit.
 這次的修改是次要的。
+Cancel
+
 Replace this file with text
 用文字來取代本檔
 Replace this text with a file
@@ -377,6 +399,10 @@ Sample_Undefined_Page
 
 Rule "%1" matched "%2" on this page.
 本頁的 "%2" 符合規則 "%1"。
+Reason: %s.
+
+Reason unknown.
+
 Without normal pages
 
 Include normal pages
@@ -537,6 +563,14 @@ Complete Content
 完整內容
 The main page is %s.
 首頁是 %s 。
+Archive:
+
+Rebuild BackLink database
+
+Internal Page: 
+
+Pages that link to this page
+
 Cannot highlight the language %s.
 無法強調顯示 %s 。
 Recent Visitors
@@ -597,6 +631,10 @@ November
 
 December
 
+set %s
+
+unset %s
+
 Clustermap
 
 Pages without a Cluster
@@ -609,8 +647,12 @@ Compilation for %s
 %s 的彙整
 Compilation tag is missing a regular expression.
 
+List spammed pages
+
 Despamming pages
 正在去除 spam 頁面
+Spammed pages
+
 Cannot find revision %s.
 無法取得版本 %s 。
 Revert to revision %1: %2
@@ -619,9 +661,31 @@ Marked as %s.
 標記為 %s 。
 Cannot find unspammed revision.
 找不到未被 spam 的版本。
+Recover Draft
+
+No text to save
+
+Draft saved
+
+Draft recovered
+
+No draft available to recover
+
+Save Draft
+
+Draft Cleanup
+
+%1 was last modified %2 and was kept
+
+%1 was last modified %2 and was deleted
+
+Unable to delete draft %s
+
 Add Comment
 
 ordinary changes
+
+Matching page names:
 
 Footnotes:
 註解：
@@ -687,8 +751,6 @@ You are now logged out.
 
 Register a new account
 
-Login
-
 Logout
 
 Who am I?
@@ -747,6 +809,12 @@ There are no pending registrations.
 
 %s is not a legal name for a namespace
 
+ (create locally)
+
+image
+圖像
+download
+下載
 Clearing Cache
 清除暫存
 Done.
@@ -795,12 +863,14 @@ The target wiki was misconfigured.
 
 You did not answer correctly.
 
+Use the back button to return the previous page and try again.
+
 To save this page you must answer this question:
 
-All Referrers
-所有的引用者
 Referrers
 引用者
+All Referrers
+所有的引用者
 Tag
 
 Rebuild index for searching
@@ -828,6 +898,8 @@ Tags: %s.
 No tags
 
 Slideshow:%s
+
+Index of all small pages
 
 Static Copy
 靜態頁面備份
@@ -859,10 +931,14 @@ URL:
 網址:
 Name:
 姓名:
-Failed to remove %s
-無法移除 %s
+Too many instances.  Only %s allowed.
+
+Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
+
 Contents
 內容
+Create a new page for today
+
 This page is a translation of %s. 
 本頁是頁面 %s 的翻譯。
 The translation is up to date.

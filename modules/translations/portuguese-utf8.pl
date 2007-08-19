@@ -20,10 +20,14 @@
 #
 # This translation was last checked for Oddmuse version 1.195.
 #
-$ModulesDescription .= '<p>$Id: portuguese-utf8.pl,v 1.13 2006/08/18 22:46:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: portuguese-utf8.pl,v 1.14 2007/08/19 11:42:08 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Leitura não permitida: utilizador, ip, ou rede está bloqueado(a).
+Login
+Entrar
+Error
+
 %s calls
 
 Could not create %s
@@ -42,6 +46,10 @@ Main lock obtained.
 Bloqueio principal efectuado.
 Main lock released.
 Bloqueio principal libertado.
+Journal
+
+More...
+
 Comments on this page
 Comentários sobre esta página
 XML::RSS is not available on this system.
@@ -60,10 +68,6 @@ Não foram encontrados itens em %s.
 
 Click to edit this page
 Clique para editar esta página
-image
-imagem
-download
-download
 CGI Internal error: %s
 Erro interno CGI: %s
 Invalid action parameter %s
@@ -86,6 +90,8 @@ Preview only, not yet saved
 Visualização apenas, nada foi gravado
 Please go on to %s.
 Por favor vá para %s
+All changes for %s
+
 No updates since %s
 Nenhuma actualização desde %s
 Updates since %s
@@ -112,6 +118,12 @@ Incluir também as modificações menores
 %s dias
 List later changes
 Mostrar modificações recentes
+RSS
+
+RSS with pages
+
+RSS with pages and diff
+
 Filters
 Filtros
 Title:
@@ -121,6 +133,8 @@ Title and Body:
 Username:
 Utilizador:
 Host:
+
+Follow up to:
 
 Language:
 Língua:
@@ -134,6 +148,8 @@ new
 novo
 from %s
 de %s
+: 
+
 This page is too big to send over RSS.
 
 History of %s
@@ -155,6 +171,8 @@ Contributors to %s
 Missing target for rollback.
 
 Target for rollback is too far back.
+
+A username is required for ordinary users.
 
 Rolling back changes
 
@@ -254,6 +272,8 @@ f
 
 Replace:
 Substituir:
+Delete
+
 Validate HTML
 Validar HTML
 Validate CSS
@@ -348,6 +368,8 @@ Summary:
 Sumário:
 This change is a minor edit.
 Esta actualização é miníma.
+Cancel
+
 Replace this file with text
 Substituir este ficheiro por texto
 Replace this text with a file
@@ -380,6 +402,10 @@ Sample_Undefined_Page
 Exemplo_Pagina_Nao_Definida
 Rule "%1" matched "%2" on this page.
 A regra "%1" coincide com a "%2" nesta página.
+Reason: %s.
+
+Reason unknown.
+
 Without normal pages
 Sem páginas normais
 Include normal pages
@@ -540,6 +566,14 @@ Complete Content
 Conteúdo completo
 The main page is %s.
 A página principal é %s.
+Archive:
+
+Rebuild BackLink database
+
+Internal Page: 
+
+Pages that link to this page
+
 Cannot highlight the language %s.
 Impossível destacar a língua %s
 Recent Visitors
@@ -600,6 +634,10 @@ November
 
 December
 
+set %s
+
+unset %s
+
 Clustermap
 
 Pages without a Cluster
@@ -612,8 +650,12 @@ Compilation for %s
 Complilação para %s
 Compilation tag is missing a regular expression.
 Falta uma expressão regular na <i>tag</i> de compilação
+List spammed pages
+
 Despamming pages
 Limpando o <i>spam</i> das páginas
+Spammed pages
+
 Cannot find revision %s.
 Imposível encontrar revisão %s.
 Revert to revision %1: %2
@@ -622,9 +664,31 @@ Marked as %s.
 Marcado como %s.
 Cannot find unspammed revision.
 Impossível encontrar revisão sem <i>spam</>.
+Recover Draft
+
+No text to save
+
+Draft saved
+
+Draft recovered
+
+No draft available to recover
+
+Save Draft
+
+Draft Cleanup
+
+%1 was last modified %2 and was kept
+
+%1 was last modified %2 and was deleted
+
+Unable to delete draft %s
+
 Add Comment
 Adicionar comentário
 ordinary changes
+
+Matching page names:
 
 Footnotes:
 Notas de rodapé:
@@ -690,8 +754,6 @@ You are now logged out.
 Você acaba de sair.
 Register a new account
 Registar uma nova conta
-Login
-Entrar
 Logout
 Sair
 Who am I?
@@ -750,6 +812,12 @@ There are no pending registrations.
 
 %s is not a legal name for a namespace
 
+ (create locally)
+
+image
+imagem
+download
+download
 Clearing Cache
 Limpando a Cache
 Done.
@@ -798,12 +866,14 @@ The target wiki was misconfigured.
 
 You did not answer correctly.
 Não respondeu correctamente.
+Use the back button to return the previous page and try again.
+
 To save this page you must answer this question:
 
+Referrers
+Referrers
 All Referrers
 Todos os <i>Referrers</i>
-Referrers
-Referrers
 Tag
 Tag
 Rebuild index for searching
@@ -832,6 +902,8 @@ No tags
 
 Slideshow:%s
 Slideshow:%s
+Index of all small pages
+
 Static Copy
 Cópia Estática
 Back to %s
@@ -862,10 +934,14 @@ URL:
 URL:
 Name:
 Nome:
-Failed to remove %s
-Falha na remoção de %s
+Too many instances.  Only %s allowed.
+
+Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
+
 Contents
 Conteúdo
+Create a new page for today
+
 This page is a translation of %s. 
 Esta página é uma tradução de %s.
 The translation is up to date.

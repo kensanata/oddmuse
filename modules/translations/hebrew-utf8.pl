@@ -17,9 +17,13 @@
 #
 # This translation was last checked for Oddmuse version 1.195.
 #
-$ModulesDescription .= '<p>$Id: hebrew-utf8.pl,v 1.9 2006/08/18 22:46:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: hebrew-utf8.pl,v 1.10 2007/08/19 11:42:08 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
+
+Login
+
+Error
 
 %s calls
 
@@ -39,6 +43,10 @@ Main lock obtained.
 נעילה ראשית הושגה.
 Main lock released.
 נעילה ראשית שוחררה.
+Journal
+
+More...
+
 Comments on this page
 הערות בדף זה
 XML::RSS is not available on this system.
@@ -56,10 +64,6 @@ No items found in %s.
  . . . . 
 
 Click to edit this page
-
-image
-
-download
 
 CGI Internal error: %s
 
@@ -83,6 +87,8 @@ Preview only, not yet saved
 תצוגה מקדימה בלבד, הדף עדיין לא נשמר.
 Please go on to %s.
 בבקשה המשך ל-%s.
+All changes for %s
+
 No updates since %s
 אין עדכונים מאז %s
 Updates since %s
@@ -109,6 +115,12 @@ Include minor changes
 %s ימים
 List later changes
 
+RSS
+
+RSS with pages
+
+RSS with pages and diff
+
 Filters
 
 Title:
@@ -118,6 +130,8 @@ Title and Body:
 Username:
 שם משתמש:
 Host:
+
+Follow up to:
 
 Language:
 
@@ -131,6 +145,8 @@ new
 
 from %s
 מ %s
+: 
+
 This page is too big to send over RSS.
 
 History of %s
@@ -152,6 +168,8 @@ Contributors to %s
 Missing target for rollback.
 
 Target for rollback is too far back.
+
+A username is required for ordinary users.
 
 Rolling back changes
 
@@ -251,6 +269,8 @@ f
 
 Replace:
 החלפה:
+Delete
+
 Validate HTML
 אמת HTML
 Validate CSS
@@ -345,6 +365,8 @@ Summary:
 תקציר:
 This change is a minor edit.
 השינוי שאני מבצע הוא קטן.
+Cancel
+
 Replace this file with text
 
 Replace this text with a file
@@ -376,6 +398,10 @@ SampleUndefinedPage
 Sample_Undefined_Page
 דף_לא_מוגדר_לדוגמא
 Rule "%1" matched "%2" on this page.
+
+Reason: %s.
+
+Reason unknown.
 
 Without normal pages
 
@@ -537,6 +563,14 @@ Complete Content
 תוכן מלא
 The main page is %s.
 הדף הראשי הוא %s.
+Archive:
+
+Rebuild BackLink database
+
+Internal Page: 
+
+Pages that link to this page
+
 Cannot highlight the language %s.
 
 Recent Visitors
@@ -597,6 +631,10 @@ November
 
 December
 
+set %s
+
+unset %s
+
 Clustermap
 
 Pages without a Cluster
@@ -609,7 +647,11 @@ Compilation for %s
 
 Compilation tag is missing a regular expression.
 
+List spammed pages
+
 Despamming pages
+
+Spammed pages
 
 Cannot find revision %s.
 
@@ -619,9 +661,31 @@ Marked as %s.
 
 Cannot find unspammed revision.
 
+Recover Draft
+
+No text to save
+
+Draft saved
+
+Draft recovered
+
+No draft available to recover
+
+Save Draft
+
+Draft Cleanup
+
+%1 was last modified %2 and was kept
+
+%1 was last modified %2 and was deleted
+
+Unable to delete draft %s
+
 Add Comment
 
 ordinary changes
+
+Matching page names:
 
 Footnotes:
 
@@ -687,8 +751,6 @@ You are now logged out.
 
 Register a new account
 
-Login
-
 Logout
 
 Who am I?
@@ -747,6 +809,12 @@ There are no pending registrations.
 
 %s is not a legal name for a namespace
 
+ (create locally)
+
+image
+
+download
+
 Clearing Cache
 
 Done.
@@ -795,12 +863,14 @@ The target wiki was misconfigured.
 
 You did not answer correctly.
 
+Use the back button to return the previous page and try again.
+
 To save this page you must answer this question:
 
-All Referrers
-כל המפנים
 Referrers
 מפנים
+All Referrers
+כל המפנים
 Tag
 
 Rebuild index for searching
@@ -828,6 +898,8 @@ Tags: %s.
 No tags
 
 Slideshow:%s
+
+Index of all small pages
 
 Static Copy
 
@@ -859,9 +931,13 @@ URL:
 
 Name:
 
-Failed to remove %s
+Too many instances.  Only %s allowed.
+
+Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 
 Contents
+
+Create a new page for today
 
 This page is a translation of %s. 
 

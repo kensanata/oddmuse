@@ -15,10 +15,14 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: italian-utf8.pl,v 1.9 2006/08/18 22:46:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: italian-utf8.pl,v 1.10 2007/08/19 11:42:08 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lettura non consentita: l'utente, l'IP o la rete risultano bloccati.
+Login
+
+Error
+
 %s calls
 
 Could not create %s
@@ -37,6 +41,10 @@ Main lock obtained.
 Blocco principale (main) ottenuto.
 Main lock released.
 Blocco principale (main) rilasciato.
+Journal
+
+More...
+
 Comments on this page
 Commenti su questa pagina
 XML::RSS is not available on this system.
@@ -55,10 +63,6 @@ Nessun elemento trovato in %s.
 
 Click to edit this page
 Cliccare per modificare questa pagina
-image
-immagine
-download
-
 CGI Internal error: %s
 
 Invalid action parameter %s
@@ -81,6 +85,8 @@ Preview only, not yet saved
 Solo anteprima, ancora nessun salvataggio
 Please go on to %s.
 Per favore procedere a %s.
+All changes for %s
+
 No updates since %s
 Nessuna modifica da %s
 Updates since %s
@@ -107,6 +113,12 @@ Includi le modifiche minori
 %s giorni
 List later changes
 Elenca i cambiamenti successivi
+RSS
+
+RSS with pages
+
+RSS with pages and diff
+
 Filters
 Filtri
 Title:
@@ -116,6 +128,8 @@ Title and Body:
 Username:
 Nome utente
 Host:
+
+Follow up to:
 
 Language:
 Lingua:
@@ -129,6 +143,8 @@ new
 nuovo
 from %s
 da %s
+: 
+
 This page is too big to send over RSS.
 
 History of %s
@@ -151,6 +167,8 @@ Missing target for rollback.
 Obiettivo per il rollback mancante.
 Target for rollback is too far back.
 L'obiettivo per il rollback è troppo indietro.
+A username is required for ordinary users.
+
 Rolling back changes
 Annullando le modifiche
 The two revisions are the same.
@@ -249,6 +267,8 @@ f
 
 Replace:
 Rimpiazza:
+Delete
+
 Validate HTML
 Convalida HTML
 Validate CSS
@@ -343,6 +363,8 @@ Summary:
 Sunto:
 This change is a minor edit.
 Questa è una modifica minore.
+Cancel
+
 Replace this file with text
 Rimpiazza questo file con un testo
 Replace this text with a file
@@ -375,6 +397,10 @@ Sample_Undefined_Page
 Pagina_Esempio_Indefinita
 Rule "%1" matched "%2" on this page.
 La regola "%1" include "%2" su questa pagina.
+Reason: %s.
+
+Reason unknown.
+
 Without normal pages
 Senza pagine normali
 Include normal pages
@@ -535,6 +561,14 @@ Complete Content
 Contenuto completo
 The main page is %s.
 La pagina principale è %s.
+Archive:
+
+Rebuild BackLink database
+
+Internal Page: 
+
+Pages that link to this page
+
 Cannot highlight the language %s.
 Impossibile evidenziare il linguaggio %s.
 Recent Visitors
@@ -595,6 +629,10 @@ November
 
 December
 
+set %s
+
+unset %s
+
 Clustermap
 
 Pages without a Cluster
@@ -607,8 +645,12 @@ Compilation for %s
 Compilazione per %s
 Compilation tag is missing a regular expression.
 Il tag di compilazione manca di un'espressione regolare.
+List spammed pages
+
 Despamming pages
 Pagine di despamming
+Spammed pages
+
 Cannot find revision %s.
 Impossibile trovare la revisione %s
 Revert to revision %1: %2
@@ -617,9 +659,31 @@ Marked as %s.
 Marcato come %s.
 Cannot find unspammed revision.
 Impossibile trovare una revisione priva di spam.
+Recover Draft
+
+No text to save
+
+Draft saved
+
+Draft recovered
+
+No draft available to recover
+
+Save Draft
+
+Draft Cleanup
+
+%1 was last modified %2 and was kept
+
+%1 was last modified %2 and was deleted
+
+Unable to delete draft %s
+
 Add Comment
 
 ordinary changes
+
+Matching page names:
 
 Footnotes:
 Note:
@@ -685,8 +749,6 @@ You are now logged out.
 
 Register a new account
 
-Login
-
 Logout
 
 Who am I?
@@ -745,6 +807,12 @@ There are no pending registrations.
 
 %s is not a legal name for a namespace
 
+ (create locally)
+
+image
+immagine
+download
+
 Clearing Cache
 Ripulisco la Cache
 Done.
@@ -793,12 +861,14 @@ The target wiki was misconfigured.
 
 You did not answer correctly.
 Risposta errata.
+Use the back button to return the previous page and try again.
+
 To save this page you must answer this question:
 
-All Referrers
-Tutti i referenti
 Referrers
 Referenti
+All Referrers
+Tutti i referenti
 Tag
 
 Rebuild index for searching
@@ -826,6 +896,8 @@ Tags: %s.
 No tags
 
 Slideshow:%s
+
+Index of all small pages
 
 Static Copy
 Copia Statica
@@ -857,10 +929,14 @@ URL:
 
 Name:
 Nome:
-Failed to remove %s
-Impossibile rimuovere %s
+Too many instances.  Only %s allowed.
+
+Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
+
 Contents
 Contenuto
+Create a new page for today
+
 This page is a translation of %s. 
 Questa pagina è una traduzione di %s.
 The translation is up to date.

@@ -20,10 +20,14 @@
 #
 # This script was last checked for Oddmuse version 1.658.
 #
-$ModulesDescription .= '<p>$Id: russian-utf8.pl,v 1.12 2007/07/03 07:28:21 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: russian-utf8.pl,v 1.13 2007/08/19 11:42:08 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Просмотр недоступен: имя пользователя, IP-адрес или сеть заблокированы.
+Login
+
+Error
+
 %s calls
 
 Could not create %s
@@ -42,6 +46,10 @@ Main lock obtained.
 Блокировка сайта установлена.
 Main lock released.
 Блокировка сайта снята.
+Journal
+
+More...
+
 Comments on this page
 Комментарии к этой странице
 XML::RSS is not available on this system.
@@ -60,10 +68,6 @@ No items found in %s.
 
 Click to edit this page
 Щелкните, чтобы править
-image
-изображение
-download
-загрузить
 CGI Internal error: %s
 Внутренняя ошибка CGI: %s
 Invalid action parameter %s
@@ -85,6 +89,8 @@ Preview:
 Preview only, not yet saved
 Только предварительный просмотр - пока ничего не сохранено
 Please go on to %s.
+
+All changes for %s
 
 No updates since %s
 Не было обновлений с %s
@@ -112,6 +118,12 @@ Include minor changes
 %s дней
 List later changes
 Показать недавние изменения
+RSS
+
+RSS with pages
+
+RSS with pages and diff
+
 Filters
 Фильтры
 Title:
@@ -122,6 +134,8 @@ Username:
 Имя пользователя:
 Host:
 Сервер:
+Follow up to:
+
 Language:
 Язык:
 Go!
@@ -134,6 +148,8 @@ new
 
 from %s
 с %s
+: 
+
 This page is too big to send over RSS.
 Эта страница слишком велика для трансляции в RSS.
 History of %s
@@ -155,6 +171,8 @@ Contributors to %s
 Missing target for rollback.
 
 Target for rollback is too far back.
+
+A username is required for ordinary users.
 
 Rolling back changes
 Откат изменений
@@ -246,8 +264,6 @@ Save
 Сохранить
 p
 
-Cancel
-Отмена
 Preview
 Предпросмотр
 Search:
@@ -256,6 +272,8 @@ f
 
 Replace:
 Замена:
+Delete
+
 Validate HTML
 
 Validate CSS
@@ -350,6 +368,8 @@ Summary:
 Описание:
 This change is a minor edit.
 Это изменение является незначительной правкой.
+Cancel
+Отмена
 Replace this file with text
 Заменить этот файл текстом
 Replace this text with a file
@@ -381,6 +401,10 @@ SampleUndefinedPage
 Sample_Undefined_Page
 Пример_Произвольной_Страницы
 Rule "%1" matched "%2" on this page.
+
+Reason: %s.
+
+Reason unknown.
 
 Without normal pages
 
@@ -542,6 +566,14 @@ Complete Content
 
 The main page is %s.
 
+Archive:
+
+Rebuild BackLink database
+
+Internal Page: 
+
+Pages that link to this page
+
 Cannot highlight the language %s.
 
 Recent Visitors
@@ -602,6 +634,10 @@ November
 Ноябрь
 December
 Декабрь
+set %s
+
+unset %s
+
 Clustermap
 Кластеры
 Pages without a Cluster
@@ -614,7 +650,11 @@ Compilation for %s
 
 Compilation tag is missing a regular expression.
 
+List spammed pages
+
 Despamming pages
+
+Spammed pages
 
 Cannot find revision %s.
 
@@ -624,9 +664,31 @@ Marked as %s.
 
 Cannot find unspammed revision.
 
+Recover Draft
+
+No text to save
+
+Draft saved
+
+Draft recovered
+
+No draft available to recover
+
+Save Draft
+
+Draft Cleanup
+
+%1 was last modified %2 and was kept
+
+%1 was last modified %2 and was deleted
+
+Unable to delete draft %s
+
 Add Comment
 Комментировать
 ordinary changes
+
+Matching page names:
 
 Footnotes:
 
@@ -692,8 +754,6 @@ You are now logged out.
 
 Register a new account
 
-Login
-
 Logout
 
 Who am I?
@@ -752,6 +812,12 @@ There are no pending registrations.
 
 %s is not a legal name for a namespace
 
+ (create locally)
+
+image
+изображение
+download
+загрузить
 Clearing Cache
 
 Done.
@@ -800,11 +866,13 @@ The target wiki was misconfigured.
 
 You did not answer correctly.
 
+Use the back button to return the previous page and try again.
+
 To save this page you must answer this question:
 
-All Referrers
-
 Referrers
+
+All Referrers
 
 Tag
 
@@ -833,6 +901,8 @@ Tags: %s.
 No tags
 
 Slideshow:%s
+
+Index of all small pages
 
 Static Copy
 
@@ -864,9 +934,13 @@ URL:
 
 Name:
 
-Failed to remove %s
+Too many instances.  Only %s allowed.
+
+Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 
 Contents
+
+Create a new page for today
 
 This page is a translation of %s. 
 

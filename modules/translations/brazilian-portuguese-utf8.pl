@@ -18,7 +18,7 @@
 #
 # This translation was last checked for Oddmuse version 1.753.
 #
-$ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.11 2007/07/24 05:54:40 dedalu Exp $</p>';
+$ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.12 2007/08/19 11:42:07 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Leitura não permitida: usuário, ip ou rede bloqueados.
@@ -938,6 +938,8 @@ Please try again later. Perhaps somebody is running maintenance or doing a long 
 Por favor, tente novamente mais tarde. Talvez alguém esteja executando manutenção ou uma longa busca. Infelizmente o site tem recursos limitados e, por isso, pedimos um pouco de paciência.
 Contents
 Conteúdo
+Create a new page for today
+
 This page is a translation of %s. 
 Esta página é uma tradução de %s. 
 The translation is up to date.

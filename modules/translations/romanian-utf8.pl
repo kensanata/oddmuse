@@ -15,10 +15,14 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: romanian-utf8.pl,v 1.7 2006/08/18 22:46:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: romanian-utf8.pl,v 1.8 2007/08/19 11:42:08 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Citirea nu este permisă: utilizatorul, ip-ul sau reţeaua este blocată.
+Login
+
+Error
+
 %s calls
 
 Could not create %s
@@ -36,6 +40,10 @@ Clear Cache
 Main lock obtained.
 
 Main lock released.
+
+Journal
+
+More...
 
 Comments on this page
 Comentarii la această pagină.
@@ -55,10 +63,6 @@ Nici un element găsit în %s.
 
 Click to edit this page
 Editează această pagină
-image
-imagine
-download
-
 CGI Internal error: %s
 
 Invalid action parameter %s
@@ -80,6 +84,8 @@ Previzualizare:
 Preview only, not yet saved
 Previzualizare, pagina nu a fost încă salvată
 Please go on to %s.
+
+All changes for %s
 
 No updates since %s
 Nici o modificare de la %s
@@ -107,6 +113,12 @@ Include modificările minore
 %s zile
 List later changes
 Arată modificările ulterioare
+RSS
+
+RSS with pages
+
+RSS with pages and diff
+
 Filters
 Filtre
 Title:
@@ -117,6 +129,8 @@ Username:
 Utilizator:
 Host:
 Adresă:
+Follow up to:
+
 Language:
 Limbă:
 Go!
@@ -129,6 +143,8 @@ new
 nou
 from %s
 de la %s
+: 
+
 This page is too big to send over RSS.
 
 History of %s
@@ -150,6 +166,8 @@ Contributors to %s
 Missing target for rollback.
 
 Target for rollback is too far back.
+
+A username is required for ordinary users.
 
 Rolling back changes
 
@@ -249,6 +267,8 @@ f
 
 Replace:
 Înlocuieşte:
+Delete
+
 Validate HTML
 HTML Valid
 Validate CSS
@@ -343,6 +363,8 @@ Summary:
 Sumar:
 This change is a minor edit.
 Această modificare este una minoră.
+Cancel
+
 Replace this file with text
 Înlocuieşte acest fişier cu text
 Replace this text with a file
@@ -374,6 +396,10 @@ SampleUndefinedPage
 Sample_Undefined_Page
 
 Rule "%1" matched "%2" on this page.
+
+Reason: %s.
+
+Reason unknown.
 
 Without normal pages
 
@@ -535,6 +561,14 @@ Complete Content
 
 The main page is %s.
 Pagina principală este %s.
+Archive:
+
+Rebuild BackLink database
+
+Internal Page: 
+
+Pages that link to this page
+
 Cannot highlight the language %s.
 
 Recent Visitors
@@ -595,6 +629,10 @@ November
 
 December
 
+set %s
+
+unset %s
+
 Clustermap
 
 Pages without a Cluster
@@ -607,7 +645,11 @@ Compilation for %s
 
 Compilation tag is missing a regular expression.
 
+List spammed pages
+
 Despamming pages
+
+Spammed pages
 
 Cannot find revision %s.
 
@@ -617,9 +659,31 @@ Marked as %s.
 
 Cannot find unspammed revision.
 
+Recover Draft
+
+No text to save
+
+Draft saved
+
+Draft recovered
+
+No draft available to recover
+
+Save Draft
+
+Draft Cleanup
+
+%1 was last modified %2 and was kept
+
+%1 was last modified %2 and was deleted
+
+Unable to delete draft %s
+
 Add Comment
 Adaugă Comentariu
 ordinary changes
+
+Matching page names:
 
 Footnotes:
 Note de subsol:
@@ -685,8 +749,6 @@ You are now logged out.
 
 Register a new account
 
-Login
-
 Logout
 
 Who am I?
@@ -745,6 +807,12 @@ There are no pending registrations.
 
 %s is not a legal name for a namespace
 
+ (create locally)
+
+image
+imagine
+download
+
 Clearing Cache
 
 Done.
@@ -793,11 +861,13 @@ The target wiki was misconfigured.
 
 You did not answer correctly.
 
+Use the back button to return the previous page and try again.
+
 To save this page you must answer this question:
 
-All Referrers
-
 Referrers
+
+All Referrers
 
 Tag
 
@@ -826,6 +896,8 @@ Tags: %s.
 No tags
 
 Slideshow:%s
+
+Index of all small pages
 
 Static Copy
 
@@ -857,10 +929,14 @@ URL:
 
 Name:
 Nume:
-Failed to remove %s
+Too many instances.  Only %s allowed.
+
+Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 
 Contents
 Conţinut
+Create a new page for today
+
 This page is a translation of %s. 
 Această pagină este o traducere a %s.
 The translation is up to date.

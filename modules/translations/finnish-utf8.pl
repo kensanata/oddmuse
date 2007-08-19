@@ -16,10 +16,14 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: finnish-utf8.pl,v 1.9 2006/08/18 22:46:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: finnish-utf8.pl,v 1.10 2007/08/19 11:42:07 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lukeminen ei ole sallittua: käyttäjä, IP tai verkko on estetty.
+Login
+
+Error
+
 %s calls
 
 Could not create %s
@@ -38,6 +42,10 @@ Main lock obtained.
 Sivuston lukitus aloitettu.
 Main lock released.
 Sivuston lukitus avattu.
+Journal
+
+More...
+
 Comments on this page
 Komentteja tähän sivuun liittyen
 XML::RSS is not available on this system.
@@ -56,10 +64,6 @@ No items found in %s.
 
 Click to edit this page
 Klikkaa muokataksesi tätä sivua
-image
-kuva
-download
-download
 CGI Internal error: %s
 
 Invalid action parameter %s
@@ -82,6 +86,8 @@ Preview only, not yet saved
 Pelkkä esikatselu, sivua ei ole tallennettu vielä
 Please go on to %s.
 Siirtykää sivulle %s, kiitos.
+All changes for %s
+
 No updates since %s
 Ei päivityksiä %s jälkeen
 Updates since %s
@@ -108,6 +114,12 @@ Näytä pienet korjaukset
 %s päivää
 List later changes
 Luettele myöhemmät muutokset
+RSS
+
+RSS with pages
+
+RSS with pages and diff
+
 Filters
 Suotimet
 Title:
@@ -118,6 +130,8 @@ Username:
 Käyttäjännimi:
 Host:
 Host:
+Follow up to:
+
 Language:
 Kieli:
 Go!
@@ -130,6 +144,8 @@ new
 uusi
 from %s
 %s:stä
+: 
+
 This page is too big to send over RSS.
 
 History of %s
@@ -152,6 +168,8 @@ Missing target for rollback.
 Palautuksen kohde puuttuu.
 Target for rollback is too far back.
 Palautuksen kohde on liian kaukana.
+A username is required for ordinary users.
+
 Rolling back changes
 Sivua palautetaan
 The two revisions are the same.
@@ -250,6 +268,8 @@ f
 h
 Replace:
 Korvaa:
+Delete
+
 Validate HTML
 Tarkista HTML
 Validate CSS
@@ -344,6 +364,8 @@ Summary:
 Yhteenveto:
 This change is a minor edit.
 Tämä on pieni korjaus.
+Cancel
+
 Replace this file with text
 Korvaa tämä tiedosto tekstillä
 Replace this text with a file
@@ -376,6 +398,10 @@ Sample_Undefined_Page
 Esimerkki_Sivu
 Rule "%1" matched "%2" on this page.
 Sääntö "%1" sopi "%2":teen tällä sivulla.
+Reason: %s.
+
+Reason unknown.
+
 Without normal pages
 
 Include normal pages
@@ -536,6 +562,14 @@ Complete Content
 Sisältö
 The main page is %s.
 Etusivu on %s.
+Archive:
+
+Rebuild BackLink database
+
+Internal Page: 
+
+Pages that link to this page
+
 Cannot highlight the language %s.
 Kieltä %s ei voida merkitä
 Recent Visitors
@@ -596,6 +630,10 @@ November
 
 December
 
+set %s
+
+unset %s
+
 Clustermap
 
 Pages without a Cluster
@@ -608,8 +646,12 @@ Compilation for %s
 
 Compilation tag is missing a regular expression.
 
+List spammed pages
+
 Despamming pages
 Sivuja puhdistetaan spam:ista
+Spammed pages
+
 Cannot find revision %s.
 Versiota ei löydy %s.
 Revert to revision %1: %2
@@ -618,9 +660,31 @@ Marked as %s.
 Merkitty nimellä %s.
 Cannot find unspammed revision.
 Spam-vapaata versiota ei löydy.
+Recover Draft
+
+No text to save
+
+Draft saved
+
+Draft recovered
+
+No draft available to recover
+
+Save Draft
+
+Draft Cleanup
+
+%1 was last modified %2 and was kept
+
+%1 was last modified %2 and was deleted
+
+Unable to delete draft %s
+
 Add Comment
 
 ordinary changes
+
+Matching page names:
 
 Footnotes:
 Alaviitteet:
@@ -686,8 +750,6 @@ You are now logged out.
 
 Register a new account
 
-Login
-
 Logout
 
 Who am I?
@@ -746,6 +808,12 @@ There are no pending registrations.
 
 %s is not a legal name for a namespace
 
+ (create locally)
+
+image
+kuva
+download
+download
 Clearing Cache
 Välimuistia tyhjennetään
 Done.
@@ -794,12 +862,14 @@ The target wiki was misconfigured.
 
 You did not answer correctly.
 
+Use the back button to return the previous page and try again.
+
 To save this page you must answer this question:
 
-All Referrers
-Kaikki viittaukset
 Referrers
 Viittaukset
+All Referrers
+Kaikki viittaukset
 Tag
 
 Rebuild index for searching
@@ -827,6 +897,8 @@ Tags: %s.
 No tags
 
 Slideshow:%s
+
+Index of all small pages
 
 Static Copy
 Staattinen kopio
@@ -858,10 +930,14 @@ URL:
 URL:
 Name:
 Nimi:
-Failed to remove %s
-%s:n poisto epäonnistui
+Too many instances.  Only %s allowed.
+
+Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
+
 Contents
 Sisältö
+Create a new page for today
+
 This page is a translation of %s. 
 
 The translation is up to date.
