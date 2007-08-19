@@ -1,3 +1,9 @@
+2007-08-19  Alex Schroeder  <alex@gnu.org>
+
+	* Makefile (test): Use prove instead of a direct perl call.
+
+	* t/atom-test.t: Fixed URL.
+
 2007-08-17  Alex Schroeder  <alex@gnu.org>
 
 	* modules/toc.pl (TocRule): Add explanation. Renamed $key to
