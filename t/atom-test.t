@@ -38,9 +38,9 @@ SKIP: {
 
   skip "XML::Atom not installed", 42 if $@;
 
-  my $wiki = 'http://localhost/cgi-bin/wiki.pl?action=version';
+  my $wiki = 'http://localhost/cgi-bin/wiki.pl';
   my $ua = LWP::UserAgent->new;
-  my $response = $ua->get($wiki);
+  my $response = $ua->get("$wiki?action=version");
   skip("No wiki running at $wiki", 42)
     unless $response->is_success;
   skip("Wiki running at $wiki doesn't have the atom extension installed", 42)
