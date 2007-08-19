@@ -9,13 +9,14 @@ MODULES=$(wildcard modules/*.pl)
 INKSCAPE=GPL $(wildcard inkscape/*.py inkscape/*.inx inkscape/*.sh)
 PACKAGEMAKER=/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker
 PWD=$(shell pwd)
-
-dist: $(VERSION).tar.gz
-
-upload: $(VERSION).tar.gz $(VERSION).tar.gz.sig \
-	$(VERSION).dmg $(VERSION).dmg.sig \
+DIST=$(VERSION).dmg $(VERSION).dmg.sig \
+	$(VERSION).tar.gz $(VERSION).tar.gz.sig \
 	$(VERSION).tgz $(VERSION).tgz.sig \
 	$(UPLOADVERSION).tar.gz $(UPLOADVERSION).tar.gz.sig
+
+dist: $(DIST)
+
+upload: $(DIST)
 	for f in $^; do \
 		curl -T $$f ftp://savannah.gnu.org/incoming/savannah/oddmuse/; \
 	done
@@ -23,10 +24,10 @@ upload: $(VERSION).tar.gz $(VERSION).tar.gz.sig \
 upload-text: new-utf8.pl
 	wikiupload new-utf8.pl http://www.oddmuse.org/cgi-bin/oddmuse-en/New_Translation_File
 
-$(VERSION).tar.gz:
+$(VERSION).tar.gz: README FDL GPL ChangeLog wiki.pl $(TRANSLATIONS) $(MODULES)
 	rm -rf $(VERSION)
 	mkdir $(VERSION)
-	cp README FDL GPL ChangeLog wiki.pl $(TRANSLATIONS) $(MODULES) $(VERSION)
+	cp $^ $(VERSION)
 	tar czf $@ $(VERSION)
 
 $(UPLOADVERSION).tar.gz: $(INKSCAPE)
@@ -103,7 +104,7 @@ update-translations: always
 	for f in $(TRANSLATIONS); do \
 		echo $$f...; \
 		sleep 5; \
-		make $$f; \
+		make update/$$f; \
 	done
 
 upload-translations: always
@@ -115,14 +116,16 @@ upload-translations: always
 
 # The curl variant tries to save bandwidth usage. Alternative:
 # wget -q http://www.oddmuse.org/cgi-bin/oddmuse/raw/$$f -O $@.wiki
+# Need to strip the update/ part.
 
-%-utf8.pl: always
-	f=`basename $@` \
-	&& curl --time-cond $@.wiki --remote-time --output $@.wiki \
-           http://www.oddmuse.org/cgi-bin/oddmuse/raw/$$f
-	grep '^\(#\|\$$\)' $@.wiki > $@-new
-	perl oddtrans -l $@ -l $@.wiki wiki.pl $(MODULES) \
-	>> $@-new && mv $@-new $@
+update/%-utf8.pl: always
+	t=`echo $@ | cut -f 2- -d /` \
+	&& f=`basename $@` \
+	&& curl --time-cond $$t.wiki --remote-time --output $$t.wiki \
+           http://www.oddmuse.org/cgi-bin/oddmuse/raw/$$f \
+	&& grep '^\(#\|\$$\)' $$t.wiki > $$t-new \
+	&& perl oddtrans -l $$t -l $$t.wiki wiki.pl $(MODULES) \
+	>> $$t-new && mv $$t-new $$t
 
 .PHONY: always
 
