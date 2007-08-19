@@ -27,7 +27,7 @@ xpath_test(update_page('Logo', "#FILE image/png\niVBORw0KGgoAAAA",
 	   . '[@alt="Logo"]');
 
 $page = get_page('action=browse id=Logo raw=1');
-$page =~ m/^Etag: ([0-9]+)/;
+$page =~ m/^Etag: ([0-9]+)/m;
 $ts = $1;
 ok($ts > 0, "Got a timestamp for the first revision");
 
