@@ -1,5 +1,7 @@
 2007-08-19  Alex Schroeder  <alex@gnu.org>
 
+	* wikiput (wikiput): Bypass questionasker's default config.
+
 	* Makefile (%-utf8.pl): Take advantage of caching when
 	downloading.
 
