@@ -128,7 +128,7 @@ install:
 	dpkg -i oddmuse*.deb
 
 test:
-	perl -e 'use Test::Harness; $$Test::Harness::switches = ""; runtests @ARGV;' t/*.t
+	prove t
 
 package-upload: debian-$(VERSION).tar.gz debian-$(VERSION).tar.gz.sig
 	curl -T "{debian-$(VERSION).tar.gz,debian-$(VERSION).tar.gz.sig}" \
