@@ -20,10 +20,14 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.16 2006/08/18 22:46:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.17 2007/08/19 11:42:08 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Läsning inte tillåten: användare, ip eller nätverk är blockerat.
+Login
+
+Error
+
 %s calls
 
 Could not create %s
@@ -42,6 +46,10 @@ Main lock obtained.
 Huvudlås påslaget.
 Main lock released.
 Huvudlås avslaget.
+Journal
+
+More...
+
 Comments on this page
 Kommenterarer till denna sida
 XML::RSS is not available on this system.
@@ -60,10 +68,6 @@ Ingen information funnen i %s.
 
 Click to edit this page
 Klicka för att redigera den här sidan
-image
-bild
-download
-ladda ned
 CGI Internal error: %s
 Internt CGI-fel: %s
 Invalid action parameter %s
@@ -86,6 +90,8 @@ Preview only, not yet saved
 Endast förhandsgranskning, ännu inte sparad
 Please go on to %s.
 Gå vidare till %s.
+All changes for %s
+
 No updates since %s
 Inga ändringar sedan %s
 Updates since %s
@@ -112,6 +118,12 @@ Visa små ändringar också
 %s dagar
 List later changes
 Visa senare ändringar
+RSS
+
+RSS with pages
+
+RSS with pages and diff
+
 Filters
 Sålla
 Title:
@@ -122,6 +134,8 @@ Username:
 Användare:
 Host:
 Värddator:
+Follow up to:
+
 Language:
 Språk
 Go!
@@ -134,6 +148,8 @@ new
 ny
 from %s
 från %s
+: 
+
 This page is too big to send over RSS.
 Denna sida är för stor för att sändas över RSS.
 History of %s
@@ -156,6 +172,8 @@ Missing target for rollback.
 Mål för återställning saknas.
 Target for rollback is too far back.
 Mål för återställning för gammalt.
+A username is required for ordinary users.
+
 Rolling back changes
 Återställer
 The two revisions are the same.
@@ -254,6 +272,8 @@ f
 k
 Replace:
 Ersätt:
+Delete
+
 Validate HTML
 Validera HTML
 Validate CSS
@@ -348,6 +368,8 @@ Summary:
 Sammanfattning:
 This change is a minor edit.
 Det här är en mindre ändring.
+Cancel
+
 Replace this file with text
 Skriv text istället för den här filen
 Replace this text with a file
@@ -380,6 +402,10 @@ Sample_Undefined_Page
 Odefinierad_exempelsida
 Rule "%1" matched "%2" on this page.
 Regel "%1"  matchade "%2" på denna sida.
+Reason: %s.
+
+Reason unknown.
+
 Without normal pages
 Utan vanliga sidor
 Include normal pages
@@ -540,6 +566,14 @@ Complete Content
 Fullständigt innehåll
 The main page is %s.
 Huvudsidan är %s.
+Archive:
+
+Rebuild BackLink database
+
+Internal Page: 
+
+Pages that link to this page
+
 Cannot highlight the language %s.
 Kan ej markera språket %s.
 Recent Visitors
@@ -600,6 +634,10 @@ November
 november
 December
 december
+set %s
+
+unset %s
+
 Clustermap
 Klusterkarta
 Pages without a Cluster
@@ -612,8 +650,12 @@ Compilation for %s
 Sammanställning för %s
 Compilation tag is missing a regular expression.
 Sammanställnings-taggen saknar en "regular expression".
+List spammed pages
+
 Despamming pages
 Rensar sidor från skräptexter
+Spammed pages
+
 Cannot find revision %s.
 Kan inte hitta version %s.
 Revert to revision %1: %2
@@ -622,10 +664,32 @@ Marked as %s.
 Markerad som %s.
 Cannot find unspammed revision.
 Kan inte finna version utan skräptexter
+Recover Draft
+
+No text to save
+
+Draft saved
+
+Draft recovered
+
+No draft available to recover
+
+Save Draft
+
+Draft Cleanup
+
+%1 was last modified %2 and was kept
+
+%1 was last modified %2 and was deleted
+
+Unable to delete draft %s
+
 Add Comment
 Lägg till kommentar
 ordinary changes
 vanliga ändringar
+Matching page names:
+
 Footnotes:
 Fotnoter:
 Could not find %1.html template in %2
@@ -690,8 +754,6 @@ You are now logged out.
 
 Register a new account
 
-Login
-
 Logout
 
 Who am I?
@@ -750,6 +812,12 @@ There are no pending registrations.
 
 %s is not a legal name for a namespace
 
+ (create locally)
+
+image
+bild
+download
+ladda ned
 Clearing Cache
 Rensar cachen
 Done.
@@ -798,12 +866,14 @@ The target wiki was misconfigured.
 
 You did not answer correctly.
 Du svarade inte korrekt.
+Use the back button to return the previous page and try again.
+
 To save this page you must answer this question:
 
-All Referrers
-Alla som länkat hit
 Referrers
 Sidor som länkat hit
+All Referrers
+Alla som länkat hit
 Tag
 
 Rebuild index for searching
@@ -831,6 +901,8 @@ Tags: %s.
 No tags
 
 Slideshow:%s
+
+Index of all small pages
 
 Static Copy
 Statisk kopia
@@ -862,10 +934,14 @@ URL:
 URL:
 Name:
 Namn:
-Failed to remove %s
-Misslyckades med att ta bort %s
+Too many instances.  Only %s allowed.
+
+Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
+
 Contents
 Innehåll
+Create a new page for today
+
 This page is a translation of %s. 
 Denna sida är en översättning av %s. 
 The translation is up to date.

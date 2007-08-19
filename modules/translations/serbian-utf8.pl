@@ -17,10 +17,14 @@
 #
 # This translation was last checked for Oddmuse version 1.195.
 #
-$ModulesDescription .= '<p>$Id: serbian-utf8.pl,v 1.9 2006/08/18 22:46:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: serbian-utf8.pl,v 1.10 2007/08/19 11:42:08 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Читање није дозвољено: приступ за корисника, IP број или мрежу је блокиран.
+Login
+
+Error
+
 %s calls
 
 Could not create %s
@@ -39,6 +43,10 @@ Main lock obtained.
 Главна брава је добављена.
 Main lock released.
 Главна брава је отпуштена.
+Journal
+
+More...
+
 Comments on this page
 Коментари на овој страни
 XML::RSS is not available on this system.
@@ -56,10 +64,6 @@ No items found in %s.
  . . . . 
 
 Click to edit this page
-
-image
-
-download
 
 CGI Internal error: %s
 
@@ -83,6 +87,8 @@ Preview only, not yet saved
 Ово је само преглед, измена још увек није записана
 Please go on to %s.
 Настави до %s.
+All changes for %s
+
 No updates since %s
 Нема измена од %s
 Updates since %s
@@ -109,6 +115,12 @@ Include minor changes
 %s дана
 List later changes
 
+RSS
+
+RSS with pages
+
+RSS with pages and diff
+
 Filters
 
 Title:
@@ -118,6 +130,8 @@ Title and Body:
 Username:
 Корисничко име:
 Host:
+
+Follow up to:
 
 Language:
 
@@ -131,6 +145,8 @@ new
 
 from %s
 од %s
+: 
+
 This page is too big to send over RSS.
 
 History of %s
@@ -153,6 +169,8 @@ Missing target for rollback.
 Недостаје циљ за повратак.
 Target for rollback is too far back.
 Циљ за повратак је предалеко уназад.
+A username is required for ordinary users.
+
 Rolling back changes
 Враћам измене
 The two revisions are the same.
@@ -251,6 +269,8 @@ f
 
 Replace:
 Замени:
+Delete
+
 Validate HTML
 Провери HTML
 Validate CSS
@@ -345,6 +365,8 @@ Summary:
 Сажетак:
 This change is a minor edit.
 Ово је ситна измена.
+Cancel
+
 Replace this file with text
 Замени ову датотеку текстом
 Replace this text with a file
@@ -376,6 +398,10 @@ SampleUndefinedPage
 Sample_Undefined_Page
 Ненаписана_Страница_За_Пример
 Rule "%1" matched "%2" on this page.
+
+Reason: %s.
+
+Reason unknown.
 
 Without normal pages
 
@@ -537,6 +563,14 @@ Complete Content
 Потпуни садржај
 The main page is %s.
 Главна страна је %s.
+Archive:
+
+Rebuild BackLink database
+
+Internal Page: 
+
+Pages that link to this page
+
 Cannot highlight the language %s.
 
 Recent Visitors
@@ -597,6 +631,10 @@ November
 
 December
 
+set %s
+
+unset %s
+
 Clustermap
 
 Pages without a Cluster
@@ -609,7 +647,11 @@ Compilation for %s
 
 Compilation tag is missing a regular expression.
 
+List spammed pages
+
 Despamming pages
+
+Spammed pages
 
 Cannot find revision %s.
 
@@ -619,9 +661,31 @@ Marked as %s.
 
 Cannot find unspammed revision.
 
+Recover Draft
+
+No text to save
+
+Draft saved
+
+Draft recovered
+
+No draft available to recover
+
+Save Draft
+
+Draft Cleanup
+
+%1 was last modified %2 and was kept
+
+%1 was last modified %2 and was deleted
+
+Unable to delete draft %s
+
 Add Comment
 
 ordinary changes
+
+Matching page names:
 
 Footnotes:
 
@@ -687,8 +751,6 @@ You are now logged out.
 
 Register a new account
 
-Login
-
 Logout
 
 Who am I?
@@ -747,6 +809,12 @@ There are no pending registrations.
 
 %s is not a legal name for a namespace
 
+ (create locally)
+
+image
+
+download
+
 Clearing Cache
 
 Done.
@@ -795,12 +863,14 @@ The target wiki was misconfigured.
 
 You did not answer correctly.
 
+Use the back button to return the previous page and try again.
+
 To save this page you must answer this question:
 
-All Referrers
-Све референце
 Referrers
 Референце
+All Referrers
+Све референце
 Tag
 
 Rebuild index for searching
@@ -828,6 +898,8 @@ Tags: %s.
 No tags
 
 Slideshow:%s
+
+Index of all small pages
 
 Static Copy
 
@@ -859,9 +931,13 @@ URL:
 
 Name:
 
-Failed to remove %s
+Too many instances.  Only %s allowed.
+
+Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 
 Contents
+
+Create a new page for today
 
 This page is a translation of %s. 
 

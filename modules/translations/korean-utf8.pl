@@ -15,10 +15,14 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: korean-utf8.pl,v 1.2 2006/09/18 11:13:24 joonhwan Exp $</p>';
+$ModulesDescription .= '<p>$Id: korean-utf8.pl,v 1.3 2007/08/19 11:42:08 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 읽기가 허락되지 않습니다: 사용자아이디, ip, 또는 네트웍이 접근거부되었습니다.
+Login
+
+Error
+
 %s calls
 
 Could not create %s
@@ -37,6 +41,10 @@ Main lock obtained.
 메인 잠금 획득.
 Main lock released.
 메인 잠금 해제.
+Journal
+
+More...
+
 Comments on this page
 이 페이지에 커맨트하세요
 XML::RSS is not available on this system.
@@ -55,10 +63,6 @@ No items found in %s.
  . . . . 
 Click to edit this page
 클릭하여 페이지를 편집합니다
-image
-이미지
-download
-다운로드
 CGI Internal error: %s
 CGI 내부 오류 : %s
 Invalid action parameter %s
@@ -81,6 +85,8 @@ Preview only, not yet saved
 미리보기만 가능합니다. 저장되지는 않습니다.
 Please go on to %s.
 %s 로 이동하여 주세요.
+All changes for %s
+
 No updates since %s
 %s 이후 한번도 업데이트가 없습니다.
 Updates since %s
@@ -107,6 +113,12 @@ Include minor changes
 %s 일
 List later changes
 이후의 변경 나열
+RSS
+
+RSS with pages
+
+RSS with pages and diff
+
 Filters
 필터
 Title:
@@ -117,6 +129,8 @@ Username:
 사용자명:
 Host:
 호스트:
+Follow up to:
+
 Language:
 언어:
 Go!
@@ -129,6 +143,8 @@ new
 새로운 사항
 from %s
 %s 로 부터
+: 
+
 This page is too big to send over RSS.
 RSS 로 전송하기에 너무 큰 페이지 입니다.
 History of %s
@@ -151,6 +167,8 @@ Missing target for rollback.
 롤백에 대한 대상이 없습니다.
 Target for rollback is too far back.
 롤백에 대한 대상이 너무 오래되었습니다.
+A username is required for ordinary users.
+
 Rolling back changes
 변경사항을 롤백
 The two revisions are the same.
@@ -249,6 +267,8 @@ f
 f
 Replace:
 바꾸기:
+Delete
+
 Validate HTML
 HTML 검증
 Validate CSS
@@ -343,6 +363,8 @@ Summary:
 요약:
 This change is a minor edit.
 이 변경사항은 세부 편집입니다.
+Cancel
+
 Replace this file with text
 이 파일을 텍스트로 바꿈
 Replace this text with a file
@@ -375,6 +397,10 @@ Sample_Undefined_Page
 Sample_Undefined_Page
 Rule "%1" matched "%2" on this page.
 규칙 "%1" 은 "%2" 와 이 페이지에서 맞지 않습니다.
+Reason: %s.
+
+Reason unknown.
+
 Without normal pages
 정상 페이지 없이
 Include normal pages
@@ -535,10 +561,18 @@ Complete Content
 전체 내용
 The main page is %s.
 메인페이지는 %s 입니다.
+Archive:
+
+Rebuild BackLink database
+
+Internal Page: 
+
+Pages that link to this page
+
 Cannot highlight the language %s.
 %s 언어에 대해서 구문강조를 할 수 없습니다.
 Recent Visitors
-최근 방문자들
+
 some action
 
 was here
@@ -595,6 +629,10 @@ November
 11월
 December
 12월
+set %s
+
+unset %s
+
 Clustermap
 클러스터맵(clustermap)
 Pages without a Cluster
@@ -607,30 +645,56 @@ Compilation for %s
 
 Compilation tag is missing a regular expression.
 
+List spammed pages
+
 Despamming pages
 페이지에서 스팸제거
+Spammed pages
+
 Cannot find revision %s.
 리비젼 %s를 찾을 수 없습니다.
 Revert to revision %1: %2
-%1 리비전으로 복귀: %2
+
 Marked as %s.
-%s 로 마크(Mark)됨
+
 Cannot find unspammed revision.
-스팸제거된 리비전을 찾을 수 없습니다.
+
+Recover Draft
+
+No text to save
+
+Draft saved
+
+Draft recovered
+
+No draft available to recover
+
+Save Draft
+
+Draft Cleanup
+
+%1 was last modified %2 and was kept
+
+%1 was last modified %2 and was deleted
+
+Unable to delete draft %s
+
 Add Comment
 
 ordinary changes
-일상적인 변경들
+
+Matching page names:
+
 Footnotes:
-꼬릿말:
+
 Could not find %1.html template in %2
-%1.html 템플릿을 %s 에서 찾지 못했습니다.
+
 Only Editors are allowed to see this hidden page.
-편집자만이 이 숨겨진 페이지를 볼 수 있습니다.
+
 Only Admins are allowed to see this hidden page.
-관리자만이 이 숨겨진 페이지를 볼 수 있습니다.
+
 Index
-인덱스
+
 Languages:
 언어:
 Show!
@@ -650,19 +714,19 @@ Local names defined on %1: %2
 Register for %s
 
 Please choose a username of the form "FirstLast" using your real name.
-자신의 이름을 "CheolSoo"와 같은 형태로 선택해 주세요.
+
 The passwords do not match.
-패스워드가 일치하지 않습니다.
+
 The password must be at least %s characters.
-패스워드는 적어도 %s 글자 이상이어야 합니다.
+
 That email address is invalid.
-이메일 주소가 유효하지 않습니다.
+
 The username %s has already been registered.
-사용자 %s 는 이미 등록되어 있습니다.
+
 Your registration for %s has been submitted.
-%s 로 등록요청되었습니다.
+
 Please allow time for the webmaster to approve your request.
-웹마스터가 요청을 수락하기 위해서는 시간이 필요합니다.
+
 An email has been sent to "%s" with further instructions.
 
 There was an error saving your registration.
@@ -684,8 +748,6 @@ Logged out of %s
 You are now logged out.
 
 Register a new account
-
-Login
 
 Logout
 
@@ -745,6 +807,12 @@ There are no pending registrations.
 
 %s is not a legal name for a namespace
 
+ (create locally)
+
+image
+이미지
+download
+다운로드
 Clearing Cache
 
 Done.
@@ -793,11 +861,13 @@ The target wiki was misconfigured.
 
 You did not answer correctly.
 
+Use the back button to return the previous page and try again.
+
 To save this page you must answer this question:
 
-All Referrers
-
 Referrers
+
+All Referrers
 
 Tag
 
@@ -826,6 +896,8 @@ Tags: %s.
 No tags
 
 Slideshow:%s
+
+Index of all small pages
 
 Static Copy
 
@@ -857,9 +929,13 @@ URL:
 
 Name:
 
-Failed to remove %s
+Too many instances.  Only %s allowed.
+
+Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 
 Contents
+
+Create a new page for today
 
 This page is a translation of %s. 
 

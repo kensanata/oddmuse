@@ -18,10 +18,14 @@
 #
 # This translation was last checked for Oddmuse version 1.296.
 #
-$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.15 2006/08/18 22:46:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.16 2007/08/19 11:42:08 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Accès interdit&nbsp;: l'utilisateur, l'IP ou le réseau est bloqué.
+Login
+Se connecter
+Error
+
 %s calls
 
 Could not create %s
@@ -40,6 +44,10 @@ Main lock obtained.
 Verrou principal obtenu.
 Main lock released.
 Verrou principal rendu.
+Journal
+
+More...
+
 Comments on this page
 Commentaires sur cette page
 XML::RSS is not available on this system.
@@ -58,10 +66,6 @@ Pas d'objets trouvés dans %s.
  . . . . 
 Click to edit this page
 Cliquez pour éditer cette page
-image
-image
-download
-télécharger
 CGI Internal error: %s
 Erreur Interne CGI : %s
 Invalid action parameter %s
@@ -84,6 +88,8 @@ Preview only, not yet saved
 Prévisualisation seulement, pas encore sauvegardée
 Please go on to %s.
 SVP aller a %s.
+All changes for %s
+
 No updates since %s
 Aucune mise à jour depuis le %s
 Updates since %s
@@ -110,6 +116,12 @@ Inclure les modifications mineures
 %s jours
 List later changes
 Lister les modifications les plus récentes
+RSS
+
+RSS with pages
+
+RSS with pages and diff
+
 Filters
 Filtres
 Title:
@@ -120,6 +132,8 @@ Username:
 Nom d'utilisateur :
 Host:
 Hôte :
+Follow up to:
+
 Language:
 Langue&nbsp;:
 Go!
@@ -132,6 +146,8 @@ new
 nouveau
 from %s
 depuis %s
+: 
+
 This page is too big to send over RSS.
 Cette page est trop grosse pour être envoyée sur RSS
 History of %s
@@ -154,6 +170,8 @@ Missing target for rollback.
 Cible manquante pour le retour en arrière.
 Target for rollback is too far back.
 La cible du retour en arrière est trop ancienne.
+A username is required for ordinary users.
+
 Rolling back changes
 Réinitialisation en cours
 The two revisions are the same.
@@ -252,6 +270,8 @@ f
 f
 Replace:
 Remplacer&nbsp;:
+Delete
+
 Validate HTML
 Valider HTML
 Validate CSS
@@ -346,6 +366,8 @@ Summary:
 Résumé&nbsp;:
 This change is a minor edit.
 Cette modification est une édition mineure.
+Cancel
+
 Replace this file with text
 Remplacer ce fichier par un texte
 Replace this text with a file
@@ -378,6 +400,10 @@ Sample_Undefined_Page
 Exemple_De_Page_NonDéfinie
 Rule "%1" matched "%2" on this page.
 La règle "%1" correspondait à "%2" sur cette page.
+Reason: %s.
+
+Reason unknown.
+
 Without normal pages
 Sans pages normales 
 Include normal pages
@@ -538,6 +564,14 @@ Complete Content
 Contenu Complet
 The main page is %s.
 La page principale est %s.
+Archive:
+
+Rebuild BackLink database
+
+Internal Page: 
+
+Pages that link to this page
+
 Cannot highlight the language %s.
 Impossible de surligner la langue %s.
 Recent Visitors
@@ -598,6 +632,10 @@ November
 Novembre
 December
 Décembre
+set %s
+
+unset %s
+
 Clustermap
 Carte du Faisceau
 Pages without a Cluster
@@ -610,8 +648,12 @@ Compilation for %s
 Compilation pour %s
 Compilation tag is missing a regular expression.
 Une expression régulière manque au tag de compilation.
+List spammed pages
+
 Despamming pages
 Suppression des textes indésirables sur les pages.
+Spammed pages
+
 Cannot find revision %s.
 Impossible de trouver la version %s.
 Revert to revision %1: %2
@@ -620,10 +662,32 @@ Marked as %s.
 Marqué comme %s.
 Cannot find unspammed revision.
 Impossible de trouver une version sans texte indésirable.
+Recover Draft
+
+No text to save
+
+Draft saved
+
+Draft recovered
+
+No draft available to recover
+
+Save Draft
+
+Draft Cleanup
+
+%1 was last modified %2 and was kept
+
+%1 was last modified %2 and was deleted
+
+Unable to delete draft %s
+
 Add Comment
 Ajouter Commentaire
 ordinary changes
 modifications ordinaires
+Matching page names:
+
 Footnotes:
 Notes de pied de page :
 Could not find %1.html template in %2
@@ -688,8 +752,6 @@ You are now logged out.
 Vous êtes maintenant déconnecté.
 Register a new account
 Enregistrer un nouveau compte.
-Login
-Se connecter
 Logout
 Se déconnecter
 Who am I?
@@ -748,6 +810,12 @@ There are no pending registrations.
 Il n'y a pas d'enregistrements en attente.
 %s is not a legal name for a namespace
 
+ (create locally)
+
+image
+image
+download
+télécharger
 Clearing Cache
 Nettoyage du cache.
 Done.
@@ -796,12 +864,14 @@ The target wiki was misconfigured.
 
 You did not answer correctly.
 Vous n'avez pas répondu correctement.
+Use the back button to return the previous page and try again.
+
 To save this page you must answer this question:
 
-All Referrers
-Tous les Introducteurs
 Referrers
 Introducteurs
+All Referrers
+Tous les Introducteurs
 Tag
 Tag
 Rebuild index for searching
@@ -830,6 +900,8 @@ No tags
 
 Slideshow:%s
 Diaporama : %s
+Index of all small pages
+
 Static Copy
 Copie Statique
 Back to %s
@@ -860,10 +932,14 @@ URL:
 URL :
 Name:
 Nom :
-Failed to remove %s
-Impossible de supprimer %s
+Too many instances.  Only %s allowed.
+
+Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
+
 Contents
 Contenus
+Create a new page for today
+
 This page is a translation of %s. 
 Cette page est une traduction de %s.
 The translation is up to date.

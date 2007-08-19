@@ -15,10 +15,14 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: ukrainian-utf8.pl,v 1.4 2006/08/18 22:46:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: ukrainian-utf8.pl,v 1.5 2007/08/19 11:42:08 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Не дозволено читати: користувач, IP, або мережа заблоковані.
+Login
+Ввійти
+Error
+
 %s calls
 
 Could not create %s
@@ -37,6 +41,10 @@ Main lock obtained.
 Отримано основний замок.
 Main lock released.
 Знято основний блок.
+Journal
+
+More...
+
 Comments on this page
 Коментарі до цієї сторінки
 XML::RSS is not available on this system.
@@ -55,10 +63,6 @@ No items found in %s.
  . . . .
 Click to edit this page
 Натисніть щоб відредагувати цю сторінку
-image
-зображення
-download
-завантажити
 CGI Internal error: %s
 Внутрішня помилка CGI: %s
 Invalid action parameter %s
@@ -81,6 +85,8 @@ Preview only, not yet saved
 Тільки попередній перегляд, ще не збережено
 Please go on to %s.
 Будь ласка, перейдіть на %s.
+All changes for %s
+
 No updates since %s
 Жодних оновлень від %s
 Updates since %s
@@ -107,6 +113,12 @@ Include minor changes
 %s днів
 List later changes
 Перелічити пізніші зміни
+RSS
+
+RSS with pages
+
+RSS with pages and diff
+
 Filters
 Фільтри
 Title:
@@ -117,6 +129,8 @@ Username:
 Ім'я користувача:
 Host:
 Хост:
+Follow up to:
+
 Language:
 Мова:
 Go!
@@ -129,6 +143,8 @@ new
 нове
 from %s
 від %s
+: 
+
 This page is too big to send over RSS.
 Ця сторінка занадто велика для пересилання через RSS.
 History of %s
@@ -151,6 +167,8 @@ Missing target for rollback.
 Відсутня ціль для скасування змін.
 Target for rollback is too far back.
 Ціль для скасування змін занадто далека.
+A username is required for ordinary users.
+
 Rolling back changes
 Скасовую зміни
 The two revisions are the same.
@@ -249,6 +267,8 @@ f
 f
 Replace:
 Замінити:
+Delete
+
 Validate HTML
 Перевірити HTML
 Validate CSS
@@ -343,6 +363,8 @@ Summary:
 Підсумок:
 This change is a minor edit.
 Ця зміна є незначною.
+Cancel
+
 Replace this file with text
 Замінити цей файл текстом
 Replace this text with a file
@@ -375,6 +397,10 @@ Sample_Undefined_Page
 
 Rule "%1" matched "%2" on this page.
 На цій сторінці "%2" відповідає правилу "%1"
+Reason: %s.
+
+Reason unknown.
+
 Without normal pages
 Без звичайних сторінок
 Include normal pages
@@ -535,6 +561,14 @@ Complete Content
 Повний зміст
 The main page is %s.
 %s - основна сторінка.
+Archive:
+
+Rebuild BackLink database
+
+Internal Page: 
+
+Pages that link to this page
+
 Cannot highlight the language %s.
 Не можу підсвічувати мову %s.
 Recent Visitors
@@ -595,6 +629,10 @@ November
 Листопад
 December
 Грудень
+set %s
+
+unset %s
+
 Clustermap
 
 Pages without a Cluster
@@ -607,7 +645,11 @@ Compilation for %s
 Компіляція для %s
 Compilation tag is missing a regular expression.
 
+List spammed pages
+
 Despamming pages
+
+Spammed pages
 
 Cannot find revision %s.
 Не можу знайти версію %s.
@@ -617,10 +659,32 @@ Marked as %s.
 Помічено як %s
 Cannot find unspammed revision.
 
+Recover Draft
+
+No text to save
+
+Draft saved
+
+Draft recovered
+
+No draft available to recover
+
+Save Draft
+
+Draft Cleanup
+
+%1 was last modified %2 and was kept
+
+%1 was last modified %2 and was deleted
+
+Unable to delete draft %s
+
 Add Comment
 Додати коментар
 ordinary changes
 звичайні зміни
+Matching page names:
+
 Footnotes:
 Примітки:
 Could not find %1.html template in %2
@@ -685,8 +749,6 @@ You are now logged out.
 Тепер ви вийшли із системи.
 Register a new account
 Зареєструвати новий обліковий запис
-Login
-Ввійти
 Logout
 Вийти
 Who am I?
@@ -745,6 +807,12 @@ There are no pending registrations.
 
 %s is not a legal name for a namespace
 
+ (create locally)
+
+image
+зображення
+download
+завантажити
 Clearing Cache
 Очещення кешу
 Done.
@@ -793,11 +861,13 @@ The target wiki was misconfigured.
 
 You did not answer correctly.
 Ви відповили невірно.
+Use the back button to return the previous page and try again.
+
 To save this page you must answer this question:
 
-All Referrers
-
 Referrers
+
+All Referrers
 
 Tag
 
@@ -827,6 +897,8 @@ No tags
 
 Slideshow:%s
 Показ слайдів: %s
+Index of all small pages
+
 Static Copy
 Статична копія
 Back to %s
@@ -857,10 +929,14 @@ URL:
 URL:
 Name:
 Ім'я:
-Failed to remove %s
-Не вдалось видалити %s
+Too many instances.  Only %s allowed.
+
+Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
+
 Contents
 Зміст
+Create a new page for today
+
 This page is a translation of %s. 
 Ця сторінка є перекладом %s.
 The translation is up to date.

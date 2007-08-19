@@ -16,10 +16,14 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: polish-utf8.pl,v 1.4 2007/04/27 21:48:40 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: polish-utf8.pl,v 1.5 2007/08/19 11:42:08 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Nie wolno Ci czytać tej strony: użytkownik, numer ip lub sieć jest zablokowana.
+Login
+Zaloguj
+Error
+
 %s calls
 %s odwołań
 Could not create %s
@@ -39,9 +43,9 @@ Uzyskano główną blokadę.
 Main lock released.
 Zwolniono główną blokadę.
 Journal
-
+Dziennik
 More...
-
+Więcej...
 Comments on this page
 Komentarze na tej stronie
 XML::RSS is not available on this system.
@@ -60,14 +64,10 @@ Nie znaleziono elementów w %s.
  . . . .
 Click to edit this page
 Kliknij aby edytować tę stronę
-image
-obrazek
-download
-pobieranie
 CGI Internal error: %s
 Wewnętrzny błąd CGI: %s
 Invalid action parameter %s
-Niewłaściwy parametr akcji %s
+Niewłaściwy parametr działania %s
 Invalid URL.
 Niewłaściwy URL.
 Page name is missing
@@ -87,7 +87,7 @@ Tylko podgląd, jeszcze nie zapisane
 Please go on to %s.
 Proszę przejść do %s.
 All changes for %s
-
+Wszystkie zmiany dla %s
 No updates since %s
 Zadnych zmian od %s
 Updates since %s
@@ -114,6 +114,12 @@ Uwzględnij drobne zmiany
 %s dni
 List later changes
 Wyświetl późniejsze zmiany
+RSS
+
+RSS with pages
+
+RSS with pages and diff
+
 Filters
 Filtry
 Title:
@@ -124,6 +130,8 @@ Username:
 Użytkownik:
 Host:
 Komputer:
+Follow up to:
+
 Language:
 Język:
 Go!
@@ -137,7 +145,7 @@ nowa
 from %s
 z %s
 : 
-
+: 
 This page is too big to send over RSS.
 Ta strona jest zbyt duża, żeby ją wysłać przez RSS.
 History of %s
@@ -161,7 +169,7 @@ Nie ma czego cofać
 Target for rollback is too far back.
 Zbyt stare, aby cofnąć
 A username is required for ordinary users.
-
+Zwykły użytkownik musi mieć nazwę.
 Rolling back changes
 Cofam zmiany
 The two revisions are the same.
@@ -197,7 +205,7 @@ Zablokuj %s
 Administration
 Administracja
 Actions:
-Akcje:
+Działania:
 Important pages:
 Ważne strony:
 To mark a page for deletion, put <strong>%s</strong> on the first line.
@@ -260,6 +268,8 @@ f
 f
 Replace:
 Zamień:
+Delete
+
 Validate HTML
 Sprawdź HTML
 Validate CSS
@@ -355,7 +365,7 @@ Streszczenie:
 This change is a minor edit.
 Ta zmiana jest drobna.
 Cancel
-
+Anuluj
 Replace this file with text
 Zastąp ten plik tekstem
 Replace this text with a file
@@ -389,9 +399,9 @@ Przykład_Niezdefiniowanej_Strony
 Rule "%1" matched "%2" on this page.
 Reguła "%1" pasuje do "%2" na tej stronie.
 Reason: %s.
-
+Przyczyna: %s.
 Reason unknown.
-
+Przyczyna nieznana.
 Without normal pages
 Bez zwykłych stron
 Include normal pages
@@ -552,18 +562,20 @@ Complete Content
 Całkowita zawartość
 The main page is %s.
 Główną stroną jest %s.
+Archive:
+
 Rebuild BackLink database
-
+Przebuduj spis linkujących
 Internal Page: 
-
+Strona Wewnętrzna: 
 Pages that link to this page
-
+Strony linkujące do tej strony
 Cannot highlight the language %s.
 Nie można pokolorować źródła dla języka %s.
 Recent Visitors
 Ostatni Odwiedzający
 some action
-jakaś akcja
+jakieś działanie
 was here
 był tutaj
 and read
@@ -619,9 +631,9 @@ listopad
 December
 grudzień
 set %s
-
+ustaw %s
 unset %s
-
+anuluj ustawienie %s
 Clustermap
 Mapa klastrów
 Pages without a Cluster
@@ -634,8 +646,12 @@ Compilation for %s
 Kompilacja dla %s
 Compilation tag is missing a regular expression.
 Brak wyrażenia regularnego w znaczniku kompilacji.
+List spammed pages
+
 Despamming pages
 Odspamowywanie stron
+Spammed pages
+
 Cannot find revision %s.
 Nie można znaleźć wersji %s.
 Revert to revision %1: %2
@@ -645,29 +661,31 @@ Oznaczony jako %s.
 Cannot find unspammed revision.
 Nie można znaleźć czystej wersji.
 Recover Draft
-
+Odzyskaj brudnopis
 No text to save
-
+Brak tekstu do zapisania
 Draft saved
-
+Brudnopis zapisany
 Draft recovered
-
+Brudnopis odzyskany
 No draft available to recover
-
+Brak brudnopisu do odzyskania
 Save Draft
-
+Zapisz brudnopis
 Draft Cleanup
-
+Czyszczenie brudnopisu
 %1 was last modified %2 and was kept
-
+%1 było ostatnio modyfikowane %2 i zostało zachowane
 %1 was last modified %2 and was deleted
-
+%1 było ostatnio modyfikowane %2 i zostało skasowane
 Unable to delete draft %s
-
+Nie udało się skasować brudnopisu %s
 Add Comment
 Dodaj komentarz
 ordinary changes
 zwykłe zmiany
+Matching page names:
+
 Footnotes:
 Przypisy:
 Could not find %1.html template in %2
@@ -732,8 +750,6 @@ You are now logged out.
 Jesteś teraz wylogowany.
 Register a new account
 Zarejestruj nowe konto
-Login
-Zaloguj
 Logout
 Wyloguj
 Who am I?
@@ -793,7 +809,11 @@ Nie ma oczekujących rejestracji.
 %s is not a legal name for a namespace
 %s nie jest dozwoloną nazwą przestrzeni nazw
  (create locally)
-
+ (utwórz lokalnie)
+image
+obrazek
+download
+pobieranie
 Clearing Cache
 Czyszczenie pamięci podręcznej
 Done.
@@ -843,7 +863,7 @@ Docelowa wiki jest źle skonfigurowana.
 You did not answer correctly.
 Nie odpowiedziałes poprawnie.
 Use the back button to return the previous page and try again.
-
+Użyj przycisku powrotu, by wrócić do poprzedniej strony, i spróbuj ponownie.
 To save this page you must answer this question:
 Aby zapisać tę stronę, musisz odpowiedzieć na pytanie:
 Referrers
@@ -879,7 +899,7 @@ Brak znaczników
 Slideshow:%s
 Pokaz slajdów: %s
 Index of all small pages
-
+Spis wszystkich małych stron
 Static Copy
 Kopia Statyczna
 Back to %s
@@ -911,11 +931,13 @@ URL:
 Name:
 Nazwa:
 Too many instances.  Only %s allowed.
-
+Zbyt wiele instancji - może być tylko %s.
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
-
+Prosimy spróbować później.  Być może ktoś dokonuje konserwacji serwisu lub jest w trakcie długiego wyszukiwania.  Niestety, nasz serwis ma ograniczone zasoby, więc musimy prosić o odrobinę cierpliwości.
 Contents
 Zawartość
+Create a new page for today
+
 This page is a translation of %s. 
 Ta strona jest tłumaczeniem %s.
 The translation is up to date.
