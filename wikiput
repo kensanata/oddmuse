@@ -85,6 +85,7 @@ def wikiput(where, text, summary="", username="",
 			       'summary': summary,
 			       'username': username,
 			       'pwd': password,
+                               'question': 1, # Bypass Questionasker default config
 			       'recent_edit': recent_edit})
     headers = {'Content-Type': "application/x-www-form-urlencoded"}
     conn = httplib.HTTPConnection(host)
