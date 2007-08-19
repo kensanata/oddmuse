@@ -1,7 +1,7 @@
 # UTF-8 encoded German translation file for use with Oddmuse
-#  -*- coding: utf-8 -*-
+#
 # Copyright (c) 2003  Karl Loncarek <karl@loncarek.de>
-# Copyright (c) 2003, 2004, 2005, 2006  Alex Schröder <alex@emacswiki.org>
+# Copyright (c) 2003, 2004, 2005, 2006, 2007  Alex Schröder <alex@gnu.org>
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
@@ -16,10 +16,14 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.21 2007/08/17 00:46:47 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.22 2007/08/19 11:36:35 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
+Login
+Anmeldung
+Error
+Fehler
 %s calls
 %s Aufrufe
 Could not create %s
@@ -38,6 +42,10 @@ Main lock obtained.
 Hauptsperre aktiviert.
 Main lock released.
 Hauptsperre aufgehoben.
+Journal
+Journal
+More...
+Weiterblättern...
 Comments on this page
 Kommentare zu dieser Seite
 XML::RSS is not available on this system.
@@ -56,10 +64,6 @@ No items found in %s.
  . . . . 
 Click to edit this page
 Hier klicken um die Seite zu bearbeiten
-image
-image
-download
-download
 CGI Internal error: %s
 Interner CGI Fehler: %s
 Invalid action parameter %s
@@ -82,6 +86,8 @@ Preview only, not yet saved
 Vorschau, noch nicht gespeichert
 Please go on to %s.
 Bitte machen Sie weiter bei %s.
+All changes for %s
+Alle Änderungen für %s
 No updates since %s
 Keine Änderungen seit %s
 Updates since %s
@@ -108,6 +114,12 @@ Inklusive kleinere Änderungen
 %s Tage
 List later changes
 Spätere Änderungen
+RSS
+RSS
+RSS with pages
+RSS mit ganzen Seiten
+RSS with pages and diff
+RSS mit ganzen Seiten und Unterschieden zur Vorversion
 Filters
 Filter
 Title:
@@ -118,6 +130,8 @@ Username:
 Benutzername:
 Host:
 Rechner:
+Follow up to:
+Antworten auf Benutzer:
 Language:
 Sprache:
 Go!
@@ -130,6 +144,8 @@ new
 Neue Seite
 from %s
 von %s
+: 
+: 
 This page is too big to send over RSS.
 Diese Seite ist zu gross für RSS.
 History of %s
@@ -152,12 +168,14 @@ Missing target for rollback.
 Das Stichdatum fehlt.
 Target for rollback is too far back.
 Das Stichdatum liegt zu weit zurück.
+A username is required for ordinary users.
+Gewöhnliche Benutzer müssen einen Benutzername angeben.
 Rolling back changes
 Änderungen werden rückgängig gemacht
 The two revisions are the same.
 Es gibt keinen Unterschied zwischen den beiden Versionen.
 Editing not allowed for %s.
-Das Bearbeiten von %s ist nicht erlaubt.
+Das bearbeiten von %s ist nicht erlaubt.
 Rollback to %s
 Rückgängig gemacht auf den Stand vom %s
 %s rolled back
@@ -250,6 +268,8 @@ f
 f
 Replace:
 Ersetzen mit:
+Delete
+Löschen
 Validate HTML
 HTML überprüfen
 Validate CSS
@@ -344,6 +364,8 @@ Summary:
 Zusammenfassung:
 This change is a minor edit.
 Dies ist eine kleinere Änderung.
+Cancel
+Abbrechen
 Replace this file with text
 Diese Datei durch Text ersetzen
 Replace this text with a file
@@ -376,6 +398,10 @@ Sample_Undefined_Page
 Beispiel_Einer_Undefinierten_Seite
 Rule "%1" matched "%2" on this page.
 Auf dieser Seite verstösst "%2" gegen die Regel "%1".
+Reason: %s.
+Grund: %s.
+Reason unknown.
+Grund unbekannt.
 Without normal pages
 Ohne normale Seiten
 Include normal pages
@@ -485,7 +511,7 @@ Sperre von %s erzeugt.
 Lock for %s removed.
 Sperre von %s aufheben.
 Displaying Wiki Version
-Anzeige der Wikiversion
+Anzeite der Wikiversion
 Show dependencies
 Abhängigkeiten zeigen
 Inter links:
@@ -536,6 +562,14 @@ Complete Content
 Vollständiger Inhalt
 The main page is %s.
 Die Hauptseite ist %s.
+Archive:
+Archiv:
+Rebuild BackLink database
+Liste der Rückverweise neu erstellen
+Internal Page: 
+Interne Seite: 
+Pages that link to this page
+Seiten, die auf diese Seite verweisen
 Cannot highlight the language %s.
 Die Sprache %s kann von diesem Modul nicht eingefärbt werden.
 Recent Visitors
@@ -596,6 +630,10 @@ November
 November
 December
 Dezember
+set %s
+%s setzen
+unset %s
+%s aufheben
 Clustermap
 Clustermap
 Pages without a Cluster
@@ -608,20 +646,46 @@ Compilation for %s
 Zusammenstellung für %s
 Compilation tag is missing a regular expression.
 Der tag für die Zusammenstellung benötigt noch ein Suchmuster.
+List spammed pages
+Liste der Seiten mit unerwünschter Werbung
 Despamming pages
 Spam entfernen
+Spammed pages
+Seiten mit unerwünschter Werbung
 Cannot find revision %s.
 Die Version %s ist verschwunden.
 Revert to revision %1: %2
 Auf Version %1 zurückgesetzt: %2
 Marked as %s.
-Mit %s markiert. 
+Mit %s markiert.
 Cannot find unspammed revision.
 Es gibt keine Version ohne Spam.
+Recover Draft
+Entwurf weiter bearbeiten
+No text to save
+Es gibt keinen Text, der zu speichern wäre
+Draft saved
+Entwurf gespeichert
+Draft recovered
+Entwurf geladen
+No draft available to recover
+Es gibt keinen gespeicherten Entwurf, der weiter bearbeitet werden könnte
+Save Draft
+Entwurf speichern
+Draft Cleanup
+Alte Entwürfe löschen
+%1 was last modified %2 and was kept
+%1 wurde am %2 zuletzt gespeichert und nicht gelöscht
+%1 was last modified %2 and was deleted
+%1 wurde am %2 zuletzt gespeichert und deswegen gelöscht
+Unable to delete draft %s
+Der Entwurf %s konnte nicht gelöscht werden
 Add Comment
 Kommentar hinzufügen
 ordinary changes
 normale Änderungen
+Matching page names:
+Übereinstimmende Seitennamen:
 Footnotes:
 Fussnoten:
 Could not find %1.html template in %2
@@ -686,8 +750,6 @@ You are now logged out.
 Sie sind nun abgemeldet.
 Register a new account
 Neue Anmeldung
-Login
-Anmeldung
 Logout
 Abmeldung
 Who am I?
@@ -746,6 +808,12 @@ There are no pending registrations.
 Es gibt keine offenen Gesuche.
 %s is not a legal name for a namespace
 %s ist ein ungültiger Name für einen Namensraum
+ (create locally)
+ (lokal erstellt)
+image
+image
+download
+download
 Clearing Cache
 Cache wird geleert
 Done.
@@ -755,15 +823,15 @@ Verweis Datenbank wird angelegt
 The 404 handler extension requires the link data extension (links.pl).
 Die 404 handler Erweiterung benötigt die Link Data Erweiterung (links.pl).
 LocalMap
-
+LocalMap
 No page id for action localmap
 Es gibt keine Spezialseite für den localmap Befehle
 Requested page %s does not exist
 Die gewünschte Seite %s existiert nicht
 Local Map for %s
-
+LocalMap für %s
 view
-
+Link
 Self-ban by %s
 %s hat sich selber verbannt.
 You have banned your own IP.
@@ -794,16 +862,18 @@ The target wiki was misconfigured.
 Das Publikationsziel wurde nicht korrekt konfiguriert.
 You did not answer correctly.
 Die Antwort ist falsch.
+Use the back button to return the previous page and try again.
+Gehen Sie zur vorherigen Seite zurück und versuchen Sie es noch ein Mal
 To save this page you must answer this question:
 Um diese Seite abzuspeichern, müssen Sie folgende Frage beantworten:
-All Referrers
-Alle Links auf diesen Wiki
 Referrers
 Links auf diese Seite
+All Referrers
+Alle Links auf diesen Wiki
 Tag
 Tag
 Rebuild index for searching
-Wiki für die Suche indexieren
+Der Index für die Suche wird neu erstellt
 Tag Cloud
 Tag Wolke
 Search::FreeText is not available on this system.
@@ -821,13 +891,15 @@ Resultate:
 (%s results)
 (%s Resultate)
 Tags:
-
+Tags:
 Tags: %s.
-
+Tags: %s.
 No tags
 Keine Tags
 Slideshow:%s
 Diashow:%s
+Index of all small pages
+Verzeichnis aller kleinen Seiten
 Static Copy
 Statische Kopie
 Back to %s
@@ -858,14 +930,18 @@ URL:
 URL:
 Name:
 Name:
-Failed to remove %s
-%s konnte nicht entfernt werden.
+Too many instances.  Only %s allowed.
+Es laufen schon %s Wiki Prozesse gleichzeitig auf diesem Server. Mehr sind leider nicht erlaubt.
+Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
+Versuchen Sie es später nocheinmal. Vielleicht werden gerade Wartungsarbeiten durchgeführt, oder ein Suchbefehl nimmt gerade viel Zeit in Anspruch. Leider sind die Resourcen des Rechners limitiert; wir bitten Sie deshalb um etwas Geduld.
 Contents
 Inhaltsverzeichnis
+Create a new page for today
+Erstellen Sie eine neue Seite für den heutigen Tag
 This page is a translation of %s. 
 Diese Seite ist eine Übersetzung von %s. 
 The translation is up to date.
-Die Übersetzung ist aktuell.
+Die Übersetztung ist aktuell.
 The translation is outdated.
 Die Übersetzung ist veraltet.
 The page does not exist.
@@ -899,7 +975,5 @@ Edit %s.
 Title: 
 Titel: 
 Tags: 
-
-More...
-Weiterblättern...
+Tags: 
 END_OF_TRANSLATION
