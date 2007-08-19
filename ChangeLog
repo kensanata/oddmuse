@@ -6,7 +6,8 @@
 
 	* Makefile (test): Use prove instead of a direct perl call.
 
-	* t/atom-test.t: Fixed URL.
+	* t/atom-test.t: Fixed URL. Renamed to atom.t.
+	* t/atom.t: Renamed from atom-test.t.
 
 2007-08-17  Alex Schroeder  <alex@gnu.org>
 
