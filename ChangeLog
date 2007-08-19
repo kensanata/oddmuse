@@ -6,6 +6,7 @@
 	(update/%-utf8.pl): Instead of %-utf8.pl; the update prefix is
 	used to distinguish dependencies from the command to download from
 	the wiki.
+	(upload): Use scp instead of ftp.
 
 	* wikiput (wikiput): Bypass questionasker's default config.
 
