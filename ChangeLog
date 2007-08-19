@@ -1,5 +1,7 @@
 2007-08-19  Alex Schroeder  <alex@gnu.org>
 
+	* modules/translations/german-utf8.pl: Update.
+
 	* t/static-copy.t: Add /m to regular expression matching.
 
 	* Makefile (test): Use prove instead of a direct perl call.
