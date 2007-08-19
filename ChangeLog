@@ -1,5 +1,8 @@
 2007-08-19  Alex Schroeder  <alex@gnu.org>
 
+	* Makefile (%-utf8.pl): Take advantage of caching when
+	downloading.
+
 	* modules/translations/german-utf8.pl: Update.
 
 	* t/static-copy.t: Add /m to regular expression matching.
