@@ -18,7 +18,7 @@ dist: $(DIST)
 
 upload: $(DIST)
 	for f in $^; do \
-		curl -T $$f ftp://savannah.gnu.org/incoming/savannah/oddmuse/; \
+		scp $$f as@dl.sv.nongnu.org:/releases/oddmuse/; \
 	done
 
 upload-text: new-utf8.pl
