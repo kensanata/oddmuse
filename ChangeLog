@@ -1,5 +1,12 @@
 2007-08-19  Alex Schroeder  <alex@gnu.org>
 
+	* Makefile ($(VERSION).tar.gz): Added correct dependencies.
+	(update-translations): Fetch new stuff from the wiki only when
+	running upload-translations.
+	(update/%-utf8.pl): Instead of %-utf8.pl; the update prefix is
+	used to distinguish dependencies from the command to download from
+	the wiki.
+
 	* wikiput (wikiput): Bypass questionasker's default config.
 
 	* Makefile (%-utf8.pl): Take advantage of caching when
