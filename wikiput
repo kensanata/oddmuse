@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 # wikiput --- Put a wiki page on an Oddmuse wiki
-# 
-# Copyright (C)  2004  Jorgen Schaefer <forcer@forcix.cx>
-# 
+#
+# Copyright (C)	 2004  Jorgen Schaefer <forcer@forcix.cx>
+#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
@@ -29,32 +29,32 @@ def main():
     recent_edit="off"
     force=0
     try:
-        opts, args = getopt.getopt(sys.argv[1:],
-                                   "hft:s:u:p:m:",
-                                   ["help", "force", "summary=", "user=",
+	opts, args = getopt.getopt(sys.argv[1:],
+				   "hft:s:u:p:m:",
+				   ["help", "force", "summary=", "user=",
 				    "password=", "minor-edit="])
     except getopt.GetoptError:
-        usage(sys.stderr)
-        sys.exit(1)
+	usage(sys.stderr)
+	sys.exit(1)
     if len(args) != 1:
-        usage(sys.stderr)
-        sys.exit(1)
+	usage(sys.stderr)
+	sys.exit(1)
     for opt, arg in opts:
-        if opt in ("-h", "--help"):
-            usage(sys.stdout)
-        if opt in ("-f", "--force"):
-            force = arg
-        if opt in ("-s", "--summary"):
-            summary = arg
-        if opt in ("-u", "--user"):
-            username = arg
-        if opt in ("-p", "--password"):
-            password = arg
-        if opt in ("-m", "--minor-edit"):
-            recent_edit="on"
+	if opt in ("-h", "--help"):
+	    usage(sys.stdout)
+	if opt in ("-f", "--force"):
+	    force = arg
+	if opt in ("-s", "--summary"):
+	    summary = arg
+	if opt in ("-u", "--user"):
+	    username = arg
+	if opt in ("-p", "--password"):
+	    password = arg
+	if opt in ("-m", "--minor-edit"):
+	    recent_edit="on"
     text = sys.stdin.read()
     if not text and not force:
-        sys.stderr.write("No content to post.  Use --force to do it anyway.\n"
+	sys.stderr.write("No content to post.  Use --force to do it anyway.\n"
 			 + args[0] + "\n")
     else:
 	wikiput(args[0], text, summary=summary, username=username,
@@ -67,25 +67,25 @@ def usage(out):
     out -- The file descriptor where to write the info.
     """
     out.write("Usage: wikiput [OPTIONS] wikipage\n"
-              "Post the data on stdin on the wikipage described by wikipage.\n"
-              "\n"
-              "Options:\n"
-              " -h --help          Display this help\n"
-              " -f --force         Allow the posting of empty pages (default: no)\n"
-              " -s --summary=S     The summary line (default: none)\n"
-	      " -u --user=U        The username to use (default: none)\n"
-	      " -p --password=P    The password to use (default: none)\n"
-              " -m --minor-edit=B  Whether this is a minor edit (default: no)\n")
+	      "Post the data on stdin on the wikipage described by wikipage.\n"
+	      "\n"
+	      "Options:\n"
+	      " -h --help	   Display this help\n"
+	      " -f --force	   Allow the posting of empty pages (default: no)\n"
+	      " -s --summary=S	   The summary line (default: none)\n"
+	      " -u --user=U	   The username to use (default: none)\n"
+	      " -p --password=P	   The password to use (default: none)\n"
+	      " -m --minor-edit=B  Whether this is a minor edit (default: no)\n")
 
-def wikiput(where, text, summary="", username="", 
+def wikiput(where, text, summary="", username="",
 	    password="", recent_edit="no"):
     (host, path, title) = parse_wiki_location(where)
     params = urllib.urlencode({'title': title,
-                               'text': text,
-                               'summary': summary,
+			       'text': text,
+			       'summary': summary,
 			       'username': username,
 			       'pwd': password,
-                               'recent_edit': recent_edit})
+			       'recent_edit': recent_edit})
     headers = {'Content-Type': "application/x-www-form-urlencoded"}
     conn = httplib.HTTPConnection(host)
     conn.request("POST", path, params, headers)
@@ -93,7 +93,7 @@ def wikiput(where, text, summary="", username="",
     data = response.read()
     conn.close()
     if response.status != 302 and response.status != 200:
-        raise RuntimeError, "%s returned %d: %s" % (where, response.status, response.reason)
+	raise RuntimeError, "%s returned %d: %s" % (where, response.status, response.reason)
 
 def parse_wiki_location(where):
     """Return a tuple of host, path and page name for the wiki page
@@ -101,7 +101,7 @@ def parse_wiki_location(where):
     """
     (scheme, host, path, params, query, fragment) = urlparse.urlparse(where)
     if not query:
-        list = path.split("/")
+	list = path.split("/")
 	query = list.pop()
 	path = "/".join(list)
     return (host, path+params, query)
