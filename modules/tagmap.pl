@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tagmap.pl,v 1.2 2007/07/26 10:46:52 uvizhe Exp $</p>';
+$ModulesDescription .= '<p>$Id: tagmap.pl,v 1.3 2007/08/23 09:02:27 uvizhe Exp $</p>';
 
 use vars qw($TagMapPage $TagMark $TagClass $TagString $TagSearchTitle);
 
@@ -88,7 +88,7 @@ sub GenerateSearchResult {
         OpenPage($page);                    # open a page
         my @tags = GetTags($Page{text});    # collect tags in an array
             foreach (@tags) {
-                if (/$searchedtag/) {
+                if (/^$searchedtag$/) {
                     my $name = NormalToFree($page);
                     $SearchResult .= "<li><a href=\"$ScriptName/$page\">$name</a>: $Page{summary}</li>";  # list of pages with their summaries
             }
