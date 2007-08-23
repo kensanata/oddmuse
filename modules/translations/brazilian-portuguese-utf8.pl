@@ -16,9 +16,9 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-# This translation was last checked for Oddmuse version 1.753.
+# This translation was last checked for Oddmuse version 1.806.
 #
-$ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.12 2007/08/19 11:42:07 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.13 2007/08/23 05:29:53 dedalu Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Leitura não permitida: usuário, ip ou rede bloqueados.
@@ -939,7 +939,7 @@ Por favor, tente novamente mais tarde. Talvez alguém esteja executando manuten�
 Contents
 Conteúdo
 Create a new page for today
-
+Criar uma nova página para hoje
 This page is a translation of %s. 
 Esta página é uma tradução de %s. 
 The translation is up to date.
