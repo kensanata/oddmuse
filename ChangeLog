@@ -1,3 +1,9 @@
+2007-08-23  Alexander Uvizhev  <uvizhe@yandex.ru>
+
+	* modules/tagmap.pl (GenerateSearchResult): Fixed regexp for proper search.
+	* modules/linktagmap.pl (GenerateLinkSearchResult): Fixed regexp for
+	proper search.
+
 2007-08-19  Alex Schroeder  <alex@gnu.org>
 
 	* Makefile ($(VERSION).tar.gz): Added correct dependencies.
