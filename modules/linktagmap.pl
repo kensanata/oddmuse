@@ -18,7 +18,7 @@
 #
 # Based on code of tagmap.pl module by Fletcher T. Penney
 # and searchtags.pl module by Brock Wilcox
-$ModulesDescription .= '<p>$Id: linktagmap.pl,v 1.5 2007/08/06 10:54:04 uvizhe Exp $</p>';
+$ModulesDescription .= '<p>$Id: linktagmap.pl,v 1.6 2007/08/23 09:17:39 uvizhe Exp $</p>';
 
 use vars qw($LinkTagMark $LinkDescMark $LinkTagClass $LinkDescClass $LinkTagMapPage $FreeLinkPattern $FullUrlPattern $LinkTagSearchTitle);
 
@@ -116,7 +116,7 @@ sub GenerateLinkSearchResult {
         foreach my $link (@links) {
             my @tags = GetLinkTags($link->{tags});  # collect tags in an array
             foreach (@tags) {
-                if (/$searchedtag/) {
+                if (/^$searchedtag$/) {
                     my @linktags = split /,\s*/, $link->{tags};   # push tags in an array
                     @linktags = map {                             # and print html output:
                         qq{<a href="$ScriptName?action=linktagsearch;linktag=$_">$_</a>};  # each tag is a link to search all links with that tag
