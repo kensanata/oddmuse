@@ -1,3 +1,8 @@
+2007-08-24	Alexander Uvizhev  <uvizhe@yandex.ru>
+
+	* modules/tagmap.pl (GenerateSearchResult): $SearchResult is now without
+	summaries. Generates a clear list of pages.
+
 2007-08-23  Alexander Uvizhev  <uvizhe@yandex.ru>
 
 	* modules/tagmap.pl (GenerateSearchResult): Fixed regexp for proper search.
