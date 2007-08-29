@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 27;
+use Test::More tests => 28;
 
 clear_pages();
 
@@ -41,6 +41,11 @@ test_page(update_page('toc', "bla\n"
 		      . "===three==\n"
 		      . "bla\n"
 		      . "=one=\n"),
+	  quotemeta('<div class="toc fnord mu">'));
+
+# check again
+
+test_page(get_page('toc'),
 	  quotemeta('<div class="toc fnord mu">'));
 
 test_page(update_page('toc', "bla\n"
