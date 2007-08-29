@@ -1,4 +1,10 @@
-2007-08-24	Alexander Uvizhev  <uvizhe@yandex.ru>
+2007-08-29  Alex Schroeder  <alex@gnu.org>
+
+	* modules/toc.pl (TocHeadings, TocPageHtml): Use TocPageHtml
+	instead of PageHtml. There, localize the HTML cache to make sure
+	the updated cache will in fact get saved.
+
+2007-08-24 Alexander Uvizhev  <uvizhe@yandex.ru>
 
 	* modules/tagmap.pl (GenerateSearchResult): $SearchResult is now without
 	summaries. Generates a clear list of pages.
