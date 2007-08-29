@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>XXX $Id: toc.pl,v 1.46 2007/08/17 16:03:09 as Exp $</p>';
+$ModulesDescription .= '<p>XXX $Id: toc.pl,v 1.47 2007/08/29 13:51:36 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
@@ -135,8 +135,9 @@ sub TocHeadings {
   my ($oldpos, $old_) = (pos, $_);
   my $class = 'toc' . join(' ', @_);
   my $key = 'toc';
-  # double rendering
-  my $html = PageHtml($TocPage);
+  # Double rendering to make sure we get the table of contents right,
+  # even though we don't know what markup rules are in effect.
+  my $html = TocPageHtml($TocPage);
   my $Headings = $q->h2(T('Contents'));
   my $HeadingsLevel      = undef;
   my $HeadingsLevelStart = undef;
@@ -179,4 +180,16 @@ sub TocHeadings {
   ($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
   return '' if $count <= 2;
   return $q->div({-class=>$class}, $Headings) if $Headings;
+}
+
+sub TocPageHtml {
+  # HACK ALERT: PageHtml -> PrintPageHtml -> PrintWikiToHTML with
+  # $savecache = 1, but the cache will not be saved because
+  # $Page{blocks} and $Page{flags} are already equal unless we
+  # localize them here. Without localization, the first request
+  # returns the correct TOC, but subsequent requests from the cache do
+  # not. Strange that local %Page will not work, here.
+  local $Page{blocks};
+  local $Page{flags};
+  return PageHtml(shift);
 }
