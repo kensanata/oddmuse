@@ -1,3 +1,7 @@
+2007-08-30  Alex Schroeder  <alex@gnu.org>
+
+	* modules/creole.pl (CreoleRule): Added ~ rule.
+
 2007-08-29  Alex Schroeder  <alex@gnu.org>
 
 	* modules/toc.pl (TocHeadings, TocPageHtml): Use TocPageHtml
