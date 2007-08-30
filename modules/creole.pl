@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.32 2007/07/19 23:39:34 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.33 2007/08/30 06:27:56 as Exp $</p>';
 
 use vars qw($CreoleLineBreaks);
 
@@ -42,9 +42,14 @@ sub CreoleHeadingRule {
 }
 
 sub CreoleRule {
+  # escape next char (and prevent // in URLs from enabling italics)
+  # ~
+  if (m/\G~($FullUrlPattern|\S)/cgo) {
+    return $1;
+  }
   # horizontal line
   # ----
-  if ($bol && m/\G(\s*\n)*[ \t]*----+[ \t]*\n?/cg
+  elsif ($bol && m/\G(\s*\n)*[ \t]*----+[ \t]*\n?/cg
       or m/\G\s*\n----+[ \t]*\n?/cg ) {
     return CloseHtmlEnvironments() . $q->hr()
       . AddHtmlEnvironment('p');
