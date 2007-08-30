@@ -2,7 +2,7 @@
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation; either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -11,14 +11,11 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 79;
+use Test::More tests => 85;
 clear_pages();
 
 add_module('creole.pl');
@@ -126,6 +123,14 @@ foo<hr />
 <table class="user"><tr><td>a</td><td colspan="2">c</td></tr><tr><td colspan="2">e</td><td>f</td></tr></table>
 |a
 <table class="user"><tr><td>a</td></tr></table>
+~#1
+#1
+~http://www.foo.com/
+http://www.foo.com/
+~CamelCaseLink
+CamelCaseLink
+~ does not escape whitespace
+~ does not escape whitespace
 EOT
 
 $CreoleLineBreaks = 1;
@@ -193,6 +198,10 @@ http://www.wikicreole.org/.
 //table[@class="user"]/tr/td/a[@class="url http outside"][@href="http://www.wikicreole.org/"][text()="Visit the WikiCreole website"]
 |[[http://www.wikicreole.org/| Visit the WikiCreole website]]
 //table[@class="user"]/tr/td/a[@class="url http outside"][@href="http://www.wikicreole.org/"][text()="Visit the WikiCreole website"]
+http://www.foo.com/~bar/
+//a[@class="url http"][@href="http://www.foo.com/~bar/"][text()="http://www.foo.com/~bar/"]
+InterMap
+//a[@class="local"][@href="http://localhost/test.pl/InterMap"][text()="InterMap"]
 EOT
 
 xpath_test(update_page('test','{{pic}}'),
