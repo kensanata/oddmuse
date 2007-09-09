@@ -29,8 +29,9 @@
 
 #	Requires MultiMarkdown 2.0.a2 or higher
 
+#	TODO: auto links in codespans should not be interpreted  (e.g. `<http://somelink/>`)
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.40 2007/09/09 20:58:44 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.41 2007/09/09 21:26:57 fletcherpenney Exp $</p>';
 
 use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled $SmartyPantsEnabled!;
 
