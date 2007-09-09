@@ -30,7 +30,7 @@
 #	Requires MultiMarkdown 2.0.a2 or higher
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.39 2007/09/09 16:13:22 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.40 2007/09/09 20:58:44 fletcherpenney Exp $</p>';
 
 use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled $SmartyPantsEnabled!;
 
@@ -142,12 +142,15 @@ sub MarkdownGetCluster {
 # routine, so I am disabling it for now, and will have to "re-fix things" when
 # I figure out if anything is now broken....
 
-
-*xxQuoteHtml = *MarkdownQuoteHtml;
+*oldQuoteHtml = *QuoteHtml;
+*QuoteHtml = *MarkdownQuoteHtml;
 
 sub MarkdownQuoteHtml {
 	my $html = shift;
 
+	$html = oldQuoteHtml($html);
+	
+#	$html =~ /&lt;http\;
 	return $html;
 }
 
@@ -202,7 +205,7 @@ sub DoWikiWords {
 		}{
 			my $label = $1;
 			$label =~ s{
-				([\s\>])($WikiWord)
+				([\s\&gt;])($WikiWord)
 			}{
 				$1 ."\\" . $2
 			}xsge;
@@ -242,7 +245,7 @@ sub DoWikiWords {
 	# WikiWords
 	if ($WikiLinks) {
 		$text =~ s{
-			([\s\>])($WikiWord\b)
+			([\s\&gt;])($WikiWord\b)
 		}{
 			$1 . CreateWikiLink($2)
 		}xsge;
@@ -401,7 +404,7 @@ sub AntiSpam {
 sub NewDoAutoLinks {
 	my $text = shift;
 
-	$text =~ s{&lt;((https?|ftp|dict):[^'">\s]+)>}{<a href="$1">$1</a>}gi;
+	$text =~ s{&lt;((https?|ftp|dict):[^'">\s]+)&gt;}{<a href="$1">$1</a>}gi;
 
 	# Email addresses: <address@domain.foo>
 	$text =~ s{
@@ -412,7 +415,7 @@ sub NewDoAutoLinks {
 			\@
 			[-a-z0-9]+(\.[-a-z0-9]+)*\.[a-z]+
 		)
-		>
+		&gt;
 	}{
 		Markdown::_EncodeEmailAddress( Markdown::_UnescapeSpecialChars($1) );
 	}egix;
