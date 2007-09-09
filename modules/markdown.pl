@@ -30,7 +30,7 @@
 #	Requires MultiMarkdown 2.0.a2 or higher
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.38 2007/09/09 15:36:42 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.39 2007/09/09 16:13:22 fletcherpenney Exp $</p>';
 
 use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled $SmartyPantsEnabled!;
 
@@ -365,8 +365,10 @@ sub NewDoHeaders {
 sub NewEncodeCode {
 	my $text = shift;
 	
-	# Undo sanitization of '<'
+	# Undo sanitization of '<, >, and &' (necessary due to a change in how Oddmuse works)
 	$text =~ s/&lt;/</g;
+	$text =~ s/&gt;/>/g;
+	$text =~ s/&amp;/&/g;
 	
 	$text = OldEncodeCode($text);
 	
