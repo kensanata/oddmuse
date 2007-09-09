@@ -30,7 +30,7 @@
 #	Requires MultiMarkdown 2.0.a2 or higher
 
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.37 2007/04/02 16:10:19 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.38 2007/09/09 15:36:42 fletcherpenney Exp $</p>';
 
 use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled $SmartyPantsEnabled!;
 
@@ -133,7 +133,17 @@ sub MarkdownGetCluster {
 
 
 # Let Markdown handle special characters, rather than OddMuse
-*QuoteHtml = *MarkdownQuoteHtml;
+
+# This opened up a security flaw whereby a user's input (e.g. search string)
+# would be displayed as raw HTML).
+#
+# It also appears that Alex has changed the way Oddmuse works, so I can't seem
+# to provide a workaround at this time. I don't remember why I had to add this
+# routine, so I am disabling it for now, and will have to "re-fix things" when
+# I figure out if anything is now broken....
+
+
+*xxQuoteHtml = *MarkdownQuoteHtml;
 
 sub MarkdownQuoteHtml {
 	my $html = shift;
@@ -232,7 +242,7 @@ sub DoWikiWords {
 	# WikiWords
 	if ($WikiLinks) {
 		$text =~ s{
-			([\s\>])($WikiWord)
+			([\s\>])($WikiWord\b)
 		}{
 			$1 . CreateWikiLink($2)
 		}xsge;
