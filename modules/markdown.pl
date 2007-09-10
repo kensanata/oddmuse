@@ -31,7 +31,7 @@
 
 #	TODO: auto links in codespans should not be interpreted  (e.g. `<http://somelink/>`)
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.41 2007/09/09 21:26:57 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.42 2007/09/10 19:32:30 fletcherpenney Exp $</p>';
 
 use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled $SmartyPantsEnabled!;
 
@@ -149,9 +149,11 @@ sub MarkdownGetCluster {
 sub MarkdownQuoteHtml {
 	my $html = shift;
 
-	$html = oldQuoteHtml($html);
-	
-#	$html =~ /&lt;http\;
+	$html =~ s/&/&amp;/g;
+	$html =~ s/</&lt;/g;
+#	$html =~ s/>/&gt;/g;
+	$html =~ s/[\x00-\x08\x0b\x0c\x0e-\x1f]/ /g; # legal xml: #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
+
 	return $html;
 }
 
@@ -405,7 +407,7 @@ sub AntiSpam {
 sub NewDoAutoLinks {
 	my $text = shift;
 
-	$text =~ s{&lt;((https?|ftp|dict):[^'">\s]+)&gt;}{<a href="$1">$1</a>}gi;
+	$text =~ s{&lt;((https?|ftp|dict):[^'">\s(&gt;)]+)>}{<a href="$1">$1</a>}gi;
 
 	# Email addresses: <address@domain.foo>
 	$text =~ s{
@@ -416,7 +418,7 @@ sub NewDoAutoLinks {
 			\@
 			[-a-z0-9]+(\.[-a-z0-9]+)*\.[a-z]+
 		)
-		&gt;
+		>
 	}{
 		Markdown::_EncodeEmailAddress( Markdown::_UnescapeSpecialChars($1) );
 	}egix;
