@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: commentcount.pl,v 1.8 2005/08/15 14:54:00 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: commentcount.pl,v 1.9 2007/09/10 03:52:58 fletcherpenney Exp $</p>';
 
 *OldCommentcountAddComment = *AddComment;
 *AddComment = *NewCommentcountAddComment;
@@ -28,12 +28,12 @@ sub NewCommentcountAddComment {
     # no comment added
   } else {
     my $num = $new;
-    if($num =~ /### (\d+) Comments?\. ###/) {
+    if($num =~ /=== (\d+) Comments?\. ===/) {
       $num = $1;
       $num++;
-      $new =~ s/### (\d+) Comments?\. ###/### $num Comments. ###/;
+      $new =~ s/=== (\d+) Comments?\. ===/=== $num Comments. ===/;
     } else {
-      $new = "### 1 Comment. ###\n" . $new;
+      $new = "=== 1 Comment. ===\n" . $new;
     }
   }
   return $new;
@@ -50,7 +50,7 @@ sub NewCommentcountScriptLink {
     $id =~ s/%([0-9a-f][0-9a-f])/chr(hex($1))/ge; # undo urlencode
     my $comments = GetPageContent($id);
     my $num = 0;
-    if($comments =~ /### (\d+) Comments?\. ###/) {
+    if($comments =~ /=== (\d+) Comments?\. ===/) {
       $num = $1;
     }
     # Fix plurals
