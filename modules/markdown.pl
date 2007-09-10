@@ -31,7 +31,7 @@
 
 #	TODO: auto links in codespans should not be interpreted  (e.g. `<http://somelink/>`)
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.42 2007/09/10 19:32:30 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.43 2007/09/10 19:52:50 fletcherpenney Exp $</p>';
 
 use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled $SmartyPantsEnabled!;
 
@@ -373,7 +373,7 @@ sub NewEncodeCode {
 	
 	# Undo sanitization of '<, >, and &' (necessary due to a change in how Oddmuse works)
 	$text =~ s/&lt;/</g;
-	$text =~ s/&gt;/>/g;
+#	$text =~ s/&gt;/>/g;
 	$text =~ s/&amp;/&/g;
 	
 	$text = OldEncodeCode($text);
@@ -407,7 +407,8 @@ sub AntiSpam {
 sub NewDoAutoLinks {
 	my $text = shift;
 
-	$text =~ s{&lt;((https?|ftp|dict):[^'">\s(&gt;)]+)>}{<a href="$1">$1</a>}gi;
+	# Added > to the excluded characters list for Oddmuse compatibility
+	$text =~ s{&lt;((https?|ftp|dict):[^'"<>\s]+)\>}{<a href="$1">$1</a>}gi; 
 
 	# Email addresses: <address@domain.foo>
 	$text =~ s{
