@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 6;
+use Test::More tests => 7;
 
 clear_pages();
 
@@ -35,3 +35,7 @@ test_page(get_page('action=browse diff=1 id=xah'),
 	  '<strong class="changes">they were in</strong>',
 	  '<strong class="changes">leaders</strong>',
 	 );
+update_page('code', 'This is the & character.');
+update_page('code', 'This is the <code>&</code> character.');
+test_page(get_page('action=browse diff=1 id=code'),
+	  '<strong class="changes">&lt;code&gt;</strong>&amp;<strong class="changes">&lt;/code&gt;</strong>');
