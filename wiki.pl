@@ -273,7 +273,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.806 2007/08/17 12:39:42 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.807 2007/09/12 09:07:08 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -563,9 +563,9 @@ sub LinkRules {
       $rest = $1;                    # back again at the end as trailing text.
       $url =~ s/&(lt|gt|amp)$//;
     }
-    if ($bracket and not $text) { # [URL] is dirty because the number may change
+    if ($bracket and not defined $text) { # [URL] is dirty because the number may change
       Dirty($str);
-      print GetUrl($url, '', 1), $rest;
+      print GetUrl($url, $text, $bracket), $rest;
     } else {
       Clean(GetUrl($url, $text, $bracket, not $bracket) . $rest); # $text may be empty, no images in brackets
     }
@@ -595,7 +595,7 @@ sub LinkRules {
 	   && ($BracketWiki && m/\G(\[\[$FreeLinkPattern\|([^\]]+)\]\])/cog
 	       or m/\G(\[\[\[$FreeLinkPattern\]\]\])/cog
 	       or m/\G(\[\[$FreeLinkPattern\]\])/cog)) {
-    # [[Free Link|text]], [[Free Link]]
+    # [[Free Link|text]], [[[Free Link]]], [[Free Link]]
     Dirty($1);
     my $bracket = (substr($1, 0, 3) eq '[[[');
     print GetPageOrEditLink($2, $3, $bracket, 1); # $3 may be empty
@@ -1113,10 +1113,10 @@ sub GetUrl {
       or !$NetworkFile && $url =~ m|^file:|) {
     # Only do remote file:// links. No file:///c|/windows.
     return $url;
-  } elsif ($bracket && !$text) {
+  } elsif ($bracket and not defined $text) {
     $text = BracketLink(++$FootnoteNumber);
     $class .= ' number';
-  } elsif (!$text) {
+  } elsif (not defined $text) {
     $text = $url;
   } elsif ($bracket) { # and $text is set
     $class .= ' outside';
