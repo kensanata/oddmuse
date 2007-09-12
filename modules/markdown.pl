@@ -31,7 +31,7 @@
 
 #	TODO: auto links in codespans should not be interpreted  (e.g. `<http://somelink/>`)
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.43 2007/09/10 19:52:50 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: markdown.pl,v 1.44 2007/09/12 05:02:13 fletcherpenney Exp $</p>';
 
 use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled $SmartyPantsEnabled!;
 
@@ -46,7 +46,7 @@ $TempNoWikiWords = 0;
 
 sub MarkdownRule {
 	# Allow journal pages	
-	if (m/\G(\<journal(\s+(\d*))?(\s+"(.*)")?(\s+(reverse))?\>[ \t]*\n?)/cgi) {
+	if (m/\G(&lt;journal(\s+(\d*))?(\s+"(.*)")?(\s+(reverse))?\>[ \t]*\n?)/cgi) {
        # <journal 10 "regexp"> includes 10 pages matching regexp
         Clean(CloseHtmlEnvironments());
         Dirty($1);
