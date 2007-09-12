@@ -56,6 +56,11 @@
 
 	* modules/toc.pl (TocInit): Moved some init code here.
 
+	* wiki.pl (DoSearch): Bugfix: Print headers if raw=1 and context=0.
+
+	* modules/search-freetext.pl (NewSearchFreeTextTitleAndBody): Do
+	not limit the number of items returned when producing raw output.
+
 2007-08-16  Alex Schroeder  <alex@gnu.org>
 
 	* modules/tables-long.pl (TablesLongRow): Localize
