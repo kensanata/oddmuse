@@ -273,7 +273,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.807 2007/09/12 09:07:08 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.808 2007/09/12 12:17:38 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2502,8 +2502,7 @@ sub ImproveDiff { # NO NEED TO BE called within a diff lock
 }
 
 sub DiffMarkWords {
-  my $old = DiffStripPrefix(shift);
-  my $new = DiffStripPrefix(shift);
+  my ($old, $new) = map { DiffStripPrefix($_) } @_;
   my @diffs = grep(/^\d/, split(/\n/, DoDiff(join("\n",split(/\s+|\b/,$old)) . "\n",
 					     join("\n",split(/\s+|\b/,$new)) . "\n")));
   foreach my $diff (reverse @diffs) { # so that new html tags don't confuse word counts
@@ -2526,7 +2525,10 @@ sub DiffHtmlMarkWords {
   my @fragments = split(/(\s+|\b)/, $text);
   splice(@fragments, 2 * ($start - 1), 0, '<strong class="changes">');
   splice(@fragments, 2 * $end, 0, '</strong>');
-  return join('', @fragments);
+  my $result = join('', @fragments);
+  $result =~ s!&<(/?)strong([^>]*)>(amp|[gl]t);!<$1strong$2>&$3;!g;
+  $result =~ s!&(amp|[gl]t)<(/?)strong([^>]*)>;!&$1;<$2strong$3>!g;
+  return $result;
 }
 
 sub DiffStripPrefix {
