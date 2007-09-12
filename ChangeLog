@@ -1,3 +1,8 @@
+2007-09-12  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (LinkRules, GetUrl): Handle the difference between
+	undefined text and "0".
+
 2007-08-30  Alex Schroeder  <alex@gnu.org>
 
 	* modules/creole.pl (CreoleRule): Added ~ rule.
