@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 53;
+use Test::More tests => 55;
 
 clear_pages();
 
@@ -62,6 +62,10 @@ free link with other text: [[other page|da other homepage]]
 //text()[string()="free link with other text: [[other page|da other homepage]]"]
 URL: http://www.oddmuse.org/
 //a[@class="url http"][@href="http://www.oddmuse.org/"][text()="http://www.oddmuse.org/"]
+URL with text: [http://www.oddmuse.org/ name]
+//a[@class="url http outside"][@href="http://www.oddmuse.org/"][text()="name"]
+zero is text: [http://www.oddmuse.org/ 0]
+//a[@class="url http outside"][@href="http://www.oddmuse.org/"][text()="0"]
 URL in text http://www.oddmuse.org/ like this
 //text()[string()="URL in text "]/following-sibling::a[@class="url http"][@href="http://www.oddmuse.org/"][text()="http://www.oddmuse.org/"]/following-sibling::text()[string()=" like this"]
 URL in brackets: [http://www.oddmuse.org/]
