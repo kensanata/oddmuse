@@ -2,6 +2,9 @@
 
 	* wiki.pl (LinkRules, GetUrl): Handle the difference between
 	undefined text and "0".
+	(DiffMarkWords): Tighter.
+	(DiffHtmlMarkWords): Fix named entities if they have been pulled
+	appart by the diff highlighting.
 
 2007-08-30  Alex Schroeder  <alex@gnu.org>
 
