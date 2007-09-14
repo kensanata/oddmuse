@@ -1,4 +1,4 @@
-# Copyright (C) 2004, 2006  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2006, 2007  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.53 2007/08/17 12:26:50 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.54 2007/09/14 20:17:58 as Exp $</p>';
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -182,15 +182,21 @@ sub NewSearchFreeTextTitleAndBody {
   my $limit = GetParam('limit', $SearchFreeTextNum);
   my $max = $page * $limit - 1;
   my @wanted = $term  =~ m/(".*?"|tag:".*?"|\S+)/g;
-  my @wanted_words = grep(!/^tag:/, @wanted);
+  my @wanted_words = grep(!/^-?tag:/, @wanted);
   my @wanted_tags = map { substr($_, 4) } grep(/^tag:/, @wanted);
+  my @unwanted_tags = map { substr($_, 5) } grep(/^-tag:/, @wanted);
   my @words = SearchFreeTextGet(SearchFreeTextDB($DataDir . '/word.db'), 0,
 				@wanted_words);
   my @tags = SearchFreeTextGet(SearchFreeTextDB($DataDir . '/tags.db'), 1,
 			       @wanted_tags);
+  my @excluded_tags = SearchFreeTextGet(SearchFreeTextDB($DataDir . '/tags.db'), 1,
+			       @unwanted_tags);
   my @result = ();
-  if (not @wanted_words and not @wanted_tags) {
+  if (not @wanted_words and not @wanted_tags and not @excluded_tags) {
     # do nothing
+  } elsif (not @wanted_words and not @wanted_tags and @excluded_tags) {
+    # exclude comes later
+    @result = AllPagesList();
   } elsif (@wanted_words and not @wanted_tags) {
     @result = @words;
   } elsif (not @wanted_words and @wanted_tags) {
@@ -202,6 +208,15 @@ sub NewSearchFreeTextTitleAndBody {
     foreach my $id (@tags) {
       push @result, $id if $hash{$id};
     }
+  }
+  if (@excluded_tags) {
+    # remove matching pages without disturbing the order of @result!
+    my %hash = map { $_ => 1 } @excluded_tags;
+    my @copy = ();
+    foreach my $id (@result) {
+      unshift(@copy,$id) unless $hash{$id};
+    }
+    @result = @copy;
   }
   my $raw = GetParam('raw','');
   # limit to the result page requested
