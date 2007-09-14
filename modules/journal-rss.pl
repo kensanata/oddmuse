@@ -1,4 +1,4 @@
-# Copyright (C) 2004, 2006  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2006, 2007  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.15 2007/02/20 14:08:21 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.16 2007/09/14 21:18:58 as Exp $</p>';
 
 $Action{journal} = \&DoJournalRss;
 
@@ -31,8 +31,9 @@ sub DoJournalRss {
   local $CollectingJournal = 1;
   my $num = GetParam('rsslimit', 10);
   my $match = GetParam('match', '^\d\d\d\d-\d\d-\d\d');
+  my $search = GetParam('search', '');
   my $reverse = GetParam('reverse', 0);
-  my @pages = (grep(/$match/, AllPagesList()));
+  my @pages = (grep(/$match/, $search ? SearchTitleAndBody($search) : AllPagesList()));
   if (defined &JournalSort) {
     @pages = sort JournalSort @pages;
   } else {
