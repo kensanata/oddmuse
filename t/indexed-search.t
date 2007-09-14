@@ -1,4 +1,4 @@
-# Copyright (C) 2006  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006, 2007  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 31;
+use Test::More tests => 33;
 
 SKIP: {
   eval { require Search::FreeText };
@@ -87,4 +87,8 @@ SKIP: {
 	    quotemeta('Search_(and_replace)'));
   test_page(get_page('action=cloud'),
 	    'search=tag:%c3%96l', 'search=tag:test', 'search=tag:be3');
+  test_page_negative(get_page('search=-tag:%c3%96l raw=1'),
+		     quotemeta('Search_(and_replace)'));
+  test_page(get_page('search=-tag:test raw=1'),
+	    quotemeta('alex_pic'));
 }
