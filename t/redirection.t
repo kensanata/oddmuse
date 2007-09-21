@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 18;
+use Test::More tests => 24;
 
 clear_pages();
 
@@ -27,6 +27,10 @@ update_page('John_Coltrane', '#REDIRECT Coltrane'); # no redirect
 update_page('Sonny_Stitt', '#REDIRECT [[Stitt]]'); # redirect
 update_page('Keith_Jarret', 'Plays with [[Gary Peacock]]'); # link to perm. anchor
 update_page('Jack_DeJohnette', 'A friend of [::Gary Peacock]'); # define perm. anchor
+update_page('InterMap', ' Rock http://rock.com/', 0, 0, 1); # interlink
+update_page('Cannonball_Adderley', '#REDIRECT Rock:Cannonball_Adderley');
+update_page('Cannonball', '#REDIRECT Rock:Cannonball');
+update_page('Adderley', '#REDIRECT [[Rock:Cannonball]]');
 
 test_page(get_page('Miles_Davis'), ('Featuring', 'John Coltrane'));
 test_page(get_page('John_Coltrane'), ('#REDIRECT Coltrane'));
@@ -43,3 +47,9 @@ test_page(update_page('Jack_DeJohnette', 'A friend of Gary Peacock.'),
 	  'A friend of Gary Peacock.');
 test_page(get_page('Keith_Jarret'),
 	  ('wiki.pl\?action=edit;id=Gary_Peacock'));
+test_page(get_page('Cannonball_Adderley'),
+	  ('Status: 302', 'Location: http://rock.com/Cannonball_Adderley'));
+test_page(get_page('Cannonball'),
+	  ('Status: 302', 'Location: http://rock.com/Cannonball'));
+test_page(get_page('Adderley'),
+	  ('Status: 302', 'Location: http://rock.com/Cannonball'));
