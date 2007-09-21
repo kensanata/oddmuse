@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 22;
+use Test::More tests => 24;
 clear_pages();
 
 add_module('namespaces.pl');
@@ -37,6 +37,9 @@ test_page(update_page('Test', 'Mooo!', 'muu ns', undef, undef, 'ns=Muu'),
 test_page(get_page('action=browse id=Test ns=Muu'),
 	  '<title>Wiki Muu: Test</title>',
 	  '<p>Mooo!</p>');
+update_page('Mu', '#REDIRECT Muu:Mu');
+test_page(get_page('action=browse id=Mu'),
+	  ('Status: 302', 'Location: http://localhost/wiki.pl/Muu/Mu'));
 test_page(get_page('action=browse id=Test ns=Main'),
 	  '<title>Wiki: Test</title>',
 	  '<p>Muuu!</p>');
