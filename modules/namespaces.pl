@@ -16,7 +16,30 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.32 2007/06/02 19:19:24 as Exp $</p>';
+=head1 Namespaces Extension
+
+This module allows you to create namespaces in Oddmuse. The effect is
+that C<http://localhost/cgi-bin/wiki/Claudia/HomePage> and
+C<http://localhost/cgi-bin/wiki/Alex/HomePage> are two different
+pages. The first URL points to the C<HomePage> in the C<Claudia>
+namespace, the second URL points to the C<HomePage> in the C<Alex>
+namespace. Both namespaces have their own list of pages and their own
+list of changes, and so on.
+
+C<http://localhost/cgi-bin/wiki/HomePage> points to the C<HomePage> in
+the "main" namespace. It is usually named C<Main>. The name can be
+changed using the C<$NamespacesMain> option.
+
+URL abbreviations will automatically be created for you. Thus, you can
+link to the various pages using C<Claudia:HomePage>, C<Alex:HomePage>,
+and C<Main:HomePage>. An additional abbreviation is also created
+automatically: C<Self>. You can use it to link to actions such as
+C<Self:action=index>. The name of this self-referring abbreviation can
+be changed using the C<$NamespacesSelf> option.
+
+=cut
+
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.33 2007/09/24 08:29:31 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent $NamespaceRoot $NamespaceSlashing);
 
@@ -227,6 +250,14 @@ sub NewNamespaceScriptLink {
   } elsif ($action =~ /(.*?)\b($InterSitePattern)\/(.*)/) {
     $ScriptName .= '/' . $2;
     $action = $1 . $3;
+  } elsif ($action =~ /(.*?)\b($InterSitePattern)%3a(.*)/ #REDIRECT
+	   and "$2:$3" eq GetParam('oldid', '')) {
+    if ($2 eq $NamespacesMain) {
+      $ScriptName = $NamespaceRoot;
+    } else {
+      $ScriptName = $NamespaceRoot . '/' . $2;
+    }
+    $action = $1 . $3;
   }
   return OldNamespaceScriptLink($action, @rest);
 }
@@ -234,4 +265,25 @@ sub NewNamespaceScriptLink {
 sub NamespaceValidId {
   # don't do this test when printing recent changes because of the
   # spliced in slash -- return nothing.
+}
+
+*OldNamespaceBrowsePage = *BrowsePage;
+*BrowsePage = *NewNamespaceBrowsePage;
+
+sub NewNamespaceBrowsePage {
+  #REDIRECT into different namespaces
+  my ($id, $raw, $comment, $status) = @_;
+  OpenPage($id);
+  my ($text, $revision) = GetTextRevision(GetParam('revision', ''));
+  my $oldId = GetParam('oldid', '');
+  if (not $oldId and not $revision and (substr($text, 0, 10) eq '#REDIRECT ')
+      and (($WikiLinks and $text =~ /^\#REDIRECT\s+$InterLinkPattern/)
+	   or ($WikiLinks and $text =~ /^\#REDIRECT\s+\[\[$FreeInterLinkPattern\]\]/))) {
+    my ($ns, $page) = map { UrlEncode($_) } split(/:/, FreeToNormal($1));
+    $oldid = ($NamespaceCurrent || $NamespacesMain) . ':' . $id;
+    local $ScriptName = $NamespaceRoot || $ScriptName;
+    print GetRedirectPage("action=browse;ns=$ns;oldid=$oldid;id=$page", $id);
+  } else {
+    return OldNamespaceBrowsePage(@_);
+  }
 }
