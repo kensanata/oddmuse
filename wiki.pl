@@ -273,7 +273,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.808 2007/09/12 12:17:38 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.809 2007/09/24 08:24:32 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1385,8 +1385,7 @@ sub BrowsePage {
   if (not $oldId and not $revision and (substr($text, 0, 10) eq '#REDIRECT ')) {
     if (($FreeLinks and $text =~ /^\#REDIRECT\s+\[\[$FreeLinkPattern\]\]/)
 	or ($WikiLinks and $text =~ /^\#REDIRECT\s+$LinkPattern/)) {
-      ReBrowsePage(FreeToNormal($1), $id); # trim extra whitespace from $1, prevent loops with $id
-      return;
+      return ReBrowsePage(FreeToNormal($1), $id); # trim extra whitespace from $1, prevent loops with $id
     }
   }
   # shortcut if we only need the raw text: no caching, no diffs, no html.
