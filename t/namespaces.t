@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 24;
+use Test::More tests => 29;
 clear_pages();
 
 add_module('namespaces.pl');
@@ -37,9 +37,26 @@ test_page(update_page('Test', 'Mooo!', 'muu ns', undef, undef, 'ns=Muu'),
 test_page(get_page('action=browse id=Test ns=Muu'),
 	  '<title>Wiki Muu: Test</title>',
 	  '<p>Mooo!</p>');
+# redirect from Main:Mu to Muu:Mu
 update_page('Mu', '#REDIRECT Muu:Mu');
 test_page(get_page('action=browse id=Mu'),
-	  ('Status: 302', 'Location: http://localhost/wiki.pl/Muu/Mu'));
+	  ('Status: 302',
+	   'Location: http://localhost/wiki.pl\?action=browse;ns=Muu;oldid=Main:Mu;id=Mu'));
+# check the edit link
+xpath_test(get_page('action=browse id=Mu ns=Muu oldid=Main:Mu'),
+	  '//div[@class="message"]/p[contains(text(),"redirected from")]/a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/wiki.pl?action=edit;id=Mu"][text()="Main:Mu"]');
+# redirect from Muu:Mu
+update_page('Mu', '#REDIRECT Ford:Goo', undef, undef, undef, 'ns=Muu');
+test_page(get_page('action=browse id=Mu ns=Muu'),
+	  ('Status: 302',
+	   'Location: http://localhost/wiki.pl\?action=browse;ns=Ford;oldid=Muu:Mu;id=Goo'));
+# check the edit link
+xpath_test(get_page('action=browse id=Goo ns=Ford oldid=Muu:Mu'),
+	  '//div[@class="message"]/p[contains(text(),"redirected from")]/a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/wiki.pl/Muu?action=edit;id=Mu"][text()="Muu:Mu"]');
+# check Main:Mu and verify that only a single redirection hop is allowed
+xpath_test(get_page('action=browse id=Mu ns=Muu oldid=Main:Mu'),
+	   '//div/p[contains(text(),"#REDIRECT")]/a[@href="http://localhost/wiki.pl/Ford/Goo"][@class="inter Ford"]/span[@class="site"][text()="Ford"]/following-sibling::span[@class="page"][text()="Goo"]');
+# continue with regular tests
 test_page(get_page('action=browse id=Test ns=Main'),
 	  '<title>Wiki: Test</title>',
 	  '<p>Muuu!</p>');
