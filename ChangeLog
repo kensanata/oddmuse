@@ -1,4 +1,19 @@
+2007-09-24  Alex Schroeder  <alex@gnu.org>
+
+	* modules/namespaces.pl: Added some POD documentation.
+	(NewNamespaceScriptLink): Added edit backlink for interlink
+	redirection.
+	(NewNamespaceBrowsePage): Replaces BrowsePage; adds redirection
+	for interlinks.
+
+2007-09-21  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (BrowsePage): Add support for interlink redirection. The
+	userinterface sucks, however. How will you ever get rid of it?
+
 2007-09-14  Alex Schroeder  <alex@gnu.org>
+
+	* modules/journal-rss.pl (DoJournalRss): Added search parameter.
 
 	* modules/search-freetext.pl (NewSearchFreeTextTitleAndBody):
 	Added unwanted tags using -tag:foo syntax.
