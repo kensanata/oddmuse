@@ -76,7 +76,7 @@ xpath_test(get_page('action=rc'),
 	   '//a[@class="local"][@href="http://localhost/wiki.pl/Test"][text()="Test"]',
 	   '//a[@class="history"][@href="http://localhost/wiki.pl?action=history;id=Test"][text()="history"]',
 	   '//a[@class="diff"][@href="http://localhost/wiki.pl?action=browse;diff=1;id=Test"][text()="diff"]',
-	   '//a[@class="local"][@href="http://localhost/wiki.pl/Muu/Test"][text()="Muu/Test"]',
+	   '//a[@class="local"][@href="http://localhost/wiki.pl/Muu/Test"][text()="Muu:Test"]',
 	   '//a[@class="history"][@href="http://localhost/wiki.pl/Muu?action=history;id=Test"][text()="history"]',
 	   '//a[@class="diff"][@href="http://localhost/wiki.pl/Muu?action=browse;diff=1;id=Test"][text()="diff"]',
 	  );
