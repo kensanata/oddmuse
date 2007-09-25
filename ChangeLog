@@ -1,5 +1,9 @@
 2007-09-24  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (ApplyRules): Add a pattern for #REDIRECT in order to
+	prevent mismatches for non-existing link-patterns.
+	(BrowsePage): Add explanation for failed redirections.
+
 	* modules/namespaces.pl: Added some POD documentation.
 	(NewNamespaceScriptLink): Added edit backlink for interlink
 	redirection.
