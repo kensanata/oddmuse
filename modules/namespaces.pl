@@ -27,7 +27,7 @@ namespace. Both namespaces have their own list of pages and their own
 list of changes, and so on.
 
 C<http://localhost/cgi-bin/wiki/HomePage> points to the C<HomePage> in
-the "main" namespace. It is usually named C<Main>. The name can be
+the main namespace. It is usually named C<Main>. The name can be
 changed using the C<$NamespacesMain> option.
 
 URL abbreviations will automatically be created for you. Thus, you can
@@ -39,16 +39,17 @@ be changed using the C<$NamespacesSelf> option.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.33 2007/09/24 08:29:31 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.34 2007/09/25 15:32:30 as Exp $</p>';
 
-use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent $NamespaceRoot $NamespaceSlashing);
+use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent
+	    $NamespaceRoot $NamespaceSlashing);
 
 $NamespacesMain = 'Main'; # to get back to the main namespace
 $NamespacesSelf = 'Self'; # for your own namespace
-$NamespaceCurrent = '';   # will be automatically set to the current namespace, if any
-$NamespaceRoot = '';      # will be automatically set to the original $ScriptName
+$NamespaceCurrent = '';   # the current namespace, if any
+$NamespaceRoot = '';      # the original $ScriptName
 
-$NamespaceSlashing = 0;   # When set, UrlEncode will immediately decode the / added by NamespaceRcLines
+$NamespaceSlashing = 0;   # affects : decoding NamespaceRcLines
 
 # try to do it before any other module starts meddling with the
 # variables (eg. localnames.pl)
@@ -126,6 +127,23 @@ sub NamespacesInitVariables {
   }
 }
 
+=head2 RecentChanges
+
+RecentChanges in the main namespace will list changes to all the
+namespaces. In order to limit it to the changes in the main namespace
+itself, you need to use the local=1 parameter. Example:
+
+C<http://localhost/cgi-bin/wiki?action=rc;local=1>
+
+First we need to read all the C<rc.log> files from the various
+namespace directories. If the first entry in the log file is not old
+enough, we need to prepend the C<oldrc.log> file.
+
+The tricky part is how to introduce the namespace prefixes to the
+links to be printed without copying the whole machinery.
+
+=cut
+
 *OldNamespaceDoRc = *DoRc;
 *DoRc = *NewNamespaceDoRc;
 
@@ -193,23 +211,37 @@ sub NewNamespaceDoRc { # Copy of DoRc
   print GetFilterForm() if $showHTML;
 }
 
+=head2 Adding the namespace to pagenames
+
+C<NamespaceRcLines> is a copy of C<GetRcLines> with all the tricky
+details. And in addition to all that, it prefixes every pagename with
+the namespace and a colon, ie. C<Alex:HomePage>. This provides
+C<NewNamespaceScriptLink> with the necessary information to build the
+correct URL to link to.
+
+=cut
+
 sub NamespaceRcLines {
   my ($file, $starttime, $ns) = @_;
   open(F,$file) or return (0, ());
   my $line = <F> or return (0, ());
   chomp($line);
-  my ($ts, $pagename, $minor, $summary, $host, $username, $rest) = split(/$FS/, $line);
+  my ($ts, $pagename, $minor, $summary, $host, $username, $rest)
+    = split(/$FS/, $line);
   my $first = $ts;
   my @result = ();
   while ($ts) {
-    # here we add the namespace to the pagename and username, but this
-    # will never work, we need to fix this later in ScriptLink!
-    push(@result, join($FS, $ts, ($ns ? ($ns . '/' . $pagename) : $pagename), $minor, $summary, $host,
-                       ($ns && $username ? ($ns . '/' . $username) : $username), $rest))
+    # Add the namespace to the pagename and username -- we need this
+    # information in ScriptLink!
+    push(@result, join($FS, $ts, ($ns ? ($ns . ':' . $pagename) : $pagename),
+		       $minor, $summary, $host,
+                       ($ns && $username ? ($ns . ':' . $username) : $username),
+		       $rest))
       if $ts >= $starttime;
     $line = <F> or last;
     chomp($line);
-    ($ts, $pagename, $minor, $summary, $host, $username, $rest) = split(/$FS/, $line);
+    ($ts, $pagename, $minor, $summary, $host, $username, $rest)
+      = split(/$FS/, $line);
   }
   if (GetParam('all', 0) or GetParam('rollback', 0)) { # include rollbacks
     # just strip the marker left by DoRollback()
@@ -223,12 +255,21 @@ sub NamespaceRcLines {
       my ($ts, $pagename, $rest) = split(/$FS/, $result[$i]);
       splice(@result, $i + 1, $end - $i), $target = 0  if $ts <= $target;
       $target = $rest, $end = $i
-        if $pagename eq ($ns ? ($ns . '/') : '') . '[[rollback]]'
+        if $pagename eq ($ns ? ($ns . ':') : '') . '[[rollback]]'
           and (not $target or $rest < $target); # marker
     }
   }
   return ($first, @result);
 }
+
+=head2 Encoding pagenames
+
+C<NewNamespaceUrlEncode> uses C<UrlEncode> to encode pagenames, with
+one exception. If the local variable C<$NamespaceSlashing> has been
+set, the first encoded slash is converted back into an ordinary slash.
+This should preserve the slash added between namespace and pagename.
+
+=cut
 
 *OldNamespaceUrlEncode = *UrlEncode;
 *UrlEncode = *NewNamespaceUrlEncode;
@@ -242,30 +283,62 @@ sub NewNamespaceUrlEncode {
 *OldNamespaceScriptLink = *ScriptLink;
 *ScriptLink = *NewNamespaceScriptLink;
 
+=head2 Printing Links
+
+We also need to override C<ScriptLink>. This is done by
+C<NewNamespaceScriptLink>. This is where the slash in the pagename is
+used to build a new URL pointing to the appropriate page in the
+appropriate namespace.
+
+In addition to that, this function makes sure that backlinks to edit
+pages with redirections result in an appropriate URL.
+
+=cut
+
 sub NewNamespaceScriptLink {
   my ($action, @rest) = @_;
   local $ScriptName = $ScriptName;
   if ($action =~ /^($UrlProtocols)\%3a/) { # URL-encoded URL
     # do nothing
-  } elsif ($action =~ /(.*?)\b($InterSitePattern)\/(.*)/) {
-    $ScriptName .= '/' . $2;
-    $action = $1 . $3;
-  } elsif ($action =~ /(.*?)\b($InterSitePattern)%3a(.*)/ #REDIRECT
-	   and "$2:$3" eq GetParam('oldid', '')) {
-    if ($2 eq $NamespacesMain) {
-      $ScriptName = $NamespaceRoot;
+  } elsif ($action =~ /(.*?)\b($InterSitePattern)%3a(.*)/) {
+    if ("$2:$3" eq GetParam('oldid', '')) {
+      if ($2 eq $NamespacesMain) {
+	$ScriptName = $NamespaceRoot;
+      } else {
+	$ScriptName = $NamespaceRoot . '/' . $2;
+      }
     } else {
-      $ScriptName = $NamespaceRoot . '/' . $2;
+      $ScriptName .= '/' . $2;
     }
     $action = $1 . $3;
   }
   return OldNamespaceScriptLink($action, @rest);
 }
 
-sub NamespaceValidId {
-  # don't do this test when printing recent changes because of the
-  # spliced in slash -- return nothing.
-}
+=head2 Invalid Pagenames
+
+Since the adding of a namespace and colon makes all these new
+pagenames invalid, C<NamespaceValidId> is overridden with an empty
+function called C<NamespaceValidId> while C<NewNamespaceDoRc> is
+running.
+
+=cut
+
+sub NamespaceValidId {}
+
+=head2 Redirection User Interface
+
+When redirection form page A to B, you will never see the link "Edit
+this page" at the bottom of page A. Therefore Oddmuse adds a link at
+the top of page B (if you arrived there via a redirection), linking to
+the edit page for A. C<NewNamespaceBrowsePage> has the necessary code
+to make this work for redirections between namespaces. This involves
+passing namespace and pagename via the C<oldid> parameter to the next
+script invokation, where C<ScriptLink> will be used to create the
+appropriate link. This is where C<NewNamespaceScriptLink> comes into
+play.
+
+=cut
 
 *OldNamespaceBrowsePage = *BrowsePage;
 *BrowsePage = *NewNamespaceBrowsePage;
