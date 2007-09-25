@@ -273,7 +273,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.809 2007/09/24 08:24:32 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.810 2007/09/25 15:28:07 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -500,6 +500,8 @@ sub ApplyRules {
 	} else {
 	  Clean(CloseHtmlEnvironments() . $q->pre({-class=>'conflict'}, $str) . AddHtmlEnvironment('p'));
 	}
+      } elsif ($bol and m/\G#REDIRECT/cg) {
+	Clean('#REDIRECT');
       } elsif (%Smilies && m/\G$smileyregex/cog && Clean(SmileyReplace())) {
       } elsif (Clean(RunMyRules($locallinks, $withanchors))) {
       } elsif (m/\G\s*\n(\s*\n)+/cg) { # paragraphs: at least two newlines
@@ -508,9 +510,9 @@ sub ApplyRules {
 	Clean("&$1;");
       } elsif (m/\G\s+/cg) {
 	Clean(' ');
-      } elsif (m/\G([A-Za-z\x80-\xff]+([ \t]+[a-z\x80-\xff]+)*[ \t]+)/cg # multiple words but
+      } elsif (m/\G([A-Za-z\x80-\xff]+([ \t]+[a-z\x80-\xff]+)*[ \t]+)/cg
 	       or m/\G([A-Za-z\x80-\xff]+)/cg or m/\G(\S)/cg) {
-	Clean($1);		# do not match http://foo
+	Clean($1); # multiple words but do not match http://foo
       } else {
 	last;
       }
@@ -1382,11 +1384,13 @@ sub BrowsePage {
   my ($text, $revision) = GetTextRevision(GetParam('revision', ''));
   # handle a single-level redirect
   my $oldId = GetParam('oldid', '');
-  if (not $oldId and not $revision and (substr($text, 0, 10) eq '#REDIRECT ')) {
-    if (($FreeLinks and $text =~ /^\#REDIRECT\s+\[\[$FreeLinkPattern\]\]/)
-	or ($WikiLinks and $text =~ /^\#REDIRECT\s+$LinkPattern/)) {
-      return ReBrowsePage(FreeToNormal($1), $id); # trim extra whitespace from $1, prevent loops with $id
-    }
+  if ((substr($text, 0, 10) eq '#REDIRECT ')) {
+    if ($oldId) { $Message .= $q->p(T('Too many redirections')); }
+    elsif ($revision) { $Message .= $q->p(T('No redirection for old revisions')); }
+    elsif (($FreeLinks and $text =~ /^\#REDIRECT\s+\[\[$FreeLinkPattern\]\]/)
+	   or ($WikiLinks and $text =~ /^\#REDIRECT\s+$LinkPattern/)) {
+      return ReBrowsePage(FreeToNormal($1), $id); }
+    else { $Message .= $q->p(T('Invalid link pattern for #REDIRECT')); }
   }
   # shortcut if we only need the raw text: no caching, no diffs, no html.
   if ($raw) {
