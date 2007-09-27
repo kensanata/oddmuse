@@ -1,3 +1,27 @@
+2007-09-27  Alex Schroeder  <alex@gnu.org>
+
+	Major change that removes permanent anchors from the core script
+	and moves it into a module.
+	
+	* wiki.pl (@IndexOptions): New.
+	(%PermanentAnchors, $PermanentAnchors)
+	($PermanentAnchorsFile): Deleted.
+	(PermanentAnchorsInit, ReInit): PermanentAnchorsInit deleted.
+	(LinkRules): Rule for permanent anchors deleted.
+	(ResolveId): Name resolution for permanent anchors deleted.
+	(GetHistoryLink): Special handling of permanent anchors removed.
+	(DoIndex): Major rewrite using @IndexOptions, replacing all
+	permanent anchors and near links related code. Use checkboxes
+	instead of links.
+	(DoPost, DeletePage, DeletePermanentAnchors):
+	DeletePermanentAnchors deleted.
+	(PermanentAnchorsInit, WritePermanentAnchors)
+	(GetPermanentAnchor): Deleted.
+
+	* modules/permanent-anchors.pl: Moved code here and rewrote
+	it somewhat. Use @IndexOptions to reintroduce permanent anchors
+	into the list of all pages.
+	
 2007-09-24  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (ApplyRules): Add a pattern for #REDIRECT in order to
