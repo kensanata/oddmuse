@@ -181,7 +181,10 @@ EOT
 
 test_page($redirect, map { UrlEncode($_); } @Test); # test cookie!
 
-# test conflict during merging without merge! -- first get oldtime, then do two conflicting edits
+# Test conflict during merging without diff3! -- First get oldtime,
+# then do two conflicting edits, and notice how merging no longer
+# works. We remove diff3 by setting the PATH environment variable to
+# ''.
 
 AppendStringToFile($ConfigFile, "\$ENV{'PATH'} = '';\n");
 
@@ -199,12 +202,11 @@ $ENV{'REMOTE_ADDR'} = 'confusibombus';
 update_page('ConflictTest', $lao_file_1);
 
 sleep(2);
-
-# merge not available -- must look for message
 $ENV{'REMOTE_ADDR'} = 'megabombus';
+diag('An error saying that diff3 was not found is expected because PATH has been unset.');
 test_page(update_page('ConflictTest', $lao_file_2,
 		      '', '', '', "oldtime=$oldtime"),
-	  'The Way that can be told of is not the eternal Way',   # file 2
+	  'The Way that can be told of is not the eternal Way',   # file 2 -- no merging!
 	  'so we may see their simplicity',                       # file 2
 	  'so we may see the result');                            # file 2
 
