@@ -49,30 +49,30 @@ $EditNote $HttpCharset $UserGotoBar $VisitorFile $RcFile %Smilies
 %SpecialDays $InterWikiMoniker $SiteDescription $RssImageUrl $ReadMe
 $RssRights $BannedCanRead $SurgeProtection $TopLinkBar $LanguageLimit
 $SurgeProtectionTime $SurgeProtectionViews $DeletedPage %Languages
-$InterMap $ValidatorLink %LockOnCreation $PermanentAnchors @CssList
-$RssStyleSheet $PermanentAnchorsFile @MyRules %CookieParameters
-@UserGotoBarPages $NewComment $StyleSheetPage $ConfigPage $ScriptName
-@MyMacros $CommentsPrefix @UploadTypes $AllNetworkFiles $UsePathInfo
-$UploadAllowed $LastUpdate $PageCluster $HtmlHeaders %PlainTextPages
-$RssInterwikiTranslate $UseCache $ModuleDir $Counter $FullUrlPattern
+$InterMap $ValidatorLink %LockOnCreation @CssList $RssStyleSheet
+@MyRules %CookieParameters @UserGotoBarPages $NewComment
+$StyleSheetPage $ConfigPage $ScriptName @MyMacros $CommentsPrefix
+@UploadTypes $AllNetworkFiles $UsePathInfo $UploadAllowed $LastUpdate
+$PageCluster $HtmlHeaders %PlainTextPages $RssInterwikiTranslate
+$UseCache $ModuleDir $Counter $FullUrlPattern $SummaryDefaultLength
 %InvisibleCookieParameters $FreeInterLinkPattern %AdminPages
-@MyAdminCode @MyInitVariables @MyMaintenance $SummaryDefaultLength
-$JournalLimit $UseQuestionmark $LockExpiration %LockExpires);
+@MyAdminCode @MyInitVariables @MyMaintenance $UseQuestionmark
+$JournalLimit $LockExpiration %LockExpires @IndexOptions);
 
 # Other global variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
 %NewCookie $FootnoteNumber $OpenPageName @IndexList $Message $q $Now
-%RecentVisitors @HtmlStack $ReplaceForm %PermanentAnchors
-%PagePermanentAnchors %MyInc $CollectingJournal $WikiDescription
-$PrintedHeader %Locks $Fragment @Blocks @Flags %NearSite %NearSource
-%NearLinksUsed $NearDir $NearMap $SisterSiteLogoUrl %NearSearch
-@KnownLocks $ModulesDescription %RuleOrder %Action $bol
-%RssInterwikiTranslate %Includes $Today);
+%RecentVisitors @HtmlStack $ReplaceForm %MyInc $CollectingJournal
+$WikiDescription $PrintedHeader %Locks $Fragment @Blocks @Flags
+%NearSite %NearSource %NearLinksUsed $NearDir $NearMap $Today $bol
+$SisterSiteLogoUrl %NearSearch @KnownLocks $ModulesDescription
+%RuleOrder %Action %RssInterwikiTranslate %Includes);
 
 # == Configuration ==
 
-# Can be set outside the script: $DataDir, $UseConfig, $ConfigFile, $ModuleDir, $ConfigPage,
-# $AdminPass, $EditPass, $ScriptName, $FullUrl, $RunCGI.
+# Can be set outside the script: $DataDir, $UseConfig, $ConfigFile,
+# $ModuleDir, $ConfigPage, $AdminPass, $EditPass, $ScriptName,
+# $FullUrl, $RunCGI.
 
 $UseConfig   = 1 unless defined $UseConfig; # 1 = load config file in the data directory
 $DataDir     = $ENV{WikiDataDir} if $UseConfig and not $DataDir; # Main wiki directory
@@ -106,7 +106,6 @@ $BracketText = 1;               # 1 = [URL desc] uses a description for the URL
 $BracketWiki = 1;               # 1 = [WikiLink desc] uses a desc for the local link
 $NetworkFile = 1;               # 1 = file: is a valid protocol for URLs
 $AllNetworkFiles = 0;           # 1 = file:///foo is allowed -- the default allows only file://foo
-$PermanentAnchors = 1;	        # 1 = [::some text] defines permanent anchors (page aliases)
 $InterMap    = 'InterMap';      # name of the intermap page, '' = disable
 $NearMap     = 'NearMap';       # name of the nearmap page, '' = disable
 $RssInterwikiTranslate = 'RssInterwikiTranslate'; # name of RSS interwiki translation page, '' = disable
@@ -150,6 +149,9 @@ $IndentLimit = 20;	        # Maximum depth of nested lists
 $LanguageLimit = 3;	        # Number of matches req. for each language
 $JournalLimit = 200;            # how many pages can be collected in one go?
 $SisterSiteLogoUrl = 'file:///tmp/oddmuse/%s.png'; # URL format string for logos
+# Checkboxes at the end of the index.
+@IndexOptions = (['pages', T('Include normal pages'), 1, \&AllPagesList],
+		 ['near', T('Include near pages'), 0, sub { keys %NearSource }]);
 # Display short comments below the GotoBar for special days
 # Example: %SpecialDays = ('1-1' => 'New Year', '1-2' => 'Next Day');
 %SpecialDays = ();
@@ -255,7 +257,6 @@ sub InitDirConfig {
   $RcOldFile   = "$DataDir/oldrc.log";	  # Old RecentChanges logfile
   $IndexFile   = "$DataDir/pageidx";	  # List of all pages
   $VisitorFile = "$DataDir/visitors.log"; # List of recent visitors
-  $PermanentAnchorsFile = "$DataDir/permanentanchors"; # Store permanent anchors
   $ConfigFile  = "$DataDir/config" unless $ConfigFile; # Config file with Perl code to execute
   $ModuleDir   = "$DataDir/modules" unless $ModuleDir; # For extensions (ending in .pm or .pl)
   $NearDir     = "$DataDir/near"; # For page indexes and .png files of other sites
@@ -273,7 +274,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.810 2007/09/25 15:28:07 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.811 2007/09/27 15:56:06 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -319,7 +320,6 @@ sub ReInit {      # init everything we need if we want to link to stuff
   AllPagesList() if not $id;
   InterInit() if $InterMap and (not $id or $id eq $InterMap);
   NearInit() if $NearMap and (not $id or $id eq $NearMap);
-  PermanentAnchorsInit() if $PermanentAnchors and not $id;
   %RssInterwikiTranslate = () if not $id or $id eq $RssInterwikiTranslate; # special since rarely used
 }
 
@@ -573,14 +573,6 @@ sub LinkRules {
     }
   } elsif ($WikiLinks && m/\G!$LinkPattern/cog) {
     Clean($1);			# ! gets eaten
-  } elsif ($PermanentAnchors && m/\G(\[::$FreeLinkPattern\])/cog) {
-    #[::Free Link] permanent anchor create only $withanchors
-    Dirty($1);
-    if ($withanchors) {
-      print GetPermanentAnchor($2);
-    } else {
-      print $q->span({-class=>'permanentanchor'}, $2);
-    }
   } elsif ($WikiLinks && $locallinks
 	   && ($BracketWiki && m/\G(\[$LinkPattern\s+([^\]]+?)\])/cog
 	       or m/\G(\[$LinkPattern\])/cog or m/\G($LinkPattern)/cog)) {
@@ -1345,13 +1337,7 @@ sub ValidIdOrDie {
 
 sub ResolveId { # return css class, resolved id, title (eg. for popups), exist-or-not
   my $id = shift;
-  my $exists = $IndexHash{$id}; # if the page exists physically
-  if (GetParam('anchor', $PermanentAnchors)) { # anchors are preferred
-    my $page = $PermanentAnchors{$id};
-    return ('alias', $page . '#' . $id, $page, $exists) # $page used as link title
-      if $page and $page ne $id;
-  }
-  return ('local', $id, '', $exists) if $exists;
+  return ('local', $id, '', 1) if $IndexHash{$id};
   if ($NearSource{$id}) {
     $NearLinksUsed{$id} = 1;
     my $site = $NearSource{$id}[0];
@@ -2122,7 +2108,6 @@ sub GetAuthorLink {
 sub GetHistoryLink {
   my ($id, $text) = @_;
   my $action = 'action=history;id=' . UrlEncode(FreeToNormal($id));
-  $action .= ';anchor=0' if $PermanentAnchors and not GetParam('anchor', $PermanentAnchors);
   return ScriptLink($action, $text, 'history');
 }
 
@@ -3145,54 +3130,30 @@ sub BannedContent {
 
 sub DoIndex {
   my $raw = GetParam('raw', 0);
-  my $pages = GetParam('pages', 1);
-  my $anchors = GetParam('permanentanchors', 1);
-  my $near = GetParam('near', 0);
   my $match = GetParam('match', '');
-  my @pages;
-  push(@pages, AllPagesList()) if $pages;
-  push(@pages, keys %PermanentAnchors) if $anchors;
-  push(@pages, keys %NearSource) if $near;
+  my @pages = ();
+  my @menu = ($q->label({-for=>'indexmatch'}, T('Filter:'))
+	      . $q->textfield(-name=>'match', -id=>'indexmatch', -size=>20));
+  foreach my $data (@IndexOptions) {
+    my ($option, $text, $default, $sub) = @$data;
+    my $value = GetParam($option, $default); # HTML checkbox warning!
+    $value = 0 if GetParam('manual', 0) and $value ne 'on';
+    push(@pages, &$sub) if $value;
+    push(@menu, $q->checkbox(-name=>$option, -checked=>$value, -label=>$text));
+  }
   @pages = grep /$match/i, @pages if $match;
   @pages = sort @pages;
   if ($raw) {
-    print GetHttpHeader('text/plain');
+    print GetHttpHeader('text/plain'); # and ignore @menu
   } else {
-    print GetHeader('', T('Index of all pages')), $q->start_div({-class=>'content index'});
-    my @menu = ();
-    if (%PermanentAnchors or %NearSource) { # only show when there is something to show
-      if ($pages) {
-	push(@menu, ScriptLink("action=index;pages=0;permanentanchors=$anchors;near=$near;match=$match",
-			       T('Without normal pages')));
-      } else {
-	push(@menu, ScriptLink("action=index;pages=1;permanentanchors=$anchors;near=$near;match=$match",
-			       T('Include normal pages')));
-      }
-    }
-    if (%PermanentAnchors) { # only show when there is something to show
-      if ($anchors) {
-	push(@menu, ScriptLink("action=index;pages=$pages;permanentanchors=0;near=$near;match=$match",
-			       T('Without permanent anchors')));
-      } else {
-	push(@menu, ScriptLink("action=index;pages=$pages;permanentanchors=1;near=$near;match=$match",
-			       T('Include permanent anchors')));
-      }
-    }
-    if (%NearSource) { # only show when there is something to show
-      if ($near) {
-	push(@menu, ScriptLink("action=index;pages=$pages;permanentanchors=$anchors;near=0;match=$match",
-			       T('Without near pages')));
-      } else {
-	push(@menu, ScriptLink("action=index;pages=$pages;permanentanchors=$anchors;near=1;match=$match",
-			       T('Include near pages')));
-      }
-    }
+    print GetHeader('', T('Index of all pages'));
+    push(@menu, GetHiddenValue('manual', 1) . $q->submit(-value=>T('Go!')));
     push(@menu, $q->b(Ts('(for %s)', GetParam('lang', '')))) if GetParam('lang', '');
-    push(@menu, $q->br(), GetHiddenValue('action', 'index'), $q->label({-for=>'indexmatch'}, T('Filter:')),
-	 $q->textfield(-name=>'match', -id=>'indexmatch', -size=>20), $q->submit(-value=>T('Go!')));
-    print GetFormStart(undef, 'get', 'index'), $q->p(@menu), $q->end_form();
+    print $q->start_div({-class=>'content index'}),
+      GetFormStart(undef, 'get', 'index'), GetHiddenValue('action', 'index'),
+      $q->p(join($q->br(), @menu)), $q->end_form(),
+      $q->h2(Ts('%s pages found.', ($#pages + 1))), $q->start_p();
   }
-  print $q->h2(Ts('%s pages found.', ($#pages + 1))), $q->start_p() unless $raw;
   foreach (@pages) { PrintPage($_) }
   print $q->end_p(), $q->end_div() unless $raw;
   PrintFooter() unless $raw;
@@ -3574,7 +3535,6 @@ sub DoPost {
   }
   Save($id, $string, $summary, (GetParam('recent_edit', '') eq 'on'), $filename);
   ReleaseLock();
-  DeletePermanentAnchors();
   ReBrowsePage($id);
 }
 
@@ -3794,7 +3754,6 @@ sub DeletePage { # Delete must be done inside locks.
     unlink $name if -f $name;
     rmdir $name if -d $name;
   }
-  DeletePermanentAnchors();
   ReInit($id);
   delete $IndexHash{$id};
   @IndexList = sort(keys %IndexHash);
@@ -3919,58 +3878,6 @@ sub WriteRecentVisitors {
     }
   }
   WriteStringToFile($VisitorFile, $data);
-}
-
-# == Permanent Anchors ==
-
-sub PermanentAnchorsInit {
-  %PagePermanentAnchors = %PermanentAnchors = ();
-  my ($status, $data) = ReadFile($PermanentAnchorsFile);
-  return unless $status; # not fatal
-  %PermanentAnchors = split(/\n| |$FS/,$data); # FIXME: $FS was used in 1.417 and earlier
-}
-
-sub WritePermanentAnchors {
-  my $data = '';
-  foreach my $name (keys %PermanentAnchors) {
-    $data .= $name . ' ' . $PermanentAnchors{$name} ."\n";
-  }
-  WriteStringToFile($PermanentAnchorsFile, $data);
-}
-
-sub GetPermanentAnchor {
-  my $id = FreeToNormal(shift);
-  my $text = NormalToFree($id);
-  my ($class, $resolved, $title, $exists) = ResolveId($id);
-  if ($class eq 'alias' and $title ne $OpenPageName) {
-    return '[' . Ts('anchor first defined here: %s',
-		    ScriptLink(UrlEncode($resolved), $text, 'alias')) . ']';
-  } elsif ($PermanentAnchors{$id} ne $OpenPageName    # not fatal
-	   and RequestLockDir('permanentanchors')) {
-    # Somebody may have added a permanent anchor in the mean time. Comparing $LastUpdate to the
-    # $IndexFile mtime does not work for subsecond changes and updates are rare, so just read!
-    PermanentAnchorsInit();
-    $PermanentAnchors{$id} = $OpenPageName;
-    WritePermanentAnchors();
-    ReleaseLockDir('permanentanchors');
-  }
-  $PagePermanentAnchors{$id} = 1; # add to the list of anchors in page
-  my $html = GetSearchLink($id, 'definition', $id,
-			   T('Click to search for references to this permanent anchor'));
-  $html .= ' [' . Ts('the page %s also exists', ScriptLink("action=browse;anchor=0;id="
-    . UrlEncode($id), $id, 'local')) . ']' if $exists;
-  return $html;
-}
-
-sub DeletePermanentAnchors {
-  foreach (keys %PermanentAnchors) {
-    if ($PermanentAnchors{$_} eq $OpenPageName and !$PagePermanentAnchors{$_}) {
-      delete($PermanentAnchors{$_}) ;
-    }
-  }
-  return unless RequestLockDir('permanentanchors'); # not fatal
-  WritePermanentAnchors();
-  ReleaseLockDir('permanentanchors');
 }
 
 sub TextIsFile { $_[0] =~ /^#FILE (\S+)\n/ }
