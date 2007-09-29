@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: permanent-anchors.pl,v 1.1 2007/09/27 15:58:56 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: permanent-anchors.pl,v 1.2 2007/09/29 16:06:15 as Exp $</p>';
 
 =head1 Permanent Anchors
 
@@ -103,9 +103,11 @@ sub GetPermanentAnchor {
   }
   $PagePermanentAnchors{$id} = 1; # add to the list of anchors in page
   my $html = GetSearchLink($id, 'definition', $id,
-			   T('Click to search for references to this permanent anchor'));
-  $html .= ' [' . Ts('the page %s also exists', ScriptLink("action=browse;anchor=0;id="
-    . UrlEncode($id), $id, 'local')) . ']' if $exists;
+    T('Click to search for references to this permanent anchor'));
+  $html .= ' [' . Ts('the page %s also exists',
+		     ScriptLink("action=browse;anchor=0;id="
+				. UrlEncode($id), NormalToFree($id), 'local'))
+    . ']' if $exists;
   return $html;
 }
 
@@ -120,7 +122,9 @@ changed by setting C<$PermanentAnchorsFile>.
 The format of the file is simple: permanent anchor names and the name
 of the page they are defined on follow each other, separated by
 whitespace. Spaces within permanent anchor names and page names are
-replaced with underlines, as always.
+replaced with underlines, as always. Thus, the keys of
+C<%PermanentAnchors> is the name of the permanent anchor, and
+C<$PermanentAnchors{$name}> is the name of the page it is defined on.
 
 =cut
 
@@ -227,16 +231,33 @@ Some user interface changes are required as well.
 Allow the page index to list permanent anchors or not by setting
 C<@IndexOptions>.
 
-=back
-
 =cut
 
 push(@IndexOptions, ['permanentanchors', T('Include permanent anchors'),
 		     1, sub { keys %PermanentAnchors }]);
 
-# Pass anchor=0 along to the history page if necessary?
+=item *
 
-# The link to the history of a page should not redirect to a permanent
-# anchor of the same name.
+Make sure that you can view old revisions of pages that have a
+permanent anchor of the same name. This requires link munging for all
+browse links from C<GetHistoryLine>.
 
-# $action .= ';anchor=0' if $PermanentAnchors and not GetParam('anchor', $PermanentAnchors);
+=back
+
+=cut
+
+*OldPermanentAnchorsGetHistoryLine = *GetHistoryLine;
+*GetHistoryLine = *NewPermanentAnchorsGetHistoryLine;
+
+sub NewPermanentAnchorsGetHistoryLine {
+  my $id = shift;
+  my $html = OldPermanentAnchorsGetHistoryLine($id, @_);
+  if ($PermanentAnchors{$id}) {
+    my $encoded_id = UrlEncode($id);
+    # link to the current revision; ignore dependence on $UsePathInfo
+    $html =~ s!$ScriptName[/?]$encoded_id!$ScriptName?action=browse;anchor=0;id=$encoded_id!;
+    # link to old revisions
+    $html =~ s!action=browse;id=$encoded_id!action=browse;anchor=0;id=$encoded_id!g;
+  }
+  return $html;
+}
