@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 43;
+use Test::More tests => 46;
 
 clear_pages();
 WriteStringToFile($RcFile, "1FirstPage1\n");
@@ -158,3 +158,10 @@ test_page_negative($page,
 		   "EvilPage",
 		   "AnotherEvilPage",
 		  );
+
+# test url encoding
+test_page(update_page('Schröder', 'Alex'), 'Alex');
+$to = (stat($IndexFile))[9];
+test_page(update_page('Schröder', 'Berta'), 'Berta');
+xpath_test(get_page('action=history id=Schr%c3%b6der username=olaf'),
+	   '//a[@class="rollback"][@href="http://localhost/wiki.pl?action=rollback;to=' . $to . ';id=Schr%c3%b6der"][text()="rollback"]');

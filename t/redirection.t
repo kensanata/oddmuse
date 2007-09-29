@@ -28,9 +28,9 @@ test_page(update_page('Miles_Davis', 'Featuring [[John Coltrane]]'),
 	  'Featuring',
 	  'John Coltrane');
 # simple redirect
-test_page(update_page('Sonny_Stitt', '#REDIRECT [[Stitt]]'),
+test_page(update_page('Sonny_Stitt', '#REDIRECT [[Stittö]]'),
 	  'Status: 302',
-	  'Location: .*wiki.pl\?action=browse;oldid=Sonny_Stitt;id=Stitt');
+	  'Location: .*wiki.pl\?action=browse;oldid=Sonny_Stitt;id=Stitt%c3%b6');
 # add another level to the redirect chain above
 test_page(update_page('Herby_Hancock', '#REDIRECT [[Sonny_Stitt]]'),
 	  'Location: http://localhost/wiki.pl\?action=browse;oldid=Herby_Hancock;id=Sonny_Stitt');
