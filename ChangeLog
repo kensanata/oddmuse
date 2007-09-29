@@ -1,3 +1,14 @@
+2007-09-29  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetFooterLinks): UrlEncode id for admin link.
+	(GetHistoryLine): UrlEncode id for rollback link.
+
+	* modules/permanent-anchors.pl (GetPermanentAnchor): Use
+	NormalToFree in the warning message.
+	(NewPermanentAnchorsGetHistoryLine): New. Allow viewing of old
+	revisions of pages where a permanent anchor of the same name
+	exists.
+
 2007-09-27  Alex Schroeder  <alex@gnu.org>
 
 	Major change that removes permanent anchors from the core script
