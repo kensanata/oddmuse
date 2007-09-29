@@ -274,7 +274,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.811 2007/09/27 15:56:06 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.812 2007/09/29 16:04:33 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1942,7 +1942,7 @@ sub GetHistoryLine {
     $html .= ' (' . T('current') . ')' if $rollback;
     $html .= ' ' . GetPageLink($id, Ts('Revision %s', $revision));
   } else {
-    $html .= ' (' . ScriptLink("action=rollback;to=$data{ts};id=$id",
+    $html .= ' (' . ScriptLink("action=rollback;to=$data{ts};id=" . UrlEncode($id),
 			       T('rollback'), 'rollback') . ')' if $rollback;
     $html .= ' ' . GetOldPageLink('browse', $id, $revision, Ts('Revision %s', $revision));
   }
@@ -2328,7 +2328,7 @@ sub GetFooterLinks {
     if $Action{contrib} and $id and $rev eq 'history';
   if ($Action{admin} and GetParam('action', '') ne 'admin') {
     my $action = 'action=admin';
-    $action .= ';id=' . $id if $id;
+    $action .= ';id=' . UrlEncode($id) if $id;
     push(@elements, ScriptLink($action, T('Administration'), 'admin'));
   }
   return @elements ? $q->span({-class=>'edit bar'}, $q->br(), @elements) : '';
