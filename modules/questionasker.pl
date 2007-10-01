@@ -14,10 +14,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.16 2007/08/17 00:33:59 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.17 2007/10/01 00:17:32 as Exp $</p>';
 
 use vars qw(@QuestionaskerQuestions
 	    $QuestionaskerRememberAnswer
+	    $QuestionaskerSecretKey
 	    $QuestionaskerRequiredList
 	    %QuestionaskerProtectedForms);
 
@@ -39,8 +40,12 @@ use vars qw(@QuestionaskerQuestions
 $QuestionaskerRequiredList = '';
 
 # If a user answers a question correctly, remember this in the cookie
-# and don't ask any further questions.
+# and don't ask any further questions. The name of the parameter in
+# the cookie can be changed should a spam bot target this module
+# specifically. Changing the secret key will force all users to answer
+# another question.
 $QuestionaskerRememberAnswer = 1;
+$QuestionaskerSecretKey = 'question';
 
 # Forms using one of the following classes are protected.
 %QuestionaskerProtectedForms = ('comment' => 1,
@@ -52,8 +57,8 @@ push(@MyInitVariables, \&QuestionaskerInit);
 sub QuestionaskerInit {
   $QuestionaskerRequiredList = FreeToNormal($QuestionaskerRequiredList);
   $AdminPages{$QuestionaskerRequiredList} = 1;
-  $CookieParameters{question} = '';
-  $InvisibleCookieParameters{question} = 1;
+  $CookieParameters{$QuestionaskerSecretKey} = '';
+  $InvisibleCookieParameters{$QuestionaskerSecretKey} = 1;
 }
 
 *OldQuestionaskerDoPost = *DoPost;
@@ -66,7 +71,7 @@ sub NewQuestionaskerDoPost {
   my $question_num = GetParam('question_num', undef);
   my $answer = GetParam('answer', undef);
   unless (UserIsAdmin()
-	  or $QuestionaskerRememberAnswer && GetParam('question', 0)
+	  or $QuestionaskerRememberAnswer && GetParam($QuestionaskerSecretKey, 0)
 	  or $preview
 	  or $QuestionaskerQuestions[$question_num][1]($answer)
 	  or QuestionaskerException($id)) {
@@ -79,7 +84,7 @@ sub NewQuestionaskerDoPost {
     # warn "Q: '$QuestionaskerQuestions[$question_num][0]', A: '$answer'\n";
     return;
   }
-  SetParam('question', 1) unless GetParam('question', 0);
+  SetParam($QuestionaskerSecretKey, 1) unless GetParam($QuestionaskerSecretKey, 0);
   return (OldQuestionaskerDoPost(@params));
 }
 
