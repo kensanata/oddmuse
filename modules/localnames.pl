@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.27 2007/10/02 12:32:49 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.28 2007/10/02 12:36:02 as Exp $</p>';
 
 =head1 Local Names
 
@@ -218,6 +218,9 @@ match, we return the URL using the CSS class "near" and the title
 "LocalNames". The CSS class is the same that is used for Near Links
 because the effect is so similar.
 
+Note: Existing local pages take precedence over local names, but local
+names take precedence over Near Links.
+
 =cut
 
 *OldLocalNamesResolveId = *ResolveId;
@@ -226,7 +229,7 @@ because the effect is so similar.
 sub NewLocalNamesResolveId {
   my $id = shift;
   my @result = OldLocalNamesResolveId($id, @_);
-  if (not $result[1] and $LocalNames{$id}) {
+  if ((not $result[1] or $result[0] eq 'near') and $LocalNames{$id}) {
     return ('near', $LocalNames{$id}, $LocalNamesPage);
   } else {
     return @result;
