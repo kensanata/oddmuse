@@ -1,8 +1,8 @@
-# Copyright (C) 2004, 2005  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2005, 2007  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation; either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -11,14 +11,27 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.26 2006/07/15 23:13:14 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.27 2007/10/02 12:32:49 as Exp $</p>';
 
-use vars qw($LocalNamesPage $LocalNamesInit %LocalNames $LocalNamesCollect
+=head1 Local Names
+
+This module allows you to centrally define redirections. Thus you can
+define that whenever somebody links to the page Foo the link will
+point to http://example.com/. These redirects are defined on special
+page called LocalNames. You can change the name of that page by
+setting C<$LocalNamesPage>.
+
+You can also link to external lists of such redirections, as long as
+they use the namespace description format developed by Lion Kimbro.
+Basically you can "import" redirections. These external lists are
+cached in a directory called C<ln> inside the data directory. You can
+change the directory by setting C<$LnDir>.
+
+=cut
+
+use vars qw($LocalNamesPage %LocalNames $LocalNamesCollect
 	    $LocalNamesCollectMaxWords $LnDir $LnCacheHours);
 
 $LocalNamesPage = 'LocalNames';
@@ -32,6 +45,14 @@ sub GetLnFile {
   return $LnDir . '/' . UrlEncode(shift);
 }
 
+=head2 Maintenance
+
+Whenever maintenance runs, all the cached external lists of
+redirections are deleted whenever they are older than twelve hours.
+You can change this expiry time by setting C<$LnCacheHours>.
+
+=cut
+
 push (MyMaintenance, \&LnMaintenance);
 
 sub LnMaintenance {
@@ -42,6 +63,33 @@ sub LnMaintenance {
     closedir DIR;
   }
 }
+
+=head2 Defining Local Names
+
+Local Names are defined on the LocalNames page.
+
+If you create ordinary named external links such as
+C<[http://ln.taoriver.net/ Local Names Website]> on the LocalNames
+page, you will have defined a new Local Name. If you write C<[[Local
+Names Website]]> elsewhere on the site (and the page does not exist),
+that link will point to the website you specified.
+
+You can link from the LocalNames page to existing namespace
+descriptions. These other namespace descriptions must use the
+namespace description format developed by Lion Kimbro. If you write
+C<[[ln:URL]]> or C<[[ln:URL text]]>, this will import all the Local
+Names defined there into your wiki.
+
+Example: C<[[ln:http://ln.taoriver.net/localnames.txt Lion's Example
+Localnames List]]>.
+
+Currently only LN records with absolute URLs are parsed correctly. All
+other record types are ignored.
+
+If you want to learn more about local names, see
+L<http://ln.taoriver.net/>.
+
+=cut
 
 # render [[ln:url]] as something clickable
 push(@MyRules, \&LocalNamesRule);
@@ -54,25 +102,35 @@ sub LocalNamesRule {
   return undef;
 }
 
-# do this later so that the user can customize $LocalNamesPage
+=head2 Initialization
+
+The LocalNames page is added to C<%AdminPages> so that the
+Administration page will list a link to it. The LocalNames page will
+be read and parsed for every request. The result is that the
+C<%LocalNames> hash has pagenames as keys and URLs to redirect to as
+values.
+
+If the LocalNames page refers to external lists of redirections, these
+will be read from the cache or fetched anew if older than twelve
+hours. If you use the cache=0 parameter in an URL or set C<$UseCache>
+to zero or less, Oddmuse will B<fetch the lists of redirections every
+single time>. Using the cache=0 parameter is a way to force Oddmuse to
+expire the cache. Setting C<$UseCache> to 0 should not be used on a
+live site.
+
+Definitions of redirections on the LocalNames take precedence over
+redirections defined on remote sites. Earlier lists of redirections
+take precedence over later lists.
+
+We ignore the spec at L<http://ln.taoriver.net/spec-1.2.html#Syntax>
+when considering what names we allow, since Oddmuse will parse them as
+regular links anyway.
+
+=cut
+
 push(@MyInitVariables, \&LocalNamesInit);
 
-*OldLocalNamesReInit = *ReInit;
-*ReInit = *NewLocalNamesReInit;
-
-sub NewLocalNamesReInit {
-  my $id = shift;
-  OldLocalNamesReInit($id, @_);
-  $LocalNamesInit = 0 if not $id or $id eq $LocalNamesPage;
-}
-
-# Just hook into NearLink stuff -- whenever near links are
-# initialized, we initialize as well.  Add our stuff first, because
-# local names have priority over near links.
-
 sub LocalNamesInit {
-  return if $LocalNamesInit; # just once, mod_perl!
-  $LocalNamesInit = 1;
   %LocalNames = ();
   $LocalNamesPage = FreeToNormal($LocalNamesPage); # spaces to underscores
   $AdminPages{$LocalNamesPage} = 1;
@@ -80,13 +138,7 @@ sub LocalNamesInit {
   while ($data =~ m/\[$FullUrlPattern\s+([^\]]+?)\]/go) {
     my ($page, $url) = ($2, $1);
     my $id = FreeToNormal($page);
-    # The entries in %NearSource will make sure that ResolveId will
-    # call GetInterSiteUrl for our pages.
     $LocalNames{$id} = $url;
-    # Add at the front to override near links.
-    unshift(@{$NearSource{$id}}, $LocalNamesPage);
-    # %NearSite is for fetching the list of pages -- we don't need that.
-    # %NearSearch is for searching remote sites -- we don't need that.
   }
   # Now read data from ln links, checking cache if possible. For all
   # URLs not in the cache or with invalid cache, fetch the file again,
@@ -140,20 +192,10 @@ sub LocalNamesInit {
 	$url = $previous_url if not $url and $previous_url;
 	$previous_url = $url;
 	$previous_type = 'LN';
-	# We ignore the spec at
-	# http://ln.taoriver.net/spec-1.2.html#Syntax when it comes to
-	# the names we allow, since Oddmuse will have to do the
-	# [[name]] thing!
 	my $id = FreeToNormal($name);
 	# Only store this, if not already stored!
 	if (not $LocalNames{$id}) {
-	  # The entries in %NearSource will make sure that ResolveId will
-	  # call GetInterSiteUrl for our pages.
 	  $LocalNames{$id} = $url;
-	  # Add at the front to override near links.
-	  unshift(@{$NearSource{$id}}, $LocalNamesPage);
-	  # %NearSite is for fetching the list of pages -- we don't need that.
-	  # %NearSearch is for searching remote sites -- we don't need that.
 	}
       } else {
 	$previous_type = undef;
@@ -164,20 +206,50 @@ sub LocalNamesInit {
   }
 }
 
-# Allow interlinks: We cannot just use %InterSite, because that would
-# result in the same ULR for $LocalNamesPage all the time.
+=head2 Name Resolution
 
-*OldLocalNamesGetInterSiteUrl = *GetInterSiteUrl;
-*GetInterSiteUrl = *NewLocalNamesGetInterSiteUrl;
+We want Near Links only to have an effect for pages that do not exist
+locally. It should not take precedence! Thus, we hook into
+C<ResolveId>; this function returns a list of four elements: CSS
+class, resolved id, title (eg. for popups), and a boolean saying
+whether the page exists or not. If the second element is empty, then
+no page exists and we check C<%LocalNames> for a match. If there is a
+match, we return the URL using the CSS class "near" and the title
+"LocalNames". The CSS class is the same that is used for Near Links
+because the effect is so similar.
 
-sub NewLocalNamesGetInterSiteUrl {
-  my ($site, $page, $quote) = @_;
-  if ($site eq $LocalNamesPage and $LocalNames{$page}) {
-    return $LocalNames{$page}
+=cut
+
+*OldLocalNamesResolveId = *ResolveId;
+*ResolveId = *NewLocalNamesResolveId;
+
+sub NewLocalNamesResolveId {
+  my $id = shift;
+  my @result = OldLocalNamesResolveId($id, @_);
+  if (not $result[1] and $LocalNames{$id}) {
+    return ('near', $LocalNames{$id}, $LocalNamesPage);
   } else {
-    return OldLocalNamesGetInterSiteUrl($site, $page, $quote);
+    return @result;
   }
 }
+
+=head2 Automatically Defining Local Names
+
+It is possible to have Oddmuse automatically define local names as you
+edit pages. In order to enable this, set C<$LocalNamesCollect> to 1.
+Once you this, every time you save a page with a named external link
+such as C<[http://www.emacswiki.org/alex/ Alex]>, this will add or
+update the corresponding entry on the LocalNames page.
+
+In order to reduce the number of entries thus collected, only external
+links with a name consisting of one or two words are used. You can
+change this word limit by setting C<$LocalNamesCollectMaxWords>.
+
+The default limit of two words assumes that you might want to make
+C<Alex> a link, or C<Alex Schroeder>, but not C<the example on Alex’s
+blog> (five “words”, since the code looks at whitespace only).
+
+=cut
 
 *LocalNamesOldSave = *Save;
 *Save = *LocalNamesNewSave;
@@ -230,6 +302,17 @@ sub LocalNamesNewSave {
 	   : @collection), 1)
     unless $localnames eq $Page{text};
 }
+
+=head2 Local Names Format
+
+The Ln Action lists all the local pages in the local names format
+defined in the specification. Example URL:
+C<http://localhost/cgi-bin/wiki?action=ln>.
+
+If you want to learn more about local names and the format used, see
+L<http://ln.taoriver.net/>.
+
+=cut
 
 $Action{ln} = \&DoLocalNames;
 
