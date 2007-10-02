@@ -1,3 +1,47 @@
+2007-10-02  Alex Schroeder  <alex@gnu.org>
+
+	* modules/near-links.pl ($SisterSiteLogoUrl): Added.
+
+	Make localnames.pl independent from the near link machinery and
+	simplify the initialization somewhat. Added POD.
+	
+	* modules/localnames.pl ($LocalNamesInit, NewLocalNamesReInit):
+	Deleted.
+	(LocalNamesInit): No longer use %NearSource.
+	(NewLocalNamesGetInterSiteUrl, NewLocalNamesResolveId): Hook into
+	ResolveId instead of GetInterSiteUrl.
+	(NewLocalNamesResolveId): Existing local pages take precedence
+	over local names, but local names take precedence over Near Links.
+
+	* wiki.pl (DoAdminPage): Sort AdminPages when printing the list.
+
+2007-10-01  Alex Schroeder  <alex@gnu.org>
+
+	Major change that removes near links from the core script
+	and moves it into a module.
+
+	* wiki.pl (%NearSite, %NearSource, %NearLinksUsed, $NearDir)
+	($NearMap, %NearSearch, $SisterSiteLogoUrl): Deleted.
+	(@IndexOptions): Removed near pages from the default value.
+	(%Action, @Debugging, DoDebug, DebugInterLinks, DoShowVersion):
+	Added debug action and moved interling debugging from the version
+	action to the debugging action. Simplified DoShowVersion by
+	showing dependencies always.
+	(NearInit, ReInit): Deleted NearInit; no longer call it from
+	ReInit.
+	(ResolveId): No longer resolve near links.
+	(PrintFooter, @MyFooters, GetSisterSites, GetNearLinksUsed):
+	Deleted GetSisterSites and GetNearLinksUsed; no longer call them
+	from PrintFooter; add the new option @MyFooters instead where
+	modules can add code.
+	(DoSearch, SearchMenu): Remove link to near search; moved the link
+	to search result changes into SearchMenu.
+	(SearchNearPages): Deleted.
+	(DoMaintain): Removed near cache maintenance.
+	
+	* modules/questionasker.pl ($QuestionaskerSecretKey): New option.
+	(QuestionaskerInit, NewQuestionaskerDoPost): Use it.
+
 2007-09-29  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetFooterLinks): UrlEncode id for admin link.
