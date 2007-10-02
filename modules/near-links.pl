@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: near-links.pl,v 1.2 2007/10/02 09:55:09 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: near-links.pl,v 1.3 2007/10/02 10:00:05 as Exp $</p>';
 
 =head1 Near Links
 
@@ -270,9 +270,7 @@ sub SearchNearPages {
   return keys(%found);
 }
 
-=head2 User Interface
-
-=head3 Index Of All Pages
+=head2 Index Of All Pages
 
 The index of all pages will offer a new option called "Include near
 pages". This uses the C<near> parameter. Example:
@@ -284,7 +282,7 @@ C<http://localhost/cgi-bin/wiki?action=index;near=1>.
 push(@IndexOptions, ['near', T('Include near pages'), 0,
 		     sub { keys %NearSource }]);
 
-=head3 Defining Near Linked Pages
+=head2 Defining Near Linked Pages
 
 When Oddmuse links to a remote site via NearLinks, it is difficult to
 create a local copy of the page. After all, there is no edit link.
@@ -313,7 +311,7 @@ sub GetNearLinksUsed {
   return '';
 }
 
-=head3 Twin Pages
+=head2 Twin Pages
 
 When looking at local pages that also exist on remote sites, Oddmuse
 will add links to the various remote versions at the bottom of the
