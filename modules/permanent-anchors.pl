@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: permanent-anchors.pl,v 1.2 2007/09/29 16:06:15 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: permanent-anchors.pl,v 1.3 2007/10/02 09:34:12 as Exp $</p>';
 
 =head1 Permanent Anchors
 
@@ -30,10 +30,10 @@ use vars qw(%PermanentAnchors %PagePermanentAnchors $PermanentAnchorsFile);
 
 $PermanentAnchorsFile = "$DataDir/permanentanchors";
 
-=head Definition
+=head2 Definition
 
 Permanent anchors are defined by using square brackets and a double
-colon, like this: C<[::Example].
+colon, like this: C<[::Example]>.
 
 If you define a permanent anchor that already exists, the new
 definition will have no effect. Instead you will be shown a link to
