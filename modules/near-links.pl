@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: near-links.pl,v 1.3 2007/10/02 10:00:05 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: near-links.pl,v 1.4 2007/10/02 13:21:10 as Exp $</p>';
 
 =head1 Near Links
 
@@ -26,7 +26,7 @@ Community:WhyWikiWorks if there is no local WhyWikiWorks page.
 =cut
 
 use vars qw(%NearSite %NearSource %NearLinksUsed $NearDir $NearMap
-%NearSearch);
+%NearSearch $SisterSiteLogoUrl);
 
 =head2 Options
 
@@ -334,6 +334,8 @@ These logos for twin pages are inside a div with the class "sister".
 =cut
 
 push(@MyFooters, \&GetSisterSites);
+
+$SisterSiteLogoUrl = 'file:///tmp/oddmuse/%s.png';
 
 sub GetSisterSites {
   my $id = shift;
