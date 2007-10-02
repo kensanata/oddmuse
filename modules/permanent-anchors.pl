@@ -1,4 +1,4 @@
-# Copyright (C) 2007  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2003, 2004, 2005, 2006, 2007  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: permanent-anchors.pl,v 1.3 2007/10/02 09:34:12 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: permanent-anchors.pl,v 1.4 2007/10/02 09:54:50 as Exp $</p>';
 
 =head1 Permanent Anchors
 
