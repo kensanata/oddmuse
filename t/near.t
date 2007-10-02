@@ -22,6 +22,8 @@ use Test::More tests => 5;
 
 clear_pages();
 
+add_module('near-links.pl');
+
 CreateDir($NearDir);
 WriteStringToFile("$NearDir/EmacsWiki", "AlexSchroeder\nFooBar\n");
 
