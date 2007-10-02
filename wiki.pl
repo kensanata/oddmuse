@@ -50,23 +50,23 @@ $EditNote $HttpCharset $UserGotoBar $VisitorFile $RcFile %Smilies
 $RssRights $BannedCanRead $SurgeProtection $TopLinkBar $LanguageLimit
 $SurgeProtectionTime $SurgeProtectionViews $DeletedPage %Languages
 $InterMap $ValidatorLink %LockOnCreation @CssList $RssStyleSheet
-@MyRules %CookieParameters @UserGotoBarPages $NewComment
+@MyRules %CookieParameters @UserGotoBarPages $NewComment $HtmlHeaders
 $StyleSheetPage $ConfigPage $ScriptName @MyMacros $CommentsPrefix
 @UploadTypes $AllNetworkFiles $UsePathInfo $UploadAllowed $LastUpdate
-$PageCluster $HtmlHeaders %PlainTextPages $RssInterwikiTranslate
-$UseCache $ModuleDir $Counter $FullUrlPattern $SummaryDefaultLength
-%InvisibleCookieParameters $FreeInterLinkPattern %AdminPages
-@MyAdminCode @MyInitVariables @MyMaintenance $UseQuestionmark
-$JournalLimit $LockExpiration %LockExpires @IndexOptions);
+$PageCluster %PlainTextPages $RssInterwikiTranslate $UseCache $Counter
+$ModuleDir $FullUrlPattern $SummaryDefaultLength $FreeInterLinkPattern
+%InvisibleCookieParameters %AdminPages @MyAdminCode @MyInitVariables
+@MyMaintenance $UseQuestionmark $JournalLimit $LockExpiration
+%LockExpires @IndexOptions @Debugging @MyFooters);
 
 # Other global variables:
+
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
 %NewCookie $FootnoteNumber $OpenPageName @IndexList $Message $q $Now
-%RecentVisitors @HtmlStack $ReplaceForm %MyInc $CollectingJournal
-$WikiDescription $PrintedHeader %Locks $Fragment @Blocks @Flags
-%NearSite %NearSource %NearLinksUsed $NearDir $NearMap $Today $bol
-$SisterSiteLogoUrl %NearSearch @KnownLocks $ModulesDescription
-%RuleOrder %Action %RssInterwikiTranslate %Includes);
+%RecentVisitors @HtmlStack $ReplaceForm %MyInc $CollectingJournal $bol
+$WikiDescription $PrintedHeader %Locks $Fragment @Blocks @Flags $Today
+@KnownLocks $ModulesDescription %Action %RuleOrder %Includes
+%RssInterwikiTranslate);
 
 # == Configuration ==
 
@@ -107,7 +107,6 @@ $BracketWiki = 1;               # 1 = [WikiLink desc] uses a desc for the local 
 $NetworkFile = 1;               # 1 = file: is a valid protocol for URLs
 $AllNetworkFiles = 0;           # 1 = file:///foo is allowed -- the default allows only file://foo
 $InterMap    = 'InterMap';      # name of the intermap page, '' = disable
-$NearMap     = 'NearMap';       # name of the nearmap page, '' = disable
 $RssInterwikiTranslate = 'RssInterwikiTranslate'; # name of RSS interwiki translation page, '' = disable
 $ENV{PATH}   = '/usr/bin';      # Path used to find 'diff'
 $UseDiff     = 1;	        # 1 = use diff
@@ -148,10 +147,8 @@ $HtmlHeaders = '';	        # Additional stuff to put in the HTML <head> section
 $IndentLimit = 20;	        # Maximum depth of nested lists
 $LanguageLimit = 3;	        # Number of matches req. for each language
 $JournalLimit = 200;            # how many pages can be collected in one go?
-$SisterSiteLogoUrl = 'file:///tmp/oddmuse/%s.png'; # URL format string for logos
 # Checkboxes at the end of the index.
-@IndexOptions = (['pages', T('Include normal pages'), 1, \&AllPagesList],
-		 ['near', T('Include near pages'), 0, sub { keys %NearSource }]);
+@IndexOptions = (['pages', T('Include normal pages'), 1, \&AllPagesList]);
 # Display short comments below the GotoBar for special days
 # Example: %SpecialDays = ('1-1' => 'New Year', '1-2' => 'Next Day');
 %SpecialDays = ();
@@ -184,9 +181,11 @@ $LockExpiration = 60; # How long before expirable locks are expired
 	    unlock => \&DoUnlock,	    password => \&DoPassword,
 	    index => \&DoIndex,		    admin => \&DoAdminPage,
 	    clear => \&DoClearCache,	    css => \&DoCss,
-	    contrib => \&DoContributors,    more => \&DoJournal, );
+	    contrib => \&DoContributors,    more => \&DoJournal,
+	    debug => \&DoDebug );
 @MyRules = (\&LinkRules); # don't set this variable, add to it!
 %RuleOrder = (\&LinkRules => 0);
+@Debugging = (\&DebugInterLinks); # subs to print debugging info
 
 # The 'main' program, called at the end of this script file (aka. as handler)
 sub DoWikiRequest {
@@ -259,7 +258,6 @@ sub InitDirConfig {
   $VisitorFile = "$DataDir/visitors.log"; # List of recent visitors
   $ConfigFile  = "$DataDir/config" unless $ConfigFile; # Config file with Perl code to execute
   $ModuleDir   = "$DataDir/modules" unless $ModuleDir; # For extensions (ending in .pm or .pl)
-  $NearDir     = "$DataDir/near"; # For page indexes and .png files of other sites
   $RssDir      = "$DataDir/rss"; # For rss feed cache
   $ReadMe      = "$DataDir/README"; # file with default content for the HomePage
 }
@@ -274,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.812 2007/09/29 16:04:33 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.813 2007/10/02 10:13:14 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -288,11 +286,11 @@ sub InitVariables {    # Init global session variables for mod_perl!
   $OpenPageName = '';  # Currently open page
   my $add_space = $CommentsPrefix =~ /[ \t_]$/;
   map { $$_ = FreeToNormal($$_); } # convert spaces to underscores on all configurable pagenames
-    (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$StyleSheetPage, \$NearMap, \$CommentsPrefix,
+    (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$StyleSheetPage, \$CommentsPrefix,
      \$ConfigPage, \$NotFoundPg, \$RssInterwikiTranslate, \$BannedContent, \$RssExclude, );
   $CommentsPrefix .= '_' if $add_space;
   @UserGotoBarPages = ($HomePage, $RCName) unless @UserGotoBarPages;
-  my @pages = sort($BannedHosts, $StyleSheetPage, $ConfigPage, $InterMap, $NearMap,
+  my @pages = sort($BannedHosts, $StyleSheetPage, $ConfigPage, $InterMap,
 		    $RssInterwikiTranslate, $BannedContent);
   %AdminPages = map { $_ => 1} @pages, $RssExclude unless %AdminPages;
   %LockOnCreation = map { $_ => 1} @pages unless %LockOnCreation;
@@ -304,7 +302,6 @@ sub InitVariables {    # Init global session variables for mod_perl!
   my $ts = (stat($IndexFile))[9]; # always stat for multiple server processes
   ReInit() if not $ts or $LastUpdate != $ts; # reinit if another process changed files (requires $DataDir)
   $LastUpdate = $ts;
-  %NearLinksUsed = (); # List of links used during this request
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
   ReportError(Ts('Could not create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR')
@@ -319,7 +316,6 @@ sub ReInit {      # init everything we need if we want to link to stuff
   my $id = shift; # when saving a page, what to do depends on the page being saved
   AllPagesList() if not $id;
   InterInit() if $InterMap and (not $id or $id eq $InterMap);
-  NearInit() if $NearMap and (not $id or $id eq $NearMap);
   %RssInterwikiTranslate = () if not $id or $id eq $RssInterwikiTranslate; # special since rarely used
 }
 
@@ -1035,25 +1031,6 @@ sub RssInterwikiTranslateInit {
   }
 }
 
-sub NearInit {
-  %NearSite = ();
-  %NearSearch = ();
-  %NearSource = ();
-  foreach (split(/\n/, GetPageContent($NearMap))) {
-    if (/^ ($InterSitePattern)[ \t]+([^ ]+)(?:[ \t]+([^ ]+))?$/) {
-      my ($site, $url, $search) = ($1, $2, $3);
-      next unless $InterSite{$site};
-      $NearSite{$site} = $url;
-      $NearSearch{$site} = $search if $search;
-      my ($status, $data) = ReadFile("$NearDir/$site");
-      next unless $status;
-      foreach my $page (split(/\n/, $data)) {
-	push(@{$NearSource{$page}}, $site);
-      }
-    }
-  }
-}
-
 sub GetInterSiteUrl {
   my ($site, $page, $quote) = @_;
   return unless $page;
@@ -1338,11 +1315,6 @@ sub ValidIdOrDie {
 sub ResolveId { # return css class, resolved id, title (eg. for popups), exist-or-not
   my $id = shift;
   return ('local', $id, '', 1) if $IndexHash{$id};
-  if ($NearSource{$id}) {
-    $NearLinksUsed{$id} = 1;
-    my $site = $NearSource{$id}[0];
-    return ('near', GetInterSiteUrl($site, $id), $site); # return source as title attribute
-  }
   return ('', '', '', '');
 }
 
@@ -2050,7 +2022,7 @@ sub DoAdminPage {
   print GetHeader('', T('Administration')),
     $q->div({-class=>'content admin'}, $q->p(T('Actions:')), $q->ul($q->li(\@menu)),
 	    $q->p(T('Important pages:')) . $q->ul(map { $q->li(GetPageOrEditLink($_, NormalToFree($_))) if $_;
-						      } keys %AdminPages),
+						      } sort keys %AdminPages),
 	    $q->p(Ts('To mark a page for deletion, put <strong>%s</strong> on the first line.',
 		     $DeletedPage)), @rest);
   PrintFooter();
@@ -2261,32 +2233,10 @@ sub PrintFooter {
   print T($FooterNote) if $FooterNote;
   print $q->p(GetValidatorLink()) if GetParam('validate', $ValidatorLink);
   print $q->p(Ts('%s seconds', (time - $Now))) if GetParam('timing',0);
-  print $q->end_div(), GetSisterSites($id), GetNearLinksUsed($id);
+  print $q->end_div();
   PrintMyContent($id) if defined(&PrintMyContent);
+  foreach my $sub (@MyFooters) { print &$sub(@_) };
   print $q->end_html;
-}
-
-sub GetSisterSites {
-  my $id = shift;
-  if ($id and $NearSource{$id}) {
-    my $sistersites = T('The same page on other sites:') . $q->br();
-    foreach my $site (@{$NearSource{$id}}) {
-      my $logo = $SisterSiteLogoUrl;
-      $logo =~ s/\%s/$site/g;
-      $sistersites .= $q->a({-href=>GetInterSiteUrl($site, $id), -title=>"$site:$id"},
-		     $q->img({-src=>$logo, -alt=>"$site:$id"}));
-    }
-    return $q->hr(), $q->div({-class=>'sister'}, $q->p($sistersites));
-  }
-  return '';
-}
-
-sub GetNearLinksUsed {
-  if (%NearLinksUsed) {
-    return $q->div({-class=>'near'}, $q->p(GetPageLink(T('EditNearLinks')) . ':',
-					   map { GetEditLink($_, $_); } keys %NearLinksUsed));
-  }
-  return '';
 }
 
 sub GetFooterTimestamp {
@@ -3132,7 +3082,7 @@ sub DoIndex {
   my $raw = GetParam('raw', 0);
   my $match = GetParam('match', '');
   my @pages = ();
-  my @menu = ($q->label({-for=>'indexmatch'}, T('Filter:'))
+  my @menu = ($q->label({-for=>'indexmatch'}, T('Filter:')) . ' '
 	      . $q->textfield(-name=>'match', -id=>'indexmatch', -size=>20));
   foreach my $data (@IndexOptions) {
     my ($option, $text, $default, $sub) = @$data;
@@ -3227,16 +3177,17 @@ sub DoSearch {
     } else {
       print GetHeader('', Ts('Search for: %s', $string)), $q->start_div({-class=>'content search'});
       $ReplaceForm = UserIsAdmin();
-      my @elements = (ScriptLink('action=rc;rcfilteronly=' . UrlEncode($string), T('View changes for these pages')));
-      push(@elements, ScriptLink('near=2;search=' . UrlEncode($string), Ts('Search sites on the %s as well', $NearMap)))
-	if %NearSearch and GetParam('near', 1) < 2;
-      print $q->p({-class=>'links'}, @elements);
+      print $q->p({-class=>'links'}, SearchMenu($string));
     }
     @results = SearchTitleAndBody($string, \&PrintSearchResult, HighlightRegex($string));
-    @results = SearchNearPages($string, @results) if GetParam('near', 1); # adds more
   }
   print SearchResultCount($#results + 1), $q->end_div() unless $raw;
   PrintFooter() unless $raw;
+}
+
+sub SearchMenu {
+  return ScriptLink('action=rc;rcfilteronly=' . UrlEncode(shift),
+		    T('View changes for these pages'));
 }
 
 sub SearchResultCount { $q->p({-class=>'result'}, Ts('%s pages found.', (shift))); }
@@ -3289,43 +3240,6 @@ sub HighlightRegex {
   my $and = T('and');
   my $or = T('or');
   return join('|', split(/ +(?:$and|$or) +/, shift));
-}
-
-sub SearchNearPages {
-  my $string = shift;
-  my %found = map {$_ => 1} @_;
-  my $regex = HighlightRegex($string);
-  if (%NearSearch and GetParam('near', 1) > 1 and GetParam('context',1)) {
-    foreach my $site (keys %NearSearch) {
-      my $url = $NearSearch{$site};
-      $url =~ s/\%s/UrlEncode($string)/ge or $url .= UrlEncode($string);
-      print $q->hr(), $q->p(Ts('Fetching results from %s:', $q->a({-href=>$url}, $site)))
-	unless GetParam('raw', 0);
-      my $data = GetRaw($url);
-      my @entries = split(/\n\n+/, $data);
-      shift @entries; # skip head
-      foreach my $entry (@entries) {
-	my %entry = ParseData($entry); # need to pass reference
-	my $name = $entry{title};
-	next if $found{$name}; # do not duplicate local pages
-	$found{$name} = 1;
-	PrintSearchResultEntry(\%entry, $regex); # with context and full search!
-      }
-    }
-  }
-  if (%NearSource and (GetParam('near', 1) or GetParam('context',1) == 0)) {
-    my $intro = 0;
-    foreach my $name (sort keys %NearSource) {
-      next if $found{$name}; # do not duplicate local pages
-      if (SearchString($string, NormalToFree($name))) {
-	$found{$name} = 1;
-	print $q->hr() . $q->p(T('Near pages:')) unless GetParam('raw', 0) or $intro;
-	$intro = 1;
-	PrintPage($name); # without context!
-      }
-    }
-  }
-  return keys(%found);
 }
 
 sub PrintSearchResult {
@@ -3713,17 +3627,6 @@ sub DoMaintain {
     WriteStringToFile($RcFile . '.old', $data);
     WriteStringToFile($RcFile, join("\n",@rc) . "\n");
   }
-  if (%NearSite) {
-    CreateDir($NearDir);
-    foreach my $site (keys %NearSite) { # skip if less than 12h old and caching allowed (the default)
-      next if GetParam('cache', $UseCache) > 0 and -f "$NearDir/$site" and -M "$NearDir/$site" < 0.5;
-      print $q->p(Ts('Getting page index file for %s.', $site));
-      my $data = GetRaw($NearSite{$site});
-      print $q->p($q->strong(Ts('%s returned no data, or LWP::UserAgent is not available.',
-				$q->a({-href=>$NearSite{$site}}, $NearSite{$site})))) unless $data;
-      WriteStringToFile("$NearDir/$site", $data);
-    }
-  }
   if (opendir(DIR, $RssDir)) { # cleanup if they should expire anyway
     foreach (readdir(DIR)) {
       unlink "$RssDir/$_" if $Now - (stat($_))[9] > $RssCacheHours * 3600;
@@ -3796,27 +3699,27 @@ sub DoPageLock {
 
 sub DoShowVersion {
   print GetHeader('', T('Displaying Wiki Version')), $q->start_div({-class=>'content version'});
-  print $WikiDescription;
-  if (GetParam('dependencies', 0)) {
-    print $q->p($q->server_software()), $q->p(sprintf('Perl v%vd', $^V)),
-      $q->p($ENV{MOD_PERL} ? $ENV{MOD_PERL} : "no mod_perl"), $q->p('CGI: ', $CGI::VERSION),
-      $q->p('LWP::UserAgent ', eval { local $SIG{__DIE__}; require LWP::UserAgent; $LWP::UserAgent::VERSION; }),
-      $q->p('XML::RSS: ', eval { local $SIG{__DIE__}; require XML::RSS; $XML::RSS::VERSION; }),
-      $q->p('XML::Parser: ', eval { local $SIG{__DIE__}; $XML::Parser::VERSION; });
-    if ($UseDiff == 1) {
-      print $q->p('diff: ' . (`diff --version` || $!)), $q->p('diff3: ' . (`diff3 --version` || $!));
-    }
-  } else {
-    print $q->p(ScriptLink('action=version;dependencies=1', T('Show dependencies')));
-  }
-  if (GetParam('links', 0)) {
-    print $q->h2(T('Inter links:')), $q->p(join(', ', sort keys %InterSite)),
-      $q->h2(T('Near links:')), $q->p(join($q->br(), map { $_ . ': ' . join(', ', @{$NearSource{$_}})} sort keys %NearSource));
-  } else {
-    print $q->p(ScriptLink('action=version;links=1', T('Show parsed link data')));
-  }
+  print $WikiDescription, $q->p($q->server_software()),
+    $q->p(sprintf('Perl v%vd', $^V)),
+    $q->p($ENV{MOD_PERL} ? $ENV{MOD_PERL} : "no mod_perl"), $q->p('CGI: ', $CGI::VERSION),
+    $q->p('LWP::UserAgent ', eval { local $SIG{__DIE__}; require LWP::UserAgent; $LWP::UserAgent::VERSION; }),
+    $q->p('XML::RSS: ', eval { local $SIG{__DIE__}; require XML::RSS; $XML::RSS::VERSION; }),
+    $q->p('XML::Parser: ', eval { local $SIG{__DIE__}; $XML::Parser::VERSION; });
+  print $q->p('diff: ' . (`diff --version` || $!)), $q->p('diff3: ' . (`diff3 --version` || $!)) if $UseDiff == 1;
   print $q->end_div();
   PrintFooter();
+}
+
+sub DoDebug {
+  print GetHeader('', T('Debugging Information')),
+    $q->start_div({-class=>'content debug'});
+  foreach my $sub (@Debugging) { &$sub; };
+  print $q->end_div();
+  PrintFooter();
+}
+
+sub DebugInterLinks {
+  print $q->h2(T('Inter links:')) . $q->p(join(', ', sort keys %InterSite));
 }
 
 # == Surge Protection ==
