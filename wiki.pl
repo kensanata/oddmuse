@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.813 2007/10/02 10:13:14 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.814 2007/10/03 09:09:02 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1824,10 +1824,8 @@ sub GetRcRss {
 sub RssItem {
   my ($id, $ts, $host, $username, $summary, $minor, $revision, $languages, $cluster, $last, $url) = @_;
   my $name = NormalToFree($id);
-  if (GetParam('full', 0)) {
-    $name .= T(': ') . $summary if $summary;
-    $summary = PageHtml($id, 50*1024, T('This page is too big to send over RSS.'));
-  }
+  $summary = PageHtml($id, 50*1024, T('This page is too big to send over RSS.'))
+    if (GetParam('full', 0)); # full page means summary is not shown
   my $date = TimeToRFC822($ts);
   $username = QuoteHtml($username);
   $username = $host unless $username;
