@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.814 2007/10/03 09:09:02 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.815 2007/10/04 08:57:45 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1139,21 +1139,21 @@ sub GetEditLink { # shortcut
 }
 
 sub ScriptLink {
-  my ($action, $text, $class, $name, $title, $accesskey, $nofollow) = @_;
+  my ($action, $text, $class, $name, $title, $accesskey) = @_;
   my %params;
   if ($action =~ /^($UrlProtocols)\%3a/ or $action =~ /^\%2f/) { # nearlinks and other URLs
     $action =~ s/%([0-9a-f][0-9a-f])/chr(hex($1))/ge; # undo urlencode
     $params{-href} = $action;
-  } elsif ($UsePathInfo and $action !~ /=/) {
+  } elsif ($UsePathInfo and index($action, '=') < 0) {
     $params{-href} = $ScriptName . '/' . $action;
   } else {
     $params{-href} = $ScriptName . '?' . $action;
+    $params{'-rel'} = 'nofollow' if index($action, '=') >= 0; # any action
   }
   $params{'-class'} = $class  if $class;
   $params{'-name'} = $name  if $name;
   $params{'-title'} = $title  if $title;
   $params{'-accesskey'} = $accesskey  if $accesskey;
-  $params{'-rel'} = 'nofollow'  if $nofollow;
   return $q->a(\%params, $text);
 }
 
@@ -1557,27 +1557,27 @@ sub RcHeader {
   my @menu;
   if ($all) {
     push(@menu, ScriptLink("$action;days=$days;all=0;showedit=$edits",
-			   T('List latest change per page only'),'','','','',1));
+			   T('List latest change per page only')));
   } else {
     push(@menu, ScriptLink("$action;days=$days;all=1;showedit=$edits",
-			   T('List all changes'),'','','','',1));
+			   T('List all changes')));
     if ($rollback) {
       push(@menu, ScriptLink("$action;days=$days;all=0;rollback=0;showedit=$edits",
-			     T('Skip rollbacks'),'','','','',1));
+			     T('Skip rollbacks')));
     } else {
       push(@menu, ScriptLink("$action;days=$days;all=0;rollback=1;showedit=$edits",
-			     T('Include rollbacks'),'','','','',1));
+			     T('Include rollbacks')));
     }
   }
   if ($edits) {
     push(@menu, ScriptLink("$action;days=$days;all=$all;showedit=0",
-			   T('List only major changes'),'','','','',1));
+			   T('List only major changes')));
   } else {
     push(@menu, ScriptLink("$action;days=$days;all=$all;showedit=1",
-			   T('Include minor changes'),'','','','',1));
+			   T('Include minor changes')));
   }
   print $q->p((map { ScriptLink("$action;days=$_;all=$all;showedit=$edits",
-				($_ != 1) ? Ts('%s days', $_) : Ts('%s days', $_),'','','','',1);
+				($_ != 1) ? Ts('%s days', $_) : Ts('%s days', $_));
 		   } @RcDays), $q->br(), @menu, $q->br(),
 	      ScriptLink($action . ';from=' . ($LastUpdate + 1) . ";all=$all;showedit=$edits",
 			 T('List later changes')), ScriptLink($rss, T('RSS'), 'rss nopages nodiff'),
@@ -2179,18 +2179,12 @@ sub GetHtmlHeader {
   my $html;
   $html = $q->base({-href=>$SiteBase}) if $SiteBase;
   $html .= GetCss();
-  # INDEX,NOFOLLOW tag for wiki pages only so that the robot doesn't index
-  # history pages.  INDEX,FOLLOW tag for RecentChanges and the index of all
-  # pages.  We need the INDEX here so that the spider comes back to these
-  # pages, since links from ordinary pages to RecentChanges or the index will
-  # not be followed.
-  if (($id eq $RCName) or (T($RCName) eq $id) or (T($id) eq $RCName)
-      or (lc (GetParam('action', '')) eq 'index')) {
+  # NOINDEX for non-browse pages.
+  if (GetParam('action', 'browse') eq 'browse'
+      and not GetParam('revision', '')) {
     $html .= '<meta name="robots" content="INDEX,FOLLOW" />';
-  } elsif ($id eq '') {
-    $html .= '<meta name="robots" content="NOINDEX,NOFOLLOW" />';
   } else {
-    $html .= '<meta name="robots" content="INDEX,NOFOLLOW" />';
+    $html .= '<meta name="robots" content="NOINDEX,FOLLOW" />';
   }
   if (not $HtmlHeaders) {
     $html .= '<link rel="alternate" type="application/rss+xml" title="' . QuoteHtml($SiteName)
