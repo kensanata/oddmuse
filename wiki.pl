@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.815 2007/10/04 08:57:45 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.816 2007/10/04 17:09:24 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1340,6 +1340,7 @@ sub BrowsePage {
   my ($id, $raw, $comment, $status) = @_;
   OpenPage($id);
   my ($text, $revision) = GetTextRevision(GetParam('revision', ''));
+  $text = $NewText unless $revision or $Page{revision}; # new text for new pages
   # handle a single-level redirect
   my $oldId = GetParam('oldid', '');
   if ((substr($text, 0, 10) eq '#REDIRECT ')) {
@@ -2513,8 +2514,6 @@ sub OpenPage { # Sets global variables
       $Page{text} = <F>;
       close F;
     } elsif ($CommentsPrefix and $id =~ /^$CommentsPrefix(.*)/o) { # do nothing
-    } else {
-      $Page{text} = $NewText;
     }
   }
   $OpenPageName = $id;
