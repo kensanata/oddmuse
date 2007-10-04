@@ -23,13 +23,13 @@ clear_pages();
 
 add_module('subscriberc.pl');
 
-run_tests(split('\n',<<'EOT'));
+xpath_run_tests(split('\n',<<'EOT'));
 My subscribed pages: AlexSchroeder.
-<a href="http://localhost/test.pl?action=rc;rcfilteronly=^(AlexSchroeder)$">My subscribed pages: AlexSchroeder</a>.
+//a[@href="http://localhost/test.pl?action=rc;rcfilteronly=^(AlexSchroeder)$"][text()="My subscribed pages: AlexSchroeder"]
 My subscribed pages: AlexSchroeder, [[LionKimbro]], [[Foo bar]].
-<a href="http://localhost/test.pl?action=rc;rcfilteronly=^(AlexSchroeder|LionKimbro|Foo_bar)$">My subscribed pages: AlexSchroeder, LionKimbro, Foo bar</a>.
+//a[@href="http://localhost/test.pl?action=rc;rcfilteronly=^(AlexSchroeder|LionKimbro|Foo_bar)$"][text()="My subscribed pages: AlexSchroeder, LionKimbro, Foo bar"]
 My subscribed categories: CategoryDecisionMaking, CategoryBar.
-<a href="http://localhost/test.pl?action=rc;rcfilteronly=(CategoryDecisionMaking|CategoryBar)">My subscribed categories: CategoryDecisionMaking, CategoryBar</a>.
+//a[@href="http://localhost/test.pl?action=rc;rcfilteronly=(CategoryDecisionMaking|CategoryBar)"][text()="My subscribed categories: CategoryDecisionMaking, CategoryBar"]
 My subscribed pages: AlexSchroeder, [[LionKimbro]], [[Foo bar]], categories: CategoryDecisionMaking.
-<a href="http://localhost/test.pl?action=rc;rcfilteronly=^(AlexSchroeder|LionKimbro|Foo_bar)$|(CategoryDecisionMaking)">My subscribed pages: AlexSchroeder, LionKimbro, Foo bar, categories: CategoryDecisionMaking</a>.
+//a[@href="http://localhost/test.pl?action=rc;rcfilteronly=^(AlexSchroeder|LionKimbro|Foo_bar)$|(CategoryDecisionMaking)"][text()="My subscribed pages: AlexSchroeder, LionKimbro, Foo bar, categories: CategoryDecisionMaking"]
 EOT
