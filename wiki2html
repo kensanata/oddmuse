@@ -1,0 +1,104 @@
+#! /usr/bin/perl
+# Copyright (C) 2007  Alex Schroeder <alex@gnu.org>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+=head1 wiki2html
+
+This program converts text in markup from stdin to HTML on stdout. As
+Oddmuse has a render engine that can be extended by plugins, you need
+to pass the Oddmuse script and all its modules on the command line.
+
+Example:
+
+    wiki2html ~/WebServer/CGI-Executables/current \
+	      ~/WebServer/Oddmuse/modules/*.pl \
+	      < in.txt > out.html
+
+=head2 Options
+
+=over
+
+=item --title
+
+Use this option to provide a title for the resulting HTML.
+
+=item --css
+
+Use this option to provide an URL or a filename for the CSS file.
+
+=item --links
+
+The presence of this option enables the linking of local pages. The
+presence of local pages is determined using the C<pageidx> file in the
+default data directory, ie. C</tmp/oddmuse/pageidx>.
+
+=back
+
+=cut
+
+package OddMuse;
+$RunCGI = 0;
+
+$title = "wiki2html output";
+$css = "http://www.oddmuse.org/oddmuse.css";
+
+use Getopt::Long;
+GetOptions("title=s" => \$title, "css=s" => \$css, "links" => \$links);
+
+=head2 Code
+
+The important part is to understand the calling convetion of
+C<ApplyRules>. The first parameter is the URL-encoded input, the
+second parameter is a boolean saying whether local links should be
+rendered, and the last one is the opening tag with which to start.
+Also note that the C<Init> call is necessary to initialize the CGI
+object.
+
+The code as it stands will try to read pages and config files from the
+default data directory. The easiest way to provide your own config
+file is probably to just add your config file to the list of files to
+be loaded:
+
+    wiki2html ~/WebServer/CGI-Executables/current \
+	      ~/WebServer/Oddmuse/config \
+	      ~/WebServer/Oddmuse/modules/*.pl \
+	      < in.txt > out.html
+
+=cut
+
+foreach my $f (@ARGV) { do $f; }
+local $/;
+my $input = <STDIN>;
+if (not $input) {
+  print STDERR "Please supply raw wiki text as input on stdin.\n";
+  exit 1; # die() will print HTML...
+}
+
+print (qq(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"),
+       qq( "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n),
+       qq(<html>\n<head>\n),
+       qq(<title>$title</title\n>),
+       qq(<meta http-equiv="Content-Type" content="text/html;charset=$HttpCharset" />\n),
+       qq(<link type="text/css" rel="stylesheet" href="$css" />\n),
+       qq(</head><body>\n),
+       qq(<div class="header"><h1>$title</h1></div>\n),
+       qq(<div class="wrapper">\n),
+       qq(<div class="content browse">));
+
+
+Init();
+ApplyRules(QuoteHtml($input), $links, undef, undef, 'p');
+
+print (qq(\n</div>\n</div>\n</body>\n</html>\n));
