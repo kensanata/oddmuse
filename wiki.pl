@@ -91,7 +91,7 @@ $StyleSheet  = '';              # URL for CSS stylesheet (like '/wiki.css')
 $StyleSheetPage = 'css';        # Page for CSS sheet
 $LogoUrl     = '';              # URL for site logo ('' for no logo)
 $NotFoundPg  = '';              # Page for not-found links ('' for blank pg)
-$NewText     = "Describe the new page here.\n";	 # New page text
+$NewText     = "This page is empty.\n";	 # New page text
 $NewComment  = "Add your comment here.\n";	 # New comment text
 $EditAllowed = 1;               # 0 = no, 1 = yes, 2 = comments pages only, 3 = comments only
 $AdminPass   = '' unless defined $AdminPass; # Whitespace separated passwords.
@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.816 2007/10/04 17:09:24 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.817 2007/10/04 17:12:41 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
