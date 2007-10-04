@@ -1,3 +1,17 @@
+2007-10-03  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (RssItem): Don't append the summary to the title if
+	showing full page content.
+
+	(ScriptLink): Get rid of the last parameter to generate nofollow
+	links explicitly. Instead, generate nofollow links whenever an
+	action is invoked. Thus, only ordinary links should be followed.
+	(RcHeader): No longer generate nofollow links explicitly. Instead,
+	rely on the new code in ScriptLink.
+	(GetHtmlHeader): Simplify the generation of the robots meta tag.
+	Use INDEX,FOLLOW for the browse action without any revisions and
+	NOINDEX,FOLLOW for everything else.
+
 2007-10-02  Alex Schroeder  <alex@gnu.org>
 
 	* modules/near-links.pl ($SisterSiteLogoUrl): Added.
