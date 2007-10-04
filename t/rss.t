@@ -23,7 +23,9 @@ use Test::More tests => 86;
 clear_pages();
 
 update_page('big', 'foofoo');
-test_page(get_page('action=rss full=1'), '<title>big: foo foo</title>');
+test_page(get_page('action=rss full=1'),
+	  '<title>big</title>',
+	  '<description>&lt;p&gt;foo foo&lt;/p&gt;</description>');
 update_page('big', 'foo foo foo', '<mu>');
 test_page(get_page('action=rss'), '<description>&lt;mu&gt;</description>');
 test_page(get_page('action=rss full=1'), 'foo foo foo');
