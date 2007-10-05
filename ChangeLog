@@ -1,3 +1,17 @@
+2007-10-06  Alex Schroeder  <alex@gnu.org>
+
+	* modules/permanent-anchors.pl (PermanentAnchorsRule): Permanent
+	anchor definitions are dirty, thus print instead of return the
+	HTML string.
+
+2007-10-04  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (BrowsePage): Use $NewText if looking at a page that
+	does not yet exist.
+	(OpenPage): When opening a nonexisting page, don't store $NewText
+	as the default text.
+	($NewText): Changed default to "This page is empty.\n"
+
 2007-10-03  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (RssItem): Don't append the summary to the title if
