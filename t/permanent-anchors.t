@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 24;
+use Test::More tests => 25;
 clear_pages();
 
 add_module('permanent-anchors.pl');
@@ -27,6 +27,10 @@ test_page(update_page('Jack_DeJohnette', 'A friend of [::Gary Peacock]'),
 	  'name="Gary_Peacock"',
 	  'class="definition"',
 	  'title="Click to search for references to this permanent anchor"');
+# get the page again to trigger a dirty/cache error
+negative_xpath_test(get_page('Jack_DeJohnette'),
+		    '//a[@class="definition"]/following-sibling::a[@class="definition"]');
+
 # link to a permanent anchor
 test_page(update_page('Keith_Jarret', 'Plays with [[Gary Peacock]]'),
 	  'Plays with',
