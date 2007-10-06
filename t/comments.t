@@ -82,7 +82,7 @@ test_page($page, 'Can add comments with edit allowed eq 3');
 AppendStringToFile($ConfigFile, "\$EditAllowed = 1;\n");
 
 get_page('title=Yadda', 'aftertext=This%20is%20my%20comment.', 'username=Alex');
-test_page(get_page('Yadda'), 'Describe the new page');
+test_page(get_page('Yadda'), 'This page is empty.');
 
 get_page('title=Comments_on_Yadda', 'aftertext=This%20is%20my%20comment.', 'username=Alex');
 test_page(get_page('Comments_on_Yadda'), 'This is my comment\.', '-- Alex');
