@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.819 2007/10/06 13:27:22 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.820 2007/10/06 14:19:26 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1127,7 +1127,7 @@ sub GetPageLink { # use if you want to force a link to local pages, whether it e
   $id = FreeToNormal($id);
   $name = $id unless $name;
   $class .= ' ' if $class;
-  return ScriptLink(UrlEncode($id), NormalToFree($name), $class . 'local');
+  return ScriptLink(UrlEncode($id), NormalToFree($name), $class . "local $id");
 }
 
 sub GetEditLink { # shortcut
@@ -1150,9 +1150,9 @@ sub ScriptLink {
     $params{-href} = $ScriptName . '?' . $action;
     $params{'-rel'} = 'nofollow' if index($action, '=') >= 0; # any action
   }
-  $params{'-class'} = $class  if $class;
-  $params{'-name'} = $name  if $name;
-  $params{'-title'} = $title  if $title;
+  $params{'-class'} = $class if $class;
+  $params{'-name'} = $name if $name;
+  $params{'-title'} = $title if $title;
   $params{'-accesskey'} = $accesskey  if $accesskey;
   return $q->a(\%params, $text);
 }
@@ -2338,9 +2338,9 @@ sub GetValidatorLink {
        . $q->a({-href => 'http://jigsaw.w3.org/css-validator/check/referer'}, T('Validate CSS'));
 }
 
-sub GetGotoBar {
-  my $id = shift;
-  return $q->span({-class=>'gotobar bar'}, (map { GetPageLink($_) } @UserGotoBarPages), $UserGotoBar);
+sub GetGotoBar { # ignore $id parameter
+  return $q->span({-class=>'gotobar bar'}, (map { GetPageLink($_) }
+					    @UserGotoBarPages), $UserGotoBar);
 }
 
 # == Difference markup and HTML ==
