@@ -28,7 +28,7 @@ $ENV{'REMOTE_ADDR'} = $localhost;
 ## Edit banned hosts as a normal user should fail
 
 test_page(update_page('BannedHosts', "# Foo\n#Bar\n$localhost\n", 'banning me'),
-	  'Describe the new page here');
+	  'This page is empty');
 
 ## Edit banned hosts as admin should succeed
 
@@ -45,7 +45,7 @@ test_page(update_page('BannedHosts', "Something else.", 'banning me'),
 ## Try to edit another page as a banned user
 
 test_page(update_page('BannedUser', 'This is a test which should fail.', 'banning test'),
-	  'Describe the new page here');
+	  'This page is empty');
 
 ## Try to edit the same page as a banned user with admin password
 
@@ -60,7 +60,7 @@ test_page(update_page('BannedHosts', "#Foo\n#Bar\n", 'banning me', 0, 1), "Foo",
 
 update_page('BannedContent', "# cosa\nma ?fia # 2007-01-14 crime\n#nostra\n(huh?\n", 'one banned word', 0, 1);
 test_page(update_page('CriminalPage', 'This is about http://mafia.example.com'),
-	  'Describe the new page here');
+	  'This page is empty');
 
 test_page($redirect,
 	  'banned text',
@@ -81,7 +81,7 @@ add_module('strange-spam.pl');
 update_page('StrangeBannedContent', "<?pom ?poko>? # 2007-01-14 tanuki power",
 	    '', 0, 1);
 test_page(update_page('TanukiPage', 'I was here!! <pompoko>'),
-	  'Describe the new page here');
+	  'This page is empty');
 test_page($redirect, 'Reason: tanuki power',
 	  'See .*StrangeBannedContent.* for more information',
 	  'Rule "&lt;\?pom \?poko&gt;\?" matched "&lt;pompoko&gt;" on this page');
