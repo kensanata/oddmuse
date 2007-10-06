@@ -28,12 +28,12 @@ AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
 $page = update_page('Test', 'Can edit page by default');
 test_page($page, 'Can edit page by default');
 xpath_test($page,
-	   '//a[@class="comment local"][@href="http://localhost/wiki.pl/Comments_on_Test"][text()="Comments on Test"]',
+	   '//a[@class="comment local Comments_on_Test"][@href="http://localhost/wiki.pl/Comments_on_Test"][text()="Comments on Test"]',
 	   '//a[@class="edit"][@href="http://localhost/wiki.pl?action=edit;id=Test"][text()="Edit this page"]');
 $page = update_page('Comments_on_Test', 'Can edit comment by default');
 test_page($page, 'Can edit comment by default');
 xpath_test($page,
-	   '//a[@class="original local"][@href="http://localhost/wiki.pl/Test"][text()="Test"]',
+	   '//a[@class="original local Test"][@href="http://localhost/wiki.pl/Test"][text()="Test"]',
 	   '//a[@class="edit"][@href="http://localhost/wiki.pl?action=edit;id=Comments_on_Test"][text()="Edit this page"]',
 	   '//textarea[@name="aftertext"]');
 
@@ -58,7 +58,7 @@ xpath_test($page,
 $page = update_page('Comments_on_Test', 'Can edit comments with edit allowed eq 2');
 test_page($page, 'Can edit comments with edit allowed eq 2');
 xpath_test($page,
-	   '//a[@class="original local"][@href="http://localhost/wiki.pl/Test"][text()="Test"]',
+	   '//a[@class="original local Test"][@href="http://localhost/wiki.pl/Test"][text()="Test"]',
 	   '//a[@class="edit"][@href="http://localhost/wiki.pl?action=edit;id=Comments_on_Test"][text()="Edit this page"]',
 	   '//textarea[@name="aftertext"]');
 
@@ -71,7 +71,7 @@ xpath_test($page,
 $page = update_page('Comments_on_Test', 'Can edit comments with edit allowed eq 3');
 test_page($page, 'Can edit comments with edit allowed eq 2');
 xpath_test($page,
-	   '//a[@class="original local"][@href="http://localhost/wiki.pl/Test"][text()="Test"]',
+	   '//a[@class="original local Test"][@href="http://localhost/wiki.pl/Test"][text()="Test"]',
 	   '//a[@class="password"][@href="http://localhost/wiki.pl?action=password"][text()="This page is read-only"]',
 	   '//textarea[@name="aftertext"]');
 $page = update_page('Comments_on_Test', '', '', '', '', 'aftertext=Can%20add%20comments%20with%20edit%20allowed%20eq%203');

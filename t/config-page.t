@@ -24,4 +24,4 @@ AppendStringToFile($ConfigFile, "\$ConfigPage = 'Config';\n");
 
 xpath_test(update_page('Config', '@UserGotoBarPages = ("Foo", "Bar");',
 		       'config', 0, 1),
-	   '//div[@class="header"]/span[@class="gotobar bar"]/a[@class="local"][text()="Foo"]/following-sibling::a[@class="local"][text()="Bar"]');
+	   '//div[@class="header"]/span[@class="gotobar bar"]/a[@class="local Foo"][text()="Foo"]/following-sibling::a[@class="local"][text()="Bar"]');
