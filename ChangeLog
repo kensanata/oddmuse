@@ -4,6 +4,7 @@
 	rollbacks.
 	(DoRollback): Leave marker for single page rollbacks.
 	(RcTextRevision): Encode id for the current revision.
+	(GetPageLink): Add the pagename to the link class.
 
 	* modules/permanent-anchors.pl (PermanentAnchorsRule): Permanent
 	anchor definitions are dirty, thus print instead of return the
