@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 46;
+use Test::More tests => 54;
 
 clear_pages();
 WriteStringToFile($RcFile, "1FirstPage1\n");
@@ -54,14 +54,6 @@ update_page('NicePage', 'Friendly content.', 'good guy one');
 update_page('OtherPage', 'Other cute content 1.', 'another good guy');
 update_page('OtherPage', 'Other cute content 2.', 'another good guy');
 update_page('OtherPage', 'Other cute content 3.', 'another good guy');
-update_page('OtherPage', 'Other cute content 4.', 'another good guy');
-update_page('OtherPage', 'Other cute content 5.', 'another good guy');
-update_page('OtherPage', 'Other cute content 6.', 'another good guy');
-update_page('OtherPage', 'Other cute content 7.', 'another good guy');
-update_page('OtherPage', 'Other cute content 8.', 'another good guy');
-update_page('OtherPage', 'Other cute content 9.', 'another good guy');
-update_page('OtherPage', 'Other cute content 10.', 'another good guy');
-update_page('OtherPage', 'Other cute content 11.', 'another good guy');
 
 # good revisions -- need a different timestamp than the old revisions!
 sleep(1);
@@ -87,6 +79,7 @@ update_page('MinorPage', 'Ramtatam', 'testerror', 1);
 test_page(get_page('NicePage'), 'Bad content');
 test_page(get_page('InnocentPage'), 'Lamb');
 
+# find the rollback link for the last good revision
 $to = xpath_test(get_page('action=rc all=1 pwd=foo'),
 		 '//strong[text()="good guy two"]/preceding-sibling::a[@class="rollback"]/attribute::href');
 $to =~ /action=rollback;to=([0-9]+)/;
@@ -108,7 +101,8 @@ test_page(get_page('EvilPage'), 'DeletedPage');
 test_page(get_page('AnotherEvilPage'), 'DeletedPage');
 test_page(get_page('InnocentPage'), 'Lamb');
 
-my $rc = get_page('action=rc all=1 showedit=1 pwd=foo from=1'); # this includes rollback info and rollback links
+# this includes rollback info and rollback links
+my $rc = get_page('action=rc all=1 showedit=1 pwd=foo from=1');
 
 # check all revisions of NicePage in recent changes
 xpath_test($rc,
@@ -160,8 +154,26 @@ test_page_negative($page,
 		  );
 
 # test url encoding
-test_page(update_page('Schröder', 'Alex'), 'Alex');
+test_page(update_page('Schröder', 'Alex', 'eins'), 'Alex');
 $to = (stat($IndexFile))[9];
-test_page(update_page('Schröder', 'Berta'), 'Berta');
+sleep(1);
+test_page(update_page('Schröder', 'Berta', 'zwei'), 'Berta');
 xpath_test(get_page('action=history id=Schr%c3%b6der username=olaf'),
 	   '//a[@class="rollback"][@href="http://localhost/wiki.pl?action=rollback;to=' . $to . ';id=Schr%c3%b6der"][text()="rollback"]');
+
+# test single page rollback
+test_page(get_page("action=rollback to=$to id=Schr%c3%b6der username=olaf"),
+	  'Rolling back changes',
+	  'Schröder</a> rolled back');
+test_page(get_page('Schr%c3%b6der'), 'Alex');
+
+# make sure it is hidden from recent changes
+$page = get_page('action=rc raw=1');
+test_page($page, "title: Schröder\ndescription: eins\n");
+test_page_negative($page, "title: Schröder\ndescription: zwei\n");
+
+# make sure that rollback=1 shows all the various links
+test_page(get_page('action=rc raw=1 rollback=1 all=1'),
+	  'link: http://localhost/wiki.pl/Schr%c3%b6der',
+	  'link: http://localhost/wiki.pl\?action=browse;id=Schr%c3%b6der;revision=2',
+	  'link: http://localhost/wiki.pl\?action=browse;id=Schr%c3%b6der;revision=1');
