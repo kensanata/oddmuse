@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.818 2007/10/06 12:24:38 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.819 2007/10/06 13:27:22 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1997,7 +1997,7 @@ sub DoRollback {
       print Ts('%s rolled back', GetPageLink($id)), ($ts ? ' ' . Ts('to %s', TimeToText($to)) : ''), $q->br();
     }
   }
-  WriteRcLog('[[rollback]]', '', $to, $page); # leave marker
+  WriteRcLog('[[rollback]]', $page, $to); # leave marker
   print $q->end_p() . $q->end_div();
   ReleaseLock();
   PrintFooter();
