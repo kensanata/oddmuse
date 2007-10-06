@@ -32,8 +32,8 @@ The End.});
 
 $page = get_page('Front_Page');
 xpath_test($page, '//div[@class="content browse"]/p[text()="Hello! "]',
-	   '//div[@class="aggregate journal"]/div[@class="page"]/h2/a[@class="local"][text()="NicePage"]',
-	   '//div[@class="aggregate journal"]/div[@class="page"]/h2/a[@class="local"][text()="OtherPage"]',
+	   '//div[@class="aggregate journal"]/div[@class="page"]/h2/a[@class="local NicePage"][text()="NicePage"]',
+	   '//div[@class="aggregate journal"]/div[@class="page"]/h2/a[@class="local OtherPage"][text()="OtherPage"]',
 	   '//div[@class="page"]/p[text()="You are nice."]',
 	   '//div[@class="page"]/p[text()="This is off-topic."]',
 	   '//div[@class="content browse"]/p[text()=" The End."]');
@@ -63,6 +63,6 @@ The End.});
 
 $page = get_page('Front_Page');
 xpath_test($page, '//div[@class="content browse"]/p[text()="Hello! "]',
-	   '//div[@class="aggregate journal"]/div[@class="page"]/h2/a[@class="local"][text()="OtherPage"]',
+	   '//div[@class="aggregate journal"]/div[@class="page"]/h2/a[@class="local OtherPage"][text()="OtherPage"]',
 	   '//div[@class="page"]/p[text()="This is off-topic."]',
 	   '//div[@class="content browse"]/p[text()=" The End."]');
