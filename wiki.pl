@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.820 2007/10/06 14:19:26 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.821 2007/10/06 20:28:37 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1127,7 +1127,7 @@ sub GetPageLink { # use if you want to force a link to local pages, whether it e
   $id = FreeToNormal($id);
   $name = $id unless $name;
   $class .= ' ' if $class;
-  return ScriptLink(UrlEncode($id), NormalToFree($name), $class . "local $id");
+  return ScriptLink(UrlEncode($id), NormalToFree($name), $class . 'local');
 }
 
 sub GetEditLink { # shortcut
