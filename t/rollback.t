@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 54;
+use Test::More tests => 62;
 
 clear_pages();
 WriteStringToFile($RcFile, "1FirstPage1\n");
@@ -157,6 +157,7 @@ test_page_negative($page,
 test_page(update_page('Schröder', 'Alex', 'eins'), 'Alex');
 $to = (stat($IndexFile))[9];
 sleep(1);
+test_page(update_page('HiddenEdit', 'not to be rolled back', 'secret'), 'not to be rolled back');
 test_page(update_page('Schröder', 'Berta', 'zwei'), 'Berta');
 xpath_test(get_page('action=history id=Schr%c3%b6der username=olaf'),
 	   '//a[@class="rollback"][@href="http://localhost/wiki.pl?action=rollback;to=' . $to . ';id=Schr%c3%b6der"][text()="rollback"]');
@@ -169,11 +170,20 @@ test_page(get_page('Schr%c3%b6der'), 'Alex');
 
 # make sure it is hidden from recent changes
 $page = get_page('action=rc raw=1');
-test_page($page, "title: Schröder\ndescription: eins\n");
+test_page($page, "title: Schröder\ndescription: eins\n",
+	  "title: HiddenEdit\ndescription: secret\n");
 test_page_negative($page, "title: Schröder\ndescription: zwei\n");
 
-# make sure that rollback=1 shows all the various links
+# make sure that rollback=1 shows the rollback link
+test_page(get_page('action=rc raw=1 rollback=1'),
+	  "title: Schröder\ndescription: Rollback to ",
+	  "title: HiddenEdit\ndescription: secret\n");
+# all=1 shows all links including rollbacks
 test_page(get_page('action=rc raw=1 rollback=1 all=1'),
+	  "title: Schröder\ndescription: Rollback to ",
+	  "title: Schröder\ndescription: zwei\n",
+	  "title: Schröder\ndescription: eins\n",
+	  "title: HiddenEdit\ndescription: secret\n",
 	  'link: http://localhost/wiki.pl/Schr%c3%b6der',
 	  'link: http://localhost/wiki.pl\?action=browse;id=Schr%c3%b6der;revision=2',
 	  'link: http://localhost/wiki.pl\?action=browse;id=Schr%c3%b6der;revision=1');
