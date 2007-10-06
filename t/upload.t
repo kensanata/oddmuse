@@ -22,11 +22,11 @@ use Test::More tests => 10;
 
 clear_pages();
 
-test_page(update_page('Logo', "#FILE image/png\niVBORw0KGgoAAAA"), 'Describe the new page here');
+test_page(update_page('Logo', "#FILE image/png\niVBORw0KGgoAAAA"), 'This page is empty');
 
 AppendStringToFile($ConfigFile, "\$UploadAllowed = 1;\n");
 
-test_page(update_page('Logo', "#FILE image/foo\niVBORw0KGgoAAAA"), 'Describe the new page here');
+test_page(update_page('Logo', "#FILE image/foo\niVBORw0KGgoAAAA"), 'This page is empty');
 
 $page = update_page('alex pic', "#FILE image/png\niVBORw0KGgoAAAA");
 test_page($page, 'This page contains an uploaded file:');
