@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.817 2007/10/04 17:12:41 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.818 2007/10/06 12:24:38 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1514,11 +1514,26 @@ sub GetRcLines {
   }
   splice(@fullrc, 0, $i);  # Remove items before index $i
   if (not $rollbacks) { # strip rollbacks
-    my ($target, $end);
+    my ($skip_to, $end);
+    my %rollback = ();
     for (my $i = $#fullrc; $i >= 0; $i--) {
-      my ($ts, $id, $rest) = split(/$FS/o, $fullrc[$i]);
-      splice(@fullrc, $i + 1, $end - $i), $target = 0  if $ts <= $target;
-      $target = $rest, $end = $i if $id eq '[[rollback]]' and (not $target or $rest < $target); # marker
+      # some fields have a different meaning if looking at rollbacks
+      my ($ts, $id, $target_ts, $target_id) = split(/$FS/o, $fullrc[$i]);
+      # strip global rollbacks
+      if ($skip_to and $ts <= $skip_to) {
+	splice(@fullrc, $i + 1, $end - $i);
+	$skip_to = 0;
+      } elsif ($id eq '[[rollback]]') {
+	if ($target_id) {
+	  $rollback{$target_id} = $target_ts; # single page rollback
+	  splice(@fullrc, $i, 1);	      # strip marker
+	} else {
+	  $end = $i unless $skip_to;
+	  $skip_to = $target_ts; # cumulative rollbacks!
+	}
+      } elsif ($rollback{$id} and $ts > $rollback{$id}) {
+	splice(@fullrc, $i, 1); # strip rolled back single pages
+      }
     }
   } else { # just strip the marker left by DoRollback()
     for (my $i = $#fullrc; $i >= 0; $i--) {
@@ -1755,7 +1770,7 @@ sub RcTextRevision {
   my($id, $ts, $host, $username, $summary, $minor, $revision, $languages, $cluster, $last) = @_;
   my $link = $ScriptName . (GetParam('all', 0) && ! $last
 			    ? '?' . GetPageParameters('browse', $id, $revision, $cluster, $last)
-			    : ($UsePathInfo ? '/' : '?') . $id);
+			    : ($UsePathInfo ? '/' : '?') . UrlEncode($id));
   print "\n", RcTextItem('title', NormalToFree($id)), RcTextItem('description', $summary),
     RcTextItem('generator', $username ? $username . ' ' . Ts('from %s', $host) : $host),
     RcTextItem('language', join(', ', @{$languages})), RcTextItem('link', $link),
@@ -1982,7 +1997,7 @@ sub DoRollback {
       print Ts('%s rolled back', GetPageLink($id)), ($ts ? ' ' . Ts('to %s', TimeToText($to)) : ''), $q->br();
     }
   }
-  WriteRcLog('[[rollback]]', '', $to) unless $page; # leave marker for DoRc() if mass rollback
+  WriteRcLog('[[rollback]]', '', $to, $page); # leave marker
   print $q->end_p() . $q->end_div();
   ReleaseLock();
   PrintFooter();
