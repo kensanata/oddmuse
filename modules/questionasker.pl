@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.19 2007/10/07 20:13:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.20 2007/10/07 20:19:02 as Exp $</p>';
 
 use vars qw(@QuestionaskerQuestions
 	    $QuestionaskerRememberAnswer
@@ -94,7 +94,7 @@ sub NewQuestionaskerDoPost {
 
 sub NewQuestionaskerGetEditForm {
   my ($id, $upload) = @_;
-  my $form = OldQuestionaskerGetEditForm($id, $upload, @_);
+  my $form = OldQuestionaskerGetEditForm(@_);
   if (not $upload
       and not QuestionaskerException(GetId())
       and not $QuestionaskerRememberAnswer && GetParam('question', 0)
