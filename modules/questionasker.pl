@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.18 2007/10/07 20:00:08 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.19 2007/10/07 20:13:10 as Exp $</p>';
 
 use vars qw(@QuestionaskerQuestions
 	    $QuestionaskerRememberAnswer
@@ -77,7 +77,7 @@ sub NewQuestionaskerDoPost {
 	  or QuestionaskerException($id)) {
     print GetHeader('', T('Edit Denied'), undef, undef, '403 FORBIDDEN');
     print $q->p(T('You did not answer correctly.'));
-    print $q->start_form, QuestionaskerGetQuestion(),
+    print $q->start_form, QuestionaskerGetQuestion(1),
       (map { $q->hidden($_, '') }
        qw(title text oldtime summary recent_edit)), $q->end_form;
     PrintFooter();
@@ -106,13 +106,16 @@ sub NewQuestionaskerGetEditForm {
 }
 
 sub QuestionaskerGetQuestion {
+  my $need_button = shift;
+  my $button = $need_button ? $q->submit(-value=>T('Go!')) : '';
   my $question_number = int(rand(scalar(@QuestionaskerQuestions)));
   return $q->div({-class=>'question'},
 		 $q->p(T('To save this page you must answer this question:')),
 		 $q->blockquote($q->p($QuestionaskerQuestions[$question_number][0]),
 				$q->p($q->input({-type=>'text', -name=>'answer'}),
 				      $q->input({-type=>'hidden', -name=>'question_num',
-						 -value=>$question_number}))));
+						 -value=>$question_number}),
+				      $button)));
 }
 
 sub QuestionaskerException {
