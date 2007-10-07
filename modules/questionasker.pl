@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.17 2007/10/01 00:17:32 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.18 2007/10/07 20:00:08 as Exp $</p>';
 
 use vars qw(@QuestionaskerQuestions
 	    $QuestionaskerRememberAnswer
@@ -77,8 +77,9 @@ sub NewQuestionaskerDoPost {
 	  or QuestionaskerException($id)) {
     print GetHeader('', T('Edit Denied'), undef, undef, '403 FORBIDDEN');
     print $q->p(T('You did not answer correctly.'));
-    print $q->p(T('Use the back button to return the previous page and try again.'));
-    print $q->p(T('Contact the wiki administrator for more information.'));
+    print $q->start_form, QuestionaskerGetQuestion(),
+      (map { $q->hidden($_, '') }
+       qw(title text oldtime summary recent_edit)), $q->end_form;
     PrintFooter();
     # logging to the error log file of the server
     # warn "Q: '$QuestionaskerQuestions[$question_num][0]', A: '$answer'\n";
@@ -88,17 +89,18 @@ sub NewQuestionaskerDoPost {
   return (OldQuestionaskerDoPost(@params));
 }
 
-*OldQuestionaskerGetFormStart = *GetFormStart;
-*GetFormStart = *NewQuestionaskerGetFormStart;
+*OldQuestionaskerGetEditForm = *GetEditForm;
+*GetEditForm = *NewQuestionaskerGetEditForm;
 
-sub NewQuestionaskerGetFormStart {
-  my ($ignore, $method, $class) = @_;
-  my $form = OldQuestionaskerGetFormStart(@_);
-  if ($QuestionaskerProtectedForms{$class}
+sub NewQuestionaskerGetEditForm {
+  my ($id, $upload) = @_;
+  my $form = OldQuestionaskerGetEditForm($id, $upload, @_);
+  if (not $upload
       and not QuestionaskerException(GetId())
       and not $QuestionaskerRememberAnswer && GetParam('question', 0)
       and not UserIsAdmin()) {
-    $form .= QuestionaskerGetQuestion();
+    my $question = QuestionaskerGetQuestion();
+    $form =~ s/<p><label for="username">/$question<p><label for="username">/;
   }
   return $form;
 }
