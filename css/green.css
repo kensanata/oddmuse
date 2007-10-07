@@ -141,16 +141,19 @@ div.message {
     top: 1.5em;
     left:0;
     right:0;
-    background-color:#fee;
-    color:#f00;
-    border:solid #f00;
-    font-weight:bold;
-    padding:0.1em 0 0.1em 1em;
     z-index: 5;
 }
 div.message p {
     display:inline;
 }
+div.message, div.question {
+    background-color:#fee;
+    color:#f00;
+    border:solid #f00;
+    font-weight:bold;
+    padding:0.1em 0 0.1em 1em;
+}
+
 div.header h1 {
     position:   absolute;
     top: 1.5em;
