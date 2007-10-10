@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 7;
+use Test::More tests => 18;
 
 clear_pages();
 
@@ -39,3 +39,21 @@ update_page('code', 'This is the & character.');
 update_page('code', 'This is the <code>&</code> character.');
 test_page(get_page('action=browse diff=1 id=code'),
 	  '<strong class="changes">&lt;code&gt;</strong>&amp;<strong class="changes">&lt;/code&gt;</strong>');
+
+# make sure revision and diffrevision work correctly
+update_page('david', 'this is the first revision', 'first revision');
+update_page('david', 'this is the second revision', 'second revision');
+update_page('david', 'this is the third revision', 'third revision');
+update_page('david', 'this is the fourth revision', 'fourth revision');
+# first make sure the history page shows the appropriate labels and
+# summaries
+test_page(get_page('action=history id=david'),
+	  'Revision 1', 'first revision',
+	  'Revision 2', 'second revision',
+	  'Revision 3', 'third revision',
+	  'Revision 4', 'fourth revision');
+# using diffrevision=1 will make sure that the third revision is not shown
+xpath_test(get_page('action=browse diff=1 id=david revision=2 diffrevision=1'),
+	   '//div[@class="old"]/p/strong[text()="first"]',
+	   '//div[@class="new"]/p/strong[text()="second"]',
+	   '//div[@class="content browse"]/p[text()="this is the second revision"]');
