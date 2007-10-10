@@ -1,3 +1,7 @@
+2007-10-10  Alex Schroeder  <alex@gnu.org>
+
+	* t/test.pl (xpath_do): Only print the page once per test run.
+
 2007-10-07  Alex Schroeder  <alex@gnu.org>
 
 	* modules/questionasker.pl (NewQuestionaskerDoPost): Pass on
