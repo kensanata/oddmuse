@@ -139,6 +139,7 @@ sub test_page_negative {
 sub xpath_do {
   my ($check, $message, $page, @tests) = @_;
   $page =~ s/^.*?<html>/<html>/s; # strip headers
+  my $page_shown = 0;
   my $parser = XML::LibXML->new();
   my $doc;
   my $result;
@@ -154,7 +155,8 @@ sub xpath_do {
 	$result .= $nodelist->string_value();
       } else {
 	$page =~ s/^.*?<body/<body/s;
-	diag($message, substr($page,0,30000));
+	diag($message, substr($page,0,30000)) unless $page_shown;
+	$page_shown = 1;
       }
     }
   }
