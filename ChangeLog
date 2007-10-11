@@ -1,3 +1,26 @@
+2007-10-11  Alex Schroeder  <alex@gnu.org>
+
+	A big change to search-freetext.pl to make sure it works even if
+	we're not reindexing all the time. This requires a reindexing of
+	all pages changed after the last big reindexing on every save.
+	
+	* modules/search-freetext.pl (DoSearchFreeTextIndex)
+	(SearchFreeTextIndex): The buildindex action will now call
+	DoSearchFreeTextIndex, which does some setup and prints info, and
+	calls SearchFreeTextIndex which does the real work.
+	SearchFreeTextIndex can now be called from elsewhere without
+	printing anything.
+	(NewSearchFreeTextSave): New. When saving, call
+	UpdateSearchFreeTextIndex.
+	(UpdateSearchFreeTextIndex): New. Call SearchFreeTextIndex with
+	the list of pages returned by SearchFreeNewPages.
+	(SearchFreeNewPages): New. Return the list of all pages changed
+	since the last modified date on word.db.
+	(NewSearchFreeTextTitleAndBody): Look in both word-update.db and
+	tags-update.db in addition to word.db and tags.db.
+	(SearchFreeTextGet): Make sure we only call search on the db if it
+	contains data.
+
 2007-10-10  Alex Schroeder  <alex@gnu.org>
 
 	* t/test.pl (xpath_do): Only print the page once per test run.
