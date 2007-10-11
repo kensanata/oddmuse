@@ -56,7 +56,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.56 2007/10/11 10:32:12 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.57 2007/10/11 10:35:10 as Exp $</p>';
 
 =head2 User Interface
 
@@ -225,7 +225,7 @@ push(@Debugging, \&DoSearchFreeTextNewPages);
 
 sub DoSearchFreeTextNewPages {
   print $q->h2(T('New Pages for Indexed Search:')),
-    $q->p(join($q->br(), map { GetPageLink($_) } SearchFreeNewPages()));
+    $q->p(join(', ', map { GetPageLink($_) } SearchFreeNewPages()));
 }
 
 =head2 Tag Cloud
