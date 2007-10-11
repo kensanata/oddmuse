@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: near-links.pl,v 1.4 2007/10/02 13:21:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: near-links.pl,v 1.5 2007/10/11 10:35:47 as Exp $</p>';
 
 =head1 Near Links
 
@@ -147,8 +147,8 @@ push(@Debugging, \&DoNearLinksList);
 
 sub DoNearLinksList {
   print $q->h2(T('Near links:')),
-    $q->p(join($q->br(),
-	       map { $_ . ': ' . join(', ', @{$NearSource{$_}})}
+    $q->p(join('; ',
+	       map { GetPageLink($_) . ': ' . join(', ', @{$NearSource{$_}})}
 	       sort keys %NearSource));
 }
 
