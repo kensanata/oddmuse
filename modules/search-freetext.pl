@@ -56,7 +56,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.57 2007/10/11 10:35:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.58 2007/10/11 10:46:34 as Exp $</p>';
 
 =head2 User Interface
 
@@ -188,7 +188,7 @@ SearchFreeTextIndex.
 
 sub SearchFreeNewPages {
   my $ts = 0;
-  $ts = -M "$DataDir/word.db" if -f $wordfile;
+  $ts = (stat("$DataDir/word-update.db"))[9] if -f "$DataDir/word.db";
   my %index = ();
   foreach my $line (GetRcLines($ts)) {
     my ($ts, $id) = split(/$FS/o, $line);
