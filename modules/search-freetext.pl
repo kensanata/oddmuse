@@ -16,6 +16,22 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+=head1 Indexed Search using Search::FreeText
+
+This package allows Oddmuse to use an index for its searches. This is
+much faster than opening every page file and searching it
+individually. The drawback is that the indexes require reindexing.
+
+This module uses four index files in the data directory: word.db,
+tags.db, word-update.db, and tags-update.db. Reindexing the site will
+index all pages and use word.db for all words, and tags.db for tags
+only. Whenever a page is saved, Oddmuse will reindex all pages newer
+than the last modified date of word.db and create word-update.db and
+tags-update.db. Whenever the entire site is reindexed, word-update.db
+and tags-update.db will be cleared again.
+
+=cut
+
 package OddMuse::Tokenize;
 
 sub new {
@@ -40,7 +56,18 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.54 2007/09/14 20:17:58 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.55 2007/10/11 10:16:15 as Exp $</p>';
+
+=head2 User Interface
+
+The rule to use is C<[[tag:some tag]]> and C<[[tag:some tag|some
+descriptive text]]>.
+
+Both the action allowing you to rebuild the index as well as the
+action showing you the tag cloud are available from the Adminstration
+menu.
+
+=cut
 
 push(@MyRules, \&SearchFreeTextTagsRule);
 
@@ -71,33 +98,59 @@ sub SearchFreeTextMenu {
        ScriptLink('action=cloud', T('Tag Cloud'), 'cloud'));
 }
 
-$Action{buildindex} = \&SearchFreeTextIndex;
+=head2 Indexing
 
-sub SearchFreeTextIndex {
+You reindex the pages by calling the buildindex action every now and
+then. Usually you'd call it at least once every 24h. Here's an example
+for a script you might call from your cron job:
+
+    #!/bin/sh
+    PW=`sed -n 's/\$AdminPass="\(.*\)";/\1/p' < config`
+    perl ../cgi-bin/wiki action=buildindex pwd=$PW > reindex.log
+    chmod o+rw *.db
+    chmod o+r reindex.log
+
+DoSearchFreeTextIndex is used as a wrapper around SearchFreeTextIndex
+that prints progress as a plain text web page. The two data files and
+a subroutine to print the pagename as well as the list of all pages
+are passed on to SearchFreeTextIndex.
+
+=cut
+
+$Action{buildindex} = \&DoSearchFreeTextIndex;
+
+sub DoSearchFreeTextIndex {
   if (not eval { require Search::FreeText;  }) {
-    print GetHttpHeader('text/plain', 'nocache', '500 INTERNAL SERVER ERROR');
-    print T('Search::FreeText is not available on this system.') ."\n";
-    return;
+    ReportError(T('Search::FreeText is not available on this system.'),
+		'500 INTERNAL SERVER ERROR');
   }
-  print GetHttpHeader('text/plain');
   my $wordfile = $DataDir . '/word.db';
   my $tagfile = $DataDir . '/tags.db';
-  if (!UserIsAdmin()) {
-    if ((-f $wordfile) && ((-M $wordfile) < 0.5)) {
-      print T('Rebuilding index not done.'), "\n",
-	T('(Rebuilding the index can only be done once every 12 hours.)'), "\n";
-      return;
-    }
+  if (!UserIsAdmin() && (-f $wordfile) && ((-M $wordfile) < 0.5)) {
+    ReportError(T('Rebuilding index not done.'), '403 FORBIDDEN',
+		0, T('(Rebuilding the index can only be done once every 12 hours.)'));
   }
+  print GetHttpHeader('text/plain');
+  SearchFreeTextIndex($wordfile, $tagfile, sub { print shift, "\n"; },
+		      AllPagesList());
+  # make sure the delta indexes are empty
+  $wordfile = "$DataDir/word-update.db";
+  $tagfile = "$DataDir/tags-update.db";
+  SearchFreeTextIndex($wordfile, $tagfile);
+  print T('Done.'), "\n";
+}
+
+sub SearchFreeTextIndex {
+  my ($wordfile, $tagfile, $print, @pages) = @_;
   my $words = SearchFreeTextDB($wordfile . ".new");
   $words->open_index();
   $words->clear_index();
   my $tags = SearchFreeTextDB($tagfile . ".new");
   $tags->open_index();
   $tags->clear_index();
-  foreach my $name (AllPagesList()) {
+  foreach my $name (@pages) {
     OpenPage($name);
-    print $name, "\n";
+    &$print($name) if $print;
     # don't forget to add the pagename to the page text, without
     # underscores
     my $page = $OpenPageName;
@@ -117,8 +170,56 @@ sub SearchFreeTextIndex {
   $tags->close_index();
   rename($wordfile . ".new", $wordfile);
   rename($tagfile . ".new", $tagfile);
-  print T('Done.'), "\n";
 }
+
+=head2 Updates
+
+Whenever a page is saved, we want to update the index. Instead of
+updating the datafiles, however, we just read the rc.log file and
+produce a list of changed pages since the last update of the word.db
+file. These pages are reindexed.
+
+UpdateSearchFreeTextIndex is also a wrapper around SearchFreeTextIndex
+that prints no progress. The two data files, an empty subroutine as
+well as the list of changed pages are passed on to
+SearchFreeTextIndex.
+
+=cut
+
+sub SearchFreeNewPages {
+  my $ts = 0;
+  $ts = -M "$DataDir/word.db" if -f $wordfile;
+  my %index = ();
+  foreach my $line (GetRcLines($ts)) {
+    my ($ts, $id) = split(/$FS/o, $line);
+    $index{$id} = 1;
+  }
+  return keys %index;
+}
+
+sub UpdateSearchFreeTextIndex {
+  if (eval { require Search::FreeText;  }) {
+    my $wordfile = "$DataDir/word-update.db";
+    my $tagfile = "$DataDir/tags-update.db";
+    SearchFreeTextIndex($wordfile, $tagfile, sub {}, SearchFreeNewPages());
+  }
+}
+
+*OldSearchFreeTextSave = *Save;
+*Save = *NewSearchFreeTextSave;
+
+sub NewSearchFreeTextSave { # called within a lock!
+  OldSearchFreeTextSave(@_);
+  UpdateSearchFreeTextIndex();
+}
+
+=head2 Tag Cloud
+
+This action delves into the internals of the data file (hack alert!)
+used by the Search::FreeText module and extracts the number of
+documents tagged per tag.
+
+=cut
 
 $Action{cloud} = \&SearchFreeTextCloud;
 
@@ -159,6 +260,13 @@ sub SearchFreeTextCloud {
   PrintFooter();
 }
 
+=head2 Search Results
+
+The old C<SearchTitleAndBody> is replaced by a new subroutine that
+searches the various data files.
+
+=cut
+
 # override the standard printing of results
 *SearchResultCount = *SearchFreeTextNop;
 
@@ -185,12 +293,15 @@ sub NewSearchFreeTextTitleAndBody {
   my @wanted_words = grep(!/^-?tag:/, @wanted);
   my @wanted_tags = map { substr($_, 4) } grep(/^tag:/, @wanted);
   my @unwanted_tags = map { substr($_, 5) } grep(/^-tag:/, @wanted);
-  my @words = SearchFreeTextGet(SearchFreeTextDB($DataDir . '/word.db'), 0,
-				@wanted_words);
-  my @tags = SearchFreeTextGet(SearchFreeTextDB($DataDir . '/tags.db'), 1,
-			       @wanted_tags);
-  my @excluded_tags = SearchFreeTextGet(SearchFreeTextDB($DataDir . '/tags.db'), 1,
-			       @unwanted_tags);
+  my @words = map {
+    SearchFreeTextGet(SearchFreeTextDB($_), 0, @wanted_words);
+  } ("$DataDir/word-update.db", "$DataDir/word.db");
+  my @tags = map {
+    SearchFreeTextGet(SearchFreeTextDB($_), 1, @wanted_tags);
+  } ("$DataDir/tags-update.db", "$DataDir/tags.db");
+  my @excluded_tags = map {
+    SearchFreeTextGet(SearchFreeTextDB($_), 1, @unwanted_tags);
+  } ("$DataDir/tags-update.db", "$DataDir/tags.db");
   my @result = ();
   if (not @wanted_words and not @wanted_tags and not @excluded_tags) {
     # do nothing
@@ -265,17 +376,26 @@ sub NewSearchFreeTextTitleAndBody {
 
 sub SearchFreeTextGet {
   my ($db, $tags, @wanted) = @_;
-  return unless @wanted; # shortcut
+  # Shortcut if there are no search terms.
+  return unless @wanted;
   my @result = ();
   # open file and get sorted list of arrays with page id and rank.
   $db->open_index();
+  # Hack alert: If the index is empty, Search::FreeText 0.5 dies with
+  # an "Empty index" error. In order to avoid this, we make the same
+  # test here and return.
+  return unless $db->{_Database}->{" "};
   my @found = $db->search(join(" ", @wanted));
   $db->close_index();
   # Make sure that all double quoted phrases do in fact all appear. To
   # do this, we copy page ids from @found. Quote potential regular
   # expressions in search strings. Backlink searches are already
   # quoted, however -- thus only do it if no backslash is found.
-  my @phrases = map { $_ = substr($_,1,-1); $_ = QuoteRegexp($_) unless index('\\', $_); $_; } grep(/^"/, @wanted);
+  my @phrases = map {
+    $_ = substr($_,1,-1);
+    $_ = QuoteRegexp($_) unless index('\\', $_);
+    $_;
+  } grep(/^"/, @wanted);
   @phrases = map { "\\[\\[tag:$_\\]\\]" } @phrases if $tags;
  PAGE: foreach (@found) {
     my ($id, $score) = (UrlDecode($_->[0]), $_->[1]);
@@ -295,7 +415,7 @@ sub SearchFreeTextGet {
 }
 
 sub SearchFreeTextDB {
-  my ($file) = @_;
+  my $file = shift;
   my $db = new Search::FreeText(-db => ['DB_File', $file]);
   # The following is terrible hacking because we cannot pass an
   # internal filter along to the constructor. If you look at
@@ -346,6 +466,23 @@ sub NewSearchFreePrintFooter {
   }
   OldSearchFreePrintFooter(@_);
 }
+
+=head2 Retagging
+
+It is possible to retag pages. Since ordinary pages can be retagged by
+just editing the page, the retagging action is only really useful to
+tag uploaded files. This will append the tag line after the end of the
+MIME encoded block where they are invisible. Use the browse action
+with raw=1 to display the MIME encoded block followed by the tags.
+
+Example output:
+
+    #FILE image/png
+    iVBORw0KGgoAAAA
+
+    Tags: [[tag:drink]] [[tag:food]]
+
+=cut
 
 $Action{retag} = \&SearchFreeDoTag;
 
