@@ -56,7 +56,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.60 2007/10/11 11:07:17 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.61 2007/10/11 11:09:36 as Exp $</p>';
 
 =head2 User Interface
 
@@ -226,7 +226,7 @@ push(@Debugging, \&DoSearchFreeTextNewPages);
 sub DoSearchFreeTextNewPages {
   my $ts = (stat("$DataDir/word.db"))[9];
   print $q->h2(T('New Pages for Indexed Search')),
-    $q->p(ScriptLink("action=rc;from=$ts",
+    $q->p(ScriptLink("action=rc;showedit=1;from=$ts",
 		     Ts('List changes since %s', TimeToText($ts)))),
     $q->p(join(', ', map { GetPageLink($_) } SearchFreeNewPages()));
 }
