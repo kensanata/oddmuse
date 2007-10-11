@@ -56,7 +56,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.55 2007/10/11 10:16:15 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.56 2007/10/11 10:32:12 as Exp $</p>';
 
 =head2 User Interface
 
@@ -211,6 +211,21 @@ sub UpdateSearchFreeTextIndex {
 sub NewSearchFreeTextSave { # called within a lock!
   OldSearchFreeTextSave(@_);
   UpdateSearchFreeTextIndex();
+}
+
+=head2 Debugging Initialization
+
+You can use the Debug Action to list the pages considered to be new:
+
+ http://localhost/cgi-bin/wiki?action=debug
+
+=cut
+
+push(@Debugging, \&DoSearchFreeTextNewPages);
+
+sub DoSearchFreeTextNewPages {
+  print $q->h2(T('New Pages for Indexed Search:')),
+    $q->p(join($q->br(), map { GetPageLink($_) } SearchFreeNewPages()));
 }
 
 =head2 Tag Cloud
