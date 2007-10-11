@@ -18,16 +18,29 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 33;
+use Test::More tests => 35;
 
 SKIP: {
   eval { require Search::FreeText };
   skip ("Search::FreeText not installed", 30) if $@;
 
   clear_pages();
-  AppendStringToFile($ConfigFile, "\$UploadAllowed = 1;\n");
+
   add_module('search-freetext.pl');
 
+  # Test uploaded pictures, too.
+  AppendStringToFile($ConfigFile, "\$UploadAllowed = 1;\n");
+
+  # Test delta indexes as we're not reindexing the pages: Create two
+  # pages; one should be part of the journal, the other should not.
+  update_page('Diary', '<journal search -tag:foo>');
+  update_page('2007-10-10', 'ordinary page');
+  update_page('2007-10-11', 'page tagged [[tag:foo]]');
+  $page = get_page('Diary');
+  test_page($page, 'ordinary page');
+  test_page_negative($page, 'page tagged');
+
+  # uploads, strange characters in the names and so on
   update_page('Search (and replace)', 'Muu, or moo. [[tag:test]] [[tag:Öl]]');
   update_page('To be, or not to be', 'That is the question. (Right?) [[tag:test]] [[tag:BE3]]');
   update_page('alex pic', "#FILE image/png\niVBORw0KGgoAAAA");
