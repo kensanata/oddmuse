@@ -56,7 +56,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.59 2007/10/11 10:51:54 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.60 2007/10/11 11:07:17 as Exp $</p>';
 
 =head2 User Interface
 
@@ -224,7 +224,10 @@ You can use the Debug Action to list the pages considered to be new:
 push(@Debugging, \&DoSearchFreeTextNewPages);
 
 sub DoSearchFreeTextNewPages {
-  print $q->h2(T('New Pages for Indexed Search:')),
+  my $ts = (stat("$DataDir/word.db"))[9];
+  print $q->h2(T('New Pages for Indexed Search')),
+    $q->p(ScriptLink("action=rc;from=$ts",
+		     Ts('List changes since %s', TimeToText($ts)))),
     $q->p(join(', ', map { GetPageLink($_) } SearchFreeNewPages()));
 }
 
