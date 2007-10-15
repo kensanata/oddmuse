@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 63;
+use Test::More tests => 66;
 
 clear_pages();
 
@@ -28,6 +28,14 @@ clear_pages();
 test_page(get_page('action=rc raw=1'), 'title: Wiki');
 WriteStringToFile($RcFile, "1${FS}test${FS}${FS}test${FS}${FS}${FS}1${FS}${FS}\n");
 test_page(get_page('action=rc raw=1'), 'title: Wiki');
+
+# Test that newlines are in fact stripped
+update_page('Newlines', 'Some text', "Summary\nwith newlines",
+	    '', '', "'username=my%0aname'");
+$page = get_page('action=rc raw=1');
+test_page($page, 'title: Newlines',
+	  'description: Summary with newlines');
+test_page_negative($page, 'generator: my');
 
 # More elaborate tests for the filters
 
