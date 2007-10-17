@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: org-mode.pl,v 1.1 2007/10/17 11:04:12 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: org-mode.pl,v 1.2 2007/10/17 11:06:24 as Exp $</p>';
 
 push(@MyRules, \&OrgModeRule);
 
@@ -24,7 +24,7 @@ my %org_emphasis_alist = qw!* b / i _ u = code + del!;
 sub OrgModeRule {
   if (/$org_emph_re/cgo) {
     my $tag = $org_emphasis_alist{$3};
-    return "<$tag>$4</$tag>$5";
+    return "$1<$tag>$4</$tag>$5";
   }
   return undef;
 }
