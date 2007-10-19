@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 35;
+use Test::More tests => 37;
 
 SKIP: {
   eval { require Search::FreeText };
@@ -47,6 +47,14 @@ SKIP: {
 
   get_page('action=buildindex pwd=foo');
 
+  # first, let's update an existing page and make sure it doesn't show
+  # up twice!
+  update_page('2007-10-11', 'the same page tagged [[tag:foo]]');
+  $page = get_page('search=tag:foo');
+  xpath_test($page, '//p/span[@class="result"]/a[text()="2007-10-11"]');
+  negative_xpath_test($page, '//p[span[@class="result"]/a[text()="2007-10-11"]]/following-sibling::p[span[@class="result"]/a[text()="2007-10-11"]]');
+
+  # image search
   test_page_negative(get_page('search=AAA raw=1'), 'alex_pic');
   test_page(get_page('search=alex raw=1'), 'alex_pic', 'image/png');
   test_page(get_page('search=png raw=1'), 'alex_pic', 'image/png');
