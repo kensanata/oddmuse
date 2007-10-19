@@ -1,3 +1,9 @@
+2007-10-19  Alex Schroeder  <alex@gnu.org>
+
+	* modules/search-freetext.pl (NewSearchFreeTextTitleAndBody): Call
+	SearchFreeTextUnique for both result sets.
+	(SearchFreeTextUnique): New, uniquify the list.
+
 2007-10-11  Alex Schroeder  <alex@gnu.org>
 
 	A big change to search-freetext.pl to make sure it works even if
