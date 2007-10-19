@@ -56,7 +56,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.61 2007/10/11 11:09:36 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.62 2007/10/19 14:26:05 as Exp $</p>';
 
 =head2 User Interface
 
@@ -314,13 +314,16 @@ sub NewSearchFreeTextTitleAndBody {
   my @words = map {
     SearchFreeTextGet(SearchFreeTextDB($_), 0, @wanted_words);
   } ("$DataDir/word-update.db", "$DataDir/word.db");
+  @words = SearchFreeTextUnique(@words); # both dictionaries might have returned a result
   my @tags = map {
     SearchFreeTextGet(SearchFreeTextDB($_), 1, @wanted_tags);
   } ("$DataDir/tags-update.db", "$DataDir/tags.db");
+  @tags = SearchFreeTextUnique(@tags); # both dictionaries might have returned a result
   my @excluded_tags = map {
     SearchFreeTextGet(SearchFreeTextDB($_), 1, @unwanted_tags);
   } ("$DataDir/tags-update.db", "$DataDir/tags.db");
   my @result = ();
+  # some set operations...
   if (not @wanted_words and not @wanted_tags and not @excluded_tags) {
     # do nothing
   } elsif (not @wanted_words and not @wanted_tags and @excluded_tags) {
@@ -390,6 +393,19 @@ sub NewSearchFreeTextTitleAndBody {
 		Ts("(%s results)", $#result + 1)) if $func and not $raw;
   }
   return @items;
+}
+
+sub SearchFreeTextUnique {
+  # remove duplicate pages without disturbing the order of @result!
+  my %seen;
+  my @copy;
+  foreach my $id (@_) {
+    if (not $seen{$id}) {
+      unshift(@copy,$id);
+      $seen{$id} = 1;
+    }
+  }
+  return @copy;
 }
 
 sub SearchFreeTextGet {
