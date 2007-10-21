@@ -6,6 +6,13 @@
 
 2007-10-11  Alex Schroeder  <alex@gnu.org>
 
+	* modules/search-freetext.pl (SearchFreeNewPages): Use stat()[9]
+	instead of -M to get the timestamp.
+	(DoSearchFreeTextNewPages): Link to RecentChanges.
+
+	* modules/near-links.pl (DoNearLinksList): Use semicolon instead
+	of br to separate pages, use page link.
+
 	A big change to search-freetext.pl to make sure it works even if
 	we're not reindexing all the time. This requires a reindexing of
 	all pages changed after the last big reindexing on every save.
@@ -26,7 +33,8 @@
 	tags-update.db in addition to word.db and tags.db.
 	(SearchFreeTextGet): Make sure we only call search on the db if it
 	contains data.
-
+	(DoSearchFreeTextNewPages): New.
+	
 2007-10-10  Alex Schroeder  <alex@gnu.org>
 
 	* t/test.pl (xpath_do): Only print the page once per test run.
