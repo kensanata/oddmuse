@@ -86,3 +86,5 @@ table.user td.l { text-align:left; }
 table.user td.c { text-align:center; }
 table.user td.j { text-align:justify; }
 table.user td.mark { background-color:yellow; }
+/* sidebar */
+div.sidebar { float: left; margin-right: 2em; margin-bottom: 3em; }
