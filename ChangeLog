@@ -1,3 +1,12 @@
+2007-10-22  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (InitCookie, CookieUsernameFix, CookieRollbackFix): Move
+	username testing from InitCookie to a new sub and add rollback
+	testing. The reason is that for submit buttons, all the info is
+	encoded in the name attribute; the value is used for the label.
+	(GetRcHtml, GetHistoryLine): Use a submit button instead of a link
+	for rollbacks.
+
 2007-10-19  Alex Schroeder  <alex@gnu.org>
 
 	* modules/search-freetext.pl (NewSearchFreeTextTitleAndBody): Call
