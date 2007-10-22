@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.821 2007/10/06 20:28:37 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.822 2007/10/22 16:38:30 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -327,7 +327,12 @@ sub InitCookie {
     %OldCookie = ();
   }
   %NewCookie = %OldCookie;
-  # Only valid usernames get stored in the new cookie.
+  CookieUsernameFix();
+  CookieRollbackFix();
+}
+
+sub CookieUsernameFix {
+ # Only valid usernames get stored in the new cookie.
   my $name = GetParam('username', '');
   $q->delete('username');
   delete $NewCookie{username};
@@ -341,6 +346,16 @@ sub InitCookie {
     $Message .= $q->p(T('UserName must be 50 characters or less: not saved'));
   } else {
     SetParam('username', $name);
+  }
+}
+
+sub CookieRollbackFix {
+  my @rollback = grep(/rollback-(\d+)/, $q->param);
+  if (@rollback and $rollback[0] =~ /(\d+)/) {
+    SetParam('to', $1);
+    $q->delete('action');
+    delete $NewCookie{action};
+    SetParam('action', 'rollback');
   }
 }
 
@@ -1728,8 +1743,7 @@ sub GetRcHtml {
 	  $pagelink = GetOldPageLink('browse', $id, $all_revision, $id, $cluster);
 	  my $rollback_is_possible = RollbackPossible($ts);
 	  if ($admin and ($rollback_is_possible or $rollback_was_possible)) {
-	    $rollback = '(' . ScriptLink('action=rollback;to=' . $ts,
-					 T('rollback'), 'rollback') . ')';
+	    $rollback = $q->submit("rollback-$ts", T('rollback'));
 	    $rollback_was_possible = $rollback_is_possible;
 	  } else {
 	    $rollback_was_possible = 0;
@@ -1928,8 +1942,7 @@ sub GetHistoryLine {
     $html .= ' (' . T('current') . ')' if $rollback;
     $html .= ' ' . GetPageLink($id, Ts('Revision %s', $revision));
   } else {
-    $html .= ' (' . ScriptLink("action=rollback;to=$data{ts};id=" . UrlEncode($id),
-			       T('rollback'), 'rollback') . ')' if $rollback;
+    $html .= ' ' . $q->submit("rollback-$data{ts}", T('rollback')) if $rollback;
     $html .= ' ' . GetOldPageLink('browse', $id, $revision, Ts('Revision %s', $revision));
   }
   my $host = $data{host};
