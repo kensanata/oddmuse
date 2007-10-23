@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 87;
+use Test::More tests => 88;
 clear_pages();
 
 add_module('creole.pl');
@@ -85,6 +85,8 @@ foo\nbar
 foo bar
 {{{\nfoo\n}}}
 <pre class="real">foo\n</pre>
+{{{foo}}} bar {{{\nbaz\n}}}
+<code>foo</code> bar <code>\nbaz\n</code>
 {{{\nfoo\n}}}\n{{{\nbar\n}}}
 <pre class="real">foo\n</pre><pre class="real">bar\n</pre>
 {{{\nfoo\n }}}\n}}}
