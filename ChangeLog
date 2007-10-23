@@ -1,3 +1,8 @@
+2007-10-23  Alex Schroeder  <alex@gnu.org>
+
+	* modules/creole.pl (CreoleRule): The \n after {{{ is mandatory
+	for a pre block.
+
 2007-10-22  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (InitCookie, CookieUsernameFix, CookieRollbackFix): Move
