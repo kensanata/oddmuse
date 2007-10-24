@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.22 2007/08/19 11:36:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.23 2007/10/24 20:59:14 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
@@ -139,7 +139,7 @@ Los!
 (minor)
 (Klein)
 rollback
-bis hier alles Rückgängig machen
+zurück setzen
 new
 Neue Seite
 from %s
