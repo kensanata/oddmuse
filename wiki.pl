@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.822 2007/10/22 16:38:30 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.823 2007/10/24 19:06:27 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -595,7 +595,7 @@ sub LinkRules {
 					 or m/\G(\[\[image:$FreeLinkPattern\|([^]|]+)\]\])/cog)) {
     # [[image:Free Link]], [[image:Free Link|alt text]]
     Dirty($1);
-    print GetDownloadLink($2, 1, undef, $3);
+    print GetDownloadLink($2, 1, undef, UnquoteHtml($3));
   } elsif ($FreeLinks && $locallinks
 	   && ($BracketWiki && m/\G(\[\[$FreeLinkPattern\|([^\]]+)\]\])/cog
 	       or m/\G(\[\[\[$FreeLinkPattern\]\]\])/cog
