@@ -1,3 +1,9 @@
+2007-10-24  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (LinkRules): Unquote alt text.
+
+	* modules/image.pl (ImageSupportRule): Unquote alt text.
+
 2007-10-23  Alex Schroeder  <alex@gnu.org>
 
 	* modules/creole.pl (CreoleRule): The \n after {{{ is mandatory
