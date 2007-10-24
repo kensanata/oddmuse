@@ -62,7 +62,7 @@ test_page($page,
 	  'View all changes',
 	  'current',
 	  'rollback',
-	  'action=rollback;to=',
+	  'name="rollback-\d+"',
 	  'Mark this page for deletion');
 test_page_negative($page,
 		   'Tesla',
