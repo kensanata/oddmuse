@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: image.pl,v 1.27 2007/07/03 07:19:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: image.pl,v 1.28 2007/10/24 19:05:46 as Exp $</p>';
 
 use vars qw($ImageUrlPath);
 
@@ -36,7 +36,7 @@ sub ImageSupportRule {
     # Don't generate an alt text if none was specified, since the rule
     # forces you to pick an alt text if you're going to provide a
     # link target.
-    my $alt = $5 ? substr($5, 1) : '';
+    my $alt = UnquoteHtml($5 ? substr($5, 1) : '');
     my $link = $6 ? substr($6, 1) : '';
     my $caption = $7 ? substr($7, 1) : '';
     my $reference = $8 ? substr($8, 1) : '';
