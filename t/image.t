@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 26;
+use Test::More tests => 28;
 
 clear_pages();
 
@@ -28,6 +28,10 @@ update_page('bar', 'foo');
 update_page('InterMap', " Oddmuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n",
 	    'required', 0, 1);
 
+
+update_page('test',
+	    '[[image/left/small:bar|alternative text|http://www.foo.com/|more text & stuff|http://www.bar.com/]]');
+
 xpath_run_tests(split('\n',<<'EOT'));
 [[image:foo]]
 //a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=foo;upload=1"][text()="?"]
@@ -35,6 +39,8 @@ xpath_run_tests(split('\n',<<'EOT'));
 //a[@class="image"][@href="http://localhost/test.pl/bar"]/img[@class="upload"][@src="http://localhost/test.pl/download/bar"][@alt="bar"]
 [[image:bar|alternative text]]
 //a[@class="image"][@href="http://localhost/test.pl/bar"]/img[@class="upload"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]
+[[image:bar|alternative & encoded text]]
+//a[@class="image"][@href="http://localhost/test.pl/bar"]/img[@class="upload"][@src="http://localhost/test.pl/download/bar"][@alt="alternative & encoded text"]
 [[image:bar|alternative text|foo]]
 //a[@class="image"][@href="http://localhost/test.pl/foo"]/img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]
 [[image/left:bar|alternative text|foo]]
@@ -53,6 +59,8 @@ xpath_run_tests(split('\n',<<'EOT'));
 //a[@class="image left outside"][@href="http://www.foo.com/"]/img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]
 [[image/left/small:bar|alternative text|http://www.foo.com/|more text|http://www.bar.com/]]
 //a[@class="image left small outside"][@href="http://www.foo.com/"][img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]]/following-sibling::br/following-sibling::span[@class="caption"]/a[@class="image left small outside"][@href="http://www.bar.com/"][text()="more text"]
+[[image/left/small:bar|alternative text & stuff|http://www.foo.com/|more text & stuff|http://www.bar.com/]]
+//a[@class="image left small outside"][@href="http://www.foo.com/"][img[@class="upload"][@title="alternative text & stuff"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text & stuff"]]/following-sibling::br/following-sibling::span[@class="caption"]/a[@class="image left small outside"][@href="http://www.bar.com/"][text()="more text & stuff"]
 [[image/left/small:bar|alternative text|http://www.foo.com/|more text|bar]]
 //a[@class="image left small outside"][@href="http://www.foo.com/"][img[@class="upload"][@title="alternative text"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]]/following-sibling::br/following-sibling::span[@class="caption"]/a[@class="image left small"][@href="http://localhost/test.pl/bar"][text()="more text"]
 [[image:http://www.example.com/]]
