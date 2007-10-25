@@ -185,6 +185,11 @@ table.history td[colspan="3"] {
 td.history {
     border-style:none;
 }
+table.history input[type="submit"] {
+    font-size: 70%;
+    padding: 0;
+    margin: 0 1ex;
+}
 table.user {
     border-style:solid;
     border-width:thin;
