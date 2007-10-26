@@ -16,13 +16,13 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: moin.pl,v 1.4 2005/04/23 22:14:56 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: moin.pl,v 1.5 2007/10/26 16:34:08 as Exp $</p>';
 
 push(@MyRules, \&MoinRule);
 $RuleOrder{\&MoinRule} = -10; # run before default rules because of [[BR]]
 
 my %moin_level;   # mapping length of whitespace to indentation level
-my $moin_current; # the current length of whitespace (not the indentation level!)
+my $moin_current; # the current length of whitespace (not indentation level!)
 
 sub MoinLength {
   $str = shift;
@@ -72,21 +72,25 @@ sub MoinRule {
   # block
   # }}}
   elsif ($bol && m/\G\{\{\{\n?(.*?\n)\}\}\}[ \t]*\n?/cgs) {
-    return CloseHtmlEnvironments() . $q->pre({-class=>'real'}, $1) . AddHtmlEnvironment('p');
+    return CloseHtmlEnvironments()
+      . $q->pre({-class=>'real'}, $1)
+	. AddHtmlEnvironment('p');
   }
   #  * list item
   #   * nested item
   elsif ($bol && m/\G(\s*\n)*([ \t]+)\*[ \t]*/cg
 	 or InElement('li') && (m/\G(\s*\n)+([ \t]+)\*[ \t]*/cg)) {
-    return CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ul', MoinListLevel($2))
-      . AddHtmlEnvironment('li');
+    return CloseHtmlEnvironmentUntil('li')
+      . OpenHtmlEnvironment('ul', MoinListLevel($2))
+	. AddHtmlEnvironment('li');
   }
   #  1. list item
   #   1. nested item
   elsif ($bol && m/\G(\s*\n)*([ \t]+)1\.[ \t]*/cg
 	 or InElement('li') && m/\G(\s*\n)+([ \t]+)1\.[ \t]*/cg) {
-    return CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ol', MoinListLevel($2))
-      . AddHtmlEnvironment('li');
+    return CloseHtmlEnvironmentUntil('li')
+      . OpenHtmlEnvironment('ol', MoinListLevel($2))
+	. AddHtmlEnvironment('li');
   }
   # indented text using whitespace
   elsif ($bol && m/\G(\s*\n)*([ \t]+)/cg) {
@@ -95,21 +99,30 @@ sub MoinRule {
 	and (InElement('li') or InElement('dd'))) {
       return ' ';
     } else {
-      return CloseHtmlEnvironmentUntil('dd') . OpenHtmlEnvironment('dl', MoinListLevel($str), 'quote')
-	. $q->dt() . AddHtmlEnvironment('dd');
+      return CloseHtmlEnvironmentUntil('dd')
+	. OpenHtmlEnvironment('dl', MoinListLevel($str), 'quote')
+	  . $q->dt()
+	    . AddHtmlEnvironment('dd');
     }
   }
   # emphasis and strong emphasis using '' and '''
   elsif (defined $HtmlStack[0] && $HtmlStack[1] && $HtmlStack[0] eq 'em'
-	 && $HtmlStack[1] eq 'strong' and m/\G'''''/cg) { # close either of the two
+	 && $HtmlStack[1] eq 'strong' and m/\G'''''/cg) {
+    # close either of the two
     return CloseHtmlEnvironment() . CloseHtmlEnvironment();
-  } elsif (m/\G'''/cg) { # traditional wiki syntax for '''strong'''
+  }
+  # traditional wiki syntax for '''strong'''
+  elsif (m/\G'''/cg) {
     return (defined $HtmlStack[0] && $HtmlStack[0] eq 'strong')
       ? CloseHtmlEnvironment() : AddHtmlEnvironment('strong');
-  } elsif (m/\G''/cg) { # traditional wiki syntax for ''emph''
+  }
+  # traditional wiki syntax for ''emph''
+  elsif (m/\G''/cg) {
     return (defined $HtmlStack[0] && $HtmlStack[0] eq 'em')
       ? CloseHtmlEnvironment() : AddHtmlEnvironment('em');
-  } elsif (m/\G__/cg) { # moin syntax for __underline__
+  }
+  # moin syntax for __underline__
+  elsif (m/\G__/cg) {
     return (defined $HtmlStack[0] && $HtmlStack[0] eq 'em')
       ? CloseHtmlEnvironment() : AddHtmlEnvironment('em', 'style="text-decoration: underline; font-style: normal;"');
   }
