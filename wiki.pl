@@ -183,8 +183,8 @@ $LockExpiration = 60; # How long before expirable locks are expired
 	    clear => \&DoClearCache,	    css => \&DoCss,
 	    contrib => \&DoContributors,    more => \&DoJournal,
 	    debug => \&DoDebug );
-@MyRules = (\&LinkRules); # don't set this variable, add to it!
-%RuleOrder = (\&LinkRules => 0);
+@MyRules = (\&LinkRules, \&ListRule); # don't set this variable, add to it!
+%RuleOrder = (\&LinkRules => 0, \&ListRule => 0);
 @Debugging = (\&DebugInterLinks); # subs to print debugging info
 
 # The 'main' program, called at the end of this script file (aka. as handler)
@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.823 2007/10/24 19:06:27 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.824 2007/10/26 16:18:10 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -434,12 +434,8 @@ sub ApplyRules {
     local $_ = $text;
     local $bol = 1;
     while (1) {
-      # Block level elements eat empty lines to prevent empty p elements.
-      if ($bol && m/\G(\s*\n)*(\*+)[ \t]+/cg
-	  or InElement('li') && m/\G(\s*\n)+(\*+)[ \t]+/cg) {
-	Clean(CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ul',length($2))
-	      . AddHtmlEnvironment('li'));
-      } elsif ($bol && m/\G(\s*\n)+/cg) {
+      # Block level elements should eat trailing empty lines to prevent empty p elements.
+      if ($bol && m/\G(\s*\n)+/cg) {
 	Clean(CloseHtmlEnvironments() . AddHtmlEnvironment('p'));
       } elsif ($bol && m/\G(\&lt;include(\s+(text|with-anchors))?\s+"(.*)"\&gt;[ \t]*\n?)/cgi) {
 	# <include "uri..."> includes the text of the given URI verbatim
@@ -540,6 +536,15 @@ sub ApplyRules {
   }
   # this can be stored in the page cache -- see PrintCache
   return (join($FS, @Blocks), join($FS, @Flags));
+}
+
+sub ListRule {
+  if ($bol && m/\G(\s*\n)*(\*+)[ \t]+/cg
+      or InElement('li') && m/\G(\s*\n)+(\*+)[ \t]+/cg) {
+    return CloseHtmlEnvironmentUntil('li')
+      . OpenHtmlEnvironment('ul',length($2)) . AddHtmlEnvironment('li');
+  }
+  return undef;
 }
 
 sub LinkRules {
@@ -1642,7 +1647,6 @@ sub GetRc {
   my $printRCLine = shift;    # code reference
   my @outrc = @_;             # the remaining parameters are rc lines
   my %extra = ();
-  my %changetime = ();
   # Slice minor edits
   my $showedit = GetParam('showedit', $ShowEdits);
   # Filter out some entries if not showing all changes
@@ -1655,7 +1659,6 @@ sub GetRc {
       } else {			# 2 = Only edits
 	push(@temprc, $rcline)	if ($minor);
       }
-      $changetime{$id} = $ts;
     }
     @outrc = @temprc;
   }
@@ -1667,7 +1670,6 @@ sub GetRc {
   my %following = ();
   foreach my $rcline (@outrc) { # from oldest to newest
     my ($ts, $id, $minor, $summary, $host, $username) = split(/$FS/o, $rcline);
-    $changetime{$id} = $ts;
     $following{$id} = $ts if $followup and $followup eq $username;
   }
   @outrc = reverse @outrc if GetParam('newtop', $RecentTop);
@@ -1676,7 +1678,7 @@ sub GetRc {
   foreach my $rcline (@outrc) {
     my ($ts, $id, $minor, $summary, $host, $username, $revision, $languages, $cluster)
       = split(/$FS/o, $rcline);
-    next if not $all and $ts < $changetime{$id};
+    next if not $all and $seen{$id};
     next if $idOnly and $idOnly ne $id;
     next if $filterOnly and not $match{$id};
     next if ($userOnly and $userOnly ne $username);
@@ -1692,7 +1694,6 @@ sub GetRc {
       $cluster = '' if $clusterOnly; # don't show cluster if $clusterOnly eq $cluster
       if ($all < 2 and not $clusterOnly and $cluster) {
 	next if $seen{$cluster};
-	$seen{$cluster} = 1;
 	$summary = "$id: $summary"; # print the cluster instead of the page
 	$id = $cluster;
 	$revision = '';
@@ -1705,7 +1706,8 @@ sub GetRc {
       &$printDailyTear($date);
     }
     &$printRCLine($id, $ts, $host, $username, $summary, $minor, $revision,
-		  \@languages, $cluster, $ts == $changetime{$id});
+		  \@languages, $cluster, !$seen{$id});
+    $seen{$id} = 1;
   }
 }
 
