@@ -13,10 +13,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: multi-url-spam-block.pl,v 1.1 2007/10/27 18:49:26 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: multi-url-spam-block.pl,v 1.2 2007/10/27 19:33:43 as Exp $</p>';
 
 *OldMultiUrlBannedContent = *BannedContent;
 *BannedContent = *NewMultiUrlBannedContent;
+
+$BannedContent = $OldMultiUrlBannedContent; # copy scalar
 
 sub NewMultiUrlBannedContent {
   my $str = shift;
