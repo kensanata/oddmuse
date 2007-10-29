@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>XXX $Id: toc.pl,v 1.47 2007/08/29 13:51:36 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.48 2007/10/29 02:27:15 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
