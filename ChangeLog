@@ -1,3 +1,9 @@
+2007-10-26  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ApplyRules, ListRule, @MyRules, %RuleOrder): Moved the
+	list rule to a separate sub and added it to the variables.
+	(GetRc): Get rid of %changetime and use %seen instead.
+
 2007-10-24  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (LinkRules): Unquote alt text.
