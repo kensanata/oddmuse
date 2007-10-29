@@ -81,8 +81,8 @@ test_page(get_page('InnocentPage'), 'Lamb');
 
 # find the rollback link for the last good revision
 $to = xpath_test(get_page('action=rc all=1 pwd=foo'),
-		 '//strong[text()="good guy two"]/preceding-sibling::a[@class="rollback"]/attribute::href');
-$to =~ /action=rollback;to=([0-9]+)/;
+		 '//strong[text()="good guy two"]/preceding-sibling::input[@type="submit"]/attribute::name');
+$to =~ /rollback-([0-9]+)/;
 $to = $1;
 
 test_page(get_page("action=rollback to=$to"), 'username is required');
@@ -106,10 +106,10 @@ my $rc = get_page('action=rc all=1 showedit=1 pwd=foo from=1');
 
 # check all revisions of NicePage in recent changes
 xpath_test($rc,
-	   '//li/span[@class="time"]/following-sibling::span[@class="new"][text()="new"]/following-sibling::a[@class="rollback"][text()="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=NicePage;revision=1"][text()="NicePage"]/following-sibling::span[@class="dash"]/following-sibling::strong[text()="good guy one"]',
-	   '//li/span[@class="time"]/following-sibling::a[@class="diff"][@href="http://localhost/wiki.pl?action=browse;diff=2;id=NicePage;diffrevision=2"][text()="diff"]/following-sibling::a[@class="rollback"][text()="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=NicePage;revision=2"][text()="NicePage"]/following-sibling::span[@class="dash"]/following-sibling::strong[text()="good guy two"]',
-	   '//li/span[@class="time"]/following-sibling::a[@class="diff"][@href="http://localhost/wiki.pl?action=browse;diff=2;id=NicePage;diffrevision=3"][text()="diff"]/following-sibling::a[@class="rollback"][text()="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=NicePage;revision=3"][text()="NicePage"]/following-sibling::span[@class="dash"]/following-sibling::strong[text()="vandal one"]',
-	   '//li/span[@class="time"]/following-sibling::a[@class="diff"][@href="http://localhost/wiki.pl?action=browse;diff=2;id=NicePage;diffrevision=4"][text()="diff"]/following-sibling::a[@class="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=NicePage;revision=4"][text()="NicePage"]/following-sibling::span[@class="dash"]/following-sibling::strong[text()="vandal two"]',
+	   '//li/span[@class="time"]/following-sibling::span[@class="new"][text()="new"]/following-sibling::input[@type="submit"][@value="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=NicePage;revision=1"][text()="NicePage"]/following-sibling::span[@class="dash"]/following-sibling::strong[text()="good guy one"]',
+	   '//li/span[@class="time"]/following-sibling::a[@class="diff"][@href="http://localhost/wiki.pl?action=browse;diff=2;id=NicePage;diffrevision=2"][text()="diff"]/following-sibling::input[@type="submit"][@value="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=NicePage;revision=2"][text()="NicePage"]/following-sibling::span[@class="dash"]/following-sibling::strong[text()="good guy two"]',
+	   '//li/span[@class="time"]/following-sibling::a[@class="diff"][@href="http://localhost/wiki.pl?action=browse;diff=2;id=NicePage;diffrevision=3"][text()="diff"]/following-sibling::input[@type="submit"][@value="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=NicePage;revision=3"][text()="NicePage"]/following-sibling::span[@class="dash"]/following-sibling::strong[text()="vandal one"]',
+	   '//li/span[@class="time"]/following-sibling::a[@class="diff"][@href="http://localhost/wiki.pl?action=browse;diff=2;id=NicePage;diffrevision=4"][text()="diff"]/following-sibling::input[@type="submit"][@value="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=NicePage;revision=4"][text()="NicePage"]/following-sibling::span[@class="dash"]/following-sibling::strong[text()="vandal two"]',
 	   # The first link to NicePage has no diffrevision (because
 	   # it is the latest version) and no rollback link (because
 	   # the timestamp is equal to $LastUpdate)
@@ -117,10 +117,10 @@ xpath_test($rc,
 	   # The second link to NicePage has a diffrevision (because
 	   # it is from an older version) and a rollback link (because
 	   # the timestamp is smaller than $LastUpdate)
-	   '//li/span[@class="time"]/following-sibling::a[@class="diff"][@href="http://localhost/wiki.pl?action=browse;diff=2;id=NicePage;diffrevision=4"][text()="diff"]/following-sibling::a[@class="rollback"][text()="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=NicePage;revision=4"][text()="NicePage"]/following-sibling::span[@class="dash"]/following-sibling::strong[text()="vandal two"]',
+	   '//li/span[@class="time"]/following-sibling::a[@class="diff"][@href="http://localhost/wiki.pl?action=browse;diff=2;id=NicePage;diffrevision=4"][text()="diff"]/following-sibling::input[@type="submit"][@value="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=NicePage;revision=4"][text()="NicePage"]/following-sibling::span[@class="dash"]/following-sibling::strong[text()="vandal two"]',
 	   # check that the minor spam is reverted with a minor rollback
-	   '//li/span[@class="time"]/following-sibling::span[@class="new"][text()="new"]/following-sibling::a[@class="rollback"][text()="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=MinorPage;revision=1"][text()="MinorPage"]/following-sibling::span[@class="dash"]/following-sibling::strong[text()="tester"]',
-	   '//li/span[@class="time"]/following-sibling::a[@class="diff"][@href="http://localhost/wiki.pl?action=browse;diff=2;id=MinorPage;diffrevision=2"][text()="diff"]/following-sibling::a[@class="rollback"][text()="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=MinorPage;revision=2"][text()="MinorPage"]/following-sibling::span[@class="dash"]/following-sibling::strong[text()="testerror"]/following-sibling::em[text()="(minor)"]',
+	   '//li/span[@class="time"]/following-sibling::span[@class="new"][text()="new"]/following-sibling::input[@type="submit"][@value="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=MinorPage;revision=1"][text()="MinorPage"]/following-sibling::span[@class="dash"]/following-sibling::strong[text()="tester"]',
+	   '//li/span[@class="time"]/following-sibling::a[@class="diff"][@href="http://localhost/wiki.pl?action=browse;diff=2;id=MinorPage;diffrevision=2"][text()="diff"]/following-sibling::input[@type="submit"][@value="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=MinorPage;revision=2"][text()="MinorPage"]/following-sibling::span[@class="dash"]/following-sibling::strong[text()="testerror"]/following-sibling::em[text()="(minor)"]',
 	   # The first link has no diffrevision (because it is the
 	   # latest version) and no rollback link (because the
 	   # timestamp is equal to $LastUpdate)
@@ -128,11 +128,11 @@ xpath_test($rc,
 	   # The second link has a diffrevision (because it is from an
 	   # older version) and a rollback link (because the timestamp
 	   # is smaller than $LastUpdate)
-	   '//li/span[@class="time"]/following-sibling::a[@class="diff"][@href="http://localhost/wiki.pl?action=browse;diff=2;id=MinorPage;diffrevision=2"][text()="diff"]/following-sibling::a[@class="rollback"][text()="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=MinorPage;revision=2"][text()="MinorPage"]/following-sibling::span[@class="dash"]/following-sibling::strong[text()="testerror"]/following-sibling::em[text()="(minor)"]',
+	   '//li/span[@class="time"]/following-sibling::a[@class="diff"][@href="http://localhost/wiki.pl?action=browse;diff=2;id=MinorPage;diffrevision=2"][text()="diff"]/following-sibling::input[@type="submit"][@value="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=MinorPage;revision=2"][text()="MinorPage"]/following-sibling::span[@class="dash"]/following-sibling::strong[text()="testerror"]/following-sibling::em[text()="(minor)"]',
 	   # The first page has no rollback link
 	   '//li/span[@class="time"]/following-sibling::span[@class="new"][text()="new"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=FirstPage"][text()="FirstPage"]',
 	   # The second page has a rollback link
-	   '//li/span[@class="time"]/following-sibling::span[@class="new"][text()="new"]/following-sibling::a[@class="rollback"][@href="http://localhost/wiki.pl?action=rollback;to=2"][text()="rollback"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=SecondPage"][text()="SecondPage"]',
+	   '//li/span[@class="time"]/following-sibling::span[@class="new"][text()="new"]/following-sibling::input[@type="submit"][@value="rollback"][@name="rollback-2"]/following-sibling::a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=SecondPage"][text()="SecondPage"]',
 	  );
 
 # test that ordinary RC doesn't show the rollback stuff
@@ -160,7 +160,7 @@ sleep(1);
 test_page(update_page('HiddenEdit', 'not to be rolled back', 'secret'), 'not to be rolled back');
 test_page(update_page('Schröder', 'Berta', 'zwei'), 'Berta');
 xpath_test(get_page('action=history id=Schr%c3%b6der username=olaf'),
-	   '//a[@class="rollback"][@href="http://localhost/wiki.pl?action=rollback;to=' . $to . ';id=Schr%c3%b6der"][text()="rollback"]');
+	   '//input[@type="submit"][@value="rollback"][@name="rollback-' . $to . '"]');
 
 # test single page rollback
 test_page(get_page("action=rollback to=$to id=Schr%c3%b6der username=olaf"),
