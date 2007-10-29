@@ -15,8 +15,10 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 4;
+use Test::More tests => 5;
 clear_pages();
+AppendStringToFile($ConfigFile, "\$BannedContent = 'MyBannedContent';\n");
+
 add_module('multi-url-spam-block.pl');
 
 $text = "http://some.example.com\n" x 30;
@@ -32,3 +34,7 @@ test_page($redirect, 'Status: 302');
 update_page('spam', $text . "http://other.example.com\n");
 test_page($redirect, 'Status: 403',
 	  'linked more than 30 times to the same domain');
+
+# Make sure that the symbol table fiddling has not confused the admin
+# page
+test_page(get_page('action=admin'), 'MyBannedContent');
