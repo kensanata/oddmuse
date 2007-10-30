@@ -1,3 +1,8 @@
+2007-10-30  Alex Schroeder  <aschroeder@localhost>
+
+	* modules/multi-url-spam-block.pl (NewMultiUrlBannedContent): Make
+	the limit configurable.
+
 2007-10-26  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (ApplyRules, ListRule, @MyRules, %RuleOrder): Moved the
