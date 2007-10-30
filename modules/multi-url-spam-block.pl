@@ -13,12 +13,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: multi-url-spam-block.pl,v 1.2 2007/10/27 19:33:43 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: multi-url-spam-block.pl,v 1.3 2007/10/30 08:47:59 as Exp $</p>';
 
 *OldMultiUrlBannedContent = *BannedContent;
 *BannedContent = *NewMultiUrlBannedContent;
 
 $BannedContent = $OldMultiUrlBannedContent; # copy scalar
+
+$MultiUrlLimit = 30;
 
 sub NewMultiUrlBannedContent {
   my $str = shift;
@@ -34,7 +36,7 @@ sub NewMultiUrlBannedContent {
     $domains{$domain}++;
     $max = $domains{$domain} if $domains{$domain} > $max;
   }
-  return T('You linked more than 30 times to the same domain. It would seem that only a spammer would do this. Your edit is refused.')
-    if $max > 30;
+  return Ts('You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.', $MultiUrlLimit)
+    if $max > $MultiUrlLimit;
   return OldMultiUrlBannedContent($str);
 }
