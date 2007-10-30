@@ -13,13 +13,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: multi-url-spam-block.pl,v 1.3 2007/10/30 08:47:59 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: multi-url-spam-block.pl,v 1.4 2007/10/30 08:50:18 as Exp $</p>';
 
 *OldMultiUrlBannedContent = *BannedContent;
 *BannedContent = *NewMultiUrlBannedContent;
 
 $BannedContent = $OldMultiUrlBannedContent; # copy scalar
 
+use vars qw($MultiUrlLimit);
 $MultiUrlLimit = 30;
 
 sub NewMultiUrlBannedContent {
