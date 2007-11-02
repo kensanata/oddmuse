@@ -15,9 +15,12 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 5;
+use Test::More tests => 7;
+
 clear_pages();
+
 AppendStringToFile($ConfigFile, "\$BannedContent = 'MyBannedContent';\n");
+AppendStringToFile($ConfigFile, "\$MultiUrlWhiteList = 'MyWhitelist';\n");
 
 add_module('multi-url-spam-block.pl');
 
@@ -37,4 +40,9 @@ test_page($redirect, 'Status: 403',
 
 # Make sure that the symbol table fiddling has not confused the admin
 # page
-test_page(get_page('action=admin'), 'MyBannedContent');
+test_page(get_page('action=admin'), 'MyBannedContent', 'MyWhitelist');
+
+update_page('MyWhitelist', 'example.com # test');
+
+update_page('spam', $text . "http://other.example.com\n");
+test_page($redirect, 'Status: 302');
