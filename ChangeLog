@@ -1,3 +1,8 @@
+2007-11-02  Alex Schroeder  <alex@gnu.org>
+
+	* modules/multi-url-spam-block.pl ($MultiUrlWhiteList): New option.
+	(NewMultiUrlBannedContent): Use whitelist.
+
 2007-10-30  Alex Schroeder  <aschroeder@localhost>
 
 	* modules/multi-url-spam-block.pl (NewMultiUrlBannedContent): Make
