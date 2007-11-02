@@ -13,27 +13,41 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: multi-url-spam-block.pl,v 1.4 2007/10/30 08:50:18 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: multi-url-spam-block.pl,v 1.5 2007/11/02 17:34:41 as Exp $</p>';
 
 *OldMultiUrlBannedContent = *BannedContent;
 *BannedContent = *NewMultiUrlBannedContent;
 
 $BannedContent = $OldMultiUrlBannedContent; # copy scalar
 
-use vars qw($MultiUrlLimit);
+use vars qw($MultiUrlWhiteList $MultiUrlLimit);
+
 $MultiUrlLimit = 30;
+$MultiUrlWhiteList = 'UrlWhitelist';
+
+push(@MyInitVariables, sub {
+       $MultiUrlWhiteList = FreeToNormal($MultiUrlWhiteList);
+       $AdminPages{$MultiUrlWhiteList} = 1;
+     });
 
 sub NewMultiUrlBannedContent {
   my $str = shift;
   my @urls = $str =~ /$FullUrlPattern/go;
   my %domains;
+  my %whitelist;
   my $max = 0;
+  my $label = '[a-z]([a-z0-9-]*[a-z0-9])?'; # RFC 1034
+  foreach (split(/\n/, GetPageContent($MultiUrlWhiteList))) {
+    next unless m/^\s*($label\.$label)/io;
+    $whitelist{$1} = 1;
+  }
   foreach my $url (@urls) {
     my @urlparts = split('/', $url, 4);
     my $domain = $urlparts[2];
     my @domainparts = split('\.', $domain);
     splice(@domainparts, 0, -2); # no subdomains
     $domain = join('.', @domainparts);
+    next if $whitelist{$domain};
     $domains{$domain}++;
     $max = $domains{$domain} if $domains{$domain} > $max;
   }
