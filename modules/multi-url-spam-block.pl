@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: multi-url-spam-block.pl,v 1.5 2007/11/02 17:34:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: multi-url-spam-block.pl,v 1.6 2007/11/02 17:38:47 as Exp $</p>';
 
 *OldMultiUrlBannedContent = *BannedContent;
 *BannedContent = *NewMultiUrlBannedContent;
@@ -28,6 +28,7 @@ $MultiUrlWhiteList = 'UrlWhitelist';
 push(@MyInitVariables, sub {
        $MultiUrlWhiteList = FreeToNormal($MultiUrlWhiteList);
        $AdminPages{$MultiUrlWhiteList} = 1;
+       $PlainTextPages{$MultiUrlWhiteList} = 1;
      });
 
 sub NewMultiUrlBannedContent {
