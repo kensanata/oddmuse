@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.824 2007/10/26 16:18:10 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.825 2007/11/03 00:01:21 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1898,8 +1898,8 @@ sub DoHistory {
       RcTextItem('generator', 'Oddmuse');
     SetParam('all', 1);
     my @languages = split(/,/, $Page{languages});
-    RcTextRevision($id, $Page{ts}, $Page{host}, $Page{username}, $Page{summary}, $Page{minor},
-		   $Page{revision}, \@languages, undef, 1);
+    RcTextRevision($id, $Page{ts}, $Page{host}, $Page{username}, $Page{summary},
+		   $Page{minor}, $Page{revision}, \@languages, undef, 1);
     foreach my $revision (GetKeepRevisions($OpenPageName)) {
       my %keep = GetKeptRevision($revision);
       @languages = split(/,/, $keep{languages});
@@ -1917,14 +1917,19 @@ sub DoHistory {
       push(@html, GetHistoryLine($id, \%keep, $row++, $rollback, \$ts));
     }
     @html = (GetFormStart(undef, 'get', 'history'),
-	     $q->p( # don't use $q->hidden here, the sticky action value will be used instead
+	     $q->p($q->submit({-name=>T('Compare')}),
+		   # don't use $q->hidden here, the sticky action
+		   # value will be used instead
 		   $q->input({-type=>'hidden', -name=>'action', -value=>'browse'}),
 		   $q->input({-type=>'hidden', -name=>'diff', -value=>'1'}),
 		   $q->input({-type=>'hidden', -name=>'id', -value=>$id})),
 	     $q->table({-class=>'history'}, @html),
-	     $q->p($q->submit({-name=>T('Compare')})), $q->end_form()) if $UseDiff;
-    push(@html, $q->p(ScriptLink('title=' . UrlEncode($id) . ';text=' . UrlEncode($DeletedPage) . ';summary='
-				 . UrlEncode(T('Deleted')), T('Mark this page for deletion'))))
+	     $q->p($q->submit({-name=>T('Compare')})),
+	     $q->end_form()) if $UseDiff;
+    push(@html, $q->p(ScriptLink('title=' . UrlEncode($id) . ';text='
+				 . UrlEncode($DeletedPage) . ';summary='
+				 . UrlEncode(T('Deleted')),
+				 T('Mark this page for deletion'))))
       if $KeepDays and $rollback and $Page{revision};
     print $q->div({-class=>'content history'}, @html);
     PrintFooter($id, 'history');
