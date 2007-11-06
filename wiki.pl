@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.825 2007/11/03 00:01:21 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.826 2007/11/06 14:46:07 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2229,7 +2229,7 @@ sub GetHtmlHeader {
       . '" href="' . $ScriptName . '?action=rss;rcidonly=' . $id . '" />' if $id;
   }
   # finish
-  $html = qq(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n<html>)
+  $html = qq(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n<html xmlns="http://www.w3.org/1999/xhtml">)
     . $q->head($q->title($q->escapeHTML($title)) . $html . $HtmlHeaders)
     . '<body class="' . GetParam('theme', $ScriptName) . '">';
   return $html;
