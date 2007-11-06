@@ -24,7 +24,7 @@ AppendStringToFile($ConfigFile, "\$MultiUrlWhiteList = 'MyWhitelist';\n");
 
 add_module('multi-url-spam-block.pl');
 
-$text = "http://some.example.com\n" x 30;
+$text = "http://some.example.com\n" x 10;
 
 update_page('spam', $text);
 test_page($redirect, 'Status: 302');
@@ -36,7 +36,7 @@ test_page($redirect, 'Status: 302');
 # another external link but the same domain
 update_page('spam', $text . "http://other.example.com\n");
 test_page($redirect, 'Status: 403',
-	  'linked more than 30 times to the same domain');
+	  'linked more than 10 times to the same domain');
 
 # Make sure that the symbol table fiddling has not confused the admin
 # page
