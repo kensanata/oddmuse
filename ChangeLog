@@ -1,3 +1,11 @@
+2007-11-06  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetHtmlHeader): Add
+	xmlns="http://www.w3.org/1999/xhtml" to the html element.
+
+	* modules/multi-url-spam-block.pl ($MultiUrlLimit): Changed the
+	default to 10.
+
 2007-11-02  Alex Schroeder  <alex@gnu.org>
 
 	* modules/multi-url-spam-block.pl ($MultiUrlWhiteList): New option.
