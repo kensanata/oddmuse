@@ -1,6 +1,6 @@
 #! /usr/bin/perl
 
-# Copyright (C) 2005  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2005, 2007  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -33,17 +33,26 @@ my $PageDir = 'page';
 my $RawDir  = 'raw';
 local $/ = undef;   # Read complete files
 
+my $regexp = $ARGV[0];
+
 # include dotfiles!
 foreach my $file (glob("$PageDir/*/*.pg $PageDir/*/.*.pg")) {
   next unless $file =~ m|/.*/(.+)\.pg$|;
   my $page = $1;
+  next if $regexp && $page !~ m|$regexp|o;
   mkdir($RawDir) or die "Cannot create $RawDir directory: $!" unless -d $RawDir;
   open(F, $file) or die "Cannot read $page file: $!";
   my $data = <F>;
   close(F);
+  my $ts = (stat("$RawDir/$page"))[9];
   my %result = ParseData($data);
-  open(F,"> $RawDir/$page") or die "Cannot write $page raw file: $!";
-  print F $result{text};
-  close(F);
-  utime $result{text}, $result{ts}, "$RawDir/$page"; # touch file
+  if ($ts == $result{ts}) {
+    print "skipping $page because it is up to date\n" if $verbose;
+  } else {
+    print "writing $page because $ts != $result{ts}\n" if $verbose;
+    open(F,"> $RawDir/$page") or die "Cannot write $page raw file: $!";
+    print F $result{text};
+    close(F);
+    utime $result{ts}, $result{ts}, "$RawDir/$page"; # touch file
+  }
 };
