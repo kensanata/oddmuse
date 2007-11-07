@@ -35,7 +35,7 @@ local $/;
 while (<>) {
   close ARGV;
   if (substr($_,0,6) eq '#FILE ') {
-    print "$ARGV\n";
+    print "decoding $ARGV\n";
     my $ts = (stat($ARGV))[9];
     s/^.*\n//;
     my $bytes = decode_base64($_);
