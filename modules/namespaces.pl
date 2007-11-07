@@ -39,7 +39,7 @@ be changed using the C<$NamespacesSelf> option.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.34 2007/09/25 15:32:30 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.35 2007/11/07 17:02:07 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent
 	    $NamespaceRoot $NamespaceSlashing);
@@ -351,7 +351,7 @@ sub NewNamespaceBrowsePage {
   my $oldId = GetParam('oldid', '');
   if (not $oldId and not $revision and (substr($text, 0, 10) eq '#REDIRECT ')
       and (($WikiLinks and $text =~ /^\#REDIRECT\s+$InterLinkPattern/)
-	   or ($WikiLinks and $text =~ /^\#REDIRECT\s+\[\[$FreeInterLinkPattern\]\]/))) {
+	   or ($FreeLinks and $text =~ /^\#REDIRECT\s+\[\[$FreeInterLinkPattern\]\]/))) {
     my ($ns, $page) = map { UrlEncode($_) } split(/:/, FreeToNormal($1));
     $oldid = ($NamespaceCurrent || $NamespacesMain) . ':' . $id;
     local $ScriptName = $NamespaceRoot || $ScriptName;
