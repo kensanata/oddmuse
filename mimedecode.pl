@@ -43,6 +43,6 @@ while (<>) {
     print F $bytes;
     close F;
     # restore mtime to collaborate with raw.pl
-    utime time, $ts, $ARGV;
+    utime $ts, $ts, $ARGV;
   }
 }
