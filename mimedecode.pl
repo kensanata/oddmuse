@@ -24,6 +24,9 @@ Something similar could be achieved using command line tools.
 Unfortunately, they are not always available. If Perl's MIME library
 is available instead, you can use this script.
 
+This particular version preserves the file's mtime in order to play
+nice with raw.pl which relies on mtime.
+
 =cut
 
 use MIME::Base64;
@@ -33,10 +36,13 @@ while (<>) {
   close ARGV;
   if (substr($_,0,6) eq '#FILE ') {
     print "$ARGV\n";
+    my $ts = (stat($ARGV))[9];
     s/^.*\n//;
     my $bytes = decode_base64($_);
     open(F, "> $ARGV");
     print F $bytes;
     close F;
+    # restore mtime to collaborate with raw.pl
+    utime time, $ts, $ARGV;
   }
 }
