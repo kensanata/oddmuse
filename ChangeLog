@@ -1,3 +1,8 @@
+2007-11-11  Alex Schroeder  <aschroeder@localhost>
+
+	* modules/questionasker.pl (NewQuestionaskerDoPost): Pass
+	aftertext through.
+
 2007-11-07  Alex Schroeder  <alex@gnu.org>
 
 	* modules/namespaces.pl (NewNamespaceBrowsePage): Fix test from
