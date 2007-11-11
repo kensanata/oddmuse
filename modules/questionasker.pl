@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.20 2007/10/07 20:19:02 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.21 2007/11/11 10:25:29 as Exp $</p>';
 
 use vars qw(@QuestionaskerQuestions
 	    $QuestionaskerRememberAnswer
@@ -79,7 +79,7 @@ sub NewQuestionaskerDoPost {
     print $q->p(T('You did not answer correctly.'));
     print $q->start_form, QuestionaskerGetQuestion(1),
       (map { $q->hidden($_, '') }
-       qw(title text oldtime summary recent_edit)), $q->end_form;
+       qw(title text oldtime summary recent_edit aftertext)), $q->end_form;
     PrintFooter();
     # logging to the error log file of the server
     # warn "Q: '$QuestionaskerQuestions[$question_num][0]', A: '$answer'\n";
