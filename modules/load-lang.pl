@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: load-lang.pl,v 1.6 2006/10/10 10:23:58 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: load-lang.pl,v 1.7 2007/11/11 10:57:55 as Exp $</p>';
 
 $CookieParameters{interface} = '';
 
@@ -28,6 +28,7 @@ my %library= ('bg' => 'bulgarian-utf8.pl',
 	      'he' => 'hebrew-utf8.pl',
 	      'it' => 'italian-utf8.pl',
 	      'ja' => 'japanese-utf8.pl',
+	      'ko' => 'korean-utf8.pl',
 	      'nl' => 'dutch-utf8.pl',
 	      'pl' => 'polish-utf8.pl',
 	      'pt' => 'portuguese-utf8.pl',
