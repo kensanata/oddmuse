@@ -15,7 +15,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: korean-utf8.pl,v 1.3 2007/08/19 11:42:08 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: korean-utf8.pl,v 1.4 2007/11/12 17:56:48 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 읽기가 허락되지 않습니다: 사용자아이디, ip, 또는 네트웍이 접근거부되었습니다.
@@ -238,7 +238,7 @@ by %s
 Edit revision %s of this page
 이 페이지의 리비젼 %s 를 편집
 Edit this page
-이 페이지를 편집
+편집
 e
 e
 This page is read-only
