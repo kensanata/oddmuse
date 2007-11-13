@@ -1,3 +1,8 @@
+2007-11-13  Alex Schroeder  <alex@gnu.org>
+
+	* t/test.pl (xpath_do): Don't be confused by the new xmlns
+	attribute in the html element.
+
 2007-11-11  Alex Schroeder  <aschroeder@localhost>
 
 	* modules/questionasker.pl (NewQuestionaskerDoPost): Pass
