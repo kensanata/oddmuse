@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.826 2007/11/06 14:46:07 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.827 2007/11/13 20:27:05 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1533,35 +1533,41 @@ sub GetRcLines {
     last if ($ts >= $starttime);
   }
   splice(@fullrc, 0, $i);  # Remove items before index $i
+  return StripRollbacks($rollbacks, @fullrc);
+}
+
+sub StripRollbacks {
+  my $rollbacks = shift;
+  my @result = @_;
   if (not $rollbacks) { # strip rollbacks
     my ($skip_to, $end);
     my %rollback = ();
-    for (my $i = $#fullrc; $i >= 0; $i--) {
+    for (my $i = $#result; $i >= 0; $i--) {
       # some fields have a different meaning if looking at rollbacks
-      my ($ts, $id, $target_ts, $target_id) = split(/$FS/o, $fullrc[$i]);
+      my ($ts, $id, $target_ts, $target_id) = split(/$FS/o, $result[$i]);
       # strip global rollbacks
       if ($skip_to and $ts <= $skip_to) {
-	splice(@fullrc, $i + 1, $end - $i);
+	splice(@result, $i + 1, $end - $i);
 	$skip_to = 0;
       } elsif ($id eq '[[rollback]]') {
 	if ($target_id) {
 	  $rollback{$target_id} = $target_ts; # single page rollback
-	  splice(@fullrc, $i, 1);	      # strip marker
+	  splice(@result, $i, 1);	      # strip marker
 	} else {
 	  $end = $i unless $skip_to;
 	  $skip_to = $target_ts; # cumulative rollbacks!
 	}
       } elsif ($rollback{$id} and $ts > $rollback{$id}) {
-	splice(@fullrc, $i, 1); # strip rolled back single pages
+	splice(@result, $i, 1); # strip rolled back single pages
       }
     }
   } else { # just strip the marker left by DoRollback()
-    for (my $i = $#fullrc; $i >= 0; $i--) {
-      my ($ts, $id) = split(/$FS/o, $fullrc[$i]);
-      splice(@fullrc, $i, 1) if $id eq '[[rollback]]';
+    for (my $i = $#result; $i >= 0; $i--) {
+      my ($ts, $id) = split(/$FS/o, $result[$i]);
+      splice(@result, $i, 1) if $id eq '[[rollback]]';
     }
   }
-  return @fullrc;
+  return @result;
 }
 
 sub RcHeader {
