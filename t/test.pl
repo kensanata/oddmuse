@@ -138,7 +138,7 @@ sub test_page_negative {
 
 sub xpath_do {
   my ($check, $message, $page, @tests) = @_;
-  $page =~ s/^.*?<html>/<html>/s; # strip headers
+  $page =~ s/^.*?(<html)/$1/s; # strip headers
   my $page_shown = 0;
   my $parser = XML::LibXML->new();
   my $doc;
