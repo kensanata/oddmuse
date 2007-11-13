@@ -39,7 +39,7 @@ be changed using the C<$NamespacesSelf> option.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.35 2007/11/07 17:02:07 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.36 2007/11/13 20:28:16 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent
 	    $NamespaceRoot $NamespaceSlashing);
@@ -243,23 +243,8 @@ sub NamespaceRcLines {
     ($ts, $pagename, $minor, $summary, $host, $username, $rest)
       = split(/$FS/, $line);
   }
-  if (GetParam('all', 0) or GetParam('rollback', 0)) { # include rollbacks
-    # just strip the marker left by DoRollback()
-    for (my $i = @result; $i; $i--) {
-      my ($ts, $pagename) = split(/$FS/, $result[$i]);
-      splice(@result, $i, 1) if $pagename eq '[[rollback]]';
-    }
-  } else {
-    my ($target, $end);
-    for (my $i = @result; $i; $i--) {
-      my ($ts, $pagename, $rest) = split(/$FS/, $result[$i]);
-      splice(@result, $i + 1, $end - $i), $target = 0  if $ts <= $target;
-      $target = $rest, $end = $i
-        if $pagename eq ($ns ? ($ns . ':') : '') . '[[rollback]]'
-          and (not $target or $rest < $target); # marker
-    }
-  }
-  return ($first, @result);
+  my $rollbacks = (GetParam('all', 0) or GetParam('rollback', 0));
+  return ($first, StripRollbacks($rollbacks, @result));
 }
 
 =head2 Encoding pagenames
