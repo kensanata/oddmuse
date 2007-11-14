@@ -122,9 +122,11 @@ form.tiny, form.tiny p {
 }
 form.tiny input {
     margin:       0.1em;
-    width:        10em;
     font-size:    80%;
     font-family:  inherit;
+}
+form.tiny input[@type="text"] {
+    width:        10em;
 }
 
 /* portrait support */
