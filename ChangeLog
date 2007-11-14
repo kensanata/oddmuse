@@ -1,4 +1,18 @@
+2007-11-14  Alex Schroeder  <alex@gnu.org>
+
+	* modules/toc.pl (TocHeadings): No idea why this solves the
+	problem with disappearing TOC. TocProcessing is allowed one more
+	level of recursion.
+
+	* wiki.pl (GetRcHtml): Wrap the entire list in a form block so
+	that the rollback buttons actually have an effect.
+
 2007-11-13  Alex Schroeder  <alex@gnu.org>
+
+	* modules/namespaces.pl (NamespaceRcLines): Use StripRollbacks.
+
+	* wiki.pl (GetRcLines, StripRollbacks): Move the rollback
+	stripping into a separate sub.
 
 	* t/test.pl (xpath_do): Don't be confused by the new xmlns
 	attribute in the html element.
