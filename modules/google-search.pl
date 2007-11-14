@@ -16,9 +16,12 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: google-search.pl,v 1.2 2007/01/12 02:05:27 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: google-search.pl,v 1.3 2007/11/14 13:10:20 as Exp $</p>';
 
-use vars qw($GoogleSearchDomain);
+use vars qw($GoogleSearchDomain $GoogleSearchExclusive);
+
+$GoogleSearchDomain = undef;
+$GoogleSearchExclusive = 1;
 
 $Action{search} = \&DoGoogleSearch;
 
@@ -27,29 +30,31 @@ push(@MyInitVariables, \&GoogleSearchInit);
 sub GoogleSearchInit {
   # If $ScriptName does not contain a hostname, this extension will
   # have no effect. Domain regexp based on RFC 2396 section 3.2.2.
-  my $alpha = '[a-zA-Z]';
-  my $alphanum = '[a-zA-Z0-9]';
-  my $alphanumdash = '[-a-zA-Z0-9]';
-  my $domainlabel = "$alphanum($alphanumdash*$alphanum)?";
-  my $toplabel = "$alpha($alphanumdash*$alphanum)?";
-  if ($ScriptName =~ m!^(https?://)?([^/]+\.)?($domainlabel\.$toplabel)\.?(:|/|\z)!) {
-    $GoogleSearchDomain = $3;
-    my $search = GetParam('search', undef);
-    SetParam('action', 'search')
-      if $search
-	and not GetParam('action', undef);
+  if (!$GoogleSearchDomain) {
+    my $alpha = '[a-zA-Z]';
+    my $alphanum = '[a-zA-Z0-9]';
+    my $alphanumdash = '[-a-zA-Z0-9]';
+    my $domainlabel = "$alphanum($alphanumdash*$alphanum)?";
+    my $toplabel = "$alpha($alphanumdash*$alphanum)?";
+    if ($ScriptName =~ m!^(https?://)?([^/]+\.)?($domainlabel\.$toplabel)\.?(:|/|\z)!) {
+      $GoogleSearchDomain = $3;
+    }
   }
+  if ($GoogleSearchDomain
+      and GetParam('search', undef)
+      and not GetParam('action', undef)
+      and not GetParam('old', 0)) {
+    SetParam('action', 'search');
+  }
+  *SearchTitleAndBody = *GoogleSearchDoNothing if $GoogleSearchExclusive;
+}
+
+# disable all other searches
+sub GoogleSearchDoNothing {
+  undef;
 }
 
 sub DoGoogleSearch {
   my $search = GetParam('search', undef);
   print $q->redirect({-uri=>"http://www.google.com/search?q=site%3A$GoogleSearchDomain+$search"});
-}
-
-# disable all other searches
-
-*SearchTitleAndBody = *GoogleSearchDoNothing;
-
-sub GoogleSearchDoNothing {
-  return () if $GoogleSearchDomain;
 }
