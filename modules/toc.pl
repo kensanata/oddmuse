@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.48 2007/10/29 02:27:15 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.49 2007/11/14 22:06:05 as Exp $</p>';
 
 push(@MyRules, \&TocRule);
 
@@ -128,9 +128,10 @@ sub TocRule {
 
 sub TocHeadings {
   # avoid recursion
-  return '' if $TocProcessing;
-  local $TocProcessing = 1;
-  local $TocCounter; # these numbers must be temporary
+  return if $TocProcessing > 1;
+  local $TocProcessing = $TocProcessing + 1;
+  # these numbers must be temporary
+  local $TocCounter;
   # don't mess up \G
   my ($oldpos, $old_) = (pos, $_);
   my $class = 'toc' . join(' ', @_);
