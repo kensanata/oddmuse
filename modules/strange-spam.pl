@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: strange-spam.pl,v 1.12 2007/01/14 16:22:18 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: strange-spam.pl,v 1.13 2007/11/14 09:23:53 as Exp $</p>';
 
 use vars qw($StrangeBannedContent);
 
@@ -27,6 +27,8 @@ $StrangeBannedContent = 'StrangeBannedContent';
 
 # copy scalar
 $BannedContent = $StrangeOldBannedContent;
+
+$AdminPages{$BannedContent} = 1;
 
 push(@MyInitVariables, \&StrangeBannedContentInit);
 
@@ -43,7 +45,7 @@ sub StrangeNewBannedContent {
   foreach (split(/\n/, GetPageContent($StrangeBannedContent))) {
     next unless m/^\s*([^#]+?)\s*(#\s*(\d\d\d\d-\d\d-\d\d\s*)?(.*))?$/;
     my ($regexp, $comment) = ($1, $4);
-    if ($str =~ /($regexp)/i) {
+    if ($str =~ /($regexp)/) {
       my $match = $1;
       return Tss('Rule "%1" matched "%2" on this page.', QuoteHtml($regexp),
 		 QuoteHtml($match)) . ' '
