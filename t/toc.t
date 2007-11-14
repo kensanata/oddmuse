@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 28;
+use Test::More tests => 30;
 
 clear_pages();
 
@@ -43,10 +43,22 @@ test_page(update_page('toc', "bla\n"
 		      . "=one=\n"),
 	  quotemeta('<div class="toc fnord mu">'));
 
-# check again
+# check whether the toc remains in the HTML cache
 
 test_page(get_page('toc'),
 	  quotemeta('<div class="toc fnord mu">'));
+
+# no cache
+
+test_page(get_page('action=browse id=toc cache=0'),
+	  quotemeta('<div class="toc fnord mu">'));
+
+# check again!
+
+test_page(get_page('toc'),
+	  quotemeta('<div class="toc fnord mu">'));
+
+# details of the toc
 
 test_page(update_page('toc', "bla\n"
 		      . "=one=\n"
