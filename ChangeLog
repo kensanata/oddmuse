@@ -1,5 +1,12 @@
 2007-11-14  Alex Schroeder  <alex@gnu.org>
 
+	* modules/google-search.pl ($GoogleSearchExclusive): New option.
+	(GoogleSearchInit): Allow $GoogleSearchDomain to be set in the
+	config file.
+
+	* modules/strange-spam.pl (StrangeNewBannedContent): No longer use
+	case-insensitive matches.
+
 	* modules/toc.pl (TocHeadings): No idea why this solves the
 	problem with disappearing TOC. TocProcessing is allowed one more
 	level of recursion.
