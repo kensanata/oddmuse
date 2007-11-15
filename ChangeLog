@@ -1,3 +1,12 @@
+2007-11-15  Alex Schroeder  <alex@gnu.org>
+
+	* modules/strange-spam.pl (StrangeNewBannedContent): Make sure
+	newlines are stripped from the match.
+
+	* modules/despam.pl (DespamBannedContent): No longer use
+	case-insensitive matches to mimic changes in strange-spam.pl.
+	Make sure newlines are stripped from the match.
+
 2007-11-14  Alex Schroeder  <alex@gnu.org>
 
 	* modules/google-search.pl ($GoogleSearchExclusive): New option.
