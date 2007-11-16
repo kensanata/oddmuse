@@ -26,22 +26,27 @@ add_module('google-search.pl');
 GoogleSearchInit();
 is($GoogleSearchDomain, undef, 'No $ScriptName');
 
+$GoogleSearchDomain = undef;
 $ScriptName = 'http://www.communitywiki.org/en';
 GoogleSearchInit();
 is($GoogleSearchDomain, 'communitywiki.org', $ScriptName);
 
+$GoogleSearchDomain = undef;
 $ScriptName = 'http://www.community.org:80/';
 GoogleSearchInit();
 is($GoogleSearchDomain, 'community.org', $ScriptName);
 
+$GoogleSearchDomain = undef;
 $ScriptName = 'http://www.communitywiki.org';
 GoogleSearchInit();
 is($GoogleSearchDomain, 'communitywiki.org', $ScriptName);
 
+$GoogleSearchDomain = undef;
 $ScriptName = 'http://emacswiki.org/cgi-bin/emacs';
 GoogleSearchInit();
 is($GoogleSearchDomain, 'emacswiki.org', $ScriptName);
 
+$GoogleSearchDomain = undef;
 $ScriptName = 'http://localhost/wiki.pl';
 GoogleSearchInit();
 isnt($GoogleSearchDomain, 'localhost', $ScriptName);
