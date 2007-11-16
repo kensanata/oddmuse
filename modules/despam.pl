@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: despam.pl,v 1.14 2007/11/15 13:56:18 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: despam.pl,v 1.15 2007/11/16 01:42:55 as Exp $</p>';
 
 push(@MyAdminCode, \&DespamMenu);
 
@@ -100,7 +100,7 @@ sub DespamBannedContent {
     my $regexp = $_;
     if ($str =~ /($regexp)/) {
       my $match = $1;
-      $match ~= s/\n/ /g;
+      $match =~ s/\n/ /g;
       return Tss('Rule "%1" matched "%2" on this page.',
 		 QuoteHtml($regexp), QuoteHtml($match));
     }
