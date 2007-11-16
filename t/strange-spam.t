@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 11;
+use Test::More tests => 12;
 
 clear_pages();
 
@@ -39,5 +39,6 @@ test_page_negative(get_page('action=spam'), 'pr0n');
 
 # Make sure that the symbol table fiddling has not confused the admin
 # page
+xpath_test(get_page('action=admin'), '//li/a[@href="http://localhost/wiki.pl?action=edit;id=BannedContent"]');
 AppendStringToFile($ConfigFile, "\$BannedContent = 'MyBannedContent';\n");
-test_page(get_page('action=admin'), 'MyBannedContent');
+xpath_test(get_page('action=admin'), '//li/a[@href="http://localhost/wiki.pl?action=edit;id=MyBannedContent"]');
