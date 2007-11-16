@@ -1,3 +1,8 @@
+2007-11-16  Alex Schroeder  <alex@gnu.org>
+
+	* modules/strange-spam.pl: No longer copy $BannedContent =
+	$StrangeOldBannedContent;
+
 2007-11-15  Alex Schroeder  <alex@gnu.org>
 
 	* modules/strange-spam.pl (StrangeNewBannedContent): Make sure
