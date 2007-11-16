@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: strange-spam.pl,v 1.16 2007/11/16 15:02:27 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: strange-spam.pl,v 1.17 2007/11/16 18:39:17 as Exp $</p>';
 
 use vars qw($StrangeBannedContent);
 
@@ -24,6 +24,7 @@ $StrangeBannedContent = 'StrangeBannedContent';
 
 *StrangeOldBannedContent = *BannedContent;
 *BannedContent = *StrangeNewBannedContent;
+$BannedContent = $StrangeOldBannedContent;
 
 push(@MyInitVariables, \&StrangeBannedContentInit);
 
