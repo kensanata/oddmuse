@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 38;
+use Test::More tests => 33;
 
 clear_pages();
 
@@ -30,51 +30,89 @@ update_page('ClusterIdea', "This is just a page.\nNobody wants it.", 'three', 1)
 sleep(1); # make sure the next revision has a different timestamp
 update_page('ClusterIdea', "MainPage\nThis is just a page.\nBut somebody has to do it.", 'four');
 
-test_page(get_page('action=rc'), 'Cluster.*MainPage');
+# Shows both a change to the MainPage Cluster and a change to ClusterIdea.
+xpath_test(get_page('action=rc'),
+	   '//a[text()="Cluster"]/following-sibling::a[text()="MainPage"][@href="http://localhost/wiki.pl?action=browse;id=MainPage;rcclusteronly=MainPage"]',
+	   '//a[text()="ClusterIdea"]');
 
-test_page(get_page('action=rc all=1'), qw(Cluster.*MainPage ClusterIdea.*two ClusterIdea.*one));
+# Show all the major changes. The last major change happened to a
+# cluster, so show a change to the MainPage cluster instead.
+$page = get_page('action=rc all=1');
+xpath_test($page,
+	   '//a[text()="Cluster"]/following-sibling::a[text()="MainPage"]/following-sibling::strong[text()="ClusterIdea: four"]',
+	   '//a[text()="ClusterIdea"]/following-sibling::strong[text()="two"]',
+	   '//a[text()="ClusterIdea"]/following-sibling::strong[text()="one"]');
+negative_xpath_test($page,
+	   '//a[text()="ClusterIdea"]/following-sibling::strong[text()="three"]');
 
-test_page(get_page('action=rc all=1 showedit=1'), qw(Cluster.*MainPage ClusterIdea.*three
-						     ClusterIdea.*two ClusterIdea.*one));
+# Show minor edits as well.
+xpath_test(get_page('action=rc all=1 showedit=1'),
+	   '//a[text()="Cluster"]/following-sibling::a[text()="MainPage"]/following-sibling::strong[text()="ClusterIdea: four"]',
+	   '//a[text()="ClusterIdea"]/following-sibling::strong[text()="three"]/following-sibling::em[text()="(minor)"]',
+	   '//a[text()="ClusterIdea"]/following-sibling::strong[text()="two"]',
+	   '//a[text()="ClusterIdea"]/following-sibling::strong[text()="one"]');
 
+# Change the MainPage.
 update_page('MainPage', 'Finally the main page.', 'main summary');
-test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage'), split('\n',<<'EOT'));
-Finally the main page
-Updates in the last [0-9]+ days
-diff.*ClusterIdea.*history.*four
-for.*MainPage.*only
-1 day
-action=browse;id=MainPage;rcclusteronly=MainPage;days=1;all=0;showedit=0
-EOT
 
-@Test = split('\n',<<'EOT');
-Finally the main page
-Updates in the last [0-9]+ days
-diff.*ClusterIdea.*four
-for.*MainPage.*only
-1 day
-EOT
+# Ordinary RecentChanges will just show the MainPage changed, now. The
+# latest change to ClusterIdea remains invisible.
+xpath_test(get_page('action=rc'),
+	   '//a[text()="MainPage"]/following-sibling::strong[text()="main summary"]',
+	   '//a[text()="ClusterIdea"]/following-sibling::strong[text()="two"]');
 
-test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage showedit=1'),
-	  (@Test, 'action=browse;id=MainPage;rcclusteronly=MainPage;days=1;all=0;showedit=1'));
-test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage all=1'),
-	  (@Test, 'action=browse;id=MainPage;rcclusteronly=MainPage;days=1;all=1;showedit=0'));
+# Visiting the MainPage as the cluster page shows RecentChanges for
+# this cluster only.
+xpath_test(get_page('action=browse id=MainPage rcclusteronly=MainPage'),
+	   '//p[text()="Finally the main page."]',
+	   '//b[text()="(for MainPage only)"]',
+	   '//li/a[text()="ClusterIdea"]/following-sibling::strong[text()="four"]',
+	   '//a[@href="http://localhost/wiki.pl?action=browse;id=MainPage;rcclusteronly=MainPage;days=1;all=0;showedit=0"]');
 
+# Now edit the page in the cluster again. Since this is a minor edit,
+# RecentChanges will remain unchanged.
 update_page('ClusterIdea', "MainPage\nSomebody has to do it.", 'five', 1);
-test_page(get_page('action=browse id=MainPage rcclusteronly=MainPage all=1 showedit=1'), split('\n',<<'EOT'));
-Finally the main page
-Updates in the last [0-9]+ days
-diff.*ClusterIdea.*five
-diff.*ClusterIdea.*four
-for.*MainPage.*only
-1 day
-action=browse;id=MainPage;rcclusteronly=MainPage;days=1;all=1;showedit=1
-EOT
+xpath_test(get_page('action=rc'),
+	   '//a[text()="MainPage"]/following-sibling::strong[text()="main summary"]',
+	   '//a[text()="ClusterIdea"]/following-sibling::strong[text()="two"]');
 
-test_page(get_page('action=rss'), 'action=browse;id=MainPage;rcclusteronly=MainPage');
+# Things change if we include minor changes, however. Now we'll see
+# the last unclustered change ("three") as well as the effect the
+# cluster has.
+xpath_test(get_page('action=rc showedit=1'),
+	   '//a[text()="Cluster"]/following-sibling::a[text()="MainPage"][@href="http://localhost/wiki.pl?action=browse;id=MainPage;rcclusteronly=MainPage"]/following-sibling::strong[text()="ClusterIdea: five"]',
+	   '//a[text()="ClusterIdea"]/following-sibling::strong[text()="three"]');
 
+# Take another look at the MainPage, this time including all and minor
+# edits. We should see the two clustered revisions.
+$page = get_page('action=browse id=MainPage rcclusteronly=MainPage all=1 showedit=1');
+xpath_test($page,
+	   '//a[text()="ClusterIdea"]/following-sibling::strong[text()="five"]',
+	   '//a[text()="ClusterIdea"]/following-sibling::strong[text()="four"]');
+negative_xpath_test($page,
+	   '//a[text()="ClusterIdea"]/following-sibling::strong[text()="three"]',
+	   '//a[text()="ClusterIdea"]/following-sibling::strong[text()="two"]',
+	   '//a[text()="ClusterIdea"]/following-sibling::strong[text()="one"]');
+
+# Check the links in the RSS feed. First major changes only, then
+# including minor changes. The clustering will only apparent with
+# minor changes.
+test_page(get_page('action=rss'),
+	  '<link>http://localhost/wiki.pl/MainPage</link>',
+	  '<link>http://localhost/wiki.pl/ClusterIdea</link>');
+test_page(get_page('action=rss showedit=1'),
+	  '<link>http://localhost/wiki.pl\?action=browse;id=MainPage;rcclusteronly=MainPage</link>',
+	  '<link>http://localhost/wiki.pl/ClusterIdea</link>');
+
+# Just to make sure everything works, create a new page in the
+# cluster. This time check the raw output. Note that the output will
+# contain a link to the last unclustered major revision of
+# ClusterIdea, two.
 update_page('OtherIdea', "MainPage\nThis is another page.\n", 'new page in cluster');
 $page = get_page('action=rc raw=1');
-test_page($page, 'title: MainPage', 'description: OtherIdea: new page in cluster',
-	  'description: main summary');
-test_page_negative($page, 'ClusterIdea');
+test_page($page, 'title: MainPage',
+	  'description: OtherIdea: new page in cluster',
+	  'description: two');
+
+# The summary of the MainPage edit will remain hidden.
+test_page_negative($page, 'main summary');
