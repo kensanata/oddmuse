@@ -39,7 +39,7 @@ be changed using the C<$NamespacesSelf> option.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.36 2007/11/13 20:28:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.37 2007/11/17 23:59:58 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent
 	    $NamespaceRoot $NamespaceSlashing);
@@ -69,6 +69,7 @@ sub NamespacesInitVariables {
       }
     }
   }
+  $NamespaceRoot = $ScriptName; # $ScriptName may be changed below
   $NamespaceCurrent = '';
   my $ns = GetParam('ns', '');
   ReportError(Ts('%s is not a legal name for a namespace', $ns))
@@ -102,7 +103,6 @@ sub NamespacesInitVariables {
     # $ConfigFile -- shared
     # $ModuleDir -- shared
     # $NearDir -- shared
-    $NamespaceRoot = $ScriptName;
     $ScriptName .= '/' . $NamespaceCurrent;
     $FullUrl .= '/' . $NamespaceCurrent;
     $StaticDir .= '/' . $NamespaceCurrent; # from static-copy.pl
