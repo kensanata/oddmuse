@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.23 2007/10/24 20:59:14 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.24 2007/11/18 21:10:12 lude Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
@@ -315,7 +315,7 @@ Cannot write %s
 Cannot create %s
 %s kann nicht erstellt werden
 Could not get %s lock
-Die %s Sperre konnte nicht gesetzt werden.
+Die %s Sperre konnte nicht gesetzt werden
 The lock was created %s.
 Die Sperre wurde %s gesetzt.
 This operation may take several seconds...
@@ -525,7 +525,7 @@ Zu viele Verbindungen durch %s
 Please do not fetch more than %1 pages in %2 seconds.
 Bitte rufen sie nicht mehr als %1 Seiten in %2 Sekunden auf.
 Check whether the web server can create the directory %s and whether it can create files in it.
-Vielleicht kann der web server das Verzeichnis %s nicht anlegen, oder es wurde schon angelegt, aber der web server kann darin keine neuen Dateien anlegen.
+Vielleicht kann der Webserver das Verzeichnis %s nicht anlegen oder es wurde schon angelegt, aber der Webserver kann darin keine neuen Dateien anlegen.
 anchor first defined here: %s
 Der Anker wurde hier zuerst definiert: %s
 Click to search for references to this permanent anchor
