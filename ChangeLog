@@ -1,3 +1,10 @@
+2007-11-18  Alex Schroeder  <alex@gnu.org>
+
+	* modules/namespaces.pl (NamespacesInitVariables): Always set
+	$NamespaceRoot because it will be used below when redirecting. Not
+	setting it will cause redirection to the Main namespace to produce
+	a wrong edit link to the source page.
+
 2007-11-15  Alex Schroeder  <alex@gnu.org>
 
 	* modules/strange-spam.pl (StrangeNewBannedContent): Make sure
