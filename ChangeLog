@@ -1,3 +1,7 @@
+2007-11-22  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetInterLink): Enclose the ":" in a separate span.
+
 2007-11-18  Alex Schroeder  <alex@gnu.org>
 
 	* modules/namespaces.pl (NamespacesInitVariables): Always set
