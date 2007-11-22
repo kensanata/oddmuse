@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.828 2007/11/13 23:23:57 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.829 2007/11/22 18:24:35 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -1080,7 +1080,9 @@ sub GetInterLink {
     $text = BracketLink(++$FootnoteNumber);
     $class .= ' number';
   } elsif (!$text) {
-    $text = $q->span({-class=>'site'}, $site) . ':' . $q->span({-class=>'page'}, $page);
+    $text = $q->span({-class=>'site'}, $site)
+      . $q->span({-class=>'separator'}, ':')
+      . $q->span({-class=>'page'}, $page);
   } elsif ($bracket) { # and $text is set
     $class .= ' outside';
   }
