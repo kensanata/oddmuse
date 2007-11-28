@@ -188,6 +188,12 @@ img.logo {
     float:left;
 }
 
+.highlight {
+    background-color: #ffa;
+    font-style: normal;
+    padding: 0 0.2em;
+}
+
 div.right .right, div.left .left {
     float: none;
 }
