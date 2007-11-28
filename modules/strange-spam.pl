@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: strange-spam.pl,v 1.17 2007/11/16 18:39:17 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: strange-spam.pl,v 1.18 2007/11/28 09:34:36 as Exp $</p>';
 
 use vars qw($StrangeBannedContent);
 
@@ -42,7 +42,7 @@ sub StrangeNewBannedContent {
   foreach (split(/\n/, GetPageContent($StrangeBannedContent))) {
     next unless m/^\s*([^#]+?)\s*(#\s*(\d\d\d\d-\d\d-\d\d\s*)?(.*))?$/;
     my ($regexp, $comment) = ($1, $4);
-    if ($str =~ /($regexp)/) {
+    if ($str =~ /($regexp)/ or $OpenPageName =~ /($regexp)/) {
       my $match = $1;
       $match =~ s/\n/ /g;
       return Tss('Rule "%1" matched "%2" on this page.', QuoteHtml($regexp),
