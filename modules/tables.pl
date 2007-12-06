@@ -16,21 +16,26 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tables.pl,v 1.6 2005/10/09 12:01:18 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tables.pl,v 1.7 2007/12/06 09:49:03 as Exp $</p>';
 
 push(@MyRules, \&TablesRule);
+
+my $RowCount;
 
 sub TablesRule {
   # tables using || -- the first row of a table
   if ($bol && m/\G(\s*\n)*((\|\|)+)([ \t])*(?=.*\|\|[ \t]*(\n|$))/cg) {
-    return OpenHtmlEnvironment('table',1,'user') . AddHtmlEnvironment('tr')
+    $RowCount = 1;
+    return OpenHtmlEnvironment('table',1,'user')
+      . AddHtmlEnvironment('tr', 'class="odd first"')
       . AddHtmlEnvironment('td', TableAttributes(length($2)/2, $4));
   }
   # tables using || -- end of the row and beginning of the next row
   elsif (InElement('td') && m/\G[ \t]*((\|\|)+)[ \t]*\n((\|\|)+)([ \t]*)/cg) {
     my $attr = TableAttributes(length($3)/2, $5);
+    my $type = $RowCount++ % 2 ? 'odd' : 'even';
     $attr = " " . $attr if $attr;
-    return "</td></tr><tr><td$attr>";
+    return qq{</td></tr class="$type"><tr><td$attr>};
   }
   # tables using || -- an ordinary table cell
   elsif (InElement('td') && m/\G[ \t]*((\|\|)+)([ \t]*)(?!(\n|$))/cg) {
