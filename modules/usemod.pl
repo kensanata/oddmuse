@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.29 2006/09/12 16:39:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.31 2007/12/06 09:52:03 as Exp $</p>';
 
 use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml
 	    $UseModSpaceRequired $UseModMarkupInTitles);
@@ -52,6 +52,7 @@ sub UsemodInit {
 }
 
 my $htmlre;
+my $rowcount;
 
 sub UsemodRule {
   my $htmlre = join('|',(@HtmlTags)) unless $htmlre;
@@ -130,14 +131,17 @@ sub UsemodRule {
   }
   # tables using || -- the first row of a table
   elsif ($bol && m/\G(\s*\n)*((\|\|)+)([ \t])*(?=.*\|\|[ \t]*(\n|$))/cg) {
-    return OpenHtmlEnvironment('table',1,'user') . AddHtmlEnvironment('tr')
+    $rowcount = 1;
+    return OpenHtmlEnvironment('table',1,'user')
+      . AddHtmlEnvironment('tr', 'class="odd first"')
       . AddHtmlEnvironment('td', UsemodTableAttributes(length($2)/2, $4));
   }
   # tables using || -- end of the row and beginning of the next row
   elsif (InElement('td') && m/\G[ \t]*((\|\|)+)[ \t]*\n((\|\|)+)([ \t]*)/cg) {
     my $attr = UsemodTableAttributes(length($3)/2, $5);
+    my $type = ++$rowcount % 2 ? 'odd' : 'even';
     $attr = " " . $attr if $attr;
-    return "</td></tr><tr><td$attr>";
+    return qq{</td></tr class="$type"><tr><td$attr>};
   }
   # tables using || -- an ordinary table cell
   elsif (InElement('td') && m/\G[ \t]*((\|\|)+)([ \t]*)(?!(\n|$))/cg) {
