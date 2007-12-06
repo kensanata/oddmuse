@@ -1,3 +1,11 @@
+2007-12-06  Alex Schroeder  <alex@gnu.org>
+
+	* modules/tables.pl (TablesRule): Add first, even, and odd classes
+	to tr elements.
+
+	* modules/usemod.pl (UsemodRule): Add first, even, and odd classes
+	to tr elements.
+
 2007-11-28  Alex Schroeder  <aschroeder@localhost>
 
 	* modules/strange-spam.pl (StrangeNewBannedContent): Apply test to
