@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.31 2007/12/06 09:52:03 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.30 2007/12/06 09:49:10 as Exp $</p>';
 
 use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml
 	    $UseModSpaceRequired $UseModMarkupInTitles);
@@ -139,7 +139,7 @@ sub UsemodRule {
   # tables using || -- end of the row and beginning of the next row
   elsif (InElement('td') && m/\G[ \t]*((\|\|)+)[ \t]*\n((\|\|)+)([ \t]*)/cg) {
     my $attr = UsemodTableAttributes(length($3)/2, $5);
-    my $type = ++$rowcount % 2 ? 'odd' : 'even';
+    my $type = $rowcount++ % 2 ? 'odd' : 'even';
     $attr = " " . $attr if $attr;
     return qq{</td></tr class="$type"><tr><td$attr>};
   }
