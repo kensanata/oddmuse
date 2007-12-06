@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tables.pl,v 1.7 2007/12/06 09:49:03 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tables.pl,v 1.8 2007/12/06 10:07:36 as Exp $</p>';
 
 push(@MyRules, \&TablesRule);
 
@@ -33,7 +33,7 @@ sub TablesRule {
   # tables using || -- end of the row and beginning of the next row
   elsif (InElement('td') && m/\G[ \t]*((\|\|)+)[ \t]*\n((\|\|)+)([ \t]*)/cg) {
     my $attr = TableAttributes(length($3)/2, $5);
-    my $type = $RowCount++ % 2 ? 'odd' : 'even';
+    my $type = ++$RowCount % 2 ? 'odd' : 'even';
     $attr = " " . $attr if $attr;
     return qq{</td></tr class="$type"><tr><td$attr>};
   }
