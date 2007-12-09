@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: permanent-anchors.pl,v 1.6 2007/12/09 01:27:21 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: permanent-anchors.pl,v 1.7 2007/12/09 22:08:50 as Exp $</p>';
 
 =head1 Permanent Anchors
 
@@ -234,7 +234,7 @@ automatically allow internal transclusion.
 
 sub NewPermanentAnchorsGetPageContent {
   my $id = shift;
-  my $result = OldPermanentAnchorsGetPageContent($str);
+  my $result = OldPermanentAnchorsGetPageContent($id);
   if (not $result and $PermanentAnchors{$id}) {
     $result = OldPermanentAnchorsGetPageContent($PermanentAnchors{$id});
     $result =~ s/^(.*\n)*.*\[::$id\]// or return '';
