@@ -323,6 +323,12 @@ div.journal h1, div.journal h2, div.journal h3, div.journal h4 {
     border:0;
 }
 
+div.include {
+    border-top: 1px dashed #ccd;
+    border-bottom: 1px dashed #ccd;
+    background-color: #d2f4b5;
+}
+
 span.description { font-weight:bold; }
 span.new { display:inline; font-weight:bold; }
 
