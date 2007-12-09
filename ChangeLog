@@ -1,3 +1,9 @@
+2007-12-09  Alex Schroeder  <alex@gnu.org>
+
+	* modules/permanent-anchors.pl
+	(NewPermanentAnchorsGetPageContent): Experimental support for
+	"anchored objects".
+
 2007-12-06  Alex Schroeder  <alex@gnu.org>
 
 	* modules/tables.pl (TablesRule): Add first, even, and odd classes
