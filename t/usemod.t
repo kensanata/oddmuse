@@ -72,27 +72,27 @@ This is <em>emphasized text containing <strong>longer strong</strong> text</em>.
 This is '''strong text containing ''emph'' text'''.
 This is <strong>strong text containing <em>emph</em> text</strong>.
 ||one||
-<table class="user"><tr><td>one</td></tr></table>
+<table class="user"><tr class="odd first"><td>one</td></tr></table>
 ||one|| 
-<table class="user"><tr><td>one</td><td align="left"> </td></tr></table>
+<table class="user"><tr class="odd first"><td>one</td><td align="left"> </td></tr></table>
 || one ''two'' ||
-<table class="user"><tr><td align="center">one <em>two</em></td></tr></table>
+<table class="user"><tr class="odd first"><td align="center">one <em>two</em></td></tr></table>
 || one two ||
-<table class="user"><tr><td align="center">one two </td></tr></table>
+<table class="user"><tr class="odd first"><td align="center">one two </td></tr></table>
 introduction\n\n||one||two||three||\n||||one two||three||
-introduction<table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table>
+introduction<table class="user"><tr class="odd first"><td>one</td><td>two</td><td>three</td></tr><tr class="even"><td colspan="2">one two</td><td>three</td></tr></table>
 ||one||two||three||\n||||one two||three||\n\nfooter
-<table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table><p>footer</p>
+<table class="user"><tr class="odd first"><td>one</td><td>two</td><td>three</td></tr><tr class="even"><td colspan="2">one two</td><td>three</td></tr></table><p>footer</p>
 ||one||two||three||\n||||one two||three||\n\nfooter
-<table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table><p>footer</p>
+<table class="user"><tr class="odd first"><td>one</td><td>two</td><td>three</td></tr><tr class="even"><td colspan="2">one two</td><td>three</td></tr></table><p>footer</p>
 || one|| two|| three||\n|||| one two|| three||\n\nfooter
-<table class="user"><tr><td align="right">one</td><td align="right">two</td><td align="right">three</td></tr><tr><td colspan="2" align="right">one two</td><td align="right">three</td></tr></table><p>footer</p>
+<table class="user"><tr class="odd first"><td align="right">one</td><td align="right">two</td><td align="right">three</td></tr><tr class="even"><td colspan="2" align="right">one two</td><td align="right">three</td></tr></table><p>footer</p>
 ||one ||two ||three ||\n||||one two ||three ||\n\nfooter
-<table class="user"><tr><td align="left">one </td><td align="left">two </td><td align="left">three </td></tr><tr><td colspan="2" align="left">one two </td><td align="left">three </td></tr></table><p>footer</p>
+<table class="user"><tr class="odd first"><td align="left">one </td><td align="left">two </td><td align="left">three </td></tr><tr class="even"><td colspan="2" align="left">one two </td><td align="left">three </td></tr></table><p>footer</p>
 || one || two || three ||\n|||| one two || three ||\n\nfooter
-<table class="user"><tr><td align="center">one </td><td align="center">two </td><td align="center">three </td></tr><tr><td colspan="2" align="center">one two </td><td align="center">three </td></tr></table><p>footer</p>
+<table class="user"><tr class="odd first"><td align="center">one </td><td align="center">two </td><td align="center">three </td></tr><tr class="even"><td colspan="2" align="center">one two </td><td align="center">three </td></tr></table><p>footer</p>
 introduction\n\n||one||two||three||\n||||one two||three||\n\nfooter
-introduction<table class="user"><tr><td>one</td><td>two</td><td>three</td></tr><tr><td colspan="2">one two</td><td>three</td></tr></table><p>footer</p>
+introduction<table class="user"><tr class="odd first"><td>one</td><td>two</td><td>three</td></tr><tr class="even"><td colspan="2">one two</td><td>three</td></tr></table><p>footer</p>
  source
 <pre> source</pre>
  source\n etc\n
