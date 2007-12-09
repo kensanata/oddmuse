@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: permanent-anchors.pl,v 1.5 2007/10/05 23:52:24 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: permanent-anchors.pl,v 1.6 2007/12/09 01:27:21 as Exp $</p>';
 
 =head1 Permanent Anchors
 
@@ -218,6 +218,29 @@ sub NewPermanentAnchorsResolveId {
   } else {
     return OldPermanentAnchorsResolveId($id, @_);
   }
+}
+
+=head2 Anchor Objects
+
+An anchor object is the text that starts after the anchor definition
+and goes up to the next heading, horizontal line, or the end of the
+page. By redefining C<GetPageContent> to work on anchor objects we
+automatically allow internal transclusion.
+
+=cut
+
+*OldPermanentAnchorsGetPageContent = *GetPageContent;
+*GetPageContent = *NewPermanentAnchorsGetPageContent;
+
+sub NewPermanentAnchorsGetPageContent {
+  my $id = shift;
+  my $result = OldPermanentAnchorsGetPageContent($str);
+  if (not $result and $PermanentAnchors{$id}) {
+    $result = OldPermanentAnchorsGetPageContent($PermanentAnchors{$id});
+    $result =~ s/^(.*\n)*.*\[::$id\]// or return '';
+    $result =~ s/(\n=|\n----|\[::$FreeLinkPattern\])(.*\n)*.*$//o;
+  }
+  return $result;
 }
 
 =head2 User Interface Changes
