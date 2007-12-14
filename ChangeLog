@@ -1,3 +1,10 @@
+2007-12-14  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetHtmlHeader, GetRobots, GetFeeds, InitVariables):
+	Moved meta element generation from into GetRobots and GetFeeds.
+	Set $HtmlHeaders via GetFeeds in InitVariables so that users can
+	append to the default value.
+
 2007-12-09  Alex Schroeder  <alex@gnu.org>
 
 	* modules/permanent-anchors.pl
