@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.829 2007/11/22 18:24:35 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.830 2007/12/14 08:58:20 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -284,6 +284,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   $Fragment = '';
   %RecentVisitors = ();
   $OpenPageName = '';  # Currently open page
+  $HtmlHeaders = GetFeeds();
   my $add_space = $CommentsPrefix =~ /[ \t_]$/;
   map { $$_ = FreeToNormal($$_); } # convert spaces to underscores on all configurable pagenames
     (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$StyleSheetPage, \$CommentsPrefix,
@@ -295,7 +296,7 @@ sub InitVariables {    # Init global session variables for mod_perl!
   %AdminPages = map { $_ => 1} @pages, $RssExclude unless %AdminPages;
   %LockOnCreation = map { $_ => 1} @pages unless %LockOnCreation;
   %PlainTextPages = ($BannedHosts => 1, $BannedContent => 1,
-		       $StyleSheetPage => 1, $ConfigPage => 1) unless %PlainTextPages;
+		     $StyleSheetPage => 1, $ConfigPage => 1) unless %PlainTextPages;
   delete $PlainTextPages{''}; # $ConfigPage and others might be empty.
   CreateDir($DataDir); # Create directory if it doesn't exist
   $Now = time;	       # Reset in case script is persistent
@@ -2222,24 +2223,38 @@ sub GetHtmlHeader {
   my ($title, $id) = @_;
   my $html;
   $html = $q->base({-href=>$SiteBase}) if $SiteBase;
-  $html .= GetCss();
-  # NOINDEX for non-browse pages.
-  if (GetParam('action', 'browse') eq 'browse'
-      and not GetParam('revision', '')) {
-    $html .= '<meta name="robots" content="INDEX,FOLLOW" />';
-  } else {
-    $html .= '<meta name="robots" content="NOINDEX,FOLLOW" />';
-  }
-  if (not $HtmlHeaders) {
-    $html .= '<link rel="alternate" type="application/rss+xml" title="' . QuoteHtml($SiteName)
-      . '" href="' . $ScriptName . '?action=rss" />';
-    $html .= '<link rel="alternate" type="application/rss+xml" title="' . QuoteHtml("$SiteName: $id")
-      . '" href="' . $ScriptName . '?action=rss;rcidonly=' . $id . '" />' if $id;
-  }
-  # finish
+  $html .= GetCss() . GetRobots() . $HtmlHeaders;
   $html = qq(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n<html xmlns="http://www.w3.org/1999/xhtml">)
     . $q->head($q->title($q->escapeHTML($title)) . $html . $HtmlHeaders)
     . '<body class="' . GetParam('theme', $ScriptName) . '">';
+  return $html;
+}
+
+sub GetRobots { # NOINDEX for non-browse pages.
+  if (GetParam('action', 'browse') eq 'browse'
+      and not GetParam('revision', '')) {
+    return '<meta name="robots" content="INDEX,FOLLOW" />';
+  } else {
+    return '<meta name="robots" content="NOINDEX,FOLLOW" />';
+  }
+}
+
+sub GetFeeds { # default for $HtmlHeaders
+  my $id = GetId(); # runs during Init, not during DoBrowseRequest
+  my $html = '<link rel="alternate" type="application/rss+xml" title="'
+    . QuoteHtml($SiteName) . '" href="' . $ScriptName . '?action=rss" />';
+  $html .= '<link rel="alternate" type="application/rss+xml" title="'
+    . QuoteHtml("$SiteName: $id") . '" href="' . $ScriptName
+    . '?action=rss;rcidonly=' . $id . '" />' if $id;
+  $html .= '<link rel="alternate" type="application/rss+xml" '
+  . 'title="Changes for ' . NormalToFree($id) . '" '
+  . 'href="' . $ScriptName . '?action=rss;match=%5E'
+  . UrlEncode(FreeToNormal($id)) . '%24" />' if $id;
+  my $username = GetParam('username', '');
+  $html .= '<link rel="alternate" type="application/rss+xml" '
+  . 'title="Follow-ups for ' . NormalToFree($username) . '" '
+  . 'href="http://www.oddmuse.org/cgi-bin/oddmuse?action=rss;followup='
+  . UrlEncode($username) . '" />' if $username;
   return $html;
 }
 
