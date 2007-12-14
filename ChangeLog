@@ -5,6 +5,7 @@
 	Set $HtmlHeaders via GetFeeds in InitVariables so that users can
 	append to the default value.
 	(GetHtmlHeader): Add charset http-equiv meta tag.
+	(GetFeeds): Removed link using match and kept just rcidonly.
 
 2007-12-09  Alex Schroeder  <alex@gnu.org>
 
