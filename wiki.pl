@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.832 2007/12/14 13:24:35 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.833 2007/12/14 13:33:40 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2238,16 +2238,12 @@ sub GetRobots { # NOINDEX for non-browse pages.
 }
 
 sub GetFeeds { # default for $HtmlHeaders
-  my $id = GetId(); # runs during Init, not during DoBrowseRequest
   my $html = '<link rel="alternate" type="application/rss+xml" title="'
     . QuoteHtml($SiteName) . '" href="' . $ScriptName . '?action=rss" />';
+  my $id = GetId(); # runs during Init, not during DoBrowseRequest
   $html .= '<link rel="alternate" type="application/rss+xml" title="'
     . QuoteHtml("$SiteName: $id") . '" href="' . $ScriptName
     . '?action=rss;rcidonly=' . $id . '" />' if $id;
-  $html .= '<link rel="alternate" type="application/rss+xml" '
-  . 'title="Changes for ' . NormalToFree($id) . '" '
-  . 'href="' . $ScriptName . '?action=rss;match=%5E'
-  . UrlEncode(FreeToNormal($id)) . '%24" />' if $id;
   my $username = GetParam('username', '');
   $html .= '<link rel="alternate" type="application/rss+xml" '
   . 'title="Follow-ups for ' . NormalToFree($username) . '" '
