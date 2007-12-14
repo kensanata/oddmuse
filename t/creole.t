@@ -199,7 +199,7 @@ http://www.wikicreole.org/.
 [[http://example.com/|{{http://mu.org/|a description}}]]
 //a[@class="image outside"][@href="http://example.com/"][img[@class="url outside"][@src="http://mu.org/"][@alt="a description"]]
 [[Ohana:WikiFamily]]
-//div/child::node()[1]/self::a[@class="inter Ohana"][@href="http://www.wikiohana.org/WikiFamily"]/span[@class="site"][text()="Ohana"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="WikiFamily"]
+//div/child::node()[1]/self::a[@class="inter Ohana"][@href="http://www.wikiohana.org/WikiFamily"]/span[@class="site"][text()="Ohana"]/following-sibling::span[@class="separator"][text()=":"]/following-sibling::span[@class="page"][text()="WikiFamily"]
 |[[http://www.wikicreole.org/|Visit the WikiCreole website]]
 //table[@class="user"]/tr/td/a[@class="url http outside"][@href="http://www.wikicreole.org/"][text()="Visit the WikiCreole website"]
 |[[http://www.wikicreole.org/| Visit the WikiCreole website]]

@@ -96,13 +96,13 @@ OddMuse
 OddMuse:
 //a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=OddMuse"][text()="?"]/following-sibling::text()[string()=":"]
 OddMuse:test
-//a[@class="inter OddMuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"]/span[@class="site"][text()="OddMuse"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="test"]
+//a[@class="inter OddMuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"]/span[@class="site"][text()="OddMuse"]/following-sibling::span[@class="separator"][text()=":"]/following-sibling::span[@class="page"][text()="test"]
 OddMuse:test: or not
-//a[@class="inter OddMuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"]/span[@class="site"][text()="OddMuse"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="test"]
+//a[@class="inter OddMuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"]/span[@class="site"][text()="OddMuse"]/following-sibling::span[@class="separator"][text()=":"]/following-sibling::span[@class="page"][text()="test"]
 OddMuse:test, and foo
-//a[@class="inter OddMuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"]/span[@class="site"][text()="OddMuse"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="test"]
+//a[@class="inter OddMuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"]/span[@class="site"][text()="OddMuse"]/following-sibling::span[@class="separator"][text()=":"]/following-sibling::span[@class="page"][text()="test"]
 PlanetMath:ZipfsLaw, and foo
-//a[@class="inter PlanetMath"][@href="http://planetmath.org/encyclopedia/ZipfsLaw.html"]/span[@class="site"][text()="PlanetMath"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="ZipfsLaw"]
+//a[@class="inter PlanetMath"][@href="http://planetmath.org/encyclopedia/ZipfsLaw.html"]/span[@class="site"][text()="PlanetMath"]/following-sibling::span[@class="separator"][text()=":"]/following-sibling::span[@class="page"][text()="ZipfsLaw"]
 [OddMuse:test]
 //a[@class="inter OddMuse number"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?test"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
 ![[Free Link]]

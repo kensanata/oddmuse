@@ -47,10 +47,10 @@ test_page(get_page('action=links raw=1 inter=1'), @Test);
 
 @Test = split('\n',<<'EOT');
 //a[@class="local"][@href="http://localhost/wiki.pl/a"][text()="a"]
-//a[@class="inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?foo"]/span[@class="site"][text()="Oddmuse"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="foo"]
-//a[@class="inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?bar"]/span[@class="site"][text()="Oddmuse"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="bar"]
-//a[@class="inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?baz"]/span[@class="site"][text()="Oddmuse"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="baz"]
-//a[@class="inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?foo_(bar)"]/span[@class="site"][text()="Oddmuse"]/following-sibling::text()[string()=":"]/following-sibling::span[@class="page"][text()="foo_(bar)"]
+//a[@class="inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?foo"]/span[@class="site"][text()="Oddmuse"]/following-sibling::span[@class="separator"][text()=":"]/following-sibling::span[@class="page"][text()="foo"]
+//a[@class="inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?bar"]/span[@class="site"][text()="Oddmuse"]/following-sibling::span[@class="separator"][text()=":"]/following-sibling::span[@class="page"][text()="bar"]
+//a[@class="inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?baz"]/span[@class="site"][text()="Oddmuse"]/following-sibling::span[@class="separator"][text()=":"]/following-sibling::span[@class="page"][text()="baz"]
+//a[@class="inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?foo_(bar)"]/span[@class="site"][text()="Oddmuse"]/following-sibling::span[@class="separator"][text()=":"]/following-sibling::span[@class="page"][text()="foo_(bar)"]
 EOT
 
 negative_xpath_test(get_page('action=links'), @Test);
