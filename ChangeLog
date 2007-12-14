@@ -4,6 +4,7 @@
 	Moved meta element generation from into GetRobots and GetFeeds.
 	Set $HtmlHeaders via GetFeeds in InitVariables so that users can
 	append to the default value.
+	(GetHtmlHeader): Add charset http-equiv meta tag.
 
 2007-12-09  Alex Schroeder  <alex@gnu.org>
 
