@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.830 2007/12/14 08:58:20 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.831 2007/12/14 09:40:15 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2221,13 +2221,10 @@ sub Cookie {
 
 sub GetHtmlHeader {
   my ($title, $id) = @_;
-  my $html;
-  $html = $q->base({-href=>$SiteBase}) if $SiteBase;
-  $html .= GetCss() . GetRobots() . $HtmlHeaders;
-  $html = qq(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n<html xmlns="http://www.w3.org/1999/xhtml">)
-    . $q->head($q->title($q->escapeHTML($title)) . $html . $HtmlHeaders)
+  my $base = $SiteBase ? $q->base({-href=>$SiteBase}) : "";
+  return qq(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n<html xmlns="http://www.w3.org/1999/xhtml">)
+    . $q->head($q->title($q->escapeHTML($title)) . $base . GetCss() . GetRobots() . $HtmlHeaders)
     . '<body class="' . GetParam('theme', $ScriptName) . '">';
-  return $html;
 }
 
 sub GetRobots { # NOINDEX for non-browse pages.
