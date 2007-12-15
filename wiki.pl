@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.833 2007/12/14 13:33:40 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.834 2007/12/15 22:41:41 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2300,10 +2300,10 @@ sub GetFooterLinks {
   my @elements;
   if ($id and $rev ne 'history' and $rev ne 'edit') {
     if ($CommentsPrefix) {
-      if ($OpenPageName =~ /^$CommentsPrefix(.*)/o) {
+      if ($id =~ /^$CommentsPrefix(.*)/o) {
 	push(@elements, GetPageLink($1, undef, 'original'));
       } else {
-	push(@elements, GetPageLink($CommentsPrefix . $OpenPageName, undef, 'comment'));
+	push(@elements, GetPageLink($CommentsPrefix . $id, undef, 'comment'));
       }
     }
     if (UserCanEdit($id, 0)) {
@@ -2334,7 +2334,7 @@ sub GetCommentForm {
   if ($CommentsPrefix ne '' and $id and $rev ne 'history' and $rev ne 'edit'
       and $id =~ /^$CommentsPrefix/o and UserCanEdit($id, 0, 1)) {
     return $q->div({-class=>'comment'}, GetFormStart(undef, undef, 'comment'), # protected by questionasker
-		   $q->p(GetHiddenValue('title', $OpenPageName),
+		   $q->p(GetHiddenValue('title', $id),
 			 GetTextArea('aftertext', $comment ? $comment : $NewComment)), $EditNote,
 		   $q->p($q->label({-for=>'username'}, T('Username:')), ' ',
 			 $q->textfield(-name=>'username', -id=>'username', -default=>GetParam('username', ''),
