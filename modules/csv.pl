@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: csv.pl,v 1.2 2007/12/22 15:27:29 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: csv.pl,v 1.3 2007/12/22 15:29:55 as Exp $</p>';
 
 push(@MyRules, \&CsvRule);
 
@@ -26,7 +26,7 @@ sub CsvRule {
   # tables using <csv> -- the first row of a table
   if ($bol && m/\G&lt;csv&gt;\n/cg) {
     $RowCount = 1;
-    return OpenHtmlEnvironment('table',1,'user')
+    return OpenHtmlEnvironment('table',1,'user csv')
       . AddHtmlEnvironment('tr', 'class="odd first"')
       . AddHtmlEnvironment('td');
   }
