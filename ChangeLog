@@ -1,5 +1,9 @@
 2007-12-22  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (UserCanEdit): %LockOnCreation only affects permissions
+	when the page is new. Once it exists, the lock file determines
+	permissions.
+
 	* modules/csv.pl (CsvRule): Add csv class.
 
 2007-12-14  Alex Schroeder  <alex@gnu.org>
