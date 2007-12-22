@@ -1,4 +1,4 @@
-# Copyright (C) 2004  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2007  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: csv.pl,v 1.1 2007/12/22 15:26:26 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: csv.pl,v 1.2 2007/12/22 15:27:29 as Exp $</p>';
 
 push(@MyRules, \&CsvRule);
 
