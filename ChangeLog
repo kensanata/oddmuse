@@ -1,3 +1,7 @@
+2007-12-22  Alex Schroeder  <alex@gnu.org>
+
+	* modules/csv.pl (CsvRule): Add csv class.
+
 2007-12-14  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetHtmlHeader, GetRobots, GetFeeds, InitVariables):
