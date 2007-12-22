@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.834 2007/12/15 22:41:41 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.835 2007/12/22 20:49:38 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3057,7 +3057,7 @@ sub UserCanEdit {
     or $id eq 'Sample_Undefined_Page' or $id eq T('Sample_Undefined_Page');
   return 1 if UserIsAdmin();
   return 0 if $id ne '' and -f GetLockedPageFile($id);
-  return 0 if $LockOnCreation{$id};
+  return 0 if $LockOnCreation{$id} and not -f GetPageFile($id); # new page
   return 1 if UserIsEditor();
   return 0 if !$EditAllowed or -f $NoEditFile;
   return 0 if $editing and UserIsBanned(); # this call is more expensive
