@@ -75,3 +75,7 @@ xpath_test(get_page('action=history id=Jack_DeJohnette'),
 	   '//a[@class="revision"][@href="http://localhost/wiki.pl?action=browse;id=Jack_DeJohnette;revision=1"][text()="Revision 1"]',
 	   # not sure whether it makes sure to have the class "local" here!
 	   '//a[@class="local"][@href="http://localhost/wiki.pl/Jack_DeJohnette"][text()="Revision 2"]');
+
+# create an anchored object
+update_page('TheGame', qq{The game has rules and props. [::TheRules] Simple and elegant. [::TheProps] Expensive and brittle.\n----\nThat's how not to do it!});
+update_page('TheTest', qq{The rules are supposed to be\n<include "TheRules">});
