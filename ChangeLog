@@ -1,3 +1,8 @@
+2007-12-31  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (UnWiki): New function to split WikiWords.
+	(GetHeader): Use UnWiki for the page page title.
+
 2007-12-22  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (UserCanEdit): %LockOnCreation only affects permissions
