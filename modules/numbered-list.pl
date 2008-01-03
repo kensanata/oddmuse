@@ -13,14 +13,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: numbered-list.pl,v 1.1 2007/12/26 17:22:46 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: numbered-list.pl,v 1.2 2008/01/03 01:01:00 as Exp $</p>';
 
 push(@MyRules, \&NumberedListRule);
 
 sub NumberedListRule {
-  # numbered lists using # copied from usemod.pl
-  if ($bol && m/\G(\s*\n)*(\#+)[ \t]/cog
-      or InElement('li') && m/\G(\s*\n)+(\#+)[ \t]/cog) {
+  # numbered lists using # copied from usemod.pl but allow leading
+  # whitespace
+  if ($bol && m/\G(\s*\n)*\s*(\#+)[ \t]/cog
+      or InElement('li') && m/\G(\s*\n)+\s*(\#+)[ \t]/cog) {
     return CloseHtmlEnvironmentUntil('li')
       . OpenHtmlEnvironment('ol',length($2))
       . AddHtmlEnvironment('li');
