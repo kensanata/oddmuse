@@ -11,6 +11,11 @@
 
 	* modules/csv.pl (CsvRule): Add csv class.
 
+2007-12-15  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetFooterLinks, GetCommentForm): Use the parameter $id
+	instead of the global $OpenPageName.
+
 2007-12-14  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetHtmlHeader, GetRobots, GetFeeds, InitVariables):
