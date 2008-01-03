@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.835 2007/12/22 20:49:38 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.836 2008/01/03 01:13:01 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2140,7 +2140,7 @@ sub GetHeader {
   if ($oldId) {
     $Message .= $q->p('(' . Ts('redirected from %s', GetEditLink($oldId, $oldId)) . ')');
   }
-  $result .= GetHtmlHeader("$SiteName: $title", $id);
+  $result .= GetHtmlHeader(Ts('%s: ', $SiteName) . UnWiki($title), $id);
   if ($embed) {
     $result .= $q->div({-class=>'header'}, $q->div({-class=>'message'}, $Message))  if $Message;
     return $result;
@@ -2897,6 +2897,13 @@ sub NormalToFree {
   my $title = shift;
   $title =~ s/_/ /g;
   return $title;
+}
+
+sub UnWiki {
+  my $str = shift;
+  return $str unless $WikiLinks and $str =~ /^$LinkPattern$/;
+  $str =~ s/([[:lower:]])([[:upper:]])/$1 $2/g;
+  return $str;
 }
 
 # == Page-editing and other special-action code ==
