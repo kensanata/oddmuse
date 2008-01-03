@@ -57,7 +57,7 @@ SKIP: {
   # some xpath tests
   update_page('RSS', "<rss $uri/heise.rdf>");
   $page = get_page('RSS');
-  xpath_test($page, Encode::encode_utf8('//a[@title="999"][@href="http://www.heise.de/tp/deutsch/inhalt/te/15886/1.html"][text()="Berufsverbot für Mediendesigner?"]'));
+  xpath_test($page, '//a[@title="999"][@href="http://www.heise.de/tp/deutsch/inhalt/te/15886/1.html"][text()="Berufsverbot für Mediendesigner?"]');
 
   test_page($page, split('\n',<<'EOT'));
 <div class="rss"><ul><li>
