@@ -1,3 +1,8 @@
+2008-01-10  Alex Schroeder  <aschroeder@localhost>
+
+	* wiki.pl (DebugInterLinks): Only print header if InterSite
+	contains anything.
+
 2007-12-31  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (UnWiki): New function to split WikiWords.
