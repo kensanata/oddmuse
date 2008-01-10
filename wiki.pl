@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.836 2008/01/03 01:13:01 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.837 2008/01/10 10:54:02 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -3769,7 +3769,8 @@ sub DoDebug {
 }
 
 sub DebugInterLinks {
-  print $q->h2(T('Inter links:')) . $q->p(join(', ', sort keys %InterSite));
+  print $q->h2(T('Inter links:')) . $q->p(join(', ', sort keys %InterSite))
+    if %InterSite;
 }
 
 # == Surge Protection ==
