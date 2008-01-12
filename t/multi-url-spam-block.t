@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 7;
+use Test::More tests => 10;
 
 clear_pages();
 
@@ -38,10 +38,19 @@ update_page('spam', $text . "http://other.example.com\n");
 test_page($redirect, 'Status: 403',
 	  'linked more than 10 times to the same domain');
 
+# Test interaction with localnames.pl
+update_page('LocalNames', $text . "http://other.example.com\n");
+test_page($redirect, 'Status: 403',
+	  'linked more than 10 times to the same domain');
+add_module('localnames.pl');
+update_page('LocalNames', $text . "http://other.example.com\n");
+test_page($redirect, 'Status: 302');
+
 # Make sure that the symbol table fiddling has not confused the admin
 # page
 test_page(get_page('action=admin'), 'MyBannedContent', 'MyWhitelist');
 
+# Test whitelist
 update_page('MyWhitelist', 'example.com # test');
 
 update_page('spam', $text . "http://other.example.com\n");
