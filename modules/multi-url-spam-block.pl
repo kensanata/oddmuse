@@ -1,4 +1,4 @@
-# Copyright (C) 2007  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2007, 2008  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: multi-url-spam-block.pl,v 1.8 2008/01/12 22:55:56 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: multi-url-spam-block.pl,v 1.9 2008/01/12 22:56:44 as Exp $</p>';
 
 *OldMultiUrlBannedContent = *BannedContent;
 *BannedContent = *NewMultiUrlBannedContent;
