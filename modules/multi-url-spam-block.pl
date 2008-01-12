@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: multi-url-spam-block.pl,v 1.7 2007/11/06 10:23:29 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: multi-url-spam-block.pl,v 1.8 2008/01/12 22:55:56 as Exp $</p>';
 
 *OldMultiUrlBannedContent = *BannedContent;
 *BannedContent = *NewMultiUrlBannedContent;
@@ -32,6 +32,16 @@ push(@MyInitVariables, sub {
      });
 
 sub NewMultiUrlBannedContent {
+  my $str = shift;
+  if (not $LocalNamesPage 
+      or GetParam('title', '') ne $LocalNamesPage) {
+    my $rule = MultiUrlBannedContent($str);
+    return $rule if $rule;
+  }
+  return OldMultiUrlBannedContent($str);
+}
+
+sub MultiUrlBannedContent {
   my $str = shift;
   my @urls = $str =~ /$FullUrlPattern/go;
   my %domains;
@@ -54,5 +64,4 @@ sub NewMultiUrlBannedContent {
   }
   return Ts('You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.', $MultiUrlLimit)
     if $max > $MultiUrlLimit;
-  return OldMultiUrlBannedContent($str);
 }
