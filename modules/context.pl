@@ -1,8 +1,8 @@
-# Copyright (C) 2008  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2007  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 3 of the License, or
+# the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -11,12 +11,9 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#
-# You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: context.pl,v 1.1 2008/01/10 11:18:53 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: context.pl,v 1.2 2008/01/21 14:55:23 as Exp $</p>';
 
 push (@MyInitVariables, \&ContextMenuItem);
 
