@@ -298,6 +298,9 @@ table.j td, table.j th, td.j, th.j, .j { text-align:justify; }
 table.l td, table.l th, td.l, th.l, .l { text-align:left; }
 table.r td, table.r th, td.r, th.r, .r { text-align:right; }
 table.c td, table.c th, td.c, th.c, .c { text-align:center; }
+table.t td { vertical-align: top; }
+td.half { width:50%; }
+td.third { width:33%; }
 
 form table td { padding:5px; }
 
