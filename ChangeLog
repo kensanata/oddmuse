@@ -1,3 +1,10 @@
+2008-01-28  Alex Schroeder  <aschroeder@localhost>
+
+	* modules/questionasker.pl (NewQuestionaskerGetEditForm): Moved
+	code to QuestionAddTo.
+	(QuestionAddTo): New.
+	(NewQuestionaskerGetCommentForm): Do the same thing for comments.
+
 2008-01-10  Alex Schroeder  <aschroeder@localhost>
 
 	* wiki.pl (DebugInterLinks): Only print header if InterSite
