@@ -1,3 +1,8 @@
+2008-02-01  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (PrintFooter): Print newline at the very end. Apparently
+	that solves a FCGI problem.
+
 2008-01-28  Alex Schroeder  <aschroeder@localhost>
 
 	* modules/questionasker.pl (NewQuestionaskerGetEditForm): Moved
