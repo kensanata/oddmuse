@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 18;
+use Test::More tests => 21;
 
 clear_pages();
 
@@ -54,6 +54,11 @@ test_page(get_page('action=history id=david'),
 	  'Revision 4', 'fourth revision');
 # using diffrevision=1 will make sure that the third revision is not shown
 xpath_test(get_page('action=browse diff=1 id=david revision=2 diffrevision=1'),
+	   '//div[@class="old"]/p/strong[text()="first"]',
+	   '//div[@class="new"]/p/strong[text()="second"]',
+	   '//div[@class="content browse"]/p[text()="this is the second revision"]');
+# check with cache = 0
+xpath_test(get_page('action=browse diff=1 id=david revision=2 diffrevision=1 cache=0'),
 	   '//div[@class="old"]/p/strong[text()="first"]',
 	   '//div[@class="new"]/p/strong[text()="second"]',
 	   '//div[@class="content browse"]/p[text()="this is the second revision"]');
