@@ -5,6 +5,12 @@
 	(QuestionAddTo): New.
 	(NewQuestionaskerGetCommentForm): Do the same thing for comments.
 
+2008-01-12  Alex Schroeder  <alex@gnu.org>
+
+	* modules/multi-url-spam-block.pl (NewMultiUrlBannedContent): Move
+	code to MultiUrlBannedContent.
+	(MultiUrlBannedContent): Disable the rule for the LocalNames page.
+
 2008-01-10  Alex Schroeder  <aschroeder@localhost>
 
 	* wiki.pl (DebugInterLinks): Only print header if InterSite
