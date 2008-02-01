@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.838 2008/02/01 07:14:21 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.839 2008/02/01 09:53:56 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2387,7 +2387,7 @@ sub PrintHtmlDiff {
   my $intro = T('Last edit');
   my $diff = GetCacheDiff($type == 1 ? 'major' : 'minor');
   # compute old revision if cache is disabled or no cached diff is available
-  if (not $old and not $diff or GetParam('cache', $UseCache) < 1) {
+  if (not $old and (not $diff or GetParam('cache', $UseCache) < 1)) {
     if ($type == 1) {
       $old = $Page{lastmajor} - 1;
       ($text, $new) = GetTextRevision($Page{lastmajor}, 1)
