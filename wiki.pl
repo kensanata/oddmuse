@@ -272,7 +272,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.837 2008/01/10 10:54:02 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.838 2008/02/01 07:14:21 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -2264,7 +2264,7 @@ sub GetCss { # prevent javascript injection
 sub PrintFooter {
   my ($id, $rev, $comment) = @_;
   if (GetParam('embed', $EmbedWiki)) {
-    print $q->end_html;
+    print $q->end_html, "\n";
     return;
   }
   print GetCommentForm($id, $rev, $comment),
@@ -2281,7 +2281,7 @@ sub PrintFooter {
   print $q->end_div();
   PrintMyContent($id) if defined(&PrintMyContent);
   foreach my $sub (@MyFooters) { print &$sub(@_) };
-  print $q->end_html;
+  print $q->end_html, "\n";
 }
 
 sub GetFooterTimestamp {
