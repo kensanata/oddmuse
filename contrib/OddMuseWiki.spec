@@ -1,6 +1,6 @@
 Name: OddMuseWiki
 Version: 2007.12.31
-Release: 2suse
+Release: 1suse
 Group: Applications/Productivity
 License: /opt/OddMuseWiki/doc/COPYING
 Summary: Simple user-editted website (wiki)
