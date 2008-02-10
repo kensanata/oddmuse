@@ -168,5 +168,5 @@ if [ "$RPM_DUMPENV" != "" ] ; then env | sort > /tmp/rpm-postun.log; fi
 
 
 %changelog
-* Wed Jan 3 2008 Dr. Robert Meier <rmeier@unitrends.com> 2007.12.13-1suse
+* Wed Jan 3 2008 Dr. Robert Meier <grandfather@sourceforge.org> 2007.12.13-1suse
 - copy-and-edit from hello.rpm
