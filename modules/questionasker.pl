@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.22 2008/01/28 16:01:24 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.23 2008/02/19 09:07:26 as Exp $</p>';
 
 use vars qw(@QuestionaskerQuestions
 	    $QuestionaskerRememberAnswer
@@ -70,7 +70,7 @@ sub NewQuestionaskerDoPost {
   my $preview = GetParam('Preview', undef); # case matters!
   my $question_num = GetParam('question_num', undef);
   my $answer = GetParam('answer', undef);
-  unless (UserIsAdmin()
+  unless (UserIsEditor()
 	  or $QuestionaskerRememberAnswer && GetParam($QuestionaskerSecretKey, 0)
 	  or $preview
 	  or $QuestionaskerQuestions[$question_num][1]($answer)
@@ -108,7 +108,7 @@ sub QuestionAddTo {
   if (not $upload
       and not QuestionaskerException(GetId())
       and not $QuestionaskerRememberAnswer && GetParam('question', 0)
-      and not UserIsAdmin()) {
+      and not UserIsEditor()) {
     my $question = QuestionaskerGetQuestion();
     $form =~ s/<p><label for="username">/$question<p><label for="username">/;
   }
