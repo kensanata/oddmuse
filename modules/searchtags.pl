@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: searchtags.pl,v 1.5 2007/08/11 10:48:19 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: searchtags.pl,v 1.6 2008/02/21 16:49:49 weakish Exp $</p>';
 
 push(@MyRules, \&SearchTagRule);
 
@@ -33,7 +33,7 @@ sub SearchTagRule {
     } @tags;
     $tags = join ', ', @tags;
     return CloseHtmlEnvironments()
-      . "<div class=taglist>Tags: $tags</div>"
+      . "<div class=\"taglist\">Tags: $tags</div>"
       . AddHtmlEnvironment('p');
   }
   return undef;
