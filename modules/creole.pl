@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.35 2007/10/23 09:33:38 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.36 2008/02/21 14:55:25 weakish Exp $</p>';
 
 use vars qw($CreoleLineBreaks);
 
@@ -126,7 +126,7 @@ sub CreoleRule {
   # {{{
   # preformatted
   # }}}
-  elsif ($bol && m/\G\{\{\{[ \t]*\n(.*?\n)\}\}\}[ \t]*\n?/cgs) {
+  elsif ($bol && m/\G\{\{\{[ \t]*\n(.*?\n)\}\}\}[ \t]*(\n|\z)/cgs) {
     my $str = $1;
     $str =~ s/\n }}}/\n}}}/g;
     return CloseHtmlEnvironments() . $q->pre({-class=>'real'}, $str)
