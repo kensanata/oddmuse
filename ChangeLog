@@ -1,3 +1,8 @@
+2008-02-22  Alex Schroeder  <alex@gnu.org>
+
+	* Makefile (VERSION_NO): Fix regular expression that determines
+	the version number to use.
+
 2008-02-19  Alex Schroeder  <alex@gnu.org>
 
 	* modules/questionasker.pl (NewQuestionaskerDoPost,
