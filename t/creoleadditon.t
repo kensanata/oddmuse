@@ -7,17 +7,43 @@
 # You can get a copy of GPL version 2 at
 # http://www.gnu.org/licenses/gpl-2.0.html
 
-# $Id: creoleadditon.t,v 1.1 2008/02/22 11:00:38 weakish Exp $
+# $Id: creoleadditon.t,v 1.2 2008/02/22 18:30:23 weakish Exp $
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 1;
+use Test::More tests => 14;
 clear_pages();
 
 add_module('creoleaddition.pl');
 
 run_tests(split('\n',<<'EOT'));
-x^^2^^ and H,,2,,O
-x<sup>2</sup> and H<sub>2</sub>O
+x^^2^^
+x<sup>2</sup>
+H,,2,,O
+H<sub>2</sub>O
+;dt1\n:dd1\n;dt2\n:dd2
+<dl><dt>dt1</dt><dd>dd1</dd><dt>dt2</dt><dd>dd2</dd></dl>
+;dt1\n:dd1
+<dl><dt>dt1</dt><dd>dd1</dd></dl>
+;dt1\n: dd1
+<dl><dt>dt1</dt><dd>dd1</dd></dl>
+; dt1\n: dd1
+<dl><dt>dt1</dt><dd>dd1</dd></dl>
+;;dt1\n:dd1
+<dl><dt>;dt1</dt><dd>dd1</dd></dl>
+;dt1\n:dd1\nmore dd1\n;dt2\n:dd2\n more dd2
+<dl><dt>dt1</dt><dd>dd1 more dd1</dd><dt>dt2</dt><dd>dd2 more dd2</dd></dl>
+; one:eins\n;two:zwei
+; one:eins ;two:zwei
+; one:eins
+; one:eins
+; one:eins\n\n; two:zwei
+; one:eins<p>; two:zwei</p>
+; dt1 :dd1
+; dt1 :dd1
+; dt1\n:dd1
+<dl><dt>dt1</dt><dd>dd1</dd></dl>
+  ;  dt1  \n  :  dd1  \n  ;  dt2 \n  :  dd2
+<dl><dt>dt1</dt><dd>dd1</dd><dt>dt2</dt><dd>dd2</dd></dl>
 EOT
 
