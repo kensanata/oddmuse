@@ -7,11 +7,11 @@
 # You can get a copy of GPL version 2 at
 # http://www.gnu.org/licenses/gpl-2.0.html
 
-# $Id: creoleadditon.t,v 1.2 2008/02/22 18:30:23 weakish Exp $
+# $Id: creoleaddtion.t,v 1.1 2008/02/22 19:47:22 weakish Exp $
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 14;
+use Test::More tests => 16;
 clear_pages();
 
 add_module('creoleaddition.pl');
@@ -45,5 +45,9 @@ H<sub>2</sub>O
 <dl><dt>dt1</dt><dd>dd1</dd></dl>
   ;  dt1  \n  :  dd1  \n  ;  dt2 \n  :  dd2
 <dl><dt>dt1</dt><dd>dd1</dd><dt>dt2</dt><dd>dd2</dd></dl>
+;dt1\n:dd1\n:dd2
+<dl><dt>dt1</dt><dd>dd1</dd><dd>dd2</dd></dl>
+;dt1 \n :dd1\n:dd2\n : dd3
+<dl><dt>dt1</dt><dd>dd1</dd><dd>dd2</dd><dd>dd3</dd></dl>
 EOT
 
