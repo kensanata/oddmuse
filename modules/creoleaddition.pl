@@ -10,7 +10,7 @@
 # For user doc, see: 
 # http://www.oddmuse.org/cgi-bin/oddmuse/CreoleAddition
 
-$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.1 2008/02/22 10:59:07 weakish Exp $</p>';
+$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.2 2008/02/22 18:29:26 weakish Exp $</p>';
 
 # Since these rules are not official now, users can turn off some of
 # them. Currently, It's no use, since there is only one rule. But
@@ -19,21 +19,28 @@ $ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.1 2008/02/22 10:59:07 weak
 use vars qw($CreoleAdditionSupSub);
 
 $CreoleAdditionSupSub = 1; # 1= ^^supscript^^ and ,,subscript,,  
+$CreoleAdditionDefList = 1; # 1= allow definition lists
 
 push(@MyRules, \&CreoleAdditionRule);
 
 sub CreoleAdditionRule{
-
-
-   # ^^sup^^
-   if ($CreoleAdditionSupSub && m/\G\^\^/cg) {
+  # ^^sup^^
+  if ($CreoleAdditionSupSub && m/\G\^\^/cg) {
      return (defined $HtmlStack[0] && $HtmlStack[0] eq 'sup')
        ? CloseHtmlEnvironment() : AddHtmlEnvironment('sup');
-   }
    # ,,sub,,
-   elsif ($CreoleAdditionSupSub && m/\G\,\,/cg) {
+  } elsif ($CreoleAdditionSupSub && m/\G\,\,/cg) {
      return (defined $HtmlStack[0] && $HtmlStack[0] eq 'sub')
        ? CloseHtmlEnvironment() : AddHtmlEnvironment('sub');
-   }
+  # definition lists 
+  # ; term
+  # : description
+  } elsif ($CreoleAdditionDefList && $bol && m/\G\s*\;[ \t]*(?=(.+(\n)(\s)*\:))/cg
+	 or InElement('dd') && m/\G\s*(\n)+(\s)*\;[ \t]*(?=(.+\n(\s)*\:))/cg) {
+    return CloseHtmlEnvironmentUntil('dd') . OpenHtmlEnvironment('dl', 1)
+      . AddHtmlEnvironment('dt'); # `:' needs special treatment, later
+  } elsif (InElement('dt', 'dd') and m/\G\s*(\n)+(\s)*\:[ \t]*/cg) {
+    return CloseHtmlEnvironmentUntil('dt') . CloseHtmlEnvironment() . AddHtmlEnvironment('dd');
+  }
    return undef;
 }
