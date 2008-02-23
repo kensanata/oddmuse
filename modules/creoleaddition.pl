@@ -10,7 +10,7 @@
 # For user doc, see: 
 # http://www.oddmuse.org/cgi-bin/oddmuse/CreoleAddition
 
-$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.4 2008/02/23 13:17:20 weakish Exp $</p>';
+$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.5 2008/02/23 14:30:28 weakish Exp $</p>';
 
 # Since these rules are not official now, users can turn off some of
 # them. Currently, It's no use, since there is only one rule. But
@@ -44,8 +44,17 @@ sub CreoleAdditionRule{
     return CloseHtmlEnvironment() . AddHtmlEnvironment('dd');
   } elsif (InElement('dd') and m/\G\s*(\n)+(\s)*\:[ \t]*(?=(.+(\n)(\s)*\:)*)/cg) {
 	return 	CloseHtmlEnvironment() . AddHtmlEnvironment('dd');
-  # ""quote""
-  }	elsif ($CreoleAdditionQuote && m/\G\"\"/cg) {
+  # """
+  # blockquote
+  # """
+  } elsif ($CreoleAdditionQuote && $bol && m/\G\"\"\"[ \t]*\n(?=(.+(\n)+\"\"\"[ \t]*(\n|\z)))/cg) {
+	        return AddHtmlEnvironment('blockquote')
+			    . AddHtmlEnvironment('p');
+  } elsif ($CreoleAdditionQuote && m/\G\n\"\"\"[ \t]*(\n|\z)/cgs) {
+	  return  
+	  CloseHtmlEnvironment(); 
+  # ''quote''
+  }	elsif ($CreoleAdditionQuote && m/\G\'\'/cgs) {
 	  return (defined $HtmlStack[0] && $HtmlStack[0] eq 'q')
 	   ? CloseHtmlEnvironment() : AddHtmlEnvironment('q');
   }	   
