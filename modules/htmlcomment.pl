@@ -8,9 +8,9 @@
 # http://www.gnu.org/licenses/gpl-2.0.html
 #
 # For user doc, see: 
-# http://www.oddmuse.org/cgi-bin/oddmuse/HtmlComment
+# http://www.oddmuse.org/cgi-bin/oddmuse/Html_Comment_Extension
 
-$ModulesDescription .= '<p>$Id: htmlcomment.pl,v 1.1 2008/02/21 17:19:56 weakish Exp $</p>';
+$ModulesDescription .= '<p>$Id: htmlcomment.pl,v 1.2 2008/02/23 15:51:27 weakish Exp $</p>';
 
 push(@MyRules, \&HtmlCommentRules);
 
