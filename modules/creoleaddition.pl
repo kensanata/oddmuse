@@ -10,7 +10,7 @@
 # For user doc, see: 
 # http://www.oddmuse.org/cgi-bin/oddmuse/CreoleAddition
 
-$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.9 2008/02/23 15:35:50 weakish Exp $</p>';
+$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.10 2008/02/23 16:12:20 weakish Exp $</p>';
 
 # Since these rules are not official now, users can turn off some of
 # them. Currently, It's no use, since there is only one rule. But
@@ -22,9 +22,9 @@ $CreoleAdditionSupSub = 1; #  ^^supscript^^ and ,,subscript,,
 $CreoleAdditionDefList = 1; #  definition lists
 $CreoleAdditionQuote =1; # 1= ""quote""
 
-push(@MyRules, \&CreoleAdditionRule);
+push(@MyRules, \&CreoleAdditionRules);
 
-sub CreoleAdditionRule{
+sub CreoleAdditionRules{
   # ^^sup^^
   if ($CreoleAdditionSupSub && m/\G\^\^/cg) {
      return (defined $HtmlStack[0] && $HtmlStack[0] eq 'sup')
@@ -37,12 +37,12 @@ sub CreoleAdditionRule{
   # ; term
   # : description
   } elsif ($CreoleAdditionDefList && $bol && m/\G\s*\;[ \t]*(?=(.+(\n)(\s)*\:))/cg
-	 or InElement('dd') && m/\G\s*(\n)+(\s)*\;[ \t]*(?=(.+\n(\s)*\:))/cg) {
+	 or InElement('dd') && m/\G\s*\n(\s)*\;[ \t]*(?=(.+\n(\s)*\:))/cg) {
     return CloseHtmlEnvironmentUntil('dd') . OpenHtmlEnvironment('dl', 1)
       . AddHtmlEnvironment('dt'); # `:' needs special treatment, later
-  } elsif (InElement('dt') and m/\G\s*(\n)+(\s)*\:[ \t]*(?=(.+(\n)(\s)*\:)*)/cg) {
+  } elsif (InElement('dt') and m/\G\s*\n(\s)*\:[ \t]*(?=(.+(\n)(\s)*\:)*)/cg) {
     return CloseHtmlEnvironment() . AddHtmlEnvironment('dd');
-  } elsif (InElement('dd') and m/\G\s*(\n)+(\s)*\:[ \t]*(?=(.+(\n)(\s)*\:)*)/cg) {
+  } elsif (InElement('dd') and m/\G\s*\n(\s)*\:[ \t]*(?=(.+(\n)(\s)*\:)*)/cg) {
 	return 	CloseHtmlEnvironment() . AddHtmlEnvironment('dd');
   # """
   # blockquote
