@@ -7,7 +7,7 @@
 # You can get a copy of GPL version 2 at
 # http://www.gnu.org/licenses/gpl-2.0.html
 
-# $Id: creoleaddition.t,v 1.3 2008/02/23 14:31:43 weakish Exp $
+# $Id: creoleaddition.t,v 1.4 2008/02/23 15:36:17 weakish Exp $
 
 require 't/test.pl';
 package OddMuse;
