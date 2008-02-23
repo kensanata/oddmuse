@@ -10,7 +10,7 @@
 # For user doc, see: 
 # http://www.oddmuse.org/cgi-bin/oddmuse/CreoleAddition
 
-$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.3 2008/02/22 19:38:36 weakish Exp $</p>';
+$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.4 2008/02/23 13:17:20 weakish Exp $</p>';
 
 # Since these rules are not official now, users can turn off some of
 # them. Currently, It's no use, since there is only one rule. But
@@ -18,8 +18,9 @@ $ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.3 2008/02/22 19:38:36 weak
 
 use vars qw($CreoleAdditionSupSub);
 
-$CreoleAdditionSupSub = 1; # 1= ^^supscript^^ and ,,subscript,,  
-$CreoleAdditionDefList = 1; # 1= allow definition lists
+$CreoleAdditionSupSub = 1; #  ^^supscript^^ and ,,subscript,,  
+$CreoleAdditionDefList = 1; #  definition lists
+$CreoleAdditionQuote =1; # 1= ""quote""
 
 push(@MyRules, \&CreoleAdditionRule);
 
@@ -43,6 +44,10 @@ sub CreoleAdditionRule{
     return CloseHtmlEnvironment() . AddHtmlEnvironment('dd');
   } elsif (InElement('dd') and m/\G\s*(\n)+(\s)*\:[ \t]*(?=(.+(\n)(\s)*\:)*)/cg) {
 	return 	CloseHtmlEnvironment() . AddHtmlEnvironment('dd');
-  }	
+  # ""quote""
+  }	elsif ($CreoleAdditionQuote && m/\G\"\"/cg) {
+	  return (defined $HtmlStack[0] && $HtmlStack[0] eq 'q')
+	   ? CloseHtmlEnvironment() : AddHtmlEnvironment('q');
+  }	   
    return undef;
 }
