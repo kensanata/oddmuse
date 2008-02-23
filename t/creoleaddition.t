@@ -7,11 +7,11 @@
 # You can get a copy of GPL version 2 at
 # http://www.gnu.org/licenses/gpl-2.0.html
 
-# $Id: creoleaddition.t,v 1.2 2008/02/23 13:17:59 weakish Exp $
+# $Id: creoleaddition.t,v 1.3 2008/02/23 14:31:43 weakish Exp $
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 17;
+use Test::More tests => 19;
 clear_pages();
 
 add_module('creoleaddition.pl');
@@ -49,7 +49,11 @@ H<sub>2</sub>O
 <dl><dt>dt1</dt><dd>dd1</dd><dd>dd2</dd></dl>
 ;dt1 \n :dd1\n:dd2\n : dd3
 <dl><dt>dt1</dt><dd>dd1</dd><dd>dd2</dd><dd>dd3</dd></dl>
-""my quote"" works ""what about x^^2^^""
+''my quote'' works ''what about x^^2^^''
 <q>my quote</q> works <q>what about x<sup>2</sup></q>
+"""\nmy block quote\n"""
+<blockquote><p>my block quote</p></blockquote>
+"""\n simple blockquote\n""" won't work
+""" simple blockquote """ won't work
 EOT
 
