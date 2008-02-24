@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: beautify.pl,v 1.3 2004/12/05 03:23:04 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: beautify.pl,v 1.4 2008/02/24 16:28:01 weakish Exp $</p>';
 
 use Beautifier::Core;
 use Output::HTML;
@@ -35,7 +35,7 @@ sub BeautificationRule {
     $result = $@ if $@;
     $_ = $old_;
     pos = $oldpos;
-    return CloseHtmlEnvironments() . $q->pre({-class=>'beauty'}, $result) . AddHtmlEnvironment('p');
+    return CloseHtmlEnvironments() . $q->div({-class=>'beauty'}, $result) . AddHtmlEnvironment('p');
   }
   return undef;
 }
@@ -46,5 +46,5 @@ sub Beautify {
   my $Hfile = eval "new HFile::HFile_$lang";
   return $q->strong(Ts('Cannot highlight the language %s.', $lang)) . "\n\n" . $source if $@;
   my $highlighter = new Beautifier::Core($Hfile, new Output::HTML);
-  return UnquoteHtml($highlighter->highlight_text($source));
+  return $highlighter->highlight_text(UnquoteHtml($source));
 }
