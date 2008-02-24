@@ -19,7 +19,7 @@
 #     (code reused with permission)
 
 package OddMuse;
-  
+
 =head1 NAME
 
 OddMuse::Wiki - cgi to a user-edittable web site.
@@ -53,7 +53,7 @@ somewhere between manual, FAQ, IRC, and mailing list.
 
 OddMuse::Wiki is very easy to install.
 Simple installation, compact code,
-and easy extensibility were the most important design factors. 
+and easy extensibility were the most important design factors.
 
 =cut
 
@@ -510,7 +510,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.840 2008/02/10 20:16:17 grandfather Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.841 2008/02/24 23:46:58 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -4113,11 +4113,11 @@ DoWikiRequest()	if $RunCGI and not exists $ENV{MOD_PERL};   # Do everything.
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 =head1 AUTHOR
-  
+
  Current maintainer: Alex Schroeder <alex@emacswiki.org>
 
  Past contributors are: Clifford A. Adams <caadams@frontiernet.net>,
  Markus Denker <marcus@ira.uka.de>, Peter Merel,
  Ward Cunningham <ward@c2.com>, and many more
-  
+
 =cut
