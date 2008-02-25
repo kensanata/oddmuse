@@ -510,7 +510,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.841 2008/02/24 23:46:58 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.842 2008/02/25 00:07:44 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0;  # Error messages don't print headers unless necessary
   $ReplaceForm = 0;    # Only admins may search and replace
@@ -615,10 +615,10 @@ sub SetParam {
 
 sub InitLinkPatterns {
   my ($UpperLetter, $LowerLetter, $AnyLetter, $WikiWord, $QDelim);
-  $QDelim = '(?:"")?';# Optional quote delimiter (removed from the output)
+  $QDelim = '(?:"")?'; # Optional quote delimiter (removed from the output)
   $WikiWord = '[A-Z]+[a-z\x80-\xff]+[A-Z][A-Za-z\x80-\xff]*';
   $LinkPattern = "($WikiWord)$QDelim";
-  $FreeLinkPattern = "([-,.()' _0-9A-Za-z\x80-\xff]+)";
+  $FreeLinkPattern = "([-,.()' _1-9A-Za-z\x80-\xff][-,.()' _0-9A-Za-z\x80-\xff]*)"; # disallow "0"
   # Intersites must start with uppercase letter to avoid confusion with URLs.
   $InterSitePattern = '[A-Z\x80-\xff]+[A-Za-z\x80-\xff]+';
   $InterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x80-\xff_=!?#\$\@~`\%&*+\\/:;.,]*[-a-zA-Z0-9\x80-\xff_=#\$\@~`\%&*+\\/])$QDelim";
