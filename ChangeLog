@@ -1,3 +1,8 @@
+2008-02-25  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (InitLinkPatterns): $FreeLinkPattern no longer allows
+	linking to the page named "0" (zero).
+
 2008-02-22  Alex Schroeder  <alex@gnu.org>
 
 	* Makefile (VERSION_NO): Fix regular expression that determines
