@@ -1,3 +1,9 @@
+2008-02-29  Robert Meier  <grandfather@savannah.gnu.org>
+
+	* wiki.pl ($VERSION): New expression based on CVS keyword
+	splitting and many changes involving perldoc and the options at
+	the beginning of the file.
+
 2008-02-25  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (InitLinkPatterns): $FreeLinkPattern no longer allows
