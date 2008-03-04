@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.54 2006/12/14 12:13:14 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.55 2008/03/04 08:21:39 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalAsTable $CalStartMonday);
 
@@ -149,7 +149,6 @@ sub CalendarRule {
 
 sub PrintYearCalendar {
   my $year = shift;
-  my @pages = AllPagesList();
   print $q->p({-class=>nav},
 	      ScriptLink('action=calendar;year=' . ($year-1), T('Previous')),
 	      '|',
