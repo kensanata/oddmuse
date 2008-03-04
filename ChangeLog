@@ -1,3 +1,8 @@
+2008-03-04  Alex Schroeder  <alex@gnu.org>
+
+	* modules/calendar.pl (PrintYearCalendar): Remove useless @pages
+	spotted by JuanmaMP.
+
 2008-02-29  Robert Meier  <grandfather@savannah.gnu.org>
 
 	* wiki.pl ($VERSION): New expression based on CVS keyword
