@@ -1,3 +1,7 @@
+2008-02-19  Brock Wilcox  <awwaiid@thelackthereof.org>
+
+	* modules/recaptcha.pl: Initial add of reCAPTCHA module
+
 2008-03-04  Alex Schroeder  <alex@gnu.org>
 
 	* modules/calendar.pl (PrintYearCalendar): Remove useless @pages
