@@ -1,3 +1,16 @@
+2008-03-07  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ScriptLink): Moved the URL modifying code into a
+	separate sub.
+	(ScriptUrl): New.
+	(GetRcRss, RssItem): No longer provide a quoted $ScriptName. Use
+	ScriptUrl instead of manually concatenating the quoted $ScriptName
+	with code testing $UsePathInfo. This is now handled by ScriptUrl.
+
+	* modules/namespaces.pl (NewNamespaceScriptUrl): Replaces
+	NewNamespaceScriptLink. This change depends on the related change
+	to ScriptLink in wiki.pl and fixes the RSS links.
+
 2008-02-19  Brock Wilcox  <awwaiid@thelackthereof.org>
 
 	* modules/recaptcha.pl: Initial add of reCAPTCHA module
