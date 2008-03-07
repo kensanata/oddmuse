@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 35;
+use Test::More tests => 36;
 clear_pages();
 
 add_module('namespaces.pl');
@@ -87,5 +87,6 @@ xpath_test(get_page('action=rc'),
 
 test_page(get_page('action=rss'),
 	  '<title>Muu:Mu</title>',
+	  '<link>http://localhost/wiki.pl/Muu/Mu</link>',
 	  '<wiki:history>http://localhost/wiki.pl/Muu\?action=history;id=Mu</wiki:history>',
 	  '<wiki:diff>http://localhost/wiki.pl/Muu\?action=browse;diff=1;id=Mu</wiki:diff>');
