@@ -39,7 +39,7 @@ be changed using the C<$NamespacesSelf> option.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.37 2007/11/17 23:59:58 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.38 2008/03/07 09:43:26 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent
 	    $NamespaceRoot $NamespaceSlashing);
@@ -216,7 +216,7 @@ sub NewNamespaceDoRc { # Copy of DoRc
 C<NamespaceRcLines> is a copy of C<GetRcLines> with all the tricky
 details. And in addition to all that, it prefixes every pagename with
 the namespace and a colon, ie. C<Alex:HomePage>. This provides
-C<NewNamespaceScriptLink> with the necessary information to build the
+C<NewNamespaceScriptUrl> with the necessary information to build the
 correct URL to link to.
 
 =cut
@@ -232,7 +232,7 @@ sub NamespaceRcLines {
   my @result = ();
   while ($ts) {
     # Add the namespace to the pagename and username -- we need this
-    # information in ScriptLink!
+    # information in ScriptUrl!
     push(@result, join($FS, $ts, ($ns ? ($ns . ':' . $pagename) : $pagename),
 		       $minor, $summary, $host,
                        ($ns && $username ? ($ns . ':' . $username) : $username),
@@ -265,22 +265,24 @@ sub NewNamespaceUrlEncode {
   return $result;
 }
 
-*OldNamespaceScriptLink = *ScriptLink;
-*ScriptLink = *NewNamespaceScriptLink;
+*OldNamespaceScriptUrl = *ScriptUrl;
+*ScriptUrl = *NewNamespaceScriptUrl;
 
 =head2 Printing Links
 
-We also need to override C<ScriptLink>. This is done by
-C<NewNamespaceScriptLink>. This is where the slash in the pagename is
+We also need to override C<ScriptUrl>. This is done by
+C<NewNamespaceScriptUrl>. This is where the slash in the pagename is
 used to build a new URL pointing to the appropriate page in the
 appropriate namespace.
 
 In addition to that, this function makes sure that backlinks to edit
 pages with redirections result in an appropriate URL.
 
+This is used for ordinary page viewing and RecentChanges.
+
 =cut
 
-sub NewNamespaceScriptLink {
+sub NewNamespaceScriptUrl {
   my ($action, @rest) = @_;
   local $ScriptName = $ScriptName;
   if ($action =~ /^($UrlProtocols)\%3a/) { # URL-encoded URL
@@ -297,7 +299,7 @@ sub NewNamespaceScriptLink {
     }
     $action = $1 . $3;
   }
-  return OldNamespaceScriptLink($action, @rest);
+  return OldNamespaceScriptUrl($action, @rest);
 }
 
 =head2 Invalid Pagenames
@@ -319,8 +321,8 @@ the top of page B (if you arrived there via a redirection), linking to
 the edit page for A. C<NewNamespaceBrowsePage> has the necessary code
 to make this work for redirections between namespaces. This involves
 passing namespace and pagename via the C<oldid> parameter to the next
-script invokation, where C<ScriptLink> will be used to create the
-appropriate link. This is where C<NewNamespaceScriptLink> comes into
+script invokation, where C<ScriptUrl> will be used to create the
+appropriate link. This is where C<NewNamespaceScriptUrl> comes into
 play.
 
 =cut
