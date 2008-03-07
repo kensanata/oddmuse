@@ -65,7 +65,7 @@ local $| = 1;  # Do not buffer output (localized for mod_perl)
 
 # Package details
 #   CVS replaces (dollar)Revision: ... (dollar) with version ...
-$VERSION=(split(/ +/, '$Revision: 1.843 $'))[1];
+$VERSION=(split(/ +/, '$Revision: 1.844 $'))[1];
 
 # Configuration/constant variables:
 
@@ -506,7 +506,7 @@ sub InitRequest {
 sub InitVariables {    # Init global session variables for mod_perl!
  $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
                           $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-   . $q->p(q{$Id: wiki.pl,v 1.843 2008/02/29 09:34:10 as Exp $});
+   . $q->p(q{$Id: wiki.pl,v 1.844 2008/03/07 09:48:14 as Exp $});
  $WikiDescription .= $ModulesDescription if $ModulesDescription;
  $PrintedHeader = 0;  # Error messages don't print headers unless necessary
  $ReplaceForm = 0;    # Only admins may search and replace
@@ -1395,18 +1395,26 @@ sub GetEditLink { # shortcut
  return ScriptLink($action, NormalToFree($name), 'edit', undef, T('Click to edit this page'), $accesskey);
 }
 
+sub ScriptUrl {
+  my $action = shift;
+  if ($action =~ /^($UrlProtocols)\%3a/ or $action =~ /^\%2f/) { # nearlinks and other URLs
+    $action =~ s/%([0-9a-f][0-9a-f])/chr(hex($1))/ge; # undo urlencode
+    # do nothing
+  } elsif ($UsePathInfo and index($action, '=') == -1) {
+    $action = $ScriptName . '/' . $action;
+  } else {
+    $action = $ScriptName . '?' . $action;
+  }
+  return $action unless wantarray;
+  return ($action, index($action, '=') != -1);
+}
+
 sub ScriptLink {
  my ($action, $text, $class, $name, $title, $accesskey) = @_;
+ my ($url, $nofollow) = ScriptUrl($action);
  my %params;
- if ($action =~ /^($UrlProtocols)\%3a/ or $action =~ /^\%2f/) { # nearlinks and other URLs
-   $action =~ s/%([0-9a-f][0-9a-f])/chr(hex($1))/ge; # undo urlencode
-   $params{-href} = $action;
- } elsif ($UsePathInfo and index($action, '=') < 0) {
-   $params{-href} = $ScriptName . '/' . $action;
- } else {
-   $params{-href} = $ScriptName . '?' . $action;
-   $params{'-rel'} = 'nofollow' if index($action, '=') >= 0; # any action
- }
+ $params{-href} = $url;
+ $params{'-rel'} = 'nofollow' if $nofollow;
  $params{'-class'} = $class if $class;
  $params{'-name'} = $name if $name;
  $params{'-title'} = $title if $title;
@@ -2046,7 +2054,6 @@ sub GetRcText {
 }
 
 sub GetRcRss {
- my $url = QuoteHtml($ScriptName);
  my $date = TimeToRFC822($LastUpdate);
  my %excluded = ();
  if (GetParam("exclude", 1)) {
@@ -2069,7 +2076,7 @@ sub GetRcRss {
 <docs>http://blogs.law.harvard.edu/tech/rss</docs>
 };
  $rss .= "<title>" .  QuoteHtml($SiteName) . ': ' . GetParam('title', QuoteHtml(NormalToFree($RCName))) . "</title>\n";
- $rss .= "<link>" . $url . ($UsePathInfo ? "/" : "?") . UrlEncode($RCName) . "</link>\n";
+ $rss .= "<link>" . ScriptUrl(UrlEncode($RCName)) . "</link>\n";
  $rss .= "<description>" . QuoteHtml($SiteDescription) . "</description>\n" if $SiteDescription;
  $rss .= "<pubDate>" . $date. "</pubDate>\n";
  $rss .= "<lastBuildDate>" . $date . "</lastBuildDate>\n";
@@ -2082,7 +2089,7 @@ sub GetRcRss {
    $rss .= "<image>\n";
    $rss .= "<url>" . $RssImageUrl . "</url>\n";
    $rss .= "<title>" . QuoteHtml($SiteName) . "</title>\n";
-   $rss .= "<link>" . $url . "</link>\n";
+   $rss .= "<link>" . ScriptUrl() . "</link>\n";
    $rss .= "</image>\n";
  }
  my $limit = GetParam("rsslimit", 15); # Only take the first 15 entries
@@ -2090,14 +2097,14 @@ sub GetRcRss {
  GetRc(sub {}, sub {
          my $id = shift;
          return if $excluded{$id} or ($limit ne 'all' and $count++ >= $limit);
-         $rss .= "\n" . RssItem($id, @_, $url);
+         $rss .= "\n" . RssItem($id, @_);
        }, @_);
  $rss .= "</channel>\n</rss>\n";
  return $rss;
 }
 
 sub RssItem {
- my ($id, $ts, $host, $username, $summary, $minor, $revision, $languages, $cluster, $last, $url) = @_;
+ my ($id, $ts, $host, $username, $summary, $minor, $revision, $languages, $cluster, $last) = @_;
  my $name = NormalToFree($id);
  $summary = PageHtml($id, 50*1024, T('This page is too big to send over RSS.'))
    if (GetParam('full', 0)); # full page means summary is not shown
@@ -2106,20 +2113,19 @@ sub RssItem {
  $username = $host unless $username;
  my $rss = "<item>\n";
  $rss .= "<title>" . QuoteHtml($name) . "</title>\n";
- $rss .= "<link>" . $url . (GetParam('all', $cluster)
-                            ? "?" . GetPageParameters('browse', $id, $revision, $cluster, $last)
-                            : ($UsePathInfo ? '/' : '?') . UrlEncode($id)) . "</link>\n";
+ $rss .= "<link>" . ScriptUrl(GetParam('all', $cluster)
+			      ? GetPageParameters('browse', $id, $revision, $cluster, $last)
+			      : UrlEncode($id)) . "</link>\n";
  $rss .= "<description>" . QuoteHtml($summary) . "</description>\n" if $summary;
  $rss .= "<pubDate>" . $date . "</pubDate>\n";
- $rss .= "<comments>" . $url . ($UsePathInfo ? '/' : '?')
-   . $CommentsPrefix . UrlEncode($id) . "</comments>\n"
-     if $CommentsPrefix and $id !~ /^$CommentsPrefix/o;
+ $rss .= "<comments>" . ScriptUrl($CommentsPrefix . UrlEncode($id)) . "</comments>\n"
+   if $CommentsPrefix and $id !~ /^$CommentsPrefix/o;
  $rss .= "<wiki:username>" . $username . "</wiki:username>\n" if $username;
  $rss .= "<wiki:status>" . (1 == $revision ? 'new' : 'updated') . "</wiki:status>\n";
  $rss .= "<wiki:importance>" . ($minor ? 'minor' : 'major') . "</wiki:importance>\n";
  $rss .= "<wiki:version>" . $revision . "</wiki:version>\n";
- $rss .= "<wiki:history>" . $url . "?action=history;id=" . UrlEncode($id) . "</wiki:history>\n";
- $rss .= "<wiki:diff>" . $url . "?action=browse;diff=1;id=" . UrlEncode($id) . "</wiki:diff>\n"
+ $rss .= "<wiki:history>" . ScriptUrl("action=history;id=" . UrlEncode($id)) . "</wiki:history>\n";
+ $rss .= "<wiki:diff>" . ScriptUrl("action=browse;diff=1;id=" . UrlEncode($id)) . "</wiki:diff>\n"
    if $UseDiff and GetParam('diffrclink', 1);
  return $rss . "</item>\n";
 }
