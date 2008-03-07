@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 55;
+use Test::More tests => 57;
 
 clear_pages();
 
@@ -28,6 +28,10 @@ $BracketWiki = 0; # old default
 InitVariables();
 
 xpath_run_tests(split('\n',<<'EOT'));
+[[1]]
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=1"][text()="?"]
+[[0]]
+//div[text()="[[0]]"]
 file://home/foo/tutorial.pdf
 //a[@class="url file"][@href="file://home/foo/tutorial.pdf"][text()="file://home/foo/tutorial.pdf"]
 file:///home/foo/tutorial.pdf
