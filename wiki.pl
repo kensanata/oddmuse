@@ -1,57 +1,6 @@
 #! /usr/bin/perl
 
-# Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008  Alex Schroeder <alex@gnu.org>
-# ... including lots of patches from the UseModWiki site
-# Copyright (C) 2001, 2002  various authors
-# ... which was based on UseModWiki version 0.92 (April 21, 2001)
-# Copyright (C) 2000, 2001  Clifford A. Adams
-#    <caadams@frontiernet.net> or <usemod@usemod.com>
-# ... which was based on the GPLed AtisWiki 0.3
-# Copyright (C) 1998  Markus Denker <marcus@ira.uka.de>
-# ... which was based on the LGPLed CVWiki CVS-patches
-# Copyright (C) 1997  Peter Merel
-# ... and The Original WikiWikiWeb
-# Copyright (C) 1996, 1997  Ward Cunningham <ward@c2.com>
-#     (code reused with permission)
-
 package OddMuse;
-
-=head1 NAME
-
-OddMuse::Wiki
-
-=head1 SYNOPSIS
-
-B<[Note: See LIMITATIONS during transition to CPAN and rpm support.]>
-
-B<use OddMuse::Wiki;>
-
-B<$DataDir = '>I<writable-state-directory>B<';>
- B<$ModuleDir = '>I<extensions-directory>B<';>
-
-B<require OddMuse::Wiki;>
-
-=head1 DESCRIPTION
-
-OddMuse::Wiki is a Common Gateway Interface (cgi) script to run a wiki.
-
-A wiki is a web site where users can edit the pages.
-It can be used for communication in a team or for documentation,
-when things have to be quick and easy: Content Management for everybody.
-
-A wiki enables dispersed people to quickly join efforts.
-In the office, you can introduce new employees, distribute phone lists,
-store memos, plan trips, document projects, prepare meetings,
-or describe internal processes.
-
-For many free software projects wikis have taken on an important role
-somewhere between manual, FAQ, IRC, and mailing list.
-
-OddMuse::Wiki is very easy to install.
-Simple installation, compact code,
-and easy extensibility were the most important design factors.
-
-=cut
 
 use strict;
 use CGI;
@@ -59,11 +8,9 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-# Package details
-#   CVS replaces (dollar)Revision: ... (dollar) with version ...
-$VERSION=(split(/ +/, '$Revision: 1.845 $'))[1];
+$VERSION=(split(/ +/, '$Revision: 1.846 $'))[1];
 
-# Configuration/constant variables:
+# Options:
 
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir
 $DataDir $KeepDir $PageDir $RcOldFile $IndexFile $BannedContent
@@ -89,7 +36,7 @@ $ModuleDir $FullUrlPattern $SummaryDefaultLength $FreeInterLinkPattern
 @MyMaintenance $UseQuestionmark $JournalLimit $LockExpiration
 %LockExpires @IndexOptions @Debugging @MyFooters);
 
-# Other global variables:
+# Internal variables:
 
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
 %NewCookie $FootnoteNumber $OpenPageName @IndexList $Message $q $Now
@@ -100,188 +47,6 @@ $WikiDescription $PrintedHeader %Locks $Fragment @Blocks @Flags $Today
 
 # == Configuration ==
 
-=head1 OPTIONS
-
-=over 4
-
-=item B<$DataDir>=I<directory>;
-
-This directory and its children hold the writable state of the wiki.
-This directory should not be in or under the web server content directories,
-but should be readable, writable, and searchable by cgi agents.
-If using apache2, see /etc/apache2/uid.conf for the cgi agent user and group.
-
-=item B<$ModuleDir>=I<directory>;
-
-This directory and its children hold the read-only plugin scripts that
-provide the wiki functionality.
-This directory should not be in or under the web server content directories,
-but should be readable, and searchable by cgi agents.
-If using apache2, see /etc/apache2/uid.conf for the cgi agent user and group.
-
-=item B<$UseConfig>=[0|1];
-
-If true, then B<$ConfigFile> is required each time the cgi script is used,
-to set system parameters.  The default is true.
-
-=item B<$ConfigFile>=I<pathname>;
-
-If B<$UseConfig> is true,
-then this file is required each time the cgi script is used,
-to set system parameters.
-
-=item B<$RunCGI>=[0|1];
-
-If B<$RunCGI> is true,
-then requiring this file starts it running as a CGI script,
-else only the subroutines are loaded.
-The default is true.
-
-=item B<$AdminPass>=I<string>;
-
-One of the space-separated words from this string must be enterred
-and saved in a cookie to authorize access to administrative pages.
-
-=item B<$EditPass>=I<string>;
-
-One of the space-separated words from this string must be enterred
-and saved in a cookie to authorize access to editting pages.
-
-=back
-
-=head1 SECURITY
-
-OddMuse::Wiki does not provide confidentiality nor authenticity
-
-=over 4
-
-=item All content is publically accessible.
-
-A workaround is to configure the web server to
-authenticate users and grant/deny access to OddMuse::Wiki pages.
-
-=item Passwords are stored in cleartext cookies.
-
-A workaround is to remove write permission from $DataDir/page ,
-which prevents all editting and administrative operations.
-
-See B<$EditAllowed>, B<$AdminPassword>, B<$EditPassword>
-in the source code for details.
-
-=item Passwords are stored in cleartext config file.
-
-The configuration file should not be in the web server content directory,
-lest it be remotely visible.
-Because the configuration file must be readable to cgi agents,
-it is typically readable by all users logged in.
-
-=item Queries and responses are sent in the clear.
-
-A workaround is to configure the web server to
-limit acces to OddMuse::Wiki to secure channels (e.g. https).
-
-=back
-
-OddMuse::Wiki provides minimal integrity.
-
-=over 4
-
-=item Content changes are reversible.
-
-At least $KeepMajor historical page versions are cached for
-at least $KeepDays.
-Changes can be "rolled back" to any major version in the cache.
-
-Some administrative operations and operations provided by
-some extensions are not reversible.
-
-See B<$KeepDays> and B<$KeepMajor> in the source code for details.
-
-=item Content change collisions are detected.
-
-Conflicts resulting from attempts to edit the same line of the
-same page are detected.
-
-=back
-
-=head1 CONFORMING TO
-
-OddMuse::Wiki conforms to CGI/1.1 (http://hoohoo.ncsa.uiuc.edu/cgi/).
-
-OddMuse::Wiki default pathnames conform to FHS-2.3
-(http://www.pathname.com/fhs/).
-
-=head1 LIMITATIONS
-
-This perldoc reflects the goals of CPAN and rpm compatibility,
-now in progress.
-
-Please report any comments/suggestions/complaints regarding
-this documentation or its targets as comments.
-(http://www.oddmuse.org/cgi-bin/oddmuse/Comments_on_Setup_on_a_Unix_System)
-
-Until complete, the following deviations are for backward compatibility
-during the transition.
-
-=over 4
-
-=item use package OddMuse instead of package OddMuse::Wiki
-
-Most administration tools, including CPAN and rpm use a two-level
-naming convention.
-
-=item default $ConfigFile=$DataDir/config instead of /etc/opt/oddmuse/wiki.conf
-
-After the transition $ConfigFile is expected to be set by conventional
-methods of environment variable, search path, and default.
-During the transition, the default directory remains under /tmp.
-B<Be advised that FHS requires /tmp to be purgeable,>
-B<which would permanently delete all wiki pages.>
-
-=item default $ModuleDIR=$DataDir/modules instead of /opt/oddmuse/wiki/modules
-
-After the transition $ModuleDir is expected to be set by conventional
-methods of environment variable, search path, and default.
-During the transition, the default directory remains under /tmp.
-B<Be advised that FHS requires /tmp to be purgeable,>
-B<which would permanently delete all wiki extensions.>
-
-=cut
-
-=head1 BUGS
-
-Please report any to the current maintainer.
-
-=head1 ENVIRONMENT
-
-=over 6
-
-=item B<WikiDataDir>
-
-If $B<WikiDatadir> is set, its value overrides the default $DataDir.
-
-=back
-
-=head1 FILES
-
-=over 6
-
-=item F</var/opt/oddmuse/wiki>
-
-The default $DataDir.
-
-=item F</opt/oddmuse/wiki/modules>
-
-The default $ModuleDir.
-
-=item F</etc/opt/oddmuse/wiki.conf>
-
-The default $ConfigFile.
-
-=back
-
-=cut
-
 # Can be set outside the script: $DataDir, $UseConfig, $ConfigFile,
 # $ModuleDir, $ConfigPage, $AdminPass, $EditPass, $ScriptName,
 # $FullUrl, $RunCGI.
@@ -291,7 +56,7 @@ $UseConfig   = 1 unless defined $UseConfig;
 
 # Main wiki directory
 $DataDir     = $ENV{WikiDataDir} if $UseConfig and not $DataDir;
-$DataDir   = '/tmp/oddmuse' unless $DataDir;
+$DataDir   = '/var/opt/oddmuse/wiki' unless $DataDir;
 
 $ConfigPage  = '' unless $ConfigPage; # config page
 
@@ -319,8 +84,7 @@ $NotFoundPg  = '';              # Page for not-found links ('' for blank pg)
 $NewText     = "This page is empty.\n";  # New page text
 $NewComment  = "Add your comment here.\n";       # New comment text
 
-# 0 = no, 1 = yes, 2 = comments pages only, 3 = comments only
-$EditAllowed = 1;
+$EditAllowed = 1; # 0 = no, 1 = yes, 2 = comments pages only, 3 = comments only
 $AdminPass   = '' unless defined $AdminPass; # Whitespace separated passwords.
 $EditPass    = '' unless defined $EditPass;  # Whitespace separated passwords.
 
@@ -440,12 +204,12 @@ sub ReportError {		# fatal!
 sub Init {
   InitDirConfig();
   $FS  = "\x1e"; # The FS character is the RECORD SEPARATOR control char in ASCII
-  $Message = '';		# Warnings and non-fatal errors.
-  InitLinkPatterns();	 # Link pattern can be changed in config files
+  $Message = ''; # Warnings and non-fatal errors.
+  InitLinkPatterns(); # Link pattern can be changed in config files
   InitModules(); # Modules come first so that users can change module variables in config
   InitConfig();	# Config comes as early as possible; remember $q is not available here
   InitRequest(); # get $q with $MaxPost and $HttpCharset; set these in the config file
-  InitCookie();		       # After InitRequest, because $q is used
+  InitCookie(); # After InitRequest, because $q is used
   InitVariables(); # After config, to change variables, after InitCookie for GetParam
 }
 
@@ -502,7 +266,7 @@ sub InitRequest {
 sub InitVariables {	 # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.845 2008/03/07 23:27:51 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.846 2008/03/08 00:03:56 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;		# Only admins may search and replace
@@ -4128,30 +3892,138 @@ sub DoCss {
 DoWikiRequest() if $RunCGI and not exists $ENV{MOD_PERL}; # Do everything.
 1;				# In case we are loaded from elsewhere
 
+=head1 NAME
+
+Oddmuse
+
+=head1 SYNOPSIS
+
+    use OddMuse::Wiki;
+    $DataDir = 'writable-state-directory';
+    FIXME
+
+=head1 DESCRIPTION
+
+OddMuse::Wiki is a Common Gateway Interface (CGI) script to run a wiki.
+
+=head1 SECURITY
+
+OddMuse::Wiki does not provide confidentiality nor authenticity.
+
+=over 4
+
+=item All content is publically accessible.
+
+A workaround is to configure the web server to authenticate users and
+grant/deny access to OddMuse::Wiki pages.
+
+=item Passwords are stored in cleartext cookies.
+
+A workaround is to remove write permission from $DataDir/page, which prevents
+all editting and administrative operations.
+
+=item Passwords are stored in cleartext config file.
+
+The configuration file should not be in the web server content directory, lest
+it be remotely visible. Because the configuration file must be readable to cgi
+agents, it is typically readable by all users logged in.
+
+=item Queries and responses are sent in the clear.
+
+A workaround is to configure the web server to limit acces to OddMuse::Wiki to
+secure channels (e.g. https).
+
+=back
+
+OddMuse::Wiki provides minimal integrity.
+
+=over 4
+
+=item Content changes are reversible.
+
+Changes can be "rolled back" to older versions, but old versions are deleted
+after 14 days.
+
+Some administrative operations and operations provided by some extensions are
+not reversible.
+
+=item Content change collisions are detected.
+
+Conflicts resulting from attempts to edit the same line of the same page are
+detected.
+
+=back
+
+=head1 CONFORMING TO
+
+OddMuse::Wiki conforms to CGI/1.1 (http://hoohoo.ncsa.uiuc.edu/cgi/).
+
+OddMuse::Wiki default pathnames conform to FHS-2.3
+(http://www.pathname.com/fhs/).
+
+=head1 BUGS
+
+Please report any to the current maintainer.
+
+=head1 ENVIRONMENT
+
+=over 6
+
+=item B<WikiDataDir>
+
+If $B<WikiDatadir> is set, its value overrides the default $DataDir.
+
+=back
+
+=head1 FILES
+
+=over 6
+
+=item F</var/opt/oddmuse/wiki>
+
+The default data directory.
+
+=item F</var/opt/oddmuse/wiki/modules>
+
+The directory where extensions are kept.
+
+=item F</etc/opt/oddmuse/wiki/config>
+
+The default configuration file.
+
+=back
+
 =head1 COPYRIGHT AND LICENSE
 
- Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008
-   Alex Schroeder <alex@gnu.org>
+    Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008
+        Alex Schroeder <alex@gnu.org>
+    ... including lots of patches from the UseModWiki site
+    Copyright (C) 2001, 2002  various authors
+    ... which was based on UseModWiki version 0.92 (April 21, 2001)
+    Copyright (C) 2000, 2001  Clifford A. Adams
+       <caadams@frontiernet.net> or <usemod@usemod.com>
+    ... which was based on the GPLed AtisWiki 0.3
+    Copyright (C) 1998  Markus Denker <marcus@ira.uka.de>
+    ... which was based on the LGPLed CVWiki CVS-patches
+    Copyright (C) 1997  Peter Merel
+    ... and The Original WikiWikiWeb
+    Copyright (C) 1996, 1997  Ward Cunningham <ward@c2.com>
+	(code reused with permission)
 
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License along with
+this program. If not, see <http://www.gnu.org/licenses/>.
 
 =head1 AUTHOR
 
- Current maintainer: Alex Schroeder <alex@gnu.org>
-
- Past contributors are: Clifford A. Adams <caadams@frontiernet.net>,
- Markus Denker <marcus@ira.uka.de>, Peter Merel,
- Ward Cunningham <ward@c2.com>, and many more
+ Alex Schroeder <alex@gnu.org> is the current maintainer.
 
 =cut
