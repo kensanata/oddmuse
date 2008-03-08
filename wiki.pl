@@ -8,7 +8,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, '$Revision: 1.846 $'))[1];
+$VERSION=(split(/ +/, '$Revision: 1.847 $'))[1]; # for MakeMaker
 
 # Options:
 
@@ -266,7 +266,7 @@ sub InitRequest {
 sub InitVariables {	 # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.846 2008/03/08 00:03:56 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.847 2008/03/08 00:05:55 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;		# Only admins may search and replace
