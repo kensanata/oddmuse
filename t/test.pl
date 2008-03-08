@@ -26,9 +26,6 @@ use Encode;
 $RunCGI = 0;    # don't print HTML on stdout
 $UseConfig = 0; # don't read module files
 
-$DataDir = '/tmp/oddmuse'; # old setting for this instance of the script
-$ENV{WikiDataDir} = '/tmp/oddmuse'; # old setting for child processes
-
 require 'wiki.pl';
 Init();
 
