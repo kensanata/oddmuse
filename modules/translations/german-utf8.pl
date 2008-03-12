@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.24 2007/11/18 21:10:12 lude Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.25 2008/03/12 16:12:51 ingob Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
@@ -511,7 +511,7 @@ Sperre von %s erzeugt.
 Lock for %s removed.
 Sperre von %s aufheben.
 Displaying Wiki Version
-Anzeite der Wikiversion
+Anzeige der Wikiversion
 Show dependencies
 Abhängigkeiten zeigen
 Inter links:
