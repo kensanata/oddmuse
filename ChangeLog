@@ -1,3 +1,7 @@
+2008-03-26  Alex Schroeder  <aschroeder@localhost>
+
+	* modules/markup.pl (MarkupInit): Sort strings by length.
+
 2008-03-07  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (ScriptLink): Moved the URL modifying code into a
