@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: markup.pl,v 1.31 2006/08/31 09:11:58 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: markup.pl,v 1.32 2008/03/26 21:57:19 as Exp $</p>';
 
 use vars qw(%MarkupPairs %MarkupSingles %MarkupLines $MarkupQuotes $MarkupQuoteTable);
 
@@ -86,6 +86,7 @@ sub MarkupInit {
 					       keys(%MarkupForcedPairs))) . ')';
   $markup_forced_pairs_re = qr/$markup_forced_pairs_re/;
   $markup_singles_re = '\G(' . join('|', (map { quotemeta(QuoteHtml($_)) }
+					  sort {$b cmp $a} # longer regex first
 					  keys(%MarkupSingles))) . ')';
   $markup_singles_re = qr/$markup_singles_re/;
   $markup_lines_re = '\G(' . join('|', (map { quotemeta(QuoteHtml($_)) }
