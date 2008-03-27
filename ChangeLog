@@ -1,3 +1,9 @@
+2008-03-27  Alexander Uvizhev  <uvizhe@yandex.ru>
+
+	* modules/linktagmap.pl (GetLinks): Improved a pattern to search
+	tagged links.
+	(GenerateLinkTagMap, PrintLinkTagMap): Link processing changed.
+
 2008-03-26  Alex Schroeder  <aschroeder@localhost>
 
 	* modules/markup.pl (MarkupInit): Sort strings by length.
