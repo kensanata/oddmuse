@@ -18,9 +18,9 @@
 #
 # Based on code of tagmap.pl module by Fletcher T. Penney
 # and searchtags.pl module by Brock Wilcox
-$ModulesDescription .= '<p>$Id: linktagmap.pl,v 1.6 2007/08/23 09:17:39 uvizhe Exp $</p>';
+$ModulesDescription .= '<p>$Id: linktagmap.pl,v 1.7 2008/03/27 13:18:05 uvizhe Exp $</p>';
 
-use vars qw($LinkTagMark $LinkDescMark $LinkTagClass $LinkDescClass $LinkTagMapPage $FreeLinkPattern $FullUrlPattern $LinkTagSearchTitle);
+use vars qw($LinkTagMark $LinkDescMark $LinkTagClass $LinkDescClass $LinkTagMapPage $UrlPattern $FullUrlPattern $LinkTagSearchTitle);
 
 # Tags and descripton are embraced with this sequences
 $LinkTagMark = '%T%' unless defined $LinkTagMark;
@@ -41,6 +41,8 @@ $Action{linktagsearch} = \&DoLinkTagSearch;
 
 # Header of a search result
 $LinkTagSearchTitle = "Links with tag %s";
+
+my $rstr = crypt($$,$$);
 
 push (@MyRules, \&LinkTagRule, \&LinkDescriptionRule);
 
@@ -148,13 +150,11 @@ sub GenerateLinkTagMap { # Generate an input XML for TagCategorizer
         my @links = GetLinks($Page{text});  # find links
        	foreach my $link (@links) {
             my @tags = GetLinkTags($link->{tags});  # collect tags in an array
-            if ($#tags >= 0) {
-                $TagXML .= "<object><id>$link->{url}|$link->{name}|$link->{description}</id>\n";  # put everything in 'id' block
-                foreach (@tags) {                                                                 # except of tags
-                    $TagXML .= "<tag>$_</tag>";                                                   # which are in 'tag' blocks
-                }
-                $TagXML .= "\n</object>\n";
+            $TagXML .= "<object><id>$link->{url}\|$rstr\|$link->{name}\|$rstr\|$link->{description}</id>\n";  # put everything in 'id' block
+            foreach (@tags) {                                                                                 # except of tags
+                $TagXML .= "<tag>$_</tag>";                                                                   # which are in 'tag' blocks
             }
+            $TagXML .= "\n</object>\n";
         }
     }
     $TagXML .= "</taglist>\n";
@@ -184,7 +184,7 @@ sub PrintLinkTagMap {
 
     $result =~ s/\<\/tag\>/<\/ul>/g;
     $result =~ s{
-        <object>$FullUrlPattern\|$FreeLinkPattern?\|(.*?)</object>  # divide 'object' block content
+        <object>$FullUrlPattern\|$rstr\|(.*?)\|$rstr\|(.*?)</object>  # divide 'object' block content
     }{
         my $url = $1;                                               # to url,
         my $name = $2; if ( length $name == 0 ) { $name = $url; }   # name (if not present use url instead)
@@ -198,9 +198,11 @@ sub PrintLinkTagMap {
 sub GetLinks { # Search a page for links
 
     my $text = shift;
+    my $text1 = $text;
     my @links;
-    while ($text =~ /\[{0,2}$FullUrlPattern\s*\|?\s*$FreeLinkPattern?\]{0,2}\s*$LinkTagMark(.+?)$LinkTagMark\s*($LinkDescMark(.+?)$LinkDescMark)?/gc) {
-        push @links, { url => $1, name => $2, tags => $3, description => $5 };  # push found links' attributes to an array of hashes
+    while ( $text =~ /($UrlPattern)\s*($LinkTagMark(.+?)$LinkTagMark\s*($LinkDescMark(.+?)$LinkDescMark)?)/cg  # simple link
+        or $text1 =~ /\[+$FullUrlPattern(.*?)\]+\s*($LinkTagMark(.+?)$LinkTagMark\s*($LinkDescMark(.+?)$LinkDescMark)?)/cg) {  # link in brackets
+        push @links, { url => $1, name => $2, tags => $4, description => $6 };  # push found links' attributes to an array of hashes
     }
     return @links;
 
