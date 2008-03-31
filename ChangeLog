@@ -1,3 +1,8 @@
+2008-03-31  Alex Schroeder  <alex@gnu.org>
+
+	* modules/creole.pl ($CreoleTildeAlternative): New option.
+	(CreoleRule): Added tilde proposal using $CreoleTildeAlternative.
+
 2008-03-27  Alexander Uvizhev  <uvizhe@yandex.ru>
 
 	* modules/linktagmap.pl (GetLinks): Improved a pattern to search
@@ -20,10 +25,6 @@
 	* modules/namespaces.pl (NewNamespaceScriptUrl): Replaces
 	NewNamespaceScriptLink. This change depends on the related change
 	to ScriptLink in wiki.pl and fixes the RSS links.
-
-2008-02-19  Brock Wilcox  <awwaiid@thelackthereof.org>
-
-	* modules/recaptcha.pl: Initial add of reCAPTCHA module
 
 2008-03-04  Alex Schroeder  <alex@gnu.org>
 
@@ -51,6 +52,10 @@
 	* modules/questionasker.pl (NewQuestionaskerDoPost,
 	QuestionAddTo): Editor password is good enough as suggested by
 	Weakish Jiang.
+
+2008-02-19  Brock Wilcox  <awwaiid@thelackthereof.org>
+
+	* modules/recaptcha.pl: Initial add of reCAPTCHA module
 
 2008-02-01  Alex Schroeder  <alex@gnu.org>
 
