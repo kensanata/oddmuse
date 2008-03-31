@@ -16,12 +16,14 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.36 2008/02/21 14:55:25 weakish Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.37 2008/03/31 14:56:30 as Exp $</p>';
 
-use vars qw($CreoleLineBreaks);
+use vars qw($CreoleLineBreaks $CreoleTildeAlternative);
 
 # single newlines don't insert a linebreak
 $CreoleLineBreaks = 0;
+# the tilde does not disappear in front of a-z, A-Z, 0-9.
+$CreoleTildeAlternative = 0;
 
 push(@MyRules, \&CreoleRule, \&CreoleHeadingRule);
 # [[link|{{Image:foo}}]] conflicts with default link rule
@@ -44,8 +46,15 @@ sub CreoleHeadingRule {
 sub CreoleRule {
   # escape next char (and prevent // in URLs from enabling italics)
   # ~
-  if (m/\G~($FullUrlPattern|\S)/cgo) {
-    return $1;
+  if (m/\G(~($FullUrlPattern|\S))/cgo) {
+    if ($CreoleTildeAlternative
+	and index('ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+		  . 'abcdefghijklmnopqrstuvwxyz'
+		  . '0123456789', $2) != -1) {
+      return $1; # tilde stays
+    } else {
+      return $2; # tilde disappears
+    }
   }
   # horizontal line
   # ----
