@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 92;
+use Test::More tests => 98;
 clear_pages();
 
 add_module('creole.pl');
@@ -145,6 +145,24 @@ http://www.foo.com/
 CamelCaseLink
 ~ does not escape whitespace
 ~ does not escape whitespace
+foo ~bar
+foo bar
+EOT
+
+$CreoleTildeAlternative = 1;
+
+# subtle differences
+run_tests(split('\n',<<'EOT'));
+~#1
+#1
+~http://www.foo.com/
+http://www.foo.com/
+~CamelCaseLink
+~CamelCaseLink
+~ does not escape whitespace
+~ does not escape whitespace
+foo ~bar
+foo ~bar
 EOT
 
 $CreoleLineBreaks = 1;
