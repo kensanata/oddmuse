@@ -10,11 +10,10 @@
 # For user doc, see: 
 # http://www.oddmuse.org/cgi-bin/oddmuse/CreoleAddition
 
-$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.10 2008/02/23 16:12:20 weakish Exp $</p>';
+$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.11 2008/04/05 17:52:34 weakish Exp $</p>';
 
 # Since these rules are not official now, users can turn off some of
-# them. Currently, It's no use, since there is only one rule. But
-# maybe we'll have more addition rules in the furture.
+# them.
 
 use vars qw($CreoleAdditionSupSub);
 
