@@ -1,3 +1,8 @@
+2008-04-12 Weakish Jiang <weakish@gmail.com>
+
+	* module/creoleaddition.pl ($CreoleAdditionMonospace): New option.
+	(CreoleAdditionRules): add new syntax: ##monaspace## 
+
 2008-03-31  Alex Schroeder  <alex@gnu.org>
 
 	* modules/creole.pl ($CreoleTildeAlternative): New option.
