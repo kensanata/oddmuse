@@ -10,7 +10,7 @@
 # For user doc, see: 
 # http://www.oddmuse.org/cgi-bin/oddmuse/CreoleAddition
 
-$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.12 2008/04/11 15:59:39 weakish Exp $</p>';
+$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.13 2008/04/11 16:04:22 weakish Exp $</p>';
 
 # Since these rules are not official now, users can turn off some of
 # them.
@@ -20,6 +20,7 @@ use vars qw($CreoleAdditionSupSub  $CreoleAdditionDefList $CreoleAdditionQuote )
 $CreoleAdditionSupSub = 1; #  ^^supscript^^ and ,,subscript,,  
 $CreoleAdditionDefList = 1; #  definition lists
 $CreoleAdditionQuote =1; # 1= ""quote""
+$CreoleAdditionMonospace =1; # ##typewritter font##
 
 push(@MyRules, \&CreoleAdditionRules);
 
@@ -32,6 +33,10 @@ sub CreoleAdditionRules{
   } elsif ($CreoleAdditionSupSub && m/\G\,\,/cg) {
      return (defined $HtmlStack[0] && $HtmlStack[0] eq 'sub')
        ? CloseHtmlEnvironment() : AddHtmlEnvironment('sub');
+   # ##monospace code##
+  } elsif ($CreoleAdditionMonospace && m/\G\#\#/cg) {
+	return (defined $HtmlStack[0] && $HtmlStack[0] eq 'code')
+	? CloseHtmlEnvironment() : AddHtmlEnvironment('code');
   # definition lists 
   # ; term
   # : description
