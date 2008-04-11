@@ -10,12 +10,12 @@
 # For user doc, see: 
 # http://www.oddmuse.org/cgi-bin/oddmuse/CreoleAddition
 
-$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.13 2008/04/11 16:04:22 weakish Exp $</p>';
+$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.14 2008/04/11 16:35:01 weakish Exp $</p>';
 
 # Since these rules are not official now, users can turn off some of
 # them.
 
-use vars qw($CreoleAdditionSupSub  $CreoleAdditionDefList $CreoleAdditionQuote );
+use vars qw($CreoleAdditionSupSub  $CreoleAdditionDefList $CreoleAdditionQuote $CreoleAdditionMonospace);
 
 $CreoleAdditionSupSub = 1; #  ^^supscript^^ and ,,subscript,,  
 $CreoleAdditionDefList = 1; #  definition lists
