@@ -7,11 +7,11 @@
 # You can get a copy of GPL version 2 at
 # http://www.gnu.org/licenses/gpl-2.0.html
 
-# $Id: creoleaddition.t,v 1.4 2008/02/23 15:36:17 weakish Exp $
+# $Id: creoleaddition.t,v 1.5 2008/04/11 16:16:04 weakish Exp $
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 19;
+use Test::More tests => 23;
 clear_pages();
 
 add_module('creoleaddition.pl');
@@ -55,5 +55,13 @@ H<sub>2</sub>O
 <blockquote><p>my block quote</p></blockquote>
 """\n simple blockquote\n""" won't work
 """ simple blockquote """ won't work
+##monospace code##
+<code>monospace code</code>
+##**blod** won't work##
+<code>**blod** won't work</code>
+##http://example.com##
+<code><a class="url http" href="http://example.com">http://example.com</a></code>
+##[[wiki page]] will work##
+<code>[[wiki_page<a class="edit" title="Click to edit this page" rel="nofollow" href="http://localhost/test.pl?action=edit;id=wiki_page">?</a>]] will work</code>
 EOT
 
