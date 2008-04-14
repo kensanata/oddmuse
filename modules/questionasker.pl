@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.23 2008/02/19 09:07:26 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.24 2008/04/14 11:25:23 as Exp $</p>';
 
 use vars qw(@QuestionaskerQuestions
 	    $QuestionaskerRememberAnswer
@@ -107,7 +107,7 @@ sub QuestionAddTo {
   my $form = shift;
   if (not $upload
       and not QuestionaskerException(GetId())
-      and not $QuestionaskerRememberAnswer && GetParam('question', 0)
+      and not $QuestionaskerRememberAnswer && GetParam($QuestionaskerSecretKey, 0)
       and not UserIsEditor()) {
     my $question = QuestionaskerGetQuestion();
     $form =~ s/<p><label for="username">/$question<p><label for="username">/;
