@@ -15,13 +15,13 @@
 #    Free Software Foundation, Inc.
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
-#	syntax change by Weakish Jiang <weakish@gmail.com>
-$ModulesDescription .= '<p>$Id: search-list.pl,v 1.12 2008/04/25 11:57:24 weakish Exp $</p>';
+
+$ModulesDescription .= '<p>$Id: search-list.pl,v 1.13 2008/04/25 12:00:00 weakish Exp $</p>';
 
 push(@MyRules, \&SearchListRule);
 
 sub SearchListRule {
-  if ($bol && /\G(\[\[!list (.*?)\]\])/cgis) {
+  if ($bol && /\G(&lt;list (.*?)&gt;)/cgis) {
     # <list regexp>
     Clean(CloseHtmlEnvironments());
     Dirty($1);
@@ -51,33 +51,3 @@ sub SearchListRule {
   }
   return undef;
 }
-
-# Add a new action list
-
-$Action{list} = \&DoList;
-
-sub DoList {
-my $id = shift;
-my $match = GetParam('match', '');
-my $search = GetParam('search', '');
-  ReportError(T('The search parameter is missing.')) unless $match or $search;
-  print GetHeader('', Ts('Page list for %s', $match||$search), '');
-  local (%Page, $OpenPageName);
-    my %hash = ();
-    foreach my $id (grep(/$match/, $search
-                    ? SearchTitleAndBody($search)
-                    : AllPagesList()))  {
-      $hash{$id} = 1;
-    }
-    my @found = keys %hash;
-    if (defined &PageSort) {
-      @found = sort PageSort @found;
-    } else {
-      @found = sort(@found);
-    }
-    @found = map { $q->li(GetPageLink($_)) } @found;
-    print $q->start_div({-class=>'search list'}),
-      $q->ul(@found), $q->end_div;  
-  PrintFooter();
-}
-    
