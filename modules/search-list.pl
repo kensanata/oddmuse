@@ -15,13 +15,13 @@
 #    Free Software Foundation, Inc.
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
-
-$ModulesDescription .= '<p>$Id: search-list.pl,v 1.10 2007/11/13 20:24:50 sheep Exp $</p>';
+#	syntax change by Weakish Jiang <weakish@gmail.com>
+$ModulesDescription .= '<p>$Id: search-list.pl,v 1.11 2008/04/25 09:48:28 weakish Exp $</p>';
 
 push(@MyRules, \&SearchListRule);
 
 sub SearchListRule {
-  if ($bol && /\G(&lt;list (.*?)&gt;)/cgis) {
+  if ($bol && /\G(\[\[!list (.*?)\]\])/cgis) {
     # <list regexp>
     Clean(CloseHtmlEnvironments());
     Dirty($1);
@@ -51,3 +51,35 @@ sub SearchListRule {
   }
   return undef;
 }
+
+# Add a new action list
+
+$Action{list} = \&DoList;
+
+sub DoList {
+my $id = shift;
+my $search = GetParam('search', '');
+  ReportError(T('The search parameter is missing.')) unless $search;
+  print GetHeader('', Ts('Page list for %s', $search), '');
+  if (!$ListPage) {
+    $ListPage = 1;
+    # Now save information required for saving the cache of the current page.
+    local (%Page, $OpenPageName);
+    my %hash = ();
+    foreach my $id (SearchTitleAndBody($search)) {
+      $hash{$id} = 1 unless $id eq $original; # skip the page with the query
+    }
+    my @found = keys %hash;
+    if (defined &PageSort) {
+      @found = sort PageSort @found;
+    } else {
+      @found = sort(@found);
+    }
+    @found = map { $q->li(GetPageLink($_)) } @found;
+    print $q->start_div({-class=>'search list'}),
+      $q->ul(@found), $q->end_div;  
+  }
+  $ListPage = 0;
+  PrintFooter();
+}
+    
