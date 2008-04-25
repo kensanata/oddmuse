@@ -15,9 +15,10 @@
 #    Free Software Foundation, Inc.
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
+# For user doc, see 
+# http://www.oddmuse.org/cgi-bin/oddmuse/ListTags_Extension
 
-
-$ModulesDescription .= '<p>$Id: listtags.pl,v 1.1 2008/04/25 15:46:28 weakish Exp $</p>';
+$ModulesDescription .= '<p>$Id: listtags.pl,v 1.2 2008/04/25 16:34:33 weakish Exp $</p>';
 
 push(@MyRules, \&ListTagRule);
 
