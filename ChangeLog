@@ -1,6 +1,6 @@
 2008-04-25 Weakish Jiang <weakish@gmail.com>
 	* module/search-list.pl ($Action, DoList): New action.
-
+	* module/listtags.pl: New extension.
 2008-04-12 Weakish Jiang <weakish@gmail.com>
 
 	* module/creoleaddition.pl ($CreoleAdditionMonospace): New option.
