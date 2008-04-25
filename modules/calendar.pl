@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.56 2008/04/25 12:41:37 weakish Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.57 2008/04/25 12:54:19 weakish Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalAsTable $CalStartMonday);
 
@@ -94,7 +94,7 @@ sub DoCollect {
   my $id = shift;
   my $match = GetParam('match', '');
   my $search = GetParam('search', '');
-  ReportError(T('The match parameter is missing or invalid.')) unless $match xor $search;
+  ReportError(T('The match parameter is missing.')) unless $match or $search;
   print GetHeader('', Ts('Page Collection for %s', $match||$search), '');
   my @pages = (grep(/$match/, $search
 		    ? SearchTitleAndBody($search)
