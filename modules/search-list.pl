@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-list.pl,v 1.14 2008/04/25 12:02:14 weakish Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-list.pl,v 1.15 2008/04/25 12:41:37 weakish Exp $</p>';
 
 push(@MyRules, \&SearchListRule);
 
@@ -61,7 +61,7 @@ sub DoList {
 my $id = shift;
 my $match = GetParam('match', '');
 my $search = GetParam('search', '');
-  ReportError(T('The search parameter is missing.')) unless $match or $search;
+  ReportError(T('The search parameter is missing or invalid.')) unless $match xor $search;
   print GetHeader('', Ts('Page list for %s', $match||$search), '');
   local (%Page, $OpenPageName);
     my %hash = ();
