@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 #	syntax change by Weakish Jiang <weakish@gmail.com>
-$ModulesDescription .= '<p>$Id: search-list.pl,v 1.11 2008/04/25 09:48:28 weakish Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-list.pl,v 1.12 2008/04/25 11:57:24 weakish Exp $</p>';
 
 push(@MyRules, \&SearchListRule);
 
@@ -58,16 +58,16 @@ $Action{list} = \&DoList;
 
 sub DoList {
 my $id = shift;
+my $match = GetParam('match', '');
 my $search = GetParam('search', '');
-  ReportError(T('The search parameter is missing.')) unless $search;
-  print GetHeader('', Ts('Page list for %s', $search), '');
-  if (!$ListPage) {
-    $ListPage = 1;
-    # Now save information required for saving the cache of the current page.
-    local (%Page, $OpenPageName);
+  ReportError(T('The search parameter is missing.')) unless $match or $search;
+  print GetHeader('', Ts('Page list for %s', $match||$search), '');
+  local (%Page, $OpenPageName);
     my %hash = ();
-    foreach my $id (SearchTitleAndBody($search)) {
-      $hash{$id} = 1 unless $id eq $original; # skip the page with the query
+    foreach my $id (grep(/$match/, $search
+                    ? SearchTitleAndBody($search)
+                    : AllPagesList()))  {
+      $hash{$id} = 1;
     }
     my @found = keys %hash;
     if (defined &PageSort) {
@@ -78,8 +78,6 @@ my $search = GetParam('search', '');
     @found = map { $q->li(GetPageLink($_)) } @found;
     print $q->start_div({-class=>'search list'}),
       $q->ul(@found), $q->end_div;  
-  }
-  $ListPage = 0;
   PrintFooter();
 }
     
