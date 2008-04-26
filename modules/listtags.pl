@@ -15,10 +15,15 @@
 #    Free Software Foundation, Inc.
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
-# For user doc, see 
-# http://www.oddmuse.org/cgi-bin/oddmuse/ListTags_Extension
 
-$ModulesDescription .= '<p>$Id: listtags.pl,v 1.2 2008/04/25 16:34:33 weakish Exp $</p>';
+
+$ModulesDescription .= '<p>$Id: listtags.pl,v 1.3 2008/04/26 00:54:27 weakish Exp $</p>';
+
+# This action is similar with list action
+
+use vars qw($TagListLabel);
+
+$TagListLabel = "tag:";
 
 push(@MyRules, \&ListTagRule);
 
@@ -35,7 +40,7 @@ sub ListTagRule {
     } @tags;
     $tags = join ', ', @tags;
     return CloseHtmlEnvironments()
-      . "<div class=\"taglist\">Tags: $tags</div>"
+      . "<div class=\"taglist\">$TagListLabel $tags</div>"
       . AddHtmlEnvironment('p');
   }
   return undef;
@@ -46,11 +51,11 @@ $Action{taglist} = \&DoTagList;
 sub DoTagList {
 my $id = shift;
 my $search = GetParam('search', '');
-my $taglabel = $search;
-   $taglabel =~ s/\|.*//;
-   $taglabel =~ s/\\\[.*\(//; 
+my $currenttag = $search;
+   $currenttag =~ s/\|.*//;
+   $currenttag =~ s/\\\[.*\(//; 
   ReportError(T('The search parameter is missing.')) unless $search;
-  print GetHeader('', Ts('Pages tagged with %s', $taglabel), '');
+  print GetHeader('', Ts('Pages tagged with %s', $currenttag), '');
   local (%Page, $OpenPageName);
     my %hash = ();
     foreach my $id (SearchTitleAndBody($search))  {
