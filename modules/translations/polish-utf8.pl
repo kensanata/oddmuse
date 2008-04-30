@@ -2,6 +2,7 @@
 #
 # Copyright (c) 2006 Radomir Dopieralski
 # Copyright (c) 2007 Marcin Borkowski
+# Copyright (c) 2008 Przemysław Wesołek
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
@@ -16,14 +17,14 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: polish-utf8.pl,v 1.5 2007/08/19 11:42:08 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: polish-utf8.pl,v 1.6 2008/04/30 23:36:30 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Nie wolno Ci czytać tej strony: użytkownik, numer ip lub sieć jest zablokowana.
 Login
 Zaloguj
 Error
-
+Błąd
 %s calls
 %s odwołań
 Could not create %s
@@ -89,7 +90,7 @@ Proszę przejść do %s.
 All changes for %s
 Wszystkie zmiany dla %s
 No updates since %s
-Zadnych zmian od %s
+Żadnych zmian od %s
 Updates since %s
 Zmiany od %s
 Updates in the last %s days
@@ -115,11 +116,11 @@ Uwzględnij drobne zmiany
 List later changes
 Wyświetl późniejsze zmiany
 RSS
-
+RSS
 RSS with pages
-
+RSS ze stronami
 RSS with pages and diff
-
+RSS ze stronami i spisem różnic
 Filters
 Filtry
 Title:
@@ -269,11 +270,11 @@ f
 Replace:
 Zamień:
 Delete
-
+Usuń
 Validate HTML
 Sprawdź HTML
 Validate CSS
-Sprawdż CSS
+Sprawdź CSS
 Last edit
 Ostatnia edycja
 Difference between revision %1 and %2
@@ -441,7 +442,7 @@ ostatnio zmieniane
 by
 autorstwa
 Transfer Error: %s
-Bląd przesyłania: %s
+Błąd przesyłania: %s
 Browser reports no file info.
 Przeglądarka nie zwraca informacji o pliku.
 Browser reports no file type.
@@ -455,7 +456,7 @@ Ta strona została zmieniona przez kogoś innego.
 The changes conflict.  Please check the page again.
 Wystąpił konflikt zmian. Proszę sprawdzić stronę ponownie.
 Please check whether you overwrote those changes.
-Prosze sprawdzić, czy nadpisałeś te zmiany.
+Proszę sprawdzić, czy nadpisałeś te zmiany.
 Anonymous
 Anonimowy
 Cannot delete the index file %s.
@@ -515,7 +516,7 @@ Wyświetlanie wersji Wiki
 Show dependencies
 Pokaż zależności
 Inter links:
-Wewnętrze odnośniki:
+Wewnętrzne odnośniki:
 Near links:
 Bliskie odnośniki:
 Show parsed link data
@@ -563,7 +564,7 @@ Całkowita zawartość
 The main page is %s.
 Główną stroną jest %s.
 Archive:
-
+Archiwum:
 Rebuild BackLink database
 Przebuduj spis linkujących
 Internal Page: 
@@ -647,11 +648,11 @@ Kompilacja dla %s
 Compilation tag is missing a regular expression.
 Brak wyrażenia regularnego w znaczniku kompilacji.
 List spammed pages
-
+Spis zaśmieconych stron
 Despamming pages
-Odspamowywanie stron
+Odśmiecanie stron
 Spammed pages
-
+Zaśmiecone strony
 Cannot find revision %s.
 Nie można znaleźć wersji %s.
 Revert to revision %1: %2
@@ -685,7 +686,7 @@ Dodaj komentarz
 ordinary changes
 zwykłe zmiany
 Matching page names:
-
+Pasujące nazwy stron:
 Footnotes:
 Przypisy:
 Could not find %1.html template in %2
@@ -779,7 +780,7 @@ Hasło dla %s zostało zresetowane. Nowe hasło zostało wysłane pocztą.
 There was an error resetting the password for %s.
 Nastąpił błąd podczas resetowania hasła dla %s.
 The username "%s" does not exist.
-Nazwa użytkonika "%s" nie istnieje.
+Nazwa użytkownika "%s" nie istnieje.
 Reset Password for %s
 Zresetuj hasło dla %s
 Reset Password?
@@ -819,7 +820,7 @@ Czyszczenie pamięci podręcznej
 Done.
 Gotowe.
 Generating Link Database
-Generownie bazy danych odnośników
+Generowanie bazy danych odnośników
 The 404 handler extension requires the link data extension (links.pl).
 Rozszerzenie obsługi 404 wymaga rozszerzenia danych o odnośnikach (links.pl).
 LocalMap
@@ -847,7 +848,7 @@ Typ
 Permalink to "%s"
 Stały odnośnik do "%s"
 There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
-Nastąpił bład podczas generowania pdf dla %s. Proszę zgłosić to do administratora, ale nie próbować pobierać ponownie, gdyż to nie zadziała.
+Nastąpił błąd podczas generowania pdf dla %s. Proszę zgłosić to do administratora, ale nie próbować pobierać ponownie, gdyż to nie zadziała.
 Someone else is generating a pdf for %s.  Please wait a minute and then try again.
 Ktoś inny generuje pdf dla %s. Proszę poczekać minutę i spróbować ponownie.
 Download this page as PDF
@@ -861,7 +862,7 @@ Docelowa wiki nie została określona w pliku konfiguracji.
 The target wiki was misconfigured.
 Docelowa wiki jest źle skonfigurowana.
 You did not answer correctly.
-Nie odpowiedziałes poprawnie.
+Nie odpowiedziałeś poprawnie.
 Use the back button to return the previous page and try again.
 Użyj przycisku powrotu, by wrócić do poprzedniej strony, i spróbuj ponownie.
 To save this page you must answer this question:
@@ -917,11 +918,11 @@ Brak parametru ID.
 Thread %s does not exist.
 Watek %s nie istnieje.
 Page %s does not contain a thread.
-Strona %s nie zawiera wątka.
+Strona %s nie zawiera wątku.
 Add
 Dodaj
 URL parameter is missing.
-Nrak parametru URL.
+Brak parametru URL.
 Add to %s thread
 Dodaj do wątku %s
 Below:
@@ -937,7 +938,7 @@ Prosimy spróbować później.  Być może ktoś dokonuje konserwacji serwisu lu
 Contents
 Zawartość
 Create a new page for today
-
+Utwórz nową stronę na dzisiaj
 This page is a translation of %s. 
 Ta strona jest tłumaczeniem %s.
 The translation is up to date.
@@ -957,7 +958,7 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 search
 szukanie
 Wanted Pages
-Porządane strony
+Pożądane strony
 %s pages
 %s stron
 %s, referenced from:
@@ -967,7 +968,7 @@ Wgranie pliku %s
 Blog
 Blog
 Matching pages:
-Pasującestrony:
+Pasujące strony:
 New
 Nowy
 Edit %s.
