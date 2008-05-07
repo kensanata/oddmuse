@@ -273,6 +273,7 @@ table.user {
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     padding: 1em;
+    margin-top: 1em;
 }
 table.user tr td {
     border:   none;
