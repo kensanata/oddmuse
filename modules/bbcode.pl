@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: bbcode.pl,v 1.5 2007/01/31 23:49:38 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: bbcode.pl,v 1.6 2008/05/09 14:02:47 as Exp $</p>';
 
 push(@MyRules, \&bbCodeRule);
 
@@ -73,16 +73,17 @@ sub bbCodeRule {
     %translate = qw{b b i i u em color em size em font span url a
 		    quote blockquote h1 h1 h2 h2 h3 h3 h4 h4 h5 h5
 		    h6 h6};
-    if (@HtmlStack and $HtmlStack[0] eq $translate{$tag}) {
-      my $html = CloseHtmlEnvironment();
-      $html .= AddHtmlEnvironment('p') unless @HtmlStack;
-      return $html; }
-    # block quoting
-    elsif ($bbBlock eq $translate{$tag}) {
-      /\G(.*\n)*/cg;
+    # closing a block level element closes all elements
+    if ($bbBlock eq $translate{$tag}) {
+      /\G([ \t]*\n)*/cg; # eat whitespace after closing block level element
       $bbBlock = undef;
       return CloseHtmlEnvironments() . "</$translate{$tag}>"
 	. AddHtmlEnvironment('p'); }
+    # ordinary elements just close themselves
+    elsif (@HtmlStack and $HtmlStack[0] eq $translate{$tag}) {
+      my $html = CloseHtmlEnvironment();
+      $html .= AddHtmlEnvironment('p') unless @HtmlStack;
+      return $html; }
     # no closing tag after all
     else {
       return $bbcode; }}
