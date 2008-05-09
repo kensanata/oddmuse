@@ -222,6 +222,8 @@ a.near:active {
 }
 a cite { font:inherit; }
 a.book, a.movie { font:inherit; text-decoration:underline; }
+.twitter a { color: #394; }
+.twitter a:visited { color: #386; }
 /* browser borkage */
 textarea[name="text"] { width:99%; height:80%; }
 textarea[name="summary"] { width:99%; height:3em; }
