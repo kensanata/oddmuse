@@ -1,3 +1,8 @@
+2008-05-09  Alex Schroeder  <alex@gnu.org>
+
+	* modules/bbcode.pl (bbCodeRule): Fix handling of block level
+	elements closing.
+
 2008-04-25 Weakish Jiang <weakish@gmail.com>
 	* module/search-list.pl ($Action, DoList): New action.
 	* module/listtags.pl: New extension.
