@@ -1,3 +1,8 @@
+2008-05-11  Alex Schroeder  <alex@gnu.org>
+
+	* modules/usemod.pl (RFC): Link to tools.ietf.org instead of
+	faqs.org.
+
 2008-05-09  Alex Schroeder  <alex@gnu.org>
 
 	* modules/bbcode.pl (bbCodeRule): Fix handling of block level
