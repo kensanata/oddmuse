@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.32 2007/12/09 01:49:37 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.33 2008/05/11 18:53:58 as Exp $</p>';
 
 use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml
 	    $UseModSpaceRequired $UseModMarkupInTitles);
@@ -206,7 +206,7 @@ sub WikiHeading {
 
 sub RFC {
   my $num = shift;
-  return $q->a({-href=>"http://www.faqs.org/rfcs/rfc${num}.html"}, "RFC $num");
+  return $q->a({-href=>"http://tools.ietf.org/html/rfc${num}"}, "RFC $num");
 }
 
 sub ISBN {
