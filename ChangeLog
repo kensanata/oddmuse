@@ -1,3 +1,8 @@
+2008-05-23  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (LinkRules): Support [[url text]], [[url|text]],
+	and [url|text].
+
 2008-05-11  Alex Schroeder  <alex@gnu.org>
 
 	* modules/usemod.pl (RFC): Link to tools.ietf.org instead of
