@@ -8,7 +8,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, '$Revision: 1.848 $'))[1]; # for MakeMaker
+$VERSION=(split(/ +/, '$Revision: 1.849 $'))[1]; # for MakeMaker
 
 # Options:
 
@@ -266,7 +266,7 @@ sub InitRequest {
 sub InitVariables {	 # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.848 2008/03/08 00:41:33 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.849 2008/05/23 11:19:15 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;		# Only admins may search and replace
@@ -569,7 +569,8 @@ sub LinkRules {
       Dirty($oldmatch);
       print $output;            # this is an interlink
     }
-  } elsif ($BracketText && m/\G(\[$FullUrlPattern\s+([^\]]+?)\])/cog
+  } elsif ($BracketText && m/\G(\[$FullUrlPattern[|[:space:]]([^\]]+?)\])/cog
+	   $BracketText && m/\G(\[\[$FullUrlPattern[|[:space:]]([^\]]+?)\]\])/cog
 	   or m/\G(\[$FullUrlPattern\])/cog or m/\G($UrlPattern)/cog) {
     # [URL text] makes [text] link to URL, [URL] makes footnotes [1]
     my ($str, $url, $text, $bracket, $rest) = ($1, $2, $3, (substr($1, 0, 1) eq '['), '');
