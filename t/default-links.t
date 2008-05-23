@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 57;
+use Test::More tests => 60;
 
 clear_pages();
 
@@ -75,6 +75,12 @@ URL in text http://www.oddmuse.org/ like this
 URL in brackets: [http://www.oddmuse.org/]
 //a[@class="url http number"][@href="http://www.oddmuse.org/"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
 URL in brackets with other text: [http://www.oddmuse.org/ oddmuse]
+//a[@class="url http outside"][@href="http://www.oddmuse.org/"][text()="oddmuse"]
+URL in brackets with other text: [[http://www.oddmuse.org/ oddmuse]]
+//a[@class="url http outside"][@href="http://www.oddmuse.org/"][text()="oddmuse"]
+URL in brackets with other text: [http://www.oddmuse.org/|oddmuse]
+//a[@class="url http outside"][@href="http://www.oddmuse.org/"][text()="oddmuse"]
+URL in brackets with other text: [[http://www.oddmuse.org/|oddmuse]]
 //a[@class="url http outside"][@href="http://www.oddmuse.org/"][text()="oddmuse"]
 URL abbreviation: Oddmuse:Link_Pattern
 //a[@class="inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"]/span[@class="site"][text()="Oddmuse"]/following-sibling::span[@class="separator"][text()=":"]/following-sibling::span[@class="page"][text()="Link_Pattern"]
