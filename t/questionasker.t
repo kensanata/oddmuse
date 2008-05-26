@@ -15,8 +15,36 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 5;
+use Test::More tests => 10;
 
 clear_pages();
 add_module('questionasker.pl');
 
+test_page_negative(update_page('test', 'edit allowed'),
+		   'edit allowed');
+test_page(update_page('test', 'admin can edit', undef, undef, 1),
+	  'admin can edit');
+test_page_negative(update_page('test', 'editable'),
+		   'editable');
+test_page(update_page('test', 'answer question 1', undef, undef, undef,
+		      'question_num=1', 'answer=4'),
+	  'answer question 1');
+# cookie
+test_page($redirect, 'question%251e1');
+test_page(update_page('test', 'override', undef, undef, undef, "question=1"),
+	  'override');
+# change key
+AppendStringToFile($ConfigFile, "\$QuestionaskerSecretKey = 'fnord';\n"
+		   . "\@QuestionaskerQuestions = "
+		   . "(['say hi' => sub { shift =~ /^hi\$/i }]);\n");
+test_page_negative(update_page('test', 'correct key', undef, undef, undef,
+			       "question=1"),
+		   'correct key');
+test_page(update_page('test', 'correct key', undef, undef, undef,
+		      "fnord=1"),
+	  'correct key');
+# cookie
+test_page($redirect, 'fnord%251e1');
+test_page(update_page('test', 'answer new question', undef, undef, undef,
+		      'question_num=0', 'answer=hi'),
+	  'answer new question');
