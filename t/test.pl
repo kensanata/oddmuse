@@ -25,7 +25,8 @@ use Encode;
 
 $RunCGI = 0;    # don't print HTML on stdout
 $UseConfig = 0; # don't read module files
-
+$DataDir = 'test-data';
+$ENV{WikiDataDir} = $DataDir;
 require 'wiki.pl';
 Init();
 
@@ -215,10 +216,10 @@ sub remove_module {
 }
 
 sub clear_pages {
-  system('/bin/rm -rf /tmp/oddmuse');
-  die "Cannot remove /tmp/oddmuse!\n" if -e '/tmp/oddmuse';
-  mkdir '/tmp/oddmuse';
-  open(F,'>/tmp/oddmuse/config');
+  system("/bin/rm -rf $DataDir");
+  die "Cannot remove $DataDir!\n" if -e $DataDir;
+  mkdir $DataDir;
+  open(F,">$DataDir/config");
   print F "\$AdminPass = 'foo';\n";
   # this used to be the default in earlier CGI.pm versions
   print F "\$ScriptName = 'http://localhost/wiki.pl';\n";
