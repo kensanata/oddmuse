@@ -1,3 +1,7 @@
+2008-05-27  Alex Schroeder  <alex@gnu.org>
+
+	* t/test.pl: Switch from /tmp/oddmuse to $DataDir.
+
 2008-05-23  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (LinkRules): Support [[url text]], [[url|text]],
