@@ -5,3 +5,4 @@ oddmuse-inkscape-1.*
 *.patch.gz
 *.diff
 *.diff.gz
+test-data
