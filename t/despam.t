@@ -39,7 +39,7 @@ update_page('ExpiredPage', "Still more spam from http://example.com.");
 
 update_page('BannedContent', " example\\.com\n", 'required', 0, 1);
 
-unlink('/tmp/oddmuse/keep/E/ExpiredPage/1.kp')
+unlink("$DataDir/keep/E/ExpiredPage/1.kp")
   or die "Cannot delete kept revision: $!";
 
 my $page = get_page('action=spam');
