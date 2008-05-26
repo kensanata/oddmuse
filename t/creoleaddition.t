@@ -7,7 +7,7 @@
 # You can get a copy of GPL version 2 at
 # http://www.gnu.org/licenses/gpl-2.0.html
 
-# $Id: creoleaddition.t,v 1.6 2008/04/11 16:34:27 weakish Exp $
+# $Id: creoleaddition.t,v 1.7 2008/05/26 23:42:47 as Exp $
 
 require 't/test.pl';
 package OddMuse;
@@ -57,9 +57,11 @@ H<sub>2</sub>O
 """ simple blockquote """ won't work
 ##monospace code##
 <code>monospace code</code>
-##http://example.com##
-<code><a class="url http" href="http://example.com">http://example.com</a></code>
-##[[wiki page]] will work##
-<code>[[wiki_page<a class="edit" title="Click to edit this page" rel="nofollow" href="http://localhost/test.pl?action=edit;id=wiki_page">?</a>]] will work</code>
 EOT
 
+xpath_run_tests(split('\n',<<'EOT'));
+##http://example.com##
+//code/a[@class="url http"][@href="http://example.com"][text()="http://example.com"]
+##[[wiki page]] will work##
+//code/a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=wiki_page"][text()="?"][@rel="nofollow"]
+EOT
