@@ -22,7 +22,7 @@ use Test::More tests => 37;
 
 SKIP: {
   eval { require Search::FreeText };
-  skip ("Search::FreeText not installed", 30) if $@;
+  skip ("Search::FreeText not installed", 37) if $@;
 
   clear_pages();
 
