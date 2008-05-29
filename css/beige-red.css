@@ -56,7 +56,9 @@ div.journal h3 {
 div.journal hr {
     display:none;
 }
-
+p.more {
+    margin-top: 3em;
+}
 /* Links in headings appear on journal pages. */
 
 h1 a, h2 a, h3 a {
