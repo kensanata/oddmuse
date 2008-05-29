@@ -1,3 +1,7 @@
+2008-05-29  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (PrintJournal): Add content class to div.
+
 2008-05-27  Alex Schroeder  <alex@gnu.org>
 
 	* t/test.pl: Switch from /tmp/oddmuse to $DataDir.
