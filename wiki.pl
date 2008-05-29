@@ -8,7 +8,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, '$Revision: 1.851 $'))[1]; # for MakeMaker
+$VERSION=(split(/ +/, qq($Revision: 1.852 $)))[1]; # for MakeMaker
 
 # Options:
 
@@ -266,7 +266,7 @@ sub InitRequest {
 sub InitVariables {	 # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.851 2008/05/29 08:23:47 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.852 2008/05/29 08:28:47 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;		# Only admins may search and replace
@@ -795,7 +795,9 @@ sub GetRaw {
 
 sub DoJournal {
   print GetHeader(undef, T('Journal'));
+  print $q->start_div({-class=>'content'});
   PrintJournal(map { GetParam($_, ''); } qw(num regexp mode offset search));
+  print $q->end_div();
   PrintFooter();
 }
 
@@ -838,7 +840,7 @@ sub PrintJournal {
     # Now save information required for saving the cache of the current page.
     local %Page;
     local $OpenPageName='';
-    print $q->start_div({-class=>'content journal'});
+    print $q->start_div({-class=>'journal'});
     PrintAllPages(1, 1, @pages);
     print $q->end_div();
     print ScriptLink("action=more;num=$num;regexp=$regexp;search=$search;mode=$mode;offset="
