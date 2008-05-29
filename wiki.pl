@@ -8,7 +8,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q($Revision: 1.853 $)))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.854 $}))[1]; # for MakeMaker
 
 # Options:
 
@@ -266,7 +266,7 @@ sub InitRequest {
 sub InitVariables {	 # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.853 2008/05/29 08:32:54 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.854 2008/05/29 08:40:26 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;		# Only admins may search and replace
@@ -843,8 +843,7 @@ sub PrintJournal {
     print $q->start_div({-class=>'journal'});
     PrintAllPages(1, 1, @pages);
     print $q->end_div();
-    print ScriptLink("action=more;num=$num;regexp=$regexp;search=$search;mode=$mode;offset="
-		     . ($offset + $num), T('More...'), 'more') if $more;
+    print $q->p({-class=>more}, ScriptLink("action=more;num=$num;regexp=$regexp;search=$search;mode=$mode;offset=" . ($offset + $num), T('More...'), 'more')) if $more;
   }
 }
 
