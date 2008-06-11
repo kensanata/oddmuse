@@ -132,7 +132,7 @@
     test_page($string, $regexp1, $regexp2, ...);
     test_page(update_page($pagename, $content), $re1, $re2);
 
-  Or make sure tha none of the regular expressions match:
+  Or make sure that none of the regular expressions match:
 
     test_page_negative($page,
 		       "rollback",
