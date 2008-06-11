@@ -15,36 +15,39 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 10;
+use Test::More tests => 12;
 
 clear_pages();
 add_module('questionasker.pl');
 
 test_page_negative(update_page('test', 'edit allowed'),
 		   'edit allowed');
-test_page(update_page('test', 'admin can edit', undef, undef, 1),
-	  'admin can edit');
-test_page_negative(update_page('test', 'editable'),
-		   'editable');
+test_page_negative(update_page('test', 'cheating using preview', '', 0, 0, 'Preview=1'),
+		   'cheating using preview');
+test_page_negative($redirect, 'question%251e1'); # check that cookie is not set after previews
 test_page(update_page('test', 'answer question 1', undef, undef, undef,
 		      'question_num=1', 'answer=4'),
 	  'answer question 1');
-# cookie
-test_page($redirect, 'question%251e1');
+test_page($redirect, 'question%251e1'); # check that the cookie is set after correct answer
+test_page(update_page('test', 'admin can edit', undef, undef, 1),
+	  'admin can edit');
+test_page_negative($redirect, 'question%251e1'); # check that cookie is not set after admins
 test_page(update_page('test', 'override', undef, undef, undef, "question=1"),
 	  'override');
-# change key
+# We cannot check that the cookie is not set after cheating because
+# cheating sets the very parameter that ends up in the cookie.
+
+# change key and question
 AppendStringToFile($ConfigFile, "\$QuestionaskerSecretKey = 'fnord';\n"
 		   . "\@QuestionaskerQuestions = "
 		   . "(['say hi' => sub { shift =~ /^hi\$/i }]);\n");
-test_page_negative(update_page('test', 'correct key', undef, undef, undef,
+test_page_negative(update_page('test', 'using old key', undef, undef, undef,
 			       "question=1"),
-		   'correct key');
+		   'using old key');
 test_page(update_page('test', 'correct key', undef, undef, undef,
 		      "fnord=1"),
 	  'correct key');
-# cookie
-test_page($redirect, 'fnord%251e1');
+test_page($redirect, 'fnord%251e1'); # check cookie with new secret
 test_page(update_page('test', 'answer new question', undef, undef, undef,
 		      'question_num=0', 'answer=hi'),
 	  'answer new question');
