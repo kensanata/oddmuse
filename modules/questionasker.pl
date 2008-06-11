@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.24 2008/04/14 11:25:23 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: questionasker.pl,v 1.25 2008/06/11 13:05:48 as Exp $</p>';
 
 use vars qw(@QuestionaskerQuestions
 	    $QuestionaskerRememberAnswer
@@ -85,7 +85,11 @@ sub NewQuestionaskerDoPost {
     # warn "Q: '$QuestionaskerQuestions[$question_num][0]', A: '$answer'\n";
     return;
   }
-  SetParam($QuestionaskerSecretKey, 1) unless GetParam($QuestionaskerSecretKey, 0);
+  # Set the secret key only if a question has in fact been answered
+  if (not GetParam($QuestionaskerSecretKey, 0)
+      and $QuestionaskerQuestions[$question_num][1]($answer)) {
+    SetParam($QuestionaskerSecretKey, 1)
+  }
   return (OldQuestionaskerDoPost(@params));
 }
 
