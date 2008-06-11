@@ -32,8 +32,6 @@ Init();
 
 use vars qw($redirect);
 
-my $resultfile = "/tmp/test-markup-result-$$";
-
 undef $/;
 $| = 1; # no output buffering
 
