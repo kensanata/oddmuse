@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 12;
+use Test::More tests => 14;
 
 clear_pages();
 add_module('questionasker.pl');
@@ -39,6 +39,7 @@ test_page(update_page('test', 'override', undef, undef, undef, "question=1"),
 
 # change key and question
 AppendStringToFile($ConfigFile, "\$QuestionaskerSecretKey = 'fnord';\n"
+		   . "\$CommentsPrefix = 'Comments on ';\n"
 		   . "\@QuestionaskerQuestions = "
 		   . "(['say hi' => sub { shift =~ /^hi\$/i }]);\n");
 test_page_negative(update_page('test', 'using old key', undef, undef, undef,
@@ -51,3 +52,6 @@ test_page($redirect, 'fnord%251e1'); # check cookie with new secret
 test_page(update_page('test', 'answer new question', undef, undef, undef,
 		      'question_num=0', 'answer=hi'),
 	  'answer new question');
+test_page(get_page('Comments_on_test'),
+	  'label for="username"',
+	  'say hi');
