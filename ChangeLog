@@ -32,6 +32,12 @@
 2008-04-25 Weakish Jiang <weakish@gmail.com>
 	* module/search-list.pl ($Action, DoList): New action.
 	* module/listtags.pl: New extension.
+
+2008-04-14  Alex Schroeder  <aschroeder@localhost>
+
+	* modules/questionasker.pl (QuestionAddTo): Use
+	$QuestionaskerSecretKey instead of the hard-coded 'question'.
+
 2008-04-12 Weakish Jiang <weakish@gmail.com>
 
 	* module/creoleaddition.pl ($CreoleAdditionMonospace): New option.
@@ -48,6 +54,7 @@
 	tagged links.
 	(GenerateLinkTagMap, PrintLinkTagMap): Link processing changed.
 
+>>>>>>> 1.844
 2008-03-26  Alex Schroeder  <aschroeder@localhost>
 
 	* modules/markup.pl (MarkupInit): Sort strings by length.
