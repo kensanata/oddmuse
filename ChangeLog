@@ -1,3 +1,11 @@
+2008-06-11  Alex Schroeder  <alex@gnu.org>
+
+	* modules/questionasker.pl (NewQuestionaskerDoPost): Only reveal
+	the secret key when a question has been asked (and not after a
+	simple preview).
+
+	* t/test.pl: Get rid of $resultfile.
+
 2008-05-29  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (PrintJournal): Add content class to div.
