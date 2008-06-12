@@ -347,12 +347,6 @@ div.content p.comment {
     text-indent: 0;
 } */
 
-/* no bleeding */
-
-div.content, div.rc {
-    overflow:hidden;
-}
-
 /* images */
 
 div.content a img, div.journal a img {
@@ -411,6 +405,13 @@ div.pic div { display:inline; margin:1ex; }
 div.pic div p { display:table-cell; }
 div.pic div p + p { display:table-caption; caption-side:bottom; }
 
+@media screen {
+    /* no bleeding */
+    div.content, div.rc {
+	overflow:hidden;
+    }
+}
+
 @media print {
     body {
 	font-size:   12pt;
@@ -427,6 +428,9 @@ div.pic div p + p { display:table-caption; caption-side:bottom; }
     /* All links get the arrow. */
     div.content a:before {
 	content:"\2192";
+    }
+    a, a:visited, a.near:link, a.near:visited {
+	color: inherit;
     }
     div.content a.image:before,
     div.content a.url:before {
@@ -484,6 +488,7 @@ div.pic div p + p { display:table-caption; caption-side:bottom; }
 	font-style: italic;
     }
     /* links with square brackets instead of colors */
+    /* too fancy!
     a[class="url number"]:after, a[class="inter number"]:after {
 	content:"[" attr(href) "]";
     }
@@ -493,9 +498,7 @@ div.pic div p + p { display:table-caption; caption-side:bottom; }
     a[class="near"]:after {
 	content:" [" attr(title) "]";
     }
-    a, a:visited, a.near:link, a.near:visited {
-	color: inherit;
-    }
+    */
 }
 
 /* rss */
