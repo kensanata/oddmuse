@@ -1,5 +1,8 @@
 2008-06-13  Alex Schroeder  <alex@gnu.org>
 
+	* t/test.pl (xpath_do): No longer strip the HTML element in order
+	to allow tests for meta data.
+
 	* wiki.pl ($DocumentHeader): New option.
 	(GetHtmlHeader): Use $DocumentHeader and GetFeeds.
 	(InitVariables): No longer set $HtmlHeaders to GetFeeds.
