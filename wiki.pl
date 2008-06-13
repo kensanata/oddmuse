@@ -8,7 +8,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.855 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.856 $}))[1]; # for MakeMaker
 
 # Options:
 
@@ -34,7 +34,7 @@ $PageCluster %PlainTextPages $RssInterwikiTranslate $UseCache $Counter
 $ModuleDir $FullUrlPattern $SummaryDefaultLength $FreeInterLinkPattern
 %InvisibleCookieParameters %AdminPages @MyAdminCode @MyInitVariables
 @MyMaintenance $UseQuestionmark $JournalLimit $LockExpiration
-%LockExpires @IndexOptions @Debugging @MyFooters);
+%LockExpires @IndexOptions @Debugging @MyFooters $DocumentHeader);
 
 # Internal variables:
 
@@ -139,6 +139,9 @@ $HtmlHeaders = '';              # Additional stuff to put in the HTML <head> sec
 $IndentLimit = 20;              # Maximum depth of nested lists
 $LanguageLimit = 3;             # Number of matches req. for each language
 $JournalLimit = 200;            # how many pages can be collected in one go?
+$DocumentHeader = qq(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN")
+  . qq( "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n)
+  . qq(<html xmlns="http://www.w3.org/1999/xhtml">);
 # Checkboxes at the end of the index.
 @IndexOptions = (['pages', T('Include normal pages'), 1, \&AllPagesList]);
 # Display short comments below the GotoBar for special days
@@ -266,7 +269,7 @@ sub InitRequest {
 sub InitVariables {	 # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.855 2008/05/29 08:43:45 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.856 2008/06/13 13:44:14 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;		# Only admins may search and replace
@@ -278,7 +281,6 @@ sub InitVariables {	 # Init global session variables for mod_perl!
   $Fragment = '';
   %RecentVisitors = ();
   $OpenPageName = '';		# Currently open page
-  $HtmlHeaders = GetFeeds();
   my $add_space = $CommentsPrefix =~ /[ \t_]$/;
   map { $$_ = FreeToNormal($$_); } # convert spaces to underscores on all configurable pagenames
     (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$StyleSheetPage, \$CommentsPrefix,
@@ -2229,8 +2231,8 @@ sub Cookie {
 sub GetHtmlHeader {		# always HTML!
   my ($title, $id) = @_;
   my $base = $SiteBase ? $q->base({-href=>$SiteBase}) : "";
-  return qq(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n<html xmlns="http://www.w3.org/1999/xhtml">)
-    . $q->head($q->title($q->escapeHTML($title)) . $base . GetCss() . GetRobots() . $HtmlHeaders
+  return $DocumentHeader
+    . $q->head($q->title($q->escapeHTML($title)) . $base . GetCss() . GetRobots() . GetFeeds() . $HtmlHeaders
 	       . qq(<meta http-equiv="Content-Type" content="text/html; charset=$HttpCharset" />))
       . '<body class="' . GetParam('theme', $ScriptName) . '">';
 }
