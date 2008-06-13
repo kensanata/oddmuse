@@ -1,3 +1,9 @@
+2008-06-13  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($DocumentHeader): New option.
+	(GetHtmlHeader): Use $DocumentHeader and GetFeeds.
+	(InitVariables): No longer set $HtmlHeaders to GetFeeds.
+
 2008-06-11  Alex Schroeder  <alex@gnu.org>
 
 	* modules/questionasker.pl (NewQuestionaskerDoPost): Only reveal
