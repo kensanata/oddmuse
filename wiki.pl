@@ -1,5 +1,32 @@
 #! /usr/bin/perl
 
+# Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008
+#     Alex Schroeder <alex@gnu.org>
+# ... including lots of patches from the UseModWiki site
+# Copyright (C) 2001, 2002  various authors
+# ... which was based on UseModWiki version 0.92 (April 21, 2001)
+# Copyright (C) 2000, 2001  Clifford A. Adams
+#    <caadams@frontiernet.net> or <usemod@usemod.com>
+# ... which was based on the GPLed AtisWiki 0.3
+# Copyright (C) 1998  Markus Denker <marcus@ira.uka.de>
+# ... which was based on the LGPLed CVWiki CVS-patches
+# Copyright (C) 1997  Peter Merel
+# ... and The Original WikiWikiWeb
+# Copyright (C) 1996, 1997  Ward Cunningham <ward@c2.com>
+#     (code reused with permission)
+
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
+
 package OddMuse;
 
 use strict;
@@ -8,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.856 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.857 $}))[1]; # for MakeMaker
 
 # Options:
 
@@ -269,7 +296,7 @@ sub InitRequest {
 sub InitVariables {	 # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.856 2008/06/13 13:44:14 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.857 2008/06/13 14:19:02 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;		# Only admins may search and replace
@@ -3894,140 +3921,4 @@ sub DoCss {
 }
 
 DoWikiRequest() if $RunCGI and not exists $ENV{MOD_PERL}; # Do everything.
-1;				# In case we are loaded from elsewhere
-
-=head1 NAME
-
-Oddmuse
-
-=head1 SYNOPSIS
-
-    use OddMuse::Wiki;
-    $DataDir = 'writable-state-directory';
-    FIXME
-
-=head1 DESCRIPTION
-
-OddMuse::Wiki is a Common Gateway Interface (CGI) script to run a wiki.
-
-=head1 SECURITY
-
-OddMuse::Wiki does not provide confidentiality nor authenticity.
-
-=over 4
-
-=item All content is publically accessible.
-
-A workaround is to configure the web server to authenticate users and
-grant/deny access to OddMuse::Wiki pages.
-
-=item Passwords are stored in cleartext cookies.
-
-A workaround is to remove write permission from $DataDir/page, which prevents
-all editting and administrative operations.
-
-=item Passwords are stored in cleartext config file.
-
-The configuration file should not be in the web server content directory, lest
-it be remotely visible. Because the configuration file must be readable to cgi
-agents, it is typically readable by all users logged in.
-
-=item Queries and responses are sent in the clear.
-
-A workaround is to configure the web server to limit acces to OddMuse::Wiki to
-secure channels (e.g. https).
-
-=back
-
-OddMuse::Wiki provides minimal integrity.
-
-=over 4
-
-=item Content changes are reversible.
-
-Changes can be "rolled back" to older versions, but old versions are deleted
-after 14 days.
-
-Some administrative operations and operations provided by some extensions are
-not reversible.
-
-=item Content change collisions are detected.
-
-Conflicts resulting from attempts to edit the same line of the same page are
-detected.
-
-=back
-
-=head1 CONFORMING TO
-
-OddMuse::Wiki conforms to CGI/1.1 (http://hoohoo.ncsa.uiuc.edu/cgi/).
-
-OddMuse::Wiki default pathnames conform to FHS-2.3
-(http://www.pathname.com/fhs/).
-
-=head1 BUGS
-
-Please report any to the current maintainer.
-
-=head1 ENVIRONMENT
-
-=over 6
-
-=item B<WikiDataDir>
-
-If $B<WikiDatadir> is set, its value overrides the default $DataDir.
-
-=back
-
-=head1 FILES
-
-=over 6
-
-=item F</var/opt/oddmuse/wiki>
-
-The default data directory.
-
-=item F</var/opt/oddmuse/wiki/modules>
-
-The directory where extensions are kept.
-
-=item F</etc/opt/oddmuse/wiki/config>
-
-The default configuration file.
-
-=back
-
-=head1 COPYRIGHT AND LICENSE
-
-    Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008
-        Alex Schroeder <alex@gnu.org>
-    ... including lots of patches from the UseModWiki site
-    Copyright (C) 2001, 2002  various authors
-    ... which was based on UseModWiki version 0.92 (April 21, 2001)
-    Copyright (C) 2000, 2001  Clifford A. Adams
-       <caadams@frontiernet.net> or <usemod@usemod.com>
-    ... which was based on the GPLed AtisWiki 0.3
-    Copyright (C) 1998  Markus Denker <marcus@ira.uka.de>
-    ... which was based on the LGPLed CVWiki CVS-patches
-    Copyright (C) 1997  Peter Merel
-    ... and The Original WikiWikiWeb
-    Copyright (C) 1996, 1997  Ward Cunningham <ward@c2.com>
-	(code reused with permission)
-
-This program is free software: you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation, either version 3 of the License, or (at your option) any later
-version.
-
-This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this program. If not, see <http://www.gnu.org/licenses/>.
-
-=head1 AUTHOR
-
- Alex Schroeder <alex@gnu.org> is the current maintainer.
-
-=cut
+1; # In case we are loaded from elsewhere
