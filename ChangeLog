@@ -4,6 +4,10 @@
 	(GetHtmlHeader): Use $DocumentHeader and GetFeeds.
 	(InitVariables): No longer set $HtmlHeaders to GetFeeds.
 
+	Also moved copyright notice and licence info back to the front of
+	the file and removed the standard POD info at the back of the
+	file.
+
 2008-06-11  Alex Schroeder  <alex@gnu.org>
 
 	* modules/questionasker.pl (NewQuestionaskerDoPost): Only reveal
