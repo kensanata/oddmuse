@@ -154,7 +154,7 @@ sub xpath_do {
       } elsif (ok(&$check($nodelist->size()), name(&$check(1) ? $test : "not $test"))) {
 	$result .= $nodelist->string_value();
       } else {
-	$page =~ s/^.*?<body/<body/s;
+	$page =~ s/^.*?<html/<html/s;
 	diag($message, substr($page,0,30000)) unless $page_shown;
 	$page_shown = 1;
       }
