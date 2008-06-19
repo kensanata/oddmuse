@@ -1,6 +1,6 @@
 2008-06-19 Ingo Belka <ingo (.) belka (at) web (.) de>
 
-    modules/tables-in-lists.pl New module wich will embedd tables
+    * modules/tables-in-lists.pl New module wich will embedd tables
     in li-list-tags. The consecutive numbering is now saved.
 
 
