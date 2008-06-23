@@ -1,8 +1,11 @@
+2008-06-23  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetHtmlHeader): Add universal edit button.
+
 2008-06-19 Ingo Belka <ingo (.) belka (at) web (.) de>
 
-    * modules/tables-in-lists.pl New module wich will embedd tables
-    in li-list-tags. The consecutive numbering is now saved.
-
+	* modules/tables-in-lists.pl New module wich will embedd tables in
+	li-list-tags. The consecutive numbering is now saved.
 
 2008-06-13  Alex Schroeder  <alex@gnu.org>
 
