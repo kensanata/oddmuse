@@ -1,3 +1,7 @@
+2008-06-24  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetHtmlHeader): Fix typo in HTML header.
+
 2008-06-23  Alex Schroeder  <alex@gnu.org>, Weakish Jiang <weakish@gmail.com>
 
 	* wiki.pl (GetHtmlHeader): Add universal edit button.
