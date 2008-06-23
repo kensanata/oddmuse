@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.857 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.858 $}))[1]; # for MakeMaker
 
 # Options:
 
@@ -296,7 +296,7 @@ sub InitRequest {
 sub InitVariables {	 # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.857 2008/06/13 14:19:02 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.858 2008/06/23 00:31:20 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;		# Only admins may search and replace
@@ -2257,10 +2257,15 @@ sub Cookie {
 
 sub GetHtmlHeader {		# always HTML!
   my ($title, $id) = @_;
-  my $base = $SiteBase ? $q->base({-href=>$SiteBase}) : "";
+  my $base = $SiteBase ? $q->base({-href=>$SiteBase}) : '';
+  $base .= '<link rel="alternate" type="application/wiki" title="'
+    . T('Edit this page') . '" href="'
+    . ScriptUrl('action=edit;id=' . UrlEncode(GetId())) . '" />' if $id;
   return $DocumentHeader
-    . $q->head($q->title($q->escapeHTML($title)) . $base . GetCss() . GetRobots() . GetFeeds() . $HtmlHeaders
-	       . qq(<meta http-equiv="Content-Type" content="text/html; charset=$HttpCharset" />))
+      . $q->head($q->title($q->escapeHTML($title)) . $base
+		 . GetCss() . GetRobots() . GetFeeds() . $HtmlHeaders
+		 . '<meta http-equiv="Content-Type" content="text/html; charset="'
+		 . $HttpCharset . '"/>')
       . '<body class="' . GetParam('theme', $ScriptName) . '">';
 }
 
