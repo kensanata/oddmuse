@@ -10,7 +10,7 @@
 # For user doc, see: 
 # http://www.oddmuse.org/cgi-bin/oddmuse/Backlinks_Extension
 
-$ModulesDescription .= '<p>$Id: backlinks.pl,v 1.1 2008/04/25 16:48:47 weakish Exp $</p>';
+$ModulesDescription .= '<p>$Id: backlinks.pl,v 1.2 2008/06/23 17:13:51 weakish Exp $</p>';
 
 *OldGetSearchLink = *GetSearchLink;
 *GetSearchLink = *NewGetSearchLink;
@@ -20,7 +20,7 @@ sub NewGetSearchLink {
   $name = UrlEncode($name);
   $text = NormalToFree($text);
   $id =~ s/_/\ /g;               # Search for url-escaped spaces
-  return ScriptLink("action=backlink;search=\\[\\[$id\\]\\]", $text, $class, $name, $title);
+  return ScriptLink("action=backlink;search=\\[\\[$id(\\|.*)*\\]\\]", $text, $class, $name, $title);
 }
 
 $Action{backlink} = \&DoBackLink;
