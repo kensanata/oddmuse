@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.858 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.859 $}))[1]; # for MakeMaker
 
 # Options:
 
@@ -296,7 +296,7 @@ sub InitRequest {
 sub InitVariables {	 # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.858 2008/06/23 00:31:20 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.859 2008/06/23 23:58:32 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;		# Only admins may search and replace
@@ -2264,7 +2264,7 @@ sub GetHtmlHeader {		# always HTML!
   return $DocumentHeader
       . $q->head($q->title($q->escapeHTML($title)) . $base
 		 . GetCss() . GetRobots() . GetFeeds() . $HtmlHeaders
-		 . '<meta http-equiv="Content-Type" content="text/html; charset="'
+		 . '<meta http-equiv="Content-Type" content="text/html; charset='
 		 . $HttpCharset . '"/>')
       . '<body class="' . GetParam('theme', $ScriptName) . '">';
 }
