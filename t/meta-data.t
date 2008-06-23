@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 3;
+use Test::More tests => 5;
 
 clear_pages();
 
@@ -25,3 +25,8 @@ xpath_test(get_page('HomePage'),
 	   '//link[@rel="alternate"][@type="application/rss+xml"][@title="Wiki"][@href="http://localhost/wiki.pl?action=rss"]',
 	   '//meta[@name="DC.title"][@content="Home of Alex"]',
 	   '//meta[@name="ICBM"][@content="47.3787648948578, 8.52716503722805"]');
+
+negative_xpath_test(get_page('action=version'),
+		    '//meta[@type="application/wiki"]');
+xpath_test(get_page('Foo'),
+	   '//link[@type="application/wiki"][@title="Edit this page"][@rel="alternate"][@href="http://localhost/wiki.pl?action=edit;id=Foo"]');
