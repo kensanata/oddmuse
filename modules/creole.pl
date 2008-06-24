@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.37 2008/03/31 14:56:30 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.38 2008/06/24 12:32:06 weakish Exp $</p>';
 
 use vars qw($CreoleLineBreaks $CreoleTildeAlternative);
 
@@ -25,11 +25,13 @@ $CreoleLineBreaks = 0;
 # the tilde does not disappear in front of a-z, A-Z, 0-9.
 $CreoleTildeAlternative = 0;
 
-push(@MyRules, \&CreoleRule, \&CreoleHeadingRule);
+push(@MyRules, \&CreoleRule, \&CreoleHeadingRule, \&CreoleNewLineRule);
 # [[link|{{Image:foo}}]] conflicts with default link rule
 $RuleOrder{\&CreoleRule} = -10;
 # == headings rule must come after the TocRule
 $RuleOrder{\&CreoleHeadingRule} = 100;
+# newline rule must come very late, otherwise it will add a lot of useless br tag in, say, lists.
+$RuleOrder{\&CreoleNewLineRule} = 120;
 
 sub CreoleHeadingRule {
   # = to ====== for h1 to h6
@@ -42,6 +44,15 @@ sub CreoleHeadingRule {
   }
   return undef;
 }
+
+sub CreoleNewLineRule {
+  # line break: one newline,
+  if ($CreoleLineBreaks && m/\G\s*\n/cg) {
+    return $q->br();
+  }
+  return undef;
+}  
+
 
 sub CreoleRule {
   # escape next char (and prevent // in URLs from enabling italics)
@@ -128,8 +139,8 @@ sub CreoleRule {
   elsif (m/\G\s*\n(\s*\n)+/cg) {
     return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
   }
-  # line break: one newline, or \\
-  elsif ($CreoleLineBreaks && m/\G\s*\n/cg or m/\G\\\\/cg) {
+  # line break: \\
+  elsif (m/\G\\\\/cg) {
     return $q->br();
   }
   # {{{
