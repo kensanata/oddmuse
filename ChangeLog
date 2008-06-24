@@ -2,14 +2,16 @@
 
 	* wiki.pl (GetHtmlHeader): Fix typo in HTML header.
 	* modules/creole.pl (CreoleNewLineRule): Avoid adding useless br tags
-	in lists, etc.
+	in lists, etc.      
+	                    (CreoleRule): When CreoleLinebreaks set to 1,
+	\\\n won't produce extra br tags now. 
 	* modules/emailquote: New module.
-
+	
 2008-06-23  Alex Schroeder  <alex@gnu.org>, Weakish Jiang <weakish@gmail.com>
 
 	* wiki.pl (GetHtmlHeader): Add universal edit button.
-	* modules/backlinks.pl (NewGetSearchLink): Change the regex to match [[page
-	name|description]]
+	* modules/backlinks.pl (NewGetSearchLink): Change the regex to match
+	[[pagename|description]]
 
 2008-06-19 Ingo Belka <ingo (.) belka (at) web (.) de>
 
