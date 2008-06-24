@@ -1,11 +1,13 @@
-2008-06-24  Alex Schroeder  <alex@gnu.org>
+2008-06-24  Alex Schroeder  <alex@gnu.org>, Weakish Jiang <weakish@gmail.com>
 
 	* wiki.pl (GetHtmlHeader): Fix typo in HTML header.
+	* modules/creole.pl (CreoleNewLineRule): Avoid adding useless br tags
+	in lists, etc.
 
 2008-06-23  Alex Schroeder  <alex@gnu.org>, Weakish Jiang <weakish@gmail.com>
 
 	* wiki.pl (GetHtmlHeader): Add universal edit button.
-	* backlinks.pl (NewGetSearchLink): Change the regex to match [[page
+	* modules/backlinks.pl (NewGetSearchLink): Change the regex to match [[page
 	name|description]]
 
 2008-06-19 Ingo Belka <ingo (.) belka (at) web (.) de>
