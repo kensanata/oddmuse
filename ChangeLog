@@ -3,6 +3,7 @@
 	* wiki.pl (GetHtmlHeader): Fix typo in HTML header.
 	* modules/creole.pl (CreoleNewLineRule): Avoid adding useless br tags
 	in lists, etc.
+	* modules/emailquote: New module.
 
 2008-06-23  Alex Schroeder  <alex@gnu.org>, Weakish Jiang <weakish@gmail.com>
 
