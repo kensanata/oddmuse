@@ -1,5 +1,4 @@
-# Copyright (C) 2006, 2007  Alex Schroeder <alex@emacswiki.org>
-#
+# Copyright (C) 2006, 2007, 2008  Alex Schroeder <alex@emacswiki.org>
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -16,7 +15,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.38 2008/06/24 12:32:06 weakish Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.39 2008/06/24 17:14:53 weakish Exp $</p>';
 
 use vars qw($CreoleLineBreaks $CreoleTildeAlternative);
 
@@ -140,7 +139,7 @@ sub CreoleRule {
     return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
   }
   # line break: \\
-  elsif (m/\G\\\\/cg) {
+  elsif (m/\G\\\\(\s*\n?)/cg) {
     return $q->br();
   }
   # {{{
