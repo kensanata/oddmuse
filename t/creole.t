@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 99;
+use Test::More tests => 100;
 clear_pages();
 
 add_module('creole.pl');
@@ -172,6 +172,8 @@ foo\nbar
 foo<br />bar
 * foo\n* bar
 <ul><li>foo</li><li>bar</li></ul>
+foo\\\nbar
+foo<br />bar
 EOT
 
 # Mixed lists are not supported
