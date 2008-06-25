@@ -1,5 +1,7 @@
 2008-06-25 Weakish Jiang <weakish@gmail.com>
-	* modules/emailquote: (EmailQuoteRule): > on a line of its own works.
+	* modules/creole.pl (CreoleHeadingRule): Better support on headings
+	more than 6 levels. 
+	* modules/emailquote.pl (EmailQuoteRule): > on a line of its own works.
 
 2008-06-24  Alex Schroeder  <alex@gnu.org> Weakish Jiang <weakish@gmail.com>
 
