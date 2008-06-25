@@ -10,15 +10,19 @@
 # For user doc, see: 
 # http://www.oddmuse.org/cgi-bin/oddmuse/Email_Quote_Extension
 
-$ModulesDescription .= '<p>$Id: emailquote.pl,v 1.1 2008/06/24 15:42:22 weakish Exp $</p>';
+$ModulesDescription .= '<p>$Id: emailquote.pl,v 1.2 2008/06/25 13:21:30 weakish Exp $</p>';
 
 push(@MyRules, \&EmailQuoteRule);
 
 sub EmailQuoteRule {
+   # > on a line with its own should work.
+   if (m/\G(\s*\n)*\&gt;(\n|\Z)/cog) {
+	return $q->br();
+   }	
    # > hi, you mentioned that:
    # > > I don't like Oddmuse.
    # > in last letter.
-    if ($bol && m/\G(\s*\n)*((\&gt;[ \t])+)/cog
+   elsif ($bol && m/\G(\s*\n)*((\&gt;[ \t])+)/cog
 	  or InElement('dd') && m/\G(\s*\n)+((\&gt;[ \t])+)/cog) {
     $leng = length($2)/5;
     return CloseHtmlEnvironmentUntil('dd') . OpenHtmlEnvironment('dl',$leng, 'quote')
