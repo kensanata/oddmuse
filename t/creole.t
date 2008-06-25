@@ -1,4 +1,4 @@
-# Copyright (C) 2006, 2007  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006, 2007, 2008  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 100;
+use Test::More tests => 101;
 clear_pages();
 
 add_module('creole.pl');
@@ -70,9 +70,11 @@ this is <strong><em>bold italic</em></strong><em>italic</em>
 ====== foo
 <h6>foo</h6>
 ======= foo
-<h6>foo</h6>
+<h6 class="h7">foo</h6>
 == foo ==
 <h2>foo</h2>
+========= h9 ======
+<h6 class="h9">h9</h6>
 == foo = =
 <h2>foo =</h2>
 == foo\nbar
