@@ -1,4 +1,7 @@
-2008-06-24  Alex Schroeder  <alex@gnu.org>, Weakish Jiang <weakish@gmail.com>
+2008-06-25 Weakish Jiang <weakish@gmail.com>
+	* modules/emailquote: (EmailQuoteRule): > on a line of its own works.
+
+2008-06-24  Alex Schroeder  <alex@gnu.org> Weakish Jiang <weakish@gmail.com>
 
 	* wiki.pl (GetHtmlHeader): Fix typo in HTML header.
 	* modules/creole.pl (CreoleNewLineRule): Avoid adding useless br tags
@@ -7,7 +10,7 @@
 	\\\n won't produce extra br tags now. 
 	* modules/emailquote: New module.
 	
-2008-06-23  Alex Schroeder  <alex@gnu.org>, Weakish Jiang <weakish@gmail.com>
+2008-06-23  Alex Schroeder  <alex@gnu.org> Weakish Jiang <weakish@gmail.com>
 
 	* wiki.pl (GetHtmlHeader): Add universal edit button.
 	* modules/backlinks.pl (NewGetSearchLink): Change the regex to match
