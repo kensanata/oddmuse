@@ -15,7 +15,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.39 2008/06/24 17:14:53 weakish Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.40 2008/06/25 15:03:28 weakish Exp $</p>';
 
 use vars qw($CreoleLineBreaks $CreoleTildeAlternative);
 
@@ -36,8 +36,11 @@ sub CreoleHeadingRule {
   # = to ====== for h1 to h6
   if ($bol && m/\G(\s*\n)*(=+)[ \t]*(.*?)[ \t]*=*[ \t]*(\n|\Z)/cg) {
     my $depth = length($2);
-    $depth = 6 if $depth > 6;
     my $text = $3;
+    if ($depth > 6) {
+	 return CloseHtmlEnvironments() . '<h6 class="' . "h$depth" . '">' . "$text</h6>"
+	 . AddHtmlEnvironment('p');
+ 	}
     return CloseHtmlEnvironments() . "<h$depth>$text</h$depth>"
       . AddHtmlEnvironment('p');
   }
