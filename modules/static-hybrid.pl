@@ -17,7 +17,7 @@
 #	 59 Temple Place, Suite 330
 #	 Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-hybrid.pl,v 1.13 2008/06/26 08:40:40 weakish Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-hybrid.pl,v 1.14 2008/06/26 08:54:59 weakish Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -453,11 +453,11 @@ sub StaticNewDespamPage {
       return;
     }
   }
-#  if (grep(/^1$/, @revisions) or not @revisions) { # if there is no kept revision, yet
-#    my $summary = Ts($rule). ' ' . Ts('Marked as %s.', $DeletedPage);
-#    print ': ' . $summary;
-#    Save($OpenPageName, $DeletedPage, $summary) unless GetParam('debug', 0);
-#	StaticDeleteFile($OpenPageName);
+  if (grep(/^1$/, @revisions) or not @revisions) { # if there is no kept revision, yet
+    my $summary = Ts($rule). ' ' . Ts('Marked as %s.', $DeletedPage);
+    print ': ' . $summary;
+    Save($OpenPageName, $DeletedPage, $summary) unless GetParam('debug', 0);
+	StaticDeleteFile($OpenPageName);
   } else {
     print ': ' . T('Cannot find unspammed revision.'. $revision);
   }
