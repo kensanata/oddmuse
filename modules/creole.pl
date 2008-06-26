@@ -1,6 +1,6 @@
 # Copyright (C) 2006, 2007  Alex Schroeder <alex@gnu.org>
 # Copyright (C) 2008  Weakish Jiang <weakish@gmail.com>
-
+#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 3 of the License, or
@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.41 2008/06/26 07:56:47 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.42 2008/06/26 08:00:36 as Exp $</p>';
 
 use vars qw($CreoleLineBreaks $CreoleTildeAlternative);
 
