@@ -1,8 +1,9 @@
-# Copyright (C) 2004, 2005  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2005, 2006, 2007, 2008  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2008  Weakish Jiang <weakish@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation; either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -11,12 +12,9 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.34 2008/06/24 07:21:13 weakish Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.35 2008/06/26 07:59:54 as Exp $</p>';
 
 use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml
 	    $UseModSpaceRequired $UseModMarkupInTitles);
