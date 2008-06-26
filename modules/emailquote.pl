@@ -10,14 +10,14 @@
 # For user doc, see: 
 # http://www.oddmuse.org/cgi-bin/oddmuse/Email_Quote_Extension
 
-$ModulesDescription .= '<p>$Id: emailquote.pl,v 1.3 2008/06/26 08:40:40 weakish Exp $</p>';
+$ModulesDescription .= '<p>$Id: emailquote.pl,v 1.4 2008/06/26 09:11:30 weakish Exp $</p>';
 
 push(@MyRules, \&EmailQuoteRule);
 
 sub EmailQuoteRule 
 {
-    # only > on its line should work
-    if ($bol && m/\G(\s*\n)*(\&gt;)+\n/cog) {
+    #  > on a line of its own should work
+    if ($bol && m/\G(\s*\n)*((\&gt;))+\n/cog) {
         return $q->p();
     }
     # > hi, you mentioned that:
