@@ -1,4 +1,4 @@
-# Copyright (C) 2007  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2007, 2008  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 28;
+use Test::More tests => 29;
 
 clear_pages();
 
@@ -73,6 +73,8 @@ foo<h2>blarg</h2><p>fnord</p>
 <h3>blarg <i>moo</i></h3>
 [h5][h6]blarg[/h6]foo
 <h5></h5><h6>blarg</h6><p>foo</p>
+[center][size=5]The Savage Tides[/size][/center]
+<div style="text-align: center"><p><em style="font-size: 500%; font-style: normal;">The Savage Tides</em></p></div>
 EOT
 
 xpath_run_tests(split('\n',<<'EOT'));
