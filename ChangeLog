@@ -1,22 +1,34 @@
+2008-06-26  Alex Schroeder  <alex@gnu.org>
+
+	* modules/bbcode.pl (bbCodeRule): Implemented [center].
+
 2008-06-25 Weakish Jiang <weakish@gmail.com>
-	* modules/creole.pl (CreoleHeadingRule): Better support on headings
-	more than 6 levels. 
-	* modules/emailquote.pl (EmailQuoteRule): > on a line of its own works.
+
+	* modules/creole.pl (CreoleHeadingRule): Better support on
+	  headings more than 6 levels.
+
+	* modules/emailquote.pl (EmailQuoteRule): > on a line of its own
+	works.
 
 2008-06-24  Alex Schroeder  <alex@gnu.org> Weakish Jiang <weakish@gmail.com>
 
 	* wiki.pl (GetHtmlHeader): Fix typo in HTML header.
-	* modules/creole.pl (CreoleNewLineRule): Avoid adding useless br tags
-	in lists, etc.      
-	                    (CreoleRule): When CreoleLinebreaks set to 1,
-	\\\n won't produce extra br tags now. 
+
+	* modules/creole.pl (CreoleNewLineRule): Avoid adding useless br
+	tags in lists, etc.
+	(CreoleRule): When CreoleLinebreaks set to 1, \\\n won't produce
+	extra br tags now.
+
 	* modules/emailquote: New module.
 	
-2008-06-23  Alex Schroeder  <alex@gnu.org> Weakish Jiang <weakish@gmail.com>
+2008-06-23  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetHtmlHeader): Add universal edit button.
-	* modules/backlinks.pl (NewGetSearchLink): Change the regex to match
-	[[pagename|description]]
+
+2008-06-23  Weakish Jiang  <weakish@gmail.com>
+
+	* modules/backlinks.pl (NewGetSearchLink): Change the regex to
+	match [[pagename|description]]
 
 2008-06-19 Ingo Belka <ingo (.) belka (at) web (.) de>
 
