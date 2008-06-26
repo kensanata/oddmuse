@@ -7,7 +7,7 @@
 # You can get a copy of GPL version 2 at
 # http://www.gnu.org/licenses/gpl-2.0.html
 
-# $Id: emailquote.t,v 1.5 2008/06/26 08:40:40 weakish Exp $
+# $Id: emailquote.t,v 1.6 2008/06/26 09:06:09 weakish Exp $
 
 require 't/test.pl';
 package OddMuse;
@@ -23,9 +23,7 @@ run_tests(split('\n',<<'EOT'));
 <dl class="quote"><dt /><dd>This is a quote.</dd></dl>
 >This is not a quote.
 &gt;This is not a quote.
->
-<p />
-> This is a quote\n>\n>> Nesting is OK.\n>\n> Quote ends.
-<dl class="quote"><dt /><dd>This is a quote<p /><dl class="quote"><dt /><dd>Nesting is OK.<br /></dd></dl></dd><dt /><dd>Quote ends.</dd></dl>
+> This is a quote.\n>\n>> Nesting is OK.\n>\n> Quote ends.
+<dl class="quote"><dt /><dd>This is a quote. <p /><dl class="quote"><dt /><dd>Nesting is OK. <p /></dd></dl></dd><dt /><dd>Quote ends.</dd></dl>
 EOT
 
