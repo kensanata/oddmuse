@@ -1,4 +1,4 @@
-# Copyright (C) 2007  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2007, 2008  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: bbcode.pl,v 1.6 2008/05/09 14:02:47 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: bbcode.pl,v 1.7 2008/06/26 07:46:53 as Exp $</p>';
 
 push(@MyRules, \&bbCodeRule);
 
@@ -60,6 +60,12 @@ sub bbCodeRule {
       $html .= "<blockquote>";
       $bbBlock = 'blockquote';
       return $html . AddHtmlEnvironment('p'); }
+    elsif ($tag eq 'center') {
+      my $html = CloseHtmlEnvironments();
+      $html .= "</$bbBlock>" if $bbBlock;
+      $html .= '<div style="text-align: center">';
+      $bbBlock = 'div';
+      return $html . AddHtmlEnvironment('p'); }
     elsif ($tag eq 'code' and /\G((?:.*\n)*?.*?)\[\/code\](.*\n)*/cgi) {
       return CloseHtmlEnvironments() . $q->pre($1) . AddHtmlEnvironment('p'); }
     elsif ($bbTitle{$tag}) {
@@ -72,7 +78,7 @@ sub bbCodeRule {
     my $tag = lc($2);
     %translate = qw{b b i i u em color em size em font span url a
 		    quote blockquote h1 h1 h2 h2 h3 h3 h4 h4 h5 h5
-		    h6 h6};
+		    h6 h6 center div};
     # closing a block level element closes all elements
     if ($bbBlock eq $translate{$tag}) {
       /\G([ \t]*\n)*/cg; # eat whitespace after closing block level element
