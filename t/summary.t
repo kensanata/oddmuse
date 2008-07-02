@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 9;
+use Test::More tests => 11;
 
 clear_pages();
 
@@ -44,5 +44,12 @@ test_page_negative(get_page('action=rc raw=1'),
 	  "description: fnord");
 # explicit setting of the summary works
 update_page('link', 'bonk', 'bunk');
+test_page(get_page('action=rc raw=1'),
+	  "description: bunk");
+# remove links from default summary when crossing $SummaryDefaultLength
+update_page('size', 'lirum larum fiderallala lirum larum fiderallala lirum larum fiderallala lirum larum fiderallala lirum larum fiderallala lirum [http://example.com content]');
+test_page_negative(get_page('action=rc raw=1'),
+	  'content');
+update_page('link', 'fnord', '[[bunk]]');
 test_page(get_page('action=rc raw=1'),
 	  "description: bunk");
