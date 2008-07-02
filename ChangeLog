@@ -1,8 +1,16 @@
+2008-07-02  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetSummary): Two more convenience replacements.
+
 2008-06-26  Alex Schroeder  <alex@gnu.org>
 
 	* modules/bbcode.pl (bbCodeRule): Implemented [center].
+
+2008-06-26 Weakish Jiang <weakish@gmail.com>
+
 	* modules/emailquote.pl (EmailQuoteRule): Fixed bugs. Versions before
 	  are buggy.
+
 2008-06-25 Weakish Jiang <weakish@gmail.com>
 
 	* modules/creole.pl (CreoleHeadingRule): Better support on
