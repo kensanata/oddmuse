@@ -1,3 +1,8 @@
+2008-07-08  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoPost): Run macros after concatenating page and
+	comments.
+
 2008-07-02  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetSummary): Two more convenience replacements.
