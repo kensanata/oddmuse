@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.860 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.861 $}))[1]; # for MakeMaker
 
 # Options:
 
@@ -296,7 +296,7 @@ sub InitRequest {
 sub InitVariables {	 # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.860 2008/07/02 09:34:13 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.861 2008/07/08 16:13:43 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;		# Only admins may search and replace
@@ -3466,11 +3466,7 @@ sub DoPost {
   RequestLockOrError();		# fatal
   OpenPage($id);
   my $old = $Page{text};
-  $_ = UnquoteHtml(GetParam('text', undef));
-  foreach my $macro (@MyMacros) {
-    &$macro;
-  }
-  my $string = $_;
+  my $string = UnquoteHtml(GetParam('text', undef));
   my ($type) = TextIsFile($string); # MIME type if an uploaded file
   my $filename = GetParam('file', undef);
   if (($filename or $type) and not $UploadAllowed and not UserIsAdmin()) {
@@ -3498,6 +3494,9 @@ sub DoPost {
     $string =~ s/\r//g;
     $string .= "\n"  if ($string !~ /\n$/);
     $string =~ s/$FS//go;
+    $_ = $string;
+    foreach my $macro (@MyMacros) { &$macro };
+    $string = $_;
   }
   my %allowed = map {$_ => 1} @UploadTypes;
   ReportError(Ts('Files of type %s are not allowed.', $type), '415 UNSUPPORTED MEDIA TYPE')
