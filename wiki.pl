@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.861 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.862 $}))[1]; # for MakeMaker
 
 # Options:
 
@@ -296,7 +296,7 @@ sub InitRequest {
 sub InitVariables {	 # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.861 2008/07/08 16:13:43 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.862 2008/07/11 14:22:53 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;		# Only admins may search and replace
@@ -736,6 +736,12 @@ sub RunMyRules {
   return undef;
 }
 
+sub RunMyMacros {
+  $_ = shift;
+  foreach my $macro (@MyMacros) { &$macro };
+  return $_;
+}
+
 sub PrintWikiToHTML {
   my ($text, $savecache, $revision, $islocked) = @_;
   $FootnoteNumber = 0;
@@ -879,7 +885,8 @@ sub PrintJournal {
 sub PrintAllPages {
   my ($links, $comments, @pages) = @_;
   my $lang = GetParam('lang', 0);
-  @pages = @pages[0 .. $JournalLimit - 1] if $#pages >= $JournalLimit and not UserIsAdmin();
+  @pages = @pages[0 .. $JournalLimit - 1]
+    if $#pages >= $JournalLimit and not UserIsAdmin();
   for my $id (@pages) {
     OpenPage($id);
     my @languages = split(/,/, $Page{languages});
@@ -890,9 +897,10 @@ sub PrintAllPages {
     PrintPageHtml();
     if ($comments and $id !~ /^$CommentsPrefix/o) {
       print $q->p({-class=>'comment'},
-		  GetPageLink($CommentsPrefix . $id, T('Comments on this page')));
+		  GetPageLink($CommentsPrefix . $id,
+			      T('Comments on this page')));
     }
-    print $q->end_div();;
+    print $q->end_div();
   }
 }
 
@@ -1442,7 +1450,8 @@ sub BrowsePage {
   if ($comment) {
     print $q->start_div({-class=>'preview'}), $q->hr();
     print $q->h2(T('Preview:'));
-    PrintWikiToHTML(AddComment('', $comment)); # no caching, current revision, unlocked
+    # no caching, current revision, unlocked
+    PrintWikiToHTML(RunMyMacros(AddComment('', $comment)));
     print $q->hr(), $q->h2(T('Preview only, not yet saved')), $q->end_div();;
   }
   SetParam('rcclusteronly', $id) if FreeToNormal(GetCluster($text)) eq $id; # automatically filter by cluster
@@ -3494,9 +3503,7 @@ sub DoPost {
     $string =~ s/\r//g;
     $string .= "\n"  if ($string !~ /\n$/);
     $string =~ s/$FS//go;
-    $_ = $string;
-    foreach my $macro (@MyMacros) { &$macro };
-    $string = $_;
+    $string = RunMyMacros($string); # run macros on text pages only
   }
   my %allowed = map {$_ => 1} @UploadTypes;
   ReportError(Ts('Files of type %s are not allowed.', $type), '415 UNSUPPORTED MEDIA TYPE')
@@ -3583,17 +3590,18 @@ sub GetSummary {
 }
 
 sub AddComment {
-  my ($old, $comment) = @_;
-  my $string = $old;
+  my ($string, $comment) = @_;
   $comment =~ s/\r//g;		# Remove "\r"-s (0x0d) from the string
   $comment =~ s/\s+$//g;	# Remove whitespace at the end
   if ($comment ne '' and $comment ne $NewComment) {
     my $author = GetParam('username', T('Anonymous'));
     my $homepage = GetParam('homepage', '');
-    $homepage = 'http://' . $homepage if $homepage and not substr($homepage,0,7) eq 'http://';
+    $homepage = 'http://' . $homepage
+      if $homepage and not substr($homepage,0,7) eq 'http://';
     $author = "[$homepage $author]" if $homepage;
     $string .= "\n----\n\n" if $string and $string ne "\n";
-    $string .= $comment . "\n\n-- " . $author . ' ' . TimeToText($Now) . "\n\n";
+    $string .= $comment . "\n\n"
+      . '-- ' . $author . ' ' . TimeToText($Now) . "\n\n";
   }
   return $string;
 }
