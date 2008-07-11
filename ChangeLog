@@ -1,10 +1,8 @@
 2008-07-11  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (RunMyMacros): New.
-	(BrowsePage): Call RunMyMacros on the result of AddComment.
 	(DoPost): Call RunMyMacros on the concatenated page body +
-	comment.
-	(AddComment): Call RunMyMacros on the comments, too.
+	comment. Also call it on the comment when previewing comments.
 
 2008-07-08  Alex Schroeder  <alex@gnu.org>
 
