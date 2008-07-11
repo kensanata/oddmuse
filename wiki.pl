@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.862 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.863 $}))[1]; # for MakeMaker
 
 # Options:
 
@@ -296,7 +296,7 @@ sub InitRequest {
 sub InitVariables {	 # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.862 2008/07/11 14:22:53 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.863 2008/07/11 14:33:05 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;		# Only admins may search and replace
@@ -1451,7 +1451,7 @@ sub BrowsePage {
     print $q->start_div({-class=>'preview'}), $q->hr();
     print $q->h2(T('Preview:'));
     # no caching, current revision, unlocked
-    PrintWikiToHTML(RunMyMacros(AddComment('', $comment)));
+    PrintWikiToHTML(AddComment('', $comment));
     print $q->hr(), $q->h2(T('Preview only, not yet saved')), $q->end_div();;
   }
   SetParam('rcclusteronly', $id) if FreeToNormal(GetCluster($text)) eq $id; # automatically filter by cluster
@@ -3520,7 +3520,7 @@ sub DoPost {
   if (GetParam('Preview', '')) { # Preview button was used
     ReleaseLock();
     if ($comment) {
-      BrowsePage($id, 0, $comment);
+      BrowsePage($id, 0, RunMyMacros($comment)); # show macros in preview
     } else {
       DoEdit($id, $string, 1);
     }
