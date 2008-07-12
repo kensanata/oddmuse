@@ -135,7 +135,6 @@
 	tagged links.
 	(GenerateLinkTagMap, PrintLinkTagMap): Link processing changed.
 
->>>>>>> 1.844
 2008-03-26  Alex Schroeder  <aschroeder@localhost>
 
 	* modules/markup.pl (MarkupInit): Sort strings by length.
