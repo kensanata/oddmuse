@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 4;
+use Test::More tests => 5;
 clear_pages();
 
 add_module('creole.pl');
@@ -31,4 +31,6 @@ run_tests(split('\n',<<'EOT'));
 <ul><li>foo <b>bar</b></li></ul>
 *foo bar*
 <b>foo bar</b>
+*foo *bar*
+<ul><li>foo <b>bar</b></li></ul>
 EOT
