@@ -7,11 +7,11 @@
 # You can get a copy of GPL version 2 at
 # http://www.gnu.org/licenses/gpl-2.0.html
 
-# $Id: emailquote.t,v 1.6 2008/06/26 09:06:09 weakish Exp $
+# $Id: emailquote.t,v 1.7 2008/07/12 13:43:48 as Exp $
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 5;
+use Test::More tests => 4;
 clear_pages();
 
 add_module('emailquote.pl');
