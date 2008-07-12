@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.42 2008/06/26 08:00:36 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.43 2008/07/12 15:27:54 as Exp $</p>';
 
 use vars qw($CreoleLineBreaks $CreoleTildeAlternative);
 
@@ -23,13 +23,39 @@ $CreoleLineBreaks = 0;
 # the tilde does not disappear in front of a-z, A-Z, 0-9.
 $CreoleTildeAlternative = 0;
 
-push(@MyRules, \&CreoleRule, \&CreoleHeadingRule, \&CreoleNewLineRule);
+push(@MyRules, \&CreoleRule, \&CreoleHeadingRule, \&CreoleNewLineRule,
+     \&CreoleListRule);
 # [[link|{{Image:foo}}]] conflicts with default link rule
 $RuleOrder{\&CreoleRule} = -10;
 # == headings rule must come after the TocRule
 $RuleOrder{\&CreoleHeadingRule} = 100;
-# newline rule must come very late, otherwise it will add a lot of useless br tag in, say, lists.
-$RuleOrder{\&CreoleNewLineRule} = 120;
+# list items must come later than MarkupRule because *foo* at the
+# beginning of a line should be bold, not the list item foo*.
+$RuleOrder{\&CreoleListRule} = 180;
+# newlines must come after list items, otherwise this will add a lot
+# of useless br tag.
+$RuleOrder{\&CreoleNewLineRule} = 200;
+
+sub CreoleListRule {
+  # * bullet list
+  # - bullet list (not nested, requires space)
+  if ($bol && (m/\G\s*(\*)[ \t]*/cg
+		  || m/\G\s*(-)[ \t]+/cg)
+	 or InElement('li') && (m/\G\s*\n[ \t]*(\*+)[ \t]*/cg
+				|| m/\G\s*\n[ \t]*(-)[ \t]+/cg)) {
+    return CloseHtmlEnvironmentUntil('li')
+      . OpenHtmlEnvironment('ul', length($1))
+      . AddHtmlEnvironment('li');
+  }
+  # # number list
+  elsif ($bol && m/\G\s*(#)[ \t]*/cg
+      or InElement('li') && m/\G\s*\n[ \t]*(#+)[ \t]*/cg) {
+    return CloseHtmlEnvironmentUntil('li')
+      . OpenHtmlEnvironment('ol', length($1))
+      . AddHtmlEnvironment('li');
+  }
+  return undef;
+}
 
 sub CreoleHeadingRule {
   # = to ====== for h1 to h6
@@ -51,9 +77,16 @@ sub CreoleNewLineRule {
   if ($CreoleLineBreaks && m/\G\s*\n/cg) {
     return $q->br();
   }
+  # paragraphs: at least two newlines
+  elsif (m/\G\s*\n(\s*\n)+/cg) {
+    return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
+  }
+  # line break: \\
+  elsif (m/\G\\\\(\s*\n?)/cg) {
+    return $q->br();
+  }
   return undef;
-}  
-
+}
 
 sub CreoleRule {
   # escape next char (and prevent // in URLs from enabling italics)
@@ -99,23 +132,6 @@ sub CreoleRule {
     return (defined $HtmlStack[0] && $HtmlStack[0] eq 'em')
       ? CloseHtmlEnvironment() : AddHtmlEnvironment('em');
   }
-  # # number list
-  elsif ($bol && m/\G\s*(#)[ \t]*/cg
-      or InElement('li') && m/\G\s*\n[ \t]*(#+)[ \t]*/cg) {
-    return CloseHtmlEnvironmentUntil('li')
-      . OpenHtmlEnvironment('ol', length($1))
-      . AddHtmlEnvironment('li');
-  }
-  # * bullet list
-  # - bullet list (not nested, requires space)
-  elsif ($bol && (m/\G\s*(\*)[ \t]*/cg
-		  || m/\G\s*(-)[ \t]+/cg)
-	 or InElement('li') && (m/\G\s*\n[ \t]*(\*+)[ \t]*/cg
-				|| m/\G\s*\n[ \t]*(-)[ \t]+/cg)) {
-    return CloseHtmlEnvironmentUntil('li')
-      . OpenHtmlEnvironment('ul', length($1))
-      . AddHtmlEnvironment('li');
-  }
   # tables using | -- end of the row or table
   elsif (InElement('td') || InElement('th')
 	 and (m/\G[ \t]*\|?[ \t]*(\n)?(\n|$)/cg)) {
@@ -135,14 +151,6 @@ sub CreoleRule {
     $html .= AddHtmlEnvironment(($2 ? 'th' : 'td'),
 				TableAttributes(length($1), $3));
     return $html;
-  }
-  # paragraphs: at least two newlines
-  elsif (m/\G\s*\n(\s*\n)+/cg) {
-    return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
-  }
-  # line break: \\
-  elsif (m/\G\\\\(\s*\n?)/cg) {
-    return $q->br();
   }
   # {{{
   # preformatted
