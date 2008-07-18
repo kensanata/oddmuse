@@ -1,8 +1,8 @@
-# Copyright (C) 2006  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006, 2008  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation; either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -11,18 +11,18 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA,
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: dojo.pl,v 1.3 2006/09/14 00:05:21 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: dojo.pl,v 1.4 2008/07/18 10:36:00 as Exp $</p>';
 
-use vars qw(@DojoGroups);
+use vars qw(@DojoPlugins $DojoTheme);
 
-@DojoGroups = qw(textGroup blockGroup justifyGroup colorGroup
-		 listGroup indentGroup linkGroup);
+$DojoTheme = 'tundra';
 
+# Configure toolbar example:
+# @DojoPlugins = qw(copy cut paste | bold);
+
+# Render all HTML tags except for <script>.
 push (@MyRules, \&WysiwygRule);
 
 sub WysiwygRule {
@@ -34,13 +34,31 @@ sub WysiwygRule {
   return undef;
 }
 
+# Add the dojo script to edit pages.
 push (@MyInitVariables, \&WysiwygScript);
 
 sub WysiwygScript {
   # cookie is not initialized yet so we cannot use GetParam
   if ($q->param('action') eq 'edit') {
-    $HtmlHeaders .= '<script src="/dojo/dojo.js" type="text/javascript"></script>'
+    $HtmlHeaders .= qq{
+<style type="text/css">
+  \@import "/dijit/themes/$DojoTheme/$DojoTheme.css";
+</style>
+<script type="text/javascript" src="/dojo/dojo.js"
+	djConfig="parseOnLoad: true"></script>
+<script type="text/javascript">
+	dojo.require("dijit.Editor");
+	dojo.addOnLoad(function () {
+	  dojo.connect(dojo.query("form.edit")[0], 'onsubmit', function () {
+	   dojo.byId('dojotext').value = dijit.byId('dojoeditor').getValue(false);
+	  });
+	});
+</script>
+};
   }
+  # theme has to match $DojoTheme (so that it gets used for the body tag)
+  delete $CookieParameters{theme};
+  SetParam('theme', $DojoTheme);
 }
 
 *OldWysiwygGetTextArea = *GetTextArea;
@@ -49,10 +67,16 @@ sub WysiwygScript {
 sub NewWysiwygGetTextArea {
   my ($name, $text, $rows) = @_;
   if ($name =~ /text/) {
-    return $q->textarea(-id=>$name, -name=>$name, -default=>$text,
-			-rows=>$rows||25, -columns=>78, -override=>1,
-			-dojoType=>'Editor',
-		        -items=>join(';|;', @DojoGroups));
+    # The dojoeditor is the visible thing that is not submitted; we
+    # need some javascript that will copy the content of the
+    # dojoeditor to the dojotext field which has the right name.
+    my %params = (-id=>'dojoeditor', -default=>$text,
+		  -rows=>$rows||25, -columns=>78, -override=>1,
+		  -dojoType=>'dijit.Editor');
+    $params{-plugins} = "[" . join(",", map{"'$_'"} @DojoPlugins) . "]"
+      if @DojoPlugins;
+    return $q->textarea(%params)
+      . $q->hidden(-id=>'dojotext', name=>$name);
   } else {
     return OldWysiwygGetTextArea(@_);
   }
