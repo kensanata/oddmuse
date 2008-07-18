@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: dojo.pl,v 1.6 2008/07/18 12:50:25 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: dojo.pl,v 1.7 2008/07/18 13:28:54 as Exp $</p>';
 
 use vars qw(@DojoPlugins $DojoTheme);
 
@@ -66,7 +66,7 @@ sub WysiwygScript {
 
 sub NewWysiwygGetTextArea {
   my ($name, $text, $rows) = @_;
-  if ($name =~ /text/) {
+  if ($name eq 'text') {
     # The dojoeditor is the visible thing that is not submitted; we
     # need some javascript that will copy the content of the
     # dojoeditor to the dojotext field which has the right name.
