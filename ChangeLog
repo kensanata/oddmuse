@@ -1,3 +1,11 @@
+2008-07-18  Alex Schroeder  <alex@gnu.org>
+
+	* modules/dojo.pl (@DojoGroups): Deleted.
+	(@DojoPlugins, $DojoTheme): New.
+	(WysiwygScript): A whole lot of new javascript.
+	(NewWysiwygGetTextArea): Add a hidden input field, add id to
+	textarea.
+
 2008-07-12  Alex Schroeder  <alex@gnu.org>
 
 	The following change makes sure we can put *bold* words at the
