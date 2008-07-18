@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: dojo.pl,v 1.5 2008/07/18 12:49:25 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: dojo.pl,v 1.6 2008/07/18 12:50:25 as Exp $</p>';
 
 use vars qw(@DojoPlugins $DojoTheme);
 
@@ -42,7 +42,7 @@ sub WysiwygScript {
   if ($q->param('action') eq 'edit') {
     $HtmlHeaders .= qq{
 <style type="text/css">
-  \@import "/dijit/themes/$DojoTheme/$DojoTheme.css";
+  \@import "/dojoroot/dijit/themes/$DojoTheme/$DojoTheme.css";
 </style>
 <script type="text/javascript" src="/dojoroot/dojo/dojo.js"
 	djConfig="parseOnLoad: true"></script>
