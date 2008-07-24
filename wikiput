@@ -57,7 +57,7 @@ Options with arguments:
  -u     The username for RecentChanges (default: none)
  -p     The password to use for locked pages (default: none)
  -w     The username:password combo for basic authentication (default:none)
- -q     The question to answer (default: 0, ie. the first question)
+ -q     The question number to answer (default: 0, ie. the first question)
  -a     The answer to the question (default: none)
  -z     Alternatively, the secret key (default: question)
  -v     Verbose output for debugging (default: none)
@@ -76,11 +76,19 @@ sub post {
   my ($uri, $id, $data, $minor, $summary, $username, $password,
       $question, $answer, $secret) = @_;
   my $ua = RequestAgent->new;
-  my $response = $ua->post($uri, {title=>$id, text=>$data, raw=>1,
-				  username=>$username, pwd=>$password,
-				  summary=>$summary, question=>$question,
-				  answer=>$answer, secret=>$secret,
-				  recent_edit=>$minor});
+  my %params = (title=>$id, text=>$data, raw=>1,
+		username=>$username, pwd=>$password,
+		summary=>$summary, question_num=>$question,
+		answer=>$answer, $secret=>1,
+		recent_edit=>$minor);
+  if ($opt_v) {
+    foreach my $key (keys %params) {
+      my $value = $params{$key} || '(none)';
+      $value = substr($value,0,50) . '...' if $key eq 'text' and length($value) > 53;
+      warn "$key: $value\n";
+    }
+  }
+  my $response = $ua->post($uri, \%params);
   my $status = $response->code . ' ' . $response->message;
   warn "POST $id failed: $status.\n" unless $response->is_success;
 }
@@ -99,7 +107,7 @@ sub main {
   die "No content to post or use -f to force it\n" if not $data and not $opt_f;
   warn length($data) . " bytes of data" if $opt_v;
   post ($uri, $id, $data, $opt_m ? 'on' : '', $opt_s, $opt_u, $opt_p,
-	$opt_q||0, $opt_a, $opt_z||'question');
+	$opt_q, $opt_a, $opt_z||'question');
 }
 
 main();
