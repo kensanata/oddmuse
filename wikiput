@@ -1,111 +1,105 @@
-#!/usr/bin/env python
-# wikiput --- Put a wiki page on an Oddmuse wiki
+#!/usr/bin/perl -w
 #
-# Copyright (C)	 2004  Jorgen Schaefer <forcer@forcix.cx>
+# Copyright (C) 2004, 2005, 2006, 2008  Alex Schroeder <alex@gnu.org>
 #
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
-# GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA.
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import httplib, urllib, re, urlparse, sys, getopt
-from time import time
+require LWP;
+use Getopt::Std;
 
-def main():
-    """The main method of the wikiput script."""
-    summary=""
-    username=""
-    password=""
-    recent_edit="off"
-    force=0
-    try:
-	opts, args = getopt.getopt(sys.argv[1:],
-				   "hft:s:u:p:m:",
-				   ["help", "force", "summary=", "user=",
-				    "password=", "minor-edit="])
-    except getopt.GetoptError:
-	usage(sys.stderr)
-	sys.exit(1)
-    if len(args) != 1:
-	usage(sys.stderr)
-	sys.exit(1)
-    for opt, arg in opts:
-	if opt in ("-h", "--help"):
-	    usage(sys.stdout)
-	if opt in ("-f", "--force"):
-	    force = arg
-	if opt in ("-s", "--summary"):
-	    summary = arg
-	if opt in ("-u", "--user"):
-	    username = arg
-	if opt in ("-p", "--password"):
-	    password = arg
-	if opt in ("-m", "--minor-edit"):
-	    recent_edit="on"
-    text = sys.stdin.read()
-    if not text and not force:
-	sys.stderr.write("No content to post.  Use --force to do it anyway.\n"
-			 + args[0] + "\n")
-    else:
-	wikiput(args[0], text, summary=summary, username=username,
-		password=password, recent_edit=recent_edit)
+our ($opt_v, $opt_w);
 
-def usage(out):
-    """Display the usage information for this script.
+# We make our own specialization of LWP::UserAgent that asks for
+# user/password if document is protected.
+{
+  package RequestAgent;
+  @ISA = qw(LWP::UserAgent);
 
-    Options:
-    out -- The file descriptor where to write the info.
-    """
-    out.write("Usage: wikiput [OPTIONS] wikipage\n"
-	      "Post the data on stdin on the wikipage described by wikipage.\n"
-	      "\n"
-	      "Options:\n"
-	      " -h --help	   Display this help\n"
-	      " -f --force	   Allow the posting of empty pages (default: no)\n"
-	      " -s --summary=S	   The summary line (default: none)\n"
-	      " -u --user=U	   The username to use (default: none)\n"
-	      " -p --password=P	   The password to use (default: none)\n"
-	      " -m --minor-edit=B  Whether this is a minor edit (default: no)\n")
+  sub new {
+    my $self = LWP::UserAgent::new(@_);
+    $self;
+  }
 
-def wikiput(where, text, summary="", username="",
-	    password="", recent_edit="no"):
-    (host, path, title) = parse_wiki_location(where)
-    params = urllib.urlencode({'title': title,
-			       'text': text,
-			       'summary': summary,
-			       'username': username,
-			       'pwd': password,
-                               'question': 1, # Bypass Questionasker default config
-			       'recent_edit': recent_edit})
-    headers = {'Content-Type': "application/x-www-form-urlencoded"}
-    conn = httplib.HTTPConnection(host)
-    conn.request("POST", path, params, headers)
-    response = conn.getresponse()
-    data = response.read()
-    conn.close()
-    if response.status != 302 and response.status != 200:
-	raise RuntimeError, "%s returned %d: %s" % (where, response.status, response.reason)
+  sub get_basic_credentials {
+    my($self, $realm, $uri) = @_;
+    return split(':', $main::opt_w, 2);
+  }
+}
 
-def parse_wiki_location(where):
-    """Return a tuple of host, path and page name for the wiki page
-    WHERE.
-    """
-    (scheme, host, path, params, query, fragment) = urlparse.urlparse(where)
-    if not query:
-	list = path.split("/")
-	query = list.pop()
-	path = "/".join(list)
-    return (host, path+params, query)
+my $usage = qq{$0 [-f] [-m] [-s SUMMARY]
+\t[-u USERNAME] [-p PASSWORD] [-w USERNAME:PASSWORD]
+\t[-q QUESTION] [-a ANSWER] [-z SECRET]
+\tTARGET
 
-if __name__ == "__main__":
-    main()
+Post the data on stdin on the wikipage described by wikipage.
+
+TARGET is the URL for the wiki page.
+
+Options:
+
+ -f	Allow the posting of empty pages (default: no)
+ -m     Whether this is a minor edit (default: no)
+
+Options with arguments:
+
+ -s	The summary for RecentChanges (default: none)
+ -u     The username for RecentChanges (default: none)
+ -p     The password to use for locked pages (default: none)
+ -w     The username:password combo for basic authentication (default:none)
+ -q     The question to answer (default: 0, ie. the first question)
+ -a     The answer to the question (default: none)
+ -z     Alternatively, the secret key (default: question)
+ -v     Verbose output for debugging (default: none)
+
+The defaults are chosen such that if the QuestionAsker extension is
+used and the secret key is unchanged, there is no need to provide
+either secret key or password.
+
+If the target wiki is protected by so-called "basic authentication" --
+that is, if you need to provide a username and password before you can
+even view the site -- then you can pass those along using the -w
+option. Separate username and password using a colon.
+};
+
+sub post {
+  my ($uri, $id, $data, $minor, $summary, $username, $password,
+      $question, $answer, $secret) = @_;
+  my $ua = RequestAgent->new;
+  my $response = $ua->post($uri, {title=>$id, text=>$data, raw=>1,
+				  username=>$username, pwd=>$password,
+				  summary=>$summary, question=>$question,
+				  answer=>$answer, secret=>$secret,
+				  recent_edit=>$minor});
+  my $status = $response->code . ' ' . $response->message;
+  warn "POST $id failed: $status.\n" unless $response->is_success;
+}
+
+sub main {
+  # $opt_v, $opt_w are global
+  our($opt_f, $opt_m, $opt_s, $opt_u, $opt_p, $opt_q, $opt_a, $opt_z);
+  getopts('fms:u:p:q:a:z:vw:');
+  my $target = shift @ARGV;
+  die $usage if not $target or @ARGV; # not enough or too many
+  die "Cannot determine page id from $target\n" unless $target =~ m!^(.*)[/?](.*?)$!;
+  my ($uri, $id) = ($1, $2);
+  warn "id $id" if $opt_v;
+  undef $/;
+  my $data = <STDIN>;
+  die "No content to post or use -f to force it\n" if not $data and not $opt_f;
+  warn length($data) . " bytes of data" if $opt_v;
+  post ($uri, $id, $data, $opt_m ? 'on' : '', $opt_s, $opt_u, $opt_p,
+	$opt_q||0, $opt_a, $opt_z||'question');
+}
+
+main();
