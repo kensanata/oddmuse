@@ -15,17 +15,28 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 3;
+use Test::More tests => 9;
 
 clear_pages();
 
 AppendStringToFile($ConfigFile, "push(\@MyMacros, sub{s/foo/bar/g});\n");
 
-# simple page save
+# page preview
+test_page(get_page('title=Macros', 'text=foo%20is%20metasyntactical',
+		   'Preview=1'),
+	  'Preview:',
+	  'bar is metasyntactical');
+# page save
 test_page(update_page('Macros', 'foo is metasyntactical'),
 	  'bar is metasyntactical');
-# comment submit
-get_page('title=Comments_on_Macros', 'aftertext=This%20is%20my%20foo%20comment.');
-test_page(get_page('Comments_on_Macros'),
+# comment preview
+test_page(get_page('title=Comments_on_Macros', 'aftertext=This%20is%20my%20foo%20comment.',
+		   'Preview=1'),
+	  'Preview:',
 	  'This is my bar comment.',
 	  '-- Anonymous');
+# comment save
+get_page('title=Comments_on_Macros', 'aftertext=This%20is%20my%20foo%20comment.');
+my $page = get_page('Comments_on_Macros');
+test_page($page, 'This is my bar comment.', '-- Anonymous');
+test_page_negative($page, 'Preview:');
