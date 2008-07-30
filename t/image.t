@@ -18,13 +18,14 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 28;
+use Test::More tests => 30;
 
 clear_pages();
 
 add_module('image.pl');
 
 update_page('bar', 'foo');
+update_page('bar_baz', 'foo');
 update_page('InterMap', " Oddmuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n",
 	    'required', 0, 1);
 
@@ -37,6 +38,10 @@ xpath_run_tests(split('\n',<<'EOT'));
 //a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=foo;upload=1"][text()="?"]
 [[image:bar]]
 //a[@class="image"][@href="http://localhost/test.pl/bar"]/img[@class="upload"][@src="http://localhost/test.pl/download/bar"][@alt="bar"]
+[[image:bar baz]]
+//a[@class="image"][@href="http://localhost/test.pl/bar_baz"]/img[@class="upload"][@src="http://localhost/test.pl/download/bar_baz"][@alt="bar baz"]
+[[image/right:bar baz]]
+//a[@class="image right"][@href="http://localhost/test.pl/bar_baz"]/img[@class="upload"][@src="http://localhost/test.pl/download/bar_baz"][@alt="bar baz"]
 [[image:bar|alternative text]]
 //a[@class="image"][@href="http://localhost/test.pl/bar"]/img[@class="upload"][@src="http://localhost/test.pl/download/bar"][@alt="alternative text"]
 [[image:bar|alternative & encoded text]]
