@@ -1,3 +1,10 @@
+2008-07-30  Alex Schroeder  <alex@gnu.org>
+
+	* modules/image.pl (ImageSupportRule): Provide a default alt text
+	if linking to a local image.
+	(ImageGetExternalUrl, ImageGetInternalUrl): Make sure link uses _
+	instead of spaces if linking to a local image.
+
 2008-07-18  Alex Schroeder  <alex@gnu.org>
 
 	* modules/dojo.pl (@DojoGroups): Deleted.
