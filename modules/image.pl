@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: image.pl,v 1.28 2007/10/24 19:05:46 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: image.pl,v 1.29 2008/07/30 07:18:17 as Exp $</p>';
 
 use vars qw($ImageUrlPath);
 
@@ -37,6 +37,8 @@ sub ImageSupportRule {
     # forces you to pick an alt text if you're going to provide a
     # link target.
     my $alt = UnquoteHtml($5 ? substr($5, 1) : '');
+    $alt = NormalToFree($name)
+      if not $alt and not $external and $name !~ /^$FullUrlPattern$/;
     my $link = $6 ? substr($6, 1) : '';
     my $caption = $7 ? substr($7, 1) : '';
     my $reference = $8 ? substr($8, 1) : '';
@@ -90,6 +92,7 @@ sub ImageGetExternalUrl {
     $link = GetInterSiteUrl($site, $page, 1); # quote!
     $class .= ' inter ' . $site;
   } else {
+    $link = FreeToNormal($link);
     if (substr($link, 0, 1) eq '/') {
       # do nothing -- relative URL on the same server
     } elsif ($UsePathInfo and !$Monolithic) {
@@ -105,7 +108,7 @@ sub ImageGetExternalUrl {
 
 # split off to support overriding from Static Extension
 sub ImageGetInternalUrl {
-  my $id = shift;
+  my $id = FreeToNormal(shift);
   if ($UsePathInfo) {
     return $ScriptName . "/download/" . UrlEncode($id);
   }
