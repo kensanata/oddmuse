@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.863 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.864 $}))[1]; # for MakeMaker
 
 # Options:
 
@@ -296,7 +296,7 @@ sub InitRequest {
 sub InitVariables {	 # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.863 2008/07/11 14:33:05 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.864 2008/08/05 16:00:22 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;		# Only admins may search and replace
@@ -403,7 +403,7 @@ sub InitLinkPatterns {
   $QDelim = '(?:"")?'; # Optional quote delimiter (removed from the output)
   $WikiWord = '[A-Z]+[a-z\x80-\xff]+[A-Z][A-Za-z\x80-\xff]*';
   $LinkPattern = "($WikiWord)$QDelim";
-  $FreeLinkPattern = "([-,.()' _1-9A-Za-z\x80-\xff][-,.()' _0-9A-Za-z\x80-\xff]*)"; # disallow "0"
+  $FreeLinkPattern = "([-,.()' _1-9A-Za-z\x80-\xff]|[-,.()' _0-9A-Za-z\x80-\xff][-,.()' _0-9A-Za-z\x80-\xff]+)"; # disallow "0"
   # Intersites must start with uppercase letter to avoid confusion with URLs.
   $InterSitePattern = '[A-Z\x80-\xff]+[A-Za-z\x80-\xff]+';
   $InterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x80-\xff_=!?#\$\@~`\%&*+\\/:;.,]*[-a-zA-Z0-9\x80-\xff_=#\$\@~`\%&*+\\/])$QDelim";
