@@ -18,16 +18,18 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 92;
+use Test::More tests => 93;
 
 clear_pages();
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
 update_page('big', 'foofoo');
 update_page('2008-08-07_New_Hope', 'testing');
+update_page('2008-08-08', 'testing');
 update_page('Comments_on_2008-08-07_New_Hope', 'testing');
 test_page(get_page('action=rss full=1'),
 	  '<title>big</title>',
 	  '<title>New Hope</title>',
+	  '<title>2008-08-08</title>',
 	  '<title>Comments on New Hope</title>',
 	  '<description>&lt;p&gt;foo foo&lt;/p&gt;</description>');
 test_page(get_page('action=rss short=0'),
