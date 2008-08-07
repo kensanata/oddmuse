@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.864 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.865 $}))[1]; # for MakeMaker
 
 # Options:
 
@@ -296,7 +296,7 @@ sub InitRequest {
 sub InitVariables {	 # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.864 2008/08/05 16:00:22 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.865 2008/08/07 00:25:21 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;		# Only admins may search and replace
@@ -1910,7 +1910,7 @@ sub GetRcRss {
 
 sub RssItem {
   my ($id, $ts, $host, $username, $summary, $minor, $revision, $languages, $cluster, $last) = @_;
-  my $name = NormalToFree($id);
+  my $name = ItemName($id);
   $summary = PageHtml($id, 50*1024, T('This page is too big to send over RSS.'))
     if (GetParam('full', 0));	# full page means summary is not shown
   my $date = TimeToRFC822($ts);
@@ -2955,6 +2955,12 @@ sub FreeToNormal {    # trim all spaces and convert them to underlines
     $id =~ s/_$//;
   }
   return $id;
+}
+
+sub ItemName {
+  my $id = shift; # id
+  $id =~ s/^($CommentsPrefix)?(\d\d\d\d-\d\d-\d\d_)/$1/ if GetParam('short', 1);
+  return NormalToFree($id);
 }
 
 sub NormalToFree {
