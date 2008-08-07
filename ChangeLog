@@ -3,6 +3,11 @@
 	* wiki.pl (ItemName): New. Strips dates from page titles.
 	(RssItem): Use it.
 
+2008-08-05  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (InitLinkPatterns): Change $FreeLinkPattern so that
+	pages starting with "0" are still allowed.
+
 2008-07-30  Alex Schroeder  <alex@gnu.org>
 
 	* modules/image.pl (ImageSupportRule): Provide a default alt text
