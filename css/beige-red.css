@@ -204,6 +204,11 @@ a {
     text-decoration:none;
     color:#e33;
 }
+
+.edit a.comment {
+    color: #f00;
+}
+
 a:visited {
     color:#c66;
 }
