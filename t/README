@@ -27,7 +27,12 @@
 
   3. Write $num tests. :)
 
+  4. To examine the situation after having run some tests, you can
+     also call the script from the command line. The only problem is
+     that the tests use a specific data directory that you need to
+     provide via an environment variable:
 
+        WikiDataDir=test-data perl wiki.pl action=index raw=1
 
   add_module, remove_module, and remove_rule
   ------------------------------------------
