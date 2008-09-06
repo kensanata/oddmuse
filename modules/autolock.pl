@@ -3,7 +3,7 @@
 
 =head1 NAME
 
-autolock - An Oddmuse [extension|module|plugin] for auto-locking pages.
+autolock - An Oddmuse module for auto-locking pages.
 
 =head1 SYNOPSIS
 
@@ -18,20 +18,20 @@ against page creations.
 
 =head1 INSTALLATION
 
-autolock is easily installable; simply move this file into the "wiki/modules/"
+autolock is easily installable; simply move this file into the B<wiki/modules/>
 directory of your Oddmuse Wiki.
 
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: autolock.pl,v 1.1 2008/09/06 04:09:04 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: autolock.pl,v 1.2 2008/09/06 10:25:09 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
 =head1 CONFIGURATION
 
 autolock is easily configurable; simply set these global variables in the
-"wiki/config.pl" file for your Oddmuse Wiki.
+B<wiki/config.pl> file for your Oddmuse Wiki.
 
 =cut
 use vars qw($AutoLockPagesMatching
@@ -48,17 +48,19 @@ page edits, creations, and deletions for page names resembling
 
   $AutoLockPagesMatching = '^Red_Apple_Falls--\d\d\d\d-\d\d-\d\d';
 
-This regular expression is left undefined, by default. (Thus, this extension
-does nothing, by default.) When redefined, this regular expression:
+This regular expression is left undefined, by default. (Thus, this module does
+nothing, by default.) When redefined, this regular expression:
 
 =over
 
-=item ...should not be a quoted regular expression (i.e., "qr/.../").
+=item ...should not be a quoted regular expression (i.e., "qr/.../"); and
 
 =item ...should not be prefixed with the contents of the C<$CommentsPrefix>
-      regular expression. (this extension does that for you, as need be.)
+      regular expression. (This module does that for you, as need be.)
 
-Aside from that, the limitless sky is yours.
+=back
+
+That aside, the limitless sky is yours.
 
 =cut
 $AutoLockPagesMatching = undef;
@@ -95,7 +97,7 @@ $AutoLockSeverity = 2;
 
 =head2 $AutoLockUserCanEditEditorFix
 
-A boolean that, if true, prompts this extension to overwrite the C<UserCanEdit>
+A boolean that, if true, prompts this module to overwrite the C<UserCanEdit>
 Oddmuse function with a "fix" to Oddmuse's page-locking logic. By default, the
 Oddmuse script (v1.865, as of this writing) allows administrators but not
 editors to edit locked pages; however, this contravenes explicit Oddmuse
@@ -112,6 +114,7 @@ By default, this boolean is true; and therefore implements this fix.
 =cut
 $AutoLockUserCanEditEditorFix = 1;
 
+# ....................{ INITIALIZATION                     }....................
 push(@MyInitVariables, \&AutoLockInit);
 
 sub AutoLockInit {
@@ -143,7 +146,7 @@ sub UserCanEditAutoLock {
 
   if ($user_can_edit && $AutoLockSeverity != 1 && !(UserIsAdmin() || UserIsEditor())) {
     my $is_page_locked = defined($AutoLockPagesMatching) &&
-      $page_name =~            m/$AutoLockPagesMatching/; 
+      $page_name =~            m/$AutoLockPagesMatching/;
     my $is_comments_page_locked = defined($AutoLockCommentsPagesMatching) &&
       $page_name =~                     m/$AutoLockCommentsPagesMatching/;
 
@@ -189,8 +192,8 @@ Ergo, autolock.
 
 =head1 SEE ALSO
 
-Jorge Arroyo's "lock-expression.pl" Oddmuse [extension|module|plugin], from
-which this was (marginally) inspired.
+Jorge Arroyo's B<lock-expression.pl> module, from which this module was
+(marginally) inspired and which this module (largely) replaces.
 
 =head1 COPYRIGHT AND LICENSE
 
