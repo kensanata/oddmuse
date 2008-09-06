@@ -1,5 +1,5 @@
 # Copyright (C) 2004, 2008  Brock Wilcox <awwaiid@thelackthereof.org>
-# Copyright (C) 2006, 2007  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006, 2007, 2008  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: recaptcha.pl,v 1.1 2008/03/06 04:49:42 awwaiid Exp $</p>';
+$ModulesDescription .= '<p>$Id: recaptcha.pl,v 1.2 2008/09/06 13:07:12 as Exp $</p>';
 
 use vars qw(
   $ReCaptchaPrivateKey
@@ -88,21 +88,21 @@ sub NewReCaptchaDoPost {
 *GetEditForm = *NewReCaptchaGetEditForm;
 
 sub NewReCaptchaGetEditForm {
-  return QuestionAddTo(OldReCaptchaGetEditForm(@_));
+  return ReCaptchaQuestionAddTo(OldReCaptchaGetEditForm(@_));
 }
 
 *OldReCaptchaGetCommentForm = *GetCommentForm;
 *GetCommentForm = *NewReCaptchaGetCommentForm;
 
 sub NewReCaptchaGetCommentForm {
-  return QuestionAddTo(OldReCaptchaGetCommentForm(@_));
+  return ReCaptchaQuestionAddTo(OldReCaptchaGetCommentForm(@_));
 }
 
-sub QuestionAddTo {
+sub ReCaptchaQuestionAddTo {
   my $form = shift;
   if (not $upload
       and not ReCaptchaException(GetId())
-      and not $ReCaptchaRememberAnswer && GetParam('question', 0)
+      and not $ReCaptchaRememberAnswer && GetParam($ReCaptchaSecretKey, 0)
       and not UserIsEditor()) {
     my $question = ReCaptchaGetQuestion();
     $form =~ s/<p><label for="username">/$question<p><label for="username">/;
