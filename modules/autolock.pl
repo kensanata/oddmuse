@@ -3,7 +3,8 @@
 
 =head1 NAME
 
-autolock - An Oddmuse module for auto-locking pages.
+autolock - An Oddmuse module for locking pages via regular expression matching
+           on page names.
 
 =head1 SYNOPSIS
 
@@ -18,20 +19,20 @@ against page creations.
 
 =head1 INSTALLATION
 
-autolock is easily installable; simply move this file into the B<wiki/modules/>
+autolock is easily installable: move this file into the B<wiki/modules/>
 directory of your Oddmuse Wiki.
 
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: autolock.pl,v 1.2 2008/09/06 10:25:09 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: autolock.pl,v 1.3 2008/09/06 11:37:33 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
 =head1 CONFIGURATION
 
-autolock is easily configurable; simply set these global variables in the
-B<wiki/config.pl> file for your Oddmuse Wiki.
+autolock is easily configurable: set these variables in the B<wiki/config.pl>
+file for your Oddmuse Wiki.
 
 =cut
 use vars qw($AutoLockPagesMatching
