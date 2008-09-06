@@ -9,20 +9,20 @@ flashbox - An Oddmuse module for embedding offsite-hosted Flash videos within
 
 =head1 INSTALLATION
 
-flashbox is easily installable; simply move this file into the "wiki/modules/"
+flashbox is easily installable: move this file into the B<wiki/modules/>
 directory of your Oddmuse Wiki.
 
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: flashbox.pl,v 1.1 2008/09/06 04:03:46 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: flashbox.pl,v 1.2 2008/09/06 11:37:33 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
 =head1 CONFIGURATION
 
-flashbox is easily configurable; simply set these global variables in the
-"wiki/config.pl" file for your Oddmuse Wiki.
+flashbox is easily configurable: set these variables in the B<wiki/config.pl>
+file for your Oddmuse Wiki.
 
 =cut
 use vars qw($FlashboxWidth
@@ -227,7 +227,7 @@ Wew! There; that wasn't so gruesomely detailed, was it?
 
 =head1 SEE ALSO
 
-The oddmuse.org "YouTube" page off which this Oddmuse extension was based, at:
+The oddmuse.org "YouTube" page off which this Oddmuse extension was founded, at:
 
 L<http://www.oddmuse.org/cgi-bin/oddmuse/YouTube>
 
