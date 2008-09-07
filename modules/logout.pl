@@ -22,7 +22,7 @@ directory of your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: logout.pl,v 1.1 2008/09/06 11:55:19 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: logout.pl,v 1.2 2008/09/07 02:01:16 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -32,7 +32,9 @@ logout is easily configurable: set these variables in the B<wiki/config.pl>
 file for your Oddmuse Wiki.
 
 =cut
-use vars qw($CommentsSuffix);
+use vars qw($CommentsSuffix
+            $LogoutIsDebugging
+          );
 
 =head2 $CommentsSuffix
 
@@ -61,8 +63,20 @@ conspired no better place for it - and therefore placed it here. (Do with it
 what thou wilt, museful wrangler!)
 
 =cut
-$CommentsSuffix = '';
 #$CommentsSuffix = 'this page';
+$CommentsSuffix = '';
+
+=head2 $LogoutIsDebugging
+
+A boolean that, if true, prints all key-value pairs (composing the currently
+requested URL query and current user's cookie) with each Oddmuse Wiki page; and,
+if false, does nothing. This boolean defaults to false.
+
+Key-value pairs are printed by appending their contents onto Oddmuse's
+C<$Message> variable, which Oddmuse then tacks onto the header for each page.
+
+=cut
+$LogoutIsDebugging = '';
 
 # ....................{ ACTIONS                            }....................
 $Action{logout} = \&DoLogout;
@@ -144,25 +158,33 @@ Corrects the C<CookieUsernameFix> function, which, in its original definition,
 caused a festering heap of trouble.
 
 We suspect a flaw in the innate coding of that function. But, whatever the
-fickle case, it's supplanted here with a modestly more stable version.
+fickle case, it's supplanted here with a (somewhat) stabler version.
 
 =cut
 sub CookieUsernameFix {
-#FIXME: Should probably extract into a new "debug.pl" module, yes?
-#   $Message.="<table>";
-#   $Message.="<tr><td>QUERY::</td></tr>";
-#   my %vars = $q->Vars;
-#   foreach my $key (keys %vars) {
-#     $Message.="<tr><td>${key}:</td><td>$vars{$key}</td></tr>";
-#   }
+  if ($LogoutIsDebugging) {
+    $Message .= "<table>";
 
-#   $Message.="<tr><td>COOKIE::</td></tr>";
-#   my ($changed, $visible, %params) = CookieData();
-#   foreach my $key (keys %params) {
-#     $Message.="<tr><td>${key}:</td><td>$params{$key}</td></tr>";
-#   }
-#   $Message.="</table>";
- # Only valid usernames get stored in the new cookie.
+    $Message .= "<tr><td>QUERY::</td></tr>";
+    my %query_parameters = $q->Vars;
+    foreach my $query_parameter_name (keys %query_parameters) {
+      $Message .= "<tr>"
+        ."<td>${query_parameter_name}:</td>"
+        ."<td>$query_parameters{$query_parameter_name}</td></tr>";
+    }
+
+    $Message .= "<tr><td>COOKIE::</td></tr>";
+    my ($changed, $visible, %cookie_parameters) = CookieData();
+    foreach my $cookie_parameter (keys %cookie_parameters) {
+      $Message.="<tr>"
+        ."<td>${cookie_parameter}:</td>"
+        ."<td>$cookie_parameters{$cookie_parameter}</td></tr>";
+    }
+
+    $Message .= "</table>";
+  }
+
+  # Only valid usernames get stored in the new cookie.
   my   $name = GetParam('username', '');
   if (!$name) { }
   elsif (!$FreeLinks && !($name =~ /^$LinkPattern$/o)) {
