@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: recaptcha.pl,v 1.2 2008/09/06 13:07:12 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: recaptcha.pl,v 1.3 2008/09/10 09:51:33 as Exp $</p>';
 
 use vars qw(
   $ReCaptchaPrivateKey
@@ -46,8 +46,8 @@ $ReCaptchaSecretKey = 'question';
 
 # Forms using one of the following classes are protected.
 %ReCaptchaProtectedForms = ('comment' => 1,
-				'edit upload' => 1,
-				'edit text' => 1,);
+			    'edit upload' => 1,
+			    'edit text' => 1,);
 
 push(@MyInitVariables, \&ReCaptchaInit);
 
@@ -65,10 +65,11 @@ sub NewReCaptchaDoPost {
   my(@params) = @_;
   my $id = FreeToNormal(GetParam('title', undef));
   my $preview = GetParam('Preview', undef); # case matters!
+  my $correct = 0;
   unless (UserIsEditor()
 	  or $ReCaptchaRememberAnswer && GetParam($ReCaptchaSecretKey, 0)
 	  or $preview
-      or ReCaptchaCheckAnswer()
+	  or $correct = ReCaptchaCheckAnswer() # remember this!
 	  or ReCaptchaException($id)) {
     print GetHeader('', T('Edit Denied'), undef, undef, '403 FORBIDDEN');
     print $q->p(T('You did not answer correctly.'));
@@ -80,7 +81,9 @@ sub NewReCaptchaDoPost {
     # warn "Q: '$ReCaptchaQuestions[$question_num][0]', A: '$answer'\n";
     return;
   }
-  SetParam($ReCaptchaSecretKey, 1) unless GetParam($ReCaptchaSecretKey, 0);
+  if (not GetParam($ReCaptchaSecretKey, 0) and $correct) {
+    SetParam($ReCaptchaSecretKey, 1);
+  }
   return (OldReCaptchaDoPost(@params));
 }
 
