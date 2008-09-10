@@ -1,8 +1,11 @@
-2008-09-06  Alex Schroeder  <alex@gnu.org>
+2008-09-06  Alex Schroeder  <aschroeder@localhost>
 
-	* modules/recaptcha.pl (NewReCaptchaDoPost): Prevent a preview
-	from setting the cookie analogous to the questionasker.pl edit
-	dated 2008-06-11.
+	* modules/recaptcha.pl (QuestionAddTo): Use $ReCaptchaSecretKey
+	instead of 'question'.
+	(NewReCaptchaDoPost, NewReCaptchaDoPost, ReCaptchaQuestionAddTo):
+	Renamed QuestionAddTo to ReCaptchaQuestionAddTo.
+	(NewReCaptchaDoPost): Prevent a preview from setting the cookie
+	analogous to the questionasker.pl edit dated 2008-06-11.
 
 2008-08-07  Alex Schroeder  <alex@gnu.org>
 
