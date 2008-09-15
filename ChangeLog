@@ -1,3 +1,8 @@
+2008-09-15  Brian Curry  <http://www.raiazome.com/Brian_Curry>
+
+	* wiki.pl (BrowsePage): Nested the preview div within the
+	content div, per Oddmuse norms.
+	
 2008-09-06  Alex Schroeder  <aschroeder@localhost>
 
 	* modules/recaptcha.pl (QuestionAddTo): Use $ReCaptchaSecretKey
