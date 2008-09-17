@@ -198,21 +198,6 @@ acronym, abbr {
     font-variant:small-caps;
 }
 
-/* Comments */
-
-.edit a.comment {
-    color: #f00;
-}
-a.comment {
-    display: block;
-    position: relative;
-    top: -7ex;
-    height: 0ex;
-}
-.footer {
-    margin-top: 4ex;
-}
-
 /* Links */
 
 a {
