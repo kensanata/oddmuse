@@ -203,14 +203,14 @@ acronym, abbr {
 .edit a.comment {
     color: #f00;
 }
-.comment {
+a.comment {
     display: block;
     position: relative;
     top: -7ex;
     height: 0ex;
 }
 .footer {
-    margin-top: 8ex;
+    margin-top: 4ex;
 }
 
 /* Links */
