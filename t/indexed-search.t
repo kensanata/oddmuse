@@ -1,8 +1,8 @@
-# Copyright (C) 2006, 2007  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006, 2007, 2008  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation; either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -11,14 +11,11 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 37;
+use Test::More tests => 45;
 
 SKIP: {
   eval { require Search::FreeText };
@@ -33,10 +30,15 @@ SKIP: {
 
   # Test delta indexes as we're not reindexing the pages: Create two
   # pages; one should be part of the journal, the other should not.
-  update_page('Diary', '<journal search -tag:foo>');
-  update_page('2007-10-10', 'ordinary page');
+  test_page(update_page('2007-10-10', 'ordinary page'), 'ordinary');
+  test_page(get_page('action=more'), 'ordinary');
   update_page('2007-10-11', 'page tagged [[tag:foo]]');
-  $page = get_page('Diary');
+  test_page(update_page('Diary', '<journal>'),
+	    '2007-10-10', 'ordinary', '2007-10-11', 'tagged');
+  $page = update_page('Diary', '<journal search tag:foo>');
+  test_page_negative($page, 'ordinary page');
+  test_page($page, 'page tagged');
+  $page = update_page('Diary', '<journal search -tag:foo>');
   test_page($page, 'ordinary page');
   test_page_negative($page, 'page tagged');
 
