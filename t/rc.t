@@ -1,4 +1,4 @@
-# Copyright (C) 2006, 2007  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006, 2007, 2008  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 66;
+use Test::More tests => 70;
 
 clear_pages();
 
@@ -165,3 +165,11 @@ test_page_negative($page, @Negatives);
 $page = get_page('action=rc rcidonly=Bombia');
 test_page($page, @Positives);
 test_page_negative($page, @Negatives);
+
+update_page('Mucidobombus', 'This is limbo.', 'flamenco');
+$page = get_page('action=rc');
+test_page($page, 'flamenco');
+test_page_negative($page, 'tarantella');
+$page = get_page('action=rc all=1');
+test_page($page, 'flamenco');
+test_page($page, 'tarantella');
