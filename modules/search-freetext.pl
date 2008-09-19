@@ -1,8 +1,8 @@
-# Copyright (C) 2004, 2006, 2007  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2006, 2007, 2008  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation; either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -11,10 +11,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 =head1 Indexed Search using Search::FreeText
 
@@ -56,7 +53,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.62 2007/10/19 14:26:05 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.63 2008/09/19 23:55:52 as Exp $</p>';
 
 =head2 User Interface
 
@@ -191,8 +188,7 @@ sub SearchFreeNewPages {
   $ts = (stat("$DataDir/word.db"))[9] if -f "$DataDir/word.db";
   my %index = ();
   foreach my $line (GetRcLines($ts)) {
-    my ($ts, $id) = split(/$FS/o, $line);
-    $index{$id} = 1;
+    $index{$line->[1]} = 1;
   }
   return keys %index;
 }
