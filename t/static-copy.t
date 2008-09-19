@@ -31,6 +31,8 @@ $page =~ m/^Etag: ([0-9]+)/m;
 $ts = $1;
 ok($ts > 0, "Got a timestamp for the first revision");
 
+sleep 1;
+
 xpath_test(update_page('HomePage', "[[image:Logo]]"),
 	   '//a[@class="image"]'
 	   . '[@href="http://localhost/wiki.pl/Logo"]'
