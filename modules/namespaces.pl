@@ -1,8 +1,8 @@
-# Copyright (C) 2004, 2005, 2006, 2007  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2005, 2006, 2007, 2008  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation; either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -11,10 +11,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 =head1 Namespaces Extension
 
@@ -39,7 +36,7 @@ be changed using the C<$NamespacesSelf> option.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.38 2008/03/07 09:43:26 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.39 2008/09/19 23:55:19 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent
 	    $NamespaceRoot $NamespaceSlashing);
@@ -140,23 +137,26 @@ namespace directories. If the first entry in the log file is not old
 enough, we need to prepend the C<oldrc.log> file.
 
 The tricky part is how to introduce the namespace prefixes to the
-links to be printed without copying the whole machinery.
+links to be printed without copying the whole machinery. All the new
+lines belong to a namespace. Prefix every pagename with the namespace
+and a colon, ie. C<Alex:HomePage>. This provides
+C<NewNamespaceScriptUrl> with the necessary information to build the
+correct URL to link to.
 
 =cut
 
-*OldNamespaceDoRc = *DoRc;
-*DoRc = *NewNamespaceDoRc;
+*OldNamespaceGetRcLines = *GetRcLines;
+*GetRcLines = *NewNamespaceGetRcLines;
 
-sub NewNamespaceDoRc { # Copy of DoRc
-  my $GetRC = shift;
-  my $showHTML = $GetRC eq \&GetRcHtml; # optimized for HTML
-  my $starttime = 0;
-  if (GetParam('from', 0)) {
-    $starttime = GetParam('from', 0);
-  } else {
-    $starttime = $Now - GetParam('days', $RcDefault) * 86400; # 24*60*60
-  }
-  # get the list of rc.log and oldrc.log files we need.  rcoldfiles is
+sub NewNamespaceGetRcLines { # starttime, hash of seen pages to use as a second return value
+  my $starttime = shift || GetParam('from', 0) ||
+    $Now - GetParam('days', $RcDefault) * 86400; # 24*60*60
+  my $filterOnly = GetParam('rcfilteronly', '');
+  # these variables apply accross logfiles
+  my %match = $filterOnly ? map { $_ => 1 } SearchTitleAndBody($filterOnly) : ();
+  my %following = ();
+  my @result = ();
+  # Get the list of rc.log and oldrc.log files we need; rcoldfiles is
   # a mapping from rcfiles to rcoldfiles.
   my @rcfiles = ();
   my %rcoldfiles = ();
@@ -167,8 +167,8 @@ sub NewNamespaceDoRc { # Copy of DoRc
   } else {
     push(@rcfiles, $RcFile);
     $rcoldfiles{$RcFile} = $RcOldFile;
-    # get the namespaces from the intermap instead of parsing the
-    # directory.  this reduces the chances of getting different
+    # Get the namespaces from the intermap instead of parsing the
+    # directory. This reduces the chances of getting different
     # results.
     foreach my $site (keys %InterSite) {
       if ($InterSite{$site} =~ m|^$ScriptName/([^/]*)|) {
@@ -180,72 +180,42 @@ sub NewNamespaceDoRc { # Copy of DoRc
       }
     }
   }
-  # start printing header
-  RcHeader() if $showHTML;
-  # now need them line by line, trying to conserve ram instead of
-  # optimizing for speed (and slurping them all in).  when opening a
-  # rcfile, compare the first timestamp with the starttime.  if any
-  # rcfile exists with no timestamp before the starttime, we need to
-  # open its rcoldfile.
-  @lines = ();
+    # Now each rcfile and the matching rcoldfile if required. When
+    # opening a rcfile, compare the first timestamp with the
+    # starttime. If any rcfile exists with no timestamp before the
+    # starttime, we need to open its rcoldfile.
   foreach my $file (@rcfiles) {
-    my ($ts, @new) = NamespaceRcLines($file, $starttime, $namespaces{$file});
-    push(@lines, @new);
-    if (not $ts or $starttime <= $ts) {
-      ($ts, @new) = NamespaceRcLines($rcoldfiles{$file}, $starttime, $namespaces{$file});
-      push(@lines, @new);
+    open(F, $file) or next;
+    my $line = <F> or next;
+    my ($ts) = split(/$FS/o, $line); # the first timestamp in the regular rc file
+    my @new;
+    if ($ts > $starttime) {	# we need to read the old rc file, too
+      push(@new, GetRcLinesFor($rcoldfiles{$file}, $starttime,\%match, \%following));
     }
+    push(@new, GetRcLinesFor($file, $starttime, \%match, \%following));
+    my $ns = $namespaces{$file};
+    if ($ns) {
+      for (my $i = $#new; $i >= 0; $i--) {
+	# page id
+	$new[$i][1] = $ns . ':' . $new[$i][1];
+	# username
+	$new[$i][5] = $ns . ':' . $new[$i][5];
+      }
+    }
+    push(@result, @new);
   }
   # We need to resort these lines...  <=> forces numerical comparison
   # which is just what we need here, as the timestamp is the first
   # part of the line.
-  @lines = sort { $a <=> $b } @lines;
-  # end, printing
-  local *ValidId = *NamespaceValidId;
-  local $NamespaceSlashing = 1;
-  if (not @lines and $showHTML) {
-    print $q->p($q->strong(Ts('No updates since %s', TimeToText($starttime))));
-  } else {
-    print &$GetRC(@lines);
-  }
-  print GetFilterForm() if $showHTML;
+  @result = sort { $a->[0] <=> $b->[0] } @result;
+  # check the first timestamp in the default file, maybe read old log file
+  # GetRcLinesFor is trying to save memory space, but some operations
+  # can only happen once we have all the data.
+  return StripRollbacks(LatestChanges(@result));
 }
 
-=head2 Adding the namespace to pagenames
-
-C<NamespaceRcLines> is a copy of C<GetRcLines> with all the tricky
-details. And in addition to all that, it prefixes every pagename with
-the namespace and a colon, ie. C<Alex:HomePage>. This provides
-C<NewNamespaceScriptUrl> with the necessary information to build the
-correct URL to link to.
-
-=cut
-
-sub NamespaceRcLines {
-  my ($file, $starttime, $ns) = @_;
-  open(F,$file) or return (0, ());
-  my $line = <F> or return (0, ());
-  chomp($line);
-  my ($ts, $pagename, $minor, $summary, $host, $username, $rest)
-    = split(/$FS/, $line);
-  my $first = $ts;
-  my @result = ();
-  while ($ts) {
-    # Add the namespace to the pagename and username -- we need this
-    # information in ScriptUrl!
-    push(@result, join($FS, $ts, ($ns ? ($ns . ':' . $pagename) : $pagename),
-		       $minor, $summary, $host,
-                       ($ns && $username ? ($ns . ':' . $username) : $username),
-		       $rest))
-      if $ts >= $starttime;
-    $line = <F> or last;
-    chomp($line);
-    ($ts, $pagename, $minor, $summary, $host, $username, $rest)
-      = split(/$FS/, $line);
-  }
-  my $rollbacks = (GetParam('all', 0) or GetParam('rollback', 0));
-  return ($first, StripRollbacks($rollbacks, @result));
-}
+# local *ValidId = *NamespaceValidId;
+# local $NamespaceSlashing = 1;
 
 =head2 Encoding pagenames
 
@@ -265,9 +235,6 @@ sub NewNamespaceUrlEncode {
   return $result;
 }
 
-*OldNamespaceScriptUrl = *ScriptUrl;
-*ScriptUrl = *NewNamespaceScriptUrl;
-
 =head2 Printing Links
 
 We also need to override C<ScriptUrl>. This is done by
@@ -281,6 +248,9 @@ pages with redirections result in an appropriate URL.
 This is used for ordinary page viewing and RecentChanges.
 
 =cut
+
+*OldNamespaceScriptUrl = *ScriptUrl;
+*ScriptUrl = *NewNamespaceScriptUrl;
 
 sub NewNamespaceScriptUrl {
   my ($action, @rest) = @_;
