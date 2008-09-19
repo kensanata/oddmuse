@@ -15,24 +15,35 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 93;
+use Test::More tests => 99;
 
 clear_pages();
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
 update_page('big', 'foofoo');
 update_page('2008-08-07_New_Hope', 'testing');
 update_page('2008-08-08', 'testing');
+update_page('2008-08-07_12h50_Forget_It', 'testing');
 update_page('Comments_on_2008-08-07_New_Hope', 'testing');
 test_page(get_page('action=rss full=1'),
 	  '<title>big</title>',
 	  '<title>New Hope</title>',
+	  '<title>12h50 Forget It</title>', # wrong
 	  '<title>2008-08-08</title>',
 	  '<title>Comments on New Hope</title>',
 	  '<description>&lt;p&gt;foo foo&lt;/p&gt;</description>');
 test_page(get_page('action=rss short=0'),
 	  '<title>big</title>',
 	  '<title>2008-08-07 New Hope</title>',
+	  '<title>2008-08-07 12h50 Forget It</title>',
 	  '<title>Comments on 2008-08-07 New Hope</title>');
+AppendStringToFile($ConfigFile, "\$RssStrip = '^\\d\\d\\d\\d-\\d\\d-\\d\\d_(\\d\\d?h\\d\\d_)?';\n");
+test_page(get_page('action=rss'),
+	  '<title>New Hope</title>',
+	  '<title>Forget It</title>');
+AppendStringToFile($ConfigFile, "\$RssStrip = '';\n");
+test_page(get_page('action=rss'),
+	  '<title>2008-08-07 New Hope</title>',
+	  '<title>2008-08-07 12h50 Forget It</title>');
 update_page('big', 'foo foo foo', '<mu>');
 test_page(get_page('action=rss'), '<description>&lt;mu&gt;</description>');
 test_page(get_page('action=rss full=1'), 'foo foo foo');
