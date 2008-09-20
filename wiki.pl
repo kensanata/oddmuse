@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.866 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.867 $}))[1]; # for MakeMaker
 
 # Options:
 
@@ -60,7 +60,7 @@ $StyleSheetPage $ConfigPage $ScriptName @MyMacros $CommentsPrefix
 $PageCluster %PlainTextPages $RssInterwikiTranslate $UseCache $Counter
 $ModuleDir $FullUrlPattern $SummaryDefaultLength $FreeInterLinkPattern
 %InvisibleCookieParameters %AdminPages @MyAdminCode @MyInitVariables
-@MyMaintenance $UseQuestionmark $JournalLimit $LockExpiration
+@MyMaintenance $UseQuestionmark $JournalLimit $LockExpiration $RssStrip
 %LockExpires @IndexOptions @Debugging @MyFooters $DocumentHeader);
 
 # Internal variables:
@@ -147,6 +147,7 @@ $RecentLink  = 1;               # 1 = link to usernames
 $PageCluster = '';              # name of cluster page, eg. 'Cluster' to enable
 $InterWikiMoniker = '';         # InterWiki prefix for this wiki for RSS
 $SiteDescription  = '';         # RSS Description of this wiki
+$RssStrip = '^\d\d\d\d-\d\d-\d\d_'; # Regexp to strip from feed item titles
 $RssImageUrl      = $LogoUrl;   # URL to image to associate with your RSS feed
 $RssRights        = '';         # Copyright notice for RSS, usually an URL to the appropriate text
 $RssExclude       = 'RssExclude'; # name of the page that lists pages to be excluded from the feed
@@ -296,7 +297,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.866 2008/09/15 07:12:21 leycec Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.867 2008/09/20 00:08:11 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -1455,7 +1456,7 @@ sub BrowsePage {
   }
   print $q->end_div();
   SetParam('rcclusteronly', $id) if FreeToNormal(GetCluster($text)) eq $id; # automatically filter by cluster
-  PrintRc($id);
+  PrintRcHtml($id);
   PrintFooter($id, $revision, $comment);
 }
 
@@ -1510,136 +1511,184 @@ sub FileFresh { # old files are never stale, current files are stale when the pa
     and (GetParam('revision', 0) or $q->http('HTTP_IF_NONE_MATCH') eq $Page{ts});
 }
 
-# == Recent changes and RSS
+# == Recent Changes
 
 sub BrowseRc {
   my $id = shift;
   if (GetParam('raw', 0)) {
-    DoRcText();
+    print GetHttpHeader('text/plain');
+    PrintRcText();
   } else {
-    PrintRc($id || $RCName, 1);
+    PrintRcHtml($id || $RCName, 1);
   }
 }
 
-sub PrintRc { # called while browsing any page to append rc to the RecentChanges page
-  my ($id, $standalone) = @_;
-  my $rc = ($id eq $RCName or $id eq T($RCName) or T($id) eq $RCName);
-  print GetHeader('', $rc ? $id : Ts('All changes for %s', $id)) if $standalone;
-  if ($standalone or $rc or GetParam('rcclusteronly', '')) {
-    print $q->start_div({-class=>'rc'});
-    print $q->hr() unless $standalone or GetParam('embed', $EmbedWiki);
-    DoRc(\&GetRcHtml);
-    print $q->end_div();
+sub GetRcLines { # starttime, hash of seen pages to use as a second return value
+  my $starttime = shift || GetParam('from', 0) ||
+    $Now - GetParam('days', $RcDefault) * 86400; # 24*60*60
+  my $filterOnly = GetParam('rcfilteronly', '');
+  # these variables apply accross logfiles
+  my %match = $filterOnly ? map { $_ => 1 } SearchTitleAndBody($filterOnly) : ();
+  my %following = ();
+  my @result = ();
+  # check the first timestamp in the default file, maybe read old log file
+  open(F, $RcFile) or return ();
+  my $line = <F> or return ();
+  my ($ts) = split(/$FS/o, $line); # the first timestamp in the regular rc file
+  if ($ts > $starttime) {          # we need to read the old rc file, too
+    push(@result, GetRcLinesFor($RcOldFile, $starttime,\%match, \%following));
   }
-  PrintFooter($id) if $standalone;
+  push(@result, GetRcLinesFor($RcFile, $starttime, \%match, \%following));
+  # GetRcLinesFor is trying to save memory space, but some operations
+  # can only happen once we have all the data.
+  return LatestChanges(StripRollbacks(@result));
 }
 
-sub DoRcText {
-  print GetHttpHeader('text/plain');
-  DoRc(\&GetRcText);
-}
-
-sub DoRc {
-  my $GetRC = shift;
-  my $showHTML = $GetRC eq \&GetRcHtml; # optimized for HTML
-  my $starttime = 0;
-  if (GetParam('from', 0)) {
-    $starttime = GetParam('from', 0);
-  } else {
-    $starttime = $Now - GetParam('days', $RcDefault) * 86400; # 24*60*60
-  }
-  my @fullrc = GetRcLines($starttime, (GetParam('all', 0) or GetParam('rollback', 0)));
-  RcHeader(@fullrc) if $showHTML;
-  if (@fullrc == 0 and $showHTML) {
-    print $q->p($q->strong(Ts('No updates since %s', TimeToText($starttime))));
-  } else {
-    print &$GetRC(@fullrc);
-  }
-  print GetFilterForm() if $showHTML;
-}
-
-sub GetRcLines {
-  my ($starttime, $rollbacks) = @_;
-  my ($status, $fileData) = ReadFile($RcFile); # read rc.log, errors are not fatal
-  my @fullrc = split(/\n/, $fileData);
-  my $firstTs = 0;
-  ($firstTs) = split(/$FS/o, $fullrc[0]) if @fullrc > 0; # just look at the first timestamp
-  if (($firstTs == 0) || ($starttime <= $firstTs)) { # read oldrc.log if necessary
-    my ($status, $oldFileData) = ReadFile($RcOldFile); # again, errors are not fatal
-    @fullrc = split(/\n/, $oldFileData . $fileData) if $status; # concatenate the file data!
-  }
-  my $i = 0;
-  while ($i < @fullrc) {      # Optimization: skip old entries quickly
-    my ($ts) = split(/$FS/o, $fullrc[$i]); # just look at the first element
-    if ($ts >= $starttime) {
-      $i -= 1000  if ($i > 0);
-      last;
+sub LatestChanges {
+  my $all = GetParam('all', 0);
+  my @result = @_;
+  my %seen = ();
+  for (my $i = $#result; $i >= 0; $i--) {
+    my $id = $result[$i][1];
+    if ($all) {
+      $result[$i][9] = 1 unless $seen{$id}; # mark latest edit
+    } else {
+      splice(@result, $i, 1) if $seen{$id}; # remove older edits
     }
-    $i += 1000;
+    $seen{$id} = 1;
   }
-  $i -= 1000  if (($i > 0) && ($i >= @fullrc));
-  for (; $i < @fullrc ; $i++) {
-    my ($ts) = split(/$FS/o, $fullrc[$i]); # just look at the first element
-    last if ($ts >= $starttime);
-  }
-  splice(@fullrc, 0, $i); # Remove items before index $i
-  return StripRollbacks($rollbacks, @fullrc);
+  return reverse @result;
 }
 
 sub StripRollbacks {
-  my $rollbacks = shift;
   my @result = @_;
-  if (not $rollbacks) {   # strip rollbacks
+  if (not (GetParam('all', 0) or GetParam('rollback', 0))) { # strip rollbacks
     my ($skip_to, $end);
     my %rollback = ();
     for (my $i = $#result; $i >= 0; $i--) {
       # some fields have a different meaning if looking at rollbacks
-      my ($ts, $id, $target_ts, $target_id) = split(/$FS/o, $result[$i]);
+      my $ts = $result[$i][0];
+      my $id = $result[$i][1];
+      my $target_ts = $result[$i][2];
+      my $target_id = $result[$i][3];
       # strip global rollbacks
       if ($skip_to and $ts <= $skip_to) {
-  splice(@result, $i + 1, $end - $i);
-  $skip_to = 0;
+	splice(@result, $i + 1, $end - $i);
+	$skip_to = 0;
       } elsif ($id eq '[[rollback]]') {
-  if ($target_id) {
-    $rollback{$target_id} = $target_ts; # single page rollback
-    splice(@result, $i, 1);             # strip marker
-  } else {
-    $end = $i unless $skip_to;
-    $skip_to = $target_ts; # cumulative rollbacks!
-  }
+	if ($target_id) {
+	  $rollback{$target_id} = $target_ts; # single page rollback
+	  splice(@result, $i, 1);             # strip marker
+	} else {
+	  $end = $i unless $skip_to;
+	  $skip_to = $target_ts; # cumulative rollbacks!
+	}
       } elsif ($rollback{$id} and $ts > $rollback{$id}) {
-  splice(@result, $i, 1); # strip rolled back single pages
+	splice(@result, $i, 1); # strip rolled back single pages
       }
     }
-  } else {      # just strip the marker left by DoRollback()
+  } else {		  # just strip the marker left by DoRollback()
     for (my $i = $#result; $i >= 0; $i--) {
-      my ($ts, $id) = split(/$FS/o, $result[$i]);
-      splice(@result, $i, 1) if $id eq '[[rollback]]';
+      splice(@result, $i, 1) if $result[$i][1] eq '[[rollback]]'; # id
     }
   }
   return @result;
 }
 
+sub GetRcLinesFor {
+  my $file = shift;
+  my $starttime = shift;
+  my %match = %{$_[0]}; # deref
+  my %following = %{$_[1]}; # deref
+  # parameters
+  my $showminoredit = GetParam('showedit', $ShowEdits); # show minor edits
+  my $all = GetParam('all', 0);
+  my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $match, $lang,
+      $followup) = map { GetParam($_, ''); } qw(rcidonly rcuseronly rchostonly
+				rcclusteronly rcfilteronly match lang followup);
+  # parsing and filtering
+  my @result = ();
+  open(F,$file) or return ();
+  while (my $line = <F>) {
+    chomp($line);
+    my ($ts, $id, $minor, $summary, $host, $username, $revision, $languages, $cluster)
+      = split(/$FS/o, $line);
+    next if $ts < $starttime;
+    $following{$id} = $ts if $followup and $followup eq $username;
+    next if $followup and (not $following{$id} or $ts <= $following{$id});
+    next if $idOnly and $idOnly ne $id;
+    next if $filterOnly and not $match{$id};
+    next if ($userOnly and $userOnly ne $username);
+    next if $minor == 1 and !$showminoredit; # skip minor edits (if [[rollback]] this value is bogus)
+    next if !$minor and $showminoredit == 2; # skip major edits
+    next if $match and $id !~ /$match/i;
+    next if $hostOnly and $host !~ /$hostOnly/i;
+    my @languages = split(/,/, $languages);
+    next if $lang and @languages and not grep(/$lang/, @languages);
+    if ($PageCluster) {
+      ($cluster, $summary) = ($1, $2) if $summary =~ /^\[\[$FreeLinkPattern\]\] ?: *(.*)/
+	or $summary =~ /^$LinkPattern ?: *(.*)/o;
+      next if ($clusterOnly and $clusterOnly ne $cluster);
+      $cluster = '' if $clusterOnly; # don't show cluster if $clusterOnly eq $cluster
+      if ($all < 2 and not $clusterOnly and $cluster) {
+	$summary = "$id: $summary"; # print the cluster instead of the page
+	$id = $cluster;
+	$revision = '';
+      }
+    } else {
+      $cluster = '';
+    }
+    $following{$id} = $ts if $followup and $followup eq $username;
+    push(@result, [$ts, $id, $minor, $summary, $host, $username, $revision,
+		   \@languages, $cluster]);
+  }
+  return @result;
+}
+
+sub ProcessRcLines {
+  my $printDailyTear = shift;	# code reference
+  my $printRCLine = shift;	# code reference
+  # needed for output
+  my $date = '';
+  for my $line (GetRcLines()) {
+    my ($ts, $id, $minor, $summary, $host, $username, $revision, $languageref,
+	$cluster, $last) = @$line;
+    if ($date ne CalcDay($ts)) {
+      $date = CalcDay($ts);
+      &$printDailyTear($date);
+    }
+    &$printRCLine($id, $ts, $host, $username, $summary, $minor, $revision,
+		  $languageref, $cluster, $last);
+  }
+}
+
+# == Produce RecentChanges (HTML)
+
 sub RcHeader {
+  my $html;
   if (GetParam('from', 0)) {
-    print $q->h2(Ts('Updates since %s', TimeToText(GetParam('from', 0))));
+    $html .= $q->h2(Ts('Updates since %s', TimeToText(GetParam('from', 0))));
   } else {
-    print $q->h2((GetParam('days', $RcDefault) != 1)
-     ? Ts('Updates in the last %s days', GetParam('days', $RcDefault))
-     : Ts('Updates in the last %s day', GetParam('days', $RcDefault)))
+    $html .= $q->h2((GetParam('days', $RcDefault) != 1)
+		    ? Ts('Updates in the last %s days',
+			 GetParam('days', $RcDefault))
+		    : Ts('Updates in the last %s day',
+			 GetParam('days', $RcDefault)))
   }
   my $days = GetParam('days', $RcDefault);
   my $all = GetParam('all', 0);
   my $edits = GetParam('showedit', 0);
   my $rollback = GetParam('rollback', 0);
   my $action = '';
-  my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $match, $lang, $followup) =
-    map {
-      my $val = GetParam($_, '');
-      print $q->p($q->b('(' . Ts('for %s only', $val) . ')')) if $val;
-      $action .= ";$_=$val" if $val; # remember these parameters later!
-      $val;
-    } qw(rcidonly rcuseronly rchostonly rcclusteronly rcfilteronly match lang followup);
+  my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly,
+      $match, $lang, $followup) =
+	map {
+	  my $val = GetParam($_, '');
+	  $html .= $q->p($q->b('(' . Ts('for %s only', $val) . ')')) if $val;
+	  $action .= ";$_=$val" if $val; # remember these parameters later!
+	  $val;
+	} qw(rcidonly rcuseronly rchostonly rcclusteronly rcfilteronly
+	     match lang followup);
   my $rss = "action=rss$action;days=$days;all=$all;showedit=$edits";
   if ($clusterOnly) {
     $action = GetPageParameters('browse', $clusterOnly) . $action;
@@ -1654,11 +1703,11 @@ sub RcHeader {
     push(@menu, ScriptLink("$action;days=$days;all=1;showedit=$edits",
          T('List all changes')));
     if ($rollback) {
-      push(@menu, ScriptLink("$action;days=$days;all=0;rollback=0;showedit=$edits",
-           T('Skip rollbacks')));
+      push(@menu, ScriptLink("$action;days=$days;all=0;rollback=0;"
+			     . "showedit=$edits", T('Skip rollbacks')));
     } else {
-      push(@menu, ScriptLink("$action;days=$days;all=0;rollback=1;showedit=$edits",
-           T('Include rollbacks')));
+      push(@menu, ScriptLink("$action;days=$days;all=0;rollback=1;"
+			     . "showedit=$edits", T('Include rollbacks')));
     }
   }
   if ($edits) {
@@ -1668,168 +1717,127 @@ sub RcHeader {
     push(@menu, ScriptLink("$action;days=$days;all=$all;showedit=1",
          T('Include minor changes')));
   }
-  print $q->p((map { ScriptLink("$action;days=$_;all=$all;showedit=$edits",
-        ($_ != 1) ? Ts('%s days', $_) : Ts('%s days', $_));
-       } @RcDays), $q->br(), @menu, $q->br(),
-        ScriptLink($action . ';from=' . ($LastUpdate + 1) . ";all=$all;showedit=$edits",
-       T('List later changes')), ScriptLink($rss, T('RSS'), 'rss nopages nodiff'),
-        ScriptLink("$rss;full=1", T('RSS with pages'), 'rss pages nodiff'),
-        ScriptLink("$rss;full=1;diff=1", T('RSS with pages and diff'), 'rss pages diff'));
+  return $html . $q->p((map {
+    ScriptLink("$action;days=$_;all=$all;showedit=$edits",
+	       ($_ != 1) ? Ts('%s days', $_) : Ts('%s days', $_));
+  } @RcDays), $q->br(), @menu, $q->br(),
+    ScriptLink($action . ';from=' . ($LastUpdate + 1)
+	       . ";all=$all;showedit=$edits", T('List later changes')),
+    ScriptLink($rss, T('RSS'), 'rss nopages nodiff'),
+    ScriptLink("$rss;full=1", T('RSS with pages'), 'rss pages nodiff'),
+    ScriptLink("$rss;full=1;diff=1", T('RSS with pages and diff'),
+	       'rss pages diff'));
 }
 
 sub GetFilterForm {
   my $form = $q->strong(T('Filters'));
   $form .= $q->input({-type=>'hidden', -name=>'action', -value=>'rc'});
-  $form .= $q->input({-type=>'hidden', -name=>'all', -value=>1}) if (GetParam('all', 0));
-  $form .= $q->input({-type=>'hidden', -name=>'showedit', -value=>1}) if (GetParam('showedit', 0));
-  $form .= $q->input({-type=>'hidden', -name=>'days', -value=>GetParam('days', $RcDefault)})
+  $form .= $q->input({-type=>'hidden', -name=>'all', -value=>1})
+    if (GetParam('all', 0));
+  $form .= $q->input({-type=>'hidden', -name=>'showedit', -value=>1})
+    if (GetParam('showedit', 0));
+  $form .= $q->input({-type=>'hidden', -name=>'days',
+		      -value=>GetParam('days', $RcDefault)})
     if (GetParam('days', $RcDefault) != $RcDefault);
   my $table = '';
-  foreach my $h (['match' => T('Title:')], ['rcfilteronly' => T('Title and Body:')],
-     ['rcuseronly' => T('Username:')], ['rchostonly' => T('Host:')],
-     ['followup' => T('Follow up to:')]) {
+  foreach my $h (['match' => T('Title:')],
+		 ['rcfilteronly' => T('Title and Body:')],
+		 ['rcuseronly' => T('Username:')], ['rchostonly' => T('Host:')],
+		 ['followup' => T('Follow up to:')]) {
     $table .= $q->Tr($q->td($q->label({-for=>$h->[0]}, $h->[1])),
-         $q->td($q->textfield(-name=>$h->[0], -id=>$h->[0], -size=>20)));
+		     $q->td($q->textfield(-name=>$h->[0], -id=>$h->[0],
+					  -size=>20)));
   }
   $table .= $q->Tr($q->td($q->label({-for=>'rclang'}, T('Language:')))
-       . $q->td($q->textfield(-name=>'lang', -id=>'rclang', -size=>10,
-            -default=>GetParam('lang', '')))) if %Languages;
+		   . $q->td($q->textfield(-name=>'lang', -id=>'rclang',
+					  -size=>10,
+					  -default=>GetParam('lang', ''))))
+    if %Languages;
   return GetFormStart(undef, 'get', 'filter') . $q->p($form) . $q->table($table)
     . $q->p($q->submit('dofilter', T('Go!'))) . $q->endform;
 }
 
-sub GetRc {
-  my $printDailyTear = shift; # code reference
-  my $printRCLine = shift;  # code reference
-  my @outrc = @_;        # the remaining parameters are rc lines
-  my %extra = ();
-  # Slice minor edits
-  my $showedit = GetParam('showedit', $ShowEdits);
-  # Filter out some entries if not showing all changes
-  if ($showedit != 1) {
-    my @temprc = ();
-    foreach my $rcline (@outrc) {
-      my ($ts, $id, $minor) = split(/$FS/o, $rcline); # skip remaining fields
-      if ($showedit == 0) {           # 0 = No edits
-  push(@temprc, $rcline)  if (!$minor);
-      } else {                  # 2 = Only edits
-  push(@temprc, $rcline)  if ($minor);
-      }
-    }
-    @outrc = @temprc;
-  }
-  my $date = '';
-  my $all = GetParam('all', 0);
-  my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $match, $lang, $followup) =
-    map { GetParam($_, ''); } qw(rcidonly rcuseronly rchostonly rcclusteronly
-         rcfilteronly match lang followup);
-  my %following = ();
-  foreach my $rcline (@outrc) { # from oldest to newest
-    my ($ts, $id, $minor, $summary, $host, $username) = split(/$FS/o, $rcline);
-    $following{$id} = $ts if $followup and $followup eq $username;
-  }
-  @outrc = reverse @outrc if GetParam('newtop', $RecentTop);
-  my %seen = ();
-  my %match = $filterOnly ? map { $_ => 1 } SearchTitleAndBody($filterOnly) : ();
-  foreach my $rcline (@outrc) {
-    my ($ts, $id, $minor, $summary, $host, $username, $revision, $languages, $cluster)
-      = split(/$FS/o, $rcline);
-    next if not $all and $seen{$id};
-    next if $idOnly and $idOnly ne $id;
-    next if $filterOnly and not $match{$id};
-    next if ($userOnly and $userOnly ne $username);
-    next if $followup and (not $following{$id} or $ts <= $following{$id});
-    next if $match and $id !~ /$match/i;
-    next if $hostOnly and $host !~ /$hostOnly/i;
-    my @languages = split(/,/, $languages);
-    next if $lang and @languages and not grep(/$lang/, @languages);
-    if ($PageCluster) {
-      ($cluster, $summary) = ($1, $2) if $summary =~ /^\[\[$FreeLinkPattern\]\] ?: *(.*)/
-  or $summary =~ /^$LinkPattern ?: *(.*)/o;
-      next if ($clusterOnly and $clusterOnly ne $cluster);
-      $cluster = '' if $clusterOnly; # don't show cluster if $clusterOnly eq $cluster
-      if ($all < 2 and not $clusterOnly and $cluster) {
-  next if $seen{$cluster};
-  $summary = "$id: $summary"; # print the cluster instead of the page
-  $id = $cluster;
-  $revision = '';
-      }
-    } else {
-      $cluster = '';
-    }
-    if ($date ne CalcDay($ts)) {
-      $date = CalcDay($ts);
-      &$printDailyTear($date);
-    }
-    &$printRCLine($id, $ts, $host, $username, $summary, $minor, $revision,
-      \@languages, $cluster, !$seen{$id});
-    $seen{$id} = 1;
-  }
-}
-
-sub GetRcHtml {
+sub RcHtml {
   my ($html, $inlist) = ('', 0);
   # Optimize param fetches and translations out of main loop
   my $all = GetParam('all', 0);
   my $admin = UserIsAdmin();
   my $rollback_was_possible = 0;
-  GetRc
-    # printDailyTear
-    sub {
-      my $date = shift;
-      if ($inlist) {
-  $html .= '</ul>';
-  $inlist = 0;
-      }
-      $html .= $q->p($q->strong($date));
-      if (!$inlist) {
-  $html .= '<ul>';
-  $inlist = 1;
-      }
-    },
-      # printRCLine
-      sub {
-  my($id, $ts, $host, $username, $summary, $minor, $revision, $languages, $cluster, $last) = @_;
-  my $all_revision = $last ? undef : $revision; # no revision for the last one
-  $host = QuoteHtml($host);
-  my $author = GetAuthorLink($host, $username);
-  my $sum = $summary ? $q->span({class=>'dash'}, ' &#8211; ') . $q->strong(QuoteHtml($summary)) : '';
-  my $edit = $minor ? $q->em({class=>'type'}, T('(minor)')) : '';
-  my $lang = @{$languages} ? $q->span({class=>'lang'}, '[' . join(', ', @{$languages}) . ']') : '';
-  my ($pagelink, $history, $diff, $rollback) = ('', '', '', '');
-  if ($all) {
-    $pagelink = GetOldPageLink('browse', $id, $all_revision, $id, $cluster);
-    my $rollback_is_possible = RollbackPossible($ts);
-    if ($admin and ($rollback_is_possible or $rollback_was_possible)) {
-      $rollback = $q->submit("rollback-$ts", T('rollback'));
-      $rollback_was_possible = $rollback_is_possible;
-    } else {
-      $rollback_was_possible = 0;
+  my $printDailyTear = sub {
+    my $date = shift;
+    if ($inlist) {
+      $html .= '</ul>';
+      $inlist = 0;
     }
-  } elsif ($cluster) {
-    $pagelink = GetOldPageLink('browse', $id, $revision, $id, $cluster);
-  } else {
-    $pagelink = GetPageLink($id, $cluster);
-    $history = '(' . GetHistoryLink($id, T('history')) . ')';
-  }
-  if ($cluster and $PageCluster) {
-    $diff .= GetPageLink($PageCluster) . ':';
-  } elsif ($UseDiff and GetParam('diffrclink', 1)) {
-    if ($revision == 1) {
-      $diff .= '(' . $q->span({-class=>'new'}, T('new')) . ')';
-    } elsif ($all) {
-      $diff .= '(' . ScriptLinkDiff(2, $id, T('diff'), '', $all_revision) . ')';
-    } else {
-      $diff .= '(' . ScriptLinkDiff($minor ? 2 : 1, $id, T('diff'), '') . ')';
+    $html .= $q->p($q->strong($date));
+    if (!$inlist) {
+      $html .= '<ul>';
+      $inlist = 1;
     }
-  }
-  $html .= $q->li($q->span({-class=>'time'}, CalcTime($ts)), $diff, $history, $rollback,
-      $pagelink, T(' . . . . '), $author, $sum, $lang, $edit);
-      },
-  @_;
+  };
+  my $printRCLine = sub {
+    my($id, $ts, $host, $username, $summary, $minor, $revision,
+       $languages, $cluster, $last) = @_;
+    my $all_revision = $last ? undef : $revision; # no revision for the last one
+    $host = QuoteHtml($host);
+    my $author = GetAuthorLink($host, $username);
+    my $sum = $summary ? $q->span({class=>'dash'}, ' &#8211; ')
+      . $q->strong(QuoteHtml($summary)) : '';
+    my $edit = $minor ? $q->em({class=>'type'}, T('(minor)')) : '';
+    my $lang = @{$languages}
+      ? $q->span({class=>'lang'}, '[' . join(', ', @{$languages}) . ']') : '';
+    my ($pagelink, $history, $diff, $rollback) = ('', '', '', '');
+    if ($all) {
+      $pagelink = GetOldPageLink('browse', $id, $all_revision, $id, $cluster);
+      my $rollback_is_possible = RollbackPossible($ts);
+      if ($admin and ($rollback_is_possible or $rollback_was_possible)) {
+	$rollback = $q->submit("rollback-$ts", T('rollback'));
+	$rollback_was_possible = $rollback_is_possible;
+      } else {
+	$rollback_was_possible = 0;
+      }
+    } elsif ($cluster) {
+      $pagelink = GetOldPageLink('browse', $id, $revision, $id, $cluster);
+    } else {
+      $pagelink = GetPageLink($id, $cluster);
+      $history = '(' . GetHistoryLink($id, T('history')) . ')';
+    }
+    if ($cluster and $PageCluster) {
+      $diff .= GetPageLink($PageCluster) . ':';
+    } elsif ($UseDiff and GetParam('diffrclink', 1)) {
+      if ($revision == 1) {
+	$diff .= '(' . $q->span({-class=>'new'}, T('new')) . ')';
+      } elsif ($all) {
+	$diff .= '(' . ScriptLinkDiff(2, $id, T('diff'), '', $all_revision) .')';
+      } else {
+	$diff .= '(' . ScriptLinkDiff($minor ? 2 : 1, $id, T('diff'), '') . ')';
+      }
+    }
+    $html .= $q->li($q->span({-class=>'time'}, CalcTime($ts)), $diff, $history,
+		    $rollback, $pagelink, T(' . . . . '), $author, $sum, $lang,
+		    $edit);
+  };
+  ProcessRcLines($printDailyTear, $printRCLine);
   $html .= '</ul>' if $inlist;
   return GetFormStart() . $html . $q->endform;
 }
+
+sub PrintRcHtml { # to append RC to existing page, or action=rc directly
+  my ($id, $standalone) = @_;
+  my $rc = ($id eq $RCName or $id eq T($RCName) or T($id) eq $RCName);
+  print GetHeader('', $rc ? $id : Ts('All changes for %s', $id)) if $standalone;
+  if ($standalone or $rc or GetParam('rcclusteronly', '')) {
+    print $q->start_div({-class=>'rc'});
+    print $q->hr() unless $standalone or GetParam('embed', $EmbedWiki);
+    print RcHeader();
+    print RcHtml();
+    print GetFilterForm();
+    print $q->end_div();
+  }
+  PrintFooter($id) if $standalone;
+}
+
+# == Produce RSS 3.0 (text) ==
 
 sub RcTextItem {
   my ($name, $value) = @_;
@@ -1839,24 +1847,30 @@ sub RcTextItem {
 }
 
 sub RcTextRevision {
-  my($id, $ts, $host, $username, $summary, $minor, $revision, $languages, $cluster, $last) = @_;
-  my $link = $ScriptName . (GetParam('all', 0) && ! $last
-          ? '?' . GetPageParameters('browse', $id, $revision, $cluster, $last)
-          : ($UsePathInfo ? '/' : '?') . UrlEncode($id));
-  print "\n", RcTextItem('title', NormalToFree($id)), RcTextItem('description', $summary),
-    RcTextItem('generator', $username ? $username . ' ' . Ts('from %s', $host) : $host),
-      RcTextItem('language', join(', ', @{$languages})), RcTextItem('link', $link),
-  RcTextItem('last-modified', TimeToW3($ts)), RcTextItem('revision', $revision);
+  my($id, $ts, $host, $username, $summary, $minor, $revision,
+     $languages, $cluster, $last) = @_;
+  my $link = $ScriptName
+    . (GetParam('all', 0) && ! $last
+       ? '?' . GetPageParameters('browse', $id, $revision, $cluster, $last)
+       : ($UsePathInfo ? '/' : '?') . UrlEncode($id));
+  print "\n", RcTextItem('title', NormalToFree($id)),
+    RcTextItem('description', $summary),
+    RcTextItem('generator', $username
+	       ? $username . ' ' . Ts('from %s', $host) : $host),
+    RcTextItem('language', join(', ', @{$languages})), RcTextItem('link', $link),
+    RcTextItem('last-modified', TimeToW3($ts)),
+      RcTextItem('revision', $revision);
 }
 
-sub GetRcText {
-  my $text;
+sub PrintRcText { # print text rss header and call ProcessRcLines
   local $RecentLink = 0;
-  print RcTextItem('title', $SiteName), RcTextItem('description', $SiteDescription),
-    RcTextItem('link', $ScriptName), RcTextItem('generator', 'Oddmuse'), RcTextItem('rights', $RssRights);
-  GetRc(sub {}, \&RcTextRevision, @_);
-  return $text;
+  print RcTextItem('title', $SiteName),
+    RcTextItem('description', $SiteDescription), RcTextItem('link', $ScriptName),
+    RcTextItem('generator', 'Oddmuse'), RcTextItem('rights', $RssRights);
+  ProcessRcLines(sub {}, \&RcTextRevision);
 }
+
+# == Produce RSS 2.0 ==
 
 sub GetRcRss {
   my $date = TimeToRFC822($LastUpdate);
@@ -1880,16 +1894,20 @@ sub GetRcRss {
 <channel>
 <docs>http://blogs.law.harvard.edu/tech/rss</docs>
 };
-  $rss .= "<title>" .  QuoteHtml($SiteName) . ': ' . GetParam('title', QuoteHtml(NormalToFree($RCName))) . "</title>\n";
+  $rss .= "<title>" .  QuoteHtml($SiteName) . ': '
+    . GetParam('title', QuoteHtml(NormalToFree($RCName))) . "</title>\n";
   $rss .= "<link>" . ScriptUrl(UrlEncode($RCName)) . "</link>\n";
-  $rss .= "<description>" . QuoteHtml($SiteDescription) . "</description>\n" if $SiteDescription;
+  $rss .= "<description>" . QuoteHtml($SiteDescription) . "</description>\n"
+    if $SiteDescription;
   $rss .= "<pubDate>" . $date. "</pubDate>\n";
   $rss .= "<lastBuildDate>" . $date . "</lastBuildDate>\n";
   $rss .= "<generator>Oddmuse</generator>\n";
   $rss .= "<copyright>" . $RssRights . "</copyright>\n" if $RssRights;
   $rss .= join('', map {"<cc:license>" . QuoteHtml($_) . "</cc:license>\n"}
-         (ref $RssLicense eq 'ARRAY' ? @$RssLicense : $RssLicense)) if $RssLicense;
-  $rss .= "<wiki:interwiki>" . $InterWikiMoniker . "</wiki:interwiki>\n" if $InterWikiMoniker;
+	       (ref $RssLicense eq 'ARRAY' ? @$RssLicense : $RssLicense))
+    if $RssLicense;
+  $rss .= "<wiki:interwiki>" . $InterWikiMoniker . "</wiki:interwiki>\n"
+    if $InterWikiMoniker;
   if ($RssImageUrl) {
     $rss .= "<image>\n";
     $rss .= "<url>" . $RssImageUrl . "</url>\n";
@@ -1899,17 +1917,19 @@ sub GetRcRss {
   }
   my $limit = GetParam("rsslimit", 15); # Only take the first 15 entries
   my $count = 0;
-  GetRc(sub {}, sub {
-    my $id = shift;
-    return if $excluded{$id} or ($limit ne 'all' and $count++ >= $limit);
-    $rss .= "\n" . RssItem($id, @_);
-  }, @_);
+  ProcessRcLines(sub {}, sub {
+		   my $id = shift;
+		   return if $excluded{$id}
+		     or ($limit ne 'all' and $count++ >= $limit);
+		   $rss .= "\n" . RssItem($id, @_);
+		 }, @_);
   $rss .= "</channel>\n</rss>\n";
   return $rss;
 }
 
 sub RssItem {
-  my ($id, $ts, $host, $username, $summary, $minor, $revision, $languages, $cluster, $last) = @_;
+  my ($id, $ts, $host, $username, $summary, $minor, $revision,
+      $languages, $cluster, $last) = @_;
   my $name = ItemName($id);
   $summary = PageHtml($id, 50*1024, T('This page is too big to send over RSS.'))
     if (GetParam('full', 0)); # full page means summary is not shown
@@ -1919,25 +1939,29 @@ sub RssItem {
   my $rss = "<item>\n";
   $rss .= "<title>" . QuoteHtml($name) . "</title>\n";
   $rss .= "<link>" . ScriptUrl(GetParam('all', $cluster)
-             ? GetPageParameters('browse', $id, $revision, $cluster, $last)
-             : UrlEncode($id)) . "</link>\n";
+			       ? GetPageParameters('browse', $id, $revision,
+						   $cluster, $last)
+			       : UrlEncode($id)) . "</link>\n";
   $rss .= "<description>" . QuoteHtml($summary) . "</description>\n" if $summary;
   $rss .= "<pubDate>" . $date . "</pubDate>\n";
-  $rss .= "<comments>" . ScriptUrl($CommentsPrefix . UrlEncode($id)) . "</comments>\n"
-    if $CommentsPrefix and $id !~ /^$CommentsPrefix/o;
+  $rss .= "<comments>" . ScriptUrl($CommentsPrefix . UrlEncode($id))
+    . "</comments>\n" if $CommentsPrefix and $id !~ /^$CommentsPrefix/o;
   $rss .= "<wiki:username>" . $username . "</wiki:username>\n" if $username;
-  $rss .= "<wiki:status>" . (1 == $revision ? 'new' : 'updated') . "</wiki:status>\n";
-  $rss .= "<wiki:importance>" . ($minor ? 'minor' : 'major') . "</wiki:importance>\n";
+  $rss .= "<wiki:status>" . (1 == $revision ? 'new' : 'updated')
+    . "</wiki:status>\n";
+  $rss .= "<wiki:importance>" . ($minor ? 'minor' : 'major')
+    . "</wiki:importance>\n";
   $rss .= "<wiki:version>" . $revision . "</wiki:version>\n";
-  $rss .= "<wiki:history>" . ScriptUrl("action=history;id=" . UrlEncode($id)) . "</wiki:history>\n";
-  $rss .= "<wiki:diff>" . ScriptUrl("action=browse;diff=1;id=" . UrlEncode($id)) . "</wiki:diff>\n"
-    if $UseDiff and GetParam('diffrclink', 1);
+  $rss .= "<wiki:history>" . ScriptUrl("action=history;id=" . UrlEncode($id))
+    . "</wiki:history>\n";
+  $rss .= "<wiki:diff>" . ScriptUrl("action=browse;diff=1;id=" . UrlEncode($id))
+    . "</wiki:diff>\n" if $UseDiff and GetParam('diffrclink', 1);
   return $rss . "</item>\n";
 }
 
 sub DoRss {
   print GetHttpHeader('application/xml');
-  DoRc(\&GetRcRss);
+  print GetRcRss();
 }
 
 # == History & Rollback ==
@@ -1947,9 +1971,11 @@ sub DoHistory {
   ValidIdOrDie($id);
   OpenPage($id);
   if (GetParam('raw', 0)) {
-    print GetHttpHeader('text/plain'), RcTextItem('title', Ts('History of %s', NormalToFree($OpenPageName))),
-      RcTextItem('date', TimeToText($Now)), RcTextItem('link', $q->url(-path_info=>1, -query=>1)),
-  RcTextItem('generator', 'Oddmuse');
+    print GetHttpHeader('text/plain'),
+      RcTextItem('title', Ts('History of %s', NormalToFree($OpenPageName))),
+      RcTextItem('date', TimeToText($Now)),
+      RcTextItem('link', $q->url(-path_info=>1, -query=>1)),
+      RcTextItem('generator', 'Oddmuse');
     SetParam('all', 1);
     my @languages = split(/,/, $Page{languages});
     RcTextRevision($id, $Page{ts}, $Page{host}, $Page{username}, $Page{summary},
@@ -1957,13 +1983,14 @@ sub DoHistory {
     foreach my $revision (GetKeepRevisions($OpenPageName)) {
       my %keep = GetKeptRevision($revision);
       @languages = split(/,/, $keep{languages});
-      RcTextRevision($id, $keep{ts}, $keep{host}, $keep{username}, $keep{summary}, $keep{minor},
-         $keep{revision}, \@languages);
+      RcTextRevision($id, $keep{ts}, $keep{host}, $keep{username},
+		     $keep{summary}, $keep{minor}, $keep{revision}, \@languages);
     }
   } else {
     print GetHeader('',QuoteHtml(Ts('History of %s', $id)));
     my $row = 0;
-    my $rollback = UserCanEdit($id, 0) && (GetParam('username', '') or UserIsEditor());
+    my $rollback = UserCanEdit($id, 0) && (GetParam('username', '')
+					   or UserIsEditor());
     my $ts;
     my @html = (GetHistoryLine($id, \%Page, $row++, $rollback, \$ts));
     foreach my $revision (GetKeepRevisions($OpenPageName)) {
@@ -1971,15 +1998,15 @@ sub DoHistory {
       push(@html, GetHistoryLine($id, \%keep, $row++, $rollback, \$ts));
     }
     @html = (GetFormStart(undef, 'get', 'history'),
-       $q->p($q->submit({-name=>T('Compare')}),
-       # don't use $q->hidden here, the sticky action
-       # value will be used instead
-       $q->input({-type=>'hidden', -name=>'action', -value=>'browse'}),
-       $q->input({-type=>'hidden', -name=>'diff', -value=>'1'}),
-       $q->input({-type=>'hidden', -name=>'id', -value=>$id})),
-       $q->table({-class=>'history'}, @html),
-       $q->p($q->submit({-name=>T('Compare')})),
-       $q->end_form()) if $UseDiff;
+	     $q->p($q->submit({-name=>T('Compare')}),
+		   # don't use $q->hidden here, the sticky action
+		   # value will be used instead
+		   $q->input({-type=>'hidden',-name=>'action',-value=>'browse'}),
+		   $q->input({-type=>'hidden', -name=>'diff', -value=>'1'}),
+		   $q->input({-type=>'hidden', -name=>'id', -value=>$id})),
+	     $q->table({-class=>'history'}, @html),
+	     $q->p($q->submit({-name=>T('Compare')})),
+	     $q->end_form()) if $UseDiff;
     push(@html, $q->p(ScriptLink('title=' . UrlEncode($id) . ';text='
          . UrlEncode($DeletedPage) . ';summary='
          . UrlEncode(T('Deleted')),
@@ -2004,19 +2031,22 @@ sub GetHistoryLine {
     $html .= ' ' . GetPageLink($id, Ts('Revision %s', $revision));
   } else {
     $html .= ' ' . $q->submit("rollback-$data{ts}", T('rollback')) if $rollback;
-    $html .= ' ' . GetOldPageLink('browse', $id, $revision, Ts('Revision %s', $revision));
+    $html .= ' ' . GetOldPageLink('browse', $id, $revision,
+				  Ts('Revision %s', $revision));
   }
   my $host = $data{host};
   $host = $data{ip} unless $host;
   $html .= T(' . . . . ') . GetAuthorLink($host, $data{username});
-  $html .= $q->span({class=>'dash'}, ' &#8211; ') . $q->strong(QuoteHtml($data{summary})) if $data{summary};
+  $html .= $q->span({class=>'dash'}, ' &#8211; ')
+    . $q->strong(QuoteHtml($data{summary})) if $data{summary};
   $html .= ' ' . $q->em({class=>'type'}, T('(minor)')) . ' ' if $data{minor};
   if ($UseDiff) {
     my %attr1 = (-type=>'radio', -name=>'diffrevision', -value=>$revision);
     $attr1{-checked} = 'checked' if 1==$row;
     my %attr2 = (-type=>'radio', -name=>'revision', -value=>$revision);
     $attr2{-checked} = 'checked' if 0==$row;
-    $html = $q->Tr($q->td($q->input(\%attr1)), $q->td($q->input(\%attr2)), $q->td($html));
+    $html = $q->Tr($q->td($q->input(\%attr1)), $q->td($q->input(\%attr2)),
+		   $q->td($html));
     $html = $q->Tr($q->td({-colspan=>3}, $q->strong($date))) . $html if $newday;
   } else {
     $html .= $q->br();
@@ -2027,13 +2057,16 @@ sub GetHistoryLine {
 
 sub DoContributors {
   my $id = shift;
+  SetParam('rcidonly', $id);
+  SetParam('all', 1);
   print GetHeader('', Ts('Contributors to %s', $id || $SiteName));
   my %contrib = ();
-  for (GetRcLines(1)) {
-    my ($ts, $pagename, $minor, $summary, $host, $username) = split(/$FS/o, $_);
-    $contrib{$username}++ if $username and (not $id or $pagename eq $id);
+  for my $line (GetRcLines(1)) {
+    my ($ts, $pagename, $minor, $summary, $host, $username) = @$line;
+    $contrib{$username}++ if $username;
   }
-  print $q->div({-class=>'content contrib'}, $q->p(map { GetPageLink($_) } sort(keys %contrib)));
+  print $q->div({-class=>'content contrib'},
+		$q->p(map { GetPageLink($_) } sort(keys %contrib)));
   PrintFooter();
 }
 
@@ -2051,8 +2084,8 @@ sub DoRollback {
   my @ids = ();
   if (not $page) {   # cannot just use list length because of ('')
     return unless UserIsAdminOrError(); # only admins can do mass changes
-    my %ids = map { my ($ts, $id) = split(/$FS/o); $id => 1; } # make unique via hash
-      GetRcLines($Now - $KeepDays * 86400, 1); # 24*60*60
+    my %ids = map { my ($ts, $id) = @$_; $id => 1; } # make unique via hash
+      GetRcLines($Now - $KeepDays * 86400); # 24*60*60
     @ids = keys %ids;
   } else {
     @ids = ($page);
@@ -2959,7 +2992,10 @@ sub FreeToNormal {    # trim all spaces and convert them to underlines
 
 sub ItemName {
   my $id = shift; # id
-  $id =~ s/^($CommentsPrefix)?(\d\d\d\d-\d\d-\d\d_)/$1/ if GetParam('short', 1);
+  return NormalToFree($id) unless GetParam('short', 1) and $RssStrip;
+  my $comment = $id =~ s/^($CommentsPrefix)//o; # strip first so that ^ works
+  $id =~ s/^$RssStrip//o;
+  $id = $CommentsPrefix . $id if $comment;
   return NormalToFree($id);
 }
 
