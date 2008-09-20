@@ -1,3 +1,32 @@
+2008-09-20  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($RssStrip): New option.
+	(ItemName): Strip the default date from the item title.
+
+	* wiki.pl (BrowsePage): Replace call to PrintRc with PrintRcHtml.
+	(BrowseRc): Replace call to PrintRc with PrintRcHtml. Use
+	PrintRcText instead of DoRcText.
+	(PrintRc, DoRcText, DoRc, GetRc, GetRcHtml, GetRcText): Deleted.
+	(GetRcLines): Moved.
+	(LatestChanges, RcHtml, PrintRcHtml, PrintRcText): New.
+	(StripRollbacks): Change to new format returned by GetRcLines.
+	(GetRcLinesFor): Factored out the per-file code of GetRcLines.
+	(ProcessRcLines): Calls the per day and per item code fragments.
+	(RcHeader): Return HTML instead of printing it.
+	(GetRcHtml, GetRcRss): Call ProcessRcLines instead of GetRc.
+	(DoRss): Call GetRcRss instead of DoRc and passing GetRcRss.
+	(DoContributors): Set parameters instead of relying on the default
+	behaviour of GetRcLines.
+
+	Change also contains a lot of whitespace changes.
+
+	* modules/search-freetext.pl (SearchFreeNewPages): Changed result
+	handling of call to GetRcLines.
+
+	* modules/namespaces.pl (NewNamespaceDoRc): No longer needed.
+	(NewNamespaceGetRcLines): New.
+	(NamespaceRcLines): No longer needed.
+
 2008-09-19  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
 	* modules/hibernal.pl: New.
