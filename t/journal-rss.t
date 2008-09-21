@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 16;
+use Test::More tests => 38;
 clear_pages();
 
 add_module('journal-rss.pl');
@@ -36,10 +36,41 @@ test_page_negative($page, 'unrelated', 'wrong page');
 test_page(get_page('action=journal reverse=1'),
 	  '2008-09-21(.*\n)+.*2008-09-22');
 
-my $page = get_page('action=journal match=21');
+$page = get_page('action=journal match=21');
 test_page($page, '2008-09-21', 'first page');
 test_page_negative($page, '2008-09-22', 'second page');
 
-my $page = get_page('action=journal search=second');
+$page = get_page('action=journal search=second');
 test_page($page, '2008-09-22', 'second page');
 test_page_negative($page, '2008-09-21', 'first page');
+
+update_page('2008-09-05', 'page');
+update_page('2008-09-06', 'page');
+update_page('2008-09-07', 'page');
+update_page('2008-09-08', 'page');
+update_page('2008-09-09', 'page');
+update_page('2008-09-10', 'page');
+update_page('2008-09-11', 'page');
+update_page('2008-09-12', 'page');
+update_page('2008-09-13', 'page');
+update_page('2008-09-14', 'page');
+update_page('2008-09-15', 'page');
+update_page('2008-09-16', 'page');
+update_page('2008-09-17', 'page');
+update_page('2008-09-18', 'page');
+update_page('2008-09-19', 'page');
+update_page('2008-09-20', 'page');
+
+$page = get_page('action=journal');
+test_page($page, '2008-09-22', '2008-09-21', '2008-09-20', '2008-09-19',
+	  '2008-09-18', '2008-09-17', '2008-09-16', '2008-09-15',
+	  '2008-09-14', '2008-09-13');
+test_page_negative($page, '2008-09-12', '2008-09-11', '2008-09-10', '2008-09-09',
+		   '2008-09-08', '2008-09-07', '2008-09-06', '2008-09-05');
+
+$page = get_page('action=journal rsslimit=1');
+test_page($page, '2008-09-22');
+test_page_negative($page, '2008-09-21');
+
+$page = get_page('action=journal rsslimit=all');
+test_page($page, '2008-09-22', '2008-09-05');
