@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.17 2008/09/21 22:07:01 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.18 2008/09/21 22:15:14 as Exp $</p>';
 
 $Action{journal} = \&DoJournalRss;
 
@@ -73,9 +73,9 @@ sub JournalRssGetRcLines {
       }
     }
     my @languages = split(/,/, $languages);
-    unshift (@result, [$Page{ts}, $id, $Page{minor}, $Page{summary}, $Page{host},
-		       $Page{username}, $Page{revision}, \@languages,
-		       GetCluster($Page{text})]);
+    push (@result, [$Page{ts}, $id, $Page{minor}, $Page{summary}, $Page{host},
+		    $Page{username}, $Page{revision}, \@languages,
+		    GetCluster($Page{text})]);
   }
   return @result;
 }
