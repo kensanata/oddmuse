@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.868 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.869 $}))[1]; # for MakeMaker
 
 # Options:
 
@@ -297,7 +297,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.868 2008/09/21 22:07:45 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.869 2008/09/21 23:31:46 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -2115,10 +2115,10 @@ sub DoRollback {
 sub DoAdminPage {
   my ($id, @rest) = @_;
   my @menu = (ScriptLink('action=index', T('Index of all pages'), 'index'),
-        ScriptLink('action=version', T('Wiki Version'), 'version'),
-        ScriptLink('action=unlock', T('Unlock Wiki'), 'unlock'),
-        ScriptLink('action=password', T('Password'), 'password'),
-        ScriptLink('action=maintain', T('Run maintenance'), 'maintain'));
+	      ScriptLink('action=version', T('Wiki Version'), 'version'),
+	      ScriptLink('action=unlock', T('Unlock Wiki'), 'unlock'),
+	      ScriptLink('action=password', T('Password'), 'password'),
+	      ScriptLink('action=maintain', T('Run maintenance'), 'maintain'));
   if (UserIsAdmin()) {
     push(@menu, ScriptLink('action=clear', T('Clear Cache'), 'clear'));
     if (-f "$DataDir/noedit") {
@@ -2130,9 +2130,11 @@ sub DoAdminPage {
     if ($id) {
       my $title = NormalToFree($id);
       if (-f GetLockedPageFile($id)) {
-  push(@menu, ScriptLink('action=pagelock;set=0;id=' . UrlEncode($id), Ts('Unlock %s', $title), 'pagelock 0'));
+	push(@menu, ScriptLink('action=pagelock;set=0;id=' . UrlEncode($id),
+			       Ts('Unlock %s', $title), 'pagelock 0'));
       } else {
-  push(@menu, ScriptLink('action=pagelock;set=1;id=' . UrlEncode($id), Ts('Lock %s', $title), 'pagelock 1'));
+	push(@menu, ScriptLink('action=pagelock;set=1;id=' . UrlEncode($id),
+			       Ts('Lock %s', $title), 'pagelock 1'));
       }
     }
   }
@@ -2142,10 +2144,10 @@ sub DoAdminPage {
   }
   print GetHeader('', T('Administration')),
     $q->div({-class=>'content admin'}, $q->p(T('Actions:')), $q->ul($q->li(\@menu)),
-      $q->p(T('Important pages:')) . $q->ul(map { $q->li(GetPageOrEditLink($_, NormalToFree($_))) if $_;
-                  } sort keys %AdminPages),
-      $q->p(Ts('To mark a page for deletion, put <strong>%s</strong> on the first line.',
-         $DeletedPage)), @rest);
+	    $q->p(T('Important pages:')) . $q->ul(map { $q->li(GetPageOrEditLink($_, NormalToFree($_))) if $_;
+						      } sort keys %AdminPages),
+	    $q->p(Ts('To mark a page for deletion, put <strong>%s</strong> on the first line.',
+		     $DeletedPage)), @rest);
   PrintFooter();
 }
 
