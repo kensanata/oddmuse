@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 6;
+use Test::More tests => 16;
 clear_pages();
 
 add_module('journal-rss.pl');
@@ -28,5 +28,18 @@ update_page('unrelated', 'wrong page');
 my $page = get_page('action=journal');
 test_page($page,
 	  '2008-09-21', 'first page',
-	  '2008-09-22', 'second page');
+	  '2008-09-22', 'second page',
+	  # reverse sort is the default
+	  '2008-09-22(.*\n)+.*2008-09-21');
 test_page_negative($page, 'unrelated', 'wrong page');
+
+test_page(get_page('action=journal reverse=1'),
+	  '2008-09-21(.*\n)+.*2008-09-22');
+
+my $page = get_page('action=journal match=21');
+test_page($page, '2008-09-21', 'first page');
+test_page_negative($page, '2008-09-22', 'second page');
+
+my $page = get_page('action=journal search=second');
+test_page($page, '2008-09-22', 'second page');
+test_page_negative($page, '2008-09-21', 'first page');
