@@ -22,4 +22,13 @@ add_module('listlocked.pl');
 
 update_page('test', 'test');
 
-ok('' eq get_page('action=listlocked raw=1'), 'No locked pages');
+test_page(get_page('action=listlocked'),
+	  '<div class="content list locked"><p></p></div>');
+
+get_page('action=pagelock id=test set=1 pwd=foo');
+
+test_page(get_page('action=listlocked raw=1'),
+	  "\ntest\n");
+
+xpath_test(get_page('action=listlocked'),
+	   '//div/p/a[text()="test"]');
