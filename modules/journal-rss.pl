@@ -1,8 +1,8 @@
-# Copyright (C) 2004, 2006, 2007  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2006, 2007, 2008  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation; either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -11,12 +11,9 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.19 2008/09/21 22:54:28 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.20 2008/09/21 23:23:01 as Exp $</p>';
 
 $Action{journal} = \&DoJournalRss;
 
@@ -53,7 +50,12 @@ sub JournalRssGetRcLines {
     # edit.
     if ($Page{minor}) {
       # Perhaps the old kept revision is gone due to $KeepMajor=0 or
-      # admin.pl...
+      # admin.pl or because a page was created as a minor change and
+      # never edited. Reading kept revisions in this case results in
+      # an error. If possible we will report the date of the last
+      # major change in order to not confuse blog aggregators (aka.
+      # planets). Thus, on a minor change, the item will reappear in
+      # the feed but its pubDate will be unchanged.
       eval {
 	my %keep = GetKeptRevision($Page{lastmajor});
 	$Page{ts} = $keep{ts};
