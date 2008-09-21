@@ -1,3 +1,14 @@
+2008-09-22  Alex Schroeder  <alex@gnu.org>
+
+	* modules/journal-rss.pl (JournalRssGetRcLines): New.
+	(DoJournalRss): Use JournalRssGetRcLines since GetRcRss was
+	changed.
+
+2008-09-21  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetRcRss): Since this sub no longer takes RC lines as
+	parameters, there's no point in passing @_ to ProcessRcLines.
+
 2008-09-20  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl ($RssStrip): New option.
