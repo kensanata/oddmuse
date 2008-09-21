@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.18 2008/09/21 22:15:14 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.19 2008/09/21 22:54:28 as Exp $</p>';
 
 $Action{journal} = \&DoJournalRss;
 
@@ -43,19 +43,6 @@ sub JournalRssGetRcLines {
   }
   # FIXME: Missing 'future' and 'past' keywords.
   # FIXME: Do we need 'offset'? I don't think so.
-  @pages = @pages[0 .. $num - 1] if $num ne 'all' and $#pages >= $num;
-  # Generate artifical rows in the list to pass to GetRcRss. We need
-  # to open every single page, because the meta-data ordinarily
-  # available in the rc.log file is not available to us. This is why
-  # we observe the rsslimit parameter. Without it, we would have to
-  # open *all* date pages. This leads to the unfortunate situation
-  # that the RC code can remove some more rows and then the end result
-  # will be smaller than rsslimit. There is no alternative, however,
-  # unless we copy the entire RC code. We could try to do better by
-  # multiplying $num by a certain factor. In the *default* situation,
-  # however, this will be inefficient as disk access is very slow. In
-  # these non-default situations it might make more sense to require
-  # users to explicitly pass a higher rsslimit.
   my @result = ();
   foreach my $id (@pages) {
     # Now save information required for saving the cache of the current page.
@@ -72,10 +59,16 @@ sub JournalRssGetRcLines {
 	$Page{ts} = $keep{ts};
       }
     }
+    # Generate artifical rows in the list to pass to GetRcRss. We need
+    # to open every single page, because the meta-data ordinarily
+    # available in the rc.log file is not available to us. This is why
+    # we observe the rsslimit parameter. Without it, we would have to
+    # open *all* date pages.
     my @languages = split(/,/, $languages);
     push (@result, [$Page{ts}, $id, $Page{minor}, $Page{summary}, $Page{host},
 		    $Page{username}, $Page{revision}, \@languages,
 		    GetCluster($Page{text})]);
+    last if $num ne 'all' and $#result + 1 >= $num;
   }
   return @result;
 }
