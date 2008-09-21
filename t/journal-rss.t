@@ -15,20 +15,22 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 38;
+use Test::More tests => 40;
 clear_pages();
 
 add_module('journal-rss.pl');
 
 # summaries eq page content since no summaries are provided
 update_page('2008-09-21', 'first page');
-update_page('2008-09-22', 'second page', undef, 1); # minor
+update_page('2008-09-22', 'second page'); # major
+sleep(1);
+update_page('2008-09-22', 'second page updated', 'second page updated', 1); # minor
 update_page('unrelated', 'wrong page');
 
 my $page = get_page('action=journal');
 test_page($page,
 	  '2008-09-21', 'first page',
-	  '2008-09-22', 'second page',
+	  '2008-09-22', 'second page updated',
 	  # reverse sort is the default
 	  '2008-09-22(.*\n)+.*2008-09-21');
 test_page_negative($page, 'unrelated', 'wrong page');
@@ -38,10 +40,10 @@ test_page(get_page('action=journal reverse=1'),
 
 $page = get_page('action=journal match=21');
 test_page($page, '2008-09-21', 'first page');
-test_page_negative($page, '2008-09-22', 'second page');
+test_page_negative($page, '2008-09-22', 'second page updated');
 
 $page = get_page('action=journal search=second');
-test_page($page, '2008-09-22', 'second page');
+test_page($page, '2008-09-22', 'second page updated');
 test_page_negative($page, '2008-09-21', 'first page');
 
 update_page('2008-09-05', 'page');
@@ -74,3 +76,15 @@ test_page_negative($page, '2008-09-21');
 
 $page = get_page('action=journal rsslimit=all');
 test_page($page, '2008-09-22', '2008-09-05');
+
+# Now let's show that we're using the timestamp of the last major
+# change if possible.
+
+my @dates = get_page('action=rss showedit=1 all=1 match=2008-09-22')
+  =~ m!<pubDate>(.*?)</pubDate>!g;
+# $dates[0] is the channel pubDate
+my $date2 = $dates[1]; # revision 2 comes first
+my $date1 = $dates[2]; # revision 1 comes second
+my ($item) = $page =~ m!(<item>\n<title>2008-09-22</title>\n(.*\n)+?</item>\n)!;
+test_page($item, "<pubDate>$date1</pubDate>");
+test_page_negative($item, "<pubDate>$date2</pubDate>");
