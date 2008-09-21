@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.16 2007/09/14 21:18:58 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.17 2008/09/21 22:07:01 as Exp $</p>';
 
 $Action{journal} = \&DoJournalRss;
 
@@ -24,38 +24,39 @@ $Action{journal} = \&DoJournalRss;
 # expect.  Produce a RSS feed that mimicks exactly how the journal tag
 # works.
 
-# To do this, create an articifial @fullrc list to pass to RcRss.
-
 sub DoJournalRss {
   return if $CollectingJournal; # avoid infinite loops
   local $CollectingJournal = 1;
+  # Fake the result of GetRcLines()
+  local *GetRcLines = *JournalRssGetRcLines;
+  print GetHttpHeader('application/xml') . GetRcRss();
+}
+
+sub JournalRssGetRcLines {
   my $num = GetParam('rsslimit', 10);
   my $match = GetParam('match', '^\d\d\d\d-\d\d-\d\d');
   my $search = GetParam('search', '');
   my $reverse = GetParam('reverse', 0);
-  my @pages = (grep(/$match/, $search ? SearchTitleAndBody($search) : AllPagesList()));
-  if (defined &JournalSort) {
-    @pages = sort JournalSort @pages;
-  } else {
-    @pages = sort {$b cmp $a} @pages;
-  }
+  my @pages = sort JournalSort (grep(/$match/, $search ? SearchTitleAndBody($search) : AllPagesList()));
   if ($reverse) {
     @pages = reverse @pages;
   }
-  # Generate artifical rows in the list to pass to GetRcRss.  We need
-  # to open every single page, because the meta-data ordinarily
-  # available in the rc.log file is not available to us.  This is why
-  # we observe the rsslimit parameter.  Without it, we would have to
-  # open *all* date pages.  This leads to the unfortunate situation
-  # that GetRc can remove some more rows and then the end result will
-  # be smaller than rsslimit.  There is no alternative, however,
-  # unless we copy the entire GetRc code.  We could try to do better
-  # by multiplying $num by a certain factor.  In the *default*
-  # situation, however, this will be inefficient as disk access is
-  # very slow.  In these non-default situations it might make more
-  # sense to require users to explicitly pass a higher rsslimit.
+  # FIXME: Missing 'future' and 'past' keywords.
+  # FIXME: Do we need 'offset'? I don't think so.
   @pages = @pages[0 .. $num - 1] if $num ne 'all' and $#pages >= $num;
-  my @fullrc = ();
+  # Generate artifical rows in the list to pass to GetRcRss. We need
+  # to open every single page, because the meta-data ordinarily
+  # available in the rc.log file is not available to us. This is why
+  # we observe the rsslimit parameter. Without it, we would have to
+  # open *all* date pages. This leads to the unfortunate situation
+  # that the RC code can remove some more rows and then the end result
+  # will be smaller than rsslimit. There is no alternative, however,
+  # unless we copy the entire RC code. We could try to do better by
+  # multiplying $num by a certain factor. In the *default* situation,
+  # however, this will be inefficient as disk access is very slow. In
+  # these non-default situations it might make more sense to require
+  # users to explicitly pass a higher rsslimit.
+  my @result = ();
   foreach my $id (@pages) {
     # Now save information required for saving the cache of the current page.
     local %Page;
@@ -71,12 +72,10 @@ sub DoJournalRss {
 	$Page{ts} = $keep{ts};
       }
     }
-    unshift (@fullrc, join($FS, $Page{ts}, $id, $Page{minor}, $Page{summary}, $Page{host},
-			   $Page{username}, $Page{revision}, $Page{languages},
-			   GetCluster($Page{text})));
+    my @languages = split(/,/, $languages);
+    unshift (@result, [$Page{ts}, $id, $Page{minor}, $Page{summary}, $Page{host},
+		       $Page{username}, $Page{revision}, \@languages,
+		       GetCluster($Page{text})]);
   }
-  # default to showedit=1 because most of these pages will have both
-  # minor *and* major changes.
-  SetParam('showedit', GetParam('showedit', 1));
-  print GetHttpHeader('application/xml') . GetRcRss(@fullrc);
+  return @result;
 }
