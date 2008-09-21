@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.867 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.868 $}))[1]; # for MakeMaker
 
 # Options:
 
@@ -297,7 +297,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.867 2008/09/20 00:08:11 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.868 2008/09/21 22:07:45 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -855,16 +855,16 @@ sub PrintJournal {
     for (my $i = 0; $i < @pages; $i++) {
       $a = $pages[$i];
       if (JournalSort() == -1) {
-  @pages = @pages[$i..$#pages];
-  last;
+	@pages = @pages[$i..$#pages];
+	last;
       }
     }
   } elsif ($mode eq 'past') {
     for (my $i = 0; $i < @pages; $i++) {
       $a = $pages[$i];
       if (JournalSort() == 1) {
-  @pages = @pages[$i..$#pages];
-  last;
+	@pages = @pages[$i..$#pages];
+	last;
       }
     }
   }
@@ -1922,7 +1922,7 @@ sub GetRcRss {
 		   return if $excluded{$id}
 		     or ($limit ne 'all' and $count++ >= $limit);
 		   $rss .= "\n" . RssItem($id, @_);
-		 }, @_);
+		 });
   $rss .= "</channel>\n</rss>\n";
   return $rss;
 }
