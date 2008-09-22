@@ -1,4 +1,4 @@
-# Copyright (C) 2006, 2007  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006, 2007, 2008  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 36;
+use Test::More tests => 40;
 clear_pages();
 
 add_module('namespaces.pl');
@@ -23,17 +23,26 @@ add_module('namespaces.pl');
 test_page(get_page('Test'),
 	  '<title>Wiki: Test</title>',
 	  'Status: 404 NOT FOUND');
-test_page(update_page('Test', 'Muuu!', 'main ns'),
+test_page(update_page('Test', 'Muuu!', 'main ns', undef, undef,
+		      'username=Alex'),
 	  '<p>Muuu!</p>');
 test_page(get_page('action=browse id=Test ns=Muu'),
 	  '<title>Wiki Muu: Test</title>',
 	  'Status: 404 NOT FOUND');
-test_page(update_page('Test', 'Mooo!', 'muu ns', undef, undef, 'ns=Muu'),
+test_page(update_page('Test', 'Mooo!', 'muu ns', undef, undef,
+		      'ns=Muu', 'username=Berta'),
 	  '<title>Wiki Muu: Test</title>',
 	  '<p>Mooo!</p>');
 test_page(get_page('action=browse id=Test ns=Muu'),
 	  '<title>Wiki Muu: Test</title>',
 	  '<p>Mooo!</p>');
+test_page(get_page('action=rc raw=1'),
+	  'generator: Alex',
+	  'generator: Muu:Berta');
+xpath_test(get_page('action=rc'),
+	  '//a[@class="author"][text()="Alex"][@href="http://localhost/wiki.pl/Alex"]',
+	  '//a[@class="author"][text()="Muu:Berta"][@href="http://localhost/wiki.pl/Muu/Berta"]');
+
 # redirect from Main:Mu to Muu:Mu
 update_page('Mu', '#REDIRECT Muu:Mu');
 test_page(get_page('action=browse id=Mu'),
