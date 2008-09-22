@@ -1,5 +1,12 @@
 2008-09-22  Alex Schroeder  <alex@gnu.org>
 
+	* modules/namespaces.pl (NewNamespaceGetAuthorLink): New hook into
+	GetAuthorLink to make sure the author link is never considered
+	invalid using NewNamespaceValidId.
+	(NamespaceValidId): Deleted.
+	(NewNamespaceValidId): Fully featured replacement only used by
+	GetAuthorLink. $NamespaceSlashing remains unused.
+
 	* modules/journal-rss.pl (JournalRssGetRcLines): New.
 	(DoJournalRss): Use JournalRssGetRcLines since GetRcRss was
 	changed.
