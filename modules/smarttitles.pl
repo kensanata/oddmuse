@@ -14,7 +14,7 @@ directory of your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: smarttitles.pl,v 1.6 2008/09/22 10:08:23 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: smarttitles.pl,v 1.7 2008/09/22 10:59:15 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -29,12 +29,23 @@ use vars qw($SmartTitlesBrowserTitle
 
 =head2 $SmartTitlesBrowserTitle
 
-The browser title for pages having a subtitle. (The browser title is the string
-displayed in your browser's titlebar, for each page.)
+The browser title for pages having a subtitle. The browser title is the string
+displayed in your browser's titlebar for each page.
 
-smarttitles substites the first '%s' in this string with this Wiki's
-C<$SiteName>, the second '%s' with this Wiki page's title, and the third '%s'
-with this Wiki page's subtitle.
+smarttitles performs variable substitution on this string, as follows:
+
+=over
+
+=item The first '%s' in this string, if present, is replaced with the Wiki's
+      C<$SiteName>.
+
+=item The second '%s' in this string, if present, is replaced with this Wiki
+      page's title.
+
+=item The third '%s' in this string, if present, is replaced with this Wiki
+      page's subtitle.
+
+=back
 
 =cut
 $SmartTitlesBrowserTitle = '%s: %s (%s)';
@@ -43,8 +54,17 @@ $SmartTitlesBrowserTitle = '%s: %s (%s)';
 
 The browser title for pages lacking a subtitle.
 
-smarttitles substites the first '%s' in this string with this Wiki's
-C<$SiteName> and the second '%s' with this Wiki page's title.
+smarttitles performs variable substitution on this string, as follows:
+
+=over
+
+=item The first '%s' in this string, if present, is replaced with the Wiki's
+      C<$SiteName>.
+
+=item The second '%s' in this string, if present, is replaced with this Wiki
+      page's title.
+
+=back
 
 =cut
 $SmartTitlesBrowserTitleWithoutSubtitle = '%s: %s';
