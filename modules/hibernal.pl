@@ -48,15 +48,10 @@ for posts having such a subtitle.
 =cut
 #FIXME: to add to Hibernal: correct Oddmuse's failure to link comment author-names
 #     having spaces; e.g., entering a username of "David Curry" should auto-link to
-#     "David_Curry". Also, I'd like a hard-break injected between the post body and
-#     post author - and italicizing of the post author, per the Raiazome "standard."
-#     Hmm. Actually, I quite like a blockquotes approach; which makes metaphysical
-#     sense as well. See the following post for a decent "sig" format (no hyphen
-#     prior to the author-name; I've tested that, and it just doesn't play out):
-#       http://www.raiazome.com/Comment_on_Brian_Curry--Blog--2008-06-18
+#     "David_Curry".
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: hibernal.pl,v 1.1 2008/09/19 05:15:47 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: hibernal.pl,v 1.2 2008/09/22 10:59:32 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -454,9 +449,8 @@ hibernal provides the following functions (for implementing those actions).
 
 =cut
 
-# ....................{ CORE REFACTORINGS                  }....................
+# ....................{ CORE REFACTORS                     }....................
 *AddComment = *AddHibernalComment;
-# *BrowsePage = *BrowseHibernalPage;
 
 =head2 AddHibernalComment
 
@@ -494,79 +488,6 @@ sub AddHibernalComment {
 
   return $comments;
 }
-
-=head2 BrowseHibernalPage
-
-Refactors several incongruities in the default C<BrowsePage> function. This is
-excrutiatingly hacky, as all we require, really, is proper emission of the
-<div class="preview">...</div> tag-set. (Specifically, this tag-set should be
-nested within the outer <div class="content browse">...</div> tag-set. While
-this may seem a small matter, it, actually, is quite a larger problem.)
-
-=cut
-#FIXME: Integrate this change into Oddmuse, itself.
-# sub BrowseHibernalPage {
-#   my ($id, $raw, $comment, $status) = @_;
-#   OpenPage($id);
-#   my ($text, $revision) = GetTextRevision(GetParam('revision', ''));
-#   $text = $NewText unless $revision or $Page{revision}; # new text for new pages
-#   # handle a single-level redirect
-#   my $oldId = GetParam('oldid', '');
-#   if ((substr($text, 0, 10) eq '#REDIRECT ')) {
-#     if ($oldId) {
-#       $Message .= $q->p(T('Too many redirections'));
-#     } elsif ($revision) {
-#       $Message .= $q->p(T('No redirection for old revisions'));
-#     } elsif (($FreeLinks and $text =~ /^\#REDIRECT\s+\[\[$FreeLinkPattern\]\]/)
-#        or ($WikiLinks and $text =~ /^\#REDIRECT\s+$LinkPattern/)) {
-#       return ReBrowsePage(FreeToNormal($1), $id);
-#     } else {
-#       $Message .= $q->p(T('Invalid link pattern for #REDIRECT'));
-#     }
-#   }
-#   # shortcut if we only need the raw text: no caching, no diffs, no html.
-#   if ($raw) {
-#     print GetHttpHeader('text/plain', $Page{ts}, $IndexHash{$id} ? undef : '404 NOT FOUND');
-#     if ($raw == 2) {
-#       print $Page{ts} . " # Do not delete this line when editing!\n";
-#     }
-#     print $text;
-#     return;
-#   }
-#   # normal page view
-#   my $msg = GetParam('msg', '');
-#   $Message .= $q->p($msg) if $msg; # show message if the page is shown
-#   SetParam('msg', '');
-#   print GetHeader($id, QuoteHtml($id), $oldId, undef, $status);
-#   my $showDiff = GetParam('diff', 0);
-#   if ($UseDiff && $showDiff) {
-#     PrintHtmlDiff($showDiff, GetParam('diffrevision', $revision), $revision, $text);
-#     print $q->hr();
-#   }
-#   print $q->start_div({-class=>'content browse'});
-#   if ($revision eq '' and $Page{blocks} and GetParam('cache', $UseCache) > 0) {
-#     PrintCache();
-#   } else {
-#     my $savecache = ($Page{revision} > 0 and $revision eq ''); # new page not cached
-#     PrintWikiToHTML($text, $savecache, $revision); # unlocked, with anchors, unlocked
-#   }
-#   #FIXME: diff begins here.
-# #   print $q->end_div();;
-#   #FIXME: diff ends here.
-#   if ($comment) {
-#     print $q->start_div({-class=>'preview'}), $q->hr();
-#     print $q->h2(T('Preview:'));
-#     # no caching, current revision, unlocked
-#     PrintWikiToHTML(AddComment('', $comment));
-#     print $q->hr(), $q->h2(T('Preview only, not yet saved')), $q->end_div();
-#   }
-#   #FIXME: diff begins here.
-#   print $q->end_div();;
-#   #FIXME: diff ends here.
-#   SetParam('rcclusteronly', $id) if FreeToNormal(GetCluster($text)) eq $id; # automatically filter by cluster
-#   PrintRc($id);
-#   PrintFooter($id, $revision, $comment);
-# }
 
 # ....................{ PAGE HEADERS                       }....................
 my ($page_title, $page_subtitle);
@@ -711,9 +632,8 @@ sub PrintHibernal {
 
 =head2 SortHibernalPostNames
 
-Sorts pages transcluded by <hibernal "regexp"> with this function, according to
-those pages' Wiki names and ensuring that comment pages are sorted after the
-pages they're commenting on.
+Sorts the posts on a hibernal page, according to the Wiki names for those posts
+and ensuring that the comment page for a post is sorted after that post.
 
 This function should, probably, be the C<JournalSort>'s default implementation.
 
@@ -724,6 +644,13 @@ sub SortHibernalPostNames {
   $B cmp $A;
 }
 
+=head2 OrderHibernalPostNames
+
+Orders the posts on a hibernal page, according to whether those posts should be
+ordered in date-descending (the default ordering) or date-ascending (the
+'future' and 'reverse' orderings).
+
+=cut
 sub OrderHibernalPostNames {
   my ($post_names, $posts_ordering) = @_;
   if ($posts_ordering eq 'future' or $posts_ordering eq 'reverse') {
