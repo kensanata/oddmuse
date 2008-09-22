@@ -36,7 +36,7 @@ be changed using the C<$NamespacesSelf> option.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.39 2008/09/19 23:55:19 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.40 2008/09/22 01:31:38 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent
 	    $NamespaceRoot $NamespaceSlashing);
@@ -214,9 +214,6 @@ sub NewNamespaceGetRcLines { # starttime, hash of seen pages to use as a second 
   return StripRollbacks(LatestChanges(@result));
 }
 
-# local *ValidId = *NamespaceValidId;
-# local $NamespaceSlashing = 1;
-
 =head2 Encoding pagenames
 
 C<NewNamespaceUrlEncode> uses C<UrlEncode> to encode pagenames, with
@@ -277,11 +274,25 @@ sub NewNamespaceScriptUrl {
 Since the adding of a namespace and colon makes all these new
 pagenames invalid, C<NamespaceValidId> is overridden with an empty
 function called C<NamespaceValidId> while C<NewNamespaceDoRc> is
-running.
+running. This is important so that author links are printed.
 
 =cut
 
-sub NamespaceValidId {}
+*OldNamespaceGetAuthorLink = *GetAuthorLink;
+*GetAuthorLink = *NewNamespaceGetAuthorLink;
+
+sub NewNamespaceGetAuthorLink {
+  local *OldNamespaceValidId = *ValidId;
+  local *ValidId = *NewNamespaceValidId;
+  # local $NamespaceSlashing = 1;
+  return OldNamespaceGetAuthorLink(@_);
+}
+
+sub NewNamespaceValidId {
+  local $FreeLinkPattern = "($InterSitePattern:)?$FreeLinkPattern";
+  local $LinkPattern = "($InterSitePattern:)?$LinkPattern";
+  return OldNamespaceValidId(@_);
+}
 
 =head2 Redirection User Interface
 
