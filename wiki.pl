@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.869 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.870 $}))[1]; # for MakeMaker
 
 # Options:
 
@@ -297,7 +297,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.869 2008/09/21 23:31:46 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.870 2008/09/23 08:52:59 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -2389,16 +2389,16 @@ sub GetFooterLinks {
   if ($id and $rev ne 'history' and $rev ne 'edit') {
     if ($CommentsPrefix) {
       if ($id =~ /^$CommentsPrefix(.*)/o) {
-  push(@elements, GetPageLink($1, undef, 'original'));
+	push(@elements, GetPageLink($1, undef, 'original'));
       } else {
-  push(@elements, GetPageLink($CommentsPrefix . $id, undef, 'comment'));
+	push(@elements, GetPageLink($CommentsPrefix . $id, undef, 'comment'));
       }
     }
     if (UserCanEdit($id, 0)) {
       if ($rev) {   # showing old revision
-  push(@elements, GetOldPageLink('edit', $id, $rev, Ts('Edit revision %s of this page', $rev)));
+	push(@elements, GetOldPageLink('edit', $id, $rev, Ts('Edit revision %s of this page', $rev)));
       } else {      # showing current revision
-  push(@elements, GetEditLink($id, T('Edit this page'), undef, T('e')));
+	push(@elements, GetEditLink($id, T('Edit this page'), undef, T('e')));
       }
     } else {      # no permission or generated page
       push(@elements, ScriptLink('action=password', T('This page is read-only'), 'password'));
