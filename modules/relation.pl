@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: relation.pl,v 1.1 2008/09/26 22:59:31 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: relation.pl,v 1.2 2008/09/26 23:00:27 as Exp $</p>';
 
 use vars qw(@RelationLinking $RelationPassedFlag);
 
@@ -115,7 +115,7 @@ $Action{'checkrelates'} = sub {
   print "<input type='submit' name='action' value='updaterelates' />&nbsp;\n";
   print "</form>\n";
   print "</body></html>\n";
-}
+};
 
 $Action{'updaterelates'} = sub {
   my $id = shift;
@@ -169,6 +169,4 @@ $Action{'updaterelates'} = sub {
 
   print ScriptLink('id='.$id, $id, 'index');
   print "</body></html>\n";
-}
-
-1;
+};
