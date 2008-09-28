@@ -3,21 +3,15 @@
 
 =head1 NAME
 
-hibernal - An Oddmuse module for improved [multi|single]-blogging, journaling,
-           and journal archival.
+hibernal - An Oddmuse module for improved multi- and single-blogging.
 
 =head1 SYNOPSIS
 
-hibernal extends Oddmuse and, optionally, Oddmuse's Calendar and SmartTitles
-extension, with reliable, scaleable support for multi-blogging (in which one
-Oddmuse Wiki installation hosts one or more blogs, each blog published by one
-separate Wiki user and providing one separate, separately searchable archive of
-blog posts for that blog) and single-blogging (in which one Oddmuse Wiki
-installation hosts one and only one blog, as in the common case).
-
-Any Oddmuse Wiki installation hosting at least one calendar-enabled blog could
-(probably) benefit from these improvements -- regardless of whether that Wiki
-actually requires multi-blogging. (See L<"DESCRIPTION">, below.)
+hibernal extends Oddmuse (and, optionally, Oddmuse's Calendar and SmartTitles
+extensions) with reliable, scaleable support for both multi-blogging - in which
+one Oddmuse Wiki hosts multiple blogs, each blog singly, separately authored by
+one Oddmuse Wiki user - and single-blogging - in which one Oddmuse Wiki hosts
+one and only one blog.
 
 =head1 INSTALLATION
 
@@ -46,12 +40,12 @@ subtitle to each hibernal archive page; and prints subtitles for each blog post,
 for posts having such a subtitle.
 
 =cut
-#FIXME: to add to Hibernal: correct Oddmuse's failure to link comment author-names
+# FIXME: to add to Hibernal: correct Oddmuse's failure to link comment author-names
 #     having spaces; e.g., entering a username of "David Curry" should auto-link to
 #     "David_Curry".
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: hibernal.pl,v 1.2 2008/09/22 10:59:32 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: hibernal.pl,v 1.3 2008/09/28 02:51:50 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -328,28 +322,6 @@ sub HibernalInit {
   $month_now += 1;
   $year_now  += 1900;
 
-  # O.K.; a bit of an unfortunate hack. If the SmartTitles extension is also
-  # installed, import the Perl script corresponding to the extension now. As the
-  # InitModules() function imports the Perl script corresponding to each
-  # installed extension in lexical order, and as the string "hibernal.pl" is
-  # ordered lexically earlier than the string "smarttitles.pl", this imports
-  # that extension earlier than it otherwise would. Here's why:
-  #
-  # The SmartTitles extension redefines the GetHeader() function. Unfortunately,
-  # this extension also redefines that function - so as to obtain the page title
-  # and subtitle for the current Hibernal blog page and propagate the page title
-  # and subtitle to the next and previous Hibernal blog pages. So, so as to
-  # correctly piggyback our redefinition of the GetHeader() function on the
-  # back of the SmartTitles refefinition, we forceably import it now.
-  my     $smart_titles_file = "${ModuleDir}/smarttitles.pl";
-  if (-f $smart_titles_file and not $MyInc{$smart_titles_file}) {
-    do   $smart_titles_file;
-    $MyInc{$smart_titles_file} = 1;
-  }
-
-  *GetHibernalHeaderOld = *GetHeader;
-  *GetHeader            = *GetHibernalHeader;
-
   # Test which of our several (optionally) dependent, third-party modules are
   # also installed on this Oddmuse Wiki.
   $is_calendar_installed =    defined &draw_month;
@@ -358,6 +330,16 @@ sub HibernalInit {
   # Declare which actions we provide based on which modules we have available.
   $Action{hibernal} =         \&DoHibernal;
   $Action{hibernal_archive} = \&DoHibernalArchive if $is_calendar_installed;
+
+  # The SmartTitles extension redefines the GetHeader() function. Unfortunately,
+  # this extension also redefines that function - so as to obtain the page title
+  # and subtitle for the current Hibernal blog page and propagate the page title
+  # and subtitle to the next and previous Hibernal blog pages. So, so as to
+  # correctly piggyback our redefinition of the GetHeader() function on the
+  # back of the SmartTitles refefinition, we forceably reassign that typeglob
+  # here, rather than outside a function definition as we'd commonly do.
+  *GetHibernalHeaderOld = *GetHeader;
+  *GetHeader            = *GetHibernalHeader;
 }
 
 # ....................{ MARKUP                             }....................
@@ -1367,18 +1349,17 @@ except where noted.
 
 Copyleft 2008 by B.w.Curry <http://www.raiazome.com>.
 
-This file is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
 
-This file is distributed in the hope that it will be useful,
+This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this file; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+along with this program. If not, see L<http://www.gnu.org/licenses/>.
 
 =cut
