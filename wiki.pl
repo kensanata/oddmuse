@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.870 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.871 $}))[1]; # for MakeMaker
 
 # Options:
 
@@ -297,7 +297,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.870 2008/09/23 08:52:59 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.871 2008/09/28 08:27:09 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -437,23 +437,22 @@ sub Dirty { # arg 1 is the raw text; the real output must be printed instead
   push(@Flags, 1);
   $Fragment = '';
 }
-;
 
 sub ApplyRules {
   # locallinks: apply rules that create links depending on local config (incl. interlink!)
   my ($text, $locallinks, $withanchors, $revision, @tags) = @_; # $revision is used for images
-  $text =~ s/\r\n/\n/g;   # DOS to Unix
-  $text =~ s/\n+$//g;   # No trailing paragraphs
-  return unless $text ne '';  # allow the text '0'
-  local $Fragment = '';   # the clean HTML fragment not yet on @Blocks
-  local @Blocks=();   # the list of cached HTML blocks
-  local @Flags=();   # a list for each block, 1 = dirty, 0 = clean
+  $text =~ s/\r\n/\n/g;		# DOS to Unix
+  $text =~ s/\n+$//g;		# No trailing paragraphs
+  return unless $text ne '';	# allow the text '0'
+  local $Fragment = '';	 # the clean HTML fragment not yet on @Blocks
+  local @Blocks=();	 # the list of cached HTML blocks
+  local @Flags=();	 # a list for each block, 1 = dirty, 0 = clean
   Clean(join('', map { AddHtmlEnvironment($_) } @tags));
   if ($OpenPageName and $PlainTextPages{$OpenPageName}) { # there should be no $PlainTextPages{''}
     Clean(CloseHtmlEnvironments() . $q->pre($text));
   } elsif (my ($type) = TextIsFile($text)) {
     Clean(CloseHtmlEnvironments() . $q->p(T('This page contains an uploaded file:'))
-    . $q->p(GetDownloadLink($OpenPageName, (substr($type, 0, 6) eq 'image/'), $revision)));
+	  . $q->p(GetDownloadLink($OpenPageName, (substr($type, 0, 6) eq 'image/'), $revision)));
   } else {
     my $smileyregex = join "|", keys %Smilies;
     $smileyregex = qr/(?=$smileyregex)/;
@@ -462,92 +461,92 @@ sub ApplyRules {
     while (1) {
       # Block level elements should eat trailing empty lines to prevent empty p elements.
       if ($bol && m/\G(\s*\n)+/cg) {
-  Clean(CloseHtmlEnvironments() . AddHtmlEnvironment('p'));
+	Clean(CloseHtmlEnvironments() . AddHtmlEnvironment('p'));
       } elsif ($bol && m/\G(\&lt;include(\s+(text|with-anchors))?\s+"(.*)"\&gt;[ \t]*\n?)/cgi) {
-  # <include "uri..."> includes the text of the given URI verbatim
-  Clean(CloseHtmlEnvironments());
-  Dirty($1);
-  my ($oldpos, $type, $uri) = ((pos), $3, UnquoteHtml($4)); # remember, page content is quoted!
-  if ($uri =~ /^$UrlProtocols:/o) {
-    if ($type eq 'text') {
-      print $q->pre({class=>"include $uri"}, QuoteHtml(GetRaw($uri)));
-    } else { # never use local links for remote pages, with a starting tag
-      print $q->start_div({class=>"include $uri"});
-      ApplyRules(QuoteHtml(GetRaw($uri)), 0, ($type eq 'with-anchors'), undef, 'p');
-      print $q->end_div();
-    }
-  } else {
-    $Includes{$OpenPageName} = 1;
-    local $OpenPageName = FreeToNormal($uri);
-    if ($type eq 'text') {
-      print $q->pre({class=>"include $OpenPageName"},QuoteHtml(GetPageContent($OpenPageName)));
-    } elsif (not $Includes{$OpenPageName}) { # with a starting tag, watch out for recursion
-      print $q->start_div({class=>"include $OpenPageName"});
-      ApplyRules(QuoteHtml(GetPageContent($OpenPageName)), $locallinks, $withanchors, undef, 'p');
-      print $q->end_div();
-      delete $Includes{$OpenPageName};
-    } else {
-      print $q->p({-class=>'error'}, $q->strong(Ts('Recursive include of %s!', $OpenPageName)));
-    }
-  }
-  Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
-  pos = $oldpos;          # restore \G after call to ApplyRules
+	# <include "uri..."> includes the text of the given URI verbatim
+	Clean(CloseHtmlEnvironments());
+	Dirty($1);
+	my ($oldpos, $type, $uri) = ((pos), $3, UnquoteHtml($4)); # remember, page content is quoted!
+	if ($uri =~ /^$UrlProtocols:/o) {
+	  if ($type eq 'text') {
+	    print $q->pre({class=>"include $uri"}, QuoteHtml(GetRaw($uri)));
+	  } else { # never use local links for remote pages, with a starting tag
+	    print $q->start_div({class=>"include $uri"});
+	    ApplyRules(QuoteHtml(GetRaw($uri)), 0, ($type eq 'with-anchors'), undef, 'p');
+	    print $q->end_div();
+	  }
+	} else {
+	  $Includes{$OpenPageName} = 1;
+	  local $OpenPageName = FreeToNormal($uri);
+	  if ($type eq 'text') {
+	    print $q->pre({class=>"include $OpenPageName"},QuoteHtml(GetPageContent($OpenPageName)));
+	  } elsif (not $Includes{$OpenPageName}) { # with a starting tag, watch out for recursion
+	    print $q->start_div({class=>"include $OpenPageName"});
+	    ApplyRules(QuoteHtml(GetPageContent($OpenPageName)), $locallinks, $withanchors, undef, 'p');
+	    print $q->end_div();
+	    delete $Includes{$OpenPageName};
+	  } else {
+	    print $q->p({-class=>'error'}, $q->strong(Ts('Recursive include of %s!', $OpenPageName)));
+	  }
+	}
+	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
+	pos = $oldpos;          # restore \G after call to ApplyRules
       } elsif ($bol && m/\G(\&lt;journal(\s+(\d*))?(\s+"(.*?)")?(\s+(reverse|past|future))?(\s+search\s+(.*))?\&gt;[ \t]*\n?)/cgi) {
-  # <journal 10 "regexp"> includes 10 pages matching regexp
-  Clean(CloseHtmlEnvironments());
-  Dirty($1);
-  my $oldpos = pos;
-  PrintJournal($3, $5, $7, 0, $9); # no offset
-  Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
-  pos = $oldpos;          # restore \G after call to ApplyRules
+	# <journal 10 "regexp"> includes 10 pages matching regexp
+	Clean(CloseHtmlEnvironments());
+	Dirty($1);
+	my $oldpos = pos;
+	PrintJournal($3, $5, $7, 0, $9); # no offset
+	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
+	pos = $oldpos;          # restore \G after call to ApplyRules
       } elsif ($bol && m/\G(\&lt;rss(\s+(\d*))?\s+(.*?)\&gt;[ \t]*\n?)/cgis) {
-  # <rss "uri..."> stores the parsed RSS of the given URI
-  Clean(CloseHtmlEnvironments());
-  Dirty($1);
-  my $oldpos = pos;
-  eval { local $SIG{__DIE__}; binmode(STDOUT, ":utf8"); } if $HttpCharset eq 'UTF-8';
-  print RSS($3 ? $3 : 15, split(/\s+/, UnquoteHtml($4)));
-  eval { local $SIG{__DIE__}; binmode(STDOUT, ":raw"); };
-  Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
-  pos = $oldpos; # restore \G after call to RSS which uses the LWP module
+	# <rss "uri..."> stores the parsed RSS of the given URI
+	Clean(CloseHtmlEnvironments());
+	Dirty($1);
+	my $oldpos = pos;
+	eval { local $SIG{__DIE__}; binmode(STDOUT, ":utf8"); } if $HttpCharset eq 'UTF-8';
+	print RSS($3 ? $3 : 15, split(/\s+/, UnquoteHtml($4)));
+	eval { local $SIG{__DIE__}; binmode(STDOUT, ":raw"); };
+	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
+	pos = $oldpos; # restore \G after call to RSS which uses the LWP module
       } elsif (/\G(&lt;search (.*?)&gt;)/cgis) {
-  # <search regexp>
-  Clean(CloseHtmlEnvironments());
-  Dirty($1);
-  my ($oldpos, $old_) = (pos, $_);
-  local ($OpenPageName, %Page);
-  print $q->start_div({-class=>'search'});
-  SearchTitleAndBody($2, \&PrintSearchResult, HighlightRegex($2));
-  print $q->end_div;
-  Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
-  ($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
+	# <search regexp>
+	Clean(CloseHtmlEnvironments());
+	Dirty($1);
+	my ($oldpos, $old_) = (pos, $_);
+	local ($OpenPageName, %Page);
+	print $q->start_div({-class=>'search'});
+	SearchTitleAndBody($2, \&PrintSearchResult, HighlightRegex($2));
+	print $q->end_div;
+	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
+	($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
       } elsif ($bol && m/\G(&lt;&lt;&lt;&lt;&lt;&lt;&lt; )/cg) {
-  my ($str, $count, $limit, $oldpos) = ($1, 0, 100, pos);
-  while (m/\G(.*\n)/cg and $count++ < $limit) {
-    $str .= $1;
-    last if (substr($1, 0, 29) eq '&gt;&gt;&gt;&gt;&gt;&gt;&gt; ');
-  }
-  if ($count >= $limit) {
-    pos = $oldpos;
-    Clean('&lt;&lt;&lt;&lt;&lt;&lt;&lt; ');
-  } else {
-    Clean(CloseHtmlEnvironments() . $q->pre({-class=>'conflict'}, $str) . AddHtmlEnvironment('p'));
-  }
+	my ($str, $count, $limit, $oldpos) = ($1, 0, 100, pos);
+	while (m/\G(.*\n)/cg and $count++ < $limit) {
+	  $str .= $1;
+	  last if (substr($1, 0, 29) eq '&gt;&gt;&gt;&gt;&gt;&gt;&gt; ');
+	}
+	if ($count >= $limit) {
+	  pos = $oldpos;
+	  Clean('&lt;&lt;&lt;&lt;&lt;&lt;&lt; ');
+	} else {
+	  Clean(CloseHtmlEnvironments() . $q->pre({-class=>'conflict'}, $str) . AddHtmlEnvironment('p'));
+	}
       } elsif ($bol and m/\G#REDIRECT/cg) {
-  Clean('#REDIRECT');
+	Clean('#REDIRECT');
       } elsif (%Smilies && m/\G$smileyregex/cog && Clean(SmileyReplace())) {
       } elsif (Clean(RunMyRules($locallinks, $withanchors))) {
       } elsif (m/\G\s*\n(\s*\n)+/cg) { # paragraphs: at least two newlines
-  Clean(CloseHtmlEnvironments() . AddHtmlEnvironment('p')); # another one like this further up
+	Clean(CloseHtmlEnvironments() . AddHtmlEnvironment('p')); # another one like this further up
       } elsif (m/\G&amp;([a-z]+|#[0-9]+|#x[a-fA-F0-9]+);/cg) { # entity references
-  Clean("&$1;");
+	Clean("&$1;");
       } elsif (m/\G\s+/cg) {
-  Clean(' ');
+	Clean(' ');
       } elsif (m/\G([A-Za-z\x80-\xff]+([ \t]+[a-z\x80-\xff]+)*[ \t]+)/cg
-         or m/\G([A-Za-z\x80-\xff]+)/cg or m/\G(\S)/cg) {
-  Clean($1);    # multiple words but do not match http://foo
+	       or m/\G([A-Za-z\x80-\xff]+)/cg or m/\G(\S)/cg) {
+	Clean($1);	  # multiple words but do not match http://foo
       } else {
-  last;
+	last;
       }
       $bol = (substr($_,pos()-1,1) eq "\n");
     }
