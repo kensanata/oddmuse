@@ -26,7 +26,7 @@ recaptcha is simply installable; simply:
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: recaptcha.pl,v 1.4 2008/09/29 07:33:32 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: recaptcha.pl,v 1.5 2008/09/29 11:53:33 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -150,7 +150,8 @@ sub NewReCaptchaDoPost {
   my $id = FreeToNormal(GetParam('title', undef));
   my $preview = GetParam('Preview', undef); # case matters!
   my $correct = 0;
-  unless (UserIsEditor()
+
+  unless (UserIsEditor() or UserIsAdmin()
     or $ReCaptchaRememberAnswer && GetParam($ReCaptchaSecretKey, 0)
     or $preview
     or $correct = ReCaptchaCheckAnswer() # remember this!
@@ -167,9 +168,11 @@ sub NewReCaptchaDoPost {
     # warn "Q: '$ReCaptchaQuestions[$question_num][0]', A: '$answer'\n";
     return;
   }
+
   if (not GetParam($ReCaptchaSecretKey, 0) and $correct) {
     SetParam($ReCaptchaSecretKey, 1);
   }
+
   return (OldReCaptchaDoPost(@params));
 }
 
