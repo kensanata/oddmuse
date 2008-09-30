@@ -1,5 +1,14 @@
 2008-09-30  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
+	* modules/creoleaddition.pl: New perldoc-style documentation.
+	($CreoleAdditionSmallCaps): New option.
+	(CreoleAdditionInit): New function.
+	(CreoleAdditionRules): Improved handling of existing markup rules,
+	so as to allow markup nesting; and implemented handling of the new
+	%%small caps%% markup rule.
+	
+2008-09-30  Brian Curry  <http://www.raiazome.com/Brian_Curry>
+
 	* modules/poetry.pl: New.
 
 2008-09-29  Brian Curry  <http://www.raiazome.com/Brian_Curry>
