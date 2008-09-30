@@ -7,7 +7,7 @@
 # You can get a copy of GPL version 2 at
 # http://www.gnu.org/licenses/gpl-2.0.html
 
-# $Id: creoleaddition.t,v 1.7 2008/05/26 23:42:47 as Exp $
+# $Id: creoleaddition.t,v 1.8 2008/09/30 07:56:18 leycec Exp $
 
 require 't/test.pl';
 package OddMuse;
@@ -52,9 +52,7 @@ H<sub>2</sub>O
 ''my quote'' works ''what about x^^2^^''
 <q>my quote</q> works <q>what about x<sup>2</sup></q>
 """\nmy block quote\n"""
-<blockquote><p>my block quote</p></blockquote>
-"""\n simple blockquote\n""" won't work
-""" simple blockquote """ won't work
+<blockquote><p>my block quote </p></blockquote>
 ##monospace code##
 <code>monospace code</code>
 EOT
