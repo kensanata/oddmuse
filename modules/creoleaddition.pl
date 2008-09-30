@@ -22,7 +22,7 @@ creoleaddition is simply installable; simply:
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.15 2008/09/30 06:32:32 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.16 2008/09/30 07:56:18 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -102,8 +102,28 @@ push(@MyRules, \&CreoleAdditionRules);
 $RuleOrder{\&CreoleAdditionRules} = -11;
 
 sub CreoleAdditionRules {
+  # ; definition list term
+  # : definition list description
+  if ($CreoleAdditionDefList && bol && (
+            m/\G[ \t]*;[ \t]*(?=[^:]+?\n[ \t]*:[ \t]*)/cg || (InElement('dd') &&
+    m/\G[ \t]*\n[ \t]*;[ \t]*(?=[^:]+?\n[ \t]*:[ \t]*)/cg))) {
+    return
+       CloseHtmlEnvironmentUntil('dd')
+      .OpenHtmlEnvironment('dl', 1)
+      . AddHtmlEnvironment('dt');
+  } elsif ($CreoleAdditionDefList && (InElement('dt') || InElement('dd')) &&
+            m/\G[ \t]*\n[ \t]*:[ \t]*/cg) {
+    return CloseHtmlEnvironment().AddHtmlEnvironment('dd');
+  # """block quotes"""
+  } elsif ($CreoleAdditionQuote && bol && m/\G\"\"\"(\s|\Z)/cg) {
+    return InElement('blockquote')
+      ? CloseHtmlEnvironmentsCreoleAdditionOld().AddHtmlEnvironment('p') :
+      CloseHtmlEnvironments().AddHtmlEnvironment('blockquote').AddHtmlEnvironment('p');
+    # ''inline quotes''
+  } elsif ($CreoleAdditionQuote && m/\G\'\'/cgs) {
+    return InElement('q') ? CloseHtmlEnvironment() : AddHtmlEnvironment('q');
   # ^^sup^^
-  if ($CreoleAdditionSupSub && m/\G\^\^/cg) {
+  } elsif ($CreoleAdditionSupSub && m/\G\^\^/cg) {
     return InElement('sup') ? CloseHtmlEnvironment() : AddHtmlEnvironment('sup');
   # ,,sub,,
   } elsif ($CreoleAdditionSupSub && m/\G\,\,/cg) {
@@ -111,32 +131,8 @@ sub CreoleAdditionRules {
   # ##monospace code##
   } elsif ($CreoleAdditionMonospace && m/\G\#\#/cg) {
     return InElement('code') ? CloseHtmlEnvironment() : AddHtmlEnvironment('code');
-  # definition lists
-  # ; term
-  # : description
-  } elsif ($CreoleAdditionDefList && $bol &&
-           (m/\G\s*\;[ \t]*(?=(.+(\n)(\s)*\:))/cg || (InElement('dd') &&
-            m/\G\s*\n(\s)*\;[ \t]*(?=(.+\n(\s)*\:))/cg))) {
-    return
-       CloseHtmlEnvironmentUntil('dd')
-      .OpenHtmlEnvironment('dl', 1)
-      . AddHtmlEnvironment('dt');  # `:' needs special treatment, later
-  } elsif (InElement('dt') and m/\G\s*\n(\s)*\:[ \t]*(?=(.+(\n)(\s)*\:)*)/cg) {
-    return CloseHtmlEnvironment().AddHtmlEnvironment('dd');
-  } elsif (InElement('dd') and m/\G\s*\n(\s)*\:[ \t]*(?=(.+(\n)(\s)*\:)*)/cg) {
-    return CloseHtmlEnvironment().AddHtmlEnvironment('dd');
-  # ''quote''
-  } elsif ($CreoleAdditionQuote && m/\G\'\'/cgs) {
-    return InElement('q') ? CloseHtmlEnvironment() : AddHtmlEnvironment('q');
-  # """
-  # block quotes
-  # """
-  } elsif ($CreoleAdditionQuote and $bol and m/\G\"\"\"(?:\n|$)/cg) {
-    return InElement('blockquote')
-      ? CloseHtmlEnvironmentsCreoleOld().AddHtmlEnvironment('p')
-      : CloseHtmlEnvironments().AddHtmlEnvironment('blockquote').AddHtmlEnvironment('p');
   # %%small caps%%
-  } elsif ($CreoleAdditionSmallCaps && m/\G\%\%/cgs) {
+  } elsif ($CreoleAdditionSmallCaps && m/\G\%\%/cg) {
     if (defined $HtmlStack[0] && $HtmlStack[0] eq 'span' &&
         $CreoleAdditionIsInSmallCaps) {
         $CreoleAdditionIsInSmallCaps = '';
@@ -149,6 +145,24 @@ sub CreoleAdditionRules {
   }
 
   return undef;
+}
+
+# ....................{ FUNCTIONS                          }....................
+*CloseHtmlEnvironmentsCreoleAdditionOld = *CloseHtmlEnvironments;
+*CloseHtmlEnvironments =                  *CloseHtmlEnvironmentsCreoleAddition;
+
+=head2 CloseHtmlEnvironmentsCreoleAddition
+
+Closes HTML environments for the current block level element, up to but not
+including the "<blockquote>" current block level element, if this block is
+embedded within a blockquote. This, though kludgy, is the code magic permitting
+block level elements in multi-line blockquotes.
+
+=cut
+sub CloseHtmlEnvironmentsCreoleAddition {
+  return InElement('blockquote')
+    ? CloseHtmlEnvironmentUntil('blockquote')
+    : CloseHtmlEnvironmentsCreoleAdditionOld();
 }
 
 =head1 COPYRIGHT AND LICENSE
