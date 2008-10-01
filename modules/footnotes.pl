@@ -13,7 +13,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: footnotes.pl,v 1.7 2008/09/28 07:00:34 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: footnotes.pl,v 1.8 2008/10/01 06:20:48 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -119,10 +119,6 @@ sub FootnotesInit {
   @FootnoteList = ();
 
   $FootnotePattern = (defined &CreoleRule ? '\(\((.*?)\)\)' : '\{\{(.*?)\}\}');
-#   if (defined &TocPageHtml) {
-#     *OldTocPageHtmlFootnotes = *TocPageHtml;
-#     *TocPageHtml = *NewTocPageHtmlFootnotes;
-#   }
 }
 
 # ....................{ MARKUP                             }....................
@@ -154,38 +150,17 @@ page. This may or not be what you want, however.
 
 =cut
 sub FootnotesRule {
-  if (m/\G($FootnotePattern)/gcos) {
+  if (m/\G($FootnotePattern)(?=($FootnotePattern)?)/gcos) {
     Dirty($1);  # do not cache the prefixing "\G"
                  push(@FootnoteList, $2);
-    $FootnoteNumber = @FootnoteList;
+    my $footnote_number = @FootnoteList;
+    my $is_adjacent_footnote = defined $3;
 
-    # Inject a delimiting comma between adjacent footnotes. This is slightly
-    # more difficult than one would expect. We can't effect this via CSS, as
-    # a hypothetical CSS selector resembling
-    #   a.footnote + a.footnote:before { content: ", " }
-    # improperly injects delimiting commas between non-adjacent
-    # footnotes. (Your guess is as good as ours, here! We ain't no Mozilla
-    # hackers...) Thus, we must effect this by injecting text into the
-    # Oddmuse-emitted HTML. However, we can't effect this with a plain
-    # regular expression, as a hypothetical regular expression matching
-    #   if (m/\G($FootnotePattern)($FootnotePattern)?/gcos) {
-    # improperly fails to inject delimiting commas between adjacent footnotes
-    # of three or more.
-    #
-    # In short: we "look ahead" at the markup following this footnote markup
-    # and, if also footnote markup, inject a delimiting comma between the two
-    # and restore the "\G" anchor. (Restoring the "\G" anchor ensures the next
-    # Oddmuse rule begins where this rule would have left off, had it not
-    # looked ahead. Vital, that!)
-    my ($oldpos, $old_) = (pos, $_);
-    my $is_adjacent_footnote = m/\G\s*($FootnotePattern)/gcos;
-    ($_, pos) = ($old_, $oldpos);   # restore \G (assignment order matters!)
-
-    print $q->a({-href=> '#footnotes'.$FootnoteNumber,
-                 -name=>  'footnote' .$FootnoteNumber,
+    print $q->a({-href=> '#footnotes'.$footnote_number,
+                 -name=>  'footnote' .$footnote_number,
                  -title=> $2,
                  -class=> 'footnote'
-                }, $FootnoteNumber.($is_adjacent_footnote ? ', ' : ''));
+                }, $footnote_number.($is_adjacent_footnote ? ', ' : ''));
 
     return '';
   }
@@ -208,32 +183,6 @@ sub FootnotesRule {
 
   return undef;
 }
-
-# ....................{ HACKS                              }....................
-# FIXME: Now fixed in "toc.pl", itself -- remove!
-
-=head2 NewTocPageHtmlFootnotes
-
-Ensures the list of footnotes is properly saved and restored in between obscure
-calls to the "Table of Contents"-specific "TocPageHtml" function. Being obscure,
-you are encouraged to dully and duly ignore this. ("...nuthin' to see here,
-folks.")
-
-=cut
-# sub NewTocPageHtmlFootnotes {
-#   # HACK ALERT: PageHtml -> PrintPageHtml -> PrintWikiToHTML with
-#   # $savecache = 1, but the cache will not be saved because
-#   # $Page{blocks} and $Page{flags} are already equal unless we
-#   # localize them here. Without localization, the first request
-#   # returns the correct TOC, but subsequent requests from the cache do
-#   # not. Strange that local %Page will not work, here.
-#   local $Page{blocks};
-#   local $Page{flags};
-#   my @FootnoteListOld = @FootnoteList;
-#   my $html = PageHtml(shift);
-#      @FootnoteList = @FootnoteListOld;
-#   return $html;
-# }
 
 # ....................{ HTML OUTPUT                        }....................
 *PrintFooterFootnotesOld = *PrintFooter;
@@ -263,17 +212,17 @@ sub PrintFootnotes() {
 
   # Don't use <ol>, because we want to link from the number back to
   # its page location.
-          my $FootnoteNumber = 1;
-  foreach my $Footnote (@FootnoteList) {
+          my $footnote_number = 1;
+  foreach my $footnote (@FootnoteList) {
     print '<div class="footnote">'
       .$q->a({-class=> 'backlink',
-               -name=>  'footnotes'.$FootnoteNumber,
-               -href=> '#footnote' .$FootnoteNumber}, $FootnoteNumber.'.')
+               -name=>  'footnotes'.$footnote_number,
+               -href=> '#footnote' .$footnote_number}, $footnote_number.'.')
       .' ';
-    ApplyRules($Footnote, 1);
+    ApplyRules($footnote, 1);
     print '</div>';
 
-    $FootnoteNumber++;
+    $footnote_number++;
   }
 
   print '</div>';
