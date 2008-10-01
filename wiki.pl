@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.871 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.872 $}))[1]; # for MakeMaker
 
 # Options:
 
@@ -297,7 +297,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.871 2008/09/28 08:27:09 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.872 2008/10/01 20:43:53 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -2636,7 +2636,6 @@ sub ParseData {      # called a lot during search, so it was optimized
   foreach (keys %result) {
     $result{$_} =~ s/\n\t/\n/g;
   }
-  ;
   return %result;
 }
 
@@ -3377,8 +3376,8 @@ sub SearchTitleAndBody {
     if (not $text) { # not uploaded file, therefore allow searching of page body
       OpenPage($id); # this opens a page twice if it is not uploaded, but that's ok
       if ($lang) {
-  my @languages = split(/,/, $Page{languages});
-  next if (@languages and not grep(/$lang/, @languages));
+	my @languages = split(/,/, $Page{languages});
+	next if (@languages and not grep(/$lang/, @languages));
       }
       $text = $Page{text};
     }
