@@ -13,7 +13,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: footnotes.pl,v 1.8 2008/10/01 06:20:48 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: footnotes.pl,v 1.9 2008/10/01 06:21:46 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -118,7 +118,9 @@ push(@MyInitVariables, \&FootnotesInit);
 sub FootnotesInit {
   @FootnoteList = ();
 
-  $FootnotePattern = (defined &CreoleRule ? '\(\((.*?)\)\)' : '\{\{(.*?)\}\}');
+  if (not defined $FootnotePattern) {
+    $FootnotePattern = defined &CreoleRule ? '\(\((.*?)\)\)' : '\{\{(.*?)\}\}';
+  }
 }
 
 # ....................{ MARKUP                             }....................
