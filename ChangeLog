@@ -1,3 +1,17 @@
+2008-10-01  Brian Curry  <http://www.raiazome.com/Brian_Curry>
+
+	* modules/creole.pl: "There be dragons, here." This module now
+	supports a significantly stabler, more robust syntax--including:
+	multiline table cells, block level elements in table cells, CSS
+	stylization for images and image links, simpler, more efficient
+	regular expressions, new perldoc-style documentation, and a subtle
+	slew of other bug fixes. "Huzzah!"
+	* modules/creoleaddition.pl (AddOrCloseCreoleAdditionEnvironment): New
+	function.
+	(CreoleAdditionRules): Usage of the new function.
+	* t/creole.pl: Corrected all non-XPath-dependent tests.
+	* t/creoleaddition.pl: Corrected all non-XPath-dependent tests.
+
 2008-09-30  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
 	* modules/creoleaddition.pl: New perldoc-style documentation.
