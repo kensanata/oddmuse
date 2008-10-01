@@ -7,11 +7,11 @@
 # You can get a copy of GPL version 2 at
 # http://www.gnu.org/licenses/gpl-2.0.html
 
-# $Id: creoleaddition.t,v 1.8 2008/09/30 07:56:18 leycec Exp $
+# $Id: creoleaddition.t,v 1.9 2008/10/01 07:54:44 leycec Exp $
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 22;
+use Test::More tests => 21;
 clear_pages();
 
 add_module('creoleaddition.pl');

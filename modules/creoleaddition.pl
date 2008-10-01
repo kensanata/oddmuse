@@ -22,7 +22,7 @@ creoleaddition is simply installable; simply:
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.16 2008/09/30 07:56:18 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.17 2008/10/01 07:54:44 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -103,36 +103,43 @@ $RuleOrder{\&CreoleAdditionRules} = -11;
 
 sub CreoleAdditionRules {
   # ; definition list term
-  # : definition list description
-  if ($CreoleAdditionDefList && bol && (
-            m/\G[ \t]*;[ \t]*(?=[^:]+?\n[ \t]*:[ \t]*)/cg || (InElement('dd') &&
+  if ($CreoleAdditionDefList and bol and (
+            m/\G[ \t]*;[ \t]*(?=[^:]+?\n[ \t]*:[ \t]*)/cg or (InElement('dd') and
     m/\G[ \t]*\n[ \t]*;[ \t]*(?=[^:]+?\n[ \t]*:[ \t]*)/cg))) {
     return
        CloseHtmlEnvironmentUntil('dd')
       .OpenHtmlEnvironment('dl', 1)
       . AddHtmlEnvironment('dt');
-  } elsif ($CreoleAdditionDefList && (InElement('dt') || InElement('dd')) &&
+  }
+  # : definition list description
+  elsif ($CreoleAdditionDefList and (InElement('dt') or InElement('dd')) and
             m/\G[ \t]*\n[ \t]*:[ \t]*/cg) {
     return CloseHtmlEnvironment().AddHtmlEnvironment('dd');
+  }
   # """block quotes"""
-  } elsif ($CreoleAdditionQuote && bol && m/\G\"\"\"(\s|\Z)/cg) {
+  elsif ($CreoleAdditionQuote and bol and m/\G\"\"\"(\s|$)/cg) {
     return InElement('blockquote')
-      ? CloseHtmlEnvironmentsCreoleAdditionOld().AddHtmlEnvironment('p') :
-      CloseHtmlEnvironments().AddHtmlEnvironment('blockquote').AddHtmlEnvironment('p');
-    # ''inline quotes''
-  } elsif ($CreoleAdditionQuote && m/\G\'\'/cgs) {
-    return InElement('q') ? CloseHtmlEnvironment() : AddHtmlEnvironment('q');
+      ? CloseHtmlEnvironmentsCreoleAdditionOld().AddHtmlEnvironment('p')
+      : CloseHtmlEnvironments().AddHtmlEnvironment('blockquote').AddHtmlEnvironment('p');
+  }
+  # ''inline quotes''
+  elsif ($CreoleAdditionQuote and m/\G\'\'/cgs) {
+    return AddOrCloseCreoleAdditionEnvironment('q');
+  }
   # ^^sup^^
-  } elsif ($CreoleAdditionSupSub && m/\G\^\^/cg) {
-    return InElement('sup') ? CloseHtmlEnvironment() : AddHtmlEnvironment('sup');
+  elsif ($CreoleAdditionSupSub and m/\G\^\^/cg) {
+    return AddOrCloseCreoleAdditionEnvironment('sup');
+  }
   # ,,sub,,
-  } elsif ($CreoleAdditionSupSub && m/\G\,\,/cg) {
-    return InElement('sub') ? CloseHtmlEnvironment() : AddHtmlEnvironment('sub');
+  elsif ($CreoleAdditionSupSub and m/\G\,\,/cg) {
+    return AddOrCloseCreoleAdditionEnvironment('sub');
+  }
   # ##monospace code##
-  } elsif ($CreoleAdditionMonospace && m/\G\#\#/cg) {
-    return InElement('code') ? CloseHtmlEnvironment() : AddHtmlEnvironment('code');
+  elsif ($CreoleAdditionMonospace and m/\G\#\#/cg) {
+    return AddOrCloseCreoleAdditionEnvironment('code');
+  }
   # %%small caps%%
-  } elsif ($CreoleAdditionSmallCaps && m/\G\%\%/cg) {
+  elsif ($CreoleAdditionSmallCaps and m/\G\%\%/cg) {
     if (defined $HtmlStack[0] && $HtmlStack[0] eq 'span' &&
         $CreoleAdditionIsInSmallCaps) {
         $CreoleAdditionIsInSmallCaps = '';
@@ -163,6 +170,20 @@ sub CloseHtmlEnvironmentsCreoleAddition {
   return InElement('blockquote')
     ? CloseHtmlEnvironmentUntil('blockquote')
     : CloseHtmlEnvironmentsCreoleAdditionOld();
+}
+
+=head2 AddOrCloseCreoleEnvironment
+
+Adds or closes the HTML environment corresponding to the passed HTML tag, as
+needed. Specifically, if that environment is already opened, this function
+closes it; otherwise, this function adds it.
+
+=cut
+sub AddOrCloseCreoleAdditionEnvironment {
+  my $html_tag = shift;
+  return InElement($html_tag)
+    ? CloseHtmlEnvironmentUntil($html_tag).CloseHtmlEnvironment()
+    : AddHtmlEnvironment       ($html_tag);
 }
 
 =head1 COPYRIGHT AND LICENSE

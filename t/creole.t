@@ -47,8 +47,8 @@ this is **bold**
 this is <strong>bold</strong>
 **bold**
 <strong>bold</strong>
-*item\n**item**
-<ul><li>item<ul><li>item<strong></strong></li></ul></li></ul>
+*item\n** **item**
+<ul><li>item<ul><li><strong>item</strong></li></ul></li></ul>
 *item\n* **item**
 <ul><li>item</li><li><strong>item</strong></li></ul>
 //italic//
@@ -123,10 +123,12 @@ foo -----
 <hr /><p>foo</p>
 foo\n----
 foo<hr />
-|a\\b|\n|c
-<table class="user"><tr><td>a<br />b</td></tr><tr><td>c</td></tr></table>
-|a|b|c\n|d|e|f
-<table class="user"><tr><td>a</td><td>b</td><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr></table>
+|a|
+<table class="user"><tr><td>a</td></tr></table>
+|a\\b|\n|c\n\nd|
+<table class="user"><tr><td>a<br />b</td></tr><tr><td>c<p>d</p></td></tr></table>
+|a|b|c\n|d|e|\nf|
+<table class="user"><tr><td>a</td><td>b</td><td>c </td><td>d</td><td>e</td></tr>f</table>
 |a|b|c|\n|d|e|f|
 <table class="user"><tr><td>a</td><td>b</td><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr></table>
 |=a|=b|=c|\n|d|e|f|
@@ -134,11 +136,9 @@ foo<hr />
 |=a|b|c|\n|=d|e|f|
 <table class="user"><tr><th>a</th><td>b</td><td>c</td></tr><tr><th>d</th><td>e</td><td>f</td></tr></table>
 | a| b| c\n| d | e | f |
-<table class="user"><tr><td align="right">a</td><td align="right">b</td><td align="right">c</td></tr><tr><td align="center">d </td><td align="center">e </td><td align="center">f </td></tr></table>
-|a||c\n||e|f
-<table class="user"><tr><td>a</td><td colspan="2">c</td></tr><tr><td colspan="2">e</td><td>f</td></tr></table>
-|a
-<table class="user"><tr><td>a</td></tr></table>
+<table class="user"><tr><td align="right">a</td><td align="right">b</td><td align="right">c </td><td align="center">d </td><td align="center">e </td><td align="center">f </td></tr></table>
+|a||c\n||e|f|
+<table class="user"><tr><td>a</td><td colspan="2">c </td><td colspan="2">e</td><td>f</td></tr></table>
 ~#1
 #1
 ~http://www.foo.com/
@@ -243,10 +243,10 @@ InterMap
 EOT
 
 xpath_test(update_page('test','{{pic}}'),
-	   '//a[@class="image"][@href="http://localhost/wiki.pl/pic"][img[@class="upload"][@src="http://localhost/wiki.pl/download/pic"][@alt="pic"]]');
+     '//a[@class="image"][@href="http://localhost/wiki.pl/pic"][img[@class="upload"][@src="http://localhost/wiki.pl/download/pic"][@alt="pic"]]');
 # Make sure not problem exists with caching
 $page = get_page('test');
 xpath_test($page,
-	   '//a[@class="image"][@href="http://localhost/wiki.pl/pic"][img[@class="upload"][@src="http://localhost/wiki.pl/download/pic"][@alt="pic"]]');
+     '//a[@class="image"][@href="http://localhost/wiki.pl/pic"][img[@class="upload"][@src="http://localhost/wiki.pl/download/pic"][@alt="pic"]]');
 negative_xpath_test($page,
-		    '//a[@class="image"]/following-sibling::a[@class="image"]');
+        '//a[@class="image"]/following-sibling::a[@class="image"]');
