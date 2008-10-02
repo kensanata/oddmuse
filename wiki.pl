@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.872 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.873 $}))[1]; # for MakeMaker
 
 # Options:
 
@@ -46,7 +46,7 @@ $LogoUrl $RcDefault $RssDir $IndentLimit $RecentTop $RecentLink
 $EditAllowed $UseDiff $KeepDays $KeepMajor $EmbedWiki $BracketText
 $UseConfig $UseLookup $AdminPass $EditPass $NetworkFile $BracketWiki
 $FreeLinks $WikiLinks $SummaryHours $FreeLinkPattern $RCName $RunCGI
-$ShowEdits $LinkPattern $RssExclude $InterLinkPattern $MaxPost
+$ShowEdits $LinkPattern $RssExclude $InterLinkPattern $MaxPost $UseGrep
 $UrlPattern $UrlProtocols $ImageExtensions $InterSitePattern $FS
 $CookieName $SiteBase $StyleSheet $NotFoundPg $FooterNote $NewText
 $EditNote $HttpCharset $UserGotoBar $VisitorFile $RcFile %Smilies
@@ -127,8 +127,9 @@ $NetworkFile = 1;               # 1 = file: is a valid protocol for URLs
 $AllNetworkFiles = 0;           # 1 = file:///foo is allowed -- the default allows only file://foo
 $InterMap    = 'InterMap';      # name of the intermap page, '' = disable
 $RssInterwikiTranslate = 'RssInterwikiTranslate'; # name of RSS interwiki translation page, '' = disable
-$ENV{PATH}   = '/usr/bin';      # Path used to find 'diff'
+$ENV{PATH}   = '/usr/bin';      # Path used to find 'diff' and 'grep'
 $UseDiff     = 1;               # 1 = use diff
+$UseGrep     = 1;               # 1 = use grep to speed up searches
 $SurgeProtection      = 1;      # 1 = protect against leeches
 $SurgeProtectionTime  = 20;     # Size of the protected window in seconds
 $SurgeProtectionViews = 10;     # How many page views to allow in this window
@@ -297,7 +298,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.872 2008/10/01 20:43:53 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.873 2008/10/02 22:19:21 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -2780,11 +2781,10 @@ sub ExpireKeepFiles {   # call with opened page
 # == File operations
 
 sub ReadFile {
-  my ($fileName) = @_;
-  my ($data);
-  local $/ = undef;   # Read complete files
+  my $fileName = shift;
   if (open(IN, "<$fileName")) {
-    $data=<IN>;
+    local $/ = undef;   # Read complete files
+    my $data=<IN>;
     close IN;
     return (1, $data);
   }
@@ -3370,7 +3370,7 @@ sub SearchTitleAndBody {
   my ($string, $func, @args) = @_;
   my @found;
   my $lang = GetParam('lang', '');
-  foreach my $id (AllPagesList()) {
+  foreach my $id (GrepFiltered($string, AllPagesList())) {
     my $name = NormalToFree($id);
     my ($text) = PageIsUploadedFile($id); # set to mime-type if this is an uploaded file
     if (not $text) { # not uploaded file, therefore allow searching of page body
@@ -3387,6 +3387,22 @@ sub SearchTitleAndBody {
     }
   }
   return @found;
+}
+
+sub GrepFiltered { # grep is so much faster!!
+  my ($string, @pages) = @_;
+  return @pages unless $UseGrep;
+  my @result;
+  my $regexp = quotemeta join '|', map { index($_,'|') == -1 ? $_ : "($_)" }
+    grep /./, $string =~ /\"([^\"]+)\"|(\S+)/g; # this acts as OR
+  open(F,"grep -l -i $regexp $PageDir/*/*.pg|");
+  while (<F>) {
+    if (m/.*\/(.*)\.pg/) {
+      push(@result, $1);
+    }
+  }
+  close(F);
+  return @result;
 }
 
 sub SearchString {
