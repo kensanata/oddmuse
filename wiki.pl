@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.873 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.874 $}))[1]; # for MakeMaker
 
 # Options:
 
@@ -298,7 +298,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.873 2008/10/02 22:19:21 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.874 2008/10/03 09:57:35 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -3393,8 +3393,14 @@ sub GrepFiltered { # grep is so much faster!!
   my ($string, @pages) = @_;
   return @pages unless $UseGrep;
   my @result;
-  my $regexp = quotemeta join '|', map { index($_,'|') == -1 ? $_ : "($_)" }
+  my $regexp = join '|', map { index($_,'|') == -1 ? $_ : "($_)" }
     grep /./, $string =~ /\"([^\"]+)\"|(\S+)/g; # this acts as OR
+  $regexp =~ s/\\s/[[:space:]]/g;
+  $regexp =~ s/\\n(\)*)$/\$$1/g; # sometimes \n can be replaced with $
+  $regexp =~ s/([?+{|()])/\\$1/g; # basic regular expressions from man grep
+  # if we know of any remaining grep incompatibilities we should
+  # return @pages here!
+  $regexp = quotemeta($regexp);
   open(F,"grep -l -i $regexp $PageDir/*/*.pg|");
   while (<F>) {
     if (m/.*\/(.*)\.pg/) {
