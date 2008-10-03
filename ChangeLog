@@ -1,3 +1,12 @@
+2008-10-03  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($UseGrep): New option. Set by default.
+	(SearchTitleAndBody): Use GrepFiltered.
+	(GrepFiltered): New code to filter AllPagesList using grep if
+	$UseGrep is set.
+
+	(ReadFile): Slight rearranging of the lines.
+
 2008-10-01  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
 	* modules/creole.pl: "There be dragons, here." This module now
@@ -32,8 +41,8 @@
 	($ReCaptchaTabIndex): New option.
 	(ReCaptchaGetQuestionHtml): New function. Permits site-specific
 	customization of module-emitted HTML and CSS.
-	(ReCaptchaGetQuestion): Rewritten so as to leverage the two new options and
-	one new function.
+	(ReCaptchaGetQuestion): Rewritten so as to leverage the two new
+	options and one new function.
 
 2008-09-29  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
