@@ -14,7 +14,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.44 2008/10/01 07:54:44 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.45 2008/10/04 03:30:50 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -48,6 +48,36 @@ character. (If false, this extension consumes such tilde ~ characters.)
 =cut
 $CreoleTildeAlternative = 0;
 
+# ....................{ INITIALIZATION                     }....................
+push(@MyInitVariables, \&CreoleInit);
+
+my $is_creoleaddition_installed;
+sub CreoleInit {
+   $is_creoleaddition_installed = defined &CreoleAdditionRule;
+}
+
+*InitLinkPatternsCreoleOld = *InitLinkPatterns;
+*InitLinkPatterns =          *InitLinkPatternsCreole;
+
+=head2 InitLinkPatternsCreole
+
+This permits users to add URLs resembling:
+  "See [[/?action=index|the site map]]."
+
+Which Oddmuse converts to HTML resembling:
+  "See <a href="/?action=index">the site map</a>."
+
+When not using this extension, users must explicitly add the site's base URL:
+  "See [[http://www.oddmuse.com/cgi-bin/oddmuse?action=index|the site map]]."
+
+=cut
+sub InitLinkPatternsCreole {
+    InitLinkPatternsCreoleOld();
+
+  my $UrlChars = '[-a-zA-Z0-9/@=+$_~*.,;:?!\'"()&#%]';    # see RFC 2396
+  $FullUrlPattern = "((?:$UrlProtocols)?[:/]$UrlChars+)"; # when used in square brackets
+}
+
 # ....................{ MARKUP                             }....................
 push(@MyRules,
      \&CreoleRule,
@@ -55,9 +85,9 @@ push(@MyRules,
      \&CreoleListAndNewLineRule,
     );
 
-# [[link|{{Image:foo}}]] conflicts with default link rule.
+# Creole link rules conflict with Oddmuse's default LinkRule.
 $RuleOrder{\&CreoleRule} = -10;
-# == headings rule must come after the TocRule.
+# Creole heading rules must come after the TocRule.
 $RuleOrder{\&CreoleHeadingRule} = 100;
 # List items must come later than MarkupRule because *foo* at the
 # beginning of a line should be bold, not the list item foo*. Also,
@@ -67,46 +97,73 @@ $RuleOrder{\&CreoleListAndNewLineRule} = 180;
 
 =head2 ListRule
 
-Oddmuse's default C<ListRule> function conflicts with this extension's
-C<CreoleListAndNewLineRule> function. We effectively "delete" the former
-function, therefore, by simply making it return nothing.
+Nullifies Oddmuse's default C<ListRule> function. That function conflicts with
+this extension's C<CreoleListAndNewLineRule> function; thus, we redefine that
+function to return nothing.
 
 =cut
 sub ListRule { return undef; }
 
+=head2 CreoleRule
+
+Handles the large part of Wiki Creole syntax.
+
+Technically, as Oddmuse's default C<LinkRules> function also conflicts with
+this extension's link rules and does not comply, in any case, with the Wiki
+Creole rules for links, we should also nullify Oddmuse's default C<LinkRules>
+function. Sadly, we don't. Why? Since existing Oddmuse Wikis using this
+extension depend on Oddmuse's default C<LinkRules> function, and as it's no
+terrible harm to let that function be, we have to let it be. Bah!
+
+=cut
 sub CreoleRule {
+  # "$is_interlinking" is a boolean that, if true, indicates this rule should
+  # make interlinks (i.e., links to Wiki pages on other, external Wikis) and,
+  # and, if false, should not. (Typically, Oddmuse sets this to false when
+  # including external HTML pages into local Wiki pages.)
+  my ($is_intralinking, $is_intraanchoring) = @_;
+
+  # Block level elements.
+  if ($bol) {
+    # horizontal line
+    # ----
+    if (m/\G(\s*\n)*[ \t]*----+[ \t]*\n?/cg or m/\G\s*\n----+[ \t]*\n?/cg) {
+      return CloseHtmlEnvironments().$q->hr().AddHtmlEnvironment('p');
+    }
+    # {{{
+    # preformatted
+    # }}}
+    elsif (m/\G\{\{\{[ \t]*\n(.*?\n)\}\}\}[ \t]*(\n|\z)/cgs) {
+      my $str = $1;
+      $str =~ s/\n }}}/\n}}}/g;
+      return CloseHtmlEnvironments()
+        .$q->pre({-class=> 'real'}, $str)
+        .AddHtmlEnvironment('p');
+    }
+    # table start using | -- the first table cell
+#     elsif (m/\G[ \t]*(\|+)(=)?([ \t]*)/cg) {
+#       return OpenHtmlEnvironment('table', 1, 'user')
+#         .AddHtmlEnvironment('tr')
+#         .AddHtmlEnvironment(($2 ? 'th' : 'td'),
+#                             GetCreoleTableHtmlAttributes(length($1), $3));
+#     }
+  }
+
   # escape next char (and prevent // in URLs from enabling italics)
   # ~
   if (m/\G(~($FullUrlPattern|\S))/cgo) {
-    if ($CreoleTildeAlternative
-  and index('ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-      . 'abcdefghijklmnopqrstuvwxyz'
-      . '0123456789', $2) != -1) {
-      return $1; # tilde stays
-    } else {
-      return $2; # tilde disappears
-    }
-  }
-  # horizontal line
-  # ----
-  elsif ($bol && m/\G(\s*\n)*[ \t]*----+[ \t]*\n?/cg
-      or m/\G\s*\n----+[ \t]*\n?/cg) {
-    return CloseHtmlEnvironments().$q->hr().AddHtmlEnvironment('p');
+    return
+      ($CreoleTildeAlternative and
+       index( 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+             .'abcdefghijklmnopqrstuvwxyz'
+             .'0123456789', $2) != -1)
+        ? $1  # tilde stays
+        : $2; # tilde disappears
   }
   # **bold**
   elsif (m/\G\*\*/cg) { return AddOrCloseCreoleEnvironment('strong'); }
   # //italic//
   elsif (m/\G\/\//cg) { return AddOrCloseCreoleEnvironment('em'); }
-  # {{{
-  # preformatted
-  # }}}
-  elsif ($bol && m/\G\{\{\{[ \t]*\n(.*?\n)\}\}\}[ \t]*(\n|\z)/cgs) {
-    my $str = $1;
-    $str =~ s/\n }}}/\n}}}/g;
-    return CloseHtmlEnvironments()
-      .$q->pre({-class=> 'real'}, $str)
-      .AddHtmlEnvironment('p');
-  }
   # {{{unformatted}}}
   elsif (m/\G\{\{\{(.*?}*)\}\}\}/cgs) {
     return $q->code($1);
@@ -160,29 +217,62 @@ sub CreoleRule {
                -alt=> substr($3,1)}));
   }
   # link: [[url]] and [[url|text]]
-  elsif (m/\G\[\[$FullUrlPattern\s*(\|\s*([^]]+))?\]\]/cgos) {
-    return GetUrl($1, $3||$1, 1);
+  elsif (m/\G\[\[$FullUrlPattern(\s*\|\s*([^\]]+?))?\]\]/cgos) {
+    # Permit embedding of Creole syntax within link text. (Rather complicated,
+    # but it does the job remarkably.)
+    my $link_url  = $1;
+    my $link_text = $3 ? CreoleRuleRecursive($3, @_) : $link_url;
+
+    # GetUrl() takes parameters resembling:
+    # ~ the link's URL.
+    # ~ the link's text (to be displayed for that URL).
+    # ~ a boolean (to be used Gods' know how).
+    return GetUrl($link_url, $link_text, 1);
   }
+  # link: [[page]] and [[page|text]]
+  elsif (m/\G(\[\[$FreeLinkPattern(\s*\|\s*([^\]]+?))?\]\])/cgos) {
+    Dirty($1);
+
+    # Permit embedding of Creole syntax within link text. (Rather complicated,
+    # but it does the job remarkably.)
+    my $page_name = $2;
+    my $link_text = $4 ? CreoleRuleRecursive($4, @_) : '';
+
+    return GetPageOrEditLink($page_name, $link_text, 0, 1);
+  }
+  #TODO: Handle interwiki links, here, as well, so as to permit embedding of
+  #Creole syntax within interwiki link text. That's a bit more work, though; so
+  #we'll leave it for a slower day.
+
   # Table syntax is matched last (or nearly last), so as to allow other Creole-
   # specific syntax within tables.
   #
   # tables using | -- end of the table (two newlines) or row (one newline)
-  elsif (InElement('table') and m/\G[ \t]*\|[ \t]*(\n)?(\n|$)/cg) {
-    return $1
-      # end of the table (two newlines)
-      ? CloseHtmlEnvironmentsCreoleOld().AddHtmlEnvironment('p')
-      # end of the row (one newline)
-      : CloseHtmlEnvironmentUntil('table');
+  elsif (InElement('table')) {
+    if (m/\G[ \t]*\|[ \t]*(\n)?(\n|$)/cg) {
+      return $1
+        # end of the table (two newlines)
+        ? CloseHtmlEnvironmentsCreoleOld().AddHtmlEnvironment('p')
+        # end of the row (one newline)
+        : CloseHtmlEnvironmentUntil('table');
+    }
+    elsif (m/\G[ \t]*(\|+)(=)?([ \t]*)/cg) {
+      return    (InElement('tr')
+              ? (InElement('td') || InElement('th') ? CloseHtmlEnvironmentUntil('tr') : '')
+              :  AddHtmlEnvironment('tr'))
+        .AddHtmlEnvironment(($2 ? 'th' : 'td'),
+                            GetCreoleTableHtmlAttributes(length($1), $3));
+    }
   }
   # tables using | -- an ordinary table cell
-  elsif (m/\G[ \t]*(\|+)(=)?([ \t]*)/cg) {
-    return
-       (InElement('table') ? '' : OpenHtmlEnvironment('table', 1, 'user'))
-      .(InElement('tr')
-        ? (InElement('td') || InElement('th') ? CloseHtmlEnvironmentUntil('tr') : '')
-        :  AddHtmlEnvironment('tr'))
-          .AddHtmlEnvironment(($2 ? 'th' : 'td'),
-                              GetCreoleTableHtmlAttributes(length($1), $3));
+  #
+  # Please note that order is important, here; this should appear after all
+  # markup dependent on being in a current table.
+  elsif ($bol and m/\G[ \t]*(\|+)(=)?([ \t]*)/cg) {
+    return OpenHtmlEnvironment('table', 1, 'user')
+      .AddHtmlEnvironment('tr')
+      .AddHtmlEnvironment(($2 ? 'th' : 'td'),
+                          GetCreoleTableHtmlAttributes(length($1), $3));
   }
 
   return undef;
@@ -269,6 +359,52 @@ sub AddOrCloseCreoleEnvironment {
   return InElement($html_tag)
     ? CloseHtmlEnvironmentUntil($html_tag).CloseHtmlEnvironment()
     : AddHtmlEnvironment       ($html_tag);
+}
+
+=head2 CreoleRuleRecursive
+
+Calls C<CreoleRule> on the passed string, from within some existing call to
+C<CreoleRule>. This function ensures, among other safeties, that the
+C<CreoleRule> function is not recursed into more than once.
+
+=cut
+sub CreoleRuleRecursive {
+  my     $markup = shift;
+  return $markup if $CreoleRuleRecursing;  # avoid infinite loops
+              local $CreoleRuleRecursing = 1;
+              local $bol = 0;  # prevent block level element handling
+
+  my ($oldpos, $old_) = (pos, $_);
+  my ($html, $html_creole) = ('', '');
+
+  $_ = $markup;
+
+  # The contents of this loop are, in part, hacked from the guts of Oddmuse's
+  # ApplyRules() function.
+  while (1) {
+    if ($html_creole = CreoleRule(@_) or
+       ($is_creoleaddition_installed and  # try "creoleaddition.pl", too.
+        $html_creole = CreoleAdditionRule(@_))) {
+      $html .= $html_creole;
+    }
+    elsif (m/\G&amp;([a-z]+|#[0-9]+|#x[a-fA-F0-9]+);/cg) { # entity references
+      $html .= "&$1;";
+    }
+    elsif (m/\G\s+/cg) {
+      $html .= ' ';
+    }
+    elsif (   m/\G([A-Za-z\x80-\xff]+([ \t]+[a-z\x80-\xff]+)*[ \t]+)/cg
+           or m/\G([A-Za-z\x80-\xff]+)/cg
+           or m/\G(\S)/cg) {
+      $html .= $1;    # multiple words but do not match http://foo}
+    }
+    else { last; }
+  }
+
+  ($_, pos) = ($old_, $oldpos);   # restore \G (assignment order matters!)
+
+  $CreoleRuleRecursing = 0;
+  return $html;
 }
 
 sub GetCreoleImageHtml {

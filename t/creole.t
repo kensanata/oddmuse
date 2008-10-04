@@ -122,7 +122,7 @@ foo -----
 ----\nfoo
 <hr /><p>foo</p>
 foo\n----
-foo<hr />
+foo <hr />
 |a|
 <table class="user"><tr><td>a</td></tr></table>
 |a\\b|\n|c\n\nd|

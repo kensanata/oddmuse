@@ -22,7 +22,7 @@ creoleaddition is simply installable; simply:
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.18 2008/10/02 00:12:04 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.19 2008/10/04 03:30:50 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -96,12 +96,12 @@ sub CreoleAdditionInit {
 }
 
 # ....................{ MARKUP                             }....................
-push(@MyRules, \&CreoleAdditionRules);
+push(@MyRules, \&CreoleAdditionRule);
 
 # Blockquote line-breaks conflict with Creole-style line-breaks.
-$RuleOrder{\&CreoleAdditionRules} = -11;
+$RuleOrder{\&CreoleAdditionRule} = -11;
 
-sub CreoleAdditionRules {
+sub CreoleAdditionRule {
   # ; definition list term
   if ($CreoleAdditionDefList and (
       ($bol and                    m/\G[ \t]*;[ \t]*(?=[^:]+?\n[ \t]*:[ \t]*)/cg) or
