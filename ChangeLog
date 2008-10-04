@@ -1,5 +1,8 @@
 2008-10-04  Alex Schroeder  <alex@gnu.org>
 
+	* t/test.pl (name): Show the last 60 characters of a XPath test
+	instead of the first 60 as this makes them easier to find.
+
 	* modules/creole.pl (CreoleRule): Added link around image for the
 	[[url|{{url}}]] rule.
 
