@@ -1,3 +1,14 @@
+2008-10-04  Brian Curry  <http://www.raiazome.com/Brian_Curry>
+
+	* modules/creole.pl (CreoleRuleRecursive): New function. Permits embedding
+	of Wiki Creole syntax within Wiki Creole syntax. (Yes... This is confusing?)
+	* modules/creole.pl (CreoleRule): Used the new function. Specifically, you
+	can now embed Creole and CreoleAddition syntax (such as bold, italics, small
+	caps, and so on) within URL and Wiki link text, ala
+	"[[Some_Page|Wow! **Quite** an //%%interesting page%%// page, here]]."
+	* modules/creoleaddition.pl (CreoleAdditionRule): Renamed function from
+	"CreoleAdditionRules" to this.
+
 2008-10-03  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl ($UseGrep): New option. Set by default.
