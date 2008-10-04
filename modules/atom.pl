@@ -20,7 +20,7 @@ use XML::Atom::Entry;
 use XML::Atom::Link;
 use XML::Atom::Person;
 
-$ModulesDescription .= '<p>$Id: atom.pl,v 1.11 2006/09/19 21:05:43 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: atom.pl,v 1.12 2008/10/04 22:30:20 as Exp $</p>';
 
 push(@MyInitVariables, \&AtomInit);
 
@@ -47,7 +47,7 @@ sub DoAtom {
   } else {
     SetParam($id, 1); # /atom/full should work, too
     print GetHttpHeader('application/atom+xml');
-    DoRc(\&GetRcAtom);
+    print GetRcAtom();
   }
 }
 
@@ -102,11 +102,7 @@ sub GetRcAtom {
   $feed .= AtomTag('wiki:interwiki', $InterWikiMoniker) if $InterWikiMoniker;
   $feed .= AtomTag('logo', $RssImageUrl) if $RssImageUrl;
   # Now call GetRc with some blocks of code as parameters:
-  GetRc (
-    # printDailyTear
-    sub {},
-    # printRCLine
-    sub {
+  ProcessRcLines(sub {}, sub {
       my ($pagename, $timestamp, $host, $username, $summary, $minor, $revision, $languages, $cluster) = @_;
       return if $excluded{$pagename} or ($limit ne 'all' and $count++ >= $limit);
       my $name = NormalToFree($pagename);
@@ -115,18 +111,17 @@ sub GetRcAtom {
       $feed .= "\n<entry>\n";
       $feed .= AtomTag('title', QuoteHtml($name));
       $feed .= qq{<link rel="alternate" href="}
-	. (GetParam('all', $cluster)
-	   ? QuoteHtml($ScriptName) . "?" . GetPageParameters('browse', $pagename, $revision, $cluster)
-	   : $url . UrlEncode($pagename)) . qq{"/>\n};
+        . (GetParam('all', $cluster)
+    	? QuoteHtml($ScriptName) . "?" . GetPageParameters('browse', $pagename, $revision, $cluster)
+    	: $url . UrlEncode($pagename)) . qq{"/>\n};
       $feed .= AtomLink("$ScriptName/atom/wiki/$id");
-
       $feed .= AtomTag('summary', QuoteHtml($summary));
       $feed .= qq{<content type="xhtml">\n<div xmlns="http://www.w3.org/1999/xhtml">\n}
-	. PageHtml($pagename, 50*1024,$q->div(T('This page is too big to send over RSS.')))
-	. qq{\n</div>\n</content>\n} if GetParam('full', 0);
+        . PageHtml($pagename, 50*1024,$q->div(T('This page is too big to send over RSS.')))
+          . qq{\n</div>\n</content>\n} if GetParam('full', 0);
       $feed .= AtomTag('published', TimeToW3($timestamp));
       $feed .= qq{<link rel="replies" href="} . $url . $CommentsPrefix . UrlEncode($pagename) . qq{"/>\n}
-	if $CommentsPrefix and $pagename !~ /^$CommentsPrefix/;
+        if $CommentsPrefix and $pagename !~ /^$CommentsPrefix/;
       $feed .= AtomTag('author', substr(AtomTag('name', $username), 0, -1)); # strip one newline
       $feed .= AtomTag('wiki:username', $username);
       $feed .= AtomTag('wiki:status', 1 == $revision ? 'new' : 'updated');
@@ -134,11 +129,9 @@ sub GetRcAtom {
       $feed .= AtomTag('wiki:version', $revision);
       $feed .= AtomTag('wiki:history', $historyPrefix . UrlEncode($pagename));
       $feed .= AtomTag('wiki:diff', $diffPrefix . UrlEncode($pagename))
-	if $UseDiff and GetParam('diffrclink', 1);
+        if $UseDiff and GetParam('diffrclink', 1);
       $feed .= "</entry>\n";
-    },
-    # RC Lines
-    @_);
+    });
   $feed .= "</feed>\n";
   return $feed;
 }
@@ -194,7 +187,6 @@ sub DoAtomSave {
     # Now save the new page
     Save($id, $string, $summary);
     ReleaseLock();
-    DeletePermanentAnchors();
     # Do we reply 200 or 201 depending on the request, or depending on
     # the action taken?
     my $url = "$ScriptName/atom/wiki/$id";
