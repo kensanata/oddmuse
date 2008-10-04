@@ -14,7 +14,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.45 2008/10/04 03:30:50 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.46 2008/10/04 11:07:54 as Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -212,9 +212,10 @@ sub CreoleRule {
   # link: [[url|{{url}}]]
   elsif (m/\G\[\[$FullUrlPattern\s*\|\{\{$FullUrlPattern\s*(\|.+?)?\}\}\]\]/cgos) {
     return GetCreoleImageHtml(
-      $q->img({-src=> $2,
-               -class=> 'url outside',
-               -alt=> substr($3,1)}));
+      $q->a({-href=> $1, -class=> 'image outside'},
+	    $q->img({-src=> $2,
+		     -class=> 'url outside',
+		     -alt=> substr($3,1)})));
   }
   # link: [[url]] and [[url|text]]
   elsif (m/\G\[\[$FullUrlPattern(\s*\|\s*([^\]]+?))?\]\]/cgos) {
