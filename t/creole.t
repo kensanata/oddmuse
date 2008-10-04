@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 101;
+use Test::More tests => 103;
 clear_pages();
 
 add_module('creole.pl');
@@ -47,6 +47,10 @@ this is **bold**
 this is <strong>bold</strong>
 **bold**
 <strong>bold</strong>
+*item\n**item**
+<ul><li>item <strong>item</strong></li></ul>
+*item\n\n**item**
+<ul><li>item</li></ul><p><strong>item</strong></p>
 *item\n** **item**
 <ul><li>item<ul><li><strong>item</strong></li></ul></li></ul>
 *item\n* **item**
@@ -197,7 +201,7 @@ http://www.wikicreole.org/.
 [[http://www.wikicreole.org/|Visit the WikiCreole website]]
 //a[@class="url http outside"][@href="http://www.wikicreole.org/"][text()="Visit the WikiCreole website"]
 [[http://www.wikicreole.org/|Visit the\nWikiCreole website]]
-//a[@class="url http outside"][@href="http://www.wikicreole.org/"][text()="Visit the\nWikiCreole website"]
+//a[@class="url http outside"][@href="http://www.wikicreole.org/"][text()="Visit the WikiCreole website"]
 [[http://www.wikicreole.org/ | Visit the WikiCreole website]]
 //a[@class="url http outside"][@href="http://www.wikicreole.org/"][text()="Visit the WikiCreole website"]
 [[link]]
@@ -205,7 +209,7 @@ http://www.wikicreole.org/.
 [[link|Go to my page]]
 //a[@class="local"][@href="http://localhost/test.pl/link"][text()="Go to my page"]
 [[link|Go to\nmy page]]
-//a[@class="local"][@href="http://localhost/test.pl/link"][text()="Go to\nmy page"]
+//a[@class="local"][@href="http://localhost/test.pl/link"][text()="Go to my page"]
 {{pic}}
 //a[@class="image"][@href="http://localhost/test.pl/pic"][img[@class="upload"][@src="http://localhost/test.pl/download/pic"][@alt="pic"]]
 [[link|{{pic}}]]
