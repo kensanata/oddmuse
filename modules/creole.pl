@@ -14,7 +14,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.48 2008/10/06 22:21:18 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.49 2008/10/06 22:51:50 as Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -259,7 +259,8 @@ sub CreoleRule {
     my $page_name = $2;
     my $link_text = $4 ? CreoleRuleRecursive($4, @_) : '';
 
-    return GetPageOrEditLink($page_name, $link_text, 0, 1);
+    print GetPageOrEditLink($page_name, $link_text, 0, 1);
+    return '';
   }
   #TODO: Handle interwiki links, here, as well, so as to permit embedding of
   #Creole syntax within interwiki link text. That's a bit more work, though; so
