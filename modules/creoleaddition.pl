@@ -22,7 +22,7 @@ creoleaddition is simply installable; simply:
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.19 2008/10/04 03:30:50 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.20 2008/10/06 06:11:21 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -117,7 +117,7 @@ sub CreoleAdditionRule {
     return CloseHtmlEnvironment().AddHtmlEnvironment('dd');
   }
   # """block quotes"""
-  elsif ($CreoleAdditionQuote and bol and m/\G\"\"\"(\s|$)/cg) {
+  elsif ($CreoleAdditionQuote and $bol and m/\G\"\"\"(\n|$)/cg) {
     return InElement('blockquote')
       ? CloseHtmlEnvironmentsCreoleAdditionOld().AddHtmlEnvironment('p')
       : CloseHtmlEnvironments().AddHtmlEnvironment('blockquote').AddHtmlEnvironment('p');
@@ -167,7 +167,15 @@ block level elements in multi-line blockquotes.
 
 =cut
 sub CloseHtmlEnvironmentsCreoleAddition {
-  return InElement('blockquote')
+  # O.K.; this is a bit complex. If we're not currently in a blockquote, simply
+  # close HTML environments as expected. If we are in such a blockquote, we must
+  # close it if and only if we're currently at the end-of-page. (Blockquotes are
+  # closed explicitly by embedding the closing """ in the page.)
+  #
+  # How do we know when we're at the end-of-page? When "pos()", a Perl built-in
+  # returning the string position of the current "\G" match, returns the length
+  # of that string.
+  return (InElement('blockquote') && pos() < length($_))
     ? CloseHtmlEnvironmentUntil('blockquote')
     : CloseHtmlEnvironmentsCreoleAdditionOld();
 }

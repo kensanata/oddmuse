@@ -1,3 +1,20 @@
+2008-10-06  Brian Curry  <http://www.raiazome.com/Brian_Curry>
+
+	* wiki.pl (ApplyRules): Ensure the regular expression match
+	position returns the length of the matched string on finishing
+	application of all rules. ("creole.pl" and "creoleaddition.pl" now
+	depend on this; it notifies them that rules are now finished.)
+	* modules/creoleaddition.pl (CreoleAdditionRule): Injected a sanity
+	check, to ensure closure of blockquotes at the end of a page.
+	* modules/creole.pl ($CreoleTableCellsAllowBlockLevelElements): New
+	option.
+	* modules/creole.pl (CreoleRule): The last, one hopes, of all Creole
+	table markup modifications (for the moment). The rather complex
+	table markup code has been modified so as to use the new option, has
+	been refactored for robustness and strict conformance to the Wiki
+	Creole standard, and has been well-documented.
+	* modules/creole.pl (CreoleGetTableHtmlAttributes): Deleted function.
+	
 2008-10-04  Alex Schroeder  <alex@gnu.org>
 
 	* t/test.pl (name): Show the last 60 characters of a XPath test

@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 103;
+use Test::More tests => 106;
 clear_pages();
 
 add_module('creole.pl');
@@ -129,20 +129,26 @@ foo\n----
 foo <hr />
 |a|
 <table class="user"><tr><td>a</td></tr></table>
+|a
+<table class="user"><tr><td>a</td></tr></table>
+|a|b|\n|c|d
+<table class="user"><tr><td>a</td><td>b</td></tr><tr><td>c</td><td>d</td></tr></table>
+|a|b\nc|d
+<table class="user"><tr><td>a</td><td>b c</td><td>d</td></tr></table>
 |a\\b|\n|c\n\nd|
-<table class="user"><tr><td>a<br />b</td></tr><tr><td>c<p>d</p></td></tr></table>
+<table class="user"><tr><td>a<br />b</td></tr><tr><td>c</td></tr></table><p>d|</p>
 |a|b|c\n|d|e|\nf|
-<table class="user"><tr><td>a</td><td>b</td><td>c </td><td>d</td><td>e</td></tr>f</table>
-|a|b|c|\n|d|e|f|
+<table class="user"><tr><td>a</td><td>b</td><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr></table>
+|a|b|c|\n|d|e|f
 <table class="user"><tr><td>a</td><td>b</td><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr></table>
 |=a|=b|=c|\n|d|e|f|
 <table class="user"><tr><th>a</th><th>b</th><th>c</th></tr><tr><td>d</td><td>e</td><td>f</td></tr></table>
 |=a|b|c|\n|=d|e|f|
 <table class="user"><tr><th>a</th><td>b</td><td>c</td></tr><tr><th>d</th><td>e</td><td>f</td></tr></table>
 | a| b| c\n| d | e | f |
-<table class="user"><tr><td align="right">a</td><td align="right">b</td><td align="right">c </td><td align="center">d </td><td align="center">e </td><td align="center">f </td></tr></table>
+<table class="user"><tr><td align="right">a</td><td align="right">b</td><td align="right">c</td></tr><tr><td align="center">d </td><td align="center">e </td><td align="center">f </td></tr></table>
 |a||c\n||e|f|
-<table class="user"><tr><td>a</td><td colspan="2">c </td><td colspan="2">e</td><td>f</td></tr></table>
+<table class="user"><tr><td>a</td><td colspan="2">c</td></tr><tr><td colspan="2">e</td><td>f</td></tr></table>
 ~#1
 #1
 ~http://www.foo.com/
