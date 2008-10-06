@@ -1,4 +1,4 @@
-# Copyright (C) 2006, 2007, 2008  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006, 2007, 2008  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 106;
+use Test::More tests => 108;
 clear_pages();
 
 add_module('creole.pl');
@@ -260,3 +260,9 @@ xpath_test($page,
      '//a[@class="image"][@href="http://localhost/wiki.pl/pic"][img[@class="upload"][@src="http://localhost/wiki.pl/download/pic"][@alt="pic"]]');
 negative_xpath_test($page,
         '//a[@class="image"]/following-sibling::a[@class="image"]');
+
+
+xpath_test(update_page('source', 'this is a [[link]].'),
+	   '//a[text()="link"]');
+negative_xpath_test(get_page('source'),
+		    '//a[text()="link"]/following-sibling::a[text()="link"]');
