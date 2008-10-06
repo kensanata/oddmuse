@@ -14,7 +14,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.46 2008/10/04 11:07:54 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.47 2008/10/06 06:11:21 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -24,7 +24,9 @@ creole is easily configurable; set these variables in the B<wiki/config.pl>
 file for your Oddmuse Wiki.
 
 =cut
-use vars qw($CreoleLineBreaks $CreoleTildeAlternative);
+use vars qw($CreoleLineBreaks
+            $CreoleTildeAlternative
+            $CreoleTableCellsAllowBlockLevelElements);
 
 =head2 $CreoleLineBreaks
 
@@ -47,6 +49,27 @@ character. (If false, this extension consumes such tilde ~ characters.)
 
 =cut
 $CreoleTildeAlternative = 0;
+
+=head2 $CreoleTableCellsAllowBlockLevelElements
+
+A boolean that, if true, permits table cell markup to embed block level
+elements in table cells. By default, this boolean is false.
+
+Block level elements include such "high-level" entities as paragraphs,
+blockquotes, list items, and so on. Thus, enabling this boolean permits you to
+embed multiple paragraphs, blockquotes, and so on in individual table cells.
+
+Please note: enabling this boolean permits non-conformant syntax -- that is,
+syntax which no longer conforms to the Wiki Creole standard. (In general,
+unless you have significant amounts of Wiki Creole table markup strictly
+conforming to the Wiki Creole standard, this shouldn't be an issue.)
+
+Please note: enabling this boolean also requires you explicitly close the last
+table cell of a cell with a "|" character. (This character is optional under
+the Wiki Creole standard, but not under this non-conformant alteration.)
+
+=cut
+$CreoleTableCellsAllowBlockLevelElements = 0;
 
 # ....................{ INITIALIZATION                     }....................
 push(@MyInitVariables, \&CreoleInit);
@@ -104,6 +127,8 @@ function to return nothing.
 =cut
 sub ListRule { return undef; }
 
+my $CreoleTableCellPattern = '[ \t]*(\|+)(=)?\n?([ \t]*)';
+
 =head2 CreoleRule
 
 Handles the large part of Wiki Creole syntax.
@@ -140,13 +165,6 @@ sub CreoleRule {
         .$q->pre({-class=> 'real'}, $str)
         .AddHtmlEnvironment('p');
     }
-    # table start using | -- the first table cell
-#     elsif (m/\G[ \t]*(\|+)(=)?([ \t]*)/cg) {
-#       return OpenHtmlEnvironment('table', 1, 'user')
-#         .AddHtmlEnvironment('tr')
-#         .AddHtmlEnvironment(($2 ? 'th' : 'td'),
-#                             GetCreoleTableHtmlAttributes(length($1), $3));
-#     }
   }
 
   # escape next char (and prevent // in URLs from enabling italics)
@@ -213,9 +231,9 @@ sub CreoleRule {
   elsif (m/\G\[\[$FullUrlPattern\s*\|\{\{$FullUrlPattern\s*(\|.+?)?\}\}\]\]/cgos) {
     return GetCreoleImageHtml(
       $q->a({-href=> $1, -class=> 'image outside'},
-	    $q->img({-src=> $2,
-		     -class=> 'url outside',
-		     -alt=> substr($3,1)})));
+      $q->img({-src=> $2,
+         -class=> 'url outside',
+         -alt=> substr($3,1)})));
   }
   # link: [[url]] and [[url|text]]
   elsif (m/\G\[\[$FullUrlPattern(\s*\|\s*([^\]]+?))?\]\]/cgos) {
@@ -244,36 +262,70 @@ sub CreoleRule {
   #TODO: Handle interwiki links, here, as well, so as to permit embedding of
   #Creole syntax within interwiki link text. That's a bit more work, though; so
   #we'll leave it for a slower day.
-
+  #
   # Table syntax is matched last (or nearly last), so as to allow other Creole-
   # specific syntax within tables.
   #
   # tables using | -- end of the table (two newlines) or row (one newline)
   elsif (InElement('table')) {
-    if (m/\G[ \t]*\|[ \t]*(\n)?(\n|$)/cg) {
-      return $1
-        # end of the table (two newlines)
-        ? CloseHtmlEnvironmentsCreoleOld().AddHtmlEnvironment('p')
-        # end of the row (one newline)
-        : CloseHtmlEnvironmentUntil('table');
+    # If block level elements are allowed in table cells, we know that this is
+    # the end of this table, if we match:
+    #  * an explicit "|" character followed by two newline characters or
+    #    an implicit end-of-page.
+    #
+    # Otherwise, we know that this is the end of this table, if we match:
+    #  * an explicit "|" character followed by two newline characters or
+    #    an implicit end-of-page, or
+    #  * two newline characters.
+    if (m/\G[ \t]*\|[ \t]*(\n\n|$)/cg or
+       (!$CreoleTableCellsAllowBlockLevelElements and m/\G[ \t]*(\n\n|$)/cg)) {
+      return CloseHtmlEnvironmentsCreoleOld().AddHtmlEnvironment('p');
     }
-    elsif (m/\G[ \t]*(\|+)(=)?([ \t]*)/cg) {
-      return    (InElement('tr')
-              ? (InElement('td') || InElement('th') ? CloseHtmlEnvironmentUntil('tr') : '')
-              :  AddHtmlEnvironment('tr'))
-        .AddHtmlEnvironment(($2 ? 'th' : 'td'),
-                            GetCreoleTableHtmlAttributes(length($1), $3));
+    # We know that this is the end of this table row, if we match:
+    #  * an explicit "|" character followed by one newline character and another
+    #    "|" character, or
+    #  * an explicit newline character followed by an explicit "|" character.
+    #
+    # That is to say, the "|" character terminating a table row is optional.
+    #
+    # In either case, the newline character signifies the end of this table
+    # row and the "|" character that follows it signifies the start of a new
+    # row. We avoid consuming the "|" character by matching it with a lookahead.
+    elsif (m/\G([ \t]*\|)?[ \t]*\n(?=$CreoleTableCellPattern)/cg) {
+      return CloseHtmlEnvironmentUntil('table').AddHtmlEnvironment('tr');
+    }
+    # We know this this is start of a new table cell (and possibly also the
+    # end of the last table cell), if we match:
+    #  * an explicit "|" character.
+    elsif (m/\G$CreoleTableCellPattern/cg) {
+      my $tag = $2 ? 'th' : 'td';
+      my $column_span = length($1);
+      my $is_right_justified = $3;
+
+      # Now that we've retrieved all numbered matches, match another lookahead.
+      my $is_left_justified = m/\G(?=.*?[ \t]+\|)/;
+      my $attributes = $column_span == 1 ? '' : qq{colspan="$column_span"};
+
+         if ($is_left_justified and
+             $is_right_justified) { $attributes .= 'align="center"' }
+      elsif ($is_right_justified) { $attributes .= 'align="right"' }
+      # this is the default:
+      # elsif ($is_left_justified) { $attributes .= 'align="left"' }
+
+      return
+         (InElement('td') || InElement('th') ? CloseHtmlEnvironmentUntil('tr') : '')
+        .AddHtmlEnvironment($tag, $attributes);
     }
   }
   # tables using | -- an ordinary table cell
   #
   # Please note that order is important, here; this should appear after all
   # markup dependent on being in a current table.
-  elsif ($bol and m/\G[ \t]*(\|+)(=)?([ \t]*)/cg) {
-    return OpenHtmlEnvironment('table', 1, 'user')
-      .AddHtmlEnvironment('tr')
-      .AddHtmlEnvironment(($2 ? 'th' : 'td'),
-                          GetCreoleTableHtmlAttributes(length($1), $3));
+  #
+  # Also, the "|" character also signifies the start of a new table cell. Thus,
+  # we avoid consuming that character by matching it with a lookahead.
+  elsif ($bol and m/\G(?=$CreoleTableCellPattern)/cg) {
+    return OpenHtmlEnvironment('table', 1, 'user').AddHtmlEnvironment('tr');
   }
 
   return undef;
@@ -343,8 +395,19 @@ permitting block level elements in multi-line table cells.
 
 =cut
 sub CloseHtmlEnvironmentsCreole {
-     if (InElement('td')) { return CloseHtmlEnvironmentUntil('td'); }
-  elsif (InElement('th')) { return CloseHtmlEnvironmentUntil('th'); }
+  # O.K.; this is a bit complex. If we're not currently in a table cell, simply
+  # close HTML environments as expected. If we are in such a table cell, we must
+  # close it if and only if we're currently at the end-of-page. (Table cells are
+  # closed explicitly by embedding the closing "|" in the page.)
+  #
+  # How do we know when we're at the end-of-page? When "pos()", a Perl built-in
+  # returning the string position of the current "\G" match, returns the length
+  # of that string.
+  if ($CreoleTableCellsAllowBlockLevelElements and pos() < length($_)) {
+       if (InElement('td')) { return CloseHtmlEnvironmentUntil('td'); }
+    elsif (InElement('th')) { return CloseHtmlEnvironmentUntil('th'); }
+  }
+
   return CloseHtmlEnvironmentsCreoleOld();
 }
 
@@ -415,21 +478,26 @@ sub GetCreoleImageHtml {
     .$image_html;
 }
 
-sub GetCreoleTableHtmlAttributes {
-  my ($span, $left, $right) = @_;
-  my $attr = '';
+# sub GetCreoleTableCellHtml {
+#   my ($span, $left, $right) = @_;
+#   my  $table_cell_attributes = '';
 
-  $attr = "colspan=\"$span\"" if ($span != 1);
-  m/\G(?=.*?([ \t]*)\|)/ and $right = $1 unless $right;
-  $attr .= ' ' if ($attr and ($left or $right));
+#   $table_cell_attributes = "colspan=\"$span\"" if ($span != 1);
+#   m/\G(?=.*?([ \t]*)\|)/ and $right = $1 unless $right;
+#   $table_cell_attributes .= ' ' if ($table_cell_attributes and ($left or $right));
 
-  if ($left and $right) { $attr .= 'align="center"' }
-  elsif ($left) { $attr .= 'align="right"' }
-  # this is the default:
-  # elsif ($right) { $attr .= 'align="left"' }
+#      if ($left and $right) { $table_cell_attributes .= 'align="center"' }
+#   elsif ($left)            { $table_cell_attributes .= 'align="right"' }
+#   # this is the default:
+#   # elsif ($right) { $table_cell_attributes .= 'align="left"' }
 
-  return $attr;
-}
+#   return
+#      (InElement('table') ? '' : OpenHtmlEnvironment('table', 1, 'user'))
+#     .(InElement('tr')
+#       ? (InElement('td') || InElement('th') ? CloseHtmlEnvironmentUntil('tr') : '')
+#       :  AddHtmlEnvironment('tr'))
+#     .AddHtmlEnvironment(($2 ? 'th' : 'td'), $table_cell_attributes);
+# }
 
 =head1 COPYRIGHT AND LICENSE
 

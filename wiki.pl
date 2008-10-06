@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.875 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.876 $}))[1]; # for MakeMaker
 
 # Options:
 
@@ -298,7 +298,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.875 2008/10/04 03:30:50 leycec Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.876 2008/10/06 06:11:20 leycec Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -547,14 +547,12 @@ sub ApplyRules {
       } elsif (m/\G([A-Za-z\x80-\xff]+([ \t]+[a-z\x80-\xff]+)*[ \t]+)/cg
          or m/\G([A-Za-z\x80-\xff]+)/cg or m/\G(\S)/cg) {
   Clean($1);    # multiple words but do not match http://foo
-      } else {
-  last;
-      }
+      } else { last; }
       $bol = (substr($_,pos()-1,1) eq "\n");
     }
   }
-  # last block -- close it, cache it
-  Clean(CloseHtmlEnvironments());
+  pos = length $_;  # notify module functions we've completed rule handling
+  Clean(CloseHtmlEnvironments());  # last block -- close it, cache it
   if ($Fragment ne '') {
     $Fragment =~ s|<p></p>||g; # clean up extra paragraphs (see end Dirty())
     print $Fragment;
