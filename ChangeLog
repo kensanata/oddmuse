@@ -1,3 +1,8 @@
+2008-10-07  Brian Curry  <http://www.raiazome.com/Brian_Curry>
+
+	* modules/creole.pl (CreoleRule): Allow one newline character
+	following an explicit pipe character to end a table.
+
 2008-10-06  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
 	* wiki.pl (ApplyRules): Ensure the regular expression match
