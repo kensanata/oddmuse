@@ -14,7 +14,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.47 2008/10/06 06:11:21 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.48 2008/10/06 22:21:18 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -127,6 +127,8 @@ function to return nothing.
 =cut
 sub ListRule { return undef; }
 
+# A regular expression matching Wiki Creole-style table cells, locally accessed
+# by CreoleRule, below.
 my $CreoleTableCellPattern = '[ \t]*(\|+)(=)?\n?([ \t]*)';
 
 =head2 CreoleRule
@@ -268,35 +270,39 @@ sub CreoleRule {
   #
   # tables using | -- end of the table (two newlines) or row (one newline)
   elsif (InElement('table')) {
-    # If block level elements are allowed in table cells, we know that this is
-    # the end of this table, if we match:
-    #  * an explicit "|" character followed by two newline characters or
-    #    an implicit end-of-page.
-    #
-    # Otherwise, we know that this is the end of this table, if we match:
-    #  * an explicit "|" character followed by two newline characters or
-    #    an implicit end-of-page, or
-    #  * two newline characters.
-    if (m/\G[ \t]*\|[ \t]*(\n\n|$)/cg or
-       (!$CreoleTableCellsAllowBlockLevelElements and m/\G[ \t]*(\n\n|$)/cg)) {
-      return CloseHtmlEnvironmentsCreoleOld().AddHtmlEnvironment('p');
-    }
     # We know that this is the end of this table row, if we match:
-    #  * an explicit "|" character followed by one newline character and another
-    #    "|" character, or
-    #  * an explicit newline character followed by an explicit "|" character.
+    #  * an explicit "|" character followed by: a newline character and
+    #    another "|" character; or
+    #  * an explicit newline character followed by: a "|" character.
     #
     # That is to say, the "|" character terminating a table row is optional.
     #
     # In either case, the newline character signifies the end of this table
     # row and the "|" character that follows it signifies the start of a new
     # row. We avoid consuming the "|" character by matching it with a lookahead.
-    elsif (m/\G([ \t]*\|)?[ \t]*\n(?=$CreoleTableCellPattern)/cg) {
+    if (m/\G([ \t]*\|)?[ \t]*\n(?=$CreoleTableCellPattern)/cg) {
       return CloseHtmlEnvironmentUntil('table').AddHtmlEnvironment('tr');
     }
-    # We know this this is start of a new table cell (and possibly also the
-    # end of the last table cell), if we match:
+    # If block level elements are allowed in table cells, we know that this is
+    # the end of the table, if we match:
+    #  * an explicit "|" character followed by: a newline character not
+    #    followed by another "|" character, or an implicit end-of-page.
+    #
+    # Otherwise, we know that this is the end of the table, if we match:
+    #  * an explicit "|" character followed by: a newline character not
+    #    followed by another "|" character, or an implicit end-of-page; or
+    #  * two newline characters.
+    #
+    # This condition should appear after the end-of-row test, above.
+    elsif (m/\G[ \t]*\|[ \t]*(\n|$)/cg or
+           (!$CreoleTableCellsAllowBlockLevelElements and m/\G[ \t]*\n\n/cg)) {
+      return CloseHtmlEnvironmentsCreoleOld().AddHtmlEnvironment('p');
+    }
+    # Lastly, we know this this is start of a new table cell (and possibly also
+    # the end of the last table cell), if we match:
     #  * an explicit "|" character.
+    #
+    # This condition should appear after the end-of-table test, above.
     elsif (m/\G$CreoleTableCellPattern/cg) {
       my $tag = $2 ? 'th' : 'td';
       my $column_span = length($1);

@@ -138,7 +138,7 @@ foo <hr />
 |a\\b|\n|c\n\nd|
 <table class="user"><tr><td>a<br />b</td></tr><tr><td>c</td></tr></table><p>d|</p>
 |a|b|c\n|d|e|\nf|
-<table class="user"><tr><td>a</td><td>b</td><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr></table>
+<table class="user"><tr><td>a</td><td>b</td><td>c</td></tr><tr><td>d</td><td>e</td></tr></table><p>f|</p>
 |a|b|c|\n|d|e|f
 <table class="user"><tr><td>a</td><td>b</td><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr></table>
 |=a|=b|=c|\n|d|e|f|
