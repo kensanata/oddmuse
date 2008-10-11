@@ -1,3 +1,11 @@
+2008-10-12  Brian Curry  <http://www.raiazome.com/Brian_Curry>
+
+	* modules/hibernal.pl (HibernalInit): Implemented context-
+	dependent defaults for $HibernalPostCommentsAuthorshipMarkup.
+	(AssayHibernalPostBounds): Corrected several obscure, but
+	damaging, edge-cases. (This necessitated a rewrite of the
+	algorithm, unfortunately.)
+
 2008-10-07  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
 	* modules/creole.pl (CreoleRule): Allow one newline character

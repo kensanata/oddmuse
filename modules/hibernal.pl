@@ -45,7 +45,7 @@ for posts having such a subtitle.
 #     "David_Curry".
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: hibernal.pl,v 1.3 2008/09/28 02:51:50 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: hibernal.pl,v 1.4 2008/10/11 13:06:44 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -65,8 +65,8 @@ use vars qw($HibernalTitleOrSubtitleSuffix
             $HibernalArchiveYearLinkText
             $HibernalPostCommentsLinkText
             $HibernalPostCommentsCreateLinkText
-            $HibernalPostCommentsDemarcationText
-            $HibernalPostCommentsAuthorshipText
+            $HibernalPostCommentsDemarcatorMarkup
+            $HibernalPostCommentsAuthorshipMarkup
 
             $HibernalDefaultPostNameRegexp
             $HibernalDefaultPostsPerPage $HibernalMaximumPostsPerPage
@@ -200,41 +200,68 @@ post (at the foot of that post), for posts having no existing comments.
 =cut
 $HibernalPostCommentsCreateLinkText = 'Comment on this post';
 
-=head2 $HibernalPostCommentsDemarcationText
+=head2 $HibernalPostCommentsDemarcatorMarkup
 
-The text for demarcating one post comment from the post comment preceding that
-comment, for all comments following the first. (The first comment doesn't need
-this demarcation, since no comments precede it.)
+Markup for demarcating blog post comments from each other. As Oddmuse
+concentrates all blog post comments for a blog post on one Wiki page, hibernal
+must provide some markup for differentiating where one blog post comment ends
+and another begins. That's what this is.
 
-This is Wiki page text; hibernal expands this text to HTML by applying all
-Oddmuse markup rules to it, just as it does for "normal" Wiki page text. (The
-default value for this text usually expands to an </hr> tag.)
+Specifically, this markup is prepended to all blog post comments for a blog post
+(except the first blog post comment for that blog post, since no comments
+precede it.)
+
+This is Wiki markup; hibernal expands this text to HTML by applying all Oddmuse
+markup rules to it, just as it does for "normal" Wiki page text. (The default
+value for this text usually expands to an </hr> tag.)
 
 =cut
-$HibernalPostCommentsDemarcationText = qq/\n\n----\n\n/;
+$HibernalPostCommentsDemarcatorMarkup = qq`----\n`;
 
-=head2 $HibernalPostCommentsAuthorshipText
+=head2 $HibernalPostCommentsAuthorshipMarkup
 
-The text for denoting authorship for each post comment. For customizability,
-hibernal performs variable substitution on this text as follows:
+Markup for demarcating the author of a blog post comment from the body text of
+that blog post comment. Typically, this includes that author’s name, an optional
+link to that author’s external homepage or internal Wiki page, and the time at
+which that author added that comment.
+
+For customizability, Hibernal performs blog post comment-specific variable
+substitution on this markup; this is:
 
 =over
 
-=item The first '%s' in this text, if present, is replaced with the author
-      of this post comment.
+=item The first '%s' in this markup, if present, is replaced with that author.
 
-=item The first '%s' in this text, if present, is replaced with the date
-      of this post comment.
+=item The first '%s' in this markup, if present, is replaced with that time.
 
 =back
 
-This is Wiki page text; hibernal expands this text to HTML by applying all
-Oddmuse markup rules to it, just as it does for "normal" Wiki page text. (The
-default value for this text usually expands to an <blockquotes>...</blockquotes>
-tag-set having as its content the author followed by comment date.)
+This is Wiki markup; Hibernal expands this text to HTML by applying all Oddmuse markup rules to it, just as it does for “normal” Wiki page text. The default value for this text depends on which other markup extensions are also installed. The algorithm is as follows:
+
+=over
+
+=item If the Creole Additions markup extension is installed, this markup
+      defaults to C<qq`\n\n"""\n%s. %s.\n"""`> -- a blockquote having a bold
+      author and non-bold time.
+
+=item Otherwise, if the Creole markup extension is installed, this markup
+      defaults to C<qq`\n\n|%s. %s.|`> -- a table having a bold author and
+      non-bold time.
+
+=item Otherwise, if the Usemod markup extension is installed, this markup
+      defaults to C<qq`\n\n||%s. %s.||> -- a table having a bold author and
+      non-bold time.
+
+=item Otherwise, if the Markup extension is installed, this markup defaults to
+      C<qq`\n\n⇒ **%s.** %s.`>.
+
+=item Otherwise, if all else fails, this markup defaults to a simple
+      C<qq`\n\n⇒ %s. %s.`>.
+
+=back
 
 =cut
-$HibernalPostCommentsAuthorshipText = qq/\n\n"""\n%s. %s.\n"""\n\n/;
+$HibernalPostCommentsAuthorshipMarkup = undef;
 
 # ....................{ CONFIGURATION =defaults            }....................
 
@@ -310,7 +337,9 @@ $HibernalDefaultArchiveSubtitle = '';
 
 # ....................{ INITIALIZATION                     }....................
 my ($second_now, $minute_now, $hour_now, $day_now, $month_now, $year_now,
-    $is_calendar_installed, $is_smarttitles_installed);
+    $is_calendar_installed,
+    $is_creoleaddition_installed,
+    $is_smarttitles_installed);
 
 push(@MyInitVariables, \&HibernalInit);
 
@@ -324,8 +353,8 @@ sub HibernalInit {
 
   # Test which of our several (optionally) dependent, third-party modules are
   # also installed on this Oddmuse Wiki.
-  $is_calendar_installed =    defined &draw_month;
-  $is_smarttitles_installed = defined &GetSmartTitles;
+  $is_calendar_installed =       defined &draw_month;
+  $is_smarttitles_installed =    defined &GetSmartTitles;
 
   # Declare which actions we provide based on which modules we have available.
   $Action{hibernal} =         \&DoHibernal;
@@ -340,31 +369,94 @@ sub HibernalInit {
   # here, rather than outside a function definition as we'd commonly do.
   *GetHibernalHeaderOld = *GetHeader;
   *GetHeader            = *GetHibernalHeader;
+
+  # Provide default values for comments authorship markup, depending on which
+  # other markup modules - if any - are installed.
+  if (not defined $HibernalPostCommentsAuthorshipMarkup) {
+    if (defined &CreoleAdditionRule) {
+      $HibernalPostCommentsAuthorshipMarkup = qq`\n\n"""\n**%s.** %s.\n"""`;
+    }
+    elsif (defined &CreoleRule) {
+      $HibernalPostCommentsAuthorshipMarkup = qq`\n\n|**%s.** %s.|`;
+    }
+    elsif (defined &UsemodRule) {
+      $HibernalPostCommentsAuthorshipMarkup = qq`\n\n||''%s.'' %s.||`;
+    }
+    elsif (defined &MarkupRule) {
+      $HibernalPostCommentsAuthorshipMarkup = qq`\n\n⇒ //**%s.** %s.//`;
+    }
+    else {
+      $HibernalPostCommentsAuthorshipMarkup = qq`\n\n⇒ %s. %s.`;
+    }
+  }
 }
 
 # ....................{ MARKUP                             }....................
 
 =head1 MARKUP
 
-hibernal provides the following markup.
+This extension handles page markup resembling:
 
-Also, rather than collecting every post ever published to that blog, that blog's
-front page can selectively collect only a certain number of recent blog posts by
-inserting that number into the <hibernal...> markup for that front page: e.g.,
-the 8 newest blog posts via the following markup:
+  <hibernal post_names="$PostNamesRegexp"
+            post_bodies="$PostBodiesRegexp"
+            posts_start_at="$PostsStartAt"
+            posts_per_page="$PostsPerPage"
+            posts_ordering="$PostsOrdering">
 
-  <hibernal "User1--Blog--\d\d\d\d-\d\d-\d\d" 8>
+Or, in its abbreviated form:
+
+  <hibernal "$PostNamesRegexp" "$PostBodiesRegexp"
+             $PostsStartAt $PostsPerPage $PostsOrdering>
+
+Or, in its commonly abbreviated form:
+
+  <hibernal "$PostNamesRegexp" $PostsStartAt $PostsPerPage>
+
+Or, in its maximally abbreviated form:
+
+  <hibernal "$PostNamesRegexp">
+
+C<$PostNamesRegexp> is a regular expression matching blog post names for this
+blog. Usually, blog post names include the full date on which those blog posts
+were posted to that blog; e.g., "Brian_Curry--Blog--2008-04-20". Thus, this
+regular expression should include an expression matching such dates. Though not
+strictly necessary, most blog frontpages should define this regular expression
+in a blog-specific way; e.g., "^Brian_Curry--Blog--/d/d/d/d-/d/d-/d/d". See
+L<DATE STANDARDS>, below, for discussion of which date formats this extension
+supports. (Hint: it's not all of them! Your dates must adhere to a standard
+supported by this extension. Ah, shucks.)
+
+C<$PostBodiesRegexp> is a regular expression further matching blog post body
+text. (Defining this regular expression introduces noticeable "slowdown"; as
+such, most blogs probably not want to define it. It's quite optional, anyway.)
+
+C<$PostsStartAt> is the index of the first blog post to be displayed on this
+blog frontpage. It defaults to "0", the most recent blog post.
+
+C<$PostsPerPage> is the number of blog posts to be displayed per blog page. It
+defaults to "8", which is quite reasonable.
+
+C<$PostsOrdering> is a string enumeration, taking one of three possible values:
+
+=over
+
+=item reverse
+
+=item past
+
+=item future
+
+=back
+
+And yes - the above regular expressions must be double-quoted, though the other
+attributes need not (but also can) be.
 
 =head2 DATE STANDARDS
 
-hibernal only supports two date-matching regular expressions, at the moment. So,
+hibernal only supports two date-matching regular expressions, at the moment.
 hibernal only matches blog posts with page names having dates matched by these
 regular expressions. (Blog posts named according to "non-standard" date formats
-will not be matched, by default, by hibernal.)
-
-The first date-matching regular expression, which is also the hibernal default,
-matches the ISO standard (4-digit year, 2-digit month, and 2-digit day) - while
-the second matches the reverse of this standard. These are, specifically:
+are ignored, by default, by hibernal.) These are, specifically:
 
 =over
 
@@ -442,10 +534,10 @@ Refactors several incongruities in the default C<AddComment> function.
 sub AddHibernalComment {
   my ($comments, $comment) = @_;
 
-  $comment =~ s/\r//g;    # Remove "\r"-s (0x0d) from the string
-  $comment =~ s/\s+$//g;  # Remove whitespace at the end
+  $comment =~ s~\r~~g;     # remove all "\r" (0x0d) characters
+  $comment =~ s~\s+$~~gs;  # remove all trailing whitespace
 
-  if ($comment ne '' and $comment ne $NewComment) {
+  if ($comment and $comment ne $NewComment) {
     my  $author =   GetParam('username', T('Anonymous'));
     my  $homepage = GetParam('homepage', '');
     if ($homepage) {
@@ -454,18 +546,23 @@ sub AddHibernalComment {
     }
     else {
       $author_page_name = FreeToNormal($author);
-      $author = "[[$author_page_name|$author]]" if $IndexHash{$author_page_name};
+
+      if ($IndexHash{$author_page_name}) {
+        $author = $author_page_name eq $author
+          ? "[[$author_page_name]]"
+          : "[[$author_page_name|$author]]";
+      }
     }
 
     # If at least one comment preceded this comment, separate this comment
     # from that comment with one hard-break.
-    if ($comments and $comments ne "\n") {
-      $comments .= $HibernalPostCommentsDemarcationText;
+    if ($comments and $comments =~ m~\S~) {
+        $comments .= $HibernalPostCommentsDemarcatorMarkup;
     }
 
     # Append this comment's author onto this comment.
     $comments .= $comment.
-      Tss($HibernalPostCommentsAuthorshipText, $author, TimeToText($Now));
+      Tss($HibernalPostCommentsAuthorshipMarkup, $author, TimeToText($Now));
   }
 
   return $comments;
@@ -483,8 +580,8 @@ passing that title and subtitle to other hibernal and hibernal archive pages.
 sub GetHibernalHeader {
   my $html_header = GetHibernalHeaderOld(@_);
 
-  (undef, $page_title) = $html_header =~ m~<h1>(<a.*>)?(.+?)(</a>)?\Q</h1>\E~;
-      ($page_subtitle) = $html_header =~ m~<p class="subtitle">(.+?)\Q</p>\E~;
+  (undef, $page_title) = $html_header =~ m~\Q<h1>\E(<a.*>)?(.+?)(</a>)?\Q</h1>\E~;
+      ($page_subtitle) = $html_header =~ m~\Q<p class="subtitle">\E(.+?)\Q</p>\E~;
 
   return $html_header;
 }
@@ -517,7 +614,7 @@ sub PrintHibernalHeader {
   #       the suffix for this page's title or subtitle within the string for
   #       that title or subtitle - which, in recursive turn, would badly cause
   #       that suffix to be appended to the "next" page's title or subtitle,
-  #       again. (Good grief, eh? There's little relief, here, for insanity.)
+  #       again. (Good grief, eh? There's little relief, here, for insanity...)
   print GetHibernalHeaderOld(undef, $page_title_suffixed, undef, undef, undef,
                              undef, $page_subtitle_suffixed);
 }
@@ -596,7 +693,9 @@ sub PrintHibernal {
     }
     # If this Oddmuse Wiki doesn't support comment pages, the determination of
     # how many posts P to display devolves to this linear calculation.
-    else { $posts_end_at = Max($posts_per_page, $#post_names); }
+    else {
+      $posts_end_at = Max($posts_start_at + $posts_per_page - 1, $#post_names);
+    }
 
     # Calculate this prior to performing array splices.
     my $is_older_posts = $#post_names > $posts_end_at;
@@ -674,8 +773,9 @@ Users expect the number of posts per page to be strictly that, and not the
 number of posts per page plus the number of posts having comments per page;
 however, as the "@post_names" array has posts comingled with comments, the
 number of posts per page plus the number of posts having comments per page
-is precisely what we get when we test "$#post_names". (A few calculations
-to correct that, then!)
+is precisely what we get when we test "$#post_names".
+
+A few calculations to correct that, then!
 
 For any given number of posts P, there are at most P*2 comment pages for
 those posts (since each post may have at most one comment page). Let us
@@ -690,16 +790,17 @@ with which we definitively, finally, slice the "@post_names" array.
 sub AssayHibernalPostBounds {
   my ($post_names, $posts_start_at, $posts_end_at, $posts_per_page) = @_;
   my  $posts_sans_comments;
-  my  $posts_end_at_slice =
+  my  $posts_end_at_max =
     Max($posts_start_at + $posts_per_page*2 - 1, $#$post_names);
 
   # A bit of an entangling "for" loop, isn't she? "Beware, intrepid code-
   # vagabond: off-one-harshities abound, and eat all who enter here."
   for ($posts_sans_comments = 0,
-       $posts_end_at = $posts_start_at - 1;
-       $posts_sans_comments < $posts_per_page and
-       $posts_end_at < $posts_end_at_slice; ) {
-    if ($$post_names[++$posts_end_at] =~ m~^$CommentsPrefix~) {
+       $posts_end_at = $posts_start_at - 1,
+       $post_index =   $posts_start_at;
+       $post_index <= $posts_end_at_max;
+       $post_index++, $posts_end_at++) {
+    if ($$post_names[$post_index] =~ m~^$CommentsPrefix~) {
       # If the first post is, actually, a comments page (as possibly, though
       # rarely, can occur), faithfully ignore that page by iterating the
       # first post to be displayed one past that comments page (which is
@@ -707,9 +808,36 @@ sub AssayHibernalPostBounds {
       # Oddmuse maintains comments pages). The ignored comments page will,
       # presumably, be displayed upon browsing to the "Older posts..." of
       # the current posts page.
-      $posts_start_at++ if $posts_end_at == $posts_start_at;
+      $posts_start_at++ if $post_index == $posts_start_at;
     }
-    else { $posts_sans_comments++; }
+    # If we've seen as many non-comment posts ($posts_sans_comments) as the
+    # user expects ($posts_per_page), then we're done. The index of the post
+    # we just looked at ($post_index) specifies the index of the last post
+    # to be shown to that user.
+    #
+    # So. Why don't we just add a "$posts_sans_comments < $posts_per_page"
+    # conditional to the above "for" loop? Doesn't the sudden falsity of that
+    # conditional imply that we must stop looking and looping? Unfortunately,
+    # no. There is a subtle off-by-one trap, here.
+    #
+    # Consider the edge case in which all posts have comments pages on those
+    # posts. Let us say that there are four such posts, altogether: two posts
+    # and two comments pages on those pages. Let us also say that the user
+    # wants two non-comment posts per page. Then immediately after we look at
+    # the second non-comment post, we increment $posts_sans_comments, here,
+    # from its former value of 1 to its new value of 2. Thus, the hypothetical
+    # conditional described above would cause the loop to stop.
+    #
+    # That's bad. Why? Because $post_index would have a value of 2, at that
+    # point. Posts are indexed from 0. So, that implies that this function
+    # would return the range (0, 2) -- or, the first post, its comment page,
+    # and the second post. But this fails to include the second post's comment
+    # page. We should be returning the range (0, 3), instead. What went wrong?
+    # That hypothetical conditional terminated the loop too early.
+    #
+    # By embedding that conditional here, we ensure that we consider the
+    # comments page for the last post. (Wee! Wasn't that gleeful fun?)
+    elsif ($posts_sans_comments++ == $posts_per_page) { last; }
   }
 
   return  ($posts_start_at, $posts_end_at);
