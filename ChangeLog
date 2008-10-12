@@ -1,3 +1,9 @@
+2008-10-12  Alex Schroeder  <alex@gnu.org>
+
+	* t/test.pl (xpath_do): Strip XML preprocessing instruction and
+	call the XML parser if the HTML parser fails. Now we can write
+	XPath tests on XML documents.
+
 2008-10-12  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
 	* modules/hibernal.pl (HibernalInit): Implemented context-
@@ -5,6 +11,11 @@
 	(AssayHibernalPostBounds): Corrected several obscure, but
 	damaging, edge-cases. (This necessitated a rewrite of the
 	algorithm, unfortunately.)
+
+2008-10-07  Alex Schroeder  <alex@gnu.org>
+
+	* modules/creole.pl (CreoleRule): Fix dirty block handling for the
+	[[page]] and [[page|text]] rules.
 
 2008-10-07  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
