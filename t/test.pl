@@ -136,12 +136,14 @@ sub test_page_negative {
 sub xpath_do {
   my ($check, $message, $page, @tests) = @_;
   $page =~ s/^.*?(<html)/$1/s; # strip headers
+  $page =~ s/^.*?<\?xml.*?>\s*//s; # strip xml processing
   my $page_shown = 0;
   my $parser = XML::LibXML->new();
   my $doc;
   my $result;
  SKIP: {
     eval { $doc = $parser->parse_html_string($page) };
+    eval { $doc = $parser->parse_string($page) } if $@;
     skip("Cannot parse ".name($page).": $@", $#tests + 1) if $@;
     foreach my $test (@tests) {
       my $nodelist;
