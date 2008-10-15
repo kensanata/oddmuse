@@ -1,8 +1,9 @@
+# Copyright (C) 2008  Alex Schroeder <alex@gu.org>
 # Copyright (C) 2004, 2005  Fletcher T. Penney <fletcher@freeshell.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation; either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -11,12 +12,9 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: logbannedcontent.pl,v 1.3 2005/04/10 16:57:22 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p>$Id: logbannedcontent.pl,v 1.4 2008/10/15 22:17:47 as Exp $</p>';
 
 use vars qw($BannedFile); 
 
@@ -27,8 +25,7 @@ $BannedFile = "$DataDir/spammer.log" unless defined $BannedFile;
 
 sub LogBannedContent {
 	my $str = shift;
-	*BannedContent = *OldBannedContent;
-	my $rule = BannedContent($str);
+	my $rule = OldBannedContent($str);
 	if ($rule) {
 		my $visitor = $ENV{'REMOTE_ADDR'};
 
