@@ -14,9 +14,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: logbannedcontent.pl,v 1.4 2008/10/15 22:17:47 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: logbannedcontent.pl,v 1.5 2008/10/15 22:18:48 as Exp $</p>';
 
-use vars qw($BannedFile); 
+use vars qw($BannedFile);
 
 $BannedFile = "$DataDir/spammer.log" unless defined $BannedFile;
 
@@ -24,25 +24,20 @@ $BannedFile = "$DataDir/spammer.log" unless defined $BannedFile;
 *BannedContent = *LogBannedContent;
 
 sub LogBannedContent {
-	my $str = shift;
-	my $rule = OldBannedContent($str);
-	if ($rule) {
-		my $visitor = $ENV{'REMOTE_ADDR'};
-
-		# Create timestamp
-		($sec, $min, $hr, $mday, $mon, $year, $wday, $yday, $isdst) =localtime(time);
-		$year=$year+1900;
-		$mon += 1;
-		
-		# Fix for 0's
-		$mon = sprintf("%02d", $mon);
-		$mday = sprintf("%02d", $mday);
-		$sec = sprintf("%02d", $sec);
-		$min = sprintf("%02d", $min);
-		$hr = sprintf("%02d", $hr);
-
-		AppendStringToFile($BannedFile, "$year/$mon/$mday\t$hr:$min:$sec\t$visitor: $OpenPageName - $rule\n");
-	}
-
-	return $rule;	
+  my $str = shift;
+  my $rule = OldBannedContent($str);
+  if ($rule) {
+    my $visitor = $ENV{'REMOTE_ADDR'};
+    ($sec, $min, $hr, $mday, $mon, $year, $wday, $yday, $isdst) = localtime(time);
+    $year=$year+1900;
+    $mon += 1;
+    # Fix for 0's
+    $mon = sprintf("%02d", $mon);
+    $mday = sprintf("%02d", $mday);
+    $sec = sprintf("%02d", $sec);
+    $min = sprintf("%02d", $min);
+    $hr = sprintf("%02d", $hr);
+    AppendStringToFile($BannedFile, "$year/$mon/$mday\t$hr:$min:$sec\t$visitor: $OpenPageName - $rule\n");
+  }
+  return $rule;
 }
