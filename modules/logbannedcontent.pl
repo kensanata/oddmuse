@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: logbannedcontent.pl,v 1.5 2008/10/15 22:18:48 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: logbannedcontent.pl,v 1.6 2008/10/16 04:53:17 as Exp $</p>';
 
 use vars qw($BannedFile);
 
@@ -22,6 +22,7 @@ $BannedFile = "$DataDir/spammer.log" unless defined $BannedFile;
 
 *OldBannedContent = *BannedContent;
 *BannedContent = *LogBannedContent;
+$BannedContent = $OldBannedContent; # copy variable
 
 sub LogBannedContent {
   my $str = shift;
