@@ -1,3 +1,9 @@
+2008-10-16  Alex Schroeder  <aschroeder@localhost>
+
+	* modules/logbannedcontent.pl (LogBannedContent): Don't remap
+	BannedContent again.
+	Copy the $BannedContent variable.
+
 2008-10-12  Alex Schroeder  <alex@gnu.org>
 
 	* t/test.pl (xpath_do): Strip XML preprocessing instruction and
