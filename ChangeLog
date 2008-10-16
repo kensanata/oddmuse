@@ -45,6 +45,13 @@
 	Creole standard, and has been well-documented.
 	* modules/creole.pl (CreoleGetTableHtmlAttributes): Deleted function.
 	
+2008-10-05  Alex Schroeder  <alex@gnu.org>
+
+	* modules/atom.pl (DoAtom): Call print GetRcAtom instead of DoRc
+	GetRcAtom.
+	(GetRcAtom): Call ProcessRcLines instead of GetRc.
+	(DoAtomSave): No longer call DeletePermanentAnchors.
+
 2008-10-04  Alex Schroeder  <alex@gnu.org>
 
 	* t/test.pl (name): Show the last 60 characters of a XPath test
