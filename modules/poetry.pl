@@ -19,7 +19,18 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: poetry.pl,v 1.1 2008/09/30 04:42:38 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: poetry.pl,v 1.2 2008/10/19 01:51:43 leycec Exp $</p>';
+
+# ....................{ INITIALIZATION                     }....................
+push(@MyInitVariables, \&PoetryInit);
+
+# A boolean that, if true, signifies that we are currently in a "verse" div.
+# Testing InElement('div') is insufficient, since we might as well be in some
+# other div element.
+my $PoetryRuleInDiv;
+sub PoetryInit {
+   $PoetryRuleInDiv = '';
+}
 
 # ....................{ MARKUP                             }....................
 push(@MyRules, \&PoetryRule);
@@ -42,24 +53,31 @@ markup as links and italicized text.
 =cut
 
 # Stanza line-breaks conflict with Creole-style line-breaks.
-$RuleOrder{\&PoetryRule} = -11;
+$RuleOrder{\&PoetryRule} = 170;
 
 sub PoetryRule {
-  if ($bol and m/\G:::(?:\n|$)/cg) {
-    if (InElement('div')) {
+  # :::
+  # open a new "verse" div or close an existing one
+  if ($bol and m/\G:::(\n|$)/cg) {
+    if ($PoetryRuleInDiv) {
+        $PoetryRuleInDiv = '';
       return CloseHtmlEnvironments().AddHtmlEnvironment('p');
     }
     else {
+        $PoetryRuleInDiv = 1;
       return CloseHtmlEnvironments()
         .AddHtmlEnvironment('div', 'class="verse"')
         .AddHtmlEnvironment('p');
     }
   }
-  elsif (InElement('div')) {
-    if (m/\G\s*\n(\s*\n)+/cg) { # paragraphs: at least two newlines
+  # Otherwise, if we are currently in an existing "verse" div, force proper
+  # whitespace with liberal use of <br/> tags. (We cannot use a simple "pre"
+  # tag, as such preformatted blocks do not permit embedding of HTML tags.)
+  elsif ($PoetryRuleInDiv) {
+    if (m/\G\s*\n(\s*\n)+/cg) {     # paragraphs: at least two newlines
       return CloseHtmlEnvironmentUntil('div').AddHtmlEnvironment('p');
     }
-    elsif (m/\G\s*\n/cg) { # line break in a poem
+    elsif (m/\G\s*\n/cg) {          # line break: one newline
       return $q->br();
     }
     elsif ($bol and m/\G(\s*)/cg) { # indentation
@@ -67,7 +85,7 @@ sub PoetryRule {
     }
   }
 
-  undef
+  return undef;
 }
 
 =head1 COPYRIGHT AND LICENSE
