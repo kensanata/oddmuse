@@ -1,4 +1,4 @@
-# Copyright (C) 2003, 2004, 2005, 2006, 2007  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: near-links.pl,v 1.5 2007/10/11 10:35:47 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: near-links.pl,v 1.6 2008/10/22 14:01:05 as Exp $</p>';
 
 =head1 Near Links
 
@@ -177,6 +177,7 @@ sub NewNearLinksResolveId {
   my $id = shift;
   my @result = OldNearLinksResolveId($id, @_);
   my %forbidden = map { $_ => 1 } @UserGotoBarPages, %AdminPages;
+  $forbidden{$id} = 1 if $CommentsPrefix and $id =~ /^$CommentsPrefix/o;
   if (not $result[1] and $NearSource{$id} and not $forbidden{$id}) {
     $NearLinksUsed{$id} = 1;
     my $site = $NearSource{$id}[0];
