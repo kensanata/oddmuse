@@ -1,3 +1,9 @@
+2008-10-22  Alex Schroeder  <alex@gnu.org>
+
+	* modules/near-links.pl (NewNearLinksResolveId): Make sure that
+	comment links are "forbidden" -- they never redirect to a remote
+	place.
+
 2008-10-19  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
 	* modules/poetry.pl (PoetryInit): New function.
