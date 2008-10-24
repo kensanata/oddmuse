@@ -14,7 +14,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.49 2008/10/06 22:51:50 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.50 2008/10/24 04:34:10 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -26,7 +26,8 @@ file for your Oddmuse Wiki.
 =cut
 use vars qw($CreoleLineBreaks
             $CreoleTildeAlternative
-            $CreoleTableCellsAllowBlockLevelElements);
+            $CreoleTableCellsAllowBlockLevelElements
+            $CreoleDashStyleUnorderedLists);
 
 =head2 $CreoleLineBreaks
 
@@ -53,11 +54,15 @@ $CreoleTildeAlternative = 0;
 =head2 $CreoleTableCellsAllowBlockLevelElements
 
 A boolean that, if true, permits table cell markup to embed block level
-elements in table cells. By default, this boolean is false.
+elements in table cells. (By default, this boolean is false.)
 
-Block level elements include such "high-level" entities as paragraphs,
-blockquotes, list items, and so on. Thus, enabling this boolean permits you to
-embed multiple paragraphs, blockquotes, and so on in individual table cells.
+You are encouraged to enable this boolean, as it significantly improves the
+"stuff" you can do with Wiki Creole table syntax. For example, enabling this
+boolean permits you to embed nested lists in tables.
+
+Block level elements are such "high-level" entities as paragraphs, blockquotes,
+list items, and so on. Thus, enabling this boolean permits you to embed multiple
+paragraphs, blockquotes, and so on in individual table cells.
 
 Please note: enabling this boolean permits non-conformant syntax -- that is,
 syntax which no longer conforms to the Wiki Creole standard. (In general,
@@ -71,34 +76,59 @@ the Wiki Creole standard, but not under this non-conformant alteration.)
 =cut
 $CreoleTableCellsAllowBlockLevelElements = 0;
 
+=head2 $CreoleDashStyleUnorderedLists
+
+A boolean that, if true, permits unordered list items to be prefixed with either
+a '-' dash or an '*' asterisk or, if false, requires unordered list items to be
+prefixed with an '*' asterick, only. (By default, this boolean is false.)
+
+Please note: enabling this boolean permits non-conformant syntax -- that is,
+syntax which no longer conforms to the Wiki Creole standard. Unless your Wiki
+requires it, you are encouraged not to set this boolean.
+
+=cut
+$CreoleDashStyleUnorderedLists = 0;
+
 # ....................{ INITIALIZATION                     }....................
 push(@MyInitVariables, \&CreoleInit);
 
+# A boolean that is true if the "creoleaddition.pl" module is also installed.
 my $is_creoleaddition_installed;
+
+# A boolean set by CreoleRule() to true, if a new table cell has just been
+# started. This allows testing, elsewhere, of whether we are at the start of a
+# a new table cell. Why test that? Because. If we are indeed at the start of a
+# a new table cell, we should behave as if the "$bol" boolean is true: we should
+# allow block level elements at the start of this new table cell.
+#
+# Of course, we have to set this to false immediately after matching past the
+# start of that table cell. This is what RunMyRulesCreole() does.
+my $CreoleTableCellBol;
+
+# A regular expression matching Wiki Creole-style table cells.
+my $CreoleTableCellPattern = '[ \t]*(\|+)(=)?\n?([ \t]*)';
+
+# A regular expression matching Wiki Creole-style pipe delimiters in links.
+my $CreoleLinkPipePattern = '[ \t]*\|[ \t]*';
+
+# A regular expression matching Wiki Creole-style link text. This expression
+# takes into account the fact that such text is always optional.
+my $CreoleLinkTextPattern = "($CreoleLinkPipePattern(.+?))?";
+
 sub CreoleInit {
-   $is_creoleaddition_installed = defined &CreoleAdditionRule;
-}
+  $is_creoleaddition_installed = defined &CreoleAdditionRule;
+  $CreoleTableCellBoll = '';
 
-*InitLinkPatternsCreoleOld = *InitLinkPatterns;
-*InitLinkPatterns =          *InitLinkPatternsCreole;
-
-=head2 InitLinkPatternsCreole
-
-This permits users to add URLs resembling:
-  "See [[/?action=index|the site map]]."
-
-Which Oddmuse converts to HTML resembling:
-  "See <a href="/?action=index">the site map</a>."
-
-When not using this extension, users must explicitly add the site's base URL:
-  "See [[http://www.oddmuse.com/cgi-bin/oddmuse?action=index|the site map]]."
-
-=cut
-sub InitLinkPatternsCreole {
-    InitLinkPatternsCreoleOld();
-
+  # This permits authors to add URLs resembling:
+  #   "See [[/?action=index|the site map]]."
+  #
+  # Which Oddmuse converts to HTML resembling:
+  #   "See <a href="/?action=index">the site map</a>."
+  #
+  # When not using this extension, authors must add this Wiki's base URL:
+  #  "See [[http://www.oddmuse.com/cgi-bin/oddmuse?action=index|the site map]]."
   my $UrlChars = '[-a-zA-Z0-9/@=+$_~*.,;:?!\'"()&#%]';    # see RFC 2396
-  $FullUrlPattern = "((?:$UrlProtocols)?[:/]$UrlChars+)"; # when used in square brackets
+  $FullUrlPattern = "((?:$UrlProtocols:|/)$UrlChars+)";
 }
 
 # ....................{ MARKUP                             }....................
@@ -117,19 +147,9 @@ $RuleOrder{\&CreoleHeadingRule} = 100;
 # newlines must come after list items, otherwise this will add a lot
 # of useless "</br>" tags.
 $RuleOrder{\&CreoleListAndNewLineRule} = 180;
-
-=head2 ListRule
-
-Nullifies Oddmuse's default C<ListRule> function. That function conflicts with
-this extension's C<CreoleListAndNewLineRule> function; thus, we redefine that
-function to return nothing.
-
-=cut
-sub ListRule { return undef; }
-
-# A regular expression matching Wiki Creole-style table cells, locally accessed
-# by CreoleRule, below.
-my $CreoleTableCellPattern = '[ \t]*(\|+)(=)?\n?([ \t]*)';
+# Oddmuse's built-in ListRule conflicts with above CreoleListAndNewLineRule.
+# Thus, we ensure the latter is applied before the former.
+$RuleOrder{\&ListRule} = 190;
 
 =head2 CreoleRule
 
@@ -152,17 +172,16 @@ sub CreoleRule {
 
   # Block level elements.
   if ($bol) {
-    # horizontal line
+    # horizontal rule
     # ----
-    if (m/\G(\s*\n)*[ \t]*----+[ \t]*\n?/cg or m/\G\s*\n----+[ \t]*\n?/cg) {
+    if (m/\G[ \t]*----[ \t]*(\n|$)/cg) {
       return CloseHtmlEnvironments().$q->hr().AddHtmlEnvironment('p');
     }
     # {{{
     # preformatted
     # }}}
-    elsif (m/\G\{\{\{[ \t]*\n(.*?\n)\}\}\}[ \t]*(\n|\z)/cgs) {
+    elsif (m/\G\{\{\{[ \t]*\n(.*?)\n\}\}\}[ \t]*(\n|$)/cgs) {
       my $str = $1;
-      $str =~ s/\n }}}/\n}}}/g;
       return CloseHtmlEnvironments()
         .$q->pre({-class=> 'real'}, $str)
         .AddHtmlEnvironment('p');
@@ -184,61 +203,74 @@ sub CreoleRule {
   elsif (m/\G\*\*/cg) { return AddOrCloseCreoleEnvironment('strong'); }
   # //italic//
   elsif (m/\G\/\//cg) { return AddOrCloseCreoleEnvironment('em'); }
-  # {{{unformatted}}}
-  elsif (m/\G\{\{\{(.*?}*)\}\}\}/cgs) {
-    return $q->code($1);
-  }
-  # {{pic}}
-  elsif (m/\G(\{\{$FreeLinkPattern(\|.+?)?\}\})/cgos) {
+  # {{{code}}}
+  elsif (m/\G\{\{\{(.*?}*)\}\}\}/cg) { return $q->code($1); }
+  # download: {{pic}}
+  elsif (m/\G(\{\{$FreeLinkPattern$CreoleLinkTextPattern\}\})/cgos) {
     Dirty($1);
-    # FIXME: inlining this gives "substr outside of string" error
-    my $alt = substr($3, 1);
-    print GetDownloadLink($2, 1, undef, $alt);
+    print GetDownloadLink($2, 1, undef, $4 || NormalToFree($2));
     return '';
   }
-  # {{url}}
-  elsif (m/\G\{\{$FullUrlPattern\s*(\|.+?)?\}\}/cgos) {
+  # image link: {{url}}
+  elsif (m/\G\{\{$FullUrlPattern$CreoleLinkTextPattern\}\}/cgos) {
     return GetCreoleImageHtml(
       $q->a({-href=> $1,
              -class=> 'image outside'},
             $q->img({-src=> $1,
-                     -alt=> substr($2, 1),
-                     -class=> 'url outside'})));
+                     -alt=> $3,
+                     -class=> 'url outside',
+                    })));
   }
-  # link: [[link|{{pic}}]]
-  elsif (m/\G\[\[$FreeLinkPattern\|\{\{$FreeLinkPattern(\|.+?)?\}\}\]\]/cgos) {
-    return GetCreoleImageHtml(
-      ScriptLink($1,
-                 $q->img({-src=> GetDownloadLink($2, 2),
-                          -alt=> substr($3,1)||NormalToFree($1),
-                          -class=> 'upload'}), 'image'));
+  # image link: [[link|{{pic}}]]
+  elsif (m/\G(\[\[$FreeLinkPattern$CreoleLinkPipePattern
+              \{\{$FreeLinkPattern$CreoleLinkTextPattern\}\}\]\])/cgosx) {
+    Dirty($1);
+    print GetCreoleImageHtml(
+      ScriptLink($2,
+                 $q->img({-src=> GetDownloadLink($3, 2),
+                          -alt=> $5 || NormalToFree($2),
+                          -class=> 'upload',
+                         }),
+                 'image'));
+    return '';
   }
-  # link: [[link|{{url}}]]
-  elsif (m/\G\[\[$FreeLinkPattern\|\{\{$FullUrlPattern\s*(\|.+?)?\}\}\]\]/cgos) {
-    return GetCreoleImageHtml(
-      ScriptLink($1,
-                 $q->img({-src=> $2,
+  # image link: [[link|{{url}}]]
+  elsif (m/\G(\[\[$FreeLinkPattern$CreoleLinkPipePattern
+              \{\{$FullUrlPattern$CreoleLinkTextPattern\}\}\]\])/cgosx) {
+    Dirty($1);
+    print GetCreoleImageHtml(
+      ScriptLink($2,
+                 $q->img({-src=> $3,
                           -class=> 'url outside',
-                          -alt=> substr($3,1)||$1}), 'image'));
+                          -alt=> $5 || NormalToFree($2),
+                         }),
+                 'image'));
+    return '';
   }
-  # link: [[url|{{pic}}]]
-  elsif (m/\G\[\[$FullUrlPattern\s*\|\{\{$FreeLinkPattern(\|.+?)?\}\}\]\]/cgos) {
-    return GetCreoleImageHtml(
-      $q->a({-href=> $1, -class=> 'image outside'},
-            $q->img({-src=> GetDownloadLink($2, 2),
+  # image link: [[url|{{pic}}]]
+  elsif (m/\G(\[\[$FullUrlPattern$CreoleLinkPipePattern
+              \{\{$FreeLinkPattern$CreoleLinkTextPattern\}\}\]\])/cgosx) {
+    Dirty($1);
+    print GetCreoleImageHtml(
+      $q->a({-href=> $2, -class=> 'image outside'},
+            $q->img({-src=> GetDownloadLink($3, 2),
                      -class=> 'upload',
-                     -alt=> substr($3,1)||$2})));
+                     -alt=> $5 || $2
+                    })));
+    return '';
   }
-  # link: [[url|{{url}}]]
-  elsif (m/\G\[\[$FullUrlPattern\s*\|\{\{$FullUrlPattern\s*(\|.+?)?\}\}\]\]/cgos) {
+  # image link: [[url|{{url}}]]
+  elsif (m/\G\[\[$FullUrlPattern$CreoleLinkPipePattern
+             \{\{$FullUrlPattern$CreoleLinkTextPattern\}\}\]\]/cgosx) {
     return GetCreoleImageHtml(
       $q->a({-href=> $1, -class=> 'image outside'},
-      $q->img({-src=> $2,
-         -class=> 'url outside',
-         -alt=> substr($3,1)})));
+            $q->img({-src=> $2,
+                     -class=> 'url outside',
+                     -alt=> $4 || $1
+                    })));
   }
   # link: [[url]] and [[url|text]]
-  elsif (m/\G\[\[$FullUrlPattern(\s*\|\s*([^\]]+?))?\]\]/cgos) {
+  elsif (m/\G\[\[$FullUrlPattern$CreoleLinkTextPattern\]\]/cgos) {
     # Permit embedding of Creole syntax within link text. (Rather complicated,
     # but it does the job remarkably.)
     my $link_url  = $1;
@@ -251,13 +283,13 @@ sub CreoleRule {
     return GetUrl($link_url, $link_text, 1);
   }
   # link: [[page]] and [[page|text]]
-  elsif (m/\G(\[\[$FreeLinkPattern(\s*\|\s*([^\]]+?))?\]\])/cgos) {
+  elsif (m/\G(\[\[$FreeLinkPattern$CreoleLinkTextPattern\]\])/cgos) {
     Dirty($1);
 
     # Permit embedding of Creole syntax within link text. (Rather complicated,
     # but it does the job remarkably.)
     my $page_name = $2;
-    my $link_text = $4 ? CreoleRuleRecursive($4, @_) : '';
+    my $link_text = $4 ? CreoleRuleRecursive($4, @_) : NormalToFree($page_name);
 
     print GetPageOrEditLink($page_name, $link_text, 0, 1);
     return '';
@@ -305,6 +337,14 @@ sub CreoleRule {
     #
     # This condition should appear after the end-of-table test, above.
     elsif (m/\G$CreoleTableCellPattern/cg) {
+      # This is the start of a new table cell. However, we only consider that
+      # equivalent to the "$bol" variable when the
+      # "$CreoleTableCellsAllowBlockLevelElements" variable is enabled. (In
+      # other words, we only declare that we may insert block level elements at
+      # the start of this new table cell, when we allow block level elements in
+      # table cells. Yum.)
+      $CreoleTableCellBol = $CreoleTableCellsAllowBlockLevelElements;
+
       my $tag = $2 ? 'th' : 'td';
       my $column_span = length($1);
       my $is_right_justified = $3;
@@ -340,7 +380,8 @@ sub CreoleRule {
 
 sub CreoleHeadingRule {
   # = to ====== for h1 to h6
-  if ($bol && m/\G(\s*\n)*(=+)[ \t]*(.*?)[ \t]*=*[ \t]*(\n|\Z)/cg) {
+  if ($bol and
+      m/\G(\s*\n)*(=+)[ \t]*(.*?)[ \t]*=*[ \t]*(\n|$)/cg) {
     my $depth = length($2);
     my $text = $3;
 
@@ -355,25 +396,32 @@ sub CreoleHeadingRule {
 }
 
 sub CreoleListAndNewLineRule {
-  my $is_in_list_item = InElement('li');
+  my $is_in_list_item  = InElement('li');
 
-  # * bullet list (nestable; needs space when nested to disambiguate from bold)
-  # - bullet list (not nestable; always needs space)
-  if (($bol and (m/\G\s*(\*)[ \t]*/cg or m/\G\s*(-)[ \t]+/cg)) or
-      ($is_in_list_item and
-       (m/\G\s*\n[ \t]*(\*+)[ \t]+/cg or m/\G\s*\n[ \t]*(-)[ \t]+/cg))) {
-    return
-      ($is_in_list_item ? CloseHtmlEnvironmentUntil('li') : CloseHtmlEnvironments())
-      .OpenHtmlEnvironment('ul', length($1))
-      .AddHtmlEnvironment('li');
-  }
-  # # number list
-  elsif (($bol             and m/\G\s*(#)[ \t]*/cg) or
-         ($is_in_list_item and m/\G\s*\n[ \t]*(#+)[ \t]*/cg)) {
+  # # numbered list
+  if (($bol             and m/\G[ \t]*(#)[ \t]*/cg) or
+      ($is_in_list_item and m/\G[ \t]*\n+[ \t]*(#+)[ \t]*/cg)) {
     return
       ($is_in_list_item ? CloseHtmlEnvironmentUntil('li') : CloseHtmlEnvironments())
       .OpenHtmlEnvironment('ol', length($1))
-      .AddHtmlEnvironment('li');
+      .AddHtmlEnvironment ('li');
+  }
+  # * bullet list (nestable; needs space when nested to disambiguate from bold)
+  elsif (($bol             and m/\G[ \t]*(\*)[ \t]*/cg) or
+         ($is_in_list_item and m/\G[ \t]*\n+[ \t]*(\*+)[ \t]+/cg)) {
+    return
+      ($is_in_list_item ? CloseHtmlEnvironmentUntil('li') : CloseHtmlEnvironments())
+      .OpenHtmlEnvironment('ul', length($1))
+      .AddHtmlEnvironment ('li');
+  }
+  # - bullet list (not nestable; always needs space)
+  elsif ($CreoleDashStyleUnorderedLists and (
+        ($bol and             m/\G[ \t]*(-)[ \t]+/cg) or
+        ($is_in_list_item and m/\G[ \t]*\n+[ \t]*(-)[ \t]+/cg))) {
+    return
+      ($is_in_list_item ? CloseHtmlEnvironmentUntil('li') : CloseHtmlEnvironments())
+      .OpenHtmlEnvironment('ul', length($1))
+      .AddHtmlEnvironment ('li');
   }
   # paragraphs: at least two newlines
   elsif (m/\G\s*\n(\s*\n)+/cg) {
@@ -390,15 +438,68 @@ sub CreoleListAndNewLineRule {
 }
 
 # ....................{ FUNCTIONS                          }....................
+*RunMyRulesCreoleOld = *RunMyRules;
+*RunMyRules =          *RunMyRulesCreole;
+
+*OpenHtmlEnvironment = *OpenHtmlEnvironmentCreole;
+
 *CloseHtmlEnvironmentsCreoleOld = *CloseHtmlEnvironments;
 *CloseHtmlEnvironments =          *CloseHtmlEnvironmentsCreole;
+
+sub RunMyRulesCreole {
+  # See documentation for the "$CreoleTableCellBol" variable, above.
+  my $creole_table_cell_bol_last = $CreoleTableCellBol;
+  $bol = 1 if $CreoleTableCellBol;
+  my $html = RunMyRulesCreoleOld(@_);
+  $CreoleTableCellBol = '' if $creole_table_cell_bol_last;
+
+  return $html;
+}
+
+=head2 OpenHtmlEnvironmentCreole
+
+Opens a new HTML environment, ensuring that all existing HTML are closed for the
+current block level element, up to but not including the "</table>" for the
+current block level element. If we are currently in a table, this prevents
+closure of that table; this, in turn, permits list items in table cells.
+
+=cut
+#FIXME: This should, probably, be the Oddmuse default. It's a bit more compact
+# and, certainly, generalized, than the default.
+sub OpenHtmlEnvironmentCreole { # close the previous one and open a new one instead
+  my ($code, $depth, $class) = @_;
+  my $text = '';                # always return something
+  my @stack;
+  my $found = 0;
+  while (@HtmlStack and $found < $depth) { # determine new stack
+    my $tag = pop(@HtmlStack);
+    $found++ if $tag eq $code; # this ignores that ul and ol can be equivalent for nesting purposes
+    unshift(@stack,$tag);
+  }
+  if (@HtmlStack and $found < $depth) { # nested sublist coming up, keep list item
+    unshift(@stack, pop(@HtmlStack));
+  }
+  @HtmlStack = @stack if not $found; # if starting a new list
+  $text .= CloseHtmlEnvironments();  # close remaining elements (or all elements if a new list)
+  @HtmlStack = @stack if $found; # if not starting a new list
+  $depth = $IndentLimit if ($depth > $IndentLimit); # requested depth 0 makes no sense
+  for (my $i = $found; $i < $depth; $i++) {
+    unshift(@HtmlStack, $code);
+    if ($class) {
+      $text .= "<$code class=\"$class\">";
+    } else {
+      $text .= "<$code>"; # this ignores that ul and ol cannot nest without li elements
+    }
+  }
+  return $text;
+}
 
 =head2 CloseHtmlEnvironmentsCreole
 
 Closes HTML environments for the current block level element, up to but not
 including the "</table>" for the current block level element, if this block is
-embedded within a blockquote or table. This, though kludgy, is the "code magic"
-permitting block level elements in multi-line table cells.
+embedded within a table. This, though kludgy, is the "code magic" permitting
+block level elements in multi-line table cells.
 
 =cut
 sub CloseHtmlEnvironmentsCreole {
