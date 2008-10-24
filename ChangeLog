@@ -44,6 +44,11 @@
 
 2008-10-12  Alex Schroeder  <alex@gnu.org>
 
+	* modules/sitemap.pl (DoSitemap): Simplified. No longer requires
+	the admin password because it no longer opens all the pages to get
+	at the timestamp. Now uses sitemap 0.9 as documented here:
+	https://www.google.com/webmasters/tools/docs/en/protocol.html
+
 	* t/test.pl (xpath_do): Strip XML preprocessing instruction and
 	call the XML parser if the HTML parser fails. Now we can write
 	XPath tests on XML documents.
