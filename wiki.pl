@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.877 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.878 $}))[1]; # for MakeMaker
 
 # Options:
 
@@ -298,7 +298,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.877 2008/10/12 19:46:12 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.878 2008/10/24 04:34:10 leycec Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -699,15 +699,10 @@ sub OpenHtmlEnvironment { # close the previous one and open a new one instead
   if (@HtmlStack and $found < $depth) { # nested sublist coming up, keep list item
     unshift(@stack, pop(@HtmlStack));
   }
-  if (not $found) {   # if starting a new list
-    @HtmlStack = @stack;
-    @stack = ();
-  }
-  while (@HtmlStack) { # close remaining elements (or all elements if a new list)
-    $text .=  '</' . shift(@HtmlStack) . '>';
-  }
-  @HtmlStack = @stack;
-  $depth = $IndentLimit  if ($depth > $IndentLimit); # requested depth 0 makes no sense
+  @HtmlStack = @stack if not $found; # if starting a new list
+  $text .= CloseHtmlEnvironments();  # close remaining elements (or all elements if a new list)
+  @HtmlStack = @stack if $found; # if not starting a new list
+  $depth = $IndentLimit if ($depth > $IndentLimit); # requested depth 0 makes no sense
   for (my $i = $found; $i < $depth; $i++) {
     unshift(@HtmlStack, $code);
     if ($class) {

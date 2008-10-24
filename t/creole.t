@@ -15,10 +15,13 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 108;
+use Test::More tests => 106;
 clear_pages();
 
 add_module('creole.pl');
+
+# Permit testing of dash-style list markup.
+$CreoleDashStyleUnorderedLists = 1;
 
 run_tests(split('\n',<<'EOT'));
 # one
@@ -90,23 +93,21 @@ foo<p>bar</p>
 foo\nbar
 foo bar
 {{{\nfoo\n}}}
-<pre class="real">foo\n</pre>
+<pre class="real">foo</pre>
 {{{\nfoo\n}}} bar
-<code>\nfoo\n</code> bar
+{{{ foo }}} bar
 {{{\nfoo\n}}} bar \n}}}\n
-<pre class="real">foo\n}}} bar \n</pre>
+<pre class="real">foo\n}}} bar </pre>
 {{{\nfoo\n}}} bar\n{{{\nfoobar\n}}}
-<pre class="real">foo\n}}} bar\n{{{\nfoobar\n</pre>
+<pre class="real">foo\n}}} bar\n{{{\nfoobar</pre>
 {{{\nfoo\n}}}\n
-<pre class="real">foo\n</pre>
+<pre class="real">foo</pre>
 {{{foo}}} bar {{{\nbaz\n}}}
-<code>foo</code> bar <code>\nbaz\n</code>
+<code>foo</code> bar {{{ baz }}}
 {{{\nfoo\n}}}\n{{{\nbar\n}}}
-<pre class="real">foo\n</pre><pre class="real">bar\n</pre>
-{{{\nfoo\n }}}\n}}}
-<pre class="real">foo\n}}}\n</pre>
-{{{\nfoo}}}
-<code>\nfoo</code>
+<pre class="real">foo</pre><pre class="real">bar</pre>
+{{{foo}}}}}}
+<code>foo}}}</code>
 foo {{{bar}}}
 foo <code>bar</code>
 foo {{{bar}}} and {{{baz}}}
@@ -117,10 +118,8 @@ foo {{{*bar*}}}
 foo <code>*bar*</code>
 ----
 <hr />
------  
-<hr />
-  -----
-<hr />
+-----
+-----
 foo -----
 foo -----
 ----\nfoo
@@ -223,7 +222,7 @@ http://www.wikicreole.org/.
 [[link|{{http://example.com/}}]]
 //a[@class="image"][@href="http://localhost/test.pl/link"][img[@class="url outside"][@src="http://example.com/"][@alt="link"]]
 [[http://example.com/|{{pic}}]]
-//a[@class="image outside"][@href="http://example.com/"][img[@class="upload"][@src="http://localhost/test.pl/download/pic"][@alt="pic"]]
+//a[@class="image outside"][@href="http://example.com/"][img[@class="upload"][@src="http://localhost/test.pl/download/pic"][@alt="http://example.com/"]]
 {{http://example.com/}}
 //a[@class="image outside"][@href="http://example.com/"][img[@class="url outside"][@src="http://example.com/"]]
 [[http://example.com/|{{http://mu.org/}}]]
@@ -263,6 +262,6 @@ negative_xpath_test($page,
 
 
 xpath_test(update_page('source', 'this is a [[link]].'),
-	   '//a[text()="link"]');
+     '//a[text()="link"]');
 negative_xpath_test(get_page('source'),
-		    '//a[text()="link"]/following-sibling::a[text()="link"]');
+        '//a[text()="link"]/following-sibling::a[text()="link"]');
