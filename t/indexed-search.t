@@ -15,11 +15,11 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 45;
+use Test::More tests => 52;
 
 SKIP: {
   eval { require Search::FreeText };
-  skip ("Search::FreeText not installed", 37) if $@;
+  skip ("Search::FreeText not installed", 52) if $@;
 
   clear_pages();
 
@@ -28,10 +28,12 @@ SKIP: {
   # Test uploaded pictures, too.
   AppendStringToFile($ConfigFile, "\$UploadAllowed = 1;\n");
 
-  # Test delta indexes as we're not reindexing the pages: Create two
-  # pages; one should be part of the journal, the other should not.
+  # Basic journal page test
   test_page(update_page('2007-10-10', 'ordinary page'), 'ordinary');
   test_page(get_page('action=more'), 'ordinary');
+
+  # Test delta indexes as we're not reindexing the pages: Create two
+  # pages; one should be part of the journal, the other should not.
   update_page('2007-10-11', 'page tagged [[tag:foo]]');
   test_page(update_page('Diary', '<journal>'),
 	    '2007-10-10', 'ordinary', '2007-10-11', 'tagged');
@@ -41,6 +43,19 @@ SKIP: {
   $page = update_page('Diary', '<journal search -tag:foo>');
   test_page($page, 'ordinary page');
   test_page_negative($page, 'page tagged');
+
+  # Test tags containing spaces
+  xpath_test(update_page('2008-10-24', 'this page is [[tag:foo bar]]'),
+	   '//a[@href="http://technorati.com/tag/%22foo%20bar%22"]');
+  $page = get_page('action=more search=tag%3a%22foo+bar%22');
+  test_page($page, 'this page is');
+  test_page_negative($page, 'page tagged'); # simple foo tag not included
+  $page = get_page('search=tag%3a%22foo+bar%22');
+  test_page($page, 'this page is');
+  test_page_negative($page, 'page tagged'); # simple foo tag not included
+  $page = get_page('search=tag%3afoo');
+  test_page($page, 'page tagged');
+  test_page_negative($page, 'this page is'); # without composite foo bar tag
 
   # uploads, strange characters in the names and so on
   update_page('Search (and replace)', 'Muu, or moo. [[tag:test]] [[tag:Öl]]');
