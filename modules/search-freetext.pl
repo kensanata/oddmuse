@@ -47,13 +47,13 @@ sub initialize {
 sub process {
   my ($self, $oldwords) = @_;
   my $string = join("\n", @$oldwords);
-  my @words = map { lc } ($string =~ /[A-Za-z0-9\x80-\xff]+/g);
+  my @words = map { lc } ($string =~ /[A-Za-z0-9_\x80-\xff]+/g);
   return \@words;
 };
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.63 2008/09/19 23:55:52 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.64 2008/10/24 14:26:21 as Exp $</p>';
 
 =head2 User Interface
 
@@ -77,7 +77,9 @@ sub SearchFreeTextTagsRule {
       or m/\G(\[\[tag:$FreeLinkPattern\|([^]|]+)\]\])/cog) {
     # [[tag:Free Link]], [[tag:Free Link|alt text]]
     my ($tag, $text) = ($2, $3);
-    return $q->a({-href=>$SearchFreeTextTagUrl . UrlEncode($tag),
+    my $str = $tag;
+    $str = qq{"$str"} if index($str, ' ') != -1;
+    return $q->a({-href=>$SearchFreeTextTagUrl . UrlEncode($str),
 		  -class=>'outside tag',
 		  -title=>T('Tag'),
 		  -rel=>'tag'
@@ -155,6 +157,8 @@ sub SearchFreeTextIndex {
     # UrlEncode key because the internal datastructure uses commas, for example.
     my @tags = ($Page{text} =~ m/\[\[tag:$FreeLinkPattern\]\]/g,
 		$Page{text} =~ m/\[\[tag:$FreeLinkPattern\|([^]|]+)\]\]/g);
+    # within a tag, space is replaced by _ as in foo_bar
+    @tags = map { FreeToNormal($_) } @tags;
     # add tags, even for files
     $tags->index_document(UrlEncode($name), join(' ', @tags)) if @tags;
     # no word index for files
@@ -266,8 +270,9 @@ sub SearchFreeTextCloud {
     print $q->a({-href  => "$ScriptName?search=tag:" . UrlEncode($_),
 		 -title => $n,
 		 -style => 'font-size: '
-		 . int(80+120*($max == $min ? 1 : ($n-$min)/($max-$min))) . '%;',
-		}, $_), T(' ... ');
+		 . int(80+120*($max == $min ? 1 : ($n-$min)/($max-$min)))
+		 . '%;',
+		}, NormalToFree($_)), T(' ... ');
   }
   $tags->close_index();
   print '</p></div>';
@@ -305,18 +310,22 @@ sub NewSearchFreeTextTitleAndBody {
   my $max = $page * $limit - 1;
   my @wanted = $term  =~ m/(".*?"|tag:".*?"|\S+)/g;
   my @wanted_words = grep(!/^-?tag:/, @wanted);
-  my @wanted_tags = map { substr($_, 4) } grep(/^tag:/, @wanted);
-  my @unwanted_tags = map { substr($_, 5) } grep(/^-tag:/, @wanted);
+  # This changes tag:"foo bar" to foo_bar (also avoiding the phrase
+  # search in SearchFreeTextGet)
+  my @wanted_tags = map { $_ = substr($_, 4); tr/"//d; FreeToNormal($_); }
+    grep(/^tag:/, @wanted);
+  my @unwanted_tags = map { $_ = substr($_, 5); tr/"//d; FreeToNormal($_); }
+    grep(/^-tag:/, @wanted);
   my @words = map {
-    SearchFreeTextGet(SearchFreeTextDB($_), 0, @wanted_words);
+    SearchFreeTextGet(SearchFreeTextDB($_), @wanted_words);
   } ("$DataDir/word-update.db", "$DataDir/word.db");
   @words = SearchFreeTextUnique(@words); # both dictionaries might have returned a result
   my @tags = map {
-    SearchFreeTextGet(SearchFreeTextDB($_), 1, @wanted_tags);
+    SearchFreeTextGet(SearchFreeTextDB($_), @wanted_tags);
   } ("$DataDir/tags-update.db", "$DataDir/tags.db");
   @tags = SearchFreeTextUnique(@tags); # both dictionaries might have returned a result
   my @excluded_tags = map {
-    SearchFreeTextGet(SearchFreeTextDB($_), 1, @unwanted_tags);
+    SearchFreeTextGet(SearchFreeTextDB($_), @unwanted_tags);
   } ("$DataDir/tags-update.db", "$DataDir/tags.db");
   my @result = ();
   # some set operations...
@@ -405,7 +414,7 @@ sub SearchFreeTextUnique {
 }
 
 sub SearchFreeTextGet {
-  my ($db, $tags, @wanted) = @_;
+  my ($db, @wanted) = @_;
   # Shortcut if there are no search terms.
   return unless @wanted;
   my @result = ();
@@ -426,7 +435,6 @@ sub SearchFreeTextGet {
     $_ = QuoteRegexp($_) unless index('\\', $_);
     $_;
   } grep(/^"/, @wanted);
-  @phrases = map { "\\[\\[tag:$_\\]\\]" } @phrases if $tags;
  PAGE: foreach (@found) {
     my ($id, $score) = (UrlDecode($_->[0]), $_->[1]);
     if (@phrases) {
