@@ -11,7 +11,7 @@ toc is easily installable; move this file into the B<wiki/modules/>
 directory for your Oddmuse Wiki.
 
 =cut
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.50 2008/09/29 03:14:39 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.51 2008/10/25 16:31:26 as Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -87,7 +87,8 @@ sub TocRule {
      && $UseModMarkupInTitles
      && m/\G(\s*\n)*(\=+)[ \t]*(?=[^=\n]+=)/cg) {
     my $depth = length($2);
-       $depth = 6 if $depth > 6;
+    $depth = 6 if $depth > 6;
+    $depth = 2 if $depth < 2;
     my $html = CloseHtmlEnvironments()
       . ($PortraitSupportColorDiv ? '</div>' : '');
     $html .= TocHeadings() if not $TocShown and $TocAutomatic;
@@ -114,7 +115,8 @@ sub TocRule {
      && !$UseModMarkupInTitles
      && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=*)[ \t]*(\n|$)/cg) {
     my $depth = length($2);
-       $depth = 6 if $depth > 6;
+    $depth = 6 if $depth > 6;
+    $depth = 2 if $depth < 2;
 
     my $text = $3;
     my $html = CloseHtmlEnvironments()
@@ -189,6 +191,7 @@ sub TocHeadings {
     # at level 1 or below.
     $depth = $HeadingsLevelStart + 1 if $depth <= $HeadingsLevelStart;
     $depth = 6 if $depth > 6;
+    $depth = 2 if $depth < 2;
     # the order of the three expressions is important!
     while ($HeadingsLevel > $depth) {
       $Headings .= '</li></ol>';
