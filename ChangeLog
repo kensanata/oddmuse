@@ -1,3 +1,22 @@
+2008-10-24  Alex Schroeder  <alex@gnu.org>
+
+	* modules/search-freetext.pl (process): Allow underscore in
+	tokens (foo_bar).
+	(SearchFreeTextTagsRule): Add double quotes around tags that
+	contain a space ("foo bar"). This should work for technorati links
+	and the like.
+	(SearchFreeTextIndex): When indexing a tag containing a space, use
+	underscores instead ([[tag:foo bar]] is indexed as foo_bar).
+	(SearchFreeTextCloud): When showing a tag containing an
+	underscore, replace it with space (foo bar).
+	(NewSearchFreeTextTitleAndBody): When searching for tags, strip
+	quotes and replace spaces with underscores. Searching for tag:"foo
+	bar" will thus result in a search for the tag foo_bar.
+	(SearchFreeTextGet): No longer tags a tag flag as an argument.
+	This also affects all the callers (NewSearchFreeTextTitleAndBody).
+	As tags will end up without quotes and with spaces replaced by
+	underscores, the special case for tags is gone.
+
 2008-10-23  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
 	* modules/wiki.pl (OpenHtmlEnvironment): Generalized list closure
