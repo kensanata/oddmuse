@@ -15,11 +15,11 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 52;
+use Test::More tests => 53;
 
 SKIP: {
   eval { require Search::FreeText };
-  skip ("Search::FreeText not installed", 52) if $@;
+  skip ("Search::FreeText not installed", 53) if $@;
 
   clear_pages();
 
@@ -124,7 +124,8 @@ SKIP: {
   test_page(get_page('search=tag:%c3%96l raw=1'),
 	    quotemeta('Search_(and_replace)'));
   test_page(get_page('action=cloud'),
-	    'search=tag:%c3%96l', 'search=tag:test', 'search=tag:be3');
+	    'search=tag:%c3%96l', 'search=tag:test', 'search=tag:be3',
+	    'search=tag:foo_bar');
   test_page_negative(get_page('search=-tag:%c3%96l raw=1'),
 		     quotemeta('Search_(and_replace)'));
   test_page(get_page('search=-tag:test raw=1'),
