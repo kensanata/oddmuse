@@ -1,3 +1,9 @@
+2008-10-25  Alex Schroeder  <alex@gnu.org>
+
+	* modules/toc.pl (TocRule, TocHeadings): Make sure no h1 headers
+	can be generated. This makes sure that the headings work just like
+	they do in the UseMod markup extension.
+
 2008-10-24  Alex Schroeder  <alex@gnu.org>
 
 	* modules/search-freetext.pl (process): Allow underscore in
