@@ -53,7 +53,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.64 2008/10/24 14:26:21 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.65 2008/10/25 13:06:50 as Exp $</p>';
 
 =head2 User Interface
 
@@ -63,6 +63,20 @@ descriptive text]]>.
 Both the action allowing you to rebuild the index as well as the
 action showing you the tag cloud are available from the Adminstration
 menu.
+
+The option C<$SearchFreeTextTagUrl> controls where the tag links point
+to. By default they link to technorati.com. Examples:
+
+C<[[tag:foo]]> links to C<http://technorati.com/tag/foo>.
+
+C<[[tag:foo bar]]> links to
+C<http://technorati.com/tag/%22foo%20bar%22> ("foo bar").
+
+One interesting setting for a blog would be the following:
+
+    $SearchFreeTextTagUrl = "$ScriptName?action=more;search=tag:";
+
+This will link every tag to a journal filtered by tag.
 
 =cut
 
@@ -283,6 +297,19 @@ sub SearchFreeTextCloud {
 
 The old C<SearchTitleAndBody> is replaced by a new subroutine that
 searches the various data files.
+
+As mentioned, we can set C<$SearchFreeTextTagUrl> to point at the wiki
+itself:
+
+    $SearchFreeTextTagUrl = "$ScriptName?action=more;search=tag:";
+
+This requires us to handle the case of tags containing whitespace.
+
+C<[[tag:foo]]> links to a search for C<tag:foo>, which works as expected.
+
+C<[[tag:foo bar]]> links to C<tag%3a%22foo%20bar%22> (tag:"foo bar")
+which needs to be translated back into tag:foo_bar for searching,
+because the page will be indexed under the key C<foo_bar>.
 
 =cut
 
