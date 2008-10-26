@@ -31,6 +31,10 @@ and tags-update.db will be cleared again.
 
 package OddMuse::Tokenize;
 
+use vars qw($regexp);
+
+$regexp = qr'[A-Za-z0-9_\x80-\xff]+';
+
 sub new {
     my ($classname, @args) = @_;
     my $class = ref($classname) || $classname;
@@ -47,13 +51,13 @@ sub initialize {
 sub process {
   my ($self, $oldwords) = @_;
   my $string = join("\n", @$oldwords);
-  my @words = map { lc } ($string =~ /[A-Za-z0-9_\x80-\xff]+/g);
+  my @words = map { lc } ($string =~ /$regexp/go);
   return \@words;
 };
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.65 2008/10/25 13:06:50 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.66 2008/10/26 11:27:21 as Exp $</p>';
 
 =head2 User Interface
 
@@ -337,11 +341,10 @@ sub NewSearchFreeTextTitleAndBody {
   my $max = $page * $limit - 1;
   my @wanted = $term  =~ m/(".*?"|tag:".*?"|\S+)/g;
   my @wanted_words = grep(!/^-?tag:/, @wanted);
-  # This changes tag:"foo bar" to foo_bar (also avoiding the phrase
-  # search in SearchFreeTextGet)
-  my @wanted_tags = map { $_ = substr($_, 4); tr/"//d; FreeToNormal($_); }
+  # This changes tag:"foo bar" to "foo_bar"
+  my @wanted_tags = map { $_ = substr($_, 4); FreeToNormal($_); }
     grep(/^tag:/, @wanted);
-  my @unwanted_tags = map { $_ = substr($_, 5); tr/"//d; FreeToNormal($_); }
+  my @unwanted_tags = map { $_ = substr($_, 5); FreeToNormal($_); }
     grep(/^-tag:/, @wanted);
   my @words = map {
     SearchFreeTextGet(SearchFreeTextDB($_), @wanted_words);
@@ -444,39 +447,60 @@ sub SearchFreeTextGet {
   my ($db, @wanted) = @_;
   # Shortcut if there are no search terms.
   return unless @wanted;
-  my @result = ();
   # open file and get sorted list of arrays with page id and rank.
   $db->open_index();
   # Hack alert: If the index is empty, Search::FreeText 0.5 dies with
   # an "Empty index" error. In order to avoid this, we make the same
   # test here and return.
   return unless $db->{_Database}->{" "};
-  my @found = $db->search(join(" ", @wanted));
-  $db->close_index();
-  # Make sure that all double quoted phrases do in fact all appear. To
-  # do this, we copy page ids from @found. Quote potential regular
-  # expressions in search strings. Backlink searches are already
-  # quoted, however -- thus only do it if no backslash is found.
-  my @phrases = map {
+  my @found = map { UrlDecode($_->[0]) } $db->search(join(" ", @wanted));
+  # Make sure that all double quoted expressions do in fact all
+  # appear. If the double quoted stuff is in fact a single token, we
+  # can reuse the search engine ("foo"). If not, we have to grep for
+  # stuff ("foo bar"). Note that quoted tags will always be single
+  # tokens (tag:"foo_bar").
+  my @phrase = map {
     $_ = substr($_,1,-1);
     $_ = QuoteRegexp($_) unless index('\\', $_);
     $_;
-  } grep(/^"/, @wanted);
- PAGE: foreach (@found) {
-    my ($id, $score) = (UrlDecode($_->[0]), $_->[1]);
-    if (@phrases) {
+  } grep(/^".* .*"$/, @wanted); # must contain a space
+  # To do this, we copy page ids from @found. Quote potential regular
+  # expressions in search strings. Backlink searches are already
+  # quoted, however -- thus only do it if no backslash is found.
+  if (@phrase) {
+    my @result = ();
+  PAGE: foreach my $id (@found) {
       OpenPage($id);
-      my $text = $OpenPageName;
-      $text =~ s/_/ /g;
-      $text .= "\n" . $Page{text};
-      foreach my $phrase (@phrases) {
+      my $text = NormalToFree($id) . "\n" . $Page{text};
+      foreach my $phrase (@phrase) {
 	# don't add it to @found by skipping to the next page
 	next PAGE unless $text =~ m/$phrase/;
       }
+      push(@result, $id); # order is important, so no hashes
     }
-    push(@result, $id); # order is important, so no hashes
+    @found = @result;
   }
-  return @result;
+  # Now do the thing for tokens (not containing spaces, ie. tags and
+  # single words). But only do this if there are in fact multiple
+  # search terms. With just one search term, the result cannot be
+  # different from what we already have.
+  if ($#wanted > 0) {
+    my @token = map {
+      $_ = substr($_,1,-1);
+      $_ = QuoteRegexp($_) unless index('\\', $_);
+      $_;
+    } grep(/^"$OddMuse::Tokenize::regexp"$/o, @wanted); # may not contain spaces
+    foreach (@token) {
+      my @result = ();
+      my %map = map { UrlDecode($_->[0]) => 1 } $db->search($_);
+      foreach my $id (@found) {
+	push(@result, $id) if $map{$id};
+      }
+      @found = @result;
+    }
+  }
+  $db->close_index();
+  return @found;
 }
 
 sub SearchFreeTextDB {
