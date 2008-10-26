@@ -15,11 +15,11 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 53;
+use Test::More tests => 61;
 
 SKIP: {
   eval { require Search::FreeText };
-  skip ("Search::FreeText not installed", 53) if $@;
+  skip ("Search::FreeText not installed", 61) if $@;
 
   clear_pages();
 
@@ -56,6 +56,15 @@ SKIP: {
   $page = get_page('search=tag%3afoo');
   test_page($page, 'page tagged');
   test_page_negative($page, 'this page is'); # without composite foo bar tag
+
+  # Mandatory matches using tags and double quotes.
+  update_page('2008-10-26', 'two tags [[tag:foo]] [[tag:baz]]');
+  $page = get_page('action=more search=tag:foo+tag:baz');
+  test_page($page, '2007-10-11', '2008-10-26'); # page tagged foo is included
+  test_page_negative($page, '2007-10-10', '2008-10-24');
+  $page = get_page('action=more search=tag%3afoo%20tag%3a%22baz%22');
+  test_page($page, '2008-10-26'); # page tagged foo is no longer included
+  test_page_negative($page, '2007-10-11', '2007-10-10', '2008-10-24');
 
   # uploads, strange characters in the names and so on
   update_page('Search (and replace)', 'Muu, or moo. [[tag:test]] [[tag:Öl]]');
