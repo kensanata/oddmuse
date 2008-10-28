@@ -162,7 +162,9 @@ sub DoTranslationLink {
   if ($target) {
     OpenPage(FreeToNormal($source));
     my $lang = GetParam('translation', 'unknown');
-    Save($OpenPageName, "[[$lang:$target]]\n" . $Page{text}, T('Added translation'), 1);
+    Save($OpenPageName, "[[$lang:$target]]\n" . $Page{text},
+	 Tss('Added translation: %1 (%2)',
+	     NormalToFree($target), T($lang)), 1);
     DoEdit($target);
   } else {
     my @missing = split(/_/, GetParam('missing', ''));
