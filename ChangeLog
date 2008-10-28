@@ -1,3 +1,8 @@
+2008-10-28  Alex Schroeder  <aschroeder@localhost>
+
+	* modules/translation-links.pl (TranslationLinkNewGetFooterLinks):
+	Fix links generated with %TranslationLinkTarget.
+
 2008-10-26  Alex Schroeder  <alex@gnu.org>
 
 	* modules/search-freetext.pl (OddMuse::Tokenize): Make the regexp
