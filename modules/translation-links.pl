@@ -53,7 +53,7 @@ use vars qw($TranslationLinkPattern %TranslationLinkTarget);
 =head2 $TranslationLinkPattern
 
 This regular expression is formed via all the defined languages and
-C<$FreeLinkPattern> if C<$FreeLinks> is set and/or C<LinkPattern> if
+C<$FreeLinkPattern> if C<$FreeLinks> is set and/or C<$LinkPattern> if
 C<$WikiLinks> is set. It matches things such as C<[[en:HomePage]]>.
 
 =cut
