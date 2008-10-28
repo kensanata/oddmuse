@@ -2,6 +2,7 @@
 
 	* modules/translation-links.pl (TranslationLinkNewGetFooterLinks):
 	Fix links generated with %TranslationLinkTarget.
+	(DoTranslationLink): Added better summary.
 
 2008-10-26  Alex Schroeder  <alex@gnu.org>
 
