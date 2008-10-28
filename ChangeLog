@@ -1,3 +1,16 @@
+2008-10-26  Alex Schroeder  <alex@gnu.org>
+
+	* modules/search-freetext.pl (OddMuse::Tokenize): Make the regexp
+	reusable outside the class.
+	(process): Use it.
+	(NewSearchFreeTextTitleAndBody): No longer strip quotes from tags.
+	(SearchFreeTextGet): Rewrote phrase handling so that tags can be
+	made mandatory by enclosing them with quotes, but making sure that
+	extra effort is only spent if there are multiple search terms.
+	Also if the terms are in fact whole tokens and not just any
+	phrase, avoid looking opening the page files and doing a regular
+	search.
+
 2008-10-25  Alex Schroeder  <alex@gnu.org>
 
 	* modules/toc.pl (TocRule, TocHeadings): Make sure no h1 headers
