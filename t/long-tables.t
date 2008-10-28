@@ -1,4 +1,4 @@
-# Copyright (C) 2006, 2007  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006, 2007, 2008  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,10 +15,16 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 14;
+use Test::More tests => 23;
 clear_pages();
 
 add_module('tables-long.pl');
+
+test_page(update_page('2008-10-26', "<table a,b>\na=alex\nb=berta\na=one\nb=two"),
+	  '<th>alex</th>', '<th>berta</th>', '<td>one</td>', '<td>two</td>');
+test_page(update_page('Diary', "This is the land of the crab-men.\n\n<journal>"),
+	  'This is the land of the crab-men.',
+	  '<th>alex</th>', '<th>berta</th>', '<td>one</td>', '<td>two</td>');
 
 run_tests(split('\n',<<'EOT'));
 <table a,b>\na=a\nb=b\na=one\nb=two
