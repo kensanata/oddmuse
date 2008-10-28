@@ -115,7 +115,7 @@ sub TranslationLinkNewGetFooterLinks {
 	my $url;
 	if ($TranslationLinkTarget{$_}) {
 	  $url = $TranslationLinkTarget{$_};
-	  $url =~ s/\%s/$_/g or $url .= $_;
+	  $url =~ s/\%s/$translations{$_}/g or $url .= $translations{$_};
 	} else {
 	  $url = ScriptUrl($translations{$_});
 	}
