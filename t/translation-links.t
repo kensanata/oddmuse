@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 22;
+use Test::More tests => 20;
 clear_pages();
 
 add_module('translation-links.pl');
@@ -47,8 +47,7 @@ xpath_test(update_page('HomePage', 'Simple test. [[de:HauptSeite]]'),
 	   '//div[@class="footer"]/span[@class="translation bar"]/a[@class="translation new"][text()="Add Translation"][@href="http://localhost/wiki.pl?action=translate;id=HomePage;missing=en_fr"]');
 
 $page = get_page('action=translate id=HomePage missing=en_fr');
-test_page($page, 'Français', 'English', 'a translation of HomePage',
-	  'the translation of HomePage');
+test_page($page, 'Français', 'English');
 test_page_negative($page, 'Deutsch');
 
 # the page is now autoidentified as English, therefore French is the only one that is missing!
