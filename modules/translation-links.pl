@@ -46,9 +46,17 @@ Or you can use a setup using a different wrapper script per language:
     $TranslationLinkTarget{en} = "$ScriptName-en";
     $TranslationLinkTarget{de} = "$ScriptName-de";
 
+=head2 $TranslationLinkHelpPage
+
+When translating a page, people will be offered a link to a help page.
+The default page is called TranslationHelp.
+
 =cut
 
-use vars qw($TranslationLinkPattern %TranslationLinkTarget);
+use vars qw($TranslationLinkPattern %TranslationLinkTarget
+	    $TranslationLinkHelpPage);
+
+$TranslationLinkHelpPage = 'TranslationHelp';
 
 =head2 $TranslationLinkPattern
 
@@ -138,7 +146,7 @@ sub TranslationLinkNewGetFooterLinks {
     if (scalar keys %missing) {
       $bar .= ' ' . ScriptLink("action=translate;id=$id;missing="
 			       . join('_', sort keys %missing),
-			       T('Translate'), 'translation new');
+			       T('Add Translation'), 'translation new');
     }
     $html = $q->span({-class=>'translation bar'}, $q->br(), $bar) . $html;
   }
@@ -171,6 +179,8 @@ sub DoTranslationLink {
     my @missing = split(/_/, GetParam('missing', ''));
     print GetHeader(undef, Ts('Translate %s', NormalToFree($source)));
     print $q->start_div({-class=>'content translate'}), GetFormStart();
+    print $q->p(Ts('Thank you for writing a translation of %s.'),
+	        T('Please indicate what language you will be using.'));
     if (defined $q->param('target') and not $lang) {
       print $q->div({-class=>'message'}, $q->p(T('Language is missing')));
     }
@@ -179,6 +189,9 @@ sub DoTranslationLink {
 			    -values=>\@missing,
 			    -linebreak=>'true',
 			    -labels=>\%Translate));
+    print $q->p(Ts('Please indicate a page name for the translation of %s.'),
+	        Ts('More help may be available here: %s.',
+		   GetPageLink($TranslationLinkHelpPage)));
     if (defined $q->param('target') and $error) {
       print $q->div({-class=>'message'}, $q->p($error));
     }
