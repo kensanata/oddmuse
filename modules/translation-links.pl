@@ -159,9 +159,10 @@ $Action{translate} = \&DoTranslationLink;
 sub DoTranslationLink {
   my $source = shift;
   my $target = FreeToNormal(GetParam('target', ''));
-  if ($target) {
+  my $error = ValidId($target);
+  my $lang = GetParam('translation', '');
+  if (not $error and $lang) {
     OpenPage(FreeToNormal($source));
-    my $lang = GetParam('translation', 'unknown');
     Save($OpenPageName, "[[$lang:$target]]\n" . $Page{text},
 	 Tss('Added translation: %1 (%2)',
 	     NormalToFree($target), T($lang)), 1);
@@ -170,15 +171,22 @@ sub DoTranslationLink {
     my @missing = split(/_/, GetParam('missing', ''));
     print GetHeader(undef, Ts('Translate %s', NormalToFree($source)));
     print $q->start_div({-class=>'content translate'}), GetFormStart();
+    if (defined $q->param('target') and not $lang) {
+      print $q->div({-class=>'message'}, $q->p(T('Language is missing')));
+    }
     print $q->p(T('Suggested languages:')),
       $q->p($q->radio_group(-name=>'translation',
 			    -values=>\@missing,
 			    -linebreak=>'true',
 			    -labels=>\%Translate));
+    if (defined $q->param('target') and $error) {
+      print $q->div({-class=>'message'}, $q->p($error));
+    }
     print $q->p($q->label({-for=>'target'}, T('Translated page: ')),
 		$q->textfield('target', '', 40),
 		$q->hidden('action', 'translate'),
 		$q->hidden('id', $source),
+		$q->hidden('missing', GetParam('missing', '')),
 		$q->submit('dotranslate', T('Go!')));
     print $q->endform, $q->end_div();
     PrintFooter();
