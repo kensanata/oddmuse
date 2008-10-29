@@ -1,3 +1,8 @@
+2008-10-29  Alex Schroeder  <alex@gnu.org>
+
+	* modules/translation-links.pl (DoTranslationLink): Report a lot
+	more errors.
+
 2008-10-28  Alex Schroeder  <aschroeder@localhost>
 
 	* modules/translation-links.pl (TranslationLinkNewGetFooterLinks):
