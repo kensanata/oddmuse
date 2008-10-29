@@ -179,7 +179,7 @@ sub DoTranslationLink {
     my @missing = split(/_/, GetParam('missing', ''));
     print GetHeader(undef, Ts('Translate %s', NormalToFree($source)));
     print $q->start_div({-class=>'content translate'}), GetFormStart();
-    print $q->p(Ts('Thank you for writing a translation of %s.'),
+    print $q->p(Ts('Thank you for writing a translation of %s.', $source),
 	        T('Please indicate what language you will be using.'));
     if (defined $q->param('target') and not $lang) {
       print $q->div({-class=>'message'}, $q->p(T('Language is missing')));
@@ -189,7 +189,8 @@ sub DoTranslationLink {
 			    -values=>\@missing,
 			    -linebreak=>'true',
 			    -labels=>\%Translate));
-    print $q->p(Ts('Please indicate a page name for the translation of %s.'),
+    print $q->p(Ts('Please indicate a page name for the translation of %s.',
+		   $source),
 	        Ts('More help may be available here: %s.',
 		   GetPageLink($TranslationLinkHelpPage)));
     if (defined $q->param('target') and $error) {

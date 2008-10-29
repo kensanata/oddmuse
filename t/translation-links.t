@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 20;
+use Test::More tests => 22;
 clear_pages();
 
 add_module('translation-links.pl');
@@ -30,7 +30,7 @@ $Translate{en} = 'English';
 $page = update_page('HomePage', 'This is the homepage. [[de:HauptSeite]] [[fr:PagePrincipale]]');
 # the page is not autoidentified as English, therefore English must be missing!
 test_page($page, 'This is the homepage.', 'fr:PagePrincipale',
-	  'action=translate;id=HomePage;missing=en', 'Translate');
+	  'action=translate;id=HomePage;missing=en', 'Add Translation');
 test_page_negative($page, 'de:HauptSeite');
 xpath_test($page, '//div[@class="footer"]/span[@class="translation bar"]/a[@class="translation de"][@href="http://localhost/wiki.pl/HauptSeite"][text()="Deutsch"]');
 
@@ -44,15 +44,16 @@ $Translate{en} = 'English';
 });
 
 xpath_test(update_page('HomePage', 'Simple test. [[de:HauptSeite]]'),
-	   '//div[@class="footer"]/span[@class="translation bar"]/a[@class="translation new"][text()="Translate"][@href="http://localhost/wiki.pl?action=translate;id=HomePage;missing=en_fr"]');
+	   '//div[@class="footer"]/span[@class="translation bar"]/a[@class="translation new"][text()="Add Translation"][@href="http://localhost/wiki.pl?action=translate;id=HomePage;missing=en_fr"]');
 
 $page = get_page('action=translate id=HomePage missing=en_fr');
-test_page($page, 'Français', 'English');
+test_page($page, 'Français', 'English', 'a translation of HomePage',
+	  'the translation of HomePage');
 test_page_negative($page, 'Deutsch');
 
 # the page is now autoidentified as English, therefore French is the only one that is missing!
 xpath_test(update_page('HomePage', 'The the the the test. [[de:HauptSeite]]'),
-	   '//div[@class="footer"]/span[@class="translation bar"]/a[@class="translation new"][text()="Translate"][@href="http://localhost/wiki.pl?action=translate;id=HomePage;missing=fr"]');
+	   '//div[@class="footer"]/span[@class="translation bar"]/a[@class="translation new"][text()="Add Translation"][@href="http://localhost/wiki.pl?action=translate;id=HomePage;missing=fr"]');
 
 test_page(get_page('action=translate id=HomePage target=PagePrincipale translation=fr'),
 	  'Editing PagePrincipale');
