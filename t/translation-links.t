@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 15;
+use Test::More tests => 20;
 clear_pages();
 
 add_module('translation-links.pl');
@@ -61,3 +61,15 @@ test_page(get_page('action=browse raw=1 id=HomePage'),
 	  '\[\[de:HauptSeite\]\]', '\[\[fr:PagePrincipale\]\]');
 
 test_page_negative(get_page('HomePage'), 'Translate');
+
+test_page(get_page('action=translate id=HomePage target= translation=fr'),
+	  'Translate HomePage', 'Page name is missing');
+
+test_page(get_page('action=translate id=HomePage target=a:b translation=fr'),
+	  'Invalid Page a:b');
+
+test_page(get_page('action=translate id=HomePage target=abc'),
+	  'Language is missing');
+
+test_page(get_page('action=translate id=HomePage target=abc translation=fr'),
+	  'Editing abc');
