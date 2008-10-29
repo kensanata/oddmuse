@@ -1,7 +1,8 @@
 2008-10-29  Alex Schroeder  <alex@gnu.org>
 
 	* modules/translation-links.pl (DoTranslationLink): Report a lot
-	more errors.
+	more errors. Add more explanation.
+	($TranslationLinkHelpPage): New option.
 
 2008-10-28  Alex Schroeder  <aschroeder@localhost>
 
