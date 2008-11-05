@@ -1,23 +1,9 @@
-# Copyright (C) 2004, 2005, 2006, 2007, 2008  Alex Schroeder <alex@gnu.org>
-# Copyright (C) 2008  Weakish Jiang <weakish@gmail.com>
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.35 2008/06/26 07:59:54 as Exp $</p>';
+#!/usr/bin/env perl
+# ====================[ usemod.pl                          ]====================
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.36 2008/11/05 09:42:06 leycec Exp $</p>';
 
 use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml
-	    $UseModSpaceRequired $UseModMarkupInTitles);
+      $UseModSpaceRequired $UseModMarkupInTitles);
 
 push(@MyRules, \&UsemodRule);
 # The ---- rule conflicts with the --- rule in markup.pl and portrait-support.pl
@@ -38,12 +24,12 @@ $UseModMarkupInTitles = 0; # 1 = may use links and other markup in ==titles==
 push(@MyInitVariables, \&UsemodInit);
 
 sub UsemodInit {
-  if (not @HtmlTags) {	 # do not override settings in the config file
-    if ($HtmlTags) {		# allow many tags
+  if (not @HtmlTags) {   # do not override settings in the config file
+    if ($HtmlTags) {    # allow many tags
       @HtmlTags = qw(b i u font big small sub sup h1 h2 h3 h4 h5 h6 cite code
-		     em s strike strong tt var div center blockquote ol ul dl
-		     table caption br p hr li dt dd tr td th);
-    } else {			# only allow a very small subset
+         em s strike strong tt var div center blockquote ol ul dl
+         table caption br p hr li dt dd tr td th);
+    } else {      # only allow a very small subset
       @HtmlTags = qw(b i u em strong tt);
     }
   }
@@ -73,29 +59,33 @@ sub UsemodRule {
   }
   # unumbered lists using *
   elsif ($bol && m/\G(\s*\n)*(\*+)[ \t]{$UseModSpaceRequired,}/cog
-	 or InElement('li') && m/\G(\s*\n)+(\*+)[ \t]{$UseModSpaceRequired,}/cog) {
+   or InElement('li') && m/\G(\s*\n)+(\*+)[ \t]{$UseModSpaceRequired,}/cog) {
     return CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ul',length($2))
       . AddHtmlEnvironment('li');
   }
   # numbered lists using #
   elsif ($bol && m/\G(\s*\n)*(\#+)[ \t]{$UseModSpaceRequired,}/cog
-	 or InElement('li') && m/\G(\s*\n)+(\#+)[ \t]{$UseModSpaceRequired,}/cog) {
+   or InElement('li') && m/\G(\s*\n)+(\#+)[ \t]{$UseModSpaceRequired,}/cog) {
     return CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ol',length($2))
       . AddHtmlEnvironment('li');
   }
   # indented text using : (use blockquote instead?)
   elsif ($bol && m/\G(\s*\n)*(\:+)[ \t]{$UseModSpaceRequired,}/cog
-	 or InElement('dd') && m/\G(\s*\n)+(\:+)[ \t]{$UseModSpaceRequired,}/cog) {
+   or InElement('dd') && m/\G(\s*\n)+(\:+)[ \t]{$UseModSpaceRequired,}/cog) {
     return CloseHtmlEnvironmentUntil('dd') . OpenHtmlEnvironment('dl',length($2), 'quote')
       . $q->dt() . AddHtmlEnvironment('dd');
   }
   # definition lists using ;
-  elsif ($bol && m/\G(\s*\n)*(\;+)[ \t]{$UseModSpaceRequired,}(?=.*\:)/cog
-	 or InElement('dd') && m/\G(\s*\n)+(\;+)[ \t]{$UseModSpaceRequired,}(?=.*\:)/cog) {
-    return CloseHtmlEnvironmentUntil('dd') . OpenHtmlEnvironment('dl',length($2))
-      . AddHtmlEnvironment('dt'); # `:' needs special treatment, later
-  } elsif (InElement('dt', 'dd') and m/\G:[ \t]*/cg) {
-    return CloseHtmlEnvironmentUntil('dt') . CloseHtmlEnvironment() . AddHtmlEnvironment('dd');
+  elsif (($bol and m/\G(\s*\n)*(\;+)[ \t]{$UseModSpaceRequired,}(?=.*\:)/cog) or
+         (InElement('dd') and m/\G(\s*\n)+(\;+)[ \t]{$UseModSpaceRequired,}(?=.*\:)/cog)) {
+    return CloseHtmlEnvironmentUntil('dd')
+      .OpenHtmlEnvironment('dl', length($2))
+      .AddHtmlEnvironment('dt');  # `:' needs special treatment, later
+  }
+  elsif (InElement('dt') and m/\G:[ \t]*/cg) {
+    return CloseHtmlEnvironmentUntil('dt')
+      .CloseHtmlEnvironment()
+      .AddHtmlEnvironment('dd');
   }
   # headings using = (with lookahead)
   elsif ($bol && $UseModMarkupInTitles && m/\G(\s*\n)*(\=+)[ \t]*(?=[^=\n]+=)/cg) {
@@ -108,9 +98,9 @@ sub UsemodRule {
     $PortraitSupportColor = 0;
     return $html;
   } elsif ($UseModMarkupInTitles
-	   && (InElement('h1') || InElement('h2') || InElement('h3')
-	       || InElement('h4') || InElement('h5') || InElement('h6'))
-	   && m/\G[ \t]*=+\n?/cg) {
+     && (InElement('h1') || InElement('h2') || InElement('h3')
+         || InElement('h4') || InElement('h5') || InElement('h6'))
+     && m/\G[ \t]*=+\n?/cg) {
     return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
   } elsif ($bol && !$UseModMarkupInTitles && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg) {
     my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '')
@@ -155,19 +145,16 @@ sub UsemodRule {
   elsif (m/\G$RFCPattern/cog) { return &RFC($1); }
   # ISBN -- dirty because the URL translations will change
   elsif (m/\G($ISBNPattern)/cog) { Dirty($1); print ISBN($2); return ''; }
-  # emphasis and strong emphasis using '' and '''
-  elsif (defined $HtmlStack[0] && $HtmlStack[1] && $HtmlStack[0] eq 'em'
-	 && $HtmlStack[1] eq 'strong' and m/\G'''''/cg) { # close either of the two
-    return CloseHtmlEnvironment() . CloseHtmlEnvironment();
-  } elsif (m/\G'''/cg) { # traditional wiki syntax for '''strong'''
-    return (defined $HtmlStack[0] && $HtmlStack[0] eq 'strong')
-      ? CloseHtmlEnvironment() : AddHtmlEnvironment('strong');
-  } elsif (m/\G''/cg) { # traditional wiki syntax for ''emph''
-    return (defined $HtmlStack[0] && $HtmlStack[0] eq 'em')
-      ? CloseHtmlEnvironment() : AddHtmlEnvironment('em');
+  # traditional wiki syntax closure for bold italic'''''
+  elsif (InElement('strong') and InElement('em') and m/\G'''''/cg) { # close both
+    return CloseHtmlEnvironment('strong').CloseHtmlEnvironment('em');
   }
+  # traditional wiki syntax for '''bold'''
+  elsif (m/\G'''/cg) { return AddOrCloseHtmlEnvironment('strong'); }
+  # traditional wiki syntax for ''italic''
+  elsif (m/\G''/cg ) { return AddOrCloseHtmlEnvironment('em'); }
   # <html> for raw html
-  elsif ($RawHtml && m/\G\&lt;html\&gt;(.*?)\&lt;\/html\&gt;/cgis) { 
+  elsif ($RawHtml && m/\G\&lt;html\&gt;(.*?)\&lt;\/html\&gt;/cgis) {
     return UnquoteHtml($1);
   }
   # miscellaneous html tags
@@ -189,7 +176,7 @@ sub UsemodTableAttributes {
   $right = $1;
   $attr .= ' ' if ($attr and ($left or $right));
   if ($left and $right) { $attr .= 'align="center"' }
-  elsif ($left) { $attr .= 'align="right"' }
+  elsif ($left ) { $attr .= 'align="right"' }
   elsif ($right) { $attr .= 'align="left"' }
   return $attr;
 }
@@ -197,7 +184,7 @@ sub UsemodTableAttributes {
 sub WikiHeading {
   my ($depth, $text) = @_;
   $depth = length($depth);
-  $depth = 6  if $depth > 6;
+  $depth = 6 if $depth > 6;
   $depth = 2 if $depth < 2;
   return "<h$depth>$text</h$depth>";
 }
@@ -216,12 +203,36 @@ sub ISBN {
   my $len = length($num);
   return "ISBN $rawnum" unless $len == 10 or $len == 13 or $len = 14; # be prepared for 2007-01-01
   my $first  = $q->a({-href => Ts('http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s', $num)},
-		  "ISBN " . $rawprint);
+      "ISBN " . $rawprint);
   my $second = $q->a({-href => Ts('http://www.amazon.com/exec/obidos/ISBN=%s', $num)},
-		  T('alternate'));
+      T('alternate'));
   my $third  = $q->a({-href => Ts('http://www.pricescan.com/books/BookDetail.asp?isbn=%s', $num)},
-		  T('search'));
+      T('search'));
   my $html = "$first ($second, $third)";
-  $html .= ' '	if ($rawnum =~ / $/);  # Add space if old ISBN had space.
+  $html .= ' '  if ($rawnum =~ / $/);  # Add space if old ISBN had space.
   return $html;
 }
+
+=head1 COPYRIGHT AND LICENSE
+
+The information below applies to everything in this distribution,
+except where noted.
+
+Copyleft  2008                         by Brian Curry <http://raiazome.com>.
+Copyright 2008                         by Weakish Jiang <weakish@gmail.com>.
+Copyright 2004, 2005, 2006, 2007, 2008 by Alex Schroeder <alex@gnu.org>.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see L<http://www.gnu.org/licenses/>.
+
+=cut
