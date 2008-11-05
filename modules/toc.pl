@@ -11,24 +11,25 @@ toc is easily installable; move this file into the B<wiki/modules/>
 directory for your Oddmuse Wiki.
 
 =cut
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.51 2008/10/25 16:31:26 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.52 2008/11/05 03:30:08 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
 =head1 CONFIGURATION
 
-footnotes is easily configurable; set these variables in the B<wiki/config.pl>
-file for your Oddmuse Wiki.
+toc is easily configurable; set these variables in the B<wiki/config.pl> file
+for your Oddmuse Wiki.
 
 =cut
 use vars qw($TocAutomatic
             $TocHeaderText
+            $TocConvertH1TagsToH2Tags
 
             $TocProcessing $TocShown $TocCounter);
 
 =head2 $TocAutomatic
 
-A boolean that: if true, automatically prepends the table of contents to the
+A boolean that, if true, automatically prepends the table of contents to the
 first header for a page or, if false, does not. If false, you must explicitly
 add the table of contents to each page for which you'd like one by explicitly
 adding the "<toc>" markup to that page.
@@ -40,10 +41,21 @@ $TocAutomatic = 1;
 
 =head2 $TocHeaderText
 
-The string displayed as the header for a page's table of contents.
+The string to be displayed as the header for each page's table of contents.
 
 =cut
 $TocHeaderText = 'Contents';
+
+=head2 $TocConvertH1TagsToH2Tags
+
+A boolean that, if true, converts all <h1> tags to <h2> tags. This is the
+Usemod convention and, as Oddmuse is derived from Usemod, the default
+convention for this module, too.
+
+By default, this boolean is true.
+
+=cut
+$TocConvertH1TagsToH2Tags = 1;
 
 # ....................{ INITIALIZATION                     }....................
 push(@MyInitVariables, \&TocInit);
@@ -87,8 +99,9 @@ sub TocRule {
      && $UseModMarkupInTitles
      && m/\G(\s*\n)*(\=+)[ \t]*(?=[^=\n]+=)/cg) {
     my $depth = length($2);
-    $depth = 6 if $depth > 6;
-    $depth = 2 if $depth < 2;
+       $depth = 6 if $depth > 6;
+       $depth = 2 if $depth < 2 and $TocConvertH1TagsToH2Tags;
+
     my $html = CloseHtmlEnvironments()
       . ($PortraitSupportColorDiv ? '</div>' : '');
     $html .= TocHeadings() if not $TocShown and $TocAutomatic;
@@ -115,8 +128,8 @@ sub TocRule {
      && !$UseModMarkupInTitles
      && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=*)[ \t]*(\n|$)/cg) {
     my $depth = length($2);
-    $depth = 6 if $depth > 6;
-    $depth = 2 if $depth < 2;
+       $depth = 6 if $depth > 6;
+       $depth = 2 if $depth < 2 and $TocConvertH1TagsToH2Tags;
 
     my $text = $3;
     my $html = CloseHtmlEnvironments()
@@ -191,7 +204,6 @@ sub TocHeadings {
     # at level 1 or below.
     $depth = $HeadingsLevelStart + 1 if $depth <= $HeadingsLevelStart;
     $depth = 6 if $depth > 6;
-    $depth = 2 if $depth < 2;
     # the order of the three expressions is important!
     while ($HeadingsLevel > $depth) {
       $Headings .= '</li></ol>';
