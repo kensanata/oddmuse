@@ -1,5 +1,28 @@
 2008-11-04  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
+	* wiki.pl (@HtmlAttrStack): New global variable. This permits
+	the InElement() and [Add|Close]HtmlEnvironment() family of
+	functions to add, remove, and search against HTML tag attributes
+	for all recently stacked HTML tag environments. Previously, tag
+	attributes were not retained; they were simply returned as text
+	from the AddHtmlEnvironment() function. Markup modules producing
+	complex HTML -- particularly, complex HTML having deeply nested
+	span or div tags -- can leverage the newly rewritten functions,
+	below, to simplify, streamline, and "clean up" their markup code.
+	(InElement): Rewritten to use this new variable.
+	(AddHtmlEnvironment): Rewritten to use this new variable.
+	(CloseHtmlEnvironment): Rewritten to use this new variable.
+	(CloseHtmlEnvironments): Rewritten to use this new variable.
+	(CloseHtmlEnvironmentUntil): Rewritten to use this new variable.
+	(AddOrCloseHtmlEnvironment): New function. Added so as to avoid
+	duplicate redefinition in the Creole, Creole Addition, and Usemod
+	modules.
+	* modules/usemod.pl (UsemodRule): Corrected erroneous usage of the
+	InElement() function. (I don't think UsemodRule()	was ever quite
+	right, really; it's a bit surprising it worked this long!)
+
+2008-11-04  Brian Curry  <http://www.raiazome.com/Brian_Curry>
+
 	* modules/toc.pl ($TocConvertH1TagsToH2Tags): New option.
 	(TocRule): Use the new option; principally, this permits Wiki
 	administrators to prevent this module from converting

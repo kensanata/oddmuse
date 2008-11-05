@@ -52,7 +52,7 @@ run_tests(split('\n',<<'EOT'));
 ; a: b: c\n;; x: y: z
 <dl><dt>a</dt><dd>b: c<dl><dt>x</dt><dd>y: z</dd></dl></dd></dl>
 * foo <b>bold\n* bar </b>
-<ul><li>foo <b>bold</b></li><li>bar &lt;/b&gt;</li></ul>
+<ul><li>foo <b>bold</b></li><li>bar </li></ul>
 This is ''emphasized''.
 This is <em>emphasized</em>.
 This is '''strong'''.
