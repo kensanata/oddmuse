@@ -11,7 +11,7 @@ toc is easily installable; move this file into the B<wiki/modules/>
 directory for your Oddmuse Wiki.
 
 =cut
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.53 2008/11/05 06:19:18 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.54 2008/11/05 10:11:48 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -53,10 +53,24 @@ for all pages. So, if true, this converts all level-1 headers to level-2 headers
 and leaves all other headers unchanged. This is the Usemod convention and, as
 Oddmuse is derived from Usemod, the default convention for this module, too.
 
-By default, this boolean is true.
+This boolean's default value for this depends on which other markup extensions
+are also installed, as follows:
+
+=over
+
+=item If the Usemod markup extension is installed, this boolean defaults to
+      C<true>. By convention, Usemod prevents creation of level-1 headers.
+      (Though, we can't imagine why it does that...)
+
+=item Otherwise, this boolean defaults to C<false>. This is what you want,
+      generally.
+
+=back
+
+Thus, by default, this boolean is usually C<false>.
 
 =cut
-$TocIsConvertingH1TagsToH2Tags = 1;
+$TocIsConvertingH1TagsToH2Tags = undef;
 
 # ....................{ INITIALIZATION                     }....................
 push(@MyInitVariables, \&TocInit);
@@ -72,6 +86,10 @@ sub TocInit {
   $TocCounter = 0;
   $TocProcessing = 0;
   $TocShown = 0;
+
+  if (not defined $TocIsConvertingH1TagsToH2Tags) {
+    $TocIsConvertingH1TagsToH2Tags = defined &UsemodRule;
+  }
 }
 
 # ....................{ MARKUP                             }....................
