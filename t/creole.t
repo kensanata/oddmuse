@@ -79,15 +79,15 @@ this is <strong><em>bold italic</em></strong><em>italic</em>
 ======= foo
 <h6 class="h7">foo</h6>
 == foo ==
-<h2>foo</h2>
+<h2>foo </h2>
 ========= h9 ======
 <h6 class="h9">h9</h6>
 == foo = =
 <h2>foo =</h2>
 == foo\nbar
 <h2>foo</h2><p>bar</p>
-== [[foo]]
-<h2>[[foo]]</h2>
+== [[http://foo.org]]
+<h2><a class="url http outside" href="http://foo.org">http://foo.org</a></h2>
 foo\n\nbar
 foo<p>bar</p>
 foo\nbar

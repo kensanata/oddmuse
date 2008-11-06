@@ -1,3 +1,17 @@
+2008-11-06  Brian Curry  <http://www.raiazome.com/Brian_Curry>
+
+	* modules/creole.pl (CreoleRule): Simplified implementation and
+	integrated with improvements to CreoleHeaderRule().
+	(CreoleHeaderRule): Improved -- remarkably. Header markup may now
+	include all other (non-bol) markup, with exception of link markup
+	producing a dirty HTML block. ("Dirty" link markup in header
+	markup is stripped out, as appropriate.)
+	(CreoleListAndNewlineRule): Simplified implementation.
+	(CreoleRuleRecursive): Supported the global @HtmlAttrStack.
+	(GetCreoleLinkHtml): New function, reducing code-bloat.
+	* modules/creoleaddition.pl (CreoleAdditionRule): Simplified
+	implementation; and handled small caps markup properly, now.
+
 2008-11-04  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
 	* modules/toc.pl (TocInit): Context-sensitively set the

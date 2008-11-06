@@ -14,7 +14,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.50 2008/10/24 04:34:10 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.51 2008/11/06 10:11:02 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -80,7 +80,7 @@ $CreoleTableCellsAllowBlockLevelElements = 0;
 
 A boolean that, if true, permits unordered list items to be prefixed with either
 a '-' dash or an '*' asterisk or, if false, requires unordered list items to be
-prefixed with an '*' asterick, only. (By default, this boolean is false.)
+prefixed with an '*' asterisk, only. (By default, this boolean is false.)
 
 Please note: enabling this boolean permits non-conformant syntax -- that is,
 syntax which no longer conforms to the Wiki Creole standard. Unless your Wiki
@@ -93,7 +93,7 @@ $CreoleDashStyleUnorderedLists = 0;
 push(@MyInitVariables, \&CreoleInit);
 
 # A boolean that is true if the "creoleaddition.pl" module is also installed.
-my $is_creoleaddition_installed;
+my $CreoleIsCreoleAddition;
 
 # A boolean set by CreoleRule() to true, if a new table cell has just been
 # started. This allows testing, elsewhere, of whether we are at the start of a
@@ -103,7 +103,7 @@ my $is_creoleaddition_installed;
 #
 # Of course, we have to set this to false immediately after matching past the
 # start of that table cell. This is what RunMyRulesCreole() does.
-my $CreoleTableCellBol;
+my $CreoleIsTableCellBol;
 
 # A regular expression matching Wiki Creole-style table cells.
 my $CreoleTableCellPattern = '[ \t]*(\|+)(=)?\n?([ \t]*)';
@@ -115,11 +115,25 @@ my $CreoleLinkPipePattern = '[ \t]*\|[ \t]*';
 # takes into account the fact that such text is always optional.
 my $CreoleLinkTextPattern = "($CreoleLinkPipePattern(.+?))?";
 
-sub CreoleInit {
-  $is_creoleaddition_installed = defined &CreoleAdditionRule;
-  $CreoleTableCellBoll = '';
+# The html tag and string of html tag attributes for the current Creole header.
+# This permits an otherwise necessary, costly evaluation of test statements
+# resembling:
+#
+#  if (InElement('h1') or InElement('h2') or InElement('h3') or
+#      InElement('h4') or InElement('h5') or InElement('h6')) { ... }
+#
+# As Creole headers may not span blocks or lines, this should be a safe caching.
+my ($CreoleHeaderHtmlTag, $CreoleHeaderHtmlTagAttr);
 
-  # This permits authors to add URLs resembling:
+sub CreoleInit {
+  $CreoleIsCreoleAddition = defined &CreoleAdditionRule;
+
+  $CreoleIsTableCellBol =
+  $CreoleHeaderHtmlTag =
+  $CreoleHeaderHtmlTagAttr = '';
+
+  #FIXME: Fold these into "wiki.pl", with Alex's kind allowance.
+  # Permit page authors to link to URLs resembling:
   #   "See [[/?action=index|the site map]]."
   #
   # Which Oddmuse converts to HTML resembling:
@@ -129,14 +143,18 @@ sub CreoleInit {
   #  "See [[http://www.oddmuse.com/cgi-bin/oddmuse?action=index|the site map]]."
   my $UrlChars = '[-a-zA-Z0-9/@=+$_~*.,;:?!\'"()&#%]';    # see RFC 2396
   $FullUrlPattern = "((?:$UrlProtocols:|/)$UrlChars+)";
+
+  # Permit page authors to link to other pages having semicolons in their names.
+  my $LinkCharsSansZero = "-;,.()' _1-9A-Za-z\x80-\xff";
+  my $LinkChars = $LinkCharsSansZero.'0';
+  $FreeLinkPattern = "([$LinkCharsSansZero]|[$LinkChars][$LinkChars]+)";
 }
 
 # ....................{ MARKUP                             }....................
 push(@MyRules,
      \&CreoleRule,
      \&CreoleHeadingRule,
-     \&CreoleListAndNewLineRule,
-    );
+     \&CreoleListAndNewLineRule);
 
 # Creole link rules conflict with Oddmuse's default LinkRule.
 $RuleOrder{\&CreoleRule} = -10;
@@ -178,7 +196,7 @@ sub CreoleRule {
       return CloseHtmlEnvironments().$q->hr().AddHtmlEnvironment('p');
     }
     # {{{
-    # preformatted
+    # nowiki block
     # }}}
     elsif (m/\G\{\{\{[ \t]*\n(.*?)\n\}\}\}[ \t]*(\n|$)/cgs) {
       my $str = $1;
@@ -200,74 +218,63 @@ sub CreoleRule {
         : $2; # tilde disappears
   }
   # **bold**
-  elsif (m/\G\*\*/cg) { return AddOrCloseCreoleEnvironment('strong'); }
+  elsif (m/\G\*\*/cg) { return AddOrCloseHtmlEnvironment('strong'); }
   # //italic//
-  elsif (m/\G\/\//cg) { return AddOrCloseCreoleEnvironment('em'); }
-  # {{{code}}}
+  elsif (m/\G\/\//cg) { return AddOrCloseHtmlEnvironment('em'); }
+  # {{{preformatted code}}}
   elsif (m/\G\{\{\{(.*?}*)\}\}\}/cg) { return $q->code($1); }
-  # download: {{pic}}
+  # download: {{pic}} and {{pic|text}}
   elsif (m/\G(\{\{$FreeLinkPattern$CreoleLinkTextPattern\}\})/cgos) {
-    Dirty($1);
-    print GetDownloadLink($2, 1, undef, $4 || NormalToFree($2));
-    return '';
+    my $text = $4 || NormalToFree($2);
+    return GetCreoleLinkHtml($1, GetDownloadLink($2, 1, undef, $text), $text);
   }
-  # image link: {{url}}
+  # image link: {{url}} and {{url|text}}
   elsif (m/\G\{\{$FullUrlPattern$CreoleLinkTextPattern\}\}/cgos) {
     return GetCreoleImageHtml(
       $q->a({-href=> $1,
              -class=> 'image outside'},
             $q->img({-src=> $1,
                      -alt=> $3,
-                     -class=> 'url outside',
-                    })));
+                     -class=> 'url outside'})));
   }
-  # image link: [[link|{{pic}}]]
+  # image link: [[link|{{pic}}]] and [[link|{{pic|text}}]]
   elsif (m/\G(\[\[$FreeLinkPattern$CreoleLinkPipePattern
               \{\{$FreeLinkPattern$CreoleLinkTextPattern\}\}\]\])/cgosx) {
-    Dirty($1);
-    print GetCreoleImageHtml(
+    my $text = $5 || NormalToFree($2);
+    return GetCreoleLinkHtml($1, GetCreoleImageHtml(
       ScriptLink($2,
                  $q->img({-src=> GetDownloadLink($3, 2),
-                          -alt=> $5 || NormalToFree($2),
-                          -class=> 'upload',
-                         }),
-                 'image'));
-    return '';
+                          -alt=> $text,
+                          -class=> 'upload'}), 'image')), $text);
   }
-  # image link: [[link|{{url}}]]
+  # image link: [[link|{{url}}]] and [[link|{{url|text}}]]
   elsif (m/\G(\[\[$FreeLinkPattern$CreoleLinkPipePattern
               \{\{$FullUrlPattern$CreoleLinkTextPattern\}\}\]\])/cgosx) {
-    Dirty($1);
-    print GetCreoleImageHtml(
+    my $text = $5 || NormalToFree($2);
+    return GetCreoleLinkHtml($1, GetCreoleImageHtml(
       ScriptLink($2,
                  $q->img({-src=> $3,
-                          -class=> 'url outside',
-                          -alt=> $5 || NormalToFree($2),
-                         }),
-                 'image'));
-    return '';
+                          -alt=> $text,
+                          -class=> 'url outside'}), 'image')), $text);
   }
-  # image link: [[url|{{pic}}]]
+  # image link: [[url|{{pic}}]] and [[url|{{pic|text}}]]
   elsif (m/\G(\[\[$FullUrlPattern$CreoleLinkPipePattern
               \{\{$FreeLinkPattern$CreoleLinkTextPattern\}\}\]\])/cgosx) {
-    Dirty($1);
-    print GetCreoleImageHtml(
+    my $text = $5 || $2;
+    return GetCreoleLinkHtml($1, GetCreoleImageHtml(
       $q->a({-href=> $2, -class=> 'image outside'},
             $q->img({-src=> GetDownloadLink($3, 2),
-                     -class=> 'upload',
-                     -alt=> $5 || $2
-                    })));
-    return '';
+                     -alt=> $text,
+                     -class=> 'upload'}))), $text);
   }
-  # image link: [[url|{{url}}]]
+  # image link: [[url|{{url}}]] and [[url|{{url|link}}]]
   elsif (m/\G\[\[$FullUrlPattern$CreoleLinkPipePattern
              \{\{$FullUrlPattern$CreoleLinkTextPattern\}\}\]\]/cgosx) {
     return GetCreoleImageHtml(
       $q->a({-href=> $1, -class=> 'image outside'},
             $q->img({-src=> $2,
-                     -class=> 'url outside',
-                     -alt=> $4 || $1
-                    })));
+                     -alt=> $4 || $1,
+                     -class=> 'url outside'})));
   }
   # link: [[url]] and [[url|text]]
   elsif (m/\G\[\[$FullUrlPattern$CreoleLinkTextPattern\]\]/cgos) {
@@ -284,15 +291,13 @@ sub CreoleRule {
   }
   # link: [[page]] and [[page|text]]
   elsif (m/\G(\[\[$FreeLinkPattern$CreoleLinkTextPattern\]\])/cgos) {
-    Dirty($1);
-
     # Permit embedding of Creole syntax within link text. (Rather complicated,
     # but it does the job remarkably.)
     my $page_name = $2;
     my $link_text = $4 ? CreoleRuleRecursive($4, @_) : NormalToFree($page_name);
 
-    print GetPageOrEditLink($page_name, $link_text, 0, 1);
-    return '';
+    return GetCreoleLinkHtml($1,
+      GetPageOrEditLink($page_name, $link_text, 0, 1), $link_text);
   }
   #TODO: Handle interwiki links, here, as well, so as to permit embedding of
   #Creole syntax within interwiki link text. That's a bit more work, though; so
@@ -329,7 +334,15 @@ sub CreoleRule {
     # This condition should appear after the end-of-row test, above.
     elsif (m/\G[ \t]*\|[ \t]*(\n|$)/cg or
            (!$CreoleTableCellsAllowBlockLevelElements and m/\G[ \t]*\n\n/cg)) {
-      return CloseHtmlEnvironmentsCreoleOld().AddHtmlEnvironment('p');
+      # Note: we do not call "CloseHtmlEnvironmentsCreoleOld", as that function
+      #       refers to the Oddmuse built-in. If another module with name
+      #       lexically following "creole.pl" also redefines the built-in
+      #       "CloseHtmlEnvironments" function, then calling the
+      #       "CloseHtmlEnvironmentsCreoleOld" function causes that other
+      #       module's redefinition to not be called. (Yes; an entangling mess
+      #       we've made for ourselves, here. Clearly, this needs a rethink in
+      #       some later Oddmuse refactoring.)
+      return CloseHtmlEnvironment('table').AddHtmlEnvironment('p');
     }
     # Lastly, we know this this is start of a new table cell (and possibly also
     # the end of the last table cell), if we match:
@@ -343,7 +356,7 @@ sub CreoleRule {
       # other words, we only declare that we may insert block level elements at
       # the start of this new table cell, when we allow block level elements in
       # table cells. Yum.)
-      $CreoleTableCellBol = $CreoleTableCellsAllowBlockLevelElements;
+      $CreoleIsTableCellBol = $CreoleTableCellsAllowBlockLevelElements;
 
       my $tag = $2 ? 'th' : 'td';
       my $column_span = length($1);
@@ -379,17 +392,32 @@ sub CreoleRule {
 }
 
 sub CreoleHeadingRule {
-  # = to ====== for h1 to h6
-  if ($bol and
-      m/\G(\s*\n)*(=+)[ \t]*(.*?)[ \t]*=*[ \t]*(\n|$)/cg) {
-    my $depth = length($2);
-    my $text = $3;
-
-    return CloseHtmlEnvironments()
-      .($depth > 6
-        ? qq{<h6 class="h${depth}">${text}</h6>}
-        : qq{<h${depth}>${text}</h${depth}>})
-      .AddHtmlEnvironment('p');
+  # header opening: = to ====== for h1 to h6
+  #
+  # header opening and closing have been partitioned into two separate
+  # conditional matches rather than congealed into one conditional match. Why?
+  # Because, in so doing, we permit application of other markup rules,
+  # elsewhere, to header text. This, in turn, permits insertion and
+  # interpretation of complex markup in header text; e.g.,
+  # == //This Is a **Level-2** Header %%Having Complex Markup%%.// ==
+  if ($bol and m~\G(\s*\n)*(=+)[ \t]*~cg) {
+    my $header_depth = length($2);
+    ($CreoleHeaderHtmlTag, $CreoleHeaderHtmlTagAttr) = $header_depth <= 6
+      ? ('h'.$header_depth, '')
+      : ('h6', qq{class="h$header_depth"});
+    return AddHtmlEnvironment($CreoleHeaderHtmlTag, $CreoleHeaderHtmlTagAttr);
+  }
+  # header closing: = to ======, newline, or EOF
+  #
+  # Note: partitioning this from the heading opening conditional, above,
+  # typically causes Oddmuse to insert an extraneous space at the end of
+  # header tags. This is non-dangerous, fortunately; and changes nothing.
+  elsif ($CreoleHeaderHtmlTag and m~\G[ \t]*=*[ \t]*(\n|$)~cg) {
+    my $header_html =
+      CloseHtmlEnvironment($CreoleHeaderHtmlTag, '^'.$CreoleHeaderHtmlTagAttr.'$')
+       .AddHtmlEnvironment('p');
+    $CreoleHeaderHtmlTag = $CreoleHeaderHtmlTagAttr = '';
+    return $header_html;
   }
 
   return undef;
@@ -402,7 +430,8 @@ sub CreoleListAndNewLineRule {
   if (($bol             and m/\G[ \t]*(#)[ \t]*/cg) or
       ($is_in_list_item and m/\G[ \t]*\n+[ \t]*(#+)[ \t]*/cg)) {
     return
-      ($is_in_list_item ? CloseHtmlEnvironmentUntil('li') : CloseHtmlEnvironments())
+      CloseHtmlEnvironmentUntil('li')
+#       ($is_in_list_item ? CloseHtmlEnvironmentUntil('li') : CloseHtmlEnvironments())
       .OpenHtmlEnvironment('ol', length($1))
       .AddHtmlEnvironment ('li');
   }
@@ -434,64 +463,99 @@ sub CreoleListAndNewLineRule {
   elsif (($CreoleLineBreaks and m/\G\s*\n/cg) or m/\G\\\\(\s*\n?)/cg) {
     return $q->br();
   }
+
   return undef;
+}
+
+# ....................{ HTML                               }....................
+
+=head2 GetCreoleImageHtml
+
+Returns the passed HTML image, conditionally wrapped within an HTML paragraph
+tag having an necessary image class when the passed HTML also represents such a
+new paragraph. Difficult to explain, isn't she?
+
+=cut
+sub GetCreoleImageHtml {
+  my $image_html = shift;
+  return
+    ($bol ? CloseHtmlEnvironments().AddHtmlEnvironment('p', 'class="image"') : '')
+    .$image_html;
+}
+
+=head2 GetCreoleLinkHtml
+
+Marks the passed HTML as a dirty block, unless this HTML belongs to an HTML
+header tag. Such tags may not contain dirty blocks! Most Oddmuse modules using
+header tags (e.g., "sidebar.pl", "toc.pl") require, as a caching efficiency,
+header text to be clean. This is a nearly necessary efficiency, since
+regeneration of markup for those modules is an often costly operation. (We
+certainly don't want to regenerate the Table of Contents for each page having at
+least one header having at least one dirty link whenever an external user browses
+to that page!)
+
+Thus, if in a header, this function cleans links out of the passed HTML and
+returns the resultant HTML (to the current clean block). Otherwise, this
+function appends the resultant HTML to a new dirty block, prints it, and returns
+it. (This does not print the resultant HTML when clean, since clean blocks are
+printed, automatically, by the next call to C<Dirty>.)
+
+This function, lastly, accepts three function parameters. These are:
+
+=over
+
+=item C<$markup>. (This is the Wiki markup string to be marked as dirty when it
+      is not embedded in a Creole header.)
+
+=item C<$html>. (This is the HTML string to be marked as dirty when this HTML
+      is not embedded in a Creole header.)
+
+=item C<$text>. (This is the text string to be marked as clean when this HTML
+      is embedded within a Creole header.)
+
+=back
+
+Creole functions, above, should **not** call the C<Dirty> function directly.
+Rather, they should always call this function...with appropriate parameters.
+
+=cut
+sub GetCreoleLinkHtml {
+  my ($markup, $html, $text) = @_;
+
+  if ($CreoleHeaderHtmlTag) { return $text; }
+  else {
+    Dirty($markup);
+    print $html;
+    return '';
+  }
 }
 
 # ....................{ FUNCTIONS                          }....................
 *RunMyRulesCreoleOld = *RunMyRules;
 *RunMyRules =          *RunMyRulesCreole;
 
-*OpenHtmlEnvironment = *OpenHtmlEnvironmentCreole;
-
 *CloseHtmlEnvironmentsCreoleOld = *CloseHtmlEnvironments;
 *CloseHtmlEnvironments =          *CloseHtmlEnvironmentsCreole;
 
-sub RunMyRulesCreole {
-  # See documentation for the "$CreoleTableCellBol" variable, above.
-  my $creole_table_cell_bol_last = $CreoleTableCellBol;
-  $bol = 1 if $CreoleTableCellBol;
-  my $html = RunMyRulesCreoleOld(@_);
-  $CreoleTableCellBol = '' if $creole_table_cell_bol_last;
+=head2 RunMyRulesCreole
 
-  return $html;
-}
+Runs all markup rules for the current block of page markup. This redefinition
+ensures that the beginning of a table cell is considered the beginning of a
+block-level element -- that, in other words, the C<$bol> global be set to 1.
 
-=head2 OpenHtmlEnvironmentCreole
-
-Opens a new HTML environment, ensuring that all existing HTML are closed for the
-current block level element, up to but not including the "</table>" for the
-current block level element. If we are currently in a table, this prevents
-closure of that table; this, in turn, permits list items in table cells.
+If the C<$CreoleTableCellsAllowBlockLevelElements> option is set to 0 (the
+default), then this function is, effectively, a no-op - and just calls the
+default C<RunMyRules> function.
 
 =cut
-#FIXME: This should, probably, be the Oddmuse default. It's a bit more compact
-# and, certainly, generalized, than the default.
-sub OpenHtmlEnvironmentCreole { # close the previous one and open a new one instead
-  my ($code, $depth, $class) = @_;
-  my $text = '';                # always return something
-  my @stack;
-  my $found = 0;
-  while (@HtmlStack and $found < $depth) { # determine new stack
-    my $tag = pop(@HtmlStack);
-    $found++ if $tag eq $code; # this ignores that ul and ol can be equivalent for nesting purposes
-    unshift(@stack,$tag);
-  }
-  if (@HtmlStack and $found < $depth) { # nested sublist coming up, keep list item
-    unshift(@stack, pop(@HtmlStack));
-  }
-  @HtmlStack = @stack if not $found; # if starting a new list
-  $text .= CloseHtmlEnvironments();  # close remaining elements (or all elements if a new list)
-  @HtmlStack = @stack if $found; # if not starting a new list
-  $depth = $IndentLimit if ($depth > $IndentLimit); # requested depth 0 makes no sense
-  for (my $i = $found; $i < $depth; $i++) {
-    unshift(@HtmlStack, $code);
-    if ($class) {
-      $text .= "<$code class=\"$class\">";
-    } else {
-      $text .= "<$code>"; # this ignores that ul and ol cannot nest without li elements
-    }
-  }
-  return $text;
+sub RunMyRulesCreole {
+  # See documentation for the "$CreoleIsTableCellBol" variable, above.
+  my $creole_is_table_cell_bol_last = $CreoleIsTableCellBol;
+  $bol = 1 if $CreoleIsTableCellBol;
+  my $html = RunMyRulesCreoleOld(@_);
+  $CreoleIsTableCellBol = '' if $creole_is_table_cell_bol_last;
+
+  return $html;
 }
 
 =head2 CloseHtmlEnvironmentsCreole
@@ -503,34 +567,12 @@ block level elements in multi-line table cells.
 
 =cut
 sub CloseHtmlEnvironmentsCreole {
-  # O.K.; this is a bit complex. If we're not currently in a table cell, simply
-  # close HTML environments as expected. If we are in such a table cell, we must
-  # close it if and only if we're currently at the end-of-page. (Table cells are
-  # closed explicitly by embedding the closing "|" in the page.)
-  #
-  # How do we know when we're at the end-of-page? When "pos()", a Perl built-in
-  # returning the string position of the current "\G" match, returns the length
-  # of that string.
-  if ($CreoleTableCellsAllowBlockLevelElements and pos() < length($_)) {
+  if ($CreoleTableCellsAllowBlockLevelElements) {
        if (InElement('td')) { return CloseHtmlEnvironmentUntil('td'); }
     elsif (InElement('th')) { return CloseHtmlEnvironmentUntil('th'); }
   }
 
   return CloseHtmlEnvironmentsCreoleOld();
-}
-
-=head2 AddOrCloseCreoleEnvironment
-
-Adds or closes the HTML environment corresponding to the passed HTML tag, as
-needed. Specifically, if that environment is already opened, this function
-closes it; otherwise, this function adds it.
-
-=cut
-sub AddOrCloseCreoleEnvironment {
-  my $html_tag = shift;
-  return InElement($html_tag)
-    ? CloseHtmlEnvironmentUntil($html_tag).CloseHtmlEnvironment()
-    : AddHtmlEnvironment       ($html_tag);
 }
 
 =head2 CreoleRuleRecursive
@@ -546,16 +588,24 @@ sub CreoleRuleRecursive {
               local $CreoleRuleRecursing = 1;
               local $bol = 0;  # prevent block level element handling
 
+  # Preserve global variables.
   my ($oldpos, $old_) = (pos, $_);
+  my @oldHtmlStack =     @HtmlStack;
+  my @oldHtmlAttrStack = @HtmlAttrStack;
+
+  # Reset global variables.
+  $_ = $markup;
+  @HtmlStack = @HtmlAttrStack = ();
+
   my ($html, $html_creole) = ('', '');
 
-  $_ = $markup;
-
   # The contents of this loop are, in part, hacked from the guts of Oddmuse's
-  # ApplyRules() function.
+  # ApplyRules() function. We cannot simply call that function, as it "cleans"
+  # the HTML converted from the text passed to it, rather than returns that
+  # HTML.
   while (1) {
     if ($html_creole = CreoleRule(@_) or
-       ($is_creoleaddition_installed and  # try "creoleaddition.pl", too.
+       ($CreoleIsCreoleAddition and  # try "creoleaddition.pl", too.
         $html_creole = CreoleAdditionRule(@_))) {
       $html .= $html_creole;
     }
@@ -568,44 +618,21 @@ sub CreoleRuleRecursive {
     elsif (   m/\G([A-Za-z\x80-\xff]+([ \t]+[a-z\x80-\xff]+)*[ \t]+)/cg
            or m/\G([A-Za-z\x80-\xff]+)/cg
            or m/\G(\S)/cg) {
-      $html .= $1;    # multiple words but do not match http://foo}
+      $html .= $1;  # multiple words but do not match http://foo
     }
     else { last; }
   }
 
-  ($_, pos) = ($old_, $oldpos);   # restore \G (assignment order matters!)
+  # Restore global variables, in reverse order.
+  @HtmlAttrStack = @oldHtmlAttrStack;
+  @HtmlStack =     @oldHtmlStack;
+  ($_, pos) = ($old_, $oldpos);
 
+  # Allow entrance into this function, again.
   $CreoleRuleRecursing = 0;
+
   return $html;
 }
-
-sub GetCreoleImageHtml {
-  my $image_html = shift;
-  return
-    ($bol ? CloseHtmlEnvironments().AddHtmlEnvironment('p', 'class="image"') : '')
-    .$image_html;
-}
-
-# sub GetCreoleTableCellHtml {
-#   my ($span, $left, $right) = @_;
-#   my  $table_cell_attributes = '';
-
-#   $table_cell_attributes = "colspan=\"$span\"" if ($span != 1);
-#   m/\G(?=.*?([ \t]*)\|)/ and $right = $1 unless $right;
-#   $table_cell_attributes .= ' ' if ($table_cell_attributes and ($left or $right));
-
-#      if ($left and $right) { $table_cell_attributes .= 'align="center"' }
-#   elsif ($left)            { $table_cell_attributes .= 'align="right"' }
-#   # this is the default:
-#   # elsif ($right) { $table_cell_attributes .= 'align="left"' }
-
-#   return
-#      (InElement('table') ? '' : OpenHtmlEnvironment('table', 1, 'user'))
-#     .(InElement('tr')
-#       ? (InElement('td') || InElement('th') ? CloseHtmlEnvironmentUntil('tr') : '')
-#       :  AddHtmlEnvironment('tr'))
-#     .AddHtmlEnvironment(($2 ? 'th' : 'td'), $table_cell_attributes);
-# }
 
 =head1 COPYRIGHT AND LICENSE
 
