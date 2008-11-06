@@ -22,7 +22,7 @@ creoleaddition is simply installable; simply:
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.20 2008/10/06 06:11:21 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.21 2008/11/06 10:11:02 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -83,18 +83,6 @@ A boolean that, if true, enables this extension's handling of
 =cut
 $CreoleAdditionSmallCaps = 1;
 
-# ....................{ INITIALIZATION                     }....................
-push(@MyInitVariables, \&CreoleAdditionInit);
-
-sub CreoleAdditionInit {
-  # True, if currently within small caps markup; false, otherwise. This is
-  # slightly more hacky than we'd like; but, as a noxious product of the
-  # programmed fact that "@HtmlBlocks" does not stack the attributes for an HTML
-  # block with the tag for that block, is unavoidable. (See "%%small caps%%",
-  # below.)
-  $CreoleAdditionIsInSmallCaps = '';
-}
-
 # ....................{ MARKUP                             }....................
 push(@MyRules, \&CreoleAdditionRule);
 
@@ -119,36 +107,21 @@ sub CreoleAdditionRule {
   # """block quotes"""
   elsif ($CreoleAdditionQuote and $bol and m/\G\"\"\"(\n|$)/cg) {
     return InElement('blockquote')
-      ? CloseHtmlEnvironmentsCreoleAdditionOld().AddHtmlEnvironment('p')
-      : CloseHtmlEnvironments().AddHtmlEnvironment('blockquote').AddHtmlEnvironment('p');
+      ? CloseHtmlEnvironment('blockquote').AddHtmlEnvironment('p')
+      : CloseHtmlEnvironments()
+         .AddHtmlEnvironment('blockquote').AddHtmlEnvironment('p');
   }
   # ''inline quotes''
-  elsif ($CreoleAdditionQuote and m/\G\'\'/cgs) {
-    return AddOrCloseCreoleAdditionEnvironment('q');
-  }
+  elsif ($CreoleAdditionQuote and m/\G\'\'/cgs) { return AddOrCloseHtmlEnvironment('q'); }
   # ^^sup^^
-  elsif ($CreoleAdditionSupSub and m/\G\^\^/cg) {
-    return AddOrCloseCreoleAdditionEnvironment('sup');
-  }
+  elsif ($CreoleAdditionSupSub and m/\G\^\^/cg) { return AddOrCloseHtmlEnvironment('sup'); }
   # ,,sub,,
-  elsif ($CreoleAdditionSupSub and m/\G\,\,/cg) {
-    return AddOrCloseCreoleAdditionEnvironment('sub');
-  }
+  elsif ($CreoleAdditionSupSub and m/\G\,\,/cg) { return AddOrCloseHtmlEnvironment('sub'); }
   # ##monospace code##
-  elsif ($CreoleAdditionMonospace and m/\G\#\#/cg) {
-    return AddOrCloseCreoleAdditionEnvironment('code');
-  }
+  elsif ($CreoleAdditionMonospace and m/\G\#\#/cg) { return AddOrCloseHtmlEnvironment('code'); }
   # %%small caps%%
   elsif ($CreoleAdditionSmallCaps and m/\G\%\%/cg) {
-    if (defined $HtmlStack[0] && $HtmlStack[0] eq 'span' &&
-        $CreoleAdditionIsInSmallCaps) {
-        $CreoleAdditionIsInSmallCaps = '';
-      return CloseHtmlEnvironment();
-    }
-    else {
-        $CreoleAdditionIsInSmallCaps = 1;
-      return AddHtmlEnvironment('span', 'style="font-variant: small-caps"');
-    }
+    return AddOrCloseHtmlEnvironment('span', 'style="font-variant: small-caps"');
   }
 
   return undef;
@@ -167,31 +140,9 @@ block level elements in multi-line blockquotes.
 
 =cut
 sub CloseHtmlEnvironmentsCreoleAddition {
-  # O.K.; this is a bit complex. If we're not currently in a blockquote, simply
-  # close HTML environments as expected. If we are in such a blockquote, we must
-  # close it if and only if we're currently at the end-of-page. (Blockquotes are
-  # closed explicitly by embedding the closing """ in the page.)
-  #
-  # How do we know when we're at the end-of-page? When "pos()", a Perl built-in
-  # returning the string position of the current "\G" match, returns the length
-  # of that string.
-  return (InElement('blockquote') && pos() < length($_))
+  return              InElement('blockquote')
     ? CloseHtmlEnvironmentUntil('blockquote')
-    : CloseHtmlEnvironmentsCreoleAdditionOld();
-}
-
-=head2 AddOrCloseCreoleEnvironment
-
-Adds or closes the HTML environment corresponding to the passed HTML tag, as
-needed. Specifically, if that environment is already opened, this function
-closes it; otherwise, this function adds it.
-
-=cut
-sub AddOrCloseCreoleAdditionEnvironment {
-  my $html_tag = shift;
-  return InElement($html_tag)
-    ? CloseHtmlEnvironmentUntil($html_tag).CloseHtmlEnvironment()
-    : AddHtmlEnvironment       ($html_tag);
+    : CloseHtmlEnvironmentsCreoleAdditionOld(@_);
 }
 
 =head1 COPYRIGHT AND LICENSE
