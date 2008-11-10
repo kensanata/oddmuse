@@ -14,7 +14,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.51 2008/11/06 10:11:02 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.52 2008/11/10 15:53:22 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -116,13 +116,13 @@ my $CreoleLinkPipePattern = '[ \t]*\|[ \t]*';
 my $CreoleLinkTextPattern = "($CreoleLinkPipePattern(.+?))?";
 
 # The html tag and string of html tag attributes for the current Creole header.
-# This permits an otherwise necessary, costly evaluation of test statements
+# This prevents an otherwise necessary, costly evaluation of test statements
 # resembling:
 #
 #  if (InElement('h1') or InElement('h2') or InElement('h3') or
 #      InElement('h4') or InElement('h5') or InElement('h6')) { ... }
 #
-# As Creole headers may not span blocks or lines, this should be a safe caching.
+# As Creole headers cannot span blocks or lines, this should be a safe caching.
 my ($CreoleHeaderHtmlTag, $CreoleHeaderHtmlTagAttr);
 
 sub CreoleInit {
@@ -293,10 +293,11 @@ sub CreoleRule {
   elsif (m/\G(\[\[$FreeLinkPattern$CreoleLinkTextPattern\]\])/cgos) {
     # Permit embedding of Creole syntax within link text. (Rather complicated,
     # but it does the job remarkably.)
+    my $markup =    $1;
     my $page_name = $2;
     my $link_text = $4 ? CreoleRuleRecursive($4, @_) : NormalToFree($page_name);
 
-    return GetCreoleLinkHtml($1,
+    return GetCreoleLinkHtml($markup,
       GetPageOrEditLink($page_name, $link_text, 0, 1), $link_text);
   }
   #TODO: Handle interwiki links, here, as well, so as to permit embedding of
@@ -429,17 +430,14 @@ sub CreoleListAndNewLineRule {
   # # numbered list
   if (($bol             and m/\G[ \t]*(#)[ \t]*/cg) or
       ($is_in_list_item and m/\G[ \t]*\n+[ \t]*(#+)[ \t]*/cg)) {
-    return
-      CloseHtmlEnvironmentUntil('li')
-#       ($is_in_list_item ? CloseHtmlEnvironmentUntil('li') : CloseHtmlEnvironments())
+    return CloseHtmlEnvironmentUntil('li')
       .OpenHtmlEnvironment('ol', length($1))
       .AddHtmlEnvironment ('li');
   }
   # * bullet list (nestable; needs space when nested to disambiguate from bold)
   elsif (($bol             and m/\G[ \t]*(\*)[ \t]*/cg) or
          ($is_in_list_item and m/\G[ \t]*\n+[ \t]*(\*+)[ \t]+/cg)) {
-    return
-      ($is_in_list_item ? CloseHtmlEnvironmentUntil('li') : CloseHtmlEnvironments())
+    return CloseHtmlEnvironmentUntil('li')
       .OpenHtmlEnvironment('ul', length($1))
       .AddHtmlEnvironment ('li');
   }
@@ -447,8 +445,7 @@ sub CreoleListAndNewLineRule {
   elsif ($CreoleDashStyleUnorderedLists and (
         ($bol and             m/\G[ \t]*(-)[ \t]+/cg) or
         ($is_in_list_item and m/\G[ \t]*\n+[ \t]*(-)[ \t]+/cg))) {
-    return
-      ($is_in_list_item ? CloseHtmlEnvironmentUntil('li') : CloseHtmlEnvironments())
+    return CloseHtmlEnvironmentUntil('li')
       .OpenHtmlEnvironment('ul', length($1))
       .AddHtmlEnvironment ('li');
   }
@@ -520,9 +517,9 @@ Rather, they should always call this function...with appropriate parameters.
 
 =cut
 sub GetCreoleLinkHtml {
-  my ($markup, $html, $text) = @_;
+  my ($markup, $html, $link_text) = @_;
 
-  if ($CreoleHeaderHtmlTag) { return $text; }
+  if ($CreoleHeaderHtmlTag) { return $link_text; }
   else {
     Dirty($markup);
     print $html;
