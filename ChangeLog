@@ -1,3 +1,10 @@
+2008-11-11  Brian Curry  <http://www.raiazome.com/Brian_Curry>
+
+	* modules/creole.pl (CreoleRule): Corrected a horrific link-caching
+	issue with my last commit. Apologies to those who've already
+	installed the last commit: this one should be (substantially!) more
+	stable.
+
 2008-11-06  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
 	* modules/creole.pl (CreoleRule): Simplified implementation and
