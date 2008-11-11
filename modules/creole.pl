@@ -14,7 +14,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.52 2008/11/10 15:53:22 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.53 2008/11/11 23:58:24 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -430,14 +430,17 @@ sub CreoleListAndNewLineRule {
   # # numbered list
   if (($bol             and m/\G[ \t]*(#)[ \t]*/cg) or
       ($is_in_list_item and m/\G[ \t]*\n+[ \t]*(#+)[ \t]*/cg)) {
-    return CloseHtmlEnvironmentUntil('li')
+    # Note: the first line of this return statement is --not-- equivalent to:
+    # "return CloseHtmlEnvironmentUntil('li')", as that line does not permit
+    # modules overriding the CloseHtmlEnvironments() function to "have a say."
+    return ($is_in_list_item ? CloseHtmlEnvironmentUntil('li') : CloseHtmlEnvironments())
       .OpenHtmlEnvironment('ol', length($1))
       .AddHtmlEnvironment ('li');
   }
   # * bullet list (nestable; needs space when nested to disambiguate from bold)
   elsif (($bol             and m/\G[ \t]*(\*)[ \t]*/cg) or
          ($is_in_list_item and m/\G[ \t]*\n+[ \t]*(\*+)[ \t]+/cg)) {
-    return CloseHtmlEnvironmentUntil('li')
+    return ($is_in_list_item ? CloseHtmlEnvironmentUntil('li') : CloseHtmlEnvironments())
       .OpenHtmlEnvironment('ul', length($1))
       .AddHtmlEnvironment ('li');
   }
@@ -445,7 +448,7 @@ sub CreoleListAndNewLineRule {
   elsif ($CreoleDashStyleUnorderedLists and (
         ($bol and             m/\G[ \t]*(-)[ \t]+/cg) or
         ($is_in_list_item and m/\G[ \t]*\n+[ \t]*(-)[ \t]+/cg))) {
-    return CloseHtmlEnvironmentUntil('li')
+    return ($is_in_list_item ? CloseHtmlEnvironmentUntil('li') : CloseHtmlEnvironments())
       .OpenHtmlEnvironment('ul', length($1))
       .AddHtmlEnvironment ('li');
   }
