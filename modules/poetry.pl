@@ -19,7 +19,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: poetry.pl,v 1.3 2008/11/11 04:50:46 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: poetry.pl,v 1.4 2008/11/15 12:53:26 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -30,7 +30,8 @@ file for your Oddmuse Wiki.
 
 =cut
 use vars qw($PoetryIsHandlingCreoleStyleMarkup
-            $PoetryIsHandlingXMLStyleMarkup);
+            $PoetryIsHandlingXmlStyleMarkup
+            $PoetryHtmlTag);
 
 =head2 $PoetryIsHandlingCreoleStyleMarkup
 
@@ -40,21 +41,51 @@ L<MARKUP> below. By default, this boolean is true.
 =cut
 $PoetryIsHandlingCreoleStyleMarkup = 1;
 
-=head2 $PoetryIsHandlingXMLStyleMarkup
+=head2 $PoetryIsHandlingXmlStyleMarkup
 
-A boolean that, if true, enables handling of XML-style markup. See
+A boolean that, if true, enables handling of Xml-style markup. See
 L<MARKUP> below. By default, this boolean is true.
 
 =cut
-$PoetryIsHandlingXMLStyleMarkup = 1;
+$PoetryIsHandlingXmlStyleMarkup = 1;
+
+=head2 $PoetryHtmlTag
+
+A string having the Html tag with which to markup poetry. By default, this is a
+preformatted block with default class "poem", which produces Html:
+
+  <pre class="poem">
+  Like this, a
+  <em>poem</em> with default
+  class <code>poem</code>.
+  </pre>
+
+Preformatted blocks cleanly preserve paragraph whitespace. However, if
+preformatted blocks are not your cup of Html, you can set this string to 'div',
+which produces Html:
+
+  <div class="poem">
+  Like this, a
+  <em>poem</em> with default
+  class <code>poem</code>.
+  </div>
+
+=cut
+$PoetryHtmlTag = 'pre';
 
 # ....................{ MARKUP                             }....................
+my $PoetryHtmlAttrPattern = '^class="poem( \S|"$)';
+
 push(@MyRules, \&PoetryRule);
+RegisterBlockLevelElement('pre', $PoetryHtmlAttrPattern);
+
+# Stanza linebreaks conflict with Creole-style line-breaks.
+$RuleOrder{\&PoetryRule} = 170;
 
 =head2 MARKUP
 
-poetry handles two markup styles: Creole and XML. The Creole style is more
-concise, but a bit less adjustable, than the XML style.
+poetry handles two markup styles: Creole and Xml. The Creole style is more
+concise, but a bit less adjustable, than the Xml style.
 
 The Creole style is three colons:
 
@@ -66,11 +97,11 @@ The Creole style is three colons:
         indented, and linking to [[Another_Poem|another poem]].
    :::
 
-The XML style is a "<poem>...</poem>" block:
+The Xml style is a "<poem>...</poem>" block:
 
    <poem class="haiku">
    Like this, a %%[[Haiku]]%% having
-   the HTML
+   the Html
    classes, ##haiku## and ##poem##.
    </poem>
 
@@ -83,9 +114,9 @@ Or, more concisely:
    </poem>
 
 Both markup produce a preformatted block (that is, a "<pre>...</pre>" block)
-having the "poem" HTML class (for CSS stylization of that block). The XML style
-permits customization of this HTML class; the Creole style does not. Thus, use
-the XML style for poetry requiring unique CSS stylization.
+having the "poem" Html class (for CSS stylization of that block). The Xml style
+permits customization of this Html class; the Creole style does not. Thus, use
+the Xml style for poetry requiring unique CSS stylization.
 
 Both markup preserve linebreaks, leading indendation, and interspersed
 whitespace, preserving the lyrical structure of the poetry this markup is
@@ -96,34 +127,26 @@ headers, and so on -- within themselves. (This permits, should you leverage it,
 Wiki poets to pen interactive and actively interesting, Wiki-integrated poetry.)
 
 =cut
-
-# Stanza linebreaks conflict with Creole-style line-breaks.
-$RuleOrder{\&PoetryRule} = 170;
-
-my $PoetryHtmlTag         = 'pre';
-my $PoetryHtmlAttrPattern = '^class="poem( \S|"$)';
-
 sub PoetryRule {
   if (InElement($PoetryHtmlTag, $PoetryHtmlAttrPattern)) {
     # Closure for the current poem.
     if ($bol and (
       ($PoetryIsHandlingCreoleStyleMarkup and m~\G:::(\n|$)~cg) or
-      ($PoetryIsHandlingXMLStyleMarkup and m~\G&lt;/poem\&gt;[ \t]*(\n|$)~cg))) {
+      ($PoetryIsHandlingXmlStyleMarkup and m~\G&lt;/poem\&gt;[ \t]*(\n|$)~cg))) {
       return CloseHtmlEnvironment($PoetryHtmlTag, $PoetryHtmlAttrPattern).
         AddHtmlEnvironment('p');
     }
     # Linebreaks and paragraphs. This interprets one newline as a linebreak, two
     # newlines as a paragraph, and N newlines, where N is greater than two, as a
-    # paragraph followed by N-2 linebreaks. This produces appropriate vertical
-    # tracking, surprisingly.
+    # paragraph followed by N-2 linebreaks. (This produces appropriate vertical
+    # tracking, surprisingly.)
     elsif (m~\G(\s*\n)+~cg) {
       $number_of_newlines = ($1 =~ tr/\n//);
 
       my $html = '';
       if ($number_of_newlines >  1) {
           $number_of_newlines -= 2;
-        $html .= CloseHtmlEnvironmentUntil($PoetryHtmlTag, $PoetryHtmlAttrPattern)
-          .AddHtmlEnvironment('p');
+        $html .= CloseHtmlEnvironments().AddHtmlEnvironment('p');
       }
              $html .= $q->br() x $number_of_newlines;
       return $html;
@@ -138,7 +161,7 @@ sub PoetryRule {
   # A new poem.
   elsif ($bol and (
     ($PoetryIsHandlingCreoleStyleMarkup and m~\G:::(\n|$)~cg) or
-    ($PoetryIsHandlingXMLStyleMarkup and
+    ($PoetryIsHandlingXmlStyleMarkup and
      m~\G\&lt;poem(\s+(?:class\s*=\s*)?"(.+?)")?\&gt;[ \t]*(\n|$)~cg))) {
     return CloseHtmlEnvironments()
       .AddHtmlEnvironment($PoetryHtmlTag, 'class="poem'.
@@ -147,22 +170,6 @@ sub PoetryRule {
   }
 
   return undef;
-}
-
-# ....................{ FUNCTIONS                          }....................
-*CloseHtmlEnvironmentsPoetryOld = *CloseHtmlEnvironments;
-*CloseHtmlEnvironments =          *CloseHtmlEnvironmentsPoetry;
-
-=head2 CloseHtmlEnvironmentsPoetry
-
-Closes HTML environments for the current poetry "<div>", up to but not including
-the "</div>" associated with the current poetry "<div>".
-
-=cut
-sub CloseHtmlEnvironmentsPoetry {
-  return InElement             ($PoetryHtmlTag, $PoetryHtmlAttrPattern)
-    ? CloseHtmlEnvironmentUntil($PoetryHtmlTag, $PoetryHtmlAttrPattern)
-    : CloseHtmlEnvironmentsPoetryOld();
 }
 
 =head1 COPYRIGHT AND LICENSE

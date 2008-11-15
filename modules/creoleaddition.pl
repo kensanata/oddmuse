@@ -22,7 +22,7 @@ creoleaddition is simply installable; simply:
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.21 2008/11/06 10:11:02 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.22 2008/11/15 12:53:26 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -85,6 +85,7 @@ $CreoleAdditionSmallCaps = 1;
 
 # ....................{ MARKUP                             }....................
 push(@MyRules, \&CreoleAdditionRule);
+RegisterBlockLevelElement('blockquote');
 
 # Blockquote line-breaks conflict with Creole-style line-breaks.
 $RuleOrder{\&CreoleAdditionRule} = -11;
@@ -125,24 +126,6 @@ sub CreoleAdditionRule {
   }
 
   return undef;
-}
-
-# ....................{ FUNCTIONS                          }....................
-*CloseHtmlEnvironmentsCreoleAdditionOld = *CloseHtmlEnvironments;
-*CloseHtmlEnvironments =                  *CloseHtmlEnvironmentsCreoleAddition;
-
-=head2 CloseHtmlEnvironmentsCreoleAddition
-
-Closes HTML environments for the current block level element, up to but not
-including the "<blockquote>" current block level element, if this block is
-embedded within a blockquote. This, though kludgy, is the code magic permitting
-block level elements in multi-line blockquotes.
-
-=cut
-sub CloseHtmlEnvironmentsCreoleAddition {
-  return              InElement('blockquote')
-    ? CloseHtmlEnvironmentUntil('blockquote')
-    : CloseHtmlEnvironmentsCreoleAdditionOld(@_);
 }
 
 =head1 COPYRIGHT AND LICENSE

@@ -1,3 +1,12 @@
+2008-11-16  Brian Curry  <http://www.raiazome.com/Brian_Curry>
+
+	* wiki.pl (AddHtmlEnvironment): Corrected a minor regression.
+	Probably not a genuine issue... but one can never tell.
+	* modules/creole.pl (CloseHtmlEnvironmentsCreole): Removed. 
+	* modules/creoleaddition.pl (CloseHtmlEnvironmentsCreoleAddition):
+	Removed. 
+	* modules/poetry.pl (CloseHtmlEnvironmentsPoetry): Removed.
+
 2008-11-15  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
 	* modules/sidebar.pl: Refactored. This is a complete rewrite
@@ -9,7 +18,7 @@
 	it may still have issues. That said -- I'm relatively proud of it,
 	and confident that it (should) stand up under rigorous scrutinies,
 	utilization, and brutalization.
-	* modules/forms.pl (FormsRule): Slightly revised, so as to comply
+	* modules/forms.pl (FormsRule): Slightly revised so as to comply
 	with the "sidebar.pl" refactoring.
 
 2008-11-15  Brian Curry  <http://www.raiazome.com/Brian_Curry>
