@@ -1,4 +1,64 @@
-2008-11-12  Brian Curry  <http://www.raiazome.com/Brian_Curry>
+2008-11-15  Brian Curry  <http://www.raiazome.com/Brian_Curry>
+
+	* wiki.pl (@MyAfterApplyRules): New global list. This is a list of
+	subroutine references, much like @MyRules. Unlike @MyRules, whose
+	subroutines are called by ApplyRules() while iterating through wiki
+	page markup, @MyAfterApplyRules subroutines are called by
+	PrintWikiToHTML(), iteratively, after all calls to ApplyRules().
+	This may not sound like much -- certainly, no deep invention.
+	Actually, however, it permits post-processing of all emitted HTML.
+	This, in turn, allows us to reimplement the Table of Contents
+	module ("toc.pl"), so as to remove the hacks upon which that
+	module formerly depended. This is a good thing. Perhaps, even a
+	great thing! As Alex can attest, "toc.pl" (and its retinue of
+	oddball hacks) has given Oddmuse some dire trouble, over time.
+	That's all past now...thanks be to the Nordic Gods.
+	(@MyBeforeApplyRules): New global list. This is a list of
+	subroutine references, much like @MyRules. Like @MyAfterApplyRules,
+	above, @MyBeforeApplyRules subroutines are not called by
+	ApplyRules() while iterating through wiki page markup but rather by
+	PrintWikiToHTML(), iteratively, before all calls to ApplyRules().
+	This, also, may not sound like much. However, it permits pre-
+	processing of all emitted HTML. This, in turn, allows us to
+	reimplement the Sidebar module ("sidebar.pl"), so as to remove the
+	hacks upon which that module formerly depended. (Praise be to Odin.)
+	(%BlockLevelElements): New global hash. This hash should not be
+	assigned to directly, but through the new
+	RegisterBlockLevelElement() function. Its keys are HTML tags:
+	'table', 'blockquote', 'div', and so. Its values are regular
+	expressions matching HTML tag attributes: 'class="poem"',
+	'align="right"', and so on. That's the structure. Here's how it
+	works: this hash has one key for each HTML tag to be considered a
+	"block-level element." Block-level elements are not closed when
+	closing HTML environments with CloseHtmlEnvironments(). Instead,
+	they must be explicitly closed with, say,
+	CloseHtmlEnvironment('table'). CloseHtmlEnvironments() now closes
+	all environments up to but not including those whose HTML tag
+	matches a key in %BlockLevelElements and whose HTML tag attributes
+	match a value in %BlockLevelElements. Thus, if Oddmuse is currently
+	in a "<table>...</table>" environment, calling
+	CloseHtmlEnvironments() now closes all environments up to but not
+	including the table. This is a good thing. This allows modules
+	to define block-level markup that can, itself, contain block-level
+	markup -- say, markup for a "<blockquotes>...</blockquotes>"
+	environment containing markup for a "<pre class='poem'>...</pre>"
+	environment containing markup for a "<ol>...</ol>" environment.
+	Prior to the introduction of this hash, block-level markup could
+	not contain other block-level markup -- since most modules "open" a
+	new HTML environment for such markup by first calling
+	CloseHtmlEnvironments(), which, of course, closes the HTML
+	environments of all "parent" block-level markup of this markup. 
+	Slightly mind-bending, isn't it?
+	(RegisterBlockLevelElement): New function. (I'm not entirely happy
+	with the verb 'register', here, but could think of nothing better.)
+	(CloseHtmlEnvironments): Use the %BlockLevelElements hash to ensure
+	block-level element HTML environments are not closed. (Of course,
+	this is an amortized constant-time lookup. No efficiency concern,
+	here!)
+	(PrintWikiToHTML): Use the @MyBeforeApplyRules and
+	@MyAfterApplyRules lists, to perform HTML pre- and post-processing.
+	
+	2008-11-12  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
 	* modules/poetry.pl ($PoetryIsHandlingXMLStyleMarkup): New option.
 	($PoetryIsHandlingCreoleStyleMarkup): New option.
