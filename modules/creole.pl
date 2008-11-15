@@ -14,7 +14,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.53 2008/11/11 23:58:24 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.54 2008/11/15 12:53:26 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -131,6 +131,13 @@ sub CreoleInit {
   $CreoleIsTableCellBol =
   $CreoleHeaderHtmlTag =
   $CreoleHeaderHtmlTagAttr = '';
+
+  # This is the "code magic" enabling block-level elements in multi-line
+  # table cells.
+  if ($CreoleTableCellsAllowBlockLevelElements) {
+    RegisterBlockLevelElement('td');
+    RegisterBlockLevelElement('th');
+  }
 
   #FIXME: Fold these into "wiki.pl", with Alex's kind allowance.
   # Permit page authors to link to URLs resembling:
@@ -534,8 +541,8 @@ sub GetCreoleLinkHtml {
 *RunMyRulesCreoleOld = *RunMyRules;
 *RunMyRules =          *RunMyRulesCreole;
 
-*CloseHtmlEnvironmentsCreoleOld = *CloseHtmlEnvironments;
-*CloseHtmlEnvironments =          *CloseHtmlEnvironmentsCreole;
+# *CloseHtmlEnvironmentsCreoleOld = *CloseHtmlEnvironments;
+# *CloseHtmlEnvironments =          *CloseHtmlEnvironmentsCreole;
 
 =head2 RunMyRulesCreole
 
@@ -558,22 +565,22 @@ sub RunMyRulesCreole {
   return $html;
 }
 
-=head2 CloseHtmlEnvironmentsCreole
+# =head2 CloseHtmlEnvironmentsCreole
 
-Closes HTML environments for the current block level element, up to but not
-including the "</table>" for the current block level element, if this block is
-embedded within a table. This, though kludgy, is the "code magic" permitting
-block level elements in multi-line table cells.
+# Closes HTML environments for the current block level element, up to but not
+# including the "</table>" for the current block level element, if this block is
+# embedded within a table. This, though kludgy, is the "code magic" permitting
+# block level elements in multi-line table cells.
 
-=cut
-sub CloseHtmlEnvironmentsCreole {
-  if ($CreoleTableCellsAllowBlockLevelElements) {
-       if (InElement('td')) { return CloseHtmlEnvironmentUntil('td'); }
-    elsif (InElement('th')) { return CloseHtmlEnvironmentUntil('th'); }
-  }
+# =cut
+# sub CloseHtmlEnvironmentsCreole {
+#   if ($CreoleTableCellsAllowBlockLevelElements) {
+#        if (InElement('td')) { return CloseHtmlEnvironmentUntil('td'); }
+#     elsif (InElement('th')) { return CloseHtmlEnvironmentUntil('th'); }
+#   }
 
-  return CloseHtmlEnvironmentsCreoleOld();
-}
+#   return CloseHtmlEnvironmentsCreoleOld();
+# }
 
 =head2 CreoleRuleRecursive
 
