@@ -35,42 +35,39 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.879 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.880 $}))[1]; # for MakeMaker
 
 # Options:
-
-use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir
-$DataDir $KeepDir $PageDir $RcOldFile $IndexFile $BannedContent
-$NoEditFile $BannedHosts $ConfigFile $FullUrl $SiteName $HomePage
-$LogoUrl $RcDefault $RssDir $IndentLimit $RecentTop $RecentLink
-$EditAllowed $UseDiff $KeepDays $KeepMajor $EmbedWiki $BracketText
-$UseConfig $UseLookup $AdminPass $EditPass $NetworkFile $BracketWiki
-$FreeLinks $WikiLinks $SummaryHours $FreeLinkPattern $RCName $RunCGI
-$ShowEdits $LinkPattern $RssExclude $InterLinkPattern $MaxPost $UseGrep
-$UrlPattern $UrlProtocols $ImageExtensions $InterSitePattern $FS
-$CookieName $SiteBase $StyleSheet $NotFoundPg $FooterNote $NewText
-$EditNote $HttpCharset $UserGotoBar $VisitorFile $RcFile %Smilies
-%SpecialDays $InterWikiMoniker $SiteDescription $RssImageUrl $ReadMe
-$RssRights $BannedCanRead $SurgeProtection $TopLinkBar $LanguageLimit
-$SurgeProtectionTime $SurgeProtectionViews $DeletedPage %Languages
-$InterMap $ValidatorLink %LockOnCreation @CssList $RssStyleSheet
-@MyRules %CookieParameters @UserGotoBarPages $NewComment $HtmlHeaders
-$StyleSheetPage $ConfigPage $ScriptName @MyMacros $CommentsPrefix
-@UploadTypes $AllNetworkFiles $UsePathInfo $UploadAllowed $LastUpdate
-$PageCluster %PlainTextPages $RssInterwikiTranslate $UseCache $Counter
-$ModuleDir $FullUrlPattern $SummaryDefaultLength $FreeInterLinkPattern
-%InvisibleCookieParameters %AdminPages @MyAdminCode @MyInitVariables
-@MyMaintenance $UseQuestionmark $JournalLimit $LockExpiration $RssStrip
-%LockExpires @IndexOptions @Debugging @MyFooters $DocumentHeader);
+use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
+$KeepDir $PageDir $RcOldFile $IndexFile $BannedContent $NoEditFile $BannedHosts
+$ConfigFile $FullUrl $SiteName $HomePage $LogoUrl $RcDefault $RssDir
+$IndentLimit $RecentTop $RecentLink $EditAllowed $UseDiff $KeepDays $KeepMajor
+$EmbedWiki $BracketText $UseConfig $UseLookup $AdminPass $EditPass $NetworkFile
+$BracketWiki $FreeLinks $WikiLinks $SummaryHours $FreeLinkPattern $RCName
+$RunCGI $ShowEdits $LinkPattern $RssExclude $InterLinkPattern $MaxPost $UseGrep
+$UrlPattern $UrlProtocols $ImageExtensions $InterSitePattern $FS $CookieName
+$SiteBase $StyleSheet $NotFoundPg $FooterNote $NewText $EditNote $HttpCharset
+$UserGotoBar $VisitorFile $RcFile %Smilies %SpecialDays $InterWikiMoniker
+$SiteDescription $RssImageUrl $ReadMe $RssRights $BannedCanRead $SurgeProtection
+$TopLinkBar $LanguageLimit $SurgeProtectionTime $SurgeProtectionViews
+$DeletedPage %Languages $InterMap $ValidatorLink %LockOnCreation @CssList
+$RssStyleSheet %CookieParameters @UserGotoBarPages $NewComment $HtmlHeaders
+$StyleSheetPage $ConfigPage $ScriptName $CommentsPrefix @UploadTypes
+$AllNetworkFiles $UsePathInfo $UploadAllowed $LastUpdate $PageCluster
+%PlainTextPages $RssInterwikiTranslate $UseCache $Counter $ModuleDir
+$FullUrlPattern $SummaryDefaultLength $FreeInterLinkPattern
+%InvisibleCookieParameters %AdminPages $UseQuestionmark $JournalLimit
+$LockExpiration $RssStrip %LockExpires @IndexOptions @Debugging $DocumentHeader
+%BlockLevelElements @MyAdminCode @MyFooters @MyInitVariables @MyMacros
+@MyMaintenance @MyRules @MyBeforeApplyRules @MyAfterApplyRules);
 
 # Internal variables:
-
-use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie
-%NewCookie $FootnoteNumber $OpenPageName @IndexList $Message $q $Now
-%RecentVisitors @HtmlStack @HtmlAttrStack $ReplaceForm %MyInc
-$CollectingJournal $bol $WikiDescription $PrintedHeader %Locks
-$Fragment @Blocks @Flags $Today @KnownLocks $ModulesDescription
-%Action %RuleOrder %Includes %RssInterwikiTranslate);
+use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie %NewCookie
+$FootnoteNumber $OpenPageName @IndexList $Message $q $Now %RecentVisitors
+@HtmlStack @HtmlAttrStack $ReplaceForm %MyInc $CollectingJournal $bol
+$WikiDescription $PrintedHeader %Locks $Fragment @Blocks @Flags $Today
+@KnownLocks $ModulesDescription %Action %RuleOrder %Includes
+%RssInterwikiTranslate);
 
 # == Configuration ==
 
@@ -298,7 +295,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.879 2008/11/05 09:42:05 leycec Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.880 2008/11/15 12:40:49 leycec Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -399,7 +396,6 @@ sub SetParam {
 }
 
 # == Markup Code ==
-
 sub InitLinkPatterns {
   my ($UpperLetter, $LowerLetter, $AnyLetter, $WikiWord, $QDelim);
   $QDelim = '(?:"")?'; # Optional quote delimiter (removed from the output)
@@ -429,7 +425,7 @@ sub Clean {
 
 sub Dirty { # arg 1 is the raw text; the real output must be printed instead
   if ($Fragment ne '') {
-    $Fragment =~ s|<p></p>||g; # clean up extra paragraphs (see end of ApplyRules)
+    $Fragment =~ s|<p>\s*</p>||g; # clean up extra paragraphs (see end of ApplyRules)
     print $Fragment;
     push(@Blocks, $Fragment);
     push(@Flags, 0);
@@ -555,7 +551,7 @@ sub ApplyRules {
   pos = length $_;  # notify module functions we've completed rule handling
   Clean(CloseHtmlEnvironments());  # last block -- close it, cache it
   if ($Fragment ne '') {
-    $Fragment =~ s|<p></p>||g; # clean up extra paragraphs (see end Dirty())
+    $Fragment =~ s|<p>\s*</p>||g; # clean up extra paragraphs (see end Dirty())
     print $Fragment;
     push(@Blocks, $Fragment);
     push(@Flags, 0);
@@ -642,6 +638,13 @@ sub LinkRules {
   return '';     # one of the dirty rules matched (and they all are)
 }
 
+sub RegisterBlockLevelElement {
+  my ($html_tag, $html_tag_attr) = @_;
+  $BlockLevelElements{$html_tag} = defined $html_tag_attr ? (
+  $BlockLevelElements{$html_tag} ? $BlockLevelElements{$html_tag}.'|' : '').
+    $html_tag_attr : '';
+}
+
 sub InElement {  # is $html_tag in @HtmlStack?
   my ($html_tag, $html_tag_attr) = @_;
   my  $i = 0;
@@ -661,8 +664,9 @@ sub AddOrCloseHtmlEnvironment {  # add $html_tag, if not already added; close, o
 
 sub AddHtmlEnvironment {  # add a new $html_tag
   my ($html_tag, $html_tag_attr) = @_;
+  $html_tag_attr = '' if not defined $html_tag_attr;
   if ($html_tag and not (@HtmlStack and $HtmlStack[0] eq $html_tag and
-     ($html_tag_attr ? $HtmlAttrStack[0] eq $html_tag_attr : 1))) {
+     ($html_tag_attr ? $HtmlAttrStack[0] =~ m/$html_tag_attr/ : 1))) {
     unshift(@HtmlStack,     $html_tag);
     unshift(@HtmlAttrStack, $html_tag_attr);
     return $html_tag_attr ? "<$html_tag $html_tag_attr>" : "<$html_tag>";
@@ -693,7 +697,15 @@ sub OpenHtmlEnvironment {  # close the previous $html_tag and open a new one
 }
 
 sub CloseHtmlEnvironments { # close all -- remember to use AddHtmlEnvironment('p') if required!
-  return CloseHtmlEnvironmentUntil(@_);
+  return CloseHtmlEnvironmentUntil() if pos($_) == length($_);  # close all HTML environments if we're are at the end of this page
+  my $html = '';
+  while (@HtmlStack) {
+    defined $BlockLevelElements{$HtmlStack[0]} and  # avoid closing block level elements
+      ($BlockLevelElements{$HtmlStack[0]} ? $HtmlAttrStack[0] =~
+     m/$BlockLevelElements{$HtmlStack[0]}/ : 1) and return $html;
+                  shift(@HtmlAttrStack);
+    $html .= '</'.shift(@HtmlStack).'>';
+  } return $html;
 }
 
 sub CloseHtmlEnvironment {  # close environments up to and including $html_tag
@@ -705,12 +717,12 @@ sub CloseHtmlEnvironment {  # close environments up to and including $html_tag
 }
 
 sub CloseHtmlEnvironmentUntil {  # close environments up to but not including $html_tag
-  my ($html_tag, $html_tag_attr) = @_;
+  my ($html_tag,  $html_tag_attr) = @_;
   my  $html = '';
   while (@HtmlStack && (pos($_) == length($_) ||  # while there is an HTML tag-stack and we are at the end of this page or...
-    !($html_tag ? ($HtmlStack[0] eq $html_tag &&  # the top tag is not the desired tag and...
+    !($html_tag ? $HtmlStack[0] eq $html_tag &&   # the top tag is not the desired tag and...
      ($html_tag_attr ? $HtmlAttrStack[0] =~       # its attributes do not match,
-       m/$html_tag_attr/ : 1)) : ''))) {          # then...
+    m/$html_tag_attr/ : 1) : ''))) {      # then...
                   shift(@HtmlAttrStack);  # shift off the top tag and
     $html .= '</'.shift(@HtmlStack).'>';  # append it to our HTML string.
   } return $html;
@@ -741,19 +753,31 @@ sub RunMyMacros {
 }
 
 sub PrintWikiToHTML {
-  my ($text, $savecache, $revision, $islocked) = @_;
+  my ($markup, $is_saving_cache, $revision, $is_locked) = @_;
+  my ($blocks, $flags);
   $FootnoteNumber = 0;
-  $text =~ s/$FS//go if $text;  # Remove separators (paranoia)
-  $text = QuoteHtml($text);
-  my ($blocks, $flags) = ApplyRules($text, 1, $savecache, $revision, 'p'); # p is start tag!
-  # local links, anchors if cache ok
-  if ($savecache and not $revision and $Page{revision} # don't save revision 0 pages
+  $markup =~ s/$FS//go if $markup;  # Remove separators (paranoia)
+  $markup = QuoteHtml($markup);
+  if (@MyBeforeApplyRules or @MyAfterApplyRules) {
+    my $html = '';
+    &$_(\$markup, $is_saving_cache, $revision) foreach (@MyBeforeApplyRules);
+    { local *STDOUT;
+      open(  STDOUT, '>', \$html) or die "Can't open memory file: $!";
+      ($blocks, $flags) = ApplyRules($markup, 1, $is_saving_cache, $revision, 'p');
+      close  STDOUT; }
+    &$_(\$html, \$blocks, \$flags)             foreach (@MyAfterApplyRules);
+    print $html;
+  }
+  else {
+    ($blocks, $flags) = ApplyRules($markup, 1, $is_saving_cache, $revision, 'p');
+  }
+  if ($is_saving_cache and not $revision and $Page{revision} # don't save revision 0 pages
       and $Page{blocks} ne $blocks and $Page{flags} ne $flags) {
     $Page{blocks} = $blocks;
-    $Page{flags} = $flags;
-    if ($islocked or RequestLockDir('main')) { # not fatal!
+    $Page{flags} =  $flags;
+    if ($is_locked or RequestLockDir('main')) { # not fatal!
       SavePage();
-      ReleaseLock() unless $islocked;
+      ReleaseLock() unless $is_locked;
     }
   }
 }
@@ -1319,7 +1343,6 @@ sub Tss {
 }
 
 # == Choosing action
-
 sub GetId {
   return $HomePage if !$q->param && !($UsePathInfo && $q->path_info && $q->path_info ne "/");
   my $id = join('_', $q->keywords); # script?p+q -> p_q
@@ -1359,7 +1382,6 @@ sub DoBrowseRequest {
 }
 
 # == Id handling ==
-
 sub ValidId { # hack alert: returns error message if invalid, and unfortunately the empty string if valid!
   my $id = FreeToNormal(shift);
   return T('Page name is missing') unless $id;
@@ -1399,7 +1421,6 @@ sub BrowseResolvedPage {
 }
 
 # == Browse page ==
-
 sub BrowsePage {
   my ($id, $raw, $comment, $status) = @_;
   OpenPage($id);
@@ -1510,7 +1531,6 @@ sub FileFresh { # old files are never stale, current files are stale when the pa
 }
 
 # == Recent Changes
-
 sub BrowseRc {
   my $id = shift;
   if (GetParam('raw', 0)) {
@@ -1661,7 +1681,6 @@ sub ProcessRcLines {
 }
 
 # == Produce RecentChanges (HTML)
-
 sub RcHeader {
   my $html;
   if (GetParam('from', 0)) {
@@ -1836,7 +1855,6 @@ sub PrintRcHtml { # to append RC to existing page, or action=rc directly
 }
 
 # == Produce RSS 3.0 (text) ==
-
 sub RcTextItem {
   my ($name, $value) = @_;
   $value =~ s/\n+$//;
@@ -1869,7 +1887,6 @@ sub PrintRcText { # print text rss header and call ProcessRcLines
 }
 
 # == Produce RSS 2.0 ==
-
 sub GetRcRss {
   my $date = TimeToRFC822($LastUpdate);
   my %excluded = ();
@@ -1963,7 +1980,6 @@ sub DoRss {
 }
 
 # == History & Rollback ==
-
 sub DoHistory {
   my $id = shift;
   ValidIdOrDie($id);
@@ -2109,7 +2125,6 @@ sub DoRollback {
 }
 
 # == Administration ==
-
 sub DoAdminPage {
   my ($id, @rest) = @_;
   my @menu = (ScriptLink('action=index', T('Index of all pages'), 'index'),
@@ -2150,7 +2165,6 @@ sub DoAdminPage {
 }
 
 # == HTML and page-oriented functions ==
-
 sub GetPageParameters {
   my ($action, $id, $revision, $cluster, $last) = @_;
   $id = FreeToNormal($id);
@@ -2467,7 +2481,6 @@ sub GetGotoBar {    # ignore $id parameter
 }
 
 # == Difference markup and HTML ==
-
 sub PrintHtmlDiff {
   my ($type, $old, $new, $text) = @_;
   my $intro = T('Last edit');
@@ -2616,7 +2629,6 @@ sub DiffAddPrefix {
 }
 
 # == Database functions ==
-
 sub ParseData {      # called a lot during search, so it was optimized
   my $data = shift;   # by eliminating non-trivial regular expressions
   my %result;
@@ -2777,7 +2789,6 @@ sub ExpireKeepFiles {   # call with opened page
 }
 
 # == File operations
-
 sub ReadFile {
   my $fileName = shift;
   if (open(IN, "<$fileName")) {
@@ -2835,7 +2846,6 @@ sub CreateKeepDir {
 }
 
 # == Lock files ==
-
 sub GetLockedPageFile {
   my $id = shift;
   return $PageDir . '/' . GetPageDirectory($id) . "/$id.lck";
@@ -2911,7 +2921,6 @@ sub DoUnlock {
 }
 
 # == Helpers ==
-
 sub CalcDay {
   my ($sec, $min, $hour, $mday, $mon, $year) = gmtime(shift);
   return sprintf('%4d-%02d-%02d', $year+1900, $mon+1, $mday);
@@ -3011,7 +3020,6 @@ sub UnWiki {
 }
 
 # == Page-editing and other special-action code ==
-
 sub DoEdit {
   my ($id, $newText, $preview) = @_;
   ValidIdOrDie($id);
@@ -3124,7 +3132,6 @@ sub DoDownload {
 }
 
 # == Passwords ==
-
 sub DoPassword {
   print GetHeader('',T('Password')), $q->start_div({-class=>'content password'});
   print $q->p(T('Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.'));
@@ -3231,7 +3238,6 @@ sub BannedContent {
 }
 
 # == Index ==
-
 sub DoIndex {
   my $raw = GetParam('raw', 0);
   my $match = GetParam('match', '');
@@ -3312,7 +3318,6 @@ sub AllPagesList {
 }
 
 # == Searching ==
-
 sub DoSearch {
   my $string = shift;
   return DoIndex() if $string eq '';
@@ -3528,7 +3533,6 @@ sub Replace {
 }
 
 # == Posting new pages ==
-
 sub DoPost {
   my $id = FreeToNormal(shift);
   ValidIdOrDie($id);
@@ -3761,7 +3765,6 @@ sub UpdateDiffs { # this could be optimized, but isn't frequent enough
 }
 
 # == Maintenance ==
-
 sub DoMaintain {
   print GetHeader('', T('Run Maintenance')), $q->start_div({-class=>'content maintain'});
   my $fname = "$DataDir/maintain";
@@ -3831,7 +3834,6 @@ sub DoMaintain {
 }
 
 # == Deleting pages ==
-
 sub PageDeletable {
   return unless $KeepDays;
   my $expirets = $Now - ($KeepDays * 86400); # 24*60*60
@@ -3854,7 +3856,6 @@ sub DeletePage {    # Delete must be done inside locks.
 }
 
 # == Page locking ==
-
 sub DoEditLock {
   return unless UserIsAdminOrError();
   print GetHeader('', T('Set or Remove global edit lock'));
@@ -3886,7 +3887,6 @@ sub DoPageLock {
 }
 
 # == Version ==
-
 sub DoShowVersion {
   print GetHeader('', T('Displaying Wiki Version')), $q->start_div({-class=>'content version'});
   print $WikiDescription, $q->p($q->server_software()),
@@ -3917,7 +3917,6 @@ sub DebugInterLinks {
 }
 
 # == Surge Protection ==
-
 sub DoSurgeProtection {
   return unless $SurgeProtection;
   my $name = GetParam('username','');
