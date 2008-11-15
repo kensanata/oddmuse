@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.881 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.882 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -58,7 +58,7 @@ $AllNetworkFiles $UsePathInfo $UploadAllowed $LastUpdate $PageCluster
 $FullUrlPattern $SummaryDefaultLength $FreeInterLinkPattern
 %InvisibleCookieParameters %AdminPages $UseQuestionmark $JournalLimit
 $LockExpiration $RssStrip %LockExpires @IndexOptions @Debugging $DocumentHeader
-%BlockLevelElements @MyAdminCode @MyFooters @MyInitVariables @MyMacros
+%HtmlEnvironmentContainers @MyAdminCode @MyFooters @MyInitVariables @MyMacros
 @MyMaintenance @MyRules @MyBeforeApplyRules @MyAfterApplyRules);
 
 # Internal variables:
@@ -295,7 +295,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.881 2008/11/15 12:53:26 leycec Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.882 2008/11/15 21:24:32 leycec Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -638,10 +638,10 @@ sub LinkRules {
   return '';     # one of the dirty rules matched (and they all are)
 }
 
-sub RegisterBlockLevelElement {
+sub SetHtmlEnvironmentContainer {
   my ($html_tag, $html_tag_attr) = @_;
-  $BlockLevelElements{$html_tag} = defined $html_tag_attr ? (
-  $BlockLevelElements{$html_tag} ? $BlockLevelElements{$html_tag}.'|' : '').
+  $HtmlEnvironmentContainers{$html_tag} = defined $html_tag_attr ? (
+  $HtmlEnvironmentContainers{$html_tag} ? $HtmlEnvironmentContainers{$html_tag}.'|' : '').
     $html_tag_attr : '';
 }
 
@@ -700,9 +700,9 @@ sub CloseHtmlEnvironments { # close all -- remember to use AddHtmlEnvironment('p
   return CloseHtmlEnvironmentUntil() if pos($_) == length($_);  # close all HTML environments if we're are at the end of this page
   my $html = '';
   while (@HtmlStack) {
-    defined $BlockLevelElements{$HtmlStack[0]} and  # avoid closing block level elements
-      ($BlockLevelElements{$HtmlStack[0]} ? $HtmlAttrStack[0] =~
-     m/$BlockLevelElements{$HtmlStack[0]}/ : 1) and return $html;
+    defined $HtmlEnvironmentContainers{$HtmlStack[0]} and  # avoid closing block level elements
+      ($HtmlEnvironmentContainers{$HtmlStack[0]} ? $HtmlAttrStack[0] =~
+     m/$HtmlEnvironmentContainers{$HtmlStack[0]}/ : 1) and return $html;
                   shift(@HtmlAttrStack);
     $html .= '</'.shift(@HtmlStack).'>';
   } return $html;

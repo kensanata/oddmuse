@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 # ====================[ sidebar.pl                         ]====================
-$ModulesDescription .= '<p>$Id: sidebar.pl,v 1.19 2008/11/15 12:48:13 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: sidebar.pl,v 1.20 2008/11/15 21:24:33 leycec Exp $</p>';
 
 use vars qw($SidebarName);
 
@@ -35,7 +35,7 @@ sub SidebarBeforeApplyRule {
 
 # ....................{ MARKUP                             }....................
 push(@MyRules, \&SidebarRule);
-RegisterBlockLevelElement('div', '^class="sidebar"$');
+SetHtmlEnvironmentContainer('div', '^class="sidebar"$');
 
 sub SidebarRule {
   if ($bol) {

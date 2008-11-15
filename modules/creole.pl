@@ -14,7 +14,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.54 2008/11/15 12:53:26 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.55 2008/11/15 21:24:33 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -26,7 +26,7 @@ file for your Oddmuse Wiki.
 =cut
 use vars qw($CreoleLineBreaks
             $CreoleTildeAlternative
-            $CreoleTableCellsAllowBlockLevelElements
+            $CreoleTableCellsContainBlockLevelElements
             $CreoleDashStyleUnorderedLists);
 
 =head2 $CreoleLineBreaks
@@ -51,7 +51,7 @@ character. (If false, this extension consumes such tilde ~ characters.)
 =cut
 $CreoleTildeAlternative = 0;
 
-=head2 $CreoleTableCellsAllowBlockLevelElements
+=head2 $CreoleTableCellsContainBlockLevelElements
 
 A boolean that, if true, permits table cell markup to embed block level
 elements in table cells. (By default, this boolean is false.)
@@ -74,7 +74,7 @@ table cell of a cell with a "|" character. (This character is optional under
 the Wiki Creole standard, but not under this non-conformant alteration.)
 
 =cut
-$CreoleTableCellsAllowBlockLevelElements = 0;
+$CreoleTableCellsContainBlockLevelElements = 0;
 
 =head2 $CreoleDashStyleUnorderedLists
 
@@ -134,9 +134,9 @@ sub CreoleInit {
 
   # This is the "code magic" enabling block-level elements in multi-line
   # table cells.
-  if ($CreoleTableCellsAllowBlockLevelElements) {
-    RegisterBlockLevelElement('td');
-    RegisterBlockLevelElement('th');
+  if ($CreoleTableCellsContainBlockLevelElements) {
+    SetHtmlEnvironmentContainer('td');
+    SetHtmlEnvironmentContainer('th');
   }
 
   #FIXME: Fold these into "wiki.pl", with Alex's kind allowance.
@@ -341,7 +341,7 @@ sub CreoleRule {
     #
     # This condition should appear after the end-of-row test, above.
     elsif (m/\G[ \t]*\|[ \t]*(\n|$)/cg or
-           (!$CreoleTableCellsAllowBlockLevelElements and m/\G[ \t]*\n\n/cg)) {
+           (!$CreoleTableCellsContainBlockLevelElements and m/\G[ \t]*\n\n/cg)) {
       # Note: we do not call "CloseHtmlEnvironmentsCreoleOld", as that function
       #       refers to the Oddmuse built-in. If another module with name
       #       lexically following "creole.pl" also redefines the built-in
@@ -360,11 +360,11 @@ sub CreoleRule {
     elsif (m/\G$CreoleTableCellPattern/cg) {
       # This is the start of a new table cell. However, we only consider that
       # equivalent to the "$bol" variable when the
-      # "$CreoleTableCellsAllowBlockLevelElements" variable is enabled. (In
+      # "$CreoleTableCellsContainBlockLevelElements" variable is enabled. (In
       # other words, we only declare that we may insert block level elements at
       # the start of this new table cell, when we allow block level elements in
       # table cells. Yum.)
-      $CreoleIsTableCellBol = $CreoleTableCellsAllowBlockLevelElements;
+      $CreoleIsTableCellBol = $CreoleTableCellsContainBlockLevelElements;
 
       my $tag = $2 ? 'th' : 'td';
       my $column_span = length($1);
@@ -550,7 +550,7 @@ Runs all markup rules for the current block of page markup. This redefinition
 ensures that the beginning of a table cell is considered the beginning of a
 block-level element -- that, in other words, the C<$bol> global be set to 1.
 
-If the C<$CreoleTableCellsAllowBlockLevelElements> option is set to 0 (the
+If the C<$CreoleTableCellsContainBlockLevelElements> option is set to 0 (the
 default), then this function is, effectively, a no-op - and just calls the
 default C<RunMyRules> function.
 
@@ -574,7 +574,7 @@ sub RunMyRulesCreole {
 
 # =cut
 # sub CloseHtmlEnvironmentsCreole {
-#   if ($CreoleTableCellsAllowBlockLevelElements) {
+#   if ($CreoleTableCellsContainBlockLevelElements) {
 #        if (InElement('td')) { return CloseHtmlEnvironmentUntil('td'); }
 #     elsif (InElement('th')) { return CloseHtmlEnvironmentUntil('th'); }
 #   }

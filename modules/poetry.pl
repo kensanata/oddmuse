@@ -19,7 +19,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: poetry.pl,v 1.4 2008/11/15 12:53:26 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: poetry.pl,v 1.5 2008/11/15 21:24:33 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -77,7 +77,7 @@ $PoetryHtmlTag = 'pre';
 my $PoetryHtmlAttrPattern = '^class="poem( \S|"$)';
 
 push(@MyRules, \&PoetryRule);
-RegisterBlockLevelElement('pre', $PoetryHtmlAttrPattern);
+SetHtmlEnvironmentContainer('pre', $PoetryHtmlAttrPattern);
 
 # Stanza linebreaks conflict with Creole-style line-breaks.
 $RuleOrder{\&PoetryRule} = 170;
