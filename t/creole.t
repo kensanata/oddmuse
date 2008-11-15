@@ -1,3 +1,4 @@
+#!/usr/bin/env perl
 # Copyright (C) 2006, 2007, 2008  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify

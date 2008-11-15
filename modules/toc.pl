@@ -11,7 +11,7 @@ toc is easily installable; move this file into the B<wiki/modules/>
 directory for your Oddmuse Wiki.
 
 =cut
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.54 2008/11/05 10:11:48 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.55 2008/11/15 12:48:13 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -22,10 +22,9 @@ for your Oddmuse Wiki.
 
 =cut
 use vars qw($TocHeaderText
+            $TocClass
             $TocAutomatic
-            $TocIsConvertingH1TagsToH2Tags
-
-            $TocProcessing $TocShown $TocCounter);
+            $TocAnchorPrefix);
 
 =head2 $TocHeaderText
 
@@ -33,6 +32,14 @@ The string to be displayed as the header for each page's table of contents.
 
 =cut
 $TocHeaderText = 'Contents';
+
+=head2 $TocClass
+
+The string to be used as the HTML class for each page's table of contents. (This
+is the string with which your CSS stylesheet customizes table of contents.)
+
+=cut
+$TocClass = 'toc';
 
 =head2 $TocAutomatic
 
@@ -46,239 +53,264 @@ By default, this boolean is true.
 =cut
 $TocAutomatic = 1;
 
-=head2 $TocIsConvertingH1TagsToH2Tags
+=head2 $TocAnchorPrefix
 
-A boolean that, if true, converts all "<h1>...</h2>" tags to "<h2>...</h2>" tags
-for all pages. So, if true, this converts all level-1 headers to level-2 headers
-and leaves all other headers unchanged. This is the Usemod convention and, as
-Oddmuse is derived from Usemod, the default convention for this module, too.
-
-This boolean's default value for this depends on which other markup extensions
-are also installed, as follows:
+The string for prefixing the names of toc anchor links with. The default
+should be fine, generally; it creates toc anchor links resembling:
 
 =over
 
-=item If the Usemod markup extension is installed, this boolean defaults to
-      C<true>. By convention, Usemod prevents creation of level-1 headers.
-      (Though, we can't imagine why it does that...)
+=item L<http://your.wiki.com/SomePage#Heading1>. A link to the first header on
+      SomePage page for some wiki.
 
-=item Otherwise, this boolean defaults to C<false>. This is what you want,
-      generally.
+=item L<http://your.wiki.com/SomePage#Heading2>. A link to the second header on
+      SomePage page for some wiki.
 
 =back
 
-Thus, by default, this boolean is usually C<false>.
+And so on. This provides Wiki users a "clean" mechanism for bookmarking,
+marking, and sharing links to particular segments of a Wiki page.
 
 =cut
-$TocIsConvertingH1TagsToH2Tags = undef;
+$TocAnchorPrefix = 'Heading';
 
 # ....................{ INITIALIZATION                     }....................
 push(@MyInitVariables, \&TocInit);
 
-# If we're rendering the headings inside the sidebar, we want to refer
-# to the headings in the real page. $OpenPageName points to the
-# $SidebarName, however, so that the Forms extension works. That's why
-# we have a separate variable being used, here.
-my $TocPage;
+# A number uniquely identifying this current header. This allows us to link each
+# list entry in the table of contents to the header it refers to.
+my $TocHeaderNumber;
 
 sub TocInit {
-  $TocPage = GetId(); # this is the TOC target
-  $TocCounter = 0;
-  $TocProcessing = 0;
-  $TocShown = 0;
-
-  if (not defined $TocIsConvertingH1TagsToH2Tags) {
-    $TocIsConvertingH1TagsToH2Tags = defined &UsemodRule;
-  }
+  $TocHeaderNumber = '';
 }
 
 # ....................{ MARKUP                             }....................
+*RunMyRulesTocOld = *RunMyRules;
+*RunMyRules       = *RunMyRulesToc;
+
 push(@MyRules, \&TocRule);
 
-# This must come *before* either headers.pl or the usemod.pl rules and
-# adds support for portrait-support.pl
-$RuleOrder{\&TocRule} = 90;
+=head2 MARKUP
 
+toc handles page markup resembling:
+
+  <toc header_text="$HeaderText" class="$Class">
+
+Or, in its abbreviated form:
+
+  <toc "$HeaderText" "$Class">
+
+Or, in its maximally abbreviated form:
+
+  <toc>
+
+C<$HeaderText> is the header text for this table of contents: that is, text
+heading the list of this table of contents. This is optional. If not specified,
+it defaults to the value of the C<$TocHeaderText> variable.
+
+C<$Class> is the HTML class for this table of contents, for CSS stylization of
+that table. This is optional. If not specified, it defaults to "toc".
+
+=cut
 sub TocRule {
-  # When rendering a heading in the SideBar, $TocPage will be ne
-  # $OpenPageBar, making sure that this heading doesn't get an id
-  # attribute. The test for an empty $OpenPageName serves to
-  # facilitate tests.
-  my $id_required = ($TocPage eq $OpenPageName || $OpenPageName eq '');
-  if (m!\G&lt;toc(/[A-Za-z\x80-\xff/]+)?&gt;!gci) {
-    my $html = CloseHtmlEnvironments()
-      . ($PortraitSupportColorDiv ? '</div>' : '');
-    $html .= TocHeadings(split(m|/|, $1)) unless $TocShown;
-    $html .= AddHtmlEnvironment('p');
-    $TocShown = 1;
-    $PortraitSupportColorDiv = 0; # after the HTML has been determined.
-    $PortraitSupportColor = 0;
-    return $html;
-  } elsif ($bol
-     && $UseModMarkupInTitles
-     && m/\G(\s*\n)*(\=+)[ \t]*(?=[^=\n]+=)/cg) {
-    my $depth = length($2);
-       $depth = 6 if $depth > 6;
-       $depth = 2 if $depth < 2 and $TocIsConvertingH1TagsToH2Tags;
+  # <toc...> markup. This explicitly opens a new table of contents, if we
+  # haven't already opened one. There may be only one such table per page.
+  if ($bol and not $TocHeaderNumber and
+      m~\G&lt;toc(/([A-Za-z\x80-\xff/]+))?    # $1
+        (\s+(?:header_text\s*=\s*)?"(.+?)")?  # $3
+        (\s+(?:class\s*=\s*)?"(.+?)")?        # $5
+        &gt;[ \t]*(\n|$)~cgx) {               # $7
+    my ($toc_class_old, $toc_header_text, $toc_class) = ($2, $4, $6);
 
-    my $html = CloseHtmlEnvironments()
-      . ($PortraitSupportColorDiv ? '</div>' : '');
-    $html .= TocHeadings() if not $TocShown and $TocAutomatic;
-    $TocShown = 1 if $TocAutomatic;
-    if ($id_required) {
-      $TocCounter++;
-      $html .= AddHtmlEnvironment('h' . $depth, qq{id="toc$TocCounter"});
-    } else {
-      $html .= AddHtmlEnvironment('h' . $depth);
-    }
-    $PortraitSupportColorDiv = 0; # after the HTML has been determined.
-    $PortraitSupportColor = 0;
-    return $html;
-  } elsif ($UseModMarkupInTitles &&
-           (InElement('h1')
-         || InElement('h2')
-         || InElement('h3')
-         || InElement('h4')
-         || InElement('h5')
-         || InElement('h6'))
-     && m/\G[ \t]*=+\n?/cg) {
-    return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
-  } elsif ($bol && (defined(&UsemodRule) || defined(&CreoleRule))
-     && !$UseModMarkupInTitles
-     && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=*)[ \t]*(\n|$)/cg) {
-    my $depth = length($2);
-       $depth = 6 if $depth > 6;
-       $depth = 2 if $depth < 2 and $TocIsConvertingH1TagsToH2Tags;
+    $TocHeaderNumber = 1;
+    $toc_header_text = $TocHeaderText if not defined $toc_header_text;
 
-    my $text = $3;
-    my $html = CloseHtmlEnvironments()
-      . ($PortraitSupportColorDiv ? '</div>' : '');
-    $html .= TocHeadings() if not $TocShown and $TocAutomatic;
-    $TocShown = 1 if $TocAutomatic;
-    if ($id_required) {
-      $TocCounter++;
-      $html .= qq{<h$depth id="toc$TocCounter">$text</h$depth>};
-    } else {
-      $html .= qq{<h$depth>$text</h$depth>};
-    }
-    $html .= AddHtmlEnvironment('p');
-    $PortraitSupportColorDiv = 0; # after the HTML has been determined.
-    $PortraitSupportColor = 0;
-    return $html;
-  } elsif ($bol && defined(&HeadersRule)
-     && (m/\G((.+?)[ \t]*\n(---+|===+)[ \t]*\n)/gc)) {
-    my $depth = substr($3,0,1) eq '=' ? 2 : 3;
-    my $text = $2;
-    my $html = CloseHtmlEnvironments()
-      . ($PortraitSupportColorDiv ? '</div>' : '');
-    $html .= TocHeadings() if not $TocShown and $TocAutomatic;
-    $TocShown = 1 if $TocAutomatic;
-    if ($id_required) {
-      $TocCounter++;
-      $html .= qq{<h$depth id="toc$TocCounter">$text</h$depth>};
-    } else {
-      $html .= qq{<h$depth>$text</h$depth>};
-    }
-    $html .= AddHtmlEnvironment('p');
-    $PortraitSupportColorDiv = 0; # after the HTML has been determined.
-    $PortraitSupportColor = 0;
-    return $html;
+    # A backwards-compatibility fix! Antiquated versions of this module
+    # accepted markup resembling:
+    #   <toc/${CLASS_NAME_1}/${CLASS_NAME_2}/...>
+    #
+    # which this conditional converts to the more conventional:
+    #   <toc class="${CLASS_NAME_1} ${CLASS_NAME_2} ...">
+    if ($toc_class_old) {
+      $toc_class = $toc_class_old;
+      $toc_class =~ tr~/~ ~;
+    } $toc_class = $TocClass.($toc_class ? ' '.$toc_class : '');
+
+    # If the topmost HTML tag is a paragraph, then the table of contents will
+    # be the first child element of that paragraph; however, embedding that
+    # table in a paragraph is quite unnecessary, and even obstructs our
+    # CSS stylization of that table elsewhere. In this case, we close this
+    # paragraph; this ensures that paragraph will have no content and
+    # therefore be removed, later, by the Oddmuse engine. This is slightly
+    # hacky -- but sufficiently necessary.
+    return ($HtmlStack[0] eq 'p' ? CloseHtmlEnvironment() : '')
+      .qq{<!-- toc header_text="$toc_header_text" class="$toc_class" -->}
+      .AddHtmlEnvironment('p');
   }
   return undef;
 }
 
-sub TocHeadings {
-  # avoid recursion
-  return if $TocProcessing > 1;
-  local $TocProcessing = $TocProcessing + 1;
-  # these numbers must be temporary
-  local $TocCounter;
-  # don't mess up \G
-  my ($oldpos, $old_) = (pos, $_);
-  my $class = 'toc' . join(' ', @_);
-  my $key =   'toc';
+=head2 RunMyRulesToc
 
-  # Double rendering to make sure we get the table of contents right,
-  # even though we don't know what markup rules are in effect.
-  my $html =  TocPageHtml($TocPage);
-  my $Headings = $q->h2(T($TocHeaderText));
-  my $HeadingsLevel      = undef;
-  my $HeadingsLevelStart = undef;
-  my $count = 1;
+Automates insertion of the <toc ...> markup for Wiki pages not explicitly
+specifying it. This searches the current page's HTML output for the first HTML
+header tag for that page and, when found, automatically inserts <toc ...> markup
+immediately before that tag.
 
-  while ($html =~ m!<h([1-6]) id=[^>]*>(.*?)</h[1-6]>!g) {
-    my ($depth, $text) = ($1, $2);
-    my $link = $key . $count;
-    $text = QuoteHtml($text);
-    if (not defined $HeadingsLevelStart) {
-      # $HeadingsLevel is set to $depth - 1 so that we get an opening
-      # of the list.  We need $HeadingsLevelStart to close all open
-      # tags at the end.
-      $HeadingsLevel      = $depth - 1;
-      $HeadingsLevelStart = $depth - 1;
+=cut
+sub RunMyRulesToc {
+  my $html = RunMyRulesTocOld(@_);
+
+  # Some markup rule converted the input Wiki markup into HTML. If this HTML is
+  # an HTML header tag, then we add a new "id" tag attribute to it (so as to
+  # uniquely identify it for later linking to from the table of contents).
+  if ($html) {
+    if ($TocAutomatic and not $TocHeaderNumber and $bol and $html =~
+      s~(<h[1-6][^>]*>)
+       ~<!-- toc header_text="$TocHeaderText" class="$TocClass" -->$1~x) {
+      $TocHeaderNumber = 1;
     }
-    $count++;
-    # if the first subheading is has depth 2, then
-    # $HeadingsLevelStart is 1, and later subheadings may not be
-    # at level 1 or below.
-    $depth = $HeadingsLevelStart + 1 if $depth <= $HeadingsLevelStart;
-    $depth = 6 if $depth > 6;
-    # the order of the three expressions is important!
-    while ($HeadingsLevel > $depth) {
-      $Headings .= '</li></ol>';
-      $HeadingsLevel--;
+
+    # If we've seen at least one HTML header and we're not currently in the
+    # sidebar (as is the odd case when $TocPageName ne $OpenPageName), then
+    # add a unique identifier to all (possible) HTML headers in this string.
+    #
+    # If we are in the sidebar, we musn't add such an identifier. HTML headers
+    # in the sidebar are not vital to warrant listing in the table of contents
+    # for the page to which they're attached. (Hah!)
+    if ($TocHeaderNumber and not InElement('div', 'class="sidebar"')) {
+      # To avoid infinite substitution recursion, we avoid matching header tags
+      # already having id attributes. Unfortunately, I'm not as adept a regular
+      # expression wizard as I should be, and was unable to get a negative
+      # lookahead expression resembling (?!\s+id=".*?") to work. As such, I
+      # use a simple negative character class hack. *shrug*
+      while ($html =~ s~<h([1-6](\s+[^i]\w+\s+=\s+"[^"]")*)>
+        ~<h$1 id="$TocAnchorPrefix$TocHeaderNumber">~cgx) {
+        $TocHeaderNumber++;
+      }
     }
-    if ($HeadingsLevel == $depth) {
-      $Headings .= '</li><li>';
-    }
-    while ($HeadingsLevel < $depth) {
-      $Headings .= '<ol><li>';
-      $HeadingsLevel++;
-    }
-    $Headings .= "<a href=\"#$link\">$text</a>";
   }
-  while ($HeadingsLevel > $HeadingsLevelStart) {
-    $Headings .= '</li></ol>';
-    $HeadingsLevel--;
-  }
-  ($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
-  return '' if $count <= 2;
-  return $q->div({-class=>$class}, $Headings) if $Headings;
-}
-
-# A Footnotes extension-specific hack; see TocPageHtml() comments, below.
-use vars qw(@FootnoteList);
-
-sub TocPageHtml {
-  # HACK ALERT: PageHtml -> PrintPageHtml -> PrintWikiToHTML with
-  # $savecache = 1, but the cache will not be saved because
-  # $Page{blocks} and $Page{flags} are already equal unless we
-  # localize them here. Without localization, the first request
-  # returns the correct TOC, but subsequent requests from the cache do
-  # not. (A "local %Page;" will not work here, since that hash has within it
-  # several hash entries that must be persisted unmolested through the call to
-  # "PageHtml": namely, $Page{text}, having the raw Wiki text for this page).
-  local $Page{blocks};
-  local $Page{flags};
-
-  # HACK ALERT: If using the Footnotes extension and this page has at least
-  # one such footnote, ensure the list of those footnotes is properly saved and
-  # restored in between calls to this function. (i.e., "...nuthin' to see here,
-  # folks.")
-  my @FootnoteListOld = @FootnoteList if defined &FootnotesRule;
-  my $html = PageHtml(shift);
-     @FootnoteList = @FootnoteListOld if defined &FootnotesRule;
 
   return $html;
 }
+
+# ....................{ MARKUP =after                      }....................
+push(@MyAfterApplyRules, \&TocAfterApplyRule);
+
+my $TocCommentPattern = qr~\Q<!-- toc\E.*?\Q -->\E~;
+
+sub TocAfterApplyRule {
+  my ($html_, $blocks_, $flags_) = @_;
+
+  # If there are at least two HTML headers on this page, insert a table of
+  # contents.
+  if ($TocHeaderNumber > 2) {
+    $$html_ =~ s~\Q<!-- toc header_text="\E([^"]+)\Q" class="\E([^"]+)\Q" -->\E~
+      GetTocHtml($html_, $blocks_, $1, $2)~e;
+  }
+  # Otherwise, remove the table of contents placeholder comment.
+  else {
+    $$html_   =~ s~$TocCommentPattern~~;
+    $$blocks_ =~ s~$TocCommentPattern~~;
+  }
+}
+
+sub GetTocHtml {
+  my ($html_, $blocks_, $toc_header_text, $toc_class) = @_;
+  my $toc_html =
+     $q->start_div({-class=> $toc_class})
+    .$q->h2(T($toc_header_text));
+
+  # This forces evaluation of the "while ($list_depth < $header_depth) {"
+  # clause on the first iteration of the outer while loop. Yes: trust us.
+  my $list_depth = 0;
+
+  while ($$html_ =~ m~<h([1-6])[^>]* id="($TocAnchorPrefix\d+)">(.*?)</h\1>~cg) {
+    my ($header_depth, $header_id, $header_text) = ($1, $2, $3);
+
+    # Strip all links from header text. (They unnecessarily convolute the
+    # interface, since the header text is already embedded in a link to the
+    # appropriate header in the dialogue script's body.)
+    $header_text =~ s~<a[^>]*>(.*?)</a>~$1~;
+
+    # By Usemod convention, all headers begin with depth 2. This algorithm,
+    # however, expects headers to begin with depth 1. Thus, to "streamline"
+    # things, we transform it appropriately. ;-)
+    if (defined &UsemodRule) { $header_depth--; }
+
+    # If this is the first header and if this header's depth is deeper than 1,
+    # we manually clamp this header's depth to 1 so as to ensure the first list
+    # item in the first ordered list resides at depth 1. (Failure to do this
+    # produces very odd ordered lists.)
+    if (not $list_depth and $header_depth > 1) { $header_depth = 1; }
+
+    # Close ordered lists and list items for prior headings deeper than this
+    # heading's depth.
+    while ($list_depth > $header_depth) {
+           $list_depth--;
+      $toc_html .= '</li></ol>';
+    }
+
+    # If the current ordered list is at this heading's depth, add this heading
+    # as a list item to that list.
+    if ($list_depth == $header_depth) {
+      $toc_html .= '</li><li>';
+    }
+    # Otherwise, add ordered lists and list items until at this heading's depth.
+    else {
+      while ($list_depth < $header_depth) {
+             $list_depth++;
+        $toc_html .= '<ol><li>';
+      }
+    }
+
+    $toc_html .= "<a href=\"#$header_id\">$header_text</a>";
+  }
+
+  # Close ordered lists and list items for the last heading.
+  while ($list_depth--) { $toc_html .= '</li></ol>'; }
+
+  $toc_html .= $q->end_div();
+
+  # Lastly, perform the same replacement on the cached version of this clean
+  # block. (Failure to do this would ensure the first creation of this page
+  # would emit the proper HTML, but all subsequent refreshings of this page
+  # the improperly cached version.)
+  $$blocks_ =~ s~$TocCommentPattern~$toc_html~;
+
+  return $toc_html;
+}
+
+=head1 TODO
+
+This extension no longer cleanly integrates with the Sidebar extension, since
+this extension now prints the table of contents for a page after having printed
+all other content for that page (rather than while printing all content for that
+page, as was previously the case).
+
+This is correctable, of course. But it means a bit of refactor work -- work
+which, frankly, I don't much have time for at the moment. I, myself, do not use
+the Sidebar extension; and even if I did, am unconvinced that this extension and
+the Sidebar extension should be as deeply integrated as they were, previously.
+
+Interested parties, though, may be interested in pursuing this solution:
+
+=over
+
+=item Change the C<BrowsePage> function in B<wiki.pl> so as to print the 
+
+=back
+
+=back
 
 =head1 COPYRIGHT AND LICENSE
 
 The information below applies to everything in this distribution,
 except where noted.
 
-Copyright 2004, 2005, 2006, 2007 by Alex Schroeder <alex@emacswiki.org>.
 Copyleft  2008                   by B.w.Curry <http://www.raiazome.com>.
+Copyright 2004, 2005, 2006, 2007 by Alex Schroeder <alex@emacswiki.org>.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

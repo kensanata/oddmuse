@@ -1,3 +1,4 @@
+#!/usr/bin/env perl
 # Copyright (C) 2008  Weakish Jiang <weakish@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -7,7 +8,7 @@
 # You can get a copy of GPL version 2 at
 # http://www.gnu.org/licenses/gpl-2.0.html
 
-# $Id: creoleaddition.t,v 1.10 2008/10/06 06:11:21 leycec Exp $
+# $Id: creoleaddition.t,v 1.11 2008/11/15 12:48:13 leycec Exp $
 
 require 't/test.pl';
 package OddMuse;

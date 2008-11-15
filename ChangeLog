@@ -1,5 +1,19 @@
 2008-11-15  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
+	* modules/sidebar.pl: Refactored. This is a complete rewrite
+	removing all previous module-specific hacks. However, as it is a
+	rewrite, it may still have issues. (Fortunately, time is the mother
+	of invention and bug fixes.)
+	* modules/toc.pl: Refactored. This is a complete rewrite
+	removing all previous module-specific hacks. As with "sidebar.pl",
+	it may still have issues. That said -- I'm relatively proud of it,
+	and confident that it (should) stand up under rigorous scrutinies,
+	utilization, and brutalization.
+	* modules/forms.pl (FormsRule): Slightly revised, so as to comply
+	with the "sidebar.pl" refactoring.
+
+2008-11-15  Brian Curry  <http://www.raiazome.com/Brian_Curry>
+
 	* wiki.pl (@MyAfterApplyRules): New global list. This is a list of
 	subroutine references, much like @MyRules. Unlike @MyRules, whose
 	subroutines are called by ApplyRules() while iterating through wiki
