@@ -14,7 +14,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.55 2008/11/15 21:24:33 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.56 2008/11/16 01:00:09 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 

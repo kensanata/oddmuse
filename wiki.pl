@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.882 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.883 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -295,7 +295,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.882 2008/11/15 21:24:32 leycec Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.883 2008/11/16 01:00:07 leycec Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -669,7 +669,7 @@ sub AddHtmlEnvironment {  # add a new $html_tag
      ($html_tag_attr ? $HtmlAttrStack[0] =~ m/$html_tag_attr/ : 1))) {
     unshift(@HtmlStack,     $html_tag);
     unshift(@HtmlAttrStack, $html_tag_attr);
-    return $html_tag_attr ? "<$html_tag $html_tag_attr>" : "<$html_tag>";
+    return '<'.$html_tag.($html_tag_attr ? ' '.$html_tag_attr : '').'>';
   } return '';  # always return something
 }
 
@@ -758,14 +758,14 @@ sub PrintWikiToHTML {
   $FootnoteNumber = 0;
   $markup =~ s/$FS//go if $markup;  # Remove separators (paranoia)
   $markup = QuoteHtml($markup);
-  if (@MyBeforeApplyRules or @MyAfterApplyRules) {
+  &$_(\$markup, $is_saving_cache, $revision) foreach (@MyBeforeApplyRules);
+  if (@MyAfterApplyRules) {
     my $html = '';
-    &$_(\$markup, $is_saving_cache, $revision) foreach (@MyBeforeApplyRules);
     { local *STDOUT;
       open(  STDOUT, '>', \$html) or die "Can't open memory file: $!";
       ($blocks, $flags) = ApplyRules($markup, 1, $is_saving_cache, $revision, 'p');
       close  STDOUT; }
-    &$_(\$html, \$blocks, \$flags)             foreach (@MyAfterApplyRules);
+    &$_(\$html, \$blocks, \$flags) foreach (@MyAfterApplyRules);
     print $html;
   }
   else {

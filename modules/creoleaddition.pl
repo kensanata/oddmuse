@@ -22,7 +22,7 @@ creoleaddition is simply installable; simply:
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.23 2008/11/15 21:24:33 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.24 2008/11/16 01:00:10 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
