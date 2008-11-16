@@ -11,7 +11,7 @@ toc is easily installable; move this file into the B<wiki/modules/>
 directory for your Oddmuse Wiki.
 
 =cut
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.55 2008/11/15 12:48:13 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.56 2008/11/16 01:00:11 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 

@@ -19,7 +19,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: poetry.pl,v 1.5 2008/11/15 21:24:33 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: poetry.pl,v 1.6 2008/11/16 01:00:11 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
