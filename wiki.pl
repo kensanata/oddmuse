@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.883 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.884 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -295,7 +295,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.883 2008/11/16 01:00:07 leycec Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.884 2008/11/20 11:45:45 leycec Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -641,7 +641,7 @@ sub LinkRules {
 sub SetHtmlEnvironmentContainer {
   my ($html_tag, $html_tag_attr) = @_;
   $HtmlEnvironmentContainers{$html_tag} = defined $html_tag_attr ? (
-  $HtmlEnvironmentContainers{$html_tag} ? $HtmlEnvironmentContainers{$html_tag}.'|' : '').
+  $HtmlEnvironmentContainers{$html_tag} ? '|'.$HtmlEnvironmentContainers{$html_tag} : '').
     $html_tag_attr : '';
 }
 
@@ -701,8 +701,8 @@ sub CloseHtmlEnvironments { # close all -- remember to use AddHtmlEnvironment('p
   my $html = '';
   while (@HtmlStack) {
     defined $HtmlEnvironmentContainers{$HtmlStack[0]} and  # avoid closing block level elements
-      ($HtmlEnvironmentContainers{$HtmlStack[0]} ? $HtmlAttrStack[0] =~
-     m/$HtmlEnvironmentContainers{$HtmlStack[0]}/ : 1) and return $html;
+           ($HtmlEnvironmentContainers{$HtmlStack[0]} ? $HtmlAttrStack[0] =~
+          m/$HtmlEnvironmentContainers{$HtmlStack[0]}/ : 1) and return $html;
                   shift(@HtmlAttrStack);
     $html .= '</'.shift(@HtmlStack).'>';
   } return $html;
