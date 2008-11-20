@@ -1,3 +1,22 @@
+2008-11-21  Brian Curry  <http://www.raiazome.com/Brian_Curry>
+
+	* wiki.pl (SetHtmlEnvironmentContainer): Corrected a slight, but
+	significant, typo.
+	* modules/sidebar.pl: Reverted. I underestimated the scope of
+	changes needed to bring this module in line with recent, other
+	changes to the Table of Contents module. The good news is that the
+	reverted Sidebar module now works as expected for all modules except
+	the Table of Contents module; of course, the bad news is that the
+	reverted Sidebar module no longer works for the Table of Contents
+	module. (Unfortunately, we can't have both, here.) I will be
+	recommitting my changes to this module as a new module, therefore,
+	named "modules/crossbar.pl" -- sometime, soon. That new module
+	will (probably) break backwards compatibility with this module, but
+	will otherwise behave as expected... with all modules.
+	* t/sidebar.t: Prevented testing against the Table of Contents
+	module, as the Sidebar module is now known not to work with that
+	module.
+
 2008-11-16  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
 	* wiki.pl (PrintWikiToHTML): Slightly reordered function calls,
