@@ -11,7 +11,7 @@ toc is easily installable; move this file into the B<wiki/modules/>
 directory for your Oddmuse Wiki.
 
 =cut
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.56 2008/11/16 01:00:11 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.57 2008/11/23 22:13:29 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -176,10 +176,10 @@ sub RunMyRulesToc {
     # sidebar (as is the odd case when $TocPageName ne $OpenPageName), then
     # add a unique identifier to all (possible) HTML headers in this string.
     #
-    # If we are in the sidebar, we musn't add such an identifier. HTML headers
-    # in the sidebar are not vital to warrant listing in the table of contents
+    # If we are in the Sidebar, we musn't add such an identifier. HTML headers
+    # in the Sidebar are not vital to warrant listing in the table of contents
     # for the page to which they're attached. (Hah!)
-    if ($TocHeaderNumber and not InElement('div', 'class="sidebar"')) {
+    if ($TocHeaderNumber and not InElement('div', '^class="\w+bar"$')) {
       # To avoid infinite substitution recursion, we avoid matching header tags
       # already having id attributes. Unfortunately, I'm not as adept a regular
       # expression wizard as I should be, and was unable to get a negative
@@ -281,28 +281,6 @@ sub GetTocHtml {
 
   return $toc_html;
 }
-
-=head1 TODO
-
-This extension no longer cleanly integrates with the Sidebar extension, since
-this extension now prints the table of contents for a page after having printed
-all other content for that page (rather than while printing all content for that
-page, as was previously the case).
-
-This is correctable, of course. But it means a bit of refactor work -- work
-which, frankly, I don't much have time for at the moment. I, myself, do not use
-the Sidebar extension; and even if I did, am unconvinced that this extension and
-the Sidebar extension should be as deeply integrated as they were, previously.
-
-Interested parties, though, may be interested in pursuing this solution:
-
-=over
-
-=item Change the C<BrowsePage> function in B<wiki.pl> so as to print the 
-
-=back
-
-=back
 
 =head1 COPYRIGHT AND LICENSE
 

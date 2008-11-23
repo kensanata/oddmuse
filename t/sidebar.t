@@ -95,4 +95,3 @@ test_page(get_page("action=browse id=$SidebarName cache=0"), #update_page($Sideb
 # correctly.
 test_page(get_page('HomePage'),
     '<div class="sidebar"><form><h1>mu</h1></form></div>');
-# test_page(get_page('HomePage'), '<div class="sidebar"><p>&lt;form&gt;&lt;h1&gt;mu&lt;/h1&gt;&lt;/form&gt;</p></div>');

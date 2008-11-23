@@ -1,5 +1,19 @@
 2008-11-24  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
+	* modules/crossbar.pl: New module. Provides a sustainable
+	replacement for the Sidebar module, for all Sidebar users
+	requiring a cleaner integration of that module with other modules
+	like the Table of Contents and Footnote modules. This new module
+	also improves Sidebar customizability by permitting users to place
+	the "Crossbar" at any position in any page.
+	* modules/forms.pl (FormsRules): Generalized so as to support both
+	the Sidebar and Crossbar modules.
+	* modules/toc.pl (RunMyRulesToc): Generalized so as to support both
+	the Sidebar and Crossbar modules.
+	* t/crossbar.t: New test suite, testing the Crossbar module.
+
+2008-11-24  Brian Curry  <http://www.raiazome.com/Brian_Curry>
+
 	* wiki.pl (GetEditForm): Added the 'upload' class attribute to 
 	upload links produced by this function, for CSS stylization.
 	(BrowsePage): Calls the new "PrintPageContent" function.
