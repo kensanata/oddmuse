@@ -1,5 +1,4 @@
 #! /usr/bin/perl
-
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008
 #     Alex Schroeder <alex@gnu.org>
 # ... including lots of patches from the UseModWiki site
@@ -19,14 +18,13 @@
 # the terms of the GNU General Public License as published by the Free Software
 # Foundation, either version 3 of the License, or (at your option) any later
 # version.
-
+#
 # This program is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 # FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
+#
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
-
 package OddMuse;
 
 use strict;
@@ -35,7 +33,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.884 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.885 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -70,7 +68,6 @@ $WikiDescription $PrintedHeader %Locks $Fragment @Blocks @Flags $Today
 %RssInterwikiTranslate);
 
 # == Configuration ==
-
 # Can be set outside the script: $DataDir, $UseConfig, $ConfigFile,
 # $ModuleDir, $ConfigPage, $AdminPass, $EditPass, $ScriptName,
 # $FullUrl, $RunCGI.
@@ -81,7 +78,6 @@ $UseConfig   = 1 unless defined $UseConfig;
 # Main wiki directory
 $DataDir     = $ENV{WikiDataDir} if $UseConfig and not $DataDir;
 $DataDir     = '/tmp/oddmuse' unless $DataDir; # FIXME: /var/opt/oddmuse/wiki ?
-
 $ConfigPage  = '' unless $ConfigPage; # config page
 
 # 1 = Run script as CGI instead of loading as module
@@ -295,7 +291,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.884 2008/11/20 11:45:45 leycec Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.885 2008/11/23 22:08:34 leycec Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -767,8 +763,7 @@ sub PrintWikiToHTML {
       close  STDOUT; }
     &$_(\$html, \$blocks, \$flags) foreach (@MyAfterApplyRules);
     print $html;
-  }
-  else {
+  } else {
     ($blocks, $flags) = ApplyRules($markup, 1, $is_saving_cache, $revision, 'p');
   }
   if ($is_saving_cache and not $revision and $Page{revision} # don't save revision 0 pages
@@ -1305,8 +1300,7 @@ sub PrintPageDiff {   # print diff for open page
   }
 }
 
-#FIXME: A bit buggy, this. STDOUT should be explicitly closed before returning.
-sub PageHtml {
+sub PageHtml {  #FIXME: A bit buggy, this. STDOUT should be explicitly closed before returning.
   my ($id, $limit, $error) = @_;
   my $result = '';
   local *STDOUT;
@@ -1321,7 +1315,6 @@ sub PageHtml {
 }
 
 # == Translating ==
-
 sub T {
   my $text = shift;
   return $Translate{$text} if $Translate{$text};
@@ -1459,21 +1452,7 @@ sub BrowsePage {
     PrintHtmlDiff($showDiff, GetParam('diffrevision', $revision), $revision, $text);
     print $q->hr();
   }
-  print $q->start_div({-class=>'content browse'});
-  if ($revision eq '' and $Page{blocks} and GetParam('cache', $UseCache) > 0) {
-    PrintCache();
-  } else {
-    my $savecache = ($Page{revision} > 0 and $revision eq ''); # new page not cached
-    PrintWikiToHTML($text, $savecache, $revision); # unlocked, with anchors, unlocked
-  }
-  if ($comment) {
-    print $q->start_div({-class=>'preview'}), $q->hr();
-    print $q->h2(T('Preview:'));
-    # no caching, current revision, unlocked
-    PrintWikiToHTML(AddComment('', $comment));
-    print $q->hr(), $q->h2(T('Preview only, not yet saved')), $q->end_div();
-  }
-  print $q->end_div();
+  PrintPageContent($text, $revision, $comment);
   SetParam('rcclusteronly', $id) if FreeToNormal(GetCluster($text)) eq $id; # automatically filter by cluster
   PrintRcHtml($id);
   PrintFooter($id, $revision, $comment);
@@ -2358,6 +2337,24 @@ sub GetCss {      # prevent javascript injection
   return join('', map { qq(<link type="text/css" rel="stylesheet" href="$_" />) } @css);
 }
 
+sub PrintPageContent {
+  my ($text, $revision, $comment) = @_;
+  print $q->start_div({-class=>'content browse'});
+  if ($revision eq '' and $Page{blocks} and GetParam('cache', $UseCache) > 0) {
+    PrintCache();
+  } else {
+    my $savecache = ($Page{revision} > 0 and $revision eq ''); # new page not cached
+    PrintWikiToHTML($text, $savecache, $revision); # unlocked, with anchors, unlocked
+  }
+  if ($comment) {
+    print $q->start_div({-class=>'preview'}), $q->hr();
+    print $q->h2(T('Preview:'));
+    # no caching, current revision, unlocked
+    PrintWikiToHTML(AddComment('', $comment));
+    print $q->hr(), $q->h2(T('Preview only, not yet saved')), $q->end_div();
+  } print $q->end_div();
+}
+
 sub PrintFooter {
   my ($id, $rev, $comment) = @_;
   if (GetParam('embed', $EmbedWiki)) {
@@ -3075,30 +3072,30 @@ sub DoEdit {
 }
 
 sub GetEditForm {
-  my ($id, $upload, $oldText, $revision) = @_;
+  my ($page_name, $upload, $oldText, $revision) = @_;
   my $html = GetFormStart(undef, undef, $upload ? 'edit upload' : 'edit text') # protected by questionasker
-    . $q->p(GetHiddenValue("title", $id), ($revision ? GetHiddenValue('revision', $revision) : ''),
-      GetHiddenValue('oldtime', $Page{ts}),
-      ($upload ? GetUpload() : GetTextArea('text', $oldText)));
+    .$q->p(GetHiddenValue("title", $page_name), ($revision ? GetHiddenValue('revision', $revision) : ''),
+           GetHiddenValue('oldtime', $Page{ts}), ($upload ? GetUpload() : GetTextArea('text', $oldText)));
   my $summary = UnquoteHtml(GetParam('summary', ''))
     || ($Now - $Page{ts} < ($SummaryHours * 3600) ? $Page{summary} : '');
-  $html .= $q->p(T('Summary:'), $q->br(), GetTextArea('summary', $summary, 2))
-    . $q->p($q->checkbox(-name=>'recent_edit', -checked=>(GetParam('recent_edit', '') eq 'on'),
-       -label=>T('This change is a minor edit.')));
+  $html .= $q->p(T('Summary:').$q->br().GetTextArea('summary', $summary, 2))
+    .$q->p($q->checkbox(-name=>'recent_edit', -checked=>(GetParam('recent_edit', '') eq 'on'),
+                        -label=>T('This change is a minor edit.')));
   $html .= T($EditNote) if $EditNote; # Allow translation
   my $username = GetParam('username', '');
-  $html .= $q->p($q->label({-for=>'username'}, T('Username:')) . ' '
-     . $q->textfield(-name=>'username', -id=>'username', -default=>$username,
-         -override=>1, -size=>20, -maxlength=>50))
-    . $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save')),
-      ($upload ? '' : ' ' . $q->submit(-name=>'Preview', -accesskey=>T('p'), -value=>T('Preview'))),
-      ' ', $q->submit(-name=>'Cancel', -value=>T('Cancel')));
+  $html .= $q->p($q->label({-for=>'username'}, T('Username:')).' '
+    .$q->textfield(-name=>'username', -id=>'username', -default=>$username,
+                   -override=>1, -size=>20, -maxlength=>50))
+    .$q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save')),
+           ($upload ? '' : ' ' . $q->submit(-name=>'Preview', -accesskey=>T('p'), -value=>T('Preview'))).
+           ' '.$q->submit(-name=>'Cancel', -value=>T('Cancel')));
   if ($upload) {
-    $html .= $q->p(ScriptLink('action=edit;upload=0;id=' . UrlEncode($id), T('Replace this file with text')));
-  } elsif ($UploadAllowed or UserIsAdmin()) {
-    $html .= $q->p(ScriptLink('action=edit;upload=1;id=' . UrlEncode($id), T('Replace this text with a file')));
+    $html .= $q->p(ScriptLink('action=edit;upload=0;id='.UrlEncode($page_name), T('Replace this file with text'),   'upload'));
   }
-  $html .= $q->endform(), $q->end_div();
+  elsif ($UploadAllowed or UserIsAdmin()) {
+    $html .= $q->p(ScriptLink('action=edit;upload=1;id='.UrlEncode($page_name), T('Replace this text with a file'), 'upload'));
+  }
+  $html .= $q->endform().$q->end_div();
   return $html;
 }
 
@@ -3683,7 +3680,7 @@ sub Save {      # call within lock, with opened page
     SetParam('msg', Ts('Cannot delete the index file %s.', $IndexFile)
        . ' ' . T('Please check the directory permissions.')
        . ' ' . T('Your changes were not saved.'));
-    return;
+    return 0;
   }
   ReInit($id);
   my $ts = time;
