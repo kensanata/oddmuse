@@ -28,7 +28,7 @@ InitVariables(); # do this after loading usemod.pl!
 # Note that we're not calling TocInit between tests, so we rely on
 # them being run in order.
 run_tests('== make honey ==\n\nMoo.\n',
-          qq{<!-- toc header_text="Contents" class="toc" --><h2 id="${TocAnchorPrefix}1">make honey</h2><p>Moo.</p>},
+          qq{<!-- toc header_text="$TocHeaderText" class="toc" --><h2 id="${TocAnchorPrefix}1">make honey</h2><p>Moo.</p>},
           '== make honey ==\nMoo.\n== make honey ==\nMoo.\n',
           qq{<h2 id="${TocAnchorPrefix}2">make honey</h2><p>Moo. </p><h2 id="${TocAnchorPrefix}3">make honey</h2><p>Moo.</p>},
          );
@@ -70,7 +70,7 @@ test_page(update_page('toc', "bla\n"
     quotemeta(qq{<ol><li><a href="#${TocAnchorPrefix}1">one</a></li><li><a href="#${TocAnchorPrefix}2">two</a></li><li><a href="#${TocAnchorPrefix}3">two</a></li></ol>}),
     quotemeta(qq{<h2 id="${TocAnchorPrefix}1">one</h2>}),
     quotemeta(qq{<h2 id="${TocAnchorPrefix}2">two</h2>}),
-    quotemeta('bla </p><div class="toc"><h2>Contents</h2><ol><li><a '),
+    quotemeta(qq{bla </p><div class="toc"><h2>$TocHeaderText</h2><ol><li><a }),
     quotemeta(qq{two</a></li></ol></div><h2 id="${TocAnchorPrefix}1">one</h2>}));
 
 test_page(update_page('toc', "bla\n"
@@ -94,7 +94,7 @@ test_page(update_page('toc', "bla\n"
     quotemeta(qq{<ol><li><a href="#${TocAnchorPrefix}1">two</a><ol><li><a href="#${TocAnchorPrefix}2">three</a></li></ol></li><li><a href="#${TocAnchorPrefix}3">one</a></li></ol>}),
     quotemeta(qq{<h2 id="${TocAnchorPrefix}1">two</h2>}),
     quotemeta(qq{<h2 id="${TocAnchorPrefix}3">one</h2>}),
-    quotemeta('bla </p><div class="toc"><h2>Contents</h2><ol><li><a '),
+    quotemeta(qq{bla </p><div class="toc"><h2>$TocHeaderText</h2><ol><li><a }),
     quotemeta('one</a></li></ol></div><p>murks'));
 
 test_page(update_page('toc', "bla\n"

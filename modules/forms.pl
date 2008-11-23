@@ -1,14 +1,15 @@
 #!/usr/bin/env perl
 # ====================[ forms.pl                           ]====================
 
-$ModulesDescription .= '<p>$Id: forms.pl,v 1.7 2008/11/15 12:48:13 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: forms.pl,v 1.8 2008/11/23 22:13:29 leycec Exp $</p>';
 
 # ....................{ MARKUP                             }....................
 push(@MyRules, \&FormsRule);
 
 sub FormsRule {
-  if (-f GetLockedPageFile($OpenPageName) or (InElement('div', 'class="sidebar"') and
-      -f GetLockedPageFile($SidebarName))) {
+  if (-f GetLockedPageFile($OpenPageName) or (InElement('div', '^class="sidebar"$') and
+      -f GetLockedPageFile($SidebarName)) or (InElement('div', '^class="crossbar"$') and
+      -f GetLockedPageFile($CrossbarPageName))) {
     if (/\G(\&lt;form.*?\&lt;\/form\&gt;)/cgs) {
       my $form = $1;
       my $oldpos = pos;
