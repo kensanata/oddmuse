@@ -14,7 +14,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.56 2008/11/16 01:00:09 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.57 2008/11/24 01:34:48 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -193,7 +193,7 @@ sub CreoleRule {
   # make interlinks (i.e., links to Wiki pages on other, external Wikis) and,
   # and, if false, should not. (Typically, Oddmuse sets this to false when
   # including external HTML pages into local Wiki pages.)
-  my ($is_intralinking, $is_intraanchoring) = @_;
+  my ($is_interlinking, $is_intraanchoring) = @_;
 
   # Block level elements.
   if ($bol) {
@@ -274,7 +274,7 @@ sub CreoleRule {
                      -alt=> $text,
                      -class=> 'upload'}))), $text);
   }
-  # image link: [[url|{{url}}]] and [[url|{{url|link}}]]
+  # image link: [[url|{{url}}]] and [[url|{{url|text}}]]
   elsif (m/\G\[\[$FullUrlPattern$CreoleLinkPipePattern
              \{\{$FullUrlPattern$CreoleLinkTextPattern\}\}\]\]/cgosx) {
     return GetCreoleImageHtml(
@@ -298,8 +298,6 @@ sub CreoleRule {
   }
   # link: [[page]] and [[page|text]]
   elsif (m/\G(\[\[$FreeLinkPattern$CreoleLinkTextPattern\]\])/cgos) {
-    # Permit embedding of Creole syntax within link text. (Rather complicated,
-    # but it does the job remarkably.)
     my $markup =    $1;
     my $page_name = $2;
     my $link_text = $4 ? CreoleRuleRecursive($4, @_) : NormalToFree($page_name);
@@ -307,9 +305,31 @@ sub CreoleRule {
     return GetCreoleLinkHtml($markup,
       GetPageOrEditLink($page_name, $link_text, 0, 1), $link_text);
   }
-  #TODO: Handle interwiki links, here, as well, so as to permit embedding of
-  #Creole syntax within interwiki link text. That's a bit more work, though; so
-  #we'll leave it for a slower day.
+  # interlink: [[Wiki:page]] and [[Wiki:page|text]]
+  elsif ($is_interlinking and
+         m/\G(\[\[$FreeInterLinkPattern$CreoleLinkTextPattern\]\])/cgos) {
+    my $markup =    $1;
+    my $interlink = $2;
+    my $interlink_text = $4;
+    my ($site_name, $page_name) = $interlink =~ m~^($InterSitePattern):(.*)$~;
+
+    # Permit embedding of Creole syntax within interlink text. We operate on
+    # "$interlink_text", rather than "$4", since that ordinal has already been
+    # overridden by the above regular expression match.
+    $interlink_text =       $interlink_text
+      ? CreoleRuleRecursive($interlink_text, @_)
+      :  $q->span({-class=> 'site'}, $site_name)
+        .$q->span({-class=> 'separator'}, ':')
+        .$q->span({-class=> 'page'}, NormalToFree($page_name));
+
+    # If the Wiki for this interlink is a registered Wiki (that is, it appears
+    # in this Wiki's "$InterMap" page), then produce an interlink to it;
+    # otherwise, produce a normal intralink to a page on this Wiki.
+    return GetCreoleLinkHtml($markup,
+        $InterSite{$site_name}
+      ? GetInterLink     ($interlink, $interlink_text, 0, 1)
+      : GetPageOrEditLink($page_name, $interlink_text, 0, 1), $interlink_text);
+  }
   #
   # Table syntax is matched last (or nearly last), so as to allow other Creole-
   # specific syntax within tables.
@@ -541,9 +561,6 @@ sub GetCreoleLinkHtml {
 *RunMyRulesCreoleOld = *RunMyRules;
 *RunMyRules =          *RunMyRulesCreole;
 
-# *CloseHtmlEnvironmentsCreoleOld = *CloseHtmlEnvironments;
-# *CloseHtmlEnvironments =          *CloseHtmlEnvironmentsCreole;
-
 =head2 RunMyRulesCreole
 
 Runs all markup rules for the current block of page markup. This redefinition
@@ -564,23 +581,6 @@ sub RunMyRulesCreole {
 
   return $html;
 }
-
-# =head2 CloseHtmlEnvironmentsCreole
-
-# Closes HTML environments for the current block level element, up to but not
-# including the "</table>" for the current block level element, if this block is
-# embedded within a table. This, though kludgy, is the "code magic" permitting
-# block level elements in multi-line table cells.
-
-# =cut
-# sub CloseHtmlEnvironmentsCreole {
-#   if ($CreoleTableCellsContainBlockLevelElements) {
-#        if (InElement('td')) { return CloseHtmlEnvironmentUntil('td'); }
-#     elsif (InElement('th')) { return CloseHtmlEnvironmentUntil('th'); }
-#   }
-
-#   return CloseHtmlEnvironmentsCreoleOld();
-# }
 
 =head2 CreoleRuleRecursive
 
