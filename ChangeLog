@@ -1,3 +1,12 @@
+2008-11-24  Alex Schroeder  <alex@gnu.org>
+
+	* modules/google-custom-search.pl ($GoogleCustomSearchEngine): New
+	option.
+	(GetSearchLink): Instead of overwriting it, use
+	NewGoogleCustomGetSearchLink. The code now uses ScriptLink instead
+	of a simple HTML link. This adds class, name, and rel attributes
+	automatically.
+
 2008-11-24  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
 	* modules/crossbar.pl (UserCanEditCrossbar): Deleted.
