@@ -33,7 +33,7 @@ crossbar is easily installable; move this file into the B<wiki/modules/>
 directory for your Oddmuse Wiki.
 
 =cut
-$ModulesDescription .= '<p>$Id: crossbar.pl,v 1.1 2008/11/23 22:13:29 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: crossbar.pl,v 1.2 2008/11/24 03:39:14 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 use vars qw($CrossbarPageName
@@ -105,6 +105,13 @@ sub CrossbarInit {
     *PrintPageContentCrossbarOld = *PrintPageContent;
     *PrintPageContent            = *PrintPageContentCrossbar;
   }
+
+  # If this user is an authenticated administrator, forcefully clear the page
+  # cache whenever saving the crossbar page.
+  if (UserIsAdmin()) {
+    *SaveCrossbarOld = *Save;
+    *Save            = *SaveCrossbar;
+  }
 }
 
 # ....................{ MARKUP =before                     }....................
@@ -175,46 +182,25 @@ sub PrintPageContentCrossbar {
 }
 
 # ....................{ EDITING                            }....................
-*UserCanEditCrossbarOld = *UserCanEdit;
-*UserCanEdit            = *UserCanEditCrossbar;
-
 *GetEditFormCrossbarOld = *GetEditForm;
 *GetEditForm            = *GetEditFormCrossbar;
-
-=head2 UserCanEditCrossbar
-
-Prevents non-administrators from editing the crossbar page, since saving that
-page implicitly clears the cache and since only administrators may clear the
-cache.
-
-=cut
-# FIXME: The default UserCanEdit() implementation should (probably) be amended
-# so as to disallow non-administrator edits of all pages in the $AdminPages
-# array. That, in turn, would obsolete this function.
-sub UserCanEditCrossbar {
-  my ($page_name, $editing, $comment) = @_;
-  my  $is_editable = UserCanEditCrossbarOld(@_);
-  if ($is_editable and $page_name eq $CrossbarPageName and not UserIsAdmin()) {
-      $is_editable = 0;
-  }
-  return $is_editable;
-}
 
 sub GetEditFormCrossbar {
   my ($page_name) = @_;
   return
-     ($page_name eq $CrossbarPageName ?
-      $q->p({-class=> 'crossbar_edit_message'},
-             $q->strong(T('Note: '))
-            .T('saving this page also clears the page cache for ')
-            .$q->em(T('all'))
-            .T(' pages.')) : '').
-     GetEditFormCrossbarOld(@_);
+    ($page_name eq $CrossbarPageName ?
+     $q->p({-class=> 'crossbar_edit_message'},
+           T(UserIsAdmin()
+             ? '<strong>You are currently logged in as an administrator.</strong> '
+             .'Saving this page propagates your crossbar changes to '
+             .'<em>all</em> other pages by forcefully clearing this Wiki\'s page cache.'
+             : '<strong>You are not currently logged in as an administrator.</strong> '
+             .'Saving this page only propagates your crossbar changes to <em>newly '
+             .'created </em> or <em>edited</em> pages &#x2014; but don\'t let that deter you!')) : '')
+    .GetEditFormCrossbarOld(@_);
 }
 
 # ....................{ SAVING                             }....................
-*SaveCrossbarOld = *Save;
-*Save            = *SaveCrossbar;
 
 =head2 SaveCrossbar
 
