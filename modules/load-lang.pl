@@ -1,8 +1,8 @@
-# Copyright (C) 2006  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006, 2008  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation; either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -11,12 +11,9 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: load-lang.pl,v 1.7 2007/11/11 10:57:55 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: load-lang.pl,v 1.8 2008/11/24 18:09:42 as Exp $</p>';
 
 $CookieParameters{interface} = '';
 
@@ -25,6 +22,7 @@ my %library= ('bg' => 'bulgarian-utf8.pl',
 	      'es' => 'spanish-utf8.pl',
 	      'fr' => 'french-utf8.pl',
 	      'fi' => 'finnish-utf8.pl',
+	      'gr' => 'greek-utf8.pl',
 	      'he' => 'hebrew-utf8.pl',
 	      'it' => 'italian-utf8.pl',
 	      'ja' => 'japanese-utf8.pl',
