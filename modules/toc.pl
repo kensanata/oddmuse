@@ -11,7 +11,7 @@ toc is easily installable; move this file into the B<wiki/modules/>
 directory for your Oddmuse Wiki.
 
 =cut
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.57 2008/11/23 22:13:29 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.58 2008/11/24 03:48:17 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -165,7 +165,11 @@ sub RunMyRulesToc {
   # Some markup rule converted the input Wiki markup into HTML. If this HTML is
   # an HTML header tag, then we add a new "id" tag attribute to it (so as to
   # uniquely identify it for later linking to from the table of contents).
-  if ($html) {
+  #
+  # If we are in a sidebar, we musn't add Table of Contents-specific comments
+  # or attributes. Sidebars tend to depend on their HTML being displayed "as is"
+  # to the user, without embellishments or change.
+  if ($html and not InElement('div', '^class="\w+bar"$')) {
     if ($TocAutomatic and not $TocHeaderNumber and $bol and $html =~
       s~(<h[1-6][^>]*>)
        ~<!-- toc header_text="$TocHeaderText" class="$TocClass" -->$1~x) {
@@ -175,11 +179,7 @@ sub RunMyRulesToc {
     # If we've seen at least one HTML header and we're not currently in the
     # sidebar (as is the odd case when $TocPageName ne $OpenPageName), then
     # add a unique identifier to all (possible) HTML headers in this string.
-    #
-    # If we are in the Sidebar, we musn't add such an identifier. HTML headers
-    # in the Sidebar are not vital to warrant listing in the table of contents
-    # for the page to which they're attached. (Hah!)
-    if ($TocHeaderNumber and not InElement('div', '^class="\w+bar"$')) {
+    if ($TocHeaderNumber) {
       # To avoid infinite substitution recursion, we avoid matching header tags
       # already having id attributes. Unfortunately, I'm not as adept a regular
       # expression wizard as I should be, and was unable to get a negative
@@ -281,6 +281,17 @@ sub GetTocHtml {
 
   return $toc_html;
 }
+
+=head1 TODO
+
+This extension no longer cleanly integrates with the Sidebar extension, since
+this extension now prints the table of contents for a page after having printed
+all other content for that page (rather than while printing all content for that
+page, as was previously the case).
+
+This is not correctable, unfortunately. The simplest solution is to suggest that
+current Sidebar users migrate to the Crossbar module -- and that is where I
+leave it.
 
 =head1 COPYRIGHT AND LICENSE
 
