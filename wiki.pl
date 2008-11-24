@@ -33,7 +33,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.885 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.886 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -291,7 +291,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.885 2008/11/23 22:08:34 leycec Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.886 2008/11/24 19:27:23 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -3893,6 +3893,7 @@ sub DoShowVersion {
     $q->p('XML::RSS: ', eval { local $SIG{__DIE__}; require XML::RSS; $XML::RSS::VERSION; }),
       $q->p('XML::Parser: ', eval { local $SIG{__DIE__}; $XML::Parser::VERSION; });
   print $q->p('diff: ' . (`diff --version` || $!)), $q->p('diff3: ' . (`diff3 --version` || $!)) if $UseDiff == 1;
+  print $q->p('grep: ' . (`grep --version` || $!)) if $UseGrep == 1;
   print $q->end_div();
   PrintFooter();
 }
