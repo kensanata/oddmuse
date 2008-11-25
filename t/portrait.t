@@ -16,7 +16,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 15;
+use Test::More tests => 18;
 
 clear_pages();
 add_module('portrait-support.pl');
@@ -70,11 +70,15 @@ test_page(update_page('headers', "[new]foo\n== one ==\ntext\n== two ==\ntext\n==
 #seems to be an infinite spin-loop. As such, until the underlying issue is
 #determined and resolved, I've temporarily disabled these tests. (Feel free to
 #re-enable them if you believe I've acted in error, of course!)
-# run_tests(split('\n',<<'EOT'));
-# [new]\nfoo
-# <div class="color one level0"><p> foo</p></div>
-# :[new]\nfoo
-# <div class="color two level1"><p> foo</p></div>
-# ::[new]\nfoo
-# <div class="color one level2"><p> foo</p></div>
-# EOT
+
+TODO: {
+  todo_skip 'these tests cause an infinite loop somewhere', 3, 1;
+run_tests(split('\n',<<'EOT'));
+[new]\nfoo
+<div class="color one level0"><p> foo</p></div>
+:[new]\nfoo
+<div class="color two level1"><p> foo</p></div>
+::[new]\nfoo
+<div class="color one level2"><p> foo</p></div>
+EOT
+}
