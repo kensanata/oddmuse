@@ -1,8 +1,8 @@
 2008-11-28  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
-	* modules/wiki.pl: Added a CVS-enabled version notice to this file's
-	header comments This should make it easier for Oddmuse users to
-	ascertain which Oddmuse version they're using.
+	* wiki.pl: Added a CVS-enabled version notice to this file's header
+	comments. This should make it easier for Oddmuse users to ascertain
+	which Oddmuse version they're using.
 
 2008-11-27  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
