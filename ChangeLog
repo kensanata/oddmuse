@@ -1,3 +1,12 @@
+2008-11-27  Brian Curry  <http://www.raiazome.com/Brian_Curry>
+
+	* modules/recaptcha.pl (ReCaptchaQuestionAddTo): Patched with a
+	Wiki-provided correction, courtesy Bayle Shanks. Apparently, the
+	previous regular expression in this function failed to match the
+	Comment form's HTML. This patch corrects that! The reCAPTCHA widget
+	is now properly displayed by both the Comment and Edit forms.
+	Thanks, Bayle. (http://bayleshanks.com)
+
 2008-11-25  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
 	* modules/forms.pl (FormsRule): Removed Sidebar-specific hack.
