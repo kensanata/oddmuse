@@ -26,7 +26,7 @@ recaptcha is simply installable; simply:
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: recaptcha.pl,v 1.5 2008/09/29 11:53:33 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: recaptcha.pl,v 1.6 2008/11/27 06:00:25 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -133,6 +133,7 @@ $ReCaptchaSecretKey = 'question';
   'edit text' =>   1
 );
 
+# ....................{ INITIALIZATION                     }....................
 push(@MyInitVariables, \&ReCaptchaInit);
 
 sub ReCaptchaInit {
@@ -142,6 +143,76 @@ sub ReCaptchaInit {
   $InvisibleCookieParameters{$ReCaptchaSecretKey} = 1;
 }
 
+# ....................{ EDITING                            }....................
+*OldReCaptchaGetEditForm = *GetEditForm;
+*GetEditForm = *NewReCaptchaGetEditForm;
+
+*OldReCaptchaGetCommentForm = *GetCommentForm;
+*GetCommentForm = *NewReCaptchaGetCommentForm;
+
+sub NewReCaptchaGetEditForm {
+  return ReCaptchaQuestionAddTo(OldReCaptchaGetEditForm(@_));
+}
+
+sub NewReCaptchaGetCommentForm {
+  return ReCaptchaQuestionAddTo(OldReCaptchaGetCommentForm(@_));
+}
+
+sub ReCaptchaQuestionAddTo {
+  my $form = shift;
+
+  if (not $upload
+      and not ReCaptchaException(GetId())
+      and not $ReCaptchaRememberAnswer && GetParam($ReCaptchaSecretKey, 0)
+      and not UserIsEditor()) {
+    $form =~
+      s/(\Q<p><input type="submit" name="Save"\E)/ReCaptchaGetQuestion().$1/e;
+  }
+
+  return $form;
+}
+
+sub ReCaptchaGetQuestion {
+  my $need_button = shift;
+
+  # Unfortunately, "Captcha::reCAPTCHA" produces invalid HTML for the reCAPTCHA theme.
+  # We must brute-force the proper HTML, instead.
+# my %recaptcha_options = ();
+# if (defined $ReCaptchaTheme)    { $recaptcha_options{theme} =    $ReCaptchaTheme; }
+# if (defined $ReCaptchaTabIndex) { $recaptcha_options{tabindex} = $ReCaptchaTabIndex; }
+
+  eval "use Captcha::reCAPTCHA";
+  my $captcha_html = Captcha::reCAPTCHA->new()->get_html(
+    $ReCaptchaPublicKey, undef, $ENV{'HTTPS'} eq 'on', undef);
+  my $submit_html = $need_button ? $q->submit(-value=> T('Go!')) : '';
+  my $options_html = '
+<script type="text/javascript">
+  var RecaptchaOptions = {
+';
+  if (defined $ReCaptchaTheme)    { $options_html .= "    theme : '$ReCaptchaTheme'\n"; }
+  if (defined $ReCaptchaTabIndex) { $options_html .= "    tabindex : $ReCaptchaTabIndex\n"; }
+  $options_html .= '  };
+</script>';
+
+  return $options_html.ReCaptchaGetQuestionHtml($captcha_html.$submit_html);
+}
+
+=head2 ReCaptchaGetQuestionHtml
+
+Enclose the reCAPTCHA iframe in Oddmuse-specific HTML and CSS.
+
+Wiki administrators are encouraged to replace this function with their own,
+Wiki-specific function by redefining this function in B<config.pl>.
+
+=cut
+sub ReCaptchaGetQuestionHtml {
+  my $question_html = shift;
+  return $q->div({-class=> 'question'}, $ReCaptchaTheme eq 'clean'
+    ? $q->p(T('Please type the following two words:')).$question_html
+    : $q->p(T('Please answer this captcha:'         )).$question_html);
+}
+
+# ....................{ POSTING                            }....................
 *OldReCaptchaDoPost = *DoPost;
 *DoPost = *NewReCaptchaDoPost;
 
@@ -176,78 +247,6 @@ sub NewReCaptchaDoPost {
   return (OldReCaptchaDoPost(@params));
 }
 
-*OldReCaptchaGetEditForm = *GetEditForm;
-*GetEditForm = *NewReCaptchaGetEditForm;
-
-sub NewReCaptchaGetEditForm {
-  return ReCaptchaQuestionAddTo(OldReCaptchaGetEditForm(@_));
-}
-
-*OldReCaptchaGetCommentForm = *GetCommentForm;
-*GetCommentForm = *NewReCaptchaGetCommentForm;
-
-sub NewReCaptchaGetCommentForm {
-  return ReCaptchaQuestionAddTo(OldReCaptchaGetCommentForm(@_));
-}
-
-sub ReCaptchaQuestionAddTo {
-  my $form = shift;
-  if (not $upload
-      and not ReCaptchaException(GetId())
-      and not $ReCaptchaRememberAnswer && GetParam($ReCaptchaSecretKey, 0)
-      and not UserIsEditor()) {
-    $form =~ s/(\Q<p><label><input type="checkbox"\E)/ReCaptchaGetQuestion().$1/e;
-  }
-  return $form;
-}
-
-sub ReCaptchaGetQuestion {
-  my $need_button = shift;
-
-  # Unfortunately, "Captcha::reCAPTCHA" produces invalid HTML for the reCAPTCHA theme.
-  # Consequently, we brute-force proper HTML, below.
-# my %recaptcha_options = ();
-# if (defined $ReCaptchaTheme)    { $recaptcha_options{theme} =    $ReCaptchaTheme; }
-# if (defined $ReCaptchaTabIndex) { $recaptcha_options{tabindex} = $ReCaptchaTabIndex; }
-
-  eval "use Captcha::reCAPTCHA";
-  my $captcha_html = Captcha::reCAPTCHA->new()->get_html(
-    $ReCaptchaPublicKey, undef, $ENV{'HTTPS'} eq 'on', undef);
-  my $submit_html = $need_button ? $q->submit(-value=> T('Go!')) : '';
-  my $options_html = '
-<script type="text/javascript">
-  var RecaptchaOptions = {
-';
-  if (defined $ReCaptchaTheme)    { $options_html .= "    theme : '$ReCaptchaTheme'\n"; }
-  if (defined $ReCaptchaTabIndex) { $options_html .= "    tabindex : $ReCaptchaTabIndex\n"; }
-  $options_html .= '  };
-</script>';
-
-  return $options_html.ReCaptchaGetQuestionHtml($captcha_html.$submit_html);
-}
-
-=head2 ReCaptchaGetQuestionHtml
-
-Enclose the reCAPTCHA iframe in Oddmuse-specific HTML and CSS.
-
-Wiki administrators are encouraged to replace this function with their own,
-Wiki-specific function by redefining this function in B<config.pl>.
-
-=cut
-sub ReCaptchaGetQuestionHtml {
-  my $question_html = shift;
-  my $div_html;
-
-  if ($ReCaptchaTheme eq 'clean') {
-    $div_html = $q->p(T('Please type the following two words:')).$question_html;
-  }
-  else {
-    $div_html = $q->p(T('Please answer this captcha:' )).$question_html;
-  }
-
-  return $q->div({-class=> 'question'}, $div_html);
-}
-
 sub ReCaptchaCheckAnswer {
   eval "use Captcha::reCAPTCHA";
   my $result = Captcha::reCAPTCHA->new()->check_answer(
@@ -259,6 +258,7 @@ sub ReCaptchaCheckAnswer {
   return $result->{is_valid};
 }
 
+# ....................{ ERROR-HANDLING                     }....................
 sub ReCaptchaException {
   my $id = shift;
   return 0 unless $ReCaptchaRequiredList and $id;
