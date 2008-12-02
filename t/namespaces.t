@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 40;
+use Test::More tests => 42;
 clear_pages();
 
 add_module('namespaces.pl');
@@ -99,3 +99,11 @@ test_page(get_page('action=rss'),
 	  '<link>http://localhost/wiki.pl/Muu/Mu</link>',
 	  '<wiki:history>http://localhost/wiki.pl/Muu\?action=history;id=Mu</wiki:history>',
 	  '<wiki:diff>http://localhost/wiki.pl/Muu\?action=browse;diff=1;id=Mu</wiki:diff>');
+
+test_page(update_page('Umlaute', 'namespace mit umlaut',
+		      'wo steckt das ü', undef, undef,
+		      'ns=Zürich'), 'namespace mit umlaut');
+xpath_test(get_page('action=rc'),
+	   # depending on whether this runs on a filesystem with UTF-8
+	   # NFC or NFD (Mac!), the encoding will be different.
+	   '//a[@class="local"][@href="http://localhost/wiki.pl/Zu%cc%88rich/Umlaute" or @href="http://localhost/wiki.pl/Zu%fcrich/Umlaute"]');
