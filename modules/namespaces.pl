@@ -36,7 +36,7 @@ be changed using the C<$NamespacesSelf> option.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.40 2008/09/22 01:31:38 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.41 2008/12/02 23:45:41 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent
 	    $NamespaceRoot $NamespaceSlashing);
@@ -253,18 +253,26 @@ sub NewNamespaceScriptUrl {
   my ($action, @rest) = @_;
   local $ScriptName = $ScriptName;
   if ($action =~ /^($UrlProtocols)\%3a/) { # URL-encoded URL
-    # do nothing
-  } elsif ($action =~ /(.*?)\b($InterSitePattern)%3a(.*)/) {
-    if ("$2:$3" eq GetParam('oldid', '')) {
-      if ($2 eq $NamespacesMain) {
-	$ScriptName = $NamespaceRoot;
+    # do nothing (why do we need this?)
+  } elsif ($action =~ m!(.*?)([^/?&;=]+)%3a(.*)!) {
+    # $2 is supposed to match the $InterSitePattern, but it might be
+    # UrlEncoded in Main:RecentChanges. If $2 contains Umlauts, for
+    # example, the encoded $2 will no longer match $InterSitePattern.
+    # We have a likely candidate -- now perform an additional test.
+    my ($s1, $s2, $s3) = ($1, $2, $3);
+    my $s = UrlDecode($s2);
+    if ($s =~ /^$InterSitePattern$/) {
+      if ("$s2:$s3" eq GetParam('oldid', '')) {
+	if ($s2 eq $NamespacesMain) {
+	  $ScriptName = $NamespaceRoot;
+	} else {
+	  $ScriptName = $NamespaceRoot . '/' . $s2;
+	}
       } else {
-	$ScriptName = $NamespaceRoot . '/' . $2;
+	$ScriptName .= '/' . $s2;
       }
-    } else {
-      $ScriptName .= '/' . $2;
+      $action = $s1 . $s3;
     }
-    $action = $1 . $3;
   }
   return OldNamespaceScriptUrl($action, @rest);
 }
