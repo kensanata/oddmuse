@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.888 2008/11/27 21:59:06 leycec Exp $
+# Version       $Id: wiki.pl,v 1.889 2008/12/03 11:46:49 leycec Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008
 #     Alex Schroeder <alex@gnu.org>
@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.888 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.889 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -293,7 +293,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.888 2008/11/27 21:59:06 leycec Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.889 2008/12/03 11:46:49 leycec Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -451,6 +451,7 @@ sub ApplyRules {
   } else {
     my $smileyregex = join "|", keys %Smilies;
     $smileyregex = qr/(?=$smileyregex)/;
+    &$_(\$text, $locallinks, $withanchors, $revision) foreach (@MyBeforeApplyRules);
     local $_ = $text;
     local $bol = 1;
     while (1) {
@@ -756,7 +757,6 @@ sub PrintWikiToHTML {
   $FootnoteNumber = 0;
   $markup =~ s/$FS//go if $markup;  # Remove separators (paranoia)
   $markup = QuoteHtml($markup);
-  &$_(\$markup, $is_saving_cache, $revision) foreach (@MyBeforeApplyRules);
   if (@MyAfterApplyRules) {
     my $html = '';
     { local *STDOUT;

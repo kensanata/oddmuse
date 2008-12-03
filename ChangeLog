@@ -1,3 +1,25 @@
+2008-12-03  Brian Curry  <http://www.raiazome.com/Brian_Curry>
+
+	* wiki.pl (PrintWikiToHTML): Moved "@MyBeforeApplyRules"-specific
+	code into the ApplyRules() routine. This corrects a number of
+	subtle issues with the Crossbar module: especially, the Crossbar
+	module's erroneous handling of uploaded files. (Thanks, Ingo
+	Belka!)
+	* modules/crossbar.pl (CrossbarBeforeApplyRule): Corrected this
+	module's erroneous handling of uploaded files.
+	(RunMyRulesTocCrossbar): New function, offloading a Crossbar-
+	specific hack from "toc.pl" into this file. (This is still...
+	slightly hacky, but a bit better.)
+	* modules/toc.pl (TocRule): Allowed more than one table of contents
+	per page. Before, this module only recognized the first "<toc...>"
+	markup for a Wiki page: all subsequent "<toc...>" markup for that
+	page was studiously ignored. Correcting this improves integration
+	with the Crossbar module.
+	(RunMyRulesToc): Removed a Crossbar-specific hack.
+	(TocAfterApplyRule): Allowed more than one table of contents.
+	($TocIsApplyingAutomaticRules): New option, providing slightly
+	finer-grained control over Table of Contents handling.
+
 2008-11-28  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
 	* wiki.pl: Added a CVS-enabled version notice to this file's header
