@@ -33,7 +33,7 @@ crossbar is easily installable; move this file into the B<wiki/modules/>
 directory for your Oddmuse Wiki.
 
 =cut
-$ModulesDescription .= '<p>$Id: crossbar.pl,v 1.3 2008/11/24 03:48:17 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: crossbar.pl,v 1.4 2008/12/03 11:46:49 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 use vars qw($CrossbarPageName
@@ -93,7 +93,13 @@ $CrossbarSubstitutionPattern = '^';
 # ....................{ INITIALIZATION                     }....................
 push(@MyInitVariables, \&CrossbarInit);
 
+# A boolean that, if true, indicates that a crossbar has already been applied to
+# this page. This prevents application of a crossbar onto pages included by this
+# current page -- and, in general, protects against "reentrant recursion."
+my $CrossbarIsApplied;
+
 sub CrossbarInit {
+  $CrossbarIsApplied = '';
   $CrossbarPageName = FreeToNormal($CrossbarPageName); # spaces to underscores
 
   # Add a link to the crossbar page to the "Administration" page.
@@ -112,6 +118,19 @@ sub CrossbarInit {
     *SaveCrossbarOld = *Save;
     *Save            = *SaveCrossbar;
   }
+
+  # If the Table of Contents module is also installed, we must prevent handling
+  # of any Table of Contents-specific code when in the
+  # '<div class="crossbar">...</div>' block. Why? Because: Table of Contents-
+  # specific code adds unique identifiers to HTML headers, Crossbar pages may
+  # contain HTML headers, and those HTML headers should not have unique
+  # identifiers added to them, since adding unique identifiers to Crossbar page
+  # headers would add those headers to the Table of Contents for //every// page.
+  # (Trust us on this one...)
+  if (defined &RunMyRulesToc) {
+    *RunMyRulesCrossbarOld = *RunMyRules;
+    *RunMyRules            = *RunMyRulesCrossbar;
+  }
 }
 
 # ....................{ MARKUP =before                     }....................
@@ -119,11 +138,14 @@ push(@MyBeforeApplyRules, \&CrossbarBeforeApplyRule);
 
 sub CrossbarBeforeApplyRule {
   my $markup_ = shift;
-  my  $crossbar_markup = GetPageContent($CrossbarPageName);
-  if ($crossbar_markup and $crossbar_markup !~ m~^(\s*$|$DeletedPage)~) {
-    $$markup_ =~ s~$CrossbarSubstitutionPattern~
-       "\n\n&lt;crossbar&gt;\n\n".QuoteHtml($crossbar_markup).
-      "\n\n&lt;/crossbar&gt;\n\n"~e;
+  if (not $CrossbarIsApplied) {
+    my  $crossbar_markup = GetPageContent($CrossbarPageName);
+    if ($crossbar_markup and $crossbar_markup !~ m~^(\s*$|$DeletedPage)~) {
+      $CrossbarIsApplied = 1;
+      $$markup_ =~ s~$CrossbarSubstitutionPattern~
+         "\n\n&lt;crossbar&gt;\n\n".QuoteHtml($crossbar_markup).
+        "\n\n&lt;/crossbar&gt;\n\n"~e;
+    }
   }
 }
 
@@ -151,6 +173,22 @@ sub CrossbarRule {
   return undef;
 }
 
+=head2 RunMyRulesCrossbar
+
+Redefines the Table of Contents module's C<RunMyRulesToc> function, when that
+module is installed, so as to apply a hacky, Crossbar-specific fix.
+
+=cut
+sub RunMyRulesCrossbar {
+  my $TocIsApplyingAutomaticRulesOld = $TocIsApplyingAutomaticRules;
+     $TocIsApplyingAutomaticRules = '' if InElement('div', '^class="crossbar"$');
+
+  my $html = RunMyRulesCrossbarOld(@_);
+
+  $TocIsApplyingAutomaticRules = $TocIsApplyingAutomaticRulesOld;
+  return $html;
+}
+
 # ....................{ BROWSING                           }....................
 
 =head2 PrintPageContentCrossbar
@@ -170,12 +208,11 @@ sub PrintPageContentCrossbar {
 
   # If the crossbar div is placed immediately after the content div, place it
   # immediately before the content div.
-  if (not ($html =~
-      s~(<div class="content browse">)(<div class="crossbar">.*?</div>)<!-- crossbar/-->~$2$1~)) {
+  if (not ($html =~ s~(<div class="content browse">)$crossbar_pattern~$2$1~)) {
     # Otherwise, if the crossbar div is placed immediately before the end of the
     # content div, place it immediately after the end of the content div.
     $html =~
-      s~(<div class="crossbar">.*?</div>)<!-- crossbar/-->(.*?<div class="wrapper close"></div></div>)~$2$1~;
+      s~$crossbar_pattern(.*?<div class="wrapper close"></div></div>)~$2$1~;
   }
 
   print $html;

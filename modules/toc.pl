@@ -11,7 +11,7 @@ toc is easily installable; move this file into the B<wiki/modules/>
 directory for your Oddmuse Wiki.
 
 =cut
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.58 2008/11/24 03:48:17 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.59 2008/12/03 11:46:49 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -24,7 +24,9 @@ for your Oddmuse Wiki.
 use vars qw($TocHeaderText
             $TocClass
             $TocAutomatic
-            $TocAnchorPrefix);
+            $TocAnchorPrefix
+
+            $TocIsApplyingAutomaticRules);
 
 =head2 $TocHeaderText
 
@@ -74,6 +76,28 @@ marking, and sharing links to particular segments of a Wiki page.
 =cut
 $TocAnchorPrefix = 'Heading';
 
+=head2 $TocIsApplyingAutomaticRules
+
+A boolean that, if true, performs a few "automatic" rules on behalf of this
+extension. These are:
+
+=over
+
+=item Add a unique C<id="${ID}"> attribute to each header tag on every page.
+      This ensures that every link in the table of contents, for every page,
+      refers to one and only one header tag in that page.
+
+=item Add an automatic table of contents to every page, if the
+      C<$TocAutomatic> boolean is also enabled.
+
+=back
+
+By default, this boolean is true. (This is a good thing. Unless you know what
+you're doing, you should probably leave this as is.)
+
+=cut
+$TocIsApplyingAutomaticRules = 1;
+
 # ....................{ INITIALIZATION                     }....................
 push(@MyInitVariables, \&TocInit);
 
@@ -114,9 +138,8 @@ that table. This is optional. If not specified, it defaults to "toc".
 
 =cut
 sub TocRule {
-  # <toc...> markup. This explicitly opens a new table of contents, if we
-  # haven't already opened one. There may be only one such table per page.
-  if ($bol and not $TocHeaderNumber and
+  # <toc...> markup. This explicitly displays a table of contents at this point.
+  if ($bol and
       m~\G&lt;toc(/([A-Za-z\x80-\xff/]+))?    # $1
         (\s+(?:header_text\s*=\s*)?"(.+?)")?  # $3
         (\s+(?:class\s*=\s*)?"(.+?)")?        # $5
@@ -147,8 +170,7 @@ sub TocRule {
     return ($HtmlStack[0] eq 'p' ? CloseHtmlEnvironment() : '')
       .qq{<!-- toc header_text="$toc_header_text" class="$toc_class" -->}
       .AddHtmlEnvironment('p');
-  }
-  return undef;
+  } return undef;
 }
 
 =head2 RunMyRulesToc
@@ -165,11 +187,8 @@ sub RunMyRulesToc {
   # Some markup rule converted the input Wiki markup into HTML. If this HTML is
   # an HTML header tag, then we add a new "id" tag attribute to it (so as to
   # uniquely identify it for later linking to from the table of contents).
-  #
-  # If we are in a sidebar, we musn't add Table of Contents-specific comments
-  # or attributes. Sidebars tend to depend on their HTML being displayed "as is"
   # to the user, without embellishments or change.
-  if ($html and not InElement('div', '^class="\w+bar"$')) {
+  if ($TocIsApplyingAutomaticRules and $html) {
     if ($TocAutomatic and not $TocHeaderNumber and $bol and $html =~
       s~(<h[1-6][^>]*>)
        ~<!-- toc header_text="$TocHeaderText" class="$TocClass" -->$1~x) {
@@ -207,12 +226,12 @@ sub TocAfterApplyRule {
   # contents.
   if ($TocHeaderNumber > 2) {
     $$html_ =~ s~\Q<!-- toc header_text="\E([^"]+)\Q" class="\E([^"]+)\Q" -->\E~
-      GetTocHtml($html_, $blocks_, $1, $2)~e;
+      GetTocHtml($html_, $blocks_, $1, $2)~ge;
   }
-  # Otherwise, remove the table of contents placeholder comment.
+  # Otherwise, remove the table of contents placeholder comments.
   else {
-    $$html_   =~ s~$TocCommentPattern~~;
-    $$blocks_ =~ s~$TocCommentPattern~~;
+    $$html_   =~ s~$TocCommentPattern~~g;
+    $$blocks_ =~ s~$TocCommentPattern~~g;
   }
 }
 
