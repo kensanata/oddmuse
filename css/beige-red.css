@@ -84,21 +84,21 @@ span.bar a {
 /* search box in the top bar */
 
 form.tiny, form.tiny p {
-    display:inline;
-    white-space:nowrap;
+    display: inline;
+    white-space: nowrap;
 }
 form.tiny input {
-    padding:0;
-    width:10ex;
-    font-size:10px;
+    padding: 0;
+    width: 10ex;
+    font-size: 80%;
 }
 
 /* code */
 
 pre, code, tt {
     font-family: "Andale Mono", Monaco, "Courrier New", monospace;
-    font-size: 16px;
-    line-height: 19px;
+    font-size: 80%;
+    line-height: 110%;
 }
 
 /* styling for divs that will be invisible when printing
@@ -106,12 +106,12 @@ pre, code, tt {
 
 div.header, div.footer, div.near {
     font-family: "Abadi MT Condensed Light", "Arial Narrow", Arial, sans-serif;
-    font-size: 12pt;
-    line-height: 13pt;
+    font-size: 75%;
+    line-height: 110%;
 
 }
 div.rc li {
-    line-height: 18pt;
+    line-height: 110%;
 }
 div.rc li + li {
     margin-top: 1em;
