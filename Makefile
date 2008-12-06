@@ -1,7 +1,7 @@
 # The Makefile is only for developpers wanting to prepare the tarball.
 # Make sure the CVS keywords for the sed command on the next line are not expanded.
 
-VERSION_NO=$(shell sed -n -e 's/^.*\$$Id: wiki\.pl,v \(1\.[0-9]*\).*$$/\1/p' wiki.pl)
+VERSION_NO=$(shell sed -n -e 's/^.*\$$Id: wiki\.pl,v \(1\.[0-9]*\).*$$/\1/p' wiki.pl | head -n 1)
 VERSION=oddmuse-$(VERSION_NO)
 UPLOADVERSION=oddmuse-inkscape-$(shell sed -n -e 's/^.*\$$Id: wikiupload,v \([0-9.]*\).*$$/\1/p' wikiupload)
 TRANSLATIONS=$(wildcard modules/translations/[a-z]*-utf8.pl$)
