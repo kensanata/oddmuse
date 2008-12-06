@@ -16,16 +16,25 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: google-custom-search.pl,v 1.1 2007/12/26 08:59:11 as Exp $</p>';
+use vars qw($GoogleCustomSearchEngine);
+
+$GoogleCustomSearchEngine = 'http://www.google.com/cse?cx=004774160799092323420:6-ff2s0o6yi&q=';
+
+$ModulesDescription .= '<p>$Id: google-custom-search.pl,v 1.2 2008/12/06 01:28:39 as Exp $</p>';
 
 # disable search form
 sub GetSearchForm {}
 
 # No more searching of titles
-sub GetSearchLink {
-  my $title = NormalToFree(shift);
-  my $term = UrlEncode($title);
-  return qq{<a href="http://www.google.com/cse?cx=004774160799092323420:6-ff2s0o6yi&q=$term">$title</a>};
+*OldGoogleCustomGetSearchLink = *GetSearchLink;
+*GetSearchLink = *NewGoogleCustomGetSearchLink;
+
+sub NewGoogleCustomGetSearchLink {
+  my ($text, $class, $name, $title) = @_;
+  $name = UrlEncode($name);
+  $text = NormalToFree($text);
+  return ScriptLink($GoogleCustomSearchEngine . UrlEncode(qq("$text")),
+		    $text, $class, $name, $title);
 }
 
 *OldGoogleCustomGetHeader = *GetHeader;
