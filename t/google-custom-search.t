@@ -18,7 +18,6 @@ package OddMuse;
 use Test::More tests => 2;
 clear_pages();
 
-# 
 add_module('google-custom-search.pl');
 
 xpath_test(update_page('the page'),
