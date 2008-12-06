@@ -43,6 +43,7 @@ test_page(update_page('headers', "[new]foo\n== one ==\ntext\n== two ==\ntext\n==
     qq{<h2 id="${TocAnchorPrefix}1">one</h2><p>text </p>},
     qq{<h2 id="${TocAnchorPrefix}2">two</h2>}, );
 remove_module('toc.pl');
+*RunMyRules = *RunMyRulesTocOld; # so that it can be reloaded safely!
 remove_rule(\&TocRule);
 remove_module('usemod.pl');
 remove_rule(\&UsemodRule);
@@ -65,14 +66,6 @@ test_page(update_page('headers', "[new]foo\n== one ==\ntext\n== two ==\ntext\n==
     qq{<h2 id="${TocAnchorPrefix}1">one</h2>},
     qq{<h2 id="${TocAnchorPrefix}2">two</h2>}, );
 
-#FIXME: Temporarily disabled by "leycec". On my machine, the following three
-#tests cause an "Out of memory!" Perl error, significant CPU churn, and what
-#seems to be an infinite spin-loop. As such, until the underlying issue is
-#determined and resolved, I've temporarily disabled these tests. (Feel free to
-#re-enable them if you believe I've acted in error, of course!)
-
-TODO: {
-  todo_skip 'these tests cause an infinite loop somewhere', 3, 1;
 run_tests(split('\n',<<'EOT'));
 [new]\nfoo
 <div class="color one level0"><p> foo</p></div>
@@ -81,4 +74,3 @@ run_tests(split('\n',<<'EOT'));
 ::[new]\nfoo
 <div class="color one level2"><p> foo</p></div>
 EOT
-}
