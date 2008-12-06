@@ -1,3 +1,11 @@
+2008-12-06  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GrepFiltered): Ignore grep error messages (which happen
+	on an empty wiki, for example).
+
+	* Makefile (VERSION_NO): Fixed the command to extract the version
+	number from wiki.pl because the CVS Id tag now appears twice.
+
 2008-12-03  Alex Schroeder  <alex@gnu.org>
 
 	* modules/namespaces.pl (NewNamespaceScriptUrl): Try and handle
