@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.890 2008/12/06 01:57:40 as Exp $
+# Version       $Id: wiki.pl,v 1.891 2008/12/07 23:58:28 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008
 #     Alex Schroeder <alex@gnu.org>
@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.890 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.891 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -293,7 +293,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.890 2008/12/06 01:57:40 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.891 2008/12/07 23:58:28 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -2379,7 +2379,6 @@ sub PrintFooter {
   foreach my $sub (@MyFooters) {
     print &$sub(@_);
   }
-  ;
   print $q->end_html, "\n";
 }
 
@@ -2456,22 +2455,25 @@ sub GetFormStart {
 
 sub GetSearchForm {
   my $form = $q->label({-for=>'search'}, T('Search:')) . ' '
-    . $q->textfield(-name=>'search', -id=>'search', -size=>20, -accesskey=>T('f')) . ' ';
+    . $q->textfield(-name=>'search', -id=>'search', -size=>20,
+		    -accesskey=>T('f')) . ' ';
   if ($ReplaceForm) {
     $form .= $q->label({-for=>'replace'}, T('Replace:')) . ' '
       . $q->textfield(-name=>'replace', -id=>'replace', -size=>20) . ' '
-  . $q->checkbox(-name=>'delete', -label=>T('Delete')) . ' ';
+	. $q->checkbox(-name=>'delete', -label=>T('Delete')) . ' ';
   }
   if (%Languages) {
     $form .= $q->label({-for=>'searchlang'}, T('Language:')) . ' '
-      . $q->textfield(-name=>'lang', -id=>'searchlang', -size=>10, -default=>GetParam('lang', '')) . ' ';
+      . $q->textfield(-name=>'lang', -id=>'searchlang', -size=>10,
+		      -default=>GetParam('lang', '')) . ' ';
   }
-  return GetFormStart(undef, 'get', 'search') . $q->p($form . $q->submit('dosearch', T('Go!'))) . $q->endform;
+  return GetFormStart(undef, 'get', 'search')
+    . $q->p($form . $q->submit('dosearch', T('Go!'))) . $q->endform;
 }
 
 sub GetValidatorLink {
-  return $q->a({-href => 'http://validator.w3.org/check/referer'}, T('Validate HTML')) . ' '
-    . $q->a({-href => 'http://jigsaw.w3.org/css-validator/check/referer'}, T('Validate CSS'));
+  return $q->a({-href => 'http://validator.w3.org/check/referer'}, T('Validate HTML'))
+    . ' ' . $q->a({-href=>'http://jigsaw.w3.org/css-validator/check/referer'}, T('Validate CSS'));
 }
 
 sub GetGotoBar {    # ignore $id parameter
@@ -3097,7 +3099,7 @@ sub GetEditForm {
   elsif ($UploadAllowed or UserIsAdmin()) {
     $html .= $q->p(ScriptLink('action=edit;upload=1;id='.UrlEncode($page_name), T('Replace this text with a file'), 'upload'));
   }
-  $html .= $q->endform().$q->end_div();
+  $html .= $q->endform();
   return $html;
 }
 
