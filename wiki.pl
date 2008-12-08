@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.891 2008/12/07 23:58:28 as Exp $
+# Version       $Id: wiki.pl,v 1.892 2008/12/08 01:10:03 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008
 #     Alex Schroeder <alex@gnu.org>
@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.891 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.892 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -59,7 +59,7 @@ $FullUrlPattern $SummaryDefaultLength $FreeInterLinkPattern
 %InvisibleCookieParameters %AdminPages $UseQuestionmark $JournalLimit
 $LockExpiration $RssStrip %LockExpires @IndexOptions @Debugging $DocumentHeader
 %HtmlEnvironmentContainers @MyAdminCode @MyFooters @MyInitVariables @MyMacros
-@MyMaintenance @MyRules @MyBeforeApplyRules @MyAfterApplyRules);
+@MyMaintenance @MyRules);
 
 # Internal variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie %NewCookie
@@ -293,7 +293,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.891 2008/12/07 23:58:28 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.892 2008/12/08 01:10:03 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -451,7 +451,6 @@ sub ApplyRules {
   } else {
     my $smileyregex = join "|", keys %Smilies;
     $smileyregex = qr/(?=$smileyregex)/;
-    &$_(\$text, $locallinks, $withanchors, $revision) foreach (@MyBeforeApplyRules);
     local $_ = $text;
     local $bol = 1;
     while (1) {
@@ -757,17 +756,7 @@ sub PrintWikiToHTML {
   $FootnoteNumber = 0;
   $markup =~ s/$FS//go if $markup;  # Remove separators (paranoia)
   $markup = QuoteHtml($markup);
-  if (@MyAfterApplyRules) {
-    my $html = '';
-    { local *STDOUT;
-      open(  STDOUT, '>', \$html) or die "Can't open memory file: $!";
-      ($blocks, $flags) = ApplyRules($markup, 1, $is_saving_cache, $revision, 'p');
-      close  STDOUT; }
-    &$_(\$html, \$blocks, \$flags) foreach (@MyAfterApplyRules);
-    print $html;
-  } else {
-    ($blocks, $flags) = ApplyRules($markup, 1, $is_saving_cache, $revision, 'p');
-  }
+  ($blocks, $flags) = ApplyRules($markup, 1, $is_saving_cache, $revision, 'p');
   if ($is_saving_cache and not $revision and $Page{revision} # don't save revision 0 pages
       and $Page{blocks} ne $blocks and $Page{flags} ne $flags) {
     $Page{blocks} = $blocks;
