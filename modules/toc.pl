@@ -11,7 +11,7 @@ toc is easily installable; move this file into the B<wiki/modules/>
 directory for your Oddmuse Wiki.
 
 =cut
-$ModulesDescription .= '<p>$Id: toc.pl,v 1.59 2008/12/03 11:46:49 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: toc.pl,v 1.60 2008/12/08 01:13:16 as Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -215,24 +215,36 @@ sub RunMyRulesToc {
 }
 
 # ....................{ MARKUP =after                      }....................
-push(@MyAfterApplyRules, \&TocAfterApplyRule);
-
 my $TocCommentPattern = qr~\Q<!-- toc\E.*?\Q -->\E~;
 
-sub TocAfterApplyRule {
-  my ($html_, $blocks_, $flags_) = @_;
+*OldTocApplyRules = *ApplyRules;
+*ApplyRules = *NewTocApplyRules;
 
+# This changes the entire rendering engine such that it no longer
+# prints output as it goes along. Instead all the output is collected
+# in $html, post-processed by inserting the table of contents where
+# appropriate, and then printed at the very end.
+sub NewTocApplyRules {
+  my ($html, $blocks, $flags);
+  {
+    local *STDOUT;
+    open(  STDOUT, '>', \$html) or die "Can't open memory file: $!";
+    ($blocks, $flags) = OldTocApplyRules(@_);
+    close  STDOUT;
+  }
   # If there are at least two HTML headers on this page, insert a table of
   # contents.
   if ($TocHeaderNumber > 2) {
-    $$html_ =~ s~\Q<!-- toc header_text="\E([^"]+)\Q" class="\E([^"]+)\Q" -->\E~
-      GetTocHtml($html_, $blocks_, $1, $2)~ge;
+    $html =~ s~\Q<!-- toc header_text="\E([^"]+)\Q" class="\E([^"]+)\Q" -->\E~
+      GetTocHtml(\$html, \$blocks, $1, $2)~ge;
   }
   # Otherwise, remove the table of contents placeholder comments.
   else {
-    $$html_   =~ s~$TocCommentPattern~~g;
-    $$blocks_ =~ s~$TocCommentPattern~~g;
+    $html   =~ s~$TocCommentPattern~~g;
+    $blocks =~ s~$TocCommentPattern~~g;
   }
+  print $html;
+  return ($blocks, $flags);
 }
 
 sub GetTocHtml {
