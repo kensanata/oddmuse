@@ -1,3 +1,19 @@
+2008-12-08  Alex Schroeder  <alex@gnu.org>
+
+	* modules/toc.pl (TocAfterApplyRule): Removed as a rule to be on
+	@MyAfterApplyRules.
+	(NewTocApplyRules): Moved code here and rewrote such as not to use
+	references where necessary.
+
+	* modules/crossbar.pl (CrossbarBeforeApplyRule): Removed as a rule
+	to be on @MyBeforeApplyRules.
+	(NewCrossbarApplyRules): Moved code here.
+
+	* wiki.pl (GetEditForm): Remove extra closing div.
+	(@MyBeforeApplyRules, @MyAfterApplyRules): Removed.
+	(ApplyRules): Removed call of code on @MyBeforeApplyRules.
+	(PrintWikiToHTML): Removed call of code on @MyAfterApplyRules.
+
 2008-12-06  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GrepFiltered): Ignore grep error messages (which happen
@@ -220,7 +236,7 @@
 	(PrintWikiToHTML): Use the @MyBeforeApplyRules and
 	@MyAfterApplyRules lists, to perform HTML pre- and post-processing.
 	
-	2008-11-12  Brian Curry  <http://www.raiazome.com/Brian_Curry>
+2008-11-12  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
 	* modules/poetry.pl ($PoetryIsHandlingXMLStyleMarkup): New option.
 	($PoetryIsHandlingCreoleStyleMarkup): New option.
