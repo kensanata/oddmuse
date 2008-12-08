@@ -33,7 +33,7 @@ crossbar is easily installable; move this file into the B<wiki/modules/>
 directory for your Oddmuse Wiki.
 
 =cut
-$ModulesDescription .= '<p>$Id: crossbar.pl,v 1.4 2008/12/03 11:46:49 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: crossbar.pl,v 1.5 2008/12/08 01:11:53 as Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 use vars qw($CrossbarPageName
@@ -134,19 +134,21 @@ sub CrossbarInit {
 }
 
 # ....................{ MARKUP =before                     }....................
-push(@MyBeforeApplyRules, \&CrossbarBeforeApplyRule);
+*OldCrossbarApplyRules = *ApplyRules;
+*ApplyRules = *NewCrossbarApplyRules;
 
-sub CrossbarBeforeApplyRule {
-  my $markup_ = shift;
+sub NewCrossbarApplyRules {
+  my $text = shift;
   if (not $CrossbarIsApplied) {
     my  $crossbar_markup = GetPageContent($CrossbarPageName);
     if ($crossbar_markup and $crossbar_markup !~ m~^(\s*$|$DeletedPage)~) {
       $CrossbarIsApplied = 1;
-      $$markup_ =~ s~$CrossbarSubstitutionPattern~
-         "\n\n&lt;crossbar&gt;\n\n".QuoteHtml($crossbar_markup).
-        "\n\n&lt;/crossbar&gt;\n\n"~e;
+      $text =~ s~$CrossbarSubstitutionPattern~
+	"\n\n&lt;crossbar&gt;\n\n".QuoteHtml($crossbar_markup).
+	"\n\n&lt;/crossbar&gt;\n\n"~e;
     }
   }
+  return OldCrossbarApplyRules($text, @_);
 }
 
 # ....................{ MARKUP                             }....................
