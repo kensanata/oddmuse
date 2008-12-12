@@ -33,7 +33,7 @@ crossbar is easily installable; move this file into the B<wiki/modules/>
 directory for your Oddmuse Wiki.
 
 =cut
-$ModulesDescription .= '<p>$Id: crossbar.pl,v 1.6 2008/12/12 22:22:02 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: crossbar.pl,v 1.7 2008/12/12 22:44:39 as Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 use vars qw($CrossbarPageName
@@ -140,7 +140,8 @@ sub CrossbarInit {
 sub NewCrossbarApplyRules {
   my $text = shift;
   if (not $CrossbarIsApplied
-      and not TextIsFile($text)) {
+      and not TextIsFile($text)
+      and (not $SidebarName or $OpenPageName ne $SidebarName)) {
     my  $crossbar_markup = GetPageContent($CrossbarPageName);
     if ($crossbar_markup and $crossbar_markup !~ m~^(\s*$|$DeletedPage)~) {
       $CrossbarIsApplied = 1;
