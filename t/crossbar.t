@@ -5,7 +5,7 @@
 # ....................{ INITIALIZATION                     }....................
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 18;
+use Test::More tests => 22;
 
 clear_pages();
 add_module('crossbar.pl');
@@ -32,7 +32,26 @@ test_page(update_page('Alex', "#FILE image/png\niVBORw0KGgoAAAA"),
 $page = get_page('action=download id=Alex');
 $page =~ s/^.*\r\n\r\n//s; # strip headers
 require MIME::Base64;
-test_page(MIME::Base64::encode($page), 'iVBORw0KGgoAAAA');
+test_page(MIME::Base64::encode($page), '^iVBORw0KGgoAAAA');
+
+# ....................{ TESTS =sidebar                     }....................
+add_module('sidebar.pl');
+
+update_page('SideBar', 'mysidebar');
+update_page('Crossbar', 'mycrossbar');
+
+$page = get_page('HomePage');
+xpath_test($page,
+	   '//div[@class="sidebar"]/p[text()="mysidebar"]',
+	   '//div[@class="crossbar"]/p[text()="mycrossbar"]');
+# verify that these two are not nested
+negative_xpath_test($page,
+		    '//div[@class="sidebar"]/div[@class="crossbar"]',
+		    '//div[@class="crossbar"]/div[@class="sidebar"]');
+
+# uninstall sidebar.pl
+remove_module('sidebar.pl');
+*GetHeader = *OldSideBarGetHeader;
 
 # ....................{ TESTS =toc                         }....................
 add_module('toc.pl');
@@ -114,6 +133,7 @@ The information below applies to everything in this distribution,
 except where noted.
 
 Copyleft 2008 by B.w.Curry <http://www.raiazome.com>.
+Copyright (C) 2008  Alex Schroeder <alex@gnu.org>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
