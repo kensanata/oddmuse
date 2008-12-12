@@ -1,3 +1,9 @@
+2008-12-12  Alex Schroeder  <alex@gnu.org>
+
+	* modules/crossbar.pl (NewCrossbarApplyRules): Do not apply the
+	rule if the text is an uploaded file or if we're currently
+	rendering the sidebar.
+
 2008-12-08  Alex Schroeder  <alex@gnu.org>
 
 	* modules/toc.pl (TocAfterApplyRule): Removed as a rule to be on
