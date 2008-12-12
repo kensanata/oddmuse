@@ -1,10 +1,11 @@
+
 #!/usr/bin/env perl
 # ====================[ crossbar.t                          ]====================
 
 # ....................{ INITIALIZATION                     }....................
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 14;
+use Test::More tests => 16;
 
 clear_pages();
 add_module('crossbar.pl');
@@ -18,6 +19,11 @@ my @update_crossbar_page_options = ('', '', 1);
 test_page(update_page($CrossbarPageName, 'mu', @update_crossbar_page_options),
           '<div class="crossbar"><p>mu</p></div>');
 test_page(get_page('HomePage'), '<div class="crossbar"><p>mu</p></div>');
+
+# Verify that raw pages are not mangled
+$page = get_page('action=browse raw=1 id=HomePage');
+test_page($page, 'This page is empty');
+test_page_negative($page, 'mu');
 
 # ....................{ TESTS =toc                         }....................
 add_module('toc.pl');
