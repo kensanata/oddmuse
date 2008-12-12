@@ -33,7 +33,7 @@ crossbar is easily installable; move this file into the B<wiki/modules/>
 directory for your Oddmuse Wiki.
 
 =cut
-$ModulesDescription .= '<p>$Id: crossbar.pl,v 1.5 2008/12/08 01:11:53 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: crossbar.pl,v 1.6 2008/12/12 22:22:02 as Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 use vars qw($CrossbarPageName
@@ -139,7 +139,8 @@ sub CrossbarInit {
 
 sub NewCrossbarApplyRules {
   my $text = shift;
-  if (not $CrossbarIsApplied) {
+  if (not $CrossbarIsApplied
+      and not TextIsFile($text)) {
     my  $crossbar_markup = GetPageContent($CrossbarPageName);
     if ($crossbar_markup and $crossbar_markup !~ m~^(\s*$|$DeletedPage)~) {
       $CrossbarIsApplied = 1;
@@ -243,11 +244,11 @@ sub GetEditFormCrossbar {
 
 =head2 SaveCrossbar
 
-Clears the page cache whenever a user saves the crossbar page. Why? Because the
-C<CrossbarBeforeApplyRule> function dynamically injects the contents of the
-crossbar page into every other page. Consequently, when the crossbar page
-changes, the contents of other pages are also changed; and must have their
-caches forcefully cleared, to ensure they are changed.
+Clears the page cache whenever a user saves the crossbar page. Why?
+Because the the contents of the crossbar page is injected into every
+other page. Consequently, when the crossbar page changes, the contents
+of other pages are also changed; and must have their caches forcefully
+cleared, to ensure they are changed.
 
 =cut
 sub SaveCrossbar {
