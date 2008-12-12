@@ -5,7 +5,7 @@
 # ....................{ INITIALIZATION                     }....................
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 16;
+use Test::More tests => 18;
 
 clear_pages();
 add_module('crossbar.pl');
@@ -24,6 +24,15 @@ test_page(get_page('HomePage'), '<div class="crossbar"><p>mu</p></div>');
 $page = get_page('action=browse raw=1 id=HomePage');
 test_page($page, 'This page is empty');
 test_page_negative($page, 'mu');
+
+# Verify that images pages are not mangled
+AppendStringToFile($ConfigFile, "\$UploadAllowed = 1;\n");
+test_page(update_page('Alex', "#FILE image/png\niVBORw0KGgoAAAA"),
+	  'This page contains an uploaded file:');
+$page = get_page('action=download id=Alex');
+$page =~ s/^.*\r\n\r\n//s; # strip headers
+require MIME::Base64;
+test_page(MIME::Base64::encode($page), 'iVBORw0KGgoAAAA');
 
 # ....................{ TESTS =toc                         }....................
 add_module('toc.pl');
