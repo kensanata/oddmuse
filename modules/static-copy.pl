@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.26 2007/08/12 11:37:01 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.27 2008/12/14 23:59:12 as Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -290,8 +290,8 @@ sub GetDownloadLink {
 }
 
 # override function from Image Extension to support advanced image tags
-sub ImageGetInternalUrl{
-  my $id = shift;
+sub ImageGetInternalUrl {
+  my $id = FreeToNormal(shift);
   if ($UsePathInfo) {
     if ($StaticAlways and $StaticUrl) {
       my $url = $StaticUrl;
