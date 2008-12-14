@@ -1,4 +1,4 @@
-# Copyright (C) 2007  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2007, 2008  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 10;
+use Test::More tests => 12;
 clear_pages();
 
 add_module('static-copy.pl');
@@ -81,3 +81,14 @@ xpath_test(update_page('HomePage', "Static: [[image:Logo]]"),
 
 # File got restored as well
 ok(-f "$DataDir/static/Logo.png", "$DataDir/static/Logo.png exists");
+
+# Make sure spaces are translated to underscores (fixed in image.pl)
+add_module('image.pl');
+
+xpath_run_tests(split('\n',<<'EOT'));
+[[image/right:bar baz]]
+//a[@class="image right"][@href="http://localhost/test.pl/bar_baz"]/img[@class="upload"][@src="http://localhost/test.pl/download/bar_baz"][@alt="bar baz"]
+EOT
+
+xpath_test(update_page('test_image', '[[image/right:bar baz]]'),
+	   '//a[@class="image right"][@href="http://localhost/wiki.pl/bar_baz"]/img[@class="upload"][@src="/static/bar_baz.html"][@alt="bar baz"]');
