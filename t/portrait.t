@@ -42,8 +42,11 @@ test_page(update_page('headers', "[new]foo\n== one ==\ntext\n== two ==\ntext\n==
     qq{<li><a href="#${TocAnchorPrefix}3">three</a></li></ol></div>},
     qq{<h2 id="${TocAnchorPrefix}1">one</h2><p>text </p>},
     qq{<h2 id="${TocAnchorPrefix}2">two</h2>}, );
+
 remove_module('toc.pl');
-*RunMyRules = *RunMyRulesTocOld; # so that it can be reloaded safely!
+# The next two are necessary so that toc.pl can be reloaded safely later!
+*ApplyRules = *OldTocApplyRules;
+*RunMyRules = *RunMyRulesTocOld;
 remove_rule(\&TocRule);
 remove_module('usemod.pl');
 remove_rule(\&UsemodRule);
