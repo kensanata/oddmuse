@@ -28,7 +28,7 @@ InitVariables(); # do this after loading usemod.pl!
 # Note that we're not calling TocInit between tests, so we rely on
 # them being run in order.
 run_tests('== make honey ==\n\nMoo.\n',
-          qq{<!-- toc header_text="$TocHeaderText" class="toc" --><h2 id="${TocAnchorPrefix}1">make honey</h2><p>Moo.</p>},
+          qq{<h2 id="${TocAnchorPrefix}1">make honey</h2><p>Moo.</p>},
           '== make honey ==\nMoo.\n== make honey ==\nMoo.\n',
           qq{<h2 id="${TocAnchorPrefix}2">make honey</h2><p>Moo. </p><h2 id="${TocAnchorPrefix}3">make honey</h2><p>Moo.</p>},
          );
