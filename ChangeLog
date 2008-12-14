@@ -1,3 +1,8 @@
+2008-12-15  Alex Schroeder  <alex@gnu.org>
+
+	* modules/static-copy.pl (ImageGetInternalUrl): Call FreeToNormal
+	on the argument.
+
 2008-12-12  Alex Schroeder  <alex@gnu.org>
 
 	* modules/crossbar.pl (NewCrossbarApplyRules): Do not apply the
