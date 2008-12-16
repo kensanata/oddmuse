@@ -18,11 +18,11 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 29;
+use Test::More tests => 30;
 
 clear_pages();
 
-do 'modules/bbcode.pl';
+add_module('bbcode.pl');
 
 run_tests(split('\n',<<'EOT'));
 [b]this text is bold[/b]
@@ -87,3 +87,8 @@ xpath_run_tests(split('\n',<<'EOT'));
 [H4][url=http://example.org]mu[/url][/h4]
 //h4/a[@class="url http"][@href="http://example.org"][text()="mu"]
 EOT
+
+add_module('creole.pl');
+
+test_page(update_page('test', '[b]Important:[/b]'),
+	  '<b>Important:</b>');
