@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: bbcode.pl,v 1.8 2008/06/26 07:57:51 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: bbcode.pl,v 1.9 2008/12/16 01:16:59 as Exp $</p>';
 
 push(@MyRules, \&bbCodeRule);
 
@@ -25,9 +25,9 @@ sub bbCodeRule {
     my $bbcode = $1;
     my $tag = lc($2);
     my $option = $3;
-    if ($tag eq 'b') { 
+    if ($tag eq 'b') {
       return AddHtmlEnvironment('b'); }
-    elsif ($tag eq 'i') { 
+    elsif ($tag eq 'i') {
       return AddHtmlEnvironment('i'); }
     elsif ($tag eq 'u') {
       return AddHtmlEnvironment('em', qq{style="text-decoration: underline; }
