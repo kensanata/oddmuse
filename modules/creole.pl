@@ -14,7 +14,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.57 2008/11/24 01:34:48 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.58 2008/12/16 01:17:43 as Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -139,7 +139,11 @@ sub CreoleInit {
     SetHtmlEnvironmentContainer('th');
   }
 
-  #FIXME: Fold these into "wiki.pl", with Alex's kind allowance.
+  # FIXME: The following changes interfere with the bbcode extension.
+  # To achieve something similar, we often see sites with an InterMap
+  # entry called Self, eg. from http://emacswiki.org/InterMap: Self
+  # /cgi-bin/emacs? -- which allows you to link to Self:action=index.
+
   # Permit page authors to link to URLs resembling:
   #   "See [[/?action=index|the site map]]."
   #
@@ -148,13 +152,13 @@ sub CreoleInit {
   #
   # When not using this extension, authors must add this Wiki's base URL:
   #  "See [[http://www.oddmuse.com/cgi-bin/oddmuse?action=index|the site map]]."
-  my $UrlChars = '[-a-zA-Z0-9/@=+$_~*.,;:?!\'"()&#%]';    # see RFC 2396
-  $FullUrlPattern = "((?:$UrlProtocols:|/)$UrlChars+)";
+  # my $UrlChars = '[-a-zA-Z0-9/@=+$_~*.,;:?!\'"()&#%]';    # see RFC 2396
+  # $FullUrlPattern = "((?:$UrlProtocols:|/)$UrlChars+)";
 
   # Permit page authors to link to other pages having semicolons in their names.
-  my $LinkCharsSansZero = "-;,.()' _1-9A-Za-z\x80-\xff";
-  my $LinkChars = $LinkCharsSansZero.'0';
-  $FreeLinkPattern = "([$LinkCharsSansZero]|[$LinkChars][$LinkChars]+)";
+  # my $LinkCharsSansZero = "-;,.()' _1-9A-Za-z\x80-\xff";
+  # my $LinkChars = $LinkCharsSansZero.'0';
+  # $FreeLinkPattern = "([$LinkCharsSansZero]|[$LinkChars][$LinkChars]+)";
 }
 
 # ....................{ MARKUP                             }....................
@@ -212,6 +216,8 @@ sub CreoleRule {
         .AddHtmlEnvironment('p');
     }
   }
+  # FIXME: I think this should be flattened such that an elsif
+  # connects the tests above with the tests right here. -- Alex
 
   # escape next char (and prevent // in URLs from enabling italics)
   # ~
