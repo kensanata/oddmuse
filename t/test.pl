@@ -200,8 +200,14 @@ sub add_module {
   mkdir $ModuleDir unless -d $ModuleDir;
   my $dir = `/bin/pwd`;
   chop($dir);
-  symlink("$dir/modules/$mod", "$ModuleDir/$mod") or die "Cannot symlink $mod: $!"
-    unless -l "$ModuleDir/$mod";
+  if (-l "$ModuleDir/$mod") {
+    # do nothing
+  } elsif (eval{ symlink("$dir/modules/$mod", "$ModuleDir/$mod"); 1; }) {
+    # do nothing
+  } else {
+    system("copy '$dir/modules/$mod' '$ModuleDir/$mod'");
+  }
+  die "Cannot symlink $mod: $!" unless -e "$ModuleDir/$mod";
   do "$ModuleDir/$mod";
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules;
 }
@@ -213,7 +219,11 @@ sub remove_module {
 }
 
 sub clear_pages {
-  system("/bin/rm -rf $DataDir");
+  if (-f "/bin/rm") {
+    system("/bin/rm -rf $DataDir");
+  } else {
+    system("c:/cygwin/bin/rm.exe -rf $DataDir");
+  }
   die "Cannot remove $DataDir!\n" if -e $DataDir;
   mkdir $DataDir;
   open(F,">$DataDir/config");
