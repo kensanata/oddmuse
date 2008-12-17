@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: download.pl,v 1.4 2004/10/15 14:09:32 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: download.pl,v 1.5 2008/12/17 13:30:28 as Exp $</p>';
 
 push( @MyRules, \&DownloadSupportRule );
 
@@ -24,7 +24,8 @@ push( @MyRules, \&DownloadSupportRule );
 # [[download:page name|alternate title]]
 
 sub DownloadSupportRule {
-  if (m!\G(\[\[download:$FreeLinkPattern\|?(.*)\]\])!gc) {
+  if (m/\G(\[\[download:$FreeLinkPattern\|([^\]]+)\]\])/cog
+      or m!\G(\[\[download:$FreeLinkPattern\]\])!cog) {
     Dirty($1);
     print GetDownloadLink($2, undef, undef, $3);
     return '';
