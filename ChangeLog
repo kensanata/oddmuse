@@ -1,5 +1,8 @@
 2008-12-17  Alex Schroeder  <alex@gnu.org>
 
+	* modules/download.pl (DownloadSupportRule): Rewrite to fix a bug
+	introduced by the change to $FreeLinkPattern 2008-08-05.
+
 	* t/test.pl (clear_pages, add_module): Add code to make it work on
 	Windows with Cygwin.
 
