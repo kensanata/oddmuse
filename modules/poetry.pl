@@ -19,7 +19,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: poetry.pl,v 1.6 2008/11/16 01:00:11 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: poetry.pl,v 1.7 2008/12/23 04:42:52 leycec Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -51,8 +51,8 @@ $PoetryIsHandlingXmlStyleMarkup = 1;
 
 =head2 $PoetryHtmlTag
 
-A string having the Html tag with which to markup poetry. By default, this is a
-preformatted block with default class "poem", which produces Html:
+A string having the HTML tag with which to markup poetry. By default, this is a
+preformatted block with default class "poem", which produces HTML:
 
   <pre class="poem">
   Like this, a
@@ -61,8 +61,8 @@ preformatted block with default class "poem", which produces Html:
   </pre>
 
 Preformatted blocks cleanly preserve paragraph whitespace. However, if
-preformatted blocks are not your cup of Html, you can set this string to 'div',
-which produces Html:
+preformatted blocks are not your cup of HTML, you can set this string to 'div',
+which produces HTML:
 
   <div class="poem">
   Like this, a
@@ -148,15 +148,12 @@ sub PoetryRule {
           $number_of_newlines -= 2;
         $html .= CloseHtmlEnvironments().AddHtmlEnvironment('p');
       }
+
              $html .= $q->br() x $number_of_newlines;
       return $html;
     }
-    # Indentation. (Embedding poetry within a preformatted block ensures excess
-    # whitespace within a line is displayed as is, while whitespace at the fore
-    # of a line is not displayed, but ignored. This corrects that.)
-    elsif ($bol and m~\G(\s*)~cg) { # indentation
-      return '&nbsp;' x length($1);
-    }
+    # Whitespace and indentation.
+    elsif (m~\G(\s+)~cg) { return '&nbsp;' x length($1); }
   }
   # A new poem.
   elsif ($bol and (
