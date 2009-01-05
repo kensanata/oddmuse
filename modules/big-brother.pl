@@ -18,7 +18,7 @@
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: big-brother.pl,v 1.7 2006/08/06 11:45:42 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: big-brother.pl,v 1.8 2009/01/05 00:26:43 as Exp $</p>';
 
 use vars qw($VisitorTime);
 
@@ -45,6 +45,9 @@ sub AddRecentVisitor {
   my ($name) = shift;
   my $value = $BigBrotherData{$name};
   my %entries = $value ? %{$value} : ();
+  # make sure we don't ignore hits in the same second
+  my $ts = $Now;
+  $ts++ while $entries{$ts};
   my $action = GetParam('action', 'browse');
   my $id = GetId(); # script/p/q -> q
   my $url = $q->url(-path_info=>1,-query=>1);
@@ -54,11 +57,11 @@ sub AddRecentVisitor {
   if ($download) {
     # do nothing
   } elsif ($id) {
-    $entries{$Now} = $id . $US . $url;
+    $entries{$ts} = $id . $US . $url;
   } elsif ($action eq 'rss' or $action eq 'rc') {
-    $entries{$Now} = $RCName . $US . $url;
+    $entries{$ts} = $RCName . $US . $url;
   } else {
-    $entries{$Now} = T('some action') . $US . $url;
+    $entries{$ts} = T('some action') . $US . $url;
   }
   $BigBrotherData{$name} = \%entries;
 }
