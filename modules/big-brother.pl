@@ -1,8 +1,8 @@
-# Copyright (C) 2005  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2005, 2009  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation; either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -11,14 +11,11 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: big-brother.pl,v 1.8 2009/01/05 00:26:43 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: big-brother.pl,v 1.9 2009/01/06 22:23:36 as Exp $</p>';
 
 use vars qw($VisitorTime);
 
@@ -92,11 +89,14 @@ sub WriteRecentVisitors {
   foreach my $name (keys %BigBrotherData) {
     my %entries = %{$BigBrotherData{$name}};
     my @times = sort keys %entries;
-    if (not $times[$SurgeProtectionViews - 1]
-	or $times[$SurgeProtectionViews - 1] >= $limit) { # newest is recent enough
-      @times = @times[-$SurgeProtectionViews .. -1] if $#times > $SurgeProtectionViews;
-      $data .=  join($FS, $name, map { $_, $entries{$_}} @times) . "\n";
+    # strip entries older than the older visits
+    while (@times and $times[0] < $limit) {
+      splice(@times, 0, 1);
     }
+    # if we still have more than the number of elements required for
+    # surge protection, delete these as well
+    @times = @times[-$SurgeProtectionViews .. -1] if @times > $SurgeProtectionViews;
+    $data .=  join($FS, $name, map { $_, $entries{$_}} @times) . "\n" if @times;
   }
   WriteStringToFile($VisitorFile, $data);
 }
