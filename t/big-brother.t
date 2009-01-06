@@ -15,10 +15,12 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 14;
+use Test::More tests => 16;
 clear_pages();
 
-AppendStringToFile($ConfigFile, "\$SurgeProtection = 1;\n");
+AppendStringToFile($ConfigFile,
+		   "\$SurgeProtection = 1;\n"
+		   . "\$VisitorTime = 30;\n");
 
 add_module('big-brother.pl');
 
@@ -34,7 +36,7 @@ for (3..$SurgeProtectionViews) {
   test_page(get_page('action=browse id=HomePage username=Alex'),
 	    'Status: 404 NOT FOUND');
 }
-test_page(get_page('action=browse id=HomePage username=Alex'),
+test_page(get_page('action=browse id=OneExtraPage username=Alex'),
 	  'Status: 503 SERVICE UNAVAILABLE');
 
 my ($status, $data) = ReadFile($VisitorFile);
@@ -47,4 +49,20 @@ foreach (split(/\n/,$data)) {
 }
 my  %entries = %{$BigBrotherData{Alex}};
 my @times = sort keys %entries;
-ok($#times == $SurgeProtectionViews - 1, "$SurgeProtectionViews entries in the log file");
+ok(@times == $SurgeProtectionViews, "$SurgeProtectionViews entries in the log file");
+
+# waiting for $VisitorTime to expire
+sleep 35;
+test_page(get_page('action=browse id=AfterWaiting username=Alex'),
+	  'Status: 404 NOT FOUND');
+# now the previous 10 entries should have expired out of the log file
+
+($status, $data) = ReadFile($VisitorFile);
+%BigBrotherData = ();
+foreach (split(/\n/,$data)) {
+  my ($name, %entries) = split /$FS/;
+  $BigBrotherData{$name} = \%entries if $name and %entries;
+}
+%entries = %{$BigBrotherData{Alex}};
+@times = sort keys %entries;
+ok(@times == 1, "just one entry remains in the log file after this wait");
