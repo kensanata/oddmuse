@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright (C) 2006, 2007, 2008  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006, 2007, 2008, 2009  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -87,8 +87,6 @@ this is <strong><em>bold italic</em></strong><em>italic</em>
 <h2>foo =</h2>
 == foo\nbar
 <h2>foo</h2><p>bar</p>
-== [[http://foo.org]]
-<h2><a class="url http outside" href="http://foo.org">http://foo.org</a></h2>
 foo\n\nbar
 foo<p>bar</p>
 foo\nbar
@@ -159,6 +157,11 @@ CamelCaseLink
 ~ does not escape whitespace
 foo ~bar
 foo bar
+EOT
+
+xpath_run_tests(split('\n',<<'EOT'));
+== [[http://foo.org]]
+//h2/a[@class="url http outside"][@href="http://foo.org"][text()="http://foo.org"]
 EOT
 
 $CreoleTildeAlternative = 1;
