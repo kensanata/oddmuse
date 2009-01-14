@@ -1,3 +1,14 @@
+2009-01-14  Alex Schroeder  <alex@gnu.org>
+
+	* modules/google-custom-search.pl (NewGoogleCustomGetSearchLink):
+	Undo the use of ScriptLink.
+
+2009-01-06  Alex Schroeder  <alex@gnu.org>
+
+	* modules/big-brother.pl (WriteRecentVisitors): Make the code
+	easier to read and eliminate a bug that caused the list of times
+	to grow indefinitely.
+
 2009-01-05  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DelayRequired): Fix an off-by one error.
