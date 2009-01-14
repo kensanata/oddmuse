@@ -20,7 +20,7 @@ use vars qw($GoogleCustomSearchEngine);
 
 $GoogleCustomSearchEngine = 'http://www.google.com/cse?cx=004774160799092323420:6-ff2s0o6yi&q=';
 
-$ModulesDescription .= '<p>$Id: google-custom-search.pl,v 1.2 2008/12/06 01:28:39 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: google-custom-search.pl,v 1.3 2009/01/14 22:40:08 as Exp $</p>';
 
 # disable search form
 sub GetSearchForm {}
@@ -31,10 +31,18 @@ sub GetSearchForm {}
 
 sub NewGoogleCustomGetSearchLink {
   my ($text, $class, $name, $title) = @_;
-  $name = UrlEncode($name);
   $text = NormalToFree($text);
-  return ScriptLink($GoogleCustomSearchEngine . UrlEncode(qq("$text")),
-		    $text, $class, $name, $title);
+  # It would be complicated to use ScriptLink here because of quoting
+  # issues: ScriptUrl expects a quoted URL, which it then proceeds to
+  # unquote again, etc. It's safer to just copy the necessary code
+  # from ScriptLink.
+  my %params;
+  $params{'-rel'} = 'nofollow';
+  $params{-href} = $GoogleCustomSearchEngine . UrlEncode(qq("$text"));
+  $params{'-class'} = $class if $class;
+  $params{'-name'} = UrlEncode($name) if $name;
+  $params{'-title'} = $title if $title;
+  return $q->a(\%params, $text);
 }
 
 *OldGoogleCustomGetHeader = *GetHeader;
