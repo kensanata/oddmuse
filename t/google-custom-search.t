@@ -1,4 +1,4 @@
-# Copyright (C) 2008  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2008, 2009  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,13 +15,15 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 2;
+use Test::More tests => 3;
 clear_pages();
 
 add_module('google-custom-search.pl');
 
-xpath_test(update_page('the page'),
+$page = update_page('the page');
+xpath_test($page,
 	   '//h1/a[text()="the page"][@rel="nofollow"][contains(@href,"q=%22the%20page%22")][@title="Click to search for references to this page"]');
+negative_xpath_test($page, '//h1/a[contains(@href,"localhost")]');
 
 add_module('permanent-anchors.pl');
 
