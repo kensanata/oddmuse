@@ -23,7 +23,7 @@
 # Additionally, lines starting with Q: and A: are rendered using 
 # the css classes div.question and div.answer.
 
-$ModulesDescription .= '<p>$Id: faq.pl,v 1.3 2008/12/18 09:52:55 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: faq.pl,v 1.4 2009/01/28 11:33:57 as Exp $</p>';
 
 $FaqHeaderText = "Questions on this page:" unless $FaqHeaderText;
 $FaqQuestionText = "Question: " unless $FaqQuestionText;
@@ -37,7 +37,7 @@ sub FaqRule {
       . $q->div({class=>'question'}, $FaqQuestionText . $1);
   } elsif ($bol && m/\GA:[ \t]*/gc) {
     return CloseHtmlEnvironments()
-      . AddHtmlEnvironment('div', "class=>'answer'") $FaqAnswerText;
+      . AddHtmlEnvironment('div', "class='answer'") . $FaqAnswerText;
   }
   return undef;
 }
