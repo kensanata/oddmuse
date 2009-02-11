@@ -22,7 +22,7 @@ creoleaddition is simply installable; simply:
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.26 2009/02/11 17:48:51 weakish Exp $</p>';
+$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.27 2009/02/11 18:14:17 weakish Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -91,20 +91,17 @@ SetHtmlEnvironmentContainer('blockquote');
 $RuleOrder{\&CreoleAdditionRule} = -11;
 
 sub CreoleAdditionRule {
-  # ; definition list term
-  if ($CreoleAdditionDefList and (
-      ($bol and m/\G[ \t]*;[ \t]*(?=([^:]*($FullUrlPattern)*[^:]*)+?\n[ \t]*:[ \t]*)/cg) or
-      (InElement('dd') and m/\G[ \t]*\n[ \t]*;[ \t]*(?=([^:]*($FullUrlPattern)*[^:]*)+?\n[ \t]*:[ \t]*)/cg))) {
-    return
-       CloseHtmlEnvironmentUntil('dd')
-      .OpenHtmlEnvironment('dl', 1)
-      . AddHtmlEnvironment('dt');
-  }
-  # : definition list description
-  elsif ($CreoleAdditionDefList and (InElement('dt') or InElement('dd')) and
-            m/\G[ \t]*\n[ \t]*:[ \t]*/cg) {
-    return CloseHtmlEnvironment().AddHtmlEnvironment('dd');
-  }
+# definition list
+# ; dt
+# : dd
+    if ($CreoleAdditionDefList && $bol && m/\G\s*\;[ \t]*(?=(.+(\n)(\s)*\:))/cg
+    or InElement('dd') && m/\G\s*\n(\s)*\;[ \t]*(?=(.+\n(\s)*\:))/cg) {
+        return CloseHtmlEnvironmentUntil('dd') . OpenHtmlEnvironment('dl', 1)
+        . AddHtmlEnvironment('dt'); }# `:' needs special treatment, later 
+    elsif (InElement('dt') and m/\G\s*\n(\s)*\:[ \t]*(?=(.+(\n)(\s)*\:)*)/cg) {
+        return CloseHtmlEnvironment() . AddHtmlEnvironment('dd');} 
+    elsif (InElement('dd') and m/\G\s*\n(\s)*\:[ \t]*(?=(.+(\n)(\s)*\:)*)/cg) {
+    return  CloseHtmlEnvironment() . AddHtmlEnvironment('dd');}
   # """block quotes"""
   elsif ($CreoleAdditionQuote and $bol and m/\G\"\"\"(\n|$)/cg) {
     return InElement('blockquote')
