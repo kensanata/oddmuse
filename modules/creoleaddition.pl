@@ -22,7 +22,7 @@ creoleaddition is simply installable; simply:
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.24 2008/11/16 01:00:10 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.25 2009/02/11 17:25:35 weakish Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -93,8 +93,8 @@ $RuleOrder{\&CreoleAdditionRule} = -11;
 sub CreoleAdditionRule {
   # ; definition list term
   if ($CreoleAdditionDefList and (
-      ($bol and                    m/\G[ \t]*;[ \t]*(?=[^:]+?\n[ \t]*:[ \t]*)/cg) or
-      (InElement('dd') and m/\G[ \t]*\n[ \t]*;[ \t]*(?=[^:]+?\n[ \t]*:[ \t]*)/cg))) {
+      ($bol and m/\G[ \t]*;[ \t]*(?=[^:]*($FullUrlPattern)*[^:]*?\n[ \t]*:[ \t]*)/cg) or
+      (InElement('dd') and m/\G[ \t]*\n[ \t]*;[ \t]*(?=[^:]*($FullUrlPattern)*[^:]*?\n[ \t]*:[ \t]*)/cg))) {
     return
        CloseHtmlEnvironmentUntil('dd')
       .OpenHtmlEnvironment('dl', 1)

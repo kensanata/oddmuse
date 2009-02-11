@@ -8,13 +8,14 @@
 # You can get a copy of GPL version 2 at
 # http://www.gnu.org/licenses/gpl-2.0.html
 
-# $Id: creoleaddition.t,v 1.11 2008/11/15 12:48:13 leycec Exp $
+# $Id: creoleaddition.t,v 1.12 2009/02/11 17:25:35 weakish Exp $
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 22;
+use Test::More tests => 26;
 clear_pages();
 
+add_module('creole.pl');
 add_module('creoleaddition.pl');
 
 run_tests(split('\n',<<'EOT'));
@@ -50,6 +51,14 @@ H<sub>2</sub>O
 <dl><dt>dt1</dt><dd>dd1</dd><dd>dd2</dd></dl>
 ;dt1 \n :dd1\n:dd2\n : dd3
 <dl><dt>dt1</dt><dd>dd1</dd><dd>dd2</dd><dd>dd3</dd></dl>
+; **dt1**\n:dd1
+<dl><dt><strong>dt1</strong></dt><dd>dd1</dd></dl>
+; {{{dt1}}}\n:dd1
+<dl><dt><code>dt1</code></dt><dd>dd1</dd></dl>
+;[[http://www.toto.com|toto]] \n :Site of my friend Toto
+<dl><dt><a class="url http outside" href="http://www.toto.com">toto</a></dt><dd>Site of my friend Toto</dd></dl>
+; {{{[[http://www.toto.com|toto]]}}} \n : Site of my friend Toto
+<dl><dt><code>[[http://www.toto.com|toto]]</code></dt><dd>Site of my friend Toto</dd></dl>
 ''my quote'' works ''what about x^^2^^''
 <q>my quote</q> works <q>what about x<sup>2</sup></q>
 """ not a block quote """
