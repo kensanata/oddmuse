@@ -1,5 +1,5 @@
 2009-02-11 Weakish Jiang <weakish@gmail.com>
-	* modules/creoleaddition.pl (CreoleAdditionRule): Allow URLs in dt in dl.
+	* modules/creoleaddition.pl (CreoleAdditionRule): Allow colons in dt in dl.
 
 2009-01-22  Alex Schroeder  <alex@gnu.org>
 
