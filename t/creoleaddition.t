@@ -8,11 +8,11 @@
 # You can get a copy of GPL version 2 at
 # http://www.gnu.org/licenses/gpl-2.0.html
 
-# $Id: creoleaddition.t,v 1.13 2009/02/11 17:48:51 weakish Exp $
+# $Id: creoleaddition.t,v 1.14 2009/02/11 18:21:03 weakish Exp $
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 27;
+use Test::More tests => 28;
 clear_pages();
 
 add_module('creole.pl');
@@ -61,6 +61,8 @@ H<sub>2</sub>O
 <dl><dt><code>[[http://www.toto.com|toto]]</code></dt><dd>Site of my friend Toto</dd></dl>
 ; what if we have {{{[[http://example.com]]}}} and {{{[[ftp://example.org]]}}}\n: And {{{[[http://example.net]]}}}
 <dl><dt>what if we have <code>[[http://example.com]]</code> and <code>[[ftp://example.org]]</code></dt><dd>And <code>[[http://example.net]]</code></dd></dl>
+;dt:notdd\n:dd
+<dl><dt>dt:notdd</dt><dd>dd</dd></dl>
 ''my quote'' works ''what about x^^2^^''
 <q>my quote</q> works <q>what about x<sup>2</sup></q>
 """ not a block quote """
