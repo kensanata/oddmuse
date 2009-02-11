@@ -16,7 +16,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 106;
+use Test::More tests => 107;
 clear_pages();
 
 add_module('creole.pl');
@@ -115,6 +115,8 @@ foo {{{{bar}}}}
 foo <code>{bar}</code>
 foo {{{*bar*}}}
 foo <code>*bar*</code>
+{{{[[http://example.org|example]]}}}
+<code>[[http://example.org|example]]</code>
 ----
 <hr />
 -----
