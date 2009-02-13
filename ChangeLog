@@ -1,3 +1,12 @@
+2009-02-13  Alex Schroeder  <alex@gnu.org>
+
+	* modules/portrait-support.pl: Changed one of the [new:...] macro
+	to match $FreeLinkPattern instead of [^]:]+ as it interfered with
+	code examples containing regular expressions. As this is a macro,
+	it will remain tricky, unfortunately.
+
+	* modules/markup.pl (%MarkupForcedPairs): Added that to options.
+
 2009-02-11 Weakish Jiang <weakish@gmail.com>
 	* modules/creoleaddition.pl (CreoleAdditionRule): Allow colons in dt in dl.
 
