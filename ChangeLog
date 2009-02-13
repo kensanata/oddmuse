@@ -33,6 +33,11 @@
 	* t/test.pl (clear_pages, add_module): Add code to make it work on
 	Windows with Cygwin.
 
+2008-12-16  Alex Schroeder  <alex@gnu.org>
+
+	* modules/creole.pl (CreoleInit): Don't change $FreeLinkPattern as
+	that intereferes with bbcode.pl.
+
 2008-12-15  Alex Schroeder  <alex@gnu.org>
 
 	* modules/static-copy.pl (ImageGetInternalUrl): Call FreeToNormal
