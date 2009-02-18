@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.11 2006/12/22 01:27:48 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.12 2009/02/18 23:13:35 as Exp $</p>';
 
 use LWP::UserAgent;
 
@@ -193,7 +193,7 @@ sub PrintAllReferers {
   for my $id (@_) {
     ReadReferers($id);
     print $q->div({-class=>'page'},
-		  $q->p(ScriptLink(UrlEncode($id),$id)),
+		  $q->p(GetPageLink($id)),
 		  GetReferers()) if %Referers;
   }
 }
