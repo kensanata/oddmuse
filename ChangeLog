@@ -1,3 +1,9 @@
+2009-02-19  Alex Schroeder  <alex@gnu.org>
+
+	* modules/referrer-tracking.pl (PrintAllReferers): Use GetPageLink
+	instead of using ScriptLink directly in order to fix the output
+	for pages containing a space.
+
 2009-02-13  Alex Schroeder  <alex@gnu.org>
 
 	* modules/portrait-support.pl: Changed one of the [new:...] macro
