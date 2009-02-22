@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.893 2009/01/05 00:30:21 as Exp $
+# Version       $Id: wiki.pl,v 1.894 2009/02/22 10:07:47 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008
 #     Alex Schroeder <alex@gnu.org>
@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.893 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.894 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -293,7 +293,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.893 2009/01/05 00:30:21 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.894 2009/02/22 10:07:47 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -382,8 +382,8 @@ sub CookieRollbackFix {
 
 sub GetParam {
   my ($name, $default) = @_;
-  my $result = $q->param($name);
-  $result = $NewCookie{$name} unless defined($result); # empty strings are defined!
+  my $result = $NewCookie{$name};
+  $result = $q->param($name) unless defined($result); # empty strings are defined!
   $result = $default unless defined($result);
   return QuoteHtml($result); # you need to unquote anything that can have <tags>
 }
@@ -1354,7 +1354,8 @@ sub DoBrowseRequest {
     eval { local $SIG{__DIE__}; MyActions(); };
   } elsif ($action) {
     ReportError(Ts('Invalid action parameter %s', $action), '501 NOT IMPLEMENTED');
-  } elsif (($search ne '') || (GetParam('dosearch', '') ne '')) { # allow search for "0"
+  } elsif ($search ne '') { # allow search for "0"
+    SetParam('action', 'search'); # fake it
     DoSearch($search);
   } elsif (GetParam('title', '') and not GetParam('Cancel', '')) {
     DoPost(GetParam('title', ''));
@@ -2295,7 +2296,7 @@ sub GetHtmlHeader {   # always HTML!
       . '<body class="' . GetParam('theme', $ScriptName) . '">';
 }
 
-sub GetRobots {     # NOINDEX for non-browse pages.
+sub GetRobots { # NOINDEX for non-browse pages.
   if (GetParam('action', 'browse') eq 'browse'
       and not GetParam('revision', '')) {
     return '<meta name="robots" content="INDEX,FOLLOW" />';
