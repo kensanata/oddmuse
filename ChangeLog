@@ -1,3 +1,11 @@
+2009-02-22  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetParam): Get result from NewCookie before getting it
+	from $q->param -- this will make SetParam have the intended effect.
+	(DoBrowseRequest): Fake a search action before calling DoSearch;
+	since the action is now explicitly not browse, GetRobots will
+	produce a NOFOLLOW header.
+
 2009-02-19  Alex Schroeder  <alex@gnu.org>
 
 	* modules/referrer-tracking.pl (PrintAllReferers): Use GetPageLink
