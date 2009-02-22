@@ -1,4 +1,4 @@
-# Copyright (C) 2006, 2007  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006, 2007, 2009  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 26;
+use Test::More tests => 30;
 
 clear_pages();
 
@@ -74,7 +74,7 @@ test_page(get_page('SearchAndReplace'), '/fuu/ and \[xa\]bar.');
 test_page(get_page('search=/fuu/ replace={{fuu}} pwd=foo'), '1 pages found');
 test_page(get_page('SearchAndReplace'), '{{fuu}} and \[xa\]bar.');
 
-## Check headers especially the quoting of non-ASCII characters.
+# Check headers especially the quoting of non-ASCII characters.
 
 $page = update_page("Alexander_Schröder", "Edit [[Alexander Schröder]]!");
 xpath_test($page,
@@ -87,3 +87,12 @@ xpath_test(update_page('IncludeSearch',
 	   '//div[@class="search"]/p/span[@class="result"]/a[@class="local"][@href="http://localhost/wiki.pl/NegativeSearchTest"][text()="NegativeSearchTest"]',
 	   '//div[@class="search"]/p/span[@class="result"]/a[@class="local"][@href="http://localhost/wiki.pl/NegativeSearchTestTwo"][text()="NegativeSearchTestTwo"]',
 	  '//p[text()=" last line"]'); # note the NL -> SPC
+
+# Search for zero
+
+update_page("Zero", "This is about 0 and the empty string ''.");
+test_page(get_page('search=0'),
+	  '<h1>Search for: 0</h1>',
+	  '<p class="result">1 pages found.</p>',
+	  "This is about <strong>0</strong> and the empty string ''.",
+	  'meta name="robots" content="NOINDEX,FOLLOW"');
