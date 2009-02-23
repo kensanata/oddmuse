@@ -1,4 +1,4 @@
-# Copyright (C) 2004, 2006, 2007, 2008  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2004, 2006, 2007, 2008, 2009  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.20 2008/09/21 23:23:01 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.21 2009/02/23 09:57:40 as Exp $</p>';
 
 $Action{journal} = \&DoJournalRss;
 
@@ -46,21 +46,8 @@ sub JournalRssGetRcLines {
     local %Page;
     local $OpenPageName = '';
     OpenPage($id);
-    # If this is a minor edit, get the timestamp of the last major
-    # edit.
-    if ($Page{minor}) {
-      # Perhaps the old kept revision is gone due to $KeepMajor=0 or
-      # admin.pl or because a page was created as a minor change and
-      # never edited. Reading kept revisions in this case results in
-      # an error. If possible we will report the date of the last
-      # major change in order to not confuse blog aggregators (aka.
-      # planets). Thus, on a minor change, the item will reappear in
-      # the feed but its pubDate will be unchanged.
-      eval {
-	my %keep = GetKeptRevision($Page{lastmajor});
-	$Page{ts} = $keep{ts};
-      }
-    }
+    # If this is a minor edit, ignore it!
+    next if ($Page{minor});
     # Generate artifical rows in the list to pass to GetRcRss. We need
     # to open every single page, because the meta-data ordinarily
     # available in the rc.log file is not available to us. This is why
