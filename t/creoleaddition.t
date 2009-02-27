@@ -1,18 +1,19 @@
 #!/usr/bin/env perl
 # Copyright (C) 2008  Weakish Jiang <weakish@gmail.com>
+# Copyright (C) 2009  Alex Schroeder <alex@gnu.com>
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as 
+# it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation.
 #
 # You can get a copy of GPL version 2 at
 # http://www.gnu.org/licenses/gpl-2.0.html
 
-# $Id: creoleaddition.t,v 1.14 2009/02/11 18:21:03 weakish Exp $
+# $Id: creoleaddition.t,v 1.15 2009/02/27 09:56:05 as Exp $
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 28;
+use Test::More tests => 29;
 clear_pages();
 
 add_module('creole.pl');
@@ -79,3 +80,12 @@ xpath_run_tests(split('\n',<<'EOT'));
 ##[[wiki page]] will work##
 //code/a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=wiki_page"][text()="?"][@rel="nofollow"]
 EOT
+
+# test for interaction with the usemod indented text rules
+
+add_module('usemod.pl');
+xpath_run_tests(split('\n',<<'EOT'));
+: is working\n:: not working
+//p[@class="indent level1"][@style="margin-left: 2em"][text()="is working "]/following-sibling::p[@class="indent level2"][@style="margin-left: 4em"][text()="not working"]
+EOT
+exit;
