@@ -14,7 +14,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.59 2009/03/02 17:53:43 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.60 2009/03/02 18:09:48 as Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -199,22 +199,19 @@ sub CreoleRule {
   # including external HTML pages into local Wiki pages.)
   my ($is_interlinking, $is_intraanchoring) = @_;
 
-  # Block level elements.
-  if ($bol) {
-    # horizontal rule
-    # ----
-    if (m/\G[ \t]*----[ \t]*(\n|$)/cg) {
-      return CloseHtmlEnvironments().$q->hr().AddHtmlEnvironment('p');
-    }
-    # {{{
-    # nowiki block
-    # }}}
-    elsif (m/\G\{\{\{[ \t]*\n(.*?)\n\}\}\}[ \t]*(\n|$)/cgs) {
-      my $str = $1;
-      return CloseHtmlEnvironments()
-        .$q->pre({-class=> 'real'}, $str)
+  # horizontal rule
+  # ----
+  if ($bol && m/\G[ \t]*----[ \t]*(\n|$)/cg) {
+    return CloseHtmlEnvironments().$q->hr().AddHtmlEnvironment('p');
+  }
+  # {{{
+  # nowiki block
+  # }}}
+  elsif ($bol && m/\G\{\{\{[ \t]*\n(.*?)\n\}\}\}[ \t]*(\n|$)/cgs) {
+    my $str = $1;
+    return CloseHtmlEnvironments()
+      .$q->pre({-class=> 'real'}, $str)
         .AddHtmlEnvironment('p');
-    }
   }
   # escape next char (and prevent // in URLs from enabling italics)
   # ~
