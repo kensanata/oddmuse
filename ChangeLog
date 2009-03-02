@@ -28,7 +28,14 @@
 	* modules/markup.pl (%MarkupForcedPairs): Added that to options.
 
 2009-02-11 Weakish Jiang <weakish@gmail.com>
-	* modules/creoleaddition.pl (CreoleAdditionRule): Allow colons in dt in dl.
+
+	* modules/creoleaddition.pl (CreoleAdditionRule): Allow colons in
+	dt in dl.
+
+2009-01-28  Alex Schroeder  <alex@gnu.org>
+
+	* modules/faq.pl (FaqRule): Applied fix suggested by user bib on
+	the website.
 
 2009-01-22  Alex Schroeder  <alex@gnu.org>
 
@@ -53,6 +60,11 @@
 
 	* modules/big-brother.pl (AddRecentVisitor): Make sure we count
 	all the hits in the same second.
+
+2008-12-18  Alex Schroeder  <alex@gnu.org>
+
+	* modules/faq.pl (FaqRule): Found some old modifications I made a
+	long time ago. Q: and A: must be at the beginning of the line.
 
 2008-12-17  Alex Schroeder  <alex@gnu.org>
 
@@ -170,7 +182,7 @@
 
 	* modules/crossbar.pl (UserCanEditCrossbar): Deleted.
 	(CrossbarInit): Permit non-administrators to edit crossbar pages.
-	(GetEditFormCrossbar): Added a message describing crossbar usage. 
+	(GetEditFormCrossbar): Added a message describing crossbar usage.
 
 2008-11-24  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
@@ -194,7 +206,7 @@
 
 2008-11-24  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
-	* wiki.pl (GetEditForm): Added the 'upload' class attribute to 
+	* wiki.pl (GetEditForm): Added the 'upload' class attribute to
 	upload links produced by this function, for CSS stylization.
 	(BrowsePage): Calls the new "PrintPageContent" function.
 	(PrintPageContent): New function, whose implementation has been
@@ -237,9 +249,9 @@
 
 	* wiki.pl (AddHtmlEnvironment): Corrected a minor regression.
 	Probably not a genuine issue... but one can never tell.
-	* modules/creole.pl (CloseHtmlEnvironmentsCreole): Removed. 
+	* modules/creole.pl (CloseHtmlEnvironmentsCreole): Removed.
 	* modules/creoleaddition.pl (CloseHtmlEnvironmentsCreoleAddition):
-	Removed. 
+	Removed.
 	* modules/poetry.pl (CloseHtmlEnvironmentsPoetry): Removed.
 
 2008-11-15  Brian Curry  <http://www.raiazome.com/Brian_Curry>
@@ -305,7 +317,7 @@
 	not contain other block-level markup -- since most modules "open" a
 	new HTML environment for such markup by first calling
 	CloseHtmlEnvironments(), which, of course, closes the HTML
-	environments of all "parent" block-level markup of this markup. 
+	environments of all "parent" block-level markup of this markup.
 	Slightly mind-bending, isn't it?
 	(RegisterBlockLevelElement): New function. (I'm not entirely happy
 	with the verb 'register', here, but could think of nothing better.)
@@ -315,14 +327,14 @@
 	here!)
 	(PrintWikiToHTML): Use the @MyBeforeApplyRules and
 	@MyAfterApplyRules lists, to perform HTML pre- and post-processing.
-	
+
 2008-11-12  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
 	* modules/poetry.pl ($PoetryIsHandlingXMLStyleMarkup): New option.
 	($PoetryIsHandlingCreoleStyleMarkup): New option.
 	(PoetryRule): Utilized new options, so as to permit several markup
 	styles, and simplified implementation, according to recent
-	refactoring in "wiki.pl". 
+	refactoring in "wiki.pl".
 	(CloseHtmlEnvironmentsPoetry): New function, permitting block-level
 	elements (e.g., lists, tables) within poems.
 
@@ -523,7 +535,7 @@
 	been refactored for robustness and strict conformance to the Wiki
 	Creole standard, and has been well-documented.
 	* modules/creole.pl (CreoleGetTableHtmlAttributes): Deleted function.
-	
+
 2008-10-05  Alex Schroeder  <alex@gnu.org>
 
 	* modules/atom.pl (DoAtom): Call print GetRcAtom instead of DoRc
@@ -584,7 +596,7 @@
 	(CreoleAdditionRules): Improved handling of existing markup rules,
 	so as to allow markup nesting; and implemented handling of the new
 	%%small caps%% markup rule.
-	
+
 2008-09-30  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
 	* modules/poetry.pl: New.
@@ -674,7 +686,7 @@
 
 	* wiki.pl (BrowsePage): Nested the preview div within the
 	content div, per Oddmuse norms.
-	
+
 2008-09-06  Alex Schroeder  <aschroeder@localhost>
 
 	* modules/recaptcha.pl (QuestionAddTo): Use $ReCaptchaSecretKey
@@ -718,7 +730,7 @@
 
 	The following change makes sure we can put *bold* words at the
 	beginning of lines if used together with markup.pl.
-	
+
 	* modules/creole.pl (CreoleListRule): New. Added with a very late
 	priority.
 	(CreoleNewLineRule): Add two more newline oriented rule items and
@@ -767,7 +779,7 @@
 	extra br tags now.
 
 	* modules/emailquote: New module.
-	
+
 2008-06-23  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetHtmlHeader): Add universal edit button.
@@ -838,7 +850,7 @@
 2008-04-12 Weakish Jiang <weakish@gmail.com>
 
 	* module/creoleaddition.pl ($CreoleAdditionMonospace): New option.
-	(CreoleAdditionRules): add new syntax: ##monaspace## 
+	(CreoleAdditionRules): add new syntax: ##monaspace##
 
 2008-03-31  Alex Schroeder  <alex@gnu.org>
 
@@ -1091,7 +1103,7 @@
 	A big change to search-freetext.pl to make sure it works even if
 	we're not reindexing all the time. This requires a reindexing of
 	all pages changed after the last big reindexing on every save.
-	
+
 	* modules/search-freetext.pl (DoSearchFreeTextIndex)
 	(SearchFreeTextIndex): The buildindex action will now call
 	DoSearchFreeTextIndex, which does some setup and prints info, and
@@ -1109,7 +1121,7 @@
 	(SearchFreeTextGet): Make sure we only call search on the db if it
 	contains data.
 	(DoSearchFreeTextNewPages): New.
-	
+
 2007-10-10  Alex Schroeder  <alex@gnu.org>
 
 	* t/test.pl (xpath_do): Only print the page once per test run.
@@ -1162,7 +1174,7 @@
 
 	Make localnames.pl independent from the near link machinery and
 	simplify the initialization somewhat. Added POD.
-	
+
 	* modules/localnames.pl ($LocalNamesInit, NewLocalNamesReInit):
 	Deleted.
 	(LocalNamesInit): No longer use %NearSource.
@@ -1196,7 +1208,7 @@
 	to search result changes into SearchMenu.
 	(SearchNearPages): Deleted.
 	(DoMaintain): Removed near cache maintenance.
-	
+
 	* modules/questionasker.pl ($QuestionaskerSecretKey): New option.
 	(QuestionaskerInit, NewQuestionaskerDoPost): Use it.
 
@@ -1215,7 +1227,7 @@
 
 	Major change that removes permanent anchors from the core script
 	and moves it into a module.
-	
+
 	* wiki.pl (@IndexOptions): New.
 	(%PermanentAnchors, $PermanentAnchors)
 	($PermanentAnchorsFile): Deleted.
@@ -1234,7 +1246,7 @@
 	* modules/permanent-anchors.pl: Moved code here and rewrote
 	it somewhat. Use @IndexOptions to reintroduce permanent anchors
 	into the list of all pages.
-	
+
 2007-09-24  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (ApplyRules): Add a pattern for #REDIRECT in order to
@@ -1406,7 +1418,7 @@
 	results depending on whether calendar.pl is installed or not. Add
 	paragraph and span with "Archive". Reverse order, add number of
 	articles in brackets.
-	
+
 	* wiki.pl (RcTextItem): Don't get confused by revision 0.
 
 2007-07-03  Alex Schroeder  <alex@gnu.org>
@@ -1435,7 +1447,7 @@
 	Implement follow-up functionality for RecentChanges; make RSS
 	feeds explicit by linking to the RSS feed of the current
 	RecentChanges.
-	
+
 	* wiki.pl (RcHeader): Added RSS links and handle followup parameter.
 	(GetFilterForm): Make sure the form fields are shown in the
 	correct order every time instead of being random. Add followup field.
@@ -1444,7 +1456,7 @@
 	Start working on tighter integration of functionality and
 	interface. Disabling functionality should disable that part of the
 	interface, if possible.
-	
+
 	* wiki.pl (GetFooterLinks): Only print history, contrib, and admin
 	links if the action is still defined.
 
@@ -1524,7 +1536,7 @@
 	error class to allow styling.
 
 	Some changes suggested by Radomir Dopieralski <oddmuse@sheep.art.pl>.
-	
+
 	* wiki.pl (ReportError): Add two newlines at the end and exit with
 	an error code because of the call to exit().
 	(GetHttpHeader): Print two newlines at the end if only a HEAD
@@ -1729,7 +1741,7 @@
 
 	* modules/creole.pl (CreoleHeadingRule, CreoleRule): Moved
 	headings into separate rule with a very different priority so that
-	the rule from toc.pl can override it. 
+	the rule from toc.pl can override it.
 
 	* modules/toc.pl (TocRule): Make it compatible with creole.pl.
 
@@ -1852,7 +1864,7 @@
 	(PACKAGEMAKER): New.
 	(PWD): New.
 	(upload): Add .dmg and .dmg.sig.
-	
+
 2006-10-11  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoJournal): Pass search parameter along to
@@ -2438,7 +2450,7 @@
 	^ and add handling of search parameter.
 
 	* wiki.pl (ApplyRules): Allow "0" as page text.
-	(ApplyRules): Make search pattern in <journal> less greedy. 
+	(ApplyRules): Make search pattern in <journal> less greedy.
 
 	* modules/age.pl ($AgeParameter): New.
 	(NewAgeGetHeader): Use it.
@@ -2949,7 +2961,7 @@
 2006-02-11  Victor Osadci  <vic_site@xhtml.md>
 
 	* modules/translations/romanian-utf8.pl: New translations for
-	error and help messages.	
+	error and help messages.
 
 2006-02-11  Ingo Belka  <grimmen@mvnet.de>
 
@@ -3204,7 +3216,7 @@
 
 	* modules/localnames.pl (LocalNamesInit, LocalNamesNewNearInit):
 	Merged LocalNamesNewNearInit with LocalNamesInit.
-	
+
 2005-10-21  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (BrowseResolvedPage): Visiting non-existing comment
@@ -3245,7 +3257,7 @@
 
 	* wiki.pl (InitVariables): Reorder calls so that $InterMap gets
 	translated before it is read.
-	
+
 2005-10-09  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (ApplyRules): Test for $OpenPageName before comparing it
@@ -3260,10 +3272,10 @@
 	stays ____ and does not turn into an empty (and thus invisible)
 	element.
 
-	* modules/tables-long.pl: 
-	* modules/sidebar.pl: 
-	* modules/referrer-tracking.pl: 
-	* modules/portrait-support.pl: 
+	* modules/tables-long.pl:
+	* modules/sidebar.pl:
+	* modules/referrer-tracking.pl:
+	* modules/portrait-support.pl:
 	* modules/page-trail.pl: Removed $DefaultStyleSheet.
 
 	* modules/linebreaks.pl (LineBreakRule): Fixed the same typo we
@@ -3275,11 +3287,11 @@
 	* modules/crumbs:
 	* modules/dynamic-comments:
 	* modules/irc: Removed $DefaultStyleSheet.
-	
+
 	* modules/edit-cluster: Removed $DefaultStyleSheet and tons of
 	changes I do not understand anymore.  I don't even know what this
 	module is for.  I should delete it.
-	
+
 	* OddMuse.pm: Require instead of do wiki.pl.
 
 	* wiki.pl (ApplyRules): Close HTML environments before printing
@@ -3344,7 +3356,7 @@
 	Switch to Apache2 and mod_perl2 support!
 	(handler): Don't call Apache->request($r).  Use
 	Apache2::Const::OK.
-	
+
 2005-10-02  Alex Schroeder  <alex@gnu.org>
 
 	* modules/weblog-3.pl (DoCategories): Go to the edit page when
@@ -3542,7 +3554,7 @@
 
 	* modules/toc.pl (TocRule): Move TOC to just before the first
 	header.
-	(NewTocGetHeader): Deleted. 
+	(NewTocGetHeader): Deleted.
 	(TocHeadings): No longer take an argument.
 
 2005-08-23  Alex Schroeder  <alex@gnu.org>
@@ -3602,7 +3614,7 @@
 	(DoSurgeProtection, WriteRecentVisitors): Simplified: No longer
 	take $Visitors into account.
 	(DoShowVisitors): Removed.
-	
+
 	(RSS, GetRcHtml): Replaced &ndash; with &#8211; for XML conformance.
 	(PageHtml): Accept size limit and error message; return error
 	message instead of HTML if the raw text of the page is too big.
@@ -3794,7 +3806,7 @@
 	rel="nofollow" links.
 	(RcHeader): Use nofollow links because RecentChanges is FOLLOW by
 	default.  This might help cut bandwidth.
-	
+
 	* modules/search-freetext.pl (SearchFreeTextMenu): New, added to
 	@MyAdminCode.
 	(SearchFreeTextIndex): Catch error if module is missing.
@@ -3826,12 +3838,12 @@
 	expiration".
 	($SummaryLines): Remove option again and replace with hard-coded
 	two lines.
-	
+
 2005-04-30  Alex Schroeder  <alex@gnu.org>
 
 	Implementation of DigestedChanges, as inspired by discussion on
 	Meatball.
-	
+
 	* wiki.pl ($SummaryLines): New option.
 	(DoEdit): If the last edit was less than 24h ago, use its summary
 	as the default.
@@ -3916,7 +3928,7 @@
 	tests all over the  script inside new function TextIsFile.
 	(TextIsFile): New.
 
-	
+
 2005-04-06  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetKeptDiff): Use GetTextRevision instead of
@@ -3950,7 +3962,7 @@
 	* modules/crumbs.pl (CrumbsRule): Independent of GetCluster and
 	therefore no longer requires $PageCluster to be set.  Call
 	FreeToNormal on all clusters.
-	
+
 2005-03-27  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (RSS): Use LWP::Parallel::UserAgent if available.
@@ -3969,7 +3981,7 @@
 	* wiki.pl (DoBrowseRequest): Move functionality to determine page
 	id to GetCurrentRequest.
 	(GetCurrentRequest, GetCurrentPageName): New sub.
-	
+
 2005-03-24  Alex Schroeder  <alex@gnu.org>
 
 	* modules/namespaces.pl (NamespacesInitVariables): Set
@@ -7307,4 +7319,3 @@
 	local links.
 	(ISBNLink): Make URLs to shops translatable.
 	(GetGotoBar): Add search button.
-
