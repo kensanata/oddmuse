@@ -14,7 +14,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.58 2008/12/16 01:17:43 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.59 2009/03/02 17:53:43 as Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -216,12 +216,9 @@ sub CreoleRule {
         .AddHtmlEnvironment('p');
     }
   }
-  # FIXME: I think this should be flattened such that an elsif
-  # connects the tests above with the tests right here. -- Alex
-
   # escape next char (and prevent // in URLs from enabling italics)
   # ~
-  if (m/\G(~($FullUrlPattern|\S))/cgo) {
+  elsif (m/\G(~($FullUrlPattern|\S))/cgo) {
     return
       ($CreoleTildeAlternative and
        index( 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
