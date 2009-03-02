@@ -9,6 +9,11 @@
 	New option.
 	(CreoleAdditionRule): Implement indented paragraphs rule.
 
+2009-02-23  Alex Schroeder  <aschroeder@localhost>
+
+	* modules/journal-rss.pl (JournalRssGetRcLines): Skip minor edits
+	instead of messing with them.
+
 2009-02-22  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetParam): Get result from NewCookie before getting it
