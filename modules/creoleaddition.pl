@@ -22,7 +22,7 @@ creoleaddition is simply installable; simply:
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.27 2009/02/11 18:14:17 weakish Exp $</p>';
+$ModulesDescription .= '<p>$Id: creoleaddition.pl,v 1.28 2009/03/02 17:54:20 as Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -36,6 +36,7 @@ B<wiki/config.pl> file for your Oddmuse Wiki.
 # them.
 use vars qw($CreoleAdditionSupSub
             $CreoleAdditionDefList
+            $CreoleAdditionIndentedParagraphs
             $CreoleAdditionQuote
             $CreoleAdditionMonospace
             $CreoleAdditionSmallCaps $CreoleAdditionIsInSmallCaps
@@ -57,6 +58,14 @@ A boolean that, if true, enables this extension's handling of
 
 =cut
 $CreoleAdditionDefList = 1;
+
+=head2 $CreoleAdditionIndentedParagraphs
+
+A boolean that, if true, enables this extension's handling of
+": indented pagraphs"-style markup. (By default, this boolean is true.)
+
+=cut
+$CreoleAdditionIndentedParagraphs = 1;
 
 =head2 $CreoleAdditionQuote
 
@@ -91,10 +100,16 @@ SetHtmlEnvironmentContainer('blockquote');
 $RuleOrder{\&CreoleAdditionRule} = -11;
 
 sub CreoleAdditionRule {
-# definition list
-# ; dt
-# : dd
-    if ($CreoleAdditionDefList && $bol && m/\G\s*\;[ \t]*(?=(.+(\n)(\s)*\:))/cg
+  # indented paragraphs
+  if ($CreoleAdditionIndentedParagraphs && $bol && m/\G((\s*\n)*(\:+)[ \t]*)/cg) {
+    return  CloseHtmlEnvironment()
+      . AddHtmlEnvironment('p', 'class="indent level' . length($3)
+			   . '" style="margin-left: ' . 2*length($3) . 'em"');
+  }
+  # definition list
+  # ; dt
+  # : dd
+  elsif ($CreoleAdditionDefList && $bol && m/\G\s*\;[ \t]*(?=(.+(\n)(\s)*\:))/cg
     or InElement('dd') && m/\G\s*\n(\s)*\;[ \t]*(?=(.+\n(\s)*\:))/cg) {
         return CloseHtmlEnvironmentUntil('dd') . OpenHtmlEnvironment('dl', 1)
         . AddHtmlEnvironment('dt'); }# `:' needs special treatment, later 
@@ -132,6 +147,7 @@ except where noted.
 
 Copyleft  2008 by B.w.Curry <http://www.raiazome.com>.
 Copyright 2008 by Weakish Jiang <weakish@gmail.com>.
+Copyright 2009  Alex Schroeder <alex@gnu.com>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
