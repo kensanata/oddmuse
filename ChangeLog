@@ -1,3 +1,8 @@
+2009-03-02  Alex Schroeder  <alex@gnu.org>
+
+	* modules/creole.pl (CreoleRule): Use an elsif instead of an if
+	within the rules.
+
 2009-02-27  Alex Schroeder  <alex@gnu.org>
 
 	* modules/creoleaddition.pl ($CreoleAdditionIndentedParagraphs):
