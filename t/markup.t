@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 54;
+use Test::More tests => 55;
 
 clear_pages();
 
@@ -126,6 +126,11 @@ i"m tired
 He said, "[w]hen I voice complaints..."
 He said, &#x201c;[w]hen I voice complaints&#x2026;&#x201d;
 EOT
+
+# FIXME: This does not work, yet, but I want it to work.
+xpath_run_tests("[http://foo.org/ foo]'s problem",
+		'//a[@class="url http outside"][@href="http://foo.org/"][text()="foo"]'
+		. '/following-sibling::text()[string()="&#x2019;s problem"]');
 
 $MarkupQuotes = 0;
 run_tests(q{"Get lost!", they say, and I answer: "I'm not 'lost'!"},
