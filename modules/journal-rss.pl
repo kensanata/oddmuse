@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.21 2009/02/23 09:57:40 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.22 2009/03/07 16:05:34 as Exp $</p>';
 
 $Action{journal} = \&DoJournalRss;
 
@@ -46,8 +46,17 @@ sub JournalRssGetRcLines {
     local %Page;
     local $OpenPageName = '';
     OpenPage($id);
-    # If this is a minor edit, ignore it!
-    next if ($Page{minor});
+    # If this is a minor edit, ignore it. Load the last major revision
+    # instead, if you can.
+    if ($Page{minor}) {
+      # Perhaps the old kept revision is gone due to $KeepMajor=0 or
+      # admin.pl or because a page was created as a minor change and
+      # never edited. Reading kept revisions in this case results in
+      # an error.
+      eval {
+ 	%Page = GetKeptRevision($Page{lastmajor});
+      }
+    }
     # Generate artifical rows in the list to pass to GetRcRss. We need
     # to open every single page, because the meta-data ordinarily
     # available in the rc.log file is not available to us. This is why
