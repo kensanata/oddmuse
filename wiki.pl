@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.894 2009/02/22 10:07:47 as Exp $
+# Version       $Id: wiki.pl,v 1.895 2009/03/07 16:21:33 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008
 #     Alex Schroeder <alex@gnu.org>
@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.894 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.895 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -293,7 +293,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.894 2009/02/22 10:07:47 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.895 2009/03/07 16:21:33 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -2114,11 +2114,11 @@ sub DoAdminPage {
     if ($id) {
       my $title = NormalToFree($id);
       if (-f GetLockedPageFile($id)) {
-  push(@menu, ScriptLink('action=pagelock;set=0;id=' . UrlEncode($id),
-             Ts('Unlock %s', $title), 'pagelock 0'));
+	push(@menu, ScriptLink('action=pagelock;set=0;id=' . UrlEncode($id),
+			       Ts('Unlock %s', $title), 'pagelock 0'));
       } else {
-  push(@menu, ScriptLink('action=pagelock;set=1;id=' . UrlEncode($id),
-             Ts('Lock %s', $title), 'pagelock 1'));
+	push(@menu, ScriptLink('action=pagelock;set=1;id=' . UrlEncode($id),
+			       Ts('Lock %s', $title), 'pagelock 1'));
       }
     }
   }
@@ -3980,8 +3980,8 @@ sub DoCss {
   } else {
     print GetHeader('', T('Install CSS')), $q->start_div({-class=>'content css'}),
       $q->p(Ts('Copy one of the following stylesheets to %s:', GetPageLink($StyleSheetPage))),
-  $q->ul(map {$q->li(ScriptLink("action=css;install=$_", $_))} @CssList),
-    $q->end_div();
+      $q->ul(map {$q->li(ScriptLink("action=css;install=$_", $_))} @CssList),
+      $q->end_div();
     PrintFooter();
   }
 }
