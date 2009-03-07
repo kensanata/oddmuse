@@ -1,3 +1,8 @@
+2009-03-07  Alex Schroeder  <alex@gnu.org>
+
+	* modules/journal-rss.pl (JournalRssGetRcLines): Don't just skip
+	minor edits. Read the last major edit instead, if your can.
+
 2009-03-02  Alex Schroeder  <alex@gnu.org>
 
 	* modules/creole.pl (CreoleRule): Use an elsif instead of an if
