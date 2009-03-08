@@ -1,4 +1,4 @@
-# Copyright (C) 2006, 2007, 2008  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006, 2007, 2008, 2009  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 42;
+use Test::More tests => 51;
 clear_pages();
 
 add_module('namespaces.pl');
@@ -93,13 +93,12 @@ xpath_test(get_page('action=rc'),
 	   '//a[@class="history"][@href="http://localhost/wiki.pl/Muu?action=history;id=Test"][text()="history"]',
 	   '//a[@class="diff"][@href="http://localhost/wiki.pl/Muu?action=browse;diff=1;id=Test"][text()="diff"]',
 	  );
-
 test_page(get_page('action=rss'),
 	  '<title>Muu:Mu</title>',
 	  '<link>http://localhost/wiki.pl/Muu/Mu</link>',
 	  '<wiki:history>http://localhost/wiki.pl/Muu\?action=history;id=Mu</wiki:history>',
 	  '<wiki:diff>http://localhost/wiki.pl/Muu\?action=browse;diff=1;id=Mu</wiki:diff>');
-
+# Test non-ASCII characters in namespaces
 test_page(update_page('Umlaute', 'namespace mit umlaut',
 		      'wo steckt das ü', undef, undef,
 		      'ns=Zürich'), 'namespace mit umlaut');
@@ -107,3 +106,23 @@ xpath_test(get_page('action=rc'),
 	   # depending on whether this runs on a filesystem with UTF-8
 	   # NFC or NFD (Mac!), the encoding will be different.
 	   '//a[@class="local"][@href="http://localhost/wiki.pl/Zu%cc%88rich/Umlaute" or @href="http://localhost/wiki.pl/Zu%fcrich/Umlaute"]');
+
+# Test rollbacks
+test_page(get_page('action=browse ns=Muu id=Test'),
+	  'Another Mooo!');
+# find first (and only rollback link) for Muu/Test
+$to = xpath_test(get_page('action=history id=Test ns=Muu username=Alex'),
+		 '//input[@value="rollback"]/attribute::name');
+$to =~ /rollback-([0-9]+)/;
+$to = $1;
+ok($to > 0, 'found rollback link for Muu/Test');
+# do the rollback
+test_page(get_page("action=rollback ns=Muu id=Test to=$to username=Alex"),
+	  'Rolling back changes', 'Test</a> rolled back');
+$page = get_page('action=browse ns=Muu id=Test');
+test_page_negative($page, 'Another Mooo!');
+test_page($page, 'Mooo!');
+# verify that local RecentChanges doesn't show anything
+test_page_negative(get_page('action=rc ns=Muu raw=1'), 'Rollback');
+# verify that global RecentChanges doesn't show anything
+test_page_negative(get_page('action=rc raw=1'), 'Rollback');
