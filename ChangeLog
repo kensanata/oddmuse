@@ -1,3 +1,8 @@
+2009-03-09  Alex Schroeder  <alex@gnu.org>
+
+	* modules/namespaces.pl (NewNamespaceGetRcLines): Strip rollbacks
+	for every namespace separately.
+
 2009-03-07  Alex Schroeder  <alex@gnu.org>
 
 	* modules/journal-rss.pl (JournalRssGetRcLines): Don't just skip
