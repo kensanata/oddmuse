@@ -1,4 +1,4 @@
-# Copyright (C) 2004, 2005, 2006, 2007, 2008  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ be changed using the C<$NamespacesSelf> option.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.41 2008/12/02 23:45:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.42 2009/03/08 23:44:54 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent
 	    $NamespaceRoot $NamespaceSlashing);
@@ -193,6 +193,9 @@ sub NewNamespaceGetRcLines { # starttime, hash of seen pages to use as a second 
       push(@new, GetRcLinesFor($rcoldfiles{$file}, $starttime,\%match, \%following));
     }
     push(@new, GetRcLinesFor($file, $starttime, \%match, \%following));
+    # strip rollbacks in each namespace separately
+    @new = StripRollbacks(@new);
+    # prepend the namespace to both pagename and author
     my $ns = $namespaces{$file};
     if ($ns) {
       for (my $i = $#new; $i >= 0; $i--) {
@@ -211,7 +214,7 @@ sub NewNamespaceGetRcLines { # starttime, hash of seen pages to use as a second 
   # check the first timestamp in the default file, maybe read old log file
   # GetRcLinesFor is trying to save memory space, but some operations
   # can only happen once we have all the data.
-  return StripRollbacks(LatestChanges(@result));
+  return LatestChanges(@result);
 }
 
 =head2 Encoding pagenames
