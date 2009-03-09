@@ -468,7 +468,7 @@
 
 2008-10-23  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
-	* modules/wiki.pl (OpenHtmlEnvironment): Generalized list closure
+	* wiki.pl (OpenHtmlEnvironment): Generalized list closure
 	by delegating that closure to the "CloseHtmlEnvironments" function.
 	This permits other extensions (namely, the Creole Markup extension)
 	to redefine the "CloseHtmlEnvironments" function and thereby
