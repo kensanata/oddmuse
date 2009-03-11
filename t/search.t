@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 30;
+use Test::More tests => 33;
 
 clear_pages();
 
@@ -29,6 +29,14 @@ test_page($page,
 	  '<h1>Search for: fooz</h1>',
 	  '<p class="result">1 pages found.</p>',
 	  'This is <strong>fooz</strong> and this is barz.');
+xpath_test($page, '//span[@class="result"]/a[@class="local"][@href="http://localhost/wiki.pl/SearchAndReplace"][text()="SearchAndReplace"]');
+
+# Search page name
+$page = get_page('search=andreplace');
+test_page($page,
+	  '<h1>Search for: andreplace</h1>',
+	  '<p class="result">1 pages found.</p>');
+	  # FIXME: Not sure this should work... 'Search<strong>AndReplace</strong>'
 xpath_test($page, '//span[@class="result"]/a[@class="local"][@href="http://localhost/wiki.pl/SearchAndReplace"][text()="SearchAndReplace"]');
 
 # Brackets in the page name
