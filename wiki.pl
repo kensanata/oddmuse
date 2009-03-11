@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.897 2009/03/10 13:06:14 as Exp $
+# Version       $Id: wiki.pl,v 1.898 2009/03/11 08:48:19 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008
 #     Alex Schroeder <alex@gnu.org>
@@ -35,7 +35,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.897 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.898 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -293,7 +293,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.897 2009/03/10 13:06:14 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.898 2009/03/11 08:48:19 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -511,7 +511,7 @@ sub ApplyRules {
   my ($oldpos, $old_) = (pos, $_);
   local ($OpenPageName, %Page);
   print $q->start_div({-class=>'search'});
-  SearchTitleAndBody($2, \&PrintSearchResult, HighlightRegex($2));
+  SearchTitleAndBody($2, \&PrintSearchResult, SearchRegexp($2));
   print $q->end_div;
   Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
   ($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
@@ -3321,7 +3321,7 @@ sub DoSearch {
       $q->start_div({-class=>'content replacement'});
     @results = Replace($string,$replacement);
     foreach (@results) {
-      PrintSearchResult($_, HighlightRegex($replacement||$string));
+      PrintSearchResult($_, SearchRegexp($replacement||$string));
     }
   } else {
     if ($raw) {
@@ -3333,7 +3333,7 @@ sub DoSearch {
       $ReplaceForm = UserIsAdmin();
       print $q->p({-class=>'links'}, SearchMenu($string));
     }
-    @results = SearchTitleAndBody($string, \&PrintSearchResult, HighlightRegex($string));
+    @results = SearchTitleAndBody($string, \&PrintSearchResult, SearchRegexp($string));
   }
   print SearchResultCount($#results + 1), $q->end_div() unless $raw;
   PrintFooter() unless $raw;
@@ -3385,10 +3385,8 @@ sub SearchTitleAndBody {
 sub GrepFiltered { # grep is so much faster!!
   my ($string, @pages) = @_;
   return @pages unless $UseGrep;
-  my @result;
-  my $regexp = join '|', map { index($_,'|') == -1 ? $_ : "($_)" }
-    grep /./, $string =~ /\"([^\"]+)\"|(\S+)/g; # this acts as OR
-  $regexp =~ s/\\s/[[:space:]]/g;
+  my $regexp = SearchRegexp($string);
+  my %result = map { $_ => 1 if NormalToFree($_) =~ /$regexp/i } AllPagesList();
   $regexp =~ s/\\n(\)*)$/\$$1/g; # sometimes \n can be replaced with $
   $regexp =~ s/([?+{|()])/\\$1/g; # basic regular expressions from man grep
   # if we know of any remaining grep incompatibilities we should
@@ -3396,12 +3394,10 @@ sub GrepFiltered { # grep is so much faster!!
   $regexp = quotemeta($regexp);
   open(F,"grep -l -i $regexp $PageDir/*/*.pg 2>/dev/null |");
   while (<F>) {
-    if (m/.*\/(.*)\.pg/) {
-      push(@result, $1);
-    }
+    $result{$1} = 1 if m/.*\/(.*)\.pg/;
   }
   close(F);
-  return @result;
+  return sort keys %result;
 }
 
 sub SearchString {
@@ -3413,10 +3409,11 @@ sub SearchString {
   return 1;
 }
 
-sub HighlightRegex {
-  my $and = T('and');
-  my $or = T('or');
-  return join('|', split(/ +(?:$and|$or) +/, shift));
+sub SearchRegexp {
+  my $regexp = join '|', map { index($_,'|') == -1 ? $_ : "($_)" }
+    grep /./, shift =~ /\"([^\"]+)\"|(\S+)/g; # this acts as OR
+  $regexp =~ s/\\s/[[:space:]]/g;
+  return $regexp;
 }
 
 sub PrintSearchResult {
