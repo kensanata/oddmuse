@@ -1,3 +1,11 @@
+2009-03-12  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl ($NewCookie): Deleted.
+	(InitCookie, CookieUsernameFix, CookieRollbackFix, GetParam)
+	(SetParam): Get rid of $NewCookie.
+	(CookieUsernameFix): Make sure that with $FreeLinks and $WikiLinks
+	unset, single words are still allowed.
+
 2009-03-09  Alex Schroeder  <alex@gnu.org>
 
 	* modules/namespaces.pl (NewNamespaceGetRcLines): Strip rollbacks
