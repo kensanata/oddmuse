@@ -1,7 +1,7 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.899 2009/03/11 14:09:32 as Exp $
+# Version       $Id: wiki.pl,v 1.900 2009/03/12 21:20:56 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
-# Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008
+# Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
 #     Alex Schroeder <alex@gnu.org>
 # ... including lots of patches from the UseModWiki site
 # Copyright (C) 2001, 2002  various authors
@@ -27,6 +27,7 @@
 #
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
+
 package OddMuse;
 
 use strict;
@@ -35,7 +36,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.899 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.900 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -62,12 +63,11 @@ $LockExpiration $RssStrip %LockExpires @IndexOptions @Debugging $DocumentHeader
 @MyMaintenance @MyRules);
 
 # Internal variables:
-use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie %NewCookie
-$FootnoteNumber $OpenPageName @IndexList $Message $q $Now %RecentVisitors
-@HtmlStack @HtmlAttrStack $ReplaceForm %MyInc $CollectingJournal $bol
-$WikiDescription $PrintedHeader %Locks $Fragment @Blocks @Flags $Today
-@KnownLocks $ModulesDescription %Action %RuleOrder %Includes
-%RssInterwikiTranslate);
+use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie $FootnoteNumber
+$OpenPageName @IndexList $Message $q $Now %RecentVisitors @HtmlStack
+@HtmlAttrStack $ReplaceForm %MyInc $CollectingJournal $bol $WikiDescription
+$PrintedHeader %Locks $Fragment @Blocks @Flags $Today @KnownLocks
+$ModulesDescription %Action %RuleOrder %Includes %RssInterwikiTranslate);
 
 # == Configuration ==
 # Can be set outside the script: $DataDir, $UseConfig, $ConfigFile,
@@ -293,7 +293,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.899 2009/03/11 14:09:32 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.900 2009/03/12 21:20:56 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -347,7 +347,6 @@ sub InitCookie {
   } else {
     %OldCookie = ();
   }
-  %NewCookie = %OldCookie;
   CookieUsernameFix();
   CookieRollbackFix();
 }
@@ -356,10 +355,9 @@ sub CookieUsernameFix {
   # Only valid usernames get stored in the new cookie.
   my $name = GetParam('username', '');
   $q->delete('username');
-  delete $NewCookie{username};
   if (!$name) {
     # do nothing
-  } elsif (!$FreeLinks && !($name =~ /^$LinkPattern$/o)) {
+  } elsif ($WikiLinks && !$FreeLinks && !($name =~ /^$LinkPattern$/o)) {
     $Message .= $q->p(Ts('Invalid UserName %s: not saved.', $name));
   } elsif ($FreeLinks && (!($name =~ /^$FreeLinkPattern$/o))) {
     $Message .= $q->p(Ts('Invalid UserName %s: not saved.', $name));
@@ -375,22 +373,20 @@ sub CookieRollbackFix {
   if (@rollback and $rollback[0] =~ /(\d+)/) {
     SetParam('to', $1);
     $q->delete('action');
-    delete $NewCookie{action};
     SetParam('action', 'rollback');
   }
 }
 
 sub GetParam {
   my ($name, $default) = @_;
-  my $result = $NewCookie{$name};
-  $result = $q->param($name) unless defined($result); # empty strings are defined!
+  my $result = $q->param($name);
   $result = $default unless defined($result);
   return QuoteHtml($result); # you need to unquote anything that can have <tags>
 }
 
 sub SetParam {
   my ($name, $val) = @_;
-  $NewCookie{$name} = $val;
+  $q->param($name, $val);
 }
 
 # == Markup Code ==
@@ -2253,14 +2249,14 @@ sub GetHttpHeader {
 
 sub CookieData {
   my ($changed, $visible, %params);
-  foreach my $key (keys %CookieParameters) { # map { UrlEncode($_) }
+  foreach my $key (keys %CookieParameters) {
     my $default = $CookieParameters{$key};
     my $value = GetParam($key, $default); # values are URL encoded
     $params{$key} = $value  if $value ne $default;
-    # The  cookie is  considered to  have changed  under  he following
-    # condition: If the value was already set, and the new value is not
-    # the same as the old value, or  if there was no old value, and the
-    # new value is not the default.
+    # The cookie is considered to have changed under he following
+    # condition: If the value was already set, and the new value is
+    # not the same as the old value, or if there was no old value, and
+    # the new value is not the default.
     my $change = (defined $OldCookie{$key} ? ($value ne $OldCookie{$key}) : ($value ne $default));
     $visible = 1 if $change and not $InvisibleCookieParameters{$key};
     $changed = 1 if $change; # note if any parameter changed and needs storing
@@ -2272,11 +2268,11 @@ sub Cookie {
   my ($changed, $visible, %params) = CookieData(); # params are URL encoded
   if ($changed) {
     my $cookie = join(UrlEncode($FS), %params); # no CTL in field values
-    my $result = $q->cookie(-name=>$CookieName,
-          -value=>$cookie,
-          -expires=>'+2y');
+    my $result = $q->cookie(-name=>$CookieName, -value=>$cookie,
+			    -expires=>'+2y');
     $Message .= $q->p(T('Cookie: ') . $CookieName . ', '
-          . join(', ', map {$_ . '=' . $params{$_}} keys(%params))) if $visible;
+		      . join(', ', map {$_ . '=' . $params{$_}}
+			     keys(%params))) if $visible;
     return $result;
   }
   return '';
