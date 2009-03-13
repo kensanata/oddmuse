@@ -1,8 +1,8 @@
-# Copyright (C) 2006  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006, 2009  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation; either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -11,10 +11,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 require 't/test.pl';
 package OddMuse;
@@ -127,10 +124,9 @@ He said, "[w]hen I voice complaints..."
 He said, &#x201c;[w]hen I voice complaints&#x2026;&#x201d;
 EOT
 
-# FIXME: This does not work, yet, but I want it to work.
 xpath_run_tests("[http://foo.org/ foo]'s problem",
 		'//a[@class="url http outside"][@href="http://foo.org/"][text()="foo"]'
-		. '/following-sibling::text()[string()="&#x2019;s problem"]');
+		. '/following-sibling::text()[string()="’s problem"]');
 
 $MarkupQuotes = 0;
 run_tests(q{"Get lost!", they say, and I answer: "I'm not 'lost'!"},
