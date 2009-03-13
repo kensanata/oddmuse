@@ -13,18 +13,33 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: markup.pl,v 1.33 2009/02/13 10:26:51 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: markup.pl,v 1.34 2009/03/13 22:28:29 as Exp $</p>';
 
 use vars qw(%MarkupPairs %MarkupForcedPairs %MarkupSingles %MarkupLines
 	    $MarkupQuotes $MarkupQuoteTable);
 
 $MarkupQuotes = 1;
-$MarkupQuoteTable = [["'", "'", '"', '"'], # 0
+
+# $MarkupQuotes	'hi'	"hi"	I'm	Favored in
+#	0	'hi'	"hi"	I'm	Typewriters
+#	1	‘hi’	“hi”	I’m	Britain and North America
+#	2	‹hi›	«hi»	I’m	France and Italy
+#	3	›hi‹	»hi«	I’m	Germany
+#	4	‚hi’	„hi”	I’m	Germany
+
+#                        0           1           2           3           4
+$MarkupQuoteTable = [[  "'",        "'",        '"',        '"'     ,   "'"     ], # 0
 		     ['&#x2018;', '&#x2019;', '&#x201d;', '&#x201c;', '&#x2019;'], # 1
 		     ['&#x2039;', '&#x203a;', '&#x00bb;', '&#x00ab;', '&#x2019;'], # 2
 		     ['&#x203a;', '&#x2039;', '&#x00ab;', '&#x00bb;', '&#x2019;'], # 3
 		     ['&#x201a;', '&#x2018;', '&#x201c;', '&#x201e;', '&#x2019;'], # 4
 		    ];
+
+# $MarkupQuoteTable->[2]->[0] ‹
+# $MarkupQuoteTable->[2]->[1] ›
+# $MarkupQuoteTable->[2]->[2] »
+# $MarkupQuoteTable->[2]->[3] «
+# $MarkupQuoteTable->[2]->[4] ’
 
 push(@MyRules, \&MarkupRule);
 # The ---- rule in usemod.pl conflicts with the --- rule
@@ -154,23 +169,38 @@ sub MarkupRule {
     return '~/'; # fix ~/elisp/ example
   } elsif ($MarkupPairs{'/'} and m|\G(/[-A-Za-z0-9\x80-\xff/]+/$words/)|gc) {
     return $1; # fix /usr/share/lib/! example
-  } elsif ($MarkupQuotes and (m/\G(?<=[[:space:]])"/cg
-			      or pos == 0 and m/\G"/cg)) {
+  }
+  # "foo
+  elsif ($MarkupQuotes and (m/\G(?<=[[:space:]])"/cg
+			    or pos == 0 and m/\G"/cg)) {
     return $MarkupQuoteTable->[$MarkupQuotes]->[3];
-  } elsif ($MarkupQuotes and (m/\G"(?=[[:space:][:punct:]])/cg
+  }
+  # foo"
+  elsif ($MarkupQuotes and (m/\G"(?=[[:space:][:punct:]])/cg
 			      or m/\G"\z/cg)) {
     return $MarkupQuoteTable->[$MarkupQuotes]->[2];
-  } elsif ($MarkupQuotes and (m/\G(?<=[[:punct:]])"/cg)) {
+  }
+  # foo."
+  elsif ($MarkupQuotes and (m/\G(?<=[[:punct:]])"/cg)) {
     return $MarkupQuoteTable->[$MarkupQuotes]->[3];
-  } elsif ($MarkupQuotes and pos == 0 and m/\G'/cg) {
+  }
+  # single quotes at the beginning of the buffer
+  elsif ($MarkupQuotes and pos == 0 and m/\G'/cg) {
     return $MarkupQuoteTable->[$MarkupQuotes]->[0];
-  } elsif ($MarkupQuotes and (m/\G'(?=[[:space:][:punct:]])/cg
-			      or m/\G'\z/cg)) {
+  }
+  # 'foo
+  elsif ($MarkupQuotes and (m/\G(?<=[[:space:]])'/cg
+			    or pos == 0 and m/\G'/cg)) {
+    return $MarkupQuoteTable->[$MarkupQuotes]->[0];
+  }
+  # foo'
+  elsif ($MarkupQuotes and (m/\G'(?=[[:space:][:punct:]])/cg
+			    or m/\G'\z/cg)) {
     return $MarkupQuoteTable->[$MarkupQuotes]->[1];
-  } elsif ($MarkupQuotes and m/\G(?<![[:space:][:punct:]])'/cg) {
+  }
+  # foo's
+  elsif ($MarkupQuotes and m/\G(?<![[:space:]])'(?![[:space:][:punct:]])/cg) {
     return $MarkupQuoteTable->[$MarkupQuotes]->[4];
-  } elsif ($MarkupQuotes and m/\G(?<=[[:space:][:punct:]])'/cg) {
-    return $MarkupQuoteTable->[$MarkupQuotes]->[0];
   }
   return undef;
 }
