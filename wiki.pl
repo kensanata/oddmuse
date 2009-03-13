@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.900 2009/03/12 21:20:56 as Exp $
+# Version       $Id: wiki.pl,v 1.901 2009/03/13 16:57:41 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
 #     Alex Schroeder <alex@gnu.org>
@@ -36,7 +36,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.900 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.901 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -293,7 +293,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.900 2009/03/12 21:20:56 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.901 2009/03/13 16:57:41 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -3382,7 +3382,8 @@ sub GrepFiltered { # grep is so much faster!!
   my ($string, @pages) = @_;
   return @pages unless $UseGrep;
   my $regexp = SearchRegexp($string);
-  my @result = grep(/$regexp/i, map { NormalToFree($_) } @pages);
+  my @result = grep(/$regexp/i, @pages);
+  my %found = map {$_ => 1} @result;
   $regexp =~ s/\\n(\)*)$/\$$1/g; # sometimes \n can be replaced with $
   $regexp =~ s/([?+{|()])/\\$1/g; # basic regular expressions from man grep
   # if we know of any remaining grep incompatibilities we should
@@ -3390,7 +3391,7 @@ sub GrepFiltered { # grep is so much faster!!
   $regexp = quotemeta($regexp);
   open(F,"grep -l -i $regexp $PageDir/*/*.pg 2>/dev/null |");
   while (<F>) {
-    push(@result, $1) if m/.*\/(.*)\.pg/;
+    push(@result, $1) if m/.*\/(.*)\.pg/ and not $found{$1};
   }
   close(F);
   return @result;
