@@ -1,5 +1,8 @@
 2009-03-13  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (GrepFiltered): Make sure matches in page content do not
+	duplicate matches in page names.
+
 	* modules/find.pl (DoFind): Switch from HighlightRegex to
 	SearchRegexp.
 
