@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: referrer-tracking.t,v 1.1 2009/02/18 23:11:50 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: referrer-tracking.t,v 1.2 2009/03/13 15:54:06 as Exp $</p>';
 
 require 't/test.pl';
 package OddMuse;
@@ -35,24 +35,25 @@ SKIP: {
     unless $response->is_success;
   skip("Wiki running at $wiki doesn't have the referrer-tracking extension installed", 9)
     unless $response->content =~ /\$Id: referrer-tracking\.pl/;
-  $ua->get("$wiki?title=My_Page;text=test");
+  my $id = 'Random' . time;
   # make sure we're not being fooled by 404 errors
-  ok($response->is_success, "Created $wiki/My_Page");
+  $ua->get("$wiki?title=$id;text=test");
+  ok($response->is_success, "Created $wiki/$id");
   # this will fail because example.com doesn't really link back (spam protection)
-  $response = $ua->get("$wiki/My_Page", 'Referer' => 'http://example.com/');
-  ok($response->is_success, "Request $wiki/My_Page with faked referrer");
+  $response = $ua->get("$wiki/$id", 'Referer' => 'http://example.com/');
+  ok($response->is_success, "Request $wiki/$id with faked referrer");
   $response = $ua->get("$wiki?action=refer");
   ok($response->is_success, 'Get list of all referrers');
   negative_xpath_test($response->content,
-		      qq{//div[\@class="content refer"]/div[\@class="page"]});
+		      qq{//div[\@class="content refer"]/div/p/a[text()="$id"]});
   # this page must actually exist and link back!
   # http://oddmuse.org/test.html
-  $response = $ua->get("$wiki/My_Page", 'Referer' => 'http://oddmuse.org/test.html');
-  ok($response->is_success, "Request $wiki/My_Page with existing referrer");
+  $response = $ua->get("$wiki/$id", 'Referer' => 'http://oddmuse.org/test.html');
+  ok($response->is_success, "Request $wiki/$id with existing referrer");
   $response = $ua->get("$wiki?action=refer");
   ok($response->is_success, 'Get list of all referrers');
   xpath_test($response->content,
 	     '//h1[text()="All Referrers"]',
 	     qq{//div[\@class="content refer"]/div[\@class="page"]},
-	     qq{//div[\@class="page"]/p/a[\@href="$wiki/My_Page"][text()="My Page"]});
+	     qq{//div[\@class="page"]/p/a[\@href="$wiki/$id"][text()="$id"]});
 }
