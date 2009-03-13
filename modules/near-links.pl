@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: near-links.pl,v 1.6 2008/10/22 14:01:05 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: near-links.pl,v 1.7 2009/03/13 15:18:46 as Exp $</p>';
 
 =head1 Near Links
 
@@ -237,7 +237,7 @@ sub NewNearLinksSearchTitleAndBody {
 sub SearchNearPages {
   my $string = shift;
   my %found = map {$_ => 1} @_;
-  my $regex = HighlightRegex($string);
+  my $regex = SearchRegexp($string);
   if (%NearSearch and GetParam('near', 1) > 1 and GetParam('context',1)) {
     foreach my $site (keys %NearSearch) {
       my $url = $NearSearch{$site};
