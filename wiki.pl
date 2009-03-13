@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.902 2009/03/13 17:00:58 as Exp $
+# Version       $Id: wiki.pl,v 1.903 2009/03/13 17:41:06 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
 #     Alex Schroeder <alex@gnu.org>
@@ -36,7 +36,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.902 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.903 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -293,7 +293,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.902 2009/03/13 17:00:58 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.903 2009/03/13 17:41:06 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -380,6 +380,7 @@ sub CookieRollbackFix {
 sub GetParam {
   my ($name, $default) = @_;
   my $result = $q->param($name);
+  $result = $OldCookie{$name} unless defined($result);
   $result = $default unless defined($result);
   return QuoteHtml($result); # you need to unquote anything that can have <tags>
 }
@@ -2253,7 +2254,7 @@ sub CookieData {
     my $default = $CookieParameters{$key};
     my $value = GetParam($key, $default); # values are URL encoded
     $params{$key} = $value  if $value ne $default;
-    # The cookie is considered to have changed under he following
+    # The cookie is considered to have changed under the following
     # condition: If the value was already set, and the new value is
     # not the same as the old value, or if there was no old value, and
     # the new value is not the default.
