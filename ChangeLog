@@ -2,6 +2,10 @@
 
 	* wiki.pl (GrepFiltered): Make sure matches in page content do not
 	duplicate matches in page names.
+	(DoShowVersion): Print version info for grep.
+	(InitCookie): We need to fall back on %OldCookie if no explicit
+	parameter was provided.
+
 
 	* modules/find.pl (DoFind): Switch from HighlightRegex to
 	SearchRegexp.
