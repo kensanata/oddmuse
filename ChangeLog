@@ -1,3 +1,8 @@
+2009-03-13  Alex Schroeder  <alex@gnu.org>
+
+	* modules/near-links.pl (SearchNearPages): Switch from
+	HighlightRegex to SearchRegexp.
+
 2009-03-12  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl ($NewCookie): Deleted.
@@ -5,6 +10,15 @@
 	(SetParam): Get rid of $NewCookie.
 	(CookieUsernameFix): Make sure that with $FreeLinks and $WikiLinks
 	unset, single words are still allowed.
+
+2009-03-11  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GrepFiltered): Return pagename matches, then page
+	content matches.
+	(DoSearch, ApplyRules): Replace HighlightRegex with SearchRegexp.
+	(GrepFiltered): Use SearchRegexp, too. And search AllPagesList.
+	(HighlightRegex): Deleted.
+	(SearchRegexp): New.
 
 2009-03-09  Alex Schroeder  <alex@gnu.org>
 
