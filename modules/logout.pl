@@ -22,7 +22,7 @@ directory of your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: logout.pl,v 1.2 2008/09/07 02:01:16 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: logout.pl,v 1.3 2009/03/13 22:27:41 as Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -200,9 +200,7 @@ sub CookieUsernameFix {
 
 sub CookieUsernameDelete {
   $Message .= $q->p(shift);
-
   $q->delete('username');
-  delete $NewCookie{username};
 }
 
 =head1 INTERFACE
