@@ -1,7 +1,13 @@
 2009-03-13  Alex Schroeder  <alex@gnu.org>
 
+	* modules/find.pl (DoFind): Switch from HighlightRegex to
+	SearchRegexp.
+
 	* modules/near-links.pl (SearchNearPages): Switch from
 	HighlightRegex to SearchRegexp.
+
+	* modules/search-freetext.pl (NewSearchFreeTextNewSearchRegexp):
+	Switch from HighlightRegex to SearchRegexp.
 
 2009-03-12  Alex Schroeder  <alex@gnu.org>
 
