@@ -1,4 +1,4 @@
-# Copyright (C) 2004, 2006, 2007, 2008  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2004, 2006, 2007, 2008, 2009  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.66 2008/10/26 11:27:21 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.67 2009/03/13 15:21:18 as Exp $</p>';
 
 =head2 User Interface
 
@@ -522,11 +522,11 @@ sub SearchFreeTextDB {
 
 # highlighting changes if new search is used
 
-*OldSearchFreeTextNewHighlightRegex = *HighlightRegex;
-*HighlightRegex = *NewSearchFreeTextNewHighlightRegex;
+*OldSearchFreeTextNewSearchRegexp = *SearchRegexp;
+*SearchRegexp = *NewSearchFreeTextNewSearchRegexp;
 
-sub NewSearchFreeTextNewHighlightRegex {
-  return OldSearchFreeTextNewHighlightRegex(@_) if GetParam('old', 0);
+sub NewSearchFreeTextNewSearchRegexp {
+  return OldSearchFreeTextNewSearchRegexp(@_) if GetParam('old', 0);
   $_ = shift;
   s/\"//g;
   return join('|', split);
