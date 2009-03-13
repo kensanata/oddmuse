@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: find.pl,v 1.2 2009/03/13 15:26:42 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: find.pl,v 1.3 2009/03/13 15:40:16 as Exp $</p>';
 
 $Action{find} = \&DoFind;
 
@@ -21,8 +21,7 @@ sub DoFind {
   my $string = GetParam('query','');
   my $raw = GetParam('raw','');
   if ($string eq '') {
-    DoIndex();
-    return;
+    return DoIndex();
   }
   if ($raw) {
     print GetHttpHeader('text/plain'), RcTextItem('title', Ts('Search for: %s', $string)),
