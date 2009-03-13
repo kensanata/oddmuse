@@ -1,5 +1,11 @@
 2009-03-13  Alex Schroeder  <alex@gnu.org>
 
+	* modules/markup.pl (MarkupRule): Fixed markup rules to get the
+	[[foo]]'s apostrophe correct.
+
+	* modules/logout.pl (CookieUsernameDelete): Changes to %NewCookie
+	are no longer needed.
+
 	* wiki.pl (GrepFiltered): Make sure matches in page content do not
 	duplicate matches in page names.
 	(DoShowVersion): Print version info for grep.
