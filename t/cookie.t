@@ -15,9 +15,13 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 14;
+use Test::More tests => 16;
 
 clear_pages();
+
+# Basic usage that broke when I last changed the cookie handling code.
+test_page(get_page('username=Alex'), 'Status: 404');
+test_page(get_page('action=browse id=Alex'), 'Alex');
 
 # Username
 test_page(get_page('action=browse id=HomePage username=Alex'), 'username=Alex');
