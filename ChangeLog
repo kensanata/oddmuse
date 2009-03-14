@@ -1,3 +1,8 @@
+2009-03-14  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetId): Fix it by no longer short-circuiting to return
+	HomePage.
+
 2009-03-13  Alex Schroeder  <alex@gnu.org>
 
 	* modules/markup.pl (MarkupRule): Fixed markup rules to get the
