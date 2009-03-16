@@ -1,3 +1,10 @@
+2009-03-16  Alex Schroeder  <aschroeder@localhost>
+
+	* wiki.pl (GetId): Do not return $HomePage if no id has been
+	specified.
+	(DoBrowseRequest): Don't report an invalid URL if no id has been
+	specified. Just browse the HomePage instead.
+
 2009-03-14  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetId): Fix it by no longer short-circuiting to return
