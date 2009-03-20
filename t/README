@@ -41,6 +41,14 @@
 
     add_module('usemod.pl');
 
+  If the module has important setup code, you might have to add the
+  following:
+
+    InitVariables();
+
+  The reason is this: If you add a module and the run the script
+  again, you're fine. But if you run tests that don't invoke another
+  copy of the script, then the init code will not have run.
 
   Modules and rules need rarely be removed, since every *.t file
   starts in a new process.  If you then want to run additional tests
