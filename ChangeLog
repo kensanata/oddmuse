@@ -1,9 +1,10 @@
 2009-03-20  Alex Schroeder  <alex@gnu.org>
 
-	* modules/tags.pl ($TagFeed, $TagRssIcon): New options.
+	* modules/tags.pl ($TagFeed, $TagFeedIcon): New options.
 	(TagsInit, TagsGetLink): New
 	(TagsRule): Will now print RSS icon and link to a feed as well, if
 	an icon URL has been provided.
+	(NewTagSave, TagIndex): Hook into Save() and index the pages.
 
 2009-03-16  Alex Schroeder  <aschroeder@localhost>
 
