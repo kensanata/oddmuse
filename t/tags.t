@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 15;
+use Test::More tests => 17;
 clear_pages();
 
 add_module('tags.pl');
@@ -75,4 +75,16 @@ ok($tag{mag}, 'Brilliant page still tagged mag');
 ok(!$file{Brilliant}, 'Tag podcast no longer applies to page Brilliant');
 ok($file{Podgecast}, 'Tag podcast still applies to page Podgecast');
 
+# close the DB file before making changes via the wiki!
+untie %h;
+
+DeletePage('Brilliant');
+
+# reopen changed file
+tie %h, "DB_File", $TagFile;
+
+ok(!$h{_Brilliant}, 'Brilliant page no longer exists');
+ok(!exists($h{mag}), 'No page tagged mag exists');
+
+# close the DB file before making changes via the wiki!
 untie %h;
