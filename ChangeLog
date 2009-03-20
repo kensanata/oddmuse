@@ -5,6 +5,8 @@
 	(TagsRule): Will now print RSS icon and link to a feed as well, if
 	an icon URL has been provided.
 	(NewTagSave, TagIndex): Hook into Save() and index the pages.
+	(NewTagDeletePage, TagDeletePage): Hook into DeletePage() and
+	remove tags and infos when pages are deleted.
 
 2009-03-16  Alex Schroeder  <aschroeder@localhost>
 
