@@ -29,7 +29,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: tags.pl,v 1.8 2009/03/20 11:20:57 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tags.pl,v 1.9 2009/03/20 13:59:32 as Exp $</p>';
 
 =head1 CONFIGURATION
 
@@ -165,6 +165,53 @@ sub TagIndex {
 
   untie %h;
 }
+
+=pod
+
+When a page expires, the relevant pages and references have to be
+removed from the tags db.
+
+=cut
+
+*OldTagDeletePage = *DeletePage;
+*DeletePage = *NewTagDeletePage;
+
+sub NewTagDeletePage { # called within a lock!
+  OldTagDeletePage(@_);
+  TagDeletePage(@_);
+}
+
+sub TagDeletePage {
+  my $id = shift;
+
+  # open the DB file
+  require DB_File;
+  tie %h, "DB_File", $TagFile;
+
+  # For each file in our hash, we have a reverse lookup of all the
+  # tags used. This allows us to delete the references that no longer
+  # show up without looping through them all.
+  foreach my $tag (split (/$FS/, $h{"_$id"})) {
+    my %file = map {$_=>1} split(/$FS/, $h{$tag});
+    delete $file{$id};
+    if (%file) {
+      $h{$tag} = join($FS, keys %file);
+    } else {
+      delete $h{$tag};
+    }
+  }
+
+  # Delete reverse lookup entry.
+  delete $h{"_$id"};
+  untie %h;
+}
+
+
+
+=pod
+
+When searching, the tags db is read and used.
+=cut
 
 =head1 COPYRIGHT AND LICENSE
 
