@@ -1,20 +1,3 @@
-# Copyright (C) 2005, 2009  Alex Schroeder <alex@gnu.org>
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-$ModulesDescription .= '<p>$Id: tags.pl,v 1.7 2009/03/20 10:06:28 as Exp $</p>';
-
 =head1 NAME
 
 tags - an Oddmuse module that implements tagging of pages and
@@ -44,6 +27,10 @@ Installing a module is easy: Create a modules subdirectory in your
 data directory, and put the Perl file in there. It will be loaded
 automatically.
 
+=cut
+
+$ModulesDescription .= '<p>$Id: tags.pl,v 1.8 2009/03/20 11:20:57 as Exp $</p>';
+
 =head1 CONFIGURATION
 
 =head2 $TagUrl and $TagFeed
@@ -72,13 +59,14 @@ Example:
 
 =cut
 
-use vars qw($TagUrl $TagFeed $TagRssIcon);
+use vars qw($TagUrl $TagFeed $TagFeedIcon $TagFile);
 
 push(@MyInitVariables, \&TagsInit);
 
 sub TagsInit {
   $TagUrl = ScriptUrl('action=rc;rcfilteronly=tag:%s') unless $TagUrl;
   $TagFeed = ScriptUrl('action=rss;rcfilteronly=tag:%s') unless $TagFeed;
+  $TagFile = "$DataDir/tag.db";
 }
 
 sub TagsGetLink {
@@ -100,14 +88,99 @@ sub TagsRule {
 		      -title=>T('Tag'),
 		      -rel=>'tag'
 		     }, $text || $tag);
-    if ($TagRssIcon) {
+    if ($TagFeedIcon) {
       $html .= ' ' . $q->a({-href=>TagsGetLink($TagFeed, $tag),
 			    -class=>'feed tag',
 			    -title=>T('Feed for this tag'),
 			    -rel=>'feed'
-			   }, $q->img({-src=>$TagRssIcon}));
+			   }, $q->img({-src=>$TagFeedIcon}));
     }
     return $html;
   }
   return undef;
 }
+
+=pod
+
+When saving, a tags db is written to disk. If it doesn't exist, it
+will be regenerated.
+
+=cut
+
+*OldTagSave = *Save;
+*Save = *NewTagSave;
+
+sub NewTagSave { # called within a lock!
+  OldTagSave(@_);
+  TagIndex(@_);
+}
+
+sub TagIndex {
+  my $id = shift;
+  # Within a tag, space is replaced by _ as in foo_bar.
+  my %tag = map { FreeToNormal($_) => 1 }
+    ($Page{text} =~ m/\[\[tag:$FreeLinkPattern\]\]/g,
+     $Page{text} =~ m/\[\[tag:$FreeLinkPattern\|([^]|]+)\]\]/g);
+  # open the DB file
+  require DB_File;
+  tie %h, "DB_File", $TagFile;
+
+  # For each tag we list the files tagged. Add the current file for
+  # all those tags where it is missing. Note that the values in %h is
+  # an encoded string; the alternative would be to use a form of
+  # freeze and thaw.
+  foreach my $tag (keys %tag) {
+    my %file = map {$_=>1} split(/$FS/, $h{$tag});
+    if (not $file{$id}) {
+      $file{$id} = 1;
+      $h{$tag} = join($FS, keys %file);
+    }
+  }
+
+  # For each file in our hash, we have a reverse lookup of all the
+  # tags used. This allows us to delete the references that no longer
+  # show up without looping through them all. The files are indexed
+  # with a starting underscore because this is an illegal tag name.
+  foreach my $tag (split (/$FS/, $h{"_$id"})) {
+    # If the tag we're looking at is no longer listed, we have work to
+    # do.
+    if (!$tag{$tag}) {
+      my %file = map {$_=>1} split(/$FS/, $h{$tag});
+      delete $file{$id};
+      if (%file) {
+	$h{$tag} = join($FS, keys %file);
+      } else {
+	delete $h{$tag};
+      }
+    }
+  }
+
+  # Store the new reverse lookup of all the tags used on the current
+  # page. If no more tags appear on this page, delete the entry.
+  if (%tag) {
+    $h{"_$id"} = join($FS, keys %tag);
+  } else {
+    delete $h{"_$id"};
+  }
+
+  untie %h;
+}
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2005, 2009  Alex Schroeder <alex@gnu.org>
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or (at
+your option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+=cut
