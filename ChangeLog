@@ -1,3 +1,10 @@
+2009-03-20  Alex Schroeder  <alex@gnu.org>
+
+	* modules/tags.pl ($TagFeed, $TagRssIcon): New options.
+	(TagsInit, TagsGetLink): New
+	(TagsRule): Will now print RSS icon and link to a feed as well, if
+	an icon URL has been provided.
+
 2009-03-16  Alex Schroeder  <aschroeder@localhost>
 
 	* wiki.pl (GetId): Do not return $HomePage if no id has been
