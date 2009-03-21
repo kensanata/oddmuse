@@ -29,7 +29,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: tags.pl,v 1.11 2009/03/21 02:02:12 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tags.pl,v 1.12 2009/03/21 02:23:29 as Exp $</p>';
 
 =head1 CONFIGURATION
 
@@ -67,6 +67,13 @@ sub TagsInit {
   $TagUrl = ScriptUrl('action=rc;rcfilteronly=tag:%s') unless $TagUrl;
   $TagFeed = ScriptUrl('action=rss;rcfilteronly=tag:%s') unless $TagFeed;
   $TagFile = "$DataDir/tag.db";
+  # Make sure that tags are not searched for in near link page names.
+  # Otherwise a search for tag:foo will result in a match of near
+  # pagenames with the empty string and print always.
+  if (%NearSource and GetParam('near', 1)
+      and grep(/^-?tag:/, GetParam('search', '') =~ /\"([^\"]+)\"|(\S+)/g)) {
+    SetParam('near', 0);
+  }
 }
 
 sub TagsGetLink {
