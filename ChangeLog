@@ -1,3 +1,10 @@
+2009-03-21  Alex Schroeder  <alex@gnu.org>
+
+	* modules/tags.pl (NewTagSave, NewTagDeletePage): Eliminate and
+	merge with NewTagSave and NewTagDeletePage respectively.
+	(TagFind, NewTagGrepFiltered, NewTagSearchString): New functions
+	to use the tag file while searching.
+
 2009-03-20  Alex Schroeder  <alex@gnu.org>
 
 	* modules/tags.pl ($TagFeed, $TagFeedIcon): New options.
