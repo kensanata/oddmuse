@@ -29,7 +29,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: tags.pl,v 1.15 2009/03/21 08:59:33 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tags.pl,v 1.16 2009/03/21 23:31:58 as Exp $</p>';
 
 =head1 CONFIGURATION
 
@@ -288,7 +288,13 @@ sub DoTagsReindex {
     ReportError(T('Rebuilding index not done.'), '403 FORBIDDEN',
 		0, T('(Rebuilding the index can only be done once every 12 hours.)'));
   }
+
+  # Request the main lock, because we want to prevent anybody from
+  # saving while we are reindexing.
+  RequestLockOrError();
+
   print GetHttpHeader('text/plain');
+
   # open the DB file
   require DB_File;
   tie %h, "DB_File", $TagFile;
@@ -315,6 +321,7 @@ sub DoTagsReindex {
   }
 
   untie %h;
+  ReleaseLock();
 }
 
 =pod
