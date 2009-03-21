@@ -29,7 +29,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: tags.pl,v 1.10 2009/03/21 01:36:26 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tags.pl,v 1.11 2009/03/21 02:02:12 as Exp $</p>';
 
 =head1 CONFIGURATION
 
@@ -266,6 +266,48 @@ sub NewTagSearchString {
   my $string = join(' ', grep(!/^-?tag:/, shift =~ /\"([^\"]+)\"|(\S+)/g));
   return 1 unless $string;
   return OldTagSearchString($string, @_);
+}
+
+=pod
+
+Finally, we need to provide the means to reindex the entire site.
+
+=cut
+
+$Action{reindex} = \&DoTagsReindex;
+
+sub DoTagsReindex {
+  if (!UserIsAdmin() && (-f $TagFile) && ((-M $TagFile) < 0.5)) {
+    ReportError(T('Rebuilding index not done.'), '403 FORBIDDEN',
+		0, T('(Rebuilding the index can only be done once every 12 hours.)'));
+  }
+  print GetHttpHeader('text/plain');
+  # open the DB file
+  require DB_File;
+  tie %h, "DB_File", $TagFile;
+  %h = ();
+
+  foreach my $id (AllPagesList()) {
+    print "$id\n";
+    OpenPage($id);
+
+    my %tag = map { FreeToNormal($_) => 1 }
+      ($Page{text} =~ m/\[\[tag:$FreeLinkPattern\]\]/g,
+       $Page{text} =~ m/\[\[tag:$FreeLinkPattern\|([^]|]+)\]\]/g);
+    next unless %tag;
+
+    # For each tag we list the files tagged. Add the current file for
+    # all tags.
+    foreach my $tag (keys %tag) {
+      $h{$tag} = join($FS, $h{$tag}, $id);
+    }
+
+    # Store the reverse lookup of all the tags used on the current
+    # page.
+    $h{"_$id"} = join($FS, keys %tag);
+  }
+
+  untie %h;
 }
 
 =head1 COPYRIGHT AND LICENSE
