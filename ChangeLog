@@ -1,3 +1,12 @@
+2009-03-22  Alex Schroeder  <alex@gnu.org>
+
+	* modules/tags.pl (DoTagsReindex): Request lock and release lock
+	when updating the index.
+
+	* modules/localnames.pl (LocalNamesNewSave): Localize
+	$OpenPageName and %Page so that it doesn't confuse other
+	extensions hooking into Save.
+
 2009-03-21  Alex Schroeder  <alex@gnu.org>
 
 	* modules/tags.pl (NewTagSave, NewTagDeletePage): Eliminate and
