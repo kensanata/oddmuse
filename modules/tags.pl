@@ -29,7 +29,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: tags.pl,v 1.12 2009/03/21 02:23:29 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tags.pl,v 1.13 2009/03/21 08:35:41 as Exp $</p>';
 
 =head1 CONFIGURATION
 
@@ -67,13 +67,6 @@ sub TagsInit {
   $TagUrl = ScriptUrl('action=rc;rcfilteronly=tag:%s') unless $TagUrl;
   $TagFeed = ScriptUrl('action=rss;rcfilteronly=tag:%s') unless $TagFeed;
   $TagFile = "$DataDir/tag.db";
-  # Make sure that tags are not searched for in near link page names.
-  # Otherwise a search for tag:foo will result in a match of near
-  # pagenames with the empty string and print always.
-  if (%NearSource and GetParam('near', 1)
-      and grep(/^-?tag:/, GetParam('search', '') =~ /\"([^\"]+)\"|(\S+)/g)) {
-    SetParam('near', 0);
-  }
 }
 
 sub TagsGetLink {
@@ -270,14 +263,21 @@ We're need to remove all tag terms (again) in order to not confuse it.
 
 sub NewTagSearchString {
   # filter out the tags from the search string
-  my $string = join(' ', grep(!/^-?tag:/, shift =~ /\"([^\"]+)\"|(\S+)/g));
+  my $string = join(' ', grep(!/^-tag:/, shift =~ /\"([^\"]+)\"|(\S+)/g));
   return 1 unless $string;
   return OldTagSearchString($string, @_);
 }
 
 =pod
 
-Finally, we need to provide the means to reindex the entire site.
+Finally, we need to provide the means to reindex the entire site. The
+Reindex Action will do this. This should only be necessary when you
+install the module, and when you suspect that the tag.db is out of
+sync such as after a restoration from backup.
+
+Example:
+
+    http://example.org/cgi-bin/wiki?action=reindex
 
 =cut
 
@@ -306,7 +306,7 @@ sub DoTagsReindex {
     # For each tag we list the files tagged. Add the current file for
     # all tags.
     foreach my $tag (keys %tag) {
-      $h{$tag} = join($FS, $h{$tag}, $id);
+      $h{$tag} = $h{$tag} ? $h{$tag} . $FS . $id : $id;
     }
 
     # Store the reverse lookup of all the tags used on the current
@@ -314,6 +314,30 @@ sub DoTagsReindex {
     $h{"_$id"} = join($FS, keys %tag);
   }
 
+  untie %h;
+}
+
+=pod
+
+If you want to debug the data structure, use the Tag List Action. All
+keys starting with an underscore are pagenames, the others are tags.
+
+Example:
+
+    http://example.org/cgi-bin/wiki?action=taglist
+
+=cut
+
+$Action{taglist} = \&TagList;
+
+sub TagList {
+  print GetHttpHeader('text/plain');
+  # open the DB file
+  require DB_File;
+  tie %h, "DB_File", $TagFile;
+  foreach my $id (sort keys %h) {
+    print "$id: " . join(', ', split(/$FS/, $h{$id})) . "\n";
+  }
   untie %h;
 }
 
