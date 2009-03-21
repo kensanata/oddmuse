@@ -29,7 +29,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: tags.pl,v 1.13 2009/03/21 08:35:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tags.pl,v 1.14 2009/03/21 08:47:58 as Exp $</p>';
 
 =head1 CONFIGURATION
 
@@ -114,7 +114,7 @@ sub NewTagSave { # called within a lock!
   OldTagSave(@_);
   my $id = shift;
   # Within a tag, space is replaced by _ as in foo_bar.
-  my %tag = map { FreeToNormal($_) => 1 }
+  my %tag = map { lc(FreeToNormal($_)) => 1 }
     ($Page{text} =~ m/\[\[tag:$FreeLinkPattern\]\]/g,
      $Page{text} =~ m/\[\[tag:$FreeLinkPattern\|([^]|]+)\]\]/g);
   # open the DB file
@@ -214,7 +214,7 @@ sub TagFind {
   tie %h, "DB_File", $TagFile;
   my %page;
   foreach my $tag (@tags) {
-    foreach my $id (split(/$FS/, $h{$tag})) {
+    foreach my $id (split(/$FS/, $h{lc($tag)})) {
       $page{$id} = 1;
     }
   }
@@ -298,7 +298,7 @@ sub DoTagsReindex {
     print "$id\n";
     OpenPage($id);
 
-    my %tag = map { FreeToNormal($_) => 1 }
+    my %tag = map { lc(FreeToNormal($_)) => 1 }
       ($Page{text} =~ m/\[\[tag:$FreeLinkPattern\]\]/g,
        $Page{text} =~ m/\[\[tag:$FreeLinkPattern\|([^]|]+)\]\]/g);
     next unless %tag;
