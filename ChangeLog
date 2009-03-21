@@ -4,6 +4,8 @@
 	merge with NewTagSave and NewTagDeletePage respectively.
 	(TagFind, NewTagGrepFiltered, NewTagSearchString): New functions
 	to use the tag file while searching.
+	(DoTagsReindex): New action to get started.
+	(TagList): New action to debug the data.
 
 2009-03-20  Alex Schroeder  <alex@gnu.org>
 
