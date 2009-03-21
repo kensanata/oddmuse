@@ -29,7 +29,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: tags.pl,v 1.9 2009/03/20 13:59:32 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tags.pl,v 1.10 2009/03/21 01:36:26 as Exp $</p>';
 
 =head1 CONFIGURATION
 
@@ -112,10 +112,6 @@ will be regenerated.
 
 sub NewTagSave { # called within a lock!
   OldTagSave(@_);
-  TagIndex(@_);
-}
-
-sub TagIndex {
   my $id = shift;
   # Within a tag, space is replaced by _ as in foo_bar.
   my %tag = map { FreeToNormal($_) => 1 }
@@ -178,10 +174,6 @@ removed from the tags db.
 
 sub NewTagDeletePage { # called within a lock!
   OldTagDeletePage(@_);
-  TagDeletePage(@_);
-}
-
-sub TagDeletePage {
   my $id = shift;
 
   # open the DB file
@@ -206,12 +198,75 @@ sub TagDeletePage {
   untie %h;
 }
 
+=pod
 
+When searching, the tags db is read and used. This works by scanning
+the search string for tag:foo and -tag:bar elements, searching for
+those, and then calling the grep filter code with the new list of
+pages and a new search term without the tag terms.
+
+=cut
+
+sub TagFind {
+  my @tags = @_;
+  # open the DB file
+  require DB_File;
+  tie %h, "DB_File", $TagFile;
+  my %page;
+  foreach my $tag (@tags) {
+    foreach my $id (split(/$FS/, $h{$tag})) {
+      $page{$id} = 1;
+    }
+  }
+  untie %h;
+  return sort keys %page;
+}
+
+*OldTagGrepFiltered = *GrepFiltered;
+*GrepFiltered = *NewTagGrepFiltered;
+
+sub NewTagGrepFiltered { # called within a lock!
+  my ($string, @pages) = @_;
+  my %page = map { $_ => 1 } @pages;
+  # this is based on the code in SearchRegexp()
+  my @tagterms = grep(/^-?tag:/, shift =~ /\"([^\"]+)\"|(\S+)/g);
+  my @positives = map {substr($_, 4)} grep(/^tag:/, @tagterms);
+  my @negatives = map {substr($_, 5)} grep(/^-tag:/, @tagterms);
+  if (@positives) {
+    my %found;
+    foreach my $id (TagFind(@positives)) {
+      $found{$id} = 1 if $page = {$id};
+    }
+    %page = %found;
+  }
+  # remove the negatives
+  foreach my $id (TagFind(@negatives)) {
+    delete $page{$id};
+  }
+  # filter out the tags from the search string
+  $string = join(' ', grep(!/^-?tag:/, $string =~ /\"([^\"]+)\"|(\S+)/g));
+  # run grep
+  return OldTagGrepFiltered($string, sort keys %page);
+}
 
 =pod
 
-When searching, the tags db is read and used.
+There remains a problem: The real search code will still be in
+operation, and terms of the form -tag:foo will never match. That's why
+the code that does the ordinary search has to be changed as well.
+We're need to remove all tag terms (again) in order to not confuse it.
+
 =cut
+
+*OldTagSearchString = *SearchString;
+*SearchString = *NewTagSearchString;
+
+sub NewTagSearchString {
+  # filter out the tags from the search string
+  my $string = join(' ', grep(!/^-?tag:/, shift =~ /\"([^\"]+)\"|(\S+)/g));
+  return 1 unless $string;
+  return OldTagSearchString($string, @_);
+}
 
 =head1 COPYRIGHT AND LICENSE
 
