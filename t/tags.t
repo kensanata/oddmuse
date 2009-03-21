@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 37;
+use Test::More tests => 45;
 clear_pages();
 
 add_module('tags.pl');
@@ -112,3 +112,10 @@ test_page_negative($page, qw(Brilliant Alex));
 $page = get_page('search=kryos%20tag:podcast%20-tag:mag raw=1');
 test_page($page, qw(Sons));
 test_page_negative($page, qw(Podgecast Brilliant Alex));
+
+test_page(get_page('action=reindex pwd=foo'), qw(Podgecast Brilliant Sons Alex));
+
+# tag search skips Alex -- repeat test after reindexing
+$page = get_page('search=tag:podcast raw=1');
+test_page($page, qw(Podgecast Brilliant Sons));
+test_page_negative($page, qw(Alex));
