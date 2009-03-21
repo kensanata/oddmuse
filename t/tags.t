@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 45;
+use Test::More tests => 47;
 clear_pages();
 
 add_module('tags.pl');
@@ -119,3 +119,18 @@ test_page(get_page('action=reindex pwd=foo'), qw(Podgecast Brilliant Sons Alex))
 $page = get_page('search=tag:podcast raw=1');
 test_page($page, qw(Podgecast Brilliant Sons));
 test_page_negative($page, qw(Alex));
+
+add_module('near-links.pl');
+
+CreateDir($NearDir);
+WriteStringToFile("$NearDir/EmacsWiki", "AlexSchroeder\nFoo\n");
+
+update_page('InterMap', " EmacsWiki http://www.emacswiki.org/cgi-bin/wiki/%s\n",
+	    'required', 0, 1);
+update_page('NearMap', " EmacsWiki"
+	    . " http://www.emacswiki.org/cgi-bin/emacs?action=index;raw=1\n",
+	    'required', 0, 1);
+
+# make sure the near pages are not listed
+$page = get_page('search=tag:podcast raw=1');
+test_page_negative($page, qw(AlexSchroeder Foo));
