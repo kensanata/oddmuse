@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.28 2007/10/02 12:36:02 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.29 2009/03/21 23:22:39 as Exp $</p>';
 
 =head1 Local Names
 
@@ -264,6 +264,7 @@ sub LocalNamesNewSave {
   return if $currentid eq $LocalNamesPage or not $LocalNamesCollect;
   my $currentname = $currentid;
   $currentname =~ s/_/ /g;
+  local ($OpenPageName, %Page);
   OpenPage($LocalNamesPage);
   my $localnames = $Page{text};
   my %map = ();
