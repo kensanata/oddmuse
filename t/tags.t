@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 17;
+use Test::More tests => 37;
 clear_pages();
 
 add_module('tags.pl');
@@ -88,3 +88,27 @@ ok(!exists($h{mag}), 'No page tagged mag exists');
 
 # close the DB file before making changes via the wiki!
 untie %h;
+
+update_page('Brilliant', 'Gameologists [[tag:podcast]] [[tag:mag]]');
+update_page('Sons', 'of Kryos [[tag:podcast]]');
+update_page('Alex', 'not a podcast');
+
+# ordinary search finds Alex
+$page = get_page('search=podcast raw=1');
+test_page($page, qw(Podgecast Brilliant Sons Alex));
+# tag search skips Alex
+$page = get_page('search=tag:podcast raw=1');
+test_page($page, qw(Podgecast Brilliant Sons));
+test_page_negative($page, qw(Alex));
+# exclude tag search skips Brilliant
+$page = get_page('search=-tag:mag raw=1');
+test_page($page, qw(Podgecast Sons Alex));
+test_page_negative($page, qw(Brilliant));
+# combine include and exclude tag search to exclude both Alex and Brilliant
+$page = get_page('search=tag:podcast%20-tag:mag raw=1');
+test_page($page, qw(Podgecast Sons));
+test_page_negative($page, qw(Brilliant Alex));
+# combine ordinary search with include and exclude tag search to exclude both Alex and Brilliant
+$page = get_page('search=kryos%20tag:podcast%20-tag:mag raw=1');
+test_page($page, qw(Sons));
+test_page_negative($page, qw(Podgecast Brilliant Alex));
