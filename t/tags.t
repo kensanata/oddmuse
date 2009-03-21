@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 52;
+use Test::More tests => 56;
 clear_pages();
 
 add_module('tags.pl');
@@ -90,7 +90,7 @@ ok(!exists($h{mag}), 'No page tagged mag exists');
 untie %h;
 
 update_page('Brilliant', 'Gameologists [[tag:podcast]] [[tag:mag]]');
-update_page('Sons', 'of Kryos [[tag:podcast]]');
+update_page('Sons', 'of Kryos [[tag:Podcast]]');
 update_page('Alex', 'not a podcast');
 
 # ordinary search finds Alex
@@ -99,6 +99,11 @@ test_page($page, qw(Podgecast Brilliant Sons Alex));
 
 # tag search skips Alex
 $page = get_page('search=tag:podcast raw=1');
+test_page($page, qw(Podgecast Brilliant Sons));
+test_page_negative($page, qw(Alex));
+
+# tag search is case insensitive
+$page = get_page('search=tag:PODCAST raw=1');
 test_page($page, qw(Podgecast Brilliant Sons));
 test_page_negative($page, qw(Alex));
 
