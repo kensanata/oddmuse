@@ -29,7 +29,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: tags.pl,v 1.14 2009/03/21 08:47:58 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tags.pl,v 1.15 2009/03/21 08:59:33 as Exp $</p>';
 
 =head1 CONFIGURATION
 
@@ -48,14 +48,14 @@ By default, these two will point to the list of recent changes,
 filtered by the appropriate tag, formatted as HTML or RSS
 respectively.
 
-=head2 $TagRssIcon
+=head2 $TagFeedIcon
 
 This variable should point to an RSS icon. You can get one from
 L<http://www.feedicons.com/>, for example.
 
 Example:
 
-    $TagRssIcon = 'http://www.example.org/pics/rss.png';
+    $TagFeedIcon = 'http://www.example.org/pics/rss.png';
 
 =cut
 
