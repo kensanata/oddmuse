@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.908 2009/03/21 08:25:13 as Exp $
+# Version       $Id: wiki.pl,v 1.909 2009/03/21 08:29:13 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
 #     Alex Schroeder <alex@gnu.org>
@@ -36,7 +36,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.908 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.909 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -293,7 +293,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.908 2009/03/21 08:25:13 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.909 2009/03/21 08:29:13 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -853,6 +853,7 @@ sub PrintJournal {
   $regexp = '^\d\d\d\d-\d\d-\d\d' unless $regexp;
   $num = 10 unless $num;
   $offset = 0 unless $offset;
+  # FIXME: Should pass filtered list of pages to SearchTitleAndBody to save time?
   my @pages = sort JournalSort (grep(/$regexp/, $search ? SearchTitleAndBody($search) : AllPagesList()));
   if ($mode eq 'reverse' or $mode eq 'future') {
     @pages = reverse @pages;
