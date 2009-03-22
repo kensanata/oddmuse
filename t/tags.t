@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 56;
+use Test::More tests => 60;
 clear_pages();
 
 add_module('tags.pl');
@@ -148,3 +148,12 @@ test_page_negative($page, qw(AlexSchroeder Foo));
 $page = update_page('Podcasts', '<journal "." search tag:podcast>');
 test_page($page, qw(Podgecast Brilliant Sons));
 test_page_negative($page, qw(Alex Foo));
+
+# check interference; in order for this test to work, we need to make
+# sure that localnames is loaded first
+add_module('localnames.pl');
+AppendStringToFile($ConfigFile, "\$LocalNamesCollect = 1;\n");
+update_page('LocalNames', 'test');
+update_page('Alex', 'is a [[tag:podcast]] after all');
+$page = get_page('search=tag:podcast raw=1');
+test_page($page, qw(Podgecast Brilliant Sons Alex));
