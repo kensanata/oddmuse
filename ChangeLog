@@ -1,3 +1,8 @@
+2009-03-28  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GrepFiltered): Sort output because grep -r doesn't
+	produce sorted output.
+
 2009-03-27  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GrepFiltered): Use grep -r because on larger wikis the
