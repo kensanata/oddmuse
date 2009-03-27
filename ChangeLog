@@ -1,3 +1,9 @@
+2009-03-27  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GrepFiltered): Use find and grep because on larger
+	wikis the command line is too large.
+	(DoShowVersion): Print find version as well.
+
 2009-03-22  Alex Schroeder  <alex@gnu.org>
 
 	* modules/tags.pl (DoTagsReindex): Request lock and release lock
