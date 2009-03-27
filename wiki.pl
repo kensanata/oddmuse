@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.909 2009/03/21 08:29:13 as Exp $
+# Version       $Id: wiki.pl,v 1.910 2009/03/27 11:13:12 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
 #     Alex Schroeder <alex@gnu.org>
@@ -36,7 +36,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.909 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.910 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -293,7 +293,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.909 2009/03/21 08:29:13 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.910 2009/03/27 11:13:12 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -2553,8 +2553,8 @@ sub ImproveDiff {      # NO NEED TO BE called within a diff lock
     {
       my $header = shift (@hunks);
       $header =~ s|^(\d+.*c.*)|<p><strong>Changed:</strong></p>| # T('Changed:')
-  or $header =~ s|^(\d+.*d.*)|<p><strong>Deleted:</strong></p>| # T('Deleted:')
-    or $header =~ s|^(\d+.*a.*)|<p><strong>Added:</strong></p>|; # T('Added:')
+	or $header =~ s|^(\d+.*d.*)|<p><strong>Deleted:</strong></p>| # T('Deleted:')
+	or $header =~ s|^(\d+.*a.*)|<p><strong>Added:</strong></p>|; # T('Added:')
       $result .= $header;
       my $chunk = shift (@hunks);
       my ($old, $new) = split (/\n---\n/, $chunk, 2);
@@ -2562,11 +2562,11 @@ sub ImproveDiff {      # NO NEED TO BE called within a diff lock
   ($old, $new) = DiffMarkWords($old, $new);
   $result .= "$old<p><strong>to</strong></p>\n$new"; # T('to')
       } else {
-  if (substr($chunk,0,2) eq '&g') {
-    $result .= DiffAddPrefix(DiffStripPrefix($chunk), '&gt; ', 'new');
-  } else {
-    $result .= DiffAddPrefix(DiffStripPrefix($chunk), '&lt; ', 'old');
-  }
+	if (substr($chunk,0,2) eq '&g') {
+	  $result .= DiffAddPrefix(DiffStripPrefix($chunk), '&gt; ', 'new');
+	} else {
+	  $result .= DiffAddPrefix(DiffStripPrefix($chunk), '&lt; ', 'old');
+	}
       }
     }
   return $result;
@@ -2852,8 +2852,8 @@ sub RequestLockDir {
     if ($n++ >= $tries) {
       my $ts = (stat($lock))[10];
       if ($Now - $ts > $LockExpiration and $LockExpires{$name}) {
-  ReleaseLockDir($name);         # expire lock
-  return 1 if RequestLockDir(@_); # and try again
+	ReleaseLockDir($name);         # expire lock
+	return 1 if RequestLockDir(@_); # and try again
       }                                 # else fail as appropriate
       return 0 unless $error;
       ReportError(Ts('Could not get %s lock', $name) . ": $!. "
