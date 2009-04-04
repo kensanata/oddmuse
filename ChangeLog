@@ -1,3 +1,9 @@
+2009-04-04  Alex Schroeder  <alex@gnu.org>
+
+	* modules/tags.pl (NewTagGrepFiltered, NewTagSearchString):
+	Support searching for tags containing a space (being replaced by
+	an underscore).
+
 2009-03-28  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GrepFiltered): Sort output because grep -r doesn't
