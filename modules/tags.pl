@@ -29,7 +29,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: tags.pl,v 1.16 2009/03/21 23:31:58 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tags.pl,v 1.17 2009/04/04 01:26:53 as Exp $</p>';
 
 =head1 CONFIGURATION
 
@@ -229,13 +229,13 @@ sub NewTagGrepFiltered { # called within a lock!
   my ($string, @pages) = @_;
   my %page = map { $_ => 1 } @pages;
   # this is based on the code in SearchRegexp()
-  my @tagterms = grep(/^-?tag:/, shift =~ /\"([^\"]+)\"|(\S+)/g);
+  my @tagterms = map { FreeToNormal($_) } grep(/^-?tag:/, shift =~ /\"([^\"]+)\"|(\S+)/g);
   my @positives = map {substr($_, 4)} grep(/^tag:/, @tagterms);
   my @negatives = map {substr($_, 5)} grep(/^-tag:/, @tagterms);
   if (@positives) {
     my %found;
     foreach my $id (TagFind(@positives)) {
-      $found{$id} = 1 if $page = {$id};
+      $found{$id} = 1 if $page{$id};
     }
     %page = %found;
   }
@@ -245,7 +245,9 @@ sub NewTagGrepFiltered { # called within a lock!
   }
   # filter out the tags from the search string
   $string = join(' ', grep(!/^-?tag:/, $string =~ /\"([^\"]+)\"|(\S+)/g));
-  # run grep
+  # if no query terms remain, just return the pages we found
+  # return sort keys %page if $string eq '';
+  # otherwise run grep
   return OldTagGrepFiltered($string, sort keys %page);
 }
 
@@ -262,8 +264,9 @@ We're need to remove all tag terms (again) in order to not confuse it.
 *SearchString = *NewTagSearchString;
 
 sub NewTagSearchString {
-  # filter out the tags from the search string
-  my $string = join(' ', grep(!/^-tag:/, shift =~ /\"([^\"]+)\"|(\S+)/g));
+  # filter out the negative tags from the search string
+  my $string = join(' ', map { NormalToFree($_) }
+		    grep(!/^-tag:/, shift =~ /\"([^\"]+)\"|(\S+)/g));
   return 1 unless $string;
   return OldTagSearchString($string, @_);
 }
