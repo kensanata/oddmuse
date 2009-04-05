@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 60;
+use Test::More tests => 66;
 clear_pages();
 
 add_module('tags.pl');
@@ -44,6 +44,7 @@ EOT
 
 update_page('Brilliant', 'Gameologists [[tag:podcast]] [[tag:mag]]');
 update_page('Podgecast', 'Another [[tag:podcast]]');
+update_page('Alex', 'Me! [[tag:Old School]]');
 
 # open the DB file
 require DB_File;
@@ -59,6 +60,8 @@ ok($file{Brilliant}, 'Tag podcast applies to page Brilliant');
 ok($file{Podgecast}, 'Tag podcast applies to page Podgecast');
 %file = map {$_=>1} split($FS, $h{"mag"});
 ok($file{Brilliant}, 'Tag mag applies to page Brilliant');
+%file = map {$_=>1} split($FS, $h{"old_school"});
+ok($file{Alex}, 'Tag Old School applies to page Alex');
 
 # close the DB file before making changes via the wiki!
 untie %h;
@@ -92,6 +95,7 @@ untie %h;
 update_page('Brilliant', 'Gameologists [[tag:podcast]] [[tag:mag]]');
 update_page('Sons', 'of Kryos [[tag:Podcast]]');
 update_page('Alex', 'not a podcast');
+update_page('Jeff', 'a blog [[tag:Old School]]');
 
 # ordinary search finds Alex
 $page = get_page('search=podcast raw=1');
@@ -112,17 +116,25 @@ $page = get_page('search=-tag:mag raw=1');
 test_page($page, qw(Podgecast Sons Alex));
 test_page_negative($page, qw(Brilliant));
 
-# combine include and exclude tag search to exclude both Alex and Brilliant
+# combine include and exclude tag search to exclude both Alex and
+# Brilliant
 $page = get_page('search=tag:podcast%20-tag:mag raw=1');
 test_page($page, qw(Podgecast Sons));
 test_page_negative($page, qw(Brilliant Alex));
 
-# combine ordinary search with include and exclude tag search to exclude both Alex and Brilliant
+# combine ordinary search with include and exclude tag search to
+# exclude both Alex and Brilliant
 $page = get_page('search=kryos%20tag:podcast%20-tag:mag raw=1');
 test_page($page, qw(Sons));
 test_page_negative($page, qw(Podgecast Brilliant Alex));
 
-test_page(get_page('action=reindex pwd=foo'), qw(Podgecast Brilliant Sons Alex));
+# search for a tag containing spaces
+$page = get_page('search=tag:old_school raw=1');
+test_page($page, qw(Jeff));
+test_page_negative($page, qw(Sons Podgecast Brilliant Alex));
+
+test_page(get_page('action=reindex pwd=foo'),
+	  qw(Podgecast Brilliant Sons Alex));
 
 # tag search skips Alex -- repeat test after reindexing
 $page = get_page('search=tag:podcast raw=1');
