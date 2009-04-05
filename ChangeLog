@@ -1,3 +1,7 @@
+2009-04-05  Alex Schroeder  <alex@gnu.org>
+
+	* modules/tags.pl (TagsMenu): Add menu.
+
 2009-04-04  Alex Schroeder  <alex@gnu.org>
 
 	* modules/tags.pl (NewTagGrepFiltered, NewTagSearchString):
