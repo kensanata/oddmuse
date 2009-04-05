@@ -36,7 +36,7 @@ be changed using the C<$NamespacesSelf> option.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.42 2009/03/08 23:44:54 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.43 2009/04/05 23:36:20 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent
 	    $NamespaceRoot $NamespaceSlashing);
@@ -74,7 +74,8 @@ sub NamespacesInitVariables {
   if (($UsePathInfo
        # make sure ordinary page names are not matched!
        and $q->path_info() =~ m|^/($InterSitePattern)(/.*)?|
-       and ($2 or $q->param or $q->keywords)
+       # has to match the code in GetId()
+       and ($2 or GetParam('id', GetParam('title', $id)) or $q->keywords)
        and ($1 ne $NamespacesMain)
        and ($1 ne $NamespacesSelf))
       or
