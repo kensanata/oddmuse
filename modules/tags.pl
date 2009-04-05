@@ -29,7 +29,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: tags.pl,v 1.17 2009/04/04 01:26:53 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tags.pl,v 1.18 2009/04/05 21:32:16 as Exp $</p>';
 
 =head1 CONFIGURATION
 
@@ -349,6 +349,22 @@ sub TagList {
     print "$id: " . join(', ', split(/$FS/, $h{$id})) . "\n";
   }
   untie %h;
+}
+
+=pod
+
+Both these actions are of course available from the Administration
+menu.
+
+=cut
+
+push(@MyAdminCode, \&TagsMenu);
+
+sub TagsMenu {
+  my ($id, $menuref, $restref) = @_;
+  push(@$menuref,
+       ScriptLink('action=reindex', T('Rebuild tag index'), 'reindex')
+       . ', ' . ScriptLink('action=taglist', T('list tags'), 'taglist'));
 }
 
 =head1 COPYRIGHT AND LICENSE
