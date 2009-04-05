@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 66;
+use Test::More tests => 70;
 clear_pages();
 
 add_module('tags.pl');
@@ -160,6 +160,13 @@ test_page_negative($page, qw(AlexSchroeder Foo));
 $page = update_page('Podcasts', '<journal "." search tag:podcast>');
 test_page($page, qw(Podgecast Brilliant Sons));
 test_page_negative($page, qw(Alex Foo));
+
+# check the tag cloud
+xpath_test(get_page('action=tagcloud'),
+	   '//h1[text()="Tag Cloud"]',
+	   '//a[@style="font-size: 200%;"][@href="http://localhost/wiki.pl?search=tag:podcast"][@title="3"][text()="podcast"]',
+	   '//a[@style="font-size: 80%;"][@href="http://localhost/wiki.pl?search=tag:old_school"][@title="1"][text()="old school"]',
+	   '//a[@style="font-size: 80%;"][@href="http://localhost/wiki.pl?search=tag:mag"][@title="1"][text()="mag"]');
 
 # check interference; in order for this test to work, we need to make
 # sure that localnames is loaded first
