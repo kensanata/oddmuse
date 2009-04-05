@@ -1,6 +1,8 @@
 2009-04-05  Alex Schroeder  <alex@gnu.org>
 
 	* modules/tags.pl (TagsMenu): Add menu.
+	(TagCloud): New action, based on the search-freetext.pl
+	implementation.
 
 2009-04-04  Alex Schroeder  <alex@gnu.org>
 
