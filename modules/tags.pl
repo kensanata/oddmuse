@@ -29,7 +29,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: tags.pl,v 1.18 2009/04/05 21:32:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tags.pl,v 1.19 2009/04/05 22:19:03 as Exp $</p>';
 
 =head1 CONFIGURATION
 
@@ -273,6 +273,44 @@ sub NewTagSearchString {
 
 =pod
 
+We also want to provide a visual feedback of tag importance using a
+"tag cloud" -- larger font size means that a tag has been used more
+often.
+
+=cut
+
+$Action{tagcloud} = \&TagCloud;
+
+sub TagCloud {
+  print GetHeader('', T('Tag Cloud'), ''),
+    $q->start_div({-class=>'content cloud'}) . '<p>';
+  # open the DB file
+  require DB_File;
+  tie %h, "DB_File", $TagFile;
+  my $max = 0;
+  my $min = 0;
+  my %count = ();
+  foreach my $tag (grep !/^_/, keys %h) {
+    $count{$tag} = split(/$FS/, $h{$tag});
+    $max = $count{$tag} if $count{$tag} > $max;
+    $min = $count{$tag} if not $min or $count{$tag} < $min;
+  }
+  untie %h;
+  foreach my $tag (sort keys %count) {
+    my $n = $count{$tag};
+    print $q->a({-href  => "$ScriptName?search=tag:" . UrlEncode($tag),
+		 -title => $n,
+		 -style => 'font-size: '
+		 . int(80+120*($max == $min ? 1 : ($n-$min)/($max-$min)))
+		 . '%;',
+		}, NormalToFree($tag)), T(' ... ');
+  }
+  print '</p></div>';
+  PrintFooter();
+}
+
+=pod
+
 Finally, we need to provide the means to reindex the entire site. The
 Reindex Action will do this. This should only be necessary when you
 install the module, and when you suspect that the tag.db is out of
@@ -364,7 +402,8 @@ sub TagsMenu {
   my ($id, $menuref, $restref) = @_;
   push(@$menuref,
        ScriptLink('action=reindex', T('Rebuild tag index'), 'reindex')
-       . ', ' . ScriptLink('action=taglist', T('list tags'), 'taglist'));
+       . ', ' . ScriptLink('action=taglist', T('list tags'), 'taglist')
+       . ', ' . ScriptLink('action=tagcloud', T('tag cloud'), 'tagcloud'));
 }
 
 =head1 COPYRIGHT AND LICENSE
