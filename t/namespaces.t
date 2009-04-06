@@ -41,7 +41,7 @@ test_page(get_page('action=browse id=Test ns=Muu'),
 	  '<p>Mooo!</p>');
 
 # search
-$page = get_page('search=Mooo ns=Muu raw=1');
+$page = get_page('/Muu?search=Mooo raw=1');
 test_page($page, 'description: Mooo!');
 test_page_negative($page, 'description: Muuu!');
 
