@@ -15,11 +15,14 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 51;
+use Test::More tests => 56;
 clear_pages();
 
 add_module('namespaces.pl');
 
+test_page_negative(get_page('/Test?username=alex'), 'Wiki Test: Test');
+
+# editing pages
 test_page(get_page('Test'),
 	  '<title>Wiki: Test</title>',
 	  'Status: 404 NOT FOUND');
@@ -36,6 +39,17 @@ test_page(update_page('Test', 'Mooo!', 'muu ns', undef, undef,
 test_page(get_page('action=browse id=Test ns=Muu'),
 	  '<title>Wiki Muu: Test</title>',
 	  '<p>Mooo!</p>');
+
+# search
+$page = get_page('search=Mooo ns=Muu raw=1');
+test_page($page, 'description: Mooo!');
+test_page_negative($page, 'description: Muuu!');
+
+$page = get_page('search=Muuu raw=1');
+test_page_negative($page, 'description: Mooo!');
+test_page($page, 'description: Muuu!');
+
+# recent changes
 test_page(get_page('action=rc raw=1'),
 	  'generator: Alex',
 	  'generator: Muu:Berta');
