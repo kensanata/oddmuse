@@ -36,15 +36,37 @@ be changed using the C<$NamespacesSelf> option.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.43 2009/04/05 23:36:20 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.44 2009/04/06 00:26:46 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent
-	    $NamespaceRoot $NamespaceSlashing);
+	    $NamespaceRoot $NamespaceSlashing @NamespaceParameters);
 
 $NamespacesMain = 'Main'; # to get back to the main namespace
 $NamespacesSelf = 'Self'; # for your own namespace
 $NamespaceCurrent = '';   # the current namespace, if any
 $NamespaceRoot = '';      # the original $ScriptName
+
+=head2 Configuration
+
+The option C<@NamespaceParameters> can be used by programmers to
+indicate for which parameters the last element of path_info shall
+count as a namespace. Consider these examples:
+
+  http://example.org/wiki/Foo/Bar
+  http://example.org/wiki/Foo?action=browse;id=Bar
+  http://example.org/wiki/Foo?title=Bar;text=Baz
+  http://example.org/wiki/Foo?search=bar
+
+In all the listed cases, Foo is supposed to be the namespace.
+
+In the following cases, however, we're interested in the page Foo and
+not the namespace Foo.
+
+  http://example.org/wiki/Foo?username=bar
+
+=cut
+
+@NamespaceParameters = ('action' => 1, 'search' => 1, 'title' => 1);
 
 $NamespaceSlashing = 0;   # affects : decoding NamespaceRcLines
 
@@ -74,10 +96,9 @@ sub NamespacesInitVariables {
   if (($UsePathInfo
        # make sure ordinary page names are not matched!
        and $q->path_info() =~ m|^/($InterSitePattern)(/.*)?|
-       # has to match the code in GetId()
-       and ($2 or GetParam('id', GetParam('title', $id)) or $q->keywords)
        and ($1 ne $NamespacesMain)
-       and ($1 ne $NamespacesSelf))
+       and ($1 ne $NamespacesSelf)
+       and ($2 or $q->keywords or NamespaceRequiredByParameter()))
       or
       ($ns =~ m/^($InterSitePattern)$/
        and ($1 ne $NamespacesMain)
@@ -122,6 +143,12 @@ sub NamespacesInitVariables {
   # transfer list of sites
   foreach my $key (keys %site) {
     $InterSite{$key} = $site{$key} unless $InterSite{$key};
+  }
+}
+
+sub NamespaceRequiredByParameter {
+  foreach $key (@NamespaceParameters) {
+    return 1 if $q->param($key);
   }
 }
 
