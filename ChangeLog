@@ -1,3 +1,11 @@
+2009-04-06  Alex Schroeder  <alex@gnu.org>
+
+	* modules/namespaces.pl (NamespacesInitVariables): Match the code
+	changes in GetId.
+	(@NamespaceParameters): New.
+	(NamespacesInitVariables): Use new option.
+	(NamespacesInitVariables): Use new function.
+
 2009-04-05  Alex Schroeder  <alex@gnu.org>
 
 	* modules/tags.pl (TagsMenu): Add menu.
