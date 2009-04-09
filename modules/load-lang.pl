@@ -13,9 +13,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: load-lang.pl,v 1.8 2008/11/24 18:09:42 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: load-lang.pl,v 1.9 2009/04/09 16:57:34 as Exp $</p>';
 
 $CookieParameters{interface} = '';
+
+use vars qw($CurrentLanguage);
 
 my %library= ('bg' => 'bulgarian-utf8.pl',
 	      'de' => 'german-utf8.pl',
@@ -61,6 +63,7 @@ sub LoadLanguage {
     if (-r $file) {
       do $file;
       do "$ConfigFile-$Lang{$_}" if -r "$ConfigFile-$Lang{$_}";
+      $CurrentLanguage = $_;
       my $f;
       if ($NamespaceCurrent) {
 	$f = "$DataDir/../README.$Lang{$_}";
