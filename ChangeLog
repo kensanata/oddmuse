@@ -1,3 +1,8 @@
+2009-04-09  alex  <alex@hcoop.net>
+
+	* modules/load-lang.pl ($CurrentLanguage): New variable.
+	(LoadLanguage): Set it.
+
 2009-04-06  Alex Schroeder  <alex@gnu.org>
 
 	* modules/namespaces.pl (NamespacesInitVariables): Match the code
