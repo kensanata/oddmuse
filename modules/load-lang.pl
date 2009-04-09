@@ -1,4 +1,4 @@
-# Copyright (C) 2006, 2008  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006, 2008, 2009  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: load-lang.pl,v 1.9 2009/04/09 16:57:34 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: load-lang.pl,v 1.10 2009/04/09 17:02:17 as Exp $</p>';
 
 $CookieParameters{interface} = '';
 
@@ -63,7 +63,7 @@ sub LoadLanguage {
     if (-r $file) {
       do $file;
       do "$ConfigFile-$Lang{$_}" if -r "$ConfigFile-$Lang{$_}";
-      $CurrentLanguage = $_;
+      $CurrentLanguage = $Lang{$_};
       my $f;
       if ($NamespaceCurrent) {
 	$f = "$DataDir/../README.$Lang{$_}";
