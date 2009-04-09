@@ -1,4 +1,4 @@
-2009-04-09  alex  <alex@hcoop.net>
+2009-04-09  Alex Schroeder  <alex@gnu.org>
 
 	* modules/load-lang.pl ($CurrentLanguage): New variable.
 	(LoadLanguage): Set it.
@@ -10,6 +10,10 @@
 	(@NamespaceParameters): New.
 	(NamespacesInitVariables): Use new option.
 	(NamespacesInitVariables): Use new function.
+
+	* wiki.pl (GrepFiltered): Short circuit if we end up with an empty
+	regular expression. This can happen when using tags.pl and only
+	specifying -tag:foo.
 
 2009-04-05  Alex Schroeder  <alex@gnu.org>
 
