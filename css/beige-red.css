@@ -349,7 +349,7 @@ div.content p.comment {
 /* images */
 
 div.content a img, div.journal a img {
-    margin: 1em; padding: 0.5em; border:1px dotted;
+    padding: 0.5em; border:1px dotted;
 }
 div.content a img.smiley, div.journal a img.smiley, img.smiley {
     margin: 0; padding: 0; border: none;
