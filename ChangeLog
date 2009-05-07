@@ -1,3 +1,8 @@
+2009-05-07  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ApplyRules): Make sure we store $_ whenever we store
+	pos because of recursive calls to ApplyRules.
+
 2009-04-09  Alex Schroeder  <alex@gnu.org>
 
 	* modules/load-lang.pl ($CurrentLanguage): New variable.
