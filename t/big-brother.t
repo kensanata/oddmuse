@@ -51,8 +51,14 @@ my  %entries = %{$BigBrotherData{Alex}};
 my @times = sort keys %entries;
 ok(@times == $SurgeProtectionViews, "$SurgeProtectionViews entries in the log file");
 
-# waiting for $VisitorTime to expire
-sleep 35;
+# $VisitorTime is 30 but since the latest entry into the log gets a +1
+# added whenever there is a duplicate entry, we might have entries in
+# the list that are a few seconds into the future. Take this into
+# account as we are waiting for $VisitorTime to expire.
+my $seconds = 30 + $times[-1] - time() + 1;
+diag("Waiting for ${seconds}s");
+sleep $seconds;
+
 test_page(get_page('action=browse id=AfterWaiting username=Alex'),
 	  'Status: 404 NOT FOUND');
 # now the previous 10 entries should have expired out of the log file
@@ -65,4 +71,5 @@ foreach (split(/\n/,$data)) {
 }
 %entries = %{$BigBrotherData{Alex}};
 @times = sort keys %entries;
-ok(@times == 1, "just one entry remains in the log file after this wait");
+ok(@times == 1, "just one entry remains in the log file after this wait ("
+   . @times . ")");
