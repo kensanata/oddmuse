@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 31;
+use Test::More tests => 37;
 
 clear_pages();
 
@@ -54,6 +54,7 @@ test_page(update_page('hist', 'Tesla', 'Power'),
 	  'Tesla',
 	  'action=history',
 	  'View other revisions');
+
 $page = get_page('action=history id=hist username=me');
 test_page($page,
 	  'test summary',
@@ -68,3 +69,10 @@ test_page_negative($page,
 		   'Tesla',
 		   'No other revisions available',
 		   'View other revisions');
+xpath_test($page,
+	   '//table[@class="history"]/tr[position()=2]/td[position()=1]/input[@name="diffrevision"][@value="2"]',
+	   '//table[@class="history"]/tr[position()=2]/td[position()=2]/input[@name="revision"][@value=""][@checked="checked"]',
+	   '//table[@class="history"]/tr[position()=2]/td[position()=3]/a[text()="Revision 2"]',
+	   '//table[@class="history"]/tr[position()=3]/td[position()=1]/input[@name="diffrevision"][@value="1"][@checked="checked"]',
+	   '//table[@class="history"]/tr[position()=3]/td[position()=2]/input[@name="revision"][@value="1"]',
+	   '//table[@class="history"]/tr[position()=3]/td[position()=3]/a[text()="Revision 1"]');
