@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.916 2009/05/07 20:04:09 as Exp $
+# Version       $Id: wiki.pl,v 1.917 2009/05/09 12:38:30 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
 #     Alex Schroeder <alex@gnu.org>
@@ -36,7 +36,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.916 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.917 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -293,7 +293,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.916 2009/05/07 20:04:09 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.917 2009/05/09 12:38:30 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -1974,11 +1974,14 @@ sub DoHistory {
     my $row = 0;
     my $rollback = UserCanEdit($id, 0) && (GetParam('username', '')
              or UserIsEditor());
-    my $ts;
-    my @html = (GetHistoryLine($id, \%Page, $row++, $rollback, \$ts));
+    my $date = CalcDay($Page{ts});
+    my @html = (GetHistoryLine($id, \%Page, $row++, $rollback, $date, 1));
     foreach my $revision (GetKeepRevisions($OpenPageName)) {
       my %keep = GetKeptRevision($revision);
-      push(@html, GetHistoryLine($id, \%keep, $row++, $rollback, \$ts));
+      my $new = CalcDay($keep{ts});
+      push(@html, GetHistoryLine($id, \%keep, $row++, $rollback,
+				 $new, $new ne $date));
+      $date = $new;
     }
     @html = (GetFormStart(undef, 'get', 'history'),
        $q->p($q->submit({-name=>T('Compare')}),
@@ -2001,13 +2004,10 @@ sub DoHistory {
 }
 
 sub GetHistoryLine {
-  my ($id, $dataref, $row, $rollback, $tsref) = @_;
+  my ($id, $dataref, $row, $rollback, $date, $newday) = @_;
   my %data = %$dataref;
   my $revision = $data{revision};
   return $q->p(T('No other revisions available')) unless $revision;
-  my $date = CalcDay($data{ts});
-  my $newday = ($date ne $$tsref);
-  $$tsref = $date if $newday;
   my $html = CalcTime($data{ts});
   if (0 == $row) {    # current revision
     $html .= ' (' . T('current') . ')' if $rollback;
@@ -2026,8 +2026,8 @@ sub GetHistoryLine {
   if ($UseDiff) {
     my %attr1 = (-type=>'radio', -name=>'diffrevision', -value=>$revision);
     $attr1{-checked} = 'checked' if 1==$row;
-    my %attr2 = (-type=>'radio', -name=>'revision', -value=>$revision);
-    $attr2{-checked} = 'checked' if 0==$row;
+    my %attr2 = (-type=>'radio', -name=>'revision', -value=> $row ? $revision : '');
+    $attr2{-checked} = 'checked' if 0==$row; # first row is special
     $html = $q->Tr($q->td($q->input(\%attr1)), $q->td($q->input(\%attr2)),
        $q->td($html));
     $html = $q->Tr($q->td({-colspan=>3}, $q->strong($date))) . $html if $newday;
