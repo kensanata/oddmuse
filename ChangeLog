@@ -1,3 +1,10 @@
+2009-05-09  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoHistory): Handle date changes here in order to avoid
+	declaring a variable and having to pass it by reference to
+	GetHistoryLine.
+	(GetHistoryLine): Simplified.
+
 2009-05-07  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (ApplyRules): Make sure we store $_ whenever we store
