@@ -1,7 +1,7 @@
 # UTF-8 encoded German translation file for use with Oddmuse
 #
 # Copyright (c) 2003  Karl Loncarek <karl@loncarek.de>
-# Copyright (c) 2003, 2004, 2005, 2006, 2007  Alex Schröder <alex@gnu.org>
+# Copyright (c) 2003, 2004, 2005, 2006, 2007, 2009  Alex Schröder <alex@gnu.org>
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
@@ -16,8 +16,10 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.25 2008/03/12 16:12:51 ingob Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.26 2009/05/09 12:00:44 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
+Include normal pages
+Mit normalen Seiten
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
 Login
@@ -68,8 +70,6 @@ CGI Internal error: %s
 Interner CGI Fehler: %s
 Invalid action parameter %s
 Ungültiger action Parameter: %s
-Invalid URL.
-Ungültige URL.
 Page name is missing
 Seitenname fehlt
 Page name is too long: %s
@@ -80,16 +80,14 @@ Invalid Page %s (must not end with .lck)
 Ungültige Seite %s (Darf nicht mit .lck enden)
 Invalid Page %s
 Ungültige Seite %s
-Preview:
-Vorschau:
-Preview only, not yet saved
-Vorschau, noch nicht gespeichert
+Too many redirections
+Sie wurden zu oft weitergeleitet
+No redirection for old revisions
+Alte Versionen werden nicht weitergeleitet
+Invalid link pattern for #REDIRECT
+Der Link für die Weiterleitung mittels #REDIRECT ist ungültig
 Please go on to %s.
 Bitte machen Sie weiter bei %s.
-All changes for %s
-Alle Änderungen für %s
-No updates since %s
-Keine Änderungen seit %s
 Updates since %s
 Änderungen seit %s
 Updates in the last %s days
@@ -142,10 +140,10 @@ rollback
 zurück setzen
 new
 Neue Seite
+All changes for %s
+Alle Änderungen für %s
 from %s
 von %s
-: 
-: 
 This page is too big to send over RSS.
 Diese Seite ist zu gross für RSS.
 History of %s
@@ -214,20 +212,24 @@ Um eine Seite zu löschen, setzt man <strong>%s</strong> auf die erste Zeile.
 [Erste Seite]
 redirected from %s
 Umgeleitet von %s
+%s: 
+%s: 
 Click to search for references to this page
 Klicken um nach Verweisen auf diese Seite zu suchen
 Cookie: 
 Cookie: 
+Edit this page
+Diese Seite bearbeiten
+Preview:
+Vorschau:
+Preview only, not yet saved
+Vorschau, noch nicht gespeichert
 Warning
 Warnung
 Database is stored in temporary directory %s
 Datenbank wird im temporären Verzeichnis %s gespeichert
 %s seconds
 %s Sekunden
-The same page on other sites:
-Dieselbe Seite auf anderen Sites:
-EditNearLinks
-Diese Seiten lokal erstellen
 Last edited
 Zuletzt geändert
 Edited
@@ -238,8 +240,6 @@ von %s
 (Unterschiede)
 Edit revision %s of this page
 Version %s dieser Seite bearbeiten
-Edit this page
-Diese Seite bearbeiten
 e
 b
 This page is read-only
@@ -281,7 +281,7 @@ Unterschiede zwischen Version %1 und %2
 revision %s
 Version %s
 current revision
-Aktuelle Version
+aktuelle Version
 Last major edit (%s)
 Letzte grössere Änderung (%s)
 later minor edits
@@ -402,22 +402,10 @@ Reason: %s.
 Grund: %s.
 Reason unknown.
 Grund unbekannt.
-Without normal pages
-Ohne normale Seiten
-Include normal pages
-Mit normalen Seiten
-Without permanent anchors
-Ohne permanente Anker
-Include permanent anchors
-Mit permanenten Ankern
-Without near pages
-Ohne Seiten aus der Umgebung
-Include near pages
-Mit Seiten aus der Umgebung
+Filter:
+Filter:
 (for %s)
 (für %s)
-Filter:
-Filter:
 %s pages found.
 %s Seiten gefunden.
 Replaced: %s
@@ -426,16 +414,6 @@ Search for: %s
 Suche nach: %s
 View changes for these pages
 Änderungen für diese Seiten
-Search sites on the %s as well
-Sites auf der %s auch durchsuchen
-and
-und
-or
-oder
-Fetching results from %s:
-Resultate von %s:
-Near pages:
-Nahe Seiten:
 last updated
 Zuletzt geändert
 by
@@ -496,8 +474,6 @@ Note: This error is normal if no changes have been made.
 HINWEIS: Dieser Fehler ist normal, wenn keine Änderungen durchgeführt wurden.
 Moving %s log entries.
 Verschiebe %s Log-Einträge.
-Getting page index file for %s.
-Hole den Seitenindex für %s.
 Set or Remove global edit lock
 Erzeugen oder Aufheben der globalen Bearbeitungssperre
 Edit lock created.
@@ -512,26 +488,16 @@ Lock for %s removed.
 Sperre von %s aufheben.
 Displaying Wiki Version
 Anzeige der Wikiversion
-Show dependencies
-Abhängigkeiten zeigen
+Debugging Information
+Informationen für die Fehlersuche
 Inter links:
 Inter Links:
-Near links:
-Nahe Links:
-Show parsed link data
-Eingelesene Link Daten anzeigen
 Too many connections by %s
 Zu viele Verbindungen durch %s
 Please do not fetch more than %1 pages in %2 seconds.
 Bitte rufen sie nicht mehr als %1 Seiten in %2 Sekunden auf.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Vielleicht kann der Webserver das Verzeichnis %s nicht anlegen oder es wurde schon angelegt, aber der Webserver kann darin keine neuen Dateien anlegen.
-anchor first defined here: %s
-Der Anker wurde hier zuerst definiert: %s
-Click to search for references to this permanent anchor
-Klicken um nach Verweisen auf diesen permanenten Anker zu suchen
-the page %s also exists
-die Seite %s existiert ebenfalls
 Copy one of the following stylesheets to %s:
 Eines der folgenden Style Sheets kann auf die %s Seite kopiert werden:
 Deleting %s
@@ -570,6 +536,10 @@ Internal Page:
 Interne Seite: 
 Pages that link to this page
 Seiten, die auf diese Seite verweisen
+The search parameter is missing.
+Der Suchparameter fehlt.
+Pages link to %s
+Seiten mit Link auf %s
 Cannot highlight the language %s.
 Die Sprache %s kann von diesem Modul nicht eingefärbt werden.
 Recent Visitors
@@ -686,8 +656,6 @@ ordinary changes
 normale Änderungen
 Matching page names:
 Übereinstimmende Seitennamen:
-Footnotes:
-Fussnoten:
 Could not find %1.html template in %2
 Im Verzeichnis %2 gibt es kein %1.html Template
 Only Editors are allowed to see this hidden page.
@@ -704,6 +672,10 @@ Define
 Definieren
 Full Link List
 Liste aller Verweise
+List of locked pages
+Liste der gesperrten Seiten
+Pages tagged with %s
+Mit %s markierte Seiten
 Template without parameters
 Vorlage ohne Parameter
 The template %s is either empty or does not exist.
@@ -712,6 +684,8 @@ Die %s Vorlage ist entweder leer oder existiert gar nicht.
  -- definiert auf der Seite %s
 Local names defined on %1: %2
 Der lokale Namen %2 wurde auf der Seite %1 definiert
+Locked Pages
+Gesperrte Seiten
 Register for %s
 Anmeldung für %s
 Please choose a username of the form "FirstLast" using your real name.
@@ -806,14 +780,34 @@ Bei der Bestätigung von %s ist ein Fehler aufgetreten.
 </ul>
 There are no pending registrations.
 Es gibt keine offenen Gesuche.
+You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
+Sie haben mehr als %s Links auf die selbe Domäne gesetzt. Normalerweise machen das nur Spammer. Die Änderung wird deswegen abgelehnt.
 %s is not a legal name for a namespace
 %s ist ein ungültiger Name für einen Namensraum
+Getting page index file for %s.
+Hole den Seitenindex für %s.
+Near links:
+Nahe Links:
+Search sites on the %s as well
+Sites auf der %s auch durchsuchen
+Fetching results from %s:
+Resultate von %s:
+Near pages:
+Nahe Seiten:
+Include near pages
+Mit Seiten aus der Umgebung
+EditNearLinks
+Diese Seiten lokal erstellen
+The same page on other sites:
+Dieselbe Seite auf anderen Sites:
  (create locally)
  (lokal erstellt)
 image
 image
 download
 download
+Backlinks
+Links zurück
 Clearing Cache
 Cache wird geleert
 Done.
@@ -836,6 +830,20 @@ Self-ban by %s
 %s hat sich selber verbannt.
 You have banned your own IP.
 Sie haben ihre eigene IP Nummer verbannt.
+OpenID Login
+OpenID Login
+Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
+
+Your homepage is set to %s.
+
+You have no homepage set.
+
+Homepage:
+
+Homepage is missing
+
+OpenID error %s
+
 Orphan List
 Liste der Waisen
 Trail: 
@@ -846,12 +854,20 @@ Type
 Typ
 Permalink to "%s"
 Permalink für "%s"
+anchor first defined here: %s
+Der Anker wurde hier zuerst definiert: %s
+the page %s also exists
+die Seite %s existiert ebenfalls
 There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
 Es gab einen Fehler beim Generieren der PDF Datei für %s. Bitte teilen Sie dies dem Webmeister mit.  Ein erneuter Versuch, diese Datei zu erhalten, wird nicht funktionieren.
 Someone else is generating a pdf for %s.  Please wait a minute and then try again.
 Gerade eben erstellt jemand eine PDF Datei für %s.  Bitte warten Sie eine Minute und versuchen es dann nochmal.
 Download this page as PDF
 Diese Seite als PDF
+Click to search for references to this permanent anchor
+Klicken um nach Verweisen auf diesen permanenten Anker zu suchen
+Include permanent anchors
+Mit permanenten Ankern
 Portrait
 Portrait
 Publish %s
@@ -862,10 +878,12 @@ The target wiki was misconfigured.
 Das Publikationsziel wurde nicht korrekt konfiguriert.
 You did not answer correctly.
 Die Antwort ist falsch.
-Use the back button to return the previous page and try again.
-Gehen Sie zur vorherigen Seite zurück und versuchen Sie es noch ein Mal
 To save this page you must answer this question:
 Um diese Seite abzuspeichern, müssen Sie folgende Frage beantworten:
+Please type the following two words:
+Bitte tippen Sie die folgenden zwei Worte ab:
+Please answer this captcha:
+Bitte beantworten Sie folgende Frage:
 Referrers
 Links auf diese Seite
 All Referrers
@@ -882,6 +900,10 @@ Rebuilding index not done.
 Der Index für die Suche wurde noch nicht neu erstellt.
 (Rebuilding the index can only be done once every 12 hours.)
 (Der Index für die Suche kann nur einmal alle zwölf Stunden neu erstellt werden.)
+New Pages for Indexed Search
+Neue Seiten für die indexierte Suche
+List changes since %s
+Alle Änderungen ab %s
  ... 
  … 
 Search term missing.
@@ -896,6 +918,8 @@ Tags: %s.
 Tags: %s.
 No tags
 Keine Tags
+Page list for %s
+Seitenliste für %s
 Slideshow:%s
 Diashow:%s
 Index of all small pages
@@ -908,6 +932,14 @@ Copy to %1 succeeded: %2.
 Die %1 Kopie hat funktioniert: %2.
 Copy to %1 failed: %2.
 Die %1 Kopie ist fehlgeschlagen: %2.
+Feed for this tag
+Feed für diesen Tag
+Rebuild tag index
+Tag Index neu erstellen
+list tags
+Tags auflisten
+tag cloud
+Tag Wolke
 Alternatively, use one of the following templates:
 Anderenfalls stehen auch folgende Vorlagen zur Verfügung:
 Thread: %s
@@ -938,6 +970,26 @@ Contents
 Inhaltsverzeichnis
 Create a new page for today
 Erstellen Sie eine neue Seite für den heutigen Tag
+Add Translation
+Übersetzung hinzufügen
+Added translation: %1 (%2)
+Übersetzung hinzugefügt: %1 (%2)
+Translate %s
+%s übersetzen
+Thank you for writing a translation of %s.
+Danke, dass Sie %s übersetzt haben.
+Please indicate what language you will be using.
+Bitte geben Sie an, welche Sprache Sie verwenden werden.
+Language is missing
+Die Sprache fehlt
+Suggested languages:
+Vorgeschlagene Sprachen:
+Please indicate a page name for the translation of %s.
+Bitte geben Sie einen Seitennamen für die Übersetzung von %s an.
+More help may be available here: %s.
+Möglicherweise finden Sie auf %s weitere Informationen.
+Translated page: 
+Übersetzte Seite:
 This page is a translation of %s. 
 Diese Seite ist eine Übersetzung von %s. 
 The translation is up to date.
