@@ -1,3 +1,10 @@
+2009-05-11  Brian Curry  <http://www.raiazome.com/Brian_Curry>
+
+	* modules/footnotes.pl (FootnotesRule): Substantially revised.
+	This now handles markup for referencing another footnote or range
+	of other footnotes. This should, in turn, make embedding academic
+	citations in Wiki pages somewhat cleaner.
+
 2009-05-09  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoHistory): Handle date changes here in order to avoid
