@@ -17,7 +17,7 @@ push(@MyAdminCode, \&ListLockedMenu);
 
 sub ListLockedMenu {
   my ($id, $menuref, $restref) = @_;
-  push(@$menuref, ScriptLink('action=listlocked', T('List locked pages'),
+  push(@$menuref, ScriptLink('action=listlocked', T('List of locked pages'),
 			     'list locked'));
 }
 
