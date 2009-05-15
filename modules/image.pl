@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: image.pl,v 1.29 2008/07/30 07:18:17 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: image.pl,v 1.30 2009/05/15 20:23:56 as Exp $</p>';
 
 use vars qw($ImageUrlPath);
 
@@ -45,6 +45,7 @@ sub ImageSupportRule {
     my $id = FreeToNormal($name);
     $class =~ s!/! !g;
     my $linkclass = $class;
+    my $found = 1;
     # link to the image if no link was given
     $link = $name unless $link;
     if ($link =~ /^($FullUrlPattern|$FreeInterLinkPattern)$/
@@ -57,12 +58,17 @@ sub ImageSupportRule {
     if ($src =~ /^($FullUrlPattern|$FreeInterLinkPattern)$/) {
       ($src) = ImageGetExternalUrl($src);
     } elsif ($src =~ /^$FreeLinkPattern$/ and not $external) {
-      $src = ImageGetInternalUrl($src);
+      $found = $IndexHash{FreeToNormal($src)};
+      $src = ImageGetInternalUrl($src) if $found;
     } else {
       $src = ImageUrlEncode($ImageUrlPath . '/' . $name);
     }
-    $result = $q->img({-src=>$src, -alt=>$alt, -title=>$alt, -class=>'upload'});
-    $result = $q->a({-href=>$link, -class=>$linkclass}, $result);
+    if ($found) {
+      $result = $q->img({-src=>$src, -alt=>$alt, -title=>$alt, -class=>'upload'});
+      $result = $q->a({-href=>$link, -class=>$linkclass}, $result);
+    } else {
+      $result = GetDownloadLink($src, 1, undef, $alt);
+    }
     if ($caption) {
       if ($reference) {
 	my $refclass = $class;
