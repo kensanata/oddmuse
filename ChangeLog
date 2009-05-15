@@ -1,3 +1,16 @@
+2009-05-15  Alex Schroeder  <alex@gnu.org>
+
+	* modules/static-copy.pl (StaticFileName): Don't just print
+	something to stdout if the target page does not exist, yet. This
+	will always happen when creating a link to an image before
+	upoading the image!
+
+	* modules/image.pl (ImageSupportRule): Make sure we provide an
+	upload link of the image is local and doesn't exist yet.
+
+	* modules/listlocked.pl (ListLockedMenu): Changed menu item name a
+	bit to match the German translation file.
+
 2009-05-11  Brian Curry  <http://www.raiazome.com/Brian_Curry>
 
 	* modules/footnotes.pl (FootnotesRule): Substantially revised.
