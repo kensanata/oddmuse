@@ -1,4 +1,4 @@
-# Copyright (C) 2007, 2008  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2007, 2008, 2009  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 12;
+use Test::More tests => 13;
 clear_pages();
 
 add_module('static-copy.pl');
@@ -85,10 +85,15 @@ ok(-f "$DataDir/static/Logo.png", "$DataDir/static/Logo.png exists");
 # Make sure spaces are translated to underscores (fixed in image.pl)
 add_module('image.pl');
 
-xpath_run_tests(split('\n',<<'EOT'));
-[[image/right:bar baz]]
-//a[@class="image right"][@href="http://localhost/test.pl/bar_baz"]/img[@class="upload"][@src="http://localhost/test.pl/download/bar_baz"][@alt="bar baz"]
-EOT
+# Now, create real pages. First, we'll use the ordinary image link to
+# a non-existing page. This should give us an edit link.
+xpath_test(update_page('test_image', '[[image:bar baz]]'),
+	   '//a[@class="edit"][@title="Click to edit this page"][@rel="nofollow"][@href="http://localhost/wiki.pl?action=edit;id=bar_baz;upload=1"]');
 
+# The same should be true for the image extension.
 xpath_test(update_page('test_image', '[[image/right:bar baz]]'),
-	   '//a[@class="image right"][@href="http://localhost/wiki.pl/bar_baz"]/img[@class="upload"][@src="/static/bar_baz.html"][@alt="bar baz"]');
+	   '//a[@class="edit"][@title="Click to edit this page"][@rel="nofollow"][@href="http://localhost/wiki.pl?action=edit;id=bar_baz;upload=1"]');
+
+# Next, using a real page. The image type is used appropriately.
+xpath_test(update_page('test_image', '[[image/right:Logo]]'),
+	   '//a[@class="image right"][@href="http://localhost/wiki.pl/Logo"]/img[@class="upload"][@src="/static/Logo.png"][@alt="Logo"]');
