@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.27 2008/12/14 23:59:12 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.28 2009/05/15 20:25:35 as Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -106,7 +106,8 @@ sub StaticFileName {
   # the $id to open the file because when called from
   # StaticScriptLink, for example, the $action is already encoded.
   my ($status, $data) = ReadFile(GetPageFile(UrlDecode($id)));
-  print "cannot read " . GetPageFile(UrlDecode($id)) . $q->br() unless $status;
+  # If the link points to a wanted page, we cannot make this static.
+  return $id unless $status;
   my %hash = ParseData($data);
   my $ext = '.html';
   if ($hash{text} =~ /^\#FILE ([^ \n]+)\n(.*)/s) {
