@@ -351,14 +351,14 @@ div.content p.comment {
 div.content a img, div.journal a img {
     padding: 0.5em; border:1px dotted;
 }
+div.content a.outside img, div.journal a.outside img {
+    border: 1px solid;
+}
 div.content a.feed img, div.journal a.feed img,
 div.content a img.smiley, div.journal a img.smiley, img.smiley,
 div.content a.inline img, div.journal a.inline img,
 div.content li a.image img, div.journal li a.image img { 
     margin: 0; padding: 0; border: none;
-}
-div.content a.outside img, div.journal a.outside img {
-    border: 1px solid;
 }
 div.image a img {
     margin-bottom: 0;
