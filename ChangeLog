@@ -1,3 +1,11 @@
+2009-05-22  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetCommentForm): Added a span around each input field
+	below the textarea.
+	(DoMaintain): Do not a newline if the rc.log file contains no more
+	entries (by default this only happens if the wiki has not been
+	edited in 90 days).
+
 2009-05-15  Alex Schroeder  <alex@gnu.org>
 
 	* modules/static-copy.pl (StaticFileName): Don't just print
