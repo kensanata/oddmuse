@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.917 2009/05/09 12:38:30 as Exp $
+# Version       $Id: wiki.pl,v 1.918 2009/05/22 18:58:57 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
 #     Alex Schroeder <alex@gnu.org>
@@ -36,7 +36,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.917 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.918 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -293,7 +293,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.917 2009/05/09 12:38:30 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.918 2009/05/22 18:58:57 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -2422,12 +2422,16 @@ sub GetCommentForm {
     return $q->div({-class=>'comment'}, GetFormStart(undef, undef, 'comment'), # protected by questionasker
        $q->p(GetHiddenValue('title', $id),
        GetTextArea('aftertext', $comment ? $comment : $NewComment)), $EditNote,
-       $q->p($q->label({-for=>'username'}, T('Username:')), ' ',
-       $q->textfield(-name=>'username', -id=>'username', -default=>GetParam('username', ''),
-               -override=>1, -size=>20, -maxlength=>50),
-       $q->label({-for=>'homepage'}, T('Homepage URL:')), ' ',
-       $q->textfield(-name=>'homepage', -id=>'homepage', -default=>GetParam('homepage', ''),
-               -override=>1, -size=>40, -maxlength=>100)),
+       $q->p($q->span({-class=>'username'},
+		      $q->label({-for=>'username'}, T('Username:')), ' ',
+		      $q->textfield(-name=>'username', -id=>'username',
+				    -default=>GetParam('username', ''),
+				    -override=>1, -size=>20, -maxlength=>50)),
+	     $q->span({-class=>'homepage'},
+		      $q->label({-for=>'homepage'}, T('Homepage URL:')), ' ',
+		      $q->textfield(-name=>'homepage', -id=>'homepage',
+				    -default=>GetParam('homepage', ''),
+				    -override=>1, -size=>40, -maxlength=>100))),
        $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save')), ' ',
        $q->submit(-name=>'Preview', -accesskey=>T('p'), -value=>T('Preview'))),
        $q->endform());
@@ -3802,7 +3806,7 @@ sub DoMaintain {
     # Write new files, and backups
     AppendStringToFile($RcOldFile, join("\n",@temp) . "\n");
     WriteStringToFile($RcFile . '.old', $data);
-    WriteStringToFile($RcFile, join("\n",@rc) . "\n");
+    WriteStringToFile($RcFile, @rc ? join("\n",@rc) . "\n" : '');
   }
   if (opendir(DIR, $RssDir)) {  # cleanup if they should expire anyway
     foreach (readdir(DIR)) {
