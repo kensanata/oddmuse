@@ -2,7 +2,8 @@ body { background-color:#FFF; color:#000; margin:1em 2em; }
 @media only screen and (max-device-width: 480px) {
     body { font-size: 300%; }
 }
-textarea { width:100%; }
+textarea { width:100%; height: 30em; }
+.comment textarea { height: 15em; }
 a:link { color:#00F; }
 a:visited { color:#A0A; }
 a:active { color:#F00; }
