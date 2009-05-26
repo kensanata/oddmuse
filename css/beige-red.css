@@ -213,13 +213,13 @@ a[class="url outside"]:before {
 a:hover {
     background-color:#dfd;
 }
-.content a.local:link {
+a.near:link {
     color:#093;
 }
-.content a.local:visited {
+a.near:visited {
     color:#550;
 }
-.content a.local:active {
+a.near:active {
     color:#0F0;
 }
 a cite { font:inherit; }
