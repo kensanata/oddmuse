@@ -1,4 +1,32 @@
+2009-06-04  Alex Schroeder  <alex@gnu.org>
+
+	* modules/mail.pl ($MailPattern): New.
+	(MailNewInitCookie): New.
+	(MailNewGetCommentForm): Added subscribe/unsubscribe link.
+	(MailIsSubscribed): New.
+	(NewMailDeletePage, MailAddSubscription): New.
+	(MailMenu): Added link to "All mail subscriptions".
+	(DoMailSubscriptions): Added unsubscription links.
+	(DoMailSubscriptionList): Support HTML output.
+	(MailLink): New.
+	(DoMailSubscribe, DoMailUnsubscribe): New.
+	(MailUnsubscribe): New.
+	(MailAddSubscription, MailSubscribe): Renamed to MailSubscribe.
+
+	* css/wiki.css (a): form.comment span is a block, now, so that the
+	fields below the summary look more like a table.
+
+	* wiki.pl (TouchIndexFile): New sub.
+	(Save): Use it.
+
+2009-05-24  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetCommentForm): Default to ten lines for comments.
+
 2009-05-22  Alex Schroeder  <alex@gnu.org>
+
+	* modules/questionasker.pl (QuestionAddTo): Adapted to changes in
+	GetCommentForm.
 
 	* wiki.pl (GetCommentForm): Added a span around each input field
 	below the textarea.
