@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 33;
+use Test::More tests => 34;
 
 clear_pages();
 
@@ -104,3 +104,12 @@ test_page(get_page('search=0'),
 	  '<p class="result">1 pages found.</p>',
 	  "This is about <strong>0</strong> and the empty string ''.",
 	  'meta name="robots" content="NOINDEX,FOLLOW"');
+
+# Test fallback when grep is unavailable
+
+TODO: {
+  local $TODO = "Don't get a decent error when opening the grep pipe";
+  AppendStringToFile($ConfigFile, "\$ENV{PATH} = undef;\n");
+  test_page(get_page('search=empty'),
+	    "This is about 0 and the <strong>empty</strong> string ''.");
+}
