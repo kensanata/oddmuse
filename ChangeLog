@@ -23,6 +23,11 @@
 	* wiki.pl (TouchIndexFile): New sub.
 	(Save): Use it.
 
+2009-05-25  Alex Schroeder  <alex@gnu.org>
+
+	* modules/questionasker.pl (QuestionAddTo): Trying to fix a
+	surprising Perl regular expression feature.
+
 2009-05-24  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetCommentForm): Default to ten lines for comments.
