@@ -1,5 +1,9 @@
 2009-06-04  Alex Schroeder  <alex@gnu.org>
 
+	* rc2mail.pl: The beginning of a new file. It will read the wiki
+	RSS feed and the list of subscribers. Eventually it will then send
+	out HTML emails to the people subscribed.
+
 	* modules/mail.pl ($MailPattern): New.
 	(MailNewInitCookie): New.
 	(MailNewGetCommentForm): Added subscribe/unsubscribe link.
