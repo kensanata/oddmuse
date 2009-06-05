@@ -31,13 +31,13 @@ img {
 div.image span.caption {
     margin: 0 1em;
 }
-li img, img.smiley {
+li img, img.smiley, .noborder img {
     border:none;
     padding:0;
     margin:0;
     background:#fff;
     color:#000;
-}    
+}
 
 div.header img, div.footer img { border:0; padding:0; margin:0; }
 
