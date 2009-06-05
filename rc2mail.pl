@@ -19,39 +19,96 @@ use Getopt::Std;
 use XML::RSS;
 use LWP::UserAgent;
 use MIME::Entity;
+use File::Temp;
 
+# This script can be invoked as follows:
+# perl rc2mail.pl -r http://localhost/cgi-bin/wiki -p test
+
+# -n Don't send email
 # -p Oddmuse administrator password
 # -r Oddmuse full URL, eg. http://localhost/cgi-bin/wiki
 #    This will request http://localhost/cgi-bin/wiki?action=rss;days=1;full=1
 #    and http://localhost/cgi-bin/wiki?action=subscriptionlist;raw=1;pwd=foo
 
-my (%opts, $pwd, $url, $ua, $response);
+my %opts;
+getopt('prn', \%opts);
+die "Must provide an url with the -r option\n" unless $opts{r};
 
-getopt('pr', \%opts);
+my $ua = new LWP::UserAgent;
 
-$ua = new LWP::UserAgent;
-$url = $opts{r} . '?action=rss;days=1;full=1';
-$response = $ua->get($url);
-die $url, $response->status_line unless $response->is_success;
+# Fetch subscribers first because we need to verify the password
 
-my $rss = new XML::RSS;
-$rss->parse($response->content);
+sub get_subscribers {
+  my ($url, $pwd) = @_;
+  $url .= '?action=subscriptionlist;raw=1;pwd=' . $pwd;
+  my $response = $ua->get($url);
+  die "Must provide an admin password with the -p option\n"
+    if $response->code == 403 and not $pwd;
+  die "Must provide the correct admin password with the -p option\n"
+    if $response->code == 403;
+  die $url, $response->status_line unless $response->is_success;
 
-$url = $opts{r} . '?action=subscriptionlist;raw=1;pwd=' . $opts{p};
-$response = $ua->get($url);
-die $url, $response->status_line unless $response->is_success;
-
-my %data;
-foreach my $line (split(/\n/, $response)) {
-  my ($key, @entries) = split(/ +/, $line);
-  $data{$key} = \@entries;
+  my %data;
+  foreach my $line (split(/\n/, $response->content)) {
+    my ($key, @entries) = split(/ +/, $line);
+    # print "Subscription for $key: ", join(', ', @entries), "\n";
+    $data{$key} = \@entries;
+  }
+  return \%data;
 }
 
-# create temporary directory
-# loop through the files
-# build filename
-# extract HTML body, unquote it, save to file
-# figure out what recipients are given the filename
-# create mailer using ->build and send file
+# Fetch RSS feed
 
-# my $mailer = new Mail::Mailer;
+sub get_rss {
+  my $url = shift;
+  $url .=  '?action=rss;days=1;full=1';
+  my $response = $ua->get($url);
+  die $url, $response->status_line unless $response->is_success;
+  my $rss = new XML::RSS;
+  $rss->parse($response->content);
+  return $rss;
+}
+
+sub send_files {
+  my ($rss, $subscribers) = @_;
+  foreach my $item (@{$rss->{'items'}}) {
+    my $title = $item->{title};
+    my $id = $title;
+    $id =~ s/ /_/g;
+    send_file($id, $title, @{$subscribers->{$id}});
+  }
+}
+
+sub send_file {
+  my ($id, $title, @subscribers) = @_;
+  my $fh = new File::Temp;
+  # print $id, ': ', join(', ', @subscribers), "\n";
+  print $fh $item->{description};
+  foreach my $subscriber (@subscribers) {
+    send_mail($subscriber, $title, $fh);
+  }
+}
+
+sub send_mail {
+  my ($subscriber, $title, $fh) = @_;
+  my $mail = new MIME::Entity->build(To => $subscriber,
+				     Subject => $title,
+				     Encoding => "base64",
+				     Path => $fh,
+				     Type=> "text/html");
+  return if exists $opt{n};
+  my @recipients = $mail->smtpsend();
+  if (@recipients) {
+    print "Sent $title to ", join(', ', @recipients), "\n";
+  } else {
+    print "Failed to send $title to $subscriber\n";
+  }
+}
+
+sub main {
+  my $subscribers = get_subscribers($opts{r}, $opts{p});
+  my $rss = get_rss($opts{r});
+  send_files($rss, $subscribers);
+}
+
+main ();
