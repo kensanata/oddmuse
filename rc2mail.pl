@@ -31,8 +31,8 @@ use Net::SMTP::TLS;
 # -n Don't send email; useful if debugging the script
 # -p Oddmuse administrator password
 # -r Oddmuse full URL, eg. http://localhost/cgi-bin/wiki
-#    This will request http://localhost/cgi-bin/wiki?action=rss;days=1;full=1
-#    and http://localhost/cgi-bin/wiki?action=subscriptionlist;raw=1;pwd=foo
+#    gets http://localhost/cgi-bin/wiki?action=rss;days=1;full=1;short=0
+#    And http://localhost/cgi-bin/wiki?action=subscriptionlist;raw=1;pwd=foo
 # -m user:password@mailhost for sending email using SMTP Auth. Without this
 #    information, the script will send mail to localhost.
 # -f email address to use as the sender.
@@ -77,7 +77,7 @@ sub get_subscribers {
 # Fetch RSS feed
 
 sub get_rss {
-  my $url = "$root?action=rss;days=1;full=1";
+  my $url = "$root?action=rss;days=1;full=1;short=0";
   print "Getting $url\n" if $verbose;
   my $response = $ua->get($url);
   die $url, $response->status_line unless $response->is_success;
