@@ -20,30 +20,44 @@ use XML::RSS;
 use LWP::UserAgent;
 use MIME::Entity;
 use File::Temp;
+use Net::SMTP::TLS;
 
 # This script can be invoked as follows:
-# perl rc2mail.pl -r http://localhost/cgi-bin/wiki -p test
+# perl rc2mail.pl -r http://localhost/cgi-bin/wiki \
+#                 -p test -m alex:secret@mail.epfarms.org \
+#                 -m "alex:*secret*@mail.epfarms.org" \
+#                 -f "kensanata@gmail.com"
 
-# -n Don't send email
+# -n Don't send email; useful if debugging the script
 # -p Oddmuse administrator password
 # -r Oddmuse full URL, eg. http://localhost/cgi-bin/wiki
 #    This will request http://localhost/cgi-bin/wiki?action=rss;days=1;full=1
 #    and http://localhost/cgi-bin/wiki?action=subscriptionlist;raw=1;pwd=foo
+# -m user:password@mailhost for sending email using SMTP Auth. Without this
+#    information, the script will send mail to localhost.
+# -f email address to use as the sender.
 
 my %opts;
-getopt('prn', \%opts);
-die "Must provide an url with the -r option\n" unless $opts{r};
+getopt('nprmf', \%opts);
+my $nomail = exists $opts{n};
+my $admin_password = $opts{p};
+my $root = $opts{r};
+die "Must provide an url with the -r option\n" unless $root;
+$opts{m} =~ /(.*?):(.*)\@(.*)/;
+my ($user, $password, $host) = ($1, $2, $3);
+die "Cannot parse -m " . $opts{m} . "\n" if $opts{m} && !$host;
+my $from = $opts{f};
+die "Must provide sender using -f\n" if !$nomail && $host && !$from;
 
 my $ua = new LWP::UserAgent;
 
 # Fetch subscribers first because we need to verify the password
 
 sub get_subscribers {
-  my ($url, $pwd) = @_;
-  $url .= '?action=subscriptionlist;raw=1;pwd=' . $pwd;
+  my $url = "$root?action=subscriptionlist;raw=1;pwd=$admin_password";
   my $response = $ua->get($url);
   die "Must provide an admin password with the -p option\n"
-    if $response->code == 403 and not $pwd;
+    if $response->code == 403 and not $admin_password;
   die "Must provide the correct admin password with the -p option\n"
     if $response->code == 403;
   die $url, $response->status_line unless $response->is_success;
@@ -60,8 +74,7 @@ sub get_subscribers {
 # Fetch RSS feed
 
 sub get_rss {
-  my $url = shift;
-  $url .=  '?action=rss;days=1;full=1';
+  my $url = "$root?action=rss;days=1;full=1";
   my $response = $ua->get($url);
   die $url, $response->status_line unless $response->is_success;
   my $rss = new XML::RSS;
@@ -71,19 +84,30 @@ sub get_rss {
 
 sub send_files {
   my ($rss, $subscribers) = @_;
-  foreach my $item (@{$rss->{'items'}}) {
+  my @items = @{$rss->{'items'}};
+  die "No items to send\n" unless @items;
+  my $sent = 0;
+  foreach my $item (@items) {
     my $title = $item->{title};
     my $id = $title;
     $id =~ s/ /_/g;
-    send_file($id, $title, @{$subscribers->{$id}});
+    my @subscribers = @{$subscribers->{$id}};
+    $sent += @subscribers;
+    send_file($id, $title, $item, @subscribers);
   }
+  die "No subscribers for the items available\n" unless $sent;
 }
 
 sub send_file {
-  my ($id, $title, @subscribers) = @_;
-  my $fh = new File::Temp;
-  # print $id, ': ', join(', ', @subscribers), "\n";
-  print $fh $item->{description};
+  my ($id, $title, $item, @subscribers) = @_;
+  my $fh = File::Temp->new(SUFFIX => '.html');
+  warn "No content for $title\n" unless $item->{description};
+  my $link = $item->{link};
+  my $sub = "$root?action=subscriptions";
+  print $fh qq(<p>Visit <a href="$link">$title</a>)
+    . qq( or <a href="$sub">manage your subscriptions</a>.</p><hr />)
+    . $item->{description};
+  $fh->close;
   foreach my $subscriber (@subscribers) {
     send_mail($subscriber, $title, $fh);
   }
@@ -92,22 +116,36 @@ sub send_file {
 sub send_mail {
   my ($subscriber, $title, $fh) = @_;
   my $mail = new MIME::Entity->build(To => $subscriber,
+				     From => $from,
 				     Subject => $title,
-				     Encoding => "base64",
 				     Path => $fh,
 				     Type=> "text/html");
-  return if exists $opt{n};
-  my @recipients = $mail->smtpsend();
-  if (@recipients) {
-    print "Sent $title to ", join(', ', @recipients), "\n";
+  return if $nomail;
+  if ($host) {
+    print "Sending $title to $subscriber using ${user}\@${host}\n";
+    my $smtp = Net::SMTP::TLS->new($host,
+				   User => $user,
+				   Password => $password,
+				   Debug => 1);
+    $smtp->mail($from);
+    $smtp->to($subscriber);
+    $smtp->data;
+    $smtp->datasend($mail->stringify);
+    $smtp->dataend;
+    $smtp->quit;
   } else {
-    print "Failed to send $title to $subscriber\n";
+    my @recipients = $mail->smtpsend();
+    if (@recipients) {
+      print "Sent $title to ", join(', ', @recipients), "\n";
+    } else {
+      print "Failed to send $title to $subscriber\n";
+    }
   }
 }
 
 sub main {
-  my $subscribers = get_subscribers($opts{r}, $opts{p});
-  my $rss = get_rss($opts{r});
+  my $subscribers = get_subscribers();
+  my $rss = get_rss();
   send_files($rss, $subscribers);
 }
 
