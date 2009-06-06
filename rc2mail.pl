@@ -36,10 +36,12 @@ use Net::SMTP::TLS;
 # -m user:password@mailhost for sending email using SMTP Auth. Without this
 #    information, the script will send mail to localhost.
 # -f email address to use as the sender.
+# -v verbose output
 
 my %opts;
 getopt('nprmf', \%opts);
 my $nomail = exists $opts{n};
+my $verbose = exists $opts{v};
 my $admin_password = $opts{p};
 my $root = $opts{r};
 die "Must provide an url with the -r option\n" unless $root;
@@ -55,6 +57,7 @@ my $ua = new LWP::UserAgent;
 
 sub get_subscribers {
   my $url = "$root?action=subscriptionlist;raw=1;pwd=$admin_password";
+  print "Getting $url\n" if $verbose;
   my $response = $ua->get($url);
   die "Must provide an admin password with the -p option\n"
     if $response->code == 403 and not $admin_password;
@@ -75,10 +78,12 @@ sub get_subscribers {
 
 sub get_rss {
   my $url = "$root?action=rss;days=1;full=1";
+  print "Getting $url\n" if $verbose;
   my $response = $ua->get($url);
   die $url, $response->status_line unless $response->is_success;
   my $rss = new XML::RSS;
   $rss->parse($response->content);
+  print "Found " . @{$rss->{'items'}} . " items.\n" if $verbose;
   return $rss;
 }
 
@@ -89,9 +94,11 @@ sub send_files {
   my $sent = 0;
   foreach my $item (@items) {
     my $title = $item->{title};
+    print "Looking at $title\n" if $verbose;
     my $id = $title;
     $id =~ s/ /_/g;
     my @subscribers = @{$subscribers->{$id}};
+    print "Subscribers: ", join(', ', @subscribers), "\n" if $verbose;
     $sent += @subscribers;
     send_file($id, $title, $item, @subscribers);
   }
@@ -115,14 +122,15 @@ sub send_file {
 
 sub send_mail {
   my ($subscriber, $title, $fh) = @_;
+  print "Skipping mail to $subscriber...\n" if $verbose && $nomail;
+  return if $nomail;
   my $mail = new MIME::Entity->build(To => $subscriber,
 				     From => $from,
 				     Subject => $title,
 				     Path => $fh,
 				     Type=> "text/html");
-  return if $nomail;
   if ($host) {
-    print "Sending $title to $subscriber using ${user}\@${host}\n";
+    print "Sending $title to $subscriber using ${user}\@${host}\n" if $verbose;
     my $smtp = Net::SMTP::TLS->new($host,
 				   User => $user,
 				   Password => $password,
@@ -136,9 +144,9 @@ sub send_mail {
   } else {
     my @recipients = $mail->smtpsend();
     if (@recipients) {
-      print "Sent $title to ", join(', ', @recipients), "\n";
+      print "Sent $title to ", join(', ', @recipients), "\n" if $verbose;
     } else {
-      print "Failed to send $title to $subscriber\n";
+      print "Failed to send $title to $subscriber\n" if $verbose;
     }
   }
 }
