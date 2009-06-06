@@ -1,3 +1,7 @@
+2009-06-07  Alex Schroeder  <alex@gnu.org>
+
+	* rc2mail.pl (get_rss): Use short=0 in the URL.
+
 2009-06-04  Alex Schroeder  <alex@gnu.org>
 
 	* rc2mail.pl: The beginning of a new file. It will read the wiki
