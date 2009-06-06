@@ -24,7 +24,7 @@ use Net::SMTP::TLS;
 
 # This script can be invoked as follows:
 # perl rc2mail.pl -r http://localhost/cgi-bin/wiki \
-#                 -p test -m alex:secret@mail.epfarms.org \
+#                 -p test \
 #                 -m "alex:*secret*@mail.epfarms.org" \
 #                 -f "kensanata@gmail.com"
 
@@ -60,7 +60,7 @@ sub get_subscribers {
     if $response->code == 403 and not $admin_password;
   die "Must provide the correct admin password with the -p option\n"
     if $response->code == 403;
-  die $url, $response->status_line unless $response->is_success;
+  die $url, "\n", $response->status_line unless $response->is_success;
 
   my %data;
   foreach my $line (split(/\n/, $response->content)) {
