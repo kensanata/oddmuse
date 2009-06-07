@@ -107,6 +107,7 @@ sub send_files {
 
 sub send_file {
   my ($id, $title, $item, @subscribers) = @_;
+  return unless @subscribers;
   my $fh = File::Temp->new(SUFFIX => '.html');
   warn "No content for $title\n" unless $item->{description};
   my $link = $item->{link};
