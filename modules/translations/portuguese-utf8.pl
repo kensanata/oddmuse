@@ -20,8 +20,10 @@
 #
 # This translation was last checked for Oddmuse version 1.195.
 #
-$ModulesDescription .= '<p>$Id: portuguese-utf8.pl,v 1.14 2007/08/19 11:42:08 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: portuguese-utf8.pl,v 1.15 2009/06/07 19:30:37 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
+Include normal pages
+Incluir páginas normais
 Reading not allowed: user, ip, or network is blocked.
 Leitura não permitida: utilizador, ip, ou rede está bloqueado(a).
 Login
@@ -72,8 +74,6 @@ CGI Internal error: %s
 Erro interno CGI: %s
 Invalid action parameter %s
 Parametro %s de acção inválido
-Invalid URL.
-URL inválida.
 Page name is missing
 Falta o nome da página
 Page name is too long: %s
@@ -84,16 +84,14 @@ Invalid Page %s (must not end with .lck)
 Página %s inválida (não pode terminar com .lck)
 Invalid Page %s
 Página %s inválida
-Preview:
-Prever:
-Preview only, not yet saved
-Visualização apenas, nada foi gravado
+Too many redirections
+
+No redirection for old revisions
+
+Invalid link pattern for #REDIRECT
+
 Please go on to %s.
 Por favor vá para %s
-All changes for %s
-
-No updates since %s
-Nenhuma actualização desde %s
 Updates since %s
 Actualizações desde %s
 Updates in the last %s days
@@ -146,10 +144,10 @@ rollback
 
 new
 novo
+All changes for %s
+
 from %s
 de %s
-: 
-
 This page is too big to send over RSS.
 
 History of %s
@@ -218,20 +216,24 @@ Para marcar uma página a ser apagada, ponha <strong>%s</strong> na primeira lin
 [Entrada]
 redirected from %s
 redireccionado de %s
+%s: 
+
 Click to search for references to this page
 Clique para procurar referências a esta página
 Cookie: 
 Cookie:
+Edit this page
+Edite esta página
+Preview:
+Prever:
+Preview only, not yet saved
+Visualização apenas, nada foi gravado
 Warning
 Atenção
 Database is stored in temporary directory %s
 Base de dados é armazenada no directório temporário %s
 %s seconds
 %s segundos
-The same page on other sites:
-A mesma página noutros sítios:
-EditNearLinks
-EditarLinksPróximos
 Last edited
 Última edição
 Edited
@@ -242,8 +244,6 @@ de %s
 (diff)
 Edit revision %s of this page
 Edite a revisão %s desta página
-Edit this page
-Edite esta página
 e
 
 This page is read-only
@@ -406,22 +406,10 @@ Reason: %s.
 
 Reason unknown.
 
-Without normal pages
-Sem páginas normais
-Include normal pages
-Incluir páginas normais
-Without permanent anchors
-Sem âncoras permanentes
-Include permanent anchors
-Incluir âncoras permanentes
-Without near pages
-Sem páginas próximas
-Include near pages
-Incluir páginas próximas
-(for %s)
-(para %s)
 Filter:
 
+(for %s)
+(para %s)
 %s pages found.
 Encontradas %s páginas.
 Replaced: %s
@@ -430,16 +418,6 @@ Search for: %s
 Procurar: %s
 View changes for these pages
 Ver alterações para estas págians
-Search sites on the %s as well
-Estender a busca aos sítios no %s
-and
-e
-or
-ou
-Fetching results from %s:
-Recolhendo os resultados de %s:
-Near pages:
-Páginas próximas:
 last updated
 última actualização
 by
@@ -500,8 +478,6 @@ Note: This error is normal if no changes have been made.
 NOTA: Este erro é normal se nenhuma alteração foi feita.
 Moving %s log entries.
 Movendo entradas de log %s.
-Getting page index file for %s.
-
 Set or Remove global edit lock
 Marque ou Remova bloqueio global de edição
 Edit lock created.
@@ -516,13 +492,9 @@ Lock for %s removed.
 Bloqueio para %s removido.
 Displaying Wiki Version
 Mostrando Versão do Wiki
-Show dependencies
-Mostrar dependências
-Inter links:
+Debugging Information
 
-Near links:
-Links próximos:
-Show parsed link data
+Inter links:
 
 Too many connections by %s
 Demasiadas ligações de %s
@@ -530,12 +502,6 @@ Please do not fetch more than %1 pages in %2 seconds.
 Por favor não busque mais do que %1 páginas em %2 segundos.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Verificar se o servidor web pode criar ao directório %s e se pode criar ficheiros no directório.
-anchor first defined here: %s
-âncora definida previamente aqui: %s
-Click to search for references to this permanent anchor
-Clicar para procurar referências a esta âncora permanente
-the page %s also exists
-a página %s também existe
 Copy one of the following stylesheets to %s:
 
 Deleting %s
@@ -573,6 +539,10 @@ Rebuild BackLink database
 Internal Page: 
 
 Pages that link to this page
+
+The search parameter is missing.
+
+Pages link to %s
 
 Cannot highlight the language %s.
 Impossível destacar a língua %s
@@ -690,8 +660,6 @@ ordinary changes
 
 Matching page names:
 
-Footnotes:
-Notas de rodapé:
 Could not find %1.html template in %2
 Impossível encontrar <i>template</i> %1.html em %2
 Only Editors are allowed to see this hidden page.
@@ -708,6 +676,10 @@ Define
 Definir
 Full Link List
 Lista completa de Ligações
+List of locked pages
+
+Pages tagged with %s
+
 Template without parameters
 <i>Template</i> sem parâmetros
 The template %s is either empty or does not exist.
@@ -715,6 +687,8 @@ O <i>template</i> está em branco ou não existe.
  -- defined on %s
 
 Local names defined on %1: %2
+
+Locked Pages
 
 Register for %s
 Registar para %s
@@ -810,14 +784,74 @@ There was an error approving %s.
 
 There are no pending registrations.
 
+Invalid Mail %s: not saved.
+
+unsubscribe
+
+subscribe
+
+Email: 
+
+%s appears to be an invalid mail address
+
+Your mail subscriptions
+
+All mail subscriptions
+
+Subscriptions
+
+Show
+
+Subscriptions for %s:
+
+Unsubscribe
+
+There are no subscriptions for %s.
+
+Change email address
+
+Mail addresses are linked to unsubscription links.
+
+Subscribe to %s.
+
+Subscribe
+
+Subscribed %s to the following pages:
+
+The remaining pages do not exist.
+
+Unsubscribed %s from the following pages:
+
+You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
+
 %s is not a legal name for a namespace
 
+Namespaces
+
+Getting page index file for %s.
+
+Near links:
+Links próximos:
+Search sites on the %s as well
+Estender a busca aos sítios no %s
+Fetching results from %s:
+Recolhendo os resultados de %s:
+Near pages:
+Páginas próximas:
+Include near pages
+Incluir páginas próximas
+EditNearLinks
+EditarLinksPróximos
+The same page on other sites:
+A mesma página noutros sítios:
  (create locally)
 
 image
 imagem
 download
 download
+Backlinks
+
 Clearing Cache
 Limpando a Cache
 Done.
@@ -840,6 +874,20 @@ Self-ban by %s
 
 You have banned your own IP.
 
+OpenID Login
+
+Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
+
+Your homepage is set to %s.
+
+You have no homepage set.
+
+Homepage:
+
+Homepage is missing
+
+OpenID error %s
+
 Orphan List
 Lista de Órfãos
 Trail: 
@@ -850,12 +898,20 @@ Type
 Tipo
 Permalink to "%s"
 <i>Permalink</i> para "%s"
+anchor first defined here: %s
+âncora definida previamente aqui: %s
+the page %s also exists
+a página %s também existe
 There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
 
 Someone else is generating a pdf for %s.  Please wait a minute and then try again.
 
 Download this page as PDF
 
+Click to search for references to this permanent anchor
+Clicar para procurar referências a esta âncora permanente
+Include permanent anchors
+Incluir âncoras permanentes
 Portrait
 Retrato
 Publish %s
@@ -866,9 +922,11 @@ The target wiki was misconfigured.
 
 You did not answer correctly.
 Não respondeu correctamente.
-Use the back button to return the previous page and try again.
-
 To save this page you must answer this question:
+
+Please type the following two words:
+
+Please answer this captcha:
 
 Referrers
 Referrers
@@ -886,6 +944,10 @@ Rebuilding index not done.
 Reconstrução do índice não realizada.
 (Rebuilding the index can only be done once every 12 hours.)
 (A reconstrução do índice só pode ser feita de 12 em 12 horas.)
+New Pages for Indexed Search
+
+List changes since %s
+
  ... 
 
 Search term missing.
@@ -900,6 +962,8 @@ Tags: %s.
 
 No tags
 
+Page list for %s
+
 Slideshow:%s
 Slideshow:%s
 Index of all small pages
@@ -911,6 +975,14 @@ Voltar para %s
 Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
+
+Feed for this tag
+
+Rebuild tag index
+
+list tags
+
+tag cloud
 
 Alternatively, use one of the following templates:
 Como alternativa, use um dos modelos seguintes:
@@ -941,6 +1013,26 @@ Please try again later. Perhaps somebody is running maintenance or doing a long 
 Contents
 Conteúdo
 Create a new page for today
+
+Add Translation
+
+Added translation: %1 (%2)
+
+Translate %s
+
+Thank you for writing a translation of %s.
+
+Please indicate what language you will be using.
+
+Language is missing
+
+Suggested languages:
+
+Please indicate a page name for the translation of %s.
+
+More help may be available here: %s.
+
+Translated page: 
 
 This page is a translation of %s. 
 Esta página é uma tradução de %s.

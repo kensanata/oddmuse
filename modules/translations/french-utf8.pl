@@ -18,8 +18,10 @@
 #
 # This translation was last checked for Oddmuse version 1.296.
 #
-$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.16 2007/08/19 11:42:08 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.17 2009/06/07 19:30:37 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
+Include normal pages
+Comprend les pages normales
 Reading not allowed: user, ip, or network is blocked.
 Accès interdit&nbsp;: l'utilisateur, l'IP ou le réseau est bloqué.
 Login
@@ -70,8 +72,6 @@ CGI Internal error: %s
 Erreur Interne CGI : %s
 Invalid action parameter %s
 Parmètre d'action invalide %s
-Invalid URL.
-URL non valide
 Page name is missing
 Le nom de la page est manquant
 Page name is too long: %s
@@ -82,16 +82,14 @@ Invalid Page %s (must not end with .lck)
 Page non valide %s (ne doit pas se terminer par .lck)
 Invalid Page %s
 Page non valide %s
-Preview:
-Prévisualisation&nbsp;:
-Preview only, not yet saved
-Prévisualisation seulement, pas encore sauvegardée
+Too many redirections
+
+No redirection for old revisions
+
+Invalid link pattern for #REDIRECT
+
 Please go on to %s.
 SVP aller a %s.
-All changes for %s
-
-No updates since %s
-Aucune mise à jour depuis le %s
 Updates since %s
 Mises à hour depuis %s
 Updates in the last %s days
@@ -144,10 +142,10 @@ rollback
 retour en arrière
 new
 nouveau
+All changes for %s
+
 from %s
 depuis %s
-: 
-
 This page is too big to send over RSS.
 Cette page est trop grosse pour être envoyée sur RSS
 History of %s
@@ -216,20 +214,24 @@ Pour marquer une page devant être supprimée, ajoutez <strong>%s</strong> à la
 [Accueil]
 redirected from %s
 redirigée à partir de %s
+%s: 
+
 Click to search for references to this page
 Cliquer pour chercher des références vers cette page
 Cookie: 
 Cookie&nbsp;: 
+Edit this page
+Modifier cette page
+Preview:
+Prévisualisation&nbsp;:
+Preview only, not yet saved
+Prévisualisation seulement, pas encore sauvegardée
 Warning
 Attention
 Database is stored in temporary directory %s
 La base de données est stockée dans le répertoire temporaire %s
 %s seconds
 %s secondes
-The same page on other sites:
-La même page sur d'autres sites :
-EditNearLinks
-EditerLiensDeProximité
 Last edited
 Dernière modification
 Edited
@@ -240,8 +242,6 @@ par %s
 (diff)
 Edit revision %s of this page
 Modifier la version %s de cette page
-Edit this page
-Modifier cette page
 e
 e
 This page is read-only
@@ -404,22 +404,10 @@ Reason: %s.
 
 Reason unknown.
 
-Without normal pages
-Sans pages normales 
-Include normal pages
-Comprend les pages normales
-Without permanent anchors
-Sans ancres permanentes
-Include permanent anchors
-Inclure les ancres permanentes
-Without near pages
-Sans pages de proximité
-Include near pages
-Inclure les pages de proximité
-(for %s)
-(pour %s)
 Filter:
 Filtre :
+(for %s)
+(pour %s)
 %s pages found.
 %s pages trouvées.
 Replaced: %s
@@ -428,16 +416,6 @@ Search for: %s
 Rechercher&nbsp;: %s
 View changes for these pages
 Voir les modifications pour ces pages
-Search sites on the %s as well
-Rechercher aussi les sites présents sur %s 
-and
-et
-or
-ou
-Fetching results from %s:
-Récupération des résultats à partir de %s :
-Near pages:
-Pages à proximité :
 last updated
 dernière mise à jour
 by
@@ -498,8 +476,6 @@ Note: This error is normal if no changes have been made.
 Remarque&nbsp;: Cette erreur est normale si aucune modification n'a été effectuée.
 Moving %s log entries.
 Déplace %s entrées du log.
-Getting page index file for %s.
-Récupération du fichier d'index de %s.
 Set or Remove global edit lock
 Positionne ou Retire le verrou global d'édition
 Edit lock created.
@@ -514,26 +490,16 @@ Lock for %s removed.
 Verrou pour %s enlevé.
 Displaying Wiki Version
 Affichage de la version du Wiki
-Show dependencies
-Afficher les dépendances
+Debugging Information
+
 Inter links:
 InterLiens :
-Near links:
-Liens de proximité :
-Show parsed link data
-Affcher les données de liens analysées
 Too many connections by %s
 Trop de connexions par %s
 Please do not fetch more than %1 pages in %2 seconds.
 Veuillez ne pas télécharger plus de %1 pages toutes les %2 secondes
 Check whether the web server can create the directory %s and whether it can create files in it.
 Verifiez si le serveur web peut créer le répertoire %s et s'il peut créer des fichiers dedans.
-anchor first defined here: %s
-première ancre définie ici&nbsp;: %s
-Click to search for references to this permanent anchor
-Cliquer pour chercher des références vers cette ancre permanente
-the page %s also exists
-la page %s existe aussi 
 Copy one of the following stylesheets to %s:
 Copier une des feuilles de style suivantes sur %s.
 Deleting %s
@@ -571,6 +537,10 @@ Rebuild BackLink database
 Internal Page: 
 
 Pages that link to this page
+
+The search parameter is missing.
+
+Pages link to %s
 
 Cannot highlight the language %s.
 Impossible de surligner la langue %s.
@@ -688,8 +658,6 @@ ordinary changes
 modifications ordinaires
 Matching page names:
 
-Footnotes:
-Notes de pied de page :
 Could not find %1.html template in %2
 Impossible de trouver le modèle %1.html dans %2
 Only Editors are allowed to see this hidden page.
@@ -706,6 +674,10 @@ Define
 Définir
 Full Link List
 Liste Complète des Liens
+List of locked pages
+
+Pages tagged with %s
+
 Template without parameters
 Gabarit sans paramètres
 The template %s is either empty or does not exist.
@@ -714,6 +686,8 @@ Le gabarit %s est soit vide soit n'existe pas.
  -- défini sur %s
 Local names defined on %1: %2
 Noms locaux définis sur %1 : %2
+Locked Pages
+
 Register for %s
 Enregistrer pour %s
 Please choose a username of the form "FirstLast" using your real name.
@@ -808,14 +782,74 @@ Il y a eu une erreur à accepter %s.
 </ul>
 There are no pending registrations.
 Il n'y a pas d'enregistrements en attente.
+Invalid Mail %s: not saved.
+
+unsubscribe
+
+subscribe
+
+Email: 
+
+%s appears to be an invalid mail address
+
+Your mail subscriptions
+
+All mail subscriptions
+
+Subscriptions
+
+Show
+
+Subscriptions for %s:
+
+Unsubscribe
+
+There are no subscriptions for %s.
+
+Change email address
+
+Mail addresses are linked to unsubscription links.
+
+Subscribe to %s.
+
+Subscribe
+
+Subscribed %s to the following pages:
+
+The remaining pages do not exist.
+
+Unsubscribed %s from the following pages:
+
+You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
+
 %s is not a legal name for a namespace
 
+Namespaces
+
+Getting page index file for %s.
+Récupération du fichier d'index de %s.
+Near links:
+Liens de proximité :
+Search sites on the %s as well
+Rechercher aussi les sites présents sur %s 
+Fetching results from %s:
+Récupération des résultats à partir de %s :
+Near pages:
+Pages à proximité :
+Include near pages
+Inclure les pages de proximité
+EditNearLinks
+EditerLiensDeProximité
+The same page on other sites:
+La même page sur d'autres sites :
  (create locally)
 
 image
 image
 download
 télécharger
+Backlinks
+
 Clearing Cache
 Nettoyage du cache.
 Done.
@@ -838,6 +872,20 @@ Self-ban by %s
 Auto-bannissement par %s
 You have banned your own IP.
 Vous avez banni votre propre IP.
+OpenID Login
+
+Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
+
+Your homepage is set to %s.
+
+You have no homepage set.
+
+Homepage:
+
+Homepage is missing
+
+OpenID error %s
+
 Orphan List
 Liste Orpheline
 Trail: 
@@ -848,12 +896,20 @@ Type
 Type
 Permalink to "%s"
 Lien permanent vers "%s"
+anchor first defined here: %s
+première ancre définie ici&nbsp;: %s
+the page %s also exists
+la page %s existe aussi 
 There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
 Il y a eu une erreur en générant le pdf pour %s. SVP, rendez-compte de cela au webmestre, mais n'essayez pas de télécharger à nouveau, car cela ne fonctionnera pas.
 Someone else is generating a pdf for %s.  Please wait a minute and then try again.
 Quelqu'un d'autre est en train de générer un pdf pour %S. SVP, attendez une minute puis essayez de nouveau.
 Download this page as PDF
 Télécharger cette page au format PDF
+Click to search for references to this permanent anchor
+Cliquer pour chercher des références vers cette ancre permanente
+Include permanent anchors
+Inclure les ancres permanentes
 Portrait
 Portrait
 Publish %s
@@ -864,9 +920,11 @@ The target wiki was misconfigured.
 
 You did not answer correctly.
 Vous n'avez pas répondu correctement.
-Use the back button to return the previous page and try again.
-
 To save this page you must answer this question:
+
+Please type the following two words:
+
+Please answer this captcha:
 
 Referrers
 Introducteurs
@@ -884,6 +942,10 @@ Rebuilding index not done.
 Reconstruction index non effectuée.
 (Rebuilding the index can only be done once every 12 hours.)
 (La reconstruction de l'index ne peut être faite qu'une fois toutes les 12 heures.)
+New Pages for Indexed Search
+
+List changes since %s
+
  ... 
  ...
 Search term missing.
@@ -898,6 +960,8 @@ Tags: %s.
 
 No tags
 
+Page list for %s
+
 Slideshow:%s
 Diaporama : %s
 Index of all small pages
@@ -910,6 +974,14 @@ Copy to %1 succeeded: %2.
 Copie vers %1 réussie : %2.
 Copy to %1 failed: %2.
 Copie vers %1 échouée : %2.
+Feed for this tag
+
+Rebuild tag index
+
+list tags
+
+tag cloud
+
 Alternatively, use one of the following templates:
 Alternativement, utilisez un des modèles suivants :
 Thread: %s
@@ -939,6 +1011,26 @@ Please try again later. Perhaps somebody is running maintenance or doing a long 
 Contents
 Contenus
 Create a new page for today
+
+Add Translation
+
+Added translation: %1 (%2)
+
+Translate %s
+
+Thank you for writing a translation of %s.
+
+Please indicate what language you will be using.
+
+Language is missing
+
+Suggested languages:
+
+Please indicate a page name for the translation of %s.
+
+More help may be available here: %s.
+
+Translated page: 
 
 This page is a translation of %s. 
 Cette page est une traduction de %s.

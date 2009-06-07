@@ -15,8 +15,10 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: italian-utf8.pl,v 1.10 2007/08/19 11:42:08 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: italian-utf8.pl,v 1.11 2009/06/07 19:30:37 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
+Include normal pages
+Includi le pagine normali
 Reading not allowed: user, ip, or network is blocked.
 Lettura non consentita: l'utente, l'IP o la rete risultano bloccati.
 Login
@@ -67,8 +69,6 @@ CGI Internal error: %s
 
 Invalid action parameter %s
 Parametro d'azione %s non valido
-Invalid URL.
-URL non valida
 Page name is missing
 Manca il nome della pagina
 Page name is too long: %s
@@ -79,16 +79,14 @@ Invalid Page %s (must not end with .lck)
 Pagina %s non valida (non può terminare in .lck)
 Invalid Page %s
 Pagina %s non valida
-Preview:
-Anteprima:
-Preview only, not yet saved
-Solo anteprima, ancora nessun salvataggio
+Too many redirections
+
+No redirection for old revisions
+
+Invalid link pattern for #REDIRECT
+
 Please go on to %s.
 Per favore procedere a %s.
-All changes for %s
-
-No updates since %s
-Nessuna modifica da %s
 Updates since %s
 Modifiche da %s
 Updates in the last %s days
@@ -141,10 +139,10 @@ rollback
 
 new
 nuovo
+All changes for %s
+
 from %s
 da %s
-: 
-
 This page is too big to send over RSS.
 
 History of %s
@@ -213,20 +211,24 @@ Per impostare una pagine per la cancellazione, inserire <strong>%s</strong> sull
 
 redirected from %s
 rediretto da %s
+%s: 
+
 Click to search for references to this page
 Clicca per cercare riferimenti a questa pagina
 Cookie: 
 
+Edit this page
+Modifica questa pagina
+Preview:
+Anteprima:
+Preview only, not yet saved
+Solo anteprima, ancora nessun salvataggio
 Warning
 Attenzione
 Database is stored in temporary directory %s
 Il database è collocato nella directory temporanea %s
 %s seconds
 %s secondi
-The same page on other sites:
-La stessa pagina su altri siti:
-EditNearLinks
-
 Last edited
 Modificata l'ultima volta
 Edited
@@ -237,8 +239,6 @@ da %s
 
 Edit revision %s of this page
 Modifica la revisione %s di questa pagina
-Edit this page
-Modifica questa pagina
 e
 
 This page is read-only
@@ -401,22 +401,10 @@ Reason: %s.
 
 Reason unknown.
 
-Without normal pages
-Senza pagine normali
-Include normal pages
-Includi le pagine normali
-Without permanent anchors
-Senza ancore permanenti
-Include permanent anchors
-Includi ancore permanenti
-Without near pages
-Senza pagine vicine
-Include near pages
-Includi pagine vicine
-(for %s)
-(per %s)
 Filter:
 
+(for %s)
+(per %s)
 %s pages found.
 Trovate %s pagine.
 Replaced: %s
@@ -425,16 +413,6 @@ Search for: %s
 Cerca: %s
 View changes for these pages
 Guarda le modifiche per queste pagine
-Search sites on the %s as well
-Cerca i siti anche su %s
-and
-e
-or
-o
-Fetching results from %s:
-Raccogliendo i risultati da %s:
-Near pages:
-Pagine vicine:
 last updated
 modificato l'ultima volta
 by
@@ -495,8 +473,6 @@ Note: This error is normal if no changes have been made.
 Nota: questo errore è normale se non sono stati apportati cambiamenti.
 Moving %s log entries.
 Spostamento di %s elementi di log.
-Getting page index file for %s.
-Raccolta del file di indice di pagina per %s.
 Set or Remove global edit lock
 Imposta o rilascia il blocco globale di modifica
 Edit lock created.
@@ -511,26 +487,16 @@ Lock for %s removed.
 Blocco per %s rilasciato.
 Displaying Wiki Version
 Mostro la versione Wiki
-Show dependencies
-Mostra le dipendenze
+Debugging Information
+
 Inter links:
 Inter collegamenti:
-Near links:
-Collegamenti vicini:
-Show parsed link data
-Mostra i dati di collegamento recepiti
 Too many connections by %s
 Troppe connessioni da %s
 Please do not fetch more than %1 pages in %2 seconds.
 Prego non richiedere più di %1 pagine in %2 secondi.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Verificare se il server web può creare la directory %s e se può crearvi file dentro.
-anchor first defined here: %s
-ancora già definita qui: %s
-Click to search for references to this permanent anchor
-Clicca per cercare riferimenti a questa ancora permanente
-the page %s also exists
-la pagina %s esiste già
 Copy one of the following stylesheets to %s:
 
 Deleting %s
@@ -568,6 +534,10 @@ Rebuild BackLink database
 Internal Page: 
 
 Pages that link to this page
+
+The search parameter is missing.
+
+Pages link to %s
 
 Cannot highlight the language %s.
 Impossibile evidenziare il linguaggio %s.
@@ -685,8 +655,6 @@ ordinary changes
 
 Matching page names:
 
-Footnotes:
-Note:
 Could not find %1.html template in %2
 Impossibile trovare il modello %1.html in %2
 Only Editors are allowed to see this hidden page.
@@ -703,6 +671,10 @@ Define
 Definisci
 Full Link List
 Lista completa dei collegamenti
+List of locked pages
+
+Pages tagged with %s
+
 Template without parameters
 Modello senza parametri
 The template %s is either empty or does not exist.
@@ -710,6 +682,8 @@ Il modello %s è vuoto o non esiste.
  -- defined on %s
 
 Local names defined on %1: %2
+
+Locked Pages
 
 Register for %s
 
@@ -805,13 +779,73 @@ There was an error approving %s.
 
 There are no pending registrations.
 
+Invalid Mail %s: not saved.
+
+unsubscribe
+
+subscribe
+
+Email: 
+
+%s appears to be an invalid mail address
+
+Your mail subscriptions
+
+All mail subscriptions
+
+Subscriptions
+
+Show
+
+Subscriptions for %s:
+
+Unsubscribe
+
+There are no subscriptions for %s.
+
+Change email address
+
+Mail addresses are linked to unsubscription links.
+
+Subscribe to %s.
+
+Subscribe
+
+Subscribed %s to the following pages:
+
+The remaining pages do not exist.
+
+Unsubscribed %s from the following pages:
+
+You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
+
 %s is not a legal name for a namespace
 
+Namespaces
+
+Getting page index file for %s.
+Raccolta del file di indice di pagina per %s.
+Near links:
+Collegamenti vicini:
+Search sites on the %s as well
+Cerca i siti anche su %s
+Fetching results from %s:
+Raccogliendo i risultati da %s:
+Near pages:
+Pagine vicine:
+Include near pages
+Includi pagine vicine
+EditNearLinks
+
+The same page on other sites:
+La stessa pagina su altri siti:
  (create locally)
 
 image
 immagine
 download
+
+Backlinks
 
 Clearing Cache
 Ripulisco la Cache
@@ -835,6 +869,20 @@ Self-ban by %s
 
 You have banned your own IP.
 
+OpenID Login
+
+Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
+
+Your homepage is set to %s.
+
+You have no homepage set.
+
+Homepage:
+
+Homepage is missing
+
+OpenID error %s
+
 Orphan List
 Lista degli orfani
 Trail: 
@@ -845,12 +893,20 @@ Type
 Tipo
 Permalink to "%s"
 Collegamento permanente a "%s"
+anchor first defined here: %s
+ancora già definita qui: %s
+the page %s also exists
+la pagina %s esiste già
 There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
 
 Someone else is generating a pdf for %s.  Please wait a minute and then try again.
 
 Download this page as PDF
 
+Click to search for references to this permanent anchor
+Clicca per cercare riferimenti a questa ancora permanente
+Include permanent anchors
+Includi ancore permanenti
 Portrait
 Ritratto
 Publish %s
@@ -861,9 +917,11 @@ The target wiki was misconfigured.
 
 You did not answer correctly.
 Risposta errata.
-Use the back button to return the previous page and try again.
-
 To save this page you must answer this question:
+
+Please type the following two words:
+
+Please answer this captcha:
 
 Referrers
 Referenti
@@ -881,6 +939,10 @@ Rebuilding index not done.
 
 (Rebuilding the index can only be done once every 12 hours.)
 
+New Pages for Indexed Search
+
+List changes since %s
+
  ... 
 
 Search term missing.
@@ -895,6 +957,8 @@ Tags: %s.
 
 No tags
 
+Page list for %s
+
 Slideshow:%s
 
 Index of all small pages
@@ -906,6 +970,14 @@ Indietro a %s
 Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
+
+Feed for this tag
+
+Rebuild tag index
+
+list tags
+
+tag cloud
 
 Alternatively, use one of the following templates:
 In alternativa, utilizzare uno dei seguenti modelli:
@@ -936,6 +1008,26 @@ Please try again later. Perhaps somebody is running maintenance or doing a long 
 Contents
 Contenuto
 Create a new page for today
+
+Add Translation
+
+Added translation: %1 (%2)
+
+Translate %s
+
+Thank you for writing a translation of %s.
+
+Please indicate what language you will be using.
+
+Language is missing
+
+Suggested languages:
+
+Please indicate a page name for the translation of %s.
+
+More help may be available here: %s.
+
+Translated page: 
 
 This page is a translation of %s. 
 Questa pagina è una traduzione di %s.

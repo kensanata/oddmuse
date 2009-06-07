@@ -17,8 +17,10 @@
 #
 # This translation was last checked for Oddmuse version 1.195.
 #
-$ModulesDescription .= '<p>$Id: serbian-utf8.pl,v 1.10 2007/08/19 11:42:08 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: serbian-utf8.pl,v 1.11 2009/06/07 19:30:37 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
+Include normal pages
+
 Reading not allowed: user, ip, or network is blocked.
 Читање није дозвољено: приступ за корисника, IP број или мрежу је блокиран.
 Login
@@ -69,8 +71,6 @@ CGI Internal error: %s
 
 Invalid action parameter %s
 Неисправан параметар акције %s
-Invalid URL.
-Неисправан URL.
 Page name is missing
 
 Page name is too long: %s
@@ -81,16 +81,14 @@ Invalid Page %s (must not end with .lck)
 Неисправна страница %s (не сме имати наставак .lck)
 Invalid Page %s
 Неисправна страница %s
-Preview:
-Преглед:
-Preview only, not yet saved
-Ово је само преглед, измена још увек није записана
+Too many redirections
+
+No redirection for old revisions
+
+Invalid link pattern for #REDIRECT
+
 Please go on to %s.
 Настави до %s.
-All changes for %s
-
-No updates since %s
-Нема измена од %s
 Updates since %s
 Измене од %s
 Updates in the last %s days
@@ -143,10 +141,10 @@ rollback
 повратак
 new
 
+All changes for %s
+
 from %s
 од %s
-: 
-
 This page is too big to send over RSS.
 
 History of %s
@@ -215,20 +213,24 @@ To mark a page for deletion, put <strong>%s</strong> on the first line.
 [Кућа]
 redirected from %s
 преусмерено са %s
+%s: 
+
 Click to search for references to this page
 
 Cookie: 
 Колачић: 
+Edit this page
+Уреди текст ове странице
+Preview:
+Преглед:
+Preview only, not yet saved
+Ово је само преглед, измена још увек није записана
 Warning
 Упозорење
 Database is stored in temporary directory %s
 База је снимљена у привремени директоријум %s
 %s seconds
 %s секунди
-The same page on other sites:
-
-EditNearLinks
-
 Last edited
 Последње уређивање
 Edited
@@ -239,8 +241,6 @@ by %s
 (разлике)
 Edit revision %s of this page
 Уреди верзију %s ове странице
-Edit this page
-Уреди текст ове странице
 e
 
 This page is read-only
@@ -403,21 +403,9 @@ Reason: %s.
 
 Reason unknown.
 
-Without normal pages
-
-Include normal pages
-
-Without permanent anchors
-
-Include permanent anchors
-
-Without near pages
-
-Include near pages
+Filter:
 
 (for %s)
-
-Filter:
 
 %s pages found.
 
@@ -426,16 +414,6 @@ Replaced: %s
 Search for: %s
 Тражи: %s
 View changes for these pages
-
-Search sites on the %s as well
-
-and
-
-or
-
-Fetching results from %s:
-
-Near pages:
 
 last updated
 последњи пут ажурирана
@@ -497,8 +475,6 @@ Note: This error is normal if no changes have been made.
 Пажња: Ова грешка је уобичајена уколико ништа нисте изменили.
 Moving %s log entries.
 Премештам %s дневничких ставки.
-Getting page index file for %s.
-
 Set or Remove global edit lock
 Постави или уклони глобалну браву за уређивање
 Edit lock created.
@@ -513,25 +489,15 @@ Lock for %s removed.
 Брава за %s је уклоњена.
 Displaying Wiki Version
 
-Show dependencies
+Debugging Information
 
 Inter links:
-
-Near links:
-
-Show parsed link data
 
 Too many connections by %s
 Превише веза од %s
 Please do not fetch more than %1 pages in %2 seconds.
 
 Check whether the web server can create the directory %s and whether it can create files in it.
-
-anchor first defined here: %s
-сидро је прво дефинисано овде: %s
-Click to search for references to this permanent anchor
-
-the page %s also exists
 
 Copy one of the following stylesheets to %s:
 
@@ -570,6 +536,10 @@ Rebuild BackLink database
 Internal Page: 
 
 Pages that link to this page
+
+The search parameter is missing.
+
+Pages link to %s
 
 Cannot highlight the language %s.
 
@@ -687,8 +657,6 @@ ordinary changes
 
 Matching page names:
 
-Footnotes:
-
 Could not find %1.html template in %2
 
 Only Editors are allowed to see this hidden page.
@@ -705,6 +673,10 @@ Define
 
 Full Link List
 Потпуни списак веза
+List of locked pages
+
+Pages tagged with %s
+
 Template without parameters
 
 The template %s is either empty or does not exist.
@@ -712,6 +684,8 @@ The template %s is either empty or does not exist.
  -- defined on %s
 
 Local names defined on %1: %2
+
+Locked Pages
 
 Register for %s
 
@@ -807,13 +781,73 @@ There was an error approving %s.
 
 There are no pending registrations.
 
+Invalid Mail %s: not saved.
+
+unsubscribe
+
+subscribe
+
+Email: 
+
+%s appears to be an invalid mail address
+
+Your mail subscriptions
+
+All mail subscriptions
+
+Subscriptions
+
+Show
+
+Subscriptions for %s:
+
+Unsubscribe
+
+There are no subscriptions for %s.
+
+Change email address
+
+Mail addresses are linked to unsubscription links.
+
+Subscribe to %s.
+
+Subscribe
+
+Subscribed %s to the following pages:
+
+The remaining pages do not exist.
+
+Unsubscribed %s from the following pages:
+
+You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
+
 %s is not a legal name for a namespace
+
+Namespaces
+
+Getting page index file for %s.
+
+Near links:
+
+Search sites on the %s as well
+
+Fetching results from %s:
+
+Near pages:
+
+Include near pages
+
+EditNearLinks
+
+The same page on other sites:
 
  (create locally)
 
 image
 
 download
+
+Backlinks
 
 Clearing Cache
 
@@ -837,6 +871,20 @@ Self-ban by %s
 
 You have banned your own IP.
 
+OpenID Login
+
+Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
+
+Your homepage is set to %s.
+
+You have no homepage set.
+
+Homepage:
+
+Homepage is missing
+
+OpenID error %s
+
 Orphan List
 
 Trail: 
@@ -847,11 +895,19 @@ Type
 
 Permalink to "%s"
 
+anchor first defined here: %s
+сидро је прво дефинисано овде: %s
+the page %s also exists
+
 There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
 
 Someone else is generating a pdf for %s.  Please wait a minute and then try again.
 
 Download this page as PDF
+
+Click to search for references to this permanent anchor
+
+Include permanent anchors
 
 Portrait
 
@@ -863,9 +919,11 @@ The target wiki was misconfigured.
 
 You did not answer correctly.
 
-Use the back button to return the previous page and try again.
-
 To save this page you must answer this question:
+
+Please type the following two words:
+
+Please answer this captcha:
 
 Referrers
 Референце
@@ -883,6 +941,10 @@ Rebuilding index not done.
 
 (Rebuilding the index can only be done once every 12 hours.)
 
+New Pages for Indexed Search
+
+List changes since %s
+
  ... 
 
 Search term missing.
@@ -897,6 +959,8 @@ Tags: %s.
 
 No tags
 
+Page list for %s
+
 Slideshow:%s
 
 Index of all small pages
@@ -908,6 +972,14 @@ Back to %s
 Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
+
+Feed for this tag
+
+Rebuild tag index
+
+list tags
+
+tag cloud
 
 Alternatively, use one of the following templates:
 
@@ -938,6 +1010,26 @@ Please try again later. Perhaps somebody is running maintenance or doing a long 
 Contents
 
 Create a new page for today
+
+Add Translation
+
+Added translation: %1 (%2)
+
+Translate %s
+
+Thank you for writing a translation of %s.
+
+Please indicate what language you will be using.
+
+Language is missing
+
+Suggested languages:
+
+Please indicate a page name for the translation of %s.
+
+More help may be available here: %s.
+
+Translated page: 
 
 This page is a translation of %s. 
 

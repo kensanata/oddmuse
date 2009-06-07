@@ -24,8 +24,10 @@
 #
 # This translation was last checked for Oddmuse version 1.215.
 #
-$ModulesDescription .= '<p>$Id: dutch-utf8.pl,v 1.10 2007/08/19 11:42:07 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: dutch-utf8.pl,v 1.11 2009/06/07 19:30:37 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
+Include normal pages
+
 Reading not allowed: user, ip, or network is blocked.
 U mag deze pagina niet lezen: uw account op deze Wiki, uw IP of uw netwerk is buitengesloten.
 Login
@@ -76,8 +78,6 @@ CGI Internal error: %s
 
 Invalid action parameter %s
 Ongeldige actieparameter %s
-Invalid URL.
-Ongeldige URL.
 Page name is missing
 Geen paginanaam opgegeven
 Page name is too long: %s
@@ -88,16 +88,14 @@ Invalid Page %s (must not end with .lck)
 Ongeldige pagina; mag niet eindigen in .lck: %s
 Invalid Page %s
 Ongeldige pagina: %s
-Preview:
-Voorvertoning:
-Preview only, not yet saved
-Dit is slechts een voorvertoning; er is nog niets opgeslagen!
+Too many redirections
+
+No redirection for old revisions
+
+Invalid link pattern for #REDIRECT
+
 Please go on to %s.
 Ga a.u.b. verder naar %s.
-All changes for %s
-
-No updates since %s
-Geen wijzigingen sinds %s
 Updates since %s
 Wijzigingen sinds %s
 Updates in the last %s days
@@ -150,10 +148,10 @@ rollback
 ongedaan maken
 new
 nieuw
+All changes for %s
+
 from %s
 vanaf %s
-: 
-
 This page is too big to send over RSS.
 
 History of %s
@@ -222,20 +220,24 @@ To mark a page for deletion, put <strong>%s</strong> on the first line.
 [Start]
 redirected from %s
 doorverwezen vanaf %s
+%s: 
+
 Click to search for references to this page
 Klik hier om te zoeken naar verwijzingen naar deze pagina
 Cookie: 
 Cookie: 
+Edit this page
+Wijzig de tekst op deze pagina
+Preview:
+Voorvertoning:
+Preview only, not yet saved
+Dit is slechts een voorvertoning; er is nog niets opgeslagen!
 Warning
 Waarschuwing
 Database is stored in temporary directory %s
 De database is opgeslagen in de tijdelijke map %s
 %s seconds
 %s seconden
-The same page on other sites:
-Dezelfde pagina op andere sites:
-EditNearLinks
-WijzigNabijeKoppelingen
 Last edited
 Laatst gewijzigd op
 Edited
@@ -246,8 +248,6 @@ door %s
 (verschillen)
 Edit revision %s of this page
 Wijzig revisie %s van deze pagina
-Edit this page
-Wijzig de tekst op deze pagina
 e
 e
 This page is read-only
@@ -410,22 +410,10 @@ Reason: %s.
 
 Reason unknown.
 
-Without normal pages
-
-Include normal pages
-
-Without permanent anchors
-
-Include permanent anchors
-
-Without near pages
-
-Include near pages
+Filter:
 
 (for %s)
 (voor %s)
-Filter:
-
 %s pages found.
 %s pagina's gevonden
 Replaced: %s
@@ -434,16 +422,6 @@ Search for: %s
 Gezocht naar: %s
 View changes for these pages
 Toon wijzigingen in deze pagina's
-Search sites on the %s as well
-Zoek ook sites op de %s
-and
-en
-or
-of
-Fetching results from %s:
-Bezig met ophalen resultaten van %s:
-Near pages:
-Nabije pagina's:
 last updated
 laatst gewijzigd
 by
@@ -504,8 +482,6 @@ Note: This error is normal if no changes have been made.
 NB: Deze foutmelding is gebruikelijk als er geen wijzigingen zijn gemaakt.
 Moving %s log entries.
 Bezig met verplaatsen van %s items.
-Getting page index file for %s.
-Bezig met ophalen indexbestand voor %s.
 Set or Remove global edit lock
 Ver-/ontgrendelen van de gehele site
 Edit lock created.
@@ -520,26 +496,16 @@ Lock for %s removed.
 %s is ontgrendeld, en kan nu weer gewijzigd worden.
 Displaying Wiki Version
 
-Show dependencies
+Debugging Information
 
 Inter links:
 Interkoppelingen:
-Near links:
-Nabije koppelingen:
-Show parsed link data
-
 Too many connections by %s
 Te veel verbindingen met %s
 Please do not fetch more than %1 pages in %2 seconds.
 Haal a.u.b. niet meer dan %s pagina's op in %2 seconden.
 Check whether the web server can create the directory %s and whether it can create files in it.
 
-anchor first defined here: %s
-bladwijzer als eerste hier gedefinieerd: %s
-Click to search for references to this permanent anchor
-Klik hier om te zoeken naar verwijzingen naar deze permanente bladwijzer
-the page %s also exists
-de pagina %s bestaat ook
 Copy one of the following stylesheets to %s:
 
 Deleting %s
@@ -577,6 +543,10 @@ Rebuild BackLink database
 Internal Page: 
 
 Pages that link to this page
+
+The search parameter is missing.
+
+Pages link to %s
 
 Cannot highlight the language %s.
 
@@ -694,8 +664,6 @@ ordinary changes
 
 Matching page names:
 
-Footnotes:
-Voetnoten:
 Could not find %1.html template in %2
 
 Only Editors are allowed to see this hidden page.
@@ -712,6 +680,10 @@ Define
 Definiëren
 Full Link List
 Volledige lijst van koppelingen
+List of locked pages
+
+Pages tagged with %s
+
 Template without parameters
 
 The template %s is either empty or does not exist.
@@ -719,6 +691,8 @@ The template %s is either empty or does not exist.
  -- defined on %s
 
 Local names defined on %1: %2
+
+Locked Pages
 
 Register for %s
 
@@ -814,13 +788,73 @@ There was an error approving %s.
 
 There are no pending registrations.
 
+Invalid Mail %s: not saved.
+
+unsubscribe
+
+subscribe
+
+Email: 
+
+%s appears to be an invalid mail address
+
+Your mail subscriptions
+
+All mail subscriptions
+
+Subscriptions
+
+Show
+
+Subscriptions for %s:
+
+Unsubscribe
+
+There are no subscriptions for %s.
+
+Change email address
+
+Mail addresses are linked to unsubscription links.
+
+Subscribe to %s.
+
+Subscribe
+
+Subscribed %s to the following pages:
+
+The remaining pages do not exist.
+
+Unsubscribed %s from the following pages:
+
+You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
+
 %s is not a legal name for a namespace
 
+Namespaces
+
+Getting page index file for %s.
+Bezig met ophalen indexbestand voor %s.
+Near links:
+Nabije koppelingen:
+Search sites on the %s as well
+Zoek ook sites op de %s
+Fetching results from %s:
+Bezig met ophalen resultaten van %s:
+Near pages:
+Nabije pagina's:
+Include near pages
+
+EditNearLinks
+WijzigNabijeKoppelingen
+The same page on other sites:
+Dezelfde pagina op andere sites:
  (create locally)
 
 image
 
 download
+
+Backlinks
 
 Clearing Cache
 Bezig met leegmaken van de cache
@@ -844,6 +878,20 @@ Self-ban by %s
 
 You have banned your own IP.
 
+OpenID Login
+
+Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
+
+Your homepage is set to %s.
+
+You have no homepage set.
+
+Homepage:
+
+Homepage is missing
+
+OpenID error %s
+
 Orphan List
 Lijst met Wezen
 Trail: 
@@ -854,11 +902,19 @@ Type
 Type
 Permalink to "%s"
 
+anchor first defined here: %s
+bladwijzer als eerste hier gedefinieerd: %s
+the page %s also exists
+de pagina %s bestaat ook
 There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
 
 Someone else is generating a pdf for %s.  Please wait a minute and then try again.
 
 Download this page as PDF
+
+Click to search for references to this permanent anchor
+Klik hier om te zoeken naar verwijzingen naar deze permanente bladwijzer
+Include permanent anchors
 
 Portrait
 Portret
@@ -870,9 +926,11 @@ The target wiki was misconfigured.
 
 You did not answer correctly.
 
-Use the back button to return the previous page and try again.
-
 To save this page you must answer this question:
+
+Please type the following two words:
+
+Please answer this captcha:
 
 Referrers
 Verwijzingen
@@ -890,6 +948,10 @@ Rebuilding index not done.
 
 (Rebuilding the index can only be done once every 12 hours.)
 
+New Pages for Indexed Search
+
+List changes since %s
+
  ... 
 
 Search term missing.
@@ -904,6 +966,8 @@ Tags: %s.
 
 No tags
 
+Page list for %s
+
 Slideshow:%s
 
 Index of all small pages
@@ -915,6 +979,14 @@ Terug naar %s
 Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
+
+Feed for this tag
+
+Rebuild tag index
+
+list tags
+
+tag cloud
 
 Alternatively, use one of the following templates:
 
@@ -945,6 +1017,26 @@ Please try again later. Perhaps somebody is running maintenance or doing a long 
 Contents
 
 Create a new page for today
+
+Add Translation
+
+Added translation: %1 (%2)
+
+Translate %s
+
+Thank you for writing a translation of %s.
+
+Please indicate what language you will be using.
+
+Language is missing
+
+Suggested languages:
+
+Please indicate a page name for the translation of %s.
+
+More help may be available here: %s.
+
+Translated page: 
 
 This page is a translation of %s. 
 

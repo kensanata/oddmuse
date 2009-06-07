@@ -15,8 +15,10 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: romanian-utf8.pl,v 1.8 2007/08/19 11:42:08 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: romanian-utf8.pl,v 1.9 2009/06/07 19:30:37 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
+Include normal pages
+
 Reading not allowed: user, ip, or network is blocked.
 Citirea nu este permisă: utilizatorul, ip-ul sau reţeaua este blocată.
 Login
@@ -67,8 +69,6 @@ CGI Internal error: %s
 
 Invalid action parameter %s
 
-Invalid URL.
-URL incorect.
 Page name is missing
 Lipseşte numele paginii.
 Page name is too long: %s
@@ -79,16 +79,14 @@ Invalid Page %s (must not end with .lck)
 
 Invalid Page %s
 
-Preview:
-Previzualizare:
-Preview only, not yet saved
-Previzualizare, pagina nu a fost încă salvată
+Too many redirections
+
+No redirection for old revisions
+
+Invalid link pattern for #REDIRECT
+
 Please go on to %s.
 
-All changes for %s
-
-No updates since %s
-Nici o modificare de la %s
 Updates since %s
 Modificări de la %s
 Updates in the last %s days
@@ -141,10 +139,10 @@ rollback
 restaurează
 new
 nou
+All changes for %s
+
 from %s
 de la %s
-: 
-
 This page is too big to send over RSS.
 
 History of %s
@@ -213,20 +211,24 @@ To mark a page for deletion, put <strong>%s</strong> on the first line.
 [Acasă]
 redirected from %s
 redirecţionat de la %s
+%s: 
+
 Click to search for references to this page
 Caută referinţe la această pagină
 Cookie: 
 
+Edit this page
+Editează această pagină
+Preview:
+Previzualizare:
+Preview only, not yet saved
+Previzualizare, pagina nu a fost încă salvată
 Warning
 Atenţie
 Database is stored in temporary directory %s
 Baza de date este păstrată în directorul temporar %s
 %s seconds
 %s secunde
-The same page on other sites:
-Aceiaşi pagină pe alte site-uri:
-EditNearLinks
-
 Last edited
 Modificat pe
 Edited
@@ -237,8 +239,6 @@ de către %s
 (diferenţe)
 Edit revision %s of this page
 Editează revizia %s a acestei pagini
-Edit this page
-Editează această pagină
 e
 
 This page is read-only
@@ -401,22 +401,10 @@ Reason: %s.
 
 Reason unknown.
 
-Without normal pages
-
-Include normal pages
-
-Without permanent anchors
-
-Include permanent anchors
-
-Without near pages
-
-Include near pages
-
-(for %s)
-(pentru %s)
 Filter:
 Filtru:
+(for %s)
+(pentru %s)
 %s pages found.
 %s pagini găsite.
 Replaced: %s
@@ -425,16 +413,6 @@ Search for: %s
 Căutare: %s
 View changes for these pages
 Vezi modificările acestor pagini
-Search sites on the %s as well
-
-and
-şi
-or
-sau
-Fetching results from %s:
-
-Near pages:
-
 last updated
 editată pe
 by
@@ -495,8 +473,6 @@ Note: This error is normal if no changes have been made.
 
 Moving %s log entries.
 
-Getting page index file for %s.
-
 Set or Remove global edit lock
 
 Edit lock created.
@@ -511,13 +487,9 @@ Lock for %s removed.
 
 Displaying Wiki Version
 
-Show dependencies
+Debugging Information
 
 Inter links:
-
-Near links:
-
-Show parsed link data
 
 Too many connections by %s
 Prea multe conexiuni de la %s
@@ -525,12 +497,6 @@ Please do not fetch more than %1 pages in %2 seconds.
 Vă rugăm să nu accesaţi mai mult de %1 pagini în %2 secunde.
 Check whether the web server can create the directory %s and whether it can create files in it.
 
-anchor first defined here: %s
-
-Click to search for references to this permanent anchor
-
-the page %s also exists
-pagina %s de asemenea există
 Copy one of the following stylesheets to %s:
 
 Deleting %s
@@ -568,6 +534,10 @@ Rebuild BackLink database
 Internal Page: 
 
 Pages that link to this page
+
+The search parameter is missing.
+
+Pages link to %s
 
 Cannot highlight the language %s.
 
@@ -685,8 +655,6 @@ ordinary changes
 
 Matching page names:
 
-Footnotes:
-Note de subsol:
 Could not find %1.html template in %2
 
 Only Editors are allowed to see this hidden page.
@@ -703,6 +671,10 @@ Define
 
 Full Link List
 
+List of locked pages
+
+Pages tagged with %s
+
 Template without parameters
 
 The template %s is either empty or does not exist.
@@ -710,6 +682,8 @@ The template %s is either empty or does not exist.
  -- defined on %s
 
 Local names defined on %1: %2
+
+Locked Pages
 
 Register for %s
 
@@ -805,13 +779,73 @@ There was an error approving %s.
 
 There are no pending registrations.
 
+Invalid Mail %s: not saved.
+
+unsubscribe
+
+subscribe
+
+Email: 
+
+%s appears to be an invalid mail address
+
+Your mail subscriptions
+
+All mail subscriptions
+
+Subscriptions
+
+Show
+
+Subscriptions for %s:
+
+Unsubscribe
+
+There are no subscriptions for %s.
+
+Change email address
+
+Mail addresses are linked to unsubscription links.
+
+Subscribe to %s.
+
+Subscribe
+
+Subscribed %s to the following pages:
+
+The remaining pages do not exist.
+
+Unsubscribed %s from the following pages:
+
+You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
+
 %s is not a legal name for a namespace
 
+Namespaces
+
+Getting page index file for %s.
+
+Near links:
+
+Search sites on the %s as well
+
+Fetching results from %s:
+
+Near pages:
+
+Include near pages
+
+EditNearLinks
+
+The same page on other sites:
+Aceiaşi pagină pe alte site-uri:
  (create locally)
 
 image
 imagine
 download
+
+Backlinks
 
 Clearing Cache
 
@@ -835,6 +869,20 @@ Self-ban by %s
 
 You have banned your own IP.
 
+OpenID Login
+
+Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
+
+Your homepage is set to %s.
+
+You have no homepage set.
+
+Homepage:
+
+Homepage is missing
+
+OpenID error %s
+
 Orphan List
 
 Trail: 
@@ -845,11 +893,19 @@ Type
 Tip
 Permalink to "%s"
 
+anchor first defined here: %s
+
+the page %s also exists
+pagina %s de asemenea există
 There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
 
 Someone else is generating a pdf for %s.  Please wait a minute and then try again.
 
 Download this page as PDF
+
+Click to search for references to this permanent anchor
+
+Include permanent anchors
 
 Portrait
 
@@ -861,9 +917,11 @@ The target wiki was misconfigured.
 
 You did not answer correctly.
 
-Use the back button to return the previous page and try again.
-
 To save this page you must answer this question:
+
+Please type the following two words:
+
+Please answer this captcha:
 
 Referrers
 
@@ -881,6 +939,10 @@ Rebuilding index not done.
 
 (Rebuilding the index can only be done once every 12 hours.)
 
+New Pages for Indexed Search
+
+List changes since %s
+
  ... 
 
 Search term missing.
@@ -895,6 +957,8 @@ Tags: %s.
 
 No tags
 
+Page list for %s
+
 Slideshow:%s
 
 Index of all small pages
@@ -906,6 +970,14 @@ Back to %s
 Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
+
+Feed for this tag
+
+Rebuild tag index
+
+list tags
+
+tag cloud
 
 Alternatively, use one of the following templates:
 
@@ -936,6 +1008,26 @@ Please try again later. Perhaps somebody is running maintenance or doing a long 
 Contents
 Conţinut
 Create a new page for today
+
+Add Translation
+
+Added translation: %1 (%2)
+
+Translate %s
+
+Thank you for writing a translation of %s.
+
+Please indicate what language you will be using.
+
+Language is missing
+
+Suggested languages:
+
+Please indicate a page name for the translation of %s.
+
+More help may be available here: %s.
+
+Translated page: 
 
 This page is a translation of %s. 
 Această pagină este o traducere a %s.

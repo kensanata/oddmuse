@@ -15,8 +15,10 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: korean-utf8.pl,v 1.4 2007/11/12 17:56:48 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: korean-utf8.pl,v 1.5 2009/06/07 19:30:37 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
+Include normal pages
+정상 페이지를 포함하여
 Reading not allowed: user, ip, or network is blocked.
 읽기가 허락되지 않습니다: 사용자아이디, ip, 또는 네트웍이 접근거부되었습니다.
 Login
@@ -67,8 +69,6 @@ CGI Internal error: %s
 CGI 내부 오류 : %s
 Invalid action parameter %s
 유효하지 않은 액션 파라메터 %s
-Invalid URL.
-유효하지 않은 URL.
 Page name is missing
 페이지 이름이 없습니다
 Page name is too long: %s
@@ -79,16 +79,14 @@ Invalid Page %s (must not end with .lck)
 페이지 이름 %s 이 유효하지 않습니다( .lck 로 끝나면 안됩니다 )
 Invalid Page %s
 %s 은 유효하지 않은 페이지입니다.
-Preview:
-미리보기:
-Preview only, not yet saved
-미리보기만 가능합니다. 저장되지는 않습니다.
+Too many redirections
+
+No redirection for old revisions
+
+Invalid link pattern for #REDIRECT
+
 Please go on to %s.
 %s 로 이동하여 주세요.
-All changes for %s
-
-No updates since %s
-%s 이후 한번도 업데이트가 없습니다.
 Updates since %s
 %s 이후의 업데이트
 Updates in the last %s days
@@ -141,10 +139,10 @@ rollback
 롤백
 new
 새로운 사항
+All changes for %s
+
 from %s
 %s 로 부터
-: 
-
 This page is too big to send over RSS.
 RSS 로 전송하기에 너무 큰 페이지 입니다.
 History of %s
@@ -213,20 +211,24 @@ To mark a page for deletion, put <strong>%s</strong> on the first line.
 [홈]
 redirected from %s
 %s 에서 재전송됨
+%s: 
+
 Click to search for references to this page
 이 페이지에 대한 참조를 검색하려면 클릭
 Cookie: 
 쿠키:
+Edit this page
+이 페이지를 편집
+Preview:
+미리보기:
+Preview only, not yet saved
+미리보기만 가능합니다. 저장되지는 않습니다.
 Warning
 경고
 Database is stored in temporary directory %s
 데이터베이스가 임시 디렉토리 %s 에 저장되었습니다.
 %s seconds
 %s 초
-The same page on other sites:
-다른 사이트에 존재하는 동일한 페이지:
-EditNearLinks
-근접링크편집
 Last edited
 최근에 편집됨
 Edited
@@ -237,8 +239,6 @@ by %s
 (차이)
 Edit revision %s of this page
 이 페이지의 리비젼 %s 를 편집
-Edit this page
-편집
 e
 e
 This page is read-only
@@ -401,22 +401,10 @@ Reason: %s.
 
 Reason unknown.
 
-Without normal pages
-정상 페이지 없이
-Include normal pages
-정상 페이지를 포함하여
-Without permanent anchors
-영구 책갈피 없이
-Include permanent anchors
-영구 책갈피 포함하여
-Without near pages
-근접 페이지 없이
-Include near pages
-근접 페이지 포함하여
-(for %s)
-(%s(을)를 위하여)
 Filter:
 필터:
+(for %s)
+(%s(을)를 위하여)
 %s pages found.
 %s 페이지를 찾음.
 Replaced: %s
@@ -425,16 +413,6 @@ Search for: %s
 찾음: %s
 View changes for these pages
 이 페이지들에서의 변경사항을 봄
-Search sites on the %s as well
-%s 에 대해서도 사이트를 검색
-and
-그리고
-or
-또는
-Fetching results from %s:
-%s 로 부터의 결과를 가져옴:
-Near pages:
-근접 페이지:
 last updated
 마지막 갱신
 by
@@ -495,8 +473,6 @@ Note: This error is normal if no changes have been made.
 주의: 변경이 전혀 없었다면 이 오류는 정상적인 것입니다.
 Moving %s log entries.
 %s 로그 엔트리를 옭김.
-Getting page index file for %s.
-%s 에 대한 페이지 인덱스 파일을 얻음.
 Set or Remove global edit lock
 전역 편집 잠금을 설정하거나 제거
 Edit lock created.
@@ -511,26 +487,16 @@ Lock for %s removed.
 %s 에 대한 잠금이 제거되었습니다.
 Displaying Wiki Version
 위키 버젼을 표시
-Show dependencies
-의존관계 표시
+Debugging Information
+
 Inter links:
 인터 링크:
-Near links:
-근접 링크:
-Show parsed link data
-해석된 링크 데이터를 보여줌
 Too many connections by %s
 %s 에 의해 너무 많은 접속이 있었습니다.
 Please do not fetch more than %1 pages in %2 seconds.
 %s 초 이내에 %1 페이지 이상을 덧붙이지 마세요.
 Check whether the web server can create the directory %s and whether it can create files in it.
 웹서버가 디렉토리 %s 를 생성하고 그 안에 파일을 생성할 수 있는지 확인하여 주세요.
-anchor first defined here: %s
-책갈피가 여기서 처음 거부되었습니다: %s
-Click to search for references to this permanent anchor
-이 영구 책갈피에 대한 참조를 검색하려면 클릭
-the page %s also exists
-%s 페이지는 이미 존재합니다.
 Copy one of the following stylesheets to %s:
 다음의 스타일시트중 하나를 %s 에 복사합니다:
 Deleting %s
@@ -568,6 +534,10 @@ Rebuild BackLink database
 Internal Page: 
 
 Pages that link to this page
+
+The search parameter is missing.
+
+Pages link to %s
 
 Cannot highlight the language %s.
 %s 언어에 대해서 구문강조를 할 수 없습니다.
@@ -685,8 +655,6 @@ ordinary changes
 
 Matching page names:
 
-Footnotes:
-
 Could not find %1.html template in %2
 
 Only Editors are allowed to see this hidden page.
@@ -703,6 +671,10 @@ Define
 정의
 Full Link List
 전체 링크 목록
+List of locked pages
+
+Pages tagged with %s
+
 Template without parameters
 파라메터 없는 템플릿
 The template %s is either empty or does not exist.
@@ -711,6 +683,8 @@ The template %s is either empty or does not exist.
  -- %s 에 정의됨
 Local names defined on %1: %2
 %1 에 정의된 로컬 이름 : %2
+Locked Pages
+
 Register for %s
 
 Please choose a username of the form "FirstLast" using your real name.
@@ -805,14 +779,74 @@ There was an error approving %s.
 
 There are no pending registrations.
 
+Invalid Mail %s: not saved.
+
+unsubscribe
+
+subscribe
+
+Email: 
+
+%s appears to be an invalid mail address
+
+Your mail subscriptions
+
+All mail subscriptions
+
+Subscriptions
+
+Show
+
+Subscriptions for %s:
+
+Unsubscribe
+
+There are no subscriptions for %s.
+
+Change email address
+
+Mail addresses are linked to unsubscription links.
+
+Subscribe to %s.
+
+Subscribe
+
+Subscribed %s to the following pages:
+
+The remaining pages do not exist.
+
+Unsubscribed %s from the following pages:
+
+You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
+
 %s is not a legal name for a namespace
 
+Namespaces
+
+Getting page index file for %s.
+%s 에 대한 페이지 인덱스 파일을 얻음.
+Near links:
+근접 링크:
+Search sites on the %s as well
+%s 에 대해서도 사이트를 검색
+Fetching results from %s:
+%s 로 부터의 결과를 가져옴:
+Near pages:
+근접 페이지:
+Include near pages
+근접 페이지 포함하여
+EditNearLinks
+근접링크편집
+The same page on other sites:
+다른 사이트에 존재하는 동일한 페이지:
  (create locally)
 
 image
 이미지
 download
 다운로드
+Backlinks
+
 Clearing Cache
 
 Done.
@@ -835,6 +869,20 @@ Self-ban by %s
 
 You have banned your own IP.
 
+OpenID Login
+
+Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
+
+Your homepage is set to %s.
+
+You have no homepage set.
+
+Homepage:
+
+Homepage is missing
+
+OpenID error %s
+
 Orphan List
 
 Trail: 
@@ -845,12 +893,20 @@ Type
 
 Permalink to "%s"
 
+anchor first defined here: %s
+책갈피가 여기서 처음 거부되었습니다: %s
+the page %s also exists
+%s 페이지는 이미 존재합니다.
 There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
 
 Someone else is generating a pdf for %s.  Please wait a minute and then try again.
 
 Download this page as PDF
 
+Click to search for references to this permanent anchor
+이 영구 책갈피에 대한 참조를 검색하려면 클릭
+Include permanent anchors
+영구 책갈피 포함하여
 Portrait
 
 Publish %s
@@ -861,9 +917,11 @@ The target wiki was misconfigured.
 
 You did not answer correctly.
 
-Use the back button to return the previous page and try again.
-
 To save this page you must answer this question:
+
+Please type the following two words:
+
+Please answer this captcha:
 
 Referrers
 
@@ -881,6 +939,10 @@ Rebuilding index not done.
 
 (Rebuilding the index can only be done once every 12 hours.)
 
+New Pages for Indexed Search
+
+List changes since %s
+
  ... 
 
 Search term missing.
@@ -895,6 +957,8 @@ Tags: %s.
 
 No tags
 
+Page list for %s
+
 Slideshow:%s
 
 Index of all small pages
@@ -906,6 +970,14 @@ Back to %s
 Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
+
+Feed for this tag
+
+Rebuild tag index
+
+list tags
+
+tag cloud
 
 Alternatively, use one of the following templates:
 
@@ -936,6 +1008,26 @@ Please try again later. Perhaps somebody is running maintenance or doing a long 
 Contents
 
 Create a new page for today
+
+Add Translation
+
+Added translation: %1 (%2)
+
+Translate %s
+
+Thank you for writing a translation of %s.
+
+Please indicate what language you will be using.
+
+Language is missing
+
+Suggested languages:
+
+Please indicate a page name for the translation of %s.
+
+More help may be available here: %s.
+
+Translated page: 
 
 This page is a translation of %s. 
 

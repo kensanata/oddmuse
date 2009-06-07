@@ -15,8 +15,10 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: ukrainian-utf8.pl,v 1.5 2007/08/19 11:42:08 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: ukrainian-utf8.pl,v 1.6 2009/06/07 19:30:38 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
+Include normal pages
+Включати звичайні сторінки
 Reading not allowed: user, ip, or network is blocked.
 Не дозволено читати: користувач, IP, або мережа заблоковані.
 Login
@@ -67,8 +69,6 @@ CGI Internal error: %s
 Внутрішня помилка CGI: %s
 Invalid action parameter %s
 Неприпустимий параметр дії: %s
-Invalid URL.
-Невірний URL.
 Page name is missing
 Ім'я сторінки відсутнє
 Page name is too long: %s
@@ -79,16 +79,14 @@ Invalid Page %s (must not end with .lck)
 Невірна сторінка %s (має закінчуватись не .lck)
 Invalid Page %s
 Невірна сторінка %s
-Preview:
-Попередній перегляд:
-Preview only, not yet saved
-Тільки попередній перегляд, ще не збережено
+Too many redirections
+
+No redirection for old revisions
+
+Invalid link pattern for #REDIRECT
+
 Please go on to %s.
 Будь ласка, перейдіть на %s.
-All changes for %s
-
-No updates since %s
-Жодних оновлень від %s
 Updates since %s
 Оновлення від %s
 Updates in the last %s days
@@ -141,10 +139,10 @@ rollback
 повернути
 new
 нове
+All changes for %s
+
 from %s
 від %s
-: 
-
 This page is too big to send over RSS.
 Ця сторінка занадто велика для пересилання через RSS.
 History of %s
@@ -213,20 +211,24 @@ To mark a page for deletion, put <strong>%s</strong> on the first line.
 [Перша сторінка]
 redirected from %s
 перенаправлено з %s
+%s: 
+
 Click to search for references to this page
 Натисніть для пошуку посилань на цю сторінку
 Cookie: 
 Кукі:
+Edit this page
+Редагувати цю сторінку
+Preview:
+Попередній перегляд:
+Preview only, not yet saved
+Тільки попередній перегляд, ще не збережено
 Warning
 Попередження
 Database is stored in temporary directory %s
 База даних зберігається в тимчасовій директорії %s
 %s seconds
 %s секунд
-The same page on other sites:
-Ця сторінка на інших сайтах:
-EditNearLinks
-
 Last edited
 Востаннє відредаговано
 Edited
@@ -237,8 +239,6 @@ by %s
 (різниця)
 Edit revision %s of this page
 Редагувати версію %s цієї сторінки
-Edit this page
-Редагувати цю сторінку
 e
 e
 This page is read-only
@@ -401,22 +401,10 @@ Reason: %s.
 
 Reason unknown.
 
-Without normal pages
-Без звичайних сторінок
-Include normal pages
-Включати звичайні сторінки
-Without permanent anchors
-Без постійних якорів
-Include permanent anchors
-Включити постійні якорі
-Without near pages
-Без близьких сторінок
-Include near pages
-Разом з близькими сторінками
-(for %s)
-(для %s)
 Filter:
 Фільтр:
+(for %s)
+(для %s)
 %s pages found.
 %s сторінок знайдено.
 Replaced: %s
@@ -425,16 +413,6 @@ Search for: %s
 Шукати: %s
 View changes for these pages
 Переглянути зміни на ції сторінках
-Search sites on the %s as well
-Шукати також сайти в %s
-and
-та
-or
-або
-Fetching results from %s:
-Отримую результати від %s:
-Near pages:
-Подібні сторінки:
 last updated
 востаннє оновлено
 by
@@ -495,8 +473,6 @@ Note: This error is normal if no changes have been made.
 Примітка: Ця помилка припустима, якщо не було зроблено жодних змін.
 Moving %s log entries.
 
-Getting page index file for %s.
-
 Set or Remove global edit lock
 Встановити або Видалити глобальний блок редагування
 Edit lock created.
@@ -511,26 +487,16 @@ Lock for %s removed.
 Видалено блок для %s.
 Displaying Wiki Version
 Показую версію Вікі
-Show dependencies
-Показати залежності
+Debugging Information
+
 Inter links:
 Внутрішні посилання:
-Near links:
-Ближні посилання:
-Show parsed link data
-Показати проаналізовані дані посилання
 Too many connections by %s
 Забагато з'єднаннь від %s
 Please do not fetch more than %1 pages in %2 seconds.
 Будь ласка, не зчитуйте більше ніж %1 сторінок за %2 секунд.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Перевірте, чи може веб сервер створити директорію %s і чи може він створювати в ній файли.
-anchor first defined here: %s
-якір вперше визначається тут: %s
-Click to search for references to this permanent anchor
-Клацніть щоб шукати посилання на цей постійний якір
-the page %s also exists
-сторінка %s також існує
 Copy one of the following stylesheets to %s:
 Копіювати одну із наступний таблиць стилей в %s:
 Deleting %s
@@ -568,6 +534,10 @@ Rebuild BackLink database
 Internal Page: 
 
 Pages that link to this page
+
+The search parameter is missing.
+
+Pages link to %s
 
 Cannot highlight the language %s.
 Не можу підсвічувати мову %s.
@@ -685,8 +655,6 @@ ordinary changes
 звичайні зміни
 Matching page names:
 
-Footnotes:
-Примітки:
 Could not find %1.html template in %2
 Не вдалось знайти шаблон %1.html в %2
 Only Editors are allowed to see this hidden page.
@@ -703,6 +671,10 @@ Define
 Визначити
 Full Link List
 Повний перелік посилань
+List of locked pages
+
+Pages tagged with %s
+
 Template without parameters
 Шаблон без параметрів
 The template %s is either empty or does not exist.
@@ -711,6 +683,8 @@ The template %s is either empty or does not exist.
  -- визначено в %s
 Local names defined on %1: %2
 Локальні імена визначено в %1: %2
+Locked Pages
+
 Register for %s
 Зареєструвати для %s
 Please choose a username of the form "FirstLast" using your real name.
@@ -805,14 +779,74 @@ There was an error approving %s.
 </ul>
 There are no pending registrations.
 
+Invalid Mail %s: not saved.
+
+unsubscribe
+
+subscribe
+
+Email: 
+
+%s appears to be an invalid mail address
+
+Your mail subscriptions
+
+All mail subscriptions
+
+Subscriptions
+
+Show
+
+Subscriptions for %s:
+
+Unsubscribe
+
+There are no subscriptions for %s.
+
+Change email address
+
+Mail addresses are linked to unsubscription links.
+
+Subscribe to %s.
+
+Subscribe
+
+Subscribed %s to the following pages:
+
+The remaining pages do not exist.
+
+Unsubscribed %s from the following pages:
+
+You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
+
 %s is not a legal name for a namespace
 
+Namespaces
+
+Getting page index file for %s.
+
+Near links:
+Ближні посилання:
+Search sites on the %s as well
+Шукати також сайти в %s
+Fetching results from %s:
+Отримую результати від %s:
+Near pages:
+Подібні сторінки:
+Include near pages
+Разом з близькими сторінками
+EditNearLinks
+
+The same page on other sites:
+Ця сторінка на інших сайтах:
  (create locally)
 
 image
 зображення
 download
 завантажити
+Backlinks
+
 Clearing Cache
 Очещення кешу
 Done.
@@ -835,6 +869,20 @@ Self-ban by %s
 
 You have banned your own IP.
 Ви заборонили власний IP.
+OpenID Login
+
+Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
+
+Your homepage is set to %s.
+
+You have no homepage set.
+
+Homepage:
+
+Homepage is missing
+
+OpenID error %s
+
 Orphan List
 
 Trail: 
@@ -845,12 +893,20 @@ Type
 Тип
 Permalink to "%s"
 Постійне посилання на "%s"
+anchor first defined here: %s
+якір вперше визначається тут: %s
+the page %s also exists
+сторінка %s також існує
 There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
 Виникла помилка при генеруванні pdf для %s. Будь ласка, повідомте про це вебмастера, але не намагайтесь завантажити ще раз, це не спрацює.
 Someone else is generating a pdf for %s.  Please wait a minute and then try again.
 Хтось інший генерує pdf для %s. Будь ласка, зачекайте хвилинку і спробуйте знову.
 Download this page as PDF
 Скачати цю сторінку в форматі PDF
+Click to search for references to this permanent anchor
+Клацніть щоб шукати посилання на цей постійний якір
+Include permanent anchors
+Включити постійні якорі
 Portrait
 
 Publish %s
@@ -861,9 +917,11 @@ The target wiki was misconfigured.
 
 You did not answer correctly.
 Ви відповили невірно.
-Use the back button to return the previous page and try again.
-
 To save this page you must answer this question:
+
+Please type the following two words:
+
+Please answer this captcha:
 
 Referrers
 
@@ -881,6 +939,10 @@ Rebuilding index not done.
 Перебудова покажника не виконана.
 (Rebuilding the index can only be done once every 12 hours.)
 
+New Pages for Indexed Search
+
+List changes since %s
+
  ... 
  ...
 Search term missing.
@@ -895,6 +957,8 @@ Tags: %s.
 
 No tags
 
+Page list for %s
+
 Slideshow:%s
 Показ слайдів: %s
 Index of all small pages
@@ -907,6 +971,14 @@ Copy to %1 succeeded: %2.
 Копіювання в %1 виконано: %2.
 Copy to %1 failed: %2.
 Не вдалось скопіювати в %1: %2
+Feed for this tag
+
+Rebuild tag index
+
+list tags
+
+tag cloud
+
 Alternatively, use one of the following templates:
 Як варіант, використовуйте один із наступних шаблонів:
 Thread: %s
@@ -936,6 +1008,26 @@ Please try again later. Perhaps somebody is running maintenance or doing a long 
 Contents
 Зміст
 Create a new page for today
+
+Add Translation
+
+Added translation: %1 (%2)
+
+Translate %s
+
+Thank you for writing a translation of %s.
+
+Please indicate what language you will be using.
+
+Language is missing
+
+Suggested languages:
+
+Please indicate a page name for the translation of %s.
+
+More help may be available here: %s.
+
+Translated page: 
 
 This page is a translation of %s. 
 Ця сторінка є перекладом %s.
