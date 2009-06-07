@@ -33,7 +33,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: mail.pl,v 1.2 2009/06/04 06:40:58 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: mail.pl,v 1.3 2009/06/07 13:46:52 as Exp $</p>';
 
 use vars qw($MailFile $MailPattern);
 
@@ -112,6 +112,26 @@ sub MailIsSubscribed {
   my %subscribers = map {$_=>1} split(/$FS/, $h{$id});
   untie %h;
   return $subscribers{$mail};
+}
+
+*MailOldGetFooterTimestamp = *GetFooterTimestamp;
+*GetFooterTimestamp = *MailNewGetFooterTimestamp;
+
+sub MailNewGetFooterTimestamp {
+  my $html = MailOldGetFooterTimestamp(@_);
+  my $mail = GetParam('mail', '');
+  return $html unless $mail;
+  my $id = shift;
+  my $addition;
+  if (MailIsSubscribed($id, $mail)) {
+    $addition = ScriptLink("action=unsubscribe;pages=$id",
+			   T('unsubscribe'), 'unsubscribe');
+  } else {
+    $addition = ScriptLink("action=subscribe;pages=$id",
+			   T('subscribe'), 'subscribe');
+  }
+  $html =~ s!(.*)(</span>)!$1 $addition$2!i;
+  return $html;
 }
 
 =head1 Saving
@@ -241,7 +261,7 @@ sub MailSubscription {
   tie %h, "DB_File", $MailFile;
   my @result = split(/$FS/, $h{$mail});
   untie %h;
-  return @result;
+  return sort @result;
 }
 
 =head1 Administrator Access
