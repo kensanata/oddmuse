@@ -33,7 +33,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: mail.pl,v 1.3 2009/06/07 13:46:52 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: mail.pl,v 1.4 2009/06/07 14:09:57 as Exp $</p>';
 
 use vars qw($MailFile $MailPattern);
 
@@ -119,9 +119,8 @@ sub MailIsSubscribed {
 
 sub MailNewGetFooterTimestamp {
   my $html = MailOldGetFooterTimestamp(@_);
-  my $mail = GetParam('mail', '');
-  return $html unless $mail;
   my $id = shift;
+  my $mail = GetParam('mail', '');
   my $addition;
   if (MailIsSubscribed($id, $mail)) {
     $addition = ScriptLink("action=unsubscribe;pages=$id",
@@ -249,6 +248,8 @@ sub DoMailSubscriptions {
     } else {
       print $q->p(Ts('There are no subscriptions for %s.', $mail));
     }
+    print $q->p(ScriptLink('action=subscriptions;mail=', T('Change email address'),
+			   'change subscriptions'));
   }
   print $q->endform(), $q->end_div();
   PrintFooter();
@@ -321,26 +322,39 @@ your cookie. Multiple pages parameters contain the pages to subscribe.
 $Action{subscribe} = \&DoMailSubscribe;
 
 sub DoMailSubscribe {
-  my $mail = GetParam('mail', '');
   my @pages = $q->param('pages');
-  return DoMailSubscriptions(@_) unless $mail;
-  my @real = ();
-  foreach my $id (@pages) {
-    push @real, $id if $IndexHash{$id};
+  return DoMailSubscriptions(@_) unless @pages;
+  my $mail = GetParam('mail', '');
+  if (not $mail) {
+    print GetHeader('', T('Subscriptions')),
+      $q->start_div({-class=>'content subscribe'}),
+      GetFormStart(undef, 'get', 'subscribe');
+    print $q->p(Ts('Subscribe to %s.',
+		   join(', ', map { GetPageLink($_) } @pages)));
+    print $q->p($q->span($q->label({-for=>'mail'}, T('Email: '))
+			 . ' ' . $q->textfield(-name=>'mail', -id=>'mail')));
+    print $q->hidden('pages', @pages);
+    print $q->input({-type=>'hidden',-name=>'action',-value=>'subscribe'}),
+      ' ', $q->submit(-name=>'Subscribe', -value=>T('Subscribe'));
+  } else {
+    my @real = ();
+    foreach my $id (@pages) {
+      push @real, $id if $IndexHash{$id};
+    }
+    # subscriptions have to be added in a lock
+    RequestLockOrError();
+    MailSubscribe($mail, @real);
+    ReleaseLock();
+    # MailSubscribe will set a parameter and must run before printing
+    # the header.
+    print GetHeader('', T('Subscriptions')),
+      $q->start_div({-class=>'content subscribe'});
+    print $q->p(Ts('Subscribed %s to the following pages:', $mail));
+    print $q->ul($q->li([map { GetPageLink($_) } @real]));
+    print $q->p(T('The remaining pages do not exist.')) if $#real < $#pages;
+    print $q->p(ScriptLink('action=subscriptions', T('Your mail subscriptions'),
+			   'subscriptions') . '.');
   }
-  # subscriptions have to be added in a lock
-  RequestLockOrError();
-  MailSubscribe($mail, @real);
-  ReleaseLock();
-  # MailSubscribe will set a parameter and must run before printing
-  # the header.
-  print GetHeader('', T('Subscriptions')),
-    $q->start_div({-class=>'content subscribe'});
-  print $q->p(Ts('Subscribed %s to the following pages:', $mail));
-  print $q->ul($q->li([map { GetPageLink($_) } @real]));
-  print $q->p(T('The remaining pages do not exist.')) if $#real < $#pages;
-  print $q->p(ScriptLink('action=subscriptions', T('Your mail subscriptions'),
-			 'subscriptions') . '.');
   print $q->end_div();
   PrintFooter();
 }
