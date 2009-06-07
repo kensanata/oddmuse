@@ -18,8 +18,10 @@
 #
 # This translation was last checked for Oddmuse version 1.504.
 #
-$ModulesDescription .= '<p>$Id: chinese-utf8.pl,v 1.11 2007/11/20 10:56:55 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: chinese-utf8.pl,v 1.12 2009/06/07 19:30:37 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
+Include normal pages
+包含正常頁面
 Reading not allowed: user, ip, or network is blocked.
 禁止讀取：使用者、ip 或是網路已被禁止連線。
 Login
@@ -70,8 +72,6 @@ CGI Internal error: %s
 CGI 內部錯誤: %s
 Invalid action parameter %s
 無效的動作參數 %s
-Invalid URL.
-無效的 URL 。
 Page name is missing
 頁面不存在
 Page name is too long: %s
@@ -82,16 +82,14 @@ Invalid Page %s (must not end with .lck)
 無效的頁面名稱 %s (不可使用 .lck 做為結尾)
 Invalid Page %s
 無效的頁面名稱 %s
-Preview:
-預覽：
-Preview only, not yet saved
-現在是預覽模式，尚未儲存
+Too many redirections
+
+No redirection for old revisions
+
+Invalid link pattern for #REDIRECT
+
 Please go on to %s.
 請繼續前住 %s 。
-All changes for %s
-所有修改頁面 %s
-No updates since %s
-自 %s 以來沒有修改
 Updates since %s
 自 %s 以來的修改
 Updates in the last %s days
@@ -144,10 +142,10 @@ rollback
 回復
 new
 新增
+All changes for %s
+所有修改頁面 %s
 from %s
 自 %s
-: 
-
 This page is too big to send over RSS.
 此頁面太大無法透過 RSS 傳送
 History of %s
@@ -216,20 +214,24 @@ To mark a page for deletion, put <strong>%s</strong> on the first line.
 [首頁]
 redirected from %s
 由 %s 轉址 
+%s: 
+
 Click to search for references to this page
 按下即可以搜尋參考至本頁的資料
 Cookie: 
 Cookie:
+Edit this page
+編輯本頁
+Preview:
+預覽：
+Preview only, not yet saved
+現在是預覽模式，尚未儲存
 Warning
 警告
 Database is stored in temporary directory %s
 資料庫現在是存放於暫存目錄 %s
 %s seconds
 %s 秒
-The same page on other sites:
-其他網站的相同頁面
-EditNearLinks
-編輯接近連結
 Last edited
 最後編輯於
 Edited
@@ -240,8 +242,6 @@ by %s
 (比較差異)
 Edit revision %s of this page
 編輯本頁的第 %s 版本
-Edit this page
-編輯本頁
 e
 
 This page is read-only
@@ -404,22 +404,10 @@ Reason: %s.
 原因: %s
 Reason unknown.
 未知原因
-Without normal pages
-不包含正常頁面
-Include normal pages
-包含正常頁面
-Without permanent anchors
-不包含固定的錨點
-Include permanent anchors
-包含固定的錨點
-Without near pages
-不包含相近的頁面
-Include near pages
-包含相近的頁面
-(for %s)
-(列出 %s )
 Filter:
 過濾規則:
+(for %s)
+(列出 %s )
 %s pages found.
 找到 %s 個頁面。
 Replaced: %s
@@ -428,16 +416,6 @@ Search for: %s
 搜尋：%s
 View changes for these pages
 參閱這些頁面的更動
-Search sites on the %s as well
-也搜尋列在 %s 上的網站
-and
-和
-or
-或
-Fetching results from %s:
-由 %s 取回的結果：
-Near pages:
-近端頁面：
 last updated
 最後更新於
 by
@@ -498,8 +476,6 @@ Note: This error is normal if no changes have been made.
 如果還沒有做過任何修改的話，則不用理會這個錯誤訊息。
 Moving %s log entries.
 移除了 %s 個記錄項目。
-Getting page index file for %s.
-自 %s 取得頁面索引資料。
 Set or Remove global edit lock
 設定或移除整個網站的編輯鎖定
 Edit lock created.
@@ -514,26 +490,16 @@ Lock for %s removed.
 已移除 %s 的鎖定。
 Displaying Wiki Version
 顯示 Wiki 主機相關套件版本
-Show dependencies
-顯示相依函式庫
+Debugging Information
+
 Inter links:
 內部連結：
-Near links:
-近端連結：
-Show parsed link data
-顯示特殊連結設定
 Too many connections by %s
 太多來自 %s 的連線
 Please do not fetch more than %1 pages in %2 seconds.
 請不要在 %2 秒內抓取超過 %1 頁的資料。
 Check whether the web server can create the directory %s and whether it can create files in it.
 請確認網站伺服器是否可建立 %s 目錄，並且在其中建立檔案。
-anchor first defined here: %s
-錨點已被定義於 %s
-Click to search for references to this permanent anchor
-按下即可搜尋此錨點的相關資料
-the page %s also exists
-也存在一個叫 %s 的頁面
 Copy one of the following stylesheets to %s:
 複製以下 CSS 模版至 %s
 Deleting %s
@@ -572,6 +538,10 @@ Internal Page:
 內部頁面:
 Pages that link to this page
 連結此頁面
+The search parameter is missing.
+
+Pages link to %s
+
 Cannot highlight the language %s.
 無法強調顯示 %s 。
 Recent Visitors
@@ -688,8 +658,6 @@ ordinary changes
 普通變更
 Matching page names:
 匹配頁面的名稱:
-Footnotes:
-註解：
 Could not find %1.html template in %2
 無法在 %2 找到 %1.html 的範本
 Only Editors are allowed to see this hidden page.
@@ -706,6 +674,10 @@ Define
 定義
 Full Link List
 完整連結列表
+List of locked pages
+
+Pages tagged with %s
+
 Template without parameters
 未指定 template 參數
 The template %s is either empty or does not exist.
@@ -714,6 +686,8 @@ The template %s is either empty or does not exist.
  -- 在 %s 中定義
 Local names defined on %1: %2
 定義本地名稱在 %1: %2
+Locked Pages
+
 Register for %s
 為 %s 註冊
 Please choose a username of the form "FirstLast" using your real name.
@@ -808,14 +782,74 @@ There was an error approving %s.
 
 There are no pending registrations.
 沒有等候的註冊
+Invalid Mail %s: not saved.
+
+unsubscribe
+
+subscribe
+
+Email: 
+
+%s appears to be an invalid mail address
+
+Your mail subscriptions
+
+All mail subscriptions
+
+Subscriptions
+
+Show
+
+Subscriptions for %s:
+
+Unsubscribe
+
+There are no subscriptions for %s.
+
+Change email address
+
+Mail addresses are linked to unsubscription links.
+
+Subscribe to %s.
+
+Subscribe
+
+Subscribed %s to the following pages:
+
+The remaining pages do not exist.
+
+Unsubscribed %s from the following pages:
+
+You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
+
 %s is not a legal name for a namespace
 %s 不是一個正常的命名空間
+Namespaces
+
+Getting page index file for %s.
+自 %s 取得頁面索引資料。
+Near links:
+近端連結：
+Search sites on the %s as well
+也搜尋列在 %s 上的網站
+Fetching results from %s:
+由 %s 取回的結果：
+Near pages:
+近端頁面：
+Include near pages
+包含相近的頁面
+EditNearLinks
+編輯接近連結
+The same page on other sites:
+其他網站的相同頁面
  (create locally)
  (本地建立)
 image
 圖像
 download
 下載
+Backlinks
+
 Clearing Cache
 清除暫存
 Done.
@@ -838,6 +872,20 @@ Self-ban by %s
 被 %s 禁止
 You have banned your own IP.
 您禁止了自已的 IP Address
+OpenID Login
+
+Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
+
+Your homepage is set to %s.
+
+You have no homepage set.
+
+Homepage:
+
+Homepage is missing
+
+OpenID error %s
+
 Orphan List
 孤立頁面列表
 Trail: 
@@ -848,12 +896,20 @@ Type
 類別
 Permalink to "%s"
 永久連結至 "%s"
+anchor first defined here: %s
+錨點已被定義於 %s
+the page %s also exists
+也存在一個叫 %s 的頁面
 There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
 建立 %s PDF 時發生錯誤，請停止下載動作並立即通知網站管理員。
 Someone else is generating a pdf for %s.  Please wait a minute and then try again.
 其它使用者正在建立 %s PDF，請過幾分鐘後在試試。
 Download this page as PDF
 下載本頁面 PDF
+Click to search for references to this permanent anchor
+按下即可搜尋此錨點的相關資料
+Include permanent anchors
+包含固定的錨點
 Portrait
 肖像
 Publish %s
@@ -864,10 +920,12 @@ The target wiki was misconfigured.
 目標(Target) Wiki 設定錯誤
 You did not answer correctly.
 您沒有回答正確的答案
-Use the back button to return the previous page and try again.
-請使用返回按鈕返回前一頁後再試一次
 To save this page you must answer this question:
 為了保存此頁面，您必須回答這個問題:
+Please type the following two words:
+
+Please answer this captcha:
+
 Referrers
 引用者
 All Referrers
@@ -884,6 +942,10 @@ Rebuilding index not done.
 重建索引尚未完成
 (Rebuilding the index can only be done once every 12 hours.)
 (重建索引間隔為 12 小時)
+New Pages for Indexed Search
+
+List changes since %s
+
  ... 
 
 Search term missing.
@@ -898,6 +960,8 @@ Tags: %s.
 標籤: %s
 No tags
 無標籤
+Page list for %s
+
 Slideshow:%s
 自動播放: %s
 Index of all small pages
@@ -910,6 +974,14 @@ Copy to %1 succeeded: %2.
 從 %2 複製到 %1 成功
 Copy to %1 failed: %2.
 從 %2 複製到 %1 失敗
+Feed for this tag
+
+Rebuild tag index
+
+list tags
+
+tag cloud
+
 Alternatively, use one of the following templates:
 或者，使用下列範本之一:
 Thread: %s
@@ -940,6 +1012,26 @@ Contents
 內容
 Create a new page for today
 建立今日頁面
+Add Translation
+
+Added translation: %1 (%2)
+
+Translate %s
+
+Thank you for writing a translation of %s.
+
+Please indicate what language you will be using.
+
+Language is missing
+
+Suggested languages:
+
+Please indicate a page name for the translation of %s.
+
+More help may be available here: %s.
+
+Translated page: 
+
 This page is a translation of %s. 
 本頁是頁面 %s 的翻譯。
 The translation is up to date.

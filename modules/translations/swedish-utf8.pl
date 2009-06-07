@@ -20,8 +20,10 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.17 2007/08/19 11:42:08 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.18 2009/06/07 19:30:38 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
+Include normal pages
+Med vanliga sidor
 Reading not allowed: user, ip, or network is blocked.
 Läsning inte tillåten: användare, ip eller nätverk är blockerat.
 Login
@@ -72,8 +74,6 @@ CGI Internal error: %s
 Internt CGI-fel: %s
 Invalid action parameter %s
 Ogiltig parameter %s
-Invalid URL.
-Ogiltig URL.
 Page name is missing
 Sidnamn saknas
 Page name is too long: %s
@@ -84,16 +84,14 @@ Invalid Page %s (must not end with .lck)
 Ogiltig sida %s (får inte sluta med .lck)
 Invalid Page %s
 Ogiltig sida %s
-Preview:
-Förhandsgranskning:
-Preview only, not yet saved
-Endast förhandsgranskning, ännu inte sparad
+Too many redirections
+
+No redirection for old revisions
+
+Invalid link pattern for #REDIRECT
+
 Please go on to %s.
 Gå vidare till %s.
-All changes for %s
-
-No updates since %s
-Inga ändringar sedan %s
 Updates since %s
 Ändringar sedan %s
 Updates in the last %s days
@@ -146,10 +144,10 @@ rollback
 återställning
 new
 ny
+All changes for %s
+
 from %s
 från %s
-: 
-
 This page is too big to send over RSS.
 Denna sida är för stor för att sändas över RSS.
 History of %s
@@ -218,20 +216,24 @@ För att markera en sida för radering, skriv <strong>%s</strong> på första ra
 [Startsida]
 redirected from %s
 omdirigerad från %s
+%s: 
+
 Click to search for references to this page
 Klicka för att söka efter referenser till den här sidan
 Cookie: 
 
+Edit this page
+Redigera sidan
+Preview:
+Förhandsgranskning:
+Preview only, not yet saved
+Endast förhandsgranskning, ännu inte sparad
 Warning
 Varning
 Database is stored in temporary directory %s
 Databas sparad i tillfällig katalog %s
 %s seconds
 %s sekunder
-The same page on other sites:
-Samma sida på andra siter:
-EditNearLinks
-Redigera närlänkar
 Last edited
 Senast ändrad
 Edited
@@ -242,8 +244,6 @@ av %s
 (ändringar)
 Edit revision %s of this page
 Redigera version %s av den här sidan
-Edit this page
-Redigera sidan
 e
 r
 This page is read-only
@@ -406,22 +406,10 @@ Reason: %s.
 
 Reason unknown.
 
-Without normal pages
-Utan vanliga sidor
-Include normal pages
-Med vanliga sidor
-Without permanent anchors
-Utan permanenta ankare
-Include permanent anchors
-Med permanenta ankare
-Without near pages
-Utan nära sidor
-Include near pages
-Med nära sidor
-(for %s)
-(för: %s)
 Filter:
 
+(for %s)
+(för: %s)
 %s pages found.
 %s sidor.
 Replaced: %s
@@ -430,16 +418,6 @@ Search for: %s
 Sök efter: %s
 View changes for these pages
 Se ändringar för dessa sidor
-Search sites on the %s as well
-Sök siter på %s också
-and
-och
-or
-eller
-Fetching results from %s:
-Hämtar resultat från %s:
-Near pages:
-Nära sidor:
 last updated
 senast reviderad
 by
@@ -500,8 +478,6 @@ Note: This error is normal if no changes have been made.
 Observera: Det här felet är normalt om inga ändringar gjorts.
 Moving %s log entries.
 Flyttar %s loggnotering.
-Getting page index file for %s.
-Hämtar sidindexfil för %s.
 Set or Remove global edit lock
 Slå på eller av globalt redigeringslås
 Edit lock created.
@@ -516,26 +492,16 @@ Lock for %s removed.
 Slog av redigeringslås för för %s.
 Displaying Wiki Version
 Visar Wikiversion
-Show dependencies
-Visa beroenden
+Debugging Information
+
 Inter links:
 Interlänkar:
-Near links:
-Närlänkar:
-Show parsed link data
-Visa tolkat länkdata
 Too many connections by %s
 För många anslutningar ifrån %s
 Please do not fetch more than %1 pages in %2 seconds.
 Vänligen hämta inte mer än %1 sidor på %2 sekunder.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Kontrollera att webservern kan skapa biblioteket %s och att den kan skapa filer i det.
-anchor first defined here: %s
-ankare definierades först här: %s
-Click to search for references to this permanent anchor
-Klicka för att söka efter referenser till det här permanenta ankaret
-the page %s also exists
-sidan %s finns också
 Copy one of the following stylesheets to %s:
 Kopiera en av följande 'stylesheets' till %s:
 Deleting %s
@@ -573,6 +539,10 @@ Rebuild BackLink database
 Internal Page: 
 
 Pages that link to this page
+
+The search parameter is missing.
+
+Pages link to %s
 
 Cannot highlight the language %s.
 Kan ej markera språket %s.
@@ -690,8 +660,6 @@ ordinary changes
 vanliga ändringar
 Matching page names:
 
-Footnotes:
-Fotnoter:
 Could not find %1.html template in %2
 Kunde inte finna %1.html-mallen i %2
 Only Editors are allowed to see this hidden page.
@@ -708,6 +676,10 @@ Define
 Definiera
 Full Link List
 Fullständing länklista
+List of locked pages
+
+Pages tagged with %s
+
 Template without parameters
 Mall utan parametrar
 The template %s is either empty or does not exist.
@@ -716,6 +688,8 @@ Mallen %s är antingen tom eller saknas.
  -- definierad på %s
 Local names defined on %1: %2
 Lokala namn definierade på %1: %2
+Locked Pages
+
 Register for %s
 
 Please choose a username of the form "FirstLast" using your real name.
@@ -810,14 +784,74 @@ There was an error approving %s.
 
 There are no pending registrations.
 
+Invalid Mail %s: not saved.
+
+unsubscribe
+
+subscribe
+
+Email: 
+
+%s appears to be an invalid mail address
+
+Your mail subscriptions
+
+All mail subscriptions
+
+Subscriptions
+
+Show
+
+Subscriptions for %s:
+
+Unsubscribe
+
+There are no subscriptions for %s.
+
+Change email address
+
+Mail addresses are linked to unsubscription links.
+
+Subscribe to %s.
+
+Subscribe
+
+Subscribed %s to the following pages:
+
+The remaining pages do not exist.
+
+Unsubscribed %s from the following pages:
+
+You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
+
 %s is not a legal name for a namespace
 
+Namespaces
+
+Getting page index file for %s.
+Hämtar sidindexfil för %s.
+Near links:
+Närlänkar:
+Search sites on the %s as well
+Sök siter på %s också
+Fetching results from %s:
+Hämtar resultat från %s:
+Near pages:
+Nära sidor:
+Include near pages
+Med nära sidor
+EditNearLinks
+Redigera närlänkar
+The same page on other sites:
+Samma sida på andra siter:
  (create locally)
 
 image
 bild
 download
 ladda ned
+Backlinks
+
 Clearing Cache
 Rensar cachen
 Done.
@@ -840,6 +874,20 @@ Self-ban by %s
 
 You have banned your own IP.
 
+OpenID Login
+
+Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
+
+Your homepage is set to %s.
+
+You have no homepage set.
+
+Homepage:
+
+Homepage is missing
+
+OpenID error %s
+
 Orphan List
 Lista över övergivna sidor
 Trail: 
@@ -850,12 +898,20 @@ Type
 Sort
 Permalink to "%s"
 Permanentlänk till "%s"
+anchor first defined here: %s
+ankare definierades först här: %s
+the page %s also exists
+sidan %s finns också
 There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
 
 Someone else is generating a pdf for %s.  Please wait a minute and then try again.
 
 Download this page as PDF
 
+Click to search for references to this permanent anchor
+Klicka för att söka efter referenser till det här permanenta ankaret
+Include permanent anchors
+Med permanenta ankare
 Portrait
 Porträtt
 Publish %s
@@ -866,9 +922,11 @@ The target wiki was misconfigured.
 
 You did not answer correctly.
 Du svarade inte korrekt.
-Use the back button to return the previous page and try again.
-
 To save this page you must answer this question:
+
+Please type the following two words:
+
+Please answer this captcha:
 
 Referrers
 Sidor som länkat hit
@@ -886,6 +944,10 @@ Rebuilding index not done.
 
 (Rebuilding the index can only be done once every 12 hours.)
 
+New Pages for Indexed Search
+
+List changes since %s
+
  ... 
 
 Search term missing.
@@ -900,6 +962,8 @@ Tags: %s.
 
 No tags
 
+Page list for %s
+
 Slideshow:%s
 
 Index of all small pages
@@ -911,6 +975,14 @@ Tillbaka till %s
 Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
+
+Feed for this tag
+
+Rebuild tag index
+
+list tags
+
+tag cloud
 
 Alternatively, use one of the following templates:
 Eller använd en av följande mallar:
@@ -941,6 +1013,26 @@ Please try again later. Perhaps somebody is running maintenance or doing a long 
 Contents
 Innehåll
 Create a new page for today
+
+Add Translation
+
+Added translation: %1 (%2)
+
+Translate %s
+
+Thank you for writing a translation of %s.
+
+Please indicate what language you will be using.
+
+Language is missing
+
+Suggested languages:
+
+Please indicate a page name for the translation of %s.
+
+More help may be available here: %s.
+
+Translated page: 
 
 This page is a translation of %s. 
 Denna sida är en översättning av %s. 

@@ -24,7 +24,7 @@
 #by wctang <wctang@csie.nctu.edu.tw> and using the tool cnmap
 #(http://search.cpan.org/~qjzhou/Encode-CNMap-0.32/bin/cnmap) by Qing-Jie Zhou <qjzhou@hotmail.com>.
 #
-$ModulesDescription .= '<p>$Id: chinese_cn-utf8.pl,v 1.10 2007/08/19 11:42:07 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: chinese_cn-utf8.pl,v 1.11 2009/06/07 19:30:37 as Exp $</p>';
 ##############################################################
 #  for those who want to use Chinese even for special pages
 #  please uncomment the corresponding lines to use translated 
@@ -41,6 +41,8 @@ $RCName      = '最近更新'; # Name of changes page
 $RssExclude       = 'RSS排除页面'; # name of the page that lists pages to be excluded from the feed
 $CategoriesPage = '日志类别';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
+Include normal pages
+包含普通页面
 Reading not allowed: user, ip, or network is blocked.
 禁止读取：使用者、ip 或是网路已被禁止连线。
 Login
@@ -91,8 +93,6 @@ CGI Internal error: %s
 CGI内部错误 %s
 Invalid action parameter %s
 无效的动作参数 %s
-Invalid URL.
-无效的 URL 。
 Page name is missing
 页面不存在
 Page name is too long: %s
@@ -103,16 +103,14 @@ Invalid Page %s (must not end with .lck)
 无效的页面名称%s(不可使用 .lck 做为结尾)
 Invalid Page %s
 无效的页面名称 %s
-Preview:
-预览：
-Preview only, not yet saved
-现在是预览模式，尚未储存
+Too many redirections
+
+No redirection for old revisions
+
+Invalid link pattern for #REDIRECT
+
 Please go on to %s.
 请继续前住%s。
-All changes for %s
-%s页面的所有修订
-No updates since %s
-自%s以来没有修改
 Updates since %s
 自%s以来的修改
 Updates in the last %s days
@@ -165,10 +163,10 @@ rollback
 恢复
 new
 新增
+All changes for %s
+%s页面的所有修订
 from %s
 自 %s
-: 
-
 This page is too big to send over RSS.
 页面太大，无法通过RSS发送。
 History of %s
@@ -237,20 +235,24 @@ To mark a page for deletion, put <strong>%s</strong> on the first line.
 [首页]
 redirected from %s
 自%s重定向 
+%s: 
+
 Click to search for references to this page
 按下即可以搜索参考至本页的数据
 Cookie: 
 曲其：
+Edit this page
+编辑本页
+Preview:
+预览：
+Preview only, not yet saved
+现在是预览模式，尚未储存
 Warning
 警告
 Database is stored in temporary directory %s
 数据库现在是存放于临时目录 %s
 %s seconds
 %s秒
-The same page on other sites:
-其他网站的相同页面
-EditNearLinks
-编辑相邻链接
 Last edited
 最后编辑于
 Edited
@@ -261,8 +263,6 @@ by %s
 (比较差异)
 Edit revision %s of this page
 编辑本页的第%s版本
-Edit this page
-编辑本页
 e
 
 This page is read-only
@@ -425,22 +425,10 @@ Reason: %s.
 
 Reason unknown.
 
-Without normal pages
-不包含普通页面
-Include normal pages
-包含普通页面
-Without permanent anchors
-不包含永久锚点
-Include permanent anchors
-包含永久锚点
-Without near pages
-不包含相邻页面
-Include near pages
-包含相邻页面
-(for %s)
-(列出%s)
 Filter:
 过滤规则：
+(for %s)
+(列出%s)
 %s pages found.
 找到%s个页面。
 Replaced: %s
@@ -449,16 +437,6 @@ Search for: %s
 搜索：%s
 View changes for these pages
 参阅这些页面的更动
-Search sites on the %s as well
-也搜索列在%s上的网站
-and
-和
-or
-或
-Fetching results from %s:
-由%s取回的结果：
-Near pages:
-相邻页面：
 last updated
 最后更新于
 by
@@ -519,8 +497,6 @@ Note: This error is normal if no changes have been made.
 如果还没有做过任何修改的话，则不用理会这个错误讯息。
 Moving %s log entries.
 移除了%s个记录项目。
-Getting page index file for %s.
-自%s取得页面索引数据。
 Set or Remove global edit lock
 设定或移除整个网站的编辑锁定
 Edit lock created.
@@ -535,26 +511,16 @@ Lock for %s removed.
 已移除%s的锁定。
 Displaying Wiki Version
 显示 Wiki 版本
-Show dependencies
-显示依赖关系
+Debugging Information
+
 Inter links:
 内部连结：
-Near links:
-附近连结：
-Show parsed link data
-显示特殊连结设定
 Too many connections by %s
 太多来自%s的连线
 Please do not fetch more than %1 pages in %2 seconds.
 请不要在 %2 秒内下载超过 %1 页的数据。
 Check whether the web server can create the directory %s and whether it can create files in it.
 请确认网站服务器是否可建立%s目录，并且在其中建立文件。
-anchor first defined here: %s
-锚点已被定义于 %s
-Click to search for references to this permanent anchor
-按下即可搜索此锚点的相关数据
-the page %s also exists
-也存在一个叫%s的页面
 Copy one of the following stylesheets to %s:
 复制以下样式模板至 %s。
 Deleting %s
@@ -592,6 +558,10 @@ Rebuild BackLink database
 Internal Page: 
 
 Pages that link to this page
+
+The search parameter is missing.
+
+Pages link to %s
 
 Cannot highlight the language %s.
 无法高亮显示语言%s。
@@ -709,8 +679,6 @@ ordinary changes
 普通改动
 Matching page names:
 
-Footnotes:
-注解：
 Could not find %1.html template in %2
 无法在 %2 找到 %1.html 的范本
 Only Editors are allowed to see this hidden page.
@@ -727,6 +695,10 @@ Define
 定义
 Full Link List
 完整连结列表
+List of locked pages
+
+Pages tagged with %s
+
 Template without parameters
 未指定 template 参数
 The template %s is either empty or does not exist.
@@ -735,6 +707,8 @@ The template %s is either empty or does not exist.
  -- 在%s中定义
 Local names defined on %1: %2
 定义在%s:%2的局部变量
+Locked Pages
+
 Register for %s
 为%s注册
 Please choose a username of the form "FirstLast" using your real name.
@@ -829,14 +803,74 @@ There was an error approving %s.
 
 There are no pending registrations.
 无待候审批用户
+Invalid Mail %s: not saved.
+
+unsubscribe
+
+subscribe
+
+Email: 
+
+%s appears to be an invalid mail address
+
+Your mail subscriptions
+
+All mail subscriptions
+
+Subscriptions
+
+Show
+
+Subscriptions for %s:
+
+Unsubscribe
+
+There are no subscriptions for %s.
+
+Change email address
+
+Mail addresses are linked to unsubscription links.
+
+Subscribe to %s.
+
+Subscribe
+
+Subscribed %s to the following pages:
+
+The remaining pages do not exist.
+
+Unsubscribed %s from the following pages:
+
+You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
+
 %s is not a legal name for a namespace
 %s不是一个合法的用户名，请重新设置
+Namespaces
+
+Getting page index file for %s.
+自%s取得页面索引数据。
+Near links:
+附近连结：
+Search sites on the %s as well
+也搜索列在%s上的网站
+Fetching results from %s:
+由%s取回的结果：
+Near pages:
+相邻页面：
+Include near pages
+包含相邻页面
+EditNearLinks
+编辑相邻链接
+The same page on other sites:
+其他网站的相同页面
  (create locally)
 
 image
 图像
 download
 下载
+Backlinks
+
 Clearing Cache
 清除缓存
 Done.
@@ -859,6 +893,20 @@ Self-ban by %s
 被%s自闭
 You have banned your own IP.
 您把封禁了自己的IP地址。
+OpenID Login
+
+Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
+
+Your homepage is set to %s.
+
+You have no homepage set.
+
+Homepage:
+
+Homepage is missing
+
+OpenID error %s
+
 Orphan List
 孤立页面列表
 Trail: 
@@ -869,12 +917,20 @@ Type
 类别
 Permalink to "%s"
 永久连结至 "%s"
+anchor first defined here: %s
+锚点已被定义于 %s
+the page %s also exists
+也存在一个叫%s的页面
 There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
 生成%s的pdf时出错。请停止下载并立即汇报管理员。
 Someone else is generating a pdf for %s.  Please wait a minute and then try again.
 其他用户正在生成%s的pdf。请稍候一分钟后再连接。
 Download this page as PDF
 下载该页面的PDF文档
+Click to search for references to this permanent anchor
+按下即可搜索此锚点的相关数据
+Include permanent anchors
+包含永久锚点
 Portrait
 肖像
 Publish %s
@@ -885,10 +941,12 @@ The target wiki was misconfigured.
 目标wiki设置有误
 You did not answer correctly.
 回答不正确。
-Use the back button to return the previous page and try again.
-
 To save this page you must answer this question:
 保存该页面需要正确回答以下问题：
+Please type the following two words:
+
+Please answer this captcha:
+
 Referrers
 引用者
 All Referrers
@@ -905,6 +963,10 @@ Rebuilding index not done.
 重建索引尚未完成
 (Rebuilding the index can only be done once every 12 hours.)
 （自动重建索引间隔为12个小时。）
+New Pages for Indexed Search
+
+List changes since %s
+
  ... 
 
 Search term missing.
@@ -919,6 +981,8 @@ Tags: %s.
 标签：%s。
 No tags
 无标签
+Page list for %s
+
 Slideshow:%s
 自动放映：%s
 Index of all small pages
@@ -931,6 +995,14 @@ Copy to %1 succeeded: %2.
 成功复制为%1：%2
 Copy to %1 failed: %2.
 无法复制为%1：%2
+Feed for this tag
+
+Rebuild tag index
+
+list tags
+
+tag cloud
+
 Alternatively, use one of the following templates:
 或者，使用下列范本之一:
 Thread: %s
@@ -960,6 +1032,26 @@ Please try again later. Perhaps somebody is running maintenance or doing a long 
 Contents
 内容
 Create a new page for today
+
+Add Translation
+
+Added translation: %1 (%2)
+
+Translate %s
+
+Thank you for writing a translation of %s.
+
+Please indicate what language you will be using.
+
+Language is missing
+
+Suggested languages:
+
+Please indicate a page name for the translation of %s.
+
+More help may be available here: %s.
+
+Translated page: 
 
 This page is a translation of %s. 
 本页是页面%s的翻译。

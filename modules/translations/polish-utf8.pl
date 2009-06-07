@@ -17,8 +17,10 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: polish-utf8.pl,v 1.6 2008/04/30 23:36:30 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: polish-utf8.pl,v 1.7 2009/06/07 19:30:37 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
+Include normal pages
+Ze zwykłymi stronami
 Reading not allowed: user, ip, or network is blocked.
 Nie wolno Ci czytać tej strony: użytkownik, numer ip lub sieć jest zablokowana.
 Login
@@ -69,8 +71,6 @@ CGI Internal error: %s
 Wewnętrzny błąd CGI: %s
 Invalid action parameter %s
 Niewłaściwy parametr działania %s
-Invalid URL.
-Niewłaściwy URL.
 Page name is missing
 Brakuje nazwy strony
 Page name is too long: %s
@@ -81,16 +81,14 @@ Invalid Page %s (must not end with .lck)
 Niewłaściwa strona %s (nie może kończyć się na .lck)
 Invalid Page %s
 Niewłaściwa strona %s
-Preview:
-Podgląd:
-Preview only, not yet saved
-Tylko podgląd, jeszcze nie zapisane
+Too many redirections
+
+No redirection for old revisions
+
+Invalid link pattern for #REDIRECT
+
 Please go on to %s.
 Proszę przejść do %s.
-All changes for %s
-Wszystkie zmiany dla %s
-No updates since %s
-Żadnych zmian od %s
 Updates since %s
 Zmiany od %s
 Updates in the last %s days
@@ -143,10 +141,10 @@ rollback
 cofnij
 new
 nowa
+All changes for %s
+Wszystkie zmiany dla %s
 from %s
 z %s
-: 
-: 
 This page is too big to send over RSS.
 Ta strona jest zbyt duża, żeby ją wysłać przez RSS.
 History of %s
@@ -215,20 +213,24 @@ Aby zaznaczyć stronę do usunięcia, wpisz <strong>%s</strong> w pierwszej lini
 [Dom]
 redirected from %s
 przekierowano z %s
+%s: 
+
 Click to search for references to this page
 Kliknij, aby szukać odniesień do tej strony
 Cookie: 
 Ciasteczko:
+Edit this page
+Edytuj tę stronę
+Preview:
+Podgląd:
+Preview only, not yet saved
+Tylko podgląd, jeszcze nie zapisane
 Warning
 Ostrzeżenie
 Database is stored in temporary directory %s
 Baza danych przechowywana w katalogu tymczasowym %s
 %s seconds
 %s sekund
-The same page on other sites:
-Ta sama strona gdzie indziej
-EditNearLinks
-EdytujBliskieLinki
 Last edited
 Ostatnio edytowane
 Edited
@@ -239,8 +241,6 @@ przez %s
 (różnice)
 Edit revision %s of this page
 Edytuj wersję %s tej strony
-Edit this page
-Edytuj tę stronę
 e
 e
 This page is read-only
@@ -403,22 +403,10 @@ Reason: %s.
 Przyczyna: %s.
 Reason unknown.
 Przyczyna nieznana.
-Without normal pages
-Bez zwykłych stron
-Include normal pages
-Ze zwykłymi stronami
-Without permanent anchors
-Bez stałych odnośników
-Include permanent anchors
-Ze stałymi odnośnikami
-Without near pages
-Bez bliskich stron
-Include near pages
-Z bliskimi stronami
-(for %s)
-(dla %s)
 Filter:
 Filtr:
+(for %s)
+(dla %s)
 %s pages found.
 znaleziono %s stron.
 Replaced: %s
@@ -427,16 +415,6 @@ Search for: %s
 Szukaj: %s
 View changes for these pages
 Zobacz zmiany dla tych stron
-Search sites on the %s as well
-Szukaj stron także na %s
-and
-oraz
-or
-lub
-Fetching results from %s:
-Pobieram wyniki z %s:
-Near pages:
-Bliskie strony:
 last updated
 ostatnio zmieniane
 by
@@ -497,8 +475,6 @@ Note: This error is normal if no changes have been made.
 Uwaga: Ten błąd jest normalny, jeśli nie było żadnych zmian.
 Moving %s log entries.
 Przenoszenie %s wpisów logów.
-Getting page index file for %s.
-Pobieranie pliku indeksu dla %s.
 Set or Remove global edit lock
 Ustaw lub zwolnij globalną blokadę edycji
 Edit lock created.
@@ -513,26 +489,16 @@ Lock for %s removed.
 Zwolniono blokadę dla %s
 Displaying Wiki Version
 Wyświetlanie wersji Wiki
-Show dependencies
-Pokaż zależności
+Debugging Information
+
 Inter links:
 Wewnętrzne odnośniki:
-Near links:
-Bliskie odnośniki:
-Show parsed link data
-Pokaż sparsowane dane odnośników
 Too many connections by %s
 Zbyt dużo połączeń z %s
 Please do not fetch more than %1 pages in %2 seconds.
 Proszę nie pobierać więcej niż %1 stron w ciągu %2 sekund.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Sprawdź czy serwer WWW może utworzyć katalog %s, oraz czy może tworzyć w nim pliki.
-anchor first defined here: %s
-odnośnik zdefiniowano uprzednio tutaj: %s
-Click to search for references to this permanent anchor
-Kliknij aby poszukać odniesień do tego stałego odnośnika
-the page %s also exists
-strona %s także istnieje
 Copy one of the following stylesheets to %s:
 Skopiuj jeden z następujących arkuszy styli do %s:
 Deleting %s
@@ -571,6 +537,10 @@ Internal Page:
 Strona Wewnętrzna: 
 Pages that link to this page
 Strony linkujące do tej strony
+The search parameter is missing.
+
+Pages link to %s
+
 Cannot highlight the language %s.
 Nie można pokolorować źródła dla języka %s.
 Recent Visitors
@@ -687,8 +657,6 @@ ordinary changes
 zwykłe zmiany
 Matching page names:
 Pasujące nazwy stron:
-Footnotes:
-Przypisy:
 Could not find %1.html template in %2
 Nie można znaleźć szablonu %1.html w %2
 Only Editors are allowed to see this hidden page.
@@ -705,6 +673,10 @@ Define
 Zdefiniuj
 Full Link List
 Pełna lista odnośników
+List of locked pages
+
+Pages tagged with %s
+
 Template without parameters
 Szablon bez parametrów
 The template %s is either empty or does not exist.
@@ -713,6 +685,8 @@ Szablon %s albo jest pusty, albo nie istnieje.
  -- zdefiniowane na %s
 Local names defined on %1: %2
 Lokalne nazwy zdefiniowane na %1: %2
+Locked Pages
+
 Register for %s
 Zarejestruj dla %s
 Please choose a username of the form "FirstLast" using your real name.
@@ -807,14 +781,74 @@ Nastąpił błąd przy potwierdzaniu %s.
 </ul>
 There are no pending registrations.
 Nie ma oczekujących rejestracji.
+Invalid Mail %s: not saved.
+
+unsubscribe
+
+subscribe
+
+Email: 
+
+%s appears to be an invalid mail address
+
+Your mail subscriptions
+
+All mail subscriptions
+
+Subscriptions
+
+Show
+
+Subscriptions for %s:
+
+Unsubscribe
+
+There are no subscriptions for %s.
+
+Change email address
+
+Mail addresses are linked to unsubscription links.
+
+Subscribe to %s.
+
+Subscribe
+
+Subscribed %s to the following pages:
+
+The remaining pages do not exist.
+
+Unsubscribed %s from the following pages:
+
+You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
+
 %s is not a legal name for a namespace
 %s nie jest dozwoloną nazwą przestrzeni nazw
+Namespaces
+
+Getting page index file for %s.
+Pobieranie pliku indeksu dla %s.
+Near links:
+Bliskie odnośniki:
+Search sites on the %s as well
+Szukaj stron także na %s
+Fetching results from %s:
+Pobieram wyniki z %s:
+Near pages:
+Bliskie strony:
+Include near pages
+Z bliskimi stronami
+EditNearLinks
+EdytujBliskieLinki
+The same page on other sites:
+Ta sama strona gdzie indziej
  (create locally)
  (utwórz lokalnie)
 image
 obrazek
 download
 pobieranie
+Backlinks
+
 Clearing Cache
 Czyszczenie pamięci podręcznej
 Done.
@@ -837,6 +871,20 @@ Self-ban by %s
 Samo-zablokowano przez %s
 You have banned your own IP.
 Zablokowałeś własny numer ip.
+OpenID Login
+
+Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
+
+Your homepage is set to %s.
+
+You have no homepage set.
+
+Homepage:
+
+Homepage is missing
+
+OpenID error %s
+
 Orphan List
 Lista Sierot
 Trail: 
@@ -847,12 +895,20 @@ Type
 Typ
 Permalink to "%s"
 Stały odnośnik do "%s"
+anchor first defined here: %s
+odnośnik zdefiniowano uprzednio tutaj: %s
+the page %s also exists
+strona %s także istnieje
 There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
 Nastąpił błąd podczas generowania pdf dla %s. Proszę zgłosić to do administratora, ale nie próbować pobierać ponownie, gdyż to nie zadziała.
 Someone else is generating a pdf for %s.  Please wait a minute and then try again.
 Ktoś inny generuje pdf dla %s. Proszę poczekać minutę i spróbować ponownie.
 Download this page as PDF
 Pobierz tę stronę jako PDF
+Click to search for references to this permanent anchor
+Kliknij aby poszukać odniesień do tego stałego odnośnika
+Include permanent anchors
+Ze stałymi odnośnikami
 Portrait
 Portret
 Publish %s
@@ -863,10 +919,12 @@ The target wiki was misconfigured.
 Docelowa wiki jest źle skonfigurowana.
 You did not answer correctly.
 Nie odpowiedziałeś poprawnie.
-Use the back button to return the previous page and try again.
-Użyj przycisku powrotu, by wrócić do poprzedniej strony, i spróbuj ponownie.
 To save this page you must answer this question:
 Aby zapisać tę stronę, musisz odpowiedzieć na pytanie:
+Please type the following two words:
+
+Please answer this captcha:
+
 Referrers
 Odniesienia
 All Referrers
@@ -883,6 +941,10 @@ Rebuilding index not done.
 Przebudowywanie indeksu nie zakończone.
 (Rebuilding the index can only be done once every 12 hours.)
 (Przebudowa indeksu może być dokonana raz na 12 godzin).
+New Pages for Indexed Search
+
+List changes since %s
+
  ... 
  ... 
 Search term missing.
@@ -897,6 +959,8 @@ Tags: %s.
 Znaczniki: %s.
 No tags
 Brak znaczników
+Page list for %s
+
 Slideshow:%s
 Pokaz slajdów: %s
 Index of all small pages
@@ -909,6 +973,14 @@ Copy to %1 succeeded: %2.
 Kopiowanie do %1 udane: %2.
 Copy to %1 failed: %2.
 Kopiowanie do %1 nie powiodło się: %2.
+Feed for this tag
+
+Rebuild tag index
+
+list tags
+
+tag cloud
+
 Alternatively, use one of the following templates:
 Ewentualnie użyj jednego z poniższych szablonów:
 Thread: %s
@@ -939,6 +1011,26 @@ Contents
 Zawartość
 Create a new page for today
 Utwórz nową stronę na dzisiaj
+Add Translation
+
+Added translation: %1 (%2)
+
+Translate %s
+
+Thank you for writing a translation of %s.
+
+Please indicate what language you will be using.
+
+Language is missing
+
+Suggested languages:
+
+Please indicate a page name for the translation of %s.
+
+More help may be available here: %s.
+
+Translated page: 
+
 This page is a translation of %s. 
 Ta strona jest tłumaczeniem %s.
 The translation is up to date.

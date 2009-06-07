@@ -15,8 +15,10 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: greek-utf8.pl,v 1.1 2008/11/24 17:40:20 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: greek-utf8.pl,v 1.2 2009/06/07 19:30:37 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
+Include normal pages
+Με τις κανονικές σελίδες.
 Reading not allowed: user, ip, or network is blocked.
 Η ανάγνωση δεν επιτρέπεται: αυτός ο χρήστης, η διεύθυνση, ή το δίκτυο έχουν μπλοκαριστεί.
 Login
@@ -67,8 +69,6 @@ CGI Internal error: %s
 Εσωτερικό Σφάλμα CGI: %s
 Invalid action parameter %s
 Μη έγκυρη παράμετρος action: %s
-Invalid URL.
-Μη έγκυρη διεύθυνση URL.
 Page name is missing
 Λείπει το όνομα της σελίδας
 Page name is too long: %s
@@ -79,16 +79,14 @@ Invalid Page %s (must not end with .lck)
 Μη έγκυρο όνομα σελίδας %s (δεν επιτρέπεται να τελειώνει σε .lck)
 Invalid Page %s
 Μη έγκυρη σελίδα %s
-Preview:
-Προεπισκόπηση:
-Preview only, not yet saved
-Προεπισκόπηση σελίδας, δεν έχει αποθηκευθεί ακόμη
+Too many redirections
+
+No redirection for old revisions
+
+Invalid link pattern for #REDIRECT
+
 Please go on to %s.
 Παρακαλώ δείτε το %s.
-All changes for %s
-Όλες οι αλλαγές για το %s
-No updates since %s
-Δεν υπάρχουν ενημερώσεις από %s
 Updates since %s
 Ενημερώσεις από %s
 Updates in the last %s days
@@ -141,10 +139,10 @@ rollback
 επαναφορά
 new
 νέα σελίδα
+All changes for %s
+Όλες οι αλλαγές για το %s
 from %s
 από %s
-: 
-: 
 This page is too big to send over RSS.
 Αυτή η σελίδα είναι πολύ μεγάλη για αποστολή μέσω RSS.
 History of %s
@@ -213,20 +211,24 @@ To mark a page for deletion, put <strong>%s</strong> on the first line.
 [Αρχική Σελίδα]
 redirected from %s
 προώθηση από το %s
+%s: 
+
 Click to search for references to this page
 Πατήστε για αναζήτηση αναφορών σε αυτή τη σελίδα
 Cookie: 
 Cookie: 
+Edit this page
+Επεξεργασία αυτής της σελίδας
+Preview:
+Προεπισκόπηση:
+Preview only, not yet saved
+Προεπισκόπηση σελίδας, δεν έχει αποθηκευθεί ακόμη
 Warning
 Προειδοποίηση
 Database is stored in temporary directory %s
 Η βάση δεδομένων έχει αποθηκευθεί στον προσωρινό κατάλογο %s
 %s seconds
 %s δευτερόλεπτα
-The same page on other sites:
-Το ίδιο με άλλους ιστότοπους:
-EditNearLinks
-ΕπεξεργασίαΚοντινώνΣελίδων
 Last edited
 Τελευταία ενημέρωση
 Edited
@@ -237,8 +239,6 @@ by %s
 (διαφορές)
 Edit revision %s of this page
 Επεξεργασία της έκδοσης %s αυτής της σελίδας
-Edit this page
-Επεξεργασία αυτής της σελίδας
 e
 e
 This page is read-only
@@ -401,22 +401,10 @@ Reason: %s.
 Λόγος: %s.
 Reason unknown.
 Άγνωστος λόγος.
-Without normal pages
-Χωρίς τις κανονικές σελίδες.
-Include normal pages
-Με τις κανονικές σελίδες.
-Without permanent anchors
-Χωρίς μόνιμες συνδέσεις
-Include permanent anchors
-Με μόνιμες συνδέσεις
-Without near pages
-Χωρίς τις διπλανές σελίδες
-Include near pages
-Με τις διπλανές σελίδες
+Filter:
+Filter:
 (for %s)
 (για %s)
-Filter:
-Filter:
 %s pages found.
 Βρέθηκαν %s σελίδες.
 Replaced: %s
@@ -425,16 +413,6 @@ Search for: %s
 Αναζήτηση για: %s
 View changes for these pages
 Προβολή ιστορικού για αυτές τις σελίδες
-Search sites on the %s as well
-Αναζήτηση ιστότοπων και στο %s
-and
-και
-or
-ή
-Fetching results from %s:
-Ανάκτηση αποτελεσμάτων από %s:
-Near pages:
-Κοντινές σελίδες:
 last updated
 τελευταία ενημέρωση
 by
@@ -495,8 +473,6 @@ Note: This error is normal if no changes have been made.
 Σημείωση: Αυτό το σφάλμα δεν είναι σημαντικό αν δεν έχουν γίνει αλλαγές.
 Moving %s log entries.
 Μετακίνηση %s εγγραφών καταγραφής.
-Getting page index file for %s.
-Ανάκτηση καταλόγου σελίδας για το %s.
 Set or Remove global edit lock
 Κλείδωμα ή Ξεκλείδωμα του κεντρικού κλειδώματος εκδότη
 Edit lock created.
@@ -511,26 +487,16 @@ Lock for %s removed.
 Το %s έχει ξεκλειδώσει.
 Displaying Wiki Version
 Προβολή της Έκδοσης του Wiki
-Show dependencies
-Προβολή εξαρτήσεων
+Debugging Information
+
 Inter links:
 Inter Links:
-Near links:
-Κοντινοί Σύνδεσμοι:
-Show parsed link data
-Προβολή αναλυτικών δεδομένων συνδέσμου
 Too many connections by %s
 Υπερβολικός αριθμός συνδέσεων από %s
 Please do not fetch more than %1 pages in %2 seconds.
 Παρακαλώ μη φορτώνετε πάνω από %s σελίδες σε λιγότερο από %2 δευτερόλεπτα.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Επιβεβαιώστε ότι ο εξυπηρετητής web μπορεί να δημιουργήσει τον κατάλογο %s και να δημιουργήσει αρχεία σε αυτόν.
-anchor first defined here: %s
-ο σύνδεσμος έχει οριστεί ήδη εδώ: %s
-Click to search for references to this permanent anchor
-Πατήστε εδώ για να ψάξετε για αναφορές σε αυτόν τον μόνιμο σύνδεσμο
-the page %s also exists
-υπάρχει και η σελίδα %s
 Copy one of the following stylesheets to %s:
 Αντιγραφή ενός από τα παρακάτω stylesheets στο %s:
 Deleting %s
@@ -569,6 +535,10 @@ Internal Page:
 Εσωτερική Σελίδα: 
 Pages that link to this page
 Σελίδες με συνδέσμους προς αυτή τη σελίδα
+The search parameter is missing.
+
+Pages link to %s
+
 Cannot highlight the language %s.
 Δεν υποστηρίζεται χρωματισμός για τη γλώσσα %s.
 Recent Visitors
@@ -685,8 +655,6 @@ ordinary changes
 απλές αλλαγές
 Matching page names:
 Σελίδες με όνομα που ταιριάζει:
-Footnotes:
-Υποσημειώσεις:
 Could not find %1.html template in %2
 Δε βρέθηκε το template %1.html sto %2
 Only Editors are allowed to see this hidden page.
@@ -703,6 +671,10 @@ Define
 Ορισμός
 Full Link List
 Λίστα Όλων των Συνδέσμων
+List of locked pages
+
+Pages tagged with %s
+
 Template without parameters
 Template χωρίς παραμέτρους
 The template %s is either empty or does not exist.
@@ -711,6 +683,8 @@ The template %s is either empty or does not exist.
  -- ορίζεται στο %s
 Local names defined on %1: %2
 Τοπικά ονόματα ορισμένα στο %1: %2
+Locked Pages
+
 Register for %s
 Εγγραφή στο %s
 Please choose a username of the form "FirstLast" using your real name.
@@ -805,14 +779,74 @@ There was an error approving %s.
 </ul>
 There are no pending registrations.
 Δεν υπάρχουν εγγραφές προς επικύρωση.
+Invalid Mail %s: not saved.
+
+unsubscribe
+
+subscribe
+
+Email: 
+
+%s appears to be an invalid mail address
+
+Your mail subscriptions
+
+All mail subscriptions
+
+Subscriptions
+
+Show
+
+Subscriptions for %s:
+
+Unsubscribe
+
+There are no subscriptions for %s.
+
+Change email address
+
+Mail addresses are linked to unsubscription links.
+
+Subscribe to %s.
+
+Subscribe
+
+Subscribed %s to the following pages:
+
+The remaining pages do not exist.
+
+Unsubscribed %s from the following pages:
+
+You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
+
 %s is not a legal name for a namespace
 το %s δεν είναι έγκυρο όνομα για ένα namespace.
+Namespaces
+
+Getting page index file for %s.
+Ανάκτηση καταλόγου σελίδας για το %s.
+Near links:
+Κοντινοί Σύνδεσμοι:
+Search sites on the %s as well
+Αναζήτηση ιστότοπων και στο %s
+Fetching results from %s:
+Ανάκτηση αποτελεσμάτων από %s:
+Near pages:
+Κοντινές σελίδες:
+Include near pages
+Με τις διπλανές σελίδες
+EditNearLinks
+ΕπεξεργασίαΚοντινώνΣελίδων
+The same page on other sites:
+Το ίδιο με άλλους ιστότοπους:
  (create locally)
  (δημιουργία τοπικά)
 image
 εικόνα
 download
 μεταφόρτωση
+Backlinks
+
 Clearing Cache
 Καθαρισμός Cache
 Done.
@@ -835,6 +869,20 @@ Self-ban by %s
 Αυτο-αποκλεισμός του %s
 You have banned your own IP.
 Έχετε αποκλείσει την ίδια σας τη διεύθυνση IP.
+OpenID Login
+
+Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
+
+Your homepage is set to %s.
+
+You have no homepage set.
+
+Homepage:
+
+Homepage is missing
+
+OpenID error %s
+
 Orphan List
 Λίστα Ορφανών Σελίδων
 Trail: 
@@ -845,12 +893,20 @@ Type
 Τύπος
 Permalink to "%s"
 Μόνιμος Σύνδεσμος για το "%s"
+anchor first defined here: %s
+ο σύνδεσμος έχει οριστεί ήδη εδώ: %s
+the page %s also exists
+υπάρχει και η σελίδα %s
 There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
 Υπήρξε κάποιο πρόβλημα με τη δημιουργία pdf για το %s.  Παρακαλώ επικοινωνήστε με το διαχειριστή συστήματος, αλλά μη δοκιμάσετε να κατεβάσετε το pdf πάλι, γιατί δε θα δουλέψει.
 Someone else is generating a pdf for %s.  Please wait a minute and then try again.
 Κάποιος άλλος δημιουργεί ένα αρχείο pdf για το %s.  Παρακαλώ περιμένετε λίγο και δοκιμάστε πάλι.
 Download this page as PDF
 Μεταφόρτωση αυτής της σελίδας ως PDF
+Click to search for references to this permanent anchor
+Πατήστε εδώ για να ψάξετε για αναφορές σε αυτόν τον μόνιμο σύνδεσμο
+Include permanent anchors
+Με μόνιμες συνδέσεις
 Portrait
 Portrait
 Publish %s
@@ -861,9 +917,11 @@ The target wiki was misconfigured.
 Το wiki προορισμού δεν έχει ρυθμιστεί σωστά.
 You did not answer correctly.
 Δεν απαντήσατε σωστά.
-Use the back button to return the previous page and try again.
-
 To save this page you must answer this question:
+
+Please type the following two words:
+
+Please answer this captcha:
 
 Referrers
 Σύνδεσμοι προς Αυτόν τον Ιστότοπο
@@ -881,6 +939,10 @@ Rebuilding index not done.
 Η ενημέρωση του καταλόγου δεν έχει ολοκληρωθεί ακόμη.
 (Rebuilding the index can only be done once every 12 hours.)
 (Η ενημέρωση του καταλόγου μπορεί να γίνει μόνο μία φορά κάθε 12 ώρες.)
+New Pages for Indexed Search
+
+List changes since %s
+
  ... 
  ... 
 Search term missing.
@@ -895,6 +957,8 @@ Tags: %s.
 Ετικέτες: %s.
 No tags
 Δεν υπάρχουν ετικέτες
+Page list for %s
+
 Slideshow:%s
 Διαφάνειες:%s
 Index of all small pages
@@ -907,6 +971,14 @@ Copy to %1 succeeded: %2.
 Η αντιγραφή στο %1 ολοκληρώθηκε με επιτυχία: %2.
 Copy to %1 failed: %2.
 Η αντιγραφή στο %1 απέτυχε: %2.
+Feed for this tag
+
+Rebuild tag index
+
+list tags
+
+tag cloud
+
 Alternatively, use one of the following templates:
 Εναλλακτικά, χρησιμοποιήστε ένα από τα παρακάτω templates:
 Thread: %s
@@ -937,6 +1009,26 @@ Contents
 Περιεχόμενα
 Create a new page for today
 Δημιουργία μιας νέας σελίδας για τη σημερινή ημερομηνία
+Add Translation
+
+Added translation: %1 (%2)
+
+Translate %s
+
+Thank you for writing a translation of %s.
+
+Please indicate what language you will be using.
+
+Language is missing
+
+Suggested languages:
+
+Please indicate a page name for the translation of %s.
+
+More help may be available here: %s.
+
+Translated page: 
+
 This page is a translation of %s. 
 Αυτή η σελίδα είναι μετάφραση της %s. 
 The translation is up to date.
