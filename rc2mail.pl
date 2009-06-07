@@ -83,13 +83,13 @@ sub get_rss {
   die $url, $response->status_line unless $response->is_success;
   my $rss = new XML::RSS;
   $rss->parse($response->content);
-  print "Found " . @{$rss->{'items'}} . " items.\n" if $verbose;
+  print "Found " . @{$rss->{items}} . " items.\n" if $verbose;
   return $rss;
 }
 
 sub send_files {
   my ($rss, $subscribers) = @_;
-  my @items = @{$rss->{'items'}};
+  my @items = @{$rss->{items}};
   die "No items to send\n" unless @items;
   my $sent = 0;
   foreach my $item (@items) {
@@ -154,7 +154,7 @@ sub send_mail {
 
 sub main {
   my $rss = get_rss();
-  return unless $rss->{'items'};
+  return unless $rss->{items};
   my $subscribers = get_subscribers();
   send_files($rss, $subscribers);
 }
