@@ -110,8 +110,8 @@ update-translations: always
 upload-translations: always
 	for f in $(TRANSLATIONS); do \
 		cvs status $$f | grep 'Status: Up-to-date'; \
-		wikiput -u cvs -s update http://www.oddmuse.org/cgi-bin/oddmuse/raw/$$f < $$f; \
-		emacswiki-upload cgi-bin $$f; \
+		wikiput -z "ham" -u "cvs" -s "update" \
+		"http://www.oddmuse.org/cgi-bin/oddmuse/raw/$$f" < $$f; \
 	done
 
 # The curl variant tries to save bandwidth usage. Alternative:
