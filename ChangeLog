@@ -1,5 +1,12 @@
 2009-06-07  Alex Schroeder  <alex@gnu.org>
 
+	* rc2mail.pl (main): Get RSS before getting subscribers. Skip
+	getting subscribers if there were no items in the feed. Skip
+	sending files if there were no subscribers (assuming a lot of
+	wikis without subscribers, eg. when using namespaces).
+	(get_rss): Use short=0 in the URL.
+	(send_file): Return unless there are subscribers.
+
 	* modules/namespaces.pl (%Namespaces): New option to differentiate
 	between intersites and namespaces. Don't list Main and Self as
 	namespaces.
@@ -13,9 +20,6 @@
 	(DoMailSubscriptions): Provide a link to change the email address.
 	(DoMailSubscribe): If no mail is provided, allow to subscribe and
 	ask for an email address.
-
-	* rc2mail.pl (get_rss): Use short=0 in the URL.
-	(send_file): Return unless there are subscribers.
 
 2009-06-04  Alex Schroeder  <alex@gnu.org>
 
