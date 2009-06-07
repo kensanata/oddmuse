@@ -1,3 +1,8 @@
+2009-06-08  Alex Schroeder  <alex@gnu.org>
+
+	* Makefile (upload-translations): No longer upload to
+	emacswiki.org; provide secret using -z.
+
 2009-06-07  Alex Schroeder  <alex@gnu.org>
 
 	* rc2mail.pl (main): Get RSS before getting subscribers. Skip
