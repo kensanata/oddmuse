@@ -36,7 +36,7 @@ be changed using the C<$NamespacesSelf> option.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.46 2009/06/07 17:59:07 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.47 2009/06/07 18:05:46 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent
 	    $NamespaceRoot $NamespaceSlashing @NamespaceParameters
@@ -145,6 +145,9 @@ sub NamespacesInitVariables {
   foreach my $key (keys %Namespaces) {
     $InterSite{$key} = $Namespaces{$key} unless $InterSite{$key};
   }
+  # remove the artificial ones
+  delete $Namespaces{$NamespacesMain};
+  delete $Namespaces{$NamespacesSelf};
 }
 
 sub NamespaceRequiredByParameter {
@@ -393,16 +396,21 @@ The namespaces action will link all known namespaces.
 $Action{namespaces} = \&DoNamespacesList;
 
 sub DoNamespacesList {
-  print GetHeader('', T('Namespaces')),
-    $q->start_div({-class=>'content namespaces'}),
-      GetFormStart(undef, 'get'), GetHiddenValue('action', 'browse'),
-	GetHiddenValue('id', $HomePage);
-  my $new = $q->textfield('ns') . ' ' . $q->submit('donamespace', T('Go!'));
-  print $q->ul($q->li([map { ScriptLink($Namespaces{$_} . $HomePage, $_) }
-		       keys %Namespaces]),
-	       $q->li($new));
-  print $q->end_form() . $q->end_div();
-  PrintFooter();
+  if (GetParam('raw', 0)) {
+    print GetHttpHeader('text/plain');
+    print join("\n", keys %Namespaces);
+  } else {
+    print GetHeader('', T('Namespaces')),
+      $q->start_div({-class=>'content namespaces'}),
+	GetFormStart(undef, 'get'), GetHiddenValue('action', 'browse'),
+	  GetHiddenValue('id', $HomePage);
+    my $new = $q->textfield('ns') . ' ' . $q->submit('donamespace', T('Go!'));
+    print $q->ul($q->li([map { ScriptLink($Namespaces{$_} . $HomePage, $_) }
+			 keys %Namespaces]),
+		 $q->li($new));
+    print $q->end_form() . $q->end_div();
+    PrintFooter();
+  }
 }
 
 push(@MyAdminCode, \&NamespacesMenu);
