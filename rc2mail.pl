@@ -156,6 +156,7 @@ sub main {
   my $rss = get_rss();
   return unless @{$rss->{items}};
   my $subscribers = get_subscribers();
+  return unless %{$subscribers};
   send_files($rss, $subscribers);
 }
 
