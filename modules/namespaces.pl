@@ -36,7 +36,7 @@ be changed using the C<$NamespacesSelf> option.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.47 2009/06/07 18:05:46 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.48 2009/06/07 18:11:17 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent
 	    $NamespaceRoot $NamespaceSlashing @NamespaceParameters
@@ -398,7 +398,7 @@ $Action{namespaces} = \&DoNamespacesList;
 sub DoNamespacesList {
   if (GetParam('raw', 0)) {
     print GetHttpHeader('text/plain');
-    print join("\n", keys %Namespaces);
+    print join("\n", keys %Namespaces), "\n";
   } else {
     print GetHeader('', T('Namespaces')),
       $q->start_div({-class=>'content namespaces'}),
