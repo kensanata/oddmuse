@@ -1,6 +1,13 @@
 2009-06-07  Alex Schroeder  <alex@gnu.org>
 
+	* modules/mail.pl (MailNewGetFooterTimestamp): New function to
+	allow people to subscribe to ordinary pages.
+	(DoMailSubscriptions): Provide a link to change the email address.
+	(DoMailSubscribe): If no mail is provided, allow to subscribe and
+	ask for an email address.
+
 	* rc2mail.pl (get_rss): Use short=0 in the URL.
+	(send_file): Return unless there are subscribers.
 
 2009-06-04  Alex Schroeder  <alex@gnu.org>
 
