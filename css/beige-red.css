@@ -247,7 +247,10 @@ p.comment {
 /* comment pages with username, homepage, and email subscription */
 .comment span { display: block; }
 .comment span label { display: inline-block; width: 10em; }
-.comment span input  { display: inline-block; width: 20em; }
+/* IE sucks */
+.comment input#username,
+.comment input#homepage,
+.comment input#mail { width: 20em; }
 
 /* cal */
 div.month { padding:0; margin:0 2ex; }
