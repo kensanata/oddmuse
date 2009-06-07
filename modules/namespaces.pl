@@ -36,10 +36,11 @@ be changed using the C<$NamespacesSelf> option.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.44 2009/04/06 00:26:46 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.45 2009/06/07 17:03:06 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent
-	    $NamespaceRoot $NamespaceSlashing @NamespaceParameters);
+	    $NamespaceRoot $NamespaceSlashing @NamespaceParameters
+	    %Namespaces);
 
 $NamespacesMain = 'Main'; # to get back to the main namespace
 $NamespacesSelf = 'Self'; # for your own namespace
@@ -75,16 +76,16 @@ $NamespaceSlashing = 0;   # affects : decoding NamespaceRcLines
 unshift(@MyInitVariables, \&NamespacesInitVariables);
 
 sub NamespacesInitVariables {
-  my %site = ();
+  %Namespaces = ();
   # Do this before changing the $DataDir and $ScriptName
   if (!$Monolithic and $UsePathInfo) {
-    $site{$NamespacesMain} = $ScriptName . '/';
+    $Namespaces{$NamespacesMain} = $ScriptName . '/';
     foreach my $name (glob("$DataDir/*")) {
       if (-d $name
-	    and $name =~ m|/($InterSitePattern)$|
-	    and $name ne $NamespacesMain
+	  and $name =~ m|/($InterSitePattern)$|
+	  and $name ne $NamespacesMain
 	  and $name ne $NamespacesSelf) {
-	$site{$1} = $ScriptName . '/' . $1 . '/';
+	$Namespaces{$1} = $ScriptName . '/' . $1 . '/';
       }
     }
   }
@@ -136,13 +137,13 @@ sub NamespacesInitVariables {
     ReportError(Ts('Could not create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR')
       unless -d $DataDir;
   }
-  $site{$NamespacesSelf} = $ScriptName . '?';
+  $Namespaces{$NamespacesSelf} = $ScriptName . '?';
   # reinitialize
   @IndexList = ();
   ReInit();
   # transfer list of sites
-  foreach my $key (keys %site) {
-    $InterSite{$key} = $site{$key} unless $InterSite{$key};
+  foreach my $key (keys %Namespaces) {
+    $InterSite{$key} = $Namespaces{$key} unless $InterSite{$key};
   }
 }
 
@@ -366,4 +367,35 @@ sub NewNamespaceBrowsePage {
   } else {
     return OldNamespaceBrowsePage(@_);
   }
+}
+
+=head2 List Namespaces
+
+The namespaces action will link all known namespaces.
+
+=cut
+
+$Action{namespaces} = \&DoNamespacesList;
+
+sub DoNamespacesList {
+  print GetHeader('', T('Namespaces')),
+    $q->start_div({-class=>'content namespaces'}),
+      GetFormStart(undef, 'get'), GetHiddenValue('action', 'browse'),
+	GetHiddenValue('id', $HomePage);
+  my $new = $q->textfield('ns') . ' ' . $q->submit('donamespace', T('Go!'));
+  print $q->ul($q->li([map { ScriptLink($Namespaces{$_} . $HomePage, $_) }
+		       keys %Namespaces]),
+	       $q->li($new));
+  print $q->end_form() . $q->end_div();
+  PrintFooter();
+}
+
+push(@MyAdminCode, \&NamespacesMenu);
+
+sub NamespacesMenu {
+  my ($id, $menuref, $restref) = @_;
+  push(@$menuref,
+       ScriptLink('action=namespaces',
+		  T('Namespaces'),
+		  'namespaces'));
 }
