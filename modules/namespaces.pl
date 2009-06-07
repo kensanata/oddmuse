@@ -36,7 +36,7 @@ be changed using the C<$NamespacesSelf> option.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.45 2009/06/07 17:03:06 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.46 2009/06/07 17:59:07 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent
 	    $NamespaceRoot $NamespaceSlashing @NamespaceParameters
@@ -245,6 +245,21 @@ sub NewNamespaceGetRcLines { # starttime, hash of seen pages to use as a second 
   # can only happen once we have all the data.
   return LatestChanges(@result);
 }
+
+=head RSS feed
+
+When retrieving the RSS feed with the parameter full=1, one would
+expect the various items to contain the fully rendered HTML.
+Unfortunately, this is not so, the reason being that OpenPage tries to
+open a file for id C<Test:Foo> which does not exist. Now, just
+fiddling with OpenPage will not work, because when rendering a page
+within a particular namespace, we need a separate C<%IndexHash> to
+figure out which links will actually point to existing pages and which
+will not. In fact, we need something alike the code for
+C<NamespacesInitVariables> to run. To do this elegantly would require
+us to create some sort of context, and cache it, and restore the
+default when we're done. All of this would be complicated and brittle.
+Until then, the parameter full=1 just is not supported.
 
 =head2 Encoding pagenames
 
