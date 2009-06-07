@@ -1,5 +1,13 @@
 2009-06-07  Alex Schroeder  <alex@gnu.org>
 
+	* modules/namespaces.pl (%Namespaces): New option to differentiate
+	between intersites and namespaces. Don't list Main and Self as
+	namespaces.
+	(NamespacesInitVariables): Set it instead of a local variable.
+	(DoNamespacesList): Use it.
+	(NamespacesMenu): Add it to a menu.
+	(NamespacesInitVariables):
+
 	* modules/mail.pl (MailNewGetFooterTimestamp): New function to
 	allow people to subscribe to ordinary pages.
 	(DoMailSubscriptions): Provide a link to change the email address.
