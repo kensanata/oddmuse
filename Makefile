@@ -9,7 +9,9 @@ MODULES=$(wildcard modules/*.pl)
 INKSCAPE=GPL $(wildcard inkscape/*.py inkscape/*.inx inkscape/*.sh)
 PACKAGEMAKER=/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker
 PWD=$(shell pwd)
-DIST=$(VERSION).dmg $(VERSION).dmg.sig \
+DIST=$(VERSION).tar.gz $(VERSION).tar.gz.sig \
+# These targets no longer work are have not been verified in a long time.
+OLDDIST=$(VERSION).dmg $(VERSION).dmg.sig \
 	$(VERSION).tar.gz $(VERSION).tar.gz.sig \
 	$(VERSION).tgz $(VERSION).tgz.sig \
 	$(UPLOADVERSION).tar.gz $(UPLOADVERSION).tar.gz.sig
