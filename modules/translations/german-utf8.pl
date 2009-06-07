@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.26 2009/05/09 12:00:44 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.27 2009/06/07 19:20:23 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 Mit normalen Seiten
@@ -780,10 +780,50 @@ Bei der Bestätigung von %s ist ein Fehler aufgetreten.
 </ul>
 There are no pending registrations.
 Es gibt keine offenen Gesuche.
+Invalid Mail %s: not saved.
+%s ist keine gültige Email Adresse und wurde nicht gespeichert.
+unsubscribe
+abmelden
+subscribe
+abonnieren
+Email: 
+Email: 
+%s appears to be an invalid mail address
+%s scheint keine gültige Email Adresse zu sein
+Your mail subscriptions
+Meine Email Abonnements
+All mail subscriptions
+Alle Email Abonnements
+Subscriptions
+Abonnements
+Show
+Zeigen
+Subscriptions for %s:
+Abonnements für %s:
+Unsubscribe
+Abmeldung
+There are no subscriptions for %s.
+Es gibt keine Abonnements für %s.
+Change email address
+Email Adresse ändern
+Mail addresses are linked to unsubscription links.
+Die Links der Email Adressen führen zu Abmeldelinks.
+Subscribe to %s.
+%s abonnieren.
+Subscribe
+Abonnieren
+Subscribed %s to the following pages:
+%s hat folgende Seiten abonniert:
+The remaining pages do not exist.
+Die restlichen Seiten existieren nicht.
+Unsubscribed %s from the following pages:
+%s wurde von folgenden Seiten abgemeldet:
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 Sie haben mehr als %s Links auf die selbe Domäne gesetzt. Normalerweise machen das nur Spammer. Die Änderung wird deswegen abgelehnt.
 %s is not a legal name for a namespace
 %s ist ein ungültiger Name für einen Namensraum
+Namespaces
+Namensräume
 Getting page index file for %s.
 Hole den Seitenindex für %s.
 Near links:
