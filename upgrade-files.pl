@@ -16,7 +16,7 @@ $NewFS = "\x1e";
 # override $FS if you want!
 
 print header() . start_html('Upgrading Files'), p;
-print q{Upgrade version: $Id: upgrade-files.pl,v 1.14 2006/08/17 10:58:13 as Exp $}, "\n";
+print q{Upgrade version: $Id: upgrade-files.pl,v 1.15 2009/06/11 18:55:27 as Exp $}, "\n";
 if (not param('dir')) {
   print start_form, p, '$DataDir: ', textfield('dir', '/tmp/oddmuse'),
     p, radio_group('separator', ['Oddmuse', 'UseMod 0.92', 'UseMod 1.00',
@@ -167,7 +167,7 @@ sub escape_newlines {
 sub basic_data {
   my $data = 'ts: ' . $section{ts} . "\n" if $section{ts};
   $data .= 'keep-ts: ' . $section{keepts} . "\n" if $section{keepts};
-  $data .= 'revision: ' . $section{revision} . "\n" if $page{revision};
+  $data .= 'revision: ' . $section{revision} . "\n" if $section{revision};
   $data .= 'summary: ' . $section{summary} . "\n" if $section{summary};
   $data .= 'summary: ' . $text{summary} . "\n" if $text{summary} and not $section{summary};
   $data .= 'username: ' . $section{username} . "\n" if $section{username};
