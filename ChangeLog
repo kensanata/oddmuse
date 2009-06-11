@@ -1,3 +1,8 @@
+2009-06-11  Alex Schroeder  <alex@gnu.org>
+
+	* upgrade-files.pl (basic_data): Fix a bug that resulted in no
+	revisions for Oddmuse pages.
+
 2009-06-08  Alex Schroeder  <alex@gnu.org>
 
 	* Makefile (upload-translations): No longer upload to
