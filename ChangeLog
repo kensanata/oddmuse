@@ -1,3 +1,13 @@
+2009-06-22  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ApplyRules): No longer localize $OpenPageName and %Page
+	for the <search regexp> rule.
+	(PrintJournal): No longer localize $OpenPageName and %Page before
+	calling PrintAllPages().
+	(PrintAllPages, SearchTitleAndBody): Instead, localize them here.
+	This will prevent bugs when the OpenPage is called from other
+	locations.
+
 2009-06-11  Alex Schroeder  <alex@gnu.org>
 
 	* upgrade-files.pl (basic_data): Fix a bug that resulted in no
