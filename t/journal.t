@@ -1,8 +1,8 @@
-# Copyright (C) 2006  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006, 2009  Alex Schroeder <alex@gnu.org>
 #
-# This program is free software; you can redistribute it and/or modify
+# This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -11,14 +11,11 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 32;
+use Test::More tests => 41;
 
 clear_pages();
 
@@ -79,3 +76,26 @@ test_page_negative($page, $yesterday, $beforeyesterday);
 # $JournalLimit does not apply to admins
 test_page(get_page('action=browse id=Summary pwd=foo'),
 	  "$tomorrow.*$today.*$yesterday.*$beforeyesterday");
+
+# Test for page corruption. Don't use update_page for the first update
+# because we don't want to render the page right after creating it.
+get_page('title=2009-06-22 text=hugglifuzbubs');
+$page = get_page('action=browse raw=1 id=2009-06-22');
+test_page($page, 'hugglifuzbubs');
+test_page_negative($page, 'blocks');
+test_page(update_page('Journal', "This is the journal.\n\n<journal>\n"),
+	  'This is the journal',
+	  '2009-06-22',
+	  'hugglifuzbubs');
+test_page(ReadFileOrDie(GetPageFile('2009-06-22')),
+	  'blocks: <p>hugglifuzbubs</p>');
+
+# Same test, but with search and tags
+add_module('tags.pl');
+update_page('2009-06-23', 'penta figurazza [[tag:foo]]');
+test_page(update_page('Journal', "This is the journal.\n\n"
+		      . "<journal search tag:foo>\n"),
+	  '2009-06-23',
+	  'penta figurazza');
+test_page(ReadFileOrDie(GetPageFile('2009-06-23')),
+	  'blocks: <p>penta figurazza');
