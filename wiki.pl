@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.921 2009/06/04 06:32:56 as Exp $
+# Version       $Id: wiki.pl,v 1.922 2009/06/22 00:28:22 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
 #     Alex Schroeder <alex@gnu.org>
@@ -36,7 +36,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.921 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.922 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -293,7 +293,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.921 2009/06/04 06:32:56 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.922 2009/06/22 00:28:22 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -509,7 +509,6 @@ sub ApplyRules {
 	Clean(CloseHtmlEnvironments());
 	Dirty($1);
 	my ($oldpos, $old_) = (pos, $_);
-	local ($OpenPageName, %Page);
 	print $q->start_div({-class=>'search'});
 	SearchTitleAndBody($2, \&PrintSearchResult, SearchRegexp($2));
 	print $q->end_div;
@@ -881,9 +880,6 @@ sub PrintJournal {
   my $max = $more ? ($offset + $num - 1) : $#pages;
   @pages = @pages[$offset .. $max];
   if (@pages) {
-    # Now save information required for saving the cache of the current page.
-    local %Page;
-    local $OpenPageName='';
     print $q->start_div({-class=>'journal'});
     PrintAllPages(1, 1, @pages);
     print $q->end_div();
@@ -897,6 +893,7 @@ sub PrintAllPages {
   @pages = @pages[0 .. $JournalLimit - 1]
     if $#pages >= $JournalLimit and not UserIsAdmin();
   for my $id (@pages) {
+    local ($OpenPageName, %Page); # this is local!
     OpenPage($id);
     my @languages = split(/,/, $Page{languages});
     next if $lang and @languages and not grep(/$lang/, @languages);
@@ -3369,6 +3366,7 @@ sub SearchTitleAndBody {
     my $name = NormalToFree($id);
     my ($text) = PageIsUploadedFile($id); # set to mime-type if this is an uploaded file
     if (not $text) { # not uploaded file, therefore allow searching of page body
+      local ($OpenPageName, %Page); # this is local!
       OpenPage($id); # this opens a page twice if it is not uploaded, but that's ok
       if ($lang) {
 	my @languages = split(/,/, $Page{languages});
