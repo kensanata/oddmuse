@@ -15,10 +15,16 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 99;
+use Test::More tests => 100;
 
 clear_pages();
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
+
+xpath_test(get_page('action=browse id=HomePage username=alex'),
+	   '//link[@rel="alternate"][@type="application/rss+xml"]'
+	   . '[@title="Follow-ups for alex"]'
+	   . '[@href="http://localhost/wiki.pl?action=rss;followup=alex"]');
+
 update_page('big', 'foofoo');
 update_page('2008-08-07_New_Hope', 'testing');
 update_page('2008-08-08', 'testing');
