@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.922 2009/06/22 00:28:22 as Exp $
+# Version       $Id: wiki.pl,v 1.923 2009/06/23 22:27:12 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
 #     Alex Schroeder <alex@gnu.org>
@@ -36,7 +36,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.922 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.923 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -293,7 +293,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.922 2009/06/22 00:28:22 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.923 2009/06/23 22:27:12 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -862,16 +862,16 @@ sub PrintJournal {
     for (my $i = 0; $i < @pages; $i++) {
       $a = $pages[$i];
       if (JournalSort() == -1) {
-  @pages = @pages[$i..$#pages];
-  last;
+	@pages = @pages[$i..$#pages];
+	last;
       }
     }
   } elsif ($mode eq 'past') {
     for (my $i = 0; $i < @pages; $i++) {
       $a = $pages[$i];
       if (JournalSort() == 1) {
-  @pages = @pages[$i..$#pages];
-  last;
+	@pages = @pages[$i..$#pages];
+	last;
       }
     }
   }
@@ -2310,8 +2310,8 @@ sub GetFeeds {      # default for $HtmlHeaders
   my $username = GetParam('username', '');
   $html .= '<link rel="alternate" type="application/rss+xml" '
     . 'title="Follow-ups for ' . NormalToFree($username) . '" '
-      . 'href="http://www.oddmuse.org/cgi-bin/oddmuse?action=rss;followup='
-  . UrlEncode($username) . '" />' if $username;
+    . 'href="' . ScriptUrl('action=rss;followup=' . UrlEncode($username))
+    . '" />' if $username;
   return $html;
 }
 
