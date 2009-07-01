@@ -1,3 +1,12 @@
+2009-06-26  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (SearchTitleAndBody): Unquote the search string.
+
+2009-06-25  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (ApplyRules): Make sure named entity Auml is rendered
+	just as auml is.
+
 2009-06-22  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (ApplyRules): No longer localize $OpenPageName and %Page
