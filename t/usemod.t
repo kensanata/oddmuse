@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 43;
+use Test::More tests => 44;
 
 clear_pages();
 
@@ -113,4 +113,11 @@ introduction<table class="user"><tr class="odd first"><td>one</td><td>two</td><t
 <pre> == nada ==</pre>
 ==[[Free Link]]==
 <h2>[[Free Link]]</h2>
+EOT
+
+$UseModMarkupInTitles = 1;
+
+run_tests(split('\n',<<'EOT'));
+==n&auml;n==
+<h2>n&auml;n</h2>
 EOT
