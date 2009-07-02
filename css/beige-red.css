@@ -213,6 +213,9 @@ a[class="url outside"]:before {
 a:hover {
     background-color:#dfd;
 }
+a.image:hover {
+    background-color: inherit;
+}
 a.near:link {
     color:#093;
 }
