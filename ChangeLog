@@ -1,5 +1,9 @@
 2009-07-03  Alex Schroeder  <alex@gnu.org>
 
+	* modules/namespaces.pl (NewNamespaceGetRcLines): Fix bug that
+	prevented the oldrc.log file from being read if rc.log was missing
+	or empty.
+
 	* wiki.pl (GetRcLines): Fix bug that prevented the oldrc.log file
 	from being read if rc.log was missing or empty.
 
