@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 # ====================[ usemod.pl                          ]====================
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.36 2008/11/05 09:42:06 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.37 2009/07/03 14:04:45 as Exp $</p>';
 
 use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml
       $UseModSpaceRequired $UseModMarkupInTitles);
@@ -35,11 +35,11 @@ sub UsemodInit {
   }
 }
 
-my $htmlre;
+my $UsemodHtmlRegExp;
 my $rowcount;
 
 sub UsemodRule {
-  my $htmlre = join('|',(@HtmlTags)) unless $htmlre;
+  $UsemodHtmlRegExp = join('|',(@HtmlTags)) unless $UsemodHtmlRegExp;
   # <pre> for monospaced, preformatted and escaped
   if ($bol && m/\G&lt;pre&gt;\n?(.*?\n)&lt;\/pre&gt;[ \t]*\n?/cgs) {
     return CloseHtmlEnvironments() . $q->pre({-class=>'real'}, $1) . AddHtmlEnvironment('p');
@@ -59,19 +59,19 @@ sub UsemodRule {
   }
   # unumbered lists using *
   elsif ($bol && m/\G(\s*\n)*(\*+)[ \t]{$UseModSpaceRequired,}/cog
-   or InElement('li') && m/\G(\s*\n)+(\*+)[ \t]{$UseModSpaceRequired,}/cog) {
+	 or InElement('li') && m/\G(\s*\n)+(\*+)[ \t]{$UseModSpaceRequired,}/cog) {
     return CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ul',length($2))
       . AddHtmlEnvironment('li');
   }
   # numbered lists using #
   elsif ($bol && m/\G(\s*\n)*(\#+)[ \t]{$UseModSpaceRequired,}/cog
-   or InElement('li') && m/\G(\s*\n)+(\#+)[ \t]{$UseModSpaceRequired,}/cog) {
+	 or InElement('li') && m/\G(\s*\n)+(\#+)[ \t]{$UseModSpaceRequired,}/cog) {
     return CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ol',length($2))
       . AddHtmlEnvironment('li');
   }
   # indented text using : (use blockquote instead?)
   elsif ($bol && m/\G(\s*\n)*(\:+)[ \t]{$UseModSpaceRequired,}/cog
-   or InElement('dd') && m/\G(\s*\n)+(\:+)[ \t]{$UseModSpaceRequired,}/cog) {
+	 or InElement('dd') && m/\G(\s*\n)+(\:+)[ \t]{$UseModSpaceRequired,}/cog) {
     return CloseHtmlEnvironmentUntil('dd') . OpenHtmlEnvironment('dl',length($2), 'quote')
       . $q->dt() . AddHtmlEnvironment('dd');
   }
@@ -88,7 +88,8 @@ sub UsemodRule {
       .AddHtmlEnvironment('dd');
   }
   # headings using = (with lookahead)
-  elsif ($bol && $UseModMarkupInTitles && m/\G(\s*\n)*(\=+)[ \t]*(?=[^=\n]+=)/cg) {
+  elsif ($bol && $UseModMarkupInTitles
+	 && m/\G(\s*\n)*(\=+)[ \t]*(?=[^=\n]+=)/cg) {
     my $depth = length($2);
     $depth = 6 if $depth > 6;
     $depth = 2 if $depth < 2;
@@ -98,11 +99,12 @@ sub UsemodRule {
     $PortraitSupportColor = 0;
     return $html;
   } elsif ($UseModMarkupInTitles
-     && (InElement('h1') || InElement('h2') || InElement('h3')
-         || InElement('h4') || InElement('h5') || InElement('h6'))
-     && m/\G[ \t]*=+\n?/cg) {
+	   && (InElement('h1') || InElement('h2') || InElement('h3')
+	       || InElement('h4') || InElement('h5') || InElement('h6'))
+	   && m/\G[ \t]*=+\n?/cg) {
     return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
-  } elsif ($bol && !$UseModMarkupInTitles && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg) {
+  } elsif ($bol && !$UseModMarkupInTitles
+	   && m/\G(\s*\n)*(\=+)[ \t]*(.+?)[ \t]*(=+)[ \t]*\n?/cg) {
     my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '')
       . WikiHeading($2, $3) . AddHtmlEnvironment('p');
     $PortraitSupportColorDiv = 0; # after the HTML has been determined.
@@ -158,11 +160,14 @@ sub UsemodRule {
     return UnquoteHtml($1);
   }
   # miscellaneous html tags
-  elsif (m/\G\&lt;($htmlre)(\s+[^<>]*?)?\&gt;/cogi) { return AddHtmlEnvironment($1, $2); }
-  elsif (m/\G\&lt;\/($htmlre)\&gt;/cogi) { return CloseHtmlEnvironment($1); }
-  elsif (m/\G\&lt;($htmlre) *\/\&gt;/cogi) { return "<$1 />"; }
-  # <a href="...">...</a> for html links
-  elsif ($HtmlLinks && m/\G\&lt;a(\s[^<>]+?)\&gt;(.*?)\&lt;\/a\&gt;/cgi) { # <a ...>text</a>
+  elsif (m/\G\&lt;($UsemodHtmlRegExp)(\s+[^<>]*?)?\&gt;/cogi) { 
+    return AddHtmlEnvironment($1, $2); }
+  elsif (m/\G\&lt;\/($UsemodHtmlRegExp)\&gt;/cogi) {
+    return CloseHtmlEnvironment($1); }
+  elsif (m/\G\&lt;($UsemodHtmlRegExp) *\/\&gt;/cogi) {
+    return "<$1 />"; }
+  # <a ...>text</a> for html links
+  elsif ($HtmlLinks && m/\G\&lt;a(\s[^<>]+?)\&gt;(.*?)\&lt;\/a\&gt;/cgi) {
     return "<a$1>$2</a>";
   }
   return undef;
