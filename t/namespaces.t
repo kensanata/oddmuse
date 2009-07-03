@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 56;
+use Test::More tests => 63;
 clear_pages();
 
 add_module('namespaces.pl');
@@ -140,3 +140,11 @@ test_page($page, 'Mooo!');
 test_page_negative(get_page('action=rc ns=Muu raw=1'), 'Rollback');
 # verify that global RecentChanges doesn't show anything
 test_page_negative(get_page('action=rc raw=1'), 'Rollback');
+
+# test oldrc.log reading
+ok(rename("$DataDir/Muu/rc.log", "$DataDir/Muu/oldrc.log"),
+   "renamed $RcFile to $RcOldFile in the Muu namespace");
+test_page(get_page('action=rc ns=Muu raw=1'), 'title: Wiki Muu',
+	  'title: BackHome', 'title: Test');
+test_page(get_page('action=rc raw=1'), 'title: Wiki',
+	  'title: Muu:BackHome', 'title: Muu:Test');
