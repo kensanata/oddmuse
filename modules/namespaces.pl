@@ -36,7 +36,7 @@ be changed using the C<$NamespacesSelf> option.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.48 2009/06/07 18:11:17 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.49 2009/07/03 13:49:47 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent
 	    $NamespaceRoot $NamespaceSlashing @NamespaceParameters
@@ -212,16 +212,16 @@ sub NewNamespaceGetRcLines { # starttime, hash of seen pages to use as a second 
       }
     }
   }
-    # Now each rcfile and the matching rcoldfile if required. When
-    # opening a rcfile, compare the first timestamp with the
-    # starttime. If any rcfile exists with no timestamp before the
-    # starttime, we need to open its rcoldfile.
+  # Now each rcfile and the matching rcoldfile if required. When
+  # opening a rcfile, compare the first timestamp with the
+  # starttime. If any rcfile exists with no timestamp before the
+  # starttime, we need to open its rcoldfile.
   foreach my $file (@rcfiles) {
-    open(F, $file) or next;
-    my $line = <F> or next;
+    open(F, $file);
+    my $line = <F>;
     my ($ts) = split(/$FS/o, $line); # the first timestamp in the regular rc file
     my @new;
-    if ($ts > $starttime) {	# we need to read the old rc file, too
+    if (not $ts or $ts > $starttime) {	# we need to read the old rc file, too
       push(@new, GetRcLinesFor($rcoldfiles{$file}, $starttime,\%match, \%following));
     }
     push(@new, GetRcLinesFor($file, $starttime, \%match, \%following));
