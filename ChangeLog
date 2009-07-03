@@ -1,5 +1,8 @@
 2009-07-03  Alex Schroeder  <alex@gnu.org>
 
+	* modules/usemod.pl (UsemodRule): Use $UsemodHtmlRegExp instead of
+	$htmlre and no longer recompute it for every call.
+
 	* modules/namespaces.pl (NewNamespaceGetRcLines): Fix bug that
 	prevented the oldrc.log file from being read if rc.log was missing
 	or empty.
