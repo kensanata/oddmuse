@@ -15,7 +15,7 @@ directory of your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: flashbox.pl,v 1.3 2008/09/22 12:58:20 leycec Exp $</p>';
+$ModulesDescription .= '<p>$Id: flashbox.pl,v 1.4 2009/07/19 10:45:35 as Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -116,7 +116,7 @@ sub FlashboxRule {
     return FlashboxHtml('slideshare',
                         "http://static.slideshare.net/swf/ssplayer2.swf?doc=${1}");
   }
-  elsif (/\G\[\[youtube:([a-z0-9]+)\]\]/cgi) {
+  elsif (/\G\[\[youtube:(-?[a-z0-9]+)\]\]/cgi) {
     return FlashboxHtml('youtube',
                         "http://www.youtube.com/v/${1}");
   }
