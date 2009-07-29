@@ -1,3 +1,8 @@
+2009-07-29  Alex Schroeder  <alex@gnu.org>
+
+	* modules/flashbox.pl (FlashboxRule): Made YouTube regular
+	expression even more lenient as suggested by sjm.
+
 2009-07-19  Alex Schroeder  <alex@gnu.org>
 
 	* modules/flashbox.pl (FlashboxRule): Fixed YouTube regular
