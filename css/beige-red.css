@@ -377,6 +377,9 @@ div.image a img {
 div.image span.caption {
     margin: 0 1em;
 }
+div.content a.noborder img.upload {
+    border: none;
+}
 
 .left { float:left; margin-right: 1em; }
 .right { float:right; margin-left: 1em; }
