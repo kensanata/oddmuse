@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.925 2009/07/03 09:23:01 as Exp $
+# Version       $Id: wiki.pl,v 1.926 2009/08/03 22:24:24 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
 #     Alex Schroeder <alex@gnu.org>
@@ -36,7 +36,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.925 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.926 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -293,7 +293,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.925 2009/07/03 09:23:01 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.926 2009/08/03 22:24:24 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -3548,7 +3548,8 @@ sub DoPost {
     $type = $q->uploadInfo($filename)->{'Content-Type'};
     ReportError(T('Browser reports no file type.'), '415 UNSUPPORTED MEDIA TYPE') unless $type;
     local $/ = undef;   # Read complete files
-    eval { require MIME::Base64; $_ = MIME::Base64::encode(<$file>) };
+    my $content = <$file>; # Apparently we cannot count on <$file> to always work within the eval!?
+    eval { require MIME::Base64; $_ = MIME::Base64::encode($content) };
     $string = '#FILE ' . $type . "\n" . $_;
   } else {
     $string = AddComment($old, $comment) if $comment;
