@@ -1,3 +1,9 @@
+2009-08-16  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (SearchString, SearchRegexp): Handle invalid regular
+	expressions by compiling the regular expression, and if that
+	fails, use quotemeta on it and use that instead.
+
 2009-08-04  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (DoPost): Apparently we cannot count on <$file> to
