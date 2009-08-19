@@ -1,3 +1,9 @@
+2009-08-19  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (SearchRegexp): Keep the test for invalid regular
+	expressions but do not return it as a result because the value
+	cannot be passed to grep.
+
 2009-08-16  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (SearchString, SearchRegexp): Handle invalid regular
