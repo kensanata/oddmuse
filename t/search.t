@@ -15,11 +15,16 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 37;
+use Test::More tests => 38;
 
 clear_pages();
 
 add_module('mac.pl');
+
+# Search for broken regular expressions
+
+test_page(get_page('search=%2Btest'),
+	  '<h1>Malformed regular expression in \+test</h1>');
 
 # Test search
 
