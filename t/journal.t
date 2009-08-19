@@ -77,12 +77,18 @@ test_page_negative($page, $yesterday, $beforeyesterday);
 test_page(get_page('action=browse id=Summary pwd=foo'),
 	  "$tomorrow.*$today.*$yesterday.*$beforeyesterday");
 
-# Test for page corruption. Don't use update_page for the first update
+# Test for page corruption. Start with an empty set of pages and a
+# fresh config file because of the $JournalLimit and dynamic pagenames
+# used above.
+clear_pages();
+
+# Don't use update_page for the first update
 # because we don't want to render the page right after creating it.
 get_page('title=2009-06-22 text=hugglifuzbubs');
 $page = get_page('action=browse raw=1 id=2009-06-22');
 test_page($page, 'hugglifuzbubs');
 test_page_negative($page, 'blocks');
+
 test_page(update_page('Journal', "This is the journal.\n\n<journal>\n"),
 	  'This is the journal',
 	  '2009-06-22',
