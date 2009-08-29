@@ -33,7 +33,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: mail.pl,v 1.4 2009/06/07 14:09:57 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: mail.pl,v 1.5 2009/08/29 23:50:46 as Exp $</p>';
 
 use vars qw($MailFile $MailPattern);
 
@@ -150,7 +150,10 @@ sub MailNewSave {
   my $id = shift;
   my $mail = GetParam('mail', '');
   my $comment = GetParam('aftertext',  '');
-  if ($id and $comment and $mail and GetParam('notify', '')) {
+  # Compare to GetId() in order to prevent subscription to LocalNames
+  # page and other automatic saves.
+  if ($id and $id eq GetId() and $comment and $mail
+      and GetParam('notify', '')) {
     my $valid = 1;
     eval {
       local $SIG{__DIE__};
