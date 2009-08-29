@@ -15,8 +15,10 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 1;
+use Test::More tests => 2;
 clear_pages();
 AppendStringToFile($ConfigFile, "\$EditPass = 'bar';\n");
 test_page(update_page('test', 'normal edit'),
 	  'normal edit');
+test_page(get_page('action=password'),
+	  'You are a normal user on this site');
