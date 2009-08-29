@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 41;
+use Test::More tests => 45;
 
 clear_pages();
 
@@ -105,3 +105,19 @@ xpath_test($page,
 	   '//input[@name="mail"][@value="alex@example.com"]',
 	   '//a[@class="unsubscribe"][@href="http://localhost/wiki.pl?action=unsubscribe;pages=Comments_on_Foo"][text()="unsubscribe"]');
 negative_xpath_test($page, '//input[@type="checkbox"][@name="notify"]');
+
+# interaction with local names
+add_module('localnames.pl');
+AppendStringToFile($ConfigFile, "\$LocalNamesCollect = 1;\n");
+
+# Fake a comment on an ordinary page without actually setting the
+# $CommentsPrefix such that a local name is also defined.
+get_page('title=MyPage aftertext="This is an [http://www.example.com/ Example]."'
+	 . ' mail=alex@example.com notify=1');
+xpath_test(get_page('MyPage'),
+	   '//a[@class="url http outside"][@href="http://www.example.com/"][text()="Example"]');
+xpath_test(get_page('LocalNames'),
+	   '//ul/li/a[@class="url http outside"][@href="http://www.example.com/"][text()="Example"]');
+$page = get_page('action=subscriptions mail=alex@example.com');
+test_page($page, 'MyPage');
+test_page_negative($page, 'LocalNames');
