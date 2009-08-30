@@ -1,3 +1,8 @@
+2009-08-30  Alex Schroeder  <alex@gnu.org>
+
+	* modules/near-links.pl (%NearLinksException): New option.
+	(NewNearLinksSearchTitleAndBody): Use it.
+
 2009-08-19  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (SearchRegexp, SearchString): Remove the test for
