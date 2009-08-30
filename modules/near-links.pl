@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: near-links.pl,v 1.7 2009/03/13 15:18:46 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: near-links.pl,v 1.8 2009/08/30 19:19:59 as Exp $</p>';
 
 =head1 Near Links
 
@@ -26,7 +26,7 @@ Community:WhyWikiWorks if there is no local WhyWikiWorks page.
 =cut
 
 use vars qw(%NearSite %NearSource %NearLinksUsed $NearDir $NearMap
-%NearSearch $SisterSiteLogoUrl);
+%NearSearch $SisterSiteLogoUrl $NearLinksException);
 
 =head2 Options
 
@@ -210,6 +210,19 @@ local search. There will be a link called "Search sites on the NearMap
 as well" at the beginning of your local search results. Clicking on
 the link will include search results from remote sites as well.
 
+=head3 Development
+
+C<%NearLinksException> is used to store all the actions where a search
+should not result in the printing of pages. Theoretically we could use
+the presence of the C<$func> parameter in the call to
+C<SearchTitleAndBody>, but there are two problems with this approach:
+We don't know what the code does. It might just be collecting data
+without printing anything. And even if we did, and skipped the
+printing, we'd be searching the near pages in vain in the case of
+RecentChanges and RSS feeds, since the near pages have no change date
+and therefore can never be presented chronologically. Developer input
+will be necessary in all cases.
+
 =cut
 
 *OldNearLinksSearchMenu = *SearchMenu;
@@ -224,13 +237,17 @@ sub NewNearLinksSearchMenu {
   return $result;
 }
 
+%NearLinksException = (rc => 1, rss=>1);
+
 *OldNearLinksSearchTitleAndBody = *SearchTitleAndBody;
 *SearchTitleAndBody = *NewNearLinksSearchTitleAndBody;
 
 sub NewNearLinksSearchTitleAndBody {
   my $string = shift;
   my @result = OldNearLinksSearchTitleAndBody($string, @_);
-  @results = SearchNearPages($string, @results) if GetParam('near', 1);
+  my $action = GetParam('action', 'browse');
+  @results = SearchNearPages($string, @results)
+    if GetParam('near', 1) and not $NearLinksException{$action};
   return @result;
 }
 
