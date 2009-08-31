@@ -15,10 +15,45 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 2;
+use Test::More tests => 6;
 clear_pages();
 AppendStringToFile($ConfigFile, "\$EditPass = 'bar';\n");
 test_page(update_page('test', 'normal edit'),
 	  'normal edit');
 test_page(get_page('action=password'),
 	  'You are a normal user on this site');
+
+# test problem reported by Gauthier
+WriteStringToFile($ConfigFile, <<'EOT');
+$EditAllowed = 2;
+$AdminPass   = 'foo' unless defined $AdminPass;
+$EditPass    = 'bar' unless defined $EditPass;
+$ScriptName = 'http://localhost/wiki.pl';
+$SurgeProtection = 0;
+$CommentsPrefix = 'Comments on ';
+$LocalNamesCollect = 1;
+EOT
+
+# using the above settings results in no permission to edit normal
+# pages
+test_page(update_page('normal_page', 'normal edit'),
+	  'This page is empty');
+test_page(update_page('normal_page', 'admin edit', 0, 0, 1),
+	  'This page is empty');
+
+# test suggested fix
+WriteStringToFile($ConfigFile, <<'EOT');
+$EditAllowed = 2;
+$AdminPass   = 'foo';
+$EditPass    = 'bar';
+$ScriptName = 'http://localhost/wiki.pl';
+$SurgeProtection = 0;
+$CommentsPrefix = 'Comments on ';
+$LocalNamesCollect = 1;
+EOT
+
+# using the password works, now
+test_page(update_page('normal_page', 'normal edit'),
+	  'This page is empty');
+test_page(update_page('normal_page', 'admin edit', 0, 0, 1),
+	  'admin edit');
