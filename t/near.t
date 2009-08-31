@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 7;
+use Test::More tests => 11;
 
 clear_pages();
 
@@ -49,3 +49,9 @@ xpath_test(get_page('FooBar'),
 
 xpath_test(get_page('Comments_on_FooBar'),
 	   qq{//div[\@class="content browse"]/p[text()="This page is empty."]});
+
+$page=get_page('action=rc rcfilteronly=alex');
+xpath_test($page, '//a[text()="FooBar"]',
+	   '//strong[text()="Test by AlexSchroeder! "]');
+xpath_test_negative($page, '//p[text()="Near pages:"]',
+		    '//a[@class="near"][@title="EmacsWiki"][text()="AlexSchroeder"]');
