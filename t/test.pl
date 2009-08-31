@@ -170,6 +170,11 @@ sub negative_xpath_test {
   xpath_do(sub { shift == 0; }, "Unexpected Matches\n", @_);
 }
 
+# alias
+sub xpath_test_negative {
+  return negative_xpath_test(@_);
+}
+
 sub xpath_run_tests {
   # translate embedded newlines (other backslashes remain untouched)
   my @tests = newlines(@_);

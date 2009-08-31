@@ -1,3 +1,12 @@
+2009-08-31  Alex Schroeder  <alex@gnu.org>
+
+	* modules/near-links.pl (NearLinksInit): Initialize
+	%NearLinksException here instead of at top level so other modules
+	can add to it as well.
+
+	* modules/journal-rss.pl (JournalRssGetRcLines): New. Add journal
+	to %NearLinksException.
+
 2009-08-30  Alex Schroeder  <alex@gnu.org>
 
 	* modules/near-links.pl (%NearLinksException): New option.
