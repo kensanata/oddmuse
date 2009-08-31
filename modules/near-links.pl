@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: near-links.pl,v 1.8 2009/08/30 19:19:59 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: near-links.pl,v 1.9 2009/08/31 08:31:04 as Exp $</p>';
 
 =head1 Near Links
 
@@ -85,6 +85,9 @@ sub NearLinksInit {
   %NearSite = ();
   %NearSearch = ();
   %NearSource = ();
+  # Don't overwrite the values other modules might have set
+  $NearLinksException{rc} = 1;
+  $NearLinksException{rss} = 1;
   foreach (split(/\n/, GetPageContent($NearMap))) {
     if (/^ ($InterSitePattern)[ \t]+([^ ]+)(?:[ \t]+([^ ]+))?$/) {
       my ($site, $url, $search) = ($1, $2, $3);
@@ -236,8 +239,6 @@ sub NewNearLinksSearchMenu {
     if %NearSearch and GetParam('near', 1) < 2;
   return $result;
 }
-
-%NearLinksException = (rc => 1, rss=>1);
 
 *OldNearLinksSearchTitleAndBody = *SearchTitleAndBody;
 *SearchTitleAndBody = *NewNearLinksSearchTitleAndBody;
