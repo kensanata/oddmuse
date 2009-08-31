@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.22 2009/03/07 16:05:34 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.23 2009/08/31 08:32:10 as Exp $</p>';
 
 $Action{journal} = \&DoJournalRss;
 
@@ -70,3 +70,8 @@ sub JournalRssGetRcLines {
   }
   return @result;
 }
+
+# Prevent near links from being printed as a result of the search.
+push(@MyInitVariables, sub {
+       $NearLinksException{journal} = 1;
+     });
