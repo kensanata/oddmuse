@@ -29,10 +29,6 @@ div.content, div.rc, body > form, div.footnotes, div.edit text {
     margin: 1em;
 }
 
-.XML {
-    vertical-align:top;
-}
-
 /* The following statement hides the result count at the end
    of a search page (since most of the time the result per page
    is 10. */
@@ -188,10 +184,26 @@ img.logo {
     float:left;
 }
 
+.top {
+	vertical-align: top;
+}
+
 .highlight {
     background-color: #ffa;
     font-style: normal;
     padding: 0 0.2em;
+}
+
+/* search box in the top bar */
+
+form.tiny, form.tiny p {
+	    display: inline;
+	    white-space: nowrap;
+}
+form.tiny input {
+	    padding: 0;
+	    width: 10ex;
+	    font-size: 70%;
 }
 
 div.right .right, div.left .left {
