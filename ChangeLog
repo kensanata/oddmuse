@@ -12,6 +12,12 @@
 	* modules/near-links.pl (%NearLinksException): New option.
 	(NewNearLinksSearchTitleAndBody): Use it.
 
+	* modules/mail.pl (MailNewSave): Only subscribe to a page to be
+	saved if that's also the page the user wants to save according to
+	GetId(). This is needed when saving a page X will also change
+	another page Y. GetId() will return X in both cases, so this code
+	is only triggered once.
+
 2009-08-19  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (SearchRegexp, SearchString): Remove the test for
