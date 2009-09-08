@@ -289,13 +289,10 @@ table.user {
     padding: 1em;
     margin: 1em 2em;
 }
-table.user tr td {
+table.user tr td, table.user tr th {
     border:   none;
     padding:  0.2em 0.5em;
-}
-table.user tr th {
-    border:   none;
-    padding:  0.2em 0.5em;
+    vertical-align: top;
 }
 table.arab tr th {
     font-weight:normal;
