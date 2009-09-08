@@ -1,0 +1,170 @@
+/* Color Scheme: links: #851; visited links: #542; background #aa8;
+   Plus black, white, and #333 for headers */
+
+body {
+	font-family: "Times New Roman",Georgia,Times;
+	color: #000;
+	background-color: #aa8;
+	margin:1em 2em;
+}
+@media print {
+	body {
+        	background-color: white;
+		font-size:12pt;
+	}
+}
+div.browse {
+	min-height: 3em;
+}
+div.footer {
+	clear:both;
+	font-size: 90%;
+}
+form.tiny, form.tiny p {
+	display:inline;
+	white-space:nowrap;
+}
+form.tiny input {
+	padding:0;
+	width:10ex;
+	font-size:10px;
+}
+
+div.commentshown {
+	padding-bottom: 1ex;
+	padding-left: 2em;
+	border-left: 2px solid black;
+	font-size: smaller;
+}
+div.commenthidden { display:none; }
+div.commentshown { display:block; }
+
+h1 {
+	font-weight: bold;
+	color: white;
+	background-color: #333;
+	width: 100%;
+	font-size: 130%;
+	padding: 0.2em;
+}
+h1 a:link, h1 a:visited {
+	color: inherit;
+	background-color: inherit;
+	text-decoration: inherit;
+}
+div.journal h1 {
+	font-size:large;
+	background-color: #555;
+}
+h2 {
+	font-weight: bold;
+	color: white;
+	background-color: #000;
+	width: 98%;
+	font-size: 110%;
+	padding: 0.2em;
+}
+a:link {
+	font-weight: bold;
+	color: #851;
+	background-color: inherit;
+}
+a:visited {
+	font-weight: bold;
+	color: #542;
+	background-color: inherit;
+}
+a:active {
+	font-weight: bold;
+	color:#a41;
+	background-color: inherit;
+}
+
+/* images with links, captions, etc */
+div.image { display: inline; margin: 1em; font-size: 90%; text-align: center; }
+.left { float: left; margin-right: 1em; }
+.right { float: right; margin-left: 1em; }
+div.right .right { float: none; }
+div.left .left { float: none; }
+
+a img { border: 1px solid #333; }
+.fit img { width: 80%; text-align: center; margin: 2em 8%; }
+.half img { width: 50%; height: 50%; text-align: center; margin: 2em 8%; }
+.noborder img { border: none; }
+
+em.underline { font-weight: bold; }
+.bar a { padding-right: 1em; }
+textarea { width:100%; }
+div.edit { padding-right: 1em; }
+img.logo { float: right; clear: right; border-style:none; }
+div.diff { padding-left:5%; padding-right:5%; }
+div.old { background-color:#FFFFAF; }
+div.new { background-color:#CFFFCF; }
+div.message { background-color:#FEE; }
+table.history { border-style:none; }
+td.history { border-style:none; }
+span.result { font-size:larger; }
+span.info { font-size:smaller; font-style:italic; }
+div.rc hr { display: none; }
+
+@media print {
+	a, a:link, a:visited {
+		color:#000;
+		text-decoration:none;
+		font-weight: normal;
+	}
+	h1 a, h2 a, h3 a, h4 a { font-style: normal; }
+	a.edit, div.footer, form, span.gotobar, a.number span { display:none; }
+	a[class="url number"]:after, a[class="inter number"]:after {
+		content:"[" attr(href) "]";
+	}
+	a[class="local number"]:after { content:"[" attr(title) "]"; }
+	img[smiley] { line-height: inherit; }
+}
+
+/* Tables */
+table.user {
+    margin: 1em 4em;
+    padding: 0 1em;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+ }
+table.user td, table.user th {
+    border-style: none;
+    padding:5px 10px;
+    vertical-align: top; 
+}
+table.user th { font-weight:bold; }
+table.user td.r { text-align:right; }
+table.user td.l { text-align:left; }
+table.user td.c { text-align:center; }
+table.user td.j { text-align:justify; }
+table.user td.mark { background-color:yellow; }
+@media print {
+	table {
+        	font-size: 9pt;
+		margin: 0;
+	}
+	table.user td, table.user th {
+		padding: 0 1ex;
+	}
+}
+
+/* Calendar */
+div.month { margin:0; padding:0; font-size:x-small; float:right; }
+div.content div.month { float:none; }
+div.year div.month { float:left; font-size:medium; padding:1ex; }
+div.month pre { margin:0; padding:0 0 0 1ex; }
+div.month a { text-decoration:none; font: inherit; }
+div.month span.title a { font: inherit; }
+/* no difference between a.exact and a.collection */
+div.month a.local { font-weight: bold; }
+div.month a.local:link { color: #562; }
+div.month a.local:visited { color: #542; }
+div.month a.today { font-weight: bold; color: #fff; }
+div.month span.title a.local { font-weight: normal; color: #842; }
+@media print {
+	div.month { display: none; }
+	div.year div.month { display: block; }
+	div.year div.month a { display: inline; }
+}
