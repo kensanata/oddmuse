@@ -26,7 +26,8 @@ use Net::SMTP::TLS;
 # perl rc2mail.pl -r http://localhost/cgi-bin/wiki \
 #                 -p test \
 #                 -m "alex:*secret*@mail.epfarms.org" \
-#                 -f "kensanata@gmail.com"
+#                 -f "kensanata@gmail.com" \
+#                 -t ~/.rc2mail
 
 # -n Don't send email; useful if debugging the script
 # -p Oddmuse administrator password
@@ -36,10 +37,13 @@ use Net::SMTP::TLS;
 # -m user:password@mailhost for sending email using SMTP Auth. Without this
 #    information, the script will send mail to localhost.
 # -f email address to use as the sender.
+# -t timestamp file; it's last modified date is used to determine when the
+#    the last run was and an appropriate URL is used. Instead of days=1 it
+#    will use from=n where n is the last modified date of the timestamp file.
 # -v verbose output
 
 my %opts;
-getopt('nprmf', \%opts);
+getopt('nprmft', \%opts);
 my $nomail = exists $opts{n};
 my $verbose = exists $opts{v};
 my $admin_password = $opts{p};
@@ -50,6 +54,7 @@ my ($user, $password, $host) = ($1, $2, $3);
 die "Cannot parse -m " . $opts{m} . "\n" if $opts{m} && !$host;
 my $from = $opts{f};
 die "Must provide sender using -f\n" if !$nomail && $host && !$from;
+my $ts = $opts{t};
 
 my $ua = new LWP::UserAgent;
 
@@ -76,8 +81,24 @@ sub get_subscribers {
 
 # Fetch RSS feed
 
+sub get_timeframe {
+  my $result;
+  if ($ts and -f $ts) {
+    $result = "from=" . (stat($ts))[9];
+    utime undef, undef, $ts;
+  } elsif (not $ts) {
+    $result = "days=1";
+  } else {
+    # file provided but does not exist: create it
+    open(F, ">$ts");
+    $result = "days=1";
+    close(F);
+  }
+  return $result;
+}
+
 sub get_rss {
-  my $url = "$root?action=rss;days=1;full=1;short=0";
+  my $url = "$root?action=rss;full=1;short=0;" . get_timeframe();
   print "Getting $url\n" if $verbose;
   my $response = $ua->get($url);
   die $url, $response->status_line unless $response->is_success;
