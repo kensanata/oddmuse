@@ -1,3 +1,9 @@
+2009-09-09  Alex Schroeder  <alex@gnu.org>
+
+	* rc2mail.pl: Introduce -t option.
+	(get_timeframe): New function.
+	(get_rss): Use it.
+
 2009-08-31  Alex Schroeder  <alex@gnu.org>
 
 	* modules/near-links.pl (NearLinksInit): Initialize
