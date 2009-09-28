@@ -78,6 +78,7 @@ sub get_subscribers {
     # print "Subscription for $key: ", join(', ', @entries), "\n";
     $data{$key} = \@entries;
   }
+  print scalar(keys(%data)) . " subscribers found\n" if $verbose;
   return \%data;
 }
 
