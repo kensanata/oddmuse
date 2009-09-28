@@ -21,6 +21,8 @@ use LWP::UserAgent;
 use MIME::Entity;
 use File::Temp;
 use Net::SMTP::TLS;
+use File::Basename;
+use File::Path;
 
 # This script can be invoked as follows:
 # perl rc2mail.pl -r http://localhost/cgi-bin/wiki \
@@ -90,9 +92,12 @@ sub get_timeframe {
     $result = "days=1";
   } else {
     # file provided but does not exist: create it
+    my $dir = dirname($ts);
+    mkpath($dir) unless -d $dir;
     open(F, ">$ts");
-    $result = "days=1";
+    print F time();
     close(F);
+    $result = "days=1";
   }
   return $result;
 }
@@ -123,7 +128,7 @@ sub send_files {
     $sent += @subscribers;
     send_file($id, $title, $item, @subscribers);
   }
-  die "No subscribers for the items available\n" unless $sent;
+  print "$sent messages sent\n" if $verbose;
 }
 
 sub send_file {
