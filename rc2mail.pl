@@ -78,7 +78,7 @@ sub get_subscribers {
     # print "Subscription for $key: ", join(', ', @entries), "\n";
     $data{$key} = \@entries;
   }
-  print scalar(keys(%data)) . " subscribers found\n" if $verbose;
+  print "Found " . scalar(keys(%data)) . " subscribers\n" if $verbose;
   return \%data;
 }
 
@@ -92,11 +92,11 @@ sub get_timeframe {
   } elsif (not $ts) {
     $result = "days=1";
   } else {
-    # file provided but does not exist: create it
+    # File provided but does not exist: create it. File content is in
+    # fact ignored on the next run!
     my $dir = dirname($ts);
     mkpath($dir) unless -d $dir;
-    open(F, ">$ts");
-    print F time();
+    open(F, ">$ts") or warn "Unable to create $ts: $!";
     close(F);
     $result = "days=1";
   }
