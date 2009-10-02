@@ -60,8 +60,9 @@ eval {
   $smtp->quit;
 };
 
-if ($@) {
-  warn "Net::SMTP::TLS problem: $@";
+warn "Net::SMTP::TLS problem: $@" if $@;
+
+eval {
   require Net::SMTP::SSL;
   my $mail = new MIME::Entity->build(To => $from, # test!
 				     From => $from,
@@ -77,4 +78,6 @@ if ($@) {
   $smtp->datasend($mail->stringify);
   $smtp->dataend;
   $smtp->quit;
-}
+};
+
+warn "Net::SMTP::SSL problem: $@" if $@;
