@@ -20,7 +20,6 @@ use XML::RSS;
 use LWP::UserAgent;
 use MIME::Entity;
 use File::Temp;
-use Net::SMTP::TLS;
 use File::Basename;
 use File::Path;
 
@@ -159,16 +158,29 @@ sub send_mail {
 				     Type=> "text/html");
   if ($host) {
     print "Sending $title to $subscriber using ${user}\@${host}\n" if $verbose;
-    my $smtp = Net::SMTP::TLS->new($host,
-				   User => $user,
-				   Password => $password,
-				   Debug => 1);
-    $smtp->mail($from);
-    $smtp->to($subscriber);
-    $smtp->data;
-    $smtp->datasend($mail->stringify);
-    $smtp->dataend;
-    $smtp->quit;
+    eval {
+      require Net::SMTP::TLS;
+      my $smtp = Net::SMTP::TLS->new($host,
+				     User => $user,
+				     Password => $password);
+      $smtp->mail($from);
+      $smtp->to($subscriber);
+      $smtp->data;
+      $smtp->datasend($mail->stringify);
+      $smtp->dataend;
+      $smtp->quit;
+    };
+    if ($@) {
+      require Net::SMTP::SSL;
+      my $smtp = Net::SMTP::SSL->new($host, Port => 465);
+      $smtp->auth($user, $password);
+      $smtp->mail($from);
+      $smtp->to($subscriber);
+      $smtp->data;
+      $smtp->datasend($mail->stringify);
+      $smtp->dataend;
+      $smtp->quit;
+    }
   } else {
     my @recipients = $mail->smtpsend();
     if (@recipients) {

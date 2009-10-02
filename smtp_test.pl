@@ -17,7 +17,6 @@ package OddMuse;
 
 use strict;
 use Getopt::Std;
-use Net::SMTP::TLS;
 use File::Temp;
 use MIME::Entity;
 
@@ -31,9 +30,10 @@ use MIME::Entity;
 
 my %opts;
 getopt('mf', \%opts);
+die "Must provide an SMTP host using -m\n" unless $opts{m};
 $opts{m} =~ /(.*?):(.*)\@(.*)/;
 my ($user, $password, $host) = ($1, $2, $3);
-die "Cannot parse -m " . $opts{m} . "\n" if $opts{m} && !$host;
+die "Cannot parse -m " . $opts{m} . "\n" unless $host;
 my $from = $opts{f};
 die "Must provide sender using -f\n" if $host && !$from;
 
@@ -41,11 +41,13 @@ my ($fh, $filename) = File::Temp->new(SUFFIX => '.html', UNLINK => 1);
 print $fh qq(<body>This is a <b>test</b>!);
 $fh->close;
 
+use Net::SMTP::TLS;
 my $mail = new MIME::Entity->build(To => $from, # test!
 				   From => $from,
-				   Subject => 'Test',
+				   Subject => 'Test Net::SMTP::TLS',
 				   Path => $fh,
 				   Type => "text/html");
+
 my $smtp = Net::SMTP::TLS->new($host,
 			       User => $user,
 			       Password => $password,
@@ -56,3 +58,21 @@ $smtp->data;
 $smtp->datasend($mail->stringify);
 $smtp->dataend;
 $smtp->quit;
+
+use Net::SMTP::SSL;
+my $mail = new MIME::Entity->build(To => $from, # test!
+				   From => $from,
+				   Subject => 'Test Net::SMTP::SSL',
+				   Path => $fh,
+				   Type => "text/html");
+
+my $smtp = Net::SMTP::SSL->new($host, Port => 465,
+			       Debug => 1);
+$smtp->auth($user, $password);
+$smtp->mail($from);
+$smtp->to($from); # test!
+$smtp->data;
+$smtp->datasend($mail->stringify);
+$smtp->dataend;
+$smtp->quit;
+
