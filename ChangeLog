@@ -1,3 +1,21 @@
+2009-10-06  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (LatestChanges): Handle "to" parameter.
+	(RcHeader): Report use of "to" parameter
+	(RcHtml): Add More... link.
+	(DebugInterLinks): Moved to debug.pl.
+
+	* modules/debug.pl (@Debugging, DebugInterLinks): Moved here from
+	the main script.
+
+2009-09-28  Alex Schroeder  <alex@gnu.org>
+
+	* rc2mail.pl (get_timeframe): Create path to filename used for -t
+	option if it does not exist. Requires File::Basename and
+	File::Path.
+	(get_subscribers): Report number of subscribers per site.
+	(get_timeframe): Added error message when open fails.
+
 2009-09-09  Alex Schroeder  <alex@gnu.org>
 
 	* rc2mail.pl: Introduce -t option.
