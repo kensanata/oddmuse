@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.929 2009/08/19 16:17:50 as Exp $
+# Version       $Id: wiki.pl,v 1.930 2009/10/06 14:33:00 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
 #     Alex Schroeder <alex@gnu.org>
@@ -36,7 +36,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.929 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.930 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -70,9 +70,8 @@ $PrintedHeader %Locks $Fragment @Blocks @Flags $Today @KnownLocks
 $ModulesDescription %Action %RuleOrder %Includes %RssInterwikiTranslate);
 
 # == Configuration ==
-# Can be set outside the script: $DataDir, $UseConfig, $ConfigFile,
-# $ModuleDir, $ConfigPage, $AdminPass, $EditPass, $ScriptName,
-# $FullUrl, $RunCGI.
+# Can be set outside the script: $DataDir, $UseConfig, $ConfigFile, $ModuleDir,
+# $ConfigPage, $AdminPass, $EditPass, $ScriptName, $FullUrl, $RunCGI.
 
 # 1 = load config file in the data directory
 $UseConfig   = 1 unless defined $UseConfig;
@@ -204,7 +203,6 @@ $LockExpiration = 60; # How long before expirable locks are expired
            debug => \&DoDebug );
 @MyRules = (\&LinkRules, \&ListRule); # don't set this variable, add to it!
 %RuleOrder = (\&LinkRules => 0, \&ListRule => 0);
-@Debugging = (\&DebugInterLinks); # subs to print debugging info
 
 # The 'main' program, called at the end of this script file (aka. as handler)
 sub DoWikiRequest {
@@ -293,7 +291,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.929 2009/08/19 16:17:50 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.930 2009/10/06 14:33:00 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -927,10 +925,10 @@ sub RSS {
   my $tHistory = T('history');
   if ($HttpCharset eq 'UTF-8' and ($tDiff ne 'diff' or $tHistory ne 'history')) {
     eval { local $SIG{__DIE__};
-     require Encode;
-     $tDiff = Encode::decode_utf8($tDiff);
-     $tHistory = Encode::decode_utf8($tHistory);
-   }
+	   require Encode;
+	   $tDiff = Encode::decode_utf8($tDiff);
+	   $tHistory = Encode::decode_utf8($tHistory);
+	 }
   }
   my $wikins = 'http://purl.org/rss/1.0/modules/wiki/';
   my $rdfns = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
@@ -1054,9 +1052,9 @@ sub GetRss {
       require LWP::Parallel::UserAgent;
       my $pua = LWP::Parallel::UserAgent->new();
       foreach my $uri (keys %todo) {
-  if (my $res = $pua->register(HTTP::Request->new('GET', $uri))) {
-    $str .= $res->error_as_HTML;
-  }
+	if (my $res = $pua->register(HTTP::Request->new('GET', $uri))) {
+	  $str .= $res->error_as_HTML;
+	}
       }
       %todo = (); # because the uris in the response may have changed due to redirects
       my $entries = $pua->wait();
@@ -1541,6 +1539,15 @@ sub LatestChanges {
     }
     $seen{$id} = 1;
   }
+  my $to = GetParam('to', 0);
+  if ($to) {
+    for (my $i = 0; $i < $#result; $i++) {
+      if ($result[$i][0] > $to) {
+	splice(@result, $i);
+	last;
+      }
+    }
+  }
   return reverse @result;
 }
 
@@ -1603,7 +1610,7 @@ sub GetRcLinesFor {
     next if $idOnly and $idOnly ne $id;
     next if $filterOnly and not $match{$id};
     next if ($userOnly and $userOnly ne $username);
-    next if $minor == 1 and !$showminoredit; # skip minor edits (if [[rollback]] this value is bogus)
+    next if $minor == 1 and !$showminoredit; # skip minor edits (if [[rollback]] this is bogus)
     next if !$minor and $showminoredit == 2; # skip major edits
     next if $match and $id !~ /$match/i;
     next if $hostOnly and $host !~ /$hostOnly/i;
@@ -1611,20 +1618,20 @@ sub GetRcLinesFor {
     next if $lang and @languages and not grep(/$lang/, @languages);
     if ($PageCluster) {
       ($cluster, $summary) = ($1, $2) if $summary =~ /^\[\[$FreeLinkPattern\]\] ?: *(.*)/
-  or $summary =~ /^$LinkPattern ?: *(.*)/o;
+	or $summary =~ /^$LinkPattern ?: *(.*)/o;
       next if ($clusterOnly and $clusterOnly ne $cluster);
       $cluster = '' if $clusterOnly; # don't show cluster if $clusterOnly eq $cluster
       if ($all < 2 and not $clusterOnly and $cluster) {
-  $summary = "$id: $summary"; # print the cluster instead of the page
-  $id = $cluster;
-  $revision = '';
+	$summary = "$id: $summary"; # print the cluster instead of the page
+	$id = $cluster;
+	$revision = '';
       }
     } else {
       $cluster = '';
     }
     $following{$id} = $ts if $followup and $followup eq $username;
     push(@result, [$ts, $id, $minor, $summary, $host, $username, $revision,
-       \@languages, $cluster]);
+		   \@languages, $cluster]);
   }
   return @result;
 }
@@ -1636,7 +1643,7 @@ sub ProcessRcLines {
   my $date = '';
   for my $line (GetRcLines()) {
     my ($ts, $id, $minor, $summary, $host, $username, $revision, $languageref,
-  $cluster, $last) = @$line;
+	$cluster, $last) = @$line;
     if ($date ne CalcDay($ts)) {
       $date = CalcDay($ts);
       &$printDailyTear($date);
@@ -1650,7 +1657,8 @@ sub ProcessRcLines {
 sub RcHeader {
   my $html;
   if (GetParam('from', 0)) {
-    $html .= $q->h2(Ts('Updates since %s', TimeToText(GetParam('from', 0))));
+    $html .= $q->h2(Ts('Updates since %s', TimeToText(GetParam('from', 0))) . ' '
+		    . (GetParam('to', 0) ? Ts('up to %s', TimeToText(GetParam('to', 0))) : ''));
   } else {
     $html .= $q->h2((GetParam('days', $RcDefault) != 1)
         ? Ts('Updates in the last %s days',
@@ -1700,16 +1708,16 @@ sub RcHeader {
     push(@menu, ScriptLink("$action;days=$days;all=$all;showedit=1",
          T('Include minor changes')));
   }
-  return $html . $q->p((map {
-    ScriptLink("$action;days=$_;all=$all;showedit=$edits",
-         ($_ != 1) ? Ts('%s days', $_) : Ts('%s days', $_));
-  } @RcDays), $q->br(), @menu, $q->br(),
-    ScriptLink($action . ';from=' . ($LastUpdate + 1)
-         . ";all=$all;showedit=$edits", T('List later changes')),
-    ScriptLink($rss, T('RSS'), 'rss nopages nodiff'),
-    ScriptLink("$rss;full=1", T('RSS with pages'), 'rss pages nodiff'),
-    ScriptLink("$rss;full=1;diff=1", T('RSS with pages and diff'),
-         'rss pages diff'));
+  return $html .
+    $q->p((map { ScriptLink("$action;days=$_;all=$all;showedit=$edits",
+			    ($_ != 1) ? Ts('%s days', $_) : Ts('%s days', $_));
+	       } @RcDays), $q->br(), @menu, $q->br(),
+	  ScriptLink($action . ';from=' . ($LastUpdate + 1)
+		     . ";all=$all;showedit=$edits", T('List later changes')),
+	  ScriptLink($rss, T('RSS'), 'rss nopages nodiff'),
+	  ScriptLink("$rss;full=1", T('RSS with pages'), 'rss pages nodiff'),
+	  ScriptLink("$rss;full=1;diff=1", T('RSS with pages and diff'),
+		     'rss pages diff'));
 }
 
 sub GetFilterForm {
@@ -1774,10 +1782,10 @@ sub RcHtml {
       $pagelink = GetOldPageLink('browse', $id, $all_revision, $id, $cluster);
       my $rollback_is_possible = RollbackPossible($ts);
       if ($admin and ($rollback_is_possible or $rollback_was_possible)) {
-  $rollback = $q->submit("rollback-$ts", T('rollback'));
-  $rollback_was_possible = $rollback_is_possible;
+	$rollback = $q->submit("rollback-$ts", T('rollback'));
+	$rollback_was_possible = $rollback_is_possible;
       } else {
-  $rollback_was_possible = 0;
+	$rollback_was_possible = 0;
       }
     } elsif ($cluster) {
       $pagelink = GetOldPageLink('browse', $id, $revision, $id, $cluster);
@@ -1789,19 +1797,28 @@ sub RcHtml {
       $diff .= GetPageLink($PageCluster) . ':';
     } elsif ($UseDiff and GetParam('diffrclink', 1)) {
       if ($revision == 1) {
-  $diff .= '(' . $q->span({-class=>'new'}, T('new')) . ')';
+	$diff .= '(' . $q->span({-class=>'new'}, T('new')) . ')';
       } elsif ($all) {
-  $diff .= '(' . ScriptLinkDiff(2, $id, T('diff'), '', $all_revision) .')';
+	$diff .= '(' . ScriptLinkDiff(2, $id, T('diff'), '', $all_revision) .')';
       } else {
-  $diff .= '(' . ScriptLinkDiff($minor ? 2 : 1, $id, T('diff'), '') . ')';
+	$diff .= '(' . ScriptLinkDiff($minor ? 2 : 1, $id, T('diff'), '') . ')';
       }
     }
     $html .= $q->li($q->span({-class=>'time'}, CalcTime($ts)), $diff, $history,
-        $rollback, $pagelink, T(' . . . . '), $author, $sum, $lang,
-        $edit);
+		    $rollback, $pagelink, T(' . . . . '), $author, $sum, $lang,
+		    $edit);
   };
   ProcessRcLines($printDailyTear, $printRCLine);
   $html .= '</ul>' if $inlist;
+  my $to = GetParam('from', $Now - GetParam('days', $RcDefault) * 86400);
+  my $from = $to - GetParam('days', $RcDefault) * 86400;
+  my $more = "action=rc;to=$to;from=$from";
+  foreach (qw(all showedit rollback rcidonly rcuseronly rchostonly
+	      rcclusteronly rcfilteronly match lang followup)) {
+    my $val = GetParam($_, '');
+    $more .= ";$_=$val" if $val;
+  }
+  $html .= $q->p({-class=>'more'}, ScriptLink($more, T('More...'), 'more'));
   return GetFormStart() . $html . $q->endform;
 }
 
@@ -1812,10 +1829,7 @@ sub PrintRcHtml { # to append RC to existing page, or action=rc directly
   if ($standalone or $rc or GetParam('rcclusteronly', '')) {
     print $q->start_div({-class=>'rc'});
     print $q->hr() unless $standalone or GetParam('embed', $EmbedWiki);
-    print RcHeader();
-    print RcHtml();
-    print GetFilterForm();
-    print $q->end_div();
+    print RcHeader() . RcHtml() . GetFilterForm() . $q->end_div();
   }
   PrintFooter($id) if $standalone;
 }
@@ -3901,17 +3915,9 @@ sub DoShowVersion {
 sub DoDebug {
   print GetHeader('', T('Debugging Information')),
     $q->start_div({-class=>'content debug'});
-  foreach my $sub (@Debugging) {
-    &$sub;
-  }
-  ;
+  foreach my $sub (@Debugging) { &$sub }
   print $q->end_div();
   PrintFooter();
-}
-
-sub DebugInterLinks {
-  print $q->h2(T('Inter links:')) . $q->p(join(', ', sort keys %InterSite))
-    if %InterSite;
 }
 
 # == Surge Protection ==
