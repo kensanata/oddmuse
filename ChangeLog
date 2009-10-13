@@ -1,3 +1,13 @@
+2009-10-14  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (LatestChanges, RcHtml, RcHeader): Change to parameter
+	to upto parameter because there was a conflict with the to
+	parameter used by the rollback action.
+
+	* wikiupload (wikiput): Add question-asker override.
+
+	* modules/timezone.pl: Complete rewrite.
+
 2009-10-06  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (LatestChanges): Handle "to" parameter.
