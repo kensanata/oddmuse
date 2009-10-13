@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: wikiupload,v 1.6 2006/02/26 03:19:26 as Exp $
+# $Id: wikiupload,v 1.7 2009/10/13 22:29:51 as Exp $
 
 import mimetypes, httplib, urllib, re, urlparse, sys, getopt
 from time import time
@@ -84,6 +84,7 @@ def wikiput(where, filename,
               [ 'summary', summary ],
               [ 'username', username ],
               [ 'pwd', password ],
+              [ 'question', 1 ],
               [ 'recent_edit', recent_edit ]]
     (content_type, body) = encode_multipart_formdata(params, type, files);
     headers = {'Content-Type': content_type}
