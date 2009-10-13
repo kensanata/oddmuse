@@ -22,7 +22,8 @@ clear_pages();
 add_module('near-links.pl');
 
 CreateDir($NearDir);
-WriteStringToFile("$NearDir/EmacsWiki", "AlexSchroeder\nFooBar\nComments_on_FooBar\n");
+WriteStringToFile("$NearDir/EmacsWiki", "AlexSchroeder\nFooBar\n"
+		  . "Comments_on_FooBar\nEmacsWiki\n");
 
 update_page('InterMap', " EmacsWiki http://www.emacswiki.org/cgi-bin/wiki/%s\n",
 	    'required', 0, 1);
