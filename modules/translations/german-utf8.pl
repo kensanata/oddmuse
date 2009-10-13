@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.27 2009/06/07 19:20:23 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.28 2009/10/13 22:48:52 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 Mit normalen Seiten
@@ -89,7 +89,9 @@ Der Link für die Weiterleitung mittels #REDIRECT ist ungültig
 Please go on to %s.
 Bitte machen Sie weiter bei %s.
 Updates since %s
-Änderungen seit %s
+Änderungen zwischen %s
+up to %s
+und %s
 Updates in the last %s days
 Änderungen der letzten %s Tage
 Updates in the last %s day
