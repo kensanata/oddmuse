@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.931 2009/10/13 22:32:34 as Exp $
+# Version       $Id: wiki.pl,v 1.932 2009/10/13 23:27:24 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
 #     Alex Schroeder <alex@gnu.org>
@@ -36,7 +36,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.931 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.932 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -291,7 +291,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.931 2009/10/13 22:32:34 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.932 2009/10/13 23:27:24 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -1540,10 +1540,10 @@ sub LatestChanges {
     $seen{$id} = 1;
   }
   my $to = GetParam('upto', 0);
-  if ($to) { # result[0][0] is the most recent entry (highest ts)
+  if ($to) {
     for (my $i = $#result; $i >= 0; $i--) {
       if ($result[$i][0] > $to) {
-	splice(@result, 0, 1 + $i); # remove the rest
+	splice(@result, 0, 1 + $i);
 	last;
       }
     }
