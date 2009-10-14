@@ -3,6 +3,8 @@
 	* wiki.pl (LatestChanges, RcHtml, RcHeader): Change to parameter
 	to upto parameter because there was a conflict with the to
 	parameter used by the rollback action.
+	(DoPost): Make sure empty comments and comments that are equal to
+	$NewComment are not saved.
 
 	* wikiupload (wikiput): Add question-asker override.
 
