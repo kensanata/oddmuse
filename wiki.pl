@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.933 2009/10/13 23:42:04 as Exp $
+# Version       $Id: wiki.pl,v 1.934 2009/10/14 09:15:09 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
 #     Alex Schroeder <alex@gnu.org>
@@ -36,7 +36,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.933 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.934 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -291,7 +291,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.933 2009/10/13 23:42:04 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.934 2009/10/14 09:15:09 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -3546,14 +3546,19 @@ sub DoPost {
   OpenPage($id);
   my $old = $Page{text};
   my $string = UnquoteHtml(GetParam('text', undef));
+  $string =~ s/(\r|$FS)//go;
   my ($type) = TextIsFile($string); # MIME type if an uploaded file
   my $filename = GetParam('file', undef);
   if (($filename or $type) and not $UploadAllowed and not UserIsAdmin()) {
     ReportError(T('Only administrators can upload files.'), '403 FORBIDDEN');
   }
   my $comment = UnquoteHtml(GetParam('aftertext', undef));
-  # Upload file
-  if ($filename) {
+  $comment =~ s/(\r|$FS)//go;
+  if (defined($comment) and (not $comment or $comment eq $NewComment)) {
+    ReleaseLock();
+    ReBrowsePage($id);
+  }
+  if ($filename) { # upload file
     my $file = $q->upload('file');
     if (not $file and $q->cgi_error) {
       ReportError(Ts('Transfer Error: %s', $q->cgi_error), '500 INTERNAL SERVER ERROR');
@@ -3566,14 +3571,11 @@ sub DoPost {
     my $content = <$file>; # Apparently we cannot count on <$file> to always work within the eval!?
     eval { require MIME::Base64; $_ = MIME::Base64::encode($content) };
     $string = '#FILE ' . $type . "\n" . $_;
-  } else {
+  } else { # ordinary text edit
     $string = AddComment($old, $comment) if $comment;
     $string = substr($string, length($DeletedPage)) # undelete pages when adding a comment
       if $comment and substr($string, 0, length($DeletedPage)) eq $DeletedPage; # no regexp!
-    # Massage the string
-    $string =~ s/\r//g;
-    $string .= "\n"  if ($string !~ /\n$/);
-    $string =~ s/$FS//go;
+    $string .= "\n"  if ($string !~ /\n$/); # add trailing newline
     $string = RunMyMacros($string); # run macros on text pages only
   }
   my %allowed = map {$_ => 1} @UploadTypes;
