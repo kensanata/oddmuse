@@ -1,5 +1,8 @@
 /* [Default Theme] */
 
+button { height: 3em; -moz-border-radius: 5px; -webkit-border-radius: 5px; }
+button a { text-decoration: none; color: inherit; }
+
 body, rss {
     background-color:#FFF;
     color:       #000;
@@ -268,6 +271,9 @@ div.footer {
     margin-top: 2em;
 }
 
+.legal {
+    font-size: 80%;
+}
 
 /* printable index */
 
