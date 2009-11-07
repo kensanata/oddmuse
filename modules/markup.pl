@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: markup.pl,v 1.34 2009/03/13 22:28:29 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: markup.pl,v 1.35 2009/11/07 19:30:17 as Exp $</p>';
 
 use vars qw(%MarkupPairs %MarkupForcedPairs %MarkupSingles %MarkupLines
 	    $MarkupQuotes $MarkupQuoteTable);
@@ -67,7 +67,7 @@ $RuleOrder{\&MarkupRule} = 150;
 %MarkupSingles = ('...' => '&#x2026;', # HORIZONTAL ELLIPSIS
 		  '---' => '&#x2014;', # EM DASH
 		  '-- ' => '&#x2013; ', # EN DASH
-		  '-> ' => '&#x2192; ', # RIGHTWARDS ARROW
+		  '-> ' => '&#x2192;&#x00a0;', # RIGHTWARDS ARROW, NO-BREAK SPACE
 		 );
 
 %MarkupLines = ('>' => 'pre',
