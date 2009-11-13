@@ -1,0 +1,2 @@
+# Where to find diff(1) and grep(1)
+$ENV{PATH} = '/usr/bin:/bin';

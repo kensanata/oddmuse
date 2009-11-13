@@ -1,0 +1,12 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine on
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} !=/favicon.ico
+  RewriteRule ^(.*)$ wiki.pl?$1 [L,QSA]
+
+  # The config file might contain passwords.
+  RewriteRule ^config$ wiki.pl/config [L]
+  # The visitor.log file contains IP numbers of visitors.
+  RewriteRule ^visitors.log$ wiki.pl/visitor.log [L]
+</IfModule>
