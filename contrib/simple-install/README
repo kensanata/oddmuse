@@ -16,6 +16,17 @@ Your directory should now contain the following files:
 
 The wiki pages will be saved in this directory.
 
+Make sure the www user (or whoever Apache runs under) has write access
+to this directory. In that directory, try chmod o+w . and see if that
+helps when you get an error message saying that Oddmuse cannot create
+the temp directory.
+
+You need to make sure that your administrator has allowed
+AllowOverride All in his httpd.conf file for the settings in the
+.htaccess file provided to have an effect.
+
+Running Oddmuse will create more files, eventually.
+
 * pages (the directory containing the pages)
 * keep (the directory containing older versions of pages)
 * pageidx (a file containing the names of existing pages)
