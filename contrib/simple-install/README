@@ -1,0 +1,65 @@
+This is the README file distributed as part of the simple-install
+package together with the Oddmuse script.
+
+Unzip all the files into a directory served by Apache. Get the
+current.pl file from here: http://emacswiki.org/scripts/current.pl
+
+Your directory should now contain the following files:
+
+* README (this file)
+* .htaccess (information for Apache)
+* config (a simple config file for you to modify)
+* wiki.pl (a wrapper script setting the data directory)
+* current.pl (the main script)
+* modules (a directory containing modules)
+* modules/creole.pl (support for the standard wiki markup)
+
+The wiki pages will be saved in this directory.
+
+* pages (the directory containing the pages)
+* keep (the directory containing older versions of pages)
+* pageidx (a file containing the names of existing pages)
+* rc.log (the file used to produce RecentChanges)
+* visitors.log (the file used to log the most recent visitors)
+* temp (a temporary directory for log files and the like)
+
+In order to start your wiki, click on the edit link (the first link
+below the navigation bar, at the bottom of the page).  This will allow
+you to enter some text for this page.  Click the Save button and you
+are done.
+
+To add new pages, edit the homepage and add links to new pages.  Links
+are traditionally formed by ConcatenatingCapitalizedWords.  This kind
+of link pattern is called a wiki word.
+
+Alternatively, put links in [[double square brackets]].  This kind of
+link pattern is called a free link.
+
+As long as the new pages don't exist, links to these pages are
+followed by a clickable question mark.  Click on the question mark to
+create the new page.
+
+Enjoy your wiki experience.
+
+Visit http://www.oddmuse.org/ to learn more about the translation
+files and modules that are part of this package.
+
+----------------------------------------------------------------------
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.1 or
+any later version published by the Free Software Foundation.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or (at
+your option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+Both the GNU Free Documentation License, and the GNU General Public
+License are distributed together with this script.  See the files FDL
+and GPL, respectively.
