@@ -225,6 +225,10 @@ a.near:visited {
 a.near:active {
     color:#0F0;
 }
+/* Interlink prefix not shown */
+a .site, a .separator {
+        display: none;
+}
 a cite { font:inherit; }
 a.book, a.movie { font:inherit; text-decoration:underline; }
 .twitter a { color: #394; }
