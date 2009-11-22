@@ -1,8 +1,5 @@
 /* [Default Theme] */
 
-button { height: 3em; -moz-border-radius: 5px; -webkit-border-radius: 5px; }
-button a { text-decoration: none; color: inherit; }
-
 body, rss {
     background-color:#FFF;
     color:       #000;
@@ -248,6 +245,18 @@ ol, ul, dl {
 }
 dd, li {
     margin-bottom:0.5em;
+}
+
+/* elisp files and other scripts for download */
+
+p.download a {
+    padding: 0.5em;
+    color: black;
+    text-decoration: none;
+    background-color: #cfa;
+    border: 1px solid #7a7;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
 }
 
 /* cal */
