@@ -10,6 +10,9 @@ INKSCAPE=GPL $(wildcard inkscape/*.py inkscape/*.inx inkscape/*.sh)
 PACKAGEMAKER=/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker
 PWD=$(shell pwd)
 DIST=$(VERSION).tar.gz $(VERSION).tar.gz.sig \
+	contrib/simple-install/$(VERSION)-simple.tar.gz \
+	contrib/simple-install/$(VERSION)-simple.tar.gz.sig
+
 # These targets no longer work are have not been verified in a long time.
 OLDDIST=$(VERSION).dmg $(VERSION).dmg.sig \
 	$(VERSION).tar.gz $(VERSION).tar.gz.sig \
@@ -25,6 +28,9 @@ upload: $(DIST)
 
 upload-text: new-utf8.pl
 	wikiupload new-utf8.pl http://www.oddmuse.org/cgi-bin/oddmuse-en/New_Translation_File
+
+contrib/simple-install/$(VERSION)-simple.tar.gz:
+	cd contrib/simple-install && make $(VERSION)-simple.tar.gz
 
 $(VERSION).tar.gz: README FDL GPL ChangeLog wiki.pl $(TRANSLATIONS) $(MODULES)
 	rm -rf $(VERSION)
