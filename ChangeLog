@@ -1,3 +1,8 @@
+2009-11-07  Alex Schroeder  <alex@gnu.org>
+
+	* modules/markup.pl (%MarkupSingles): The right arrow is followed
+	by a non-breaking space. Added more arrows.
+
 2009-10-14  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (LatestChanges, RcHtml, RcHeader): Change to parameter
