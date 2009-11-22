@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 32;
+use Test::More tests => 42;
 
 clear_pages();
 
@@ -24,19 +24,20 @@ AppendStringToFile($ConfigFile, "\$RcDefault = $RcDefault;\n");
 
 my $now = time - 10;
 my $day = 24*60*60;
-for my $i (0 .. 60) {
+for my $i (reverse 0 .. 20, 50 .. 60) {
   my $ts = $now - $i * $day;
   AppendStringToFile($RcFile, "$ts${FS}test$i${FS}${FS}test$i${FS}${FS}${FS}1${FS}${FS}\n");
 }
 
-# at least one line
-xpath_test($rc, '//div[@class="rc"]');
-
 # default page lists correct number of pages
 my $rc = get_page('action=rc');
+
 xpath_test($rc, map { "//a[text()='test$_']" } (0..6));
 # 7 is exactly 7 * 24h + 10 seconds in the past, ie. it should not show up
 negative_xpath_test($rc, map { "//a[text()='test$_']" } (7..10));
+
+# at least one line
+xpath_test($rc, '//div[@class="rc"]');
 
 # find "more" link
 my $url = xpath_test($rc, '//a[text()="More..."][@class="more"]/attribute::href');
@@ -59,3 +60,13 @@ $rc = get_page("action=rc from=$from upto=$upto");
 # there should be no links
 xpath_test($rc, '//div[@class="rc"]');
 negative_xpath_test($rc, '//ul/li/span[@class="time"]');
+
+# get a page with some links
+$from = $now - 52 * $day;
+$upto = $from + $RcDefault * $day;
+$rc = get_page("action=rc from=$from upto=$upto");
+
+# there should be links from 50 .. 52
+negative_xpath_test($rc, map { "//a[text()='test$_']" } (45 .. 49));
+xpath_test($rc, map { "//a[text()='test$_']" } (50 .. 52));
+negative_xpath_test($rc, map { "//a[text()='test$_']" } (53 .. 54));
