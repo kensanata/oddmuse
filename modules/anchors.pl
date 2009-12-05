@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: anchors.pl,v 1.15 2005/04/16 08:36:49 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: anchors.pl,v 1.16 2009/12/05 15:09:39 as Exp $</p>';
 
 push(@MyRules, \&AnchorsRule);
 
@@ -46,7 +46,7 @@ sub AnchorsRule {
     $text =~ s/_/ /g;
     return ScriptLink(UrlEncode($id), $text, $class, undef, $title);
   } elsif (m/\G\[\:$FreeLinkPattern\]/gc) {
-    return $q->a({-name=>FreeToNormal($1), -class=>'anchor'});
+    return $q->a({-name=>FreeToNormal($1), -class=>'anchor'}, ' ');
   }
   return undef;
 }
