@@ -27,7 +27,7 @@ do 'modules/link-all.pl'; # check compatibility
 
 xpath_run_tests(split('\n',<<'EOT'));
 This is a [:day for fun and laughter].
-//a[@class="anchor"][@name="day_for_fun_and_laughter"]
+//a[@class="anchor"][@name="day_for_fun_and_laughter"][text()=" "]
 [[#day for fun and laughter]].
 //a[@class="local anchor"][@href="#day_for_fun_and_laughter"][text()="day for fun and laughter"]
 [[2004-08-17#day for fun and laughter]].
