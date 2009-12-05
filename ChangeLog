@@ -1,3 +1,8 @@
+2009-12-05  Alex Schroeder  <alex@gnu.org>
+
+	* modules/anchors.pl (AnchorsRule): Used a space for anchor
+	definition in order to avoid an empty a element.
+
 2009-11-07  Alex Schroeder  <alex@gnu.org>
 
 	* modules/markup.pl (%MarkupSingles): The right arrow is followed
