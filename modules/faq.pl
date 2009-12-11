@@ -23,7 +23,7 @@
 # Additionally, lines starting with Q: and A: are rendered using 
 # the css classes div.question and div.answer.
 
-$ModulesDescription .= '<p>$Id: faq.pl,v 1.4 2009/01/28 11:33:57 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: faq.pl,v 1.5 2009/12/11 09:02:13 as Exp $</p>';
 
 $FaqHeaderText = "Questions on this page:" unless $FaqHeaderText;
 $FaqQuestionText = "Question: " unless $FaqQuestionText;
@@ -55,10 +55,13 @@ sub NewFaqGetHeader {
 
 sub FaqHeadings {
   $page = GetPageContent(shift);
-  # ignore all the stuff that gets processed anyway
+  # ignore all the stuff that gets processed anyway by usemod.pl and
+  # creole.pl -- if we're not going to hook into ordinary parsing like
+  # toc.pl does, this will always be incomplete.
   $page =~ s/<nowiki>(.*\n)*<\/nowiki>//gi;
   $page =~ s/<pre>(.*\n)*<\/pre>//gi;
   $page =~ s/<code>(.*\n)*<\/code>//gi;
+  $page =~ s/\{\{\{[ \t]*\n(.*?)\n\}\}\}[ \t]*(\n|$)//gs;
 
   my $Headings = '';
   foreach $line (grep(/^Q:[ \t]*(.*?)$/, split(/\n/, $page))) {
