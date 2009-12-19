@@ -25,6 +25,8 @@ div.sister img { border:none; }
 div.near { background-color:#EFE; }
 div.near p { margin-top:0; }
 h2, h3 { margin-top:10ex; }
+.left { float: left; }
+.right { float: right; }
 @media print {
  body { font:12pt sans-serif; }
  a, a:link, a:visited { color:#000; text-decoration:none; font-style:oblique; }
