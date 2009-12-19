@@ -8,10 +8,6 @@ a.definition:after { content:"]"; }
 a.alias { text-decoration:none; border-bottom: thin dashed; }
 a.near:link { color:#093; }
 a.near:visited { color:#550; }
-a.upload:before { content:"<"; }
-a.upload:after { content:">"; }
-a.outside:before { content:"["; }
-a.outside:after { content:"]"; }
 img.logo { float: right; clear: right; border-style:none; }
 div.diff { padding-left:5%; padding-right:5%; }
 div.old { background-color:#FFFFAF; }
