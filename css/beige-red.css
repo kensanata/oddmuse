@@ -15,7 +15,6 @@ h1, h2, h3, title {
     line-height: 100%;
 }
 h1, channel title {
-    font-family: Garamond, "Bookman Old Style", Cochin, Baskerville, serif;
     font-size: 24pt;
     margin:  1em 0 0.5em 0;
     padding: 0.4em 0;
@@ -464,7 +463,6 @@ div.pic div p + p { display:table-caption; caption-side:bottom; }
     }
     /* headings */
     h1 {
-	font-family: Garamond, Verdana, serif;
 	color:       inherit;
 	margin-top:  2em;
     }
