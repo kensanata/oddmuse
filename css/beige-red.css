@@ -95,7 +95,7 @@ form.tiny input {
 /* code */
 
 pre, code, tt {
-    font-family: "Andale Mono", Monaco, "Courrier New", monospace;
+    font-family: "Andale Mono", Monaco, "Courier New", Courier, monospace;
     font-size: 80%;
     line-height: 110%;
 }
