@@ -11,11 +11,12 @@ body, rss {
 /* headings: we can use larger sizes if we use a lighter color  */
 
 h1, h2, h3, title {
+    font-family: Garamond, GaramondNo8, "Bookman Old Style", Cochin, Baskerville, serif;
     font-weight:normal;
     line-height: 100%;
 }
 h1, channel title {
-    font-size: 24pt;
+    font-size: 32pt;
     margin:  1em 0 0.5em 0;
     padding: 0.4em 0;
     color:   #666;
@@ -272,9 +273,10 @@ div.year > div.month {
 div.footer {
     clear:both;
 }
-div.month a.edit {
+div.content div.month a.edit {
     color:inherit;
     font-weight:inherit;
+    text-decoration: none;
 }
 
 /* history tables and other tables */
