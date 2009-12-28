@@ -83,33 +83,39 @@ sub get_subscribers {
 
 # Fetch RSS feed
 
-sub get_timeframe {
-  my $result;
+sub get_timestamp {
   if ($ts and -f $ts) {
-    $result = "from=" . (stat($ts))[9];
-    utime undef, undef, $ts;
-  } elsif (not $ts) {
-    $result = "days=1";
+    return "from=" . (stat($ts))[9];
   } else {
-    # File provided but does not exist: create it. File content is in
-    # fact ignored on the next run!
+    return "days=1";
+  }
+}
+
+sub update_timestamp {
+  # Only update timestamps if $ts is provided.
+  return unless $ts;
+  if (-f $ts) {
+    # File exists: update timestamp.
+    utime undef, undef, $ts;
+  } else {
+    # File does not exist: create it. File content is ignored on the
+    # next run!
     my $dir = dirname($ts);
     mkpath($dir) unless -d $dir;
     open(F, ">$ts") or warn "Unable to create $ts: $!";
     close(F);
-    $result = "days=1";
   }
-  return $result;
 }
 
 sub get_rss {
-  my $url = "$root?action=rss;full=1;short=0;" . get_timeframe();
+  my $url = "$root?action=rss;full=1;short=0;" . get_timestamp();
   print "Getting $url\n" if $verbose;
   my $response = $ua->get($url);
   die $url, $response->status_line unless $response->is_success;
   my $rss = new XML::RSS;
   $rss->parse($response->content);
   print "Found " . @{$rss->{items}} . " items.\n" if $verbose;
+  update_timestamp();
   return $rss;
 }
 
@@ -128,7 +134,7 @@ sub send_files {
     $sent += @subscribers;
     send_file($id, $title, $item, @subscribers);
   }
-  print "$sent messages sent\n" if $verbose;
+  print "$sent messages sent\n" if $sent;
 }
 
 sub send_file {
