@@ -167,7 +167,8 @@ $Action{translate} = \&DoTranslationLink;
 sub DoTranslationLink {
   my $source = shift;
   my $target = FreeToNormal(GetParam('target', ''));
-  my $error = ValidId($target);
+  my $error = ValidId($target)
+    || ($source eq $target and T("Please provide a different page name for the translation."));
   my $lang = GetParam('translation', '');
   if (not $error and $lang) {
     OpenPage(FreeToNormal($source));
