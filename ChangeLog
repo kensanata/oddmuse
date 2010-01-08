@@ -1,3 +1,8 @@
+2010-01-08  Alex Schroeder  <aschroeder@thinkmo.de>
+
+	* modules/translation-links.pl (DoTranslationLink): Provide an
+	error message if source and target page are the same.
+
 2009-12-28  Alex Schroeder  <alex@gnu.org>
 
 	* rc2mail.pl (get_timeframe): Replaced by get_timestamp and
