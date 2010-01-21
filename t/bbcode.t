@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 30;
+use Test::More tests => 32;
 
 clear_pages();
 
@@ -75,6 +75,10 @@ foo<h2>blarg</h2><p>fnord</p>
 <h5></h5><h6>blarg</h6><p>foo</p>
 [center][size=5]The Savage Tides[/size][/center]
 <div style="text-align: center"><p><em style="font-size: 500%; font-style: normal;">The Savage Tides</em></p></div>
+[list]\n[*]one\n[*]two\n[/list]
+<ul> <li>one </li><li>two </li></ul>
+[quote][list][*]one[*]two[/list][/quote]
+<blockquote></blockquote><ul><li>one</li><li>two</li></ul><p>[/quote]</p>
 EOT
 
 xpath_run_tests(split('\n',<<'EOT'));
