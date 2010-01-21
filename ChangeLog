@@ -1,3 +1,8 @@
+2010-01-21  Alex Schroeder  <alex@gnu.org>
+
+	* modules/bbcode.pl (bbCodeRule): Support bullet lists, but no
+	nesting of block level elements.
+
 2010-01-08  Alex Schroeder  <aschroeder@thinkmo.de>
 
 	* modules/translation-links.pl (DoTranslationLink): Provide an
