@@ -13,15 +13,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: bbcode.pl,v 1.9 2008/12/16 01:16:59 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: bbcode.pl,v 1.10 2010/01/21 18:00:48 as Exp $</p>';
 
 push(@MyRules, \&bbCodeRule);
 
 use vars qw($bbBlock);
 my %bbTitle = qw(h1 1 h2 1 h3 1 h4 1 h5 1 h6 1);
 
+# This code does not allow the nesting of block elements such as quote
+# and list.
+
 sub bbCodeRule {
-  if (/\G(\[([a-z][a-z1-6]*)(?:=([^]]+))?\])/cgi) {
+  if (/\G(\[([a-z*][a-z1-6]*)(?:=([^]]+))?\])/cgi) {
     my $bbcode = $1;
     my $tag = lc($2);
     my $option = $3;
@@ -63,6 +66,13 @@ sub bbCodeRule {
       $html .= '<div style="text-align: center">';
       $bbBlock = 'div';
       return $html . AddHtmlEnvironment('p'); }
+    elsif ($tag eq 'list') {
+      my $html = CloseHtmlEnvironments();
+      $html .= "</$bbBlock>" if $bbBlock;
+      $bbBlock = 'ul';
+      return $html . '<ul>'; }
+    elsif ($tag eq '*' and $bbBlock eq 'ul') {
+      return CloseHtmlEnvironmentUntil('ul') . AddHtmlEnvironment('li'); }
     elsif ($tag eq 'code' and /\G((?:.*\n)*?.*?)\[\/code\](.*\n)*/cgi) {
       return CloseHtmlEnvironments() . $q->pre($1) . AddHtmlEnvironment('p'); }
     elsif ($bbTitle{$tag}) {
@@ -75,7 +85,7 @@ sub bbCodeRule {
     my $tag = lc($2);
     %translate = qw{b b i i u em color em size em font span url a
 		    quote blockquote h1 h1 h2 h2 h3 h3 h4 h4 h5 h5
-		    h6 h6 center div};
+		    h6 h6 center div list ul};
     # closing a block level element closes all elements
     if ($bbBlock eq $translate{$tag}) {
       /\G([ \t]*\n)*/cg; # eat whitespace after closing block level element
