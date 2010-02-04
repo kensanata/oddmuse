@@ -13,7 +13,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: dates.pl,v 1.1 2010/02/04 16:44:08 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: dates.pl,v 1.2 2010/02/04 16:45:34 as Exp $</p>';
+
+push(@MyAdminCode, \&DatesMenu);
+
+sub DatesMenu {
+  my ($id, $menuref, $restref) = @_;
+  push(@$menuref,
+       ScriptLink('action=dates',
+		  T('Extract all dates from the database'),
+		  'dates'));
+}
 
 $Action{dates} = \&DoDates;
 
