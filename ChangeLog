@@ -1,3 +1,7 @@
+2010-02-10  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl: PATH now contains both /bin and /usr/bin.
+
 2010-01-28  Alex Schroeder  <alex@gnu.org>
 
         * modules/bbcode.pl (bbCodeRule): s and strike.
