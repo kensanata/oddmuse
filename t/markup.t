@@ -57,7 +57,7 @@ foo_bar_baz
 _foo bar 4_
 <em style="text-decoration: underline; font-style: normal;">foo bar 4</em>
 this -> that
-this &#x2192; that
+this &#x2192;&#x00a0;that
 and this...
 and this&#x2026;
 foo---bar
