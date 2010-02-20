@@ -1,6 +1,16 @@
+2010-02-20  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (DoRollback): Prevent rollback from restoring banned
+	content.
+
 2010-02-10  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl: PATH now contains both /bin and /usr/bin.
+
+2010-02-08  Alex Schroeder  <alex@gnu.org>
+
+	* wikiupload (wikiput): Quoted 1 to avoid an error reported by
+	labancle on #oddmuse.
 
 2010-01-28  Alex Schroeder  <alex@gnu.org>
 
