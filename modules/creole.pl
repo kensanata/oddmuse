@@ -14,7 +14,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.60 2009/03/02 18:09:48 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.61 2010/02/20 21:00:57 as Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -433,7 +433,8 @@ sub CreoleHeadingRule {
     ($CreoleHeaderHtmlTag, $CreoleHeaderHtmlTagAttr) = $header_depth <= 6
       ? ('h'.$header_depth, '')
       : ('h6', qq{class="h$header_depth"});
-    return AddHtmlEnvironment($CreoleHeaderHtmlTag, $CreoleHeaderHtmlTagAttr);
+    return CloseHtmlEnvironments()
+      . AddHtmlEnvironment($CreoleHeaderHtmlTag, $CreoleHeaderHtmlTagAttr);
   }
   # header closing: = to ======, newline, or EOF
   #
