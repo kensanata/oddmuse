@@ -1,5 +1,8 @@
 2010-02-20  Alex Schroeder  <alex@gnu.org>
 
+	* modules/creole.pl (CreoleHeadingRule): Close HTML environment
+	before opening a header; this prevents headers insides p elements.
+
 	* wiki.pl (DoRollback): Prevent rollback from restoring banned
 	content.
 
