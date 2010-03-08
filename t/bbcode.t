@@ -31,6 +31,10 @@ run_tests(split('\n',<<'EOT'));
 <i>this text is italic</i>
 [u]this text is underlined[/u]
 <em style="text-decoration: underline; font-style: normal;">this text is underlined</em>
+[s]this text is deleted[/s]
+<del>this text is deleted</del>
+[strike]this text is deleted[/strike]
+<del>this text is deleted</del>
 [color=blue]this text is blue[/color]
 <em style="color: blue; font-style: normal;">this text is blue</em>
 [size=+2]this text is two sizes larger than normal[/size]
