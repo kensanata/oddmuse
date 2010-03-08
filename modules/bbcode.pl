@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: bbcode.pl,v 1.11 2010/01/28 10:51:37 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: bbcode.pl,v 1.12 2010/03/08 22:52:59 as Exp $</p>';
 
 push(@MyRules, \&bbCodeRule);
 
@@ -87,7 +87,7 @@ sub bbCodeRule {
     my $tag = lc($2);
     %translate = qw{b b i i u em color em size em font span url a
 		    quote blockquote h1 h1 h2 h2 h3 h3 h4 h4 h5 h5
-		    h6 h6 center div list ul};
+		    h6 h6 center div list ul s del strike del};
     # closing a block level element closes all elements
     if ($bbBlock eq $translate{$tag}) {
       /\G([ \t]*\n)*/cg; # eat whitespace after closing block level element
