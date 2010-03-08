@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 34;
+use Test::More tests => 35;
 
 clear_pages();
 
@@ -97,6 +97,11 @@ xpath_run_tests(split('\n',<<'EOT'));
 EOT
 
 add_module('creole.pl');
+
+run_tests(split('\n',<<'EOT'));
+* [s]this text is deleted[/s]
+<ul><li><del>this text is deleted</del></li></ul>
+EOT
 
 test_page(update_page('test', '[b]Important:[/b]'),
 	  '<b>Important:</b>');
