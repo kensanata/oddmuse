@@ -1,3 +1,7 @@
+2010-03-31  Alex Schroeder  <aschroeder@thinkmo.de>
+
+	* modules/tags.pl (TagsRule): Add alt attribute.
+
 2010-02-20  Alex Schroeder  <alex@gnu.org>
 
 	* modules/creole.pl (CreoleHeadingRule): Close HTML environment
@@ -17,7 +21,7 @@
 
 2010-01-28  Alex Schroeder  <alex@gnu.org>
 
-        * modules/bbcode.pl (bbCodeRule): s and strike.
+	* modules/bbcode.pl (bbCodeRule): s and strike.
 
 2010-01-21  Alex Schroeder  <alex@gnu.org>
 
