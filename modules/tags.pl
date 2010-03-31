@@ -29,7 +29,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: tags.pl,v 1.19 2009/04/05 22:19:03 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tags.pl,v 1.20 2010/03/31 16:35:29 as Exp $</p>';
 
 =head1 CONFIGURATION
 
@@ -93,7 +93,8 @@ sub TagsRule {
 			    -class=>'feed tag',
 			    -title=>T('Feed for this tag'),
 			    -rel=>'feed'
-			   }, $q->img({-src=>$TagFeedIcon}));
+			   }, $q->img({-src=>$TagFeedIcon,
+				       -alt=>T('RSS')}));
     }
     return $html;
   }
