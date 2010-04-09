@@ -2,6 +2,11 @@
 
 	* modules/tags.pl (TagsRule): Add alt attribute.
 
+2010-03-08  Alex Schroeder  <alex@gnu.org>
+
+	* modules/bbcode.pl (bbCodeRule): Fix closing of s and strike
+	blocks.
+
 2010-02-20  Alex Schroeder  <alex@gnu.org>
 
 	* modules/creole.pl (CreoleHeadingRule): Close HTML environment
