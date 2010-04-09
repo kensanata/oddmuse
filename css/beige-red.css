@@ -434,6 +434,7 @@ div.pic div p + p { display:table-caption; caption-side:bottom; }
 	font-size:   12pt;
 	line-height: 13pt;
 	color:       #000;
+	background-color: #fff;
     }
     
     /* hide all the crap */
@@ -442,16 +443,23 @@ div.pic div p + p { display:table-caption; caption-side:bottom; }
     div.rc form, form.tiny, p.comment {
 	display:none;
     }
-    /* All links get the arrow. */
-    div.content a:before {
-	content:"\2192";
+    a,
+    a:visited,
+    div.content a.near:link, 
+    div.content a.near:visited,
+    div.content a.near:active {
+	color:inherit;
+	font-weight: bold;
     }
-    a, a:visited, a.near:link, a.near:visited {
-	color: inherit;
+    div.content a.feed {
+	display: none;
     }
-    div.content a.image:before,
-    div.content a.url:before {
-	content:"";
+    div.content a.book,
+    div.content a.movie {
+	text-decoration: none;
+    }
+    a cite {
+	font-style: italic;
     }
     /* no difference */
     pre, code, tt {
@@ -487,34 +495,6 @@ div.pic div p + p { display:table-caption; caption-side:bottom; }
     div.journal h3 a:visited {
 	color: inherit;
     }
-
-    /* except for journal titles and page titles */
-    div.content h1 a:before, div.content h2 a:before,
-    div.content h3 a:before {
-	content: "";
-    }
-    /* and book and movie links */
-    div.content a.book:before, div.content a.movie:before {
-	content: "";
-    }
-    div.content a.book, div.content a.movie {
-	text-decoration: none;
-    }
-    a cite {
-	font-style: italic;
-    }
-    /* links with square brackets instead of colors */
-    /* too fancy!
-    a[class="url number"]:after, a[class="inter number"]:after {
-	content:"[" attr(href) "]";
-    }
-    a[class="local number"]:after {
-	content:"[" attr(title) "]";
-    }
-    a[class="near"]:after {
-	content:" [" attr(title) "]";
-    }
-    */
 }
 
 /* rss */
