@@ -55,5 +55,5 @@ test_page(get_page('search=alex'),
 	  '<title>Wiki: Search for: alex</title>');
 AppendStringToFile($ConfigFile, "\$ScriptName = 'http://emacswiki.org/';\n");
 test_page(get_page('search=alex'),
-	  'Status: 302 Moved',
+	  'Status: 302',
        'Location: http://www.google.com/search\?q=site%3Aemacswiki.org\+alex');
