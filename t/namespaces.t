@@ -117,9 +117,10 @@ test_page(update_page('Umlaute', 'namespace mit umlaut',
 		      'wo steckt das ü', undef, undef,
 		      'ns=Zürich'), 'namespace mit umlaut');
 xpath_test(get_page('action=rc'),
-	   # depending on whether this runs on a filesystem with UTF-8
-	   # NFC or NFD (Mac!), the encoding will be different.
-	   '//a[@class="local"][@href="http://localhost/wiki.pl/Zu%cc%88rich/Umlaute" or @href="http://localhost/wiki.pl/Zu%fcrich/Umlaute"]');
+	   # the exact result depends on filesystem encoding!
+	   '//a[@class="local"][@href="http://localhost/wiki.pl/Zu%cc%88rich/Umlaute"'
+	   . ' or @href="http://localhost/wiki.pl/Zu%fcrich/Umlaute"'
+	   . ' or @href="http://localhost/wiki.pl/Z%c3%bcrich/Umlaute"]');
 
 # Test rollbacks
 test_page(get_page('action=browse ns=Muu id=Test'),

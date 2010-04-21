@@ -91,8 +91,8 @@ test_page(get_page('SearchAndReplace'), '{{fuu}} and \[xa\]bar.');
 
 $page = update_page("Alexander_Schröder", "Edit [[Alexander Schröder]]!");
 xpath_test($page,
-	   Encode::encode_utf8('//h1/a[@title="Click to search for references to this page"][@href="http://localhost/wiki.pl?search=%22Alexander+Schr%c3%b6der%22"][text()="Alexander Schröder"]'),
-	   Encode::encode_utf8('//a[@class="local"][@href="http://localhost/wiki.pl/Alexander_Schr%c3%b6der"][text()="Alexander Schröder"]'));
+	   '//h1/a[@title="Click to search for references to this page"][@href="http://localhost/wiki.pl?search=%22Alexander+Schr%c3%b6der%22"][text()="Alexander Schröder" or text()="' . Encode::encode_utf8('Alexander Schröder') . '"]',
+	   '//a[@class="local"][@href="http://localhost/wiki.pl/Alexander_Schr%c3%b6der"][text()="Alexander Schröder" or text()="' . Encode::encode_utf8('Alexander Schröder') . '"]');
 
 xpath_test(update_page('IncludeSearch',
 		       "first line\n<search \"ab\">\nlast line"),
@@ -124,5 +124,5 @@ TODO: {
   local $TODO = "Don't get a decent error when opening the grep pipe";
   AppendStringToFile($ConfigFile, "\$ENV{PATH} = '';\n");
   test_page(get_page('search=empty'),
-	    "This is about 0 and the <strong>empty</strong> string ''.");
+	    "0 pages found");
 }
