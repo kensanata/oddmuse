@@ -124,5 +124,5 @@ TODO: {
   local $TODO = "Don't get a decent error when opening the grep pipe";
   AppendStringToFile($ConfigFile, "\$ENV{PATH} = '';\n");
   test_page(get_page('search=empty'),
-	    "0 pages found");
+	    "1 pages found");
 }
