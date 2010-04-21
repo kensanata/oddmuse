@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 62;
+use Test::More tests => 63;
 
 clear_pages();
 WriteStringToFile($RcFile, "1FirstPage1\n");
@@ -185,3 +185,11 @@ test_page(get_page('action=rc raw=1 rollback=1 all=1'),
 	  'link: http://localhost/wiki.pl/Schr%c3%b6der',
 	  'link: http://localhost/wiki.pl\?action=browse;id=Schr%c3%b6der;revision=2',
 	  'link: http://localhost/wiki.pl\?action=browse;id=Schr%c3%b6der;revision=1');
+
+# Making sure no extra [[rollback]] entries show up
+clear_pages();
+update_page('Test', 'Hallo');
+$ts = $Now - $KeepDays * 86400 + 100;
+get_page("action=rollback to=$ts username=Alex pwd=foo");
+AppendStringToFile($ConfigFile, "\$KeepDays = 7;\n");
+test_page_negative(get_page("action=rc raw=1"), '[[rollback]]');
