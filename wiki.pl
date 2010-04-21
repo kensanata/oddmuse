@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.936 2010/02/20 20:20:09 as Exp $
+# Version       $Id: wiki.pl,v 1.937 2010/04/21 20:56:20 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
 #     Alex Schroeder <alex@gnu.org>
@@ -36,7 +36,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.936 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.937 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -291,7 +291,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.936 2010/02/20 20:20:09 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.937 2010/04/21 20:56:20 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -1577,6 +1577,7 @@ sub StripRollbacks {
 	splice(@result, $i, 1); # strip rolled back single pages
       }
     }
+    splice(@result, 0, $end + 1) if $skip_to; # strip rest if any
   } else {		  # just strip the marker left by DoRollback()
     for (my $i = $#result; $i >= 0; $i--) {
       splice(@result, $i, 1) if $result[$i][1] eq '[[rollback]]'; # id
