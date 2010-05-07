@@ -36,7 +36,7 @@ be changed using the C<$NamespacesSelf> option.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.49 2009/07/03 13:49:47 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.50 2010/05/07 15:18:57 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent
 	    $NamespaceRoot $NamespaceSlashing @NamespaceParameters
@@ -405,9 +405,8 @@ sub DoNamespacesList {
 	GetFormStart(undef, 'get'), GetHiddenValue('action', 'browse'),
 	  GetHiddenValue('id', $HomePage);
     my $new = $q->textfield('ns') . ' ' . $q->submit('donamespace', T('Go!'));
-    print $q->ul($q->li([map { ScriptLink($Namespaces{$_} . $HomePage, $_) }
-			 keys %Namespaces]),
-		 $q->li($new));
+    print $q->ul($q->li([map { $q->a({-href => $Namespaces{$_} . $HomePage},
+				     $_); } keys %Namespaces]), $q->li($new));
     print $q->end_form() . $q->end_div();
     PrintFooter();
   }
