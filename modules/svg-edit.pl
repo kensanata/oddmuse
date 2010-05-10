@@ -12,9 +12,10 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-use vars qw($SvgMimeType);
+use vars qw($SvgMimeType $SvgEditorUrl);
 
-$SvgMimeType = 'image/svg+xml';
+$SvgMimeType  = 'image/svg+xml';
+$SvgEditorUrl = 'http://svg-edit.googlecode.com/svn/tags/stable/editor/svg-editor.html';
 
 push (@MyInitVariables, \&SvgInitVariables);
 
@@ -60,12 +61,12 @@ sub SvgDimensions {
 
 sub NewSvgGetEditForm {
   my $html = OldSvgGetEditForm(@_);
-  return $html unless SvgItIs($Page{text});
   my $link = ScriptLink('action=svg;id=' . UrlEncode($OpenPageName),
 			T('Edit image in the browser'),
 			'svg');
-  my $text = T('Replace this file with text');
-  $html =~ s!$text</a>!$text</a> $link!;
+  my $text1 = T('Replace this file with text');
+  my $text2 = T('Replace this text with a file');
+  $html =~ s!($text1|$text2)</a>!$1</a> $link!;
   return $html;
 }
 
@@ -74,6 +75,7 @@ $Action{svg} = \&DoSvg;
 sub DoSvg {
   my $id = shift;
   print GetHeader('', Ts('Editing %s', $id));
-  print qq{<iframe src="http://svg-edit.googlecode.com/svn/tags/stable/editor/svg-editor.html" width="750" height="600"></iframe>};
+  print $q->iframe({-src => "$SvgEditorUrl?url=" . OldSvgGetDownloadLink($id, 2),
+		    -width => "100%", -height => "500"}, "");
   PrintFooter($id, 'edit');
 }
