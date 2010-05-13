@@ -133,6 +133,14 @@ function oddmuseInit () {
 }
 
 window.setTimeout("oddmuseInit()", 1000);
+
+var elem = document.getElementsByTagName("div");
+for (i=0; i<elem.length; i++) {
+  if (elem[i].className=="sidebar") {
+    elem[i].style.display='none';
+  }
+}
+
 </script>
 };
   print GetHeader('', Ts('Editing %s', $id));
