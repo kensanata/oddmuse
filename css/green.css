@@ -21,10 +21,6 @@ html, body { /* hue 84 */
 body.gray {
     background-color:#d5e0c5;
 }
-
-.invisible {
-    display: none;
-}
  
 /* The next section includes some funky selectors.
    See http://www.w3.org/TR/REC-CSS2/selector.html for more. */
