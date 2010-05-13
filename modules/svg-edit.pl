@@ -127,19 +127,18 @@ function oddmuseSaveHandler (window, svg) {
 function oddmuseInit () {
     if (frames['svgeditor'].svgCanvas != null) {
 	frames['svgeditor'].svgCanvas.bind("saved", oddmuseSaveHandler);
+	var elem = document.getElementsByTagName("div");
+	for (i=0; i<elem.length; i++) {
+	  if (elem[i].className=="sidebar") {
+	    elem[i].style.display='none';
+	  }
+	}
     } else {
 	window.setTimeout("oddmuseInit()", 1000);
     }
 }
 
 window.setTimeout("oddmuseInit()", 1000);
-
-var elem = document.getElementsByTagName("div");
-for (i=0; i<elem.length; i++) {
-  if (elem[i].className=="sidebar") {
-    elem[i].style.display='none';
-  }
-}
 
 </script>
 };
