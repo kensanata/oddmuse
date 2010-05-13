@@ -1,3 +1,15 @@
+2010-05-13  Alex Schroeder  <alex@gnu.org>
+
+	* modules/svg-edit.pl (DoSvg): Add Javascript to override the save
+	functionality. It includes an encode64 function, a new save
+	handler, and some init code, and initialize the image.
+
+2010-05-11  Alex Schroeder  <alex@gnu.org>
+
+	* modules/svg-edit.pl (DoSvg): Add URL of the SVG so that you can
+	edit images if the image URL (on the wiki) is reachable by the
+	editor (defaulting to Google).
+
 2010-05-07  Alex Schroeder  <alex@gnu.org>
 
 	* modules/namespaces.pl (DoNamespacesList): Fix the links to
