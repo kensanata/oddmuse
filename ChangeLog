@@ -1,3 +1,8 @@
+2010-05-14  Alex Schroeder  <alex@gnu.org>
+
+	* modules/svg-edit.pl (NewSvgGetDownloadLink): Show older
+	revisions, too. Work when included in [[image:foo]] links.
+
 2010-05-13  Alex Schroeder  <alex@gnu.org>
 
 	* modules/svg-edit.pl (DoSvg): Add Javascript to override the save
