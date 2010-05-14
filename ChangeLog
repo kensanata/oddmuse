@@ -2,6 +2,7 @@
 
 	* modules/svg-edit.pl (NewSvgGetDownloadLink): Show older
 	revisions, too. Work when included in [[image:foo]] links.
+	(DoSvg): Enable translation of the prompt.
 
 2010-05-13  Alex Schroeder  <alex@gnu.org>
 
