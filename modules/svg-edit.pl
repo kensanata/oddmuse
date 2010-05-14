@@ -131,6 +131,7 @@ function oddmuseSaveHandler (window, svg) {
     var summary = prompt("$summary");
     frames['svgeditor'].jQuery.post('$FullUrl', { title: '$id', raw: 1,
                                                   summary: summary,
+                                                  question: 1,
 						  text: '#FILE $SvgMimeType\\n'
 						  + encode64(svg) } );
 }
