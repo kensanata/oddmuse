@@ -32,12 +32,18 @@ sub NewSvgGetDownloadLink {
   my ($name, $image, $revision, $alt) = @_;
   return OldSvgGetDownloadLink(@_) if $name ne $OpenPageName;
   return OldSvgGetDownloadLink(@_) if $image != 1;
-  my $data = $Page{text};
+  # determine if this is SVG data we need to show in an iframe
+  my $data;
+  if ($revision) {
+    ($data) = GetTextRevision($revision); # ignore revision reset
+  } else {
+    $data = $Page{text};
+  }
   return OldSvgGetDownloadLink(@_) unless SvgItIs($data);
   my ($width, $height) = SvgDimensions($data);
   # add 20 to compensate for scrollbars?
   return $q->iframe({-width => $width + 20, -height => $height + 20,
-		     -src => OldSvgGetDownloadLink($name, 2)}, "");
+		     -src => OldSvgGetDownloadLink($name, 2, $revision)}, "");
 }
 
 sub SvgItIs {
@@ -119,7 +125,7 @@ function encode64(input) {
 }
 
 function oddmuseSaveHandler (window, svg) {
-    show_save_warning = false;
+    window.show_save_warning = false;
     var summary = prompt("Summary of your changes: ");
     frames['svgeditor'].jQuery.post('$FullUrl', { title: '$id', raw: 1,
                                                   summary: summary,
