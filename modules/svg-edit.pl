@@ -81,6 +81,7 @@ $Action{svg} = \&DoSvg;
 
 sub DoSvg {
   my $id = shift;
+  my $summary = T('Summary of your changes: ');
   $HtmlHeaders .= qq{
 <script type="text/javascript">
 
@@ -127,7 +128,7 @@ function encode64(input) {
 
 function oddmuseSaveHandler (window, svg) {
     window.show_save_warning = false;
-    var summary = prompt("Summary of your changes: ");
+    var summary = prompt("$summary");
     frames['svgeditor'].jQuery.post('$FullUrl', { title: '$id', raw: 1,
                                                   summary: summary,
 						  text: '#FILE $SvgMimeType\\n'
