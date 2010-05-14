@@ -364,7 +364,7 @@ textarea#summary { width:75%; height:10%; }
 
 /* links to change from text to file and back */
 
-form.upload a.svg, form.upload a.upload {
+form.edit a.svg, form.edit a.upload {
     padding: 0.5em;
     margin-right: 0.5em;
     background-color: #cfa;
