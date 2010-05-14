@@ -119,7 +119,9 @@ function encode64(input) {
 }
 
 function oddmuseSaveHandler (window, svg) {
+    var summary = prompt("Summary of your changes: ");
     frames['svgeditor'].jQuery.post('$FullUrl', { title: '$id', raw: 1,
+                                                  summary: summary,
 						  text: '#FILE $SvgMimeType\\n'
 						  + encode64(svg) } );
 }
