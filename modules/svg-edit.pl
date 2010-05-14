@@ -67,12 +67,11 @@ sub SvgDimensions {
 *GetEditForm = *NewSvgGetEditForm;
 
 sub NewSvgGetEditForm {
-  my ($page_name, $upload, $oldText, $revision) = @_;
   my $html = OldSvgGetEditForm(@_);
-  my $link = ScriptLink('action=svg;id=' . UrlEncode($OpenPageName)
-			. ($revision ? ";revision=$revision" : ""),
-			T('Edit image in the browser'),
-			'svg');
+  my $action = 'action=svg;id=' . UrlEncode($OpenPageName);
+  $action .= ";revision=" . GetParam('revision', '')
+    if GetParam('revision', '');
+  my $link = ScriptLink($action, T('Edit image in the browser'), 'svg');
   my $text1 = T('Replace this file with text');
   my $text2 = T('Replace this text with a file');
   $html =~ s!($text1|$text2)</a>!$1</a> $link!;
@@ -158,7 +157,9 @@ window.setTimeout("oddmuseInit()", 1000);
 };
   print GetHeader('', Ts('Editing %s', $id));
   # This only works if editor and file are on the same site, I think.
-  print $q->iframe({-src => $SvgEditorUrl . '?url=' . GetDownloadLink($id, 2),
+  my $drawing = GetDownloadLink($id, 2, GetParam('revision', ''));
+  my $src = $SvgEditorUrl . '?url=' . UrlEncode($url);
+  print $q->iframe({-src => $src,
 		    -name => 'svgeditor',
 		    -width => "100%",
 		    -height => "500"}, "");
