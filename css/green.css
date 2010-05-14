@@ -362,6 +362,19 @@ dl, ol, ul { margin-left:0em; }
 textarea#text { width:75%; height:70%; }
 textarea#summary { width:75%; height:10%; }
 
+/* links to change from text to file and back */
+
+form.upload a.svg, form.upload a.upload {
+    padding: 0.5em;
+    margin-right: 0.5em;
+    background-color: #cfa;
+    border: 1px solid #7a7;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+
+/* images */
+
 img { border:0; }
 pre, img.upload {
     border: #777 1px solid; padding: 0.5em;
