@@ -30,10 +30,11 @@ sub SvgInitVariables {
 
 sub NewSvgGetDownloadLink {
   my ($name, $image, $revision, $alt) = @_;
-  return OldSvgGetDownloadLink(@_) if $name ne $OpenPageName;
   return OldSvgGetDownloadLink(@_) if $image != 1;
   # determine if this is SVG data we need to show in an iframe
   my $data;
+  local (%Page, $OpenPageName);
+  OpenPage($name);
   if ($revision) {
     ($data) = GetTextRevision($revision); # ignore revision reset
   } else {
