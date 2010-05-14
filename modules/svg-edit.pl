@@ -70,7 +70,7 @@ sub NewSvgGetEditForm {
   my ($page_name, $upload, $oldText, $revision) = @_;
   my $html = OldSvgGetEditForm(@_);
   my $link = ScriptLink('action=svg;id=' . UrlEncode($OpenPageName)
-			. $revision ? ";revision=$revision" : "",
+			. ($revision ? ";revision=$revision" : ""),
 			T('Edit image in the browser'),
 			'svg');
   my $text1 = T('Replace this file with text');
