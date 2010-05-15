@@ -1,7 +1,9 @@
 2010-05-14  Alex Schroeder  <alex@gnu.org>
 
-	* modules/svg-edit.pl (NewSvgGetDownloadLink): Show older
-	revisions, too. Work when included in [[image:foo]] links.
+	* modules/svg-edit.pl (DoSvg): Make the sidebar invisible, if
+	necessary.
+	(NewSvgGetDownloadLink): Show older revisions, too. Work when
+	included in [[image:foo]] links.
 	(DoSvg): Enable translation of the prompt.
 
 2010-05-13  Alex Schroeder  <alex@gnu.org>
