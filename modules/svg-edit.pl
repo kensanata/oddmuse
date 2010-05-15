@@ -157,7 +157,7 @@ window.setTimeout("oddmuseInit()", 1000);
 };
   print GetHeader('', Ts('Editing %s', $id));
   # This only works if editor and file are on the same site, I think.
-  my $drawing = GetDownloadLink($id, 2, GetParam('revision', ''));
+  my $url = GetDownloadLink($id, 2, GetParam('revision', ''));
   my $src = $SvgEditorUrl . '?url=' . UrlEncode($url);
   print $q->iframe({-src => $src,
 		    -name => 'svgeditor',
