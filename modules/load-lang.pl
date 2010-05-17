@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: load-lang.pl,v 1.10 2009/04/09 17:02:17 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: load-lang.pl,v 1.11 2010/05/17 17:21:06 as Exp $</p>';
 
 $CookieParameters{interface} = '';
 
@@ -76,4 +76,6 @@ sub LoadLanguage {
   }
 }
 
-push(@MyInitVariables, \&LoadLanguage);
+# Must load language dependent config files before running init code for
+# gotobar.pl and similar extensions.
+unshift(@MyInitVariables, \&LoadLanguage);
