@@ -1,0 +1,156 @@
+/* Originally from Earle Martin, as seen on
+   http://downlode.org/log/2005-01-14/Mu_License,
+   Adapted by Alex Schroeder for Oddmuse.
+   Alex's changes available under the Mu License:
+
+       If you are asking what license this is released under,
+       you are asking the wrong question.
+*/
+
+body {
+  margin: 12px;
+  background: #002;
+  color: #fff;
+  font-family: Consolas, Courrier, fixed;
+}
+
+h1 a:link, h1 a:visited {
+    font-weight: normal;
+    color: #bfe;
+}
+
+a {
+  text-decoration: none;
+}    
+
+a:link, a:active {
+  color: #9df;
+}
+
+a:visited {
+  color: #add;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+blockquote {
+  border-left: 1px solid #fff;
+  padding-left: 10px;
+  margin-left: 20px;
+}
+
+hr { clear:both; }
+
+div.content {
+  border: 1px solid #fff;
+  padding: 20px;
+  color: #fff;
+  background: #333;
+}
+
+/* Tables */
+
+table.user {
+        margin: 1ex 4em;
+        padding: 1ex 1em;
+        border-top: 1px solid white;
+        border-bottom: 1px solid white;
+}
+table.user td, table.user th {
+        border-style: none;
+        padding:5px 10px;
+        vertical-align: top; 
+}
+table.user td.mark { background-color: #6ca; }
+table.user td.j { text-align: justify; }
+table.user td.c { text-align: center; }
+table.user td.l { text-align: left; }
+table.user td.r { text-align: right; }
+table.user th { font-weight: bold; }
+
+table.history { border-style:none; }
+td.history { border-style:none; }
+
+/* images with links, captions, etc */
+
+div.left .left { float: none; }
+div.right .right { float: none; }
+.right { float: right; margin-left: 1em; }
+.left { float: left; margin-right: 1em; }
+div.image { display: inline; margin: 1em; font-size: 90%; text-align: center; }
+
+/* diff */
+
+div.old { background-color: #944; }
+div.new { background-color: #498; }
+
+/* edit */
+
+div.edit { border:none; background:inherit; width:100%; }
+div.edit textarea { width:95%; color:#fff; background:#333; }
+input[name=summary] { width:80%; }
+
+/* calendar */
+
+div.year { border:none; background:inherit; }
+div.month { padding:0; margin:0 2ex; }
+body > div.month {
+    float:right;
+    background-color:inherit;
+    border:solid thin;
+    padding:0 1ex;
+}
+div.year > div.month { float:left; }
+div.footer { clear:both; }
+div.month a.edit { color:inherit; font-weight:inherit; }
+div.month .today { border: 1px solid red; }
+
+/* not checked */
+
+div.journal h1 { font-size: large }
+dd, li { margin-bottom:0.5ex; }
+
+/* portrait support: not checked */
+
+div.color { clear:left; }
+div.one { background-color:#444; padding: 0.1ex 0; }
+
+img.portrait {
+    float:left;
+    clear:left;
+    background-color:#000;
+    border:#fff 1px solid;
+    padding:1px;
+    margin:10px;
+}
+li { margin-left:1em; }
+div.portrait { float:left;
+    clear:left;
+    font-size:xx-small;
+    padding-left:10px;
+}
+div.portrait + p { min-height:70px; }
+div.portrait img.portrait { float:none; margin:10px 10px 0 0; }
+div.portrait a { text-decoration:none; color:#999; }
+
+/* irc support: not checked */
+
+dl.irc dt { width:12ex; float:left; text-align:right; }
+dl.irc dd { margin-left:15ex; }
+
+/* search support: not checked */
+
+span.result { font-size:larger; }
+span.info { font-size:smaller; font-style:italic; }
+div.rss { border:1px dashed; padding:0 1em;}
+
+/* permanent anchors support: not checked */
+
+a.definition { border-bottom:dashed 1px; }
+a.alias { text-decoration:none; border-bottom:dashed 1px; }
+
+/* near links: not checked */
+
+a.near { text-decoration: underline; }
