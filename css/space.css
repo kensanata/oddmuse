@@ -11,7 +11,7 @@ body {
   margin: 12px;
   background: #002;
   color: #fff;
-  font-family: Consolas, Courrier, fixed;
+  font-family: "Andale Mono", Consolas, "Courier New", Courier, fixed;
 }
 
 h1 a:link, h1 a:visited {
@@ -50,7 +50,7 @@ div.content {
   background: #333;
 }
 
-/* Tables */
+/* tables */
 
 table.user {
         margin: 1ex 4em;
@@ -92,7 +92,11 @@ div.edit { border:none; background:inherit; width:100%; }
 div.edit textarea { width:95%; color:#fff; background:#333; }
 input[name=summary] { width:80%; }
 
-/* calendar */
+/* recent changes */
+
+.rc strong { font-weight: normal; }
+
+/* calendar: not checked */
 
 div.year { border:none; background:inherit; }
 div.month { padding:0; margin:0 2ex; }
@@ -106,6 +110,24 @@ div.year > div.month { float:left; }
 div.footer { clear:both; }
 div.month a.edit { color:inherit; font-weight:inherit; }
 div.month .today { border: 1px solid red; }
+
+/* logo */
+
+img.logo {
+    border: none;
+    float:right;
+    margin:0;
+    padding:2px;
+}
+
+/* sidebar */
+
+div.sidebar {
+    border:1px solid #fff;
+    padding: 0 1em;
+    margin: 0 0 1em 0;
+    background: #333;
+}
 
 /* not checked */
 
