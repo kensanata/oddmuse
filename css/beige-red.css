@@ -399,6 +399,12 @@ table.aside {
 table.aside td {
     text-align:left;
 }
+div.sidebar {
+    float:right; width: 250px;
+    text-align: right;
+    border: none;
+    margin: 1ex;
+}
 
 dl.irc dt { width:20ex; float:left; text-align:right; clear:left; }
 dl.irc dt span.time { float:left; }
