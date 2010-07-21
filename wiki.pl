@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.937 2010/04/21 20:56:20 as Exp $
+# Version       $Id: wiki.pl,v 1.938 2010/07/21 14:01:50 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
 #     Alex Schroeder <alex@gnu.org>
@@ -36,7 +36,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.937 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.938 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -69,7 +69,6 @@ $OpenPageName @IndexList $Message $q $Now %RecentVisitors @HtmlStack
 $PrintedHeader %Locks $Fragment @Blocks @Flags $Today @KnownLocks
 $ModulesDescription %Action %RuleOrder %Includes %RssInterwikiTranslate);
 
-# == Configuration ==
 # Can be set outside the script: $DataDir, $UseConfig, $ConfigFile, $ModuleDir,
 # $ConfigPage, $AdminPass, $EditPass, $ScriptName, $FullUrl, $RunCGI.
 
@@ -291,7 +290,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.937 2010/04/21 20:56:20 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.938 2010/07/21 14:01:50 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -391,7 +390,6 @@ sub SetParam {
   $q->param($name, $val);
 }
 
-# == Markup Code ==
 sub InitLinkPatterns {
   my ($UpperLetter, $LowerLetter, $AnyLetter, $WikiWord, $QDelim);
   $QDelim = '(?:"")?'; # Optional quote delimiter (removed from the output)
@@ -1301,7 +1299,6 @@ sub PageHtml {  #FIXME: A bit buggy, this. STDOUT should be explicitly closed be
   return $result;
 }
 
-# == Translating ==
 sub T {
   my $text = shift;
   return $Translate{$text} if $Translate{$text};
@@ -1322,7 +1319,6 @@ sub Tss {
   return $text;
 }
 
-# == Choosing action
 sub GetId {
   my $id = join('_', $q->keywords); # script?p+q -> p_q
   if ($UsePathInfo) {
@@ -1359,7 +1355,6 @@ sub DoBrowseRequest {
   }
 }
 
-# == Id handling ==
 sub ValidId { # hack alert: returns error message if invalid, and unfortunately the empty string if valid!
   my $id = FreeToNormal(shift);
   return T('Page name is missing') unless $id;
@@ -1398,7 +1393,6 @@ sub BrowseResolvedPage {
   }
 }
 
-# == Browse page ==
 sub BrowsePage {
   my ($id, $raw, $comment, $status) = @_;
   OpenPage($id);
@@ -1494,7 +1488,6 @@ sub FileFresh { # old files are never stale, current files are stale when the pa
     and (GetParam('revision', 0) or $q->http('HTTP_IF_NONE_MATCH') eq $Page{ts});
 }
 
-# == Recent Changes
 sub BrowseRc {
   my $id = shift;
   if (GetParam('raw', 0)) {
@@ -1652,7 +1645,6 @@ sub ProcessRcLines {
   }
 }
 
-# == Produce RecentChanges (HTML)
 sub RcHeader {
   my ($from, $upto, $html) = (GetParam('from', 0), GetParam('upto', 0), '');
   if ($from) {
@@ -1833,7 +1825,6 @@ sub PrintRcHtml { # to append RC to existing page, or action=rc directly
   PrintFooter($id) if $standalone;
 }
 
-# == Produce RSS 3.0 (text) ==
 sub RcTextItem {
   my ($name, $value) = @_;
   $value =~ s/\n+$//;
@@ -1865,7 +1856,6 @@ sub PrintRcText { # print text rss header and call ProcessRcLines
   ProcessRcLines(sub {}, \&RcTextRevision);
 }
 
-# == Produce RSS 2.0 ==
 sub GetRcRss {
   my $date = TimeToRFC822($LastUpdate);
   my %excluded = ();
@@ -1958,7 +1948,6 @@ sub DoRss {
   print GetRcRss();
 }
 
-# == History & Rollback ==
 sub DoHistory {
   my $id = shift;
   ValidIdOrDie($id);
@@ -2105,7 +2094,6 @@ sub DoRollback {
   PrintFooter();
 }
 
-# == Administration ==
 sub DoAdminPage {
   my ($id, @rest) = @_;
   my @menu = (ScriptLink('action=index', T('Index of all pages'), 'index'),
@@ -2145,7 +2133,6 @@ sub DoAdminPage {
   PrintFooter();
 }
 
-# == HTML and page-oriented functions ==
 sub GetPageParameters {
   my ($action, $id, $revision, $cluster, $last) = @_;
   $id = FreeToNormal($id);
@@ -2485,7 +2472,6 @@ sub GetGotoBar {    # ignore $id parameter
               @UserGotoBarPages), $UserGotoBar);
 }
 
-# == Difference markup and HTML ==
 sub PrintHtmlDiff {
   my ($type, $old, $new, $text) = @_;
   my $intro = T('Last edit');
@@ -2633,7 +2619,6 @@ sub DiffAddPrefix {
   return $q->div({-class=>$class},$q->p(join($q->br(), @lines)));
 }
 
-# == Database functions ==
 sub ParseData {      # called a lot during search, so it was optimized
   my $data = shift;   # by eliminating non-trivial regular expressions
   my %result;
@@ -2793,7 +2778,6 @@ sub ExpireKeepFiles {   # call with opened page
   }
 }
 
-# == File operations
 sub ReadFile {
   my $fileName = shift;
   if (open(IN, "<$fileName")) {
@@ -2850,7 +2834,6 @@ sub CreateKeepDir {
   CreateDir($dir . '/' . GetPageDirectory($id) . '/' . $id);
 }
 
-# == Lock files ==
 sub GetLockedPageFile {
   my $id = shift;
   return $PageDir . '/' . GetPageDirectory($id) . "/$id.lck";
@@ -2925,7 +2908,6 @@ sub DoUnlock {
   PrintFooter();
 }
 
-# == Helpers ==
 sub CalcDay {
   my ($sec, $min, $hour, $mday, $mon, $year) = gmtime(shift);
   return sprintf('%4d-%02d-%02d', $year+1900, $mon+1, $mday);
@@ -3024,7 +3006,6 @@ sub UnWiki {
   return $str;
 }
 
-# == Page-editing and other special-action code ==
 sub DoEdit {
   my ($id, $newText, $preview) = @_;
   ValidIdOrDie($id);
@@ -3136,7 +3117,6 @@ sub DoDownload {
   }
 }
 
-# == Passwords ==
 sub DoPassword {
   print GetHeader('',T('Password')), $q->start_div({-class=>'content password'});
   print $q->p(T('Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.'));
@@ -3242,7 +3222,6 @@ sub BannedContent {
   return 0;
 }
 
-# == Index ==
 sub DoIndex {
   my $raw = GetParam('raw', 0);
   my $match = GetParam('match', '');
@@ -3322,7 +3301,6 @@ sub AllPagesList {
   return @IndexList;
 }
 
-# == Searching ==
 sub DoSearch {
   my $string = shift;
   return DoIndex() if $string eq '';
@@ -3539,7 +3517,6 @@ sub Replace {
   return @result;
 }
 
-# == Posting new pages ==
 sub DoPost {
   my $id = FreeToNormal(shift);
   ValidIdOrDie($id);
@@ -3778,7 +3755,6 @@ sub UpdateDiffs { # this could be optimized, but isn't frequent enough
   $Page{'diff-major'} = $Page{lastmajor} == $Page{revision} ? 1 : $olddiff;
 }
 
-# == Maintenance ==
 sub DoMaintain {
   print GetHeader('', T('Run Maintenance')), $q->start_div({-class=>'content maintain'});
   my $fname = "$DataDir/maintain";
@@ -3847,7 +3823,6 @@ sub DoMaintain {
   PrintFooter();
 }
 
-# == Deleting pages ==
 sub PageDeletable {
   return unless $KeepDays;
   my $expirets = $Now - ($KeepDays * 86400); # 24*60*60
@@ -3869,7 +3844,6 @@ sub DeletePage {    # Delete must be done inside locks.
   return '';      # no error
 }
 
-# == Page locking ==
 sub DoEditLock {
   return unless UserIsAdminOrError();
   print GetHeader('', T('Set or Remove global edit lock'));
@@ -3900,7 +3874,6 @@ sub DoPageLock {
   PrintFooter();
 }
 
-# == Version ==
 sub DoShowVersion {
   print GetHeader('', T('Displaying Wiki Version')), $q->start_div({-class=>'content version'});
   print $WikiDescription, $q->p($q->server_software()),
@@ -3923,7 +3896,6 @@ sub DoDebug {
   PrintFooter();
 }
 
-# == Surge Protection ==
 sub DoSurgeProtection {
   return unless $SurgeProtection;
   my $name = GetParam('username','');
