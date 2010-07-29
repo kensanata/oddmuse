@@ -9,12 +9,6 @@ body, rss {
     padding:0;
 }
 
-/* iPhone */
-
-@media only screen and (max-device-width: 480px) {
-    body { font-size: 200%; }
-}
-
 /* headings: we can use larger sizes if we use a lighter color  */
 
 h1, h2, h3, title {
@@ -440,6 +434,16 @@ div.pic div p + p { display:table-caption; caption-side:bottom; }
     div.content, div.rc {
 	overflow:hidden;
     }
+}
+
+/* iPhone */
+
+@media only screen and (max-device-width: 480px) {
+    body { font-size: 200%; line-height: 150%; margin: 1em; }
+    img.smiley, a.feed img { 
+	height: 20pt;
+    }
+    form table td { padding: 0; }
 }
 
 @media print {
