@@ -1,11 +1,18 @@
 body, rss {
-    font-family: Garamond, GaramondNo8, "Bookman Old Style", Cochin, Baskerville, serif;
+    font-family: Garamond, GaramondNo8, "Bookman Old Style",
+    Cochin, Baskerville, serif;
     font-size: 16pt;
     line-height: 20pt;
     background-color:#ffe;
     color:#630;
     margin:1em 3em;
     padding:0;
+}
+
+/* iPhone */
+
+@media only screen and (max-device-width: 480px) {
+    body { font-size: 200%; }
 }
 
 /* headings: we can use larger sizes if we use a lighter color  */
