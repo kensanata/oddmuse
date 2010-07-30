@@ -446,6 +446,15 @@ div.pic div p + p { display:table-caption; caption-side:bottom; }
     form table td { padding: 0; }
 }
 
+/* iPad */
+
+
+@media only screen and (min-device-width: 481px) and (max-device-width: 1024px) { 
+    textarea, input { font-size: large }
+}
+
+
+
 @media print {
     body {
 	font-size:   12pt;
