@@ -235,8 +235,8 @@ a.book, a.movie { font:inherit; text-decoration:underline; }
 .twitter a { color: #394; }
 .twitter a:visited { color: #386; }
 /* browser borkage */
-textarea[name="text"] { width:99%; height:80%; }
-textarea[name="summary"] { width:99%; height:3em; }
+textarea[name="text"] { width:98%; height:80%; }
+textarea[name="summary"] { width:98%; height:3em; }
 /* comments */
 textarea[name="aftertext"] { width:99%; height:10em; }
 div.commentshown {
@@ -435,25 +435,6 @@ div.pic div p + p { display:table-caption; caption-side:bottom; }
 	overflow:hidden;
     }
 }
-
-/* iPhone */
-
-@media only screen and (max-device-width: 480px) {
-    body { font-size: 200%; line-height: 150%; margin: 1em; }
-    img.smiley, a.feed img { 
-	height: 20pt;
-    }
-    form table td { padding: 0; }
-}
-
-/* iPad */
-
-
-@media only screen and (min-device-width: 481px) and (max-device-width: 1024px) { 
-    textarea, input { font-size: large }
-}
-
-
 
 @media print {
     body {
