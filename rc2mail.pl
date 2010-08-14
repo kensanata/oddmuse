@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Copyright (C) 2009  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2010  Alex Schroeder <alex@gnu.org>
 
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -44,9 +44,10 @@ use File::Path;
 # -v verbose output
 
 my %opts;
-getopt('nprmft', \%opts);
+getopt('nprmftq', \%opts);
 my $nomail = exists $opts{n};
 my $verbose = exists $opts{v};
+my $quiet = exists $opts{q};
 my $admin_password = $opts{p};
 my $root = $opts{r};
 die "Must provide an url with the -r option\n" unless $root;
@@ -190,9 +191,9 @@ sub send_mail {
   } else {
     my @recipients = $mail->smtpsend();
     if (@recipients) {
-      print "Sent $title to ", join(', ', @recipients), "\n" if $verbose;
+      print "Sent $title to ", join(', ', @recipients), "\n" unless $quiet;
     } else {
-      print "Failed to send $title to $subscriber\n" if $verbose;
+      print "Failed to send $title to $subscriber\n" unless $quiet;
     }
   }
 }
