@@ -1,3 +1,8 @@
+2010-08-14  Alex Schroeder  <alex@gnu.org>
+
+	* rc2mail.pl (send_mail): Introduced new -q flag and print
+	confirmation message unless the quiet flag is used.
+	
 2010-05-17  Alex Schroeder  <alex@gnu.org>
 
 	* modules/load-lang.pl: Prepend instead of append to
