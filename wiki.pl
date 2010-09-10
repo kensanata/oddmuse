@@ -1,7 +1,7 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.938 2010/07/21 14:01:50 as Exp $
+# Version       $Id: wiki.pl,v 1.939 2010/09/10 15:27:49 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
-# Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
+# Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
 #     Alex Schroeder <alex@gnu.org>
 # ... including lots of patches from the UseModWiki site
 # Copyright (C) 2001, 2002  various authors
@@ -36,7 +36,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.938 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.939 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -290,7 +290,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.938 2010/07/21 14:01:50 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.939 2010/09/10 15:27:49 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -2840,23 +2840,24 @@ sub GetLockedPageFile {
 }
 
 sub RequestLockDir {
-  my ($name, $tries, $wait, $error) = @_;
-  my ($lock, $n);
+  my ($name, $tries, $wait, $error, $retried) = @_;
   $tries = 4 unless $tries;
   $wait = 2 unless $wait;
   CreateDir($TempDir);
-  $lock = $LockDir . $name;
-  $n = 0;
+  my $lock = $LockDir . $name;
+  my $n = 0;
   while (mkdir($lock, 0555) == 0) {
     if ($n++ >= $tries) {
-      my $ts = (stat($lock))[10];
-      if ($Now - $ts > $LockExpiration and $LockExpires{$name}) {
-	ReleaseLockDir($name);         # expire lock
-	return 1 if RequestLockDir(@_); # and try again
-      }                                 # else fail as appropriate
+      my $ts = (stat($lock))[9];
+      if ($Now - $ts > $LockExpiration and $LockExpires{$name}
+	  and not $retried) {
+	ReleaseLockDir($name); # try to expire lock (no checking)
+	return 1 if RequestLockDir($name, undef, undef, undef, 1);
+      }
       return 0 unless $error;
       ReportError(Ts('Could not get %s lock', $name) . ": $!. "
-      . Ts('The lock was created %s.', CalcTimeSince($Now - $ts)),
+      . Ts('The lock was created %s.', CalcTimeSince($Now - $ts))
+      . ($retried ? ' ' . T('Maybe the user running this script is no longer allowed to remove the lock directory?') : ''),
       '503 SERVICE UNAVAILABLE');
     }
     sleep($wait);
@@ -2866,9 +2867,9 @@ sub RequestLockDir {
 }
 
 sub ReleaseLockDir {
-  my $name = shift;   # We don't check whether we succeeded.
+  my $name = shift;        # We don't check whether we succeeded.
   rmdir($LockDir . $name); # Before fixing, make sure we only call this
-  delete $Locks{$name};   # when we know the lock exists.
+  delete $Locks{$name};    # when we know the lock exists.
 }
 
 sub RequestLockOrError {
