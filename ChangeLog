@@ -1,8 +1,15 @@
+2010-09-10  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (RequestLockDir): Don't enter an infinite loop of trying
+	requesting a lock and trying to unlock. Unlocking can fail if the
+	permissions are wrong, for example (user running the script
+	changed, for example).
+
 2010-08-14  Alex Schroeder  <alex@gnu.org>
 
 	* rc2mail.pl (send_mail): Introduced new -q flag and print
 	confirmation message unless the quiet flag is used.
-	
+
 2010-05-17  Alex Schroeder  <alex@gnu.org>
 
 	* modules/load-lang.pl: Prepend instead of append to
