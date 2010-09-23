@@ -2,17 +2,17 @@
 /* Based on the dusty brown theme for wordpress by Noufal Ibrahim <nkv at hcoop dot net> */
 
 body {
-	border: solid 2px #565;
-	border-top: solid 3px #565;
-	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-	margin: 2ex;
-	padding: 0;
-	background-color: #edead7;
-	color: black;
+    border: solid 2px #565;
+    border-top: solid 3px #565;
+    font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+    margin: 2ex;
+    padding: 0;
+    background-color: #edead7;
+    color: black;
 }
 
 div.content {
-	padding: 3ex 7%;
+    padding: 3ex 7%;
 }
 
 div.journal hr { display:none; }
@@ -21,7 +21,7 @@ a { color: #675; }
 a:visited { color: #342; }
 a:hover {
     color: #9a8;
-	text-decoration: underline;
+    text-decoration: underline;
 }
 
 a img {
@@ -29,35 +29,43 @@ a img {
 }
 
 span.gotobar {
-	color: #444;
-	width: 70%;
-	margin: 10px 0 10px 0;
-	padding: 0px;
-	text-align: center;
+    color: #444;
+    width: 70%;
+    margin: 10px 0 10px 0;
+    padding: 0px;
+    text-align: center;
 }
- 
+
 span.gotobar a:link {
-	color: black;
+    color: black;
 }
 
 div.header {
-	background: #f7eccf;
+    background: #f7eccf;
     border-bottom: 1px solid #d1ccc2;
-	letter-spacing: 0.2em;
-	margin: 0;
-	padding: 1ex;
-    text-align: right;
-	font-size: small;
+    letter-spacing: 0.2em;
+    margin: 0;
+    padding: 1ex;
+    text-align: left;
+    font-size: small;
 }
 
+.left { float:left; }
+.right { float:right; }
+div.left .left, div.right .right {
+    float:none;
+}
+.center { text-align:center; }
+
+
 div.header a {
-	color: black;
-	text-decoration: none;
+    color: black;
+    text-decoration: none;
 }
 
 div.footer, span.specialdays {
-	font-size: x-small;
-	padding: 1ex;
+    font-size: x-small;
+    padding: 1ex;
 }
 
 div.sister img {
@@ -86,7 +94,7 @@ textarea {
 }
 
 textarea[name="aftertext"] {
-	height: 10em;
+    height: 10em;
 }
 
 textarea[name="summary"] {
@@ -101,20 +109,20 @@ pre {
 }
 
 pre span {
-	display:none;
+    display:none;
 }
 
 h2 {
-	border-bottom: 1px dotted #ccc;
-	letter-spacing: 0.2em;
-	margin: 15px 0 2px 0;
-	padding-bottom: 2px;
+    border-bottom: 1px dotted #ccc;
+    letter-spacing: 0.2em;
+    margin: 15px 0 2px 0;
+    padding-bottom: 2px;
 }
 
 h3 {
-	border-bottom: dotted 1px #eee;
-	font-family: "Times New Roman", Times, serif;
-	margin-top: 0;
+    border-bottom: dotted 1px #eee;
+    font-family: "Times New Roman", Times, serif;
+    margin-top: 0;
 }
 
 div.month { float:right; margin:0; padding:0 1ex; }
@@ -137,17 +145,17 @@ div.message { background-color:#FEE; }
 div.journal h1 { font-size:large; }
 table.history { border-style:none; }
 td.history { border-style:none; }
-table.user { border-style:solid; border-width:thin; }
-table.user tr td { border-style:solid; border-width:thin; padding:5px; }
+table.user { border-style:none; border-width:thin; }
+table.user tr td { border-style:none; border-width:thin; padding:5px; }
 span.result { font-size:larger; }
 span.info { font-size:smaller; font-style:italic; }
 
 @media print {
- span.gotobar, div.footer { display: none; }
- a, a:link, a:visited { color:#000; text-decoration:none; font-style:oblique; }
- h1 a, h2 a, h3 a, h4 a { font-style:normal; }
- a.edit, div.footer, div.refer, form, span.gotobar, a.number span { display:none; }
- a[class="url number"]:after, a[class="inter number"]:after { content:"[" attr(href) "]"; }
- a[class="local number"]:after { content:"[" attr(title) "]"; }
- img[smiley] { line-height: inherit; }
+    span.gotobar, div.footer { display: none; }
+    a, a:link, a:visited { color:#000; text-decoration:none; font-style:oblique; }
+    h1 a, h2 a, h3 a, h4 a { font-style:normal; }
+    a.edit, div.footer, div.refer, form, span.gotobar, a.number span { display:none; }
+    a[class="url number"]:after, a[class="inter number"]:after { content:"[" attr(href) "]"; }
+    a[class="local number"]:after { content:"[" attr(title) "]"; }
+    img[smiley] { line-height: inherit; }
 }
