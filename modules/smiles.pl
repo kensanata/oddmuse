@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: smiles.pl,v 1.3 2007/01/12 02:04:13 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: smiles.pl,v 1.4 2010/10/01 17:33:27 as Exp $</p>';
 
 %Smilies = (
      ':-?D'      => 'http://www.emacswiki.org/pics/grin.png',
@@ -37,4 +37,5 @@ $ModulesDescription .= '<p>$Id: smiles.pl,v 1.3 2007/01/12 02:04:13 as Exp $</p>
      ':-[Ppb]'   => 'http://www.emacswiki.org/pics/poke.png',
      '\(-?:'     => 'http://www.emacswiki.org/pics/reverse-smile.png',
      '&lt;3'     => 'http://www.emacswiki.org/pics/round-heart.png',
+     ':-?€'      => 'http://www.emacswiki.org/pics/tentacle.png',
            );
