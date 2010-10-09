@@ -235,10 +235,10 @@ a.book, a.movie { font:inherit; text-decoration:underline; }
 .twitter a { color: #394; }
 .twitter a:visited { color: #386; }
 /* browser borkage */
-textarea[name="text"] { width:98%; height:80%; }
-textarea[name="summary"] { width:98%; height:3em; }
+textarea[name="text"] { width:97%; height:80%; }
+textarea[name="summary"] { width:97%; height:3em; }
 /* comments */
-textarea[name="aftertext"] { width:99%; height:10em; }
+textarea[name="aftertext"] { width:97%; height:10em; }
 div.commentshown {
     background-color:#ffc;
     padding-bottom:1ex;
