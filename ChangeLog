@@ -1,5 +1,8 @@
 2010-10-10  Alex Schroeder  <alex@gnu.org>
 
+	* modules/gravatar.pl (AddGravatar): New; strip gravatar link from
+	comment summary.
+
 	* wiki.pl (GetSummary): Fix remaining closing square bracket.
 
 2010-09-21  Alex Schroeder  <alex@gnu.org>
