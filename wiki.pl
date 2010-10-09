@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.939 2010/09/10 15:27:49 as Exp $
+# Version       $Id: wiki.pl,v 1.940 2010/10/09 23:20:56 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
 #     Alex Schroeder <alex@gnu.org>
@@ -36,7 +36,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.939 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.940 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -290,7 +290,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.939 2010/09/10 15:27:49 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.940 2010/10/09 23:20:56 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -3638,7 +3638,7 @@ sub GetSummary {
   my $summary = GetParam('summary', '') || $text; # not GetParam('summary', $text) work because '' is defined
   $summary =~ s/$FS|[\r\n]+/ /go; # remove linebreaks and separator characters
   $summary =~ s/\[$FullUrlPattern\s+(.*?)\]/$2/go; # fix common annoyance when copying text to summary
-  $summary =~ s/\[$FullUrlPattern//go;
+  $summary =~ s/\[$FullUrlPattern\]//go;
   $summary =~ s/\[\[$FreeLinkPattern\]\]/$1/go;
   return UnquoteHtml($summary);
 }
