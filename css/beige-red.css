@@ -405,11 +405,10 @@ dl.irc dd { margin-left:22ex; }
 
 /* portrait */
 
-img.portrait { float: left; clear: left; margin: 1ex; border:#999 1px solid; }
 div.footer, div.comment, hr { clear: both; }
-div.portrait { float: left; clear: left; font-size: xx-small; margin-right: 1em; }
-div.portrait img.portrait { float: none; margin: 0; }
-div.portrait a { text-decoration: none; color: #999; }
+div.portrait { float: left; font-size: small; margin-right: 1em; }
+div.portrait { line-height: 1em; }
+div.portrait a { color: #999; }
 
 div.left { float:left; margin:1em; padding: 0.5em; }
 div.left p { display:table-cell; }
