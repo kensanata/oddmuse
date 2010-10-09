@@ -66,8 +66,8 @@ dl.irc dd { margin-left:15ex; }
 @media print { span.trail { display: none; }}
 /* portrait support */
 img.portrait { float: left; clear: left; margin: 1ex; border:#999 1px solid; }
-div.footer, div.comment { clear: both; }
-div.portrait { float: left; clear: left; font-size: xx-small; }
+div.footer, div.comment, hr { clear: both; }
+div.portrait { float: left; clear: left; font-size: xx-small; margin-right: 1em; }
 div.portrait img.portrait { float: none; margin: 0; }
 div.portrait a { text-decoration: none; color: #999; }
 div.color { clear: both; }
