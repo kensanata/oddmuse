@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: gravatar.pl,v 1.1 2010/10/09 22:48:42 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: gravatar.pl,v 1.2 2010/10/09 23:27:09 as Exp $</p>';
 
 use Digest::MD5 qw(md5_hex);
 
@@ -65,4 +65,13 @@ sub AddGravatar {
     SetParam('aftertext',
 	     "[[gravatar:$username:$gravatar]]\n$aftertext");
   }
+}
+
+*GravatarOldGetSummary = *GetSummary;
+*GetSummary = *GravatarNewGetSummary;
+
+sub GravatarNewGetSummary {
+  my $summary = GravatarOldGetSummary(@_);
+  $summary =~ s/^\[\[gravatar:([^\n:]+):([0-9a-f]+)\]\] *//;
+  return $summary;
 }
