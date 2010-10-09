@@ -330,14 +330,6 @@ div.search span.result { font-size:larger; }
 div.search span.info { font-size:smaller; font-style:italic; }
 div.search p.result { display:none; }
 
-img.portrait {
-    float:right;
-    margin:1em;
-    padding:1em;
-    border:1px dotted #000;
-    background-color:#fff;
-}
-
 img.logo {
     float:   right;
     margin:  0;
@@ -412,6 +404,12 @@ dl.irc dt span.time { float:left; }
 dl.irc dd { margin-left:22ex; }
 
 /* portrait */
+
+img.portrait { float: left; clear: left; margin: 1ex; border:#999 1px solid; }
+div.footer, div.comment, hr { clear: both; }
+div.portrait { float: left; clear: left; font-size: xx-small; margin-right: 1em; }
+div.portrait img.portrait { float: none; margin: 0; }
+div.portrait a { text-decoration: none; color: #999; }
 
 div.left { float:left; margin:1em; padding: 0.5em; }
 div.left p { display:table-cell; }
