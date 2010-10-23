@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.13 2010/10/23 13:08:08 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.14 2010/10/23 13:31:07 as Exp $</p>';
 
 use LWP::UserAgent;
 
@@ -26,6 +26,7 @@ use vars qw($RefererDir $RefererTimeLimit $RefererLimit $RefererFilter
 $RefererTimeLimit = 86400; # How long referrals shall be remembered in seconds
 $RefererLimit	  = 15;	   # How many different referer shall be remembered
 $RefererFilter    = 'ReferrerFilter'; # Name of the filter page
+$RefererTitleLimit = 70;   # This is used to shorten long titles
 
 push(@MyInitVariables, \&RefererInit);
 
@@ -130,6 +131,11 @@ sub UrlToTitle {
   $title = $1 if $title =~ /$FullUrlPattern/; # extract valid URL
   $title =~ s/\%([0-9a-f][0-9a-f])/chr(hex($1))/egi
     if lc($charset) eq lc($HttpCharset); # decode if possible
+  # shorten it if necessary
+  if (length($title) > $RefererTitleLimit) {
+    $title = substr($title, 0, $RefererTitleLimit - 10)
+      . "..." . substr($title, -7);
+  }
   return $title;
 }
 
@@ -153,6 +159,8 @@ sub PageContentToTitle {
   $title =~ s!\s+! !g;
   $title =~ s!^ !!g;
   $title =~ s! $!!g;
+  $title = substring($title, 0, $RefererTitleLimit) . "..."
+    if length($title) > $RefererTitleLimit;
   return $title;
 }
 
