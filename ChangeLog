@@ -5,6 +5,8 @@
 	(UrlToTitle): New.
 	(UpdateReferers): Call sub to generate title from page content.
 	(PageContentToTitle): New.
+	(UrlToTitle, PageContentToTitle): Shorten title if necessary.
+	($RefererTitleLimit): New.
 
 2010-10-10  Alex Schroeder  <alex@gnu.org>
 
