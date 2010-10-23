@@ -1,22 +1,18 @@
-# Copyright (C) 2004, 2005, 2006  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2005, 2006, 2010  Alex Schroeder <alex@gnu.org>
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.12 2009/02/18 23:13:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.13 2010/10/23 13:08:08 as Exp $</p>';
 
 use LWP::UserAgent;
 
@@ -129,17 +125,35 @@ sub ExpireReferers { # no need to save the pruned list if nothing else changes
 #    |  \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
 #   )*$/x;
 
+sub UrlToTitle {
+  my $title = QuoteHtml(shift);
+  $title = $1 if $title =~ /$FullUrlPattern/; # extract valid URL
+  $title =~ s/\%([0-9a-f][0-9a-f])/chr(hex($1))/egi
+    if lc($charset) eq lc($HttpCharset); # decode if possible
+  return $title;
+}
+
 sub GetReferers {
   my $result = join(' ', map {
-    my $title = QuoteHtml($_);
-    $title = $1 if $title =~ /$FullUrlPattern/; # extract valid URL
-    my ($ts, $charset) = split(/ /, $Referers{$_});
-    $title =~ s/\%([0-9a-f][0-9a-f])/chr(hex($1))/egi
-      if lc($charset) eq lc($HttpCharset); # decode if possible
+    my ($ts, $charset, $title) = split(/ /, $Referers{$_});
+    $title = UrlToTitle($_) unless $title;
     $q->a({-href=>$_}, $title);
   } keys %Referers);
   return $q->div({-class=>'refer'}, $q->p(T('Referrers') . ': ' . $result))
     if $result;
+}
+
+sub PageContentToTitle {
+  my $content = shift;
+  my $title = $1 if $content =~ m!<h1.*?>(.*?)</h1>!;
+  $title = $1 if not $title and $content =~ m!<title>(.*?)</title>!;
+  # get rid of extra tags
+  $title =~ s!<.*?>!!g;
+  # trimming
+  $title =~ s!\s+! !g;
+  $title =~ s!^ !!g;
+  $title =~ s! $!!g;
+  return $title;
 }
 
 sub UpdateReferers {
@@ -156,7 +170,9 @@ sub UpdateReferers {
   my $response = $ua->get($referer);
   return unless $response->is_success and $response->content =~ /$self/;
   my ($charset) = $response->header("Content-Type") =~ /charset=([^\s";]*)/;
-  $Referers{$referer} = "$Now $charset"; # numerical comparisons still work!
+  my $title = PageContentToTitle($response->content);
+  # starting with a timestamp makes sure that numerical comparisons still work!
+  $Referers{$referer} = "$Now $charset $title";
   return 1;
 }
 
