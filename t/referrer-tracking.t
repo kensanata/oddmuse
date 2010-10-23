@@ -1,4 +1,4 @@
-# Copyright (C) 2009  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2009, 2010  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,12 +13,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: referrer-tracking.t,v 1.2 2009/03/13 15:54:06 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: referrer-tracking.t,v 1.3 2010/10/23 13:05:29 as Exp $</p>';
 
 require 't/test.pl';
 package OddMuse;
 
-use Test::More tests => 9;
+use Test::More tests => 10;
 
 SKIP: {
 
@@ -55,5 +55,6 @@ SKIP: {
   xpath_test($response->content,
 	     '//h1[text()="All Referrers"]',
 	     qq{//div[\@class="content refer"]/div[\@class="page"]},
-	     qq{//div[\@class="page"]/p/a[\@href="$wiki/$id"][text()="$id"]});
+	     qq{//div[\@class="page"]/p/a[\@href="$wiki/$id"][text()="$id"]},
+	     qq{//div[\@class="refer"]/p/a[\@href="http://oddmuse.org/test.html"][text()="Test"]});
 }
