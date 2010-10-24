@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.14 2010/10/23 13:31:07 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.15 2010/10/24 12:09:17 as Exp $</p>';
 
 use LWP::UserAgent;
 
@@ -141,7 +141,7 @@ sub UrlToTitle {
 
 sub GetReferers {
   my $result = join(' ', map {
-    my ($ts, $charset, $title) = split(/ /, $Referers{$_});
+    my ($ts, $charset, $title) = split(/ /, $Referers{$_}, 3);
     $title = UrlToTitle($_) unless $title;
     $q->a({-href=>$_}, $title);
   } keys %Referers);
