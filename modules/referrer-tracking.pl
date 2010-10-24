@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.16 2010/10/24 12:15:53 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.17 2010/10/24 12:17:10 as Exp $</p>';
 
 use LWP::UserAgent;
 
@@ -133,6 +133,7 @@ sub UrlToTitle {
     if lc($charset) eq lc($HttpCharset); # decode if possible
   $title =~ s!^https?://!!;
   $title =~ s!\.html?$!!;
+  $title =~ s!/$!!;
   # shorten it if necessary
   if (length($title) > $RefererTitleLimit) {
     $title = substr($title, 0, $RefererTitleLimit - 10)

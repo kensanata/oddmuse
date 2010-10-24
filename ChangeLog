@@ -1,6 +1,8 @@
 2010-10-24  Alex Schroeder  <alex@gnu.org>
 
 	* modules/referrer-tracking.pl (GetReferers): Fix split.
+	(UrlToTitle): Strip http:// prefix and .html suffix.
+	(PageContentToTitle): Fix regular expressions.
 
 2010-10-23  Alex Schroeder  <alex@gnu.org>
 
