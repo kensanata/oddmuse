@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: referrer-tracking.t,v 1.3 2010/10/23 13:05:29 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: referrer-tracking.t,v 1.4 2010/10/27 18:17:50 as Exp $</p>';
 
 require 't/test.pl';
 package OddMuse;
@@ -56,5 +56,5 @@ SKIP: {
 	     '//h1[text()="All Referrers"]',
 	     qq{//div[\@class="content refer"]/div[\@class="page"]},
 	     qq{//div[\@class="page"]/p/a[\@href="$wiki/$id"][text()="$id"]},
-	     qq{//div[\@class="refer"]/p/a[\@href="http://oddmuse.org/test.html"][text()="Test"]});
+	     qq{//div[\@class="refer"]/p/a[\@href="http://oddmuse.org/test.html"][text()="Tëst"]});
 }
