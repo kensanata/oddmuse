@@ -1,3 +1,11 @@
+2010-10-27  Alex Schroeder  <alex@gnu.org>
+
+	* modules/referrer-tracking.pl (UrlToTitle): Add charset arg.
+	(GetReferers): Pass charset to UrlToTitle.
+	(PageContentToTitle): Add charset arg and encode title
+	appropriately if not UTF-8.
+	(UpdateReferers): Pass charset to PageContentToTitle.
+
 2010-10-24  Alex Schroeder  <alex@gnu.org>
 
 	* modules/referrer-tracking.pl (GetReferers): Fix split.
