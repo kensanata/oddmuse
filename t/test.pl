@@ -49,13 +49,13 @@ sub url_encode {
 sub update_page {
   my ($id, $text, $summary, $minor, $admin, @rest) = @_;
   my $pwd = $admin ? 'foo' : 'wrong';
-  $id = url_encode($id);
+  my $page = url_encode($id);
   $text = url_encode($text);
   $summary = url_encode($summary);
   $minor = $minor ? 'on' : 'off';
   my $rest = join(' ', @rest);
-  $redirect = `perl wiki.pl 'Save=1' 'title=$id' 'summary=$summary' 'recent_edit=$minor' 'text=$text' 'pwd=$pwd' $rest`;
-  $output = `perl wiki.pl action=browse id=$id $rest`;
+  $redirect = `perl wiki.pl 'Save=1' 'title=$page' 'summary=$summary' 'recent_edit=$minor' 'text=$text' 'pwd=$pwd' $rest`;
+  $output = `perl wiki.pl action=browse id=$page $rest`;
   if ($redirect =~ /^Status: 302 /) {
     # just in case a new page got created or NearMap or InterMap
     $IndexHash{$id} = 1;
@@ -66,7 +66,8 @@ sub update_page {
 }
 
 sub get_page {
-  open(F,"perl wiki.pl @_ |");
+  # add quotes around the elements to allow foo&bar etc
+  open(F,"perl wiki.pl " . join(" ", map("'$_'", @_)) . " |");
   my $output = <F>;
   close F;
   return $output;
