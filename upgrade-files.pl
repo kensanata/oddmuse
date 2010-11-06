@@ -16,7 +16,7 @@ $NewFS = "\x1e";
 # override $FS if you want!
 
 print header() . start_html('Upgrading Files'), p;
-print q{Upgrade version: $Id: upgrade-files.pl,v 1.15 2009/06/11 18:55:27 as Exp $}, "\n";
+print q{Upgrade version: $Id: upgrade-files.pl,v 1.16 2010/11/06 11:51:18 as Exp $}, "\n";
 if (not param('dir')) {
   print start_form, p, '$DataDir: ', textfield('dir', '/tmp/oddmuse'),
     p, radio_group('separator', ['Oddmuse', 'UseMod 0.92', 'UseMod 1.00',
@@ -144,6 +144,7 @@ sub write_file {
 
 sub cache {
   $_ = shift;
+  return "" unless $_;
   my ($block, $flag) = split(/$FS2/, $_);
   my @blocks = split(/$FS3/, $block);
   my @flags = split(/$FS3/, $flag);
