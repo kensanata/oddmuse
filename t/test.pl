@@ -66,8 +66,7 @@ sub update_page {
 }
 
 sub get_page {
-  # add quotes around the elements to allow foo&bar etc
-  open(F,"perl wiki.pl " . join(" ", map("'$_'", @_)) . " |");
+  open(F, "perl wiki.pl @_ |");
   my $output = <F>;
   close F;
   return $output;
