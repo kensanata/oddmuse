@@ -1,24 +1,20 @@
-# Copyright (C) 2006, 2007  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006, 2007, 2010  Alex Schroeder <alex@gnu.org>
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 30;
+use Test::More tests => 33;
 
 clear_pages();
 
@@ -26,9 +22,13 @@ add_module('image.pl');
 
 update_page('bar', 'foo');
 update_page('bar_baz', 'foo');
+update_page('bar&baz', 'foo');
+
+# make sure encoded filename is ok
+test_page(get_page('"bar&baz"'), 'foo');
+
 update_page('InterMap', " Oddmuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n",
 	    'required', 0, 1);
-
 
 update_page('test',
 	    '[[image/left/small:bar|alternative text|http://www.foo.com/|more text & stuff|http://www.bar.com/]]');
@@ -40,6 +40,10 @@ xpath_run_tests(split('\n',<<'EOT'));
 //a[@class="image"][@href="http://localhost/test.pl/bar"]/img[@class="upload"][@src="http://localhost/test.pl/download/bar"][@alt="bar"]
 [[image:bar baz]]
 //a[@class="image"][@href="http://localhost/test.pl/bar_baz"]/img[@class="upload"][@src="http://localhost/test.pl/download/bar_baz"][@alt="bar baz"]
+[[image:bar&baz]]
+//a[@class="image"][@href="http://localhost/test.pl/bar%26baz"]/img[@class="upload"][@src="http://localhost/test.pl/download/bar%26baz"][@alt="bar&baz"]
+[[image:foo&bar]]
+//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=foo%26bar;upload=1"][text()="?"]
 [[image/right:bar baz]]
 //a[@class="image right"][@href="http://localhost/test.pl/bar_baz"]/img[@class="upload"][@src="http://localhost/test.pl/download/bar_baz"][@alt="bar baz"]
 [[image:bar|alternative text]]
