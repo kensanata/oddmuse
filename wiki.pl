@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.940 2010/10/09 23:20:56 as Exp $
+# Version       $Id: wiki.pl,v 1.941 2010/11/07 02:11:53 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
 #     Alex Schroeder <alex@gnu.org>
@@ -36,7 +36,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.940 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.941 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -290,7 +290,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.940 2010/10/09 23:20:56 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.941 2010/11/07 02:11:53 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -395,7 +395,7 @@ sub InitLinkPatterns {
   $QDelim = '(?:"")?'; # Optional quote delimiter (removed from the output)
   $WikiWord = '[A-Z]+[a-z\x80-\xff]+[A-Z][A-Za-z\x80-\xff]*';
   $LinkPattern = "($WikiWord)$QDelim";
-  $FreeLinkPattern = "([-,.()' _1-9A-Za-z\x80-\xff]|[-,.()' _0-9A-Za-z\x80-\xff][-,.()' _0-9A-Za-z\x80-\xff]+)"; # disallow "0"
+  $FreeLinkPattern = "([-,.()'%&?;<> _1-9A-Za-z\x80-\xff]|[-,.()'%&?;<> _0-9A-Za-z\x80-\xff][-,.()'%&?;<> _0-9A-Za-z\x80-\xff]+)"; # disallow "0" and must match HTML and plain text (ie. > and &gt;)
   # Intersites must start with uppercase letter to avoid confusion with URLs.
   $InterSitePattern = '[A-Z\x80-\xff]+[A-Za-z\x80-\xff]+';
   $InterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x80-\xff_=!?#\$\@~`\%&*+\\/:;.,]*[-a-zA-Z0-9\x80-\xff_=#\$\@~`\%&*+\\/])$QDelim";
@@ -470,7 +470,7 @@ sub ApplyRules {
 	  $Includes{$OpenPageName} = 1;
 	  local $OpenPageName = FreeToNormal($uri);
 	  if ($type eq 'text') {
-	    print $q->pre({class=>"include $OpenPageName"},QuoteHtml(GetPageContent($OpenPageName)));
+	    print $q->pre({class=>"include $OpenPageName"}, QuoteHtml(GetPageContent($OpenPageName)));
 	  } elsif (not $Includes{$OpenPageName}) { # with a starting tag, watch out for recursion
 	    print $q->start_div({class=>"include $OpenPageName"});
 	    ApplyRules(QuoteHtml(GetPageContent($OpenPageName)), $locallinks, $withanchors, undef, 'p');
@@ -616,7 +616,7 @@ sub LinkRules {
            or m/\G(\[\[image:$FreeLinkPattern\|([^]|]+)\]\])/cog)) {
     # [[image:Free Link]], [[image:Free Link|alt text]]
     Dirty($1);
-    print GetDownloadLink($2, 1, undef, UnquoteHtml($3));
+    print GetDownloadLink(FreeToNormal($2), 1, undef, UnquoteHtml($3));
   } elsif ($FreeLinks && $locallinks
      && ($BracketWiki && m/\G(\[\[$FreeLinkPattern\|([^\]]+)\]\])/cog
          or m/\G(\[\[\[$FreeLinkPattern\]\]\])/cog
@@ -797,6 +797,7 @@ sub UnquoteHtml {
   $html =~ s/&lt;/</g;
   $html =~ s/&gt;/>/g;
   $html =~ s/&amp;/&/g;
+  $html =~ s/%26/&/g;
   return $html;
 }
 
@@ -936,76 +937,76 @@ sub RSS {
     my $data = $data{$uri};
     if (not $data) {
       $str .= $q->p({-class=>'error'}, $q->strong(Ts('%s returned no data, or LWP::UserAgent is not available.',
-                 $q->a({-href=>$uri}, $uri))));
+						     $q->a({-href=>$uri}, $uri))));
     } else {
       my $rss = new XML::RSS;
       eval { local $SIG{__DIE__}; $rss->parse($data); };
       if ($@) {
-  $str .= $q->p({-class=>'error'}, $q->strong(Ts('RSS parsing failed for %s', $q->a({-href=>$uri}, $uri)) . ': ' . $@));
+	$str .= $q->p({-class=>'error'}, $q->strong(Ts('RSS parsing failed for %s', $q->a({-href=>$uri}, $uri)) . ': ' . $@));
       } else {
-  my $interwiki;
-  if (@uris > 1) {
-    RssInterwikiTranslateInit(); # not needed anywhere else thus init only now and not in ReInit
-    $interwiki = $rss->{channel}->{$wikins}->{interwiki};
-    $interwiki =~ s/^\s+//; # when RDF is used, sometimes whitespace remains,
-    $interwiki =~ s/\s+$//; # which breaks the test for an existing $interwiki below
-    if (!$interwiki) {
-      $interwiki = $rss->{channel}->{$rdfns}->{value};
-    }
-    $interwiki = $RssInterwikiTranslate{$interwiki} if $RssInterwikiTranslate{$interwiki};
-    $interwiki = $RssInterwikiTranslate{$uri} unless $interwiki;
-  }
-  my $num = 999;
-  $str .= $q->p({-class=>'error'}, $q->strong(Ts('No items found in %s.', $q->a({-href=>$uri}, $uri))))
-    unless @{$rss->{items}};
-  foreach my $i (@{$rss->{items}}) {
-    my $line;
-    my $date = $i->{dc}->{date};
-    if (not $date and $i->{pubDate}) {
-      $date = $i->{pubDate};
-      my %mon = (Jan=>1, Feb=>2, Mar=>3, Apr=>4, May=>5, Jun=>6,
-           Jul=>7, Aug=>8, Sep=>9, Oct=>10, Nov=>11, Dec=>12);
-      $date =~ s/^(?:[A-Z][a-z][a-z], )?(\d\d?) ([A-Z][a-z][a-z]) (\d\d(?:\d\d)?)/ # pubDate uses RFC 822
-        sprintf('%04d-%02d-%02d', ($3 < 100 ? 1900 + $3 : $3), $mon{$2}, $1)/e;
-    }
-    $date = sprintf("%03d", $num--) unless $date; # for RSS 0.91 feeds without date, descending
-    my $title = $i->{title};
-    my $description = $i->{description};
-    if (not $title and $description) { # title may be missing in RSS 2.00
-      $title = $description;
-      $description = '';
-    }
-    $title = $i->{link} if not $title and $i->{link}; # if description and title are missing
-    $line .= ' (' . $q->a({-href=>$i->{$wikins}->{diff}}, $tDiff) . ')'
-      if $i->{$wikins}->{diff};
-    $line .= ' (' . $q->a({-href=>$i->{$wikins}->{history}}, $tHistory) . ')'
-      if $i->{$wikins}->{history};
-    if ($title) {
-      if ($i->{link}) {
-        $line .= ' ' . $q->a({-href=>$i->{link}, -title=>$date},
-           ($interwiki ? $interwiki . ':' : '') . $title);
-      } else {
-        $line .= ' ' . $title;
-      }
-    }
-    my $contributor = $i->{dc}->{contributor};
-    $contributor = $i->{$wikins}->{username} unless $contributor;
-    $contributor =~ s/^\s+//;
-    $contributor =~ s/\s+$//;
-    $contributor = $i->{$rdfns}->{value} unless $contributor;
-    $line .= $q->span({-class=>'contributor'}, $q->span(T(' . . . . ')) . $contributor) if $contributor;
-    if ($description) {
-      if ($description =~ /</) {
-        $line .= $q->div({-class=>'description'}, $description);
-      } else {
-        $line .= $q->span({class=>'dash'}, ' &#8211; ') . $q->strong({-class=>'description'}, $description);
-      }
-    }
-    while ($lines{$date}) {
-      $date .= ' ';
-    }                     # make sure this is unique
-    $lines{$date} = $line;
-  }
+	my $interwiki;
+	if (@uris > 1) {
+	  RssInterwikiTranslateInit(); # not needed anywhere else thus init only now and not in ReInit
+	  $interwiki = $rss->{channel}->{$wikins}->{interwiki};
+	  $interwiki =~ s/^\s+//; # when RDF is used, sometimes whitespace remains,
+	  $interwiki =~ s/\s+$//; # which breaks the test for an existing $interwiki below
+	  if (!$interwiki) {
+	    $interwiki = $rss->{channel}->{$rdfns}->{value};
+	  }
+	  $interwiki = $RssInterwikiTranslate{$interwiki} if $RssInterwikiTranslate{$interwiki};
+	  $interwiki = $RssInterwikiTranslate{$uri} unless $interwiki;
+	}
+	my $num = 999;
+	$str .= $q->p({-class=>'error'}, $q->strong(Ts('No items found in %s.', $q->a({-href=>$uri}, $uri))))
+	  unless @{$rss->{items}};
+	foreach my $i (@{$rss->{items}}) {
+	  my $line;
+	  my $date = $i->{dc}->{date};
+	  if (not $date and $i->{pubDate}) {
+	    $date = $i->{pubDate};
+	    my %mon = (Jan=>1, Feb=>2, Mar=>3, Apr=>4, May=>5, Jun=>6,
+		       Jul=>7, Aug=>8, Sep=>9, Oct=>10, Nov=>11, Dec=>12);
+	    $date =~ s/^(?:[A-Z][a-z][a-z], )?(\d\d?) ([A-Z][a-z][a-z]) (\d\d(?:\d\d)?)/ # pubDate uses RFC 822
+	      sprintf('%04d-%02d-%02d', ($3 < 100 ? 1900 + $3 : $3), $mon{$2}, $1)/e;
+	  }
+	  $date = sprintf("%03d", $num--) unless $date; # for RSS 0.91 feeds without date, descending
+	  my $title = $i->{title};
+	  my $description = $i->{description};
+	  if (not $title and $description) { # title may be missing in RSS 2.00
+	    $title = $description;
+	    $description = '';
+	  }
+	  $title = $i->{link} if not $title and $i->{link}; # if description and title are missing
+	  $line .= ' (' . $q->a({-href=>$i->{$wikins}->{diff}}, $tDiff) . ')'
+	    if $i->{$wikins}->{diff};
+	  $line .= ' (' . $q->a({-href=>$i->{$wikins}->{history}}, $tHistory) . ')'
+	    if $i->{$wikins}->{history};
+	  if ($title) {
+	    if ($i->{link}) {
+	      $line .= ' ' . $q->a({-href=>$i->{link}, -title=>$date},
+				   ($interwiki ? $interwiki . ':' : '') . $title);
+	    } else {
+	      $line .= ' ' . $title;
+	    }
+	  }
+	  my $contributor = $i->{dc}->{contributor};
+	  $contributor = $i->{$wikins}->{username} unless $contributor;
+	  $contributor =~ s/^\s+//;
+	  $contributor =~ s/\s+$//;
+	  $contributor = $i->{$rdfns}->{value} unless $contributor;
+	  $line .= $q->span({-class=>'contributor'}, $q->span(T(' . . . . ')) . $contributor) if $contributor;
+	  if ($description) {
+	    if ($description =~ /</) {
+	      $line .= $q->div({-class=>'description'}, $description);
+	    } else {
+	      $line .= $q->span({class=>'dash'}, ' &#8211; ') . $q->strong({-class=>'description'}, $description);
+	    }
+	  }
+	  while ($lines{$date}) {
+	    $date .= ' ';
+	  }                     # make sure this is unique
+	  $lines{$date} = $line;
+	}
       }
     }
   }
@@ -1017,9 +1018,9 @@ sub RSS {
     if ($key =~ /(\d\d\d\d(?:-\d?\d)?(?:-\d?\d)?)(?:[T ](\d?\d:\d\d))?/) {
       my ($day, $time) = ($1, $2);
       if ($day ne $date) {
-  $str .= '</ul>' if $date; # close ul except for the first time where no open ul exists
-  $date = $day;
-  $str .= $q->p($q->strong($day)) . '<ul>';
+	$str .= '</ul>' if $date; # close ul except for the first time where no open ul exists
+	$date = $day;
+	$str .= $q->p($q->strong($day)) . '<ul>';
       }
       $line = $q->span({-class=>'time'}, $time . ' UTC ') . $line if $time;
     } elsif (not $date) {
@@ -1173,7 +1174,7 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
     return ScriptLink(UrlEncode($resolved), $link, $class, undef, $title);
   } else {      # reproduce markup if $UseQuestionmark
     return GetEditLink($id, $bracket ? "[$link]" : $link) if not $UseQuestionmark;
-    $link = $id . GetEditLink($id, '?');
+    $link = QuoteHtml($id) . GetEditLink($id, '?');
     $link .= ($free ? '|' : ' ') . $text if $text and $text ne $id;
     $link = "[[$link]]" if $free;
     $link = "[$link]" if $bracket or not $free and $text;
@@ -1225,12 +1226,12 @@ sub ScriptLink {
 }
 
 sub GetDownloadLink {
-  my ($name, $image, $revision, $alt) = @_;
-  $alt = $name unless $alt;
-  my $id = FreeToNormal($name);
+  my ($id, $image, $revision, $alt) = @_;
+  $alt = NormalToFree($id) unless $alt;
   # if the page does not exist
   return '[[' . ($image ? 'image' : 'download') . ':'
-    . ($UseQuestionmark ? $name . GetEditLink($id, '?', 1) : GetEditLink($id, $name, 1)) . ']]'
+    . ($UseQuestionmark ? QuoteHtml($id) . GetEditLink($id, '?', 1)
+       : GetEditLink($id, $id, 1)) . ']]'
       unless $IndexHash{$id};
   my $action;
   if ($revision) {
@@ -1247,11 +1248,12 @@ sub GetDownloadLink {
       $action = $ScriptName . '?' . $action;
     }
     return $action if $image == 2;
-    my $result = $q->img({-src=>$action, -alt=>NormalToFree($alt), -class=>'upload'});
-    $result = ScriptLink(UrlEncode($id), $result, 'image') unless $id eq $OpenPageName;
+    my $result = $q->img({-src=>$action, -alt=>UnquoteHtml($alt), -class=>'upload'});
+    $result = ScriptLink(UrlEncode($id), $result, 'image')
+      unless $id eq $OpenPageName;
     return $result;
   } else {
-    return ScriptLink($action, NormalToFree($alt), 'upload');
+    return ScriptLink($action, $alt, 'upload');
   }
 }
 
@@ -1320,7 +1322,8 @@ sub Tss {
 }
 
 sub GetId {
-  my $id = join('_', $q->keywords); # script?p+q -> p_q
+  my $id = UnquoteHtml(GetParam('id', GetParam('title', ''))); # id=x or title=x -> x
+  $id = join('_', $q->keywords) unless $id; # script?p+q -> p_q
   if ($UsePathInfo) {
     my @path = split(/\//, $q->path_info);
     $id = pop(@path) unless $id; # script/p/q -> q
@@ -1328,7 +1331,7 @@ sub GetId {
       SetParam($p, 1);    # script/p/q -> p=1
     }
   }
-  return GetParam('id', GetParam('title', $id)); # id=x or title=x override
+  return $id;
 }
 
 sub DoBrowseRequest {
@@ -1425,7 +1428,7 @@ sub BrowsePage {
   my $msg = GetParam('msg', '');
   $Message .= $q->p($msg) if $msg; # show message if the page is shown
   SetParam('msg', '');
-  print GetHeader($id, QuoteHtml($id), $oldId, undef, $status);
+  print GetHeader($id, NormalToFree($id), $oldId, undef, $status);
   my $showDiff = GetParam('diff', 0);
   if ($UseDiff && $showDiff) {
     PrintHtmlDiff($showDiff, GetParam('diffrevision', $revision), $revision, $text);
@@ -1588,15 +1591,16 @@ sub GetRcLinesFor {
   my $showminoredit = GetParam('showedit', $ShowEdits); # show minor edits
   my $all = GetParam('all', 0);
   my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $match, $lang,
-      $followup) = map { GetParam($_, ''); } qw(rcidonly rcuseronly rchostonly
+      $followup) = map { UnquoteHtml(GetParam($_, '')); }
+	qw(rcidonly rcuseronly rchostonly
         rcclusteronly rcfilteronly match lang followup);
   # parsing and filtering
   my @result = ();
   open(F,$file) or return ();
   while (my $line = <F>) {
     chomp($line);
-    my ($ts, $id, $minor, $summary, $host, $username, $revision, $languages, $cluster)
-      = split(/$FS/o, $line);
+    my ($ts, $id, $minor, $summary, $host, $username, $revision,
+	$languages, $cluster) = split(/$FS/o, $line);
     next if $ts < $starttime;
     $following{$id} = $ts if $followup and $followup eq $username;
     next if $followup and (not $following{$id} or $ts <= $following{$id});
@@ -1816,7 +1820,8 @@ sub RcHtml {
 sub PrintRcHtml { # to append RC to existing page, or action=rc directly
   my ($id, $standalone) = @_;
   my $rc = ($id eq $RCName or $id eq T($RCName) or T($id) eq $RCName);
-  print GetHeader('', $rc ? $id : Ts('All changes for %s', $id)) if $standalone;
+  print GetHeader('', $rc ? NormalToFree($id) : Ts('All changes for %s', NormalToFree($id)))
+    if $standalone;
   if ($standalone or $rc or GetParam('rcclusteronly', '')) {
     print $q->start_div({-class=>'rc'});
     print $q->hr() unless $standalone or GetParam('embed', $EmbedWiki);
@@ -1921,7 +1926,7 @@ sub RssItem {
   $username = QuoteHtml($username);
   $username = $host unless $username;
   my $rss = "<item>\n";
-  $rss .= "<title>" . QuoteHtml($name) . "</title>\n";
+  $rss .= "<title>$name</title>\n";
   $rss .= "<link>" . ScriptUrl(GetParam('all', $cluster)
              ? GetPageParameters('browse', $id, $revision,
                $cluster, $last)
@@ -1969,7 +1974,7 @@ sub DoHistory {
          $keep{summary}, $keep{minor}, $keep{revision}, \@languages);
     }
   } else {
-    print GetHeader('',QuoteHtml(Ts('History of %s', $id)));
+    print GetHeader('', Ts('History of %s', NormalToFree($id)));
     my $row = 0;
     my $rollback = UserCanEdit($id, 0) && (GetParam('username', '')
              or UserIsEditor());
@@ -2041,7 +2046,7 @@ sub DoContributors {
   my $id = shift;
   SetParam('rcidonly', $id);
   SetParam('all', 1);
-  print GetHeader('', Ts('Contributors to %s', $id || $SiteName));
+  print GetHeader('', Ts('Contributors to %s', NormalToFree($id || $SiteName)));
   my %contrib = ();
   for my $line (GetRcLines(1)) {
     my ($ts, $pagename, $minor, $summary, $host, $username) = @$line;
@@ -2073,7 +2078,8 @@ sub DoRollback {
     @ids = ($page);
   }
   RequestLockOrError();
-  print GetHeader('', T('Rolling back changes')), $q->start_div({-class=>'content rollback'}), $q->start_p();
+  print GetHeader('', T('Rolling back changes')),
+    $q->start_div({-class=>'content rollback'}), $q->start_p();
   foreach my $id (@ids) {
     OpenPage($id);
     my ($text, $minor, $ts) = GetTextAtTime($to);
@@ -2196,7 +2202,6 @@ sub GetHeader {
   my $embed = GetParam('embed', $EmbedWiki);
   my $alt = T('[Home]');
   my $result = GetHttpHeader('text/html', $nocache, $status);
-  $title = NormalToFree($title);
   if ($oldId) {
     $Message .= $q->p('(' . Ts('redirected from %s', GetEditLink($oldId, $oldId)) . ')');
   }
@@ -2286,7 +2291,7 @@ sub GetHtmlHeader {   # always HTML!
     . T('Edit this page') . '" href="'
     . ScriptUrl('action=edit;id=' . UrlEncode(GetId())) . '" />' if $id;
   return $DocumentHeader
-      . $q->head($q->title($q->escapeHTML($title)) . $base
+      . $q->head($q->title($title) . $base
      . GetCss() . GetRobots() . GetFeeds() . $HtmlHeaders
      . '<meta http-equiv="Content-Type" content="text/html; charset='
      . $HttpCharset . '"/>')
@@ -2308,7 +2313,7 @@ sub GetFeeds {      # default for $HtmlHeaders
   my $id = GetId(); # runs during Init, not during DoBrowseRequest
   $html .= '<link rel="alternate" type="application/rss+xml" title="'
     . QuoteHtml("$SiteName: $id") . '" href="' . $ScriptName
-      . '?action=rss;rcidonly=' . $id . '" />' if $id;
+      . '?action=rss;rcidonly=' . UrlEncode(FreeToNormal($id)) . '" />' if $id;
   my $username = GetParam('username', '');
   $html .= '<link rel="alternate" type="application/rss+xml" '
     . 'title="Follow-ups for ' . NormalToFree($username) . '" '
@@ -2982,7 +2987,7 @@ sub FreeToNormal {    # trim all spaces and convert them to underlines
     $id =~ s/^_//;
     $id =~ s/_$//;
   }
-  return $id;
+  return UnquoteHtml($id);
 }
 
 sub ItemName {
@@ -2997,7 +3002,7 @@ sub ItemName {
 sub NormalToFree {
   my $title = shift;
   $title =~ s/_/ /g;
-  return $title;
+  return QuoteHtml($title);
 }
 
 sub UnWiki {
@@ -3042,11 +3047,11 @@ sub DoEdit {
   }
   my $header;
   if ($revision and not $upload) {
-    $header = Ts('Editing revision %s of', $revision) . ' ' . $id;
+    $header = Ts('Editing revision %s of', $revision) . ' ' . NormalToFree($id);
   } else {
-    $header = Ts('Editing %s', $id);
+    $header = Ts('Editing %s', NormalToFree($id));
   }
-  print GetHeader('', QuoteHtml($header)), $q->start_div({-class=>'content edit'});
+  print GetHeader('', $header), $q->start_div({-class=>'content edit'});
   if ($preview and not $upload) {
     print $q->start_div({-class=>'preview'});
     print $q->h2(T('Preview:'));
