@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.23 2009/08/31 08:32:10 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: journal-rss.pl,v 1.24 2010/12/04 15:13:53 as Exp $</p>';
 
 $Action{journal} = \&DoJournalRss;
 
@@ -55,8 +55,12 @@ sub JournalRssGetRcLines {
       # an error.
       eval {
  	%Page = GetKeptRevision($Page{lastmajor});
-      }
+      };
+      next if $@;
     }
+    next if $Page{text} =~ /^\s*$/; # only whitespace is also to be deleted
+    next if $DeletedPage && substr($Page{text}, 0, length($DeletedPage))
+      eq $DeletedPage; # no regexp
     # Generate artifical rows in the list to pass to GetRcRss. We need
     # to open every single page, because the meta-data ordinarily
     # available in the rc.log file is not available to us. This is why
