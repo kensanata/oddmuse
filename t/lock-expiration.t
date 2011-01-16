@@ -18,14 +18,34 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 13;
+use Test::More tests => 17;
 
 clear_pages(); # this also disables Surge Protection
 AppendStringToFile($ConfigFile, "\$SurgeProtection = 1;\n");
 $localhost = 'confusibombus';
 $ENV{'REMOTE_ADDR'} = $localhost;
-ok(! -d $LockDir . 'visitors', 'visitors lock does not exist yet');
+my $lock = $LockDir . 'visitors';
+ok(! -d $lock, 'visitors lock does not exist yet');
 ok(! -f $VisitorFile, 'visitors log does not exist yet');
+
+# Don't loop forever trying to remove a lock older than
+# $LockExpiration that cannot be removed (eg. if the script user was
+# changed, so that the old lockfile cannot be removed by the new
+# user). Locks are directories; we simulate a lock that cannot be
+# removed by creating a file with the same name instead.
+mkdir($TempDir);
+ok(open(F, '>', $lock), "create bogus ${LockDir}visitors");
+my $ts = time - 120;
+utime($ts, $ts, $lock); # change mtime of the lockfile
+$ts = time;
+get_page('fail-to-get-lock');
+my $waiting = time - $ts;
+ok($waiting >= 16, "waited $waiting seconds (min. 16)");
+unlink($LockDir . 'visitors');
+$ts = time;
+test_page(get_page('get-lock'), 'get-lock');
+my $waiting = time - $ts;
+ok($waiting <= 2, "waited $waiting seconds (max. 2)");
 
 # The main lock works as intended.
 RequestLockOrError();
