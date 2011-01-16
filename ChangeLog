@@ -1,3 +1,10 @@
+2011-01-16  Alex Schroeder  <alex@gnu.org>
+
+	* modules/creole.pl (CreoleRule): Use FreeToNormal on the first
+	parameter to GetDownloadLink several times. When using
+	GetPageOrEditLink, make sure that we don't call NormalToFree on
+	the last parameter.
+
 2010-12-04  Alex Schroeder  <alex@gnu.org>
 
 	* modules/journal-rss.pl (JournalRssGetRcLines): Make sure minor
