@@ -18,13 +18,6 @@ There is also an admin interface that shows which email addresses are
 subscribed to which pages, allowing the easy removal of email
 addresses from the database.
 
-=head1 LIMITATION
-
-The actual sending of emails is not done by this module. An external
-process such as a cron job will have to do this. This complicates
-installation, but it will also server as a security measure, since
-wiki and mailer are separate processes.
-
 =head1 INSTALLATION
 
 Installing a module is easy: Create a modules subdirectory in your
@@ -33,7 +26,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: mail.pl,v 1.5 2009/08/29 23:50:46 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: mail.pl,v 1.6 2011/01/16 03:37:52 as Exp $</p>';
 
 use vars qw($MailFile $MailPattern);
 
@@ -447,4 +440,53 @@ sub MailUnsubscribe {
   untie %h;
   # changes made will affect how pages look
   SetParam('sub', GetParam('sub', 0) + 1);
+}
+
+=head1 Sending Mail
+
+The actual sending of emails depends on setting the appropriate
+options.
+
+C<$MailServer>: This defaults to localhost. If you have Oddmuse
+installed on a full server that includes an SMTP server such as
+sendmail or postfix, you might get away with not setting any of the
+variables.
+
+C<$MailUser>: Chances are you will need to authenticate before you can
+send an email via your mail server. Specify the name here.
+
+C<$MailPassword>: Specify the password here.
+
+C<$MailFrom>: Often mail servers know which email addresses they
+serve. If somebody else tries to use them, they'll return an error
+saying that "relaying is not allowed". If you are allowed to use the
+mail server, use this option to set the appropriate sender address.
+
+Example setup:
+
+    $MailServer = 'smtp.google.com';
+    $MailUser = 'kensanata';
+    $MailPassword = '*secret*';
+    $MailFrom = 'kensanata@gmail.com';
+
+=cut
+
+push(@MyMaintenance, \&DraftCleanup);
+
+sub DraftCleanup {
+  print '<p>' . T('Draft Cleanup');
+  foreach my $draft (glob("$DraftDir/* $DraftDir/.*")) {
+    next if $draft =~ m!/\.\.?$!;
+    my $ts = (stat($draft))[9];
+    if ($Now - $ts < 1209600) { # 14*24*60*60
+      print $q->br(), Tss("%1 was last modified %2 and was kept",
+		$draft, CalcTimeSince($Now - $ts));
+    } elsif (unlink($draft)) {
+      print $q->br(), Tss("%1 was last modified %2 and was deleted",
+		$draft, CalcTimeSince($Now - $ts));
+    } else {
+      print $q->br(), Ts('Unable to delete draft %s', $draft);
+    }
+  }
+  print '</p>';
 }
