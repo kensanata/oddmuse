@@ -26,7 +26,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: mail.pl,v 1.6 2011/01/16 03:37:52 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: mail.pl,v 1.7 2011/01/16 03:39:50 as Exp $</p>';
 
 use vars qw($MailFile $MailPattern);
 
@@ -470,23 +470,3 @@ Example setup:
     $MailFrom = 'kensanata@gmail.com';
 
 =cut
-
-push(@MyMaintenance, \&DraftCleanup);
-
-sub DraftCleanup {
-  print '<p>' . T('Draft Cleanup');
-  foreach my $draft (glob("$DraftDir/* $DraftDir/.*")) {
-    next if $draft =~ m!/\.\.?$!;
-    my $ts = (stat($draft))[9];
-    if ($Now - $ts < 1209600) { # 14*24*60*60
-      print $q->br(), Tss("%1 was last modified %2 and was kept",
-		$draft, CalcTimeSince($Now - $ts));
-    } elsif (unlink($draft)) {
-      print $q->br(), Tss("%1 was last modified %2 and was deleted",
-		$draft, CalcTimeSince($Now - $ts));
-    } else {
-      print $q->br(), Ts('Unable to delete draft %s', $draft);
-    }
-  }
-  print '</p>';
-}
