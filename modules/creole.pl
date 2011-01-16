@@ -14,7 +14,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.61 2010/02/20 21:00:57 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.62 2011/01/16 03:36:15 as Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -233,7 +233,7 @@ sub CreoleRule {
   # download: {{pic}} and {{pic|text}}
   elsif (m/\G(\{\{$FreeLinkPattern$CreoleLinkTextPattern\}\})/cgos) {
     my $text = $4 || NormalToFree($2);
-    return GetCreoleLinkHtml($1, GetDownloadLink($2, 1, undef, $text), $text);
+    return GetCreoleLinkHtml($1, GetDownloadLink(FreeToNormal($2), 1, undef, $text), $text);
   }
   # image link: {{url}} and {{url|text}}
   elsif (m/\G\{\{$FullUrlPattern$CreoleLinkTextPattern\}\}/cgos) {
@@ -250,7 +250,7 @@ sub CreoleRule {
     my $text = $5 || NormalToFree($2);
     return GetCreoleLinkHtml($1, GetCreoleImageHtml(
       ScriptLink($2,
-                 $q->img({-src=> GetDownloadLink($3, 2),
+                 $q->img({-src=> GetDownloadLink(FreeToNormal($3), 2),
                           -alt=> $text,
                           -class=> 'upload'}), 'image')), $text);
   }
@@ -270,7 +270,7 @@ sub CreoleRule {
     my $text = $5 || $2;
     return GetCreoleLinkHtml($1, GetCreoleImageHtml(
       $q->a({-href=> $2, -class=> 'image outside'},
-            $q->img({-src=> GetDownloadLink($3, 2),
+            $q->img({-src=> GetDownloadLink(FreeToNormal($3), 2),
                      -alt=> $text,
                      -class=> 'upload'}))), $text);
   }
@@ -300,7 +300,7 @@ sub CreoleRule {
   elsif (m/\G(\[\[$FreeLinkPattern$CreoleLinkTextPattern\]\])/cgos) {
     my $markup =    $1;
     my $page_name = $2;
-    my $link_text = $4 ? CreoleRuleRecursive($4, @_) : NormalToFree($page_name);
+    my $link_text = $4 ? CreoleRuleRecursive($4, @_) : $page_name;
 
     return GetCreoleLinkHtml($markup,
       GetPageOrEditLink($page_name, $link_text, 0, 1), $link_text);
@@ -320,7 +320,7 @@ sub CreoleRule {
       ? CreoleRuleRecursive($interlink_text, @_)
       :  $q->span({-class=> 'site'}, $site_name)
         .$q->span({-class=> 'separator'}, ':')
-        .$q->span({-class=> 'page'}, NormalToFree($page_name));
+        .$q->span({-class=> 'page'}, $page_name);
 
     # If the Wiki for this interlink is a registered Wiki (that is, it appears
     # in this Wiki's "$InterMap" page), then produce an interlink to it;
