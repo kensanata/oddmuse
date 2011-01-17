@@ -14,7 +14,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.62 2011/01/16 03:36:15 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.63 2011/01/17 02:31:57 as Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -232,36 +232,36 @@ sub CreoleRule {
   elsif (m/\G\{\{\{(.*?}*)\}\}\}/cg) { return $q->code($1); }
   # download: {{pic}} and {{pic|text}}
   elsif (m/\G(\{\{$FreeLinkPattern$CreoleLinkTextPattern\}\})/cgos) {
-    my $text = $4 || NormalToFree($2);
+    my $text = $4 || $2;
     return GetCreoleLinkHtml($1, GetDownloadLink(FreeToNormal($2), 1, undef, $text), $text);
   }
   # image link: {{url}} and {{url|text}}
   elsif (m/\G\{\{$FullUrlPattern$CreoleLinkTextPattern\}\}/cgos) {
     return GetCreoleImageHtml(
-      $q->a({-href=> $1,
+      $q->a({-href=> UnquoteHtml($1),
              -class=> 'image outside'},
-            $q->img({-src=> $1,
-                     -alt=> $3,
+            $q->img({-src=> UnquoteHtml($1),
+                     -alt=> UnquoteHtml($3),
                      -class=> 'url outside'})));
   }
   # image link: [[link|{{pic}}]] and [[link|{{pic|text}}]]
   elsif (m/\G(\[\[$FreeLinkPattern$CreoleLinkPipePattern
               \{\{$FreeLinkPattern$CreoleLinkTextPattern\}\}\]\])/cgosx) {
-    my $text = $5 || NormalToFree($2);
+    my $text = $5 || $2;
     return GetCreoleLinkHtml($1, GetCreoleImageHtml(
-      ScriptLink($2,
+      ScriptLink(UrlEncode(FreeToNormal($2)),
                  $q->img({-src=> GetDownloadLink(FreeToNormal($3), 2),
-                          -alt=> $text,
+                          -alt=> UnquoteHtml($text),
                           -class=> 'upload'}), 'image')), $text);
   }
   # image link: [[link|{{url}}]] and [[link|{{url|text}}]]
   elsif (m/\G(\[\[$FreeLinkPattern$CreoleLinkPipePattern
               \{\{$FullUrlPattern$CreoleLinkTextPattern\}\}\]\])/cgosx) {
-    my $text = $5 || NormalToFree($2);
+    my $text = $5 || $2;
     return GetCreoleLinkHtml($1, GetCreoleImageHtml(
-      ScriptLink($2,
-                 $q->img({-src=> $3,
-                          -alt=> $text,
+      ScriptLink(UrlEncode(FreeToNormal($2)),
+                 $q->img({-src=> UnquoteHtml($3),
+                          -alt=> UnquoteHtml($text),
                           -class=> 'url outside'}), 'image')), $text);
   }
   # image link: [[url|{{pic}}]] and [[url|{{pic|text}}]]
@@ -269,18 +269,18 @@ sub CreoleRule {
               \{\{$FreeLinkPattern$CreoleLinkTextPattern\}\}\]\])/cgosx) {
     my $text = $5 || $2;
     return GetCreoleLinkHtml($1, GetCreoleImageHtml(
-      $q->a({-href=> $2, -class=> 'image outside'},
+      $q->a({-href=> UnquoteHtml($2), -class=> 'image outside'},
             $q->img({-src=> GetDownloadLink(FreeToNormal($3), 2),
-                     -alt=> $text,
+                     -alt=> UnquoteHtml($text),
                      -class=> 'upload'}))), $text);
   }
   # image link: [[url|{{url}}]] and [[url|{{url|text}}]]
   elsif (m/\G\[\[$FullUrlPattern$CreoleLinkPipePattern
              \{\{$FullUrlPattern$CreoleLinkTextPattern\}\}\]\]/cgosx) {
     return GetCreoleImageHtml(
-      $q->a({-href=> $1, -class=> 'image outside'},
-            $q->img({-src=> $2,
-                     -alt=> $4 || $1,
+      $q->a({-href=> UnquoteHtml($1), -class=> 'image outside'},
+            $q->img({-src=> UnquoteHtml($2),
+                     -alt=> UnquoteHtml($4),
                      -class=> 'url outside'})));
   }
   # link: [[url]] and [[url|text]]
