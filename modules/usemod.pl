@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 # ====================[ usemod.pl                          ]====================
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.37 2009/07/03 14:04:45 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.38 2011/01/19 16:39:38 as Exp $</p>';
 
 use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml
       $UseModSpaceRequired $UseModMarkupInTitles);
@@ -19,6 +19,7 @@ $RawHtml     = 0;   # 1 = allow <HTML> environment for raw HTML inclusion
 $HtmlTags    = 0;   # 1 = allow some 'unsafe' HTML tags
 $UseModSpaceRequired = 1;  # 1 = require space after * # : ; for lists.
 $UseModMarkupInTitles = 0; # 1 = may use links and other markup in ==titles==
+$UseModExtraSpaceRequired = 0; # 1 = require space before : in definition lists
 
 # do this later so that the user can customize some vars
 push(@MyInitVariables, \&UsemodInit);
@@ -76,13 +77,13 @@ sub UsemodRule {
       . $q->dt() . AddHtmlEnvironment('dd');
   }
   # definition lists using ;
-  elsif (($bol and m/\G(\s*\n)*(\;+)[ \t]{$UseModSpaceRequired,}(?=.*\:)/cog) or
-         (InElement('dd') and m/\G(\s*\n)+(\;+)[ \t]{$UseModSpaceRequired,}(?=.*\:)/cog)) {
+  elsif (($bol and m/\G(\s*\n)*(\;+)[ \t]{$UseModSpaceRequired,}(?=.*[ \t]{$UseModExtraSpaceRequired,}\:)/cog) or
+         (InElement('dd') and m/\G(\s*\n)+(\;+)[ \t]{$UseModSpaceRequired,}(?=.*[ \t]{$UseModExtraSpaceRequired,}\:)/cog)) {
     return CloseHtmlEnvironmentUntil('dd')
       .OpenHtmlEnvironment('dl', length($2))
       .AddHtmlEnvironment('dt');  # `:' needs special treatment, later
   }
-  elsif (InElement('dt') and m/\G:[ \t]*/cg) {
+  elsif (InElement('dt') and m/\G[ \t]{$UseModExtraSpaceRequired,}:[ \t]*/cg) {
     return CloseHtmlEnvironmentUntil('dt')
       .CloseHtmlEnvironment()
       .AddHtmlEnvironment('dd');
