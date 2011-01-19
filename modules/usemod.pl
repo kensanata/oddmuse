@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 # ====================[ usemod.pl                          ]====================
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.39 2011/01/19 16:52:18 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.40 2011/01/19 17:39:43 as Exp $</p>';
 
 use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml
       $UseModSpaceRequired $UseModMarkupInTitles);
@@ -83,7 +83,7 @@ sub UsemodRule {
       .OpenHtmlEnvironment('dl', length($2))
       .AddHtmlEnvironment('dt');  # `:' needs special treatment, later
   }
-  elsif (InElement('dt') and m/\G[ \t]{$UseModExtraSpaceRequired,}:[ \t]*/cg) {
+  elsif (InElement('dt') and m/\G(?<=[ \t]){$UseModExtraSpaceRequired,}:[ \t]*/cg) {
     return CloseHtmlEnvironmentUntil('dt')
       .CloseHtmlEnvironment()
       .AddHtmlEnvironment('dd');
