@@ -1,3 +1,8 @@
+2011-01-19  Alex Schroeder  <alex@gnu.org>
+
+	* modules/usemod.pl ($UseModExtraSpaceRequired): New option.
+	(UsemodRule): Use it for definition lists.
+
 2011-01-17  Alex Schroeder  <alex@gnu.org>
 
 	* modules/creole.pl (CreoleRule): Resolved a lot more quoting
