@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 # ====================[ usemod.pl                          ]====================
-$ModulesDescription .= '<p>$Id: usemod.pl,v 1.38 2011/01/19 16:39:38 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: usemod.pl,v 1.39 2011/01/19 16:52:18 as Exp $</p>';
 
 use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml
       $UseModSpaceRequired $UseModMarkupInTitles);
@@ -224,9 +224,10 @@ sub ISBN {
 The information below applies to everything in this distribution,
 except where noted.
 
-Copyleft  2008                         by Brian Curry <http://raiazome.com>.
-Copyright 2008                         by Weakish Jiang <weakish@gmail.com>.
-Copyright 2004, 2005, 2006, 2007, 2008 by Alex Schroeder <alex@gnu.org>.
+Copyright 2008, 2009, 2010 by Alex Schroeder <alex@gnu.org>.
+Copyleft  2008 by Brian Curry <http://raiazome.com>.
+Copyright 2008 by Weakish Jiang <weakish@gmail.com>.
+Copyright 2004, 2005, 2006, 2007 by Alex Schroeder <alex@gnu.org>.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
