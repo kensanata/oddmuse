@@ -13,12 +13,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: referrer-tracking.t,v 1.4 2010/10/27 18:17:50 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: referrer-tracking.t,v 1.5 2011/01/22 16:50:06 as Exp $</p>';
 
 require 't/test.pl';
 package OddMuse;
 
-use Test::More tests => 10;
+use Test::More tests => 10; # update two numbers below!
 
 SKIP: {
 
@@ -26,14 +26,14 @@ SKIP: {
     require LWP::UserAgent;
   };
 
-  skip "LWP::UserAgent not installed", 9 if $@;
+  skip "LWP::UserAgent not installed", 10 if $@;
 
   my $wiki = 'http://localhost/cgi-bin/wiki.pl';
   my $ua = LWP::UserAgent->new;
   my $response = $ua->get("$wiki?action=version");
-  skip("No wiki running at $wiki", 9)
+  skip("No wiki running at $wiki", 10)
     unless $response->is_success;
-  skip("Wiki running at $wiki doesn't have the referrer-tracking extension installed", 9)
+  skip("Wiki running at $wiki doesn't have the referrer-tracking extension installed", 10)
     unless $response->content =~ /\$Id: referrer-tracking\.pl/;
   my $id = 'Random' . time;
   # make sure we're not being fooled by 404 errors
