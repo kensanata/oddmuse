@@ -41,13 +41,16 @@ use File::Path;
 # -t timestamp file; it's last modified date is used to determine when the
 #    the last run was and an appropriate URL is used. Instead of days=1 it
 #    will use from=n where n is the last modified date of the timestamp file.
-# -v verbose output
+# -q quiet (default: number of messages sent)
+# -v verbose output (recipients)
+# -x debug output
 
 my %opts;
-getopt('nprmftq', \%opts);
+getopt('nprmftqvx', \%opts);
 my $nomail = exists $opts{n};
 my $verbose = exists $opts{v};
 my $quiet = exists $opts{q};
+my $debug = exists $opts{x};
 my $admin_password = $opts{p};
 my $root = $opts{r};
 die "Must provide an url with the -r option\n" unless $root;
@@ -64,7 +67,7 @@ my $ua = new LWP::UserAgent;
 
 sub get_subscribers {
   my $url = "$root?action=subscriptionlist;raw=1;pwd=$admin_password";
-  print "Getting $url\n" if $verbose;
+  print "Getting $url\n" if $debug;
   my $response = $ua->get($url);
   die "Must provide an admin password with the -p option\n"
     if $response->code == 403 and not $admin_password;
@@ -78,7 +81,7 @@ sub get_subscribers {
     # print "Subscription for $key: ", join(', ', @entries), "\n";
     $data{$key} = \@entries;
   }
-  print "Found " . scalar(keys(%data)) . " subscribers\n" if $verbose;
+  print "Found " . scalar(keys(%data)) . " subscribers\n" if $debug;
   return \%data;
 }
 
@@ -110,12 +113,12 @@ sub update_timestamp {
 
 sub get_rss {
   my $url = "$root?action=rss;full=1;short=0;" . get_timestamp();
-  print "Getting $url\n" if $verbose;
+  print "Getting $url\n" if $debug;
   my $response = $ua->get($url);
   die $url, $response->status_line unless $response->is_success;
   my $rss = new XML::RSS;
   $rss->parse($response->content);
-  print "Found " . @{$rss->{items}} . " items.\n" if $verbose;
+  print "Found " . @{$rss->{items}} . " items.\n" if $debug;
   update_timestamp();
   return $rss;
 }
@@ -127,11 +130,11 @@ sub send_files {
   my $sent = 0;
   foreach my $item (@items) {
     my $title = $item->{title};
-    print "Looking at $title\n" if $verbose;
+    print "Looking at $title\n" if $debug;
     my $id = $title;
     $id =~ s/ /_/g;
     my @subscribers = @{$subscribers->{$id}};
-    print "Subscribers: ", join(', ', @subscribers), "\n" if $verbose;
+    print "Subscribers: ", join(', ', @subscribers), "\n" if $debug;
     $sent += @subscribers;
     send_file($id, $title, $item, @subscribers);
   }
@@ -156,7 +159,7 @@ sub send_file {
 
 sub send_mail {
   my ($subscriber, $title, $fh) = @_;
-  print "Skipping mail to $subscriber...\n" if $verbose && $nomail;
+  print "Skipping mail to $subscriber...\n" if $debug && $nomail;
   return if $nomail;
   my $mail = new MIME::Entity->build(To => $subscriber,
 				     From => $from,
