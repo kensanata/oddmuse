@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 12;
+use Test::More tests => 13;
 
 clear_pages();
 
@@ -57,4 +57,7 @@ xpath_test_negative($page, '//p[text()="Near pages:"]',
 		    '//a[@class="near"][@title="EmacsWiki"][text()="AlexSchroeder"]');
 
 my @matches = get_page('action=index raw=1 near=1') =~ m/^FooBar$/gm;
-is(scalar(@matches), 1, "FooBar listed just once");
+is(scalar(@matches), 1, "FooBar listed once when including near pages");
+
+my @matches = get_page('action=index raw=1 pages=0 near=1') =~ m/^FooBar$/gm;
+is(scalar(@matches), 1, "FooBar listed once when excluding local pages");
