@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: near-links.pl,v 1.9 2009/08/31 08:31:04 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: near-links.pl,v 1.10 2011/01/29 14:33:15 as Exp $</p>';
 
 =head1 Near Links
 
@@ -295,11 +295,24 @@ The index of all pages will offer a new option called "Include near
 pages". This uses the C<near> parameter. Example:
 C<http://localhost/cgi-bin/wiki?action=index;near=1>.
 
+We don't need to list remote pages that also exist locally, since the
+index will resolve pages as they get printed. If we list remote pages,
+all we'll do is have the name twice on the list, and they'll get
+resolved to the same target (the local page), which is unexpected.
+
 =cut
 
 
 push(@IndexOptions, ['near', T('Include near pages'), 0,
-		     sub { keys %NearSource }]);
+		     \&ListNearPages]);
+
+sub ListNearPages {
+  my %pages = %NearSource;
+  foreach my $page (AllPagesList()) {
+    delete $pages{$page};
+  }
+  return keys %pages;
+}
 
 =head2 Defining Near Linked Pages
 
