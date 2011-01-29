@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: near-links.pl,v 1.10 2011/01/29 14:33:15 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: near-links.pl,v 1.11 2011/01/29 14:38:45 as Exp $</p>';
 
 =head1 Near Links
 
@@ -308,8 +308,10 @@ push(@IndexOptions, ['near', T('Include near pages'), 0,
 
 sub ListNearPages {
   my %pages = %NearSource;
-  foreach my $page (AllPagesList()) {
-    delete $pages{$page};
+  if (GetParam('pages', 1)) {
+    foreach my $page (AllPagesList()) {
+      delete $pages{$page};
+    }
   }
   return keys %pages;
 }
