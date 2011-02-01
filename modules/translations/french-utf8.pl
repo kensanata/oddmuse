@@ -2,6 +2,7 @@
 #
 # Copyright (c) 2003, 2005  Pierre Gaston
 # Copyright (c) 2004, 2005  Christophe Ducamp
+# Copyright (c) 2010  Alex Schroeder
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
@@ -18,22 +19,22 @@
 #
 # This translation was last checked for Oddmuse version 1.296.
 #
-$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.17 2009/06/07 19:30:37 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.18 2011/02/01 00:18:00 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 Comprend les pages normales
 Reading not allowed: user, ip, or network is blocked.
-Accès interdit&nbsp;: l'utilisateur, l'IP ou le réseau est bloqué.
+Accès interdit : l'utilisateur, l'IP ou le réseau est bloqué.
 Login
 Se connecter
 Error
-
+Erreur
 %s calls
 
 Could not create %s
 Création impossible de %s
 Invalid UserName %s: not saved.
-Nom d'utilisateur non valide %s&nbsp;: non sauvegardé.
+Nom d'utilisateur non valide %s : non sauvegardé.
 UserName must be 50 characters or less: not saved
 Le nom d'utilisateur ne doit pas dépasser 50 caractères : non sauvegardé
 This page contains an uploaded file:
@@ -49,7 +50,7 @@ Verrou principal rendu.
 Journal
 
 More...
-
+Suivant…
 Comments on this page
 Commentaires sur cette page
 XML::RSS is not available on this system.
@@ -75,7 +76,7 @@ Parmètre d'action invalide %s
 Page name is missing
 Le nom de la page est manquant
 Page name is too long: %s
-Le nom de la page est trop long&nbsp;: %s
+Le nom de la page est trop long : %s
 Invalid Page %s (must not end with .db)
 Page non valide %s (ne doit pas se terminer par .db)
 Invalid Page %s (must not end with .lck)
@@ -92,6 +93,8 @@ Please go on to %s.
 SVP aller a %s.
 Updates since %s
 Mises à hour depuis %s
+up to %s
+jusqu’à
 Updates in the last %s days
 Mises à jour durant les derniers %s jours
 Updates in the last %s day
@@ -117,9 +120,9 @@ Lister les modifications les plus récentes
 RSS
 
 RSS with pages
-
+RSS avec pages
 RSS with pages and diff
-
+RSS avec pages et différences
 Filters
 Filtres
 Title:
@@ -133,7 +136,7 @@ Hôte :
 Follow up to:
 
 Language:
-Langue&nbsp;:
+Langue :
 Go!
 Allez-y !
 (minor)
@@ -143,7 +146,7 @@ retour en arrière
 new
 nouveau
 All changes for %s
-
+Tous les changements pour %s
 from %s
 depuis %s
 This page is too big to send over RSS.
@@ -153,17 +156,17 @@ Historique de %s
 Compare
 Comparer
 Deleted
-
+Suprimé
 Mark this page for deletion
-
+Marquer cette page à suprimer
 No other revisions available
-
+Il n’y a pas d’autre version
 current
-
+actuelle
 Revision %s
 Version %s
 Contributors to %s
-
+Contributeurs à %s
 Missing target for rollback.
 Cible manquante pour le retour en arrière.
 Target for rollback is too far back.
@@ -176,12 +179,14 @@ The two revisions are the same.
 Les deux révisions sont les mêmes.
 Editing not allowed for %s.
 Edition non autorisée pour %s.
+Rollback of %s would restore banned content.
+Un retour à %s restaurara du texte interdit.
 Rollback to %s
 Retour à %s
 %s rolled back
 Retour en arrière pour %s
 to %s
-
+à %s
 Index of all pages
 Index de toutes les pages
 Wiki Version
@@ -205,9 +210,9 @@ Verrouiller %s
 Administration
 Administration
 Actions:
-Actions :
+Actions :
 Important pages:
-Pages importantes :
+Pages importantes :
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 Pour marquer une page devant être supprimée, ajoutez <strong>%s</strong> à la première ligne
 [Home]
@@ -215,15 +220,15 @@ Pour marquer une page devant être supprimée, ajoutez <strong>%s</strong> à la
 redirected from %s
 redirigée à partir de %s
 %s: 
-
+%s : 
 Click to search for references to this page
 Cliquer pour chercher des références vers cette page
 Cookie: 
-Cookie&nbsp;: 
+Cookie : 
 Edit this page
 Modifier cette page
 Preview:
-Prévisualisation&nbsp;:
+Prévisualisation :
 Preview only, not yet saved
 Prévisualisation seulement, pas encore sauvegardée
 Warning
@@ -253,7 +258,7 @@ Voir la version actuelle
 View all changes
 Voir toutes les modifications
 View contributors
-
+Vour les contributeurs
 Homepage URL:
 Adresse(URL) du site perso
 s
@@ -265,13 +270,13 @@ p
 Preview
 Prévisualisation
 Search:
-Rechercher&nbsp;:
+Rechercher :
 f
 f
 Replace:
-Remplacer&nbsp;:
+Remplacer :
 Delete
-
+Suprimer
 Validate HTML
 Valider HTML
 Validate CSS
@@ -291,13 +296,13 @@ later minor edits
 No diff available.
 Pas de diff disponible.
 Old revision:
-Ancienne révision:
+Ancienne révision :
 Changed:
-Modifiée&nbsp;:
+Modifiée :
 Deleted:
-
+Suprimé :
 Added:
-Ajoutée&nbsp;:
+Ajoutée :
 to
 à
 Revision %s not available
@@ -320,6 +325,8 @@ Could not get %s lock
 Ne peut obtenir un verrouillage %s
 The lock was created %s.
 Le verrouillage a été créé %s.
+Maybe the user running this script is no longer allowed to remove the lock directory?
+
 This operation may take several seconds...
 Cette opération peut prendre quelques secondes...
 Forced unlock of %s lock.
@@ -343,7 +350,7 @@ just now
 Edit Denied
 Modification interdite
 Editing not allowed: user, ip, or network is blocked.
-Modification interdite&nbsp;: l'utilisateur, l'adresse ip, ou le reseau est bloqué.
+Modification interdite : l'utilisateur, l'adresse ip, ou le reseau est bloqué.
 Contact the wiki administrator for more information.
 Contactez l'administrateur du wiki pour plus d'information.
 The rule %s matched for you.
@@ -351,7 +358,7 @@ La règle %s a fonctionné pour vous.
 See %s for more information.
 Voir %s pour plus d'information.
 Editing not allowed: %s is read-only.
-Modification interdite&nbsp;: %s est en lecture seule.
+Modification interdite : %s est en lecture seule.
 Only administrators can upload files.
 Seuls les administrateurs peuvent téléverser des fichiers.
 Editing revision %s of
@@ -363,17 +370,17 @@ Modification de l'ancienne version %s.
 Saving this page will replace the latest revision with this text.
 Sauvegarder cette page remplacera la dernière version par ce texte.
 Summary:
-Résumé&nbsp;:
+Résumé :
 This change is a minor edit.
 Cette modification est une édition mineure.
 Cancel
-
+Anuler
 Replace this file with text
 Remplacer ce fichier par un texte
 Replace this text with a file
 Remplacer ce texte par un fichier
 File to upload: 
-Fichier à téléverser&nbsp;: 
+Fichier à téléverser : 
 Files of type %s are not allowed.
 Les fichiers de type %s ne sont pas autorisés.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
@@ -387,7 +394,7 @@ Vous êtes un utilisateur normal de ce site.
 Your password does not match any of the  administrator or editor passwords.
 Vote mot de passe ne corespond à aucun de ceux des mots de passe administrateurs ou éditeurs.
 Password:
-Mot de passe&nbsp;:
+Mot de passe :
 This site does not use admin or editor passwords.
 Ce site n'utilise pas de mot de passe pour les administrateurs ou les éditeurs.
 This operation is restricted to site editors only...
@@ -401,19 +408,21 @@ Exemple_De_Page_NonDéfinie
 Rule "%1" matched "%2" on this page.
 La règle "%1" correspondait à "%2" sur cette page.
 Reason: %s.
-
+Raison : %s.
 Reason unknown.
-
+Raison inconnu.
 Filter:
 Filtre :
 (for %s)
 (pour %s)
 %s pages found.
 %s pages trouvées.
+Malformed regular expression in %s
+Expression régulière malformé dans %s
 Replaced: %s
-Remplacé&nbsp;: %s
+Remplacé : %s
 Search for: %s
-Rechercher&nbsp;: %s
+Rechercher : %s
 View changes for these pages
 Voir les modifications pour ces pages
 last updated
@@ -421,7 +430,7 @@ dernière mise à jour
 by
 par
 Transfer Error: %s
-Erreur de Transfert&nbsp;: %s
+Erreur de Transfert : %s
 Browser reports no file info.
 Le navigateur signale pas d'information sur le fichier.
 Browser reports no file type.
@@ -473,7 +482,7 @@ Impossible d'ouvrir le fichier de log %
 Error was
 L'erreur était
 Note: This error is normal if no changes have been made.
-Remarque&nbsp;: Cette erreur est normale si aucune modification n'a été effectuée.
+Remarque : Cette erreur est normale si aucune modification n'a été effectuée.
 Moving %s log entries.
 Déplace %s entrées du log.
 Set or Remove global edit lock
@@ -492,8 +501,6 @@ Displaying Wiki Version
 Affichage de la version du Wiki
 Debugging Information
 
-Inter links:
-InterLiens :
 Too many connections by %s
 Trop de connexions par %s
 Please do not fetch more than %1 pages in %2 seconds.
@@ -618,6 +625,14 @@ Compilation for %s
 Compilation pour %s
 Compilation tag is missing a regular expression.
 Une expression régulière manque au tag de compilation.
+Extract all dates from the database
+
+Dates
+
+No dates found.
+
+Inter links:
+InterLiens :
 List spammed pages
 
 Despamming pages
@@ -657,6 +672,8 @@ Ajouter Commentaire
 ordinary changes
 modifications ordinaires
 Matching page names:
+
+Email: 
 
 Could not find %1.html template in %2
 Impossible de trouver le modèle %1.html dans %2
@@ -788,8 +805,6 @@ unsubscribe
 
 subscribe
 
-Email: 
-
 %s appears to be an invalid mail address
 
 Your mail subscriptions
@@ -897,7 +912,7 @@ Type
 Permalink to "%s"
 Lien permanent vers "%s"
 anchor first defined here: %s
-première ancre définie ici&nbsp;: %s
+première ancre définie ici : %s
 the page %s also exists
 la page %s existe aussi 
 There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
@@ -913,15 +928,17 @@ Inclure les ancres permanentes
 Portrait
 Portrait
 Publish %s
-
+Publier %s
 No target wiki was specified in the config file.
 
 The target wiki was misconfigured.
 
+Upload is limited to %s bytes
+
 You did not answer correctly.
 Vous n'avez pas répondu correctement.
 To save this page you must answer this question:
-
+Il faut réponder a cette question pour sauvegarder la page :
 Please type the following two words:
 
 Please answer this captcha:
@@ -945,13 +962,13 @@ Reconstruction index non effectuée.
 New Pages for Indexed Search
 
 List changes since %s
-
+Changement depuis %s
  ... 
- ...
+ ... 
 Search term missing.
 Terme de la recherche manquant.
 Result pages: 
-Pages de résultats :
+Pages de résultats : 
 (%s results)
 (%s résultats)
 Tags:
@@ -970,6 +987,10 @@ Static Copy
 Copie Statique
 Back to %s
 Retour à %s
+Edit image in the browser
+
+Summary of your changes: 
+
 Copy to %1 succeeded: %2.
 Copie vers %1 réussie : %2.
 Copy to %1 failed: %2.
@@ -1008,18 +1029,26 @@ Too many instances.  Only %s allowed.
 
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 
+Timezone
+
+Pick your timezone:
+
+Set
+
 Contents
 Contenus
 Create a new page for today
 
 Add Translation
+Àjouter une traduction
+Please provide a different page name for the translation.
 
 Added translation: %1 (%2)
 
 Translate %s
-
+Traduire %s
 Thank you for writing a translation of %s.
-
+Merci pour traduir %s.
 Please indicate what language you will be using.
 
 Language is missing
