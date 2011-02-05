@@ -1,22 +1,21 @@
 # UTF-8 encoded German translation file for use with Oddmuse
 #
 # Copyright (c) 2003  Karl Loncarek <karl@loncarek.de>
-# Copyright (c) 2003, 2004, 2005, 2006, 2007, 2009  Alex Schröder <alex@gnu.org>
+# Copyright (c) 2003, 2004, 2005, 2006, 2007, 2009, 2010  Alex Schröder <alex@gnu.org>
 #
-# Permission is granted to copy, distribute and/or modify this
-# document under the terms of the GNU Free Documentation License,
-# Version 1.2 or any later version published by the Free Software
-# Foundation; with no Invariant Sections, no Front-Cover Texts, and no
-# Back-Cover Texts.  A copy of the license could be found at:
-# http://www.gnu.org/licenses/fdl.txt .
+# Permission is granted to copy, distribute and/or modify this document under
+# the terms of the GNU Free Documentation License, Version 1.2 or any later
+# version published by the Free Software Foundation; with no Invariant Sections,
+# no Front-Cover Texts, and no Back-Cover Texts. A copy of the license could be
+# found at: http://www.gnu.org/licenses/fdl.txt .
 #
 # Installation:
 # =============
 #
-# Create a modules subdirectory in your data directory, and put the
-# file in there. It will be loaded automatically.
+# Create a modules subdirectory in your data directory, and put the file in
+# there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.29 2011/02/05 12:39:51 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.30 2011/02/05 12:40:38 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 Mit normalen Seiten
