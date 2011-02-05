@@ -19,7 +19,7 @@
 #
 # This translation was last checked for Oddmuse version 1.296.
 #
-$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.19 2011/02/05 12:00:55 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.20 2011/02/05 12:29:07 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 Comprend les pages normales
@@ -954,7 +954,7 @@ Reconstruire l'index pour la recherche
 Tag Cloud
 Nuage de Tags
 Search::FreeText is not available on this system.
-Chercher::TexteLibre n'est pas disponible sur ce système.
+Search::FreeText n'est pas disponible sur ce système.
 Rebuilding index not done.
 Reconstruction index non effectuée.
 (Rebuilding the index can only be done once every 12 hours.)
