@@ -16,7 +16,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.28 2009/10/13 22:48:52 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.29 2011/02/05 12:39:51 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 Mit normalen Seiten
@@ -176,6 +176,8 @@ The two revisions are the same.
 Es gibt keinen Unterschied zwischen den beiden Versionen.
 Editing not allowed for %s.
 Das bearbeiten von %s ist nicht erlaubt.
+Rollback of %s would restore banned content.
+%s rückgäng zu machen würde verbotenen Text wieder einführen.
 Rollback to %s
 Rückgängig gemacht auf den Stand vom %s
 %s rolled back
@@ -320,6 +322,8 @@ Could not get %s lock
 Die %s Sperre konnte nicht gesetzt werden
 The lock was created %s.
 Die Sperre wurde %s gesetzt.
+Maybe the user running this script is no longer allowed to remove the lock directory?
+Vielleicht darf der user, welcher dieses script ausführt, das Sperr-Verzeichnis nicht löschen?
 This operation may take several seconds...
 Das könnte einige Sekunden dauern...
 Forced unlock of %s lock.
@@ -410,6 +414,8 @@ Filter:
 (für %s)
 %s pages found.
 %s Seiten gefunden.
+Malformed regular expression in %s
+%s enthält einen ungültigten regulären Ausdruck
 Replaced: %s
 Ersetzt: %s
 Search for: %s
@@ -492,8 +498,6 @@ Displaying Wiki Version
 Anzeige der Wikiversion
 Debugging Information
 Informationen für die Fehlersuche
-Inter links:
-Inter Links:
 Too many connections by %s
 Zu viele Verbindungen durch %s
 Please do not fetch more than %1 pages in %2 seconds.
@@ -618,6 +622,14 @@ Compilation for %s
 Zusammenstellung für %s
 Compilation tag is missing a regular expression.
 Der tag für die Zusammenstellung benötigt noch ein Suchmuster.
+Extract all dates from the database
+Alle Daten aus der Datenbank extrahieren
+Dates
+Daten
+No dates found.
+Keine Daten gefunden.
+Inter links:
+Inter Links:
 List spammed pages
 Liste der Seiten mit unerwünschter Werbung
 Despamming pages
@@ -658,6 +670,8 @@ ordinary changes
 normale Änderungen
 Matching page names:
 Übereinstimmende Seitennamen:
+Email: 
+Email: 
 Could not find %1.html template in %2
 Im Verzeichnis %2 gibt es kein %1.html Template
 Only Editors are allowed to see this hidden page.
@@ -788,8 +802,6 @@ unsubscribe
 abmelden
 subscribe
 abonnieren
-Email: 
-Email: 
 %s appears to be an invalid mail address
 %s scheint keine gültige Email Adresse zu sein
 Your mail subscriptions
@@ -875,17 +887,17 @@ Sie haben ihre eigene IP Nummer verbannt.
 OpenID Login
 OpenID Login
 Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
-
+Die Identität wird in einem Cookie gespeichert, falls diese erlaubt sind. Cookies gehen verloren, wenn ein anderer Rechner, eine anderes Konto, oder ein anderer Browser verwendet wird.
 Your homepage is set to %s.
-
+Homepage wurde auf %s gesetzt.
 You have no homepage set.
-
+Keine Homepage gesetzt.
 Homepage:
-
+Homepage:
 Homepage is missing
-
+Homepage fehlt
 OpenID error %s
-
+OpenID Fehler %s
 Orphan List
 Liste der Waisen
 Trail: 
@@ -918,6 +930,8 @@ No target wiki was specified in the config file.
 In der Konfigurationsdatei wurde kein Publikationsziel festgelegt.
 The target wiki was misconfigured.
 Das Publikationsziel wurde nicht korrekt konfiguriert.
+Upload is limited to %s bytes
+Das Hochladen von Daten ist auf %s Bytes limitiert
 You did not answer correctly.
 Die Antwort ist falsch.
 To save this page you must answer this question:
@@ -970,6 +984,10 @@ Static Copy
 Statische Kopie
 Back to %s
 Zurück zu %s
+Edit image in the browser
+Bild im Browser bearbeiten
+Summary of your changes: 
+Zusammenfassung der gemachten Änderungen:
 Copy to %1 succeeded: %2.
 Die %1 Kopie hat funktioniert: %2.
 Copy to %1 failed: %2.
@@ -1008,12 +1026,20 @@ Too many instances.  Only %s allowed.
 Es laufen schon %s Wiki Prozesse gleichzeitig auf diesem Server. Mehr sind leider nicht erlaubt.
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 Versuchen Sie es später nocheinmal. Vielleicht werden gerade Wartungsarbeiten durchgeführt, oder ein Suchbefehl nimmt gerade viel Zeit in Anspruch. Leider sind die Resourcen des Rechners limitiert; wir bitten Sie deshalb um etwas Geduld.
+Timezone
+Zeitzone
+Pick your timezone:
+Zeitzone wählen:
+Set
+Setzen
 Contents
 Inhaltsverzeichnis
 Create a new page for today
 Erstellen Sie eine neue Seite für den heutigen Tag
 Add Translation
 Übersetzung hinzufügen
+Please provide a different page name for the translation.
+Die Übersetzung darf nicht gleich heissen.
 Added translation: %1 (%2)
 Übersetzung hinzugefügt: %1 (%2)
 Translate %s
