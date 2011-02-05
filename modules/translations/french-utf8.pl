@@ -19,12 +19,12 @@
 #
 # This translation was last checked for Oddmuse version 1.296.
 #
-$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.18 2011/02/01 00:18:00 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.19 2011/02/05 12:00:55 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 Comprend les pages normales
 Reading not allowed: user, ip, or network is blocked.
-Accès interdit : l'utilisateur, l'IP ou le réseau est bloqué.
+Accès interdit : l’utilisateur, l’IP ou le réseau est bloqué.
 Login
 Se connecter
 Error
@@ -34,45 +34,45 @@ Erreur
 Could not create %s
 Création impossible de %s
 Invalid UserName %s: not saved.
-Nom d'utilisateur non valide %s : non sauvegardé.
+Nom d’utilisateur non valide %s : non sauvegardé.
 UserName must be 50 characters or less: not saved
-Le nom d'utilisateur ne doit pas dépasser 50 caractères : non sauvegardé
+Le nom d’utilisateur ne doit pas dépasser 50 caractères : non sauvegardé
 This page contains an uploaded file:
-Cette page contient un fichier téléversé :
+Cette page contient un fichier téléversé :
 Recursive include of %s!
-Inclusion par récursivité de %s !
+Inclusion par récursivité de %s !
 Clear Cache
-
+Effacer le cache
 Main lock obtained.
 Verrou principal obtenu.
 Main lock released.
 Verrou principal rendu.
 Journal
-
+Journal
 More...
 Suivant…
 Comments on this page
 Commentaires sur cette page
 XML::RSS is not available on this system.
-XML::RSS n'est pas disponible sur ce système.
+XML::RSS n’est pas disponible sur ce système.
 diff
 diff
 history
 historique
 %s returned no data, or LWP::UserAgent is not available.
-%s n'a pas retourné de données, ou LWP::UserAgent n'est pas disponible.
+%s n’a pas retourné de données, ou LWP::UserAgent n’est pas disponible.
 RSS parsing failed for %s
-L'analyse du RSS de %s a échoué 
+L’analyse du RSS de %s a échoué 
 No items found in %s.
-Pas d'objets trouvés dans %s.
+Pas d’objets trouvés dans %s.
  . . . . 
  . . . . 
 Click to edit this page
 Cliquez pour éditer cette page
 CGI Internal error: %s
-Erreur Interne CGI : %s
+Erreur Interne CGI : %s
 Invalid action parameter %s
-Parmètre d'action invalide %s
+Parmètre d’action invalide %s
 Page name is missing
 Le nom de la page est manquant
 Page name is too long: %s
@@ -84,11 +84,11 @@ Page non valide %s (ne doit pas se terminer par .lck)
 Invalid Page %s
 Page non valide %s
 Too many redirections
-
+Trop de redirections
 No redirection for old revisions
-
+Pas de redirection pour les versions ancienne
 Invalid link pattern for #REDIRECT
-
+Mise en forme invalide pour le lien de redirection (#REDIRECT)
 Please go on to %s.
 SVP aller a %s.
 Updates since %s
@@ -106,9 +106,9 @@ Lister seulement les dernières modifications par page
 List all changes
 Lister toutes les modifications
 Skip rollbacks
-
+Sans les retours en arrière
 Include rollbacks
-
+Incluant les retours en arrière
 List only major changes
 Lister seulement les modifications majeures
 Include minor changes
@@ -118,7 +118,7 @@ Inclure les modifications mineures
 List later changes
 Lister les modifications les plus récentes
 RSS
-
+RSS
 RSS with pages
 RSS avec pages
 RSS with pages and diff
@@ -126,19 +126,19 @@ RSS avec pages et différences
 Filters
 Filtres
 Title:
-Titre :
+Titre :
 Title and Body:
-Titre et Corps :
+Titre et Corps :
 Username:
-Nom d'utilisateur :
+Nom d’utilisateur :
 Host:
-Hôte :
+Hôte :
 Follow up to:
-
+Modifications suivant :
 Language:
 Langue :
 Go!
-Allez-y !
+Allez-y !
 (minor)
 (mineur)
 rollback
@@ -172,7 +172,7 @@ Cible manquante pour le retour en arrière.
 Target for rollback is too far back.
 La cible du retour en arrière est trop ancienne.
 A username is required for ordinary users.
-
+Un nom d’utilisateur est nécessaire pour les utilisateurs communs
 Rolling back changes
 Réinitialisation en cours
 The two revisions are the same.
@@ -282,7 +282,7 @@ Valider HTML
 Validate CSS
 Valider CSS
 Last edit
-
+Dernière modification
 Difference between revision %1 and %2
 Différence (de la révision %1 à %2)
 revision %s
@@ -290,9 +290,9 @@ révision %s
 current revision
 révision actuelle
 Last major edit (%s)
-
+Dernière modification majeure (%s)
 later minor edits
-
+modifications mineures suivantes
 No diff available.
 Pas de diff disponible.
 Old revision:
@@ -306,7 +306,7 @@ Ajoutée :
 to
 à
 Revision %s not available
-La version %s n'est pas disponible
+La version %s n’est pas disponible
 showing current revision instead
 présentation à la place de la version en cours.
 Showing revision %s
@@ -326,13 +326,13 @@ Ne peut obtenir un verrouillage %s
 The lock was created %s.
 Le verrouillage a été créé %s.
 Maybe the user running this script is no longer allowed to remove the lock directory?
-
+Peut-être l’utilisateur éxecutant le logiciel n’est plus autorisé à effacer le répertoire utilisé pour le verrouillage ?
 This operation may take several seconds...
 Cette opération peut prendre quelques secondes...
 Forced unlock of %s lock.
 Supression forcée du verrou %s.
 No unlock required.
-La suppression du verrou n'est pas nécessaire.
+La suppression du verrou n’est pas nécessaire.
 %s hours ago
 il y a %s heures
 1 hour ago
@@ -346,17 +346,17 @@ il y a %s secondes
 1 second ago
 il y a 1 seconde
 just now
-à l'instant
+à l’instant
 Edit Denied
 Modification interdite
 Editing not allowed: user, ip, or network is blocked.
-Modification interdite : l'utilisateur, l'adresse ip, ou le reseau est bloqué.
+Modification interdite : l’utilisateur, l’adresse ip, ou le reseau est bloqué.
 Contact the wiki administrator for more information.
-Contactez l'administrateur du wiki pour plus d'information.
+Contactez l’administrateur du wiki pour plus d’information.
 The rule %s matched for you.
 La règle %s a fonctionné pour vous.
 See %s for more information.
-Voir %s pour plus d'information.
+Voir %s pour plus d’information.
 Editing not allowed: %s is read-only.
 Modification interdite : %s est en lecture seule.
 Only administrators can upload files.
@@ -366,7 +366,7 @@ Modification de la version %s de
 Editing %s
 Modification de %s
 Editing old revision %s.
-Modification de l'ancienne version %s.
+Modification de l’ancienne version %s.
 Saving this page will replace the latest revision with this text.
 Sauvegarder cette page remplacera la dernière version par ce texte.
 Summary:
@@ -384,7 +384,7 @@ Fichier à téléverser :
 Files of type %s are not allowed.
 Les fichiers de type %s ne sont pas autorisés.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
-Votre mot de passe est conservé dans un cookie, si cette fonctionnalité est activée dans votre navigateur. Les cookies peuvent être perdus si vous vous reconnectez à partir d'une autre machine, d'un autre compte ou en utilisant un autre logiciel.
+Votre mot de passe est conservé dans un cookie, si cette fonctionnalité est activée dans votre navigateur. Les cookies peuvent être perdus si vous vous reconnectez à partir d’une autre machine, d’un autre compte ou en utilisant un autre logiciel.
 You are currently an administrator on this site.
 Vous êtes actuellement administrateur de ce site.
 You are currently an editor on this site.
@@ -396,7 +396,7 @@ Vote mot de passe ne corespond à aucun de ceux des mots de passe administrateur
 Password:
 Mot de passe :
 This site does not use admin or editor passwords.
-Ce site n'utilise pas de mot de passe pour les administrateurs ou les éditeurs.
+Ce site n’utilise pas de mot de passe pour les administrateurs ou les éditeurs.
 This operation is restricted to site editors only...
 Cette opération est réservée aux éditeurs du site seulement...
 This operation is restricted to administrators only...
@@ -412,7 +412,7 @@ Raison : %s.
 Reason unknown.
 Raison inconnu.
 Filter:
-Filtre :
+Filtre :
 (for %s)
 (pour %s)
 %s pages found.
@@ -432,7 +432,7 @@ par
 Transfer Error: %s
 Erreur de Transfert : %s
 Browser reports no file info.
-Le navigateur signale pas d'information sur le fichier.
+Le navigateur signale pas d’information sur le fichier.
 Browser reports no file type.
 Le navigateur signale pas de format de fichier.
 The page contains banned text.
@@ -440,7 +440,7 @@ Cette page contient un texte interdit.
 No changes to be saved.
 Aucun changement à sauvegarder.
 This page was changed by somebody else %s.
-Cette page a été modifiée par quelqu'un d'autre %s.
+Cette page a été modifiée par quelqu’un d’autre %s.
 The changes conflict.  Please check the page again.
 Conflit sur les modifications. SVP vérifiez la page à nouveau.
 Please check whether you overwrote those changes.
@@ -452,9 +452,9 @@ Impossible de supprimer le fichier index  %s.
 Please check the directory permissions.
 Veuillez vérifier les permissions des répertoires.
 Your changes were not saved.
-Vos modifications n'ont pas été sauvegardées
+Vos modifications n’ont pas été sauvegardées
 Could not get a lock to merge!
-Pas pu obtenir de verrouillage pour la fusion !
+Pas pu obtenir de verrouillage pour la fusion !
 you
 vous
 ancestor
@@ -466,33 +466,33 @@ Lancer la maintenance
 Maintenance not done.
 Maintenance non effectuée.
 (Maintenance can only be done once every 12 hours.)
-(La maintenance ne peut être effectuée qu'une fois toutes les 12 heures.)
+(La maintenance ne peut être effectuée qu’une fois toutes les 12 heures.)
 Remove the "maintain" file or wait.
 Enlevez le fichier "maintain" ou patientez.
 Expiring keep files and deleting pages marked for deletion
 Expiration des fichiers de cache et suppression des pages marquées pour la suppression
 not deleted: 
-non supprimée :
+non supprimée :
 deleted
 supprimé
 Moving part of the %s log file.
 Deplace une partie du fichier de log %s.
 Could not open %s log file
-Impossible d'ouvrir le fichier de log %
+Impossible d’ouvrir le fichier de log %
 Error was
-L'erreur était
+L’erreur était
 Note: This error is normal if no changes have been made.
-Remarque : Cette erreur est normale si aucune modification n'a été effectuée.
+Remarque : Cette erreur est normale si aucune modification n’a été effectuée.
 Moving %s log entries.
 Déplace %s entrées du log.
 Set or Remove global edit lock
-Positionne ou Retire le verrou global d'édition
+Positionne ou Retire le verrou global d’édition
 Edit lock created.
-Verrou d'édition créé.
+Verrou d’édition créé.
 Edit lock removed.
-Verrou d'édition enlevé.
+Verrou d’édition enlevé.
 Set or Remove page edit lock
-Positionne ou enlève le verrou d'édition de la page
+Positionne ou enlève le verrou d’édition de la page
 Lock for %s created.
 Verrou pour %s créé.
 Lock for %s removed.
@@ -500,13 +500,13 @@ Verrou pour %s enlevé.
 Displaying Wiki Version
 Affichage de la version du Wiki
 Debugging Information
-
+Information pour le déboguage
 Too many connections by %s
 Trop de connexions par %s
 Please do not fetch more than %1 pages in %2 seconds.
 Veuillez ne pas télécharger plus de %1 pages toutes les %2 secondes
 Check whether the web server can create the directory %s and whether it can create files in it.
-Verifiez si le serveur web peut créer le répertoire %s et s'il peut créer des fichiers dedans.
+Verifiez si le serveur web peut créer le répertoire %s et s’il peut créer des fichiers dedans.
 Copy one of the following stylesheets to %s:
 Copier une des feuilles de style suivantes sur %s.
 Deleting %s
@@ -560,7 +560,7 @@ was here
 and read
 et a lu
 Illegal year value: Use 0001-9999
-
+Il faut que l’année soit un valeur entre 0001 et 9999
 The match parameter is missing.
 Le paramètre de correspondance est manquant.
 Page Collection for %s
@@ -674,7 +674,7 @@ modifications ordinaires
 Matching page names:
 
 Email: 
-
+Email : 
 Could not find %1.html template in %2
 Impossible de trouver le modèle %1.html dans %2
 Only Editors are allowed to see this hidden page.
@@ -702,7 +702,7 @@ Le gabarit %s est soit vide soit n'existe pas.
  -- defined on %s
  -- défini sur %s
 Local names defined on %1: %2
-Noms locaux définis sur %1 : %2
+Noms locaux définis sur %1 : %2
 Locked Pages
 
 Register for %s
@@ -800,47 +800,47 @@ Il y a eu une erreur à accepter %s.
 There are no pending registrations.
 Il n'y a pas d'enregistrements en attente.
 Invalid Mail %s: not saved.
-
+L’adresse e-mail %s n’est pas valide
 unsubscribe
-
+désabonner
 subscribe
-
+abonner
 %s appears to be an invalid mail address
-
+L’adresse e-mail %s n’est pas valide
 Your mail subscriptions
-
+Vôtre abonnements
 All mail subscriptions
-
+Tous les abonnements
 Subscriptions
-
+Abonnements
 Show
-
+Voir
 Subscriptions for %s:
-
+Abonnements pour %s :
 Unsubscribe
-
+Désabonner
 There are no subscriptions for %s.
-
+Il n’y a pas d’abonnements pour %s.
 Change email address
-
+Changer l’adresse e-mail
 Mail addresses are linked to unsubscription links.
-
+Les adresses e-mail sont liées au désabonnement.
 Subscribe to %s.
-
+Abonner %s.
 Subscribe
-
+Abonner
 Subscribed %s to the following pages:
-
+%s est abonné aux pages suivantes :
 The remaining pages do not exist.
-
+Les pages restantes n’existent pas (ou plus).
 Unsubscribed %s from the following pages:
-
+%s a désabonné les pages suivantes :
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 
 %s is not a legal name for a namespace
-
+%s n’est pas un nom valide pour un espace de noms
 Namespaces
-
+Espace de noms
 Getting page index file for %s.
 Récupération du fichier d'index de %s.
 Near links:
@@ -936,7 +936,7 @@ The target wiki was misconfigured.
 Upload is limited to %s bytes
 
 You did not answer correctly.
-Vous n'avez pas répondu correctement.
+Vous n’avez pas répondu correctement.
 To save this page you must answer this question:
 Il faut réponder a cette question pour sauvegarder la page :
 Please type the following two words:
@@ -1038,7 +1038,7 @@ Set
 Contents
 Contenus
 Create a new page for today
-
+Ajouter une page nouvelle pour aujourd’hui
 Add Translation
 Àjouter une traduction
 Please provide a different page name for the translation.
