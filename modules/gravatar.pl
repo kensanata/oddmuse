@@ -12,28 +12,31 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: gravatar.pl,v 1.2 2010/10/09 23:27:09 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: gravatar.pl,v 1.3 2011/02/12 21:44:57 as Exp $</p>';
 
 use Digest::MD5 qw(md5_hex);
-
-push(@MyRules, \&GravatarRule);
-push(@MyInitVariables, \&AddGravatar);
 
 # Same as in mail.pl
 $CookieParameters{mail} = '';
 
+my $gravatar_regexp = "\\[\\[gravatar:(?:$FullUrlPattern)?:?([^\n:]+):([0-9a-f]+)\\]\\]";
+
+push(@MyRules, \&GravatarRule);
+
 sub GravatarRule {
-  if ($bol && m!\G\[\[gravatar:([^\n:]+):([0-9a-f]+)\]\]!gc) {
-    my $gravatar = "http://www.gravatar.com/avatar/$2";
-    my $name = FreeToNormal($1);
-    return $q->div({-class=>"portrait gravatar"},
-		   $q->p(ScriptLink($name,
-				    $q->img({-src=>$gravatar,
-					     -class=>'portrait',
-					     -alt=>''}),
-				    'newauthor', ''),
-			 $q->br(),
-			 GetPageLink($name)));
+  if ($bol && m!\G$gravatar_regexp!cog) {
+    my $url = $1;
+    my $gravatar = "http://www.gravatar.com/avatar/$3";
+    my $name = FreeToNormal($2);
+    $url = ScriptUrl($name) unless $url;
+    return $q->span({-class=>"portrait gravatar"},
+    		   $q->p($q->a({-href=>$url,
+    			        -class=>'newauthor'},
+    			       $q->img({-src=>$gravatar,
+    					-class=>'portrait',
+    					-alt=>''})),
+    			 $q->br(),
+    			 GetPageLink($name)));
   }
   return undef;
 }
@@ -54,6 +57,8 @@ sub GravatarNewGetCommentForm {
   return $html;
 }
 
+push(@MyInitVariables, \&AddGravatar);
+
 sub AddGravatar {
   my $aftertext = GetParam('aftertext');
   my $mail = GetParam('mail');
@@ -61,9 +66,10 @@ sub AddGravatar {
   $mail =~ s/[ \t]+$//;
   my $gravatar = md5_hex(lc($mail));
   my $username = GetParam('username');
+  my $homepage = GetParam('homepage');
   if ($aftertext && $mail && $aftertext !~ /^\[\[gravatar:/) {
     SetParam('aftertext',
-	     "[[gravatar:$username:$gravatar]]\n$aftertext");
+	     "[[gravatar:$homepage:$username:$gravatar]]\n$aftertext");
   }
 }
 
@@ -72,6 +78,6 @@ sub AddGravatar {
 
 sub GravatarNewGetSummary {
   my $summary = GravatarOldGetSummary(@_);
-  $summary =~ s/^\[\[gravatar:([^\n:]+):([0-9a-f]+)\]\] *//;
+  $summary =~ s/^$gravatar_regexp *//o;
   return $summary;
 }
