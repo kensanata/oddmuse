@@ -25,7 +25,7 @@ AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
 test_page(get_page(join(' ',
 			'title=Comments_on_Test1',
 			'aftertext="This is my comment"',
-			'username=Alex',
+			'username=Alex%20Schroeder',
 			'homepage=http://oddmuse.org/',
 			'mail=alex@gnu.org')),
 	  'Status: 302 Found');
@@ -34,7 +34,7 @@ my $page = get_page('Comments_on_Test1');
 xpath_test($page,
 	   '//span[@class="portrait gravatar"]',
 	   '//p[contains(text(),"This is my comment")]',
-	   '//p/a[@href="http://oddmuse.org/"][text()="Alex"]',
+	   '//a[@href="http://oddmuse.org/"][text()="Alex Schroeder"]',
 	   '//img[@src="http://www.gravatar.com/avatar/' . $gravatar . '"]');
 
 # without homepage
@@ -42,7 +42,7 @@ xpath_test($page,
 test_page(get_page(join(' ',
 			'title=Comments_on_Test2',
 			'aftertext="This is my comment"',
-			'username=Alex',
+			'username=Alex%20Schroeder',
 			'mail=alex@gnu.org')),
 	  'Status: 302 Found');
 my $gravatar = md5_hex('alex@gnu.org');
@@ -50,7 +50,7 @@ my $page = get_page('Comments_on_Test2');
 xpath_test($page,
 	   '//span[@class="portrait gravatar"]',
 	   '//p[contains(text(),"This is my comment")]',
-	   '//p/a[@href="http://localhost/wiki.pl/Alex"][text()="Alex"]',
+	   '//a[@href="http://localhost/wiki.pl/Alex_Schroeder"][text()="Alex Schroeder"]',
 	   '//img[@src="http://www.gravatar.com/avatar/' . $gravatar . '"]');
 
 # with homepage an no email
@@ -58,14 +58,14 @@ xpath_test($page,
 test_page(get_page(join(' ',
 			'title=Comments_on_Test3',
 			'aftertext="This is my comment"',
-			'username=Alex',
+			'username=Alex%20Schroeder',
 			'homepage=http://oddmuse.org/')),
 	  'Status: 302 Found');
 my $gravatar = md5_hex('alex@gnu.org');
 my $page = get_page('Comments_on_Test3');
 xpath_test($page,
 	   '//p[text()="This is my comment"]',
-	   '//p/a[@href="http://oddmuse.org/"][text()="Alex"]');
+	   '//a[@href="http://oddmuse.org/"][text()="Alex Schroeder"]');
 negative_xpath_test($page,
 		    '//span[@class="portrait gravatar"]',
 		    '//img[@src="http://www.gravatar.com/avatar/' . $gravatar . '"]');
