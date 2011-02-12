@@ -1,3 +1,10 @@
+2011-02-12  Alex Schroeder  <alex@gnu.org>
+
+	* modules/gravatar.pl (GravatarRule): Accept URL in addition to
+	the name.
+	(AddGravatar): Add homepage if available.
+	(GravatarNewGetSummary): Use the regular expression variable.
+
 2011-02-05  Alex Schroeder  <alex@gnu.org>
 
 	* modules/translations/french-utf8.pl: Best effort translation for
