@@ -12,14 +12,14 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: gravatar.pl,v 1.4 2011/02/12 22:00:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: gravatar.pl,v 1.5 2011/02/12 22:03:20 as Exp $</p>';
 
 use Digest::MD5 qw(md5_hex);
 
 # Same as in mail.pl
 $CookieParameters{mail} = '';
 
-my $gravatar_regexp = "\\[\\[gravatar:(?:$FullUrlPattern:)?:?([^\n:]+):([0-9a-f]+)\\]\\]";
+my $gravatar_regexp = "\\[\\[gravatar:(?:$FullUrlPattern )?([^\n:]+):([0-9a-f]+)\\]\\]";
 
 push(@MyRules, \&GravatarRule);
 
@@ -67,9 +67,10 @@ sub AddGravatar {
   my $gravatar = md5_hex(lc($mail));
   my $username = GetParam('username');
   my $homepage = GetParam('homepage');
+  $homepage .= ' ' if $homepage;
   if ($aftertext && $mail && $aftertext !~ /^\[\[gravatar:/) {
     SetParam('aftertext',
-	     "[[gravatar:$homepage:$username:$gravatar]]\n$aftertext");
+	     "[[gravatar:$homepage $username:$gravatar]]\n$aftertext");
   }
 }
 
