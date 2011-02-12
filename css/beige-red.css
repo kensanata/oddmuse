@@ -409,9 +409,9 @@ dl.irc dd { margin-left:22ex; }
 /* portrait */
 
 div.footer, div.comment, hr { clear: both; }
-div.portrait { float: left; font-size: small; margin-right: 1em; }
-div.portrait { line-height: 1em; }
-div.portrait a { color: #999; }
+.portrait { float: left; font-size: small; margin-right: 1em; }
+.portrait { line-height: 1em; }
+.portrait a { color: #999; }
 
 div.left { float:left; margin:1em; padding: 0.5em; }
 div.left p { display:table-cell; }
