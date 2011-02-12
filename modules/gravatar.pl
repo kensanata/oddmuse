@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: gravatar.pl,v 1.5 2011/02/12 22:03:20 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: gravatar.pl,v 1.6 2011/02/12 22:09:55 as Exp $</p>';
 
 use Digest::MD5 qw(md5_hex);
 
@@ -30,13 +30,13 @@ sub GravatarRule {
     my $name = FreeToNormal($2);
     $url = ScriptUrl($name) unless $url;
     return $q->span({-class=>"portrait gravatar"},
-    		   $q->p($q->a({-href=>$url,
-    			        -class=>'newauthor'},
-    			       $q->img({-src=>$gravatar,
-    					-class=>'portrait',
-    					-alt=>''})),
-    			 $q->br(),
-    			 GetPageLink($name)));
+		    $q->a({-href=>$url,
+			   -class=>'newauthor'},
+			  $q->img({-src=>$gravatar,
+				   -class=>'portrait',
+				   -alt=>''})),
+		    $q->br(),
+		    GetPageLink($name));
   }
   return undef;
 }
