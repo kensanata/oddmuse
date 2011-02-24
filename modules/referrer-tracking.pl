@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.18 2010/10/27 18:17:16 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.19 2011/02/24 22:47:11 as Exp $</p>';
 
 use LWP::UserAgent;
 
@@ -128,10 +128,8 @@ sub ExpireReferers { # no need to save the pruned list if nothing else changes
 
 sub UrlToTitle {
   my $title = QuoteHtml(shift);
-  my $charset = shift;
   $title = $1 if $title =~ /$FullUrlPattern/; # extract valid URL
-  $title =~ s/\%([0-9a-f][0-9a-f])/chr(hex($1))/egi
-    if lc($charset) eq lc($HttpCharset); # decode if possible
+  $title =~ s/\%([0-9a-f][0-9a-f])/chr(hex($1))/egi; # decode if possible
   $title =~ s!^https?://!!;
   $title =~ s!\.html?$!!;
   $title =~ s!/$!!;
@@ -145,8 +143,8 @@ sub UrlToTitle {
 
 sub GetReferers {
   my $result = join(' ', map {
-    my ($ts, $charset, $title) = split(/ /, $Referers{$_}, 3);
-    $title = UrlToTitle($_, $charset) unless $title;
+    my ($ts, $title) = split(/ /, $Referers{$_}, 2);
+    $title = UrlToTitle($_) unless $title;
     $q->a({-href=>$_}, $title);
   } keys %Referers);
   return $q->div({-class=>'refer'}, $q->p(T('Referrers') . ': ' . $result))
@@ -154,16 +152,9 @@ sub GetReferers {
 }
 
 sub PageContentToTitle {
-  my ($content, $charset) = @_;
+  my ($content) = @_;
   my $title = $1 if $content =~ m!<h1.*?>(.*?)</h1>!;
   $title = $1 if not $title and $content =~ m!<title>(.*?)</title>!;
-  # encoding
-  if ($HttpCharset eq 'UTF-8' and uc($charset) ne 'UTF-8') {
-    eval { local $SIG{__DIE__};
-	   require Encode;
-	   $title = Encode::encode_utf8($title);
-	 }
-  }
   # get rid of extra tags
   $title =~ s!<.*?>!!g;
   # trimming
@@ -188,10 +179,9 @@ sub UpdateReferers {
   my $ua = LWP::UserAgent->new;
   my $response = $ua->get($referer);
   return unless $response->is_success and $response->content =~ /$self/;
-  my ($charset) = $response->header("Content-Type") =~ /charset=([^\s";]*)/;
-  my $title = PageContentToTitle($response->content, $charset);
+  my $title = PageContentToTitle($response->content);
   # starting with a timestamp makes sure that numerical comparisons still work!
-  $Referers{$referer} = "$Now $charset $title";
+  $Referers{$referer} = "$Now $title";
   return 1;
 }
 
