@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: gravatar.pl,v 1.6 2011/02/12 22:09:55 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: gravatar.pl,v 1.7 2011/03/01 16:48:41 as Exp $</p>';
 
 use Digest::MD5 qw(md5_hex);
 
@@ -67,6 +67,8 @@ sub AddGravatar {
   my $gravatar = md5_hex(lc($mail));
   my $username = GetParam('username');
   my $homepage = GetParam('homepage');
+  $homepage = 'http://' . $homepage
+    if $homepage and $homepage !~ m!^https?://!;
   $homepage .= ' ' if $homepage;
   if ($aftertext && $mail && $aftertext !~ /^\[\[gravatar:/) {
     SetParam('aftertext',
