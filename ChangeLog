@@ -1,3 +1,8 @@
+2011-03-01  Alex Schroeder  <alex@gnu.org>
+
+	* modules/gravatar.pl (AddGravatar): Prefix "http://" to homepage
+	if user did not provide it.
+
 2011-02-12  Alex Schroeder  <alex@gnu.org>
 
 	* modules/gravatar.pl (GravatarRule): Accept URL in addition to
