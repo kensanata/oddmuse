@@ -1,3 +1,7 @@
+2011-03-03  Alex Schroeder  <alex@gnu.org>
+
+	* modules/gravatar.pl (AddGravatar): Ignore case.
+
 2011-03-01  Alex Schroeder  <alex@gnu.org>
 
 	* modules/gravatar.pl (AddGravatar): Prefix "http://" to homepage
