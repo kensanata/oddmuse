@@ -1,3 +1,7 @@
+2011-03-06  Alex Schroeder  <alex@gnu.org>
+
+	* modules/bbcode.pl (bbCodeRule): Support [hightlight].
+
 2011-03-03  Alex Schroeder  <alex@gnu.org>
 
 	* modules/gravatar.pl (AddGravatar): Ignore case.
@@ -51,6 +55,20 @@
 
 	* modules/journal-rss.pl (JournalRssGetRcLines): Make sure minor
 	changes and empty pages don't show up.
+
+2010-11-07  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (InitLinkPatterns): $FreeLinkPattern now inlcudes
+	%&?;<>.
+	(LinkRules, UnquoteHtml, GetPageOrEditLink, GetDownloadLink)
+	(GetId, BrowsePage, PrintRcHtml, RssItem, DoHistory)
+	(DoContributors, GetHeader, GetHtmlHeader, GetFeeds)
+	(FreeToNormal, NormalToFree, DoEdit): Implement the various
+	changes required to allow the extra characters. This includes
+	issues of HTML quoting and unquoting, and the dangers of double
+	encoding. Unfortunately, it's a big mess.
+
+	This revision should not be considered stable!
 
 2010-10-27  Alex Schroeder  <alex@gnu.org>
 
