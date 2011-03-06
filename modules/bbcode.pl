@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: bbcode.pl,v 1.13 2010/09/21 11:04:59 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: bbcode.pl,v 1.14 2011/03/06 21:08:23 as Exp $</p>';
 
 push(@MyRules, \&bbCodeRule);
 
@@ -47,6 +47,8 @@ sub bbCodeRule {
 				. qq{font-style: normal;"}); }
     elsif ($tag eq 'font') {
       return AddHtmlEnvironment('span', qq{style="font-family: $option;"}); }
+    elsif ($tag eq 'highlight') {
+      return AddHtmlEnvironment('strong', qq{class="highlight"}); }
     elsif ($tag eq 'url') {
       if ($option) {
 	$option =~ /^($UrlProtocols)/o;
@@ -87,7 +89,8 @@ sub bbCodeRule {
     my $tag = lc($2);
     %translate = qw{b b i i u em color em size em font span url a
 		    quote blockquote h1 h1 h2 h2 h3 h3 h4 h4 h5 h5
-		    h6 h6 center div list ul s del strike del};
+		    h6 h6 center div list ul s del strike del
+		    highlight strong};
     # closing a block level element closes all elements
     if ($bbBlock eq $translate{$tag}) {
       /\G([ \t]*\n)*/cg; # eat whitespace after closing block level element
