@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 36;
+use Test::More tests => 37;
 
 clear_pages();
 
@@ -85,6 +85,8 @@ foo<h2>blarg</h2><p>fnord</p>
 <ul> <li>one </li><li>two </li></ul>
 [quote][list][*]one[*]two[/list][/quote]
 <blockquote></blockquote><ul><li>one</li><li>two</li></ul><p>[/quote]</p>
+[highlight]this text is highlighted[/highlight]
+<strong class="highlight">this text is highlighted</strong>
 EOT
 
 xpath_run_tests(split('\n',<<'EOT'));
