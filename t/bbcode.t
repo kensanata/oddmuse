@@ -80,11 +80,11 @@ foo<h2>blarg</h2><p>fnord</p>
 [h5][h6]blarg[/h6]foo
 <h5></h5><h6>blarg</h6><p>foo</p>
 [center][size=5]The Savage Tides[/size][/center]
-<div style="text-align: center"><p><em style="font-size: 500%; font-style: normal;">The Savage Tides</em></p></div>
+<div class="center" style="text-align: center"><p><em style="font-size: 500%; font-style: normal;">The Savage Tides</em></p></div>
 [left]This is left[/left]
-<div style="float: left"><p>This is left</p></div>
+<div class="left" style="float: left"><p>This is left</p></div>
 [right]This is right[/right]
-<div style="float: right"><p>This is right</p></div>
+<div class="right" style="float: right"><p>This is right</p></div>
 [list]\n[*]one\n[*]two\n[/list]
 <ul> <li>one </li><li>two </li></ul>
 [quote][list][*]one[*]two[/list][/quote]
