@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: bbcode.pl,v 1.15 2011/03/15 01:06:43 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: bbcode.pl,v 1.16 2011/03/15 11:01:07 as Exp $</p>';
 
 push(@MyRules, \&bbCodeRule);
 
@@ -24,10 +24,10 @@ my %bbTitle = qw(h1 1 h2 1 h3 1 h4 1 h5 1 h6 1);
 # and list.
 
 sub bbCodeRule {
-  if (/\G(\[([a-z*][a-z1-6]*)(?:=([^]]+))?\])/cgi) {
+  if (/\G(\[([a-z*][a-z1-6]*)(?:=([^]"]+))?\])/cgi) {
     my $bbcode = $1;
     my $tag = lc($2);
-    my $option = $3;
+    my $option = $3; # sanitize?
     if ($tag eq 'b') {
       return AddHtmlEnvironment('b'); }
     elsif ($tag eq 'i') {
@@ -67,13 +67,13 @@ sub bbCodeRule {
     elsif ($tag eq 'center') {
       my $html = CloseHtmlEnvironments();
       $html .= "</$bbBlock>" if $bbBlock;
-      $html .= qq{<div style="text-align: $tag">};
+      $html .= qq{<div class="center" style="text-align: $tag">};
       $bbBlock = 'div';
       return $html . AddHtmlEnvironment('p'); }
     elsif ($tag eq 'left' or $tag eq 'right') {
       my $html = CloseHtmlEnvironments();
       $html .= "</$bbBlock>" if $bbBlock;
-      $html .= qq{<div style="float: $tag">};
+      $html .= qq{<div class="$tag" style="float: $tag">};
       $bbBlock = 'div';
       return $html . AddHtmlEnvironment('p'); }
     elsif ($tag eq 'list') {
