@@ -14,7 +14,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.64 2011/03/22 23:42:18 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: creole.pl,v 1.65 2011/03/22 23:59:47 as Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -164,16 +164,12 @@ sub CreoleInit {
 # ....................{ MARKUP                             }....................
 push(@MyRules,
      \&CreoleRule,
-     \&CreoleEmphasisRule,
      \&CreoleHeadingRule,
      \&CreoleListAndNewLineRule);
 
 # Creole link rules conflict with Oddmuse's default LinkRule.
 $RuleOrder{\&CreoleRule} = -10;
 # Creole heading rules must come after the TocRule.
-$RuleOrder{\&CreoleEmphasisRule} = 100;
-# Creole bold rules must come after the default list rule because
-# ** at the beginning of a line might introduce a list item.
 $RuleOrder{\&CreoleHeadingRule} = 100;
 # List items must come later than MarkupRule because *foo* at the
 # beginning of a line should be bold, not the list item foo*. Also,
@@ -228,6 +224,10 @@ sub CreoleRule {
         ? $1  # tilde stays
         : $2; # tilde disappears
   }
+  # **bold**
+  elsif (m/\G\*\*/cg) { return AddOrCloseHtmlEnvironment('strong'); }
+  # //italic//
+  elsif (m/\G\/\//cg) { return AddOrCloseHtmlEnvironment('em'); }
   # {{{preformatted code}}}
   elsif (m/\G\{\{\{(.*?}*)\}\}\}/cg) { return $q->code($1); }
   # download: {{pic}} and {{pic|text}}
@@ -416,14 +416,6 @@ sub CreoleRule {
     return OpenHtmlEnvironment('table', 1, 'user').AddHtmlEnvironment('tr');
   }
 
-  return undef;
-}
-
-sub CreoleEmphasisRule {
-  # **bold**
-  if (m/\G\*\*/cg) { return AddOrCloseHtmlEnvironment('strong'); }
-  # //italic//
-  elsif (m/\G\/\//cg) { return AddOrCloseHtmlEnvironment('em'); }
   return undef;
 }
 
@@ -621,7 +613,6 @@ sub CreoleRuleRecursive {
   # HTML.
   while (1) {
     if ($html_creole = CreoleRule(@_) or
-	$html_creole = CreoleEmphasisRule(@_) or
        ($CreoleIsCreoleAddition and  # try "creoleaddition.pl", too.
         $html_creole = CreoleAdditionRule(@_))) {
       $html .= $html_creole;
