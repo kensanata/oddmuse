@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 25;
+use Test::More tests => 26;
 
 clear_pages();
 
@@ -27,6 +27,11 @@ xpath_test(get_page('Start'),
 	   '//a[@class="local"][@href="http://localhost/wiki.pl/D%26D"][text()="D&D"]');
 xpath_test(update_page('Start', '[[image:D&D]]'),
 	   '//img[@class="upload"][@alt="D&D"][@src="http://localhost/wiki.pl/download/D%26D"]');
+
+xpath_run_tests(split('\n',<<'EOT'));
+[http://example.org/ this & that]
+//a[@class="url http outside"][@href="http://example.org/"][text()="this & that"]
+EOT
 
 add_module('creole.pl');
 
