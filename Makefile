@@ -104,16 +104,10 @@ $(VERSION).tgz: wiki.pl modules/creole.pl Mac/config Mac/wiki
 	sudo chmod 775 Slack/var/www/cgi-bin/wiki
 	cd Slack && tar czf ../$@ var install
 
-# 1. update-translations (will fetch input from the wiki, and updates files)
-# 2. check changes, cvs commit
-# 3. upload-translations (will verify cvs status, upload scripts, and upload pages)
+%-utf8.pl: wiki.pl $(MODULES)
+	perl oddtrans -l $@ $^ > $@-new && mv $@-new $@
 
-update-translations: always
-	for f in $(TRANSLATIONS); do \
-		echo $$f...; \
-		sleep 5; \
-		make update/$$f; \
-	done
+update-translations: $(TRANSLATIONS)
 
 upload-translations: always
 	for f in $(TRANSLATIONS); do \
@@ -121,19 +115,6 @@ upload-translations: always
 		wikiput -z "ham" -u "cvs" -s "update" \
 		"http://www.oddmuse.org/cgi-bin/oddmuse/raw/$$f" < $$f; \
 	done
-
-# The curl variant tries to save bandwidth usage. Alternative:
-# wget -q http://www.oddmuse.org/cgi-bin/oddmuse/raw/$$f -O $@.wiki
-# Need to strip the update/ part.
-
-update/%-utf8.pl: always
-	t=`echo $@ | cut -f 2- -d /` \
-	&& f=`basename $@` \
-	&& curl --time-cond $$t.wiki --remote-time --output $$t.wiki \
-           http://www.oddmuse.org/cgi-bin/oddmuse/raw/$$f \
-	&& grep '^\(#\|\$$\)' $$t.wiki > $$t-new \
-	&& perl oddtrans -l $$t -l $$t.wiki wiki.pl $(MODULES) \
-	>> $$t-new && mv $$t-new $$t
 
 .PHONY: always
 
