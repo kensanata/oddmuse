@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.941 2010/11/07 02:11:53 as Exp $
+# Version       $Id: wiki.pl,v 1.942 2011/05/01 19:44:09 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
 #     Alex Schroeder <alex@gnu.org>
@@ -36,7 +36,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.941 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.942 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -290,7 +290,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.941 2010/11/07 02:11:53 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.942 2011/05/01 19:44:09 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -3528,7 +3528,7 @@ sub DoPost {
   ValidIdOrDie($id);
   ReportError(Ts('Editing not allowed for %s.', $id), '403 FORBIDDEN') unless UserCanEdit($id, 1);
   # Lock before getting old page to prevent races
-  RequestLockOrError();   # fatal
+  RequestLockOrError();		# fatal
   OpenPage($id);
   my $old = $Page{text};
   my $string = UnquoteHtml(GetParam('text', undef));
@@ -3544,7 +3544,7 @@ sub DoPost {
     ReleaseLock();
     ReBrowsePage($id);
   }
-  if ($filename) { # upload file
+  if ($filename) {		# upload file
     my $file = $q->upload('file');
     if (not $file and $q->cgi_error) {
       ReportError(Ts('Transfer Error: %s', $q->cgi_error), '500 INTERNAL SERVER ERROR');
@@ -3553,11 +3553,11 @@ sub DoPost {
       unless $q->uploadInfo($filename);
     $type = $q->uploadInfo($filename)->{'Content-Type'};
     ReportError(T('Browser reports no file type.'), '415 UNSUPPORTED MEDIA TYPE') unless $type;
-    local $/ = undef;   # Read complete files
+    local $/ = undef;		# Read complete files
     my $content = <$file>; # Apparently we cannot count on <$file> to always work within the eval!?
     eval { require MIME::Base64; $_ = MIME::Base64::encode($content) };
     $string = '#FILE ' . $type . "\n" . $_;
-  } else { # ordinary text edit
+  } else {			# ordinary text edit
     $string = AddComment($old, $comment) if $comment;
     $string = substr($string, length($DeletedPage)) # undelete pages when adding a comment
       if $comment and substr($string, 0, length($DeletedPage)) eq $DeletedPage; # no regexp!
@@ -3572,7 +3572,7 @@ sub DoPost {
   if (not UserIsEditor()) {
     my $rule = BannedContent($string) || BannedContent($summary);
     ReportError(T('Edit Denied'), '403 FORBIDDEN', undef, $q->p(T('The page contains banned text.')),
-    $q->p(T('Contact the wiki administrator for more information.')), $q->p($rule)) if $rule;
+		$q->p(T('Contact the wiki administrator for more information.')), $q->p($rule)) if $rule;
   }
   # rebrowse if no changes
   my $oldrev = $Page{revision};
@@ -3585,7 +3585,7 @@ sub DoPost {
     }
     return;
   } elsif ($old eq $string) {
-    ReleaseLock();   # No changes -- just show the same page again
+    ReleaseLock();	 # No changes -- just show the same page again
     return ReBrowsePage($id);
   } elsif ($oldrev == 0 and ($string eq $NewText or $string eq "\n")) {
     ReportError(T('No changes to be saved.'), '400 BAD REQUEST'); # don't fake page creation because of webdav
@@ -3608,26 +3608,26 @@ sub DoPost {
     if ($myoldtime) {
       my ($ancestor) = GetTextAtTime($myoldtime);
       if ($ancestor and $old ne $ancestor) {
-  my $new = MergeRevisions($string, $ancestor, $old);
-  if ($new) {
-    $string = $new;
-    if ($new =~ /^<<<<<<</m and $new =~ /^>>>>>>>/m) {
-      SetParam('msg', Ts('This page was changed by somebody else %s.',
-             CalcTimeSince($Now - $Page{ts}))
-         . ' ' . T('The changes conflict.  Please check the page again.'));
-    }            # else no conflict
-  } else {
-    $generalwarning = 1;
-  }     # else merge revision didn't work
+	my $new = MergeRevisions($string, $ancestor, $old);
+	if ($new) {
+	  $string = $new;
+	  if ($new =~ /^<<<<<<</m and $new =~ /^>>>>>>>/m) {
+	    SetParam('msg', Ts('This page was changed by somebody else %s.',
+			       CalcTimeSince($Now - $Page{ts}))
+		     . ' ' . T('The changes conflict.  Please check the page again.'));
+	  }			# else no conflict
+	} else {
+	  $generalwarning = 1;
+	}  # else merge revision didn't work
       }    # else nobody changed the page in the mean time (same text)
     } else {
       $generalwarning = 1;
-    }     # no way to be sure since myoldtime is missing
+    }			# no way to be sure since myoldtime is missing
   } # same author or nobody changed the page in the mean time (same timestamp)
   if ($generalwarning and ($Now - $Page{ts}) < 600) {
     SetParam('msg', Ts('This page was changed by somebody else %s.',
-           CalcTimeSince($Now - $Page{ts}))
-       . ' ' . T('Please check whether you overwrote those changes.'));
+		       CalcTimeSince($Now - $Page{ts}))
+	     . ' ' . T('Please check whether you overwrote those changes.'));
   }
   Save($id, $string, $summary, (GetParam('recent_edit', '') eq 'on'), $filename);
   ReleaseLock();
