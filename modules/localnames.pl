@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.36 2011/05/11 13:22:37 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.37 2011/05/11 13:48:08 as Exp $</p>';
 
 =head1 Local Names
 
@@ -238,7 +238,7 @@ sub NewLocalNamesResolveId {
   if ((not $resolved or $class eq 'near') and $LocalNames{$id}) {
     return ('near', $LocalNames{$id}, $LocalNamesPage);
   } else {
-    $WantedPages{$id} = 1 if not $resolved and $class ne 'near';
+    $WantedPages{$id} = 1 if not $resolved; # this is provisional!
     return ($class, $resolved, @rest);
   }
 }
@@ -426,8 +426,18 @@ sub GetWantedPages {
       delete $WantedPages{$id} if $id =~ /^$CommentsPrefix/o;
     }
   }
+  # now something more complicated: if near-links.pl was loaded, then
+  # %WantedPages may contain pages that will in fact resolve. That's
+  # why we try to resolve all the wanted ids again. And since
+  # resolving ids will do stuff to %WantedPages, we need to make a
+  # copy of the ids we're looking at.
+  my @wanted;
+  foreach my $id (keys %WantedPages) {
+    my ($class, $resolved)  = ResolveId($id);
+    push(@wanted, $id) unless $resolved;
+  }
   # if any wanted pages remain, print them
-  if (%WantedPages) {
+  if (@wanted) {
     return $q->div({-class=>'definition'},
 		   $q->p(T('Define external redirect: '),
 			 map { my $page = NormalToFree($_);
@@ -435,7 +445,7 @@ sub GetWantedPages {
 					  . UrlEncode($page),
 					  $page,
 					  'define');
-			     } keys %WantedPages));
+			     } @wanted));
   }
   return '';
 }
