@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.34 2011/05/11 13:17:20 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.35 2011/05/11 13:19:47 as Exp $</p>';
 
 =head1 Local Names
 
@@ -430,9 +430,10 @@ sub GetWantedPages {
   if (%WantedPages) {
     return $q->div({-class=>'definition'},
 		   $q->p(T('Define Local Names') . ':',
-			 map { ScriptLink('action=define;name='
-					  . UrlEncode($_),
-					  NormalToFree($_),
+			 map { my $page = NormalToFree($_);
+			       ScriptLink('action=define;name='
+					  . UrlEncode($page),
+					  $page,
 					  'define');
 			     } keys %WantedPages));
   }
