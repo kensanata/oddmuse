@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.35 2011/05/11 13:19:47 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.36 2011/05/11 13:22:37 as Exp $</p>';
 
 =head1 Local Names
 
@@ -238,7 +238,7 @@ sub NewLocalNamesResolveId {
   if ((not $resolved or $class eq 'near') and $LocalNames{$id}) {
     return ('near', $LocalNames{$id}, $LocalNamesPage);
   } else {
-    $WantedPages{$id} = 1 unless $resolved;
+    $WantedPages{$id} = 1 if not $resolved and $class ne 'near';
     return ($class, $resolved, @rest);
   }
 }
@@ -429,7 +429,7 @@ sub GetWantedPages {
   # if any wanted pages remain, print them
   if (%WantedPages) {
     return $q->div({-class=>'definition'},
-		   $q->p(T('Define Local Names') . ':',
+		   $q->p(T('Define external redirect: '),
 			 map { my $page = NormalToFree($_);
 			       ScriptLink('action=define;name='
 					  . UrlEncode($page),
