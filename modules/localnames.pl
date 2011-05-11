@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.29 2009/03/21 23:22:39 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.30 2011/05/11 12:10:11 as Exp $</p>';
 
 =head1 Local Names
 
@@ -353,3 +353,46 @@ sub DoLocalNames {
     }
   }
 }
+
+=head2 Define Action
+
+The Define Action allows you to interactively add local names using a
+form. Example URL: C<http://localhost/cgi-bin/wiki?action=define>.
+
+You can also provide the C<name> and C<link> parameters yourself if
+you want to use this action from a script.
+
+=cut
+
+$Action{define} = \&DoDefine;
+
+sub DoDefine {
+  if (GetParam('link', '') and GetParam('name', '')) {
+    SetParam('title', $LocalNamesPage);
+    SetParam('text', GetPageContent($LocalNamesPage) . "\n* ["
+	     . GetParam('link', '') . ' ' . GetParam('name', '')
+	     . "]\n");
+    SetParam('summary', 'Defined ' . GetParam('name'));
+    return DoPost($LocalNamesPage);
+  } else {
+    print GetHeader('', T('Define')),
+      $q->start_div({-class=>'content define'}),
+	GetFormStart(undef, 'get', 'def');
+    my $go = T('Go!');
+    print $q->p(T('Name: '),
+		qq{<input type="text" name="name" tabindex="1" />},
+		GetHiddenValue('action', 'define'),
+		GetHiddenValue('recent_edit', 'on'));
+    print $q->p(T('URL: '),
+		qq{<input type="text" name="link" tabindex="2" />});
+    print $q->p(qq{<input type="submit" value="$go" tabindex="3" />});
+    print $q->end_form, $q->end_div();
+    PrintFooter();
+  }
+}
+
+push(@MyAdminCode, sub {
+       my ($id, $menuref, $restref) = @_;
+       push(@$menuref, ScriptLink('action=define', T('Define Local Names'),
+				  'define'));
+     });
