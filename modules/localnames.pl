@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.30 2011/05/11 12:10:11 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: localnames.pl,v 1.31 2011/05/11 12:52:54 as Exp $</p>';
 
 =head1 Local Names
 
@@ -32,7 +32,8 @@ change the directory by setting C<$LnDir>.
 =cut
 
 use vars qw($LocalNamesPage %LocalNames $LocalNamesCollect
-	    $LocalNamesCollectMaxWords $LnDir $LnCacheHours);
+	    $LocalNamesCollectMaxWords $LnDir $LnCacheHours
+	    %WantedPages);
 
 $LocalNamesPage = 'LocalNames';
 $LocalNamesCollect = 0;
@@ -131,6 +132,7 @@ regular links anyway.
 push(@MyInitVariables, \&LocalNamesInit);
 
 sub LocalNamesInit {
+  %WantedPages = (); # list of missing pages used during this request
   %LocalNames = ();
   $LocalNamesPage = FreeToNormal($LocalNamesPage); # spaces to underscores
   $AdminPages{$LocalNamesPage} = 1;
@@ -221,6 +223,10 @@ because the effect is so similar.
 Note: Existing local pages take precedence over local names, but local
 names take precedence over Near Links.
 
+We also keep track of wanted pages (links to missing pages) so that we
+can printe a list of definition links at the bottom using the Define
+Action (see below).
+
 =cut
 
 *OldLocalNamesResolveId = *ResolveId;
@@ -228,11 +234,12 @@ names take precedence over Near Links.
 
 sub NewLocalNamesResolveId {
   my $id = shift;
-  my @result = OldLocalNamesResolveId($id, @_);
-  if ((not $result[1] or $result[0] eq 'near') and $LocalNames{$id}) {
+  my ($class, $resolved, @rest) = OldLocalNamesResolveId($id, @_);
+  if ((not $resolved or $class eq 'near') and $LocalNames{$id}) {
     return ('near', $LocalNames{$id}, $LocalNamesPage);
   } else {
-    return @result;
+    $WantedPages{$id} = 1 unless $resolved;
+    return ($class, $resolved, @rest);
   }
 }
 
@@ -362,6 +369,9 @@ form. Example URL: C<http://localhost/cgi-bin/wiki?action=define>.
 You can also provide the C<name> and C<link> parameters yourself if
 you want to use this action from a script.
 
+As wanted pages (links to missing pages) come up, you will get links
+to appropriate define actions in your footer.
+
 =cut
 
 $Action{define} = \&DoDefine;
@@ -379,13 +389,15 @@ sub DoDefine {
       $q->start_div({-class=>'content define'}),
 	GetFormStart(undef, 'get', 'def');
     my $go = T('Go!');
-    print $q->p(T('Name: '),
-		qq{<input type="text" name="name" tabindex="1" />},
+    print $q->p($q->label({-for=>"defined"}, T('Name: ')),
+		$q->textfield(-name=>"name", -id=>"defined",
+			      -tabindex=>"1", -size=>20));
+    print $q->p($q->label({-for=>"definition"}, T('URL: ')),
+		$q->textfield(-name=>"link", -id=>"definition",
+			      -tabindex=>"2", -size=>20));
+    print $q->p($q->submit(-label=>$go, -tabindex=>"3"),
 		GetHiddenValue('action', 'define'),
 		GetHiddenValue('recent_edit', 'on'));
-    print $q->p(T('URL: '),
-		qq{<input type="text" name="link" tabindex="2" />});
-    print $q->p(qq{<input type="submit" value="$go" tabindex="3" />});
     print $q->end_form, $q->end_div();
     PrintFooter();
   }
@@ -396,3 +408,33 @@ push(@MyAdminCode, sub {
        push(@$menuref, ScriptLink('action=define', T('Define Local Names'),
 				  'define'));
      });
+
+# link to define action for non-existing pages
+
+
+
+push(@MyFooters, \&GetWantedPages);
+
+sub GetWantedPages {
+  # skip admin pages
+  foreach my $id (@UserGotoBarPages, keys %AdminPages) {
+    delete $WantedPages{$id};
+  }
+  # skip comment pages
+  if ($CommentsPrefix) {
+    foreach my $id (keys %WantedPages) {
+      delete $WantedPages{$id} if $id =~ /^$CommentsPrefix/o;
+    }
+  }
+  # if any wanted pages remain, print them
+  if (%WantedPages) {
+    return $q->div({-class=>'definition'},
+		   $q->p(T('Define Local Names') . ':',
+			 map { ScriptLink('action=define;name='
+					  . UrlEncode($_),
+					  NormalToFree($_),
+					  'define');
+			     } keys %WantedPages));
+  }
+  return '';
+}
