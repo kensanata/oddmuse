@@ -105,7 +105,7 @@ pre, code, tt {
 /* styling for divs that will be invisible when printing
    when printing. */
 
-div.header, div.footer, div.near {
+div.header, div.footer, div.near, div.definition {
     font-family: "Abadi MT Condensed Light", "Arial Narrow", Arial, sans-serif;
     font-size: 75%;
     line-height: 110%;
@@ -175,7 +175,7 @@ div.sister img {
     background-color:#ffe;
 }
 
-div.near {
+div.near, div.definition {
     background-color:#efe;
 }
 
@@ -445,8 +445,8 @@ div.pic div p + p { display:table-caption; caption-side:bottom; }
     }
     
     /* hide all the crap */
-    div.diff, div.diff+hr, div.refer, div.near, div.sister, div.cal,
-    div.footer, span.specialdays, span.gotobar, a.edit, a.number span,
+    div.diff, div.diff+hr, div.refer, div.near, div.definition, div.sister,
+    div.cal, div.footer, span.specialdays, span.gotobar, a.edit, a.number span,
     div.rc form, form.tiny, p.comment {
 	display:none;
     }
