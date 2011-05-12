@@ -1,3 +1,13 @@
+2011-05-11  Alex Schroeder  <alex@gnu.org>
+
+	* modules/localnames.pl (DoDefine): New. Added to @MyAdminCode and
+	%Action.
+	(%WantedPages): New.
+	(LocalNamesInit): Initialize it.
+	(NewLocalNamesResolveId): Set it.
+	(GetWantedPages): New. Added to @MyFooters. Uses %WantedPages to
+	print definition links, which are handled by DoDefine.
+
 2011-03-15  Alex Schroeder  <alex@gnu.org>
 
 	* modules/bbcode.pl (bbCodeRule): Support [left] and [right].
