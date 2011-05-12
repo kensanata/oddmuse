@@ -202,6 +202,14 @@ acronym, abbr {
     font-variant:small-caps;
 }
 
+/* emphasis, trying to avoid italics online */
+
+em {
+    font-style: normal;
+    letter-spacing: 0.2em;
+    margin: 0 0.3em;
+}
+
 /* Links */
 
 a {
