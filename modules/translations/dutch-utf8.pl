@@ -24,7 +24,7 @@
 #
 # This translation was last checked for Oddmuse version 1.215.
 #
-$ModulesDescription .= '<p>$Id: dutch-utf8.pl,v 1.11 2009/06/07 19:30:37 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: dutch-utf8.pl,v 1.12 2011/05/17 13:24:13 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 
@@ -98,6 +98,8 @@ Please go on to %s.
 Ga a.u.b. verder naar %s.
 Updates since %s
 Wijzigingen sinds %s
+up to %s
+
 Updates in the last %s days
 Wijzigingen in de laatste %s dagen
 Updates in the last %s day
@@ -182,6 +184,8 @@ The two revisions are the same.
 
 Editing not allowed for %s.
 Het wijzigen van %s is niet toegestaan.
+Rollback of %s would restore banned content.
+
 Rollback to %s
 Wijzigingen ongedaan maken tot %s
 %s rolled back
@@ -326,6 +330,8 @@ Could not get %s lock
 Kan %s niet vergrendelen
 The lock was created %s.
 
+Maybe the user running this script is no longer allowed to remove the lock directory?
+
 This operation may take several seconds...
 Dit kan een aantal seconden duren...
 Forced unlock of %s lock.
@@ -416,6 +422,8 @@ Filter:
 (voor %s)
 %s pages found.
 %s pagina's gevonden
+Malformed regular expression in %s
+
 Replaced: %s
 Vervangen door: %s
 Search for: %s
@@ -498,8 +506,6 @@ Displaying Wiki Version
 
 Debugging Information
 
-Inter links:
-Interkoppelingen:
 Too many connections by %s
 Te veel verbindingen met %s
 Please do not fetch more than %1 pages in %2 seconds.
@@ -624,6 +630,14 @@ Compilation for %s
 
 Compilation tag is missing a regular expression.
 
+Extract all dates from the database
+
+Dates
+
+No dates found.
+
+Inter links:
+Interkoppelingen:
 List spammed pages
 
 Despamming pages
@@ -664,6 +678,8 @@ ordinary changes
 
 Matching page names:
 
+Email: 
+
 Could not find %1.html template in %2
 
 Only Editors are allowed to see this hidden page.
@@ -691,6 +707,14 @@ The template %s is either empty or does not exist.
  -- defined on %s
 
 Local names defined on %1: %2
+
+Name: 
+
+URL: 
+
+Define Local Names
+
+Define external redirect: 
 
 Locked Pages
 
@@ -793,8 +817,6 @@ Invalid Mail %s: not saved.
 unsubscribe
 
 subscribe
-
-Email: 
 
 %s appears to be an invalid mail address
 
@@ -924,6 +946,8 @@ No target wiki was specified in the config file.
 
 The target wiki was misconfigured.
 
+Upload is limited to %s bytes
+
 You did not answer correctly.
 
 To save this page you must answer this question:
@@ -976,6 +1000,10 @@ Static Copy
 
 Back to %s
 Terug naar %s
+Edit image in the browser
+
+Summary of your changes: 
+
 Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
@@ -1014,11 +1042,19 @@ Too many instances.  Only %s allowed.
 
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 
+Timezone
+
+Pick your timezone:
+
+Set
+
 Contents
 
 Create a new page for today
 
 Add Translation
+
+Please provide a different page name for the translation.
 
 Added translation: %1 (%2)
 
