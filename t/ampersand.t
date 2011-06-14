@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 28;
+use Test::More tests => 32;
 
 clear_pages();
 
@@ -92,4 +92,17 @@ xpath_run_tests(split('\n',<<'EOT'));
 //a[@class="image outside"][@href="http://example.com/q?a=1&b=2"][img[@class="url outside"][@src="http://example.com/q?a=1&b=2"][@alt="text & description"]]
 [[http://example.com/q?a=1&b=2|{{http://mu.org/q?a=1&b=2|text & description}}]]
 //a[@class="image outside"][@href="http://example.com/q?a=1&b=2"][img[@class="url outside"][@src="http://mu.org/q?a=1&b=2"][@alt="text & description"]]
+EOT
+
+$UseQuestionmark = 0;
+
+xpath_run_tests(split('\n',<<'EOT'));
+[[miss & miss]]
+//a[text()="miss & miss"]
+[[[miss & miss]]]
+//a[text()="[miss & miss]"]
+[[image:miss & miss]]
+//a[text()="miss & miss"]
+[[image:pic & pic]]
+//a[@class="image"][@href="http://localhost/test.pl/pic_%26_pic"][img[@class="upload"][@src="http://localhost/test.pl/download/pic_%26_pic"][@alt="pic & pic"]]
 EOT
