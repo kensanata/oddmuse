@@ -14,17 +14,23 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 26;
+use Test::More tests => 28;
 
 clear_pages();
 
 xpath_test(update_page('Start', '[[D&D]]'),
 	   '//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/wiki.pl?action=edit;id=D%26D"][text()="?"]');
-xpath_test(update_page('D%26D', 'Test'),
+xpath_test(get_page('action=rc'),
+	   '//strong[text()="D&D"]');
+
+xpath_test(update_page('D%26D', 'Test', 'Test&Deliver'),
 	   '//h1/a[text()="D&D"]',
 	   '//div[@class="content browse"]/p[text()="Test"]');
 xpath_test(get_page('Start'),
 	   '//a[@class="local"][@href="http://localhost/wiki.pl/D%26D"][text()="D&D"]');
+xpath_test(get_page('action=rc'),
+	   '//strong[text()="Test&Deliver"]');
+
 xpath_test(update_page('Start', '[[image:D&D]]'),
 	   '//img[@class="upload"][@alt="D&D"][@src="http://localhost/wiki.pl/download/D%26D"]');
 
