@@ -233,7 +233,7 @@ div.sister img {
     margin-right: 20px;
 }
 
-div.near {
+div.near, div.definition {
     font-size: smaller;
 }
 
@@ -264,7 +264,7 @@ div.sidebar ul {
 @media print {
     div.diff, div.diff+hr, div.refer, div.near, div.sister, div.cal, div.footer,
     span.specialdays, span.gotobar, a.edit, a.number span,
-    div.rc form { display: none; }
+    div.rc form, div.definition { display: none; }
     body { font: 12pt "Neep", "Arial", sans-serif; color: #000; }
     a:link, a:visited { color: #000; text-decoration: none; font-style: oblique; }
     a[class="url number"]:after, a[class="inter number"]:after { content: "[" attr(href) "]"; }

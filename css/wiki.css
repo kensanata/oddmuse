@@ -24,8 +24,8 @@ div.search { background-color:#F1F5FF }
 div.sister { float:left; margin-right:1ex; background-color:#FFF; }
 div.sister p { margin-top:0; }
 div.sister img { border:none; }
-div.near { background-color:#EFE; }
-div.near p { margin-top:0; }
+div.near, div.definition { background-color:#EFE; }
+div.near p, div.definition p { margin-top:0; }
 form.comment span { display: block; }
 @media print {
     body { font:12pt sans-serif; }

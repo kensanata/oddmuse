@@ -79,8 +79,8 @@ div.message  { background-color:#fee; color:#f00; border:solid #f00;
 div.sister { float:left; padding-right:1ex; background-color:#fff; }
 div.sister p { margin-top:0; }
 div.sister hr { display:none; }
-div.near { background-color:#efe; }
-div.near p { margin-top: 0; }
+div.near, div.definition { background-color:#efe; }
+div.near p, div.definition p { margin-top: 0; }
 div.footer + hr { display:none; }
 
 div.journal hr { display:none; }
@@ -163,14 +163,8 @@ div.month a[class~="today"][class~="collection"] { background-color:#faf; }
 }
 
 @media print {
-    span.gotobar { display:none; }
-    span.specialdays { display:none; }
-    div.sidebar { display:none; }
-    div.refer { display:none; }
-    div.footer { display:none; }
-    div.near { display:none; }
-    div.sister { display:none; }
-    div.languages { display:none; }
+    span.gotobar, span.specialdays, div.sidebar, div.refer, div.footer,
+    div.near, div.definition, div.sister, div.languages { display:none; }
 }
 
 div.languages { border-top:1px solid; clear:both; }
@@ -184,11 +178,12 @@ span[lang=pt] { background-color:#bfb; }
 span[lang=es] { background-color:#fec; }
 span[lang=sv] { background-color:#adf; }
 
-body.simple div.footer p.note { display:none; }
-body.simple div.footer span.gotobar + br { display:none; }
-body.simple div.footer span.gotobar { display:none; }
-body.simple div.sister { display:none; }
-body.simple div.near { display:none; }
+body.simple div.footer p.note,
+body.simple div.footer span.gotobar + br,
+body.simple div.footer span.gotobar,
+body.simple div.sister,
+body.simple div.near,
+body.simple div.definition,
 body.simple div.languages { display:none; }
 
 body.explicit a.near[title=MeatBall]:before { content:"MeatBall:"; }

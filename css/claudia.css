@@ -193,7 +193,7 @@ div.sidebar a {
     a { text-decoration:none; color:black; }
     div.header span.gotobar { display:none; }
     span.specialdays { display:none; }
-    div.refer, div.footer, div.near, div.sister, div.sidebar {
+    div.refer, div.footer, div.near, div.definition, div.sister, div.sidebar {
 	display:none;
     }
 }

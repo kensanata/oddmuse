@@ -325,8 +325,8 @@ div.sister {
 }
 div.sister p { padding:1ex; margin:0; }
 div.sister hr { display:none; }
-div.near { padding:1ex; margin:0; }
-div.near p { margin: 0; }
+div.near, div.definition { padding:1ex; margin:0; }
+div.near p, div.definition p { margin: 0; }
 div.footer + hr { display:none; }
 
 div.journal hr { display:none; }
@@ -543,14 +543,15 @@ when the page is printed (or during print preview).  More information:
 
 @media print {
     /* When printing, turn off a bunch of stuff. */
-    div.header span.gotobar { display:none; }
-    span.specialdays { display:none; }
-    div.refer { display:none; }
-    div.footer { display:none; }
-    div.near { display:none; }
-    div.sister { display:none; }
-    div.languages { display:none; }
-    div.message { display:none; }
+    div.header span.gotobar,
+    span.specialdays,
+    div.refer,
+    div.footer,
+    div.near,
+    div.definition,
+    div.sister,
+    div.languages,
+    div.message,
     img.logo { display:none; }
 
     /* portraits */
@@ -592,11 +593,12 @@ span[lang=pt], .pt { background-color:#bfb; }
 span[lang=es], .es { background-color:#fec; }
 span[lang=sv], .sv { background-color:#adf; }
 
-body.simple div.footer p.note { display:none; }
-body.simple div.footer span.gotobar + br { display:none; }
-body.simple div.footer span.gotobar { display:none; }
-body.simple div.sister { display:none; }
-body.simple div.near { display:none; }
+body.simple div.footer p.note,
+body.simple div.footer span.gotobar + br,
+body.simple div.footer span.gotobar,
+body.simple div.sister,
+body.simple div.near,
+body.simple div.definition,
 body.simple div.languages { display:none; }
 
 body.explicit a.near[title=MeatBall]:before { content:"MeatBall:"; }
