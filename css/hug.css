@@ -138,11 +138,12 @@ a.rechts { float:right; margin:1em; }
     h1, h2 { border:none; }
     h1 a { color:black; }
     a { text-decoration:none; color:black; }
-    div.header span.gotobar { display:none; }
-    span.specialdays { display:none; }
-    div.refer { display:none; }
-    div.footer { display:none; }
-    div.near { display:none; }
-    div.sister { display:none; }
+    div.header span.gotobar,
+    span.specialdays,
+    div.refer,
+    div.footer,
+    div.near,
+    div.definition,
+    div.sister,
     body.admin div.footer { display:none; }
 }

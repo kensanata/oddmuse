@@ -87,10 +87,10 @@ div.sister p {
 div.sister hr {
     display:none;
 }
-div.near {
+div.near, div.definition {
     background-color:#efe;
 }
-div.near p {
+div.near p, div.definition p {
     margin-top: 0;
 }
 div.toc {

@@ -64,7 +64,7 @@ div.sister { float:left; margin-right:1ex; background-color:#fff; }
 div.sister p { margin-top:0; }
 div.sister hr { display:none; }
 div.sister img { border:none; }
-div.near { background-color:#efe; }
+div.near, div.definition { background-color:#efe; }
 
 /* Two Column Theme */
 

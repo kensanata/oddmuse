@@ -23,7 +23,7 @@ a:hover {
 
 /* headers */
 
-div.header, div.footer, div.near {
+div.header, div.footer, div.near, div.definition {
     font-family: Abadi MT Condensed Light, Arial Narrow, Arial, sans-serif;
     font-size: 16px;
 }
@@ -91,7 +91,8 @@ div.journal hr { display:none; }
 /* Links */
 
 a { text-decoration:none; font-weight:bold; color:#e33; }
-div.header a, div.footer a, div.near a { font-weight: normal; }
+div.header a, div.footer a, div.near a,
+div.definition a { font-weight: normal; }
 a:visited { color:#c66; }
 a[class="url outside"]:before { content:"\2197"; }
 a.near:link { color:#093; }

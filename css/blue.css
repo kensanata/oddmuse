@@ -41,7 +41,7 @@ div.message  { background-color:#fee; color:#f00; border:solid #f00;
 div.sister { float:left; margin-right:1ex; background-color:#fff; }
 div.sister p { margin-top:0; border-top:solid; }
 div.sister hr { display:none; }
-div.near { background-color:#efe; border-top:solid; }
+div.near, div.definition { background-color:#efe; border-top:solid; }
 
 table.user { border-style:dotted; border-width:thin; padding:1ex;
              margin-bottom:1ex; width:90%; text-align:center; margin-left:5%; }
@@ -61,10 +61,6 @@ img.logo {
     border:#999 1px solid; padding:1ex; margin:1ex; }
 
 @media print {
-    span.gotobar { display:none }
-    span.specialdays { display:none }
-    div.refer { display:none }
-    div.footer { display:none }
-    div.near { display:none }
-    div.sister { display:none }
+    span.gotobar, span.specialdays, div.refer, div.footer, div.near,
+    div.definition, div.sister { display:none }
 }
