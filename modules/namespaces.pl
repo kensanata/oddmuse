@@ -36,7 +36,7 @@ be changed using the C<$NamespacesSelf> option.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.50 2010/05/07 15:18:57 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.51 2011/06/23 00:31:59 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent
 	    $NamespaceRoot $NamespaceSlashing @NamespaceParameters
@@ -123,10 +123,10 @@ sub NamespacesInitVariables {
     # $ConfigFile -- shared
     # $ModuleDir -- shared
     # $NearDir -- shared
-    $ScriptName .= '/' . $NamespaceCurrent;
-    $FullUrl .= '/' . $NamespaceCurrent;
+    $ScriptName .= '/' . UrlEncode($NamespaceCurrent);
+    $FullUrl .= '/' . UrlEncode($NamespaceCurrent);
     $StaticDir .= '/' . $NamespaceCurrent; # from static-copy.pl
-    $StaticUrl .= $NamespaceCurrent . '/'
+    $StaticUrl .= UrlEncode($NamespaceCurrent) . '/'
       if substr($StaticUrl,-1) eq '/'; # from static-copy.pl
     $WikiDescription .= "<p>Current namespace: $NamespaceCurrent</p>";
     # override LastUpdate
