@@ -1,3 +1,16 @@
+2011-06-23  Alex Schroeder  <alex@gnu.org>
+
+	* modules/offline.pl (DoManifest): Add missing pages from the goto
+	bar.
+
+	* modules/namespaces.pl (NamespacesInitVariables): URL encode the
+	current namespace for $ScriptName, $FullUrl and $StaticUrl.
+
+2011-06-14  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetPageOrEditLink): Fix ampersand problem for
+	$UseQuestionmark = 0.
+
 2011-05-11  Alex Schroeder  <alex@gnu.org>
 
 	* modules/localnames.pl (DoDefine): New. Added to @MyAdminCode and
