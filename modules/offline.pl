@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: offline.pl,v 1.1 2011/06/23 00:20:00 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: offline.pl,v 1.2 2011/06/23 00:35:56 as Exp $</p>';
 
 # Based on http://diveintohtml5.org/offline.html
 
@@ -54,7 +54,15 @@ sub DoManifest {
   foreach my $id (AllPagesList()) {
     print ScriptUrl($id) . "\n";
   }
+  # Missing pages that should show the default text such as
+  # RecentChanges
+  foreach my $id (@UserGotoBarPages) {
+    print ScriptUrl($id) . "\n" unless $IndexHash{$id};
+  }
+  # External CSS
   print $StyleSheet . "\n" if $StyleSheet;
+  # FIXME: $StyleSheetPage
+  # FIXME: external images, stuff in $HtmlHeaders
   print qq{
 FALLBACK:
 / $offline
