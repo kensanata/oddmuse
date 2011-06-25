@@ -406,7 +406,7 @@ div.sidebar {
     float:right;
     width: 500px;
     border: none;
-    margin: 1ex;
+    margin-left: 1ex;
     font-size: 80%;
 }
 
