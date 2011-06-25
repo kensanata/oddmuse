@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: offline.pl,v 1.3 2011/06/25 13:19:28 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: offline.pl,v 1.4 2011/06/25 13:35:35 as Exp $</p>';
 
 # Based on http://diveintohtml5.org/offline.html
 
@@ -91,6 +91,6 @@ $Action{offline} = \&DoOffline;
 # Show an excuse for the pages that have not been cached.
 sub DoOffline {
   ReportError(T('Offline'),
-	      '503 SERVICE UNAVAILABLE',
+	      '200 OK',
 	      0, $q->p(T('You are currently offline and what you requested is not part of the offline application. You need to be online to do this.')));
 }
