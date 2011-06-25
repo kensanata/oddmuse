@@ -402,7 +402,11 @@ div.sidebar {
     margin: 1ex;
 }
 
-.small {
+.bigsidebar {
+    float:right;
+    width: 500px;
+    border: none;
+    margin: 1ex;
     font-size: 80%;
 }
 
