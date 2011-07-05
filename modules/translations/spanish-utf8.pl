@@ -18,7 +18,7 @@
 #
 # This translation was last checked for Oddmuse version 1.195.
 #
-$ModulesDescription .= '<p>$Id: spanish-utf8.pl,v 1.12 2009/06/07 19:30:38 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: spanish-utf8.pl,v 1.13 2011/07/05 00:30:18 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 Incluir páginas normales
@@ -1013,7 +1013,7 @@ Contenidos
 Create a new page for today
 Crear una página nueva para hoy
 Add Translation
-
+Añadir traducción
 Added translation: %1 (%2)
 
 Translate %s
