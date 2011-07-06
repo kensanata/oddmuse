@@ -3,7 +3,7 @@
 	* wiki.pl (GetRcRss): Add Dublin Core (dc) and Atom (atom)
 	namespace. Switch cc prefix to http://web.resource.org/cc/. Switch
 	channel link from RecentChanges to the HomePage. Fix image title
-	and link to match the channel title and link.
+	and link to match the channel title and link. Add atom self link.
 	(RssItem): Repace wiki:username with dc:contributor. Use link for
 	guid element.
 
