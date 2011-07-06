@@ -1,3 +1,23 @@
+2011-07-06  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetRcRss): Add Dublin Core (dc) and Atom (atom)
+	namespace. Switch cc prefix to http://web.resource.org/cc/. Switch
+	channel link from RecentChanges to the HomePage. Fix image title
+	and link to match the channel title and link.
+	(RssItem): Repace wiki:username with dc:contributor. Use link for
+	guid element.
+
+2011-06-25  Alex Schroeder  <alex@gnu.org>
+
+	* modules/offline.pl (InitOffline): Disable surge protection when
+	browsing the offline pages. Add offline path_info to separate the
+	offline app from the ordinary stuff.
+	(DoManifest): Add the offline path_info, remove the missing pages
+	from @UserGotoBarPages because these result in 404 errors.
+	(DoOffline): Fix text. Return 200 code instead of 503.
+	(NewOfflineReBrowsePage): Add redirection support for offline
+	browsing.
+
 2011-06-23  Alex Schroeder  <alex@gnu.org>
 
 	* modules/offline.pl (DoManifest): Add missing pages from the goto
