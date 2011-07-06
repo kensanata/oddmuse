@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: dynamic-comments.pl,v 1.7 2005/10/07 23:23:30 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: dynamic-comments.pl,v 1.8 2011/07/06 17:12:38 as Exp $</p>';
 
 push(@MyInitVariables, \&DynamicCommentsAddScript);
 
@@ -48,7 +48,7 @@ sub DynamicCommentsNewGetPageLink {
     if ($page) {
       return qq{<a href="javascript:togglecomments('$id')">$title</a>}
         . '</p>' # close p before opening div
-        . $q->div({-class=>commenthidden, -id=>$id},
+        . $q->div({-class=>commenthidden, -id=>UrlEncode($id)},
                   $page,
                   $q->p(DynamicCommentsOldGetPageLink($id, T('Add Comment'))))
         . '<p>'; # open an empty p that will be closed in PrintAllPages
