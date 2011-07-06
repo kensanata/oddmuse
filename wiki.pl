@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.943 2011/06/14 15:18:40 as Exp $
+# Version       $Id: wiki.pl,v 1.944 2011/07/06 15:26:01 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
 #     Alex Schroeder <alex@gnu.org>
@@ -36,7 +36,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.943 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.944 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -290,7 +290,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.943 2011/06/14 15:18:40 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.944 2011/07/06 15:26:01 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -1871,37 +1871,41 @@ sub GetRcRss {
       }
     }
   }
-  my $rss = qq{<?xml version="1.0" encoding="$HttpCharset"?>};
+  my $rss = qq{<?xml version="1.0" encoding="$HttpCharset"?>\n};
   if ($RssStyleSheet =~ /\.(xslt?|xml)$/) {
-    $rss .= qq{<?xml-stylesheet type="text/xml" href="$RssStyleSheet" ?>};
+    $rss .= qq{<?xml-stylesheet type="text/xml" href="$RssStyleSheet" ?>\n};
   } elsif ($RssStyleSheet) {
-    $rss .= qq{<?xml-stylesheet type="text/css" href="$RssStyleSheet" ?>};
+    $rss .= qq{<?xml-stylesheet type="text/css" href="$RssStyleSheet" ?>\n};
   }
   $rss .= qq{<rss version="2.0"
     xmlns:wiki="http://purl.org/rss/1.0/modules/wiki/"
-    xmlns:cc="http://backend.userland.com/creativeCommonsRssModule">
+    xmlns:dc="http://purl.org/rss/1.0/modules/dc/"
+    xmlns:cc="http://web.resource.org/cc/"
+    xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
 <docs>http://blogs.law.harvard.edu/tech/rss</docs>
 };
-  $rss .= "<title>" .  QuoteHtml($SiteName) . ': '
-    . GetParam('title', QuoteHtml(NormalToFree($RCName))) . "</title>\n";
-  $rss .= "<link>" . ScriptUrl(UrlEncode($RCName)) . "</link>\n";
+  my $title = QuoteHtml($SiteName) . ': '
+    . GetParam('title', QuoteHtml(NormalToFree($HomePage)));
+  $rss .= "<title>$title</title>\n";
+  $rss .= "<link>$ScriptName</link>\n";
+  $rss .= qq{<atom:link href="$ScriptName" rel="self" type="application/rss+xml" />\n};
   $rss .= "<description>" . QuoteHtml($SiteDescription) . "</description>\n"
     if $SiteDescription;
-  $rss .= "<pubDate>" . $date. "</pubDate>\n";
-  $rss .= "<lastBuildDate>" . $date . "</lastBuildDate>\n";
+  $rss .= "<pubDate>$date</pubDate>\n";
+  $rss .= "<lastBuildDate>$date</lastBuildDate>\n";
   $rss .= "<generator>Oddmuse</generator>\n";
-  $rss .= "<copyright>" . $RssRights . "</copyright>\n" if $RssRights;
+  $rss .= "<copyright>$RssRights</copyright>\n" if $RssRights;
   $rss .= join('', map {"<cc:license>" . QuoteHtml($_) . "</cc:license>\n"}
          (ref $RssLicense eq 'ARRAY' ? @$RssLicense : $RssLicense))
     if $RssLicense;
-  $rss .= "<wiki:interwiki>" . $InterWikiMoniker . "</wiki:interwiki>\n"
+  $rss .= "<wiki:interwiki>$InterWikiMoniker</wiki:interwiki>\n"
     if $InterWikiMoniker;
   if ($RssImageUrl) {
     $rss .= "<image>\n";
-    $rss .= "<url>" . $RssImageUrl . "</url>\n";
-    $rss .= "<title>" . QuoteHtml($SiteName) . "</title>\n";
-    $rss .= "<link>" . ScriptUrl() . "</link>\n";
+    $rss .= "<url>$RssImageUrl</url>\n";
+    $rss .= "<title>$title</title>\n";    # the same as the channel
+    $rss .= "<link>$ScriptName</link>\n"; # the same as the channel
     $rss .= "</image>\n";
   }
   my $limit = GetParam("rsslimit", 15); # Only take the first 15 entries
@@ -1927,15 +1931,15 @@ sub RssItem {
   $username = $host unless $username;
   my $rss = "<item>\n";
   $rss .= "<title>$name</title>\n";
-  $rss .= "<link>" . ScriptUrl(GetParam('all', $cluster)
-             ? GetPageParameters('browse', $id, $revision,
-               $cluster, $last)
-             : UrlEncode($id)) . "</link>\n";
+  my $link = ScriptUrl(GetParam('all', $cluster)
+             ? GetPageParameters('browse', $id, $revision, $cluster, $last)
+             : UrlEncode($id));
+  $rss .= "<link>$link</link>\n<guid>$link</guid>\n";
   $rss .= "<description>" . QuoteHtml($summary) . "</description>\n" if $summary;
   $rss .= "<pubDate>" . $date . "</pubDate>\n";
   $rss .= "<comments>" . ScriptUrl($CommentsPrefix . UrlEncode($id))
     . "</comments>\n" if $CommentsPrefix and $id !~ /^$CommentsPrefix/o;
-  $rss .= "<wiki:username>" . $username . "</wiki:username>\n" if $username;
+  $rss .= "<dc:contributor>" . $username . "</dc:contributor>\n" if $username;
   $rss .= "<wiki:status>" . (1 == $revision ? 'new' : 'updated')
     . "</wiki:status>\n";
   $rss .= "<wiki:importance>" . ($minor ? 'minor' : 'major')
