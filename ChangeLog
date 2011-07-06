@@ -1,13 +1,18 @@
 2011-07-06  Alex Schroeder  <alex@gnu.org>
 
+	* modules/dynamic-comments.pl (SafeId): New.
+	(DynamicCommentsNewGetPageLink): Use it.
+
 	* modules/image.pl (ImageSupportRule): Don't URL encode
 	$ImageUrlPath – specially bad if it ends up containing "http:" and
 	the like.
 
-	* wiki.pl (GetRcRss): Add Dublin Core (dc) and Atom (atom)
+	* wiki.pl (GetScriptUrlWithRcParameters): New.
+	(GetRcRss): Add Dublin Core (dc) and Atom (atom)
 	namespace. Switch cc prefix to http://web.resource.org/cc/. Switch
 	channel link from RecentChanges to the HomePage. Fix image title
-	and link to match the channel title and link. Add atom self link.
+	and link to match the channel title and link. Add atom self link
+	using GetScriptUrlWithRcParameters.
 	(RssItem): Repace wiki:username with dc:contributor. Use link for
 	guid element.
 
