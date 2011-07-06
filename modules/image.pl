@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: image.pl,v 1.30 2009/05/15 20:23:56 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: image.pl,v 1.31 2011/07/06 15:55:13 as Exp $</p>';
 
 use vars qw($ImageUrlPath);
 
@@ -52,7 +52,7 @@ sub ImageSupportRule {
 	or $link =~ /^$FreeLinkPattern$/ and not $external) {
       ($link, $linkclass) = ImageGetExternalUrl($link, $linkclass);
     } else {
-      $link = ImageUrlEncode($ImageUrlPath . '/' . $link);
+      $link = $ImageUrlPath . '/' . ImageUrlEncode($link);
     }
     my $src = $name;
     if ($src =~ /^($FullUrlPattern|$FreeInterLinkPattern)$/) {
@@ -61,7 +61,7 @@ sub ImageSupportRule {
       $found = $IndexHash{FreeToNormal($src)};
       $src = ImageGetInternalUrl($src) if $found;
     } else {
-      $src = ImageUrlEncode($ImageUrlPath . '/' . $name);
+      $src = $ImageUrlPath . '/' . ImageUrlEncode($name);
     }
     if ($found) {
       $result = $q->img({-src=>$src, -alt=>$alt, -title=>$alt, -class=>'upload'});
