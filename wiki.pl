@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.946 2011/07/06 15:48:28 as Exp $
+# Version       $Id: wiki.pl,v 1.947 2011/07/06 16:04:16 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
 #     Alex Schroeder <alex@gnu.org>
@@ -36,7 +36,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.946 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.947 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -290,7 +290,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.946 2011/07/06 15:48:28 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.947 2011/07/06 16:04:16 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -1889,7 +1889,7 @@ sub GetRcRss {
     . GetParam('title', QuoteHtml(NormalToFree($HomePage)));
   $rss .= "<title>$title</title>\n";
   $rss .= "<link>$ScriptName</link>\n";
-  $rss .= qq{<atom:link href="} . $q->url(-rewrite=>1)
+  $rss .= qq{<atom:link href="} . $q->self_url()
     . qq{" rel="self" type="application/rss+xml" />\n};
   $rss .= "<description>" . QuoteHtml($SiteDescription) . "</description>\n"
     if $SiteDescription;
