@@ -22,10 +22,14 @@ sub MonitorInit {
   if (!$MonitorUser or !$MonitorPassword or !$MonitorHost) {
     $Message .= $q->p('Monitor extension has been installed but not configured.');
   }
-  MonitorSend() if $q->url() =~ /$MonitorRegexp/;
+  AppendStringToFile("$TempDir/oddmuse.log", localtime . " monitor init\n");
+  MonitorSend() if $q->url =~ /$MonitorRegexp/;
 }
 
 sub MonitorSend {
+  AppendStringToFile("$TempDir/oddmuse.log", localtime . " monitor send\n");
+  require File::Temp;
+  require MIME::Entity;
   my $fh = File::Temp->new(SUFFIX => '.html');
   my $home = ScriptLink(UrlEncode($HomePage), $HomePage);
   print $fh qq(<p>Monitor mail from <a href="$home">$SiteName:$HomePage</a>.</p><hr />)
