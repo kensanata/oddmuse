@@ -14,53 +14,71 @@
 
 package OddMuse;
 
-use vars qw($MonitorUser $MonitorPassword $MonitorHost $MonitorRegexp);
+use vars qw($MonitorUser $MonitorPassword $MonitorHost
+	    $MonitorFrom $MonitorTo $MonitorRegexp);
 
 push(@MyInitVariables, \&MonitorInit);
 
+sub MonitorLog {
+  $Message .= $q->p(shift);
+}
+
 sub MonitorInit {
-  if (!$MonitorUser or !$MonitorPassword or !$MonitorHost) {
+  $MonitorTo = $MonitorFrom unless $MonitorTo;
+  if (!$MonitorUser or !$MonitorPassword or !$MonitorHost or !$MonitorFrom) {
     $Message .= $q->p('Monitor extension has been installed but not configured.');
   }
-  AppendStringToFile("$TempDir/oddmuse.log", localtime . " monitor init\n");
-  MonitorSend() if $q->url =~ /$MonitorRegexp/;
+  if ($q->request_method() eq 'POST'
+      && $q->url =~ /$MonitorRegexp/) {
+    eval {
+      MonitorSend();
+    };
+    if ($@) {
+      MonitorLog("monitor error: $@");
+    }
+  }
 }
 
 sub MonitorSend {
-  AppendStringToFile("$TempDir/oddmuse.log", localtime . " monitor send\n");
+  # MonitorLog("monitor send");
   require File::Temp;
   require MIME::Entity;
+  # MonitorLog("monitor require");
   my $fh = File::Temp->new(SUFFIX => '.html');
-  my $home = ScriptLink(UrlEncode($HomePage), $HomePage);
-  print $fh qq(<p>Monitor mail from <a href="$home">$SiteName:$HomePage</a>.</p><hr />)
+  my $home = ScriptLink(UrlEncode($HomePage), "$SiteName: $HomePage");
+  print $fh qq(<p>Monitor mail from $home.</p><hr />)
     . $q->Dump();
   $fh->close;
+  # MonitorLog("monitor file");
   my $mail = new MIME::Entity->build(To => $MonitorUser,
-				     From => $MonitorUser,
+				     From => $MonitorFrom,
 				     Subject => "Oddmuse Monitor",
 				     Path => $fh,
 				     Type=> "text/html");
+  # MonitorLog("monitor mail");
   eval {
     require Net::SMTP::TLS;
     my $smtp = Net::SMTP::TLS->new($MonitorHost,
 				   User => $MonitorUser,
 				   Password => $MonitorPassword);
-    $smtp->mail($MonitorUser);
-    $smtp->to($MonitorUser);
+    $smtp->mail($MonitorFrom);
+    $smtp->to($MonitorTo);
     $smtp->data;
     $smtp->datasend($mail->stringify);
     $smtp->dataend;
     $smtp->quit;
   };
+  MonitorLog("monitor TSL error: $@") if $@;
   if ($@) {
     require Net::SMTP::SSL;
-    my $smtp = Net::SMTP::SSL->new($host, Port => 465);
+    my $smtp = Net::SMTP::SSL->new($MonitorHost, Port => 465);
     $smtp->auth($MonitorUser, $MonitorPassword);
-    $smtp->mail($MonitorUser);
-    $smtp->to($MonitorUser);
+    $smtp->mail($MonitorFrom);
+    $smtp->to($MonitorTo);
     $smtp->data;
     $smtp->datasend($mail->stringify);
     $smtp->dataend;
     $smtp->quit;
   }
+  MonitorLog("monitor SSL error: $@") if $@;
 }
