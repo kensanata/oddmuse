@@ -1,5 +1,7 @@
 2011-10-12  Alex Schroeder  <alex@gnu.org>
 
+	* rc2mail.pl: Fix getopts call.
+
 	* modules/monitor.pl (MonitorSend): Change from User to From
 	address.
 
