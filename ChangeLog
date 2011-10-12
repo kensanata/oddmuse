@@ -1,3 +1,11 @@
+2011-10-13  Alex Schroeder  <aschroeder@thinkmo.de>
+
+	* wiki.pl (TextIsFile): Extract encoding from the file.
+	(DoDownload): Take encoding and pass it on.
+	(GetHttpHeader): Accept encoding parameter and add HTTP header.
+	(DoPost): Save gzip encoding if the file content starts with the
+	magic bytes.
+
 2011-10-12  Alex Schroeder  <alex@gnu.org>
 
 	* modules/honeypot.pl (HoneyPotInspection): New.
