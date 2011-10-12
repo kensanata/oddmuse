@@ -58,7 +58,7 @@ sub MonitorSend {
     . $q->Dump();
   $fh->close;
   # MonitorLog("monitor file");
-  my $mail = new MIME::Entity->build(To => $MonitorUser,
+  my $mail = new MIME::Entity->build(To => $MonitorTo,
 				     From => $MonitorFrom,
 				     Subject => "Oddmuse Monitor",
 				     Path => $fh,
