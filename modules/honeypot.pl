@@ -46,7 +46,8 @@ sub HoneyPotNewGetFormStart {
 push(@MyInitVariables, \&HoneyPotInspection);
 
 sub HoneyPotInspection {
-  if (GetParam('title', '')
+  if (not UserIsEditor()
+      and GetParam('title', '')
       and (GetParam('idiot') or GetParam('looser')
 	   or $Now - GetParam('ok') > 3600)) {
     ReportError(T('Edit Denied'), '403 FORBIDDEN');;
