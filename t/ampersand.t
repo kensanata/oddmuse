@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 32;
+use Test::More tests => 38;
 
 clear_pages();
 
@@ -38,6 +38,16 @@ xpath_run_tests(split('\n',<<'EOT'));
 [http://example.org/ this & that]
 //a[@class="url http outside"][@href="http://example.org/"][text()="this & that"]
 EOT
+
+# Seite zum Testen von Kommentaren
+test_page(update_page('Änderungen', 'Veränderung'),
+	  'Änderungen', 'Veränderung');
+# redirect auf die richtige Seite
+test_page(get_page('title=Änderungen aftertext=Öffnung'),
+	  'Location:', UrlEncode('Änderungen'));
+# Test von Original und Kommentar
+test_page(get_page('Änderungen'),
+	  'Veränderung', 'Öffnung');
 
 add_module('creole.pl');
 
