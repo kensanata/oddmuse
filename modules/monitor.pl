@@ -17,6 +17,14 @@ package OddMuse;
 use vars qw($MonitorUser $MonitorPassword $MonitorHost
 	    $MonitorFrom $MonitorTo $MonitorRegexp);
 
+# example settings:
+# $MonitorUser = 'oddmuse.wiki';
+# $MonitorPassword = '***secret***';
+# $MonitorHost = 'smpt.google.com';
+# $MonitorFrom = 'oddmuse.wiki@gmail.com';
+# $MonitorTo = 'kensanata@gmail.com';
+# $MonitorRegexp = '.';
+
 push(@MyInitVariables, \&MonitorInit);
 
 sub MonitorLog {
