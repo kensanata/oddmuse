@@ -40,4 +40,15 @@ sub HoneyPotNewGetFormStart {
   return $html;
 }
 
-# TODO: kill requests that filled in data into the honeypots
+# kill requests that contain the idiot or looser parameters
+# and requests that have a timestamp that is too old
+
+push(@MyInitVariables, \&HoneyPotInspection);
+
+sub HoneyPotInspection {
+  if (GetParam('title', '')
+      and (GetParam('idiot') or GetParam('looser')
+	   or $Now - GetParam('ok') > 3600)) {
+    ReportError(T('Edit Denied'), '403 FORBIDDEN');;
+  }
+}
