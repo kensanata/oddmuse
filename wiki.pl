@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.950 2011/07/06 16:51:14 as Exp $
+# Version       $Id: wiki.pl,v 1.951 2011/10/12 22:42:00 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
 #     Alex Schroeder <alex@gnu.org>
@@ -36,7 +36,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.950 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.951 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -290,7 +290,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.950 2011/07/06 16:51:14 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.951 2011/10/12 22:42:00 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -2253,13 +2253,14 @@ sub GetHeader {
 sub GetHttpHeader {
   return if $PrintedHeader;
   $PrintedHeader = 1;
-  my ($type, $ts, $status) = @_; # $ts is undef, a ts, or 'nocache'
+  my ($type, $ts, $status, $encoding) = @_; # $ts is undef, a ts, or 'nocache'
   my %headers = (-cache_control=>($UseCache < 0 ? 'no-cache' : 'max-age=10'));
   $headers{-etag} = $ts || PageEtag() if GetParam('cache', $UseCache) >= 2;
   $headers{'-last-modified'} = TimeToRFC822($ts) if $ts and $ts ne 'nocache'; # RFC 2616 section 13.3.4
   $headers{-type} = GetParam('mime-type', $type);
   $headers{-type} .= "; charset=$HttpCharset" if $HttpCharset;
   $headers{-status} = $status if $status;
+  $headers{-Content_Encoding} = $encoding if $encoding;
   my $cookie = Cookie();
   $headers{-cookie} = $cookie  if $cookie;
   if ($q->request_method() eq 'HEAD') {
@@ -3125,12 +3126,12 @@ sub DoDownload {
   print $q->header(-status=>'304 NOT MODIFIED') and return if FileFresh(); # FileFresh needs an OpenPage!
   my ($text, $revision) = GetTextRevision(GetParam('revision', '')); # maybe revision reset!
   my $ts = $Page{ts};
-  if (my ($type) = TextIsFile($text)) {
+  if (my ($type, $encoding) = TextIsFile($text)) {
     my ($data) = $text =~ /^[^\n]*\n(.*)/s;
     my %allowed = map {$_ => 1} @UploadTypes;
     ReportError(Ts('Files of type %s are not allowed.', $type), '415 UNSUPPORTED MEDIA TYPE')
       if @UploadTypes and not $allowed{$type};
-    print GetHttpHeader($type, $ts);
+    print GetHttpHeader($type, $ts, undef, $encoding);
     require MIME::Base64;
     print MIME::Base64::decode($data);
   } else {
@@ -3571,8 +3572,9 @@ sub DoPost {
     ReportError(T('Browser reports no file type.'), '415 UNSUPPORTED MEDIA TYPE') unless $type;
     local $/ = undef;		# Read complete files
     my $content = <$file>; # Apparently we cannot count on <$file> to always work within the eval!?
+    my $encoding = 'gzip' if substr($content,0,2) eq "\x1f\x8b";
     eval { require MIME::Base64; $_ = MIME::Base64::encode($content) };
-    $string = '#FILE ' . $type . "\n" . $_;
+    $string = "#FILE $type $encoding\n" . $_;
   } else {			# ordinary text edit
     $string = AddComment($old, $comment) if $comment;
     $string = substr($string, length($DeletedPage)) # undelete pages when adding a comment
@@ -3977,7 +3979,7 @@ sub WriteRecentVisitors {
   WriteStringToFile($VisitorFile, $data);
 }
 
-sub TextIsFile { $_[0] =~ /^#FILE (\S+)\n/ }
+sub TextIsFile { $_[0] =~ /^#FILE (\S+) ?(\S+)\n/ }
 
 sub DoCss {
   my $css = GetParam('install', '');
