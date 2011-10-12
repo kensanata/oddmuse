@@ -26,7 +26,11 @@ sub HoneyPotNewGetFormStart {
   my $html = HoneyPotOldGetFormStart(@_);
   if (not $HoneyPotWasHere) {
     $HoneyPotWasHere = 1;
+    # TODO: randomize names
     $html .= $q->div({-style=>'display:none'},
+		     $q->textfield({-name=>'ok', -id=>'ok',
+				    -default=>time,
+				    -size=>40, -maxlength=>250}),
 		     $q->label({-for=>'idiot'}, 'Leave empty:'), ' ',
 		     $q->textfield({-name=>'idiot', -id=>'idiot',
 				    -size=>40, -maxlength=>250}),
@@ -35,3 +39,5 @@ sub HoneyPotNewGetFormStart {
   }
   return $html;
 }
+
+# TODO: kill requests that filled in data into the honeypots
