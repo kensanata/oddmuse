@@ -46,7 +46,7 @@ use File::Path;
 # -x debug output
 
 my %opts;
-getopt('nprmftqvx', \%opts);
+getopts('np:r:m:f:t:qvx', \%opts);
 my $nomail = exists $opts{n};
 my $verbose = exists $opts{v};
 my $quiet = exists $opts{q};
