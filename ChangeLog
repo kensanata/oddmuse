@@ -1,6 +1,7 @@
 2011-10-12  Alex Schroeder  <alex@gnu.org>
 
 	* modules/honeypot.pl (HoneyPotInspection): New.
+	(HoneyPotInspection): Except editors.
 
 	* rc2mail.pl: Fix getopts call.
 
