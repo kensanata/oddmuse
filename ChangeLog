@@ -1,3 +1,7 @@
+2011-10-14  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (TextIsFile): Fix regular expression.
+
 2011-10-13  Alex Schroeder  <aschroeder@thinkmo.de>
 
 	* wiki.pl (TextIsFile): Extract encoding from the file.
