@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.28 2009/05/15 20:25:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.29 2011/10/13 23:46:21 as Exp $</p>';
 
 $Action{static} = \&DoStatic;
 
@@ -110,9 +110,9 @@ sub StaticFileName {
   return $id unless $status;
   my %hash = ParseData($data);
   my $ext = '.html';
-  if ($hash{text} =~ /^\#FILE ([^ \n]+)\n(.*)/s) {
+  if ($hash{text} =~ /^\#FILE ([^ \n]+ ?[^ \n]*)\n(.*)/s) {
     %StaticMimeTypes = StaticMimeTypes() unless %StaticMimeTypes;
-    $ext = $StaticMimeTypes{$1};
+    $ext = $StaticMimeTypes{"$1"};
     $ext = '.' . $ext if $ext;
   }
   $StaticFiles{$id} = $id . $ext;
@@ -125,7 +125,7 @@ sub StaticWriteFile {
   my $html = GetParam('html', 1);
   my $filename = StaticFileName($id);
   OpenPage($id);
-  my ($mimetype, $data) = $Page{text} =~ /^\#FILE ([^ \n]+)\n(.*)/s;
+  my ($mimetype, $encoding, $data) = $Page{text} =~ /^\#FILE ([^ \n]+) ?([^ \n]*)\n(.*)/s;
   return unless $html or $data;
   open(F,"> $StaticDir/$filename") or ReportError(Ts('Cannot write %s', $filename));
   if ($data) {
