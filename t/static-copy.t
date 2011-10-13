@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 13;
+use Test::More tests => 16;
 clear_pages();
 
 add_module('static-copy.pl');
@@ -81,6 +81,35 @@ xpath_test(update_page('HomePage', "Static: [[image:Logo]]"),
 
 # File got restored as well
 ok(-f "$DataDir/static/Logo.png", "$DataDir/static/Logo.png exists");
+
+# upload svgz (gzipped)
+my $page = <<EOT;
+#FILE image/svg+xml gzip
+H4sICKlml04AA3Rlc3Quc3ZnADWOQQ6DIBBF956CzF6hdtMY0F1PYA9gCqUkdMbIRKSnLy76t/+/
+vK+n4xPF7rYUCA1cOgXC4ZNsQG/gMd/bG4jEC9olEjoDSDCNjU67F5XEZODNvA5S5py7fO1o87JX
+Ssm6gEacSVxiJW1Ia1zKEDAGdDDWUrM7WBzVW7XFQK/gv34RcpvC1w29WhnGeSMfyRZ2qOWJ1ROn
+Y2x+OvAf9cMAAAA=
+EOT
+AppendStringToFile($ConfigFile, q{
+push(@UploadTypes, "image/svg+xml");
+$StaticMimeTypes{"image/svg+xml"} = 'svg';
+$StaticMimeTypes{"image/svg+xml gzip"} = 'svgz';
+});
+
+# verify upload worked
+test_page(update_page('Trogs', $page, undef, 0, 1), # admin
+	  'contains an uploaded file');
+
+# verify static file exists
+ok(-f "$DataDir/static/Trogs.svgz", "$DataDir/static/Trogs.svgz exists");
+
+# verify source link is correct
+xpath_test(update_page('HomePage', "Static: [[image:Trogs]]"),
+	   '//a[@class="image"]'
+	   . '[@href="http://localhost/wiki.pl/Trogs"]'
+	   . '/img[@class="upload"]'
+	   . '[@src="/static/Trogs.svgz"]'
+	   . '[@alt="Trogs"]');
 
 # Make sure spaces are translated to underscores (fixed in image.pl)
 add_module('image.pl');
