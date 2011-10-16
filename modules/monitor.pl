@@ -33,10 +33,12 @@ sub MonitorLog {
 
 sub MonitorInit {
   $MonitorTo = $MonitorFrom unless $MonitorTo;
-  if (!$MonitorUser or !$MonitorPassword or !$MonitorHost or !$MonitorFrom) {
+  if (!$MonitorUser or !$MonitorPassword
+      or !$MonitorHost or !$MonitorFrom) {
     $Message .= $q->p('Monitor extension has been installed but not configured.');
   }
   if ($q->request_method() eq 'POST'
+      && !$q->param('Preview')
       && $q->url =~ /$MonitorRegexp/) {
     eval {
       MonitorSend();
