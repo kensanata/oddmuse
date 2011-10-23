@@ -3,7 +3,8 @@
 	* modules/tags.pl (NewTagDeletePage): Return OldTagDeletePage().
 
 	* modules/git.pl ($GitMail): New option.
-	(GitInitRepository): Use it.
+	(GitInitRepository, GitNewSave, GitNewDeletePage, GitCleanup): Use
+	it.
 
 2011-10-14  Alex Schroeder  <alex@gnu.org>
 
