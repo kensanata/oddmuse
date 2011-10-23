@@ -1,5 +1,7 @@
 2011-10-23  Alex Schroeder  <alex@gnu.org>
 
+	* modules/tags.pl (NewTagDeletePage): Return OldTagDeletePage().
+
 	* modules/git.pl ($GitMail): New option.
 	(GitInitRepository): Use it.
 
