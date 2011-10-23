@@ -42,9 +42,17 @@ Default: C<$DataDir/git>
 The directory in which the repository resides. If it doesn't exist,
 Oddmuse will create it for you.
 
+=head2 $GitMail
+
+Default: C<unknown@oddmuse.org>
+
+The email address used to identify users in git.
+
 =cut
 
-use vars qw($GitDir);
+use vars qw($GitDir $GitMail);
+
+$GitMail = 'unknown@oddmuse.org';
 
 push(@MyInitVariables, \&GitInitVariables);
 
@@ -65,7 +73,7 @@ sub GitInitRepository {
 	or ReportError("git add $id failed: $!");
     }
     system(qw(git commit -m), "initial import",
-	   "--author=Oddmuse <unknown\@oddmuse.org>") == 0
+	   "--author=Oddmuse <$GitMail>") == 0
 	     or ReportError("git initial commit failed: $!");
   } else {
     chdir($GitDir); # important for all the git commands that follow!
