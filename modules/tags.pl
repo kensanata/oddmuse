@@ -29,7 +29,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: tags.pl,v 1.20 2010/03/31 16:35:29 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: tags.pl,v 1.21 2011/10/23 18:53:40 as Exp $</p>';
 
 =head1 CONFIGURATION
 
@@ -174,7 +174,6 @@ removed from the tags db.
 *DeletePage = *NewTagDeletePage;
 
 sub NewTagDeletePage { # called within a lock!
-  OldTagDeletePage(@_);
   my $id = shift;
 
   # open the DB file
@@ -197,6 +196,9 @@ sub NewTagDeletePage { # called within a lock!
   # Delete reverse lookup entry.
   delete $h{"_$id"};
   untie %h;
+
+  # Return any error codes?
+  return OldTagDeletePage($id, @_);
 }
 
 =pod
