@@ -1,3 +1,8 @@
+2011-10-23  Alex Schroeder  <alex@gnu.org>
+
+	* modules/git.pl ($GitMail): New option.
+	(GitInitRepository): Use it.
+
 2011-10-14  Alex Schroeder  <alex@gnu.org>
 
 	* modules/static-copy.pl (StaticFileName, StaticWriteFile): Handle
