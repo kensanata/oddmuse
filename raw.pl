@@ -71,7 +71,7 @@ Writes the raw wiki text into plain text files.
 --regexp selects a subsets of pages whose names match the regular
   expression. Note that spaces have been translated to underscores.
 
---page designates the page directory. By default is is 'page' in the
+--page designates the page directory. By default this is 'page' in the
   current directory. If you run this script in your data directory,
   the default should be fine.
 
