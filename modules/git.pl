@@ -95,7 +95,7 @@ sub GitNewSave {
   my $message = $Page{summary} || T('no summary available');
   my $author = $Page{username} || T('Anonymous');
   system(qw(git commit --quiet -m), $message,
-	 "--author=$author <unknown\@oddmuse.org>",
+	 "--author=$author <$GitMail>",
 	 $id) == 0 or ReportError("git commit $id failed: $!");
 }
 
@@ -112,7 +112,7 @@ sub GitNewDeletePage {
   my $message = T('page marked was for deletion');
   my $author = T('Oddmuse');
   system(qw(git commit --quiet -m), $message,
-	 "--author=$author <unknown\@oddmuse.org>",
+	 "--author=$author <$GitMail>",
 	 $id) == 0 or ReportError("git commit $id failed: $!");
   return ''; # no error
 }
@@ -138,7 +138,7 @@ sub GitCleanup {
     system(qw(git add --all)) == 0
       or ReportError("git add -A failed: $!");
     system(qw(git commit --quiet -m), 'maintenance job',
-	   "--author=Oddmuse <unknown\@oddmuse.org>",
+	   "--author=Oddmuse <$GitMail>",
 	   $id) == 0 or ReportError("git maintenance commit failed: $!");
   }
 }
