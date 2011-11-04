@@ -125,7 +125,7 @@ form.tiny input {
     font-size:    80%;
     font-family:  inherit;
 }
-form.tiny input[@type="text"] {
+form.tiny input[type="text"] {
     width:        10em;
 }
 
