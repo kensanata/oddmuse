@@ -124,7 +124,7 @@ sub GitNewDeletePage {
   GitInitRepository();
   my ($id) = @_;
   GitRun('rm', '--quiet', '--ignore-unmatch', $id);
-  my $message = T('page marked was for deletion');
+  my $message = T('page was marked for deletion');
   my $author = T('Oddmuse');
   GitRun('commit', '--quiet', '-m', $message,
 	 "--author=$author <$GitMail>", $id);
@@ -149,8 +149,7 @@ sub GitCleanup {
     }
     # commit the new state
     chdir($GitDir); # important for all the git commands that follow!
-    GitRun('add', '--all');
-    GitRun('commit', '--quiet', '-m', 'maintenance job',
+    GitRun('commit', '--quiet', '-a', '-m', 'maintenance job',
 	   "--author=Oddmuse <$GitMail>", $id);
   }
 }
