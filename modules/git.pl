@@ -89,7 +89,7 @@ sub GitInitRepository {
       WriteStringToFile("$GitDir/$id", $Page{text});
       GitRun('add', $id);
     }
-    GitRun('commit', '-m', 'initial import',
+    GitRun('commit', '--quiet', '-m', 'initial import',
 	   "--author=Oddmuse <$GitMail>");
   } else {
     chdir($GitDir); # important for all the git commands that follow!
@@ -150,6 +150,6 @@ sub GitCleanup {
     # commit the new state
     chdir($GitDir); # important for all the git commands that follow!
     GitRun('commit', '--quiet', '-a', '-m', 'maintenance job',
-	   "--author=Oddmuse <$GitMail>", $id);
+	   "--author=Oddmuse <$GitMail>");
   }
 }

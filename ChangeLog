@@ -1,3 +1,13 @@
+2011-11-05  Alex Schroeder  <alex@gnu.org>
+
+	* modules/git.pl (GitCleanup): No $id for commit.
+	(GitInitRepository): Add --quiet.
+
+2011-11-04  Alex Schroeder  <alex@gnu.org>
+
+	* modules/git.pl (GitCleanup): Get rid of git add --all and use
+	git commit -a instead.
+
 2011-10-23  Alex Schroeder  <alex@gnu.org>
 
 	* modules/tags.pl (NewTagDeletePage): Return OldTagDeletePage().
