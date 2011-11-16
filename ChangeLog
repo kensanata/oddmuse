@@ -1,3 +1,8 @@
+2011-11-16  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (GetRcRss): Link to $HomePage explicitly instead of just
+	linking to $ScriptName.
+
 2011-11-05  Alex Schroeder  <alex@gnu.org>
 
 	* modules/git.pl (GitCleanup): No $id for commit.
