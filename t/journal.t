@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 41;
+use Test::More tests => 44;
 
 clear_pages();
 
@@ -76,6 +76,12 @@ test_page_negative($page, $yesterday, $beforeyesterday);
 # $JournalLimit does not apply to admins
 test_page(get_page('action=browse id=Summary pwd=foo'),
 	  "$tomorrow.*$today.*$yesterday.*$beforeyesterday");
+
+# make sure deleted pages don't count (limit is set to two):
+update_page($tomorrow, $DeletedPage);
+$page = update_page('Summary', "Tomorrow is gone:\n\n<journal>");
+test_page($page, "$today.*$yesterday");
+test_page_negative($page, $tomorrow, $beforeyesterday);
 
 # Test for page corruption. Start with an empty set of pages and a
 # fresh config file because of the $JournalLimit and dynamic pagenames
