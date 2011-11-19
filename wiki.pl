@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.953 2011/11/16 22:58:27 as Exp $
+# Version       $Id: wiki.pl,v 1.954 2011/11/19 15:19:34 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
 #     Alex Schroeder <alex@gnu.org>
@@ -36,7 +36,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.953 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.954 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -290,7 +290,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.953 2011/11/16 22:58:27 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.954 2011/11/19 15:19:34 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -872,28 +872,25 @@ sub PrintJournal {
       }
     }
   }
-  return unless $pages[$offset]; # not enough pages
-  my $more = ($#pages >= $offset + $num);
-  my $max = $more ? ($offset + $num - 1) : $#pages;
-  @pages = @pages[$offset .. $max];
-  if (@pages) {
-    print $q->start_div({-class=>'journal'});
-    PrintAllPages(1, 1, @pages);
-    print $q->end_div();
-    print $q->p({-class=>'more'}, ScriptLink("action=more;num=$num;regexp=$regexp;search=$search;mode=$mode;offset=" . ($offset + $num), T('More...'), 'more')) if $more;
-  }
+  return unless $pages[$offset];
+  print $q->start_div({-class=>'journal'});
+  my $next = $offset + PrintAllPages(1, 1, $num, @pages[$offset .. $#pages]);
+  print $q->end_div();
+  print $q->p({-class=>'more'}, ScriptLink("action=more;num=$num;regexp=$regexp;search=$search;mode=$mode;offset=$next", T('More...'), 'more')) if $pages[$next];
 }
 
 sub PrintAllPages {
-  my ($links, $comments, @pages) = @_;
+  my ($links, $comments, $num, @pages) = @_;
   my $lang = GetParam('lang', 0);
-  @pages = @pages[0 .. $JournalLimit - 1]
-    if $#pages >= $JournalLimit and not UserIsAdmin();
+  my ($i, $n) = 0;
   for my $id (@pages) {
+    $i++; # pages looked at
+    last if $n >= $JournalLimit and not UserIsAdmin() or $n >= $num;
     local ($OpenPageName, %Page); # this is local!
     OpenPage($id);
     my @languages = split(/,/, $Page{languages});
     next if $lang and @languages and not grep(/$lang/, @languages);
+    next if PageMarkedForDeletion();
     my $title = NormalToFree($id);
     print $q->start_div({-class=>'page'}),
       $q->h1($links ? GetPageLink($id, $title) : $q->a({-name=>$id},$title));
@@ -904,7 +901,9 @@ sub PrintAllPages {
             T('Comments on this page')));
     }
     print $q->end_div();
+    $n++; # pages actually printed
   }
+  return $i;
 }
 
 sub RSS {
@@ -3796,7 +3795,7 @@ sub DoMaintain {
   foreach my $name (AllPagesList()) {
     print $q->br(), GetPageLink($name);
     OpenPage($name);
-    my $delete = PageDeletable($name);
+    my $delete = PageDeletable();
     if ($delete) {
       my $status = DeletePage($OpenPageName);
       print ' ' . ($status ? T('not deleted: ') . $status : T('deleted'));
@@ -3851,6 +3850,10 @@ sub PageDeletable {
   return unless $KeepDays;
   my $expirets = $Now - ($KeepDays * 86400); # 24*60*60
   return 0 unless $Page{ts} < $expirets;
+  return PageMarkedForDeletion();
+}
+
+sub PageMarkedForDeletion {
   return 1 if $Page{text} =~ /^\s*$/; # only whitespace is also to be deleted
   return $DeletedPage && substr($Page{text}, 0, length($DeletedPage)) eq $DeletedPage; # no regexp!
 }
