@@ -19,7 +19,7 @@
 
 # Includes comment pages in journal collections.
 
-$ModulesDescription .= '<p>$Id: show-comments.pl,v 1.1 2004/09/27 23:01:29 sblatt Exp $</p>';
+$ModulesDescription .= '<p>$Id: show-comments.pl,v 1.2 2011/11/19 15:27:09 as Exp $</p>';
 
 *OldPrintJournal = *PrintJournal;
 *PrintJournal = *NewPrintJournal;
@@ -61,7 +61,7 @@ sub NewPrintJournal {
       local %Page;
       local $OpenPageName='';
       print '<div class="journal">';
-      PrintAllPages(1, 1, @pages);
+      PrintAllPages(1, 1, undef, @pages);
       print '</div>';
     }
     $CollectingJournal = 0;

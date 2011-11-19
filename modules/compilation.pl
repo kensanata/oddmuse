@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: compilation.pl,v 1.3 2004/12/05 03:24:05 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: compilation.pl,v 1.4 2011/11/19 15:27:00 as Exp $</p>';
 
 $Action{compilation} = \&DoCompilation;
 
@@ -49,7 +49,7 @@ sub PrintCompilation {
     local %Page;
     local $OpenPageName='';
     print '<div class="compilation">';
-    PrintAllPages(1, 1, @pages);
+    PrintAllPages(1, 1, undef, @pages);
     print '</div>';
   }
   return @pages;
