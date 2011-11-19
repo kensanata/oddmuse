@@ -1,3 +1,11 @@
+<<<<<<< ChangeLog
+2011-11-19  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl (PrintJournal, PrintAllPages): Journal pages no longer print deleted pages.
+	(DoMaintain): PageDeletable doesn't require a parameter.
+	(PageDeletable): Split into two.
+	(PageMarkedForDeletion): New, used by PrintAllPages.
+
 2011-11-16  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (GetRcRss): Link to $HomePage explicitly instead of just
