@@ -1,4 +1,3 @@
-<<<<<<< ChangeLog
 2011-11-19  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (PrintJournal, PrintAllPages): Journal pages no longer print deleted pages.
