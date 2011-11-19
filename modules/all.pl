@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: all.pl,v 1.1 2006/06/15 11:30:14 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: all.pl,v 1.2 2011/11/19 15:26:44 as Exp $</p>';
 
 $Action{all} = \&DoPrintAllPages;
 
@@ -28,7 +28,7 @@ sub DoPrintAllPages {
   print GetHeader('', T('Complete Content'))
     . $q->p(Ts('The main page is %s.', $q->a({-href=>'#' . $HomePage}, $HomePage)));
   print $q->p($q->b(Ts('(for %s)', GetParam('lang', 0)))) if GetParam('lang', 0);
-  PrintAllPages(0, 0, AllPagesList());
+  PrintAllPages(0, 0, undef, AllPagesList());
   PrintFooter();
 }
 

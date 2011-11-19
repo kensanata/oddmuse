@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: calendar.pl,v 1.57 2008/04/25 12:54:19 weakish Exp $</p>';
+$ModulesDescription .= '<p>$Id: calendar.pl,v 1.58 2011/11/19 15:26:55 as Exp $</p>';
 
 use vars qw($CalendarOnEveryPage $CalAsTable $CalStartMonday);
 
@@ -104,7 +104,7 @@ sub DoCollect {
     # Now save information required for saving the cache of the current page.
     local (%Page, $OpenPageName);
     print $q->start_div({-class=>'content journal collection'});
-    PrintAllPages(1, 1, @pages);
+    PrintAllPages(1, 1, undef, @pages);
     print $q->end_div();
   }
   $CollectingJournal = 0;

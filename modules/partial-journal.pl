@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: partial-journal.pl,v 1.3 2004/12/05 03:55:38 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: partial-journal.pl,v 1.4 2011/11/19 15:27:03 as Exp $</p>';
 
 # Set up some rule so that we can mess with '-- cut --' (change to <hr>)
 push(@MyRules, \&PartialCutRule);
@@ -34,6 +34,7 @@ sub PartialCutRule {
 sub NewPartialPrintAllPages {
   my $links = shift;
   my $comments = shift;
+  my $num = shift;
   for my $id (@_) {
     OpenPage($id);
     print $q->hr . $q->h1($links ? GetPageLink($id) : $q->a({-name=>$id},$id));
