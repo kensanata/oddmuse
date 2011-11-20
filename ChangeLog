@@ -1,16 +1,26 @@
+2011-11-20  Alex Schroeder  <alex@gnu.org>
+
+	* git.pl: Renamed $GitDir to $GitRepo.
+
 2011-11-19  Alex Schroeder  <alex@gnu.org>
 
-	* modules/show-comments.pl (NewPrintJournal): PrintAllPages needs an extra parameter.
+	* modules/show-comments.pl (NewPrintJournal): PrintAllPages needs
+	an extra parameter.
 
-	* modules/partial-journal.pl (NewPartialPrintAllPages): PrintAllPages needs an extra parameter.
+	* modules/partial-journal.pl (NewPartialPrintAllPages):
+	PrintAllPages needs an extra parameter.
 
-	* modules/compilation.pl (PrintCompilation): PrintAllPages needs an extra parameter.
+	* modules/compilation.pl (PrintCompilation): PrintAllPages needs
+	an extra parameter.
 
-	* modules/calendar.pl (DoCollect): PrintAllPages needs an extra parameter.
+	* modules/calendar.pl (DoCollect): PrintAllPages needs an extra
+	parameter.
 
-	* modules/all.pl (DoPrintAllPages): PrintAllPages needs an extra parameter.
+	* modules/all.pl (DoPrintAllPages): PrintAllPages needs an extra
+	parameter.
 
-	* wiki.pl (PrintJournal, PrintAllPages): Journal pages no longer print deleted pages.
+	* wiki.pl (PrintJournal, PrintAllPages): Journal pages no longer
+	print deleted pages.
 	(DoMaintain): PageDeletable doesn't require a parameter.
 	(PageDeletable): Split into two.
 	(PageMarkedForDeletion): New, used by PrintAllPages.
