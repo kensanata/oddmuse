@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: all.pl,v 1.2 2011/11/19 15:26:44 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: all.pl,v 1.3 2011/11/20 23:39:17 as Exp $</p>';
 
 $Action{all} = \&DoPrintAllPages;
 
@@ -30,28 +30,6 @@ sub DoPrintAllPages {
   print $q->p($q->b(Ts('(for %s)', GetParam('lang', 0)))) if GetParam('lang', 0);
   PrintAllPages(0, 0, undef, AllPagesList());
   PrintFooter();
-}
-
-sub PrintAllPages {
-  my $links = shift;
-  my $comments = shift;
-  my $lang = GetParam('lang', 0);
-  for my $id (@_) {
-    OpenPage($id);
-    my @languages = split(/,/, $Page{languages});
-    @languages = GetLanguages($Page{text}) unless GetParam('cache', $UseCache); # maybe refresh!
-    next if $lang and @languages and not grep(/$lang/, @languages);
-    my $title = $id;
-    $title =~ s/_/ /g;	 # Display as spaces
-    print $q->start_div({-class=>'page'}) . $q->hr
-      . $q->h1($links ? GetPageLink($id, $title) : $q->a({-name=>$id},$title));
-    PrintPageHtml();
-    if ($comments and UserCanEdit($CommentsPrefix . $id, 0) and $id !~ /^$CommentsPrefix/) {
-      print $q->p({-class=>'comment'},
-		  GetPageLink($CommentsPrefix . $id, T('Comments on this page')));
-    }
-    print $q->end_div();;
-  }
 }
 
 *OldAllScriptLink = *ScriptLink;
