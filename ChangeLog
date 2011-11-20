@@ -1,5 +1,7 @@
 2011-11-20  Alex Schroeder  <alex@gnu.org>
 
+	* modules/git.pl (GitCleanup): Run git push.
+
 	* git.pl: Renamed $GitDir to $GitRepo.
 
 2011-11-19  Alex Schroeder  <alex@gnu.org>
