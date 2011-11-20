@@ -35,7 +35,7 @@ Default: C</usr/bin/git>
 
 The fully qualified name for the binary to run. Your PATH will not be searched.
 
-=head2 $GitDir
+=head2 $GitRepo
 
 Default: C<$DataDir/git>
 
@@ -50,7 +50,7 @@ The email address used to identify users in git.
 
 =cut
 
-use vars qw($GitBinary $GitDir $GitMail);
+use vars qw($GitBinary $GitRepo $GitMail);
 
 $GitBinary = '/usr/bin/git';
 $GitMail = 'unknown@oddmuse.org';
@@ -76,23 +76,23 @@ sub GitRun {
 }
 
 sub GitInitVariables {
-  $GitDir = $DataDir . '/git';
+  $GitRepo = $DataDir . '/git';
 }
 
 sub GitInitRepository {
-  if (not -d "$GitDir/.git") {
-    CreateDir($GitDir);
-    chdir($GitDir); # important for all the git commands that follow!
+  if (not -d "$GitRepo/.git") {
+    CreateDir($GitRepo);
+    chdir($GitRepo); # important for all the git commands that follow!
     GitRun('init', '--quiet');
     foreach my $id (AllPagesList()) {
       OpenPage($id);
-      WriteStringToFile("$GitDir/$id", $Page{text});
+      WriteStringToFile("$GitRepo/$id", $Page{text});
       GitRun('add', $id);
     }
     GitRun('commit', '--quiet', '-m', 'initial import',
 	   "--author=Oddmuse <$GitMail>");
   } else {
-    chdir($GitDir); # important for all the git commands that follow!
+    chdir($GitRepo); # important for all the git commands that follow!
   }
 }
 
@@ -103,7 +103,7 @@ sub GitNewSave {
   GitOldSave(@_);
   GitInitRepository();
   my ($id) = @_;
-  WriteStringToFile("$GitDir/$id", $Page{text});
+  WriteStringToFile("$GitRepo/$id", $Page{text});
   if ($Page{revision} == 1) {
     GitRun('add', $id);
   }
@@ -134,21 +134,21 @@ sub GitNewDeletePage {
 push(@MyMaintenance, \&GitCleanup);
 
 sub GitCleanup {
-  if (-d $GitDir) {
+  if (-d $GitRepo) {
     # delete all the files including all the files starting with a dot
-    opendir(DIR, $GitDir) or ReportError("cannot open directory $GitDir: $!");
+    opendir(DIR, $GitRepo) or ReportError("cannot open directory $GitRepo: $!");
     foreach my $file (readdir(DIR)) {
       next if $file eq '.git' or $file eq '.' or $file eq '..';
-      unlink "$GitDir/$file" or ReportError("cannot delete $GitDir/$file: $!");
+      unlink "$GitRepo/$file" or ReportError("cannot delete $GitRepo/$file: $!");
     }
     closedir DIR;
     # write all the files again
     foreach my $id (AllPagesList()) {
       OpenPage($id);
-      WriteStringToFile("$GitDir/$id", $Page{text});
+      WriteStringToFile("$GitRepo/$id", $Page{text});
     }
     # commit the new state
-    chdir($GitDir); # important for all the git commands that follow!
+    chdir($GitRepo); # important for all the git commands that follow!
     GitRun('commit', '--quiet', '-a', '-m', 'maintenance job',
 	   "--author=Oddmuse <$GitMail>");
   }
