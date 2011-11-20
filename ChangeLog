@@ -1,3 +1,7 @@
+2011-11-21  Alex Schroeder  <alex@gnu.org>
+
+	* modules/all.pl (PrintAllPages): Deleted. (Was it ever required?)
+
 2011-11-20  Alex Schroeder  <alex@gnu.org>
 
 	* git.pl: Renamed $GitDir to $GitRepo.
