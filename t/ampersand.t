@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 38;
+use Test::More tests => 39;
 
 clear_pages();
 
@@ -57,6 +57,11 @@ xpath_test(get_page('Start'),
 # revert and run the previous test as well
 xpath_test(update_page('Start', '[[D&D]]'),
 	   '//a[@class="local"][@href="http://localhost/wiki.pl/D%26D"][text()="D&D"]');
+
+# Journal test
+update_page('2011-11-20 No D%26D Today', 'This is the page itself.');
+test_page(update_page('Journal', '<journal>'),
+	  '2011-11-20 No D&amp;D Today');
 
 # the following was copied from creole.pl
 
