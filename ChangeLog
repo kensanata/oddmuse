@@ -1,5 +1,7 @@
 2011-11-21  Alex Schroeder  <alex@gnu.org>
 
+	* wiki.pl (PrintAllPages): Fix double quoting of page title.
+
 	* modules/all.pl (PrintAllPages): Deleted. (Was it ever required?)
 
 2011-11-20  Alex Schroeder  <alex@gnu.org>
