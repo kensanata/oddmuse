@@ -1,3 +1,9 @@
+2011-11-26  Alex Schroeder  <alex@gnu.org>
+
+	* modules/honeypot.pl: Add pod.
+	($HoneyPotOk $HoneyPotIdiot, $HoneyPotTimestamp): New.
+	(HoneyPotNewGetFormStart, HoneyPotInspection): Use them.
+
 2011-11-21  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (PrintAllPages): Fix double quoting of page title.
