@@ -128,12 +128,14 @@ sub post {
   my %params = (text => $data,
   		title => $id,
   		summary => $name,
-	        question => 1,
   		username => GetParam('username'),
   		pwd => GetParam('pwd'));
+  # spam fighting modules
+  $param{$QuestionaskerSecretKey} = 1 if $QuestionaskerSecretKey;
+  $param{$HoneyPotOk} = time if $HoneyPotOk;
   my $response = $ua->post($site, \%params);
   if ($response->is_error) {
-    print $q->p("The submission failed! ($QuestionaskerSecretKey)");
+    print $q->p("The submission failed!");
     print $q->pre($response->status_line . "\n"
   		  . $response->content);
   } else {
