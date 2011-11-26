@@ -1,5 +1,8 @@
 2011-11-26  Alex Schroeder  <alex@gnu.org>
 
+	* contrib/campaignwiki/add-link.pl (post): Handle questionasker
+	and honeypot modules.
+
 	* modules/honeypot.pl: Add pod.
 	($HoneyPotOk $HoneyPotIdiot, $HoneyPotTimestamp): New.
 	(HoneyPotNewGetFormStart, HoneyPotInspection): Use them.
