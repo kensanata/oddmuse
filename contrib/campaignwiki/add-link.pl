@@ -125,25 +125,26 @@ sub post_addition {
   # start with the homepage
   my @pages = GetPageContent($HomePage) =~ /\* \[\[(.*?)\]\]/g;
   for my $id (@pages) {
-    return post($id, undef, $name, $url) if $id eq $toc;
+    return post($id, undef, $name, $url, GetParam('stars', '')) if $id eq $toc;
     my $data = GetPageContent(FreeToNormal($id));
     while ($data =~ /(\*+ ([^][\n]*))$/mg) {
-      return post($id, $1, $name, $url) if $2 eq $toc;
+      return post($id, $1, $name, $url, GetParam('stars', '')) if $2 eq $toc;
     }
   }
   print $q->p("Whoops. I was unable to find “$toc” in the wiki. Sorry!");
 }
 
 sub post {
-  my ($id, $toc, $name, $url) = @_;
+  my ($id, $toc, $name, $url, $stars) = @_;
   my $data = GetPageContent(FreeToNormal($id));
+  $stars = ' ' . (':star:' x $stars) if $stars;
   if ($toc) {
     $toc =~ /^(\*+)/;
     my $depth = "*$1"; # one more!
     my $regexp = quotemeta($toc);
-    $data =~ s/$regexp/$toc\n$depth \[$url $name\]/;
+    $data =~ s/$regexp/$toc\n$depth \[$url $name\]$stars/;
   } else {
-    $data = "* [$url $name]\n" . $data;
+    $data = "* [$url $name]$stars\n" . $data;
   }
   my $ua = LWP::UserAgent->new;
   my %params = (text => $data,
@@ -152,8 +153,8 @@ sub post {
   		username => GetParam('username'),
   		pwd => GetParam('pwd'));
   # spam fighting modules
-  $param{$QuestionaskerSecretKey} = 1 if $QuestionaskerSecretKey;
-  $param{$HoneyPotOk} = time if $HoneyPotOk;
+  $params{$QuestionaskerSecretKey} = 1 if $QuestionaskerSecretKey;
+  $params{$HoneyPotOk} = time if $HoneyPotOk;
   my $response = $ua->post($site, \%params);
   if ($response->is_error) {
     print $q->p("The submission failed!");
