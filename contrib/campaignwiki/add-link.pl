@@ -66,18 +66,39 @@ sub check_url {
   $toc =~ s/^[   ]+//;
   return default() unless $toc;
   my $url = shift;
-  my $name = GetParam('name', get_name($url));
+  my $name = UnquoteHtml(GetParam('name', get_name($url)));
   if (not GetParam('confirm', 0)) {
     print $q->p("Please confirm that you want to add "
 		. GetUrl($url, $name)
 		. " to the section “$toc”.");
     print $q->start_form;
-    print $q->p($q->label({-for=>'name'}, T('Use a different name:')) . ' '
-		. $q->textfield(-name=>'name', -id=>'name', -size=>50,
-				-default=>$name)
+    print $q->p($q->label({-for=>'name', -style=>'display: inline-block; width:30ex'},
+			  T('Use a different link name:')) . ' '
+		. $q->textfield(-style=>'display: inline-block; width:60ex',
+				-name=>'name', -id=>'name', -size=>50, -default=>$name)
 		. $q->br()
-	        . $q->label({-for=>'username'}, T('Username:')) . ' '
-	        . $q->textfield(-name=>'username', -id=>'username', -size=>50));
+	        . $q->label({-for=>'username', -style=>'display: inline-block; width:30ex'},
+			    T('Your name for the log file:')) . ' '
+	        . $q->textfield(-style=>'display: inline-block; width:60ex',
+				-name=>'username', -id=>'username', -size=>50));
+    my $star = $q->img({-src=>'http://www.emacswiki.org/pics/star.png', -class=>'smiley',
+			-alt=>'star'});
+    print '<p>Optionally: Do you want to rate it?<br />';
+    my $i = 0;
+    foreach my $label ($q->span({-style=>'display: inline-block; width:15ex'}, $star)
+		       . 'I might use this for my next campaign',
+		       $q->span({-style=>'display: inline-block; width:15ex'}, $star x 2)
+		       . 'I have used this in a campaign and it worked as intended',
+		       $q->span({-style=>'display: inline-block; width:15ex'}, $star x 3)
+		       . 'I have used it in many of my campaigns',
+		       $q->span({-style=>'display: inline-block; width:15ex'}, $star x 4)
+		       . 'Everybody should give it a try',
+		       $q->span({-style=>'display: inline-block; width:15ex'}, $star x 5)
+		       . 'Everybody should use it, that is how awesome it is!') {
+      $i++;
+      print qq{<label><input type="radio" name="stars" value="$i" $checked/>$label</label><br />};
+    }
+    print '</p>';
     print $q->hidden('url', $url);
     print $q->hidden('toc', $toc);
     print $q->hidden('confirm', 1);
