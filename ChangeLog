@@ -2,6 +2,7 @@
 
 	* contrib/campaignwiki/add-link.pl (post): Handle questionasker
 	and honeypot modules.
+	(check_url): Add some CSS and option to rate.
 
 	* modules/honeypot.pl: Add pod.
 	($HoneyPotOk $HoneyPotIdiot, $HoneyPotTimestamp): New.
