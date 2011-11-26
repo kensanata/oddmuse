@@ -1,8 +1,9 @@
 2011-11-26  Alex Schroeder  <alex@gnu.org>
 
 	* contrib/campaignwiki/add-link.pl (post): Handle questionasker
-	and honeypot modules.
+	and honeypot modules. Add stars if any.
 	(check_url): Add some CSS and option to rate.
+	(post_addition): Pass stars to post.
 
 	* modules/honeypot.pl: Add pod.
 	($HoneyPotOk $HoneyPotIdiot, $HoneyPotTimestamp): New.
