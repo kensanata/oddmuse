@@ -210,7 +210,9 @@ sub post_addition {
 		  summary => $title,
 		  username => GetParam('username'),
 		  pwd => GetParam('pwd'));
+    # spam fighting modules
     $params{$QuestionaskerSecretKey} = 1 if $QuestionaskerSecretKey;
+    $params{$HoneyPotOk} = time if $HoneyPotOk;
     my $response = $ua->post($site, \%params);
     if ($response->is_error) {
       print $q->p("The submission failed!");
