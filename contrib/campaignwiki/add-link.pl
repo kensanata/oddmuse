@@ -17,6 +17,7 @@
 package OddMuse;
 use LWP::UserAgent;
 use HTML::TreeBuilder;
+use utf8;
 
 # load Oddmuse core
 $RunCGI = 0;
@@ -34,16 +35,22 @@ main();
 sub toc {
   # start with the homepage
   my @values;
+  my %labels;
   for my $id (GetPageContent($HomePage) =~ /\* \[\[(.*?)\]\]/g) {
     push @values, $id;
     for my $item (GetPageContent(FreeToNormal($id)) =~ /(\*+ [^][\n]*)$/mg) {
-      $item =~ s/\*/ /g;
-      push @values, $item;
+      my $value = $item;
+      my $label = $item;
+      $value =~ s/\* *//g;
+      push @values, $value;
+      $label =~ s/\* */ /g; # EM SPACE
+      $labels{$value} = $label;
     }
   }
   return $q->radio_group(-name =>'toc',
-		      -values => \@values,
-		      -linebreak=>'true');
+			 -values => \@values,
+			 -labels => \%labels,
+			 -linebreak=>'true');
 }
 
 sub default {
@@ -63,15 +70,14 @@ sub default {
 
 sub check_url {
   my $toc = GetParam('toc');
-  $toc =~ s/^[   ]+//;
   return default() unless $toc;
   my $url = shift;
-  my $name = UnquoteHtml(GetParam('name', get_name($url)));
   if (not GetParam('confirm', 0)) {
+    my $name = get_name($url);
     print $q->p("Please confirm that you want to add "
 		. GetUrl($url, $name)
 		. " to the section “$toc”.");
-    print $q->start_form;
+    print $q->start_form(-method=>'get');
     print $q->p($q->label({-for=>'name', -style=>'display: inline-block; width:30ex'},
 			  T('Use a different link name:')) . ' '
 		. $q->textfield(-style=>'display: inline-block; width:60ex',
@@ -105,7 +111,7 @@ sub check_url {
     print $q->submit('go', 'Continue');
     print $q->end_form();
   } else {
-    post_addition($name, $url, $toc);
+    post_addition($q->param('name'), $url, $toc);
   }
 }
 
@@ -121,7 +127,9 @@ sub get_name {
 sub post_addition {
   my ($name, $url, $toc) = @_;
   my $id = FreeToNormal($name);
-  print $q->p("Adding ", $q->a({-href=>$url}, $name), " to “$toc”.");
+  my $display = $name;
+  utf8::decode($display); # we're dealing with user input
+  print $q->p("Adding ", GetUrl($url, $display), " to “$toc”.");
   # start with the homepage
   my @pages = GetPageContent($HomePage) =~ /\* \[\[(.*?)\]\]/g;
   for my $id (@pages) {
@@ -170,11 +178,13 @@ sub main {
   $DataDir = "$DataDir/$wiki";     # but link to the local pages
   Init();                          # read config file (no modules!)
   $ScriptName = $site;             # undo setting in the config file
+  binmode(STDOUT,':utf8');
+  $q->charset('utf8');
   if ($q->path_info eq '/source') {
     seek DATA, 0, 0;
     print "Content-type: text/plain; charset=UTF-8\r\n\r\n", <DATA>;
   } else {
-    $UserGotoBar .= $q->a({-href=>$q->url . '/source'}, 'Source');
+    $UserGotoBar = $q->a({-href=>$q->url . '/source'}, 'Source');
     print GetHeader('', 'Submit a new link');
     print $q->start_div({-class=>'content index'});
     if (not GetParam('url')) {
@@ -182,7 +192,7 @@ sub main {
     } else {
       check_url(GetParam('url'));
     }
-    print $q->p('Questions? Send mail to Alex Schröder <'
+    print $q->p('Questions? Send mail to Alex Schroeder <'
 		. $q->a({-href=>'mailto:kensanata@gmail.com'},
 			'kensanata@gmail.com') . '>');
     print $q->end_div();
