@@ -6,6 +6,9 @@
 	installed and requires $FullUrl).
 	(post_addition): Pass on $HoneyPotOk, if set.
 	(main): Call HoneyPotInspection() if appropriate.
+	(default): Ask for the username.
+	(check_url): Require a username.
+	(main): Add title parameter in order to trigger honeypot inspection.
 
 	* contrib/campaignwiki/add-link.pl: use utf8.
 	(toc): labels and values are different, now.
