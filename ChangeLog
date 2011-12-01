@@ -1,7 +1,11 @@
 2011-12-01  Alex Schroeder  <alex@gnu.org>
 
 	* contrib/campaignwiki/submit.pl (post_addition): Add support for
-	honeypot.
+	honeypot. Set $FullUrl.
+	(default): Use GetFormStart (which will load honeypot.pl if
+	installed and requires $FullUrl).
+	(post_addition): Pass on $HoneyPotOk, if set.
+	(main): Call HoneyPotInspection() if appropriate.
 
 	* contrib/campaignwiki/add-link.pl: use utf8.
 	(toc): labels and values are different, now.
