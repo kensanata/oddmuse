@@ -1,3 +1,11 @@
+2011-12-01  Alex Schroeder  <alex@gnu.org>
+
+	* contrib/campaignwiki/add-link.pl: use utf8.
+	(toc): labels and values are different, now.
+	(check_url): this simplifies stuff, here. Also fix some name
+	handling.
+	(post_addition, main): Fix some UTF-8 encoding issues.
+
 2011-11-26  Alex Schroeder  <alex@gnu.org>
 
 	* contrib/campaignwiki/add-link.pl (post): Handle questionasker
