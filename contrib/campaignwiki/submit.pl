@@ -40,8 +40,15 @@ sub default {
 	      . $q->a({-href=>'http://campaignwiki.org/planet'},
 			'Old School RPG Planet') . ".");
   print GetFormStart();
-  print $q->p($q->label({-for=>'url'}, T('URL:')) . ' '
-	      . $q->textfield(-name=>'url', -id=>'url', -size=>50));
+  print $q->p($q->label({-for=>'url', -style=>'display: inline-block; width:30ex'},
+			T('URL:')) . ' '
+	      . $q->textfield(-style=>'display: inline-block; width:60ex',
+			      -name=>'url', -id=>'url', -size=>50)
+	      . $q->br()
+	      . $q->label({-for=>'username', -style=>'display: inline-block; width:30ex'},
+			  T('Your name for the log file:')) . ' '
+	      . $q->textfield(-style=>'display: inline-block; width:60ex',
+			      -name=>'username', -id=>'username', -size=>50));
   print $q->submit('go', 'Go!');
   print $q->end_form();
   print $q->p("Drag this bookmarklet to your bookmarks bar for easy access:",
@@ -95,6 +102,8 @@ sub check_url {
     print $q->p($q->a({-href=>$url}, $url) . qq{
 seems to be <strong>invalid</strong>. $frown Make sure you use something
 like the following: <tt>http://grognardia.blogspot.com/</tt>});
+  } elsif (not GetParam('username', '')) {
+    print $q->p(qq{As an anti-spam measure I'd really like you to <strong>provide a name</strong> for the log file. Sorry about that. $frown});
   } else {
     my %blogs = parse_blogs();
     my $duplicate = host_exists($u->host, %blogs);
@@ -248,6 +257,7 @@ sub main {
     if (not GetParam('url')) {
       default();
     } else {
+      SetParam('title', 'Feeds'); # required to trigger HoneyPotInspection()
       HoneyPotInspection();
       check_url(GetParam('url'));
     }
