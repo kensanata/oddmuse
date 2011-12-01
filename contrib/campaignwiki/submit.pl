@@ -27,6 +27,7 @@ my $page = "Feeds";
 my $site = "http://campaignwiki.org/wiki/Planet";
 my $src = "$site/raw/$page";
 my $target = "$site/$page";
+$FullUrl = "http://campaignwiki.org/submit";
 my %valid_content_type = ('application/atom+xml' => 1,
 			  'application/rss+xml' => 1,
 			  'application/xml' => 1,
@@ -38,7 +39,7 @@ sub default {
   print $q->p("Submit a blog to the "
 	      . $q->a({-href=>'http://campaignwiki.org/planet'},
 			'Old School RPG Planet') . ".");
-  print $q->start_multipart_form(-method=>'get', -class=>'submit');
+  print GetFormStart();
   print $q->p($q->label({-for=>'url'}, T('URL:')) . ' '
 	      . $q->textfield(-name=>'url', -id=>'url', -size=>50));
   print $q->submit('go', 'Go!');
@@ -212,7 +213,7 @@ sub post_addition {
 		  pwd => GetParam('pwd'));
     # spam fighting modules
     $params{$QuestionaskerSecretKey} = 1 if $QuestionaskerSecretKey;
-    $params{$HoneyPotOk} = time if $HoneyPotOk;
+    $params{$HoneyPotOk} = GetParam($HoneyPotOk, time) if $HoneyPotOk;
     my $response = $ua->post($site, \%params);
     if ($response->is_error) {
       print $q->p("The submission failed!");
@@ -247,6 +248,7 @@ sub main {
     if (not GetParam('url')) {
       default();
     } else {
+      HoneyPotInspection();
       check_url(GetParam('url'));
     }
     print $q->p('Questions? Send mail to Alex Schröder <'
