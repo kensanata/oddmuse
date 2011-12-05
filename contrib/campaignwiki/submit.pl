@@ -112,7 +112,7 @@ like the following: <tt>http://grognardia.blogspot.com/</tt>});
 	&& !GetParam('confirmed')) {
       print $q->p("We have a partial match: ",
 		  $q->a({-href=>$duplicate}, $duplicate));
-      print $q->start_multipart_form(-method=>'get', -class=>'submit');
+      print GetFormStart();
       print $q->hidden('confirmed', 1);
       print $q->hidden('url', $url);
       print $q->submit('go', 'Proceed anyway!');
@@ -127,7 +127,7 @@ thing to do, though.});
     } else {
       my @alternatives = get_feeds($url, keys %blogs);
       if ($#alternatives > 0 && !GetParam('candidate')) {
-	print $q->start_multipart_form(-method=>'get', -class=>'submit');
+	print GetFormStart();
 	print $q->hidden('confirmed', 1);
 	print $q->hidden('url', $url);
 	print $q->p("You need to pick one of the candidates:");
@@ -254,7 +254,8 @@ sub main {
     $UserGotoBar .= $q->a({-href=>$q->url . '/source'}, 'Source');
     print GetHeader('', 'Submit a new blog');
     print $q->start_div({-class=>'content index'});
-    if (not GetParam('url')) {
+    if (not GetParam('url')
+	or not GetParam($HoneyPotOk)) {
       default();
     } else {
       SetParam('title', 'Feeds'); # required to trigger HoneyPotInspection()
