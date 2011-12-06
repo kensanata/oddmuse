@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.956 2011/11/21 00:32:05 as Exp $
+# Version       $Id: wiki.pl,v 1.957 2011/12/06 00:01:44 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
 #     Alex Schroeder <alex@gnu.org>
@@ -36,7 +36,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.956 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.957 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -51,7 +51,7 @@ $SiteBase $StyleSheet $NotFoundPg $FooterNote $NewText $EditNote $HttpCharset
 $UserGotoBar $VisitorFile $RcFile %Smilies %SpecialDays $InterWikiMoniker
 $SiteDescription $RssImageUrl $ReadMe $RssRights $BannedCanRead $SurgeProtection
 $TopLinkBar $LanguageLimit $SurgeProtectionTime $SurgeProtectionViews
-$DeletedPage %Languages $InterMap $ValidatorLink %LockOnCreation @CssList
+$DeletedPage %Languages $InterMap $ValidatorLink %LockOnCreation
 $RssStyleSheet %CookieParameters @UserGotoBarPages $NewComment $HtmlHeaders
 $StyleSheetPage $ConfigPage $ScriptName $CommentsPrefix @UploadTypes
 $AllNetworkFiles $UsePathInfo $UploadAllowed $LastUpdate $PageCluster
@@ -172,14 +172,6 @@ $DocumentHeader = qq(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN")
 # Replace regular expressions with inlined images
 # Example: %Smilies = (":-?D(?=\\W)" => '/pics/grin.png');
 %Smilies = ();
-@CssList = qw(http://www.emacswiki.org/css/astrid.css
-             http://www.emacswiki.org/css/beige-red.css
-             http://www.emacswiki.org/css/blue.css
-             http://www.emacswiki.org/css/cali.css
-             http://www.emacswiki.org/css/green.css
-             http://www.emacswiki.org/css/hug.css
-             http://www.emacswiki.org/css/oddmuse.css
-             http://www.emacswiki.org/css/wikio.css); # List of Oddmuse CSS URLs
 # Detect page languages when saving edits
 # Example: %Languages = ('de' => '\b(der|die|das|und|oder)\b');
 %Languages = ();
@@ -197,9 +189,8 @@ $LockExpiration = 60; # How long before expirable locks are expired
            download => \&DoDownload,       rss => \&DoRss,
            unlock => \&DoUnlock,           password => \&DoPassword,
            index => \&DoIndex,             admin => \&DoAdminPage,
-           clear => \&DoClearCache,        css => \&DoCss,
-           contrib => \&DoContributors,    more => \&DoJournal,
-           debug => \&DoDebug );
+           clear => \&DoClearCache,        debug => \&DoDebug,
+           contrib => \&DoContributors,    more => \&DoJournal);
 @MyRules = (\&LinkRules, \&ListRule); # don't set this variable, add to it!
 %RuleOrder = (\&LinkRules => 0, \&ListRule => 0);
 
@@ -290,7 +281,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.956 2011/11/21 00:32:05 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.957 2011/12/06 00:01:44 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -2129,7 +2120,6 @@ sub DoAdminPage {
     } else {
       push(@menu, ScriptLink('action=editlock;set=1', T('Lock site'), 'editlock 1'));
     }
-    push(@menu, ScriptLink('action=css', T('Install CSS'), 'css')) unless $StyleSheet;
     if ($id) {
       my $title = NormalToFree($id);
       if (-f GetLockedPageFile($id)) {
@@ -3983,23 +3973,6 @@ sub WriteRecentVisitors {
 }
 
 sub TextIsFile { $_[0] =~ /^#FILE (\S+) ?(\S+)?\n/ }
-
-sub DoCss {
-  my $css = GetParam('install', '');
-  if ($css) {
-    my $data = GetRaw($css);
-    ReportError(Ts('%s returned no data, or LWP::UserAgent is not available.', $css),
-    '500 INTERNAL SERVER ERROR') unless $data;
-    SetParam('text', $data);
-    DoPost($StyleSheetPage);
-  } else {
-    print GetHeader('', T('Install CSS')), $q->start_div({-class=>'content css'}),
-      $q->p(Ts('Copy one of the following stylesheets to %s:', GetPageLink($StyleSheetPage))),
-      $q->ul(map {$q->li(ScriptLink("action=css;install=$_", $_))} @CssList),
-      $q->end_div();
-    PrintFooter();
-  }
-}
 
 DoWikiRequest() if $RunCGI and not exists $ENV{MOD_PERL}; # Do everything.
 1; # In case we are loaded from elsewhere
