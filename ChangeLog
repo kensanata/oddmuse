@@ -1,3 +1,12 @@
+2011-12-06  Alex Schroeder  <alex@gnu.org>
+
+	* wiki.pl: Get rid of @CssList.
+	Remove css action.
+	(DoAdminPage): Remove Install CSS menu.
+	(DoCss): Deleted.
+
+	* modules/css-install.pl: New.
+
 2011-12-04  Alex Schroeder  <alex@gnu.org>
 
 	* contrib/campaignwiki/submit.pl (check_url): Use GetFormStart.
