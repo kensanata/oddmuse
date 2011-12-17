@@ -1,7 +1,7 @@
 2011-12-17  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (PrintAllPages): Fix a small bug when counting the pages
-	looked at, following an observation by Ingo Belka
+	looked at, following an observation by Ingo Belka.
 
 2011-12-06  Alex Schroeder  <alex@gnu.org>
 
