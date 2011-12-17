@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.957 2011/12/06 00:01:44 as Exp $
+# Version       $Id: wiki.pl,v 1.958 2011/12/17 17:24:17 as Exp $
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
 #     Alex Schroeder <alex@gnu.org>
@@ -36,7 +36,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
-$VERSION=(split(/ +/, q{$Revision: 1.957 $}))[1]; # for MakeMaker
+$VERSION=(split(/ +/, q{$Revision: 1.958 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -281,7 +281,7 @@ sub InitRequest {
 sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
          $Counter++ > 0 ? Ts('%s calls', $Counter) : '')
-    . $q->p(q{$Id: wiki.pl,v 1.957 2011/12/06 00:01:44 as Exp $});
+    . $q->p(q{$Id: wiki.pl,v 1.958 2011/12/17 17:24:17 as Exp $});
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
   $ReplaceForm = 0;   # Only admins may search and replace
@@ -875,8 +875,8 @@ sub PrintAllPages {
   my $lang = GetParam('lang', 0);
   my ($i, $n) = 0;
   for my $id (@pages) {
-    $i++; # pages looked at
     last if $n >= $JournalLimit and not UserIsAdmin() or $num and $n >= $num;
+    $i++; # pages looked at
     local ($OpenPageName, %Page); # this is local!
     OpenPage($id);
     my @languages = split(/,/, $Page{languages});
