@@ -12,29 +12,44 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: weblog-3.pl,v 1.13 2011/12/31 00:27:33 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: weblog-3.pl,v 1.14 2011/12/31 01:40:26 as Exp $</p>';
 
 # Categories
+
+use vars qw($CategoriesPage);
 
 $CategoriesPage = 'Categories';
 
 *CategoriesOldOpenPage = *OpenPage;
 *OpenPage = *CategoriesNewOpenPage;
 
-%Category = (); # fast checking
-@Categories = (); # correct order
-my $CategoryInit = 0;
+my %Category = (); # fast checking
+my @Categories = (); # correct order
+
+# handle reset of $NewText in mod_apache environment
+
+my $CategoryNewText;
+
+push(@MyInitVariables, sub {
+       if (defined $CategoryNewText) {
+	 $NewText = $CategoryNewText;
+       } else {
+	 $CategoryNewText = $NewText;
+       }
+});
+
+# Set $NewText on OpenPage in some case only
 
 sub CategoriesNewOpenPage {
   CategoryInit() unless $CategoryInit;
   CategoriesOldOpenPage(@_);
   if ($Page{revision} == 0) {
     if ($OpenPageName eq $HomePage) {
-      $Page{text} = '<journal>';
+      $NewText = '<journal>';
     } elsif (GetParam('tag','') or $Category{$OpenPageName}) {
       # if the page is either on the categories page, or the tag=1
       # parameter was added, show a journal
-      $Page{text} = T('Matching pages:')
+      $NewText = T('Matching pages:')
 	. "\n\n"
 	. '<journal "^\d\d\d\d-\d\d-\d\d.*'
 	. $OpenPageName
@@ -42,6 +57,8 @@ sub CategoriesNewOpenPage {
     }
   }
 }
+
+# Category page
 
 sub CategoryParse {
   my @paragraphs = split(/\n\n+/, shift);
@@ -56,6 +73,8 @@ sub CategoryParse {
   }
   return @result;
 }
+
+my $CategoryInit = 0;
 
 sub CategoryInit {
   $CategoryInit = 1;
@@ -81,7 +100,8 @@ sub DoCategories {
   PrintFooter();
 }
 
-*GetGotoBar = * NewGetGotoBar;
+# Goto Bar
+
 my $GotoBarInit = 0;
 
 sub GotoBarInit {
@@ -89,6 +109,8 @@ sub GotoBarInit {
   @UserGotoBarPages = (@UserGotoBarPages,
 		       CategoryParse(GetPageContent($HomePage)));
 }
+
+*GetGotoBar = * NewGetGotoBar;
 
 sub NewGetGotoBar {
   my $id = shift;
