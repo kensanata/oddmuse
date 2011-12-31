@@ -3,6 +3,9 @@
 	* modules/weblog-3.pl (CategoryParse): New. Change parsing
 	slightly to match the description on the wiki.
 	(CategoryInit, GotoBarInit): Use it.
+	(CategoriesNewOpenPage): Instead of setting $Page{text}, set
+	$NewText because that's what BrowsePage uses. Handle $NewPage in
+	the case of mod_apache or similar environment.
 
 2011-12-17  Alex Schroeder  <alex@gnu.org>
 
