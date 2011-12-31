@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 22;
+use Test::More tests => 34;
 
 clear_pages();
 
@@ -38,9 +38,10 @@ test_page($page, '2011-12-17', '2011-12-16', '2011-12-15',
 test_page_negative($page, '2011-12-12', '2011-12-11', '2011-12-10',
 	  '2011-12-09', '2011-12-08');
 
+xpath_test($page, '//a[@href="http://localhost/wiki.pl?action=more;num=5;regexp=^\d\d\d\d-\d\d-\d\d;search=;mode=;offset=5"][text()="More..."]');
+
 # check that the link for more actually works
 
-xpath_test($page, '//a[@href="http://localhost/wiki.pl?action=more;num=5;regexp=^\d\d\d\d-\d\d-\d\d;search=;mode=;offset=5"][text()="More..."]');
 $page = get_page("action=more num=5 offset=5 ");
 
 test_page_negative($page, '2011-12-17', '2011-12-16', '2011-12-15',
@@ -48,3 +49,18 @@ test_page_negative($page, '2011-12-17', '2011-12-16', '2011-12-15',
 test_page($page, '2011-12-12', '2011-12-11', '2011-12-10',
 	  '2011-12-09', '2011-12-08');
 xpath_test_negative($page, '//a[text()="More..."]');
+
+# check that the link for more appears correctly
+
+$page = get_page("action=more num=5 offset=4 ");
+
+test_page_negative($page, '2011-12-17', '2011-12-16', '2011-12-15',
+	  '2011-12-14', '2011-12-08');
+test_page($page, '2011-12-13', '2011-12-12', '2011-12-11',
+	  '2011-12-10', '2011-12-09');
+xpath_test($page, '//a[text()="More..."]');
+
+# one las check
+
+xpath_test_negative(get_page("action=more num=5 offset=6 "),
+		    '//a[text()="More..."]');
