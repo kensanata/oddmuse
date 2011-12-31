@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 35;
+use Test::More tests => 45;
 
 clear_pages();
 
@@ -25,6 +25,15 @@ update_page('link', 'bla');
 update_page('First_Item', 'bla');
 update_page('Second_Item', 'bla');
 
+# default empty homepage defaults to journal
+
+test_page(update_page('2012-12-31_Foo_Baz', 'bla'), 'bla');
+
+xpath_test(get_page('HomePage'),
+	   '//h1/a[text()="2012-12-31 Foo Baz"]');
+
+# update HomePage with some links for the goto-bar
+
 my $text = <<EOT;
 This is not a list.
 * [[This paragraph]] did not start with a list.
@@ -33,6 +42,8 @@ This is not a list.
 * [[First Item]] in the goto-bar.
 ** [[Second Item]] in the goto-bar.
 EOT
+
+# check goto-bar
 
 $page = update_page('HomePage', $text);
 
@@ -57,8 +68,11 @@ xpath_test($page,
 	   '//a[text()="First Item"]/following-sibling::*[1][text()="Second Item"]',
 	   '//a[text()="Second Item"]/following-sibling::*[1][text()="New"]');
 
+# Create category pagse
+
 update_page('Foo', 'bla');
 update_page('Bar', 'bla');
+# don't create 'Quux'
 
 $text = <<EOT;
 This is not a list.
@@ -67,7 +81,10 @@ This is not a list.
 * This does not start with a [[link]].
 * [[Foo]] in the goto-bar.
 ** [[Bar]] in the goto-bar.
+* [[Quux]] in the goto-bar bit does not exist.
 EOT
+
+# Categories page
 
 $page = update_page('Categories', $text);
 
@@ -75,18 +92,22 @@ xpath_test($page,
 	   '//ul/li/a[text()="This paragraph"]',
 	   '//ul/li/a[text()="link"]',
 	   '//ul/li/a[text()="Foo"]',
-	   '//ul/li/a[text()="Bar"]');
+	   '//ul/li/a[text()="Bar"]',
+	   '//ul/li/a[@title="Click to edit this page"]');
 
 xpath_test_negative($page,
 		    '//span[@class="gotobar bar"]/a[text()="This paragraph"]',
 		    '//span[@class="gotobar bar"]/a[text()="link"]');
+
+# New page lists categories, even if the page does not exist
 
 $page = get_page('action=new');
 
 xpath_test($page,
 	   '//a[text()="Categories"]',
 	   '//a[text()="First Item"]',
-	   '//a[text()="Second Item"]');
+	   '//a[text()="Second Item"]',
+	   '//a[text()="Quux"]');
 
 xpath_test_negative($page,
 	   '//a[text()="This paragraph"]',
@@ -94,7 +115,7 @@ xpath_test_negative($page,
 
 # current category is added to the list
 
-$page = update_page('2012-12-31_Foo_Baz', 'bla');
+$page = get_page('2012-12-31_Foo_Baz');
 
 xpath_test($page,
 	   '//a[text()="HomePage"]/following-sibling::*[1][text()="RecentChanges"]',
@@ -112,3 +133,27 @@ xpath_test($page,
 	   '//a[text()="First Item"][@href="http://localhost/wiki.pl/First_Item"]',
 	   '//a[text()="Foo"][@href="http://localhost/wiki.pl/Foo"]',
 	   '//a[text()="Baz"][@href="http://localhost/wiki.pl?tag=1;action=browse;id=Baz"]');
+
+# Foo has existing content, thus no journal
+
+$page = get_page('Foo');
+xpath_test($page, '//p[text()="bla"]');
+xpath_test_negative($page, '//h1/a[text()="2012-12-31 Foo Baz"]');
+
+# Quux does not have existing content and defaults to a journal
+# because it is a known category (but there are no matching pages)
+
+$page = get_page('Quux');
+xpath_test($page, '//p[text()="Matching pages:"]');
+
+# Baz has no existing content and is no known category, thus without
+# the tag parameter, it doesn't exists
+
+$page = get_page('Baz');
+xpath_test($page, '//p[text()="This page is empty."]');
+xpath_test_negative($page, '//h1/a[text()="2012-12-31 Foo Baz"]');
+
+# Baz with the tag parameter defaults to the journal.
+
+$page = get_page('tag=1 action=browse id=Baz');
+xpath_test($page, '//h1/a[text()="2012-12-31 Foo Baz"]');
