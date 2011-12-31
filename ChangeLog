@@ -1,3 +1,9 @@
+2011-12-31  Alex Schroeder  <alex@gnu.org>
+
+	* modules/weblog-3.pl (CategoryParse): New. Change parsing
+	slightly to match the description on the wiki.
+	(CategoryInit, GotoBarInit): Use it.
+
 2011-12-17  Alex Schroeder  <alex@gnu.org>
 
 	* wiki.pl (PrintAllPages): Fix a small bug when counting the pages
