@@ -1,22 +1,18 @@
-# Copyright (C) 2005, 2006  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2005, 2006, 2011  Alex Schroeder <alex@gnu.org>
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 3 of the License, or (at your option) any later
+# version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: weblog-3.pl,v 1.12 2006/01/01 23:46:57 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: weblog-3.pl,v 1.13 2011/12/31 00:27:33 as Exp $</p>';
 
 # Categories
 
@@ -47,18 +43,24 @@ sub CategoriesNewOpenPage {
   }
 }
 
-sub CategoryInit {
-  $CategoryInit = 1;
-  my @paragraphs = split(/\n\n+/, GetPageContent($CategoriesPage));
+sub CategoryParse {
+  my @paragraphs = split(/\n\n+/, shift);
+  my @result;
   foreach (@paragraphs) {
     next unless /^\*/;
-    while (/\*.*?\[\[$FreeLinkPattern\]\]/g) {
+    while (/\*+\s*\[\[$FreeLinkPattern\]\]/g) {
       my $id = FreeToNormal($1);
-      $Category{$id} = 1;
-      push(@Categories, $id);
+      push(@result, $id);
     }
     last;
   }
+  return @result;
+}
+
+sub CategoryInit {
+  $CategoryInit = 1;
+  @Categories = CategoryParse(GetPageContent($CategoriesPage));
+  map { $Category{$_} = 1 } @Categories;
 }
 
 # New Action
@@ -79,23 +81,13 @@ sub DoCategories {
   PrintFooter();
 }
 
-# Set Goto Bar according to links on the HomePage.
-# Every item should start with exactly one bullet
-# and a link in double square brackets.
-
 *GetGotoBar = * NewGetGotoBar;
 my $GotoBarInit = 0;
 
 sub GotoBarInit {
   $GotoBarInit = 1;
-  my @paragraphs = split(/\n\n+/, GetPageContent($HomePage));
-  foreach (@paragraphs) {
-    next unless /^\*/;
-    while (/\*.*?\[\[(.*?)\]\]/g) {
-      push(@UserGotoBarPages, $1);
-    }
-    last;
-  }
+  @UserGotoBarPages = (@UserGotoBarPages,
+		       CategoryParse(GetPageContent($HomePage)));
 }
 
 sub NewGetGotoBar {
