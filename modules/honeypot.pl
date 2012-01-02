@@ -22,7 +22,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: honeypot.pl,v 1.5 2011/11/26 11:30:42 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: honeypot.pl,v 1.6 2012/01/02 22:47:01 as Exp $</p>';
 
 =head1 CONFIGURATION
 
@@ -94,11 +94,15 @@ push(@MyInitVariables, \&HoneyPotInspection);
 
 sub HoneyPotInspection {
   if (not UserIsEditor()
+      # we're making an edit
       and GetParam('title', '')
+      # override from questionasker.pl
+      and not ($QuestionaskerRememberAnswer and GetParam($QuestionaskerSecretKey, 0))
+      # the parameters we use in our form
       and (GetParam($HoneyPotIdiot1) or GetParam($HoneyPotIdiot2)
 	   or ($HoneyPotOk
 	       and $Now - GetParam($HoneyPotOk) > $HoneyPotTimestamp))) {
-    ReportError(T('Edit Denied'), '403 FORBIDDEN');;
+    ReportError(T('Edit Denied'), '403 FORBIDDEN');
   }
 }
 
