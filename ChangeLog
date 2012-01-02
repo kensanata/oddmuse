@@ -1,3 +1,8 @@
+2012-01-02  Alex Schroeder  <alex@gnu.org>
+
+	* modules/honeypot.pl (HoneyPotInspection): Allow override using
+	$QuestionaskerSecretKey.
+
 2011-12-31  Alex Schroeder  <alex@gnu.org>
 
 	* modules/weblog-3.pl (CategoryParse): New. Change parsing
