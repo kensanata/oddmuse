@@ -22,7 +22,7 @@ directory of your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: logout.pl,v 1.3 2009/03/13 22:27:41 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: logout.pl,v 1.4 2012/01/17 18:23:07 as Exp $</p>';
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -145,7 +145,7 @@ sub GetFooterLinksLogout {
       GetParam('pwd',      '') ne '') {
     $footer_links =~ s
       /(.+)(<\/.+?>)$
-      /$1.ScriptLink('action=logout;id='.UrlEncode($id), T('Logout'), 'logout').$2
+      /$1.' '.ScriptLink('action=logout;id='.UrlEncode($id), T('Logout'), 'logout').$2
       /ex;
   }
 
