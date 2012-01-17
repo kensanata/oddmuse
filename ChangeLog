@@ -1,3 +1,8 @@
+2012-01-17  Alex Schroeder  <alex@gnu.org>
+
+	* modules/logout.pl (GetFooterLinksLogout): Add extra space as
+	suggested by wiki user Cayenne.
+
 2012-01-02  Alex Schroeder  <alex@gnu.org>
 
 	* modules/honeypot.pl (HoneyPotInspection): Allow override using
