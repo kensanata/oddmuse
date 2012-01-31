@@ -16,7 +16,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: webapp.pl,v 1.1 2011/12/31 03:04:35 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: webapp.pl,v 1.2 2012/01/31 11:10:40 as Exp $</p>';
 
 push(@MyAdminCode, \&WebAppMenu);
 
@@ -87,48 +87,50 @@ EOT
     exit;
   } elsif ($q->path_info eq '/webapp/oddmuse.js') {
     print GetHttpHeader('application/javascript', $LastUpdate);
+    my $quoted_script = quotemeta($ScriptName);
     print <<EOT;
 var wiki = (function() {
     var pages;
     var log = function(msg) {
-	$("#status").text(msg);
+	\$("#status").text(msg);
     }
     var log_html = function(msg) {
-	$("#status").html(msg);
+	\$("#status").html(msg);
     }
     var log_node = function(msg) {
-	$("#status").empty();
-	$("#status").append(msg);
+	\$("#status").empty();
+	\$("#status").append(msg);
     }
     var get_pages = function(data) {
-	pages = data.split("\n");
+	pages = data.split("\\n");
 	var count = 1;
 	pages.pop(); // after the last newline there is nothing
-	$("#total").text(pages.length);
+	\$("#total").text(pages.length);
 	var get_page = function(i, id) {
 	    if (id != "") {
 		var store_page = function(data) {
 		    window.localStorage.setItem(id, data);
-		    $("#page").text(count++);
+		    \$("#page").text(count++);
 		}
-		$.get("cgi-bin/wiki.pl",
+		\$.get("$FullUrl",
 		      {action: "browse", id: id},
 		      store_page);
 	    }
 	}
-	$.each(pages, get_page);
+	\$.each(pages, get_page);
 	window.localStorage.setItem(" pages", pages.join(" "));
     }
     var download = function() {
 	log("Getting list of pages...");
-	$.get("cgi-bin/wiki.pl",
+	\$.get("$FullUrl",
 	      {action: "index", raw: "1"},
 	      get_pages);
 	log_html('<p><a href="javascript:wiki.list()">List</a> the pages in local storage.');
     }
     var initialize = function() {
-	pages = window.localStorage.getItem(" pages").split(" ");
+	pages = window.localStorage.getItem(" pages");
 	if (pages) {
+            pages = pages.split(" ");
 	    log_html('<p>Found pages in local storage. <a href="javascript:wiki.list()">List</a> the pages in local storage. <a href="javascript:wiki.download()">Download</a> a fresh copy.');
 	} else {
 	    download();
@@ -136,25 +138,25 @@ var wiki = (function() {
     };
     var list = function() {
 	var ul = document.createElement('ul');
-	$.each(pages, function(i, id) {
+	\$.each(pages, function(i, id) {
 	    var li = document.createElement('li');
 	    var a = document.createElement('a');
-	    $(a).attr({href: "javascript:wiki.browse('" + id + "')"});
-	    $(a).text(id);
-	    $(li).append(a);
-	    $(ul).append(li);
+	    \$(a).attr({href: "javascript:wiki.browse('" + id + "')"});
+	    \$(a).text(id);
+	    \$(li).append(a);
+	    \$(ul).append(li);
 	});
 	log_node(ul);
     }
     var browse = function(id) {
-	var re = /$ScriptName\/([^\/?]+)/;
-	$('*').html(window.localStorage.getItem(id));
-	$('a[href^="$ScriptName"]').each(function(i, a) {
-	    var match = re.exec($(a).attr('href'));
+	var re = /$quoted_script\\/([^\\/?]+)/;
+	\$('*').html(window.localStorage.getItem(id));
+	\$('a[href^="$ScriptName"]').each(function(i, a) {
+	    var match = re.exec(\$(a).attr('href'));
 	    if (match) {
 		var id = unescape(match[1]);
 		if (pages.indexOf(id) >= 0) {
-		    $(a).attr('href', "javascript:wiki.browse('" + id + "')");
+		    \$(a).attr('href', "javascript:wiki.browse('" + id + "')");
 		}
 	    }
 	});
@@ -167,7 +169,7 @@ var wiki = (function() {
     };
 }());
 
-$(document).ready(function(evt) {
+\$(document).ready(function(evt) {
     wiki.initialize();
 });
 EOT
