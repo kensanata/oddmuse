@@ -357,12 +357,6 @@ div.content p.comment {
 
 /* images */
 
-div.content a img, div.journal a img {
-    padding: 0.5em; border:1px dotted;
-}
-div.content a.outside img, div.journal a.outside img {
-    border: 1px solid;
-}
 div.content a.feed img, div.journal a.feed img,
 div.content a img.smiley, div.journal a img.smiley, img.smiley,
 div.content a.inline img, div.journal a.inline img,
@@ -374,9 +368,6 @@ div.image a img {
 }
 div.image span.caption {
     margin: 0 1em;
-}
-div.content a.noborder img.upload {
-    border: none;
 }
 
 .left { float:left; margin-right: 1em; }
