@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: gravatar.pl,v 1.8 2011/03/03 12:55:24 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: gravatar.pl,v 1.9 2012/02/10 10:49:04 as Exp $</p>';
 
 use Digest::MD5 qw(md5_hex);
 
@@ -60,7 +60,7 @@ sub GravatarNewGetCommentForm {
 push(@MyInitVariables, \&AddGravatar);
 
 sub AddGravatar {
-  my $aftertext = GetParam('aftertext');
+  my $aftertext = UnquoteHtml(GetParam('aftertext'));
   my $mail = GetParam('mail');
   $mail =~ s/^[ \t]+//;
   $mail =~ s/[ \t]+$//;
