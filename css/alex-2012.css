@@ -1,0 +1,494 @@
+body, rss {
+    font-family: Garamond, GaramondNo8, "Bookman Old Style", Cochin, Baskerville, serif;
+    font-size: 16pt;
+    line-height: 20pt;
+    margin:1em 3em;
+    padding:0;
+}
+
+/* headings: we can use larger sizes if we use a lighter color.
+   we cannot inherit the font-family because header and footer use a narrow font. */
+
+h1, h2, h3, title {
+    font-family: Garamond, GaramondNo8, "Bookman Old Style", Cochin, Baskerville, serif;
+    font-weight:normal;
+    line-height: 100%;
+}
+h1, channel title {
+    font-size: 32pt;
+    margin:  1em 0 0.5em 0;
+    padding: 0.4em 0;
+}
+h2 {
+    font-size: 18pt;
+    margin:  2em 0 0 0;
+    padding: 0;
+}
+h3 {
+    font-size:  inherit;
+    font-weight: bold;
+    padding:    0;
+    margin:     1em 0 0 0;
+    clear:      both;
+}
+
+/* headers in the journal are smaller */
+
+div.journal h1, item title {
+    font-size:     inherit;
+    padding:       0;
+    clear:         both;
+    border-bottom: 1px solid #000;
+}
+div.journal h2 {
+    font-family: inherit;
+    font-size:   inherit;
+}
+div.journal h3 {
+    font-family: inherit;
+    font-size:   inherit;
+    font-weight: inherit;
+    font-style:  italic;
+}
+div.journal hr {
+    display:none;
+}
+p.more {
+    margin-top: 3em;
+}
+/* Links in headings appear on journal pages. */
+
+h1 a, h2 a, h3 a {
+    color:inherit;
+    text-decoration:none;
+    font-weight: normal;
+} 
+h1 a:visited, h2 a:visited, h3 a:visited {
+    color: inherit;
+}
+
+/* stop floating content from flowing over the footer */
+
+hr {
+    clear: both;
+}
+
+/* the distance between links in the navigation bars */
+
+span.bar a {
+    margin-right: 1ex;
+}
+
+/* search box in the top bar */
+
+form.tiny, form.tiny p {
+    display: inline;
+    white-space: nowrap;
+}
+form.tiny input {
+    padding: 0;
+    width: 10ex;
+    font-size: 80%;
+}
+
+/* code */
+
+pre, code, tt {
+    font-family: "Andale Mono", Monaco, "Courier New", Courier, monospace;
+    font-size: 80%;
+    line-height: 110%;
+}
+
+/* styling for divs that will be invisible when printing
+   when printing. */
+
+div.header, div.footer, div.near, div.definition, p.comment, a.tag {
+    font-family: "Abadi MT Condensed Light", "Arial Narrow", Arial, sans-serif;
+    font-size: 75%;
+    line-height: 110%;
+}
+div.footer form.search {
+    display: none;
+}
+div.rc li {
+    line-height: 110%;
+}
+div.rc li + li {
+    margin-top: 1em;
+}
+div.rc li strong, table.history strong, strong.description {
+    font-weight: inherit;
+}
+div.diff {
+    padding-left:  5%;
+    padding-right: 5%;
+    font-size:     12pt;
+    line-height:   14pt;
+    color:         #000;
+
+}
+div.old {
+    background-color: #ffffaf;
+}
+div.new {
+    background-color: #cfffcf;
+}
+
+div.refer {
+    padding-left:  5%;
+    padding-right: 5%;
+    font-size:     12pt;
+    line-height:   13pt;
+}
+
+div.refer a:first-child:before { content: "" }
+div.refer a:before { content: "• " }
+
+div.message {
+    background-color:#fee;
+    color:#000;
+}
+
+img.xml {
+    border:none;
+    padding:1px;
+}
+a.small img {
+    max-width:300px;
+}
+a.large img {
+    max-width:600px;
+}
+div.sister {
+    margin-right:1ex;
+    background-color:inherit;
+}
+div.sister p {
+    margin-top:0;
+}
+div.sister hr {
+    display:none;
+}
+div.sister img {
+    border:none;
+    background-color:#ffe;
+}
+
+div.near, div.definition {
+    background-color:#efe;
+}
+
+div.sidebar {
+    float:right;
+    border:1px dotted #000;
+    padding:0 1em;
+}
+div.sidebar ul {
+    padding-left:1em;
+}
+
+/* replacements, features */
+
+del {
+    color: #666;
+}
+ins {
+    color: #b33;
+    text-decoration: none;
+}
+acronym, abbr {
+    letter-spacing:0.1em;
+    font-variant:small-caps;
+}
+
+/* Interlink prefix not shown */
+a .site, a .separator {
+        display: none;
+}
+a cite { font:inherit; }
+/* browser borkage */
+textarea[name="text"] { width:97%; height:80%; }
+textarea[name="summary"] { width:97%; height:3em; }
+/* comments */
+textarea[name="aftertext"] { width:97%; height:10em; }
+div.commentshown {
+    background-color:#ffc;
+    padding-bottom:1ex;
+}
+div.commenthidden {
+    display:none;
+}
+div.commentshown {
+    display:block;
+}
+p.comment {
+    margin-bottom: 0;
+}
+/* comment pages with username, homepage, and email subscription */
+.comment span { display: block; }
+.comment span label { display: inline-block; width: 10em; }
+/* IE sucks */
+.comment input#username,
+.comment input#homepage,
+.comment input#mail { width: 20em; }
+
+/* cal */
+div.month { padding:0; margin:0 2ex; }
+body > div.month {
+    float:right;
+    background-color: inherit;
+    border:solid thin;
+    padding:0 1ex;
+}
+div.year > div.month {
+    float:left;
+}
+div.footer {
+    clear:both;
+}
+div.content div.month a.edit {
+    color:inherit;
+    font-weight:inherit;
+    text-decoration: none;
+}
+
+/* history tables and other tables */
+table.history {
+    border:   none;
+}
+td.history {
+    border:   none;
+}
+
+table.user {
+    border:      none;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    padding: 1em;
+    margin: 1em 2em;
+}
+table.user tr td, table.user tr th {
+    border:   none;
+    padding:  0.2em 0.5em;
+    vertical-align: top;
+}
+table.arab tr th {
+    font-weight:normal;
+    text-align:left;
+    vertical-align:top;
+}
+table.arab, table.arab tr th, table.arab tr td {
+    border:none;
+}
+th.nobreak {
+    white-space:nowrap;
+}
+table.full { width:99%; margin-left:1px; }
+table.j td, table.j th, table tr td.j, table tr th.j, .j { text-align:justify; }
+table.l td, table.l th, table tr td.l, table tr th.l, .l { text-align:left; }
+table.r td, table.r th, table tr td.r, table tr th.r, .r { text-align:right; }
+table.c td, table.c th, table tr td.c, table tr th.c, .c { text-align:center; }
+table.t td { vertical-align: top; }
+td.half { width:50%; }
+td.third { width:33%; }
+
+form table td { padding:5px; }
+
+/* lists */
+dd { padding-bottom:0.5ex; }
+dl.inside dt { float:left; }
+/* search */
+div.search span.result { font-size:larger; }
+div.search span.info { font-size:smaller; font-style:italic; }
+div.search p.result { display:none; }
+
+img.logo {
+    float:   right;
+    margin:  0;
+    padding: 0;
+    border:  1px solid #000;
+    opacity: 0.3;
+    background-color:#ffe;
+}
+
+/* images */
+
+div.content a.feed img, div.journal a.feed img,
+div.content a img.smiley, div.journal a img.smiley, img.smiley,
+div.content a.inline img, div.journal a.inline img,
+div.content li a.image img, div.journal li a.image img { 
+    margin: 0; padding: 0; border: none;
+}
+div.image a img {
+    margin-bottom: 0;
+}
+div.image span.caption {
+    margin: 0 1em;
+}
+
+.left { float:left; margin-right: 1em; }
+.right { float:right; margin-left: 1em; }
+div.left .left, div.right .right {
+    float:none;
+}
+.center { text-align:center; }
+table.aside {
+    float:right;
+    width:40%;
+    margin-left: 1em;
+    padding: 1ex;
+    border: 1px dotted #666;
+}
+table.aside td {
+    text-align:left;
+}
+div.sidebar {
+    float:right; width: 250px;
+    text-align: right;
+    border: none;
+    margin: 1ex;
+}
+
+.bigsidebar {
+    float:right;
+    width: 500px;
+    border: none;
+    margin-left: 1ex;
+    font-size: 80%;
+}
+
+dl.irc dt { width:20ex; float:left; text-align:right; clear:left; }
+dl.irc dt span.time { float:left; }
+dl.irc dd { margin-left:22ex; }
+
+/* portrait */
+
+div.footer, div.comment, hr { clear: both; }
+.portrait { float: left; font-size: small; margin-right: 1em; }
+.portrait { line-height: 1em; }
+.portrait a { color: #999; }
+
+div.left { float:left; margin:1em; padding: 0.5em; }
+div.left p { display:table-cell; }
+div.left p + p { display:table-caption; caption-side:bottom; }
+
+p.table a { float:left; width:20ex; }
+p.table + p { clear:both; }
+
+@media screen {
+    /* no bleeding */
+    div.content, div.rc {
+	overflow:hidden;
+    }
+}
+
+@media print {
+    body {
+	font-size:   12pt;
+	line-height: 13pt;
+	color:       #000;
+	background-color: #fff;
+    }
+    
+    /* hide all the crap */
+    div.diff, div.diff+hr, div.refer, div.near, div.definition, div.sister,
+    div.cal, div.footer, span.specialdays, span.gotobar, a.edit, a.number span,
+    div.rc form, form.tiny, p.comment {
+	display:none;
+    }
+    a,
+    a:visited,
+    div.content a.near:link, 
+    div.content a.near:visited,
+    div.content a.near:active {
+	color:inherit;
+	font-weight: bold;
+    }
+    div.content a.feed {
+	display: none;
+    }
+    div.content a.book,
+    div.content a.movie {
+	text-decoration: none;
+    }
+    a cite {
+	font-style: italic;
+    }
+    /* no difference */
+    pre, code, tt {
+	font-size: inherit;
+	line-height: inherit;
+    }
+    /* no dotted underlines */ 
+    acronym, abbr {
+	border: none;
+	text-decoration: none;
+    }
+    /* headings */
+    h1 {
+	color:       inherit;
+	margin-top:  2em;
+    }
+    h2 {
+	color:inherit;
+	margin: 1em 0;
+	font-variant: small-caps;
+    }
+    h3 {
+	font-weight:inherit;
+	font-style:italic;
+	color:inherit;
+	margin: 1em 0;
+    }
+    h1 a, h2 a, h3 a {
+	color: inherit;
+    }
+    div.journal h1 a:visited,
+    div.journal h2 a:visited,
+    div.journal h3 a:visited {
+	color: inherit;
+    }
+}
+
+/* rss */
+channel * { display: block; }
+
+channel title {
+    margin-top: 30pt;
+}
+copyright {
+    font-size: 14pt;
+    line-height: 16pt;
+    margin-top: 1em;
+}
+channel > link:before {
+    font-size: 18pt;
+    display: block;
+    margin: 1em;
+    padding: 0.5em;
+    content: "This is an RSS feed, designed to be read in a feed reader.";
+    color: red;
+    border: 1px solid red;
+}
+link, license {
+    font-size: 11pt;
+    margin-bottom: 9pt;
+}
+username:before { content: "Last edited by "; }
+username:after { content: "."; }
+generator:before { content: "Feed generated by "; }
+generator:after { content: "."; }
+channel description {
+    font-weight: bold;
+}
+item description {
+    font-style: italic;
+    font-weight: normal;
+    margin-bottom: 1em;
+}
+docs, language,
+pubDate, lastBuildDate, ttl, guid, category, comments,
+docs, image title, image link,
+status, version, diff, history, importance {
+    display: none;
+}
