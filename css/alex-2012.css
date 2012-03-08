@@ -6,6 +6,10 @@ body, rss {
     padding:0;
 }
 
+body.sans {
+    font-family: Franklin Gothic Book, Corbel, Arial, sans-serif;
+}
+
 /* headings: we can use larger sizes if we use a lighter color.
    we cannot inherit the font-family because header and footer use a narrow font. */
 
