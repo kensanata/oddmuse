@@ -36,7 +36,7 @@ be changed using the C<$NamespacesSelf> option.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.51 2011/06/23 00:31:59 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.52 2012/03/17 19:35:19 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent
 	    $NamespaceRoot $NamespaceSlashing @NamespaceParameters
@@ -420,4 +420,19 @@ sub NamespacesMenu {
        ScriptLink('action=namespaces',
 		  T('Namespaces'),
 		  'namespaces'));
+}
+
+*NamespacesOldGetId = *GetId;
+*GetId = *NamespacesNewGetId;
+
+sub NamespacesNewGetId {
+  my $id = NamespacesOldGetId(@_);
+  # http://example.org/cgi-bin/wiki.pl/Test/Test means NamespaceCurrent=Test and id=Test
+  # In this case GetId() will have set the parameter Test to 1.
+  # http://example.org/cgi-bin/wiki.pl/Test?rollback-1234=foo
+  # This doesn't set the Test parameter.
+  if ($UsePathInfo and $id eq $NamespaceCurrent and not GetParam($id)) {
+    $id = undef;
+  }
+  return $id;
 }
