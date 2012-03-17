@@ -1,3 +1,9 @@
+2012-03-17  Alex Schroeder  <alex@gnu.org>
+
+	* modules/namespaces.pl (NamespacesNewGetId): Fix the special case
+	http://example.org/cgi-bin/wiki.pl/Test?rollback-1234=foo where
+	Test refers to the namespace and not to the page id.
+
 2012-03-08  Alex Schroeder  <aschroeder@thinkmo.de>
 
 	* wiki.pl (PrintAllPages): Skip redirected pages.
