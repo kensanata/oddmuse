@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 63;
+use Test::More tests => 71;
 clear_pages();
 
 add_module('namespaces.pl');
@@ -131,12 +131,27 @@ $to = xpath_test(get_page('action=history id=Test ns=Muu username=Alex'),
 $to =~ /rollback-([0-9]+)/;
 $to = $1;
 ok($to > 0, 'found rollback link for Muu/Test');
+
 # do the rollback
 test_page(get_page("action=rollback ns=Muu id=Test to=$to username=Alex"),
 	  'Rolling back changes', 'Test</a> rolled back');
 $page = get_page('action=browse ns=Muu id=Test');
 test_page_negative($page, 'Another Mooo!');
 test_page($page, 'Mooo!');
+
+# verify feed
+test_page(get_page('action=rc ns=Muu raw=1'),
+	  'title: Wiki Muu', 'title: Test', 'title: BackHome');
+
+# now roll back all the pages in the namespace
+update_page('Test', 'spam spam spam', 'spam', undef, undef, 'ns=Muu');
+# test it with path_info instead of ns parameter
+test_page(get_page("'/Muu?rollback-$to=rollback' 'username=Alex' 'pwd=foo'"),
+	  'Rolling back changes', 'Test</a> rolled back');
+$page = get_page('action=browse ns=Muu id=Test');
+test_page_negative($page, 'spam');
+test_page($page, 'Mooo!');
+
 # verify that local RecentChanges doesn't show anything
 test_page_negative(get_page('action=rc ns=Muu raw=1'), 'Rollback');
 # verify that global RecentChanges doesn't show anything
@@ -145,7 +160,14 @@ test_page_negative(get_page('action=rc raw=1'), 'Rollback');
 # test oldrc.log reading
 ok(rename("$DataDir/Muu/rc.log", "$DataDir/Muu/oldrc.log"),
    "renamed $RcFile to $RcOldFile in the Muu namespace");
-test_page(get_page('action=rc ns=Muu raw=1'), 'title: Wiki Muu',
-	  'title: BackHome', 'title: Test');
-test_page(get_page('action=rc raw=1'), 'title: Wiki',
-	  'title: Muu:BackHome', 'title: Muu:Test');
+# verify the feed
+my $feed = get_page('action=rc ns=Muu raw=1');
+test_page($feed, 'title: Wiki Muu', 'title: Test');
+# this page was now rolled back out of existence
+test_page_negative($feed, 'title: BackHome');
+
+# check the entire wiki, too
+$feed = get_page('action=rc raw=1');
+test_page($feed, 'title: Wiki', 'title: Muu:Test');
+# BackHome never existed and Muu:BackHome was rolled back
+test_page_negative($feed, 'title: Muu:BackHome', 'title: BackHome');
