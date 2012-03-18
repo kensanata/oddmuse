@@ -36,7 +36,7 @@ be changed using the C<$NamespacesSelf> option.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.52 2012/03/17 19:35:19 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.53 2012/03/18 01:03:56 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent
 	    $NamespaceRoot $NamespaceSlashing @NamespaceParameters
@@ -67,7 +67,7 @@ not the namespace Foo.
 
 =cut
 
-@NamespaceParameters = ('action' => 1, 'search' => 1, 'title' => 1);
+@NamespaceParameters = qw(action search title);
 
 $NamespaceSlashing = 0;   # affects : decoding NamespaceRcLines
 
