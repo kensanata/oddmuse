@@ -36,7 +36,7 @@ be changed using the C<$NamespacesSelf> option.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.53 2012/03/18 01:03:56 as Exp $</p>';
+$ModulesDescription .= '<p>$Id: namespaces.pl,v 1.54 2012/03/20 16:41:22 as Exp $</p>';
 
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent
 	    $NamespaceRoot $NamespaceSlashing @NamespaceParameters
@@ -376,8 +376,8 @@ sub NewNamespaceBrowsePage {
   my ($text, $revision) = GetTextRevision(GetParam('revision', ''));
   my $oldId = GetParam('oldid', '');
   if (not $oldId and not $revision and (substr($text, 0, 10) eq '#REDIRECT ')
-      and (($WikiLinks and $text =~ /^\#REDIRECT\s+$InterLinkPattern/)
-	   or ($FreeLinks and $text =~ /^\#REDIRECT\s+\[\[$FreeInterLinkPattern\]\]/))) {
+      and (($WikiLinks and $text =~ /^\#REDIRECT\s+(($InterSitePattern:)?$InterLinkPattern)/)
+	   or ($FreeLinks and $text =~ /^\#REDIRECT\s+\[\[(($InterSitePattern:)?$FreeInterLinkPattern)\]\]/))) {
     my ($ns, $page) = map { UrlEncode($_) } split(/:/, FreeToNormal($1));
     $oldid = ($NamespaceCurrent || $NamespacesMain) . ':' . $id;
     local $ScriptName = $NamespaceRoot || $ScriptName;
@@ -427,11 +427,12 @@ sub NamespacesMenu {
 
 sub NamespacesNewGetId {
   my $id = NamespacesOldGetId(@_);
+  # http://example.org/cgi-bin/wiki.pl?action=browse;ns=Test;id=Test means NamespaceCurrent=Test and id=Test
   # http://example.org/cgi-bin/wiki.pl/Test/Test means NamespaceCurrent=Test and id=Test
   # In this case GetId() will have set the parameter Test to 1.
   # http://example.org/cgi-bin/wiki.pl/Test?rollback-1234=foo
   # This doesn't set the Test parameter.
-  if ($UsePathInfo and $id eq $NamespaceCurrent and not GetParam($id)) {
+  if ($UsePathInfo and $id eq $NamespaceCurrent and not GetParam($id) and not GetParam('ns')) {
     $id = undef;
   }
   return $id;
