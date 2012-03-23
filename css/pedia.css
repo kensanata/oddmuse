@@ -77,18 +77,24 @@ div.footer span.edit {
     top: 20px;
     left: 206px;
     display: block;
-    width: 500px;
 }
 div.footer span.edit a {
     padding-right: 1em;
 }
+/* Messages */
+div.message {
+    position: absolute;
+    top: 70px;
+    left: 206px;
+    color: red;
+}
 /* Content */
-div.content, div.rc {
+div.content, div.rc, div.diff, div.comment {
     margin-left: 196px; /* see gotobar */
     padding: 1em;
     border-bottom: 1px solid #aaccff;
     background: white;
-}    
+}
 pre {
     border: 1pt dashed black;
     font-size: 8pt;
@@ -107,6 +113,67 @@ ul {
 }
 li {
     margin-bottom: 0.1em;
+}
+/* Diff */
+div.diff {
+    font-size: 90%;
+}
+div.diff p b {
+    font-size: 150%;
+    font-weight: normal;
+}
+div.old {
+    background-color:#FFFFAF;
+}
+div.new {
+    background-color:#CFFFCF;
+}
+/* portrait support */
+div.color {
+    clear:left;
+}
+div.one {
+    background-color:#eee;
+    padding: 0.1ex 0;
+}
+img.portrait {
+    float:left;
+    clear:left;
+    background-color:#fff;
+    border:#999 1px solid;
+    	padding:10px;
+    margin:10px;
+}
+li {
+    margin-left:1em;
+}
+div.portrait {
+    float:     left;
+    clear:     left;
+    font-size: xx-small;
+    padding-left: 10px;
+}
+div.portrait + p {
+    min-height:70px;
+}
+div.portrait img.portrait {
+    float:none;
+    margin:10px 10px 0 0;
+}
+div.portrait a {
+    text-decoration:none;
+    color:#999;
+}
+/* IRC */
+dl.irc dt {
+    width:15ex;
+    float:left;
+    text-align:right;
+    clear:left;
+}
+dl.irc dt span.time { display:none; }
+dl.irc dd {
+    margin-left:17ex;
 }
 /* Category Convention */
 hr {
