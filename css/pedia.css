@@ -1,0 +1,128 @@
+body {
+    font-family: sans-serif;
+    font-size: 0.8em;
+    line-height: 1.5em;
+    margin: 0;
+    padding: 0;
+    background: #fafafa repeat-y url(/css/emacs_sidebar_pedia.png)
+}
+/* Google Search Box */
+div.header form {
+    position: absolute;
+    top: 0;
+    right: 1em;
+}
+/* Logo */
+img.logo {
+    display: none;
+}
+a.logo {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 196px;
+    height: 150px;
+    background:transparent url(/css/emacs_logo_pedia.png);
+}
+
+/* Side Bar */
+span.gotobar {
+    position: absolute;
+    top: 150px;
+    left: 0pt;
+    width: 196px;
+}
+span.gotobar a {
+    display: block;
+    font-size: 100%;
+    margin-left: 1.5em;
+    margin-top: 0.5em;
+}
+/* Links */
+a {
+    color: #55b;
+    text-decoration: none;
+}
+a:visited {
+    color: #31b;
+}
+/* Header */
+div.header {
+    margin-left: 196px;
+    height: 130px;
+    background-color: white;
+    padding: 10px;
+}
+div.header .specialdays {
+    display: block;
+    position: absolute;
+    top: 10px;
+}
+div.header h1 {
+    font-weight: normal;
+    margin-top: 40px;
+    padding-top: 40px;
+    padding-bottom: 7px;
+    border-top: 1px solid #aaccff;
+    border-bottom: 1px solid #aaaaaa;
+    width: auto;
+}    
+div.header h1 a {
+    color: black;
+}
+div.footer span.edit {
+    position: absolute;
+    top: 20px;
+    left: 206px;
+    display: block;
+    width: 500px;
+}
+div.footer span.edit a {
+    padding-right: 1em;
+}
+/* Content */
+div.content, div.rc {
+    margin-left: 196px; /* see gotobar */
+    padding: 1em;
+    border-bottom: 1px solid #aaccff;
+    background: white;
+}    
+pre {
+    border: 1pt dashed black;
+    font-size: 8pt;
+    overflow: auto;
+    padding: 1em 0;
+    white-space: pre;
+}
+p {
+    margin-top: 0.4em;
+    margin-right: 0pt;
+    margin-bottom: 0.5em;
+    margin-left: 0pt;
+}
+ul {
+    list-style-type: square;
+}
+li {
+    margin-bottom: 0.1em;
+}
+/* Category Convention */
+hr {
+    display: none;
+}
+hr + p {
+    background-color: #fafafa;
+    padding: 1em;
+    border: 1px solid #aaaaaa;
+}
+/* Footer */
+.footer {
+    font-size: 0.9em;
+    margin: 0;
+    padding: 1ex 1em 1ex 206px;
+    background: #fafafa;
+}
+.footer .gotobar {
+    display: none;
+}
