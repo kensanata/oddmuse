@@ -51,7 +51,7 @@ a:visited {
 /* Header */
 div.header {
     margin-left: 196px;
-    height: 130px;
+    height: 110px;
     background-color: white;
     padding: 10px;
 }
@@ -72,11 +72,15 @@ div.header h1 {
 div.header h1 a {
     color: black;
 }
+/* Top Link Bar */
 div.footer span.edit {
-    position: absolute;
-    top: 20px;
-    left: 206px;
     display: block;
+    position: absolute;
+    top: 30px;
+    left: 206px;
+}
+div.footer span.edit br {
+    display: none;
 }
 div.footer span.edit a {
     padding-right: 1em;
@@ -99,7 +103,7 @@ pre {
     border: 1pt dashed black;
     font-size: 8pt;
     overflow: auto;
-    padding: 1em 0;
+    padding: 1em;
     white-space: pre;
 }
 p {
@@ -177,20 +181,25 @@ dl.irc dd {
 }
 /* Category Convention */
 hr {
-    display: none;
+    border: none;
+    color: #aaccff;
+    background-color: #aaccff;
+    height: 1px;
+    padding: 0px;
+    margin: 1em 0;
 }
-hr + p {
+hr + p:last-child {
     background-color: #fafafa;
     padding: 1em;
     border: 1px solid #aaaaaa;
 }
 /* Footer */
-.footer {
+div.footer {
     font-size: 0.9em;
     margin: 0;
     padding: 1ex 1em 1ex 206px;
     background: #fafafa;
 }
-.footer .gotobar {
+div.footer span.gotobar, div.footer hr {
     display: none;
 }
