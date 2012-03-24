@@ -68,6 +68,7 @@ div.header h1 {
     border-top: 1px solid #aaccff;
     border-bottom: 1px solid #aaaaaa;
     width: auto;
+    white-space: nowrap;
 }    
 div.header h1 a {
     color: black;
@@ -78,6 +79,7 @@ div.footer span.edit {
     position: absolute;
     top: 30px;
     left: 206px;
+    white-space: nowrap;
 }
 div.footer span.edit br {
     display: none;
@@ -193,6 +195,19 @@ hr + p:last-child {
     padding: 1em;
     border: 1px solid #aaaaaa;
 }
+/* Comment Pages */
+form.comment span {
+    display: block;
+    padding: 0.2em 0;
+}  
+form.comment span label {
+    display: inline-block;
+    width: 10em;
+}  
+form.comment span input {
+    display: inline-block;
+    width: 20em;
+}  
 /* Footer */
 div.footer {
     font-size: 0.9em;
