@@ -140,6 +140,14 @@ ul {
 li {
     margin-bottom: 0.1em;
 }
+/* Table of Contents */
+div.toc {
+    width: 50%;
+    font-size: 90%;
+    padding: 0 1em;
+    margin: 2em 0;
+    border: 1px solid #ddd;
+}
 /* Diff */
 div.diff {
     font-size: 90%;
@@ -166,8 +174,8 @@ img.portrait {
     float:left;
     clear:left;
     background-color:#fff;
-    border:#999 1px solid;
-    	padding:10px;
+    border: 1px solid #999;
+    padding:10px;
     margin:10px;
 }
 li {
