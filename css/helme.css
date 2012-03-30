@@ -1,0 +1,6 @@
+@import "alex-2012.css";
+
+/* override alex-2012.css */
+div.footer form.search {
+    display: block;
+}
