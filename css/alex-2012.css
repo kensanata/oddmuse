@@ -83,6 +83,18 @@ span.bar a {
     margin-right: 1ex;
 }
 
+/* search box in the top bar */
+
+form.tiny, form.tiny p {
+    display: inline;
+    white-space: nowrap;
+}
+form.tiny input {
+    padding: 0;
+    width: 10ex;
+    font-size: 80%;
+}
+
 /* code */
 
 pre, code, tt {
@@ -94,11 +106,13 @@ pre, code, tt {
 /* styling for divs that will be invisible when printing
    when printing. */
 
-div.header, div.footer, div.near, div.definition, p.comment,
-a.tag {
+div.header, div.footer, div.near, div.definition, p.comment, a.tag {
     font-family: "Abadi MT Condensed Light", "Arial Narrow", Arial, sans-serif;
     font-size: 75%;
     line-height: 110%;
+}
+div.footer form.search {
+    display: none;
 }
 div.rc li {
     line-height: 110%;
