@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: commentcount.pl,v 1.9 2007/09/10 03:52:58 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/commentcount.pl">commentcount.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Comment_Count_Extension">Comment Count Extension</a></p>';
 
 *OldCommentcountAddComment = *AddComment;
 *AddComment = *NewCommentcountAddComment;

@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: checkbox.pl,v 1.1 2006/11/05 17:00:37 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/checkbox.pl">checkbox.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Checklist_Extension">Checklist Extension</a></p>';
 
 # [[ : To do]]
 # [[X: Done]]

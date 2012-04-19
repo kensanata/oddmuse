@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: national-days.pl,v 1.1 2004/05/15 12:28:22 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/national-days.pl">national-days.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Special_Days">Special Days</a></p>';
 
 %SpecialDays = (
    '1-1' => 'Sudan, National Day, Haiti, Independence Day, Cuba, Liberation Day',

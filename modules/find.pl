@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: find.pl,v 1.3 2009/03/13 15:40:16 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/find.pl">find.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Find_Extension">Find Extension</a></p>';
 
 $Action{find} = \&DoFind;
 

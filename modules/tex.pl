@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tex.pl,v 1.2 2006/09/14 17:47:03 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/tex.pl">tex.pl</a></p>';
 
 use vars qw($TeXInit);
 

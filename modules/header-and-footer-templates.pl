@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: header-and-footer-templates.pl,v 1.3 2004/12/25 21:54:15 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/header-and-footer-templates.pl">header-and-footer-templates.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Comments_on_HTML_Templates">Comments on HTML Templates</a></p>';
 
 use vars qw($HtmlTemplateDir);
 use HTML::Template;

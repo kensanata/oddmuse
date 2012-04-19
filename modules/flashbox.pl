@@ -15,7 +15,7 @@ directory of your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: flashbox.pl,v 1.5 2009/07/29 13:00:33 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/flashbox.pl">flashbox.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Flashbox_Extension">Flashbox Extension</a></p>';
 
 # ....................{ CONFIGURATION                      }....................
 

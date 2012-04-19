@@ -57,7 +57,7 @@ sub process {
 
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: search-freetext.pl,v 1.67 2009/03/13 15:21:18 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/search-freetext.pl">search-freetext.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Indexed_Search">Indexed Search</a></p>';
 
 =head2 User Interface
 

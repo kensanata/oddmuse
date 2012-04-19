@@ -20,7 +20,7 @@ use vars qw($PageTrailLength);
 
 $PageTrailLength = 10;
 
-$ModulesDescription .= '<p>$Id: page-trail.pl,v 1.6 2009/01/22 00:33:40 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/page-trail.pl">page-trail.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Page_Trail_Extension">Page Trail Extension</a></p>';
 
 $CookieParameters{trail} = '';
 $InvisibleCookieParameters{trail} = 1;

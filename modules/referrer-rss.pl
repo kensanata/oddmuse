@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: referrer-rss.pl,v 1.1 2006/10/08 15:59:54 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/referrer-rss.pl">referrer-rss.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Comments_on_Automatic_Link_Back">Comments on Automatic Link Back</a></p>';
 
 $Action{"refer-rss"} = \&DoRefererRss;
 

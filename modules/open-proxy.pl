@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: open-proxy.pl,v 1.2 2005/08/08 13:05:50 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/open-proxy.pl">open-proxy.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Open_Proxy_Banning_Extension">Open Proxy Banning Extension</a></p>';
 
 # We scan proxies by attempting to self-ban ourselves.  If we're
 # hitting an open proxy, our request will in fact be forwarded, and

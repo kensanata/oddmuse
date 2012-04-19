@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: gotobar.pl,v 1.6 2006/07/15 23:12:35 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/gotobar.pl">gotobar.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Gotobar_Extension">Gotobar Extension</a></p>';
 
 use vars qw($GotobarName);
 

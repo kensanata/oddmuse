@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: clustermap.pl,v 1.16 2007/04/02 14:45:00 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/clustermap.pl">clustermap.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/ClusterMap_Module">ClusterMap Module</a></p>';
 
 use vars qw($ClusterMapPage $ClusterMapTOC $FilterUnclusteredRegExp @ClusterMapAdminPages);
 

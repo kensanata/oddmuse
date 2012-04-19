@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: dojo.pl,v 1.7 2008/07/18 13:28:54 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/dojo.pl">dojo.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Using_Dojo_Instead_Of_Wiki_Markup">Using Dojo Instead Of Wiki Markup</a></p>';
 
 use vars qw(@DojoPlugins $DojoTheme);
 

@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: weblog-4.pl,v 1.13 2007/02/20 00:29:37 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/weblog-4.pl">weblog-4.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Blogging_With_Tags">Blogging With Tags</a></p>';
 
 push(@MyInitVariables, sub {
        $SearchFreeTextTagUrl = $ScriptName . '?action=browse;tag=1;id=';

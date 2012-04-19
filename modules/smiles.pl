@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: smiles.pl,v 1.4 2010/10/01 17:33:27 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/smiles.pl">smiles.pl</a></p>';
 
 %Smilies = (
      ':-?D'      => 'http://www.emacswiki.org/pics/grin.png',

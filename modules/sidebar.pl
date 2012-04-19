@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: sidebar.pl,v 1.21 2008/11/20 11:45:46 leycec Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/sidebar.pl">sidebar.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Sidebar_Extension">Sidebar Extension</a></p>';
 
 use vars qw($SidebarName);
 

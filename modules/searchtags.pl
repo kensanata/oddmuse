@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: searchtags.pl,v 1.6 2008/02/21 16:49:49 weakish Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/searchtags.pl">searchtags.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/SearchTags_Extension">SearchTags Extension</a></p>';
 
 push(@MyRules, \&SearchTagRule);
 

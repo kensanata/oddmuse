@@ -29,7 +29,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: tags.pl,v 1.21 2011/10/23 18:53:40 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/tags.pl">tags.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Tagging_Extension">Tagging Extension</a></p>';
 
 =head1 CONFIGURATION
 

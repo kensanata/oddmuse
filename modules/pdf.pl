@@ -17,7 +17,7 @@
 #    Boston, MA 02111-1307 USA
 #
 
-$ModulesDescription .= '<p>$Id: pdf.pl,v 1.5 2006/01/08 20:48:00 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/pdf.pl">pdf.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/PDF_Module">PDF Module</a></p>';
 
 *PdfOldDoBrowseRequest = *DoBrowseRequest;
 *DoBrowseRequest = *PdfDoBrowseRequest;

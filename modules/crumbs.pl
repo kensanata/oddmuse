@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: crumbs.pl,v 1.5 2005/10/07 23:23:30 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/crumbs.pl">crumbs.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/List_Parent_Pages_Extension">List Parent Pages Extension</a></p>';
 
 push(@MyRules, \&CrumbsRule);
 $RuleOrder{\&CrumbsRule} = -10; # run before default rules!

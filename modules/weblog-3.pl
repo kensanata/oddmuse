@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: weblog-3.pl,v 1.14 2011/12/31 01:40:26 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/weblog-3.pl">weblog-3.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Create_a_Blog_Front_Page">Create a Blog Front Page</a></p>';
 
 # Categories
 

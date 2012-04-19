@@ -25,7 +25,7 @@ directory of your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: autolock.pl,v 1.3 2008/09/06 11:37:33 leycec Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/autolock.pl">autolock.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Autolock_Extension">Autolock Extension</a></p>';
 
 # ....................{ CONFIGURATION                      }....................
 

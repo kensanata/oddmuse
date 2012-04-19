@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 # ====================[ forms.pl                           ]====================
 
-$ModulesDescription .= '<p>$Id: forms.pl,v 1.9 2008/11/25 09:59:32 leycec Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/forms.pl">forms.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Form_Extension">Form Extension</a></p>';
 
 # ....................{ MARKUP                             }....................
 push(@MyRules, \&FormsRule);

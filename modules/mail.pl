@@ -26,7 +26,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: mail.pl,v 1.7 2011/01/16 03:39:50 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/mail.pl">mail.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Mail_Extension">Mail Extension</a></p>';
 
 use vars qw($MailFile $MailPattern);
 

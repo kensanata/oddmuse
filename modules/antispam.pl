@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: antispam.pl,v 1.2 2005/04/08 21:23:43 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/antispam.pl">antispam.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Antispam_Module">Antispam Module</a></p>';
 
 use vars qw($DoMaskEmail $CreateMailtoLinks); 
 

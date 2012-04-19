@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: compilation.pl,v 1.4 2011/11/19 15:27:00 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/compilation.pl">compilation.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Compilation_Extension">Compilation Extension</a></p>';
 
 $Action{compilation} = \&DoCompilation;
 

@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: archive.pl,v 1.4 2007/07/04 20:14:44 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/archive.pl">archive.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Archive_Extension">Archive Extension</a></p>';
 
 *OldArchiveGetHeader = *GetHeader;
 *GetHeader = *NewArchiveGetHeader;

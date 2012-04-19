@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: referrer-tracking.pl,v 1.19 2011/02/24 22:47:11 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/referrer-tracking.pl">referrer-tracking.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Automatic_Link_Back">Automatic Link Back</a></p>';
 
 use LWP::UserAgent;
 

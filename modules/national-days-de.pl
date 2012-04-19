@@ -24,7 +24,7 @@
 # If you are running a multilingual site, then you should explicitly
 # load this file from your language-specific config file.
 
-$ModulesDescription .= '<p>$Id: national-days-de.pl,v 1.9 2006/10/23 11:34:05 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/national-days-de.pl">national-days-de.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Special_Days">Special Days</a></p>';
 
 %SpecialDays = (
   '1-1' => 'Haiti: Erlangung der Unabhängigkeit 1804, Kuba: Jahrestag der Revolution 1959, Sudan: Erlangung der Unabhängigkeit 1956',

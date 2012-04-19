@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: enclosure.pl,v 1.2 2007/08/16 19:59:13 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/enclosure.pl">enclosure.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Podcasting">Podcasting</a></p>';
 
 use vars qw(@Enclosures);
 

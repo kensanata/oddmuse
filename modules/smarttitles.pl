@@ -14,7 +14,7 @@ directory of your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: smarttitles.pl,v 1.7 2008/09/22 10:59:15 leycec Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/smarttitles.pl">smarttitles.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Smarttitles_Extension">Smarttitles Extension</a></p>';
 
 # ....................{ CONFIGURATION                      }....................
 

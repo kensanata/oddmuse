@@ -20,7 +20,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: xfn.pl,v 1.1 2006/08/20 15:34:35 adulau Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/xfn.pl">xfn.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/xfn_Module">xfn Module</a></p>';
 
 push ( @MyRules, \&xfnRule );
 

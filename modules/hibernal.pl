@@ -45,7 +45,7 @@ for posts having such a subtitle.
 #     "David_Curry".
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: hibernal.pl,v 1.4 2008/10/11 13:06:44 leycec Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/hibernal.pl">hibernal.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Hibernal_Extension">Hibernal Extension</a></p>';
 
 # ....................{ CONFIGURATION                      }....................
 

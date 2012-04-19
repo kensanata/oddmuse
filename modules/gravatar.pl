@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: gravatar.pl,v 1.9 2012/02/10 10:49:04 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/gravatar.pl">gravatar.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Gravatar">Gravatar</a></p>';
 
 use Digest::MD5 qw(md5_hex);
 

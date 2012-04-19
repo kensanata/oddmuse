@@ -42,7 +42,7 @@ sub PageTypeInit {
 # have page clustering enabled (see the manual), then the page type
 # will automatically act as a cluster.
 
-$ModulesDescription .= '<p>$Id: page-type.pl,v 1.6 2006/07/15 23:13:37 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/page-type.pl">page-type.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Page_Type_Extension">Page Type Extension</a></p>';
 
 *OldPageTypeDoPost = *DoPost;
 *DoPost = *NewPageTypeDoPost;

@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: adsense.pl,v 1.1 2010/03/12 18:36:02 hbbb Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/adsense.pl">adsense.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/AdSense_Module">AdSense Module</a></p>';
 
 use vars qw($AdSensePageName $AdSensePlace);
 

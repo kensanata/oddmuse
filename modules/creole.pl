@@ -14,7 +14,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: creole.pl,v 1.65 2011/03/22 23:59:47 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/creole.pl">creole.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Creole_Markup_Extension">Creole Markup Extension</a></p>';
 
 # ....................{ CONFIGURATION                      }....................
 

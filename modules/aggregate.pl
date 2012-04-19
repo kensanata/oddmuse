@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: aggregate.pl,v 1.9 2007/06/26 09:40:41 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/aggregate.pl">aggregate.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Front_Page_Extension">Front Page Extension</a></p>';
 
 push(@MyRules, \&AggregateRule);
 

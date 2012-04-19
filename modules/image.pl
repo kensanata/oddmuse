@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: image.pl,v 1.31 2011/07/06 15:55:13 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/image.pl">image.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Image_Extension">Image Extension</a></p>';
 
 use vars qw($ImageUrlPath);
 

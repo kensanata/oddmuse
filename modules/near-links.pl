@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: near-links.pl,v 1.11 2011/01/29 14:38:45 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/near-links.pl">near-links.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Near_Links">Near Links</a></p>';
 
 =head1 Near Links
 

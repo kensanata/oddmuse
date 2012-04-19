@@ -27,7 +27,7 @@
 #  $LogoUrl = GetDynLogoUrl();
 #
 
-$ModulesDescription .= '<p>$Id: dynlogo.pl,v 1.2 2004/10/02 08:40:01 sblatt Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/dynlogo.pl">dynlogo.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Dynamic_Logo">Dynamic Logo</a></p>';
 
 use vars qw($DynLogoDirectory $DynLogoDefault %DynLogoMap);
 

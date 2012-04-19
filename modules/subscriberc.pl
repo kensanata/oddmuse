@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: subscriberc.pl,v 1.5 2005/07/26 10:30:00 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/subscriberc.pl">subscriberc.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Subscribed_Recent_Changes">Subscribed Recent Changes</a></p>';
 
 push(@MyRules, \&SubscribedRecentChangesRule);
 

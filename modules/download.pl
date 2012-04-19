@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: download.pl,v 1.5 2008/12/17 13:30:28 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/download.pl">download.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Download_Extension">Download Extension</a></p>';
 
 push( @MyRules, \&DownloadSupportRule );
 

@@ -17,7 +17,7 @@ use XML::Atom::Entry;
 use XML::Atom::Link;
 use XML::Atom::Person;
 
-$ModulesDescription .= '<p>$Id: atom.pl,v 1.13 2008/10/04 22:31:11 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/atom.pl">atom.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Atom_Extension">Atom Extension</a></p>';
 
 push(@MyInitVariables, \&AtomInit);
 

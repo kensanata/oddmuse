@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: login.pl,v 1.8 2006/08/06 11:47:14 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/login.pl">login.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Login_Module">Login Module</a></p>';
 
 #use vars qw($RegistrationForm $MinimumPasswordLength $RegistrationsMustBeApproved $LoginForm $PasswordFile $PendingPasswordFile $RequireLoginToEdit $ConfirmEmailAddress $ConfirmEmailAddress $UncomfirmedPasswordFile $EmailSenderAddress $EmailCommand $NotifyPendingRegistrations $EmailConfirmationMessage $ResetPasswordMessage $RegistrationForm $LogoutForm $ResetForm $ChangePassForm $RequireCamelUserName);
 

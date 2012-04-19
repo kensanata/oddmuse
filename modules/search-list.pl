@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: search-list.pl,v 1.16 2008/04/25 12:55:50 weakish Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/search-list.pl">search-list.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Search_List_Extension">Search List Extension</a></p>';
 
 push(@MyRules, \&SearchListRule);
 
