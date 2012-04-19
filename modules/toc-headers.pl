@@ -20,7 +20,7 @@
 # This is a simplified mix of headers.pl and toc.pl to work together.
 # It is based on headers.pl 1.12 and toc.pl 1.30.
 
-$ModulesDescription .= '<p>$Id: toc-headers.pl,v 1.1 2006/05/06 21:12:50 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/toc-headers.pl">toc-headers.pl</a></p>';
 
 use vars qw($MinTocSize $OrderedLists);
 

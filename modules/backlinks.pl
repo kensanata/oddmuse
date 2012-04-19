@@ -10,7 +10,7 @@
 # For user doc, see: 
 # http://www.oddmuse.org/cgi-bin/oddmuse/Backlinks_Extension
 
-$ModulesDescription .= '<p>$Id: backlinks.pl,v 1.2 2008/06/23 17:13:51 weakish Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/backlinks.pl">backlinks.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Backlinks_Extension">Backlinks Extension</a></p>';
 
 *OldGetSearchLink = *GetSearchLink;
 *GetSearchLink = *NewGetSearchLink;

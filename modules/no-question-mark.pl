@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: no-question-mark.pl,v 1.2 2006/06/05 21:53:31 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/no-question-mark.pl">no-question-mark.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/No_Questionmarks_Extension">No Questionmarks Extension</a></p>';
 
 sub GetPageOrEditLink {
   my ($id, $text, $bracket, $free) = @_;

@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: multi-url-spam-block.pl,v 1.9 2008/01/12 22:56:44 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/multi-url-spam-block.pl">multi-url-spam-block.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Multiple_Link_Ban_Extension">Multiple Link Ban Extension</a></p>';
 
 *OldMultiUrlBannedContent = *BannedContent;
 *BannedContent = *NewMultiUrlBannedContent;

@@ -22,7 +22,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: honeypot.pl,v 1.6 2012/01/02 22:47:01 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/honeypot.pl">honeypot.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Comments_on_Monitor_Extension">Comments on Monitor Extension</a></p>';
 
 =head1 CONFIGURATION
 

@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tables-long.pl,v 1.16 2007/08/16 21:56:35 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/tables-long.pl">tables-long.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Long_Table_Markup_Extension">Long Table Markup Extension</a></p>';
 
 push(@MyRules, \&TablesLongRule);
 

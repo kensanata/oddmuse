@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: index.pl,v 1.4 2007/02/14 09:25:18 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/index.pl">index.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Index_Extension">Index Extension</a></p>';
 
 $Action{'printable-index'} = \&DoPrintableIndex;
 

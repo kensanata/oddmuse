@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: strange-spam.pl,v 1.18 2007/11/28 09:34:36 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/strange-spam.pl">strange-spam.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/StrangeBannedContent">StrangeBannedContent</a></p>';
 
 use vars qw($StrangeBannedContent);
 

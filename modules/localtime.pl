@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: localtime.pl,v 1.1 2008/03/02 16:02:09 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/localtime.pl">localtime.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Localtime_Extension">Localtime Extension</a></p>';
 
 *CalcDay     = *NewCalcDay;
 *CalcTime    = *NewCalcTime;

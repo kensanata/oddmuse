@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tables.pl,v 1.9 2007/12/09 01:49:37 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/tables.pl">tables.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Table_Markup_Extension">Table Markup Extension</a></p>';
 
 push(@MyRules, \&TablesRule);
 

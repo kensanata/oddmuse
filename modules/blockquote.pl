@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: blockquote.pl,v 1.1 2007/07/18 08:09:29 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/blockquote.pl">blockquote.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Comments_on_Text_Formatting_Rules">Comments on Text Formatting Rules</a></p>';
 
 push(@MyRules, \&BlockQuoteRule);
 

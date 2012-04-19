@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: tables-in-lists.pl,v 1.1 2008/06/19 06:03:59 ingob Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/tables-in-lists.pl">tables-in-lists.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Table_Markup_Extension">Table Markup Extension</a></p>';
 
 push(@MyRules, \&TablesInListsRule);
 

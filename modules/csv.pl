@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: csv.pl,v 1.3 2007/12/22 15:29:55 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/csv.pl">csv.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Comments_on_Long_Table_Markup_Extension">Comments on Long Table Markup Extension</a></p>';
 
 push(@MyRules, \&CsvRule);
 

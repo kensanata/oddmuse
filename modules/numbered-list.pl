@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: numbered-list.pl,v 1.2 2008/01/03 01:01:00 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/numbered-list.pl">numbered-list.pl</a></p>';
 
 push(@MyRules, \&NumberedListRule);
 

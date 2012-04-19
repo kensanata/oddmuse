@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: dynamic-comments.pl,v 1.10 2011/07/06 19:18:01 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/dynamic-comments.pl">dynamic-comments.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Dynamic_Comments_Extension">Dynamic Comments Extension</a></p>';
 
 push(@MyInitVariables, \&DynamicCommentsAddScript);
 

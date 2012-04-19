@@ -31,7 +31,7 @@
 
 #	TODO: auto links in codespans should not be interpreted  (e.g. `<http://somelink/>`)
 
-$ModulesDescription .= '<p>$Id: markdown.pl,v 1.44 2007/09/12 05:02:13 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/markdown.pl">markdown.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Markdown_Extension">Markdown Extension</a></p>';
 
 use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled $SmartyPantsEnabled!;
 

@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: nearlink-create.pl,v 1.1 2006/12/02 21:36:01 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/nearlink-create.pl">nearlink-create.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Comments_on_Near_Links">Comments on Near Links</a></p>';
 
 *OldNearCreateScriptLink = *ScriptLink;
 *ScriptLink = *NewNearCreateScriptLink;

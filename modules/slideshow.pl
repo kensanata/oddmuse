@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: slideshow.pl,v 1.2 2005/04/08 21:23:43 fletcherpenney Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/slideshow.pl">slideshow.pl</a></p>';
 
 use vars qw($SlideShowDataFolder $SlideShowTheme $SlideShowHeader %SlideShowMeta);
 

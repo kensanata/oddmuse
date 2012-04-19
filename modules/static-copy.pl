@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: static-copy.pl,v 1.29 2011/10/13 23:46:21 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/static-copy.pl">static-copy.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Static_Copy_Extension">Static Copy Extension</a></p>';
 
 $Action{static} = \&DoStatic;
 

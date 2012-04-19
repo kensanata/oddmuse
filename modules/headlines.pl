@@ -19,7 +19,7 @@
 
 use vars qw($HeadlineNumber);
 
-$ModulesDescription .= '<p>$Id: headlines.pl,v 1.8 2005/04/28 23:58:17 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/headlines.pl">headlines.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Headlines_Extension">Headlines Extension</a></p>';
 
 push(@MyRules, \&HeadlinesRule);
 

@@ -33,7 +33,7 @@ crossbar is easily installable; move this file into the B<wiki/modules/>
 directory for your Oddmuse Wiki.
 
 =cut
-$ModulesDescription .= '<p>$Id: crossbar.pl,v 1.7 2008/12/12 22:44:39 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/crossbar.pl">crossbar.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Crossbar_Extension">Crossbar Extension</a></p>';
 
 # ....................{ CONFIGURATION                      }....................
 use vars qw($CrossbarPageName

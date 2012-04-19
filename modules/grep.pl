@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: grep.pl,v 1.3 2006/02/15 19:29:39 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/grep.pl">grep.pl</a></p>';
 
 push(@MyRules, \&GrepRule);
 

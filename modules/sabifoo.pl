@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: sabifoo.pl,v 1.7 2006/10/31 15:43:15 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/sabifoo.pl">sabifoo.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Sabifoo">Sabifoo</a></p>';
 
 push(@MyInitVariables, \&SabiFooInit);
 

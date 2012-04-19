@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: logbannedcontent.pl,v 1.6 2008/10/16 04:53:17 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/logbannedcontent.pl">logbannedcontent.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/LogBannedContent_Module">LogBannedContent Module</a></p>';
 
 use vars qw($BannedFile);
 

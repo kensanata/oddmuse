@@ -17,7 +17,7 @@
 #    Boston, MA 02111-1307 USA
 
 
-$ModulesDescription .= '<p>$Id: listtags.pl,v 1.3 2008/04/26 00:54:27 weakish Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/listtags.pl">listtags.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/ListTags_Extension">ListTags Extension</a></p>';
 
 # This action is similar with list action
 

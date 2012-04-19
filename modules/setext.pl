@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: setext.pl,v 1.9 2004/12/05 14:19:12 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/setext.pl">setext.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/SeText_Extension">SeText Extension</a></p>';
 
 push(@MyRules, \&SeTextRule);
 

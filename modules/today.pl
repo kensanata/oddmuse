@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: today.pl,v 1.7 2007/08/03 23:08:43 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/today.pl">today.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Blog_Module">Blog Module</a></p>';
 
 # New Action
 

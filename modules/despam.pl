@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: despam.pl,v 1.15 2007/11/16 01:42:55 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/despam.pl">despam.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Despam_Extension">Despam Extension</a></p>';
 
 push(@MyAdminCode, \&DespamMenu);
 

@@ -79,7 +79,7 @@ my $eqAbbrev = "Eq. ";
 my $LatexDefaultTemplateName = "$LatexDir/template.latex";
 
 
-$ModulesDescription .= '<p>$Id: latex.pl,v 1.14 2005/03/15 14:50:04 tolchz Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/latex.pl">latex.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/LaTeX_Extension">LaTeX Extension</a></p>';
 
 # Internal Equation counting and referencing variables
 my $eqCounter = 0;

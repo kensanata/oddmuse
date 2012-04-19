@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: localnames.pl,v 1.37 2011/05/11 13:48:08 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/localnames.pl">localnames.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Local_Names_Extension">Local Names Extension</a></p>';
 
 =head1 Local Names
 

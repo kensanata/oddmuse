@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: locked.pl,v 1.1 2008/12/12 13:34:41 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/locked.pl">locked.pl</a></p>';
 
 $Action{locked} = \&DoLocked;
 

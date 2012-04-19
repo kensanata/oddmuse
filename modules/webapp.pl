@@ -16,7 +16,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: webapp.pl,v 1.2 2012/01/31 11:10:40 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/webapp.pl">webapp.pl</a></p>';
 
 push(@MyAdminCode, \&WebAppMenu);
 

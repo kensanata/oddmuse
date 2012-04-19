@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p>$Id: bbcode.pl,v 1.16 2011/03/15 11:01:07 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/bbcode.pl">bbcode.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/bbCode_Extension">bbCode Extension</a></p>';
 
 push(@MyRules, \&bbCodeRule);
 

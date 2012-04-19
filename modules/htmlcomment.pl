@@ -10,7 +10,7 @@
 # For user doc, see: 
 # http://www.oddmuse.org/cgi-bin/oddmuse/Html_Comment_Extension
 
-$ModulesDescription .= '<p>$Id: htmlcomment.pl,v 1.2 2008/02/23 15:51:27 weakish Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/htmlcomment.pl">htmlcomment.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Html_Comment_Extension">Html Comment Extension</a></p>';
 
 push(@MyRules, \&HtmlCommentRules);
 

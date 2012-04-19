@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p>$Id: irc.pl,v 1.7 2006/07/31 20:24:59 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/irc.pl">irc.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/IRC_Log_Extension">IRC Log Extension</a></p>';
 
 use vars qw($IrcNickRegexp $IrcLinkNick);
 

@@ -19,7 +19,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p>$Id: poetry.pl,v 1.7 2008/12/23 04:42:52 leycec Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/poetry.pl">poetry.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Poetry_Extension">Poetry Extension</a></p>';
 
 # ....................{ CONFIGURATION                      }....................
 

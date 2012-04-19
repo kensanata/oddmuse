@@ -10,7 +10,7 @@
 # For user doc, see: 
 # http://www.oddmuse.org/cgi-bin/oddmuse/Field_List_Extension
 
-$ModulesDescription .= '<p>$Id: fieldlist.pl,v 1.1 2008/02/23 17:11:27 weakish Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/fieldlist.pl">fieldlist.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Field_List_Extension">Field List Extension</a></p>';
 
 push(@MyRules, \&FieldListRules);
 

@@ -15,7 +15,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p>$Id: css-install.pl,v 1.1 2011/12/05 23:59:30 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/css-install.pl">css-install.pl</a></p>';
 
 =head1 CONFIGURATION
 

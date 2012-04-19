@@ -21,7 +21,7 @@
 # $InstanceThrottleLimit by keeping track of the process ids in
 # $InstanceThrottleDir
 
-$ModulesDescription .= '<p>$Id: throttle.pl,v 1.6 2006/10/21 18:51:40 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/throttle.pl">throttle.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Limit_Number_Of_Instances_Running">Limit Number Of Instances Running</a></p>';
 
 use vars qw($InstanceThrottleDir $InstanceThrottleLimit);
 
