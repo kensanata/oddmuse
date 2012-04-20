@@ -162,6 +162,9 @@ div.old {
 div.new {
     background-color:#CFFFCF;
 }
+div.wrapper div.diff + hr {
+    display: none;
+}
 /* portrait support */
 div.color {
     clear:left;
