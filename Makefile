@@ -1,9 +1,9 @@
 # The Makefile is only for developpers wanting to prepare the tarball.
 # Make sure the CVS keywords for the sed command on the next line are not expanded.
 
-VERSION_NO=$(shell sed -n -e 's/^.*\$$Id: wiki\.pl,v \(1\.[0-9]*\).*$$/\1/p' wiki.pl | head -n 1)
+VERSION_NO=$(shell git describe --tags)
 VERSION=oddmuse-$(VERSION_NO)
-UPLOADVERSION=oddmuse-inkscape-$(shell sed -n -e 's/^.*\$$Id: wikiupload,v \([0-9.]*\).*$$/\1/p' wikiupload)
+UPLOADVERSION=oddmuse-inkscape-$(VERSION_NO)
 TRANSLATIONS=$(wildcard modules/translations/[a-z]*-utf8.pl$)
 MODULES=$(wildcard modules/*.pl)
 INKSCAPE=GPL $(wildcard inkscape/*.py inkscape/*.inx inkscape/*.sh)
@@ -21,6 +21,9 @@ OLDDIST=$(VERSION).dmg $(VERSION).dmg.sig \
 
 dist: $(DIST)
 
+current.pl: wiki.pl
+	sed "s/\\\$$q->a({-href=>'http:\/\/www.oddmuse.org\/'}, 'Oddmuse')/\\\$$q->a({-href=>'http:\/\/git.savannah.gnu.org\/cgit\/oddmuse.git\/tag\/?id=$(VERSION_NO)'}, 'wiki.pl') . ', see ' . &/" < $< > $@
+
 upload: $(DIST)
 	for f in $^; do \
 		scp $$f as@dl.sv.nongnu.org:/releases/oddmuse/; \
@@ -32,7 +35,7 @@ upload-text: new-utf8.pl
 contrib/simple-install/$(VERSION)-simple.tar.gz:
 	cd contrib/simple-install && make $(VERSION)-simple.tar.gz
 
-$(VERSION).tar.gz: README FDL GPL ChangeLog wiki.pl $(TRANSLATIONS) $(MODULES)
+$(VERSION).tar.gz: README FDL GPL ChangeLog wiki.pl $(TRANSLATIONS) $(MODULES) current.pl
 	rm -rf $(VERSION)
 	mkdir $(VERSION)
 	cp $^ $(VERSION)
