@@ -21,7 +21,9 @@ OLDDIST=$(VERSION).dmg $(VERSION).dmg.sig \
 
 dist: $(DIST)
 
-current.pl: wiki.pl
+.PHONY: always
+
+current.pl: always
 	sed "s/\\\$$q->a({-href=>'http:\/\/www.oddmuse.org\/'}, 'Oddmuse')/\\\$$q->a({-href=>'http:\/\/git.savannah.gnu.org\/cgit\/oddmuse.git\/tag\/?id=$(VERSION_NO)'}, 'wiki.pl') . ', see ' . &/" < $< > $@
 
 upload: $(DIST)
@@ -118,8 +120,6 @@ upload-translations: always
 		wikiput -z "ham" -u "cvs" -s "update" \
 		"http://www.oddmuse.org/cgi-bin/oddmuse/raw/$$f" < $$f; \
 	done
-
-.PHONY: always
 
 deb:
 	equivs-build control
