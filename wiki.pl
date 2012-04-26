@@ -381,7 +381,7 @@ sub SetParam {
 }
 
 sub InitLinkPatterns {
-  my ($UpperLetter, $LowerLetter, $AnyLetter, $WikiWord, $QDelim);
+  my ($WikiWord, $QDelim);
   $QDelim = '(?:"")?'; # Optional quote delimiter (removed from the output)
   $WikiWord = '[A-Z]+[a-z\x80-\xff]+[A-Z][A-Za-z\x80-\xff]*';
   $LinkPattern = "($WikiWord)$QDelim";
@@ -2717,7 +2717,7 @@ sub GetKeptRevision {   # Call after OpenPage
 }
 
 sub GetPageFile {
-  my ($id, $revision) = @_;
+  my ($id) = @_;
   return $PageDir . '/' . GetPageDirectory($id) . "/$id.pg";
 }
 
