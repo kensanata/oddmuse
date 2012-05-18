@@ -39,7 +39,7 @@ li img, img.smiley, .noborder img {
     color:#000;
 }
 /* Google +1 */
-a.plus1 img {
+a#plus1 img {
     background-color: #fff;
     padding: 0;
     margin: 0;
