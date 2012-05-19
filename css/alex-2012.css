@@ -83,6 +83,12 @@ span.bar a {
     margin-right: 1ex;
 }
 
+/* Google +1 button */
+
+a#plus1 img {
+    border: none;
+}
+
 /* search box in the top bar */
 
 form.tiny, form.tiny p {
