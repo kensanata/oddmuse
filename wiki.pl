@@ -1815,7 +1815,7 @@ sub RcHtml {
     $more .= ";$_=$val" if $val;
   }
   $html .= $q->p({-class=>'more'}, ScriptLink($more, T('More...'), 'more'));
-  return GetFormStart() . $html . $q->endform;
+  return GetFormStart(undef, 'get', 'rc') . $html . $q->endform;
 }
 
 sub PrintRcHtml { # to append RC to existing page, or action=rc directly
@@ -2452,7 +2452,8 @@ sub GetCommentForm {
 sub GetFormStart {
   my ($ignore, $method, $class) = @_;
   $method ||= 'post';
-  return $q->start_multipart_form(-method=>$method, -action=>$FullUrl, -class=>$class);
+  return $q->start_multipart_form(-method=>$method, -action=>$FullUrl,
+				  -class=>$class||'form');
 }
 
 sub GetSearchForm {
