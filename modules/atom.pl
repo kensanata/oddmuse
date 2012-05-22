@@ -55,7 +55,7 @@ sub DoAtomIntrospection {
   push(@types, @UploadTypes) if $UploadAllowed;
   my $upload = '<accept>' . join(', ', @types) . '</accept>';
   print <<EOT;
-<?xml version="1.0" encoding='$HttpCharset'?>
+<?xml version="1.0" encoding='UTF-8'?>
 <service xmlns="http://purl.org/atom/app#">
 <workspace title="Wiki" >
 <collection title="$SiteName" href="$ScriptName/atom/wiki">
@@ -79,7 +79,7 @@ sub GetRcAtom {
   my $historyPrefix = QuoteHtml($ScriptName) . "?action=history;id=";
   my $limit = GetParam("rsslimit", 15); # Only take the first 15 entries
   my $count = 0;
-  my $feed = qq{<?xml version="1.0" encoding="$HttpCharset"?>\n};
+  my $feed = qq{<?xml version="1.0" encoding="UTF-8"?>\n};
   if ($RssStyleSheet =~ /\.(xslt?|xml)$/) {
     $feed .= qq{<?xml-stylesheet type="text/xml" href="$RssStyleSheet" ?>\n};
   } elsif ($RssStyleSheet) {
