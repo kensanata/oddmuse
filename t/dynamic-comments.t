@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 9;
+use Test::More tests => 11;
 
 clear_pages();
 
@@ -37,7 +37,11 @@ test_page(update_page('Comments_on_2011-07-06', 'Yo'),
 xpath_test(get_page('Hi'),
 	   '//div[@class="journal"]/div[@class="page"]/p[@class="comment"]/a[@href="javascript:togglecomments(\'Comments_on_2011-07-06\')"][text()="Comments on 2011-07-06"]');
 
-update_page('2011-07-06_(…)_Dü', 'Hallo');
+# encoding basics
+$page = update_page('2011-07-06_(…)_Dü', 'Hallo Dü');
+test_page($page, 'Hallo Dü');
+xpath_test($page, '//p[contains(text(), "Dü")]');
+
 update_page('Comments_on_2011-07-06_(…)_Dü', 'Yo');
 
 xpath_test(update_page('Hi', '<journal>'),

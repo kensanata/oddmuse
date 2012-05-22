@@ -158,7 +158,7 @@ sub StaticHtml {
 <title>$SiteName: $id</title>
 <link type="text/css" rel="stylesheet" href="static.css" />
 <meta http-equiv="refresh" content="0; url=$target">
-<meta http-equiv="content-type" content="text/html; charset=$HttpCharset">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 </head>
 <body>
 <p>Redirected to <a href="$target">$1</a>.</p>
@@ -173,7 +173,7 @@ EOT
 <head>
 <title>$SiteName: $id</title>
 <link type="text/css" rel="stylesheet" href="static.css" />
-<meta http-equiv="content-type" content="text/html; charset=$HttpCharset">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 </head>
 <body>
 EOT

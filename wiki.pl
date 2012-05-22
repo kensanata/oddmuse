@@ -47,20 +47,19 @@ $EmbedWiki $BracketText $UseConfig $UseLookup $AdminPass $EditPass $NetworkFile
 $BracketWiki $FreeLinks $WikiLinks $SummaryHours $FreeLinkPattern $RCName
 $RunCGI $ShowEdits $LinkPattern $RssExclude $InterLinkPattern $MaxPost $UseGrep
 $UrlPattern $UrlProtocols $ImageExtensions $InterSitePattern $FS $CookieName
-$SiteBase $StyleSheet $NotFoundPg $FooterNote $NewText $EditNote $HttpCharset
-$UserGotoBar $VisitorFile $RcFile %Smilies %SpecialDays $InterWikiMoniker
-$SiteDescription $RssImageUrl $ReadMe $RssRights $BannedCanRead $SurgeProtection
-$TopLinkBar $LanguageLimit $SurgeProtectionTime $SurgeProtectionViews
-$DeletedPage %Languages $InterMap $ValidatorLink %LockOnCreation
-$RssStyleSheet %CookieParameters @UserGotoBarPages $NewComment $HtmlHeaders
-$StyleSheetPage $ConfigPage $ScriptName $CommentsPrefix @UploadTypes
-$AllNetworkFiles $UsePathInfo $UploadAllowed $LastUpdate $PageCluster
-%PlainTextPages $RssInterwikiTranslate $UseCache $Counter $ModuleDir
-$FullUrlPattern $SummaryDefaultLength $FreeInterLinkPattern
-%InvisibleCookieParameters %AdminPages $UseQuestionmark $JournalLimit
-$LockExpiration $RssStrip %LockExpires @IndexOptions @Debugging $DocumentHeader
-%HtmlEnvironmentContainers @MyAdminCode @MyFooters @MyInitVariables @MyMacros
-@MyMaintenance @MyRules);
+$SiteBase $StyleSheet $NotFoundPg $FooterNote $NewText $EditNote $UserGotoBar
+$VisitorFile $RcFile %Smilies %SpecialDays $InterWikiMoniker $SiteDescription
+$RssImageUrl $ReadMe $RssRights $BannedCanRead $SurgeProtection $TopLinkBar
+$LanguageLimit $SurgeProtectionTime $SurgeProtectionViews $DeletedPage
+%Languages $InterMap $ValidatorLink %LockOnCreation $RssStyleSheet
+%CookieParameters @UserGotoBarPages $NewComment $HtmlHeaders $StyleSheetPage
+$ConfigPage $ScriptName $CommentsPrefix @UploadTypes $AllNetworkFiles
+$UsePathInfo $UploadAllowed $LastUpdate $PageCluster %PlainTextPages
+$RssInterwikiTranslate $UseCache $Counter $ModuleDir $FullUrlPattern
+$SummaryDefaultLength $FreeInterLinkPattern %InvisibleCookieParameters
+%AdminPages $UseQuestionmark $JournalLimit $LockExpiration $RssStrip
+%LockExpires @IndexOptions @Debugging $DocumentHeader %HtmlEnvironmentContainers
+@MyAdminCode @MyFooters @MyInitVariables @MyMacros @MyMaintenance @MyRules);
 
 # Internal variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie $FootnoteNumber
@@ -95,7 +94,6 @@ $CookieName  = 'Wiki';          # Name for this wiki (for multi-wiki sites)
 
 $SiteBase    = '';              # Full URL for <BASE> header
 $MaxPost     = 1024 * 210;      # Maximum 210K posts (about 200K for pages)
-$HttpCharset = 'UTF-8';         # You are on your own if you change this!
 $StyleSheet  = '';              # URL for CSS stylesheet (like '/wiki.css')
 $StyleSheetPage = 'css';        # Page for CSS sheet
 $LogoUrl     = '';              # URL for site logo ('' for no logo)
@@ -217,13 +215,14 @@ sub ReportError {   # fatal!
 }
 
 sub Init {
+  binmode(STDOUT, ':utf8');
   InitDirConfig();
   $FS  = "\x1e"; # The FS character is the RECORD SEPARATOR control char in ASCII
   $Message = ''; # Warnings and non-fatal errors.
   InitLinkPatterns(); # Link pattern can be changed in config files
   InitModules(); # Modules come first so that users can change module variables in config
   InitConfig(); # Config comes as early as possible; remember $q is not available here
-  InitRequest(); # get $q with $MaxPost and $HttpCharset; set these in the config file
+  InitRequest(); # get $q with $MaxPost; set these in the config file
   InitCookie(); # After InitRequest, because $q is used
   InitVariables(); # After config, to change variables, after InitCookie for GetParam
 }
@@ -245,7 +244,7 @@ sub InitConfig {
     do $ConfigFile; # these options must be set in a wrapper script or via the environment
     $Message .= CGI::p("$ConfigFile: $@") if $@; # remember, no $q exists, yet
   }
-  if ($ConfigPage) { # $FS, $HttpCharset, $MaxPost must be set in config file!
+  if ($ConfigPage) { # $FS and $MaxPost must be set in config file!
     my ($status, $data) = ReadFile(GetPageFile(FreeToNormal($ConfigPage)));
     my %data = ParseData($data); # before InitVariables so GetPageContent won't work
     eval $data{text} if $data{text};
@@ -274,8 +273,6 @@ sub InitDirConfig {
 sub InitRequest {
   $CGI::POST_MAX = $MaxPost;
   $q = new CGI unless $q;
-  $q->charset($HttpCharset) if $HttpCharset;
-  eval { local $SIG{__DIE__}; binmode(STDOUT, ":raw"); }; # we treat input and output as bytes
 }
 
 sub InitVariables {  # Init global session variables for mod_perl!
@@ -485,9 +482,7 @@ sub ApplyRules {
 	Clean(CloseHtmlEnvironments());
 	Dirty($1);
 	my ($oldpos, $old_) = (pos, $_); # remember these because of the call to RSS()
-	eval { local $SIG{__DIE__}; binmode(STDOUT, ":utf8"); } if $HttpCharset eq 'UTF-8';
 	print RSS($3 ? $3 : 15, split(/\s+/, UnquoteHtml($4)));
-	eval { local $SIG{__DIE__}; binmode(STDOUT, ":raw"); };
 	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
 	($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
       } elsif (/\G(&lt;search (.*?)&gt;)/cgis) {
@@ -912,13 +907,6 @@ sub RSS {
   # translations will be double encoded when printing the result.
   my $tDiff = T('diff');
   my $tHistory = T('history');
-  if ($HttpCharset eq 'UTF-8' and ($tDiff ne 'diff' or $tHistory ne 'history')) {
-    eval { local $SIG{__DIE__};
-	   require Encode;
-	   $tDiff = Encode::decode_utf8($tDiff);
-	   $tHistory = Encode::decode_utf8($tHistory);
-	 }
-  }
   my $wikins = 'http://purl.org/rss/1.0/modules/wiki/';
   my $rdfns = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
   @uris = map { s/^"?(.*?)"?$/$1/; $_; } @uris; # strip quotes of uris
@@ -1872,7 +1860,7 @@ sub GetRcRss {
       }
     }
   }
-  my $rss = qq{<?xml version="1.0" encoding="$HttpCharset"?>\n};
+  my $rss = qq{<?xml version="1.0" encoding="UTF-8"?>\n};
   if ($RssStyleSheet =~ /\.(xslt?|xml)$/) {
     $rss .= qq{<?xml-stylesheet type="text/xml" href="$RssStyleSheet" ?>\n};
   } elsif ($RssStyleSheet) {
@@ -2246,8 +2234,8 @@ sub GetHttpHeader {
   my %headers = (-cache_control=>($UseCache < 0 ? 'no-cache' : 'max-age=10'));
   $headers{-etag} = $ts || PageEtag() if GetParam('cache', $UseCache) >= 2;
   $headers{'-last-modified'} = TimeToRFC822($ts) if $ts and $ts ne 'nocache'; # RFC 2616 section 13.3.4
+  $headers{-charset} = 'UTF-8';
   $headers{-type} = GetParam('mime-type', $type);
-  $headers{-type} .= "; charset=$HttpCharset" if $HttpCharset;
   $headers{-status} = $status if $status;
   $headers{-Content_Encoding} = $encoding if $encoding;
   my $cookie = Cookie();
@@ -2297,10 +2285,9 @@ sub GetHtmlHeader {   # always HTML!
     . T('Edit this page') . '" href="'
     . ScriptUrl('action=edit;id=' . UrlEncode(GetId())) . '" />' if $id;
   return $DocumentHeader
-      . $q->head($q->title($title) . $base
-     . GetCss() . GetRobots() . GetFeeds() . $HtmlHeaders
-     . '<meta http-equiv="Content-Type" content="text/html; charset='
-     . $HttpCharset . '"/>')
+    . $q->head($q->title($title) . $base
+      . GetCss() . GetRobots() . GetFeeds() . $HtmlHeaders
+      . '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>')
       . '<body class="' . GetParam('theme', $ScriptName) . '">';
 }
 
@@ -2319,7 +2306,7 @@ sub GetFeeds {      # default for $HtmlHeaders
   my $id = GetId(); # runs during Init, not during DoBrowseRequest
   $html .= '<link rel="alternate" type="application/rss+xml" title="'
     . QuoteHtml("$SiteName: $id") . '" href="' . $ScriptName
-      . '?action=rss;rcidonly=' . UrlEncode(FreeToNormal($id)) . '" />' if $id;
+    . '?action=rss;rcidonly=' . UrlEncode(FreeToNormal($id)) . '" />' if $id;
   my $username = GetParam('username', '');
   $html .= '<link rel="alternate" type="application/rss+xml" '
     . 'title="Follow-ups for ' . NormalToFree($username) . '" '
@@ -2452,8 +2439,9 @@ sub GetCommentForm {
 sub GetFormStart {
   my ($ignore, $method, $class) = @_;
   $method ||= 'post';
+  $class  ||= 'form';
   return $q->start_multipart_form(-method=>$method, -action=>$FullUrl,
-				  -class=>$class||'form');
+				  -accept_charset=>'UTF-8', -class=>$class);
 }
 
 sub GetSearchForm {

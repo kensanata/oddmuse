@@ -16,7 +16,6 @@
 package OddMuse;
 use lib '.';
 use XML::LibXML;
-use Encode;
 
 # Import the functions
 
@@ -25,6 +24,7 @@ $UseConfig = 0; # don't read module files
 $DataDir = 'test-data';
 $ENV{WikiDataDir} = $DataDir;
 require 'wiki.pl';
+$ENV{PATH} = '/usr/local/bin:$ENV{PATH}'; # location of perl?
 Init();
 
 use vars qw($redirect);
@@ -46,6 +46,15 @@ sub url_encode {
   return join('', @letters);
 }
 
+# run perl in a subprocess and make sure it prints UTF-8 and not Latin-1
+sub capture {
+  my $command = shift;
+  open (CL, '-|:encoding(utf-8)', $command) or die "Can't run $command: $!";
+  my $result = <CL>;
+  close CL;
+  return $result;
+}
+
 sub update_page {
   my ($id, $text, $summary, $minor, $admin, @rest) = @_;
   my $pwd = $admin ? 'foo' : 'wrong';
@@ -54,8 +63,8 @@ sub update_page {
   $summary = url_encode($summary);
   $minor = $minor ? 'on' : 'off';
   my $rest = join(' ', @rest);
-  $redirect = `perl wiki.pl 'Save=1' 'title=$page' 'summary=$summary' 'recent_edit=$minor' 'text=$text' 'pwd=$pwd' $rest`;
-  $output = `perl wiki.pl action=browse id=$page $rest`;
+  $redirect = capture("perl wiki.pl 'Save=1' 'title=$page' 'summary=$summary' 'recent_edit=$minor' 'text=$text' 'pwd=$pwd' $rest");
+  $output = capture("perl wiki.pl action=browse id=$page $rest");
   if ($redirect =~ /^Status: 302 /) {
     # just in case a new page got created or NearMap or InterMap
     $IndexHash{$id} = 1;
@@ -66,10 +75,7 @@ sub update_page {
 }
 
 sub get_page {
-  open(F, "perl wiki.pl @_ |");
-  my $output = <F>;
-  close F;
-  return $output;
+  return capture("perl wiki.pl @_");
 }
 
 sub name {
@@ -120,8 +126,8 @@ sub run_macro_tests {
 # one string, many tests
 sub test_page {
   my $page = shift;
-  foreach my $str (@_) {
-    like($page, qr($str), name($str));
+  foreach my $test (@_) {
+    like($page, qr($test), name($test));
   }
 }
 
@@ -147,7 +153,15 @@ sub xpath_do {
     skip("Cannot parse ".name($page).": $@", $#tests + 1) if $@;
     foreach my $test (@tests) {
       my $nodelist;
-      eval { $nodelist = $doc->findnodes($test) };
+      my $bytes = $test;
+      # utf8::encode: Converts in-place the character sequence to the
+      # corresponding octet sequence in *UTF-X*. The UTF8 flag is
+      # turned off, so that after this operation, the string is a byte
+      # string. (I have no idea why this is necessary, but there you
+      # go. See encoding.t tests and make sure the page file is
+      # encoded correctly.)
+      utf8::encode($bytes);
+      eval { $nodelist = $doc->findnodes($bytes) };
       if ($@) {
 	fail(&$check(1) ? "$test: $@" : "not $test: $@");
       } elsif (ok(&$check($nodelist->size()), name(&$check(1) ? $test : "not $test"))) {

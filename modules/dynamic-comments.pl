@@ -38,11 +38,9 @@ function togglecomments (id) {
 
 sub SafeId {
   my $id = shift;
-  my $regexp = "";
-  $regexp = "|\xc3[\x80-\x96\x98-\xb6\xb8-\xff]|[\xc4-\xca].|\xcb[\x00-\xbf]"
-          . "|\xcd[\xb0-\xbd\xbf-\xff]|[\xce-\xDF].|\xe0..|\xe1[\x00-\xbe]."
-          . "|\xe1\xbf[\x00-\xbf]|\xe2\x80[\x8c\x8d]"
-      if $HttpCharset eq 'UTF-8';
+  my $regexp = "|\xc3[\x80-\x96\x98-\xb6\xb8-\xff]|[\xc4-\xca].|\xcb[\x00-\xbf]"
+    . "|\xcd[\xb0-\xbd\xbf-\xff]|[\xce-\xDF].|\xe0..|\xe1[\x00-\xbe]."
+    . "|\xe1\xbf[\x00-\xbf]|\xe2\x80[\x8c\x8d]";
   # Unicode Codepoint   UTF-8 encoding
   # [#xC0-#xD6]              c3 80 - c3 96
   # [#xD8-#xF6]              c3 98 - c3 b6
