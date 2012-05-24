@@ -198,8 +198,8 @@ sub MarkdownNearInit {
 sub DoWikiWords {
 	
 	my $text = shift;
-	my $WikiWord = '[A-Z]+[a-z\x80-\xff]+[A-Z][A-Za-z\x80-\xff]*';
-	my $FreeLinkPattern = "([-,.()' _0-9A-Za-z\x80-\xff]+)";
+	my $WikiWord = '[A-Z]+[a-z\x{0080}-\x{ffff}]+[A-Z][A-Za-z\x{0080}-\x{ffff}]*';
+	my $FreeLinkPattern = "([-,.()' _0-9A-Za-z\x{0080}-\x{ffff}]+)";
 
 	if ($FreeLinks) {
 		# FreeLinks
@@ -299,7 +299,7 @@ sub CreateWikiLink {
 
 sub UnescapeWikiWords {
 	my $text = shift;
-	my $WikiWord = '[A-Z]+[a-z\x80-\xff]+[A-Z][A-Za-z\x80-\xff]*';
+	my $WikiWord = '[A-Z]+[a-z\x{0080}-\x{ffff}]+[A-Z][A-Za-z\x{0080}-\x{ffff}]*';
 	
 	# Unescape escaped WikiWords
 	$text =~ s/\\($WikiWord)/$1/g;
@@ -379,7 +379,7 @@ sub NewEncodeCode {
 	$text = OldEncodeCode($text);
 	
 	# Protect Wiki Words
-	my $WikiWord = '[A-Z]+[a-z\x80-\xff]+[A-Z][A-Za-z\x80-\xff]*';
+	my $WikiWord = '[A-Z]+[a-z\x{0080}-\x{ffff}]+[A-Z][A-Za-z\x{0080}-\x{ffff}]*';
 	$text =~ s!($WikiWord)!\\$1!gx;
 
 	return $text;
@@ -471,7 +471,7 @@ sub MarkdownAddComment {
 
 sub NewDoAnchors {
 	my $text = shift;
-	my $WikiWord = '[A-Z]+[a-z\x80-\xff]+[A-Z][A-Za-z\x80-\xff]*';
+	my $WikiWord = '[A-Z]+[a-z\x{0080}-\x{ffff}]+[A-Z][A-Za-z\x{0080}-\x{ffff}]*';
 		
 	return Markdown::_DoAnchors($text);
 }

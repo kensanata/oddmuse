@@ -15,6 +15,8 @@
 # Create a modules subdirectory in your data directory, and put the file in
 # there. It will be loaded automatically.
 #
+use utf8;
+use utf8;
 $ModulesDescription .= '<p>$Id: german-utf8.pl,v 1.30 2011/02/05 12:40:38 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages

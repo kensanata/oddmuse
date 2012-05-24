@@ -15,6 +15,7 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
+use utf8;
 $ModulesDescription .= '<p>$Id: greek-utf8.pl,v 1.2 2009/06/07 19:30:37 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages

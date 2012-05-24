@@ -15,6 +15,7 @@
 require 't/test.pl';
 package OddMuse;
 use Test::More tests => 11;
+use utf8; # tests contain UTF-8 characters and it matters
 
 clear_pages();
 
@@ -35,7 +36,7 @@ test_page(update_page('Comments_on_2011-07-06', 'Yo'),
 	  'Yo');
 
 xpath_test(get_page('Hi'),
-	   '//div[@class="journal"]/div[@class="page"]/p[@class="comment"]/a[@href="javascript:togglecomments(\'Comments_on_2011-07-06\')"][text()="Comments on 2011-07-06"]');
+	   '//div[@class="journal"]/div[@class="page"]/p[@class="comment"]/a[@href="javascript:togglecomments(\'id0\')"][text()="Comments on 2011-07-06"]');
 
 # encoding basics
 $page = update_page('2011-07-06_(…)_Dü', 'Hallo Dü');
@@ -47,4 +48,4 @@ update_page('Comments_on_2011-07-06_(…)_Dü', 'Yo');
 xpath_test(update_page('Hi', '<journal>'),
 	  '//h1/a[text()="2011-07-06 (…) Dü"]',
 	  '//div[@class="journal"]/div[@class="page"]/p[@class="comment"]/a[text()="Comments on 2011-07-06 (…) Dü"]',
-	  '//div[@class="journal"]/div[@class="page"]/p[@class="comment"]/a[@href="javascript:togglecomments(\'Comments_on_2011-07-06__Dü\')"]');
+	  '//div[@class="journal"]/div[@class="page"]/p[@class="comment"]/a[@href="javascript:togglecomments(\'id0\')"]');

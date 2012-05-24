@@ -18,6 +18,7 @@
 #
 # This translation was updated for Oddmuse 1.354.
 #
+use utf8;
 $ModulesDescription .= '<p>$Id: bulgarian-utf8.pl,v 1.11 2009/06/07 19:30:37 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
