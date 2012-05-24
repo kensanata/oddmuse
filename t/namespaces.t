@@ -16,6 +16,8 @@
 require 't/test.pl';
 package OddMuse;
 use Test::More tests => 71;
+use utf8; # tests contain UTF-8 characters and it matters
+
 clear_pages();
 
 add_module('namespaces.pl');
@@ -118,10 +120,7 @@ test_page(update_page('Umlaute', 'namespace mit umlaut',
 		      'ns=Zürich'), 'namespace mit umlaut');
 xpath_test(get_page('action=rc'),
 	   # the exact result depends on filesystem encoding!
-	   '//a[@class="local"][@href="http://localhost/wiki.pl/Zu%cc%88rich/Umlaute"'
-	   . ' or @href="http://localhost/wiki.pl/Zu%fcrich/Umlaute"'
-	   . ' or @href="http://localhost/wiki.pl/Z%c3%bcrich/Umlaute"]');
-
+	   '//a[@class="local"][@href="http://localhost/wiki.pl/Z%c3%bcrich/Umlaute"]');
 # Test rollbacks
 test_page(get_page('action=browse ns=Muu id=Test'),
 	  'Another Mooo!');

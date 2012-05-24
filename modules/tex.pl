@@ -19,6 +19,7 @@
 $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/tex.pl">tex.pl</a></p>';
 
 use vars qw($TeXInit);
+use utf8;
 
 my %h = qw( !` ¡ {\pounds} £ \pounds £ {\S} § \S § \"{} ¨ {\copyright} ©
 \copyright © $^a$ ª \={} ¯ $\pm$ ± \pm ± $^2$ ² $^3$ ³ \'{} ´ {\P} ¶

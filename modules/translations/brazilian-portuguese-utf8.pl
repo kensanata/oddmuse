@@ -18,6 +18,7 @@
 #
 # This translation was last checked for Oddmuse version 1.753.
 #
+use utf8;
 $ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.14 2009/06/07 19:30:37 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
