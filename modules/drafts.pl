@@ -1,20 +1,16 @@
-# Copyright (C) 2006  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006, 2012  Alex Schroeder <alex@gnu.org>
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 3 of the License, or (at your option) any later
+# version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
 
 use vars qw($DraftDir);
 
@@ -73,16 +69,17 @@ push(@MyMaintenance, \&DraftCleanup);
 sub DraftCleanup {
   print '<p>' . T('Draft Cleanup');
   foreach my $draft (glob("$DraftDir/* $DraftDir/.*")) {
+    my $name = substr($draft, length($DraftDir) + 1);
     next if $draft =~ m!/\.\.?$!;
     my $ts = (stat($draft))[9];
     if ($Now - $ts < 1209600) { # 14*24*60*60
       print $q->br(), Tss("%1 was last modified %2 and was kept",
-		$draft, CalcTimeSince($Now - $ts));
+		$name, CalcTimeSince($Now - $ts));
     } elsif (unlink($draft)) {
       print $q->br(), Tss("%1 was last modified %2 and was deleted",
-		$draft, CalcTimeSince($Now - $ts));
+		$name, CalcTimeSince($Now - $ts));
     } else {
-      print $q->br(), Ts('Unable to delete draft %s', $draft);
+      print $q->br(), Ts('Unable to delete draft %s', $name);
     }
   }
   print '</p>';
