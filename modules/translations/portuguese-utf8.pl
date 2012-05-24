@@ -20,6 +20,7 @@
 #
 # This translation was last checked for Oddmuse version 1.195.
 #
+use utf8;
 $ModulesDescription .= '<p>$Id: portuguese-utf8.pl,v 1.15 2009/06/07 19:30:37 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages

@@ -19,6 +19,7 @@ require 't/test.pl';
 package OddMuse;
 
 use Test::More tests => 10; # update two numbers below!
+use utf8; # tests contain UTF-8 characters and it matters
 
 SKIP: {
 

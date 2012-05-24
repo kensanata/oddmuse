@@ -16,6 +16,7 @@
 require 't/test.pl';
 package OddMuse;
 use Test::More tests => 61;
+use utf8; # tests contain UTF-8 characters and it matters
 
 SKIP: {
   eval { require Search::FreeText };

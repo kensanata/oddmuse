@@ -140,7 +140,7 @@ that table. This is optional. If not specified, it defaults to "toc".
 sub TocRule {
   # <toc...> markup. This explicitly displays a table of contents at this point.
   if ($bol and
-      m~\G&lt;toc(/([A-Za-z\x80-\xff/]+))?    # $1
+      m~\G&lt;toc(/([A-Za-z\x{0080}-\x{ffff}/]+))?    # $1
         (\s+(?:header_text\s*=\s*)?"(.+?)")?  # $3
         (\s+(?:class\s*=\s*)?"(.+?)")?        # $5
         &gt;[ \t]*(\n|$)~cgx) {               # $7
