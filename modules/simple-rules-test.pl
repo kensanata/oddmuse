@@ -5,7 +5,7 @@ use vars qw($FS $FreeLinkPattern $UrlProtocols $UrlChars $EndChars
 $UrlPattern $q);
 
 $FS = "\x1e";
-$FreeLinkPattern = "([-,.()' _0-9A-Za-z\x80-\xff]+)";
+$FreeLinkPattern = "([-,.()' _0-9A-Za-z\x{0080}-\x{ffff}]+)";
 $UrlProtocols = 'http|https|ftp|afs|news|nntp|mid|cid|mailto|wais|prospero|telnet|gopher|irc';
 $UrlChars = '[-a-zA-Z0-9/@=+$_~*.,;:?!\'"()&#%]'; # see RFC 2396
 $EndChars = '[-a-zA-Z0-9/@=+$_~*]'; # no punctuation at the end of the url.

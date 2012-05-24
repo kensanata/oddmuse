@@ -16,6 +16,7 @@
 package OddMuse;
 use lib '.';
 use XML::LibXML;
+use utf8;
 
 # Import the functions
 
@@ -26,7 +27,6 @@ $ENV{WikiDataDir} = $DataDir;
 require 'wiki.pl';
 $ENV{PATH} = '/usr/local/bin:$ENV{PATH}'; # location of perl?
 Init();
-
 use vars qw($redirect);
 
 undef $/;
@@ -35,6 +35,7 @@ $| = 1; # no output buffering
 sub url_encode {
   my $str = shift;
   return '' unless $str;
+  utf8::encode($str); # turn to byte string
   my @letters = split(//, $str);
   my @safe = ('a' .. 'z', 'A' .. 'Z', '0' .. '9', '-', '_', '.'); # shell metachars are unsafe
   foreach my $letter (@letters) {
@@ -164,7 +165,8 @@ sub xpath_do {
       eval { $nodelist = $doc->findnodes($bytes) };
       if ($@) {
 	fail(&$check(1) ? "$test: $@" : "not $test: $@");
-      } elsif (ok(&$check($nodelist->size()), name(&$check(1) ? $test : "not $test"))) {
+      } elsif (ok(&$check($nodelist->size()),
+		  name(&$check(1) ? $test : "not $test"))) {
 	$result .= $nodelist->string_value();
       } else {
 	$page =~ s/^.*?<html/<html/s;
@@ -215,16 +217,18 @@ sub remove_rule {
 }
 
 sub add_module {
-  my $mod = shift;
+  my ($mod, $subdir) = @_;
+  $subdir .= '/' if $subdir and substr($subdir, -1) ne '/';
+  my $filename = 
   mkdir $ModuleDir unless -d $ModuleDir;
   my $dir = `/bin/pwd`;
   chop($dir);
   if (-l "$ModuleDir/$mod") {
     # do nothing
-  } elsif (eval{ symlink("$dir/modules/$mod", "$ModuleDir/$mod"); 1; }) {
+  } elsif (eval{ symlink("$dir/modules/$subdir$mod", "$ModuleDir/$mod"); 1; }) {
     # do nothing
   } else {
-    system("copy '$dir/modules/$mod' '$ModuleDir/$mod'");
+    system("copy '$dir/modules/$subdir$mod' '$ModuleDir/$mod'");
   }
   die "Cannot symlink $mod: $!" unless -e "$ModuleDir/$mod";
   do "$ModuleDir/$mod";
@@ -245,7 +249,8 @@ sub clear_pages {
   }
   die "Cannot remove $DataDir!\n" if -e $DataDir;
   mkdir $DataDir;
-  open(F,">$DataDir/config");
+  add_module('mac.pl') if $^O eq 'darwin'; # guessing HFS filesystem
+  open(F, '>:encoding(utf-8)', "$DataDir/config");
   print F "\$AdminPass = 'foo';\n";
   # this used to be the default in earlier CGI.pm versions
   print F "\$ScriptName = 'http://localhost/wiki.pl';\n";

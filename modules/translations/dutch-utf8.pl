@@ -24,6 +24,7 @@
 #
 # This translation was last checked for Oddmuse version 1.215.
 #
+use utf8;
 $ModulesDescription .= '<p>$Id: dutch-utf8.pl,v 1.12 2011/05/17 13:24:13 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
