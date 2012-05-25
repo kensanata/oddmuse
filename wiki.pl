@@ -2264,7 +2264,7 @@ sub CookieData {
   my ($changed, $visible, %params);
   foreach my $key (keys %CookieParameters) {
     my $default = $CookieParameters{$key};
-    my $value = GetParam($key, $default); # values are URL encoded
+    my $value = GetParam($key, $default);
     $params{$key} = $value  if $value ne $default;
     # The cookie is considered to have changed under the following
     # condition: If the value was already set, and the new value is
@@ -2281,6 +2281,7 @@ sub Cookie {
   my ($changed, $visible, %params) = CookieData(); # params are URL encoded
   if ($changed) {
     my $cookie = join(UrlEncode($FS), %params); # no CTL in field values
+    utf8::encode($cookie);
     my $result = $q->cookie(-name=>$CookieName, -value=>$cookie,
 			    -expires=>'+2y');
     $Message .= $q->p(T('Cookie: ') . $CookieName . ', '

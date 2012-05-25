@@ -74,3 +74,12 @@ sub MacFixEncoding {
     $InterSite{$key} = $Namespaces{$key} if $Namespaces{$key};
   }
 }
+
+# for drafts.pl
+
+*OldMacDraftFiles = *DraftFiles;
+*DraftFiles = *NewMacDraftFiles;
+
+sub NewMacDraftFiles {
+  return map { NFC($_) } OldMacDraftFiles(@_);
+}
