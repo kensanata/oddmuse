@@ -20,17 +20,9 @@ $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git
 
 use Unicode::Normalize;
 
-<<<<<<< HEAD
 *OldMacAllPagesList = *AllPagesList;
 *AllPagesList = *NewMacAllPagesList;
 
-=======
-$UseGrep = 0;
-
-*OldMacAllPagesList = *AllPagesList;
-*AllPagesList = *NewMacAllPagesList;
-
->>>>>>> 700d412a0112ccacd9a9bf6e7764b72acf1d1511
 sub NewMacAllPagesList {
   $refresh = GetParam('refresh', 0);
   if ($IndexInit && !$refresh) {
