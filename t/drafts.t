@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 25;
+use Test::More tests => 26;
 use utf8;
 
 clear_pages();
@@ -78,6 +78,6 @@ ok(! -f "$DraftDir/.berta", "$DraftDir/Alex is gone");
 # Testing UTF-8
 # Saving draft uses 204 No Content status
 test_page(get_page('title=HomePage text=foo username=Schröder Draft=1'),
-	 'Status: 204');
+	 'Status: 204', 'username%251eSchr%C3%B6der');
 test_page(get_page('action=maintain pwd=foo'),
 	  'Schröder was last modified [^<>]* and was kept');

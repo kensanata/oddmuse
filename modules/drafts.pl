@@ -32,6 +32,7 @@ $Action{draft} = \&DoDraft;
 sub DoDraft {
   my $id = shift;
   my $draft = $DraftDir . '/' . GetParam('username', GetRemoteHost());
+  utf8::encode($draft);
   if ($id) {
     my $text = GetParam('text', '');
     ReportError(T('No text to save'), '400 BAD REQUEST') unless $text;
@@ -66,20 +67,27 @@ sub DraftNewGetEditForm {
 
 push(@MyMaintenance, \&DraftCleanup);
 
+sub DraftFiles {
+  return map {
+    $_ = substr($_, length($DraftDir) + 1);
+    utf8::decode($_);
+    $_;
+  } glob("$DraftDir/* $DraftDir/.*");
+}
+
 sub DraftCleanup {
   print '<p>' . T('Draft Cleanup');
-  foreach my $draft (glob("$DraftDir/* $DraftDir/.*")) {
-    my $name = substr($draft, length($DraftDir) + 1);
-    next if $draft =~ m!/\.\.?$!;
-    my $ts = (stat($draft))[9];
+  foreach my $draft (DraftFiles()) {
+    next if $draft eq '.' or $draft eq '..';
+    my $ts = (stat("$DraftDir/$draft"))[9];
     if ($Now - $ts < 1209600) { # 14*24*60*60
       print $q->br(), Tss("%1 was last modified %2 and was kept",
-		$name, CalcTimeSince($Now - $ts));
-    } elsif (unlink($draft)) {
+		$draft, CalcTimeSince($Now - $ts));
+    } elsif (unlink("$DraftDir/$draft")) {
       print $q->br(), Tss("%1 was last modified %2 and was deleted",
-		$name, CalcTimeSince($Now - $ts));
+		$draft, CalcTimeSince($Now - $ts));
     } else {
-      print $q->br(), Ts('Unable to delete draft %s', $name);
+      print $q->br(), Ts('Unable to delete draft %s', $draft);
     }
   }
   print '</p>';
