@@ -26,7 +26,12 @@ $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git
 $ThumbnailTempDir = '/tmp';
 
 # Path and name of external program to use to create thumbnails. Only
-# ImageMagick 'convert' can be used
+# ImageMagick 'convert' can be used. You may have to set the MAGICK_HOME
+# environment variable in your config file if you set it to
+# /usr/local/bin/convert and get the following error:
+#   convert: no decode delegate for this image format
+# For your config file:
+#   $ENV{MAGICK_HOME} = '/usr/local';
 $ThumbnailConvert = '/usr/bin/convert';
 
 # Max size for a thumbnail. If larger size is specified just shows
@@ -180,12 +185,12 @@ sub GenerateThumbNail {
      #   Check MIME type supported
      #   Check is a file
 
-     my $type, $data;
      my ($text, $revision) = GetTextRevision(GetParam('revision', '')); # maybe revision reset!
+     my ($type) = TextIsFile($text); # MIME type if an uploaded file
+     my $data = substr($text, index($text, "\n") + 1);
 
-      if ($text =~ /#FILE ([^ \n]+)\n(.*)/s)
+     if ($type)
      {
-           ($type, $data) = ($1, $2);
            my $regexp = quotemeta($type);
 
             if (@ThumbnailTypes and not grep(/^$regexp$/, @ThumbnailTypes)) {
@@ -202,7 +207,7 @@ sub GenerateThumbNail {
 
      # Decode the original image to a temp file
 
-     open(FD, "> $filename") or ReportError(Ts("Could not open $s for writing whilst trying to save image before creating thumbnail. Check write permissions.",$filename), '500 INTERNAL SERVER ERROR');  
+     open(FD, "> $filename") or ReportError(Ts("Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.",$filename), '500 INTERNAL SERVER ERROR');  
      binmode(FD);
      print FD MIME::Base64::decode($data);
      close(FD);
@@ -214,27 +219,32 @@ sub GenerateThumbNail {
 
     # create the thumbnail
 
-     open (MESSAGE, $ThumbnailConvert . " $filename -verbose -resize $size" . "x" . " $ThumbnailCacheDir/$id/$size |") or ReportError(Ts("Failed to run $s to create thumbnail.", $ThumbnailConvert), '500 INTERNAL SERVER ERROR');  
+     my $command = "$ThumbnailConvert '$filename' -verbose -resize ${size}x '$ThumbnailCacheDir/$id/$size' 2>&1";
+     open (MESSAGE, '-|', $command)
+       or ReportError(Tss("Failed to run %1 to create thumbnail: %2", $ThumbnailConvert, $!),
+		      '500 INTERNAL SERVER ERROR');
 
       my $convert = <MESSAGE>;
       close(MESSAGE);
-      
+
       my $scaled_size_x;
       my $scaled_size_y;
 
-      my $thumbnail_data= '';
+	my $thumbnail_data= '';
 
-       if($convert =~ m/=>(\d+)x(\d+)/)
-       {
+        if($?) {
+                 ReportError(Ts("%s ran into an error", $ThumbnailConvert), '500 INTERNAL SERVER ERROR', undef,
+			     $q->pre($command . "\n" . $convert));
+	} elsif($convert =~ m/=>(\d+)x(\d+)/) {
                  $scaled_size_x = $1;
                  $scaled_size_y = $2;
+	} elsif (!$convert) {
+                 ReportError(Ts("%s produced no output", $ThumbnailConvert), '500 INTERNAL SERVER ERROR');
         } else {
-                 ReportError(Ts("Failed to parse $s.", $convert), '500 INTERNAL SERVER ERROR');             
+                 ReportError(Ts("Failed to parse %s.", $convert), '500 INTERNAL SERVER ERROR');
         }
 
-
         unlink($filename);
-
 
         # save tag to page
         #$Page{'thumbnail_' . $size} = '#FILE ' . $type . ' created=' . $Now . ' revision=' . $Page{'revision'} . ' size=' . $scaled_size_x . 'x' . $scaled_size_y . "\n" . $thumbnail_data;
