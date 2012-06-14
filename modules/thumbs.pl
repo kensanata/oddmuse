@@ -1,4 +1,4 @@
-# Copyright (C) 2004 Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004, 2012 Alex Schroeder <alex@gnu.org>
 # Copyright (C) 2005 Rob Neild
 #
 # This program is free software: you can redistribute it and/or modify it under
