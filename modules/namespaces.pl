@@ -249,7 +249,7 @@ sub NewNamespaceGetRcLines { # starttime, hash of seen pages to use as a second 
   return LatestChanges(@result);
 }
 
-=head RSS feed
+=head2 RSS feed
 
 When retrieving the RSS feed with the parameter full=1, one would
 expect the various items to contain the fully rendered HTML.
