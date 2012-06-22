@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 32;
+use Test::More tests => 35;
 use utf8; # tests contain UTF-8 characters and it matters
 
 clear_pages();
@@ -73,6 +73,16 @@ test_page($page, 'title: Search for: öl', 'title: Öl');
 # managed to switch of the use of grep
 test_page(get_page('search=ähren raw=1'),
 	  'title: Search for: ähren', 'title: Öl');
+
+# the username keeps getting reported as changed
+test_page(get_page('action=browse id=Möglich username=Schr%C3%B6der'),
+	  'Set-Cookie: Wiki=username%251eSchr%C3%B6der',
+	  'username=Schröder');
+
+# verify that non-ASCII parameters work as intended
+AppendStringToFile($ConfigFile, "use utf8;\n\$CookieParameters{ärger} = 1;\n");
+test_page(get_page('action=browse id=Test %C3%A4rger=hallo'),
+	  'Set-Cookie: Wiki=%C3%A4rger%251ehallo');
 
 # this causes wide character in print somehow? otherwise harmless
 test_page(update_page("Russian", "Русский Hello"),
