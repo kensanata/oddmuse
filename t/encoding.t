@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 30;
+use Test::More tests => 32;
 use utf8; # tests contain UTF-8 characters and it matters
 
 clear_pages();
@@ -73,3 +73,12 @@ test_page($page, 'title: Search for: öl', 'title: Öl');
 # managed to switch of the use of grep
 test_page(get_page('search=ähren raw=1'),
 	  'title: Search for: ähren', 'title: Öl');
+
+# this causes wide character in print somehow? otherwise harmless
+test_page(update_page("Russian", "Русский Hello"),
+	  "Русский");
+
+# with toc.pl, however, a problem: Русский is corrupted
+add_module('toc.pl');
+test_page(update_page("Russian", "Русский Hello again"),
+	  "Русский");
