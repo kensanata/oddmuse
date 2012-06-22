@@ -231,6 +231,7 @@ sub NewTocApplyRules {
     open(  STDOUT, '>', \$html) or die "Can't open memory file: $!";
     ($blocks, $flags) = OldTocApplyRules(@_);
     close  STDOUT;
+    utf8::decode($html);
   }
   # If there are at least two HTML headers on this page, insert a table of
   # contents.
