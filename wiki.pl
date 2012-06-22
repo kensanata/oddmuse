@@ -325,12 +325,10 @@ sub ReInit {   # init everything we need if we want to link to stuff
 
 sub InitCookie {
   undef $q->{'.cookies'};   # Clear cache if it exists (for SpeedyCGI)
-  if ($q->cookie($CookieName)) {
-    %OldCookie = split(/$FS/o, UrlDecode($q->cookie($CookieName)));
-  } else {
-    %OldCookie = ();
-  }
-  my %provided = map { $_ => 1 } $q->param;
+  my $cookie = $q->cookie($CookieName);
+  utf8::decode($cookie); # make sure it's decoded as UTF-8
+  %OldCookie = split(/$FS/o, UrlDecode($cookie));
+  my %provided = map { utf8::decode($_); $_ => 1 } $q->param;
   for my $key (keys %OldCookie) {
     SetParam($key, $OldCookie{$key}) unless $provided{$key};
   }
@@ -366,6 +364,7 @@ sub CookieRollbackFix {
 
 sub GetParam {
   my ($name, $default) = @_;
+  utf8::encode($name); # may fail
   my $result = $q->param($name);
   $result = $default unless defined($result);
   utf8::decode($result); # may fail
@@ -2265,7 +2264,6 @@ sub CookieData {
   foreach my $key (keys %CookieParameters) {
     my $default = $CookieParameters{$key};
     my $value = GetParam($key, $default);
-    utf8::encode($value);
     $params{$key} = $value  if $value ne $default;
     # The cookie is considered to have changed under the following
     # condition: If the value was already set, and the new value is
@@ -2282,6 +2280,7 @@ sub Cookie {
   my ($changed, $visible, %params) = CookieData(); # params are URL encoded
   if ($changed) {
     my $cookie = join(UrlEncode($FS), %params); # no CTL in field values
+    utf8::encode($cookie); # prevent casting to Latin 1
     my $result = $q->cookie(-name=>$CookieName, -value=>$cookie,
 			    -expires=>'+2y');
     $Message .= $q->p(T('Cookie: ') . $CookieName . ', '
