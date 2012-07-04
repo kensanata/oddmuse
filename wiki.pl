@@ -1270,7 +1270,9 @@ sub PageHtml {  #FIXME: A bit buggy, this. STDOUT should be explicitly closed be
   local *STDOUT;
   OpenPage($id);
   open(STDOUT, '>', \$result) or die "Can't open memory file: $!";
+  binmode(STDOUT, ":utf8");
   PrintPageDiff();
+  utf8::decode($result);
   return $error if $limit and length($result) > $limit;
   my $diff = $result;
   PrintPageHtml();

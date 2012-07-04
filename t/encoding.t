@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 35;
+use Test::More tests => 37;
 use utf8; # tests contain UTF-8 characters and it matters
 
 clear_pages();
@@ -92,3 +92,10 @@ test_page(update_page("Russian", "Русский Hello"),
 add_module('toc.pl');
 test_page(update_page("Russian", "Русский Hello again"),
 	  "Русский");
+
+# and with inclusion, too:
+test_page(update_page("All", qq{<include "Russian">}),
+	  "Русский");
+
+# and checking the cache
+test_page(get_page("All"), "Русский");

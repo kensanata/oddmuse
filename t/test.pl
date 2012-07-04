@@ -82,6 +82,7 @@ sub name {
   $_ = shift;
   s/\n/\\n/g;
   $_ = '...' . substr($_, -60) if length > 63;
+  utf8::encode($_);
   return $_;
 }
 

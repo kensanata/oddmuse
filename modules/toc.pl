@@ -25,7 +25,6 @@ use vars qw($TocHeaderText
             $TocClass
             $TocAutomatic
             $TocAnchorPrefix
-
             $TocIsApplyingAutomaticRules);
 
 =head2 $TocHeaderText
@@ -229,8 +228,10 @@ sub NewTocApplyRules {
   {
     local *STDOUT;
     open(  STDOUT, '>', \$html) or die "Can't open memory file: $!";
+    binmode STDOUT, ":utf8";
     ($blocks, $flags) = OldTocApplyRules(@_);
     close  STDOUT;
+    utf8::decode($blocks);
     utf8::decode($html);
   }
   # If there are at least two HTML headers on this page, insert a table of
