@@ -32,10 +32,7 @@ package OddMuse;
 use strict;
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
-use vars qw($VERSION);
 local $| = 1;  # Do not buffer output (localized for mod_perl)
-
-$VERSION=(split(/ +/, q{$Revision: 1.960 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
