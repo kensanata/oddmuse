@@ -24,6 +24,8 @@
 # If you are running a multilingual site, then you should explicitly
 # load this file from your language-specific config file.
 
+use utf8;
+
 $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/national-days-de.pl">national-days-de.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Special_Days">Special Days</a></p>';
 
 %SpecialDays = (
