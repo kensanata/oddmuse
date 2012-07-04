@@ -1,8 +1,7 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.960 2012/03/08 15:28:18 as Exp $
-# Copyleft      2008 Brian Curry <http://www.raiazome.com>
-# Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
+# Copyright (C) 2001-2012
 #     Alex Schroeder <alex@gnu.org>
+# Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # ... including lots of patches from the UseModWiki site
 # Copyright (C) 2001, 2002  various authors
 # ... which was based on UseModWiki version 0.92 (April 21, 2001)
