@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 37;
+use Test::More tests => 38;
 use utf8; # tests contain UTF-8 characters and it matters
 
 clear_pages();
@@ -86,6 +86,10 @@ test_page(get_page('action=browse id=Test %C3%A4rger=hallo'),
 
 # this causes wide character in print somehow? otherwise harmless
 test_page(update_page("Russian", "Русский Hello"),
+	  "Русский");
+
+# checking for errors in the rss feed
+test_page(get_page("action=rss match=Russian full=1"),
 	  "Русский");
 
 # with toc.pl, however, a problem: Русский is corrupted

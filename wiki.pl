@@ -1264,20 +1264,22 @@ sub PrintPageDiff {   # print diff for open page
   }
 }
 
-sub PageHtml {  #FIXME: A bit buggy, this. STDOUT should be explicitly closed before returning.
+sub PageHtml {
   my ($id, $limit, $error) = @_;
-  my $result = '';
+  my ($diff, $page);
   local *STDOUT;
   OpenPage($id);
-  open(STDOUT, '>', \$result) or die "Can't open memory file: $!";
+  open(STDOUT, '>', \$diff) or die "Can't open memory file: $!";
   binmode(STDOUT, ":utf8");
   PrintPageDiff();
-  utf8::decode($result);
-  return $error if $limit and length($result) > $limit;
-  my $diff = $result;
+  utf8::decode($diff);
+  return $error if $limit and length($diff) > $limit;
+  open(STDOUT, '>', \$page) or die "Can't open memory file: $!";
+  binmode(STDOUT, ":utf8");
   PrintPageHtml();
-  return $diff . $q->p($error) if $limit and length($result) > $limit;
-  return $result;
+  utf8::decode($page);
+  return $diff . $q->p($error) if $limit and length($diff . $page) > $limit;
+  return $diff . $page;
 }
 
 sub T {
