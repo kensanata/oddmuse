@@ -2300,7 +2300,7 @@ sub GetHtmlHeader {   # always HTML!
   return $DocumentHeader
     . $q->head($q->title($title) . $base
       . GetCss() . GetRobots() . GetFeeds() . $HtmlHeaders
-      . '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>')
+      . '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />')
       . '<body class="' . GetParam('theme', $ScriptName) . '">';
 }
 
