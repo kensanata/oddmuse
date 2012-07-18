@@ -19,7 +19,7 @@
 # This translation was last checked for Oddmuse version 1.504.
 #
 use utf8;
-$ModulesDescription .= '<p>$Id: chinese-utf8.pl,v 1.12 2009/06/07 19:30:37 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/chinese-utf8.pl">chinese-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Chinese">Chinese</a></p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 包含正常頁面

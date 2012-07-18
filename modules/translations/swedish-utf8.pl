@@ -21,7 +21,7 @@
 # file in there. It will be loaded automatically.
 #
 use utf8;
-$ModulesDescription .= '<p>$Id: swedish-utf8.pl,v 1.18 2009/06/07 19:30:38 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/swedish-utf8.pl">swedish-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Swedish">Swedish</a></p><p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 Med vanliga sidor

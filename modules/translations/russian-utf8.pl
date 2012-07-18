@@ -21,7 +21,7 @@
 # This script was last checked for Oddmuse version 1.658.
 #
 use utf8;
-$ModulesDescription .= '<p>$Id: russian-utf8.pl,v 1.13 2007/08/19 11:42:08 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/russian-utf8.pl">russian-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Russian">Russian</a></p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Просмотр недоступен: имя пользователя, IP-адрес или сеть заблокированы.
