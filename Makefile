@@ -2,27 +2,49 @@
 # Make sure the CVS keywords for the sed command on the next line are not expanded.
 
 VERSION_NO=$(shell git describe --tags)
-VERSION=oddmuse-$(VERSION_NO)
-UPLOADVERSION=oddmuse-inkscape-$(VERSION_NO)
 TRANSLATIONS=$(wildcard modules/translations/[a-z]*-utf8.pl$)
 MODULES=$(wildcard modules/*.pl)
+BUILD=build/wiki.pl $(foreach file, $(notdir $(MODULES)) $(notdir $(TRANSLATIONS)), build/$(file))
+
+# PREPARE/BUILD: this creates copies of wiki.pl and all the modules
+# and translations in the build subdirectory. These copies all contain
+# a reference to the revision they were created from (git describe
+# --tags).
+
+prepare: build $(BUILD)
+
+build:
+	mkdir -p build
+
+build/wiki.pl: wiki.pl
+	sed "s/\\\$$q->a({-href=>'http:\/\/www.oddmuse.org\/'}, 'Oddmuse')/\\\$$q->a({-href=>'http:\/\/git.savannah.gnu.org\/cgit\/oddmuse.git\/tag\/?id=$(VERSION_NO)'}, 'wiki.pl') . ' ($(VERSION_NO)), see ' . &/" < $< > $@
+
+build/%-utf8.pl: modules/translations/%-utf8.pl
+	sed "s/<a href=\"http:\/\/git.savannah.gnu.org\/cgit\/oddmuse.git\/tree\/modules\/translations\/\\(.*\\).pl\">\\(.*\\).pl<\/a>/<a href=\"http:\/\/git.savannah.gnu.org\/cgit\/oddmuse.git\/tree\/modules\/translations\/\\1.pl?id=$(VERSION_NO)\">\\1.pl<\/a> (for $(VERSION_NO))/" < $< > $@
+
+# from: http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/namespaces.pl
+#   to: http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/namespaces.pl?id=2.1-11-gd4f1e27
+
+build/%.pl: modules/%.pl
+	sed "s/<a href=\"http:\/\/git.savannah.gnu.org\/cgit\/oddmuse.git\/tree\/modules\/\\(.*\\).pl\">\\(.*\\).pl<\/a>/<a href=\"http:\/\/git.savannah.gnu.org\/cgit\/oddmuse.git\/tree\/modules\/\\1.pl?id=$(VERSION_NO)\">\\1.pl<\/a> (for $(VERSION_NO))/" < $< > $@
+
+
+
+
+# UNTESTED/OBSOLETE: these targets have not been tested in a long time
+# and are potentially obsolete.
+VERSION=oddmuse-$(VERSION_NO)
+UPLOADVERSION=oddmuse-inkscape-$(VERSION_NO)
 INKSCAPE=GPL $(wildcard inkscape/*.py inkscape/*.inx inkscape/*.sh)
 PACKAGEMAKER=/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker
-PWD=$(shell pwd)
 DIST=$(VERSION).tar.gz $(VERSION).tar.gz.sig \
 	contrib/simple-install/$(VERSION)-simple.tar.gz \
 	contrib/simple-install/$(VERSION)-simple.tar.gz.sig
-
-# These targets no longer work are have not been verified in a long time.
 OLDDIST=$(VERSION).dmg $(VERSION).dmg.sig \
-	$(VERSION).tar.gz $(VERSION).tar.gz.sig \
-	$(VERSION).tgz $(VERSION).tgz.sig \
-	$(UPLOADVERSION).tar.gz $(UPLOADVERSION).tar.gz.sig
+	$(VERSION).tgz $(VERSION).tgz.sig
+PWD=$(shell pwd)
 
 dist: $(DIST)
-
-current.pl: wiki.pl
-	sed "s/\\\$$q->a({-href=>'http:\/\/www.oddmuse.org\/'}, 'Oddmuse')/\\\$$q->a({-href=>'http:\/\/git.savannah.gnu.org\/cgit\/oddmuse.git\/tag\/?id=$(VERSION_NO)'}, 'wiki.pl') . ', see ' . &/" < $< > $@
 
 upload: $(DIST)
 	for f in $^; do \

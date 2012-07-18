@@ -1,4 +1,7 @@
 *~
-/current.pl
+/build/
 \#*\#
 /test-data
+/Mac/pkg/
+*.dmg
+*.pkg
