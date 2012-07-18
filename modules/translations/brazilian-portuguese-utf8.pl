@@ -19,7 +19,7 @@
 # This translation was last checked for Oddmuse version 1.753.
 #
 use utf8;
-$ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.14 2009/06/07 19:30:37 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/brazilian-portuguese-utf8.pl">brazilian-portuguese-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Portuguese">Portuguese</a></p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 Incluir páginas normais

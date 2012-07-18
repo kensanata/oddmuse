@@ -20,7 +20,7 @@
 # This translation was last checked for Oddmuse version 1.296.
 #
 use utf8;
-$ModulesDescription .= '<p>$Id: french-utf8.pl,v 1.20 2011/02/05 12:29:07 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/french-utf8.pl">french-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/French">French</a></p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 Comprend les pages normales

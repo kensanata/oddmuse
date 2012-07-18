@@ -16,7 +16,7 @@
 # file in there. It will be loaded automatically.
 #
 use utf8;
-$ModulesDescription .= '<p>$Id: greek-utf8.pl,v 1.2 2009/06/07 19:30:37 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/greek-utf8.pl">greek-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Greek">Greek</a></p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 Με τις κανονικές σελίδες.

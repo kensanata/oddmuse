@@ -25,7 +25,7 @@
 #(http://search.cpan.org/~qjzhou/Encode-CNMap-0.32/bin/cnmap) by Qing-Jie Zhou <qjzhou@hotmail.com>.
 #
 use utf8;
-$ModulesDescription .= '<p>$Id: chinese_cn-utf8.pl,v 1.11 2009/06/07 19:30:37 as Exp $</p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/chinese_cn-utf8.pl">chinese_cn-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Chinese">Chinese</a></p>';
 ##############################################################
 #  for those who want to use Chinese even for special pages
 #  please uncomment the corresponding lines to use translated 
