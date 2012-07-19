@@ -1,25 +1,3 @@
-# UTF-8 encoded Traditional Chinese language file for use with Oddmuse
-#
-# Copyright (c) 2003, 2004  wctang <wctang@csie.nctu.edu.tw>
-# Copyright (c) 2007  Wei Ren Wang <weithenn@gmail.com>
-#
-# Permission is granted to copy, distribute and/or modify this
-# document under the terms of the GNU Free Documentation License,
-# Version 1.2 or any later version published by the Free Software
-# Foundation; with no Invariant Sections, no Front-Cover Texts, and no
-# Back-Cover Texts.  A copy of the license could be found at:
-# http://www.gnu.org/licenses/fdl.txt.
-#
-# Installation:
-# =============
-#
-# Create a modules subdirectory in your data directory, and put the
-# file in there. It will be loaded automatically.
-#
-# This translation was last checked for Oddmuse version 1.504.
-#
-use utf8;
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/chinese-utf8.pl">chinese-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Chinese">Chinese</a></p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 包含正常頁面
@@ -93,6 +71,8 @@ Please go on to %s.
 請繼續前住 %s 。
 Updates since %s
 自 %s 以來的修改
+up to %s
+
 Updates in the last %s days
 在 %s 天之內的更動
 Updates in the last %s day
@@ -177,6 +157,8 @@ The two revisions are the same.
 二個版本相同
 Editing not allowed for %s.
 不允許編輯 %s 。
+Rollback of %s would restore banned content.
+
 Rollback to %s
 回復至 %s
 %s rolled back
@@ -197,8 +179,6 @@ Unlock site
 網站解鎖
 Lock site
 網站鎖定
-Install CSS
-安裝 CSS
 Unlock %s
 解鎖 %s
 Lock %s
@@ -321,6 +301,8 @@ Could not get %s lock
 無法取得 %s 鎖定
 The lock was created %s.
 建立鎖定 %s
+Maybe the user running this script is no longer allowed to remove the lock directory?
+
 This operation may take several seconds...
 這個動作可能要花幾秒…
 Forced unlock of %s lock.
@@ -411,6 +393,8 @@ Filter:
 (列出 %s )
 %s pages found.
 找到 %s 個頁面。
+Malformed regular expression in %s
+
 Replaced: %s
 取代：%s
 Search for: %s
@@ -493,16 +477,12 @@ Displaying Wiki Version
 顯示 Wiki 主機相關套件版本
 Debugging Information
 
-Inter links:
-內部連結：
 Too many connections by %s
 太多來自 %s 的連線
 Please do not fetch more than %1 pages in %2 seconds.
 請不要在 %2 秒內抓取超過 %1 頁的資料。
 Check whether the web server can create the directory %s and whether it can create files in it.
 請確認網站伺服器是否可建立 %s 目錄，並且在其中建立檔案。
-Copy one of the following stylesheets to %s:
-複製以下 CSS 模版至 %s
 Deleting %s
 正在刪除 %s
 Deleted %s
@@ -619,6 +599,20 @@ Compilation for %s
 %s 的彙整
 Compilation tag is missing a regular expression.
 匯編的標記缺少一個正規表示式
+Install CSS
+安裝 CSS
+Copy one of the following stylesheets to %s:
+複製以下 CSS 模版至 %s
+Reset
+
+Extract all dates from the database
+
+Dates
+
+No dates found.
+
+Inter links:
+內部連結：
 List spammed pages
 列出 SPAM 頁面
 Despamming pages
@@ -659,6 +653,14 @@ ordinary changes
 普通變更
 Matching page names:
 匹配頁面的名稱:
+no summary available
+
+page was marked for deletion
+
+Oddmuse
+
+Email: 
+
 Could not find %1.html template in %2
 無法在 %2 找到 %1.html 的範本
 Only Editors are allowed to see this hidden page.
@@ -687,6 +689,14 @@ The template %s is either empty or does not exist.
  -- 在 %s 中定義
 Local names defined on %1: %2
 定義本地名稱在 %1: %2
+Name: 
+
+URL: 
+
+Define Local Names
+
+Define external redirect: 
+
 Locked Pages
 
 Register for %s
@@ -789,8 +799,6 @@ unsubscribe
 
 subscribe
 
-Email: 
-
 %s appears to be an invalid mail address
 
 Your mail subscriptions
@@ -827,6 +835,8 @@ You linked more than %s times to the same domain. It would seem that only a spam
 %s 不是一個正常的命名空間
 Namespaces
 
+ (create locally)
+ (本地建立)
 Getting page index file for %s.
 自 %s 取得頁面索引資料。
 Near links:
@@ -843,8 +853,6 @@ EditNearLinks
 編輯接近連結
 The same page on other sites:
 其他網站的相同頁面
- (create locally)
- (本地建立)
 image
 圖像
 download
@@ -859,6 +867,12 @@ Generating Link Database
 產生連結資料庫
 The 404 handler extension requires the link data extension (links.pl).
 404 訊息，您需要安裝 (links.pl) 擴充模組
+Make available offline
+
+Offline
+
+You are currently offline and what you requested is not part of the offline application. You need to be online to do this.
+
 LocalMap
 本地地圖
 No page id for action localmap
@@ -873,20 +887,6 @@ Self-ban by %s
 被 %s 禁止
 You have banned your own IP.
 您禁止了自已的 IP Address
-OpenID Login
-
-Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
-
-Your homepage is set to %s.
-
-You have no homepage set.
-
-Homepage:
-
-Homepage is missing
-
-OpenID error %s
-
 Orphan List
 孤立頁面列表
 Trail: 
@@ -919,6 +919,8 @@ No target wiki was specified in the config file.
 設定檔案中沒有設定目標(Target) Wiki
 The target wiki was misconfigured.
 目標(Target) Wiki 設定錯誤
+Upload is limited to %s bytes
+
 You did not answer correctly.
 您沒有回答正確的答案
 To save this page you must answer this question:
@@ -971,6 +973,10 @@ Static Copy
 靜態頁面備份
 Back to %s
 返回 %s
+Edit image in the browser
+
+Summary of your changes: 
+
 Copy to %1 succeeded: %2.
 從 %2 複製到 %1 成功
 Copy to %1 failed: %2.
@@ -1009,11 +1015,39 @@ Too many instances.  Only %s allowed.
 太多請求，只允許 %s
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 系統忙碌中請稍後在試一次，可能有人正在執行維護動作或長期搜尋
+thumb
+
+Error creating thumbnail from non existant page %s.
+
+Can not create thumbnail for file type %s.
+
+Can not create thumbnail for a text document
+
+Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
+
+Can not create path for thumbnail - %s
+
+Failed to run %1 to create thumbnail: %2
+
+%s ran into an error
+
+%s produced no output
+
+Failed to parse %s.
+
+Timezone
+
+Pick your timezone:
+
+Set
+
 Contents
 內容
 Create a new page for today
 建立今日頁面
 Add Translation
+
+Please provide a different page name for the translation.
 
 Added translation: %1 (%2)
 
@@ -1057,6 +1091,8 @@ Wanted Pages
 %s 頁面
 %s, referenced from:
 %s 引用自:
+Web application for offline browsing
+
 Upload of %s file
 上傳 %s 檔案
 Blog
