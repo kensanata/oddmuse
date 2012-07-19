@@ -18,24 +18,68 @@
 
 $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/mac.pl">mac.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Mac">Mac</a></p>';
 
-use Encode;
 use Unicode::Normalize;
 
-*OldAllPagesList = *AllPagesList;
-*AllPagesList = *NewAllPagesList;
+*OldMacAllPagesList = *AllPagesList;
+*AllPagesList = *NewMacAllPagesList;
 
-sub NewAllPagesList {
+sub NewMacAllPagesList {
   $refresh = GetParam('refresh', 0);
   if ($IndexInit && !$refresh) {
     return @IndexList;
   }
-  OldAllPagesList(@_);
+  OldMacAllPagesList(@_);
   my @new = ();
   %IndexHash = ();
   foreach my $id (@IndexList) {
-    $id = encode_utf8(NFC(decode_utf8($id)));
+    $id = NFC($id);
     push(@new, $id);
     $IndexHash{$id} = 1;
   }
+  @IndexList = @new;
   return @new;
+}
+
+push(@MyInitVariables, \&MacFixEncoding);
+
+sub MacFixEncoding {
+  # disable grep if searching for non-ascii stuff:
+
+  # $ mkdir /tmp/dir
+  # $ echo schroeder > /tmp/dir/schroeder
+  # $ echo schröder > /tmp/dir/schröder
+  # $ echo SCHRÖDER > /tmp/dir/SCHRÖDER-UP # don't use SCHRÖDER because of HFS
+  # $ grep -rli schröder /tmp/dir
+  # /tmp/dir/schröder
+  # $ grep -rli SCHRÖDER /tmp/dir
+  # /tmp/dir/schröder
+  #
+  # Why is grep not finding the upper case variant in the SCHRÖDER-UP
+  # file?
+
+  $UseGrep = 0 if GetParam('search', '') =~ /[x{0080}-\x{ffff}]/;
+
+  # the rest is only necessary if using namespaces.pl
+  return unless defined %Namespaces;
+  while (my ($key, $value) = each %Namespaces) {
+    delete $Namespaces{$key};
+    utf8::decode($key);
+    $key = NFC($key);
+    $Namespaces{$key} = $NamespaceRoot . '/' . $key . '/';
+  }
+  while (my ($key, $value) = each %InterSite) {
+    delete $InterSite{$key};
+    utf8::decode($key);
+    $key = NFC($key);
+    $InterSite{$key} = $Namespaces{$key} if $Namespaces{$key};
+  }
+}
+
+# for drafts.pl
+
+*OldMacDraftFiles = *DraftFiles;
+*DraftFiles = *NewMacDraftFiles;
+
+sub NewMacDraftFiles {
+  return map { NFC($_) } OldMacDraftFiles(@_);
 }

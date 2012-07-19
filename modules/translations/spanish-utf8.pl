@@ -18,7 +18,8 @@
 #
 # This translation was last checked for Oddmuse version 1.195.
 #
-$ModulesDescription .= '<p>$Id: spanish-utf8.pl,v 1.13 2011/07/05 00:30:18 as Exp $</p>';
+use utf8;
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/spanish-utf8.pl">spanish-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Spanish">Spanish</a></p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 Incluir páginas normales

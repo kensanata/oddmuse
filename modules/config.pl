@@ -29,25 +29,21 @@ sub DoConfig {
 \$EditPass = "";
 };
   my $source = GetRaw('http://www.emacswiki.org/scripts/current');
-  foreach my $var qw($HomePage $MaxPost $HttpCharset $StyleSheet
-		     $StyleSheetPage $NotFoundPg $NewText $NewComment
-		     $EditAllowed $BannedHosts $BannedCanRead
-		     $BannedContent $WikiLinks $FreeLinks $BracketText
-		     $BracketWiki $NetworkFile $AllNetworkFiles
-		     $PermanentAnchors $InterMap $NearMap
-		     $RssInterwikiTranslate $SurgeProtection
-		     $SurgeProtectionTime $SurgeProtectionViews
+  foreach my $var qw($HomePage $MaxPost $StyleSheet $StyleSheetPage $NotFoundPg
+		     $NewText $NewComment $EditAllowed $BannedHosts
+		     $BannedCanRead $BannedContent $WikiLinks $FreeLinks
+		     $BracketText $BracketWiki $NetworkFile $AllNetworkFiles
+		     $PermanentAnchors $InterMap $NearMap $RssInterwikiTranslate
+		     $SurgeProtection $SurgeProtectionTime $SurgeProtectionViews
 		     $DeletedPage $RCName @RcDays $RcDefault $KeepDays
-		     $KeepMajor $SummaryHours $SummaryDefaultLength
-		     $ShowEdits $UseLookup $RecentTop $RecentLink
-		     $PageCluster $InterWikiMoniker $SiteDescription
-		     $RssImageUrl $RssRights $RssExclude
-		     $RssCacheHours $RssStyleSheet $UploadAllowed
-		     @UploadTypes $EmbedWiki $FooterNote $EditNote
-		     $TopLinkBar @UserGotoBarPages $UserGotoBar
-		     $ValidatorLink $CommentsPrefix $HtmlHeaders
-		     $IndentLimit $LanguageLimit $JournalLimit
-		     $SisterSiteLogoUrl %SpecialDays %Smilies
+		     $KeepMajor $SummaryHours $SummaryDefaultLength $ShowEdits
+		     $UseLookup $RecentTop $RecentLink $PageCluster
+		     $InterWikiMoniker $SiteDescription $RssImageUrl $RssRights
+		     $RssExclude $RssCacheHours $RssStyleSheet $UploadAllowed
+		     @UploadTypes $EmbedWiki $FooterNote $EditNote $TopLinkBar
+		     @UserGotoBarPages $UserGotoBar $ValidatorLink
+		     $CommentsPrefix $HtmlHeaders $IndentLimit $LanguageLimit
+		     $JournalLimit $SisterSiteLogoUrl %SpecialDays %Smilies
 		     %Languages) {
     my $default = undef;
     my $re = quotemeta($var);

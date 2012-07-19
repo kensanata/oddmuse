@@ -1,21 +1,22 @@
-# Copyright (C) 2006, 2007, 2008, 2009  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006, 2007, 2008, 2009, 2012  Alex Schroeder <alex@gnu.org>
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 3 of the License, or
-# (at your option) any later version.
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 3 of the License, or (at your option) any later
+# version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
 
 require 't/test.pl';
 package OddMuse;
 use Test::More tests => 71;
+use utf8; # tests contain UTF-8 characters and it matters
+
 clear_pages();
 
 add_module('namespaces.pl');
@@ -118,10 +119,7 @@ test_page(update_page('Umlaute', 'namespace mit umlaut',
 		      'ns=Zürich'), 'namespace mit umlaut');
 xpath_test(get_page('action=rc'),
 	   # the exact result depends on filesystem encoding!
-	   '//a[@class="local"][@href="http://localhost/wiki.pl/Zu%cc%88rich/Umlaute"'
-	   . ' or @href="http://localhost/wiki.pl/Zu%fcrich/Umlaute"'
-	   . ' or @href="http://localhost/wiki.pl/Z%c3%bcrich/Umlaute"]');
-
+	   '//a[@class="local"][@href="http://localhost/wiki.pl/Z%c3%bcrich/Umlaute"]');
 # Test rollbacks
 test_page(get_page('action=browse ns=Muu id=Test'),
 	  'Another Mooo!');

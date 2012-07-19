@@ -17,7 +17,8 @@
 #
 # This translation was last checked for Oddmuse version 1.215.
 #
-$ModulesDescription .= '<p>$Id: japanese-utf8.pl,v 1.11 2009/06/07 19:30:37 as Exp $</p>';
+use utf8;
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/japanese-utf8.pl">japanese-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Japanese">Japanese</a></p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 

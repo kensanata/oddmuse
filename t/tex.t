@@ -19,6 +19,8 @@
 require 't/test.pl';
 package OddMuse;
 use Test::More tests => 3;
+use utf8; # tests contain UTF-8 characters and it matters
+
 clear_pages();
 add_module('tex.pl');
 
