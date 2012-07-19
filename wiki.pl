@@ -375,13 +375,13 @@ sub SetParam {
 sub InitLinkPatterns {
   my ($WikiWord, $QDelim);
   $QDelim = '(?:"")?'; # Optional quote delimiter (removed from the output)
-  $WikiWord = '[A-Z]+[a-z\x{0080}-\x{ffff}]+[A-Z][A-Za-z\x{0080}-\x{ffff}]*';
+  $WikiWord = '[A-Z]+[a-z\x{0080}-\x{fffd}]+[A-Z][A-Za-z\x{0080}-\x{fffd}]*'; # exclude noncharacters FFFE and FFFF
   $LinkPattern = "($WikiWord)$QDelim";
-  $FreeLinkPattern = "([-,.()'%&?;<> _1-9A-Za-z\x{0080}-\x{ffff}]|[-,.()'%&?;<> _0-9A-Za-z\x{0080}-\x{ffff}][-,.()'%&?;<> _0-9A-Za-z\x{0080}-\x{ffff}]+)"; # disallow "0" and must match HTML and plain text (ie. > and &gt;)
+  $FreeLinkPattern = "([-,.()'%&?;<> _1-9A-Za-z\x{0080}-\x{fffd}]|[-,.()'%&?;<> _0-9A-Za-z\x{0080}-\x{fffd}][-,.()'%&?;<> _0-9A-Za-z\x{0080}-\x{fffd}]+)"; # disallow "0" and must match HTML and plain text (ie. > and &gt;)
   # Intersites must start with uppercase letter to avoid confusion with URLs.
-  $InterSitePattern = '[A-Z\x{0080}-\x{ffff}]+[A-Za-z\x{0080}-\x{ffff}]+';
-  $InterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x{0080}-\x{ffff}_=!?#\$\@~`\%&*+\\/:;.,]*[-a-zA-Z0-9\x{0080}-\x{ffff}_=#\$\@~`\%&*+\\/])$QDelim";
-  $FreeInterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x{0080}-\x{ffff}_=!?#\$\@~`\%&*+\\/:;.,()' ]+)"; # plus space and other characters, and no restrictions on the end of the pattern
+  $InterSitePattern = '[A-Z\x{0080}-\x{fffd}]+[A-Za-z\x{0080}-\x{fffd}]+';
+  $InterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x{0080}-\x{fffd}_=!?#\$\@~`\%&*+\\/:;.,]*[-a-zA-Z0-9\x{0080}-\x{fffd}_=#\$\@~`\%&*+\\/])$QDelim";
+  $FreeInterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x{0080}-\x{fffd}_=!?#\$\@~`\%&*+\\/:;.,()' ]+)"; # plus space and other characters, and no restrictions on the end of the pattern
   $UrlProtocols = 'http|https|ftp|afs|news|nntp|mid|cid|mailto|wais|prospero|telnet|gopher|irc|feed';
   $UrlProtocols .= '|file'  if $NetworkFile;
   my $UrlChars = '[-a-zA-Z0-9/@=+$_~*.,;:?!\'"()&#%]'; # see RFC 2396
@@ -512,8 +512,8 @@ sub ApplyRules {
 	Clean("&$1;");
       } elsif (m/\G\s+/cg) {
 	Clean(' ');
-      } elsif (m/\G([A-Za-z\x{0080}-\x{ffff}]+([ \t]+[a-z\x{0080}-\x{ffff}]+)*[ \t]+)/cg
-	       or m/\G([A-Za-z\x{0080}-\x{ffff}]+)/cg or m/\G(\S)/cg) {
+      } elsif (m/\G([A-Za-z\x{0080}-\x{fffd}]+([ \t]+[a-z\x{0080}-\x{fffd}]+)*[ \t]+)/cg
+	       or m/\G([A-Za-z\x{0080}-\x{fffd}]+)/cg or m/\G(\S)/cg) {
 	Clean($1);    # multiple words but do not match http://foo
       } else {
 	last;
