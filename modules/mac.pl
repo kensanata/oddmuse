@@ -57,7 +57,7 @@ sub MacFixEncoding {
   # Why is grep not finding the upper case variant in the SCHRÖDER-UP
   # file?
 
-  $UseGrep = 0 if GetParam('search', '') =~ /[x{0080}-\x{ffff}]/;
+  $UseGrep = 0 if GetParam('search', '') =~ /[x{0080}-\x{fffd}]/;
 
   # the rest is only necessary if using namespaces.pl
   return unless defined %Namespaces;
