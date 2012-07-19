@@ -33,7 +33,7 @@ sub TablesLongRule {
   # a new row is started when a cell is repeated
   # if cells are missing, column spans are created (the first row
   # could use row spans...)
-  if ($bol && m|\G\s*\n*\&lt;table(/[A-Za-z\x{0080}-\x{ffff}/]+)? +([A-Za-z\x{0080}-\x{ffff},;\/ ]+)\&gt; *\n|cg) {
+  if ($bol && m|\G\s*\n*\&lt;table(/[A-Za-z\x{0080}-\x{fffd}/]+)? +([A-Za-z\x{0080}-\x{fffd},;\/ ]+)\&gt; *\n|cg) {
     my $class = join(' ', split(m|/|, $1)); # leading / in $1 will make sure we have leading space
     Clean(CloseHtmlEnvironments() . "<table class=\"user long$class\">");
     # labels and their default class
@@ -60,7 +60,7 @@ sub TablesLongRule {
     my $rowspan = '';
     my $first = 1;
     for my $line (@lines) {
-      if ($line =~ m|^($regexp)/?([0-9]+)?/?([A-Za-z\x{0080}-\x{ffff}/]+)?[:=] *(.*)|) { # regexp changes for other tables
+      if ($line =~ m|^($regexp)/?([0-9]+)?/?([A-Za-z\x{0080}-\x{fffd}/]+)?[:=] *(.*)|) { # regexp changes for other tables
 	$label = $1;
 	$rowspan = $2;
 	$class = join(' ', split(m|/|, $3)); # no leading / therefore no leading space

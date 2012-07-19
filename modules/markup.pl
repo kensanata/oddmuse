@@ -80,9 +80,9 @@ $RuleOrder{\&MarkupRule} = 150;
 %MarkupLines = ('>' => 'pre',
 	       );
 
-my $words = '([A-Za-z\x{0080}-\x{ffff}][-%.,:;\'"!?0-9 A-Za-z\x{0080}-\x{ffff}]*?)';
+my $words = '([A-Za-z\x{0080}-\x{fffd}][-%.,:;\'"!?0-9 A-Za-z\x{0080}-\x{fffd}]*?)';
 # zero-width look-ahead assertion to prevent km/h from counting
-my $noword = '(?=[^-0-9A-Za-z\x{0080}-\x{ffff}]|$)';
+my $noword = '(?=[^-0-9A-Za-z\x{0080}-\x{fffd}]|$)';
 
 my $markup_pairs_re = '';
 my $markup_forced_pairs_re = '';
@@ -174,7 +174,7 @@ sub MarkupRule {
     return $MarkupSingles{UnquoteHtml($1)};
   } elsif ($MarkupPairs{'/'} and m|\G~/|gc) {
     return '~/'; # fix ~/elisp/ example
-  } elsif ($MarkupPairs{'/'} and m|\G(/[-A-Za-z0-9\x{0080}-\x{ffff}/]+/$words/)|gc) {
+  } elsif ($MarkupPairs{'/'} and m|\G(/[-A-Za-z0-9\x{0080}-\x{fffd}/]+/$words/)|gc) {
     return $1; # fix /usr/share/lib/! example
   }
   # "foo

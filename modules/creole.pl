@@ -156,7 +156,7 @@ sub CreoleInit {
   # $FullUrlPattern = "((?:$UrlProtocols:|/)$UrlChars+)";
 
   # Permit page authors to link to other pages having semicolons in their names.
-  # my $LinkCharsSansZero = "-;,.()' _1-9A-Za-z\x{0080}-\x{ffff}";
+  # my $LinkCharsSansZero = "-;,.()' _1-9A-Za-z\x{0080}-\x{fffd}";
   # my $LinkChars = $LinkCharsSansZero.'0';
   # $FreeLinkPattern = "([$LinkCharsSansZero]|[$LinkChars][$LinkChars]+)";
 }
@@ -623,8 +623,8 @@ sub CreoleRuleRecursive {
     elsif (m/\G\s+/cg) {
       $html .= ' ';
     }
-    elsif (   m/\G([A-Za-z\x{0080}-\x{ffff}]+([ \t]+[a-z\x{0080}-\x{ffff}]+)*[ \t]+)/cg
-           or m/\G([A-Za-z\x{0080}-\x{ffff}]+)/cg
+    elsif (   m/\G([A-Za-z\x{0080}-\x{fffd}]+([ \t]+[a-z\x{0080}-\x{fffd}]+)*[ \t]+)/cg
+           or m/\G([A-Za-z\x{0080}-\x{fffd}]+)/cg
            or m/\G(\S)/cg) {
       $html .= $1;  # multiple words but do not match http://foo
     }
