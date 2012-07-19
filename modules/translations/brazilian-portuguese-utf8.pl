@@ -1,25 +1,3 @@
-# UTF-8 encoded Brazilian Portuguese language file for use with Oddmuse
-#
-# Copyright (c) 2003  Marcelo Toledo <rw@locked.org>.
-# Copyright (c) 2006, 2007  Hélio Nunes <dedalu@dedalu.art.br>.
-#
-# Permission is granted to copy, distribute and/or modify this
-# document under the terms of the GNU Free Documentation License,
-# Version 1.2 or any later version published by the Free Software
-# Foundation; with no Invariant Sections, no Front-Cover Texts, and no
-# Back-Cover Texts.  A copy of the license could be found at:
-# http://www.gnu.org/licenses/fdl.txt.
-#
-# Installation:
-# =============
-#
-# Create a modules subdirectory in your data directory, and put the
-# file in there. It will be loaded automatically.
-#
-# This translation was last checked for Oddmuse version 1.753.
-#
-use utf8;
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/brazilian-portuguese-utf8.pl">brazilian-portuguese-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Portuguese">Portuguese</a></p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 Incluir páginas normais
@@ -93,6 +71,8 @@ Please go on to %s.
 Por favor, vá para %s.
 Updates since %s
 Atualizações desde %s
+up to %s
+
 Updates in the last %s days
 Atualizações nos últimos %s dias
 Updates in the last %s day
@@ -177,6 +157,8 @@ The two revisions are the same.
 As duas versões são idênticas.
 Editing not allowed for %s.
 Edição não permitida para %s.
+Rollback of %s would restore banned content.
+
 Rollback to %s
 Desfazer para %s
 %s rolled back
@@ -197,8 +179,6 @@ Unlock site
 Desbloquear site
 Lock site
 Bloquear site
-Install CSS
-Instalar CSS
 Unlock %s
 Desbloquear %s
 Lock %s
@@ -321,6 +301,8 @@ Could not get %s lock
 Não foi possível conseguir o bloqueio %s
 The lock was created %s.
 O bloqueio foi criado %s.
+Maybe the user running this script is no longer allowed to remove the lock directory?
+
 This operation may take several seconds...
 Essa operação pode demorar vários segundos...
 Forced unlock of %s lock.
@@ -411,6 +393,8 @@ Filtro:
 (para %s)
 %s pages found.
 %s páginas encontradas.
+Malformed regular expression in %s
+
 Replaced: %s
 Substituído: %s
 Search for: %s
@@ -493,16 +477,12 @@ Displaying Wiki Version
 Mostrando a versão do Wiki
 Debugging Information
 
-Inter links:
-Links inter-:
 Too many connections by %s
 Muitas conexões de %s
 Please do not fetch more than %1 pages in %2 seconds.
 Por favor, abra mais do que %1 páginas em %2 segundos.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Verifique se o servidor web pode criar o diretório %s e se pode criar arquivos nele.
-Copy one of the following stylesheets to %s:
-Copie uma das seguintes folhas de estilo para %s:
 Deleting %s
 Excluindo %s
 Deleted %s
@@ -619,6 +599,20 @@ Compilation for %s
 Compilação para %s
 Compilation tag is missing a regular expression.
 Falta expressão regular na etiqueta de compilação.
+Install CSS
+Instalar CSS
+Copy one of the following stylesheets to %s:
+Copie uma das seguintes folhas de estilo para %s:
+Reset
+
+Extract all dates from the database
+
+Dates
+
+No dates found.
+
+Inter links:
+Links inter-:
 List spammed pages
 Listar páginas com spam
 Despamming pages
@@ -659,6 +653,14 @@ ordinary changes
 alterações normais
 Matching page names:
 Coincidindo com os nomes de página:
+no summary available
+
+page was marked for deletion
+
+Oddmuse
+
+Email: 
+
 Could not find %1.html template in %2
 Não foi possível encontrar o modelo %1.html em %2
 Only Editors are allowed to see this hidden page.
@@ -687,6 +689,14 @@ O modelo %s ou está vazio ou não existe.
  -- definido em %s
 Local names defined on %1: %2
 Nomes locais definidos em %1: %2
+Name: 
+
+URL: 
+
+Define Local Names
+
+Define external redirect: 
+
 Locked Pages
 
 Register for %s
@@ -789,8 +799,6 @@ unsubscribe
 
 subscribe
 
-Email: 
-
 %s appears to be an invalid mail address
 
 Your mail subscriptions
@@ -827,6 +835,8 @@ You linked more than %s times to the same domain. It would seem that only a spam
 %s não é um nome legal para um espaço de nomes
 Namespaces
 
+ (create locally)
+ (criar localmente)
 Getting page index file for %s.
 Obtendo arquivo de índice de página para %s.
 Near links:
@@ -843,8 +853,6 @@ EditNearLinks
 EditarLinksPróximos
 The same page on other sites:
 A mesma página em outros sites:
- (create locally)
- (criar localmente)
 image
 imagem
 download
@@ -859,6 +867,12 @@ Generating Link Database
 Gerando Banco de Dados de Link
 The 404 handler extension requires the link data extension (links.pl).
 A extensão 404 handler requer a extensão link data (links.pl)
+Make available offline
+
+Offline
+
+You are currently offline and what you requested is not part of the offline application. You need to be online to do this.
+
 LocalMap
 MapaLocal
 No page id for action localmap
@@ -873,20 +887,6 @@ Self-ban by %s
 Auto-banimento por %s
 You have banned your own IP.
 Você baniu seu próprio IP.
-OpenID Login
-
-Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
-
-Your homepage is set to %s.
-
-You have no homepage set.
-
-Homepage:
-
-Homepage is missing
-
-OpenID error %s
-
 Orphan List
 Lista de Órfãs
 Trail: 
@@ -919,6 +919,8 @@ No target wiki was specified in the config file.
 Não foi especificado um wiki alvo no arquivo de configuração.
 The target wiki was misconfigured.
 O wiki alvo está mal configurado.
+Upload is limited to %s bytes
+
 You did not answer correctly.
 Você não respondeu corretamente à pergunta.
 To save this page you must answer this question:
@@ -971,6 +973,10 @@ Static Copy
 Cópia Estática
 Back to %s
 Voltar para %s
+Edit image in the browser
+
+Summary of your changes: 
+
 Copy to %1 succeeded: %2.
 Sucesso na cópia de %1: %2.
 Copy to %1 failed: %2.
@@ -1009,11 +1015,39 @@ Too many instances.  Only %s allowed.
 Muitas instâncias. Apenas %s permitidas.
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 Por favor, tente novamente mais tarde. Talvez alguém esteja executando manutenção ou uma longa busca. Infelizmente o site tem recursos limitados e, por isso, pedimos um pouco de paciência.
+thumb
+
+Error creating thumbnail from non existant page %s.
+
+Can not create thumbnail for file type %s.
+
+Can not create thumbnail for a text document
+
+Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
+
+Can not create path for thumbnail - %s
+
+Failed to run %1 to create thumbnail: %2
+
+%s ran into an error
+
+%s produced no output
+
+Failed to parse %s.
+
+Timezone
+
+Pick your timezone:
+
+Set
+
 Contents
 Conteúdo
 Create a new page for today
 
 Add Translation
+
+Please provide a different page name for the translation.
 
 Added translation: %1 (%2)
 
@@ -1057,6 +1091,8 @@ Páginas Procuradas
 %s páginas
 %s, referenced from:
 %s, referenciada por:
+Web application for offline browsing
+
 Upload of %s file
 Envio de arquivos %s
 Blog
