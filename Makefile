@@ -141,8 +141,6 @@ upload-translations: always
 		"http://www.oddmuse.org/cgi-bin/oddmuse/raw/$$f" < $$f; \
 	done
 
-.PHONY: always
-
 deb:
 	equivs-build control
 
