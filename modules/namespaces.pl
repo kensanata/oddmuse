@@ -97,45 +97,45 @@ sub NamespacesInitVariables {
   if (($UsePathInfo
        # make sure ordinary page names are not matched!
        and $q->path_info() =~ m|^/($InterSitePattern)(/.*)?|
-       and ($1 ne $NamespacesMain)
-       and ($1 ne $NamespacesSelf)
        and ($2 or $q->keywords or NamespaceRequiredByParameter()))
       or
-      ($ns =~ m/^($InterSitePattern)$/
-       and ($1 ne $NamespacesMain)
-       and ($1 ne $NamespacesSelf))) {
-    $NamespaceCurrent = $1;
-    # Change some stuff from the original InitVariables call:
-    $SiteName   .= ' ' . $NamespaceCurrent;
-    $InterWikiMoniker = $NamespaceCurrent;
-    $DataDir    .= '/' . $NamespaceCurrent;
-    $PageDir     = "$DataDir/page";
-    $KeepDir     = "$DataDir/keep";
-    $RefererDir  = "$DataDir/referer";
-    $TempDir     = "$DataDir/temp";
-    $LockDir     = "$TempDir/lock";
-    $NoEditFile  = "$DataDir/noedit";
-    $RcFile = "$DataDir/rc.log";
-    $RcOldFile   = "$DataDir/oldrc.log";
-    $IndexFile   = "$DataDir/pageidx";
-    $VisitorFile = "$DataDir/visitors.log";
-    $PermanentAnchorsFile = "$DataDir/permanentanchors";
-    # $ConfigFile -- shared
-    # $ModuleDir -- shared
-    # $NearDir -- shared
-    $ScriptName .= '/' . UrlEncode($NamespaceCurrent);
-    $FullUrl .= '/' . UrlEncode($NamespaceCurrent);
-    $StaticDir .= '/' . $NamespaceCurrent; # from static-copy.pl
-    $StaticUrl .= UrlEncode($NamespaceCurrent) . '/'
-      if substr($StaticUrl,-1) eq '/'; # from static-copy.pl
-    $WikiDescription .= "<p>Current namespace: $NamespaceCurrent</p>";
-    # override LastUpdate
-    my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size, $atime,$mtime,$ctime,$blksize,$blocks)
-      = stat($IndexFile);
-    $LastUpdate = $mtime;
-    CreateDir($DataDir); # Create directory if it doesn't exist
-    ReportError(Ts('Could not create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR')
-      unless -d $DataDir;
+      ($ns =~ m/^($InterSitePattern)$/)) {
+    $ns = $1;
+    if ($ns ne $NamespacesMain
+	and $ns ne $NamespacesSelf) {
+      $NamespaceCurrent = $ns;
+      # Change some stuff from the original InitVariables call:
+      $SiteName   .= ' ' . $NamespaceCurrent;
+      $InterWikiMoniker = $NamespaceCurrent;
+      $DataDir    .= '/' . $NamespaceCurrent;
+      $PageDir     = "$DataDir/page";
+      $KeepDir     = "$DataDir/keep";
+      $RefererDir  = "$DataDir/referer";
+      $TempDir     = "$DataDir/temp";
+      $LockDir     = "$TempDir/lock";
+      $NoEditFile  = "$DataDir/noedit";
+      $RcFile      = "$DataDir/rc.log";
+      $RcOldFile   = "$DataDir/oldrc.log";
+      $IndexFile   = "$DataDir/pageidx";
+      $VisitorFile = "$DataDir/visitors.log";
+      $PermanentAnchorsFile = "$DataDir/permanentanchors";
+      # $ConfigFile -- shared
+      # $ModuleDir -- shared
+      # $NearDir -- shared
+      $ScriptName .= '/' . UrlEncode($NamespaceCurrent);
+      $FullUrl .= '/' . UrlEncode($NamespaceCurrent);
+      $StaticDir .= '/' . $NamespaceCurrent; # from static-copy.pl
+      $StaticUrl .= UrlEncode($NamespaceCurrent) . '/'
+	if substr($StaticUrl,-1) eq '/'; # from static-copy.pl
+      $WikiDescription .= "<p>Current namespace: $NamespaceCurrent</p>";
+      # override LastUpdate
+      my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size, $atime,$mtime,$ctime,$blksize,$blocks)
+	= stat($IndexFile);
+      $LastUpdate = $mtime;
+      CreateDir($DataDir); # Create directory if it doesn't exist
+      ReportError(Ts('Cannot create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR')
+	unless -d $DataDir;
+    }
   }
   $Namespaces{$NamespacesSelf} = $ScriptName . '?';
   # reinitialize
@@ -217,7 +217,7 @@ sub NewNamespaceGetRcLines { # starttime, hash of seen pages to use as a second 
   # starttime. If any rcfile exists with no timestamp before the
   # starttime, we need to open its rcoldfile.
   foreach my $file (@rcfiles) {
-    open(F, $file);
+    open(F, '<:encoding(UTF-8)', $file);
     my $line = <F>;
     my ($ts) = split(/$FS/o, $line); # the first timestamp in the regular rc file
     my @new;

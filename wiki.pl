@@ -28,7 +28,6 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
 package OddMuse;
-
 use strict;
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
@@ -247,6 +246,7 @@ sub InitConfig {
 }
 
 sub InitDirConfig {
+  utf8::decode($DataDir); # just in case, eg. "WikiDataDir=/tmp/Zürich♥ perl wiki.pl"
   $PageDir     = "$DataDir/page";  # Stores page data
   $KeepDir     = "$DataDir/keep";  # Stores kept (old) page data
   $TempDir     = "$DataDir/temp";  # Temporary files and locks
@@ -304,7 +304,7 @@ sub InitVariables {  # Init global session variables for mod_perl!
   $LastUpdate = $ts;
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
-  ReportError(Ts('Could not create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR')
+  ReportError(Ts('Cannot create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR')
     unless -d $DataDir;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -2833,6 +2833,7 @@ sub AppendStringToFile {
 
 sub CreateDir {
   my ($newdir) = @_;
+  utf8::encode($newdir);
   return if -d $newdir;
   mkdir($newdir, 0775)
     or ReportError(Ts('Cannot create %s', $newdir) . ": $!", '500 INTERNAL SERVER ERROR');
