@@ -92,50 +92,52 @@ sub NamespacesInitVariables {
   $NamespaceRoot = $ScriptName; # $ScriptName may be changed below
   $NamespaceCurrent = '';
   my $ns = GetParam('ns', '');
+  if (not $ns and $UsePathInfo) {
+    my $path_info = $q->path_info();
+    utf8::decode($path_info);
+    # make sure ordinary page names are not matched!
+    if ($path_info =~ m|^/($InterSitePattern)(/.*)?|
+	and ($2 or $q->keywords or NamespaceRequiredByParameter())) {
+      $ns = $1;
+    }
+  }
   ReportError(Ts('%s is not a legal name for a namespace', $ns))
     if $ns and $ns !~ m/^($InterSitePattern)$/;
-  if (($UsePathInfo
-       # make sure ordinary page names are not matched!
-       and $q->path_info() =~ m|^/($InterSitePattern)(/.*)?|
-       and ($2 or $q->keywords or NamespaceRequiredByParameter()))
-      or
-      ($ns =~ m/^($InterSitePattern)$/)) {
-    $ns = $1;
-    if ($ns ne $NamespacesMain
-	and $ns ne $NamespacesSelf) {
-      $NamespaceCurrent = $ns;
-      # Change some stuff from the original InitVariables call:
-      $SiteName   .= ' ' . $NamespaceCurrent;
-      $InterWikiMoniker = $NamespaceCurrent;
-      $DataDir    .= '/' . $NamespaceCurrent;
-      $PageDir     = "$DataDir/page";
-      $KeepDir     = "$DataDir/keep";
-      $RefererDir  = "$DataDir/referer";
-      $TempDir     = "$DataDir/temp";
-      $LockDir     = "$TempDir/lock";
-      $NoEditFile  = "$DataDir/noedit";
-      $RcFile      = "$DataDir/rc.log";
-      $RcOldFile   = "$DataDir/oldrc.log";
-      $IndexFile   = "$DataDir/pageidx";
-      $VisitorFile = "$DataDir/visitors.log";
-      $PermanentAnchorsFile = "$DataDir/permanentanchors";
-      # $ConfigFile -- shared
-      # $ModuleDir -- shared
-      # $NearDir -- shared
-      $ScriptName .= '/' . UrlEncode($NamespaceCurrent);
-      $FullUrl .= '/' . UrlEncode($NamespaceCurrent);
-      $StaticDir .= '/' . $NamespaceCurrent; # from static-copy.pl
-      $StaticUrl .= UrlEncode($NamespaceCurrent) . '/'
-	if substr($StaticUrl,-1) eq '/'; # from static-copy.pl
-      $WikiDescription .= "<p>Current namespace: $NamespaceCurrent</p>";
-      # override LastUpdate
-      my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size, $atime,$mtime,$ctime,$blksize,$blocks)
-	= stat($IndexFile);
-      $LastUpdate = $mtime;
-      CreateDir($DataDir); # Create directory if it doesn't exist
-      ReportError(Ts('Cannot create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR')
-	unless -d $DataDir;
-    }
+  if ($ns
+      and $ns ne $NamespacesMain
+      and $ns ne $NamespacesSelf) {
+    $NamespaceCurrent = $ns;
+    # Change some stuff from the original InitVariables call:
+    $SiteName   .= ' ' . $NamespaceCurrent;
+    $InterWikiMoniker = $NamespaceCurrent;
+    $DataDir    .= '/' . $NamespaceCurrent;
+    $PageDir     = "$DataDir/page";
+    $KeepDir     = "$DataDir/keep";
+    $RefererDir  = "$DataDir/referer";
+    $TempDir     = "$DataDir/temp";
+    $LockDir     = "$TempDir/lock";
+    $NoEditFile  = "$DataDir/noedit";
+    $RcFile      = "$DataDir/rc.log";
+    $RcOldFile   = "$DataDir/oldrc.log";
+    $IndexFile   = "$DataDir/pageidx";
+    $VisitorFile = "$DataDir/visitors.log";
+    $PermanentAnchorsFile = "$DataDir/permanentanchors";
+    # $ConfigFile -- shared
+    # $ModuleDir -- shared
+    # $NearDir -- shared
+    $ScriptName .= '/' . UrlEncode($NamespaceCurrent);
+    $FullUrl .= '/' . UrlEncode($NamespaceCurrent);
+    $StaticDir .= '/' . $NamespaceCurrent; # from static-copy.pl
+    $StaticUrl .= UrlEncode($NamespaceCurrent) . '/'
+      if substr($StaticUrl,-1) eq '/'; # from static-copy.pl
+    $WikiDescription .= "<p>Current namespace: $NamespaceCurrent</p>";
+    # override LastUpdate
+    my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size, $atime,$mtime,$ctime,$blksize,$blocks)
+      = stat($IndexFile);
+    $LastUpdate = $mtime;
+    CreateDir($DataDir);	# Create directory if it doesn't exist
+    ReportError(Ts('Cannot create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR')
+      unless -d $DataDir;
   }
   $Namespaces{$NamespacesSelf} = $ScriptName . '?';
   # reinitialize
@@ -203,8 +205,8 @@ sub NewNamespaceGetRcLines { # starttime, hash of seen pages to use as a second 
     # directory. This reduces the chances of getting different
     # results.
     foreach my $site (keys %InterSite) {
-      if ($InterSite{$site} =~ m|^$ScriptName/([^/]*)|) {
-	my $ns = $1 or next;
+      if (substr($InterSite{$site}, 0, length($ScriptName)) eq $ScriptName) {
+	my $ns = $site;
 	my $file = "$DataDir/$ns/rc.log";
 	push(@rcfiles, $file);
 	$namespaces{$file} = $ns;
