@@ -16,11 +16,14 @@
 require 't/test.pl';
 package OddMuse;
 use Test::More tests => 20;
+use utf8; # tests contain UTF-8 characters and it matters
+
 clear_pages();
 
 add_module('translation-links.pl');
 
 AppendStringToFile($ConfigFile, q{
+use utf8;
 %Languages = ('de' => '\b(der|die|das|und|oder)\b',
               'en' => '\b(the|he|she|that|this)\b');
 $Translate{de} = 'Deutsch';

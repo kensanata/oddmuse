@@ -22,7 +22,7 @@ push(@MyRules, \&LinkAllRule);
 $RuleOrder{\&LinkAllRule} = 1000;
 
 sub LinkAllRule {
-  if (/\G([A-Za-z\x80-\xff]+)/gc) {
+  if (/\G([A-Za-z\x{0080}-\x{ffff}]+)/gc) {
     my $oldpos = pos;
     Dirty($1);
     # print the word, or the link to the word

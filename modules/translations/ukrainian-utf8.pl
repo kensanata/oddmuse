@@ -15,7 +15,8 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-$ModulesDescription .= '<p>$Id: ukrainian-utf8.pl,v 1.6 2009/06/07 19:30:38 as Exp $</p>';
+use utf8;
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/ukrainian-utf8.pl">ukrainian-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Ukrainian">Ukrainian</a></p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 Включати звичайні сторінки

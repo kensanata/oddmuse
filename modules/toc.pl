@@ -25,7 +25,6 @@ use vars qw($TocHeaderText
             $TocClass
             $TocAutomatic
             $TocAnchorPrefix
-
             $TocIsApplyingAutomaticRules);
 
 =head2 $TocHeaderText
@@ -140,7 +139,7 @@ that table. This is optional. If not specified, it defaults to "toc".
 sub TocRule {
   # <toc...> markup. This explicitly displays a table of contents at this point.
   if ($bol and
-      m~\G&lt;toc(/([A-Za-z\x80-\xff/]+))?    # $1
+      m~\G&lt;toc(/([A-Za-z\x{0080}-\x{ffff}/]+))?    # $1
         (\s+(?:header_text\s*=\s*)?"(.+?)")?  # $3
         (\s+(?:class\s*=\s*)?"(.+?)")?        # $5
         &gt;[ \t]*(\n|$)~cgx) {               # $7
@@ -229,8 +228,11 @@ sub NewTocApplyRules {
   {
     local *STDOUT;
     open(  STDOUT, '>', \$html) or die "Can't open memory file: $!";
+    binmode STDOUT, ":utf8";
     ($blocks, $flags) = OldTocApplyRules(@_);
     close  STDOUT;
+    utf8::decode($blocks);
+    utf8::decode($html);
   }
   # If there are at least two HTML headers on this page, insert a table of
   # contents.

@@ -77,7 +77,7 @@ sub NewQuestionaskerDoPost {
 	  or QuestionaskerException($id)) {
     print GetHeader('', T('Edit Denied'), undef, undef, '403 FORBIDDEN');
     print $q->p(T('You did not answer correctly.'));
-    print $q->start_form, QuestionaskerGetQuestion(1),
+    print GetFormStart(), QuestionaskerGetQuestion(1),
       (map { $q->hidden($_, '') }
        qw(title text oldtime summary recent_edit aftertext)), $q->end_form;
     PrintFooter();
