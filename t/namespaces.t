@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 71;
+use Test::More tests => 73;
 use utf8; # tests contain UTF-8 characters and it matters
 
 clear_pages();
@@ -113,13 +113,21 @@ test_page(get_page('action=rss'),
 	  '<link>http://localhost/wiki.pl/Muu/Mu</link>',
 	  '<wiki:history>http://localhost/wiki.pl/Muu\?action=history;id=Mu</wiki:history>',
 	  '<wiki:diff>http://localhost/wiki.pl/Muu\?action=browse;diff=1;id=Mu</wiki:diff>');
-# Test non-ASCII characters in namespaces
+# Test Unicode characters in namespaces (BLACK HEART SUIT)
+test_page(update_page('Umlaute', 'namespace mit herz',
+		      'wo steckt das ü', undef, undef,
+		      'ns=Zürich♥'), 'namespace mit herz');
+xpath_test(get_page('action=rc'),
+	   # the exact result depends on filesystem encoding!
+	   '//a[@class="local"][@href="http://localhost/wiki.pl/Z%c3%bcrich%e2%99%a5/Umlaute"]');
+# Test potential Latin-1 characters in namespaces (LATIN SMALL LETTER U DIAERESIS)
 test_page(update_page('Umlaute', 'namespace mit umlaut',
 		      'wo steckt das ü', undef, undef,
 		      'ns=Zürich'), 'namespace mit umlaut');
 xpath_test(get_page('action=rc'),
 	   # the exact result depends on filesystem encoding!
 	   '//a[@class="local"][@href="http://localhost/wiki.pl/Z%c3%bcrich/Umlaute"]');
+
 # Test rollbacks
 test_page(get_page('action=browse ns=Muu id=Test'),
 	  'Another Mooo!');
