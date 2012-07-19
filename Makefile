@@ -22,6 +22,11 @@ build/wiki.pl: wiki.pl
 build/%-utf8.pl: modules/translations/%-utf8.pl
 	sed "s/<a href=\"http:\/\/git.savannah.gnu.org\/cgit\/oddmuse.git\/tree\/modules\/translations\/\\(.*\\).pl\">\\(.*\\).pl<\/a>/<a href=\"http:\/\/git.savannah.gnu.org\/cgit\/oddmuse.git\/tree\/modules\/translations\/\\1.pl?id=$(VERSION_NO)\">\\1.pl<\/a> (for $(VERSION_NO))/" < $< > $@
 
+# Currently oddtrans introduces encoding errors!
+
+# %-utf8.pl: wiki.pl $(MODULES)
+# 	perl oddtrans -l $@ $^ > $@-new && mv $@-new $@
+
 # from: http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/namespaces.pl
 #   to: http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/namespaces.pl?id=2.1-11-gd4f1e27
 
@@ -128,9 +133,6 @@ $(VERSION).tgz: wiki.pl modules/creole.pl Mac/config Mac/wiki
 	sudo chmod 644 Slack/var/www/cgi-bin/current
 	sudo chmod 775 Slack/var/www/cgi-bin/wiki
 	cd Slack && tar czf ../$@ var install
-
-%-utf8.pl: wiki.pl $(MODULES)
-	perl oddtrans -l $@ $^ > $@-new && mv $@-new $@
 
 update-translations: $(TRANSLATIONS)
 
