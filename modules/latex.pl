@@ -32,6 +32,7 @@
 # img.InlineMath
 # img.DisplayMath
 
+use File::Glob ':glob';
 use vars qw($LatexDir $LatexLinkDir $LatexExtendPath $LatexSingleDollars);
 
 # One of the following options must be set correctly to the full path of
@@ -172,7 +173,7 @@ sub MakeLaTeX {
       #setup rendering directory
       my $dir = "$LatexDir/$hash";
       if (-d $dir) {
-	  unlink (glob('$dir/*'));
+	  unlink (bsd_glob('$dir/*'));
       } else {
 	  mkdir($dir) or return "[Unable to create $dir]";
       }
@@ -220,5 +221,3 @@ sub MakeLaTeX {
   rmdir ($dir);
   return $result;
 }
-
-

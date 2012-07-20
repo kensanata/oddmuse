@@ -37,6 +37,7 @@ be changed using the C<$NamespacesSelf> option.
 
 $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/namespaces.pl">namespaces.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Namespaces_Extension">Namespaces Extension</a></p>';
 
+use File::Glob ':glob';
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent
 	    $NamespaceRoot $NamespaceSlashing @NamespaceParameters
 	    %Namespaces);
@@ -79,7 +80,7 @@ sub NamespacesInitVariables {
   # Do this before changing the $DataDir and $ScriptName
   if (!$Monolithic and $UsePathInfo) {
     $Namespaces{$NamespacesMain} = $ScriptName . '/';
-    foreach my $name (glob("$DataDir/*")) {
+    foreach my $name (bsd_glob("$DataDir/*")) {
       utf8::decode($name);
       if (-d $name
 	  and $name =~ m|/($InterSitePattern)$|

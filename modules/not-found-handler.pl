@@ -18,6 +18,7 @@
 
 $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/not-found-handler.pl">not-found-handler.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/404_Handler_Extension">404 Handler Extension</a></p>';
 
+use File::Glob ':glob';
 use vars qw($NotFoundHandlerDir, $LinkFile, %LinkDb, $LinkDbInit);
 
 $NotFoundHandlerDir = '/tmp/oddmuse/cache';
@@ -29,7 +30,7 @@ $Action{clearcache} = \&DoClearCache;
 
 sub DoClearCache {
   print GetHeader('', QuoteHtml(T('Clearing Cache')), '');
-  unlink(glob("$NotFoundHandlerDir/*"));
+  unlink(bsd_glob("$NotFoundHandlerDir/*"));
   print $q->p(T('Done.'));
   PrintFooter();
 }
@@ -103,7 +104,7 @@ sub NewNotFoundHandlerSave {
     NotFoundHandlerCacheUpdate($id);
   } else {
     # unlink PageName, PageName.en, PageName.de, etc.
-    unlink("$NotFoundHandlerDir/$id", glob("$NotFoundHandlerDir/$id.[a-z][a-z]"));
+    unlink("$NotFoundHandlerDir/$id", bsd_glob("$NotFoundHandlerDir/$id.[a-z][a-z]"));
   }
 }
 
@@ -128,7 +129,7 @@ sub NotFoundHandlerCacheUpdate {
   foreach my $source (keys %LinkDb) {
     warn "Examining $source\n";
     if (grep(/$target/, @{$LinkDb{$source}})) {
-      unlink("$NotFoundHandlerDir/$source", glob("$NotFoundHandlerDir/$source.[a-z][a-z]"));
+      unlink("$NotFoundHandlerDir/$source", bsd_glob("$NotFoundHandlerDir/$source.[a-z][a-z]"));
       warn "Unlinking $source\n";
     }
   }
