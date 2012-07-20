@@ -23,6 +23,7 @@
 
 $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/throttle.pl">throttle.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Limit_Number_Of_Instances_Running">Limit Number Of Instances Running</a></p>';
 
+use File::Glob ':glob';
 use vars qw($InstanceThrottleDir $InstanceThrottleLimit);
 
 $InstanceThrottleDir = $DataDir."/pids"; # directory for pid files
@@ -47,7 +48,7 @@ sub NewDoBrowseRequest {
 
 # limit the script to a maximum of $InstanceThrottleLimit instances
 sub DoInstanceThrottle {
-  my @pids = glob($InstanceThrottleDir."/*");
+  my @pids = bsd_glob($InstanceThrottleDir."/*");
   # Go over all pids: validate each pid by sending signal 0, unlink
   # pidfile if pid does not exist and return 0. Count the number of
   # zeros (= removed files = zombies) with grep.

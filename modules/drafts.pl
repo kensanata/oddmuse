@@ -12,6 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+use File::Glob ':glob';
 use vars qw($DraftDir);
 
 $DraftDir = $DataDir."/draft"; # directory for drafts
@@ -72,7 +73,7 @@ sub DraftFiles {
     $_ = substr($_, length($DraftDir) + 1);
     utf8::decode($_);
     $_;
-  } glob("$DraftDir/* $DraftDir/.*");
+  } bsd_glob("$DraftDir/*"), bsd_glob("$DraftDir/.*");
 }
 
 sub DraftCleanup {
