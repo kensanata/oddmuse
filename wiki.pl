@@ -3308,9 +3308,9 @@ sub AllPagesList {
   }
   @IndexList = ();
   %IndexHash = ();
-  # Try to write out the list for future runs.  If file exists and cannot be changed, error!
+  # If file exists and cannot be changed, error!
   my $locked = RequestLockDir('index', undef, undef, -f $IndexFile);
-  foreach (bsd_glob("$PageDir/*/*.pg")) { # find .dotfiles, too
+  foreach (bsd_glob("$PageDir/*/*.pg"), bsd_glob("$PageDir/*/.*.pg")) {
     next unless m|/.*/(.+)\.pg$|;
     my $id = $1;
     utf8::decode($id);
