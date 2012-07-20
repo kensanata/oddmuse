@@ -31,6 +31,7 @@ package OddMuse;
 use strict;
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
+use File::Glob ':glob';
 local $| = 1;  # Do not buffer output (localized for mod_perl)
 
 # Options:
@@ -224,7 +225,7 @@ sub Init {
 
 sub InitModules {
   if ($UseConfig and $ModuleDir and -d $ModuleDir) {
-    foreach my $lib (glob("$ModuleDir/*.pm $ModuleDir/*.pl")) {
+    foreach my $lib (bsd_glob("$ModuleDir/*.p[ml]")) {
       do $lib unless $MyInc{$lib};
       $MyInc{$lib} = 1;   # Cannot use %INC in mod_perl settings
       $Message .= CGI::p("$lib: $@") if $@; # no $q exists, yet
@@ -2727,7 +2728,7 @@ sub GetPageFile {
 }
 
 sub GetKeepFile {
-  my ($id, $revision) = @_; die 'No revision' unless $revision; #FIXME
+  my ($id, $revision) = @_; die "No revision for $id" unless $revision; #FIXME
   return $KeepDir . '/' . GetPageDirectory($id) . "/$id/$revision.kp";
 }
 
@@ -2737,7 +2738,7 @@ sub GetKeepDir {
 }
 
 sub GetKeepFiles {
-  return glob(GetKeepDir(shift) . '/*.kp'); # files such as 1.kp, 2.kp, etc.
+  return bsd_glob(GetKeepDir(shift) . '/*.kp'); # files such as 1.kp, 2.kp, etc.
 }
 
 sub GetKeepRevisions {
@@ -2901,7 +2902,7 @@ sub ReleaseLock {
 sub ForceReleaseLock {
   my $pattern = shift;
   my $forced;
-  foreach my $name (glob $pattern) {
+  foreach my $name (bsd_glob $pattern) {
     # First try to obtain lock (in case of normal edit lock)
     $forced = 1 if !RequestLockDir($name, 5, 3, 0);
     ReleaseLockDir($name); # Release the lock, even if we didn't get it.
@@ -3309,7 +3310,7 @@ sub AllPagesList {
   %IndexHash = ();
   # Try to write out the list for future runs.  If file exists and cannot be changed, error!
   my $locked = RequestLockDir('index', undef, undef, -f $IndexFile);
-  foreach (glob("$PageDir/*/*.pg $PageDir/*/.*.pg")) { # find .dotfiles, too
+  foreach (bsd_glob("$PageDir/*/*.pg")) { # find .dotfiles, too
     next unless m|/.*/(.+)\.pg$|;
     my $id = $1;
     utf8::decode($id);
