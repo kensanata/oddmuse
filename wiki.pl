@@ -2797,6 +2797,7 @@ sub ExpireKeepFiles {   # call with opened page
 
 sub ReadFile {
   my $file = shift;
+  utf8::encode($file);
   if (open(IN, '<:encoding(UTF-8)', $file)) {
     local $/ = undef;   # Read complete files
     my $data=<IN>;
@@ -2818,6 +2819,7 @@ sub ReadFileOrDie {
 
 sub WriteStringToFile {
   my ($file, $string) = @_;
+  utf8::encode($file);
   open(OUT, '>:encoding(UTF-8)', $file)
     or ReportError(Ts('Cannot write %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
   print OUT  $string;
@@ -2826,6 +2828,7 @@ sub WriteStringToFile {
 
 sub AppendStringToFile {
   my ($file, $string) = @_;
+  utf8::encode($file);
   open(OUT, '>>:encoding(UTF-8)', $file)
     or ReportError(Ts('Cannot write %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
   print OUT  $string;
