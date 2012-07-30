@@ -661,7 +661,7 @@ sub OpenHtmlEnvironment {  # close the previous $html_tag and open a new one
   @HtmlStack = @stack if $found; # if not starting a new list
   $depth = $IndentLimit if $depth > $IndentLimit; # requested depth 0 makes no sense
   $html_tag_attr = qq/class="$html_tag_attr"/ # backwards-compatibility hack: classically, the third argument to this function was a single CSS class, rather than string of HTML tag attributes as in the second argument to the "AddHtmlEnvironment" function. To allow both sorts, we conditionally change this string to 'class="$html_tag_attr"' when this string is a single CSS class.
-    if $html_tag_attr && $html_tag_attr !~ m/^\s*[:alpha:]+\s*=\s*('|").+\1/;
+    if $html_tag_attr && $html_tag_attr !~ m/^\s*[[:alpha:]]@@+\s*=\s*('|").+\1/;
   splice(@HtmlAttrStack, 0, @HtmlAttrStack - @HtmlStack); # truncate to size of @HtmlStack
   foreach ($found..$depth-1) {
     unshift(@HtmlStack,     $html_tag);
