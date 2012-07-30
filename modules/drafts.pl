@@ -33,7 +33,6 @@ $Action{draft} = \&DoDraft;
 sub DoDraft {
   my $id = shift;
   my $draft = $DraftDir . '/' . GetParam('username', GetRemoteHost());
-  utf8::encode($draft);
   if ($id) {
     my $text = GetParam('text', '');
     ReportError(T('No text to save'), '400 BAD REQUEST') unless $text;

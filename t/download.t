@@ -46,7 +46,10 @@ test_page(update_page('Trogs', $page), 'contains an uploaded file');
 
 xpath_test(get_page('Trogs'),
 	   '//p/img[@class="upload"][@src="http://localhost/wiki.pl?action=download;id=Trogs"][@alt="Trogs"]');
-$page = get_page('action=download id=Trogs');
+{
+  local $raw = 1;
+  $page = get_page('action=download id=Trogs');
+}
 test_page($page,
 	  'Content-Type: image/svg\+xml',
 	  'Content-encoding: gzip');
