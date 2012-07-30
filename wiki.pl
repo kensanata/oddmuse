@@ -2797,7 +2797,7 @@ sub ExpireKeepFiles {   # call with opened page
 
 sub ReadFile {
   my $file = shift;
-  utf8::encode($file);
+  utf8::encode($file); # filenames are bytes!
   if (open(IN, '<:encoding(UTF-8)', $file)) {
     local $/ = undef;   # Read complete files
     my $data=<IN>;
@@ -3371,6 +3371,7 @@ sub PageIsUploadedFile {
   return undef if $OpenPageName eq $id;
   if ($IndexHash{$id}) {
     my $file = GetPageFile($id);
+    utf8::encode($file); # filenames are bytes!
     open(FILE, '<:encoding(UTF-8)', $file)
       or ReportError(Ts('Cannot open %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
     while (defined($_ = <FILE>) and $_ !~ /^text: /) {
