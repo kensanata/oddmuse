@@ -271,6 +271,7 @@ sub clear_pages {
   $ScriptName = 'http://localhost/test.pl'; # different!
   $IndexInit = 0;
   %IndexHash = ();
+  @IndexList = ();
   $InterSiteInit = 0;
   %InterSite = ();
   $NearSiteInit = 0;
