@@ -268,7 +268,6 @@ sub InitDirConfig {
 sub InitRequest { # set up $q
   $CGI::POST_MAX = $MaxPost;
   $q = new CGI unless $q;
-  $q->charset('UTF-8');
 }
 
 sub InitVariables {  # Init global session variables for mod_perl!
@@ -2244,10 +2243,10 @@ sub GetHttpHeader {
   return if $PrintedHeader;
   $PrintedHeader = 1;
   my ($type, $ts, $status, $encoding) = @_; # $ts is undef, a ts, or 'nocache'
+  $q->charset($type =~ m!^(text/|application/xml)! ? 'utf-8' : ''); # text/plain, text/html, application/xml: UTF-8
   my %headers = (-cache_control=>($UseCache < 0 ? 'no-cache' : 'max-age=10'));
   $headers{-etag} = $ts || PageEtag() if GetParam('cache', $UseCache) >= 2;
   $headers{'-last-modified'} = TimeToRFC822($ts) if $ts and $ts ne 'nocache'; # RFC 2616 section 13.3.4
-  $headers{-charset} = 'UTF-8';
   $headers{-type} = GetParam('mime-type', $type);
   $headers{-status} = $status if $status;
   $headers{-Content_Encoding} = $encoding if $encoding;
@@ -2301,7 +2300,7 @@ sub GetHtmlHeader {   # always HTML!
   return $DocumentHeader
     . $q->head($q->title($title) . $base
       . GetCss() . GetRobots() . GetFeeds() . $HtmlHeaders
-      . '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />')
+      . '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />')
       . '<body class="' . GetParam('theme', $ScriptName) . '">';
 }
 
@@ -2455,7 +2454,7 @@ sub GetFormStart {
   $method ||= 'post';
   $class  ||= 'form';
   return $q->start_multipart_form(-method=>$method, -action=>$FullUrl,
-				  -accept_charset=>'UTF-8', -class=>$class);
+				  -accept_charset=>'utf-8', -class=>$class);
 }
 
 sub GetSearchForm {
