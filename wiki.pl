@@ -3131,7 +3131,7 @@ sub DoDownload {
       if @UploadTypes and not $allowed{$type};
     print GetHttpHeader($type, $ts, undef, $encoding);
     require MIME::Base64;
-    binmode(STDOUT, "raw");
+    binmode(STDOUT, ":pop:raw"); # need to pop utf8 for Windows users!?
     print MIME::Base64::decode($data);
   } else {
     print GetHttpHeader('text/plain', $ts);
