@@ -40,6 +40,17 @@ sub NewMacAllPagesList {
   return @new;
 }
 
+*OldMacGrepFiltered = *GrepFiltered;
+*GrepFiltered = *NewMacGrepFiltered;
+
+sub NewMacGrepFiltered {
+  my @pages = OldMacGrepFiltered(@_);
+  foreach my $id (@pages) {
+    $id = NFC($id);
+  }
+  return @pages;
+}
+
 push(@MyInitVariables, \&MacFixEncoding);
 
 sub MacFixEncoding {

@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 39;
+use Test::More tests => 41;
 use utf8; # tests contain UTF-8 characters and it matters
 
 clear_pages();
@@ -106,3 +106,11 @@ test_page(get_page("All"), "Русский");
 
 # and checking without the cache
 test_page(get_page("action=browse id=All cache=0"), "Русский");
+
+# testing search
+test_page(get_page('search=Русский raw=1'),
+	  qw(Russian));
+
+# testing page editing
+test_page(update_page("Русский", "друзья"),
+	  "друзья");

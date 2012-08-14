@@ -16,9 +16,11 @@ package OddMuse;
 use lib '.';
 use XML::LibXML;
 use utf8;
+use vars qw($raw);
 
 # Import the functions
 
+$raw = 0;       # capture utf8 is the default
 $RunCGI = 0;    # don't print HTML on stdout
 $UseConfig = 0; # don't read module files
 $DataDir = 'test-data';
@@ -46,10 +48,20 @@ sub url_encode {
   return join('', @letters);
 }
 
-# run perl in a subprocess and make sure it prints UTF-8 and not Latin-1
+# Run perl in a subprocess and make sure it prints UTF-8 and not Latin-1
+# If you use the download action, the output will be raw bytes. Use
+# something like the following:
+# {
+#   local $raw = 1;
+#   $page = get_page('action=download id=Trogs');
+# }
 sub capture {
   my $command = shift;
-  open (CL, '-|:encoding(utf-8)', $command) or die "Can't run $command: $!";
+  if ($raw) {
+    open (CL, '-|', $command) or die "Can't run $command: $!";
+  } else {
+    open (CL, '-|:encoding(utf-8)', $command) or die "Can't run $command: $!";
+  }
   my $result = <CL>;
   close CL;
   return $result;
@@ -259,6 +271,7 @@ sub clear_pages {
   $ScriptName = 'http://localhost/test.pl'; # different!
   $IndexInit = 0;
   %IndexHash = ();
+  @IndexList = ();
   $InterSiteInit = 0;
   %InterSite = ();
   $NearSiteInit = 0;

@@ -29,7 +29,10 @@ test_page_negative($page, 'mu');
 AppendStringToFile($ConfigFile, "\$UploadAllowed = 1;\n");
 test_page(update_page('Alex', "#FILE image/png\niVBORw0KGgoAAAA"),
 	  'This page contains an uploaded file:');
-$page = get_page('action=download id=Alex');
+{
+  local $raw = 1;
+  $page = get_page('action=download id=Alex');
+}
 $page =~ s/^.*\r\n\r\n//s; # strip headers
 require MIME::Base64;
 test_page(MIME::Base64::encode($page), '^iVBORw0KGgoAAAA');
