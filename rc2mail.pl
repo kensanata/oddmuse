@@ -119,7 +119,6 @@ sub get_rss {
   my $rss = new XML::RSS;
   $rss->parse($response->content);
   print "Found " . @{$rss->{items}} . " items.\n" if $debug;
-  update_timestamp();
   return $rss;
 }
 
@@ -208,6 +207,7 @@ sub main {
   my $subscribers = get_subscribers();
   return unless %{$subscribers};
   send_files($rss, $subscribers);
+  update_timestamp();
 }
 
 main ();
