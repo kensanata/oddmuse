@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 16;
+use Test::More tests => 19;
 
 clear_pages();
 
@@ -49,6 +49,7 @@ The two are the same,
 But after they are produced,
   they have different names.
 };
+
 my $lao_file_2 = q{The Way that can be told of is not the eternal Way;
 The name that can be named is not the eternal name.
 The Nameless is the origin of Heaven and Earth;
@@ -118,9 +119,8 @@ sleep(2);
 
 update_page('ConflictTest', $lao_file);
 
-$_ = `perl wiki.pl action=edit id=ConflictTest`;
-/name="oldtime" value="([0-9]+)"/;
-my $oldtime = $1;
+my $oldtime = xpath_test(get_page('action=edit id=ConflictTest'),
+		 '//input[@name="oldtime"]/attribute::value');
 
 sleep(2);
 
@@ -143,9 +143,8 @@ sleep(2);
 
 update_page('ConflictTest', $tzu_file);
 
-$_ = `perl wiki.pl action=edit id=ConflictTest`;
-/name="oldtime" value="([0-9]+)"/;
-$oldtime = $1;
+$oldtime = xpath_test(get_page('action=edit id=ConflictTest'),
+		      '//input[@name="oldtime"]/attribute::value');
 
 sleep(2);
 
@@ -192,9 +191,8 @@ sleep(2);
 
 update_page('ConflictTest', $lao_file);
 
-$_ = `perl wiki.pl action=edit id=ConflictTest`;
-/name="oldtime" value="([0-9]+)"/;
-$oldtime = $1;
+$oldtime = xpath_test(get_page('action=edit id=ConflictTest'),
+		      '//input[@name="oldtime"]/attribute::value');
 
 sleep(2);
 
