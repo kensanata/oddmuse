@@ -2977,7 +2977,7 @@ sub TimeToRFC822 {
 sub GetHiddenValue {
   my ($name, $value) = @_;
   $q->param($name, $value);
-  return $q->hidden($name);
+  return $q->input({-type=>"hidden", -name=>$name, -value=>$value});
 }
 
 sub GetRemoteHost { # when testing, these variables are undefined.
