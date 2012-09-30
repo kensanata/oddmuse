@@ -352,7 +352,8 @@ sub DoTagsReindex {
        $Page{text} =~ m/\[\[tag:$FreeLinkPattern\|([^]|]+)\]\]/g);
     next unless %tag;
 
-    utf8::encode($id); # back to bytes for the following installation:
+    # utf8::encode($id);
+    # back to bytes for the following installation:
     # This is perl, v5.10.1 (*) built for i486-linux-gnu-thread-multi
     # (with 56 registered patches, see perl -V for more detail)
     # (FIXME: get rid of this call, or explain why no UTF-8 can be stored in %h)
