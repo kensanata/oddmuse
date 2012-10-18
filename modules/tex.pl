@@ -1,8 +1,8 @@
-# Copyright (C) 2006  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006, 2012  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation; either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -11,17 +11,14 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/tex.pl">tex.pl</a></p>';
 
 use vars qw($TeXInit);
 use utf8;
 
-my %h = qw( !` ¡ {\pounds} £ \pounds £ {\S} § \S § \"{} ¨ {\copyright} ©
+my %Tex = qw( !` ¡ {\pounds} £ \pounds £ {\S} § \S § \"{} ¨ {\copyright} ©
 \copyright © $^a$ ª \={} ¯ $\pm$ ± \pm ± $^2$ ² $^3$ ³ \'{} ´ {\P} ¶
 \P ¶ $\cdot$ · \cdot · \c{} ¸ $^1$ ¹ $^o$ º ?` ¿ \`{A} À \`A À \'{A} Á
 \'A Á \^{A} Â \^A Â \~{A} Ã \~A Ã \"{A} Ä \"A Ä \k{A} Ą {\AA} Å \AA Å
@@ -167,5 +164,14 @@ _0 ₀ _1 ₁ _2 ₂ _3 ₃ _4 ₄ _5 ₅ _6 ₆ _7 ₇ _8 ₈ _9 ₉ _= ₌ \~ 
 \textdiscount ⁒ \textestimated ℮ \textopenbullet ◦ \textlquill ⁅
 \textrquill ⁆ \textcircledP ℗ \textreferencemark ※ );
 
-my $re = '(' . join('|', map {quotemeta} keys %h) . ')(\s|\b)';
-push(@MyMacros, sub {s/$re/$h{$1}/go});
+my $TexRe = '(' . join('|', map {quotemeta} sort { $b cmp $a } keys %Tex) . ')';
+$TexRe = qr{$TexRe};
+
+push(@MyRules, \&TexRule);
+
+sub TexRule {
+  if (m/\G$TexRe/goc) {
+    return $Tex{$1};
+  }
+  return undef;
+}

@@ -666,7 +666,8 @@ sub OpenHtmlEnvironment {  # close the previous $html_tag and open a new one
     unshift(@HtmlStack,     $html_tag);
     unshift(@HtmlAttrStack, $html_tag_attr);
     $html .= $html_tag_attr ? "<$html_tag $html_tag_attr>" : "<$html_tag>";
-  } return $html;
+  }
+  return $html;
 }
 
 sub CloseHtmlEnvironments { # close all -- remember to use AddHtmlEnvironment('p') if required!
