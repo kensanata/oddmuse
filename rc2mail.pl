@@ -119,7 +119,6 @@ sub get_rss {
   my $rss = new XML::RSS;
   $rss->parse($response->content);
   print "Found " . @{$rss->{items}} . " items.\n" if $debug;
-  update_timestamp();
   return $rss;
 }
 
@@ -145,6 +144,7 @@ sub send_file {
   my ($id, $title, $item, @subscribers) = @_;
   return unless @subscribers;
   my $fh = File::Temp->new(SUFFIX => '.html');
+  binmode($fh, ":utf8");
   warn "No content for $title\n" unless $item->{description};
   my $link = $item->{link};
   my $sub = "$root?action=subscriptions";
@@ -207,6 +207,7 @@ sub main {
   my $subscribers = get_subscribers();
   return unless %{$subscribers};
   send_files($rss, $subscribers);
+  update_timestamp();
 }
 
 main ();

@@ -122,11 +122,9 @@ i"m tired
 i"m tired
 He said, "[w]hen I voice complaints..."
 He said, &#x201c;[w]hen I voice complaints&#x2026;&#x201d;
+[foo]'s problem
+[foo]&#x2019;s problem
 EOT
-
-xpath_run_tests("[http://foo.org/ foo]'s problem",
-		'//a[@class="url http outside"][@href="http://foo.org/"][text()="foo"]'
-		. '/following-sibling::text()[string()="’s problem"]');
 
 $MarkupQuotes = 0;
 run_tests(q{"Get lost!", they say, and I answer: "I'm not 'lost'!"},

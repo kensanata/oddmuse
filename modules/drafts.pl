@@ -1,21 +1,18 @@
-# Copyright (C) 2006  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006, 2012  Alex Schroeder <alex@gnu.org>
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 3 of the License, or (at your option) any later
+# version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
 
+use File::Glob ':glob';
 use vars qw($DraftDir);
 
 $DraftDir = $DataDir."/draft"; # directory for drafts
@@ -70,15 +67,23 @@ sub DraftNewGetEditForm {
 
 push(@MyMaintenance, \&DraftCleanup);
 
+sub DraftFiles {
+  return map {
+    $_ = substr($_, length($DraftDir) + 1);
+    utf8::decode($_);
+    $_;
+  } bsd_glob("$DraftDir/*"), bsd_glob("$DraftDir/.*");
+}
+
 sub DraftCleanup {
   print '<p>' . T('Draft Cleanup');
-  foreach my $draft (glob("$DraftDir/* $DraftDir/.*")) {
-    next if $draft =~ m!/\.\.?$!;
-    my $ts = (stat($draft))[9];
+  foreach my $draft (DraftFiles()) {
+    next if $draft eq '.' or $draft eq '..';
+    my $ts = (stat("$DraftDir/$draft"))[9];
     if ($Now - $ts < 1209600) { # 14*24*60*60
       print $q->br(), Tss("%1 was last modified %2 and was kept",
 		$draft, CalcTimeSince($Now - $ts));
-    } elsif (unlink($draft)) {
+    } elsif (unlink("$DraftDir/$draft")) {
       print $q->br(), Tss("%1 was last modified %2 and was deleted",
 		$draft, CalcTimeSince($Now - $ts));
     } else {

@@ -1,24 +1,3 @@
-# UTF-8 encoded Bulgarian translation file for use with Oddmuse
-#
-# Copyright (c) 2004 Stanislav Traykov <stanislav@tortoises.org>
-# Copyright (c) 2003, 2004  Alex Schröder <alex@emacswiki.org>
-#
-# Permission is granted to copy, distribute and/or modify this
-# document under the terms of the GNU Free Documentation License,
-# Version 1.2 or any later version published by the Free Software
-# Foundation; with no Invariant Sections, no Front-Cover Texts, and no
-# Back-Cover Texts.  A copy of the license could be found at:
-# http://www.gnu.org/licenses/fdl.txt .
-#
-# Installation:
-# =============
-#
-# Create a modules subdirectory in your data directory, and put the
-# file in there. It will be loaded automatically.
-#
-# This translation was updated for Oddmuse 1.354.
-#
-$ModulesDescription .= '<p>$Id: bulgarian-utf8.pl,v 1.11 2009/06/07 19:30:37 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 
@@ -92,6 +71,8 @@ Please go on to %s.
 Моля продължи на %s.
 Updates since %s
 Промени от %s насам
+up to %s
+
 Updates in the last %s days
 Промени през последните %s дни
 Updates in the last %s day
@@ -176,6 +157,8 @@ The two revisions are the same.
 
 Editing not allowed for %s.
 Редакция на %s не е разрешена.
+Rollback of %s would restore banned content.
+
 Rollback to %s
 Връщане до %s
 %s rolled back
@@ -195,8 +178,6 @@ Run maintenance
 Unlock site
 
 Lock site
-
-Install CSS
 
 Unlock %s
 
@@ -320,6 +301,8 @@ Could not get %s lock
 Не може да се резервират изключителни права върху %s.
 The lock was created %s.
 
+Maybe the user running this script is no longer allowed to remove the lock directory?
+
 This operation may take several seconds...
 Тази операция може да потрае малко...
 Forced unlock of %s lock.
@@ -410,6 +393,8 @@ Filter:
 (за %s)
 %s pages found.
 %s намерени страници.
+Malformed regular expression in %s
+
 Replaced: %s
 Заместено: %s
 Search for: %s
@@ -492,15 +477,11 @@ Displaying Wiki Version
 
 Debugging Information
 
-Inter links:
-Интер-линкове:
 Too many connections by %s
 Прекалено много връзки с %s
 Please do not fetch more than %1 pages in %2 seconds.
 
 Check whether the web server can create the directory %s and whether it can create files in it.
-
-Copy one of the following stylesheets to %s:
 
 Deleting %s
 
@@ -618,6 +599,20 @@ Compilation for %s
 
 Compilation tag is missing a regular expression.
 
+Install CSS
+
+Copy one of the following stylesheets to %s:
+
+Reset
+
+Extract all dates from the database
+
+Dates
+
+No dates found.
+
+Inter links:
+Интер-линкове:
 List spammed pages
 
 Despamming pages
@@ -658,6 +653,14 @@ ordinary changes
 
 Matching page names:
 
+no summary available
+
+page was marked for deletion
+
+Oddmuse
+
+Email: 
+
 Could not find %1.html template in %2
 
 Only Editors are allowed to see this hidden page.
@@ -685,6 +688,14 @@ The template %s is either empty or does not exist.
  -- defined on %s
 
 Local names defined on %1: %2
+
+Name: 
+
+URL: 
+
+Define Local Names
+
+Define external redirect: 
 
 Locked Pages
 
@@ -788,8 +799,6 @@ unsubscribe
 
 subscribe
 
-Email: 
-
 %s appears to be an invalid mail address
 
 Your mail subscriptions
@@ -826,6 +835,8 @@ You linked more than %s times to the same domain. It would seem that only a spam
 
 Namespaces
 
+ (create locally)
+
 Getting page index file for %s.
 Получаване на индекс за %s.
 Near links:
@@ -842,8 +853,6 @@ EditNearLinks
 Редакция на близки линкове
 The same page on other sites:
 Същата страница на други места:
- (create locally)
-
 image
 
 download
@@ -858,6 +867,12 @@ Generating Link Database
 
 The 404 handler extension requires the link data extension (links.pl).
 
+Make available offline
+
+Offline
+
+You are currently offline and what you requested is not part of the offline application. You need to be online to do this.
+
 LocalMap
 
 No page id for action localmap
@@ -871,20 +886,6 @@ view
 Self-ban by %s
 
 You have banned your own IP.
-
-OpenID Login
-
-Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
-
-Your homepage is set to %s.
-
-You have no homepage set.
-
-Homepage:
-
-Homepage is missing
-
-OpenID error %s
 
 Orphan List
 
@@ -917,6 +918,8 @@ Publish %s
 No target wiki was specified in the config file.
 
 The target wiki was misconfigured.
+
+Upload is limited to %s bytes
 
 You did not answer correctly.
 
@@ -970,6 +973,10 @@ Static Copy
 
 Back to %s
 Обратно към %s
+Edit image in the browser
+
+Summary of your changes: 
+
 Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
@@ -1008,11 +1015,39 @@ Too many instances.  Only %s allowed.
 
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 
+thumb
+
+Error creating thumbnail from non existant page %s.
+
+Can not create thumbnail for file type %s.
+
+Can not create thumbnail for a text document
+
+Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
+
+Can not create path for thumbnail - %s
+
+Failed to run %1 to create thumbnail: %2
+
+%s ran into an error
+
+%s produced no output
+
+Failed to parse %s.
+
+Timezone
+
+Pick your timezone:
+
+Set
+
 Contents
 
 Create a new page for today
 
 Add Translation
+
+Please provide a different page name for the translation.
 
 Added translation: %1 (%2)
 
@@ -1055,6 +1090,8 @@ Wanted Pages
 %s pages
 
 %s, referenced from:
+
+Web application for offline browsing
 
 Upload of %s file
 

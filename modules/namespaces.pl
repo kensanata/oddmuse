@@ -1,17 +1,16 @@
-# Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2012  Alex Schroeder <alex@gnu.org>
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 3 of the License, or
-# (at your option) any later version.
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 3 of the License, or (at your option) any later
+# version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
 
 =head1 Namespaces Extension
 
@@ -38,6 +37,7 @@ be changed using the C<$NamespacesSelf> option.
 
 $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/namespaces.pl">namespaces.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Namespaces_Extension">Namespaces Extension</a></p>';
 
+use File::Glob ':glob';
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent
 	    $NamespaceRoot $NamespaceSlashing @NamespaceParameters
 	    %Namespaces);
@@ -80,7 +80,8 @@ sub NamespacesInitVariables {
   # Do this before changing the $DataDir and $ScriptName
   if (!$Monolithic and $UsePathInfo) {
     $Namespaces{$NamespacesMain} = $ScriptName . '/';
-    foreach my $name (glob("$DataDir/*")) {
+    foreach my $name (bsd_glob("$DataDir/*")) {
+      utf8::decode($name);
       if (-d $name
 	  and $name =~ m|/($InterSitePattern)$|
 	  and $name ne $NamespacesMain
@@ -92,19 +93,21 @@ sub NamespacesInitVariables {
   $NamespaceRoot = $ScriptName; # $ScriptName may be changed below
   $NamespaceCurrent = '';
   my $ns = GetParam('ns', '');
+  if (not $ns and $UsePathInfo) {
+    my $path_info = $q->path_info();
+    utf8::decode($path_info);
+    # make sure ordinary page names are not matched!
+    if ($path_info =~ m|^/($InterSitePattern)(/.*)?|
+	and ($2 or $q->keywords or NamespaceRequiredByParameter())) {
+      $ns = $1;
+    }
+  }
   ReportError(Ts('%s is not a legal name for a namespace', $ns))
     if $ns and $ns !~ m/^($InterSitePattern)$/;
-  if (($UsePathInfo
-       # make sure ordinary page names are not matched!
-       and $q->path_info() =~ m|^/($InterSitePattern)(/.*)?|
-       and ($1 ne $NamespacesMain)
-       and ($1 ne $NamespacesSelf)
-       and ($2 or $q->keywords or NamespaceRequiredByParameter()))
-      or
-      ($ns =~ m/^($InterSitePattern)$/
-       and ($1 ne $NamespacesMain)
-       and ($1 ne $NamespacesSelf))) {
-    $NamespaceCurrent = $1;
+  if ($ns
+      and $ns ne $NamespacesMain
+      and $ns ne $NamespacesSelf) {
+    $NamespaceCurrent = $ns;
     # Change some stuff from the original InitVariables call:
     $SiteName   .= ' ' . $NamespaceCurrent;
     $InterWikiMoniker = $NamespaceCurrent;
@@ -115,7 +118,7 @@ sub NamespacesInitVariables {
     $TempDir     = "$DataDir/temp";
     $LockDir     = "$TempDir/lock";
     $NoEditFile  = "$DataDir/noedit";
-    $RcFile = "$DataDir/rc.log";
+    $RcFile      = "$DataDir/rc.log";
     $RcOldFile   = "$DataDir/oldrc.log";
     $IndexFile   = "$DataDir/pageidx";
     $VisitorFile = "$DataDir/visitors.log";
@@ -133,8 +136,8 @@ sub NamespacesInitVariables {
     my ($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,$size, $atime,$mtime,$ctime,$blksize,$blocks)
       = stat($IndexFile);
     $LastUpdate = $mtime;
-    CreateDir($DataDir); # Create directory if it doesn't exist
-    ReportError(Ts('Could not create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR')
+    CreateDir($DataDir);	# Create directory if it doesn't exist
+    ReportError(Ts('Cannot create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR')
       unless -d $DataDir;
   }
   $Namespaces{$NamespacesSelf} = $ScriptName . '?';
@@ -203,8 +206,8 @@ sub NewNamespaceGetRcLines { # starttime, hash of seen pages to use as a second 
     # directory. This reduces the chances of getting different
     # results.
     foreach my $site (keys %InterSite) {
-      if ($InterSite{$site} =~ m|^$ScriptName/([^/]*)|) {
-	my $ns = $1 or next;
+      if (substr($InterSite{$site}, 0, length($ScriptName)) eq $ScriptName) {
+	my $ns = $site;
 	my $file = "$DataDir/$ns/rc.log";
 	push(@rcfiles, $file);
 	$namespaces{$file} = $ns;
@@ -217,7 +220,7 @@ sub NewNamespaceGetRcLines { # starttime, hash of seen pages to use as a second 
   # starttime. If any rcfile exists with no timestamp before the
   # starttime, we need to open its rcoldfile.
   foreach my $file (@rcfiles) {
-    open(F, $file);
+    open(F, '<:encoding(UTF-8)', $file);
     my $line = <F>;
     my ($ts) = split(/$FS/o, $line); # the first timestamp in the regular rc file
     my @new;
@@ -249,7 +252,7 @@ sub NewNamespaceGetRcLines { # starttime, hash of seen pages to use as a second 
   return LatestChanges(@result);
 }
 
-=head RSS feed
+=head2 RSS feed
 
 When retrieving the RSS feed with the parameter full=1, one would
 expect the various items to contain the fully rendered HTML.

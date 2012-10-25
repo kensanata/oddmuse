@@ -109,7 +109,7 @@ sub get {
     } else {
       print $q->header( -cache_control  => 'max-age=10',
 			-etag           => $OddMuse::Page{ts},
-			-type           => "text/plain; charset=$OddMuse::HttpCharset",
+			-type           => "text/plain; charset=UTF-8",
 			-status         => "200 OK",);
       print $OddMuse::Page{text} unless $head;
     }
@@ -373,11 +373,6 @@ sub propfind {
       $resp->addChild($propstat);
     }
   }
-  # The XML Parser handles UTF-8 correctly, but Perl will
-  # automatically convert it to Latin-1 upon printing to STDOUT unless
-  # we use binmode.
-  eval { local $SIG{__DIE__}; binmode(STDOUT, ":utf8"); }
-    if $OddMuse::HttpCharset eq 'UTF-8';
   warn "RESPONSE: 207\n" . $doc->toString(1) . "\n" if $verbose;
   print $doc->toString(1);
 }

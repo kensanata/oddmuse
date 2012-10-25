@@ -147,8 +147,11 @@ sub GitCleanup {
       OpenPage($id);
       WriteStringToFile("$GitRepo/$id", $Page{text});
     }
-    # commit the new state
+    # run git!
     chdir($GitRepo); # important for all the git commands that follow!
+    # add any new files
+    GitRun('add', '.');
+    # commit the new state
     GitRun('commit', '--quiet', '-a', '-m', 'maintenance job',
 	   "--author=Oddmuse <$GitMail>");
   }

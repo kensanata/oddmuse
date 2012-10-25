@@ -33,7 +33,7 @@ push(@MyRules, \&SeTextRule);
 # If the length does not match, pos is reset and zero is returned so
 # that the remaining rules will be tested instead.
 
-my $word = '([-A-Za-z\x80-\xff]+)';
+my $word = '([-A-Za-z\x{0080}-\x{fffd}]+)';
 sub SeTextRule {
   my $oldpos = pos;
   if ($bol && ((m/\G((.+?)[ \t]*\n(-+|=+)[ \t]*\n)/gc

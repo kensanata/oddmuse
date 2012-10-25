@@ -1,8 +1,7 @@
 #! /usr/bin/perl
-# Version       $Id: wiki.pl,v 1.960 2012/03/08 15:28:18 as Exp $
-# Copyleft      2008 Brian Curry <http://www.raiazome.com>
-# Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
+# Copyright (C) 2001-2012
 #     Alex Schroeder <alex@gnu.org>
+# Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # ... including lots of patches from the UseModWiki site
 # Copyright (C) 2001, 2002  various authors
 # ... which was based on UseModWiki version 0.92 (April 21, 2001)
@@ -29,14 +28,11 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
 package OddMuse;
-
 use strict;
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
-use vars qw($VERSION);
+use File::Glob ':glob';
 local $| = 1;  # Do not buffer output (localized for mod_perl)
-
-$VERSION=(split(/ +/, q{$Revision: 1.960 $}))[1]; # for MakeMaker
 
 # Options:
 use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
@@ -47,20 +43,19 @@ $EmbedWiki $BracketText $UseConfig $UseLookup $AdminPass $EditPass $NetworkFile
 $BracketWiki $FreeLinks $WikiLinks $SummaryHours $FreeLinkPattern $RCName
 $RunCGI $ShowEdits $LinkPattern $RssExclude $InterLinkPattern $MaxPost $UseGrep
 $UrlPattern $UrlProtocols $ImageExtensions $InterSitePattern $FS $CookieName
-$SiteBase $StyleSheet $NotFoundPg $FooterNote $NewText $EditNote $HttpCharset
-$UserGotoBar $VisitorFile $RcFile %Smilies %SpecialDays $InterWikiMoniker
-$SiteDescription $RssImageUrl $ReadMe $RssRights $BannedCanRead $SurgeProtection
-$TopLinkBar $LanguageLimit $SurgeProtectionTime $SurgeProtectionViews
-$DeletedPage %Languages $InterMap $ValidatorLink %LockOnCreation
-$RssStyleSheet %CookieParameters @UserGotoBarPages $NewComment $HtmlHeaders
-$StyleSheetPage $ConfigPage $ScriptName $CommentsPrefix @UploadTypes
-$AllNetworkFiles $UsePathInfo $UploadAllowed $LastUpdate $PageCluster
-%PlainTextPages $RssInterwikiTranslate $UseCache $Counter $ModuleDir
-$FullUrlPattern $SummaryDefaultLength $FreeInterLinkPattern
-%InvisibleCookieParameters %AdminPages $UseQuestionmark $JournalLimit
-$LockExpiration $RssStrip %LockExpires @IndexOptions @Debugging $DocumentHeader
-%HtmlEnvironmentContainers @MyAdminCode @MyFooters @MyInitVariables @MyMacros
-@MyMaintenance @MyRules);
+$SiteBase $StyleSheet $NotFoundPg $FooterNote $NewText $EditNote $UserGotoBar
+$VisitorFile $RcFile %Smilies %SpecialDays $InterWikiMoniker $SiteDescription
+$RssImageUrl $ReadMe $RssRights $BannedCanRead $SurgeProtection $TopLinkBar
+$LanguageLimit $SurgeProtectionTime $SurgeProtectionViews $DeletedPage
+%Languages $InterMap $ValidatorLink %LockOnCreation $RssStyleSheet
+%CookieParameters @UserGotoBarPages $NewComment $HtmlHeaders $StyleSheetPage
+$ConfigPage $ScriptName $CommentsPrefix @UploadTypes $AllNetworkFiles
+$UsePathInfo $UploadAllowed $LastUpdate $PageCluster %PlainTextPages
+$RssInterwikiTranslate $UseCache $Counter $ModuleDir $FullUrlPattern
+$SummaryDefaultLength $FreeInterLinkPattern %InvisibleCookieParameters
+%AdminPages $UseQuestionmark $JournalLimit $LockExpiration $RssStrip
+%LockExpires @IndexOptions @Debugging $DocumentHeader %HtmlEnvironmentContainers
+@MyAdminCode @MyFooters @MyInitVariables @MyMacros @MyMaintenance @MyRules);
 
 # Internal variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie $FootnoteNumber
@@ -95,7 +90,6 @@ $CookieName  = 'Wiki';          # Name for this wiki (for multi-wiki sites)
 
 $SiteBase    = '';              # Full URL for <BASE> header
 $MaxPost     = 1024 * 210;      # Maximum 210K posts (about 200K for pages)
-$HttpCharset = 'UTF-8';         # You are on your own if you change this!
 $StyleSheet  = '';              # URL for CSS stylesheet (like '/wiki.css')
 $StyleSheetPage = 'css';        # Page for CSS sheet
 $LogoUrl     = '';              # URL for site logo ('' for no logo)
@@ -207,7 +201,7 @@ sub DoWikiRequest {
 
 sub ReportError {   # fatal!
   my ($errmsg, $status, $log, @html) = @_;
-  $q = new CGI unless $q; # make sure we can report errors before InitRequest
+  InitRequest(); # make sure we can report errors before InitRequest
   print GetHttpHeader('text/html', 'nocache', $status), GetHtmlHeader(T('Error')),
     $q->start_div({class=>"error"}), $q->h1(QuoteHtml($errmsg)), @html, $q->end_div,
       $q->end_html, "\n\n"; # newlines for FCGI because of exit()
@@ -217,22 +211,21 @@ sub ReportError {   # fatal!
 }
 
 sub Init {
+  binmode(STDOUT, ':utf8');
   InitDirConfig();
   $FS  = "\x1e"; # The FS character is the RECORD SEPARATOR control char in ASCII
   $Message = ''; # Warnings and non-fatal errors.
   InitLinkPatterns(); # Link pattern can be changed in config files
   InitModules(); # Modules come first so that users can change module variables in config
   InitConfig(); # Config comes as early as possible; remember $q is not available here
-  InitRequest(); # get $q with $MaxPost and $HttpCharset; set these in the config file
+  InitRequest(); # get $q with $MaxPost; set these in the config file
   InitCookie(); # After InitRequest, because $q is used
   InitVariables(); # After config, to change variables, after InitCookie for GetParam
 }
 
 sub InitModules {
   if ($UseConfig and $ModuleDir and -d $ModuleDir) {
-    foreach my $lib (glob("$ModuleDir/*.pm $ModuleDir/*.pl")) {
-      next unless ($lib =~ /^($ModuleDir\/[-\w.]+\.p[lm])$/o);
-      $lib = $1;    # untaint
+    foreach my $lib (bsd_glob("$ModuleDir/*.p[ml]")) {
       do $lib unless $MyInc{$lib};
       $MyInc{$lib} = 1;   # Cannot use %INC in mod_perl settings
       $Message .= CGI::p("$lib: $@") if $@; # no $q exists, yet
@@ -245,7 +238,7 @@ sub InitConfig {
     do $ConfigFile; # these options must be set in a wrapper script or via the environment
     $Message .= CGI::p("$ConfigFile: $@") if $@; # remember, no $q exists, yet
   }
-  if ($ConfigPage) { # $FS, $HttpCharset, $MaxPost must be set in config file!
+  if ($ConfigPage) { # $FS and $MaxPost must be set in config file!
     my ($status, $data) = ReadFile(GetPageFile(FreeToNormal($ConfigPage)));
     my %data = ParseData($data); # before InitVariables so GetPageContent won't work
     eval $data{text} if $data{text};
@@ -254,6 +247,7 @@ sub InitConfig {
 }
 
 sub InitDirConfig {
+  utf8::decode($DataDir); # just in case, eg. "WikiDataDir=/tmp/Zürich♥ perl wiki.pl"
   $PageDir     = "$DataDir/page";  # Stores page data
   $KeepDir     = "$DataDir/keep";  # Stores kept (old) page data
   $TempDir     = "$DataDir/temp";  # Temporary files and locks
@@ -271,11 +265,9 @@ sub InitDirConfig {
   $ModuleDir   = "$DataDir/modules" unless $ModuleDir;
 }
 
-sub InitRequest {
+sub InitRequest { # set up $q
   $CGI::POST_MAX = $MaxPost;
   $q = new CGI unless $q;
-  $q->charset($HttpCharset) if $HttpCharset;
-  eval { local $SIG{__DIE__}; binmode(STDOUT, ":raw"); }; # we treat input and output as bytes
 }
 
 sub InitVariables {  # Init global session variables for mod_perl!
@@ -312,7 +304,7 @@ sub InitVariables {  # Init global session variables for mod_perl!
   $LastUpdate = $ts;
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
   @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
-  ReportError(Ts('Could not create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR')
+  ReportError(Ts('Cannot create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR')
     unless -d $DataDir;
   foreach my $sub (@MyInitVariables) {
     my $result = &$sub;
@@ -329,12 +321,10 @@ sub ReInit {   # init everything we need if we want to link to stuff
 
 sub InitCookie {
   undef $q->{'.cookies'};   # Clear cache if it exists (for SpeedyCGI)
-  if ($q->cookie($CookieName)) {
-    %OldCookie = split(/$FS/o, UrlDecode($q->cookie($CookieName)));
-  } else {
-    %OldCookie = ();
-  }
-  my %provided = map { $_ => 1 } $q->param;
+  my $cookie = $q->cookie($CookieName);
+  utf8::decode($cookie); # make sure it's decoded as UTF-8
+  %OldCookie = split(/$FS/o, UrlDecode($cookie));
+  my %provided = map { utf8::decode($_); $_ => 1 } $q->param;
   for my $key (keys %OldCookie) {
     SetParam($key, $OldCookie{$key}) unless $provided{$key};
   }
@@ -370,8 +360,10 @@ sub CookieRollbackFix {
 
 sub GetParam {
   my ($name, $default) = @_;
+  utf8::encode($name); # may fail
   my $result = $q->param($name);
   $result = $default unless defined($result);
+  utf8::decode($result); # may fail
   return QuoteHtml($result); # you need to unquote anything that can have <tags>
 }
 
@@ -381,22 +373,22 @@ sub SetParam {
 }
 
 sub InitLinkPatterns {
-  my ($UpperLetter, $LowerLetter, $AnyLetter, $WikiWord, $QDelim);
+  my ($WikiWord, $QDelim);
   $QDelim = '(?:"")?'; # Optional quote delimiter (removed from the output)
-  $WikiWord = '[A-Z]+[a-z\x80-\xff]+[A-Z][A-Za-z\x80-\xff]*';
+  $WikiWord = '[A-Z]+[a-z\x{0080}-\x{fffd}]+[A-Z][A-Za-z\x{0080}-\x{fffd}]*'; # exclude noncharacters FFFE and FFFF
   $LinkPattern = "($WikiWord)$QDelim";
-  $FreeLinkPattern = "([-,.()'%&?;<> _1-9A-Za-z\x80-\xff]|[-,.()'%&?;<> _0-9A-Za-z\x80-\xff][-,.()'%&?;<> _0-9A-Za-z\x80-\xff]+)"; # disallow "0" and must match HTML and plain text (ie. > and &gt;)
+  $FreeLinkPattern = "([-,.()'%&?;<> _1-9A-Za-z\x{0080}-\x{fffd}]|[-,.()'%&?;<> _0-9A-Za-z\x{0080}-\x{fffd}][-,.()'%&?;<> _0-9A-Za-z\x{0080}-\x{fffd}]+)"; # disallow "0" and must match HTML and plain text (ie. > and &gt;)
   # Intersites must start with uppercase letter to avoid confusion with URLs.
-  $InterSitePattern = '[A-Z\x80-\xff]+[A-Za-z\x80-\xff]+';
-  $InterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x80-\xff_=!?#\$\@~`\%&*+\\/:;.,]*[-a-zA-Z0-9\x80-\xff_=#\$\@~`\%&*+\\/])$QDelim";
-  $FreeInterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x80-\xff_=!?#\$\@~`\%&*+\\/:;.,()' ]+)"; # plus space and other characters, and no restrictions on the end of the pattern
+  $InterSitePattern = '[A-Z\x{0080}-\x{fffd}]+[A-Za-z\x{0080}-\x{fffd}]+';
+  $InterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x{0080}-\x{fffd}_=!?#\$\@~`\%&*+\\/:;.,]*[-a-zA-Z0-9\x{0080}-\x{fffd}_=#\$\@~`\%&*+\\/])$QDelim";
+  $FreeInterLinkPattern = "($InterSitePattern:[-a-zA-Z0-9\x{0080}-\x{fffd}_=!?#\$\@~`\%&*+\\/:;.,()' ]+)"; # plus space and other characters, and no restrictions on the end of the pattern
   $UrlProtocols = 'http|https|ftp|afs|news|nntp|mid|cid|mailto|wais|prospero|telnet|gopher|irc|feed';
   $UrlProtocols .= '|file'  if $NetworkFile;
   my $UrlChars = '[-a-zA-Z0-9/@=+$_~*.,;:?!\'"()&#%]'; # see RFC 2396
   my $EndChars = '[-a-zA-Z0-9/@=+$_~*]'; # no punctuation at the end of the url.
   $UrlPattern = "((?:$UrlProtocols):$UrlChars+$EndChars)";
   $FullUrlPattern="((?:$UrlProtocols):$UrlChars+)"; # when used in square brackets
-  $ImageExtensions = '(gif|jpg|png|bmp|jpeg)';
+  $ImageExtensions = '(gif|jpg|png|bmp|jpeg|svg)';
 }
 
 sub Clean {
@@ -485,9 +477,7 @@ sub ApplyRules {
 	Clean(CloseHtmlEnvironments());
 	Dirty($1);
 	my ($oldpos, $old_) = (pos, $_); # remember these because of the call to RSS()
-	eval { local $SIG{__DIE__}; binmode(STDOUT, ":utf8"); } if $HttpCharset eq 'UTF-8';
 	print RSS($3 ? $3 : 15, split(/\s+/, UnquoteHtml($4)));
-	eval { local $SIG{__DIE__}; binmode(STDOUT, ":raw"); };
 	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
 	($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
       } elsif (/\G(&lt;search (.*?)&gt;)/cgis) {
@@ -522,8 +512,8 @@ sub ApplyRules {
 	Clean("&$1;");
       } elsif (m/\G\s+/cg) {
 	Clean(' ');
-      } elsif (m/\G([A-Za-z\x80-\xff]+([ \t]+[a-z\x80-\xff]+)*[ \t]+)/cg
-	       or m/\G([A-Za-z\x80-\xff]+)/cg or m/\G(\S)/cg) {
+      } elsif (m/\G([A-Za-z\x{0080}-\x{fffd}]+([ \t]+[a-z\x{0080}-\x{fffd}]+)*[ \t]+)/cg
+	       or m/\G([A-Za-z\x{0080}-\x{fffd}]+)/cg or m/\G(\S)/cg) {
 	Clean($1);    # multiple words but do not match http://foo
       } else {
 	last;
@@ -670,13 +660,14 @@ sub OpenHtmlEnvironment {  # close the previous $html_tag and open a new one
   @HtmlStack = @stack if $found; # if not starting a new list
   $depth = $IndentLimit if $depth > $IndentLimit; # requested depth 0 makes no sense
   $html_tag_attr = qq/class="$html_tag_attr"/ # backwards-compatibility hack: classically, the third argument to this function was a single CSS class, rather than string of HTML tag attributes as in the second argument to the "AddHtmlEnvironment" function. To allow both sorts, we conditionally change this string to 'class="$html_tag_attr"' when this string is a single CSS class.
-    if $html_tag_attr && $html_tag_attr !~ m/^\s*[:alpha:]+\s*=\s*('|").+\1/;
+    if $html_tag_attr && $html_tag_attr !~ m/^\s*[[:alpha:]]@@+\s*=\s*('|").+\1/;
   splice(@HtmlAttrStack, 0, @HtmlAttrStack - @HtmlStack); # truncate to size of @HtmlStack
   foreach ($found..$depth-1) {
     unshift(@HtmlStack,     $html_tag);
     unshift(@HtmlAttrStack, $html_tag_attr);
     $html .= $html_tag_attr ? "<$html_tag $html_tag_attr>" : "<$html_tag>";
-  } return $html;
+  }
+  return $html;
 }
 
 sub CloseHtmlEnvironments { # close all -- remember to use AddHtmlEnvironment('p') if required!
@@ -794,6 +785,7 @@ sub UnquoteHtml {
 sub UrlEncode {
   my $str = shift;
   return '' unless $str;
+  utf8::encode($str); # turn to byte string
   my @letters = split(//, $str);
   my %safe = map {$_ => 1} ('a' .. 'z', 'A' .. 'Z', '0' .. '9', '-', '_', '.', '!', '~', '*', "'", '(', ')', '#');
   foreach my $letter (@letters) {
@@ -912,13 +904,6 @@ sub RSS {
   # translations will be double encoded when printing the result.
   my $tDiff = T('diff');
   my $tHistory = T('history');
-  if ($HttpCharset eq 'UTF-8' and ($tDiff ne 'diff' or $tHistory ne 'history')) {
-    eval { local $SIG{__DIE__};
-	   require Encode;
-	   $tDiff = Encode::decode_utf8($tDiff);
-	   $tHistory = Encode::decode_utf8($tHistory);
-	 }
-  }
   my $wikins = 'http://purl.org/rss/1.0/modules/wiki/';
   my $rdfns = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
   @uris = map { s/^"?(.*?)"?$/$1/; $_; } @uris; # strip quotes of uris
@@ -1030,8 +1015,8 @@ sub GetRss {
   if (GetParam('cache', $UseCache) > 0) {
     foreach my $uri (keys %todo) { # read cached rss files if possible
       if ($Now - (stat($todo{$uri}))[9] < $RssCacheHours * 3600) {
-  $data{$uri} = ReadFile($todo{$uri});
-  delete($todo{$uri});  # no need to fetch them below
+	$data{$uri} = ReadFile($todo{$uri});
+	delete($todo{$uri});  # no need to fetch them below
       }
     }
   }
@@ -1048,8 +1033,8 @@ sub GetRss {
       %todo = (); # because the uris in the response may have changed due to redirects
       my $entries = $pua->wait();
       foreach (keys %$entries) {
-  my $uri = $entries->{$_}->request->uri;
-  $data{$uri} = $entries->{$_}->response->content;
+	my $uri = $entries->{$_}->request->uri;
+	$data{$uri} = $entries->{$_}->response->content;
       }
     }
   }
@@ -1059,7 +1044,10 @@ sub GetRss {
   if (GetParam('cache', $UseCache) > 0) {
     CreateDir($RssDir);
     foreach my $uri (@need_cache) {
-      WriteStringToFile(GetRssFile($uri), $data{$uri});
+      my $data = $data{$uri};
+      # possibly a Latin-1 file without encoding attribute will cause a problem?
+      $data =~ s/encoding="[^"]*"/encoding="UTF-8"/; # content was converted
+      WriteStringToFile(GetRssFile($uri), $data) if $data;
     }
   }
   return $str, %data;
@@ -1277,18 +1265,22 @@ sub PrintPageDiff {   # print diff for open page
   }
 }
 
-sub PageHtml {  #FIXME: A bit buggy, this. STDOUT should be explicitly closed before returning.
+sub PageHtml {
   my ($id, $limit, $error) = @_;
-  my $result = '';
+  my ($diff, $page);
   local *STDOUT;
   OpenPage($id);
-  open(STDOUT, '>', \$result) or die "Can't open memory file: $!";
+  open(STDOUT, '>', \$diff) or die "Can't open memory file: $!";
+  binmode(STDOUT, ":utf8");
   PrintPageDiff();
-  return $error if $limit and length($result) > $limit;
-  my $diff = $result;
+  utf8::decode($diff);
+  return $error if $limit and length($diff) > $limit;
+  open(STDOUT, '>', \$page) or die "Can't open memory file: $!";
+  binmode(STDOUT, ":utf8");
   PrintPageHtml();
-  return $diff . $q->p($error) if $limit and length($result) > $limit;
-  return $result;
+  utf8::decode($page);
+  return $diff . $q->p($error) if $limit and length($diff . $page) > $limit;
+  return $diff . $page;
 }
 
 sub T {
@@ -1313,9 +1305,17 @@ sub Tss {
 
 sub GetId {
   my $id = UnquoteHtml(GetParam('id', GetParam('title', ''))); # id=x or title=x -> x
-  $id = join('_', $q->keywords) unless $id; # script?p+q -> p_q
+  if (not $id) {
+    my @keywords = $q->keywords;
+    foreach my $keyword (@keywords) {
+      utf8::decode($keyword);
+    }
+    $id = join('_', @keywords) unless $id; # script?p+q -> p_q
+  }
   if ($UsePathInfo) {
-    my @path = split(/\//, $q->path_info);
+    my $path = $q->path_info;
+    utf8::decode($path);
+    my @path = split(/\//, $path);
     $id = pop(@path) unless $id; # script/p/q -> q
     foreach my $p (@path) {
       SetParam($p, 1);    # script/p/q -> p=1
@@ -1500,7 +1500,7 @@ sub GetRcLines { # starttime, hash of seen pages to use as a second return value
   my %following = ();
   my @result = ();
   # check the first timestamp in the default file, maybe read old log file
-  open(F, $RcFile);
+  open(F, '<:encoding(UTF-8)', $RcFile);
   my $line = <F>;
   my ($ts) = split(/$FS/o, $line); # the first timestamp in the regular rc file
   if (not $ts or $ts > $starttime) { # we need to read the old rc file, too
@@ -1586,7 +1586,7 @@ sub GetRcLinesFor {
         rcclusteronly rcfilteronly match lang followup);
   # parsing and filtering
   my @result = ();
-  open(F,$file) or return ();
+  open(F, '<:encoding(UTF-8)', $file) or return ();
   while (my $line = <F>) {
     chomp($line);
     my ($ts, $id, $minor, $summary, $host, $username, $revision,
@@ -1815,7 +1815,7 @@ sub RcHtml {
     $more .= ";$_=$val" if $val;
   }
   $html .= $q->p({-class=>'more'}, ScriptLink($more, T('More...'), 'more'));
-  return GetFormStart() . $html . $q->endform;
+  return GetFormStart(undef, 'get', 'rc') . $html . $q->endform;
 }
 
 sub PrintRcHtml { # to append RC to existing page, or action=rc directly
@@ -1872,7 +1872,7 @@ sub GetRcRss {
       }
     }
   }
-  my $rss = qq{<?xml version="1.0" encoding="$HttpCharset"?>\n};
+  my $rss = qq{<?xml version="1.0" encoding="UTF-8"?>\n};
   if ($RssStyleSheet =~ /\.(xslt?|xml)$/) {
     $rss .= qq{<?xml-stylesheet type="text/xml" href="$RssStyleSheet" ?>\n};
   } elsif ($RssStyleSheet) {
@@ -2218,15 +2218,16 @@ sub GetHeader {
   $result .= $q->start_div({-class=>'header'});
   if (not $embed and $LogoUrl) {
     my $url = $IndexHash{$LogoUrl} ? GetDownloadLink($LogoUrl, 2) : $LogoUrl;
-    $result .= ScriptLink(UrlEncode($HomePage), $q->img({-src=>$url, -alt=>$alt, -class=>'logo'}), 'logo');
+    $result .= ScriptLink(UrlEncode($HomePage),
+			  $q->img({-src=>$url, -alt=>$alt, -class=>'logo'}), 'logo');
   }
   if (GetParam('toplinkbar', $TopLinkBar)) {
     $result .= GetGotoBar($id);
     if (%SpecialDays) {
       my ($sec, $min, $hour, $mday, $mon, $year) = gmtime($Now);
       if ($SpecialDays{($mon + 1) . '-' . $mday}) {
-  $result .= $q->br() . $q->span({-class=>'specialdays'},
-               $SpecialDays{($mon + 1) . '-' . $mday});
+	$result .= $q->br() . $q->span({-class=>'specialdays'},
+				       $SpecialDays{($mon + 1) . '-' . $mday});
       }
     }
   }
@@ -2243,11 +2244,11 @@ sub GetHttpHeader {
   return if $PrintedHeader;
   $PrintedHeader = 1;
   my ($type, $ts, $status, $encoding) = @_; # $ts is undef, a ts, or 'nocache'
+  $q->charset($type =~ m!^(text/|application/xml)! ? 'utf-8' : ''); # text/plain, text/html, application/xml: UTF-8
   my %headers = (-cache_control=>($UseCache < 0 ? 'no-cache' : 'max-age=10'));
   $headers{-etag} = $ts || PageEtag() if GetParam('cache', $UseCache) >= 2;
   $headers{'-last-modified'} = TimeToRFC822($ts) if $ts and $ts ne 'nocache'; # RFC 2616 section 13.3.4
   $headers{-type} = GetParam('mime-type', $type);
-  $headers{-type} .= "; charset=$HttpCharset" if $HttpCharset;
   $headers{-status} = $status if $status;
   $headers{-Content_Encoding} = $encoding if $encoding;
   my $cookie = Cookie();
@@ -2263,7 +2264,7 @@ sub CookieData {
   my ($changed, $visible, %params);
   foreach my $key (keys %CookieParameters) {
     my $default = $CookieParameters{$key};
-    my $value = GetParam($key, $default); # values are URL encoded
+    my $value = GetParam($key, $default);
     $params{$key} = $value  if $value ne $default;
     # The cookie is considered to have changed under the following
     # condition: If the value was already set, and the new value is
@@ -2280,6 +2281,7 @@ sub Cookie {
   my ($changed, $visible, %params) = CookieData(); # params are URL encoded
   if ($changed) {
     my $cookie = join(UrlEncode($FS), %params); # no CTL in field values
+    utf8::encode($cookie); # prevent casting to Latin 1
     my $result = $q->cookie(-name=>$CookieName, -value=>$cookie,
 			    -expires=>'+2y');
     $Message .= $q->p(T('Cookie: ') . $CookieName . ', '
@@ -2297,10 +2299,9 @@ sub GetHtmlHeader {   # always HTML!
     . T('Edit this page') . '" href="'
     . ScriptUrl('action=edit;id=' . UrlEncode(GetId())) . '" />' if $id;
   return $DocumentHeader
-      . $q->head($q->title($title) . $base
-     . GetCss() . GetRobots() . GetFeeds() . $HtmlHeaders
-     . '<meta http-equiv="Content-Type" content="text/html; charset='
-     . $HttpCharset . '"/>')
+    . $q->head($q->title($title) . $base
+      . GetCss() . GetRobots() . GetFeeds() . $HtmlHeaders
+      . '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />')
       . '<body class="' . GetParam('theme', $ScriptName) . '">';
 }
 
@@ -2319,7 +2320,7 @@ sub GetFeeds {      # default for $HtmlHeaders
   my $id = GetId(); # runs during Init, not during DoBrowseRequest
   $html .= '<link rel="alternate" type="application/rss+xml" title="'
     . QuoteHtml("$SiteName: $id") . '" href="' . $ScriptName
-      . '?action=rss;rcidonly=' . UrlEncode(FreeToNormal($id)) . '" />' if $id;
+    . '?action=rss;rcidonly=' . UrlEncode(FreeToNormal($id)) . '" />' if $id;
   my $username = GetParam('username', '');
   $html .= '<link rel="alternate" type="application/rss+xml" '
     . 'title="Follow-ups for ' . NormalToFree($username) . '" '
@@ -2452,7 +2453,9 @@ sub GetCommentForm {
 sub GetFormStart {
   my ($ignore, $method, $class) = @_;
   $method ||= 'post';
-  return $q->start_multipart_form(-method=>$method, -action=>$FullUrl, -class=>$class);
+  $class  ||= 'form';
+  return $q->start_multipart_form(-method=>$method, -action=>$FullUrl,
+				  -accept_charset=>'utf-8', -class=>$class);
 }
 
 sub GetSearchForm {
@@ -2536,6 +2539,7 @@ sub DoDiff {      # Actualy call the diff program
   WriteStringToFile($oldName, $_[0]);
   WriteStringToFile($newName, $_[1]);
   my $diff_out = `diff $oldName $newName`;
+  utf8::decode($diff_out); # needs decoding
   $diff_out =~ s/\\ No newline.*\n//g; # Get rid of common complaint.
   ReleaseLockDir('diff');
   # No need to unlink temp files--next diff will just overwrite.
@@ -2662,7 +2666,9 @@ sub OpenPage {      # Sets global variables
     %Page = ();
     $Page{ts} = $Now;
     $Page{revision} = 0;
-    if ($id eq $HomePage and (open(F, $ReadMe) or open(F, 'README'))) {
+    if ($id eq $HomePage
+	and (open(F, '<:encoding(UTF-8)', $ReadMe)
+	     or open(F, '<:encoding(UTF-8)', 'README'))) {
       local $/ = undef;
       $Page{text} = <F>;
       close F;
@@ -2717,12 +2723,12 @@ sub GetKeptRevision {   # Call after OpenPage
 }
 
 sub GetPageFile {
-  my ($id, $revision) = @_;
+  my ($id) = @_;
   return $PageDir . '/' . GetPageDirectory($id) . "/$id.pg";
 }
 
 sub GetKeepFile {
-  my ($id, $revision) = @_; die 'No revision' unless $revision; #FIXME
+  my ($id, $revision) = @_; die "No revision for $id" unless $revision; #FIXME
   return $KeepDir . '/' . GetPageDirectory($id) . "/$id/$revision.kp";
 }
 
@@ -2732,7 +2738,7 @@ sub GetKeepDir {
 }
 
 sub GetKeepFiles {
-  return glob(GetKeepDir(shift) . '/*.kp'); # files such as 1.kp, 2.kp, etc.
+  return bsd_glob(GetKeepDir(shift) . '/*.kp'); # files such as 1.kp, 2.kp, etc.
 }
 
 sub GetKeepRevisions {
@@ -2790,8 +2796,9 @@ sub ExpireKeepFiles {   # call with opened page
 }
 
 sub ReadFile {
-  my $fileName = shift;
-  if (open(IN, "<$fileName")) {
+  my $file = shift;
+  utf8::encode($file); # filenames are bytes!
+  if (open(IN, '<:encoding(UTF-8)', $file)) {
     local $/ = undef;   # Read complete files
     my $data=<IN>;
     close IN;
@@ -2801,18 +2808,19 @@ sub ReadFile {
 }
 
 sub ReadFileOrDie {
-  my ($fileName) = @_;
+  my ($file) = @_;
   my ($status, $data);
-  ($status, $data) = ReadFile($fileName);
+  ($status, $data) = ReadFile($file);
   if (!$status) {
-    ReportError(Ts('Cannot open %s', $fileName) . ": $!", '500 INTERNAL SERVER ERROR');
+    ReportError(Ts('Cannot open %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
   }
   return $data;
 }
 
 sub WriteStringToFile {
   my ($file, $string) = @_;
-  open(OUT, ">$file")
+  utf8::encode($file);
+  open(OUT, '>:encoding(UTF-8)', $file)
     or ReportError(Ts('Cannot write %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
   print OUT  $string;
   close(OUT);
@@ -2820,7 +2828,8 @@ sub WriteStringToFile {
 
 sub AppendStringToFile {
   my ($file, $string) = @_;
-  open(OUT, ">>$file")
+  utf8::encode($file);
+  open(OUT, '>>:encoding(UTF-8)', $file)
     or ReportError(Ts('Cannot write %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
   print OUT  $string;
   close(OUT);
@@ -2828,6 +2837,7 @@ sub AppendStringToFile {
 
 sub CreateDir {
   my ($newdir) = @_;
+  utf8::encode($newdir);
   return if -d $newdir;
   mkdir($newdir, 0775)
     or ReportError(Ts('Cannot create %s', $newdir) . ": $!", '500 INTERNAL SERVER ERROR');
@@ -2895,7 +2905,7 @@ sub ReleaseLock {
 sub ForceReleaseLock {
   my $pattern = shift;
   my $forced;
-  foreach my $name (glob $pattern) {
+  foreach my $name (bsd_glob $pattern) {
     # First try to obtain lock (in case of normal edit lock)
     $forced = 1 if !RequestLockDir($name, 5, 3, 0);
     ReleaseLockDir($name); # Release the lock, even if we didn't get it.
@@ -2968,7 +2978,7 @@ sub TimeToRFC822 {
 sub GetHiddenValue {
   my ($name, $value) = @_;
   $q->param($name, $value);
-  return $q->hidden($name);
+  return $q->input({-type=>"hidden", -name=>$name, -value=>$value});
 }
 
 sub GetRemoteHost { # when testing, these variables are undefined.
@@ -3122,6 +3132,7 @@ sub DoDownload {
       if @UploadTypes and not $allowed{$type};
     print GetHttpHeader($type, $ts, undef, $encoding);
     require MIME::Base64;
+    binmode(STDOUT, ":pop:raw"); # need to pop utf8 for Windows users!?
     print MIME::Base64::decode($data);
   } else {
     print GetHttpHeader('text/plain', $ts);
@@ -3257,8 +3268,8 @@ sub DoIndex {
     push(@menu, $q->b(Ts('(for %s)', GetParam('lang', '')))) if GetParam('lang', '');
     print $q->start_div({-class=>'content index'}),
       GetFormStart(undef, 'get', 'index'), GetHiddenValue('action', 'index'),
-  $q->p(join($q->br(), @menu)), $q->end_form(),
-    $q->h2(Ts('%s pages found.', ($#pages + 1))), $q->start_p();
+      $q->p(join($q->br(), @menu)), $q->end_form(),
+      $q->h2(Ts('%s pages found.', ($#pages + 1))), $q->start_p();
   }
   foreach (@pages) {
     PrintPage($_);
@@ -3289,6 +3300,7 @@ sub PrintPage {
 sub AllPagesList {
   my $refresh = GetParam('refresh', 0);
   return @IndexList if @IndexList and not $refresh;
+  SetParam('refresh', 0) if $refresh;
   if (not $refresh and -f $IndexFile) {
     my ($status, $rawIndex) = ReadFile($IndexFile); # not fatal
     if ($status) {
@@ -3300,11 +3312,12 @@ sub AllPagesList {
   }
   @IndexList = ();
   %IndexHash = ();
-  # Try to write out the list for future runs.  If file exists and cannot be changed, error!
+  # If file exists and cannot be changed, error!
   my $locked = RequestLockDir('index', undef, undef, -f $IndexFile);
-  foreach (glob("$PageDir/*/*.pg $PageDir/*/.*.pg")) { # find .dotfiles, too
+  foreach (bsd_glob("$PageDir/*/*.pg"), bsd_glob("$PageDir/*/.*.pg")) {
     next unless m|/.*/(.+)\.pg$|;
     my $id = $1;
+    utf8::decode($id);
     push(@IndexList, $id);
     $IndexHash{$id} = 1;
   }
@@ -3358,7 +3371,9 @@ sub PageIsUploadedFile {
   return undef if $OpenPageName eq $id;
   if ($IndexHash{$id}) {
     my $file = GetPageFile($id);
-    open(FILE, "<$file") or ReportError(Ts('Cannot open %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
+    utf8::encode($file); # filenames are bytes!
+    open(FILE, '<:encoding(UTF-8)', $file)
+      or ReportError(Ts('Cannot open %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
     while (defined($_ = <FILE>) and $_ !~ /^text: /) {
     }          # read lines until we get to the text key
     close FILE;
@@ -3402,7 +3417,7 @@ sub GrepFiltered { # grep is so much faster!!
   # if we know of any remaining grep incompatibilities we should
   # return @pages here!
   $regexp = quotemeta($regexp);
-  open(F,"grep -rli $regexp '$PageDir' 2>/dev/null |");
+  open(F, '-|:encoding(UTF-8)', "grep -rli $regexp '$PageDir' 2>/dev/null");
   while (<F>) {
     push(@result, $1) if m/.*\/(.*)\.pg/ and not $found{$1};
   }

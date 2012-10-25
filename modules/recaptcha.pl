@@ -230,7 +230,7 @@ sub NewReCaptchaDoPost {
     print GetHeader('', T('Edit Denied'), undef, undef, '403 FORBIDDEN');
     print $q->start_div({-class=>'error'});
     print $q->p(T('You did not answer correctly.'));
-    print $q->start_form, ReCaptchaGetQuestion(1),
+    print GetFormStart(), ReCaptchaGetQuestion(1),
       (map { $q->hidden($_, '') }
        qw(title text oldtime summary recent_edit aftertext)), $q->end_form;
     print $q->end_div();
