@@ -173,7 +173,7 @@ sub StaticHtml {
 	# Process the page
 	local $Message = "";
 	# encoding is left off, so fix it:
-	print qq!<?xml version="1.0" encoding="$HttpCharset" ?>!;
+	print qq!<?xml version="1.0" encoding="UTF-8" ?>!;
 	print GetHeader($id, QuoteHtml($id), undef, "");
 	print $q->start_div({-class=> 'content browse'});
 	print PageHtml($id);

@@ -16,6 +16,8 @@
 require 't/test.pl';
 package OddMuse;
 use Test::More tests => 25;
+use utf8; # tests contain UTF-8 characters and it matters
+
 clear_pages();
 
 add_module('permanent-anchors.pl');
@@ -57,7 +59,7 @@ $page = update_page('Keith_Jarret', 'plays unlike [::Thelonius Mönk]');
 like($page, qr(the page (.*?) also exists), 'the page ... also exists');
 $page =~ qr(the page (.*?) also exists);
 $link = $1;
-xpath_test($link, Encode::encode_utf8('//a[@class="local"][@href="http://localhost/wiki.pl?action=browse;anchor=0;id=Thelonius_M%c3%b6nk"][text()="Thelonius Mönk"]'));
+xpath_test($link, '//a[@class="local"][@href="http://localhost/wiki.pl?action=browse;anchor=0;id=Thelonius_M%c3%b6nk"][text()="Thelonius Mönk"]');
 # verify that the redirection works
 test_page(get_page('action=browse id=Thelonius_Mönk'),
 	  'Status: 302',

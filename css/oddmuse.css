@@ -38,6 +38,13 @@ li img, img.smiley, .noborder img {
     background:#fff;
     color:#000;
 }
+/* Google +1 */
+a#plus1 img {
+    background-color: #fff;
+    padding: 0;
+    margin: 0;
+    border: none;
+}
 
 div.header img, div.footer img { border:0; padding:0; margin:0; }
 

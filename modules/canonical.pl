@@ -18,6 +18,8 @@
 
 $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/canonical.pl">canonical.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Canonical_Names">Canonical Names</a></p>';
 
+use utf8;
+
 *OldCanonicalResolveId = *ResolveId;
 *ResolveId = *NewCanonicalResolveId;
 
@@ -39,14 +41,9 @@ sub NewCanonicalResolveId {
 
 # If the page AlexSchröder exists, [[alexschroder]] will link to it.
 
-use utf8;
-use Encode;
 sub CanonicalName {
   my $str = shift;
-  $DebugInfo .= ' ' . $str;
-  $str = decode('utf-8', $str);
   $str =~ tr/äáàâëéèêïíìîöóòôüúùû/aaaaeeeeiiiioooouuuu/;
   $str = lc($str);
-  $DebugInfo .= '->' . $str;
   return $str;
 }

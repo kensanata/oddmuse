@@ -1,0 +1,7 @@
+*~
+/build/
+\#*\#
+/test-data
+/Mac/pkg/
+*.dmg
+*.pkg

@@ -2,6 +2,9 @@
 # Based on umtrans.pl version 1.0 (April 8, 2001) by Clifford Adams.
 # Extracts translation strings from wiki script and extensions.
 
+binmode(STDIN, ':utf8');
+binmode(STDOUT, ':utf8');
+
 $help = q{
 NAME
        oddtrans - complement translation tables for Oddmuse

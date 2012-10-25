@@ -83,6 +83,10 @@ span.bar a {
     margin-right: 1ex;
 }
 
+a img {
+    border: none;
+}
+
 /* search box in the top bar */
 
 form.tiny, form.tiny p {
@@ -332,6 +336,7 @@ div.image span.caption {
 
 .left { float:left; margin-right: 1em; }
 .right { float:right; margin-left: 1em; }
+.half a img { height: 50%; width: 50%; }
 div.left .left, div.right .right {
     float:none;
 }

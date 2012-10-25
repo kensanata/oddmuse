@@ -33,7 +33,7 @@ package OddMuse::Tokenize;
 
 use vars qw($regexp);
 
-$regexp = qr'[A-Za-z0-9_\x80-\xff]+';
+$regexp = qr'[A-Za-z0-9_\x{0080}-\x{fffd}]+';
 
 sub new {
     my ($classname, @args) = @_;

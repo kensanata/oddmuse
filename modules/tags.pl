@@ -218,6 +218,7 @@ sub TagFind {
   my %page;
   foreach my $tag (@tags) {
     foreach my $id (split(/$FS/, $h{lc($tag)})) {
+      utf8::decode($id);
       $page{$id} = 1;
     }
   }
@@ -248,9 +249,7 @@ sub NewTagGrepFiltered { # called within a lock!
   }
   # filter out the tags from the search string
   $string = join(' ', grep(!/^-?tag:/, $string =~ /\"([^\"]+)\"|(\S+)/g));
-  # if no query terms remain, just return the pages we found
-  # return sort keys %page if $string eq '';
-  # otherwise run grep
+  # run the old code for any remaining search terms
   return OldTagGrepFiltered($string, sort keys %page);
 }
 
@@ -352,6 +351,12 @@ sub DoTagsReindex {
       ($Page{text} =~ m/\[\[tag:$FreeLinkPattern\]\]/g,
        $Page{text} =~ m/\[\[tag:$FreeLinkPattern\|([^]|]+)\]\]/g);
     next unless %tag;
+
+    # utf8::encode($id);
+    # back to bytes for the following installation:
+    # This is perl, v5.10.1 (*) built for i486-linux-gnu-thread-multi
+    # (with 56 registered patches, see perl -V for more detail)
+    # (FIXME: get rid of this call, or explain why no UTF-8 can be stored in %h)
 
     # For each tag we list the files tagged. Add the current file for
     # all tags.

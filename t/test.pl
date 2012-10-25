@@ -1,32 +1,33 @@
-# Copyright (C) 2004, 2005, 2006, 2008  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2004, 2005, 2006, 2008, 2012  Alex Schroeder <alex@gnu.org>
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 3 of the License, or
-# (at your option) any later version.
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 3 of the License, or (at your option) any later
+# version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program. If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
 
 package OddMuse;
 use lib '.';
 use XML::LibXML;
-use Encode;
+use utf8;
+use vars qw($raw);
 
 # Import the functions
 
+$raw = 0;       # capture utf8 is the default
 $RunCGI = 0;    # don't print HTML on stdout
 $UseConfig = 0; # don't read module files
 $DataDir = 'test-data';
 $ENV{WikiDataDir} = $DataDir;
 require 'wiki.pl';
+$ENV{PATH} = '/usr/local/bin:' . $ENV{PATH}; # location of perl?
 Init();
-
 use vars qw($redirect);
 
 undef $/;
@@ -35,6 +36,7 @@ $| = 1; # no output buffering
 sub url_encode {
   my $str = shift;
   return '' unless $str;
+  utf8::encode($str); # turn to byte string
   my @letters = split(//, $str);
   my @safe = ('a' .. 'z', 'A' .. 'Z', '0' .. '9', '-', '_', '.'); # shell metachars are unsafe
   foreach my $letter (@letters) {
@@ -46,6 +48,25 @@ sub url_encode {
   return join('', @letters);
 }
 
+# Run perl in a subprocess and make sure it prints UTF-8 and not Latin-1
+# If you use the download action, the output will be raw bytes. Use
+# something like the following:
+# {
+#   local $raw = 1;
+#   $page = get_page('action=download id=Trogs');
+# }
+sub capture {
+  my $command = shift;
+  if ($raw) {
+    open (CL, '-|', $command) or die "Can't run $command: $!";
+  } else {
+    open (CL, '-|:encoding(utf-8)', $command) or die "Can't run $command: $!";
+  }
+  my $result = <CL>;
+  close CL;
+  return $result;
+}
+
 sub update_page {
   my ($id, $text, $summary, $minor, $admin, @rest) = @_;
   my $pwd = $admin ? 'foo' : 'wrong';
@@ -54,8 +75,8 @@ sub update_page {
   $summary = url_encode($summary);
   $minor = $minor ? 'on' : 'off';
   my $rest = join(' ', @rest);
-  $redirect = `perl wiki.pl 'Save=1' 'title=$page' 'summary=$summary' 'recent_edit=$minor' 'text=$text' 'pwd=$pwd' $rest`;
-  $output = `perl wiki.pl action=browse id=$page $rest`;
+  $redirect = capture("perl wiki.pl 'Save=1' 'title=$page' 'summary=$summary' 'recent_edit=$minor' 'text=$text' 'pwd=$pwd' $rest");
+  $output = capture("perl wiki.pl action=browse id=$page $rest");
   if ($redirect =~ /^Status: 302 /) {
     # just in case a new page got created or NearMap or InterMap
     $IndexHash{$id} = 1;
@@ -66,16 +87,14 @@ sub update_page {
 }
 
 sub get_page {
-  open(F, "perl wiki.pl @_ |");
-  my $output = <F>;
-  close F;
-  return $output;
+  return capture("perl wiki.pl @_");
 }
 
 sub name {
   $_ = shift;
   s/\n/\\n/g;
   $_ = '...' . substr($_, -60) if length > 63;
+  utf8::encode($_);
   return $_;
 }
 
@@ -120,8 +139,8 @@ sub run_macro_tests {
 # one string, many tests
 sub test_page {
   my $page = shift;
-  foreach my $str (@_) {
-    like($page, qr($str), name($str));
+  foreach my $test (@_) {
+    like($page, qr($test), name($test));
   }
 }
 
@@ -147,10 +166,19 @@ sub xpath_do {
     skip("Cannot parse ".name($page).": $@", $#tests + 1) if $@;
     foreach my $test (@tests) {
       my $nodelist;
-      eval { $nodelist = $doc->findnodes($test) };
+      my $bytes = $test;
+      # utf8::encode: Converts in-place the character sequence to the
+      # corresponding octet sequence in *UTF-X*. The UTF8 flag is
+      # turned off, so that after this operation, the string is a byte
+      # string. (I have no idea why this is necessary, but there you
+      # go. See encoding.t tests and make sure the page file is
+      # encoded correctly.)
+      utf8::encode($bytes);
+      eval { $nodelist = $doc->findnodes($bytes) };
       if ($@) {
 	fail(&$check(1) ? "$test: $@" : "not $test: $@");
-      } elsif (ok(&$check($nodelist->size()), name(&$check(1) ? $test : "not $test"))) {
+      } elsif (ok(&$check($nodelist->size()),
+		  name(&$check(1) ? $test : "not $test"))) {
 	$result .= $nodelist->string_value();
       } else {
 	$page =~ s/^.*?<html/<html/s;
@@ -201,16 +229,18 @@ sub remove_rule {
 }
 
 sub add_module {
-  my $mod = shift;
+  my ($mod, $subdir) = @_;
+  $subdir .= '/' if $subdir and substr($subdir, -1) ne '/';
+  my $filename = 
   mkdir $ModuleDir unless -d $ModuleDir;
   my $dir = `/bin/pwd`;
   chop($dir);
   if (-l "$ModuleDir/$mod") {
     # do nothing
-  } elsif (eval{ symlink("$dir/modules/$mod", "$ModuleDir/$mod"); 1; }) {
+  } elsif (eval{ symlink("$dir/modules/$subdir$mod", "$ModuleDir/$mod"); 1; }) {
     # do nothing
   } else {
-    system("copy '$dir/modules/$mod' '$ModuleDir/$mod'");
+    system("copy '$dir/modules/$subdir$mod' '$ModuleDir/$mod'");
   }
   die "Cannot symlink $mod: $!" unless -e "$ModuleDir/$mod";
   do "$ModuleDir/$mod";
@@ -231,7 +261,8 @@ sub clear_pages {
   }
   die "Cannot remove $DataDir!\n" if -e $DataDir;
   mkdir $DataDir;
-  open(F,">$DataDir/config");
+  add_module('mac.pl') if $^O eq 'darwin'; # guessing HFS filesystem
+  open(F, '>:encoding(utf-8)', "$DataDir/config");
   print F "\$AdminPass = 'foo';\n";
   # this used to be the default in earlier CGI.pm versions
   print F "\$ScriptName = 'http://localhost/wiki.pl';\n";
@@ -240,6 +271,7 @@ sub clear_pages {
   $ScriptName = 'http://localhost/test.pl'; # different!
   $IndexInit = 0;
   %IndexHash = ();
+  @IndexList = ();
   $InterSiteInit = 0;
   %InterSite = ();
   $NearSiteInit = 0;

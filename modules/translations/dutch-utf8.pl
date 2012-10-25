@@ -24,7 +24,8 @@
 #
 # This translation was last checked for Oddmuse version 1.215.
 #
-$ModulesDescription .= '<p>$Id: dutch-utf8.pl,v 1.12 2011/05/17 13:24:13 as Exp $</p>';
+use utf8;
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/dutch-utf8.pl">dutch-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Dutch">Dutch</a></p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 
