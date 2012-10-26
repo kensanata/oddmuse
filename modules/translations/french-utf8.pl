@@ -3,6 +3,7 @@
 # Copyright (c) 2003, 2005  Pierre Gaston
 # Copyright (c) 2004, 2005  Christophe Ducamp
 # Copyright (c) 2010  Alex Schroeder
+# Copyright (c) 2012  Aurélien Desbrières
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
@@ -17,10 +18,12 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-# This translation was last checked for Oddmuse version 1.296.
-#
+# This translation was last checked for Oddmuse 2.2.
+
 use utf8;
+
 $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/french-utf8.pl">french-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/French">French</a></p>';
+
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 Comprend les pages normales
@@ -31,9 +34,9 @@ Se connecter
 Error
 Erreur
 %s calls
-
+%s appel
 Could not create %s
-Création impossible de %s
+Création de %s impossible
 Invalid UserName %s: not saved.
 Nom d’utilisateur non valide %s : non sauvegardé.
 UserName must be 50 characters or less: not saved
@@ -87,13 +90,13 @@ Page non valide %s
 Too many redirections
 Trop de redirections
 No redirection for old revisions
-Pas de redirection pour les versions ancienne
+Pas de redirection pour les versions anciennes
 Invalid link pattern for #REDIRECT
-Mise en forme invalide pour le lien de redirection (#REDIRECT)
+Syntaxe invalide pour le lien de redirection (#REDIRECT)
 Please go on to %s.
-SVP aller a %s.
+SVP aller à %s.
 Updates since %s
-Mises à hour depuis %s
+Mises à jour depuis %s
 up to %s
 jusqu’à
 Updates in the last %s days
@@ -109,7 +112,7 @@ Lister toutes les modifications
 Skip rollbacks
 Sans les retours en arrière
 Include rollbacks
-Incluant les retours en arrière
+Inclure les retours en arrière
 List only major changes
 Lister seulement les modifications majeures
 Include minor changes
@@ -117,7 +120,7 @@ Inclure les modifications mineures
 %s days
 %s jours
 List later changes
-Lister les modifications les plus récentes
+Lister les modifications plus récentes
 RSS
 RSS
 RSS with pages
@@ -151,15 +154,15 @@ Tous les changements pour %s
 from %s
 depuis %s
 This page is too big to send over RSS.
-Cette page est trop grosse pour être envoyée sur RSS
+Cette page est trop grande pour être envoyée sur RSS
 History of %s
 Historique de %s
 Compare
 Comparer
 Deleted
-Suprimé
+Suprimée
 Mark this page for deletion
-Marquer cette page à suprimer
+Marquer cette page comme étant à supprimer
 No other revisions available
 Il n’y a pas d’autre version
 current
@@ -173,15 +176,15 @@ Cible manquante pour le retour en arrière.
 Target for rollback is too far back.
 La cible du retour en arrière est trop ancienne.
 A username is required for ordinary users.
-Un nom d’utilisateur est nécessaire pour les utilisateurs communs
+Un nom d’utilisateur est nécessaire pour les utilisateurs normaux
 Rolling back changes
 Réinitialisation en cours
 The two revisions are the same.
-Les deux révisions sont les mêmes.
+Les deux versions sont indentiques.
 Editing not allowed for %s.
-Edition non autorisée pour %s.
+Modification non autorisée pour %s.
 Rollback of %s would restore banned content.
-Un retour à %s restaurara du texte interdit.
+Un retour à %s restaurera du texte interdit.
 Rollback to %s
 Retour à %s
 %s rolled back
@@ -215,7 +218,7 @@ Actions :
 Important pages:
 Pages importantes :
 To mark a page for deletion, put <strong>%s</strong> on the first line.
-Pour marquer une page devant être supprimée, ajoutez <strong>%s</strong> à la première ligne
+Pour marquer une page comme étant à supprimée, ajoutez <strong>%s</strong> à la première ligne
 [Home]
 [Accueil]
 redirected from %s
@@ -259,7 +262,7 @@ Voir la version actuelle
 View all changes
 Voir toutes les modifications
 View contributors
-Vour les contributeurs
+Voir les contributeurs
 Homepage URL:
 Adresse(URL) du site perso
 s
@@ -277,7 +280,7 @@ f
 Replace:
 Remplacer :
 Delete
-Suprimer
+Supprimer
 Validate HTML
 Valider HTML
 Validate CSS
@@ -285,11 +288,11 @@ Valider CSS
 Last edit
 Dernière modification
 Difference between revision %1 and %2
-Différence (de la révision %1 à %2)
+Différence entre les versions %1 et %2
 revision %s
-révision %s
+version %s
 current revision
-révision actuelle
+version actuelle
 Last major edit (%s)
 Dernière modification majeure (%s)
 later minor edits
@@ -393,7 +396,7 @@ Vous êtes actuellement éditeur de ce site.
 You are a normal user on this site.
 Vous êtes un utilisateur normal de ce site.
 Your password does not match any of the  administrator or editor passwords.
-Vote mot de passe ne corespond à aucun de ceux des mots de passe administrateurs ou éditeurs.
+Vote mot de passe ne corespond ni au mot de passe administrateur ni au mot de passe éditeur.
 Password:
 Mot de passe :
 This site does not use admin or editor passwords.
@@ -419,7 +422,7 @@ Filtre :
 %s pages found.
 %s pages trouvées.
 Malformed regular expression in %s
-Expression régulière malformé dans %s
+Expression régulière malformée dans %s
 Replaced: %s
 Remplacé : %s
 Search for: %s
@@ -433,9 +436,9 @@ par
 Transfer Error: %s
 Erreur de Transfert : %s
 Browser reports no file info.
-Le navigateur signale pas d’information sur le fichier.
+Le navigateur ne signale pas d’information sur le fichier.
 Browser reports no file type.
-Le navigateur signale pas de format de fichier.
+Le navigateur ne signale pas de type de fichier.
 The page contains banned text.
 Cette page contient un texte interdit.
 No changes to be saved.
@@ -531,7 +534,7 @@ Renamed %1 to %2.
 Immediately delete %s
 Supprimer immédiatement %s
 Rename %s to:
-Renommer %s en :
+Renommer %s en :
 Learn more...
 En savoir plus...
 Complete Content
@@ -539,17 +542,17 @@ Contenu Complet
 The main page is %s.
 La page principale est %s.
 Archive:
-
+Archive:
 Rebuild BackLink database
-
+Rebâtir les liens de la base de donnée
 Internal Page: 
-
+Page Interne :
 Pages that link to this page
-
+Pages liées à cette page
 The search parameter is missing.
-
+Le paramètre de recherche est manquant
 Pages link to %s
-
+Pages liées à %s
 Cannot highlight the language %s.
 Impossible de surligner la langue %s.
 Recent Visitors
@@ -611,9 +614,9 @@ Novembre
 December
 Décembre
 set %s
-
+paramétrer %s
 unset %s
-
+dé-paramétrer %s 
 Clustermap
 Carte du Faisceau
 Pages without a Cluster
@@ -627,53 +630,53 @@ Compilation pour %s
 Compilation tag is missing a regular expression.
 Une expression régulière manque au tag de compilation.
 Extract all dates from the database
-
+Extraire toutes les dates depuis la base de données
 Dates
-
+Dates
 No dates found.
-
+Aucune dates trouvées
 Inter links:
-InterLiens :
+InterLiens :
 List spammed pages
-
+Lister les pages spammer
 Despamming pages
 Suppression des textes indésirables sur les pages.
 Spammed pages
-
+Pages spammées
 Cannot find revision %s.
 Impossible de trouver la version %s.
 Revert to revision %1: %2
-Retour à la version %1 : %2
+Retour à la version %1 : %2
 Marked as %s.
 Marqué comme %s.
 Cannot find unspammed revision.
 Impossible de trouver une version sans texte indésirable.
 Recover Draft
-
+Récupérer le brouillon
 No text to save
-
+Pas de texte à sauvegarder
 Draft saved
-
+Brouillon sauvegardé
 Draft recovered
-
+Brouillon récupéré
 No draft available to recover
-
+Pas de brouillon à récupérer
 Save Draft
-
+Sauvegarder le Brouillon
 Draft Cleanup
-
+Brouillon Nettoyer
 %1 was last modified %2 and was kept
-
+%1 ont été les dernier modifier et %2 ont été gardé
 %1 was last modified %2 and was deleted
-
+%1 ont été modifié et %2 on été effacés
 Unable to delete draft %s
-
+Impossible d'effacer le brouillon %s
 Add Comment
-Ajouter Commentaire
+Ajouter un commentaire
 ordinary changes
 modifications ordinaires
 Matching page names:
-
+Pages correspondant aux noms :
 Email: 
 Email : 
 Could not find %1.html template in %2
@@ -685,27 +688,27 @@ Seuls les Administrateurs ont l'autorisation de voir cette page cachée.
 Index
 Index
 Languages:
-Langues :
+Langues :
 Show!
-Voir !
+Voir !
 Define
 Définir
 Full Link List
 Liste Complète des Liens
 List of locked pages
-
+Liste des pages vérrouillés
 Pages tagged with %s
-
+Pages taguées avec %s
 Template without parameters
-Gabarit sans paramètres
+Modèle sans paramètres
 The template %s is either empty or does not exist.
-Le gabarit %s est soit vide soit n'existe pas.
+Le modèle %s est soit vide soit n'existe pas.
  -- defined on %s
  -- défini sur %s
 Local names defined on %1: %2
 Noms locaux définis sur %1 : %2
 Locked Pages
-
+Pages Vérouillées
 Register for %s
 Enregistrer pour %s
 Please choose a username of the form "FirstLast" using your real name.
@@ -737,7 +740,7 @@ Connecté sous %s.
 Logout of %s
 Déconnexion de %s
 Logout of %s?
-Déconnexion de %s ?
+Déconnexion de %s ?
 Logged out of %s
 Déconnecté de %s
 You are now logged out.
@@ -747,9 +750,9 @@ Enregistrer un nouveau compte.
 Logout
 Se déconnecter
 Who am I?
-Qui suis-je ?
+Qui suis-je ?
 Forgot your password?
-Mot de passe oublié ?
+Mot de passe oublié ?
 Change your password
 Changer votre mot de passe
 Approve pending registrations
@@ -761,7 +764,7 @@ Confirmation d'Enregistrement pour %s
 Confirmation failed.  Please email %s for help.
 Echec sur la confirmation. SVP envoyez un email à %s pour de l'aide.
 Who Am I?
-Qui suis-je ?
+Qui suis-je ?
 You are logged in as %s.
 Vous êtes connecté en tant que %s.
 You are not logged in.
@@ -777,11 +780,11 @@ Le nom d'utilisateur "%s" n'existe pas.
 Reset Password for %s
 Réinitialiser le mot de passe pour %s
 Reset Password?
-Réinitialisation Mot de Passe ?
+Réinitialisation Mot de Passe ?
 Change Password for %s
 Modification Mot de Passe pour %s
 Change Password?
-Modification Mot de Passe ?
+Modification Mot de Passe ?
 Your current password is incorrect.
 Votre Mot de Passe est incorrect.
 Your password has been changed.
@@ -837,7 +840,7 @@ Les pages restantes n’existent pas (ou plus).
 Unsubscribed %s from the following pages:
 %s a désabonné les pages suivantes :
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
-
+Vous avez liés plus de %s le même domaine. Il semble que seul les spammeurs font cela. Votre édition est donc refusée. 
 %s is not a legal name for a namespace
 %s n’est pas un nom valide pour un espace de noms
 Namespaces
@@ -845,27 +848,27 @@ Espace de noms
 Getting page index file for %s.
 Récupération du fichier d'index de %s.
 Near links:
-Liens de proximité :
+Liens de proximité :
 Search sites on the %s as well
 Rechercher aussi les sites présents sur %s 
 Fetching results from %s:
-Récupération des résultats à partir de %s :
+Récupération des résultats à partir de %s :
 Near pages:
-Pages à proximité :
+Pages à proximité :
 Include near pages
 Inclure les pages de proximité
 EditNearLinks
 EditerLiensDeProximité
 The same page on other sites:
-La même page sur d'autres sites :
+La même page sur d'autres sites :
  (create locally)
-
+ (créée locallement)
 image
 image
 download
 télécharger
 Backlinks
-
+Liens en retour
 Clearing Cache
 Nettoyage du cache.
 Done.
@@ -889,23 +892,23 @@ Auto-bannissement par %s
 You have banned your own IP.
 Vous avez banni votre propre IP.
 OpenID Login
-
+Identification OpenID
 Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
-
+Votre identité est sauvegardée dans un cookie, si vous avez activé les cookies. Vos cookies seront perdue si vous vous connecté depuis une autre machine, sur un autre compte ou si vous utiliser un autre navigateur.
 Your homepage is set to %s.
-
+Votre page d'accueil est ajusté sur %s.
 You have no homepage set.
-
+Votre page d'acceuil n'est pas ajustée.
 Homepage:
-
+Page d'accueil :
 Homepage is missing
-
+La page d'accueil est manquante
 OpenID error %s
-
+Erreur OpenID %s
 Orphan List
 Liste Orpheline
 Trail: 
-Trace :
+Trace :
 None
 Aucune
 Type
@@ -931,19 +934,19 @@ Portrait
 Publish %s
 Publier %s
 No target wiki was specified in the config file.
-
+La cible du wiki n'est pas spécifiée dans le fichier de configuration.
 The target wiki was misconfigured.
-
+La cible du wiki à été mal configurée.
 Upload is limited to %s bytes
-
+Le téléversement est limité à %s bytes
 You did not answer correctly.
 Vous n’avez pas répondu correctement.
 To save this page you must answer this question:
-Il faut réponder a cette question pour sauvegarder la page :
+Vous devez répondre a cette question pour sauvegarder la page :
 Please type the following two words:
-
+Taper s'il vous plait les deux mots suivant :
 Please answer this captcha:
-
+Répondez à ce captcha s'il vous plais :
 Referrers
 Introducteurs
 All Referrers
@@ -961,7 +964,7 @@ Reconstruction index non effectuée.
 (Rebuilding the index can only be done once every 12 hours.)
 (La reconstruction de l'index ne peut être faite qu'une fois toutes les 12 heures.)
 New Pages for Indexed Search
-
+Nouvelle pages pour indexer la recherche
 List changes since %s
 Changement depuis %s
  ... 
@@ -969,43 +972,43 @@ Changement depuis %s
 Search term missing.
 Terme de la recherche manquant.
 Result pages: 
-Pages de résultats : 
+Pages de résultats : 
 (%s results)
 (%s résultats)
 Tags:
-
+Tags :
 Tags: %s.
-
+Tags : %s
 No tags
-
+Pas de tags
 Page list for %s
-
+Liste des pages pour %s
 Slideshow:%s
-Diaporama : %s
+Diaporama : %s
 Index of all small pages
-
+Indexe de toutes les petites pages
 Static Copy
 Copie Statique
 Back to %s
 Retour à %s
 Edit image in the browser
-
+Éditer l'image du navigateur
 Summary of your changes: 
-
+Sommaire des changements :
 Copy to %1 succeeded: %2.
-Copie vers %1 réussie : %2.
+Copie vers %1 réussie : %2.
 Copy to %1 failed: %2.
-Copie vers %1 échouée : %2.
+Copie vers %1 échouée : %2.
 Feed for this tag
-
+Graines pour ce tag
 Rebuild tag index
-
+Rebâtir votre index de tag
 list tags
-
+liste de tags
 tag cloud
-
+tag du nuage
 Alternatively, use one of the following templates:
-Alternativement, utilisez un des modèles suivants :
+Alternativement, utilisez un des modèles suivants :
 Thread: %s
 Fil: %s
 ID parameter is missing.
@@ -1021,47 +1024,47 @@ Le paramètre URL est manquant.
 Add to %s thread
 Ajouter %s au fil
 Below:
-En-dessous :
+En-dessous :
 URL:
-URL :
+URL :
 Name:
-Nom :
+Nom :
 Too many instances.  Only %s allowed.
-
+Trop d'instances. %s seulement est autorisée
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
-
+ressources, nous vous demandons de faire preuve d'un peu de patience.
 Timezone
-
+Fuseau horaire
 Pick your timezone:
-
+Sélectionner votre fuseau horaire
 Set
-
+Ajusté
 Contents
 Contenus
 Create a new page for today
 Ajouter une page nouvelle pour aujourd’hui
 Add Translation
-Àjouter une traduction
+Ajouter une traduction
 Please provide a different page name for the translation.
-
+Donné s'il vous plait un nom différent à votre traduction
 Added translation: %1 (%2)
-
+Traduction ajoutée: %1 (%2)
 Translate %s
 Traduire %s
 Thank you for writing a translation of %s.
-Merci pour traduir %s.
+Merci pour la traduction de %s.
 Please indicate what language you will be using.
-
+Merci d'indiquer quel langage vous allez utiliser.
 Language is missing
-
+Le langage est manquant
 Suggested languages:
-
+Langages suggérés
 Please indicate a page name for the translation of %s.
-
+Indiqué s'il vous plait votre traduction pour %s.
 More help may be available here: %s.
-
+Plus d'aide disponible ici: %s.
 Translated page: 
-
+Page traduite :
 This page is a translation of %s. 
 Cette page est une traduction de %s.
 The translation is up to date.
@@ -1081,23 +1084,23 @@ http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 search
 chercher
 Wanted Pages
-
+Pages recherchées
 %s pages
-
+%s pages
 %s, referenced from:
-
+%s, référencé depuis :
 Upload of %s file
 Téléversement du fichier %s
 Blog
 Blog
 Matching pages:
-Pages correspondantes :
+Pages correspondantes :
 New
 Nouveau 
 Edit %s.
 Editer %s.
 Title: 
-
+Titre :
 Tags: 
-
+Tags :
 END_OF_TRANSLATION

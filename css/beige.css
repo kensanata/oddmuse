@@ -179,7 +179,7 @@ div.rc hr { display: none; }
 
 /* Tables */
 table.user {
-    margin: 1em 4em;
+    margin: 1em 0;
     padding: 0 1em;
     border-top: 1px solid black;
     border-bottom: 1px solid black;
