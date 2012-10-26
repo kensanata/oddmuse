@@ -178,8 +178,8 @@ sub UpdateReferers {
   }
   my $ua = LWP::UserAgent->new;
   my $response = $ua->get($referer);
-  return unless $response->is_success and $response->content =~ /$self/;
-  my $title = PageContentToTitle($response->content);
+  return unless $response->is_success and $response->decoded_content =~ /$self/;
+  my $title = PageContentToTitle($response->decoded_content);
   # starting with a timestamp makes sure that numerical comparisons still work!
   $Referers{$referer} = "$Now $title";
   return 1;
