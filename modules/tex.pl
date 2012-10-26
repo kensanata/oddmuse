@@ -15,10 +15,10 @@
 
 $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/tex.pl">tex.pl</a></p>';
 
-use vars qw($TeXInit);
+use vars qw($TeXInit %Tex);
 use utf8;
 
-my %Tex = qw( !` ¡ {\pounds} £ \pounds £ {\S} § \S § \"{} ¨ {\copyright} ©
+%Tex = qw( !` ¡ {\pounds} £ \pounds £ {\S} § \S § \"{} ¨ {\copyright} ©
 \copyright © $^a$ ª \={} ¯ $\pm$ ± \pm ± $^2$ ² $^3$ ³ \'{} ´ {\P} ¶
 \P ¶ $\cdot$ · \cdot · \c{} ¸ $^1$ ¹ $^o$ º ?` ¿ \`{A} À \`A À \'{A} Á
 \'A Á \^{A} Â \^A Â \~{A} Ã \~A Ã \"{A} Ä \"A Ä \k{A} Ą {\AA} Å \AA Å
@@ -152,17 +152,18 @@ _0 ₀ _1 ₁ _2 ₂ _3 ₃ _4 ₄ _5 ₅ _6 ₆ _7 ₇ _8 ₈ _9 ₉ _= ₌ \~ 
 ′ \varpropto ∝ \varrho ϱ \varsigma ς \vartheta ϑ \vartriangleleft ⊲
 \vartriangleright ⊳ \vdash ⊢ \vdots ⋮ \vee ∨ \veebar ⊻ \vert | \wedge
 ∧ \wp ℘ \wr ≀ \xi ξ \zeta ζ \Bbb{N} ℕ \Bbb{P} ℙ \Bbb{R} ℝ \Bbb{Z} ℤ --
-– --- — ~   \mu μ \rho ρ \mathscr{I} ℐ \Smiley ☺ \blacksmiley ☻
+– --- — \mu μ \rho ρ \mathscr{I} ℐ \Smiley ☺ \blacksmiley ☻
 \Frowny ☹ \Letter ✉ \permil ‰ \registered ® \currency ¤ \dh ð \DH Ð
 \th þ \TH Þ \micro µ \lnot ¬ \ordfeminine ª \ordmasculine º \lambdabar
 ƛ \celsius ℃ \ldq “ \rdq ” \minus − \defs ≙ \llbracket 〚 \rrbracket 〛
-\ldata 《\rdata 》\glq ‚ \grq ‘ \glqq „ \"` „ \grqq “ \"' “ \flq ‹
+\ldata 《 \rdata 》 \glq ‚ \grq ‘ \glqq „ \"` „ \grqq “ \"' “ \flq ‹
 \frq › \flqq « \"< « \frqq » \"> » \- ­ \textmu µ \textfractionsolidus
 ⁄ \textbigcircle ⃝ \textmusicalnote ♪ \textdied ✝ \textcolonmonetary ₡
 \textwon ₩ \textnaira ₦ \textpeso ₱ \textlira ₤ \textrecipe ℞
 \textinterrobang ‽ \textpertenthousand ‱ \textbaht ฿ \textnumero №
 \textdiscount ⁒ \textestimated ℮ \textopenbullet ◦ \textlquill ⁅
 \textrquill ⁆ \textcircledP ℗ \textreferencemark ※ );
+$Tex{'~'} = ' ';
 
 my $TexRe = '(' . join('|', map {quotemeta} sort { $b cmp $a } keys %Tex) . ')';
 $TexRe = qr{$TexRe};
