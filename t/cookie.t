@@ -1,4 +1,4 @@
-# Copyright (C) 2009  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2009, 2012  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,8 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 16;
+use Test::More tests => 18;
+use utf8;
 
 clear_pages();
 
@@ -78,4 +79,10 @@ SKIP: {
   $response = $ua->get("$wiki?action=debug;pwd=");
   test_page($ua->cookie_jar->as_string, 'Set-Cookie.*: Wiki=""');
 
+  # Encoding issues
+  $response = $ua->get("$wiki?action=rc;username=Alex\%20Schr\%C3\%B6der");
+  test_page($ua->cookie_jar->as_string,
+	    'Set-Cookie.*: Wiki=username%251eAlex%20Schr%C3%B6der');
+  test_page($response->decoded_content,
+	    'Cookie: Wiki, username=Alex Schröder');
 };
