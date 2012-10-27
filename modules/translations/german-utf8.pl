@@ -1,7 +1,7 @@
 # UTF-8 encoded German translation file for use with Oddmuse
 #
 # Copyright (c) 2003  Karl Loncarek <karl@loncarek.de>
-# Copyright (c) 2003, 2004, 2005, 2006, 2007, 2009, 2010  Alex Schröder <alex@gnu.org>
+# Copyright (c) 2003-2012  Alex Schröder <alex@gnu.org>
 #
 # Permission is granted to copy, distribute and/or modify this document under
 # the terms of the GNU Free Documentation License, Version 1.2 or any later
@@ -16,7 +16,9 @@
 # there. It will be loaded automatically.
 #
 use utf8;
+
 $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/german-utf8.pl">german-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/German">German</a></p>';
+
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 Mit normalen Seiten
@@ -28,8 +30,8 @@ Error
 Fehler
 %s calls
 %s Aufrufe
-Could not create %s
-Konnte %s nicht erzeugen
+Cannot create %s
+%s kann nicht erstellt werden
 Invalid UserName %s: not saved.
 Ungültiger Benutzername %s: nicht gespeichert.
 UserName must be 50 characters or less: not saved
@@ -198,8 +200,6 @@ Unlock site
 Wiki entsperren
 Lock site
 Wiki sperren
-Install CSS
-CSS installieren
 Unlock %s
 %s entsperren
 Lock %s
@@ -316,8 +316,6 @@ Cannot open %s
 %s kann nicht geöffnet werden
 Cannot write %s
 %s kann nicht geschrieben werden
-Cannot create %s
-%s kann nicht erstellt werden
 Could not get %s lock
 Die %s Sperre konnte nicht gesetzt werden
 The lock was created %s.
@@ -504,8 +502,6 @@ Please do not fetch more than %1 pages in %2 seconds.
 Bitte rufen sie nicht mehr als %1 Seiten in %2 Sekunden auf.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Vielleicht kann der Webserver das Verzeichnis %s nicht anlegen oder es wurde schon angelegt, aber der Webserver kann darin keine neuen Dateien anlegen.
-Copy one of the following stylesheets to %s:
-Eines der folgenden Style Sheets kann auf die %s Seite kopiert werden:
 Deleting %s
 %s löschen
 Deleted %s
@@ -622,6 +618,12 @@ Compilation for %s
 Zusammenstellung für %s
 Compilation tag is missing a regular expression.
 Der tag für die Zusammenstellung benötigt noch ein Suchmuster.
+Install CSS
+CSS installieren
+Copy one of the following stylesheets to %s:
+Eines der folgenden Style Sheets kann auf die %s Seite kopiert werden:
+Reset
+Zurück setzen
 Extract all dates from the database
 Alle Daten aus der Datenbank extrahieren
 Dates
@@ -670,6 +672,14 @@ ordinary changes
 normale Änderungen
 Matching page names:
 Übereinstimmende Seitennamen:
+Fix page encoding
+Zeichenkodierung korrigieren
+no summary available
+keine Zusammenfassug vorhanden
+page was marked for deletion
+die Seite war zum Löschen freigegeben
+Oddmuse
+Oddmuse
 Email: 
 Email: 
 Could not find %1.html template in %2
@@ -684,6 +694,22 @@ Languages:
 Sprachen:
 Show!
 Zeigen!
+LaTeX export
+LaTeX Export
+An uploaded file cannot be rendered as LaTeX.
+Ein hochgeladene Datei kann nicht mit LaTeX dargestellt werden.
+Exporting of journal pages to LaTeX is not supported.
+Journalseiten können nicht für LaTeX exportiert werden.
+Exporting of RSS feeds to LaTeX is not supported.
+RSS Feeds können nicht für LaTeX exportiert werden.
+Exporting of search results to LaTeX is not supported.
+Suchresultate können nicht für LaTeX exportiert werden.
+Exporting of redirections to LaTeX is not supported.
+Umleitungen können nicht für LaTeX exportiert werden.
+Exporting of named entity reference to LaTeX is not supported.
+Benannte Zeichen können nicht für LaTeX exportiert werden.
+Exporting of images to LaTeX is not supported.
+Bilder können nicht für LaTeX exportiert werden.
 Define
 Definieren
 Full Link List
@@ -700,6 +726,14 @@ Die %s Vorlage ist entweder leer oder existiert gar nicht.
  -- definiert auf der Seite %s
 Local names defined on %1: %2
 Der lokale Namen %2 wurde auf der Seite %1 definiert
+Name: 
+Name: 
+URL: 
+URL: 
+Define Local Names
+Lokalen Namen definieren
+Define external redirect: 
+Umleitung auf eine externe Seite definieren: 
 Locked Pages
 Gesperrte Seiten
 Register for %s
@@ -870,6 +904,12 @@ Generating Link Database
 Verweis Datenbank wird angelegt
 The 404 handler extension requires the link data extension (links.pl).
 Die 404 handler Erweiterung benötigt die Link Data Erweiterung (links.pl).
+Make available offline
+Offline zur Verfügung stellen
+Offline
+Offline
+You are currently offline and what you requested is not part of the offline application. You need to be online to do this.
+Sie sind im Moment offline und was sie verlangt haben, ist nicht Teil der Offline Applikation. Hierfür müssen sie online sein.
 LocalMap
 LocalMap
 No page id for action localmap
@@ -884,20 +924,6 @@ Self-ban by %s
 %s hat sich selber verbannt.
 You have banned your own IP.
 Sie haben ihre eigene IP Nummer verbannt.
-OpenID Login
-OpenID Login
-Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
-Die Identität wird in einem Cookie gespeichert, falls diese erlaubt sind. Cookies gehen verloren, wenn ein anderer Rechner, eine anderes Konto, oder ein anderer Browser verwendet wird.
-Your homepage is set to %s.
-Homepage wurde auf %s gesetzt.
-You have no homepage set.
-Keine Homepage gesetzt.
-Homepage:
-Homepage:
-Homepage is missing
-Homepage fehlt
-OpenID error %s
-OpenID Fehler %s
 Orphan List
 Liste der Waisen
 Trail: 
@@ -1026,6 +1052,26 @@ Too many instances.  Only %s allowed.
 Es laufen schon %s Wiki Prozesse gleichzeitig auf diesem Server. Mehr sind leider nicht erlaubt.
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 Versuchen Sie es später nocheinmal. Vielleicht werden gerade Wartungsarbeiten durchgeführt, oder ein Suchbefehl nimmt gerade viel Zeit in Anspruch. Leider sind die Resourcen des Rechners limitiert; wir bitten Sie deshalb um etwas Geduld.
+thumb
+
+Error creating thumbnail from non existant page %s.
+
+Can not create thumbnail for file type %s.
+
+Can not create thumbnail for a text document
+
+Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
+
+Can not create path for thumbnail - %s
+
+Failed to run %1 to create thumbnail: %2
+
+%s ran into an error
+%s hat einen Fehler festgestellt
+%s produced no output
+%s hat nichts ausgegeben
+Failed to parse %s.
+Die Ausgabe von %s wurde nicht verstanden
 Timezone
 Zeitzone
 Pick your timezone:
@@ -1082,6 +1128,8 @@ Gewünschte Seiten
 %s Seiten
 %s, referenced from:
 %s, referenziert von:
+Web application for offline browsing
+Offline Webapplikation
 Upload of %s file
 Hochladen der %s Datei
 Blog

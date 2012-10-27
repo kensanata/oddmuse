@@ -24,8 +24,8 @@ build/%-utf8.pl: modules/translations/%-utf8.pl
 
 # Currently oddtrans introduces encoding errors!
 
-# %-utf8.pl: wiki.pl $(MODULES)
-# 	perl oddtrans -l $@ $^ > $@-new && mv $@-new $@
+%-utf8.pl: wiki.pl $(MODULES)
+	perl oddtrans -l $@ $^ > $@-new && mv $@-new $@
 
 # from: http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/namespaces.pl
 #   to: http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/namespaces.pl?id=2.1-11-gd4f1e27
