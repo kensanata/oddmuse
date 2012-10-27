@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/tex.pl">tex.pl</a></p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/tex.pl">tex.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/TeX_Extension">TeX Extension</a></p>';
 
 use vars qw($TeXInit %Tex);
 use utf8;

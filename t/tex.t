@@ -25,3 +25,14 @@ test_page(update_page('Example', '4\times7 right\copyright a\inftyb'),
 	  qw(4×7 right© a∞b));
 
 ok($Tex{'\textreferencemark'}, "TeX patterns ok");
+
+# Create the table of documentation:
+# binmode(STDOUT, ':utf8');
+# my $i = 1;
+# foreach (sort keys %Tex) {
+#   printf "||%s || %s ", $_, $Tex{$_};
+#   if ($i % 5 == 0) {
+#     print "||\n";
+#   }
+#   $i++;
+# }
