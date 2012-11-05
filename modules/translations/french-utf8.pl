@@ -4,6 +4,7 @@
 # Copyright (c) 2004, 2005  Christophe Ducamp
 # Copyright (c) 2010  Alex Schroeder
 # Copyright (c) 2012  Aurélien Desbrières
+# Copyright (c) 2012  Hervé Robin
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
@@ -94,7 +95,7 @@ Pas de redirection pour les versions anciennes
 Invalid link pattern for #REDIRECT
 Syntaxe invalide pour le lien de redirection (#REDIRECT)
 Please go on to %s.
-SVP aller à %s.
+SVP allez à %s.
 Updates since %s
 Mises à jour depuis %s
 up to %s
@@ -160,7 +161,7 @@ Historique de %s
 Compare
 Comparer
 Deleted
-Suprimée
+Supprimé(e)
 Mark this page for deletion
 Marquer cette page comme étant à supprimer
 No other revisions available
@@ -180,11 +181,11 @@ Un nom d’utilisateur est nécessaire pour les utilisateurs normaux
 Rolling back changes
 Réinitialisation en cours
 The two revisions are the same.
-Les deux versions sont indentiques.
+Les deux versions sont identiques.
 Editing not allowed for %s.
 Modification non autorisée pour %s.
 Rollback of %s would restore banned content.
-Un retour à %s restaurera du texte interdit.
+Un retour à %s restaurera du contenu interdit.
 Rollback to %s
 Retour à %s
 %s rolled back
@@ -196,13 +197,13 @@ Index de toutes les pages
 Wiki Version
 Affiche la version du wiki
 Unlock Wiki
-Supression du verrou
+Suppression du verrou
 Password
 Mot de passe
 Run maintenance
 Lancer la maintenance
 Unlock site
-Déverouiller le site
+Déverrouiller le site
 Lock site
 Verouiller le site
 Install CSS
@@ -218,11 +219,11 @@ Actions :
 Important pages:
 Pages importantes :
 To mark a page for deletion, put <strong>%s</strong> on the first line.
-Pour marquer une page comme étant à supprimée, ajoutez <strong>%s</strong> à la première ligne
+Pour marquer une page comme étant à supprimer, ajoutez <strong>%s</strong> à la première ligne
 [Home]
 [Accueil]
 redirected from %s
-redirigée à partir de %s
+redirigé(e) à partir de %s
 %s: 
 %s : 
 Click to search for references to this page
@@ -244,7 +245,7 @@ La base de données est stockée dans le répertoire temporaire %s
 Last edited
 Dernière modification
 Edited
-Modifié
+Modifié(e)
 by %s
 par %s
 (diff)
@@ -264,7 +265,7 @@ Voir toutes les modifications
 View contributors
 Voir les contributeurs
 Homepage URL:
-Adresse(URL) du site perso
+Adresse(URL) du site personnel
 s
 s
 Save
@@ -302,17 +303,17 @@ Pas de diff disponible.
 Old revision:
 Ancienne révision :
 Changed:
-Modifiée :
+Modifié(e) :
 Deleted:
-Suprimé :
+Supprimé(e) :
 Added:
-Ajoutée :
+Ajouté(e) :
 to
 à
 Revision %s not available
 La version %s n’est pas disponible
 showing current revision instead
-présentation à la place de la version en cours.
+présentation à la place de la version en cours
 Showing revision %s
 Présentation de la version %s
 Cannot save a nameless page.
@@ -330,11 +331,11 @@ Ne peut obtenir un verrouillage %s
 The lock was created %s.
 Le verrouillage a été créé %s.
 Maybe the user running this script is no longer allowed to remove the lock directory?
-Peut-être l’utilisateur éxecutant le logiciel n’est plus autorisé à effacer le répertoire utilisé pour le verrouillage ?
+Peut-être l’utilisateur exécutant le logiciel n’est-il plus autorisé à effacer le répertoire utilisé pour le verrouillage ?
 This operation may take several seconds...
 Cette opération peut prendre quelques secondes...
 Forced unlock of %s lock.
-Supression forcée du verrou %s.
+Suppression forcée du verrou %s.
 No unlock required.
 La suppression du verrou n’est pas nécessaire.
 %s hours ago
@@ -354,11 +355,11 @@ just now
 Edit Denied
 Modification interdite
 Editing not allowed: user, ip, or network is blocked.
-Modification interdite : l’utilisateur, l’adresse ip, ou le reseau est bloqué.
+Modification interdite : l’utilisateur, l’adresse ip, ou le réseau est bloqué.
 Contact the wiki administrator for more information.
 Contactez l’administrateur du wiki pour plus d’information.
 The rule %s matched for you.
-La règle %s a fonctionné pour vous.
+La règle %s a été appliquée pour vous.
 See %s for more information.
 Voir %s pour plus d’information.
 Editing not allowed: %s is read-only.
@@ -378,7 +379,7 @@ Résumé :
 This change is a minor edit.
 Cette modification est une édition mineure.
 Cancel
-Anuler
+Annuler
 Replace this file with text
 Remplacer ce fichier par un texte
 Replace this text with a file
@@ -396,7 +397,7 @@ Vous êtes actuellement éditeur de ce site.
 You are a normal user on this site.
 Vous êtes un utilisateur normal de ce site.
 Your password does not match any of the  administrator or editor passwords.
-Vote mot de passe ne corespond ni au mot de passe administrateur ni au mot de passe éditeur.
+Vote mot de passe ne correspond ni au mot de passe administrateur ni au mot de passe éditeur.
 Password:
 Mot de passe :
 This site does not use admin or editor passwords.
@@ -414,7 +415,7 @@ La règle "%1" correspondait à "%2" sur cette page.
 Reason: %s.
 Raison : %s.
 Reason unknown.
-Raison inconnu.
+Raison inconnue.
 Filter:
 Filtre :
 (for %s)
@@ -422,9 +423,9 @@ Filtre :
 %s pages found.
 %s pages trouvées.
 Malformed regular expression in %s
-Expression régulière malformée dans %s
+Expression rationnelle mal formulée dans %s
 Replaced: %s
-Remplacé : %s
+Remplacé(e) : %s
 Search for: %s
 Rechercher : %s
 View changes for these pages
@@ -452,7 +453,7 @@ SVP vérifiez si vous avez écrasé ces modifications.
 Anonymous
 Anonyme
 Cannot delete the index file %s.
-Impossible de supprimer le fichier index  %s.
+Impossible de supprimer le fichier index %s.
 Please check the directory permissions.
 Veuillez vérifier les permissions des répertoires.
 Your changes were not saved.
@@ -476,11 +477,11 @@ Enlevez le fichier "maintain" ou patientez.
 Expiring keep files and deleting pages marked for deletion
 Expiration des fichiers de cache et suppression des pages marquées pour la suppression
 not deleted: 
-non supprimée :
+non supprimé(e) :
 deleted
-supprimé
+supprimé(e)
 Moving part of the %s log file.
-Deplace une partie du fichier de log %s.
+Déplace une partie du fichier de log %s.
 Could not open %s log file
 Impossible d’ouvrir le fichier de log %
 Error was
@@ -510,15 +511,15 @@ Trop de connexions par %s
 Please do not fetch more than %1 pages in %2 seconds.
 Veuillez ne pas télécharger plus de %1 pages toutes les %2 secondes
 Check whether the web server can create the directory %s and whether it can create files in it.
-Verifiez si le serveur web peut créer le répertoire %s et s’il peut créer des fichiers dedans.
+Vérifiez si le serveur web peut créer le répertoire %s et s’il peut créer des fichiers dedans.
 Copy one of the following stylesheets to %s:
 Copier une des feuilles de style suivantes sur %s.
 Deleting %s
-Supression de %s
+Suppression de %s
 Deleted %s
-%s supprimée
+%s supprimé(e)
 Renaming %1 to %2.
-Change  %1 en %2.
+Renomme %1 en %2.
 The page %s does not exist
 La page %s n'existe pas
 The page %s already exists
@@ -526,11 +527,11 @@ La page %s existe déjà
 Cannot rename %1 to %2
 Impossible de renommer %1 en %2
 Renamed to %s
-Renommé  en %s
+Renommé(e)  en %s
 Renamed from %s
-Renommé à partir de %s
+Renommé(e) à partir de %s
 Renamed %1 to %2.
-%1 a été renommée en %2.
+%1 a été renommé(e) en %2.
 Immediately delete %s
 Supprimer immédiatement %s
 Rename %s to:
@@ -542,9 +543,9 @@ Contenu Complet
 The main page is %s.
 La page principale est %s.
 Archive:
-Archive:
+Archive :
 Rebuild BackLink database
-Rebâtir les liens de la base de donnée
+Rebâtir les liens de la base de données
 Internal Page: 
 Page Interne :
 Pages that link to this page
@@ -590,29 +591,29 @@ Ve
 Sa
 Sa
 January
-Janvier
+janvier
 February
-Février
+février
 March
-Mars
+mars
 April
-Avril
+avril
 May
-Mai
+mai
 June
-Juin
+juin
 July
-Juillet
+juillet
 August
-Août
+août
 September
-Septembre
+septembre
 October
-Octobre
+octobre
 November
-Novembre
+novembre
 December
-Décembre
+décembre
 set %s
 paramétrer %s
 unset %s
@@ -634,11 +635,11 @@ Extraire toutes les dates depuis la base de données
 Dates
 Dates
 No dates found.
-Aucune dates trouvées
+Aucune date trouvée
 Inter links:
 InterLiens :
 List spammed pages
-Lister les pages spammer
+Lister les pages spammées
 Despamming pages
 Suppression des textes indésirables sur les pages.
 Spammed pages
@@ -648,27 +649,27 @@ Impossible de trouver la version %s.
 Revert to revision %1: %2
 Retour à la version %1 : %2
 Marked as %s.
-Marqué comme %s.
+Marqué(e) comme %s.
 Cannot find unspammed revision.
 Impossible de trouver une version sans texte indésirable.
 Recover Draft
 Récupérer le brouillon
 No text to save
-Pas de texte à sauvegarder
+Aucun texte à sauvegarder
 Draft saved
 Brouillon sauvegardé
 Draft recovered
 Brouillon récupéré
 No draft available to recover
-Pas de brouillon à récupérer
+Aucun brouillon à récupérer
 Save Draft
 Sauvegarder le Brouillon
 Draft Cleanup
-Brouillon Nettoyer
+Nettoyer le Brouillon
 %1 was last modified %2 and was kept
-%1 ont été les dernier modifier et %2 ont été gardé
+%1 a été modifié(e) en dernier et %2 a été conservé(e)
 %1 was last modified %2 and was deleted
-%1 ont été modifié et %2 on été effacés
+%1 a été modifié(e) en dernier et %2 a été effacé(e)
 Unable to delete draft %s
 Impossible d'effacer le brouillon %s
 Add Comment
@@ -678,11 +679,11 @@ modifications ordinaires
 Matching page names:
 Pages correspondant aux noms :
 Email: 
-Email : 
+E-mail : 
 Could not find %1.html template in %2
 Impossible de trouver le modèle %1.html dans %2
 Only Editors are allowed to see this hidden page.
-Seuls les Editeurs ont l'autorisation de voir cette page cachée.
+Seuls les Éditeurs ont l'autorisation de voir cette page cachée.
 Only Admins are allowed to see this hidden page.
 Seuls les Administrateurs ont l'autorisation de voir cette page cachée.
 Index
@@ -696,7 +697,7 @@ Définir
 Full Link List
 Liste Complète des Liens
 List of locked pages
-Liste des pages vérrouillés
+Liste des pages verrouillées
 Pages tagged with %s
 Pages taguées avec %s
 Template without parameters
@@ -704,11 +705,11 @@ Modèle sans paramètres
 The template %s is either empty or does not exist.
 Le modèle %s est soit vide soit n'existe pas.
  -- defined on %s
- -- défini sur %s
+ -- défini(e) sur %s
 Local names defined on %1: %2
 Noms locaux définis sur %1 : %2
 Locked Pages
-Pages Vérouillées
+Pages Verrouillées
 Register for %s
 Enregistrer pour %s
 Please choose a username of the form "FirstLast" using your real name.
@@ -726,7 +727,7 @@ Votre enregistrement pour %s a été soumis.
 Please allow time for the webmaster to approve your request.
 SVP accordez un peu de temps au webmestre pour valider votre demande.
 An email has been sent to "%s" with further instructions.
-Un email a été envoyé à "%s" pour de plus amples instructions.
+Un e-mail a été envoyé à "%s" pour de plus amples instructions.
 There was an error saving your registration.
 Il y a eu une erreur au moment de sauvegarder votre enregistrement.
 An account was created for %s.
@@ -736,15 +737,15 @@ Se connecter sur %s
 Username and/or password are incorrect.
 Le nom d'utilisateur et/ou le mot de passe sont incorrects.
 Logged in as %s.
-Connecté sous %s.
+Connecté(e) sous %s.
 Logout of %s
 Déconnexion de %s
 Logout of %s?
 Déconnexion de %s ?
 Logged out of %s
-Déconnecté de %s
+Déconnecté(e) de %s
 You are now logged out.
-Vous êtes maintenant déconnecté.
+Vous êtes maintenant déconnecté(e).
 Register a new account
 Enregistrer un nouveau compte.
 Logout
@@ -762,17 +763,17 @@ Confirmation d'Enregistrement pour %s
 %s, your registration has been approved. You can now use your password to login and edit this wiki.
 %s, votre enregistrement a été accepté. Vous pouvez désormais utiliser votre mot de passe pour vous connecter et éditer ce wiki.
 Confirmation failed.  Please email %s for help.
-Echec sur la confirmation. SVP envoyez un email à %s pour de l'aide.
+Échec sur la confirmation. SVP envoyez un e-mail à %s pour obtenir de l'aide.
 Who Am I?
 Qui suis-je ?
 You are logged in as %s.
-Vous êtes connecté en tant que %s.
+Vous êtes connecté(e) en tant que %s.
 You are not logged in.
-Vous n'êtes pas connecté.
+Vous n'êtes pas connecté(e).
 Reset Password
 Réinitialiser le mot de passe.
 The password for %s was reset.  It has been emailed to the address on file.
-Le mot de passe pour %s a été réinitialisé. Il a été envoyé à l'adresse sur le fichier.
+Le mot de passe pour %s a été réinitialisé. Il a été envoyé à l'adresse spécifiée sur le fichier.
 There was an error resetting the password for %s.
 Il y a eu une erreur de réinitialisation du mot de passe pour %s.
 The username "%s" does not exist.
@@ -780,11 +781,11 @@ Le nom d'utilisateur "%s" n'existe pas.
 Reset Password for %s
 Réinitialiser le mot de passe pour %s
 Reset Password?
-Réinitialisation Mot de Passe ?
+Réinitialisation du Mot de Passe ?
 Change Password for %s
-Modification Mot de Passe pour %s
+Modification du Mot de Passe pour %s
 Change Password?
-Modification Mot de Passe ?
+Modification du Mot de Passe ?
 Your current password is incorrect.
 Votre Mot de Passe est incorrect.
 Your password has been changed.
@@ -792,9 +793,9 @@ Votre mot de passe a été modifié.
 Approve Pending Registrations for %s
 Accepter les Enregistrements en Attente pour %s
 %s has been approved.
-%s a été accepté.
+%s a été accepté(e).
 There was an error approving %s.
-Il y a eu une erreur à accepter %s.
+Il y a eu une erreur en acceptant %s.
 <ul>
 <ul>
 <li>%1 - %2</li>
@@ -806,15 +807,15 @@ Il n'y a pas d'enregistrements en attente.
 Invalid Mail %s: not saved.
 L’adresse e-mail %s n’est pas valide
 unsubscribe
-désabonner
+se désabonner
 subscribe
-abonner
+s'abonner
 %s appears to be an invalid mail address
 L’adresse e-mail %s n’est pas valide
 Your mail subscriptions
-Vôtre abonnements
+Votre abonnements
 All mail subscriptions
-Tous les abonnements
+Tous les abonnements e-mail
 Subscriptions
 Abonnements
 Show
@@ -822,7 +823,7 @@ Voir
 Subscriptions for %s:
 Abonnements pour %s :
 Unsubscribe
-Désabonner
+Se désabonner
 There are no subscriptions for %s.
 Il n’y a pas d’abonnements pour %s.
 Change email address
@@ -830,21 +831,21 @@ Changer l’adresse e-mail
 Mail addresses are linked to unsubscription links.
 Les adresses e-mail sont liées au désabonnement.
 Subscribe to %s.
-Abonner %s.
+S'abonner %s.
 Subscribe
-Abonner
+S'abonner
 Subscribed %s to the following pages:
 %s est abonné aux pages suivantes :
 The remaining pages do not exist.
 Les pages restantes n’existent pas (ou plus).
 Unsubscribed %s from the following pages:
-%s a désabonné les pages suivantes :
+%s est désabonné aux pages suivantes :
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
-Vous avez liés plus de %s le même domaine. Il semble que seul les spammeurs font cela. Votre édition est donc refusée. 
+Vous avez créé plus de %s liens vers le même domaine. Il semble que seuls les spammeurs font cela. Votre édition est donc refusée. 
 %s is not a legal name for a namespace
 %s n’est pas un nom valide pour un espace de noms
 Namespaces
-Espace de noms
+Espaces de noms
 Getting page index file for %s.
 Récupération du fichier d'index de %s.
 Near links:
@@ -858,11 +859,11 @@ Pages à proximité :
 Include near pages
 Inclure les pages de proximité
 EditNearLinks
-EditerLiensDeProximité
+ÉditerLiensDeProximité
 The same page on other sites:
 La même page sur d'autres sites :
  (create locally)
- (créée locallement)
+ (créer localement)
 image
 image
 download
@@ -884,7 +885,7 @@ Aucune page id pour actionner la carte locale
 Requested page %s does not exist
 La page demandée %s n'existe pas
 Local Map for %s
-CarteLocale pour %s
+Carte Locale pour %s
 view
 voir
 Self-ban by %s
@@ -894,11 +895,11 @@ Vous avez banni votre propre IP.
 OpenID Login
 Identification OpenID
 Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
-Votre identité est sauvegardée dans un cookie, si vous avez activé les cookies. Vos cookies seront perdue si vous vous connecté depuis une autre machine, sur un autre compte ou si vous utiliser un autre navigateur.
+Votre identité est sauvegardée dans un cookie, si vous avez activé les cookies. Vos cookies seront perdus si vous vous connectez depuis une autre machine, sur un autre compte ou si vous utilisez un autre navigateur.
 Your homepage is set to %s.
-Votre page d'accueil est ajusté sur %s.
+Votre page d'accueil est établie sur %s.
 You have no homepage set.
-Votre page d'acceuil n'est pas ajustée.
+Votre page d'acceuil n'est pas établie.
 Homepage:
 Page d'accueil :
 Homepage is missing
@@ -918,9 +919,9 @@ Lien permanent vers "%s"
 anchor first defined here: %s
 première ancre définie ici : %s
 the page %s also exists
-la page %s existe aussi 
+la page %s existe également
 There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
-Il y a eu une erreur en générant le pdf pour %s. SVP, rendez-compte de cela au webmestre, mais n'essayez pas de télécharger à nouveau, car cela ne fonctionnera pas.
+Il y a eu une erreur en générant le pdf pour %s. SVP, rendez compte de cela au webmestre, mais n'essayez pas de télécharger à nouveau, car cela ne fonctionnera pas.
 Someone else is generating a pdf for %s.  Please wait a minute and then try again.
 Quelqu'un d'autre est en train de générer un pdf pour %S. SVP, attendez une minute puis essayez de nouveau.
 Download this page as PDF
@@ -936,21 +937,21 @@ Publier %s
 No target wiki was specified in the config file.
 La cible du wiki n'est pas spécifiée dans le fichier de configuration.
 The target wiki was misconfigured.
-La cible du wiki à été mal configurée.
+La cible du wiki a été mal configurée.
 Upload is limited to %s bytes
 Le téléversement est limité à %s bytes
 You did not answer correctly.
 Vous n’avez pas répondu correctement.
 To save this page you must answer this question:
-Vous devez répondre a cette question pour sauvegarder la page :
+Vous devez répondre à cette question pour sauvegarder la page :
 Please type the following two words:
-Taper s'il vous plait les deux mots suivant :
+Tapez s'il vous plaît les deux mots suivants :
 Please answer this captcha:
-Répondez à ce captcha s'il vous plais :
+Répondez à ce captcha s'il vous plaît :
 Referrers
-Introducteurs
+Référants
 All Referrers
-Tous les Introducteurs
+Tous les Référants
 Tag
 Tag
 Rebuild index for searching
@@ -960,13 +961,13 @@ Nuage de Tags
 Search::FreeText is not available on this system.
 Search::FreeText n'est pas disponible sur ce système.
 Rebuilding index not done.
-Reconstruction index non effectuée.
+Reconstruction de l'index non effectuée.
 (Rebuilding the index can only be done once every 12 hours.)
-(La reconstruction de l'index ne peut être faite qu'une fois toutes les 12 heures.)
+(La reconstruction de l'index ne peut être effectuée qu'une fois toutes les 12 heures.)
 New Pages for Indexed Search
 Nouvelle pages pour indexer la recherche
 List changes since %s
-Changement depuis %s
+Changements dans la liste depuis %s
  ... 
  ... 
 Search term missing.
@@ -986,27 +987,27 @@ Liste des pages pour %s
 Slideshow:%s
 Diaporama : %s
 Index of all small pages
-Indexe de toutes les petites pages
+Index de toutes les pages de petite taille
 Static Copy
 Copie Statique
 Back to %s
 Retour à %s
 Edit image in the browser
-Éditer l'image du navigateur
+Éditer l'image dans le navigateur
 Summary of your changes: 
-Sommaire des changements :
+Résumé de tous vos changements :
 Copy to %1 succeeded: %2.
 Copie vers %1 réussie : %2.
 Copy to %1 failed: %2.
 Copie vers %1 échouée : %2.
 Feed for this tag
-Graines pour ce tag
+Flux pour ce tag
 Rebuild tag index
-Rebâtir votre index de tag
+Rebâtir votre index de tags
 list tags
 liste de tags
 tag cloud
-tag du nuage
+nuage de tags
 Alternatively, use one of the following templates:
 Alternativement, utilisez un des modèles suivants :
 Thread: %s
@@ -1016,7 +1017,7 @@ Le paramètre ID est manquant.
 Thread %s does not exist.
 Le fil %s n'existe pas.
 Page %s does not contain a thread.
-La page %s ne contient pas de fil.
+La page %s ne contient aucun fil.
 Add
 Ajouter
 URL parameter is missing.
@@ -1032,11 +1033,11 @@ Nom :
 Too many instances.  Only %s allowed.
 Trop d'instances. %s seulement est autorisée
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
-ressources, nous vous demandons de faire preuve d'un peu de patience.
+Essayez plus tard s'il vous plaît. Peut-être que quelqu'un effectue une maintenance ou une recherche volumineuse. Malheureusement le site a des ressources limitées, nous vous demandons de faire preuve d'un peu de patience.
 Timezone
 Fuseau horaire
 Pick your timezone:
-Sélectionner votre fuseau horaire
+Sélectionnez votre fuseau horaire
 Set
 Ajusté
 Contents
@@ -1046,23 +1047,23 @@ Ajouter une page nouvelle pour aujourd’hui
 Add Translation
 Ajouter une traduction
 Please provide a different page name for the translation.
-Donné s'il vous plait un nom différent à votre traduction
+Donnez s'il vous plait un nom différent à votre traduction
 Added translation: %1 (%2)
-Traduction ajoutée: %1 (%2)
+Traduction ajoutée : %1 (%2)
 Translate %s
 Traduire %s
 Thank you for writing a translation of %s.
 Merci pour la traduction de %s.
 Please indicate what language you will be using.
-Merci d'indiquer quel langage vous allez utiliser.
+Merci d'indiquer quelle langue vous allez utiliser.
 Language is missing
-Le langage est manquant
+La langue est manquante
 Suggested languages:
-Langages suggérés
+Langues suggérées
 Please indicate a page name for the translation of %s.
-Indiqué s'il vous plait votre traduction pour %s.
+Indiquez s'il vous plaît un nom de page pour la traduction de %s.
 More help may be available here: %s.
-Plus d'aide disponible ici: %s.
+Plus d'aide disponible ici : %s.
 Translated page: 
 Page traduite :
 This page is a translation of %s. 
@@ -1070,7 +1071,7 @@ Cette page est une traduction de %s.
 The translation is up to date.
 La traduction est à jour.
 The translation is outdated.
-La traduction n'est pas à jour.
+La traduction n'est plus à jour.
 The page does not exist.
 La page n'existe pas.
 http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
@@ -1088,7 +1089,7 @@ Pages recherchées
 %s pages
 %s pages
 %s, referenced from:
-%s, référencé depuis :
+%s, référencé(e) depuis :
 Upload of %s file
 Téléversement du fichier %s
 Blog
@@ -1096,9 +1097,9 @@ Blog
 Matching pages:
 Pages correspondantes :
 New
-Nouveau 
+Nouveau
 Edit %s.
-Editer %s.
+Éditer %s.
 Title: 
 Titre :
 Tags: 
