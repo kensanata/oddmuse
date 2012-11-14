@@ -149,9 +149,6 @@ div.refer {
     line-height:   13pt;
 }
 
-div.refer a:first-child:before { content: "" }
-div.refer a:before { content: "• " }
-
 div.message {
     background-color:#fee;
     color:#000;
