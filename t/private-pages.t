@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 26;
+use Test::More tests => 27;
 
 clear_pages();
 add_module('private-pages.pl');
@@ -87,3 +87,7 @@ test_page_negative($page, 'secret');
 my $page = get_page('title=Privat text=YaddaYadda revision=1');
 test_page($page, 'Editing not allowed');
 test_page_negative($page, 'secret');
+
+# can't include them
+test_page_negative(update_page('Publik', '<include "Privat">'),
+		   'Cats have secrets');

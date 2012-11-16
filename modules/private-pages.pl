@@ -65,12 +65,20 @@ sub PrivatePageLocked {
 sub NewPrivatePagesUserCanEdit {
   my ($id, $editing, @rest) = @_;
   my $result = OldPrivatePagesUserCanEdit($id, $editing, @rest);
-  # GetPageContent bypasses OpenPage!
-  if ($result > 0 and $editing and PrivatePageLocked(GetPageContent($id))) {
-    return 0;
-  } else {
-    return $result;
+  # bypass OpenPage and GetPageContent (these are redefined below)
+  if ($result > 0 and $editing and $IndexHash{$id}) {
+    my %data = ParseData(ReadFileOrDie(GetPageFile($id)));
+    if (PrivatePageLocked($data{text})) {
+      return 0;
+    }
   }
+  return $result;
+}
+
+sub PrivatePageMessage {
+  return Ts('This page is password protected. If you know the password, you can %s. Once you have done that, return and reload this page.',
+	    '[' . ScriptUrl('action=password') . ' '
+	    . T('supply the password now') . ']');
 }
 
 *OldPrivatePagesOpenPage = *OpenPage;
@@ -80,11 +88,20 @@ sub NewPrivatePagesOpenPage {
   OldPrivatePagesOpenPage(@_);
   if (PrivatePageLocked($Page{text})) {
     %Page = (); # reset everything
-    $NewText = Ts('This page is password protected. If you know the password, you can %s. Once you have done that, return and reload this page.',
-		  '[' . ScriptUrl('action=password') . ' '
-		  . T('supply the password now') . ']');
+    $NewText = PrivatePageMessage();
   }
   return $OpenPageName;
+}
+
+*OldPrivatePagesGetPageContent = *GetPageContent;
+*GetPageContent = *NewPrivatePagesGetPageContent;
+
+sub NewPrivatePagesGetPageContent {
+  my $text = OldPrivatePagesGetPageContent(@_);
+  if (PrivatePageLocked($text)) {
+    return PrivatePageMessage();
+  }
+  return $text;
 }
 
 push(@MyRules, \&PrivatePageRule);
