@@ -376,7 +376,7 @@ sub NewNamespaceBrowsePage {
   #REDIRECT into different namespaces
   my ($id, $raw, $comment, $status) = @_;
   OpenPage($id);
-  my ($text, $revision) = GetTextRevision(GetParam('revision', ''));
+  my ($text, $revision) = GetTextRevision(GetParam('revision', ''), 1);
   my $oldId = GetParam('oldid', '');
   if (not $oldId and not $revision and (substr($text, 0, 10) eq '#REDIRECT ')
       and (($WikiLinks and $text =~ /^\#REDIRECT\s+(($InterSitePattern:)?$InterLinkPattern)/)
