@@ -2495,7 +2495,7 @@ sub PrintHtmlDiff {
     if ($type == 1) {
       $old = $Page{lastmajor} - 1;
       ($text, $new) = GetTextRevision($Page{lastmajor}, 1)
-  unless $new or $Page{lastmajor} == $Page{revision};
+	unless $new or $Page{lastmajor} == $Page{revision};
     } elsif ($new) {
       $old = $new - 1;
     } else {
