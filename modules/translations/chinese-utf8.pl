@@ -1,3 +1,25 @@
+# UTF-8 encoded Traditional Chinese language file for use with Oddmuse
+#
+# Copyright (c) 2003, 2004  wctang <wctang@csie.nctu.edu.tw>
+# Copyright (c) 2007  Wei Ren Wang <weithenn@gmail.com>
+#
+# Permission is granted to copy, distribute and/or modify this
+# document under the terms of the GNU Free Documentation License,
+# Version 1.2 or any later version published by the Free Software
+# Foundation; with no Invariant Sections, no Front-Cover Texts, and no
+# Back-Cover Texts.  A copy of the license could be found at:
+# http://www.gnu.org/licenses/fdl.txt.
+#
+# Installation:
+# =============
+#
+# Create a modules subdirectory in your data directory, and put the
+# file in there. It will be loaded automatically.
+#
+# This translation was last checked for Oddmuse version 1.504.
+#
+use utf8;
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/chinese-utf8.pl">chinese-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Chinese">Chinese</a></p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 包含正常頁面
