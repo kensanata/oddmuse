@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 27;
+use Test::More tests => 28;
 
 clear_pages();
 add_module('private-pages.pl');
@@ -47,6 +47,10 @@ test_page_negative(get_page('action=browse id=Privat revision=1'),
 # read old revisions with password
 test_page(get_page('action=browse id=Privat revision=1 pwd=foo'),
 	  'So many secrets remain untold');
+
+# can't read old revisions without password
+test_page(get_page('action=browse id=Privat revision=1'),
+	  'This page is password protected');
 
 # can't see secrets when printing raw pages
 my $page = get_page('action=browse raw=1 id=Privat pwd=foo');
