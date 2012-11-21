@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 20;
+use Test::More tests => 33;
 use utf8; # tests contain UTF-8 characters and it matters
 
 clear_pages();
@@ -76,3 +76,43 @@ test_page(get_page('action=translate id=HomePage target=abc'),
 
 test_page(get_page('action=translate id=HomePage target=abc translation=fr'),
 	  'Editing abc');
+
+# encoding issues
+
+# first check the from ASCII to something that can be encoded in Latin-1
+test_page(update_page('SiteMap', 'Hello'), 'Hello');
+test_page(get_page('action=translate id=SiteMap target=Übersicht translation=de'),
+	  'Editing Übersicht');
+xpath_test(get_page('SiteMap'),
+	   '//a[@class="translation de"][text()="Deutsch"]');
+xpath_test(get_page('action=rc showedit=1'),
+	   '//li/a[@class="local"][text()="SiteMap"]/following-sibling::strong[text()="Added translation: Übersicht (Deutsch)"]');
+
+# now check the other way around
+test_page(get_page('action=translate id=Übersicht target=SiteMap translation=en'),
+	  'Editing SiteMap');
+xpath_test(get_page('Übersicht'),
+	   '//a[@class="translation en"][text()="English"]');
+xpath_test(get_page('action=rc showedit=1'),
+	   '//li/a[@class="local"][text()="Übersicht"]/following-sibling::strong[text()="Added translation: SiteMap (English)"]');
+
+AppendStringToFile($ConfigFile, q{
+$Languages{ja} = '(ま|す|ん|し|ょ|う|の|は)';
+$Translate{ja} = '日本語';
+});
+
+# Repeat it with Unicode!
+test_page(get_page('action=translate id=SiteMap target=サイトマップ translation=ja'),
+	  'Editing サイトマップ');
+xpath_test(get_page('SiteMap'),
+	   '//a[@class="translation ja"][text()="日本語"]');
+xpath_test(get_page('action=rc showedit=1'),
+	   '//li/a[@class="local"][text()="SiteMap"]/following-sibling::strong[text()="Added translation: サイトマップ (日本語)"]');
+
+# and again,  check the other way around
+test_page(get_page('action=translate id=サイトマップ target=SiteMap translation=en'),
+	  'Editing SiteMap');
+xpath_test(get_page('サイトマップ'),
+	   '//a[@class="translation en"][text()="English"]');
+xpath_test(get_page('action=rc showedit=1'),
+	   '//li/a[@class="local"][text()="サイトマップ"]/following-sibling::strong[text()="Added translation: SiteMap (English)"]');
