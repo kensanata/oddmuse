@@ -14,16 +14,30 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 5;
+use Test::More tests => 8;
 use utf8; # tests contain UTF-8 characters and it matters
 
 clear_pages();
 add_module('fix-encoding.pl');
 
+# make sure the menu only shows up if it applies to a page
+
 test_page_negative(get_page('action=admin'), 'action=fix-encoding');
 test_page(get_page('action=admin id=foo'), 'action=fix-encoding;id=foo');
 
-test_page(update_page('Example', 'PilgerstÃ¤tte fÃ¼r die GÃ¶ttin'),
+# make sure nothing is saved if there is no change
+
+test_page(update_page('Example', 'Pilgerstätte für die Göttin'),
+	  'Pilgerstätte für die Göttin');
+
+test_page(get_page('action=fix-encoding id=Example'),
+	  'Location: http://localhost/wiki.pl/Example');
+
+test_page_negative(get_page('action=rc showedit=1'), 'fix encoding');
+
+# here is an actual page you need to fix
+
+test_page(update_page('Example', 'PilgerstÃ¤tte fÃ¼r die GÃ¶ttin', 'borked encoding'),
 	  'PilgerstÃ¤tte fÃ¼r die GÃ¶ttin');
 
 test_page(get_page('action=fix-encoding id=Example'),

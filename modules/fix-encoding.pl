@@ -24,7 +24,7 @@ sub FixEncoding {
   OpenPage($id);
   my $text = $Page{text};
   utf8::decode($text);
-  Save($id, $text, 'fix encoding', 1);
+  Save($id, $text, 'fix encoding', 1) if $text ne $Page{text};
   ReleaseLock();
   ReBrowsePage($id);
 }
