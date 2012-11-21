@@ -200,9 +200,13 @@ sub DoTranslationLink {
     }
     print $q->p($q->label({-for=>'target'}, T('Translated page: ')),
 		$q->textfield('target', '', 40),
-		$q->hidden('action', 'translate'),
-		$q->hidden('id', $source),
-		$q->hidden('missing', GetParam('missing', '')),
+		# don't use $q->hidden or you'll get encoding errors
+		$q->input({-type=>'hidden', -name=>'id',
+			   -value=>$source}),
+		$q->input({-type=>'hidden', -name=>'action',
+			   -value=>'translate'}),
+		$q->input({-type=>'hidden', -name=>'missing',
+			   -value=>GetParam('missing', '')}),
 		$q->submit('dotranslate', T('Go!')));
     print $q->endform, $q->end_div();
     PrintFooter();
