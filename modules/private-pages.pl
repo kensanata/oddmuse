@@ -104,6 +104,17 @@ sub NewPrivatePagesGetPageContent {
   return $text;
 }
 
+*OldPrivatePagesGetTextRevision = *GetTextRevision;
+*GetTextRevision = *NewPrivatePagesGetTextRevision;
+
+sub NewPrivatePagesGetTextRevision {
+  my ($text, $revision) = OldPrivatePagesGetTextRevision(@_);
+  if (PrivatePageLocked($text)) {
+    return (PrivatePageMessage(), $revision);
+  }
+  return ($text, $revision);
+}
+
 push(@MyRules, \&PrivatePageRule);
 
 sub PrivatePageRule {
