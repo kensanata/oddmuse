@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 8;
+use Test::More tests => 11;
 use utf8; # tests contain UTF-8 characters and it matters
 
 clear_pages();
@@ -24,6 +24,13 @@ add_module('fix-encoding.pl');
 
 test_page_negative(get_page('action=admin'), 'action=fix-encoding');
 test_page(get_page('action=admin id=foo'), 'action=fix-encoding;id=foo');
+
+# make sure nothing is saved if the page does not exist
+
+test_page(get_page('action=fix-encoding id=Example'),
+	  'Location: http://localhost/wiki.pl/Example');
+
+test_page_negative(get_page('action=rc showedit=1'), 'fix encoding');
 
 # make sure nothing is saved if there is no change
 
@@ -45,3 +52,5 @@ test_page(get_page('action=fix-encoding id=Example'),
 
 test_page(get_page('Example'),
 	  'Pilgerstätte für die Göttin');
+
+test_page(get_page('action=rc showedit=1'), 'fix encoding');
