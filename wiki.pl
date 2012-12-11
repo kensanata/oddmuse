@@ -811,7 +811,7 @@ sub GetRaw {
   return unless eval { require LWP::UserAgent; };
   my $ua = LWP::UserAgent->new;
   my $response = $ua->get($uri);
-  return $response->content if $response->is_success;
+  return $response->decoded_content if $response->is_success;
 }
 
 sub DoJournal {
