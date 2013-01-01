@@ -1022,7 +1022,7 @@ sub GetRss {
   }
   my @need_cache = keys %todo;
   if (keys %todo > 1) {   # try parallel access if available
-    eval { # see code example in LWP::Parallel, not LWP::Parllel::UserAgent (no callbacks here)
+    eval { # see code example in LWP::Parallel, not LWP::Parallel::UserAgent (no callbacks here)
       require LWP::Parallel::UserAgent;
       my $pua = LWP::Parallel::UserAgent->new();
       foreach my $uri (keys %todo) {
