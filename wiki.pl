@@ -811,7 +811,7 @@ sub GetRaw {
   return unless eval { require LWP::UserAgent; };
   my $ua = LWP::UserAgent->new;
   my $response = $ua->get($uri);
-  return $response->content if $response->is_success;
+  return $response->decoded_content if $response->is_success;
 }
 
 sub DoJournal {
@@ -1034,7 +1034,7 @@ sub GetRss {
       my $entries = $pua->wait();
       foreach (keys %$entries) {
 	my $uri = $entries->{$_}->request->uri;
-	$data{$uri} = $entries->{$_}->response->content;
+	$data{$uri} = $entries->{$_}->response->decoded_content;
       }
     }
   }
