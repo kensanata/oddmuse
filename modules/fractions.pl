@@ -20,31 +20,31 @@ push(@MyRules, \&FractionsRule);
 # usage: ^1/32
 sub FractionsRule {
   if (/\G\^([0-9]+)\/([0-9]+)/cg) {
-    if    ($1 == 1 and $2 == 4)  { return "\&x00bc;"; }
-    elsif ($1 == 1 and $2 == 2)  { return "\&x00bd;"; }
-    elsif ($1 == 3 and $2 == 4)  { return "\&x00be;"; }
-    elsif ($1 == 1 and $2 == 7)  { return "\&x2150;"; }
-    elsif ($1 == 1 and $2 == 9)  { return "\&x2151;"; }
-    elsif ($1 == 1 and $2 == 10) { return "\&x2152;"; }
-    elsif ($1 == 1 and $2 == 3)  { return "\&x2153;"; }
-    elsif ($1 == 2 and $2 == 3)  { return "\&x2154;"; }
-    elsif ($1 == 1 and $2 == 5)  { return "\&x2155;"; }
-    elsif ($1 == 2 and $2 == 5)  { return "\&x2156;"; }
-    elsif ($1 == 3 and $2 == 5)  { return "\&x2157;"; }
-    elsif ($1 == 4 and $2 == 5)  { return "\&x2158;"; }
-    elsif ($1 == 1 and $2 == 6)  { return "\&x2159;"; }
-    elsif ($1 == 5 and $2 == 6)  { return "\&x215a;"; }
-    elsif ($1 == 1 and $2 == 8)  { return "\&x215b;"; }
-    elsif ($1 == 3 and $2 == 8)  { return "\&x215c;"; }
-    elsif ($1 == 5 and $2 == 8)  { return "\&x215d;"; }
-    elsif ($1 == 7 and $2 == 8)  { return "\&x215e;"; }
+    if    ($1 == 1 and $2 == 4)  { return "\&#x00bc;"; }
+    elsif ($1 == 1 and $2 == 2)  { return "\&#x00bd;"; }
+    elsif ($1 == 3 and $2 == 4)  { return "\&#x00be;"; }
+    elsif ($1 == 1 and $2 == 7)  { return "\&#x2150;"; }
+    elsif ($1 == 1 and $2 == 9)  { return "\&#x2151;"; }
+    elsif ($1 == 1 and $2 == 10) { return "\&#x2152;"; }
+    elsif ($1 == 1 and $2 == 3)  { return "\&#x2153;"; }
+    elsif ($1 == 2 and $2 == 3)  { return "\&#x2154;"; }
+    elsif ($1 == 1 and $2 == 5)  { return "\&#x2155;"; }
+    elsif ($1 == 2 and $2 == 5)  { return "\&#x2156;"; }
+    elsif ($1 == 3 and $2 == 5)  { return "\&#x2157;"; }
+    elsif ($1 == 4 and $2 == 5)  { return "\&#x2158;"; }
+    elsif ($1 == 1 and $2 == 6)  { return "\&#x2159;"; }
+    elsif ($1 == 5 and $2 == 6)  { return "\&#x215a;"; }
+    elsif ($1 == 1 and $2 == 8)  { return "\&#x215b;"; }
+    elsif ($1 == 3 and $2 == 8)  { return "\&#x215c;"; }
+    elsif ($1 == 5 and $2 == 8)  { return "\&#x215d;"; }
+    elsif ($1 == 7 and $2 == 8)  { return "\&#x215e;"; }
     else {
       my $html;
       # superscripts
       for my $char (split(//, $1)) {
-	if    ($char eq '1') { $html .= "\&x00b9;"; }
-	elsif ($char eq '2') { $html .= "\&x00b2;"; }
-	elsif ($char eq '3') { $html .= "\&x00b3;"; }
+	if    ($char eq '1') { $html .= "\&#x00b9;"; }
+	elsif ($char eq '2') { $html .= "\&#x00b2;"; }
+	elsif ($char eq '3') { $html .= "\&#x00b3;"; }
 	else                 { $html .= "\&#x207$char;"; }
       }
       # fraction slash
