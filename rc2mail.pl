@@ -148,9 +148,12 @@ sub send_file {
   warn "No content for $title\n" unless $item->{description};
   my $link = $item->{link};
   my $sub = "$root?action=subscriptions";
-  print $fh qq(<p>Visit <a href="$link">$title</a>)
+  my $text = qq(<p>Visit <a href="$link">$title</a>)
     . qq( or <a href="$sub">manage your subscriptions</a>.</p><hr />)
     . $item->{description};
+  # prevent 501 Syntax error - line too long
+  $text =~ s/<(p|h[1-6]|[duo]l|pre|li|form|div|blockquote|hr|table|tr)>/\r\n<$1>/gi;
+  print $fh $text;
   $fh->close;
   foreach my $subscriber (@subscribers) {
     send_mail($subscriber, $title, $fh);
