@@ -1,17 +1,16 @@
-# Copyright (C) 2007, 2008  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2007, 2008, 2013  Alex Schroeder <alex@gnu.org>
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 3 of the License, or
-# (at your option) any later version.
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 3 of the License, or (at your option) any later
+# version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
 
 $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/bbcode.pl">bbcode.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/bbCode_Extension">bbCode Extension</a></p>';
 
@@ -37,6 +36,10 @@ sub bbCodeRule {
 				. qq{font-style: normal;"}); }
     elsif ($tag eq 's' or $tag eq 'strike') {
       return AddHtmlEnvironment('del'); }
+    elsif ($tag eq 'sub') {
+      return AddHtmlEnvironment('sub'); }
+    elsif ($tag eq 'sup') {
+      return AddHtmlEnvironment('sup'); }
     elsif ($tag eq 'color') {
       return AddHtmlEnvironment('em', qq{style="color: $option; }
 				. qq{font-style: normal;"}); }
@@ -96,7 +99,7 @@ sub bbCodeRule {
     %translate = qw{b b i i u em color em size em font span url a
 		    quote blockquote h1 h1 h2 h2 h3 h3 h4 h4 h5 h5
 		    h6 h6 center div left div right div list ul
-		    s del strike del highlight strong};
+		    s del strike del sub sub sup sup highlight strong};
     # closing a block level element closes all elements
     if ($bbBlock eq $translate{$tag}) {
       /\G([ \t]*\n)*/cg; # eat whitespace after closing block level element
