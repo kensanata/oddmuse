@@ -1500,7 +1500,7 @@ sub GetRcLines { # starttime, hash of seen pages to use as a second return value
   my %following = ();
   my @result = ();
   # check the first timestamp in the default file, maybe read old log file
-  open(F, '<:encoding(UTF-8)', $RcFile);
+  open(F, '<:utf8', $RcFile);
   my $line = <F>;
   my ($ts) = split(/$FS/o, $line); # the first timestamp in the regular rc file
   if (not $ts or $ts > $starttime) { # we need to read the old rc file, too
@@ -1586,7 +1586,7 @@ sub GetRcLinesFor {
         rcclusteronly rcfilteronly match lang followup);
   # parsing and filtering
   my @result = ();
-  open(F, '<:encoding(UTF-8)', $file) or return ();
+  open(F, '<:utf8', $file) or return ();
   while (my $line = <F>) {
     chomp($line);
     my ($ts, $id, $minor, $summary, $host, $username, $revision,
@@ -2667,8 +2667,8 @@ sub OpenPage {      # Sets global variables
     $Page{ts} = $Now;
     $Page{revision} = 0;
     if ($id eq $HomePage
-	and (open(F, '<:encoding(UTF-8)', $ReadMe)
-	     or open(F, '<:encoding(UTF-8)', 'README'))) {
+	and (open(F, '<:utf8', $ReadMe)
+	     or open(F, '<:utf8', 'README'))) {
       local $/ = undef;
       $Page{text} = <F>;
       close F;
@@ -2798,7 +2798,7 @@ sub ExpireKeepFiles {   # call with opened page
 sub ReadFile {
   my $file = shift;
   utf8::encode($file); # filenames are bytes!
-  if (open(IN, '<:encoding(UTF-8)', $file)) {
+  if (open(IN, '<:utf8', $file)) {
     local $/ = undef;   # Read complete files
     my $data=<IN>;
     close IN;
@@ -3372,7 +3372,7 @@ sub PageIsUploadedFile {
   if ($IndexHash{$id}) {
     my $file = GetPageFile($id);
     utf8::encode($file); # filenames are bytes!
-    open(FILE, '<:encoding(UTF-8)', $file)
+    open(FILE, '<:utf8', $file)
       or ReportError(Ts('Cannot open %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
     while (defined($_ = <FILE>) and $_ !~ /^text: /) {
     }          # read lines until we get to the text key
