@@ -1586,7 +1586,8 @@ sub GetRcLinesFor {
         rcclusteronly rcfilteronly match lang followup);
   # parsing and filtering
   my @result = ();
-  open(F, '<:encoding(UTF-8)', $file) or return ();
+  # using :utf8 instead of :encoding(utf-8) to avoid validation and warnings on corrupt files :(
+  open(F, '<:utf8', $file) or return ();
   while (my $line = <F>) {
     chomp($line);
     my ($ts, $id, $minor, $summary, $host, $username, $revision,
