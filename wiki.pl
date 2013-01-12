@@ -797,6 +797,7 @@ sub UrlEncode {
 sub UrlDecode {
   my $str = shift;
   $str =~ s/%([0-9a-f][0-9a-f])/chr(hex($1))/ge;
+  utf8::decode($str); # make internal string
   return $str;
 }
 
