@@ -476,8 +476,6 @@ sub DoMailMigration {
     my %n;
     foreach my $key (sort keys %h) {
       my $value = $h{$key};
-      utf8::encode($key);
-      utf8::encode($value);
       my @values = sort split(/$FS/, $value);
       $n{UrlEncode($key)} = join($FS, map { UrlEncode($_) } @values);
     }

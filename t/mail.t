@@ -16,7 +16,7 @@
 require 't/test.pl';
 package OddMuse;
 use utf8; # tests contain UTF-8 characters and it matters
-use Test::More tests => 50;
+use Test::More tests => 52;
 
 clear_pages();
 
@@ -36,6 +36,10 @@ test_page(get_page('action=migrate-subscriptions pwd=foo'),
 	  'Migrated 2 rows');
 test_page(get_page('action=migrate-subscriptions pwd=foo'),
 	  'migration not necessary');
+
+test_page(get_page('action=subscriptionlist pwd=foo raw=1'),
+	  'alex@gnu.org Unregelmässige_Spieler',
+	  'Unregelmässige_Spieler alex@gnu.org');
 
 # make a test with a character that cannot be Latin-1 encoded
 # ★ #x2605 => xE2 #x98 #x85 in UTF-8
