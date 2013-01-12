@@ -15,13 +15,24 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 45;
+use utf8; # tests contain UTF-8 characters and it matters
+use Test::More tests => 48;
 
 clear_pages();
 
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
 
 add_module('mail.pl');
+
+
+# make a test with a character that cannot be Latin-1 encoded
+# ★ #x2605 => xE2 #x98 #x85 in UTF-8
+test_page(get_page('title=Comments_on_%e2%98%85 aftertext=test username=Alex '
+		 . 'mail=berta@example.com notify=1'),
+	  'Set-Cookie:.*mail%251eberta%40example.com');
+test_page(get_page('action=subscriptionlist pwd=foo raw=1'),
+	  'Comments_on_★ berta@example.com',
+	  'berta@example.com Comments_on_★');
 
 # edit page
 $page = get_page('Comments_on_Foo');
