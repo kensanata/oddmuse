@@ -102,7 +102,7 @@ sub MailIsSubscribed {
   # open the DB file
   require DB_File;
   tie %h, "DB_File", $MailFile;
-  my %subscribers = map {$_=>1} split(/$FS/, $h{$id});
+  my %subscribers = map {$_=>1} split(/$FS/, UrlDecode($h{UrlEncode($id)}));
   untie %h;
   return $subscribers{$mail};
 }
@@ -179,13 +179,13 @@ sub MailDeletePage {
   my $id = shift;
   require DB_File;
   tie %h, "DB_File", $MailFile;
-  foreach my $mail (split(/$FS/, delete $h{$id})) {
-    my %subscriptions = map {$_=>1} split(/$FS/, $h{$mail});
+  foreach my $mail (split(/$FS/, UrlDecode(delete $h{UrlEncode($id)}))) {
+    my %subscriptions = map {$_=>1} split(/$FS/, UrlDecode($h{UrlEncode($mail)}));
     delete $subscriptions{$id};
     if (%subscriptions) {
-      $h{$mail} = join($FS, keys %subscriptions);
+      $h{UrlEncode($mail)} = UrlEncode(join($FS, keys %subscriptions));
     } else {
-      delete $h{$mail};
+      delete $h{UrlEncode($mail)};
     }
   }
   untie %h;
@@ -256,7 +256,7 @@ sub MailSubscription {
   return unless $mail;
   require DB_File;
   tie %h, "DB_File", $MailFile;
-  my @result = split(/$FS/, $h{$mail});
+  my @result = split(/$FS/, UrlDecode($h{UrlEncode($mail)}));
   untie %h;
   return sort @result;
 }
@@ -283,15 +283,17 @@ sub DoMailSubscriptionList {
       '<ul>';
   }
   require DB_File;
+
   tie %h, "DB_File", $MailFile;
-  foreach my $key (sort keys %h) {
-    my @values = sort split(/$FS/, $h{$key});
+  foreach my $encodedkey (sort keys %h) {
+    my @values = sort split(/$FS/, UrlDecode($h{$encodedkey}));
+    my $key = UrlDecode($encodedkey);
     if ($raw) {
       print join(' ', $key, @values) . "\n";
     } else {
         print $q->li(Ts('%s: ', MailLink($key, @values)),
 		     join(' ', map { MailLink($_, $key) }
-			  sort split(/$FS/, $h{$key})));
+			  sort split(/$FS/, UrlDecode($h{UrlEncode($key)}))));
     }
   }
   print '</ul></div>' unless $raw;
@@ -363,16 +365,16 @@ sub MailSubscribe {
   require DB_File;
   tie %h, "DB_File", $MailFile;
   # add to the mail entry
-  my %subscriptions = map {$_=>1} split(/$FS/, $h{$mail});
+  my %subscriptions = map {$_=>1} split(/$FS/, UrlDecode($h{UrlEncode($mail)}));
   for my $id (@pages) {
     $subscriptions{$id} = 1;
   }
-  $h{$mail} = join($FS, keys %subscriptions);
+  $h{UrlEncode($mail)} = UrlEncode(join($FS, keys %subscriptions));
   # add to the page entries
   for my $id (@pages) {
-    my %subscribers = map {$_=>1} split(/$FS/, $h{$id});
+    my %subscribers = map {$_=>1} split(/$FS/, UrlDecode($h{UrlEncode($id)}));
     $subscribers{$mail} = 1;
-    $h{$id} = join($FS, keys %subscribers);
+    $h{UrlEncode($id)} = UrlEncode(join($FS, keys %subscribers));
   }
   untie %h;
   # changes made will affect how pages look
@@ -420,53 +422,24 @@ sub MailUnsubscribe {
   return unless $mail and @pages;
   require DB_File;
   tie %h, "DB_File", $MailFile;
-  my %subscriptions = map {$_=>1} split(/$FS/, $h{$mail});
+  my %subscriptions = map {$_=>1} split(/$FS/, UrlDecode($h{UrlEncode($mail)}));
   foreach my $id (@pages) {
     delete $subscriptions{$id};
     # take care of reverse lookup
-    my %subscribers = map {$_=>1} split(/$FS/, $h{$id});
+    my %subscribers = map {$_=>1} split(/$FS/, UrlDecode($h{UrlEncode($id)}));
     delete $subscribers{$mail};
     if (%subscribers) {
-      $h{$id} = join($FS, keys %subscribers);
+      $h{UrlEncode($id)} = UrlEncode(join($FS, keys %subscribers));
     } else {
-      delete $h{$id};
+      delete $h{UrlEncode($id)};
     }
   }
   if (%subscriptions) {
-    $h{$mail} = join($FS, keys %subscriptions);
+    $h{UrlEncode($mail)} = UrlEncode(join($FS, keys %subscriptions));
   } else {
-    delete $h{$mail} unless %subscriptions;
+    delete $h{UrlEncode($mail)} unless %subscriptions;
   }
   untie %h;
   # changes made will affect how pages look
   SetParam('sub', GetParam('sub', 0) + 1);
 }
-
-=head1 Sending Mail
-
-The actual sending of emails depends on setting the appropriate
-options.
-
-C<$MailServer>: This defaults to localhost. If you have Oddmuse
-installed on a full server that includes an SMTP server such as
-sendmail or postfix, you might get away with not setting any of the
-variables.
-
-C<$MailUser>: Chances are you will need to authenticate before you can
-send an email via your mail server. Specify the name here.
-
-C<$MailPassword>: Specify the password here.
-
-C<$MailFrom>: Often mail servers know which email addresses they
-serve. If somebody else tries to use them, they'll return an error
-saying that "relaying is not allowed". If you are allowed to use the
-mail server, use this option to set the appropriate sender address.
-
-Example setup:
-
-    $MailServer = 'smtp.google.com';
-    $MailUser = 'kensanata';
-    $MailPassword = '*secret*';
-    $MailFrom = 'kensanata@gmail.com';
-
-=cut
