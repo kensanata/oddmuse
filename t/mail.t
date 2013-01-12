@@ -16,14 +16,26 @@
 require 't/test.pl';
 package OddMuse;
 use utf8; # tests contain UTF-8 characters and it matters
-use Test::More tests => 48;
+use Test::More tests => 50;
 
 clear_pages();
 
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
 
 add_module('mail.pl');
+Init(); # set $MailFile
 
+# tests migration
+require DB_File;
+tie %h, "DB_File", $MailFile;
+$h{'alex@gnu.org'} = 'Unregelmässige_Spieler';
+$h{'Unregelmässige_Spieler'} = 'alex@gnu.org';
+untie %h;
+
+test_page(get_page('action=migrate-subscriptions pwd=foo'),
+	  'Migrated 2 rows');
+test_page(get_page('action=migrate-subscriptions pwd=foo'),
+	  'migration not necessary');
 
 # make a test with a character that cannot be Latin-1 encoded
 # ★ #x2605 => xE2 #x98 #x85 in UTF-8

@@ -443,3 +443,48 @@ sub MailUnsubscribe {
   # changes made will affect how pages look
   SetParam('sub', GetParam('sub', 0) + 1);
 }
+
+=head1 Migrate
+
+The mailmigrate action will migrate your subscription list from the
+old format to the new format. This is necessary because these days
+because the keys and values of the DB_File are URL encoded.
+
+=cut
+
+$Action{'migrate-subscriptions'} = \&DoMailMigration;
+
+sub DoMailMigration {
+  UserIsAdminOrError();
+  print GetHeader('', T('Migrating Subscriptions')),
+    $q->start_div({-class=>'content mailmigrate'});
+
+  require DB_File;
+
+  tie %h, "DB_File", $MailFile;
+  my $found = 0;
+  foreach my $key (keys %h) {
+    if (index($key, '@') != -1) {
+      $found = 1;
+      last;
+    }
+  }
+
+  if (not $found) {
+    print $q->p(T('No non-migrated email addresses found, migration not necessary.'));
+  } else {
+    my %n;
+    foreach my $key (sort keys %h) {
+      my $value = $h{$key};
+      utf8::encode($key);
+      utf8::encode($value);
+      my @values = sort split(/$FS/, $value);
+      $n{UrlEncode($key)} = join($FS, map { UrlEncode($_) } @values);
+    }
+    %h = %n;
+    print $q->p(Ts('Migrated %s rows.', scalar(keys %n)));
+  }
+  print '</div>';
+  untie %h;
+  PrintFooter();
+}
