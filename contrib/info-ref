@@ -95,8 +95,7 @@ sub ProcessRequest {
 sub ShowForm {
   print $q->header, $q->start_html,
     $q->start_form, "Index entry: ", $q->textfield('find'), $q->submit, $q->end_form,
-    $q->p('$Id: info-ref,v 1.2 2010/05/04 20:48:37 alex Exp alex $',
-	  ' (' . $q->a({-href=>"http://www.emacswiki.org/scripts/info-ref"}, "source") . ')', $q->br(),
+    $q->p($q->a({-href=>"http://www.emacswiki.org/scripts/info-ref"}, "Source"), $q->br(),
 	  'Last DB update: ', TimeToText((stat($db))[9]),
 	  ' (' . $q->a({-href=>$q->url . '?init=1'}, "update") . ')'),
     $q->end_html;
