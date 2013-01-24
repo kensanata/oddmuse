@@ -16,7 +16,7 @@ $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git
 
 =h1 Compatibility
 
-This exension works with logbannedcontent.pl.
+This extension works with logbannedcontent.pl.
 
 =h1 Example content for the BannedRegexps page:
 
