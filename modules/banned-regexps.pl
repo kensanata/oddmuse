@@ -74,9 +74,7 @@ sub RegexpNewBannedContent {
       }
     }
   }
-  if ($rule and $BannedFile) {
-    LogBannedContent($rule);
-    return $rule;
-  }
+  LogBannedContent($rule) if $rule and $BannedFile;
+  return $rule if $rule;
   return 0;
 }
