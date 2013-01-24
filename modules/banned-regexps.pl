@@ -48,9 +48,6 @@ push(@MyInitVariables, sub {
        $AdminPages{$BannedRegexps} = 1;
        $LockOnCreation{$BannedRegexps} = 1;
        $PlainTextPages{$BannedRegexps} = 1;
-       # take the opportunity to clean out some stuff
-       delete $AdminPages{$RssInterwikiTranslate};
-       delete $AdminPages{$StyleSheetPage};
      });
 
 *RegexpOldBannedContent = *BannedContent;
