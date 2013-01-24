@@ -249,7 +249,7 @@ dd, li {
 
 /* elisp files and other scripts for download */
 
-p.download a {
+p.download a, a.download {
     padding: 0.5em;
     color: black;
     text-decoration: none;
