@@ -12,6 +12,8 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+package OddMuse;
+
 $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/banned-regexps.pl">banned-regexps.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Banning_Regular_Expressions">Banning Regular Expressions</a></p>';
 
 =h1 Compatibility
