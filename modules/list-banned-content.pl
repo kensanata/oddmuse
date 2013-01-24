@@ -30,6 +30,8 @@ sub DoListBannedContent {
     $text_regexps{qr($1)} = $4;
   }
   print '<div class="content banned"><p>';
+  print $BannedContent . ': ' . scalar(keys(%url_regexps)) . $q->br() . "\n";
+  print $BannedRegexps . ': ' . scalar(keys(%text_regexps)) . $q->br() . "\n";
  PAGE: foreach my $id (@pages) {
     OpenPage($id);
     my @urls = $str =~ /$FullUrlPattern/go;
