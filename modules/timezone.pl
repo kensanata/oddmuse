@@ -25,7 +25,9 @@ $defaultTZ = 'UTC';
 $CookieParameters{time} = '';
 
 sub TZget {
-  my $dt = DateTime->from_epoch(epoch=>shift);
+  my $ts = shift;
+  $ts = 0 if not defined($ts);
+  my $dt = DateTime->from_epoch(epoch=>$ts);
   my $tz = GetParam('time', '');
   # setting time= will use the (defined) empty string, so avoid that
   $tz = $defaultTZ unless $tz;

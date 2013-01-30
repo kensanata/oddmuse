@@ -18,6 +18,12 @@ use XML::LibXML;
 use utf8;
 use vars qw($raw);
 
+# Test::More explains how to fix wide character in print issues
+my $builder = Test::More->builder;
+binmode $builder->output,         ":utf8";
+binmode $builder->failure_output, ":utf8";
+binmode $builder->todo_output,    ":utf8";
+
 # Import the functions
 
 $raw = 0;       # capture utf8 is the default
@@ -94,7 +100,6 @@ sub name {
   $_ = shift;
   s/\n/\\n/g;
   $_ = '...' . substr($_, -60) if length > 63;
-  utf8::encode($_);
   return $_;
 }
 
@@ -138,8 +143,8 @@ sub run_macro_tests {
 
 # one string, many tests
 sub test_page {
-  my $page = shift;
-  foreach my $test (@_) {
+  my ($page, @tests) = @_;
+  foreach my $test (@tests) {
     like($page, qr($test), name($test));
   }
 }

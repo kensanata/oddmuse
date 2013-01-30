@@ -84,7 +84,7 @@ AppendStringToFile($ConfigFile, "use utf8;\n\$CookieParameters{ärger} = 1;\n");
 test_page(get_page('action=browse id=Test %C3%A4rger=hallo'),
 	  'Set-Cookie: Wiki=%C3%A4rger%251ehallo');
 
-# this causes wide character in print somehow? otherwise harmless
+# create a test page to test the output in various ways
 test_page(update_page("Russian", "Русский Hello"),
 	  "Русский");
 
