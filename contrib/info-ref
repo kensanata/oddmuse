@@ -1,21 +1,17 @@
 #!/usr/bin/perl
-# Copyright (C) 2005, 2006, 2007  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2005, 2006, 2007, 2012  Alex Schroeder <alex@gnu.org>
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
 
 use strict;
 use warnings;
@@ -38,6 +34,42 @@ my %indexes = (
 	       => 'GNU Emacs Lisp reference manual, Index',
 	       'http://www.gnu.org/software/emacs/manual/html_node/elisp/index.html'
 	       => 'GNU Emacs Lisp reference manual, Top Menu',
+	       'http://www.gnu.org/software/emacs/manual/html_node/message/Index.html'
+	       => 'Message Manual, Index',
+	       'http://www.gnu.org/software/emacs/manual/html_node/gnus/Index.html'
+	       => 'The Gnus Newsreader, Index',
+	       'http://www.gnu.org/software/emacs/manual/html_node/cl/Function-Index.html'
+	       => 'Common Lisp Extensions, Function Index',
+	       'http://www.gnu.org/software/emacs/manual/html_node/ccmode/Variable-Index.html'
+	       => 'CC Mode Manual, Variable Index',
+	       'http://www.gnu.org/software/emacs/manual/html_node/ccmode/Concept-and-Key-Index.html'
+	       => 'CC Mode Manual, Command and Function Index',
+	       'http://www.gnu.org/software/emacs/manual/html_node/org/Index.html'
+	       => 'Org Mode Manual, Index',
+	       'http://www.gnu.org/software/auctex/manual/auctex/Function-Index.html'
+	       => 'AUCTeX Manual, Function Index',
+	       'http://www.gnu.org/software/auctex/manual/auctex/Variable-Index.html'
+	       => 'AUCTeX Manual, Variable Index',
+	       'http://www.gnu.org/software/auctex/manual/auctex/Concept-Index.html'
+	       => 'AUCTeX Manual, Concept Index',
+	       'http://www.gnu.org/software/texinfo/manual/texinfo/html_node/index.html'
+	       => 'Texinfo, Command and Variable Index',
+	       'http://www.gnu.org/software/texinfo/manual/texinfo/html_node/General-Index.html'
+	       => 'Texinfo, General Index',
+	       'http://www.gnu.org/software/texinfo/manual/info/html_node/Index.html'
+	       => 'Info, Index',
+	       'http://www.gnu.org/software/emacs/manual/html_node/dired-x/Command-Index.html'
+	       => 'Dired Extra, Function Index',
+	       'http://www.gnu.org/software/emacs/manual/html_node/dired-x/Variable-Index.html'
+	       => 'Dired Extra, Variable Index',
+	       'http://www.gnu.org/software/coreutils/manual/html_node/Concept-index.html'
+	       => 'Coreutils, Index',
+	       'http://www.gnu.org/software/diffutils/manual/html_node/Index.html'
+	       => 'Diffutils, Index',
+	       'http://www.gnu.org/software/findutils/manual/html_node/find_html/Primary-Index.html'
+	       => 'Findutils, Primary Index',
+	       'http://www.gnu.org/software/emacs/manual/html_node/ediff/Index.html'
+	       => 'Edfiff, Index',
 	      );
 
 my $db = '/org/org.emacswiki/htdocs/emacs/info-ref.dat';
@@ -63,7 +95,9 @@ sub ProcessRequest {
 sub ShowForm {
   print $q->header, $q->start_html,
     $q->start_form, "Index entry: ", $q->textfield('find'), $q->submit, $q->end_form,
-    $q->p('$Id: info-ref,v 1.1 2007/07/13 23:20:57 as Exp $'),
+    $q->p($q->a({-href=>"http://www.emacswiki.org/scripts/info-ref"}, "Source"), $q->br(),
+	  'Last DB update: ', TimeToText((stat($db))[9]),
+	  ' (' . $q->a({-href=>$q->url . '?init=1'}, "update") . ')'),
     $q->end_html;
 }
 
@@ -74,9 +108,11 @@ sub Find {
   foreach my $line (split(/$nl/, $data)) {
     my ($key, $rest) = split(/$fs/, $line);
     $map{$key} = ();
-    foreach my $a (split(/$gs/, $rest)) {
-      my ($link, $label) = split(/$rs/, $a);
-      $map{$key}{$link} = $label;
+    if ($rest) {
+      foreach my $a (split(/$gs/, $rest)) {
+	my ($link, $label) = split(/$rs/, $a);
+	$map{$key}{$link} = $label;
+      }
     }
   }
   my @links = keys %{$map{$str}};
@@ -150,7 +186,7 @@ sub GetRaw {
   return unless eval { require LWP::UserAgent; };
   my $ua = LWP::UserAgent->new;
   my $response = $ua->get($uri);
-  return $response->content;
+  return $response->decoded_content;
 }
 
 sub ReadFile {
@@ -188,4 +224,19 @@ sub ReportError { # fatal!
   print $q->header(-status => $status);
   print $q->start_html, $q->h2($errmsg), $q->end_html;
   exit (1);
+}
+
+sub CalcDay {
+  my ($sec, $min, $hour, $mday, $mon, $year) = gmtime(shift);
+  return sprintf('%4d-%02d-%02d', $year+1900, $mon+1, $mday);
+}
+
+sub CalcTime {
+  my ($sec, $min, $hour, $mday, $mon, $year) = gmtime(shift);
+  return sprintf('%02d:%02d UTC', $hour, $min);
+}
+
+sub TimeToText {
+  my $t = shift;
+  return CalcDay($t) . ' ' . CalcTime($t);
 }

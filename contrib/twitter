@@ -1,0 +1,51 @@
+#!/usr/bin/perl
+# Copyright (C) 2009, 2012  Alex Schroeder <alex@gnu.org>
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
+
+use CGI qw/:standard/;
+use CGI::Carp qw(fatalsToBrowser);
+use LWP::UserAgent;
+use XML::RSS;
+
+if (not param('feed')) {
+  print header(),
+    start_html('Description Stripping'),
+    h1('Description Stripping'),
+    p('Removes the description of an article if it matches the title. This is most useful for Twitter and other microblogging services.'),
+    p('Example input:', code('http://api.twitter.com/1/statuses/user_timeline.rss?screen_name=kensanata')),
+    start_form(-method=>'GET'),
+    p('Feed: ', textfield('feed', '', 40), checkbox('Strip username'),
+      submit()),
+    end_form(),
+    end_html();
+  exit;
+}
+
+$ua = LWP::UserAgent->new;
+$request = HTTP::Request->new('GET', param('feed'));
+$response = $ua->request($request);
+$data = $response->content;
+exit unless $data;
+
+print header(-type=>$response->content_type);
+
+$rss = new XML::RSS;
+$rss->parse($data);
+
+foreach my $i (@{$rss->{items}}) {
+  $i->{description} = undef if $i->{description} eq $i->{title};
+  $i->{title} =~ s/^.*?: // if param('Strip username');
+}
+
+print $rss->as_string;
