@@ -52,9 +52,19 @@ sub TocScript {
     }
   }
 
-  var initToc=function()
-  {
+  var initToc=function() {
     var toc = document.getElementById('toc');
+
+    if (!toc) {
+      var divs = document.getElementsByTagName('div');
+      for (var i = 0; i < divs.length; i++) {
+        if (divs[i].getAttribute('class') == 'toc') {
+          toc = divs[i];
+          break;
+        }
+      }
+    }
+
     if (!toc) {
       var h2 = document.getElementsByTagName('h2')[0];
       if (h2) {
@@ -70,6 +80,7 @@ sub TocScript {
         outline.sections = outline.sections[0].sections;
       }
       var html = outline.asHTML(true);
+
       toc.innerHTML = html;
     }
   }
