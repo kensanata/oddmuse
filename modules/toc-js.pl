@@ -79,9 +79,11 @@ sub TocScript {
       if (outline.sections.length == 1) {
         outline.sections = outline.sections[0].sections;
       }
-      var html = outline.asHTML(true);
 
-      toc.innerHTML = html;
+      if (outline.sections.length > 1) {
+        var html = outline.asHTML(true);
+        toc.innerHTML = html;
+      }
     }
   }
 
