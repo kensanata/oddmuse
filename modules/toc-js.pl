@@ -80,7 +80,8 @@ sub TocScript {
         outline.sections = outline.sections[0].sections;
       }
 
-      if (outline.sections.length > 1) {
+      if (outline.sections.length > 1
+          || outline.sections[0].sections.length > 0) {
         var html = outline.asHTML(true);
         toc.innerHTML = html;
       }
