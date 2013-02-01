@@ -53,35 +53,37 @@ sub TocScript {
   }
 
   var initToc=function() {
-    var toc = document.getElementById('toc');
 
-    if (!toc) {
-      var divs = document.getElementsByTagName('div');
-      for (var i = 0; i < divs.length; i++) {
-        if (divs[i].getAttribute('class') == 'toc') {
-          toc = divs[i];
-          break;
-        }
-      }
+    var outline = HTML5Outline(document.body);
+    if (outline.sections.length == 1) {
+      outline.sections = outline.sections[0].sections;
     }
 
-    if (!toc) {
-      var h2 = document.getElementsByTagName('h2')[0];
-      if (h2) {
-        toc = document.createElement('div');
-        toc.setAttribute('class', 'toc');
-        h2.parentNode.insertBefore(toc, h2);
-      }
-    }
+    if (outline.sections.length > 1
+	|| outline.sections[0].sections.length > 0) {
 
-    if (toc) {
-      var outline = HTML5Outline(document.body);
-      if (outline.sections.length == 1) {
-        outline.sections = outline.sections[0].sections;
+      var toc = document.getElementById('toc');
+
+      if (!toc) {
+	var divs = document.getElementsByTagName('div');
+	for (var i = 0; i < divs.length; i++) {
+	  if (divs[i].getAttribute('class') == 'toc') {
+	    toc = divs[i];
+	    break;
+	  }
+	}
       }
 
-      if (outline.sections.length > 1
-          || outline.sections[0].sections.length > 0) {
+      if (!toc) {
+	var h2 = document.getElementsByTagName('h2')[0];
+	if (h2) {
+	  toc = document.createElement('div');
+	  toc.setAttribute('class', 'toc');
+	  h2.parentNode.insertBefore(toc, h2);
+	}
+      }
+
+      if (toc) {
         var html = outline.asHTML(true);
         toc.innerHTML = html;
       }
