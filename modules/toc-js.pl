@@ -84,6 +84,8 @@ sub TocScript {
           || outline.sections[0].sections.length > 0) {
         var html = outline.asHTML(true);
         toc.innerHTML = html;
+      } else {
+        toc.parentNode.removeChild(toc);
       }
     }
   }
