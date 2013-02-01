@@ -60,7 +60,8 @@ sub TocScript {
     }
 
     if (outline.sections.length > 1
-	|| outline.sections[0].sections.length > 0) {
+	|| outline.sections.length == 1
+           && outline.sections[0].sections.length > 0) {
 
       var toc = document.getElementById('toc');
 
