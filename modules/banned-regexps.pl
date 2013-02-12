@@ -67,14 +67,17 @@ sub RegexpNewBannedContent {
       my ($regexp, $comment, $re) = ($1, $4, undef);
       eval { $re = qr/$regexp/i; };
       if (defined($re) && $str =~ $re) {
-        $rule = Tss('Rule "%1" matched on this page.', QuoteHtml($regexp)) . ' '
+	my $explanation = ($1
+			   ? Tss('Regular expression "%1" matched "%2" on this page.', QuoteHtml($regexp), $1)
+			   : Ts('Regular expression "%s" matched on this page.', QuoteHtml($regexp)));
+        $rule = $explanation . ' '
           . ($comment ? Ts('Reason: %s.', $comment) : T('Reason unknown.')) . ' '
-            . Ts('See %s for more information.', GetPageLink($BannedRegexps));
+          . Ts('See %s for more information.', GetPageLink($BannedRegexps));
         last;
       }
     }
   }
-  LogBannedContent($rule) if $rule and $BannedFile;
+  LogWrite($rule) if $rule and $BannedFile;
   return $rule if $rule;
   return 0;
 }
