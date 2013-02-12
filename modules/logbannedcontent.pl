@@ -20,25 +20,31 @@ use vars qw($BannedFile);
 
 $BannedFile = "$DataDir/spammer.log" unless defined $BannedFile;
 
-*OldBannedContent = *BannedContent;
-*BannedContent = *LogBannedContent;
-$BannedContent = $OldBannedContent; # copy variable
+*LogOldBannedContent = *BannedContent;
+*BannedContent = *LogNewBannedContent;
+$BannedContent = $LogOldBannedContent; # copy variable
 
-sub LogBannedContent {
+sub LogNewBannedContent {
   my $str = shift;
-  my $rule = OldBannedContent($str);
-  if ($rule) {
-    my $visitor = $ENV{'REMOTE_ADDR'};
-    ($sec, $min, $hr, $mday, $mon, $year, $wday, $yday, $isdst) = localtime(time);
-    $year=$year+1900;
-    $mon += 1;
-    # Fix for 0's
-    $mon = sprintf("%02d", $mon);
-    $mday = sprintf("%02d", $mday);
-    $sec = sprintf("%02d", $sec);
-    $min = sprintf("%02d", $min);
-    $hr = sprintf("%02d", $hr);
-    AppendStringToFile($BannedFile, "$year/$mon/$mday\t$hr:$min:$sec\t$visitor: $OpenPageName - $rule\n");
-  }
+  my $rule = LogOldBannedContent($str);
+  LogWrite($rule) if $rule;
   return $rule;
+}
+
+*LogOldUserIsBanned = *UserIsBanned;
+*UserIsBanned = *LogNewUserIsBanned;
+
+sub LogNewUserIsBanned {
+  my $str = shift;
+  my $rule = LogOldUserIsBanned($str);
+  LogWrite(Ts('Host or IP matched %s', $rule)) if $rule;
+  return $rule;
+}
+
+sub LogWrite {
+  my $rule = shift;
+  my $id = $OpenPageName || GetId();
+  AppendStringToFile($BannedFile,
+		     join("\t", TimeToW3($Now), $ENV{'REMOTE_ADDR'}, $id, $rule)
+		     . "\n");
 }
