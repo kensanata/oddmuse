@@ -127,10 +127,10 @@ sub NewTagSave { # called within a lock!
   # an encoded string; the alternative would be to use a form of
   # freeze and thaw.
   foreach my $tag (keys %tag) {
-    my %file = map {$_=>1} split(/$FS/, $h{$tag});
+    my %file = map {$_=>1} split(/$FS/, UrlDecode($h{UrlEncode($tag)}));
     if (not $file{$id}) {
       $file{$id} = 1;
-      $h{$tag} = join($FS, keys %file);
+      $h{UrlEncode($tag)} = UrlEncode(join($FS, keys %file));
     }
   }
 
@@ -138,16 +138,16 @@ sub NewTagSave { # called within a lock!
   # tags used. This allows us to delete the references that no longer
   # show up without looping through them all. The files are indexed
   # with a starting underscore because this is an illegal tag name.
-  foreach my $tag (split (/$FS/, $h{"_$id"})) {
+  foreach my $tag (split (/$FS/, UrlDecode($h{UrlEncode("_$id")}))) {
     # If the tag we're looking at is no longer listed, we have work to
     # do.
     if (!$tag{$tag}) {
-      my %file = map {$_=>1} split(/$FS/, $h{$tag});
+      my %file = map {$_=>1} split(/$FS/, UrlDecode($h{UrlEncode($tag)}));
       delete $file{$id};
       if (%file) {
-	$h{$tag} = join($FS, keys %file);
+	$h{UrlEncode($tag)} = UrlEncode(join($FS, keys %file));
       } else {
-	delete $h{$tag};
+	delete $h{UrlEncode($tag)};
       }
     }
   }
@@ -155,9 +155,9 @@ sub NewTagSave { # called within a lock!
   # Store the new reverse lookup of all the tags used on the current
   # page. If no more tags appear on this page, delete the entry.
   if (%tag) {
-    $h{"_$id"} = join($FS, keys %tag);
+    $h{UrlEncode("_$id")} = UrlEncode(join($FS, keys %tag));
   } else {
-    delete $h{"_$id"};
+    delete $h{UrlEncode("_$id")};
   }
 
   untie %h;
@@ -183,18 +183,18 @@ sub NewTagDeletePage { # called within a lock!
   # For each file in our hash, we have a reverse lookup of all the
   # tags used. This allows us to delete the references that no longer
   # show up without looping through them all.
-  foreach my $tag (split (/$FS/, $h{"_$id"})) {
-    my %file = map {$_=>1} split(/$FS/, $h{$tag});
+  foreach my $tag (split (/$FS/, UrlDecode($h{UrlEncode("_$id")}))) {
+    my %file = map {$_=>1} split(/$FS/, UrlDecode($h{UrlEncode($tag)}));
     delete $file{$id};
     if (%file) {
-      $h{$tag} = join($FS, keys %file);
+      $h{UrlEncode($tag)} = UrlEncode(join($FS, keys %file));
     } else {
-      delete $h{$tag};
+      delete $h{UrlEncode($tag)};
     }
   }
 
   # Delete reverse lookup entry.
-  delete $h{"_$id"};
+  delete $h{UrlEncode("_$id")};
   untie %h;
 
   # Return any error codes?
@@ -217,8 +217,7 @@ sub TagFind {
   tie %h, "DB_File", $TagFile;
   my %page;
   foreach my $tag (@tags) {
-    foreach my $id (split(/$FS/, $h{lc($tag)})) {
-      utf8::decode($id);
+    foreach my $id (split(/$FS/, UrlDecode($h{UrlEncode(lc($tag))}))) {
       $page{$id} = 1;
     }
   }
@@ -292,20 +291,20 @@ sub TagCloud {
   my $max = 0;
   my $min = 0;
   my %count = ();
-  foreach my $tag (grep !/^_/, keys %h) {
-    $count{$tag} = split(/$FS/, $h{$tag});
-    $max = $count{$tag} if $count{$tag} > $max;
-    $min = $count{$tag} if not $min or $count{$tag} < $min;
+  foreach my $encoded_tag (grep !/^_/, keys %h) {
+    $count{$encoded_tag} = split(/$FS/, $h{$encoded_tag});
+    $max = $count{$encoded_tag} if $count{$encoded_tag} > $max;
+    $min = $count{$encoded_tag} if not $min or $count{$encoded_tag} < $min;
   }
   untie %h;
-  foreach my $tag (sort keys %count) {
-    my $n = $count{$tag};
-    print $q->a({-href  => "$ScriptName?search=tag:" . UrlEncode($tag),
+  foreach my $encoded_tag (sort keys %count) {
+    my $n = $count{$encoded_tag};
+    print $q->a({-href  => "$ScriptName?search=tag:" . $encoded_tag,
 		 -title => $n,
 		 -style => 'font-size: '
 		 . int(80+120*($max == $min ? 1 : ($n-$min)/($max-$min)))
 		 . '%;',
-		}, NormalToFree($tag)), T(' ... ');
+		}, NormalToFree(UrlDecode($encoded_tag))), T(' ... ');
   }
   print '</p></div>';
   PrintFooter();
@@ -352,21 +351,18 @@ sub DoTagsReindex {
        $Page{text} =~ m/\[\[tag:$FreeLinkPattern\|([^]|]+)\]\]/g);
     next unless %tag;
 
-    # utf8::encode($id);
-    # back to bytes for the following installation:
-    # This is perl, v5.10.1 (*) built for i486-linux-gnu-thread-multi
-    # (with 56 registered patches, see perl -V for more detail)
-    # (FIXME: get rid of this call, or explain why no UTF-8 can be stored in %h)
-
     # For each tag we list the files tagged. Add the current file for
     # all tags.
     foreach my $tag (keys %tag) {
-      $h{$tag} = $h{$tag} ? $h{$tag} . $FS . $id : $id;
+      my $encoded_tag = UrlEncode($tag);
+      $h{$encoded_tag} = $h{$encoded_tag}
+	? $h{$encoded_tag} . UrlEncode($FS . $id)
+	: UrlEncode($id);
     }
 
     # Store the reverse lookup of all the tags used on the current
     # page.
-    $h{"_$id"} = join($FS, keys %tag);
+    $h{UrlEncode("_$id")} = UrlEncode(join($FS, keys %tag));
   }
 
   untie %h;
@@ -391,8 +387,8 @@ sub TagList {
   # open the DB file
   require DB_File;
   tie %h, "DB_File", $TagFile;
-  foreach my $id (sort keys %h) {
-    print "$id: " . join(', ', split(/$FS/, $h{$id})) . "\n";
+  foreach my $id (sort map { UrlDecode($_) } keys %h) {
+    print "$id: " . join(', ', split(/$FS/, UrlDecode($h{UrlEncode($id)}))) . "\n";
   }
   untie %h;
 }
@@ -416,7 +412,7 @@ sub TagsMenu {
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2005, 2009  Alex Schroeder <alex@gnu.org>
+Copyright (C) 2005, 2009, 2013  Alex Schroeder <alex@gnu.org>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
