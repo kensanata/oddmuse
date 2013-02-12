@@ -45,24 +45,24 @@ xpath_run_tests(split('\n',<<'EOT'));
 EOT
 
 update_page('Brilliant', 'Gameologists [[tag:podcast]] [[tag:mag]]');
-update_page('Pödgecäst', 'Another [[tag:podcast]]');
+update_page('Pödgecäst´s', 'Another [[tag:podcast]]');
 update_page('Alex', 'Me! [[tag:Old School]]');
 
 # open the DB file
 require DB_File;
 tie %h, "DB_File", $TagFile;
 
-%tag = map {$_=>1} split($FS, $h{"_Brilliant"});
+%tag = map {$_=>1} split($FS, UrlDecode($h{UrlEncode("_Brilliant")}));
 ok($tag{podcast}, 'Brilliant page tagged podcast');
 ok($tag{mag}, 'Brilliant page tagged mag');
-%tag = map {$_=>1} split($FS, $h{"_Pödgecäst"});
-ok($tag{podcast}, 'Pödgecäst page tagged podcast');
-%file = map {$_=>1} split($FS, $h{"podcast"});
+%tag = map {$_=>1} split($FS, UrlDecode($h{UrlEncode("_Pödgecäst´s")}));
+ok($tag{podcast}, 'Pödgecäst´s page tagged podcast');
+%file = map {$_=>1} split($FS, UrlDecode($h{UrlEncode("podcast")}));
 ok($file{Brilliant}, 'Tag podcast applies to page Brilliant');
-ok($file{Pödgecäst}, 'Tag podcast applies to page Pödgecäst');
-%file = map {$_=>1} split($FS, $h{"mag"});
+ok($file{"Pödgecäst´s"}, 'Tag podcast applies to page Pödgecäst´s');
+%file = map {$_=>1} split($FS, UrlDecode($h{UrlEncode("mag")}));
 ok($file{Brilliant}, 'Tag mag applies to page Brilliant');
-%file = map {$_=>1} split($FS, $h{"old_school"});
+%file = map {$_=>1} split($FS, UrlDecode($h{UrlEncode("old_school")}));
 ok($file{Alex}, 'Tag Old School applies to page Alex');
 
 # close the DB file before making changes via the wiki!
@@ -73,12 +73,12 @@ update_page('Brilliant', 'Gameologists [[tag:mag]]');
 # reopen changed file
 tie %h, "DB_File", $TagFile;
 
-%tag = map {$_=>1} split($FS, $h{"_Brilliant"});
+%tag = map {$_=>1} split($FS, UrlDecode($h{UrlEncode("_Brilliant")}));
 ok(!$tag{podcast}, 'Brilliant page no longer tagged podcast');
 ok($tag{mag}, 'Brilliant page still tagged mag');
-%file = map {$_=>1} split($FS, $h{"podcast"});
+%file = map {$_=>1} split($FS, UrlDecode($h{UrlEncode("podcast")}));
 ok(!$file{Brilliant}, 'Tag podcast no longer applies to page Brilliant');
-ok($file{Pödgecäst}, 'Tag podcast still applies to page Pödgecäst');
+ok($file{"Pödgecäst´s"}, 'Tag podcast still applies to page Pödgecäst´s');
 
 # close the DB file before making changes via the wiki!
 untie %h;
@@ -88,8 +88,8 @@ DeletePage('Brilliant');
 # reopen changed file
 tie %h, "DB_File", $TagFile;
 
-ok(!$h{_Brilliant}, 'Brilliant page no longer exists');
-ok(!exists($h{mag}), 'No page tagged mag exists');
+ok(!$h{UrlEncode("_Brilliant")}, 'Brilliant page no longer exists');
+ok(!exists($h{UrlEncode("mag")}), 'No page tagged mag exists');
 
 # close the DB file before making changes via the wiki!
 untie %h;
@@ -101,46 +101,46 @@ update_page('Jeff', 'a blog [[tag:Old School]]');
 
 # ordinary search finds Alex
 $page = get_page('search=podcast raw=1');
-test_page($page, qw(Pödgecäst Brilliant Sons Alex));
+test_page($page, qw(Pödgecäst´s Brilliant Sons Alex));
 
 # tag search skips Alex
 $page = get_page('search=tag:podcast raw=1');
-test_page($page, qw(Pödgecäst Brilliant Sons));
+test_page($page, qw(Pödgecäst´s Brilliant Sons));
 test_page_negative($page, qw(Alex));
 
 # tag search is case insensitive
 $page = get_page('search=tag:PODCAST raw=1');
-test_page($page, qw(Pödgecäst Brilliant Sons));
+test_page($page, qw(Pödgecäst´s Brilliant Sons));
 test_page_negative($page, qw(Alex));
 
 # exclude tag search skips Brilliant
 $page = get_page('search=-tag:mag raw=1');
-test_page($page, qw(Pödgecäst Sons Alex));
+test_page($page, qw(Pödgecäst´s Sons Alex));
 test_page_negative($page, qw(Brilliant));
 
 # combine include and exclude tag search to exclude both Alex and
 # Brilliant
 $page = get_page('search=tag:podcast%20-tag:mag raw=1');
-test_page($page, qw(Pödgecäst Sons));
+test_page($page, qw(Pödgecäst´s Sons));
 test_page_negative($page, qw(Brilliant Alex));
 
 # combine ordinary search with include and exclude tag search to
 # exclude both Alex and Brilliant
 $page = get_page('search=kryos%20tag:podcast%20-tag:mag raw=1');
 test_page($page, qw(Sons));
-test_page_negative($page, qw(Pödgecäst Brilliant Alex));
+test_page_negative($page, qw(Pödgecäst´s Brilliant Alex));
 
 # search for a tag containing spaces
 $page = get_page('search=tag:old_school raw=1');
 test_page($page, qw(Jeff));
-test_page_negative($page, qw(Sons Pödgecäst Brilliant Alex));
+test_page_negative($page, qw(Sons Pödgecäst´s Brilliant Alex));
 
 test_page(get_page('action=reindex pwd=foo'),
-	  qw(Pödgecäst Brilliant Sons Alex));
+	  qw(Pödgecäst´s Brilliant Sons Alex));
 
 # tag search skips Alex -- repeat test after reindexing
 $page = get_page('search=tag:podcast raw=1');
-test_page($page, qw(Pödgecäst Brilliant Sons));
+test_page($page, qw(Pödgecäst´s Brilliant Sons));
 test_page_negative($page, qw(Alex));
 
 add_module('near-links.pl');
@@ -160,7 +160,7 @@ test_page_negative($page, qw(AlexSchroeder Foo));
 
 # check journal pages
 $page = update_page('Podcasts', '<journal "." search tag:podcast>');
-test_page($page, qw(Pödgecäst Brilliant Sons));
+test_page($page, qw(Pödgecäst´s Brilliant Sons));
 test_page_negative($page, qw(Alex Foo));
 
 # check the tag cloud
@@ -177,4 +177,4 @@ AppendStringToFile($ConfigFile, "\$LocalNamesCollect = 1;\n");
 update_page('LocalNames', 'test');
 update_page('Alex', 'is a [[tag:podcast]] after all');
 $page = get_page('search=tag:podcast raw=1');
-test_page($page, qw(Pödgecäst Brilliant Sons Alex));
+test_page($page, qw(Pödgecäst´s Brilliant Sons Alex));
