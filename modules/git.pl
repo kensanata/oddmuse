@@ -133,26 +133,50 @@ sub GitNewDeletePage {
 
 push(@MyMaintenance, \&GitCleanup);
 
+$Action{git} = \&DoGitCleanup;
+
+sub DoGitCleanup {
+  UserIsAdminOrError();
+  print GetHeader('', 'Git', '');
+  print $q->start_div({-class=>'content git'});
+  RequestLockOrError();
+  print $q->p(T('Main lock obtained.')), '<p>',
+    T('Cleaning up git repository');
+  GitCleanup();
+  ReleaseLock();
+  print $q->p(T('Main lock released.')), $q->end_div();
+  PrintFooter();
+}
+
 sub GitCleanup {
   if (-d $GitRepo) {
+    print $q->p("Git cleanup starting");
+    AllPagesList();
     # delete all the files including all the files starting with a dot
     opendir(DIR, $GitRepo) or ReportError("cannot open directory $GitRepo: $!");
     foreach my $file (readdir(DIR)) {
-      next if $file eq '.git' or $file eq '.' or $file eq '..';
-      unlink "$GitRepo/$file" or ReportError("cannot delete $GitRepo/$file: $!");
+      my $name = $file;
+      utf8::decode($name); # filenames are bytes
+      next if $file eq '.git' or $file eq '.' or $file eq '..' or $IndexHash{$name};
+      print $q->p("Deleting left over file $name");
+      unlink "$GitRepo/$file" or ReportError("cannot delete $GitRepo/$name: $!");
     }
     closedir DIR;
-    # write all the files again
-    foreach my $id (AllPagesList()) {
+    # write all the files again, just to be sure
+    print $q->p("Rewriting all the files, just to be sure");
+    foreach my $id (@IndexList) {
       OpenPage($id);
       WriteStringToFile("$GitRepo/$id", $Page{text});
     }
     # run git!
     chdir($GitRepo); # important for all the git commands that follow!
     # add any new files
+    print $q->p("Adding new files, if any");
     GitRun('add', '.');
     # commit the new state
-    GitRun('commit', '--quiet', '-a', '-m', 'maintenance job',
-	   "--author=Oddmuse <$GitMail>");
+    print $q->p("Committing changes, if any");
+    # try to protect against mysterious crashes
+    print $q->pre(`$GitBinary commit --quiet -a -m 'maintenance job' --author=Oddmuse <$GitMail>` . ' ');
+    print $q->p("Git done");
   }
 }
