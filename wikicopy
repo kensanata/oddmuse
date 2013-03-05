@@ -42,6 +42,7 @@ our ($opt_v, $opt_w);
 
 my $usage = qq{$0 [-i URL] [-d STRING] [-t SECONDS]
 \t[-u USERNAME] [-p PASSWORD] [-w USERNAME:PASSWORD]
+\t[-q QUESTION] [-a ANSWER] [-z SECRET]
 \t[SOURCE] TARGET
 
 SOURCE and TARGET are the base URLs for the two wikis.  Visiting these
@@ -61,18 +62,15 @@ If you use -d instead of providing a SOURCE, all the pages will be
 replaced with STRING. This is useful when replacing the page content
 with "DeletedPage", for example.
 
-Your copies on the target wiki will show up on the list of changes as
-anonymous edits. If you want to provide a username, you can use -u to
-do so.
-
-If you want to copy pages to a locked wiki or if you need to overwrite
-locked target pages, you need to provide a password using -p.
-
-On the other hand, if your wiki is protected by so-called "basic
-authentication" -- that is, if you need to provide a username and
-password before you can even view the site -- then you can pass
-those along using the -w option. Separate username and password
-using a colon.
+ -d     Delete target pages instead of providing SOURCE (default: none)
+ -s	The summary for RecentChanges (default: none)
+ -u     The username for RecentChanges (default: none)
+ -p     The password to use for locked pages (default: none)
+ -w     The username:password combo for basic authentication (default:none)
+ -q     The question number to answer (default: 0, ie. the first question)
+ -a     The answer to the question (default: none)
+ -z     Alternatively, the secret key (default: question)
+ -v     Verbose output for debugging (default: none)
 
 Examples:
 
@@ -111,17 +109,31 @@ sub GetRaw {
   return $response->content if $response->is_success;
 }
 
-sub PostRaw {
-  my ($uri, $id, $data, $username, $password) = @_;
+sub post {
+  my ($uri, $id, $data, $minor, $summary, $username, $password,
+      $question, $answer, $secret) = @_;
   my $ua = RequestAgent->new;
-  my $response = $ua->post($uri, {title=>$id, text=>$data, raw=>1,
-				  username=>$username, pwd=>$password});
+  my %params = (title=>$id, text=>$data, raw=>1,
+		username=>$username, pwd=>$password,
+		summary=>$summary, question_num=>$question,
+		answer=>$answer, $secret=>1,
+		recent_edit=>$minor);
+  if ($opt_v) {
+    foreach my $key (keys %params) {
+      my $value = $params{$key} || '(none)';
+      $value = substr($value,0,50) . '...'
+	if $key eq 'text' and length($value) > 53;
+      warn "$key: $value\n";
+    }
+  }
+  my $response = $ua->post($uri, \%params);
   my $status = $response->code . ' ' . $response->message;
   warn "POST $id failed: $status.\n" unless $response->is_success;
 }
 
 sub copy {
-  my ($source, $replacement, $target, $interval, $username, $password,
+  my ($source, $replacement, $target, $interval, $minor, $summary,
+      $username, $password, $question, $answer, $secret,
       @pages) = @_;
   foreach my $id (@pages) {
     print "$id\n";
@@ -129,18 +141,18 @@ sub copy {
     # fix URL for other wikis
     my $data = $replacement || GetRaw("$source?action=browse;id=$page;raw=1");
     next unless $data;
-    PostRaw($target, $id, $data, $username, $password);
+    post($target, $id, $data, $minor, $summary, $username, $password,
+      $question, $answer, $secret);
     sleep($interval);
   }
 }
 
 sub main {
-  our($opt_i, $opt_t, $opt_d, $opt_u, $opt_p);
-  getopts('i:t:d:u:p:w:v');
+  our($opt_m, $opt_i, $opt_t, $opt_d, $opt_s, $opt_u, $opt_p,
+      $opt_q, $opt_a, $opt_z);
+  getopts('mi:t:d:s:u:p:q:a:z:w:v');
   my $interval = $opt_t ? $opt_t : 5;
   my $replacement = $opt_d;
-  my $username = $opt_u;
-  my $password = $opt_p;
   my ($source, $target);
   $source = shift(@ARGV) unless $replacement;
   $target = shift(@ARGV);
@@ -157,7 +169,8 @@ sub main {
     }
   }
   die "The list of pages is missing.  Did you use -i?\n" unless @pages;
-  copy($source, $replacement, $target, $interval, $username, $password,
+  copy($source, $replacement, $target, $interval, $opt_m ? 'on' : '', $opt_s,
+       $opt_u, $opt_p, $opt_q, $opt_a, $opt_z||'question',
        @pages);
 }
 
