@@ -84,7 +84,8 @@ sub post {
   if ($opt_v) {
     foreach my $key (keys %params) {
       my $value = $params{$key} || '(none)';
-      $value = substr($value,0,50) . '...' if $key eq 'text' and length($value) > 53;
+      $value = substr($value,0,50) . '...'
+	if $key eq 'text' and length($value) > 53;
       warn "$key: $value\n";
     }
   }
