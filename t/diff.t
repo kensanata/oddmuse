@@ -1,24 +1,20 @@
-# Copyright (C) 2006  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006-2013  Alex Schroeder <alex@gnu.org>
+
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 21;
+use Test::More tests => 23;
 
 clear_pages();
 
@@ -54,11 +50,13 @@ test_page(get_page('action=history id=david'),
 	  'Revision 4', 'fourth revision');
 # using diffrevision=1 will make sure that the third revision is not shown
 xpath_test(get_page('action=browse diff=1 id=david revision=2 diffrevision=1'),
+	   '//p[@class="summary"][text()="Summary: second revision"]',
 	   '//div[@class="old"]/p/strong[text()="first"]',
 	   '//div[@class="new"]/p/strong[text()="second"]',
 	   '//div[@class="content browse"]/p[text()="this is the second revision"]');
 # check with cache = 0
 xpath_test(get_page('action=browse diff=1 id=david revision=2 diffrevision=1 cache=0'),
+	   '//p[@class="summary"][text()="Summary: second revision"]',
 	   '//div[@class="old"]/p/strong[text()="first"]',
 	   '//div[@class="new"]/p/strong[text()="second"]',
 	   '//div[@class="content browse"]/p[text()="this is the second revision"]');
