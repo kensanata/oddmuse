@@ -14,9 +14,17 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 23;
+use Test::More tests => 25;
+use utf8;
 
 clear_pages();
+
+# encoding stuff
+update_page('dash', "- en ‘dash’\n");
+update_page('dash', "- en ‘dash’\n— em “dash”\n");
+test_page(get_page('action=browse diff=1 id=dash'),
+	  '<div class="new"><p>&gt; — em “dash”</p></div>',
+	  '- en ‘dash’ — em “dash”');
 
 # Highlighting differences
 update_page('xah', "When we judge people in society, often, we can see people's true nature not by the official defenses and behaviors, but by looking at the statistics (past records) of their behavior and the circumstances it happens.\n"
