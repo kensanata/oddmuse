@@ -1390,7 +1390,7 @@ sub BrowseResolvedPage {
 sub BrowsePage {
   my ($id, $raw, $comment, $status) = @_;
   OpenPage($id);
-  my ($text, $revision) = GetTextRevision(GetParam('revision', ''));
+  my ($text, $revision, $summary) = GetTextRevision(GetParam('revision', ''));
   $text = $NewText unless $revision or $Page{revision}; # new text for new pages
   # handle a single-level redirect
   my $oldId = GetParam('oldid', '');
@@ -1422,7 +1422,7 @@ sub BrowsePage {
   print GetHeader($id, NormalToFree($id), $oldId, undef, $status);
   my $showDiff = GetParam('diff', 0);
   if ($UseDiff && $showDiff) {
-    PrintHtmlDiff($showDiff, GetParam('diffrevision', $revision), $revision, $text);
+    PrintHtmlDiff($showDiff, GetParam('diffrevision', $revision), $revision, $text, $summary);
     print $q->hr();
   }
   PrintPageContent($text, $revision, $comment);
@@ -2488,14 +2488,14 @@ sub GetGotoBar {    # ignore $id parameter
 }
 
 sub PrintHtmlDiff {
-  my ($type, $old, $new, $text) = @_;
+  my ($type, $old, $new, $text, $summary) = @_;
   my $intro = T('Last edit');
   my $diff = GetCacheDiff($type == 1 ? 'major' : 'minor');
   # compute old revision if cache is disabled or no cached diff is available
   if (not $old and (not $diff or GetParam('cache', $UseCache) < 1)) {
     if ($type == 1) {
       $old = $Page{lastmajor} - 1;
-      ($text, $new) = GetTextRevision($Page{lastmajor}, 1)
+      ($text, $new, $summary) = GetTextRevision($Page{lastmajor}, 1)
 	unless $new or $Page{lastmajor} == $Page{revision};
     } elsif ($new) {
       $old = $new - 1;
@@ -2503,6 +2503,7 @@ sub PrintHtmlDiff {
       $old = $Page{revision} - 1;
     }
   }
+  $summary = $q->p({-class=>'summary'}, T('Summary:') . ' ' . $summary) if $summary;
   if ($old > 0) { # generate diff if the computed old revision makes sense
     $diff = GetKeptDiff($text, $old);
     $intro = Tss('Difference between revision %1 and %2', $old,
@@ -2513,7 +2514,7 @@ sub PrintHtmlDiff {
   }
   $diff =~ s!<p><strong>(.*?)</strong></p>!'<p><strong>' . T($1) . '</strong></p>'!ge;
   $diff = T('No diff available.') unless $diff;
-  print $q->div({-class=>'diff'}, $q->p($q->b($intro)), $diff);
+  print $q->div({-class=>'diff'}, $q->p($q->b($intro)), $summary, $diff);
 }
 
 sub GetCacheDiff {
@@ -2697,15 +2698,15 @@ sub GetTextAtTime { # call with opened page, return $minor if all pages between 
 sub GetTextRevision {
   my ($revision, $quiet) = @_;
   $revision =~ s/\D//g;   # Remove non-numeric chars
-  return ($Page{text}, $revision) unless $revision and $revision ne $Page{revision};
+  return ($Page{text}, $revision, $Page{summary}) unless $revision and $revision ne $Page{revision};
   my %keep = GetKeptRevision($revision);
   if (not %keep) {
     $Message .= $q->p(Ts('Revision %s not available', $revision)
           . ' (' . T('showing current revision instead') . ')') unless $quiet;
-    return ($Page{text}, '');
+    return ($Page{text}, '', '');
   }
   $Message .= $q->p(Ts('Showing revision %s', $revision)) unless $quiet;
-  return ($keep{text}, $revision);
+  return ($keep{text}, $revision, $keep{summary});
 }
 
 sub GetPageContent {
