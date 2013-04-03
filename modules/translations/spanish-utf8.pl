@@ -498,7 +498,7 @@ Interlinks:
 Too many connections by %s
 Demasiadas conexiones por %s
 Please do not fetch more than %1 pages in %2 seconds.
-Por favor, no visites más de %1 páginas en %s segundos.
+Por favor, no visites más de %1 páginas en %2 segundos.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Comprueba si el servidor web puede crear el directorio %s y si puede crear archivos en él. 
 Copy one of the following stylesheets to %s:
