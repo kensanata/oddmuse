@@ -193,9 +193,6 @@ div.sidebar ul {
 
 /* replacements, features */
 
-del {
-    color: #666;
-}
 ins {
     color: #b33;
     text-decoration: none;
