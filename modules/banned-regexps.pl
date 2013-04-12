@@ -67,8 +67,9 @@ sub RegexpNewBannedContent {
       my ($regexp, $comment, $re) = ($1, $4, undef);
       eval { $re = qr/$regexp/i; };
       if (defined($re) && $str =~ $re) {
-	my $explanation = ($1
-			   ? Tss('Regular expression "%1" matched "%2" on this page.', QuoteHtml($regexp), $1)
+	my $group1 = $1;
+	my $explanation = ($group1
+			   ? Tss('Regular expression "%1" matched "%2" on this page.', QuoteHtml($regexp), $group1)
 			   : Ts('Regular expression "%s" matched on this page.', QuoteHtml($regexp)));
         $rule = $explanation . ' '
           . ($comment ? Ts('Reason: %s.', $comment) : T('Reason unknown.')) . ' '

@@ -1,8 +1,8 @@
-# Copyright (C) 2006, 2013  Alex Schroeder <alex@gnu.org>
-#
-# This program is free software; you can redistribute it and/or modify it under
+# Copyright (C) 2006-2013  Alex Schroeder <alex@gnu.org>
+
+# This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
-# Foundation; either version 3 of the License, or (at your option) any later
+# Foundation, either version 3 of the License, or (at your option) any later
 # version.
 #
 # This program is distributed in the hope that it will be useful, but WITHOUT
@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 23;
+use Test::More tests => 25;
 use utf8;
 
 clear_pages();
@@ -58,11 +58,13 @@ test_page(get_page('action=history id=david'),
 	  'Revision 4', 'fourth revision');
 # using diffrevision=1 will make sure that the third revision is not shown
 xpath_test(get_page('action=browse diff=1 id=david revision=2 diffrevision=1'),
+	   '//p[@class="summary"][text()="Summary: second revision"]',
 	   '//div[@class="old"]/p/strong[text()="first"]',
 	   '//div[@class="new"]/p/strong[text()="second"]',
 	   '//div[@class="content browse"]/p[text()="this is the second revision"]');
 # check with cache = 0
 xpath_test(get_page('action=browse diff=1 id=david revision=2 diffrevision=1 cache=0'),
+	   '//p[@class="summary"][text()="Summary: second revision"]',
 	   '//div[@class="old"]/p/strong[text()="first"]',
 	   '//div[@class="new"]/p/strong[text()="second"]',
 	   '//div[@class="content browse"]/p[text()="this is the second revision"]');
