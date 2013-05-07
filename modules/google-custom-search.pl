@@ -50,7 +50,7 @@ sub NewGoogleCustomGetSearchLink {
 
 sub NewGoogleCustomGetHeader {
   my $html = OldGoogleCustomGetHeader(@_);
-  $form .= qq {
+  my $form = qq {
 <!-- Google CSE Search Box Begins  -->
 <form class="tiny" action="http://www.google.com/cse" id="searchbox_004774160799092323420:6-ff2s0o6yi"><p>
 <input type="hidden" name="cx" value="004774160799092323420:6-ff2s0o6yi" />
