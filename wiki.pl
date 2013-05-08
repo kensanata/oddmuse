@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# Copyright (C) 2001-2012
+# Copyright (C) 2001-2013
 #     Alex Schroeder <alex@gnu.org>
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # ... including lots of patches from the UseModWiki site
@@ -1162,11 +1162,12 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
 }
 
 sub GetPageLink { # use if you want to force a link to local pages, whether it exists or not
-  my ($id, $name, $class) = @_;
+  my ($id, $name, $class, $accesskey) = @_;
   $id = FreeToNormal($id);
   $name = $id unless $name;
   $class .= ' ' if $class;
-  return ScriptLink(UrlEncode($id), NormalToFree($name), $class . 'local');
+  return ScriptLink(UrlEncode($id), NormalToFree($name), $class . 'local',
+		    undef, undef, $accesskey);
 }
 
 sub GetEditLink {   # shortcut
@@ -1996,8 +1997,7 @@ sub DoHistory {
     }
     @html = (GetFormStart(undef, 'get', 'history'),
        $q->p($q->submit({-name=>T('Compare')}),
-       # don't use $q->hidden here, the sticky action
-       # value will be used instead
+       # don't use $q->hidden here!
        $q->input({-type=>'hidden',-name=>'action',-value=>'browse'}),
        $q->input({-type=>'hidden', -name=>'diff', -value=>'1'}),
        $q->input({-type=>'hidden', -name=>'id', -value=>$id})),
@@ -2399,9 +2399,9 @@ sub GetFooterLinks {
   if ($id and $rev ne 'history' and $rev ne 'edit') {
     if ($CommentsPrefix) {
       if ($id =~ /^$CommentsPrefix(.*)/o) {
-	push(@elements, GetPageLink($1, undef, 'original'));
+	push(@elements, GetPageLink($1, undef, 'original', T('a')));
       } else {
-	push(@elements, GetPageLink($CommentsPrefix . $id, undef, 'comment'));
+	push(@elements, GetPageLink($CommentsPrefix . $id, undef, 'comment', T('c')));
       }
     }
     if (UserCanEdit($id, 0)) {

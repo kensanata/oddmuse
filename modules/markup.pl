@@ -144,6 +144,8 @@ sub MarkupRule {
     return CloseHtmlEnvironments()
       . MarkupTag($MarkupLines{UnquoteHtml($tag)}, $str)
       . AddHtmlEnvironment('p');
+  } elsif (%MarkupSingles and m/$markup_singles_re/gc) {
+    return $MarkupSingles{UnquoteHtml($1)};
   } elsif (%MarkupForcedPairs and m/$markup_forced_pairs_re/gc) {
     my $tag = $1;
     my $start = $tag;
@@ -170,8 +172,6 @@ sub MarkupRule {
     }
   } elsif (%MarkupPairs and m/$markup_pairs_re/gc) {
     return MarkupTag($MarkupPairs{UnquoteHtml($1)}, $2);
-  } elsif (%MarkupSingles and m/$markup_singles_re/gc) {
-    return $MarkupSingles{UnquoteHtml($1)};
   } elsif ($MarkupPairs{'/'} and m|\G~/|gc) {
     return '~/'; # fix ~/elisp/ example
   } elsif ($MarkupPairs{'/'} and m|\G(/[-A-Za-z0-9\x{0080}-\x{fffd}/]+/$words/)|gc) {
