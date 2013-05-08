@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright (C) 2006, 2007, 2008, 2009  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006-2013  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 107;
+use Test::More tests => 108;
 clear_pages();
 
 add_module('creole.pl');
@@ -159,6 +159,8 @@ CamelCaseLink
 ~ does not escape whitespace
 foo ~bar
 foo bar
+| 1|foo |
+<table class="user"><tr><td align="right">1</td><td>foo </td></tr></table>
 EOT
 
 xpath_run_tests(split('\n',<<'EOT'));

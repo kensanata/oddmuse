@@ -1,13 +1,16 @@
+@font-face {
+	  font-family: 'Garamond';
+	  font-style: normal;
+	  font-weight: 400;
+	  src: local('Garamond'), local('GaramondNo8'), local('EB Garamond'), local('EBGaramond'), url(https://themes.googleusercontent.com/static/fonts/ebgaramond/v4/kYZt1bJ8UsGAPRGnkXPeFdIh4imgI8P11RFo6YPCPC0.woff) format('woff');
+}
+
 body, rss {
-    font-family: Garamond, GaramondNo8, "Bookman Old Style", Cochin, Baskerville, serif;
+    font-family: Garamond, serif;
     font-size: 16pt;
     line-height: 20pt;
     margin:1em 3em;
     padding:0;
-}
-
-body.sans {
-    font-family: Franklin Gothic Book, Corbel, Arial, sans-serif;
 }
 
 /* headings: we can use larger sizes if we use a lighter color.
@@ -386,69 +389,69 @@ p.table + p { clear:both; }
 
 @media print {
     body {
-	font-size:   12pt;
-	line-height: 13pt;
-	color:       #000;
-	background-color: #fff;
-    }
+		font-size:   12pt;
+		line-height: 13pt;
+		color:       #000;
+		background-color: #fff;
+	}
     
     /* hide all the crap */
     div.diff, div.diff+hr, div.refer, div.near, div.definition, div.sister,
     div.cal, div.footer, span.specialdays, span.gotobar, a.edit, a.number span,
     div.rc form, form.tiny, p.comment {
-	display:none;
+		display:none;
     }
     a,
     a:visited,
     div.content a.near:link, 
     div.content a.near:visited,
     div.content a.near:active {
-	color:inherit;
-	font-weight: bold;
+		color:inherit;
+		font-weight: bold;
     }
     div.content a.feed {
-	display: none;
+		display: none;
     }
     div.content a.book,
     div.content a.movie {
-	text-decoration: none;
+		text-decoration: none;
     }
     a cite {
-	font-style: italic;
+		font-style: italic;
     }
     /* no difference */
     pre, code, tt {
-	font-size: inherit;
-	line-height: inherit;
+		font-size: inherit;
+		line-height: inherit;
     }
     /* no dotted underlines */ 
     acronym, abbr {
-	border: none;
-	text-decoration: none;
+		border: none;
+		text-decoration: none;
     }
     /* headings */
     h1 {
-	color:       inherit;
-	margin-top:  2em;
-    }
-    h2 {
-	color:inherit;
-	margin: 1em 0;
-	font-variant: small-caps;
-    }
-    h3 {
-	font-weight:inherit;
-	font-style:italic;
-	color:inherit;
-	margin: 1em 0;
-    }
-    h1 a, h2 a, h3 a {
-	color: inherit;
-    }
-    div.journal h1 a:visited,
-    div.journal h2 a:visited,
-    div.journal h3 a:visited {
-	color: inherit;
+		color:       inherit;
+		margin-top:  2em;
+	}
+	h2 {
+		color:inherit;
+		margin: 1em 0;
+		font-variant: small-caps;
+	}
+	h3 {
+		font-weight:inherit;
+		font-style:italic;
+		color:inherit;
+		margin: 1em 0;
+	}
+	h1 a, h2 a, h3 a {
+		color: inherit;
+	}
+	div.journal h1 a:visited,
+	div.journal h2 a:visited,
+	div.journal h3 a:visited {
+		color: inherit;
     }
 }
 

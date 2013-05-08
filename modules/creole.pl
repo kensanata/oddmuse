@@ -391,7 +391,7 @@ sub CreoleRule {
       my $is_right_justified = $3;
 
       # Now that we've retrieved all numbered matches, match another lookahead.
-      my $is_left_justified = m/\G(?=.*?[ \t]+\|)/;
+      my $is_left_justified = m/\G(?=[^\n|]*?[ \t]+\|)/;
       my $attributes = $column_span == 1 ? '' : qq{colspan="$column_span"};
 
          if ($is_left_justified and
