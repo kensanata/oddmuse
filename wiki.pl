@@ -2109,26 +2109,47 @@ sub DoRollback {
 
 sub DoAdminPage {
   my ($id, @rest) = @_;
-  my @menu = (ScriptLink('action=index', T('Index of all pages'), 'index'),
-        ScriptLink('action=version', T('Wiki Version'), 'version'),
-        ScriptLink('action=unlock', T('Unlock Wiki'), 'unlock'),
-        ScriptLink('action=password', T('Password'), 'password'),
-        ScriptLink('action=maintain', T('Run maintenance'), 'maintain'));
+  my @menu = ();
+  push(@menu, ScriptLink('action=index',
+			 T('Index of all pages'), 'index'))
+    if $Action{index};
+  push(@menu, ScriptLink('action=version',
+			 T('Wiki Version'), 'version'))
+    if $Action{version};
+  push(@menu, ScriptLink('action=unlock',
+			 T('Unlock Wiki'), 'unlock'))
+    if $Action{unlock};
+  push(@menu, ScriptLink('action=password',
+			 T('Password'), 'password'))
+    if $Action{password};
+  push(@menu, ScriptLink('action=maintain',
+			 T('Run maintenance'), 'maintain'))
+    if $Action{maintain};
   if (UserIsAdmin()) {
-    push(@menu, ScriptLink('action=clear', T('Clear Cache'), 'clear'));
-    if (-f "$DataDir/noedit") {
-      push(@menu, ScriptLink('action=editlock;set=0', T('Unlock site'), 'editlock 0'));
-    } else {
-      push(@menu, ScriptLink('action=editlock;set=1', T('Lock site'), 'editlock 1'));
+    push(@menu, ScriptLink('action=clear',
+			   T('Clear Cache'), 'clear'))
+      if $Action{clear};
+    if ($Action{editlock}) {
+      if (-f "$DataDir/noedit") {
+	push(@menu, ScriptLink('action=editlock;set=0',
+			      T('Unlock site'), 'editlock 0'));
+      } else {
+	push(@menu, ScriptLink('action=editlock;set=1',
+			       T('Lock site'), 'editlock 1'));
+      }
     }
-    if ($id) {
+    if ($id and $Action{pagelock}) {
       my $title = NormalToFree($id);
       if (-f GetLockedPageFile($id)) {
-	push(@menu, ScriptLink('action=pagelock;set=0;id=' . UrlEncode($id),
-			       Ts('Unlock %s', $title), 'pagelock 0'));
+	push(@menu, ScriptLink('action=pagelock;set=0;id='
+			       . UrlEncode($id),
+			       Ts('Unlock %s', $title),
+			       'pagelock 0'));
       } else {
-	push(@menu, ScriptLink('action=pagelock;set=1;id=' . UrlEncode($id),
-			       Ts('Lock %s', $title), 'pagelock 1'));
+	push(@menu, ScriptLink('action=pagelock;set=1;id='
+			       . UrlEncode($id),
+			       Ts('Lock %s', $title),
+			       'pagelock 1'));
       }
     }
   }
