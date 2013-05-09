@@ -3796,8 +3796,7 @@ sub DoMaintain {
       return;
     }
   }
-  RequestLockOrError();
-  print $q->p(T('Main lock obtained.')), '<p>', T('Expiring keep files and deleting pages marked for deletion');
+  print '<p>', T('Expiring keep files and deleting pages marked for deletion');
   # Expire all keep files
   foreach my $name (AllPagesList()) {
     print $q->br(), GetPageLink($name);
@@ -3810,7 +3809,10 @@ sub DoMaintain {
       ExpireKeepFiles();
     }
   }
-  print '</p>', $q->p(Ts('Moving part of the %s log file.', $RCName));
+  print '</p>';
+  RequestLockOrError();
+  print $q->p(T('Main lock obtained.'));
+  print $q->p(Ts('Moving part of the %s log file.', $RCName));
   # Determine the number of days to go back
   my $days = 0;
   foreach (@RcDays) {
