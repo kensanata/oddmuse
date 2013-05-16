@@ -52,7 +52,7 @@ $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git
   '3-12' => 'Mauritius: Erlangung der Unabhängigkeit 1968',
   '3-14' => 'Andorra: Tag der Verfassung',
   '3-15' => 'Ungarn: Gedenktag an den Revolutions- und Freiheitskampf 1848/49',
-  '3-17' => 'Irland: St. Patrick\'s Day',
+  '3-17' => 'Irland: St. Patrick\'s Day, Italien: Einigung 1870',
   '3-20' => 'Tunesien: Erlangung der Unabhängigkeit 1956',
   '3-21' => 'Namibia: Erlangung der Unabhängigkeit 1990',
   '3-23' => 'Pakistan: Beschluss zur Staatsgründung 1940',
