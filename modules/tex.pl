@@ -170,6 +170,10 @@ $TexRe = qr{$TexRe};
 
 push(@MyRules, \&TexRule);
 
+# use of -- conflicts with MarkupRules such as the following:
+# $MarkupForcedPairs{'--'} = 'del';
+$RuleOrder{\&TexRule} = 160;
+
 sub TexRule {
   if (m/\G$TexRe/goc) {
     return $Tex{$1};
