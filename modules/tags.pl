@@ -292,7 +292,7 @@ sub TagCloud {
   my $min = 0;
   my %count = ();
   foreach my $encoded_tag (grep !/^_/, keys %h) {
-    $count{$encoded_tag} = split(/$FS/, $h{$encoded_tag});
+    $count{$encoded_tag} = split(/$FS/, UrlDecode($h{$encoded_tag}));
     $max = $count{$encoded_tag} if $count{$encoded_tag} > $max;
     $min = $count{$encoded_tag} if not $min or $count{$encoded_tag} < $min;
   }
