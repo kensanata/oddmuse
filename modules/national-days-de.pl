@@ -64,6 +64,7 @@ $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git
   '4-17' => 'Syrien: Abzug der letzten französischen Mandatstruppen 1946',
   '4-18' => 'Simbabwe: Erlangung der Unabhängigkeit',
   '4-19' => 'Jahrestag der Papstwahl (Benedikt XVI.)',
+  '4-25' => 'Italien: Tag der Befreiung 1945',
   '4-26' => 'Tansania: Jahrestag der Vereinigung von Tanganjika und Sansibar 1964',
   '4-27' => 'Afghanistan: Tag der Revolution, Sierra Leone: Erlangung der Unabhängigkeit 1961, Südafrika: Tag der ersten freien Wahlen 1994, Togo: Erlangung der Unabhängigkeit 1960',
   '4-30' => 'Niederlande: Königinnentag',
