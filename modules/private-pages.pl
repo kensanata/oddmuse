@@ -1,4 +1,4 @@
-# Copyright (C) 2012  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2012–2013  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -81,6 +81,16 @@ sub PrivatePageMessage {
 	    . T('supply the password now') . ']');
 }
 
+# prevent unauthorized reading
+
+# If we leave $Page{revision}, PrintWikiToHTML will save the new
+# PrivatePageMessage as the new page content. If we delete
+# $Page{revision}, the text shown will be based on $NewText. If we
+# have no $Page{ts} and no $Page{text}, PageDeletable will return 1.
+# As a workaround, we set a timestamp. Aging of the page doesn't
+# matter since the text starts with #PASSWORD and therefore cannot be
+# the empty string or $DeletedPage.
+
 *OldPrivatePagesOpenPage = *OpenPage;
 *OpenPage = *NewPrivatePagesOpenPage;
 
@@ -88,10 +98,13 @@ sub NewPrivatePagesOpenPage {
   OldPrivatePagesOpenPage(@_);
   if (PrivatePageLocked($Page{text})) {
     %Page = (); # reset everything
+    $Page{ts} = $Now;
     $NewText = PrivatePageMessage();
   }
   return $OpenPageName;
 }
+
+# prevent reading of page content by other code
 
 *OldPrivatePagesGetPageContent = *GetPageContent;
 *GetPageContent = *NewPrivatePagesGetPageContent;
@@ -104,6 +117,8 @@ sub NewPrivatePagesGetPageContent {
   return $text;
 }
 
+# prevent reading of old revisions
+
 *OldPrivatePagesGetTextRevision = *GetTextRevision;
 *GetTextRevision = *NewPrivatePagesGetTextRevision;
 
@@ -115,6 +130,8 @@ sub NewPrivatePagesGetTextRevision {
   return ($text, $revision);
 }
 
+# hide #PASSWORD
+
 push(@MyRules, \&PrivatePageRule);
 
 sub PrivatePageRule {
@@ -123,6 +140,8 @@ sub PrivatePageRule {
   }
   return undef;
 }
+
+# prevent leaking of edit summary
 
 *OldPrivatePagesGetSummary = *GetSummary;
 *GetSummary = *NewPrivatePagesGetSummary;

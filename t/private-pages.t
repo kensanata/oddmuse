@@ -1,4 +1,4 @@
-# Copyright (C) 2012  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2012–2013  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 28;
+use Test::More tests => 29;
 
 clear_pages();
 add_module('private-pages.pl');
@@ -31,6 +31,10 @@ test_page($redirect, 'Status: 403');
 test_page_negative(update_page('Privat', "#PASSWORD foo\nCats have secrets.\n", undef, undef, 1),
 		   'Cats have secrets');
 test_page($redirect, 'Status: 302');
+
+# is not deleted by maintenance job
+my $page = get_page('action=maintain');
+test_page($page, 'Privat');
 
 # read it with password
 my $page = get_page('action=browse id=Privat pwd=foo');
