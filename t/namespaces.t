@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 73;
+use Test::More tests => 77;
 use utf8; # tests contain UTF-8 characters and it matters
 
 clear_pages();
@@ -40,6 +40,15 @@ test_page(update_page('Test', 'Mooo!', 'muu ns', undef, undef,
 test_page(get_page('action=browse id=Test ns=Muu'),
 	  '<title>Wiki Muu: Test</title>',
 	  '<p>Mooo!</p>');
+
+# history
+xpath_test(get_page('action=history id=Test ns=Muu'),
+	   '//table[@class="history"]/tr/td/a[text()="Revision 1"]',
+	   '//h1[text()="History of Test"]');
+
+test_page(get_page('action=history id=Test ns=Muu raw=1'),
+	  "link: http://localhost/wiki.pl/Muu\\?action=history;id=Test;raw=1\n",
+	  "link: http://localhost/wiki.pl/Muu/Test\n");
 
 # search
 $page = get_page('/Muu?search=Mooo raw=1');
