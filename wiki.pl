@@ -1969,7 +1969,7 @@ sub DoHistory {
     print GetHttpHeader('text/plain'),
       RcTextItem('title', Ts('History of %s', NormalToFree($OpenPageName))),
       RcTextItem('date', TimeToText($Now)),
-      RcTextItem('link', $q->url(-path_info=>1, -query=>1)),
+      RcTextItem('link', ScriptUrl("action=history;id=$OpenPageName;raw=1")),
       RcTextItem('generator', 'Oddmuse');
     SetParam('all', 1);
     my @languages = split(/,/, $Page{languages});
