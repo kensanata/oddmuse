@@ -398,7 +398,7 @@ p.table + p { clear:both; }
     /* hide all the crap */
     div.diff, div.diff+hr, div.refer, div.near, div.definition, div.sister,
     div.cal, div.footer, span.specialdays, span.gotobar, a.edit, a.number span,
-    div.rc form, form.tiny, p.comment {
+    div.rc form, form.tiny, p.comment, p#plus1, div.g-plusone {
 		display:none;
     }
     a,
