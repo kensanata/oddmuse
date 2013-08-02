@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 7;
+use Test::More tests => 21;
 
 clear_pages();
 
@@ -29,3 +29,27 @@ test_page(get_page('action=ban id=Test pwd=foo'), 'pyrobombus', 'Ban!');
 test_page(get_page('action=ban id=Test host=pyrobombus pwd=foo'),
 	  'Location: http://localhost/wiki.pl/BannedHosts');
 test_page(get_page('BannedHosts'), 'pyrobombus', 'Test');
+
+clear_pages();
+add_module('ban-contributors.pl');
+
+update_page('Test', 'no spam');
+ok(get_page('action=browse id=Test raw=2')
+   =~ /(\d+) # Do not delete this line/,
+   'raw=2 returns timestamp');
+$to = $1;
+ok($to, 'timestamp stored');
+sleep(1);
+
+update_page('Test', "http://spam/amoxil/ http://spam/doxycycline/");
+test_page(get_page("action=rollback id=Test to=$to pwd=foo"),
+	  'Rolling back changes', 'These URLs were rolled back',
+	  'amoxil', 'doxycycline', 'Consider banning the hostname');
+test_page(get_page("action=ban id=Test content=amoxil pwd=foo"),
+	  'Location: http://localhost/wiki.pl/BannedContent');
+test_page(get_page('BannedContent'), 'amoxil', 'Test');
+update_page('Test', "http://spam/amoxil/ http://spam/doxycycline/");
+$page = get_page("action=rollback id=Test to=$to pwd=foo");
+test_page($page, 'Rolling back changes', 'These URLs were rolled back',
+	  'doxycycline');
+test_page_negative($page, 'amoxil');
