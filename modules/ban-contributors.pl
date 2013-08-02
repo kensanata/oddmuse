@@ -90,3 +90,43 @@ sub DoBanHosts {
   }
   PrintFooter();
 }
+
+=head2 Rollback
+
+If you are an admin and rolled back a single page, this extension will
+list the URLs your rollback removed (assuming that those URLs are part
+of the spam) and it will allow you to provide a regular expression
+that will be added to BannedHosts.
+
+=cut
+
+*OldBanContributorsWriteRcLog = *WriteRcLog;
+*WriteRcLog = *NewBanContributorsWriteRcLog;
+
+sub NewBanContributorsWriteRcLog {
+  my ($tag, $id, $to) = @_;
+  if ($tag eq '[[rollback]]' and $id and $to > 0
+      and $OpenPageName eq $id and UserIsAdmin()) {
+    # we currently have the clean page loaded, so we need to reload
+    # the spammed revision (there is a possible race condition here)
+    my ($old) = GetTextRevision($Page{revision}-1, 1);
+    my %urls = map {$_ => 1 } $old =~ /$UrlPattern/og;
+    # we open the file again to force a load of the despammed page
+    foreach my $url ($Page{text} =~ /$UrlPattern/og) {
+      delete($urls{$url});
+    }
+    if (keys %urls) {
+      print $q->p(T("These URLs were rolled back. Perhaps you want to add a regular expression to banned hosts?"));
+      print $q->pre(join("\n", sort keys %urls));
+      print GetFormStart(undef, 'get', 'ban'),
+	    GetHiddenValue('action', 'ban'),
+	    GetHiddenValue('id', $id),
+	    GetHiddenValue('recent_edit', 'on'),
+	    $q->p($q->label({-for=>'host'}, T('Regular expression:')), " ",
+		  $q->textfield(-name=>'host', -size=>30), " ",
+		  $q->submit(T('Ban!'))),
+	    $q->end_form();
+    };
+  };
+  return OldBanContributorsWriteRcLog(@_);
+}
