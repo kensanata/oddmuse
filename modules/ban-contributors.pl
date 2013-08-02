@@ -39,17 +39,24 @@ sub BanMenu {
 
 $Action{ban} = \&DoBanHosts;
 
-sub IsHostBanned {
-  my ($host, $regexps) = @_;
+sub IsItBanned {
+  my ($it, $regexps) = @_;
   foreach my $regexp (@$regexps) {
-    return $host if ($host =~ /$regexp/i);
+    return $it if ($it =~ /$regexp/i);
   }
 }
 
 sub DoBanHosts {
   my $id = shift;
+  my $content = GetParam('content', '');
   my $host = GetParam('host', '');
-  if ($host) {
+  if ($content) {
+    SetParam('text', GetPageContent($BannedContent)
+	     . $content . " # " . CalcDay($Now) . " "
+	     . NormalToFree($id) . "\n");
+    SetParam('summary', NormalToFree($id));
+    DoPost($BannedContent);
+  } elsif ($host) {
     $host =~ s/\./\\./g;
     SetParam('text', GetPageContent($BannedHosts)
 	     . "^" . $host . " # " . CalcDay($Now) . " "
@@ -76,7 +83,7 @@ sub DoBanHosts {
       my $name = $_;
       delete $contrib{$_}{''};
       $name .= " (" . join(", ", sort(keys(%{$contrib{$_}}))) . ")";
-      if (IsHostBanned($_, \@regexps)) {
+      if (IsItBanned($_, \@regexps)) {
 	print $q->p(Ts("%s is banned", $name));
       } else {
 	print GetFormStart(undef, 'get', 'ban'),
@@ -115,18 +122,31 @@ sub NewBanContributorsWriteRcLog {
     foreach my $url ($Page{text} =~ /$UrlPattern/og) {
       delete($urls{$url});
     }
+    # we also remove any candidates that are already banned
+    my @regexps = ();
+    foreach (split(/\n/, GetPageContent($BannedContent))) {
+      if (/^\s*([^#]\S+)/) { # all lines except empty lines and comments, trim whitespace
+	push(@regexps, $1);
+      }
+    }
+    foreach my $url (keys %urls) {
+      delete($urls{$url}) if IsItBanned($url, \@regexps);
+    }
     if (keys %urls) {
-      print $q->p(T("These URLs were rolled back. Perhaps you want to add a regular expression to banned hosts?"));
+      print $q->p(Ts("These URLs were rolled back. Perhaps you want to add a regular expression to %s?",
+		     GetPageLink($BannedContent)));
       print $q->pre(join("\n", sort keys %urls));
       print GetFormStart(undef, 'get', 'ban'),
 	    GetHiddenValue('action', 'ban'),
 	    GetHiddenValue('id', $id),
 	    GetHiddenValue('recent_edit', 'on'),
-	    $q->p($q->label({-for=>'host'}, T('Regular expression:')), " ",
-		  $q->textfield(-name=>'host', -size=>30), " ",
+	    $q->p($q->label({-for=>'content'}, T('Regular expression:')), " ",
+		  $q->textfield(-name=>'content', -size=>30), " ",
 		  $q->submit(T('Ban!'))),
 	    $q->end_form();
     };
+    print $q->p(T("Consider banning the hostname or IP number as well: "),
+		ScriptLink('action=ban;id=' . UrlEncode($id), T('Ban contributors')));
   };
   return OldBanContributorsWriteRcLog(@_);
 }
