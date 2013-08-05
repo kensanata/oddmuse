@@ -41,8 +41,12 @@ $Action{ban} = \&DoBanHosts;
 
 sub IsItBanned {
   my ($it, $regexps) = @_;
+  my $re = undef;
   foreach my $regexp (@$regexps) {
-    return $it if ($it =~ /$regexp/i);
+    eval { $re = qr/$regexp/i; };
+    if (defined($re) && $it =~ $re) {
+      return $it;
+    }
   }
 }
 
