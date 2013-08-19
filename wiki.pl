@@ -2356,7 +2356,7 @@ sub GetCss {      # prevent javascript injection
   push (@css, $StyleSheet) if $StyleSheet and not @css;
   push (@css, "$ScriptName?action=browse;id=" . UrlEncode($StyleSheetPage) . ";raw=1;mime-type=text/css")
     if $IndexHash{$StyleSheetPage} and not @css;
-  push (@css, 'http://www.oddmuse.org/oddmuse.css') unless @css;
+  push (@css, 'http://www.oddmuse.org/default.css') unless @css;
   return join('', map { qq(<link type="text/css" rel="stylesheet" href="$_" />) } @css);
 }
 
