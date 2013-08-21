@@ -71,7 +71,7 @@ sub MacFixEncoding {
   $UseGrep = 0 if GetParam('search', '') =~ /[x{0080}-\x{fffd}]/;
 
   # the rest is only necessary if using namespaces.pl
-  return unless defined %Namespaces;
+  return unless %Namespaces;
   while (my ($key, $value) = each %Namespaces) {
     delete $Namespaces{$key};
     utf8::decode($key);
