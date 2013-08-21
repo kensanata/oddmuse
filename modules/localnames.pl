@@ -54,7 +54,7 @@ You can change this expiry time by setting C<$LnCacheHours>.
 
 =cut
 
-push (MyMaintenance, \&LnMaintenance);
+push (@MyMaintenance, \&LnMaintenance);
 
 sub LnMaintenance {
   if (opendir(DIR, $RssDir)) { # cleanup if they should expire anyway
