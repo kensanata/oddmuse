@@ -72,18 +72,20 @@ sub MacFixEncoding {
 
   # the rest is only necessary if using namespaces.pl
   return unless %Namespaces;
-  while (my ($key, $value) = each %Namespaces) {
-    delete $Namespaces{$key};
+  my %hash = ();
+  for my $key (keys %Namespaces) {
     utf8::decode($key);
     $key = NFC($key);
-    $Namespaces{$key} = $NamespaceRoot . '/' . $key . '/';
+    $hash{$key} = $NamespaceRoot . '/' . $key . '/';
   }
-  while (my ($key, $value) = each %InterSite) {
-    delete $InterSite{$key};
+  %Namespaces = %hash;
+  %hash = ();
+  for my $key (keys %InterSite) {
     utf8::decode($key);
     $key = NFC($key);
-    $InterSite{$key} = $Namespaces{$key} if $Namespaces{$key};
+    $hash{$key} = $Namespaces{$key} if $Namespaces{$key};
   }
+  %InterSite = %hash;
 }
 
 # for drafts.pl
