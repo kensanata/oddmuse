@@ -72,6 +72,7 @@ sub DoBanHosts {
     print GetHeader('', Ts('Ban Contributors to %s', NormalToFree($id)));
     SetParam('rcidonly', $id);
     SetParam('all', 1);
+    SetParam('showedit', 1);
     my %contrib = ();
     for my $line (GetRcLines()) {
       $contrib{$line->[4]}->{$line->[5]} = 1 if $line->[4];
