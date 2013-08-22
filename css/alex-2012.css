@@ -380,12 +380,12 @@ div.left p + p { display:table-caption; caption-side:bottom; }
 p.table a { float:left; width:20ex; }
 p.table + p { clear:both; }
 
+/* no bleeding
 @media screen {
-    /* no bleeding */
     div.content, div.rc {
 	overflow:hidden;
     }
-}
+} */
 
 @media print {
     body {
