@@ -50,15 +50,15 @@ test_page(get_page('action=browse id=HomePage username=Alex'),
 SKIP: {
 
   eval { require LWP::UserAgent; };
-  skip "LWP::UserAgent not installed", 5 if $@;
+  skip "LWP::UserAgent not installed", 7 if $@;
 
   eval { require HTTP::Cookies; };
-  skip "HTTP::Cookies not installed", 5 if $@;
+  skip "HTTP::Cookies not installed", 7 if $@;
 
   my $wiki = 'http://localhost/cgi-bin/wiki.pl';
   my $ua = LWP::UserAgent->new;
   my $response = $ua->get("$wiki?action=version");
-  skip("No wiki running at $wiki", 5)
+  skip("No wiki running at $wiki", 7)
     unless $response->is_success;
 
   $ua = LWP::UserAgent->new;

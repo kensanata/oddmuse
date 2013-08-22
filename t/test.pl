@@ -32,7 +32,16 @@ $UseConfig = 0; # don't read module files
 $DataDir = 'test-data';
 $ENV{WikiDataDir} = $DataDir;
 require 'wiki.pl';
-$ENV{PATH} = '/usr/local/bin:' . $ENV{PATH}; # location of perl?
+
+# Try to guess which Perl we should be using. Since we loaded wiki.pl,
+# our $ENV{PATH} is set to /bin:/usr/bin in order to find diff and
+# grep.
+if ($ENV{PERLBREW_PATH}) {
+  $ENV{PATH} = $ENV{PERLBREW_PATH} . ':' . $ENV{PATH};
+} elsif (-f '/usr/local/bin/perl') {
+  $ENV{PATH} = '/usr/local/bin:' . $ENV{PATH};
+}
+
 Init();
 use vars qw($redirect);
 

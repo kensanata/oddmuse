@@ -228,6 +228,9 @@ div.commentshown {
 p.comment {
     margin-bottom: 0;
 }
+div.comment h2 {
+    margin-top: 5em;
+}
 /* comment pages with username, homepage, and email subscription */
 .comment span { display: block; }
 .comment span label { display: inline-block; width: 10em; }
