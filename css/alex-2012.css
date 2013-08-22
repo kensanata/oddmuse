@@ -228,6 +228,9 @@ div.commentshown {
 p.comment {
     margin-bottom: 0;
 }
+div.comment {
+    font-size: 14pt;
+}
 div.comment h2 {
     margin-top: 5em;
 }
