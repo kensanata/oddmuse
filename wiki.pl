@@ -1560,6 +1560,7 @@ sub StripRollbacks {
 	    $ts = $result[$i][0];
 	  }
 	  splice(@result, $i + 1, $end - $i);
+	  $i++; # compensate $i-- in for loop
 	}
       } elsif ($rollback{$id} and $ts > $rollback{$id}) {
 	splice(@result, $i, 1); # strip rolled back single pages
