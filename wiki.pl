@@ -2079,6 +2079,8 @@ sub DoRollback {
   if (not $page) {   # cannot just use list length because of ('')
     return unless UserIsAdminOrError(); # only admins can do mass changes
     SetParam('showedit', 1); # make GetRcLines return minor edits as well
+    SetParam('all', 1);      # prevent LatestChanges from interfering
+    SetParam('rollback', 1); # prevent StripRollbacks from interfering
     my %ids = map { my ($ts, $id) = @$_; $id => 1; } # make unique via hash
       GetRcLines($Now - $KeepDays * 86400); # 24*60*60
     @ids = keys %ids;
