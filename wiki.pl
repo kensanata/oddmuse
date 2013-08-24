@@ -1542,30 +1542,29 @@ sub LatestChanges {
 sub StripRollbacks {
   my @result = @_;
   if (not (GetParam('all', 0) or GetParam('rollback', 0))) { # strip rollbacks
-    my ($skip_to, $end, %rollback);
+    my (%rollback);
     for (my $i = $#result; $i >= 0; $i--) {
       # some fields have a different meaning if looking at rollbacks
       my $ts = $result[$i][0];
       my $id = $result[$i][1];
       my $target_ts = $result[$i][2];
       my $target_id = $result[$i][3];
-      # strip global rollbacks
-      if ($skip_to and $ts <= $skip_to) {
-	splice(@result, $i + 1, $end - $i);
-	$skip_to = 0;
-      } elsif ($id eq '[[rollback]]') {
+      if ($id eq '[[rollback]]') {
 	if ($target_id) {
 	  $rollback{$target_id} = $target_ts; # single page rollback
 	  splice(@result, $i, 1);             # strip marker
 	} else {
-	  $end = $i unless $skip_to;
-	  $skip_to = $target_ts; # cumulative rollbacks!
+	  my $end = $i;
+	  while ($ts > $target_ts and $i > 0) {
+	    $i--; # quickly skip all these lines
+	    $ts = $result[$i][0];
+	  }
+	  splice(@result, $i + 1, $end - $i);
 	}
       } elsif ($rollback{$id} and $ts > $rollback{$id}) {
 	splice(@result, $i, 1); # strip rolled back single pages
       }
     }
-    splice(@result, 0, $end + 1) if $skip_to; # strip rest if any
   } else {		  # just strip the marker left by DoRollback()
     for (my $i = $#result; $i >= 0; $i--) {
       splice(@result, $i, 1) if $result[$i][1] eq '[[rollback]]'; # id
