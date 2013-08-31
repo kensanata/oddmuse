@@ -16,6 +16,8 @@ $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git
 
 push(@MyRules, \&bbCodeRule);
 
+$RuleOrder{\&bbCodeRule} = 100; # must come after PortraitSupportRule
+
 use vars qw($bbBlock);
 my %bbTitle = qw(h1 1 h2 1 h3 1 h4 1 h5 1 h6 1);
 
