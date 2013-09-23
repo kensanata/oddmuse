@@ -2527,6 +2527,7 @@ sub PrintHtmlDiff {
       $old = $Page{revision} - 1;
     }
   }
+  $summary = $Page{summary} if not $summary and not $new;
   $summary = $q->p({-class=>'summary'}, T('Summary:') . ' ' . $summary) if $summary;
   if ($old > 0) { # generate diff if the computed old revision makes sense
     $diff = GetKeptDiff($text, $old);
