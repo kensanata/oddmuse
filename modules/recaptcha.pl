@@ -231,7 +231,7 @@ sub NewReCaptchaDoPost {
     print $q->start_div({-class=>'error'});
     print $q->p(T('You did not answer correctly.'));
     print GetFormStart(), ReCaptchaGetQuestion(1),
-      (map { $q->hidden($_, '') }
+      (map { $q->input({-type=>'hidden', -name=>$_, -value=>GetParam($_)}) }
        qw(title text oldtime summary recent_edit aftertext)), $q->end_form;
     print $q->end_div();
     PrintFooter();
