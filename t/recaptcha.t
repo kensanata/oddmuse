@@ -21,14 +21,18 @@ use utf8; # test data is UTF-8 and it matters
 clear_pages();
 $ENV{'REMOTE_ADDR'}='127.0.0.1';
 add_module('recaptcha.pl');
+
+# The recaptcha module used to corrupt UTF-8 encoding and HTML
+# escaping.
+
 # non-existing page and no permission
-test_page(get_page('title=SandBox text=K%C3%BChlschrank'),
+test_page(get_page('title=SandBox text="<b>K%C3%BChlschrank</b>"'),
 	  'Status: 403',
-	  'Kühlschrank');
+	  '&lt;b&gt;Kühlschrank&lt;/b&gt;');
 # update it as an admin
-test_page(update_page('SandBox', 'Kühlschrank', undef, undef, 1),
-	  'Kühlschrank');
+test_page(update_page('SandBox', '<b>Kühlschrank</b>', undef, undef, 1),
+	  '&lt;b&gt;Kühlschrank&lt;/b&gt;');
 # existing page and no permission
-test_page(get_page('title=SandBox text=K%C3%BChlschrank-test'),
+test_page(get_page('title=SandBox text="<b>K%C3%BChlschrank-test</b>"'),
 	  'Status: 403',
-	  'Kühlschrank-test');
+	  '&lt;b&gt;Kühlschrank-test&lt;/b&gt;');
