@@ -24,7 +24,20 @@ sub FixEncoding {
   OpenPage($id);
   my $text = $Page{text};
   utf8::decode($text);
-  Save($id, $text, 'fix encoding', 1) if $text ne $Page{text};
+  Save($id, $text, T('Fix character encoding'), 1) if $text ne $Page{text};
+  ReleaseLock();
+  ReBrowsePage($id);
+}
+
+$Action{'fix-escaping'} = \&FixEscaping;
+
+sub FixEscaping {
+  my $id = shift;
+  ValidIdOrDie($id);
+  RequestLockOrError();
+  OpenPage($id);
+  my $text = UnquoteHtml($Page{text});
+  Save($id, $text, T('Fix HTML escapes'), 1) if $text ne $Page{text};
   ReleaseLock();
   ReBrowsePage($id);
 }
@@ -35,6 +48,10 @@ sub FixEncodingMenu {
   my ($id, $menuref, $restref) = @_;
   if ($id) {
     push(@$menuref,
-	 ScriptLink('action=fix-encoding;id=' . UrlEncode($id), T('Fix page encoding')));
+	 ScriptLink('action=fix-encoding;id=' . UrlEncode($id),
+		    T('Fix character encoding')));
+    push(@$menuref,
+	 ScriptLink('action=fix-escaping;id=' . UrlEncode($id),
+		    T('Fix HTML escapes')));
   }
 }

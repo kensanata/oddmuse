@@ -70,8 +70,8 @@ update_page('NicePage', 'Evil content.', 'vandal one');
 update_page('OtherPage', 'Other evil content.', 'another vandal');
 update_page('NicePage', 'Bad content.', 'vandal two');
 update_page('EvilPage', 'Spam!', 'vandal three');
-update_page('AnotherEvilPage', 'More Spam!', 'vandal four');
-update_page('AnotherEvilPage', 'Still More Spam!', 'vandal five');
+update_page('AnotherEvilPage', 'More Minor Spam!', 'vandal four', 1);
+update_page('AnotherEvilPage', 'Still More Minor Spam!', 'vandal five', 1);
 update_page('MinorPage', 'Ramtatam', 'testerror', 1);
 
 test_page(get_page('NicePage'), 'Bad content');
