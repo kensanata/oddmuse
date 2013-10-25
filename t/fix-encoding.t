@@ -1,4 +1,4 @@
-# Copyright (C) 2012  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2012–2013  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 12;
+use Test::More tests => 20;
 use utf8; # tests contain UTF-8 characters and it matters
 
 clear_pages();
@@ -26,14 +26,19 @@ test_page_negative(get_page('action=admin'), 'action=fix-encoding');
 
 # make sure no menu shows up if the page does not exists
 
-test_page(get_page('action=admin id=foo'), 'action=fix-encoding;id=foo');
+test_page(get_page('action=admin id=foo'),
+	  'action=fix-encoding;id=foo',
+	  'action=fix-escaping;id=foo');
 
 # make sure nothing is saved if the page does not exist
 
 test_page(get_page('action=fix-encoding id=Example'),
 	  'Location: http://localhost/wiki.pl/Example');
 
-test_page_negative(get_page('action=rc showedit=1'), 'fix encoding');
+test_page(get_page('action=fix-escaping id=Example'),
+	  'Location: http://localhost/wiki.pl/Example');
+
+test_page_negative(get_page('action=rc all=1 showedit=1'), 'fix');
 
 # make sure nothing is saved if there is no change
 
@@ -43,14 +48,19 @@ test_page(update_page('Example', 'Pilgerstätte für die Göttin'),
 test_page(get_page('action=fix-encoding id=Example'),
 	  'Location: http://localhost/wiki.pl/Example');
 
-test_page_negative(get_page('action=rc showedit=1'), 'fix encoding');
+test_page(get_page('action=fix-escaping id=Example'),
+	  'Location: http://localhost/wiki.pl/Example');
+
+test_page_negative(get_page('action=rc all=1 showedit=1'),
+		   'Fix Character encoding');
 
 # the menu shows up if the page exists
 
 test_page(get_page('action=admin id=Example'),
-	  'action=fix-encoding;id=Example');
+	  'action=fix-encoding;id=Example',
+	  'action=fix-escaping;id=Example');
 
-# here is an actual page you need to fix
+# here is an actual page with a character encoding error you need to fix
 
 test_page(update_page('Example', 'PilgerstÃ¤tte fÃ¼r die GÃ¶ttin',
 		      'borked encoding'),
@@ -62,4 +72,20 @@ test_page(get_page('action=fix-encoding id=Example'),
 test_page(get_page('Example'),
 	  'Pilgerstätte für die Göttin');
 
-test_page(get_page('action=rc showedit=1'), 'fix encoding');
+test_page(get_page('action=rc showedit=1'),
+	  'Fix character encoding');
+
+# here is an actual page with an HTML escaping error you need to fix
+
+test_page(update_page('Example', '&amp;lt;b&amp;gt;bold&amp;lt;/b&amp;gt;',
+		      'borked escaping'),
+	  '&amp;lt;b&amp;gt;bold&amp;lt;/b&amp;gt;');
+
+test_page(get_page('action=fix-escaping id=Example'),
+	  'Location: http://localhost/wiki.pl/Example');
+
+test_page(get_page('Example'),
+	  '&lt;b&gt;bold&lt;/b&gt;');
+
+test_page(get_page('action=rc showedit=1'),
+	  'Fix HTML escapes');

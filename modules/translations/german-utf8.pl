@@ -672,7 +672,7 @@ ordinary changes
 normale Änderungen
 Matching page names:
 Übereinstimmende Seitennamen:
-Fix page encoding
+Fix character encoding
 Zeichenkodierung korrigieren
 no summary available
 keine Zusammenfassug vorhanden
