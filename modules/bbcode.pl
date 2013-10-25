@@ -16,6 +16,8 @@ $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git
 
 push(@MyRules, \&bbCodeRule);
 
+$RuleOrder{\&bbCodeRule} = 100; # must come after PortraitSupportRule
+
 use vars qw($bbBlock);
 my %bbTitle = qw(h1 1 h2 1 h3 1 h4 1 h5 1 h6 1);
 
@@ -36,6 +38,8 @@ sub bbCodeRule {
 				. qq{font-style: normal;"}); }
     elsif ($tag eq 's' or $tag eq 'strike') {
       return AddHtmlEnvironment('del'); }
+    elsif ($tag eq 'tt') {
+      return AddHtmlEnvironment('tt'); }
     elsif ($tag eq 'sub') {
       return AddHtmlEnvironment('sub'); }
     elsif ($tag eq 'sup') {
@@ -99,7 +103,8 @@ sub bbCodeRule {
     %translate = qw{b b i i u em color em size em font span url a
 		    quote blockquote h1 h1 h2 h2 h3 h3 h4 h4 h5 h5
 		    h6 h6 center div left div right div list ul
-		    s del strike del sub sub sup sup highlight strong};
+		    s del strike del sub sub sup sup highlight strong
+		    tt tt};
     # closing a block level element closes all elements
     if ($bbBlock eq $translate{$tag}) {
       /\G([ \t]*\n)*/cg; # eat whitespace after closing block level element

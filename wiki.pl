@@ -1542,30 +1542,30 @@ sub LatestChanges {
 sub StripRollbacks {
   my @result = @_;
   if (not (GetParam('all', 0) or GetParam('rollback', 0))) { # strip rollbacks
-    my ($skip_to, $end, %rollback);
+    my (%rollback);
     for (my $i = $#result; $i >= 0; $i--) {
       # some fields have a different meaning if looking at rollbacks
       my $ts = $result[$i][0];
       my $id = $result[$i][1];
       my $target_ts = $result[$i][2];
       my $target_id = $result[$i][3];
-      # strip global rollbacks
-      if ($skip_to and $ts <= $skip_to) {
-	splice(@result, $i + 1, $end - $i);
-	$skip_to = 0;
-      } elsif ($id eq '[[rollback]]') {
+      if ($id eq '[[rollback]]') {
 	if ($target_id) {
 	  $rollback{$target_id} = $target_ts; # single page rollback
 	  splice(@result, $i, 1);             # strip marker
 	} else {
-	  $end = $i unless $skip_to;
-	  $skip_to = $target_ts; # cumulative rollbacks!
+	  my $end = $i;
+	  while ($ts > $target_ts and $i > 0) {
+	    $i--; # quickly skip all these lines
+	    $ts = $result[$i][0];
+	  }
+	  splice(@result, $i + 1, $end - $i);
+	  $i++; # compensate $i-- in for loop
 	}
       } elsif ($rollback{$id} and $ts > $rollback{$id}) {
 	splice(@result, $i, 1); # strip rolled back single pages
       }
     }
-    splice(@result, 0, $end + 1) if $skip_to; # strip rest if any
   } else {		  # just strip the marker left by DoRollback()
     for (my $i = $#result; $i >= 0; $i--) {
       splice(@result, $i, 1) if $result[$i][1] eq '[[rollback]]'; # id
@@ -2078,6 +2078,9 @@ sub DoRollback {
   my @ids = ();
   if (not $page) {   # cannot just use list length because of ('')
     return unless UserIsAdminOrError(); # only admins can do mass changes
+    SetParam('showedit', 1); # make GetRcLines return minor edits as well
+    SetParam('all', 1);      # prevent LatestChanges from interfering
+    SetParam('rollback', 1); # prevent StripRollbacks from interfering
     my %ids = map { my ($ts, $id) = @$_; $id => 1; } # make unique via hash
       GetRcLines($Now - $KeepDays * 86400); # 24*60*60
     @ids = keys %ids;
@@ -2524,6 +2527,7 @@ sub PrintHtmlDiff {
       $old = $Page{revision} - 1;
     }
   }
+  $summary = $Page{summary} if not $summary and not $new;
   $summary = $q->p({-class=>'summary'}, T('Summary:') . ' ' . $summary) if $summary;
   if ($old > 0) { # generate diff if the computed old revision makes sense
     $diff = GetKeptDiff($text, $old);

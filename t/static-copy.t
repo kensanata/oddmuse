@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 16;
+use Test::More tests => 29;
 clear_pages();
 
 add_module('static-copy.pl');
@@ -110,6 +110,18 @@ xpath_test(update_page('HomePage', "Static: [[image:Trogs]]"),
 	   . '/img[@class="upload"]'
 	   . '[@src="/static/Trogs.svgz"]'
 	   . '[@alt="Trogs"]');
+
+# delete the static pages and regenerate it
+ok(unlink("$DataDir/static/Trogs.svgz"), "Deleted $DataDir/static/Trogs.svgz");
+ok(unlink("$DataDir/static/Logo.png"), "Deleted $DataDir/static/Logo.png");
+test_page(get_page('action=static raw=1 pwd=foo'), "Trogs", "Logo");
+ok(-f "$DataDir/static/Trogs.svgz", "$DataDir/static/Trogs.svgz exists");
+ok(-f "$DataDir/static/Logo.png", "$DataDir/static/Logo.png exists");
+ok(! -f "$DataDir/static/HomePage.html", "$DataDir/static/HomePage.html does not exist");
+test_page(get_page('action=static raw=1 pwd=foo html=1'), "Trogs", "Logo", "HomePage");
+ok(-f "$DataDir/static/Trogs.svgz", "$DataDir/static/Trogs.svgz exists");
+ok(-f "$DataDir/static/Logo.png", "$DataDir/static/Logo.png exists");
+ok(-f "$DataDir/static/HomePage.html", "$DataDir/static/HomePage.html exists");
 
 # Make sure spaces are translated to underscores (fixed in image.pl)
 add_module('image.pl');
