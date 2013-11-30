@@ -1,4 +1,4 @@
-# Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2003–2013  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -303,8 +303,12 @@ resolved to the same target (the local page), which is unexpected.
 =cut
 
 
-push(@IndexOptions, ['near', T('Include near pages'), 0,
-		     \&ListNearPages]);
+# IndexOptions must be set in MyInitVariables for translations to
+# work.
+push(@MyInitVariables, sub {
+       push(@IndexOptions, ['near', T('Include near pages'), 0,
+			    \&ListNearPages]);
+     });
 
 sub ListNearPages {
   my %pages = %NearSource;
