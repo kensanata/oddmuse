@@ -1850,11 +1850,10 @@ sub RcTextRevision {
        : ($UsePathInfo ? '/' : '?') . UrlEncode($id));
   print "\n", RcTextItem('title', NormalToFree($id)),
     RcTextItem('description', $summary),
-    RcTextItem('generator', $username
-         ? $username . ' ' . Ts('from %s', $host) : $host),
+    RcTextItem('generator', GetAuthor($host, $username)),
     RcTextItem('language', join(', ', @{$languages})), RcTextItem('link', $link),
     RcTextItem('last-modified', TimeToW3($ts)),
-      RcTextItem('revision', $revision);
+    RcTextItem('revision', $revision);
 }
 
 sub PrintRcText { # print text rss header and call ProcessRcLines
@@ -2202,6 +2201,13 @@ sub ScriptLinkDiff {
   return ScriptLink($action, $text, 'diff');
 }
 
+sub GetAuthor {
+  my ($host, $username) = @_;
+  return $username . ' ' . Ts('from %s', $host) if $username and $host;
+  return $username if $username;
+  return T($host); # could be 'Anonymous'
+}
+
 sub GetAuthorLink {
   my ($host, $username) = @_;
   $username = FreeToNormal($username);
@@ -2210,11 +2216,11 @@ sub GetAuthorLink {
     $username = '';     # Just pretend it isn't there.
   }
   if ($username and $RecentLink) {
-    return ScriptLink(UrlEncode($username), $name, 'author', undef, Ts('from %s', $host));
+    return ScriptLink(UrlEncode($username), $name, 'author', undef, $host);
   } elsif ($username) {
-    return $q->span({-class=>'author'}, $name) . ' ' . Ts('from %s', $host);
+    return $q->span({-class=>'author'}, $name);
   }
-  return $host;
+  return T($host); # could be 'Anonymous'
 }
 
 sub GetHistoryLink {
@@ -3494,8 +3500,7 @@ sub PrintSearchResultEntry {
   my %entry = %{(shift)}; # get value from reference
   my $regex = shift;
   if (GetParam('raw', 0)) {
-    $entry{generator} = $entry{username} . ' ' if $entry{username};
-    $entry{generator} .= Ts('from %s', $entry{host}) if $entry{host};
+    $entry{generator} = GetAuthor($entry{host}, $entry{username});
     foreach my $key (qw(title description size last-modified generator username host)) {
       print RcTextItem($key, $entry{$key});
     }
@@ -3799,9 +3804,9 @@ sub MergeRevisions {   # merge change from file2 to file3 into file1
 # Note: all diff and recent-list operations should be done within locks.
 sub WriteRcLog {
   my ($id, $summary, $minor, $revision, $username, $host, $languages, $cluster) = @_;
-  my $rc_line = join($FS, $Now, $id, $minor, $summary, $host,
+  my $line = join($FS, $Now, $id, $minor, $summary, $host,
          $username, $revision, $languages, $cluster);
-  AppendStringToFile($RcFile, $rc_line . "\n");
+  AppendStringToFile($RcFile, $line . "\n");
 }
 
 sub UpdateDiffs { # this could be optimized, but isn't frequent enough
@@ -3853,17 +3858,18 @@ sub DoMaintain {
   }
   # Move the old stuff from rc to temp
   my @rc = split(/\n/, $data);
-  my $i;
-  for ($i = 0; $i < @rc ; $i++) {
-    my ($ts) = split(/$FS/o, $rc[$i]);
+  my @tmp = ();
+  for my $line (@rc) {
+    my ($ts, $id, $minor, $summary, $host, @rest) = split(/$FS/o, $line);
     last if ($ts >= $starttime);
+    push(@tmp, join($FS, $ts, $id, $minor, $summary, 'Anonymous', @rest));
   }
-  print $q->p(Ts('Moving %s log entries.', $i));
-  if ($i) {
-    my @temp = splice(@rc, 0, $i);
+  print $q->p(Ts('Moving %s log entries.', scalar(@tmp)));
+  if (@tmp) {
     # Write new files, and backups
-    AppendStringToFile($RcOldFile, join("\n",@temp) . "\n");
+    AppendStringToFile($RcOldFile, join("\n", @tmp) . "\n");
     WriteStringToFile($RcFile . '.old', $data);
+    splice(@rc, 0, scalar(@tmp)); # strip
     WriteStringToFile($RcFile, @rc ? join("\n",@rc) . "\n" : '');
   }
   if (opendir(DIR, $RssDir)) {  # cleanup if they should expire anyway
