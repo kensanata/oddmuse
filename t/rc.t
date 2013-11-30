@@ -1,4 +1,4 @@
-# Copyright (C) 2006, 2007, 2008, 2009  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006–20013  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 83;
+use Test::More tests => 86;
 
 clear_pages();
 
@@ -23,14 +23,22 @@ clear_pages();
 # with nothing appropriate in them.
 
 test_page(get_page('action=rc raw=1'), 'title: Wiki');
-WriteStringToFile($RcFile, "1${FS}test${FS}${FS}test${FS}${FS}${FS}1${FS}${FS}\n");
+# ts, id, minor, summary, host, username, revision, languages, cluster
+WriteStringToFile($RcFile, "1${FS}test${FS}${FS}test${FS}127.0.0.1${FS}${FS}1${FS}${FS}\n");
 test_page_negative(get_page('action=rc raw=1'), 'title: test');
 test_page(get_page('action=rc raw=1 from=1'), 'title: Wiki', 'title: test',
-	  'description: test', 'link: http://localhost/wiki.pl/test',
+	  'description: test', 'generator: 127.0.0.1',
+	  'link: http://localhost/wiki.pl/test',
 	  'last-modified: 1970-01-01T00:00Z', 'revision: 1');
-ok(rename($RcFile, $RcOldFile), "renamed $RcFile to $RcOldFile");
+
+test_page(get_page('action=maintain'),
+	  'Moving part of the RecentChanges log file',
+	  'Moving 1 log entries');
+
+# make sure it was anonymized
 test_page(get_page('action=rc raw=1 from=1'), 'title: Wiki', 'title: test',
-	  'description: test', 'link: http://localhost/wiki.pl/test',
+	  'description: test', 'generator: Anonymous',
+	  'link: http://localhost/wiki.pl/test',
 	  'last-modified: 1970-01-01T00:00Z', 'revision: 1');
 
 # Test that newlines are in fact stripped
