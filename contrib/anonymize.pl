@@ -59,6 +59,7 @@ sub anonymize {
   my $FS  = "\x1e"; # The FS character is the RECORD SEPARATOR control char
   my @lines = ();
   while (my $line = <F>) {
+    next if $line eq "\n"; # some rc.log files are broken and contain empty lines
     my ($ts, $id, $minor, $summary, $host, @rest) = split(/$FS/o, $line);
     if ($id eq '[[rollback]]') {
       # rollback markers are very different
