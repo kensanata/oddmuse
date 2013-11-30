@@ -46,7 +46,7 @@ push(@MyAdminCode, \&FixEncodingMenu);
 
 sub FixEncodingMenu {
   my ($id, $menuref, $restref) = @_;
-  if ($id) {
+  if ($id && GetParam('username')) {
     push(@$menuref,
 	 ScriptLink('action=fix-encoding;id=' . UrlEncode($id),
 		    T('Fix character encoding')));

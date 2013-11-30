@@ -108,6 +108,22 @@ a:active {
 	color:#a41;
 	background-color: inherit;
 }
+.button {
+	display: inline-block;
+	font-size: 150%;
+	cursor: pointer;
+	padding: 0.3em 0.5em;
+	text-shadow: 0px -1px 0px #ccc;
+	background-color: #cfa;
+	border: 1px solid #9d8;
+	border-radius: 5px;
+	box-shadow: 0px 1px 3px white inset,
+	            0px 1px 3px black;
+}
+.button a {
+	text-decoration: none;
+	font-weight: normal;
+}
 
 /* images with links, captions, etc */
 div.image { display: inline; margin: 1em; font-size: 90%; text-align: center; }
