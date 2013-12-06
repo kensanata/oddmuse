@@ -1,36 +1,34 @@
 ;;; oddmuse-curl.el -- edit pages on an Oddmuse wiki using curl
-
+;; 
 ;; Copyright (C) 2006–2013  Alex Schroeder <alex@gnu.org>
 ;;           (C) 2007  rubikitch <rubikitch@ruby-lang.org>
-
+;; 
 ;; Latest version:
-;;   http://www.emacswiki.org/cgi-bin/wiki/download/oddmuse-curl.el
-;;   (oddmuse-edit "EmacsWiki" "oddmuse-curl.el")
-;;   or save using (emacswiki-post "oddmuse-curl.el")
+;;   http://git.savannah.gnu.org/cgit/oddmuse.git/plain/contrib/oddmuse-curl.el
 ;; Discussion, feedback:
 ;;   http://www.emacswiki.org/cgi-bin/wiki/OddmuseMode
-
-;; This program is free software: you can redistribute it and/or modify it under
-;; the terms of the GNU General Public License as published by the Free Software
-;; Foundation, either version 3 of the License, or (at your option) any later
-;; version.
-
+;; 
+;; This program is free software: you can redistribute it and/or modify it
+;; under the terms of the GNU General Public License as published by the Free
+;; Software Foundation, either version 3 of the License, or (at your option)
+;; any later version.
+;; 
 ;; This program is distributed in the hope that it will be useful, but WITHOUT
-;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-;; FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-;; details.
-
-;; You should have received a copy of the GNU General Public License along with
-;; GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.
+;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+;; FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+;; more details.
+;; 
+;; You should have received a copy of the GNU General Public License along
+;; with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
-
+;; 
 ;; A simple mode to edit pages on Oddmuse wikis using Emacs and the command-line
 ;; HTTP client `curl'.
-
+;; 
 ;; Since text formatting rules depend on the wiki you're writing for, the
 ;; font-locking can only be an approximation.
-
+;; 
 ;; Put this file in a directory on your `load-path' and 
 ;; add this to your init file:
 ;; (require 'oddmuse)
@@ -44,17 +42,25 @@
   (require 'sgml-mode)
   (require 'skeleton))
 
+(require 'goto-addr)
+(require 'info)
+
 (defcustom oddmuse-directory "~/emacs/oddmuse"
   "Directory to store oddmuse pages."
   :type '(string)
   :group 'oddmuse)
 
 (defcustom oddmuse-wikis
-  '(("TestWiki" "http://www.emacswiki.org/cgi-bin/test" utf-8 "question" nil)
-    ("EmacsWiki" "http://www.emacswiki.org/cgi-bin/emacs" utf-8 "uihnscuskc" nil)
-    ("CommunityWiki" "http://www.communitywiki.org/cw" utf-8 "question" nil)
-    ("OddmuseWiki" "http://www.oddmuse.org/cgi-bin/oddmuse" utf-8 "question" nil)
-    ("CampaignWiki" "http://www.campaignwiki.org/wiki/NameOfYourWiki" utf-8 "ts" nil))
+  '(("TestWiki" "http://www.emacswiki.org/cgi-bin/test"
+     utf-8 "question" nil)
+    ("EmacsWiki" "http://www.emacswiki.org/cgi-bin/emacs"
+     utf-8 "uihnscuskc" nil)
+    ("CommunityWiki" "http://www.communitywiki.org/cw"
+     utf-8 "question" nil)
+    ("OddmuseWiki" "http://www.oddmuse.org/cgi-bin/oddmuse"
+     utf-8 "question" nil)
+    ("CampaignWiki" "http://www.campaignwiki.org/wiki/NameOfYourWiki"
+     utf-8 "ts" nil))
   "Alist mapping wiki names to URLs.
 
 The elements in this list are:
@@ -177,7 +183,7 @@ It must accept the page on stdin.
 %w  URL of the wiki as provided by `oddmuse-wikis'")
 
 (defvar oddmuse-link-pattern
-  "\\<[A-Z\xc0-\xde]+[a-z\xdf-\xff]+\\([A-Z\xc0-\xde]+[a-z\xdf-\xff]*\\)+\\>"
+  "\\<[[:upper:]]+[[:lower:]]+\\([[:upper:]]+[[:lower:]]*\\)+\\>"
   "The pattern used for finding WikiName.")
 
 (defvar oddmuse-wiki nil
@@ -249,12 +255,18 @@ This is used by Oddmuse to merge changes.")
   "Implement markup rules for the Usemod markup extension."
   (font-lock-add-keywords
    nil
-  '(("^=[^=\n]+=$" 0 '(face info-title-1 help-echo "Usemod H1"))
-    ("^==[^=\n]+==$" 0 '(face info-title-2 help-echo "Usemod H2"))
-    ("^===[^=\n]+===$" 0 '(face info-title-3 help-echo "Usemod H3"))
-    ("^====+[^=\n]+====$" 0 '(face info-title-4 help-echo "Usemod H4"))
-    ("^ .+?$" 0 '(face font-lock-comment-face help-echo "Usemod block"))
-    ("^[#]+ " 0 '(face font-lock-constant-face help-echo "Usemod ordered list")))))
+  '(("^=[^=\n]+=$"
+     0 '(face info-title-1 help-echo "Usemod H1"))
+    ("^==[^=\n]+==$"
+     0 '(face info-title-2 help-echo "Usemod H2"))
+    ("^===[^=\n]+===$"
+     0 '(face info-title-3 help-echo "Usemod H3"))
+    ("^====+[^=\n]+====$"
+     0 '(face info-title-4 help-echo "Usemod H4"))
+    ("^ .+?$"
+     0 '(face font-lock-comment-face help-echo "Usemod block"))
+    ("^[#]+ "
+     0 '(face font-lock-constant-face help-echo "Usemod ordered list")))))
 
 (defun oddmuse-usemod-html-markup ()
   "Implement markup rules for the HTML option in the Usemod markup extension."
@@ -270,9 +282,12 @@ This is used by Oddmuse to merge changes.")
   "Implement markup rules for the Markup extension."
   (font-lock-add-keywords
    nil
-   '(("\\*\\w+\\(\\w+\\|[-%.,:;\'\"!? ]+\\)*?\\*" 0 '(face bold help-echo "Markup bold"))
-     ("\\_</\\w+\\(\\w+\\|[-%.,:;\'\"!? ]+\\)*?/" 0 '(face italic help-echo "Markup italic"))
-     ("_\\w+\\(\\w+\\|[-%.,:;\'\"!? ]+\\)*?_" 0 '(face underline help-echo "Markup underline")))))
+   '(("\\*\\w+[[:word:]-%.,:;\'\"!? ]*\\*"
+      0 '(face bold help-echo "Markup bold"))
+     ("\\_</\\w+[[:word:]-%.,:;\'\"!? ]*/"
+      0 '(face italic help-echo "Markup italic"))
+     ("_\\w+[[:word:]-%.,:;\'\"!? ]*_"
+      0 '(face underline help-echo "Markup underline")))))
 
 (defun oddmuse-basic-markup ()
   "Implement markup rules for the basic Oddmuse setup without extensions.
@@ -280,10 +295,14 @@ This function should come come last in `oddmuse-markup-functions'
 because of such basic patterns as [.*] which are very generic."
   (font-lock-add-keywords
    nil
-   `((,oddmuse-link-pattern 0 '(face link help-echo "Basic wiki name"))
-     ("\\[\\[.*?\\]\\]" 0 '(face link help-echo "Basic free link"))
-     (,(concat "\\[" goto-address-url-regexp "\\( .+?\\)?\\]") 0 '(face link help-echo "Basic external free link"))
-     ("^\\([*]+\\)" 0 '(face font-lock-constant-face help-echo "Basic bullet list"))))
+   `((,oddmuse-link-pattern
+      0 '(face link help-echo "Basic wiki name"))
+     ("\\[\\[.*?\\]\\]"
+      0 '(face link help-echo "Basic free link"))
+     (,(concat "\\[" goto-address-url-regexp "\\( .+?\\)?\\]")
+      0 '(face link help-echo "Basic external free link"))
+     ("^\\([*]+\\)"
+      0 '(face font-lock-constant-face help-echo "Basic bullet list"))))
   (goto-address))
 
 ;; Should determine this automatically based on the version? And cache it per wiki?
@@ -414,6 +433,7 @@ Use a prefix argument to force a reload of the page."
 	(let ((max-mini-window-height 1))
 	  (shell-command command buf))
         (pop-to-buffer buf)
+	(goto-address)
 	(view-mode)))))
 
 ;;;###autoload
@@ -543,7 +563,8 @@ The current wiki is taken from `oddmuse-wiki'."
     (oddmuse-run "Posting" command buf t)))
 
 (defun oddmuse-make-completion-table (wiki)
-  "Create pagename completion table for WIKI. if available, return precomputed one."
+  "Create pagename completion table for WIKI.
+If available, return precomputed one."
   (or (gethash wiki oddmuse-pages-hash)
       (oddmuse-compute-pagename-completion-table wiki)))
 
@@ -557,7 +578,8 @@ This command is used to reflect new pages to `oddmuse-pages-hash'."
          (command (oddmuse-format-command oddmuse-index-get-command))
          table)
     (message "Getting index of all pages...")
-    (prog1 (setq table (mapcar 'list (split-string (shell-command-to-string command))))
+    (prog1
+	(setq table (split-string (shell-command-to-string command)))
       (puthash wiki table oddmuse-pages-hash)
       (message "Getting index of all pages...done"))))
 
@@ -630,8 +652,9 @@ With universal argument, reload."
 ;;;###autoload
 (defun emacswiki-post (&optional pagename summary)
   "Post the current buffer to the EmacsWiki.
-If this command is invoked interactively: with prefix argument, prompts pagename,
-otherwise set pagename as basename of `buffer-file-name'.
+If this command is invoked interactively: with prefix argument,
+prompts for pagename, otherwise set pagename as basename of
+`buffer-file-name'.
 
 This command is intended to post current EmacsLisp program easily."
   (interactive)
@@ -650,12 +673,9 @@ This command is intended to post current EmacsLisp program easily."
       (concat (or (cadr (assoc wiki oddmuse-wikis)) (error)) "/" pagename)
     (error nil)))
 
-;; (oddmuse-url "EmacsWiki" "OddmuseMode")
-;; (oddmuse-url "a" "OddmuseMode")
-
 ;;;###autoload
 (defun oddmuse-browse-page (wiki pagename)
-  "Ask a WWW browser to load an oddmuse page.
+  "Ask a WWW browser to load an Oddmuse page.
 WIKI is the name of the wiki as defined in `oddmuse-wikis',
 PAGENAME is the pagename of the page you want to browse."
   (interactive (oddmuse-read-wiki-and-pagename))
