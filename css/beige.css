@@ -125,6 +125,19 @@ a:active {
 	font-weight: normal;
 }
 
+/* table of contents */
+.toc {
+    font-size: smaller;
+    border-left: 1em solid #886;
+}
+.toc ol {
+    list-style-type: none;
+    padding-left: 1em;
+}
+.toc a {
+    font-weight: normal;
+}
+
 /* images with links, captions, etc */
 div.image { display: inline; margin: 1em; font-size: 90%; text-align: center; }
 .left { float: left; margin-right: 1em; }
