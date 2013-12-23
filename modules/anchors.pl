@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/anchors.pl">anchors.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Comments_on_Local_Anchor_Extension">Comments on Local Anchor Extension</a></p>';
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/anchors.pl">anchors.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Local_Anchor_Extension">Comments on Local Anchor Extension</a></p>';
 
 push(@MyRules, \&AnchorsRule);
 
