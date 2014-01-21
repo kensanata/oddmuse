@@ -1,0 +1,224 @@
+@font-face {
+  font-family: 'Gentium Basic';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Gentium Basic'), local('GentiumBasic'), url(http://themes.googleusercontent.com/static/fonts/gentiumbasic/v5/KCktj43blvLkhOTolFn-MVhr3SzZVY8L1R-AhaesIwA.woff) format('woff');
+}
+@font-face {
+  font-family: 'Gentium Basic';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Gentium Basic Bold'), local('GentiumBasic-Bold'), url(http://themes.googleusercontent.com/static/fonts/gentiumbasic/v5/2qL6yulgGf0wwgOp-UqGyKuvVGpDTHxx0YlM6XbRIFE.woff) format('woff');
+}
+@font-face {
+  font-family: 'Gentium Basic';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Gentium Basic Italic'), local('GentiumBasic-Italic'), url(http://themes.googleusercontent.com/static/fonts/gentiumbasic/v5/qoFz4NSMaYC2UmsMAG3lyajIwExuvJl80GezUi4i-sM.woff) format('woff');
+}
+@font-face {
+  font-family: 'Gentium Basic';
+  font-style: italic;
+  font-weight: 700;
+  src: local('Gentium Basic Bold Italic'), local('GentiumBasic-BoldItalic'), url(http://themes.googleusercontent.com/static/fonts/gentiumbasic/v5/8N9-c_aQDJ8LbI1NGVMrwjBWbH-5CKom31QWlI8zOIM.woff) format('woff');
+}
+
+body {
+    background:#fff;
+    padding:2% 5%;
+    margin:0;
+    font-family: "Gentium Basic", "Bookman Old Style", "Times New Roman", serif;
+    font-size: 18pt;
+}
+
+div.header h1 {
+    margin-top:2ex;
+}
+
+a {
+    text-decoration: none;
+    color: #a00;
+}
+
+a:visited {
+    color: #d88;
+}
+
+div.header h1 a:hover, h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover,
+a:hover, span.caption a.image:hover {
+    background:#fee;
+}
+
+img.logo {
+    float: right;
+    clear: right;
+    border-style:none;
+    background-color:#fff;
+}
+
+img {
+    padding: 0.5em;
+    margin: 0 1em;
+}
+
+a.image:hover {
+    background:inherit;
+}
+
+a.image:hover img {
+    background:#fee;
+}
+
+/* a.definition soll aussehen wie h2 */
+h2, p a.definition {
+    display:block;
+    clear:both;
+}
+
+/* Such Link im h1 soll nicht auffallen. */
+h1, h2, h3, h4, h1 a, h1 a:visited, p a.definition {
+    color:#666;
+    font-size: 30pt;
+    font-weight: normal;
+    margin: 4ex 0 1ex 0;
+    padding: 0;
+    border-bottom: 1px solid #000;
+}
+
+h3, h4 {
+    font-size: inherit;
+}
+
+
+
+
+div.diff {
+    padding: 1em 3em;
+}
+div.old {
+    background-color:#FFFFAF;
+}
+div.new {
+    background-color:#CFFFCF;
+}
+div.old p, div.new p {
+    padding: 0.5em 0;
+}
+div.refer { padding-left:5%; padding-right:5%; font-size:smaller; }
+div[class="content refer"] p { margin-top:2em; }
+div.content div.refer hr { display:none; }
+div.content div.refer { padding:0; font-size:medium; }
+div.content div.refer p { margin:0; }
+div.refer a { display:block; }
+table.history { border-style:none; }
+td.history { border-style:none; }
+
+table.user {
+    border-style: none;
+    margin-left: 3em;
+}
+table.user tr td {
+    border-style: none;
+    padding:0.5ex 1ex;
+}
+
+dt {
+    font-weight:bold;
+}
+dd {
+    margin-bottom:1ex;
+}
+
+textarea { width:100%; height:80%; }
+textarea#summary { height: 3em; }
+
+div.image span.caption {
+    margin: 0 1em;
+}
+li img, img.smiley, .noborder img {
+    border:none;
+    padding:0;
+    margin:0;
+    background:#fff;
+    color:#000;
+}
+/* Google +1 */
+a#plus1 img {
+    background-color: #fff;
+    padding: 0;
+    margin: 0;
+    border: none;
+}
+
+div.header img, div.footer img { border:0; padding:0; margin:0; }
+
+.left { float:left; }
+.right { float:right; }
+div.left .left, div.right .right {
+    float:none;
+}
+.center { text-align:center; }
+
+span.author {
+    color: #501;
+}
+span.bar a {
+	padding-right:1ex;
+}
+
+.rc .author {
+    font-weight: normal;
+    color: #666;
+}
+.rc .dash {
+    display: none;
+}
+.rc strong {
+    font-weight: normal;
+    color: inherit;
+    display: block;
+}
+.rc li {
+    position:relative;
+    padding-right: 5em;
+}
+.rc .lang {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1;
+}
+.rc .type {
+    position: absolute;
+    top: 1.16em; /* don't forget line-height */
+    right: 0;
+    z-index: 2;
+    background:#fff; /* covers language if no summary */
+    padding: 0.1em 0 0.1em 1em;
+}
+
+hr {
+    border:none;
+    color:black;
+    background-color:#000;
+    height:2px; 
+    margin-top:2ex;
+}
+
+div.footer hr {
+    height:4px;
+    margin: 2em 0 1ex 0;
+}
+
+pre {
+    padding: 0.5em;
+    margin-left: 1em;
+    margin-right: 2em;
+    white-space: pre;
+    overflow:hidden;
+    font-size: smaller;
+}
+
+div.footer hr {
+    clear:both;
+}
