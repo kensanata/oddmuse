@@ -166,37 +166,6 @@ span.bar a {
 	padding-right:1ex;
 }
 
-.rc .author {
-    font-weight: normal;
-    color: #666;
-}
-.rc .dash {
-    display: none;
-}
-.rc strong {
-    font-weight: normal;
-    color: inherit;
-    display: block;
-}
-.rc li {
-    position:relative;
-    padding-right: 5em;
-}
-.rc .lang {
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 1;
-}
-.rc .type {
-    position: absolute;
-    top: 1.16em; /* don't forget line-height */
-    right: 0;
-    z-index: 2;
-    background:#fff; /* covers language if no summary */
-    padding: 0.1em 0 0.1em 1em;
-}
-
 hr {
     border:none;
     color:black;
