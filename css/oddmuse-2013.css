@@ -166,6 +166,20 @@ span.bar a {
 	padding-right:1ex;
 }
 
+.rc .author {
+    color: #655;
+}
+
+.rc strong {
+    font-weight: normal;
+    color: inherit;
+}
+
+.rc li {
+    position:relative;
+    padding: 1ex 0;
+}
+
 hr {
     border:none;
     color:black;
