@@ -113,16 +113,18 @@ sub name {
 }
 
 sub newlines {
-  my @strings = @_;
-  return map { s/\\n/\n/g; $_; } @strings;
+  my $str = shift;
+  $str =~ s/\\n/\n/g;
+  return $str;
 }
 
 # alternating input and output strings for applying rules
 sub run_tests {
   # translate embedded newlines (other backslashes remain untouched)
-  my @tests = newlines(@_);
+  my @tests = @_;
   my ($input, $output);
   while (($input, $output, @tests) = @tests) {
+    $input = newlines($input);
     my $result = apply_rules($input);
     is($result, $output, name($input));
   }
@@ -219,10 +221,10 @@ sub xpath_test_negative {
 
 sub xpath_run_tests {
   # translate embedded newlines (other backslashes remain untouched)
-  my @tests = newlines(@_);
+  my @tests = @_;
   my ($input, $output);
   while (($input, $output, @tests) = @tests) {
-    my $result = apply_rules($input);
+    my $result = apply_rules(newlines($input));
     xpath_test("<div>$result</div>", $output);
   }
 }
