@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 20;
+use Test::More tests => 22;
 use utf8; # tests contain UTF-8 characters and it matters
 
 clear_pages();
@@ -26,9 +26,9 @@ test_page_negative(get_page('action=admin'), 'action=fix-encoding');
 
 # make sure no menu shows up if the page does not exists
 
-test_page(get_page('action=admin id=foo'),
-	  'action=fix-encoding;id=foo',
-	  'action=fix-escaping;id=foo');
+test_page_negative(get_page('action=admin id=foo'),
+		   'action=fix-encoding;id=foo',
+		   'action=fix-escaping;id=foo');
 
 # make sure nothing is saved if the page does not exist
 
@@ -54,9 +54,15 @@ test_page(get_page('action=fix-escaping id=Example'),
 test_page_negative(get_page('action=rc all=1 showedit=1'),
 		   'Fix Character encoding');
 
-# the menu shows up if the page exists
+# the menu doesn't show up if the page exists
 
-test_page(get_page('action=admin id=Example'),
+test_page_negative(get_page('action=admin id=Example'),
+		   'action=fix-encoding;id=Example',
+		   'action=fix-escaping;id=Example');
+
+# the menu does show up if the page exists and a username is set
+
+test_page(get_page('action=admin id=Example username=Alex'),
 	  'action=fix-encoding;id=Example',
 	  'action=fix-escaping;id=Example');
 
