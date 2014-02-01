@@ -95,8 +95,8 @@ $StyleSheetPage = 'css';        # Page for CSS sheet
 $LogoUrl     = '';              # URL for site logo ('' for no logo)
 $NotFoundPg  = '';              # Page for not-found links ('' for blank pg)
 
-$NewText     = "This page is empty.\n";  # New page text
-$NewComment  = "Add your comment here.\n";       # New comment text
+$NewText     = T('This page is empty.') . "\n";    # New page text
+$NewComment  = T('Add your comment here.') . "\n"; # New comment text
 
 $EditAllowed = 1; # 0 = no, 1 = yes, 2 = comments pages only, 3 = comments only
 $AdminPass   = '' unless defined $AdminPass; # Whitespace separated passwords.
