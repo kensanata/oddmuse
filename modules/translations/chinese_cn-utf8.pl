@@ -42,8 +42,10 @@ $RCName      = '最近更新'; # Name of changes page
 $RssExclude       = 'RSS排除页面'; # name of the page that lists pages to be excluded from the feed
 $CategoriesPage = '日志类别';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
-Include normal pages
-包含普通页面
+This page is empty.
+
+Add your comment here.
+
 Reading not allowed: user, ip, or network is blocked.
 禁止读取：使用者、ip 或是网路已被禁止连线。
 Login
@@ -114,6 +116,8 @@ Please go on to %s.
 请继续前住%s。
 Updates since %s
 自%s以来的修改
+up to %s
+
 Updates in the last %s days
 在%s天之内的更动
 Updates in the last %s day
@@ -166,8 +170,6 @@ new
 新增
 All changes for %s
 %s页面的所有修订
-from %s
-自 %s
 This page is too big to send over RSS.
 页面太大，无法通过RSS发送。
 History of %s
@@ -198,6 +200,8 @@ The two revisions are the same.
 两个版本相同
 Editing not allowed for %s.
 不允许编辑%s。
+Rollback of %s would restore banned content.
+
 Rollback to %s
 恢复至 %s
 %s rolled back
@@ -218,8 +222,6 @@ Unlock site
 网站解锁
 Lock site
 网站锁定
-Install CSS
-安装CSS
 Unlock %s
 解锁 %s
 Lock %s
@@ -232,6 +234,8 @@ Important pages:
 重要页面
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 在首行加入 <strong>%s</strong>以将页面标志为删除.
+from %s
+自 %s
 [Home]
 [首页]
 redirected from %s
@@ -262,6 +266,10 @@ by %s
 由 %s
 (diff)
 (比较差异)
+a
+
+c
+
 Edit revision %s of this page
 编辑本页的第%s版本
 e
@@ -300,6 +308,8 @@ Validate CSS
 验证 CSS
 Last edit
 最后编辑
+Summary:
+摘要：
 Difference between revision %1 and %2
 差异（从第 %1 版到%2）
 revision %s
@@ -336,12 +346,12 @@ Cannot open %s
 无法打开 %s
 Cannot write %s
 无法写入 %s
-Cannot create %s
-无法创建
 Could not get %s lock
 无法取得%s锁定
 The lock was created %s.
 创建文件只读标记。
+Maybe the user running this script is no longer allowed to remove the lock directory?
+
 This operation may take several seconds...
 这个动作可能要花几秒…
 Forced unlock of %s lock.
@@ -384,8 +394,6 @@ Editing old revision %s.
 正在编辑旧的第%s版。
 Saving this page will replace the latest revision with this text.
 如果储存的话，将会取代目前最新的版本。
-Summary:
-摘要：
 This change is a minor edit.
 这次的修改是次要的。
 Cancel
@@ -432,6 +440,8 @@ Filter:
 (列出%s)
 %s pages found.
 找到%s个页面。
+Malformed regular expression in %s
+
 Replaced: %s
 取代：%s
 Search for: %s
@@ -514,16 +524,12 @@ Displaying Wiki Version
 显示 Wiki 版本
 Debugging Information
 
-Inter links:
-内部连结：
 Too many connections by %s
 太多来自%s的连线
 Please do not fetch more than %1 pages in %2 seconds.
 请不要在 %2 秒内下载超过 %1 页的数据。
 Check whether the web server can create the directory %s and whether it can create files in it.
 请确认网站服务器是否可建立%s目录，并且在其中建立文件。
-Copy one of the following stylesheets to %s:
-复制以下样式模板至 %s。
 Deleting %s
 正在删除 %s
 Deleted %s
@@ -563,6 +569,24 @@ Pages that link to this page
 The search parameter is missing.
 
 Pages link to %s
+
+Ban contributors
+
+Ban Contributors to %s
+
+%s is banned
+
+Ban!
+
+These URLs were rolled back. Perhaps you want to add a regular expression to %s?
+
+Regular expression:
+
+Consider banning the hostname or IP number as well: 
+
+Regular expression "%1" matched "%2" on this page.
+
+Regular expression "%s" matched on this page.
 
 Cannot highlight the language %s.
 无法高亮显示语言%s。
@@ -640,6 +664,20 @@ Compilation for %s
 %s的汇编
 Compilation tag is missing a regular expression.
 汇编标志缺少一个正规表达式。
+Install CSS
+安装CSS
+Copy one of the following stylesheets to %s:
+复制以下样式模板至 %s。
+Reset
+
+Extract all dates from the database
+
+Dates
+
+No dates found.
+
+Inter links:
+内部连结：
 List spammed pages
 
 Despamming pages
@@ -680,6 +718,20 @@ ordinary changes
 普通改动
 Matching page names:
 
+Fix character encoding
+
+Fix HTML escapes
+
+no summary available
+
+page was marked for deletion
+
+Oddmuse
+
+Cleaning up git repository
+
+Email: 
+
 Could not find %1.html template in %2
 无法在 %2 找到 %1.html 的范本
 Only Editors are allowed to see this hidden page.
@@ -696,6 +748,10 @@ Define
 定义
 Full Link List
 完整连结列表
+Banned Content
+
+Rule "%1" matched on this page.
+
 List of locked pages
 
 Pages tagged with %s
@@ -708,7 +764,17 @@ The template %s is either empty or does not exist.
  -- 在%s中定义
 Local names defined on %1: %2
 定义在%s:%2的局部变量
+Name: 
+
+URL: 
+
+Define Local Names
+
+Define external redirect: 
+
 Locked Pages
+
+Host or IP matched %s
 
 Register for %s
 为%s注册
@@ -810,8 +876,6 @@ unsubscribe
 
 subscribe
 
-Email: 
-
 %s appears to be an invalid mail address
 
 Your mail subscriptions
@@ -842,11 +906,19 @@ The remaining pages do not exist.
 
 Unsubscribed %s from the following pages:
 
+Migrating Subscriptions
+
+No non-migrated email addresses found, migration not necessary.
+
+Migrated %s rows.
+
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 
 %s is not a legal name for a namespace
 %s不是一个合法的用户名，请重新设置
 Namespaces
+
+ (create locally)
 
 Getting page index file for %s.
 自%s取得页面索引数据。
@@ -864,8 +936,6 @@ EditNearLinks
 编辑相邻链接
 The same page on other sites:
 其他网站的相同页面
- (create locally)
-
 image
 图像
 download
@@ -880,6 +950,12 @@ Generating Link Database
 产生连结数据库
 The 404 handler extension requires the link data extension (links.pl).
 404信息处理扩展单元需要您安装links.pl
+Make available offline
+
+Offline
+
+You are currently offline and what you requested is not part of the offline application. You need to be online to do this.
+
 LocalMap
 本地地图
 No page id for action localmap
@@ -894,20 +970,6 @@ Self-ban by %s
 被%s自闭
 You have banned your own IP.
 您把封禁了自己的IP地址。
-OpenID Login
-
-Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
-
-Your homepage is set to %s.
-
-You have no homepage set.
-
-Homepage:
-
-Homepage is missing
-
-OpenID error %s
-
 Orphan List
 孤立页面列表
 Trail: 
@@ -934,12 +996,18 @@ Include permanent anchors
 包含永久锚点
 Portrait
 肖像
+This page is password protected. If you know the password, you can %s. Once you have done that, return and reload this page.
+
+supply the password now
+
 Publish %s
 发表%s
 No target wiki was specified in the config file.
 配置文件中没有设定目标wiki
 The target wiki was misconfigured.
 目标wiki设置有误
+Upload is limited to %s bytes
+
 You did not answer correctly.
 回答不正确。
 To save this page you must answer this question:
@@ -992,6 +1060,10 @@ Static Copy
 静态页面备份
 Back to %s
 返回 %s
+Edit image in the browser
+
+Summary of your changes: 
+
 Copy to %1 succeeded: %2.
 成功复制为%1：%2
 Copy to %1 failed: %2.
@@ -1030,11 +1102,39 @@ Too many instances.  Only %s allowed.
 
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 
+thumb
+
+Error creating thumbnail from non existant page %s.
+
+Can not create thumbnail for file type %s.
+
+Can not create thumbnail for a text document
+
+Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
+
+Can not create path for thumbnail - %s
+
+Failed to run %1 to create thumbnail: %2
+
+%s ran into an error
+
+%s produced no output
+
+Failed to parse %s.
+
+Timezone
+
+Pick your timezone:
+
+Set
+
 Contents
 内容
 Create a new page for today
 
 Add Translation
+
+Please provide a different page name for the translation.
 
 Added translation: %1 (%2)
 
@@ -1078,6 +1178,8 @@ Wanted Pages
 %s个页面
 %s, referenced from:
 %s，引用自：
+Web application for offline browsing
+
 Upload of %s file
 上传%s个文件
 Blog
