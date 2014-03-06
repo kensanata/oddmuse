@@ -142,7 +142,7 @@ Go!
 (minor)
 (次要的)
 rollback
-回復
+回滾
 new
 新增
 All changes for %s
@@ -168,13 +168,13 @@ Revision %s
 Contributors to %s
 編寫 %s 的作者
 Missing target for rollback.
-找不到要回復的目標
+找不到要回滾的目標
 Target for rollback is too far back.
-要回復的目標已太久以前了。
+要回滾的目標已太久以前了。
 A username is required for ordinary users.
 需使用普通用戶名稱
 Rolling back changes
-回復修改
+回滾修改
 The two revisions are the same.
 二個版本相同
 Editing not allowed for %s.
@@ -182,9 +182,9 @@ Editing not allowed for %s.
 Rollback of %s would restore banned content.
 
 Rollback to %s
-回復至 %s
+回滾至 %s
 %s rolled back
-%s 已回復
+%s 已回滾
 to %s
 到 %s
 Index of all pages
@@ -644,7 +644,7 @@ SPAM 廣告頁面
 Cannot find revision %s.
 無法取得版本 %s 。
 Revert to revision %1: %2
-回復至版本 %1: %2 
+回滾至版本 %1: %2 
 Marked as %s.
 標記為 %s 。
 Cannot find unspammed revision.
