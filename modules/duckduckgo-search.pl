@@ -44,6 +44,6 @@ sub DuckDuckGoSearchInit {
 }
 
 sub DoDuckDuckGoSearch {
-  my $search = GetParam('search', undef);
+  my $search = UrlEncode(GetParam('search', undef));
   print $q->redirect({-uri=>"https://www.duckduckgo.com/?q=$search+site%3A$DuckDuckGoSearchDomain"});
 }
