@@ -1,8 +1,9 @@
 # UTF-8 encoded Simplified Chinese language file for use with Oddmuse
 #
+# Copyright (c) 2014, Andy Stewart <lazycat.manatee@gmail.com>
 # Copyright (c) 2006, Qianqian Fang <fangqq@gmail.com>
-# Copyright (c) 2003, 2004  wctang <wctang@csie.nctu.edu.tw>.
-# Copyright (c) 2005  xuzq <xuzq@chinalions.com>.
+# Copyright (c) 2003, 2004  wctang <wctang@csie.nctu.edu.tw>
+# Copyright (c) 2005  xuzq <xuzq@chinalions.com>
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
@@ -17,47 +18,44 @@
 # Create a modules subdirectory in your data directory, and put the
 # file in there. It will be loaded automatically.
 #
-#Thanks:
-#=======
-#This translation is based upon the traditional Chinese translation chinese-utf8.pl
-#(http://www.oddmuse.org/cgi-bin/wiki/download/chinese-utf8.pl)
-#by wctang <wctang@csie.nctu.edu.tw> and using the tool cnmap
-#(http://search.cpan.org/~qjzhou/Encode-CNMap-0.32/bin/cnmap) by Qing-Jie Zhou <qjzhou@hotmail.com>.
+# Thanks:
+# =======
+# This translation is based upon the traditional Chinese translation
+# chinese-utf8.pl
+# (http://www.oddmuse.org/cgi-bin/wiki/download/chinese-utf8.pl) by
+# wctang <wctang@csie.nctu.edu.tw> and using the tool cnmap
+# (http://search.cpan.org/~qjzhou/Encode-CNMap-0.32/bin/cnmap) by
+# Qing-Jie Zhou <qjzhou@hotmail.com>.
 #
 use utf8;
 $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/chinese_cn-utf8.pl">chinese_cn-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Chinese">Chinese</a></p>';
-##############################################################
-#  for those who want to use Chinese even for special pages
-#  please uncomment the corresponding lines to use translated 
-#  page name
-##############################################################
-$SiteName    = '我的Wiki';                # Name of site (used for titles)
-$HomePage    = '首页';      # Home page
-$NewText     = "新页面内容\n";  # New page text
-$NewComment  = "请添加评论\n";       # New comment text
+$SiteName = '我的Wiki'; # Name of site (used for titles)
+$HomePage = '首页'; # Home page
+$NewText = "新页面内容\n"; # New page text
+$NewComment = "请添加评论\n"; # New comment text
 $BannedContent = '禁用'; # Page for banned content (usually for link-ban)
-$BannedHosts = '封禁地址';   # Page for banned hosts
-$DeletedPage = '删除页面';   # Pages starting with this can be deleted
-$RCName      = '最近更新'; # Name of changes page
-$RssExclude       = 'RSS排除页面'; # name of the page that lists pages to be excluded from the feed
+$BannedHosts = '封禁地址'; # Page for banned hosts
+$DeletedPage = '删除页面'; # Pages starting with this can be deleted
+$RCName = '最近更新'; # Name of changes page
+$RssExclude = 'RSS排除页面'; # name of the page that lists pages to be excluded from the feed
 $CategoriesPage = '日志类别';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 包含普通页面
 Reading not allowed: user, ip, or network is blocked.
-禁止读取：使用者、ip 或是网路已被禁止连线。
+禁止读取：用户、IP 或是网络已被禁止连接。
 Login
 登录
 Error
-
+错误
 %s calls
-
+%s 次调用
 Could not create %s
 无法建立 %s
 Invalid UserName %s: not saved.
-无法储存。无效的使用者名称 %s
+无法保存, 无效的用户名 %s。
 UserName must be 50 characters or less: not saved
-无法储存。使用者名称不可超过 50 个字符。
+无法保存, 使用者名称不可超过 50 个字符。
 This page contains an uploaded file:
 本页包含一个已上传的文件：
 Recursive include of %s!
@@ -65,13 +63,13 @@ Recursive include of %s!
 Clear Cache
 清除缓存
 Main lock obtained.
-取得主要锁定。
+获得主要锁定。
 Main lock released.
 释放主要锁定。
 Journal
-
+日志
 More...
-
+更多...
 Comments on this page
 对本页发表评论
 XML::RSS is not available on this system.
@@ -105,43 +103,43 @@ Invalid Page %s (must not end with .lck)
 Invalid Page %s
 无效的页面名称 %s
 Too many redirections
-
+太多的重定向
 No redirection for old revisions
-
+不能重定向到旧版本
 Invalid link pattern for #REDIRECT
-
+无效的 #REDIRECT 连接模式
 Please go on to %s.
 请继续前住%s。
 Updates since %s
-自%s以来的修改
+自%s以来的更改
 Updates in the last %s days
-在%s天之内的更动
+在%s天之内的更改
 Updates in the last %s day
-在%s天之内的更动
+在%s天之内的更改
 for %s only
 只列出 %s
 List latest change per page only
-只列出每个页面最新的修改
+只列出每个页面最新的更改
 List all changes
-列出恢复的版本
+列出所有更改
 Skip rollbacks
-跳过恢复的版本
+跳过回滚的版本
 Include rollbacks
-包含版本恢复
+包含回滚的版本
 List only major changes
-只列出主要的修改
+只列出主要的更改
 Include minor changes
-也显示次要的修改
+显示次要的更改
 %s days
 %s天
 List later changes
-列出最新的修改
+列出随后的更改
 RSS
-
+RSS
 RSS with pages
-
+RSS和页面
 RSS with pages and diff
-
+RSS和页面以及差异
 Filters
 过滤器
 Title:
@@ -149,11 +147,11 @@ Title:
 Title and Body:
 标题和正文：
 Username:
-使用者名称：
+用户名：
 Host:
-来源主机：
+主机：
 Follow up to:
-
+跟进：
 Language:
 语言：
 Go!
@@ -161,11 +159,11 @@ Go!
 (minor)
 (次要的)
 rollback
-恢复
+回滚
 new
 新增
 All changes for %s
-%s页面的所有修订
+%s页面的所有更改
 from %s
 自 %s
 This page is too big to send over RSS.
@@ -177,31 +175,31 @@ Compare
 Deleted
 已删除的
 Mark this page for deletion
-标记为准备删除文档
+标记为准备删除的文档
 No other revisions available
-无其他版本
+没有其他版本可用
 current
-当前
+当前版本
 Revision %s
 第%s版本
 Contributors to %s
-参与编写%s的作者
+参与编写%s的贡献者
 Missing target for rollback.
-找不到要恢复的目标
+找不到要回滚的目标。
 Target for rollback is too far back.
-要恢复的目标过于久远。
+要回滚的目标过于久远。
 A username is required for ordinary users.
-
+需要一个普通用户的用户名。
 Rolling back changes
-恢复修改
+回滚更改
 The two revisions are the same.
 两个版本相同
 Editing not allowed for %s.
 不允许编辑%s。
 Rollback to %s
-恢复至 %s
+回滚至 %s
 %s rolled back
-%s已恢复
+%s已回滚
 to %s
 到 %s
 Index of all pages
@@ -209,15 +207,15 @@ Index of all pages
 Wiki Version
 显示 Wiki 的版本
 Unlock Wiki
-解锁
+解锁 Wiki
 Password
 密码
 Run maintenance
 执行维护动作
 Unlock site
-网站解锁
+解锁网站
 Lock site
-网站锁定
+锁定网站
 Install CSS
 安装CSS
 Unlock %s
@@ -227,27 +225,27 @@ Lock %s
 Administration
 管理
 Actions:
-操作
+操作：
 Important pages:
-重要页面
+重要页面：
 To mark a page for deletion, put <strong>%s</strong> on the first line.
-在首行加入 <strong>%s</strong>以将页面标志为删除.
+在首行加入 <strong>%s</strong>以将页面标记为删除。
 [Home]
 [首页]
 redirected from %s
 自%s重定向 
 %s: 
-
+%s：
 Click to search for references to this page
 按下即可以搜索参考至本页的数据
 Cookie: 
-曲其：
+Cookie：
 Edit this page
 编辑本页
 Preview:
 预览：
 Preview only, not yet saved
-现在是预览模式，尚未储存
+现在是预览模式，尚未保存
 Warning
 警告
 Database is stored in temporary directory %s
@@ -271,17 +269,17 @@ This page is read-only
 View other revisions
 参阅其他版本
 View current revision
-参阅目前版本
+参阅当前版本
 View all changes
-列出所有的修改
+列出所有更改
 View contributors
-查看作者
+查看贡献者
 Homepage URL:
 首页网址：
 s
 
 Save
-储存
+保存
 p
 
 Preview
@@ -293,7 +291,7 @@ f
 Replace:
 取代：
 Delete
-
+删除
 Validate HTML
 验证 HTML
 Validate CSS
@@ -301,11 +299,11 @@ Validate CSS
 Last edit
 最后编辑
 Difference between revision %1 and %2
-差异（从第 %1 版到%2）
+比较第%1版和第%2版之间的差异
 revision %s
 第%s版
 current revision
-目前的版本
+当前版本
 Last major edit (%s)
 最后主版本编辑 (%s)
 later minor edits
@@ -329,9 +327,9 @@ showing current revision instead
 Showing revision %s
 显示第%s版
 Cannot save a nameless page.
-无法储存没有名称的页面。
+无法保存没有名称的页面。
 Cannot save a page without revision.
-无法储存没有版本信息的页面。
+无法保存没有版本信息的页面。
 Cannot open %s
 无法打开 %s
 Cannot write %s
@@ -339,9 +337,9 @@ Cannot write %s
 Cannot create %s
 无法创建
 Could not get %s lock
-无法取得%s锁定
+无法获得%s锁定
 The lock was created %s.
-创建文件只读标记。
+为 %s 建立锁定 。	
 This operation may take several seconds...
 这个动作可能要花几秒…
 Forced unlock of %s lock.
@@ -361,21 +359,21 @@ No unlock required.
 1 second ago
 1 秒前
 just now
-就是现在
+刚才
 Edit Denied
 禁止编辑
 Editing not allowed: user, ip, or network is blocked.
-禁止编辑；使用者、ip 或是网路已被禁止连线。
+禁止编辑；用户、IP 或是网络已被禁止连接。
 Contact the wiki administrator for more information.
-请通知 wiki 管理者，以取得更多的信息。
+请通知 wiki 管理员以获得更多的信息。
 The rule %s matched for you.
-你符合的规则：%s。
+符合您的规则：%s。
 See %s for more information.
-请参阅%s以取得更多信息。
+请参阅%s以获得更多信息。
 Editing not allowed: %s is read-only.
 禁止编辑；%s为只读。
 Only administrators can upload files.
-只有管理者可以上传文件。
+只有管理员可以上传文件。
 Editing revision %s of
 正在编辑第%s版的
 Editing %s
@@ -383,13 +381,13 @@ Editing %s
 Editing old revision %s.
 正在编辑旧的第%s版。
 Saving this page will replace the latest revision with this text.
-如果储存的话，将会取代目前最新的版本。
+如果保存本页，将会替换目前最新的版本。
 Summary:
 摘要：
 This change is a minor edit.
-这次的修改是次要的。
+这次的更改是次要的。
 Cancel
-
+取消
 Replace this file with text
 用文字来取代本档
 Replace this text with a file
@@ -399,23 +397,23 @@ File to upload:
 Files of type %s are not allowed.
 不允许%s类型的文件。
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
-如果你的 cookie 功能打开的话，则你的密码会被储放在 cookie 中。如果你由其他机器、用其他的帐号、或使用别的软件来连线的话，则 cookie 可能会消失。
+如果您已经开启了 cookie， 您的密码会被保存在 cookie 中。Cookie可能会因为您使用其他机器、帐号、或别的软件来连接而丢失。
 You are currently an administrator on this site.
-你现在是本站的管理者。
+您现在是本站的管理员。
 You are currently an editor on this site.
-你现在是本站的编辑者。
+您现在是本站的编辑者。
 You are a normal user on this site.
-你现在是本站的一般使用者。
+您现在是本站的普通用户。
 Your password does not match any of the  administrator or editor passwords.
-你的密码不符合任何管理者或编辑者的密码。
+您的密码和任何管理员或编辑者的密码都不匹配。
 Password:
 密码：
 This site does not use admin or editor passwords.
-本站并不使用管理者或编辑者密码功能。
+本站并不使用管理员或编辑者密码功能。
 This operation is restricted to site editors only...
 这个动作限定只允许编辑者使用…
 This operation is restricted to administrators only...
-这个动作限定只允许管理者使用…
+这个动作限定只允许管理员使用…
 SampleUndefinedPage
 未定义页面
 Sample_Undefined_Page
@@ -423,9 +421,9 @@ Sample_Undefined_Page
 Rule "%1" matched "%2" on this page.
 本页的 "%2" 符合规则 "%1"。
 Reason: %s.
-
+原因：%s。
 Reason unknown.
-
+未知原因。
 Filter:
 过滤规则：
 (for %s)
@@ -437,7 +435,7 @@ Replaced: %s
 Search for: %s
 搜索：%s
 View changes for these pages
-参阅这些页面的更动
+参阅这些页面的更改
 last updated
 最后更新于
 by
@@ -455,9 +453,9 @@ No changes to be saved.
 This page was changed by somebody else %s.
 本页在%s已被人修改过。
 The changes conflict.  Please check the page again.
-你的修改和他人发生冲突。请再次确认。
+您的修改和他人发生冲突。请再次确认。
 Please check whether you overwrote those changes.
-请确认一下是否你要覆盖这些修改。
+请您确认一下是否要覆盖这些修改。
 Anonymous
 匿名者
 Cannot delete the index file %s.
@@ -465,11 +463,11 @@ Cannot delete the index file %s.
 Please check the directory permissions.
 请确认目录的权限。
 Your changes were not saved.
-你的变更尚未储存。
+您的变更尚未保存。
 Could not get a lock to merge!
-在合并时无法取得锁定！
+在合并时无法获得锁定！
 you
-你的
+您的
 ancestor
 之前的
 other
@@ -495,9 +493,9 @@ Could not open %s log file
 Error was
 错误是
 Note: This error is normal if no changes have been made.
-如果还没有做过任何修改的话，则不用理会这个错误讯息。
+如果还没有做过任何修改，请不用理会这个错误讯息。
 Moving %s log entries.
-移除了%s个记录项目。
+移除了%s个日志项目。
 Set or Remove global edit lock
 设定或移除整个网站的编辑锁定
 Edit lock created.
@@ -513,11 +511,11 @@ Lock for %s removed.
 Displaying Wiki Version
 显示 Wiki 版本
 Debugging Information
-
+调试信息
 Inter links:
-内部连结：
+内部链接：
 Too many connections by %s
-太多来自%s的连线
+太多来自%s的连接
 Please do not fetch more than %1 pages in %2 seconds.
 请不要在 %2 秒内下载超过 %1 页的数据。
 Check whether the web server can create the directory %s and whether it can create files in it.
@@ -547,27 +545,27 @@ Immediately delete %s
 Rename %s to:
 将%s重命名为:
 Learn more...
-更多...
+了解更多...
 Complete Content
 完整内容
 The main page is %s.
-首页是%s。
+主页是%s。
 Archive:
-
+存档：
 Rebuild BackLink database
-
+重建BackLink数据库
 Internal Page: 
-
+内部页面：
 Pages that link to this page
-
+本页的链接页面
 The search parameter is missing.
-
+未指定 search 参数。
 Pages link to %s
-
+页面链接至 %s
 Cannot highlight the language %s.
 无法高亮显示语言%s。
 Recent Visitors
-最近的访问者
+最近的游客
 some action
 部分行为
 was here
@@ -625,9 +623,9 @@ November
 December
 十二月
 set %s
-
+设置 %s
 unset %s
-
+取消设置 %s
 Clustermap
 簇页面
 Pages without a Cluster
@@ -641,13 +639,13 @@ Compilation for %s
 Compilation tag is missing a regular expression.
 汇编标志缺少一个正规表达式。
 List spammed pages
-
+列出垃圾页面
 Despamming pages
-正在去除 spam 页面
+正在去除垃圾页面
 Spammed pages
-
+垃圾页面
 Cannot find revision %s.
-无法取得版本%s。
+无法获得版本%s。
 Revert to revision %1: %2
 恢复至版本 %1: %2 
 Marked as %s.
@@ -655,33 +653,33 @@ Marked as %s.
 Cannot find unspammed revision.
 找不到未被 spam 的版本。
 Recover Draft
-
+恢复草稿
 No text to save
-
+没有文本需要保存
 Draft saved
-
+草稿已经保存
 Draft recovered
-
+草稿已恢复
 No draft available to recover
-
+没有需要恢复的草稿
 Save Draft
-
+保存草稿
 Draft Cleanup
-
+清除草稿
 %1 was last modified %2 and was kept
-
+%1 最后修改 %2 已被保持
 %1 was last modified %2 and was deleted
-
+%1 最后修改 %2 已被删除
 Unable to delete draft %s
-
+不能删除草稿 %s
 Add Comment
 添加评论
 ordinary changes
 普通改动
 Matching page names:
-
+匹配页名称：
 Could not find %1.html template in %2
-无法在 %2 找到 %1.html 的范本
+无法在 %2 找到 %1.html 的模板
 Only Editors are allowed to see this hidden page.
 只有编辑才允许查看该隐藏页面
 Only Admins are allowed to see this hidden page.
@@ -695,29 +693,29 @@ Show!
 Define
 定义
 Full Link List
-完整连结列表
+完整链接列表
 List of locked pages
-
+列出被锁定的页面
 Pages tagged with %s
-
+页面标记为%s
 Template without parameters
 未指定 template 参数
 The template %s is either empty or does not exist.
-范本%s可能为空或不存在。
+模板%s可能为空或不存在。
  -- defined on %s
  -- 在%s中定义
 Local names defined on %1: %2
 定义在%s:%2的局部变量
 Locked Pages
-
+锁定的页面
 Register for %s
 为%s注册
 Please choose a username of the form "FirstLast" using your real name.
-请使用你的名字注册。
+请使用您的名字注册。
 The passwords do not match.
 两次输入的口令不一致。
 The password must be at least %s characters.
-口令必须只要%s个西文字母。
+口令必须只要%s个英文字母。
 That email address is invalid.
 电子邮件地址非法。
 The username %s has already been registered.
@@ -805,53 +803,53 @@ There was an error approving %s.
 There are no pending registrations.
 无待候审批用户
 Invalid Mail %s: not saved.
-
+无法保存, 无效的邮件 %s。
 unsubscribe
-
+退订
 subscribe
-
+订阅
 Email: 
-
+邮件：
 %s appears to be an invalid mail address
-
+%s 似乎是一个错误的邮件地址
 Your mail subscriptions
-
+您的邮件订阅
 All mail subscriptions
-
+所有邮件订阅
 Subscriptions
-
+订阅
 Show
-
+显示
 Subscriptions for %s:
-
+%s 的订阅
 Unsubscribe
-
+退订
 There are no subscriptions for %s.
-
+%s 没有订阅
 Change email address
-
+更改邮件地址
 Mail addresses are linked to unsubscription links.
-
+邮件地址链接到退订链接。
 Subscribe to %s.
-
+订阅 %s 。
 Subscribe
-
+订阅
 Subscribed %s to the following pages:
-
+订阅以下页面 %s ：
 The remaining pages do not exist.
-
+剩下的页面不存在。
 Unsubscribed %s from the following pages:
-
+从以下页面退订 %s
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
-
+您已经对同一个域名的连接已经超过 %s 次。这似乎只有垃圾邮件发送者会这么做。您的编辑被拒绝。
 %s is not a legal name for a namespace
 %s不是一个合法的用户名，请重新设置
 Namespaces
-
+命名空间
 Getting page index file for %s.
-自%s取得页面索引数据。
+自%s获得页面索引数据。
 Near links:
-附近连结：
+附近链接：
 Search sites on the %s as well
 也搜索列在%s上的网站
 Fetching results from %s:
@@ -865,19 +863,19 @@ EditNearLinks
 The same page on other sites:
 其他网站的相同页面
  (create locally)
-
+ (本地创建)
 image
 图像
 download
 下载
 Backlinks
-
+反向链接
 Clearing Cache
 清除缓存
 Done.
 结束。
 Generating Link Database
-产生连结数据库
+产生链接数据库
 The 404 handler extension requires the link data extension (links.pl).
 404信息处理扩展单元需要您安装links.pl
 LocalMap
@@ -893,21 +891,21 @@ view
 Self-ban by %s
 被%s自闭
 You have banned your own IP.
-您把封禁了自己的IP地址。
+您已经禁止了自己的IP地址。
 OpenID Login
-
+OpenID登录
 Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
-
+如果您已经开启了 cookie， 您的身份会被保存在 cookie 中。Cookie可能会因为您使用其他机器、帐号、或别的软件来连接而丢失。
 Your homepage is set to %s.
-
+您的主页被设置为 %s。
 You have no homepage set.
-
+您没有主页设置。
 Homepage:
-
+主页：
 Homepage is missing
-
+主页不存在
 OpenID error %s
-
+OpenID错误 %s
 Orphan List
 孤立页面列表
 Trail: 
@@ -917,17 +915,17 @@ None
 Type
 类别
 Permalink to "%s"
-永久连结至 "%s"
+永久链接至 "%s"
 anchor first defined here: %s
 锚点已被定义于 %s
 the page %s also exists
 也存在一个叫%s的页面
 There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
-生成%s的pdf时出错。请停止下载并立即汇报管理员。
+生成%s的pdf时出错。如果生成PDF不能工作请不要再尝试下载， 并报告给管理员。
 Someone else is generating a pdf for %s.  Please wait a minute and then try again.
 其他用户正在生成%s的pdf。请稍候一分钟后再连接。
 Download this page as PDF
-下载该页面的PDF文档
+下载该页面为PDF文档
 Click to search for references to this permanent anchor
 按下即可搜索此锚点的相关数据
 Include permanent anchors
@@ -945,9 +943,9 @@ You did not answer correctly.
 To save this page you must answer this question:
 保存该页面需要正确回答以下问题：
 Please type the following two words:
-
+请键入以下两句话：
 Please answer this captcha:
-
+请回答这个验证码：
 Referrers
 引用者
 All Referrers
@@ -965,11 +963,11 @@ Rebuilding index not done.
 (Rebuilding the index can only be done once every 12 hours.)
 （自动重建索引间隔为12个小时。）
 New Pages for Indexed Search
-
+收录搜索的新页面
 List changes since %s
-
+列出自 %s 以来的更改
  ... 
-
+ ... 
 Search term missing.
 缺少搜索项。
 Result pages: 
@@ -983,11 +981,11 @@ Tags: %s.
 No tags
 无标签
 Page list for %s
-
+％s的页面列表
 Slideshow:%s
 自动放映：%s
 Index of all small pages
-
+索引所有小页面
 Static Copy
 静态页面备份
 Back to %s
@@ -997,15 +995,15 @@ Copy to %1 succeeded: %2.
 Copy to %1 failed: %2.
 无法复制为%1：%2
 Feed for this tag
-
+订阅这个标签
 Rebuild tag index
-
+重建标签索引
 list tags
-
+列出标签
 tag cloud
-
+标签云
 Alternatively, use one of the following templates:
-或者，使用下列范本之一:
+或者，使用下列模板之一:
 Thread: %s
 讨论主题: %s
 ID parameter is missing.
@@ -1027,33 +1025,33 @@ URL:
 Name:
 姓名:
 Too many instances.  Only %s allowed.
-
+太多的实例。只有%s被允许。
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
-
+请稍后再试。也许有人正在运行维护或耗时搜索。不幸的是，站点的资源有限，还请您保持耐心。
 Contents
 内容
 Create a new page for today
-
+创建一个今天的新页面
 Add Translation
-
+添加翻译
 Added translation: %1 (%2)
-
+已添加翻译：%1 (%2)
 Translate %s
-
+翻译 %s
 Thank you for writing a translation of %s.
-
+感谢您编写 %s 的翻译
 Please indicate what language you will be using.
-
+请指定您要使用的语言
 Language is missing
-
+语言不存在
 Suggested languages:
-
+建议的语言：
 Please indicate a page name for the translation of %s.
-
+请指定 %s 的翻译页面名称
 More help may be available here: %s.
-
+在 %s 查找更多帮助
 Translated page: 
-
+已翻译页面：
 This page is a translation of %s. 
 本页是页面%s的翻译。
 The translation is up to date.
@@ -1067,7 +1065,7 @@ http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
 http://www.amazon.com/exec/obidos/ISBN=%s
 
 alternate
-另一个连结
+另一个链接
 http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 
 search
