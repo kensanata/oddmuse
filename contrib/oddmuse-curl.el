@@ -450,13 +450,14 @@ Use a prefix argument to force a reload of the page."
         (pop-to-buffer (get-buffer name))
       (let* ((wiki-data (assoc wiki oddmuse-wikis))
              (url (nth 1 wiki-data))
-             (oddmuse-page-name pagename)
+	     (oddmuse-page-name pagename)
              (command (oddmuse-format-command oddmuse-get-command))
              (coding (nth 2 wiki-data))
              (buf (find-file-noselect (concat oddmuse-directory "/" wiki "/"
 					      pagename)))
              (coding-system-for-read coding)
              (coding-system-for-write coding))
+	;; don't use let for dynamically bound variable
         (set-buffer buf)
         (unless (equal name (buffer-name)) (rename-buffer name))
         (erase-buffer)
@@ -474,8 +475,9 @@ Use a prefix argument to force a reload of the page."
   "Figure out what page we need to visit
 and call `oddmuse-edit' on it."
   (interactive "P")
-  (let ((pagename (if arg (oddmuse-read-pagename oddmuse-wiki)
-                    (oddmuse-pagename-at-point))))
+  (let ((pagename (or (and arg (oddmuse-read-pagename oddmuse-wiki))
+		      (oddmuse-pagename-at-point)
+		      (oddmuse-read-pagename oddmuse-wiki))))
     (oddmuse-edit (or oddmuse-wiki
                       (read-from-minibuffer "URL: "))
                   pagename)))
@@ -494,17 +496,17 @@ and call `oddmuse-edit' on it."
 (defun oddmuse-pagename-at-point ()
   "Page name at point."
   (let ((pagename (word-at-point)))
-    (cond ((oddmuse-current-free-link-contents))
-          ((oddmuse-wikiname-p pagename)
-           pagename)
-          (t
-           (error "No link found at point")))))
+    (or (oddmuse-current-free-link-contents)
+	(oddmuse-wikiname-p pagename))))
 
 (defun oddmuse-wikiname-p (pagename)
   "Whether PAGENAME is WikiName or not."
-  (let (case-fold-search)
-    (string-match (concat "^" oddmuse-link-pattern "$") pagename)))
+  (when pagename
+    (let (case-fold-search)
+      (when (string-match (concat "^" oddmuse-link-pattern "$") pagename)
+	pagename))))
 
+;; (oddmuse-wikiname-p nil)
 ;; (oddmuse-wikiname-p "WikiName")
 ;; (oddmuse-wikiname-p "not-wikiname")
 ;; (oddmuse-wikiname-p "notWikiName")
