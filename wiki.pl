@@ -860,6 +860,8 @@ sub PrintJournal {
   print $q->start_div({-class=>'journal'});
   my $next = $offset + PrintAllPages(1, 1, $num, @pages[$offset .. $#pages]);
   print $q->end_div();
+  $regexp = UrlEncode($regexp);
+  $search = UrlEncode($search);
   print $q->p({-class=>'more'}, ScriptLink("action=more;num=$num;regexp=$regexp;search=$search;mode=$mode;offset=$next", T('More...'), 'more')) if $pages[$next];
 }
 
