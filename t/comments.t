@@ -1,24 +1,20 @@
-# Copyright (C) 2006  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006–2014  Alex Schroeder <alex@gnu.org>
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 3 of the License, or (at your option) any later
+# version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 35;
+use Test::More tests => 36;
 clear_pages();
 
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
@@ -89,11 +85,17 @@ test_page(get_page('Comments_on_Yadda'), 'This is my comment\.', '-- Alex');
 test_page(get_page('action=rc raw=1'), 'title: Comments on Yadda',
 	  'description: This is my comment.', 'generator: Alex');
 
+# homepage
 get_page('title=Comments_on_Yadda', 'aftertext=This%20is%20another%20comment.',
 	 'username=Alex', 'homepage=http%3a%2f%2fwww%2eoddmuse%2eorg%2f');
 xpath_test(get_page('Comments_on_Yadda'),
 	   '//p[contains(text(),"This is my comment.")]',
 	   '//a[@class="url http outside"][@href="http://www.oddmuse.org/"][text()="Alex"]');
+# variant without protocol
+get_page('title=Comments_on_Yadda', 'aftertext=This%20is%20another%20comment.',
+	 'username=Berta', 'homepage=alexschroeder%2ech');
+xpath_test(get_page('Comments_on_Yadda'),
+	   '//a[@class="url http outside"][@href="http://alexschroeder.ch"][text()="Berta"]');
 
 my $textarea = '//textarea[@name="aftertext"][@id="aftertext"]';
 xpath_test(get_page('Comments_on_Yadda'), $textarea);
