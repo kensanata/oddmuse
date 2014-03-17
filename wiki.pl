@@ -3711,7 +3711,7 @@ sub AddComment {
     my $author = GetParam('username', T('Anonymous'));
     my $homepage = GetParam('homepage', '');
     $homepage = 'http://' . $homepage
-      if $homepage and not substr($homepage,0,7) eq 'http://';
+      if $homepage and $homepage !~ /^($UrlProtocols):/;
     $author = "[$homepage $author]" if $homepage;
     $string .= "\n----\n\n" if $string and $string ne "\n";
     $string .= $comment . "\n\n"
