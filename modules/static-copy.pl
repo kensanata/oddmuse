@@ -60,6 +60,8 @@ sub StaticWriteFiles {
   my $html = GetParam('html', 0);
   local *ScriptLink = *StaticScriptLink;
   local *GetDownloadLink = *StaticGetDownloadLink;
+  # get rid of subscribe link in the footer by mail.pl
+  local *GetCommentForm = *MailOldGetCommentForm if defined &MailNewGetCommentForm;
   foreach my $id (AllPagesList()) {
     if ($StaticAlways > 1
 	or $html
@@ -208,7 +210,8 @@ EOT
   print F $q->div({-class=>'content'}, PageHtml($id)); # this reopens the page currently open
   # footer
   my $links = '';
-  if ($OpenPageName !~ /^$CommentsPrefix/) { # fails if $CommentsPrefix is empty!
+  if ($OpenPageName !~ /^$CommentsPrefix/ # fails if $CommentsPrefix is empty!
+      and $IndexHash{$CommentsPrefix . $OpenPageName}) {
     $links .= ScriptLink(UrlEncode($CommentsPrefix . $OpenPageName),
                          T('Comments on this page'));
   }
