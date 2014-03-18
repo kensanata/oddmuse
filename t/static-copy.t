@@ -1,21 +1,21 @@
-# Copyright (C) 2007, 2008, 2009  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2007–2014  Alex Schroeder <alex@gnu.org>
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation, either version 3 of the License, or (at your option)
+# any later version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+# more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 29;
+use Test::More tests => 31;
 clear_pages();
 
 add_module('static-copy.pl');
@@ -114,14 +114,24 @@ xpath_test(update_page('HomePage', "Static: [[image:Trogs]]"),
 # delete the static pages and regenerate it
 ok(unlink("$DataDir/static/Trogs.svgz"), "Deleted $DataDir/static/Trogs.svgz");
 ok(unlink("$DataDir/static/Logo.png"), "Deleted $DataDir/static/Logo.png");
-test_page(get_page('action=static raw=1 pwd=foo'), "Trogs", "Logo");
-ok(-f "$DataDir/static/Trogs.svgz", "$DataDir/static/Trogs.svgz exists");
-ok(-f "$DataDir/static/Logo.png", "$DataDir/static/Logo.png exists");
-ok(! -f "$DataDir/static/HomePage.html", "$DataDir/static/HomePage.html does not exist");
-test_page(get_page('action=static raw=1 pwd=foo html=1'), "Trogs", "Logo", "HomePage");
-ok(-f "$DataDir/static/Trogs.svgz", "$DataDir/static/Trogs.svgz exists");
-ok(-f "$DataDir/static/Logo.png", "$DataDir/static/Logo.png exists");
-ok(-f "$DataDir/static/HomePage.html", "$DataDir/static/HomePage.html exists");
+
+# StaticWriteFiles must write uploaded files only (since $StaticAlways = 1)
+$page = get_page('action=static raw=1 pwd=foo');
+test_page($page, "Trogs", "Logo"); # Remember, a rollback has restored Logo.png
+test_page_negative($page, "HomePage"); # since it an ordinary page
+
+ok(-s "$DataDir/static/Trogs.svgz", "$DataDir/static/Trogs.svgz has nonzero size");
+ok(-s "$DataDir/static/Logo.png", "$DataDir/static/Logo.png has nonzero size");
+ok(! -e "$DataDir/static/HomePage.html", "$DataDir/static/HomePage.html does not exist");
+
+# force generation of HomePage using html=1
+$page = get_page('action=static raw=1 pwd=foo html=1');
+test_page($page, "Trogs", "Logo", "HomePage");
+test_page_negative($page, "no data"); # must not skip HomePage!
+
+ok(-s "$DataDir/static/Trogs.svgz", "$DataDir/static/Trogs.svgz has nonzero size");
+ok(-s "$DataDir/static/Logo.png", "$DataDir/static/Logo.png has nonzero size");
+ok(-s "$DataDir/static/HomePage.html", "$DataDir/static/HomePage.html has nonzero size");
 
 # Make sure spaces are translated to underscores (fixed in image.pl)
 add_module('image.pl');

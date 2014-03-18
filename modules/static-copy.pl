@@ -1,4 +1,4 @@
-# Copyright (C) 2004-2013  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2004-2014  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -56,13 +56,14 @@ sub StaticMimeTypes {
 
 sub StaticWriteFiles {
   my $raw = GetParam('raw', 0);
+  my $html = GetParam('html', 0);
   local *ScriptLink = *StaticScriptLink;
   local *GetDownloadLink = *StaticGetDownloadLink;
   foreach my $id (AllPagesList()) {
     if ($StaticAlways > 1
-	or GetParam('html', 0)
+	or $html
 	or PageIsUploadedFile($id)) {
-      StaticWriteFile($id);
+      StaticWriteFile($id, $html);
     }
   }
 }
@@ -120,7 +121,7 @@ sub StaticFileName {
 }
 
 sub StaticWriteFile {
-  my $id = shift;
+  my ($id, $html) = @_;
   my $raw = GetParam('raw', 0);
   my $filename = StaticFileName($id);
   OpenPage($id);
@@ -132,6 +133,8 @@ sub StaticWriteFile {
     StaticHtml($id);
   } else {
     print "no data for ";
+    close(F);
+    return;
   }
   close(F);
   chmod 0644,"$StaticDir/$filename";
