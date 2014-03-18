@@ -126,16 +126,18 @@ sub StaticWriteFile {
   my $raw = GetParam('raw', 0);
   my $filename = StaticFileName($id);
   OpenPage($id);
-  my ($mimetype, $encoding, $data) = $Page{text} =~ /^\#FILE ([^ \n]+) ?([^ \n]*)\n(.*)/s;
-  open(F,"> $StaticDir/$filename") or ReportError(Ts('Cannot write %s', $filename));
+  my ($mimetype, $encoding, $data) =
+    $Page{text} =~ /^\#FILE ([^ \n]+) ?([^ \n]*)\n(.*)/s;
+  open(F,"> $StaticDir/$filename")
+    or ReportError(Ts('Cannot write %s', $filename));
   if ($data) {
+    binmode(F);
     StaticFile($id, $mimetype, $data);
   } elsif ($html) {
+    binmode(F, ':utf8');
     StaticHtml($id);
   } else {
     print "no data for ";
-    close(F);
-    return;
   }
   close(F);
   chmod 0644,"$StaticDir/$filename";
@@ -145,7 +147,6 @@ sub StaticWriteFile {
 sub StaticFile {
   my ($id, $type, $data) = @_;
   require MIME::Base64;
-  binmode(F);
   print F MIME::Base64::decode($data);
 }
 

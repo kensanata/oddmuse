@@ -15,7 +15,8 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 34;
+use utf8;
+use Test::More tests => 35;
 clear_pages();
 
 add_module('static-copy.pl');
@@ -134,11 +135,13 @@ ok(-s "$DataDir/static/Logo.png", "$DataDir/static/Logo.png has nonzero size");
 ok(-s "$DataDir/static/HomePage.html", "$DataDir/static/HomePage.html has nonzero size");
 
 # check that links between pages work as expected
-xpath_test(update_page("Test", "Link to HomePage."),
+xpath_test(update_page("Test", "Link to HomePage. Testing Ümlaute."),
 	   '//a[text()="HomePage"][@href="http://localhost/wiki.pl/HomePage"]');
 test_page(get_page('action=static raw=1 pwd=foo html=1'), 'Test');
 xpath_test_file("$DataDir/static/Test.html",
 	   '//a[text()="HomePage"][@href="HomePage.html"]');
+test_file("$DataDir/static/Test.html",
+	  "Ümlaute");
 
 # make sure spaces are translated to underscores (fixed in image.pl)
 add_module('image.pl');
