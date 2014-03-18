@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 31;
+use Test::More tests => 34;
 clear_pages();
 
 add_module('static-copy.pl');
@@ -133,7 +133,14 @@ ok(-s "$DataDir/static/Trogs.svgz", "$DataDir/static/Trogs.svgz has nonzero size
 ok(-s "$DataDir/static/Logo.png", "$DataDir/static/Logo.png has nonzero size");
 ok(-s "$DataDir/static/HomePage.html", "$DataDir/static/HomePage.html has nonzero size");
 
-# Make sure spaces are translated to underscores (fixed in image.pl)
+# check that links between pages work as expected
+xpath_test(update_page("Test", "Link to HomePage."),
+	   '//a[text()="HomePage"][@href="http://localhost/wiki.pl/HomePage"]');
+test_page(get_page('action=static raw=1 pwd=foo html=1'), 'Test');
+xpath_test_file("$DataDir/static/Test.html",
+	   '//a[text()="HomePage"][@href="HomePage.html"]');
+
+# make sure spaces are translated to underscores (fixed in image.pl)
 add_module('image.pl');
 
 # Now, create real pages. First, we'll use the ordinary image link to

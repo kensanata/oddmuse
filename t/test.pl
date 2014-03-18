@@ -158,6 +158,18 @@ sub test_page {
   }
 }
 
+# one file, many tests
+sub test_file {
+  my ($file, @tests) = @_;
+  if (open(F, '<', $file)) {
+    local $/ = undef;
+    test_page(<F>, @tests);
+    close(F);
+  } else {
+    warn "cannot open $file\n";
+  }
+}
+
 # one string, many negative tests
 sub test_page_negative {
   my $page = shift;
@@ -206,6 +218,17 @@ sub xpath_do {
 
 sub xpath_test {
   xpath_do(sub { shift > 0; }, "No Matches\n", @_);
+}
+
+sub xpath_test_file {
+  my ($file, @tests) = @_;
+  if (open(F, '<', $file)) {
+    local $/ = undef;
+    xpath_test(<F>, @tests);
+    close(F);
+  } else {
+    warn "cannot open $file\n";
+  }
 }
 
 sub negative_xpath_test {
