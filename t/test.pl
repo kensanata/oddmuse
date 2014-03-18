@@ -161,7 +161,7 @@ sub test_page {
 # one file, many tests
 sub test_file {
   my ($file, @tests) = @_;
-  if (open(F, '<', $file)) {
+  if (open(F, '< :utf8', $file)) {
     local $/ = undef;
     test_page(<F>, @tests);
     close(F);
@@ -222,7 +222,7 @@ sub xpath_test {
 
 sub xpath_test_file {
   my ($file, @tests) = @_;
-  if (open(F, '<', $file)) {
+  if (open(F, '< :utf8', $file)) {
     local $/ = undef;
     xpath_test(<F>, @tests);
     close(F);
