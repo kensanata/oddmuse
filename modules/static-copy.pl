@@ -35,6 +35,7 @@ sub DoStatic {
   }
   CreateDir($StaticDir);
   %StaticFiles = ();
+  print '<p>' unless $raw;
   StaticWriteFiles();
   print '</p>' unless $raw;
   PrintFooter() unless $raw;
