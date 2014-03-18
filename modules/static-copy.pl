@@ -67,6 +67,9 @@ sub StaticWriteFiles {
       StaticWriteFile($id, $html);
     }
   }
+  if ($StaticAlways > 1 or $html) {
+    StaticWriteCss();
+  }
 }
 
 sub StaticScriptLink {
@@ -219,6 +222,21 @@ EOT
                   $q->span({-class=>'time'}, GetFooterTimestamp($id)));
   # finish
   print F '</body></html>';
+}
+
+sub StaticWriteCss {
+  my $css;
+  if ($StyleSheet) {
+    $css = GetRaw($StyleSheet);
+  }
+  if (not $css and $IndexHash{$StyleSheetPage}) {
+    $css = GetPageContent($StyleSheetPage);
+  }
+  if (not $css) {
+    $css = GetRaw('http://www.oddmuse.org/default.css');
+  }
+  WriteStringToFile("$StaticDir/static.css", $css) if $css;
+  chmod 0644,"$StaticDir/static.css";
 }
 
 *StaticFilesOldSave = *Save;
