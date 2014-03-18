@@ -16,7 +16,7 @@
 require 't/test.pl';
 package OddMuse;
 use utf8;
-use Test::More tests => 35;
+use Test::More tests => 36;
 clear_pages();
 
 add_module('static-copy.pl');
@@ -142,6 +142,8 @@ xpath_test_file("$DataDir/static/Test.html",
 	   '//a[text()="HomePage"][@href="HomePage.html"]');
 test_file("$DataDir/static/Test.html",
 	  "Ümlaute");
+test_file("$DataDir/static/static.css",
+	  "body { background-color:#FFF; color:#000; margin:1em 2em; }");
 
 # make sure spaces are translated to underscores (fixed in image.pl)
 add_module('image.pl');
