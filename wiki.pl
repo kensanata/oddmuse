@@ -3340,7 +3340,7 @@ sub AllPagesList {
   if (not $refresh and -f $IndexFile) {
     my ($status, $rawIndex) = ReadFile($IndexFile); # not fatal
     if ($status) {
-      %IndexHash = split(/\s+/, $rawIndex);
+      %IndexHash = split(/ /, $rawIndex);
       @IndexList = sort(keys %IndexHash);
       return @IndexList;
     }
