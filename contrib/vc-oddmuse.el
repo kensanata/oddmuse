@@ -1,3 +1,11 @@
+(require 'oddmuse)
+(require 'diff)
+
+;;; Commentary
+
+;; Add the following to your init file:
+;; (add-to-list 'vc-handled-backends 'oddmuse)
+
 (add-to-list 'vc-handled-backends 'oddmuse)
 
 (defun vc-oddmuse-revision-granularity () 'file)
@@ -54,7 +62,7 @@ It must print the page to stdout.
 	 (coding-system-for-read coding)
 	 (coding-system-for-write coding)
 	 (max-mini-window-height 1))
-    (oddmuse-run "Load recent changes" command buffer nil))
+    (oddmuse-run "Getting recent changes" command buffer nil))
   ;; Parse current buffer as RSS 3.0 and display it correctly.
   (save-excursion
     (with-current-buffer buffer
@@ -82,8 +90,75 @@ It must print the page to stdout.
 (defun vc-oddmuse-log-incoming ()
   (error "This is not supported."))
 
-(defun vc-oddmuse-diff ()
-  "No idea"
-  nil)
+(defvar vc-oddmuse-get-revision-command
+  "curl --silent %w\"?action=browse;id=%t;revision=%o;raw=1\""
+  "Command to use to get older revisions of a page.
+It must print the page to stdout.
+
+%?  '?' character
+%w  URL of the wiki as provided by `oddmuse-wikis'
+%t  Page title as provided by `oddmuse-page-name'
+%o  Revision to retrieve as provided by `oddmuse-revision'")
+
+(defvar vc-oddmuse-get-history-command
+  "curl --silent %w\"?action=history;id=%t;raw=1\""
+  "Command to use to get the history of a page.
+It must print the page to stdout.
+
+%?  '?' character
+%w  URL of the wiki as provided by `oddmuse-wikis'
+%t  Page title as provided by `oddmuse-page-name'")
+
+(defun vc-oddmuse-diff (files &optional rev1 rev2 buffer)
+  "Report the differences for FILES."
+  (setq buffer (or buffer (get-buffer-create "*vc-diff*")))
+  (dolist (file files)
+    (setq oddmuse-page-name (file-name-nondirectory file)
+	  oddmuse-wiki (or oddmuse-wiki
+			   (file-name-nondirectory
+			    (directory-file-name
+			     (file-name-directory file)))))
+    (let* ((wiki-data (or (assoc oddmuse-wiki oddmuse-wikis)
+			  (error "Cannot find data for wiki %s" oddmuse-wiki)))
+	   (url (nth 1 wiki-data)))
+      (unless rev1
+	;; Since we don't know the most recent revision we have to fetch
+	;; it from the server every time.
+	(with-temp-buffer
+	  (let ((max-mini-window-height 1))
+	    (oddmuse-run "Determining latest revision"
+			 (oddmuse-format-command vc-oddmuse-get-history-command)
+			 (current-buffer) nil))
+	  (if (re-search-forward "^revision: \\([0-9]+\\)$" nil t)
+	      (setq rev1 (match-string 1))
+	    (error "Cannot determine the latest revision from the page history"))))
+      (dolist (rev (list rev1 rev2))
+	(when (and rev
+		   (not (file-readable-p (concat oddmuse-directory
+						 "/" oddmuse-wiki "/"
+						 oddmuse-page-name
+						 ".~" rev "~"))))
+	  (let* ((oddmuse-revision rev)
+		 (command (oddmuse-format-command vc-oddmuse-get-revision-command))
+		 (coding (nth 2 wiki-data))
+		 (filename (concat oddmuse-directory "/" oddmuse-wiki "/"
+				   oddmuse-page-name ".~" rev "~"))
+		 (coding-system-for-read coding)
+		 (coding-system-for-write coding))
+	    (with-temp-buffer
+	      (let ((max-mini-window-height 1))
+		(oddmuse-run (concat "Downloading revision " rev)
+			     command (current-buffer) nil))
+	      (write-file filename)))))
+      (diff-no-select
+       (if rev1
+	   (concat oddmuse-directory "/" oddmuse-wiki "/" oddmuse-page-name ".~" rev1 "~")
+	 file)
+       (if rev2
+	   (concat oddmuse-directory "/" oddmuse-wiki "/" oddmuse-page-name ".~" rev2 "~")
+	 file)
+       nil
+       (vc-switches 'oddmuse 'diff)
+       buffer))))
 
 (provide 'vc-oddmuse)
