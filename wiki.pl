@@ -3034,11 +3034,9 @@ sub FreeToNormal {    # trim all spaces and convert them to underlines
   my $id = shift;
   return '' unless $id;
   $id =~ s/ /_/g;
-  if (index($id, '_') > -1) {  # Quick check for any space/underscores
-    $id =~ s/__+/_/g;
-    $id =~ s/^_//;
-    $id =~ s/_$//;
-  }
+  $id =~ s/__+/_/g;
+  $id =~ s/^_//;
+  $id =~ s/_$//;
   return UnquoteHtml($id);
 }
 
