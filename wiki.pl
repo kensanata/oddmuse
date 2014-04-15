@@ -465,12 +465,12 @@ sub ApplyRules {
 	}
 	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
 	($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
-      } elsif ($bol && m/\G(\&lt;journal(\s+(\d*))?(\s+"(.*?)")?(\s+(reverse|past|future))?(\s+search\s+(.*))?\&gt;[ \t]*\n?)/cgi) {
+      } elsif ($bol && m/\G(\&lt;journal(\s+(\d*)(,(\d*))?)?(\s+"(.*?)")?(\s+(reverse|past|future))?(\s+search\s+(.*))?\&gt;[ \t]*\n?)/cgi) {
 	# <journal 10 "regexp"> includes 10 pages matching regexp
 	Clean(CloseHtmlEnvironments());
 	Dirty($1);
 	my ($oldpos, $old_) = (pos, $_); # remember these because of the call to PrintJournal()
-	PrintJournal($3, $5, $7, 0, $9); # no offset
+	PrintJournal($3, $5, $7, $9, 0, $11); # no offset
 	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
 	($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
       } elsif ($bol && m/\G(\&lt;rss(\s+(\d*))?\s+(.*?)\&gt;[ \t]*\n?)/cgis) {
@@ -819,7 +819,7 @@ sub GetRaw {
 sub DoJournal {
   print GetHeader(undef, T('Journal'));
   print $q->start_div({-class=>'content'});
-  PrintJournal(map { GetParam($_, ''); } qw(num regexp mode offset search));
+  PrintJournal(map { GetParam($_, ''); } qw(num num regexp mode offset search));
   print $q->end_div();
   PrintFooter();
 }
@@ -829,9 +829,10 @@ sub JournalSort { $b cmp $a }
 sub PrintJournal {
   return if $CollectingJournal; # avoid infinite loops
   local $CollectingJournal = 1;
-  my ($num, $regexp, $mode, $offset, $search) = @_;
+  my ($num, $numMore, $regexp, $mode, $offset, $search) = @_;
   $regexp = '^\d\d\d\d-\d\d-\d\d' unless $regexp;
   $num = 10 unless $num;
+  $numMore = $num unless $numMore;
   $offset = 0 unless $offset;
   # FIXME: Should pass filtered list of pages to SearchTitleAndBody to save time?
   my @pages = sort JournalSort (grep(/$regexp/, $search ? SearchTitleAndBody($search) : AllPagesList()));
@@ -862,7 +863,7 @@ sub PrintJournal {
   print $q->end_div();
   $regexp = UrlEncode($regexp);
   $search = UrlEncode($search);
-  print $q->p({-class=>'more'}, ScriptLink("action=more;num=$num;regexp=$regexp;search=$search;mode=$mode;offset=$next", T('More...'), 'more')) if $pages[$next];
+  print $q->p({-class=>'more'}, ScriptLink("action=more;num=$numMore;regexp=$regexp;search=$search;mode=$mode;offset=$next", T('More...'), 'more')) if $pages[$next];
 }
 
 sub PrintAllPages {
