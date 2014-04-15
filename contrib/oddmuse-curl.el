@@ -1,12 +1,12 @@
 ;;; oddmuse-curl.el -- edit pages on an Oddmuse wiki using curl
 ;; 
-;; Copyright (C) 2006–2013  Alex Schroeder <alex@gnu.org>
+;; Copyright (C) 2006–2014  Alex Schroeder <alex@gnu.org>
 ;;           (C) 2007  rubikitch <rubikitch@ruby-lang.org>
 ;; 
 ;; Latest version:
 ;;   http://git.savannah.gnu.org/cgit/oddmuse.git/plain/contrib/oddmuse-curl.el
 ;; Discussion, feedback:
-;;   http://www.emacswiki.org/cgi-bin/wiki/OddmuseMode
+;;   http://www.emacswiki.org/cgi-bin/wiki/OddmuseCurl
 ;; 
 ;; This program is free software: you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by the Free
@@ -45,22 +45,16 @@
 (require 'goto-addr)
 (require 'info)
 
-(defcustom oddmuse-directory "~/emacs/oddmuse"
+(defcustom oddmuse-directory "~/.emacs.d/oddmuse"
   "Directory to store oddmuse pages."
   :type '(string)
   :group 'oddmuse)
 
 (defcustom oddmuse-wikis
-  '(("TestWiki" "http://www.emacswiki.org/cgi-bin/test"
-     utf-8 "question" nil)
-    ("EmacsWiki" "http://www.emacswiki.org/cgi-bin/emacs"
+  '(("EmacsWiki" "http://www.emacswiki.org/cgi-bin/emacs"
      utf-8 "uihnscuskc" nil)
-    ("CommunityWiki" "http://www.communitywiki.org/cw"
-     utf-8 "question" nil)
     ("OddmuseWiki" "http://www.oddmuse.org/cgi-bin/oddmuse"
-     utf-8 "question" nil)
-    ("CampaignWiki" "http://www.campaignwiki.org/wiki/NameOfYourWiki"
-     utf-8 "ts" nil))
+     utf-8 "question" nil))
   "Alist mapping wiki names to URLs.
 
 The elements in this list are:
@@ -160,15 +154,15 @@ It must print the RSS 3.0 text format to stdout.
 
 (defvar oddmuse-post-command
   (concat "curl --silent --write-out '%{http_code}'"
-          " --form title=%t"
-          " --form summary=%s"
-          " --form username=%u"
-          " --form password=%p"
+          " --form title='%t'"
+          " --form summary='%s'"
+          " --form username='%u'"
+          " --form password='%p'"
 	  " --form %q=1"
           " --form recent_edit=%m"
 	  " --form oldtime=%o"
-          " --form text=\"<-\""
-          " %w")
+          " --form text='<-'"
+          " '%w'")
   "Command to use for publishing pages.
 It must accept the page on stdin.
 
@@ -397,11 +391,11 @@ Font-locking is controlled by `oddmuse-markup-functions'.
                     ("%p" . oddmuse-password)
                     ("%q" . question)
 		    ("%o" . oddmuse-revision)
+		    ("%r" . regexp)
 		    ("%\\?" . hatena)))
       (when (and (boundp (cdr pair)) (stringp (symbol-value (cdr pair))))
         (setq command (replace-regexp-in-string (car pair)
-                                                (shell-quote-argument
-                                                 (symbol-value (cdr pair)))
+						(symbol-value (cdr pair))
                                                 command t t))))
     command))
 
@@ -521,7 +515,7 @@ Save outpout in BUF and report an appropriate error.
 ON-REGION indicates whether the commands runs on the region
 such as when posting, or whether it just runs by itself such
 as when loading a page."
-  (message "%s..." mesg)
+  (message "%s using %s..." mesg command)
   ;; If ON-REGION, the resulting HTTP CODE is found in BUF, so check
   ;; that, too.
   (if (and (= 0 (if on-region
