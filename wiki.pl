@@ -2709,7 +2709,6 @@ sub OpenPage {      # Sets global variables
       local $/ = undef;
       $Page{text} = <F>;
       close F;
-    } elsif ($CommentsPrefix and $id =~ /^$CommentsPrefix(.*)/o) { # do nothing
     }
   }
   $OpenPageName = $id;
