@@ -49,7 +49,7 @@ $RssImageUrl $ReadMe $RssRights $BannedCanRead $SurgeProtection $TopLinkBar
 $LanguageLimit $SurgeProtectionTime $SurgeProtectionViews $DeletedPage
 %Languages $InterMap $ValidatorLink %LockOnCreation $RssStyleSheet
 %CookieParameters @UserGotoBarPages $NewComment $HtmlHeaders $StyleSheetPage
-$ConfigPage $ScriptName $CommentsPrefix @UploadTypes $AllNetworkFiles
+$ConfigPage $ScriptName $CommentsPrefix $CommentsPattern @UploadTypes $AllNetworkFiles
 $UsePathInfo $UploadAllowed $LastUpdate $PageCluster %PlainTextPages
 $RssInterwikiTranslate $UseCache $Counter $ModuleDir $FullUrlPattern
 $SummaryDefaultLength $FreeInterLinkPattern %InvisibleCookieParameters
@@ -151,6 +151,7 @@ $TopLinkBar  = 1;               # 1 = add a goto bar at the top of the page
 $UserGotoBar = '';              # HTML added to end of goto bar
 $ValidatorLink = 0;             # 1 = Link to the W3C HTML validator service
 $CommentsPrefix = '';           # prefix for comment pages, eg. 'Comments_on_' to enable
+$CommentsPattern = undef;       # regex used to match comment pages
 $HtmlHeaders = '';              # Additional stuff to put in the HTML <head> section
 $IndentLimit = 20;              # Maximum depth of nested lists
 $LanguageLimit = 3;             # Number of matches req. for each language
@@ -289,6 +290,8 @@ sub InitVariables {  # Init global session variables for mod_perl!
     (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$StyleSheetPage, \$CommentsPrefix,
      \$ConfigPage, \$NotFoundPg, \$RssInterwikiTranslate, \$BannedContent, \$RssExclude, );
   $CommentsPrefix .= '_' if $add_space;
+  $CommentsPattern = "^$CommentsPrefix(.*)"
+    unless defined $CommentsPattern or not $CommentsPrefix;
   @UserGotoBarPages = ($HomePage, $RCName) unless @UserGotoBarPages;
   my @pages = sort($BannedHosts, $StyleSheetPage, $ConfigPage, $InterMap,
                    $RssInterwikiTranslate, $BannedContent);
@@ -883,15 +886,19 @@ sub PrintAllPages {
       $q->h1($links ? GetPageLink($id)
 	     : $q->a({-name=>$id}, UrlEncode(FreeToNormal($id))));
     PrintPageHtml();
-    if ($comments and $id !~ /^$CommentsPrefix/o) {
-      print $q->p({-class=>'comment'},
-      GetPageLink($CommentsPrefix . $id,
-            T('Comments on this page')));
-    }
+    PrintPageCommentsLink($id, $comments);
     print $q->end_div();
     $n++; # pages actually printed
   }
   return $i;
+}
+
+sub PrintPageCommentsLink {
+  my ($id, $comments) = @_;
+  if ($comments and $CommentsPattern and $id !~ /$CommentsPattern/o) {
+    print $q->p({-class=>'comment'},
+                GetPageLink($CommentsPrefix . $id, T('Comments on this page')));
+  }
 }
 
 sub RSS {
@@ -1383,7 +1390,7 @@ sub BrowseResolvedPage {
     print $q->redirect({-uri=>$resolved});
   } elsif ($class && $class eq 'alias') { # an anchor was found instead of a page
     ReBrowsePage($resolved);
-  } elsif (not $resolved and $NotFoundPg and $id !~ /^$CommentsPrefix/o) { # custom page-not-found message
+  } elsif (not $resolved and $NotFoundPg and $id !~ /$CommentsPattern/o) { # custom page-not-found message
     BrowsePage($NotFoundPg);
   } elsif ($resolved) {   # an existing page was found
     BrowsePage($resolved, GetParam('raw', 0));
@@ -1945,7 +1952,7 @@ sub RssItem {
   $rss .= "<description>" . QuoteHtml($summary) . "</description>\n" if $summary;
   $rss .= "<pubDate>" . $date . "</pubDate>\n";
   $rss .= "<comments>" . ScriptUrl($CommentsPrefix . UrlEncode($id))
-    . "</comments>\n" if $CommentsPrefix and $id !~ /^$CommentsPrefix/o;
+    . "</comments>\n" if $CommentsPattern and $id !~ /$CommentsPattern/o;
   $rss .= "<dc:contributor>" . $username . "</dc:contributor>\n" if $username;
   $rss .= "<wiki:status>" . (1 == $revision ? 'new' : 'updated')
     . "</wiki:status>\n";
@@ -2431,8 +2438,8 @@ sub GetFooterLinks {
   my ($id, $rev) = @_;
   my @elements;
   if ($id and $rev ne 'history' and $rev ne 'edit') {
-    if ($CommentsPrefix) {
-      if ($id =~ /^$CommentsPrefix(.*)/o) {
+    if ($CommentsPattern) {
+      if ($id =~ /$CommentsPattern/o) {
 	push(@elements, GetPageLink($1, undef, 'original', T('a')));
       } else {
 	push(@elements, GetPageLink($CommentsPrefix . $id, undef, 'comment', T('c')));
@@ -2463,8 +2470,8 @@ sub GetFooterLinks {
 
 sub GetCommentForm {
   my ($id, $rev, $comment) = @_;
-  if ($CommentsPrefix ne '' and $id and $rev ne 'history' and $rev ne 'edit'
-      and $id =~ /^$CommentsPrefix/o and UserCanEdit($id, 0, 1)) {
+  if ($CommentsPattern ne '' and $id and $rev ne 'history' and $rev ne 'edit'
+      and $id =~ /$CommentsPattern/o and UserCanEdit($id, 0, 1)) {
     return $q->div({-class=>'comment'}, GetFormStart(undef, undef, 'comment'), # protected by questionasker
        $q->p(GetHiddenValue('title', $id),
        GetTextArea('aftertext', $comment ? $comment : $NewComment, 10)), $EditNote,
@@ -3221,7 +3228,7 @@ sub UserCanEdit {
   return 1 if UserIsEditor();
   return 0 if !$EditAllowed or -f $NoEditFile;
   return 0 if $editing and UserIsBanned(); # this call is more expensive
-  return 0 if $EditAllowed >= 2 and (not $CommentsPrefix or $id !~ /^$CommentsPrefix/o);
+  return 0 if $EditAllowed >= 2 and (not $CommentsPattern or $id !~ /$CommentsPattern/o);
   return 1 if $EditAllowed >= 3 and ($comment or (GetParam('aftertext', '') and not GetParam('text', '')));
   return 0 if $EditAllowed >= 3;
   return 1;
