@@ -3264,13 +3264,12 @@ sub UserIsEditor {
 sub UserHasPassword {
   my ($pwd, $pass) = @_;
   return 0 if not $pass;
+  if ($PassHashFunction ne '') {
+    no strict 'refs';
+    $pwd = &$PassHashFunction($pwd . $PassSalt);
+  }
   foreach (split(/\s+/, $pass)) {
-    if ($PassHashFunction eq '') {
-      return 1 if $pwd eq $_;
-    } else {
-      no strict "refs";
-      return 1 if &$PassHashFunction($pwd . $PassSalt) eq $_;
-    }
+    return 1 if $pwd eq $_;
   }
   return 0;
 }
