@@ -16,7 +16,9 @@
 # file in there. It will be loaded automatically.
 #
 use utf8;
-$ModulesDescription .= '<p>japanese-utf8.pl</p>';
+
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/japanese-utf8.pl">japanese-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Japanese">Japanese</a></p>';
+
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 This page is empty.
 このページは空です。
