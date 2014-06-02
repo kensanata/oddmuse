@@ -39,7 +39,8 @@ use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
 $KeepDir $PageDir $RcOldFile $IndexFile $BannedContent $NoEditFile $BannedHosts
 $ConfigFile $FullUrl $SiteName $HomePage $LogoUrl $RcDefault $RssDir
 $IndentLimit $RecentTop $RecentLink $EditAllowed $UseDiff $KeepDays $KeepMajor
-$EmbedWiki $BracketText $UseConfig $UseLookup $AdminPass $EditPass $NetworkFile
+$EmbedWiki $BracketText $UseConfig $UseLookup $AdminPass $EditPass
+$PassHashFunction $PassSalt $NetworkFile
 $BracketWiki $FreeLinks $WikiLinks $SummaryHours $FreeLinkPattern $RCName
 $RunCGI $ShowEdits $LinkPattern $RssExclude $InterLinkPattern $MaxPost $UseGrep
 $UrlPattern $UrlProtocols $ImageExtensions $InterSitePattern $FS $CookieName
@@ -101,6 +102,8 @@ $NewComment  = T('Add your comment here.') . "\n"; # New comment text
 $EditAllowed = 1; # 0 = no, 1 = yes, 2 = comments pages only, 3 = comments only
 $AdminPass   = '' unless defined $AdminPass; # Whitespace separated passwords.
 $EditPass    = '' unless defined $EditPass;  # Whitespace separated passwords.
+$PassHashFunction = '' unless defined $PassHashFunction; # Name of the function to create hashes
+$PassSalt    = '' unless defined $PassSalt; # Salt will be added to any password before hashing
 
 $BannedHosts = 'BannedHosts';   # Page for banned hosts
 $BannedCanRead = 1;             # 1 = banned cannot edit, 0 = banned cannot read
@@ -3250,19 +3253,22 @@ sub UserIsBanned {
 }
 
 sub UserIsAdmin {
-  return 0 if $AdminPass eq '';
-  my $pwd = GetParam('pwd', '');
-  foreach (split(/\s+/, $AdminPass)) {
-    return 1 if $pwd eq $_;
-  }
-  return 0;
+  return UserHasPassword(GetParam('pwd', ''), $AdminPass);
 }
 
 sub UserIsEditor {
   return 1 if UserIsAdmin();  # Admin includes editor
-  return 0 if $EditPass eq '';
-  my $pwd = GetParam('pwd', ''); # Used for both passwords
-  foreach (split(/\s+/, $EditPass)) {
+  return UserHasPassword(GetParam('pwd', ''), $EditPass);
+}
+
+sub UserHasPassword {
+  my ($pwd, $pass) = @_;
+  return 0 if not $pass;
+  if ($PassHashFunction ne '') {
+    no strict 'refs';
+    $pwd = &$PassHashFunction($pwd . $PassSalt);
+  }
+  foreach (split(/\s+/, $pass)) {
     return 1 if $pwd eq $_;
   }
   return 0;
