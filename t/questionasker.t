@@ -55,3 +55,7 @@ test_page(update_page('test', 'answer new question', undef, undef, undef,
 test_page(get_page('Comments_on_test'),
 	  'label for="username"',
 	  'say hi');
+
+# test for corruption of Unicode text
+update_page('Umlaute', '<Schröder>');
+test_page($redirect, '&lt;Schröder&gt;')
