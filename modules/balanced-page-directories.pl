@@ -60,10 +60,10 @@ let us know about your wiki. :)
 
 Once you install the code, reload any page. This should trigger
 migration. No output is produced during migration. Migration is
-triggered whenever a page file isn't found but a page found is found
-at the default old location. If, for example, $PageDir/c1/HomePage.pg
-doesn't exist but $PageDir/h/HomePage.pg does, and the wiki can be
-locked, the wiki is locked and migration is started.
+triggered whenever a page file isn't found but a page is found at the
+default old location. If, for example, $PageDir/c1/HomePage.pg doesn't
+exist but $PageDir/h/HomePage.pg does, and the wiki can be locked, the
+wiki is locked and migration is started.
 
 =cut
 
