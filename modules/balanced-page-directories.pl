@@ -90,17 +90,19 @@ sub NewBalancedPageDirectoriesGetPageDirectory {
 sub NewBalancedPageDirectoriesOpenPage {
   my $id = shift;
   if (! -f GetPageFile($id)) {
-    BalancedPageDirectoriesMigrate(@_);
+    BalancedPageDirectoriesMigrate($id);
   }
   return OldBalancedPageDirectoriesOpenPage($id, @_);
 }
 
 sub BalancedPageDirectoriesMigrate {
+  my $id = shift;
 
-  # Check if migration would have helped.
+  # This code is called if the page file does not exist. Perhaps we
+  # need to migrate? Check if the old page file exists. If it does
+  # not, there is no point in migration.
   *GetPageDirectory = *OldBalancedPageDirectoriesGetPageDirectory;
-  OldBalancedPageDirectoriesOpenPage(@_);
-  return if $Page{revision} > 0;
+  return unless -f GetPageFile($id);
 
   # Make sure we can change the data structure now.
   RequestLockOrError();
