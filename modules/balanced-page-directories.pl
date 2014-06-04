@@ -102,7 +102,10 @@ sub BalancedPageDirectoriesMigrate {
   # need to migrate? Check if the old page file exists. If it does
   # not, there is no point in migration.
   *GetPageDirectory = *OldBalancedPageDirectoriesGetPageDirectory;
-  return unless -f GetPageFile($id);
+  if (not -f GetPageFile($id)) {
+    *GetPageDirectory = *NewBalancedPageDirectoriesGetPageDirectory;
+    return;
+  }
 
   # Make sure we can change the data structure now.
   RequestLockOrError();
@@ -111,7 +114,7 @@ sub BalancedPageDirectoriesMigrate {
   # using globbing.
   SetParam('refresh', 1);
 
-  for my $id (AllPagesList()) {
+  for $id (AllPagesList()) {
 
     *GetPageDirectory = *OldBalancedPageDirectoriesGetPageDirectory;
     my $page_from = GetPageFile($id);
