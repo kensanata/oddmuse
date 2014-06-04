@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 9;
+use Test::More tests => 10;
 use utf8; # tests contain UTF-8 characters and it matters
 
 clear_pages();
@@ -38,3 +38,7 @@ test_page(get_page('HomePage'), 'This is an egg.');
 ok(-f GetKeepFile('HomePage', 1), 'keep file');
 test_page(get_page('ホームページ'), 'これが卵です。');
 ok(-f GetLockedPageFile($StyleSheetPage), 'page lock');
+
+# create a new page
+test_page(update_page('サイトマップ', '日本語ユーザーに向けて'),
+	  '日本語ユーザーに向けて');
