@@ -91,14 +91,14 @@ sub DespamBannedContent {
     foreach my $url (@urls) {
       if ($url =~ /($regexp)/i) {
 	return Tss('Rule "%1" matched "%2" on this page.',
-		   QuoteHtml($regexp), $url);
+		   QuoteHtml($regexp), QuoteHtml($url));
       }
     }
   }
   # depends on strange-spam.pl!
   foreach (@DespamStrangeRules) {
     my $regexp = $_;
-    if ($str =~ /($regexp)/) {
+    if ($str =~ /($regexp)/i) {
       my $match = $1;
       $match =~ s/\n/ /g;
       return Tss('Rule "%1" matched "%2" on this page.',
