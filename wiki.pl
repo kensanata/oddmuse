@@ -39,7 +39,8 @@ use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
 $KeepDir $PageDir $RcOldFile $IndexFile $BannedContent $NoEditFile $BannedHosts
 $ConfigFile $FullUrl $SiteName $HomePage $LogoUrl $RcDefault $RssDir
 $IndentLimit $RecentTop $RecentLink $EditAllowed $UseDiff $KeepDays $KeepMajor
-$EmbedWiki $BracketText $UseConfig $UseLookup $AdminPass $EditPass $NetworkFile
+$EmbedWiki $BracketText $UseConfig $UseLookup $AdminPass $EditPass
+$PassHashFunction $PassSalt $NetworkFile
 $BracketWiki $FreeLinks $WikiLinks $SummaryHours $FreeLinkPattern $RCName
 $RunCGI $ShowEdits $LinkPattern $RssExclude $InterLinkPattern $MaxPost $UseGrep
 $UrlPattern $UrlProtocols $ImageExtensions $InterSitePattern $FS $CookieName
@@ -49,7 +50,7 @@ $RssImageUrl $ReadMe $RssRights $BannedCanRead $SurgeProtection $TopLinkBar
 $LanguageLimit $SurgeProtectionTime $SurgeProtectionViews $DeletedPage
 %Languages $InterMap $ValidatorLink %LockOnCreation $RssStyleSheet
 %CookieParameters @UserGotoBarPages $NewComment $HtmlHeaders $StyleSheetPage
-$ConfigPage $ScriptName $CommentsPrefix @UploadTypes $AllNetworkFiles
+$ConfigPage $ScriptName $CommentsPrefix $CommentsPattern @UploadTypes $AllNetworkFiles
 $UsePathInfo $UploadAllowed $LastUpdate $PageCluster %PlainTextPages
 $RssInterwikiTranslate $UseCache $Counter $ModuleDir $FullUrlPattern
 $SummaryDefaultLength $FreeInterLinkPattern %InvisibleCookieParameters
@@ -101,6 +102,8 @@ $NewComment  = T('Add your comment here.') . "\n"; # New comment text
 $EditAllowed = 1; # 0 = no, 1 = yes, 2 = comments pages only, 3 = comments only
 $AdminPass   = '' unless defined $AdminPass; # Whitespace separated passwords.
 $EditPass    = '' unless defined $EditPass;  # Whitespace separated passwords.
+$PassHashFunction = '' unless defined $PassHashFunction; # Name of the function to create hashes
+$PassSalt    = '' unless defined $PassSalt; # Salt will be added to any password before hashing
 
 $BannedHosts = 'BannedHosts';   # Page for banned hosts
 $BannedCanRead = 1;             # 1 = banned cannot edit, 0 = banned cannot read
@@ -151,6 +154,7 @@ $TopLinkBar  = 1;               # 1 = add a goto bar at the top of the page
 $UserGotoBar = '';              # HTML added to end of goto bar
 $ValidatorLink = 0;             # 1 = Link to the W3C HTML validator service
 $CommentsPrefix = '';           # prefix for comment pages, eg. 'Comments_on_' to enable
+$CommentsPattern = undef;       # regex used to match comment pages
 $HtmlHeaders = '';              # Additional stuff to put in the HTML <head> section
 $IndentLimit = 20;              # Maximum depth of nested lists
 $LanguageLimit = 3;             # Number of matches req. for each language
@@ -289,6 +293,8 @@ sub InitVariables {  # Init global session variables for mod_perl!
     (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$StyleSheetPage, \$CommentsPrefix,
      \$ConfigPage, \$NotFoundPg, \$RssInterwikiTranslate, \$BannedContent, \$RssExclude, );
   $CommentsPrefix .= '_' if $add_space;
+  $CommentsPattern = "^$CommentsPrefix(.*)"
+    unless defined $CommentsPattern or not $CommentsPrefix;
   @UserGotoBarPages = ($HomePage, $RCName) unless @UserGotoBarPages;
   my @pages = sort($BannedHosts, $StyleSheetPage, $ConfigPage, $InterMap,
                    $RssInterwikiTranslate, $BannedContent);
@@ -465,12 +471,12 @@ sub ApplyRules {
 	}
 	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
 	($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
-      } elsif ($bol && m/\G(\&lt;journal(\s+(\d*))?(\s+"(.*?)")?(\s+(reverse|past|future))?(\s+search\s+(.*))?\&gt;[ \t]*\n?)/cgi) {
+      } elsif ($bol && m/\G(\&lt;journal(\s+(\d*)(,(\d*))?)?(\s+"(.*?)")?(\s+(reverse|past|future))?(\s+search\s+(.*))?\&gt;[ \t]*\n?)/cgi) {
 	# <journal 10 "regexp"> includes 10 pages matching regexp
 	Clean(CloseHtmlEnvironments());
 	Dirty($1);
 	my ($oldpos, $old_) = (pos, $_); # remember these because of the call to PrintJournal()
-	PrintJournal($3, $5, $7, 0, $9); # no offset
+	PrintJournal($3, $5, $7, $9, 0, $11); # no offset
 	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
 	($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
       } elsif ($bol && m/\G(\&lt;rss(\s+(\d*))?\s+(.*?)\&gt;[ \t]*\n?)/cgis) {
@@ -819,7 +825,7 @@ sub GetRaw {
 sub DoJournal {
   print GetHeader(undef, T('Journal'));
   print $q->start_div({-class=>'content'});
-  PrintJournal(map { GetParam($_, ''); } qw(num regexp mode offset search));
+  PrintJournal(map { GetParam($_, ''); } qw(num num regexp mode offset search));
   print $q->end_div();
   PrintFooter();
 }
@@ -829,9 +835,10 @@ sub JournalSort { $b cmp $a }
 sub PrintJournal {
   return if $CollectingJournal; # avoid infinite loops
   local $CollectingJournal = 1;
-  my ($num, $regexp, $mode, $offset, $search) = @_;
+  my ($num, $numMore, $regexp, $mode, $offset, $search) = @_;
   $regexp = '^\d\d\d\d-\d\d-\d\d' unless $regexp;
   $num = 10 unless $num;
+  $numMore = $num unless $numMore;
   $offset = 0 unless $offset;
   # FIXME: Should pass filtered list of pages to SearchTitleAndBody to save time?
   my @pages = sort JournalSort (grep(/$regexp/, $search ? SearchTitleAndBody($search) : AllPagesList()));
@@ -862,7 +869,7 @@ sub PrintJournal {
   print $q->end_div();
   $regexp = UrlEncode($regexp);
   $search = UrlEncode($search);
-  print $q->p({-class=>'more'}, ScriptLink("action=more;num=$num;regexp=$regexp;search=$search;mode=$mode;offset=$next", T('More...'), 'more')) if $pages[$next];
+  print $q->p({-class=>'more'}, ScriptLink("action=more;num=$numMore;regexp=$regexp;search=$search;mode=$mode;offset=$next", T('More...'), 'more')) if $pages[$next];
 }
 
 sub PrintAllPages {
@@ -882,15 +889,19 @@ sub PrintAllPages {
       $q->h1($links ? GetPageLink($id)
 	     : $q->a({-name=>$id}, UrlEncode(FreeToNormal($id))));
     PrintPageHtml();
-    if ($comments and $id !~ /^$CommentsPrefix/o) {
-      print $q->p({-class=>'comment'},
-      GetPageLink($CommentsPrefix . $id,
-            T('Comments on this page')));
-    }
+    PrintPageCommentsLink($id, $comments);
     print $q->end_div();
     $n++; # pages actually printed
   }
   return $i;
+}
+
+sub PrintPageCommentsLink {
+  my ($id, $comments) = @_;
+  if ($comments and $CommentsPattern and $id !~ /$CommentsPattern/o) {
+    print $q->p({-class=>'comment'},
+                GetPageLink($CommentsPrefix . $id, T('Comments on this page')));
+  }
 }
 
 sub RSS {
@@ -1382,7 +1393,7 @@ sub BrowseResolvedPage {
     print $q->redirect({-uri=>$resolved});
   } elsif ($class && $class eq 'alias') { # an anchor was found instead of a page
     ReBrowsePage($resolved);
-  } elsif (not $resolved and $NotFoundPg and $id !~ /^$CommentsPrefix/o) { # custom page-not-found message
+  } elsif (not $resolved and $NotFoundPg and $id !~ /$CommentsPattern/o) { # custom page-not-found message
     BrowsePage($NotFoundPg);
   } elsif ($resolved) {   # an existing page was found
     BrowsePage($resolved, GetParam('raw', 0));
@@ -1944,7 +1955,7 @@ sub RssItem {
   $rss .= "<description>" . QuoteHtml($summary) . "</description>\n" if $summary;
   $rss .= "<pubDate>" . $date . "</pubDate>\n";
   $rss .= "<comments>" . ScriptUrl($CommentsPrefix . UrlEncode($id))
-    . "</comments>\n" if $CommentsPrefix and $id !~ /^$CommentsPrefix/o;
+    . "</comments>\n" if $CommentsPattern and $id !~ /$CommentsPattern/o;
   $rss .= "<dc:contributor>" . $username . "</dc:contributor>\n" if $username;
   $rss .= "<wiki:status>" . (1 == $revision ? 'new' : 'updated')
     . "</wiki:status>\n";
@@ -2430,8 +2441,8 @@ sub GetFooterLinks {
   my ($id, $rev) = @_;
   my @elements;
   if ($id and $rev ne 'history' and $rev ne 'edit') {
-    if ($CommentsPrefix) {
-      if ($id =~ /^$CommentsPrefix(.*)/o) {
+    if ($CommentsPattern) {
+      if ($id =~ /$CommentsPattern/o) {
 	push(@elements, GetPageLink($1, undef, 'original', T('a')));
       } else {
 	push(@elements, GetPageLink($CommentsPrefix . $id, undef, 'comment', T('c')));
@@ -2462,8 +2473,8 @@ sub GetFooterLinks {
 
 sub GetCommentForm {
   my ($id, $rev, $comment) = @_;
-  if ($CommentsPrefix ne '' and $id and $rev ne 'history' and $rev ne 'edit'
-      and $id =~ /^$CommentsPrefix/o and UserCanEdit($id, 0, 1)) {
+  if ($CommentsPattern ne '' and $id and $rev ne 'history' and $rev ne 'edit'
+      and $id =~ /$CommentsPattern/o and UserCanEdit($id, 0, 1)) {
     return $q->div({-class=>'comment'}, GetFormStart(undef, undef, 'comment'), # protected by questionasker
        $q->p(GetHiddenValue('title', $id),
        GetTextArea('aftertext', $comment ? $comment : $NewComment, 10)), $EditNote,
@@ -2708,7 +2719,6 @@ sub OpenPage {      # Sets global variables
       local $/ = undef;
       $Page{text} = <F>;
       close F;
-    } elsif ($CommentsPrefix and $id =~ /^$CommentsPrefix(.*)/o) { # do nothing
     }
   }
   $OpenPageName = $id;
@@ -3034,11 +3044,9 @@ sub FreeToNormal {    # trim all spaces and convert them to underlines
   my $id = shift;
   return '' unless $id;
   $id =~ s/ /_/g;
-  if (index($id, '_') > -1) {  # Quick check for any space/underscores
-    $id =~ s/__+/_/g;
-    $id =~ s/^_//;
-    $id =~ s/_$//;
-  }
+  $id =~ s/__+/_/g;
+  $id =~ s/^_//;
+  $id =~ s/_$//;
   return UnquoteHtml($id);
 }
 
@@ -3223,7 +3231,7 @@ sub UserCanEdit {
   return 1 if UserIsEditor();
   return 0 if !$EditAllowed or -f $NoEditFile;
   return 0 if $editing and UserIsBanned(); # this call is more expensive
-  return 0 if $EditAllowed >= 2 and (not $CommentsPrefix or $id !~ /^$CommentsPrefix/o);
+  return 0 if $EditAllowed >= 2 and (not $CommentsPattern or $id !~ /$CommentsPattern/o);
   return 1 if $EditAllowed >= 3 and ($comment or (GetParam('aftertext', '') and not GetParam('text', '')));
   return 0 if $EditAllowed >= 3;
   return 1;
@@ -3245,19 +3253,22 @@ sub UserIsBanned {
 }
 
 sub UserIsAdmin {
-  return 0 if $AdminPass eq '';
-  my $pwd = GetParam('pwd', '');
-  foreach (split(/\s+/, $AdminPass)) {
-    return 1 if $pwd eq $_;
-  }
-  return 0;
+  return UserHasPassword(GetParam('pwd', ''), $AdminPass);
 }
 
 sub UserIsEditor {
   return 1 if UserIsAdmin();  # Admin includes editor
-  return 0 if $EditPass eq '';
-  my $pwd = GetParam('pwd', ''); # Used for both passwords
-  foreach (split(/\s+/, $EditPass)) {
+  return UserHasPassword(GetParam('pwd', ''), $EditPass);
+}
+
+sub UserHasPassword {
+  my ($pwd, $pass) = @_;
+  return 0 if not $pass;
+  if ($PassHashFunction ne '') {
+    no strict 'refs';
+    $pwd = &$PassHashFunction($pwd . $PassSalt);
+  }
+  foreach (split(/\s+/, $pass)) {
     return 1 if $pwd eq $_;
   }
   return 0;
@@ -3340,7 +3351,7 @@ sub AllPagesList {
   if (not $refresh and -f $IndexFile) {
     my ($status, $rawIndex) = ReadFile($IndexFile); # not fatal
     if ($status) {
-      %IndexHash = split(/\s+/, $rawIndex);
+      %IndexHash = split(/ /, $rawIndex);
       @IndexList = sort(keys %IndexHash);
       return @IndexList;
     }

@@ -237,9 +237,6 @@ a.near:link {
 a.near:visited {
     color:#550;
 }
-a.tag:before {
-    content:"\2601\ ";
-}
 ol, ul, dl {
     padding-top:0.5em;
 }
