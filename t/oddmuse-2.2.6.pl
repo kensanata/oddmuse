@@ -2770,17 +2770,17 @@ sub GetKeptRevision {   # Call after OpenPage
 
 sub GetPageFile {
   my ($id) = @_;
-  return  "$PageDir/$id.pg";
+  return $PageDir . '/' . GetPageDirectory($id) . "/$id.pg";
 }
 
 sub GetKeepFile {
   my ($id, $revision) = @_; die "No revision for $id" unless $revision; #FIXME
-  return "$KeepDir/$id/$revision.kp";
+  return $KeepDir . '/' . GetPageDirectory($id) . "/$id/$revision.kp";
 }
 
 sub GetKeepDir {
   my $id = shift; die 'No id' unless $id; #FIXME
-  return "$KeepDir/$id";
+  return $KeepDir . '/' . GetPageDirectory($id) . '/' . $id;
 }
 
 sub GetKeepFiles {
@@ -2791,11 +2791,19 @@ sub GetKeepRevisions {
   return sort {$b <=> $a} map { m/([0-9]+)\.kp$/; $1; } GetKeepFiles(shift);
 }
 
+sub GetPageDirectory {
+  my $id = shift;
+  if ($id =~ /^([a-zA-Z])/) {
+    return uc($1);
+  }
+  return 'other';
+}
+
 # Always call SavePage within a lock.
 sub SavePage { # updating the cache will not change timestamp and revision!
   ReportError(T('Cannot save a nameless page.'), '400 BAD REQUEST', 1) unless $OpenPageName;
   ReportError(T('Cannot save a page without revision.'), '400 BAD REQUEST', 1) unless $Page{revision};
-  CreateDir($PageDir);
+  CreatePageDir($PageDir, $OpenPageName);
   WriteStringToFile(GetPageFile($OpenPageName), EncodePage(%Page));
 }
 
@@ -2806,8 +2814,7 @@ sub SaveKeepFile {
   delete $Page{'diff-major'};
   delete $Page{'diff-minor'};
   $Page{'keep-ts'} = $Now;  # expire only $KeepDays from $Now!
-  CreateDir($KeepDir);
-  CreateDir("$KeepDir/$OpenPageName");
+  CreateKeepDir($KeepDir, $OpenPageName);
   WriteStringToFile(GetKeepFile($OpenPageName, $Page{revision}), EncodePage(%Page));
 }
 
@@ -2882,9 +2889,21 @@ sub CreateDir {
     or ReportError(Ts('Cannot create %s', $newdir) . ": $!", '500 INTERNAL SERVER ERROR');
 }
 
+sub CreatePageDir {
+  my ($dir, $id) = @_;
+  CreateDir($dir);
+  CreateDir($dir . '/' . GetPageDirectory($id));
+}
+
+sub CreateKeepDir {
+  my ($dir, $id) = @_;
+  CreatePageDir($dir, $id);
+  CreateDir($dir . '/' . GetPageDirectory($id) . '/' . $id);
+}
+
 sub GetLockedPageFile {
   my $id = shift;
-  return "$PageDir/$id.lck";
+  return $PageDir . '/' . GetPageDirectory($id) . "/$id.lck";
 }
 
 sub RequestLockDir {
@@ -3342,7 +3361,7 @@ sub AllPagesList {
   %IndexHash = ();
   # If file exists and cannot be changed, error!
   my $locked = RequestLockDir('index', undef, undef, -f $IndexFile);
-  foreach (bsd_glob("$PageDir/*.pg"), bsd_glob("$PageDir/.*.pg")) {
+  foreach (bsd_glob("$PageDir/*/*.pg"), bsd_glob("$PageDir/*/.*.pg")) {
     next unless m|/.*/(.+)\.pg$|;
     my $id = $1;
     utf8::decode($id);
