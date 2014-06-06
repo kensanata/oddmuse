@@ -15,14 +15,20 @@
 
 =head1 Balanced Page Directories
 
-By default, Oddmuse disperses page data files into 27 directories
-based on the first character of the page name. The directories are "A"
-to "Z", and "other". If you use your wiki as a blog, all the pages
-starting with a date end up in "other". If your page names start with
-letters other than "A" to "Z", all the pages end up in "other". If you
-are using comment pages, all your comment pages end in "C". This can
-turn into a problem if you reach ten thousand pages and more in a
-single directory.
+B<WARNING: This module is deprecated.> Oddmuse no longer disperses
+page data files into 27 directories based on the first character of
+the page name. The directories used to be "A" to "Z", and "other". If
+you uses your wiki as a blog, all the pages starting with a date ended
+up in "other". If your page names started with letters other than "A"
+to "Z", all the pages ended up in "other". If you were using comment
+pages, all your comment pages ended in "C". This module was intended
+to create more subdirectories and spread them more evenly. This is no
+longer necessary, as the typical filesystem's performance no longer
+degrades with tens of thousands of files in a directory. I'm assuming
+most Oddmuse hosts to use some form of GNU/Linux with ext3 or ext4
+with dir_index option.
+
+The remaining info for this module is all deprecated.
 
 =over
 
