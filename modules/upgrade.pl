@@ -40,8 +40,11 @@ sub DoUpgrade {
 	print " failed!";
       }
     }
+    for my $subdir (grep(/\/([A-Z]|other)$/, bsd_glob("$dir/*"))) {
+      rmdir $subdir; # ignore errors
+    }
   }
-  ReleaseLockDir();
+  ReleaseLock();
   print $q->end_p(), $q->end_div();
   PrintFooter();
 }
