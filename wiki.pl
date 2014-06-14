@@ -97,7 +97,7 @@ $LogoUrl     = '';              # URL for site logo ('' for no logo)
 $NotFoundPg  = '';              # Page for not-found links ('' for blank pg)
 
 $NewText     = T('This page is empty.') . "\n";    # New page text
-$NewComment  = T('Add your comment here.') . "\n"; # New comment text
+$NewComment  = T('Add your comment here:') . "\n"; # New comment text
 
 $EditAllowed = 1; # 0 = no, 1 = yes, 2 = comments pages only, 3 = comments only
 $AdminPass   = '' unless defined $AdminPass; # Whitespace separated passwords.
@@ -2480,8 +2480,8 @@ sub GetCommentForm {
   if ($CommentsPattern ne '' and $id and $rev ne 'history' and $rev ne 'edit'
       and $id =~ /$CommentsPattern/o and UserCanEdit($id, 0, 1)) {
     return $q->div({-class=>'comment'}, GetFormStart(undef, undef, 'comment'), # protected by questionasker
-       $q->p(GetHiddenValue('title', $id),
-       GetTextArea('aftertext', $comment ? $comment : $NewComment, 10)), $EditNote,
+       $q->p(GetHiddenValue('title', $id), $q->label({-for=>'aftertext', -accesskey=>T('c')}, $NewComment),
+       $q->br(), GetTextArea('aftertext', $comment, 10)), $EditNote,
        $q->p($q->span({-class=>'username'},
 		      $q->label({-for=>'username'}, T('Username:')), ' ',
 		      $q->textfield(-name=>'username', -id=>'username',

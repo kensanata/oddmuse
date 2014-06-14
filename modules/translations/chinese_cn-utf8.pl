@@ -40,7 +40,7 @@ $CategoriesPage = '日志类别';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 This page is empty.
 
-Add your comment here.
+Add your comment here:
 
 Reading not allowed: user, ip, or network is blocked.
 禁止读取：用户、IP 或是网络已被禁止连接。
