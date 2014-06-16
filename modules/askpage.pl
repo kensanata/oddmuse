@@ -52,10 +52,8 @@ sub NewAskPageDoPost {
 *GetCommentForm=*NewAskPageGetCommentForm;
 sub NewAskPageGetCommentForm {
   my ($id, $rev, $comment) = @_;
-  my $OldNewComment = $NewComment;
   $NewComment = $NewQuestion if $id eq $AskPage;
   return OldAskPageGetCommentForm(@_);
-  $NewComment = $OldNewComment;
 }
 
 *OldAskPageJournalSort=*JournalSort;
