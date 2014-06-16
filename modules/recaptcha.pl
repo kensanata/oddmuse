@@ -252,7 +252,7 @@ sub ReCaptchaCheckAnswer {
   eval "use Captcha::reCAPTCHA";
   my $result = Captcha::reCAPTCHA->new()->check_answer(
     $ReCaptchaPrivateKey,
-    $ENV{'REMOTE_ADDR'},
+    GetRemoteAddress(),
     GetParam('recaptcha_challenge_field'),
     GetParam('recaptcha_response_field')
   );
