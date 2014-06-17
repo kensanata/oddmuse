@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 15;
+use Test::More tests => 24;
 
 clear_pages();
 
@@ -32,19 +32,39 @@ ok(-d "$KeepDir/T", "T keep directory exists");
 
 add_module('upgrade.pl');
 
+ok(-f "$ModuleDir/upgrade.pl", "upgrade.pl was installed");
+
+test_page(get_page('Test'), 'Upgrading Database', 'action=password');
+
+test_page(get_page('action=password'), 'You are a normal user');
+
 $page = get_page('action=upgrade pwd=foo');
 
 test_page($page,
 	  'page/T/Test.pg',
 	  'page/T/Test.lck',
-	  'keep/T/Test');
+	  'keep/T/Test',
+	  'Upgrade complete');
 
-test_page_negative($page, 'failed', 'does not fit the pattern');
+test_page_negative($page, 'failed',
+		   'does not fit the pattern',
+		   'Please remove');
 
 ok(! -d "$PageDir/T", "T directory has disappeared");
 ok(! -d "$KeepDir/T", "T keep directory has disappeared");
 ok(! -d $LockDir . 'main', "Lock was released");
+ok(! -f "$ModuleDir/upgrade.pl", "upgrade.pl was renamed");
 
 test_page(get_page('action=browse id=Test revision=1'), 'Hello');
 
 test_page(get_page('Test'), 'Hallo');
+
+# you cannot run it again after a successful run
+test_page(get_page('action=upgrade pwd=foo'),
+	  'Invalid action parameter');
+
+# reinstall it and run it again
+add_module('upgrade.pl');
+
+test_page(get_page('action=upgrade pwd=foo'),
+	  'Upgrade complete');

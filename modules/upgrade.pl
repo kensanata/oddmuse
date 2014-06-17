@@ -12,11 +12,30 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-$Action{upgrade} = \&DoUpgrade;
+
+*DoBrowseRequest = *DoUpgrade;
 
 sub DoUpgrade {
-  UserIsAdminOrError();
-  RequestLockOrError();
+
+  # The only thing allowed besides upgrading is login and unlock
+  my $action = lc(GetParam('action', ''));
+  if (($action eq 'password' or $action eq 'unlock')
+      and $Action{$action}) {
+    return &{$Action{$action}}($id);
+  }
+
+  # Only admins may upgrade
+  ReportError(T('Upgrading Database'),
+	      '403 FORBIDDEN', 0,
+	      $q->p(T('This operation is restricted to administrators only...'))
+	      . $q->p(ScriptLink('action=password', T('Login'), 'password')))
+    unless UserIsAdmin();
+
+  ReportError(T('Upgrading Database'),
+	      '403 FORBIDDEN', 0,
+	      $q->p(T('Did the previous upgrade end with an error? A lock was left behind.'))
+	      . $q->p(ScriptLink('action=unlock', T('Unlock wiki'), 'unlock')))
+    unless RequestLockDir('main');
 
   print GetHeader('', T('Upgrading Database')),
     $q->start_div({-class=>'content upgrade'});
@@ -44,7 +63,17 @@ sub DoUpgrade {
       rmdir $subdir; # ignore errors
     }
   }
+
+  print $q->end_p();
+
+  if (rename "$ModuleDir/upgrade.pl", "$ModuleDir/upgrade.done") {
+    print $q->p(T("Upgrade complete."))
+  } else {
+    print $q->p(T("Upgrade complete. Please remove $ModuleDir/upgade.pl, now."))
+  }
+
   ReleaseLock();
+
   print $q->end_p(), $q->end_div();
   PrintFooter();
 }
