@@ -302,11 +302,11 @@ because of such basic patterns as [.*] which are very generic."
 ;; Should determine this automatically based on the version? And cache it per wiki?
 ;; http://emacswiki.org/wiki?action=version
 (defvar oddmuse-markup-functions
-  '(oddmuse-basic-markup
-    oddmuse-extended-markup
+  '(oddmuse-extended-markup
     oddmuse-usemod-markup
     oddmuse-creole-markup
-    oddmuse-bbcode-markup)
+    oddmuse-bbcode-markup
+    oddmuse-basic-markup)
   "The list of functions to call when `oddmuse-mode' runs.
 Later functions take precedence because they call `font-lock-add-keywords'
 which adds the expressions to the front of the existing list.")
