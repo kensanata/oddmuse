@@ -311,6 +311,14 @@ because of such basic patterns as [.*] which are very generic."
 Later functions take precedence because they call `font-lock-add-keywords'
 which adds the expressions to the front of the existing list.")
 
+(defun oddmuse-nobreak-p ()
+  "Prevent line break of links.
+This depends on the `link' face."
+  (let ((face (get-text-property (point) 'face)))
+    (if (listp face)
+	(memq 'link face)
+      (eq 'link face))))
+
 (define-derived-mode oddmuse-mode text-mode "Odd"
   "Simple mode to edit wiki pages.
 
@@ -347,6 +355,8 @@ Font-locking is controlled by `oddmuse-markup-functions'.
 	     (prog1 (match-string 1)
 	       (replace-match "")
 	       (set-buffer-modified-p nil)))))
+  (set (make-local-variable 'fill-nobreak-predicate)
+       '(oddmuse-nobreak-p))
   (setq indent-tabs-mode nil))
 
 (autoload 'sgml-tag "sgml-mode" t)
