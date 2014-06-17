@@ -363,6 +363,7 @@ Font-locking is controlled by `oddmuse-markup-functions'.
 
 (define-key oddmuse-mode-map (kbd "C-c C-t") 'sgml-tag)
 (define-key oddmuse-mode-map (kbd "C-c C-o") 'oddmuse-follow)
+(define-key oddmuse-mode-map (kbd "C-c C-n") 'oddmuse-new)
 (define-key oddmuse-mode-map (kbd "C-c C-m") 'oddmuse-toggle-minor)
 (define-key oddmuse-mode-map (kbd "C-c C-c") 'oddmuse-post)
 (define-key oddmuse-mode-map (kbd "C-x C-v") 'oddmuse-revert)
@@ -471,6 +472,19 @@ Use a prefix argument to force a reload of the page."
 	(oddmuse-mode)))))
 
 (defalias 'oddmuse-go 'oddmuse-edit)
+
+;;;###autoload
+(defun oddmuse-new (wiki pagename)
+  "Create a new page on a wiki.
+WIKI is the name of the wiki as defined in `oddmuse-wikis'.
+The pagename begins with the current date."
+  (interactive 
+   (list (completing-read "Wiki: " oddmuse-wikis nil t oddmuse-wiki)
+	 (replace-regexp-in-string
+	  " +" "_"
+	  (read-from-minibuffer "Pagename: "
+				(format-time-string "%Y-%m-%d ")))))
+  (oddmuse-edit wiki pagename))
 
 (autoload 'word-at-point "thingatpt")
 
