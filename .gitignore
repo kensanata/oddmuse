@@ -5,3 +5,4 @@
 /Mac/pkg/
 *.dmg
 *.pkg
+.DS_Store
