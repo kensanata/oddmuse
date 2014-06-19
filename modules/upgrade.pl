@@ -12,6 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+use utf8;
 
 *DoBrowseRequest = *DoUpgrade;
 
@@ -46,21 +47,26 @@ sub DoUpgrade {
 
   print "<p>Renaming files...";
 
-  for my $dir ($PageDir, $KeepDir, $RefererDir, $JoinerDir, $JoinerEmailDir) {
-    next unless $dir;
-    for my $old (bsd_glob("$dir/*/*", bsd_glob("$dir/*/.*"))) {
-      next if $old eq '.' or $old eq '..';
-      print "<br />\n$old";
-      my $new = $old;
-      $new =~ s!/([A-Z]|other)!!;
-      if ($old eq $new) {
-	print " does not fit the pattern!";
-      } elsif (not rename $old, $new) {
-	print " failed!";
+  for my $ns ('', keys %InterSite) {
+    next unless -d "$DataDir/$ns";
+    print "<br />\n<strong>$ns</strong>" if $ns;
+    for my $dir ($PageDir, $KeepDir, $RefererDir, $JoinerDir, $JoinerEmailDir) {
+      next unless $dir;
+      $dir =~ s/^$DataDir/$DataDir\/$ns/ if $ns;
+      for my $old (bsd_glob("$dir/*/*", bsd_glob("$dir/*/.*"))) {
+	next if $old eq '.' or $old eq '..';
+	print "<br />\n$old";
+	my $new = $old;
+	$new =~ s!/([A-Z]|other)/!/!;
+	if ($old eq $new) {
+	  print " does not fit the pattern!";
+	} elsif (not rename $old, $new) {
+	  print " → $new failed!";
+	}
       }
-    }
-    for my $subdir (grep(/\/([A-Z]|other)$/, bsd_glob("$dir/*"))) {
-      rmdir $subdir; # ignore errors
+      for my $subdir (grep(/\/([A-Z]|other)$/, bsd_glob("$dir/*"))) {
+	rmdir $subdir; # ignore errors
+      }
     }
   }
 

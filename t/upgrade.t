@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 24;
+use Test::More tests => 31;
 
 clear_pages();
 
@@ -68,3 +68,28 @@ add_module('upgrade.pl');
 
 test_page(get_page('action=upgrade pwd=foo'),
 	  'Upgrade complete');
+
+# set up a wiki with namespaces
+
+clear_pages();
+
+add_module('namespaces.pl');
+
+test_page(qx(perl t/oddmuse-2.2.6.pl title=Test text=Main%20Hello),
+	  "Status: 302 Found");
+
+test_page(qx(perl t/oddmuse-2.2.6.pl title=Test text=Space%20Hello ns=Space),
+	  "Status: 302 Found");
+
+add_module('upgrade.pl');
+
+$page = get_page('action=upgrade pwd=foo');
+
+test_page($page,
+	  '<strong>Space</strong>',
+	  'Upgrade complete');
+
+test_page_negative($page, 'failed');
+
+test_page(get_page('Test'), 'Main Hello');
+test_page(get_page("'/Space/Test?'"), 'Space Hello');
