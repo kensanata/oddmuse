@@ -42,8 +42,9 @@
   (require 'sgml-mode)
   (require 'skeleton))
 
-(require 'goto-addr)
-(require 'info)
+(require 'goto-addr); URL regexp
+(require 'info); link face
+(require 'shr); browsing
 
 (defcustom oddmuse-directory "~/.emacs.d/oddmuse"
   "Directory to store oddmuse pages."
@@ -164,11 +165,35 @@ It must print the RSS 3.0 text format to stdout.
           " --form text='<-'"
           " '%w'")
   "Command to use for publishing pages.
-It must accept the page on stdin.
+It must accept the page on stdin and print the HTTP status code
+on stdout.
 
 %?  '?' character
 %t  pagename
 %s  summary
+%u  username
+%p  password
+%q  question-asker cookie
+%m  minor edit
+%o  oldtime, a timestamp provided by Oddmuse
+%w  URL of the wiki as provided by `oddmuse-wikis'")
+
+(defvar oddmuse-preview-command
+  (concat "curl --silent"
+          " --form title='%t'"
+          " --form username='%u'"
+          " --form password='%p'"
+	  " --form %q=1"
+          " --form recent_edit=%m"
+	  " --form oldtime=%o"
+	  " --form Preview=Preview"; the only difference
+          " --form text='<-'"
+          " '%w'")
+  "Command to use for previewing pages.
+It must accept the page on stdin and print the HTML on stdout.
+
+%?  '?' character
+%t  pagename
 %u  username
 %p  password
 %q  question-asker cookie
@@ -366,6 +391,7 @@ Font-locking is controlled by `oddmuse-markup-functions'.
 (define-key oddmuse-mode-map (kbd "C-c C-n") 'oddmuse-new)
 (define-key oddmuse-mode-map (kbd "C-c C-m") 'oddmuse-toggle-minor)
 (define-key oddmuse-mode-map (kbd "C-c C-c") 'oddmuse-post)
+(define-key oddmuse-mode-map (kbd "C-c C-p") 'oddmuse-preview)
 (define-key oddmuse-mode-map (kbd "C-x C-v") 'oddmuse-revert)
 (define-key oddmuse-mode-map (kbd "C-c C-f") 'oddmuse-edit)
 (define-key oddmuse-mode-map (kbd "C-c C-i") 'oddmuse-insert-pagename)
@@ -467,7 +493,7 @@ Use a prefix argument to force a reload of the page."
         (unless (equal name (buffer-name)) (rename-buffer name))
         (erase-buffer)
 	(let ((max-mini-window-height 1))
-	  (oddmuse-run "Loading" command buf nil))
+	  (oddmuse-run "Loading" command buf))
         (pop-to-buffer buf)
 	(oddmuse-mode)))))
 
@@ -529,31 +555,42 @@ and call `oddmuse-edit' on it."
 ;; (oddmuse-wikiname-p "not-wikiname")
 ;; (oddmuse-wikiname-p "notWikiName")
 
-(defun oddmuse-run (mesg command buf on-region)
+(defun oddmuse-run (mesg command buf &optional on-region expected-code)
   "Print MESG and run COMMAND on the current buffer.
 MESG should be appropriate for the following uses:
   \"MESG...\"
   \"MESG...done\"
   \"MESG failed: REASON\"
 Save outpout in BUF and report an appropriate error.
+
 ON-REGION indicates whether the commands runs on the region
 such as when posting, or whether it just runs by itself such
-as when loading a page."
+as when loading a page.
+
+If ON-REGION is not nil, the command output is compared to
+EXPECTED-CODE. The command is supposed to print the HTTP status
+code on stdout, so usually we want to provide either 302 or 200
+as EXPECTED-CODE."
   (message "%s using %s..." mesg command)
+  (when (numberp expected-code)
+    (setq expected-code (number-to-string expected-code)))
   ;; If ON-REGION, the resulting HTTP CODE is found in BUF, so check
   ;; that, too.
   (if (and (= 0 (if on-region
-		    (shell-command-on-region (point-min) (point-max) command buf)
+		    (shell-command-on-region (point-min) (point-max)
+					     command buf)
 		  (shell-command command buf)))
 	   (or (not on-region)
-	       (string= "302" (with-current-buffer buf
-				(buffer-string)))))
+	       (not expected-code)
+	       (string= expected-code
+			(with-current-buffer buf
+			  (buffer-string)))))
       (message "%s...done" mesg)
     (let ((err "Unknown error"))
       (with-current-buffer buf
 	(when (re-search-forward "<h1>\\(.*?\\)\\.?</h1>" nil t)
 	  (setq err (match-string 1))))
-      (error "%s...%s" mesg err))))
+      (error "Error %s: %s" mesg err))))
 
 ;;;###autoload
 (defun oddmuse-post (summary)
@@ -580,7 +617,38 @@ The current wiki is taken from `oddmuse-wiki'."
 	 (buf (get-buffer-create " *oddmuse-response*"))
 	 (text (buffer-string)))
     (and buffer-file-name (basic-save-buffer))
-    (oddmuse-run "Posting" command buf t)))
+    (oddmuse-run "Posting" command buf t 302)))
+
+;;;###autoload
+(defun oddmuse-preview ()
+  "Preview the current buffer for the current wiki.
+The current wiki is taken from `oddmuse-wiki'."
+  (interactive)
+  ;; when using prefix or on a buffer that is not in oddmuse-mode
+  (when (or (not oddmuse-wiki) current-prefix-arg)
+    (set (make-local-variable 'oddmuse-wiki)
+         (completing-read "Wiki: " oddmuse-wikis nil t)))
+  (when (not oddmuse-page-name)
+    (set (make-local-variable 'oddmuse-page-name)
+         (read-from-minibuffer "Pagename: " (buffer-name))))
+  (let* ((list (assoc oddmuse-wiki oddmuse-wikis))
+         (url (nth 1 list))
+         (oddmuse-minor (if oddmuse-minor "on" "off"))
+         (coding (nth 2 list))
+         (coding-system-for-read coding)
+         (coding-system-for-write coding)
+	 (question (nth 3 list))
+	 (oddmuse-username (or (nth 4 list)
+			       oddmuse-username))
+         (command (oddmuse-format-command oddmuse-preview-command))
+	 (buf (get-buffer-create " *oddmuse-response*"))
+	 (text (buffer-string)))
+    (and buffer-file-name (basic-save-buffer))
+    (oddmuse-run "Previewing" command buf t); no status code on stdout
+    (message "Rendering...")
+    (shr-render-buffer buf)
+    (message "Rendering...done")
+    (pop-to-buffer "*html*")))
 
 (defun oddmuse-make-completion-table (wiki)
   "Create pagename completion table for WIKI.
@@ -635,7 +703,7 @@ With universal argument, reload."
         (unless (equal name (buffer-name)) (rename-buffer name))
         (erase-buffer)
 	(let ((max-mini-window-height 1))
-	  (oddmuse-run "Load recent changes" command buf nil))
+	  (oddmuse-run "Load recent changes" command buf))
 	(oddmuse-rc-buffer)
 	(set (make-local-variable 'oddmuse-wiki) wiki)))))
 
