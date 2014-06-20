@@ -44,8 +44,8 @@
 
 (require 'goto-addr); URL regexp
 (require 'info); link face
-(require 'shr); browsing
-
+(require 'shr); preview
+(require 'xml); preview munging
 (defcustom oddmuse-directory "~/.emacs.d/oddmuse"
   "Directory to store oddmuse pages."
   :type '(string)
@@ -708,9 +708,31 @@ The current wiki is taken from `oddmuse-wiki'."
     (and buffer-file-name (basic-save-buffer))
     (oddmuse-run "Previewing" command buf t); no status code on stdout
     (message "Rendering...")
-    (shr-render-buffer buf)
-    (message "Rendering...done")
-    (pop-to-buffer "*html*")))
+    (pop-to-buffer "*Preview*")
+    (erase-buffer)
+    (shr-insert-document
+     (with-current-buffer (get-buffer " *oddmuse-response*")
+       (let ((html (libxml-parse-html-region (point-min) (point-max))))
+	 (oddmuse-find-node
+	  (lambda (node)
+	    (and (eq (xml-node-name node) 'div)
+		 (string= (xml-get-attribute node 'class) "preview")))
+	  html))))
+    (goto-char (point-min))
+    (message "Rendering...done")))
+
+(defun oddmuse-find-node (test node)
+  "Return the child of NODE that satisfies TEST.
+TEST is a function that takes a node as an argument.  NODE is a
+node as returned by `libxml-parse-html-region' or
+`xml-parse-region'. The function recurses through the node tree."
+  (if (funcall test node)
+      node
+    (dolist (child (xml-node-children node))
+      (when (listp child)
+	(let ((result (oddmuse-find-node test child)))
+	  (when result
+	    (return result)))))))
 
 (defun oddmuse-make-completion-table (wiki)
   "Create pagename completion table for WIKI.
