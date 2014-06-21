@@ -129,12 +129,12 @@ sub JoinerRequestLockOrError {
 
 sub JoinerGetEmailFile {
   my ($email) = @_;
-  return $JoinerEmailDir . '/' . GetPageDirectory($email) . "/$email.email";
+  return "$JoinerEmailDir/$email.email";
 }
 
 sub JoinerGetAccountFile {
   my ($username) = @_;
-  return $JoinerDir . '/' . GetPageDirectory($username) . "/$username.account";
+  return "$JoinerDir/$username.account";
 }
 
 # Always call JoinerCreateAccount within a lock.
