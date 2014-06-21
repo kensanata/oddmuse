@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 31;
+use Test::More tests => 37;
 
 clear_pages();
 
@@ -93,3 +93,27 @@ test_page_negative($page, 'failed');
 
 test_page(get_page('Test'), 'Main Hello');
 test_page(get_page("'/Space/Test?'"), 'Space Hello');
+
+# Install modules which use GetPageContent in their init routine.
+
+clear_pages();
+
+test_page(qx(perl t/oddmuse-2.2.6.pl title=$InterMap text=$InterMap),
+	  $InterMap);
+
+add_module('localnames.pl');
+test_page(qx(perl t/oddmuse-2.2.6.pl title=$LocalNamesPage text=$LocalNamesPage),
+	  $LocalNamesPage);
+
+add_module('sidebar.pl');
+test_page(qx(perl t/oddmuse-2.2.6.pl title=$SidebarName text=$SidebarName),
+	  $SidebarName);
+
+add_module('near-links.pl');
+test_page(qx(perl t/oddmuse-2.2.6.pl title=$NearMap text=$NearMap),
+	  $NearMap);
+
+add_module('upgrade.pl');
+test_page_negative(get_page('HomePage'), 'Cannot open');
+test_page(get_page('action=upgrade pwd=foo'),
+	  'Upgrade complete');
