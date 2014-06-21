@@ -46,6 +46,7 @@
 (require 'info); link face
 (require 'shr); preview
 (require 'xml); preview munging
+
 (defcustom oddmuse-directory "~/.emacs.d/oddmuse"
   "Directory to store oddmuse pages."
   :type '(string)
