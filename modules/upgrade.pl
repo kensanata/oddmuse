@@ -14,6 +14,21 @@
 
 use utf8;
 
+# We are now running in InitModules. InitVariables will be called later.
+# We want to prevent any calls to GetPageContent and the like.
+
+*UpgradeOldInitVariables = *InitVariables;
+*InitVariables = *UpgradeNewInitVariables;
+
+sub UpgradeNewInitVariables {
+  $InterMap = undef;
+  @MyInitVariables = grep {
+       $_ != \&LocalNamesInit
+    && $_ != \&NearLinksInit
+  } @MyInitVariables;
+  UpgradeOldInitVariables(@_);
+}
+
 *DoBrowseRequest = *DoUpgrade;
 
 sub DoUpgrade {
