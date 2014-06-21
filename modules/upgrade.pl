@@ -22,10 +22,9 @@ use utf8;
 
 sub UpgradeNewInitVariables {
   $InterMap = undef;
-  @MyInitVariables = grep {
-       $_ != \&LocalNamesInit
-    && $_ != \&NearLinksInit
-  } @MyInitVariables;
+  $LocalNamesPage = undef;
+  $SidebarName = undef;
+  $NearMap = undef;
   UpgradeOldInitVariables(@_);
 }
 
@@ -70,13 +69,17 @@ sub DoUpgrade {
       $dir =~ s/^$DataDir/$DataDir\/$ns/ if $ns;
       for my $old (bsd_glob("$dir/*/*", bsd_glob("$dir/*/.*"))) {
 	next if $old eq '.' or $old eq '..';
-	print "<br />\n$old";
+	my $oldname = $old;
+	utf8::decode($oldname);
+	print "<br />\n$oldname";
 	my $new = $old;
 	$new =~ s!/([A-Z]|other)/!/!;
 	if ($old eq $new) {
 	  print " does not fit the pattern!";
 	} elsif (not rename $old, $new) {
-	  print " → $new failed!";
+	  my $newname = $new;
+	  utf8::decode($newname);
+	  print " → $newname failed!";
 	}
       }
       for my $subdir (grep(/\/([A-Z]|other)$/, bsd_glob("$dir/*"))) {
