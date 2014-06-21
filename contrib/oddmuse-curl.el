@@ -6,7 +6,7 @@
 ;; Latest version:
 ;;   http://git.savannah.gnu.org/cgit/oddmuse.git/plain/contrib/oddmuse-curl.el
 ;; Discussion, feedback:
-;;   http://www.emacswiki.org/cgi-bin/wiki/OddmuseCurl
+;;   http://www.emacswiki.org/wiki/OddmuseCurl
 ;; 
 ;; This program is free software: you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by the Free
