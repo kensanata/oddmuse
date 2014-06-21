@@ -25,6 +25,7 @@ sub UpgradeNewInitVariables {
   $LocalNamesPage = undef;
   $SidebarName = undef;
   $NearMap = undef;
+  $GotobarName = undef;
   UpgradeOldInitVariables(@_);
 }
 
@@ -64,11 +65,12 @@ sub DoUpgrade {
   for my $ns ('', keys %InterSite) {
     next unless -d "$DataDir/$ns";
     print "<br />\n<strong>$ns</strong>" if $ns;
-    for my $dir ($PageDir, $KeepDir, $RefererDir, $JoinerDir, $JoinerEmailDir) {
-      next unless $dir;
+    for my $dirname ($PageDir, $KeepDir, $RefererDir, $JoinerDir, $JoinerEmailDir) {
+      next unless $dirname;
+      my $dir = $dirname; # copy in order not to modify the original
       $dir =~ s/^$DataDir/$DataDir\/$ns/ if $ns;
-      for my $old (bsd_glob("$dir/*/*", bsd_glob("$dir/*/.*"))) {
-	next if $old eq '.' or $old eq '..';
+      for my $old (bsd_glob("$dir/*/*"), bsd_glob("$dir/*/.*")) {
+	next if $old =~ /\/\.\.?$/;
 	my $oldname = $old;
 	utf8::decode($oldname);
 	print "<br />\n$oldname";
