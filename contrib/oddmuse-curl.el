@@ -360,15 +360,15 @@ This function should come come last in `oddmuse-markup-functions'
 because of such basic patterns as [.*] which are very generic."
   (setcar font-lock-defaults
 	  (append 
-	   `((,oddmuse-link-pattern
-	      0 '(face link
-		       help-echo "Basic wiki name"))
-	     ("\\[\\[.*?\\]\\]"
+	   `(("\\[\\[.*?\\]\\]"
 	      0 '(face link
 		       help-echo "Basic free link"))
 	     (,(concat "\\[" goto-address-url-regexp "\\( .+?\\)?\\]")
 	      0 '(face link
 		       help-echo "Basic external free link"))
+	     (,oddmuse-link-pattern
+	      0 '(face link
+		       help-echo "Basic wiki name"))
 	     ("^\\([*]+\\)"
 	      0 '(face font-lock-constant-face
 		       help-echo "Basic bullet list")))
@@ -586,7 +586,7 @@ and call `oddmuse-edit' on it."
 		      (oddmuse-pagename-at-point)
 		      (oddmuse-read-pagename oddmuse-wiki))))
     (oddmuse-edit (or oddmuse-wiki
-                      (read-from-minibuffer "URL: "))
+		      (completing-read "Wiki: " oddmuse-wikis nil t))
                   pagename)))
 
 (defun oddmuse-current-free-link-contents ()
@@ -794,18 +794,28 @@ With universal argument, reload."
 
 (defun oddmuse-rc-buffer ()
   "Parse current buffer as RSS 3.0 and display it correctly."
-  (let (result)
+  (let ((result nil)
+	(fill-column (window-width))
+	(fill-prefix "  "))
     (dolist (item (cdr (split-string (buffer-string) "\n\n")));; skip first item
       (let ((data (mapcar (lambda (line)
 			    (when (string-match "^\\(.*?\\): \\(.*\\)" line)
-			      (cons (match-string 1 line)
+			      (cons (intern (match-string 1 line))
 				    (match-string 2 line))))
-			  (split-string item "\n"))))
+			  (split-string item "\n" t))))
 	(setq result (cons data result))))
     (erase-buffer)
     (dolist (item (nreverse result))
-      (insert "[[" (cdr (assoc "title" item)) "]] – "
-	      (cdr (assoc "generator" item)) "\n"))
+      (let ((title (cdr (assq 'title item)))
+	    (generator (cdr (assq 'generator item)))
+	    (description (cdr (assq 'description item))))
+	(insert "[[" title "]] – " generator "\n")
+	(when description
+	  (save-restriction
+	    (narrow-to-region (point) (point))
+	    (insert fill-prefix description)
+	    (fill-paragraph))
+	  (newline))))
     (goto-char (point-min))
     (oddmuse-mode)))
 
