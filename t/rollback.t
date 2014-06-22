@@ -154,7 +154,8 @@ test_page_negative($page,
 
 # test url encoding
 test_page(update_page('Schröder', 'Alex', 'eins'), 'Alex');
-$to = (stat($IndexFile))[9];
+OpenPage('Schröder');
+$to = $Page{ts};
 sleep(1);
 test_page(update_page('HiddenEdit', 'not to be rolled back', 'secret'), 'not to be rolled back');
 test_page(update_page('Schröder', 'Berta', 'zwei'), 'Berta');
