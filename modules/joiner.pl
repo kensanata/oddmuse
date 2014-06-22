@@ -5,6 +5,15 @@
 # Based on Login Module for Oddmuse (login.pl)
 # Copyright (C) 2004  Fletcher T. Penney <fletcher@freeshell.org>
 #
+# Codes included from questionasker.pl for Oddmuse
+# Copyright (C) 2004  Brock Wilcox <awwaiid@thelackthereof.org>
+# Copyright (C) 2006, 2007  Alex Schroeder <alex@gnu.org>
+#
+# Codes included from ReCaptcha Extension for Oddmuse
+# Copyleft  2008             by B.w.Curry <http://www.raiazome.com>.
+# Copyright 2004, 2008       by Brock Wilcox <awwaiid@thelackthereof.org>.
+# Copyright 2006, 2007, 2008 by Alex Schroeder <alex@gnu.org>.
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -70,6 +79,17 @@ Retrying the email-sending commands is restricted to certain frequency.
 Specify the waiting duration for retry in seconds.
 Default = 60 * 10.
 
+$JoinerQuestionModule
+Specify cooperative anti-spam extension.
+Supported values are 'Questionasker', 'ReCaptcha' and 'GdSecurityImage'.
+Corresponding anti-spam extension need to be installed separately.
+Default = (auto detect).
+
+$JoinerDataDir
+When using with Namespaces Extension, specify original root data directory
+to concentrate Joiner data files in it.
+Default = $DataDir.
+
 $JoinerEmailCommand
 The command used to send email.
 Default = '/usr/sbin/sendmail -oi -t'.
@@ -88,7 +108,7 @@ Their data format is same as wiki page's.
 
 use vars qw($JoinerSalt $JoinerGeneratorSalt $JoinerEmailSenderAddress
   $JoinerCommentAllowed $JoinerMinimumPasswordLength $JoinerWait
-  $JoinerEmailCommand $JoinerEmailRegExp);
+  $JoinerQuestionModule $JoinerDataDir $JoinerEmailCommand $JoinerEmailRegExp);
 use vars qw($JoinerDir $JoinerEmailDir $JoinerMessage $JoinerLoggedIn);
 
 use Digest::MD5;
@@ -113,7 +133,7 @@ $Action{joiner_manage} = \&JoinerDoManage;
 $Action{joiner_ban} = \&JoinerDoBan;
 $Action{joiner_process_ban} = \&JoinerDoProcessBan;
 
-push(@MyAdminCode,\&JoinerAdminCode);
+push(@MyAdminCode, \&JoinerAdminCode);
 push(@MyInitVariables, \&JoinerInitVariables);
 
 sub JoinerGetPasswordHash {
@@ -165,7 +185,7 @@ sub JoinerCreateAccount {
   $email_page{email} = $email;
   $email_page{confirmed} = 0;
   $email_page{registration_time} = $Now;
-  CreatePageDir($JoinerEmailDir, $email);
+  CreateDir($JoinerEmailDir);
   WriteStringToFile(JoinerGetEmailFile($email), EncodePage(%email_page));
 
   my %page;
@@ -175,7 +195,7 @@ sub JoinerCreateAccount {
   $page{key} = $key;
   $page{confirmed} = 0;
   $page{registration_time} = $Now;
-  CreatePageDir($JoinerDir, $username);
+  CreateDir($JoinerDir);
   WriteStringToFile(JoinerGetAccountFile($username), EncodePage(%page));
   return '';
 }
@@ -231,6 +251,92 @@ sub JoinerSendChangeEmailEmail {
   close EMAIL;
 }
 
+sub JoinerQuestionaskerGetQuestion {
+  my $need_button = shift;
+  my $button = $need_button ? $q->submit(-value=>T('Go!')) : '';
+  my $question_number = int(rand(scalar(@QuestionaskerQuestions)));
+  return $q->div({-class=>'question'},
+                 $q->p(T('To submit this form you must answer this question:')),
+                 $q->blockquote($q->p($QuestionaskerQuestions[$question_number][0]),
+                                $q->p($q->input({-type=>'text', -name=>'answer'}),
+                                      $q->input({-type=>'hidden', -name=>'question_num',
+                                                 -value=>$question_number}),
+                                      $button)));
+}
+
+sub JoinerQuestionaskerCheck {
+  my $question_num = GetParam('question_num', undef);
+  my $answer = GetParam('answer', undef);
+  unless (UserIsEditor()
+          or $QuestionaskerRememberAnswer && GetParam($QuestionaskerSecretKey, 0)
+          or $QuestionaskerQuestions[$question_num][1]($answer)) {
+    # logging to the error log file of the server
+    # warn "Q: '$QuestionaskerQuestions[$question_num][0]', A: '$answer'\n";
+    return 0;
+  }
+  # Set the secret key only if a question has in fact been answered
+  if (not GetParam($QuestionaskerSecretKey, 0)
+      and $QuestionaskerQuestions[$question_num][1]($answer)) {
+    SetParam($QuestionaskerSecretKey, 1)
+  }
+  return 1;
+}
+
+sub JoinerReCaptchaCheck {
+  my $correct = 0;
+
+  unless (UserIsEditor() or UserIsAdmin()
+    or $ReCaptchaRememberAnswer && GetParam($ReCaptchaSecretKey, 0)
+    or $correct = ReCaptchaCheckAnswer() # remember this!
+    ) {
+    # logging to the error log file of the server
+    # warn "Q: '$ReCaptchaQuestions[$question_num][0]', A: '$answer'\n";
+    return 0;
+  }
+
+  if (not GetParam($ReCaptchaSecretKey, 0) and $correct) {
+    SetParam($ReCaptchaSecretKey, 1);
+  }
+  return 1;
+}
+
+sub JoinerGetQuestion {
+  if ($JoinerQuestionModule eq 'Questionasker') {
+    if (not $QuestionaskerRememberAnswer && GetParam($QuestionaskerSecretKey, 0)
+        and not UserIsEditor()) {
+      return JoinerQuestionaskerGetQuestion();
+    }
+  } elsif ($JoinerQuestionModule eq 'ReCaptcha') {
+    if (not $ReCaptchaRememberAnswer && GetParam($ReCaptchaSecretKey, 0)
+        and not UserIsEditor()) {
+      return ReCaptchaGetQuestion();
+    }
+  } elsif ($JoinerQuestionModule eq 'GdSecurityImage') {
+    return GdSecurityImageGetHtml();
+  }
+  return '';
+}
+
+sub JoinerCheckQuestion {
+  if ($JoinerQuestionModule eq 'Questionasker') {
+    if (!JoinerQuestionaskerCheck()) {
+      $JoinerMessage = T('Question:') . ' ' . T('You did not answer correctly.');
+      return 0;
+    }
+  } elsif ($JoinerQuestionModule eq 'ReCaptcha') {
+    if (!JoinerReCaptchaCheck()) {
+      $JoinerMessage = T('CAPTCHA:') . ' ' . T('You did not answer correctly.');
+      return 0;
+    }
+  } elsif ($JoinerQuestionModule eq 'GdSecurityImage') {
+    if (!GdSecurityImageCheck()) {
+      $JoinerMessage = T('CAPTCHA:') . ' ' . T('Please type the six characters from the anti-spam image');
+      return 0;
+    }
+  }
+  return 1;
+}
+
 sub JoinerDoRegister {
   print GetHeader('', T('Registration'), '');
   print $q->start_div({-class=>'joiner'});
@@ -259,16 +365,11 @@ sub JoinerDoRegister {
     $q->td($q->textfield(-name=>'joiner_email', -id=>'joiner_email')));
   $table .= $q->Tr($q->td(), $q->td($q->submit(-name=>'Submit', -value=>T('Submit'))));
   print $q->table($table);
+  print JoinerGetQuestion();
   print $q->endform;
 
   print $q->end_div();
   PrintFooter();
-}
-
-# XXX It may be not a good idea to use rand and md5 to generate a password.
-sub JoinerGeneratePassword {
-  my $md5 = Digest::MD5::md5_base64($JoinerGeneratorSalt . rand());
-  return substr($md5, 0, 10);
 }
 
 sub JoinerDoProcessRegistration {
@@ -298,6 +399,11 @@ sub JoinerDoProcessRegistration {
   }
   if ($repeated_password ne $password) {
     $JoinerMessage = T('Password:') . ' ' . T('Repeat Password:') . ' ' . T('Passwords differ.');
+    JoinerDoRegister();
+    return;
+  }
+
+  if (!JoinerCheckQuestion()) {
     JoinerDoRegister();
     return;
   }
@@ -374,7 +480,7 @@ sub JoinerDoConfirmRegistration {
   $page{key} = '';
   $page{confirmed} = 1;
   JoinerRequestLockOrError('joiner');
-  CreatePageDir($JoinerDir, $username);
+  CreateDir($JoinerDir);
   WriteStringToFile(JoinerGetAccountFile($username), EncodePage(%page));
   ReleaseLockDir('joiner');
 
@@ -386,7 +492,7 @@ sub JoinerDoConfirmRegistration {
     my %email_page = ParseData($email_data);
     $email_page{confirmed} = 1;
     JoinerRequestLockOrError('joiner');
-    CreatePageDir($JoinerEmailDir, $email);
+    CreateDir($JoinerEmailDir);
     WriteStringToFile(JoinerGetEmailFile($email), EncodePage(%email_page));
     ReleaseLockDir('joiner');
   }
@@ -423,6 +529,7 @@ sub JoinerDoLogin {
     $q->td($q->password_field(-name=>'joiner_password', -id=>'joiner_password')));
   $table .= $q->Tr($q->td(), $q->td($q->submit(-name=>'Submit', -value=>T('Submit'))));
   print $q->table($table);
+  print JoinerGetQuestion();
   print $q->endform;
 
   print $q->start_p();
@@ -441,6 +548,11 @@ sub JoinerDoProcessLogin {
   my $message = ValidId($username);
   if ($message ne '') {
     $JoinerMessage = T('Username:') . ' ' . $message;
+    JoinerDoLogin();
+    return;
+  }
+
+  if (!($key ne '' && $password eq '') && !JoinerCheckQuestion()) {
     JoinerDoLogin();
     return;
   }
@@ -486,7 +598,7 @@ sub JoinerDoProcessLogin {
   my $session = Digest::MD5::md5_hex(rand());
   $page{session} = $session;
   JoinerRequestLockOrError('joiner');
-  CreatePageDir($JoinerDir, $username);
+  CreateDir($JoinerDir);
   WriteStringToFile(JoinerGetAccountFile($username), EncodePage(%page));
   ReleaseLockDir('joiner');
 
@@ -641,7 +753,7 @@ sub JoinerDoProcessChangePassword {
   $page{key} = '';
   $page{recover} = '';
   JoinerRequestLockOrError('joiner');
-  CreatePageDir($JoinerDir, $username);
+  CreateDir($JoinerDir);
   WriteStringToFile(JoinerGetAccountFile($username), EncodePage(%page));
   ReleaseLockDir('joiner');
 
@@ -677,6 +789,7 @@ sub JoinerDoForgotPassword {
     $q->td($q->textfield(-name=>'joiner_email', -id=>'joiner_email')));
   $table .= $q->Tr($q->td(), $q->td($q->submit(-name=>'Submit', -value=>T('Submit'))));
   print $q->table($table);
+  print JoinerGetQuestion();
   print $q->endform;
 
   print $q->end_div();
@@ -688,6 +801,11 @@ sub JoinerDoProcessForgotPassword {
 
   if (!($email =~ /$JoinerEmailRegExp/)) {
     $JoinerMessage = T('Email:') . ' ' . T('Bad email address format.');
+    JoinerDoForgotPassword();
+    return;
+  }
+
+  if (!JoinerCheckQuestion()) {
     JoinerDoForgotPassword();
     return;
   }
@@ -730,7 +848,7 @@ sub JoinerDoProcessForgotPassword {
   $page{recover_time} = $Now;
   $page{recover_key} = $key;
   JoinerRequestLockOrError('joiner');
-  CreatePageDir($JoinerDir, $username);
+  CreateDir($JoinerDir);
   WriteStringToFile(JoinerGetAccountFile($username), EncodePage(%page));
   ReleaseLockDir('joiner');
 
@@ -837,7 +955,7 @@ sub JoinerDoProcessChangeEmail {
   $page{change_email_key} = $key;
   $page{change_email_time} = $Now;
   JoinerRequestLockOrError('joiner');
-  CreatePageDir($JoinerDir, $username);
+  CreateDir($JoinerDir);
   WriteStringToFile(JoinerGetAccountFile($username), EncodePage(%page));
   ReleaseLockDir('joiner');
 
@@ -903,7 +1021,7 @@ sub JoinerDoConfirmEmail {
   $page{change_email_key} = '';
   $page{change_email_time} = '';
   JoinerRequestLockOrError('joiner');
-  CreatePageDir($JoinerDir, $username);
+  CreateDir($JoinerDir);
   WriteStringToFile(JoinerGetAccountFile($username), EncodePage(%page));
   ReleaseLockDir('joiner');
 
@@ -913,7 +1031,7 @@ sub JoinerDoConfirmEmail {
   $email_page{confirmed} = 1;
   $email_page{registration_time} = $Now;
   JoinerRequestLockOrError('joiner');
-  CreatePageDir($JoinerEmailDir, $new_email);
+  CreateDir($JoinerEmailDir);
   WriteStringToFile(JoinerGetEmailFile($new_email), EncodePage(%email_page));
   ReleaseLockDir('joiner');
 
@@ -1027,7 +1145,7 @@ sub JoinerDoProcessBan {
   }
 
   JoinerRequestLockOrError('joiner');
-  CreatePageDir($JoinerDir, $username);
+  CreateDir($JoinerDir);
   WriteStringToFile(JoinerGetAccountFile($username), EncodePage(%page));
   ReleaseLockDir('joiner');
 
@@ -1119,13 +1237,27 @@ sub JoinerInitVariables {
   $JoinerCommentAllowed = 1 unless defined $JoinerCommentAllowed;
   $JoinerMinimumPasswordLength = 6 unless defined $JoinerMinimumPasswordLength;
   $JoinerWait = 60 * 10 unless defined $JoinerWait;
+  if (!defined($JoinerQuestionModule)) {
+    if (defined &QuestionaskerInit) {
+      $JoinerQuestionModule = 'Questionasker';
+    } elsif (defined &ReCaptchaInit) {
+      $JoinerQuestionModule = 'ReCaptcha';
+    } elsif (defined &GdSecurityImageInitVariables) {
+      $JoinerQuestionModule = 'GdSecurityImage';
+    } else {
+      $JoinerQuestionModule = '';
+    }
+  }
+  $JoinerDataDir = $DataDir unless defined $JoinerDataDir;
   $JoinerEmailCommand = '/usr/sbin/sendmail -oi -t' unless defined $JoinerEmailCommand;
   $JoinerEmailRegExp = '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+$' unless defined $JoinerEmailRegExp;
 
-  $JoinerDir = "$DataDir/joiner";
-  $JoinerEmailDir = "$DataDir/joiner_email";
+  $JoinerDir = "$JoinerDataDir/joiner";
+  $JoinerEmailDir = "$JoinerDataDir/joiner_email";
   $JoinerLoggedIn = '';
 
   $CookieParameters{'joiner_session'} = '';
+  $InvisibleCookieParameters{'joiner_session'} = 1;
   $CookieParameters{'joiner_recover'} = '';
+  $InvisibleCookieParameters{'joiner_recover'} = 1;
 }
