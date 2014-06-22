@@ -3337,8 +3337,8 @@ sub AllPagesList {
   if (not $refresh and -f $IndexFile) {
     my ($status, $rawIndex) = ReadFile($IndexFile); # not fatal
     if ($status) {
-      %IndexHash = split(/ /, $rawIndex);
-      @IndexList = sort(keys %IndexHash);
+      @IndexList = split(/ /, $rawIndex);
+      %IndexHash = map {$_ => 1} @IndexList;
       return @IndexList;
     }
     # If open fails just refresh the index
@@ -3354,7 +3354,7 @@ sub AllPagesList {
     push(@IndexList, $id);
     $IndexHash{$id} = 1;
   }
-  WriteStringToFile($IndexFile, join(' ', %IndexHash)) if $locked;
+  WriteStringToFile($IndexFile, join(' ', @IndexList)) if $locked;
   ReleaseLockDir('index') if $locked;
   return @IndexList;
 }
@@ -3759,7 +3759,7 @@ sub Save {      # call within lock, with opened page
   if ($revision == 1) {
     $IndexHash{$id} = 1;
     @IndexList = sort(keys %IndexHash);
-    WriteStringToFile($IndexFile, join(' ', %IndexHash));
+    WriteStringToFile($IndexFile, join(' ', @IndexList));
   }
 }
 
