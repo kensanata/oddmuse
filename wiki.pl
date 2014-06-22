@@ -1866,7 +1866,8 @@ sub RcTextRevision {
     RcTextItem('generator', GetAuthor($host, $username)),
     RcTextItem('language', join(', ', @{$languages})), RcTextItem('link', $link),
     RcTextItem('last-modified', TimeToW3($ts)),
-    RcTextItem('revision', $revision);
+    RcTextItem('revision', $revision),
+    RcTextItem('minor', $minor);
 }
 
 sub PrintRcText { # print text rss header and call ProcessRcLines

@@ -808,8 +808,12 @@ With universal argument, reload."
     (dolist (item (nreverse result))
       (let ((title (cdr (assq 'title item)))
 	    (generator (cdr (assq 'generator item)))
-	    (description (cdr (assq 'description item))))
-	(insert "[[" title "]] – " generator "\n")
+	    (description (cdr (assq 'description item)))
+	    (minor (cdr (assq 'minor item))))
+	(insert "[[" title "]] – " generator)
+	(when minor
+	  (insert " [minor]"))
+	(newline)
 	(when description
 	  (save-restriction
 	    (narrow-to-region (point) (point))
