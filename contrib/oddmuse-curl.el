@@ -494,10 +494,15 @@ Font-locking is controlled by `oddmuse-markup-functions'.
 		    ("%r" . regexp)
 		    ("%\\?" . hatena)))
       (when (and (boundp (cdr pair)) (stringp (symbol-value (cdr pair))))
-        (setq command (replace-regexp-in-string (car pair)
-						(symbol-value (cdr pair))
-                                                command t t))))
-    command))
+	(let* ((key (car pair))
+	       (sym (cdr pair))
+	       (value (symbol-value sym)))
+	  (when (and (eq sym 'summary)
+		     (string-match "'" value))
+	    ;; form summary='A quote is '"'"' this!'
+	    (setq value (replace-regexp-in-string "'" "'\"'\"'" value t t)))
+	  (setq command (replace-regexp-in-string key value command t t))))))
+  command)
 
 (defun oddmuse-read-wiki-and-pagename (&optional required default)
   "Read an wikiname and a pagename of `oddmuse-wikis' with completion.
