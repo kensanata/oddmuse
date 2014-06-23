@@ -78,7 +78,8 @@ sub NewQuestionaskerDoPost {
     print GetHeader('', T('Edit Denied'), undef, undef, '403 FORBIDDEN');
     print $q->p(T('You did not answer correctly.'));
     print GetFormStart(), QuestionaskerGetQuestion(1),
-      (map { $q->hidden($_, '') }
+      (map { $q->input({-type=>'hidden', -name=>$_,
+			-value=>UnquoteHtml(GetParam($_))}) }
        qw(title text oldtime summary recent_edit aftertext)), $q->end_form;
     PrintFooter();
     # logging to the error log file of the server

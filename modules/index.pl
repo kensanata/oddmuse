@@ -24,7 +24,7 @@ sub DoPrintableIndex {
   print GetHeader('', T('Index'), '');
   my @pages = PrintableIndexPages();
   my %hash;
-  map { push(@{$hash{GetPageDirectory($_)}}, $_); } @pages;
+  map { push(@{$hash{substr($_,0,1)}}, $_); } @pages;
   print '<div class="content printable index">';
   print $q->p($q->a({-name=>"top"}),
 	      map { $q->a({-href=>"#$_"}, $_); } sort keys %hash);

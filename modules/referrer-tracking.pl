@@ -80,7 +80,7 @@ sub RefererNewDeletePage {
 
 sub GetRefererFile {
   my $id = shift;
-  return $RefererDir . '/' . GetPageDirectory($id) . "/$id.rf";
+  return "$RefererDir/$id.rf";
 }
 
 sub ReadReferers {

@@ -17,7 +17,7 @@ $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git
 
 $CookieParameters{interface} = '';
 
-use vars qw($CurrentLanguage);
+use vars qw($CurrentLanguage $LoadLanguageDir);
 
 my %library= ('bg' => 'bulgarian-utf8.pl',
 	      'de' => 'german-utf8.pl',
@@ -60,6 +60,7 @@ sub LoadLanguage {
   foreach $_ (@prefs) {
     last if $Lang{$_} eq 'en'; # the default
     my $file = $library{$Lang{$_}};
+    $file = "$LoadLanguageDir/$file" if defined $LoadLanguageDir;
     if (-r $file) {
       do $file;
       do "$ConfigFile-$Lang{$_}" if -r "$ConfigFile-$Lang{$_}";
