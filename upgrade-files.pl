@@ -54,6 +54,7 @@ sub rewrite {
     my %page = split(/$FS1/, read_file($file), -1);
     %section = split(/$FS2/, $page{text_default}, -1);
     %text = split(/$FS3/, $section{data}, -1);
+    $file =~ s!/([A-Z]|other)/!/!;
     $file =~ s/\.db$/.pg/ or die "Invalid page name\n";
     print "Writing $file...\n";
     write_page_file($file);
@@ -65,6 +66,7 @@ sub rewrite {
     print "Reading refer $file...\n";
     my $data = read_file($file);
     $data =~ s/$FS1/$NewFS/g;
+    $file =~ s!/([A-Z]|other)/!/!;
     $file =~ s/\.rb$/.rf/ or die "Invalid page name\n";
     print "Writing $file...\n";
     write_file($file, $data);
@@ -77,6 +79,7 @@ sub rewrite {
     my $data = read_file($file);
     my @list = split(/$FS1/, $data);
     my $out = $file;
+    $out =~ s!/([A-Z]|other)/!/!;
     $out =~ s/\.kp$// or die "Invalid keep name\n";
     # We introduce a new variable $dir, here, instead of using $out,
     # because $out will be part of the filename later on, and the

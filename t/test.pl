@@ -108,7 +108,7 @@ sub get_page {
 sub name {
   $_ = shift;
   s/\n/\\n/g;
-  $_ = '...' . substr($_, -60) if length > 63;
+  $_ = '...' . substr($_, -67) if length > 70;
   return $_;
 }
 

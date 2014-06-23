@@ -1,4 +1,4 @@
-# Copyright (C) 2008  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2008–2014  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 14;
+use Test::More tests => 15;
 
 clear_pages();
 add_module('questionasker.pl');
@@ -55,3 +55,7 @@ test_page(update_page('test', 'answer new question', undef, undef, undef,
 test_page(get_page('Comments_on_test'),
 	  'label for="username"',
 	  'say hi');
+
+# test for corruption of Unicode text
+update_page('Umlaute', '<Schröder>');
+test_page($redirect, '&lt;Schröder&gt;')
