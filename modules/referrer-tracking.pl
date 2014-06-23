@@ -191,7 +191,7 @@ sub WriteReferers {
   my $data = join($FS, %Referers);
   my $file = GetRefererFile($id);
   if ($data) {
-    CreatePageDir($RefererDir, $id);
+    CreateDir($RefererDir);
     WriteStringToFile($file, $data);
   } else {
     unlink $file; # just try it, doesn't matter if it fails
