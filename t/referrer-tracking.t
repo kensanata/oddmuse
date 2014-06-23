@@ -75,4 +75,7 @@ SKIP: {
 	     qq{//div[\@class="content refer"]/div[\@class="page"]},
 	     qq{//div[\@class="page"]/p/a[\@href="$wiki/$id"][text()="$id"]},
 	     qq{//div[\@class="refer"]/p/a[\@href="http://oddmuse.org/test.html"][text()="Tëst"]});
+
+  # Clean up
+  $ua->get("$wiki?title=$id;text=");
 }
