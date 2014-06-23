@@ -345,13 +345,16 @@ This is used by Oddmuse to merge changes.")
 	  (append 
 	   '(("\\*\\w+[[:word:]-%.,:;\'\"!? ]*\\*"
 	      0 '(face bold
-		       help-echo "Markup bold"))
+		       help-echo "Markup bold"
+		       nobreak t))
 	     ("\\_</\\w+[[:word:]-%.,:;\'\"!? ]*/"
 	      0 '(face italic
-		       help-echo "Markup italic"))
+		       help-echo "Markup italic"
+		       nobreak t))
 	     ("_\\w+[[:word:]-%.,:;\'\"!? ]*_"
 	      0 '(face underline
-		       help-echo "Markup underline")))
+		       help-echo "Markup underline"
+		       nobreak t)))
 	   (car font-lock-defaults))))
 
 (defun oddmuse-basic-markup ()
@@ -401,10 +404,11 @@ Here's a template for your code:
 (defun oddmuse-nobreak-p ()
   "Prevent line break of links.
 This depends on the `link' face."
-  (let ((face (get-text-property (point) 'face)))
-    (if (listp face)
-	(memq 'link face)
-      (eq 'link face))))
+  (or (get-text-property (point) 'nobreak)
+      (let ((face (get-text-property (point) 'face)))
+	(if (listp face)
+	    (memq 'link face)
+	  (eq 'link face)))))
 
 (define-derived-mode oddmuse-mode text-mode "Odd"
   "Simple mode to edit wiki pages.
@@ -445,6 +449,8 @@ Font-locking is controlled by `oddmuse-markup-functions'.
 	       (set-buffer-modified-p nil)))))
   (set (make-local-variable 'fill-nobreak-predicate)
        '(oddmuse-nobreak-p))
+  (set (make-local-variable 'font-lock-extra-managed-props)
+       '(nobreak))
   (setq indent-tabs-mode nil))
 
 (autoload 'sgml-tag "sgml-mode" t)
