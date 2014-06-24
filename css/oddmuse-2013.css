@@ -199,6 +199,11 @@ div.footer hr {
     margin: 2em 0 1ex 0;
 }
 
+div.comment {
+  border-top: 2px solid #000;
+  padding-top: 2em;
+}
+
 pre {
     padding: 0.5em;
     margin-left: 1em;
