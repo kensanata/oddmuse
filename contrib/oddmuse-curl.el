@@ -234,179 +234,133 @@ This is used by Oddmuse to merge changes.")
   (add-to-list 'auto-mode-alist
                `(,(expand-file-name oddmuse-directory) . oddmuse-mode)))
 
-(defun oddmuse-creole-markup ()
-  "Implement markup rules for the Creole markup extension."
-  (setcar font-lock-defaults
-	  (append 
-	   '(("^=[^=\n]+"
-	      0 '(face info-title-1
-		       help-echo "Creole H1")); = h1
-	     ("^==[^=\n]+"
-	      0 '(face info-title-2
-		       help-echo "Creole H2")); == h2
-	     ("^===[^=\n]+"
-	      0 '(face info-title-3
-		       help-echo "Creole H3")); === h3
-	     ("^====+[^=\n]+"
-	      0 '(face info-title-4
-		       help-echo "Creole H4")); ====h4
-	     ("\\_<//\\(.*\n\\)*?.*?//"
-	      0 '(face italic
-		       help-echo "Creole italic")); //italic//
-	     ("\\*\\*\\(.*\n\\)*?.*?\\*\\*"
-	      0 '(face bold
-		       help-echo "Creole bold")); **bold**
-	     ("__\\(.*\n\\)*?.*?__"
-	      0 '(face underline
-		       help-echo "Creole underline")); __underline__
-	     ("|+=?"
-	      0 '(face font-lock-string-face
-		       help-echo "Creole table cell"))
-	     ("\\\\\\\\[ \t]+"
-	      0 '(face font-lock-warning-face
-		       help-echo "Creole line break"))
-	     ("^#+ "
-	      0 '(face font-lock-constant-face
-		       help-echo "Creole ordered list"))
-	     ("^- "
-	      0 '(face font-lock-constant-face
-		       help-echo "Creole ordered list")))
-	   (car font-lock-defaults))))
+(defvar oddmuse-creole-markup
+  '(("^=[^=\n]+"
+     0 '(face info-title-1
+	      help-echo "Creole H1")); = h1
+    ("^==[^=\n]+"
+     0 '(face info-title-2
+	      help-echo "Creole H2")); == h2
+    ("^===[^=\n]+"
+     0 '(face info-title-3
+	      help-echo "Creole H3")); === h3
+    ("^====+[^=\n]+"
+     0 '(face info-title-4
+	      help-echo "Creole H4")); ====h4
+    ("\\_<//\\(.*\n\\)*?.*?//"
+     0 '(face italic
+	      help-echo "Creole italic")); //italic//
+    ("\\*\\*\\(.*\n\\)*?.*?\\*\\*"
+     0 '(face bold
+	      help-echo "Creole bold")); **bold**
+    ("__\\(.*\n\\)*?.*?__"
+     0 '(face underline
+	      help-echo "Creole underline")); __underline__
+    ("|+=?"
+     0 '(face font-lock-string-face
+	      help-echo "Creole table cell"))
+    ("\\\\\\\\[ \t]+"
+     0 '(face font-lock-warning-face
+	      help-echo "Creole line break"))
+    ("^#+ "
+     0 '(face font-lock-constant-face
+	      help-echo "Creole ordered list"))
+    ("^- "
+     0 '(face font-lock-constant-face
+	      help-echo "Creole ordered list"))
+    ("{{{.*?}}}"
+     0 '(face shadow
+	      help-echo "Creole code"))
+    ("^{{{\n\\(.*\n\\)+}}}\n"
+     0 '(face shadow
+	      help-echo "Creole multiline code")))
+    "Implement markup rules for the Creole markup extension.
+The rule to identify multiline blocks of code doesn't really work.")
 
-(defun oddmuse-bbcode-markup ()
-  "Implement markup rules for the bbcode markup extension."
-  (setcar font-lock-defaults
-	  (append 
-	   `(("\\[b\\]\\(.*\n\\)*?.*?\\[/b\\]"
-	      0 '(face bold
-		       help-echo "BB code bold"))
-	     ("\\[i\\]\\(.*\n\\)*?.*?\\[/i\\]"
-	      0 '(face italic
-		       help-echo "BB code italic"))
-	     ("\\[u\\]\\(.*\n\\)*?.*?\\[/u\\]"
-	      0 '(face underline
-		       help-echo "BB code underline"))
-	     (,(concat "\\[url=" goto-address-url-regexp "\\]")
-	      0 '(face font-lock-builtin-face
-		       help-echo "BB code url"))
-	     ("\\[/?\\(img\\|url\\)\\]"
-	      0 '(face font-lock-builtin-face
-		       help-echo "BB code url or img"))
-	     ("\\[s\\(trike\\)?\\]\\(.*\n\\)*?.*?\\[/s\\(trike\\)?\\]"
-	      0 '(face strike
-		       help-echo "BB code strike"))
-	     ("\\[/?\\(left\\|right\\|center\\)\\]"
-	      0 '(face font-lock-constant-face
-		       help-echo "BB code alignment")))
-	   (car font-lock-defaults))))
+(defvar oddmuse-bbcode-markup
+  `(("\\[b\\]\\(.*\n\\)*?.*?\\[/b\\]"
+     0 '(face bold
+	      help-echo "BB code bold"))
+    ("\\[i\\]\\(.*\n\\)*?.*?\\[/i\\]"
+     0 '(face italic
+	      help-echo "BB code italic"))
+    ("\\[u\\]\\(.*\n\\)*?.*?\\[/u\\]"
+     0 '(face underline
+	      help-echo "BB code underline"))
+    (,(concat "\\[url=" goto-address-url-regexp "\\]")
+     0 '(face font-lock-builtin-face
+	      help-echo "BB code url"))
+    ("\\[/?\\(img\\|url\\)\\]"
+     0 '(face font-lock-builtin-face
+	      help-echo "BB code url or img"))
+    ("\\[s\\(trike\\)?\\]\\(.*\n\\)*?.*?\\[/s\\(trike\\)?\\]"
+     0 '(face strike
+	      help-echo "BB code strike"))
+    ("\\[/?\\(left\\|right\\|center\\)\\]"
+     0 '(face font-lock-constant-face
+	      help-echo "BB code alignment")))
+  "Implement markup rules for the bbcode markup extension.")
 
-(defun oddmuse-usemod-markup ()
-  "Implement markup rules for the Usemod markup extension."
-  (setcar font-lock-defaults
-	  (append 
-	   '(("^=[^=\n]+=$"
-	      0 '(face info-title-1
-		       help-echo "Usemod H1"))
-	     ("^==[^=\n]+==$"
-	      0 '(face info-title-2
-		       help-echo "Usemod H2"))
-	     ("^===[^=\n]+===$"
-	      0 '(face info-title-3
-		       help-echo "Usemod H3"))
-	     ("^====+[^=\n]+====$"
-	      0 '(face info-title-4
-		       help-echo "Usemod H4"))
-	     ("^ .+?$"
-	      0 '(face font-lock-comment-face
-		       help-echo "Usemod block"))
-	     ("^[#]+ "
-	      0 '(face font-lock-constant-face
-		       help-echo "Usemod ordered list")))
-	   (car font-lock-defaults))))
+(defvar oddmuse-usemod-markup
+  '(("^=[^=\n]+=$"
+     0 '(face info-title-1
+	      help-echo "Usemod H1"))
+    ("^==[^=\n]+==$"
+     0 '(face info-title-2
+	      help-echo "Usemod H2"))
+    ("^===[^=\n]+===$"
+     0 '(face info-title-3
+	      help-echo "Usemod H3"))
+    ("^====+[^=\n]+====$"
+     0 '(face info-title-4
+	      help-echo "Usemod H4"))
+    ("\n\n\\( .*\n\\)+"
+     0 '(face shadow
+	      font-lock-multiline t
+	      help-echo "Usemod block"))
+    ("^[#]+ "
+     0 '(face font-lock-constant-face
+	      help-echo "Usemod ordered list")))
+  "Implement markup rules for the Usemod markup extension.
+The rule to identify indented blocks of code doesn't really work.")
 
-(defun oddmuse-usemod-html-markup ()
-  "Implement markup rules for the HTML option in the Usemod markup extension."
-  (setcar font-lock-defaults
-	  (append 
-	   '(("<\\(/?[a-z]+\\)"
-	      1 '(face font-lock-function-name-face
-		       help-echo "Usemod HTML")))
-	   (car font-lock-defaults)))
-  (set (make-local-variable 'sgml-tag-alist)
-       `(("b") ("code") ("em") ("i") ("strong") ("nowiki")
-	 ("pre" \n) ("tt") ("u")))
-  (set (make-local-variable 'skeleton-transformation) 'identity))
+(defvar oddmuse-usemod-html-markup
+  '(("<\\(/?[a-z]+\\)"
+     1 '(face font-lock-function-name-face
+	      help-echo "Usemod HTML")))
+  "Implement markup rules for the HTML option in the Usemod markup extension.")
 
-(defun oddmuse-extended-markup ()
-  "Implement markup rules for the Markup extension."
-  (setcar font-lock-defaults
-	  (append 
-	   '(("\\*\\w+[[:word:]-%.,:;\'\"!? ]*\\*"
-	      0 '(face bold
-		       help-echo "Markup bold"
-		       nobreak t))
-	     ("\\_</\\w+[[:word:]-%.,:;\'\"!? ]*/"
-	      0 '(face italic
-		       help-echo "Markup italic"
-		       nobreak t))
-	     ("_\\w+[[:word:]-%.,:;\'\"!? ]*_"
-	      0 '(face underline
-		       help-echo "Markup underline"
-		       nobreak t)))
-	   (car font-lock-defaults))))
+(defvar oddmuse-extended-markup
+  '(("\\*\\w+[[:word:]-%.,:;\'\"!? ]*\\*"
+     0 '(face bold
+	      help-echo "Markup bold"
+	      nobreak t))
+    ("\\_</\\w+[[:word:]-%.,:;\'\"!? ]*/"
+     0 '(face italic
+	      help-echo "Markup italic"
+	      nobreak t))
+    ("_\\w+[[:word:]-%.,:;\'\"!? ]*_"
+     0 '(face underline
+	      help-echo "Markup underline"
+	      nobreak t)))
+  "Implement markup rules for the Markup extension.")
 
-(defun oddmuse-basic-markup ()
+(defvar oddmuse-basic-markup
+  `(("\\[\\[.*?\\]\\]"
+     0 '(face link
+	      help-echo "Basic free link"))
+    (,(concat "\\[" goto-address-url-regexp "\\( .+?\\)?\\]")
+     0 '(face link
+	      help-echo "Basic external free link"))
+    (,oddmuse-link-pattern
+     0 '(face link
+	      help-echo "Basic wiki name"))
+    ("^\\([*]+\\)"
+     0 '(face font-lock-constant-face
+	      help-echo "Basic bullet list")))
   "Implement markup rules for the basic Oddmuse setup without extensions.
-This function should come come last in `oddmuse-markup-functions'
-because of such basic patterns as [.*] which are very generic."
-  (setcar font-lock-defaults
-	  (append 
-	   `(("\\[\\[.*?\\]\\]"
-	      0 '(face link
-		       help-echo "Basic free link"))
-	     (,(concat "\\[" goto-address-url-regexp "\\( .+?\\)?\\]")
-	      0 '(face link
-		       help-echo "Basic external free link"))
-	     (,oddmuse-link-pattern
-	      0 '(face link
-		       help-echo "Basic wiki name"))
-	     ("^\\([*]+\\)"
-	      0 '(face font-lock-constant-face
-		       help-echo "Basic bullet list")))
-	   (car font-lock-defaults))))
-
-;; Should determine this automatically based on the version? And cache
-;; it per wiki?  http://emacswiki.org/wiki?action=version
-(defvar oddmuse-markup-functions
-  '(oddmuse-creole-markup
-    oddmuse-usemod-markup
-    oddmuse-bbcode-markup
-    oddmuse-extended-markup
-    oddmuse-basic-markup
-    goto-address)
-  "The list of functions to call when `oddmuse-mode' runs.
-If these functions add font-locking, they should modify
-`font-lock-defaults'. See `font-lock-keywords' for documentation.
-If these functions all prepend their keywords, you should list
-the most important function last.
-
-Here's a template for your code:
-
-\(setcar font-lock-defaults
-	(append 
-	 '((REGEXP
-	    0 '(face FACE
-		     help-echo DOCSTRING)))
-	 (car font-lock-defaults)))")
-
-(defun oddmuse-nobreak-p ()
-  "Prevent line break of links.
-This depends on the `link' face."
-  (or (get-text-property (point) 'nobreak)
-      (let ((face (get-text-property (point) 'face)))
-	(if (listp face)
-	    (memq 'link face)
-	  (eq 'link face)))))
+These rules should come come last because of such basic patterns
+as [.*] which are very generic.")
 
 (define-derived-mode oddmuse-mode text-mode "Odd"
   "Simple mode to edit wiki pages.
@@ -426,17 +380,36 @@ Customize `oddmuse-wikis' to add more wikis to the list.
 Font-locking is controlled by `oddmuse-markup-functions'.
 
 \\{oddmuse-mode-map}"
-  (setq font-lock-defaults '(nil))
-  (mapc 'funcall oddmuse-markup-functions)
+  (set (make-local-variable 'oddmuse-minor)
+       oddmuse-use-always-minor)
+  (setq indent-tabs-mode nil)
+
+  ;; font-locking (case sensitive)
+  (goto-address)
+  (setq font-lock-defaults
+	(list (append oddmuse-basic-markup
+		      oddmuse-creole-markup
+		      oddmuse-extended-markup
+		      oddmuse-bbcode-markup
+		      oddmuse-usemod-markup
+		      oddmuse-usemod-html-markup)))
   (font-lock-mode 1)
+
+  ;; HTML tags
+  (set (make-local-variable 'sgml-tag-alist)
+       `(("b") ("code") ("em") ("i") ("strong") ("nowiki")
+	 ("pre" \n) ("tt") ("u")))
+  (set (make-local-variable 'skeleton-transformation) 'identity)
+
+  ;; saving the file
   (when buffer-file-name
     (set (make-local-variable 'oddmuse-wiki)
 	 (file-name-nondirectory
 	  (substring (file-name-directory buffer-file-name) 0 -1)))
     (set (make-local-variable 'oddmuse-page-name)
 	 (file-name-nondirectory buffer-file-name)))
-  (set (make-local-variable 'oddmuse-minor)
-       oddmuse-use-always-minor)
+
+  ;; version control
   (set (make-local-variable 'oddmuse-revision)
        (save-excursion
 	 (goto-char (point-min))
@@ -445,11 +418,21 @@ Font-locking is controlled by `oddmuse-markup-functions'.
 	     (prog1 (match-string 1)
 	       (replace-match "")
 	       (set-buffer-modified-p nil)))))
+
+  ;; filling
   (set (make-local-variable 'fill-nobreak-predicate)
        '(oddmuse-nobreak-p))
   (set (make-local-variable 'font-lock-extra-managed-props)
-       '(nobreak))
-  (setq indent-tabs-mode nil))
+       '(nobreak help-echo)))
+
+(defun oddmuse-nobreak-p ()
+  "Prevent line break of links.
+This depends on the `link' face."
+  (or (get-text-property (point) 'nobreak)
+      (let ((face (get-text-property (point) 'face)))
+	(if (listp face)
+	    (memq 'link face)
+	  (eq 'link face)))))
 
 (autoload 'sgml-tag "sgml-mode" t)
 
@@ -553,7 +536,6 @@ Use a prefix argument to force a reload of the page."
         (pop-to-buffer (get-buffer name))
       (let* ((wiki-data (assoc wiki oddmuse-wikis))
              (url (nth 1 wiki-data))
-	     (oddmuse-page-name pagename)
              (command (oddmuse-format-command oddmuse-get-command))
              (coding (nth 2 wiki-data))
              (buf (find-file-noselect (concat oddmuse-directory "/" wiki "/"
