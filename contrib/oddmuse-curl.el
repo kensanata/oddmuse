@@ -54,9 +54,7 @@
 
 (defcustom oddmuse-wikis
   '(("EmacsWiki" "http://www.emacswiki.org/cgi-bin/emacs"
-     utf-8 "uihnscuskc" nil)
-    ("OddmuseWiki" "http://www.oddmuse.org/cgi-bin/oddmuse"
-     utf-8 "question" nil))
+     utf-8 "uihnscuskc" nil))
   "Alist mapping wiki names to URLs.
 
 The elements in this list are:
