@@ -836,8 +836,9 @@ With universal argument, reload."
 (defun oddmuse-revert ()
   "Revert this oddmuse page."
   (interactive)
-  (let ((current-prefix-arg 4))
-    (oddmuse-edit oddmuse-wiki oddmuse-page-name)))
+  (when (yes-or-no-p "Revert this page? ")
+    (let ((current-prefix-arg 4))
+      (oddmuse-edit oddmuse-wiki oddmuse-page-name))))
 
 ;;;###autoload
 (defun oddmuse-insert-pagename (pagename)
