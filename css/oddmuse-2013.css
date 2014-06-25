@@ -210,8 +210,11 @@ pre {
     margin-right: 2em;
     white-space: pre;
     overflow:hidden;
-    font-size: smaller;
 }
+
+tt, pre, code {
+    font-size: 80%;
+};
 
 div.footer hr {
     clear:both;
