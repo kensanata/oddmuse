@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 37;
+use Test::More tests => 44;
 
 clear_pages();
 
@@ -24,11 +24,17 @@ $page = qx(perl t/oddmuse-2.2.6.pl title=Test text=Hello);
 test_page($page, "Status: 302 Found");
 $page = qx(perl t/oddmuse-2.2.6.pl title=Test text=Hallo);
 test_page($page, "Status: 302 Found");
+$page = qx(perl t/oddmuse-2.2.6.pl title=.hidden text=Hello);
+test_page($page, "Status: 302 Found");
+$page = qx(perl t/oddmuse-2.2.6.pl title=.hidden text=Hallo);
+test_page($page, "Status: 302 Found");
 $page = qx(perl t/oddmuse-2.2.6.pl action=pagelock id=Test set=1 pwd=foo);
 test_page($page, "created");
 
 ok(-d "$PageDir/T", "T page directory exists");
 ok(-d "$KeepDir/T", "T keep directory exists");
+ok(-d "$PageDir/other", "other page directory exists");
+ok(-d "$KeepDir/other", "other keep directory exists");
 
 add_module('upgrade.pl');
 
@@ -44,6 +50,8 @@ test_page($page,
 	  'page/T/Test.pg',
 	  'page/T/Test.lck',
 	  'keep/T/Test',
+	  'page/other/.hidden.pg',
+	  'keep/other/.hidden',
 	  'Upgrade complete');
 
 test_page_negative($page, 'failed',
@@ -58,6 +66,7 @@ ok(! -f "$ModuleDir/upgrade.pl", "upgrade.pl was renamed");
 test_page(get_page('action=browse id=Test revision=1'), 'Hello');
 
 test_page(get_page('Test'), 'Hallo');
+test_page(get_page('.hidden'), 'Hallo');
 
 # you cannot run it again after a successful run
 test_page(get_page('action=upgrade pwd=foo'),

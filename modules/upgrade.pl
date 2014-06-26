@@ -67,8 +67,8 @@ sub DoUpgrade {
     for my $dir ($PageDir, $KeepDir, $RefererDir, $JoinerDir, $JoinerEmailDir) {
       next unless $dir;
       $dir =~ s/^$DataDir/$DataDir\/$ns/ if $ns;
-      for my $old (bsd_glob("$dir/*/*", bsd_glob("$dir/*/.*"))) {
-	next if $old eq '.' or $old eq '..';
+      for my $old (bsd_glob("$dir/*/*"), bsd_glob("$dir/*/.*")) {
+	next if substr($old, -2) eq '/.' or substr($old, -3) eq '/..';
 	my $oldname = $old;
 	utf8::decode($oldname);
 	print "<br />\n$oldname";
@@ -82,7 +82,8 @@ sub DoUpgrade {
 	  print " → $newname failed!";
 	}
       }
-      for my $subdir (grep(/\/([A-Z]|other)$/, bsd_glob("$dir/*"))) {
+      for my $subdir (grep(/\/([A-Z]|other)$/, bsd_glob("$dir/*"), bsd_glob("$dir/.*"))) {
+	next if substr($subdir, -2) eq '/.' or substr($subdir, -3) eq '/..';
 	rmdir $subdir; # ignore errors
       }
     }
