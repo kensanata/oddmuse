@@ -677,12 +677,15 @@ The current wiki is taken from `oddmuse-wiki'."
     (oddmuse-run "Posting" command buf t 302)))
 
 ;;;###autoload
-(defun oddmuse-preview ()
+(defun oddmuse-preview (&optional arg)
   "Preview the current buffer for the current wiki.
-The current wiki is taken from `oddmuse-wiki'."
-  (interactive)
+The current wiki is taken from `oddmuse-wiki'.
+
+Use a prefix argument to view the preview using an external
+browser."
+  (interactive "P")
   ;; when using prefix or on a buffer that is not in oddmuse-mode
-  (when (or (not oddmuse-wiki) current-prefix-arg)
+  (when (not oddmuse-wiki)
     (set (make-local-variable 'oddmuse-wiki)
          (completing-read "Wiki: " oddmuse-wikis nil t)))
   (when (not oddmuse-page-name)
@@ -702,19 +705,26 @@ The current wiki is taken from `oddmuse-wiki'."
 	 (text (buffer-string)))
     (and buffer-file-name (basic-save-buffer))
     (oddmuse-run "Previewing" command buf t); no status code on stdout
-    (message "Rendering...")
-    (pop-to-buffer "*Preview*")
-    (erase-buffer)
-    (shr-insert-document
-     (with-current-buffer (get-buffer " *oddmuse-response*")
-       (let ((html (libxml-parse-html-region (point-min) (point-max))))
-	 (oddmuse-find-node
-	  (lambda (node)
-	    (and (eq (xml-node-name node) 'div)
-		 (string= (xml-get-attribute node 'class) "preview")))
-	  html))))
-    (goto-char (point-min))
-    (message "Rendering...done")))
+    (if arg
+	(with-current-buffer buf
+	  (let ((file (make-temp-file "oddmuse-preview-" nil ".html")))
+	    (write-region (point-min) (point-max) file)
+	    (browse-url (browse-url-file-url file))))
+      (message "Rendering...")
+      (pop-to-buffer "*Preview*")
+      (erase-buffer)
+      (shr-insert-document
+       (with-current-buffer buf
+	 (let ((html (libxml-parse-html-region (point-min) (point-max))))
+	   (oddmuse-find-node
+	    (lambda (node)
+	      (and (eq (xml-node-name node) 'div)
+		   (string= (xml-get-attribute node 'class) "preview")))
+	    html))))
+      (goto-char (point-min))
+      (kill-buffer buf);; prevent it from showing up after q
+      (view-mode)
+      (message "Rendering...done"))))
 
 (defun oddmuse-find-node (test node)
   "Return the child of NODE that satisfies TEST.
