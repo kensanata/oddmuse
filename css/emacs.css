@@ -335,7 +335,22 @@ div.month a.local {
 
 /* highlighting */
 
-/* Equivalent to Output::HTML */
+/* highlighting source code */
+
+span.builtin      { color: #483d8b; } /* DarkSlateBlue */
+span.comment      { color: #b22222; } /* Firebrick */
+span.constant     { color: #008b8b; } /* DarkCyan */
+span.function     { color: #0000ff; } /* Blue1 */
+span.keyword      { color: #7f007f; } /* Purple */
+span.string       { color: #8b475d; } /* VioletRed4 */
+span.type         { color: #228b22; } /* ForestGreen */
+span.warning      { color: #ff0000; font-weight: bold; } /* Red1 */
+span.comment span,
+span.string  span { color: inherit; }
+span.comment span.important.constant,
+span.string  span.important.constant { color: #008b8b; }
+
+/* old: Equivalent to Output::HTML */
 
 span.linecomment  { color: green; }
 span.blockcomment { color: green; }
