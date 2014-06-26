@@ -492,19 +492,13 @@ This depends on the `link' face."
 	  (setq command (replace-regexp-in-string key value command t t))))))
   command)
 
-(defun oddmuse-read-wiki-and-pagename (&optional required default)
-  "Read an wikiname and a pagename of `oddmuse-wikis' with completion.
-If provided, REQUIRED and DEFAULT are passed along to `oddmuse-read-pagename'."
-  (let ((wiki (completing-read "Wiki: " oddmuse-wikis nil t oddmuse-wiki)))
-    (list wiki (oddmuse-read-pagename wiki required default))))  
-
 ;;;###autoload
 (defun oddmuse-history (wiki pagename)
   "Show a page's history on a wiki using `view-mode'.
 WIKI is the name of the wiki as defined in `oddmuse-wikis',
 PAGENAME is the pagename of the page you want the history of.
 Use a prefix argument to force a reload of the page."
-  (interactive (oddmuse-read-wiki-and-pagename t oddmuse-page-name))
+  (interactive (oddmuse-pagename))
   (let ((name (concat wiki ":" pagename " [history]")))
     (if (and (get-buffer name)
              (not current-prefix-arg))
@@ -529,7 +523,7 @@ Use a prefix argument to force a reload of the page."
 WIKI is the name of the wiki as defined in `oddmuse-wikis',
 PAGENAME is the pagename of the page you want to edit.
 Use a prefix argument to force a reload of the page."
-  (interactive (oddmuse-read-wiki-and-pagename))
+  (interactive (oddmuse-pagename))
   (make-directory (concat oddmuse-directory "/" wiki) t)
   (let ((name (concat wiki ":" pagename)))
     (if (and (get-buffer name)
@@ -572,33 +566,54 @@ The pagename begins with the current date."
 (autoload 'word-at-point "thingatpt")
 
 ;;;###autoload
-(defun oddmuse-follow (arg)
+(defun oddmuse-follow (wiki pagename)
   "Figure out what page we need to visit
 and call `oddmuse-edit' on it."
-  (interactive "P")
-  (let ((pagename (or (and arg (oddmuse-read-pagename oddmuse-wiki))
-		      (oddmuse-pagename-at-point)
-		      (oddmuse-read-pagename oddmuse-wiki))))
-    (oddmuse-edit (or oddmuse-wiki
-		      (completing-read "Wiki: " oddmuse-wikis nil t))
-                  pagename)))
+  (interactive (oddmuse-pagename))
+  (oddmuse-edit (or oddmuse-wiki
+		    (completing-read "Wiki: " oddmuse-wikis nil t))
+		(oddmuse-pagename arg))))
 
-(defun oddmuse-current-free-link-contents ()
-  "Free link contents if the point is between [[ and ]]."
-  (save-excursion
-    (let* ((pos (point))
-           (start (search-backward "[[" nil t))
-           (end (search-forward "]]" nil t)))
-      (and start end (>= end pos)
-           (replace-regexp-in-string
-            " " "_"
-            (buffer-substring (+ start 2) (- end 2)))))))
+(defun oddmuse-pagename (&optional arg)
+  "Return the wiki and pagename the user wants to edit or follow.
+This cannot be the current pagename!  If given the optional
+argument ARG, read it from the minibuffer.  Otherwise, try to get
+a pagename at point.  If this does not yield a pagename, ask the
+user for a page. Also, if no wiki has been give, ask for that,
+too. The pagename returned does not necessarily exist!
+
+Use this function when following links in regular wiki buffers,
+in Recent Changes, History Buffers, and also in text files and
+the like."
+  (let* ((wiki (or (and (not arg) oddmuse-wiki)
+		  (completing-read "Wiki: " oddmuse-wikis nil t)))
+	 (pagename (or (and arg (oddmuse-read-pagename wiki))
+		       (oddmuse-pagename-at-point)
+		       (oddmuse-read-pagename wiki nil (word-at-point)))))
+    (list wiki pagename)))
 
 (defun oddmuse-pagename-at-point ()
-  "Page name at point."
+  "Page name at point.
+It's either a [[free link]] or a WikiWord based on
+`oddmuse-current-free-link-contents' or `oddmuse-wikiname-p'."
   (let ((pagename (word-at-point)))
     (or (oddmuse-current-free-link-contents)
 	(oddmuse-wikiname-p pagename))))
+
+(defun oddmuse-current-free-link-contents ()
+  "The page name in a free link at point.
+This returns \"foo\" for [[foo]] and [[foo|bar]]."
+  (save-excursion
+    (let* ((pos (point))
+           (start (when (search-backward "[[" nil t)
+		    (match-end 0)))
+           (end (when (search-forward "]]" (line-end-position) t)
+		  (match-beginning 0))))
+      (and start end (>= end pos)
+           (replace-regexp-in-string
+            " " "_"
+	    (car (split-string
+		  (buffer-substring-no-properties start end) "|")))))))
 
 (defun oddmuse-wikiname-p (pagename)
   "Whether PAGENAME is WikiName or not."
@@ -870,7 +885,7 @@ This command is intended to post current EmacsLisp program easily."
   "Ask a WWW browser to load an Oddmuse page.
 WIKI is the name of the wiki as defined in `oddmuse-wikis',
 PAGENAME is the pagename of the page you want to browse."
-  (interactive (oddmuse-read-wiki-and-pagename))
+  (interactive (oddmuse-pagename))
   (browse-url (oddmuse-url wiki pagename)))
 
 ;;;###autoload
