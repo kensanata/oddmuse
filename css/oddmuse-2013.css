@@ -199,14 +199,22 @@ div.footer hr {
     margin: 2em 0 1ex 0;
 }
 
+div.comment {
+  border-top: 2px solid #000;
+  padding-top: 2em;
+}
+
 pre {
     padding: 0.5em;
     margin-left: 1em;
     margin-right: 2em;
     white-space: pre;
     overflow:hidden;
-    font-size: smaller;
 }
+
+tt, pre, code {
+    font-size: 80%;
+};
 
 div.footer hr {
     clear:both;
