@@ -442,6 +442,7 @@ This depends on the `link' face."
 (define-key oddmuse-mode-map (kbd "C-c C-m") 'oddmuse-toggle-minor)
 (define-key oddmuse-mode-map (kbd "C-c C-c") 'oddmuse-post)
 (define-key oddmuse-mode-map (kbd "C-c C-p") 'oddmuse-preview)
+(define-key oddmuse-mode-map (kbd "C-c C-b") 'oddmuse-browse-this-page)
 (define-key oddmuse-mode-map (kbd "C-x C-v") 'oddmuse-revert)
 (define-key oddmuse-mode-map (kbd "C-c C-f") 'oddmuse-edit)
 (define-key oddmuse-mode-map (kbd "C-c C-i") 'oddmuse-insert-pagename)
