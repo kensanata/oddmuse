@@ -30,8 +30,8 @@ sub main {
   my ($regexp, $PageDir, $RawDir) = @_;
   # include dotfiles!
   local $/ = undef;   # Read complete files
-  foreach my $file (glob("$PageDir/*/*.pg $PageDir/*/.*.pg")) {
-    next unless $file =~ m|/.*/(.+)\.pg$|;
+  foreach my $file (glob("$PageDir/*.pg $PageDir/.*.pg")) {
+    next unless $file =~ m|.*/(.+)\.pg$|;
     my $page = $1;
     next if $regexp && $page !~ m|$regexp|o;
     mkdir($RawDir) or die "Cannot create $RawDir directory: $!"
