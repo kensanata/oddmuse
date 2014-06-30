@@ -572,7 +572,7 @@ and call `oddmuse-edit' on it."
   (interactive (oddmuse-pagename))
   (oddmuse-edit (or oddmuse-wiki
 		    (completing-read "Wiki: " oddmuse-wikis nil t))
-		(oddmuse-pagename arg))))
+		(oddmuse-pagename arg)))
 
 (defun oddmuse-pagename (&optional arg)
   "Return the wiki and pagename the user wants to edit or follow.
