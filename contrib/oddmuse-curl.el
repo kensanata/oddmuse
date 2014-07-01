@@ -570,9 +570,7 @@ The pagename begins with the current date."
   "Figure out what page we need to visit
 and call `oddmuse-edit' on it."
   (interactive (oddmuse-pagename))
-  (oddmuse-edit (or oddmuse-wiki
-		    (completing-read "Wiki: " oddmuse-wikis nil t))
-		(oddmuse-pagename arg)))
+  (oddmuse-edit wiki pagename))
 
 (defun oddmuse-pagename (&optional arg)
   "Return the wiki and pagename the user wants to edit or follow.
