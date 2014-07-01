@@ -17,6 +17,7 @@
 package OddMuse;
 use LWP::UserAgent;
 use HTML::TreeBuilder;
+use utf8;
 
 # load Oddmuse core
 $RunCGI = 0;
