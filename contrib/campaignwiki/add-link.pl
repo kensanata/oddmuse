@@ -31,6 +31,8 @@ my $wiki = 'LinksToWisdom';
 my $site = "http://campaignwiki.org/wiki/$wiki";
 # my $site = "http://localhost/wiki.pl";
 my $home = "$site/$HomePage";
+# http://www.emacswiki.org/pics/star.png
+my $stardata = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAFVBMVEUAAHkAAACzdRTapx3twwD/9qb////1YCa0AAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfXAQYCJAu+WhwbAAAAKnRFWHRDb21tZW50AGJ5IFJhZG9taXIgJ1RoZSBTaGVlcCcgRG9waWVybGFza2kVfTXbAAAAYElEQVQI12NgQAKMMIaYAFTAzRDKCHOEMETCnEFyjIJhYS6OggwMoqGhaS7GRgIMjC6uYc5GikA5YRcXIyWwotBgJUWw7lAXsAyDaIihMlhK1FFA0AjEEAESQgJQu4EYAPAPC2XcokgQAAAAAElFTkSuQmCC';
 
 main();
 
@@ -96,15 +98,14 @@ sub confirm {
 			  T('Your name for the log file:')) . ' '
 	      . $q->textfield(-style=>'display: inline-block; width:50ex',
 			      -name=>'username', -id=>'username', -size=>50));
-  my $star = $q->img({-src=>'http://www.emacswiki.org/pics/star.png', -class=>'smiley',
-		      -alt=>'star'});
+  my $star = $q->img({-src=>$stardata, -class=>'smiley', -alt=>'☆'});
   print '<p>Optionally: Do you want to rate it?<br />';
   my $i = 0;
-  foreach my $label ($q->span({-style=>'display: inline-block; width:5em'}, $star)
+  foreach my $label ($q->span({-style=>'display: inline-block; width:3em'}, $star)
 		     . 'I might use this for my campaign',
-		     $q->span({-style=>'display: inline-block; width:5em'}, $star x 2)
+		     $q->span({-style=>'display: inline-block; width:3em'}, $star x 2)
 		     . 'I have used this in a campaign and it worked as intended',
-		     $q->span({-style=>'display: inline-block; width:5em'}, $star x 3)
+		     $q->span({-style=>'display: inline-block; width:3em'}, $star x 3)
 		     . 'I have used this in a campaign and it was ' . $q->em('great')) {
     $i++;
     print qq{<label><input type="radio" name="stars" value="$i" $checked/>$label</label><br />};
@@ -117,6 +118,7 @@ sub confirm {
   print $q->end_form();
 }
 
+# returns unquoted html
 sub get_name {
   my $url = shift;
   my $tree = HTML::TreeBuilder->new_from_content(GetRaw($url));
@@ -216,7 +218,7 @@ sub main {
     print GetHeader('', 'Submit a new link');
     print $q->start_div({-class=>'content index'});
     my $url = GetParam('url');
-    my $name = GetParam('name', get_name($url));
+    my $name = UnquoteHtml(GetParam('name', get_name($url)));
     my $toc = GetParam('toc');
     my $confirm = GetParam('confirm');
     my $summary = GetParam('summary');
