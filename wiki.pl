@@ -370,7 +370,7 @@ sub GetParam {
   utf8::encode($name); # may fail
   my $result = $q->param($name);
   $result = $default unless defined($result);
-  utf8::decode($result); # may fail
+  utf8::decode($result) if defined $result; # may fail, avoid turning undef to ''
   return QuoteHtml($result); # you need to unquote anything that can have <tags>
 }
 
