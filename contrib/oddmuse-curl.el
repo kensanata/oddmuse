@@ -271,7 +271,7 @@ This is used by Oddmuse to merge changes.")
     ("{{{.*?}}}"
      0 '(face shadow
 	      help-echo "Creole code"))
-    ("^{{{\n\\(.*\n\\)+}}}\n"
+    ("^{{{\n\\(.*\n\\)+?}}}\n"
      0 '(face shadow
 	      help-echo "Creole multiline code")))
     "Implement markup rules for the Creole markup extension.
@@ -425,14 +425,18 @@ Font-locking is controlled by `oddmuse-markup-functions'.
   (set (make-local-variable 'font-lock-extra-managed-props)
        '(nobreak help-echo)))
 
-(defun oddmuse-nobreak-p ()
+(defun oddmuse-nobreak-p (&optional pos)
   "Prevent line break of links.
-This depends on the `link' face."
-  (or (get-text-property (point) 'nobreak)
-      (let ((face (get-text-property (point) 'face)))
-	(if (listp face)
-	    (memq 'link face)
-	  (eq 'link face)))))
+This depends on the `link' face or the `nobreak' property: if
+both the character before and after point have it, don't break."
+  (if pos
+      (or (get-text-property pos 'nobreak)
+	  (let ((face (get-text-property pos 'face)))
+	    (if (listp face)
+		(memq 'link face)
+	      (eq 'link face))))
+    (and (oddmuse-nobreak-p (point))
+	 (oddmuse-nobreak-p (1- (point))))))
 
 (autoload 'sgml-tag "sgml-mode" t)
 
