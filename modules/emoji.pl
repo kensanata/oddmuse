@@ -19,7 +19,7 @@ $RuleOrder{\&EmojiRule} = 500;
 sub EmojiRule {
   if (m/\G:-?D/cg) {
     # 😀 1F600 GRINNING FACE
-    return '&#1F600;';
+    return '&#x1F600;';
   }  elsif (/\G:-?\)/cg) {
     # 😊 1F60A SMILING FACE WITH SMILING EYES
     return '&#x1F60A;';
