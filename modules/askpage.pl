@@ -39,13 +39,12 @@ sub IncrementInFile {
 *DoPost=*NewAskPageDoPost;
 sub NewAskPageDoPost {
   my $id = FreeToNormal(shift);
-  if ($id eq $AskPage and not GetParam('text', undef)) {
-    my $currentId = IncrementInFile("$DataDir/curquestion");
+  if ($id eq $AskPage and not GetParam('text', undef)) { # comment, not a regular edit
+    my $currentQuestion = IncrementInFile("$DataDir/curquestion");
     $currentQuestion =~ s/[\s\n]//g;
-    return OldAskPageDoPost($QuestionPage . $currentQuestion, @_);
-  } else {
-    return OldAskPageDoPost($id, @_);
+    return OldAskPageDoPost($QuestionPage . $currentQuestion, @_); # hack page name
   }
+  OldAskPageDoPost($id, @_); # keep original functionality for regular edits
 }
 
 *OldAskPageGetCommentForm=*GetCommentForm;
@@ -53,7 +52,7 @@ sub NewAskPageDoPost {
 sub NewAskPageGetCommentForm {
   my ($id, $rev, $comment) = @_;
   $NewComment = $NewQuestion if $id eq $AskPage;
-  return OldAskPageGetCommentForm(@_);
+  OldAskPageGetCommentForm(@_);
 }
 
 *OldAskPageJournalSort=*JournalSort;
