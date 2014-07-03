@@ -471,12 +471,12 @@ sub ApplyRules {
 	}
 	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
 	($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
-      } elsif ($bol && m/\G(\&lt;journal(\s+(\d*)(,(\d*))?)?(\s+"(.*?)")?(\s+(reverse|past|future))?(\s+search\s+(.*))?\&gt;[ \t]*\n?)/cgi) {
+      } elsif ($bol && m/\G(\&lt;(journal|titles):?(\d*)((\s+|:)(\d*),?(\d*))?(\s+"(.*?)")?(\s+(reverse|past|future))?(\s+search\s+(.*))?\&gt;[ \t]*\n?)/cgi) {
 	# <journal 10 "regexp"> includes 10 pages matching regexp
 	Clean(CloseHtmlEnvironments());
 	Dirty($1);
 	my ($oldpos, $old_) = (pos, $_); # remember these because of the call to PrintJournal()
-	PrintJournal($3, $5, $7, $9, 0, $11); # no offset
+	PrintJournal($6, $7, $9, $11, $3, $13, $2);
 	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
 	($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
       } elsif ($bol && m/\G(\&lt;rss(\s+(\d*))?\s+(.*?)\&gt;[ \t]*\n?)/cgis) {
@@ -825,7 +825,7 @@ sub GetRaw {
 sub DoJournal {
   print GetHeader(undef, T('Journal'));
   print $q->start_div({-class=>'content'});
-  PrintJournal(map { GetParam($_, ''); } qw(num num regexp mode offset search));
+  PrintJournal(map { GetParam($_, ''); } qw(num num regexp mode offset search variation));
   print $q->end_div();
   PrintFooter();
 }
@@ -835,10 +835,11 @@ sub JournalSort { $b cmp $a }
 sub PrintJournal {
   return if $CollectingJournal; # avoid infinite loops
   local $CollectingJournal = 1;
-  my ($num, $numMore, $regexp, $mode, $offset, $search) = @_;
+  my ($num, $numMore, $regexp, $mode, $offset, $search, $variation) = @_;
+  $variation = 'journal' unless $variation;
   $regexp = '^\d\d\d\d-\d\d-\d\d' unless $regexp;
   $num = 10 unless $num;
-  $numMore = $num unless $numMore;
+  $numMore = $num unless $numMore ne '';
   $offset = 0 unless $offset;
   # FIXME: Should pass filtered list of pages to SearchTitleAndBody to save time?
   my @pages = sort JournalSort (grep(/$regexp/, $search ? SearchTitleAndBody($search) : AllPagesList()));
@@ -865,15 +866,17 @@ sub PrintJournal {
   }
   return unless $pages[$offset];
   print $q->start_div({-class=>'journal'});
-  my $next = $offset + PrintAllPages(1, 1, $num, @pages[$offset .. $#pages]);
+  my $next = $offset + PrintAllPages(1, 1, $num, $variation, @pages[$offset .. $#pages]);
   print $q->end_div();
   $regexp = UrlEncode($regexp);
   $search = UrlEncode($search);
-  print $q->p({-class=>'more'}, ScriptLink("action=more;num=$numMore;regexp=$regexp;search=$search;mode=$mode;offset=$next", T('More...'), 'more')) if $pages[$next];
+  if ($pages[$next] and $numMore != 0) {
+    print $q->p({-class=>'more'}, ScriptLink("action=more;num=$numMore;regexp=$regexp;search=$search;mode=$mode;offset=$next;variation=$variation", T('More...'), 'more'));
+  }
 }
 
 sub PrintAllPages {
-  my ($links, $comments, $num, @pages) = @_;
+  my ($links, $comments, $num, $variation, @pages) = @_;
   my $lang = GetParam('lang', 0);
   my ($i, $n) = 0;
   for my $id (@pages) {
@@ -888,8 +891,10 @@ sub PrintAllPages {
     print $q->start_div({-class=>'page'}),
       $q->h1($links ? GetPageLink($id)
 	     : $q->a({-name=>$id}, UrlEncode(FreeToNormal($id))));
-    PrintPageHtml();
-    PrintPageCommentsLink($id, $comments);
+    if ($variation ne 'titles') {
+      PrintPageHtml();
+      PrintPageCommentsLink($id, $comments);
+    }
     print $q->end_div();
     $n++; # pages actually printed
   }
