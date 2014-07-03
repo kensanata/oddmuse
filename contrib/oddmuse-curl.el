@@ -729,6 +729,7 @@ browser."
 	    (browse-url (browse-url-file-url file))))
       (message "Rendering...")
       (pop-to-buffer "*Preview*")
+      (fundamental-mode)
       (erase-buffer)
       (shr-insert-document
        (with-current-buffer buf
