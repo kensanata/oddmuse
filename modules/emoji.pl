@@ -21,11 +21,11 @@ sub EmojiRule {
     # 😀 1F600 GRINNING FACE
     return '&#1F600;';
   }  elsif (/\G:-?\)/cg) {
-    # ☺ 00263a WHITE SMILING FACE
-    return '&#X263A;';
+    # 😊 1F60A SMILING FACE WITH SMILING EYES
+    return '&#x1F60A;';
   }  elsif (/\G:-?\(/cg) {
-    # ☹ 2639 WHITE FROWNING FACE
-    return '&#x2639;';
+    # 😟 1F61F WORRIED FACE
+    return '&#x1F61F;';
   }  elsif (/\G;-?\)/cg) {
     # 😉 1F609 WINKING FACE
     return '&#x1F609;';
@@ -33,14 +33,20 @@ sub EmojiRule {
     # 😢 1F622 CRYING FACE
     return '&#x1F622;';
   }  elsif (/\G:'\[/cg) {
-    # 😡 1F621 POUTING FACE
-    return '&#x1F621;';
+    # 😠 1F620 ANGRY FACE
+    return '&#x1F620;';
   }  elsif (/\G:-[Ppb]/cg) {
     # 😝 1F61D FACE WITH STUCK-OUT TONGUE AND TIGHTLY-CLOSED EYES
     return '&#x1F61D;';
   }  elsif (/\G&lt;3/cg) {
     # ❤ 2764 HEAVY BLACK HEART
     return '&#x2764;';
+  }  elsif (/\G\^_*\^/cg) {
+    # 😄 1F604 SMILING FACE WITH OPEN MOUTH AND SMILING EYES
+    return '&#x1F604;';
+  }  elsif (/\G\bO_o\b/cg) {
+    # 😲 1F632 ASTONISHED FACE
+    return '&#x1F632;';
   }
   return undef;
 }
