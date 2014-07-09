@@ -782,11 +782,12 @@ This command is used to reflect new pages to `oddmuse-pages-hash'."
   "Read a pagename of WIKI with completion.
 Optional arguments REQUIRE and DEFAULT are passed on to `completing-read'.
 Typically you would use t and a `oddmuse-page-name', if that makes sense."
-  (completing-read (if default
-		       (concat "Pagename [" default "]: ")
-		     "Pagename: ")
-		   (oddmuse-make-completion-table wiki)
-		   nil require nil nil default))
+  (let ((completion-ignore-case t))
+    (completing-read (if default
+			 (concat "Pagename [" default "]: ")
+		       "Pagename: ")
+		     (oddmuse-make-completion-table wiki)
+		     nil require nil nil default)))
 
 ;;;###autoload
 (defun oddmuse-rc (&optional include-minor-edits)
@@ -855,9 +856,10 @@ With universal argument, reload."
 
 ;;;###autoload
 (defun oddmuse-insert-pagename (pagename)
-  "Insert a PAGENAME of current wiki with completion."
+  "Insert a PAGENAME of current wiki with completion.
+Replaces _ with spaces again."
   (interactive (list (oddmuse-read-pagename oddmuse-wiki)))
-  (insert pagename))
+  (insert (replace-regexp-in-string "_" " " pagename)))
 
 ;;;###autoload
 (defun emacswiki-post (&optional pagename summary)
@@ -880,7 +882,8 @@ This command is intended to post current EmacsLisp program easily."
 (defun oddmuse-url (wiki pagename)
   "Get the URL of oddmuse wiki."
   (condition-case v
-      (concat (or (cadr (assoc wiki oddmuse-wikis)) (error)) "/" pagename)
+      (concat (or (cadr (assoc wiki oddmuse-wikis)) (error)) "/"
+	      (url-hexify-string pagename))
     (error nil)))
 
 ;;;###autoload
