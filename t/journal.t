@@ -67,7 +67,6 @@ negative_xpath_test($page, "//a[text()='$today']",
 		    "//a[text()='$yesterday']",
 		    "//a[text()='$beforeyesterday']");
 
-
 # Check that ,0 disables More... link
 test_page_negative(update_page('Summary', "No 'More' link:\n\n<journal 3,0>"), 'More\.\.\.');
 
@@ -128,6 +127,3 @@ test_page(update_page('Journal', "This is the journal.\n\n"
 	  'penta figurazza');
 test_page(ReadFileOrDie(GetPageFile('2009-06-23')),
 	  'blocks: <p>penta figurazza');
-
-
-
