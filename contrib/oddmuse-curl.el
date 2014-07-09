@@ -355,7 +355,7 @@ The rule to identify indented blocks of code doesn't really work.")
     (,oddmuse-link-pattern
      0 '(face link
 	      help-echo "Basic wiki name"))
-    ("^\\([*]+\\)"
+    ("^\\([*] \\)"
      0 '(face font-lock-constant-face
 	      help-echo "Basic bullet list")))
   "Implement markup rules for the basic Oddmuse setup without extensions.
