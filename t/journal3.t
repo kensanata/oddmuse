@@ -38,7 +38,7 @@ test_page($page, '2011-12-17', '2011-12-16', '2011-12-15',
 test_page_negative($page, '2011-12-12', '2011-12-11', '2011-12-10',
 	  '2011-12-09', '2011-12-08');
 
-xpath_test($page, '//a[@href="http://localhost/wiki.pl?action=more;num=5;regexp=%5e%5cd%5cd%5cd%5cd-%5cd%5cd-%5cd%5cd;search=;mode=;offset=5"][text()="More..."]');
+xpath_test($page, '//a[@href="http://localhost/wiki.pl?action=more;num=5;regexp=%5e%5cd%5cd%5cd%5cd-%5cd%5cd-%5cd%5cd;search=;mode=;offset=5;variation=journal"][text()="More..."]');
 
 # check that the link for more actually works
 
@@ -68,4 +68,4 @@ xpath_test_negative(get_page("action=more num=5 offset=6 "),
 # check for unescaped URL
 
 $page = update_page('Plus', "Using a plus:\n\n<journal 5 \"^.+\">");
-xpath_test($page, '//a[text()="More..."][@href="http://localhost/wiki.pl?action=more;num=5;regexp=%5e.%2b;search=;mode=;offset=5"]');
+xpath_test($page, '//a[text()="More..."][@href="http://localhost/wiki.pl?action=more;num=5;regexp=%5e.%2b;search=;mode=;offset=5;variation=journal"]');
