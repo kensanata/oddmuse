@@ -28,7 +28,7 @@ sub DoPrintAllPages {
   print GetHeader('', T('Complete Content'))
     . $q->p(Ts('The main page is %s.', $q->a({-href=>'#' . $HomePage}, $HomePage)));
   print $q->p($q->b(Ts('(for %s)', GetParam('lang', 0)))) if GetParam('lang', 0);
-  PrintAllPages(0, 0, undef, AllPagesList());
+  PrintAllPages(0, 0, undef, undef, AllPagesList());
   PrintFooter();
 }
 
