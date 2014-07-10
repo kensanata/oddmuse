@@ -68,9 +68,9 @@ run_tests(split('\n',<<'EOT'));
 [code]monospaced text[/code]\nmore text\nand last line
 <pre>monospaced text</pre><p>more text and last line</p>
 :) :-) :( :-(
-&#x263a; &#x263a; &#x2639; &#x2639;
+&#x1F60A; &#x1F60A; &#x1F61F; &#x1F61F;
 :smile: :happy: :frown: :sad:
-&#x263a; &#x263a; &#x2639; &#x2639;
+&#x1F60A; &#x1F60A; &#x1F61F; &#x1F61F;
 foo\n[h1]blarg
 foo <h1>blarg</h1>
 foo[h2]blarg[/h2]fnord
