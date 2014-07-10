@@ -847,18 +847,11 @@ sub PrintJournal {
     @pages = reverse @pages;
   }
   $b = defined($Today) ? $Today : CalcDay($Now);
-  if ($mode eq 'future') {
+  if ($mode eq 'future' || $mode eq 'past') {
+    my $compare = $mode eq 'future' ? -1 : 1;
     for (my $i = 0; $i < @pages; $i++) {
       $a = $pages[$i];
-      if (JournalSort() == -1) {
-	@pages = @pages[$i..$#pages];
-	last;
-      }
-    }
-  } elsif ($mode eq 'past') {
-    for (my $i = 0; $i < @pages; $i++) {
-      $a = $pages[$i];
-      if (JournalSort() == 1) {
+      if (JournalSort() == $compare) {
 	@pages = @pages[$i..$#pages];
 	last;
       }
@@ -945,9 +938,7 @@ sub RSS {
 	  $interwiki = $rss->{channel}->{$wikins}->{interwiki};
 	  $interwiki =~ s/^\s+//; # when RDF is used, sometimes whitespace remains,
 	  $interwiki =~ s/\s+$//; # which breaks the test for an existing $interwiki below
-	  if (!$interwiki) {
-	    $interwiki = $rss->{channel}->{$rdfns}->{value};
-	  }
+	  $interwiki = $rss->{channel}->{$rdfns}->{value} unless $interwiki;
 	  $interwiki = $RssInterwikiTranslate{$interwiki} if $RssInterwikiTranslate{$interwiki};
 	  $interwiki = $RssInterwikiTranslate{$uri} unless $interwiki;
 	}
@@ -997,9 +988,7 @@ sub RSS {
 	      $line .= $q->span({class=>'dash'}, ' &#8211; ') . $q->strong({-class=>'description'}, $description);
 	    }
 	  }
-	  while ($lines{$date}) {
-	    $date .= ' ';
-	  }                     # make sure this is unique
+	  $date .= ' ' while ($lines{$date}); # make sure this is unique
 	  $lines{$date} = $line;
 	}
       }
@@ -2132,32 +2121,18 @@ sub DoRollback {
 sub DoAdminPage {
   my ($id, @rest) = @_;
   my @menu = ();
-  push(@menu, ScriptLink('action=index',
-			 T('Index of all pages'), 'index'))
-    if $Action{index};
-  push(@menu, ScriptLink('action=version',
-			 T('Wiki Version'), 'version'))
-    if $Action{version};
-  push(@menu, ScriptLink('action=unlock',
-			 T('Unlock Wiki'), 'unlock'))
-    if $Action{unlock};
-  push(@menu, ScriptLink('action=password',
-			 T('Password'), 'password'))
-    if $Action{password};
-  push(@menu, ScriptLink('action=maintain',
-			 T('Run maintenance'), 'maintain'))
-    if $Action{maintain};
+  push(@menu, ScriptLink('action=index', T('Index of all pages'), 'index')) if $Action{index};
+  push(@menu, ScriptLink('action=version', T('Wiki Version'), 'version')) if $Action{version};
+  push(@menu, ScriptLink('action=unlock', T('Unlock Wiki'), 'unlock')) if $Action{unlock};
+  push(@menu, ScriptLink('action=password', T('Password'), 'password')) if $Action{password};
+  push(@menu, ScriptLink('action=maintain', T('Run maintenance'), 'maintain')) if $Action{maintain};
   if (UserIsAdmin()) {
-    push(@menu, ScriptLink('action=clear',
-			   T('Clear Cache'), 'clear'))
-      if $Action{clear};
+    push(@menu, ScriptLink('action=clear', T('Clear Cache'), 'clear')) if $Action{clear};
     if ($Action{editlock}) {
       if (-f "$DataDir/noedit") {
-	push(@menu, ScriptLink('action=editlock;set=0',
-			      T('Unlock site'), 'editlock 0'));
+	push(@menu, ScriptLink('action=editlock;set=0', T('Unlock site'), 'editlock 0'));
       } else {
-	push(@menu, ScriptLink('action=editlock;set=1',
-			       T('Lock site'), 'editlock 1'));
+	push(@menu, ScriptLink('action=editlock;set=1', T('Lock site'), 'editlock 1'));
       }
     }
     if ($id and $Action{pagelock}) {
@@ -2623,26 +2598,25 @@ sub ImproveDiff {      # NO NEED TO BE called within a diff lock
   $diff =~ tr/\r//d;
   my @hunks = split (/^(\d+,?\d*[adc]\d+,?\d*\n)/m, $diff);
   my $result = shift (@hunks);  # intro
-  while ($#hunks > 0)           # at least one header and a real hunk
-    {
-      my $header = shift (@hunks);
-      $header =~ s|^(\d+.*c.*)|<p><strong>Changed:</strong></p>| # T('Changed:')
-	or $header =~ s|^(\d+.*d.*)|<p><strong>Deleted:</strong></p>| # T('Deleted:')
+  while ($#hunks > 0) {         # at least one header and a real hunk
+    my $header = shift (@hunks);
+    $header =~ s|^(\d+.*c.*)|<p><strong>Changed:</strong></p>| # T('Changed:')
+      or $header =~ s|^(\d+.*d.*)|<p><strong>Deleted:</strong></p>| # T('Deleted:')
 	or $header =~ s|^(\d+.*a.*)|<p><strong>Added:</strong></p>|; # T('Added:')
-      $result .= $header;
-      my $chunk = shift (@hunks);
-      my ($old, $new) = split (/\n---\n/, $chunk, 2);
-      if ($old and $new) {
-  ($old, $new) = DiffMarkWords($old, $new);
-  $result .= "$old<p><strong>to</strong></p>\n$new"; # T('to')
+    $result .= $header;
+    my $chunk = shift (@hunks);
+    my ($old, $new) = split (/\n---\n/, $chunk, 2);
+    if ($old and $new) {
+      ($old, $new) = DiffMarkWords($old, $new);
+      $result .= "$old<p><strong>to</strong></p>\n$new"; # T('to')
+    } else {
+      if (substr($chunk,0,2) eq '&g') {
+	$result .= DiffAddPrefix(DiffStripPrefix($chunk), '&gt; ', 'new');
       } else {
-	if (substr($chunk,0,2) eq '&g') {
-	  $result .= DiffAddPrefix(DiffStripPrefix($chunk), '&gt; ', 'new');
-	} else {
-	  $result .= DiffAddPrefix(DiffStripPrefix($chunk), '&lt; ', 'old');
-	}
+	$result .= DiffAddPrefix(DiffStripPrefix($chunk), '&lt; ', 'old');
       }
     }
+  }
   return $result;
 }
 
@@ -2714,9 +2688,7 @@ sub ParseData {      # called a lot during search, so it was optimized
 
 sub OpenPage {      # Sets global variables
   my $id = shift;
-  if ($OpenPageName eq $id) {
-    return;
-  }
+  return if $OpenPageName eq $id;
   if ($IndexHash{$id}) {
     %Page = ParseData(ReadFileOrDie(GetPageFile($id)));
   } else {
@@ -2979,21 +2951,13 @@ sub CalcTime {
 
 sub CalcTimeSince {
   my $total = shift;
-  if ($total >= 7200) {
-    return Ts('%s hours ago',int($total/3600));
-  } elsif ($total >= 3600) {
-    return T('1 hour ago');
-  } elsif ($total >= 120) {
-    return Ts('%s minutes ago',int($total/60));
-  } elsif ($total >= 60) {
-    return T('1 minute ago');
-  } elsif ($total >= 2) {
-    return Ts('%s seconds ago',int($total));
-  } elsif ($total == 1) {
-    return T('1 second ago');
-  } else {
-    return T('just now');
-  }
+  return Ts('%s hours ago', int($total/3600)) if ($total >= 7200);
+  return T('1 hour ago')                      if ($total >= 3600);
+  return Ts('%s minutes ago', int($total/60)) if ($total >= 120);
+  return T('1 minute ago')                    if ($total >= 60);
+  return Ts('%s seconds ago', int($total))    if ($total >= 2);
+  return T('1 second ago')                    if ($total == 1);
+  return T('just now');
 }
 
 sub TimeToText {
@@ -3025,9 +2989,7 @@ sub GetRemoteHost { # when testing, these variables are undefined.
     eval 'use Socket; my $iaddr = inet_aton(GetRemoteAddress());'
       . '$rhost = gethostbyaddr($iaddr, AF_INET) if $iaddr;';
   }
-  if (not $rhost) {
-    $rhost = GetRemoteAddress();
-  }
+  $rhost = GetRemoteAddress() unless $rhost;
   return $rhost;
 }
 
