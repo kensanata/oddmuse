@@ -19,16 +19,16 @@ use Test::More tests => 21;
 clear_pages();
 
 add_module('ban-contributors.pl');
-$localhost = 'pyrobombus';
+$localhost = '127.0.0.1';
 $ENV{'REMOTE_ADDR'} = $localhost;
 
 update_page('Test', 'insults');
 test_page_negative(get_page('action=admin id=Test'), 'Ban contributors');
 test_page(get_page('action=admin id=Test pwd=foo'), 'Ban contributors');
-test_page(get_page('action=ban id=Test pwd=foo'), 'pyrobombus', 'Ban!');
-test_page(get_page('action=ban id=Test host=pyrobombus pwd=foo'),
+test_page(get_page('action=ban id=Test pwd=foo'), $localhost, 'Ban!');
+test_page(get_page("action=ban id=Test host=$localhost pwd=foo"),
 	  'Location: http://localhost/wiki.pl/BannedHosts');
-test_page(get_page('BannedHosts'), 'pyrobombus', 'Test');
+test_page(get_page('BannedHosts'), $localhost, 'Test');
 
 clear_pages();
 add_module('ban-contributors.pl');

@@ -39,7 +39,7 @@ use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
 $KeepDir $PageDir $RcOldFile $IndexFile $BannedContent $NoEditFile $BannedHosts
 $ConfigFile $FullUrl $SiteName $HomePage $LogoUrl $RcDefault $RssDir
 $IndentLimit $RecentTop $RecentLink $EditAllowed $UseDiff $KeepDays $KeepMajor
-$EmbedWiki $BracketText $UseConfig $UseLookup $AdminPass $EditPass
+$EmbedWiki $BracketText $UseConfig $AdminPass $EditPass
 $PassHashFunction $PassSalt $NetworkFile
 $BracketWiki $FreeLinks $WikiLinks $SummaryHours $FreeLinkPattern $RCName
 $RunCGI $ShowEdits $LinkPattern $RssExclude $InterLinkPattern $MaxPost $UseGrep
@@ -132,7 +132,6 @@ $KeepMajor   = 1;               # 1 = keep at least one major rev when expiring 
 $SummaryHours = 4;              # Hours to offer the old subject when editing a page
 $SummaryDefaultLength = 150;    # Length of default text for summary (0 to disable)
 $ShowEdits   = 0;               # 1 = major and show minor edits in recent changes
-$UseLookup   = 1;               # 1 = lookup host names instead of using only IP numbers
 $RecentTop   = 1;               # 1 = most recent entries at the top of the list
 $RecentLink  = 1;               # 1 = link to usernames
 $PageCluster = '';              # name of cluster page, eg. 'Cluster' to enable
@@ -2108,7 +2107,7 @@ sub DoRollback {
     } elsif (not UserIsEditor() and my $rule = BannedContent($text)) {
       print Ts('Rollback of %s would restore banned content.', $id), $rule, $q->br();
     } else {
-      Save($id, $text, Ts('Rollback to %s', TimeToText($to)), $minor, ($Page{ip} ne GetRemoteAddress()));
+      Save($id, $text, Ts('Rollback to %s', TimeToText($to)), $minor, ($Page{host} ne GetRemoteHost()));
       print Ts('%s rolled back', GetPageLink($id)), ($ts ? ' ' . Ts('to %s', TimeToText($to)) : ''), $q->br();
     }
   }
@@ -2195,7 +2194,7 @@ sub ScriptLinkDiff {
   return ScriptLink($action, $text, 'diff');
 }
 
-sub GetRemoteAddress {
+sub GetRemoteHost {
   return $ENV{REMOTE_ADDR};
 }
 
@@ -2982,17 +2981,6 @@ sub GetHiddenValue {
   return $q->input({-type=>"hidden", -name=>$name, -value=>$value});
 }
 
-sub GetRemoteHost { # when testing, these variables are undefined.
-  my $rhost = $ENV{REMOTE_HOST}; # tests are written to avoid -w warnings.
-  if (not $rhost and $UseLookup and GetRemoteAddress()) {
-    # Catch errors (including bad input) without aborting the script
-    eval 'use Socket; my $iaddr = inet_aton(GetRemoteAddress());'
-      . '$rhost = gethostbyaddr($iaddr, AF_INET) if $iaddr;';
-  }
-  $rhost = GetRemoteAddress() unless $rhost;
-  return $rhost;
-}
-
 sub FreeToNormal {    # trim all spaces and convert them to underlines
   my $id = shift;
   return '' unless $id;
@@ -3192,13 +3180,10 @@ sub UserCanEdit {
 
 sub UserIsBanned {
   return 0 if GetParam('action', '') eq 'password'; # login is always ok
-  my ($host, $ip);
-  $ip = GetRemoteAddress();
-  $host = GetRemoteHost();
+  my $host = GetRemoteHost();
   foreach (split(/\n/, GetPageContent($BannedHosts))) {
     if (/^\s*([^#]\S+)/) { # all lines except empty lines and comments, trim whitespace
       my $regexp = $1;
-      return $regexp  if ($ip   =~ /$regexp/i);
       return $regexp  if ($host =~ /$regexp/i);
     }
   }
@@ -3536,7 +3521,7 @@ sub Replace {
     if (eval "s{$from}{$to}gi") { # allows use of backreferences
       push (@result, $id);
       Save($id, $_, $from . ' -> ' . $to, 1,
-     ($Page{ip} ne GetRemoteAddress()));
+	   ($Page{host} ne GetRemoteHost()));
     }
   }
   ReleaseLock();
@@ -3615,7 +3600,7 @@ sub DoPost {
   if ($oldrev) { # the first author (no old revision) is not considered to be "new"
     # prefer usernames for potential new author detection
     $newAuthor = 1 if not $Page{username} or $Page{username} ne GetParam('username', '');
-    $newAuthor = 1 if not GetRemoteAddress() or not $Page{ip} or GetRemoteAddress() ne $Page{ip};
+    $newAuthor = 1 if not GetRemoteHost() or not $Page{host} or GetRemoteHost() ne $Page{host};
   }
   my $oldtime = $Page{ts};
   my $myoldtime = GetParam('oldtime', ''); # maybe empty!
@@ -3708,7 +3693,6 @@ sub Save {      # call within lock, with opened page
   $Page{revision} = $revision;
   $Page{summary} = $summary;
   $Page{username} = $user;
-  $Page{ip} = GetRemoteAddress();
   $Page{host} = $host;
   $Page{minor} = $minor;
   $Page{text} = $new;
@@ -3933,7 +3917,7 @@ sub DoDebug {
 sub DoSurgeProtection {
   return unless $SurgeProtection;
   my $name = GetParam('username','');
-  $name = GetRemoteAddress() if not $name and $SurgeProtection;
+  $name = GetRemoteHost() if not $name and $SurgeProtection;
   return unless $name;
   ReadRecentVisitors();
   AddRecentVisitor($name);
