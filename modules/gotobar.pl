@@ -28,7 +28,7 @@ sub GotobarInit {
   $AdminPages{$GotobarName} = 1;
   if ($IndexHash{$GotobarName}) {
     OpenPage($GotobarName);
-    return if $DeletedPage && $Page{text} =~ /^\s*$DeletedPage\b/o;
+    return if PageMarkedForDeletion();
     # Don't use @UserGotoBarPages because this messes up the order of
     # links for unsuspecting users.
     @UserGotoBarPages = ();
