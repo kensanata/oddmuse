@@ -98,6 +98,12 @@ h1 a:visited, h2 a:visited, h3 a:visited {
     font-weight: normal;
 }
 
+/* links */
+
+a.number {
+    text-decoration: none;
+}
+
 /* stop floating content from flowing over the footer */
 
 hr {
@@ -259,8 +265,8 @@ div.comment h2 {
     margin-top: 5em;
 }
 /* comment pages with username, homepage, and email subscription */
-.comment span { display: block; }
-.comment span label { display: inline-block; width: 10em; }
+.comment form span { display: block; }
+.comment form span label { display: inline-block; width: 10em; }
 /* IE sucks */
 .comment input#username,
 .comment input#homepage,
