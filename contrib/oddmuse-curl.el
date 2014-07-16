@@ -494,7 +494,7 @@ both the character before and after point have it, don't break."
 	    ;; form summary='A quote is '"'"' this!'
 	    (setq value (replace-regexp-in-string "'" "'\"'\"'" value t t)))
 	  (setq command (replace-regexp-in-string key value command t t))))))
-  command)
+  (replace-regexp-in-string "&" "%26" command t t))
 
 ;;;###autoload
 (defun oddmuse-history (wiki pagename)
