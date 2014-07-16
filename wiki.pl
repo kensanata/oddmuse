@@ -1842,6 +1842,7 @@ sub PrintRcHtml { # to append RC to existing page, or action=rc directly
 
 sub RcTextItem {
   my ($name, $value) = @_;
+  $value = UnquoteHtml($value);
   $value =~ s/\n+$//;
   $value =~ s/\n+/\n /;
   return $value ? $name . ': ' . $value . "\n" : '';
