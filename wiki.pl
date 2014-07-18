@@ -2919,7 +2919,7 @@ sub DoUnlock {
       $message .= $q->p(Ts('Forced unlock of %s lock.', $lock));
     }
   }
-  print $message ? $message : $q->p(T('No unlock required.'));
+  print $message || $q->p(T('No unlock required.'));
   PrintFooter();
 }
 
