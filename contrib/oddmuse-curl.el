@@ -131,26 +131,39 @@ This can be changed for each edition using `oddmuse-toggle-minor'."
   "Command to use for publishing pages.
 It must print the page to stdout.
 
-%?  '?' character
 %w  URL of the wiki as provided by `oddmuse-wikis'
-%t  URL encoded pagename, eg. HowTo, How_To, or How%20To")
+%t  URL encoded pagename, eg. HowTo, How_To, or How%20To
+
+See `oddmuse-format-command' for other options.")
 
 (defvar oddmuse-history-command
   "curl --silent %w\"?action=history;raw=1;\"id=%t"
   "Command to use for reading the history of a page.
 It must print the history to stdout.
 
-%?  '?' character
 %w  URL of the wiki as provided by `oddmuse-wikis'
-%t  URL encoded pagename, eg. HowTo, How_To, or How%20To")
+%t  URL encoded pagename, eg. HowTo, How_To, or How%20To
+
+See `oddmuse-format-command' for other options.")
 
 (defvar oddmuse-rc-command
   "curl --silent %w\"?action=rc;raw=1\""
   "Command to use for Recent Changes.
 It must print the RSS 3.0 text format to stdout.
 
-%?  '?' character
-%w  URL of the wiki as provided by `oddmuse-wikis'")
+%w  URL of the wiki as provided by `oddmuse-wikis'
+
+See `oddmuse-format-command' for other options.")
+
+(defvar oddmuse-search-command
+  "curl --silent %w\"?search=%r;raw=1\""
+  "Command to use for Recent Changes.
+It must print the RSS 3.0 text format to stdout.
+
+%w  URL of the wiki as provided by `oddmuse-wikis'
+%r  Regular expression to search for
+
+See `oddmuse-format-command' for other options.")
 
 (defvar oddmuse-post-command
   (concat "curl --silent --write-out '%{http_code}'"
@@ -167,7 +180,6 @@ It must print the RSS 3.0 text format to stdout.
 It must accept the page on stdin and print the HTTP status code
 on stdout.
 
-%?  '?' character
 %t  pagename
 %s  summary
 %u  username
@@ -175,7 +187,9 @@ on stdout.
 %q  question-asker cookie
 %m  minor edit
 %o  oldtime, a timestamp provided by Oddmuse
-%w  URL of the wiki as provided by `oddmuse-wikis'")
+%w  URL of the wiki as provided by `oddmuse-wikis'
+
+See `oddmuse-format-command' for other options.")
 
 (defvar oddmuse-preview-command
   (concat "curl --silent"
@@ -191,14 +205,15 @@ on stdout.
   "Command to use for previewing pages.
 It must accept the page on stdin and print the HTML on stdout.
 
-%?  '?' character
 %t  pagename
 %u  username
 %p  password
 %q  question-asker cookie
 %m  minor edit
 %o  oldtime, a timestamp provided by Oddmuse
-%w  URL of the wiki as provided by `oddmuse-wikis'")
+%w  URL of the wiki as provided by `oddmuse-wikis'
+
+See `oddmuse-format-command' for other options.")
 
 (defvar oddmuse-link-pattern
   "\\<[[:upper:]]+[[:lower:]]+\\([[:upper:]]+[[:lower:]]*\\)+\\>"
@@ -219,9 +234,9 @@ Must match a key from `oddmuse-wikis'.")
   "Command to use for publishing index pages.
 It must print the page to stdout.
 
-%?  '?' character
 %w  URL of the wiki as provided by `oddmuse-wikis'
-")
+
+See `oddmuse-format-command' for other options.")
 
 (defvar oddmuse-minor nil
   "Is this edit a minor change?")
@@ -452,6 +467,7 @@ both the character before and after point have it, don't break."
 (define-key oddmuse-mode-map (kbd "C-c C-i") 'oddmuse-insert-pagename)
 (define-key oddmuse-mode-map (kbd "C-c C-h") 'oddmuse-history)
 (define-key oddmuse-mode-map (kbd "C-c C-r") 'oddmuse-rc)
+(define-key oddmuse-mode-map (kbd "C-c C-s") 'oddmuse-search)
 
 ;; This has been stolen from simple-wiki-edit
 ;;;###autoload
@@ -471,28 +487,38 @@ both the character before and after point have it, don't break."
              '(oddmuse-minor " [MINOR]"))
 
 (defun oddmuse-format-command (command)
-  "Internal: Substitute oddmuse format flags according to `url',
-`oddmuse-page-name', `summary', `oddmuse-username', `question',
-`oddmuse-password', `oddmuse-revision'."
-  (let ((hatena "?"))
-    (dolist (pair '(("%w" . url)
-		    ("%t" . oddmuse-page-name)
-		    ("%s" . summary)
-                    ("%u" . oddmuse-username)
-		    ("%m" . oddmuse-minor)
-                    ("%p" . oddmuse-password)
-                    ("%q" . question)
-		    ("%o" . oddmuse-revision)
-		    ("%r" . regexp)
-		    ("%\\?" . hatena)))
-      (when (and (boundp (cdr pair)) (stringp (symbol-value (cdr pair))))
-	(let* ((key (car pair))
-	       (sym (cdr pair))
-	       (value (symbol-value sym)))
+  "Format COMMAND, replacing placeholders with variables.
+%w url (usually from `oddmuse-wikis'
+%t `oddmuse-page-name'
+%s summary (as provided by the user)
+%u `oddmuse-username'
+%m `oddmuse-minor'
+%p `oddmuse-password'
+%q question (as provided by `oddmuse-wikis')
+%o `oddmuse-revision'
+%r regexp (as provided by the user)"
+  (dolist (pair '(("%w" . url)
+		  ("%t" . oddmuse-page-name)
+		  ("%s" . summary)
+		  ("%u" . oddmuse-username)
+		  ("%m" . oddmuse-minor)
+		  ("%p" . oddmuse-password)
+		  ("%q" . question)
+		  ("%o" . oddmuse-revision)
+		  ("%r" . regexp)))
+    (let* ((key (car pair))
+	   (sym (cdr pair))
+	   value)
+      (when (boundp sym)
+	(setq value (symbol-value sym))
+	(when (stringp value)
 	  (when (and (eq sym 'summary)
 		     (string-match "'" value))
 	    ;; form summary='A quote is '"'"' this!'
 	    (setq value (replace-regexp-in-string "'" "'\"'\"'" value t t)))
+	  (when (and (eq sym 'regexp)
+		     (string-match " " value))
+	    (setq value (replace-regexp-in-string " " "+" value t t)))
 	  (setq command (replace-regexp-in-string key value command t t))))))
   (replace-regexp-in-string "&" "%26" command t t))
 
@@ -790,6 +816,32 @@ Typically you would use t and a `oddmuse-page-name', if that makes sense."
 		     nil require nil nil default)))
 
 ;;;###autoload
+(defun oddmuse-search (regexp)
+  "Search the wiki."
+  (interactive "sSearch Wiki: ")
+  (let* ((wiki (or oddmuse-wiki
+		   (completing-read "Wiki: " oddmuse-wikis nil t)))
+	 (name (concat "*" wiki " Search for '" regexp "'*")))
+    (if (and (get-buffer name)
+             (not current-prefix-arg))
+        (pop-to-buffer (get-buffer name))
+      (let* ((wiki-data (assoc wiki oddmuse-wikis))
+             (url (nth 1 wiki-data))
+             (command (oddmuse-format-command oddmuse-search-command))
+             (coding (nth 2 wiki-data))
+             (buf (get-buffer-create name))
+             (coding-system-for-read coding)
+             (coding-system-for-write coding))
+	(set-buffer buf)
+        (unless (equal name (buffer-name)) (rename-buffer name))
+        (erase-buffer)
+	(let ((max-mini-window-height 1))
+	  (oddmuse-run "Searching" command buf))
+	(oddmuse-rc-buffer)
+	(highlight-regexp (hi-lock-process-phrase regexp))
+	(set (make-local-variable 'oddmuse-wiki) wiki)))))
+
+;;;###autoload
 (defun oddmuse-rc (&optional include-minor-edits)
   "Show Recent Changes.
 With universal argument, reload."
@@ -820,7 +872,7 @@ With universal argument, reload."
   (let ((result nil)
 	(fill-column (window-width))
 	(fill-prefix "  "))
-    (dolist (item (cdr (split-string (buffer-string) "\n\n")));; skip first item
+    (dolist (item (cdr (split-string (buffer-string) "\n\n" t)));; skip first item
       (let ((data (mapcar (lambda (line)
 			    (when (string-match "^\\(.*?\\): \\(.*\\)" line)
 			      (cons (intern (match-string 1 line))
