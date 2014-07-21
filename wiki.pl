@@ -210,7 +210,7 @@ sub ReportError {   # fatal!
       $q->end_html, "\n\n"; # newlines for FCGI because of exit()
   WriteStringToFile("$TempDir/error", '<body>' . $q->h1("$status $errmsg") . $q->Dump) if $log;
   map { ReleaseLockDir($_); } keys %Locks;
-  exit (2);
+  exit 2;
 }
 
 sub Init {
@@ -257,15 +257,13 @@ sub InitDirConfig {
   $LockDir     = "$TempDir/lock";  # DB is locked if this exists
   $NoEditFile  = "$DataDir/noedit"; # Indicates that the site is read-only
   $RcFile      = "$DataDir/rc.log"; # New RecentChanges logfile
-  $RcOldFile   = "$DataDir/oldrc.log";   # Old RecentChanges logfile
+  $RcOldFile   = "$DataDir/oldrc.log"; # Old RecentChanges logfile
   $IndexFile   = "$DataDir/pageidx";   # List of all pages
   $VisitorFile = "$DataDir/visitors.log"; # List of recent visitors
   $RssDir      = "$DataDir/rss";    # For rss feed cache
   $ReadMe      = "$DataDir/README"; # file with default content for the HomePage
-  # Config file with Perl code to execute
-  $ConfigFile ||= "$DataDir/config";
-  # For extensions (ending in .pm or .pl)
-  $ModuleDir  ||= "$DataDir/modules";
+  $ConfigFile ||= "$DataDir/config";  # Config file with Perl code to execute
+  $ModuleDir  ||= "$DataDir/modules"; # For extensions (ending in .pm or .pl)
 }
 
 sub InitRequest { # set up $q
@@ -392,7 +390,7 @@ sub InitLinkPatterns {
   my $EndChars = '[-a-zA-Z0-9/@=+$_~*]'; # no punctuation at the end of the url.
   $UrlPattern = "((?:$UrlProtocols):$UrlChars+$EndChars)";
   $FullUrlPattern="((?:$UrlProtocols):$UrlChars+)"; # when used in square brackets
-  $ImageExtensions = '(gif|jpg|png|bmp|jpeg|svg)';
+  $ImageExtensions = '(gif|jpg|jpeg|png|bmp|svg)';
 }
 
 sub Clean {
@@ -410,7 +408,7 @@ sub Dirty { # arg 1 is the raw text; the real output must be printed instead
     push(@Blocks, $Fragment);
     push(@Flags, 0);
   }
-  push(@Blocks, (shift));
+  push(@Blocks, shift);
   push(@Flags, 1);
   $Fragment = '';
 }
@@ -422,12 +420,12 @@ sub ApplyRules {
   $text =~ s/\n+$//g;   # No trailing paragraphs
   return if $text eq '';  # allow the text '0'
   local $Fragment = '';  # the clean HTML fragment not yet on @Blocks
-  local @Blocks=();  # the list of cached HTML blocks
-  local @Flags=();   # a list for each block, 1 = dirty, 0 = clean
+  local @Blocks = ();  # the list of cached HTML blocks
+  local @Flags = ();   # a list for each block, 1 = dirty, 0 = clean
   Clean(join('', map { AddHtmlEnvironment($_) } @tags));
   if ($OpenPageName and $PlainTextPages{$OpenPageName}) { # there should be no $PlainTextPages{''}
     Clean(CloseHtmlEnvironments() . $q->pre($text));
-  } elsif (my ($type) = TextIsFile($text)) {
+  } elsif (my ($type) = TextIsFile($text)) { # TODO? $type defined here??
     Clean(CloseHtmlEnvironments() . $q->p(T('This page contains an uploaded file:'))
 	  . $q->p(GetDownloadLink($OpenPageName, (substr($type, 0, 6) eq 'image/'), $revision)));
   } else {
@@ -481,7 +479,7 @@ sub ApplyRules {
 	Clean(CloseHtmlEnvironments());
 	Dirty($1);
 	my ($oldpos, $old_) = (pos, $_); # remember these because of the call to RSS()
-	print RSS($3 ? $3 : 15, split(/\s+/, UnquoteHtml($4)));
+	print RSS($3 || 15, split(/\s+/, UnquoteHtml($4)));
 	Clean(AddHtmlEnvironment('p')); # if dirty block is looked at later, this will disappear
 	($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
       } elsif (/\G(&lt;search (.*?)&gt;)/cgis) {
@@ -618,8 +616,8 @@ sub LinkRules {
 sub SetHtmlEnvironmentContainer {
   my ($html_tag, $html_tag_attr) = @_;
   $HtmlEnvironmentContainers{$html_tag} = defined $html_tag_attr ? (
-  $HtmlEnvironmentContainers{$html_tag} ? '|'.$HtmlEnvironmentContainers{$html_tag} : '').
-    $html_tag_attr : '';
+    $HtmlEnvironmentContainers{$html_tag} ? '|' . $HtmlEnvironmentContainers{$html_tag} : '')
+      . $html_tag_attr : '';
 }
 
 sub InElement {  # is $html_tag in @HtmlStack?
@@ -634,8 +632,8 @@ sub InElement {  # is $html_tag in @HtmlStack?
 
 sub AddOrCloseHtmlEnvironment {  # add $html_tag, if not already added; close, otherwise
   my ($html_tag, $html_tag_attr) = @_;
-  return InElement        ($html_tag, '^'.$html_tag_attr.'$')
-    ? CloseHtmlEnvironment($html_tag, '^'.$html_tag_attr.'$')
+  return InElement        ($html_tag, '^' . $html_tag_attr . '$')
+    ? CloseHtmlEnvironment($html_tag, '^' . $html_tag_attr . '$')
     : AddHtmlEnvironment  ($html_tag, $html_tag_attr);
 }
 
@@ -646,7 +644,7 @@ sub AddHtmlEnvironment {  # add a new $html_tag
 			 ($html_tag_attr ? $HtmlAttrStack[0] =~ m/$html_tag_attr/ : 1))) {
     unshift(@HtmlStack,     $html_tag);
     unshift(@HtmlAttrStack, $html_tag_attr);
-    return '<'.$html_tag.($html_tag_attr ? ' '.$html_tag_attr : '').'>';
+    return '<' . $html_tag . ($html_tag_attr ? ' ' . $html_tag_attr : '') . '>';
   } return '';  # always return something
 }
 
@@ -666,7 +664,7 @@ sub OpenHtmlEnvironment {  # close the previous $html_tag and open a new one
   $html_tag_attr = qq/class="$html_tag_attr"/ # backwards-compatibility hack: classically, the third argument to this function was a single CSS class, rather than string of HTML tag attributes as in the second argument to the "AddHtmlEnvironment" function. To allow both sorts, we conditionally change this string to 'class="$html_tag_attr"' when this string is a single CSS class.
     if $html_tag_attr and $html_tag_attr !~ m/^\s*[[:alpha:]]@@+\s*=\s*('|").+\1/;
   splice(@HtmlAttrStack, 0, @HtmlAttrStack - @HtmlStack); # truncate to size of @HtmlStack
-  foreach ($found..$depth-1) {
+  foreach ($found .. $depth - 1) {
     unshift(@HtmlStack,     $html_tag);
     unshift(@HtmlAttrStack, $html_tag_attr);
     $html .= $html_tag_attr ? "<$html_tag $html_tag_attr>" : "<$html_tag>";
@@ -682,16 +680,18 @@ sub CloseHtmlEnvironments { # close all -- remember to use AddHtmlEnvironment('p
            ($HtmlEnvironmentContainers{$HtmlStack[0]} ? $HtmlAttrStack[0] =~
           m/$HtmlEnvironmentContainers{$HtmlStack[0]}/ : 1) and return $html;
     shift(@HtmlAttrStack);
-    $html .= '</'.shift(@HtmlStack).'>';
-  } return $html;
+    $html .= '</' . shift(@HtmlStack) . '>';
+  }
+  return $html;
 }
 
 sub CloseHtmlEnvironment {  # close environments up to and including $html_tag
   my $html = CloseHtmlEnvironmentUntil(@_) if @_ and InElement(@_);
   if (@HtmlStack and (not(@_) or defined $html)) {
     shift(@HtmlAttrStack);
-    return $html.'</'.shift(@HtmlStack).'>';
-  } return $html or '';  # always return something
+    return $html . '</' . shift(@HtmlStack) . '>';
+  }
+  return $html || ''; # avoid returning undefined
 }
 
 sub CloseHtmlEnvironmentUntil {  # close environments up to but not including $html_tag
@@ -702,8 +702,9 @@ sub CloseHtmlEnvironmentUntil {  # close environments up to but not including $h
      ($html_tag_attr ? $HtmlAttrStack[0] =~       # its attributes do not match,
     m/$html_tag_attr/ : 1) : ''))) {      # then...
     shift(@HtmlAttrStack);  # shift off the top tag and
-    $html .= '</'.shift(@HtmlStack).'>';  # append it to our HTML string.
-  } return $html;
+    $html .= '</' . shift(@HtmlStack) . '>';  # append it to our HTML string.
+  }
+  return $html;
 }
 
 sub SmileyReplace {
@@ -740,7 +741,7 @@ sub PrintWikiToHTML {
   if ($is_saving_cache and not $revision and $Page{revision} # don't save revision 0 pages
       and $Page{blocks} ne $blocks and $Page{flags} ne $flags) {
     $Page{blocks} = $blocks;
-    $Page{flags} =  $flags;
+    $Page{flags}  = $flags;
     if ($is_locked or RequestLockDir('main')) { # not fatal!
       SavePage();
       ReleaseLock() unless $is_locked;
@@ -755,9 +756,7 @@ sub DoClearCache {
     $q->p(T('Main lock obtained.')), '<p>';
   foreach my $id (AllPagesList()) {
     OpenPage($id);
-    delete $Page{blocks};
-    delete $Page{flags};
-    delete $Page{languages};
+    delete @Page{qw(blocks flags languages)};
     $Page{languages} = GetLanguages($Page{blocks}) unless TextIsFile($Page{blocks});
     SavePage();
     print $q->br(), GetPageLink($id);
@@ -840,16 +839,14 @@ sub PrintJournal {
   $offset ||= 0;
   # FIXME: Should pass filtered list of pages to SearchTitleAndBody to save time?
   my @pages = sort JournalSort (grep(/$regexp/, $search ? SearchTitleAndBody($search) : AllPagesList()));
-  if ($mode eq 'reverse' or $mode eq 'future') {
-    @pages = reverse @pages;
-  }
-  $b = defined($Today) ? $Today : CalcDay($Now);
+  @pages = reverse @pages if $mode eq 'reverse' or $mode eq 'future';
+  $b = $Today // CalcDay($Now);
   if ($mode eq 'future' || $mode eq 'past') {
     my $compare = $mode eq 'future' ? -1 : 1;
     for (my $i = 0; $i < @pages; $i++) {
       $a = $pages[$i];
       if (JournalSort() == $compare) {
-	@pages = @pages[$i..$#pages];
+	@pages = @pages[$i .. $#pages];
 	last;
       }
     }
@@ -905,9 +902,9 @@ sub RSS {
   my $maxitems = shift;
   my @uris = @_;
   my %lines;
-  if (not eval { require XML::RSS;  }) {
+  if (not eval { require XML::RSS; }) {
     my $err = $@;
-    return $q->div({-class=>'rss'}, $q->p({-class=>'error'}, $q->strong(T('XML::RSS is not available on this system.')),  $err));
+    return $q->div({-class=>'rss'}, $q->p({-class=>'error'}, $q->strong(T('XML::RSS is not available on this system.')), $err));
   }
   # All strings that are concatenated with strings returned by the RSS
   # feed must be decoded.  Without this decoding, 'diff' and 'history'
@@ -960,7 +957,7 @@ sub RSS {
 	    $description = '';
 	  }
 	  $title = $i->{link} if not $title and $i->{link}; # if description and title are missing
-	  $line .= ' (' . $q->a({-href=>$i->{$wikins}->{diff}}, $tDiff) . ')' if $i->{$wikins}->{diff};
+	  $line .= ' (' . $q->a({-href=>$i->{$wikins}->{diff}},    $tDiff) . ')'    if $i->{$wikins}->{diff};
 	  $line .= ' (' . $q->a({-href=>$i->{$wikins}->{history}}, $tHistory) . ')' if $i->{$wikins}->{history};
 	  if ($title) {
 	    if ($i->{link}) {
@@ -990,7 +987,7 @@ sub RSS {
     }
   }
   my @lines = sort { $b cmp $a } keys %lines;
-  @lines = @lines[0..$maxitems-1] if $maxitems and $#lines > $maxitems;
+  @lines = @lines[0 .. $maxitems-1] if $maxitems and $#lines > $maxitems;
   my $date = '';
   foreach my $key (@lines) {
     my $line = $lines{$key};
@@ -1090,19 +1087,16 @@ sub GetInterLink {
   $page =~ s/&amp;/&/g;   # Unquote common URL HTML
   my $url = GetInterSiteUrl($site, $page, $quote);
   my $class = 'inter ' . $site;
-  if ($text and $bracket and not $url) {
-    return "[$id $text]";
-  } elsif ($bracket and not $url) {
-    return "[$id]";
-  } elsif (not $url) {
-    return $id;
-  } elsif ($bracket and not $text) {
+  return "[$id $text]" if $text and $bracket and not $url;
+  return "[$id]" if $bracket and not $url;
+  return $id if not $url;
+  if ($bracket and not $text) {
     $text = BracketLink(++$FootnoteNumber);
     $class .= ' number';
   } elsif (not $text) {
     $text = $q->span({-class=>'site'}, $site)
       . $q->span({-class=>'separator'}, ':')
-  . $q->span({-class=>'page'}, $page);
+      . $q->span({-class=>'page'}, $page);
   } elsif ($bracket) {    # and $text is set
     $class .= ' outside';
   }
@@ -1151,7 +1145,7 @@ sub GetPageOrEditLink { # use GetPageLink and GetEditLink if you know the result
     $class .= ' number';
     $title = NormalToFree($id);
   }
-  my $link = $text||NormalToFree($id);
+  my $link = $text || NormalToFree($id);
   if ($resolved) { # anchors don't exist as pages, therefore do not use $exists
     return ScriptLink(UrlEncode($resolved), $link, $class, undef, $title);
   } else {      # reproduce markup if $UseQuestionmark
@@ -1186,10 +1180,8 @@ sub ScriptUrl {
   if ($action =~ /^($UrlProtocols)\%3a/ or $action =~ /^\%2f/) { # nearlinks and other URLs
     $action =~ s/%([0-9a-f][0-9a-f])/chr(hex($1))/ge; # undo urlencode
     # do nothing
-  } elsif ($UsePathInfo and index($action, '=') == -1) {
-    $action = $ScriptName . '/' . $action;
   } else {
-    $action = $ScriptName . '?' . $action;
+    $action = $ScriptName . (($UsePathInfo and index($action, '=') == -1) ? '/' : '?') . $action;
   }
   return $action unless wantarray;
   return ($action, index($action, '=') != -1);
@@ -1225,11 +1217,7 @@ sub GetDownloadLink {
     $action = "action=download;id=" . UrlEncode($id);
   }
   if ($image) {
-    if ($UsePathInfo and not $revision) {
-      $action = $ScriptName . '/' . $action;
-    } else {
-      $action = $ScriptName . '?' . $action;
-    }
+    $action = $ScriptName . (($UsePathInfo and not $revision) ? '/' : '?') . $action;
     return $action if $image == 2;
     my $result = $q->img({-src=>$action, -alt=>UnquoteHtml($alt), -class=>'upload'});
     $result = ScriptLink(UrlEncode($id), $result, 'image') unless $id eq $OpenPageName;
@@ -1289,8 +1277,7 @@ sub PageHtml {
 
 sub T {
   my $text = shift;
-  return $Translate{$text} if $Translate{$text};
-  return $text;
+  return $Translate{$text} || $text;
 }
 
 sub Ts {
@@ -1412,9 +1399,7 @@ sub BrowsePage {
   # shortcut if we only need the raw text: no caching, no diffs, no html.
   if ($raw) {
     print GetHttpHeader('text/plain', $Page{ts}, $IndexHash{$id} ? undef : '404 NOT FOUND');
-    if ($raw == 2) {
-      print $Page{ts} . " # Do not delete this line when editing!\n";
-    }
+    print $Page{ts} . " # Do not delete this line when editing!\n" if $raw == 2;
     print $text;
     return;
   }
@@ -1451,11 +1436,7 @@ sub GetRedirectPage {
     $html .= Ts('Please go on to %s.', $action); # no redirect
     return $html;
   }
-  if ($UsePathInfo and $action !~ /=/) {
-    $url = $ScriptName . '/' . $action;
-  } else {
-    $url = $ScriptName . '?' . $action;
-  }
+  $url = $ScriptName . (($UsePathInfo and $action !~ /=/) ? '/' : '?') . $action;
   my $nameLink = $q->a({-href=>$url}, $name);
   my %headers = (-uri=>$url);
   my $cookie = Cookie();
@@ -1545,10 +1526,7 @@ sub StripRollbacks {
     my (%rollback);
     for (my $i = $#result; $i >= 0; $i--) {
       # some fields have a different meaning if looking at rollbacks
-      my $ts = $result[$i][0];
-      my $id = $result[$i][1];
-      my $target_ts = $result[$i][2];
-      my $target_id = $result[$i][3];
+      my ($ts, $id, $target_ts, $target_id) = @{$result[$i]};
       if ($id eq '[[rollback]]') {
 	if ($target_id) {
 	  $rollback{$target_id} = $target_ts; # single page rollback
@@ -1643,18 +1621,18 @@ sub ProcessRcLines {
 
 sub RcHeader {
   my ($from, $upto, $html) = (GetParam('from', 0), GetParam('upto', 0), '');
+  my $days = GetParam('days', $RcDefault);
+  my $all = GetParam('all', 0);
+  my $edits = GetParam('showedit', 0);
+  my $rollback = GetParam('rollback', 0);
   if ($from) {
     $html .= $q->h2(Ts('Updates since %s', TimeToText(GetParam('from', 0))) . ' '
 		    . ($upto ? Ts('up to %s', TimeToText($upto)) : ''));
   } else {
     $html .= $q->h2((GetParam('days', $RcDefault) != 1)
-		    ? Ts('Updates in the last %s days', GetParam('days', $RcDefault))
-		    : Ts('Updates in the last %s day', GetParam('days', $RcDefault)));
+		    ? Ts('Updates in the last %s days', $days)
+		    : Ts('Updates in the las %s day',  $days));
   }
-  my $days = GetParam('days', $RcDefault);
-  my $all = GetParam('all', 0);
-  my $edits = GetParam('showedit', 0);
-  my $rollback = GetParam('rollback', 0);
   my $action = '';
   my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly,
       $match, $lang, $followup) =
@@ -1732,7 +1710,6 @@ sub GetFilterForm {
     $table .= $q->Tr($q->td($q->label({-for=>$h->[0]}, $h->[1])),
 		     $q->td($q->textfield(-name=>$h->[0], -id=>$h->[0], -size=>20)));
   }
-
   if (%Languages) {
     $table .= $q->Tr($q->td($q->label({-for=>'rclang'}, T('Language:')))
 		     . $q->td($q->textfield(-name=>'lang', -id=>'rclang', -size=>10,
@@ -2018,7 +1995,7 @@ sub GetHistoryLine {
   my $revision = $data{revision};
   return $q->p(T('No other revisions available')) unless $revision;
   my $html = CalcTime($data{ts});
-  if (0 == $row) {    # current revision
+  if ($row == 0) {    # current revision
     $html .= ' (' . T('current') . ')' if $rollback;
     $html .= ' ' . GetPageLink($id, Ts('Revision %s', $revision));
   } else {
@@ -2033,11 +2010,10 @@ sub GetHistoryLine {
   $html .= ' ' . $q->em({class=>'type'}, T('(minor)')) . ' ' if $data{minor};
   if ($UseDiff) {
     my %attr1 = (-type=>'radio', -name=>'diffrevision', -value=>$revision);
-    $attr1{-checked} = 'checked' if 1==$row;
+    $attr1{-checked} = 'checked' if $row == 1;
     my %attr2 = (-type=>'radio', -name=>'revision', -value=> $row ? $revision : '');
-    $attr2{-checked} = 'checked' if 0==$row; # first row is special
-    $html = $q->Tr($q->td($q->input(\%attr1)), $q->td($q->input(\%attr2)),
-       $q->td($html));
+    $attr2{-checked} = 'checked' if $row == 0; # first row is special
+    $html = $q->Tr($q->td($q->input(\%attr1)), $q->td($q->input(\%attr2)), $q->td($html));
     $html = $q->Tr($q->td({-colspan=>3}, $q->strong($date))) . $html if $newday;
   } else {
     $html .= $q->br();
@@ -2131,7 +2107,7 @@ sub DoAdminPage {
 			       Ts('Unlock %s', $title), 'pagelock 0'));
       } else {
 	push(@menu, ScriptLink('action=pagelock;set=1;id=' . UrlEncode($id),
-			       Ts('Lock %s', $title), 'pagelock 1'));
+			       Ts('Lock %s',   $title), 'pagelock 1'));
       }
     }
   }
@@ -2528,7 +2504,7 @@ sub PrintHtmlDiff {
 		 $new ? Ts('revision %s', $new) : T('current revision'));
   } elsif ($type == 1 and $Page{lastmajor} != $Page{revision}) {
     $intro = Ts('Last major edit (%s)', ScriptLinkDiff(1, $OpenPageName, T('later minor edits'),
-						       undef, $Page{lastmajor}||1));
+						       undef, $Page{lastmajor} || 1));
   }
   $diff =~ s!<p><strong>(.*?)</strong></p>!'<p><strong>' . T($1) . '</strong></p>'!ge;
   $diff ||= T('No diff available.');
@@ -2538,7 +2514,7 @@ sub PrintHtmlDiff {
 sub GetCacheDiff {
   my $type = shift;
   my $diff = $Page{"diff-$type"};
-  $diff = $Page{"diff-minor"} if ($diff eq '1'); # if major eq minor diff
+  $diff = $Page{"diff-minor"} if $diff eq '1'; # if major eq minor diff
   return $diff;
 }
 
@@ -2558,7 +2534,7 @@ sub DoDiff {      # Actualy call the diff program
   RequestLockDir('diff') or return '';
   WriteStringToFile($oldName, $_[0]);
   WriteStringToFile($newName, $_[1]);
-  my $diff_out = `diff $oldName $newName`;
+  my $diff_out = `diff \Q$oldName\E \Q$newName\E`;
   utf8::decode($diff_out); # needs decoding
   $diff_out =~ s/\\ No newline.*\n//g; # Get rid of common complaint.
   ReleaseLockDir('diff');
@@ -2668,9 +2644,7 @@ sub ParseData {      # called a lot during search, so it was optimized
     $end = $start += 2;   # skip ': '
   }
   $result{$key} .= substr($data, $end, -1); # strip last \n
-  foreach (keys %result) {
-    $result{$_} =~ s/\n\t/\n/g;
-  }
+  $result{$_} =~ s/\n\t/\n/g foreach (keys %result);
   return %result;
 }
 
@@ -2867,8 +2841,7 @@ sub RequestLockDir {
   while (mkdir($lock, 0555) == 0) {
     if ($n++ >= $tries) {
       my $ts = (stat($lock))[9];
-      if ($Now - $ts > $LockExpiration and $LockExpires{$name}
-	  and not $retried) {
+      if ($Now - $ts > $LockExpiration and $LockExpires{$name} and not $retried) {
 	ReleaseLockDir($name); # try to expire lock (no checking)
 	return 1 if RequestLockDir($name, undef, undef, undef, 1);
       }
@@ -2891,8 +2864,7 @@ sub ReleaseLockDir {
 }
 
 sub RequestLockOrError {
-  # 10 tries, 3 second wait, die on error
-  return RequestLockDir('main', 10, 3, 1);
+  return RequestLockDir('main', 10, 3, 1); # 10 tries, 3 second wait, die on error
 }
 
 sub ReleaseLock {
@@ -3028,7 +3000,7 @@ sub DoEdit {
   if ($upload) {    # shortcut lots of code
     $revision = '';
     $preview = 0;
-  } elsif ($isFile and not $upload) {
+  } elsif ($isFile) {
     $oldText = '';
   }
   my $header;
@@ -3071,10 +3043,9 @@ sub GetEditForm {
            ($upload ? '' : ' ' . $q->submit(-name=>'Preview', -accesskey=>T('p'), -value=>T('Preview'))).
            ' '.$q->submit(-name=>'Cancel', -value=>T('Cancel')));
   if ($upload) {
-    $html .= $q->p(ScriptLink('action=edit;upload=0;id='.UrlEncode($page_name), T('Replace this file with text'),   'upload'));
-  }
-  elsif ($UploadAllowed or UserIsAdmin()) {
-    $html .= $q->p(ScriptLink('action=edit;upload=1;id='.UrlEncode($page_name), T('Replace this text with a file'), 'upload'));
+    $html .= $q->p(ScriptLink('action=edit;upload=0;id=' . UrlEncode($page_name), T('Replace this file with text'),   'upload'));
+  } elsif ($UploadAllowed or UserIsAdmin()) {
+    $html .= $q->p(ScriptLink('action=edit;upload=1;id=' . UrlEncode($page_name), T('Replace this text with a file'), 'upload'));
   }
   $html .= $q->endform();
   return $html;
@@ -3082,7 +3053,7 @@ sub GetEditForm {
 
 sub GetTextArea {
   my ($name, $text, $rows) = @_;
-  return $q->textarea(-id=>$name, -name=>$name, -default=>$text, -rows=>$rows||25, -columns=>78, -override=>1);
+  return $q->textarea(-id=>$name, -name=>$name, -default=>$text, -rows=>$rows || 25, -columns=>78, -override=>1);
 }
 
 sub GetUpload {
@@ -3170,7 +3141,7 @@ sub UserIsBanned {
   foreach (split(/\n/, GetPageContent($BannedHosts))) {
     if (/^\s*([^#]\S+)/) { # all lines except empty lines and comments, trim whitespace
       my $regexp = $1;
-      return $regexp  if ($host =~ /$regexp/i);
+      return $regexp if ($host =~ /$regexp/i);
     }
   }
   return 0;
@@ -3242,9 +3213,7 @@ sub DoIndex {
       $q->p(join($q->br(), @menu)), $q->end_form(),
       $q->h2(Ts('%s pages found.', ($#pages + 1))), $q->start_p();
   }
-  foreach (@pages) {
-    PrintPage($_);
-  }
+  PrintPage($_) foreach (@pages);
   print $q->end_p(), $q->end_div() unless $raw;
   PrintFooter() unless $raw;
 }
@@ -3303,7 +3272,7 @@ sub DoSearch {
   eval { qr/$string/ }
     or $@ and ReportError(Ts('Malformed regular expression in %s', $string),
 			  '400 BAD REQUEST');
-  my $replacement = GetParam('replace',undef);
+  my $replacement = GetParam('replace', undef);
   my $raw = GetParam('raw', '');
   my @results;
   if ($replacement or GetParam('delete', 0)) {
@@ -3312,7 +3281,7 @@ sub DoSearch {
       $q->start_div({-class=>'content replacement'});
     @results = Replace($string, $replacement);
     foreach (@results) {
-      PrintSearchResult($_, SearchRegexp($replacement||$string));
+      PrintSearchResult($_, SearchRegexp($replacement || $string));
     }
   } else {
     if ($raw) {
@@ -3426,7 +3395,7 @@ sub PrintSearchResult {
   $text =~ s/([-_=\\*\\.]){10,}/$1$1$1$1$1/g ; # e.g. shrink "----------"
   $entry{title} = $name;
   $entry{description} =  $type || SearchExtract(QuoteHtml($text), $regex);
-  $entry{size} = int((length($text)/1024)+1) . 'K';
+  $entry{size} = int((length($text) / 1024) + 1) . 'K';
   $entry{'last-modified'} = TimeToText($Page{ts});
   $entry{username} = $Page{username};
   $entry{host} = $Page{host};
@@ -3468,7 +3437,7 @@ sub SearchHighlight {
 
 sub SearchExtract {
   my ($data, $string) = @_;
-  my ($snippetlen, $maxsnippets) = (100, 4) ; #  these seem nice.
+  my ($snippetlen, $maxsnippets) = (100, 4); #  these seem nice.
   # show a snippet from the beginning of the document
   my $j = index($data, ' ', $snippetlen); # end on word boundary
   my $t = substr($data, 0, $j);
@@ -3480,9 +3449,9 @@ sub SearchExtract {
     if (($j = index($data, $1)) > -1 ) {
       # get substr containing (start of) match, ending on word boundaries
       my $start = index($data, ' ', $j - $snippetlen / 2);
-      $start = 0 if ($start == -1);
+      $start = 0 if $start == -1;
       my $end = index($data, ' ', $j + $snippetlen / 2);
-      $end = length($data ) if ($end == -1);
+      $end = length($data) if $end == -1;
       $t = substr($data, $start, $end - $start);
       $result .= $t . ' . . .';
       # truncate text to avoid rematching the same string.
@@ -3556,8 +3525,9 @@ sub DoPost {
     $string = RunMyMacros($string); # run macros on text pages only
   }
   my %allowed = map {$_ => 1} @UploadTypes;
-  ReportError(Ts('Files of type %s are not allowed.', $type), '415 UNSUPPORTED MEDIA TYPE')
-    if @UploadTypes and $type and not $allowed{$type};
+  if (@UploadTypes and $type and not $allowed{$type}) {
+    ReportError(Ts('Files of type %s are not allowed.', $type), '415 UNSUPPORTED MEDIA TYPE');
+  }
   # Banned Content
   my $summary = GetSummary();
   if (not UserIsEditor()) {
@@ -3672,14 +3642,9 @@ sub Save {      # call within lock, with opened page
   TouchIndexFile();
   SaveKeepFile(); # deletes blocks, flags, diff-major, and diff-minor, and sets keep-ts
   ExpireKeepFiles();
-  $Page{ts} = $Now;
   $Page{lastmajor} = $revision unless $minor;
-  $Page{revision} = $revision;
-  $Page{summary} = $summary;
-  $Page{username} = $user;
-  $Page{host} = $host;
-  $Page{minor} = $minor;
-  $Page{text} = $new;
+  @Page{qw(ts revision summary username host minor text)} =
+      ($Now, $revision, $summary, $user, $host, $minor, $new);
   if ($UseDiff and $UseCache > 1 and $revision > 1 and not $upload and not TextIsFile($old)) {
     UpdateDiffs($old, $new, $olddiff); # sets diff-major and diff-minor
   }
@@ -3730,7 +3695,7 @@ sub MergeRevisions {   # merge change from file2 to file3 into file1
   WriteStringToFile($name2, $file2);
   WriteStringToFile($name3, $file3);
   my ($you, $ancestor, $other) = (T('you'), T('ancestor'), T('other'));
-  my $output = `diff3 -m -L "$you" -L "$ancestor" -L "$other" $name1 $name2 $name3`;
+  my $output = `diff3 -m -L \Q$you\E -L \Q$ancestor\E -L \Q$other\E \Q$name1\E \Q$name2\E \Q$name3\E`;
   ReleaseLockDir('merge'); # don't unlink temp files--next merge will just overwrite.
   return $output;
 }
@@ -3787,7 +3752,7 @@ sub DoMaintain {
   # Read the current file
   my ($status, $data) = ReadFile($RcFile);
   if (not $status) {
-    print $q->p($q->strong(Ts('Could not open %s log file', $RCName) . ':') . ' '. $RcFile),
+    print $q->p($q->strong(Ts('Could not open %s log file', $RCName) . ':') . ' ' . $RcFile),
       $q->p(T('Error was') . ':'), $q->pre($!), $q->p(T('Note: This error is normal if no changes have been made.'));
   }
   # Move the old stuff from rc to temp
@@ -3795,7 +3760,7 @@ sub DoMaintain {
   my @tmp = ();
   for my $line (@rc) {
     my ($ts, $id, $minor, $summary, $host, @rest) = split(/$FS/o, $line);
-    last if ($ts >= $starttime);
+    last if $ts >= $starttime;
     push(@tmp, join($FS, $ts, $id, $minor, $summary, 'Anonymous', @rest));
   }
   print $q->p(Ts('Moving %s log entries.', scalar(@tmp)));
