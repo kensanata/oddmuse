@@ -455,19 +455,19 @@ both the character before and after point have it, don't break."
 
 (autoload 'sgml-tag "sgml-mode" t)
 
-(define-key oddmuse-mode-map (kbd "C-c C-t") 'sgml-tag)
-(define-key oddmuse-mode-map (kbd "C-c C-o") 'oddmuse-follow)
-(define-key oddmuse-mode-map (kbd "C-c C-n") 'oddmuse-new)
-(define-key oddmuse-mode-map (kbd "C-c C-m") 'oddmuse-toggle-minor)
-(define-key oddmuse-mode-map (kbd "C-c C-c") 'oddmuse-post)
-(define-key oddmuse-mode-map (kbd "C-c C-p") 'oddmuse-preview)
 (define-key oddmuse-mode-map (kbd "C-c C-b") 'oddmuse-browse-this-page)
-(define-key oddmuse-mode-map (kbd "C-x C-v") 'oddmuse-revert)
-(define-key oddmuse-mode-map (kbd "C-c C-f") 'oddmuse-edit)
-(define-key oddmuse-mode-map (kbd "C-c C-i") 'oddmuse-insert-pagename)
+(define-key oddmuse-mode-map (kbd "C-c C-c") 'oddmuse-post)
+(define-key oddmuse-mode-map (kbd "C-c C-e") 'oddmuse-edit)
+(define-key oddmuse-mode-map (kbd "C-c C-f") 'oddmuse-follow)
 (define-key oddmuse-mode-map (kbd "C-c C-h") 'oddmuse-history)
+(define-key oddmuse-mode-map (kbd "C-c C-i") 'oddmuse-insert-pagename)
+(define-key oddmuse-mode-map (kbd "C-c C-m") 'oddmuse-toggle-minor)
+(define-key oddmuse-mode-map (kbd "C-c C-n") 'oddmuse-new)
+(define-key oddmuse-mode-map (kbd "C-c C-p") 'oddmuse-preview)
 (define-key oddmuse-mode-map (kbd "C-c C-r") 'oddmuse-rc)
 (define-key oddmuse-mode-map (kbd "C-c C-s") 'oddmuse-search)
+(define-key oddmuse-mode-map (kbd "C-c C-t") 'sgml-tag)
+(define-key oddmuse-mode-map (kbd "C-x C-v") 'oddmuse-revert)
 
 ;; This has been stolen from simple-wiki-edit
 ;;;###autoload
