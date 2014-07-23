@@ -789,6 +789,8 @@ If available, return precomputed one."
   (or (gethash wiki oddmuse-pages-hash)
       (oddmuse-compute-pagename-completion-table wiki)))
 
+(defalias 'oddmuse-reload 'oddmuse-compute-pagename-completion-table)
+
 (defun oddmuse-compute-pagename-completion-table (&optional wiki-arg)
   "Really fetch the list of pagenames from WIKI.
 This command is used to reflect new pages to `oddmuse-pages-hash'."
