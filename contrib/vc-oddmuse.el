@@ -39,11 +39,15 @@
 		(file-name-directory file)))
 
 (defun vc-oddmuse-state (file)
-  "No idea."
-  'up-to-date)
+  "Return the current version control state of FILE.
+For a list of possible values, see `vc-state'."
+  ;; Avoid downloading the current version from the wiki and comparing
+  ;; the text: Too much traffic!
+  'edited)
 
 (defun vc-oddmuse-working-revision (file)
-  "No idea")
+  "The current revision based on `oddmuse-revisions'."
+  (oddmuse-revision-get oddmuse-wiki oddmuse-page-name))
 
 (defun vc-oddmuse-checkout-model (files)
   "No locking."
@@ -83,8 +87,7 @@ It must print the page to stdout.
 	 (command (oddmuse-format-command vc-oddmuse-log-command))
 	 (coding (nth 2 wiki-data))
 	 (coding-system-for-read coding)
-	 (coding-system-for-write coding)
-	 (max-mini-window-height 1))
+	 (coding-system-for-write coding))
     (oddmuse-run "Getting recent changes" command buffer nil))
   ;; Parse current buffer as RSS 3.0 and display it correctly.
   (save-excursion
@@ -123,65 +126,59 @@ It must print the page to stdout.
 %t  Page title as provided by `oddmuse-page-name'
 %o  Revision to retrieve as provided by `oddmuse-revision'")
 
-(defvar vc-oddmuse-get-history-command
-  "curl --silent %w\"?action=history;id=%t;raw=1\""
-  "Command to use to get the history of a page.
-It must print the page to stdout.
-
-%?  '?' character
-%w  URL of the wiki as provided by `oddmuse-wikis'
-%t  Page title as provided by `oddmuse-page-name'")
+(defun oddmuse-revision-filename (rev)
+  "Return filename for revision REV.
+This uses `oddmuse-directory', `oddmuse-wiki' and
+`oddmuse-page-name'."
+  (concat oddmuse-directory
+	  "/" oddmuse-wiki
+	  "/" oddmuse-page-name
+	  ".~" rev "~"))
 
 (defun vc-oddmuse-diff (files &optional rev1 rev2 buffer)
   "Report the differences for FILES."
   (setq buffer (or buffer (get-buffer-create "*vc-diff*")))
   (dolist (file files)
-    (setq oddmuse-page-name (file-name-nondirectory file)
-	  oddmuse-wiki (or oddmuse-wiki
-			   (file-name-nondirectory
-			    (directory-file-name
-			     (file-name-directory file)))))
-    (let* ((wiki-data (or (assoc oddmuse-wiki oddmuse-wikis)
-			  (error "Cannot find data for wiki %s" oddmuse-wiki)))
-	   (url (nth 1 wiki-data)))
-      (unless rev1
-	;; Since we don't know the most recent revision we have to fetch
-	;; it from the server every time.
-	(with-temp-buffer
-	  (let ((max-mini-window-height 1))
-	    (oddmuse-run "Determining latest revision"
-			 (oddmuse-format-command vc-oddmuse-get-history-command)
-			 (current-buffer) nil))
-	  (if (re-search-forward "^revision: \\([0-9]+\\)$" nil t)
-	      (setq rev1 (match-string 1))
-	    (error "Cannot determine the latest revision from the page history"))))
+    (with-oddmuse-file file
+      (setq rev1 (or rev1 (oddmuse-get-latest-revision)))
       (dolist (rev (list rev1 rev2))
-	(when (and rev
-		   (not (file-readable-p (concat oddmuse-directory
-						 "/" oddmuse-wiki "/"
-						 oddmuse-page-name
-						 ".~" rev "~"))))
+	(when (and rev (not (file-readable-p (oddmuse-revision-filename rev))))
 	  (let* ((oddmuse-revision rev)
 		 (command (oddmuse-format-command vc-oddmuse-get-revision-command))
-		 (coding (nth 2 wiki-data))
-		 (filename (concat oddmuse-directory "/" oddmuse-wiki "/"
-				   oddmuse-page-name ".~" rev "~"))
-		 (coding-system-for-read coding)
-		 (coding-system-for-write coding))
+		 (filename (oddmuse-revision-filename rev)))
 	    (with-temp-buffer
-	      (let ((max-mini-window-height 1))
-		(oddmuse-run (concat "Downloading revision " rev)
-			     command (current-buffer) nil))
+	      (oddmuse-run (concat "Downloading revision " rev) command)
 	      (write-file filename)))))
       (diff-no-select
-       (if rev1
-	   (concat oddmuse-directory "/" oddmuse-wiki "/" oddmuse-page-name ".~" rev1 "~")
-	 file)
-       (if rev2
-	   (concat oddmuse-directory "/" oddmuse-wiki "/" oddmuse-page-name ".~" rev2 "~")
-	 file)
+       (if rev1 (oddmuse-revision-filename rev1) file)
+       (if rev2 (oddmuse-revision-filename rev2) file)
        nil
        (vc-switches 'oddmuse 'diff)
        buffer))))
+
+(defun vc-oddmuse-revert (file &optional contents-done)
+  "Revert FILE back to the wiki revision.
+If optional arg CONTENTS-DONE is non-nil, then nothing needs to
+be done, as the contents of FILE have already been reverted from
+a version backup."
+  (unless contents-done
+    (with-oddmuse-file file
+      (let ((command (oddmuse-format-command vc-oddmuse-get-revision-command)))
+	(with-temp-buffer
+	  (oddmuse-run "Loading" command)
+	  (write-file file))))))
+
+(defun vc-oddmuse-checkin (files rev comment)
+  "Commit changes in FILES to this backend.
+REV is a historical artifact and should be ignored.  COMMENT is
+used as a check-in comment."
+  (dolist (file files)
+    (with-oddmuse-file file
+      (let* ((summary comment)
+	     (command (oddmuse-format-command oddmuse-post-command))
+	     (buf (get-buffer-create " *oddmuse-response*")))
+	(with-temp-buffer
+	  (insert-file-contents file)
+	  (oddmuse-run "Posting" command buf t 302))))))
 
 (provide 'vc-oddmuse)
