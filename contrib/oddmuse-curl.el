@@ -156,7 +156,7 @@ It must print the RSS 3.0 text format to stdout.
 See `oddmuse-format-command' for other options.")
 
 (defvar oddmuse-search-command
-  "curl --silent %w --form search=%r --form raw=1"
+  "curl --silent %w --form search='%r' --form raw=1"
   "Command to use for Recent Changes.
 It must print the RSS 3.0 text format to stdout.
 
@@ -473,7 +473,6 @@ both the character before and after point have it, don't break."
 (define-key oddmuse-mode-map (kbd "C-c C-r") 'oddmuse-rc)
 (define-key oddmuse-mode-map (kbd "C-c C-s") 'oddmuse-search)
 (define-key oddmuse-mode-map (kbd "C-c C-t") 'sgml-tag)
-(define-key oddmuse-mode-map (kbd "C-x C-v") 'oddmuse-revert)
 
 ;; This has been stolen from simple-wiki-edit
 ;;;###autoload
@@ -524,11 +523,7 @@ macros.
 	  (when (and (eq sym 'summary)
 		     (string-match "'" value))
 	    ;; form summary='A quote is '"'"' this!'
-	    (setq value (replace-regexp-in-string "'" "'\"'\"'" value t t)))
-	  (when (and (eq sym 'regexp)
-		     (string-match " " value))
-	    (setq value (replace-regexp-in-string " " "+" value t t)))
-	  (setq command (replace-regexp-in-string key value command t t))))))
+	    (setq value (replace-regexp-in-string "'" "'\"'\"'" value t t))))))
   (replace-regexp-in-string "&" "%26" command t t))
 
 (defmacro with-oddmuse-file (file &rest body)
@@ -838,41 +833,33 @@ browser."
   (when (not oddmuse-page-name)
     (set (make-local-variable 'oddmuse-page-name)
          (read-from-minibuffer "Pagename: " (buffer-name))))
-  (let* ((list (assoc oddmuse-wiki oddmuse-wikis))
-         (url (nth 1 list))
-         (oddmuse-minor (if oddmuse-minor "on" "off"))
-         (coding (nth 2 list))
-         (coding-system-for-read coding)
-         (coding-system-for-write coding)
-	 (question (nth 3 list))
-	 (oddmuse-username (or (nth 4 list)
-			       oddmuse-username))
-         (command (oddmuse-format-command oddmuse-preview-command))
-	 (buf (get-buffer-create " *oddmuse-response*"))
-	 (text (buffer-string)))
-    (and buffer-file-name (basic-save-buffer))
-    (oddmuse-run "Previewing" command buf t); no status code on stdout
-    (if arg
-	(with-current-buffer buf
-	  (let ((file (make-temp-file "oddmuse-preview-" nil ".html")))
-	    (write-region (point-min) (point-max) file)
-	    (browse-url (browse-url-file-url file))))
-      (message "Rendering...")
-      (pop-to-buffer "*Preview*")
-      (fundamental-mode)
-      (erase-buffer)
-      (shr-insert-document
-       (with-current-buffer buf
-	 (let ((html (libxml-parse-html-region (point-min) (point-max))))
-	   (oddmuse-find-node
-	    (lambda (node)
-	      (and (eq (xml-node-name node) 'div)
-		   (string= (xml-get-attribute node 'class) "preview")))
-	    html))))
-      (goto-char (point-min))
-      (kill-buffer buf);; prevent it from showing up after q
-      (view-mode)
-      (message "Rendering...done"))))
+  (with-oddmuse-wiki-and-pagename oddmuse-wiki oddmuse-page-name
+    (let ((oddmuse-minor (if oddmuse-minor "on" "off"))
+	  (buf (get-buffer-create " *oddmuse-response*"))
+	  (command (oddmuse-format-command oddmuse-preview-command)))
+      (and buffer-file-name (basic-save-buffer))
+      (oddmuse-run "Previewing" command buf t); no status code on stdout
+      (if arg
+	  (with-current-buffer buf
+	    (let ((file (make-temp-file "oddmuse-preview-" nil ".html")))
+	      (write-region (point-min) (point-max) file)
+	      (browse-url (browse-url-file-url file))))
+	(message "Rendering...")
+	(pop-to-buffer "*Preview*")
+	(fundamental-mode)
+	(erase-buffer)
+	(shr-insert-document
+	 (with-current-buffer buf
+	   (let ((html (libxml-parse-html-region (point-min) (point-max))))
+	     (oddmuse-find-node
+	      (lambda (node)
+		(and (eq (xml-node-name node) 'div)
+		     (string= (xml-get-attribute node 'class) "preview")))
+	      html))))
+	(goto-char (point-min))
+	(kill-buffer buf);; prevent it from showing up after q
+	(view-mode)
+	(message "Rendering...done")))))
 
 (defun oddmuse-find-node (test node)
   "Return the child of NODE that satisfies TEST.
@@ -931,20 +918,17 @@ Typically you would use t and a `oddmuse-page-name', if that makes sense."
     (if (and (get-buffer name)
              (not current-prefix-arg))
         (pop-to-buffer (get-buffer name))
-      (let* ((wiki-data (assoc wiki oddmuse-wikis))
-             (url (nth 1 wiki-data))
-             (command (oddmuse-format-command oddmuse-search-command))
-             (coding (nth 2 wiki-data))
-             (buf (get-buffer-create name))
-             (coding-system-for-read coding)
-             (coding-system-for-write coding))
-	(set-buffer buf)
-        (unless (equal name (buffer-name)) (rename-buffer name))
-        (erase-buffer)
-	(oddmuse-run "Searching" command buf)
-	(oddmuse-rc-buffer)
-	(highlight-regexp (hi-lock-process-phrase regexp))
-	(set (make-local-variable 'oddmuse-wiki) wiki)))))
+      (with-oddmuse-wiki-and-pagename wiki nil
+	(let ((buf (get-buffer-create name))
+	      (command (oddmuse-format-command oddmuse-search-command)))
+	  (set-buffer buf)
+	  (unless (equal name (buffer-name)) (rename-buffer name))
+	  (erase-buffer)
+	  (oddmuse-run "Searching" command buf)
+	  (oddmuse-rc-buffer)
+	  (dolist (re (split-string regexp))
+	    (highlight-regexp (hi-lock-process-phrase re)))
+	  (set (make-local-variable 'oddmuse-wiki) wiki))))))
 
 ;;;###autoload
 (defun oddmuse-rc (&optional include-minor-edits)
@@ -957,19 +941,15 @@ With universal argument, reload."
     (if (and (get-buffer name)
              (not current-prefix-arg))
         (pop-to-buffer (get-buffer name))
-      (let* ((wiki-data (assoc wiki oddmuse-wikis))
-             (url (nth 1 wiki-data))
-             (command (oddmuse-format-command oddmuse-rc-command))
-             (coding (nth 2 wiki-data))
-             (buf (get-buffer-create name))
-             (coding-system-for-read coding)
-             (coding-system-for-write coding))
-	(set-buffer buf)
-        (unless (equal name (buffer-name)) (rename-buffer name))
-        (erase-buffer)
-	(oddmuse-run "Load recent changes" command buf)
-	(oddmuse-rc-buffer)
-	(set (make-local-variable 'oddmuse-wiki) wiki)))))
+      (with-oddmuse-wiki-and-pagename wiki nil
+	(let ((buf (get-buffer-create name))
+	       (command (oddmuse-format-command oddmuse-rc-command)))
+	  (set-buffer buf)
+	  (unless (equal name (buffer-name)) (rename-buffer name))
+	  (erase-buffer)
+	  (oddmuse-run "Load recent changes" command buf)
+	  (oddmuse-rc-buffer)
+	  (set (make-local-variable 'oddmuse-wiki) wiki))))))
 
 (defun oddmuse-rc-buffer ()
   "Parse current buffer as RSS 3.0 and display it correctly."
@@ -1002,7 +982,7 @@ With universal argument, reload."
     (goto-char (point-min))
     (oddmuse-mode)))
 
-;;;###autoload
+;; you probably want vc-revert
 (defun oddmuse-revert ()
   "Revert this oddmuse page."
   (interactive)
