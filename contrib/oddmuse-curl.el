@@ -127,11 +127,18 @@ See `oddmuse-format-command' for the formatting options.")
 
 (defvar oddmuse-search-command
   "curl --silent %w --form search='%r' --form raw=1"
-  "Command to use for Recent Changes.
+  "Command to use for searching regular expression.
 It must print the RSS 3.0 text format to stdout.
 
 See `oddmuse-format-command' for the formatting options.")
 
+(defvar oddmuse-match-command
+  "curl --silent %w --form action=index --form match='%r' --form raw=1"
+  "Command to look for matching pages.
+It must print the page names to stdout.
+
+See `oddmuse-format-command' for the formatting options.")
+  
 (defvar oddmuse-post-command
   (concat "curl --silent --write-out '%{http_code}'"
           " --form title='%t'"
@@ -872,11 +879,13 @@ node as returned by `libxml-parse-html-region' or
 
 ;;;###autoload
 (defun oddmuse-search (regexp)
-  "Search the wiki."
-  (interactive "sSearch Wiki: ")
+  "Search the wiki for REGEXP.
+REGEXP must be a regular expression understood by the
+wiki (ie. it must use Perl syntax)."
+  (interactive "sSearch term: ")
   (let* ((wiki (or oddmuse-wiki
 		   (completing-read "Wiki: " oddmuse-wikis nil t)))
-	 (name (concat "*" wiki " Search for '" regexp "'*")))
+	 (name (concat "*" wiki ": search for '" regexp "'*")))
     (if (and (get-buffer name)
              (not current-prefix-arg))
         (pop-to-buffer (get-buffer name))
@@ -889,13 +898,35 @@ node as returned by `libxml-parse-html-region' or
       (set (make-local-variable 'oddmuse-wiki) wiki))))
 
 ;;;###autoload
+(defun oddmuse-match (regexp)
+  "Search the wiki for page names matching REGEXP.
+REGEXP must be a regular expression understood by the
+wiki (ie. it must use Perl syntax)."
+  (interactive "sPages matching: ")
+  (let* ((wiki (or oddmuse-wiki
+		   (completing-read "Wiki: " oddmuse-wikis nil t)))
+	 (name (concat "*" wiki ": matches for '" regexp "'*")))
+    (if (and (get-buffer name)
+             (not current-prefix-arg))
+        (pop-to-buffer (get-buffer name))
+      (set-buffer (get-buffer-create name))
+      (erase-buffer)
+      (oddmuse-run "Searching" oddmuse-match-command wiki)
+      (let ((lines (split-string (buffer-string) "\n" t)))
+	(erase-buffer)
+	(dolist (line lines)
+	  (insert "[[" (replace-regexp-in-string "_" " " line) "]]\n")))
+      (oddmuse-mode)
+      (set (make-local-variable 'oddmuse-wiki) wiki))))
+
+;;;###autoload
 (defun oddmuse-rc (&optional include-minor-edits)
   "Show Recent Changes.
 With universal argument, reload."
   (interactive "P")
   (let* ((wiki (or oddmuse-wiki
 		   (completing-read "Wiki: " oddmuse-wikis nil t)))
-	 (name (concat "*" wiki " RC*")))
+	 (name (concat "*" wiki ": recent changes*")))
     (if (and (get-buffer name) (not current-prefix-arg))
         (pop-to-buffer (get-buffer name))
       (set-buffer (get-buffer-create name))
