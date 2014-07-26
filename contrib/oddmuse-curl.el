@@ -223,13 +223,15 @@ Must match a key from `oddmuse-wikis'.")
 (defvar oddmuse-page-name nil
   "Pagename of the current buffer.")
 
-(defun oddmuse-set-missing-variables ()
+(defun oddmuse-set-missing-variables (&optional arg)
   "Set `oddmuse-wiki' and `oddmuse-page-name', if necessary.
+Force a binding of `oddmuse-wiki' if ARG is provided.
+
 Call this function when you're running a command in a buffer that
 was not previously connected to a wiki. One example would be
 calling `oddmuse-post' on an ordinary file that's not in Oddmuse
 Mode."
-  (when (or (not oddmuse-wiki) current-prefix-arg)
+  (when (or (not oddmuse-wiki) arg)
     (set (make-local-variable 'oddmuse-wiki)
          (completing-read "Wiki: " oddmuse-wikis nil t)))
   (when (not oddmuse-page-name)
@@ -726,6 +728,7 @@ both the character before and after point have it, don't break."
 (define-key oddmuse-mode-map (kbd "C-c C-e") 'oddmuse-edit)
 (define-key oddmuse-mode-map (kbd "C-c C-f") 'oddmuse-follow)
 (define-key oddmuse-mode-map (kbd "C-c C-i") 'oddmuse-insert-pagename)
+(define-key oddmuse-mode-map (kbd "C-c C-l") 'oddmuse-match)
 (define-key oddmuse-mode-map (kbd "C-c C-m") 'oddmuse-toggle-minor)
 (define-key oddmuse-mode-map (kbd "C-c C-n") 'oddmuse-new)
 (define-key oddmuse-mode-map (kbd "C-c C-p") 'oddmuse-preview)
@@ -770,7 +773,7 @@ Requires all the variables to be bound for
     (if (re-search-forward "^revision: \\([0-9]+\\)$" nil t)
 	(prog1 (match-string 1)
 	  (message "Determining latest revision...done"))
-      (error "Cannot determine the latest revision from the page history"))))
+      (message "Cannot determine the latest revision from the page history"))))
 
 ;;;###autoload
 (defun oddmuse-edit (wiki pagename)
@@ -801,7 +804,8 @@ Use a prefix argument to force a reload of the page."
 WIKI is the name of the wiki as defined in `oddmuse-wikis'.
 The pagename begins with the current date."
   (interactive 
-   (list (completing-read "Wiki: " oddmuse-wikis nil t oddmuse-wiki)
+   (list (or oddmuse-wiki
+	     (completing-read "Wiki: " oddmuse-wikis nil t oddmuse-wiki))
 	 (replace-regexp-in-string
 	  " +" "_"
 	  (read-from-minibuffer "Pagename: "
@@ -820,9 +824,10 @@ and call `oddmuse-edit' on it."
 ;;;###autoload
 (defun oddmuse-post (summary)
   "Post the current buffer to the current wiki.
-The current wiki is taken from `oddmuse-wiki'."
+The current wiki is taken from `oddmuse-wiki'.
+Use a prefix argument to override this."
   (interactive "sSummary: ")
-  (oddmuse-set-missing-variables)
+  (oddmuse-set-missing-variables current-prefix-arg)
   (let ((list (gethash oddmuse-wiki oddmuse-pages-hash)))
     (when (not (member oddmuse-page-name list))
       (puthash oddmuse-wiki (cons oddmuse-page-name list) oddmuse-pages-hash)))
