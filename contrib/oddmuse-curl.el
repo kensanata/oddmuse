@@ -400,7 +400,7 @@ It's either a [[free link]] or a WikiWord based on
 %o `oddmuse-ts'
 %r `regexp' as provided by the user"
   (dolist (pair '(("%w" . url)
-		  ("%t" . oddmuse-page-name)
+		  ("%t" . pagename)
 		  ("%s" . summary)
 		  ("%u" . oddmuse-username)
 		  ("%m" . oddmuse-minor)
@@ -466,20 +466,16 @@ as EXPECTED-CODE."
       (setq expected-code (number-to-string expected-code)))
     ;; If SEND-BUFFER, the resulting HTTP CODE is found in BUF, so check
     ;; that, too.
-    (if (and (= 0 (if send-buffer
+    (let* ((errno (if send-buffer
 		      (shell-command-on-region (point-min) (point-max) command buf)
 		    (shell-command command buf)))
-	     (or (not send-buffer)
-		 (not expected-code)
-		 (string= expected-code
-			  (with-current-buffer buf
-			    (buffer-string)))))
-	(message "%s...done" mesg)
-      (let ((err "Unknown error"))
-	(with-current-buffer buf
-	  (when (re-search-forward "<h1>\\(.*?\\)\\.?</h1>" nil t)
-	    (setq err (match-string 1))))
-	(error "Error %s: %s" mesg err)))))
+	   (status (with-current-buffer buf (buffer-string))))
+      (cond ((not (zerop errno))
+	     (error "Error %s: non-zero return value" mesg))
+	    ((and send-buffer expected-code (not (string= expected-code status)))
+	     (error "Error %s: HTTP Status Code %s" mesg status))
+	    (t
+	     (message "%s...done" mesg))))))
 
 (defun oddmuse-make-completion-table (wiki)
   "Create pagename completion table for WIKI.
@@ -756,22 +752,18 @@ Replaces _ with spaces again."
 
 ;;; Major functions
 
-(defun oddmuse-get-latest-revision ()
+(defun oddmuse-get-latest-revision (wiki pagename)
   "Return the latest revision as a string, eg. \"5\".
 Requires all the variables to be bound for
 `oddmuse-format-command'."
   ;; Since we don't know the most recent revision we have to fetch it
-  ;; from the server every time. Also, oddmuse-wiki and
-  ;; oddmuse-page-name are buffer-local so it takes some rebinding to
-  ;; get them into the temp buffer.
-  (let ((wiki oddmuse-wiki)
-	(pagename oddmuse-page-name))
-    (with-temp-buffer
-      (oddmuse-run "Determining latest revision" oddmuse-get-history-command wiki pagename)
-      (if (re-search-forward "^revision: \\([0-9]+\\)$" nil t)
-	  (prog1 (match-string 1)
-	    (message "Determining latest revision...done"))
-	(error "Cannot determine the latest revision from the page history")))))
+  ;; from the server every time.
+  (with-temp-buffer
+    (oddmuse-run "Determining latest revision" oddmuse-get-history-command wiki pagename)
+    (if (re-search-forward "^revision: \\([0-9]+\\)$" nil t)
+	(prog1 (match-string 1)
+	  (message "Determining latest revision...done"))
+      (error "Cannot determine the latest revision from the page history"))))
 
 ;;;###autoload
 (defun oddmuse-edit (wiki pagename)
@@ -788,7 +780,7 @@ Use a prefix argument to force a reload of the page."
       (set-buffer (find-file-noselect (concat oddmuse-directory "/" wiki "/" pagename)))
       (erase-buffer)
       (oddmuse-run "Loading" oddmuse-get-command wiki pagename)
-      (oddmuse-revision-put wiki pagename (oddmuse-get-latest-revision))
+      (oddmuse-revision-put wiki pagename (oddmuse-get-latest-revision wiki pagename))
       ;; fix it for VC in the new buffer because this is not a vc-checkout
       (vc-mode-line buffer-file-name 'oddmuse)
       (pop-to-buffer (current-buffer))
@@ -842,7 +834,7 @@ browser."
   (oddmuse-set-missing-variables)
   (let ((buf (get-buffer-create " *oddmuse-response*")))
     (and buffer-file-name (basic-save-buffer))
-    (oddmuse-run "Previewing" oddmuse-preview-command nil nil buf)
+    (oddmuse-run "Previewing" oddmuse-preview-command nil nil buf t)
     (if arg
 	(with-current-buffer buf
 	  (let ((file (make-temp-file "oddmuse-preview-" nil ".html")))
