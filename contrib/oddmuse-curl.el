@@ -631,6 +631,12 @@ The rule to identify indented blocks of code doesn't really work.")
     (,(concat "\\[" goto-address-url-regexp "\\( .+?\\)?\\]")
      0 '(face link
 	      help-echo "Basic external free link"))
+    ("\\[[[:upper:]]\\S-*:\\S-+ [^]\n]*\\]"
+     0 '(face link
+	      help-echo "Basic external interlink with text"))
+    ("[[:upper:]]\\S-*:\\S-+"
+     0 '(face link
+	      help-echo "Basic external interlink"))
     (,oddmuse-link-pattern
      0 '(face link
 	      help-echo "Basic wiki name"))
