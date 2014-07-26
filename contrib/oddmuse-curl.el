@@ -47,6 +47,8 @@
 (require 'shr); preview
 (require 'xml); preview munging
 
+;;; Options
+
 (defcustom oddmuse-directory "~/.emacs.d/oddmuse"
   "Directory to store oddmuse pages."
   :type '(string)
@@ -107,17 +109,12 @@ USERNAME, your optional username to provide. It defaults to
 				(string :tag "specify"))))
   :group 'oddmuse)
 
+;;; Variables
+
 (defvar oddmuse-get-command
   "curl --silent %w --form action=browse --form raw=2 --form id=%t"
   "Command to use for publishing pages.
 It must print the page to stdout.
-
-See `oddmuse-format-command' for the formatting options.")
-
-(defvar oddmuse-history-command
-  "curl --silent %w --form action=history --form raw=1 --form id=%t"
-  "Command to use for reading the history of a page.
-It must print the history to stdout.
 
 See `oddmuse-format-command' for the formatting options.")
 
@@ -206,6 +203,12 @@ This is the default for `oddmuse-minor'."
  :type '(boolean)
  :group 'oddmuse)
 
+(defvar oddmuse-pages-hash (make-hash-table :test 'equal)
+  "The wiki-name / pages pairs.
+Refresh using \\[oddmuse-reload].")
+
+;;; Important buffer local variables
+
 (defvar oddmuse-wiki nil
   "The current wiki.
 Must match a key from `oddmuse-wikis'.")
@@ -213,9 +216,18 @@ Must match a key from `oddmuse-wikis'.")
 (defvar oddmuse-page-name nil
   "Pagename of the current buffer.")
 
-(defvar oddmuse-pages-hash (make-hash-table :test 'equal)
-  "The wiki-name / pages pairs.
-Refresh using \\[oddmuse-reload].")
+(defun oddmuse-set-missing-variables ()
+  "Set `oddmuse-wiki' and `oddmuse-page-name', if necessary.
+Call this function when you're running a command in a buffer that
+was not previously connected to a wiki. One example would be
+calling `oddmuse-post' on an ordinary file that's not in Oddmuse
+Mode."
+  (when (or (not oddmuse-wiki) current-prefix-arg)
+    (set (make-local-variable 'oddmuse-wiki)
+         (completing-read "Wiki: " oddmuse-wikis nil t)))
+  (when (not oddmuse-page-name)
+    (set (make-local-variable 'oddmuse-page-name)
+         (read-from-minibuffer "Pagename: " (buffer-name)))))
 
 (defvar oddmuse-minor nil
   "Is this edit a minor change?")
@@ -223,6 +235,8 @@ Refresh using \\[oddmuse-reload].")
 (defvar oddmuse-ts nil
   "The timestamp of the current page's ancestor.
 This is used by Oddmuse to merge changes.")
+
+;;; Remembering the latest revision of every page
 
 (defvar oddmuse-revisions nil
   "An alist to store the current revision we have per page.
@@ -248,6 +262,28 @@ Example:
   (let ((w (assoc wiki oddmuse-revisions)))
     (when w
       (cdr (assoc page w)))))
+
+;;; Helpers
+
+(defsubst oddmuse-page-name (file)
+  "Return the page name based on FILE."
+  (file-name-nondirectory file))
+
+(defsubst oddmuse-wiki (file)
+  "Return the wiki name based on FILE."
+  (file-name-nondirectory
+   (directory-file-name
+    (file-name-directory file))))
+
+(defmacro with-oddmuse-file (file &rest body)
+  "Bind `oddmuse-wiki' and `oddmuse-page-name' based on FILE
+and execute BODY."
+  `(let ((oddmuse-page-name (oddmuse-page-name ,file))
+	 (oddmuse-wiki (oddmuse-wiki ,file)))
+     ,@body))
+
+(put 'with-oddmuse-file 'lisp-indent-function 1)
+(font-lock-add-keywords 'emacs-lisp-mode '("\\<with-oddmuse-file\\>"))
 
 (defun oddmuse-url (wiki pagename)
   "Get the URL of oddmuse wiki."
@@ -285,6 +321,12 @@ the like."
 		       (oddmuse-read-pagename wiki nil (word-at-point)))))
     (list wiki pagename)))
 
+(defun oddmuse-pagename-if-missing ()
+  "Return the default wiki and page name or ask for one."
+  (if (and oddmuse-wiki oddmuse-page-name)
+      (list oddmuse-wiki oddmuse-page-name)
+    (oddmuse-pagename)))
+
 (defun oddmuse-current-free-link-contents ()
   "The page name in a free link at point.
 This returns \"foo\" for [[foo]] and [[foo|bar]]."
@@ -315,6 +357,130 @@ It's either a [[free link]] or a WikiWord based on
       (when (string-match (concat "^" oddmuse-link-pattern "$") pagename)
 	pagename))))
 
+;; (oddmuse-wikiname-p nil)
+;; (oddmuse-wikiname-p "WikiName")
+;; (oddmuse-wikiname-p "not-wikiname")
+;; (oddmuse-wikiname-p "notWikiName")
+
+(defun oddmuse-render-rss3 ()
+  "Parse current buffer as RSS 3.0 and display it correctly."
+  (save-excursion
+    (let (result)
+      (dolist (item (cdr (split-string (buffer-string) "\n\n")));; skip first item
+	(let ((data (mapcar (lambda (line)
+			      (when (string-match "^\\(.*?\\): \\(.*\\)" line)
+				(cons (match-string 1 line)
+				      (match-string 2 line))))
+			    (split-string item "\n"))))
+	  (setq result (cons data result))))
+      (erase-buffer)
+      (dolist (item (nreverse result))
+	(insert "title:      " (cdr (assoc "title" item)) "\n"
+		"version:    " (cdr (assoc "revision" item)) "\n"
+		"generator:  " (cdr (assoc "generator" item)) "\n"
+		"timestamp:  " (cdr (assoc "last-modified" item)) "\n\n"
+		"    " (or (cdr (assoc "description" item)) ""))
+	(fill-paragraph)
+	(insert "\n\n"))
+      (goto-char (point-min)))
+    (view-mode)))
+
+;;; processing the commands
+
+(defun oddmuse-format-command (command)
+  "Format COMMAND, replacing placeholders with variables.
+
+%w `url' as provided by `oddmuse-wikis'
+%t `pagename'
+%s `summary' as provided by the user
+%u `username' as provided by `oddmuse-wikis' or `oddmuse-username' if not provided
+%m `oddmuse-minor'
+%p `oddmuse-password'
+%q `question' as provided by `oddmuse-wikis'
+%o `oddmuse-ts'
+%r `regexp' as provided by the user"
+  (dolist (pair '(("%w" . url)
+		  ("%t" . oddmuse-page-name)
+		  ("%s" . summary)
+		  ("%u" . oddmuse-username)
+		  ("%m" . oddmuse-minor)
+		  ("%p" . oddmuse-password)
+		  ("%q" . question)
+		  ("%o" . oddmuse-ts)
+		  ("%r" . regexp)))
+    (let* ((key (car pair))
+	   (sym (cdr pair))
+	   value)
+      (when (boundp sym)
+	(setq value (symbol-value sym))
+	(when (eq sym 'oddmuse-minor)
+	  (setq value (if value "on" "off")))
+	(when (stringp value)
+	  (when (and (eq sym 'summary)
+		     (string-match "'" value))
+	    ;; form summary='A quote is '"'"' this!'
+	    (setq value (replace-regexp-in-string "'" "'\"'\"'" value t t)))
+	  (setq command (replace-regexp-in-string key value command t t))))))
+  (replace-regexp-in-string "&" "%26" command t t))
+
+(defun oddmuse-run (mesg command wiki &optional pagename buf send-buffer expected-code)
+  "Print MESG and run COMMAND on the current buffer.
+WIKI identifies the entry in `oddmuse-wiki' to be used and
+defaults to the variable `oddmuse-wiki'.
+
+PAGENAME is the optional page name to pass to
+`oddmuse-format-command' and defaults to the variable
+`oddmuse-page-name'.
+
+MESG should be appropriate for the following uses:
+  \"MESG...\"
+  \"MESG...done\"
+  \"MESG failed: REASON\"
+
+Save output in BUF and report an appropriate error.  If BUF is
+not provided, use the current buffer.
+
+SEND-BUFFER indicates whether the commands needs the content of
+the current buffer on STDIN---such as when posting---or whether
+it just runs by itself such as when loading a page.
+
+If SEND-BUFFER is not nil, the command output is compared to
+EXPECTED-CODE. The command is supposed to print the HTTP status
+code on stdout, so usually we want to provide either 302 or 200
+as EXPECTED-CODE."
+  (let* ((max-mini-window-height 1)
+	 (wiki (or wiki oddmuse-wiki))
+	 (pagename (or pagename oddmuse-page-name))
+	 (wiki-data (or (assoc wiki oddmuse-wikis)
+			(error "Cannot find data for wiki %s" wiki)))
+	 (url (nth 1 wiki-data))
+	 (coding (nth 2 wiki-data))
+	 (coding-system-for-read coding)
+	 (coding-system-for-write coding)
+	 (question (nth 3 wiki-data))
+	 (oddmuse-username (or (nth 4 wiki-data) oddmuse-username)))
+    (setq buf (or buf (current-buffer))
+	  command (oddmuse-format-command command))
+    (message "%s using %s..." mesg command)
+    (when (numberp expected-code)
+      (setq expected-code (number-to-string expected-code)))
+    ;; If SEND-BUFFER, the resulting HTTP CODE is found in BUF, so check
+    ;; that, too.
+    (if (and (= 0 (if send-buffer
+		      (shell-command-on-region (point-min) (point-max) command buf)
+		    (shell-command command buf)))
+	     (or (not send-buffer)
+		 (not expected-code)
+		 (string= expected-code
+			  (with-current-buffer buf
+			    (buffer-string)))))
+	(message "%s...done" mesg)
+      (let ((err "Unknown error"))
+	(with-current-buffer buf
+	  (when (re-search-forward "<h1>\\(.*?\\)\\.?</h1>" nil t)
+	    (setq err (match-string 1))))
+	(error "Error %s: %s" mesg err)))))
+
 (defun oddmuse-make-completion-table (wiki)
   "Create pagename completion table for WIKI.
 If available, return precomputed one."
@@ -336,10 +502,7 @@ This command is used to reflect new pages to `oddmuse-pages-hash'."
       (puthash wiki table oddmuse-pages-hash)
       (message "Getting index of all pages...done"))))
 
-;; (oddmuse-wikiname-p nil)
-;; (oddmuse-wikiname-p "WikiName")
-;; (oddmuse-wikiname-p "not-wikiname")
-;; (oddmuse-wikiname-p "notWikiName")
+;;; Mode and font-locking
 
 (defun oddmuse-mode-initialize ()
   (add-to-list 'auto-mode-alist
@@ -512,19 +675,15 @@ Font-locking is controlled by `oddmuse-markup-functions'.
 	 ("pre" \n) ("tt") ("u")))
   (set (make-local-variable 'skeleton-transformation) 'identity)
 
-  ;; saving the file
+  (make-local-variable 'oddmuse-wiki)
+  (make-local-variable 'oddmuse-page-name)
+
   (when buffer-file-name
-    ;; Avoid "Making X buffer-local while locally let-bound!"  warning
-    ;; by using these bindings.
-    (let (wiki page-name)
-      (with-oddmuse-file buffer-file-name
-	(setq wiki oddmuse-wiki
-	      page-name oddmuse-page-name))
-      (set (make-local-variable 'oddmuse-wiki) wiki)
-      (set (make-local-variable 'oddmuse-page-name) page-name)
-      ;; set buffer name
-      (let ((name (concat wiki ":" page-name)))
-	(unless (equal name (buffer-name)) (rename-buffer name)))))
+    (setq oddmuse-wiki (oddmuse-wiki buffer-file-name)
+	  oddmuse-page-name (oddmuse-page-name buffer-file-name))
+    ;; set buffer name
+    (let ((name (concat oddmuse-wiki ":" oddmuse-page-name)))
+      (unless (equal name (buffer-name)) (rename-buffer name))))
 
   ;; version control
   (set (make-local-variable 'oddmuse-ts)
@@ -541,6 +700,8 @@ Font-locking is controlled by `oddmuse-markup-functions'.
        '(oddmuse-nobreak-p))
   (set (make-local-variable 'font-lock-extra-managed-props)
        '(nobreak help-echo)))
+
+;;; Key bindings
 
 (defun oddmuse-nobreak-p (&optional pos)
   "Prevent line break of links.
@@ -561,7 +722,6 @@ both the character before and after point have it, don't break."
 (define-key oddmuse-mode-map (kbd "C-c C-c") 'oddmuse-post)
 (define-key oddmuse-mode-map (kbd "C-c C-e") 'oddmuse-edit)
 (define-key oddmuse-mode-map (kbd "C-c C-f") 'oddmuse-follow)
-(define-key oddmuse-mode-map (kbd "C-c C-h") 'oddmuse-history)
 (define-key oddmuse-mode-map (kbd "C-c C-i") 'oddmuse-insert-pagename)
 (define-key oddmuse-mode-map (kbd "C-c C-m") 'oddmuse-toggle-minor)
 (define-key oddmuse-mode-map (kbd "C-c C-n") 'oddmuse-new)
@@ -594,162 +754,20 @@ Replaces _ with spaces again."
   (interactive (list (oddmuse-read-pagename oddmuse-wiki)))
   (insert (replace-regexp-in-string "_" " " pagename)))
 
-(defun oddmuse-format-command (command)
-  "Format COMMAND, replacing placeholders with variables.
-Best used with `with-oddmuse-wiki-and-pagename' and similar
-macros.
-
-%w url (usually from `oddmuse-wikis'
-%t `oddmuse-page-name'
-%s summary (as provided by the user)
-%u `oddmuse-username'
-%m `oddmuse-minor'
-%p `oddmuse-password'
-%q question (as provided by `oddmuse-wikis')
-%o `oddmuse-ts'
-%r regexp (as provided by the user)"
-  (dolist (pair '(("%w" . url)
-		  ("%t" . oddmuse-page-name)
-		  ("%s" . summary)
-		  ("%u" . oddmuse-username)
-		  ("%m" . oddmuse-minor)
-		  ("%p" . oddmuse-password)
-		  ("%q" . question)
-		  ("%o" . oddmuse-ts)
-		  ("%r" . regexp)))
-    (let* ((key (car pair))
-	   (sym (cdr pair))
-	   value)
-      (when (boundp sym)
-	(setq value (symbol-value sym))
-	(when (stringp value)
-	  (when (and (eq sym 'summary)
-		     (string-match "'" value))
-	    ;; form summary='A quote is '"'"' this!'
-	    (setq value (replace-regexp-in-string "'" "'\"'\"'" value t t)))))))
-  (replace-regexp-in-string "&" "%26" command t t))
-
-(defun oddmuse-run (mesg command &optional buf send-buffer expected-code)
-  "Print MESG and run COMMAND on the current buffer.
-MESG should be appropriate for the following uses:
-  \"MESG...\"
-  \"MESG...done\"
-  \"MESG failed: REASON\"
-Save outpout in BUF and report an appropriate error.
-If BUF is not provided, use the current buffer.
-
-SEND-BUFFER indicates whether the commands needs the content of
-the current buffer on STDIN---such as when posting---or whether
-it just runs by itself such as when loading a page.
-
-If SEND-BUFFER is not nil, the command output is compared to
-EXPECTED-CODE. The command is supposed to print the HTTP status
-code on stdout, so usually we want to provide either 302 or 200
-as EXPECTED-CODE."
-  (setq buf (or buf (current-buffer)))
-  (let ((max-mini-window-height 1))
-    (message "%s using %s..." mesg command)
-    (when (numberp expected-code)
-      (setq expected-code (number-to-string expected-code)))
-    ;; If SEND-BUFFER, the resulting HTTP CODE is found in BUF, so check
-    ;; that, too.
-    (if (and (= 0 (if send-buffer
-		      (shell-command-send-buffer (point-min) (point-max) command buf)
-		    (shell-command command buf)))
-	     (or (not send-buffer)
-		 (not expected-code)
-		 (string= expected-code
-			  (with-current-buffer buf
-			    (buffer-string)))))
-	(message "%s...done" mesg)
-      (let ((err "Unknown error"))
-	(with-current-buffer buf
-	  (when (re-search-forward "<h1>\\(.*?\\)\\.?</h1>" nil t)
-	    (setq err (match-string 1))))
-	(error "Error %s: %s" mesg err)))))
-
-(defmacro with-oddmuse-file (file &rest body)
-  "Bind some variables needed for `oddmuse-run' based on FILE.
-These are: `oddmuse-wiki' and `oddmuse-page-name', plus the
-derived values of `wiki-data', `url', `coding',
-`coding-system-for-read', `coding-system-for-write', `question'
-and `oddmuse-username'. With all these bindings in place, execute
-BODY."
-  `(let* ((oddmuse-page-name (file-name-nondirectory ,file))
-	  (oddmuse-wiki (file-name-nondirectory
-			 (directory-file-name
-			  (file-name-directory ,file))))
-	  (wiki-data (or (assoc oddmuse-wiki oddmuse-wikis)
-			 (error "Cannot find data for wiki %s" oddmuse-wiki)))
-	  (url (nth 1 wiki-data))
-	  (coding (nth 2 wiki-data))
-	  (coding-system-for-read coding)
-	  (coding-system-for-write coding)
-	  (question (nth 3 wiki-data))
-	  (oddmuse-username (or (nth 4 wiki-data) oddmuse-username)))
-     ,@body))
-
-(put 'with-oddmuse-file 'lisp-indent-function 1)
-(font-lock-add-keywords 'emacs-lisp-mode '("\\<with-oddmuse-file\\>"))
-
-(defmacro with-oddmuse-wiki-and-pagename (wiki pagename &rest body)
-  "Bind some variables needed for `oddmuse-run' based on FILE.
-These are: `oddmuse-wiki' and `oddmuse-page-name', plus the
-derived values of `wiki-data', `url', `coding',
-`coding-system-for-read', `coding-system-for-write', `question'
-and `oddmuse-username'. With all these bindings in place, execute
-BODY."
-  `(let* ((oddmuse-page-name ,pagename)
-	  (oddmuse-wiki ,wiki)
-	  (wiki-data (or (assoc oddmuse-wiki oddmuse-wikis)
-			 (error "Cannot find data for wiki %s" oddmuse-wiki)))
-	  (url (nth 1 wiki-data))
-	  (coding (nth 2 wiki-data))
-	  (coding-system-for-read coding)
-	  (coding-system-for-write coding)
-	  (question (nth 3 wiki-data))
-	  (oddmuse-username (or (nth 4 wiki-data) oddmuse-username)))
-     ,@body))
-
-(put 'with-oddmuse-wiki-and-pagename 'lisp-indent-function 2)
-(font-lock-add-keywords 'emacs-lisp-mode '("\\<with-oddmuse-wiki-and-pagename\\>"))
-
-;;;###autoload
-(defun oddmuse-history (wiki pagename)
-  "Show a page's history on a wiki using `view-mode'.
-WIKI is the name of the wiki as defined in `oddmuse-wikis',
-PAGENAME is the pagename of the page you want the history of.
-Use a prefix argument to force a reload of the page."
-  (interactive (oddmuse-pagename))
-  (let ((name (concat wiki ":" pagename " [history]")))
-    (if (and (get-buffer name)
-             (not current-prefix-arg))
-        (pop-to-buffer (get-buffer name))
-      (let* ((wiki-data (assoc wiki oddmuse-wikis))
-             (url (nth 1 wiki-data))
-             (oddmuse-page-name pagename)
-             (command (oddmuse-format-command oddmuse-history-command))
-             (coding (nth 2 wiki-data))
-             (buf (get-buffer-create name)))
-        (set-buffer buf)
-        (erase-buffer)
-	(let ((max-mini-window-height 1))
-	  (shell-command command buf))
-        (pop-to-buffer buf)
-	(goto-address)
-	(view-mode)))))
+;;; Major functions
 
 (defun oddmuse-get-latest-revision ()
   "Return the latest revision as a string, eg. \"5\".
 Requires all the variables to be bound for
 `oddmuse-format-command'."
   ;; Since we don't know the most recent revision we have to fetch it
-  ;; from the server every time. Also, format command outside the temp
-  ;; buffer because oddmuse-wiki and oddmuse-page-name are
-  ;; buffer-local!
-  (let ((command (oddmuse-format-command oddmuse-get-history-command)))
+  ;; from the server every time. Also, oddmuse-wiki and
+  ;; oddmuse-page-name are buffer-local so it takes some rebinding to
+  ;; get them into the temp buffer.
+  (let ((wiki oddmuse-wiki)
+	(pagename oddmuse-page-name))
     (with-temp-buffer
-      (oddmuse-run "Determining latest revision" command)
+      (oddmuse-run "Determining latest revision" oddmuse-get-history-command wiki pagename)
       (if (re-search-forward "^revision: \\([0-9]+\\)$" nil t)
 	  (prog1 (match-string 1)
 	    (message "Determining latest revision...done"))
@@ -767,21 +785,13 @@ Use a prefix argument to force a reload of the page."
     (if (and (get-buffer name)
              (not current-prefix-arg))
         (pop-to-buffer (get-buffer name))
-      (with-oddmuse-wiki-and-pagename wiki pagename
-	(let* ((rev (oddmuse-get-latest-revision))
-	       (file (concat oddmuse-directory "/" wiki "/" pagename))
-	       (buf (find-file-noselect file))
-	       (command (oddmuse-format-command oddmuse-get-command)))
-	  (oddmuse-revision-put oddmuse-wiki oddmuse-page-name rev)
-	  (set-buffer buf)
-	  (unless (equal name (buffer-name)) (rename-buffer name))
-	  (erase-buffer)
-	  (oddmuse-run "Loading" command buf)
-	  (pop-to-buffer buf)
-	  ;; fix it for VC in the new buffer because this is not a vc-checkout
-	  (vc-mode-line file 'oddmuse)))
-      ;; Don't use let to dynamically bind oddmuse-page-name because
-      ;; it will be set once oddmuse-mode is called.
+      (set-buffer (find-file-noselect (concat oddmuse-directory "/" wiki "/" pagename)))
+      (erase-buffer)
+      (oddmuse-run "Loading" oddmuse-get-command wiki pagename)
+      (oddmuse-revision-put wiki pagename (oddmuse-get-latest-revision))
+      ;; fix it for VC in the new buffer because this is not a vc-checkout
+      (vc-mode-line buffer-file-name 'oddmuse)
+      (pop-to-buffer (current-buffer))
       (oddmuse-mode))))
 
 (defalias 'oddmuse-go 'oddmuse-edit)
@@ -813,30 +823,13 @@ and call `oddmuse-edit' on it."
   "Post the current buffer to the current wiki.
 The current wiki is taken from `oddmuse-wiki'."
   (interactive "sSummary: ")
-  ;; when using prefix or on a buffer that is not in oddmuse-mode
-  (when (or (not oddmuse-wiki) current-prefix-arg)
-    (set (make-local-variable 'oddmuse-wiki)
-         (completing-read "Wiki: " oddmuse-wikis nil t)))
-  (when (not oddmuse-page-name)
-    (set (make-local-variable 'oddmuse-page-name)
-         (read-from-minibuffer "Pagename: " (buffer-name))))
+  (oddmuse-set-missing-variables)
   (let ((list (gethash oddmuse-wiki oddmuse-pages-hash)))
     (when (not (member oddmuse-page-name list))
       (puthash oddmuse-wiki (cons oddmuse-page-name list) oddmuse-pages-hash)))
-  (let* ((list (assoc oddmuse-wiki oddmuse-wikis))
-         (url (nth 1 list))
-         (oddmuse-minor (if oddmuse-minor "on" "off"))
-         (coding (nth 2 list))
-         (coding-system-for-read coding)
-         (coding-system-for-write coding)
-	 (question (nth 3 list))
-	 (oddmuse-username (or (nth 4 list)
-			       oddmuse-username))
-         (command (oddmuse-format-command oddmuse-post-command))
-	 (buf (get-buffer-create " *oddmuse-response*"))
-	 (text (buffer-string)))
-    (and buffer-file-name (basic-save-buffer))
-    (oddmuse-run "Posting" command buf t 302)))
+  (and buffer-file-name (basic-save-buffer))
+  (oddmuse-run "Posting" oddmuse-post-command nil nil
+	       (get-buffer-create " *oddmuse-response*") t 302))
 
 ;;;###autoload
 (defun oddmuse-preview (&optional arg)
@@ -846,40 +839,31 @@ The current wiki is taken from `oddmuse-wiki'.
 Use a prefix argument to view the preview using an external
 browser."
   (interactive "P")
-  ;; when using prefix or on a buffer that is not in oddmuse-mode
-  (when (not oddmuse-wiki)
-    (set (make-local-variable 'oddmuse-wiki)
-         (completing-read "Wiki: " oddmuse-wikis nil t)))
-  (when (not oddmuse-page-name)
-    (set (make-local-variable 'oddmuse-page-name)
-         (read-from-minibuffer "Pagename: " (buffer-name))))
-  (with-oddmuse-wiki-and-pagename oddmuse-wiki oddmuse-page-name
-    (let ((oddmuse-minor (if oddmuse-minor "on" "off"))
-	  (buf (get-buffer-create " *oddmuse-response*"))
-	  (command (oddmuse-format-command oddmuse-preview-command)))
-      (and buffer-file-name (basic-save-buffer))
-      (oddmuse-run "Previewing" command buf t); no status code on stdout
-      (if arg
-	  (with-current-buffer buf
-	    (let ((file (make-temp-file "oddmuse-preview-" nil ".html")))
-	      (write-region (point-min) (point-max) file)
-	      (browse-url (browse-url-file-url file))))
-	(message "Rendering...")
-	(pop-to-buffer "*Preview*")
-	(fundamental-mode)
-	(erase-buffer)
-	(shr-insert-document
-	 (with-current-buffer buf
-	   (let ((html (libxml-parse-html-region (point-min) (point-max))))
-	     (oddmuse-find-node
-	      (lambda (node)
-		(and (eq (xml-node-name node) 'div)
-		     (string= (xml-get-attribute node 'class) "preview")))
-	      html))))
-	(goto-char (point-min))
-	(kill-buffer buf);; prevent it from showing up after q
-	(view-mode)
-	(message "Rendering...done")))))
+  (oddmuse-set-missing-variables)
+  (let ((buf (get-buffer-create " *oddmuse-response*")))
+    (and buffer-file-name (basic-save-buffer))
+    (oddmuse-run "Previewing" oddmuse-preview-command nil nil buf)
+    (if arg
+	(with-current-buffer buf
+	  (let ((file (make-temp-file "oddmuse-preview-" nil ".html")))
+	    (write-region (point-min) (point-max) file)
+	    (browse-url (browse-url-file-url file))))
+      (message "Rendering...")
+      (pop-to-buffer "*Preview*")
+      (fundamental-mode)
+      (erase-buffer)
+      (shr-insert-document
+       (with-current-buffer buf
+	 (let ((html (libxml-parse-html-region (point-min) (point-max))))
+	   (oddmuse-find-node
+	    (lambda (node)
+	      (and (eq (xml-node-name node) 'div)
+		   (string= (xml-get-attribute node 'class) "preview")))
+	    html))))
+      (goto-char (point-min))
+      (kill-buffer buf);; prevent it from showing up after q
+      (view-mode)
+      (message "Rendering...done"))))
 
 (defun oddmuse-find-node (test node)
   "Return the child of NODE that satisfies TEST.
@@ -904,17 +888,13 @@ node as returned by `libxml-parse-html-region' or
     (if (and (get-buffer name)
              (not current-prefix-arg))
         (pop-to-buffer (get-buffer name))
-      (with-oddmuse-wiki-and-pagename wiki nil
-	(let ((buf (get-buffer-create name))
-	      (command (oddmuse-format-command oddmuse-search-command)))
-	  (set-buffer buf)
-	  (unless (equal name (buffer-name)) (rename-buffer name))
-	  (erase-buffer)
-	  (oddmuse-run "Searching" command buf)
-	  (oddmuse-rc-buffer)
-	  (dolist (re (split-string regexp))
-	    (highlight-regexp (hi-lock-process-phrase re)))
-	  (set (make-local-variable 'oddmuse-wiki) wiki))))))
+      (set-buffer (get-buffer-create name))
+      (erase-buffer)
+      (oddmuse-run "Searching" oddmuse-search-command wiki)
+      (oddmuse-rc-buffer)
+      (dolist (re (split-string regexp))
+	(highlight-regexp (hi-lock-process-phrase re)))
+      (set (make-local-variable 'oddmuse-wiki) wiki))))
 
 ;;;###autoload
 (defun oddmuse-rc (&optional include-minor-edits)
@@ -924,18 +904,14 @@ With universal argument, reload."
   (let* ((wiki (or oddmuse-wiki
 		   (completing-read "Wiki: " oddmuse-wikis nil t)))
 	 (name (concat "*" wiki " RC*")))
-    (if (and (get-buffer name)
-             (not current-prefix-arg))
+    (if (and (get-buffer name) (not current-prefix-arg))
         (pop-to-buffer (get-buffer name))
-      (with-oddmuse-wiki-and-pagename wiki nil
-	(let ((buf (get-buffer-create name))
-	       (command (oddmuse-format-command oddmuse-rc-command)))
-	  (set-buffer buf)
-	  (unless (equal name (buffer-name)) (rename-buffer name))
-	  (erase-buffer)
-	  (oddmuse-run "Load recent changes" command buf)
-	  (oddmuse-rc-buffer)
-	  (set (make-local-variable 'oddmuse-wiki) wiki))))))
+      (set-buffer (get-buffer-create name))
+      (erase-buffer)
+      (oddmuse-run "Load recent changes" oddmuse-rc-command wiki)
+      (oddmuse-rc-buffer)
+      ;; set local variable after `oddmuse-mode' killed them
+      (set (make-local-variable 'oddmuse-wiki) wiki))))
 
 (defun oddmuse-rc-buffer ()
   "Parse current buffer as RSS 3.0 and display it correctly."
@@ -967,14 +943,6 @@ With universal argument, reload."
 	  (newline))))
     (goto-char (point-min))
     (oddmuse-mode)))
-
-;; you probably want vc-revert
-(defun oddmuse-revert ()
-  "Revert this oddmuse page."
-  (interactive)
-  (when (yes-or-no-p "Revert this page? ")
-    (let ((current-prefix-arg 4))
-      (oddmuse-edit oddmuse-wiki oddmuse-page-name))))
 
 ;;;###autoload
 (defun emacswiki-post (&optional pagename summary)

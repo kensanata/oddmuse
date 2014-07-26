@@ -64,51 +64,28 @@ For a list of possible values, see `vc-state'."
   nil)
 
 (defvar vc-oddmuse-log-command
-  "curl --silent %w\"?action=rc;showedit=1;all=1;from=1;raw=1;match=%r\""
+  (concat "curl --silent %w"
+	  " --form action=rc"
+	  " --form showedit=1"
+	  " --form all=1"
+	  " --form from=1"
+	  " --form raw=1"
+	  " --form match='%r'")
   "Command to use for publishing index pages.
 It must print the page to stdout.
 
-%?  '?' character
-%w  URL of the wiki as provided by `oddmuse-wikis'
-%r  Regular expression, URL encoded, of the pages to limit ourselves to.
-    This uses the free variable `regexp'.")
+See `oddmuse-format-command' for the formatting options.")
 
-(defun vc-oddmuse-print-log (files buffer &optional shortlog
-				   start-revision limit)
+(defun vc-oddmuse-print-log (files buffer &optional shortlog start-revision limit)
   "Load complete recent changes for the files."
-  (let* ((wiki (or oddmuse-wiki
-		   (completing-read "Wiki: " oddmuse-wikis nil t)))
-	 (wiki-data (assoc wiki oddmuse-wikis))
-	 (url (nth 1 wiki-data))
-	 (regexp (concat
-		  "^("  ;; Perl regular expression!
-		  (mapconcat 'file-name-nondirectory files "|")
-		  ")$"))
-	 (command (oddmuse-format-command vc-oddmuse-log-command))
-	 (coding (nth 2 wiki-data))
-	 (coding-system-for-read coding)
-	 (coding-system-for-write coding))
-    (oddmuse-run "Getting recent changes" command buffer nil))
-  ;; Parse current buffer as RSS 3.0 and display it correctly.
-  (save-excursion
-    (with-current-buffer buffer
-      (let (result)
-	(dolist (item (cdr (split-string (buffer-string) "\n\n")));; skip first item
-	  (let ((data (mapcar (lambda (line)
-				(when (string-match "^\\(.*?\\): \\(.*\\)" line)
-				  (cons (match-string 1 line)
-					(match-string 2 line))))
-			      (split-string item "\n"))))
-	    (setq result (cons data result))))
-	(dolist (item (nreverse result))
-	  (insert "title:      " (cdr (assoc "title" item)) "\n"
-	          "version:    " (cdr (assoc "revision" item)) "\n"
-	          "generator:  " (cdr (assoc "generator" item)) "\n"
-	          "timestamp:  " (cdr (assoc "last-modified" item)) "\n\n"
-		  "    " (or (cdr (assoc "description" item)) ""))
-	  (fill-paragraph)
-	  (insert "\n\n"))
-	(goto-char (point-min))))))
+  ;; Derive `oddmuse-wiki' from the first file
+  (with-oddmuse-file (car files)
+    ;; The wiki expects a Perl regular expression!
+    (let ((regexp (concat "^(" (mapconcat 'file-name-nondirectory files "|") ")$")))
+      (oddmuse-run "Getting recent changes" vc-oddmuse-log-command nil nil buffer)))
+  (with-current-buffer buffer
+    (oddmuse-render-rss3))
+  'limit-unsupported)
 
 (defun vc-oddmuse-log-outgoing ()
   (error "This is not supported."))
@@ -179,6 +156,6 @@ used as a check-in comment."
 	     (buf (get-buffer-create " *oddmuse-response*")))
 	(with-temp-buffer
 	  (insert-file-contents file)
-	  (oddmuse-run "Posting" command buf t 302))))))
+	  (oddmuse-run "Posting" command nil nil buf t 302))))))
 
 (provide 'vc-oddmuse)
