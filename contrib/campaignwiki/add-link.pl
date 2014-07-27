@@ -1,57 +1,27 @@
-#! /usr/bin/perl
+(quotemeta($domain));
+    $q->a({-href => $_}, $domain)
+	. " (" . $q->a({-href => "$self/match/$term"}, $blog{$_}) . ")";
+  } @list;
+  return \@list;
+}
 
-# Copyright (C) 2011–2014  Alex Schroeder <alex@gnu.org>
-
-# This program is free software: you can redistribute it and/or modify it under
-# the terms of the GNU General Public License as published by the Free Software
-# Foundation, either version 3 of the License, or (at your option) any later
-# version.
-#
-# This program is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License along with
-# this program. If not, see <http://www.gnu.org/licenses/>.
-
-package OddMuse;
-
-use LWP::UserAgent;
-use HTML::TreeBuilder;
-use JSON::PP;
-use utf8;
-
-# load Oddmuse core
-$RunCGI = 0;
-do "wiki.pl";
-
-# globals
-my $name = "OSR Links to Wisdom";
-my $wiki = 'LinksToWisdom';
-my $site = "http://campaignwiki.org/wiki/$wiki";
-# my $site = "http://localhost/wiki.pl";
-my $home = "$site/$HomePage";
-# http://www.emacswiki.org/pics/star.png
-my $stardata = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAFVBMVEUAAHkAAACzdRTapx3twwD/9qb////1YCa0AAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfXAQYCJAu+WhwbAAAAKnRFWHRDb21tZW50AGJ5IFJhZG9taXIgJ1RoZSBTaGVlcCcgRG9waWVybGFza2kVfTXbAAAAYElEQVQI12NgQAKMMIaYAFTAzRDKCHOEMETCnEFyjIJhYS6OggwMoqGhaS7GRgIMjC6uYc5GikA5YRcXIyWwotBgJUWw7lAXsAyDaIihMlhK1FFA0AjEEAESQgJQu4EYAPAPC2XcokgQAAAAAElFTkSuQmCC';
-
-main();
-
-sub toc {
+sub match {
+  my $term = shift;
   # start with the homepage
-  my @values;
-  my %labels;
+  my @list;
+  my $title;
   for my $id (GetPageContent($HomePage) =~ /\* \[\[(.*?)\]\]/g) {
-    push @values, $id;
-    for my $item (GetPageContent(FreeToNormal($id)) =~ /(\*+ [^][\n]*)$/mg) {
-      my $value = $item;
-      my $label = $item;
-      $value =~ s/\* *//g;
-      push @values, $value;
-      $label =~ s/\* */ /g; # EM SPACE
-      $labels{$value} = $label;
+    for my $line (split /\n/, GetPageContent(FreeToNormal($id))) {
+      if ($line =~ /^\*+\s+([^][\n]*)$/) {
+	$title = $1;
+      } elsif ($line =~ /$term/o) {
+	if ($line =~ /^\*+\s+\[(https?:\S+)\s+([^]]+)\]/) {
+	  push (@list, $q->a({-href => $1}, $2) . " (" . $title . ")");
+	}
+      }
     }
   }
-  return \@values, \%labels;
+  return \@list;
 }
 
 sub html_toc {
@@ -188,11 +158,20 @@ sub post {
   }
 }
 
+sub print_end_of_page {
+    print $q->p('Questions? Send mail to Alex Schroeder <'
+		. $q->a({-href=>'mailto:kensanata@gmail.com'},
+			'kensanata@gmail.com') . '>');
+    print $q->end_div();
+    PrintFooter();
+}
+
 sub main {
   $ConfigFile = "$DataDir/config"; # read the global config file
   $DataDir = "$DataDir/$wiki";     # but link to the local pages
   Init();                          # read config file (no modules!)
   $ScriptName = $site;             # undo setting in the config file
+  $FullUrl = $site;                #
   binmode(STDOUT,':utf8');
   $q->charset('utf8');
   if ($q->path_info eq '/source') {
@@ -212,29 +191,13 @@ sub main {
     print "Content-type: application/json; charset=UTF-8\r\n\r\n";
     binmode(STDOUT,':raw'); # because of encode_json
     print JSON::PP::encode_json($values);
-  } else {
-    push(@UserGotoBarPages, 'Help');
-    $UserGotoBar = $q->a({-href=>$q->url . '/source'}, 'Source');
-    print GetHeader('', 'Submit a new link');
-    print $q->start_div({-class=>'content index'});
-    my $url = GetParam('url');
-    my $name = UnquoteHtml(GetParam('name', get_name($url)));
-    my $toc = GetParam('toc');
-    my $confirm = GetParam('confirm');
-    my $summary = GetParam('summary');
-    if (not $url or not $toc) {
-      default();
-    } elsif (not $confirm) {
-      confirm($url, $name, $toc);
-    } else {
-      post_addition($url, $name, $toc, $summary);
-    }
-    print $q->p('Questions? Send mail to Alex Schroeder <'
-		. $q->a({-href=>'mailto:kensanata@gmail.com'},
-			'kensanata@gmail.com') . '>');
-    print $q->end_div();
-    PrintFooter();
-  }
-}
-
-__DATA__
+  } elsif ($q->path_info eq '/top') {
+    print GetHeader('', 'Top Blogs');
+    print $q->start_div({-class=>'content top'});
+    print $q->ol($q->li(top()));
+    print_end_of_page();
+  } elsif ($q->path_info =~ '^/match/(.*)') {
+    my $term = $1;
+    print GetHeader('', "Entries Matching '$term'");
+    print $q->start_div({-class=>'content match'});
+    print $q->o
