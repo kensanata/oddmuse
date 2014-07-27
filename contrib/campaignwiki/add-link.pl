@@ -1,4 +1,83 @@
-(quotemeta($domain));
+#! /usr/bin/perl
+
+# Copyright (C) 2011–2014  Alex Schroeder <alex@gnu.org>
+
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
+
+package OddMuse;
+
+use LWP::UserAgent;
+use HTML::TreeBuilder;
+use JSON::PP;
+use utf8;
+
+# load Oddmuse core
+$RunCGI = 0;
+do "wiki.pl";
+
+# globals
+my $self = "http://campaignwiki.org/add-link";
+my $name = "OSR Links to Wisdom";
+my $wiki = 'LinksToWisdom';
+my $site = "http://campaignwiki.org/wiki/$wiki";
+# my $site = "http://localhost/wiki.pl";
+my $home = "$site/$HomePage";
+# http://www.emacswiki.org/pics/star.png
+my $stardata = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAFVBMVEUAAHkAAACzdRTapx3twwD/9qb////1YCa0AAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfXAQYCJAu+WhwbAAAAKnRFWHRDb21tZW50AGJ5IFJhZG9taXIgJ1RoZSBTaGVlcCcgRG9waWVybGFza2kVfTXbAAAAYElEQVQI12NgQAKMMIaYAFTAzRDKCHOEMETCnEFyjIJhYS6OggwMoqGhaS7GRgIMjC6uYc5GikA5YRcXIyWwotBgJUWw7lAXsAyDaIihMlhK1FFA0AjEEAESQgJQu4EYAPAPC2XcokgQAAAAAElFTkSuQmCC';
+
+main();
+
+sub toc {
+  # start with the homepage
+  my @values;
+  my %labels;
+  for my $id (GetPageContent($HomePage) =~ /\* \[\[(.*?)\]\]/g) {
+    push @values, $id;
+    for my $item (GetPageContent(FreeToNormal($id)) =~ /(\*+ [^][\n]*)$/mg) {
+      my $value = $item;
+      my $label = $item;
+      $value =~ s/\* *//g;
+      push @values, $value;
+      $label =~ s/\* */ /g; # EM SPACE
+      $labels{$value} = $label;
+    }
+  }
+  return \@values, \%labels;
+}
+
+sub top {
+  # start with the homepage
+  my %blog;
+  my $n;
+  for my $id (GetPageContent($HomePage) =~ /\* \[\[(.*?)\]\]/g) {
+    for my $item (GetPageContent(FreeToNormal($id)) =~ /^\*+\s+\[(https?:\/\/[^\/\n\t ]+)/mg) {
+      $n++;
+      # handle blogspot domain munging
+      $item =~ s/blogspot(\.[a-z]+)+/blogspot.com/;
+      $blog{$item}++;
+    }
+  }
+  print $q->p("Total links counted: $n.");
+  my @list = sort { $blog{$b} <=> $blog{$a} } keys %blog;
+  # my $max = scalar @list;
+  # $max = 20 if $max > 20;
+  # @list = @list[0 .. $max -1];
+  @list = map {
+    my $domain = substr($_, index($_, '://') + 3);
+    my $term = quotemeta($domain);
+    # handle blogspot domain munging
+    $term =~ s/blogspot\\\.com/blogspot(\\.[a-z]+)+/;
+    $term = QuoteHtml($term);
     $q->a({-href => $_}, $domain)
 	. " (" . $q->a({-href => "$self/match/$term"}, $blog{$_}) . ")";
   } @list;
@@ -200,4 +279,27 @@ sub main {
     my $term = $1;
     print GetHeader('', "Entries Matching '$term'");
     print $q->start_div({-class=>'content match'});
-    print $q->o
+    print $q->ol($q->li(match($term)));
+    print_end_of_page();
+  } else {
+    push(@UserGotoBarPages, 'Help');
+    $UserGotoBar = $q->a({-href=>$q->url . '/source'}, 'Source');
+    print GetHeader('', 'Submit a new link');
+    print $q->start_div({-class=>'content index'});
+    my $url = GetParam('url');
+    my $name = UnquoteHtml(GetParam('name', get_name($url)));
+    my $toc = GetParam('toc');
+    my $confirm = GetParam('confirm');
+    my $summary = GetParam('summary');
+    if (not $url or not $toc) {
+      default();
+    } elsif (not $confirm) {
+      confirm($url, $name, $toc);
+    } else {
+      post_addition($url, $name, $toc, $summary);
+    }
+    print_end_of_page();
+  }
+}
+
+__DATA__
