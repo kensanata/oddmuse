@@ -3475,7 +3475,7 @@ sub Replace {
     $_ = $Page{text};
     if (eval "s{$from}{$to}gi") { # allows use of backreferences
       push (@result, $id);
-      Save($id, $_, $from . ' -> ' . $to, 1, ($Page{host} ne GetRemoteHost()));
+      Save($id, $_, $from . ' → ' . $to, 1, ($Page{host} ne GetRemoteHost()));
     }
   }
   ReleaseLock();
