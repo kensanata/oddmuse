@@ -779,7 +779,8 @@ Requires all the variables to be bound for
     (if (re-search-forward "^revision: \\([0-9]+\\)$" nil t)
 	(prog1 (match-string 1)
 	  (message "Determining latest revision...done"))
-      (message "Cannot determine the latest revision from the page history"))))
+      (message "This is a new page")
+      "new")))
 
 ;;;###autoload
 (defun oddmuse-edit (wiki pagename)
