@@ -26,6 +26,7 @@ $RunCGI = 0;
 do "wiki.pl";
 
 # globals
+my $self = "http://campaignwiki.org/add-link";
 my $name = "OSR Links to Wisdom";
 my $wiki = 'LinksToWisdom';
 my $site = "http://campaignwiki.org/wiki/$wiki";
@@ -52,6 +53,54 @@ sub toc {
     }
   }
   return \@values, \%labels;
+}
+
+sub top {
+  # start with the homepage
+  my %blog;
+  my $n;
+  for my $id (GetPageContent($HomePage) =~ /\* \[\[(.*?)\]\]/g) {
+    for my $item (GetPageContent(FreeToNormal($id)) =~ /^\*+\s+\[(https?:\/\/[^\/\n\t ]+)/mg) {
+      $n++;
+      # handle blogspot domain munging
+      $item =~ s/blogspot(\.[a-z]+)+/blogspot.com/;
+      $blog{$item}++;
+    }
+  }
+  print $q->p("Total links counted: $n.");
+  my @list = sort { $blog{$b} <=> $blog{$a} } keys %blog;
+  # my $max = scalar @list;
+  # $max = 20 if $max > 20;
+  # @list = @list[0 .. $max -1];
+  @list = map {
+    my $domain = substr($_, index($_, '://') + 3);
+    my $term = quotemeta($domain);
+    # handle blogspot domain munging
+    $term =~ s/blogspot\\\.com/blogspot(\\.[a-z]+)+/;
+    $term = QuoteHtml($term);
+    $q->a({-href => $_}, $domain)
+	. " (" . $q->a({-href => "$self/match/$term"}, $blog{$_}) . ")";
+  } @list;
+  return \@list;
+}
+
+sub match {
+  my $term = shift;
+  # start with the homepage
+  my @list;
+  my $title;
+  for my $id (GetPageContent($HomePage) =~ /\* \[\[(.*?)\]\]/g) {
+    for my $line (split /\n/, GetPageContent(FreeToNormal($id))) {
+      if ($line =~ /^\*+\s+([^][\n]*)$/) {
+	$title = $1;
+      } elsif ($line =~ /$term/o) {
+	if ($line =~ /^\*+\s+\[(https?:\S+)\s+([^]]+)\]/) {
+	  push (@list, $q->a({-href => $1}, $2) . " (" . $title . ")");
+	}
+      }
+    }
+  }
+  return \@list;
 }
 
 sub html_toc {
@@ -188,11 +237,20 @@ sub post {
   }
 }
 
+sub print_end_of_page {
+    print $q->p('Questions? Send mail to Alex Schroeder <'
+		. $q->a({-href=>'mailto:kensanata@gmail.com'},
+			'kensanata@gmail.com') . '>');
+    print $q->end_div();
+    PrintFooter();
+}
+
 sub main {
   $ConfigFile = "$DataDir/config"; # read the global config file
   $DataDir = "$DataDir/$wiki";     # but link to the local pages
   Init();                          # read config file (no modules!)
   $ScriptName = $site;             # undo setting in the config file
+  $FullUrl = $site;                #
   binmode(STDOUT,':utf8');
   $q->charset('utf8');
   if ($q->path_info eq '/source') {
@@ -212,6 +270,17 @@ sub main {
     print "Content-type: application/json; charset=UTF-8\r\n\r\n";
     binmode(STDOUT,':raw'); # because of encode_json
     print JSON::PP::encode_json($values);
+  } elsif ($q->path_info eq '/top') {
+    print GetHeader('', 'Top Blogs');
+    print $q->start_div({-class=>'content top'});
+    print $q->ol($q->li(top()));
+    print_end_of_page();
+  } elsif ($q->path_info =~ '^/match/(.*)') {
+    my $term = $1;
+    print GetHeader('', "Entries Matching '$term'");
+    print $q->start_div({-class=>'content match'});
+    print $q->ol($q->li(match($term)));
+    print_end_of_page();
   } else {
     push(@UserGotoBarPages, 'Help');
     $UserGotoBar = $q->a({-href=>$q->url . '/source'}, 'Source');
@@ -229,11 +298,7 @@ sub main {
     } else {
       post_addition($url, $name, $toc, $summary);
     }
-    print $q->p('Questions? Send mail to Alex Schroeder <'
-		. $q->a({-href=>'mailto:kensanata@gmail.com'},
-			'kensanata@gmail.com') . '>');
-    print $q->end_div();
-    PrintFooter();
+    print_end_of_page();
   }
 }
 
