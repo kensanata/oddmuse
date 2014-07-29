@@ -50,29 +50,39 @@ The email address used to identify users in git.
 
 =cut
 
-use vars qw($GitBinary $GitRepo $GitMail);
+use Cwd;
+use vars qw($GitBinary $GitRepo $GitMail $GitPageFile);
 
-$GitBinary = '/usr/bin/git';
+$GitBinary = 'git';
 $GitMail = 'unknown@oddmuse.org';
+$GitPageFile = 0;
 
 push(@MyInitVariables, \&GitInitVariables);
 
 sub GitRun {
+  my $oldDir = cwd;
+  chdir($GitRepo);
   my $result = '';
   local *STDOUT;
   open(STDOUT, '>', \$result) or die "Can't open memory file: $!";
-  system($GitBinary, @_) == 0
-    or ReportError("git failed: $!",
-		   "500 INTERNAL SERVER ERROR",
-		   undef,
-		   $q->p($q->tt(join(' ', $GitBinary, map {
-		     if (index($_, ' ') == -1) {
-		      $_;
-		     } else {
-		       "'$_'";
-		     }
-		   } @_))),
-		   $q->pre($result));
+  my $exitStatus = system($GitBinary, @_);
+  chdir($oldDir);
+  if (not defined wantarray) { # void context
+    return if $exitStatus == 0;
+    ReportError("git failed: $!",
+		'500 INTERNAL SERVER ERROR',
+		undef,
+		$q->p($q->tt(join(' ', $GitBinary, map {
+		  if (index($_, ' ') == -1) {
+		    $_;
+		  } else {
+		    "'$_'";
+		  }
+				  } @_))),
+		$q->pre($result));
+  } else {
+    return $exitStatus;
+  }
 }
 
 sub GitInitVariables {
@@ -80,20 +90,15 @@ sub GitInitVariables {
 }
 
 sub GitInitRepository {
-  if (not -d "$GitRepo/.git") {
-    CreateDir($GitRepo);
-    chdir($GitRepo); # important for all the git commands that follow!
-    GitRun('init', '--quiet');
-    foreach my $id (AllPagesList()) {
-      OpenPage($id);
-      WriteStringToFile("$GitRepo/$id", $Page{text});
-      GitRun('add', $id);
-    }
-    GitRun('commit', '--quiet', '-m', 'initial import',
-	   "--author=Oddmuse <$GitMail>");
-  } else {
-    chdir($GitRepo); # important for all the git commands that follow!
+  return if -d "$GitRepo/.git";
+  CreateDir($GitRepo);
+  GitRun(qw(init --quiet));
+  foreach my $id (AllPagesList()) {
+    OpenPage($id);
+    WriteStringToFile("$GitRepo/$id", $GitPageFile ? EncodePage(%Page) : $Page{text});
+    GitRun(qw(add --), $id);
   }
+  GitRun(qw(commit --quiet -m), 'initial import', "--author=Oddmuse <$GitMail>");
 }
 
 *GitOldSave = *Save;
@@ -103,16 +108,14 @@ sub GitNewSave {
   GitOldSave(@_);
   GitInitRepository();
   my ($id) = @_;
-  WriteStringToFile("$GitRepo/$id", $Page{text});
-  if ($Page{revision} == 1) {
-    GitRun('add', $id);
-  }
+  WriteStringToFile("$GitRepo/$id", $GitPageFile ? EncodePage(%Page) : $Page{text});
+  GitRun(qw(add --), $id) if ($Page{revision} == 1);
   my $message = $Page{summary};
   $message =~ s/^\s+$//;
   $message ||= T('no summary available');
   my $author = $Page{username} || T('Anonymous');
-  GitRun('commit', '--quiet', '-m', $message,
-	 "--author=$author <$GitMail>", $id);
+  GitRun(qw(commit --quiet -m), $message,
+	 "--author=$author <$GitMail>", '--', $id);
 }
 
 *GitOldDeletePage = *DeletePage;
@@ -123,11 +126,11 @@ sub GitNewDeletePage {
   return $error if $error;
   GitInitRepository();
   my ($id) = @_;
-  GitRun('rm', '--quiet', '--ignore-unmatch', $id);
+  GitRun(qw(rm --quiet --ignore-unmatch --), $id);
   my $message = T('page was marked for deletion');
   my $author = T('Oddmuse');
-  GitRun('commit', '--quiet', '-m', $message,
-	 "--author=$author <$GitMail>", $id);
+  GitRun(qw(commit --quiet -m), $message,
+	 "--author=$author <$GitMail>", '--', $id);
   return ''; # no error
 }
 
@@ -140,8 +143,7 @@ sub DoGitCleanup {
   print GetHeader('', 'Git', '');
   print $q->start_div({-class=>'content git'});
   RequestLockOrError();
-  print $q->p(T('Main lock obtained.')), '<p>',
-    T('Cleaning up git repository');
+  print $q->p(T('Main lock obtained.')), '<p>', T('Cleaning up git repository');
   GitCleanup();
   ReleaseLock();
   print $q->p(T('Main lock released.')), $q->end_div();
@@ -150,7 +152,7 @@ sub DoGitCleanup {
 
 sub GitCleanup {
   if (-d $GitRepo) {
-    print $q->p("Git cleanup starting");
+    print $q->p('Git cleanup starting');
     AllPagesList();
     # delete all the files including all the files starting with a dot
     opendir(DIR, $GitRepo) or ReportError("cannot open directory $GitRepo: $!");
@@ -163,20 +165,20 @@ sub GitCleanup {
     }
     closedir DIR;
     # write all the files again, just to be sure
-    print $q->p("Rewriting all the files, just to be sure");
+    print $q->p('Rewriting all the files, just to be sure');
     foreach my $id (@IndexList) {
       OpenPage($id);
-      WriteStringToFile("$GitRepo/$id", $Page{text});
+      WriteStringToFile("$GitRepo/$id", $GitPageFile ? EncodePage(%Page) : $Page{text});
     }
     # run git!
-    chdir($GitRepo); # important for all the git commands that follow!
     # add any new files
-    print $q->p("Adding new files, if any");
-    GitRun('add', '.');
+    print $q->p('Adding new files, if any');
+    GitRun(qw(add -A));
     # commit the new state
-    print $q->p("Committing changes, if any");
-    # try to protect against mysterious crashes
-    print $q->pre(`$GitBinary commit --quiet -a -m 'maintenance job' --author=Oddmuse <$GitMail>` . ' ');
-    print $q->p("Git done");
+    print $q->p('Committing changes, if any');
+    my $exitStatus = GitRun(qw(commit --quiet -m), 'maintenance job',
+			    "--author=Oddmuse <$GitMail>");
+    print $q->p('git commit finished with ' . $exitStatus . ' exit status.');
+    print $q->p('Git done');
   }
 }
