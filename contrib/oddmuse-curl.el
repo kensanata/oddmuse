@@ -144,7 +144,7 @@ See `oddmuse-format-command' for the formatting options.")
           " --form title='%t'"
           " --form summary='%s'"
           " --form username='%u'"
-          " --form password='%p'"
+          " --form pwd='%p'"
 	  " --form %q=1"
           " --form recent_edit=%m"
 	  " --form oldtime=%o"
@@ -160,7 +160,7 @@ See `oddmuse-format-command' for the formatting options.")
   (concat "curl --silent"
           " --form title='%t'"
           " --form username='%u'"
-          " --form password='%p'"
+          " --form pwd='%p'"
 	  " --form %q=1"
           " --form recent_edit=%m"
 	  " --form oldtime=%o"
@@ -456,7 +456,11 @@ it just runs by itself such as when loading a page.
 If SEND-BUFFER is not nil, the command output is compared to
 EXPECTED-CODE. The command is supposed to print the HTTP status
 code on stdout, so usually we want to provide either 302 or 200
-as EXPECTED-CODE."
+as EXPECTED-CODE.
+
+In addition to that, we check the HTML in the buffer for
+indications of an error. If we find any, that willget reported as
+well."
   (let* ((max-mini-window-height 1)
 	 (wiki (or wiki oddmuse-wiki))
 	 (pagename (or pagename oddmuse-page-name))
@@ -483,6 +487,10 @@ as EXPECTED-CODE."
 	     (error "Error %s: non-zero return value" mesg))
 	    ((and send-buffer expected-code (not (string= expected-code status)))
 	     (error "Error %s: HTTP Status Code %s" mesg status))
+	    ((string-match "<title>Error</title>" status)
+	     (if (string-match "<h1>\\(.*\\)</h1>" status)
+		 (error "Error %s: %s" mesg (match-string 1 status))
+	       (error "Error %s: Cause unknown")))
 	    (t
 	     (message "%s...done" mesg))))))
 
