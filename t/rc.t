@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 90;
+use Test::More tests => 92;
 
 clear_pages();
 
@@ -27,6 +27,15 @@ my ($from, $upto) = $more =~ /action=rc;from=(\d+);upto=(\d+)/;
 is($upto - $from, 3 * 24 * 60 * 60, 'More... link is for 3 days');
 
 # Click it once...
+
+$more = xpath_test(get_page("action=rc from=$from upto=$upto"),
+		   '//a[text()="More..."]/attribute::href');
+
+($from, $upto) = $more =~ /action=rc;from=(\d+);upto=(\d+)/;
+is($upto - $from, 3 * 24 * 60 * 60, 'Next More... link is for 3 days, too');
+
+# Click it twice...
+
 
 $more = xpath_test(get_page("action=rc from=$from upto=$upto"),
 		   '//a[text()="More..."]/attribute::href');
