@@ -1781,8 +1781,9 @@ sub RcHtml {
   };
   ProcessRcLines($printDailyTear, $printRCLine);
   $html .= '</ul>' if $inlist;
-  my $to = GetParam('from', $Now - GetParam('days', $RcDefault) * 86400);
-  my $from = $to - GetParam('days', $RcDefault) * 86400;
+  # use delta between from and upto, or use days, whichever is available
+  my $to = GetParam('from', GetParam('upto', $Now - GetParam('days') * 86400));
+  my $from = $to - (GetParam('upto') ? GetParam('upto') - GetParam('from') : GetParam('days', $RcDefault) * 86400);
   my $more = "action=rc;from=$from;upto=$to";
   foreach (qw(all showedit rollback rcidonly rcuseronly rchostonly
 	      rcclusteronly rcfilteronly match lang followup)) {
