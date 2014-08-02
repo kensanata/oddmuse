@@ -1,4 +1,4 @@
-# Copyright (C) 2006–20013  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006–20014  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,12 +15,27 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 86;
+use Test::More tests => 90;
 
 clear_pages();
 
-# First, make sure it handles empty log files and very old log files
-# with nothing appropriate in them.
+# Before doing anything, let's check the More... links
+
+my $more = xpath_test(get_page('action=rc days=3'),
+		      '//a[text()="More..."]/attribute::href');
+my ($from, $upto) = $more =~ /action=rc;from=(\d+);upto=(\d+)/;
+is($upto - $from, 3 * 24 * 60 * 60, 'More... link is for 3 days');
+
+# Click it once...
+
+$more = xpath_test(get_page("action=rc from=$from upto=$upto"),
+		   '//a[text()="More..."]/attribute::href');
+
+($from, $upto) = $more =~ /action=rc;from=(\d+);upto=(\d+)/;
+is($upto - $from, 3 * 24 * 60 * 60, 'Next More... link is for 3 days, too');
+
+# Make sure it handles empty log files and very old log files with
+# nothing appropriate in them.
 
 test_page(get_page('action=rc raw=1'), 'title: Wiki');
 # ts, id, minor, summary, host, username, revision, languages, cluster
