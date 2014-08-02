@@ -974,7 +974,8 @@ With universal argument, reload."
 	    (generator (cdr (assq 'generator item)))
 	    (description (cdr (assq 'description item)))
 	    (minor (cdr (assq 'minor item))))
-	(insert "[[" title "]] – " generator)
+	(insert "[[" title "]] – "
+		(propertize generator 'font-lock-face 'shadow))
 	(when minor
 	  (insert " [minor]"))
 	(newline)
