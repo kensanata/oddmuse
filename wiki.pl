@@ -649,11 +649,11 @@ sub AddHtmlEnvironment {  # add a new $html_tag
 }
 
 sub OpenHtmlEnvironment {  # close the previous $html_tag and open a new one
-  my ($html_tag, $depth, $html_tag_attr) = @_;
+  my ($html_tag, $depth, $html_tag_attr, $tag_regex) = @_;
   my ($html, $found, @stack) = ('', 0);  # always return something
   while (@HtmlStack and $found < $depth) { # determine new stack
     my $tag = pop(@HtmlStack);
-    $found++ if $tag eq $html_tag; # this ignores that ul and ol can be equivalent for nesting purposes
+    $found++ if ($tag_regex ? $tag =~ $tag_regex : $tag eq $html_tag);
     unshift(@stack, $tag);
   }
   unshift(@stack, pop(@HtmlStack)) if @HtmlStack and $found < $depth; # nested sublist coming up, keep list item
