@@ -2392,7 +2392,7 @@ sub GetFooterLinks {
   if ($id and $rev ne 'history' and $rev ne 'edit') {
     if ($CommentsPattern) {
       if ($id =~ /$CommentsPattern/o) {
-	push(@elements, GetPageLink($1, undef, 'original', T('a')));
+	push(@elements, GetPageLink($1, undef, 'original', T('a'))) if $1;
       } else {
 	push(@elements, GetPageLink($CommentsPrefix . $id, undef, 'comment', T('c')));
       }
