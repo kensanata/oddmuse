@@ -458,7 +458,8 @@ sub CreoleListAndNewLineRule {
   # # numbered list
   # * bullet list (nestable; needs space when nested to disambiguate from bold)
   if (($bol             and m/\G[ \t]*([#*])[ \t]*/cg) or
-      ($is_in_list_item and m/\G[ \t]*\n+[ \t]*(([#*])\2+)[ \t]*/cg)) {
+      ($is_in_list_item and m/\G[ \t]*\n+[ \t]*(#+)[ \t]*/cg) or 
+      ($is_in_list_item and m/\G[ \t]*\n+[ \t]*(\*+)[ \t]+/cg)) {
     # Note: the first line of this return statement is --not-- equivalent to:
     # "return CloseHtmlEnvironmentUntil('li')", as that line does not permit
     # modules overriding the CloseHtmlEnvironments() function to "have a say."
