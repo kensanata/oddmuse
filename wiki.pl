@@ -2225,12 +2225,14 @@ sub GetHeader {
     }
   }
   $result .= $q->div({-class=>'message'}, $Message) if $Message;
-  if ($id ne '') {
-    $result .= $q->h1(GetSearchLink($id, '', '', T('Click to search for references to this page')));
-  } else {
-    $result .= $q->h1($title);
-  }
+  $result .= GetHeaderTitle($id, $title, $oldId);
   return $result . $q->end_div() . $q->start_div({-class=>'wrapper'});
+}
+
+sub GetHeaderTitle {
+  my ($id, $title, $oldId) = @_;
+  return $q->h1($title) if $id eq '';
+  return $q->h1(GetSearchLink($id, '', '', T('Click to search for references to this page')));
 }
 
 sub GetHttpHeader {
