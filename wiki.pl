@@ -2292,7 +2292,7 @@ sub GetHtmlHeader {   # always HTML!
   my $base = $SiteBase ? $q->base({-href=>$SiteBase}) : '';
   $base .= '<link rel="alternate" type="application/wiki" title="'
     . T('Edit this page') . '" href="'
-    . ScriptUrl('action=edit;id=' . UrlEncode(GetId())) . '" />' if $id;
+    . ScriptUrl('action=edit;id=' . UrlEncode($id)) . '" />' if $id;
   return $DocumentHeader
     . $q->head($q->title($title) . $base
       . GetCss() . GetRobots() . GetFeeds() . $HtmlHeaders
