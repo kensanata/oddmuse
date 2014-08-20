@@ -61,7 +61,7 @@ sub NewPrintJournal {
       local %Page;
       local $OpenPageName='';
       print '<div class="journal">';
-      PrintAllPages(1, 1, undef, @pages);
+      PrintAllPages(1, 1, undef, undef, @pages);
       print '</div>';
     }
     $CollectingJournal = 0;
