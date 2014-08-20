@@ -108,7 +108,7 @@ sub get_page {
 sub name {
   $_ = shift;
   s/\n/\\n/g;
-  $_ = '...' . substr($_, -60) if length > 63;
+  $_ = '...' . substr($_, -67) if length > 70;
   return $_;
 }
 
@@ -290,15 +290,7 @@ sub remove_module {
   unlink("$ModuleDir/$mod") or die "Cannot unlink: $!";
 }
 
-sub clear_pages {
-  if (-f "/bin/rm") {
-    system("/bin/rm -rf $DataDir");
-  } else {
-    system("c:/cygwin/bin/rm.exe -rf $DataDir");
-  }
-  die "Cannot remove $DataDir!\n" if -e $DataDir;
-  mkdir $DataDir;
-  add_module('mac.pl') if $^O eq 'darwin'; # guessing HFS filesystem
+sub write_config_file {
   open(F, '>:encoding(utf-8)', "$DataDir/config");
   print F "\$AdminPass = 'foo';\n";
   # this used to be the default in earlier CGI.pm versions
@@ -314,6 +306,18 @@ sub clear_pages {
   $NearSiteInit = 0;
   %NearSite = ();
   %NearSearch = ();
+}
+
+sub clear_pages {
+  if (-f "/bin/rm") {
+    system("/bin/rm -rf $DataDir");
+  } else {
+    system("c:/cygwin/bin/rm.exe -rf $DataDir");
+  }
+  die "Cannot remove $DataDir!\n" if -e $DataDir;
+  mkdir $DataDir;
+  add_module('mac.pl') if $^O eq 'darwin'; # guessing HFS filesystem
+  write_config_file();
 }
 
 1;

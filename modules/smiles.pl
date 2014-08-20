@@ -1,41 +1,54 @@
-# Copyright (C) 2004  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2014  Alex Schroeder <alex@gnu.org>
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
 
 $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/smiles.pl">smiles.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Logo_And_Icons#Smilies">Logo And Icons</a></p>';
 
+# The smilies are from the Emacs 24 distribution. There, you'll find
+# them in the etc/images/smilies/medium directory.
+
+# Files: blink.xpm braindamaged.xpm cry.xpm dead.xpm evil.xpm forced.xpm
+#        frown.xpm grin.xpm indifferent.xpm reverse-smile.xpm sad.xpm
+#        smile.xpm wry.xpm
+# Author: Adam Sjøgren
+# Copyright (C) 2007-2013 Free Software Foundation, Inc.
+# License: GNU General Public License version 3 or later (see COPYING)
+
 %Smilies = (
-     ':-?D'      => 'http://www.emacswiki.org/pics/grin.png',
-     ':-?\)'     => 'http://www.emacswiki.org/pics/smile.png',
-     ':-?\}='    => 'http://www.emacswiki.org/pics/smile-cool-beard.png',
-     ';-?\)'     => 'http://www.emacswiki.org/pics/blink.png',
-     ':-?]'      => 'http://www.emacswiki.org/pics/forced.png',
-     '=-?\)'     => 'http://www.emacswiki.org/pics/bigeye-smile.png',
-     '8-\)'      => 'http://www.emacswiki.org/pics/braindamaged.png',
-     '8-?D'      => 'http://www.emacswiki.org/pics/goggle.png',
-     ':-\|'      => 'http://www.emacswiki.org/pics/indifferent.png',
-     ':-?[/\\\]' => 'http://www.emacswiki.org/pics/wry.png',
-     ':-?\('     => 'http://www.emacswiki.org/pics/sad.png',
-     ':-?\{'     => 'http://www.emacswiki.org/pics/frown.png',
-     ':\'\('     => 'http://www.emacswiki.org/pics/cry.png',
-     'X-?[(|]'   => 'http://www.emacswiki.org/pics/dead.png',
-     '\&gt;-?\{' => 'http://www.emacswiki.org/pics/evil.png',
-     ':-[Ppb]'   => 'http://www.emacswiki.org/pics/poke.png',
-     '\(-?:'     => 'http://www.emacswiki.org/pics/reverse-smile.png',
-     '&lt;3'     => 'http://www.emacswiki.org/pics/round-heart.png',
-     ':-?€'      => 'http://www.emacswiki.org/pics/tentacle.png',
+	    # blink
+	    quotemeta(';-)') => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAACFQTFRFAAAAAAAAHRkAiHUA07YA+tgAZFYA/90AWU0Aj3sA////jG0orwAAAAF0Uk5TAEDm2GYAAAABYktHRApo0PRWAAAAcklEQVQI12NgYGAUFBRgAAJGZdcQIxBLLLy8vDQRKJBeXl7eXibAwAQUKBcvVWAQLk5xKxcvN2QQKS8UBzIcGUTLwSCQQbQQRIsHMoiUiJeXF7o7MgiXTywvlwQqZgqvFBScDtQONrAcaCDcCoSlUGcAAESjIP6OTV1GAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE0LTA3LTAzVDE0OjQ3OjQ2KzAyOjAwBw7jJgAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNC0wNy0wM1QxNDo0Nzo0NiswMjowMHZTW5oAAAAASUVORK5CYII',
+	    # braindamaged
+	    quotemeta('8-)') => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAB5QTFRFAAAAAAAAHRkAiHUA07YA+tgAZFYA/90Aj3sA////2fI0PgAAAAF0Uk5TAEDm2GYAAAABYktHRAnx2aXsAAAAeElEQVQI12NgYGAUFBRgAAJGZdcQIxBLLLy8vDQRKJDuKOIoUibAwBQu5iiSWKrAIFwukpTmWG7IIFIu5pSSWO7IIFruKFIoUh7IIFpYDgTigQwiJeLl5YXujkDFjeXlEkDFTOEVgoLtQO2M6SA1QAPhViAshToDABSyHdgjFa3AAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE0LTA3LTAzVDE0OjQ3OjQ2KzAyOjAwBw7jJgAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNC0wNy0wM1QxNDo0Nzo0NiswMjowMHZTW5oAAAAASUVORK5CYII',
+	    # cry
+	    quotemeta(':\'(') => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAB5QTFRFAAAAAAAAHRkAiHUA07YA+tgAZFYA/90AWU0A////M/SGKgAAAAF0Uk5TAEDm2GYAAAABYktHRAnx2aXsAAAAcklEQVQI12NgYGAUFBRgAAJGZdcQIxBLLLy8vDQRKJBeXl7eXibAwBRe0V4hUarAIFwuKFHYWG7IIAKUKXQsd2QQBTJKxMoDwQwgCARKFQsKmgOlhMsb3UskgIqZQoDKHV0VgAa2l5dXAA2EW4GwFOoMAEHVILjOIAB7AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE0LTA3LTAzVDE0OjQ3OjQ2KzAyOjAwBw7jJgAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNC0wNy0wM1QxNDo0Nzo0NiswMjowMHZTW5oAAAAASUVORK5CYII',
+	    # dead
+	    quotemeta('X-(') => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAB5QTFRFAAAAAAAAHRkAiHUA07YA+tgAZFYA/90Aj3sA////2fI0PgAAAAF0Uk5TAEDm2GYAAAABYktHRAnx2aXsAAAAdklEQVQI12NgYGAUFBRgAAJGZdcQIxBLLLy8vDQRKJDh7hFS0ibAwBQiIuLo6KrAIFzuGF4qUm7IIFIiIhro6O7IIFoBUtMeyCBaWA4E4oFAKfHy8kKglHB5Y3m5BFAxU3iFoGB7qQIDYzpITZkAwgqEpVBnAABAVB4+nUMqPgAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxNC0wNy0wM1QxNDo0Nzo0NiswMjowMAcO4yYAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMTQtMDctMDNUMTQ6NDc6NDYrMDI6MDB2U1uaAAAAAElFTkSuQmC',
+	    # evil
+	    quotemeta('>-{') => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAACFQTFRFAAAAAAAAHRkAiHUA07YA+tgAZFYA/90AWU0Aj3sA////jG0orwAAAAF0Uk5TAEDm2GYAAAABYktHRApo0PRWAAAAc0lEQVQI12NgYGAUFBRgAAJGZdcQIxBLLLy8vDQRKJBuUV7eXCbAwBTuWF4uUqrAIFxe2O4hXm7IIFJe2AJkODKIloNBIINoIYgWD2QQKREvLy90dwQqnlheLglUzBReKSg4HaidMR2kBmgg3AqEpVBnAAAxxSDj4Zf1RAAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxNC0wNy0wM1QxNDo0Nzo0NiswMjowMAcO4yYAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMTQtMDctMDNUMTQ6NDc6NDYrMDI6MDB2U1uaAAAAAElFTkSuQmC',
+	    # forced
+	    quotemeta(':-]') => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAB5QTFRFAAAAAAAAHRkAiHUA07YA+tgAZFYA/90AWU0A////M/SGKgAAAAF0Uk5TAEDm2GYAAAABYktHRAnx2aXsAAAAb0lEQVQI12NgYGAUFBRgAAJGZdcQIxBLLLy8vDQRKJBeUV7eXibAwBReWF4uXqrAIFwOYpQbMohAGI4MouVgEMggWgyizQMZRArdy8tLxB0ZhItNysudzQ0ZmEIUBQWFXBWABoLUAA2EW4GwFOoMAENHIDaBTwKaAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE0LTA3LTAzVDE0OjQ3OjQ2KzAyOjAwBw7jJgAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNC0wNy0wM1QxNDo0Nzo0NiswMjowMHZTW5oAAAAASUVORK5CYII',
+	    # frown
+	    quotemeta('>-(') => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAB5QTFRFAAAAAAAAHRkAiHUA07YA+tgAZFYA/90AWU0A////M/SGKgAAAAF0Uk5TAEDm2GYAAAABYktHRAnx2aXsAAAAbklEQVQI12NgYGAUFBRgAAJGZdcQIxBLLLy8vDQRKJBuUV7eXCbAwBTuWF4uUqrAIFxe2O4hXm7IIFJe2AJkODKIloNBIIIhUl4sKGgOlBIub3QvkQAqZgoRKS93dFUAGtheXl4BNBBuBcJSqDMAINwgfeXok+IAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTQtMDctMDNUMTQ6NDc6NDYrMDI6MDAHDuMmAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE0LTA3LTAzVDE0OjQ3OjQ2KzAyOjAwdlNbmgAAAABJRU5ErkJggg=',
+	    # grin
+	    quotemeta(':-D') => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAACFQTFRFAAAAAAAAHRkAiHUA07YA+tgAZFYA/90AWU0A////j3sAOzDvXwAAAAF0Uk5TAEDm2GYAAAABYktHRAnx2aXsAAAAcElEQVQI12NgYGAUFBRgAAJGZdcQIxBLLLy8vDQRKJBeUV7eXibAwBReWF4uXqrAIFwOYpQbMohAGI4MouVgEMggWiiWbJYoHsggUiI5c+ZEd0eg4oUzZ0oBFTOFVwkKLgdqZ0wHqQUaCLcCYSnUGQBvkCGbMSPrngAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxNC0wNy0wM1QxNDo0Nzo0NiswMjowMAcO4yYAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMTQtMDctMDNUMTQ6NDc6NDYrMDI6MDB2U1uaAAAAAElFTkSuQmC',
+	    # indifferent
+	    quotemeta(':-|') => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAB5QTFRFAAAAAAAAHRkAiHUA07YA+tgAZFYA/90AWU0A////M/SGKgAAAAF0Uk5TAEDm2GYAAAABYktHRAnx2aXsAAAAb0lEQVQI12NgYGAUFBRgAAJGZdcQIxBLLLy8vDQRKJBeUV7eXibAwBReWF4uXqrAIFwOYpQbMohAGI4MouVgEMggmg6i3QIZRISFy4vLxR0ZhAsdTQQNzQ0ZmILLBd0FgdoZ00HagAbCrUBYCnUGABvIH6pXpKoIAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE0LTA3LTAzVDE0OjQ3OjQ2KzAyOjAwBw7jJgAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNC0wNy0wM1QxNDo0Nzo0NiswMjowMHZTW5oAAAAASUVORK5CYII',
+	    # reverse-smile
+	    quotemeta('(-:') => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAACFQTFRFAAAAAAAAHRkAiHUA07YA+tgAZFYA/90Aj3sAWU0A////QtT48gAAAAF0Uk5TAEDm2GYAAAABYktHRApo0PRWAAAAbklEQVQI12NgYGAUFBRgAAJGZdcQIxBLLLy8vDQRKJBeDgRlAgxM4RWCgu2lCgzC5Y3l5RLlhgwiJeLl5YXujgyihSA14oEMouVgEMggUg4UEi93BCoGMwyB2kEMoHbG9Mry8ulAA+FWICyFOgMAVzMhig+T55IAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTQtMDctMDNUMTQ6NDc6NDYrMDI6MDAHDuMmAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE0LTA3LTAzVDE0OjQ3OjQ2KzAyOjAwdlNbmgAAAABJRU5ErkJggg=',
+	    # sad
+	    quotemeta(':-(') => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAB5QTFRFAAAAAAAAHRkAiHUA07YA+tgAZFYA/90AWU0A////M/SGKgAAAAF0Uk5TAEDm2GYAAAABYktHRAnx2aXsAAAAaUlEQVQI12NgYGAUFBRgAAJGZdcQIxBLLLy8vDQRKJBeUV7eXibAwBReWF4uXqrAIFwOYpQbMohAGI4MouVgEIhgiJQXCwqaA6WEyxvdSySAiplCRMrLHV0VgAa2l5dXAA2EW4GwFOoMAGqJITUDfchKAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE0LTA3LTAzVDE0OjQ3OjQ2KzAyOjAwBw7jJgAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNC0wNy0wM1QxNDo0Nzo0NiswMjowMHZTW5oAAAAASUVORK5CYII',
+	    # smile
+	    quotemeta(':-)') => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAACFQTFRFAAAAAAAAHRkAiHUA07YA+tgAZFYA/90AWU0Aj3sA////jG0orwAAAAF0Uk5TAEDm2GYAAAABYktHRApo0PRWAAAAbUlEQVQI12NgYGAUFBRgAAJGZdcQIxBLLLy8vDQRKJBeUV7eXibAwBReWF4uXqrAIFwOYpQbMohAGI4MouVgEMggWgiixQMZRErEy8sL3R2BiieWl0sCFTOFVwoKTgdqZ0wHqQEaCLcCYSnUGQB7ciGbohFtcwAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxNC0wNy0wM1QxNDo0Nzo0NiswMjowMAcO4yYAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMTQtMDctMDNUMTQ6NDc6NDYrMDI6MDB2U1uaAAAAAElFTkSuQmC',
+	    # wry
+	    quotemeta(':-/') => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAB5QTFRFAAAAAAAAHRkAiHUA07YA+tgAZFYA/90AWU0A////M/SGKgAAAAF0Uk5TAEDm2GYAAAABYktHRAnx2aXsAAAAZklEQVQI12NgYGAUFBRgAAJGZdcQIxBLLLy8vDQRKJBeUV7eXibAwBReWF4uXqrAIFwOYpQbMohAGI4MouVgEAhhlAEZIiCGGVBKuNxRUFAEqJgpPBkoBNTOmJ4OUiSAsAJhKdQZAIcwIb3IdkxFAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE0LTA3LTAzVDE0OjQ3OjQ2KzAyOjAwBw7jJgAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNC0wNy0wM1QxNDo0Nzo0NiswMjowMHZTW5oAAAAASUVORK5CYII',
            );

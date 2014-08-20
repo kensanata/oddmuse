@@ -1,4 +1,4 @@
-# Copyright (C) 2004, 2006, 2007, 2008, 2009  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2004–2014  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,7 +34,12 @@ sub JournalRssGetRcLines {
   my $match = GetParam('match', '^\d\d\d\d-\d\d-\d\d');
   my $search = GetParam('search', '');
   my $reverse = GetParam('reverse', 0);
+  my $monthly = GetParam('monthly', 0);
   my @pages = sort JournalSort (grep(/$match/, $search ? SearchTitleAndBody($search) : AllPagesList()));
+  if ($monthly and not $match) {
+    my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday) = gmtime();
+    $match = '^' . sprintf("%04d-%02d", $year+1900, $mon+1) . '-\d\d';
+  }
   if ($reverse) {
     @pages = reverse @pages;
   }

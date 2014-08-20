@@ -28,7 +28,7 @@ body {
     padding:2% 5%;
     margin:0;
     font-family: "Gentium Basic", "Bookman Old Style", "Times New Roman", serif;
-    font-size: 18pt;
+    font-size: 16pt;
 }
 
 div.header h1 {
@@ -129,9 +129,15 @@ dd {
     margin-bottom:1ex;
 }
 
-textarea { width:100%; height:80%; }
+textarea {
+    width:100%;
+    height:80%;
+    font-size: 12pt;
+}
 textarea#summary { height: 3em; }
-
+input {
+    font-size: 12pt;
+}
 div.image span.caption {
     margin: 0 1em;
 }
@@ -193,14 +199,22 @@ div.footer hr {
     margin: 2em 0 1ex 0;
 }
 
+div.comment {
+  border-top: 2px solid #000;
+  padding-top: 2em;
+}
+
 pre {
     padding: 0.5em;
     margin-left: 1em;
     margin-right: 2em;
     white-space: pre;
     overflow:hidden;
-    font-size: smaller;
 }
+
+tt, pre, code {
+    font-size: 80%;
+};
 
 div.footer hr {
     clear:both;

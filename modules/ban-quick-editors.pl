@@ -25,7 +25,7 @@ sub BanQuickNewUserIsBanned {
   if (not $rule
       and $SurgeProtection # need surge protection
       and GetParam('title')) {
-    my $name = GetParam('username', $ENV{'REMOTE_ADDR'});
+    my $name = GetParam('username', GetRemoteHost());
     my @entries = @{$RecentVisitors{$name}};
     # $entry[0] is $Now after AddRecentVisitor
     my $ts = $entries[1];
