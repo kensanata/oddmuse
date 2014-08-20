@@ -422,9 +422,9 @@ sub StaticNewDoRollback {
     } elsif (!UserCanEdit($id, 1)) {
       print Ts('Editing not allowed for %s.', $id), $q->br();
     } else {
-      Save($id, $text, Ts('Rollback to %s', TimeToText($to)), $minor, ($Page{ip} ne $ENV{REMOTE_ADDR}));
-     	StaticDeleteFile($id);
-		print Ts('%s rolled back', GetPageLink($id)), ($ts ? ' ' . Ts('to %s', TimeToText($to)) : ''), $q->br();
+      Save($id, $text, Ts('Rollback to %s', TimeToText($to)), $minor, ($Page{host} ne GetRemoteHost()));
+      StaticDeleteFile($id);
+      print Ts('%s rolled back', GetPageLink($id)), ($ts ? ' ' . Ts('to %s', TimeToText($to)) : ''), $q->br();
     }
   }
   WriteRcLog('[[rollback]]', '', $to) unless $page; # leave marker for DoRc() if mass rollback

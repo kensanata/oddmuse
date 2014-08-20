@@ -122,15 +122,15 @@ sub bbCodeRule {
   # smiley
   elsif (/\G(:-?[()])/cg) {
     if (substr($1,-1) eq ')') {
-      # '☺' 0009786 00263a WHITE SMILING FACE, So, 0, ON, N,
-      return '&#x263a;'; }
+      # 😊 1F60A SMILING FACE WITH SMILING EYES
+      return '&#x1F60A;'; }
     else {
-      # '☹' 0009785 002639 WHITE FROWNING FACE, So, 0, ON, N,
-      return '&#x2639;'; }}
+      # 😟 1F61F WORRIED FACE
+      return '&#x1F61F;'; }}
   elsif (/\G:(?:smile|happy):/cg) {
-    return '&#x263a;'; }
+    return '&#x1F60A;'; }
   elsif (/\G:(?:sad|frown):/cg) {
-    return '&#x2639;'; }
+    return '&#x1F61F;'; }
   # no match
   return undef;
 }

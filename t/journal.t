@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 44;
+use Test::More tests => 51;
 
 clear_pages();
 
@@ -66,6 +66,22 @@ xpath_test($page, "//a[text()='$tomorrow']");
 negative_xpath_test($page, "//a[text()='$today']",
 		    "//a[text()='$yesterday']",
 		    "//a[text()='$beforeyesterday']");
+
+# Check that ,0 disables More... link
+test_page_negative(update_page('Summary', "No 'More' link:\n\n<journal 3,0>"), 'More\.\.\.');
+
+# But otherwise More... button is present and ,XX syntax works correctly
+test_page(update_page('Summary', "'More' button works correctly:\n\n<journal 2,69>"), 'More\.\.\.', 'num=69');
+
+# <titles> should not display page content
+$page = update_page('Summary', "No page contents:\n\n<titles 3>");
+test_page_negative($page, '(Freitag|Samstag|Sonntag)'); # no content
+test_page($page, "$tomorrow.*$today.*$yesterday"); # but titles are there!
+
+# :OFFSET
+$page = update_page('Summary', "Using offset:\n\n<journal:1>");
+test_page_negative($page, 'Sonntag'); # tomorrow should not appear
+test_page($page, 'Samstag.*Freitag'); # but everything else should
 
 # check $JournalLimit option and comments
 AppendStringToFile($ConfigFile, "\$JournalLimit = 2;\n\$CommentsPrefix = 'Talk about ';\n");

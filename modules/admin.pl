@@ -62,13 +62,13 @@ sub AdminPowerRename {
   # Regenerate index on next request -- remove this before errors can occur!
   unlink($IndexFile);
   # page file
-  CreatePageDir($PageDir, $new); # It might not exist yet
+  CreateDir($PageDir); # It might not exist yet
   rename($fname, $newfname)
     or ReportError(Tss('Cannot rename %1 to %2', $fname, $newfname) . ": $!", '500 INTERNAL SERVER ERROR');
   # keep directory
   my $kdir = GetKeepDir($id);
   my $newkdir = GetKeepDir($new);
-  CreatePageDir($KeepDir, $new); # It might not exist yet (only the parent directory!)
+  CreateDir($KeepDir); # It might not exist yet (only the parent directory!)
   rename($kdir, $newkdir)
     or ReportError(Tss('Cannot rename %1 to %2', $kdir, $newkdir) . ": $!", '500 INTERNAL SERVER ERROR')
       if -d $kdir;
@@ -76,7 +76,7 @@ sub AdminPowerRename {
   if (defined(&GetRefererFile)) {
     my $rdir = GetRefererFile($id);
     my $newrdir = GetRefererFile($new);
-    CreatePageDir($RefererDir, $new); # It might not exist yet
+    CreateDir($RefererDir); # It might not exist yet
     rename($rdir, $newrdir)
       or ReportError(Tss('Cannot rename %1 to %2', $rdir, $newrdir) . ": $!", '500 INTERNAL SERVER ERROR')
 	if -d $rdir;

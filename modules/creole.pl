@@ -456,21 +456,16 @@ sub CreoleListAndNewLineRule {
   my $is_in_list_item  = InElement('li');
 
   # # numbered list
-  if (($bol             and m/\G[ \t]*(#)[ \t]*/cg) or
-      ($is_in_list_item and m/\G[ \t]*\n+[ \t]*(#+)[ \t]*/cg)) {
+  # * bullet list (nestable; needs space when nested to disambiguate from bold)
+  if (($bol             and m/\G[ \t]*([#*])[ \t]*/cg) or
+      ($is_in_list_item and m/\G[ \t]*\n+[ \t]*(#+)[ \t]*/cg) or 
+      ($is_in_list_item and m/\G[ \t]*\n+[ \t]*(\*+)[ \t]+/cg)) {
     # Note: the first line of this return statement is --not-- equivalent to:
     # "return CloseHtmlEnvironmentUntil('li')", as that line does not permit
     # modules overriding the CloseHtmlEnvironments() function to "have a say."
     return ($is_in_list_item ? CloseHtmlEnvironmentUntil('li') : CloseHtmlEnvironments())
-      .OpenHtmlEnvironment('ol', length($1))
-      .AddHtmlEnvironment ('li');
-  }
-  # * bullet list (nestable; needs space when nested to disambiguate from bold)
-  elsif (($bol             and m/\G[ \t]*(\*)[ \t]*/cg) or
-         ($is_in_list_item and m/\G[ \t]*\n+[ \t]*(\*+)[ \t]+/cg)) {
-    return ($is_in_list_item ? CloseHtmlEnvironmentUntil('li') : CloseHtmlEnvironments())
-      .OpenHtmlEnvironment('ul', length($1))
-      .AddHtmlEnvironment ('li');
+      .OpenHtmlEnvironment(substr($1, 0, 1) eq '#' ? 'ol' : 'ul', length($1), '', 'ol|ul')
+      .AddHtmlEnvironment('li');
   }
   # - bullet list (not nestable; always needs space)
   elsif ($CreoleDashStyleUnorderedLists and (

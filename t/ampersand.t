@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 39;
+use Test::More tests => 40;
 use utf8; # tests contain UTF-8 characters and it matters
 
 clear_pages();
@@ -49,6 +49,8 @@ test_page(get_page('title=Änderungen aftertext=Öffnung'),
 # Test von Original und Kommentar
 test_page(get_page('Änderungen'),
 	  'Veränderung', 'Öffnung');
+# Test von RSS 3.0
+test_page(get_page('action=rc raw=1'), 'title: D&D');
 
 add_module('creole.pl');
 

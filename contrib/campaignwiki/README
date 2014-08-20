@@ -1,0 +1,37 @@
+The files in this directory are used to run http://campaignwiki.org/
+
+add-link.pl
+===========
+
+This is used to add links to the Links To Wisdom wiki. This wiki is a
+bookmark site: A few pages make up a big unordered list of links in
+wiki format. add-link is a tool to help users contribute new links to
+the list.
+
+http://campaignwiki.org/wiki/LinksToWisdom/HomePage
+
+copy.pl
+=======
+
+This is used to copy the text from a web page to a wiki page. The idea
+was to keep archive copies of cool pages somewhere. The Blog Archive
+never got used, though.
+
+http://campaignwiki.org/wiki/BlogArchive/HomePage
+
+monster-tag.pl
+==============
+
+This is used to quickly tag many pages in the Monsters wiki. The
+Monsters wiki hasn't been used in a long time, though.
+
+http://campaignwiki.org/wiki/Monsters/HomePage
+
+submit.pl
+=========
+
+This used to be used to add sites to the Old School RPG Planet. The
+aggregator was configured via a wiki page on the Planet wiki. It's now
+abandoned.
+
+http://campaignwiki.org/wiki/Planet/HomePage

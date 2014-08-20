@@ -22,7 +22,7 @@ $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 This page is empty.
 このページは空です。
-Add your comment here.
+Add your comment here:
 ここにコメントを追加してください。
 Reading not allowed: user, ip, or network is blocked.
 閲覧は許可されません: ユーザ、IP、またはネットワークがブロックされています。

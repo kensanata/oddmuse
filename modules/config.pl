@@ -37,7 +37,7 @@ sub DoConfig {
 		     $SurgeProtection $SurgeProtectionTime $SurgeProtectionViews
 		     $DeletedPage $RCName @RcDays $RcDefault $KeepDays
 		     $KeepMajor $SummaryHours $SummaryDefaultLength $ShowEdits
-		     $UseLookup $RecentTop $RecentLink $PageCluster
+		     $RecentTop $RecentLink $PageCluster
 		     $InterWikiMoniker $SiteDescription $RssImageUrl $RssRights
 		     $RssExclude $RssCacheHours $RssStyleSheet $UploadAllowed
 		     @UploadTypes $EmbedWiki $FooterNote $EditNote $TopLinkBar
