@@ -2539,7 +2539,7 @@ sub DoDiff {      # Actualy call the diff program
   WriteStringToFile($newName, $_[1]);
   my $diff_out = `diff -- \Q$oldName\E \Q$newName\E`;
   utf8::decode($diff_out); # needs decoding
-  $diff_out =~ s/\\ No newline.*\n//g; # Get rid of common complaint.
+  $diff_out =~ s/\n\K\\ No newline.*\n//g; # Get rid of common complaint.
   ReleaseLockDir('diff');
   # No need to unlink temp files--next diff will just overwrite.
   return $diff_out;
