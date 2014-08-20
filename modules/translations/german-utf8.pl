@@ -1,7 +1,7 @@
 # UTF-8 encoded German translation file for use with Oddmuse
 #
 # Copyright (c) 2003  Karl Loncarek <karl@loncarek.de>
-# Copyright (c) 2003-2012  Alex Schröder <alex@gnu.org>
+# Copyright (c) 2003-2014  Alex Schröder <alex@gnu.org>
 #
 # Permission is granted to copy, distribute and/or modify this document under
 # the terms of the GNU Free Documentation License, Version 1.2 or any later
@@ -20,8 +20,6 @@ use utf8;
 $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/german-utf8.pl">german-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/German">German</a></p>';
 
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
-Include normal pages
-Mit normalen Seiten
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
 Login
@@ -32,6 +30,8 @@ Fehler
 %s Aufrufe
 Cannot create %s
 %s kann nicht erstellt werden
+Include normal pages
+Mit normalen Seiten
 Invalid UserName %s: not saved.
 Ungültiger Benutzername %s: nicht gespeichert.
 UserName must be 50 characters or less: not saved
@@ -97,7 +97,7 @@ und %s
 Updates in the last %s days
 Änderungen der letzten %s Tage
 Updates in the last %s day
-Änderungen der letzten %s Tage
+Änderungen des letzten %s Tages
 for %s only
 nur für %s
 List latest change per page only
@@ -146,8 +146,6 @@ new
 Neue Seite
 All changes for %s
 Alle Änderungen für %s
-from %s
-von %s
 This page is too big to send over RSS.
 Diese Seite ist zu gross für RSS.
 History of %s
@@ -212,6 +210,8 @@ Important pages:
 Wichtige Seiten:
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 Um eine Seite zu löschen, setzt man <strong>%s</strong> auf die erste Zeile.
+from %s
+von %s
 [Home]
 [Erste Seite]
 redirected from %s
@@ -242,6 +242,10 @@ by %s
 von %s
 (diff)
 (Unterschiede)
+a
+
+c
+
 Edit revision %s of this page
 Version %s dieser Seite bearbeiten
 e
@@ -280,6 +284,8 @@ Validate CSS
 CSS überprüfen
 Last edit
 Letzte Änderung
+Summary:
+Zusammenfassung:
 Difference between revision %1 and %2
 Unterschiede zwischen Version %1 und %2
 revision %s
@@ -316,6 +322,8 @@ Cannot open %s
 %s kann nicht geöffnet werden
 Cannot write %s
 %s kann nicht geschrieben werden
+unlock the wiki
+die Wiki entsperren
 Could not get %s lock
 Die %s Sperre konnte nicht gesetzt werden
 The lock was created %s.
@@ -364,8 +372,6 @@ Editing old revision %s.
 Hiermit wird die alte Version %s bearbeitet.
 Saving this page will replace the latest revision with this text.
 Wird diese Änderung gespeichert, wird dies die aktuelle Version ersetzen. Damit werden die später gemachten Änderungen verloren gehen.
-Summary:
-Zusammenfassung:
 This change is a minor edit.
 Dies ist eine kleinere Änderung.
 Cancel
@@ -524,6 +530,10 @@ Immediately delete %s
 %s sofort löschen
 Rename %s to:
 %s umbenennen zu:
+Attach file:
+
+Upload
+
 Learn more...
 Mehr dazu...
 Complete Content
@@ -542,6 +552,24 @@ The search parameter is missing.
 Der Suchparameter fehlt.
 Pages link to %s
 Seiten mit Link auf %s
+Ban contributors
+Mitautoren sperren
+Ban Contributors to %s
+Mitautorren von %s sperren
+%s is banned
+%s ist schon gesperrt
+Ban!
+Sperren!
+These URLs were rolled back. Perhaps you want to add a regular expression to %s?
+Diese URLs wurden rückgängig gemacht. Vielleicht wollen Sie einen passenden regulären Ausdruck zu %s hinzufügen?
+Regular expression:
+Regulärer Ausdruck:
+Consider banning the IP number as well: 
+Überlegen Sie sich, ob sie die IP Nummer ebenfalls sperren wollen: 
+Regular expression "%1" matched "%2" on this page.
+Regulärer Ausdruck "%1" passt zu "%2" auf dieser Seite.
+Regular expression "%s" matched on this page.
+Regulärer Ausdruck "%1" passt auf dieser Seite.
 Cannot highlight the language %s.
 Die Sprache %s kann von diesem Modul nicht eingefärbt werden.
 Recent Visitors
@@ -610,6 +638,8 @@ Clustermap
 Clustermap
 Pages without a Cluster
 Seiten ohne Cluster
+Comments:
+Kommentare:
 Comments on 
 Kommentare zu 
 Comment on 
@@ -646,6 +676,10 @@ Marked as %s.
 Mit %s markiert.
 Cannot find unspammed revision.
 Es gibt keine Version ohne Spam.
+Page diff
+Seitenunterschiede
+Diff
+Unterschiede
 Recover Draft
 Entwurf weiter bearbeiten
 No text to save
@@ -670,16 +704,46 @@ Add Comment
 Kommentar hinzufügen
 ordinary changes
 normale Änderungen
+Updates in the last %s day
+Änderungen der letzten %s Tage
 Matching page names:
 Übereinstimmende Seitennamen:
 Fix character encoding
 Zeichenkodierung korrigieren
+Fix HTML escapes
+HTML Codierungen korrigieren
+Set $FormTimeoutSalt.
+$FormTimeoutSalt setzen.
+Form Timeout
+Zeitüberschreitung für Formulare
+GD or Image::Magick modules not available.
+GD oder Image::Magick Modul wurde nicht gefunden.
+GD::SecurityImage module not available.
+GD::SecurityImage Modul wurde nicht gefunden.
+Image storing failed. (%s)
+Bild konnte nicht gespeichert werden. (%s)
+Bad gd_security_image_id.
+Fehlerhafte gd_security_image_id.
+Please type the six characters from the anti-spam image
+Bitte geben Sie die sechs Charaktere des Anti-Spam Bildes ein
+Submit
+Fertig
+CAPTCHA
+CAPTCHA
+You did not answer correctly.
+Die Antwort ist falsch.
+$GdSecurityImageFont is not set.
+$GdSecurityImageFont ist nicht gesetzt.
+No summary provided
+Keine Zusammenfassung gegeben
 no summary available
 keine Zusammenfassug vorhanden
 page was marked for deletion
 die Seite war zum Löschen freigegeben
 Oddmuse
 Oddmuse
+Cleaning up git repository
+Git Repo wird aufgeräumt
 Email: 
 Email: 
 Could not find %1.html template in %2
@@ -690,30 +754,154 @@ Only Admins are allowed to see this hidden page.
 Nur Administratoren dürfen diese versteckte Seite sehen.
 Index
 Index
+The username %s already exists.
+Der Benutzername %s existiert bereits.
+The email address %s has already been used.
+Die Email Adresse %s wird schon verwendet.
+Wait %s minutes before try again.
+Bitte warten Sie %s Minuten, bevor Sie es noch einmal versuchen.
+Registration Confirmation
+Registrierungsbestätigung
+Visit the link blow to confirm registration.
+Klicken Sie auf den untenstehenden Link, um ihre Registrierung zu bestätigen.
+Recover Account
+Konto zurückgewinnen
+You can login by following the link below. Then set new password.
+Melden Sie sich mit unten stehendem Link an. Dort können Sie ein neues Passwort wählen.
+Change Email Address
+Email Adresse ändern
+To confirm changing email address, follow the link below.
+Um die neue Email Adresse zu bestätigen, folgen sie untenstehendem Link. 
+To submit this form you must answer this question:
+Um dieses Formular abschicken zu können, müssen Sie folgende Frage beantworten:
+Question:
+Frage:
+CAPTCHA:
+CAPTCHA:
+Registration
+Anmeldung
+The username must be valid page name.
+Der Benutzername muss gleichzeitig ein gültiger Seitenname sein.
+Confirmation email will be sent to the email address.
+Die Bestätigungsemail wird an Ihre Email Adresse verschickt.
+Repeat Password:
+Passwort wiederholen:
+Email:
+Email:
+Bad email address format.
+Die Adresse ist verdächtig formatiert.
+Password needs to have at least %s characters.
+Das Passwort muss mindestens %s Charaktere lang sein.
+Passwords differ.
+Die Passwörter unterscheiden sich.
+Email Sent
+Email versendet
+Confirmation email has been sent to %s. Visit the link on the mail to confirm registration.
+Die Bestätigungsemail wurde an %s geschickt. Folgen Sie dem Link in dieser Email um ihre Registrierung zu bestätigen.
+Failed to Confirm Registration
+Die Registrierung wurde nicht bestätigt
+Invalid key.
+Ungültiger Schlüssel.
+The key expired.
+Der Schlüssel ist abgelaufen.
+Registration Confirmed
+Registrierung bestätigt
+Now, you can login by using username and password.
+Nun können Sie sich mit Benutzername und Passwort anmelden.
+Forgot your password?
+Passwort vergessen?
+Login failed.
+Login fehl geschlagen.
+You are banned.
+Sie sind gesperrt.
+You must confirm email address.
+Sie müssen ihre Email Adresse zuerst bestätigen.
+Logged in
+Angemeldet
+%s has logged in.
+%s hat sich angemeldet.
+You should set new password immediately.
+Sie sollten das neue Passwort sofort setzen.
+Change Password
+Passwort ändern
+Logged out
+Abgemeldet
+%s has logged out.
+%s hat sich abgemeldet.
+Account Settings
+Kontoeinstellungen
+Logout
+Abmeldung
+Current Password:
+Aktuelles Passwort:
+New Password:
+Neues Passwort:
+Repeat New Password:
+Neues Passwort wiederholen:
+Password is wrong.
+Das Passwort ist falsch.
+Password Changed
+Passwort geändert
+Your password has been changed.
+Das Passwort wurde geändert.
+Forgot Password
+Passwort vergessen
+Enter email address, and recovery login ticket will be sent.
+Geben Sie ihre Email Adresse an und es wird ihnen eine Email geschickt, mit der Sie ihr Passwort zurück setzen können.
+Not found.
+Nicht gefunden.
+The mail address is not valid anymore.
+Die Email Adresse ist nicht mehr gültig.
+An email has been sent to %s with further instructions.
+Eine Email mit Instruktionen wurde an %s geschickt.
+New Email Address:
+Neue Email Adresse:
+Failed to load account.
+Die Kontoinformationen konnten nicht geladen werden.
+An email has been sent to %s with a login ticket.
+Eine Email mit mit den Instruktionen wurde an %s geschickt.
+Confirmation Failed
+Bestätigung fehlgeschlagen
+Failed to confirm.
+Bestätigung fehlgeschlagen.
+Email Address Changed
+Email Adresse geändert
+Email address for %1 has been changed to %2.
+Email Adresse von %1 wurde auf %2 geändert.
+Account Management
+Kontoverwaltung
+Ban Account
+Konto sperren
+Enter username of the account to ban:
+Benutzername des Kontos, welches zu sperren ist:
+Ban
+Sperren
+Enter username of the account to unban:
+Benutzername des Kontos, welches zu entsperren ist:
+Unban
+Entsperren
+%s is already banned.
+%s ist schon gesperrt.
+%s has been banned.
+%s wurde gesperrt.
+%s is not banned.
+%s ist nicht gesperrt.
+%s has been unbanned.
+%s wurde entsperrt.
+Register
+Registrieren
 Languages:
 Sprachen:
 Show!
 Zeigen!
-LaTeX export
-LaTeX Export
-An uploaded file cannot be rendered as LaTeX.
-Ein hochgeladene Datei kann nicht mit LaTeX dargestellt werden.
-Exporting of journal pages to LaTeX is not supported.
-Journalseiten können nicht für LaTeX exportiert werden.
-Exporting of RSS feeds to LaTeX is not supported.
-RSS Feeds können nicht für LaTeX exportiert werden.
-Exporting of search results to LaTeX is not supported.
-Suchresultate können nicht für LaTeX exportiert werden.
-Exporting of redirections to LaTeX is not supported.
-Umleitungen können nicht für LaTeX exportiert werden.
-Exporting of named entity reference to LaTeX is not supported.
-Benannte Zeichen können nicht für LaTeX exportiert werden.
-Exporting of images to LaTeX is not supported.
-Bilder können nicht für LaTeX exportiert werden.
 Define
 Definieren
 Full Link List
 Liste aller Verweise
+Banned Content
+Gesperrte Inhalte
+Rule "%1" matched on this page.
+Regel "%1" passt auf dieser Seite.
 List of locked pages
 Liste der gesperrten Seiten
 Pages tagged with %s
@@ -736,6 +924,8 @@ Define external redirect:
 Umleitung auf eine externe Seite definieren: 
 Locked Pages
 Gesperrte Seiten
+IP matched %s
+IP Nummer passt auf %s
 Register for %s
 Anmeldung für %s
 Please choose a username of the form "FirstLast" using your real name.
@@ -774,12 +964,8 @@ You are now logged out.
 Sie sind nun abgemeldet.
 Register a new account
 Neue Anmeldung
-Logout
-Abmeldung
 Who am I?
 Wer bin ich?
-Forgot your password?
-Passwort vergessen?
 Change your password
 Passwort ändern
 Approve pending registrations
@@ -814,8 +1000,6 @@ Change Password?
 Passwort ändern
 Your current password is incorrect.
 Das aktuelle Passwort ist nicht korrekt.
-Your password has been changed.
-Das Passwort wurde geändert.
 Approve Pending Registrations for %s
 Offene Gesuche für %s bestätigen
 %s has been approved.
@@ -866,6 +1050,12 @@ The remaining pages do not exist.
 Die restlichen Seiten existieren nicht.
 Unsubscribed %s from the following pages:
 %s wurde von folgenden Seiten abgemeldet:
+Migrating Subscriptions
+Abonnements migrieren
+No non-migrated email addresses found, migration not necessary.
+Es wurden keine Email Adressen gefundne, die zu migrieren wären.
+Migrated %s rows.
+%s Zeilen wurden migriert.
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 Sie haben mehr als %s Links auf die selbe Domäne gesetzt. Normalerweise machen das nur Spammer. Die Änderung wird deswegen abgelehnt.
 %s is not a legal name for a namespace
@@ -950,6 +1140,10 @@ Include permanent anchors
 Mit permanenten Ankern
 Portrait
 Portrait
+This page is password protected. If you know the password, you can %s. Once you have done that, return and reload this page.
+Diese Seite ist durch ein Passwort geschützt. Falls Sie das Passwort kennen, können Sie. Sobald Sie dies getan haben, kehren Sie hierher zurück und laden Sie die Seite erneut
+supply the password now
+dieses nun angeben
 Publish %s
 %s publizieren
 No target wiki was specified in the config file.
@@ -958,8 +1152,6 @@ The target wiki was misconfigured.
 Das Publikationsziel wurde nicht korrekt konfiguriert.
 Upload is limited to %s bytes
 Das Hochladen von Daten ist auf %s Bytes limitiert
-You did not answer correctly.
-Die Antwort ist falsch.
 To save this page you must answer this question:
 Um diese Seite abzuspeichern, müssen Sie folgende Frage beantworten:
 Please type the following two words:
@@ -1053,7 +1245,7 @@ Es laufen schon %s Wiki Prozesse gleichzeitig auf diesem Server. Mehr sind leide
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 Versuchen Sie es später nocheinmal. Vielleicht werden gerade Wartungsarbeiten durchgeführt, oder ein Suchbefehl nimmt gerade viel Zeit in Anspruch. Leider sind die Resourcen des Rechners limitiert; wir bitten Sie deshalb um etwas Geduld.
 thumb
-
+Vorschau
 Error creating thumbnail from non existant page %s.
 
 Can not create thumbnail for file type %s.
@@ -1112,6 +1304,16 @@ The translation is outdated.
 Die Übersetzung ist veraltet.
 The page does not exist.
 Die Seite existiert nicht.
+Upgrading Database
+Datenbank wird auf den neuesten Stand gebracht
+Did the previous upgrade end with an error? A lock was left behind.
+Endete der vorhergehende Upgrade mit einem Fehler? Eine Sperre ist zurück geblieben.
+Unlock wiki
+Wiki entsprerren
+Upgrade complete.
+Datenbank ist auf dem neuesten Stand.
+Upgrade complete. Please remove $ModuleDir/upgade.pl, now.
+Datenbank ist auf dem neuesten Stand. Bitte entfernen Sie nun $ModuleDir/upgade.pl.
 http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s

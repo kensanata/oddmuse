@@ -1631,7 +1631,7 @@ sub RcHeader {
   } else {
     $html .= $q->h2((GetParam('days', $RcDefault) != 1)
 		    ? Ts('Updates in the last %s days', $days)
-		    : Ts('Updates in the las %s day',  $days));
+		    : Ts('Updates in the last %s day',  $days));
   }
   my $action = '';
   my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly,
@@ -2849,10 +2849,13 @@ sub RequestLockDir {
 	return 1 if RequestLockDir($name, undef, undef, undef, 1);
       }
       return 0 unless $error;
-      ReportError(Ts('Could not get %s lock', $name) . ": $!. "
-      . Ts('The lock was created %s.', CalcTimeSince($Now - $ts))
-      . ($retried ? ' ' . T('Maybe the user running this script is no longer allowed to remove the lock directory?') : ''),
-      '503 SERVICE UNAVAILABLE');
+      my $unlock = ScriptLink('action=unlock', T('unlock the wiki'), 'unlock');
+      ReportError(Ts('Could not get %s lock', $name) . ": $!. ",
+        '503 SERVICE UNAVAILABLE', undef,
+        Ts('The lock was created %s.', CalcTimeSince($Now - $ts))
+	. ($retried ? ' ' . T('Maybe the user running this script is no longer allowed to remove the lock directory?') : '')
+        . ' ' . qq{Sometimes locks are left behind if a job crashes.}
+	. ' ' . qq{After ten minutes, you could try to $unlock.});
     }
     sleep($wait);
   }
