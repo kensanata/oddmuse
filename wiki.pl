@@ -2537,7 +2537,7 @@ sub DoDiff {      # Actualy call the diff program
   RequestLockDir('diff') or return '';
   WriteStringToFile($oldName, $_[0]);
   WriteStringToFile($newName, $_[1]);
-  my $diff_out = `diff \Q$oldName\E \Q$newName\E`;
+  my $diff_out = `diff -- \Q$oldName\E \Q$newName\E`;
   utf8::decode($diff_out); # needs decoding
   $diff_out =~ s/\\ No newline.*\n//g; # Get rid of common complaint.
   ReleaseLockDir('diff');
@@ -3698,7 +3698,7 @@ sub MergeRevisions {   # merge change from file2 to file3 into file1
   WriteStringToFile($name2, $file2);
   WriteStringToFile($name3, $file3);
   my ($you, $ancestor, $other) = (T('you'), T('ancestor'), T('other'));
-  my $output = `diff3 -m -L \Q$you\E -L \Q$ancestor\E -L \Q$other\E \Q$name1\E \Q$name2\E \Q$name3\E`;
+  my $output = `diff3 -m -L \Q$you\E -L \Q$ancestor\E -L \Q$other\E -- \Q$name1\E \Q$name2\E \Q$name3\E`;
   ReleaseLockDir('merge'); # don't unlink temp files--next merge will just overwrite.
   return $output;
 }
