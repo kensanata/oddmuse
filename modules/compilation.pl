@@ -49,7 +49,7 @@ sub PrintCompilation {
     local %Page;
     local $OpenPageName='';
     print '<div class="compilation">';
-    PrintAllPages(1, 1, undef, @pages);
+    PrintAllPages(1, 1, undef, undef, @pages);
     print '</div>';
   }
   return @pages;

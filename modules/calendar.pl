@@ -104,7 +104,7 @@ sub DoCollect {
     # Now save information required for saving the cache of the current page.
     local (%Page, $OpenPageName);
     print $q->start_div({-class=>'content journal collection'});
-    PrintAllPages(1, 1, undef, @pages);
+    PrintAllPages(1, 1, undef, undef, @pages);
     print $q->end_div();
   }
   $CollectingJournal = 0;
