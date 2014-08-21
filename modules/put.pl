@@ -28,6 +28,8 @@ only works reliably for GET requests.
 
 =cut
 
+AddModuleDescripton('put.pl');
+
 push(@MyInitVariables, \&PutMethodHandler);
 
 sub PutMethodHandler {
