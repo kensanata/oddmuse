@@ -1,8 +1,28 @@
+# UTF-8 encoded Traditional Chinese language file for use with Oddmuse
+#
+# Copyright (c) 2003, 2004  wctang <wctang@csie.nctu.edu.tw>
+# Copyright (c) 2007  Wei Ren Wang <weithenn@gmail.com>
+#
+# Permission is granted to copy, distribute and/or modify this
+# document under the terms of the GNU Free Documentation License,
+# Version 1.2 or any later version published by the Free Software
+# Foundation; with no Invariant Sections, no Front-Cover Texts, and no
+# Back-Cover Texts.  A copy of the license could be found at:
+# http://www.gnu.org/licenses/fdl.txt.
+#
+# Installation:
+# =============
+#
+# Create a modules subdirectory in your data directory, and put the
+# file in there. It will be loaded automatically.
+#
+# This translation was last checked for Oddmuse version 1.504.
+#
+use utf8;
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/chinese-utf8.pl">chinese-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Chinese">Chinese</a></p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
-This page is empty.
-
-Add your comment here:
-
+Include normal pages
+包含正常頁面
 Reading not allowed: user, ip, or network is blocked.
 禁止讀取：使用者、ip 或是網路已被禁止連線。
 Login
@@ -11,10 +31,8 @@ Error
 錯誤
 %s calls
 
-Cannot create %s
+Could not create %s
 無法建立 %s
-Include normal pages
-包含正常頁面
 Invalid UserName %s: not saved.
 無法儲存。無效的使用者名稱 %s
 UserName must be 50 characters or less: not saved
@@ -129,6 +147,8 @@ new
 新增
 All changes for %s
 所有修改頁面 %s
+from %s
+自 %s
 This page is too big to send over RSS.
 此頁面太大無法透過 RSS 傳送
 History of %s
@@ -193,8 +213,6 @@ Important pages:
 重要頁面:
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 在該頁首行加入 <strong>%s</strong> 可將頁面標記為刪除
-from %s
-自 %s
 [Home]
 [首頁]
 redirected from %s
@@ -225,10 +243,6 @@ by %s
 由 %s
 (diff)
 (比較差異)
-a
-
-c
-
 Edit revision %s of this page
 編輯本頁的第 %s 版本
 e
@@ -267,8 +281,6 @@ Validate CSS
 驗證 CSS
 Last edit
 最後編輯
-Summary:
-摘要：
 Difference between revision %1 and %2
 差異（從第 %1 版到%2）
 revision %s
@@ -305,8 +317,8 @@ Cannot open %s
 無法開啟 %s
 Cannot write %s
 無法寫入 %s
-unlock the wiki
-
+Cannot create %s
+無法建立 %s
 Could not get %s lock
 無法取得 %s 鎖定
 The lock was created %s.
@@ -355,6 +367,8 @@ Editing old revision %s.
 正在編輯舊的第 %s 版。
 Saving this page will replace the latest revision with this text.
 如果儲存的話，將會取代目前最新的版本。
+Summary:
+摘要：
 This change is a minor edit.
 這次的修改是次要的。
 Cancel
@@ -513,10 +527,6 @@ Immediately delete %s
 立即刪除 %s
 Rename %s to:
 將 %s 重新命名為:
-Attach file:
-
-Upload
-
 Learn more...
 更多...
 Complete Content
@@ -534,24 +544,6 @@ Pages that link to this page
 The search parameter is missing.
 
 Pages link to %s
-
-Ban contributors
-
-Ban Contributors to %s
-
-%s is banned
-
-Ban!
-
-These URLs were rolled back. Perhaps you want to add a regular expression to %s?
-
-Regular expression:
-
-Consider banning the hostname or IP number as well: 
-
-Regular expression "%1" matched "%2" on this page.
-
-Regular expression "%s" matched on this page.
 
 Cannot highlight the language %s.
 無法強調顯示 %s 。
@@ -621,8 +613,6 @@ Clustermap
 叢集頁面
 Pages without a Cluster
 不包含叢集頁面
-Comments:
-
 Comments on 
 評論關於
 Comment on 
@@ -659,10 +649,6 @@ Marked as %s.
 標記為 %s 。
 Cannot find unspammed revision.
 找不到未被 spam 的版本。
-Page diff
-
-Diff
-
 Recover Draft
 還原草稿
 No text to save
@@ -689,41 +675,11 @@ ordinary changes
 普通變更
 Matching page names:
 匹配頁面的名稱:
-Fix character encoding
-
-Fix HTML escapes
-
-Set $FormTimeoutSalt.
-
-Form Timeout
-
-GD or Image::Magick modules not available.
-
-GD::SecurityImage module not available.
-
-Image storing failed. (%s)
-
-Bad gd_security_image_id.
-
-Please type the six characters from the anti-spam image
-
-Submit
-
-CAPTCHA
-
-You did not answer correctly.
-您沒有回答正確的答案
-$GdSecurityImageFont is not set.
-
-No summary provided
-
 no summary available
 
 page was marked for deletion
 
 Oddmuse
-
-Cleaning up git repository
 
 Email: 
 
@@ -735,142 +691,6 @@ Only Admins are allowed to see this hidden page.
 只允許管理者能看到此隱藏頁面
 Index
 索引
-The username %s already exists.
-
-The email address %s has already been used.
-
-Wait %s minutes before try again.
-
-Registration Confirmation
-
-Visit the link blow to confirm registration.
-
-Recover Account
-
-You can login by following the link below. Then set new password.
-
-Change Email Address
-
-To confirm changing email address, follow the link below.
-
-To submit this form you must answer this question:
-
-Question:
-
-CAPTCHA:
-
-Registration
-
-The username must be valid page name.
-
-Confirmation email will be sent to the email address.
-
-Repeat Password:
-
-Email:
-
-Bad email address format.
-
-Password needs to have at least %s characters.
-
-Passwords differ.
-
-Email Sent
-
-Confirmation email has been sent to %s. Visit the link on the mail to confirm registration.
-
-Failed to Confirm Registration
-
-Invalid key.
-
-The key expired.
-
-Registration Confirmed
-
-Now, you can login by using username and password.
-
-Forgot your password?
-忘記您的密碼 ?
-Login failed.
-
-You are banned.
-
-You must confirm email address.
-
-Logged in
-
-%s has logged in.
-
-You should set new password immediately.
-
-Change Password
-
-Logged out
-
-%s has logged out.
-
-Account Settings
-
-Logout
-登出
-Current Password:
-
-New Password:
-
-Repeat New Password:
-
-Password is wrong.
-
-Password Changed
-
-Your password has been changed.
-您的密碼已變更
-Forgot Password
-
-Enter email address, and recovery login ticket will be sent.
-
-Not found.
-
-The mail address is not valid anymore.
-
-An email has been sent to %s with further instructions.
-
-New Email Address:
-
-Failed to load account.
-
-An email has been sent to %s with a login ticket.
-
-Confirmation Failed
-
-Failed to confirm.
-
-Email Address Changed
-
-Email address for %1 has been changed to %2.
-
-Account Management
-
-Ban Account
-
-Enter username of the account to ban:
-
-Ban
-
-Enter username of the account to unban:
-
-Unban
-
-%s is already banned.
-
-%s has been banned.
-
-%s is not banned.
-
-%s has been unbanned.
-
-Register
-
 Languages:
 語文：
 Show!
@@ -879,10 +699,6 @@ Define
 定義
 Full Link List
 完整連結列表
-Banned Content
-
-Rule "%1" matched on this page.
-
 List of locked pages
 
 Pages tagged with %s
@@ -904,8 +720,6 @@ Define Local Names
 Define external redirect: 
 
 Locked Pages
-
-Host or IP matched %s
 
 Register for %s
 為 %s 註冊
@@ -945,8 +759,12 @@ You are now logged out.
 您已登出
 Register a new account
 註冊新使用者帳戶
+Logout
+登出
 Who am I?
 我是誰 ?
+Forgot your password?
+忘記您的密碼 ?
 Change your password
 變更您的密碼
 Approve pending registrations
@@ -981,6 +799,8 @@ Change Password?
 變更密碼 ?
 Your current password is incorrect.
 您目前的密碼不正確
+Your password has been changed.
+您的密碼已變更
 Approve Pending Registrations for %s
 等待註冊 %s
 %s has been approved.
@@ -1031,18 +851,14 @@ The remaining pages do not exist.
 
 Unsubscribed %s from the following pages:
 
-Migrating Subscriptions
-
-No non-migrated email addresses found, migration not necessary.
-
-Migrated %s rows.
-
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 
 %s is not a legal name for a namespace
 %s 不是一個正常的命名空間
 Namespaces
 
+ (create locally)
+ (本地建立)
 Getting page index file for %s.
 自 %s 取得頁面索引資料。
 Near links:
@@ -1059,8 +875,6 @@ EditNearLinks
 編輯接近連結
 The same page on other sites:
 其他網站的相同頁面
- (create locally)
- (本地建立)
 image
 圖像
 download
@@ -1121,10 +935,6 @@ Include permanent anchors
 包含固定的錨點
 Portrait
 肖像
-This page is password protected. If you know the password, you can %s. Once you have done that, return and reload this page.
-
-supply the password now
-
 Publish %s
 發表 %s
 No target wiki was specified in the config file.
@@ -1133,6 +943,8 @@ The target wiki was misconfigured.
 目標(Target) Wiki 設定錯誤
 Upload is limited to %s bytes
 
+You did not answer correctly.
+您沒有回答正確的答案
 To save this page you must answer this question:
 為了保存此頁面，您必須回答這個問題:
 Please type the following two words:
@@ -1285,16 +1097,6 @@ The translation is outdated.
 本頁翻譯已過期。
 The page does not exist.
 頁面不存在。
-Upgrading Database
-
-Did the previous upgrade end with an error? A lock was left behind.
-
-Unlock wiki
-
-Upgrade complete.
-
-Upgrade complete. Please remove $ModuleDir/upgade.pl, now.
-
 http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s

@@ -1,8 +1,27 @@
+# UTF-8 encoded polish translation file for use with Oddmuse
+#
+# Copyright (c) 2006 Radomir Dopieralski
+# Copyright (c) 2007 Marcin Borkowski
+# Copyright (c) 2008 Przemysław Wesołek
+#
+# Permission is granted to copy, distribute and/or modify this
+# document under the terms of the GNU Free Documentation License,
+# Version 1.2 or any later version published by the Free Software
+# Foundation; with no Invariant Sections, no Front-Cover Texts, and no
+# Back-Cover Texts.  A copy of the license could be found at:
+# http://www.gnu.org/licenses/fdl.txt .
+#
+# Installation:
+# =============
+#
+# Create a modules subdirectory in your data directory, and put the
+# file in there. It will be loaded automatically.
+#
+use utf8;
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/polish-utf8.pl">polish-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Polish">Polish</a></p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
-This page is empty.
-
-Add your comment here:
-
+Include normal pages
+Ze zwykłymi stronami
 Reading not allowed: user, ip, or network is blocked.
 Nie wolno Ci czytać tej strony: użytkownik, numer ip lub sieć jest zablokowana.
 Login
@@ -11,10 +30,8 @@ Error
 Błąd
 %s calls
 %s odwołań
-Cannot create %s
+Could not create %s
 Nie można utworzyć %s
-Include normal pages
-Ze zwykłymi stronami
 Invalid UserName %s: not saved.
 Nieprawidłowa NazwaUżytkownika %s: nie zapisano.
 UserName must be 50 characters or less: not saved
@@ -75,8 +92,6 @@ Please go on to %s.
 Proszę przejść do %s.
 Updates since %s
 Zmiany od %s
-up to %s
-
 Updates in the last %s days
 Zmiany w ostatnich %s dniach
 Updates in the last %s day
@@ -129,6 +144,8 @@ new
 nowa
 All changes for %s
 Wszystkie zmiany dla %s
+from %s
+z %s
 This page is too big to send over RSS.
 Ta strona jest zbyt duża, żeby ją wysłać przez RSS.
 History of %s
@@ -159,8 +176,6 @@ The two revisions are the same.
 Te dwie wersje są identyczne.
 Editing not allowed for %s.
 Edycja %s niedozwolona.
-Rollback of %s would restore banned content.
-
 Rollback to %s
 Cofam do %s
 %s rolled back
@@ -181,6 +196,8 @@ Unlock site
 Odblokuj serwis
 Lock site
 Zablokuj serwis
+Install CSS
+Zainstaluj CSS
 Unlock %s
 Odblokuj %s
 Lock %s
@@ -193,8 +210,6 @@ Important pages:
 Ważne strony:
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 Aby zaznaczyć stronę do usunięcia, wpisz <strong>%s</strong> w pierwszej linii.
-from %s
-z %s
 [Home]
 [Dom]
 redirected from %s
@@ -225,10 +240,6 @@ by %s
 przez %s
 (diff)
 (różnice)
-a
-
-c
-
 Edit revision %s of this page
 Edytuj wersję %s tej strony
 e
@@ -267,8 +278,6 @@ Validate CSS
 Sprawdź CSS
 Last edit
 Ostatnia edycja
-Summary:
-Streszczenie:
 Difference between revision %1 and %2
 Różnice (pomiędzy wersjami %1 i %2)
 revision %s
@@ -305,14 +314,12 @@ Cannot open %s
 Nie można otworzyć %s
 Cannot write %s
 Nie można zapisać %s
-unlock the wiki
-
+Cannot create %s
+Nie można utworzyć %s
 Could not get %s lock
 Nie można zablokować %s
 The lock was created %s.
 Blokada utworzona %s
-Maybe the user running this script is no longer allowed to remove the lock directory?
-
 This operation may take several seconds...
 Ta operacja może potrwać kilka sekund...
 Forced unlock of %s lock.
@@ -355,6 +362,8 @@ Editing old revision %s.
 Edytowanie starej wersji %s.
 Saving this page will replace the latest revision with this text.
 Zapisanie tej strony zastąpi ostatnią wersję tym tekstem.
+Summary:
+Streszczenie:
 This change is a minor edit.
 Ta zmiana jest drobna.
 Cancel
@@ -401,8 +410,6 @@ Filtr:
 (dla %s)
 %s pages found.
 znaleziono %s stron.
-Malformed regular expression in %s
-
 Replaced: %s
 Zamieniono: %s
 Search for: %s
@@ -485,12 +492,16 @@ Displaying Wiki Version
 Wyświetlanie wersji Wiki
 Debugging Information
 
+Inter links:
+Wewnętrzne odnośniki:
 Too many connections by %s
 Zbyt dużo połączeń z %s
 Please do not fetch more than %1 pages in %2 seconds.
 Proszę nie pobierać więcej niż %1 stron w ciągu %2 sekund.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Sprawdź czy serwer WWW może utworzyć katalog %s, oraz czy może tworzyć w nim pliki.
+Copy one of the following stylesheets to %s:
+Skopiuj jeden z następujących arkuszy styli do %s:
 Deleting %s
 Kasowanie %s
 Deleted %s
@@ -513,10 +524,6 @@ Immediately delete %s
 Niezwłocznie skasuj %s
 Rename %s to:
 Zmień nazwę %s na:
-Attach file:
-
-Upload
-
 Learn more...
 Dowiedz się więcej...
 Complete Content
@@ -534,24 +541,6 @@ Strony linkujące do tej strony
 The search parameter is missing.
 
 Pages link to %s
-
-Ban contributors
-
-Ban Contributors to %s
-
-%s is banned
-
-Ban!
-
-These URLs were rolled back. Perhaps you want to add a regular expression to %s?
-
-Regular expression:
-
-Consider banning the hostname or IP number as well: 
-
-Regular expression "%1" matched "%2" on this page.
-
-Regular expression "%s" matched on this page.
 
 Cannot highlight the language %s.
 Nie można pokolorować źródła dla języka %s.
@@ -621,8 +610,6 @@ Clustermap
 Mapa klastrów
 Pages without a Cluster
 Strony bez klastra
-Comments:
-
 Comments on 
 Komentarze na
 Comment on 
@@ -631,20 +618,6 @@ Compilation for %s
 Kompilacja dla %s
 Compilation tag is missing a regular expression.
 Brak wyrażenia regularnego w znaczniku kompilacji.
-Install CSS
-Zainstaluj CSS
-Copy one of the following stylesheets to %s:
-Skopiuj jeden z następujących arkuszy styli do %s:
-Reset
-
-Extract all dates from the database
-
-Dates
-
-No dates found.
-
-Inter links:
-Wewnętrzne odnośniki:
 List spammed pages
 Spis zaśmieconych stron
 Despamming pages
@@ -659,10 +632,6 @@ Marked as %s.
 Oznaczony jako %s.
 Cannot find unspammed revision.
 Nie można znaleźć czystej wersji.
-Page diff
-
-Diff
-
 Recover Draft
 Odzyskaj brudnopis
 No text to save
@@ -689,44 +658,6 @@ ordinary changes
 zwykłe zmiany
 Matching page names:
 Pasujące nazwy stron:
-Fix character encoding
-
-Fix HTML escapes
-
-Set $FormTimeoutSalt.
-
-Form Timeout
-
-GD or Image::Magick modules not available.
-
-GD::SecurityImage module not available.
-
-Image storing failed. (%s)
-
-Bad gd_security_image_id.
-
-Please type the six characters from the anti-spam image
-
-Submit
-
-CAPTCHA
-
-You did not answer correctly.
-Nie odpowiedziałeś poprawnie.
-$GdSecurityImageFont is not set.
-
-No summary provided
-
-no summary available
-
-page was marked for deletion
-
-Oddmuse
-
-Cleaning up git repository
-
-Email: 
-
 Could not find %1.html template in %2
 Nie można znaleźć szablonu %1.html w %2
 Only Editors are allowed to see this hidden page.
@@ -735,142 +666,6 @@ Only Admins are allowed to see this hidden page.
 Tylko administratorom wolno oglądać tę ukrytą stronę.
 Index
 Indeks
-The username %s already exists.
-
-The email address %s has already been used.
-
-Wait %s minutes before try again.
-
-Registration Confirmation
-
-Visit the link blow to confirm registration.
-
-Recover Account
-
-You can login by following the link below. Then set new password.
-
-Change Email Address
-
-To confirm changing email address, follow the link below.
-
-To submit this form you must answer this question:
-
-Question:
-
-CAPTCHA:
-
-Registration
-
-The username must be valid page name.
-
-Confirmation email will be sent to the email address.
-
-Repeat Password:
-
-Email:
-
-Bad email address format.
-
-Password needs to have at least %s characters.
-
-Passwords differ.
-
-Email Sent
-
-Confirmation email has been sent to %s. Visit the link on the mail to confirm registration.
-
-Failed to Confirm Registration
-
-Invalid key.
-
-The key expired.
-
-Registration Confirmed
-
-Now, you can login by using username and password.
-
-Forgot your password?
-Zapomniałeś hasła?
-Login failed.
-
-You are banned.
-
-You must confirm email address.
-
-Logged in
-
-%s has logged in.
-
-You should set new password immediately.
-
-Change Password
-
-Logged out
-
-%s has logged out.
-
-Account Settings
-
-Logout
-Wyloguj
-Current Password:
-
-New Password:
-
-Repeat New Password:
-
-Password is wrong.
-
-Password Changed
-
-Your password has been changed.
-Twoje hasło zostało zmienione.
-Forgot Password
-
-Enter email address, and recovery login ticket will be sent.
-
-Not found.
-
-The mail address is not valid anymore.
-
-An email has been sent to %s with further instructions.
-
-New Email Address:
-
-Failed to load account.
-
-An email has been sent to %s with a login ticket.
-
-Confirmation Failed
-
-Failed to confirm.
-
-Email Address Changed
-
-Email address for %1 has been changed to %2.
-
-Account Management
-
-Ban Account
-
-Enter username of the account to ban:
-
-Ban
-
-Enter username of the account to unban:
-
-Unban
-
-%s is already banned.
-
-%s has been banned.
-
-%s is not banned.
-
-%s has been unbanned.
-
-Register
-
 Languages:
 Języki:
 Show!
@@ -879,10 +674,6 @@ Define
 Zdefiniuj
 Full Link List
 Pełna lista odnośników
-Banned Content
-
-Rule "%1" matched on this page.
-
 List of locked pages
 
 Pages tagged with %s
@@ -895,17 +686,7 @@ Szablon %s albo jest pusty, albo nie istnieje.
  -- zdefiniowane na %s
 Local names defined on %1: %2
 Lokalne nazwy zdefiniowane na %1: %2
-Name: 
-
-URL: 
-
-Define Local Names
-
-Define external redirect: 
-
 Locked Pages
-
-Host or IP matched %s
 
 Register for %s
 Zarejestruj dla %s
@@ -945,8 +726,12 @@ You are now logged out.
 Jesteś teraz wylogowany.
 Register a new account
 Zarejestruj nowe konto
+Logout
+Wyloguj
 Who am I?
 Kim jestem?
+Forgot your password?
+Zapomniałeś hasła?
 Change your password
 Zmień hasło
 Approve pending registrations
@@ -981,6 +766,8 @@ Change Password?
 Zmienić hasło?
 Your current password is incorrect.
 Twoje obecne hasło jest nieprawidłowe.
+Your password has been changed.
+Twoje hasło zostało zmienione.
 Approve Pending Registrations for %s
 Potwierdź oczekujące rejestracje dla %s
 %s has been approved.
@@ -1000,6 +787,8 @@ Invalid Mail %s: not saved.
 unsubscribe
 
 subscribe
+
+Email: 
 
 %s appears to be an invalid mail address
 
@@ -1030,12 +819,6 @@ Subscribed %s to the following pages:
 The remaining pages do not exist.
 
 Unsubscribed %s from the following pages:
-
-Migrating Subscriptions
-
-No non-migrated email addresses found, migration not necessary.
-
-Migrated %s rows.
 
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 
@@ -1075,12 +858,6 @@ Generating Link Database
 Generowanie bazy danych odnośników
 The 404 handler extension requires the link data extension (links.pl).
 Rozszerzenie obsługi 404 wymaga rozszerzenia danych o odnośnikach (links.pl).
-Make available offline
-
-Offline
-
-You are currently offline and what you requested is not part of the offline application. You need to be online to do this.
-
 LocalMap
 MapaLokalna
 No page id for action localmap
@@ -1095,6 +872,20 @@ Self-ban by %s
 Samo-zablokowano przez %s
 You have banned your own IP.
 Zablokowałeś własny numer ip.
+OpenID Login
+
+Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
+
+Your homepage is set to %s.
+
+You have no homepage set.
+
+Homepage:
+
+Homepage is missing
+
+OpenID error %s
+
 Orphan List
 Lista Sierot
 Trail: 
@@ -1121,18 +912,14 @@ Include permanent anchors
 Ze stałymi odnośnikami
 Portrait
 Portret
-This page is password protected. If you know the password, you can %s. Once you have done that, return and reload this page.
-
-supply the password now
-
 Publish %s
 Opublikuj %s
 No target wiki was specified in the config file.
 Docelowa wiki nie została określona w pliku konfiguracji.
 The target wiki was misconfigured.
 Docelowa wiki jest źle skonfigurowana.
-Upload is limited to %s bytes
-
+You did not answer correctly.
+Nie odpowiedziałeś poprawnie.
 To save this page you must answer this question:
 Aby zapisać tę stronę, musisz odpowiedzieć na pytanie:
 Please type the following two words:
@@ -1183,10 +970,6 @@ Static Copy
 Kopia Statyczna
 Back to %s
 Wróć do %s
-Edit image in the browser
-
-Summary of your changes: 
-
 Copy to %1 succeeded: %2.
 Kopiowanie do %1 udane: %2.
 Copy to %1 failed: %2.
@@ -1225,39 +1008,11 @@ Too many instances.  Only %s allowed.
 Zbyt wiele instancji - może być tylko %s.
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 Prosimy spróbować później.  Być może ktoś dokonuje konserwacji serwisu lub jest w trakcie długiego wyszukiwania.  Niestety, nasz serwis ma ograniczone zasoby, więc musimy prosić o odrobinę cierpliwości.
-thumb
-
-Error creating thumbnail from non existant page %s.
-
-Can not create thumbnail for file type %s.
-
-Can not create thumbnail for a text document
-
-Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
-
-Can not create path for thumbnail - %s
-
-Failed to run %1 to create thumbnail: %2
-
-%s ran into an error
-
-%s produced no output
-
-Failed to parse %s.
-
-Timezone
-
-Pick your timezone:
-
-Set
-
 Contents
 Zawartość
 Create a new page for today
 Utwórz nową stronę na dzisiaj
 Add Translation
-
-Please provide a different page name for the translation.
 
 Added translation: %1 (%2)
 
@@ -1285,16 +1040,6 @@ The translation is outdated.
 Tłumaczenie jest przestarzałe.
 The page does not exist.
 Strona ta nie istnieje.
-Upgrading Database
-
-Did the previous upgrade end with an error? A lock was left behind.
-
-Unlock wiki
-
-Upgrade complete.
-
-Upgrade complete. Please remove $ModuleDir/upgade.pl, now.
-
 http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
 http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -1311,8 +1056,6 @@ Pożądane strony
 %s stron
 %s, referenced from:
 %s, wspomniana na:
-Web application for offline browsing
-
 Upload of %s file
 Wgranie pliku %s
 Blog
