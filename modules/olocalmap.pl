@@ -42,7 +42,7 @@ $LocalMapDefaultDepth = 3 unless defined $LocalMapDefaultDepth;
 # Implementation
 #
 ##########################################################################
-$ModulesDescription .= '<p>$Id $: build a Local Site Map from a page, using references as sub-sections</p>';
+AddModuleDescripton('olocalmap.pl');
 
 push(@MyInitVariables, \&InitLocalMap);
 
