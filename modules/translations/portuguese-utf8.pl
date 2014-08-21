@@ -1,8 +1,30 @@
+# UTF-8 encoded Portuguese European language file for use with Oddmuse
+#
+# Portuguese European version by Guida Querido <guida@querido.net>
+# and Paulo Querido <correio@pauloquerido.com> September 2005
+# based on the Brazilian Portuguese version
+# Copyright (c) 2003  Marcelo Toledo <rw@locked.org>.
+#
+# Permission is granted to copy, distribute and/or modify this
+# document under the terms of the GNU Free Documentation License,
+# Version 1.2 or any later version published by the Free Software
+# Foundation; with no Invariant Sections, no Front-Cover Texts, and no
+# Back-Cover Texts.  A copy of the license could be found at:
+# http://www.gnu.org/licenses/fdl.txt.
+#
+# Installation:
+# =============
+#
+# Create a modules subdirectory in your data directory, and put the
+# file in there. It will be loaded automatically.
+#
+# This translation was last checked for Oddmuse version 1.195.
+#
+use utf8;
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/portuguese-utf8.pl">portuguese-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Portuguese">Portuguese</a></p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
-This page is empty.
-
-Add your comment here:
-
+Include normal pages
+Incluir páginas normais
 Reading not allowed: user, ip, or network is blocked.
 Leitura não permitida: utilizador, ip, ou rede está bloqueado(a).
 Login
@@ -11,10 +33,8 @@ Error
 
 %s calls
 
-Cannot create %s
-Impossível criar %s
-Include normal pages
-Incluir páginas normais
+Could not create %s
+Não foi possivel criar %s
 Invalid UserName %s: not saved.
 NomeUtilizador inválido %s: nada salvo.
 UserName must be 50 characters or less: not saved
@@ -75,8 +95,6 @@ Please go on to %s.
 Por favor vá para %s
 Updates since %s
 Actualizações desde %s
-up to %s
-
 Updates in the last %s days
 Actualizações nos últimos %s dias
 Updates in the last %s day
@@ -129,6 +147,8 @@ new
 novo
 All changes for %s
 
+from %s
+de %s
 This page is too big to send over RSS.
 
 History of %s
@@ -159,8 +179,6 @@ The two revisions are the same.
 
 Editing not allowed for %s.
 Edição não permitida para %s.
-Rollback of %s would restore banned content.
-
 Rollback to %s
 
 %s rolled back
@@ -181,6 +199,8 @@ Unlock site
 Desbloquear sítio
 Lock site
 Bloquear sítio
+Install CSS
+
 Unlock %s
 Desbloquear %s
 Lock %s
@@ -193,8 +213,6 @@ Important pages:
 Páginas importantes:
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 Para marcar uma página a ser apagada, ponha <strong>%s</strong> na primeira linha.
-from %s
-de %s
 [Home]
 [Entrada]
 redirected from %s
@@ -225,10 +243,6 @@ by %s
 de %s
 (diff)
 (diff)
-a
-
-c
-
 Edit revision %s of this page
 Edite a revisão %s desta página
 e
@@ -267,8 +281,6 @@ Validate CSS
 Validar CSS
 Last edit
 
-Summary:
-Sumário:
 Difference between revision %1 and %2
 Diferença (entre a revisão %1 e %2)
 revision %s
@@ -305,13 +317,11 @@ Cannot open %s
 Não foi possível abrir %s
 Cannot write %s
 Não foi possível escrever %s
-unlock the wiki
-
+Cannot create %s
+Impossível criar %s
 Could not get %s lock
 Não foi possível bloquear %s
 The lock was created %s.
-
-Maybe the user running this script is no longer allowed to remove the lock directory?
 
 This operation may take several seconds...
 Esta operação pode demorar alguns segundos...
@@ -355,6 +365,8 @@ Editing old revision %s.
 Editando antiga revisão %s.
 Saving this page will replace the latest revision with this text.
 Gravar esta página irá substituir a última revisão com este texto.
+Summary:
+Sumário:
 This change is a minor edit.
 Esta actualização é miníma.
 Cancel
@@ -401,8 +413,6 @@ Filter:
 (para %s)
 %s pages found.
 Encontradas %s páginas.
-Malformed regular expression in %s
-
 Replaced: %s
 Substituído: %s
 Search for: %s
@@ -485,12 +495,16 @@ Displaying Wiki Version
 Mostrando Versão do Wiki
 Debugging Information
 
+Inter links:
+
 Too many connections by %s
 Demasiadas ligações de %s
 Please do not fetch more than %1 pages in %2 seconds.
 Por favor não busque mais do que %1 páginas em %2 segundos.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Verificar se o servidor web pode criar ao directório %s e se pode criar ficheiros no directório.
+Copy one of the following stylesheets to %s:
+
 Deleting %s
 Apagando %s
 Deleted %s
@@ -513,10 +527,6 @@ Immediately delete %s
 Apagar %s imediatamente
 Rename %s to:
 Renomear %s para:
-Attach file:
-
-Upload
-
 Learn more...
 
 Complete Content
@@ -534,24 +544,6 @@ Pages that link to this page
 The search parameter is missing.
 
 Pages link to %s
-
-Ban contributors
-
-Ban Contributors to %s
-
-%s is banned
-
-Ban!
-
-These URLs were rolled back. Perhaps you want to add a regular expression to %s?
-
-Regular expression:
-
-Consider banning the hostname or IP number as well: 
-
-Regular expression "%1" matched "%2" on this page.
-
-Regular expression "%s" matched on this page.
 
 Cannot highlight the language %s.
 Impossível destacar a língua %s
@@ -621,8 +613,6 @@ Clustermap
 
 Pages without a Cluster
 Páginas sem Cluster
-Comments:
-
 Comments on 
 Comentários sobre
 Comment on 
@@ -631,20 +621,6 @@ Compilation for %s
 Complilação para %s
 Compilation tag is missing a regular expression.
 Falta uma expressão regular na <i>tag</i> de compilação
-Install CSS
-
-Copy one of the following stylesheets to %s:
-
-Reset
-
-Extract all dates from the database
-
-Dates
-
-No dates found.
-
-Inter links:
-
 List spammed pages
 
 Despamming pages
@@ -659,10 +635,6 @@ Marked as %s.
 Marcado como %s.
 Cannot find unspammed revision.
 Impossível encontrar revisão sem <i>spam</>.
-Page diff
-
-Diff
-
 Recover Draft
 
 No text to save
@@ -689,44 +661,6 @@ ordinary changes
 
 Matching page names:
 
-Fix character encoding
-
-Fix HTML escapes
-
-Set $FormTimeoutSalt.
-
-Form Timeout
-
-GD or Image::Magick modules not available.
-
-GD::SecurityImage module not available.
-
-Image storing failed. (%s)
-
-Bad gd_security_image_id.
-
-Please type the six characters from the anti-spam image
-
-Submit
-
-CAPTCHA
-
-You did not answer correctly.
-Não respondeu correctamente.
-$GdSecurityImageFont is not set.
-
-No summary provided
-
-no summary available
-
-page was marked for deletion
-
-Oddmuse
-
-Cleaning up git repository
-
-Email: 
-
 Could not find %1.html template in %2
 Impossível encontrar <i>template</i> %1.html em %2
 Only Editors are allowed to see this hidden page.
@@ -735,142 +669,6 @@ Only Admins are allowed to see this hidden page.
 
 Index
 Índice
-The username %s already exists.
-
-The email address %s has already been used.
-
-Wait %s minutes before try again.
-
-Registration Confirmation
-
-Visit the link blow to confirm registration.
-
-Recover Account
-
-You can login by following the link below. Then set new password.
-
-Change Email Address
-
-To confirm changing email address, follow the link below.
-
-To submit this form you must answer this question:
-
-Question:
-
-CAPTCHA:
-
-Registration
-
-The username must be valid page name.
-
-Confirmation email will be sent to the email address.
-
-Repeat Password:
-
-Email:
-
-Bad email address format.
-
-Password needs to have at least %s characters.
-
-Passwords differ.
-
-Email Sent
-
-Confirmation email has been sent to %s. Visit the link on the mail to confirm registration.
-
-Failed to Confirm Registration
-
-Invalid key.
-
-The key expired.
-
-Registration Confirmed
-
-Now, you can login by using username and password.
-
-Forgot your password?
-
-Login failed.
-
-You are banned.
-
-You must confirm email address.
-
-Logged in
-
-%s has logged in.
-
-You should set new password immediately.
-
-Change Password
-
-Logged out
-
-%s has logged out.
-
-Account Settings
-
-Logout
-Sair
-Current Password:
-
-New Password:
-
-Repeat New Password:
-
-Password is wrong.
-
-Password Changed
-
-Your password has been changed.
-
-Forgot Password
-
-Enter email address, and recovery login ticket will be sent.
-
-Not found.
-
-The mail address is not valid anymore.
-
-An email has been sent to %s with further instructions.
-
-New Email Address:
-
-Failed to load account.
-
-An email has been sent to %s with a login ticket.
-
-Confirmation Failed
-
-Failed to confirm.
-
-Email Address Changed
-
-Email address for %1 has been changed to %2.
-
-Account Management
-
-Ban Account
-
-Enter username of the account to ban:
-
-Ban
-
-Enter username of the account to unban:
-
-Unban
-
-%s is already banned.
-
-%s has been banned.
-
-%s is not banned.
-
-%s has been unbanned.
-
-Register
-
 Languages:
 Línguas:
 Show!
@@ -879,10 +677,6 @@ Define
 Definir
 Full Link List
 Lista completa de Ligações
-Banned Content
-
-Rule "%1" matched on this page.
-
 List of locked pages
 
 Pages tagged with %s
@@ -895,17 +689,7 @@ O <i>template</i> está em branco ou não existe.
 
 Local names defined on %1: %2
 
-Name: 
-
-URL: 
-
-Define Local Names
-
-Define external redirect: 
-
 Locked Pages
-
-Host or IP matched %s
 
 Register for %s
 Registar para %s
@@ -945,7 +729,11 @@ You are now logged out.
 Você acaba de sair.
 Register a new account
 Registar uma nova conta
+Logout
+Sair
 Who am I?
+
+Forgot your password?
 
 Change your password
 
@@ -981,6 +769,8 @@ Change Password?
 
 Your current password is incorrect.
 
+Your password has been changed.
+
 Approve Pending Registrations for %s
 
 %s has been approved.
@@ -1000,6 +790,8 @@ Invalid Mail %s: not saved.
 unsubscribe
 
 subscribe
+
+Email: 
 
 %s appears to be an invalid mail address
 
@@ -1030,12 +822,6 @@ Subscribed %s to the following pages:
 The remaining pages do not exist.
 
 Unsubscribed %s from the following pages:
-
-Migrating Subscriptions
-
-No non-migrated email addresses found, migration not necessary.
-
-Migrated %s rows.
 
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 
@@ -1075,12 +861,6 @@ Generating Link Database
 Gerando base de dados de Links
 The 404 handler extension requires the link data extension (links.pl).
 
-Make available offline
-
-Offline
-
-You are currently offline and what you requested is not part of the offline application. You need to be online to do this.
-
 LocalMap
 MapaLocal
 No page id for action localmap
@@ -1094,6 +874,20 @@ ver
 Self-ban by %s
 
 You have banned your own IP.
+
+OpenID Login
+
+Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
+
+Your homepage is set to %s.
+
+You have no homepage set.
+
+Homepage:
+
+Homepage is missing
+
+OpenID error %s
 
 Orphan List
 Lista de Órfãos
@@ -1121,18 +915,14 @@ Include permanent anchors
 Incluir âncoras permanentes
 Portrait
 Retrato
-This page is password protected. If you know the password, you can %s. Once you have done that, return and reload this page.
-
-supply the password now
-
 Publish %s
 
 No target wiki was specified in the config file.
 
 The target wiki was misconfigured.
 
-Upload is limited to %s bytes
-
+You did not answer correctly.
+Não respondeu correctamente.
 To save this page you must answer this question:
 
 Please type the following two words:
@@ -1183,10 +973,6 @@ Static Copy
 Cópia Estática
 Back to %s
 Voltar para %s
-Edit image in the browser
-
-Summary of your changes: 
-
 Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
@@ -1225,39 +1011,11 @@ Too many instances.  Only %s allowed.
 
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 
-thumb
-
-Error creating thumbnail from non existant page %s.
-
-Can not create thumbnail for file type %s.
-
-Can not create thumbnail for a text document
-
-Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
-
-Can not create path for thumbnail - %s
-
-Failed to run %1 to create thumbnail: %2
-
-%s ran into an error
-
-%s produced no output
-
-Failed to parse %s.
-
-Timezone
-
-Pick your timezone:
-
-Set
-
 Contents
 Conteúdo
 Create a new page for today
 
 Add Translation
-
-Please provide a different page name for the translation.
 
 Added translation: %1 (%2)
 
@@ -1285,16 +1043,6 @@ The translation is outdated.
 A tradução está desactualizada.
 The page does not exist.
 Esta página não existe.
-Upgrading Database
-
-Did the previous upgrade end with an error? A lock was left behind.
-
-Unlock wiki
-
-Upgrade complete.
-
-Upgrade complete. Please remove $ModuleDir/upgade.pl, now.
-
 http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -1310,8 +1058,6 @@ Wanted Pages
 %s pages
 
 %s, referenced from:
-
-Web application for offline browsing
 
 Upload of %s file
 

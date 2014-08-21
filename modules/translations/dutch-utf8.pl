@@ -1,7 +1,33 @@
+# UTF-8 encoded Dutch language file for use with Oddmuse
+#
+# Copyright (c) 2003-2004 Onno Broekmans <onnod@lycos.com>
+#
+# Release 2 of this translation
+#
+# This is my first translation of OddMuse, and since I've only just
+# started using OddMuse, I suspect there are still some things that
+# need to be changed. Please contact me at obroekma@angelfire.com
+# with any suggestions etc.
+#
+# Permission is granted to copy, distribute and/or modify this
+# document under the terms of the GNU Free Documentation License,
+# Version 1.2 or any later version published by the Free Software
+# Foundation; with no Invariant Sections, no Front-Cover Texts, and no
+# Back-Cover Texts.  A copy of the license could be found at:
+# http://www.gnu.org/licenses/fdl.txt .
+#
+# Installation:
+# =============
+#
+# Create a modules subdirectory in your data directory, and put the
+# file in there. It will be loaded automatically.
+#
+# This translation was last checked for Oddmuse version 1.215.
+#
+use utf8;
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/dutch-utf8.pl">dutch-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Dutch">Dutch</a></p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
-This page is empty.
-
-Add your comment here:
+Include normal pages
 
 Reading not allowed: user, ip, or network is blocked.
 U mag deze pagina niet lezen: uw account op deze Wiki, uw IP of uw netwerk is buitengesloten.
@@ -11,10 +37,8 @@ Error
 
 %s calls
 
-Cannot create %s
-
-Include normal pages
-
+Could not create %s
+Kan %s niet aanmaken
 Invalid UserName %s: not saved.
 Niet opgeslagen: de GebruikersNaam %s is ongeldig.
 UserName must be 50 characters or less: not saved
@@ -129,6 +153,8 @@ new
 nieuw
 All changes for %s
 
+from %s
+vanaf %s
 This page is too big to send over RSS.
 
 History of %s
@@ -181,6 +207,8 @@ Unlock site
 Ontgrendel site
 Lock site
 Vergrendel site
+Install CSS
+
 Unlock %s
 
 Lock %s
@@ -193,8 +221,6 @@ Important pages:
 
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 
-from %s
-vanaf %s
 [Home]
 [Start]
 redirected from %s
@@ -225,10 +251,6 @@ by %s
 door %s
 (diff)
 (verschillen)
-a
-
-c
-
 Edit revision %s of this page
 Wijzig revisie %s van deze pagina
 e
@@ -267,8 +289,6 @@ Validate CSS
 Valideer CSS
 Last edit
 
-Summary:
-Samenvatting:
 Difference between revision %1 and %2
 Verschil (van revisie %1 naar %2)
 revision %s
@@ -305,7 +325,7 @@ Cannot open %s
 Kan %s niet openen
 Cannot write %s
 Kan %s niet wijzigen
-unlock the wiki
+Cannot create %s
 
 Could not get %s lock
 Kan %s niet vergrendelen
@@ -355,6 +375,8 @@ Editing old revision %s.
 Wijzigen van oude revisie %s.
 Saving this page will replace the latest revision with this text.
 Als u deze pagina opslaat wordt de meest recente revisie vervangen door deze tekst.
+Summary:
+Samenvatting:
 This change is a minor edit.
 Dit is slechts een kleine wijziging.
 Cancel
@@ -491,6 +513,8 @@ Please do not fetch more than %1 pages in %2 seconds.
 Haal a.u.b. niet meer dan %s pagina's op in %2 seconden.
 Check whether the web server can create the directory %s and whether it can create files in it.
 
+Copy one of the following stylesheets to %s:
+
 Deleting %s
 Bezig met verwijderen van %s
 Deleted %s
@@ -513,10 +537,6 @@ Immediately delete %s
 
 Rename %s to:
 
-Attach file:
-
-Upload
-
 Learn more...
 
 Complete Content
@@ -534,24 +554,6 @@ Pages that link to this page
 The search parameter is missing.
 
 Pages link to %s
-
-Ban contributors
-
-Ban Contributors to %s
-
-%s is banned
-
-Ban!
-
-These URLs were rolled back. Perhaps you want to add a regular expression to %s?
-
-Regular expression:
-
-Consider banning the hostname or IP number as well: 
-
-Regular expression "%1" matched "%2" on this page.
-
-Regular expression "%s" matched on this page.
 
 Cannot highlight the language %s.
 
@@ -621,8 +623,6 @@ Clustermap
 
 Pages without a Cluster
 
-Comments:
-
 Comments on 
 
 Comment on 
@@ -630,12 +630,6 @@ Comment on
 Compilation for %s
 
 Compilation tag is missing a regular expression.
-
-Install CSS
-
-Copy one of the following stylesheets to %s:
-
-Reset
 
 Extract all dates from the database
 
@@ -658,10 +652,6 @@ Revert to revision %1: %2
 Marked as %s.
 
 Cannot find unspammed revision.
-
-Page diff
-
-Diff
 
 Recover Draft
 
@@ -689,42 +679,6 @@ ordinary changes
 
 Matching page names:
 
-Fix character encoding
-
-Fix HTML escapes
-
-Set $FormTimeoutSalt.
-
-Form Timeout
-
-GD or Image::Magick modules not available.
-
-GD::SecurityImage module not available.
-
-Image storing failed. (%s)
-
-Bad gd_security_image_id.
-
-Please type the six characters from the anti-spam image
-
-Submit
-
-CAPTCHA
-
-You did not answer correctly.
-
-$GdSecurityImageFont is not set.
-
-No summary provided
-
-no summary available
-
-page was marked for deletion
-
-Oddmuse
-
-Cleaning up git repository
-
 Email: 
 
 Could not find %1.html template in %2
@@ -735,142 +689,6 @@ Only Admins are allowed to see this hidden page.
 
 Index
 
-The username %s already exists.
-
-The email address %s has already been used.
-
-Wait %s minutes before try again.
-
-Registration Confirmation
-
-Visit the link blow to confirm registration.
-
-Recover Account
-
-You can login by following the link below. Then set new password.
-
-Change Email Address
-
-To confirm changing email address, follow the link below.
-
-To submit this form you must answer this question:
-
-Question:
-
-CAPTCHA:
-
-Registration
-
-The username must be valid page name.
-
-Confirmation email will be sent to the email address.
-
-Repeat Password:
-
-Email:
-
-Bad email address format.
-
-Password needs to have at least %s characters.
-
-Passwords differ.
-
-Email Sent
-
-Confirmation email has been sent to %s. Visit the link on the mail to confirm registration.
-
-Failed to Confirm Registration
-
-Invalid key.
-
-The key expired.
-
-Registration Confirmed
-
-Now, you can login by using username and password.
-
-Forgot your password?
-
-Login failed.
-
-You are banned.
-
-You must confirm email address.
-
-Logged in
-
-%s has logged in.
-
-You should set new password immediately.
-
-Change Password
-
-Logged out
-
-%s has logged out.
-
-Account Settings
-
-Logout
-
-Current Password:
-
-New Password:
-
-Repeat New Password:
-
-Password is wrong.
-
-Password Changed
-
-Your password has been changed.
-
-Forgot Password
-
-Enter email address, and recovery login ticket will be sent.
-
-Not found.
-
-The mail address is not valid anymore.
-
-An email has been sent to %s with further instructions.
-
-New Email Address:
-
-Failed to load account.
-
-An email has been sent to %s with a login ticket.
-
-Confirmation Failed
-
-Failed to confirm.
-
-Email Address Changed
-
-Email address for %1 has been changed to %2.
-
-Account Management
-
-Ban Account
-
-Enter username of the account to ban:
-
-Ban
-
-Enter username of the account to unban:
-
-Unban
-
-%s is already banned.
-
-%s has been banned.
-
-%s is not banned.
-
-%s has been unbanned.
-
-Register
-
 Languages:
 Talen:
 Show!
@@ -879,10 +697,6 @@ Define
 Definiëren
 Full Link List
 Volledige lijst van koppelingen
-Banned Content
-
-Rule "%1" matched on this page.
-
 List of locked pages
 
 Pages tagged with %s
@@ -904,8 +718,6 @@ Define Local Names
 Define external redirect: 
 
 Locked Pages
-
-Host or IP matched %s
 
 Register for %s
 
@@ -945,7 +757,11 @@ You are now logged out.
 
 Register a new account
 
+Logout
+
 Who am I?
+
+Forgot your password?
 
 Change your password
 
@@ -980,6 +796,8 @@ Change Password for %s
 Change Password?
 
 Your current password is incorrect.
+
+Your password has been changed.
 
 Approve Pending Registrations for %s
 
@@ -1031,12 +849,6 @@ The remaining pages do not exist.
 
 Unsubscribed %s from the following pages:
 
-Migrating Subscriptions
-
-No non-migrated email addresses found, migration not necessary.
-
-Migrated %s rows.
-
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 
 %s is not a legal name for a namespace
@@ -1075,12 +887,6 @@ Generating Link Database
 Bezig met genereren van Koppelingendatabase
 The 404 handler extension requires the link data extension (links.pl).
 The 404 handler extension requires the link data extension (links.pl).
-Make available offline
-
-Offline
-
-You are currently offline and what you requested is not part of the offline application. You need to be online to do this.
-
 LocalMap
 
 No page id for action localmap
@@ -1094,6 +900,20 @@ view
 Self-ban by %s
 
 You have banned your own IP.
+
+OpenID Login
+
+Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
+
+Your homepage is set to %s.
+
+You have no homepage set.
+
+Homepage:
+
+Homepage is missing
+
+OpenID error %s
 
 Orphan List
 Lijst met Wezen
@@ -1121,10 +941,6 @@ Include permanent anchors
 
 Portrait
 Portret
-This page is password protected. If you know the password, you can %s. Once you have done that, return and reload this page.
-
-supply the password now
-
 Publish %s
 
 No target wiki was specified in the config file.
@@ -1132,6 +948,8 @@ No target wiki was specified in the config file.
 The target wiki was misconfigured.
 
 Upload is limited to %s bytes
+
+You did not answer correctly.
 
 To save this page you must answer this question:
 
@@ -1225,26 +1043,6 @@ Too many instances.  Only %s allowed.
 
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 
-thumb
-
-Error creating thumbnail from non existant page %s.
-
-Can not create thumbnail for file type %s.
-
-Can not create thumbnail for a text document
-
-Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
-
-Can not create path for thumbnail - %s
-
-Failed to run %1 to create thumbnail: %2
-
-%s ran into an error
-
-%s produced no output
-
-Failed to parse %s.
-
 Timezone
 
 Pick your timezone:
@@ -1285,16 +1083,6 @@ The translation is outdated.
 
 The page does not exist.
 
-Upgrading Database
-
-Did the previous upgrade end with an error? A lock was left behind.
-
-Unlock wiki
-
-Upgrade complete.
-
-Upgrade complete. Please remove $ModuleDir/upgade.pl, now.
-
 http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -1310,8 +1098,6 @@ Wanted Pages
 %s pages
 
 %s, referenced from:
-
-Web application for offline browsing
 
 Upload of %s file
 

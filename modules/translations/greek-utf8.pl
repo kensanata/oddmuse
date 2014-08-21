@@ -1,8 +1,25 @@
+# UTF-8 encoded German translation file for use with Oddmuse
+#
+# Copyright (c) 2008 Giorgos Keramidas <keramida@freebsd.org>
+#
+# Permission is granted to copy, distribute and/or modify this
+# document under the terms of the GNU Free Documentation License,
+# Version 1.2 or any later version published by the Free Software
+# Foundation; with no Invariant Sections, no Front-Cover Texts, and no
+# Back-Cover Texts.  A copy of the license could be found at:
+# http://www.gnu.org/licenses/fdl.txt .
+#
+# Installation:
+# =============
+#
+# Create a modules subdirectory in your data directory, and put the
+# file in there. It will be loaded automatically.
+#
+use utf8;
+$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/greek-utf8.pl">greek-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Greek">Greek</a></p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
-This page is empty.
-
-Add your comment here:
-
+Include normal pages
+Με τις κανονικές σελίδες.
 Reading not allowed: user, ip, or network is blocked.
 Η ανάγνωση δεν επιτρέπεται: αυτός ο χρήστης, η διεύθυνση, ή το δίκτυο έχουν μπλοκαριστεί.
 Login
@@ -11,10 +28,8 @@ Error
 Σφάλμα
 %s calls
 %s κλήσεις
-Cannot create %s
-Σφάλμα δημιουργίας του %s
-Include normal pages
-Με τις κανονικές σελίδες.
+Could not create %s
+Η δημιουργία του %s δεν είναι δυνατή
 Invalid UserName %s: not saved.
 Μη έγκυρο ΌνομαΧρήστη %s: δεν αποθηκεύθηκε.
 UserName must be 50 characters or less: not saved
@@ -75,8 +90,6 @@ Please go on to %s.
 Παρακαλώ δείτε το %s.
 Updates since %s
 Ενημερώσεις από %s
-up to %s
-
 Updates in the last %s days
 Ενημερώσεις που έγιναν τις τελευταίες %s ημέρες
 Updates in the last %s day
@@ -129,6 +142,8 @@ new
 νέα σελίδα
 All changes for %s
 Όλες οι αλλαγές για το %s
+from %s
+από %s
 This page is too big to send over RSS.
 Αυτή η σελίδα είναι πολύ μεγάλη για αποστολή μέσω RSS.
 History of %s
@@ -159,8 +174,6 @@ The two revisions are the same.
 Οι δύο εκδόσεις είναι πανομοιότυπες.
 Editing not allowed for %s.
 Δεν επιτρέπεται η επεξεργασία του %s.
-Rollback of %s would restore banned content.
-
 Rollback to %s
 Επαναφορά σε %s
 %s rolled back
@@ -181,6 +194,8 @@ Unlock site
 Ξεκλείδωμα ιστότοπου
 Lock site
 Κλείδωμα ιστότοπου
+Install CSS
+Εγκατάσταση CSS
 Unlock %s
 Ξεκλείδωμα του %s
 Lock %s
@@ -193,8 +208,6 @@ Important pages:
 Σημαντικές σελίδες:
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 Για να σημειωθεί μια σελίδα προς διαγραφή, εισάγετε το κείμενο <strong>%s</strong> στην πρώτη γραμμή της σελίδας.
-from %s
-από %s
 [Home]
 [Αρχική Σελίδα]
 redirected from %s
@@ -225,10 +238,6 @@ by %s
 από %s
 (diff)
 (διαφορές)
-a
-
-c
-
 Edit revision %s of this page
 Επεξεργασία της έκδοσης %s αυτής της σελίδας
 e
@@ -267,8 +276,6 @@ Validate CSS
 Έλεγχος Εγκυρότητας CSS
 Last edit
 Τελευταία ενημέρωση
-Summary:
-Σύνοψη αλλαγών:
 Difference between revision %1 and %2
 Διαφορές μεταξύ των εκδόσεων %1 και %2
 revision %s
@@ -305,14 +312,12 @@ Cannot open %s
 Σφάλμα ανάγνωσης του %s
 Cannot write %s
 Σφάλμα αποθήκευσης του %s
-unlock the wiki
-
+Cannot create %s
+Σφάλμα δημιουργίας του %s
 Could not get %s lock
 Σφάλμα κατά το κλείδωμα του %s
 The lock was created %s.
 Το %s έχει κλειδώσει.
-Maybe the user running this script is no longer allowed to remove the lock directory?
-
 This operation may take several seconds...
 Αυτό το βήμα μπορεί να πάρει μερικά δευτερόλεπτα...
 Forced unlock of %s lock.
@@ -355,6 +360,8 @@ Editing old revision %s.
 Επεξεργασία παλιότερης έκδοσης %s.
 Saving this page will replace the latest revision with this text.
 Αν αποθηκεύσετε αυτή τη σελίδα, θα αντικαταστήσει την τρέχουσα έκδοση με αυτό το κείμενο.
+Summary:
+Σύνοψη αλλαγών:
 This change is a minor edit.
 Αυτή η αλλαγή είναι μια μικρή αλλαγή.
 Cancel
@@ -401,8 +408,6 @@ Filter:
 (για %s)
 %s pages found.
 Βρέθηκαν %s σελίδες.
-Malformed regular expression in %s
-
 Replaced: %s
 Αντικαταστάθηκε: %s
 Search for: %s
@@ -485,12 +490,16 @@ Displaying Wiki Version
 Προβολή της Έκδοσης του Wiki
 Debugging Information
 
+Inter links:
+Inter Links:
 Too many connections by %s
 Υπερβολικός αριθμός συνδέσεων από %s
 Please do not fetch more than %1 pages in %2 seconds.
 Παρακαλώ μη φορτώνετε πάνω από %s σελίδες σε λιγότερο από %2 δευτερόλεπτα.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Επιβεβαιώστε ότι ο εξυπηρετητής web μπορεί να δημιουργήσει τον κατάλογο %s και να δημιουργήσει αρχεία σε αυτόν.
+Copy one of the following stylesheets to %s:
+Αντιγραφή ενός από τα παρακάτω stylesheets στο %s:
 Deleting %s
 Διαγραφή του %s
 Deleted %s
@@ -513,10 +522,6 @@ Immediately delete %s
 Άμεση διαγραφή του %s
 Rename %s to:
 Μετονομασία του %s σε:
-Attach file:
-
-Upload
-
 Learn more...
 Περισσότερες πληροφορίες...
 Complete Content
@@ -534,24 +539,6 @@ Pages that link to this page
 The search parameter is missing.
 
 Pages link to %s
-
-Ban contributors
-
-Ban Contributors to %s
-
-%s is banned
-
-Ban!
-
-These URLs were rolled back. Perhaps you want to add a regular expression to %s?
-
-Regular expression:
-
-Consider banning the hostname or IP number as well: 
-
-Regular expression "%1" matched "%2" on this page.
-
-Regular expression "%s" matched on this page.
 
 Cannot highlight the language %s.
 Δεν υποστηρίζεται χρωματισμός για τη γλώσσα %s.
@@ -621,8 +608,6 @@ Clustermap
 Clustermap
 Pages without a Cluster
 Σελίδες που δεν ανήκουν σε κάποιο Cluster
-Comments:
-
 Comments on 
 Σχόλια για το 
 Comment on 
@@ -631,20 +616,6 @@ Compilation for %s
 Συλλογή για το  %s
 Compilation tag is missing a regular expression.
 Λείπει η κανονική έκφραση (regular expression) από την ετικέτα της συλλογής.
-Install CSS
-Εγκατάσταση CSS
-Copy one of the following stylesheets to %s:
-Αντιγραφή ενός από τα παρακάτω stylesheets στο %s:
-Reset
-
-Extract all dates from the database
-
-Dates
-
-No dates found.
-
-Inter links:
-Inter Links:
 List spammed pages
 Λίστα σελίδων με spam
 Despamming pages
@@ -659,10 +630,6 @@ Marked as %s.
 Σημειώθηκε ως %s.
 Cannot find unspammed revision.
 Δεν υπάρχει έκδοση χωρίς spam.
-Page diff
-
-Diff
-
 Recover Draft
 Επαναφορά Πρόχειρου
 No text to save
@@ -689,44 +656,6 @@ ordinary changes
 απλές αλλαγές
 Matching page names:
 Σελίδες με όνομα που ταιριάζει:
-Fix character encoding
-
-Fix HTML escapes
-
-Set $FormTimeoutSalt.
-
-Form Timeout
-
-GD or Image::Magick modules not available.
-
-GD::SecurityImage module not available.
-
-Image storing failed. (%s)
-
-Bad gd_security_image_id.
-
-Please type the six characters from the anti-spam image
-
-Submit
-
-CAPTCHA
-
-You did not answer correctly.
-Δεν απαντήσατε σωστά.
-$GdSecurityImageFont is not set.
-
-No summary provided
-
-no summary available
-
-page was marked for deletion
-
-Oddmuse
-
-Cleaning up git repository
-
-Email: 
-
 Could not find %1.html template in %2
 Δε βρέθηκε το template %1.html sto %2
 Only Editors are allowed to see this hidden page.
@@ -735,142 +664,6 @@ Only Admins are allowed to see this hidden page.
 Αυτή την κρυφή σελίδα μπορούν να τη δουν μόνο οι Διαχειριστές.
 Index
 Κατάλογος
-The username %s already exists.
-
-The email address %s has already been used.
-
-Wait %s minutes before try again.
-
-Registration Confirmation
-
-Visit the link blow to confirm registration.
-
-Recover Account
-
-You can login by following the link below. Then set new password.
-
-Change Email Address
-
-To confirm changing email address, follow the link below.
-
-To submit this form you must answer this question:
-
-Question:
-
-CAPTCHA:
-
-Registration
-
-The username must be valid page name.
-
-Confirmation email will be sent to the email address.
-
-Repeat Password:
-
-Email:
-
-Bad email address format.
-
-Password needs to have at least %s characters.
-
-Passwords differ.
-
-Email Sent
-
-Confirmation email has been sent to %s. Visit the link on the mail to confirm registration.
-
-Failed to Confirm Registration
-
-Invalid key.
-
-The key expired.
-
-Registration Confirmed
-
-Now, you can login by using username and password.
-
-Forgot your password?
-Ξεχάσατε τον κωδικό σας;
-Login failed.
-
-You are banned.
-
-You must confirm email address.
-
-Logged in
-
-%s has logged in.
-
-You should set new password immediately.
-
-Change Password
-
-Logged out
-
-%s has logged out.
-
-Account Settings
-
-Logout
-Αποσύνδεση
-Current Password:
-
-New Password:
-
-Repeat New Password:
-
-Password is wrong.
-
-Password Changed
-
-Your password has been changed.
-Ο κωδικός σας άλλαξε.
-Forgot Password
-
-Enter email address, and recovery login ticket will be sent.
-
-Not found.
-
-The mail address is not valid anymore.
-
-An email has been sent to %s with further instructions.
-
-New Email Address:
-
-Failed to load account.
-
-An email has been sent to %s with a login ticket.
-
-Confirmation Failed
-
-Failed to confirm.
-
-Email Address Changed
-
-Email address for %1 has been changed to %2.
-
-Account Management
-
-Ban Account
-
-Enter username of the account to ban:
-
-Ban
-
-Enter username of the account to unban:
-
-Unban
-
-%s is already banned.
-
-%s has been banned.
-
-%s is not banned.
-
-%s has been unbanned.
-
-Register
-
 Languages:
 Γλώσσες:
 Show!
@@ -879,10 +672,6 @@ Define
 Ορισμός
 Full Link List
 Λίστα Όλων των Συνδέσμων
-Banned Content
-
-Rule "%1" matched on this page.
-
 List of locked pages
 
 Pages tagged with %s
@@ -895,17 +684,7 @@ The template %s is either empty or does not exist.
  -- ορίζεται στο %s
 Local names defined on %1: %2
 Τοπικά ονόματα ορισμένα στο %1: %2
-Name: 
-
-URL: 
-
-Define Local Names
-
-Define external redirect: 
-
 Locked Pages
-
-Host or IP matched %s
 
 Register for %s
 Εγγραφή στο %s
@@ -945,8 +724,12 @@ You are now logged out.
 Έχετε αποσυνδεθεί.
 Register a new account
 Δημιουργία νέου λογαριασμού
+Logout
+Αποσύνδεση
 Who am I?
 Με τι όνομα έχω συνδεθεί;
+Forgot your password?
+Ξεχάσατε τον κωδικό σας;
 Change your password
 Αλλαγή κωδικού
 Approve pending registrations
@@ -981,6 +764,8 @@ Change Password?
 Θέλετε να Αλλάξετε Κωδικό;
 Your current password is incorrect.
 Ο τρέχων κωδικός σας δεν είναι σωστός.
+Your password has been changed.
+Ο κωδικός σας άλλαξε.
 Approve Pending Registrations for %s
 Offene Gesuche für %s bestätigen
 %s has been approved.
@@ -1000,6 +785,8 @@ Invalid Mail %s: not saved.
 unsubscribe
 
 subscribe
+
+Email: 
 
 %s appears to be an invalid mail address
 
@@ -1030,12 +817,6 @@ Subscribed %s to the following pages:
 The remaining pages do not exist.
 
 Unsubscribed %s from the following pages:
-
-Migrating Subscriptions
-
-No non-migrated email addresses found, migration not necessary.
-
-Migrated %s rows.
 
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 
@@ -1075,12 +856,6 @@ Generating Link Database
 Δημιουργία Βάσης Συνδέσμων
 The 404 handler extension requires the link data extension (links.pl).
 Η επέκταση χειρισμού σφαλμάτων 404 χρειάζεται την επέκταση link data (links.pl).
-Make available offline
-
-Offline
-
-You are currently offline and what you requested is not part of the offline application. You need to be online to do this.
-
 LocalMap
 LocalMap
 No page id for action localmap
@@ -1095,6 +870,20 @@ Self-ban by %s
 Αυτο-αποκλεισμός του %s
 You have banned your own IP.
 Έχετε αποκλείσει την ίδια σας τη διεύθυνση IP.
+OpenID Login
+
+Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
+
+Your homepage is set to %s.
+
+You have no homepage set.
+
+Homepage:
+
+Homepage is missing
+
+OpenID error %s
+
 Orphan List
 Λίστα Ορφανών Σελίδων
 Trail: 
@@ -1121,18 +910,14 @@ Include permanent anchors
 Με μόνιμες συνδέσεις
 Portrait
 Portrait
-This page is password protected. If you know the password, you can %s. Once you have done that, return and reload this page.
-
-supply the password now
-
 Publish %s
 Έκδοση του %s
 No target wiki was specified in the config file.
 Δεν έχει οριστεί wiki προορισμού στο αρχείο ρυθμίσεων.
 The target wiki was misconfigured.
 Το wiki προορισμού δεν έχει ρυθμιστεί σωστά.
-Upload is limited to %s bytes
-
+You did not answer correctly.
+Δεν απαντήσατε σωστά.
 To save this page you must answer this question:
 
 Please type the following two words:
@@ -1183,10 +968,6 @@ Static Copy
 Στατικό Αντίγραφο
 Back to %s
 Επιστροφή στο %s
-Edit image in the browser
-
-Summary of your changes: 
-
 Copy to %1 succeeded: %2.
 Η αντιγραφή στο %1 ολοκληρώθηκε με επιτυχία: %2.
 Copy to %1 failed: %2.
@@ -1225,39 +1006,11 @@ Too many instances.  Only %s allowed.
 Πάρα πολλές ταυτόχρονες αιτήσεις στον εξυπηρετητή αυτής της σελίδας.  Επιτρέπονται μόνο %s ταυτόχρονες συνδέσεις.
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 Παρακαλώ δοκιμάστε αργότερα.  Μπορεί κάποιος να τρέχει αυτή τη στιγμή μια εργασία διαχείρισης ή μια μεγάλη αίτηση αναζήτησης.  Δυστυχώς ο ιστότοπος έχει περιορισμένες πηγές, οπότε επαφιόμαστε προς το παρόν στην υπομονή σας.
-thumb
-
-Error creating thumbnail from non existant page %s.
-
-Can not create thumbnail for file type %s.
-
-Can not create thumbnail for a text document
-
-Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
-
-Can not create path for thumbnail - %s
-
-Failed to run %1 to create thumbnail: %2
-
-%s ran into an error
-
-%s produced no output
-
-Failed to parse %s.
-
-Timezone
-
-Pick your timezone:
-
-Set
-
 Contents
 Περιεχόμενα
 Create a new page for today
 Δημιουργία μιας νέας σελίδας για τη σημερινή ημερομηνία
 Add Translation
-
-Please provide a different page name for the translation.
 
 Added translation: %1 (%2)
 
@@ -1285,16 +1038,6 @@ The translation is outdated.
 Αυτή η μετάφραση χρειάζεται ενημέρωση.
 The page does not exist.
 Αυτή η σελίδα δεν υπάρχει.
-Upgrading Database
-
-Did the previous upgrade end with an error? A lock was left behind.
-
-Unlock wiki
-
-Upgrade complete.
-
-Upgrade complete. Please remove $ModuleDir/upgade.pl, now.
-
 http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -1311,8 +1054,6 @@ Wanted Pages
 %s σελίδες
 %s, referenced from:
 %s, αναφέρονται από:
-Web application for offline browsing
-
 Upload of %s file
 Μεταφόρτωση του αρχείου %s
 Blog
