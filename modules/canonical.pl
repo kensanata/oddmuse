@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/canonical.pl">canonical.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Canonical_Names">Canonical Names</a></p>';
+AddModuleDescripton('canonical.pl', 'Canonical Names');
 
 use utf8;
 

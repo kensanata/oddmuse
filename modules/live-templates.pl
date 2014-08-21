@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/live-templates.pl">live-templates.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Live_Template_Extension">Live Template Extension</a></p>';
+AddModuleDescripton('live-templates.pl', 'Live Template Extension');
 
 push(@MyRules, \&LiveTemplateRule);
 

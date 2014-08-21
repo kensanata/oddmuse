@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/relation.pl">relation.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Relation_Extension">Relation Extension</a></p>';
+AddModuleDescripton('relation.pl', 'Relation Extension');
 
 use vars qw(@RelationLinking $RelationPassedFlag);
 

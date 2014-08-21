@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/htmllinks.pl">htmllinks.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/HtmlLinks_Module">HtmlLinks Module</a></p>';
+AddModuleDescripton('htmllinks.pl', 'HtmlLinks Module');
 
 use vars qw($HtmlLinks); 
 

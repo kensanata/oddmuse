@@ -22,7 +22,7 @@
 # is useless. This extension will not work under Windows/IIS unless cal
 # is installed.
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/cal3.pl">cal3.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Cal3_Extension">Cal3 Extension</a></p>';
+AddModuleDescripton('cal3.pl', 'Cal3 Extension');
 
 *OldCalendarGetHeader = *GetHeader;
 *GetHeader = *NewCalendarGetHeader;

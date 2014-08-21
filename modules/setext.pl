@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/setext.pl">setext.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/SeText_Extension">SeText Extension</a></p>';
+AddModuleDescripton('setext.pl', 'SeText Extension');
 
 push(@MyRules, \&SeTextRule);
 

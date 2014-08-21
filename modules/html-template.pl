@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/html-template.pl">html-template.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/HTML_Templates">HTML Templates</a></p>';
+AddModuleDescripton('html-template.pl', 'HTML Templates');
 
 # The entire mechanism of how pages are built is now upside down.
 # Instead of writing code that assembles pages, we load templates,

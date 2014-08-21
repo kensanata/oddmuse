@@ -20,7 +20,7 @@ package OddMuse;
 
 use vars qw($WantedPageName $WantedPageNameFilter $WantedPageReferrerFilter);
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/wanted.pl">wanted.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Wanted_Pages_Extension">Wanted Pages Extension</a></p>';
+AddModuleDescripton('wanted.pl', 'Wanted Pages Extension');
 
 
 push(@MyAdminCode, \&WantedAction);

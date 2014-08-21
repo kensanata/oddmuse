@@ -15,7 +15,7 @@
 # This file must load before logbannedcontent.pl such that quick
 # editors will be logged.
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/ban-quick-editors.pl">ban-quick-editors.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Banning_Quick_Editors">Banning Quick Editors</a></p>';
+AddModuleDescripton('ban-quick-editors.pl', 'Banning Quick Editors');
 
 *BanQuickOldUserIsBanned = *UserIsBanned;
 *UserIsBanned = *BanQuickNewUserIsBanned;

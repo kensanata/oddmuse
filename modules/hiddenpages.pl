@@ -23,7 +23,7 @@
 # on a pattern matching the page id or to a membership to a certain
 # page cluster.
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/hiddenpages.pl">hiddenpages.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Hidden_Pages_Extension">Hidden Pages Extension</a></p>';
+AddModuleDescripton('hiddenpages.pl', 'Hidden Pages Extension');
 
 use vars qw($HiddenCluster $HideEditorPages $HideAdminPages
 $HideRegExEditor $HideRegExAdmin);

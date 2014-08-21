@@ -18,7 +18,7 @@
 
 # Create a plain text listing of all pages in your wiki
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/sitemap-index.pl">sitemap-index.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Sitemap-index_Extension">Sitemap-index Extension</a></p>';
+AddModuleDescripton('sitemap-index.pl', 'Sitemap-index Extension');
 
 $Action{'sitemap-index'} = \&DoSiteMapIndex;
 

@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/static-copy.pl">static-copy.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Static_Copy_Extension">Static Copy Extension</a></p>';
+AddModuleDescripton('static-copy.pl', 'Static Copy Extension');
 
 $Action{static} = \&DoStatic;
 

@@ -17,7 +17,7 @@
 # Porter stemming algorithm code copied verbatim from http://www.tartarus.org/~martin/PorterStemmer/
 
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/wordstem.pl">wordstem.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/WordStemming">WordStemming</a></p>';
+AddModuleDescripton('wordstem.pl', 'WordStemming');
 
 *OldStemmingResolveId = *ResolveId;
 *ResolveId = *NewStemmingResolveId;

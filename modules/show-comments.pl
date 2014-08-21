@@ -19,7 +19,7 @@
 
 # Includes comment pages in journal collections.
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/show-comments.pl">show-comments.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Comment_Pages">Comment Pages</a></p>';
+AddModuleDescripton('show-comments.pl', 'Comment Pages');
 
 *OldPrintJournal = *PrintJournal;
 *PrintJournal = *NewPrintJournal;

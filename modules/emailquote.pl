@@ -10,7 +10,7 @@
 # For user doc, see: 
 # http://www.oddmuse.org/cgi-bin/oddmuse/Email_Quote_Extension
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/emailquote.pl">emailquote.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Email_Quote_Extension">Email Quote Extension</a></p>';
+AddModuleDescripton('emailquote.pl', 'Email Quote Extension');
 
 push(@MyRules, \&EmailQuoteRule);
 

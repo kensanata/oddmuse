@@ -22,7 +22,7 @@ directory of your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/logout.pl">logout.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Logout_Extension">Logout Extension</a></p>';
+AddModuleDescripton('logout.pl', 'Logout Extension');
 
 # ....................{ CONFIGURATION                      }....................
 

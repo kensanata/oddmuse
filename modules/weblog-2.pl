@@ -18,7 +18,7 @@
 
 use Time::ParseDate;
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/weblog-2.pl">weblog-2.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Complex_Weblog_Extension">Complex Weblog Extension</a></p>';
+AddModuleDescripton('weblog-2.pl', 'Complex Weblog Extension');
 
 push(@MyInitVariables, \&WebLog2Init);
 

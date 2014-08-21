@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/link-all.pl">link-all.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Link_All_Words_Extension">Link All Words Extension</a></p>';
+AddModuleDescripton('link-all.pl', 'Link All Words Extension');
 
 push(@MyRules, \&LinkAllRule);
 $RuleOrder{\&LinkAllRule} = 1000;

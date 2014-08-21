@@ -15,7 +15,7 @@
 #    Boston, MA 02111-1307 USA
 
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/edit-assist.pl">edit-assist.pl</a></p>';
+AddModuleDescripton('edit-assist.pl');
 
 push (@MyInitVariables,
       sub {

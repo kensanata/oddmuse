@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/portrait-support.pl">portrait-support.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Portraits_Support_Extension">Portraits Support Extension</a></p>';
+AddModuleDescripton('portrait-support.pl', 'Portraits Support Extension');
 
 push(@MyMacros, sub{ s/\[new::\]/"[new:" . GetParam('username', T('Anonymous'))
 		       . ':' . TimeToText($Now) . "]"/ge });

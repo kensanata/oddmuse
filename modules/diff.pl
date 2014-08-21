@@ -15,7 +15,7 @@
 
 package OddMuse;
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/diff.pl">diff.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Diff_Action_Extension">Diff Action Extension</a></p>';
+AddModuleDescripton('diff.pl', 'Diff Action Extension');
 
 push(@MyRules, \&DiffActionRule);
 $Action{pagediff} = \&DoDiffAction;

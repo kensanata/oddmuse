@@ -20,7 +20,7 @@ use vars qw($GoogleCustomSearchEngine);
 
 $GoogleCustomSearchEngine = 'http://www.google.com/cse?cx=004774160799092323420:6-ff2s0o6yi&q=';
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/google-custom-search.pl">google-custom-search.pl</a></p>';
+AddModuleDescripton('google-custom-search.pl');
 
 # disable search form
 sub GetSearchForm {}

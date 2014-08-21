@@ -11,7 +11,7 @@ toc is easily installable; move this file into the B<wiki/modules/>
 directory for your Oddmuse Wiki.
 
 =cut
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/toc.pl">toc.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Table_of_Contents_Extension">Table of Contents Extension</a></p>';
+AddModuleDescripton('toc.pl', 'Table of Contents Extension');
 
 # ....................{ CONFIGURATION                      }....................
 

@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/not-found-handler.pl">not-found-handler.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/404_Handler_Extension">404 Handler Extension</a></p>';
+AddModuleDescripton('not-found-handler.pl', '404 Handler Extension');
 
 use File::Glob ':glob';
 use vars qw($NotFoundHandlerDir, $LinkFile, %LinkDb, $LinkDbInit);

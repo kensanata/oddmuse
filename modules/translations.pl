@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations.pl">translations.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Translation_Extension">Translation Extension</a></p>';
+AddModuleDescripton('translations.pl', 'Translation Extension');
 
 push(@MyRules, \&TranslationRule);
 
