@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/moin.pl">moin.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Moin_Markup_Extension">Moin Markup Extension</a></p>';
+AddModuleDescripton('moin.pl', 'Moin Markup Extension');
 
 push(@MyRules, \&MoinRule);
 $RuleOrder{\&MoinRule} = -10; # run before default rules because of [[BR]]

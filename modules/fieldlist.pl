@@ -10,7 +10,7 @@
 # For user doc, see: 
 # http://www.oddmuse.org/cgi-bin/oddmuse/Field_List_Extension
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/fieldlist.pl">fieldlist.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Field_List_Extension">Field List Extension</a></p>';
+AddModuleDescripton('fieldlist.pl', 'Field List Extension');
 
 push(@MyRules, \&FieldListRules);
 

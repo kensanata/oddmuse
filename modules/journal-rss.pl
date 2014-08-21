@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/journal-rss.pl">journal-rss.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Journal_RSS_Extension">Journal RSS Extension</a></p>';
+AddModuleDescripton('journal-rss.pl', 'Journal RSS Extension');
 
 $Action{journal} = \&DoJournalRss;
 

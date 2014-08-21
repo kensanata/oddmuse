@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/google-search.pl">google-search.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Use_Google_For_Searches">Use Google For Searches</a></p>';
+AddModuleDescripton('google-search.pl', 'Use Google For Searches');
 
 use vars qw($GoogleSearchDomain $GoogleSearchExclusive);
 

@@ -23,7 +23,7 @@
 # Additionally, lines starting with Q: and A: are rendered using 
 # the css classes div.question and div.answer.
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/faq.pl">faq.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/FAQ_Extension">FAQ Extension</a></p>';
+AddModuleDescripton('faq.pl', 'FAQ Extension');
 
 $FaqHeaderText = "Questions on this page:" unless $FaqHeaderText;
 $FaqQuestionText = "Question: " unless $FaqQuestionText;

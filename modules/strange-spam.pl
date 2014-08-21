@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/strange-spam.pl">strange-spam.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/StrangeBannedContent">StrangeBannedContent</a></p>';
+AddModuleDescripton('strange-spam.pl', 'StrangeBannedContent');
 
 use vars qw($StrangeBannedContent);
 

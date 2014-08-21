@@ -23,7 +23,7 @@
 # span[lang=de] { background-color:#ffd; }
 # span[lang=it] { background-color:#dfd; }
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/lang.pl">lang.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Language_Extension">Language Extension</a></p>';
+AddModuleDescripton('lang.pl', 'Language Extension');
 
 push(@MyRules, \&LangRule);
 

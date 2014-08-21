@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/all.pl">all.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/All_Action">All Action</a></p>';
+AddModuleDescripton('all.pl', 'All Action');
 
 $Action{all} = \&DoPrintAllPages;
 

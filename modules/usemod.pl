@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 # ====================[ usemod.pl                          ]====================
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/usemod.pl">usemod.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Usemod_Markup_Extension">Usemod Markup Extension</a></p>';
+AddModuleDescripton('usemod.pl', 'Usemod Markup Extension');
 
 use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml
       $UseModSpaceRequired $UseModMarkupInTitles);

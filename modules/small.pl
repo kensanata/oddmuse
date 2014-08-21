@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/small.pl">small.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/List_Small_Pages_Extension">List Small Pages Extension</a></p>';
+AddModuleDescripton('small.pl', 'List Small Pages Extension');
 
 my $SmallLimit = 1000;
 

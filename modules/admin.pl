@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/admin.pl">admin.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Admin_Power_Extension">Admin Power Extension</a></p>';
+AddModuleDescripton('admin.pl', 'Admin Power Extension');
 
 $Action{delete} = \&AdminPowerDelete;
 $Action{rename} = \&AdminPowerRename;

@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/links.pl">links.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Link_Data_Extension">Link Data Extension</a></p>';
+AddModuleDescripton('links.pl', 'Link Data Extension');
 
 $Action{links} = \&DoLinks;
 

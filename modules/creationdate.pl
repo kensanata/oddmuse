@@ -23,7 +23,7 @@
 #
 # Of course, you can customize this to store more information
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/creationdate.pl">creationdate.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/CreationDate_Module">CreationDate Module</a></p>';
+AddModuleDescripton('creationdate.pl', 'CreationDate Module');
 
 *CreationDateOldOpenPage = *OpenPage;
 *OpenPage = CreationDateOpenPage;

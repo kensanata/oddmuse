@@ -20,7 +20,7 @@
 # ie: http://search.cpan.org/CPAN/authors/id/C/CH/CHAMAS/MLDBM-2.01.tar.gz
 
 use MLDBM qw( DB_File Storable );
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/backlinkage.pl">backlinkage.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Inline_Backlinks">Inline Backlinks</a></p>';
+AddModuleDescripton('backlinkage.pl', 'Inline Backlinks');
 
 my $debug=1;             # Set Text Output Verbosity when compiling
 my $backfile = $DataDir . '/backlinks.db';  # Where data lives

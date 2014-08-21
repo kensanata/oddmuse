@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/duckduckgo-search.pl">duckduckgo-search.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Use_DuckDuckGo_For_Searches">Use DuckDuckGo For Searches</a></p>';
+AddModuleDescripton('duckduckgo-search.pl', 'Use DuckDuckGo For Searches');
 
 use vars qw($DuckDuckGoSearchDomain);
 

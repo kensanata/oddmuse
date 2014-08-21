@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/html-uploads.pl">html-uploads.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Restricted_HTML_Upload">Restricted HTML Upload</a></p>';
+AddModuleDescripton('html-uploads.pl', 'Restricted HTML Upload');
 
 $Action{download} = \&HtmlUploadsDoDownload;
 

@@ -14,7 +14,7 @@
 
 package OddMuse;
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/toc-js.pl">toc-js.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Javascript_Table_of_Contents_Extension">Javascript Table of Contents Extension</a></p>';
+AddModuleDescripton('toc-js.pl', 'Javascript Table of Contents Extension');
 
 use vars qw($TocOutlineLibrary);
 

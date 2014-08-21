@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/mac.pl">mac.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Mac">Mac</a></p>';
+AddModuleDescripton('mac.pl', 'Mac');
 
 use Unicode::Normalize;
 

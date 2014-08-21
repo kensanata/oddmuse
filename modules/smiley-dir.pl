@@ -21,7 +21,7 @@ use vars qw{$SmileyDir $SmileyUrlPath};
 $SmileyDir = '/mnt/pics'; # directory with all the smileys
 $SmileyUrlPath = '/pics'; # path where all the smileys can be found (URL)
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/smiley-dir.pl">smiley-dir.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Smiley_Directory_Extension">Smiley Directory Extension</a></p>';
+AddModuleDescripton('smiley-dir.pl', 'Smiley Directory Extension');
 
 push(@MyInitVariables, \&SmileyDirInit);
 
