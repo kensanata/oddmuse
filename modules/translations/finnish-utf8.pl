@@ -1,4 +1,3 @@
-# -*-mode: fundamental; coding: utf-8;-*-
 # UTF-8 encoded Finnish translation file for use with Oddmuse
 #
 # Copyright (c) 2004 mixu (Mikito Takada)

@@ -1,4 +1,3 @@
-# -*-mode: fundamental; coding: utf-8;-*-
 # UTF-8 encoded Swedish language file for use with Oddmuse
 #
 # Copyright (c) 2003 Erik S-O Johansson and others
