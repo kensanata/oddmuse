@@ -3930,5 +3930,10 @@ sub WriteRecentVisitors {
 
 sub TextIsFile { $_[0] =~ /^#FILE (\S+) ?(\S+)?\n/ }
 
+sub AddModuleDescription {
+  my ($filename, $name) = @_;
+  $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/' . UrlEncode($filename) . '">' . QuoteHtml($filename) . '</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/' . UrlEncode($name) . '">' . QuoteHtml($name) . '</a></p>';
+}
+
 DoWikiRequest() if $RunCGI and not exists $ENV{MOD_PERL}; # Do everything.
 1; # In case we are loaded from elsewhere
