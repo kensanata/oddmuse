@@ -20,6 +20,8 @@
 
 use vars qw(%NotifyJournalPage @NotifyUrlPatterns);
 
+AddModuleDescripton('weblog-tracking.pl');
+
 # Put this file in your modules directory.
 
 %NotifyJournalPage = ();

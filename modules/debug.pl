@@ -15,6 +15,8 @@
 
 package OddMuse;
 
+AddModuleDescripton('debug.pl');
+
 @Debugging = (\&DebugInterLinks);
 
 sub DebugInterLinks {
