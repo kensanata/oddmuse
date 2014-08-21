@@ -42,7 +42,7 @@ $LocalMapDefaultDepth = 3 unless defined $LocalMapDefaultDepth;
 # Implementation
 #
 ##########################################################################
-AddModuleDescripton('olocalmap.pl');
+AddModuleDescription('olocalmap.pl');
 
 push(@MyInitVariables, \&InitLocalMap);
 

@@ -20,7 +20,7 @@ require MIME::Base64;
 
 use File::Path;
 
-AddModuleDescripton('thumbs.pl', 'Image Thumbnails');
+AddModuleDescription('thumbs.pl', 'Image Thumbnails');
 
 # Tempoary directory to create thumbnails in
 $ThumbnailTempDir = '/tmp';

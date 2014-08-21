@@ -22,7 +22,7 @@ automatically.
 
 =cut
 
-AddModuleDescripton('honeypot.pl', 'Comments on Monitor Extension');
+AddModuleDescription('honeypot.pl', 'Comments on Monitor Extension');
 
 =head1 CONFIGURATION
 

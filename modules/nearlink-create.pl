@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('nearlink-create.pl', 'Comments on Near Links');
+AddModuleDescription('nearlink-create.pl', 'Comments on Near Links');
 
 *OldNearCreateScriptLink = *ScriptLink;
 *ScriptLink = *NewNearCreateScriptLink;

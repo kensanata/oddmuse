@@ -23,7 +23,7 @@
 #     - Tried to get rid of LWP but failed :(
 #     - We have to capture the script before CGI.pm starts to get STDIN
 
-AddModuleDescripton('pingback-server.pl');
+AddModuleDescription('pingback-server.pl');
 
 use LWP::UserAgent; # This one will one day be eliminated! Hopefully!
 

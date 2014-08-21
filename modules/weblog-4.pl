@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('weblog-4.pl', 'Blogging With Tags');
+AddModuleDescription('weblog-4.pl', 'Blogging With Tags');
 
 push(@MyInitVariables, sub {
        $SearchFreeTextTagUrl = $ScriptName . '?action=browse;tag=1;id=';

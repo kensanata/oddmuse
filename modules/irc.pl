@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('irc.pl', 'IRC Log Extension');
+AddModuleDescription('irc.pl', 'IRC Log Extension');
 
 use vars qw($IrcNickRegexp $IrcLinkNick);
 

@@ -26,7 +26,7 @@ automatically.
 
 =cut
 
-AddModuleDescripton('mail.pl', 'Mail Extension');
+AddModuleDescription('mail.pl', 'Mail Extension');
 
 use vars qw($MailFile $MailPattern);
 

@@ -16,7 +16,7 @@ automatically.
 
 =cut
 
-AddModuleDescripton('webapp.pl');
+AddModuleDescription('webapp.pl');
 
 push(@MyAdminCode, \&WebAppMenu);
 

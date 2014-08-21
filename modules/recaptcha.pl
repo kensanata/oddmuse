@@ -26,7 +26,7 @@ recaptcha is simply installable; simply:
 =cut
 package OddMuse;
 
-AddModuleDescripton('recaptcha.pl', 'ReCaptcha Extension');
+AddModuleDescription('recaptcha.pl', 'ReCaptcha Extension');
 
 # ....................{ CONFIGURATION                      }....................
 

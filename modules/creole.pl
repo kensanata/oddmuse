@@ -14,7 +14,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-AddModuleDescripton('creole.pl', 'Creole Markup Extension');
+AddModuleDescription('creole.pl', 'Creole Markup Extension');
 
 # ....................{ CONFIGURATION                      }....................
 

@@ -23,7 +23,7 @@
 # on a pattern matching the page id or to a membership to a certain
 # page cluster.
 
-AddModuleDescripton('hiddenpages.pl', 'Hidden Pages Extension');
+AddModuleDescription('hiddenpages.pl', 'Hidden Pages Extension');
 
 use vars qw($HiddenCluster $HideEditorPages $HideAdminPages
 $HideRegExEditor $HideRegExAdmin);

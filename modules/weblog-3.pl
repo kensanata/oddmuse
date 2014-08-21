@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-AddModuleDescripton('weblog-3.pl', 'Create a Blog Front Page');
+AddModuleDescription('weblog-3.pl', 'Create a Blog Front Page');
 
 # Categories
 

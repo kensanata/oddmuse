@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('open-proxy.pl', 'Open Proxy Banning Extension');
+AddModuleDescription('open-proxy.pl', 'Open Proxy Banning Extension');
 
 # We scan proxies by attempting to self-ban ourselves.  If we're
 # hitting an open proxy, our request will in fact be forwarded, and

@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('paragraph-link.pl', 'Paragraph Link Extension');
+AddModuleDescription('paragraph-link.pl', 'Paragraph Link Extension');
 
 push(@MyRules, \&ParagraphLinkRule);
 # The [...] rule conflicts with the [new] in portrait-support.pl

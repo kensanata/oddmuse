@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-AddModuleDescripton('localtime.pl', 'Localtime Extension');
+AddModuleDescription('localtime.pl', 'Localtime Extension');
 
 *CalcDay     = *NewCalcDay;
 *CalcTime    = *NewCalcTime;

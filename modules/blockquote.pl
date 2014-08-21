@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('blockquote.pl', 'Comments on Text Formatting Rules');
+AddModuleDescription('blockquote.pl', 'Comments on Text Formatting Rules');
 
 push(@MyRules, \&BlockQuoteRule);
 

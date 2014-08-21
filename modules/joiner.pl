@@ -27,7 +27,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-AddModuleDescripton('joiner.pl', 'Joiner Extension');
+AddModuleDescription('joiner.pl', 'Joiner Extension');
 
 =head1 DESCRIPTION
 

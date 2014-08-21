@@ -26,7 +26,7 @@
 
 use utf8;
 
-AddModuleDescripton('national-days-de.pl', 'Special Days');
+AddModuleDescription('national-days-de.pl', 'Special Days');
 
 %SpecialDays = (
   '1-1' => 'Haiti: Erlangung der Unabhängigkeit 1804, Kuba: Jahrestag der Revolution 1959, Sudan: Erlangung der Unabhängigkeit 1956',

@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('tagmap.pl', 'TagMap Module');
+AddModuleDescription('tagmap.pl', 'TagMap Module');
 
 use vars qw($TagMapPage $TagMark $TagClass $TagString $TagSearchTitle);
 

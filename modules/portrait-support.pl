@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-AddModuleDescripton('portrait-support.pl', 'Portraits Support Extension');
+AddModuleDescription('portrait-support.pl', 'Portraits Support Extension');
 
 push(@MyMacros, sub{ s/\[new::\]/"[new:" . GetParam('username', T('Anonymous'))
 		       . ':' . TimeToText($Now) . "]"/ge });

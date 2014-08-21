@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-AddModuleDescripton('dojo.pl', 'Using Dojo Instead Of Wiki Markup');
+AddModuleDescription('dojo.pl', 'Using Dojo Instead Of Wiki Markup');
 
 use vars qw(@DojoPlugins $DojoTheme);
 

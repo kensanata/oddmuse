@@ -39,7 +39,7 @@ Notes:
 
 =cut
 
-AddModuleDescripton('private-pages.pl', 'Private Pages Extension');
+AddModuleDescription('private-pages.pl', 'Private Pages Extension');
 
 sub PrivatePageLocked {
   my $text = shift;

@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('publish.pl', 'Publish Page Extension');
+AddModuleDescription('publish.pl', 'Publish Page Extension');
 
 use vars qw($PublishTargetUrl);
 

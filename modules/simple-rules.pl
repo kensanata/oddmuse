@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('simple-rules.pl', 'Simple Fast Alternate Text Formatting Rules');
+AddModuleDescription('simple-rules.pl', 'Simple Fast Alternate Text Formatting Rules');
 
 *ApplyRules = *NewSimpleRulesApplyRules;
 

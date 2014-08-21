@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('age.pl', 'Age Indication Extension');
+AddModuleDescription('age.pl', 'Age Indication Extension');
 
 use vars qw(%AgeEffect $AgeParameter);
 

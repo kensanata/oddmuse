@@ -80,7 +80,7 @@ my $eqAbbrev = "Eq. ";
 my $LatexDefaultTemplateName = "$LatexDir/template.latex";
 
 
-AddModuleDescripton('latex.pl', 'LaTeX Extension');
+AddModuleDescription('latex.pl', 'LaTeX Extension');
 
 # Internal Equation counting and referencing variables
 my $eqCounter = 0;

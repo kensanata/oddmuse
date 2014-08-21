@@ -18,7 +18,7 @@
 
 use utf8;
 
-AddModuleDescripton('national-days.pl', 'Special Days');
+AddModuleDescription('national-days.pl', 'Special Days');
 
 %SpecialDays = (
    '1-1' => 'Sudan, National Day, Haiti, Independence Day, Cuba, Liberation Day',

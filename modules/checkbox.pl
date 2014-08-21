@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('checkbox.pl', 'Checklist Extension');
+AddModuleDescription('checkbox.pl', 'Checklist Extension');
 
 # [[ : To do]]
 # [[X: Done]]

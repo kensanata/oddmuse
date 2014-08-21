@@ -10,7 +10,7 @@
 # For user doc, see: 
 # http://www.oddmuse.org/cgi-bin/oddmuse/Backlinks_Extension
 
-AddModuleDescripton('backlinks.pl', 'Backlinks Extension');
+AddModuleDescription('backlinks.pl', 'Backlinks Extension');
 
 *OldGetSearchLink = *GetSearchLink;
 *GetSearchLink = *NewGetSearchLink;

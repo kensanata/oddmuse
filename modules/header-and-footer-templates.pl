@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('header-and-footer-templates.pl', 'Comments on HTML Templates');
+AddModuleDescription('header-and-footer-templates.pl', 'Comments on HTML Templates');
 
 use vars qw($HtmlTemplateDir);
 use HTML::Template;

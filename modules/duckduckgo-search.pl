@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-AddModuleDescripton('duckduckgo-search.pl', 'Use DuckDuckGo For Searches');
+AddModuleDescription('duckduckgo-search.pl', 'Use DuckDuckGo For Searches');
 
 use vars qw($DuckDuckGoSearchDomain);
 

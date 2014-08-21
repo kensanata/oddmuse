@@ -17,7 +17,7 @@ use XML::Atom::Entry;
 use XML::Atom::Link;
 use XML::Atom::Person;
 
-AddModuleDescripton('atom.pl', 'Atom Extension');
+AddModuleDescription('atom.pl', 'Atom Extension');
 
 push(@MyInitVariables, \&AtomInit);
 

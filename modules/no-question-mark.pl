@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('no-question-mark.pl', 'No Questionmarks Extension');
+AddModuleDescription('no-question-mark.pl', 'No Questionmarks Extension');
 
 sub GetPageOrEditLink {
   my ($id, $text, $bracket, $free) = @_;

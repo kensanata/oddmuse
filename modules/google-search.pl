@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('google-search.pl', 'Use Google For Searches');
+AddModuleDescription('google-search.pl', 'Use Google For Searches');
 
 use vars qw($GoogleSearchDomain $GoogleSearchExclusive);
 

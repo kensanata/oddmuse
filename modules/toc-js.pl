@@ -14,7 +14,7 @@
 
 package OddMuse;
 
-AddModuleDescripton('toc-js.pl', 'Javascript Table of Contents Extension');
+AddModuleDescription('toc-js.pl', 'Javascript Table of Contents Extension');
 
 use vars qw($TocOutlineLibrary);
 

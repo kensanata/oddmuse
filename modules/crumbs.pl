@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('crumbs.pl', 'List Parent Pages Extension');
+AddModuleDescription('crumbs.pl', 'List Parent Pages Extension');
 
 push(@MyRules, \&CrumbsRule);
 $RuleOrder{\&CrumbsRule} = -10; # run before default rules!

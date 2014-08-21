@@ -22,7 +22,7 @@ creoleaddition is simply installable; simply:
 =cut
 package OddMuse;
 
-AddModuleDescripton('creoleaddition.pl', 'Creole Addition Markup Extension');
+AddModuleDescription('creoleaddition.pl', 'Creole Addition Markup Extension');
 
 # ....................{ CONFIGURATION                      }....................
 

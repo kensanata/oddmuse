@@ -10,7 +10,7 @@
 # For user doc, see: 
 # http://www.oddmuse.org/cgi-bin/oddmuse/Html_Comment_Extension
 
-AddModuleDescripton('htmlcomment.pl', 'Html Comment Extension');
+AddModuleDescription('htmlcomment.pl', 'Html Comment Extension');
 
 push(@MyRules, \&HtmlCommentRules);
 

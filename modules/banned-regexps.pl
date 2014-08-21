@@ -14,7 +14,7 @@
 
 package OddMuse;
 
-AddModuleDescripton('banned-regexps.pl', 'Banning Regular Expressions');
+AddModuleDescription('banned-regexps.pl', 'Banning Regular Expressions');
 
 =h1 Compatibility
 

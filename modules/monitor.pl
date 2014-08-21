@@ -17,7 +17,7 @@ package OddMuse;
 use vars qw($MonitorUser $MonitorPassword $MonitorHost
 	    $MonitorFrom $MonitorTo $MonitorRegexp);
 
-AddModuleDescripton('monitor.pl');
+AddModuleDescription('monitor.pl');
 
 # example settings:
 # $MonitorUser = 'oddmuse.wiki';

@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('html-template.pl', 'HTML Templates');
+AddModuleDescription('html-template.pl', 'HTML Templates');
 
 # The entire mechanism of how pages are built is now upside down.
 # Instead of writing code that assembles pages, we load templates,

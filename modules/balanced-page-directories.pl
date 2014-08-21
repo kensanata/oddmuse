@@ -73,7 +73,7 @@ wiki is locked and migration is started.
 
 =cut
 
-AddModuleDescripton('balanced-page-directories.pl', 'Balanced Page Directories Extension');
+AddModuleDescription('balanced-page-directories.pl', 'Balanced Page Directories Extension');
 
 use Digest::MD5 qw(md5_hex);
 use File::Find qw(finddepth);

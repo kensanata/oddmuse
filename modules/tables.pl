@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('tables.pl', 'Table Markup Extension');
+AddModuleDescription('tables.pl', 'Table Markup Extension');
 
 push(@MyRules, \&TablesRule);
 

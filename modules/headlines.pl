@@ -19,7 +19,7 @@
 
 use vars qw($HeadlineNumber);
 
-AddModuleDescripton('headlines.pl', 'Headlines Extension');
+AddModuleDescription('headlines.pl', 'Headlines Extension');
 
 push(@MyRules, \&HeadlinesRule);
 

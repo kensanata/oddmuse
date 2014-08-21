@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('flickrgallery.pl', 'FlickrGallery Module');
+AddModuleDescription('flickrgallery.pl', 'FlickrGallery Module');
 
 # NOTE: This API key for Flickr is NOT to be used in any other products
 # INCLUDING derivative works.  The rest of the code can be used as licensed

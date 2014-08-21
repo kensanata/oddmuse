@@ -4,7 +4,7 @@
 # This module is free software; you can redistribute it or modify it
 # under the same terms as Perl itself.
 
-AddModuleDescripton('webdav.pl', 'WebDAV Extension');
+AddModuleDescription('webdav.pl', 'WebDAV Extension');
 
 use vars qw($WebDavCache);
 

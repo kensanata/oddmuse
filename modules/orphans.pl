@@ -22,7 +22,7 @@
 # This module will show ALL orphaned pages, even whole orphaned
 # subgraphs on this wiki.
 
-AddModuleDescripton('orphans.pl', 'Orphans Extension');
+AddModuleDescription('orphans.pl', 'Orphans Extension');
 
 # What is interesting to us?
 @orphan_entrypoints = ($HomePage, $RCName);

@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-AddModuleDescripton('offline.pl', 'Plans');
+AddModuleDescription('offline.pl', 'Plans');
 
 # Based on http://diveintohtml5.org/offline.html
 

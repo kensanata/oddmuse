@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('referrer-rss.pl', 'Comments on Automatic Link Back');
+AddModuleDescription('referrer-rss.pl', 'Comments on Automatic Link Back');
 
 $Action{"refer-rss"} = \&DoRefererRss;
 

@@ -19,7 +19,7 @@ use CGI;
 #use CGI::Carp qw ( fatalsToBrowser );
 use File::Basename;
 
-AddModuleDescripton('upload.pl');
+AddModuleDescription('upload.pl');
 
 $CGI::POST_MAX = 1024 * 100000;
 my $filenameWhitelist = 'a-zA-Z0-9_.-';

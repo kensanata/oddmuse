@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-AddModuleDescripton('localnames.pl', 'Local Names Extension');
+AddModuleDescription('localnames.pl', 'Local Names Extension');
 
 =head1 Local Names
 

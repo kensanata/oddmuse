@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('small.pl', 'List Small Pages Extension');
+AddModuleDescription('small.pl', 'List Small Pages Extension');
 
 my $SmallLimit = 1000;
 

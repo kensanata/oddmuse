@@ -20,7 +20,7 @@ package OddMuse;
 
 use vars qw($WantedPageName $WantedPageNameFilter $WantedPageReferrerFilter);
 
-AddModuleDescripton('wanted.pl', 'Wanted Pages Extension');
+AddModuleDescription('wanted.pl', 'Wanted Pages Extension');
 
 
 push(@MyAdminCode, \&WantedAction);

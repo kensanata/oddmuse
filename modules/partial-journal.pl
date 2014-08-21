@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('partial-journal.pl', 'Partial Page Journal');
+AddModuleDescription('partial-journal.pl', 'Partial Page Journal');
 
 # Set up some rule so that we can mess with '-- cut --' (change to <hr>)
 push(@MyRules, \&PartialCutRule);

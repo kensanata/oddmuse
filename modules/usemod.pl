@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 # ====================[ usemod.pl                          ]====================
-AddModuleDescripton('usemod.pl', 'Usemod Markup Extension');
+AddModuleDescription('usemod.pl', 'Usemod Markup Extension');
 
 use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml
       $UseModSpaceRequired $UseModMarkupInTitles);

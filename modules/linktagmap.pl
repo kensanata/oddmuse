@@ -18,7 +18,7 @@
 #
 # Based on code of tagmap.pl module by Fletcher T. Penney
 # and searchtags.pl module by Brock Wilcox
-AddModuleDescripton('linktagmap.pl', 'LinkTagMap Module');
+AddModuleDescription('linktagmap.pl', 'LinkTagMap Module');
 
 use vars qw($LinkTagMark $LinkDescMark $LinkTagClass $LinkDescClass $LinkTagMapPage $UrlPattern $FullUrlPattern $LinkTagSearchTitle);
 

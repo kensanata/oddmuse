@@ -15,7 +15,7 @@
 
 package OddMuse;
 
-AddModuleDescripton('new-window.pl', 'New Window Links Extension');
+AddModuleDescription('new-window.pl', 'New Window Links Extension');
 
 # Opening links in new windows is evil
 push(@MyRules, \&NewWindowLink);

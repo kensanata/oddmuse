@@ -15,7 +15,7 @@
 use File::Glob ':glob';
 use vars qw($DraftDir);
 
-AddModuleDescripton('drafts.pl');
+AddModuleDescription('drafts.pl');
 
 $DraftDir = $DataDir."/draft"; # directory for drafts
 

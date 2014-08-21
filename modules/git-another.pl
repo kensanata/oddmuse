@@ -15,7 +15,7 @@
 
 package OddMuse;
 
-AddModuleDescripton('git-another.pl', 'Another Git Extension');
+AddModuleDescription('git-another.pl', 'Another Git Extension');
 
 use Cwd;
 use Capture::Tiny ':all';

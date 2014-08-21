@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('search-shortcut.pl', 'Comments on Searching');
+AddModuleDescription('search-shortcut.pl', 'Comments on Searching');
 
 *OldGetHeader = *GetHeader;
 *GetHeader = *NewGetHeader;

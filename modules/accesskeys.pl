@@ -15,7 +15,7 @@
 
 package OddMuse;
 
-AddModuleDescripton('accesskeys.pl', 'Links With AccessKeys Extension');
+AddModuleDescription('accesskeys.pl', 'Links With AccessKeys Extension');
 
 push(@MyRules, \&LinksWithAccessKeys);
 sub LinksWithAccessKeys {

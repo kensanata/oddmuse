@@ -20,7 +20,7 @@ use vars qw($GoogleCustomSearchEngine);
 
 $GoogleCustomSearchEngine = 'http://www.google.com/cse?cx=004774160799092323420:6-ff2s0o6yi&q=';
 
-AddModuleDescripton('google-custom-search.pl');
+AddModuleDescription('google-custom-search.pl');
 
 # disable search form
 sub GetSearchForm {}

@@ -15,7 +15,7 @@ automatically.
 
 =cut
 
-AddModuleDescripton('css-install.pl');
+AddModuleDescription('css-install.pl');
 
 =head1 CONFIGURATION
 
