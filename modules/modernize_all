@@ -1,0 +1,10 @@
+#!/bin/bash
+for curFile in *.pl; do
+    [[ ! -f $curFile ]] && continue
+    echo -n "Processing $curFile ... "
+    output=$(./moderndescription "$curFile")
+    what_What_Filename=${output##*|}  # I CAN'T HEAR!!!
+    echo -n "${output%|*}"
+    [[ $output != $what_What_Filename && $curFile != $what_What_Filename ]] && echo -n " This module was written by a liar. (Filename in description does not match real filename)"
+    echo
+done

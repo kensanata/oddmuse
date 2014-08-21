@@ -1,0 +1,47 @@
+#!/usr/bin/perl -pi
+use strict;
+use warnings;
+
+BEGIN {
+  our $found;
+  our $yellFilename;
+}
+
+my $part0 = quotemeta(q{$ModulesDescription .= '});
+my $part1 = quotemeta(q{<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/});
+my $part2 = quotemeta(q{">});
+my $part3 = quotemeta(q{</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/});
+my $part4 = quotemeta(q{">});
+my $part5 = quotemeta(q{</a></p>';});
+
+if (m/^$part0$part1([^"]*)$part2([^<]*)($part3([^"]*)$part4([^<]*))?$part5$/) {
+  my $noUnderscores = $4;
+  our $yellFilename = $1;
+  $noUnderscores =~ tr/_/ / if $3;
+  if ($1 eq $2 and (not $3 or $noUnderscores eq $5)) {
+    if ($3) {
+      $_ = "AddModuleDescripton('$2', '$5');\n"; # good!
+    } else {
+      print STDERR "Module has no wiki page.";
+      $_ = "AddModuleDescripton('$2');\n"; # well, okay
+    }
+  } else {
+    print STDERR "Module description was found, but there is something wrong. Please edit it manually.";
+  }
+  our $found = 1;
+} elsif (m/^$part0<p>(Id:)?\s*([\w-]+\.pl)/) {
+  print STDERR "Old-style description found." . " Module has no wiki page.";
+  our $yellFilename = $2;
+  $_ = "AddModuleDescripton('$2');\n"; # shit happens
+  our $found = 1;
+} elsif (m/^\s*$part0/) {
+  print STDERR "Module description was written by a mythical creature.";
+  our $found = 1;
+}
+
+END {
+  our ($found, $yellFilename);
+  print STDERR "Module description was not found." unless $found;
+  print "|$yellFilename" if $yellFilename;
+  print "\n";
+}
