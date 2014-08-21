@@ -15,7 +15,7 @@ directory of your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-AddModuleDescripton('flashbox.pl', 'Flashbox Extension');
+AddModuleDescription('flashbox.pl', 'Flashbox Extension');
 
 # ....................{ CONFIGURATION                      }....................
 

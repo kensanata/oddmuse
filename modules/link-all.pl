@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('link-all.pl', 'Link All Words Extension');
+AddModuleDescription('link-all.pl', 'Link All Words Extension');
 
 push(@MyRules, \&LinkAllRule);
 $RuleOrder{\&LinkAllRule} = 1000;

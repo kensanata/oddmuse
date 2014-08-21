@@ -23,7 +23,7 @@
 # Additionally, lines starting with Q: and A: are rendered using 
 # the css classes div.question and div.answer.
 
-AddModuleDescripton('faq.pl', 'FAQ Extension');
+AddModuleDescription('faq.pl', 'FAQ Extension');
 
 $FaqHeaderText = "Questions on this page:" unless $FaqHeaderText;
 $FaqQuestionText = "Question: " unless $FaqQuestionText;

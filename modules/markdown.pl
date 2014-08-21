@@ -31,7 +31,7 @@
 
 #	TODO: auto links in codespans should not be interpreted  (e.g. `<http://somelink/>`)
 
-AddModuleDescripton('markdown.pl', 'Markdown Extension');
+AddModuleDescription('markdown.pl', 'Markdown Extension');
 
 use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled $SmartyPantsEnabled!;
 

@@ -1,6 +1,6 @@
 # We just try to autodetect everything.
 
-AddModuleDescripton('vcard.pl');
+AddModuleDescription('vcard.pl');
 
 push(@MyRules, \&hCardRule);
 

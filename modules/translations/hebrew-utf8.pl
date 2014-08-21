@@ -1,26 +1,7 @@
-# UTF-8 encoded Hebrew language file for use with Oddmuse
-#
-# Copyright (c) 2003  Erez Zukerman, IDP, ezuk at idp dot co dot il
-#
-# Permission is granted to copy, distribute and/or modify this
-# document under the terms of the GNU Free Documentation License,
-# Version 1.2 or any later version published by the Free Software
-# Foundation; with no Invariant Sections, no Front-Cover Texts, and no
-# Back-Cover Texts.  A copy of the license could be found at:
-# http://www.gnu.org/licenses/fdl.txt.
-#
-# Installation:
-# =============
-#
-# Create a modules subdirectory in your data directory, and put the
-# file in there. It will be loaded automatically.
-#
-# This translation was last checked for Oddmuse version 1.195.
-#
-use utf8;
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/hebrew-utf8.pl">hebrew-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Hebrew">Hebrew</a></p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
-Include normal pages
+This page is empty.
+
+Add your comment here:
 
 Reading not allowed: user, ip, or network is blocked.
 
@@ -30,8 +11,10 @@ Error
 
 %s calls
 
-Could not create %s
-לא ניתן ליצור את %s
+Cannot create %s
+
+Include normal pages
+
 Invalid UserName %s: not saved.
 שם משתמש שגוי: %s לא נשמר.
 UserName must be 50 characters or less: not saved
@@ -92,6 +75,8 @@ Please go on to %s.
 בבקשה המשך ל-%s.
 Updates since %s
 עדכונים מאז %s
+up to %s
+
 Updates in the last %s days
 עדכונים ב%s הימים האחרונים
 Updates in the last %s day
@@ -144,8 +129,6 @@ new
 
 All changes for %s
 
-from %s
-מ %s
 This page is too big to send over RSS.
 
 History of %s
@@ -176,6 +159,8 @@ The two revisions are the same.
 
 Editing not allowed for %s.
 לא ניתן לערוך את %s.
+Rollback of %s would restore banned content.
+
 Rollback to %s
 
 %s rolled back
@@ -196,8 +181,6 @@ Unlock site
 
 Lock site
 
-Install CSS
-
 Unlock %s
 
 Lock %s
@@ -210,6 +193,8 @@ Important pages:
 
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 
+from %s
+מ %s
 [Home]
 [דף בית]
 redirected from %s
@@ -240,6 +225,10 @@ by %s
 
 (diff)
 (הבדלים)
+a
+
+c
+
 Edit revision %s of this page
 ערוך את גירסה %s של דף זה
 e
@@ -278,6 +267,8 @@ Validate CSS
 אמת CSS
 Last edit
 
+Summary:
+תקציר:
 Difference between revision %1 and %2
 
 revision %s
@@ -314,11 +305,13 @@ Cannot open %s
 
 Cannot write %s
 
-Cannot create %s
+unlock the wiki
 
 Could not get %s lock
 
 The lock was created %s.
+
+Maybe the user running this script is no longer allowed to remove the lock directory?
 
 This operation may take several seconds...
 פעולה זו עשויה להימשך מספר שניות...
@@ -362,8 +355,6 @@ Editing old revision %s.
 עורך גירסה ישנה %s.
 Saving this page will replace the latest revision with this text.
 שמירת דף זה תחליף את הגירסה החדשה ביותר בטקסט זה.
-Summary:
-תקציר:
 This change is a minor edit.
 השינוי שאני מבצע הוא קטן.
 Cancel
@@ -409,6 +400,8 @@ Filter:
 (for %s)
 
 %s pages found.
+
+Malformed regular expression in %s
 
 Replaced: %s
 הוחלף: %s
@@ -492,15 +485,11 @@ Displaying Wiki Version
 
 Debugging Information
 
-Inter links:
-
 Too many connections by %s
 יותר מדי חיבורים מ-%s.
 Please do not fetch more than %1 pages in %2 seconds.
 
 Check whether the web server can create the directory %s and whether it can create files in it.
-
-Copy one of the following stylesheets to %s:
 
 Deleting %s
 
@@ -524,6 +513,10 @@ Immediately delete %s
 
 Rename %s to:
 
+Attach file:
+
+Upload
+
 Learn more...
 
 Complete Content
@@ -541,6 +534,24 @@ Pages that link to this page
 The search parameter is missing.
 
 Pages link to %s
+
+Ban contributors
+
+Ban Contributors to %s
+
+%s is banned
+
+Ban!
+
+These URLs were rolled back. Perhaps you want to add a regular expression to %s?
+
+Regular expression:
+
+Consider banning the hostname or IP number as well: 
+
+Regular expression "%1" matched "%2" on this page.
+
+Regular expression "%s" matched on this page.
 
 Cannot highlight the language %s.
 
@@ -610,6 +621,8 @@ Clustermap
 
 Pages without a Cluster
 
+Comments:
+
 Comments on 
 
 Comment on 
@@ -617,6 +630,20 @@ Comment on
 Compilation for %s
 
 Compilation tag is missing a regular expression.
+
+Install CSS
+
+Copy one of the following stylesheets to %s:
+
+Reset
+
+Extract all dates from the database
+
+Dates
+
+No dates found.
+
+Inter links:
 
 List spammed pages
 
@@ -631,6 +658,10 @@ Revert to revision %1: %2
 Marked as %s.
 
 Cannot find unspammed revision.
+
+Page diff
+
+Diff
 
 Recover Draft
 
@@ -658,6 +689,44 @@ ordinary changes
 
 Matching page names:
 
+Fix character encoding
+
+Fix HTML escapes
+
+Set $FormTimeoutSalt.
+
+Form Timeout
+
+GD or Image::Magick modules not available.
+
+GD::SecurityImage module not available.
+
+Image storing failed. (%s)
+
+Bad gd_security_image_id.
+
+Please type the six characters from the anti-spam image
+
+Submit
+
+CAPTCHA
+
+You did not answer correctly.
+
+$GdSecurityImageFont is not set.
+
+No summary provided
+
+no summary available
+
+page was marked for deletion
+
+Oddmuse
+
+Cleaning up git repository
+
+Email: 
+
 Could not find %1.html template in %2
 
 Only Editors are allowed to see this hidden page.
@@ -665,6 +734,142 @@ Only Editors are allowed to see this hidden page.
 Only Admins are allowed to see this hidden page.
 
 Index
+
+The username %s already exists.
+
+The email address %s has already been used.
+
+Wait %s minutes before try again.
+
+Registration Confirmation
+
+Visit the link blow to confirm registration.
+
+Recover Account
+
+You can login by following the link below. Then set new password.
+
+Change Email Address
+
+To confirm changing email address, follow the link below.
+
+To submit this form you must answer this question:
+
+Question:
+
+CAPTCHA:
+
+Registration
+
+The username must be valid page name.
+
+Confirmation email will be sent to the email address.
+
+Repeat Password:
+
+Email:
+
+Bad email address format.
+
+Password needs to have at least %s characters.
+
+Passwords differ.
+
+Email Sent
+
+Confirmation email has been sent to %s. Visit the link on the mail to confirm registration.
+
+Failed to Confirm Registration
+
+Invalid key.
+
+The key expired.
+
+Registration Confirmed
+
+Now, you can login by using username and password.
+
+Forgot your password?
+
+Login failed.
+
+You are banned.
+
+You must confirm email address.
+
+Logged in
+
+%s has logged in.
+
+You should set new password immediately.
+
+Change Password
+
+Logged out
+
+%s has logged out.
+
+Account Settings
+
+Logout
+
+Current Password:
+
+New Password:
+
+Repeat New Password:
+
+Password is wrong.
+
+Password Changed
+
+Your password has been changed.
+
+Forgot Password
+
+Enter email address, and recovery login ticket will be sent.
+
+Not found.
+
+The mail address is not valid anymore.
+
+An email has been sent to %s with further instructions.
+
+New Email Address:
+
+Failed to load account.
+
+An email has been sent to %s with a login ticket.
+
+Confirmation Failed
+
+Failed to confirm.
+
+Email Address Changed
+
+Email address for %1 has been changed to %2.
+
+Account Management
+
+Ban Account
+
+Enter username of the account to ban:
+
+Ban
+
+Enter username of the account to unban:
+
+Unban
+
+%s is already banned.
+
+%s has been banned.
+
+%s is not banned.
+
+%s has been unbanned.
+
+Register
 
 Languages:
 
@@ -674,6 +879,10 @@ Define
 
 Full Link List
 רשימת קישורים מלאה
+Banned Content
+
+Rule "%1" matched on this page.
+
 List of locked pages
 
 Pages tagged with %s
@@ -686,7 +895,17 @@ The template %s is either empty or does not exist.
 
 Local names defined on %1: %2
 
+Name: 
+
+URL: 
+
+Define Local Names
+
+Define external redirect: 
+
 Locked Pages
+
+Host or IP matched %s
 
 Register for %s
 
@@ -726,11 +945,7 @@ You are now logged out.
 
 Register a new account
 
-Logout
-
 Who am I?
-
-Forgot your password?
 
 Change your password
 
@@ -766,8 +981,6 @@ Change Password?
 
 Your current password is incorrect.
 
-Your password has been changed.
-
 Approve Pending Registrations for %s
 
 %s has been approved.
@@ -787,8 +1000,6 @@ Invalid Mail %s: not saved.
 unsubscribe
 
 subscribe
-
-Email: 
 
 %s appears to be an invalid mail address
 
@@ -819,6 +1030,12 @@ Subscribed %s to the following pages:
 The remaining pages do not exist.
 
 Unsubscribed %s from the following pages:
+
+Migrating Subscriptions
+
+No non-migrated email addresses found, migration not necessary.
+
+Migrated %s rows.
 
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 
@@ -858,6 +1075,12 @@ Generating Link Database
 
 The 404 handler extension requires the link data extension (links.pl).
 
+Make available offline
+
+Offline
+
+You are currently offline and what you requested is not part of the offline application. You need to be online to do this.
+
 LocalMap
 
 No page id for action localmap
@@ -871,20 +1094,6 @@ view
 Self-ban by %s
 
 You have banned your own IP.
-
-OpenID Login
-
-Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
-
-Your homepage is set to %s.
-
-You have no homepage set.
-
-Homepage:
-
-Homepage is missing
-
-OpenID error %s
 
 Orphan List
 
@@ -912,13 +1121,17 @@ Include permanent anchors
 
 Portrait
 
+This page is password protected. If you know the password, you can %s. Once you have done that, return and reload this page.
+
+supply the password now
+
 Publish %s
 
 No target wiki was specified in the config file.
 
 The target wiki was misconfigured.
 
-You did not answer correctly.
+Upload is limited to %s bytes
 
 To save this page you must answer this question:
 
@@ -970,6 +1183,10 @@ Static Copy
 
 Back to %s
 
+Edit image in the browser
+
+Summary of your changes: 
+
 Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
@@ -1008,11 +1225,39 @@ Too many instances.  Only %s allowed.
 
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 
+thumb
+
+Error creating thumbnail from non existant page %s.
+
+Can not create thumbnail for file type %s.
+
+Can not create thumbnail for a text document
+
+Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
+
+Can not create path for thumbnail - %s
+
+Failed to run %1 to create thumbnail: %2
+
+%s ran into an error
+
+%s produced no output
+
+Failed to parse %s.
+
+Timezone
+
+Pick your timezone:
+
+Set
+
 Contents
 
 Create a new page for today
 
 Add Translation
+
+Please provide a different page name for the translation.
 
 Added translation: %1 (%2)
 
@@ -1040,6 +1285,16 @@ The translation is outdated.
 
 The page does not exist.
 
+Upgrading Database
+
+Did the previous upgrade end with an error? A lock was left behind.
+
+Unlock wiki
+
+Upgrade complete.
+
+Upgrade complete. Please remove $ModuleDir/upgade.pl, now.
+
 http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -1055,6 +1310,8 @@ Wanted Pages
 %s pages
 
 %s, referenced from:
+
+Web application for offline browsing
 
 Upload of %s file
 

@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('image.pl', 'Image Extension');
+AddModuleDescription('image.pl', 'Image Extension');
 
 use vars qw($ImageUrlPath);
 

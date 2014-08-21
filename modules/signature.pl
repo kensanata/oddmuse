@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('signature.pl', 'Signature Extension');
+AddModuleDescription('signature.pl', 'Signature Extension');
 
 push(@MyRules, \&SignatureExceptionRule);
 

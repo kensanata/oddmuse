@@ -20,7 +20,7 @@
 # ie: http://search.cpan.org/CPAN/authors/id/C/CH/CHAMAS/MLDBM-2.01.tar.gz
 
 use MLDBM qw( DB_File Storable );
-AddModuleDescripton('backlinkage.pl', 'Inline Backlinks');
+AddModuleDescription('backlinkage.pl', 'Inline Backlinks');
 
 my $debug=1;             # Set Text Output Verbosity when compiling
 my $backfile = $DataDir . '/backlinks.db';  # Where data lives

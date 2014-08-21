@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('moin.pl', 'Moin Markup Extension');
+AddModuleDescription('moin.pl', 'Moin Markup Extension');
 
 push(@MyRules, \&MoinRule);
 $RuleOrder{\&MoinRule} = -10; # run before default rules because of [[BR]]

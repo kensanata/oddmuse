@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('despam.pl', 'Despam Extension');
+AddModuleDescription('despam.pl', 'Despam Extension');
 
 push(@MyAdminCode, \&DespamMenu);
 

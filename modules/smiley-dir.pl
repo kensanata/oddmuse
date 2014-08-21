@@ -21,7 +21,7 @@ use vars qw{$SmileyDir $SmileyUrlPath};
 $SmileyDir = '/mnt/pics'; # directory with all the smileys
 $SmileyUrlPath = '/pics'; # path where all the smileys can be found (URL)
 
-AddModuleDescripton('smiley-dir.pl', 'Smiley Directory Extension');
+AddModuleDescription('smiley-dir.pl', 'Smiley Directory Extension');
 
 push(@MyInitVariables, \&SmileyDirInit);
 

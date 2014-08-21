@@ -1,4 +1,4 @@
-AddModuleDescripton('edit-cluster.pl');
+AddModuleDescription('edit-cluster.pl');
 
 $EditCluster = 'EditCluster';
 

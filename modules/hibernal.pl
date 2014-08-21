@@ -45,7 +45,7 @@ for posts having such a subtitle.
 #     "David_Curry".
 package OddMuse;
 
-AddModuleDescripton('hibernal.pl', 'Hibernal Extension');
+AddModuleDescription('hibernal.pl', 'Hibernal Extension');
 
 # ....................{ CONFIGURATION                      }....................
 

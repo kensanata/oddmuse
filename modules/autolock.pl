@@ -25,7 +25,7 @@ directory of your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-AddModuleDescripton('autolock.pl', 'Autolock Extension');
+AddModuleDescription('autolock.pl', 'Autolock Extension');
 
 # ....................{ CONFIGURATION                      }....................
 

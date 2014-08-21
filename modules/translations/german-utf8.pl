@@ -1,25 +1,8 @@
-# UTF-8 encoded German translation file for use with Oddmuse
-#
-# Copyright (c) 2003  Karl Loncarek <karl@loncarek.de>
-# Copyright (c) 2003-2014  Alex Schröder <alex@gnu.org>
-#
-# Permission is granted to copy, distribute and/or modify this document under
-# the terms of the GNU Free Documentation License, Version 1.2 or any later
-# version published by the Free Software Foundation; with no Invariant Sections,
-# no Front-Cover Texts, and no Back-Cover Texts. A copy of the license could be
-# found at: http://www.gnu.org/licenses/fdl.txt .
-#
-# Installation:
-# =============
-#
-# Create a modules subdirectory in your data directory, and put the file in
-# there. It will be loaded automatically.
-#
-use utf8;
-
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/german-utf8.pl">german-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/German">German</a></p>';
-
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
+This page is empty.
+
+Add your comment here:
+
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
 Login
@@ -97,7 +80,7 @@ und %s
 Updates in the last %s days
 Änderungen der letzten %s Tage
 Updates in the last %s day
-Änderungen des letzten %s Tages
+Änderungen der letzten %s Tage
 for %s only
 nur für %s
 List latest change per page only
@@ -564,8 +547,8 @@ These URLs were rolled back. Perhaps you want to add a regular expression to %s?
 Diese URLs wurden rückgängig gemacht. Vielleicht wollen Sie einen passenden regulären Ausdruck zu %s hinzufügen?
 Regular expression:
 Regulärer Ausdruck:
-Consider banning the IP number as well: 
-Überlegen Sie sich, ob sie die IP Nummer ebenfalls sperren wollen: 
+Consider banning the hostname or IP number as well: 
+
 Regular expression "%1" matched "%2" on this page.
 Regulärer Ausdruck "%1" passt zu "%2" auf dieser Seite.
 Regular expression "%s" matched on this page.
@@ -704,8 +687,6 @@ Add Comment
 Kommentar hinzufügen
 ordinary changes
 normale Änderungen
-Updates in the last %s day
-Änderungen der letzten %s Tage
 Matching page names:
 Übereinstimmende Seitennamen:
 Fix character encoding
@@ -713,7 +694,7 @@ Zeichenkodierung korrigieren
 Fix HTML escapes
 HTML Codierungen korrigieren
 Set $FormTimeoutSalt.
-$FormTimeoutSalt setzen.
+
 Form Timeout
 Zeitüberschreitung für Formulare
 GD or Image::Magick modules not available.
@@ -733,7 +714,7 @@ CAPTCHA
 You did not answer correctly.
 Die Antwort ist falsch.
 $GdSecurityImageFont is not set.
-$GdSecurityImageFont ist nicht gesetzt.
+
 No summary provided
 Keine Zusammenfassung gegeben
 no summary available
@@ -924,8 +905,8 @@ Define external redirect:
 Umleitung auf eine externe Seite definieren: 
 Locked Pages
 Gesperrte Seiten
-IP matched %s
-IP Nummer passt auf %s
+Host or IP matched %s
+
 Register for %s
 Anmeldung für %s
 Please choose a username of the form "FirstLast" using your real name.
@@ -1313,7 +1294,7 @@ Wiki entsprerren
 Upgrade complete.
 Datenbank ist auf dem neuesten Stand.
 Upgrade complete. Please remove $ModuleDir/upgade.pl, now.
-Datenbank ist auf dem neuesten Stand. Bitte entfernen Sie nun $ModuleDir/upgade.pl.
+
 http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s

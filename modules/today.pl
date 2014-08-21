@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('today.pl', 'Blog Module');
+AddModuleDescription('today.pl', 'Blog Module');
 
 # New Action
 

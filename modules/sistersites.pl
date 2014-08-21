@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('sistersites.pl', 'Sister Pages');
+AddModuleDescription('sistersites.pl', 'Sister Pages');
 
 $Action{'sisterpages'} = \&DoSisterPages;
 

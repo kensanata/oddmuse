@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('plainsite.pl', 'PlainSite Module');
+AddModuleDescription('plainsite.pl', 'PlainSite Module');
 
 use vars qw($PlainSiteAllowCommentLink);
 

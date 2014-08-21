@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-AddModuleDescripton('org-mode.pl', 'Comments on Writing Extensions');
+AddModuleDescription('org-mode.pl', 'Comments on Writing Extensions');
 
 push(@MyRules, \&OrgModeRule);
 

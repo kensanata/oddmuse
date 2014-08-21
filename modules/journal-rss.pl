@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-AddModuleDescripton('journal-rss.pl', 'Journal RSS Extension');
+AddModuleDescription('journal-rss.pl', 'Journal RSS Extension');
 
 $Action{journal} = \&DoJournalRss;
 

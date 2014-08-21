@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('html-uploads.pl', 'Restricted HTML Upload');
+AddModuleDescription('html-uploads.pl', 'Restricted HTML Upload');
 
 $Action{download} = \&HtmlUploadsDoDownload;
 

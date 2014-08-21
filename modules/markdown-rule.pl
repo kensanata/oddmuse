@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-AddModuleDescripton('markdown-rule.pl', 'Markdown Rule Extension');
+AddModuleDescription('markdown-rule.pl', 'Markdown Rule Extension');
 
 push(@MyRules, \&MarkdownRule);
 # Since we want this package to be a simple add-on, we try and avoid

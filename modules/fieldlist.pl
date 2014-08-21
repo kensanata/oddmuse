@@ -10,7 +10,7 @@
 # For user doc, see: 
 # http://www.oddmuse.org/cgi-bin/oddmuse/Field_List_Extension
 
-AddModuleDescripton('fieldlist.pl', 'Field List Extension');
+AddModuleDescription('fieldlist.pl', 'Field List Extension');
 
 push(@MyRules, \&FieldListRules);
 

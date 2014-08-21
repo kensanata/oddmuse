@@ -14,7 +14,7 @@ directory of your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-AddModuleDescripton('smarttitles.pl', 'Smarttitles Extension');
+AddModuleDescription('smarttitles.pl', 'Smarttitles Extension');
 
 # ....................{ CONFIGURATION                      }....................
 

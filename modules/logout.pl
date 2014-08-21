@@ -22,7 +22,7 @@ directory of your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-AddModuleDescripton('logout.pl', 'Logout Extension');
+AddModuleDescription('logout.pl', 'Logout Extension');
 
 # ....................{ CONFIGURATION                      }....................
 

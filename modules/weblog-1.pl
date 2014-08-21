@@ -21,7 +21,7 @@ use vars qw($WeblogTextLogo $WeblogXmlLogo);
 $WeblogXmlLogo = '/images/rss.png';
 $WeblogTextLogo = '/images/txt.png';
 
-AddModuleDescripton('weblog-1.pl', 'Minimal Weblog Extension');
+AddModuleDescription('weblog-1.pl', 'Minimal Weblog Extension');
 
 $RefererTracking = 1;
 $CommentsPrefix = 'Comments_on_';

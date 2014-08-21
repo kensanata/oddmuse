@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 # ====================[ forms.pl                           ]====================
 
-AddModuleDescripton('forms.pl', 'Form Extension');
+AddModuleDescription('forms.pl', 'Form Extension');
 
 # ....................{ MARKUP                             }....................
 push(@MyRules, \&FormsRule);

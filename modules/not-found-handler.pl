@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('not-found-handler.pl', '404 Handler Extension');
+AddModuleDescription('not-found-handler.pl', '404 Handler Extension');
 
 use File::Glob ':glob';
 use vars qw($NotFoundHandlerDir, $LinkFile, %LinkDb, $LinkDbInit);

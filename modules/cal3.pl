@@ -22,7 +22,7 @@
 # is useless. This extension will not work under Windows/IIS unless cal
 # is installed.
 
-AddModuleDescripton('cal3.pl', 'Cal3 Extension');
+AddModuleDescription('cal3.pl', 'Cal3 Extension');
 
 *OldCalendarGetHeader = *GetHeader;
 *GetHeader = *NewCalendarGetHeader;

@@ -15,7 +15,7 @@
 # This file must load before logbannedcontent.pl such that quick
 # editors will be logged.
 
-AddModuleDescripton('ban-quick-editors.pl', 'Banning Quick Editors');
+AddModuleDescription('ban-quick-editors.pl', 'Banning Quick Editors');
 
 *BanQuickOldUserIsBanned = *UserIsBanned;
 *UserIsBanned = *BanQuickNewUserIsBanned;

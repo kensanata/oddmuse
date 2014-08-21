@@ -15,7 +15,7 @@
 #    Boston, MA 02111-1307 USA
 
 
-AddModuleDescripton('edit-assist.pl');
+AddModuleDescription('edit-assist.pl');
 
 push (@MyInitVariables,
       sub {

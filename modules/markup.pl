@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-AddModuleDescripton('markup.pl', 'Markup Erweiterung');
+AddModuleDescription('markup.pl', 'Markup Erweiterung');
 
 use vars qw(%MarkupPairs %MarkupForcedPairs %MarkupSingles %MarkupLines
 	    $MarkupQuotes $MarkupQuoteTable);

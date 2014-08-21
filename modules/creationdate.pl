@@ -23,7 +23,7 @@
 #
 # Of course, you can customize this to store more information
 
-AddModuleDescripton('creationdate.pl', 'CreationDate Module');
+AddModuleDescription('creationdate.pl', 'CreationDate Module');
 
 *CreationDateOldOpenPage = *OpenPage;
 *OpenPage = CreationDateOpenPage;

@@ -18,7 +18,7 @@
 
 use Time::ParseDate;
 
-AddModuleDescripton('weblog-2.pl', 'Complex Weblog Extension');
+AddModuleDescription('weblog-2.pl', 'Complex Weblog Extension');
 
 push(@MyInitVariables, \&WebLog2Init);
 

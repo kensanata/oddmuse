@@ -14,7 +14,7 @@
 
 package OddMuse;
 
-AddModuleDescripton('advanced-uploads.pl', 'Advanced File Upload Extension');
+AddModuleDescription('advanced-uploads.pl', 'Advanced File Upload Extension');
 
 $HtmlHeaders .= '<script type="text/javascript" src="/js/uploader.js"></script>';
 

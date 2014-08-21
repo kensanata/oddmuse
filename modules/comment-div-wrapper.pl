@@ -15,7 +15,7 @@
 
 package OddMuse;
 
-AddModuleDescripton('comment-div-wrapper.pl', 'Comment Div Wrapper Extension');
+AddModuleDescription('comment-div-wrapper.pl', 'Comment Div Wrapper Extension');
 
 my $CommentDiv = 0;
 push(@MyRules, \&CommentDivWrapper);

@@ -17,7 +17,7 @@
 #    Boston, MA 02111-1307 USA
 #
 
-AddModuleDescripton('pdf.pl', 'PDF Module');
+AddModuleDescription('pdf.pl', 'PDF Module');
 
 *PdfOldDoBrowseRequest = *DoBrowseRequest;
 *DoBrowseRequest = *PdfDoBrowseRequest;

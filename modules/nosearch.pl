@@ -1,6 +1,6 @@
 # This module is copied from http://sheep.art.pl/Oddmuse_modules
 
-AddModuleDescripton('nosearch.pl');
+AddModuleDescription('nosearch.pl');
 
 
 *OldGetSearchLink = *GetSearchLink;

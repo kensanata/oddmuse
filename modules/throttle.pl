@@ -21,7 +21,7 @@
 # $InstanceThrottleLimit by keeping track of the process ids in
 # $InstanceThrottleDir
 
-AddModuleDescripton('throttle.pl', 'Limit Number Of Instances Running');
+AddModuleDescription('throttle.pl', 'Limit Number Of Instances Running');
 
 use File::Glob ':glob';
 use vars qw($InstanceThrottleDir $InstanceThrottleLimit);

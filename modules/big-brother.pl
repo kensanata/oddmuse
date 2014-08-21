@@ -15,7 +15,7 @@
 
 package OddMuse;
 
-AddModuleDescripton('big-brother.pl', 'Big Brother Extension');
+AddModuleDescription('big-brother.pl', 'Big Brother Extension');
 
 use vars qw($VisitorTime);
 

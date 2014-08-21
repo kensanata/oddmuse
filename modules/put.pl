@@ -28,7 +28,7 @@ only works reliably for GET requests.
 
 =cut
 
-AddModuleDescripton('put.pl');
+AddModuleDescription('put.pl');
 
 push(@MyInitVariables, \&PutMethodHandler);
 

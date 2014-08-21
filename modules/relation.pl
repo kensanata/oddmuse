@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('relation.pl', 'Relation Extension');
+AddModuleDescription('relation.pl', 'Relation Extension');
 
 use vars qw(@RelationLinking $RelationPassedFlag);
 

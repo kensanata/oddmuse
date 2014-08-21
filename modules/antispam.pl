@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('antispam.pl', 'Antispam Module');
+AddModuleDescription('antispam.pl', 'Antispam Module');
 
 use vars qw($DoMaskEmail $CreateMailtoLinks); 
 

@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('canonical.pl', 'Canonical Names');
+AddModuleDescription('canonical.pl', 'Canonical Names');
 
 use utf8;
 

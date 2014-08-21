@@ -27,7 +27,7 @@
 #  $LogoUrl = GetDynLogoUrl();
 #
 
-AddModuleDescripton('dynlogo.pl', 'Dynamic Logo');
+AddModuleDescription('dynlogo.pl', 'Dynamic Logo');
 
 use vars qw($DynLogoDirectory $DynLogoDefault %DynLogoMap);
 

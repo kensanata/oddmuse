@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('templates.pl', 'Template Extension');
+AddModuleDescription('templates.pl', 'Template Extension');
 
 # Any page with a name ending in "Template" is a valid template.
 # When creating a page, the $EditNote is prefixed with a list of

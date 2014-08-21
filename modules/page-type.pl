@@ -42,7 +42,7 @@ sub PageTypeInit {
 # have page clustering enabled (see the manual), then the page type
 # will automatically act as a cluster.
 
-AddModuleDescripton('page-type.pl', 'Page Type Extension');
+AddModuleDescription('page-type.pl', 'Page Type Extension');
 
 *OldPageTypeDoPost = *DoPost;
 *DoPost = *NewPageTypeDoPost;

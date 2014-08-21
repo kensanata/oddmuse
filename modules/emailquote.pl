@@ -10,7 +10,7 @@
 # For user doc, see: 
 # http://www.oddmuse.org/cgi-bin/oddmuse/Email_Quote_Extension
 
-AddModuleDescripton('emailquote.pl', 'Email Quote Extension');
+AddModuleDescription('emailquote.pl', 'Email Quote Extension');
 
 push(@MyRules, \&EmailQuoteRule);
 

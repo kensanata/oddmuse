@@ -21,7 +21,7 @@
 # edit a page by double-clicking on it. The user must have
 # JavaScript enabled for this to work.
 
-AddModuleDescripton('doubleclick.pl', 'Doubleclick Extension');
+AddModuleDescription('doubleclick.pl', 'Doubleclick Extension');
 
 *OldDoubleclickGetHeader = *GetHeader;
 *GetHeader = NewDoubleclickGetHeader;

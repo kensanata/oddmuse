@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-AddModuleDescripton('gd_security_image.pl');
+AddModuleDescription('gd_security_image.pl');
 
 =head1 DESCRIPTION
 

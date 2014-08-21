@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-AddModuleDescripton('permanent-anchors.pl', 'Permanent Anchors');
+AddModuleDescription('permanent-anchors.pl', 'Permanent Anchors');
 
 =head1 Permanent Anchors
 

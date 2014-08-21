@@ -35,7 +35,7 @@ be changed using the C<$NamespacesSelf> option.
 
 =cut
 
-AddModuleDescripton('namespaces.pl', 'Namespaces Extension');
+AddModuleDescription('namespaces.pl', 'Namespaces Extension');
 
 use File::Glob ':glob';
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent

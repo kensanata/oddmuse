@@ -18,7 +18,7 @@
 
 # Create a plain text listing of all pages in your wiki
 
-AddModuleDescripton('sitemap-index.pl', 'Sitemap-index Extension');
+AddModuleDescription('sitemap-index.pl', 'Sitemap-index Extension');
 
 $Action{'sitemap-index'} = \&DoSiteMapIndex;
 

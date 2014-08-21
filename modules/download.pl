@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('download.pl', 'Download Extension');
+AddModuleDescription('download.pl', 'Download Extension');
 
 push( @MyRules, \&DownloadSupportRule );
 

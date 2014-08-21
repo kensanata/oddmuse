@@ -19,7 +19,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-AddModuleDescripton('poetry.pl', 'Poetry Extension');
+AddModuleDescription('poetry.pl', 'Poetry Extension');
 
 # ....................{ CONFIGURATION                      }....................
 

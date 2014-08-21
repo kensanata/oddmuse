@@ -23,7 +23,7 @@
 # span[lang=de] { background-color:#ffd; }
 # span[lang=it] { background-color:#dfd; }
 
-AddModuleDescripton('lang.pl', 'Language Extension');
+AddModuleDescription('lang.pl', 'Language Extension');
 
 push(@MyRules, \&LangRule);
 

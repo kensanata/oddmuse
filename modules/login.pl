@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('login.pl', 'Login Module');
+AddModuleDescription('login.pl', 'Login Module');
 
 #use vars qw($RegistrationForm $MinimumPasswordLength $RegistrationsMustBeApproved $LoginForm $PasswordFile $PendingPasswordFile $RequireLoginToEdit $ConfirmEmailAddress $ConfirmEmailAddress $UncomfirmedPasswordFile $EmailSenderAddress $EmailCommand $NotifyPendingRegistrations $EmailConfirmationMessage $ResetPasswordMessage $RegistrationForm $LogoutForm $ResetForm $ChangePassForm $RequireCamelUserName);
 

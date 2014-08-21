@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('translations.pl', 'Translation Extension');
+AddModuleDescription('translations.pl', 'Translation Extension');
 
 push(@MyRules, \&TranslationRule);
 

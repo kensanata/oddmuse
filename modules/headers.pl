@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('headers.pl', 'Header Markup Extension');
+AddModuleDescription('headers.pl', 'Header Markup Extension');
 
 # After toc.pl but before usemod.pl
 push(@MyRules, \&HeadersRule);

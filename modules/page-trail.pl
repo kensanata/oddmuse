@@ -20,7 +20,7 @@ use vars qw($PageTrailLength);
 
 $PageTrailLength = 10;
 
-AddModuleDescripton('page-trail.pl', 'Page Trail Extension');
+AddModuleDescription('page-trail.pl', 'Page Trail Extension');
 
 $CookieParameters{trail} = '';
 $InvisibleCookieParameters{trail} = 1;

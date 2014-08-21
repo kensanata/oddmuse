@@ -22,7 +22,7 @@
 # action links.  This allows your RecentChanges page to be more useful and 
 # use the pre-cached pages, rather than calling the Oddmuse script.
 
-AddModuleDescripton('plainclusterrc.pl');
+AddModuleDescription('plainclusterrc.pl');
 
 
 *GetRcHtml = *PlainGetRcHtml;

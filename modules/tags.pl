@@ -29,7 +29,7 @@ automatically.
 
 =cut
 
-AddModuleDescripton('tags.pl', 'Tagging Extension');
+AddModuleDescription('tags.pl', 'Tagging Extension');
 
 =head1 CONFIGURATION
 

@@ -57,7 +57,7 @@ sub process {
 
 package OddMuse;
 
-AddModuleDescripton('search-freetext.pl', 'Indexed Search');
+AddModuleDescription('search-freetext.pl', 'Indexed Search');
 
 =head2 User Interface
 

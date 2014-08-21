@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('archive.pl', 'Archive Extension');
+AddModuleDescription('archive.pl', 'Archive Extension');
 
 *OldArchiveGetHeader = *GetHeader;
 *GetHeader = *NewArchiveGetHeader;

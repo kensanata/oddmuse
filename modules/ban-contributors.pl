@@ -25,7 +25,7 @@ the IP or hostname will be added to the C<BannedHosts> page for you.
 
 =cut
 
-AddModuleDescripton('ban-contributors.pl', 'Ban Contributors Extension');
+AddModuleDescription('ban-contributors.pl', 'Ban Contributors Extension');
 
 push(@MyAdminCode, \&BanMenu);
 

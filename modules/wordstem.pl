@@ -17,7 +17,7 @@
 # Porter stemming algorithm code copied verbatim from http://www.tartarus.org/~martin/PorterStemmer/
 
 
-AddModuleDescripton('wordstem.pl', 'WordStemming');
+AddModuleDescription('wordstem.pl', 'WordStemming');
 
 *OldStemmingResolveId = *ResolveId;
 *ResolveId = *NewStemmingResolveId;

@@ -15,7 +15,7 @@
 
 package OddMuse;
 
-AddModuleDescripton('diff.pl', 'Diff Action Extension');
+AddModuleDescription('diff.pl', 'Diff Action Extension');
 
 push(@MyRules, \&DiffActionRule);
 $Action{pagediff} = \&DoDiffAction;

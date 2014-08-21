@@ -13,7 +13,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-AddModuleDescripton('footnotes.pl', 'Footnotes Extension');
+AddModuleDescription('footnotes.pl', 'Footnotes Extension');
 
 # ....................{ CONFIGURATION                      }....................
 

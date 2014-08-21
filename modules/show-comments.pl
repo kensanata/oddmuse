@@ -19,7 +19,7 @@
 
 # Includes comment pages in journal collections.
 
-AddModuleDescripton('show-comments.pl', 'Comment Pages');
+AddModuleDescription('show-comments.pl', 'Comment Pages');
 
 *OldPrintJournal = *PrintJournal;
 *PrintJournal = *NewPrintJournal;

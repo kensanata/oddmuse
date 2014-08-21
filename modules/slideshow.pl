@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescripton('slideshow.pl');
+AddModuleDescription('slideshow.pl');
 
 use vars qw($SlideShowDataFolder $SlideShowTheme $SlideShowHeader %SlideShowMeta);
 
