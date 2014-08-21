@@ -1,3 +1,25 @@
+# UTF-8 encoded Brazilian Portuguese language file for use with Oddmuse
+#
+# Copyright (c) 2003  Marcelo Toledo <rw@locked.org>.
+# Copyright (c) 2006, 2007  Hélio Nunes <dedalu@dedalu.art.br>.
+#
+# Permission is granted to copy, distribute and/or modify this
+# document under the terms of the GNU Free Documentation License,
+# Version 1.2 or any later version published by the Free Software
+# Foundation; with no Invariant Sections, no Front-Cover Texts, and no
+# Back-Cover Texts.  A copy of the license could be found at:
+# http://www.gnu.org/licenses/fdl.txt.
+#
+# Installation:
+# =============
+#
+# Create a modules subdirectory in your data directory, and put the
+# file in there. It will be loaded automatically.
+#
+# This translation was last checked for Oddmuse version 1.753.
+#
+use utf8;
+$ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.14 2009/06/07 19:30:37 as Exp $</p>';
 %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Include normal pages
 Incluir páginas normais
