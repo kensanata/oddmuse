@@ -88,8 +88,8 @@ that point.
 
 =cut
 sub SmartTitlesRule {
-     if (m/\G#TITLE[ \t]+(.*?)\s*\n+/cg   ) { return ''; }
-  elsif (m/\G#SUBTITLE[ \t]+(.*?)\s*\n+/cg) { return ''; }
+     if (m/\G#TITLE[ \t]+(.*?)\s*(\n+|$)/cg   ) { return ''; }
+  elsif (m/\G#SUBTITLE[ \t]+(.*?)\s*(\n+|$)/cg) { return ''; }
 
   return undef;
 }
@@ -108,10 +108,9 @@ extensions (namely, hibernal) to obtain the title and subtitle for pages.
 
 =cut
 sub GetSmartTitles {
-  return (
-    ($Page{text} =~    m/\#TITLE[ \t]+(.*?)\s*\n+/c),
-    ($Page{text} =~ m/\#SUBTITLE[ \t]+(.*?)\s*\n+/c)
-  );
+  my ($title)    = $Page{text} =~ m/\#TITLE[ \t]+(.*?)\s*\n+/c;
+  my ($subtitle) = $Page{text} =~ m/\#SUBTITLE[ \t]+(.*?)\s*\n+/c;
+  return ($title, $subtitle);
 }
 
 =head2 GetHeaderSmartTitles
@@ -120,6 +119,7 @@ Changes the passed page's HTML header to reflect any "#TITLE" or "#SUBTITLE"
 within that passed page's Wiki content.
 
 =cut
+
 sub GetHeaderSmartTitles {
   my ($page_name, $title, undef, undef, undef, undef, $subtitle) = @_;
   my ($smart_title, $smart_subtitle);
@@ -131,36 +131,26 @@ sub GetHeaderSmartTitles {
     ($smart_title, $smart_subtitle) = GetSmartTitles();
   }
 
-  if (!$smart_title    && $title   ) { $smart_title =    $title; }
-  if (!$smart_subtitle && $subtitle) { $smart_subtitle = $subtitle; }
+  $smart_title ||= $title;
+  $smart_subtitle ||= $subtitle;
 
-  #          .........{ TITLE                              }.........
-  if ($smart_title and $smart_title ne $title) {
-    $html_header =~ s~\Q>${title}</a>\Q~>${smart_title}</a>~g;
+  $smart_title = QuoteHtml($smart_title);
+  $smart_subtitle = QuoteHtml($smart_subtitle);
+
+  $html_header =~ s~\Q>$title</a>\E~>$smart_title</a>~g;
+  $html_header =~ s~\Q</h1>\E~</h1><p class="subtitle">$smart_subtitle</p>~ if $smart_subtitle;
+
+  my $smart_header;
+  if ($SiteName eq $smart_title) { # show "MySite: subtitle" instead of "MySite: MySite (subtitle)"
+    $smart_header = $smart_subtitle
+	? sprintf($SmartTitlesBrowserTitleWithoutSubtitle, $SiteName, $smart_subtitle)
+	: $SiteName;
+  } else {
+    $smart_header = $smart_subtitle
+	? sprintf($SmartTitlesBrowserTitle,                $SiteName, $smart_title, $smart_subtitle)
+	: sprintf($SmartTitlesBrowserTitleWithoutSubtitle, $SiteName, $smart_title);
   }
-
-  #          .........{ SUBTITLE                           }.........
-  if ($smart_subtitle) {
-    $html_header =~ s~\Q</h1>\Q~</h1><p class="subtitle">${smart_subtitle}</p>~;
-  }
-
-  #          .........{ HEADER                             }.........
-  {
-    my $smart_header;
-
-    if ($SiteName eq $smart_title) {
-      $smart_header = $smart_subtitle
-        ? sprintf($SmartTitlesBrowserTitleWithoutSubtitle, $SiteName, $smart_subtitle)
-        : $SiteName;
-    }
-    else {
-      $smart_header = $smart_subtitle
-        ? sprintf($SmartTitlesBrowserTitle,                $SiteName, $smart_title, $smart_subtitle)
-        : sprintf($SmartTitlesBrowserTitleWithoutSubtitle, $SiteName, $smart_title);
-    }
-
-    $html_header =~ s~\<title\>.*?\<\/title\>~<title>${smart_header}</title>~;
-  }
+  $html_header =~ s~\<title\>.*?\<\/title\>~<title>$smart_header</title>~;
 
   return $html_header;
 }
@@ -170,6 +160,7 @@ sub GetHeaderSmartTitles {
 The information below applies to everything in this distribution,
 except where noted.
 
+Copyright 2014 Alex-Daniel Jakimenko <alex.jakimenko@gmail.com>
 Copyleft  2008 by B.w.Curry <http://www.raiazome.com>.
 Copyright 2006 by Charles Mauch <mailto://cmauch@gmail.com>.
 
