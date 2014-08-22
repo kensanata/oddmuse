@@ -73,7 +73,7 @@ wiki is locked and migration is started.
 
 =cut
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/balanced-page-directories.pl">balanced-page-directories.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Balanced_Page_Directories_Extension">Balanced Page Directories Extension</a>';
+AddModuleDescription('balanced-page-directories.pl', 'Balanced Page Directories Extension');
 
 use Digest::MD5 qw(md5_hex);
 use File::Find qw(finddepth);

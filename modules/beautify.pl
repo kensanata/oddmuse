@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/beautify.pl">beautify.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Source_Code_Beautification_Extension">Source Code Beautification Extension</a></p>';
+AddModuleDescription('beautify.pl', 'Source Code Beautification Extension');
 
 use Beautifier::Core;
 use Output::HTML;

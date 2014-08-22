@@ -15,7 +15,7 @@
 
 package OddMuse;
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/big-brother.pl">big-brother.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Big_Brother_Extension">Big Brother Extension</a></p>';
+AddModuleDescription('big-brother.pl', 'Big Brother Extension');
 
 use vars qw($VisitorTime);
 

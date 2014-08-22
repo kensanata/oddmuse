@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/permanent-anchors.pl">permanent-anchors.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Permanent_Anchors">Permanent Anchors</a></p>';
+AddModuleDescription('permanent-anchors.pl', 'Permanent Anchors');
 
 =head1 Permanent Anchors
 

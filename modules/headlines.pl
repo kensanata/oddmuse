@@ -19,7 +19,7 @@
 
 use vars qw($HeadlineNumber);
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/headlines.pl">headlines.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Headlines_Extension">Headlines Extension</a></p>';
+AddModuleDescription('headlines.pl', 'Headlines Extension');
 
 push(@MyRules, \&HeadlinesRule);
 

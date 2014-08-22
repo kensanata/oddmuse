@@ -18,7 +18,7 @@
 
 use utf8;
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/national-days.pl">national-days.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Special_Days">Special Days</a></p>';
+AddModuleDescription('national-days.pl', 'Special Days');
 
 %SpecialDays = (
    '1-1' => 'Sudan, National Day, Haiti, Independence Day, Cuba, Liberation Day',

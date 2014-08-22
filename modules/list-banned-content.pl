@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/list-banned-content.pl">list-banned-content.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/BannedContent">Index Extension</a></p>';
+AddModuleDescription('list-banned-content.pl');
 
 $Action{'list-banned-content'} = \&DoListBannedContent;
 

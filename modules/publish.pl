@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/publish.pl">publish.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Publish_Page_Extension">Publish Page Extension</a></p>';
+AddModuleDescription('publish.pl', 'Publish Page Extension');
 
 use vars qw($PublishTargetUrl);
 

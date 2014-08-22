@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/dates.pl">dates.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Dates_Extension">Dates Extension</a></p>';
+AddModuleDescription('dates.pl', 'Dates Extension');
 
 push(@MyAdminCode, \&DatesMenu);
 

@@ -17,7 +17,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/calendar.pl">calendar.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Calendar_Extension">Calendar Extension</a></p>';
+AddModuleDescription('calendar.pl', 'Calendar Extension');
 
 use vars qw($CalendarOnEveryPage $CalAsTable $CalStartMonday);
 

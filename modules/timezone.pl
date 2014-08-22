@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/timezone.pl">timezone.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Timezone_Extension">Timezone Extension</a></p>';
+AddModuleDescription('timezone.pl', 'Timezone Extension');
 
 use DateTime;
 use DateTime::TimeZone;

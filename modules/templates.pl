@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/templates.pl">templates.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Template_Extension">Template Extension</a></p>';
+AddModuleDescription('templates.pl', 'Template Extension');
 
 # Any page with a name ending in "Template" is a valid template.
 # When creating a page, the $EditNote is prefixed with a list of

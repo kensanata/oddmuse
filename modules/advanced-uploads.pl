@@ -14,7 +14,7 @@
 
 package OddMuse;
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/advanced-uploads.pl">advanced-uploads.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Advanced_File_Upload_Extension">Advanced File Upload Extension</a></p>';
+AddModuleDescription('advanced-uploads.pl', 'Advanced File Upload Extension');
 
 $HtmlHeaders .= '<script type="text/javascript" src="/js/uploader.js"></script>';
 

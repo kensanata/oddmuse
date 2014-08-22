@@ -22,7 +22,7 @@
 # action links.  This allows your RecentChanges page to be more useful and 
 # use the pre-cached pages, rather than calling the Oddmuse script.
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/plainclusterrc.pl">plainclusterrc.pl</a></p>';
+AddModuleDescription('plainclusterrc.pl');
 
 
 *GetRcHtml = *PlainGetRcHtml;

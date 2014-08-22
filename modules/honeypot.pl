@@ -22,7 +22,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/honeypot.pl">honeypot.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Comments_on_Monitor_Extension">Comments on Monitor Extension</a></p>';
+AddModuleDescription('honeypot.pl', 'Comments on Monitor Extension');
 
 =head1 CONFIGURATION
 

@@ -18,7 +18,7 @@
 #
 # Based on code of tagmap.pl module by Fletcher T. Penney
 # and searchtags.pl module by Brock Wilcox
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/linktagmap.pl">linktagmap.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/LinkTagMap_Module">LinkTagMap Module</a></p>';
+AddModuleDescription('linktagmap.pl', 'LinkTagMap Module');
 
 use vars qw($LinkTagMark $LinkDescMark $LinkTagClass $LinkDescClass $LinkTagMapPage $UrlPattern $FullUrlPattern $LinkTagSearchTitle);
 

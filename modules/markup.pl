@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/markup.pl">markup.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Markup_Erweiterung">Markup Erweiterung</a></p>';
+AddModuleDescription('markup.pl', 'Markup Erweiterung');
 
 use vars qw(%MarkupPairs %MarkupForcedPairs %MarkupSingles %MarkupLines
 	    $MarkupQuotes $MarkupQuoteTable);

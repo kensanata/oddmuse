@@ -1,5 +1,7 @@
 # We just try to autodetect everything.
 
+AddModuleDescription('vcard.pl');
+
 push(@MyRules, \&hCardRule);
 
 my $addr = qr(\G(\S+ \S+)

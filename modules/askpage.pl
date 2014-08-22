@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/askpage.pl">askpage.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Ask_Page_Extension">Ask Page Extension</a></p>';
+AddModuleDescription('askpage.pl', 'Ask Page Extension');
 
 use Fcntl qw(:DEFAULT :flock);
 

@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/markdown-rule.pl">markdown-rule.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Markdown_Rule_Extension">Markdown Rule Extension</a></p>';
+AddModuleDescription('markdown-rule.pl', 'Markdown Rule Extension');
 
 push(@MyRules, \&MarkdownRule);
 # Since we want this package to be a simple add-on, we try and avoid

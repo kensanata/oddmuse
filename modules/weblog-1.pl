@@ -21,7 +21,7 @@ use vars qw($WeblogTextLogo $WeblogXmlLogo);
 $WeblogXmlLogo = '/images/rss.png';
 $WeblogTextLogo = '/images/txt.png';
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/weblog-1.pl">weblog-1.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Minimal_Weblog_Extension">Minimal Weblog Extension</a></p>';
+AddModuleDescription('weblog-1.pl', 'Minimal Weblog Extension');
 
 $RefererTracking = 1;
 $CommentsPrefix = 'Comments_on_';

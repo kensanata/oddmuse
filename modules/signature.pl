@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/signature.pl">signature.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Signature_Extension">Signature Extension</a></p>';
+AddModuleDescription('signature.pl', 'Signature Extension');
 
 push(@MyRules, \&SignatureExceptionRule);
 

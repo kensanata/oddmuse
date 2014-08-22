@@ -39,7 +39,7 @@ Notes:
 
 =cut
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/private-pages.pl">private-pages.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Private_Pages_Extension">Private Pages Extension</a></p>';
+AddModuleDescription('private-pages.pl', 'Private Pages Extension');
 
 sub PrivatePageLocked {
   my $text = shift;

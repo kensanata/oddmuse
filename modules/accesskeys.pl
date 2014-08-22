@@ -15,7 +15,7 @@
 
 package OddMuse;
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/accesskeys.pl">accesskeys.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Links_With_AccessKeys_Extension">Links With AccessKeys Extension</a></p>';
+AddModuleDescription('accesskeys.pl', 'Links With AccessKeys Extension');
 
 push(@MyRules, \&LinksWithAccessKeys);
 sub LinksWithAccessKeys {

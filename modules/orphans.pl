@@ -22,7 +22,7 @@
 # This module will show ALL orphaned pages, even whole orphaned
 # subgraphs on this wiki.
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/orphans.pl">orphans.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Orphans_Extension">Orphans Extension</a></p>';
+AddModuleDescription('orphans.pl', 'Orphans Extension');
 
 # What is interesting to us?
 @orphan_entrypoints = ($HomePage, $RCName);

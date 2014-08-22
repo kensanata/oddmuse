@@ -15,7 +15,7 @@
 
 package OddMuse;
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/comment-div-wrapper.pl">comment-div-wrapper.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Comment_Div_Wrapper_Extension">Comment Div Wrapper Extension</a></p>';
+AddModuleDescription('comment-div-wrapper.pl', 'Comment Div Wrapper Extension');
 
 my $CommentDiv = 0;
 push(@MyRules, \&CommentDivWrapper);

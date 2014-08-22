@@ -4,7 +4,7 @@
 # This module is free software; you can redistribute it or modify it
 # under the same terms as Perl itself.
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/webdav.pl">webdav.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/WebDAV_Extension">WebDAV Extension</a></p>';
+AddModuleDescription('webdav.pl', 'WebDAV Extension');
 
 use vars qw($WebDavCache);
 

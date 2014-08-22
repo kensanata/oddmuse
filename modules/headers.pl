@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/headers.pl">headers.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Header_Markup_Extension">Header Markup Extension</a></p>';
+AddModuleDescription('headers.pl', 'Header Markup Extension');
 
 # After toc.pl but before usemod.pl
 push(@MyRules, \&HeadersRule);

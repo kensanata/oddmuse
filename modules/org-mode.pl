@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/org-mode.pl">org-mode.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Comments_on_Writing_Extensions">Comments on Writing Extensions</a></p>';
+AddModuleDescription('org-mode.pl', 'Comments on Writing Extensions');
 
 push(@MyRules, \&OrgModeRule);
 
