@@ -14,6 +14,8 @@
 
 use utf8;
 
+AddModuleDescription('upgrade.pl', '2014-06-17 New Directory Structure');
+
 # We are now running in InitModules. InitVariables will be called later.
 # We want to prevent any calls to GetPageContent and the like.
 
