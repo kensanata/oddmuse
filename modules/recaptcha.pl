@@ -26,7 +26,7 @@ recaptcha is simply installable; simply:
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/recaptcha.pl">recaptcha.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/ReCaptcha_Extension">ReCaptcha Extension</a></p>';
+AddModuleDescription('recaptcha.pl', 'ReCaptcha Extension');
 
 # ....................{ CONFIGURATION                      }....................
 

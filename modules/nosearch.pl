@@ -1,6 +1,6 @@
 # This module is copied from http://sheep.art.pl/Oddmuse_modules
 
-$ModulesDescription .= '<p>Id: nosearch.pl,v 0.1 2007/06/13 15:42:00 as Exp</p>';
+AddModuleDescription('nosearch.pl');
 
 
 *OldGetSearchLink = *GetSearchLink;

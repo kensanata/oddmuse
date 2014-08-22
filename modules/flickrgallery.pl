@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/flickrgallery.pl">flickrgallery.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/FlickrGallery_Module">FlickrGallery Module</a></p>';
+AddModuleDescription('flickrgallery.pl', 'FlickrGallery Module');
 
 # NOTE: This API key for Flickr is NOT to be used in any other products
 # INCLUDING derivative works.  The rest of the code can be used as licensed

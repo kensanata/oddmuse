@@ -15,7 +15,7 @@
 
 package OddMuse;
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/git-another.pl">git-another.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Another_Git_Extension">Another Git Extension</a></p>';
+AddModuleDescription('git-another.pl', 'Another Git Extension');
 
 use Cwd;
 use Capture::Tiny ':all';

@@ -20,7 +20,7 @@ require MIME::Base64;
 
 use File::Path;
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/thumbs.pl">thumbs.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Image_Thumbnails">Image Thumbnails</a></p>';
+AddModuleDescription('thumbs.pl', 'Image Thumbnails');
 
 # Tempoary directory to create thumbnails in
 $ThumbnailTempDir = '/tmp';

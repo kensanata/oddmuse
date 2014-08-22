@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/thread.pl">thread.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Thread_Server_Extension">Thread Server Extension</a></p>';
+AddModuleDescription('thread.pl', 'Thread Server Extension');
 
 $Action{getthread} = \&ThreadGet;
 $Action{addthread} = \&ThreadAdd;

@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/paragraph-link.pl">paragraph-link.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Paragraph_Link_Extension">Paragraph Link Extension</a></p>';
+AddModuleDescription('paragraph-link.pl', 'Paragraph Link Extension');
 
 push(@MyRules, \&ParagraphLinkRule);
 # The [...] rule conflicts with the [new] in portrait-support.pl

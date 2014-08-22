@@ -26,7 +26,7 @@ automatically.
 
 =cut
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/mail.pl">mail.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Mail_Extension">Mail Extension</a></p>';
+AddModuleDescription('mail.pl', 'Mail Extension');
 
 use vars qw($MailFile $MailPattern);
 

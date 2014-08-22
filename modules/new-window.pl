@@ -15,7 +15,7 @@
 
 package OddMuse;
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/new-window.pl">new-window.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/New_Window_Links_Extension">New Window Links Extension</a></p>';
+AddModuleDescription('new-window.pl', 'New Window Links Extension');
 
 # Opening links in new windows is evil
 push(@MyRules, \&NewWindowLink);

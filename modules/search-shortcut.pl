@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/search-shortcut.pl">search-shortcut.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Comments_on_Searching">Comments on Searching</a></p>';
+AddModuleDescription('search-shortcut.pl', 'Comments on Searching');
 
 *OldGetHeader = *GetHeader;
 *GetHeader = *NewGetHeader;

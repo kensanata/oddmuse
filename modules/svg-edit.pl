@@ -14,6 +14,8 @@
 
 use vars qw($SvgMimeType $SvgEditorUrl);
 
+AddModuleDescription('svg-edit.pl');
+
 $SvgMimeType  = 'image/svg+xml';
 $SvgEditorUrl = 'http://svg-edit.googlecode.com/svn/tags/stable/editor/svg-editor.html';
 

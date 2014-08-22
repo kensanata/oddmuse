@@ -1,3 +1,5 @@
+AddModuleDescription('edit-cluster.pl');
+
 $EditCluster = 'EditCluster';
 
 sub GetRc {

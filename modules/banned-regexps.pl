@@ -14,7 +14,7 @@
 
 package OddMuse;
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/banned-regexps.pl">banned-regexps.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Banning_Regular_Expressions">Banning Regular Expressions</a></p>';
+AddModuleDescription('banned-regexps.pl', 'Banning Regular Expressions');
 
 =h1 Compatibility
 

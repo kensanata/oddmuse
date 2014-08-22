@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/crumbs.pl">crumbs.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/List_Parent_Pages_Extension">List Parent Pages Extension</a></p>';
+AddModuleDescription('crumbs.pl', 'List Parent Pages Extension');
 
 push(@MyRules, \&CrumbsRule);
 $RuleOrder{\&CrumbsRule} = -10; # run before default rules!

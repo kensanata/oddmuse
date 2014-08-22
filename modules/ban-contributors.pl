@@ -25,7 +25,7 @@ the IP or hostname will be added to the C<BannedHosts> page for you.
 
 =cut
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/ban-contributors.pl">ban-contributors.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Ban_Contributors_Extension">Ban Contributors Extension</a></p>';
+AddModuleDescription('ban-contributors.pl', 'Ban Contributors Extension');
 
 push(@MyAdminCode, \&BanMenu);
 

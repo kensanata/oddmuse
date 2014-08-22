@@ -21,7 +21,7 @@
 # edit a page by double-clicking on it. The user must have
 # JavaScript enabled for this to work.
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/doubleclick.pl">doubleclick.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Doubleclick_Extension">Doubleclick Extension</a></p>';
+AddModuleDescription('doubleclick.pl', 'Doubleclick Extension');
 
 *OldDoubleclickGetHeader = *GetHeader;
 *GetHeader = NewDoubleclickGetHeader;

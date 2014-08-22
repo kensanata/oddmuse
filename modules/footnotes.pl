@@ -13,7 +13,7 @@ directory for your Oddmuse Wiki.
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/footnotes.pl">footnotes.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Footnotes_Extension">Footnotes Extension</a></p>';
+AddModuleDescription('footnotes.pl', 'Footnotes Extension');
 
 # ....................{ CONFIGURATION                      }....................
 

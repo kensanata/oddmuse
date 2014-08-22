@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA,
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/fckeditor.pl">fckeditor.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Using_FCKeditor_In_Addition_To_Wiki_Markup">Using FCKeditor In Addition To Wiki Markup</a></p>';
+AddModuleDescription('fckeditor.pl', 'Using FCKeditor In Addition To Wiki Markup');
 
 use vars qw($FCKeditorHeight);
 

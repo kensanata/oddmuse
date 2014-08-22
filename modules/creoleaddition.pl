@@ -22,7 +22,7 @@ creoleaddition is simply installable; simply:
 =cut
 package OddMuse;
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/creoleaddition.pl">creoleaddition.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Creole_Addition_Markup_Extension">Creole Addition Markup Extension</a></p>';
+AddModuleDescription('creoleaddition.pl', 'Creole Addition Markup Extension');
 
 # ....................{ CONFIGURATION                      }....................
 
