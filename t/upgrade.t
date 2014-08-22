@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 44;
+use Test::More tests => 47;
 
 clear_pages();
 
@@ -82,13 +82,19 @@ test_page(get_page('action=upgrade pwd=foo'),
 
 clear_pages();
 
-add_module('namespaces.pl');
+# install the old revision of namespaces.pl; we cannot use add_module
+# because the old revision is stored in the t subdirectory.
+my $dir = `/bin/pwd`;
+chop($dir);
+my $mod = 'namespaces-2.2.6.pl';
+symlink("$dir/t/$mod", "$ModuleDir/$mod");
+ok(-e "$ModuleDir/$mod", "old namespaces.pl installed");
 
 test_page(qx(perl t/oddmuse-2.2.6.pl title=Test text=Main%20Hello),
-	  "Status: 302 Found");
+	  "Status: 302 Found", "Location: http://localhost/wiki.pl/Test");
 
 test_page(qx(perl t/oddmuse-2.2.6.pl title=Test text=Space%20Hello ns=Space),
-	  "Status: 302 Found");
+	  "Status: 302 Found", "Location: http://localhost/wiki.pl/Space/Test");
 
 add_module('upgrade.pl');
 
