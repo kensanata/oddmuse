@@ -16,7 +16,7 @@ automatically.
 
 =cut
 
-AddModuleDescription('webapp.pl');
+AddModuleDescription('webapp.pl', 'Offline Extension');
 
 push(@MyAdminCode, \&WebAppMenu);
 
