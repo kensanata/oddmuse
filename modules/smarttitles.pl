@@ -25,7 +25,8 @@ file for your Oddmuse Wiki.
 
 =cut
 use vars qw($SmartTitlesBrowserTitle
-            $SmartTitlesBrowserTitleWithoutSubtitle);
+            $SmartTitlesBrowserTitleWithoutSubtitle
+            $SmartTitlesSubUrlText);
 
 =head2 $SmartTitlesBrowserTitle
 
@@ -69,6 +70,8 @@ smarttitles performs variable substitution on this string, as follows:
 =cut
 $SmartTitlesBrowserTitleWithoutSubtitle = '%s: %s';
 
+$SmartTitlesSubUrlText = undef;
+
 # ....................{ RULES                              }....................
 push(@MyRules, \&SmartTitlesRule);
 
@@ -88,9 +91,7 @@ that point.
 
 =cut
 sub SmartTitlesRule {
-     if (m/\G(^|\n)?#TITLE[ \t]+(.*?)\s*(\n+|$)/cg   ) { return ''; }
-  elsif (m/\G(^|\n)?#SUBTITLE[ \t]+(.*?)\s*(\n+|$)/cg) { return ''; }
-
+  return '' if m/\G(^|\n)?#(TITLE|SUBTITLE|SUBURL)[ \t]+(.*?)\s*(\n+|$)/cg;
   return undef;
 }
 
@@ -110,7 +111,8 @@ extensions (namely, hibernal) to obtain the title and subtitle for pages.
 sub GetSmartTitles {
   my ($title)    = $Page{text} =~ m/(?:^|\n)\#TITLE[ \t]+(.*?)\s*\n+/c;
   my ($subtitle) = $Page{text} =~ m/(?:^|\n)\#SUBTITLE[ \t]+(.*?)\s*\n+/c;
-  return ($title, $subtitle);
+  my ($suburl)   = $Page{text} =~ m/(?:^|\n)\#SUBURL[ \t]+(.*?)\s*\n+/c;
+  return ($title, $subtitle, $suburl);
 }
 
 =head2 GetHeaderSmartTitles
@@ -122,13 +124,13 @@ within that passed page's Wiki content.
 
 sub GetHeaderSmartTitles {
   my ($page_name, $title, undef, undef, undef, undef, $subtitle) = @_;
-  my ($smart_title, $smart_subtitle);
+  my ($smart_title, $smart_subtitle, $smart_suburl);
   my  $html_header = GetHeaderSmartTitlesOld(@_);
 
   if ($page_name) {
     OpenPage($page_name);
     $title = NormalToFree($title);
-    ($smart_title, $smart_subtitle) = GetSmartTitles();
+    ($smart_title, $smart_subtitle, $smart_suburl) = GetSmartTitles();
   }
 
   $smart_title ||= $title;
@@ -138,7 +140,11 @@ sub GetHeaderSmartTitles {
   $smart_subtitle = QuoteHtml($smart_subtitle);
 
   $html_header =~ s~\Q>$title</a>\E~>$smart_title</a>~g;
-  $html_header =~ s~\Q</h1>\E~</h1><p class="subtitle">$smart_subtitle</p>~ if $smart_subtitle;
+  if ($smart_subtitle) {
+    my $subtitlehtml = '<p class="subtitle">' . $smart_subtitle;
+    $subtitlehtml .= GetUrl($smart_suburl, $SmartTitlesSubUrlText, 1) if $smart_suburl;
+    $html_header =~ s~\Q</h1>\E~</h1>$subtitlehtml</p>~;
+  }
 
   my $smart_header;
   if ($SiteName eq $smart_title) { # show "MySite: subtitle" instead of "MySite: MySite (subtitle)"
