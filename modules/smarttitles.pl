@@ -88,8 +88,8 @@ that point.
 
 =cut
 sub SmartTitlesRule {
-     if (m/\G#TITLE[ \t]+(.*?)\s*(\n+|$)/cg   ) { return ''; }
-  elsif (m/\G#SUBTITLE[ \t]+(.*?)\s*(\n+|$)/cg) { return ''; }
+     if (m/\G(^|\n)?#TITLE[ \t]+(.*?)\s*(\n+|$)/cg   ) { return ''; }
+  elsif (m/\G(^|\n)?#SUBTITLE[ \t]+(.*?)\s*(\n+|$)/cg) { return ''; }
 
   return undef;
 }
@@ -108,8 +108,8 @@ extensions (namely, hibernal) to obtain the title and subtitle for pages.
 
 =cut
 sub GetSmartTitles {
-  my ($title)    = $Page{text} =~ m/\#TITLE[ \t]+(.*?)\s*\n+/c;
-  my ($subtitle) = $Page{text} =~ m/\#SUBTITLE[ \t]+(.*?)\s*\n+/c;
+  my ($title)    = $Page{text} =~ m/(?:^|\n)\#TITLE[ \t]+(.*?)\s*\n+/c;
+  my ($subtitle) = $Page{text} =~ m/(?:^|\n)\#SUBTITLE[ \t]+(.*?)\s*\n+/c;
   return ($title, $subtitle);
 }
 
