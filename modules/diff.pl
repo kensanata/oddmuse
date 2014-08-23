@@ -46,7 +46,7 @@ sub DoDiffAction {
       print '<span class="diffactionold">' . $type;
     }
     ApplyRules($_);
-    print '</span>';
+    print '</span>' if $type =~ /[+-]/;
     print '<br/>';
   }
   PrintFooter();
