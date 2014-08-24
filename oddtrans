@@ -72,11 +72,15 @@ my $header = 0;
 sub header_info_extract{
   return if $header++;
   $file = shift;
-  open(FILE, "<", $file) or die "Can't open $file because: $!";
+  open(FILE, "<:encoding(utf8)", $file) or die "Can't open $file because: $!";
   foreach (<FILE>) {
     last if (/^%/);
-    utf8::decode($_);
     print;
   }
   close FILE;
+}
+
+sub AddModuleDescription {
+  # Do nothin; this function is just there such that the translation
+  # files can be run.
 }
