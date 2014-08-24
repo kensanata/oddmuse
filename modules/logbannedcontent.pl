@@ -37,7 +37,7 @@ sub LogNewBannedContent {
 sub LogNewUserIsBanned {
   my $str = shift;
   my $rule = LogOldUserIsBanned($str);
-  LogWrite(Ts('Host or IP matched %s', $rule)) if $rule;
+  LogWrite(Ts('IP number matched %s', $rule)) if $rule;
   return $rule;
 }
 
