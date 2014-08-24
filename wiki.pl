@@ -3702,6 +3702,7 @@ sub MergeRevisions {   # merge change from file2 to file3 into file1
   WriteStringToFile($name3, $file3);
   my ($you, $ancestor, $other) = (T('you'), T('ancestor'), T('other'));
   my $output = `diff3 -m -L \Q$you\E -L \Q$ancestor\E -L \Q$other\E -- \Q$name1\E \Q$name2\E \Q$name3\E`;
+  utf8::decode($output); # needs decoding
   ReleaseLockDir('merge'); # don't unlink temp files--next merge will just overwrite.
   return $output;
 }
