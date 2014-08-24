@@ -91,7 +91,7 @@ that point.
 
 =cut
 sub SmartTitlesRule {
-  return '' if m/\G(^|\n)?#(TITLE|SUBTITLE|SUBURL)[ \t]+(.*?)\s*(\n+|$)/cg;
+  return '' if m/\G(^|\n)?#(TITLE|SUBTITLE|SUBURL:?)[ \t]+(.*?)\s*(\n+|$)/cg;
   return undef;
 }
 
@@ -111,8 +111,8 @@ extensions (namely, hibernal) to obtain the title and subtitle for pages.
 sub GetSmartTitles {
   my ($title)    = $Page{text} =~ m/(?:^|\n)\#TITLE[ \t]+(.*?)\s*\n+/c;
   my ($subtitle) = $Page{text} =~ m/(?:^|\n)\#SUBTITLE[ \t]+(.*?)\s*\n+/c;
-  my ($suburl)   = $Page{text} =~ m/(?:^|\n)\#SUBURL[ \t]+(.*?)\s*\n+/c;
-  return ($title, $subtitle, $suburl);
+  my ($interlink, $suburl) = $Page{text} =~ m/(?:^|\n)\#SUBURL(:)?[ \t]+(.*?)\s*\n+/c;
+  return ($title, $subtitle, $suburl, $interlink ? 1 : '');
 }
 
 =head2 GetHeaderSmartTitles
@@ -130,7 +130,7 @@ sub GetHeaderSmartTitles {
   if ($page_name) {
     OpenPage($page_name);
     $title = NormalToFree($title);
-    ($smart_title, $smart_subtitle, $smart_suburl) = GetSmartTitles();
+    ($smart_title, $smart_subtitle, $smart_suburl, $smart_interlink) = GetSmartTitles();
   }
 
   $smart_title ||= $title;
@@ -142,7 +142,10 @@ sub GetHeaderSmartTitles {
   $html_header =~ s~\Q>$title</a>\E~>$smart_title</a>~g;
   if ($smart_subtitle) {
     my $subtitlehtml = '<p class="subtitle">' . $smart_subtitle;
-    $subtitlehtml .= GetUrl($smart_suburl, $SmartTitlesSubUrlText, 1) if $smart_suburl;
+    if ($smart_suburl) {
+      $subtitlehtml .= $smart_interlink ? GetInterLink($smart_suburl, undef, 1, 1)
+	                                : GetUrl($smart_suburl, $SmartTitlesSubUrlText, 1);
+    }
     $html_header =~ s~\Q</h1>\E~</h1>$subtitlehtml</p>~;
   }
 
