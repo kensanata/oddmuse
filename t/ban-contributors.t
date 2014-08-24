@@ -44,7 +44,7 @@ sleep(1);
 update_page('Test', "http://spam/amoxil/ http://spam/doxycycline/");
 test_page(get_page("action=rollback id=Test to=$to pwd=foo"),
 	  'Rolling back changes', 'These URLs were rolled back',
-	  'amoxil', 'doxycycline', 'Consider banning the hostname');
+	  'amoxil', 'doxycycline', 'Consider banning the IP number');
 test_page(get_page("action=ban id=Test content=amoxil pwd=foo"),
 	  'Location: http://localhost/wiki.pl/BannedContent');
 test_page(get_page('BannedContent'), 'amoxil', 'Test');
