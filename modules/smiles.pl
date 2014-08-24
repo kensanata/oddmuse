@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-AddModuleDescription('smiles.pl', 'Logo And Icons', 'Smilies');
+AddModuleDescription('smiles.pl', 'Smilies');
 
 # The smilies are from the Emacs 24 distribution. There, you'll find
 # them in the etc/images/smilies/medium directory.
