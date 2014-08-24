@@ -20,10 +20,12 @@
 # file in there. It will be loaded automatically.
 #
 use utf8;
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/swedish-utf8.pl">swedish-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Swedish">Swedish</a></p><p>';
-%Translate = split(/\n/,<<END_OF_TRANSLATION);
-Include normal pages
-Med vanliga sidor
+AddModuleDescription('swedish-utf8.pl', 'Swedish');
+%Translate = split(/\n/,<<'END_OF_TRANSLATION');
+This page is empty.
+
+Add your comment here:
+
 Reading not allowed: user, ip, or network is blocked.
 Läsning inte tillåten: användare, ip eller nätverk är blockerat.
 Login
@@ -32,8 +34,10 @@ Error
 
 %s calls
 
-Could not create %s
-Kunde inte skapa %s
+Cannot create %s
+Kan inte skapa %s
+Include normal pages
+Med vanliga sidor
 Invalid UserName %s: not saved.
 Ogiltigt användarnamn %s: Ej sparad.
 UserName must be 50 characters or less: not saved
@@ -94,10 +98,12 @@ Please go on to %s.
 Gå vidare till %s.
 Updates since %s
 Ändringar sedan %s
+up to %s
+
 Updates in the last %s days
 Ändringar de %s senaste dagarna
-Updates in the last %s day
-Ändringar den %s senaste dagen
+Updates in the last day
+Ändringar den senaste dagen
 for %s only
 för endast %s
 List latest change per page only
@@ -146,8 +152,6 @@ new
 ny
 All changes for %s
 
-from %s
-från %s
 This page is too big to send over RSS.
 Denna sida är för stor för att sändas över RSS.
 History of %s
@@ -178,6 +182,8 @@ The two revisions are the same.
 De två versionerna är identiska.
 Editing not allowed for %s.
 %s kan inte redigeras.
+Rollback of %s would restore banned content.
+
 Rollback to %s
 Återställning till %s
 %s rolled back
@@ -198,8 +204,6 @@ Unlock site
 Lås upp wikin
 Lock site
 Lås wikin
-Install CSS
-Installera CSS
 Unlock %s
 Lås upp %s
 Lock %s
@@ -212,6 +216,8 @@ Important pages:
 Viktiga sidor:
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 För att markera en sida för radering, skriv <strong>%s</strong> på första raden.
+from %s
+från %s
 [Home]
 [Startsida]
 redirected from %s
@@ -242,6 +248,10 @@ by %s
 av %s
 (diff)
 (ändringar)
+a
+
+c
+
 Edit revision %s of this page
 Redigera version %s av den här sidan
 e
@@ -280,6 +290,8 @@ Validate CSS
 Validera CSS
 Last edit
 
+Summary:
+Sammanfattning:
 Difference between revision %1 and %2
 Skillnad (från version %1 till %2)
 revision %s
@@ -316,12 +328,14 @@ Cannot open %s
 Kan inte öppna %s
 Cannot write %s
 Kan inte skriva %s
-Cannot create %s
-Kan inte skapa %s
+unlock the wiki
+
 Could not get %s lock
 Kunde inte låsa %s
 The lock was created %s.
 Låset skapades %s.
+Maybe the user running this script is no longer allowed to remove the lock directory?
+
 This operation may take several seconds...
 Den här funktionen kan ta flera sekunder...
 Forced unlock of %s lock.
@@ -364,8 +378,6 @@ Editing old revision %s.
 Redigerar gammal version %s.
 Saving this page will replace the latest revision with this text.
 Att spara den här sidan kommer att ersätta den senaste versionen med den här texten.
-Summary:
-Sammanfattning:
 This change is a minor edit.
 Det här är en mindre ändring.
 Cancel
@@ -412,6 +424,8 @@ Filter:
 (för: %s)
 %s pages found.
 %s sidor.
+Malformed regular expression in %s
+
 Replaced: %s
 Ersatt: %s
 Search for: %s
@@ -494,16 +508,14 @@ Displaying Wiki Version
 Visar Wikiversion
 Debugging Information
 
-Inter links:
-Interlänkar:
 Too many connections by %s
 För många anslutningar ifrån %s
 Please do not fetch more than %1 pages in %2 seconds.
 Vänligen hämta inte mer än %1 sidor på %2 sekunder.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Kontrollera att webservern kan skapa biblioteket %s och att den kan skapa filer i det.
-Copy one of the following stylesheets to %s:
-Kopiera en av följande 'stylesheets' till %s:
+, see 
+
 Deleting %s
 Tar bort %s
 Deleted %s
@@ -526,6 +538,10 @@ Immediately delete %s
 Radera %s direkt
 Rename %s to:
 Byt namn på %s till:
+Attach file:
+
+Upload
+
 Learn more...
 Läs mer...
 Complete Content
@@ -543,6 +559,24 @@ Pages that link to this page
 The search parameter is missing.
 
 Pages link to %s
+
+Ban contributors
+
+Ban Contributors to %s
+
+%s is banned
+
+Ban!
+
+These URLs were rolled back. Perhaps you want to add a regular expression to %s?
+
+Regular expression:
+
+Consider banning the IP number as well: 
+
+Regular expression "%1" matched "%2" on this page.
+
+Regular expression "%s" matched on this page.
 
 Cannot highlight the language %s.
 Kan ej markera språket %s.
@@ -612,6 +646,8 @@ Clustermap
 Klusterkarta
 Pages without a Cluster
 Sidor utan kluster
+Comments:
+
 Comments on 
 Kommentarer till 
 Comment on 
@@ -620,6 +656,20 @@ Compilation for %s
 Sammanställning för %s
 Compilation tag is missing a regular expression.
 Sammanställnings-taggen saknar en "regular expression".
+Install CSS
+Installera CSS
+Copy one of the following stylesheets to %s:
+Kopiera en av följande 'stylesheets' till %s:
+Reset
+
+Extract all dates from the database
+
+Dates
+
+No dates found.
+
+Inter links:
+Interlänkar:
 List spammed pages
 
 Despamming pages
@@ -634,6 +684,10 @@ Marked as %s.
 Markerad som %s.
 Cannot find unspammed revision.
 Kan inte finna version utan skräptexter
+Page diff
+
+Diff
+
 Recover Draft
 
 No text to save
@@ -660,6 +714,44 @@ ordinary changes
 vanliga ändringar
 Matching page names:
 
+Fix character encoding
+
+Fix HTML escapes
+
+Set $FormTimeoutSalt.
+
+Form Timeout
+
+GD or Image::Magick modules not available.
+
+GD::SecurityImage module not available.
+
+Image storing failed. (%s)
+
+Bad gd_security_image_id.
+
+Please type the six characters from the anti-spam image
+
+Submit
+
+CAPTCHA
+
+You did not answer correctly.
+Du svarade inte korrekt.
+$GdSecurityImageFont is not set.
+
+No summary provided
+
+no summary available
+
+page was marked for deletion
+
+Oddmuse
+
+Cleaning up git repository
+
+Email: 
+
 Could not find %1.html template in %2
 Kunde inte finna %1.html-mallen i %2
 Only Editors are allowed to see this hidden page.
@@ -668,6 +760,142 @@ Only Admins are allowed to see this hidden page.
 
 Index
 Innehållsförteckning
+The username %s already exists.
+
+The email address %s has already been used.
+
+Wait %s minutes before try again.
+
+Registration Confirmation
+
+Visit the link blow to confirm registration.
+
+Recover Account
+
+You can login by following the link below. Then set new password.
+
+Change Email Address
+
+To confirm changing email address, follow the link below.
+
+To submit this form you must answer this question:
+
+Question:
+
+CAPTCHA:
+
+Registration
+
+The username must be valid page name.
+
+Confirmation email will be sent to the email address.
+
+Repeat Password:
+
+Email:
+
+Bad email address format.
+
+Password needs to have at least %s characters.
+
+Passwords differ.
+
+Email Sent
+
+Confirmation email has been sent to %s. Visit the link on the mail to confirm registration.
+
+Failed to Confirm Registration
+
+Invalid key.
+
+The key expired.
+
+Registration Confirmed
+
+Now, you can login by using username and password.
+
+Forgot your password?
+
+Login failed.
+
+You are banned.
+
+You must confirm email address.
+
+Logged in
+
+%s has logged in.
+
+You should set new password immediately.
+
+Change Password
+
+Logged out
+
+%s has logged out.
+
+Account Settings
+
+Logout
+
+Current Password:
+
+New Password:
+
+Repeat New Password:
+
+Password is wrong.
+
+Password Changed
+
+Your password has been changed.
+
+Forgot Password
+
+Enter email address, and recovery login ticket will be sent.
+
+Not found.
+
+The mail address is not valid anymore.
+
+An email has been sent to %s with further instructions.
+
+New Email Address:
+
+Failed to load account.
+
+An email has been sent to %s with a login ticket.
+
+Confirmation Failed
+
+Failed to confirm.
+
+Email Address Changed
+
+Email address for %1 has been changed to %2.
+
+Account Management
+
+Ban Account
+
+Enter username of the account to ban:
+
+Ban
+
+Enter username of the account to unban:
+
+Unban
+
+%s is already banned.
+
+%s has been banned.
+
+%s is not banned.
+
+%s has been unbanned.
+
+Register
+
 Languages:
 Språk:
 Show!
@@ -676,6 +904,10 @@ Define
 Definiera
 Full Link List
 Fullständing länklista
+Banned Content
+
+Rule "%1" matched on this page.
+
 List of locked pages
 
 Pages tagged with %s
@@ -688,7 +920,15 @@ Mallen %s är antingen tom eller saknas.
  -- definierad på %s
 Local names defined on %1: %2
 Lokala namn definierade på %1: %2
-Locked Pages
+Name: 
+
+URL: 
+
+Define Local Names
+
+Define external redirect: 
+
+IP number matched %s
 
 Register for %s
 
@@ -728,11 +968,7 @@ You are now logged out.
 
 Register a new account
 
-Logout
-
 Who am I?
-
-Forgot your password?
 
 Change your password
 
@@ -768,8 +1004,6 @@ Change Password?
 
 Your current password is incorrect.
 
-Your password has been changed.
-
 Approve Pending Registrations for %s
 
 %s has been approved.
@@ -789,8 +1023,6 @@ Invalid Mail %s: not saved.
 unsubscribe
 
 subscribe
-
-Email: 
 
 %s appears to be an invalid mail address
 
@@ -821,6 +1053,16 @@ Subscribed %s to the following pages:
 The remaining pages do not exist.
 
 Unsubscribed %s from the following pages:
+
+Migrating Subscriptions
+
+No non-migrated email addresses found, migration not necessary.
+
+Migrated %s rows.
+
+Update modules
+
+Module Updater
 
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 
@@ -860,6 +1102,12 @@ Generating Link Database
 Skapar länkdatabas
 The 404 handler extension requires the link data extension (links.pl).
 404-hanterarmodulen kräver länkdatamodulen för att fungera (links.pl).
+Make available offline
+
+Offline
+
+You are currently offline and what you requested is not part of the offline application. You need to be online to do this.
+
 LocalMap
 
 No page id for action localmap
@@ -873,20 +1121,6 @@ view
 Self-ban by %s
 
 You have banned your own IP.
-
-OpenID Login
-
-Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
-
-Your homepage is set to %s.
-
-You have no homepage set.
-
-Homepage:
-
-Homepage is missing
-
-OpenID error %s
 
 Orphan List
 Lista över övergivna sidor
@@ -914,14 +1148,18 @@ Include permanent anchors
 Med permanenta ankare
 Portrait
 Porträtt
+This page is password protected. If you know the password, you can %s. Once you have done that, return and reload this page.
+
+supply the password now
+
 Publish %s
 
 No target wiki was specified in the config file.
 
 The target wiki was misconfigured.
 
-You did not answer correctly.
-Du svarade inte korrekt.
+Upload is limited to %s bytes
+
 To save this page you must answer this question:
 
 Please type the following two words:
@@ -972,6 +1210,10 @@ Static Copy
 Statisk kopia
 Back to %s
 Tillbaka till %s
+Edit image in the browser
+
+Summary of your changes: 
+
 Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
@@ -1010,11 +1252,39 @@ Too many instances.  Only %s allowed.
 
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 
+thumb
+
+Error creating thumbnail from non existant page %s.
+
+Can not create thumbnail for file type %s.
+
+Can not create thumbnail for a text document
+
+Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
+
+Can not create path for thumbnail - %s
+
+Failed to run %1 to create thumbnail: %2
+
+%s ran into an error
+
+%s produced no output
+
+Failed to parse %s.
+
+Timezone
+
+Pick your timezone:
+
+Set
+
 Contents
 Innehåll
 Create a new page for today
 
 Add Translation
+
+Please provide a different page name for the translation.
 
 Added translation: %1 (%2)
 
@@ -1042,6 +1312,16 @@ The translation is outdated.
 Denna översättning är föråldrad
 The page does not exist.
 Sidan finns inte.
+Upgrading Database
+
+Did the previous upgrade end with an error? A lock was left behind.
+
+Unlock wiki
+
+Upgrade complete.
+
+Upgrade complete. Please remove $ModuleDir/upgade.pl, now.
+
 http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -1057,6 +1337,8 @@ Wanted Pages
 %s pages
 
 %s, referenced from:
+
+Web application for offline browsing
 
 Upload of %s file
 

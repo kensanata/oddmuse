@@ -21,8 +21,12 @@
 # This script was last checked for Oddmuse version 1.658.
 #
 use utf8;
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/russian-utf8.pl">russian-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Russian">Russian</a></p>';
-%Translate = split(/\n/,<<END_OF_TRANSLATION);
+AddModuleDescription('russian-utf8.pl', 'Russian');
+%Translate = split(/\n/,<<'END_OF_TRANSLATION');
+This page is empty.
+
+Add your comment here:
+
 Reading not allowed: user, ip, or network is blocked.
 Просмотр недоступен: имя пользователя, IP-адрес или сеть заблокированы.
 Login
@@ -31,8 +35,10 @@ Error
 
 %s calls
 
-Could not create %s
+Cannot create %s
 Невозможно создать %s
+Include normal pages
+
 Invalid UserName %s: not saved.
 Hекорректное имя пользователя %s: не сохранено.
 UserName must be 50 characters or less: not saved
@@ -73,8 +79,6 @@ CGI Internal error: %s
 Внутренняя ошибка CGI: %s
 Invalid action parameter %s
 Некорректный параметр действия %s
-Invalid URL.
-Некорректный URL.
 Page name is missing
 Отсутствует имя страницы
 Page name is too long: %s
@@ -85,22 +89,22 @@ Invalid Page %s (must not end with .lck)
 Некорректная страница %s (не должна оканчиваться на .lck)
 Invalid Page %s
 Некорректная страница %s
-Preview:
-Предварительный просмотр:
-Preview only, not yet saved
-Только предварительный просмотр - пока ничего не сохранено
+Too many redirections
+
+No redirection for old revisions
+
+Invalid link pattern for #REDIRECT
+
 Please go on to %s.
 
-All changes for %s
-
-No updates since %s
-Не было обновлений с %s
 Updates since %s
 Обновления с %s
+up to %s
+
 Updates in the last %s days
 Обновления за последние %s дней
-Updates in the last %s day
-Обновления за последний %s день
+Updates in the last day
+Обновления за последний день
 for %s only
 только для %s
 List latest change per page only
@@ -147,9 +151,7 @@ rollback
 откат
 new
 
-from %s
-с %s
-: 
+All changes for %s
 
 This page is too big to send over RSS.
 Эта страница слишком велика для трансляции в RSS.
@@ -181,6 +183,8 @@ The two revisions are the same.
 Заданы одинаковые версии страницы
 Editing not allowed for %s.
 Редактирование не разрешено для %s.
+Rollback of %s would restore banned content.
+
 Rollback to %s
 Откат до %s
 %s rolled back
@@ -201,8 +205,6 @@ Unlock site
 Разблокировать сайт для редактирования другими
 Lock site
 Блокировать сайт от редактирования другими
-Install CSS
-Загрузить CSS-стиль
 Unlock %s
 Разблокировать %s
 Lock %s
@@ -215,24 +217,30 @@ Important pages:
 Служебные страницы:
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 Чтобы пометить любую страницу к удалению, поместите <strong>%s</strong> первой строкой страницы.
+from %s
+с %s
 [Home]
 [Домой]
 redirected from %s
 перенаправлено с %s
+%s: 
+
 Click to search for references to this page
 Щелкните для поиска ссылок на эту страницу
 Cookie: 
 Кука:
+Edit this page
+Редактировать
+Preview:
+Предварительный просмотр:
+Preview only, not yet saved
+Только предварительный просмотр - пока ничего не сохранено
 Warning
 Внимание
 Database is stored in temporary directory %s
 База данных сохранена во временной директории %s
 %s seconds
 %s секунд
-The same page on other sites:
-
-EditNearLinks
-
 Last edited
 Редактировалось последний раз 
 Edited
@@ -241,10 +249,12 @@ by %s
 пользователем %s
 (diff)
 (изменения)
+a
+
+c
+
 Edit revision %s of this page
 Править версию %s этой страницы
-Edit this page
-Редактировать
 e
 
 This page is read-only
@@ -281,6 +291,8 @@ Validate CSS
 
 Last edit
 
+Summary:
+Описание:
 Difference between revision %1 and %2
 Отличия (версии %1 от %2)
 revision %s
@@ -317,11 +329,13 @@ Cannot open %s
 
 Cannot write %s
 
-Cannot create %s
+unlock the wiki
 
 Could not get %s lock
 
 The lock was created %s.
+
+Maybe the user running this script is no longer allowed to remove the lock directory?
 
 This operation may take several seconds...
 Эта операция может занять несколько секунд...
@@ -365,8 +379,6 @@ Editing old revision %s.
 Редактирование старой версии %s.
 Saving this page will replace the latest revision with this text.
 Сохранение этой страницы заменит последнюю версию на этот текст.
-Summary:
-Описание:
 This change is a minor edit.
 Это изменение является незначительной правкой.
 Cancel
@@ -407,40 +419,20 @@ Reason: %s.
 
 Reason unknown.
 
-Without normal pages
-
-Include normal pages
-
-Without permanent anchors
-
-Include permanent anchors
-
-Without near pages
-
-Include near pages
-
-(for %s)
-(%s)
 Filter:
 Фильтр:
+(for %s)
+(%s)
 %s pages found.
 Найдено %s страниц
+Malformed regular expression in %s
+
 Replaced: %s
 
 Search for: %s
 Искать: %s
 View changes for these pages
 Посмотреть изменения для этих страниц
-Search sites on the %s as well
-
-and
-
-or
-
-Fetching results from %s:
-
-Near pages:
-
 last updated
 
 by
@@ -501,8 +493,6 @@ Note: This error is normal if no changes have been made.
 Примечание: Эта ошибка - нормально, если не было сделано изменений.
 Moving %s log entries.
 
-Getting page index file for %s.
-
 Set or Remove global edit lock
 Установка или снятие глобальной блокировки на редактирование
 Edit lock created.
@@ -517,28 +507,16 @@ Lock for %s removed.
 Блокировка на %s снята.
 Displaying Wiki Version
 Версия Wiki
-Show dependencies
-Показать используемые библиотеки и модули
-Inter links:
+Debugging Information
 
-Near links:
-
-Show parsed link data
-Показать данные о препроцессинге ссылок
 Too many connections by %s
 
 Please do not fetch more than %1 pages in %2 seconds.
 Пожалйуста, не запрашивайте более %1 страниц в течение %2 секунд.
 Check whether the web server can create the directory %s and whether it can create files in it.
 
-anchor first defined here: %s
+, see 
 
-Click to search for references to this permanent anchor
-
-the page %s also exists
-
-Copy one of the following stylesheets to %s:
-Выберите один из перечисленных стилей для копирования в %s
 Deleting %s
 
 Deleted %s
@@ -561,6 +539,10 @@ Immediately delete %s
 
 Rename %s to:
 
+Attach file:
+
+Upload
+
 Learn more...
 
 Complete Content
@@ -574,6 +556,28 @@ Rebuild BackLink database
 Internal Page: 
 
 Pages that link to this page
+
+The search parameter is missing.
+
+Pages link to %s
+
+Ban contributors
+
+Ban Contributors to %s
+
+%s is banned
+
+Ban!
+
+These URLs were rolled back. Perhaps you want to add a regular expression to %s?
+
+Regular expression:
+
+Consider banning the IP number as well: 
+
+Regular expression "%1" matched "%2" on this page.
+
+Regular expression "%s" matched on this page.
 
 Cannot highlight the language %s.
 
@@ -643,6 +647,8 @@ Clustermap
 Кластеры
 Pages without a Cluster
 Некластеризованые страницы
+Comments:
+
 Comments on 
 Комментарии к
 Comment on 
@@ -650,6 +656,20 @@ Comment on
 Compilation for %s
 
 Compilation tag is missing a regular expression.
+
+Install CSS
+Загрузить CSS-стиль
+Copy one of the following stylesheets to %s:
+Выберите один из перечисленных стилей для копирования в %s
+Reset
+
+Extract all dates from the database
+
+Dates
+
+No dates found.
+
+Inter links:
 
 List spammed pages
 
@@ -664,6 +684,10 @@ Revert to revision %1: %2
 Marked as %s.
 
 Cannot find unspammed revision.
+
+Page diff
+
+Diff
 
 Recover Draft
 
@@ -691,7 +715,43 @@ ordinary changes
 
 Matching page names:
 
-Footnotes:
+Fix character encoding
+
+Fix HTML escapes
+
+Set $FormTimeoutSalt.
+
+Form Timeout
+
+GD or Image::Magick modules not available.
+
+GD::SecurityImage module not available.
+
+Image storing failed. (%s)
+
+Bad gd_security_image_id.
+
+Please type the six characters from the anti-spam image
+
+Submit
+
+CAPTCHA
+
+You did not answer correctly.
+
+$GdSecurityImageFont is not set.
+
+No summary provided
+
+no summary available
+
+page was marked for deletion
+
+Oddmuse
+
+Cleaning up git repository
+
+Email: 
 
 Could not find %1.html template in %2
 
@@ -701,6 +761,142 @@ Only Admins are allowed to see this hidden page.
 
 Index
 
+The username %s already exists.
+
+The email address %s has already been used.
+
+Wait %s minutes before try again.
+
+Registration Confirmation
+
+Visit the link blow to confirm registration.
+
+Recover Account
+
+You can login by following the link below. Then set new password.
+
+Change Email Address
+
+To confirm changing email address, follow the link below.
+
+To submit this form you must answer this question:
+
+Question:
+
+CAPTCHA:
+
+Registration
+
+The username must be valid page name.
+
+Confirmation email will be sent to the email address.
+
+Repeat Password:
+
+Email:
+
+Bad email address format.
+
+Password needs to have at least %s characters.
+
+Passwords differ.
+
+Email Sent
+
+Confirmation email has been sent to %s. Visit the link on the mail to confirm registration.
+
+Failed to Confirm Registration
+
+Invalid key.
+
+The key expired.
+
+Registration Confirmed
+
+Now, you can login by using username and password.
+
+Forgot your password?
+
+Login failed.
+
+You are banned.
+
+You must confirm email address.
+
+Logged in
+
+%s has logged in.
+
+You should set new password immediately.
+
+Change Password
+
+Logged out
+
+%s has logged out.
+
+Account Settings
+
+Logout
+
+Current Password:
+
+New Password:
+
+Repeat New Password:
+
+Password is wrong.
+
+Password Changed
+
+Your password has been changed.
+
+Forgot Password
+
+Enter email address, and recovery login ticket will be sent.
+
+Not found.
+
+The mail address is not valid anymore.
+
+An email has been sent to %s with further instructions.
+
+New Email Address:
+
+Failed to load account.
+
+An email has been sent to %s with a login ticket.
+
+Confirmation Failed
+
+Failed to confirm.
+
+Email Address Changed
+
+Email address for %1 has been changed to %2.
+
+Account Management
+
+Ban Account
+
+Enter username of the account to ban:
+
+Ban
+
+Enter username of the account to unban:
+
+Unban
+
+%s is already banned.
+
+%s has been banned.
+
+%s is not banned.
+
+%s has been unbanned.
+
+Register
+
 Languages:
 
 Show!
@@ -709,6 +905,14 @@ Define
 
 Full Link List
 Полный список ссылок
+Banned Content
+
+Rule "%1" matched on this page.
+
+List of locked pages
+
+Pages tagged with %s
+
 Template without parameters
 
 The template %s is either empty or does not exist.
@@ -716,6 +920,16 @@ The template %s is either empty or does not exist.
  -- defined on %s
 
 Local names defined on %1: %2
+
+Name: 
+
+URL: 
+
+Define Local Names
+
+Define external redirect: 
+
+IP number matched %s
 
 Register for %s
 
@@ -755,11 +969,7 @@ You are now logged out.
 
 Register a new account
 
-Logout
-
 Who am I?
-
-Forgot your password?
 
 Change your password
 
@@ -795,8 +1005,6 @@ Change Password?
 
 Your current password is incorrect.
 
-Your password has been changed.
-
 Approve Pending Registrations for %s
 
 %s has been approved.
@@ -811,7 +1019,73 @@ There was an error approving %s.
 
 There are no pending registrations.
 
+Invalid Mail %s: not saved.
+
+unsubscribe
+
+subscribe
+
+%s appears to be an invalid mail address
+
+Your mail subscriptions
+
+All mail subscriptions
+
+Subscriptions
+
+Show
+
+Subscriptions for %s:
+
+Unsubscribe
+
+There are no subscriptions for %s.
+
+Change email address
+
+Mail addresses are linked to unsubscription links.
+
+Subscribe to %s.
+
+Subscribe
+
+Subscribed %s to the following pages:
+
+The remaining pages do not exist.
+
+Unsubscribed %s from the following pages:
+
+Migrating Subscriptions
+
+No non-migrated email addresses found, migration not necessary.
+
+Migrated %s rows.
+
+Update modules
+
+Module Updater
+
+You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
+
 %s is not a legal name for a namespace
+
+Namespaces
+
+Getting page index file for %s.
+
+Near links:
+
+Search sites on the %s as well
+
+Fetching results from %s:
+
+Near pages:
+
+Include near pages
+
+EditNearLinks
+
+The same page on other sites:
 
  (create locally)
 
@@ -819,6 +1093,8 @@ image
 изображение
 download
 загрузить
+Backlinks
+
 Clearing Cache
 
 Done.
@@ -826,6 +1102,12 @@ Done.
 Generating Link Database
 
 The 404 handler extension requires the link data extension (links.pl).
+
+Make available offline
+
+Offline
+
+You are currently offline and what you requested is not part of the offline application. You need to be online to do this.
 
 LocalMap
 
@@ -851,13 +1133,25 @@ Type
 
 Permalink to "%s"
 
+anchor first defined here: %s
+
+the page %s also exists
+
 There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
 
 Someone else is generating a pdf for %s.  Please wait a minute and then try again.
 
 Download this page as PDF
 
+Click to search for references to this permanent anchor
+
+Include permanent anchors
+
 Portrait
+
+This page is password protected. If you know the password, you can %s. Once you have done that, return and reload this page.
+
+supply the password now
 
 Publish %s
 
@@ -865,11 +1159,13 @@ No target wiki was specified in the config file.
 
 The target wiki was misconfigured.
 
-You did not answer correctly.
-
-Use the back button to return the previous page and try again.
+Upload is limited to %s bytes
 
 To save this page you must answer this question:
+
+Please type the following two words:
+
+Please answer this captcha:
 
 Referrers
 
@@ -887,6 +1183,10 @@ Rebuilding index not done.
 
 (Rebuilding the index can only be done once every 12 hours.)
 
+New Pages for Indexed Search
+
+List changes since %s
+
  ... 
 
 Search term missing.
@@ -901,6 +1201,8 @@ Tags: %s.
 
 No tags
 
+Page list for %s
+
 Slideshow:%s
 
 Index of all small pages
@@ -909,9 +1211,21 @@ Static Copy
 
 Back to %s
 Назад к %s
+Edit image in the browser
+
+Summary of your changes: 
+
 Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
+
+Feed for this tag
+
+Rebuild tag index
+
+list tags
+
+tag cloud
 
 Alternatively, use one of the following templates:
 
@@ -939,9 +1253,57 @@ Too many instances.  Only %s allowed.
 
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 
+thumb
+
+Error creating thumbnail from non existant page %s.
+
+Can not create thumbnail for file type %s.
+
+Can not create thumbnail for a text document
+
+Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
+
+Can not create path for thumbnail - %s
+
+Failed to run %1 to create thumbnail: %2
+
+%s ran into an error
+
+%s produced no output
+
+Failed to parse %s.
+
+Timezone
+
+Pick your timezone:
+
+Set
+
 Contents
 
 Create a new page for today
+
+Add Translation
+
+Please provide a different page name for the translation.
+
+Added translation: %1 (%2)
+
+Translate %s
+
+Thank you for writing a translation of %s.
+
+Please indicate what language you will be using.
+
+Language is missing
+
+Suggested languages:
+
+Please indicate a page name for the translation of %s.
+
+More help may be available here: %s.
+
+Translated page: 
 
 This page is a translation of %s. 
 
@@ -950,6 +1312,16 @@ The translation is up to date.
 The translation is outdated.
 
 The page does not exist.
+
+Upgrading Database
+
+Did the previous upgrade end with an error? A lock was left behind.
+
+Unlock wiki
+
+Upgrade complete.
+
+Upgrade complete. Please remove $ModuleDir/upgade.pl, now.
 
 http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
 
@@ -966,6 +1338,8 @@ Wanted Pages
 %s pages
 
 %s, referenced from:
+
+Web application for offline browsing
 
 Upload of %s file
 

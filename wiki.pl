@@ -3931,11 +3931,16 @@ sub WriteRecentVisitors {
 
 sub TextIsFile { $_[0] =~ /^#FILE (\S+) ?(\S+)?\n/ }
 
-sub AddModuleDescription {
-  my ($filename, $name) = @_;
-  $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/' . UrlEncode($filename) . '">' . QuoteHtml($filename);
-  $ModulesDescription .= '</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/' . UrlEncode(FreeToNormal($name)) . '">' . QuoteHtml($name) if $name;
-  $ModulesDescription .= '</a></p>';
+sub AddModuleDescription { # cannot use $q here because this is module init time
+  my ($filename, $name, $anchor, $tag) = @_;
+  my $src = 'http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/' . UrlEncode($filename);
+  $src .= '?' . $tag if $tag;
+  my $doc = 'http://www.oddmuse.org/cgi-bin/oddmuse/' . UrlEncode(FreeToNormal($name));
+  $doc .= '#' . $anchor if $anchor;
+  $ModulesDescription .= "<p><a href=\"$src\">" . QuoteHtml($filename) . "</a>";
+  $ModulesDescription .= " ($tag)" if $tag;
+  $ModulesDescription .= T(', see ') . "<a href=\"$doc\">" . QuoteHtml($name) . "</a>" if $name;
+  $ModulesDescription .= "</p>";
 }
 
 DoWikiRequest() if $RunCGI and not exists $ENV{MOD_PERL}; # Do everything.

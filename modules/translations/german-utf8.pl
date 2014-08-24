@@ -17,7 +17,7 @@
 #
 use utf8;
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/german-utf8.pl">german-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/German">German</a></p>';
+AddModuleDescription('german-utf8.pl', 'German');
 
 %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.
@@ -512,6 +512,8 @@ Please do not fetch more than %1 pages in %2 seconds.
 Bitte rufen sie nicht mehr als %1 Seiten in %2 Sekunden auf.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Vielleicht kann der Webserver das Verzeichnis %s nicht anlegen oder es wurde schon angelegt, aber der Webserver kann darin keine neuen Dateien anlegen.
+, see 
+, siehe 
 Deleting %s
 %s löschen
 Deleted %s

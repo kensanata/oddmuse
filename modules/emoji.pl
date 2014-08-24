@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-AddModuleDescription('emoji.pl', 'Logo And Icons');
+AddModuleDescription('emoji.pl', 'Logo And Icons', 'Smilies');
 
 push(@MyRules, \&EmojiRule);
 # this can be last

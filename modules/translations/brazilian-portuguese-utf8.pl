@@ -19,10 +19,12 @@
 # This translation was last checked for Oddmuse version 1.753.
 #
 use utf8;
-$ModulesDescription .= '<p>$Id: brazilian-portuguese-utf8.pl,v 1.14 2009/06/07 19:30:37 as Exp $</p>';
-%Translate = split(/\n/,<<END_OF_TRANSLATION);
-Include normal pages
-Incluir páginas normais
+AddModuleDescription('brazilian-portuguese-utf8.pl', 'Portuguese');
+%Translate = split(/\n/,<<'END_OF_TRANSLATION');
+This page is empty.
+
+Add your comment here:
+
 Reading not allowed: user, ip, or network is blocked.
 Leitura não permitida: usuário, ip ou rede bloqueados.
 Login
@@ -31,8 +33,10 @@ Error
 Erro
 %s calls
 %s chamadas
-Could not create %s
+Cannot create %s
 Não foi possível criar %s
+Include normal pages
+Incluir páginas normais
 Invalid UserName %s: not saved.
 NomeUsuário inválido %s: nada salvo.
 UserName must be 50 characters or less: not saved
@@ -97,8 +101,8 @@ up to %s
 
 Updates in the last %s days
 Atualizações nos últimos %s dias
-Updates in the last %s day
-Atualizações no último %s dia
+Updates in the last day
+Atualizações no último dia
 for %s only
 para %s apenas
 List latest change per page only
@@ -147,8 +151,6 @@ new
 novo
 All changes for %s
 Todas as alterações para %s
-from %s
-de %s
 This page is too big to send over RSS.
 Essa página é grande demais para ser enviada por RSS.
 History of %s
@@ -213,6 +215,8 @@ Important pages:
 Páginas importantes:
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 Para marcar uma página para exclusão, coloque <strong>%s</strong> na primeira linha
+from %s
+de %s
 [Home]
 [Início]
 redirected from %s
@@ -243,6 +247,10 @@ by %s
 por %s
 (diff)
 (diferença)
+a
+
+c
+
 Edit revision %s of this page
 Editar a versão %s dessa página
 e
@@ -281,6 +289,8 @@ Validate CSS
 Validar CSS
 Last edit
 Última edição
+Summary:
+Sumário:
 Difference between revision %1 and %2
 Diferença (entre versão %1 e %2)
 revision %s
@@ -317,8 +327,8 @@ Cannot open %s
 Não foi possível abrir %s
 Cannot write %s
 Não foi possível escrever %s
-Cannot create %s
-Não foi possível criar %s
+unlock the wiki
+
 Could not get %s lock
 Não foi possível conseguir o bloqueio %s
 The lock was created %s.
@@ -367,8 +377,6 @@ Editing old revision %s.
 Editando versão antiga %s.
 Saving this page will replace the latest revision with this text.
 Salvar essa página irá substituir a última versão com esse texto.
-Summary:
-Sumário:
 This change is a minor edit.
 Essa atualização é mínima.
 Cancel
@@ -505,6 +513,8 @@ Please do not fetch more than %1 pages in %2 seconds.
 Por favor, abra mais do que %1 páginas em %2 segundos.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Verifique se o servidor web pode criar o diretório %s e se pode criar arquivos nele.
+, see 
+, veja 
 Deleting %s
 Excluindo %s
 Deleted %s
@@ -527,6 +537,10 @@ Immediately delete %s
 Excluir imediatamente %s
 Rename %s to:
 Renomear %s para:
+Attach file:
+
+Upload
+
 Learn more...
 Leia mais...
 Complete Content
@@ -544,6 +558,24 @@ Páginas que possuem links para essa página
 The search parameter is missing.
 
 Pages link to %s
+
+Ban contributors
+
+Ban Contributors to %s
+
+%s is banned
+
+Ban!
+
+These URLs were rolled back. Perhaps you want to add a regular expression to %s?
+
+Regular expression:
+
+Consider banning the IP number as well: 
+
+Regular expression "%1" matched "%2" on this page.
+
+Regular expression "%s" matched on this page.
 
 Cannot highlight the language %s.
 Não foi possível destacar a linguagem %s.
@@ -613,6 +645,8 @@ Clustermap
 MapaCluster
 Pages without a Cluster
 Páginas sem um Cluster
+Comments:
+Comentários:
 Comments on 
 Comentários sobre 
 Comment on 
@@ -649,6 +683,10 @@ Marked as %s.
 Marcado como %s.
 Cannot find unspammed revision.
 Não foi possível localizar versão sem spam.
+Page diff
+
+Diff
+
 Recover Draft
 Recuperar Rascunho
 No text to save
@@ -675,11 +713,41 @@ ordinary changes
 alterações normais
 Matching page names:
 Coincidindo com os nomes de página:
+Fix character encoding
+
+Fix HTML escapes
+
+Set $FormTimeoutSalt.
+
+Form Timeout
+
+GD or Image::Magick modules not available.
+
+GD::SecurityImage module not available.
+
+Image storing failed. (%s)
+
+Bad gd_security_image_id.
+
+Please type the six characters from the anti-spam image
+
+Submit
+
+CAPTCHA
+
+You did not answer correctly.
+Você não respondeu corretamente à pergunta.
+$GdSecurityImageFont is not set.
+
+No summary provided
+
 no summary available
 
 page was marked for deletion
 
 Oddmuse
+
+Cleaning up git repository
 
 Email: 
 
@@ -691,6 +759,142 @@ Only Admins are allowed to see this hidden page.
 Somente administradores podem ver essa página oculta.
 Index
 Índice
+The username %s already exists.
+
+The email address %s has already been used.
+
+Wait %s minutes before try again.
+
+Registration Confirmation
+
+Visit the link blow to confirm registration.
+
+Recover Account
+
+You can login by following the link below. Then set new password.
+
+Change Email Address
+
+To confirm changing email address, follow the link below.
+
+To submit this form you must answer this question:
+
+Question:
+
+CAPTCHA:
+
+Registration
+
+The username must be valid page name.
+
+Confirmation email will be sent to the email address.
+
+Repeat Password:
+
+Email:
+
+Bad email address format.
+
+Password needs to have at least %s characters.
+
+Passwords differ.
+
+Email Sent
+
+Confirmation email has been sent to %s. Visit the link on the mail to confirm registration.
+
+Failed to Confirm Registration
+
+Invalid key.
+
+The key expired.
+
+Registration Confirmed
+
+Now, you can login by using username and password.
+
+Forgot your password?
+Esqueceu sua senha?
+Login failed.
+
+You are banned.
+
+You must confirm email address.
+
+Logged in
+
+%s has logged in.
+
+You should set new password immediately.
+
+Change Password
+
+Logged out
+
+%s has logged out.
+
+Account Settings
+
+Logout
+Sair
+Current Password:
+
+New Password:
+
+Repeat New Password:
+
+Password is wrong.
+
+Password Changed
+
+Your password has been changed.
+Sua senha foi alterada.
+Forgot Password
+
+Enter email address, and recovery login ticket will be sent.
+
+Not found.
+
+The mail address is not valid anymore.
+
+An email has been sent to %s with further instructions.
+
+New Email Address:
+
+Failed to load account.
+
+An email has been sent to %s with a login ticket.
+
+Confirmation Failed
+
+Failed to confirm.
+
+Email Address Changed
+
+Email address for %1 has been changed to %2.
+
+Account Management
+
+Ban Account
+
+Enter username of the account to ban:
+
+Ban
+
+Enter username of the account to unban:
+
+Unban
+
+%s is already banned.
+
+%s has been banned.
+
+%s is not banned.
+
+%s has been unbanned.
+
+Register
+
 Languages:
 Idiomas:
 Show!
@@ -699,6 +903,10 @@ Define
 Definir
 Full Link List
 Lista Completa de Links
+Banned Content
+
+Rule "%1" matched on this page.
+
 List of locked pages
 
 Pages tagged with %s
@@ -719,7 +927,7 @@ Define Local Names
 
 Define external redirect: 
 
-Locked Pages
+IP number matched %s
 
 Register for %s
 Registrar para %s
@@ -759,12 +967,8 @@ You are now logged out.
 Agora você saiu.
 Register a new account
 Registrar uma nova conta
-Logout
-Sair
 Who am I?
 Quem sou eu?
-Forgot your password?
-Esqueceu sua senha?
 Change your password
 Mudar sua senha
 Approve pending registrations
@@ -799,8 +1003,6 @@ Change Password?
 Mudar Senha?
 Your current password is incorrect.
 A senha atual não está correta.
-Your password has been changed.
-Sua senha foi alterada.
 Approve Pending Registrations for %s
 Aprovar Registros Pendentes para %s
 %s has been approved.
@@ -851,14 +1053,22 @@ The remaining pages do not exist.
 
 Unsubscribed %s from the following pages:
 
+Migrating Subscriptions
+
+No non-migrated email addresses found, migration not necessary.
+
+Migrated %s rows.
+
+Update modules
+
+Module Updater
+
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 
 %s is not a legal name for a namespace
 %s não é um nome legal para um espaço de nomes
 Namespaces
 
- (create locally)
- (criar localmente)
 Getting page index file for %s.
 Obtendo arquivo de índice de página para %s.
 Near links:
@@ -875,6 +1085,8 @@ EditNearLinks
 EditarLinksPróximos
 The same page on other sites:
 A mesma página em outros sites:
+ (create locally)
+ (criar localmente)
 image
 imagem
 download
@@ -935,6 +1147,10 @@ Include permanent anchors
 Incluir âncoras permanentes
 Portrait
 Retrato
+This page is password protected. If you know the password, you can %s. Once you have done that, return and reload this page.
+
+supply the password now
+
 Publish %s
 Publicar %s
 No target wiki was specified in the config file.
@@ -943,8 +1159,6 @@ The target wiki was misconfigured.
 O wiki alvo está mal configurado.
 Upload is limited to %s bytes
 
-You did not answer correctly.
-Você não respondeu corretamente à pergunta.
 To save this page you must answer this question:
 Para salvar essa página você deve responder a esta pergunta:
 Please type the following two words:
@@ -1097,6 +1311,16 @@ The translation is outdated.
 A tradução está desatualizada.
 The page does not exist.
 Esta página não existe.
+Upgrading Database
+
+Did the previous upgrade end with an error? A lock was left behind.
+
+Unlock wiki
+
+Upgrade complete.
+
+Upgrade complete. Please remove $ModuleDir/upgade.pl, now.
+
 http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
 http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
 http://www.amazon.com/exec/obidos/ISBN=%s

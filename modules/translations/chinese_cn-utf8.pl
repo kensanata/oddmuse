@@ -26,7 +26,7 @@
 #(http://search.cpan.org/~qjzhou/Encode-CNMap-0.32/bin/cnmap) by Qing-Jie Zhou <qjzhou@hotmail.com>.
 #
 use utf8;
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/chinese_cn-utf8.pl">chinese_cn-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Chinese">Chinese</a></p>';
+AddModuleDescription('chinese_cn-utf8.pl', 'Chinese');
 $SiteName = '我的Wiki'; # Name of site (used for titles)
 $HomePage = '首页'; # Home page
 $NewText = "新页面内容\n"; # New page text
@@ -37,7 +37,7 @@ $DeletedPage = '删除页面'; # Pages starting with this can be deleted
 $RCName = '最近更新'; # Name of changes page
 $RssExclude = 'RSS排除页面'; # name of the page that lists pages to be excluded from the feed
 $CategoriesPage = '日志类别';
-%Translate = split(/\n/,<<END_OF_TRANSLATION);
+%Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.
 
 Add your comment here:
@@ -118,8 +118,8 @@ up to %s
 
 Updates in the last %s days
 在%s天之内的更改
-Updates in the last %s day
-在%s天之内的更改
+Updates in the last day
+在天之内的更改
 for %s only
 只列出 %s
 List latest change per page only
@@ -344,6 +344,8 @@ Cannot open %s
 无法打开 %s
 Cannot write %s
 无法写入 %s
+unlock the wiki
+
 Could not get %s lock
 无法获得%s锁定
 The lock was created %s.
@@ -528,6 +530,8 @@ Please do not fetch more than %1 pages in %2 seconds.
 请不要在 %2 秒内下载超过 %1 页的数据。
 Check whether the web server can create the directory %s and whether it can create files in it.
 请确认网站服务器是否可建立%s目录，并且在其中建立文件。
+, see 
+
 Deleting %s
 正在删除 %s
 Deleted %s
@@ -550,6 +554,10 @@ Immediately delete %s
 立即删除 %s
 Rename %s to:
 将%s重命名为:
+Attach file:
+
+Upload
+
 Learn more...
 了解更多...
 Complete Content
@@ -580,7 +588,7 @@ These URLs were rolled back. Perhaps you want to add a regular expression to %s?
 
 Regular expression:
 
-Consider banning the hostname or IP number as well: 
+Consider banning the IP number as well: 
 
 Regular expression "%1" matched "%2" on this page.
 
@@ -654,6 +662,8 @@ Clustermap
 簇页面
 Pages without a Cluster
 不包含簇的页面
+Comments:
+
 Comments on 
 评论关于
 Comment on 
@@ -690,6 +700,10 @@ Marked as %s.
 标记为%s。
 Cannot find unspammed revision.
 找不到未被 spam 的版本。
+Page diff
+
+Diff
+
 Recover Draft
 恢复草稿
 No text to save
@@ -720,6 +734,30 @@ Fix character encoding
 
 Fix HTML escapes
 
+Set $FormTimeoutSalt.
+
+Form Timeout
+
+GD or Image::Magick modules not available.
+
+GD::SecurityImage module not available.
+
+Image storing failed. (%s)
+
+Bad gd_security_image_id.
+
+Please type the six characters from the anti-spam image
+
+Submit
+
+CAPTCHA
+
+You did not answer correctly.
+回答不正确。
+$GdSecurityImageFont is not set.
+
+No summary provided
+
 no summary available
 
 page was marked for deletion
@@ -738,26 +776,146 @@ Only Admins are allowed to see this hidden page.
 只有管理员才允许查看该隐藏页面
 Index
 索引
+The username %s already exists.
+
+The email address %s has already been used.
+
+Wait %s minutes before try again.
+
+Registration Confirmation
+
+Visit the link blow to confirm registration.
+
+Recover Account
+
+You can login by following the link below. Then set new password.
+
+Change Email Address
+
+To confirm changing email address, follow the link below.
+
+To submit this form you must answer this question:
+
+Question:
+
+CAPTCHA:
+
+Registration
+
+The username must be valid page name.
+
+Confirmation email will be sent to the email address.
+
+Repeat Password:
+
+Email:
+
+Bad email address format.
+
+Password needs to have at least %s characters.
+
+Passwords differ.
+
+Email Sent
+
+Confirmation email has been sent to %s. Visit the link on the mail to confirm registration.
+
+Failed to Confirm Registration
+
+Invalid key.
+
+The key expired.
+
+Registration Confirmed
+
+Now, you can login by using username and password.
+
+Forgot your password?
+忘记了口令？
+Login failed.
+
+You are banned.
+
+You must confirm email address.
+
+Logged in
+
+%s has logged in.
+
+You should set new password immediately.
+
+Change Password
+
+Logged out
+
+%s has logged out.
+
+Account Settings
+
+Logout
+注销
+Current Password:
+
+New Password:
+
+Repeat New Password:
+
+Password is wrong.
+
+Password Changed
+
+Your password has been changed.
+您的口令已修改。
+Forgot Password
+
+Enter email address, and recovery login ticket will be sent.
+
+Not found.
+
+The mail address is not valid anymore.
+
+An email has been sent to %s with further instructions.
+
+New Email Address:
+
+Failed to load account.
+
+An email has been sent to %s with a login ticket.
+
+Confirmation Failed
+
+Failed to confirm.
+
+Email Address Changed
+
+Email address for %1 has been changed to %2.
+
+Account Management
+
+Ban Account
+
+Enter username of the account to ban:
+
+Ban
+
+Enter username of the account to unban:
+
+Unban
+
+%s is already banned.
+
+%s has been banned.
+
+%s is not banned.
+
+%s has been unbanned.
+
+Register
+
 Languages:
 语言：
 Show!
 显示!
-LaTeX export
-
-An uploaded file cannot be rendered as LaTeX.
-
-Exporting of journal pages to LaTeX is not supported.
-
-Exporting of RSS feeds to LaTeX is not supported.
-
-Exporting of search results to LaTeX is not supported.
-
-Exporting of redirections to LaTeX is not supported.
-
-Exporting of named entity reference to LaTeX is not supported.
-
-Exporting of images to LaTeX is not supported.
-
 Define
 定义
 Full Link List
@@ -786,9 +944,7 @@ Define Local Names
 
 Define external redirect: 
 
-Locked Pages
-锁定的页面
-Host or IP matched %s
+IP number matched %s
 
 Register for %s
 为%s注册
@@ -828,12 +984,8 @@ You are now logged out.
 您现在已经退出登录。
 Register a new account
 注册一个新账号
-Logout
-注销
 Who am I?
 我是谁？
-Forgot your password?
-忘记了口令？
 Change your password
 更改您的口令
 Approve pending registrations
@@ -868,8 +1020,6 @@ Change Password?
 确认更改口令
 Your current password is incorrect.
 您现在的口令不正确。
-Your password has been changed.
-您的口令已修改。
 Approve Pending Registrations for %s
 待候审批的用户“%s”的注册信息
 %s has been approved.
@@ -925,6 +1075,10 @@ Migrating Subscriptions
 No non-migrated email addresses found, migration not necessary.
 
 Migrated %s rows.
+
+Update modules
+
+Module Updater
 
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 您已经对同一个域名的连接已经超过 %s 次。这似乎只有垃圾邮件发送者会这么做。您的编辑被拒绝。
@@ -1022,8 +1176,6 @@ The target wiki was misconfigured.
 目标wiki设置有误
 Upload is limited to %s bytes
 
-You did not answer correctly.
-回答不正确。
 To save this page you must answer this question:
 保存该页面需要正确回答以下问题：
 Please type the following two words:
@@ -1176,6 +1328,16 @@ The translation is outdated.
 本页翻译已过期。
 The page does not exist.
 页面不存在。
+Upgrading Database
+
+Did the previous upgrade end with an error? A lock was left behind.
+
+Unlock wiki
+
+Upgrade complete.
+
+Upgrade complete. Please remove $ModuleDir/upgade.pl, now.
+
 http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s

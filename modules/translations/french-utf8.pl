@@ -23,11 +23,13 @@
 
 use utf8;
 
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/french-utf8.pl">french-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/French">French</a></p>';
+AddModuleDescription('french-utf8.pl', 'French');
 
-%Translate = split(/\n/,<<END_OF_TRANSLATION);
-Include normal pages
-Comprend les pages normales
+%Translate = split(/\n/,<<'END_OF_TRANSLATION');
+This page is empty.
+Cette page est vide.
+Add your comment here:
+Ajoutez un commentaire :
 Reading not allowed: user, ip, or network is blocked.
 Accès interdit : l’utilisateur, l’IP ou le réseau est bloqué.
 Login
@@ -36,8 +38,10 @@ Error
 Erreur
 %s calls
 %s appel
-Could not create %s
-Création de %s impossible
+Cannot create %s
+Impossible de créer %s
+Include normal pages
+Comprend les pages normales
 Invalid UserName %s: not saved.
 Nom d’utilisateur non valide %s : non sauvegardé.
 UserName must be 50 characters or less: not saved
@@ -102,8 +106,8 @@ up to %s
 jusqu’à
 Updates in the last %s days
 Mises à jour durant les derniers %s jours
-Updates in the last %s day
-Mises à jour durant le dernier %s jour
+Updates in the last day
+Mises à jour durant le dernier jour
 for %s only
 pour %s seulement
 List latest change per page only
@@ -152,8 +156,6 @@ new
 nouveau
 All changes for %s
 Tous les changements pour %s
-from %s
-depuis %s
 This page is too big to send over RSS.
 Cette page est trop grande pour être envoyée sur RSS
 History of %s
@@ -206,8 +208,6 @@ Unlock site
 Déverrouiller le site
 Lock site
 Verouiller le site
-Install CSS
-Installer CSS
 Unlock %s
 Déverrouiller %s
 Lock %s
@@ -220,6 +220,8 @@ Important pages:
 Pages importantes :
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 Pour marquer une page comme étant à supprimer, ajoutez <strong>%s</strong> à la première ligne
+from %s
+depuis %s
 [Home]
 [Accueil]
 redirected from %s
@@ -250,6 +252,10 @@ by %s
 par %s
 (diff)
 (diff)
+a
+
+c
+
 Edit revision %s of this page
 Modifier la version %s de cette page
 e
@@ -288,6 +294,8 @@ Validate CSS
 Valider CSS
 Last edit
 Dernière modification
+Summary:
+Résumé :
 Difference between revision %1 and %2
 Différence entre les versions %1 et %2
 revision %s
@@ -324,8 +332,8 @@ Cannot open %s
 Ne peut pas ouvrir %s
 Cannot write %s
 Ne peut pas écrire %s
-Cannot create %s
-Impossible de créer %s
+unlock the wiki
+supprimer le verrou %s.
 Could not get %s lock
 Ne peut obtenir un verrouillage %s
 The lock was created %s.
@@ -374,8 +382,6 @@ Editing old revision %s.
 Modification de l’ancienne version %s.
 Saving this page will replace the latest revision with this text.
 Sauvegarder cette page remplacera la dernière version par ce texte.
-Summary:
-Résumé :
 This change is a minor edit.
 Cette modification est une édition mineure.
 Cancel
@@ -512,8 +518,8 @@ Please do not fetch more than %1 pages in %2 seconds.
 Veuillez ne pas télécharger plus de %1 pages toutes les %2 secondes
 Check whether the web server can create the directory %s and whether it can create files in it.
 Vérifiez si le serveur web peut créer le répertoire %s et s’il peut créer des fichiers dedans.
-Copy one of the following stylesheets to %s:
-Copier une des feuilles de style suivantes sur %s.
+, see 
+, voir
 Deleting %s
 Suppression de %s
 Deleted %s
@@ -536,6 +542,10 @@ Immediately delete %s
 Supprimer immédiatement %s
 Rename %s to:
 Renommer %s en :
+Attach file:
+
+Upload
+
 Learn more...
 En savoir plus...
 Complete Content
@@ -554,6 +564,24 @@ The search parameter is missing.
 Le paramètre de recherche est manquant
 Pages link to %s
 Pages liées à %s
+Ban contributors
+
+Ban Contributors to %s
+
+%s is banned
+
+Ban!
+
+These URLs were rolled back. Perhaps you want to add a regular expression to %s?
+
+Regular expression:
+
+Consider banning the IP number as well: 
+
+Regular expression "%1" matched "%2" on this page.
+
+Regular expression "%s" matched on this page.
+
 Cannot highlight the language %s.
 Impossible de surligner la langue %s.
 Recent Visitors
@@ -622,6 +650,8 @@ Clustermap
 Carte du Faisceau
 Pages without a Cluster
 Pages sans Faisceau
+Comments:
+Commentaires :
 Comments on 
 Commentaires sur
 Comment on 
@@ -630,6 +660,12 @@ Compilation for %s
 Compilation pour %s
 Compilation tag is missing a regular expression.
 Une expression régulière manque au tag de compilation.
+Install CSS
+Installer CSS
+Copy one of the following stylesheets to %s:
+Copier une des feuilles de style suivantes sur %s.
+Reset
+
 Extract all dates from the database
 Extraire toutes les dates depuis la base de données
 Dates
@@ -652,6 +688,10 @@ Marked as %s.
 Marqué(e) comme %s.
 Cannot find unspammed revision.
 Impossible de trouver une version sans texte indésirable.
+Page diff
+
+Diff
+
 Recover Draft
 Récupérer le brouillon
 No text to save
@@ -678,6 +718,42 @@ ordinary changes
 modifications ordinaires
 Matching page names:
 Pages correspondant aux noms :
+Fix character encoding
+
+Fix HTML escapes
+
+Set $FormTimeoutSalt.
+
+Form Timeout
+
+GD or Image::Magick modules not available.
+
+GD::SecurityImage module not available.
+
+Image storing failed. (%s)
+
+Bad gd_security_image_id.
+
+Please type the six characters from the anti-spam image
+
+Submit
+
+CAPTCHA
+
+You did not answer correctly.
+Vous n’avez pas répondu correctement.
+$GdSecurityImageFont is not set.
+
+No summary provided
+
+no summary available
+
+page was marked for deletion
+
+Oddmuse
+
+Cleaning up git repository
+
 Email: 
 E-mail : 
 Could not find %1.html template in %2
@@ -688,6 +764,142 @@ Only Admins are allowed to see this hidden page.
 Seuls les Administrateurs ont l'autorisation de voir cette page cachée.
 Index
 Index
+The username %s already exists.
+
+The email address %s has already been used.
+
+Wait %s minutes before try again.
+
+Registration Confirmation
+
+Visit the link blow to confirm registration.
+
+Recover Account
+
+You can login by following the link below. Then set new password.
+
+Change Email Address
+
+To confirm changing email address, follow the link below.
+
+To submit this form you must answer this question:
+
+Question:
+
+CAPTCHA:
+
+Registration
+
+The username must be valid page name.
+
+Confirmation email will be sent to the email address.
+
+Repeat Password:
+
+Email:
+
+Bad email address format.
+
+Password needs to have at least %s characters.
+
+Passwords differ.
+
+Email Sent
+
+Confirmation email has been sent to %s. Visit the link on the mail to confirm registration.
+
+Failed to Confirm Registration
+
+Invalid key.
+
+The key expired.
+
+Registration Confirmed
+
+Now, you can login by using username and password.
+
+Forgot your password?
+Mot de passe oublié ?
+Login failed.
+
+You are banned.
+
+You must confirm email address.
+
+Logged in
+
+%s has logged in.
+
+You should set new password immediately.
+
+Change Password
+
+Logged out
+
+%s has logged out.
+
+Account Settings
+
+Logout
+Se déconnecter
+Current Password:
+
+New Password:
+
+Repeat New Password:
+
+Password is wrong.
+
+Password Changed
+
+Your password has been changed.
+Votre mot de passe a été modifié.
+Forgot Password
+
+Enter email address, and recovery login ticket will be sent.
+
+Not found.
+
+The mail address is not valid anymore.
+
+An email has been sent to %s with further instructions.
+
+New Email Address:
+
+Failed to load account.
+
+An email has been sent to %s with a login ticket.
+
+Confirmation Failed
+
+Failed to confirm.
+
+Email Address Changed
+
+Email address for %1 has been changed to %2.
+
+Account Management
+
+Ban Account
+
+Enter username of the account to ban:
+
+Ban
+
+Enter username of the account to unban:
+
+Unban
+
+%s is already banned.
+
+%s has been banned.
+
+%s is not banned.
+
+%s has been unbanned.
+
+Register
+
 Languages:
 Langues :
 Show!
@@ -696,6 +908,10 @@ Define
 Définir
 Full Link List
 Liste Complète des Liens
+Banned Content
+
+Rule "%1" matched on this page.
+
 List of locked pages
 Liste des pages verrouillées
 Pages tagged with %s
@@ -708,8 +924,16 @@ Le modèle %s est soit vide soit n'existe pas.
  -- défini(e) sur %s
 Local names defined on %1: %2
 Noms locaux définis sur %1 : %2
-Locked Pages
-Pages Verrouillées
+Name: 
+
+URL: 
+
+Define Local Names
+
+Define external redirect: 
+
+IP number matched %s
+
 Register for %s
 Enregistrer pour %s
 Please choose a username of the form "FirstLast" using your real name.
@@ -748,12 +972,8 @@ You are now logged out.
 Vous êtes maintenant déconnecté(e).
 Register a new account
 Enregistrer un nouveau compte.
-Logout
-Se déconnecter
 Who am I?
 Qui suis-je ?
-Forgot your password?
-Mot de passe oublié ?
 Change your password
 Changer votre mot de passe
 Approve pending registrations
@@ -788,8 +1008,6 @@ Change Password?
 Modification du Mot de Passe ?
 Your current password is incorrect.
 Votre Mot de Passe est incorrect.
-Your password has been changed.
-Votre mot de passe a été modifié.
 Approve Pending Registrations for %s
 Accepter les Enregistrements en Attente pour %s
 %s has been approved.
@@ -840,6 +1058,16 @@ The remaining pages do not exist.
 Les pages restantes n’existent pas (ou plus).
 Unsubscribed %s from the following pages:
 %s est désabonné aux pages suivantes :
+Migrating Subscriptions
+
+No non-migrated email addresses found, migration not necessary.
+
+Migrated %s rows.
+
+Update modules
+
+Module Updater
+
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 Vous avez créé plus de %s liens vers le même domaine. Il semble que seuls les spammeurs font cela. Votre édition est donc refusée. 
 %s is not a legal name for a namespace
@@ -878,6 +1106,12 @@ Generating Link Database
 Création de la base de données de liens
 The 404 handler extension requires the link data extension (links.pl).
 L'extension "404 handler" nécessite une base de données de liens (links.pl).
+Make available offline
+
+Offline
+
+You are currently offline and what you requested is not part of the offline application. You need to be online to do this.
+
 LocalMap
 CarteLocale
 No page id for action localmap
@@ -892,20 +1126,6 @@ Self-ban by %s
 Auto-bannissement par %s
 You have banned your own IP.
 Vous avez banni votre propre IP.
-OpenID Login
-Identification OpenID
-Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
-Votre identité est sauvegardée dans un cookie, si vous avez activé les cookies. Vos cookies seront perdus si vous vous connectez depuis une autre machine, sur un autre compte ou si vous utilisez un autre navigateur.
-Your homepage is set to %s.
-Votre page d'accueil est établie sur %s.
-You have no homepage set.
-Votre page d'acceuil n'est pas établie.
-Homepage:
-Page d'accueil :
-Homepage is missing
-La page d'accueil est manquante
-OpenID error %s
-Erreur OpenID %s
 Orphan List
 Liste Orpheline
 Trail: 
@@ -932,6 +1152,10 @@ Include permanent anchors
 Inclure les ancres permanentes
 Portrait
 Portrait
+This page is password protected. If you know the password, you can %s. Once you have done that, return and reload this page.
+
+supply the password now
+
 Publish %s
 Publier %s
 No target wiki was specified in the config file.
@@ -940,8 +1164,6 @@ The target wiki was misconfigured.
 La cible du wiki a été mal configurée.
 Upload is limited to %s bytes
 Le téléversement est limité à %s bytes
-You did not answer correctly.
-Vous n’avez pas répondu correctement.
 To save this page you must answer this question:
 Vous devez répondre à cette question pour sauvegarder la page :
 Please type the following two words:
@@ -1034,6 +1256,26 @@ Too many instances.  Only %s allowed.
 Trop d'instances. %s seulement est autorisée
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 Essayez plus tard s'il vous plaît. Peut-être que quelqu'un effectue une maintenance ou une recherche volumineuse. Malheureusement le site a des ressources limitées, nous vous demandons de faire preuve d'un peu de patience.
+thumb
+
+Error creating thumbnail from non existant page %s.
+
+Can not create thumbnail for file type %s.
+
+Can not create thumbnail for a text document
+
+Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
+
+Can not create path for thumbnail - %s
+
+Failed to run %1 to create thumbnail: %2
+
+%s ran into an error
+
+%s produced no output
+
+Failed to parse %s.
+
 Timezone
 Fuseau horaire
 Pick your timezone:
@@ -1074,6 +1316,16 @@ The translation is outdated.
 La traduction n'est plus à jour.
 The page does not exist.
 La page n'existe pas.
+Upgrading Database
+
+Did the previous upgrade end with an error? A lock was left behind.
+
+Unlock wiki
+
+Upgrade complete.
+
+Upgrade complete. Please remove $ModuleDir/upgade.pl, now.
+
 http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -1090,6 +1342,8 @@ Pages recherchées
 %s pages
 %s, referenced from:
 %s, référencé(e) depuis :
+Web application for offline browsing
+
 Upload of %s file
 Téléversement du fichier %s
 Blog
