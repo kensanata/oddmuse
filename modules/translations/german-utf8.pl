@@ -19,7 +19,11 @@ use utf8;
 
 $ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/german-utf8.pl">german-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/German">German</a></p>';
 
-%Translate = split(/\n/,<<END_OF_TRANSLATION);
+%Translate = split(/\n/,<<'END_OF_TRANSLATION');
+This page is empty.
+Diese Seite ist leer.
+Add your comment here:
+Ihr Kommentar:
 Reading not allowed: user, ip, or network is blocked.
 Lesen nicht erlaubt: Benutzer, IP oder Netzwerk ist gesperrt.
 Login
@@ -96,8 +100,8 @@ up to %s
 und %s
 Updates in the last %s days
 Änderungen der letzten %s Tage
-Updates in the last %s day
-Änderungen des letzten %s Tages
+Updates in the last day
+Änderungen des letzten Tages
 for %s only
 nur für %s
 List latest change per page only
@@ -531,9 +535,9 @@ Immediately delete %s
 Rename %s to:
 %s umbenennen zu:
 Attach file:
-
+File anhängen:
 Upload
-
+Hochladen
 Learn more...
 Mehr dazu...
 Complete Content
@@ -704,8 +708,6 @@ Add Comment
 Kommentar hinzufügen
 ordinary changes
 normale Änderungen
-Updates in the last %s day
-Änderungen der letzten %s Tage
 Matching page names:
 Übereinstimmende Seitennamen:
 Fix character encoding
@@ -922,9 +924,7 @@ Define Local Names
 Lokalen Namen definieren
 Define external redirect: 
 Umleitung auf eine externe Seite definieren: 
-Locked Pages
-Gesperrte Seiten
-IP matched %s
+IP number matched %s
 IP Nummer passt auf %s
 Register for %s
 Anmeldung für %s
@@ -1056,6 +1056,10 @@ No non-migrated email addresses found, migration not necessary.
 Es wurden keine Email Adressen gefundne, die zu migrieren wären.
 Migrated %s rows.
 %s Zeilen wurden migriert.
+Update modules
+Module auf den neuesten Stand bringen
+Module Updater
+Modul Updater
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 Sie haben mehr als %s Links auf die selbe Domäne gesetzt. Normalerweise machen das nur Spammer. Die Änderung wird deswegen abgelehnt.
 %s is not a legal name for a namespace
