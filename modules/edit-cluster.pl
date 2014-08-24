@@ -90,7 +90,7 @@ sub EditClusterNewRcHeader {
   } else {
     print $q->h2((GetParam('days', $RcDefault) != 1)
 		 ? Ts('Updates in the last %s days', GetParam('days', $RcDefault))
-		 : Ts('Updates in the last %s day', GetParam('days', $RcDefault)))
+		 : Ts('Updates in the last day'))
   }
   my $action;
   my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly, $match, $lang) =

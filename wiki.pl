@@ -1631,7 +1631,7 @@ sub RcHeader {
   } else {
     $html .= $q->h2((GetParam('days', $RcDefault) != 1)
 		    ? Ts('Updates in the last %s days', $days)
-		    : Ts('Updates in the last %s day',  $days));
+		    : Ts('Updates in the last day'));
   }
   my $action = '';
   my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly,
