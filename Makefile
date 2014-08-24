@@ -17,16 +17,16 @@ build:
 	mkdir -p build
 
 build/wiki.pl: wiki.pl
-	sed "s/\\\$$q->a({-href=>'http:\/\/www.oddmuse.org\/'}, 'Oddmuse')/\\\$$q->a({-href=>'http:\/\/git.savannah.gnu.org\/cgit\/oddmuse.git\/tag\/?id=$(VERSION_NO)'}, 'wiki.pl') . ' ($(VERSION_NO)), see ' . &/" < $< > $@
+	perl -lne "s/(\\\$$q->a\({-href=>'http:\/\/www.oddmuse.org\/'}, 'Oddmuse'\))/\\\$$q->a({-href=>'http:\/\/git.savannah.gnu.org\/cgit\/oddmuse.git\/tag\/?id=$(VERSION_NO)'}, 'wiki.pl') . ' ($(VERSION_NO)), see ' . \$$1/; print" < $< > $@
 
 build/%-utf8.pl: modules/translations/%-utf8.pl
-	perl -lne "s/(AddModuleDescription\('[^']+', '[^']+', '[^']+')\)/\$$1, 'translations\/', '$(VERSION_NO)')/ or s/(AddModuleDescription\('[^']+', '[^']+')\)/\$$1, undef, 'translations\/', '$(VERSION_NO)')/; print" < $< > $@
+	perl -lne "s/(AddModuleDescription\('[^']+', '[^']+')\)/\$$1, 'translations\/', '$(VERSION_NO)')/; print" < $< > $@
 
 # from: http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/namespaces.pl
 #   to: http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/namespaces.pl?id=2.1-11-gd4f1e27
 
 build/%.pl: modules/%.pl
-	perl -lne "s/(AddModuleDescription\('[^']+', '[^']+', '[^']+')\)/\$$1, undef, '$(VERSION_NO)')/ or s/(AddModuleDescription\('[^']+', '[^']+')\)/\$$1, undef, undef, '$(VERSION_NO)')/; print" < $< > $@
+	perl -lne "s/(AddModuleDescription\('[^']+', '[^']+')\)/\$$1, undef, '$(VERSION_NO)')/; print" < $< > $@
 
 translations: $(TRANSLATIONS)
 	for f in $^; do \
