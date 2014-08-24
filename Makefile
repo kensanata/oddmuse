@@ -22,19 +22,17 @@ build/wiki.pl: wiki.pl
 build/%-utf8.pl: modules/translations/%-utf8.pl
 	sed "s/<a href=\"http:\/\/git.savannah.gnu.org\/cgit\/oddmuse.git\/tree\/modules\/translations\/\\(.*\\).pl\">\\(.*\\).pl<\/a>/<a href=\"http:\/\/git.savannah.gnu.org\/cgit\/oddmuse.git\/tree\/modules\/translations\/\\1.pl?id=$(VERSION_NO)\">\\1.pl<\/a> (for $(VERSION_NO))/" < $< > $@
 
-# Currently oddtrans introduces encoding errors!
-
-%-utf8.pl: wiki.pl $(MODULES)
-	perl oddtrans -l $@ $^ > $@-new && mv $@-new $@
-
 # from: http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/namespaces.pl
 #   to: http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/namespaces.pl?id=2.1-11-gd4f1e27
 
 build/%.pl: modules/%.pl
-	sed "s/<a href=\"http:\/\/git.savannah.gnu.org\/cgit\/oddmuse.git\/tree\/modules\/\\(.*\\).pl\">\\(.*\\).pl<\/a>/<a href=\"http:\/\/git.savannah.gnu.org\/cgit\/oddmuse.git\/tree\/modules\/\\1.pl?id=$(VERSION_NO)\">\\1.pl<\/a> (for $(VERSION_NO))/" < $< > $@
+	perl -lne "s/(AddModuleDescription\('[^']+', '[^']+', '[^']+')\)/\$$1, '$(VERSION_NO)')/ or s/(AddModuleDescription\('[^']+', '[^']+')\)/\$$1, undef, '$(VERSION_NO)')/; print" < $< > $@
 
-
-
+translations: $(TRANSLATIONS)
+	for f in $^; do \
+	  echo updating $$f...; \
+	  perl oddtrans -l $$f wiki.pl $(MODULES) > $$f-new && mv $$f-new $$f; \
+	done
 
 # UNTESTED/OBSOLETE: these targets have not been tested in a long time
 # and are potentially obsolete.

@@ -16,9 +16,11 @@
 # file in there. It will be loaded automatically.
 #
 use utf8;
-$ModulesDescription .= '<p><a href="http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/translations/finnish-utf8.pl">finnish-utf8.pl</a>, see <a href="http://www.oddmuse.org/cgi-bin/oddmuse/Finnish">Finnish</a></p>';
-%Translate = split(/\n/,<<END_OF_TRANSLATION);
-Include normal pages
+AddModuleDescription('finnish-utf8.pl', 'Finnish');
+%Translate = split(/\n/,<<'END_OF_TRANSLATION');
+This page is empty.
+
+Add your comment here:
 
 Reading not allowed: user, ip, or network is blocked.
 Lukeminen ei ole sallittua: käyttäjä, IP tai verkko on estetty.
@@ -28,8 +30,10 @@ Error
 
 %s calls
 
-Could not create %s
+Cannot create %s
 %s:ää ei voitu luoda
+Include normal pages
+
 Invalid UserName %s: not saved.
 Epäkelpo käyttäjännimi %s: ei tallennettu.
 UserName must be 50 characters or less: not saved
@@ -90,10 +94,12 @@ Please go on to %s.
 Siirtykää sivulle %s, kiitos.
 Updates since %s
 Päivitykset %s jälkeen
+up to %s
+
 Updates in the last %s days
 Päivitykset viimeisten %s päivän aikana
-Updates in the last %s day
-Päivitykset viimeisen %s päivän aikana
+Updates in the last day
+Päivitykset viimeisen päivän aikana
 for %s only
 vain %s:lle
 List latest change per page only
@@ -142,8 +148,6 @@ new
 uusi
 All changes for %s
 
-from %s
-%s:stä
 This page is too big to send over RSS.
 
 History of %s
@@ -174,6 +178,8 @@ The two revisions are the same.
 
 Editing not allowed for %s.
 Muokkaus ei ole sallittu: %s.
+Rollback of %s would restore banned content.
+
 Rollback to %s
 Palautus %s:ään
 %s rolled back
@@ -194,8 +200,6 @@ Unlock site
 Avaa sivuston lukko
 Lock site
 Lukitse sivusto
-Install CSS
-
 Unlock %s
 
 Lock %s
@@ -208,6 +212,8 @@ Important pages:
 
 To mark a page for deletion, put <strong>%s</strong> on the first line.
 
+from %s
+%s:stä
 [Home]
 [Etusivu]
 redirected from %s
@@ -238,6 +244,10 @@ by %s
  %s
 (diff)
 (diff)
+a
+
+c
+
 Edit revision %s of this page
 Muokkaa tämän sivun versiota %s
 e
@@ -276,6 +286,8 @@ Validate CSS
 Tarkista CSS
 Last edit
 
+Summary:
+Yhteenveto:
 Difference between revision %1 and %2
 Muutokset (versioiden %1 ja %2 välillä)
 revision %s
@@ -312,11 +324,13 @@ Cannot open %s
 Ei voitu avata: %s
 Cannot write %s
 Ei voitu kirjoittaa: %s
-Cannot create %s
+unlock the wiki
 
 Could not get %s lock
 Ei voitu lukita: %s
 The lock was created %s.
+
+Maybe the user running this script is no longer allowed to remove the lock directory?
 
 This operation may take several seconds...
 Tämä operaatio voi kestää useita sekunteja...
@@ -360,8 +374,6 @@ Editing old revision %s.
 Muokataan vanhaa versiota %s.
 Saving this page will replace the latest revision with this text.
 Tämän sivun tallentaminen korvaa viimeisimmän version tällä tekstillä.
-Summary:
-Yhteenveto:
 This change is a minor edit.
 Tämä on pieni korjaus.
 Cancel
@@ -408,6 +420,8 @@ Filter:
 (%s:lle)
 %s pages found.
 %s sivua löydetty.
+Malformed regular expression in %s
+
 Replaced: %s
 Korvattu: %s
 Search for: %s
@@ -490,15 +504,13 @@ Displaying Wiki Version
 
 Debugging Information
 
-Inter links:
-Kaukolinkit:
 Too many connections by %s
 Liian monta yhteydenottoa %s:stä
 Please do not fetch more than %1 pages in %2 seconds.
 älä avaa yli %1 sivua %2 sekunnin aikana.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Tarkista voiko www-palvelin luoda hakemiston %s ja voiko se luoda sivuja tähän hakemistoon.
-Copy one of the following stylesheets to %s:
+, see 
 
 Deleting %s
 Poistetaan %s
@@ -522,6 +534,10 @@ Immediately delete %s
 
 Rename %s to:
 
+Attach file:
+
+Upload
+
 Learn more...
 
 Complete Content
@@ -539,6 +555,24 @@ Pages that link to this page
 The search parameter is missing.
 
 Pages link to %s
+
+Ban contributors
+
+Ban Contributors to %s
+
+%s is banned
+
+Ban!
+
+These URLs were rolled back. Perhaps you want to add a regular expression to %s?
+
+Regular expression:
+
+Consider banning the IP number as well: 
+
+Regular expression "%1" matched "%2" on this page.
+
+Regular expression "%s" matched on this page.
 
 Cannot highlight the language %s.
 Kieltä %s ei voida merkitä
@@ -608,6 +642,8 @@ Clustermap
 
 Pages without a Cluster
 
+Comments:
+
 Comments on 
 
 Comment on 
@@ -616,6 +652,20 @@ Compilation for %s
 
 Compilation tag is missing a regular expression.
 
+Install CSS
+
+Copy one of the following stylesheets to %s:
+
+Reset
+
+Extract all dates from the database
+
+Dates
+
+No dates found.
+
+Inter links:
+Kaukolinkit:
 List spammed pages
 
 Despamming pages
@@ -630,6 +680,10 @@ Marked as %s.
 Merkitty nimellä %s.
 Cannot find unspammed revision.
 Spam-vapaata versiota ei löydy.
+Page diff
+
+Diff
+
 Recover Draft
 
 No text to save
@@ -656,6 +710,44 @@ ordinary changes
 
 Matching page names:
 
+Fix character encoding
+
+Fix HTML escapes
+
+Set $FormTimeoutSalt.
+
+Form Timeout
+
+GD or Image::Magick modules not available.
+
+GD::SecurityImage module not available.
+
+Image storing failed. (%s)
+
+Bad gd_security_image_id.
+
+Please type the six characters from the anti-spam image
+
+Submit
+
+CAPTCHA
+
+You did not answer correctly.
+
+$GdSecurityImageFont is not set.
+
+No summary provided
+
+no summary available
+
+page was marked for deletion
+
+Oddmuse
+
+Cleaning up git repository
+
+Email: 
+
 Could not find %1.html template in %2
 
 Only Editors are allowed to see this hidden page.
@@ -664,6 +756,142 @@ Only Admins are allowed to see this hidden page.
 
 Index
 Sisällysluettelo
+The username %s already exists.
+
+The email address %s has already been used.
+
+Wait %s minutes before try again.
+
+Registration Confirmation
+
+Visit the link blow to confirm registration.
+
+Recover Account
+
+You can login by following the link below. Then set new password.
+
+Change Email Address
+
+To confirm changing email address, follow the link below.
+
+To submit this form you must answer this question:
+
+Question:
+
+CAPTCHA:
+
+Registration
+
+The username must be valid page name.
+
+Confirmation email will be sent to the email address.
+
+Repeat Password:
+
+Email:
+
+Bad email address format.
+
+Password needs to have at least %s characters.
+
+Passwords differ.
+
+Email Sent
+
+Confirmation email has been sent to %s. Visit the link on the mail to confirm registration.
+
+Failed to Confirm Registration
+
+Invalid key.
+
+The key expired.
+
+Registration Confirmed
+
+Now, you can login by using username and password.
+
+Forgot your password?
+
+Login failed.
+
+You are banned.
+
+You must confirm email address.
+
+Logged in
+
+%s has logged in.
+
+You should set new password immediately.
+
+Change Password
+
+Logged out
+
+%s has logged out.
+
+Account Settings
+
+Logout
+
+Current Password:
+
+New Password:
+
+Repeat New Password:
+
+Password is wrong.
+
+Password Changed
+
+Your password has been changed.
+
+Forgot Password
+
+Enter email address, and recovery login ticket will be sent.
+
+Not found.
+
+The mail address is not valid anymore.
+
+An email has been sent to %s with further instructions.
+
+New Email Address:
+
+Failed to load account.
+
+An email has been sent to %s with a login ticket.
+
+Confirmation Failed
+
+Failed to confirm.
+
+Email Address Changed
+
+Email address for %1 has been changed to %2.
+
+Account Management
+
+Ban Account
+
+Enter username of the account to ban:
+
+Ban
+
+Enter username of the account to unban:
+
+Unban
+
+%s is already banned.
+
+%s has been banned.
+
+%s is not banned.
+
+%s has been unbanned.
+
+Register
+
 Languages:
 Kielet:
 Show!
@@ -672,6 +900,10 @@ Define
 Määritä
 Full Link List
 Täysi linkkilista
+Banned Content
+
+Rule "%1" matched on this page.
+
 List of locked pages
 
 Pages tagged with %s
@@ -684,7 +916,15 @@ Pohja %s on joko tyhjä tai ei ole olemassa.
 
 Local names defined on %1: %2
 
-Locked Pages
+Name: 
+
+URL: 
+
+Define Local Names
+
+Define external redirect: 
+
+IP number matched %s
 
 Register for %s
 
@@ -724,11 +964,7 @@ You are now logged out.
 
 Register a new account
 
-Logout
-
 Who am I?
-
-Forgot your password?
 
 Change your password
 
@@ -764,8 +1000,6 @@ Change Password?
 
 Your current password is incorrect.
 
-Your password has been changed.
-
 Approve Pending Registrations for %s
 
 %s has been approved.
@@ -785,8 +1019,6 @@ Invalid Mail %s: not saved.
 unsubscribe
 
 subscribe
-
-Email: 
 
 %s appears to be an invalid mail address
 
@@ -817,6 +1049,16 @@ Subscribed %s to the following pages:
 The remaining pages do not exist.
 
 Unsubscribed %s from the following pages:
+
+Migrating Subscriptions
+
+No non-migrated email addresses found, migration not necessary.
+
+Migrated %s rows.
+
+Update modules
+
+Module Updater
 
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 
@@ -856,6 +1098,12 @@ Generating Link Database
 Linkkitietokantaa luodaan
 The 404 handler extension requires the link data extension (links.pl).
 404-käsittelijä-laajennus vaatii "link data" -laajennuksen (links.pl).
+Make available offline
+
+Offline
+
+You are currently offline and what you requested is not part of the offline application. You need to be online to do this.
+
 LocalMap
 
 No page id for action localmap
@@ -869,20 +1117,6 @@ view
 Self-ban by %s
 
 You have banned your own IP.
-
-OpenID Login
-
-Your identity is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
-
-Your homepage is set to %s.
-
-You have no homepage set.
-
-Homepage:
-
-Homepage is missing
-
-OpenID error %s
 
 Orphan List
 Orpojen sivujen lista
@@ -910,13 +1144,17 @@ Include permanent anchors
 
 Portrait
 Avatar
+This page is password protected. If you know the password, you can %s. Once you have done that, return and reload this page.
+
+supply the password now
+
 Publish %s
 
 No target wiki was specified in the config file.
 
 The target wiki was misconfigured.
 
-You did not answer correctly.
+Upload is limited to %s bytes
 
 To save this page you must answer this question:
 
@@ -968,6 +1206,10 @@ Static Copy
 Staattinen kopio
 Back to %s
 Takaisin %s:ään
+Edit image in the browser
+
+Summary of your changes: 
+
 Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
@@ -1006,11 +1248,39 @@ Too many instances.  Only %s allowed.
 
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
 
+thumb
+
+Error creating thumbnail from non existant page %s.
+
+Can not create thumbnail for file type %s.
+
+Can not create thumbnail for a text document
+
+Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
+
+Can not create path for thumbnail - %s
+
+Failed to run %1 to create thumbnail: %2
+
+%s ran into an error
+
+%s produced no output
+
+Failed to parse %s.
+
+Timezone
+
+Pick your timezone:
+
+Set
+
 Contents
 Sisältö
 Create a new page for today
 
 Add Translation
+
+Please provide a different page name for the translation.
 
 Added translation: %1 (%2)
 
@@ -1038,6 +1308,16 @@ The translation is outdated.
 Käännös on vanhentunut.
 The page does not exist.
 Sivu ei ole olemassa.
+Upgrading Database
+
+Did the previous upgrade end with an error? A lock was left behind.
+
+Unlock wiki
+
+Upgrade complete.
+
+Upgrade complete. Please remove $ModuleDir/upgade.pl, now.
+
 http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -1053,6 +1333,8 @@ Wanted Pages
 %s pages
 
 %s, referenced from:
+
+Web application for offline browsing
 
 Upload of %s file
 
