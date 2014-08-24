@@ -35,6 +35,7 @@ while ($arg =~ /^-l/) {
   $file = shift unless $file;
   die $help unless -f $file;
   %backup = %Translate;
+  &header_info_extract($file); # keep the header information of the translation files
   do $file or die "Cannot do $file";
   foreach $key (keys %Translate) {
     $backup{$key} = $Translate{$key};
@@ -43,6 +44,15 @@ while ($arg =~ /^-l/) {
   $arg = shift;
 }
 unshift(@ARGV,$arg); # shove the last one back because it is not -l!
+
+print q{%Translate = split(/\n/,<<'END_OF_TRANSLATION');
+};
+foreach (<>) {
+  s/Ts?s?\(\'([^']+)/&trans($1)/ge;
+  s/Ts?s?\(\"([^"]+)/&trans($1)/ge;
+}
+
+print "END_OF_TRANSLATION\n";
 
 my %seen = ();
 
@@ -57,10 +67,16 @@ sub trans {
   return ' ';
 }
 
-print '%Translate = split(/\n/,<<END_OF_TRANSLATION);' . "\n";
-foreach (<>) {
-  s/Ts?s?\(\'([^']+)/&trans($1)/ge;
-  s/Ts?s?\(\"([^"]+)/&trans($1)/ge;
-}
+my $header = 0;
 
-print "END_OF_TRANSLATION\n";
+sub header_info_extract{
+  return if $header++;
+  $file = shift;
+  open(FILE, "<", $file) or die "Can't open $file because: $!";
+  foreach (<FILE>) {
+    last if (/^%/);
+    utf8::decode($_);
+    print;
+  }
+  close FILE;
+}
