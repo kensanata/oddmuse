@@ -26,7 +26,7 @@ push(@MyRules, \&GravatarRule);
 sub GravatarRule {
   if ($bol && m!\G$gravatar_regexp!cog) {
     my $url = $1;
-    my $gravatar = "http://www.gravatar.com/avatar/$3";
+    my $gravatar = "https://secure.gravatar.com/avatar/$3";
     my $name = FreeToNormal($2);
     $url = ScriptUrl($name) unless $url;
     return $q->span({-class=>"portrait gravatar"},
