@@ -15,8 +15,8 @@
 AddModuleDescription('emoji.pl', 'Smilies');
 
 push(@MyRules, \&EmojiRule);
-# this can be last
-$RuleOrder{\&EmojiRule} = 500;
+# this must come before tex.pl because of \o/ turning into ø/
+$RuleOrder{\&EmojiRule} = 150;
 
 # Some relevant links
 # https://en.wikipedia.org/wiki/List_of_emoticons
@@ -28,7 +28,7 @@ sub EmojiRule {
   } elsif (/\G:[-o]?\)/cg) {
     # 😊 1F60A SMILING FACE WITH SMILING EYES
     return '&#x1F60A;';
-  } elsif (/\G:3\)/cg) {
+  } elsif (/\G:3/cg) {
     # 😸  1F638 GRINNING CAT FACE WITH SMILING EYES
     return '&#x1f638;';
   } elsif (/\G:-?\(/cg) {
