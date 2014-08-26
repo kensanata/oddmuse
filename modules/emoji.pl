@@ -40,7 +40,7 @@ sub EmojiRule {
   } elsif (/\G:'\(/cg) {
     # 😢 1F622 CRYING FACE
     return '&#x1F622;';
-  } elsif (/\G>:-?\(/cg) {
+  } elsif (/\G&gt;:-?\(/cg) {
     # 😠 1F620 ANGRY FACE
     return '&#x1F620;';
   } elsif (/\G:-?[Ppb]/cg) {
@@ -58,6 +58,9 @@ sub EmojiRule {
   } elsif (/\G\\o\//cg) {
     # 🙌 1F64C PERSON RAISING BOTH HANDS IN CELEBRATION
     return '&#x1F64C;';
+  } elsif (/\G\\m\//cg) {
+    # ✊  270A RAISED FIST
+    return '&#x270A;';
   }
   return undef;
 }
