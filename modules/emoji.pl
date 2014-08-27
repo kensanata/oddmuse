@@ -28,9 +28,9 @@ sub EmojiRule {
   } elsif (/\G:[-o]?\)/cg) {
     # 😊 1F60A SMILING FACE WITH SMILING EYES
     return '&#x1F60A;';
-  } elsif (/\G:3/cg) {
+  } elsif (/\G :3/cg) {
     # 😸  1F638 GRINNING CAT FACE WITH SMILING EYES
-    return '&#x1f638;';
+    return ' &#x1f638;';
   } elsif (/\G:-?\(/cg) {
     # 😟 1F61F WORRIED FACE
     return '&#x1F61F;';
