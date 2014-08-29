@@ -29,8 +29,11 @@
 
 package OddMuse;
 use strict;
+use warnings;
+#use diagnostics;
+
 use CGI;
-use CGI::Carp qw(fatalsToBrowser);
+use CGI::Carp qw(fatalsToBrowser warningsToBrowser);
 use File::Glob ':glob';
 local $| = 1; # Do not buffer output (localized for mod_perl)
 
@@ -302,10 +305,11 @@ sub InitVariables {  # Init global session variables for mod_perl!
   CreateDir($DataDir);    # Create directory if it doesn't exist
   $Now = time;      # Reset in case script is persistent
   my $ts = (stat($IndexFile))[9]; # always stat for multiple server processes
-  ReInit() if not $ts or $LastUpdate != $ts; # reinit if another process changed files (requires $DataDir)
+  ReInit() if not $ts or not $LastUpdate or $LastUpdate != $ts; # reinit if another process changed files (requires $DataDir)
   $LastUpdate = $ts;
   unshift(@MyRules, \&MyRules) if defined(&MyRules) && (not @MyRules or $MyRules[0] != \&MyRules);
-  @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules; # default is 0
+  $RuleOrder{$_} //= 0 for @MyRules; # default is 0
+  @MyRules = sort {$RuleOrder{$a} <=> $RuleOrder{$b}} @MyRules;
   ReportError(Ts('Cannot create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR') unless -d $DataDir;
   @IndexOptions = (['pages', T('Include normal pages'), 1, \&AllPagesList]);
   foreach my $sub (@MyInitVariables) {
@@ -453,7 +457,7 @@ sub ApplyRules {
 	} else {
 	  $Includes{$OpenPageName} = 1;
 	  local $OpenPageName = FreeToNormal($uri);
-	  if ($type eq 'text') {
+	  if ($type and $type eq 'text') {
 	    print $q->pre({class=>"include $OpenPageName"}, QuoteHtml(GetPageContent($OpenPageName)));
 	  } elsif (not $Includes{$OpenPageName}) { # with a starting tag, watch out for recursion
 	    print $q->start_div({class=>"include $OpenPageName"});
@@ -523,7 +527,7 @@ sub ApplyRules {
       $bol = (substr($_, pos() - 1, 1) eq "\n");
     }
   }
-  pos = length $_;  # notify module functions we've completed rule handling
+  pos = length $_ if $_;  # notify module functions we've completed rule handling
   Clean(CloseHtmlEnvironments());  # last block -- close it, cache it
   if ($Fragment ne '') {
     $Fragment =~ s|<p>\s*</p>||g; # clean up extra paragraphs (see end Dirty())
@@ -673,7 +677,7 @@ sub OpenHtmlEnvironment {  # close the previous $html_tag and open a new one
 }
 
 sub CloseHtmlEnvironments { # close all -- remember to use AddHtmlEnvironment('p') if required!
-  return CloseHtmlEnvironmentUntil() if pos($_) == length($_);  # close all HTML environments if we're are at the end of this page
+  return CloseHtmlEnvironmentUntil() if $_ and pos($_) == length($_);  # close all HTML environments if we're are at the end of this page
   my $html = '';
   while (@HtmlStack) {
     defined $HtmlEnvironmentContainers{$HtmlStack[0]} and  # avoid closing block level elements
@@ -769,6 +773,7 @@ sub DoClearCache {
 
 sub QuoteHtml {
   my $html = shift;
+  return '' if not $html;
   $html =~ s/&/&amp;/g;
   $html =~ s/</&lt;/g;
   $html =~ s/>/&gt;/g;
@@ -839,9 +844,9 @@ sub PrintJournal {
   $offset ||= 0;
   # FIXME: Should pass filtered list of pages to SearchTitleAndBody to save time?
   my @pages = sort JournalSort (grep(/$regexp/, $search ? SearchTitleAndBody($search) : AllPagesList()));
-  @pages = reverse @pages if $mode eq 'reverse' or $mode eq 'future';
+  @pages = reverse @pages if $mode and ($mode eq 'reverse' or $mode eq 'future');
   $b = $Today // CalcDay($Now);
-  if ($mode eq 'future' || $mode eq 'past') {
+  if ($mode and ($mode eq 'future' or $mode eq 'past')) {
     my $compare = $mode eq 'future' ? -1 : 1;
     for (my $i = 0; $i < @pages; $i++) {
       $a = $pages[$i];
@@ -1163,7 +1168,7 @@ sub GetPageLink { # use if you want to force a link to local pages, whether it e
   $id = FreeToNormal($id);
   $name ||= $id;
   $class .= ' ' if $class;
-  return ScriptLink(UrlEncode($id), NormalToFree($name), $class . 'local',
+  return ScriptLink(UrlEncode($id), NormalToFree($name), ($class || '') . 'local',
 		    undef, undef, $accesskey);
 }
 
@@ -1577,8 +1582,8 @@ sub GetRcLinesFor {
     next if $idOnly and $idOnly ne $id;
     next if $filterOnly and not $match{$id};
     next if ($userOnly and $userOnly ne $username);
-    next if $minor == 1 and not $showminoredit; # skip minor edits (if [[rollback]] this is bogus)
-    next if not $minor and $showminoredit == 2; # skip major edits
+    next if $minor and $minor == 1 and not $showminoredit; # skip minor edits (if [[rollback]] this is bogus)
+    next if not $minor and $showminoredit and $showminoredit == 2; # skip major edits
     next if $match and $id !~ /$match/i;
     next if $hostOnly and $host !~ /$hostOnly/i;
     my @languages = split(/,/, $languages);
@@ -2379,6 +2384,7 @@ sub PrintFooter {
 
 sub GetFooterTimestamp {
   my ($id, $rev) = @_;
+  $rev //= '';
   if ($id and $rev ne 'history' and $rev ne 'edit' and $Page{revision}) {
     my @elements = ($q->br(), ($rev eq '' ? T('Last edited') : T('Edited')), TimeToText($Page{ts}),
 		    Ts('by %s', GetAuthorLink($Page{host}, $Page{username})));
@@ -2390,6 +2396,7 @@ sub GetFooterTimestamp {
 
 sub GetFooterLinks {
   my ($id, $rev) = @_;
+  $rev //= '';
   my @elements;
   if ($id and $rev ne 'history' and $rev ne 'edit') {
     if ($CommentsPattern) {
@@ -2411,7 +2418,7 @@ sub GetFooterLinks {
   }
   push(@elements, GetHistoryLink($id, T('View other revisions'))) if $Action{history} and $id and $rev ne 'history';
   push(@elements, GetPageLink($id, T('View current revision')),
-       GetRCLink($id, T('View all changes'))) if $Action{history} and $rev ne '';
+       GetRCLink($id, T('View all changes'))) if $Action{history} and $rev;
   if ($Action{contrib} and $id and $rev eq 'history') {
     push(@elements, ScriptLink("action=contrib;id=" . UrlEncode($id), T('View contributors'), 'contrib'));
   }
@@ -2425,6 +2432,7 @@ sub GetFooterLinks {
 
 sub GetCommentForm {
   my ($id, $rev, $comment) = @_;
+  $rev //= '';
   if ($CommentsPattern ne '' and $id and $rev ne 'history' and $rev ne 'edit'
       and $id =~ /$CommentsPattern/o and UserCanEdit($id, 0, 1)) {
     return $q->div({-class=>'comment'}, GetFormStart(undef, undef, 'comment'), # protected by questionasker
@@ -3895,7 +3903,7 @@ sub DelayRequired {
   my $name = shift;
   my @entries = @{$RecentVisitors{$name}};
   my $ts = $entries[$SurgeProtectionViews];
-  return ($Now - $ts) < $SurgeProtectionTime;
+  return $Now - ($ts || 0) < $SurgeProtectionTime;
 }
 
 sub AddRecentVisitor {
@@ -3923,17 +3931,20 @@ sub WriteRecentVisitors {
   foreach my $name (keys %RecentVisitors) {
     my @entries = @{$RecentVisitors{$name}};
     if ($entries[0] >= $limit) { # if the most recent one is too old, do not keep
-      $data .=  join($FS, $name, @entries[0 .. $SurgeProtectionViews - 1]) . "\n";
+      $data .= join($FS, $name, @entries[0 .. $SurgeProtectionViews - 1]) . "\n";
     }
   }
   WriteStringToFile($VisitorFile, $data);
 }
 
-sub TextIsFile { $_[0] =~ /^#FILE (\S+) ?(\S+)?\n/ }
+sub TextIsFile {
+  return '' unless $_[0];
+  $_[0] =~ /^#FILE (\S+) ?(\S+)?\n/
+}
 
 sub AddModuleDescription { # cannot use $q here because this is module init time
   my ($filename, $page, $dir, $tag) = @_;
-  my $src = "http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/$dir" . UrlEncode($filename) . ($tag ? '?' . $tag : '');
+  my $src = "http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/" . ($dir || '') . UrlEncode($filename) . ($tag ? '?' . $tag : '');
   my $doc = 'http://www.oddmuse.org/cgi-bin/oddmuse/' . UrlEncode(FreeToNormal($page));
   $ModulesDescription .= "<p><a href=\"$src\">" . QuoteHtml($filename) . "</a>" . ($tag ? " ($tag)" : '');
   $ModulesDescription .= T(', see ') . "<a href=\"$doc\">" . QuoteHtml($page) . "</a>" if $page;
@@ -3941,4 +3952,5 @@ sub AddModuleDescription { # cannot use $q here because this is module init time
 }
 
 DoWikiRequest() if $RunCGI and not exists $ENV{MOD_PERL}; # Do everything.
+warningsToBrowser(1);
 1; # In case we are loaded from elsewhere
