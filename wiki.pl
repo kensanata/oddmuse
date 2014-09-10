@@ -2081,7 +2081,7 @@ sub DoRollback {
   WriteRcLog('[[rollback]]', $page, $to); # leave marker
   print $q->end_p() . $q->end_div();
   ReleaseLock();
-  PrintFooter($page);
+  PrintFooter($page, 'edit');
 }
 
 sub DoAdminPage {
