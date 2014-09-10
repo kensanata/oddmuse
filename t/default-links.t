@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 61;
+use Test::More tests => 62;
 
 clear_pages();
 
@@ -34,6 +34,8 @@ xpath_run_tests(split('\n',<<'EOT'));
 //div[text()="[[0]]"]
 [[0a]]
 //a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=0a"][text()="?"]
+[[foo bar]]
+//div[text()[.="[[foo_bar"]/following-sibling::a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=foo_bar"][text()="?"]/following-sibling::text()[.="]]"]]
 file://home/foo/tutorial.pdf
 //a[@class="url file"][@href="file://home/foo/tutorial.pdf"][text()="file://home/foo/tutorial.pdf"]
 file:///home/foo/tutorial.pdf
