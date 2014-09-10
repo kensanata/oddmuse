@@ -35,7 +35,7 @@ xpath_test($page,
 	   '//span[@class="portrait gravatar"]',
 	   '//p[contains(text(),"This is my comment")]',
 	   '//a[@href="http://oddmuse.org/"][text()="Alex Schroeder"]',
-	   '//img[@src="http://www.gravatar.com/avatar/' . $gravatar . '"]');
+	   '//img[@src="https://secure.gravatar.com/avatar/' . $gravatar . '"]');
 
 # without homepage
 
@@ -51,7 +51,7 @@ xpath_test($page,
 	   '//span[@class="portrait gravatar"]',
 	   '//p[contains(text(),"This is my comment")]',
 	   '//a[@href="http://localhost/wiki.pl/Alex_Schroeder"][text()="Alex Schroeder"]',
-	   '//img[@src="http://www.gravatar.com/avatar/' . $gravatar . '"]');
+	   '//img[@src="https://secure.gravatar.com/avatar/' . $gravatar . '"]');
 
 # with homepage an no email
 
@@ -68,4 +68,4 @@ xpath_test($page,
 	   '//a[@href="http://oddmuse.org/"][text()="Alex Schroeder"]');
 negative_xpath_test($page,
 		    '//span[@class="portrait gravatar"]',
-		    '//img[@src="http://www.gravatar.com/avatar/' . $gravatar . '"]');
+		    '//img[@src="https://secure.gravatar.com/avatar/' . $gravatar . '"]');
