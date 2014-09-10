@@ -1,21 +1,20 @@
-# Copyright (C) 2006, 2007, 2008  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006–2014  Alex Schroeder <alex@gnu.org>
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 3 of the License, or
-# (at your option) any later version.
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 3 of the License, or (at your option) any later
+# version.
 #
-# This program is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-# General Public License for more details.
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program. If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 63;
+use Test::More tests => 69;
 use utf8; # tests contain UTF-8 characters and it matters
 
 clear_pages();
@@ -195,3 +194,20 @@ $ts = $Now - $KeepDays * 86400 + 100;
 get_page("action=rollback to=$ts username=Alex pwd=foo");
 AppendStringToFile($ConfigFile, "\$KeepDays = 7;\n");
 test_page_negative(get_page("action=rc raw=1"), '[[rollback]]');
+
+# Avoid Save button for comments
+AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
+update_page('Comments_on_Test', 'no spam');
+ok(get_page('action=browse id=Test raw=2')
+   =~ /(\d+) # Do not delete this line/,
+   'raw=2 returns timestamp');
+$to = $1;
+ok($to, 'timestamp stored');
+sleep(1);
+
+get_page('title=Comments_on_Test aftertext=http://spam/amoxil/');
+test_page(get_page('Comments_on_Test'), 'spam');
+# rollback without password
+$page = get_page("action=rollback id=Comments_on_Test to=$to username=Alex");
+test_page($page, 'Rolling back changes');
+test_page_negative($page, 'Add your comment here', 'Save');
