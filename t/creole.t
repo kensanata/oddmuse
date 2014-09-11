@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright (C) 2006-2013  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006-2014  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 108;
+use Test::More tests => 110;
 clear_pages();
 
 add_module('creole.pl');
@@ -221,6 +221,10 @@ http://www.wikicreole.org/.
 //a[text()="link"]
 [[link|Go to my page]]
 //a[@class="local"][@href="http://localhost/test.pl/link"][text()="Go to my page"]
+[[no link]]
+//div[text()[.="[[no_link"]/following-sibling::a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=no_link"][text()="?"]/following-sibling::text()[.="]]"]]
+[[no link|Go to my page]]
+//div[text()[.="[[no_link"]/following-sibling::a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=no_link"][text()="?"]/following-sibling::text()[.="|Go to my page]]"]]
 [[link|Go to\nmy page]]
 //a[@class="local"][@href="http://localhost/test.pl/link"][text()="Go to my page"]
 {{pic}}
