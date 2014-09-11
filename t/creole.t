@@ -16,7 +16,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 108;
+use Test::More tests => 110;
 clear_pages();
 
 add_module('creole.pl');
@@ -217,6 +217,10 @@ http://www.wikicreole.org/.
 //a[@class="url http outside"][@href="http://www.wikicreole.org/"][em[text()="Visit the WikiCreole website"]]
 [[http://www.wikicreole.org/ | Visit the WikiCreole website]]
 //a[@class="url http outside"][@href="http://www.wikicreole.org/"][text()="Visit the WikiCreole website"]
+[[foo space bar]]
+//div[text()[.="[[foo_space_bar"]/following-sibling::a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=foo_space_bar"][text()="?"]/following-sibling::text()[.="]]"]]
+[[foo_underscore_bar]]
+//div[text()[.="[[foo_underscore_bar"]/following-sibling::a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=foo_underscore_bar"][text()="?"]/following-sibling::text()[.="]]"]]
 [[link]]
 //a[text()="link"]
 [[link|Go to my page]]
