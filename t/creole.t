@@ -16,7 +16,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 110;
+use Test::More tests => 111;
 clear_pages();
 
 add_module('creole.pl');
@@ -217,14 +217,16 @@ http://www.wikicreole.org/.
 //a[@class="url http outside"][@href="http://www.wikicreole.org/"][em[text()="Visit the WikiCreole website"]]
 [[http://www.wikicreole.org/ | Visit the WikiCreole website]]
 //a[@class="url http outside"][@href="http://www.wikicreole.org/"][text()="Visit the WikiCreole website"]
+[[foo bar]]
+//div[text()[.="[[foo_bar"]/following-sibling::a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=foo_bar"][text()="?"]/following-sibling::text()[.="]]"]]
+[[foo_bar]]
+//div[text()[.="[[foo_bar"]/following-sibling::a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=foo_bar"][text()="?"]/following-sibling::text()[.="]]"]]
+[[foo bar|text]]
+//div[text()[.="[[foo_bar"]/following-sibling::a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=foo_bar"][text()="?"]/following-sibling::text()[.="|text]]"]]
 [[link]]
 //a[text()="link"]
 [[link|Go to my page]]
 //a[@class="local"][@href="http://localhost/test.pl/link"][text()="Go to my page"]
-[[no link]]
-//div[text()[.="[[no_link"]/following-sibling::a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=no_link"][text()="?"]/following-sibling::text()[.="]]"]]
-[[no link|Go to my page]]
-//div[text()[.="[[no_link"]/following-sibling::a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/test.pl?action=edit;id=no_link"][text()="?"]/following-sibling::text()[.="|Go to my page]]"]]
 [[link|Go to\nmy page]]
 //a[@class="local"][@href="http://localhost/test.pl/link"][text()="Go to my page"]
 {{pic}}
