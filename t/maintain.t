@@ -1,4 +1,4 @@
-# Copyright (C) 2009  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2009, 2014  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,9 +15,10 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 6;
+use Test::More tests => 9;
 clear_pages();
 
+# old log entry to be moved
 my $log = join($FS, '1235079422', 'Ganz_und_Gar', '',
 	       'Ladenbeschreibung und Preisliste', '62.12.165.34',
 	       'Alex', '1', '', '');
@@ -33,3 +34,16 @@ test_page($log,
 	  "${FS}test${FS}",
 	  "${FS}this is a test${FS}");
 test_page_negative($log, "^\n");
+
+# old page to be deleted
+OpenPage('test');
+$Page{ts} = 1;
+$Page{revision} = 1;
+$Page{text} = $DeletedPage;
+SavePage();
+ok(-f GetPageFile($OpenPageName), GetPageFile($OpenPageName)
+   . " exists");
+xpath_test(get_page('action=maintain pwd=foo'),
+	   '//a[text()="test"]/following-sibling::text()[.=" deleted"]');
+ok(! -e GetPageFile($OpenPageName), GetPageFile($OpenPageName)
+   . " was deleted");
