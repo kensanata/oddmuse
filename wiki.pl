@@ -2978,21 +2978,9 @@ sub UnWiki {
 
 sub DoEdit {
   my ($id, $newText, $preview) = @_;
-  ValidIdOrDie($id);
+  UserCanEditOrDie($id);
   my $upload = GetParam('upload', undef);
-  if (not UserCanEdit($id, 1)) {
-    my $rule = UserIsBanned();
-    if ($rule) {
-      ReportError(T('Edit Denied'), '403 FORBIDDEN', undef,
-      $q->p(T('Editing not allowed: user, ip, or network is blocked.')),
-      $q->p(T('Contact the wiki administrator for more information.')),
-      $q->p(Ts('The rule %s matched for you.', $rule) . ' '
-	    . Ts('See %s for more information.', GetPageLink($BannedHosts))));
-    } else {
-      ReportError(T('Edit Denied'), '403 FORBIDDEN', undef,
-      $q->p(Ts('Editing not allowed: %s is read-only.', NormalToFree($id))));
-    }
-  } elsif ($upload and not $UploadAllowed and not UserIsAdmin()) {
+  if ($upload and not $UploadAllowed and not UserIsAdmin()) {
     ReportError(T('Only administrators can upload files.'), '403 FORBIDDEN');
   }
   OpenPage($id);
@@ -3123,6 +3111,24 @@ sub UserIsAdminOrError {
   UserIsAdmin()
     or ReportError(T('This operation is restricted to administrators only...'), '403 FORBIDDEN');
   return 1;
+}
+
+sub UserCanEditOrDie {
+  my $id = shift;
+  ValidIdOrDie($id);
+  if (not UserCanEdit($id, 1)) {
+    my $rule = UserIsBanned();
+    if ($rule) {
+      ReportError(T('Edit Denied'), '403 FORBIDDEN', undef,
+		  $q->p(T('Editing not allowed: user, ip, or network is blocked.')),
+		  $q->p(T('Contact the wiki administrator for more information.')),
+		  $q->p(Ts('The rule %s matched for you.', $rule) . ' '
+			. Ts('See %s for more information.', GetPageLink($BannedHosts))));
+    } else {
+      ReportError(T('Edit Denied'), '403 FORBIDDEN', undef,
+		  $q->p(Ts('Editing not allowed: %s is read-only.', NormalToFree($id))));
+    }
+  }
 }
 
 sub UserCanEdit {
@@ -3490,8 +3496,7 @@ sub Replace {
 
 sub DoPost {
   my $id = FreeToNormal(shift);
-  ValidIdOrDie($id);
-  ReportError(Ts('Editing not allowed for %s.', $id), '403 FORBIDDEN') unless UserCanEdit($id, 1);
+  UserCanEditOrDie($id);
   # Lock before getting old page to prevent races
   RequestLockOrError();		# fatal
   OpenPage($id);

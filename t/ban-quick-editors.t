@@ -1,4 +1,4 @@
-# Copyright (C) 2013  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2013-2014  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 3;
+use Test::More tests => 4;
 
 clear_pages();
 
@@ -28,7 +28,8 @@ add_module('ban-quick-editors.pl');
 get_page('Test');
 test_page(update_page('Test', 'cannot edit'),
 	  'This page is empty');
-test_page($redirect, 'Editing not allowed');
+test_page($redirect, 'Editing not allowed',
+	  'fast editing spam bot');
 sleep 5;
 test_page(update_page('Test', 'edit succeeded'),
 	  'edit succeeded');
