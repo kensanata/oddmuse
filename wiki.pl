@@ -2070,7 +2070,7 @@ sub DoRollback {
     if ($Page{text} eq $text) {
       print T("The two revisions are the same."), $q->br() if $page; # no message when doing mass revert
     } elsif (not UserCanEdit($id, 1)) {
-      print Ts('Editing not allowed for %s.', $id), $q->br();
+      print Ts('Editing not allowed: %s is read-only.', $id), $q->br();
     } elsif (not UserIsEditor() and my $rule = BannedContent($text)) {
       print Ts('Rollback of %s would restore banned content.', $id), $rule, $q->br();
     } else {

@@ -25,7 +25,7 @@ test_page(get_page('action=editlock'), 'operation is restricted');
 test_page(get_page('action=editlock pwd=foo'), 'Edit lock created');
 xpath_test(update_page('TestLock', 'mu!'),
 	   '//a[@href="http://localhost/wiki.pl?action=password"][@class="password"][text()="This page is read-only"]');
-test_page($redirect, '403 FORBIDDEN', 'Editing not allowed for TestLock');
+test_page($redirect, '403 FORBIDDEN', 'Editing not allowed: TestLock is read-only');
 test_page(get_page('action=editlock set=0'), 'operation is restricted');
 test_page(get_page('action=editlock set=0 pwd=foo'), 'Edit lock removed');
 RequestLockDir('main');
