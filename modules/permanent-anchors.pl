@@ -167,7 +167,8 @@ anchors.
 *DeletePage = *NewPermanentAnchorsDeletePage;
 
 sub NewPermanentAnchorsDeletePage {
-  OldPermanentAnchorsDeletePage(@_);
+  my $status = OldPermanentAnchorsDeletePage(@_);
+  return $status if $status; # this would be the error message
   DeletePermanentAnchors(@_); # the only parameter is $id
 }
 
