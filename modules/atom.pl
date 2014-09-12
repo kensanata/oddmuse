@@ -1,4 +1,4 @@
-# Copyright (C) 2004, 2006, 2008  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2004, 2006, 2008, 2014  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -140,11 +140,11 @@ sub DoAtomSave {
   my $title = $entry->title();
   my $author = $entry->author();
   SetParam('username', $author->name) if $author; # Used in Save()
-  my $id = FreeToNormal($title) if ValidIdOrDie($title);
+  my $id = FreeToNormal($title);
+  UserCanEditOrDie($id);
   $oldid = $id unless $oldid;
   ValidIdOrDie($oldid);
   my $summary = $entry->summary();
-  ReportError(Ts('Editing not allowed for %s.', $id), '403 FORBIDDEN') unless UserCanEdit($id, 1);
   # Lock before getting old page to prevent races
   RequestLockOrError();		# fatal
   OpenPage($oldid);
