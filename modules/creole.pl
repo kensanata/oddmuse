@@ -242,6 +242,7 @@ sub CreoleRule {
              -class=> 'image outside'},
             $q->img({-src=> UnquoteHtml($1),
                      -alt=> UnquoteHtml($3),
+                     -title=> UnquoteHtml($3),
                      -class=> 'url outside'})));
   }
   # image link: [[link|{{pic}}]] and [[link|{{pic|text}}]]
@@ -252,6 +253,7 @@ sub CreoleRule {
       ScriptLink(UrlEncode(FreeToNormal($2)),
                  $q->img({-src=> GetDownloadLink(FreeToNormal($3), 2),
                           -alt=> UnquoteHtml($text),
+                          -title=> UnquoteHtml($text),
                           -class=> 'upload'}), 'image')), $text);
   }
   # image link: [[link|{{url}}]] and [[link|{{url|text}}]]
@@ -262,6 +264,7 @@ sub CreoleRule {
       ScriptLink(UrlEncode(FreeToNormal($2)),
                  $q->img({-src=> UnquoteHtml($3),
                           -alt=> UnquoteHtml($text),
+                          -title=> UnquoteHtml($text),
                           -class=> 'url outside'}), 'image')), $text);
   }
   # image link: [[url|{{pic}}]] and [[url|{{pic|text}}]]
@@ -272,6 +275,7 @@ sub CreoleRule {
       $q->a({-href=> UnquoteHtml($2), -class=> 'image outside'},
             $q->img({-src=> GetDownloadLink(FreeToNormal($3), 2),
                      -alt=> UnquoteHtml($text),
+                     -title=> UnquoteHtml($text),
                      -class=> 'upload'}))), $text);
   }
   # image link: [[url|{{url}}]] and [[url|{{url|text}}]]
@@ -281,6 +285,7 @@ sub CreoleRule {
       $q->a({-href=> UnquoteHtml($1), -class=> 'image outside'},
             $q->img({-src=> UnquoteHtml($2),
                      -alt=> UnquoteHtml($4),
+                     -title=> UnquoteHtml($4),
                      -class=> 'url outside'})));
   }
   # link: [[url]] and [[url|text]]
