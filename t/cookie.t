@@ -1,4 +1,4 @@
-# Copyright (C) 2009, 2012  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2009–2014  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -46,7 +46,6 @@ AppendStringToFile($ConfigFile, "\$WikiLinks = 0;\n");
 test_page(get_page('action=browse id=HomePage username=Alex'),
 	  'username=Alex');
 
-
 SKIP: {
 
   eval { require LWP::UserAgent; };
@@ -68,21 +67,23 @@ SKIP: {
   # Set the cookie
   $response = $ua->get("$wiki?action=debug;pwd=foo");
   ok($response->is_success, 'request the page');
-  test_page($ua->cookie_jar->as_string, 'Set-Cookie.*: Wiki=pwd%251efoo');
+  $ua->cookie_jar->as_string =~ /Set-Cookie.*: ([^=]+)=pwd%251efoo/;
+  my $cookie = $1;
+  ok($cookie, 'pwd was set in the cookie');
   test_page_negative($response->content, 'pwd');
 
   # Change the cookie
   $response = $ua->get("$wiki?action=debug;pwd=test");
-  test_page($ua->cookie_jar->as_string, 'Set-Cookie.*: Wiki=pwd%251etest');
+  test_page($ua->cookie_jar->as_string, qq{Set-Cookie.*: $cookie=pwd%251etest});
 
   # Delete the cookie
   $response = $ua->get("$wiki?action=debug;pwd=");
-  test_page($ua->cookie_jar->as_string, 'Set-Cookie.*: Wiki=""');
+  test_page($ua->cookie_jar->as_string, qq{Set-Cookie.*: $cookie=""});
 
   # Encoding issues
   $response = $ua->get("$wiki?action=rc;username=Alex\%20Schr\%C3\%B6der");
   test_page($ua->cookie_jar->as_string,
-	    'Set-Cookie.*: Wiki=username%251eAlex%20Schr%C3%B6der');
+	    qq{Set-Cookie.*: $cookie=username%251eAlex%20Schr%C3%B6der});
   test_page($response->decoded_content,
-	    'Cookie: Wiki, username=Alex Schröder');
+	    qq{Cookie: $cookie, username=Alex Schröder});
 };
