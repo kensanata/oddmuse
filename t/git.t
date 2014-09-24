@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 15;
+use Test::More tests => 16;
 use utf8; # test data is UTF-8 and it matters
 
 SKIP: {
@@ -27,7 +27,7 @@ SKIP: {
   add_module('git.pl');
 
   if (qx($GitBinary --version) !~ /git version/) {
-    skip "$GitBinary not found", 15;
+    skip "$GitBinary not found", 16;
   }
   GitInitVariables();
 
@@ -48,8 +48,7 @@ SKIP: {
   $GitResult = '';
 
   GitRun(qw(status));
-  test_page($GitResult,
-	    'nothing to commit, working directory clean');
+  test_page($GitResult, 'nothing to commit', 'working directory clean');
   
   GitRun(qw(log -- Test));
   test_page($GitResult,
