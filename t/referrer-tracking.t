@@ -32,8 +32,13 @@ SKIP: {
   my $response = $ua->get("$wiki?action=version");
   skip("No wiki running at $wiki", 12)
     unless $response->is_success;
-  skip("Wiki running at $wiki doesn't have the referrer-tracking extension installed", 12)
+  # check that the wiki is capable of running these tests
+  skip("Wiki running at $wiki doesn't have the Referrer-Tracking Extension installed", 12)
     unless $response->content =~ /referrer-tracking\.pl/;
+  # if we're running in some random environment where localhost is not
+  # a wiki for us to interact with
+  skip("Wiki running at $wiki has the Question Asker Extension installed", 12)
+      if $response->content =~ /questionasker\.pl/;
 
   my $id = 'Random' . time;
   # make sure we're not being fooled by 404 errors
