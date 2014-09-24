@@ -87,6 +87,7 @@ clear_pages();
 my $dir = `/bin/pwd`;
 chop($dir);
 my $mod = 'namespaces-2.2.6.pl';
+mkdir($ModuleDir);
 symlink("$dir/t/$mod", "$ModuleDir/$mod");
 ok(-e "$ModuleDir/$mod", "old namespaces.pl installed");
 
