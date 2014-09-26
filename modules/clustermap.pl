@@ -40,8 +40,8 @@ $PrintTOCAnchor = 0;
 
 %ClusterMap = ();
 
-*OldDoRc = *DoRc;
-*DoRc = *ClusterMapDoRc;
+*OldPrintRcHtml = *PrintRcHtml;
+*PrintRcHtml = *ClusterMapPrintRcHtml;
 
 push(@MyAdminCode, \&ClusterMapAdminRule);
 
@@ -178,7 +178,7 @@ sub CreateClusterMap {
 	}
 }
 
-sub ClusterMapDoRc {
+sub ClusterMapPrintRcHtml {
 	my ( @options ) = @_;
 	my $page = "";
 	my $cluster = GetParam(rcclusteronly);
@@ -195,7 +195,7 @@ sub ClusterMapDoRc {
 		print "</ul>";
 	}
 	
-	OldDoRc(@options);
+	OldPrintRcHtml(@options);
 }
 
 sub PrintUnclusteredMap {
