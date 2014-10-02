@@ -280,7 +280,7 @@ sub GetTocHtml {
 
     # Close ordered lists and list items for prior headings deeper than this
     # heading's depth.
-    while ($list_depth > $header_depth) {
+    while ($list_depth > $header_depth and $list_depth != 1) {
            $list_depth--;
       $toc_html .= '</li></ol>';
     }
