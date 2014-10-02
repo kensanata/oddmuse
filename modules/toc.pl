@@ -270,7 +270,7 @@ sub GetTocHtml {
     # By Usemod convention, all headers begin with depth 2. This algorithm,
     # however, expects headers to begin with depth 1. Thus, to "streamline"
     # things, we transform it appropriately. ;-)
-    if (defined &UsemodRule) { $header_depth--; }
+    $header_depth-- if defined &UsemodRule or defined &CreoleRule;
 
     # If this is the first header and if this header's depth is deeper than 1,
     # we manually clamp this header's depth to 1 so as to ensure the first list
