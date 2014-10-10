@@ -1,4 +1,4 @@
-# Copyright (C) 2006, 2007, 2009  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006–2014  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 38;
+use Test::More tests => 39;
 use utf8; # tests contain UTF-8 characters and it matters
 
 clear_pages();
@@ -101,6 +101,9 @@ xpath_test(update_page('IncludeSearch',
 	   '//div[@class="search"]/p/span[@class="result"]/a[@class="local"][@href="http://localhost/wiki.pl/NegativeSearchTest"][text()="NegativeSearchTest"]',
 	   '//div[@class="search"]/p/span[@class="result"]/a[@class="local"][@href="http://localhost/wiki.pl/NegativeSearchTestTwo"][text()="NegativeSearchTestTwo"]',
 	  '//p[text()=" last line"]'); # note the NL -> SPC
+
+xpath_test(get_page('search=Schröder'),
+	   '//input[@name="search"][@value="Schröder"]');
 
 # Search for zero
 
