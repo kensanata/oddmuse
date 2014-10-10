@@ -366,7 +366,7 @@ sub JoinerDoRegister {
   $table .= $q->Tr($q->td(), $q->td($q->submit(-name=>'Submit', -value=>T('Submit'))));
   print $q->table($table);
   print JoinerGetQuestion();
-  print $q->endform;
+  print $q->end_form;
 
   print $q->end_div();
   PrintFooter();
@@ -530,7 +530,7 @@ sub JoinerDoLogin {
   $table .= $q->Tr($q->td(), $q->td($q->submit(-name=>'Submit', -value=>T('Submit'))));
   print $q->table($table);
   print JoinerGetQuestion();
-  print $q->endform;
+  print $q->end_form;
 
   print $q->start_p();
   print ScriptLink('action=joiner_forgot_password', T('Forgot your password?'));
@@ -705,7 +705,7 @@ sub JoinerDoChangePassword {
     $q->td($q->password_field(-name=>'joiner_repeat_new_password', -id=>'joiner_repeat_new_password')));
   $table .= $q->Tr($q->td(), $q->td($q->submit(-name=>'Submit', -value=>T('Submit'))));
   print $q->table($table);
-  print $q->endform;
+  print $q->end_form;
 
   print $q->end_div();
   PrintFooter();
@@ -790,7 +790,7 @@ sub JoinerDoForgotPassword {
   $table .= $q->Tr($q->td(), $q->td($q->submit(-name=>'Submit', -value=>T('Submit'))));
   print $q->table($table);
   print JoinerGetQuestion();
-  print $q->endform;
+  print $q->end_form;
 
   print $q->end_div();
   PrintFooter();
@@ -891,7 +891,7 @@ sub JoinerDoChangeEmail {
     $q->td($q->password_field(-name=>'joiner_password', -id=>'joiner_password')));
   $table .= $q->Tr($q->td(), $q->td($q->submit(-name=>'Submit', -value=>T('Submit'))));
   print $q->table($table);
-  print $q->endform;
+  print $q->end_form;
 
   print $q->end_div();
   PrintFooter();
@@ -1082,7 +1082,7 @@ sub JoinerDoBan {
     $q->td($q->textfield(-name=>'joiner_username', -id=>'joiner_username')));
   $table .= $q->Tr($q->td(), $q->td($q->submit(-name=>'Ban', -value=>T('Ban'))));
   print $q->table($table);
-  print $q->endform;
+  print $q->end_form;
 
   print $q->start_p();
   print T('Enter username of the account to unban:');
@@ -1096,7 +1096,7 @@ sub JoinerDoBan {
     $q->td($q->textfield(-name=>'joiner_username', -id=>'joiner_username')));
   $table .= $q->Tr($q->td(), $q->td($q->submit(-name=>'Unban', -value=>T('Unban'))));
   print $q->table($table);
-  print $q->endform;
+  print $q->end_form;
 
   print $q->end_div();
   PrintFooter();

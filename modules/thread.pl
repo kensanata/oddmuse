@@ -111,7 +111,7 @@ sub ThreadAdd {
 		  . '</td></tr></table>'
 		  . '<p>'
 		  . $q->p($q->submit(-name=>'Save', -value=>T('Save')))
-		  . $q->endform());
+		  . $q->end_form());
     print $q->end_html;
   } else {
     my ($page, $thread) = ThreadExtract($id);
