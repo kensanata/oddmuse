@@ -1716,7 +1716,7 @@ sub GetFilterForm {
 					    -default=>GetParam('lang', ''))));
   }
   return GetFormStart(undef, 'get', 'filter') . $q->p($form) . $q->table($table)
-    . $q->p($q->submit('dofilter', T('Go!'))) . $q->endform;
+    . $q->p($q->submit('dofilter', T('Go!'))) . $q->end_form;
 }
 
 sub RcHtml {
@@ -1791,7 +1791,7 @@ sub RcHtml {
     $more .= ";$_=$val" if $val;
   }
   $html .= $q->p({-class=>'more'}, ScriptLink($more, T('More...'), 'more'));
-  return GetFormStart(undef, 'get', 'rc') . $html . $q->endform;
+  return GetFormStart(undef, 'get', 'rc') . $html . $q->end_form;
 }
 
 sub PrintRcHtml { # to append RC to existing page, or action=rc directly
@@ -2442,7 +2442,7 @@ sub GetCommentForm {
 				    -override=>1, -size=>40, -maxlength=>100))),
        $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save')), ' ',
        $q->submit(-name=>'Preview', -accesskey=>T('p'), -value=>T('Preview'))),
-       $q->endform());
+       $q->end_form());
   }
   return '';
 }
@@ -2470,7 +2470,7 @@ sub GetSearchForm {
 		      -default=>GetParam('lang', '')) . ' ';
   }
   return GetFormStart(undef, 'get', 'search')
-    . $q->p($form . $q->submit('dosearch', T('Go!'))) . $q->endform;
+    . $q->p($form . $q->submit('dosearch', T('Go!'))) . $q->end_form;
 }
 
 sub GetValidatorLink {
@@ -3041,7 +3041,7 @@ sub GetEditForm {
   } elsif ($UploadAllowed or UserIsAdmin()) {
     $html .= $q->p(ScriptLink('action=edit;upload=1;id=' . UrlEncode($page_name), T('Replace this text with a file'), 'upload'));
   }
-  $html .= $q->endform();
+  $html .= $q->end_form();
   return $html;
 }
 
@@ -3093,7 +3093,7 @@ sub DoPassword {
     print GetFormStart(undef, undef, 'password'),
       $q->p(GetHiddenValue('action', 'password'), T('Password:'), ' ',
       $q->password_field(-name=>'pwd', -size=>20, -maxlength=>50),
-      $q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save'))), $q->endform;
+      $q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save'))), $q->end_form;
   } else {
     print $q->p(T('This site does not use admin or editor passwords.'));
   }

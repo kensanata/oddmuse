@@ -75,6 +75,6 @@ sub DoTZ {
 			     -values=>\@names,
 			     -default=>GetParam('time', $defaultTZ)),
 	      $q->submit('dotz', T('Set')));
-  print $q->endform . $q->end_div();
+  print $q->end_form . $q->end_div();
   PrintFooter();
 }

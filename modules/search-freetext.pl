@@ -546,7 +546,7 @@ sub NewSearchFreePrintFooter {
 		    $q->p(GetHiddenValue('id', $id), GetHiddenValue('action', 'retag'),
 			  T('Tags:'), $q->br(), GetTextArea('tags', join(' ', @tags), 2),
 			  $q->br(), $q->submit(-name=>'Save', -value=>T('Save'))),
-		    $q->endform());
+		    $q->end_form());
     } elsif ($id and @tags) {
       print $q->div({-class=>'tags'},
 		    $q->p(T('Tags:'), map { $_ = "\[\[tag:$_\]\]";

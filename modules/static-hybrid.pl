@@ -368,7 +368,7 @@ sub StaticGetCommentForm {
 										   -override=>1, -size=>40, -maxlength=>100)),
 					   $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save')), ' ',
 							 $q->submit(-name=>'Preview', -value=>T('Preview'))),
-					   $q->endform());
+					   $q->end_form());
 	}
 	return '';
 }

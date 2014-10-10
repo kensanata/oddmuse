@@ -208,7 +208,7 @@ sub DoTranslationLink {
 		$q->input({-type=>'hidden', -name=>'missing',
 			   -value=>GetParam('missing', '')}),
 		$q->submit('dotranslate', T('Go!')));
-    print $q->endform, $q->end_div();
+    print $q->end_form, $q->end_div();
     PrintFooter();
   }
 }
