@@ -29,7 +29,7 @@
 
 package OddMuse;
 use strict;
-use CGI;
+use CGI qw/-utf8/;
 use CGI::Carp qw(fatalsToBrowser);
 use File::Glob ':glob';
 local $| = 1; # Do not buffer output (localized for mod_perl)
@@ -324,9 +324,8 @@ sub ReInit {   # init everything we need if we want to link to stuff
 sub InitCookie {
   undef $q->{'.cookies'};   # Clear cache if it exists (for SpeedyCGI)
   my $cookie = $q->cookie($CookieName);
-  utf8::decode($cookie); # make sure it's decoded as UTF-8
   %OldCookie = split(/$FS/o, UrlDecode($cookie));
-  my %provided = map { utf8::decode($_); $_ => 1 } $q->param;
+  my %provided = map { $_ => 1 } $q->param;
   for my $key (keys %OldCookie) {
     SetParam($key, $OldCookie{$key}) unless $provided{$key};
   }
@@ -362,10 +361,8 @@ sub CookieRollbackFix {
 
 sub GetParam {
   my ($name, $default) = @_;
-  utf8::encode($name); # may fail
   my $result = $q->param($name);
   $result //= $default;
-  utf8::decode($result) if defined $result; # may fail, avoid turning undef to ''
   return QuoteHtml($result); # you need to unquote anything that can have <tags>
 }
 
@@ -2276,7 +2273,6 @@ sub Cookie {
   my ($changed, $visible, %params) = CookieData(); # params are URL encoded
   if ($changed) {
     my $cookie = join(UrlEncode($FS), %params); # no CTL in field values
-    utf8::encode($cookie); # prevent casting to Latin 1
     my $result = $q->cookie(-name=>$CookieName, -value=>$cookie, -expires=>'+2y');
     if ($visible) {
       $Message .= $q->p(T('Cookie: ') . $CookieName . ', '
