@@ -254,6 +254,9 @@ Example:
 
   ((\"Alex\" ((\"Contact\" . \"58\"))))")
 
+(defvar oddmuse-revision nil
+  "A variable to bind dynamically when calling `oddmuse-format-command'.")
+
 (defun oddmuse-revision-put (wiki page rev)
   "Store REV for WIKI and PAGE in `oddmuse-revisions'."
   (let ((w (assoc wiki oddmuse-revisions)))
@@ -407,6 +410,7 @@ It's either a [[free link]] or a WikiWord based on
 %p `oddmuse-password'
 %q `question' as provided by `oddmuse-wikis'
 %o `oddmuse-ts'
+%v `oddmuse-revision'
 %r `regexp' as provided by the user"
   (dolist (pair '(("%w" . url)
 		  ("%t" . pagename)
@@ -416,6 +420,7 @@ It's either a [[free link]] or a WikiWord based on
 		  ("%p" . oddmuse-password)
 		  ("%q" . question)
 		  ("%o" . oddmuse-ts)
+		  ("%v" . oddmuse-revision)
 		  ("%r" . regexp)))
     (let* ((key (car pair))
 	   (sym (cdr pair))

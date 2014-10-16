@@ -94,14 +94,19 @@ See `oddmuse-format-command' for the formatting options.")
   (error "This is not supported."))
 
 (defvar vc-oddmuse-get-revision-command
-  "curl --silent %w\"?action=browse;id=%t;revision=%o;raw=1\""
+  (concat "curl --silent"
+	  " --form action=browse"
+	  " --form id=%t"
+	  " --form revision=%v"
+	  " --form raw=1"
+	  " '%w'")
   "Command to use to get older revisions of a page.
 It must print the page to stdout.
 
 %?  '?' character
 %w  URL of the wiki as provided by `oddmuse-wikis'
 %t  Page title as provided by `oddmuse-page-name'
-%o  Revision to retrieve as provided by `oddmuse-revision'")
+%v  Revision to retrieve as provided by `oddmuse-revision'")
 
 (defun oddmuse-revision-filename (rev)
   "Return filename for revision REV.
@@ -117,14 +122,18 @@ This uses `oddmuse-directory', `oddmuse-wiki' and
   (setq buffer (or buffer (get-buffer-create "*vc-diff*")))
   (dolist (file files)
     (with-oddmuse-file file
-      (setq rev1 (or rev1 (oddmuse-get-latest-revision)))
+      (setq rev1 (or rev1 (oddmuse-get-latest-revision
+			   oddmuse-wiki oddmuse-page-name)))
       (dolist (rev (list rev1 rev2))
 	(when (and rev (not (file-readable-p (oddmuse-revision-filename rev))))
 	  (let* ((oddmuse-revision rev)
-		 (command (oddmuse-format-command vc-oddmuse-get-revision-command))
+		 (command (oddmuse-format-command
+			   vc-oddmuse-get-revision-command))
 		 (filename (oddmuse-revision-filename rev)))
 	    (with-temp-buffer
-	      (oddmuse-run (concat "Downloading revision " rev) command)
+	      (oddmuse-run
+	       (concat "Downloading revision " rev)
+	       command oddmuse-wiki)
 	      (write-file filename)))))
       (diff-no-select
        (if rev1 (oddmuse-revision-filename rev1) file)
