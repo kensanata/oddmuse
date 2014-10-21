@@ -28,7 +28,7 @@ push(@MyRules, \&ImageSupportRule);
 
 sub ImageSupportRule {
   my $result = undef;
-  if (m!\G\[\[image((/[a-z]+)*)( external)?:\s*([^]|]+?)\s*(\|[^]|]+?)?\s*(\|[^]|]*?)?\s*(\|[^]|]*?)?\s*(\|[^]|]*?)?\s*\]\]!gc) {
+  if (m!\G\[\[image((/[a-z]+)*)( external)?:\s*([^]|]+?)\s*(\|[^]|]+?)?\s*(\|[^]|]*?)?\s*(\|[^]|]*?)?\s*(\|[^]|]*?)?\s*\]\](\{([^}]+)\})?!gc) {
     my $oldpos = pos;
     my $class = 'image' . $1;
     my $external = $3;
@@ -42,6 +42,7 @@ sub ImageSupportRule {
     my $link = $6 ? substr($6, 1) : '';
     my $caption = $7 ? substr($7, 1) : '';
     my $reference = $8 ? substr($8, 1) : '';
+    my $comments = $10;
     my $id = FreeToNormal($name);
     $class =~ s!/! !g;
     my $linkclass = $class;
@@ -66,6 +67,16 @@ sub ImageSupportRule {
     if ($found) {
       $result = $q->img({-src=>$src, -alt=>$alt, -title=>$alt, -class=>'upload'});
       $result = $q->a({-href=>$link, -class=>$linkclass}, $result);
+      if ($comments) {
+	for (split '\n', $comments) {
+	  my $valRegex = qr/(([0-9.]+[a-z]*%?)\s+)/;
+	  if ($_ =~ /^\s*(([a-zA-Z ]+)\/)?$valRegex$valRegex$valRegex$valRegex(.*)$/) { # can't use {4} here? :(
+	    my $commentClass = $2 ? "imagecomment $2" : 'imagecomment';
+	    $result .= $q->div({-class=>$commentClass, -style=>"position: absolute; top: $6; left: $4; width: $8; height: $10"}, QuoteHtml($11));
+	  }
+	}
+	$result = CloseHtmlEnvironments() . $q->div({-class=>"imageholder", -style=>"position: relative"}, $result);
+      }
     } else {
       $result = GetDownloadLink($src, 1, undef, $alt);
     }
