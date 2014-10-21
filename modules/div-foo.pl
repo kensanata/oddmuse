@@ -19,11 +19,17 @@ AddModuleDescription('div-foo.pl', 'Div Foo Extension');
 push(@MyRules, \&DivFooRule);
 
 sub DivFooRule {
-  if (m/\G\&lt;([\w ]+)\&gt;/cgi) {
-    return AddHtmlEnvironment('div', qq{class="$1"});
+  if (m/\G\&lt;([\w ]+)\&gt;\s*\n/cg) {
+    return CloseHtmlEnvironment('p') . AddHtmlEnvironment('div', qq{class="$1"});
   }
-  if (m/\G\&lt;\/\&gt;/cgi) {
-    return CloseHtmlEnvironment('div');
+  if (m/\G\&lt;([\w ]+)\&gt;/cg) {
+    return AddHtmlEnvironment('span', qq{class="$1"});
+  }
+  if (m/\G\&lt;\/\/\&gt;/cg) {
+    return CloseHtmlEnvironment('div') . (InElement('div') ? '' : AddHtmlEnvironment('p'));
+  }
+  if (m/\G\&lt;\/\&gt;/cg) {
+    return CloseHtmlEnvironment('span');
   }
   return undef;
 }
