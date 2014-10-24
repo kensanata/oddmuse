@@ -38,7 +38,7 @@ sub ModuleUpdaterAction {
     my $curModule = fileparse($_);
     ProcessModule($curModule);
   }
-  print '<strong>Done!</strong>';
+  print $q->strong('Done!');
   PrintFooter();
   ReleaseLock();
 }
@@ -46,39 +46,42 @@ sub ModuleUpdaterAction {
 sub ProcessModule() {
   my $module = shift;
   CreateDir($TempDir);
-  print "<hr/>";
-  print "<strong>Updating $module ...</strong><br/>";
-  if (system('wget', '-O', "$TempDir/newmodule", '--', "$OddmuseModulesUrl/$module") != 0) {
-    if ($? >> 8 == 8) { # wget usually returns 8 if server response is NOT FOUND
-      # TODO maybe there is any better way to do this?
-      print '<strong>There is no such module in git repository. If this is your own module, please contribute it to Oddmuse! If it is not, then it was probably removed.</strong><br/>';
-      return;
-    }
-    print 'There was an error downloading this module.<br/>';
+  print $q->hr();
+  print $q->strong("Updating $module ..."), $q->br();
+  my $moduleData = GetRaw("$OddmuseModulesUrl/$module");
+  if (not $moduleData) {
+    print $q->strong('There was an error downloading this module.'
+		     . ' If this is your own module, please contribute it to Oddmuse!'), $q->br();
     return;
   }
+  open my $fh, ">", "$TempDir/newmodule" or die("Could not open file. $!");
+  print $fh $moduleData;
+  close $fh;
+
   my $diff = DoModuleDiff("$ModuleDir/$module", "$TempDir/newmodule");
   if (not $diff) {
-    print '<strong>This module is up to date, there is no need to update it.</strong><br/>';
+    print $q->strong('This module is up to date, there is no need to update it.'), $q->br();
     return;
   }
-  print '<strong>There is a newer version of this module. Here is a diff:</strong><br/>';
+  print $q->strong('There is a newer version of this module. Here is a diff:'), $q->br();
 
   $diff = QuoteHtml($diff);
   $diff =~ tr/\r//d; # TODO is this required? # probably not
   for (split /\n/, $diff) {
     my ($type) = /(.)/;
-    if ($type eq '+') {
-      print '<span class="updaternew">';
-    } elsif ($type eq '-') {
-      print '<span class="updaterold">';
+    if ($type =~ /[+-]/) {
+      my $class = $type eq '+' ? 'updaternew' : 'updaterold';
+      print $q->span({-class => $class}, $q->code($_));
+    } else {
+      print $q->span($q->code($_));
     }
-    print '<code>' . $_ . '</code>';
-    print '</span>' if $type =~ /[+-]/;
-    print '<br/>';
+    print $q->br();
   }
-  move("$TempDir/newmodule", "$ModuleDir/$module") or print "<strong>Unable to replace module: $! </strong><br/>";
-  print '<strong>Module updated successfully!</strong><br/>';
+  if (move("$TempDir/newmodule", "$ModuleDir/$module")) {
+    print $q->strong('Module updated successfully!'), $q->br();
+  } else {
+    print $q->strong("Unable to replace module: $!"), $q->br();
+  }
 }
 
 sub DoModuleDiff {
