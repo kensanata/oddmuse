@@ -197,9 +197,17 @@ hr {
 div.footer hr {
     height:4px;
     margin: 2em 0 1ex 0;
+    clear:both;
 }
 
-div.comment {
+div.content > div.comment {
+    border-top: none;
+    padding-top: none;
+    border-left: 1ex solid #bbb;
+    padding-left: 1ex;
+}
+
+div.wrapper > div.comment {
   border-top: 2px solid #000;
   padding-top: 2em;
 }
@@ -215,7 +223,3 @@ pre {
 tt, pre, code {
     font-size: 80%;
 };
-
-div.footer hr {
-    clear:both;
-}
