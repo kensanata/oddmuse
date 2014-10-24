@@ -112,7 +112,7 @@ USERNAME, your optional username to provide. It defaults to
 ;;; Variables
 
 (defvar oddmuse-get-command
-  "curl --silent %w --form action=browse --form raw=2 --form id=%t"
+  "curl --silent %w --form action=browse --form raw=2 --form id='%t'"
   "Command to use for publishing pages.
 It must print the page to stdout.
 
@@ -288,10 +288,10 @@ Example:
     (file-name-directory file))))
 
 (defmacro with-oddmuse-file (file &rest body)
-  "Bind `oddmuse-wiki' and `oddmuse-page-name' based on FILE
-and execute BODY."
-  `(let ((oddmuse-page-name (oddmuse-page-name ,file))
-	 (oddmuse-wiki (oddmuse-wiki ,file)))
+  "Bind `wiki' and `pagename' based on FILE and execute BODY."
+  (declare (debug (symbolp &rest form)))
+  `(let ((pagename (oddmuse-page-name ,file))
+	 (wiki (oddmuse-wiki ,file)))
      ,@body))
 
 (put 'with-oddmuse-file 'lisp-indent-function 1)
@@ -482,15 +482,13 @@ well."
     (message "%s using %s..." mesg command)
     (when (numberp expected-code)
       (setq expected-code (number-to-string expected-code)))
-    ;; If SEND-BUFFER, the resulting HTTP CODE is found in BUF, so check
-    ;; that, too.
-    (let* ((errno (if send-buffer
-		      (shell-command-on-region (point-min) (point-max) command buf)
-		    (shell-command command buf)))
-	   (status (with-current-buffer buf (buffer-string))))
-      (cond ((not (zerop errno))
-	     (error "Error %s: non-zero return value" mesg))
-	    ((and send-buffer expected-code (not (string= expected-code status)))
+    (if send-buffer
+	(shell-command-on-region (point-min) (point-max) command buf)
+      (shell-command command buf))
+    (let ((status (with-current-buffer buf (buffer-string))))
+      (cond ((and send-buffer
+		  expected-code
+		  (not (string= expected-code status)))
 	     (error "Error %s: HTTP Status Code %s" mesg status))
 	    ((string-match "<title>Error</title>" status)
 	     (if (string-match "<h1>\\(.*\\)</h1>" status)
