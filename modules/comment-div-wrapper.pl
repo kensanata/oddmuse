@@ -31,7 +31,7 @@ sub CommentDivWrapper {
   if ($OpenPageName =~ /$CommentsPattern/o) {
     if ($bol and m/\G(\s*\n)*----+[ \t]*\n?/cg) {
       my $html = CloseHtmlEnvironments()
-	  . ($CommentDiv++ > 0 ? '</div>' : '<h2 id="commentsHeading">' . T('Comments:') . '</h2>') . '<div class="userComment">'
+	  . ($CommentDiv++ > 0 ? '</div>' : '<h2 class="commentsHeading">' . T('Comments:') . '</h2>') . '<div class="userComment">'
 	  . AddHtmlEnvironment('p');
       return $html;
     }
