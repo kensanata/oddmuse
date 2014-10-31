@@ -91,7 +91,10 @@ sub BisectProcess {
   $halfsize = ($end - $start + 1) / 2.0;
   for (my $i = 0; $i < @files; $i++) {
     if ($i >= $start and $i <= $end - int($halfsize)) {
-      print $q->strong('+ '), (fileparse($files[$i]))[0], $q->br();
+      print $q->strong('> + '), (fileparse($files[$i]))[0], $q->br();
+    } elsif ($i >= $start and $i <= $end) {
+      print $q->strong('> - '), (fileparse($files[$i]))[0], $q->br();
+      move($files[$i], $files[$i] . '.disabled');
     } else {
       print $q->strong('- '), (fileparse($files[$i]))[0], $q->br();
       move($files[$i], $files[$i] . '.disabled');
