@@ -1260,12 +1260,10 @@ sub PageHtml {
   local *STDOUT;
   OpenPage($id);
   open(STDOUT, '>', \$diff) or die "Can't open memory file: $!";
-  binmode(STDOUT, ":utf8");
   PrintPageDiff();
   utf8::decode($diff);
   return $error if $limit and length($diff) > $limit;
   open(STDOUT, '>', \$page) or die "Can't open memory file: $!";
-  binmode(STDOUT, ":utf8");
   PrintPageHtml();
   utf8::decode($page);
   return $diff . $q->p($error) if $limit and length($diff . $page) > $limit;
