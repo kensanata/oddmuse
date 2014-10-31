@@ -25,14 +25,14 @@ sub CommentDivWrapper {
   if (substr($OpenPageName, 0, length($CommentsPrefix)) eq $CommentsPrefix) {
     if (pos == 0 and not $CommentDiv) {
       $CommentDiv = 1;
-      return '<div class="userComment">';
+      return $q->start_div({-class=>'userComment'});
     }
   }
   if ($OpenPageName =~ /$CommentsPattern/o) {
     if ($bol and m/\G(\s*\n)*----+[ \t]*\n?/cg) {
       my $html = CloseHtmlEnvironments()
-          . ($CommentDiv++ > 0 ? '</div>' : '<h2 id="commentsHeading">' . T('Comments:') . '</h2>') . '<div class="userComment">'
-          . AddHtmlEnvironment('p');
+	  . ($CommentDiv++ > 0 ? $q->end_div() : $q->h2({-class=>'commentsHeading'}, T('Comments:'))) . $q->start_div({-class=>'userComment'})
+	  . AddHtmlEnvironment('p');
       return $html;
     }
   }
@@ -46,8 +46,8 @@ sub CommentDivWrapper {
 sub NewCommentDivApplyRules {
   my ($blocks, $flags) = OldCommentDivApplyRules(@_);
   if ($CommentDiv) {
-    print '</div>';
-    $blocks .= $FS . '</div>';
+    print $q->end_div();
+    $blocks .= $FS . $q->end_div();
     $flags .= $FS . 0;
     $CommentDiv = 0;
   }
