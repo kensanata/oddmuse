@@ -122,8 +122,7 @@ This uses `oddmuse-directory', `oddmuse-wiki' and
   (setq buffer (or buffer (get-buffer-create "*vc-diff*")))
   (dolist (file files)
     (with-oddmuse-file file
-      (setq rev1 (or rev1 (oddmuse-get-latest-revision
-			   oddmuse-wiki oddmuse-page-name)))
+      (setq rev1 (or rev1 (oddmuse-get-latest-revision wiki pagename)))
       (dolist (rev (list rev1 rev2))
 	(when (and rev (not (file-readable-p (oddmuse-revision-filename rev))))
 	  (let* ((oddmuse-revision rev)
@@ -133,7 +132,7 @@ This uses `oddmuse-directory', `oddmuse-wiki' and
 	    (with-temp-buffer
 	      (oddmuse-run
 	       (concat "Downloading revision " rev)
-	       command oddmuse-wiki)
+	       command wiki)
 	      (write-file filename)))))
       (diff-no-select
        (if rev1 (oddmuse-revision-filename rev1) file)
@@ -165,6 +164,6 @@ used as a check-in comment."
 	     (buf (get-buffer-create " *oddmuse-response*")))
 	(with-temp-buffer
 	  (insert-file-contents file)
-	  (oddmuse-run "Posting" command nil nil buf t 302))))))
+	  (oddmuse-run "Posting" command wiki pagename buf t 302))))))
 
 (provide 'vc-oddmuse)
