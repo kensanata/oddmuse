@@ -29,6 +29,7 @@
 
 package OddMuse;
 use strict;
+use utf8; # in case anybody ever addes UTF8 characters to the source
 use CGI qw/-utf8/;
 use CGI::Carp qw(fatalsToBrowser);
 use File::Glob ':glob';
@@ -214,7 +215,8 @@ sub ReportError {   # fatal!
 }
 
 sub Init {
-  binmode(STDOUT, ':utf8');
+  binmode(STDOUT, ':utf8'); # this is where the HTML gets printed
+  binmode(STDERR, ':utf8'); # just in case somebody prints debug info to stderr
   InitDirConfig();
   $FS = "\x1e"; # The FS character is the RECORD SEPARATOR control char in ASCII
   $Message = ''; # Warnings and non-fatal errors.
@@ -361,6 +363,7 @@ sub CookieRollbackFix {
 
 sub GetParam {
   my ($name, $default) = @_;
+  utf8::encode($name); # turn to byte string
   my $result = $q->param($name);
   $result //= $default;
   return QuoteHtml($result); # you need to unquote anything that can have <tags>
@@ -1260,10 +1263,14 @@ sub PageHtml {
   local *STDOUT;
   OpenPage($id);
   open(STDOUT, '>', \$diff) or die "Can't open memory file: $!";
+  binmode(STDOUT); # works whether STDOUT already has the UTF8 layer or not
+  binmode(STDOUT, ":utf8");
   PrintPageDiff();
   utf8::decode($diff);
   return $error if $limit and length($diff) > $limit;
   open(STDOUT, '>', \$page) or die "Can't open memory file: $!";
+  binmode(STDOUT); # works whether STDOUT already has the UTF8 layer or not
+  binmode(STDOUT, ":utf8");
   PrintPageHtml();
   utf8::decode($page);
   return $diff . $q->p($error) if $limit and length($diff . $page) > $limit;
@@ -1451,7 +1458,7 @@ sub PageFresh { # pages can depend on other pages (ie. last update), admin statu
 
 sub PageEtag {
   my ($changed, $visible, %params) = CookieData();
-  return UrlEncode(join($FS, $LastUpdate, sort(values %params))); # no CTL in field values
+  return UrlEncode(join($FS, $LastUpdate||$Now, sort(values %params))); # no CTL in field values
 }
 
 sub FileFresh { # old files are never stale, current files are stale when the page was modified
