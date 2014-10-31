@@ -904,9 +904,10 @@ node as returned by `libxml-parse-html-region' or
 (defun oddmuse-search (regexp)
   "Search the wiki for REGEXP.
 REGEXP must be a regular expression understood by the
-wiki (ie. it must use Perl syntax)."
+wiki (ie. it must use Perl syntax).
+Use a prefix argument to search a different wiki."
   (interactive "sSearch term: ")
-  (let* ((wiki (or oddmuse-wiki
+  (let* ((wiki (or (and (not current-prefix-arg) oddmuse-wiki)
 		   (completing-read "Wiki: " oddmuse-wikis nil t)))
 	 (name (concat "*" wiki ": search for '" regexp "'*")))
     (if (and (get-buffer name)
@@ -924,9 +925,10 @@ wiki (ie. it must use Perl syntax)."
 (defun oddmuse-match (regexp)
   "Search the wiki for page names matching REGEXP.
 REGEXP must be a regular expression understood by the
-wiki (ie. it must use Perl syntax)."
+wiki (ie. it must use Perl syntax).
+Use a prefix argument to search a different wiki."
   (interactive "sPages matching: ")
-  (let* ((wiki (or oddmuse-wiki
+  (let* ((wiki (or (and (not current-prefix-arg) oddmuse-wiki)
 		   (completing-read "Wiki: " oddmuse-wikis nil t)))
 	 (name (concat "*" wiki ": matches for '" regexp "'*")))
     (if (and (get-buffer name)
