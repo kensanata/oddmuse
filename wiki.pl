@@ -2239,12 +2239,12 @@ sub GetHttpHeader {
   $q->charset($type =~ m!^(text/|application/xml)! ? 'utf-8' : ''); # text/plain, text/html, application/xml: UTF-8
   my %headers = (-cache_control=>($UseCache < 0 ? 'no-cache' : 'max-age=10'));
   # Set $ts when serving raw content that cannot be modified by cookie parameters; or 'nocache'; or undef. If you
-  # provide a $ts, the last-modiefied header generated will by used by both HTTP/1.0 and HTTP/1.1 clients. If you
-  # provide no $ts, the etag header generated will be used by HTTP/1.1 clients. In this situation, cookie parameters can
-  # influence the look of the page and we cannot rely on $LastUpdate. See RFC 2616 section 13.3.4.
+  # provide a $ts, the last-modiefied header generated will by used by HTTP/1.0 clients. If you provide no $ts, the etag
+  # header generated will be used by HTTP/1.1 clients. In this situation, cookie parameters can influence the look of
+  # the page and we cannot rely on $LastUpdate. HTTP/1.0 clients will ignore etags. See RFC 2616 section 13.3.4.
   if (GetParam('cache', $UseCache) >= 2 and $ts ne 'nocache') {
     $headers{'-last-modified'} = TimeToRFC822($ts) if $ts;
-    $headers{-etag} = PageEtag() if not $ts;
+    $headers{-etag} = PageEtag();
   }
   $headers{-type} = GetParam('mime-type', $type);
   $headers{-status} = $status if $status;
