@@ -33,7 +33,7 @@ sub ModuleUpdaterMenu {
 sub ModuleUpdaterAction {
   return unless UserIsAdminOrError();
   RequestLockOrError();
-  print GetHeader('', T('Module Updater'), '');
+  print GetHeader('', T('Module Updater'), '', 'nocache');
 
   if (GetParam('ok')) {
     ModuleUpdaterApply();
