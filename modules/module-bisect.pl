@@ -17,43 +17,58 @@ package OddMuse;
 use File::Basename;
 use File::Copy;
 
-AddModuleDescription('module-bisect.pl', 'Bisect Extension');
+AddModuleDescription('module-bisect.pl', 'Module Bisect Extension');
 
+push(@MyAdminCode, \&ModuleBisectMenu);
 $Action{bisect} = \&BisectAction;
+
+sub ModuleBisectMenu {
+  return unless UserIsAdmin();
+  my ($id, $menuref, $restref) = @_;
+  push(@$menuref, ScriptLink('action=bisect', T('Bisect modules'), 'modulebisect'));
+}
 
 sub BisectAction {
   UserIsAdminOrError();
   RequestLockOrError();
-  print GetHeader('', T('Module Bisect'), '');
+  print GetHeader('', T('Module Bisect'), '', 'nocache');
   if (GetParam('stop')) {
     BisectEnableAll(1);
     print $q->br(), $q->strong(T('All modules enabled now!'));
+    print GetFormStart(undef, 'get', 'bisect');
+    print GetHiddenValue('action', 'bisect');
+    print $q->submit(-name=>'noop', -value=>T('Go back'));
+    print $q->end_form();
   } elsif (GetParam('good') or GetParam('bad')) {
     BisectProcess(GetParam('good'));
   } else {
-    print GetFormStart(undef, 'get', 'bisect');
-    print GetHiddenValue('action', 'bisect');
-    my @disabledFiles = bsd_glob("$ModuleDir/*.p[ml].disabled");
-    if (@disabledFiles == 0) {
-      print 'Test / Always enabled / Always disabled', $q->br();
-      my @files = bsd_glob("$ModuleDir/*.p[ml]");
-      for (my $i = 0; $i < @files; $i++) {
-	my $moduleName = fileparse($files[$i]);
-	my @disabled = ($moduleName eq 'module-bisect.pl' ? (-disabled=>'disabled') : ());
-	print $q->input({-type=>'radio', -name=>"m$i", -value=>'t', ($moduleName ne 'module-bisect.pl' ? (-checked=>'checked') : ()), @disabled});
-	print $q->input({-type=>'radio', -name=>"m$i", -value=>'on', ($moduleName eq 'module-bisect.pl' ? (-checked=>'checked') : ())});
-	print $q->input({-type=>'radio', -name=>"m$i", -value=>'off', @disabled});
-	print $moduleName, $q->br();
-      }
-      print $q->submit(-name=>'bad', -value=>T('Start'));
-    } else {
-      print T('Biscecting proccess is already active.'), $q->br();
-      print $q->submit(-name=>'stop', -value=>T('Stop'));
-    }
-    print $q->end_form();
+    BisectInitialScreen();
   }
   PrintFooter();
   ReleaseLock();
+}
+
+sub BisectInitialScreen {
+  print GetFormStart(undef, 'get', 'bisect');
+  print GetHiddenValue('action', 'bisect');
+  my @disabledFiles = bsd_glob("$ModuleDir/*.p[ml].disabled");
+  if (@disabledFiles == 0) {
+    print T('Test / Always enabled / Always disabled'), $q->br();
+    my @files = bsd_glob("$ModuleDir/*.p[ml]");
+    for (my $i = 0; $i < @files; $i++) {
+      my $moduleName = fileparse($files[$i]);
+      my @disabled = ($moduleName eq 'module-bisect.pl' ? (-disabled=>'disabled') : ());
+      print $q->input({-type=>'radio', -name=>"m$i", -value=>'t', ($moduleName ne 'module-bisect.pl' ? (-checked=>'checked') : ()), @disabled});
+      print $q->input({-type=>'radio', -name=>"m$i", -value=>'on', ($moduleName eq 'module-bisect.pl' ? (-checked=>'checked') : ())});
+      print $q->input({-type=>'radio', -name=>"m$i", -value=>'off', @disabled});
+      print $moduleName, $q->br();
+    }
+    print $q->submit(-name=>'bad', -value=>T('Start'));
+  } else {
+    print T('Biscecting proccess is already active.'), $q->br();
+    print $q->submit(-name=>'stop', -value=>T('Stop'));
+  }
+  print $q->end_form();
 }
 
 sub BisectProcess {
@@ -71,12 +86,13 @@ sub BisectProcess {
       splice @files, $i, 1;
     }
   }
-  my $start = GetParam('start') - 1; # $start and $end are indexes
-  my $end = GetParam('end') - 1;
-  $start = 0 if $start < 0; # not specified (probably right after Start)
-  $end = @files * 2 - 1 if $end < 0;
+  my $start = GetParam('start', 1) - 1; # $start and $end are indexes
+  my $end = GetParam('end', @files * 2) - 1;
   if ($end - $start <= 1) {
-    print 'It seems like ', $q->strong((fileparse($isGood ? $files[$end] : $files[$start]))[0]), ' is causing your problem.';
+    print Ts('It seems like module %s is causing your problem.',
+	     $q->strong((fileparse($isGood ? $files[$end] : $files[$start]))[0])), $q->br(), $q->br();
+    print T('Please note that this module does not handle situations when your problem is caused by a combination of specific modules (which is rare anyway).'), $q->br();
+    print T('Good luck fixing your problem! ;)');
     print GetFormStart(undef, 'get', 'bisect');
     print GetHiddenValue('action', 'bisect');
     print $q->submit(-name=>'stop', -value=>T('Stop'));
@@ -115,7 +131,7 @@ sub BisectEnableAll {
   for (bsd_glob("$ModuleDir/*.p[ml].disabled")) { # reenable all modules
     my $oldName = $_;
     s/\.disabled$//;
-    print "Enabling ", (fileparse($_))[0], '...', $q->br() if $_[0];
+    print Ts('Enabling %s', (fileparse($_))[0]), '...', $q->br() if $_[0];
     move($oldName, $_);
   }
 }
