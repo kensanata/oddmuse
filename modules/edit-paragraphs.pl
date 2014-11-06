@@ -73,18 +73,19 @@ sub EditParagraphNewPrintPageContent {
   my ($text, $revision) = @_;
   if ($text and not $revision) {
     my ($start, $end) = (0, 0);
-    while ($text =~ /\n\n/g) {
-      $end = pos($text) - 2;
-      push(@EditParagraphs, [$start, $end, substr($text, $start, $end - $start)]);
-      $start = $end + 2;
+    while ($text =~ /(\n\n+)/g) {
+      $end = pos($text);
+      push(@EditParagraphs, [$start, $end, substr($text, $start, $end - $start - length($1))]);
+      $start = $end;
     }
-    if ($start) {
+    # Only do this if we have at least two paragraphs.
+    if (@EditParagraphs and $start) {
       push(@EditParagraphs, [$start, length($text), substr($text, $start)]);
     }
   }
-  # for my $element (@EditParagraphs) {
-  #   warn $element->[0] . "-" . $element->[1] .": " . $element->[2];
-  # }
+  for my $element (@EditParagraphs) {
+    warn $element->[0] . "-" . $element->[1] .": " . $element->[2];
+  }
   return EditParagraphOldPrintPageContent(@_);
 }
 
@@ -104,14 +105,11 @@ sub EditParagraphNewCloseHtmlEnvironments {
   my $pos = pos;
   if ($pos) {
     for my $element (@EditParagraphs) {
-      if ($pos == $element->[1] + 2) {
+      if ($pos == $element->[1]) {
 	$text = $element->[2];
 	last;
       }
     }
-  } else {
-    # last one
-    $text = $EditParagraphs[-1]->[2];
   }
   if ($text) {
     # Huge Hack Alert: We are appending to $Fragment, which is what Clean appends to.
@@ -124,6 +122,7 @@ sub EditParagraphNewCloseHtmlEnvironments {
     # <h2>...<a ...>&#x270E;</a></h2><p></p>
     $Fragment =~ s/(<\/h[1-6]><p>)$//;
     my $html = $1;
+    $html .= "<!-- here: $pos -->";
     $Fragment .= ScriptLink("action=edit-paragraph;title=$OpenPageName;paragraph="
 			    . UrlEncode($text), $EditParagraphPencil, 'pencil');
     $Fragment .= $html;
