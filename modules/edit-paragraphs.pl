@@ -24,6 +24,7 @@ sub DoEditParagraph {
   my $id = GetParam('title', '');
   UserCanEditOrDie($id);
   my $old = GetParam('paragraph', '');
+  $old =~ s/\r//g;
   return DoEdit($id) unless $old;
   my $new = GetParam('text', '');
   OpenPage($id);
