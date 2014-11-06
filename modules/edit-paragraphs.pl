@@ -61,16 +61,16 @@ sub DoEditParagraph {
   PrintFooter($id, 'edit');
 }
 
-# When PrintPageContent is called for the current revision of a page
+# When PrintWikiToHTML is called for the current revision of a page
 # we initialize our data structure.
 
 my @EditParagraphs = ();
 
-*EditParagraphOldPrintPageContent = *PrintPageContent;
-*PrintPageContent = *EditParagraphNewPrintPageContent;
+*EditParagraphOldPrintWikiToHTML = *PrintWikiToHTML;
+*PrintWikiToHTML = *EditParagraphNewPrintWikiToHTML;
 
-sub EditParagraphNewPrintPageContent {
-  my ($text, $revision) = @_;
+sub EditParagraphNewPrintWikiToHTML {
+  my ($text, $is_saving_cache, $revision, $is_locked) = @_;
   if ($text and not $revision) {
     my ($start, $end) = (0, 0);
     while ($text =~ /(\n\n+)/g) {
@@ -83,10 +83,10 @@ sub EditParagraphNewPrintPageContent {
       push(@EditParagraphs, [$start, length($text), substr($text, $start)]);
     }
   }
-  for my $element (@EditParagraphs) {
-    warn $element->[0] . "-" . $element->[1] .": " . $element->[2];
-  }
-  return EditParagraphOldPrintPageContent(@_);
+  # for my $element (@EditParagraphs) {
+  #   warn $element->[0] . "-" . $element->[1] .": " . $element->[2];
+  # }
+  return EditParagraphOldPrintWikiToHTML(@_);
 }
 
 # edit icon
@@ -110,6 +110,9 @@ sub EditParagraphNewCloseHtmlEnvironments {
 	last;
       }
     }
+  } elsif (@EditParagraphs) {
+    # the last one
+    $text = $EditParagraphs[-1]->[2];
   }
   if ($text) {
     # Huge Hack Alert: We are appending to $Fragment, which is what Clean appends to.
@@ -122,10 +125,10 @@ sub EditParagraphNewCloseHtmlEnvironments {
     # <h2>...<a ...>&#x270E;</a></h2><p></p>
     $Fragment =~ s/(<\/h[1-6]><p>)$//;
     my $html = $1;
-    $html .= "<!-- here: $pos -->";
     $Fragment .= ScriptLink("action=edit-paragraph;title=$OpenPageName;paragraph="
 			    . UrlEncode($text), $EditParagraphPencil, 'pencil');
     $Fragment .= $html;
   }
+  # return "<!-- here: $pos -->" . EditParagraphOldCloseHtmlEnvironments(@_);
   return EditParagraphOldCloseHtmlEnvironments(@_);
 }
