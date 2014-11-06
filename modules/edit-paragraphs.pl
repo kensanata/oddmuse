@@ -113,10 +113,20 @@ sub EditParagraphNewCloseHtmlEnvironments {
     # last one
     $text = $EditParagraphs[-1]->[2];
   }
-  my $html; # = "<!-- here ($pos): $text -->";
   if ($text) {
-    $html .= ScriptLink("action=edit-paragraph;title=$OpenPageName;paragraph="
-		       . UrlEncode($text), $EditParagraphPencil, 'pencil');
+    # Huge Hack Alert: We are appending to $Fragment, which is what Clean appends to.
+    # We do this so that we can handle headers. Without this fix we'd see something like this:
+    # <h2>...</h2><p><a ...>&#x270E;</a></p>
+    # Usually this would look as follows:
+    # <h2>...</h2><p></p>
+    # This is eliminated in Dirty. But it won't be eliminated if we leave the link in there.
+    # What we want is this:
+    # <h2>...<a ...>&#x270E;</a></h2><p></p>
+    $Fragment =~ s/(<\/h[1-6]><p>)$//;
+    my $html = $1;
+    $Fragment .= ScriptLink("action=edit-paragraph;title=$OpenPageName;paragraph="
+			    . UrlEncode($text), $EditParagraphPencil, 'pencil');
+    $Fragment .= $html;
   }
-  return $html . EditParagraphOldCloseHtmlEnvironments(@_);
+  return EditParagraphOldCloseHtmlEnvironments(@_);
 }
