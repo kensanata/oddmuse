@@ -61,8 +61,11 @@ sub DoEditParagraph {
   PrintFooter($id, 'edit');
 }
 
-# When PrintWikiToHTML is called for the current revision of a page
-# we initialize our data structure.
+# When PrintWikiToHTML is called for the current revision of a page we
+# initialize our data structure. The data structure simply divides the
+# page up into blocks based on what one would like to edit. By
+# default, that's just paragraph breaks and list items. When using
+# Creole, ordered list items and table rows are added.
 
 my @EditParagraphs = ();
 
@@ -73,9 +76,18 @@ sub EditParagraphNewPrintWikiToHTML {
   my ($text, $is_saving_cache, $revision, $is_locked) = @_;
   if ($text and not $revision) {
     my ($start, $end) = (0, 0);
-    while ($text =~ /(\n\n+)/g) {
+    # This grouping with zero-width positive look-ahead assertion
+    # makes sure that this chunk of text does not include markup need
+    # for the next chunk of text.
+    if (grep { $_ eq \&CreoleRule } @MyRules) {
+      $regexp = "\n+(\n|(?=[*#-=|]))";
+    } else {
+      $regexp = "\n+(\n|(?=[*]))";
+    }
+    while ($text =~ /$regexp/g) {
       $end = pos($text);
-      push(@EditParagraphs, [$start, $end, substr($text, $start, $end - $start - length($1))]);
+      push(@EditParagraphs,
+	   [$start, $end, substr($text, $start, $end - $start)]);
       $start = $end;
     }
     # Only do this if we have at least two paragraphs.
@@ -83,9 +95,7 @@ sub EditParagraphNewPrintWikiToHTML {
       push(@EditParagraphs, [$start, length($text), substr($text, $start)]);
     }
   }
-  # for my $element (@EditParagraphs) {
-  #   warn $element->[0] . "-" . $element->[1] .": " . $element->[2];
-  # }
+  # warn join('', '', map { $_->[0] . "-" . $_->[1] .": " . $_->[2]; } @EditParagraphs);
   return EditParagraphOldPrintWikiToHTML(@_);
 }
 
@@ -95,24 +105,40 @@ sub EditParagraphNewPrintWikiToHTML {
 
 my $EditParagraphPencil = '&#x270E;';
 
-# Whenever CloseHtmlEnvironments is called, we add a link.
+# Whenever an important element is closed, we try to add a link.
 
 *EditParagraphOldCloseHtmlEnvironments = *CloseHtmlEnvironments;
 *CloseHtmlEnvironments = *EditParagraphNewCloseHtmlEnvironments;
 
 sub EditParagraphNewCloseHtmlEnvironments {
+  EditParagraph();
+  return EditParagraphOldCloseHtmlEnvironments(@_);
+}
+
+*EditParagraphOldCloseHtmlEnvironmentUntil = *CloseHtmlEnvironmentUntil;
+*CloseHtmlEnvironmentUntil = *EditParagraphNewCloseHtmlEnvironmentUntil;
+
+sub EditParagraphNewCloseHtmlEnvironmentUntil {
+  my $tag = $_[0];
+  if ($tag =~ /^(p|li|table|h[1-6])$/i) {
+    EditParagraph();
+  }
+  return EditParagraphOldCloseHtmlEnvironmentUntil(@_);
+}
+
+sub EditParagraph {
   my $text;
   my $pos = pos;
-  if ($pos) {
-    for my $element (@EditParagraphs) {
-      if ($pos == $element->[1]) {
-	$text = $element->[2];
-	last;
+  if (@EditParagraphs) {
+    if ($pos) {
+      while (@EditParagraphs and $EditParagraphs[0]->[1] <= $pos) {
+	$text .= $EditParagraphs[0]->[2];
+	shift(@EditParagraphs);
       }
+    } else {
+      # the last one
+      $text = $EditParagraphs[-1]->[2];
     }
-  } elsif (@EditParagraphs) {
-    # the last one
-    $text = $EditParagraphs[-1]->[2];
   }
   if ($text) {
 
@@ -145,6 +171,4 @@ sub EditParagraphNewCloseHtmlEnvironments {
       $Fragment .= $link
     }
   }
-  # return "<!-- here: $pos -->" . EditParagraphOldCloseHtmlEnvironments(@_);
-  return EditParagraphOldCloseHtmlEnvironments(@_);
 }

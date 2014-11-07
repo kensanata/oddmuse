@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 5;
+use Test::More tests => 15;
 use utf8;
 
 clear_pages();
@@ -25,13 +25,14 @@ Being but heavy, I will bear the light.
 
 Nay, gentle Romeo, we must have you dance.
 
+
 Not I, believe me: you have dancing shoes
 With nimble soles: I have a soul of lead
 So stakes me to the ground I cannot move.
 };
 
 my $page = update_page('Romeo_and_Mercutio', $text);
-for my $paragraph (split(/\n\n/, $text)) {
+for my $paragraph (split(/\n\n+/, $text)) {
   test_page($page, 'action=edit-paragraph;title=Romeo_and_Mercutio;paragraph='
 	    . UrlEncode($paragraph));
 }	   
@@ -50,3 +51,24 @@ my $text = q{|PARIS |JULIET |
 
 my $page = update_page('Paris_and_Juliet', $text);
 test_page_negative($page, '\|', '</table><p><a ');
+
+for my $row (split(/\n/, $text)) {
+  test_page($page, 'action=edit-paragraph;title=Paris_and_Juliet;paragraph='
+	    . UrlEncode($row));
+}	   
+
+my $text = q{== Romeo and Juliet, Act III, Scene II
+
+* Tybalt is gone, and Romeo banished;
+  Romeo that kill'd him, he is banished.
+* O God! did Romeo's hand shed Tybalt's blood?
+* It did, it did; alas the day, it did!
+};
+
+my $page = update_page('Nurse_and_Juliet', $text);
+
+for my $item (split(/\n(?=[*])/, $text)) {
+  my $str = UrlEncode($item);
+  $str =~ s/\*/\\*/g;
+  test_page($page, "action=edit-paragraph;title=Nurse_and_Juliet;paragraph=$str");
+}
