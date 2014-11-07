@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 4;
+use Test::More tests => 5;
 use utf8;
 
 clear_pages();
@@ -36,6 +36,8 @@ for my $paragraph (split(/\n\n/, $text)) {
 	    . UrlEncode($paragraph));
 }	   
 
+# Test for extra links in empty paragraphs before and after tables.
+
 add_module('creole.pl');
 
 my $text = q{|PARIS |JULIET |
@@ -47,4 +49,4 @@ my $text = q{|PARIS |JULIET |
 };
 
 my $page = update_page('Paris_and_Juliet', $text);
-test_page_negative($page, '\|');
+test_page_negative($page, '\|', '</table><p><a ');
