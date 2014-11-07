@@ -108,16 +108,15 @@ a.pencil {
     transition: visibility 0s 1s, opacity 1s linear;
     opacity: 0;
 }
-a.pencil:hover {
+*:hover > a.pencil {
     visible: visible;
-    transition: opacity 1s linear;
+    transition: opacity .5s linear;
     opacity: 1;
 }
-/* support tablets and phones */
-*:active > a.pencil {
-    visible: visible;
-    transition: opacity 0s;
-    opacity: 1;
+@media print {
+    a.pencil {
+	display: none;
+    }
 }
 
 a.number {
