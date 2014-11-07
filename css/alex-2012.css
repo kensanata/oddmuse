@@ -100,6 +100,26 @@ h1 a:visited, h2 a:visited, h3 a:visited {
 
 /* links */
 
+a.pencil {
+    padding-left: 1ex;
+    text-decoration: none;
+    color: inherit;
+    visible: hidden;
+    transition: visibility 0s 1s, opacity 1s linear;
+    opacity: 0;
+}
+a.pencil:hover {
+    visible: visible;
+    transition: opacity 1s linear;
+    opacity: 1;
+}
+/* support tablets and phones */
+*:active > a.pencil {
+    visible: visible;
+    transition: opacity 0s;
+    opacity: 1;
+}
+
 a.number {
     text-decoration: none;
 }
@@ -138,6 +158,15 @@ pre, code, tt {
     font-family: "Andale Mono", Monaco, "Courier New", Courier, monospace;
     font-size: 80%;
     line-height: 110%;
+}
+
+pre {
+    overflow:hidden;
+    white-space: pre-wrap;      /* CSS 3 */
+    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+    white-space: -pre-wrap;     /* Opera 4-6 */
+    white-space: -o-pre-wrap;   /* Opera 7 */
+    word-wrap: break-word;      /* Internet Explorer 5.5+ */
 }
 
 /* styling for divs that will be invisible when printing
@@ -364,6 +393,10 @@ div.image a img {
 }
 div.image span.caption {
     margin: 0 1em;
+}
+
+img {
+    max-width: 100%;
 }
 
 .left { float:left; margin-right: 1em; }
