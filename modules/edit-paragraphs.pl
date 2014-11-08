@@ -26,6 +26,8 @@ sub DoEditParagraph {
   my $old = GetParam('paragraph', '');
   $old =~ s/\r//g;
   return DoEdit($id) unless $old;
+
+  # Find text to edit
   my $new = GetParam('text', '');
   OpenPage($id);
   if ($new) {
@@ -36,8 +38,37 @@ sub DoEditParagraph {
     } else {
       $text = $Page{text};
     }
+    
     my $search_term = quotemeta($old);
-    if ($text =~ s/$search_term/$new/) {
+    my $around = GetParam('around', undef);
+    my $done;
+    if ($around) {
+      # Fuzz Factor: Just search and replace foo around a certain
+      # point in order to handle repeating paragraphs. Apply a fuzz
+      # factor to handle edit conflicts.
+      my $len = length($old);
+      my ($from, $to) = ($around - 2 * $len + 1, $around + $len - 1);
+      my ($before, $area, $after) =
+	  (substr($text, 0, $from),
+	   substr($text, $from, $to - $from),
+	   substr($text, $to));
+      $done = $area =~ s/$search_term/$new/;
+      $text = $before . $area . $after if $done;
+      if (!$done) {
+	ReportError(T('Could not identify the paragraph you were editing'),
+		    '500 INTERNAL SERVER ERROR',
+		    undef,
+		    $q->p(T('This is the section you edited:'))
+		    . $q->pre($old)
+		    . $q->p(Ts('This is the area around %s:', $around))
+		    . $q->pre($area));
+      }
+    } else {
+      # simple case, just do it
+      $done = $text =~ s/$search_term/$new/;
+    }
+
+    if ($done) {
       SetParam('text', $text);
       return DoPost($id);
     } else {
@@ -160,7 +191,7 @@ sub EditParagraph {
     # What we want, I guess, is this:
     # <table><tr><td>...<a ...>&#x270E;</a></td></tr></table></p>
     
-    my $link = ScriptLink("action=edit-paragraph;title=$OpenPageName;paragraph="
+    my $link = ScriptLink("action=edit-paragraph;title=$OpenPageName;around=$pos;paragraph="
 			  . UrlEncode($text), $EditParagraphPencil, 'pencil');
     if ($Fragment =~ s!((:?</h[1-6]>|</t[dh]></tr></table>)<p>)$!!) {
       $Fragment .= $link . $1;
