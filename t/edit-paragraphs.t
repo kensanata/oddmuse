@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 30;
+use Test::More tests => 31;
 use utf8;
 
 clear_pages();
@@ -52,7 +52,7 @@ xpath_test(get_page("action=edit-paragraph title=Romeo_and_Mercutio around=$arou
 
 add_module('creole.pl');
 
-my $text = q{|PARIS |JULIET |
+$text = q{|PARIS |JULIET |
 |Come you to make confession to this father? |To answer that, I should confess to you. |
 |Do not deny to him that you love me. |I will confess to you that I love him. |
 |So will ye, I am sure, that you love me. | |
@@ -60,7 +60,7 @@ my $text = q{|PARIS |JULIET |
 -- William Shakespeare, Romeo and Juliet, Act IV, Scene I
 };
 
-my $page = update_page('Paris_and_Juliet', $text);
+$page = update_page('Paris_and_Juliet', $text);
 test_page_negative($page, '\|', '</table><p><a ');
 
 for my $row (split(/\n/, $text)) {
@@ -68,7 +68,7 @@ for my $row (split(/\n/, $text)) {
 	    . UrlEncode($row));
 }	   
 
-my $text = q{== Romeo and Juliet, Act III, Scene II
+$text = q{== Romeo and Juliet, Act III, Scene II
 
 * Tybalt is gone, and Romeo banished;
   Romeo that kill'd him, he is banished.
@@ -76,7 +76,7 @@ my $text = q{== Romeo and Juliet, Act III, Scene II
 * It did, it did; alas the day, it did!
 };
 
-my $page = update_page('Nurse_and_Juliet', $text);
+$page = update_page('Nurse_and_Juliet', $text);
 
 for my $item (split(/\n(?=[*])/, $text)) {
   my $str = UrlEncode($item);
@@ -85,7 +85,7 @@ for my $item (split(/\n(?=[*])/, $text)) {
 	    . $str);
 }
 
-my $text = q{Benvolio: Tell me in sadness, who is that you love.
+$text = q{Benvolio: Tell me in sadness, who is that you love.
 
 Romeo:  What, shall I groan and tell thee?
 
@@ -136,3 +136,9 @@ test_page(get_page('action=edit-paragraph title=Benvolio_and_Romeo '
 test_page(get_page('Benvolio_and_Romeo'),
 	  'Benvolio: Tell me in sadness',
 	  'Ben: Groan!');
+
+$text = q{I am hurt.
+<em>A plague o' both your houses!</em> I am sped.
+};
+xpath_test(get_page('action=edit-paragraph title=Mercutio paragraph="' . UrlEncode($text) . '"'),
+	   qq'//textarea[text()="$text"]');
