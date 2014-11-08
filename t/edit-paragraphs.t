@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 25;
+use Test::More tests => 30;
 use utf8;
 
 clear_pages();
@@ -36,6 +36,17 @@ for my $paragraph (split(/\n\n+/, $text)) {
   test_page($page, 'action=edit-paragraph;title=Romeo_and_Mercutio;around=\d*;paragraph='
 	    . UrlEncode($paragraph));
 }	   
+
+# Check whether the form is right.
+ok($page =~ /action=edit-paragraph;title=Romeo_and_Mercutio;around=(\d*);paragraph=([^"]*)/, 'found example link to use');
+my $around = $1;
+my $enc = $2;
+my $par = UrlDecode($enc);
+xpath_test(get_page("action=edit-paragraph title=Romeo_and_Mercutio around=$around paragraph=$enc"),
+	   q'//input[@type="hidden"][@value="Romeo_and_Mercutio"][@name="title"]',
+	   q'//input[@type="hidden"][@value="edit-paragraph"][@name="action"]',
+	   qq'//textarea[text()="$par"]',
+	   qq'//input[\@type="hidden"][\@value="$around"][\@name="around"]');
 
 # Test for extra links in empty paragraphs before and after tables.
 

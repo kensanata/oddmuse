@@ -23,9 +23,12 @@ $Action{'edit-paragraph'} = \&DoEditParagraph;
 sub DoEditParagraph {
   my $id = GetParam('title', '');
   UserCanEditOrDie($id);
+
   my $old = GetParam('paragraph', '');
   $old =~ s/\r//g;
   return DoEdit($id) unless $old;
+
+  my $around = GetParam('around', undef);
 
   # Find text to edit
   my $new = GetParam('text', '');
@@ -40,7 +43,6 @@ sub DoEditParagraph {
     }
     
     my $search_term = quotemeta($old);
-    my $around = GetParam('around', undef);
     my $done;
     if ($around) {
       # Fuzz Factor: Just search and replace foo around a certain
@@ -86,6 +88,7 @@ sub DoEditParagraph {
   my $form = GetEditForm($id, undef, $old);
   my $param = GetHiddenValue('paragraph', $old);
   $param .= GetHiddenValue('action', 'edit-paragraph'); # add action
+  $param .= GetHiddenValue('around', $around); # add around position
   $form =~ s!</form>!$param</form>!;
   print $form;
   print $q->end_div();
