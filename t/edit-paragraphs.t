@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 36;
+use Test::More tests => 39;
 use utf8;
 
 clear_pages();
@@ -161,3 +161,33 @@ William Shakespeare, Romeo and Juliet, Act III, Scene I
 $page = update_page('Benvolio_and_Romeo', $text);
 test_page_negative($page, '</pre><p><a ', '<p><a ');
 test_page($page, 'fool!<a ', '</pre><hr ?/><p>William', 'Scene I<a');
+
+# mixed lists
+
+$text = q{* One
+## Two
+};
+
+$page = update_page('Alex_Daniel', $text);
+for my $item (split(/\n(?=[\*\#])/, $text)) {
+  my $str = UrlEncode($item);
+  $str =~ s/\*/\\*/g;
+  test_page($page, 'action=edit-paragraph;title=Alex_Daniel;around=\d*;paragraph='
+	    . $str);
+}
+
+# comments, the last element in particular
+			
+$text = q{Test
+
+-- Anonymous
+
+----
+
+Test
+
+-- Real Anonymous
+};
+
+$page = update_page('Alex_Daniel', $text);
+test_page($page, 'action=edit-paragraph;title=Alex_Daniel;around=\d*;paragraph=--%20Real%20Anonymous%0a');
