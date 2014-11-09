@@ -193,16 +193,19 @@ sub EditParagraph {
     # <table><tr><td>...</td></tr></table><p><a ...>&#x270E;</a></p>
     # What we want, I guess, is this:
     # <table><tr><td>...<a ...>&#x270E;</a></td></tr></table></p>
-    
+
     my $link = ScriptLink("action=edit-paragraph;title=$OpenPageName;around=$pos;paragraph="
 			  . UrlEncode($text), $EditParagraphPencil, 'pencil');
-    if ($Fragment =~ s!((:?</h[1-6]>|</t[dh]></tr></table>)<p>)$!!) {
+    if ($Fragment =~ s!((:?</h[1-6]>|</t[dh]></tr></table>|</pre>)<p>)$!!) {
+      # $Fragment .= '<!-- 1 -->';
       $Fragment .= $link . $1;
-    } elsif ($Fragment eq '<p>') {
+    } elsif ($pos and $Fragment =~ /<p>$/) {
       # Do nothing: this will result in <p></p> and get eliminated.
+      # $Fragment .= '<!-- 2 -->';
     } else {
       # This is the default: add the link.
-      $Fragment .= $link
+      # $Fragment .= '<!-- 3 -->';
+      $Fragment .= $link;
     }
   }
 }
