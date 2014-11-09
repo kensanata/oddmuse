@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 31;
+use Test::More tests => 36;
 use utf8;
 
 clear_pages();
@@ -142,3 +142,22 @@ $text = q{I am hurt.
 };
 xpath_test(get_page('action=edit-paragraph title=Mercutio paragraph="' . UrlEncode($text) . '"'),
 	   qq'//textarea[text()="$text"]');
+
+$text = q{
+{{{
+BENVOLIO        Romeo, away, be gone!
+        The citizens are up, and Tybalt slain.
+        Stand not amazed: the prince will doom thee death,
+        If thou art taken: hence, be gone, away!
+
+ROMEO   O, I am fortune's fool!
+}}}
+
+----
+
+William Shakespeare, Romeo and Juliet, Act III, Scene I
+};
+
+$page = update_page('Benvolio_and_Romeo', $text);
+test_page_negative($page, '</pre><p><a ', '<p><a ');
+test_page($page, 'fool!<a ', '</pre><hr ?/><p>William', 'Scene I<a');
