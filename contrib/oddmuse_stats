@@ -7,8 +7,15 @@ oddmuse-stats - Plugin to monitor Oddmuse edits
 
 =head1 CONFIGURATION
 
-Set @parent_dirs in the script. The directories in this list are searched
-for data directories containing rc.log files.
+Set env.parent_dirs in the config file. The directories in this list
+are searched for data directories containing rc.log files. No
+whitespace in the directory names, sorry.
+
+Example:
+
+    [oddmuse_stats]
+    user www-data
+    env.parent_dirs /home/alex /home/alex/campaignwiki
 
 =head1 AUTHORS
 
@@ -25,12 +32,21 @@ GPLv3
 
 =cut
 
+use Munin::Plugin;
 use File::Basename;
 
 # The wiki directories may not contain any spaces.
-my @parent_dirs = ('/home/alex', '/home/alex/campaignwiki');
-my %wikis = ();
+# Use the config file to set the environment variable!
+my @parent_dirs = ();
+my %logfiles = ();
+my %names = ();
 my $debug = $ENV{MUNIN_DEBUG};
+
+if ($ENV{'parent_dirs'}) {
+    @parent_dirs = split(/ /, $ENV{'parent_dirs'});
+} else {
+    die "The parent_dirs environment variable must be set.\n";
+}
 
 for my $parent_dir (@parent_dirs) {
     warn "opening $parent_dir\n" if $debug;
@@ -38,7 +54,11 @@ for my $parent_dir (@parent_dirs) {
 	while(readdir $dh) {
 	    next if $_ eq '.' or $_ eq '..';
 	    if (-r "$parent_dir/$_/rc.log") {
-		$wikis{basename($_)} = "$parent_dir/$_/rc.log";
+		my $basename = basename($_);
+		$names{clean_fieldname($basename)}
+		= $basename;
+		$logfiles{clean_fieldname($basename)}
+		= "$parent_dir/$_/rc.log";
 	    } else {
 		warn "discarding $_\n" if $debug;
 	    }
@@ -51,11 +71,11 @@ my $yesterday = time() - 86400;
 
 if ($ARGV[0]) {
     if ($ARGV[0] eq 'autoconf') {
-	if (keys %wikis) {
+	if (keys %logfiles) {
 	    print "yes\n";
 	    exit 0;
 	} else {
-	    print "no (no wikis found in " . join(", ", @parent_dirs) . ")\n";
+	    print "no (no logfiles found in " . join(", ", @parent_dirs) . ")\n";
 	    exit 0;
 	}
     } elsif ($ARGV[0] eq 'config') {
@@ -64,20 +84,21 @@ if ($ARGV[0]) {
 	print "graph_info This graph shows how many edits the wiki had in the last 24h.\n";
 	print "graph_vlabel edits/day\n";
 	print "graph_order";
-	for my $wiki (sort keys %wikis) {
+	for my $wiki (sort keys %logfiles) {
 	    print " $wiki";
 	};
 	print "\n";
-	for my $wiki (sort keys %wikis) {
-	    print "$wiki.label $wiki\n";
+	for my $wiki (sort keys %logfiles) {
+	    my $name = $names{$wiki};
+	    print "$wiki.label $name\n";
 	}
 	exit 0;
     }
 }
 
-for my $wiki (sort keys %wikis) {
-    open (my $fh, '<', $wikis{$wiki})
-	or die "cannot open " . $wikis{$wiki} . ": $!";
+for my $wiki (sort keys %logfiles) {
+    open (my $fh, '<', $logfiles{$wiki})
+	or die "cannot open " . $logfiles{$wiki} . ": $!";
     my $value = 0;
     while (<$fh>) {
 	my ($ts) = split(/\x1e/);
