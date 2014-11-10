@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 44;
+use Test::More tests => 48;
 use utf8;
 clear_pages();
 
@@ -128,19 +128,24 @@ test_page(get_page('Benvolio_and_Romeo'),
 	  'Benvolio: Tell me in sadness',
 	  'Ben: Groan!');
 
-# Try again but now let's simulate a page changed in the background
-# such that the text is now not exactly at the expected position, but
-# close by.
-$text =~ s/tell thee/tell you/;
-update_page('Benvolio_and_Romeo', $text);
-test_page(get_page('action=edit-paragraph title=Benvolio_and_Romeo '
-		   . 'around=105 '
-		   . 'paragraph=Benvolio text=Ben'),
-	  # not using update_page because of the parameters
-	  'Status: 302');
-test_page(get_page('Benvolio_and_Romeo'),
-	  'Benvolio: Tell me in sadness',
-	  'Ben: Groan!');
+ SKIP: {
+
+   skip "We don't do fuzzy matching anymore.", 3;
+   
+   # Try again but now let's simulate a page changed in the background
+   # such that the text is now not exactly at the expected position, but
+   # close by.
+   $text =~ s/tell thee/tell you/;
+   update_page('Benvolio_and_Romeo', $text);
+   test_page(get_page('action=edit-paragraph title=Benvolio_and_Romeo '
+		      . 'around=105 '
+		      . 'paragraph=Benvolio text=Ben'),
+	     # not using update_page because of the parameters
+	     'Status: 302');
+   test_page(get_page('Benvolio_and_Romeo'),
+	     'Benvolio: Tell me in sadness',
+	     'Ben: Groan!');
+}
 
 # HTML encoding.
 
@@ -230,7 +235,20 @@ $text = q{Test.
 
 $page = update_page('Test', $text);
 test_page_negative(get_page('action=browse id=Test raw=1'), '&lt;');
-# HTML encoded text is longer: every < > counts adds 3. Thus 16 + 2x3 = 22.
-my $action = 'action=edit-paragraph;title=Test;around=22;paragraph=' . UrlEncode("<test1>\n\n");
+# HTML encoded text is longer: every < > counts adds 3. Thus 33 + 6x3 = 51.
+my $action = 'action=edit-paragraph;title=Test;around=51;paragraph=' . UrlEncode("<test3>\n");
 test_page($page, $action);
-test_page(get_page(join(' ', split(';', $action))), QuoteHtml("<test1>\n\n"));
+test_page(get_page(join(' ', split(';', $action))), QuoteHtml("<test3>\n"));
+# test error
+test_page(get_page('action=edit-paragraph title=Test'
+ . ' text=' . UrlEncode("<test30>\n")        # new
+ . ' paragraph=' . UrlEncode("<test3>\n")    # old
+ . ' around=1'),
+ 'Could not identify the paragraph you were editing',
+ '<pre>' . QuoteHtml("<test3>\n") . '</pre>');
+test_page(get_page('action=edit-paragraph title=Test'
+ . ' text=' . UrlEncode("<test30>\n")        # new
+ . ' paragraph=' . UrlEncode("<test3>\n")    # old
+ . ' around=51'), 'Status: 302');
+$text =~ s/test3/test30/;
+test_page(get_page('action=browse id=Test raw=1'), $text);

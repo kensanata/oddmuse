@@ -48,45 +48,32 @@ sub DoEditParagraph {
       $text = $Page{text};
     }
     
-    my $search_term = quotemeta($old);
     my $done;
     if ($around) {
-      # Fuzz Factor: Just search and replace foo around a certain
-      # point in order to handle repeating paragraphs. Apply a fuzz
-      # factor to handle edit conflicts.
-      my $len = length($old);
-      my ($from, $to) = ($around - 2 * $len + 1, $around + $len - 1);
-      $from = 0 if $from < 0;
-      $to = $len if $to > $len;
-      my ($before, $area, $after) =
-	  (substr($text, 0, $from),
-	   substr($text, $from, $to - $from),
-	   substr($text, $to));
-      $done = $area =~ s/$search_term/$new/;
-      $text = $before . $area . $after if $done;
-      if (!$done) {
-	ReportError(T('Could not identify the paragraph you were editing'),
-		    '500 INTERNAL SERVER ERROR',
-		    undef,
-		    $q->p(T('This is the section you edited:'))
-		    . $q->pre($old)
-		    . $q->p(Ts('This is the area around %s:', $around))
-		    . $q->pre($area));
+      # The tricky part is that the numbers refer to the HTML quoted text. What a pain.
+      my $qold = QuoteHtml($old);
+      my $qtext = QuoteHtml($text);
+
+      if (substr($qtext, $around - length($qold), length($qold)) eq $qold) {
+	$text = UnquoteHtml(substr($qtext, 0, $around - length($qold))
+			    . QuoteHtml($new) . substr($qtext, $around));
+	$done = 1;
       }
     } else {
       # simple case, just do it
+      my $search_term = quotemeta($old);
       $done = $text =~ s/$search_term/$new/;
     }
 
     if ($done) {
-      SetParam('text', $text);
+      SetParam('text', UnquoteHtml($text));
       return DoPost($id);
     } else {
       ReportError(T('Could not identify the paragraph you were editing'),
 		  '500 INTERNAL SERVER ERROR',
 		  undef,
 		  $q->p(T('This is the section you edited:'))
-		  . $q->pre($old)
+		  . $q->pre(QuoteHtml($old))
 		  . $q->p(T('This is the current page:'))
 		  . $q->pre($text));
     }
@@ -165,7 +152,7 @@ sub EditParagraphNewCloseHtmlEnvironmentUntil {
 
 sub EditParagraph {
   my $text;
-  my $pos = pos;
+  my $pos = pos; # pos is empty for the last link
   if (@EditParagraphs) {
     if ($pos) {
       while (@EditParagraphs and $EditParagraphs[0]->[1] <= $pos) {
@@ -192,6 +179,8 @@ sub EditParagraph {
     # <table><tr><td>...</td></tr></table><p><a ...>&#x270E;</a></p>
     # What we want, I guess, is this:
     # <table><tr><td>...<a ...>&#x270E;</a></td></tr></table></p>
+    
+    $pos = $pos || length(QuoteHtml($Page{text})); # make sure we have an around value
     my $link = ScriptLink("action=edit-paragraph;title=$OpenPageName;around=$pos;paragraph="
 			  . UrlEncode(UnquoteHtml($text)), $EditParagraphPencil, 'pencil');
     if ($Fragment =~ s!((:?</h[1-6]>|</t[dh]></tr></table>|</pre>)<p>)$!!) {
