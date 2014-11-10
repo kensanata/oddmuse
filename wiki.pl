@@ -98,7 +98,7 @@ $LogoUrl     = '';              # URL for site logo ('' for no logo)
 $NotFoundPg  = '';              # Page for not-found links ('' for blank pg)
 
 $NewText     = T('This page is empty.') . "\n";    # New page text
-$NewComment  = T('Add your comment here:') . "\n"; # New comment text
+$NewComment  = T('Add your comment here:'); # New comment text
 
 $EditAllowed = 1;               # 0 = no, 1 = yes, 2 = comments pages only, 3 = comments only
 $AdminPass //= '';              # Whitespace separated passwords.
@@ -3516,7 +3516,7 @@ sub DoPost {
   }
   my $comment = UnquoteHtml(GetParam('aftertext', undef));
   $comment =~ s/(\r|$FS)//go;
-  if (defined($comment) and (not $comment or $comment eq $NewComment)) {
+  if ($comment eq '') {
     ReleaseLock();
     ReBrowsePage($id);
   }
@@ -3630,7 +3630,7 @@ sub AddComment {
   my ($string, $comment) = @_;
   $comment =~ s/\r//g;    # Remove "\r"-s (0x0d) from the string
   $comment =~ s/\s+$//g;  # Remove whitespace at the end
-  if ($comment ne '' and $comment ne $NewComment) {
+  if ($comment ne '') {
     my $author = GetParam('username', T('Anonymous'));
     my $homepage = GetParam('homepage', '');
     $homepage = 'http://' . $homepage if $homepage and $homepage !~ /^($UrlProtocols):/;
