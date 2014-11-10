@@ -87,6 +87,14 @@ sub TocScript {
       if (toc) {
         var html = outline.asHTML(true);
         toc.innerHTML = html;
+
+	items = toc.getElementsByTagName('a');
+	for (var i = 0; i < items.length; i++) {
+	  if (items[i].textContent.endsWith('✎')) {
+            var text = items[i].childNodes[0].nodeValue;
+	    items[i].childNodes[0].nodeValue = text.substring(0, text.length - 1);
+	  }
+	}
       }
     }
   }
