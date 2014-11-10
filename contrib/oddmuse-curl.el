@@ -1031,6 +1031,6 @@ PAGENAME is the pagename of the page you want to browse."
   (interactive)
   (kill-new (oddmuse-url oddmuse-wiki oddmuse-page-name)))
 
-(provide 'oddmuse)
+(provide 'oddmuse-curl)
 
 ;;; oddmuse-curl.el ends here
