@@ -14,10 +14,12 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 39;
+use Test::More tests => 41;
 use utf8;
-
 clear_pages();
+
+AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
+
 add_module('edit-paragraphs.pl');
 
 my $text = q{Give me a torch: I am not for this ambling;
@@ -189,5 +191,21 @@ Test
 -- Real Anonymous
 };
 
+$page = update_page('Comments_on_Alex_Daniel', $text);
+test_page($page, 'action=edit-paragraph;title=Comments_on_Alex_Daniel;around=\d*;paragraph=--%20Real%20Anonymous%0a');
+
+# more than one newline at the end
+
+$text = q{one
+
+two
+
+};
+
 $page = update_page('Alex_Daniel', $text);
-test_page($page, 'action=edit-paragraph;title=Alex_Daniel;around=\d*;paragraph=--%20Real%20Anonymous%0a');
+for my $item (split(/\n+/, $text)) {
+  my $str = UrlEncode($item);
+  $str =~ s/\*/\\*/g;
+  test_page($page, 'action=edit-paragraph;title=Alex_Daniel;around=\d*;paragraph='
+	    . $str);
+}
