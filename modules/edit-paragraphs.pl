@@ -16,6 +16,12 @@ package OddMuse;
 
 AddModuleDescription('edit-paragraph.pl', 'Edit Paragraphs Extension');
 
+# edit icon
+# http://publicdomainvectors.org/en/free-clipart/Pencil-vector-icon/9221.html
+# q{<img width="30" height="30" title="" alt="edit" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAE2UlEQVRIx53WW0sbaRwG8GcmSsxhdTKT5K60FFqa4CmKh96uq62gtR563butN1KNQSgESqFemBjr2mKjMRpBt1uln2FJe9ObHsyu3d2yyH6EFoTVhr7PXrQTJslMmuwLA0mYvL95/vOebPjSJJMLJZ+t7iu9pw9AHEAQwAGAE4v/Wnasf5dNHsQK/R7A37IsEwAB/ATAY9W/VUpjh9Wi7wHw5s2b4vz588KAKyb9fDMVqniwPgB/AWA0GhX5fF68fftWBAIBHV82wf83bET/AMDJyUnx4cMHwa/t1atXRry07AW0FlhvPwA4dDgclCRJtLe3ixcvXtDYXr9+bcRXjLhcQ+JS9LeGhgbeunVLXL58WQBgIBDg8+fPy/BgMKjjD3VcrrHUOppraGjg3NycWFpaEmfOnKGiKLTC37x5I1paWnT8US2w3voBHDgcDkYiEZFIJITP56PH42E0GmVLSwsB8NKlS8xms0V4JpMRdXV1+lSrWNbS3/sBHLhcLs7OzopEIiH8fj8VReHy8jIjkQhdLhfPnTtXhudyOdHV1UVJkgSAPVQxV4uSulwuhsNhsbi4KPx+P1VV5dLSEsPhMGVZZnNzMxcWFnj27FkCYDAY5P7+vmhra9OT/gLAWe0yOADgwO12c2ZmpoBqmsbFxUWGw2HabDY2Nzdza2uLN27coCzL7Ojo0BPq6C4Ad7Ur0gCAnNvtLkrq9XoZj8cLSVtbW7mxscHx8XEC4NDQEBcWFoSqqjq6DeC7ass7ACBXWl6v18tYLFZA29vbub6+zomJCQLg8PAwt7e3RW9vL7+u22kATWYrlxl6BcDvTqeTkUhExONx4fP5CklnZ2dps9kYCoWYTCYL6PXr15lOp0V3d7eeNGWxUVii7xwOB+fm5spQPWlHR0cROjY2xlQqJXp6enQ0CUD71u5kRP+02+28c+eOiMfj9Hq91DSNiUSCMzMzpuj4+DjX1tZEb2+vjq4C8FZ4pUXoVQDv6+vrGY1GRSwWE5qmUVVVPnjwoICGQiGura0VBtLExASTyaQRfQTAV+U4wlV9E797966IxWJUVZWKonBlZYXT09OUZZltbW1MpVKV0IeSJPnN3qkZPAjgCADv3bsnYrEYPR4PGxsbubq6ytu3b1OSJLa2tjKdTnNsbMyqvCsmqGWprwD4R9/E79+/z6amJrrdbq6vr3NqaqqwImUyGY6OjhIAR0dHSwfSyjeSlrV3dXV1nJ+fFx8/fuSTJ0/Y2NjIjY0NTk1NUZIkBgIB7uzscGRkhAA4MjLCzc1N45R5KEmSr8LZzbRRURTx6dMnkuTx8TGz2SwnJycJgBcvXuTTp0957dq1osWhq6vLOJAqjl6rB6CqqoIkhfhyasnn80yn07xw4QL39/c5PDxMABwcHOTu7q7o7Ow0Thmt2tFbBmuaRiMshODJyQlfvnzJoaEhAuDAwAD39vZEKBQyLg6eGk6h5XB9fT0zmUwRTpKnp6d8/Pgx+/v7+ezZM+PWlrI4sko1lfrre+bm5mYZ/vnzZ2azWREMBnU0XbLLSFVureawjm9tbRUdV3K5nAgEAgQgAGQAuGpALRNLBlgCAKfTib6+PtjtdpyenvLw8FA6OjoSAH4G8COAfyuVzyKYafvVmNrkygPYAWCvMWnFUv8Hwmcq2TCQ4MwAAAAASUVORK5CYII=" />};
+
+our $EditParagraphPencil = '&#x270E;';
+
 # Allow editing of substrings
 
 $Action{'edit-paragraph'} = \&DoEditParagraph;
@@ -124,20 +130,15 @@ sub EditParagraphNewPrintWikiToHTML {
 	   [$start, $end, substr($text, $start, $end - $start)]);
       $start = $end;
     }
-    # Only do this if we have at least two paragraphs.
-    if (@EditParagraphs and $start) {
+    # Only do this if we have at least two paragraphs and the end
+    # isn't just some empty lines.
+    if (@EditParagraphs and $start and $start < length($text)) {
       push(@EditParagraphs, [$start, length($text), substr($text, $start)]);
     }
   }
   # warn join('', '', map { $_->[0] . "-" . $_->[1] .": " . $_->[2]; } @EditParagraphs);
   return EditParagraphOldPrintWikiToHTML(@_);
 }
-
-# edit icon
-# http://publicdomainvectors.org/en/free-clipart/Pencil-vector-icon/9221.html
-# q{<img width="30" height="30" title="" alt="edit" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAE2UlEQVRIx53WW0sbaRwG8GcmSsxhdTKT5K60FFqa4CmKh96uq62gtR563butN1KNQSgESqFemBjr2mKjMRpBt1uln2FJe9ObHsyu3d2yyH6EFoTVhr7PXrQTJslMmuwLA0mYvL95/vOebPjSJJMLJZ+t7iu9pw9AHEAQwAGAE4v/Wnasf5dNHsQK/R7A37IsEwAB/ATAY9W/VUpjh9Wi7wHw5s2b4vz588KAKyb9fDMVqniwPgB/AWA0GhX5fF68fftWBAIBHV82wf83bET/AMDJyUnx4cMHwa/t1atXRry07AW0FlhvPwA4dDgclCRJtLe3ixcvXtDYXr9+bcRXjLhcQ+JS9LeGhgbeunVLXL58WQBgIBDg8+fPy/BgMKjjD3VcrrHUOppraGjg3NycWFpaEmfOnKGiKLTC37x5I1paWnT8US2w3voBHDgcDkYiEZFIJITP56PH42E0GmVLSwsB8NKlS8xms0V4JpMRdXV1+lSrWNbS3/sBHLhcLs7OzopEIiH8fj8VReHy8jIjkQhdLhfPnTtXhudyOdHV1UVJkgSAPVQxV4uSulwuhsNhsbi4KPx+P1VV5dLSEsPhMGVZZnNzMxcWFnj27FkCYDAY5P7+vmhra9OT/gLAWe0yOADgwO12c2ZmpoBqmsbFxUWGw2HabDY2Nzdza2uLN27coCzL7Ojo0BPq6C4Ad7Ur0gCAnNvtLkrq9XoZj8cLSVtbW7mxscHx8XEC4NDQEBcWFoSqqjq6DeC7ass7ACBXWl6v18tYLFZA29vbub6+zomJCQLg8PAwt7e3RW9vL7+u22kATWYrlxl6BcDvTqeTkUhExONx4fP5CklnZ2dps9kYCoWYTCYL6PXr15lOp0V3d7eeNGWxUVii7xwOB+fm5spQPWlHR0cROjY2xlQqJXp6enQ0CUD71u5kRP+02+28c+eOiMfj9Hq91DSNiUSCMzMzpuj4+DjX1tZEb2+vjq4C8FZ4pUXoVQDv6+vrGY1GRSwWE5qmUVVVPnjwoICGQiGura0VBtLExASTyaQRfQTAV+U4wlV9E797966IxWJUVZWKonBlZYXT09OUZZltbW1MpVKV0IeSJPnN3qkZPAjgCADv3bsnYrEYPR4PGxsbubq6ytu3b1OSJLa2tjKdTnNsbMyqvCsmqGWprwD4R9/E79+/z6amJrrdbq6vr3NqaqqwImUyGY6OjhIAR0dHSwfSyjeSlrV3dXV1nJ+fFx8/fuSTJ0/Y2NjIjY0NTk1NUZIkBgIB7uzscGRkhAA4MjLCzc1N45R5KEmSr8LZzbRRURTx6dMnkuTx8TGz2SwnJycJgBcvXuTTp0957dq1osWhq6vLOJAqjl6rB6CqqoIkhfhyasnn80yn07xw4QL39/c5PDxMABwcHOTu7q7o7Ow0Thmt2tFbBmuaRiMshODJyQlfvnzJoaEhAuDAwAD39vZEKBQyLg6eGk6h5XB9fT0zmUwRTpKnp6d8/Pgx+/v7+ezZM+PWlrI4sko1lfrre+bm5mYZ/vnzZ2azWREMBnU0XbLLSFVureawjm9tbRUdV3K5nAgEAgQgAGQAuGpALRNLBlgCAKfTib6+PtjtdpyenvLw8FA6OjoSAH4G8COAfyuVzyKYafvVmNrkygPYAWCvMWnFUv8Hwmcq2TCQ4MwAAAAASUVORK5CYII=" />};
-
-my $EditParagraphPencil = '&#x270E;';
 
 # Whenever an important element is closed, we try to add a link.
 
