@@ -56,6 +56,8 @@ sub DoEditParagraph {
       # factor to handle edit conflicts.
       my $len = length($old);
       my ($from, $to) = ($around - 2 * $len + 1, $around + $len - 1);
+      $from = 0 if $from < 0;
+      $to = $len if $to > $len;
       my ($before, $area, $after) =
 	  (substr($text, 0, $from),
 	   substr($text, $from, $to - $from),
@@ -114,26 +116,26 @@ my @EditParagraphs = ();
 
 sub EditParagraphNewPrintWikiToHTML {
   my ($text, $is_saving_cache, $revision, $is_locked) = @_;
-  if ($text and not $revision) {
+  # We need to use quoted HTML because that's what the rules will applied to!
+  my $quoted_text = QuoteHtml($text);
+  if ($quoted_text and not $revision) {
     my ($start, $end) = (0, 0);
-    # This grouping with zero-width positive look-ahead assertion
-    # makes sure that this chunk of text does not include markup need
-    # for the next chunk of text.
+    # This grouping with zero-width positive look-ahead assertion makes sure that this chunk of text does not include
+    # markup need for the next chunk of text.
     if (grep { $_ eq \&CreoleRule } @MyRules) {
       $regexp = "\n+(\n|(?=[*#-=|]))";
     } else {
       $regexp = "\n+(\n|(?=[*]))";
     }
-    while ($text =~ /$regexp/g) {
-      $end = pos($text);
+    while ($quoted_text =~ /$regexp/g) {
+      $end = pos($quoted_text);
       push(@EditParagraphs,
-	   [$start, $end, substr($text, $start, $end - $start)]);
+	   [$start, $end, substr($quoted_text, $start, $end - $start)]);
       $start = $end;
     }
-    # Only do this if we have at least two paragraphs and the end
-    # isn't just some empty lines.
-    if (@EditParagraphs and $start and $start < length($text)) {
-      push(@EditParagraphs, [$start, length($text), substr($text, $start)]);
+    # Only do this if we have at least two paragraphs and the end isn't just some empty lines.
+    if (@EditParagraphs and $start and $start < length($quoted_text)) {
+      push(@EditParagraphs, [$start, length($quoted_text), substr($quoted_text, $start)]);
     }
   }
   # warn join('', '', map { $_->[0] . "-" . $_->[1] .": " . $_->[2]; } @EditParagraphs);
@@ -177,26 +179,21 @@ sub EditParagraph {
   }
   if ($text) {
 
-    # Huge Hack Alert: We are appending to $Fragment, which is what
-    # Clean appends to. We do this so that we can handle headers and
-    # other block elements. Without this fix we'd see something like
-    # this:
+    # Huge Hack Alert: We are appending to $Fragment, which is what Clean appends to. We do this so that we can handle
+    # headers and other block elements. Without this fix we'd see something like this:
     # <h2>...</h2><p><a ...>&#x270E;</a></p>
     # Usually this would look as follows:
     # <h2>...</h2><p></p>
-    # This is eliminated in Dirty. But it won't be eliminated if we leave the link in there.
-    # What we want is this:
+    # This is eliminated in Dirty. But it won't be eliminated if we leave the link in there. What we want is this:
     # <h2>...<a ...>&#x270E;</a></h2><p></p>
     #
-    # The same issue arises for other block level elements. What
-    # happens at the end of a table? Without this fix we'd see
-    # something like this:
+    # The same issue arises for other block level elements. What happens at the end of a table? Without this fix we'd
+    # see something like this:
     # <table><tr><td>...</td></tr></table><p><a ...>&#x270E;</a></p>
     # What we want, I guess, is this:
     # <table><tr><td>...<a ...>&#x270E;</a></td></tr></table></p>
-
     my $link = ScriptLink("action=edit-paragraph;title=$OpenPageName;around=$pos;paragraph="
-			  . UrlEncode($text), $EditParagraphPencil, 'pencil');
+			  . UrlEncode(UnquoteHtml($text)), $EditParagraphPencil, 'pencil');
     if ($Fragment =~ s!((:?</h[1-6]>|</t[dh]></tr></table>|</pre>)<p>)$!!) {
       # $Fragment .= '<!-- 1 -->';
       $Fragment .= $link . $1;
