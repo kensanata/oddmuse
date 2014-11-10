@@ -28,7 +28,7 @@
 
 (add-to-list 'vc-handled-backends 'oddmuse)
 
-(require 'oddmuse)
+(require 'oddmuse-curl)
 (require 'diff)
 
 (defun vc-oddmuse-revision-granularity () 'file)
