@@ -3526,7 +3526,7 @@ sub DoPost {
   }
   my $comment = UnquoteHtml(GetParam('aftertext', undef));
   $comment =~ s/(\r|$FS)//go;
-  if ($comment eq '') {
+  if (defined $comment and $comment eq '') {
     ReleaseLock();
     ReBrowsePage($id);
   }
