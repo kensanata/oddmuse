@@ -2091,11 +2091,20 @@ sub DoAdminPage {
   my @menu = ();
   push(@menu, ScriptLink('action=index',    T('Index of all pages'), 'index')) if $Action{index};
   push(@menu, ScriptLink('action=version',  T('Wiki Version'),     'version')) if $Action{version};
-  push(@menu, ScriptLink('action=unlock',   T('Unlock Wiki'),       'unlock')) if $Action{unlock};
-  push(@menu, ScriptLink('action=password', T('Password'),        'password')) if $Action{password};
+  push(@menu, ScriptLink('action=password', T('Password'), 'password')) if $Action{password};
   push(@menu, ScriptLink('action=maintain', T('Run maintenance'), 'maintain')) if $Action{maintain};
+  my @locks;
+  for my $pattern (@KnownLocks) {
+    for my $name (bsd_glob $pattern) {
+      if (-d $LockDir . $name) {
+	push(@locks, $name);
+      }
+    }
+  }
+  if (@locks and $Action{unlock}) {
+    push(@menu, ScriptLink('action=unlock', T('Unlock Wiki'), 'unlock') . ' (' . join(', ', @locks) . ')');
+  };
   if (UserIsAdmin()) {
-    push(@menu, ScriptLink('action=clear', T('Clear Cache'), 'clear')) if $Action{clear};
     if ($Action{editlock}) {
       if (-f "$DataDir/noedit") {
 	push(@menu, ScriptLink('action=editlock;set=0', T('Unlock site'), 'editlock 0'));
@@ -2113,6 +2122,7 @@ sub DoAdminPage {
 			       Ts('Lock %s',   $title), 'pagelock 1'));
       }
     }
+    push(@menu, ScriptLink('action=clear', T('Clear Cache'), 'clear')) if $Action{clear};
   }
   foreach my $sub (@MyAdminCode) {
     &$sub($id, \@menu, \@rest);
