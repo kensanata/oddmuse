@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 41;
+use Test::More tests => 48;
 use utf8;
 clear_pages();
 
@@ -40,6 +40,7 @@ for my $paragraph (split(/\n\n+/, $text)) {
 }	   
 
 # Check whether the form is right.
+
 ok($page =~ /action=edit-paragraph;title=Romeo_and_Mercutio;around=(\d*);paragraph=([^"]*)/, 'found example link to use');
 my $around = $1;
 my $enc = $2;
@@ -103,7 +104,8 @@ Romeo: A right good mark-man! And she's fair I love.
 Benvolio: A right fair mark, fair coz, is soonest hit.
 };
 
-# replace the first occurence
+# Replace the first occurence.
+
 test_page(update_page('Benvolio_and_Romeo', $text),
 	  'Benvolio: Tell me in sadness');
 test_page(get_page('action=edit-paragraph title=Benvolio_and_Romeo '
@@ -114,7 +116,8 @@ test_page(get_page('Benvolio_and_Romeo'),
 	  'Ben: Tell me in sadness',
 	  'Benvolio: Groan!');
 
-# reset and try again but replace the occurence around 105
+# Reset and try again but replace the occurence around 105.
+
 update_page('Benvolio_and_Romeo', $text);
 test_page(get_page('action=edit-paragraph title=Benvolio_and_Romeo '
 		   . 'around=105 '
@@ -125,25 +128,34 @@ test_page(get_page('Benvolio_and_Romeo'),
 	  'Benvolio: Tell me in sadness',
 	  'Ben: Groan!');
 
-# try again but now let's simulate a page changed in the background
-# such that the text is now not exactly at the expected position, but
-# close by.
-$text =~ s/tell thee/tell you/;
-update_page('Benvolio_and_Romeo', $text);
-test_page(get_page('action=edit-paragraph title=Benvolio_and_Romeo '
-		   . 'around=105 '
-		   . 'paragraph=Benvolio text=Ben'),
-	  # not using update_page because of the parameters
-	  'Status: 302');
-test_page(get_page('Benvolio_and_Romeo'),
-	  'Benvolio: Tell me in sadness',
-	  'Ben: Groan!');
+ SKIP: {
+
+   skip "We don't do fuzzy matching anymore.", 3;
+   
+   # Try again but now let's simulate a page changed in the background
+   # such that the text is now not exactly at the expected position, but
+   # close by.
+   $text =~ s/tell thee/tell you/;
+   update_page('Benvolio_and_Romeo', $text);
+   test_page(get_page('action=edit-paragraph title=Benvolio_and_Romeo '
+		      . 'around=105 '
+		      . 'paragraph=Benvolio text=Ben'),
+	     # not using update_page because of the parameters
+	     'Status: 302');
+   test_page(get_page('Benvolio_and_Romeo'),
+	     'Benvolio: Tell me in sadness',
+	     'Ben: Groan!');
+}
+
+# HTML encoding.
 
 $text = q{I am hurt.
 <em>A plague o' both your houses!</em> I am sped.
 };
 xpath_test(get_page('action=edit-paragraph title=Mercutio paragraph="' . UrlEncode($text) . '"'),
 	   qq'//textarea[text()="$text"]');
+
+# Make sure the link at the very end is shown.
 
 $text = q{
 {{{
@@ -164,7 +176,7 @@ $page = update_page('Benvolio_and_Romeo', $text);
 test_page_negative($page, '</pre><p><a ', '<p><a ');
 test_page($page, 'fool!<a ', '</pre><hr ?/><p>William', 'Scene I<a');
 
-# mixed lists
+# Mixed lists.
 
 $text = q{* One
 ## Two
@@ -178,7 +190,7 @@ for my $item (split(/\n(?=[\*\#])/, $text)) {
 	    . $str);
 }
 
-# comments, the last element in particular
+# Comments, the last element in particular.
 			
 $text = q{Test
 
@@ -194,7 +206,7 @@ Test
 $page = update_page('Comments_on_Alex_Daniel', $text);
 test_page($page, 'action=edit-paragraph;title=Comments_on_Alex_Daniel;around=\d*;paragraph=--%20Real%20Anonymous%0a');
 
-# more than one newline at the end
+# More than one newline at the end.
 
 $text = q{one
 
@@ -209,3 +221,34 @@ for my $item (split(/\n+/, $text)) {
   test_page($page, 'action=edit-paragraph;title=Alex_Daniel;around=\d*;paragraph='
 	    . $str);
 }
+
+# More HTML encoding.
+
+$text = q{Test.
+
+<test1>
+
+<test2>
+
+<test3>
+};
+
+$page = update_page('Test', $text);
+test_page_negative(get_page('action=browse id=Test raw=1'), '&lt;');
+# HTML encoded text is longer: every < > counts adds 3. Thus 33 + 6x3 = 51.
+my $action = 'action=edit-paragraph;title=Test;around=51;paragraph=' . UrlEncode("<test3>\n");
+test_page($page, $action);
+test_page(get_page(join(' ', split(';', $action))), QuoteHtml("<test3>\n"));
+# test error
+test_page(get_page('action=edit-paragraph title=Test'
+ . ' text=' . UrlEncode("<test30>\n")        # new
+ . ' paragraph=' . UrlEncode("<test3>\n")    # old
+ . ' around=1'),
+ 'Could not identify the paragraph you were editing',
+ '<pre>' . QuoteHtml("<test3>\n") . '</pre>');
+test_page(get_page('action=edit-paragraph title=Test'
+ . ' text=' . UrlEncode("<test30>\n")        # new
+ . ' paragraph=' . UrlEncode("<test3>\n")    # old
+ . ' around=51'), 'Status: 302');
+$text =~ s/test3/test30/;
+test_page(get_page('action=browse id=Test raw=1'), $text);
