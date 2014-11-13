@@ -1,33 +1,111 @@
+/* vietnamese */
 @font-face {
-  font-family: "EB Garamond";
+  font-family: 'Noticia Text';
   font-style: normal;
-  src: local('EB Garamond 12'), url('EBGaramond12-Regular.ttf') format("truetype");
+  font-weight: 400;
+  src: local('Noticia Text'), local('NoticiaText-Regular)'), url('fonts/NoticiaText-Regular.woff') format('woff');
+  unicode-range: U+0102-0103, U+1EA0-1EF1, U+20AB;
 }
-
+/* latin-ext */
 @font-face {
-  font-family: "EB Garamond";
+  font-family: 'Noticia Text';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Noticia Text'), local('NoticiaText-Regular)'), url('fonts/NoticiaText-Regular.woff') format('woff');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Noticia Text';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Noticia Text'), local('NoticiaText-Regular)'), url('fonts/NoticiaText-Regular.woff') format('woff');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Noticia Text';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Noticia Text Bold'), local('NoticiaText-Bold)'), url('fonts/NoticiaText-Bold.woff') format('woff');
+  unicode-range: U+0102-0103, U+1EA0-1EF1, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Noticia Text';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Noticia Text Bold'), local('NoticiaText-Bold)'), url('fonts/NoticiaText-Bold.woff') format('woff');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Noticia Text';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Noticia Text Bold'), local('NoticiaText-Bold)'), url('fonts/NoticiaText-Bold.woff') format('woff');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Noticia Text';
   font-style: italic;
-  src: local('EB Garamond 12'), url('EBGaramond12-Italic.ttf') format("truetype");
+  font-weight: 400;
+  src: local('Noticia Text Italic'), local('NoticiaText-Italic)'), url('fonts/NoticiaText-Italic.woff') format('woff');
+  unicode-range: U+0102-0103, U+1EA0-1EF1, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Noticia Text';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Noticia Text Italic'), local('NoticiaText-Italic)'), url('fonts/NoticiaText-Italic.woff') format('woff');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Noticia Text';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Noticia Text Italic'), local('NoticiaText-Italic)'), url('fonts/NoticiaText-Italic.woff') format('woff');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Noticia Text';
+  font-style: italic;
+  font-weight: 700;
+  src: local('Noticia Text Bold Italic'), local('NoticiaText-BoldItalic)'), url('fonts/NoticiaText-BoldItalic.woff') format('woff');
+  unicode-range: U+0102-0103, U+1EA0-1EF1, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Noticia Text';
+  font-style: italic;
+  font-weight: 700;
+  src: local('Noticia Text Bold Italic'), local('NoticiaText-BoldItalic)'), url('fonts/NoticiaText-BoldItalic.woff') format('woff');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Noticia Text';
+  font-style: italic;
+  font-weight: 700;
+  src: local('Noticia Text Bold Italic'), local('NoticiaText-BoldItalic)'), url('fonts/NoticiaText-BoldItalic.woff') format('woff');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
 @font-face {
-  font-family: 'EB Garamond All SC';
-  src: local('EB Garamond 12 All SC'), url('EBGaramond12-AllSC.ttf') format("truetype");
-}
-
-@font-face {
-    font-family:"Symbola";
-    src: local('Symbola'), url("Symbola.woff") format("woff"), url("Symbola.ttf") format("truetype");
-    font-weight:normal;
-    font-style:normal;
+  font-family: 'Symbola';
+  src: local('Symbola'), url('fonts/Symbola.woff') format('woff');
 }
 
 body, rss {
-    font-family: "EB Garamond", Symbola, serif;
+    font-family: "Noticia Text", Symbola, serif;
     font-style: normal;
-    font-size: 18pt;
-    line-height: 22pt;
-    margin:1em 3em;
+    font-size: 14pt;
+    line-height: 150%;
+    margin: 1em 3em;
     padding:0;
 }
 
@@ -35,48 +113,47 @@ body, rss {
    we cannot inherit the font-family because header and footer use a narrow font. */
 
 h1, h2, h3, title {
-    font-family: "EB Garamond", Symbola, serif;
+    font-family: inherit;
     font-weight: normal;
-    line-height: 100%;
 }
 h1, channel title {
     font-size: 32pt;
-    margin:  1em 0 0.5em 0;
+    margin: 1em 0 0.5em 0;
     padding: 0.4em 0;
 }
 h2 {
     font-size: 18pt;
-    margin:  2em 0 0 0;
+    margin: 2em 0 0 0;
     padding: 0;
 }
 h3 {
-    font-size:  inherit;
+    font-size: inherit;
     font-weight: bold;
-    padding:    0;
-    margin:     1em 0 0 0;
-    clear:      both;
+    padding: 0;
+    margin: 1em 0 0 0;
+    clear: both;
 }
 
 /* headers in the journal are smaller */
 
 div.journal h1, item title {
-    font-size:     inherit;
-    padding:       0;
-    clear:         both;
+    font-size: inherit;
+    padding: 0;
+    clear: both;
     border-bottom: 1px solid #000;
 }
 div.journal h2 {
     font-family: inherit;
-    font-size:   inherit;
+    font-size: inherit;
 }
 div.journal h3 {
     font-family: inherit;
-    font-size:   inherit;
+    font-size: inherit;
     font-weight: inherit;
-    font-style:  italic;
+    font-style: italic;
 }
 div.journal hr {
-    display:none;
+    visibility: hidden;
 }
 p.more {
     margin-top: 3em;
@@ -169,12 +246,6 @@ form.tiny input {
     font-size: 80%;
 }
 
-/* bold = small caps */
-b, strong {
-    font-family: "EB Garamond All SC";
-    font-weight: normal;
-}
-
 /* code */
 
 pre, code, tt {
@@ -198,26 +269,23 @@ pre {
 div.header, div.footer, div.near, div.definition, p.comment, a.tag {
     
     font-size: 14pt;
-    line-height: 16pt;
 }
 div.footer form.search {
     display: none;
-}
-div.rc li {
-    line-height: 110%;
 }
 div.rc li + li {
     margin-top: 1em;
 }
 div.rc li strong, table.history strong, strong.description {
+    font-family: inherit;
     font-weight: inherit;
 }
 div.diff {
-    padding-left:  5%;
+    padding-left: 5%;
     padding-right: 5%;
-    font-size:     12pt;
-    line-height:   14pt;
-    color:         #000;
+    font-size: 12pt;
+    line-height: 110%;
+    color: #000;
 
 }
 div.old {
@@ -228,10 +296,9 @@ div.new {
 }
 
 div.refer {
-    padding-left:  5%;
+    padding-left: 5%;
     padding-right: 5%;
-    font-size:     12pt;
-    line-height:   13pt;
+    font-size: 12pt;
 }
 
 div.message {
@@ -298,8 +365,8 @@ textarea[name="summary"] { width:97%; height:3em; }
 /* comments */
 textarea[name="aftertext"] { width:97%; height:10em; }
 div.commentshown {
-    background-color:#ffc;
-    padding-bottom:1ex;
+    font-size: 12pt;
+    padding: 2em 0;
 }
 div.commenthidden {
     display:none;
@@ -346,22 +413,22 @@ div.content div.month a.edit {
 
 /* history tables and other tables */
 table.history {
-    border:   none;
+    border: none;
 }
 td.history {
-    border:   none;
+    border: none;
 }
 
 table.user {
-    border:      none;
+    border: none;
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     padding: 1em;
     margin: 1em 2em;
 }
 table.user tr td, table.user tr th {
-    border:   none;
-    padding:  0.2em 0.5em;
+    border: none;
+    padding: 0.2em 0.5em;
     vertical-align: top;
 }
 table.arab tr th {
@@ -395,10 +462,10 @@ div.search span.info { font-size:smaller; font-style:italic; }
 div.search p.result { display:none; }
 
 img.logo {
-    float:   right;
-    margin:  0 0 0 1ex;
+    float: right;
+    margin: 0 0 0 1ex;
     padding: 0;
-    border:  1px solid #000;
+    border: 1px solid #000;
     opacity: 0.3;
     background-color:#ffe;
 }
@@ -481,70 +548,34 @@ p.table + p { clear:both; }
 
 @media print {
     body {
-		font-size:   12pt;
-		line-height: 13pt;
-		color:       #000;
-		background-color: #fff;
-	}
+	font-size: 12pt;
+	color: #000;
+	background-color: #fff;
+    }
     
     /* hide all the crap */
     div.diff, div.diff+hr, div.refer, div.near, div.definition, div.sister,
     div.cal, div.footer, span.specialdays, span.gotobar, a.edit, a.number span,
     div.rc form, form.tiny, p.comment, p#plus1, div.g-plusone {
-		display:none;
+	display:none;
     }
     a,
     a:visited,
     div.content a.near:link, 
     div.content a.near:visited,
     div.content a.near:active {
-		color:inherit;
-		font-weight: bold;
+	color:inherit;
+	font-weight: bold;
     }
     div.content a.feed {
-		display: none;
+	display: none;
     }
     div.content a.book,
     div.content a.movie {
-		text-decoration: none;
+	text-decoration: none;
     }
     a cite {
-		font-style: italic;
-    }
-    /* no difference */
-    pre, code, tt {
-		font-size: inherit;
-		line-height: inherit;
-    }
-    /* no dotted underlines */ 
-    acronym, abbr {
-		border: none;
-		text-decoration: none;
-    }
-    /* headings */
-    h1 {
-		color:       inherit;
-		margin-top:  2em;
-	}
-	h2 {
-		color:inherit;
-		margin: 1em 0;
-		font-variant: small-caps;
-		font-family: "EB Garamond All SC", "EB Garamond", Garamond, serif;
-	}
-	h3 {
-		font-weight:inherit;
-		font-style:italic;
-		color:inherit;
-		margin: 1em 0;
-	}
-	h1 a, h2 a, h3 a {
-		color: inherit;
-	}
-	div.journal h1 a:visited,
-	div.journal h2 a:visited,
-	div.journal h3 a:visited {
-		color: inherit;
+	font-style: italic;
     }
 }
 
@@ -556,7 +587,6 @@ channel title {
 }
 copyright {
     font-size: 14pt;
-    line-height: 16pt;
     margin-top: 1em;
 }
 channel > link:before {
