@@ -812,7 +812,8 @@ Use a prefix argument to force a reload of the page."
       ;; fix it for VC in the new buffer because this is not a vc-checkout
       (vc-mode-line buffer-file-name 'oddmuse)
       (pop-to-buffer (current-buffer))
-      (oddmuse-mode))))
+      (oddmuse-mode)
+      (write-file (buffer-file-name)))))
 
 (defalias 'oddmuse-go 'oddmuse-edit)
 
@@ -851,7 +852,9 @@ Use a prefix argument to override this."
       (puthash oddmuse-wiki (cons oddmuse-page-name list) oddmuse-pages-hash)))
   (and buffer-file-name (basic-save-buffer))
   (oddmuse-run "Posting" oddmuse-post-command nil nil
-	       (get-buffer-create " *oddmuse-response*") t 302))
+	       (get-buffer-create " *oddmuse-response*") t 302)
+  (oddmuse-revision-put oddmuse-wiki oddmuse-page-name
+    (oddmuse-get-latest-revision oddmuse-wiki oddmuse-page-name)))
 
 ;;;###autoload
 (defun oddmuse-preview (&optional arg)
@@ -992,6 +995,21 @@ With universal argument, reload."
 	  (newline))))
     (goto-char (point-min))
     (oddmuse-mode)))
+
+(defun oddmuse-history (wiki pagename)
+  "Show the history for PAGENAME on WIKI.
+Compared to `vc-oddmuse-print-log' this only prints the revisions
+that can actually be retrieved (for diff and rollback)."
+  (interactive (oddmuse-pagename-if-missing))
+  (let ((name (concat "*" wiki ": history for " pagename "*")))
+    (if (and (get-buffer name)
+	     (not current-prefix-arg))
+	(pop-to-buffer (get-buffer name))
+      (set-buffer (get-buffer-create name))
+      (erase-buffer)
+      (oddmuse-run "History" oddmuse-get-history-command wiki pagename)
+      (oddmuse-mode)
+      (set (make-local-variable 'oddmuse-wiki) wiki))))
 
 ;;;###autoload
 (defun emacswiki-post (&optional pagename summary)

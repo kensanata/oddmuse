@@ -110,11 +110,11 @@ It must print the page to stdout.
 
 (defun oddmuse-revision-filename (rev)
   "Return filename for revision REV.
-This uses `oddmuse-directory', `oddmuse-wiki' and
-`oddmuse-page-name'."
+This uses `oddmuse-directory', `wiki' and `pagename' as bound by
+`with-oddmuse-file'."
   (concat oddmuse-directory
-	  "/" oddmuse-wiki
-	  "/" oddmuse-page-name
+	  "/" wiki
+	  "/" pagename
 	  ".~" rev "~"))
 
 (defun vc-oddmuse-diff (files &optional rev1 rev2 buffer)
@@ -126,13 +126,12 @@ This uses `oddmuse-directory', `oddmuse-wiki' and
       (dolist (rev (list rev1 rev2))
 	(when (and rev (not (file-readable-p (oddmuse-revision-filename rev))))
 	  (let* ((oddmuse-revision rev)
-		 (command (oddmuse-format-command
-			   vc-oddmuse-get-revision-command))
+		 (command vc-oddmuse-get-revision-command)
 		 (filename (oddmuse-revision-filename rev)))
 	    (with-temp-buffer
 	      (oddmuse-run
 	       (concat "Downloading revision " rev)
-	       command wiki)
+	       command wiki pagename)
 	      (write-file filename)))))
       (diff-no-select
        (if rev1 (oddmuse-revision-filename rev1) file)
