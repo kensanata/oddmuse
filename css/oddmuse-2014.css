@@ -1,0 +1,245 @@
+@font-face {
+  font-family: 'Gentium Basic';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Gentium Basic'), local('GentiumBasic'), url(/fonts/GenBasR.woff) format('woff');
+}
+@font-face {
+  font-family: 'Gentium Basic';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Gentium Basic Bold'), local('GentiumBasic-Bold'), url(/fonts/GenBasB.woff) format('woff');
+}
+@font-face {
+  font-family: 'Gentium Basic';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Gentium Basic Italic'), local('GentiumBasic-Italic'), url(/fonts/GenBasI.woff) format('woff');
+}
+@font-face {
+  font-family: 'Gentium Basic';
+  font-style: italic;
+  font-weight: 700;
+  src: local('Gentium Basic Bold Italic'), local('GentiumBasic-BoldItalic'), url(/fonts/GenBasBI.woff) format('woff');
+}
+
+@font-face {
+  font-family: 'Gentium Plus';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Gentium Plus'), local('GentiumPlus'), url(/fonts/GentiumPlus-R.woff) format('woff');
+}
+@font-face {
+  font-family: 'Gentium Plus';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Gentium Plus Italic'), local('GentiumPlus-Italic'), url(/fonts/GentiumPlus-I.woff) format('woff');
+}
+
+body {
+    background:#fff;
+    padding:2% 5%;
+    margin:0;
+    font-family: "Gentium Basic", "Gentium Plus", "Bookman Old Style", "Times New Roman", serif;
+    font-size: 16pt;
+}
+
+div.header h1 {
+    margin-top:2ex;
+}
+
+a {
+    text-decoration: none;
+    color: #a00;
+}
+
+a:visited {
+    color: #d88;
+}
+
+div.header h1 a:hover, h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover,
+a:hover, span.caption a.image:hover {
+    background:#fee;
+}
+
+img.logo {
+    float: right;
+    clear: right;
+    border-style:none;
+    background-color:#fff;
+}
+
+img {
+    padding: 0.5em;
+    margin: 0 1em;
+}
+
+a.image:hover {
+    background:inherit;
+}
+
+a.image:hover img {
+    background:#fee;
+}
+
+/* a.definition soll aussehen wie h2 */
+h2, p a.definition {
+    display:block;
+    clear:both;
+}
+
+/* Such Link im h1 soll nicht auffallen. */
+h1, h2, h3, h4, h1 a, h1 a:visited, p a.definition {
+    color:#666;
+    font-size: 30pt;
+    font-weight: normal;
+    margin: 4ex 0 1ex 0;
+    padding: 0;
+    border-bottom: 1px solid #000;
+}
+
+h3, h4 {
+    font-size: inherit;
+}
+
+
+
+
+div.diff {
+    padding: 1em 3em;
+}
+div.old {
+    background-color:#FFFFAF;
+}
+div.new {
+    background-color:#CFFFCF;
+}
+div.old p, div.new p {
+    padding: 0.5em 0;
+}
+div.refer { padding-left:5%; padding-right:5%; font-size:smaller; }
+div[class="content refer"] p { margin-top:2em; }
+div.content div.refer hr { display:none; }
+div.content div.refer { padding:0; font-size:medium; }
+div.content div.refer p { margin:0; }
+div.refer a { display:block; }
+table.history { border-style:none; }
+td.history { border-style:none; }
+
+table.user {
+    border-style: none;
+    margin-left: 3em;
+}
+table.user tr td {
+    border-style: none;
+    padding:0.5ex 1ex;
+}
+
+dt {
+    font-weight:bold;
+}
+dd {
+    margin-bottom:1ex;
+}
+
+textarea {
+    width:100%;
+    height:80%;
+    font-size: 12pt;
+}
+textarea#summary { height: 3em; }
+input {
+    font-size: 12pt;
+}
+div.image span.caption {
+    margin: 0 1em;
+}
+li img, img.smiley, .noborder img {
+    border:none;
+    padding:0;
+    margin:0;
+    background:#fff;
+    color:#000;
+}
+/* Google +1 */
+a#plus1 img {
+    background-color: #fff;
+    padding: 0;
+    margin: 0;
+    border: none;
+}
+
+div.header img, div.footer img { border:0; padding:0; margin:0; }
+/* No goto bar at the bottom. */
+.footer .gotobar, .footer .edit br { display: none; }
+
+.left { float:left; }
+.right { float:right; }
+div.left .left, div.right .right {
+    float:none;
+}
+.center { text-align:center; }
+
+span.author {
+    color: #501;
+}
+span.bar a {
+	padding-right:1ex;
+}
+
+.rc .author {
+    color: #655;
+}
+
+.rc strong {
+    font-weight: normal;
+    color: inherit;
+}
+
+.rc li {
+    position:relative;
+    padding: 1ex 0;
+}
+
+hr {
+    border:none;
+    color:black;
+    background-color:#000;
+    height:2px; 
+    margin-top:2ex;
+}
+
+div.footer hr {
+    height:4px;
+    margin: 2em 0 1ex 0;
+    clear:both;
+}
+
+div.content > div.comment {
+    border-top: none;
+    padding-top: none;
+    border-left: 1ex solid #bbb;
+    padding-left: 1ex;
+}
+
+div.wrapper > div.comment {
+  border-top: 2px solid #000;
+  padding-top: 2em;
+}
+
+pre {
+    padding: 0.5em;
+    margin-left: 1em;
+    margin-right: 2em;
+    white-space: pre;
+    overflow:hidden;
+    white-space: pre-wrap;      /* CSS 3 */
+    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+    white-space: -pre-wrap;     /* Opera 4-6 */
+    white-space: -o-pre-wrap;   /* Opera 7 */
+    word-wrap: break-word;      /* Internet Explorer 5.5+ */
+}
+
+tt, pre, code {
+    font-size: 80%;
+};
