@@ -52,6 +52,13 @@ sub TocScript {
     }
   }
 
+  # https://stackoverflow.com/questions/280634/endswith-in-javascript
+  if (typeof String.prototype.endsWith !== 'function') {
+    String.prototype.endsWith = function(suffix) {
+      return this.indexOf(suffix, this.length - suffix.length) !== -1;
+    };
+  }
+
   var initToc=function() {
 
     var outline = HTML5Outline(document.body);
