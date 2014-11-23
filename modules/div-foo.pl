@@ -16,14 +16,17 @@ package OddMuse;
 
 AddModuleDescription('div-foo.pl', 'Div Foo Extension');
 
+use vars qw($DivFooPrefix);
+$DivFooPrefix = 'foo_';
+
 push(@MyRules, \&DivFooRule);
 
 sub DivFooRule {
-  if (m/\G\&lt;([\w ]+)\&gt;\s*\n/cg) {
-    return CloseHtmlEnvironment('p') . AddHtmlEnvironment('div', qq{class="$1"});
+  if (m/\G\&lt;([a-z-_][a-z-_ ]+[a-z-_])\&gt;\s*\n/cg) {
+    return CloseHtmlEnvironment('p') . AddHtmlEnvironment('div', 'class="' . join(' ', map {"$DivFooPrefix$_"} split /\s+/, $1) . '"');
   }
-  if (m/\G\&lt;([\w ]+)\&gt;/cg) {
-    return AddHtmlEnvironment('span', qq{class="$1"});
+  if (m/\G\&lt;([a-z-_][a-z-_ ]+[a-z-_])\&gt;/cg) {
+    return AddHtmlEnvironment('span', 'class="' . join(' ', map {"$DivFooPrefix$_"} split /\s+/, $1) . '"');
   }
   if (m/\G\&lt;\/\/\&gt;/cg) {
     return CloseHtmlEnvironment('div') . (InElement('div') ? '' : AddHtmlEnvironment('p'));
