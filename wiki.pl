@@ -2468,7 +2468,7 @@ sub GetFormStart {
 }
 
 sub GetSearchForm {
-  my $html = GetFormStart(undef, 'get', 'search');
+  my $html = GetFormStart(undef, 'get', 'search') . $q->start_p;
   $html .= $q->label({-for=>'search'}, T('Search:')) . ' '
       . $q->textfield(-name=>'search', -id=>'search', -size=>20, -accesskey=>T('f')) . ' ';
   if ($ReplaceForm) {
@@ -2480,12 +2480,13 @@ sub GetSearchForm {
     $html .= $q->label({-for=>'searchlang'}, T('Language:')) . ' '
 	. $q->textfield(-name=>'lang', -id=>'searchlang', -size=>10, -default=>GetParam('lang', '')) . ' ';
   }
-  $html .= $q->submit('dosearch', T('Go!')) . $q->end_form;
+  $html .= $q->submit('dosearch', T('Go!')) . $q->end_p . $q->end_form;
   if (GetParam('matchingpages', $MatchingPages)) {
-    $html .= $q->input(-type=>'hidden', -name=>'action', -value=>'index');
+    $html .= GetFormStart(undef, 'get', 'matchingpages'). $q->start_p;
+    $html .= $q->input({-type=>'hidden', -name=>'action', -value=>'index'});
     $html .= $q->label({-for=>'matchingpage'}, T('Filter:')) . ' '
-	. $q->textfield(-name=>'match', -id=>'matchingpage', -size=>20);
-    $html .= $q->submit('dosearch', T('Go!')) . $q->end_form;
+	. $q->textfield(-name=>'match', -id=>'matchingpage', -size=>20) . ' ';
+    $html .= $q->submit('dosearch', T('Go!')) . $q->end_p . $q->end_form;
   }
   return $html;
 }
