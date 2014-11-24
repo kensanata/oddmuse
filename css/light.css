@@ -39,13 +39,17 @@ body {
 }
 
 /* general */
-div.browse {
-	min-height: 3em;
+.browse { min-height: 3em; }
+/* .header form, .header p { margin: 0; display: inline; white-space: nowrap; }*/
+.header { padding-right: 10em; }
+.header form.search { position: absolute; top: 0; right: 2em; }
+.header form.matchingpages { position: absolute; top: 2em; right: 2em; }
+label[for="searchlang"], #searchlang, input[type="submit"] { display: none; }
+.header input { width: 10ex; }
+input { font-size: 80%; line-height: 125%; }
 }
-div.footer {
-	clear:both;
-	font-size: 90%;
-}
+
+.footer { clear:both; font-size: 90%; }
 
 /* comments, footer */
 div.commentshown {
@@ -148,6 +152,10 @@ a.pencil {
     a.pencil {
 	display: none;
     }
+}
+table a.pencil {
+    position: absolute;
+    right: inherit;
 }
 
 /* table of contents */
