@@ -260,8 +260,8 @@ input {
 
 /* code */
 
-pre, code, tt {
-    font-family: "Andale Mono", Monaco, "Courier New", Courier, monospace;
+textarea, pre, code, tt {
+    font-family: "Andale Mono", Monaco, "Courier New", Courier, monospace, "Symbola";
     font-size: 80%;
 }
 
