@@ -1318,16 +1318,16 @@ sub DoBrowseRequest {
   my $id = GetId();
   my $action = lc(GetParam('action', '')); # script?action=foo;id=bar
   $action = 'download' if GetParam('download', '') and not $action; # script/download/id
-  my $search = GetParam('search', '');
   if ($Action{$action}) {
     &{$Action{$action}}($id);
   } elsif ($action and defined &MyActions) {
     eval { local $SIG{__DIE__}; MyActions(); };
   } elsif ($action) {
     ReportError(Ts('Invalid action parameter %s', $action), '501 NOT IMPLEMENTED');
-  } elsif ($search ne '') { # allow search for "0"
-    SetParam('action', 'search'); # fake it
-    DoSearch($search);
+  } elsif (GetParam('match', '') ne '') {
+    DoIndex();
+  } elsif (GetParam('search', '') ne '') { # allow search for "0"
+    DoSearch();
   } elsif (GetParam('title', '') and not GetParam('Cancel', '')) {
     DoPost(GetParam('title', ''));
   } else {
@@ -2476,18 +2476,15 @@ sub GetSearchForm {
 	. $q->textfield(-name=>'replace', -id=>'replace', -size=>20) . ' '
 	. $q->checkbox(-name=>'delete', -label=>T('Delete')) . ' ';
   }
+  if (GetParam('matchingpages', $MatchingPages)) {
+    $html .= $q->label({-for=>'matchingpage'}, T('Filter:')) . ' '
+	. $q->textfield(-name=>'match', -id=>'matchingpage', -size=>20) . ' ';
+  }
   if (%Languages) {
     $html .= $q->label({-for=>'searchlang'}, T('Language:')) . ' '
 	. $q->textfield(-name=>'lang', -id=>'searchlang', -size=>10, -default=>GetParam('lang', '')) . ' ';
   }
   $html .= $q->submit('dosearch', T('Go!')) . $q->end_p . $q->end_form;
-  if (GetParam('matchingpages', $MatchingPages)) {
-    $html .= GetFormStart(undef, 'get', 'matchingpages'). $q->start_p;
-    $html .= $q->input({-type=>'hidden', -name=>'action', -value=>'index'});
-    $html .= $q->label({-for=>'matchingpage'}, T('Filter:')) . ' '
-	. $q->textfield(-name=>'match', -id=>'matchingpage', -size=>20) . ' ';
-    $html .= $q->submit('dosearch', T('Go!')) . $q->end_p . $q->end_form;
-  }
   return $html;
 }
 
@@ -3296,7 +3293,7 @@ sub AllPagesList {
 }
 
 sub DoSearch {
-  my $string = shift;
+  my $string = shift || GetParam('search', '');;
   return DoIndex() if $string eq '';
   eval { qr/$string/ }
     or $@ and ReportError(Ts('Malformed regular expression in %s', $string),
