@@ -1325,8 +1325,10 @@ sub DoBrowseRequest {
   } elsif ($action) {
     ReportError(Ts('Invalid action parameter %s', $action), '501 NOT IMPLEMENTED');
   } elsif (GetParam('match', '') ne '') {
+    SetParam('action', 'index'); # make sure this gets a NOINDEX
     DoIndex();
   } elsif (GetParam('search', '') ne '') { # allow search for "0"
+    SetParam('action', 'search'); # make sure this gets a NOINDEX
     DoSearch();
   } elsif (GetParam('title', '') and not GetParam('Cancel', '')) {
     DoPost(GetParam('title', ''));
