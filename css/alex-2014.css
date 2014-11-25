@@ -240,7 +240,8 @@ a img {
     white-space: nowrap;
 }
 label[for="searchlang"], #searchlang, input[type="submit"] {
-    display: none;
+    /* don't use display: none! http://stackoverflow.com/questions/5665203/getting-iphone-go-button-to-submit-form */
+    visibility: hidden; position: absolute;
 }
 /* wrap on the iphone */
 @media media only screen and (max-device-width: 480px) {
