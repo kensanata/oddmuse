@@ -239,7 +239,7 @@ a img {
     display: inline;
     white-space: nowrap;
 }
-label[for="searchlang"], #searchlang, input[type="submit"] {
+label[for="searchlang"], #searchlang, .header input[type="submit"] {
     /* don't use display: none! http://stackoverflow.com/questions/5665203/getting-iphone-go-button-to-submit-form */
     visibility: hidden; position: absolute;
 }
@@ -253,7 +253,7 @@ label[for="searchlang"], #searchlang, input[type="submit"] {
 
 /* other form fields */
 
-input {
+input[type="text"] {
     padding: 0;
     font-size: 80%;
     line-height: 125%;
