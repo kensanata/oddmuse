@@ -186,6 +186,12 @@ sub EditParagraph {
     if ($Fragment =~ s!((:?</h[1-6]>|</t[dh]></tr></table>|</pre>)<p>)$!!) {
       # $Fragment .= '<!-- 1 -->';
       $Fragment .= $link . $1;
+    } elsif ($Fragment =~ s!(</p>\s*</form>)$!!) {
+      # $Fragment .= '<!-- HTML fixes for <html> -->';
+      # Since anything can appear in raw HTML tags, there is no one-size fits all rule.
+      # I usually use the <html> tags to embed forms, and forms need to contain a <p>.
+      # so that's what I'm handling.
+      $Fragment .= $link . $1;
     } elsif ($pos and $Fragment =~ /<p>$/) {
       # Do nothing: this will result in <p></p> and get eliminated.
       # $Fragment .= '<!-- 2 -->';
