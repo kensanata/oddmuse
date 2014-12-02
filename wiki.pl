@@ -2397,7 +2397,7 @@ sub GetFooterTimestamp {
     my @elements = (($rev eq '' ? T('Last edited') : T('Edited')), TimeToText($Page{ts}),
 		    Ts('by %s', GetAuthorLink($Page{host}, $Page{username})));
     push(@elements, ScriptLinkDiff(2, $id, T('(diff)'), $rev)) if $UseDiff and $Page{revision} > 1;
-    return $q->span({-class=>'time'}, @elements, $q->br());
+    return $q->div({-class=>'time'}, @elements);
   }
   return '';
 }
@@ -2434,7 +2434,7 @@ sub GetFooterLinks {
     $action .= ';id=' . UrlEncode($id) if $id;
     push(@elements, ScriptLink($action, T('Administration'), 'admin'));
   }
-  return @elements ? $q->span({-class=>'edit bar'}, @elements, $q->br()) : '';
+  return @elements ? $q->div({-class=>'edit bar'}, @elements) : '';
 }
 
 sub GetCommentForm {
