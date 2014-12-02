@@ -2220,6 +2220,7 @@ sub GetHeader {
     my $url = $IndexHash{$LogoUrl} ? GetDownloadLink($LogoUrl, 2) : $LogoUrl;
     $result .= ScriptLink(UrlEncode($HomePage), $q->img({-src=>$url, -alt=>$alt, -class=>'logo'}), 'logo');
   }
+  $result .= $q->start_div({-class=>'menu'});
   if (GetParam('toplinkbar', $TopLinkBar) != 2) {
     $result .= GetGotoBar($id);
     if (%SpecialDays) {
@@ -2231,6 +2232,7 @@ sub GetHeader {
     }
   }
   $result .= GetSearchForm() if GetParam('topsearchform', $TopSearchForm) != 2;
+  $result .= $q->end_div();
   $result .= $q->div({-class=>'message'}, $Message) if $Message;
   $result .= GetHeaderTitle($id, $title, $oldId);
   return $result . $q->end_div() . $q->start_div({-class=>'wrapper'});
