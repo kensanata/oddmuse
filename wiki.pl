@@ -2220,6 +2220,7 @@ sub GetHeader {
     my $url = $IndexHash{$LogoUrl} ? GetDownloadLink($LogoUrl, 2) : $LogoUrl;
     $result .= ScriptLink(UrlEncode($HomePage), $q->img({-src=>$url, -alt=>$alt, -class=>'logo'}), 'logo');
   }
+  $result .= $q->start_div({-class=>'menu'});
   if (GetParam('toplinkbar', $TopLinkBar) != 2) {
     $result .= GetGotoBar($id);
     if (%SpecialDays) {
@@ -2231,6 +2232,7 @@ sub GetHeader {
     }
   }
   $result .= GetSearchForm() if GetParam('topsearchform', $TopSearchForm) != 2;
+  $result .= $q->end_div();
   $result .= $q->div({-class=>'message'}, $Message) if $Message;
   $result .= GetHeaderTitle($id, $title, $oldId);
   return $result . $q->end_div() . $q->start_div({-class=>'wrapper'});
@@ -2397,7 +2399,7 @@ sub GetFooterTimestamp {
     my @elements = (($rev eq '' ? T('Last edited') : T('Edited')), TimeToText($Page{ts}),
 		    Ts('by %s', GetAuthorLink($Page{host}, $Page{username})));
     push(@elements, ScriptLinkDiff(2, $id, T('(diff)'), $rev)) if $UseDiff and $Page{revision} > 1;
-    return $q->span({-class=>'time'}, @elements, $q->br());
+    return $q->div({-class=>'time'}, @elements);
   }
   return '';
 }
@@ -2434,7 +2436,7 @@ sub GetFooterLinks {
     $action .= ';id=' . UrlEncode($id) if $id;
     push(@elements, ScriptLink($action, T('Administration'), 'admin'));
   }
-  return @elements ? $q->span({-class=>'edit bar'}, @elements, $q->br()) : '';
+  return @elements ? $q->div({-class=>'edit bar'}, @elements) : '';
 }
 
 sub GetCommentForm {
