@@ -122,7 +122,7 @@ sub MailNewGetFooterTimestamp {
     $addition = ScriptLink("action=subscribe;pages=$id",
 			   T('subscribe'), 'subscribe');
   }
-  $html =~ s!(.*)(</span>)!$1 $addition$2!i;
+  $html =~ s!(.*)(<br /></span>)!$1 $addition$2!i;
   return $html;
 }
 
