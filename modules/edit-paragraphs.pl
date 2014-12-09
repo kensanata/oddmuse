@@ -27,7 +27,7 @@ our $EditParagraphPencil = '&#x270E;';
 $Action{'edit-paragraph'} = \&DoEditParagraph;
 
 sub DoEditParagraph {
-  my $id = GetParam('title', '');
+  my $id = UnquoteHtml(GetParam('title', ''));
   UserCanEditOrDie($id);
 
   my $old = UnquoteHtml(GetParam('paragraph', ''));
@@ -181,17 +181,27 @@ sub EditParagraph {
     # <table><tr><td>...<a ...>&#x270E;</a></td></tr></table></p>
     
     $pos = $pos || length(QuoteHtml($Page{text})); # make sure we have an around value
-    my $link = ScriptLink("action=edit-paragraph;title=$OpenPageName;around=$pos;paragraph="
-			  . UrlEncode(UnquoteHtml($text)), $EditParagraphPencil, 'pencil');
+    my $title = UrlEncode($OpenPageName);
+    my $paragraph = UrlEncode(UnquoteHtml($text));
+    my $link = ScriptLink("action=edit-paragraph;title=$title;around=$pos;paragraph=$paragraph",
+			  $EditParagraphPencil, 'pencil');
+
     if ($Fragment =~ s!((:?</h[1-6]>|</t[dh]></tr></table>|</pre>)<p>)$!!) {
-      # $Fragment .= '<!-- 1 -->';
+      # $Fragment .= '<!-- moved inside -->';
       $Fragment .= $link . $1;
-    } elsif ($pos and $Fragment =~ /<p>$/) {
-      # Do nothing: this will result in <p></p> and get eliminated.
-      # $Fragment .= '<!-- 2 -->';
+    } elsif ($Fragment =~ s!(</p>\s*</form>)$!!) {
+      # $Fragment .= '<!-- HTML fixes for <html> -->';
+      # Since anything can appear in raw HTML tags, there is no one-size fits all rule.
+      # I usually use the <html> tags to embed forms, and forms need to contain a <p>.
+      # so that's what I'm handling.
+      $Fragment .= $link . $1;
+    } elsif ($pos and $Fragment =~ /<(p|tr)>$/) {
+      # Do nothing: this is either an empty paragraph and will be
+      # eliminated, or an empty row which will not be shown.
+      # $Fragment .= '<!-- empty -->';
     } else {
       # This is the default: add the link.
-      # $Fragment .= '<!-- 3 -->';
+      # $Fragment .= '<!-- default -->';
       $Fragment .= $link;
     }
   }

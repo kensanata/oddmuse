@@ -36,35 +36,27 @@ use File::Glob ':glob';
 local $| = 1; # Do not buffer output (localized for mod_perl)
 
 # Options:
-use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir
-$KeepDir $PageDir $RcOldFile $IndexFile $BannedContent $NoEditFile $BannedHosts
-$ConfigFile $FullUrl $SiteName $HomePage $LogoUrl $RcDefault $RssDir
-$IndentLimit $RecentTop $RecentLink $EditAllowed $UseDiff $KeepDays $KeepMajor
-$EmbedWiki $BracketText $UseConfig $AdminPass $EditPass
-$PassHashFunction $PassSalt $NetworkFile
-$BracketWiki $FreeLinks $WikiLinks $SummaryHours $FreeLinkPattern $RCName
-$RunCGI $ShowEdits $LinkPattern $RssExclude $InterLinkPattern $MaxPost $UseGrep
-$UrlPattern $UrlProtocols $ImageExtensions $InterSitePattern $FS $CookieName
-$SiteBase $StyleSheet $NotFoundPg $FooterNote $NewText $EditNote $UserGotoBar
-$VisitorFile $RcFile %Smilies %SpecialDays $InterWikiMoniker $SiteDescription
-$RssImageUrl $ReadMe $RssRights $BannedCanRead $SurgeProtection $TopLinkBar
-$LanguageLimit $SurgeProtectionTime $SurgeProtectionViews $DeletedPage
-%Languages $InterMap $ValidatorLink %LockOnCreation $RssStyleSheet
-%CookieParameters @UserGotoBarPages $NewComment $HtmlHeaders $StyleSheetPage
-$ConfigPage $ScriptName $CommentsPrefix $CommentsPattern @UploadTypes $AllNetworkFiles
-$UsePathInfo $UploadAllowed $LastUpdate $PageCluster %PlainTextPages
-$RssInterwikiTranslate $UseCache $Counter $ModuleDir $FullUrlPattern
-$SummaryDefaultLength $FreeInterLinkPattern %InvisibleCookieParameters
-%AdminPages $UseQuestionmark $JournalLimit $LockExpiration $RssStrip
-%LockExpires @IndexOptions @Debugging $DocumentHeader %HtmlEnvironmentContainers
-@MyAdminCode @MyFooters @MyInitVariables @MyMacros @MyMaintenance @MyRules);
+use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir $KeepDir $PageDir $RcOldFile $IndexFile
+$BannedContent $NoEditFile $BannedHosts $ConfigFile $FullUrl $SiteName $HomePage $LogoUrl $RcDefault $RssDir
+$IndentLimit $RecentTop $RecentLink $EditAllowed $UseDiff $KeepDays $KeepMajor $EmbedWiki $BracketText $UseConfig
+$AdminPass $EditPass $PassHashFunction $PassSalt $NetworkFile $BracketWiki $FreeLinks $WikiLinks $SummaryHours
+$FreeLinkPattern $RCName $RunCGI $ShowEdits $LinkPattern $RssExclude $InterLinkPattern $MaxPost $UseGrep $UrlPattern
+$UrlProtocols $ImageExtensions $InterSitePattern $FS $CookieName $SiteBase $StyleSheet $NotFoundPg $FooterNote $NewText
+$EditNote $UserGotoBar $VisitorFile $RcFile %Smilies %SpecialDays $InterWikiMoniker $SiteDescription $RssImageUrl
+$ReadMe $RssRights $BannedCanRead $SurgeProtection $TopLinkBar $TopSearchForm $MatchingPages $LanguageLimit
+$SurgeProtectionTime $SurgeProtectionViews $DeletedPage %Languages $InterMap $ValidatorLink %LockOnCreation
+$RssStyleSheet %CookieParameters @UserGotoBarPages $NewComment $HtmlHeaders $StyleSheetPage $ConfigPage $ScriptName
+$CommentsPrefix $CommentsPattern @UploadTypes $AllNetworkFiles $UsePathInfo $UploadAllowed $LastUpdate $PageCluster
+%PlainTextPages $RssInterwikiTranslate $UseCache $Counter $ModuleDir $FullUrlPattern $SummaryDefaultLength
+$FreeInterLinkPattern %InvisibleCookieParameters %AdminPages $UseQuestionmark $JournalLimit $LockExpiration $RssStrip
+%LockExpires @IndexOptions @Debugging $DocumentHeader %HtmlEnvironmentContainers @MyAdminCode @MyFooters
+@MyInitVariables @MyMacros @MyMaintenance @MyRules);
 
 # Internal variables:
-use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie $FootnoteNumber
-$OpenPageName @IndexList $Message $q $Now %RecentVisitors @HtmlStack
-@HtmlAttrStack $ReplaceForm %MyInc $CollectingJournal $bol $WikiDescription
-$PrintedHeader %Locks $Fragment @Blocks @Flags $Today @KnownLocks
-$ModulesDescription %Action %RuleOrder %Includes %RssInterwikiTranslate);
+use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie $FootnoteNumber $OpenPageName @IndexList $Message $q $Now
+%RecentVisitors @HtmlStack @HtmlAttrStack $ReplaceForm %MyInc $CollectingJournal $bol $WikiDescription $PrintedHeader
+%Locks $Fragment @Blocks @Flags $Today @KnownLocks $ModulesDescription %Action %RuleOrder %Includes
+%RssInterwikiTranslate);
 
 # Can be set outside the script: $DataDir, $UseConfig, $ConfigFile, $ModuleDir,
 # $ConfigPage, $AdminPass, $EditPass, $ScriptName, $FullUrl, $RunCGI.
@@ -136,33 +128,35 @@ $ShowEdits   = 0;               # 1 = major and show minor edits in recent chang
 $RecentTop   = 1;               # 1 = most recent entries at the top of the list
 $RecentLink  = 1;               # 1 = link to usernames
 $PageCluster = '';              # name of cluster page, eg. 'Cluster' to enable
-$InterWikiMoniker = '';         # InterWiki prefix for this wiki for RSS
-$SiteDescription  = '';         # RSS Description of this wiki
+$InterWikiMoniker = '';        	# InterWiki prefix for this wiki for RSS
+$SiteDescription  = '';        	# RSS Description of this wiki
 $RssStrip = '^\d\d\d\d-\d\d-\d\d_'; # Regexp to strip from feed item titles
-$RssImageUrl      = $LogoUrl;   # URL to image to associate with your RSS feed
-$RssRights        = '';         # Copyright notice for RSS, usually an URL to the appropriate text
+$RssImageUrl      = $LogoUrl;  	# URL to image to associate with your RSS feed
+$RssRights        = '';        	# Copyright notice for RSS, usually an URL to the appropriate text
 $RssExclude       = 'RssExclude'; # name of the page that lists pages to be excluded from the feed
-$RssCacheHours    =  1;         # How many hours to cache remote RSS files
-$RssStyleSheet    = '';         # External style sheet for RSS files
-$UploadAllowed    = 0;          # 1 = yes, 0 = administrators only
+$RssCacheHours    =  1;        	# How many hours to cache remote RSS files
+$RssStyleSheet    = '';        	# External style sheet for RSS files
+$UploadAllowed    =  0;        	# 1 = yes, 0 = administrators only
 @UploadTypes = ('image/jpeg', 'image/png'); # MIME types allowed, all allowed if empty list
-$EmbedWiki   = 0;               # 1 = no headers/footers
-$FooterNote  = '';              # HTML for bottom of every page
-$EditNote    = '';              # HTML notice above buttons on edit page
-$TopLinkBar  = 1;               # 1 = add a goto bar at the top of the page
-@UserGotoBarPages = ();         # List of pagenames
-$UserGotoBar = '';              # HTML added to end of goto bar
-$ValidatorLink = 0;             # 1 = Link to the W3C HTML validator service
-$CommentsPrefix = '';           # prefix for comment pages, eg. 'Comments_on_' to enable
-$CommentsPattern = undef;       # regex used to match comment pages
-$HtmlHeaders = '';              # Additional stuff to put in the HTML <head> section
-$IndentLimit = 20;              # Maximum depth of nested lists
-$LanguageLimit = 3;             # Number of matches req. for each language
-$JournalLimit = 200;            # how many pages can be collected in one go?
+$EmbedWiki         = 0;        	# 1 = no headers/footers
+$FooterNote       = '';        	# HTML for bottom of every page
+$EditNote         = '';        	# HTML notice above buttons on edit page
+$TopLinkBar        = 1;        	# 0 = goto bar both at the top and bottom; 1 = top, 2 = bottom
+$TopSearchForm     = 1;         # 0 = search form both at the top and bottom; 1 = top, 2 = bottom
+$MatchingPages     = 0;         # 1 = search page content and page titles
+@UserGotoBarPages = ();        	# List of pagenames
+$UserGotoBar      = '';        	# HTML added to end of goto bar
+$ValidatorLink     = 0;        	# 1 = Link to the W3C HTML validator service
+$CommentsPrefix   = '';        	# prefix for comment pages, eg. 'Comments_on_' to enable
+$CommentsPattern = undef;      	# regex used to match comment pages
+$HtmlHeaders      = '';        	# Additional stuff to put in the HTML <head> section
+$IndentLimit      = 20;        	# Maximum depth of nested lists
+$LanguageLimit     = 3;        	# Number of matches req. for each language
+$JournalLimit    = 200;        	# how many pages can be collected in one go?
 $DocumentHeader = qq(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN")
   . qq( "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n)
   . qq(<html xmlns="http://www.w3.org/1999/xhtml">);
-# Checkboxes at the end of the index.
+				# Checkboxes at the end of the index.
 @IndexOptions = ();
 # Display short comments below the GotoBar for special days
 # Example: %SpecialDays = ('1-1' => 'New Year', '1-2' => 'Next Day');
@@ -176,8 +170,8 @@ $DocumentHeader = qq(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN")
 @KnownLocks = qw(main diff index merge visitors); # locks to remove
 $LockExpiration = 60; # How long before expirable locks are expired
 %LockExpires = (diff=>1, index=>1, merge=>1, visitors=>1); # locks to expire after some time
-%CookieParameters = (username=>'', pwd=>'', homepage=>'', theme=>'', css=>'', msg=>'',
-		     lang=>'', toplinkbar=>$TopLinkBar, embed=>$EmbedWiki, );
+%CookieParameters = (username=>'', pwd=>'', homepage=>'', theme=>'', css=>'', msg=>'', lang=>'', embed=>$EmbedWiki,
+		     toplinkbar=>$TopLinkBar, topsearchform=>$TopSearchForm, matchingpages=>$MatchingPages, );
 %InvisibleCookieParameters = (msg=>1, pwd=>1,);
 %Action = (rc => \&BrowseRc,               rollback => \&DoRollback,
            browse => \&BrowseResolvedPage, maintain => \&DoMaintain,
@@ -1324,16 +1318,18 @@ sub DoBrowseRequest {
   my $id = GetId();
   my $action = lc(GetParam('action', '')); # script?action=foo;id=bar
   $action = 'download' if GetParam('download', '') and not $action; # script/download/id
-  my $search = GetParam('search', '');
   if ($Action{$action}) {
     &{$Action{$action}}($id);
   } elsif ($action and defined &MyActions) {
     eval { local $SIG{__DIE__}; MyActions(); };
   } elsif ($action) {
     ReportError(Ts('Invalid action parameter %s', $action), '501 NOT IMPLEMENTED');
-  } elsif ($search ne '') { # allow search for "0"
-    SetParam('action', 'search'); # fake it
-    DoSearch($search);
+  } elsif (GetParam('match', '') ne '') {
+    SetParam('action', 'index'); # make sure this gets a NOINDEX
+    DoIndex();
+  } elsif (GetParam('search', '') ne '') { # allow search for "0"
+    SetParam('action', 'search'); # make sure this gets a NOINDEX
+    DoSearch();
   } elsif (GetParam('title', '') and not GetParam('Cancel', '')) {
     DoPost(GetParam('title', ''));
   } else {
@@ -1866,8 +1862,7 @@ sub GetRcRss {
 <channel>
 <docs>http://blogs.law.harvard.edu/tech/rss</docs>
 };
-  my $title = QuoteHtml($SiteName) . ': '
-    . GetParam('title', QuoteHtml(NormalToFree($HomePage)));
+  my $title = QuoteHtml($SiteName) . ': ' . GetParam('title', QuoteHtml(NormalToFree($HomePage)));
   $rss .= "<title>$title</title>\n";
   $rss .= "<link>" . ScriptUrl($HomePage) . "</link>\n";
   $rss .= qq{<atom:link href="} . GetScriptUrlWithRcParameters()
@@ -2223,10 +2218,9 @@ sub GetHeader {
   $result .= $q->start_div({-class=>'header'});
   if (not $embed and $LogoUrl) {
     my $url = $IndexHash{$LogoUrl} ? GetDownloadLink($LogoUrl, 2) : $LogoUrl;
-    $result .= ScriptLink(UrlEncode($HomePage),
-			  $q->img({-src=>$url, -alt=>$alt, -class=>'logo'}), 'logo');
+    $result .= ScriptLink(UrlEncode($HomePage), $q->img({-src=>$url, -alt=>$alt, -class=>'logo'}), 'logo');
   }
-  if (GetParam('toplinkbar', $TopLinkBar)) {
+  if (GetParam('toplinkbar', $TopLinkBar) != 2) {
     $result .= GetGotoBar($id);
     if (%SpecialDays) {
       my ($sec, $min, $hour, $mday, $mon, $year) = gmtime($Now);
@@ -2236,6 +2230,7 @@ sub GetHeader {
       }
     }
   }
+  $result .= GetSearchForm() if GetParam('topsearchform', $TopSearchForm) != 2;
   $result .= $q->div({-class=>'message'}, $Message) if $Message;
   $result .= GetHeaderTitle($id, $title, $oldId);
   return $result . $q->end_div() . $q->start_div({-class=>'wrapper'});
@@ -2376,9 +2371,11 @@ sub PrintFooter {
     return;
   }
   print GetCommentForm($id, $rev, $comment),
-    $q->start_div({-class=>'wrapper close'}), $q->end_div(), $q->end_div(),
-      $q->start_div({-class=>'footer'}), $q->hr(), GetGotoBar($id),
-  GetFooterLinks($id, $rev), GetFooterTimestamp($id, $rev), GetSearchForm();
+  $q->start_div({-class=>'wrapper close'}), $q->end_div(), $q->end_div();
+  print $q->start_div({-class=>'footer'}), $q->hr();
+  print GetGotoBar($id) if GetParam('toplinkbar', $TopLinkBar) != 1;
+  print GetFooterLinks($id, $rev), GetFooterTimestamp($id, $rev);
+  print GetSearchForm() if GetParam('topsearchform', $TopSearchForm) != 1;
   if ($DataDir =~ m|/tmp/|) {
     print $q->p($q->strong(T('Warning') . ': ')
     . Ts('Database is stored in temporary directory %s', $DataDir));
@@ -2397,10 +2394,10 @@ sub PrintFooter {
 sub GetFooterTimestamp {
   my ($id, $rev) = @_;
   if ($id and $rev ne 'history' and $rev ne 'edit' and $Page{revision}) {
-    my @elements = ($q->br(), ($rev eq '' ? T('Last edited') : T('Edited')), TimeToText($Page{ts}),
+    my @elements = (($rev eq '' ? T('Last edited') : T('Edited')), TimeToText($Page{ts}),
 		    Ts('by %s', GetAuthorLink($Page{host}, $Page{username})));
     push(@elements, ScriptLinkDiff(2, $id, T('(diff)'), $rev)) if $UseDiff and $Page{revision} > 1;
-    return $q->span({-class=>'time'}, @elements);
+    return $q->span({-class=>'time'}, @elements, $q->br());
   }
   return '';
 }
@@ -2437,7 +2434,7 @@ sub GetFooterLinks {
     $action .= ';id=' . UrlEncode($id) if $id;
     push(@elements, ScriptLink($action, T('Administration'), 'admin'));
   }
-  return @elements ? $q->span({-class=>'edit bar'}, $q->br(), @elements) : '';
+  return @elements ? $q->span({-class=>'edit bar'}, @elements, $q->br()) : '';
 }
 
 sub GetCommentForm {
@@ -2473,21 +2470,24 @@ sub GetFormStart {
 }
 
 sub GetSearchForm {
-  my $form = $q->label({-for=>'search'}, T('Search:')) . ' '
-    . $q->textfield(-name=>'search', -id=>'search', -size=>20,
-		    -accesskey=>T('f')) . ' ';
+  my $html = GetFormStart(undef, 'get', 'search') . $q->start_p;
+  $html .= $q->label({-for=>'search'}, T('Search:')) . ' '
+      . $q->textfield(-name=>'search', -id=>'search', -size=>20, -accesskey=>T('f')) . ' ';
   if ($ReplaceForm) {
-    $form .= $q->label({-for=>'replace'}, T('Replace:')) . ' '
-      . $q->textfield(-name=>'replace', -id=>'replace', -size=>20) . ' '
+    $html .= $q->label({-for=>'replace'}, T('Replace:')) . ' '
+	. $q->textfield(-name=>'replace', -id=>'replace', -size=>20) . ' '
 	. $q->checkbox(-name=>'delete', -label=>T('Delete')) . ' ';
   }
-  if (%Languages) {
-    $form .= $q->label({-for=>'searchlang'}, T('Language:')) . ' '
-      . $q->textfield(-name=>'lang', -id=>'searchlang', -size=>10,
-		      -default=>GetParam('lang', '')) . ' ';
+  if (GetParam('matchingpages', $MatchingPages)) {
+    $html .= $q->label({-for=>'matchingpage'}, T('Filter:')) . ' '
+	. $q->textfield(-name=>'match', -id=>'matchingpage', -size=>20) . ' ';
   }
-  return GetFormStart(undef, 'get', 'search')
-    . $q->p($form . $q->submit('dosearch', T('Go!'))) . $q->end_form;
+  if (%Languages) {
+    $html .= $q->label({-for=>'searchlang'}, T('Language:')) . ' '
+	. $q->textfield(-name=>'lang', -id=>'searchlang', -size=>10, -default=>GetParam('lang', '')) . ' ';
+  }
+  $html .= $q->submit('dosearch', T('Go!')) . $q->end_p . $q->end_form;
+  return $html;
 }
 
 sub GetValidatorLink {
@@ -3295,7 +3295,7 @@ sub AllPagesList {
 }
 
 sub DoSearch {
-  my $string = shift;
+  my $string = shift || GetParam('search', '');;
   return DoIndex() if $string eq '';
   eval { qr/$string/ }
     or $@ and ReportError(Ts('Malformed regular expression in %s', $string),
@@ -3893,8 +3893,7 @@ sub DoDebug {
 
 sub DoSurgeProtection {
   return unless $SurgeProtection;
-  my $name = GetParam('username', '');
-  $name = GetRemoteHost() if not $name and $SurgeProtection;
+  my $name = GetParam('username', GetRemoteHost());
   return unless $name;
   ReadRecentVisitors();
   AddRecentVisitor($name);

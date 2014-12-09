@@ -4,16 +4,123 @@
    @import url(http://fonts.googleapis.com/css?family=Esteban&subset=latin,latin-ext);
 
    For campaignwiki.org, we need to use the same URL in the config file when
-   calling wkhtmltopdf. */
+   calling wkhtmltopdf.
 
-@import url(https://fonts.googleapis.com/css?family=Noticia+Text:400,400italic,700italic,700&subset=latin,latin-ext);
+   @import url(https://fonts.googleapis.com/css?family=Noticia+Text:400,400italic,700italic,700&subset=latin,latin-ext); */
+
+/* vietnamese */
+@font-face {
+  font-family: 'Noticia Text';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Noticia Text'), local('NoticiaText-Regular)'), url('/fonts/NoticiaText-Regular.woff') format('woff');
+  unicode-range: U+0102-0103, U+1EA0-1EF1, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Noticia Text';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Noticia Text'), local('NoticiaText-Regular)'), url('/fonts/NoticiaText-Regular.woff') format('woff');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Noticia Text';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Noticia Text'), local('NoticiaText-Regular)'), url('/fonts/NoticiaText-Regular.woff') format('woff');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Noticia Text';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Noticia Text Bold'), local('NoticiaText-Bold)'), url('/fonts/NoticiaText-Bold.woff') format('woff');
+  unicode-range: U+0102-0103, U+1EA0-1EF1, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Noticia Text';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Noticia Text Bold'), local('NoticiaText-Bold)'), url('/fonts/NoticiaText-Bold.woff') format('woff');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Noticia Text';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Noticia Text Bold'), local('NoticiaText-Bold)'), url('/fonts/NoticiaText-Bold.woff') format('woff');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Noticia Text';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Noticia Text Italic'), local('NoticiaText-Italic)'), url('/fonts/NoticiaText-Italic.woff') format('woff');
+  unicode-range: U+0102-0103, U+1EA0-1EF1, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Noticia Text';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Noticia Text Italic'), local('NoticiaText-Italic)'), url('/fonts/NoticiaText-Italic.woff') format('woff');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Noticia Text';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Noticia Text Italic'), local('NoticiaText-Italic)'), url('/fonts/NoticiaText-Italic.woff') format('woff');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Noticia Text';
+  font-style: italic;
+  font-weight: 700;
+  src: local('Noticia Text Bold Italic'), local('NoticiaText-BoldItalic)'), url('/fonts/NoticiaText-BoldItalic.woff') format('woff');
+  unicode-range: U+0102-0103, U+1EA0-1EF1, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Noticia Text';
+  font-style: italic;
+  font-weight: 700;
+  src: local('Noticia Text Bold Italic'), local('NoticiaText-BoldItalic)'), url('/fonts/NoticiaText-BoldItalic.woff') format('woff');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Noticia Text';
+  font-style: italic;
+  font-weight: 700;
+  src: local('Noticia Text Bold Italic'), local('NoticiaText-BoldItalic)'), url('/fonts/NoticiaText-BoldItalic.woff') format('woff');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+@font-face {
+  font-family: 'Symbola';
+  src: local('Symbola'), url('/fonts/Symbola.woff') format('woff');
+}
 
 body {
-	font-family: "Noticia Text", Times, serif;
+	font-family: "Noticia Text", Symbola, serif;
 	font-size: 14pt;
 	color: #000;
 	background-color: #eed;
 	margin:1em 2em;
+}
+
+textarea, pre, code, tt {
+    font-family: "Andale Mono", Monaco, "Courier New", Courier, monospace, Symbola;
+    font-size: 80%;
 }
 
 @media print {
@@ -39,13 +146,14 @@ body {
 }
 
 /* general */
-div.browse {
-	min-height: 3em;
-}
-div.footer {
-	clear:both;
-	font-size: 90%;
-}
+.browse { min-height: 3em; }
+.header form, .header p { margin: 0; }
+/* hide the buttons but don't use display:none because of
+   http://stackoverflow.com/questions/5665203/getting-iphone-go-button-to-submit-form */
+.header input[type="submit"] { position: absolute; visibility: hidden; }
+.header input { width: 5em; font-size: 80%; }
+.footer { clear:both; font-size: 90%; }
+.content input { font-size: 80%; line-height: 125%; }
 
 /* comments, footer */
 div.commentshown {
@@ -148,6 +256,10 @@ a.pencil {
     a.pencil {
 	display: none;
     }
+}
+table a.pencil {
+    position: absolute;
+    right: inherit;
 }
 
 /* table of contents */

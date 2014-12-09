@@ -235,31 +235,34 @@ a img {
 
 /* search box in the top bar */
 
-.tiny, .tiny * {
+.header form, .header p {
     display: inline;
     white-space: nowrap;
 }
+label[for="searchlang"], #searchlang, .header input[type="submit"] {
+    /* don't use display: none! http://stackoverflow.com/questions/5665203/getting-iphone-go-button-to-submit-form */
+    visibility: hidden; position: absolute;
+}
 /* wrap on the iphone */
 @media media only screen and (max-device-width: 480px) {
-    div.tiny {
-	white-space: normal;
-    }
-    .tiny input {
-	max-width: 10ex;
-    }
 }
 
-.tiny input {
-    padding: 0;
+.header input {
     width: 10ex;
+}
+
+/* other form fields */
+
+input[type="text"] {
+    padding: 0;
     font-size: 80%;
     line-height: 125%;
 }
 
 /* code */
 
-pre, code, tt {
-    font-family: "Andale Mono", Monaco, "Courier New", Courier, monospace;
+textarea, pre, code, tt {
+    font-family: "Andale Mono", Monaco, "Courier New", Courier, monospace, "Symbola";
     font-size: 80%;
 }
 
