@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 48;
+use Test::More tests => 52;
 use utf8;
 clear_pages();
 
@@ -252,3 +252,27 @@ test_page(get_page('action=edit-paragraph title=Test'
  . ' around=51'), 'Status: 302');
 $text =~ s/test3/test30/;
 test_page(get_page('action=browse id=Test raw=1'), $text);
+
+# ampersand in a pagename
+
+$text = q{d4
+
+d5
+
+d8
+
+d10
+};
+
+$page = update_page('D%26D', $text);
+my $action = 'action=edit-paragraph;title=D%26D;around=8;paragraph=d5%0a%0a';
+test_page($page, $action);
+test_page(get_page(join(' ', split(';', $action))), 'd5');
+# test error
+test_page(get_page('action=edit-paragraph title=D%26D'
+ . ' text=d6%0a%0a'       # new
+ . ' paragraph=d5%0a%0a'  # old
+ . ' around=8'),
+ 'Status: 302');
+$text =~ s/d5/d6/;
+test_page(get_page('action=browse id=D%26D raw=1'), $text);

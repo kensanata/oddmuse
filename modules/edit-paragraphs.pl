@@ -27,7 +27,7 @@ our $EditParagraphPencil = '&#x270E;';
 $Action{'edit-paragraph'} = \&DoEditParagraph;
 
 sub DoEditParagraph {
-  my $id = GetParam('title', '');
+  my $id = UnquoteHtml(GetParam('title', ''));
   UserCanEditOrDie($id);
 
   my $old = UnquoteHtml(GetParam('paragraph', ''));
@@ -181,8 +181,10 @@ sub EditParagraph {
     # <table><tr><td>...<a ...>&#x270E;</a></td></tr></table></p>
     
     $pos = $pos || length(QuoteHtml($Page{text})); # make sure we have an around value
-    my $link = ScriptLink("action=edit-paragraph;title=$OpenPageName;around=$pos;paragraph="
-			  . UrlEncode(UnquoteHtml($text)), $EditParagraphPencil, 'pencil');
+    my $title = UrlEncode($OpenPageName);
+    my $paragraph = UrlEncode(UnquoteHtml($text));
+    my $link = ScriptLink("action=edit-paragraph;title=$title;around=$pos;paragraph=$paragraph",
+			  $EditParagraphPencil, 'pencil');
 
     if ($Fragment =~ s!((:?</h[1-6]>|</t[dh]></tr></table>|</pre>)<p>)$!!) {
       # $Fragment .= '<!-- moved inside -->';
