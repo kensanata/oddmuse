@@ -1,9 +1,11 @@
+/* font-face includes TTF for PDF generation */
+
 /* vietnamese */
 @font-face {
   font-family: 'Noticia Text';
   font-style: normal;
   font-weight: 400;
-  src: local('Noticia Text'), local('NoticiaText-Regular)'), url('/fonts/NoticiaText-Regular.woff') format('woff');
+  src: local('Noticia Text'), local('NoticiaText-Regular)'), url('/fonts/NoticiaText-Regular.woff') format('woff') url('/fonts/NoticiaText-Regular.ttf') format('truetype');
   unicode-range: U+0102-0103, U+1EA0-1EF1, U+20AB;
 }
 /* latin-ext */
@@ -11,7 +13,7 @@
   font-family: 'Noticia Text';
   font-style: normal;
   font-weight: 400;
-  src: local('Noticia Text'), local('NoticiaText-Regular)'), url('/fonts/NoticiaText-Regular.woff') format('woff');
+  src: local('Noticia Text'), local('NoticiaText-Regular)'), url('/fonts/NoticiaText-Regular.woff') format('woff') url('/fonts/NoticiaText-Regular.ttf') format('truetype');
   unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
 }
 /* latin */
@@ -19,7 +21,7 @@
   font-family: 'Noticia Text';
   font-style: normal;
   font-weight: 400;
-  src: local('Noticia Text'), local('NoticiaText-Regular)'), url('/fonts/NoticiaText-Regular.woff') format('woff');
+  src: local('Noticia Text'), local('NoticiaText-Regular)'), url('/fonts/NoticiaText-Regular.woff') format('woff') url('/fonts/NoticiaText-Regular.ttf') format('truetype');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 /* vietnamese */
@@ -27,7 +29,7 @@
   font-family: 'Noticia Text';
   font-style: normal;
   font-weight: 700;
-  src: local('Noticia Text Bold'), local('NoticiaText-Bold)'), url('/fonts/NoticiaText-Bold.woff') format('woff');
+  src: local('Noticia Text Bold'), local('NoticiaText-Bold)'), url('/fonts/NoticiaText-Bold.woff') format('woff') url('/fonts/NoticiaText-Bold.ttf') format('truetype');
   unicode-range: U+0102-0103, U+1EA0-1EF1, U+20AB;
 }
 /* latin-ext */
@@ -35,7 +37,7 @@
   font-family: 'Noticia Text';
   font-style: normal;
   font-weight: 700;
-  src: local('Noticia Text Bold'), local('NoticiaText-Bold)'), url('/fonts/NoticiaText-Bold.woff') format('woff');
+  src: local('Noticia Text Bold'), local('NoticiaText-Bold)'), url('/fonts/NoticiaText-Bold.woff') format('woff') url('/fonts/NoticiaText-Bold.ttf') format('truetype');
   unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
 }
 /* latin */
@@ -43,7 +45,7 @@
   font-family: 'Noticia Text';
   font-style: normal;
   font-weight: 700;
-  src: local('Noticia Text Bold'), local('NoticiaText-Bold)'), url('/fonts/NoticiaText-Bold.woff') format('woff');
+  src: local('Noticia Text Bold'), local('NoticiaText-Bold)'), url('/fonts/NoticiaText-Bold.woff') format('woff') url('/fonts/NoticiaText-Bold.ttf') format('truetype');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 /* vietnamese */
@@ -51,7 +53,7 @@
   font-family: 'Noticia Text';
   font-style: italic;
   font-weight: 400;
-  src: local('Noticia Text Italic'), local('NoticiaText-Italic)'), url('/fonts/NoticiaText-Italic.woff') format('woff');
+  src: local('Noticia Text Italic'), local('NoticiaText-Italic)'), url('/fonts/NoticiaText-Italic.woff') format('woff') url('/fonts/NoticiaText-Italic.ttf') format('truetype');
   unicode-range: U+0102-0103, U+1EA0-1EF1, U+20AB;
 }
 /* latin-ext */
@@ -59,7 +61,7 @@
   font-family: 'Noticia Text';
   font-style: italic;
   font-weight: 400;
-  src: local('Noticia Text Italic'), local('NoticiaText-Italic)'), url('/fonts/NoticiaText-Italic.woff') format('woff');
+  src: local('Noticia Text Italic'), local('NoticiaText-Italic)'), url('/fonts/NoticiaText-Italic.woff') format('woff') url('/fonts/NoticiaText-Italic.ttf') format('truetype');
   unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
 }
 /* latin */
@@ -67,7 +69,7 @@
   font-family: 'Noticia Text';
   font-style: italic;
   font-weight: 400;
-  src: local('Noticia Text Italic'), local('NoticiaText-Italic)'), url('/fonts/NoticiaText-Italic.woff') format('woff');
+  src: local('Noticia Text Italic'), local('NoticiaText-Italic)'), url('/fonts/NoticiaText-Italic.woff') format('woff') url('/fonts/NoticiaText-Italic.ttf') format('truetype');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 /* vietnamese */
@@ -75,7 +77,7 @@
   font-family: 'Noticia Text';
   font-style: italic;
   font-weight: 700;
-  src: local('Noticia Text Bold Italic'), local('NoticiaText-BoldItalic)'), url('/fonts/NoticiaText-BoldItalic.woff') format('woff');
+  src: local('Noticia Text Bold Italic'), local('NoticiaText-BoldItalic)'), url('/fonts/NoticiaText-BoldItalic.woff') format('woff') url('/fonts/NoticiaText-BoldItalic.ttf') format('truetype');
   unicode-range: U+0102-0103, U+1EA0-1EF1, U+20AB;
 }
 /* latin-ext */
@@ -83,7 +85,7 @@
   font-family: 'Noticia Text';
   font-style: italic;
   font-weight: 700;
-  src: local('Noticia Text Bold Italic'), local('NoticiaText-BoldItalic)'), url('/fonts/NoticiaText-BoldItalic.woff') format('woff');
+  src: local('Noticia Text Bold Italic'), local('NoticiaText-BoldItalic)'), url('/fonts/NoticiaText-BoldItalic.woff') format('woff') url('/fonts/NoticiaText-BoldItalic.ttf') format('truetype');
   unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
 }
 /* latin */
@@ -91,13 +93,13 @@
   font-family: 'Noticia Text';
   font-style: italic;
   font-weight: 700;
-  src: local('Noticia Text Bold Italic'), local('NoticiaText-BoldItalic)'), url('/fonts/NoticiaText-BoldItalic.woff') format('woff');
+  src: local('Noticia Text Bold Italic'), local('NoticiaText-BoldItalic)'), url('/fonts/NoticiaText-BoldItalic.woff') format('woff') url('/fonts/NoticiaText-BoldItalic.ttf') format('truetype');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
 @font-face {
   font-family: 'Symbola';
-  src: local('Symbola'), url('/fonts/Symbola.woff') format('woff');
+  src: local('Symbola'), url('/fonts/Symbola.woff') format('woff') url('/fonts/Symbola.ttf') format('truetype');
 }
 
 body, rss {
@@ -106,6 +108,30 @@ body, rss {
     font-size: 14pt;
     margin: 1em 3em;
     padding:0;
+}
+
+@media print {
+    body {
+	font-size: 12pt;
+	color: #000;
+	background-color: #fff;
+    }
+    
+    /* hide all the crap */
+    div.diff, div.diff+hr, div.refer, div.near, div.definition, div.sister,
+    div.cal, div.footer, span.specialdays, span.gotobar, a.edit, a.number span,
+    div.rc form, form.tiny, p.comment, p#plus1, div.g-plusone, div.content a.feed {
+	display:none;
+    }
+    div.content a.book,
+    div.content a.movie {
+	text-decoration: none;
+    }
+    a cite {
+	font-style: italic;
+    }
+    img[alt="RSS"] { display: none }
+    a.rss { font-size: 8pt }
 }
 
 /* headings: we can use larger sizes if we use a lighter color.
@@ -282,6 +308,12 @@ div.header, div.footer, div.near, div.definition, p.comment, a.tag {
     
     font-size: 14pt;
 }
+@media print {
+    div.header, div.footer, div.near, div.definition, p.comment, a.tag {
+	font-size: 8pt;
+    }
+}
+
 div.footer form.search {
     display: none;
 }
@@ -556,40 +588,8 @@ p.table + p { clear:both; }
     }
 } */
 
-@media print {
-    body {
-	font-size: 12pt;
-	color: #000;
-	background-color: #fff;
-    }
-    
-    /* hide all the crap */
-    div.diff, div.diff+hr, div.refer, div.near, div.definition, div.sister,
-    div.cal, div.footer, span.specialdays, span.gotobar, a.edit, a.number span,
-    div.rc form, form.tiny, p.comment, p#plus1, div.g-plusone {
-	display:none;
-    }
-    a,
-    a:visited,
-    div.content a.near:link, 
-    div.content a.near:visited,
-    div.content a.near:active {
-	color:inherit;
-	font-weight: bold;
-    }
-    div.content a.feed {
-	display: none;
-    }
-    div.content a.book,
-    div.content a.movie {
-	text-decoration: none;
-    }
-    a cite {
-	font-style: italic;
-    }
-}
-
 /* rss */
+
 channel * { display: block; }
 
 channel title {
