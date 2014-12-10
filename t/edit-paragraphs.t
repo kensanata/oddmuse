@@ -277,26 +277,23 @@ test_page(get_page('action=edit-paragraph title=D%26D'
 $text =~ s/d5/d6/;
 test_page(get_page('action=browse id=D%26D raw=1'), $text);
 
-# questionmark in the edited text
+# questionmark, square brackets, bullet lists in the edited text
 
-$text = q{who?
-
-[where]?
-
-why?
-
-what?
+$text = q{* who?
+* [where]?
+* why?
+* what?
 };
 
 $page = update_page('Questions', $text);
-my $action = 'action=edit-paragraph;title=Questions;around=16;paragraph=%5bwhere%5d%3f';
-test_page($page, $action);
+my $action = 'action=edit-paragraph;title=Questions;around=18;paragraph=*%20%5bwhere%5d%3f%0a';
+test_page($page, quotemeta($action));
 test_page(get_page(join(' ', split(';', $action))), '\[where\]\?');
 # test error
 test_page(get_page('action=edit-paragraph title=Questions'
- . ' paragraph=%5bwhere%5d%3f%0a%0a'  # old
- . ' text=how%3f%0a%0a'         # new
- . ' around=16'),
+ . ' paragraph=*%20%5bwhere%5d%3f%0a'  # old
+ . ' text=*%20how%3f%0a'         # new
+ . ' around=18'),
  'Status: 302');
 $text =~ s/\[where\]\?/how?/;
 test_page(get_page('action=browse id=Questions raw=1'), quotemeta($text));

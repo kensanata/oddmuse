@@ -69,6 +69,10 @@ sub DoEditParagraph {
       SetParam('text', UnquoteHtml($text));
       return DoPost($id);
     } else {
+      $text = substr($text, 0, $around)
+	  . "\n### around here ###\n"
+	  . substr($text, $around)
+	  if $around;
       ReportError(T('Could not identify the paragraph you were editing'),
 		  '500 INTERNAL SERVER ERROR',
 		  undef,
@@ -156,6 +160,7 @@ sub EditParagraph {
   if (@EditParagraphs) {
     if ($pos) {
       while (@EditParagraphs and $EditParagraphs[0]->[1] <= $pos) {
+	$pos = $EditParagraphs[0]->[1]; # just in case we're overshooting
 	$text .= $EditParagraphs[0]->[2];
 	shift(@EditParagraphs);
       }
