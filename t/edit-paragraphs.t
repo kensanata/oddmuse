@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 52;
+use Test::More tests => 56;
 use utf8;
 clear_pages();
 
@@ -241,14 +241,14 @@ test_page($page, $action);
 test_page(get_page(join(' ', split(';', $action))), QuoteHtml("<test3>\n"));
 # test error
 test_page(get_page('action=edit-paragraph title=Test'
- . ' text=' . UrlEncode("<test30>\n")        # new
  . ' paragraph=' . UrlEncode("<test3>\n")    # old
+ . ' text=' . UrlEncode("<test30>\n")        # new
  . ' around=1'),
  'Could not identify the paragraph you were editing',
  '<pre>' . QuoteHtml("<test3>\n") . '</pre>');
 test_page(get_page('action=edit-paragraph title=Test'
- . ' text=' . UrlEncode("<test30>\n")        # new
  . ' paragraph=' . UrlEncode("<test3>\n")    # old
+ . ' text=' . UrlEncode("<test30>\n")        # new
  . ' around=51'), 'Status: 302');
 $text =~ s/test3/test30/;
 test_page(get_page('action=browse id=Test raw=1'), $text);
@@ -270,9 +270,33 @@ test_page($page, $action);
 test_page(get_page(join(' ', split(';', $action))), 'd5');
 # test error
 test_page(get_page('action=edit-paragraph title=D%26D'
- . ' text=d6%0a%0a'       # new
  . ' paragraph=d5%0a%0a'  # old
+ . ' text=d6%0a%0a'       # new
  . ' around=8'),
  'Status: 302');
 $text =~ s/d5/d6/;
 test_page(get_page('action=browse id=D%26D raw=1'), $text);
+
+# questionmark in the edited text
+
+$text = q{who?
+
+[where]?
+
+why?
+
+what?
+};
+
+$page = update_page('Questions', $text);
+my $action = 'action=edit-paragraph;title=Questions;around=16;paragraph=%5bwhere%5d%3f';
+test_page($page, $action);
+test_page(get_page(join(' ', split(';', $action))), '\[where\]\?');
+# test error
+test_page(get_page('action=edit-paragraph title=Questions'
+ . ' paragraph=%5bwhere%5d%3f%0a%0a'  # old
+ . ' text=how%3f%0a%0a'         # new
+ . ' around=16'),
+ 'Status: 302');
+$text =~ s/\[where\]\?/how?/;
+test_page(get_page('action=browse id=Questions raw=1'), quotemeta($text));
