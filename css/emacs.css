@@ -115,6 +115,7 @@ div.toc h2 {
 
 /* get rid of useless "10 results found" when using indexed search. */
 div.search p.result { display:none; }
+label[for="searchlang"], input#searchlang { display: none; }
 
 form.tiny, form.tiny p {
     display:inline;
