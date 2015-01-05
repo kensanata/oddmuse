@@ -37,6 +37,8 @@ my %library= ('bg' => 'bulgarian-utf8.pl',
 	      'se' => 'swedish-utf8.pl',
 	      'sr' => 'serbian-utf8.pl',
 	      'zh' => 'chinese-utf8.pl',
+	      'zh-cn' => 'chinese_cn-utf8.pl',
+	      'zh-tw' => 'chinese-utf8.pl',
 	     );
 
 sub LoadLanguage {
