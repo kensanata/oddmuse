@@ -37,7 +37,7 @@ AddModuleDescription('tags.pl', 'Tagging Extension');
 
 These variable will be used to link the tags. By default, they will
 point at the wiki itself, using C<$ScriptName>. They use C<%s> as a
-placeholder for the URL encoded tag.
+placeholder for the tag.
 
 Example:
 
@@ -74,6 +74,18 @@ sub TagsGetLink {
   $id = UrlEncode($id);
   $url =~ s/\%s/$id/g or $url .= $id;
   return $url;
+}
+
+sub TagReadHash {
+  require Storable;
+  return %{ Storable::retrieve($TagFile) } if -f $TagFile;
+}
+
+
+sub TagWriteHash {
+  my $h = shift;
+  require Storable;
+  return Storable::store($h, $TagFile);
 }
 
 push(@MyRules, \&TagsRule);
@@ -119,18 +131,15 @@ sub NewTagSave { # called within a lock!
     ($Page{text} =~ m/\[\[tag:$FreeLinkPattern\]\]/g,
      $Page{text} =~ m/\[\[tag:$FreeLinkPattern\|([^]|]+)\]\]/g);
   # open the DB file
-  require Storable;
-  my %h = %{ Storable::retrieve($TagFile) };
+  my %h = TagReadHash();
 
   # For each tag we list the files tagged. Add the current file for
-  # all those tags where it is missing. Note that the values in %h is
-  # an encoded string; the alternative would be to use a form of
-  # freeze and thaw.
+  # all those tags where it is missing.
   foreach my $tag (keys %tag) {
-    my %file = map {$_=>1} split(/$FS/, UrlDecode($h{UrlEncode($tag)}));
+    my %file = map {$_=>1} split(/$FS/, $h{$tag});
     if (not $file{$id}) {
       $file{$id} = 1;
-      $h{UrlEncode($tag)} = UrlEncode(join($FS, keys %file));
+      $h{$tag} = join($FS, keys %file);
     }
   }
 
@@ -138,16 +147,16 @@ sub NewTagSave { # called within a lock!
   # tags used. This allows us to delete the references that no longer
   # show up without looping through them all. The files are indexed
   # with a starting underscore because this is an illegal tag name.
-  foreach my $tag (split (/$FS/, UrlDecode($h{UrlEncode("_$id")}))) {
+  foreach my $tag (split (/$FS/, $h{"_$id"})) {
     # If the tag we're looking at is no longer listed, we have work to
     # do.
     if (!$tag{$tag}) {
-      my %file = map {$_=>1} split(/$FS/, UrlDecode($h{UrlEncode($tag)}));
+      my %file = map {$_=>1} split(/$FS/, $h{$tag});
       delete $file{$id};
       if (%file) {
-	$h{UrlEncode($tag)} = UrlEncode(join($FS, keys %file));
+	$h{$tag} = join($FS, keys %file);
       } else {
-	delete $h{UrlEncode($tag)};
+	delete $h{$tag};
       }
     }
   }
@@ -155,12 +164,12 @@ sub NewTagSave { # called within a lock!
   # Store the new reverse lookup of all the tags used on the current
   # page. If no more tags appear on this page, delete the entry.
   if (%tag) {
-    $h{UrlEncode("_$id")} = UrlEncode(join($FS, keys %tag));
+    $h{"_$id"} = join($FS, keys %tag);
   } else {
-    delete $h{UrlEncode("_$id")};
+    delete $h{"_$id"};
   }
 
-  Storable::store(\%h, $TagFile);
+  TagWriteHash(\%h);
 }
 
 =pod
@@ -177,25 +186,24 @@ sub NewTagDeletePage { # called within a lock!
   my $id = shift;
 
   # open the DB file
-  require Storable;
-  my %h = %{ Storable::retrieve($TagFile) };
+  my %h = TagReadHash();
 
   # For each file in our hash, we have a reverse lookup of all the
   # tags used. This allows us to delete the references that no longer
   # show up without looping through them all.
-  foreach my $tag (split (/$FS/, UrlDecode($h{UrlEncode("_$id")}))) {
-    my %file = map {$_=>1} split(/$FS/, UrlDecode($h{UrlEncode($tag)}));
+  foreach my $tag (split (/$FS/, $h{"_$id"})) {
+    my %file = map {$_=>1} split(/$FS/, $h{$tag});
     delete $file{$id};
     if (%file) {
-      $h{UrlEncode($tag)} = UrlEncode(join($FS, keys %file));
+      $h{$tag} = join($FS, keys %file);
     } else {
-      delete $h{UrlEncode($tag)};
+      delete $h{$tag};
     }
   }
 
   # Delete reverse lookup entry.
-  delete $h{UrlEncode("_$id")};
-  Storable::store(\%h, $TagFile);
+  delete $h{"_$id"};
+  TagWriteHash(\%h);
 
   # Return any error codes?
   return OldTagDeletePage($id, @_);
@@ -213,15 +221,14 @@ pages and a new search term without the tag terms.
 sub TagFind {
   my @tags = @_;
   # open the DB file
-  require Storable;
-  my %h = %{ Storable::retrieve($TagFile) };
+  my %h = TagReadHash();
   my %page;
   foreach my $tag (@tags) {
-    foreach my $id (split(/$FS/, UrlDecode($h{UrlEncode(lc($tag))}))) {
+    foreach my $id (split(/$FS/, $h{lc($tag)})) {
       $page{$id} = 1;
     }
   }
-  Storable::store(\%h, $TagFile);
+  TagWriteHash(\%h);
   return sort keys %page;
 }
 
@@ -286,25 +293,24 @@ sub TagCloud {
   print GetHeader('', T('Tag Cloud'), ''),
     $q->start_div({-class=>'content cloud'}) . '<p>';
   # open the DB file
-  require Storable;
-  my %h = %{ Storable::retrieve($TagFile) };
+  my %h = TagReadHash();
   my $max = 0;
   my $min = 0;
   my %count = ();
-  foreach my $encoded_tag (grep !/^_/, keys %h) {
-    $count{$encoded_tag} = split(/$FS/, UrlDecode($h{$encoded_tag}));
-    $max = $count{$encoded_tag} if $count{$encoded_tag} > $max;
-    $min = $count{$encoded_tag} if not $min or $count{$encoded_tag} < $min;
+  foreach my $tag (grep !/^_/, keys %h) {
+    $count{$tag} = split(/$FS/, $h{$tag});
+    $max = $count{$tag} if $count{$tag} > $max;
+    $min = $count{$tag} if not $min or $count{$tag} < $min;
   }
-  Storable::store(\%h, $TagFile);
-  foreach my $encoded_tag (sort keys %count) {
-    my $n = $count{$encoded_tag};
-    print $q->a({-href  => "$ScriptName?search=tag:" . $encoded_tag,
+  TagWriteHash(\%h);
+  foreach my $tag (sort keys %count) {
+    my $n = $count{$tag};
+    print $q->a({-href  => "$ScriptName?search=tag:" . UrlEncode($tag),
 		 -title => $n,
 		 -style => 'font-size: '
 		 . int(80+120*($max == $min ? 1 : ($n-$min)/($max-$min)))
 		 . '%;',
-		}, NormalToFree(UrlDecode($encoded_tag))), T(' ... ');
+		}, NormalToFree($tag)), T(' ... ');
   }
   print '</p></div>';
   PrintFooter();
@@ -353,15 +359,13 @@ sub DoTagsReindex {
     # For each tag we list the files tagged. Add the current file for
     # all tags.
     foreach my $tag (keys %tag) {
-      my $encoded_tag = UrlEncode($tag);
-      $h{$encoded_tag} = $h{$encoded_tag}
-	? $h{$encoded_tag} . UrlEncode($FS . $id)
-	: UrlEncode($id);
+      $h{$tag} .= $FS if $h{$tag};
+      $h{$tag} .= $id;
     }
 
     # Store the reverse lookup of all the tags used on the current
     # page.
-    $h{UrlEncode("_$id")} = UrlEncode(join($FS, keys %tag));
+    $h{"_$id"} = join($FS, keys %tag);
   }
 
   Storable::store(\%h, $TagFile) or print "Error saving tag file.\n";
@@ -384,12 +388,11 @@ $Action{taglist} = \&TagList;
 sub TagList {
   print GetHttpHeader('text/plain');
   # open the DB file
-  require Storable;
-  my %h = %{ Storable::retrieve($TagFile) };
-  foreach my $id (sort map { UrlDecode($_) } keys %h) {
-    print "$id: " . join(', ', split(/$FS/, UrlDecode($h{UrlEncode($id)}))) . "\n";
+  my %h = TagReadHash();
+  foreach my $id (sort map { $_ } keys %h) {
+    print "$id: " . join(', ', split(/$FS/, $h{$id})) . "\n";
   }
-  Storable::store(\%h, $TagFile);
+  TagWriteHash(\%h);
 }
 
 =pod
