@@ -119,8 +119,8 @@ sub NewTagSave { # called within a lock!
     ($Page{text} =~ m/\[\[tag:$FreeLinkPattern\]\]/g,
      $Page{text} =~ m/\[\[tag:$FreeLinkPattern\|([^]|]+)\]\]/g);
   # open the DB file
-  require DB_File;
-  tie %h, "DB_File", $TagFile;
+  require Storable;
+  my %h = %{ Storable::retrieve($TagFile) };
 
   # For each tag we list the files tagged. Add the current file for
   # all those tags where it is missing. Note that the values in %h is
@@ -160,7 +160,7 @@ sub NewTagSave { # called within a lock!
     delete $h{UrlEncode("_$id")};
   }
 
-  untie %h;
+  Storable::store(\%h, $TagFile);
 }
 
 =pod
@@ -177,8 +177,8 @@ sub NewTagDeletePage { # called within a lock!
   my $id = shift;
 
   # open the DB file
-  require DB_File;
-  tie %h, "DB_File", $TagFile;
+  require Storable;
+  my %h = %{ Storable::retrieve($TagFile) };
 
   # For each file in our hash, we have a reverse lookup of all the
   # tags used. This allows us to delete the references that no longer
@@ -195,7 +195,7 @@ sub NewTagDeletePage { # called within a lock!
 
   # Delete reverse lookup entry.
   delete $h{UrlEncode("_$id")};
-  untie %h;
+  Storable::store(\%h, $TagFile);
 
   # Return any error codes?
   return OldTagDeletePage($id, @_);
@@ -213,15 +213,15 @@ pages and a new search term without the tag terms.
 sub TagFind {
   my @tags = @_;
   # open the DB file
-  require DB_File;
-  tie %h, "DB_File", $TagFile;
+  require Storable;
+  my %h = %{ Storable::retrieve($TagFile) };
   my %page;
   foreach my $tag (@tags) {
     foreach my $id (split(/$FS/, UrlDecode($h{UrlEncode(lc($tag))}))) {
       $page{$id} = 1;
     }
   }
-  untie %h;
+  Storable::store(\%h, $TagFile);
   return sort keys %page;
 }
 
@@ -286,8 +286,8 @@ sub TagCloud {
   print GetHeader('', T('Tag Cloud'), ''),
     $q->start_div({-class=>'content cloud'}) . '<p>';
   # open the DB file
-  require DB_File;
-  tie %h, "DB_File", $TagFile;
+  require Storable;
+  my %h = %{ Storable::retrieve($TagFile) };
   my $max = 0;
   my $min = 0;
   my %count = ();
@@ -296,7 +296,7 @@ sub TagCloud {
     $max = $count{$encoded_tag} if $count{$encoded_tag} > $max;
     $min = $count{$encoded_tag} if not $min or $count{$encoded_tag} < $min;
   }
-  untie %h;
+  Storable::store(\%h, $TagFile);
   foreach my $encoded_tag (sort keys %count) {
     my $n = $count{$encoded_tag};
     print $q->a({-href  => "$ScriptName?search=tag:" . $encoded_tag,
@@ -338,9 +338,8 @@ sub DoTagsReindex {
   print GetHttpHeader('text/plain');
 
   # open the DB file
-  require DB_File;
-  tie %h, "DB_File", $TagFile;
-  %h = ();
+  require Storable;
+  my %h = ();
 
   foreach my $id (AllPagesList()) {
     print "$id\n";
@@ -365,7 +364,7 @@ sub DoTagsReindex {
     $h{UrlEncode("_$id")} = UrlEncode(join($FS, keys %tag));
   }
 
-  untie %h;
+  Storable::store(\%h, $TagFile) or print "Error saving tag file.\n";
   ReleaseLock();
 }
 
@@ -385,12 +384,12 @@ $Action{taglist} = \&TagList;
 sub TagList {
   print GetHttpHeader('text/plain');
   # open the DB file
-  require DB_File;
-  tie %h, "DB_File", $TagFile;
+  require Storable;
+  my %h = %{ Storable::retrieve($TagFile) };
   foreach my $id (sort map { UrlDecode($_) } keys %h) {
     print "$id: " . join(', ', split(/$FS/, UrlDecode($h{UrlEncode($id)}))) . "\n";
   }
-  untie %h;
+  Storable::store(\%h, $TagFile);
 }
 
 =pod
@@ -412,7 +411,7 @@ sub TagsMenu {
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2005, 2009, 2013  Alex Schroeder <alex@gnu.org>
+Copyright (C) 2005–2015  Alex Schroeder <alex@gnu.org>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
