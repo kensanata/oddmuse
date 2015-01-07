@@ -49,50 +49,49 @@ update_page('Pödgecäst´s', 'Another [[tag:podcast]]');
 update_page('Alex', 'Me! [[tag:Old School]]');
 
 # open the DB file
-require DB_File;
-tie %h, "DB_File", $TagFile;
+my %h = TagReadHash();
 
-%tag = map {$_=>1} split($FS, UrlDecode($h{UrlEncode("_Brilliant")}));
+%tag = map {$_=>1} split($FS, $h{"_Brilliant"});
 ok($tag{podcast}, 'Brilliant page tagged podcast');
 ok($tag{mag}, 'Brilliant page tagged mag');
-%tag = map {$_=>1} split($FS, UrlDecode($h{UrlEncode("_Pödgecäst´s")}));
+%tag = map {$_=>1} split($FS, $h{"_Pödgecäst´s"});
 ok($tag{podcast}, 'Pödgecäst´s page tagged podcast');
-%file = map {$_=>1} split($FS, UrlDecode($h{UrlEncode("podcast")}));
+%file = map {$_=>1} split($FS, $h{"podcast"});
 ok($file{Brilliant}, 'Tag podcast applies to page Brilliant');
 ok($file{"Pödgecäst´s"}, 'Tag podcast applies to page Pödgecäst´s');
-%file = map {$_=>1} split($FS, UrlDecode($h{UrlEncode("mag")}));
+%file = map {$_=>1} split($FS, $h{"mag"});
 ok($file{Brilliant}, 'Tag mag applies to page Brilliant');
-%file = map {$_=>1} split($FS, UrlDecode($h{UrlEncode("old_school")}));
+%file = map {$_=>1} split($FS, $h{"old_school"});
 ok($file{Alex}, 'Tag Old School applies to page Alex');
 
 # close the DB file before making changes via the wiki!
-untie %h;
+TagWriteHash(\%h);
 
 update_page('Brilliant', 'Gameologists [[tag:mag]]');
 
 # reopen changed file
-tie %h, "DB_File", $TagFile;
+%h = TagReadHash();
 
-%tag = map {$_=>1} split($FS, UrlDecode($h{UrlEncode("_Brilliant")}));
+%tag = map {$_=>1} split($FS, $h{"_Brilliant"});
 ok(!$tag{podcast}, 'Brilliant page no longer tagged podcast');
 ok($tag{mag}, 'Brilliant page still tagged mag');
-%file = map {$_=>1} split($FS, UrlDecode($h{UrlEncode("podcast")}));
+%file = map {$_=>1} split($FS, $h{"podcast"});
 ok(!$file{Brilliant}, 'Tag podcast no longer applies to page Brilliant');
 ok($file{"Pödgecäst´s"}, 'Tag podcast still applies to page Pödgecäst´s');
 
 # close the DB file before making changes via the wiki!
-untie %h;
+TagWriteHash(\%h);
 
 DeletePage('Brilliant');
 
 # reopen changed file
-tie %h, "DB_File", $TagFile;
+%h = TagReadHash();
 
-ok(!$h{UrlEncode("_Brilliant")}, 'Brilliant page no longer exists');
-ok(!exists($h{UrlEncode("mag")}), 'No page tagged mag exists');
+ok(!$h{"_Brilliant"}, 'Brilliant page no longer exists');
+ok(!exists($h{"mag"}), 'No page tagged mag exists');
 
 # close the DB file before making changes via the wiki!
-untie %h;
+TagWriteHash(\%h);
 
 update_page('Brilliant', 'Gameologists [[tag:podcast]] [[tag:mag]]');
 update_page('Sons', 'of Kryos [[tag:Podcast]]');
