@@ -67,7 +67,7 @@ not the namespace Foo.
 
 =cut
 
-@NamespaceParameters = qw(action search title);
+@NamespaceParameters = qw(action search title match);
 
 $NamespaceSlashing = 0;   # affects : decoding NamespaceRcLines
 
