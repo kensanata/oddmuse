@@ -136,10 +136,10 @@ sub NewTagSave { # called within a lock!
   # For each tag we list the files tagged. Add the current file for
   # all those tags where it is missing.
   foreach my $tag (keys %tag) {
-    my %file = map {$_=>1} split(/$FS/, $h{$tag});
+    my %file = map {$_=>1} @{$h{$tag}};
     if (not $file{$id}) {
       $file{$id} = 1;
-      $h{$tag} = join($FS, keys %file);
+      $h{$tag} = [keys %file];
     }
   }
 
@@ -147,14 +147,14 @@ sub NewTagSave { # called within a lock!
   # tags used. This allows us to delete the references that no longer
   # show up without looping through them all. The files are indexed
   # with a starting underscore because this is an illegal tag name.
-  foreach my $tag (split (/$FS/, $h{"_$id"})) {
+  foreach my $tag (@{$h{"_$id"}}) {
     # If the tag we're looking at is no longer listed, we have work to
     # do.
     if (!$tag{$tag}) {
-      my %file = map {$_=>1} split(/$FS/, $h{$tag});
+      my %file = map {$_=>1} @{$h{$tag}};
       delete $file{$id};
       if (%file) {
-	$h{$tag} = join($FS, keys %file);
+	$h{$tag} = [keys %file];
       } else {
 	delete $h{$tag};
       }
@@ -164,7 +164,7 @@ sub NewTagSave { # called within a lock!
   # Store the new reverse lookup of all the tags used on the current
   # page. If no more tags appear on this page, delete the entry.
   if (%tag) {
-    $h{"_$id"} = join($FS, keys %tag);
+    $h{"_$id"} = [keys %tag];
   } else {
     delete $h{"_$id"};
   }
@@ -191,11 +191,11 @@ sub NewTagDeletePage { # called within a lock!
   # For each file in our hash, we have a reverse lookup of all the
   # tags used. This allows us to delete the references that no longer
   # show up without looping through them all.
-  foreach my $tag (split (/$FS/, $h{"_$id"})) {
-    my %file = map {$_=>1} split(/$FS/, $h{$tag});
+  foreach my $tag (@{$h{"_$id"}}) {
+    my %file = map {$_=>1} @{$h{$tag}};
     delete $file{$id};
     if (%file) {
-      $h{$tag} = join($FS, keys %file);
+      $h{$tag} = [keys %file];
     } else {
       delete $h{$tag};
     }
@@ -224,7 +224,7 @@ sub TagFind {
   my %h = TagReadHash();
   my %page;
   foreach my $tag (@tags) {
-    foreach my $id (split(/$FS/, $h{lc($tag)})) {
+    foreach my $id (@{$h{lc($tag)}}) {
       $page{$id} = 1;
     }
   }
@@ -298,7 +298,7 @@ sub TagCloud {
   my $min = 0;
   my %count = ();
   foreach my $tag (grep !/^_/, keys %h) {
-    $count{$tag} = split(/$FS/, $h{$tag});
+    $count{$tag} = @{$h{$tag}};
     $max = $count{$tag} if $count{$tag} > $max;
     $min = $count{$tag} if not $min or $count{$tag} < $min;
   }
@@ -359,13 +359,12 @@ sub DoTagsReindex {
     # For each tag we list the files tagged. Add the current file for
     # all tags.
     foreach my $tag (keys %tag) {
-      $h{$tag} .= $FS if $h{$tag};
-      $h{$tag} .= $id;
+      push(@{$h{$tag}}, $id);
     }
 
     # Store the reverse lookup of all the tags used on the current
     # page.
-    $h{"_$id"} = join($FS, keys %tag);
+    $h{"_$id"} = [keys %tag];
   }
 
   Storable::store(\%h, $TagFile) or print "Error saving tag file.\n";
@@ -389,8 +388,8 @@ sub TagList {
   print GetHttpHeader('text/plain');
   # open the DB file
   my %h = TagReadHash();
-  foreach my $id (sort map { $_ } keys %h) {
-    print "$id: " . join(', ', split(/$FS/, $h{$id})) . "\n";
+  foreach my $id (sort keys %h) {
+    print "$id: " . join(', ', @{$h{$id}}) . "\n";
   }
   TagWriteHash(\%h);
 }
