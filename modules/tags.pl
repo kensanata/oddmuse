@@ -229,7 +229,6 @@ sub TagFind {
       $page{$id} = 1;
     }
   }
-  TagWriteHash(\%h);
   return sort keys %page;
 }
 
@@ -303,7 +302,6 @@ sub TagCloud {
     $max = $count{$tag} if $count{$tag} > $max;
     $min = $count{$tag} if not $min or $count{$tag} < $min;
   }
-  TagWriteHash(\%h);
   foreach my $tag (sort keys %count) {
     my $n = $count{$tag};
     print $q->a({-href  => "$ScriptName?search=tag:" . UrlEncode($tag),
