@@ -82,6 +82,7 @@ sub TagReadHash {
 }
 
 
+# returns undef if encountering an error
 sub TagWriteHash {
   my $h = shift;
   require Storable;
@@ -366,8 +367,11 @@ sub DoTagsReindex {
     # page.
     $h{"_$id"} = [keys %tag];
   }
-
-  Storable::store(\%h, $TagFile) or print "Error saving tag file.\n";
+  if (TagWriteHash(\%h)) {
+    print "Saved tag file.\n";
+  } else {
+    print "Error saving tag file.\n";
+  }
   ReleaseLock();
 }
 
