@@ -36,11 +36,16 @@
   src: local('Gentium Plus Italic'), local('GentiumPlus-Italic'), url(/fonts/GentiumPlus-I.woff) format('woff');
 }
 
+@font-face {
+  font-family: 'Symbola';
+  src: local('Symbola'), url('/fonts/Symbola.woff') format('woff') url('/fonts/Symbola.ttf') format('truetype');
+}
+
 body {
     background:#fff;
     padding:2% 5%;
     margin:0;
-    font-family: "Gentium Basic", "Gentium Plus", "Bookman Old Style", "Times New Roman", serif;
+    font-family: "Gentium Basic", "Gentium Plus", "Symbola", serif;
     font-size: 16pt;
 }
 
