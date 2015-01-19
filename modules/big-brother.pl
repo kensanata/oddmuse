@@ -17,11 +17,15 @@ package OddMuse;
 
 AddModuleDescription('big-brother.pl', 'Big Brother Extension');
 
-use vars qw($VisitorTime);
+use vars qw($VisitorTime @BigBrotherSecretParameters);
 
 my $US  = "\x1f";
 
 $VisitorTime = 7200; # keep visitor data arround for 2 hours.
+
+# normal password parameter from wiki.pl
+# password parameters from login.pl
+@BigBrotherSecretParameters = qw(pwd pwd1 pwd2 oldpwd);
 
 push(@MyAdminCode, \&BigBrotherVisitors);
 
@@ -47,6 +51,13 @@ sub AddRecentVisitor {
   $ts++ while $entries{$ts};
   my $action = GetParam('action', 'browse');
   my $id = GetId(); # script/p/q -> q
+  my %params = map { $_ => 1 } $q->param;
+  for $bad (@BigBrotherSecretParameters) {
+    delete $params{$bad};
+  }
+  my $url = ScriptUrl(join(';', "action=$action;id=" . UrlEncode($id),
+			   map { $_ . '=' . UrlEncode(GetParam($_)) }
+			   keys %params));
   my $url = $q->url(-path_info=>1,-query=>1);
   my $download = GetParam('action', 'browse') eq 'download'
     || GetParam('download', 0)

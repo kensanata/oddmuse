@@ -1,4 +1,4 @@
-# Copyright (C) 2009  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2009–2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 16;
+use Test::More tests => 18;
 clear_pages();
 
 AppendStringToFile($ConfigFile,
@@ -24,11 +24,19 @@ AppendStringToFile($ConfigFile,
 
 add_module('big-brother.pl');
 
-get_page('action=browse id=HomePage username=Alex');
-my $item = xpath_test(get_page('action=visitors'),
-		      '//li[contains(text(), "was here")]');
-ok($item =~ /Alex was here (just now|\d seconds? ago) and read HomePage/,
-   'Alex was here and read HomePage');
+get_page('action=browse id=SomePage username=Alex');
+get_page('username=Berta pwd=foo');
+my $visitors = get_page('action=visitors');
+my $item = xpath_test($visitors,
+		      '//li[contains(., "Alex")]');
+like($item, qr/Alex was here (just now|\d seconds? ago) and read SomePage/,
+     'Alex was here and read SomePage');
+
+my $item = xpath_test($visitors,
+		      '//li[contains(., "Berta")]');
+like($item, qr/Berta was here (just now|\d seconds? ago) and read some action/,
+     'Berta was here and read some action');
+unlike($item, qr/pwd/, 'Link does not contain password');
 
 # check surge protection still works (taking into account the previous
 # get_page calls)
@@ -44,7 +52,6 @@ ok($status, "Read $VisitorFile");
 %BigBrotherData = ();
 foreach (split(/\n/,$data)) {
   my ($name, %entries) = split /$FS/;
-  ok($name eq 'Alex', 'Alex is the only entry');
   $BigBrotherData{$name} = \%entries if $name and %entries;
 }
 my  %entries = %{$BigBrotherData{Alex}};
