@@ -2651,22 +2651,14 @@ sub DiffAddPrefix {
   return $q->div({-class=>$class}, $q->p(join($q->br(), @lines)));
 }
 
-sub ParseData {      # called a lot during search, so it was optimized
-  my $data = shift;   # by eliminating non-trivial regular expressions
+sub ParseData {
+  my $data = shift;
   my %result;
-  my $end = index($data, ': ');
-  my $key = substr($data, 0, $end);
-  my $start = $end += 2;           # skip ': '
-  while ($end = index($data, "\n", $end) + 1) { # include \n
-    next if substr($data, $end, 1) eq "\t";     # continue after \n\t
-    $result{$key} = substr($data, $start, $end - $start - 1); # strip last \n
-    $start = index($data, ': ', $end); # starting at $end begins the new key
-    last if $start == -1;
-    $key = substr($data, $end, $start - $end);
-    $end = $start += 2;   # skip ': '
+  while ($data =~ /(\S+?): (.*?)(?=\n[^ \t]|\Z)/sg) {
+    my ($key, $value) = ($1, $2);
+    $value =~ s/\n\t/\n/g;
+    $result{$key} = $value;
   }
-  $result{$key} .= substr($data, $end, -1); # strip last \n
-  $result{$_} =~ s/\n\t/\n/g foreach (keys %result);
   return %result;
 }
 
