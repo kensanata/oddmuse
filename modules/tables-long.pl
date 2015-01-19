@@ -59,6 +59,7 @@ sub TablesLongRule {
     my $label = '';
     my $rowspan = '';
     my $first = 1;
+    my $odd = 0;
     for my $line (@lines) {
       if ($line =~ m|^($regexp)/?([0-9]+)?/?([A-Za-z\x{0080}-\x{fffd}/]+)?[:=] *(.*)|) { # regexp changes for other tables
 	$label = $1;
@@ -66,7 +67,8 @@ sub TablesLongRule {
 	$class = join(' ', split(m|/|, $3)); # no leading / therefore no leading space
 	$line = $4;
 	if ($row{$label}) { # repetition of label, we must start a new row
-	  TablesLongRow(\@labels, \%row, \%class, \%rowspan, $first);
+	  TablesLongRow(\@labels, \%row, \%class, \%rowspan, $first, $odd);
+          $odd++;
 	  $first = 0;
 	  %row = ();
 	  %class = %default_class;
@@ -80,7 +82,7 @@ sub TablesLongRule {
       }
       $row{$label} .= $line . "\n";
     }
-    TablesLongRow(\@labels, \%row, \%class, \%rowspan, $first); # don't forget the last row
+    TablesLongRow(\@labels, \%row, \%class, \%rowspan, $first, $odd); # don't forget the last row
     Clean('</table>' . AddHtmlEnvironment('p'));
     pos = $lastpos;
     return '';
@@ -94,7 +96,14 @@ sub TablesLongRow {
   my %class = %{$_[2]};
   my %rowspan = %{$_[3]};
   my $first = $_[4];
-  Clean('<tr>');
+  my $odd = $_[5];
+  if ($first) {
+    Clean('<tr class="first">');
+  } elsif ($odd %2 == 0) {
+    Clean('<tr class="even">');
+  } else {
+    Clean('<tr class="odd">');
+  }
   # first print the old row
   for my $i (0 .. $#labels) {
     next if not $row{$labels[$i]}; # should only happen after previous cellspans
