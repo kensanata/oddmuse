@@ -1,20 +1,17 @@
-# Copyright (C) 2004, 2005  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2004–2015  Alex Schroeder <alex@gnu.org>
+# Copyright (C)      2015  Matt Adams <opensource@radicaldynamic.com>
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
 
 AddModuleDescription('tables-long.pl', 'Long Table Markup Extension');
 
@@ -58,8 +55,7 @@ sub TablesLongRule {
     my %rowspan = ();
     my $label = '';
     my $rowspan = '';
-    my $first = 1;
-    my $odd = 0;
+    my $rownum = 1;
     for my $line (@lines) {
       if ($line =~ m|^($regexp)/?([0-9]+)?/?([A-Za-z\x{0080}-\x{fffd}/]+)?[:=] *(.*)|) { # regexp changes for other tables
 	$label = $1;
@@ -67,9 +63,7 @@ sub TablesLongRule {
 	$class = join(' ', split(m|/|, $3)); # no leading / therefore no leading space
 	$line = $4;
 	if ($row{$label}) { # repetition of label, we must start a new row
-	  TablesLongRow(\@labels, \%row, \%class, \%rowspan, $first, $odd);
-          $odd++;
-	  $first = 0;
+	  TablesLongRow(\@labels, \%row, \%class, \%rowspan, $rownum++);
 	  %row = ();
 	  %class = %default_class;
 	  foreach my $key (keys %rowspan) {
@@ -82,7 +76,7 @@ sub TablesLongRule {
       }
       $row{$label} .= $line . "\n";
     }
-    TablesLongRow(\@labels, \%row, \%class, \%rowspan, $first, $odd); # don't forget the last row
+    TablesLongRow(\@labels, \%row, \%class, \%rowspan, $rownum); # don't forget the last row
     Clean('</table>' . AddHtmlEnvironment('p'));
     pos = $lastpos;
     return '';
@@ -95,11 +89,10 @@ sub TablesLongRow {
   my %row = %{$_[1]};
   my %class = %{$_[2]};
   my %rowspan = %{$_[3]};
-  my $first = $_[4];
-  my $odd = $_[5];
-  if ($first) {
-    Clean('<tr class="first">');
-  } elsif ($odd %2 == 0) {
+  my $rownum = $_[4];
+  if ($rownum == 1) {
+    Clean('<tr class="first odd">');
+  } elsif ($rownum %2 == 0) {
     Clean('<tr class="even">');
   } else {
     Clean('<tr class="odd">');
@@ -116,7 +109,7 @@ sub TablesLongRow {
     my $rowspan = $rowspan{$labels[$i]};
     my $class = $class{$labels[$i]};
     my $html = '<';
-    $html .= $first ? 'th' : 'td';
+    $html .= $rownum == 1 ? 'th' : 'td';
     $html .= " colspan=\"$colspan\"" if $colspan != 1;
     $html .= " rowspan=\"$rowspan\"" if defined $rowspan and $rowspan >= 0; # ignore negatives
     $html .= " class=\"$class\"" if $class;
@@ -143,7 +136,7 @@ sub TablesLongRow {
     # Alternatively, just use
     # Clean($row{$labels[$i]});
     # or mark this block as dirty.
-    Clean(CloseHtmlEnvironments() . '</' . ($first ? 'th' : 'td') . '>');
+    Clean(CloseHtmlEnvironments() . '</' . ($rownum == 1 ? 'th' : 'td') . '>');
   }
   Clean('</tr>');
 }
