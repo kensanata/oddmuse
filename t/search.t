@@ -63,6 +63,8 @@ test_page(get_page('search=fooz replace=fuuz pwd=foo'), split('\n',<<'EOT'));
 This is <strong>fuuz</strong> and this is barz.
 EOT
 
+# 'This is fuuz and this is barz.'
+
 # Replace with empty string
 
 test_page(get_page('search=this%20is%20 replace= pwd=foo delete=1'), split('\n',<<'EOT'));
@@ -71,8 +73,11 @@ test_page(get_page('search=this%20is%20 replace= pwd=foo delete=1'), split('\n',
 fuuz and barz.
 EOT
 
-# Replace with backreferences, where the replacement pattern is no longer found
+# 'fuuz and barz.'
 
+
+# Replace with backreferences, where the replacement pattern is no longer found.
+# Take 'fuuz and barz.' and replace ([a-z]+)z with x$1 results in 'xfuu and xbar.'
 test_page(get_page('"search=([a-z]%2b)z" replace=x%241 pwd=foo'), '1 pages found');
 test_page(get_page('SearchAndReplace'), 'xfuu and xbar.');
 
