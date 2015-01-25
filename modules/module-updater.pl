@@ -68,7 +68,7 @@ sub ModuleUpdaterApply {
   print $q->br(), $q->strong('Done!');
 }
 
-sub ProcessModule() {
+sub ProcessModule {
   my $module = shift;
   CreateDir($TempDir);
   print $q->hr();
