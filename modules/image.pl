@@ -72,7 +72,7 @@ sub ImageSupportRule {
 	  my $valRegex = qr/(([0-9.]+[a-z]*%?)\s+)/;
 	  if ($_ =~ /^\s*(([a-zA-Z ]+)\/)?$valRegex$valRegex$valRegex$valRegex(.*)$/) { # can't use {4} here? :(
 	    my $commentClass = $2 ? "imagecomment $2" : 'imagecomment';
-	    $result .= $q->div({-class=>$commentClass, -style=>"position: absolute; top: $6; left: $4; width: $8; height: $10"}, QuoteHtml($11));
+	    $result .= $q->div({-class=>$commentClass, -style=>"position: absolute; top: $6; left: $4; width: $8; height: $10"}, $11);
 	  }
 	}
 	$result = CloseHtmlEnvironments() . $q->div({-class=>"imageholder", -style=>"position: relative"}, $result);
