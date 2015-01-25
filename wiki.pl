@@ -3384,6 +3384,7 @@ sub GrepFiltered { # grep is so much faster!!
     push(@result, $1) if m/.*\/(.*)\.pg/ and not $found{$1};
   }
   close(F);
+  return @pages if $?;
   return sort @result;
 }
 

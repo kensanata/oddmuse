@@ -124,9 +124,5 @@ test_page(get_page('search="<b>"'),
 
 # Test fallback when grep is unavailable
 
-TODO: {
-  local $TODO = "Don't get a decent error when opening the grep pipe";
-  AppendStringToFile($ConfigFile, "\$ENV{PATH} = '';\n");
-  test_page(get_page('search=empty'),
-	    "1 pages found");
-}
+AppendStringToFile($ConfigFile, "\$ENV{PATH} = '';\n");
+test_page(get_page('search=empty'), "1 pages found");
