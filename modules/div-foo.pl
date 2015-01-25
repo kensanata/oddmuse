@@ -22,16 +22,17 @@ $DivFooPrefix = 'foo_';
 push(@MyRules, \&DivFooRule);
 
 sub DivFooRule {
-  if (m/\G\&lt;([a-z-_][a-z-_ ]+[a-z-_])\&gt;\s*\n/cg) {
+  if (m/\G \&lt; ([a-z-_][a-z-_ ]+[a-z-_]) \&gt; \s*\n /cgx) {
     return CloseHtmlEnvironment('p') . AddHtmlEnvironment('div', 'class="' . join(' ', map {"$DivFooPrefix$_"} split /\s+/, $1) . '"');
   }
-  if (m/\G\&lt;([a-z-_][a-z-_ ]+[a-z-_])\&gt;/cg) {
-    return AddHtmlEnvironment('span', 'class="' . join(' ', map {"$DivFooPrefix$_"} split /\s+/, $1) . '"');
+  if (m/\G \&lt; ([a-z-_][a-z-_ ]+[a-z-_]) (\?(.*?(?=\&gt;)))? \&gt; /cgx) {
+    my $title = $3 ? ' title="' . QuoteHtml($3) . '"' : '';
+    return AddHtmlEnvironment('span', 'class="' . join(' ', map {"$DivFooPrefix$_"} split /\s+/, $1) . '"' . $title);
   }
-  if (m/\G\&lt;\/\/\&gt;/cg) {
+  if (m/\G \&lt; \/ \/ \&gt; /cgx) {
     return CloseHtmlEnvironment('div') . (InElement('div') ? '' : AddHtmlEnvironment('p'));
   }
-  if (m/\G\&lt;\/\&gt;/cg) {
+  if (m/\G \&lt; \/ \&gt; /cgx) {
     return CloseHtmlEnvironment('span');
   }
   return undef;
