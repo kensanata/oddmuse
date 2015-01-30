@@ -1,3 +1,4 @@
+# Copyright (C) 2015  Matt Adams <opensource@radicaldynamic.com>
 # Copyright (C) 2006  Matthias Dietrich <md (at) plusw (.) de>
 # Copyright (C) 2005  Mathias Dahl <mathias . dahl at gmail dot com>
 # Copyright (C) 2005  Alex Schroeder <alex@emacswiki.org>
@@ -67,11 +68,15 @@ sub NewOpenPage {
     $hidden = "adi";
   }
 
-  # Check the different levels of access
-  if ($hidden eq "edi" && $HideEditorPages == 1 && (!UserIsEditor() && !UserIsAdmin())) {
-    ReportError(T("Only Editors are allowed to see this hidden page."), "401 Not Authorized");
-  } elsif ($hidden eq "adi" && $HideAdminPages == 1 && !UserIsAdmin()) {
-    ReportError(T("Only Admins are allowed to see this hidden page."), "401 Not Authorized");
+  my $action = lc(GetParam('action', ''));
+ 
+  if ($action ne 'rc' && $action ne 'search') {
+    # Check the different levels of access
+    if ($hidden eq "edi" && $HideEditorPages == 1 && (!UserIsEditor() && !UserIsAdmin())) {
+      ReportError(T("Only Editors are allowed to see this hidden page."), "401 Not Authorized");
+    } elsif ($hidden eq "adi" && $HideAdminPages == 1 && !UserIsAdmin()) {
+      ReportError(T("Only Admins are allowed to see this hidden page."), "401 Not Authorized");
+    }
   }
 
   # Give control back to OpenPage()
