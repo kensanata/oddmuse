@@ -147,6 +147,11 @@ sub GetFooterLinksLogout {
       /(.+)(<\/.+?>)$
       /$1.' '.ScriptLink('action=logout;id='.UrlEncode($id), T('Logout'), 'logout').$2
       /ex;
+  } else {
+    $footer_links =~ s
+      /(.+)(<\/.+?>)$
+      /$1.' '.ScriptLink('action=password', T('Login'), 'login').$2
+      /ex;
   }
 
   return $footer_links;
