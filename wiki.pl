@@ -422,7 +422,7 @@ sub ApplyRules {
   } elsif (my ($type) = TextIsFile($text)) { # TODO? $type defined here??
     Clean(CloseHtmlEnvironments() . $q->p(T('This page contains an uploaded file:'))
 	  . $q->p(GetDownloadLink($OpenPageName, (substr($type, 0, 6) eq 'image/'), $revision))
-          . $q->p(length $Page{summary} > 0 ? $q->blockquote($Page{summary}) : $q->p(T('No summary was provided for this file.'))));
+	  . $q->p(length $Page{summary} > 0 ? $q->blockquote(QuoteHtml($Page{summary})) : $q->p(T('No summary was provided for this file.'))));
   } else {
     my $smileyregex = join "|", keys %Smilies;
     $smileyregex = qr/(?=$smileyregex)/;
