@@ -109,11 +109,14 @@ has several unnerving effects:
 
 =cut
 sub DoLogout {
-  foreach my $cookieKey (keys %CookieParameters) { SetParam($cookieKey, ''); }
+  my $id = shift;
+ 
+  SetParam('username', $CookieParameters{username});
+  SetParam('pwd', $CookieParameters{pwd});
 
   print
-    GetHeader('', Ts('Logged out of %s', $SiteName), '').
-    $q->div({-class=> 'content'}, T('You are now logged out.'));
+    GetHeader('', Ts('Logged out of %s', $SiteName), '') .
+    $q->div({-class=> 'content'}, $q->p(T('You are now logged out.'), $id ? $q->p(ScriptLink('action=browse;id=' . UrlEncode($id) . '&time=' . time, T('Return to ' . NormalToFree($id)))) : ''));
   PrintFooter();
 }
 
@@ -129,7 +132,7 @@ Appends a "Logout" link onto the edit bar in the footer of each page.
 
 =cut
 sub GetFooterLinksLogout {
-  my ($page_name, $page_rev) = @_;
+  my ($id, $rev) = @_;
   my  $footer_links = GetFooterLinksLogoutOld(@_);
 
   if ($CommentsPrefix and $CommentsSuffix) {
@@ -143,14 +146,18 @@ sub GetFooterLinksLogout {
   # in with some username or password.
   if (GetParam('username', '') ne '' or
       GetParam('pwd',      '') ne '') {
+    my $action = 'action=logout';
+    $action .= ';id=' . UrlEncode($id) if $id;
     $footer_links =~ s
       /(.+)(<\/.+?>)$
-      /$1.' '.ScriptLink('action=logout;id='.UrlEncode($id), T('Logout'), 'logout').$2
+      /$1.' '.ScriptLink($action, T('Logout'), 'logout').$2
       /ex;
   } else {
+    my $action = 'action=password';
+    $action .= ';id=' . UrlEncode($id) if $id;
     $footer_links =~ s
       /(.+)(<\/.+?>)$
-      /$1.' '.ScriptLink('action=password', T('Login'), 'login').$2
+      /$1.' '.ScriptLink($action, T('Login'), 'login').$2
       /ex;
   }
 
@@ -204,7 +211,9 @@ sub CookieUsernameFix {
 }
 
 sub CookieUsernameDelete {
-  $Message .= $q->p(shift);
+  if ($LogoutIsDebugging) {
+    $Message .= $q->p(shift);
+  }
   $q->delete('username');
 }
 
@@ -244,7 +253,7 @@ logout retains this (admittedly loose) concept of a "user."
 logout is "little brother" to the login module - from which it was inspired and
 for which it's partly named, in antiparallel.
 
-logout only implements a slim subset of functionality implemented by the logout
+logout only implements a slim subset of functionality implemented by the login 
 module. For a full-bodied, fully configurable alternative to Oddmuse security,
 please use that module instead.
 
