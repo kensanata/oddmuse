@@ -3535,7 +3535,7 @@ sub DoPost {
   $comment =~ s/(\r|$FS)//go;
   if (defined $comment and $comment eq '') {
     ReleaseLock();
-    ReBrowsePage($id);
+    return ReBrowsePage($id);
   }
   if ($filename) {		# upload file
     my $file = $q->upload('file');
