@@ -397,7 +397,7 @@ You are currently an editor on this site.
 你現在是本站的編輯者。
 You are a normal user on this site.
 你現在是本站的一般使用者。
-Your password does not match any of the  administrator or editor passwords.
+Your password does not match any of the administrator or editor passwords.
 你的密碼不符合任何管理者或編輯者的密碼。
 Password:
 密碼：

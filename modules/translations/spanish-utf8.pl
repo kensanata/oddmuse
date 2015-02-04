@@ -397,7 +397,7 @@ You are currently an editor on this site.
 Ahora eres un editor en este sitio.
 You are a normal user on this site.
 Eres un usuario normal en este sitio.
-Your password does not match any of the  administrator or editor passwords.
+Your password does not match any of the administrator or editor passwords.
 Tu contraseña no coincide con ninguna de las contraseñas de administrador o editor.
 Password:
 Contraseña:

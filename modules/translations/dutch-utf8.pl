@@ -403,7 +403,7 @@ You are currently an editor on this site.
 U bent een redacteur op deze site.
 You are a normal user on this site.
 U bent een gewone gebruiker op deze site.
-Your password does not match any of the  administrator or editor passwords.
+Your password does not match any of the administrator or editor passwords.
 Uw wachtwoord komt niet overeen met een beheerders- of redacteurswachtwoord.
 Password:
 Wachtwoord:

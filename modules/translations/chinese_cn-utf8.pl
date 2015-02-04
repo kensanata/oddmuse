@@ -414,7 +414,7 @@ You are currently an editor on this site.
 您现在是本站的编辑者。
 You are a normal user on this site.
 您现在是本站的普通用户。
-Your password does not match any of the  administrator or editor passwords.
+Your password does not match any of the administrator or editor passwords.
 您的密码和任何管理员或编辑者的密码都不匹配。
 Password:
 密码：

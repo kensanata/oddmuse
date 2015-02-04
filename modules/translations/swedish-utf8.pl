@@ -398,7 +398,7 @@ You are currently an editor on this site.
 Du är för närvarande redaktör för den här webbplatsen.
 You are a normal user on this site.
 Du är en normal användare på den här webbplatsen.
-Your password does not match any of the  administrator or editor passwords.
+Your password does not match any of the administrator or editor passwords.
 Ditt lösenord motsvarar inget av admininistratörs- eller redaktörslösenorden.
 Password:
 Lösenord:

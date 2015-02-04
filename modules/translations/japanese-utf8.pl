@@ -396,7 +396,7 @@ You are currently an editor on this site.
 あなたは現在このサイトの編集者です。
 You are a normal user on this site.
 あなたはこのサイトの通常ユーザです。
-Your password does not match any of the  administrator or editor passwords.
+Your password does not match any of the administrator or editor passwords.
 あなたのパスワードは管理者パスワードにも編集者パスワードにも一致しません。
 Password:
 パスワード:

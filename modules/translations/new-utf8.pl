@@ -394,7 +394,7 @@ You are currently an editor on this site.
 
 You are a normal user on this site.
 
-Your password does not match any of the  administrator or editor passwords.
+Your password does not match any of the administrator or editor passwords.
 
 Password:
 

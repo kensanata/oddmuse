@@ -394,7 +394,7 @@ You are currently an editor on this site.
 Είστε ένας εκδότης σε αυτό το δικτυακό τόπο.
 You are a normal user on this site.
 Είστε ένας απλός χρήστης σε αυτό το δικτυακό τόπο.
-Your password does not match any of the  administrator or editor passwords.
+Your password does not match any of the administrator or editor passwords.
 Ο κωδικός σας δεν ταιριάζει με κανένα κωδικό από τους διαχειριστές ή τους εκδότες.
 Password:
 Κωδικός:

@@ -399,7 +399,7 @@ You are currently an editor on this site.
 Сейчас вы имеете права редактора.
 You are a normal user on this site.
 Сейчас вы имеете права обычного пользователя.
-Your password does not match any of the  administrator or editor passwords.
+Your password does not match any of the administrator or editor passwords.
 Ваш пароль не совпадает с паролями администратора или редактора.
 Password:
 Пароль:

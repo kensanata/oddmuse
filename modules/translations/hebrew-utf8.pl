@@ -396,7 +396,7 @@ You are currently an editor on this site.
 אתה כרגע עורך באתר זה.
 You are a normal user on this site.
 אתה משתמש רגיל באתר זה.
-Your password does not match any of the  administrator or editor passwords.
+Your password does not match any of the administrator or editor passwords.
 הססמה שלך לא מתאימה ללסמאות של המנהל או העורך.
 Password:
 ססמה:

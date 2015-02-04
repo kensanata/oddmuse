@@ -396,7 +396,7 @@ You are currently an editor on this site.
 Sie sind momentan ein Redaktor auf dieser Webseite.
 You are a normal user on this site.
 Sie sind ein normaler Benutzer auf dieser Webseite.
-Your password does not match any of the  administrator or editor passwords.
+Your password does not match any of the administrator or editor passwords.
 Ihr Passwort stimmt nicht mit einem Administrator- oder Redaktor-Passwort überein.
 Password:
 Passwort:

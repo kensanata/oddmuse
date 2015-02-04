@@ -396,7 +396,7 @@ You are currently an editor on this site.
 Тренутно сте уредник на овом сајту.
 You are a normal user on this site.
 Ви сте нормални корисник на овом сајту.
-Your password does not match any of the  administrator or editor passwords.
+Your password does not match any of the administrator or editor passwords.
 Ваша лозинка се не поклапа ни са једном од аминистраторских или уредничких лозинки.
 Password:
 Лозинка:

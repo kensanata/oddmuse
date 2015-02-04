@@ -399,7 +399,7 @@ You are currently an editor on this site.
 Você é actualmente um editor deste sítio.
 You are a normal user on this site.
 Você é um utilizador normal deste sítio.
-Your password does not match any of the  administrator or editor passwords.
+Your password does not match any of the administrator or editor passwords.
 A sua senha não coincide com nenhuma dos administradores ou editores.
 Password:
 Senha:
