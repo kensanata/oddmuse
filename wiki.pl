@@ -3088,6 +3088,7 @@ sub DoDownload {
 }
 
 sub DoPassword {
+  my $id = shift;
   print GetHeader('', T('Password')), $q->start_div({-class=>'content password'});
   print $q->p(T('Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.'));
   if (UserIsAdmin()) {
@@ -3097,16 +3098,20 @@ sub DoPassword {
   } else {
     print $q->p(T('You are a normal user on this site.'));
     if ($AdminPass or $EditPass) {
-      print $q->p(T('Your password does not match any of the  administrator or editor passwords.'));
+      print $q->p(T('Your password does not match any of the administrator or editor passwords.'));
     }
   }
   if ($AdminPass or $EditPass) {
     print GetFormStart(undef, undef, 'password'),
       $q->p(GetHiddenValue('action', 'password'), T('Password:'), ' ',
       $q->password_field(-name=>'pwd', -size=>20, -maxlength=>50),
+      $q->hidden(-name=>'id', -value=>$id),
       $q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save'))), $q->end_form;
   } else {
     print $q->p(T('This site does not use admin or editor passwords.'));
+  }
+  if ($id) {
+    print $q->p(ScriptLink('action=browse;id=' . UrlEncode($id) . '&time=' . time, T('Return to ' . NormalToFree($id))));
   }
   print $q->end_div();
   PrintFooter();

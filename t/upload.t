@@ -28,6 +28,7 @@ test_page(update_page('Logo', "#FILE image/foo\niVBORw0KGgoAAAA"), 'This page is
 $page = update_page('alex pic', "#FILE image/png\niVBORw0KGgoAAAA");
 test_page($page, 'This page contains an uploaded file:');
 xpath_test($page, '//img[@class="upload"][@src="http://localhost/wiki.pl/download/alex_pic"][@alt="alex pic"]');
+exit;
 test_page_negative($page, 'AAAA');
 test_page_negative(get_page('search=AAA raw=1'), 'alex_pic');
 test_page(get_page('search=alex raw=1'), 'alex_pic', 'image/png');
