@@ -397,7 +397,7 @@ You are currently an editor on this site.
 Ти си редактор.
 You are a normal user on this site.
 Ти си нормален потребител.
-Your password does not match any of the  administrator or editor passwords.
+Your password does not match any of the administrator or editor passwords.
 Твоята парола не съвпада нито с администраторската, нито с редакторската парола.
 Password:
 Парола:

@@ -394,7 +394,7 @@ You are currently an editor on this site.
 Наразі, ви редактор на цьому сайті.
 You are a normal user on this site.
 Ви звичайний користувач сайту.
-Your password does not match any of the  administrator or editor passwords.
+Your password does not match any of the administrator or editor passwords.
 Ваш пароль не збігається ні з паролєм адміністратора, ні з паролєм редактора.
 Password:
 Пароль:

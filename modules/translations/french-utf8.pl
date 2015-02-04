@@ -402,7 +402,7 @@ You are currently an editor on this site.
 Vous êtes actuellement éditeur de ce site.
 You are a normal user on this site.
 Vous êtes un utilisateur normal de ce site.
-Your password does not match any of the  administrator or editor passwords.
+Your password does not match any of the administrator or editor passwords.
 Vote mot de passe ne correspond ni au mot de passe administrateur ni au mot de passe éditeur.
 Password:
 Mot de passe :

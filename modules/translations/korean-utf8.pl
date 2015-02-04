@@ -394,7 +394,7 @@ You are currently an editor on this site.
 사용자가 이 페이지의 편집인입니다.
 You are a normal user on this site.
 사용자가 이 사이트의 정상 사용자입니다.
-Your password does not match any of the  administrator or editor passwords.
+Your password does not match any of the administrator or editor passwords.
 사용자의 암호가 관리자 또는 편집자의 암호와 일치하지 않습니다.
 Password:
 암호:

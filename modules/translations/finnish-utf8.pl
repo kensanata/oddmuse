@@ -394,7 +394,7 @@ You are currently an editor on this site.
 Olet tällä hetkellä sivuston toimittaja (editor).
 You are a normal user on this site.
 Olet tällä hetkellä tavallinen sivuston käyttäjä.
-Your password does not match any of the  administrator or editor passwords.
+Your password does not match any of the administrator or editor passwords.
 Salasanasi ei ole yksikään ylläpidon tai toimittajien salasanoista.
 Password:
 Salasana:

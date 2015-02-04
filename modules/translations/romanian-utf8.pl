@@ -394,7 +394,7 @@ You are currently an editor on this site.
 Sunteţi editor pe acest site.
 You are a normal user on this site.
 Sunteţi un utilizator obişnuit pe acest site.
-Your password does not match any of the  administrator or editor passwords.
+Your password does not match any of the administrator or editor passwords.
 Parola dumneavoastră nu corespunde nici unei parole de administrator sau editor.
 Password:
 Parola:
