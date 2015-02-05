@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 108;
+use Test::More tests => 114;
 use utf8; # tests contain UTF-8 characters and it matters
 
 clear_pages();
@@ -72,7 +72,7 @@ SKIP: {
     require XML::RSS;
   };
 
-  skip "XML::RSS not installed", 83 if $@;
+  skip "XML::RSS not installed", 89 if $@;
 
   use Cwd;
   $dir = cwd;
@@ -228,6 +228,34 @@ http://www.usemod.com/cgi-bin/mb.pl\?LionKimbro
 unified rc for here and meatball
 <span class="contributor"><span> \. \. \. \. </span>AlexSchroeder</span>
 http://www.emacswiki.org/cgi-bin/community\?action=browse;id=RecentNearChanges;revision=1
+EOT
+
+  # Have multiple, separate feeds on a page, in a long table
+  add_module('tables-long.pl');
+  update_page('RSS', qq"Everything in a long table.
+
+<table/mainpage a/third, b/third, c/third>
+a: Fire Engineering Training
+b: Fire Engineering LODDs
+c: Irons & Ladders
+
+a:
+<rss 3 $uri/mb.rdf>
+
+b:
+<rss 3 $uri/community.rdf>
+
+c:
+<rss 3 $uri/rss1.0.rdf>
+----
+");
+  test_page(get_page('RSS'), split('\n',<<'EOT'));
+reply to Scott's comment \(need threading!\)
+reply to sunir
+WikiEmigration is the way to go
+unified rc for here and meatball
+see newpage if you have a namepage on MeatballWiki
+GTKeyboard is a graphical keyboard that
 EOT
 
 }

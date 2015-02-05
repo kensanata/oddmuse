@@ -92,7 +92,7 @@ sub TablesLongRow {
   my $rownum = $_[4];
   if ($rownum == 1) {
     Clean('<tr class="first odd">');
-  } elsif ($rownum %2 == 0) {
+  } elsif ($rownum % 2 == 0) {
     Clean('<tr class="even">');
   } else {
     Clean('<tr class="odd">');
@@ -116,11 +116,11 @@ sub TablesLongRow {
     $html .= '>';
     Clean($html);
 
-    # WATCH OUT: here comes the evil magic messing with the internals!
-    # first, clean everything up like at the end of ApplyRules
-
+    # WATCH OUT: here comes the evil magic messing with the internals! first, clean everything up like at the end of
+    # ApplyRules. The reason we are doing this is because we don't want to treat the entire long table as a single dirty
+    # block. We want to cache as much as possible.
     if ($Fragment ne '') {
-      $Fragment =~ s|<p></p>||g; # clean up extra paragraphs (see end Dirty())
+      $Fragment =~ s|<p>\s*</p>||g; # clean up extra paragraphs (see end Dirty())
       print $Fragment;
       push(@Blocks, $Fragment);
       push(@Flags, 0);
@@ -129,13 +129,11 @@ sub TablesLongRow {
     # call ApplyRules, and *inline* the results; ignoring $PortraitSupportColorDiv
     local $PortraitSupportColorDiv;
     my ($blocks, $flags) = ApplyRules($row{$labels[$i]}, 1, 1); # local links, anchors
-    push(@Blocks, split(/$FS/, $blocks));
-    push(@Flags, split(/$FS/, $flags));
+    # split using a negative limit so that trailing empty fields are not stripped
+    push(@Blocks, split(/$FS/, $blocks, -1));
+    push(@Flags, split(/$FS/, $flags, -1));
     # end of evil magic
 
-    # Alternatively, just use
-    # Clean($row{$labels[$i]});
-    # or mark this block as dirty.
     Clean(CloseHtmlEnvironments() . '</' . ($rownum == 1 ? 'th' : 'td') . '>');
   }
   Clean('</tr>');
