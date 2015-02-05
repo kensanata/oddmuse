@@ -1,4 +1,4 @@
-# Copyright (C) 2006, 2008  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006–2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 100;
+use Test::More tests => 108;
 use utf8; # tests contain UTF-8 characters and it matters
 
 clear_pages();
@@ -72,7 +72,7 @@ SKIP: {
     require XML::RSS;
   };
 
-  skip "XML::RSS not installed", 75 if $@;
+  skip "XML::RSS not installed", 83 if $@;
 
   use Cwd;
   $dir = cwd;
@@ -216,4 +216,18 @@ unified rc for here and meatball
 <span class="contributor"><span> \. \. \. \. </span>AlexSchroeder</span>
 http://www.emacswiki.org/cgi-bin/community\?action=browse;id=RecentNearChanges;revision=1
 EOT
+
+  # Have multiple, separate feeds on a page.
+  update_page('RSS', "One:\n\n<rss $uri/mb.rdf>\n\nTwo:\n\n<rss $uri/community.rdf>");
+  test_page(get_page('RSS'), split('\n',<<'EOT'));
+LionKimbro
+2003-10-24T22:49:33\+06:00
+RecentNearChanges
+http://www.usemod.com/cgi-bin/mb.pl\?LionKimbro
+2003-10-24T21:02:53\+00:00
+unified rc for here and meatball
+<span class="contributor"><span> \. \. \. \. </span>AlexSchroeder</span>
+http://www.emacswiki.org/cgi-bin/community\?action=browse;id=RecentNearChanges;revision=1
+EOT
+
 }
