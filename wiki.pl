@@ -33,10 +33,11 @@ use utf8; # in case anybody ever addes UTF8 characters to the source
 use CGI qw/-utf8/;
 use CGI::Carp qw(fatalsToBrowser);
 use File::Glob ':glob';
+use File::Basename;
 local $| = 1; # Do not buffer output (localized for mod_perl)
 
 # Options:
-use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir $KeepDir $PageDir $RcOldFile $IndexFile
+use vars qw($RssLicense $RssCacheHours @RcDays $TempDir $LockDir $DataDir $KeepDir $PageDir $FileDir $RcOldFile $IndexFile
 $BannedContent $NoEditFile $BannedHosts $ConfigFile $FullUrl $SiteName $HomePage $LogoUrl $RcDefault $RssDir
 $IndentLimit $RecentTop $RecentLink $EditAllowed $UseDiff $KeepDays $KeepMajor $EmbedWiki $BracketText $UseConfig
 $AdminPass $EditPass $PassHashFunction $PassSalt $NetworkFile $BracketWiki $FreeLinks $WikiLinks $SummaryHours
@@ -46,7 +47,8 @@ $EditNote $UserGotoBar $VisitorFile $RcFile %Smilies %SpecialDays $InterWikiMoni
 $ReadMe $RssRights $BannedCanRead $SurgeProtection $TopLinkBar $TopSearchForm $MatchingPages $LanguageLimit
 $SurgeProtectionTime $SurgeProtectionViews $DeletedPage %Languages $InterMap $ValidatorLink %LockOnCreation
 $RssStyleSheet %CookieParameters @UserGotoBarPages $NewComment $HtmlHeaders $StyleSheetPage $ConfigPage $ScriptName
-$CommentsPrefix $CommentsPattern @UploadTypes $AllNetworkFiles $UsePathInfo $UploadAllowed $LastUpdate $PageCluster
+$CommentsPrefix $CommentsPattern @UploadTypes $AllNetworkFiles $UsePathInfo $UploadAllowed $FilenameWhitelist @AdditionalChars
+$LastUpdate $PageCluster
 %PlainTextPages $RssInterwikiTranslate $UseCache $Counter $ModuleDir $FullUrlPattern $SummaryDefaultLength
 $FreeInterLinkPattern %InvisibleCookieParameters %AdminPages $UseQuestionmark $JournalLimit $LockExpiration $RssStrip
 %LockExpires @IndexOptions @Debugging $DocumentHeader %HtmlEnvironmentContainers @MyAdminCode @MyFooters
@@ -138,6 +140,8 @@ $RssCacheHours    =  1;        	# How many hours to cache remote RSS files
 $RssStyleSheet    = '';        	# External style sheet for RSS files
 $UploadAllowed    =  0;        	# 1 = yes, 0 = administrators only
 @UploadTypes = ('image/jpeg', 'image/png'); # MIME types allowed, all allowed if empty list
+$FilenameWhitelist = 'a-zA-Z0-9_.-';	# Other characters will be removed from the filenames (uploaded files only)
+@AdditionalChars = ('A'..'Z', 'a'..'z', '0'..'9'); # These characters will be appended if the file already exists
 $EmbedWiki         = 0;        	# 1 = no headers/footers
 $FooterNote       = '';        	# HTML for bottom of every page
 $EditNote         = '';        	# HTML notice above buttons on edit page
@@ -248,6 +252,7 @@ sub InitConfig {
 sub InitDirConfig {
   utf8::decode($DataDir); # just in case, eg. "WikiDataDir=/tmp/Zürich♥ perl wiki.pl"
   $PageDir     = "$DataDir/page";  # Stores page data
+  $FileDir     = "$DataDir/file";  # Stores uploaded files
   $KeepDir     = "$DataDir/keep";  # Stores kept (old) page data
   $TempDir     = "$DataDir/temp";  # Temporary files and locks
   $LockDir     = "$TempDir/lock";  # DB is locked if this exists
@@ -3517,6 +3522,27 @@ sub Replace {
   return @result;
 }
 
+sub SaveUploadedFile {
+  my ($filename, $file) = @_;
+  my ($name, $path, $extension) = fileparse($filename, '\..*');
+  $name =~ tr/ /_/;
+  $name =~ s/[^$FilenameWhitelist]//g;
+  $extension =~ tr/ /_/;
+  $extension =~ s/[^$FilenameWhitelist]//g;
+  my $curFilename = $name . $extension;
+  while (-e "$FileDir/$curFilename") { # keep adding random characters until we get unique filename
+    die 'Error: Cannot save file with such filename' if length $curFilename >= 150; # cannot find available filename after so many attempts
+    $name .= $AdditionalChars[rand @AdditionalChars];
+    $curFilename = $name . $extension;
+  }
+  CreateDir($FileDir);
+  open(UPLOADFILE, '>', "$FileDir/$curFilename") or die "$!";
+  binmode UPLOADFILE;
+  print UPLOADFILE while <$file>;
+  close UPLOADFILE;
+  return $curFilename;
+}
+
 sub DoPost {
   my $id = FreeToNormal(shift);
   UserCanEditOrDie($id);
@@ -3545,11 +3571,8 @@ sub DoPost {
     ReportError(T('Browser reports no file info.'), '500 INTERNAL SERVER ERROR') unless $q->uploadInfo($filename);
     $type = $q->uploadInfo($filename)->{'Content-Type'};
     ReportError(T('Browser reports no file type.'), '415 UNSUPPORTED MEDIA TYPE') unless $type;
-    local $/ = undef;		# Read complete files
-    my $content = <$file>; # Apparently we cannot count on <$file> to always work within the eval!?
-    my $encoding = 'gzip' if substr($content, 0, 2) eq "\x1f\x8b";
-    eval { require MIME::Base64; $_ = MIME::Base64::encode($content) };
-    $string = "#FILE $type $encoding\n" . $_;
+    my $savedFile = SaveUploadedFile($filename, $file);
+    $string = "Uploaded file: [[File:$savedFile]]\n";
   } else {			# ordinary text edit
     $string = AddComment($old, $comment) if $comment;
     if ($comment and substr($string, 0, length($DeletedPage)) eq $DeletedPage) { # look ma, no regexp!
