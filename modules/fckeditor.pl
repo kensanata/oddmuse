@@ -30,7 +30,7 @@ sub WysiwygRule {
       or substr($1,4,6) eq 'script';
     return UnquoteHtml($1);
   }
-  return undef;
+  return;
 }
 
 push (@MyInitVariables, \&WysiwygScript);

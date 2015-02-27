@@ -56,5 +56,5 @@ sub TablesInListsRule {
                 return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
             }
     }
-    return undef; # sonst geht Oddmuse in eine Endlosschleife
+    return; # sonst geht Oddmuse in eine Endlosschleife
 }

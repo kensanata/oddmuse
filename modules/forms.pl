@@ -25,7 +25,7 @@ sub FormsRule {
       return UnquoteHtml($1);
     }
   }
-  return undef;
+  return;
 }
 
 =head1 COPYRIGHT AND LICENSE

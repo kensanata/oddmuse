@@ -33,5 +33,5 @@ sub NewWindowLink {
     my $link = $q->a({-href=>$url, -class=>$class, -target=>"_new"}, $text);
     return $link;
   }
-  return undef;
+  return;
 }

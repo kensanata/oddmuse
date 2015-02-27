@@ -421,7 +421,7 @@ sub CreoleRule {
     return OpenHtmlEnvironment('table', 1, 'user').AddHtmlEnvironment('tr');
   }
 
-  return undef;
+  return;
 }
 
 sub CreoleHeadingRule {
@@ -454,7 +454,7 @@ sub CreoleHeadingRule {
     return $header_html;
   }
 
-  return undef;
+  return;
 }
 
 sub CreoleListAndNewLineRule {
@@ -492,7 +492,7 @@ sub CreoleListAndNewLineRule {
     return $q->br();
   }
 
-  return undef;
+  return;
 }
 
 # ....................{ HTML                               }....................

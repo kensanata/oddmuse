@@ -35,7 +35,7 @@ sub HeadlinesRule {
     HeadlinesPrint();
     return AddHtmlEnvironment('p');
   }
-  return undef;
+  return;
 }
 
 sub HeadlinesPrint {

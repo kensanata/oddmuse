@@ -100,7 +100,7 @@ sub LocalNamesRule {
     # [[ln:url text]], [[ln:url]]
     return $q->a({-class=>'url outside ln', -href=>$1}, $2||$1);
   }
-  return undef;
+  return;
 }
 
 =head2 Initialization

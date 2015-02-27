@@ -174,7 +174,7 @@ sub CrossbarRule {
     }
   }
 
-  return undef;
+  return;
 }
 
 =head2 RunMyRulesCrossbar

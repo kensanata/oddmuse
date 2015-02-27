@@ -22,7 +22,7 @@ $Action{pagediff} = \&DoDiffAction;
 
 sub DiffActionRule {
   return PrintDiffActionChooser($3) if (m/\G(&lt;diff( (.*))&gt;)/cgi);
-  return undef; # the rule didn't match
+  return; # the rule didn't match
 }
 
 sub DoDiffAction {

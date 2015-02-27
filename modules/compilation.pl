@@ -67,5 +67,5 @@ sub CompilationRule {
     pos = $oldpos;		# restore \G after call to ApplyRules
     return AddHtmlEnvironment('p');
   }
-  return undef;
+  return;
 }

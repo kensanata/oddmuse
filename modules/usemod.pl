@@ -171,7 +171,7 @@ sub UsemodRule {
   elsif ($HtmlLinks && m/\G\&lt;a(\s[^<>]+?)\&gt;(.*?)\&lt;\/a\&gt;/cgi) {
     return "<a$1>$2</a>";
   }
-  return undef;
+  return;
 }
 
 sub UsemodTableAttributes {

@@ -33,7 +33,7 @@ sub LangRule {
     $html .= "</" . shift(@HtmlStack) . ">"  if $HtmlStack[0] eq 'span';
     return $html . AddHtmlEnvironment('span', "lang=\"$1\"") . "[$1]";
   }
-  return undef;
+  return;
 }
 
 *OldLangInitCookie = *InitCookie;

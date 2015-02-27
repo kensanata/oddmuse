@@ -40,5 +40,5 @@ sub CsvRule {
     return "</td><td>";
   }
   # an empty line will end the table automatically; no closing tag is required
-  return undef;
+  return;
 }

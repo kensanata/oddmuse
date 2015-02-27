@@ -31,5 +31,5 @@ sub BlockQuoteRule {
       . AddHtmlEnvironment('blockquote')
       . AddHtmlEnvironment('p');
   }
-  return undef;
+  return;
 }

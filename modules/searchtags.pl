@@ -36,5 +36,5 @@ sub SearchTagRule {
       . "<div class=\"taglist\">Tags: $tags</div>"
       . AddHtmlEnvironment('p');
   }
-  return undef;
+  return;
 }

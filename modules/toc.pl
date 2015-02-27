@@ -169,7 +169,7 @@ sub TocRule {
     return ($HtmlStack[0] eq 'p' ? CloseHtmlEnvironment() : '')
       .qq{<!-- toc header_text="$toc_header_text" class="$toc_class" -->}
       .AddHtmlEnvironment('p');
-  } return undef;
+  } return;
 }
 
 =head2 RunMyRulesToc

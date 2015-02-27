@@ -186,7 +186,7 @@ sub SlideShowRule {
     return CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ul',length($2)-3, 'incremental')
       . AddHtmlEnvironment('li');
   }
-	return undef;
+	return;
 }
 
 

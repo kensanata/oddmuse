@@ -50,5 +50,5 @@ sub ParagraphLinkRule {
     print $html;
     return '';
   }
-  return undef;
+  return;
 }

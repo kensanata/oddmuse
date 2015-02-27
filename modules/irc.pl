@@ -46,5 +46,5 @@ sub IrcRule {
     $html .= CloseHtmlEnvironment('dt') . AddHtmlEnvironment('dd');
     return $html;
   }
-  return undef;
+  return;
 }

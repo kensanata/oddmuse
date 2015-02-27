@@ -47,7 +47,7 @@ sub TablesRule {
   elsif (InElement('td') && m/\G[ \t]*((\|\|)+)[ \t]*/cg) {
     return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
   }
-  return undef;
+  return;
 }
 
 sub TableAttributes {

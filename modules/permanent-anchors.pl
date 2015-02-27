@@ -80,7 +80,7 @@ sub PermanentAnchorsRule {
       print $q->span({-class=>'permanentanchor'}, $2);
     }
   }
-  return undef;
+  return;
 }
 
 sub GetPermanentAnchor {

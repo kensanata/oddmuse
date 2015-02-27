@@ -30,5 +30,5 @@ sub DownloadSupportRule {
     print GetDownloadLink($2, undef, undef, $3);
     return '';
   }
-  return undef;
+  return;
 }

@@ -45,5 +45,5 @@ sub LiveTemplateRule {
     Clean(AddHtmlEnvironment('p'));
     return '';
   }
-  return undef;
+  return;
 }

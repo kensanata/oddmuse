@@ -37,7 +37,7 @@ sub BeautificationRule {
     pos = $oldpos;
     return CloseHtmlEnvironments() . $q->div({-class=>'beauty'}, $result) . AddHtmlEnvironment('p');
   }
-  return undef;
+  return;
 }
 
 sub Beautify {

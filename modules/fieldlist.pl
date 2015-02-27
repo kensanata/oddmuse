@@ -23,5 +23,5 @@ sub FieldListRules {
   } elsif (InElement('dt') and m/\G\:[ \t]*(?=((\S)+))/cg) {
     return CloseHtmlEnvironment() . AddHtmlEnvironment('dd');
   }
-    return undef;
+    return;
 }	

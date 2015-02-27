@@ -88,7 +88,7 @@ sub FlickrGalleryRule {
 		return '';
 	}
 	
-	return undef;
+	return;
 }
 
 sub MarkdownFlickrGalleryRule {

@@ -62,5 +62,5 @@ sub MaskEmailRule {
 		}
 		return $email;
 	}
-	return undef;
+	return;
 }

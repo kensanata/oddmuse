@@ -137,7 +137,7 @@ sub CreoleAdditionRule {
     return AddOrCloseHtmlEnvironment('span', 'style="font-variant: small-caps"');
   }
 
-  return undef;
+  return;
 }
 
 =head1 COPYRIGHT AND LICENSE

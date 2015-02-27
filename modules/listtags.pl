@@ -43,7 +43,7 @@ sub ListTagRule {
       . "<div class=\"taglist\">$TagListLabel $tags</div>"
       . AddHtmlEnvironment('p');
   }
-  return undef;
+  return;
 }
 
 $Action{taglist} = \&DoTagList;
