@@ -101,7 +101,7 @@ sub MarkdownRule {
     }
     return $result;
   }
-  return undef;
+  return;
 }
 
 sub SanitizeSource {

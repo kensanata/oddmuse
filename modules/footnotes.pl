@@ -295,7 +295,7 @@ sub FootnotesRule {
     return '';
   }
 
-  return undef;
+  return;
 }
 
 # ....................{ HTML OUTPUT                        }....................

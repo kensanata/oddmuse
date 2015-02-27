@@ -69,7 +69,7 @@ sub PortraitSupportRule {
       return $html;
     }
   }
-  return undef;
+  return;
 }
 
 *OldPortraitSupportApplyRules = *ApplyRules;

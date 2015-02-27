@@ -98,7 +98,7 @@ sub TranslationLinkRule {
     $Page{translations} = join($FS, %TranslationLinkData);
     return '';
   }
-  return undef;
+  return;
 }
 
 =head2 Footer Links

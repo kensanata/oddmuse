@@ -134,5 +134,5 @@ sub MarkdownRule {
     $params{-title} = $title if $title;
     return $q->a(\%params, $text);
   }
-  return undef;
+  return;
 }

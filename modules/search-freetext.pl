@@ -103,7 +103,7 @@ sub SearchFreeTextTagsRule {
 		  -rel=>'tag'
 		 }, $text || $tag);
   }
-  return undef;
+  return;
 }
 
 push(@MyAdminCode, \&SearchFreeTextMenu);

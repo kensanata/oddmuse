@@ -120,7 +120,7 @@ sub FlashboxRule {
     return FlashboxHtml('youtube',
                         "http://www.youtube.com/v/${1}");
   }
-  return undef;
+  return;
 }
 
 sub FlashboxHtml {

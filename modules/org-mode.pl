@@ -26,5 +26,5 @@ sub OrgModeRule {
     my $tag = $org_emphasis_alist{$3};
     return "$1<$tag>$4</$tag>$5";
   }
-  return undef;
+  return;
 }

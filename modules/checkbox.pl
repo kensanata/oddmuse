@@ -53,7 +53,7 @@ sub CheckBoxRule {
       return $1;
     }
   }
-  return undef;
+  return;
 }
 
 $Action{checkbox} = \&DoCheckBox;

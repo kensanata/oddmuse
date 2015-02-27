@@ -39,7 +39,7 @@ sub FaqRule {
     return CloseHtmlEnvironments()
       . AddHtmlEnvironment('div', "class='answer'") . $FaqAnswerText;
   }
-  return undef;
+  return;
 }
 
 *OldFaqGetHeader = *GetHeader;

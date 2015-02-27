@@ -62,5 +62,5 @@ sub EmojiRule {
     # ✊  270A RAISED FIST
     return '&#x270A;';
   }
-  return undef;
+  return;
 }

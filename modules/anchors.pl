@@ -44,5 +44,5 @@ sub AnchorsRule {
   } elsif (m/\G\[\:$FreeLinkPattern\]/gc) {
     return $q->a({-name=>FreeToNormal($1), -class=>'anchor'}, '');
   }
-  return undef;
+  return;
 }

@@ -32,5 +32,5 @@ sub HtmlLinksRule {
 	} else {
 		$HtmlLinks = 0;
 	}
-	return undef;
+	return;
 }

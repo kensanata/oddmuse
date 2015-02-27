@@ -26,5 +26,5 @@ sub LineBreakRule {
   } elsif (m/\G\s*\n/cg) { # line break: one newline
     return $q->br();
   }
-  return undef;
+  return;
 }

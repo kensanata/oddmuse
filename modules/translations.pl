@@ -27,7 +27,7 @@ sub TranslationRule {
     print GetTranslationLink($2, $3);
     return '';
   }
-  return undef;
+  return;
 }
 
 sub GetCurrentPageRevision {

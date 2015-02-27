@@ -497,7 +497,7 @@ sub HibernalRule {
 
     return '';
   }
-  return undef;
+  return;
 }
 
 # ....................{ ACTIONS                            }....................

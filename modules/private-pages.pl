@@ -138,7 +138,7 @@ sub PrivatePageRule {
   if (pos == 0 && m/\G#PASSWORD.*\n/gc) {
     return '';
   }
-  return undef;
+  return;
 }
 
 # prevent leaking of edit summary

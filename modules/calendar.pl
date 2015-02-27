@@ -144,7 +144,7 @@ sub CalendarRule {
     pos = $oldpos;
     return AddHtmlEnvironment('p');
   }
-  return undef;
+  return;
 }
 
 sub PrintYearCalendar {

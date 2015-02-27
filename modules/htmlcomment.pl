@@ -25,7 +25,7 @@ sub HtmlCommentRules {
     return CloseHtmlEnvironments() . '<!--' . $str . '-->' 
       . AddHtmlEnvironment('p');
     }
-    return undef;
+    return;
 }	
    
 

@@ -32,7 +32,7 @@ sub GrepRule {
     pos = $oldpos; # restore \G after searching
     return '';
   }
-  return undef;
+  return;
 }
 
 sub PrintGrep {
