@@ -85,7 +85,7 @@ $CookieName  = 'Wiki';          # Name for this wiki (for multi-wiki sites)
 $SiteBase    = '';              # Full URL for <BASE> header
 $MaxPost     = 1024 * 210;      # Maximum 210K posts (about 200K for pages)
 $StyleSheet  = '';              # URL for CSS stylesheet (like '/wiki.css')
-$StyleSheetPage = 'css';        # Page for CSS sheet
+$StyleSheetPage = '';           # Page for CSS sheet
 $LogoUrl     = '';              # URL for site logo ('' for no logo)
 $NotFoundPg  = '';              # Page for not-found links ('' for blank pg)
 
