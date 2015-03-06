@@ -1,6 +1,8 @@
 #! /usr/bin/perl
-# Copyright (C) 2001-2013
+# Copyright (C) 2001-2015
 #     Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2014-2015
+#     Alex Jakimenko <alex.jakimenko@gmail.com>
 # Copyleft      2008 Brian Curry <http://www.raiazome.com>
 # ... including lots of patches from the UseModWiki site
 # Copyright (C) 2001, 2002  various authors
