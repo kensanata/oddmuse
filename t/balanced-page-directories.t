@@ -1,4 +1,4 @@
-# Copyright (C) 2014  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2014–2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -18,6 +18,9 @@ use Test::More tests => 10;
 use utf8; # tests contain UTF-8 characters and it matters
 
 clear_pages();
+
+$StyleSheetPage = 'css';
+AppendStringToFile($ConfigFile, "\$StyleSheetPage = 'css';\n");
 
 update_page('HomePage', 'Das ist ein Ei.');
 ok(-f GetPageFile('HomePage'), 'page file');
