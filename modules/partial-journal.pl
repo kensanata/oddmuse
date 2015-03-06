@@ -25,7 +25,7 @@ sub PartialCutRule {
   if (m/\G(?<=\n)\s*--\s*cut\s*--\s*(?=\n)/gc) {
     return CloseHtmlEnvironments() . '<hr class="cut" />' . AddHtmlEnvironment('p');
   }
-  return undef;
+  return;
 }
 
 *OldPartialPrintJournal = *PrintJournal;

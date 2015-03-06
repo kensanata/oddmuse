@@ -130,5 +130,5 @@ sub MoinRule {
   elsif (m/\G([ \t]+|[ \t]*\n)/cg) {
     return ' ';
   }
-  return undef;
+  return;
 }

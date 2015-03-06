@@ -209,5 +209,5 @@ sub MarkupRule {
   elsif ($MarkupQuotes and m/\G(?<![[:space:]])'(?![[:space:][:punct:]])/cg) {
     return $MarkupQuoteTable->[$MarkupQuotes]->[4];
   }
-  return undef;
+  return;
 }

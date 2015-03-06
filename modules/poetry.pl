@@ -166,7 +166,7 @@ sub PoetryRule {
       .AddHtmlEnvironment('p');
   }
 
-  return undef;
+  return;
 }
 
 =head1 COPYRIGHT AND LICENSE

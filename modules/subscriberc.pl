@@ -30,7 +30,7 @@ sub SubscribedRecentChangesRule {
       return Subscribe('', $1);
     }
   }
-  return undef;
+  return;
 }
 
 sub Subscribe {

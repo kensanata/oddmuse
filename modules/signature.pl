@@ -34,5 +34,5 @@ sub SignatureExceptionRule {
   } elsif (m/\G!\~\~\~/gc) {
     return '~~~';
   }
-  return undef;
+  return;
 }

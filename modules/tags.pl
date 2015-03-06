@@ -111,7 +111,7 @@ sub TagsRule {
     }
     return $html;
   }
-  return undef;
+  return;
 }
 
 =pod

@@ -26,5 +26,5 @@ sub NumberedListRule {
       . OpenHtmlEnvironment('ol',length($2))
       . AddHtmlEnvironment('li');
   }
-  return undef;
+  return;
 }

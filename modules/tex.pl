@@ -178,5 +178,5 @@ sub TexRule {
   if (m/\G$TexRe/goc) {
     return $Tex{$1};
   }
-  return undef;
+  return;
 }

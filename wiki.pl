@@ -536,7 +536,7 @@ sub ListRule {
     return CloseHtmlEnvironmentUntil('li')
       . OpenHtmlEnvironment('ul', length($2)) . AddHtmlEnvironment('li');
   }
-  return undef;
+  return;
 }
 
 sub LinkRules {
@@ -603,7 +603,7 @@ sub LinkRules {
     my $bracket = (substr($1, 0, 3) eq '[[[');
     print GetPageOrEditLink($2, $3, $bracket, 1); # $3 may be empty
   } else {
-    return undef;   # nothing matched
+    return;   # nothing matched
   }
   return '';     # one of the dirty rules matched (and they all are)
 }
@@ -717,7 +717,7 @@ sub RunMyRules {
     SetParam('msg', $@) if $@;
     return $result if defined($result);
   }
-  return undef;
+  return;
 }
 
 sub RunMyMacros {
@@ -3336,7 +3336,7 @@ sub SearchResultCount { $q->p({-class=>'result'}, Ts('%s pages found.', (shift))
 
 sub PageIsUploadedFile {
   my $id = shift;
-  return undef if $OpenPageName eq $id;
+  return if $OpenPageName eq $id;
   if ($IndexHash{$id}) {
     my $file = GetPageFile($id);
     utf8::encode($file); # filenames are bytes!

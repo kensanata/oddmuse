@@ -132,5 +132,5 @@ sub bbCodeRule {
   elsif (/\G:(?:sad|frown):/cg) {
     return '&#x1F61F;'; }
   # no match
-  return undef;
+  return;
 }

@@ -38,7 +38,7 @@ sub MyNewGetHtmlHeader {
 sub xfnRule {
     if (m/\G$PersonPattern/cog) { return &Person($1); }
 
-    return undef;
+    return;
 }
 
 sub Person {
