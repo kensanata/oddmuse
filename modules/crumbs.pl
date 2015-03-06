@@ -44,5 +44,5 @@ sub CrumbsRule {
     pos = $oldpos; # set after $_ is set!
     return $result; # clean rule, will be cached!
   }
-  return undef;
+  return;
 }

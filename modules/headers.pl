@@ -52,5 +52,5 @@ sub HeadersRule {
     $PortraitSupportColor = 0;
     return $html . AddHtmlEnvironment('p');
   }
-  return undef;
+  return;
 }

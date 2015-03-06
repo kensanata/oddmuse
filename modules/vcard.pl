@@ -16,7 +16,7 @@ my $email = qr(\G\s*(\S+@\S+)\n?);
 my $tel = qr(\G\s*(\S+): (\+?[-0-9 ]+)\n?);
 
 sub hCardRule {
-  return undef unless $bol;
+  return unless $bol;
   my ($fn, $street, $zip, $city, $country) = /$addr/cg;
   if ($fn) {
     my ($mail) = /$email/cg;
@@ -40,5 +40,5 @@ sub hCardRule {
 		      -style=>'color:red;'}, $hCard);
     return CloseHtmlEnvironments() . $hCard . AddHtmlEnvironment('p');
   }
-  return undef;
+  return;
 }

@@ -81,7 +81,7 @@ sub TablesLongRule {
     pos = $lastpos;
     return '';
   }
-  return undef;
+  return;
 }
 
 sub TablesLongRow {

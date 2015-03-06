@@ -29,7 +29,7 @@ sub EmailQuoteRule
         return CloseHtmlEnvironmentUntil('dd') . OpenHtmlEnvironment('dl',$leng, 'quote')
         . $q->dt() . AddHtmlEnvironment('dd');
     }
-    return undef;
+    return;
 }	
    
 

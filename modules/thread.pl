@@ -31,7 +31,7 @@ sub ThreadRule {
     pos = $oldpos;
     return '';
   }
-  return undef;
+  return;
 }
 
 sub ThreadGet {

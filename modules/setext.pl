@@ -60,5 +60,5 @@ sub SeTextRule {
   } elsif (m/\G`_(.+)_`/gc) {
     return $1;
   }
-  return undef;
+  return;
 }

@@ -56,5 +56,5 @@ sub FractionsRule {
       return $html;
     }
   }
-  return undef;
+  return;
 }

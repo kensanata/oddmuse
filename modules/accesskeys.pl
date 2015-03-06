@@ -32,5 +32,5 @@ sub LinksWithAccessKeys {
     }
     return ''; # this is a dirty rule that depends the definition of other pages
   }
-  return undef; # the rule didn't match
+  return; # the rule didn't match
 }

@@ -70,7 +70,7 @@ sub ClusterMapRule {
 		return '';
 	}
 	
-	return undef;
+	return;
 }
 
 

@@ -34,7 +34,7 @@ sub EnclosureRule {
     $Page{enclosures} = join(' ', keys %enclosures);
     return GetDownloadLink($id, undef, undef, $3);
   }
-  return undef;
+  return;
 }
 
 * OldEnclosurePrintWikiToHTML = *PrintWikiToHTML;

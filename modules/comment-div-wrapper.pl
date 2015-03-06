@@ -36,7 +36,7 @@ sub CommentDivWrapper {
       return $html;
     }
   }
-  return undef;
+  return;
 }
 
 # close final div

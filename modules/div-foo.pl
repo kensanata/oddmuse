@@ -35,5 +35,5 @@ sub DivFooRule {
   if (m/\G \&lt; \/ \&gt; /cgx) {
     return CloseHtmlEnvironment('span');
   }
-  return undef;
+  return;
 }

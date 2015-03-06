@@ -121,7 +121,7 @@ sub LatexRule {
 	return "[ Equation $label not found ]";
     }
   }
-  return undef;
+  return;
 }
 
 sub MakeLaTeX {

@@ -49,7 +49,7 @@ sub SearchListRule {
     ($_, pos) = ($old_, $oldpos); # restore \G (assignment order matters!)
     return '';
   }
-  return undef;
+  return;
 }
 
 

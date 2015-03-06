@@ -53,7 +53,7 @@ sub TagRule { # Process page tags on a page
         my $tags = join ', ', @tags;
         return qq{<div class="$TagClass">$TagString$tags</div>}; # tags are put in DIV block
     }
-    return undef;
+    return;
 
 }
 

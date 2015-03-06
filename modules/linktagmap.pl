@@ -56,7 +56,7 @@ sub LinkTagRule { # Process link tags on a page
         my $linktags = join ', ', @linktags;
         return qq{<span class="$LinkTagClass">$linktags</span>}; # tags are put in SPAN block
     }
-    return undef;
+    return;
 
 }
 
@@ -65,7 +65,7 @@ sub LinkDescriptionRule { # Process link descriptions on a page
     if ( m/\G$LinkDescMark(.*?)$LinkDescMark/gc) {          # find description
         return qq{<span class="$LinkDescClass">$1</span>};  # put it in SPAN block
     }
-    return undef;
+    return;
 
 }
 

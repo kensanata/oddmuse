@@ -31,7 +31,7 @@ sub LinkAllRule {
     # the block is cached so we don't return anything
     return '';
   }
-  return undef;
+  return;
 }
 
 sub LinkAllGetPageLinkIfItExists {

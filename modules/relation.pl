@@ -75,7 +75,7 @@ sub RelationRule {
     pos = $rememberpos;
     return $rtext;
   }
-  return undef;
+  return;
 }
 
 *OldRelationPrintFooter = *PrintFooter;

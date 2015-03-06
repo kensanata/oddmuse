@@ -38,7 +38,7 @@ sub GravatarRule {
 		    $q->br(),
 		    GetPageLink($name));
   }
-  return undef;
+  return;
 }
 
 *GravatarOldGetCommentForm = *GetCommentForm;
