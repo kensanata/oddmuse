@@ -2477,7 +2477,7 @@ sub GetSearchForm {
   my $html = GetFormStart(undef, 'get', 'search') . $q->start_p;
   $html .= $q->label({-for=>'search'}, T('Search:')) . ' '
       . $q->textfield(-name=>'search', -id=>'search', -size=>20, -accesskey=>T('f')) . ' ';
-  if (UserIsAdmin()) {
+  if (GetParam('search') ne '' and UserIsAdmin()) { # see DoBrowseRequest
     $html .= $q->label({-for=>'replace'}, T('Replace:')) . ' '
 	. $q->textfield(-name=>'replace', -id=>'replace', -size=>20) . ' '
 	. $q->checkbox(-name=>'delete', -label=>T('Delete')) . ' ';
