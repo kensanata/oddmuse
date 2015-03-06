@@ -56,7 +56,7 @@ $FreeInterLinkPattern %InvisibleCookieParameters %AdminPages $UseQuestionmark $J
 
 # Internal variables:
 use vars qw(%Page %InterSite %IndexHash %Translate %OldCookie $FootnoteNumber $OpenPageName @IndexList $Message $q $Now
-%RecentVisitors @HtmlStack @HtmlAttrStack $ReplaceForm %MyInc $CollectingJournal $bol $WikiDescription $PrintedHeader
+%RecentVisitors @HtmlStack @HtmlAttrStack %MyInc $CollectingJournal $bol $WikiDescription $PrintedHeader
 %Locks $Fragment @Blocks @Flags $Today @KnownLocks $ModulesDescription %Action %RuleOrder %Includes
 %RssInterwikiTranslate);
 
@@ -274,7 +274,6 @@ sub InitVariables {  # Init global session variables for mod_perl!
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $PrintedHeader = 0; # Error messages don't print headers unless necessary
-  $ReplaceForm = 0;   # Only admins may search and replace
   $ScriptName //= $q->url(); # URL used in links
   $FullUrl ||= $ScriptName; # URL used in forms
   %Locks = ();
@@ -2478,7 +2477,7 @@ sub GetSearchForm {
   my $html = GetFormStart(undef, 'get', 'search') . $q->start_p;
   $html .= $q->label({-for=>'search'}, T('Search:')) . ' '
       . $q->textfield(-name=>'search', -id=>'search', -size=>20, -accesskey=>T('f')) . ' ';
-  if ($ReplaceForm) {
+  if (UserIsAdmin()) {
     $html .= $q->label({-for=>'replace'}, T('Replace:')) . ' '
 	. $q->textfield(-name=>'replace', -id=>'replace', -size=>20) . ' '
 	. $q->checkbox(-name=>'delete', -label=>T('Delete')) . ' ';
@@ -3320,7 +3319,6 @@ sub DoSearch {
 	RcTextItem('link', $q->url(-path_info=>1, -query=>1)), "\n" if GetParam('context', 1);
     } else {
       print GetHeader('', Ts('Search for: %s', $string)), $q->start_div({-class=>'content search'});
-      $ReplaceForm = UserIsAdmin();
       print $q->p({-class=>'links'}, SearchMenu($string));
     }
     @results = SearchTitleAndBody($string, \&PrintSearchResult, SearchRegexp($string));
