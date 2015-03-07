@@ -117,7 +117,7 @@ $UseDiff     = 1;               # 1 = use diff
 $UseGrep     = 1;               # 1 = use grep to speed up searches
 $SurgeProtection      = 1;      # 1 = protect against leeches
 $SurgeProtectionTime  = 20;     # Size of the protected window in seconds
-$SurgeProtectionViews = 10;     # How many page views to allow in this window
+$SurgeProtectionViews = 20;     # How many page views to allow in this window
 $DeletedPage = 'DeletedPage';   # Pages starting with this can be deleted
 $RCName      = 'RecentChanges'; # Name of changes page
 @RcDays      = qw(1 3 7 30 90); # Days for links on RecentChanges
