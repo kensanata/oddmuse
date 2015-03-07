@@ -1,4 +1,4 @@
-# Copyright (C) 2006–2014  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006–2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 39;
+use Test::More tests => 41;
 use utf8; # tests contain UTF-8 characters and it matters
 
 clear_pages();
@@ -27,7 +27,7 @@ add_module('mac.pl');
 test_page(get_page('search=%2Btest'),
 	  '<h1>Malformed regular expression in \+test</h1>');
 
-# Test search
+# Test search, make sure ordinary users don't see the replacement form
 
 update_page('SearchAndReplace', 'This is fooz and this is barz.', '', 1);
 $page = get_page('search=fooz');
@@ -36,6 +36,7 @@ test_page($page,
 	  '<p class="result">1 pages found.</p>',
 	  'This is <strong>fooz</strong> and this is barz.');
 xpath_test($page, '//span[@class="result"]/a[@class="local"][@href="http://localhost/wiki.pl/SearchAndReplace"][text()="SearchAndReplace"]');
+test_page_negative($page, 'Replace:');
 
 # Search page name
 $page = get_page('search=andreplace');
@@ -51,6 +52,9 @@ test_page(update_page('Search (and replace)', 'Muu'),
 	  'search=%22Search\+%5c\(and\+replace%5c\)%22');
 
 # Make sure only admins can replace
+
+test_page(get_page('search=foo pwd=foo'),
+	  'Replace:');
 
 test_page(get_page('search=foo replace=bar'),
 	  'This operation is restricted to administrators only...');
