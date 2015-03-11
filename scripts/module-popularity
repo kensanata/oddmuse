@@ -30,4 +30,4 @@ done
 
 for curModule in "${!modules[@]}"; do
   echo "${modules[$curModule]} $curModule"
-done | sort -nr
+done | sort -k 2 | sort -nrs
