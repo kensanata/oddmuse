@@ -1,4 +1,4 @@
-# Copyright (C) 2006, 2009  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006–2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 55;
+use Test::More tests => 59;
 
 clear_pages();
 
@@ -50,6 +50,14 @@ da *foo*
 da <b>foo</b>
 da *foo bar 6*
 da <b>foo bar 6</b>
+da a*b is not * whatever
+da a*b is not * whatever
+da a*b is not* whatever
+da a*b is not* whatever
+da a *b is not * whatever
+da a *b is not * whatever
+da a *b is not* whatever
+da a <b>b is not</b> whatever
 _foo_
 <em style="text-decoration: underline; font-style: normal;">foo</em>
 foo_bar_baz

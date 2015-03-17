@@ -1,4 +1,4 @@
-# Copyright (C) 2004, 2005, 2006, 2009  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2004–2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -80,9 +80,12 @@ $RuleOrder{\&MarkupRule} = 150;
 %MarkupLines = ('>' => 'pre',
 	       );
 
-my $words = '([A-Za-z\x{0080}-\x{fffd}][-%.,:;\'"!?0-9 A-Za-z\x{0080}-\x{fffd}]*?)';
+# either a single letter, or a string that begins with a single letter and ends with a non-space
+my $words = '([A-Za-z\x{0080}-\x{fffd}](?:[-%.,:;\'"!?0-9 A-Za-z\x{0080}-\x{fffd}]*?[-%.,:;\'"!?0-9A-Za-z\x{0080}-\x{fffd}])?)';
+# zero-width assertion to prevent km/h from counting
+my $nowordstart = '(?:(?<=[^-0-9A-Za-z\x{0080}-\x{fffd}])|^)';
 # zero-width look-ahead assertion to prevent km/h from counting
-my $noword = '(?=[^-0-9A-Za-z\x{0080}-\x{fffd}]|$)';
+my $nowordend = '(?=[^-0-9A-Za-z\x{0080}-\x{fffd}]|$)';
 
 my $markup_pairs_re = '';
 my $markup_forced_pairs_re = '';
@@ -101,7 +104,7 @@ push(@MyInitVariables, \&MarkupInit);
 sub MarkupInit {
   $markup_pairs_re = '\G([' . join('', (map { quotemeta(QuoteHtml($_)) }
 					keys(%MarkupPairs))) . '])';
-  $markup_pairs_re = qr/${markup_pairs_re}${words}\1${noword}/;
+  $markup_pairs_re = qr/${nowordstart}${markup_pairs_re}${words}\1${nowordend}/;
   $markup_forced_pairs_re = '\G(' . join('|', (map { quotemeta(QuoteHtml($_)) }
 					       keys(%MarkupForcedPairs))) . ')';
   $markup_forced_pairs_re = qr/$markup_forced_pairs_re/;
