@@ -78,7 +78,7 @@ unshift(@MyInitVariables, \&NamespacesInitVariables);
 sub NamespacesInitVariables {
   %Namespaces = ();
   # Do this before changing the $DataDir and $ScriptName
-  if (!$Monolithic and $UsePathInfo) {
+  if ($UsePathInfo) {
     $Namespaces{$NamespacesMain} = $ScriptName . '/';
     foreach my $name (bsd_glob("$DataDir/*")) {
       utf8::decode($name);
