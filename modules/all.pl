@@ -20,7 +20,7 @@ AddModuleDescription('all.pl', 'All Action');
 
 $Action{all} = \&DoPrintAllPages;
 
-my $Monolithic = 0;
+our $Monolithic = 0;
 
 sub DoPrintAllPages {
   return  if (!UserIsAdminOrError());
