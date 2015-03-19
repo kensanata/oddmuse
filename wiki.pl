@@ -1673,7 +1673,7 @@ sub RcHeader {
   }
   return $html .
     $q->p((map { ScriptLink("$action;days=$_;all=$all;showedit=$edits",
-			    ($_ != 1) ? Ts('%s days', $_) : Ts('%s days', $_));
+			    ($_ != 1) ? Ts('%s days', $_) : Ts('%s day', $_));
 	       } @RcDays), $q->br(), @menu, $q->br(),
 	  ScriptLink($action . ';from=' . ($LastUpdate + 1)
 		     . ";all=$all;showedit=$edits", T('List later changes')),
