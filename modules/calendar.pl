@@ -51,7 +51,7 @@ sub Cal {
   }
   my @pages = AllPagesList();
   my $cal = draw_month($mon, $year);
-  $cal =~ s{( {1,2}\d{1,2})\b}{{
+  $cal =~ s{ ( ?\d{1,2})\b}{{
     my $day = $1;
     my $date = sprintf("%d-%02d-%02d", $year, $mon, $day);
     my $re = "^$date";
@@ -61,13 +61,13 @@ sub Cal {
     my $class = '';
     $class .= ' today' if $day == $mday_now and $mon == $mon_now and $year == $year_now;
     my @matches = grep(/$re/, @pages);
-    my $link;
+    my $link = ' ';
     if (@matches == 0) { # not using GetEditLink because of $class
-      $link = ScriptLink('action=edit;id=' . UrlEncode($page), $day, 'edit' . $class);
+      $link .= ScriptLink('action=edit;id=' . UrlEncode($page), $day, 'edit' . $class);
     } elsif (@matches == 1) { # not using GetPageLink because of $class
-      $link = ScriptLink($matches[0], $day, 'local exact' . $class);
+      $link .= ScriptLink($matches[0], $day, 'local exact' . $class);
     } else {
-      $link = ScriptLink('action=collect;match=' . UrlEncode($re), $day,  'local collection' . $class);
+      $link .= ScriptLink('action=collect;match=' . UrlEncode($re), $day,  'local collection' . $class);
     }
     $link;
   }}ge;
