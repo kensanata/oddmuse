@@ -103,7 +103,7 @@ $PassSalt  //= '';              # Salt will be added to any password before hash
 $BannedHosts = 'BannedHosts';   # Page for banned hosts
 $BannedCanRead = 1;             # 1 = banned cannot edit, 0 = banned cannot read
 $BannedContent = 'BannedContent'; # Page for banned content (usually for link-ban)
-$WikiLinks   = 1;               # 1 = LinkPattern is a link
+$WikiLinks   = '';              # 1 = LinkPattern is a link
 $FreeLinks   = 1;               # 1 = [[some text]] is a link
 $UseQuestionmark = 1;           # 1 = append questionmark to links to nonexisting pages
 $BracketText = 1;               # 1 = [URL desc] uses a description for the URL
