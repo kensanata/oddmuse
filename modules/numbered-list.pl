@@ -13,7 +13,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 AddModuleDescription('numbered-list.pl');
+
+use vars qw($bol @MyRules);
 
 push(@MyRules, \&NumberedListRule);
 

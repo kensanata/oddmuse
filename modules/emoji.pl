@@ -12,7 +12,11 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 AddModuleDescription('emoji.pl', 'Smilies');
+
+use vars qw(%RuleOrder @MyRules);
 
 push(@MyRules, \&EmojiRule);
 # this must come before tex.pl because of \o/ turning into ø/

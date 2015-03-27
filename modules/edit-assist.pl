@@ -14,8 +14,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
 
 AddModuleDescription('edit-assist.pl');
+
+use vars qw($q $HtmlHeaders @MyInitVariables);
 
 push (@MyInitVariables,
       sub {

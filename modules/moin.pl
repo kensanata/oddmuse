@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('moin.pl', 'Moin Markup Extension');
+
+use vars qw($q $bol @HtmlStack %RuleOrder @MyRules);
 
 push(@MyRules, \&MoinRule);
 $RuleOrder{\&MoinRule} = -10; # run before default rules because of [[BR]]
@@ -25,7 +29,7 @@ my %moin_level;   # mapping length of whitespace to indentation level
 my $moin_current; # the current length of whitespace (not indentation level!)
 
 sub MoinLength {
-  $str = shift;
+  my $str = shift;
   my $oldpos = pos;
   $str =~ s/\t/       /g;
   die if pos != $oldpos;

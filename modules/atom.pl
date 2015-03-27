@@ -13,11 +13,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+# use strict; # TODO fix problem with %excluded (108) and $id (118)
+
 use XML::Atom::Entry;
 use XML::Atom::Link;
 use XML::Atom::Person;
 
 AddModuleDescription('atom.pl', 'Atom Extension');
+
+use vars qw($q %Page %Action $CommentsPrefix $ScriptName $SiteName $MaxPost $UseDiff $NewText $DeletedPage @MyInitVariables @MyMacros $FS $BannedContent $RssStyleSheet $RssRights $RssLicense $RssImageUrl $RCName @UploadTypes $UploadAllowed $UsePathInfo $SiteDescription $LastUpdate $InterWikiMoniker);
 
 push(@MyInitVariables, \&AtomInit);
 

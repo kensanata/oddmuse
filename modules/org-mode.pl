@@ -13,7 +13,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 AddModuleDescription('org-mode.pl', 'Comments on Writing Extensions');
+
+use vars qw(@MyRules);
 
 push(@MyRules, \&OrgModeRule);
 

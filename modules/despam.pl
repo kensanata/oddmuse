@@ -16,6 +16,10 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
+use vars qw($q $Now %IndexHash %Action %Page $OpenPageName $FS $BannedContent $RcFile $RcDefault @MyAdminCode $FullUrlPattern $DeletedPage $StrangeBannedContent);
+
 AddModuleDescription('despam.pl', 'Despam Extension');
 
 push(@MyAdminCode, \&DespamMenu);
@@ -127,7 +131,8 @@ sub DespamPage {
   my $rule = shift;
   # from DoHistory()
   my @revisions = sort {$b <=> $a} map { m|/([0-9]+).kp$|; $1; } GetKeepFiles($OpenPageName);
-  foreach my $revision (@revisions) { # remember the last revision checked
+  my $revision; # remember the last revision checked
+  foreach $revision (@revisions) {
     my ($text, $rev) = GetTextRevision($revision, 1); # quiet
     if (not $rev) {
       print ': ' . Ts('Cannot find revision %s.', $revision);

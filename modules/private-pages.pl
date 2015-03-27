@@ -12,6 +12,8 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 =head1 Private Pages Extension
 
 This module allows you to hide the content of particular pages in Oddmuse.
@@ -41,6 +43,8 @@ Notes:
 
 AddModuleDescription('private-pages.pl', 'Private Pages Extension');
 
+use vars qw(%IndexHash %Page $OpenPageName $Now @MyRules $NewText);
+
 sub PrivatePageLocked {
   my $text = shift;
   my ($line) = split(/\n/, $text, 1);
@@ -52,7 +56,7 @@ sub PrivatePageLocked {
     foreach (@token) {
       if ($pwd eq $_) {
 	$lock = 0;
-	break;
+	last;
       }
     }
   }

@@ -12,10 +12,14 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 use File::Glob ':glob';
 use vars qw($DraftDir);
 
 AddModuleDescription('drafts.pl');
+
+use vars qw($q $Message $Now %Action $DataDir @MyInitVariables @MyMaintenance $FooterNote);
 
 $DraftDir = $DataDir."/draft"; # directory for drafts
 

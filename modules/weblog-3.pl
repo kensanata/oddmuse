@@ -12,10 +12,13 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+# use strict; #TODO what is $CategoryInit?
+
 AddModuleDescription('weblog-3.pl', 'Create a Blog Front Page');
 
 # Categories
 
+use vars qw($q %Action %Page $OpenPageName $NewText $HomePage $ScriptName @MyInitVariables $FreeLinkPattern $UserGotoBar @UserGotoBarPages $UsePathInfo);
 use vars qw($CategoriesPage);
 
 $CategoriesPage = 'Categories';

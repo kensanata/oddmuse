@@ -1,4 +1,6 @@
 #!/usr/bin/env perl
+# use strict; #TODO what is $upload? (169)
+
 # ====================[ recapcha.pl                        ]====================
 
 =head1 NAME
@@ -36,6 +38,8 @@ recaptcha is easily configurable; set these variables in the B<wiki/config.pl>
 file for your Oddmuse Wiki.
 
 =cut
+
+use vars qw($q %AdminPages $LinkPattern $FreeLinks $FreeLinkPattern $WikiLinks @MyInitVariables %CookieParameters %InvisibleCookieParameters);
 use vars qw(
   $ReCaptchaPrivateKey
   $ReCaptchaPublicKey

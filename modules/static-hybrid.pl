@@ -17,12 +17,15 @@
 #	 59 Temple Place, Suite 330
 #	 Boston, MA 02111-1307 USA
 
+# use strict; #TODO what is $StaticFilesAlways ? No such variable anywhere.
+
 AddModuleDescription('static-hybrid.pl', 'Static Hybrid Module');
 
-$Action{static} = \&DoStatic;
-
+use vars qw($q $Now %Action %Page %IndexHash @IndexList $OpenPageName $ScriptName $FS $RCName $DeletedPage $UsePathInfo $CommentsPrefix $Message $KeepDays $NewComment $EmbedWiki $ClusterMapPage %NearLinksUsed);
 use vars qw($StaticDir $StaticAlways %StaticMimeTypes $StaticUrl
+
 %StaticLinkedPages @StaticIgnoredPages);
+$Action{static} = \&DoStatic;
 
 $StaticDir = '' unless defined $StaticDir;
 $StaticUrl = '' unless defined $StaticUrl;	  # change this!
@@ -440,7 +443,8 @@ sub StaticNewDespamPage {
   my $rule = shift;
   # from DoHistory()
   my @revisions = sort {$b <=> $a} map { m|/([0-9]+).kp$|; $1; } GetKeepFiles($OpenPageName);
-  foreach my $revision (@revisions) { # remember the last revision checked
+  my $revision;
+  foreach $revision (@revisions) { # remember the last revision checked
     my ($text, $rev) = GetTextRevision($revision, 1); # quiet
     if (not $rev) {
       print ': ' . Ts('Cannot find revision %s.', $revision);

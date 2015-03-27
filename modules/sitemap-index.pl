@@ -18,18 +18,22 @@
 
 # Create a plain text listing of all pages in your wiki
 
+use strict;
+
 AddModuleDescription('sitemap-index.pl', 'Sitemap-index Extension');
+
+use vars qw(%Action $ScriptName);
 
 $Action{'sitemap-index'} = \&DoSiteMapIndex;
 
 sub DoSiteMapIndex {
-	# Basically, this is DoIndex with raw=1 and prepending the URL
-	my @pages;
-	push(@pages, AllPagesList());
-	@pages = sort @pages;
+  # Basically, this is DoIndex with raw=1 and prepending the URL
+  my @pages;
+  push(@pages, AllPagesList());
+  @pages = sort @pages;
 
-	print GetHttpHeader('text/plain');
-	foreach (@pages) {
-		print $ScriptName, "/", $_, "\n";
-	}
+  print GetHttpHeader('text/plain');
+  foreach (@pages) {
+    print $ScriptName, "/", $_, "\n";
+  }
 }

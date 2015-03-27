@@ -21,10 +21,14 @@
 # edit a page by double-clicking on it. The user must have
 # JavaScript enabled for this to work.
 
+use strict;
+
 AddModuleDescription('doubleclick.pl', 'Doubleclick Extension');
 
+use vars qw($ScriptName);
+
 *OldDoubleclickGetHeader = *GetHeader;
-*GetHeader = NewDoubleclickGetHeader;
+*GetHeader = *NewDoubleclickGetHeader;
 
 sub NewDoubleclickGetHeader {
     my $id = shift;

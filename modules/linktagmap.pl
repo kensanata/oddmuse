@@ -18,8 +18,11 @@
 #
 # Based on code of tagmap.pl module by Fletcher T. Penney
 # and searchtags.pl module by Brock Wilcox
+use strict;
+
 AddModuleDescription('linktagmap.pl', 'LinkTagMap Module');
 
+use vars qw(%Action %Page $OpenPageName $ModuleDir @MyRules $ScriptName);
 use vars qw($LinkTagMark $LinkDescMark $LinkTagClass $LinkDescClass $LinkTagMapPage $UrlPattern $FullUrlPattern $LinkTagSearchTitle);
 
 # Tags and descripton are embraced with this sequences

@@ -16,9 +16,13 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+# use strict; #TODO what is $today?
+
 use Time::ParseDate;
 
 AddModuleDescription('weblog-2.pl', 'Complex Weblog Extension');
+
+use vars qw($q @MyInitVariables @UserGotoBarPages);
 
 push(@MyInitVariables, \&WebLog2Init);
 
@@ -26,10 +30,10 @@ sub WebLog2Init {
   my $id = join('_', $q->keywords);
   $id = $q->path_info() unless $id;
   my $current;
-  ($current, $year, $mon, $mday) = ($id =~ m|^/?((\d\d\d\d)-(\d\d)-(\d\d))|);
+  my ($current, $year, $mon, $mday) = ($id =~ m|^/?((\d\d\d\d)-(\d\d)-(\d\d))|);
   if ($current and $current ne $today) {
     my $time = parsedate($current, GMT => 1);
-    ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = localtime($time - 60*60*24);
+    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = localtime($time - 60*60*24);
     my $previous = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
     ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = localtime($time + 60*60*24);
     my $next = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);

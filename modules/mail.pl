@@ -1,3 +1,5 @@
+use strict;
+
 =head1 NAME
 
 tags - an Oddmuse module that implements email subscription to pages
@@ -28,6 +30,7 @@ automatically.
 
 AddModuleDescription('mail.pl', 'Mail Extension');
 
+use vars qw($q %Action %IndexHash $FS $DataDir %CookieParameters %InvisibleCookieParameters @MyInitVariables @MyAdminCode $Message);
 use vars qw($MailFile $MailPattern);
 
 push (@MyInitVariables, sub {
@@ -50,6 +53,8 @@ subscribe or unsubscribe. The alternative would have been to touch the
 index file at the end of the subscribe and unsubscribe function.
 
 =cut
+
+my %h;
 
 *MailOldInitCookie = *InitCookie;
 *InitCookie = *MailNewInitCookie;
@@ -83,7 +88,7 @@ sub MailNewGetCommentForm {
     $addition = ' ' . ScriptLink("action=unsubscribe;pages=$id",
 				 T('unsubscribe'), 'unsubscribe');
   } else {
-    $addition = $q->input({-type=>checkbox, -name=>"notify", -value=>'1'})
+    $addition = $q->input({-type=>'checkbox', -name=>'notify', -value=>'1'})
       . ScriptLink("action=subscribe;pages=$id", T('subscribe'), 'subscribe');
   }
   $addition = $q->span({-class=>'mail'},
@@ -238,7 +243,7 @@ sub DoMailSubscriptions {
       print $q->p(Ts('Subscriptions for %s:', $mail),
 		  $q->input({-type=>'hidden',-name=>'action',-value=>'unsubscribe'}));
       print $q->p(join($q->br(),
-		       map { $q->input({-type=>checkbox, -name=>"pages", -value=>"$_"})
+		       map { $q->input({-type=>'checkbox', -name=>'pages', -value=>"$_"})
 			       . GetPageLink($_) } @subscriptions));
       print $q->p($q->submit(-name=>'Unsubscribe', -value=>T('Unsubscribe')));
     } else {

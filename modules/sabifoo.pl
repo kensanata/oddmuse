@@ -16,7 +16,12 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('sabifoo.pl', 'Sabifoo');
+
+use vars qw(%IndexHash @MyInitVariables);
+use vars qw($SummaryDefaultLength);
 
 push(@MyInitVariables, \&SabiFooInit);
 

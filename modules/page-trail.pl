@@ -16,11 +16,14 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
+AddModuleDescription('page-trail.pl', 'Page Trail Extension');
+
+use vars qw($q %CookieParameters %InvisibleCookieParameters);
 use vars qw($PageTrailLength);
 
 $PageTrailLength = 10;
-
-AddModuleDescription('page-trail.pl', 'Page Trail Extension');
 
 $CookieParameters{trail} = '';
 $InvisibleCookieParameters{trail} = 1;

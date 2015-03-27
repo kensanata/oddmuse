@@ -1,3 +1,5 @@
+use strict;
+
 =head1 NAME
 
 honeypot - an Oddmuse module that reduces wiki spam
@@ -55,7 +57,8 @@ By default, these have the values of "idiot" and "looser", for obvious reasons.
 
 package OddMuse;
 
-use vars qw($HoneyPotOk $HoneyPotIdiot $HoneyPotTimestamp);
+use vars qw($q $Now @MyInitVariables $QuestionaskerRememberAnswer $QuestionaskerSecretKey);
+use vars qw($HoneyPotOk $HoneyPotIdiot $HoneyPotTimestamp $HoneyPotIdiot1 $HoneyPotIdiot2);
 
 $HoneyPotOk = 'ok';
 $HoneyPotIdiot1 = 'idiot';

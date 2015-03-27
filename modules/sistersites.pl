@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+# use strict; #TODO what is $match? (42)
+
 AddModuleDescription('sistersites.pl', 'Sister Pages');
+
+use vars qw(%Action $ScriptName $UsePathInfo %NearSource %PermanentAnchors);
 
 $Action{'sisterpages'} = \&DoSisterPages;
 

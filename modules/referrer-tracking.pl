@@ -11,17 +11,18 @@
 #
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
+use strict;
 
 AddModuleDescription('referrer-tracking.pl', 'Automatic Link Back');
 
 use LWP::UserAgent;
 
+use vars qw($q $Now $OpenPageName %Action @KnownLocks %AdminPages $ScriptName $DataDir $EmbedWiki $FS @MyInitVariables @MyAdminCode $FullUrlPattern);
 push(@KnownLocks, "refer_*");
-
 $Action{refer} = \&DoPrintAllReferers;
 
 use vars qw($RefererDir $RefererTimeLimit $RefererLimit $RefererFilter
-%Referers);
+$RefererTitleLimit %Referers);
 
 $RefererTimeLimit = 86400; # How long referrals shall be remembered in seconds
 $RefererLimit	  = 15;	   # How many different referer shall be remembered

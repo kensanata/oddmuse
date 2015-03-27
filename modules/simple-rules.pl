@@ -16,7 +16,10 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+#use strict; #TODO local variables? What?
+
 AddModuleDescription('simple-rules.pl', 'Simple Fast Alternate Text Formatting Rules');
+use vars qw($q $OpenPageName $FS $UrlPattern $FreeLinkPattern);
 
 *ApplyRules = *NewSimpleRulesApplyRules;
 

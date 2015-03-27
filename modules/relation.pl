@@ -16,8 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('relation.pl', 'Relation Extension');
 
+use vars qw($q %Action $OpenPageName @MyRules $DataDir);
 use vars qw(@RelationLinking $RelationPassedFlag);
 
 push(@MyRules, \&RelationRule);
@@ -86,7 +89,7 @@ sub RelationPrintFooter {
   if ($RelationPassedFlag > 0) {
      print "<div class='footnotes'>\n";
 #     print "<a href='$OpenPageName?action=checkrelates'>CheckRelations</a><br />\n";
-     print ScriptLink('action=checkrelates;id='.$OpenPageName, CheckRelations, 'index');
+     print ScriptLink('action=checkrelates;id='.$OpenPageName, 'CheckRelations', 'index');
      print "</div>\n";
   };
   OldRelationPrintFooter(@params);

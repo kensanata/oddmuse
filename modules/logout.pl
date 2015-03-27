@@ -1,4 +1,6 @@
 #!/usr/bin/env perl
+use strict;
+
 # ====================[ logout.pl                          ]====================
 
 =head1 NAME
@@ -23,6 +25,8 @@ directory of your Oddmuse Wiki.
 package OddMuse;
 
 AddModuleDescription('logout.pl', 'Logout Extension');
+
+use vars qw($q %Action $CommentsPrefix $Message $LinkPattern $FreeLinks $FreeLinkPattern $SiteName %CookieParameters);
 
 # ....................{ CONFIGURATION                      }....................
 

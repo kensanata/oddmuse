@@ -22,17 +22,21 @@
 # LaTeX   - http://www.latex-project.org
 # TeX     - http://www.tug.org/teTeX/
 #
-# And one of : 
+# And one of :
 # dvipng  - http://sourceforge.net/projects/dvipng/
 # convert - http://www.imagemagick.org/
 #
 # CSS Styles:
-# span.eqCount 
+# span.eqCount
 # img.LaTeX
 # img.InlineMath
 # img.DisplayMath
 
+# use strict; # TODO some vars are out of scope, but there is no way to see the scope because of the broken indentation
+
 use File::Glob ':glob';
+
+use vars qw($DataDir @MyRules);
 use vars qw($LatexDir $LatexLinkDir $LatexExtendPath $LatexSingleDollars);
 
 # One of the following options must be set correctly to the full path of
@@ -44,8 +48,8 @@ my $convertPath = "/usr/bin/convert";
 # Set $dispErrors to display LaTeX errors inline on the page.
 my $dispErrors = 1;
 
-# Set $useMD5 to 1 if you want to use MD5 hashes for filenames, set it to 0 to use 
-# a url-encoded hash. If $useMD5 is set and the Digest::MD5 module is not available, 
+# Set $useMD5 to 1 if you want to use MD5 hashes for filenames, set it to 0 to use
+# a url-encoded hash. If $useMD5 is set and the Digest::MD5 module is not available,
 # latex.pl falls back to urlencode
 my $useMD5 = 0;
 
@@ -59,7 +63,7 @@ $LatexSingleDollars = 0;
 # Set $allowPlainTeX to 1 to allow normal LaTeX commands inside of $[ ]$
 # to be executed outside of the math environment.  This should only be done
 # if your wiki is not publically editable because of the possible security risk
-$allowPlainLaTeX = 0;
+my $allowPlainLaTeX = 0;
 
 # $LatexDir must be accessible from the outside as $LatexLinkDir.  The
 # first directory is used to *save* the pictures, the second directory
@@ -101,7 +105,7 @@ sub LatexRule {
     my $label = $1;
     my $latex = $2;
     $label =~ s#\(?\)?##g;# Remove the ()'s from the label and convert case
-    $label =~ tr/A-Z/a-z/; 
+    $label =~ tr/A-Z/a-z/;
     $eqCounter++;
     $eqHash{$label} = $eqCounter;
     return &MakeLaTeX("\\begin{displaymath} $latex \\end{displaymath}", "display math",$label);
@@ -110,10 +114,10 @@ sub LatexRule {
   } elsif ($LatexSingleDollars and m/\G\$((.*\n)*?.*?)\$/gc) {
     return &MakeLaTeX("\$ $1 \$", "inline math");
   } elsif ($allowPlainLaTeX && m/\G\$\[((.*\n)*?.*?)\]\$/gc) { #Pick up plain LaTeX commands
-    return &MakeLaTeX(" $1 ", "LaTeX");   
+    return &MakeLaTeX(" $1 ", "LaTeX");
   } elsif (m/\GEQ\((.*?)\)/gc) { # Handle references to equations
     my $label = $1;
-    $label =~ tr/A-Z/a-z/; 
+    $label =~ tr/A-Z/a-z/;
     if ($eqHash{$label}) {
 	return $eqAbbrev . "<a href=\"#$label\">". $eqHash{$label} . "</a>";
     }
@@ -129,19 +133,17 @@ sub MakeLaTeX {
   $ENV{PATH} .= $LatexExtendPath if $LatexExtendPath and $ENV{PATH} !~ /$LatexExtendPath/;
 
   # Select which binary to use for conversion of dvi to images
-  my $useConvert = 0; 
-  if (not -e $dvipngPath) { 
+  my $useConvert = 0;
+  if (not -e $dvipngPath) {
       if (not -e $convertPath) {
-	  return "[Error: dvipng binary and convert binary not found at $dvipngPath or $converPath ]";
+	  return "[Error: dvipng binary and convert binary not found at $dvipngPath or $convertPath ]";
       }
-      else {  
-	  $useConvert = 1; # Fall back on convert if dvipng is missing and convert exists       
+      else {
+	  $useConvert = 1; # Fall back on convert if dvipng is missing and convert exists
       }
   }
 
-
   $latex = UnquoteHtml($latex); # Change &lt; back to <, for example
-  
 
   # User selects which hash to use
   my $hash;
@@ -154,8 +156,6 @@ sub MakeLaTeX {
       $hash = UrlEncode($latex);
       $hash =~ s/%//g;
   }
-  
-
 
   # check cache
   if (not -f "$LatexDir/$hash.png" or -z "$LatexDir/$hash.png") { #If file doesn't exist or is zero bytes
@@ -182,25 +182,25 @@ sub MakeLaTeX {
       my $errorText = qx(latex srender.tex);
       return "[Illegal LaTeX markup: <pre>$latex</pre>] <br/> Error: <pre>$errorText</pre>" if ($? && $dispErrors);
       return "[Illegal LaTeX markup: <pre>$latex</pre>] <br/>" if $?;
-      
+
       my $output;
-      
+
       # Use specified binary to convert dvi to png
-      if ($useConvert) { 
+      if ($useConvert) {
 	  $output = qx($convertPath -antialias -crop 0x0 -density 120x120 -transparent white srender.dvi srender1.png );
 	  return "[convert error $? ($output)]" if $?;
       } else {
 	  $output = qx($dvipngPath -T tight -bg Transparent srender.dvi);
 	  return "[dvipng error $? ($output)]" if $?;
       }
-      
+
       my $result;
       if (-f 'srender1.png' and not -z 'srender1.png') {
 	  my $png = ReadFileOrDie("srender1.png");
 	  WriteStringToFile ("$LatexDir/$hash.png", $png);
       } else {	  $result = "[Error retrieving image for $latex]"; }
-      
-								}
+
+  }
     # Finally print the html for the image
     if ($type eq "inline math") { # inline math
       return ("<img class='InlineMath' "
@@ -214,7 +214,7 @@ sub MakeLaTeX {
     } else {  # latex format
       return ("<img class='LaTeX' "
              ."src='$LatexLinkDir/$hash.png' alt='$latex' \/>");
-	   }								
+	   }
 
   unlink (glob('*'));
   chdir ($LatexDir);

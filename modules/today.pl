@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('today.pl', 'Blog Module');
+
+use vars qw(%Action $Now @MyAdminCode $UsePathInfo $NamespaceCurrent);
 
 # New Action
 
@@ -46,7 +50,7 @@ sub DoNew {
     $id = '';
   }
   my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = gmtime($Now);
-  $today = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
+  my $today = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
   $today .= sprintf("_%02dh%02d", $hour, $min) if GetParam('hour', 0);
   $today .= "_$id" if $id;
   return DoEdit($today);

@@ -13,11 +13,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 AddModuleDescription('load-lang.pl', 'Language Browser Preferences');
 
-$CookieParameters{interface} = '';
-
+use vars qw($q %CookieParameters $ConfigFile $DataDir $ReadMe $NamespaceCurrent @MyInitVariables);
 use vars qw($CurrentLanguage $LoadLanguageDir);
+
+$CookieParameters{interface} = '';
 
 my %library= ('bg' => 'bulgarian-utf8.pl',
 	      'de' => 'german-utf8.pl',

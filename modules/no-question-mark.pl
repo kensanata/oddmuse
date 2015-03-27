@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('no-question-mark.pl', 'No Questionmarks Extension');
+
+use vars qw($q $OpenPageName $ScriptName %IndexHash $FootnoteNumber $UsePathInfo);
 
 sub GetPageOrEditLink {
   my ($id, $text, $bracket, $free) = @_;

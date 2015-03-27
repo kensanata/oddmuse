@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('live-templates.pl', 'Live Template Extension');
+
+use vars qw($q $bol @MyRules $FreeLinkPattern);
 
 push(@MyRules, \&LiveTemplateRule);
 

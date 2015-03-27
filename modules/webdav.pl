@@ -4,8 +4,11 @@
 # This module is free software; you can redistribute it or modify it
 # under the same terms as Perl itself.
 
+# use strict; # TODO namespace:: weirdness
+
 AddModuleDescription('webdav.pl', 'WebDAV Extension');
 
+use vars qw($q $Now %Page @KnownLocks $DataDir);
 use vars qw($WebDavCache);
 
 $WebDavCache = "$DataDir/webdav";

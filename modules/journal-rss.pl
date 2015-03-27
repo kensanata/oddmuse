@@ -13,8 +13,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# use strict; #TODO what is $languages?
+
 AddModuleDescription('journal-rss.pl', 'Journal RSS Extension');
 
+use vars qw($OpenPageName $CollectingJournal %Page %Action @MyInitVariables $DeletedPage);
 $Action{journal} = \&DoJournalRss;
 
 # Currently RSS works like RecentChanges, which is not what bloggers

@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('searchtags.pl', 'SearchTags Extension');
+
+use vars qw(@MyRules);
 
 push(@MyRules, \&SearchTagRule);
 
@@ -31,7 +35,7 @@ sub SearchTagRule {
       $encoded = UrlEncode($encoded);
       ScriptLink("search=Tags:\\s*($encoded|.*,\\s*$encoded)(,|\\n)", $name);
     } @tags;
-    $tags = join ', ', @tags;
+    my $tags = join ', ', @tags;
     return CloseHtmlEnvironments()
       . "<div class=\"taglist\">Tags: $tags</div>"
       . AddHtmlEnvironment('p');

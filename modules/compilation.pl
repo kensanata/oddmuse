@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('compilation.pl', 'Compilation Extension');
+
+use vars qw($q $bol %Action %Page $OpenPageName $CollectingJournal @MyRules);
 
 $Action{compilation} = \&DoCompilation;
 

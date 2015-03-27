@@ -1,6 +1,6 @@
 #
 # A very simple module to support XHTML Friends Network (http://www.gmpg.org/xfn/)
-# 
+#
 # Copyright (C) 2006 Alex Schroeder <alex@emacswiki.org>
 # Copyright (C) 2006 Alexandre (adulau) Dulaunoy <adulauATATfoo.be>
 #
@@ -20,7 +20,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('xfn.pl', 'xfn Module');
+
+use vars qw($q @MyRules);
 
 push ( @MyRules, \&xfnRule );
 
@@ -46,4 +50,3 @@ sub Person {
     my ( $url, $text, $rel ) = split ( /\|/, $xfn );
     return $q->a( { -href => "${url}", -rel => "${rel}" }, "$text" );
 }
-

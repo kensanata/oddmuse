@@ -23,6 +23,9 @@
 #
 # Basic idea got from MoinMoin.
 
+use strict;
+
+use vars qw($q %Action %IndexHash $FS $LinkPattern $FreeLinks $FreeLinkPattern $WikiLinks $BracketWiki @MyInitVariables $UserGotoBar);
 
 ##########################################################################
 #
@@ -53,8 +56,8 @@ sub InitLocalMap {
 
    # Avoid putting stuff in non-pages (like RecentChanges) and in
    # the page result of the action
-   return 0 unless (length($id) 
-                    && $IndexHash{$id} 
+   return 0 unless (length($id)
+                    && $IndexHash{$id}
                     && ($action cmp 'localmap'));
 
    # Add a link to the list of parents
@@ -111,7 +114,7 @@ sub LocalMapWorkHorse {
                  or m/\G(\[$LinkPattern\])/cog or m/\G($LinkPattern)/cog)) {
             $sub_id = $1;
          } elsif ($FreeLinks
-                  && (($BracketWiki 
+                  && (($BracketWiki
                        && m/\G(\[\[($FreeLinkPattern)\|([^\]]+)\]\])/cog)
                       or m/\G(\[\[\[($FreeLinkPattern)\]\]\])/cog
                       or m/\G(\[\[($FreeLinkPattern)\]\])/cog)) {
@@ -131,7 +134,7 @@ sub LocalMapWorkHorse {
       # Recollect. We cannot do it inside the for loop because otherwise
       # we would spoil the hash pointed by $GotPagesRef
       foreach my $sub_id (@subpages) {
-         $retval_children .= 
+         $retval_children .=
            LocalMapWorkHorse($sub_id, $depth - 1, $GotPagesRef);
       }
 

@@ -16,6 +16,10 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
+use vars qw($q %Page %Action $IndexFile $PageDir $KeepDir @MyAdminCode $RefererDir);
+
 AddModuleDescription('admin.pl', 'Admin Power Extension');
 
 $Action{delete} = \&AdminPowerDelete;
