@@ -13,8 +13,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 AddModuleDescription('listlocked.pl', 'List Locked Extension');
 
+use vars qw($q %Action @MyAdminCode);
 push(@MyAdminCode, \&ListLockedMenu);
 
 sub ListLockedMenu {

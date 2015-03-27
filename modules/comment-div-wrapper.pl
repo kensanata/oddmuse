@@ -13,10 +13,13 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 package OddMuse;
 
 AddModuleDescription('comment-div-wrapper.pl', 'Comment Div Wrapper Extension');
 
+use vars qw($q $bol $OpenPageName @MyRules %RuleOrder $CommentsPrefix $CommentsPattern $FS);
 my $CommentDiv = 0;
 push(@MyRules, \&CommentDivWrapper);
 $RuleOrder{\&CommentDivWrapper} = -50;

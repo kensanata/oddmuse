@@ -14,8 +14,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+# use strict; #TODO what is this magic??
+
 AddModuleDescription('logbannedcontent.pl', 'LogBannedContent Module');
 
+use vars qw($OpenPageName $Now $DataDir $BannedContent);
 use vars qw($BannedFile);
 
 $BannedFile = "$DataDir/spammer.log" unless defined $BannedFile;

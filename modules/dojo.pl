@@ -13,8 +13,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 AddModuleDescription('dojo.pl', 'Using Dojo Instead Of Wiki Markup');
 
+use vars qw($q $HtmlHeaders @MyRules @MyInitVariables %CookieParameters);
 use vars qw(@DojoPlugins $DojoTheme);
 
 $DojoTheme = 'tundra';

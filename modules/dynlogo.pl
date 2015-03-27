@@ -27,6 +27,8 @@
 #  $LogoUrl = GetDynLogoUrl();
 #
 
+use strict;
+
 AddModuleDescription('dynlogo.pl', 'Dynamic Logo');
 
 use vars qw($DynLogoDirectory $DynLogoDefault %DynLogoMap);
@@ -45,7 +47,7 @@ $DynLogoDefault = 'logo.png';
 sub GetDynLogoUrl {
   my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = localtime(time);
   my $today = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
-  foreach $k(keys(%DynLogoMap)) {
+  foreach my $k (keys(%DynLogoMap)) {
     if ($today=~m/$k/) {
       return $DynLogoDirectory."/".$DynLogoMap{$k};
     }

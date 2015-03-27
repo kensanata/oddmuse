@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+# use strict; # TODO $IndexInit
+
 AddModuleDescription('mac.pl', 'Mac');
+
+use vars qw(%InterSite %IndexHash @IndexList @MyInitVariables $UseGrep %Namespaces $NamespaceRoot);
 
 use Unicode::Normalize;
 
@@ -24,7 +28,7 @@ use Unicode::Normalize;
 *AllPagesList = *NewMacAllPagesList;
 
 sub NewMacAllPagesList {
-  $refresh = GetParam('refresh', 0);
+  my $refresh = GetParam('refresh', 0);
   if ($IndexInit && !$refresh) {
     return @IndexList;
   }

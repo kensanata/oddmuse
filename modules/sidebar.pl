@@ -14,8 +14,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 AddModuleDescription('sidebar.pl', 'Sidebar Extension');
 
+use vars qw($OpenPageName @MyInitVariables %AdminPages);
 use vars qw($SidebarName);
 
 # Include this page on every page:

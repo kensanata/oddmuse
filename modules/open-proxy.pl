@@ -17,6 +17,8 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('open-proxy.pl', 'Open Proxy Banning Extension');
 
 # We scan proxies by attempting to self-ban ourselves.  If we're
@@ -24,6 +26,7 @@ AddModuleDescription('open-proxy.pl', 'Open Proxy Banning Extension');
 # the proxy has banned himself.  Ordinary users should never call the
 # self-ban action.
 
+use vars qw(%Action %Page $Now $ScriptName $BannedHosts $SiteBase $DataDir);
 use vars qw($SelfBan $OpenProxies);
 
 $SelfBan = "xyzzy"; # change this from time to time in your config file

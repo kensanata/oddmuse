@@ -17,8 +17,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('tagmap.pl', 'TagMap Module');
 
+use vars qw(%Action %Page $OpenPageName @MyRules $ModuleDir $ScriptName);
 use vars qw($TagMapPage $TagMark $TagClass $TagString $TagSearchTitle);
 
 $TagMapPage = "TagMap" unless defined $TagMapPage;

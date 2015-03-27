@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('paragraph-link.pl', 'Paragraph Link Extension');
+
+use vars qw($bol $OpenPageName %RuleOrder @MyRules $FreeLinkPattern %PermanentAnchors %PagePermanentAnchors);
 
 push(@MyRules, \&ParagraphLinkRule);
 # The [...] rule conflicts with the [new] in portrait-support.pl

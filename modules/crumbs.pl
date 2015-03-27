@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('crumbs.pl', 'List Parent Pages Extension');
+
+use vars qw($q %RuleOrder @MyRules $LinkPattern $FreeLinks $FreeLinkPattern $WikiLinks);
 
 push(@MyRules, \&CrumbsRule);
 $RuleOrder{\&CrumbsRule} = -10; # run before default rules!

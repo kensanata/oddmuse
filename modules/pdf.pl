@@ -17,12 +17,15 @@
 #    Boston, MA 02111-1307 USA
 #
 
+# use strict; # TODO impossible to use strict mode because of $id and @NoLinkToPdf
+
 AddModuleDescription('pdf.pl', 'PDF Module');
 
 *PdfOldDoBrowseRequest = *DoBrowseRequest;
 *DoBrowseRequest = *PdfDoBrowseRequest;
 
-use vars qw($pdfDirectory $pdfProcessCommand $tempBaseDirectory);
+use vars qw($q %Page $OpenPageName $ModuleDir $ScriptName $SiteName);
+use vars qw($pdfDirectory $pdfProcessCommand $tempBaseDirectory); # TODO use CamelCase (first capital letter) for public vars
 
 # These variables must be configured properly!
 $pdfProcessCommand 		= "/path/to/your/pdflatexscript"
@@ -39,15 +42,15 @@ $pdfProcessCommand 		= "/path/to/your/pdflatexscript"
 # # Use MultiMarkdown to automagically convert a text file to html and pdf
 #
 # IFS=' '
-# 
+#
 # export TEXINPUTS=/arpa/af/f/fletcher/texmf//:
-# 
+#
 # for filename in "$@"
 # do
 #
 # # Use XSLT to process XHTML to LaTeX
 # /usr/pkg/bin/xsltproc /www/af/f/fletcher/wiki/wikidb/modules/Markdown/xhtml2article.xslt "$filename" > "${filename%.*}.tex"
-# 
+#
 # /usr/pkg/bin/pdflatex "$filename"
 # /usr/pkg/bin/pdflatex "$filename"
 # /usr/pkg/bin/pdflatex "$filename"
@@ -61,37 +64,36 @@ $pdfDirectory		= "/path/to/your/pdf/directory"
 
 
 # Do not need to change these
-$tempDirectory		= "";
+my $tempDirectory		= "";
 
 
 sub PdfDoBrowseRequest{
 	my $id = GetId();
 	$id = FreeToNormal($id);
-	
+
 	if (GetParam('pdf','')) {
 
 		# Strip `.pdf` if present
 		# This does cause problems if you have a page name
 		# that ends in `.pdf`...
-                
+
 		$id =~ s/\.pdf$//;
 
 
 		# Isolate ourselves
 		local %Page;
 		local $OpenPageName = '';
-				
+
 		OpenPage($id);
 
-		# Create a working directory				
+		# Create a working directory
 		CreateTempDirectory($id);
 
 		# Isolate our output
 		outputHTML($id);
 
 		createPDF();
-		
-		
+
 		if (-f "$pdfDirectory/$id.pdf") {
 			# Remove working directory/lockfile
 			system ("/bin/rm -rf \"$tempDirectory\"");
@@ -103,7 +105,7 @@ sub PdfDoBrowseRequest{
 			# Something happened - pdf not in place
 			# Leave lockfile to prevent the hard-headed from
 			# killing your server, and for debugging
-			
+
 			ReportError(Ts('There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.', $id));
 		}
 
@@ -117,7 +119,7 @@ sub PdfDoBrowseRequest{
 sub outputHTML {
 	($id) = @_;
 	my $result = '';
-	
+
 	local *STDOUT;
 	open(STDOUT, '>', \$result);
 	local *STDERR;
@@ -127,23 +129,22 @@ sub outputHTML {
 	print PageHtml($id);
 
 	open(FILE,"> $tempDirectory/temp.html") or ReportError(Ts('Cannot write %s', "temp.html"));
-	
+
 	print FILE qq{<?xml version="1.0" encoding="UTF-8" ?>
 <html>
 	<head>};
-		
+
 	# Create meta-data (you can customize this)
 	print FILE qq{<title>$OpenPageName</title>};
 	print FILE qq{<meta name="author" content="$SiteName"/>};
 	print FILE qq{<meta name="copyright" content="2005. This work is licensed under a Creative Commons License:  http://creativecommons.org/licenses/by-sa/2.5/"/>};
 	print FILE qq{<meta name="XMP" content="CCAttributionShareAlike"/>};
 	print FILE "</head><body>";
-	
+
 	# Output the body and close the file
 	print FILE $result;
 	print FILE "\n</body>\n</html>\n";
 	close FILE;
-	
 }
 
 
@@ -154,7 +155,7 @@ sub createPDF {
 	open(STDOUT, '>/dev/null');
 	local *STDERR;
 	open(STDERR, '>/dev/null');
-			
+
 	# Run latex script and copy pdf to final location
 	system("cd \"$tempDirectory\"; \"$pdfProcessCommand\" temp.html > /dev/null; /bin/cp temp.pdf \"$pdfDirectory/$id.pdf\" ");
 }
@@ -171,29 +172,29 @@ sub PdfNewDoPost {
 	my $id = FreeToNormal(shift);
 
 	unlink("$pdfDirectory/$id.pdf");
-	
+
 	PdfOldDoPost($id);
 }
 
 
 sub CreateTempDirectory {
 	my ($id) = @_;
-	
+
 	$tempDirectory = "$tempBaseDirectory/$id";
-	
+
 	# Create the general directory if it doesn't exist
 	CreateDir($tempBaseDirectory);
-	
+
 	# Now, create a temp directory for this page
 	# If it exists, then someone else is generating pdf - give error message
-	
+
 	if (-d $tempDirectory) {
 		# Someone else is creating this pdf
-		
+
 		ReportError(Ts('Someone else is generating a pdf for %s.  Please wait a minute and then try again.', $id));
-	
+
 	}
-	
+
 	CreateDir($tempDirectory);
 }
 
@@ -206,14 +207,14 @@ sub CreateTempDirectory {
 
 sub PdfNewCreateWikiLink {
 	my $title = shift;
-	
+
 	my $rawlink = PdfOldCreateWikiLink($title);
-	
+
 	if ($rawlink =~ /http\:\/\//) {
 		return $rawlink;
 	} else {
 		$rawlink =~ s/\((.*)\)/($ScriptName\/$1)/;
-		
+
 		return $rawlink;
 	}
 }
@@ -223,15 +224,15 @@ sub PdfNewCreateWikiLink {
 
 sub PdfNewGetFooterLinks {
 	my ($id, $rev) = @_;
-	my $result = PdfOldGetFooterLinks($id,$rev);	
+	my $result = PdfOldGetFooterLinks($id,$rev);
 
 
-	push(@NoLinkToPdf,"");	
+	push(@NoLinkToPdf,"");
 	foreach my $page (@NoLinkToPdf) {
 		if ($id =~ /^$page$/) {
 			return $result;
 		}
 	}
-	
+
 	return $result . "<br/>" . ScriptLink("pdf/$id.pdf",T('Download this page as PDF'));
 }

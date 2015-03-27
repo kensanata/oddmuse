@@ -23,13 +23,15 @@
 #     - Tried to get rid of LWP but failed :(
 #     - We have to capture the script before CGI.pm starts to get STDIN
 
-AddModuleDescription('pingback-server.pl');
+use strict;
 
 use LWP::UserAgent; # This one will one day be eliminated! Hopefully!
 
 # Need these to do pingback
 use RPC::XML;
 use RPC::XML::Parser;
+
+AddModuleDescription('pingback-server.pl');
 
 use vars qw( $CommentsPrefix );
 
@@ -145,7 +147,7 @@ sub DoPingbackServer {
   }
 
 =pod
-  
+
   # This doesn't work... but might be a basis for an in-wiki update system
 
   sub DoPost {
@@ -173,4 +175,3 @@ sub DoPingbackServer {
 =cut
 
 }
-

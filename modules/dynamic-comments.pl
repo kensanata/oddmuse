@@ -12,7 +12,11 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 AddModuleDescription('dynamic-comments.pl', 'Dynamic Comments Extension');
+
+use vars qw($q $CollectingJournal $CommentsPrefix @MyInitVariables $HtmlHeaders);
 
 push(@MyInitVariables, \&DynamicCommentsAddScript);
 

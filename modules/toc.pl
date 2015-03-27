@@ -1,4 +1,7 @@
 #!/usr/bin/env perl
+use strict;
+
+use vars qw($q $bol @HtmlStack @MyRules @MyInitVariables);
 # ====================[ toc.pl                             ]====================
 
 =head1 NAME

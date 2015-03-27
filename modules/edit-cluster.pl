@@ -1,4 +1,8 @@
+# use strict; #TODO $rcfilteronly and $rcuseronly
+
 AddModuleDescription('edit-cluster.pl');
+
+use vars qw($q $FS $RcDefault @RcDays $RecentTop $LastUpdate);
 
 $EditCluster = 'EditCluster';
 
@@ -62,7 +66,7 @@ sub GetRc {
     } elsif (%wanted_clusters) {
       my $show = 1;
       foreach my $cluster (keys %cluster) { # assuming "fr,CopyEdit"
-	foreach $member (split(/,/, $cluster)) { # eg. "fr"
+	foreach my $member (split(/,/, $cluster)) { # eg. "fr"
 	  if ($cluster{$cluster}) {
 	    $show = 1;
 	    last;

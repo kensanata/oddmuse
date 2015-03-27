@@ -12,9 +12,13 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+# use strict; #TODO what is $id (46) ?
+
 use utf8;
 
 AddModuleDescription('upgrade.pl', '2014-06-17 New Directory Structure');
+
+use vars qw($q %Action %InterSite $ModuleDir $IndexFile $DataDir $PageDir $KeepDir $InterMap $JoinerDir $JoinerEmailDir $LocalNamesPage $GotobarName $NearMap $RefererDir $SidebarName);
 
 # We are now running in InitModules. InitVariables will be called later.
 # We want to prevent any calls to GetPageContent and the like.

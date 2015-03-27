@@ -12,8 +12,11 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+# use strict; #TODO what is $free (42)?
+
 AddModuleDescription('anchors.pl', 'Local Anchor Extension');
 
+use vars qw($q $FootnoteNumber $FreeLinkPattern @MyRules $BracketWiki);
 push(@MyRules, \&AnchorsRule);
 
 sub AnchorsRule {

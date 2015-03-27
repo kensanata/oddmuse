@@ -1,4 +1,6 @@
 #!/usr/bin/env perl
+use strict;
+
 # ====================[ poetry.pl                          ]====================
 
 =head1 NAME
@@ -20,6 +22,8 @@ directory for your Oddmuse Wiki.
 package OddMuse;
 
 AddModuleDescription('poetry.pl', 'Poetry Extension');
+
+use vars qw($q $bol %RuleOrder @MyRules);
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -141,7 +145,7 @@ sub PoetryRule {
     # paragraph followed by N-2 linebreaks. (This produces appropriate vertical
     # tracking, surprisingly.)
     elsif (m~\G(\s*\n)+~cg) {
-      $number_of_newlines = ($1 =~ tr/\n//);
+      my $number_of_newlines = ($1 =~ tr/\n//);
 
       my $html = '';
       if ($number_of_newlines >  1) {

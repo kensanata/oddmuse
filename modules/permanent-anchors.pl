@@ -13,7 +13,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 AddModuleDescription('permanent-anchors.pl', 'Permanent Anchors');
+
+use vars qw($q $OpenPageName %IndexHash $DataDir $ScriptName @MyRules @MyInitVariables $FS $FreeLinkPattern @IndexOptions);
 
 =head1 Permanent Anchors
 

@@ -1,4 +1,6 @@
 #!/usr/bin/env perl
+use strict;
+
 # ====================[ autolock.pl                        ]====================
 
 =head1 NAME
@@ -26,6 +28,8 @@ directory of your Oddmuse Wiki.
 package OddMuse;
 
 AddModuleDescription('autolock.pl', 'Autolock Extension');
+
+use vars qw(@MyInitVariables $CommentsPrefix $EditAllowed $NoEditFile %LockOnCreation);
 
 # ....................{ CONFIGURATION                      }....................
 

@@ -18,6 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 AddModuleDescription('form_timeout.pl');
 
 =head1 DESCRIPTION
@@ -39,6 +41,7 @@ Default = 60 * 30 (30 minutes).
 
 =cut
 
+use vars qw($q $Now @MyInitVariables);
 use vars qw($FormTimeoutSalt $FormTimeoutTimeout);
 use Digest::MD5 qw(md5_hex);
 

@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+# use strict; #TODO %Category is declared with 'my', can we really use it?
+
 AddModuleDescription('weblog-4.pl', 'Blogging With Tags');
+
+use vars qw($q %Action %Page $OpenPageName $HomePage $ScriptName @MyInitVariables @MyAdminCode $SearchFreeTextTagUrl);
 
 push(@MyInitVariables, sub {
        $SearchFreeTextTagUrl = $ScriptName . '?action=browse;tag=1;id=';

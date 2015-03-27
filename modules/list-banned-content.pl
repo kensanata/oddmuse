@@ -12,7 +12,11 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+# use strict; #TODO what is $str?
+
 AddModuleDescription('list-banned-content.pl');
+
+use vars qw($q %Action %Page $BannedContent $BannedRegexps $FullUrlPattern);
 
 $Action{'list-banned-content'} = \&DoListBannedContent;
 

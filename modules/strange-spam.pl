@@ -16,8 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+# use strict; # TODO again that weird thing
+
 AddModuleDescription('strange-spam.pl', 'StrangeBannedContent');
 
+use vars qw(%AdminPages $OpenPageName @MyInitVariables %LockOnCreation %PlainTextPages $BannedContent);
 use vars qw($StrangeBannedContent);
 
 $StrangeBannedContent = 'StrangeBannedContent';

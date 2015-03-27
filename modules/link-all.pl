@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+# use strict; #TODO $IndexInit
+
 AddModuleDescription('link-all.pl', 'Link All Words Extension');
+
+use vars qw(%IndexHash %RuleOrder @MyRules $UserGotoBar $ScriptName);
 
 push(@MyRules, \&LinkAllRule);
 $RuleOrder{\&LinkAllRule} = 1000;

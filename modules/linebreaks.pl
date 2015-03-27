@@ -16,8 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('linebreaks.pl', 'Paragraph Break Alternative');
 
+use vars qw($q @MyRules);
 push(@MyRules, \&LineBreakRule);
 
 sub LineBreakRule {

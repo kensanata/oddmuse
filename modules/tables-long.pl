@@ -13,8 +13,11 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 AddModuleDescription('tables-long.pl', 'Long Table Markup Extension');
 
+use vars qw($bol @Flags $Fragment @Blocks $FS @MyRules $PortraitSupportColorDiv);
 push(@MyRules, \&TablesLongRule);
 
 my $TablesLongLabels = '';

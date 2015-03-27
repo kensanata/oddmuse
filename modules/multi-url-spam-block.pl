@@ -13,7 +13,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# use strict; #TODO weird "copy scalar" thing
+
 AddModuleDescription('multi-url-spam-block.pl', 'Multiple Link Ban Extension');
+
+use vars qw($BannedContent);
 
 *OldMultiUrlBannedContent = *BannedContent;
 *BannedContent = *NewMultiUrlBannedContent;
@@ -33,7 +37,7 @@ push(@MyInitVariables, sub {
 
 sub NewMultiUrlBannedContent {
   my $str = shift;
-  if (not $LocalNamesPage 
+  if (not $LocalNamesPage
       or GetParam('title', '') ne $LocalNamesPage) {
     my $rule = MultiUrlBannedContent($str);
     return $rule if $rule;

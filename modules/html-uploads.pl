@@ -16,8 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('html-uploads.pl', 'Restricted HTML Upload');
 
+use vars qw(%Action @UploadTypes);
 $Action{download} = \&HtmlUploadsDoDownload;
 
 # anybody can download raw html

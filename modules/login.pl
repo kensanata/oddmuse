@@ -16,9 +16,12 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('login.pl', 'Login Module');
 
-#use vars qw($RegistrationForm $MinimumPasswordLength $RegistrationsMustBeApproved $LoginForm $PasswordFile $PendingPasswordFile $RequireLoginToEdit $ConfirmEmailAddress $ConfirmEmailAddress $UncomfirmedPasswordFile $EmailSenderAddress $EmailCommand $NotifyPendingRegistrations $EmailConfirmationMessage $ResetPasswordMessage $RegistrationForm $LogoutForm $ResetForm $ChangePassForm $RequireCamelUserName);
+use vars qw($q %Action $SiteName @MyAdminCode $IndexFile $DataDir $FullUrl);
+use vars qw($RegistrationForm $MinimumPasswordLength $RegistrationsMustBeApproved $LoginForm $PasswordFile $PasswordFileToUse $PendingPasswordFile $RequireLoginToEdit $ConfirmEmailAddress $UncomfirmedPasswordFile $EmailSenderAddress $EmailCommand $EmailRegExp $NotifyPendingRegistrations $EmailConfirmationMessage $ResetPasswordMessage $RegistrationForm $LogoutForm $ResetForm $ChangePassForm $RequireCamelUserName $UsernameRegExp);
 
 my $EncryptedPassword = "";
 
@@ -44,7 +47,7 @@ $EmailCommand = "/usr/sbin/sendmail -oi -t" unless defined $EmailCommand;
 $NotifyPendingRegistrations = "fletcher\@mercury.local" unless defined $NotifyPendingRegistrations;
 
 $EmailConfirmationMessage = qq!From: $EmailSenderAddress
-Subject: $SiteName Registration Confirmation	
+Subject: $SiteName Registration Confirmation
 
 This email address was used to create an account at $SiteName.  If you did not register at this site, you do not need to do anything.
 
@@ -63,7 +66,7 @@ Thank you...
 
 ! unless defined $ResetPasswordMessage;
 
-$PasswordFileToUse = $RegistrationsMustBeApproved 
+$PasswordFileToUse = $RegistrationsMustBeApproved
 		? $PendingPasswordFile : $PasswordFile;
 
 $PasswordFileToUse = $ConfirmEmailAddress
@@ -255,9 +258,9 @@ sub DoProcessRegistration {
 			ReportError(T('There was an error saving your registration.'));
 		}
 	}
-	
+
 	SendConfirmationEmail($username,$email) if ($ConfirmEmailAddress);
-	
+
 	PrintFooter();
 }
 
@@ -332,7 +335,7 @@ sub UserExists {
 		}
 	}
 	close PASSWD;
-	
+
 	if ($RegistrationsMustBeApproved) {
 		if (open (PASSWD, $PendingPasswordFile)) {
 			while ( <PASSWD> ) {
@@ -360,17 +363,17 @@ sub UserExists {
 
 sub AddUser {
 	my ($username, $pwd, $email, $FileToUse) = @_;
-	
-	my @salts = (a..z,A..Z,0..9,'.','/');
+
+	my @salts = ('a'..'z', 'A'..'Z', 0..9, '.', '/');
 	my $salt=$salts[rand @salts];
 	$salt.=$salts[rand @salts];
 	my $encrypted = crypt($pwd,$salt);
 	$EncryptedPassword = $encrypted;
-	
+
 	my %passwords = ();
 	my %emails = ();
 	my $key;
-	
+
 	if (open (PASSWD, $FileToUse)) {
 		while ( <PASSWD> ) {
 			if ($_ =~ /^(.*):(.*):(.*)$/) {
@@ -389,7 +392,7 @@ sub AddUser {
 		print PASSWD "$key:$passwords{$key}:$emails{$key}\n";
 	}
 	close PASSWD;
-	
+
 	return 1;
 }
 
@@ -417,7 +420,7 @@ sub LoginUserCanEdit {
 sub AuthenticateUser {
 	my ($username, $password) = @_;
 	my $line;
-	
+
 	if (open(PASSWD, $PasswordFile)) {
 		while ($line = <PASSWD>) {
 			if ($line =~ /^$username:(.*):(.*)/) {
@@ -433,15 +436,15 @@ sub AuthenticateUser {
 }
 
 sub LoginAdminRule {
-	($id, $menuref, *restref) = @_;
-	
+	my ($id, $menuref) = @_;
+
 	push(@$menuref, ScriptLink('action=register', T('Register a new account'), 'register'));
 	push(@$menuref, ScriptLink('action=login', T('Login'), 'login'));
 	push(@$menuref, ScriptLink('action=logout', T('Logout'), 'logout'));
 	push(@$menuref, ScriptLink('action=whoami', T('Who am I?'), 'whoami'));
 	push(@$menuref, ScriptLink('action=reset', T('Forgot your password?'), 'reset'));
 	push(@$menuref, ScriptLink('action=change', T('Change your password'), 'change'));
-	
+
 	if (UserIsAdmin()) {
 		push(@$menuref, ScriptLink('action=approve_pending', T('Approve pending registrations'), 'approve'));
 	}
@@ -450,17 +453,17 @@ sub LoginAdminRule {
 sub SendConfirmationEmail {
 	my ($username, $email) = @_;
 	my $key = $EncryptedPassword;
-	my @salts = (a..z,A..Z,0..9,'.','/');
+	my @salts = ('a'..'z', 'A'..'Z', 0..9, '.', '/');
 	my $salt=$salts[rand @salts];
 	$salt.=$salts[rand @salts];
 	my $encrypted = crypt($key,$salt);
-	
-	$confirmationLink = "$FullUrl?action=confirm_registration;account=$username;key=$encrypted;";
-	
-	open (MAIL, "| $EmailCommand");	
+
+	my $confirmationLink = "$FullUrl?action=confirm_registration;account=$username;key=$encrypted;";
+
+	open (MAIL, "| $EmailCommand");
 	print MAIL "To: $email\n$EmailConfirmationMessage\n\nClick on the following link to confirm:\n\n$confirmationLink\n\n";
 	close MAIL;
-	
+
 }
 
 $Action{confirm_registration} = \&DoConfirmRegistration;
@@ -469,14 +472,14 @@ sub DoConfirmRegistration {
 	my $id = shift;
 	my $account = GetParam('account', '');
 	my $key = GetParam('key', '');
-	
+
 	if ( ConfirmUser($account,$key)) {
 		print GetHeader('', Ts('Confirm Registration for %s', $SiteName), '');
 
 		print Ts('%s, your registration has been approved. You can now use your password to login and edit this wiki.',$account);
-		
+
 		PrintFooter();
-		
+
 	} else {
 		ReportError(Ts('Confirmation failed.  Please email %s for help.', $EmailSenderAddress));
 	}
@@ -485,7 +488,7 @@ sub DoConfirmRegistration {
 
 sub ConfirmUser {
 	my ($username, $key) = @_;
-	my $FileToUse = $RegistrationsMustBeApproved 
+	my $FileToUse = $RegistrationsMustBeApproved
 		? $PendingPasswordFile : $PasswordFileToUse;
 
 	if (open(PASSWD, $UncomfirmedPasswordFile)) {
@@ -509,11 +512,11 @@ sub ConfirmUser {
 
 sub RemoveUser {
 	my ($username, $FileToUse) = @_;
-	
+
 	my %passwords = ();
 	my %emails = ();
 	my $key;
-	
+
 	if (open (PASSWD, $FileToUse)) {
 		while ( <PASSWD> ) {
 			if ($_ =~ /^(.*):(.*):(.*)$/) {
@@ -530,7 +533,7 @@ sub RemoveUser {
 		print PASSWD "$key:$passwords{$key}:$emails{$key}\n";
 	}
 	close PASSWD;
-	
+
 	return 1;
 }
 
@@ -558,9 +561,9 @@ sub DoResetPassword {
 
 	if (UserExists($username)) {
 		my ($newpass, $newhash) = newpass();
-		
+
 		my $email = ChangePassword($username,$newhash);
-		
+
 		if ($email ne "") {
 			print GetHeader('', T('Reset Password'), '');
 			print Ts('The password for %s was reset.  It has been emailed to the address on file.',$username);
@@ -568,7 +571,7 @@ sub DoResetPassword {
 			SendResetEmail($email,$newpass);
 		} else {
 			ReportError(Ts('There was an error resetting the password for %s.',$username));
-		}		
+		}
 	} else {
 		ReportError(Ts('The username "%s" does not exist.',$username));
 	}
@@ -576,29 +579,29 @@ sub DoResetPassword {
 
 sub newpass {
 	# Create a random password
-	
-	my @salts = (a..z,A..Z,0..9,'.','/'); 
+
+	my @salts = ('a'..'z', 'A'..'Z', 0..9, '.', '/');
 	my $salt=$salts[rand @salts];
 	$salt.=$salts[rand @salts];
-	
+
 	my $password = $salts[rand @salts];
-	
-	for ( $i=0; $i < 7; $i++) {
+
+	for (my $i = 0; $i < 7; $i++) {
 		$password .= $salts[rand @salts];
 	}
-	
+
 	my $hash = crypt($password, $salt);
-	
-	return ($password, $hash); 
+
+	return ($password, $hash);
 }
 
 sub ChangePassword {
 	my ($user, $hash) = @_;
-	
+
 	my %passwords = ();
 	my %emails = ();
 	my $key;
-	
+
 	if (open (PASSWD, $PasswordFile)) {
 		while ( <PASSWD> ) {
 			if ($_ =~ /^(.*):(.*):(.*)$/) {
@@ -637,11 +640,10 @@ sub DoReset {
 
 sub SendResetEmail {
 	my ($email, $newpass) = @_;
-	
-	open (MAIL, "| $EmailCommand");	
+
+	open (MAIL, "| $EmailCommand");
 	print MAIL "To: $email\n$EmailConfirmationMessage\n\nYour new temporary password:\n\n$newpass\n\n";
 	close MAIL;
-	
 }
 
 
@@ -678,21 +680,21 @@ sub DoProcessChangePassword {
 		unless (length($pwd1) > ($MinimumPasswordLength-1));
 
 	print GetHeader('', Ts('Register for %s', $SiteName), '');
-	
-	my @salts = (a..z,A..Z,0..9,'.','/');
+
+	my @salts = ('a'..'z', 'A'..'Z', 0..9, '.', '/');
 	my $salt=$salts[rand @salts];
 	$salt.=$salts[rand @salts];
 	my $encrypted = crypt($pwd1,$salt);
 
 	ChangePassword($username,$encrypted);
-	
+
 	print T('Your password has been changed.');
 	PrintFooter();
 }
 
 sub SendNotification {
 	my $NewUser = shift;
-	
+
 	open (MAIL, "| $EmailCommand");
 	print MAIL "To: $NotifyPendingRegistrations\nFrom: $EmailSenderAddress\nSubject: New User at $SiteName\n\nYou have a new pending registration at $SiteName:\n\n$NewUser\n\n";
 	close MAIL;
@@ -706,11 +708,11 @@ sub DoApprovePending {
 	my $count = 0;
 
 	my $ToBeApproved = GetParam('user','');
-	
+
 	UserIsAdminOrError();
-	
+
 	print GetHeader('', Ts('Approve Pending Registrations for %s', $SiteName), '');
-	
+
 	if ($ToBeApproved) {
 		if (ApproveUser($ToBeApproved)) {
 			print Ts('%s has been approved.',$ToBeApproved);
@@ -728,12 +730,12 @@ sub DoApprovePending {
 			}
 		}
 		print T('</ul>');
-	
+
 		if ($count == 0) {
 			print T('There are no pending registrations.');
 		}
 	}
-	
+
 	PrintFooter();
 }
 

@@ -14,8 +14,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# use strict; #TODO what is $upload?
+
 AddModuleDescription('questionasker.pl', 'QuestionAsker Extension');
 
+use vars qw($q $bol $FreeLinks $FreeLinkPattern $LinkPattern $WikiLinks @MyInitVariables %AdminPages %CookieParameters %InvisibleCookieParameters);
 use vars qw(@QuestionaskerQuestions
 	    $QuestionaskerRememberAnswer
 	    $QuestionaskerSecretKey

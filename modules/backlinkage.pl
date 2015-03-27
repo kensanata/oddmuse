@@ -19,8 +19,13 @@
 # Grab MLDBM at http://search.cpan.org/dist/MLDBM/lib/MLDBM.pm
 # ie: http://search.cpan.org/CPAN/authors/id/C/CH/CHAMAS/MLDBM-2.01.tar.gz
 
+use strict;
+
+use Fcntl;
 use MLDBM qw( DB_File Storable );
 AddModuleDescription('backlinkage.pl', 'Inline Backlinks');
+
+use vars qw($q %Action %Page @MyAdminCode $DataDir $LinkPattern);
 
 my $debug=1;             # Set Text Output Verbosity when compiling
 my $backfile = $DataDir . '/backlinks.db';  # Where data lives
@@ -54,9 +59,9 @@ sub BuildBacklinkDatabase {
             $hash->{'link' . $backlinkcount} = $link;
         }
         log2("$backlinkcount Links found in $name\n") if $backlinkcount;
-        $backhash{$name} = $hash;       # Store Hash data in HoH    
-    } 
-  
+        $backhash{$name} = $hash;       # Store Hash data in HoH
+    }
+
     if ($debug >= 3) {
         log4("Printing dump of USABLE Data we stored, sorted and neat\n");
         for my $source (sort keys %backhash) {
@@ -84,7 +89,7 @@ sub BacklinkProcess {
         if ($exists) {
             push (@backlinks,$resolved) unless (($seen{$resolved}++) or ($resolved eq $name));
         }
-    } 
+    }
     return @backlinks;
 }
 
@@ -92,14 +97,14 @@ sub BacklinkProcess {
 sub GetBackLink {
     my (@backlinks, @unpopped, @alldone);
     my $id = $_[0];
-    
+
     use vars qw($BacklinkBanned);
     $BacklinkBanned = "HomePage|ScratchPad" if !$BacklinkBanned;
     tie my %backhash, 'MLDBM', $backfile, O_CREAT|O_RDWR, 0644 or die "Cannot open file $backfile $!\n";
 
     # Search database for matches
-    while ( ($source, $hashes) = each %backhash ) {
-        while ( ($key, $value) = each %$hashes ) {
+    while ( my ($source, $hashes) = each %backhash ) {
+        while ( my ($key, $value) = each %$hashes ) {
             if ($id =~ /$value/) {
                 push (@backlinks, $source);
             }
@@ -114,11 +119,11 @@ sub GetBackLink {
                 push(@unpopped, ScriptLink(UrlEncode($resolved), $resolved, $class . ' backlink', undef, T('Internal Page: ' . $resolved)));
             }
     }
-    
+
     my $arraycount = @unpopped;
     return if !$arraycount; # Dont bother with the rest if empty results
-   
-    # Pop and Push data to make it look good (no trailing commas) 
+
+    # Pop and Push data to make it look good (no trailing commas)
     my $temp = pop(@unpopped);
     foreach my $backlink (@unpopped) {
             push(@alldone, $backlink . ", ");

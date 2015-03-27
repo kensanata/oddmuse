@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('search-list.pl', 'Search List Extension');
+
+use vars qw($q $bol %Action %Page $OpenPageName @MyRules);
 
 push(@MyRules, \&SearchListRule);
 
@@ -78,7 +82,6 @@ my $search = GetParam('search', '');
     }
     @found = map { $q->li(GetPageLink($_)) } @found;
     print $q->start_div({-class=>'search list'}),
-      $q->ul(@found), $q->end_div;  
+      $q->ul(@found), $q->end_div;
   PrintFooter();
 }
-

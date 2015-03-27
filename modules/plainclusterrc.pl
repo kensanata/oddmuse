@@ -9,7 +9,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-#	
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the
 #    Free Software Foundation, Inc.
@@ -17,13 +17,15 @@
 #    Boston, MA 02111-1307 USA
 
 # This module is designed to be used in conjunction with the ClusterMap Module
-# and the Static Hybrid Module.  It alters the code that generates the 
-# RecentChanges page so that links to a Cluster Page are direct links, not 
-# action links.  This allows your RecentChanges page to be more useful and 
+# and the Static Hybrid Module.  It alters the code that generates the
+# RecentChanges page so that links to a Cluster Page are direct links, not
+# action links.  This allows your RecentChanges page to be more useful and
 # use the pre-cached pages, rather than calling the Oddmuse script.
 
-AddModuleDescription('plainclusterrc.pl');
+#use strict; #TODO this is hopeless
 
+AddModuleDescription('plainclusterrc.pl');
+#use vars qw($q);
 
 *GetRcHtml = *PlainGetRcHtml;
 

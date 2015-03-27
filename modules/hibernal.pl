@@ -1,4 +1,6 @@
 #!/usr/bin/env perl
+# use strict; #TODO hard stuff
+
 # ====================[ hibernal.pl                        ]====================
 
 =head1 NAME
@@ -47,6 +49,8 @@ package OddMuse;
 
 AddModuleDescription('hibernal.pl', 'Hibernal Extension');
 
+use vars qw($q $bol %Action %Page $OpenPageName %IndexHash $Now $Today %RuleOrder @MyRules @MyInitVariables $CommentsPrefix $NewComment $DeletedPage $CalAsTable);
+
 # ....................{ CONFIGURATION                      }....................
 
 =head1 CONFIGURATION
@@ -74,6 +78,8 @@ use vars qw($HibernalTitleOrSubtitleSuffix
             $HibernalDefaultArchiveTitle $HibernalDefaultArchiveSubtitle
 
             $HibernalIsCurrentlyPrinting
+
+            $HibernalDefaultDateRegexp
           );
 
 =head2 $HibernalTitleOrSubtitleSuffix
@@ -545,7 +551,7 @@ sub AddHibernalComment {
       $author = "[[$homepage|$author]]";
     }
     else {
-      $author_page_name = FreeToNormal($author);
+      my $author_page_name = FreeToNormal($author);
 
       if ($IndexHash{$author_page_name}) {
         $author = $author_page_name eq $author
@@ -596,8 +602,8 @@ that's embedded in the physical markup for that page.)
 sub PrintHibernalHeader {
   my ($page_title_default, $page_subtitle_default, $suffix) = @_;
 
-  $page_title =    GetParam('title',    $default_title);
-  $page_subtitle = GetParam('subtitle', $default_subtitle);
+  $page_title =    GetParam('title',    $page_title_default);
+  $page_subtitle = GetParam('subtitle', $page_subtitle_default);
 
   # Avoid tainting the $page_title and $page_subtitle globals with the suffix.
   my ($page_title_suffixed, $page_subtitle_suffixed) =
@@ -1159,8 +1165,8 @@ sub PrintHibernalArchiveYear {
 
   if ($CalAsTable) {
     print '<table><tr>';
-    for $month ((1..12)) {
-      print '<td>'.GetHibernalArchiveMonth($post_name_regexp, $year, $month).'</td>';
+    for my $month (1..12) {
+      print '<td>' . GetHibernalArchiveMonth($post_name_regexp, $year, $month) . '</td>';
 
       # Enforce the customary calendar layout of three months per calendar row.
       print '</tr><tr>' if $month == 3 or $month == 6 or $month == 9;
@@ -1168,7 +1174,7 @@ sub PrintHibernalArchiveYear {
     print '</tr></table>';
   }
   else {
-    for $month ((1..12)) {
+    for my $month (1..12) {
       print GetHibernalArchiveMonth($post_name_regexp, $year, $month);
     }
   }
@@ -1325,7 +1331,7 @@ sub GetHibernalDaySpecificPostNameRegexp {
 }
 
 sub GetHibernalCommentlessPostNameRegexp {
-  $post_name_regexp = shift;
+  my $post_name_regexp = shift;
   $post_name_regexp =~ s~^\Q^($CommentsPrefix)?\E~^~ if $CommentsPrefix;
   return $post_name_regexp;
 }

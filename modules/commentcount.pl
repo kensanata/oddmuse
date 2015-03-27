@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('commentcount.pl', 'Comment Count Extension');
+
+use vars qw($CommentsPrefix);
 
 *OldCommentcountAddComment = *AddComment;
 *AddComment = *NewCommentcountAddComment;
@@ -44,7 +48,7 @@ sub NewCommentcountAddComment {
 
 sub NewCommentcountScriptLink {
   my ($action, $text, @rest) = @_;
-  if ($CommentsPrefix && $action =~ /^$CommentsPrefix(.*)/) {
+  if ($CommentsPrefix && $action =~ /^$CommentsPrefix(.*)/) { # TODO use $CommentsPattern ?
     # Add the number of comments here
     my $id = $action;
     $id =~ s/%([0-9a-f][0-9a-f])/chr(hex($1))/ge; # undo urlencode

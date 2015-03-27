@@ -16,14 +16,18 @@
 # Thumbnail (and improved image handling) module for OddMuse wiki
 # Conflicts with the "Image extension module"
 
+use strict;
+
 require MIME::Base64;
 
 use File::Path;
 
 AddModuleDescription('thumbs.pl', 'Image Thumbnails');
 
+use vars qw($q $OpenPageName %IndexHash @UploadTypes @MyRules $FreeLinkPattern);
+
 # Tempoary directory to create thumbnails in
-$ThumbnailTempDir = '/tmp';
+our $ThumbnailTempDir = '/tmp';
 
 # Path and name of external program to use to create thumbnails. Only
 # ImageMagick 'convert' can be used. You may have to set the MAGICK_HOME
@@ -32,24 +36,24 @@ $ThumbnailTempDir = '/tmp';
 #   convert: no decode delegate for this image format
 # For your config file:
 #   $ENV{MAGICK_HOME} = '/usr/local';
-$ThumbnailConvert = '/usr/bin/convert';
+our $ThumbnailConvert = '/usr/bin/convert';
 
 # Max size for a thumbnail. If larger size is specified just shows
 # regular image
-$ThumbnailMaxSize  = 500;
+our $ThumbnailMaxSize  = 500;
 
 # Default thumbnail size if non is specified
-$ThumbnailDefaultSize = 100;
+our $ThumbnailDefaultSize = 100;
 
 # MIME types to create thumbnail for, all allowed if empty list
-@ThumbnailTypes =  @UploadTypes;
+our @ThumbnailTypes =  @UploadTypes;
 
 # As well as using ALT, use TITLE. This enables comments to popup when
 # hovering mouse over thumbnail
-$ThumbnailImageUseTitle = 0;
+our $ThumbnailImageUseTitle = 0;
 
-$ThumbnailCacheDir = "oddmuse_thumbnail_cache";
-$ThumbnailCacheUrl = "/oddmuse_thumbnail_cache";
+our $ThumbnailCacheDir = "oddmuse_thumbnail_cache";
+our $ThumbnailCacheUrl = "/oddmuse_thumbnail_cache";
 
 # Define new formatting rule "thumb" that inserts an auto generated thumbnail
 # Syntax is [[thumb:page name | etc. ]]

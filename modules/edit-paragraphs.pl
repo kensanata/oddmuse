@@ -12,9 +12,13 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 package OddMuse;
 
 AddModuleDescription('edit-paragraph.pl', 'Edit Paragraphs Extension');
+
+use vars qw($q $OpenPageName $Fragment %Page %Action @MyRules $LastUpdate);
 
 # edit icon
 # http://publicdomainvectors.org/en/free-clipart/Pencil-vector-icon/9221.html
@@ -113,6 +117,7 @@ sub EditParagraphNewPrintWikiToHTML {
     my ($start, $end) = (0, 0);
     # This grouping with zero-width positive look-ahead assertion makes sure that this chunk of text does not include
     # markup need for the next chunk of text.
+    my $regexp;
     if (grep { $_ eq \&CreoleRule } @MyRules) {
       $regexp = "\n+(\n|(?=[*#-=|]))";
     } else {

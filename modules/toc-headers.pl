@@ -20,8 +20,11 @@
 # This is a simplified mix of headers.pl and toc.pl to work together.
 # It is based on headers.pl 1.12 and toc.pl 1.30.
 
+use strict;
+
 AddModuleDescription('toc-headers.pl');
 
+use vars qw($q $bol %Page @MyRules);
 use vars qw($MinTocSize $OrderedLists);
 
 push(@MyRules, \&HeadersRule);
@@ -34,12 +37,12 @@ my $TocShown = 0; # private
 
 sub HeadersRule {
   my $html = undef;
-  
+
   if (!$TocShown) {
     $html = CloseHtmlEnvironments() . TocHeadings() . AddHtmlEnvironment('p');
     $TocShown = 1;
   }
-    
+
   if ($bol && (m/\G((.+?)[ \t]*\n(---+|===+)[ \t]*\n)/gc)) {
     $html .= CloseHtmlEnvironments();
     $TocCounter++;
@@ -51,7 +54,7 @@ sub HeadersRule {
     }
     $html .= AddHtmlEnvironment('p');
   }
-  
+
   return $html;
 }
 

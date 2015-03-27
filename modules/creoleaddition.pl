@@ -1,4 +1,6 @@
 #!/usr/bin/env perl
+use strict;
+
 # ====================[ creoleaddition.pl                  ]====================
 
 =head1 NAME
@@ -24,6 +26,7 @@ package OddMuse;
 
 AddModuleDescription('creoleaddition.pl', 'Creole Addition Markup Extension');
 
+use vars qw($bol @MyRules %RuleOrder);
 # ....................{ CONFIGURATION                      }....................
 
 =head1 CONFIGURATION

@@ -12,11 +12,15 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 package OddMuse;
 
 AddModuleDescription('div-foo.pl', 'Div Foo Extension');
 
+use vars qw(@MyRules);
 use vars qw($DivFooPrefix);
+
 $DivFooPrefix = 'foo_';
 
 push(@MyRules, \&DivFooRule);

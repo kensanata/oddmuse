@@ -16,27 +16,27 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('aawrapperdiv.pl', 'WrapperDiv Module');
 
+use vars qw($q);
 
 *OldGetHeader = *GetHeader;
 *GetHeader = *WrapperGetHeader;
 
 sub WrapperGetHeader {
-	my ($id, $title, $oldId, $nocache, $status) = @_;
-	my $result = OldGetHeader ($id, $title, $oldId, $nocache, $status);
-	$result .= $q->start_div({-class=>'wrapper'});
+  my ($id, $title, $oldId, $nocache, $status) = @_;
+  my $result = OldGetHeader ($id, $title, $oldId, $nocache, $status);
+  $result .= $q->start_div({-class=>'wrapper'});
 }
 
 *OldPrintFooter = *PrintFooter;
 *PrintFooter = *WrapperPrintFooter;
 
 sub WrapperPrintFooter {
-	my ($id, $rev, $comment) = @_;
-	print $q->start_div({-class=>'wrapper close'});
-	print $q->end_div(), $q->end_div();
-	OldPrintFooter($id, $rev, $comment);
+  my ($id, $rev, $comment) = @_;
+  print $q->start_div({-class=>'wrapper close'});
+  print $q->end_div(), $q->end_div();
+  OldPrintFooter($id, $rev, $comment);
 }
-
-
-

@@ -16,9 +16,12 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('htmllinks.pl', 'HtmlLinks Module');
 
-use vars qw($HtmlLinks); 
+use vars qw($OpenPageName %RuleOrder @MyRules);
+use vars qw($HtmlLinks);
 
 $HtmlLinks = 0;		# Mask all email, not just those in []'s
 

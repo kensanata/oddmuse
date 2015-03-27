@@ -13,10 +13,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 AddModuleDescription('askpage.pl', 'Ask Page Extension');
 
 use Fcntl qw(:DEFAULT :flock);
 
+use vars qw($DataDir $NewComment);
 use vars qw($AskPage $QuestionPage $NewQuestion);
 # Don't forget to set your $CommentsPattern to include both $AskPage and $QuestionPage
 $AskPage = 'Ask';
@@ -56,7 +59,7 @@ sub NewAskPageGetCommentForm {
 }
 
 *OldAskPageJournalSort=*JournalSort;
-*JournalSort=NewAskPageJournalSort;
+*JournalSort=*NewAskPageJournalSort;
 sub NewAskPageJournalSort {
   return OldAskPageJournalSort() unless $a =~ m/^$QuestionPage\d+$/ and $b =~ m/^$QuestionPage\d+$/;
   ($b =~ m/$QuestionPage(\d+)/)[0] <=> ($a =~ m/$QuestionPage(\d+)/)[0];
