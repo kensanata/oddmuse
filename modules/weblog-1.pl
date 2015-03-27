@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-#use strict; #TODO what is $RefererTracking ?
+use strict;
 
 use vars qw(@MyInitVariables $UserGotoBar @UserGotoBarPages $CommentsPrefix $EditAllowed);
 use vars qw($WeblogTextLogo $WeblogXmlLogo);
@@ -26,7 +26,6 @@ $WeblogTextLogo = '/images/txt.png';
 
 AddModuleDescription('weblog-1.pl', 'Minimal Weblog Extension');
 
-$RefererTracking = 1; # TODO there is no such variable anywhere
 $CommentsPrefix = 'Comments_on_'; # TODO huh? But that's the default value, right?
 $EditAllowed = 2;
 
