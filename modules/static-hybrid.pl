@@ -443,8 +443,7 @@ sub StaticNewDespamPage {
   my $rule = shift;
   # from DoHistory()
   my @revisions = sort {$b <=> $a} map { m|/([0-9]+).kp$|; $1; } GetKeepFiles($OpenPageName);
-  my $revision;
-  foreach $revision (@revisions) { # remember the last revision checked
+  foreach my $revision (@revisions) {
     my ($text, $rev) = GetTextRevision($revision, 1); # quiet
     if (not $rev) {
       print ': ' . Ts('Cannot find revision %s.', $revision);
@@ -463,6 +462,6 @@ sub StaticNewDespamPage {
     Save($OpenPageName, $DeletedPage, $summary) unless GetParam('debug', 0);
 	StaticDeleteFile($OpenPageName);
   } else {
-    print ': ' . T('Cannot find unspammed revision.'. $revision);
+    print ': ' . T('Cannot find unspammed revision.');
   }
 }

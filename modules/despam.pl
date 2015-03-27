@@ -131,8 +131,7 @@ sub DespamPage {
   my $rule = shift;
   # from DoHistory()
   my @revisions = sort {$b <=> $a} map { m|/([0-9]+).kp$|; $1; } GetKeepFiles($OpenPageName);
-  my $revision; # remember the last revision checked
-  foreach $revision (@revisions) {
+  foreach my $revision (@revisions) {
     my ($text, $rev) = GetTextRevision($revision, 1); # quiet
     if (not $rev) {
       print ': ' . Ts('Cannot find revision %s.', $revision);
@@ -149,6 +148,6 @@ sub DespamPage {
     print ': ' . $summary;
     Save($OpenPageName, $DeletedPage, $summary) unless GetParam('debug', 0);
   } else {
-    print ': ' . T('Cannot find unspammed revision.'. $revision);
+    print ': ' . T('Cannot find unspammed revision.');
   }
 }
