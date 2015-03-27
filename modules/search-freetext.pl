@@ -13,6 +13,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 =head1 Indexed Search using Search::FreeText
 
 This package allows Oddmuse to use an index for its searches. This is
@@ -84,6 +86,7 @@ This will link every tag to a journal filtered by tag.
 
 =cut
 
+use vars qw($q %Action %Page $OpenPageName $CollectingJournal @MyRules $DataDir $ScriptName $FreeLinkPattern @MyAdminCode @Debugging);
 push(@MyRules, \&SearchFreeTextTagsRule);
 
 use vars qw($SearchFreeTextTagUrl);

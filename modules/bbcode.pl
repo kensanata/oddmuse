@@ -12,10 +12,12 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 AddModuleDescription('bbcode.pl', 'bbCode Extension');
 
+use vars qw($q @HtmlStack @MyRules %RuleOrder $UrlProtocols $FullUrlPattern);
 push(@MyRules, \&bbCodeRule);
-
 $RuleOrder{\&bbCodeRule} = 100; # must come after PortraitSupportRule
 
 use vars qw($bbBlock);
@@ -100,7 +102,7 @@ sub bbCodeRule {
   elsif (/\G(\[\/([a-z][a-z1-6]*)\])/cgi) {
     my $bbcode = $1;
     my $tag = lc($2);
-    %translate = qw{b b i i u em color em size em font span url a
+    my %translate = qw{b b i i u em color em size em font span url a
 		    quote blockquote h1 h1 h2 h2 h3 h3 h4 h4 h5 h5
 		    h6 h6 center div left div right div list ul
 		    s del strike del sub sub sup sup highlight strong

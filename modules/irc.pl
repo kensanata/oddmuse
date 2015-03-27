@@ -16,8 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('irc.pl', 'IRC Log Extension');
 
+use vars qw($q $bol %RuleOrder @MyRules);
 use vars qw($IrcNickRegexp $IrcLinkNick);
 
 push(@MyRules, \&IrcRule);

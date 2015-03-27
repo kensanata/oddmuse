@@ -16,9 +16,12 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('antispam.pl', 'Antispam Module');
 
-use vars qw($DoMaskEmail $CreateMailtoLinks); 
+use vars qw(@MyRules);
+use vars qw($DoMaskEmail $CreateMailtoLinks $EmailRegExp);
 
 $DoMaskEmail = 1;		# Mask all email, not just those in []'s
 $CreateMailtoLinks = 1;		# Create mailto's for all addresses
@@ -27,33 +30,33 @@ $EmailRegExp = '[\w\.\-]+@([\w\-]+\.)+[\w]+';
 
 
 push(@MyRules, \&MaskEmailRule);
-    
+
 sub MaskEmailRule {
 	# Allow [email@foo.bar Email Me] links
 	if (m/\G\[($EmailRegExp(\s\w+)*\s*)\]/igc) {
-		$chunk = $1;
+		my $chunk = $1;
 		$chunk =~ s/($EmailRegExp)//i;
-		$email = $1;
+		my $email = $1;
 		$chunk =~ s/^\s*//;
 		$chunk =~ s/\s*$//;
-		
-		$masked="";
-		@decimal = unpack('C*', $email);
-		foreach $i (@decimal) {
-			$masked.="&#".$i.";";
+
+		my $masked = '';
+		my @decimal = unpack('C*', $email);
+		for (@decimal) {
+			$masked .= '&#' . $_ . ';';
 		}
 		$email = $masked;
 		$chunk = $email if $chunk eq "";
-		return "<a href=\"mailto:" . $email . "\">$chunk</a>";
+		return "<a href=\"mailto:$email\">$chunk</a>";
 	}
-	
+
 	if (m/\G($EmailRegExp)/igc) {
-		$email=$1;
+		my $email = $1;
 		if ($DoMaskEmail) {
-			$masked="";
-			@decimal = unpack('C*', $email);
-			foreach $i (@decimal) {
-				$masked.="&#".$i.";";
+			my $masked="";
+			my @decimal = unpack('C*', $email);
+			for (@decimal) {
+				$masked .= '&#' . $_ . ';';
 			}
 			$email = $masked;
 		}

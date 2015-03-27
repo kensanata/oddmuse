@@ -21,9 +21,12 @@
 # $InstanceThrottleLimit by keeping track of the process ids in
 # $InstanceThrottleDir
 
+use strict;
+
 AddModuleDescription('throttle.pl', 'Limit Number Of Instances Running');
 
 use File::Glob ':glob';
+use vars qw($q $DataDir);
 use vars qw($InstanceThrottleDir $InstanceThrottleLimit);
 
 $InstanceThrottleDir = $DataDir."/pids"; # directory for pid files

@@ -16,6 +16,9 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+#use strict; #TODO what is $RefererTracking ?
+
+use vars qw(@MyInitVariables $UserGotoBar @UserGotoBarPages $CommentsPrefix $EditAllowed);
 use vars qw($WeblogTextLogo $WeblogXmlLogo);
 
 $WeblogXmlLogo = '/images/rss.png';
@@ -23,8 +26,8 @@ $WeblogTextLogo = '/images/txt.png';
 
 AddModuleDescription('weblog-1.pl', 'Minimal Weblog Extension');
 
-$RefererTracking = 1;
-$CommentsPrefix = 'Comments_on_';
+$RefererTracking = 1; # TODO there is no such variable anywhere
+$CommentsPrefix = 'Comments_on_'; # TODO huh? But that's the default value, right?
 $EditAllowed = 2;
 
 push(@MyInitVariables, \&WebLog1Init);
@@ -32,9 +35,9 @@ push(@MyInitVariables, \&WebLog1Init);
 sub WebLog1Init {
   if (GetParam('blog', 1)) {	# language independent!
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = localtime(time);
-    $today = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
+    my $today = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
     ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = localtime(time - 60*60*24);
-    $yesterday = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
+    my $yesterday = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
     # this modification is not mod_perl safe!
     my $blog = T('Blog');
     push(@UserGotoBarPages, $blog) unless grep (/^$blog$/, @UserGotoBarPages);

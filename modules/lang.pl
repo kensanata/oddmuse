@@ -23,7 +23,11 @@
 # span[lang=de] { background-color:#ffd; }
 # span[lang=it] { background-color:#dfd; }
 
+use strict;
+
 AddModuleDescription('lang.pl', 'Language Extension');
+
+use vars qw($q @HtmlStack @MyRules $FullUrl);
 
 push(@MyRules, \&LangRule);
 
@@ -45,7 +49,7 @@ sub NewLangInitCookie {
     my @old = split(/ /, GetParam('theme', ''));
     my @old_normal;
     my @old_languages;
-    foreach $entry (@old) {
+    foreach my $entry (@old) {
       if (length($entry) == 2) {
 	push(@old_languages, $entry);
       } else {

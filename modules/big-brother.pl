@@ -13,10 +13,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 package OddMuse;
 
 AddModuleDescription('big-brother.pl', 'Big Brother Extension');
 
+use vars qw($q $Now %Action $SurgeProtectionViews $SurgeProtectionTime @MyAdminCode $RCName $VisitorFile $FS);
 use vars qw($VisitorTime @BigBrotherSecretParameters);
 
 my $US  = "\x1f";
@@ -52,7 +55,7 @@ sub AddRecentVisitor {
   my $action = GetParam('action', 'browse');
   my $id = GetId(); # script/p/q -> q
   my %params = map { $_ => 1 } $q->param;
-  for $bad (@BigBrotherSecretParameters) {
+  for my $bad (@BigBrotherSecretParameters) {
     delete $params{$bad};
   }
   my $url = ScriptUrl(join(';', "action=$action;id=" . UrlEncode($id),

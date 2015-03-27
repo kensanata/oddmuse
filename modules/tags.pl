@@ -1,3 +1,5 @@
+use strict;
+
 =head1 NAME
 
 tags - an Oddmuse module that implements tagging of pages and
@@ -59,6 +61,7 @@ Example:
 
 =cut
 
+use vars qw($q %Action %Page $FreeLinkPattern @MyInitVariables @MyRules @MyAdminCode $DataDir $ScriptName);
 use vars qw($TagUrl $TagFeed $TagFeedIcon $TagFile);
 
 push(@MyInitVariables, \&TagsInit);

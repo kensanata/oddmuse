@@ -15,7 +15,11 @@
 # This file must load before logbannedcontent.pl such that quick
 # editors will be logged.
 
+use strict;
+
 AddModuleDescription('ban-quick-editors.pl', 'Banning Quick Editors');
+
+use vars qw($Now %RecentVisitors $SurgeProtection);
 
 *BanQuickOldUserIsBanned = *UserIsBanned;
 *UserIsBanned = *BanQuickNewUserIsBanned;

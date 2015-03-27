@@ -1,3 +1,5 @@
+use strict;
+
 =head1 NAME
 
 webapp - an Oddmuse module that provides offline wiki browsing
@@ -17,6 +19,8 @@ automatically.
 =cut
 
 AddModuleDescription('webapp.pl', 'Offline Extension');
+
+use vars qw($q %IndexHash $ScriptName $FullUrl $StyleSheet $StyleSheetPage $SurgeProtection @MyAdminCode @MyInitVariables $LastUpdate);
 
 push(@MyAdminCode, \&WebAppMenu);
 

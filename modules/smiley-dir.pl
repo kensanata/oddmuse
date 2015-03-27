@@ -16,12 +16,15 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-use vars qw{$SmileyDir $SmileyUrlPath};
+use strict;
+
+AddModuleDescription('smiley-dir.pl', 'Smiley Directory Extension');
+
+use vars qw(@MyInitVariables $ImageExtensions %Smilies);
+use vars qw($SmileyDir $SmileyUrlPath);
 
 $SmileyDir = '/mnt/pics'; # directory with all the smileys
 $SmileyUrlPath = '/pics'; # path where all the smileys can be found (URL)
-
-AddModuleDescription('smiley-dir.pl', 'Smiley Directory Extension');
 
 push(@MyInitVariables, \&SmileyDirInit);
 

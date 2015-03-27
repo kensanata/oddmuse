@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('aggregate.pl', 'Front Page Extension');
+
+use vars qw($q $bol %Action %Page $OpenPageName $UseDiff $UsePathInfo $RssStyleSheet $RssLicense $RssRights $RssImageUrl $CommentsPrefix $SiteName $ScriptName $HomePage $SiteDescription @MyRules $LastUpdate $InterWikiMoniker);
 
 push(@MyRules, \&AggregateRule);
 

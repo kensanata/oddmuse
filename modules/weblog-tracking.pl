@@ -18,6 +18,9 @@
 
 # Weblog Tracker Notification Extension
 
+use strict;
+
+use vars qw($q $UsePathInfo $ScriptName $SiteName);
 use vars qw(%NotifyJournalPage @NotifyUrlPatterns);
 
 AddModuleDescription('weblog-tracking.pl');
@@ -76,7 +79,7 @@ sub PingTracker {
     my $name = UrlEncode($SiteName . ': ' . $id);
     my $rss = UrlEncode($q->url . '?action=rss');
     require LWP::UserAgent;
-    foreach $uri (@NotifyUrlPatterns) {
+    foreach my $uri (@NotifyUrlPatterns) {
       my $fork = fork();
       if (not ($fork > 0)) { # either we're the child or forking failed
 	$uri =~ s/\$name/$name/g;

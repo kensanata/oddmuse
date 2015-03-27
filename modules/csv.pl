@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('csv.pl', 'Comments on Long Table Markup Extension');
+
+use vars qw($bol @MyRules);
 
 push(@MyRules, \&CsvRule);
 

@@ -13,12 +13,16 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 package OddMuse;
 
 AddModuleDescription('git-another.pl', 'Another Git Extension');
 
 use Cwd;
 use Capture::Tiny ':all';
+
+use vars qw(%Page $DataDir $FootnoteNumber);
 use vars qw($GitBinary $GitMail);
 
 $GitBinary = 'git';
@@ -45,7 +49,7 @@ sub GitInitRepository {
 
 sub RenderHtmlCacheWithoutPrinting { # requires an open page
   $FootnoteNumber = 0;
-  my $blocks, $flags;
+  my ($blocks, $flags);
   capture {
     ($blocks, $flags) = ApplyRules(QuoteHtml($Page{text}), 1, 1, $Page{revision}, 'p');
   };

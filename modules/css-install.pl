@@ -1,3 +1,5 @@
+use strict;
+
 =head1 NAME
 
 css-install - an Oddmuse module that allows users to change the site CSS
@@ -27,6 +29,7 @@ C<@CssList> contains a list of all the recommended CSS URLs.
 
 package OddMuse;
 
+use vars qw($q %Action @MyAdminCode $StyleSheet $StyleSheetPage);
 use vars qw(@CssList);
 
 # List of Oddmuse CSS URLs

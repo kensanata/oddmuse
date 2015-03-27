@@ -13,6 +13,8 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+# use strict; # TODO what is $username?
+
 =head1 Balanced Page Directories
 
 B<WARNING: This module is deprecated.> Oddmuse no longer disperses
@@ -77,6 +79,8 @@ AddModuleDescription('balanced-page-directories.pl', 'Balanced Page Directories 
 
 use Digest::MD5 qw(md5_hex);
 use File::Find qw(finddepth);
+
+use vars qw($PageDir $KeepDir $JoinerDir $JoinerEmailDir $RefererDir);
 use vars qw($BalancedPageDirectoriesSize);
 
 $BalancedPageDirectoriesSize = 2;

@@ -16,11 +16,13 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
 
 AddModuleDescription('listtags.pl', 'ListTags Extension');
 
 # This action is similar with list action
 
+use vars qw($q $bol %Action %Page $OpenPageName @MyRules);
 use vars qw($TagListLabel);
 
 $TagListLabel = "tag:";
@@ -38,7 +40,7 @@ sub ListTagRule {
       $encoded = UrlEncode($encoded);
       ScriptLink("action=taglist;search=\\[\\[\!tag\\s*($encoded|.*,\\s*$encoded)(,|\\]\\])", $name);
     } @tags;
-    $tags = join ', ', @tags;
+    my $tags = join ', ', @tags;
     return CloseHtmlEnvironments()
       . "<div class=\"taglist\">$TagListLabel $tags</div>"
       . AddHtmlEnvironment('p');
@@ -53,7 +55,7 @@ my $id = shift;
 my $search = GetParam('search', '');
 my $currenttag = $search;
    $currenttag =~ s/\|.*//;
-   $currenttag =~ s/\\\[.*\(//; 
+   $currenttag =~ s/\\\[.*\(//;
   ReportError(T('The search parameter is missing.')) unless $search;
   print GetHeader('', Ts('Pages tagged with %s', $currenttag), '');
   local (%Page, $OpenPageName);
@@ -69,7 +71,6 @@ my $currenttag = $search;
     }
     @found = map { $q->li(GetPageLink($_)) } @found;
     print $q->start_div({-class=>'search list'}),
-      $q->ul(@found), $q->end_div;  
+      $q->ul(@found), $q->end_div;
   PrintFooter();
-}  
-
+}

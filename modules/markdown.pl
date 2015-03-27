@@ -13,7 +13,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-#	
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the
 #    Free Software Foundation, Inc.
@@ -31,9 +31,12 @@
 
 #	TODO: auto links in codespans should not be interpreted  (e.g. `<http://somelink/>`)
 
+# use strict; #TODO $InterSiteInit and $NearSiteInit are not used anywhere else
+
 AddModuleDescription('markdown.pl', 'Markdown Extension');
 
-use vars qw!%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled $SmartyPantsEnabled!;
+use vars qw(%Page $Now %RuleOrder @MyRules %InterSite $InterSitePattern $InterMap $ScriptName $LinkPattern $FreeLinks $FreeLinkPattern $WikiLinks $FS $FootnoteNumber $ModuleDir $NewComment $PageCluster $NearDir $NearMap %NearSite %NearSearch %NearSource);
+use vars qw(%MarkdownRuleOrder @MyMarkdownRules $MarkdownEnabled $SmartyPantsEnabled);
 
 $MarkdownEnabled = 1;
 $SmartyPantsEnabled = 1;
@@ -42,10 +45,10 @@ $SmartyPantsEnabled = 1;
 
 $RuleOrder{\&MarkdownRule} = -10;
 
-$TempNoWikiWords = 0;
+my $TempNoWikiWords = 0;
 
 sub MarkdownRule {
-	# Allow journal pages	
+	# Allow journal pages
 	if (m/\G(&lt;journal(\s+(\d*))?(\s+"(.*)")?(\s+(reverse))?\>[ \t]*\n?)/cgi) {
        # <journal 10 "regexp"> includes 10 pages matching regexp
         Clean(CloseHtmlEnvironments());
@@ -56,7 +59,7 @@ sub MarkdownRule {
         pos = $oldpos;          # restore \G after call to ApplyRules
         return;
       }
-      
+
   if (pos == 0) {
     my $pos = length($_); # fake matching entire file
     my $source = $_;
@@ -72,23 +75,23 @@ sub MarkdownRule {
 
     # Do not allow raw HTML
     $source = SanitizeSource($source);
-    
+
 	# Allow other Modules to process raw text before Markdown
 	# This allows other modules to be "Markdown Compatible"
 	@MyMarkdownRules = sort {$MarkdownRuleOrder{$a} <=> $MarkdownRuleOrder{$b}} @MyMarkdownRules; # default is 0
 	foreach my $sub (@MyMarkdownRules) {
 		$source = &$sub($source);
 	}
-	
+
     my $result = Markdown::Markdown($source);
- 
+
 	if ($SmartyPantsEnabled) {
 		require "$ModuleDir/Markdown/SmartyPants.pl";
 		$result = SmartyPants::SmartyPants($result,"2",undef);
 	}
-   
+
 	$result = UnescapeWikiWords($result);
-	
+
 	$result = AntiSpam($result);
 
     pos = $pos;
@@ -97,7 +100,7 @@ sub MarkdownRule {
     # Otherwise, "full" does not work
     if (GetParam("action",'') =~ /^(rss|journal)$/) {
     	$result =~ s/\</&lt;/g;
-    	$result =~ s/\>/&gt;/g;    	
+    	$result =~ s/\>/&gt;/g;
     }
     return $result;
   }
@@ -105,7 +108,7 @@ sub MarkdownRule {
 }
 
 sub SanitizeSource {
-	$text = shift;
+	my $text = shift;
 
 	# We don't want to allow insertion of raw html into Wikis
 	# for security reasons.
@@ -115,7 +118,7 @@ sub SanitizeSource {
 	# (in other words, this is not a bug)
 
 	$text =~ s/\</&lt;/g;
-	
+
 	return $text;
 }
 
@@ -196,7 +199,6 @@ sub MarkdownNearInit {
 # Modify the Markdown source to work with OddMuse
 
 sub DoWikiWords {
-	
 	my $text = shift;
 	my $WikiWord = '[A-Z]+[a-z\x{0080}-\x{fffd}]+[A-Z][A-Za-z\x{0080}-\x{fffd}]*';
 	my $FreeLinkPattern = "([-,.()' _0-9A-Za-z\x{0080}-\x{fffd}]+)";
@@ -212,30 +214,30 @@ sub DoWikiWords {
 			}{
 				$1 ."\\" . $2
 			}xsge;
-			
+
 			CreateWikiLink($label)
 		}xsge;
 
 		# Images - this is too convenient not to support...
 		# Though it doesn't fit with Markdown syntax
 		$text =~ s{
-			(\[\[image:$FreeLinkPattern\]\])	
+			(\[\[image:$FreeLinkPattern\]\])
 		}{
 			my $link = GetDownloadLink($2, 1, undef, $3);
 			$link =~ s/_/&#95;/g;
 			$link
 		}xsge;
-	
+
 		$text =~ s{
-			(\[\[image:$FreeLinkPattern\|([^]|]+)\]\])	
+			(\[\[image:$FreeLinkPattern\|([^]|]+)\]\])
 		}{
 			my $link = GetDownloadLink($2, 1, undef, $3);
 			$link =~ s/_/&#95;/g;
 			$link
 		}xsge;
-		
+
 		# And Same thing for downloads
-		
+
 		$text =~ s{
 			(\[\[download:$FreeLinkPattern\|?(.*)\]\])
 		}{
@@ -244,7 +246,7 @@ sub DoWikiWords {
 			$link
 		}xsge;
 	}
-	
+
 	# WikiWords
 	if ($WikiLinks) {
 		$text =~ s{
@@ -252,34 +254,33 @@ sub DoWikiWords {
 		}{
 			$1 . CreateWikiLink($2)
 		}xsge;
-		
+
 		# Catch WikiWords at beginning of page (ie PageCluster)
 		$text =~ s{^($WikiWord)
 		}{
 			CreateWikiLink($1)
 		}xse;
 	}
-	
-	
+
 	return $text;
 }
 
 sub CreateWikiLink {
 	my $title = shift;
-	
+
 	my $id = $title;
 		$id =~ s/ /_/g;
 		$id =~ s/__+/_/g;
 		$id =~ s/^_//g;
 		$id =~ s/_$//;
-		
+
 
 	#AllPagesList();
 	#my $exists = $IndexHash{$id};
 
 	my $resolvable = $id;
 	$resolvable =~ s/\\//g;
-	
+
 	my ($class, $resolved, $linktitle, $exists) = ResolveId($resolvable);
 
 
@@ -300,7 +301,7 @@ sub CreateWikiLink {
 sub UnescapeWikiWords {
 	my $text = shift;
 	my $WikiWord = '[A-Z]+[a-z\x{0080}-\x{fffd}]+[A-Z][A-Za-z\x{0080}-\x{fffd}]*';
-	
+
 	# Unescape escaped WikiWords
 	$text =~ s/\\($WikiWord)/$1/g;
 
@@ -314,7 +315,7 @@ sub NewRunSpanGamut {
 # tags like paragraphs, headers, and list items.
 #
 	my $text = shift;
-	
+
 	$text = Markdown::_DoCodeSpans($text);
 
 	$text = Markdown::_EscapeSpecialCharsWithinTagAttributes($text);
@@ -332,14 +333,14 @@ sub NewRunSpanGamut {
 		$text = Markdown::_DoImages($text);
 		$text = NewDoAnchors($text);
 	}
-	
+
 	# Make links out of things like `<http://example.com/>`
 	# Must come after _DoAnchors(), because you can use < and >
 	# delimiters in inline links like [this](<url>).
 	$text = Markdown::_DoAutoLinks($text);
 
 	$text = Markdown::_EncodeAmpsAndAngles($text);
-	
+
 	$text = Markdown::_DoItalicsAndBold($text);
 
 	# Do hard breaks:
@@ -354,13 +355,13 @@ sub NewRunSpanGamut {
 
 sub NewDoHeaders {
 	my $text = shift;
-	
+
 	$TempNoWikiWords = 1;
-	
+
 	$text = OldDoHeaders($text);
-	
+
 	$TempNoWikiWords = 0;
-	
+
 	return $text;
 }
 
@@ -370,14 +371,14 @@ sub NewDoHeaders {
 
 sub NewEncodeCode {
 	my $text = shift;
-	
+
 	# Undo sanitization of '<, >, and &' (necessary due to a change in how Oddmuse works)
 	$text =~ s/&lt;/</g;
 #	$text =~ s/&gt;/>/g;
 	$text =~ s/&amp;/&/g;
-	
+
 	$text = OldEncodeCode($text);
-	
+
 	# Protect Wiki Words
 	my $WikiWord = '[A-Z]+[a-z\x{0080}-\x{fffd}]+[A-Z][A-Za-z\x{0080}-\x{fffd}]*';
 	$text =~ s!($WikiWord)!\\$1!gx;
@@ -395,12 +396,12 @@ sub AntiSpam {
 	}{
 		my $masked="";
 		my @decimal = unpack('C*', $1);
-		foreach $i (@decimal) {
+		foreach my $i (@decimal) {
 			$masked.="&#".$i.";";
 		}
 		$masked
 	}xsge;
-	
+
 	return $text;
 }
 
@@ -408,7 +409,7 @@ sub NewDoAutoLinks {
 	my $text = shift;
 
 	# Added > to the excluded characters list for Oddmuse compatibility
-	$text =~ s{&lt;((https?|ftp|dict):[^'"<>\s]+)\>}{<a href="$1">$1</a>}gi; 
+	$text =~ s{&lt;((https?|ftp|dict):[^'"<>\s]+)\>}{<a href="$1">$1</a>}gi;
 
 	# Email addresses: <address@domain.foo>
 	$text =~ s{
@@ -472,7 +473,7 @@ sub MarkdownAddComment {
 sub NewDoAnchors {
 	my $text = shift;
 	my $WikiWord = '[A-Z]+[a-z\x{0080}-\x{fffd}]+[A-Z][A-Za-z\x{0080}-\x{fffd}]*';
-		
+
 	return Markdown::_DoAnchors($text);
 }
 

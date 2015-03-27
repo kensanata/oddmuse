@@ -12,6 +12,10 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
+use vars qw(%Page %IndexHash %AdminPages $HomePage $RCName @MyInitVariables $LinkPattern $FreeLinkPattern $FullUrlPattern $InterLinkPattern $UserGotoBar @UserGotoBarPages);
+
 AddModuleDescription('gotobar.pl', 'Gotobar Extension');
 
 use vars qw($GotobarName);

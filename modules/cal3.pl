@@ -22,7 +22,11 @@
 # is useless. This extension will not work under Windows/IIS unless cal
 # is installed.
 
+use strict;
+
 AddModuleDescription('cal3.pl', 'Cal3 Extension');
+
+use vars qw(%IndexHash $Now $ScriptName);
 
 *OldCalendarGetHeader = *GetHeader;
 *GetHeader = *NewCalendarGetHeader;
@@ -32,8 +36,8 @@ sub NewCalendarGetHeader {
   $cyear += 1900;
   $cmon += 1;
 
-  my qw($cal $prevmon $prevyear $nextmon $nextyear);
-  
+  my ($cal, $prevmon, $prevyear, $nextmon, $nextyear);
+
   # check if previous month is in previous year
   if ($cmon == 1){
     $prevmon = "12";
@@ -80,10 +84,8 @@ sub Cal {
              : ($IndexHash{$date} ? 'exists' : 'wanted');
     } else {
       $class = ($IndexHash{$date} ? 'exists' : 'wanted');
-    }	      
+    }
     "<a class=\"$class\" href=\"$ScriptName/$date\">$day</a>";
     }|ge;
   return "<div class=\"cal\"><pre>$cal</pre></div>";
 }
-
-

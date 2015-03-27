@@ -1,7 +1,11 @@
 #!/usr/bin/env perl
+use strict;
+
 # ====================[ forms.pl                           ]====================
 
 AddModuleDescription('forms.pl', 'Form Extension');
+
+use vars qw($q $OpenPageName @MyRules $CrossbarPageName);
 
 # ....................{ MARKUP                             }....................
 push(@MyRules, \&FormsRule);

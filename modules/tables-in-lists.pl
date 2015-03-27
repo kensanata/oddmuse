@@ -16,15 +16,20 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('tables-in-lists.pl', 'Table Markup Extension');
+
+use vars qw($bol @MyRules);
 
 push(@MyRules, \&TablesInListsRule);
 
 sub TablesInListsRule {
 # tables using || -- the first row of a table inside a list
+    my $rowcount;
     if ($bol && m/\G((\|\|)+)([ \t])*(?=.*\|\|[ \t]*(\n|$))/cg) {
         $rowcount = 1;
-        if (InElement('li')) {  
+        if (InElement('li')) {
         return CloseHtmlEnvironmentUntil('li')
             . AddHtmlEnvironment('table', 'class="user"')
             . AddHtmlEnvironment('tr', 'class="odd first"')

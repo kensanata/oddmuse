@@ -13,9 +13,13 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 package OddMuse;
 
 AddModuleDescription('new-window.pl', 'New Window Links Extension');
+
+use vars qw($q @MyRules $FullUrlPattern $UrlProtocols $BracketText);
 
 # Opening links in new windows is evil
 push(@MyRules, \&NewWindowLink);

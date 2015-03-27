@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('archive.pl', 'Archive Extension');
+
+use vars qw($q);
 
 *OldArchiveGetHeader = *GetHeader;
 *GetHeader = *NewArchiveGetHeader;
@@ -32,7 +36,7 @@ sub NewArchiveGetHeader {
   print $q->div({-class=>'archive'},
 		$q->p($q->span(T('Archive:')),
 		      map {
-			$key = $_;
+			my $key = $_;
 			my ($year, $month) = split(/-/, $key);
 			if (defined(&month_name)) {
 			  ScriptLink('action=collect;match=' . UrlEncode("^$year-$month"),

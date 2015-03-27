@@ -12,9 +12,12 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 AddModuleDescription('delete-all.pl');
 
-use vars qw($DeletedAge);
+use vars qw(%Page $Now $OpenPageName %LockOnCreation);
+use vars qw($DeleteAge);
 
 $DeleteAge = 172800; # 2*24*60*60
 

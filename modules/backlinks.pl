@@ -1,16 +1,20 @@
 # Copyright (C) 2008  Weakish Jiang <weakish@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as 
+# it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation.
 #
 # You can get a copy of GPL version 2 at
 # http://www.gnu.org/licenses/gpl-2.0.html
 #
-# For user doc, see: 
+# For user doc, see:
 # http://www.oddmuse.org/cgi-bin/oddmuse/Backlinks_Extension
 
+use strict;
+
 AddModuleDescription('backlinks.pl', 'Backlinks Extension');
+
+use vars qw($q %Action %Page $OpenPageName);
 
 *OldGetSearchLink = *GetSearchLink;
 *GetSearchLink = *NewGetSearchLink;
@@ -30,7 +34,7 @@ my $id = shift;
 my $search = GetParam('search', '');
 my $taglabel = $search;
    $taglabel =~ s/\\\[\\\[//;
-   $taglabel =~ s/\\\]\\\]//; 
+   $taglabel =~ s/\\\]\\\]//;
   ReportError(T('The search parameter is missing.')) unless $search;
   print GetHeader('', Ts('Pages link to %s', $taglabel), '');
   local (%Page, $OpenPageName);
@@ -46,6 +50,6 @@ my $taglabel = $search;
     }
     @found = map { $q->li(GetPageLink($_)) } @found;
     print $q->start_div({-class=>'search list'}),
-      $q->ul(@found), $q->end_div;  
+      $q->ul(@found), $q->end_div;
   PrintFooter();
-}  
+}

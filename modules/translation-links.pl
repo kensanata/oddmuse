@@ -13,6 +13,8 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 AddModuleDescription('translation-links.pl', 'Translation Links');
 
 =head1 Translation Links
@@ -55,6 +57,7 @@ The default page is called TranslationHelp.
 
 =cut
 
+use vars qw($q %Action %Page $OpenPageName %Translate %Languages $LinkPattern $FreeLinks $FreeLinkPattern $WikiLinks @MyRules @MyInitVariables $FS);
 use vars qw($TranslationLinkPattern %TranslationLinkTarget
 	    $TranslationLinkHelpPage);
 

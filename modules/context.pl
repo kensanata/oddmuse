@@ -13,8 +13,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 AddModuleDescription('context.pl', 'Calendar Extension');
 
+use vars qw($q @Debugging $UserGotoBar @MyInitVariables);
 push (@MyInitVariables, \&ContextMenuItem);
 
 sub ContextMenuItem {

@@ -16,8 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+# use strict; #TODO $IgnoreForTOC is not used anywhere, $InHandout is weird
+
 AddModuleDescription('slideshow.pl');
 
+use vars qw($q %Action %Page $Now @MyRules $FS $FootnoteNumber);
 use vars qw($SlideShowDataFolder $SlideShowTheme $SlideShowHeader %SlideShowMeta);
 
 my $InSlide = 0;
@@ -36,7 +39,7 @@ EOT
 
 $SlideShowTheme = "i18n" unless defined $SlideShowTheme;
 
-$SlideShowConfiguration = 
+my $SlideShowConfiguration =
 qq!<meta name="defaultView" content="slideshow" />
 <meta name="controlVis" content="hidden" />
 
@@ -53,7 +56,7 @@ qq!<meta name="defaultView" content="slideshow" />
 	author => "",
 	company => "",
 	authafill => "",
-) unless defined %SlideShowMeta;
+) unless %SlideShowMeta;
 
 my $SlideShowTitle;
 
@@ -62,14 +65,14 @@ $Action{slideshow} = \&DoSlideShow;
 sub DoSlideShow {
 	my $id = shift;
 	print GetSlideShowHeader($id, Ts('Slideshow:%s', $id));
-	
+
 	IndexSlideShow($id);
-	
+
 	push(@MyRules, \&SlideShowRule);
 	*OldPrintWikiToHTML = *PrintWikiToHTML;
 	*PrintWikiToHTML = *PrintSlideWikiToHTML;
 	$IgnoreForTOC = 1;
-	
+
 	OpenPage($id);
 	PrintPageHtml();
 	print GetSlideShowFooter($id);
@@ -89,8 +92,8 @@ sub GetSlideShowHeader {
 
 sub GetSlideShowHtmlHeader {
 	my ($title, $id) = @_;
-	
-	$html =  $q->head($q->title($q->escapeHTML($SlideShowTitle)) . "\n" . GetSlideShowMeta($id) . $SlideShowConfiguration);
+
+	my $html =  $q->head($q->title($q->escapeHTML($SlideShowTitle)) . "\n" . GetSlideShowMeta($id) . $SlideShowConfiguration);
 	$html .= '
 <body><div class="layout"><div id="controls"></div><div id="currentSlide"></div>';
 	$html .= GetSlideHeader($id) . GetSlideFooter($id) . '</div>'
@@ -101,7 +104,7 @@ sub GetSlideShowHtmlHeader {
 sub GetSlideShowMeta {
 	my ($id) = @_;
 	my $html;
-	
+
 	foreach my $MetaKey (keys %SlideShowMeta) {
 		next if $MetaKey =~ /^(footer[12])$/;
 		$html .= qq!<meta name="$MetaKey" content="$SlideShowMeta{$MetaKey}" />\n!;
@@ -112,7 +115,7 @@ sub GetSlideShowMeta {
 sub GetSlideHeader {
 	my ($id) = @_;
 	my $html = '<div id="header">';
-	
+
 	$html .= '</div>';
 	return $html;
 }
@@ -120,7 +123,7 @@ sub GetSlideHeader {
 sub GetSlideFooter {
 	my ($id) = @_;
 	my $html = '<div id="footer">';
-	
+
 	$html .= qq!<h1>$SlideShowMeta{footer1}</h1><h2>$SlideShowMeta{footer2}</h2>!;
 	$html .= '</div>';
 	return $html;
@@ -129,7 +132,7 @@ sub GetSlideFooter {
 sub GetSlideShowFooter{
 	my ($id) = @_;
 	my $html = '</div></body></html>';
-	
+
 	if ($InSlide) {
 		$html = '</div>' . $html;
 	}
@@ -142,13 +145,13 @@ sub SlideShowRule {
 	if (m/\G(\s*\n)*\&lt;slide[ \t]+([^\n]*?)([ \t]*class\=([^\n]*?))?\&gt;/icg) {
 		my $CloseDiv = "";
 		my $class = "slide";
-		
+
 		$CloseDiv .= "</div>" if ($InSlide);
 		$CloseDiv .= "</div>" if ($InHandout);
 		$InSlide = 1;
 		$InHandout = 0;
 		$class = $4 if ($4 ne "");
-		
+
 		if ($SlideShowBegun) {
 			return CloseHtmlEnvironments() . $CloseDiv . qq!<div class="$class">! . AddHtmlEnvironment('h1','') . $2 . CloseHtmlEnvironment();
 		} else {
@@ -164,7 +167,7 @@ sub SlideShowRule {
 		$InHandout = 1;
 		my $class = "handout";
 		$class = $4 if ($4 ne "");
-		
+
 		return CloseHtmlEnvironments() . qq!<div class="$class">!;
 	}
 
@@ -211,7 +214,7 @@ sub IndexSlideShow {
 	my ($id) = @_;
 
 	my $page = GetPageContent($id);
-	
+
 	while ($page =~ /\<slide[ \t]+([^\n]*)\>/isg ) {
 		$SlideShowIndex{$1}=$SlideCounter;
 		$SlideCounter++;

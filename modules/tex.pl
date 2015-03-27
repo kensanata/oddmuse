@@ -13,8 +13,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 AddModuleDescription('tex.pl', 'TeX Extension');
 
+use vars qw(%RuleOrder @MyRules);
 use vars qw($TeXInit %Tex);
 use utf8;
 

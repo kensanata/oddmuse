@@ -19,7 +19,11 @@
 
 # Includes comment pages in journal collections.
 
+use strict;
+
 AddModuleDescription('show-comments.pl', 'Comment Pages');
+
+use vars qw(%Page $OpenPageName $CommentsPrefix $CollectingJournal);
 
 *OldPrintJournal = *PrintJournal;
 *PrintJournal = *NewPrintJournal;

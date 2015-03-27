@@ -16,8 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('publish.pl', 'Publish Page Extension');
 
+use vars qw($q %Action %Page $OpenPageName @MyAdminCode $ScriptName $FullUrl);
 use vars qw($PublishTargetUrl);
 
 $PublishTargetUrl = '';

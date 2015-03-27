@@ -28,8 +28,11 @@ only works reliably for GET requests.
 
 =cut
 
+use strict;
+
 AddModuleDescription('put.pl');
 
+use vars qw($q @MyInitVariables $MaxPost);
 push(@MyInitVariables, \&PutMethodHandler);
 
 sub PutMethodHandler {

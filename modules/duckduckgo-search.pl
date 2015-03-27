@@ -12,8 +12,11 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 AddModuleDescription('duckduckgo-search.pl', 'Use DuckDuckGo For Searches');
 
+use vars qw($q %Action $ScriptName @MyInitVariables);
 use vars qw($DuckDuckGoSearchDomain);
 
 $DuckDuckGoSearchDomain = undef;

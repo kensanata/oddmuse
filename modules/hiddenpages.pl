@@ -24,10 +24,11 @@
 # on a pattern matching the page id or to a membership to a certain
 # page cluster.
 
+use strict;
+
 AddModuleDescription('hiddenpages.pl', 'Hidden Pages Extension');
 
-use vars qw($HiddenCluster $HideEditorPages $HideAdminPages
-$HideRegExEditor $HideRegExAdmin);
+use vars qw($HiddenCluster $HideEditorPages $HideAdminPages $HideRegExEditor $HideRegExAdmin);
 
 # $HiddenCluster is a cluster name for hidden pages. Default
 # is pages in the cluster "HiddenPage". You can override this
@@ -69,7 +70,7 @@ sub NewOpenPage {
   }
 
   my $action = lc(GetParam('action', ''));
- 
+
   if ($action ne 'rc' && $action ne 'search') {
     # Check the different levels of access
     if ($hidden eq "edi" && $HideEditorPages == 1 && (!UserIsEditor() && !UserIsAdmin())) {

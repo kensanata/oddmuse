@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+# use strict; # TODO problem with %default or @default
+
 AddModuleDescription('config.pl', 'Plans');
+
+use vars qw($Now %Action $SiteName $ScriptName);
 
 $Action{config} = \&DoConfig;
 $Action{clone} = \&DoClone;
@@ -29,7 +33,7 @@ sub DoConfig {
 \$EditPass = "";
 };
   my $source = GetRaw('http://www.emacswiki.org/scripts/current');
-  foreach my $var qw($HomePage $MaxPost $StyleSheet $StyleSheetPage $NotFoundPg
+  foreach my $var (qw($HomePage $MaxPost $StyleSheet $StyleSheetPage $NotFoundPg
 		     $NewText $NewComment $EditAllowed $BannedHosts
 		     $BannedCanRead $BannedContent $WikiLinks $FreeLinks
 		     $BracketText $BracketWiki $NetworkFile $AllNetworkFiles
@@ -44,13 +48,13 @@ sub DoConfig {
 		     @UserGotoBarPages $UserGotoBar $ValidatorLink
 		     $CommentsPrefix $HtmlHeaders $IndentLimit $LanguageLimit
 		     $JournalLimit $SisterSiteLogoUrl %SpecialDays %Smilies
-		     %Languages) {
+		     %Languages)) {
     my $default = undef;
     my $re = quotemeta($var);
     if ($source =~ m!\n$re\s*=\s*(\d+(\s*[*+-/]\s*\d+)*|'[^']*'|"[^"]*"|\(.*?\)|qw\(.*?\))\s*;!) {
       $default = $1;
     }
-    $type = substr($var, 0, 1);
+    my $type = substr($var, 0, 1);
     if ($type eq '$') {
       my $val = eval($var);
       print "$var = " . ConfigStr($val) . "; # default: $default\n"
@@ -67,7 +71,7 @@ sub DoConfig {
       print "$var = (", join(', ', map { ConfigStr($_)
 					   . ' => ' . ConfigStr($hash{$_})}
 			     keys %hash) . "); # default: $default\n"
-	unless ConfigHashEqual(\%hash, \%default);;
+	unless ConfigHashEqual(\%hash, \%default);
     }
   }
   print "# Done!\n";
@@ -87,7 +91,7 @@ sub ConfigStr {
 sub ConfigListEqual {
   my ($a, $b) = @_;
   return 0 if @$a != @$b;
-  for ($i = 0; $i < @$a; $i++) {
+  for (my $i = 0; $i < @$a; $i++) {
     return 0 unless @$a[$i] eq @$b[$i];
   }
   return 1;

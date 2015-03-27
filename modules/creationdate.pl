@@ -16,17 +16,21 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 #
-# This module stores additional information about a page when it is 
+# This module stores additional information about a page when it is
 # first created:
 #		created = the date the page is FIRST saved
 #		originalAuthor = the username that first created a page
 #
 # Of course, you can customize this to store more information
 
+use strict;
+
 AddModuleDescription('creationdate.pl', 'CreationDate Module');
 
+use vars qw(%Page $Now);
+
 *CreationDateOldOpenPage = *OpenPage;
-*OpenPage = CreationDateOpenPage;
+*OpenPage = *CreationDateOpenPage;
 
 sub CreationDateOpenPage{
 	CreationDateOldOpenPage(@_);

@@ -16,6 +16,7 @@
 #
 # Porter stemming algorithm code copied verbatim from http://www.tartarus.org/~martin/PorterStemmer/
 
+use strict;
 
 AddModuleDescription('wordstem.pl', 'WordStemming');
 
@@ -138,12 +139,12 @@ sub stemWord {
     $page = "";
     # Split the word up at case changes and stem each subword
     my @words = split(/([a-z]*)([A-Z]+[a-z]+)/,$oldpage);
-    foreach my $w(@words) { 
+    foreach my $w(@words) {
 	if ($w) {
 	    if ($w =~ /_/) {  # Possible word separated by _
 	    my @subwords = split(/_/,$w);
 	    foreach my $w(@subwords) {
-		if ($w) { 
+		if ($w) {
 		    $page .= lc(&stem($w)); #Force case changes to not matter
 		}
 	    }

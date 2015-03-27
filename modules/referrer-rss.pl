@@ -16,7 +16,13 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+# TODO referers and refeRrers
+
+use strict;
+
 AddModuleDescription('referrer-rss.pl', 'Comments on Automatic Link Back');
+
+use vars qw(%Action $LastUpdate $ScriptName $RssStyleSheet $RssImageUrl $SiteName $SiteDescription %Referers);
 
 $Action{"refer-rss"} = \&DoRefererRss;
 
