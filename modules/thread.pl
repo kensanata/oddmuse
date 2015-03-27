@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('thread.pl', 'Thread Server Extension');
+
+use vars qw($q %Action @MyRules $FreeLinkPattern $UrlPattern $ScriptName);
 
 $Action{getthread} = \&ThreadGet;
 $Action{addthread} = \&ThreadAdd;
@@ -48,7 +52,7 @@ sub ThreadGet {
 sub ThreadExtract {
   my $id = shift;
   ReportError(T('ID parameter is missing.'), '400 BAD REQUEST') unless $id;
-  $page = GetPageContent($id);
+  my $page = GetPageContent($id);
   ReportError(Ts('Thread %s does not exist.', $id), '404 NOT FOUND') unless $page;
   # ignore all the stuff that gets processed anyway
   foreach my $tag ('nowiki', 'pre', 'code') {

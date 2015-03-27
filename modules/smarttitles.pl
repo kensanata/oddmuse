@@ -1,4 +1,6 @@
 #!/usr/bin/env perl
+use strict;
+
 # ====================[ smarttitles.pl                     ]====================
 
 =head1 NAME
@@ -15,6 +17,8 @@ directory of your Oddmuse Wiki.
 package OddMuse;
 
 AddModuleDescription('smarttitles.pl', 'Smarttitles Extension');
+
+use vars qw(%Page $SiteName @MyRules %RuleOrder);
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -124,7 +128,7 @@ within that passed page's Wiki content.
 
 sub GetHeaderSmartTitles {
   my ($page_name, $title, undef, undef, undef, undef, $subtitle) = @_;
-  my ($smart_title, $smart_subtitle, $smart_suburl);
+  my ($smart_title, $smart_subtitle, $smart_suburl, $smart_interlink);
   my  $html_header = GetHeaderSmartTitlesOld(@_);
 
   if ($page_name) {

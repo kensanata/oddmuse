@@ -20,10 +20,15 @@
 # This module creates a list of all questions on the page, e.g.
 # for a faq. It does so by recognizing all lines that begin with
 # a Q: as a question.
-# Additionally, lines starting with Q: and A: are rendered using 
+# Additionally, lines starting with Q: and A: are rendered using
 # the css classes div.question and div.answer.
 
+use strict;
+
 AddModuleDescription('faq.pl', 'FAQ Extension');
+
+use vars qw($q $bol @MyRules);
+use vars qw($FaqHeaderText $FaqQuestionText $FaqAnswerText);
 
 $FaqHeaderText = "Questions on this page:" unless $FaqHeaderText;
 $FaqQuestionText = "Question: " unless $FaqQuestionText;
@@ -54,7 +59,7 @@ sub NewFaqGetHeader {
 }
 
 sub FaqHeadings {
-  $page = GetPageContent(shift);
+  my $page = GetPageContent(shift);
   # ignore all the stuff that gets processed anyway by usemod.pl and
   # creole.pl -- if we're not going to hook into ordinary parsing like
   # toc.pl does, this will always be incomplete.
@@ -64,7 +69,7 @@ sub FaqHeadings {
   $page =~ s/\{\{\{[ \t]*\n(.*?)\n\}\}\}[ \t]*(\n|$)//gs;
 
   my $Headings = '';
-  foreach $line (grep(/^Q:[ \t]*(.*?)$/, split(/\n/, $page))) {
+  foreach my $line (grep(/^Q:[ \t]*(.*?)$/, split(/\n/, $page))) {
     next unless $line =~ /^Q:[ \t]*(.*?)$/;
     next unless $1;
     my $link = 'FAQ_' . UrlEncode($1);

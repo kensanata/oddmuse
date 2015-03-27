@@ -1,4 +1,6 @@
 #!/usr/bin/env perl
+use strict;
+
 # ====================[ crossbar.pl                         ]====================
 
 =head1 NAME
@@ -34,6 +36,8 @@ directory for your Oddmuse Wiki.
 
 =cut
 AddModuleDescription('crossbar.pl', 'Crossbar Extension');
+
+use vars qw($q $bol $OpenPageName @HtmlStack @MyInitVariables @MyRules %AdminPages $DeletedPage $SidebarName $TocIsApplyingAutomaticRules);
 
 # ....................{ CONFIGURATION                      }....................
 use vars qw($CrossbarPageName

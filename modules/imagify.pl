@@ -12,13 +12,16 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 use Digest::SHA qw(sha256_hex);
 
 package OddMuse;
 
 AddModuleDescription('imagify.pl', 'Imagify Extension');
 
-use vars qw(%ImagifyParams, $ImagifyDir, $ImagifyFormat);
+use vars qw($q @MyRules $ScriptName $DataDir);
+use vars qw(%ImagifyParams $ImagifyDir $ImagifyFormat);
 $ImagifyFormat = 'png';
 %ImagifyParams = qw{-background transparent -fill black -font Corsiva -pointsize 16 -size 600x};
 $ImagifyDir = "$DataDir/imagify"; # For images with rendered text

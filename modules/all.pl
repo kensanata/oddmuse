@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('all.pl', 'All Action');
+
+use vars qw($q %Action $HomePage $UrlProtocols);
 
 $Action{all} = \&DoPrintAllPages;
 
@@ -41,6 +45,7 @@ sub NewAllScriptLink {
       and $action !~ /^($UrlProtocols)\%3a/
       and $action !~ /^\%2f/
       and $action !~ /=/) {
+    my %params;
     $params{-href} = '#' . $action;
     $params{'-class'} = $class  if $class;
     $params{'-name'} = $name  if $name;

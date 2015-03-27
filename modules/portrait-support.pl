@@ -13,7 +13,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 AddModuleDescription('portrait-support.pl', 'Portraits Support Extension');
+
+use vars qw($q $bol $Now @MyMacros @MyRules $FreeLinkPattern $UrlPattern $FS);
 
 push(@MyMacros, sub{ s/\[new::\]/"[new:" . GetParam('username', T('Anonymous'))
 		       . ':' . TimeToText($Now) . "]"/ge });
@@ -26,7 +30,7 @@ use vars qw($PortraitSupportColorDiv $PortraitSupportColor);
 $PortraitSupportColor = 0;
 $PortraitSupportColorDiv = 0;
 
-my %Portraits = ();
+my %Portrait = ();
 
 sub PortraitSupportRule {
   if ($bol) {

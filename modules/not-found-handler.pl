@@ -16,10 +16,14 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+# use strict; # TODO STDOUT ?
+
 AddModuleDescription('not-found-handler.pl', '404 Handler Extension');
 
+use vars qw($q $OpenPageName %Page %Action $DataDir $FreeLinkPattern);
+
 use File::Glob ':glob';
-use vars qw($NotFoundHandlerDir, $LinkFile, %LinkDb, $LinkDbInit);
+use vars qw($NotFoundHandlerDir $LinkFile %LinkDb $LinkDbInit);
 
 $NotFoundHandlerDir = '/tmp/oddmuse/cache';
 $LinkFile = "$DataDir/linkdb";

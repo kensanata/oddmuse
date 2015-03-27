@@ -12,6 +12,8 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+#use strict; #TODO $Monolithic is 'my'
+
 =head1 Namespaces Extension
 
 This module allows you to create namespaces in Oddmuse. The effect is
@@ -38,6 +40,8 @@ be changed using the C<$NamespacesSelf> option.
 AddModuleDescription('namespaces.pl', 'Namespaces Extension');
 
 use File::Glob ':glob';
+
+use vars qw($q %Action %Page @IndexList $Now %InterSite $SiteName $ScriptName $UsePathInfo $DataDir $HomePage @MyInitVariables @MyAdminCode $FullUrl $LinkPattern $InterSitePattern $FreeLinks $FreeLinkPattern $InterLinkPattern $FreeInterLinkPattern $UrlProtocols $WikiLinks $FS $RcFile $RcOldFile $RcDefault $PageDir $KeepDir $LockDir $TempDir $IndexFile $VisitorFile $NoEditFile $WikiDescription $LastUpdate $StaticDir $StaticUrl $InterWikiMoniker $RefererDir $PermanentAnchorsFile);
 use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent
 	    $NamespaceRoot $NamespaceSlashing @NamespaceParameters
 	    %Namespaces);
@@ -154,7 +158,7 @@ sub NamespacesInitVariables {
 }
 
 sub NamespaceRequiredByParameter {
-  foreach $key (@NamespaceParameters) {
+  foreach my $key (@NamespaceParameters) {
     return 1 if $q->param($key);
   }
 }
@@ -382,9 +386,9 @@ sub NewNamespaceBrowsePage {
       and (($WikiLinks and $text =~ /^\#REDIRECT\s+(($InterSitePattern:)?$InterLinkPattern)/)
 	   or ($FreeLinks and $text =~ /^\#REDIRECT\s+\[\[(($InterSitePattern:)?$FreeInterLinkPattern)\]\]/))) {
     my ($ns, $page) = map { UrlEncode($_) } split(/:/, FreeToNormal($1));
-    $oldid = ($NamespaceCurrent || $NamespacesMain) . ':' . $id;
+    $oldId = ($NamespaceCurrent || $NamespacesMain) . ':' . $id;
     local $ScriptName = $NamespaceRoot || $ScriptName;
-    print GetRedirectPage("action=browse;ns=$ns;oldid=$oldid;id=$page", $id);
+    print GetRedirectPage("action=browse;ns=$ns;oldid=$oldId;id=$page", $id);
   } else {
     return OldNamespaceBrowsePage(@_);
   }

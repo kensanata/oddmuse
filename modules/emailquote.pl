@@ -1,21 +1,24 @@
 # Copyright (C) 2008  Weakish Jiang <weakish@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as 
+# it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation.
 #
 # You can get a copy of GPL version 2 at
 # http://www.gnu.org/licenses/gpl-2.0.html
 #
-# For user doc, see: 
+# For user doc, see:
 # http://www.oddmuse.org/cgi-bin/oddmuse/Email_Quote_Extension
+
+use strict;
 
 AddModuleDescription('emailquote.pl', 'Email Quote Extension');
 
+use vars qw($q $bol @MyRules);
+
 push(@MyRules, \&EmailQuoteRule);
 
-sub EmailQuoteRule 
-{
+sub EmailQuoteRule {
     #  > on a line of its own should work
     if ($bol && m/\G(\s*\n)*((\&gt;))+\n/cog) {
         return $q->p();
@@ -25,11 +28,9 @@ sub EmailQuoteRule
     # > in last letter.
     elsif ($bol && m/\G(\s*\n)*((\&gt;)+)[ \t]/cog
            or InElement('dd') && m/\G(\s*\n)+((\&gt;)+)[ \t]/cog) {
-        $leng = length($2) / 4;
+        my $leng = length($2) / 4;
         return CloseHtmlEnvironmentUntil('dd') . OpenHtmlEnvironment('dl',$leng, 'quote')
         . $q->dt() . AddHtmlEnvironment('dd');
     }
     return;
-}	
-   
-
+}

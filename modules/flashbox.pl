@@ -1,4 +1,6 @@
 #!/usr/bin/env perl
+use strict;
+
 # ====================[ flashbox.pl                        ]====================
 
 =head1 NAME
@@ -16,6 +18,8 @@ directory of your Oddmuse Wiki.
 package OddMuse;
 
 AddModuleDescription('flashbox.pl', 'Flashbox Extension');
+
+use vars qw($bol @MyRules %RuleOrder);
 
 # ....................{ CONFIGURATION                      }....................
 

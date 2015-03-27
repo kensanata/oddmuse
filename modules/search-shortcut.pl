@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('search-shortcut.pl', 'Comments on Searching');
+
+use vars qw($FullUrl);
 
 *OldGetHeader = *GetHeader;
 *GetHeader = *NewGetHeader;

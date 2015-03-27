@@ -16,6 +16,8 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('templates.pl', 'Template Extension');
 
 # Any page with a name ending in "Template" is a valid template.
@@ -23,9 +25,10 @@ AddModuleDescription('templates.pl', 'Template Extension');
 # available templates.  When the user clicks on one of the links,
 # The text area is filled with the template.
 
-$Action{'edit'} = \&TemplateDoEdit;
-
+use vars qw($q %IndexHash %Action $EditNote);
 use vars qw($TemplatePattern);
+
+$Action{'edit'} = \&TemplateDoEdit;
 
 $TemplatePattern = q{Template$}; # strange quoting because of cperl-mode ;)
 

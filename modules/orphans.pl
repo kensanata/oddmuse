@@ -22,10 +22,14 @@
 # This module will show ALL orphaned pages, even whole orphaned
 # subgraphs on this wiki.
 
+use strict;
+
 AddModuleDescription('orphans.pl', 'Orphans Extension');
 
+use vars qw(%Action $RCName $HomePage);
+
 # What is interesting to us?
-@orphan_entrypoints = ($HomePage, $RCName);
+my @orphan_entrypoints = ($HomePage, $RCName);
 
 $Action{orphans} = \&DoOrphans;
 

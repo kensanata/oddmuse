@@ -16,8 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+# use strict; #TODO what is $match (52) ?
+
 AddModuleDescription('index.pl', 'Index Extension');
 
+use vars qw($q %Action %PermanentAnchors %NearSource);
 $Action{'printable-index'} = \&DoPrintableIndex;
 
 sub DoPrintableIndex {

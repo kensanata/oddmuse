@@ -1,6 +1,10 @@
 # We just try to autodetect everything.
 
+use strict;
+
 AddModuleDescription('vcard.pl');
+
+use vars qw($q $bol @MyRules);
 
 push(@MyRules, \&hCardRule);
 

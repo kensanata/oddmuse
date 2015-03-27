@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('headers.pl', 'Header Markup Extension');
+
+use vars qw($q $bol %RuleOrder @MyRules $PortraitSupportColor $PortraitSupportColorDiv);
 
 # After toc.pl but before usemod.pl
 push(@MyRules, \&HeadersRule);

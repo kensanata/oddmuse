@@ -16,6 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
+AddModuleDescription('page-type.pl', 'Page Type Extension');
+
+use vars qw($q %AdminPages @MyInitVariables $LinkPattern $FreeLinks $FreeLinkPattern $WikiLinks);
 use vars qw($PageTypesName);
 
 # You need to define the available types on the following page.
@@ -42,8 +47,6 @@ sub PageTypeInit {
 # have page clustering enabled (see the manual), then the page type
 # will automatically act as a cluster.
 
-AddModuleDescription('page-type.pl', 'Page Type Extension');
-
 *OldPageTypeDoPost = *DoPost;
 *DoPost = *NewPageTypeDoPost;
 
@@ -64,7 +67,7 @@ sub NewPageTypeDoPost {
 }
 
 *OldPageTypeGetTextArea = *GetTextArea;
-*GetTextArea = NewPageTypeGetTextArea;
+*GetTextArea = *NewPageTypeGetTextArea;
 
 sub NewPageTypeGetTextArea {
   my ($name, $text) = @_;

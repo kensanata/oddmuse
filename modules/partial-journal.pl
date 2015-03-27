@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('partial-journal.pl', 'Partial Page Journal');
+
+use vars qw($q %Page @MyRules $CommentsPrefix);
 
 # Set up some rule so that we can mess with '-- cut --' (change to <hr>)
 push(@MyRules, \&PartialCutRule);
@@ -29,7 +33,7 @@ sub PartialCutRule {
 }
 
 *OldPartialPrintJournal = *PrintJournal;
-*PrintJournal = NewPartialPrintJournal;
+*PrintJournal = *NewPartialPrintJournal;
 
 sub NewPartialPrintAllPages {
   my $links = shift;
@@ -62,5 +66,3 @@ sub NewPartialPrintJournal {
   *PrintAllPages = *OldPartialPrintAllPages;
   return $out;
 }
-
-

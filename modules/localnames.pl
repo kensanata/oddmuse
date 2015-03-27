@@ -13,7 +13,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 AddModuleDescription('localnames.pl', 'Local Names Extension');
+
+use vars qw($q $Now %Page %Action $OpenPageName $ScriptName $DataDir $RssDir @MyRules @MyMaintenance @MyInitVariables $FullUrlPattern $FreeLinkPattern $CommentsPrefix $UseCache @UserGotoBarPages %AdminPages @MyAdminCode @MyFooters $UsePathInfo);
 
 =head1 Local Names
 
@@ -423,7 +427,7 @@ sub GetWantedPages {
   # skip comment pages
   if ($CommentsPrefix) {
     foreach my $id (keys %WantedPages) {
-      delete $WantedPages{$id} if $id =~ /^$CommentsPrefix/o;
+      delete $WantedPages{$id} if $id =~ /^$CommentsPrefix/o; # TODO use $CommentsPattern ?
     }
   }
   # now something more complicated: if near-links.pl was loaded, then

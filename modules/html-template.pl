@@ -16,6 +16,8 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('html-template.pl', 'HTML Templates');
 
 # The entire mechanism of how pages are built is now upside down.
@@ -24,6 +26,7 @@ AddModuleDescription('html-template.pl', 'HTML Templates');
 #
 # This is the beginning of PHP-in-Perl.  :(
 
+use vars qw($q %Action $DataDir $UseCache $LastUpdate);
 use vars qw($HtmlTemplateDir);
 
 $HtmlTemplateDir   = "$DataDir/templates";

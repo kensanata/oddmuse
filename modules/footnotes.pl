@@ -1,4 +1,6 @@
 #!/usr/bin/env perl
+use strict;
+
 # ====================[ footnotes.pl                       ]====================
 
 =head1 NAME
@@ -15,6 +17,7 @@ package OddMuse;
 
 AddModuleDescription('footnotes.pl', 'Footnotes Extension');
 
+use vars qw($q $bol @MyRules @MyInitVariables);
 # ....................{ CONFIGURATION                      }....................
 
 =head1 CONFIGURATION

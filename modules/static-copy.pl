@@ -12,8 +12,11 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 AddModuleDescription('static-copy.pl', 'Static Copy Extension');
 
+use vars qw($q %Page %IndexHash $OpenPageName $ScriptName $SiteName $UsePathInfo %Action $CommentsPrefix $FreeLinks $WikiLinks $LinkPattern $FreeLinkPattern $StyleSheet $StyleSheetPage $TopLinkBar $UserGotoBar $LogoUrl $SidebarName);
 $Action{static} = \&DoStatic;
 
 use vars qw($StaticDir $StaticAlways %StaticMimeTypes $StaticUrl);
@@ -211,7 +214,7 @@ EOT
   # footer
   my $links = '';
   if ($OpenPageName !~ /^$CommentsPrefix/ # fails if $CommentsPrefix is empty!
-      and $IndexHash{$CommentsPrefix . $OpenPageName}) {
+      and $IndexHash{$CommentsPrefix . $OpenPageName}) { # TODO use $CommentsPattern
     $links .= ScriptLink(UrlEncode($CommentsPrefix . $OpenPageName),
                          T('Comments on this page'));
   }

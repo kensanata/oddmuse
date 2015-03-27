@@ -12,6 +12,8 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 =head1 NAME
 
 git - An Oddmuse module to save all changes made into a git repository.
@@ -63,9 +65,10 @@ If $GitDebug is set, this variable holds STDOUT of the git command.
 
 use Cwd;
 use File::Temp ();
-use vars qw($GitBinary $GitRepo $GitMail $GitPageFile $GitDebug $GitResult);
 
 AddModuleDescription('git.pl', 'Git Extension');
+use vars qw($q %Page %Action %IndexHash @IndexList @MyInitVariables @MyMaintenance $DataDir);
+use vars qw($GitBinary $GitRepo $GitMail $GitPageFile $GitDebug $GitResult);
 
 $GitBinary = 'git';
 $GitMail = 'unknown@oddmuse.org';

@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('checkbox.pl', 'Checklist Extension');
+
+use vars qw($q $bol @HtmlStack %Action %Page $OpenPageName @MyRules);
 
 # [[ : To do]]
 # [[X: Done]]

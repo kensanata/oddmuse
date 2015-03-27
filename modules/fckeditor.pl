@@ -16,8 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA,
 
+use strict;
+
 AddModuleDescription('fckeditor.pl', 'Using FCKeditor In Addition To Wiki Markup');
 
+use vars qw($q @MyRules @MyInitVariables $HtmlHeaders);
 use vars qw($FCKeditorHeight);
 
 $FCKeditorHeight = 400; # Pixel

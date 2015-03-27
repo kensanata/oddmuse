@@ -13,8 +13,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 AddModuleDescription('enclosure.pl', 'Podcasting');
 
+use vars qw(%Page %IndexHash @MyRules $FreeLinkPattern);
 use vars qw(@Enclosures);
 
 push(@MyRules, \&EnclosureRule);

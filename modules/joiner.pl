@@ -27,7 +27,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# use strict; #TODO what is $status?
+
 AddModuleDescription('joiner.pl', 'Joiner Extension');
+
+use vars qw($q $Now %Action @MyAdminCode @MyInitVariables $UserGotoBar $DataDir $FullUrl $SiteName %CookieParameters %InvisibleCookieParameters @QuestionaskerQuestions $QuestionaskerRememberAnswer $QuestionaskerSecretKey $ReCaptchaSecretKey $ReCaptchaRememberAnswer);
 
 =head1 DESCRIPTION
 
@@ -448,7 +452,7 @@ sub JoinerDoConfirmRegistration {
   my $username = GetParam('joiner_username', '');
   my $key = GetParam('joiner_key', '');
 
-  $message = ValidId($username);
+  my $message = ValidId($username);
   if ($message ne '') {
     $JoinerMessage = T('Username:') . ' ' . $message;
     JoinerShowRegistrationConfirmationFailed();
@@ -992,7 +996,7 @@ sub JoinerDoConfirmEmail {
   my $username = GetParam('joiner_username', '');
   my $key = GetParam('joiner_key', '');
 
-  $message = ValidId($username);
+  my $message = ValidId($username);
   if ($message ne '') {
     $JoinerMessage = $message;
     JoinerShowConfirmEmailFailed();
@@ -1105,10 +1109,10 @@ sub JoinerDoBan {
 sub JoinerDoProcessBan {
   UserIsAdminOrError();
 
-  $username = GetParam('joiner_username', '');
-  $ban = GetParam('joiner_ban', '');
+  my $username = GetParam('joiner_username', '');
+  my $ban = GetParam('joiner_ban', '');
 
-  $message = ValidId($username);
+  my $message = ValidId($username);
   if ($message ne '') {
     $JoinerMessage = $message;
     JoinerDoBan();

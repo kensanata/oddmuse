@@ -22,7 +22,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# use strict; #TODO what is $upload (344)?
+
 AddModuleDescription('gd_security_image.pl');
+
+use vars qw($q $Now %Action $FullUrl $LinkPattern $FreeLinks $FreeLinkPattern $WikiLinks $DataDir $ModuleDir @MyInitVariables %CookieParameters %InvisibleCookieParameters);
 
 =head1 DESCRIPTION
 
@@ -373,7 +377,7 @@ sub GdSecurityImageInitVariables {
   %GdSecurityImageProtectedForms = ('comment' => 1,
                               'edit upload' => 1,
                               'edit text' => 1,)
-    unless defined %GdSecurityImageProtectedForms;
+    unless %GdSecurityImageProtectedForms;
 
   $GdSecurityImageDataDir = $DataDir unless defined $GdSecurityImageDataDir;
 

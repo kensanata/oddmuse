@@ -1,7 +1,10 @@
 # This module is copied from http://sheep.art.pl/Oddmuse_modules
 
+use strict;
+
 AddModuleDescription('nosearch.pl');
 
+use vars qw($q @MyAdminCode);
 
 *OldGetSearchLink = *GetSearchLink;
 *GetSearchLink = *NewGetSearchLink;
@@ -24,5 +27,3 @@ sub BacklinksMenu {
       push(@$menuref, $link);
   }
 }
-
-

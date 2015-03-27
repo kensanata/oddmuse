@@ -17,8 +17,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('calendar.pl', 'Calendar Extension');
 
+use vars qw($q %Page %Action $Now $OpenPageName $CollectingJournal $FreeLinkPattern @MyRules);
 use vars qw($CalendarOnEveryPage $CalAsTable $CalStartMonday);
 
 $CalendarOnEveryPage = 0;   # 1=on every page is a month-div situated in the header, use css to control
@@ -149,21 +152,21 @@ sub CalendarRule {
 
 sub PrintYearCalendar {
   my $year = shift;
-  print $q->p({-class=>nav},
+  print $q->p({-class=>'nav'},
 	      ScriptLink('action=calendar;year=' . ($year-1), T('Previous')),
 	      '|',
 	      ScriptLink('action=calendar;year=' . ($year+1), T('Next')));
   if ($CalAsTable) {
       print '<table><tr>';
-      for $mon ((1..12)) {
+      for my $mon (1..12) {
         print '<td>'.Cal($year, $mon, 1).'</td>';
-        if (($mon==3) or ($mon==6) or ($mon==9)) {
+        if ($mon == 3 or $mon == 6 or $mon == 9) {
             print '</tr><tr>';
         }
       }
       print '</tr></table>';
   } else {
-      for $mon ((1..12)) {
+      for my $mon (1..12) {
         print Cal($year, $mon, 1);
       }
   }

@@ -16,8 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('age.pl', 'Age Indication Extension');
 
+use vars qw(%Page $Now $ScriptName);
 use vars qw(%AgeEffect $AgeParameter);
 
 # map page age to theme
@@ -46,7 +49,7 @@ sub NewAgeGetHeader {
     }
   }
   return $header unless $theme;
-  $oldtheme = GetParam('theme', $ScriptName);
+  my $oldtheme = GetParam('theme', $ScriptName);
   $header =~ s/class="$oldtheme"/class="$theme"/; # touch as little as possible
   return $header;
 }

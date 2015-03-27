@@ -16,8 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('image.pl', 'Image Extension');
 
+use vars qw($q @MyRules $FullUrlPattern $FreeLinkPattern $FreeInterLinkPattern %IndexHash $ScriptName $UsePathInfo $Monolithic);
 use vars qw($ImageUrlPath);
 
 $ImageUrlPath = '/images';      # URL where the images are to be found

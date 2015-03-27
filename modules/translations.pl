@@ -17,7 +17,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('translations.pl', 'Translation Extension');
+
+use vars qw(@MyRules $FreeLinkPattern);
 
 push(@MyRules, \&TranslationRule);
 

@@ -13,11 +13,14 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 AddModuleDescription('timezone.pl', 'Timezone Extension');
 
 use DateTime;
 use DateTime::TimeZone;
 
+use vars qw($q %Action %CookieParameters);
 use vars qw($defaultTZ);
 
 $defaultTZ = 'UTC';

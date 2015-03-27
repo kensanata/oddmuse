@@ -1,9 +1,13 @@
 #!/usr/bin/env perl
 # ====================[ usemod.pl                          ]====================
+
+use strict;
+
 AddModuleDescription('usemod.pl', 'Usemod Markup Extension');
 
+use vars qw($q $bol %RuleOrder @MyRules @MyInitVariables $PortraitSupportColor $PortraitSupportColorDiv);
 use vars qw($RFCPattern $ISBNPattern @HtmlTags $HtmlTags $HtmlLinks $RawHtml
-      $UseModSpaceRequired $UseModMarkupInTitles);
+      $UseModSpaceRequired $UseModExtraSpaceRequired $UseModMarkupInTitles);
 
 push(@MyRules, \&UsemodRule);
 # The ---- rule conflicts with the --- rule in markup.pl and portrait-support.pl

@@ -16,9 +16,12 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+# use strict; #TODO we should add my %Unclustered, right? Also fix *restref weirdness
+
 AddModuleDescription('clustermap.pl', 'ClusterMap Module');
 
-use vars qw($ClusterMapPage $ClusterMapTOC $FilterUnclusteredRegExp @ClusterMapAdminPages);
+use vars qw($q %Action %Page $OpenPageName @MyRules @MyAdminCode $HomePage $DeletedPage $RCName $InterMap $BannedContent $BannedHosts %AdminPages $RssExclude @AdminPages $NearMap);
+use vars qw($ClusterMapPage %ClusterMap $ClusterMapTOC $FilterUnclusteredRegExp @ClusterMapAdminPages $PrintTOCAnchor);
 
 $ClusterMapPage = "Site_Map" unless defined $ClusterMapPage;
 
@@ -32,9 +35,9 @@ $FilterUnclusteredRegExp = '\d\d\d\d-\d\d-\d\d|\d* *Comments on .*'
 # They are also added to the Important Pages list on the administration page
 @ClusterMapAdminPages = ( $HomePage, $DeletedPage, $BannedContent,
 	$BannedHosts, $InterMap, $NearMap, $RCName, $RssExclude)
-	
-	unless defined @ClusterMapAdminPages;
-	
+
+	unless @ClusterMapAdminPages;
+
 $ClusterMapTOC = 1 unless defined $ClusterMapTOC;
 $PrintTOCAnchor = 0;
 
@@ -59,7 +62,7 @@ sub ClusterMapRule {
 	if (/\G^([\n\r]*\<\s*clustermap\s*\>\s*)$/mgc) {
 		Dirty($1);
 		my $oldpos = pos;
-		$oldstr = $_;
+		my $oldstr = $_;
 		CreateClusterMap();
 		print "</p>";		# Needed to clean up, but could cause problems
 							# if <clustermap> isn't put into a new paragraph
@@ -69,7 +72,6 @@ sub ClusterMapRule {
 		$_ = $oldstr;
 		return '';
 	}
-	
 	return;
 }
 
@@ -79,7 +81,7 @@ sub DoClusterMap {
 	# For each cluster, get list of all pages in that cluster
 	# Create map, using body of cluster pages, followed by titles of pages
 	#	within that cluster
-	
+
 	print GetHeader('',$ClusterMapPage,'');
 
 	CreateClusterMap();
@@ -94,21 +96,20 @@ sub DoClusterMap {
 		print '</ol></div>';
 		$PrintTOCAnchor = 1;
 	}
-	print '<div class="content">';	
-	PrintClusterMap(); 
-	
+	print '<div class="content">';
+	PrintClusterMap();
+
 	print '</div>';
 	PrintFooter();
 }
 
 sub DoUnclustered {
-	
 	print GetHeader('','Pages without a Cluster','');
 	print '<div class="content">';
-	
+
 	CreateClusterMap();
 	PrintUnclusteredMap();
-	
+
 	print '</div>';
 	PrintFooter();
 }
@@ -122,7 +123,7 @@ sub PrintClusterMap {
 		$free =~ s/_/ /g;
 
 		OpenPage($cluster);
-		
+
 		if ( FreeToNormal(GetCluster($Page{text})) eq $cluster ) {
 			# Don't display the page name twice if the cluster page is also
 			# a member of the cluster
@@ -137,7 +138,7 @@ sub PrintClusterMap {
 			print $q->h1(GetPageOrEditLink($free, $free));
 		}
 		PrintWikiToHTML($Page{text}, 0);
-		
+
 		print "<ul>";
 		foreach my $page (sort keys %{$ClusterMap{$cluster}}) {
 			my $title = $page;
@@ -150,28 +151,28 @@ sub PrintClusterMap {
 
 sub CreateClusterMap {
 	my @pages = AllPagesList();
-	
+
 	local %Page;
 	local $OpenPageName='';
-	
+
 	foreach my $page ( @pages) {
 		OpenPage($page);
 		my $cluster = FreeToNormal(GetCluster($Page{text}));
-		
+
 		next if ($cluster eq $DeletedPage);		# Don't map Deleted Pages
-		
+
 		next if (TextIsFile($Page{text}));		# Don't map files
-		
+
 		if ($cluster eq "") {					# Grab Unclustered Pages
 			$Unclustered{$page} = 1;
 			next;
 		}
-		
+
 		if ($cluster ne FreeToNormal($page)) {				# Create Cluster Map
 			$ClusterMap{$cluster}{$page} = 1;
 		}
 	}
-	
+
 	# Strip out Admin Pages
 	foreach my $page (@AdminPages) {
 		delete($Unclustered{$page});
@@ -182,7 +183,7 @@ sub ClusterMapPrintRcHtml {
 	my ( @options ) = @_;
 	my $page = "";
 	my $cluster = GetParam(rcclusteronly);
-	
+
 	if ($cluster ne "") {
 		CreateClusterMap();
 		print "Pages in this cluster:";
@@ -194,13 +195,13 @@ sub ClusterMapPrintRcHtml {
 		}
 		print "</ul>";
 	}
-	
+
 	OldPrintRcHtml(@options);
 }
 
 sub PrintUnclusteredMap {
 		print "<ul>";
-		foreach $page (sort keys %Unclustered) {
+		foreach my $page (sort keys %Unclustered) {
 			my $title = $page;
 			$title =~ s/_/ /g;
 			if ($title !~ /^($FilterUnclusteredRegExp)$/) {
@@ -208,12 +209,11 @@ sub PrintUnclusteredMap {
 			}
 		}
 		print "</ul>";
-
 }
 
 sub ClusterMapAdminRule {
 	($id, $menuref, *restref) = @_;
-	
+
 	push(@$menuref, ScriptLink('action=clustermap', T('Clustermap'), 'clustermap'));
 	push(@$menuref, ScriptLink('action=unclustered', T('Pages without a Cluster'), 'unclustered'));
 }
@@ -228,7 +228,7 @@ sub ClusterMapBrowseResolvedPage {
 	if ($id eq $ClusterMapPage) {
 		CreateClusterMap();
 		print GetHeader('',$title,'');
-		print '<div class="content">';	
+		print '<div class="content">';
 		if ($ClusterMapTOC) {
 			my $TOCCount = 0;
 			print '<div class="toc"><h2>Categories</h2><ol>';
@@ -241,7 +241,7 @@ sub ClusterMapBrowseResolvedPage {
 			$PrintTOCAnchor = 1;
 		}
 		PrintClusterMap();
-		print '</div>';	
+		print '</div>';
 		PrintFooter();
 	} else {
 		OldBrowseResolvedPage($id);
@@ -260,7 +260,7 @@ sub ClusterMapPrintWikiToHTML {
 		&& ($pageText =~ /^\s*$/s)){
 		SetParam('rcclusteronly',0);
 		CreateClusterMap();
-		print '<div class="content">';	
+		print '<div class="content">';
 		if ($ClusterMapTOC) {
 			my $TOCCount = 0;
 			print '<div class="toc"><h2>Contents</h2><ol>';
@@ -272,7 +272,7 @@ sub ClusterMapPrintWikiToHTML {
 			$PrintTOCAnchor = 1;
 		}
 		PrintClusterMap();
-		print '</div>';	
+		print '</div>';
 	}
 	OldPrintWikiToHTML(@_);
 }

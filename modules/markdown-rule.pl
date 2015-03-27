@@ -13,7 +13,11 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 AddModuleDescription('markdown-rule.pl', 'Markdown Rule Extension');
+
+use vars qw($q $bol %RuleOrder @MyRules $UrlProtocols $FullUrlPattern);
 
 push(@MyRules, \&MarkdownRule);
 # Since we want this package to be a simple add-on, we try and avoid

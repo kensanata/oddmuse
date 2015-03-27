@@ -14,15 +14,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+
 AddModuleDescription('adsense.pl', 'AdSense Module');
 
+use vars qw(@MyInitVariables @MyFooters);
 use vars qw($AdSensePageName $AdSensePlace);
 
 push (@MyInitVariables, \&AdSenseInit);
 
 sub AdSenseInit {
   $AdSensePageName = "AdSense" unless $AdSensePageName;
-  $AdSensePlace = "top" unless $AdSensePlace;	   
+  $AdSensePlace = "top" unless $AdSensePlace;
   if ($AdSensePlace eq 'bottom') {  # Process adsense after all modules have been loaded
     push (@MyFooters, \&GetAdSense);
   } elsif ($AdSensePlace eq 'top')  {
@@ -40,4 +43,3 @@ sub AdSenseNewGetHtmlHeader {
 sub GetAdSense {
   return GetPageContent($AdSensePageName) if GetParam('action', 'browse') eq 'browse';
 }
-

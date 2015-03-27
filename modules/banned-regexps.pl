@@ -12,6 +12,8 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+#use strict; # TODO Something weird with $RegexpOldBannedContent
+
 package OddMuse;
 
 AddModuleDescription('banned-regexps.pl', 'Banning Regular Expressions');
@@ -42,6 +44,7 @@ This extension works with logbannedcontent.pl.
 
 =cut
 
+use vars qw(%AdminPages %LockOnCreation @MyInitVariables %PlainTextPages $BannedContent $BannedFile);
 use vars qw($BannedRegexps);
 
 $BannedRegexps = 'BannedRegexps';

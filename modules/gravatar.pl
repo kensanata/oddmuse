@@ -12,9 +12,13 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+# use strict; this makes no sense: my $addition = ... . $addition
+
 AddModuleDescription('gravatar.pl', 'Gravatar');
 
 use Digest::MD5 qw(md5_hex);
+
+use vars qw($q $bol %CookieParameters $FullUrlPattern @MyRules @MyInitVariables);
 
 # Same as in mail.pl
 $CookieParameters{mail} = '';

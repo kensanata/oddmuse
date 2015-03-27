@@ -16,7 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
+use strict;
+
 AddModuleDescription('signature.pl', 'Signature Extension');
+
+use vars qw($Now @MyRules @MyMacros);
 
 push(@MyRules, \&SignatureExceptionRule);
 
