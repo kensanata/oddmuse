@@ -16,12 +16,14 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-# use strict; #TODO we should add my %Unclustered, right? Also fix *restref weirdness
+use strict;
 
 AddModuleDescription('clustermap.pl', 'ClusterMap Module');
 
 use vars qw($q %Action %Page $OpenPageName @MyRules @MyAdminCode $HomePage $DeletedPage $RCName $InterMap $BannedContent $BannedHosts %AdminPages $RssExclude @AdminPages $NearMap);
 use vars qw($ClusterMapPage %ClusterMap $ClusterMapTOC $FilterUnclusteredRegExp @ClusterMapAdminPages $PrintTOCAnchor);
+
+my %Unclustered = ();
 
 $ClusterMapPage = "Site_Map" unless defined $ClusterMapPage;
 
@@ -182,7 +184,7 @@ sub CreateClusterMap {
 sub ClusterMapPrintRcHtml {
 	my ( @options ) = @_;
 	my $page = "";
-	my $cluster = GetParam(rcclusteronly);
+	my $cluster = GetParam('rcclusteronly');
 
 	if ($cluster ne "") {
 		CreateClusterMap();
@@ -212,7 +214,7 @@ sub PrintUnclusteredMap {
 }
 
 sub ClusterMapAdminRule {
-	($id, $menuref, *restref) = @_;
+	my ($id, $menuref) = @_;
 
 	push(@$menuref, ScriptLink('action=clustermap', T('Clustermap'), 'clustermap'));
 	push(@$menuref, ScriptLink('action=unclustered', T('Pages without a Cluster'), 'unclustered'));
