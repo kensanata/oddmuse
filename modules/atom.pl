@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-# use strict; # TODO fix problem with %excluded (108) and $id (118)
+use strict;
 
 use XML::Atom::Entry;
 use XML::Atom::Link;
@@ -21,7 +21,7 @@ use XML::Atom::Person;
 
 AddModuleDescription('atom.pl', 'Atom Extension');
 
-use vars qw($q %Page %Action $CommentsPrefix $ScriptName $SiteName $MaxPost $UseDiff $NewText $DeletedPage @MyInitVariables @MyMacros $FS $BannedContent $RssStyleSheet $RssRights $RssLicense $RssImageUrl $RCName @UploadTypes $UploadAllowed $UsePathInfo $SiteDescription $LastUpdate $InterWikiMoniker);
+use vars qw($q %Page %Action $CommentsPrefix $ScriptName $SiteName $MaxPost $UseDiff $NewText $DeletedPage @MyInitVariables @MyMacros $FS $BannedContent $RssStyleSheet $RssRights $RssLicense $RssImageUrl $RssExclude $RCName @UploadTypes $UploadAllowed $UsePathInfo $SiteDescription $LastUpdate $InterWikiMoniker);
 
 push(@MyInitVariables, \&AtomInit);
 
@@ -102,6 +102,14 @@ sub GetRcAtom {
 		(ref $RssLicense eq 'ARRAY' ? @$RssLicense : $RssLicense));
   $feed .= AtomTag('wiki:interwiki', $InterWikiMoniker) if $InterWikiMoniker;
   $feed .= AtomTag('logo', $RssImageUrl) if $RssImageUrl;
+  my %excluded = ();
+  if (GetParam("exclude", 1)) {
+    foreach (split(/\n/, GetPageContent($RssExclude))) {
+      if (/^ ([^ ]+)[ \t]*$/) { # only read lines with one word after one space
+	$excluded{$1} = 1;
+      }
+    }
+  }
   # Now call GetRc with some blocks of code as parameters:
   ProcessRcLines(sub {}, sub {
       my ($pagename, $timestamp, $host, $username, $summary, $minor, $revision, $languages, $cluster) = @_;
@@ -115,7 +123,7 @@ sub GetRcAtom {
         . (GetParam('all', $cluster)
     	? QuoteHtml($ScriptName) . "?" . GetPageParameters('browse', $pagename, $revision, $cluster)
     	: $url . UrlEncode($pagename)) . qq{"/>\n};
-      $feed .= AtomLink("$ScriptName/atom/wiki/$id");
+      $feed .= AtomLink("$ScriptName/atom/wiki/$pagename");
       $feed .= AtomTag('summary', QuoteHtml($summary));
       $feed .= qq{<content type="xhtml">\n<div xmlns="http://www.w3.org/1999/xhtml">\n}
         . PageHtml($pagename, 50*1024,$q->div(T('This page is too big to send over RSS.')))
