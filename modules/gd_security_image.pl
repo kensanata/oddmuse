@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# use strict; #TODO what is $upload (344)?
+use strict;
 
 AddModuleDescription('gd_security_image.pl');
 
@@ -328,7 +328,7 @@ sub NewGdSecurityImageDoPost {
 *GetEditForm = *NewGdSecurityImageGetEditForm;
 
 sub NewGdSecurityImageGetEditForm {
-  return GdSecurityImageAddTo(OldGdSecurityImageGetEditForm(@_));
+  return GdSecurityImageAddTo(OldGdSecurityImageGetEditForm(@_), $_[1]);
 }
 
 *OldGdSecurityImageGetCommentForm = *GetCommentForm;
@@ -339,7 +339,7 @@ sub NewGdSecurityImageGetCommentForm {
 }
 
 sub GdSecurityImageAddTo {
-  my $form = shift;
+  my ($form, $upload) = @_;
   if (not $upload
       and not GdSecurityImageException(GetId())
       and not UserIsEditor()) {
