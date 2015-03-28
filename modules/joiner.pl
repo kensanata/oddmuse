@@ -27,7 +27,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# use strict; #TODO what is $status?
+use strict;
 
 AddModuleDescription('joiner.pl', 'Joiner Extension');
 
@@ -167,7 +167,7 @@ sub JoinerCreateAccount {
 
   my ($account_status, $account_data)
     = ReadFile(JoinerGetAccountFile($username));
-  if ($status) {
+  if ($account_status) {
     return T('Username:') . ' ' .
       Ts('The username %s already exists.', $username);
   }
