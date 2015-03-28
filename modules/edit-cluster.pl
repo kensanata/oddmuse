@@ -12,13 +12,14 @@
 #
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
-# use strict; #TODO $rcfilteronly and $rcuseronly
+
+use strict;
 
 AddModuleDescription('edit-cluster.pl');
 
 use vars qw($q $FS $RcDefault @RcDays $RecentTop $LastUpdate);
 
-$EditCluster = 'EditCluster';
+our $EditCluster = 'EditCluster';
 
 sub GetRc {
   my $printDailyTear = shift;
@@ -148,9 +149,9 @@ sub EditClusterNewRcHeader {
   $form .= $q->input({-type=>'hidden', -name=>'action', -value=>'rc'});
   $form .= $q->input({-type=>'hidden', -name=>'all', -value=>1}) if $all;
   $form .= $q->input({-type=>'hidden', -name=>'days', -value=>$days}) if $days != $RcDefault;
-  $form .= $q->input({-type=>'hidden', -name=>'rcfilteronly', -value=>$rcfilteronly}) if $rcfilteronly;
-  $form .= $q->input({-type=>'hidden', -name=>'rcuseronly', -value=>$rcuseronly}) if $rcuseronly;
-  $form .= $q->input({-type=>'hidden', -name=>'rchostonly', -value=>$rchostonly}) if $rchostonly;
+  $form .= $q->input({-type=>'hidden', -name=>'rcfilteronly', -value=>$filterOnly}) if $filterOnly;
+  $form .= $q->input({-type=>'hidden', -name=>'rcuseronly', -value=>$userOnly}) if $userOnly;
+  $form .= $q->input({-type=>'hidden', -name=>'rchostonly', -value=>$hostOnly}) if $hostOnly;
   $form .= $q->input({-type=>'hidden', -name=>'match', -value=>$match}) if $match;
   $form .= $q->input({-type=>'hidden', -name=>'lang', -value=>$lang}) if $lang;
   print $form, ' ', $q->submit(T('Go!')), $q->end_form();
