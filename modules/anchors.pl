@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-# use strict; #TODO what is $free (42)?
+use strict;
 
 AddModuleDescription('anchors.pl', 'Local Anchor Extension');
 
@@ -38,8 +38,10 @@ sub AnchorsRule {
     if (!$text && $bracket) {
       $text = BracketLink(++$FootnoteNumber); # s/_/ /g happens further down!
       $class .= ' number';
-      $title = $id; # override title
-      $title =~ s/_/ /g if $free;
+      # Since we're displaying a number such as [1], the title attribute should tell us where this will go.
+      $title = "$2 ($3)";
+      # The user might have writen [[[FooBar#one two]]] or [[[FooBar#one_two]]]
+      $title =~ s/_/ /g;
     }
     $text = $id unless $text;
     $text =~ s/_/ /g;

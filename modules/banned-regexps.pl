@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-#use strict; # TODO Something weird with $RegexpOldBannedContent
+use strict;
 
 package OddMuse;
 
@@ -55,10 +55,15 @@ push(@MyInitVariables, sub {
        $PlainTextPages{$BannedRegexps} = 1;
      });
 
+my $RegexpOldBannedContent; # for use strict
+
 *RegexpOldBannedContent = *BannedContent;
 *BannedContent = *RegexpNewBannedContent;
 
-# the above also changes the mapping for the variable!
+# The code below changes both the sub and the variable. $BannedContent now points to $RegexpNewBannedContent (which is
+# undefined) and the name of the Banned Content page is only accessible via $RegexpOldBannedContent. If we copy
+# $RegexpOldBannedContent to $BannedContent, everything else will keep working.
+
 $BannedContent = $RegexpOldBannedContent;
 
 sub RegexpNewBannedContent {
