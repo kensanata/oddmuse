@@ -1,10 +1,25 @@
-# use strict; #TODO $rcfilteronly and $rcuseronly
+# Copyright (C) 2005–2015  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2014–2015  Aleks-Daniel Jakimenko <alex.jakimenko@gmail.com>
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
+
+use strict;
 
 AddModuleDescription('edit-cluster.pl');
 
 use vars qw($q $FS $RcDefault @RcDays $RecentTop $LastUpdate);
 
-$EditCluster = 'EditCluster';
+our $EditCluster = 'EditCluster';
 
 sub GetRc {
   my $printDailyTear = shift;
@@ -134,9 +149,9 @@ sub EditClusterNewRcHeader {
   $form .= $q->input({-type=>'hidden', -name=>'action', -value=>'rc'});
   $form .= $q->input({-type=>'hidden', -name=>'all', -value=>1}) if $all;
   $form .= $q->input({-type=>'hidden', -name=>'days', -value=>$days}) if $days != $RcDefault;
-  $form .= $q->input({-type=>'hidden', -name=>'rcfilteronly', -value=>$rcfilteronly}) if $rcfilteronly;
-  $form .= $q->input({-type=>'hidden', -name=>'rcuseronly', -value=>$rcuseronly}) if $rcuseronly;
-  $form .= $q->input({-type=>'hidden', -name=>'rchostonly', -value=>$rchostonly}) if $rchostonly;
+  $form .= $q->input({-type=>'hidden', -name=>'rcfilteronly', -value=>$filterOnly}) if $filterOnly;
+  $form .= $q->input({-type=>'hidden', -name=>'rcuseronly', -value=>$userOnly}) if $userOnly;
+  $form .= $q->input({-type=>'hidden', -name=>'rchostonly', -value=>$hostOnly}) if $hostOnly;
   $form .= $q->input({-type=>'hidden', -name=>'match', -value=>$match}) if $match;
   $form .= $q->input({-type=>'hidden', -name=>'lang', -value=>$lang}) if $lang;
   print $form, ' ', $q->submit(T('Go!')), $q->end_form();

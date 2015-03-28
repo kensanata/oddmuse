@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# use strict; #TODO hard stuff
+use strict;
 
 # ====================[ hibernal.pl                        ]====================
 
@@ -67,6 +67,7 @@ use vars qw($HibernalTitleOrSubtitleSuffix
             $HibernalOlderPostsLinkText
             $HibernalArchiveLinkText
             $HibernalArchiveYearLinkText
+            $HibernalPostCommentLinkText
             $HibernalPostCommentsLinkText
             $HibernalPostCommentsCreateLinkText
             $HibernalPostCommentsDemarcatorMarkup
@@ -687,7 +688,7 @@ sub PrintHibernal {
          ? SearchTitleAndBody($post_body_regexp)
          : AllPagesList()));
 
-  $posts_ordering and OrderHibernalPostNames(\$post_names, $posts_ordering);
+  $posts_ordering and OrderHibernalPostNames(\@post_names, $posts_ordering);
 
   if (defined $post_names[$posts_start_at]) {
         my $posts_end_at;
@@ -803,7 +804,7 @@ sub AssayHibernalPostBounds {
   # vagabond: off-one-harshities abound, and eat all who enter here."
   for ($posts_sans_comments = 0,
        $posts_end_at = $posts_start_at - 1,
-       $post_index =   $posts_start_at;
+       my $post_index =   $posts_start_at;
        $post_index <= $posts_end_at_max;
        $post_index++, $posts_end_at++) {
     if ($$post_names[$post_index] =~ m~^$CommentsPrefix~) {

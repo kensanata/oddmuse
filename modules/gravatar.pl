@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-# use strict; this makes no sense: my $addition = ... . $addition
+use strict;
 
 AddModuleDescription('gravatar.pl', 'Gravatar');
 
@@ -55,8 +55,7 @@ sub GravatarNewGetCommentForm {
   my $addition = $q->span({-class=>'mail'},
 			  $q->label({-for=>'mail'}, T('Email: '))
 			  . ' ' . $q->textfield(-name=>'mail', -id=>'mail',
-						-default=>GetParam('mail', ''))
-			  . $addition);
+						-default=>GetParam('mail', '')));
   $html =~ s!(name="homepage".*?)</p>!$1 $addition</p>!i;
   return $html;
 }
