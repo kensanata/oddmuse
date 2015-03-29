@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-# use strict; #TODO what is $match (52) ?
+use strict;
 
 AddModuleDescription('index.pl', 'Index Extension');
 
@@ -49,6 +49,7 @@ sub PrintableIndexPages {
   push(@pages, AllPagesList()) if GetParam('pages', 1);
   push(@pages, keys %PermanentAnchors) if GetParam('permanentanchors', 1);
   push(@pages, keys %NearSource) if GetParam('near', 0);
-  @pages = grep /$match/i, @pages if GetParam('match', '');
+  my $match = GetParam('match', '');
+  @pages = grep /$match/i, @pages if $match;
   return sort @pages;
 }
