@@ -1,5 +1,5 @@
-# Copyright (C) 2008  Alex Schroeder <alex@gu.org>
-# Copyright (C) 2004, 2005  Fletcher T. Penney <fletcher@freeshell.org>
+# Copyright (C) 2008–2015  Alex Schroeder <alex@gu.org>
+# Copyright (C) 2004–2005  Fletcher T. Penney <fletcher@freeshell.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-# use strict; #TODO what is this magic??
+use strict;
 
 AddModuleDescription('logbannedcontent.pl', 'LogBannedContent Module');
 
@@ -23,9 +23,16 @@ use vars qw($BannedFile);
 
 $BannedFile = "$DataDir/spammer.log" unless defined $BannedFile;
 
+my $LogOldBannedContent; # for use strict
+
 *LogOldBannedContent = *BannedContent;
 *BannedContent = *LogNewBannedContent;
-$BannedContent = $LogOldBannedContent; # copy variable
+
+# The code above changes both the sub and the variable. $BannedContent now points to $LogNewBannedContent (which is
+# undefined) and the name of the Banned Content page is only accessible via $LogOldBannedContent. If we copy
+# $LogOldBannedContent to $BannedContent, everything else will keep working.
+
+$BannedContent = $LogOldBannedContent;
 
 sub LogNewBannedContent {
   my $str = shift;
