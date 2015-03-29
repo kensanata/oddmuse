@@ -54,7 +54,7 @@ $RuleOrder{\&MarkupRule} = 150;
 		'~' => 'em',
 	       );
 
-%MarkupForcedPairs = ("{{{\n" => ['pre', undef, '}}}'],
+%MarkupForcedPairs = ("{{{\n" => ['pre', {}, '}}}'], # don't use undef instead of {}
 		      '##' => 'code',
 		      '%%' => 'span',
 		      '**' => 'b',
