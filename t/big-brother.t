@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 18;
+use Test::More tests => 28;
 clear_pages();
 
 AppendStringToFile($ConfigFile,
