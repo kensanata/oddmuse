@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# use strict; # TODO @results on 254
+use strict;
 
 AddModuleDescription('near-links.pl', 'Near Links');
 
@@ -251,7 +251,7 @@ sub NewNearLinksSearchTitleAndBody {
   my $string = shift;
   my @result = OldNearLinksSearchTitleAndBody($string, @_);
   my $action = GetParam('action', 'browse');
-  @results = SearchNearPages($string, @results)
+  @result = SearchNearPages($string, @result)
     if GetParam('near', 1) and not $NearLinksException{$action};
   return @result;
 }
