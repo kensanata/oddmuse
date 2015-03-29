@@ -60,7 +60,7 @@ my $RegexpOldBannedContent; # for use strict
 *RegexpOldBannedContent = *BannedContent;
 *BannedContent = *RegexpNewBannedContent;
 
-# The code below changes both the sub and the variable. $BannedContent now points to $RegexpNewBannedContent (which is
+# The code above changes both the sub and the variable. $BannedContent now points to $RegexpNewBannedContent (which is
 # undefined) and the name of the Banned Content page is only accessible via $RegexpOldBannedContent. If we copy
 # $RegexpOldBannedContent to $BannedContent, everything else will keep working.
 
