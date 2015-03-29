@@ -1,5 +1,5 @@
 # Copyright (C) 2004  Brock Wilcox <awwaiid@thelackthereof.org>
-# Copyright (C) 2006, 2007  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006–2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# use strict; #TODO what is $upload?
+use strict;
 
 AddModuleDescription('questionasker.pl', 'QuestionAsker Extension');
 
@@ -101,7 +101,7 @@ sub NewQuestionaskerDoPost {
 *GetEditForm = *NewQuestionaskerGetEditForm;
 
 sub NewQuestionaskerGetEditForm {
-  return QuestionAddTo(OldQuestionaskerGetEditForm(@_));
+  return QuestionAddTo(OldQuestionaskerGetEditForm(@_), $_[1]);
 }
 
 *OldQuestionaskerGetCommentForm = *GetCommentForm;
@@ -112,7 +112,7 @@ sub NewQuestionaskerGetCommentForm {
 }
 
 sub QuestionAddTo {
-  my $form = shift;
+  my ($form, $upload) = @_;
   if (not $upload
       and not QuestionaskerException(GetId())
       and not $QuestionaskerRememberAnswer && GetParam($QuestionaskerSecretKey, 0)
