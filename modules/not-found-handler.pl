@@ -16,11 +16,11 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-# use strict; # TODO STDOUT ?
+use strict;
 
 AddModuleDescription('not-found-handler.pl', '404 Handler Extension');
 
-use vars qw($q $OpenPageName %Page %Action $DataDir $FreeLinkPattern);
+use vars qw($q $OpenPageName %Page %Action $DataDir $FreeLinkPattern $PermanentAnchors);
 
 use File::Glob ':glob';
 use vars qw($NotFoundHandlerDir $LinkFile %LinkDb $LinkDbInit);
@@ -78,7 +78,7 @@ sub RefreshLinkDb {
     # in a multilingual setting we would need to determine the correct
     # filename in which to store it in order to get headers
     # etc. right.
-    *P = STDOUT;
+    *P = *STDOUT; # TODO most likely this does not work
     PrintWikiToHTML($Page{text}, 1, 0, 1); # revision 0, is already locked
     *STDOUT = *P;
   }
