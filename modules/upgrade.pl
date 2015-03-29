@@ -1,4 +1,4 @@
-# Copyright (C) 2014  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2014–2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-# use strict; #TODO what is $id (46) ?
+use strict;
 
 use utf8;
 
@@ -38,12 +38,11 @@ sub UpgradeNewInitVariables {
 *DoBrowseRequest = *DoUpgrade;
 
 sub DoUpgrade {
-
   # The only thing allowed besides upgrading is login and unlock
   my $action = lc(GetParam('action', ''));
   if (($action eq 'password' or $action eq 'unlock')
       and $Action{$action}) {
-    return &{$Action{$action}}($id);
+    return &{$Action{$action}}(GetId());
   }
 
   # Only admins may upgrade
