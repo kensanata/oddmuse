@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# use strict; #TODO what is $upload? (169)
+use strict;
 
 # ====================[ recapcha.pl                        ]====================
 
@@ -155,7 +155,7 @@ sub ReCaptchaInit {
 *GetCommentForm = *NewReCaptchaGetCommentForm;
 
 sub NewReCaptchaGetEditForm {
-  return ReCaptchaQuestionAddTo(OldReCaptchaGetEditForm(@_));
+  return ReCaptchaQuestionAddTo(OldReCaptchaGetEditForm(@_), $_[1]);
 }
 
 sub NewReCaptchaGetCommentForm {
@@ -163,7 +163,7 @@ sub NewReCaptchaGetCommentForm {
 }
 
 sub ReCaptchaQuestionAddTo {
-  my $form = shift;
+  my ($form, $upload) = @_;
 
   if (not $upload
       and not ReCaptchaException(GetId())
