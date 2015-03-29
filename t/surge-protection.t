@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 14;
+use Test::More tests => 24;
 clear_pages();
 
 AppendStringToFile($ConfigFile, "\$SurgeProtection = 1;\n");
