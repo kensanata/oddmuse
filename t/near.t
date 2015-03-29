@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 13;
+use Test::More tests => 16;
 
 clear_pages();
 
@@ -41,6 +41,14 @@ xpath_test(update_page('FooBar', "Test by AlexSchroeder!\n"),
 xpath_test(get_page('search=alexschroeder'),
 	   '//p[text()="Near pages:"]',
 	   '//a[@class="near"][@title="EmacsWiki"][@href="http://www.emacswiki.org/cgi-bin/wiki/AlexSchroeder"][text()="AlexSchroeder"]');
+
+my $page = get_page('search=FooBar');
+xpath_test($page,
+	   '//a[@class="local"][@href="http://localhost/wiki.pl/FooBar"][text()="FooBar"]',
+	   '//a[@class="near"][@title="EmacsWiki"][@href="http://www.emacswiki.org/cgi-bin/wiki/Comments_on_FooBar"][text()="Comments on FooBar"]',
+	   # The pages found: FooBar (locally), FooBaz (locally, because FooBar is in the body), and Comments_on_FooBar
+	   # (remote). The remove FooBar must not be counted.
+	   '//p[@class="result"][text()="3 pages found."]');
 
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
 
