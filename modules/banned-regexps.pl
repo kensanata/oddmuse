@@ -55,7 +55,7 @@ push(@MyInitVariables, sub {
        $PlainTextPages{$BannedRegexps} = 1;
      });
 
-my $RegexpOldBannedContent; # for use strict
+our $RegexpOldBannedContent; # for use strict
 
 *RegexpOldBannedContent = *BannedContent;
 *BannedContent = *RegexpNewBannedContent;

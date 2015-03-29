@@ -19,7 +19,7 @@ AddModuleDescription('multi-url-spam-block.pl', 'Multiple Link Ban Extension');
 
 use vars qw($BannedContent @MyInitVariables %AdminPages %PlainTextPages $FullUrlPattern $LocalNamesPage);
 
-my $OldMultiUrlBannedContent; # for use strict
+our $OldMultiUrlBannedContent; # for use strict
 
 *OldMultiUrlBannedContent = *BannedContent;
 *BannedContent = *NewMultiUrlBannedContent;

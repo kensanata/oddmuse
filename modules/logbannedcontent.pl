@@ -23,7 +23,7 @@ use vars qw($BannedFile);
 
 $BannedFile = "$DataDir/spammer.log" unless defined $BannedFile;
 
-my $LogOldBannedContent; # for use strict
+our $LogOldBannedContent; # for use strict
 
 *LogOldBannedContent = *BannedContent;
 *BannedContent = *LogNewBannedContent;

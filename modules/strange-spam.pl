@@ -21,7 +21,7 @@ use vars qw($StrangeBannedContent);
 
 $StrangeBannedContent = 'StrangeBannedContent';
 
-my $StrangeOldBannedContent; # use strict
+our $StrangeOldBannedContent; # use strict
 
 *StrangeOldBannedContent = *BannedContent;
 *BannedContent = *StrangeNewBannedContent;
