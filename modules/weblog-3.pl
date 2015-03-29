@@ -28,6 +28,7 @@ $CategoriesPage = 'Categories';
 
 my %Category = (); # fast checking
 my @Categories = (); # correct order
+my $CategoryInit = 0;
 
 # handle reset of $NewText in mod_apache environment
 
@@ -76,8 +77,6 @@ sub CategoryParse {
   }
   return @result;
 }
-
-my $CategoryInit = 0;
 
 sub CategoryInit {
   $CategoryInit = 1;
