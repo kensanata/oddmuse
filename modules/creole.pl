@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-#use strict; #TODO just do 'my $CreoleRuleRecursing'?
+use strict;
 
 # ====================[ creole.pl                          ]====================
 
@@ -594,10 +594,13 @@ C<CreoleRule>. This function ensures, among other safeties, that the
 C<CreoleRule> function is not recursed into more than once.
 
 =cut
+
+our $CreoleRuleRecursing; # must have a variable to localize below
+
 sub CreoleRuleRecursive {
   my     $markup = shift;
   return $markup if $CreoleRuleRecursing;  # avoid infinite loops
-  local $CreoleRuleRecursing = 1;
+  local $CreoleRuleRecursing = 1; # use local for the mod_perl case
   local $bol = 0;  # prevent block level element handling
 
   # Preserve global variables.
