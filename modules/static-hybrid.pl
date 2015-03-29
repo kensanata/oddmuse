@@ -17,7 +17,7 @@
 #	 59 Temple Place, Suite 330
 #	 Boston, MA 02111-1307 USA
 
-# use strict; #TODO what is $StaticFilesAlways ? No such variable anywhere.
+use strict;
 
 AddModuleDescription('static-hybrid.pl', 'Static Hybrid Module');
 
@@ -29,7 +29,7 @@ $Action{static} = \&DoStatic;
 
 $StaticDir = '' unless defined $StaticDir;
 $StaticUrl = '' unless defined $StaticUrl;	  # change this!
-$StaticAlways = 0 unless defined $StaticFilesAlways;
+$StaticAlways = 0 unless defined $StaticAlways;
 		# 1 = uploaded files only, 2 = all pages
 
 my $StaticMimeTypes = '/etc/http/mime.types';
@@ -203,9 +203,9 @@ sub StaticFilesNewDoPost {
 	my $old_cluster = FreeToNormal(GetCluster($Page{text}));
 	StaticFilesOldDoPost($id);
 	my $new_cluster = FreeToNormal(GetCluster($Page{text}));
-	
+
 	$ClusterHasChanged = 1 if ($old_cluster ne $new_cluster);
-	
+
 	if ($StaticAlways) {
 		# always delete
 		StaticDeleteFile($OpenPageName);
@@ -301,13 +301,13 @@ sub ImageGetInternalUrl{
 
 sub AddLinkedFilesToQueue {
 	my $id = shift;
-		
+
 	foreach my $pattern (keys %StaticLinkedPages) {
 		if ($id =~ /$pattern/) {
 			AddNewFilesToQueue(@{$StaticLinkedPages{$pattern}})
 		}
 	}
-	
+
 	# If you modify a comment page, then update the original
 	# Don't check for recursive updates - the only thing that
 	# changed was the CommentCount - no reason to waste time
@@ -315,7 +315,7 @@ sub AddLinkedFilesToQueue {
 		my $match = $1;
 		push(@StaticQueue,$match);
 	}
-	
+
 	# If the page added belongs to a cluster, update the cluster's page
 	# and the $ClusterMapPage
 	# especially important with the clustermap module
@@ -323,13 +323,13 @@ sub AddLinkedFilesToQueue {
 	local $OpenPageName = '';
 	OpenPage($id);
 	my $cluster = FreeToNormal(GetCluster($Page{text}));
-	
+
 	# Only move up the cluster hierarchy if the page we originally
 	# edited has a cluster
 	if ($PageBeingSaved = $id) {
 		if ($cluster ne "" && $cluster ne $id) {
 			AddNewFilesToQueue($cluster);
-			
+
 			# If we are using clustermaps then update
 			# ClusterMapPage
 			# But only if cluster has changed
