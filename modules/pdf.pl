@@ -17,7 +17,7 @@
 #    Boston, MA 02111-1307 USA
 #
 
-# use strict; # TODO impossible to use strict mode because of $id and @NoLinkToPdf
+use strict;
 
 AddModuleDescription('pdf.pl', 'PDF Module');
 
@@ -25,7 +25,7 @@ AddModuleDescription('pdf.pl', 'PDF Module');
 *DoBrowseRequest = *PdfDoBrowseRequest;
 
 use vars qw($q %Page $OpenPageName $ModuleDir $ScriptName $SiteName);
-use vars qw($pdfDirectory $pdfProcessCommand $tempBaseDirectory); # TODO use CamelCase (first capital letter) for public vars
+use vars qw(@NoLinkToPdf $pdfDirectory $pdfProcessCommand $tempBaseDirectory); # TODO use CamelCase (first capital letter) for public vars
 
 # These variables must be configured properly!
 $pdfProcessCommand 		= "/path/to/your/pdflatexscript"
@@ -92,7 +92,7 @@ sub PdfDoBrowseRequest{
 		# Isolate our output
 		outputHTML($id);
 
-		createPDF();
+		createPDF($id);
 
 		if (-f "$pdfDirectory/$id.pdf") {
 			# Remove working directory/lockfile
@@ -117,7 +117,7 @@ sub PdfDoBrowseRequest{
 
 # Create an HTML file with just the content of the page body
 sub outputHTML {
-	($id) = @_;
+	my ($id) = @_;
 	my $result = '';
 
 	local *STDOUT;
@@ -151,6 +151,7 @@ sub outputHTML {
 # Run a series of steps to convert XHTML to pdf
 # You may have to change this based on your system
 sub createPDF {
+	my $id = shift;
 	local *STDOUT;
 	open(STDOUT, '>/dev/null');
 	local *STDERR;
@@ -203,7 +204,7 @@ sub CreateTempDirectory {
 # Fix Wiki Links - they have to be fully qualified
 
 *PdfOldCreateWikiLink = *CreateWikiLink;
-*CreateWikiLink = PdfNewCreateWikiLink;
+*CreateWikiLink = *PdfNewCreateWikiLink;
 
 sub PdfNewCreateWikiLink {
 	my $title = shift;
