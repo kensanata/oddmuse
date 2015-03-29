@@ -1,4 +1,4 @@
-# Copyright (C) 2007, 2008  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2007–2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,16 +13,22 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# use strict; #TODO weird "copy scalar" thing
+use strict;
 
 AddModuleDescription('multi-url-spam-block.pl', 'Multiple Link Ban Extension');
 
-use vars qw($BannedContent);
+use vars qw($BannedContent @MyInitVariables %AdminPages %PlainTextPages $FullUrlPattern $LocalNamesPage);
+
+my $OldMultiUrlBannedContent; # for use strict
 
 *OldMultiUrlBannedContent = *BannedContent;
 *BannedContent = *NewMultiUrlBannedContent;
 
-$BannedContent = $OldMultiUrlBannedContent; # copy scalar
+# The code above changes both the sub and the variable. $BannedContent now points to $NewMultiUrlBannedContent (which is
+# undefined) and the name of the Banned Content page is only accessible via $OldMultiUrlBannedContent. If we copy
+# $OldMultiUrlBannedContent to $BannedContent, everything else will keep working.
+
+$BannedContent = $OldMultiUrlBannedContent;
 
 use vars qw($MultiUrlWhiteList $MultiUrlLimit);
 
