@@ -13,11 +13,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# use strict; #TODO what is $languages?
+use strict;
 
 AddModuleDescription('journal-rss.pl', 'Journal RSS Extension');
 
-use vars qw($OpenPageName $CollectingJournal %Page %Action @MyInitVariables $DeletedPage);
+use vars qw($OpenPageName $CollectingJournal %Page %Action @MyInitVariables $DeletedPage %NearLinksException);
 $Action{journal} = \&DoJournalRss;
 
 # Currently RSS works like RecentChanges, which is not what bloggers
@@ -74,7 +74,7 @@ sub JournalRssGetRcLines {
     # available in the rc.log file is not available to us. This is why
     # we observe the rsslimit parameter. Without it, we would have to
     # open *all* date pages.
-    my @languages = split(/,/, $languages);
+    my @languages = split(/,/, $Page{languages});
     push (@result, [$Page{ts}, $id, $Page{minor}, $Page{summary}, $Page{host},
 		    $Page{username}, $Page{revision}, \@languages,
 		    GetCluster($Page{text})]);
