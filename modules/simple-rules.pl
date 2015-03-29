@@ -16,7 +16,7 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-#use strict; #TODO local variables? What?
+use strict;
 
 AddModuleDescription('simple-rules.pl', 'Simple Fast Alternate Text Formatting Rules');
 use vars qw($q $OpenPageName $FS $UrlPattern $FreeLinkPattern);
@@ -25,6 +25,10 @@ use vars qw($q $OpenPageName $FS $UrlPattern $FreeLinkPattern);
 
 my $PROT = "\x1c";
 my $DIRT = "\x1d";
+
+# Variables which are essentially global and which contain state are localized before they are set. In order to localize
+# them, they have to be declared here, first.
+use vars qw($counter %protected %dirty);
 
 sub NewSimpleRulesApplyRules {
   # locallinks: apply rules that create links depending on local config (incl. interlink!)
@@ -120,7 +124,7 @@ sub SimpleRulesMungeResult {
   my @flags;
   my $count = 0;
   my $html;
-  foreach $item (split(/$DIRT([0-9]+)$DIRT/, $raw)) {
+  foreach my $item (split(/$DIRT([0-9]+)$DIRT/, $raw)) {
     if ($count % 2) { # deal with reference
       if ($dirty{$item}) { # dirty block
 	if ($html) {
