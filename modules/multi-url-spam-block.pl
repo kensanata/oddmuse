@@ -19,16 +19,8 @@ AddModuleDescription('multi-url-spam-block.pl', 'Multiple Link Ban Extension');
 
 use vars qw($BannedContent @MyInitVariables %AdminPages %PlainTextPages $FullUrlPattern $LocalNamesPage);
 
-our $OldMultiUrlBannedContent; # for use strict
-
-*OldMultiUrlBannedContent = *BannedContent;
-*BannedContent = *NewMultiUrlBannedContent;
-
-# The code above changes both the sub and the variable. $BannedContent now points to $NewMultiUrlBannedContent (which is
-# undefined) and the name of the Banned Content page is only accessible via $OldMultiUrlBannedContent. If we copy
-# $OldMultiUrlBannedContent to $BannedContent, everything else will keep working.
-
-$BannedContent = $OldMultiUrlBannedContent;
+*OldMultiUrlBannedContent = \&BannedContent;
+*BannedContent = \&NewMultiUrlBannedContent;
 
 use vars qw($MultiUrlWhiteList $MultiUrlLimit);
 
