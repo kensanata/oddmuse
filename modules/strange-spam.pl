@@ -21,16 +21,8 @@ use vars qw($StrangeBannedContent);
 
 $StrangeBannedContent = 'StrangeBannedContent';
 
-our $StrangeOldBannedContent; # use strict
-
-*StrangeOldBannedContent = *BannedContent;
-*BannedContent = *StrangeNewBannedContent;
-
-# The code above changes both the sub and the variable. $BannedContent now points to $StrangeNewBannedContent (which is
-# undefined) and the name of the Banned Content page is only accessible via $StrangeOldBannedContent. If we copy
-# $StrangeOldBannedContent to $BannedContent, everything else will keep working.
-
-$BannedContent = $StrangeOldBannedContent;
+*StrangeOldBannedContent = \&BannedContent;
+*BannedContent = \&StrangeNewBannedContent;
 
 push(@MyInitVariables, \&StrangeBannedContentInit);
 

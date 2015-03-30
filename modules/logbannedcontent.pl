@@ -23,16 +23,8 @@ use vars qw($BannedFile);
 
 $BannedFile = "$DataDir/spammer.log" unless defined $BannedFile;
 
-our $LogOldBannedContent; # for use strict
-
-*LogOldBannedContent = *BannedContent;
-*BannedContent = *LogNewBannedContent;
-
-# The code above changes both the sub and the variable. $BannedContent now points to $LogNewBannedContent (which is
-# undefined) and the name of the Banned Content page is only accessible via $LogOldBannedContent. If we copy
-# $LogOldBannedContent to $BannedContent, everything else will keep working.
-
-$BannedContent = $LogOldBannedContent;
+*LogOldBannedContent = \&BannedContent;
+*BannedContent = \&LogNewBannedContent;
 
 sub LogNewBannedContent {
   my $str = shift;
