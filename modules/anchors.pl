@@ -1,4 +1,4 @@
-# Copyright (C) 2004, 2005, 2009  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2004–2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -16,7 +16,7 @@ use strict;
 
 AddModuleDescription('anchors.pl', 'Local Anchor Extension');
 
-use vars qw($q $FootnoteNumber $FreeLinkPattern @MyRules $BracketWiki);
+use vars qw($q %Page $FootnoteNumber $FreeLinkPattern @MyRules $BracketWiki);
 push(@MyRules, \&AnchorsRule);
 
 sub AnchorsRule {
@@ -50,4 +50,18 @@ sub AnchorsRule {
     return $q->a({-name=>FreeToNormal($1), -class=>'anchor'}, '');
   }
   return;
+}
+
+*OldAnchorsBrowsePage=*BrowsePage;
+*BrowsePage=*NewAnchorsBrowsePage;
+
+sub NewAnchorsBrowsePage {
+  my ($id) = @_;
+  OpenPage($id);
+  if (not GetParam('revision', '')
+      and not GetParam('oldid', '')
+      and $Page{text} =~ /^\#REDIRECT\s+\[\[$FreeLinkPattern\#$FreeLinkPattern\]\]/) {
+    return ReBrowsePage(FreeToNormal($1 . '#' . $2), $id);
+  }
+  return OldAnchorsBrowsePage(@_);
 }
