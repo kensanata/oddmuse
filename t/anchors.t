@@ -1,4 +1,4 @@
-# Copyright (C) 2006, 2009  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006–2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -14,12 +14,12 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 9;
+use Test::More tests => 11;
 
 clear_pages();
 
-do 'modules/anchors.pl';
-do 'modules/link-all.pl'; # check compatibility
+add_module('anchors.pl');
+add_module('link-all.pl');
 
 xpath_run_tests(split('\n',<<'EOT'));
 This is a [:day for fun and laughter].
@@ -47,3 +47,8 @@ run_tests(split('\n',<<'EOT'));
 [[2004-08-17#day for fun and laughter|boo]].
 [[2004-08-17#day for fun and laughter|boo]].
 EOT
+  
+# simple redirect
+test_page(update_page('Testing', '#REDIRECT [[New Text Formatting Rules#h5o-2]]'),
+	  'Status: 302',
+	  'Location: .*wiki.pl\?action=browse;oldid=Testing;id=New_Text_Formatting_Rules#h5o-2');
