@@ -29,7 +29,7 @@ $Action{updatemodules} = \&ModuleUpdaterAction;
 
 sub ModuleUpdaterMenu {
   return unless UserIsAdmin();
-  my ($id, $menuref, $restref) = @_;
+  my ($id, $menuref) = @_;
   push(@$menuref, ScriptLink('action=updatemodules', T('Update modules'), 'moduleupdater'));
 }
 
@@ -83,6 +83,7 @@ sub ProcessModule {
     return;
   }
   open my $fh, ">", "$TempDir/$module" or die("Could not open file. $!");
+  utf8::encode($moduleData);
   print $fh $moduleData;
   close $fh;
 
