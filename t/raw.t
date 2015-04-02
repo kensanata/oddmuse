@@ -1,4 +1,4 @@
-# Copyright (C) 2014  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2014–2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,6 +20,6 @@ use Test::More tests => 2;
 clear_pages();
 
 test_page(update_page('Test', 'Hallo'), 'Hallo');
-print qx(perl raw.pl --page $PageDir --dir $DataDir/raw/);
+print qx(perl scripts/raw.pl --page $PageDir --dir $DataDir/raw/);
 my ($status, $data) = ReadFile("$DataDir/raw/Test"); # not fatal
 ok($status && $data eq "Hallo\n", "raw Test created");
