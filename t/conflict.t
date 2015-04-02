@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 23;
+use Test::More tests => 26;
 
 clear_pages();
 
@@ -220,5 +220,16 @@ my ($ts, $title, $text) = xpath_test($page,
 				     '//input[@name="title"]/attribute::value',
 				     '//textarea[@name="text"]/text()');
 $text = UrlEncode($text);
-$page = get_page(qq{title="$title" oldtime="$ts" text="$text" Preview=Preview});
-xpath_test($page, '//input[@name="oldtime"]/attribute::value');
+is(xpath_test(get_page(qq{title="$title" oldtime="$ts" text="$text" Preview=Preview}),
+	      '//input[@name="oldtime"]/attribute::value'),
+   $ts, 'Timestamp unchanged after a preview');
+
+# now another user changes the file
+sleep(2);
+$ENV{'REMOTE_ADDR'} = 'confusibombus';
+update_page('ConflictTest', $lao_file_1);
+
+# and we run the same preview again, without reloading!
+is(xpath_test(get_page(qq{title="$title" oldtime="$ts" text="$text" Preview=Preview}),
+	      '//input[@name="oldtime"]/attribute::value'),
+   $ts, 'Timestamp of preview still unchanged even though somebody else changed the page');
