@@ -185,7 +185,7 @@ sub xpath_do {
   my $page_shown = 0;
   my $parser = XML::LibXML->new();
   my $doc;
-  my $result;
+  my @result;
  SKIP: {
     eval { $doc = $parser->parse_html_string($page) };
     eval { $doc = $parser->parse_string($page) } if $@;
@@ -205,7 +205,7 @@ sub xpath_do {
 	fail(&$check(1) ? "$test: $@" : "not $test: $@");
       } elsif (ok(&$check($nodelist->size()),
 		  name(&$check(1) ? $test : "not $test"))) {
-	$result .= $nodelist->string_value();
+	push(@result, $nodelist->string_value());
       } else {
 	$page =~ s/^.*?<html/<html/s;
 	diag($message, substr($page,0,30000)) unless $page_shown;
@@ -213,7 +213,7 @@ sub xpath_do {
       }
     }
   }
-  return $result; # return string_value() of all found nodes
+  return wantarray ? @result : $result[0]; # list or string of first result
 }
 
 sub xpath_test {
