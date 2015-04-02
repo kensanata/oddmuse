@@ -23,6 +23,11 @@ AddModuleDescription('pygmentize.pl', 'Pygmentize Extension');
 
 our ($q, $bol, %RuleOrder, @MyRules);
 
+# You can push other stuff to that list.
+# For example: push @PygmentizeArgs, qw(-F whitespace:spaces=true,tabs=true)
+# If you want to change existing options then just reinitialize the list
+our @PygmentizeArgs = qw(-O noclasses);
+
 push(@MyRules, \&PygmentizeRule);
 $RuleOrder{\&PygmentizeRule} = -60;
 
@@ -39,13 +44,13 @@ sub DoPygmentize {
   my ($contents, $lexer) = @_;
   $lexer = "-l \Q$lexer\E" if $lexer; # should be already safe, but \Q \E just because I'm paranoid
   $lexer ||= '-g'; # -g for autodetect
-  my $options = 'whitespace:spaces=true,tabs=true'; # TODO make this configurable
+  my $args = join ' ', map { quotemeta } @PygmentizeArgs;
   CreateDir($TempDir);
   $contents = UnquoteHtml($contents);
 
   RequestLockDir('pygmentize') or return '';
   WriteStringToFile("$TempDir/pygmentize", $contents);
-  my $output = `pygmentize $lexer -f html -O encoding=utf8 -O noclasses -F \Q$options\E \Q$TempDir/pygmentize\E`;
+  my $output = `pygmentize $lexer -f html -O encoding=utf8 $args -- \Q$TempDir/pygmentize\E`;
   ReleaseLockDir('pygmentize');
 
   utf8::decode($output);
