@@ -21,7 +21,7 @@ package OddMuse;
 
 AddModuleDescription('pygmentize.pl', 'Pygmentize Extension');
 
-our ($q, $bol, %RuleOrder, @MyRules);
+our ($q, $bol, %RuleOrder, @MyRules, $TempDir);
 
 # You can push other stuff to that list.
 # For example: push @PygmentizeArgs, qw(-F whitespace:spaces=true,tabs=true)
