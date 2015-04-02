@@ -1,4 +1,4 @@
-# Copyright (C) 2006  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006–2015  Alex Schroeder <alex@emacswiki.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 19;
+use Test::More tests => 23;
 
 clear_pages();
 
@@ -182,10 +182,7 @@ test_page($redirect, map { UrlEncode($_); } @Test); # test cookie!
 
 # Test conflict during merging without diff3! -- First get oldtime,
 # then do two conflicting edits, and notice how merging no longer
-# works. We remove diff3 by setting the PATH environment variable to
-# ''.
-
-AppendStringToFile($ConfigFile, "\$ENV{'PATH'} = '';\n");
+# works.
 
 sleep(2);
 
@@ -201,13 +198,27 @@ update_page('ConflictTest', $lao_file_1);
 
 sleep(2);
 $ENV{'REMOTE_ADDR'} = 'megabombus';
-diag('An error saying that diff3 was not found is expected because PATH has been unset.');
+# We remove diff3 by setting the PATH environment variable to ''.
+diag('Warnings saying that diff and diff3 cannot be found is expected because PATH has been unset.');
+AppendStringToFile($ConfigFile, "\$ENV{'PATH'} = '';\n");
 test_page(update_page('ConflictTest', $lao_file_2,
 		      '', '', '', "oldtime=$oldtime"),
 	  'The Way that can be told of is not the eternal Way',   # file 2 -- no merging!
 	  'so we may see their simplicity',                       # file 2
 	  'so we may see the result');                            # file 2
+# Rewrite config file and thus restore access to diff and diff3.
+write_config_file();
 
 test_page($redirect, map { UrlEncode($_) }
 	  ('This page was changed by somebody else',
            'Please check whether you overwrote those changes')); # test cookie!
+
+# verify that a preview does not loose oldtime
+$page = get_page('action=edit id=ConflictTest');
+my ($ts, $title, $text) = xpath_test($page,
+				     '//input[@name="oldtime"]/attribute::value',
+				     '//input[@name="title"]/attribute::value',
+				     '//textarea[@name="text"]/text()');
+$text = UrlEncode($text);
+$page = get_page(qq{title="$title" oldtime="$ts" text="$text" Preview=Preview});
+xpath_test($page, '//input[@name="oldtime"]/attribute::value');
