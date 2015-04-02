@@ -2953,7 +2953,6 @@ sub TimeToRFC822 {
 
 sub GetHiddenValue {
   my ($name, $value) = @_;
-  $q->param($name, $value);
   return $q->input({-type=>"hidden", -name=>$name, -value=>$value});
 }
 
