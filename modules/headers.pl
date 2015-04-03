@@ -24,7 +24,7 @@ use vars qw($q $bol %RuleOrder @MyRules $PortraitSupportColor $PortraitSupportCo
 
 # After toc.pl but before usemod.pl
 push(@MyRules, \&HeadersRule);
-$RuleOrder{ \&HeadersRule } = 95;
+$RuleOrder{\&HeadersRule} = 95;
 
 # The trickiest part is the first rule.  It finds titles like the following:
 #
