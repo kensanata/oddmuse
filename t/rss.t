@@ -76,7 +76,7 @@ SKIP: {
 
   use Cwd;
   $dir = cwd;
-  $uri = "file://$dir";
+  $uri = "file://$dir/t/feeds";
   $uri =~ s/ /%20/g;		# for cygdrive stuff including spaces
 
   # some xpath tests
