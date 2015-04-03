@@ -28,6 +28,10 @@ our ($q, $bol, %RuleOrder, @MyRules, $TempDir);
 # If you want to change existing options then just reinitialize the list
 our @PygmentizeArgs = qw(-O noclasses);
 
+push(@MyInitVariables, sub {
+  push(@KnownLocks, 'pygmentize');
+     });
+
 push(@MyRules, \&PygmentizeRule);
 $RuleOrder{\&PygmentizeRule} = -60;
 
