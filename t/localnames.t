@@ -22,7 +22,7 @@ use Test::More tests => 19;
 
 use Cwd;
 $dir = cwd;
-$uri = "file://$dir";
+$uri = "file://$dir/t/feeds";
 $uri =~ s/ /%20/g; # for cygdrive stuff including spaces
 
 clear_pages();

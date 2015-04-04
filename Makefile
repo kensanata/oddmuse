@@ -2,7 +2,7 @@
 # Make sure the CVS keywords for the sed command on the next line are not expanded.
 
 VERSION_NO=$(shell git describe --tags)
-TRANSLATIONS=$(wildcard modules/translations/[a-z]*-utf8.pl$)
+TRANSLATIONS=$(wildcard modules/translations/[a-z]*.pl$)
 MODULES=$(wildcard modules/*.pl)
 BUILD=build/wiki.pl $(foreach file, $(notdir $(MODULES)) $(notdir $(TRANSLATIONS)), build/$(file))
 
@@ -16,10 +16,19 @@ prepare: build $(BUILD)
 build:
 	mkdir -p build
 
+clean:
+	rm -rf build
+
 build/wiki.pl: wiki.pl
 	perl -lne "s/(\\\$$q->a\({-href=>'http:\/\/www.oddmuse.org\/'}, 'Oddmuse'\))/\\\$$q->a({-href=>'http:\/\/git.savannah.gnu.org\/cgit\/oddmuse.git\/tag\/?id=$(VERSION_NO)'}, 'wiki.pl') . ' ($(VERSION_NO)), see ' . \$$1/; print" < $< > $@
 
 build/%-utf8.pl: modules/translations/%-utf8.pl
+	perl -lne "s/(AddModuleDescription\('[^']+', '[^']+')\)/\$$1, 'translations\/', '$(VERSION_NO)')/; print" < $< > $@
+
+build/national-%.pl: modules/translations/national-%.pl
+	perl -lne "s/(AddModuleDescription\('[^']+', '[^']+')\)/\$$1, 'translations\/', '$(VERSION_NO)')/; print" < $< > $@
+
+build/month-names-%.pl: modules/translations/month-names-%.pl
 	perl -lne "s/(AddModuleDescription\('[^']+', '[^']+')\)/\$$1, 'translations\/', '$(VERSION_NO)')/; print" < $< > $@
 
 # from: http://git.savannah.gnu.org/cgit/oddmuse.git/tree/modules/namespaces.pl
