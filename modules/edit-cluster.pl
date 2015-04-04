@@ -15,7 +15,7 @@
 
 use strict;
 
-AddModuleDescription('edit-cluster.pl');
+AddModuleDescription('edit-cluster.pl', 'Edit Cluster Extension');
 
 use vars qw($q $FS $RcDefault @RcDays $RecentTop $LastUpdate);
 
