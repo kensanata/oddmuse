@@ -20,7 +20,7 @@
 
 use strict;
 
-AddModuleDescription('form_timeout.pl');
+AddModuleDescription('form_timeout.pl', 'Form Timeout Extension');
 
 =head1 DESCRIPTION
 

@@ -24,7 +24,7 @@
 
 use strict;
 
-AddModuleDescription('gd_security_image.pl');
+AddModuleDescription('gd_security_image.pl', 'GD Security Image Extension');
 
 use vars qw($q $Now %Action $FullUrl $LinkPattern $FreeLinks $FreeLinkPattern $WikiLinks $DataDir $ModuleDir @MyInitVariables %CookieParameters %InvisibleCookieParameters);
 

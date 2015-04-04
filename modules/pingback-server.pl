@@ -31,7 +31,7 @@ use LWP::UserAgent; # This one will one day be eliminated! Hopefully!
 use RPC::XML;
 use RPC::XML::Parser;
 
-AddModuleDescription('pingback-server.pl');
+AddModuleDescription('pingback-server.pl', 'Pingback Server Extension');
 
 use vars qw( $CommentsPrefix );
 
