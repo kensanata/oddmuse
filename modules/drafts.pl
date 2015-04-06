@@ -17,7 +17,7 @@ use strict;
 use File::Glob ':glob';
 use vars qw($DraftDir);
 
-AddModuleDescription('drafts.pl');
+AddModuleDescription('drafts.pl', 'Draft Extension');
 
 use vars qw($q $Message $Now %Action $DataDir @MyInitVariables @MyMaintenance $FooterNote);
 

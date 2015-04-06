@@ -23,7 +23,7 @@ use strict;
 use vars qw($q $UsePathInfo $ScriptName $SiteName);
 use vars qw(%NotifyJournalPage @NotifyUrlPatterns);
 
-AddModuleDescription('weblog-tracking.pl');
+AddModuleDescription('weblog-tracking.pl', 'Update Weblog Tracker Extension');
 
 # Put this file in your modules directory.
 
