@@ -17,7 +17,7 @@ use strict;
 
 AddModuleDescription('listlocked.pl', 'List Locked Extension');
 
-use vars qw($q %Action @MyAdminCode);
+our ($q, %Action, @MyAdminCode);
 push(@MyAdminCode, \&ListLockedMenu);
 
 sub ListLockedMenu {

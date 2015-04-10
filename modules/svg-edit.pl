@@ -14,8 +14,8 @@
 
 use strict;
 
-use vars qw($q %Action %Page $OpenPageName @MyInitVariables $UploadAllowed @UploadTypes $FullUrl $HtmlHeaders);
-use vars qw($SvgMimeType $SvgEditorUrl);
+our ($q, %Action, %Page, $OpenPageName, @MyInitVariables, $UploadAllowed, @UploadTypes, $FullUrl, $HtmlHeaders);
+our ($SvgMimeType, $SvgEditorUrl);
 
 AddModuleDescription('svg-edit.pl', 'SVG Editor Extension');
 

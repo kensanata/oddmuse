@@ -24,8 +24,8 @@ AddModuleDescription('pdf.pl', 'PDF Module');
 *PdfOldDoBrowseRequest = *DoBrowseRequest;
 *DoBrowseRequest = *PdfDoBrowseRequest;
 
-use vars qw($q %Page $OpenPageName $ModuleDir $ScriptName $SiteName);
-use vars qw(@NoLinkToPdf $pdfDirectory $pdfProcessCommand $tempBaseDirectory); # TODO use CamelCase (first capital letter) for public vars
+our ($q, %Page, $OpenPageName, $ModuleDir, $ScriptName, $SiteName);
+our (@NoLinkToPdf, $pdfDirectory, $pdfProcessCommand, $tempBaseDirectory); # TODO use CamelCase (first capital letter) for public vars
 
 # These variables must be configured properly!
 $pdfProcessCommand 		= "/path/to/your/pdflatexscript"

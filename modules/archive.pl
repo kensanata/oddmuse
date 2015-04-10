@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('archive.pl', 'Archive Extension');
 
-use vars qw($q);
+our ($q);
 
 *OldArchiveGetHeader = *GetHeader;
 *GetHeader = *NewArchiveGetHeader;

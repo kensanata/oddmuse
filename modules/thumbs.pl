@@ -24,7 +24,7 @@ use File::Path;
 
 AddModuleDescription('thumbs.pl', 'Image Thumbnails');
 
-use vars qw($q $OpenPageName %IndexHash @UploadTypes @MyRules $FreeLinkPattern);
+our ($q, $OpenPageName, %IndexHash, @UploadTypes, @MyRules, $FreeLinkPattern);
 
 # Tempoary directory to create thumbnails in
 our $ThumbnailTempDir = '/tmp';

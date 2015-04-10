@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('checkbox.pl', 'Checklist Extension');
 
-use vars qw($q $bol @HtmlStack %Action %Page $OpenPageName @MyRules);
+our ($q, $bol, @HtmlStack, %Action, %Page, $OpenPageName, @MyRules);
 
 # [[ : To do]]
 # [[X: Done]]

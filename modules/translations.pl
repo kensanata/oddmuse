@@ -21,7 +21,7 @@ use strict;
 
 AddModuleDescription('translations.pl', 'Translation Extension');
 
-use vars qw(@MyRules $FreeLinkPattern);
+our (@MyRules, $FreeLinkPattern);
 
 push(@MyRules, \&TranslationRule);
 

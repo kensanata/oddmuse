@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('no-question-mark.pl', 'No Questionmarks Extension');
 
-use vars qw($q $OpenPageName $ScriptName %IndexHash $FootnoteNumber $UsePathInfo);
+our ($q, $OpenPageName, $ScriptName, %IndexHash, $FootnoteNumber, $UsePathInfo);
 
 sub GetPageOrEditLink {
   my ($id, $text, $bracket, $free) = @_;

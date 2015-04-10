@@ -17,7 +17,7 @@ use strict;
 
 AddModuleDescription('portrait-support.pl', 'Portraits Support Extension');
 
-use vars qw($q $bol $Now @MyMacros @MyRules $FreeLinkPattern $UrlPattern $FS);
+our ($q, $bol, $Now, @MyMacros, @MyRules, $FreeLinkPattern, $UrlPattern, $FS);
 
 push(@MyMacros, sub{ s/\[new::\]/"[new:" . GetParam('username', T('Anonymous'))
 		       . ':' . TimeToText($Now) . "]"/ge });
@@ -25,7 +25,7 @@ push(@MyMacros, sub{ s/\[new:$FreeLinkPattern\]/"[new:$1:" . TimeToText($Now) . 
 
 push(@MyRules, \&PortraitSupportRule);
 
-use vars qw($PortraitSupportColorDiv $PortraitSupportColor);
+our ($PortraitSupportColorDiv, $PortraitSupportColor);
 
 $PortraitSupportColor = 0;
 $PortraitSupportColorDiv = 0;

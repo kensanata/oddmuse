@@ -20,8 +20,8 @@ use strict;
 
 AddModuleDescription('smiley-dir.pl', 'Smiley Directory Extension');
 
-use vars qw(@MyInitVariables $ImageExtensions %Smilies);
-use vars qw($SmileyDir $SmileyUrlPath);
+our (@MyInitVariables, $ImageExtensions, %Smilies);
+our ($SmileyDir, $SmileyUrlPath);
 
 $SmileyDir = '/mnt/pics'; # directory with all the smileys
 $SmileyUrlPath = '/pics'; # path where all the smileys can be found (URL)

@@ -16,7 +16,7 @@ use strict;
 
 AddModuleDescription('emoji.pl', 'Smilies');
 
-use vars qw(%RuleOrder @MyRules);
+our (%RuleOrder, @MyRules);
 
 push(@MyRules, \&EmojiRule);
 # this must come before tex.pl because of \o/ turning into ø/

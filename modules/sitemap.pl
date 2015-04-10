@@ -16,7 +16,7 @@
 use strict;
 
 AddModuleDescription('sitemap.pl', 'Sitemap Extension');
-use vars qw(%Action);
+our (%Action);
 
 $Action{'sitemap'} = \&DoSitemap;
 

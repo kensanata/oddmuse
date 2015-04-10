@@ -20,8 +20,8 @@ use strict;
 
 AddModuleDescription('image.pl', 'Image Extension');
 
-use vars qw($q @MyRules $FullUrlPattern $FreeLinkPattern $FreeInterLinkPattern %IndexHash $ScriptName $UsePathInfo $Monolithic);
-use vars qw($ImageUrlPath);
+our ($q, @MyRules, $FullUrlPattern, $FreeLinkPattern, $FreeInterLinkPattern, %IndexHash, $ScriptName, $UsePathInfo, $Monolithic);
+our ($ImageUrlPath);
 
 $ImageUrlPath = '/images';      # URL where the images are to be found
 

@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('commentcount.pl', 'Comment Count Extension');
 
-use vars qw($CommentsPrefix);
+our ($CommentsPrefix);
 
 *OldCommentcountAddComment = *AddComment;
 *AddComment = *NewCommentcountAddComment;

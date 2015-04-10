@@ -18,8 +18,8 @@ use strict;
 
 AddModuleDescription('adsense.pl', 'AdSense Module');
 
-use vars qw(@MyInitVariables @MyFooters);
-use vars qw($AdSensePageName $AdSensePlace);
+our (@MyInitVariables, @MyFooters);
+our ($AdSensePageName, $AdSensePlace);
 
 push (@MyInitVariables, \&AdSenseInit);
 

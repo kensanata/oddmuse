@@ -17,12 +17,12 @@ AddModuleDescription('referrer-tracking.pl', 'Automatic Link Back');
 
 use LWP::UserAgent;
 
-use vars qw($q $Now $OpenPageName %Action @KnownLocks %AdminPages $ScriptName $DataDir $EmbedWiki $FS @MyInitVariables @MyAdminCode $FullUrlPattern);
+our ($q, $Now, $OpenPageName, %Action, @KnownLocks, %AdminPages, $ScriptName, $DataDir, $EmbedWiki, $FS, @MyInitVariables, @MyAdminCode, $FullUrlPattern);
 push(@KnownLocks, "refer_*");
 $Action{refer} = \&DoPrintAllReferers;
 
-use vars qw($RefererDir $RefererTimeLimit $RefererLimit $RefererFilter
-$RefererTitleLimit %Referers);
+our ($RefererDir, $RefererTimeLimit, $RefererLimit, $RefererFilter,
+$RefererTitleLimit, %Referers);
 
 $RefererTimeLimit = 86400; # How long referrals shall be remembered in seconds
 $RefererLimit	  = 15;	   # How many different referer shall be remembered

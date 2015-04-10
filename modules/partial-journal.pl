@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('partial-journal.pl', 'Partial Page Journal');
 
-use vars qw($q %Page @MyRules $CommentsPrefix);
+our ($q, %Page, @MyRules, $CommentsPrefix);
 
 # Set up some rule so that we can mess with '-- cut --' (change to <hr>)
 push(@MyRules, \&PartialCutRule);

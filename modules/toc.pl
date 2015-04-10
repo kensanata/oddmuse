@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 use strict;
 
-use vars qw($q $bol @HtmlStack @MyRules @MyInitVariables);
+our ($q, $bol, @HtmlStack, @MyRules, @MyInitVariables);
 # ====================[ toc.pl                             ]====================
 
 =head1 NAME
@@ -24,10 +24,10 @@ toc is easily configurable; set these variables in the B<wiki/config.pl> file
 for your Oddmuse Wiki.
 
 =cut
-use vars qw($TocHeaderText
-            $TocClass
-            $TocAutomatic
-            $TocAnchorPrefix
+our ($TocHeaderText,
+            $TocClass,
+            $TocAutomatic,
+            $TocAnchorPrefix,
             $TocIsApplyingAutomaticRules);
 
 =head2 $TocHeaderText

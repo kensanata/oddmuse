@@ -17,7 +17,7 @@ use strict;
 
 AddModuleDescription('edit-cluster.pl', 'Edit Cluster Extension');
 
-use vars qw($q $FS $RcDefault @RcDays $RecentTop $LastUpdate);
+our ($q, $FS, $RcDefault, @RcDays, $RecentTop, $LastUpdate);
 
 our $EditCluster = 'EditCluster';
 

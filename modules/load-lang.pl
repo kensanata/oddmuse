@@ -17,8 +17,8 @@ use strict;
 
 AddModuleDescription('load-lang.pl', 'Language Browser Preferences');
 
-use vars qw($q %CookieParameters $ConfigFile $DataDir $ReadMe $NamespaceCurrent @MyInitVariables);
-use vars qw($CurrentLanguage $LoadLanguageDir);
+our ($q, %CookieParameters, $ConfigFile, $DataDir, $ReadMe, $NamespaceCurrent, @MyInitVariables);
+our ($CurrentLanguage, $LoadLanguageDir);
 
 $CookieParameters{interface} = '';
 

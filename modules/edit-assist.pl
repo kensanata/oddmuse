@@ -18,7 +18,7 @@ use strict;
 
 AddModuleDescription('edit-assist.pl');
 
-use vars qw($q $HtmlHeaders @MyInitVariables);
+our ($q, $HtmlHeaders, @MyInitVariables);
 
 push (@MyInitVariables,
       sub {

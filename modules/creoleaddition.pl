@@ -26,7 +26,7 @@ package OddMuse;
 
 AddModuleDescription('creoleaddition.pl', 'Creole Addition Markup Extension');
 
-use vars qw($bol @MyRules %RuleOrder);
+our ($bol, @MyRules, %RuleOrder);
 # ....................{ CONFIGURATION                      }....................
 
 =head1 CONFIGURATION
@@ -37,13 +37,12 @@ B<wiki/config.pl> file for your Oddmuse Wiki.
 =cut
 # Since these rules are not official now, users can turn off some of
 # them.
-use vars qw($CreoleAdditionSupSub
-            $CreoleAdditionDefList
-            $CreoleAdditionIndentedParagraphs
-            $CreoleAdditionQuote
-            $CreoleAdditionMonospace
-            $CreoleAdditionSmallCaps $CreoleAdditionIsInSmallCaps
-          );
+our ($CreoleAdditionSupSub,
+            $CreoleAdditionDefList,
+            $CreoleAdditionIndentedParagraphs,
+            $CreoleAdditionQuote,
+            $CreoleAdditionMonospace,
+            $CreoleAdditionSmallCaps, $CreoleAdditionIsInSmallCaps);
 
 =head2 $CreoleAdditionSupSub
 

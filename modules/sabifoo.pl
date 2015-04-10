@@ -20,8 +20,8 @@ use strict;
 
 AddModuleDescription('sabifoo.pl', 'Sabifoo');
 
-use vars qw(%IndexHash @MyInitVariables);
-use vars qw($SummaryDefaultLength);
+our (%IndexHash, @MyInitVariables);
+our ($SummaryDefaultLength);
 
 push(@MyInitVariables, \&SabiFooInit);
 

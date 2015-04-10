@@ -32,7 +32,7 @@ use strict;
 
 AddModuleDescription('put.pl');
 
-use vars qw($q @MyInitVariables $MaxPost);
+our ($q, @MyInitVariables, $MaxPost);
 push(@MyInitVariables, \&PutMethodHandler);
 
 sub PutMethodHandler {

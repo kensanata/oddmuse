@@ -14,11 +14,11 @@
 
 use strict;
 
-use vars qw(%Page %IndexHash %AdminPages $HomePage $RCName @MyInitVariables $LinkPattern $FreeLinkPattern $FullUrlPattern $InterLinkPattern $UserGotoBar @UserGotoBarPages);
+our (%Page, %IndexHash, %AdminPages, $HomePage, $RCName, @MyInitVariables, $LinkPattern, $FreeLinkPattern, $FullUrlPattern, $InterLinkPattern, $UserGotoBar, @UserGotoBarPages);
 
 AddModuleDescription('gotobar.pl', 'Gotobar Extension');
 
-use vars qw($GotobarName);
+our ($GotobarName);
 
 # Include this page on every page:
 

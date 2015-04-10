@@ -19,7 +19,7 @@
 use strict;
 
 AddModuleDescription('links.pl', 'Link Data Extension');
-use vars qw($q %InterSite %IndexHash %Page %Action $FS $LinkPattern $InterLinkPattern $FreeLinks $FreeLinkPattern $FreeInterLinkPattern $UrlPattern $FullUrlPattern $BracketWiki $BracketText $WikiLinks);
+our ($q, %InterSite, %IndexHash, %Page, %Action, $FS, $LinkPattern, $InterLinkPattern, $FreeLinks, $FreeLinkPattern, $FreeInterLinkPattern, $UrlPattern, $FullUrlPattern, $BracketWiki, $BracketText, $WikiLinks);
 $Action{links} = \&DoLinks;
 
 sub DoLinks {

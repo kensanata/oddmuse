@@ -61,8 +61,8 @@ Example:
 
 =cut
 
-use vars qw($q %Action %Page $FreeLinkPattern @MyInitVariables @MyRules @MyAdminCode $DataDir $ScriptName);
-use vars qw($TagUrl $TagFeed $TagFeedIcon $TagFile);
+our ($q, %Action, %Page, $FreeLinkPattern, @MyInitVariables, @MyRules, @MyAdminCode, $DataDir, $ScriptName);
+our ($TagUrl, $TagFeed, $TagFeedIcon, $TagFile);
 
 push(@MyInitVariables, \&TagsInit);
 

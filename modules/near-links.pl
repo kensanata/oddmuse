@@ -17,7 +17,7 @@ use strict;
 
 AddModuleDescription('near-links.pl', 'Near Links');
 
-use vars qw($q %AdminPages %InterSite $CommentsPrefix $DataDir $UseCache @MyFooters @MyMaintenance @MyInitVariables @Debugging $InterSitePattern @UserGotoBarPages @IndexOptions);
+our ($q, %AdminPages, %InterSite, $CommentsPrefix, $DataDir, $UseCache, @MyFooters, @MyMaintenance, @MyInitVariables, @Debugging, $InterSitePattern, @UserGotoBarPages, @IndexOptions);
 
 =head1 Near Links
 
@@ -29,8 +29,8 @@ Community:WhyWikiWorks if there is no local WhyWikiWorks page.
 
 =cut
 
-use vars qw(%NearSite %NearSource %NearLinksUsed $NearDir $NearMap
-%NearSearch $SisterSiteLogoUrl %NearLinksException);
+our (%NearSite, %NearSource, %NearLinksUsed, $NearDir, $NearMap,
+%NearSearch, $SisterSiteLogoUrl, %NearLinksException);
 
 =head2 Options
 

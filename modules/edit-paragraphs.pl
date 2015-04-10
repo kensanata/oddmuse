@@ -18,7 +18,7 @@ package OddMuse;
 
 AddModuleDescription('edit-paragraphs.pl', 'Edit Paragraphs Extension');
 
-use vars qw($q $OpenPageName $Fragment %Page %Action @MyRules $LastUpdate);
+our ($q, $OpenPageName, $Fragment, %Page, %Action, @MyRules, $LastUpdate);
 
 # edit icon
 # http://publicdomainvectors.org/en/free-clipart/Pencil-vector-icon/9221.html

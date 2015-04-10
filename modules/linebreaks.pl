@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('linebreaks.pl', 'Paragraph Break Alternative');
 
-use vars qw($q @MyRules);
+our ($q, @MyRules);
 push(@MyRules, \&LineBreakRule);
 
 sub LineBreakRule {

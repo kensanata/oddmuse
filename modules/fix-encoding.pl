@@ -17,7 +17,7 @@ use strict;
 
 AddModuleDescription('fix-encoding.pl', 'Fix Encoding');
 
-use vars qw(%Action %Page @MyAdminCode);
+our (%Action, %Page, @MyAdminCode);
 
 $Action{'fix-encoding'} = \&FixEncoding;
 

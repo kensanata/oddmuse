@@ -45,8 +45,8 @@ automatically.
 
 AddModuleDescription('mail.pl', 'Mail Extension');
 
-use vars qw($q %Action %IndexHash $FS $DataDir %CookieParameters %InvisibleCookieParameters @MyInitVariables @MyAdminCode $Message);
-use vars qw($MailFile $MailPattern);
+our ($q, %Action, %IndexHash, $FS, $DataDir, %CookieParameters, %InvisibleCookieParameters, @MyInitVariables, @MyAdminCode, $Message);
+our ($MailFile, $MailPattern);
 
 push (@MyInitVariables, sub {
 	$MailFile = "$DataDir/mail.db";

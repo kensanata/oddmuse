@@ -17,7 +17,7 @@ use strict;
 
 AddModuleDescription('org-mode.pl', 'Comments on Writing Extensions');
 
-use vars qw(@MyRules);
+our (@MyRules);
 
 push(@MyRules, \&OrgModeRule);
 

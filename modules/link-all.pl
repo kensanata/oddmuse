@@ -16,7 +16,7 @@ use strict;
 
 AddModuleDescription('link-all.pl', 'Link All Words Extension');
 
-use vars qw(%IndexHash %RuleOrder @MyRules $UserGotoBar $ScriptName);
+our (%IndexHash, %RuleOrder, @MyRules, $UserGotoBar, $ScriptName);
 
 push(@MyRules, \&LinkAllRule);
 $RuleOrder{\&LinkAllRule} = 1000;

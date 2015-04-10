@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('csv.pl', 'Comments on Long Table Markup Extension');
 
-use vars qw($bol @MyRules);
+our ($bol, @MyRules);
 
 push(@MyRules, \&CsvRule);
 

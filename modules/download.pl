@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('download.pl', 'Download Extension');
 
-use vars qw(@MyRules $FreeLinkPattern);
+our (@MyRules, $FreeLinkPattern);
 push( @MyRules, \&DownloadSupportRule );
 
 # [[download:page name]]

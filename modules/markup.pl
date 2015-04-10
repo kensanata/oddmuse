@@ -17,9 +17,9 @@ use strict;
 
 AddModuleDescription('markup.pl', 'Markup Extension');
 
-use vars qw($q $bol @MyRules %RuleOrder @MyInitVariables);
-use vars qw(%MarkupPairs %MarkupForcedPairs %MarkupSingles %MarkupLines
-	    $MarkupQuotes $MarkupQuoteTable);
+our ($q, $bol, @MyRules, %RuleOrder, @MyInitVariables);
+our (%MarkupPairs, %MarkupForcedPairs, %MarkupSingles, %MarkupLines,
+	    $MarkupQuotes, $MarkupQuoteTable);
 
 $MarkupQuotes = 1;
 

@@ -16,7 +16,7 @@ use strict;
 
 AddModuleDescription('sistersites.pl', 'Sister Pages');
 
-use vars qw(%Action $ScriptName $UsePathInfo %NearSource %PermanentAnchors);
+our (%Action, $ScriptName, $UsePathInfo, %NearSource, %PermanentAnchors);
 
 $Action{'sisterpages'} = \&DoSisterPages;
 

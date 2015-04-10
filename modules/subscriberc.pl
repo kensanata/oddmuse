@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('subscriberc.pl', 'Subscribed Recent Changes');
 
-use vars qw($bol @MyRules $LinkPattern $FreeLinkPattern);
+our ($bol, @MyRules, $LinkPattern, $FreeLinkPattern);
 
 push(@MyRules, \&SubscribedRecentChangesRule);
 

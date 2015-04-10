@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('today.pl', 'Blog Module');
 
-use vars qw(%Action $Now @MyAdminCode $UsePathInfo $NamespaceCurrent);
+our (%Action, $Now, @MyAdminCode, $UsePathInfo, $NamespaceCurrent);
 
 # New Action
 

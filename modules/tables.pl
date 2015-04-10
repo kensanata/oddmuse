@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('tables.pl', 'Table Markup Extension');
 
-use vars qw($bol @MyRules);
+our ($bol, @MyRules);
 push(@MyRules, \&TablesRule);
 
 my $RowCount;

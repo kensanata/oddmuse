@@ -44,8 +44,8 @@ This extension works with logbannedcontent.pl.
 
 =cut
 
-use vars qw(%AdminPages %LockOnCreation @MyInitVariables %PlainTextPages $BannedContent $BannedFile);
-use vars qw($BannedRegexps);
+our (%AdminPages, %LockOnCreation, @MyInitVariables, %PlainTextPages, $BannedContent, $BannedFile);
+our ($BannedRegexps);
 
 $BannedRegexps = 'BannedRegexps';
 

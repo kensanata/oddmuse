@@ -29,8 +29,8 @@ C<@CssList> contains a list of all the recommended CSS URLs.
 
 package OddMuse;
 
-use vars qw($q %Action @MyAdminCode $StyleSheet $StyleSheetPage);
-use vars qw(@CssList);
+our ($q, %Action, @MyAdminCode, $StyleSheet, $StyleSheetPage);
+our (@CssList);
 
 # List of Oddmuse CSS URLs
 

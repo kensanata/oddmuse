@@ -17,7 +17,7 @@ use strict;
 
 AddModuleDescription('find.pl', 'Find Extension');
 
-use vars qw($q $Now %Action);
+our ($q, $Now, %Action);
 $Action{find} = \&DoFind;
 
 sub DoFind {

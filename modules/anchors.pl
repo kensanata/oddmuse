@@ -16,7 +16,7 @@ use strict;
 
 AddModuleDescription('anchors.pl', 'Local Anchor Extension');
 
-use vars qw($q %Page $FootnoteNumber $FreeLinkPattern @MyRules $BracketWiki);
+our ($q, %Page, $FootnoteNumber, $FreeLinkPattern, @MyRules, $BracketWiki);
 push(@MyRules, \&AnchorsRule);
 
 sub AnchorsRule {
