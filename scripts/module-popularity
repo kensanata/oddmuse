@@ -18,16 +18,18 @@
 # Where 'list' is a file with a list of links to action=version (one link on each line)
 
 declare -A modules
+declare -A moduleLinks
 
 while read -r link; do
     echo "$link"
     while read -r module; do
 	[[ $module == 'wiki.pl' ]] && continue
 	((modules["$module"] += 1))
+	moduleLinks["$module"]+=" $link";
     done < <(curl -s "$link" | grep -Po 'tree/modules/\K.*?\.pl|\$Id:\s*\K.*?\.pl')
 done
 
 
 for curModule in "${!modules[@]}"; do
-  echo "${modules[$curModule]} $curModule"
+  echo "${modules[$curModule]} $curModule${moduleLinks[$curModule]}"
 done | sort -k 2 | sort -nrs
