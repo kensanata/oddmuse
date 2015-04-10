@@ -214,13 +214,6 @@ tt, pre, code {
 @font-face {
   font-family: 'Gentium Basic';
   font-style: normal;
-  font-weight: 400;
-  src: local('Gentium Basic'), local('GentiumBasic'), url(/fonts/GenBasR.woff) format('woff');
-}
-
-@font-face {
-  font-family: 'Gentium Basic';
-  font-style: normal;
   font-weight: 700;
   src: local('Gentium Basic Bold'), local('GentiumBasic-Bold'), url(/fonts/GenBasB.woff) format('woff');
 }
@@ -237,6 +230,13 @@ tt, pre, code {
   font-style: italic;
   font-weight: 700;
   src: local('Gentium Basic Bold Italic'), local('GentiumBasic-BoldItalic'), url(/fonts/GenBasBI.woff) format('woff');
+}
+
+@font-face {
+  font-family: 'Gentium Basic';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Gentium Basic'), local('GentiumBasic'), url(/fonts/GenBasR.woff) format('woff');
 }
 
 @font-face {
