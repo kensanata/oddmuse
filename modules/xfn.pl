@@ -24,7 +24,7 @@ use strict;
 
 AddModuleDescription('xfn.pl', 'xfn Module');
 
-use vars qw($q @MyRules);
+our ($q, @MyRules);
 
 push ( @MyRules, \&xfnRule );
 

@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('aggregate.pl', 'Front Page Extension');
 
-use vars qw($q $bol %Action %Page $OpenPageName $UseDiff $UsePathInfo $RssStyleSheet $RssLicense $RssRights $RssImageUrl $CommentsPrefix $SiteName $ScriptName $HomePage $SiteDescription @MyRules $LastUpdate $InterWikiMoniker);
+our ($q, $bol, %Action, %Page, $OpenPageName, $UseDiff, $UsePathInfo, $RssStyleSheet, $RssLicense, $RssRights, $RssImageUrl, $CommentsPrefix, $SiteName, $ScriptName, $HomePage, $SiteDescription, @MyRules, $LastUpdate, $InterWikiMoniker);
 
 push(@MyRules, \&AggregateRule);
 

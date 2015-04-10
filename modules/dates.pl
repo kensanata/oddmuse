@@ -17,7 +17,7 @@ use strict;
 
 AddModuleDescription('dates.pl', 'Dates Extension');
 
-use vars qw($q %Action @MyAdminCode);
+our ($q, %Action, @MyAdminCode);
 push(@MyAdminCode, \&DatesMenu);
 
 sub DatesMenu {

@@ -25,7 +25,7 @@
 
 use strict;
 
-use vars qw($q %Action %IndexHash $FS $LinkPattern $FreeLinks $FreeLinkPattern $WikiLinks $BracketWiki @MyInitVariables $UserGotoBar);
+our ($q, %Action, %IndexHash, $FS, $LinkPattern, $FreeLinks, $FreeLinkPattern, $WikiLinks, $BracketWiki, @MyInitVariables, $UserGotoBar);
 
 ##########################################################################
 #
@@ -36,7 +36,7 @@ use vars qw($q %Action %IndexHash $FS $LinkPattern $FreeLinks $FreeLinkPattern $
 $Action{'localmap'} = \&DoLocalMap;
 
 # Variables
-use vars qw($LocalMapDefaultDepth);
+our ($LocalMapDefaultDepth);
 $LocalMapDefaultDepth = 3 unless defined $LocalMapDefaultDepth;
 
 

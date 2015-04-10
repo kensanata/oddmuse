@@ -25,7 +25,7 @@ use strict;
 
 AddModuleDescription('doubleclick.pl', 'Doubleclick Extension');
 
-use vars qw($ScriptName);
+our ($ScriptName);
 
 *OldDoubleclickGetHeader = *GetHeader;
 *GetHeader = *NewDoubleclickGetHeader;

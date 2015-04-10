@@ -18,8 +18,8 @@ package OddMuse;
 
 AddModuleDescription('toc-js.pl', 'Javascript Table of Contents Extension');
 
-use vars qw($HtmlHeaders @MyInitVariables);
-use vars qw($TocOutlineLibrary);
+our ($HtmlHeaders, @MyInitVariables);
+our ($TocOutlineLibrary);
 
 $TocOutlineLibrary = 'http://h5o.googlecode.com/files/outliner.0.5.0.62.js';
 

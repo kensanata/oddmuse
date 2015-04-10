@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('sync.pl', 'Page Synchronization');
 
-use vars qw($q %Page $OpenPageName @MyRules $FullUrl $FullUrlPattern $ScriptName);
+our ($q, %Page, $OpenPageName, @MyRules, $FullUrl, $FullUrlPattern, $ScriptName);
 
 push(@MyRules, \&SyncRule);
 

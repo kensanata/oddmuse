@@ -17,7 +17,7 @@ package OddMuse;
 
 AddModuleDescription('footnotes.pl', 'Footnotes Extension');
 
-use vars qw($q $bol @MyRules @MyInitVariables);
+our ($q, $bol, @MyRules, @MyInitVariables);
 # ....................{ CONFIGURATION                      }....................
 
 =head1 CONFIGURATION
@@ -26,9 +26,9 @@ footnotes is easily configurable; set these variables in the B<wiki/config.pl>
 file for your Oddmuse Wiki.
 
 =cut
-use vars qw($FootnotePattern
-            $FootnotesPattern
-            $FootnotesHeaderText
+our ($FootnotePattern,
+            $FootnotesPattern,
+            $FootnotesHeaderText,
 
             @FootnoteList);
 

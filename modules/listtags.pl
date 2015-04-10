@@ -22,8 +22,8 @@ AddModuleDescription('listtags.pl', 'ListTags Extension');
 
 # This action is similar with list action
 
-use vars qw($q $bol %Action %Page $OpenPageName @MyRules);
-use vars qw($TagListLabel);
+our ($q, $bol, %Action, %Page, $OpenPageName, @MyRules);
+our ($TagListLabel);
 
 $TagListLabel = "tag:";
 

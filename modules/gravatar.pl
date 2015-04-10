@@ -18,7 +18,7 @@ AddModuleDescription('gravatar.pl', 'Gravatar');
 
 use Digest::MD5 qw(md5_hex);
 
-use vars qw($q $bol %CookieParameters $FullUrlPattern @MyRules @MyInitVariables);
+our ($q, $bol, %CookieParameters, $FullUrlPattern, @MyRules, @MyInitVariables);
 
 # Same as in mail.pl
 $CookieParameters{mail} = '';

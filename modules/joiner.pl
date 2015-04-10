@@ -31,7 +31,7 @@ use strict;
 
 AddModuleDescription('joiner.pl', 'Joiner Extension');
 
-use vars qw($q $Now %Action @MyAdminCode @MyInitVariables $UserGotoBar $DataDir $FullUrl $SiteName %CookieParameters %InvisibleCookieParameters @QuestionaskerQuestions $QuestionaskerRememberAnswer $QuestionaskerSecretKey $ReCaptchaSecretKey $ReCaptchaRememberAnswer);
+our ($q, $Now, %Action, @MyAdminCode, @MyInitVariables, $UserGotoBar, $DataDir, $FullUrl, $SiteName, %CookieParameters, %InvisibleCookieParameters, @QuestionaskerQuestions, $QuestionaskerRememberAnswer, $QuestionaskerSecretKey, $ReCaptchaSecretKey, $ReCaptchaRememberAnswer);
 
 =head1 DESCRIPTION
 
@@ -110,10 +110,10 @@ Their data format is same as wiki page's.
 
 =cut
 
-use vars qw($JoinerSalt $JoinerGeneratorSalt $JoinerEmailSenderAddress
-  $JoinerCommentAllowed $JoinerMinimumPasswordLength $JoinerWait
-  $JoinerQuestionModule $JoinerDataDir $JoinerEmailCommand $JoinerEmailRegExp);
-use vars qw($JoinerDir $JoinerEmailDir $JoinerMessage $JoinerLoggedIn);
+our ($JoinerSalt, $JoinerGeneratorSalt, $JoinerEmailSenderAddress,
+  $JoinerCommentAllowed, $JoinerMinimumPasswordLength, $JoinerWait,
+  $JoinerQuestionModule, $JoinerDataDir, $JoinerEmailCommand, $JoinerEmailRegExp);
+our ($JoinerDir, $JoinerEmailDir, $JoinerMessage, $JoinerLoggedIn);
 
 use Digest::MD5;
 

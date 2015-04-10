@@ -33,7 +33,7 @@ and tags-update.db will be cleared again.
 
 package OddMuse::Tokenize;
 
-use vars qw($regexp);
+our ($regexp);
 
 $regexp = qr'[A-Za-z0-9_\x{0080}-\x{fffd}]+';
 
@@ -86,10 +86,10 @@ This will link every tag to a journal filtered by tag.
 
 =cut
 
-use vars qw($q %Action %Page $OpenPageName $CollectingJournal @MyRules $DataDir $ScriptName $FreeLinkPattern @MyAdminCode @Debugging);
+our ($q, %Action, %Page, $OpenPageName, $CollectingJournal, @MyRules, $DataDir, $ScriptName, $FreeLinkPattern, @MyAdminCode, @Debugging);
 push(@MyRules, \&SearchFreeTextTagsRule);
 
-use vars qw($SearchFreeTextTagUrl);
+our ($SearchFreeTextTagUrl);
 
 $SearchFreeTextTagUrl = 'http://technorati.com/tag/';
 

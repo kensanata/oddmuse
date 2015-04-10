@@ -19,7 +19,7 @@
 use strict;
 
 AddModuleDescription('simple-rules.pl', 'Simple Fast Alternate Text Formatting Rules');
-use vars qw($q $OpenPageName $FS $UrlPattern $FreeLinkPattern);
+our ($q, $OpenPageName, $FS, $UrlPattern, $FreeLinkPattern);
 
 *ApplyRules = *NewSimpleRulesApplyRules;
 
@@ -28,7 +28,7 @@ my $DIRT = "\x1d";
 
 # Variables which are essentially global and which contain state are localized before they are set. In order to localize
 # them, they have to be declared here, first.
-use vars qw($counter %protected %dirty);
+our ($counter, %protected, %dirty);
 
 sub NewSimpleRulesApplyRules {
   # locallinks: apply rules that create links depending on local config (incl. interlink!)

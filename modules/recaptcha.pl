@@ -39,17 +39,15 @@ file for your Oddmuse Wiki.
 
 =cut
 
-use vars qw($q %AdminPages $LinkPattern $FreeLinks $FreeLinkPattern $WikiLinks @MyInitVariables %CookieParameters %InvisibleCookieParameters);
-use vars qw(
-  $ReCaptchaPrivateKey
-  $ReCaptchaPublicKey
-  $ReCaptchaTheme
-  $ReCaptchaTabIndex
-  $ReCaptchaRememberAnswer
-  $ReCaptchaSecretKey
-  $ReCaptchaRequiredList
-  %ReCaptchaProtectedForms
-);
+our ($q, %AdminPages, $LinkPattern, $FreeLinks, $FreeLinkPattern, $WikiLinks, @MyInitVariables, %CookieParameters, %InvisibleCookieParameters);
+our ($ReCaptchaPrivateKey,
+  $ReCaptchaPublicKey,
+  $ReCaptchaTheme,
+  $ReCaptchaTabIndex,
+  $ReCaptchaRememberAnswer,
+  $ReCaptchaSecretKey,
+  $ReCaptchaRequiredList,
+  %ReCaptchaProtectedForms);
 
 =head2 $ReCaptchaPublicKey
 

@@ -26,7 +26,7 @@ package OddMuse;
 
 AddModuleDescription('logout.pl', 'Logout Extension');
 
-use vars qw($q %Action $CommentsPrefix $Message $LinkPattern $FreeLinks $FreeLinkPattern $SiteName %CookieParameters);
+our ($q, %Action, $CommentsPrefix, $Message, $LinkPattern, $FreeLinks, $FreeLinkPattern, $SiteName, %CookieParameters);
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -36,9 +36,8 @@ logout is easily configurable: set these variables in the B<wiki/config.pl>
 file for your Oddmuse Wiki.
 
 =cut
-use vars qw($CommentsSuffix
-            $LogoutIsDebugging
-          );
+our ($CommentsSuffix,
+            $LogoutIsDebugging);
 
 =head2 $CommentsSuffix
 

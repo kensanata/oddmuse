@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('all.pl', 'All Action');
 
-use vars qw($q %Action $HomePage $UrlProtocols);
+our ($q, %Action, $HomePage, $UrlProtocols);
 
 $Action{all} = \&DoPrintAllPages;
 

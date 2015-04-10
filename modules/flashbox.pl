@@ -19,7 +19,7 @@ package OddMuse;
 
 AddModuleDescription('flashbox.pl', 'Flashbox Extension');
 
-use vars qw($bol @MyRules %RuleOrder);
+our ($bol, @MyRules, %RuleOrder);
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -29,7 +29,7 @@ flashbox is easily configurable: set these variables in the B<wiki/config.pl>
 file for your Oddmuse Wiki.
 
 =cut
-use vars qw($FlashboxWidth
+our ($FlashboxWidth,
             $FlashboxHeight);
 
 =head2 $FlashboxWidth

@@ -20,8 +20,8 @@ use strict;
 
 AddModuleDescription('relation.pl', 'Relation Extension');
 
-use vars qw($q %Action $OpenPageName @MyRules $DataDir);
-use vars qw(@RelationLinking $RelationPassedFlag);
+our ($q, %Action, $OpenPageName, @MyRules, $DataDir);
+our (@RelationLinking, $RelationPassedFlag);
 
 push(@MyRules, \&RelationRule);
 

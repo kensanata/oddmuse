@@ -20,8 +20,8 @@ AddModuleDescription('timezone.pl', 'Timezone Extension');
 use DateTime;
 use DateTime::TimeZone;
 
-use vars qw($q %Action %CookieParameters);
-use vars qw($defaultTZ);
+our ($q, %Action, %CookieParameters);
+our ($defaultTZ);
 
 $defaultTZ = 'UTC';
 

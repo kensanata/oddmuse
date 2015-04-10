@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('signature.pl', 'Signature Extension');
 
-use vars qw($Now @MyRules @MyMacros);
+our ($Now, @MyRules, @MyMacros);
 
 push(@MyRules, \&SignatureExceptionRule);
 

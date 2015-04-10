@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('html-uploads.pl', 'Restricted HTML Upload');
 
-use vars qw(%Action @UploadTypes);
+our (%Action, @UploadTypes);
 $Action{download} = \&HtmlUploadsDoDownload;
 
 # anybody can download raw html

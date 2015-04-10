@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('grep.pl');
 
-use vars qw($q @MyRules);
+our ($q, @MyRules);
 
 push(@MyRules, \&GrepRule);
 

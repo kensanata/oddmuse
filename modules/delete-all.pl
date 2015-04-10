@@ -16,8 +16,8 @@ use strict;
 
 AddModuleDescription('delete-all.pl');
 
-use vars qw(%Page $Now $OpenPageName %LockOnCreation);
-use vars qw($DeleteAge);
+our (%Page, $Now, $OpenPageName, %LockOnCreation);
+our ($DeleteAge);
 
 $DeleteAge = 172800; # 2*24*60*60
 

@@ -17,7 +17,7 @@ use strict;
 
 AddModuleDescription('tables-long.pl', 'Long Table Markup Extension');
 
-use vars qw($bol @Flags $Fragment @Blocks $FS @MyRules $PortraitSupportColorDiv);
+our ($bol, @Flags, $Fragment, @Blocks, $FS, @MyRules, $PortraitSupportColorDiv);
 push(@MyRules, \&TablesLongRule);
 
 my $TablesLongLabels = '';

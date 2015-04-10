@@ -31,7 +31,7 @@ use strict;
 
 AddModuleDescription('dynlogo.pl', 'Dynamic Logo');
 
-use vars qw($DynLogoDirectory $DynLogoDefault %DynLogoMap);
+our ($DynLogoDirectory, $DynLogoDefault, %DynLogoMap);
 
 # Directory to search for images.
 $DynLogoDirectory = '/pic/dynlogo';

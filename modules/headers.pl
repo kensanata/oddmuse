@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('headers.pl', 'Header Markup Extension');
 
-use vars qw($q $bol %RuleOrder @MyRules $PortraitSupportColor $PortraitSupportColorDiv);
+our ($q, $bol, %RuleOrder, @MyRules, $PortraitSupportColor, $PortraitSupportColorDiv);
 
 # After toc.pl but before usemod.pl
 push(@MyRules, \&HeadersRule);

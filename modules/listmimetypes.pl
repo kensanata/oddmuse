@@ -16,7 +16,7 @@
 use strict;
 
 AddModuleDescription('listmimetypes.pl');
-use vars qw(%Action @UploadTypes);
+our (%Action, @UploadTypes);
 
 $Action{mimetypes} = \&DoListMimeTypes;
 

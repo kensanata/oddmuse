@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('search-shortcut.pl', 'Comments on Searching');
 
-use vars qw($FullUrl);
+our ($FullUrl);
 
 *OldGetHeader = *GetHeader;
 *GetHeader = *NewGetHeader;

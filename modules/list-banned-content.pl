@@ -16,7 +16,7 @@ use strict;
 
 AddModuleDescription('list-banned-content.pl');
 
-use vars qw($q %Action %Page $BannedContent $BannedRegexps $FullUrlPattern);
+our ($q, %Action, %Page, $BannedContent, $BannedRegexps, $FullUrlPattern);
 
 $Action{'list-banned-content'} = \&DoListBannedContent;
 

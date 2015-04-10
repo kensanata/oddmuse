@@ -16,7 +16,7 @@ use strict;
 
 AddModuleDescription('weblog-4.pl', 'Blogging With Tags');
 
-use vars qw($q %Action %Page $OpenPageName $HomePage $ScriptName @MyInitVariables @MyAdminCode $SearchFreeTextTagUrl);
+our ($q, %Action, %Page, $OpenPageName, $HomePage, $ScriptName, @MyInitVariables, @MyAdminCode, $SearchFreeTextTagUrl);
 
 push(@MyInitVariables, sub {
        $SearchFreeTextTagUrl = $ScriptName . '?action=browse;tag=1;id=';

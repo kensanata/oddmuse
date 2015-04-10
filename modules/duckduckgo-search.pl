@@ -16,8 +16,8 @@ use strict;
 
 AddModuleDescription('duckduckgo-search.pl', 'Use DuckDuckGo For Searches');
 
-use vars qw($q %Action $ScriptName @MyInitVariables);
-use vars qw($DuckDuckGoSearchDomain);
+our ($q, %Action, $ScriptName, @MyInitVariables);
+our ($DuckDuckGoSearchDomain);
 
 $DuckDuckGoSearchDomain = undef;
 

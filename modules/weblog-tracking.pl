@@ -20,8 +20,8 @@
 
 use strict;
 
-use vars qw($q $UsePathInfo $ScriptName $SiteName);
-use vars qw(%NotifyJournalPage @NotifyUrlPatterns);
+our ($q, $UsePathInfo, $ScriptName, $SiteName);
+our (%NotifyJournalPage, @NotifyUrlPatterns);
 
 AddModuleDescription('weblog-tracking.pl', 'Update Weblog Tracker Extension');
 

@@ -16,9 +16,9 @@ use strict;
 
 package OddMuse;
 
-use vars qw($q $Message $HomePage $SiteName @MyInitVariables);
-use vars qw($MonitorUser $MonitorPassword $MonitorHost
-	    $MonitorFrom $MonitorTo $MonitorRegexp);
+our ($q, $Message, $HomePage, $SiteName, @MyInitVariables);
+our ($MonitorUser, $MonitorPassword, $MonitorHost,
+	    $MonitorFrom, $MonitorTo, $MonitorRegexp);
 
 AddModuleDescription('monitor.pl');
 

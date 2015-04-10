@@ -16,8 +16,8 @@ use strict;
 
 AddModuleDescription('strange-spam.pl', 'StrangeBannedContent');
 
-use vars qw(%AdminPages $OpenPageName @MyInitVariables %LockOnCreation %PlainTextPages $BannedContent);
-use vars qw($StrangeBannedContent);
+our (%AdminPages, $OpenPageName, @MyInitVariables, %LockOnCreation, %PlainTextPages, $BannedContent);
+our ($StrangeBannedContent);
 
 $StrangeBannedContent = 'StrangeBannedContent';
 

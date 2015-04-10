@@ -27,8 +27,8 @@ use strict;
 
 AddModuleDescription('faq.pl', 'FAQ Extension');
 
-use vars qw($q $bol @MyRules);
-use vars qw($FaqHeaderText $FaqQuestionText $FaqAnswerText);
+our ($q, $bol, @MyRules);
+our ($FaqHeaderText, $FaqQuestionText, $FaqAnswerText);
 
 $FaqHeaderText = "Questions on this page:" unless $FaqHeaderText;
 $FaqQuestionText = "Question: " unless $FaqQuestionText;

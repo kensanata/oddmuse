@@ -21,7 +21,7 @@ use File::Copy;
 
 AddModuleDescription('module-bisect.pl', 'Module Bisect Extension');
 
-use vars qw($q @MyAdminCode %Action $ModuleDir);
+our ($q, @MyAdminCode, %Action, $ModuleDir);
 
 push(@MyAdminCode, \&ModuleBisectMenu);
 $Action{bisect} = \&BisectAction;

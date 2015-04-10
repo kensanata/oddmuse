@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('moin.pl', 'Moin Markup Extension');
 
-use vars qw($q $bol @HtmlStack %RuleOrder @MyRules);
+our ($q, $bol, @HtmlStack, %RuleOrder, @MyRules);
 
 push(@MyRules, \&MoinRule);
 $RuleOrder{\&MoinRule} = -10; # run before default rules because of [[BR]]

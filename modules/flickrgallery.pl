@@ -24,8 +24,8 @@ AddModuleDescription('flickrgallery.pl', 'FlickrGallery Module');
 # INCLUDING derivative works.  The rest of the code can be used as licensed
 my $FlickrAPIKey = "a8d5ba0d878e08847ccc8b150e52a859";
 
-use vars qw(%RuleOrder @MyRules @MyMarkdownRules);
-use vars qw($FlickrBaseUrl $FlickrHeaderTemplate $FlickrFooterTemplate $FlickrImageTemplate $FlickrExtension $FlickrLabel);
+our (%RuleOrder, @MyRules, @MyMarkdownRules);
+our ($FlickrBaseUrl, $FlickrHeaderTemplate, $FlickrFooterTemplate, $FlickrImageTemplate, $FlickrExtension, $FlickrLabel);
 
 use LWP;
 

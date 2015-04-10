@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('search-list.pl', 'Search List Extension');
 
-use vars qw($q $bol %Action %Page $OpenPageName @MyRules);
+our ($q, $bol, %Action, %Page, $OpenPageName, @MyRules);
 
 push(@MyRules, \&SearchListRule);
 

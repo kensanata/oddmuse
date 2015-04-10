@@ -29,7 +29,7 @@ package OddMuse;
 
 AddModuleDescription('autolock.pl', 'Autolock Extension');
 
-use vars qw(@MyInitVariables $CommentsPrefix $EditAllowed $NoEditFile %LockOnCreation);
+our (@MyInitVariables, $CommentsPrefix, $EditAllowed, $NoEditFile, %LockOnCreation);
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -39,9 +39,9 @@ autolock is easily configurable: set these variables in the B<wiki/config.pl>
 file for your Oddmuse Wiki.
 
 =cut
-use vars qw($AutoLockPagesMatching
-            $AutoLockCommentsPagesMatching
-            $AutoLockSeverity
+our ($AutoLockPagesMatching,
+            $AutoLockCommentsPagesMatching,
+            $AutoLockSeverity,
             $AutoLockUserCanEditEditorFix);
 
 =head2 $AutoLockPagesMatching

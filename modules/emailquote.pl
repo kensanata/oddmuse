@@ -14,7 +14,7 @@ use strict;
 
 AddModuleDescription('emailquote.pl', 'Email Quote Extension');
 
-use vars qw($q $bol @MyRules);
+our ($q, $bol, @MyRules);
 
 push(@MyRules, \&EmailQuoteRule);
 

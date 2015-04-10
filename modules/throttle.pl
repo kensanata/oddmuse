@@ -26,8 +26,8 @@ use strict;
 AddModuleDescription('throttle.pl', 'Limit Number Of Instances Running');
 
 use File::Glob ':glob';
-use vars qw($q $DataDir);
-use vars qw($InstanceThrottleDir $InstanceThrottleLimit);
+our ($q, $DataDir);
+our ($InstanceThrottleDir, $InstanceThrottleLimit);
 
 $InstanceThrottleDir = $DataDir."/pids"; # directory for pid files
 $InstanceThrottleLimit = 2; # maximum number of parallel processes

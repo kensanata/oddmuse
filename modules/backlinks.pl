@@ -14,7 +14,7 @@ use strict;
 
 AddModuleDescription('backlinks.pl', 'Backlinks Extension');
 
-use vars qw($q %Action %Page $OpenPageName);
+our ($q, %Action, %Page, $OpenPageName);
 
 *OldGetSearchLink = *GetSearchLink;
 *GetSearchLink = *NewGetSearchLink;
