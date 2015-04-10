@@ -16,7 +16,7 @@ use strict;
 
 package OddMuse;
 
-AddModuleDescription('edit-paragraph.pl', 'Edit Paragraphs Extension');
+AddModuleDescription('edit-paragraphs.pl', 'Edit Paragraphs Extension');
 
 use vars qw($q $OpenPageName $Fragment %Page %Action @MyRules $LastUpdate);
 
