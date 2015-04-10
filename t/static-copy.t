@@ -143,7 +143,7 @@ xpath_test_file("$DataDir/static/Test.html",
 test_file("$DataDir/static/Test.html",
 	  "Ümlaute");
 test_file("$DataDir/static/static.css",
-	  "body { background-color:#FFF; color:#000; margin:1em 2em; }");
+	  "This is the default CSS file for Oddmuse wikis");
 
 # make sure spaces are translated to underscores (fixed in image.pl)
 add_module('image.pl');
