@@ -17,7 +17,7 @@ use strict;
 
 AddModuleDescription('numbered-list.pl');
 
-use vars qw($bol @MyRules);
+our ($bol, @MyRules);
 
 push(@MyRules, \&NumberedListRule);
 

@@ -43,7 +43,7 @@ Notes:
 
 AddModuleDescription('private-pages.pl', 'Private Pages Extension');
 
-use vars qw(%IndexHash %Page $OpenPageName $Now @MyRules $NewText);
+our (%IndexHash, %Page, $OpenPageName, $Now, @MyRules, $NewText);
 
 sub PrivatePageLocked {
   my $text = shift;

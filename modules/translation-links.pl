@@ -57,8 +57,8 @@ The default page is called TranslationHelp.
 
 =cut
 
-use vars qw($q %Action %Page $OpenPageName %Translate %Languages $LinkPattern $FreeLinks $FreeLinkPattern $WikiLinks @MyRules @MyInitVariables $FS);
-use vars qw($TranslationLinkPattern %TranslationLinkTarget
+our ($q, %Action, %Page, $OpenPageName, %Translate, %Languages, $LinkPattern, $FreeLinks, $FreeLinkPattern, $WikiLinks, @MyRules, @MyInitVariables, $FS);
+our ($TranslationLinkPattern, %TranslationLinkTarget,
 	    $TranslationLinkHelpPage);
 
 $TranslationLinkHelpPage = 'TranslationHelp';

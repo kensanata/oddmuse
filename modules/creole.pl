@@ -18,7 +18,7 @@ package OddMuse;
 
 AddModuleDescription('creole.pl', 'Creole Markup Extension');
 
-use vars qw($q $bol %InterSite $FreeLinkPattern $FullUrlPattern $FreeLinkPattern $FreeInterLinkPattern $InterSitePattern @MyRules %RuleOrder @MyInitVariables @HtmlStack @HtmlAttrStack);
+our ($q, $bol, %InterSite, $FreeLinkPattern, $FullUrlPattern, $FreeLinkPattern, $FreeInterLinkPattern, $InterSitePattern, @MyRules, %RuleOrder, @MyInitVariables, @HtmlStack, @HtmlAttrStack);
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -28,9 +28,9 @@ creole is easily configurable; set these variables in the B<wiki/config.pl>
 file for your Oddmuse Wiki.
 
 =cut
-use vars qw($CreoleLineBreaks
-            $CreoleTildeAlternative
-            $CreoleTableCellsContainBlockLevelElements
+our ($CreoleLineBreaks,
+            $CreoleTildeAlternative,
+            $CreoleTableCellsContainBlockLevelElements,
             $CreoleDashStyleUnorderedLists);
 
 =head2 $CreoleLineBreaks

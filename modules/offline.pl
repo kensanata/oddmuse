@@ -16,7 +16,7 @@ use strict;
 
 AddModuleDescription('offline.pl', 'Offline Extension');
 
-use vars qw($q %Action $StyleSheet $ScriptName $HtmlHeaders @MyAdminCode @MyInitVariables $DocumentHeader $SurgeProtection);
+our ($q, %Action, $StyleSheet, $ScriptName, $HtmlHeaders, @MyAdminCode, @MyInitVariables, $DocumentHeader, $SurgeProtection);
 
 # Based on http://diveintohtml5.org/offline.html
 

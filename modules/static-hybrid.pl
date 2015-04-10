@@ -21,10 +21,10 @@ use strict;
 
 AddModuleDescription('static-hybrid.pl', 'Static Hybrid Module');
 
-use vars qw($q $Now %Action %Page %IndexHash @IndexList $OpenPageName $ScriptName $FS $RCName $DeletedPage $UsePathInfo $CommentsPrefix $Message $KeepDays $NewComment $EmbedWiki $ClusterMapPage %NearLinksUsed);
-use vars qw($StaticDir $StaticAlways %StaticMimeTypes $StaticUrl
+our ($q, $Now, %Action, %Page, %IndexHash, @IndexList, $OpenPageName, $ScriptName, $FS, $RCName, $DeletedPage, $UsePathInfo, $CommentsPrefix, $Message, $KeepDays, $NewComment, $EmbedWiki, $ClusterMapPage, %NearLinksUsed);
+our ($StaticDir, $StaticAlways, %StaticMimeTypes, $StaticUrl,
 
-%StaticLinkedPages @StaticIgnoredPages);
+%StaticLinkedPages, @StaticIgnoredPages);
 $Action{static} = \&DoStatic;
 
 $StaticDir = '' unless defined $StaticDir;

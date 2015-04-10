@@ -17,8 +17,8 @@ use strict;
 
 AddModuleDescription('tex.pl', 'TeX Extension');
 
-use vars qw(%RuleOrder @MyRules);
-use vars qw($TeXInit %Tex);
+our (%RuleOrder, @MyRules);
+our ($TeXInit, %Tex);
 use utf8;
 
 %Tex = qw( !` ¡ {\pounds} £ \pounds £ {\S} § \S § \"{} ¨ {\copyright} ©

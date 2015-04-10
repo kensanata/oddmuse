@@ -18,8 +18,8 @@ package OddMuse;
 
 AddModuleDescription('div-foo.pl', 'Div Foo Extension');
 
-use vars qw(@MyRules);
-use vars qw($DivFooPrefix);
+our (@MyRules);
+our ($DivFooPrefix);
 
 $DivFooPrefix = 'foo_';
 

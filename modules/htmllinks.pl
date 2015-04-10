@@ -20,8 +20,8 @@ use strict;
 
 AddModuleDescription('htmllinks.pl', 'HtmlLinks Module');
 
-use vars qw($OpenPageName %RuleOrder @MyRules);
-use vars qw($HtmlLinks);
+our ($OpenPageName, %RuleOrder, @MyRules);
+our ($HtmlLinks);
 
 $HtmlLinks = 0;		# Mask all email, not just those in []'s
 

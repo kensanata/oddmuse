@@ -19,7 +19,7 @@
 use strict;
 
 AddModuleDescription('nearlink-create.pl', 'Comments on Near Links');
-use vars qw(%InterSite $FreeLinkPattern);
+our (%InterSite, $FreeLinkPattern);
 
 *OldNearCreateScriptLink = *ScriptLink;
 *ScriptLink = *NewNearCreateScriptLink;

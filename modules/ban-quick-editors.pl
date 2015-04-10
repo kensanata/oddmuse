@@ -19,7 +19,7 @@ use strict;
 
 AddModuleDescription('ban-quick-editors.pl', 'Banning Quick Editors');
 
-use vars qw($Now %RecentVisitors $SurgeProtection);
+our ($Now, %RecentVisitors, $SurgeProtection);
 
 *BanQuickOldUserIsBanned = *UserIsBanned;
 *UserIsBanned = *BanQuickNewUserIsBanned;

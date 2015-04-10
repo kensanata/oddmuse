@@ -28,7 +28,7 @@ use strict;
 
 AddModuleDescription('hiddenpages.pl', 'Hidden Pages Extension');
 
-use vars qw($HiddenCluster $HideEditorPages $HideAdminPages $HideRegExEditor $HideRegExAdmin);
+our ($HiddenCluster, $HideEditorPages, $HideAdminPages, $HideRegExEditor, $HideRegExAdmin);
 
 # $HiddenCluster is a cluster name for hidden pages. Default
 # is pages in the cluster "HiddenPage". You can override this

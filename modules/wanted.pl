@@ -20,11 +20,11 @@ use strict;
 
 package OddMuse;
 
-use vars qw($WantedPageName $WantedPageNameFilter $WantedPageReferrerFilter);
+our ($WantedPageName, $WantedPageNameFilter, $WantedPageReferrerFilter);
 
 AddModuleDescription('wanted.pl', 'Wanted Pages Extension');
 
-use vars qw($q %Action %IndexHash @MyAdminCode);
+our ($q, %Action, %IndexHash, @MyAdminCode);
 
 push(@MyAdminCode, \&WantedAction);
 

@@ -18,8 +18,8 @@
 
 AddModuleDescription('webdav.pl', 'WebDAV Extension');
 
-use vars qw($q $Now %Page @KnownLocks $DataDir);
-use vars qw($WebDavCache);
+our ($q, $Now, %Page, @KnownLocks, $DataDir);
+our ($WebDavCache);
 
 $WebDavCache = "$DataDir/webdav";
 push(@KnownLocks, 'webdav');

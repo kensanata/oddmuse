@@ -18,8 +18,8 @@ AddModuleDescription('weblog-3.pl', 'Create a Blog Front Page');
 
 # Categories
 
-use vars qw($q %Action %Page $OpenPageName $NewText $HomePage $ScriptName @MyInitVariables $FreeLinkPattern $UserGotoBar @UserGotoBarPages $UsePathInfo);
-use vars qw($CategoriesPage);
+our ($q, %Action, %Page, $OpenPageName, $NewText, $HomePage, $ScriptName, @MyInitVariables, $FreeLinkPattern, $UserGotoBar, @UserGotoBarPages, $UsePathInfo);
+our ($CategoriesPage);
 
 $CategoriesPage = 'Categories';
 

@@ -17,7 +17,7 @@ use strict;
 
 AddModuleDescription('fractions.pl', 'Fractions');
 
-use vars qw(@MyRules);
+our (@MyRules);
 
 push(@MyRules, \&FractionsRule);
 

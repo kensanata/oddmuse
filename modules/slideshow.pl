@@ -20,8 +20,8 @@
 
 AddModuleDescription('slideshow.pl');
 
-use vars qw($q %Action %Page $Now @MyRules $FS $FootnoteNumber);
-use vars qw($SlideShowDataFolder $SlideShowTheme $SlideShowHeader %SlideShowMeta);
+our ($q, %Action, %Page, $Now, @MyRules, $FS, $FootnoteNumber);
+our ($SlideShowDataFolder, $SlideShowTheme, $SlideShowHeader, %SlideShowMeta);
 
 my $InSlide = 0;
 my $SlideShowBegun = 0;

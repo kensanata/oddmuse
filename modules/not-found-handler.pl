@@ -20,10 +20,10 @@ use strict;
 
 AddModuleDescription('not-found-handler.pl', '404 Handler Extension');
 
-use vars qw($q $OpenPageName %Page %Action $DataDir $FreeLinkPattern $PermanentAnchors);
+our ($q, $OpenPageName, %Page, %Action, $DataDir, $FreeLinkPattern, $PermanentAnchors);
 
 use File::Glob ':glob';
-use vars qw($NotFoundHandlerDir $LinkFile %LinkDb $LinkDbInit);
+our ($NotFoundHandlerDir, $LinkFile, %LinkDb, $LinkDbInit);
 
 $NotFoundHandlerDir = '/tmp/oddmuse/cache';
 $LinkFile = "$DataDir/linkdb";

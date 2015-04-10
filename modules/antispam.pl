@@ -20,8 +20,8 @@ use strict;
 
 AddModuleDescription('antispam.pl', 'Antispam Module');
 
-use vars qw(@MyRules);
-use vars qw($DoMaskEmail $CreateMailtoLinks $EmailRegExp);
+our (@MyRules);
+our ($DoMaskEmail, $CreateMailtoLinks, $EmailRegExp);
 
 $DoMaskEmail = 1;		# Mask all email, not just those in []'s
 $CreateMailtoLinks = 1;		# Create mailto's for all addresses

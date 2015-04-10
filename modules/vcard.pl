@@ -19,7 +19,7 @@ use strict;
 
 AddModuleDescription('vcard.pl');
 
-use vars qw($q $bol @MyRules);
+our ($q, $bol, @MyRules);
 
 push(@MyRules, \&hCardRule);
 

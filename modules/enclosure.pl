@@ -17,8 +17,8 @@ use strict;
 
 AddModuleDescription('enclosure.pl', 'Podcasting');
 
-use vars qw(%Page %IndexHash @MyRules $FreeLinkPattern);
-use vars qw(@Enclosures);
+our (%Page, %IndexHash, @MyRules, $FreeLinkPattern);
+our (@Enclosures);
 
 push(@MyRules, \&EnclosureRule);
 

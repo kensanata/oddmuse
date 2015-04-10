@@ -18,8 +18,8 @@ use strict;
 
 AddModuleDescription('sidebar.pl', 'Sidebar Extension');
 
-use vars qw($OpenPageName @MyInitVariables %AdminPages);
-use vars qw($SidebarName);
+our ($OpenPageName, @MyInitVariables, %AdminPages);
+our ($SidebarName);
 
 # Include this page on every page:
 

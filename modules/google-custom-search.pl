@@ -18,8 +18,8 @@
 
 use strict;
 
-use vars qw($q);
-use vars qw($GoogleCustomSearchEngine);
+our ($q);
+our ($GoogleCustomSearchEngine);
 
 $GoogleCustomSearchEngine = 'http://www.google.com/cse?cx=004774160799092323420:6-ff2s0o6yi&q=';
 

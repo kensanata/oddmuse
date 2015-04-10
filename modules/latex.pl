@@ -32,8 +32,8 @@ use strict;
 
 use File::Glob ':glob';
 
-use vars qw($DataDir @MyRules);
-use vars qw($LatexDir $LatexLinkDir $LatexExtendPath $LatexSingleDollars);
+our ($DataDir, @MyRules);
+our ($LatexDir, $LatexLinkDir, $LatexExtendPath, $LatexSingleDollars);
 
 # One of the following options must be set correctly to the full path of
 # either dvipng or convert.  If both paths are set correctly, dvipng is used

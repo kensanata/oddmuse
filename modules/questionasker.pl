@@ -18,11 +18,11 @@ use strict;
 
 AddModuleDescription('questionasker.pl', 'QuestionAsker Extension');
 
-use vars qw($q $bol $FreeLinks $FreeLinkPattern $LinkPattern $WikiLinks @MyInitVariables %AdminPages %CookieParameters %InvisibleCookieParameters);
-use vars qw(@QuestionaskerQuestions
-	    $QuestionaskerRememberAnswer
-	    $QuestionaskerSecretKey
-	    $QuestionaskerRequiredList
+our ($q, $bol, $FreeLinks, $FreeLinkPattern, $LinkPattern, $WikiLinks, @MyInitVariables, %AdminPages, %CookieParameters, %InvisibleCookieParameters);
+our (@QuestionaskerQuestions,
+	    $QuestionaskerRememberAnswer,
+	    $QuestionaskerSecretKey,
+	    $QuestionaskerRequiredList,
 	    %QuestionaskerProtectedForms);
 
 # A list of arrays. The first element in each array is a string, the

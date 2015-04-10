@@ -67,8 +67,8 @@ use Cwd;
 use File::Temp ();
 
 AddModuleDescription('git.pl', 'Git Extension');
-use vars qw($q %Page %Action %IndexHash @IndexList @MyInitVariables @MyMaintenance $DataDir);
-use vars qw($GitBinary $GitRepo $GitMail $GitPageFile $GitDebug $GitResult);
+our ($q, %Page, %Action, %IndexHash, @IndexList, @MyInitVariables, @MyMaintenance, $DataDir);
+our ($GitBinary, $GitRepo, $GitMail, $GitPageFile, $GitDebug, $GitResult);
 
 $GitBinary = 'git';
 $GitMail = 'unknown@oddmuse.org';

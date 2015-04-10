@@ -20,8 +20,8 @@ use strict;
 
 AddModuleDescription('page-trail.pl', 'Page Trail Extension');
 
-use vars qw($q %CookieParameters %InvisibleCookieParameters);
-use vars qw($PageTrailLength);
+our ($q, %CookieParameters, %InvisibleCookieParameters);
+our ($PageTrailLength);
 
 $PageTrailLength = 10;
 

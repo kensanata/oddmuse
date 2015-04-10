@@ -14,7 +14,7 @@ use strict;
 
 AddModuleDescription('htmlcomment.pl', 'Html Comment Extension');
 
-use vars qw($bol @MyRules);
+our ($bol, @MyRules);
 
 push(@MyRules, \&HtmlCommentRules);
 

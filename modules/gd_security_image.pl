@@ -26,7 +26,7 @@ use strict;
 
 AddModuleDescription('gd_security_image.pl', 'GD Security Image Extension');
 
-use vars qw($q $Now %Action $FullUrl $LinkPattern $FreeLinks $FreeLinkPattern $WikiLinks $DataDir $ModuleDir @MyInitVariables %CookieParameters %InvisibleCookieParameters);
+our ($q, $Now, %Action, $FullUrl, $LinkPattern, $FreeLinks, $FreeLinkPattern, $WikiLinks, $DataDir, $ModuleDir, @MyInitVariables, %CookieParameters, %InvisibleCookieParameters);
 
 =head1 DESCRIPTION
 
@@ -99,13 +99,13 @@ re-answer CAPTCHA.
 
 =cut
 
-use vars qw($GdSecurityImageFont $GdSecurityImageRememberAnswer
-  $GdSecurityImageDuration $GdSecurityImageRequiredList
-  %GdSecurityImageProtectedForms $GdSecurityImageDataDir
-  $GdSecurityImageWidth $GdSecurityImageHeight
-  $GdSecurityImagePtsize $GdSecurityImageScramble $GdSecurityImageChars
+our ($GdSecurityImageFont, $GdSecurityImageRememberAnswer,
+  $GdSecurityImageDuration, $GdSecurityImageRequiredList,
+  %GdSecurityImageProtectedForms, $GdSecurityImageDataDir,
+  $GdSecurityImageWidth, $GdSecurityImageHeight,
+  $GdSecurityImagePtsize, $GdSecurityImageScramble, $GdSecurityImageChars,
   $GdSecurityImageAA);
-use vars qw($GdSecurityImageDir $GdSecurityImageId $GdSecurityImagePngToAA);
+our ($GdSecurityImageDir, $GdSecurityImageId, $GdSecurityImagePngToAA);
 
 use Digest::MD5;
 use File::Glob ':glob';

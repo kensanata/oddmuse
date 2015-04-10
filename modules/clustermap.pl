@@ -20,8 +20,8 @@ use strict;
 
 AddModuleDescription('clustermap.pl', 'ClusterMap Module');
 
-use vars qw($q %Action %Page $OpenPageName @MyRules @MyAdminCode $HomePage $DeletedPage $RCName $InterMap $BannedContent $BannedHosts %AdminPages $RssExclude @AdminPages $NearMap);
-use vars qw($ClusterMapPage %ClusterMap $ClusterMapTOC $FilterUnclusteredRegExp @ClusterMapAdminPages $PrintTOCAnchor);
+our ($q, %Action, %Page, $OpenPageName, @MyRules, @MyAdminCode, $HomePage, $DeletedPage, $RCName, $InterMap, $BannedContent, $BannedHosts, %AdminPages, $RssExclude, @AdminPages, $NearMap);
+our ($ClusterMapPage, %ClusterMap, $ClusterMapTOC, $FilterUnclusteredRegExp, @ClusterMapAdminPages, $PrintTOCAnchor);
 
 my %Unclustered = ();
 

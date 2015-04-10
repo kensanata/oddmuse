@@ -16,11 +16,11 @@ use strict;
 
 AddModuleDescription('bbcode.pl', 'bbCode Extension');
 
-use vars qw($q @HtmlStack @MyRules %RuleOrder $UrlProtocols $FullUrlPattern);
+our ($q, @HtmlStack, @MyRules, %RuleOrder, $UrlProtocols, $FullUrlPattern);
 push(@MyRules, \&bbCodeRule);
 $RuleOrder{\&bbCodeRule} = 100; # must come after PortraitSupportRule
 
-use vars qw($bbBlock);
+our ($bbBlock);
 my %bbTitle = qw(h1 1 h2 1 h3 1 h4 1 h5 1 h6 1);
 
 # This code does not allow the nesting of block elements such as quote

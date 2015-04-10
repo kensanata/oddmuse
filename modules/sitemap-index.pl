@@ -22,7 +22,7 @@ use strict;
 
 AddModuleDescription('sitemap-index.pl', 'Sitemap-index Extension');
 
-use vars qw(%Action $ScriptName);
+our (%Action, $ScriptName);
 
 $Action{'sitemap-index'} = \&DoSiteMapIndex;
 

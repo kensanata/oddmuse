@@ -20,8 +20,8 @@ use strict;
 
 AddModuleDescription('google-search.pl', 'Use Google For Searches');
 
-use vars qw($q %Action $ScriptName @MyInitVariables);
-use vars qw($GoogleSearchDomain $GoogleSearchExclusive);
+our ($q, %Action, $ScriptName, @MyInitVariables);
+our ($GoogleSearchDomain, $GoogleSearchExclusive);
 
 $GoogleSearchDomain = undef;
 $GoogleSearchExclusive = 1;

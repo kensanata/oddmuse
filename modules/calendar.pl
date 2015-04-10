@@ -21,8 +21,8 @@ use strict;
 
 AddModuleDescription('calendar.pl', 'Calendar Extension');
 
-use vars qw($q %Page %Action $Now $OpenPageName $CollectingJournal $FreeLinkPattern @MyRules);
-use vars qw($CalendarOnEveryPage $CalAsTable $CalStartMonday);
+our ($q, %Page, %Action, $Now, $OpenPageName, $CollectingJournal, $FreeLinkPattern, @MyRules);
+our ($CalendarOnEveryPage, $CalAsTable, $CalStartMonday);
 
 $CalendarOnEveryPage = 0;   # 1=on every page is a month-div situated in the header, use css to control
 $CalAsTable = 0;            # 0=every month-div is "free", 1=every month-div is caught in a table, use css to control

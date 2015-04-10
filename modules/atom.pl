@@ -21,7 +21,7 @@ use XML::Atom::Person;
 
 AddModuleDescription('atom.pl', 'Atom Extension');
 
-use vars qw($q %Page %Action $CommentsPrefix $ScriptName $SiteName $MaxPost $UseDiff $NewText $DeletedPage @MyInitVariables @MyMacros $FS $BannedContent $RssStyleSheet $RssRights $RssLicense $RssImageUrl $RssExclude $RCName @UploadTypes $UploadAllowed $UsePathInfo $SiteDescription $LastUpdate $InterWikiMoniker);
+our ($q, %Page, %Action, $CommentsPrefix, $ScriptName, $SiteName, $MaxPost, $UseDiff, $NewText, $DeletedPage, @MyInitVariables, @MyMacros, $FS, $BannedContent, $RssStyleSheet, $RssRights, $RssLicense, $RssImageUrl, $RssExclude, $RCName, @UploadTypes, $UploadAllowed, $UsePathInfo, $SiteDescription, $LastUpdate, $InterWikiMoniker);
 
 push(@MyInitVariables, \&AtomInit);
 

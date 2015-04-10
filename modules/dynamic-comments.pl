@@ -16,7 +16,7 @@ use strict;
 
 AddModuleDescription('dynamic-comments.pl', 'Dynamic Comments Extension');
 
-use vars qw($q $CollectingJournal $CommentsPrefix @MyInitVariables $HtmlHeaders);
+our ($q, $CollectingJournal, $CommentsPrefix, @MyInitVariables, $HtmlHeaders);
 
 push(@MyInitVariables, \&DynamicCommentsAddScript);
 

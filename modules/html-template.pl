@@ -26,8 +26,8 @@ AddModuleDescription('html-template.pl', 'HTML Templates');
 #
 # This is the beginning of PHP-in-Perl.  :(
 
-use vars qw($q %Action $DataDir $UseCache $LastUpdate);
-use vars qw($HtmlTemplateDir);
+our ($q, %Action, $DataDir, $UseCache, $LastUpdate);
+our ($HtmlTemplateDir);
 
 $HtmlTemplateDir   = "$DataDir/templates";
 

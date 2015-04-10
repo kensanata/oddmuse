@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('aawrapperdiv.pl', 'WrapperDiv Module');
 
-use vars qw($q);
+our ($q);
 
 *OldGetHeader = *GetHeader;
 *GetHeader = *WrapperGetHeader;

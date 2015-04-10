@@ -57,8 +57,8 @@ By default, these have the values of "idiot" and "looser", for obvious reasons.
 
 package OddMuse;
 
-use vars qw($q $Now @MyInitVariables $QuestionaskerRememberAnswer $QuestionaskerSecretKey);
-use vars qw($HoneyPotOk $HoneyPotIdiot $HoneyPotTimestamp $HoneyPotIdiot1 $HoneyPotIdiot2);
+our ($q, $Now, @MyInitVariables, $QuestionaskerRememberAnswer, $QuestionaskerSecretKey);
+our ($HoneyPotOk, $HoneyPotIdiot, $HoneyPotTimestamp, $HoneyPotIdiot1, $HoneyPotIdiot2);
 
 $HoneyPotOk = 'ok';
 $HoneyPotIdiot1 = 'idiot';

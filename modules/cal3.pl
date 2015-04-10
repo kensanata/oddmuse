@@ -26,7 +26,7 @@ use strict;
 
 AddModuleDescription('cal3.pl', 'Cal3 Extension');
 
-use vars qw(%IndexHash $Now $ScriptName);
+our (%IndexHash, $Now, $ScriptName);
 
 *OldCalendarGetHeader = *GetHeader;
 *GetHeader = *NewCalendarGetHeader;

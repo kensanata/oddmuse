@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('tables-in-lists.pl', 'Table Markup Extension');
 
-use vars qw($bol @MyRules);
+our ($bol, @MyRules);
 
 push(@MyRules, \&TablesInListsRule);
 

@@ -20,8 +20,8 @@ use strict;
 
 AddModuleDescription('page-type.pl', 'Page Type Extension');
 
-use vars qw($q %AdminPages @MyInitVariables $LinkPattern $FreeLinks $FreeLinkPattern $WikiLinks);
-use vars qw($PageTypesName);
+our ($q, %AdminPages, @MyInitVariables, $LinkPattern, $FreeLinks, $FreeLinkPattern, $WikiLinks);
+our ($PageTypesName);
 
 # You need to define the available types on the following page.
 

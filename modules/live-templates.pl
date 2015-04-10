@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('live-templates.pl', 'Live Template Extension');
 
-use vars qw($q $bol @MyRules $FreeLinkPattern);
+our ($q, $bol, @MyRules, $FreeLinkPattern);
 
 push(@MyRules, \&LiveTemplateRule);
 

@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('setext.pl', 'SeText Extension');
 
-use vars qw($q $bol @MyRules $PortraitSupportColorDiv);
+our ($q, $bol, @MyRules, $PortraitSupportColorDiv);
 
 push(@MyRules, \&SeTextRule);
 

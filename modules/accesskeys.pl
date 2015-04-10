@@ -19,7 +19,7 @@ package OddMuse;
 
 AddModuleDescription('accesskeys.pl', 'Links With AccessKeys Extension');
 
-use vars qw(@MyRules $FreeLinkPattern);
+our (@MyRules, $FreeLinkPattern);
 
 push(@MyRules, \&LinksWithAccessKeys);
 sub LinksWithAccessKeys {

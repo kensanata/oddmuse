@@ -4,7 +4,7 @@ use strict;
 
 AddModuleDescription('nosearch.pl');
 
-use vars qw($q @MyAdminCode);
+our ($q, @MyAdminCode);
 
 *OldGetSearchLink = *GetSearchLink;
 *GetSearchLink = *NewGetSearchLink;

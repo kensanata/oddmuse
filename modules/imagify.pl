@@ -20,8 +20,8 @@ package OddMuse;
 
 AddModuleDescription('imagify.pl', 'Imagify Extension');
 
-use vars qw($q @MyRules $ScriptName $DataDir);
-use vars qw(%ImagifyParams $ImagifyDir $ImagifyFormat);
+our ($q, @MyRules, $ScriptName, $DataDir);
+our (%ImagifyParams, $ImagifyDir, $ImagifyFormat);
 $ImagifyFormat = 'png';
 %ImagifyParams = qw{-background transparent -fill black -font Corsiva -pointsize 16 -size 600x};
 $ImagifyDir = "$DataDir/imagify"; # For images with rendered text
