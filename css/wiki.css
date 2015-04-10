@@ -1,88 +1,250 @@
-body { background-color:#FFF; color:#000; margin:1em 2em; }
-@media only screen and (max-device-width: 480px) {
-    body { font-size: 300%; }
+@font-face {
+  font-family: 'Gentium Basic';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Gentium Basic'), local('GentiumBasic'), url(/fonts/GenBasR.woff) format('woff');
 }
-textarea { width:100%; }
-a:link { color:#00F; }
-a:visited { color:#A0A; }
-a:active { color:#F00; }
-a.alias { text-decoration:none; border-bottom: thin dashed; }
-a.near:link { color:#093; }
-a.near:visited { color:#550; }
-img.logo { float: right; clear: right; border-style:none; }
-div.diff { padding-left:5%; padding-right:5%; }
-div.old { background-color:#FFFFAF; }
-div.new { background-color:#CFFFCF; }
-div.message { background-color:#FEE; }
-div.journal h1 { font-size:large; }
+@font-face {
+  font-family: 'Gentium Basic';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Gentium Basic Bold'), local('GentiumBasic-Bold'), url(/fonts/GenBasB.woff) format('woff');
+}
+@font-face {
+  font-family: 'Gentium Basic';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Gentium Basic Italic'), local('GentiumBasic-Italic'), url(/fonts/GenBasI.woff) format('woff');
+}
+@font-face {
+  font-family: 'Gentium Basic';
+  font-style: italic;
+  font-weight: 700;
+  src: local('Gentium Basic Bold Italic'), local('GentiumBasic-BoldItalic'), url(/fonts/GenBasBI.woff) format('woff');
+}
+
+@font-face {
+  font-family: 'Gentium Plus';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Gentium Plus'), local('GentiumPlus'), url(/fonts/GentiumPlus-R.woff) format('woff');
+}
+@font-face {
+  font-family: 'Gentium Plus';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Gentium Plus Italic'), local('GentiumPlus-Italic'), url(/fonts/GentiumPlus-I.woff) format('woff');
+}
+
+@font-face {
+  font-family: 'Symbola';
+  src: local('Symbola'), url('/fonts/Symbola.woff') format('woff') url('/fonts/Symbola.ttf') format('truetype');
+}
+
+body {
+    background:#fff;
+    padding:2% 5%;
+    margin:0;
+    font-family: "Gentium Basic", "Gentium Plus", "Symbola", serif;
+    font-size: 16pt;
+}
+
+div.header h1 {
+    margin-top:2ex;
+}
+
+a {
+    text-decoration: none;
+    color: #a00;
+}
+
+a:visited {
+    color: #d88;
+}
+
+div.header h1 a:hover, h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover,
+a:hover, span.caption a.image:hover {
+    background:#fee;
+}
+
+img.logo {
+    float: right;
+    clear: right;
+    border-style:none;
+    background-color:#fff;
+}
+
+img {
+    padding: 0.5em;
+    margin: 0 1em;
+}
+
+a.image:hover {
+    background:inherit;
+}
+
+a.image:hover img {
+    background:#fee;
+}
+
+/* a.definition soll aussehen wie h2 */
+h2, p a.definition {
+    display:block;
+    clear:both;
+}
+
+/* Such Link im h1 soll nicht auffallen. */
+h1, h2, h3, h4, h1 a, h1 a:visited, p a.definition {
+    color:#666;
+    font-size: 30pt;
+    font-weight: normal;
+    margin: 4ex 0 1ex 0;
+    padding: 0;
+    border-bottom: 1px solid #000;
+}
+
+h3, h4 {
+    font-size: inherit;
+}
+
+
+
+
+div.diff {
+    padding: 1em 3em;
+}
+div.old {
+    background-color:#FFFFAF;
+}
+div.new {
+    background-color:#CFFFCF;
+}
+div.old p, div.new p {
+    padding: 0.5em 0;
+}
+div.refer { padding-left:5%; padding-right:5%; font-size:smaller; }
+div[class="content refer"] p { margin-top:2em; }
+div.content div.refer hr { display:none; }
+div.content div.refer { padding:0; font-size:medium; }
+div.content div.refer p { margin:0; }
+div.refer a { display:block; }
 table.history { border-style:none; }
 td.history { border-style:none; }
-span.result { font-size:larger; }
-span.info { font-size:smaller; font-style:italic; }
-div.rss { background-color:#EEF; }
-div.search { background-color:#F1F5FF }
-div.sister { float:left; margin-right:1ex; background-color:#FFF; }
-div.sister p { margin-top:0; }
-div.sister img { border:none; }
-div.near, div.definition { background-color:#EFE; }
-div.near p, div.definition p { margin-top:0; }
-form.comment span { display: block; }
-@media print {
-    body { font:12pt sans-serif; }
-    a, a:link, a:visited { color:#000; text-decoration:none; font-style:oblique; }
-    h1 a, h2 a, h3 a, h4 a { font-style:normal; }
-    a.edit, div.footer, form, span.gotobar, a.number span { display:none; }
-    a[class="url number"]:after, a[class="inter number"]:after { content:"[" attr(href) "]"; }
-    a[class="local number"]:after { content:"[" attr(title) "]"; }
-    img[smiley] { line-height: inherit; }
+
+table.user {
+    border-style: none;
+    margin-left: 3em;
 }
-/* calendar */
-div.month { margin:0; padding:0; font-size:x-small; float:right; }
-div.content div.month { float:none; }
-div.footer { clear:both; }
-div.year div.month { float:left; font-size:medium; padding:1ex; }
-div.month pre { margin:0; padding:0 0 0 1ex; background-color:#ffe; }
-div.month a { text-decoration:none; color:inherit; }
-div.month span.title a { background-color:inherit; }
-div.month a.exact { background-color:#eef; }
-div.month a.collection { background-color:#ccf; }
-div.month a.today { background-color:#fcc; }
-div.month a[class~="today"][class~="exact"] { background-color:#fcf; }
-div.month a[class~="today"][class~="collection"] { background-color:#faf; }
-@media print {
-    div.month { display: none; }
-    div.year div.month { display: block; }
-    div.year div.month a { display: inline; }
+table.user tr td {
+    border-style: none;
+    padding:0.5ex 1ex;
 }
-/* crumbs */
-span.crumbs { font-size: smaller; }
-/* dynamic comments */
-div.commenthidden { display:none; }
-div.commentshown { display:block; background-color:#ffc; padding:1ex; }
-/* irc */
-dl.irc dt { width:12ex; float:left; text-align:right; }
-dl.irc dd { margin-left:15ex; }
-/* page trail */
-@media print { span.trail { display: none; }}
-/* portrait support */
-img.portrait { float: left; clear: left; margin: 1ex; border:#999 1px solid; }
-div.footer, div.comment, hr { clear: both; }
-div.portrait { float: left; clear: left; font-size: xx-small; margin-right: 1em; }
-div.portrait img.portrait { float: none; margin: 0; }
-div.portrait a { text-decoration: none; color: #999; }
-div.color { clear: both; }
-div.one { background-color: #ddd; }
-/* referrer tracking */
-div.refer { padding-left:5%; padding-right:5%; font-size:smaller; }
-@media print { div.refer { display:none; }}
-/* usemod, tables, long tables */
-table.user { border-style:solid; border-width:thin; }
-table.user td, table.user th { border-style:solid; border-width:thin; padding:5px; }
-table.user th { font-weight:bold; }
-table.user td.r { text-align:right; }
-table.user td.l { text-align:left; }
-table.user td.c { text-align:center; }
-table.user td.j { text-align:justify; }
-table.user td.mark { background-color:yellow; }
-/* sidebar */
-div.sidebar { float: left; margin-right: 2em; margin-bottom: 3em; }
+
+dt {
+    font-weight:bold;
+}
+dd {
+    margin-bottom:1ex;
+}
+
+textarea {
+    width:100%;
+    height:80%;
+    font-size: 12pt;
+}
+textarea#summary { height: 3em; }
+input {
+    font-size: 12pt;
+}
+div.image span.caption {
+    margin: 0 1em;
+}
+li img, img.smiley, .noborder img {
+    border:none;
+    padding:0;
+    margin:0;
+    background:#fff;
+    color:#000;
+}
+/* Google +1 */
+a#plus1 img {
+    background-color: #fff;
+    padding: 0;
+    margin: 0;
+    border: none;
+}
+
+div.header img, div.footer img { border:0; padding:0; margin:0; }
+/* No goto bar at the bottom. */
+.footer .gotobar, .footer .edit br { display: none; }
+
+.left { float:left; }
+.right { float:right; }
+div.left .left, div.right .right {
+    float:none;
+}
+.center { text-align:center; }
+
+span.author {
+    color: #501;
+}
+span.bar a {
+	padding-right:1ex;
+}
+
+.rc .author {
+    color: #655;
+}
+
+.rc strong {
+    font-weight: normal;
+    color: inherit;
+}
+
+.rc li {
+    position:relative;
+    padding: 1ex 0;
+}
+
+hr {
+    border:none;
+    color:black;
+    background-color:#000;
+    height:2px; 
+    margin-top:2ex;
+}
+
+div.footer hr {
+    height:4px;
+    margin: 2em 0 1ex 0;
+    clear:both;
+}
+
+div.content > div.comment {
+    border-top: none;
+    padding-top: none;
+    border-left: 1ex solid #bbb;
+    padding-left: 1ex;
+}
+
+div.wrapper > div.comment {
+  border-top: 2px solid #000;
+  padding-top: 2em;
+}
+
+pre {
+    padding: 0.5em;
+    margin-left: 1em;
+    margin-right: 2em;
+    white-space: pre;
+    overflow:hidden;
+    white-space: pre-wrap;      /* CSS 3 */
+    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+    white-space: -pre-wrap;     /* Opera 4-6 */
+    white-space: -o-pre-wrap;   /* Opera 7 */
+    word-wrap: break-word;      /* Internet Explorer 5.5+ */
+}
+
+tt, pre, code {
+    font-size: 80%;
+};
