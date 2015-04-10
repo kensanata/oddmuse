@@ -18,8 +18,8 @@
 
 use strict;
 
-use vars qw(@MyInitVariables $UserGotoBar @UserGotoBarPages $CommentsPrefix $EditAllowed);
-use vars qw($WeblogTextLogo $WeblogXmlLogo);
+our (@MyInitVariables, $UserGotoBar, @UserGotoBarPages, $CommentsPrefix, $EditAllowed);
+our ($WeblogTextLogo, $WeblogXmlLogo);
 
 $WeblogXmlLogo = '/images/rss.png';
 $WeblogTextLogo = '/images/txt.png';

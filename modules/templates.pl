@@ -25,8 +25,8 @@ AddModuleDescription('templates.pl', 'Template Extension');
 # available templates.  When the user clicks on one of the links,
 # The text area is filled with the template.
 
-use vars qw($q %IndexHash %Action $EditNote);
-use vars qw($TemplatePattern);
+our ($q, %IndexHash, %Action, $EditNote);
+our ($TemplatePattern);
 
 $Action{'edit'} = \&TemplateDoEdit;
 

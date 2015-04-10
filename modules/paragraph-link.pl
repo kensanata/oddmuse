@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('paragraph-link.pl', 'Paragraph Link Extension');
 
-use vars qw($bol $OpenPageName %RuleOrder @MyRules $FreeLinkPattern %PermanentAnchors %PagePermanentAnchors);
+our ($bol, $OpenPageName, %RuleOrder, @MyRules, $FreeLinkPattern, %PermanentAnchors, %PagePermanentAnchors);
 
 push(@MyRules, \&ParagraphLinkRule);
 # The [...] rule conflicts with the [new] in portrait-support.pl

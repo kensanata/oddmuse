@@ -20,8 +20,8 @@ use strict;
 
 AddModuleDescription('irc.pl', 'IRC Log Extension');
 
-use vars qw($q $bol %RuleOrder @MyRules);
-use vars qw($IrcNickRegexp $IrcLinkNick);
+our ($q, $bol, %RuleOrder, @MyRules);
+our ($IrcNickRegexp, $IrcLinkNick);
 
 push(@MyRules, \&IrcRule);
 $RuleOrder{\&IrcRule} = 200; # after HTML tags in Usemod Markup Extension.

@@ -37,11 +37,11 @@ directory for your Oddmuse Wiki.
 =cut
 AddModuleDescription('crossbar.pl', 'Crossbar Extension');
 
-use vars qw($q $bol $OpenPageName @HtmlStack @MyInitVariables @MyRules %AdminPages $DeletedPage $SidebarName $TocIsApplyingAutomaticRules);
+our ($q, $bol, $OpenPageName, @HtmlStack, @MyInitVariables, @MyRules, %AdminPages, $DeletedPage, $SidebarName, $TocIsApplyingAutomaticRules);
 
 # ....................{ CONFIGURATION                      }....................
-use vars qw($CrossbarPageName
-            $CrossbarDivIsOutsideContentDiv
+our ($CrossbarPageName,
+            $CrossbarDivIsOutsideContentDiv,
             $CrossbarSubstitutionPattern);
 
 =head1 CONFIGURATION

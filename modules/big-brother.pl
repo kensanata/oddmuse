@@ -19,8 +19,8 @@ package OddMuse;
 
 AddModuleDescription('big-brother.pl', 'Big Brother Extension');
 
-use vars qw($q $Now %Action $SurgeProtectionViews $SurgeProtectionTime @MyAdminCode $RCName $VisitorFile $FS);
-use vars qw($VisitorTime @BigBrotherSecretParameters);
+our ($q, $Now, %Action, $SurgeProtectionViews, $SurgeProtectionTime, @MyAdminCode, $RCName, $VisitorFile, $FS);
+our ($VisitorTime, @BigBrotherSecretParameters);
 
 my $US  = "\x1f";
 

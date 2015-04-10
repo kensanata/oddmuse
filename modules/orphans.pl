@@ -26,7 +26,7 @@ use strict;
 
 AddModuleDescription('orphans.pl', 'Orphans Extension');
 
-use vars qw(%Action $RCName $HomePage);
+our (%Action, $RCName, $HomePage);
 
 # What is interesting to us?
 my @orphan_entrypoints = ($HomePage, $RCName);

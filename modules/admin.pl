@@ -18,7 +18,7 @@
 
 use strict;
 
-use vars qw($q %Page %Action $IndexFile $PageDir $KeepDir @MyAdminCode $RefererDir);
+our ($q, %Page, %Action, $IndexFile, $PageDir, $KeepDir, @MyAdminCode, $RefererDir);
 
 AddModuleDescription('admin.pl', 'Admin Power Extension');
 

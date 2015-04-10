@@ -16,7 +16,7 @@ use strict;
 
 AddModuleDescription('mac.pl', 'Mac');
 
-use vars qw(%InterSite %IndexHash @IndexList @MyInitVariables $UseGrep %Namespaces $NamespaceRoot);
+our (%InterSite, %IndexHash, @IndexList, @MyInitVariables, $UseGrep, %Namespaces, $NamespaceRoot);
 
 use Unicode::Normalize;
 

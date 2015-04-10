@@ -20,8 +20,8 @@ use strict;
 
 AddModuleDescription('header-and-footer-templates.pl', 'Comments on HTML Templates');
 
-use vars qw($q $Now $Message $DataDir %SpecialDays);
-use vars qw($HtmlTemplateDir);
+our ($q, $Now, $Message, $DataDir, %SpecialDays);
+our ($HtmlTemplateDir);
 use HTML::Template;
 
 $HtmlTemplateDir   = "$DataDir/templates";

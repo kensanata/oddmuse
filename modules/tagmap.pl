@@ -21,8 +21,8 @@ use strict;
 
 AddModuleDescription('tagmap.pl', 'TagMap Module');
 
-use vars qw(%Action %Page $OpenPageName @MyRules $ModuleDir $ScriptName);
-use vars qw($TagMapPage $TagMark $TagClass $TagString $TagSearchTitle);
+our (%Action, %Page, $OpenPageName, @MyRules, $ModuleDir, $ScriptName);
+our ($TagMapPage, $TagMark, $TagClass, $TagString, $TagSearchTitle);
 
 $TagMapPage = "TagMap" unless defined $TagMapPage;
 

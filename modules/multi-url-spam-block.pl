@@ -17,12 +17,12 @@ use strict;
 
 AddModuleDescription('multi-url-spam-block.pl', 'Multiple Link Ban Extension');
 
-use vars qw($BannedContent @MyInitVariables %AdminPages %PlainTextPages $FullUrlPattern $LocalNamesPage);
+our ($BannedContent, @MyInitVariables, %AdminPages, %PlainTextPages, $FullUrlPattern, $LocalNamesPage);
 
 *OldMultiUrlBannedContent = \&BannedContent;
 *BannedContent = \&NewMultiUrlBannedContent;
 
-use vars qw($MultiUrlWhiteList $MultiUrlLimit);
+our ($MultiUrlWhiteList, $MultiUrlLimit);
 
 $MultiUrlLimit = 10;
 $MultiUrlWhiteList = 'UrlWhitelist';

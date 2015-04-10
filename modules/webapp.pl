@@ -20,7 +20,7 @@ automatically.
 
 AddModuleDescription('webapp.pl', 'Offline Extension');
 
-use vars qw($q %IndexHash $ScriptName $FullUrl $StyleSheet $StyleSheetPage $SurgeProtection @MyAdminCode @MyInitVariables $LastUpdate);
+our ($q, %IndexHash, $ScriptName, $FullUrl, $StyleSheet, $StyleSheetPage, $SurgeProtection, @MyAdminCode, @MyInitVariables, $LastUpdate);
 
 push(@MyAdminCode, \&WebAppMenu);
 

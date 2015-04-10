@@ -23,7 +23,7 @@ use strict;
 
 AddModuleDescription('show-comments.pl', 'Comment Pages');
 
-use vars qw(%Page $OpenPageName $CommentsPrefix $CollectingJournal);
+our (%Page, $OpenPageName, $CommentsPrefix, $CollectingJournal);
 
 *OldPrintJournal = *PrintJournal;
 *PrintJournal = *NewPrintJournal;

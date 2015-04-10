@@ -16,10 +16,10 @@ use strict;
 
 AddModuleDescription('static-copy.pl', 'Static Copy Extension');
 
-use vars qw($q %Page %IndexHash $OpenPageName $ScriptName $SiteName $UsePathInfo %Action $CommentsPrefix $FreeLinks $WikiLinks $LinkPattern $FreeLinkPattern $StyleSheet $StyleSheetPage $TopLinkBar $UserGotoBar $LogoUrl $SidebarName);
+our ($q, %Page, %IndexHash, $OpenPageName, $ScriptName, $SiteName, $UsePathInfo, %Action, $CommentsPrefix, $FreeLinks, $WikiLinks, $LinkPattern, $FreeLinkPattern, $StyleSheet, $StyleSheetPage, $TopLinkBar, $UserGotoBar, $LogoUrl, $SidebarName);
 $Action{static} = \&DoStatic;
 
-use vars qw($StaticDir $StaticAlways %StaticMimeTypes $StaticUrl);
+our ($StaticDir, $StaticAlways, %StaticMimeTypes, $StaticUrl);
 
 $StaticDir = '/tmp/static';
 $StaticUrl = '';           # change this!

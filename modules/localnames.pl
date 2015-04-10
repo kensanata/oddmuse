@@ -17,7 +17,7 @@ use strict;
 
 AddModuleDescription('localnames.pl', 'Local Names Extension');
 
-use vars qw($q $Now %Page %Action $OpenPageName $ScriptName $DataDir $RssDir @MyRules @MyMaintenance @MyInitVariables $FullUrlPattern $FreeLinkPattern $CommentsPrefix $UseCache @UserGotoBarPages %AdminPages @MyAdminCode @MyFooters $UsePathInfo);
+our ($q, $Now, %Page, %Action, $OpenPageName, $ScriptName, $DataDir, $RssDir, @MyRules, @MyMaintenance, @MyInitVariables, $FullUrlPattern, $FreeLinkPattern, $CommentsPrefix, $UseCache, @UserGotoBarPages, %AdminPages, @MyAdminCode, @MyFooters, $UsePathInfo);
 
 =head1 Local Names
 
@@ -35,8 +35,8 @@ change the directory by setting C<$LnDir>.
 
 =cut
 
-use vars qw($LocalNamesPage %LocalNames $LocalNamesCollect
-	    $LocalNamesCollectMaxWords $LnDir $LnCacheHours
+our ($LocalNamesPage, %LocalNames, $LocalNamesCollect,
+	    $LocalNamesCollectMaxWords, $LnDir, $LnCacheHours,
 	    %WantedPages);
 
 $LocalNamesPage = 'LocalNames';

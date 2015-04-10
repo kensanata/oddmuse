@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('index.pl', 'Index Extension');
 
-use vars qw($q %Action %PermanentAnchors %NearSource);
+our ($q, %Action, %PermanentAnchors, %NearSource);
 $Action{'printable-index'} = \&DoPrintableIndex;
 
 sub DoPrintableIndex {

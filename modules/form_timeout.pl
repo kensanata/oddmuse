@@ -41,8 +41,8 @@ Default = 60 * 30 (30 minutes).
 
 =cut
 
-use vars qw($q $Now @MyInitVariables);
-use vars qw($FormTimeoutSalt $FormTimeoutTimeout);
+our ($q, $Now, @MyInitVariables);
+our ($FormTimeoutSalt, $FormTimeoutTimeout);
 use Digest::MD5 qw(md5_hex);
 
 $FormTimeoutSalt = undef;

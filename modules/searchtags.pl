@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('searchtags.pl', 'SearchTags Extension');
 
-use vars qw(@MyRules);
+our (@MyRules);
 
 push(@MyRules, \&SearchTagRule);
 

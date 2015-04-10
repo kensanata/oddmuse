@@ -24,8 +24,8 @@ use strict;
 
 AddModuleDescription('toc-headers.pl');
 
-use vars qw($q $bol %Page @MyRules);
-use vars qw($MinTocSize $OrderedLists);
+our ($q, $bol, %Page, @MyRules);
+our ($MinTocSize, $OrderedLists);
 
 push(@MyRules, \&HeadersRule);
 

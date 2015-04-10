@@ -27,7 +27,7 @@ use strict;
 
 AddModuleDescription('creationdate.pl', 'CreationDate Module');
 
-use vars qw(%Page $Now);
+our (%Page, $Now);
 
 *CreationDateOldOpenPage = *OpenPage;
 *OpenPage = *CreationDateOpenPage;

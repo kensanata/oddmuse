@@ -25,7 +25,7 @@ use Fcntl;
 use MLDBM qw( DB_File Storable );
 AddModuleDescription('backlinkage.pl', 'Inline Backlinks');
 
-use vars qw($q %Action %Page @MyAdminCode $DataDir $LinkPattern);
+our ($q, %Action, %Page, @MyAdminCode, $DataDir, $LinkPattern);
 
 my $debug=1;             # Set Text Output Verbosity when compiling
 my $backfile = $DataDir . '/backlinks.db';  # Where data lives
@@ -98,7 +98,7 @@ sub GetBackLink {
     my (@backlinks, @unpopped, @alldone);
     my $id = $_[0];
 
-    use vars qw($BacklinkBanned);
+    our ($BacklinkBanned);
     $BacklinkBanned = "HomePage|ScratchPad" if !$BacklinkBanned;
     tie my %backhash, 'MLDBM', $backfile, O_CREAT|O_RDWR, 0644 or die "Cannot open file $backfile $!\n";
 

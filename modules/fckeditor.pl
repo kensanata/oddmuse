@@ -20,8 +20,8 @@ use strict;
 
 AddModuleDescription('fckeditor.pl', 'Using FCKeditor In Addition To Wiki Markup');
 
-use vars qw($q @MyRules @MyInitVariables $HtmlHeaders);
-use vars qw($FCKeditorHeight);
+our ($q, @MyRules, @MyInitVariables, $HtmlHeaders);
+our ($FCKeditorHeight);
 
 $FCKeditorHeight = 400; # Pixel
 

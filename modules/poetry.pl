@@ -23,7 +23,7 @@ package OddMuse;
 
 AddModuleDescription('poetry.pl', 'Poetry Extension');
 
-use vars qw($q $bol %RuleOrder @MyRules);
+our ($q, $bol, %RuleOrder, @MyRules);
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -33,8 +33,8 @@ poetry is easily configurable; set these variables in the B<wiki/config.pl>
 file for your Oddmuse Wiki.
 
 =cut
-use vars qw($PoetryIsHandlingCreoleStyleMarkup
-            $PoetryIsHandlingXmlStyleMarkup
+our ($PoetryIsHandlingCreoleStyleMarkup,
+            $PoetryIsHandlingXmlStyleMarkup,
             $PoetryHtmlTag);
 
 =head2 $PoetryIsHandlingCreoleStyleMarkup

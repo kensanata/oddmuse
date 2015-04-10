@@ -22,8 +22,8 @@ use strict;
 
 AddModuleDescription('linktagmap.pl', 'LinkTagMap Module');
 
-use vars qw(%Action %Page $OpenPageName $ModuleDir @MyRules $ScriptName);
-use vars qw($LinkTagMark $LinkDescMark $LinkTagClass $LinkDescClass $LinkTagMapPage $UrlPattern $FullUrlPattern $LinkTagSearchTitle);
+our (%Action, %Page, $OpenPageName, $ModuleDir, @MyRules, $ScriptName);
+our ($LinkTagMark, $LinkDescMark, $LinkTagClass, $LinkDescClass, $LinkTagMapPage, $UrlPattern, $FullUrlPattern, $LinkTagSearchTitle);
 
 # Tags and descripton are embraced with this sequences
 $LinkTagMark = '%T%' unless defined $LinkTagMark;

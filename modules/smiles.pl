@@ -16,7 +16,7 @@ use strict;
 
 AddModuleDescription('smiles.pl', 'Smilies');
 
-use vars qw(%Smilies);
+our (%Smilies);
 
 # The smilies are from the Emacs 24 distribution. There, you'll find
 # them in the etc/images/smilies/medium directory.

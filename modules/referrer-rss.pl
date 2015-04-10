@@ -22,7 +22,7 @@ use strict;
 
 AddModuleDescription('referrer-rss.pl', 'Comments on Automatic Link Back');
 
-use vars qw(%Action $LastUpdate $ScriptName $RssStyleSheet $RssImageUrl $SiteName $SiteDescription %Referers);
+our (%Action, $LastUpdate, $ScriptName, $RssStyleSheet, $RssImageUrl, $SiteName, $SiteDescription, %Referers);
 
 $Action{"refer-rss"} = \&DoRefererRss;
 

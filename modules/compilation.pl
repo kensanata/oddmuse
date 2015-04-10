@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('compilation.pl', 'Compilation Extension');
 
-use vars qw($q $bol %Action %Page $OpenPageName $CollectingJournal @MyRules);
+our ($q, $bol, %Action, %Page, $OpenPageName, $CollectingJournal, @MyRules);
 
 $Action{compilation} = \&DoCompilation;
 

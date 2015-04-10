@@ -19,8 +19,8 @@ AddModuleDescription('askpage.pl', 'Ask Page Extension');
 
 use Fcntl qw(:DEFAULT :flock);
 
-use vars qw($DataDir $NewComment);
-use vars qw($AskPage $QuestionPage $NewQuestion);
+our ($DataDir, $NewComment);
+our ($AskPage, $QuestionPage, $NewQuestion);
 # Don't forget to set your $CommentsPattern to include both $AskPage and $QuestionPage
 $AskPage = 'Ask';
 $QuestionPage = 'Question_';

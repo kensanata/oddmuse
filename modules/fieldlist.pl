@@ -14,7 +14,7 @@ use strict;
 
 AddModuleDescription('fieldlist.pl', 'Field List Extension');
 
-use vars qw($bol @MyRules);
+our ($bol, @MyRules);
 
 push(@MyRules, \&FieldListRules);
 

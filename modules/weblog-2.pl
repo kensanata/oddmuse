@@ -18,7 +18,7 @@ use Time::ParseDate;
 
 AddModuleDescription('weblog-2.pl', 'Complex Weblog Extension');
 
-use vars qw($q @MyInitVariables @UserGotoBarPages);
+our ($q, @MyInitVariables, @UserGotoBarPages);
 
 push(@MyInitVariables, \&WebLog2Init);
 

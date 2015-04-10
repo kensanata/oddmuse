@@ -21,8 +21,8 @@ use strict;
 
 AddModuleDescription('headlines.pl', 'Headlines Extension');
 
-use vars qw(@MyRules);
-use vars qw($HeadlineNumber);
+our (@MyRules);
+our ($HeadlineNumber);
 
 push(@MyRules, \&HeadlinesRule);
 

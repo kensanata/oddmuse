@@ -33,7 +33,7 @@ use RPC::XML::Parser;
 
 AddModuleDescription('pingback-server.pl', 'Pingback Server Extension');
 
-use vars qw( $CommentsPrefix );
+our ($CommentsPrefix);
 
 *OldPingbackServerGetHtmlHeader = *GetHtmlHeader;
 *GetHtmlHeader = *NewPingbackServerGetHtmlHeader;

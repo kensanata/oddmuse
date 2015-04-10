@@ -22,8 +22,8 @@ AddModuleDescription('git-another.pl', 'Another Git Extension');
 use Cwd;
 use Capture::Tiny ':all';
 
-use vars qw(%Page $DataDir $FootnoteNumber);
-use vars qw($GitBinary $GitMail);
+our (%Page, $DataDir, $FootnoteNumber);
+our ($GitBinary, $GitMail);
 
 $GitBinary = 'git';
 $GitMail = 'unknown@oddmuse.org';

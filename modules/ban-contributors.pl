@@ -25,7 +25,7 @@ the IP or hostname will be added to the C<BannedHosts> page for you.
 
 =cut
 use strict;
-use vars qw($q $Now %Page $OpenPageName %Action $UrlPattern $BannedContent $BannedHosts @MyAdminCode);
+our ($q, $Now, %Page, $OpenPageName, %Action, $UrlPattern, $BannedContent, $BannedHosts, @MyAdminCode);
 
 AddModuleDescription('ban-contributors.pl', 'Ban Contributors Extension');
 

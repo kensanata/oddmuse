@@ -41,9 +41,9 @@ AddModuleDescription('namespaces.pl', 'Namespaces Extension');
 
 use File::Glob ':glob';
 
-use vars qw($q %Action %Page @IndexList $Now %InterSite $SiteName $ScriptName $UsePathInfo $DataDir $HomePage @MyInitVariables @MyAdminCode $FullUrl $LinkPattern $InterSitePattern $FreeLinks $FreeLinkPattern $InterLinkPattern $FreeInterLinkPattern $UrlProtocols $WikiLinks $FS $RcFile $RcOldFile $RcDefault $PageDir $KeepDir $LockDir $TempDir $IndexFile $VisitorFile $NoEditFile $WikiDescription $LastUpdate $StaticDir $StaticUrl $InterWikiMoniker $RefererDir $PermanentAnchorsFile);
-use vars qw($NamespacesMain $NamespacesSelf $NamespaceCurrent
-	    $NamespaceRoot $NamespaceSlashing @NamespaceParameters
+our ($q, %Action, %Page, @IndexList, $Now, %InterSite, $SiteName, $ScriptName, $UsePathInfo, $DataDir, $HomePage, @MyInitVariables, @MyAdminCode, $FullUrl, $LinkPattern, $InterSitePattern, $FreeLinks, $FreeLinkPattern, $InterLinkPattern, $FreeInterLinkPattern, $UrlProtocols, $WikiLinks, $FS, $RcFile, $RcOldFile, $RcDefault, $PageDir, $KeepDir, $LockDir, $TempDir, $IndexFile, $VisitorFile, $NoEditFile, $WikiDescription, $LastUpdate, $StaticDir, $StaticUrl, $InterWikiMoniker, $RefererDir, $PermanentAnchorsFile);
+our ($NamespacesMain, $NamespacesSelf, $NamespaceCurrent,
+	    $NamespaceRoot, $NamespaceSlashing, @NamespaceParameters,
 	    %Namespaces);
 
 $NamespacesMain = 'Main'; # to get back to the main namespace

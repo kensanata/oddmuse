@@ -17,7 +17,7 @@ use strict;
 
 AddModuleDescription('permanent-anchors.pl', 'Permanent Anchors');
 
-use vars qw($q $OpenPageName %IndexHash $DataDir $ScriptName @MyRules @MyInitVariables $FS $FreeLinkPattern @IndexOptions);
+our ($q, $OpenPageName, %IndexHash, $DataDir, $ScriptName, @MyRules, @MyInitVariables, $FS, $FreeLinkPattern, @IndexOptions);
 
 =head1 Permanent Anchors
 
@@ -30,7 +30,7 @@ difference.
 
 =cut
 
-use vars qw(%PermanentAnchors %PagePermanentAnchors $PermanentAnchorsFile);
+our (%PermanentAnchors, %PagePermanentAnchors, $PermanentAnchorsFile);
 
 $PermanentAnchorsFile = "$DataDir/permanentanchors";
 

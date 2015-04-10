@@ -20,8 +20,8 @@ use strict;
 
 AddModuleDescription('plainsite.pl', 'PlainSite Module');
 
-use vars qw($q $OpenPageName $HomePage $CommentsPrefix $RCName);
-use vars qw($PlainSiteAllowCommentLink);
+our ($q, $OpenPageName, $HomePage, $CommentsPrefix, $RCName);
+our ($PlainSiteAllowCommentLink);
 
 *OldGetFooterLinks = *GetFooterLinks;
 *GetFooterLinks = *PlainSiteGetFooterLinks;

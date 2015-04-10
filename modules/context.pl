@@ -17,7 +17,7 @@ use strict;
 
 AddModuleDescription('context.pl', 'Calendar Extension');
 
-use vars qw($q @Debugging $UserGotoBar @MyInitVariables);
+our ($q, @Debugging, $UserGotoBar, @MyInitVariables);
 push (@MyInitVariables, \&ContextMenuItem);
 
 sub ContextMenuItem {

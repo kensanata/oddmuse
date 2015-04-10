@@ -20,8 +20,8 @@ use strict;
 
 AddModuleDescription('login.pl', 'Login Module');
 
-use vars qw($q %Action $SiteName @MyAdminCode $IndexFile $DataDir $FullUrl);
-use vars qw($RegistrationForm $MinimumPasswordLength $RegistrationsMustBeApproved $LoginForm $PasswordFile $PasswordFileToUse $PendingPasswordFile $RequireLoginToEdit $ConfirmEmailAddress $UncomfirmedPasswordFile $EmailSenderAddress $EmailCommand $EmailRegExp $NotifyPendingRegistrations $EmailConfirmationMessage $ResetPasswordMessage $RegistrationForm $LogoutForm $ResetForm $ChangePassForm $RequireCamelUserName $UsernameRegExp);
+our ($q, %Action, $SiteName, @MyAdminCode, $IndexFile, $DataDir, $FullUrl);
+our ($RegistrationForm, $MinimumPasswordLength, $RegistrationsMustBeApproved, $LoginForm, $PasswordFile, $PasswordFileToUse, $PendingPasswordFile, $RequireLoginToEdit, $ConfirmEmailAddress, $UncomfirmedPasswordFile, $EmailSenderAddress, $EmailCommand, $EmailRegExp, $NotifyPendingRegistrations, $EmailConfirmationMessage, $ResetPasswordMessage, $RegistrationForm, $LogoutForm, $ResetForm, $ChangePassForm, $RequireCamelUserName, $UsernameRegExp);
 
 my $EncryptedPassword = "";
 

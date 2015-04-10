@@ -20,8 +20,8 @@ use strict;
 
 AddModuleDescription('age.pl', 'Age Indication Extension');
 
-use vars qw(%Page $Now $ScriptName);
-use vars qw(%AgeEffect $AgeParameter);
+our (%Page, $Now, $ScriptName);
+our (%AgeEffect, $AgeParameter);
 
 # map page age to theme
 %AgeEffect = (60*60*24 => 'day',

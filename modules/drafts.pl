@@ -15,11 +15,11 @@
 use strict;
 
 use File::Glob ':glob';
-use vars qw($DraftDir);
+our ($DraftDir);
 
 AddModuleDescription('drafts.pl', 'Draft Extension');
 
-use vars qw($q $Message $Now %Action $DataDir @MyInitVariables @MyMaintenance $FooterNote);
+our ($q, $Message, $Now, %Action, $DataDir, @MyInitVariables, @MyMaintenance, $FooterNote);
 
 $DraftDir = $DataDir."/draft"; # directory for drafts
 

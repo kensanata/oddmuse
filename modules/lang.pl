@@ -27,7 +27,7 @@ use strict;
 
 AddModuleDescription('lang.pl', 'Language Extension');
 
-use vars qw($q @HtmlStack @MyRules $FullUrl);
+our ($q, @HtmlStack, @MyRules, $FullUrl);
 
 push(@MyRules, \&LangRule);
 

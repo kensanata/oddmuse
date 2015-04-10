@@ -49,7 +49,7 @@ package OddMuse;
 
 AddModuleDescription('hibernal.pl', 'Hibernal Extension');
 
-use vars qw($q $bol %Action %Page $OpenPageName %IndexHash $Now $Today %RuleOrder @MyRules @MyInitVariables $CommentsPrefix $NewComment $DeletedPage $CalAsTable);
+our ($q, $bol, %Action, %Page, $OpenPageName, %IndexHash, $Now, $Today, %RuleOrder, @MyRules, @MyInitVariables, $CommentsPrefix, $NewComment, $DeletedPage, $CalAsTable);
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -59,29 +59,28 @@ hibernal is easily configurable; set these variables in the B<wiki/config.pl>
 file for your Oddmuse Wiki.
 
 =cut
-use vars qw($HibernalTitleOrSubtitleSuffix
-            $HibernalArchiveTitleOrSubtitleSuffix
+our ($HibernalTitleOrSubtitleSuffix,
+            $HibernalArchiveTitleOrSubtitleSuffix,
 
-            $HibernalNewPostLinkText
-            $HibernalNewerPostsLinkText
-            $HibernalOlderPostsLinkText
-            $HibernalArchiveLinkText
-            $HibernalArchiveYearLinkText
-            $HibernalPostCommentLinkText
-            $HibernalPostCommentsLinkText
-            $HibernalPostCommentsCreateLinkText
-            $HibernalPostCommentsDemarcatorMarkup
-            $HibernalPostCommentsAuthorshipMarkup
+            $HibernalNewPostLinkText,
+            $HibernalNewerPostsLinkText,
+            $HibernalOlderPostsLinkText,
+            $HibernalArchiveLinkText,
+            $HibernalArchiveYearLinkText,
+            $HibernalPostCommentLinkText,
+            $HibernalPostCommentsLinkText,
+            $HibernalPostCommentsCreateLinkText,
+            $HibernalPostCommentsDemarcatorMarkup,
+            $HibernalPostCommentsAuthorshipMarkup,
 
-            $HibernalDefaultPostNameRegexp
-            $HibernalDefaultPostsPerPage $HibernalMaximumPostsPerPage
-            $HibernalDefaultTitle        $HibernalDefaultSubtitle
-            $HibernalDefaultArchiveTitle $HibernalDefaultArchiveSubtitle
+            $HibernalDefaultPostNameRegexp,
+            $HibernalDefaultPostsPerPage, $HibernalMaximumPostsPerPage,
+            $HibernalDefaultTitle,        $HibernalDefaultSubtitle,
+            $HibernalDefaultArchiveTitle, $HibernalDefaultArchiveSubtitle,
 
-            $HibernalIsCurrentlyPrinting
+            $HibernalIsCurrentlyPrinting,
 
-            $HibernalDefaultDateRegexp
-          );
+            $HibernalDefaultDateRegexp);
 
 =head2 $HibernalTitleOrSubtitleSuffix
 

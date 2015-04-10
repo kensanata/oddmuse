@@ -17,8 +17,8 @@ use strict;
 
 AddModuleDescription('dojo.pl', 'Using Dojo Instead Of Wiki Markup');
 
-use vars qw($q $HtmlHeaders @MyRules @MyInitVariables %CookieParameters);
-use vars qw(@DojoPlugins $DojoTheme);
+our ($q, $HtmlHeaders, @MyRules, @MyInitVariables, %CookieParameters);
+our (@DojoPlugins, $DojoTheme);
 
 $DojoTheme = 'tundra';
 

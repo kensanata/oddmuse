@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('blockquote.pl', 'Comments on Text Formatting Rules');
 
-use vars qw($bol @MyRules);
+our ($bol, @MyRules);
 
 push(@MyRules, \&BlockQuoteRule);
 

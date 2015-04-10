@@ -20,7 +20,7 @@ use strict;
 
 AddModuleDescription('crumbs.pl', 'List Parent Pages Extension');
 
-use vars qw($q %RuleOrder @MyRules $LinkPattern $FreeLinks $FreeLinkPattern $WikiLinks);
+our ($q, %RuleOrder, @MyRules, $LinkPattern, $FreeLinks, $FreeLinkPattern, $WikiLinks);
 
 push(@MyRules, \&CrumbsRule);
 $RuleOrder{\&CrumbsRule} = -10; # run before default rules!

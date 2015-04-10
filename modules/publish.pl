@@ -20,8 +20,8 @@ use strict;
 
 AddModuleDescription('publish.pl', 'Publish Page Extension');
 
-use vars qw($q %Action %Page $OpenPageName @MyAdminCode $ScriptName $FullUrl);
-use vars qw($PublishTargetUrl);
+our ($q, %Action, %Page, $OpenPageName, @MyAdminCode, $ScriptName, $FullUrl);
+our ($PublishTargetUrl);
 
 $PublishTargetUrl = '';
 

@@ -19,7 +19,7 @@
 use strict;
 
 AddModuleDescription('small.pl', 'List Small Pages Extension');
-use vars qw($q %Page %Action $DeletedPage $LinkPattern $FreeLinks $FreeLinkPattern $WikiLinks);
+our ($q, %Page, %Action, $DeletedPage, $LinkPattern, $FreeLinks, $FreeLinkPattern, $WikiLinks);
 
 my $SmallLimit = 1000;
 
