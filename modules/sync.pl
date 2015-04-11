@@ -33,8 +33,8 @@ sub SyncRule {
   return;
 }
 
-*SyncOldSave = *Save;
-*Save = *SyncNewSave;
+*SyncOldSave = \&Save;
+*Save = \&SyncNewSave;
 
 sub SyncNewSave {
   my ($id) = @_;

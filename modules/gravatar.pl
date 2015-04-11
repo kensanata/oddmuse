@@ -45,8 +45,8 @@ sub GravatarRule {
   return;
 }
 
-*GravatarOldGetCommentForm = *GetCommentForm;
-*GetCommentForm = *GravatarNewGetCommentForm;
+*GravatarOldGetCommentForm = \&GetCommentForm;
+*GetCommentForm = \&GravatarNewGetCommentForm;
 
 sub GravatarNewGetCommentForm {
   my $html = GravatarOldGetCommentForm(@_);
@@ -79,8 +79,8 @@ sub AddGravatar {
   }
 }
 
-*GravatarOldGetSummary = *GetSummary;
-*GetSummary = *GravatarNewGetSummary;
+*GravatarOldGetSummary = \&GetSummary;
+*GetSummary = \&GravatarNewGetSummary;
 
 sub GravatarNewGetSummary {
   my $summary = GravatarOldGetSummary(@_);

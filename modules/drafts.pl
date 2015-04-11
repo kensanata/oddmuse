@@ -58,8 +58,8 @@ sub DoDraft {
 
 # add preview button to edit page (but not to GetCommentForm!)
 
-*DraftOldGetEditForm = *GetEditForm;
-*GetEditForm = *DraftNewGetEditForm;
+*DraftOldGetEditForm = \&GetEditForm;
+*GetEditForm = \&DraftNewGetEditForm;
 
 sub DraftNewGetEditForm {
   my $html = DraftOldGetEditForm(@_);

@@ -22,8 +22,8 @@ AddModuleDescription('canonical.pl', 'Canonical Names');
 
 use utf8;
 
-*OldCanonicalResolveId = *ResolveId;
-*ResolveId = *NewCanonicalResolveId;
+*OldCanonicalResolveId = \&ResolveId;
+*ResolveId = \&NewCanonicalResolveId;
 
 my %CanonicalName = ();
 

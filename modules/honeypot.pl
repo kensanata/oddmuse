@@ -65,8 +65,8 @@ $HoneyPotIdiot1 = 'idiot';
 $HoneyPotIdiot2 = 'looser';
 $HoneyPotTimestamp = 3600;
 
-*HoneyPotOldGetFormStart = *GetFormStart;
-*GetFormStart = *HoneyPotNewGetFormStart;
+*HoneyPotOldGetFormStart = \&GetFormStart;
+*GetFormStart = \&HoneyPotNewGetFormStart;
 
 my $HoneyPotWasHere = 0;
 

@@ -23,8 +23,8 @@ our ($CategoriesPage);
 
 $CategoriesPage = 'Categories';
 
-*CategoriesOldOpenPage = *OpenPage;
-*OpenPage = *CategoriesNewOpenPage;
+*CategoriesOldOpenPage = \&OpenPage;
+*OpenPage = \&CategoriesNewOpenPage;
 
 my %Category = (); # fast checking
 my @Categories = (); # correct order

@@ -21,7 +21,7 @@ use strict;
 AddModuleDescription('simple-rules.pl', 'Simple Fast Alternate Text Formatting Rules');
 our ($q, $OpenPageName, $FS, $UrlPattern, $FreeLinkPattern);
 
-*ApplyRules = *NewSimpleRulesApplyRules;
+*ApplyRules = \&NewSimpleRulesApplyRules;
 
 my $PROT = "\x1c";
 my $DIRT = "\x1d";

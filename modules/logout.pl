@@ -124,8 +124,8 @@ sub DoLogout {
 }
 
 # ....................{ FUNCTIONS                          }....................
-*GetFooterLinksLogoutOld = *GetFooterLinks;
-*GetFooterLinks =          *GetFooterLinksLogout;
+*GetFooterLinksLogoutOld = \&GetFooterLinks;
+*GetFooterLinks =          \&GetFooterLinksLogout;
 
 =head1 FUNCTIONS
 

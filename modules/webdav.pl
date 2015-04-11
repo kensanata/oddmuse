@@ -26,16 +26,16 @@ push(@KnownLocks, 'webdav');
 
 use CGI;
 
-*DavOldDoBrowseRequest = *DoBrowseRequest;
-*DoBrowseRequest = *DavNewDoBrowseRequest;
+*DavOldDoBrowseRequest = \&DoBrowseRequest;
+*DoBrowseRequest = \&DavNewDoBrowseRequest;
 
 sub DavNewDoBrowseRequest {
   my $dav = new OddMuse::DAV;
   $dav->run($q)||DavOldDoBrowseRequest();
 }
 
-*DavOldOpenPage = *OpenPage;
-*OpenPage = *DavNewOpenPage;
+*DavOldOpenPage = \&OpenPage;
+*OpenPage = \&DavNewOpenPage;
 
 sub DavNewOpenPage {
   DavOldOpenPage(@_);

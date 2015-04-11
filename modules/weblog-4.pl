@@ -31,8 +31,8 @@ sub BlogMenu {
 
 # Default page content copied from weblog-3.pl.
 
-*BlogOldOpenPage = *OpenPage;
-*OpenPage = *BlogNewOpenPage;
+*BlogOldOpenPage = \&OpenPage;
+*OpenPage = \&BlogNewOpenPage;
 
 sub BlogNewOpenPage {
   BlogOldOpenPage(@_);

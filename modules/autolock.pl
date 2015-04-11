@@ -142,8 +142,8 @@ sub AutoLockInit {
 }
 
 # ....................{ REDEFINITIONS                      }....................
-*UserCanEditAutoLockOld = *UserCanEdit;
-*UserCanEdit =            *UserCanEditAutoLock;
+*UserCanEditAutoLockOld = \&UserCanEdit;
+*UserCanEdit =            \&UserCanEditAutoLock;
 
 sub UserCanEditAutoLock {
   my ($page_name, $is_editing, $is_comment) = @_;

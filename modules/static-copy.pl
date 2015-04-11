@@ -245,8 +245,8 @@ sub StaticWriteCss {
   chmod 0644,"$StaticDir/static.css";
 }
 
-*StaticFilesOldSave = *Save;
-*Save = *StaticFilesNewSave;
+*StaticFilesOldSave = \&Save;
+*Save = \&StaticFilesNewSave;
 
 sub StaticFilesNewSave {
   my ($id, $new) = @_;
@@ -262,8 +262,8 @@ sub StaticFilesNewSave {
   }
 }
 
-*StaticOldDeletePage = *DeletePage;
-*DeletePage = *StaticNewDeletePage;
+*StaticOldDeletePage = \&DeletePage;
+*DeletePage = \&StaticNewDeletePage;
 
 sub StaticNewDeletePage {
   my $id = shift;

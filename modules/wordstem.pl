@@ -20,8 +20,8 @@ use strict;
 
 AddModuleDescription('wordstem.pl', 'WordStemming');
 
-*OldStemmingResolveId = *ResolveId;
-*ResolveId = *NewStemmingResolveId;
+*OldStemmingResolveId = \&ResolveId;
+*ResolveId = \&NewStemmingResolveId;
 
 initialise();
 my %StemmedPages = ();

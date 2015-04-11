@@ -18,8 +18,8 @@ use strict;
 
 AddModuleDescription('localtime.pl', 'Localtime Extension');
 
-*CalcDay     = *NewCalcDay;
-*CalcTime    = *NewCalcTime;
+*CalcDay     = \&NewCalcDay;
+*CalcTime    = \&NewCalcTime;
 
 sub NewCalcDay {
     my ($sec, $min, $hour, $mday, $mon, $year) = localtime(shift);

@@ -125,8 +125,8 @@ sub GitInitRepository {
   GitRun(qw(commit --quiet -m), 'initial import', "--author=Oddmuse <$GitMail>");
 }
 
-*GitOldSave = *Save;
-*Save = *GitNewSave;
+*GitOldSave = \&Save;
+*Save = \&GitNewSave;
 
 sub GitNewSave {
 
@@ -154,8 +154,8 @@ sub GitNewSave {
 	 "--author=$author <$GitMail>", '--', $id);
 }
 
-*GitOldDeletePage = *DeletePage;
-*DeletePage = *GitNewDeletePage;
+*GitOldDeletePage = \&DeletePage;
+*DeletePage = \&GitNewDeletePage;
 
 sub GitNewDeletePage {
   my $error = GitOldDeletePage(@_);

@@ -64,8 +64,8 @@ sub WysiwygScript {
   SetParam('theme', $DojoTheme);
 }
 
-*OldWysiwygGetTextArea = *GetTextArea;
-*GetTextArea = *NewWysiwygGetTextArea;
+*OldWysiwygGetTextArea = \&GetTextArea;
+*GetTextArea = \&NewWysiwygGetTextArea;
 
 sub NewWysiwygGetTextArea {
   my ($name, $text, $rows) = @_;
@@ -85,8 +85,8 @@ sub NewWysiwygGetTextArea {
   }
 }
 
-*OldWysiwygImproveDiff = *ImproveDiff;
-*ImproveDiff = *NewWysiwygImproveDiff;
+*OldWysiwygImproveDiff = \&ImproveDiff;
+*ImproveDiff = \&NewWysiwygImproveDiff;
 
 sub NewWysiwygImproveDiff {
   my $old = OldWysiwygImproveDiff(@_);

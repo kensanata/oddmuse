@@ -46,8 +46,8 @@ sub LinkAllGetPageLinkIfItExists {
   }
 }
 
-*OldLinkAllGetGotoBar = *GetGotoBar;
-*GetGotoBar = *NewLinkAllGetGotoBar;
+*OldLinkAllGetGotoBar = \&GetGotoBar;
+*GetGotoBar = \&NewLinkAllGetGotoBar;
 
 sub NewLinkAllGetGotoBar {
   my $id = shift;

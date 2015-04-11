@@ -106,8 +106,8 @@ sub DoEditParagraph {
 
 my @EditParagraphs = ();
 
-*EditParagraphOldPrintWikiToHTML = *PrintWikiToHTML;
-*PrintWikiToHTML = *EditParagraphNewPrintWikiToHTML;
+*EditParagraphOldPrintWikiToHTML = \&PrintWikiToHTML;
+*PrintWikiToHTML = \&EditParagraphNewPrintWikiToHTML;
 
 sub EditParagraphNewPrintWikiToHTML {
   my ($text, $is_saving_cache, $revision, $is_locked) = @_;
@@ -140,16 +140,16 @@ sub EditParagraphNewPrintWikiToHTML {
 
 # Whenever an important element is closed, we try to add a link.
 
-*EditParagraphOldCloseHtmlEnvironments = *CloseHtmlEnvironments;
-*CloseHtmlEnvironments = *EditParagraphNewCloseHtmlEnvironments;
+*EditParagraphOldCloseHtmlEnvironments = \&CloseHtmlEnvironments;
+*CloseHtmlEnvironments = \&EditParagraphNewCloseHtmlEnvironments;
 
 sub EditParagraphNewCloseHtmlEnvironments {
   EditParagraph();
   return EditParagraphOldCloseHtmlEnvironments(@_);
 }
 
-*EditParagraphOldCloseHtmlEnvironmentUntil = *CloseHtmlEnvironmentUntil;
-*CloseHtmlEnvironmentUntil = *EditParagraphNewCloseHtmlEnvironmentUntil;
+*EditParagraphOldCloseHtmlEnvironmentUntil = \&CloseHtmlEnvironmentUntil;
+*CloseHtmlEnvironmentUntil = \&EditParagraphNewCloseHtmlEnvironmentUntil;
 
 sub EditParagraphNewCloseHtmlEnvironmentUntil {
   my $tag = $_[0];

@@ -32,11 +32,11 @@ our ($InstanceThrottleDir, $InstanceThrottleLimit);
 $InstanceThrottleDir = $DataDir."/pids"; # directory for pid files
 $InstanceThrottleLimit = 2; # maximum number of parallel processes
 
-*OldDoSurgeProtection = *DoSurgeProtection;
-*DoSurgeProtection = *NewDoSurgeProtection;
+*OldDoSurgeProtection = \&DoSurgeProtection;
+*DoSurgeProtection = \&NewDoSurgeProtection;
 
-*OldDoBrowseRequest = *DoBrowseRequest;
-*DoBrowseRequest = *NewDoBrowseRequest;
+*OldDoBrowseRequest = \&DoBrowseRequest;
+*DoBrowseRequest = \&NewDoBrowseRequest;
 
 sub NewDoSurgeProtection {
   DoInstanceThrottle();

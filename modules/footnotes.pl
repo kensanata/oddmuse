@@ -302,8 +302,8 @@ sub FootnotesRule {
 }
 
 # ....................{ HTML OUTPUT                        }....................
-*PrintFooterFootnotesOld = *PrintFooter;
-*PrintFooter =             *PrintFooterFootnotes;
+*PrintFooterFootnotesOld = \&PrintFooter;
+*PrintFooter =             \&PrintFooterFootnotes;
 
 =head2 PrintFooterFootnotes
 

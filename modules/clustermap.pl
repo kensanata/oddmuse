@@ -45,8 +45,8 @@ $PrintTOCAnchor = 0;
 
 %ClusterMap = ();
 
-*OldPrintRcHtml = *PrintRcHtml;
-*PrintRcHtml = *ClusterMapPrintRcHtml;
+*OldPrintRcHtml = \&PrintRcHtml;
+*PrintRcHtml = \&ClusterMapPrintRcHtml;
 
 push(@MyAdminCode, \&ClusterMapAdminRule);
 
@@ -220,8 +220,8 @@ sub ClusterMapAdminRule {
 	push(@$menuref, ScriptLink('action=unclustered', T('Pages without a Cluster'), 'unclustered'));
 }
 
-*OldBrowseResolvedPage = *BrowseResolvedPage;
-*BrowseResolvedPage = *ClusterMapBrowseResolvedPage;
+*OldBrowseResolvedPage = \&BrowseResolvedPage;
+*BrowseResolvedPage = \&ClusterMapBrowseResolvedPage;
 
 sub ClusterMapBrowseResolvedPage {
 	my $title = shift;
@@ -250,8 +250,8 @@ sub ClusterMapBrowseResolvedPage {
 	}
 }
 
-*OldPrintWikiToHTML = *PrintWikiToHTML;
-*PrintWikiToHTML = *ClusterMapPrintWikiToHTML;
+*OldPrintWikiToHTML = \&PrintWikiToHTML;
+*PrintWikiToHTML = \&ClusterMapPrintWikiToHTML;
 
 sub ClusterMapPrintWikiToHTML {
 	my ($pageText, $savecache, $revision, $islocked) = @_;

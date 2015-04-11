@@ -397,8 +397,8 @@ sub AddUser {
 }
 
 
-*OldUserCanEdit = *UserCanEdit;
-*UserCanEdit = *LoginUserCanEdit;
+*OldUserCanEdit = \&UserCanEdit;
+*UserCanEdit = \&LoginUserCanEdit;
 
 sub LoginUserCanEdit {
 	my ($id, $editing) = @_;

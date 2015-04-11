@@ -20,8 +20,8 @@ our (%InterSite, %IndexHash, @IndexList, @MyInitVariables, $UseGrep, %Namespaces
 
 use Unicode::Normalize;
 
-*OldMacAllPagesList = *AllPagesList;
-*AllPagesList = *NewMacAllPagesList;
+*OldMacAllPagesList = \&AllPagesList;
+*AllPagesList = \&NewMacAllPagesList;
 
 sub NewMacAllPagesList {
   return @IndexList if @IndexList and not GetParam('refresh', 0);
@@ -37,8 +37,8 @@ sub NewMacAllPagesList {
   return @new;
 }
 
-*OldMacGrepFiltered = *GrepFiltered;
-*GrepFiltered = *NewMacGrepFiltered;
+*OldMacGrepFiltered = \&GrepFiltered;
+*GrepFiltered = \&NewMacGrepFiltered;
 
 sub NewMacGrepFiltered {
   my @pages = OldMacGrepFiltered(@_);
@@ -87,8 +87,8 @@ sub MacFixEncoding {
 
 # for drafts.pl
 
-*OldMacDraftFiles = *DraftFiles;
-*DraftFiles = *NewMacDraftFiles;
+*OldMacDraftFiles = \&DraftFiles;
+*DraftFiles = \&NewMacDraftFiles;
 
 sub NewMacDraftFiles {
   return map { NFC($_) } OldMacDraftFiles(@_);

@@ -55,7 +55,7 @@ sub GetSpecialDays {
   }
 }
 
-*GetHeader = *HeaderTemplate;
+*GetHeader = \&HeaderTemplate;
 
 sub HeaderTemplate {
   my ($id, $title, $oldId, $nocache, $status) = @_;
@@ -74,7 +74,7 @@ sub HeaderTemplate {
     . $template->output;
 }
 
-*PrintFooter = *PrintFooterTemplate;
+*PrintFooter = \&PrintFooterTemplate;
 
 sub PrintFooterTemplate {
   my ($id, $rev, $comment) = @_;

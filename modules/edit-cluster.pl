@@ -100,8 +100,8 @@ sub GetRc {
   }
 }
 
-*EditClusterOldRcHeader = *RcHeader;
-*RcHeader = *EditClusterNewRcHeader;
+*EditClusterOldRcHeader = \&RcHeader;
+*RcHeader = \&EditClusterNewRcHeader;
 
 sub EditClusterNewRcHeader {
   if (GetParam('from', 0)) {

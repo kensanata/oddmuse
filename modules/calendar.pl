@@ -28,8 +28,8 @@ $CalendarOnEveryPage = 0;   # 1=on every page is a month-div situated in the hea
 $CalAsTable = 0;            # 0=every month-div is "free", 1=every month-div is caught in a table, use css to control
 $CalStartMonday = 0;        # 0=week starts with Su, 1=week starts with Mo
 
-*OldCalendarGetHeader = *GetHeader;
-*GetHeader = *NewCalendarGetHeader;
+*OldCalendarGetHeader = \&GetHeader;
+*GetHeader = \&NewCalendarGetHeader;
 
 sub NewCalendarGetHeader {
   my $header = OldCalendarGetHeader(@_);

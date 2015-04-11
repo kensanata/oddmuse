@@ -21,8 +21,8 @@ use strict;
 AddModuleDescription('nearlink-create.pl', 'Comments on Near Links');
 our (%InterSite, $FreeLinkPattern);
 
-*OldNearCreateScriptLink = *ScriptLink;
-*ScriptLink = *NewNearCreateScriptLink;
+*OldNearCreateScriptLink = \&ScriptLink;
+*ScriptLink = \&NewNearCreateScriptLink;
 
 sub NewNearCreateScriptLink {
   my ($action, $text, $class, $name, $title, $accesskey, $nofollow) = @_;

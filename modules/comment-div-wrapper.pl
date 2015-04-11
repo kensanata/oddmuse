@@ -43,8 +43,8 @@ sub CommentDivWrapper {
 }
 
 # close final div
-*OldCommentDivApplyRules = *ApplyRules;
-*ApplyRules = *NewCommentDivApplyRules;
+*OldCommentDivApplyRules = \&ApplyRules;
+*ApplyRules = \&NewCommentDivApplyRules;
 
 sub NewCommentDivApplyRules {
   my ($blocks, $flags) = OldCommentDivApplyRules(@_);

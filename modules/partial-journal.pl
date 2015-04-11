@@ -32,8 +32,8 @@ sub PartialCutRule {
   return;
 }
 
-*OldPartialPrintJournal = *PrintJournal;
-*PrintJournal = *NewPartialPrintJournal;
+*OldPartialPrintJournal = \&PrintJournal;
+*PrintJournal = \&NewPartialPrintJournal;
 
 sub NewPartialPrintAllPages {
   my $links = shift;
