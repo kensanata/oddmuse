@@ -300,8 +300,8 @@ sub GdSecurityImageGetHtml {
   return $form;
 }
 
-*OldGdSecurityImageDoPost = *DoPost;
-*DoPost = *NewGdSecurityImageDoPost;
+*OldGdSecurityImageDoPost = \&DoPost;
+*DoPost = \&NewGdSecurityImageDoPost;
 
 sub NewGdSecurityImageDoPost {
   my(@params) = @_;
@@ -324,15 +324,15 @@ sub NewGdSecurityImageDoPost {
   return (OldGdSecurityImageDoPost(@params));
 }
 
-*OldGdSecurityImageGetEditForm = *GetEditForm;
-*GetEditForm = *NewGdSecurityImageGetEditForm;
+*OldGdSecurityImageGetEditForm = \&GetEditForm;
+*GetEditForm = \&NewGdSecurityImageGetEditForm;
 
 sub NewGdSecurityImageGetEditForm {
   return GdSecurityImageAddTo(OldGdSecurityImageGetEditForm(@_), $_[1]);
 }
 
-*OldGdSecurityImageGetCommentForm = *GetCommentForm;
-*GetCommentForm = *NewGdSecurityImageGetCommentForm;
+*OldGdSecurityImageGetCommentForm = \&GetCommentForm;
+*GetCommentForm = \&NewGdSecurityImageGetCommentForm;
 
 sub NewGdSecurityImageGetCommentForm {
   return GdSecurityImageAddTo(OldGdSecurityImageGetCommentForm(@_));

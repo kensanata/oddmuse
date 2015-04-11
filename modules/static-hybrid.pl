@@ -194,8 +194,8 @@ sub StaticHtml {
 	return;
 }
 
-*StaticFilesOldDoPost = *DoPost;
-*DoPost = *StaticFilesNewDoPost;
+*StaticFilesOldDoPost = \&DoPost;
+*DoPost = \&StaticFilesNewDoPost;
 
 sub StaticFilesNewDoPost {
 	my $id = FreeToNormal(shift);
@@ -226,8 +226,8 @@ sub StaticFilesNewDoPost {
 	}
 }
 
-*StaticOldDeletePage = *DeletePage;
-*DeletePage = *StaticNewDeletePage;
+*StaticOldDeletePage = \&DeletePage;
+*DeletePage = \&StaticNewDeletePage;
 
 sub StaticNewDeletePage {
 	my $id = shift;
@@ -394,8 +394,8 @@ sub AddNewFilesToQueue {
 
 # Make rollback compatible
 
-*StaticOldDoRollback = *DoRollback;
-*DoRollback = *StaticNewDoRollback;
+*StaticOldDoRollback = \&DoRollback;
+*DoRollback = \&StaticNewDoRollback;
 $Action{rollback} = \&StaticNewDoRollback;
 
 # Delete the static file so that changes made during a rollback are propogated
@@ -436,8 +436,8 @@ sub StaticNewDoRollback {
   PrintFooter();
 }
 
-*StaticOldDespamPage = *DespamPage;
-*DespamPage = *StaticNewDespamPage;
+*StaticOldDespamPage = \&DespamPage;
+*DespamPage = \&StaticNewDespamPage;
 
 sub StaticNewDespamPage {
   my $rule = shift;

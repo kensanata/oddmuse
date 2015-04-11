@@ -33,8 +33,8 @@ sub SidebarInit {
   $AdminPages{$SidebarName} = 1;
 }
 
-*OldSideBarGetHeader = *GetHeader;
-*GetHeader = *NewSideBarGetHeader;
+*OldSideBarGetHeader = \&GetHeader;
+*GetHeader = \&NewSideBarGetHeader;
 
 # this assumes that *all* calls to GetHeader will print!
 sub NewSideBarGetHeader {

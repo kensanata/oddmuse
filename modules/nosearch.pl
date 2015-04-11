@@ -6,8 +6,8 @@ AddModuleDescription('nosearch.pl');
 
 our ($q, @MyAdminCode);
 
-*OldGetSearchLink = *GetSearchLink;
-*GetSearchLink = *NewGetSearchLink;
+*OldGetSearchLink = \&GetSearchLink;
+*GetSearchLink = \&NewGetSearchLink;
 sub NewGetSearchLink {
   my ($text, $class, $name, $title) = @_;
   $name = UrlEncode($name);

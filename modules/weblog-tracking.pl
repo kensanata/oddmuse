@@ -49,8 +49,8 @@ push (@NotifyUrlPatterns, 'http://ping.blo.gs/?name=$name&url=$url&rssUrl=$rss&d
 
 # You should not need to change anything below this point.
 
-*OldWeblogTrackingSave = *Save;
-*Save = *NewWeblogTrackingSave;
+*OldWeblogTrackingSave = \&Save;
+*Save = \&NewWeblogTrackingSave;
 
 sub NewWeblogTrackingSave {
   my ($id, $new, $summary, $minor, $upload) = @_;

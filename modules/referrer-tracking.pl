@@ -44,8 +44,8 @@ sub RefererMenu {
   push(@$menuref, ScriptLink('action=refer', T('All Referrers'), 'refer'));
 }
 
-*RefererOldPrintFooter = *PrintFooter;
-*PrintFooter = *RefererNewPrintFooter;
+*RefererOldPrintFooter = \&PrintFooter;
+*PrintFooter = \&RefererNewPrintFooter;
 
 sub RefererNewPrintFooter {
   my ($id, $rev, $comment, @rest) = @_;
@@ -56,8 +56,8 @@ sub RefererNewPrintFooter {
   RefererOldPrintFooter($id, $rev, $comment, @rest);
 }
 
-*RefererOldExpireKeepFiles = *ExpireKeepFiles;
-*ExpireKeepFiles = *RefererNewExpireKeepFiles;
+*RefererOldExpireKeepFiles = \&ExpireKeepFiles;
+*ExpireKeepFiles = \&RefererNewExpireKeepFiles;
 
 sub RefererNewExpireKeepFiles {
   RefererOldExpireKeepFiles(@_); # call with opened page
@@ -65,8 +65,8 @@ sub RefererNewExpireKeepFiles {
   WriteReferers($OpenPageName);
 }
 
-*RefererOldDeletePage = *DeletePage;
-*DeletePage = *RefererNewDeletePage;
+*RefererOldDeletePage = \&DeletePage;
+*DeletePage = \&RefererNewDeletePage;
 
 sub RefererNewDeletePage {
   my $status = RefererOldDeletePage(@_);

@@ -32,8 +32,8 @@ sub HtmlUploadsDoDownload {
 
 # but only admins can upload raw html
 
-*OldHtmlUploadsDoPost = *DoPost;
-*DoPost = *NewHtmlUploadsDoPost;
+*OldHtmlUploadsDoPost = \&DoPost;
+*DoPost = \&NewHtmlUploadsDoPost;
 
 sub NewHtmlUploadsDoPost {
   my @args = @_;

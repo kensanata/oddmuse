@@ -84,8 +84,8 @@ sub FormTimeoutCheck {
   return 1;
 }
 
-*OldFormTimeoutGetFormStart = *GetFormStart;
-*GetFormStart = *NewFormTimeoutGetFormStart;
+*OldFormTimeoutGetFormStart = \&GetFormStart;
+*GetFormStart = \&NewFormTimeoutGetFormStart;
 
 sub NewFormTimeoutGetFormStart {
   my ($ignore, $method, $class) = @_;
@@ -96,8 +96,8 @@ sub NewFormTimeoutGetFormStart {
   return $form;
 }
 
-*OldFormTimeoutDoEdit = *DoEdit;
-*DoEdit = *NewFormTimeoutDoEdit;
+*OldFormTimeoutDoEdit = \&DoEdit;
+*DoEdit = \&NewFormTimeoutDoEdit;
 
 sub NewFormTimeoutDoEdit {
   my ($id, $newText, $preview) = @_;

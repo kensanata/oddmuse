@@ -124,8 +124,8 @@ will be regenerated.
 
 =cut
 
-*OldTagSave = *Save;
-*Save = *NewTagSave;
+*OldTagSave = \&Save;
+*Save = \&NewTagSave;
 
 sub NewTagSave { # called within a lock!
   OldTagSave(@_);
@@ -183,8 +183,8 @@ removed from the tags db.
 
 =cut
 
-*OldTagDeletePage = *DeletePage;
-*DeletePage = *NewTagDeletePage;
+*OldTagDeletePage = \&DeletePage;
+*DeletePage = \&NewTagDeletePage;
 
 sub NewTagDeletePage { # called within a lock!
   my $id = shift;
@@ -235,8 +235,8 @@ sub TagFind {
   return sort keys %page;
 }
 
-*OldTagGrepFiltered = *GrepFiltered;
-*GrepFiltered = *NewTagGrepFiltered;
+*OldTagGrepFiltered = \&GrepFiltered;
+*GrepFiltered = \&NewTagGrepFiltered;
 
 sub NewTagGrepFiltered { # called within a lock!
   my ($string, @pages) = @_;
@@ -271,8 +271,8 @@ We're need to remove all tag terms (again) in order to not confuse it.
 
 =cut
 
-*OldTagSearchString = *SearchString;
-*SearchString = *NewTagSearchString;
+*OldTagSearchString = \&SearchString;
+*SearchString = \&NewTagSearchString;
 
 sub NewTagSearchString {
   # filter out the negative tags from the search string

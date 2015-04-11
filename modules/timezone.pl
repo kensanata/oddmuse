@@ -42,23 +42,23 @@ sub TZget {
   return $dt;
 }
 
-*OldTZCalcDay = *CalcDay;
-*CalcDay = *NewTZCalcDay;
+*OldTZCalcDay = \&CalcDay;
+*CalcDay = \&NewTZCalcDay;
 
 sub NewTZCalcDay {
   return TZget(shift)->ymd;
 }
 
-*OldTZCalcTime = *CalcTime;
-*CalcTime = *NewTZCalcTime;
+*OldTZCalcTime = \&CalcTime;
+*CalcTime = \&NewTZCalcTime;
 
 sub NewTZCalcTime {
   return substr(TZget(shift)->hms, 0, 5) # strip seconds
     . (GetParam('time', '') ? '' : ' UTC');
 }
 
-*OldTZGetFooterTimestamp = *GetFooterTimestamp;
-*GetFooterTimestamp = *NewTZGetFooterTimestamp;
+*OldTZGetFooterTimestamp = \&GetFooterTimestamp;
+*GetFooterTimestamp = \&NewTZGetFooterTimestamp;
 
 sub NewTZGetFooterTimestamp {
   my $html = OldTZGetFooterTimestamp(@_);

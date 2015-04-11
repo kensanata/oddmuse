@@ -69,8 +69,8 @@ index file at the end of the subscribe and unsubscribe function.
 
 =cut
 
-*MailOldInitCookie = *InitCookie;
-*InitCookie = *MailNewInitCookie;
+*MailOldInitCookie = \&InitCookie;
+*InitCookie = \&MailNewInitCookie;
 
 $CookieParameters{mail} = '';
 $CookieParameters{sub} = '';
@@ -89,8 +89,8 @@ sub MailNewInitCookie {
   }
 }
 
-*MailOldGetCommentForm = *GetCommentForm;
-*GetCommentForm = *MailNewGetCommentForm;
+*MailOldGetCommentForm = \&GetCommentForm;
+*GetCommentForm = \&MailNewGetCommentForm;
 
 sub MailNewGetCommentForm {
   my $html = MailOldGetCommentForm(@_);
@@ -125,8 +125,8 @@ sub MailIsSubscribed {
   return $subscribers{$mail};
 }
 
-*MailOldGetFooterTimestamp = *GetFooterTimestamp;
-*GetFooterTimestamp = *MailNewGetFooterTimestamp;
+*MailOldGetFooterTimestamp = \&GetFooterTimestamp;
+*GetFooterTimestamp = \&MailNewGetFooterTimestamp;
 
 sub MailNewGetFooterTimestamp {
   my $html = MailOldGetFooterTimestamp(@_);
@@ -152,8 +152,8 @@ this via an URL you need to provide the parameters id, mail, aftertext
 
 =cut
 
-*MailOldSave = *Save;
-*Save = *MailNewSave;
+*MailOldSave = \&Save;
+*Save = \&MailNewSave;
 
 sub MailNewSave {
   # is called within a lock! :)
@@ -177,8 +177,8 @@ sub MailNewSave {
   }
 }
 
-*OldMailDeletePage = *DeletePage;
-*DeletePage = *NewMailDeletePage;
+*OldMailDeletePage = \&DeletePage;
+*DeletePage = \&NewMailDeletePage;
 
 =head1 Deleting
 

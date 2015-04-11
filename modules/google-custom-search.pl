@@ -29,8 +29,8 @@ AddModuleDescription('google-custom-search.pl');
 sub GetSearchForm {}
 
 # No more searching of titles
-*OldGoogleCustomGetSearchLink = *GetSearchLink;
-*GetSearchLink = *NewGoogleCustomGetSearchLink;
+*OldGoogleCustomGetSearchLink = \&GetSearchLink;
+*GetSearchLink = \&NewGoogleCustomGetSearchLink;
 
 sub NewGoogleCustomGetSearchLink {
   my ($text, $class, $name, $title) = @_;
@@ -48,8 +48,8 @@ sub NewGoogleCustomGetSearchLink {
   return $q->a(\%params, $text);
 }
 
-*OldGoogleCustomGetHeader = *GetHeader;
-*GetHeader = *NewGoogleCustomGetHeader;
+*OldGoogleCustomGetHeader = \&GetHeader;
+*GetHeader = \&NewGoogleCustomGetHeader;
 
 sub NewGoogleCustomGetHeader {
   my $html = OldGoogleCustomGetHeader(@_);

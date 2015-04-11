@@ -38,8 +38,8 @@ function togglecomments (id) {
 
 my $num = 0;
 
-*DynamicCommentsOldGetPageLink = *GetPageLink;
-*GetPageLink = *DynamicCommentsNewGetPageLink;
+*DynamicCommentsOldGetPageLink = \&GetPageLink;
+*GetPageLink = \&DynamicCommentsNewGetPageLink;
 
 sub DynamicCommentsNewGetPageLink {
   my ($id, @rest) = @_;

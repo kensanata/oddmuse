@@ -47,8 +47,8 @@ sub PageTypeInit {
 # have page clustering enabled (see the manual), then the page type
 # will automatically act as a cluster.
 
-*OldPageTypeDoPost = *DoPost;
-*DoPost = *NewPageTypeDoPost;
+*OldPageTypeDoPost = \&DoPost;
+*DoPost = \&NewPageTypeDoPost;
 
 sub NewPageTypeDoPost {
   my $id = shift;
@@ -66,8 +66,8 @@ sub NewPageTypeDoPost {
   OldPageTypeDoPost($id);
 }
 
-*OldPageTypeGetTextArea = *GetTextArea;
-*GetTextArea = *NewPageTypeGetTextArea;
+*OldPageTypeGetTextArea = \&GetTextArea;
+*GetTextArea = \&NewPageTypeGetTextArea;
 
 sub NewPageTypeGetTextArea {
   my ($name, $text) = @_;

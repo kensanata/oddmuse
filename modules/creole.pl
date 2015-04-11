@@ -563,8 +563,8 @@ sub GetCreoleLinkHtml {
 }
 
 # ....................{ FUNCTIONS                          }....................
-*RunMyRulesCreoleOld = *RunMyRules;
-*RunMyRules =          *RunMyRulesCreole;
+*RunMyRulesCreoleOld = \&RunMyRules;
+*RunMyRules =          \&RunMyRulesCreole;
 
 =head2 RunMyRulesCreole
 

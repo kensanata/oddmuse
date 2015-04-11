@@ -76,8 +76,8 @@ sub PortraitSupportRule {
   return;
 }
 
-*OldPortraitSupportApplyRules = *ApplyRules;
-*ApplyRules = *NewPortraitSupportApplyRules;
+*OldPortraitSupportApplyRules = \&ApplyRules;
+*ApplyRules = \&NewPortraitSupportApplyRules;
 
 sub NewPortraitSupportApplyRules {
   my ($blocks, $flags) = OldPortraitSupportApplyRules(@_);

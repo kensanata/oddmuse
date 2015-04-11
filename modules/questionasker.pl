@@ -64,8 +64,8 @@ sub QuestionaskerInit {
   $InvisibleCookieParameters{$QuestionaskerSecretKey} = 1;
 }
 
-*OldQuestionaskerDoPost = *DoPost;
-*DoPost = *NewQuestionaskerDoPost;
+*OldQuestionaskerDoPost = \&DoPost;
+*DoPost = \&NewQuestionaskerDoPost;
 
 sub NewQuestionaskerDoPost {
   my(@params) = @_;
@@ -97,15 +97,15 @@ sub NewQuestionaskerDoPost {
   return (OldQuestionaskerDoPost(@params));
 }
 
-*OldQuestionaskerGetEditForm = *GetEditForm;
-*GetEditForm = *NewQuestionaskerGetEditForm;
+*OldQuestionaskerGetEditForm = \&GetEditForm;
+*GetEditForm = \&NewQuestionaskerGetEditForm;
 
 sub NewQuestionaskerGetEditForm {
   return QuestionAddTo(OldQuestionaskerGetEditForm(@_), $_[1]);
 }
 
-*OldQuestionaskerGetCommentForm = *GetCommentForm;
-*GetCommentForm = *NewQuestionaskerGetCommentForm;
+*OldQuestionaskerGetCommentForm = \&GetCommentForm;
+*GetCommentForm = \&NewQuestionaskerGetCommentForm;
 
 sub NewQuestionaskerGetCommentForm {
   return QuestionAddTo(OldQuestionaskerGetCommentForm(@_));

@@ -233,8 +233,8 @@ Action (see below).
 
 =cut
 
-*OldLocalNamesResolveId = *ResolveId;
-*ResolveId = *NewLocalNamesResolveId;
+*OldLocalNamesResolveId = \&ResolveId;
+*ResolveId = \&NewLocalNamesResolveId;
 
 sub NewLocalNamesResolveId {
   my $id = shift;
@@ -265,8 +265,8 @@ blog> (five “words”, since the code looks at whitespace only).
 
 =cut
 
-*LocalNamesOldSave = *Save;
-*Save = *LocalNamesNewSave;
+*LocalNamesOldSave = \&Save;
+*Save = \&LocalNamesNewSave;
 
 sub LocalNamesNewSave {
   LocalNamesOldSave(@_);

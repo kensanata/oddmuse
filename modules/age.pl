@@ -34,8 +34,8 @@ our (%AgeEffect, $AgeParameter);
 # if using creationdate.pl.
 $AgeParameter = 'ts';
 
-*OldAgeGetHeader = *GetHeader;
-*GetHeader = *NewAgeGetHeader;
+*OldAgeGetHeader = \&GetHeader;
+*GetHeader = \&NewAgeGetHeader;
 
 sub NewAgeGetHeader {
   my $header = OldAgeGetHeader(@_);

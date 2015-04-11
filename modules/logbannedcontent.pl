@@ -33,8 +33,8 @@ sub LogNewBannedContent {
   return $rule;
 }
 
-*LogOldUserIsBanned = *UserIsBanned;
-*UserIsBanned = *LogNewUserIsBanned;
+*LogOldUserIsBanned = \&UserIsBanned;
+*UserIsBanned = \&LogNewUserIsBanned;
 
 sub LogNewUserIsBanned {
   my $str = shift;

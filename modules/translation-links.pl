@@ -111,8 +111,8 @@ well as a link to the translate action.
 
 =cut
 
-*TranslationLinkOldGetFooterLinks = *GetFooterLinks;
-*GetFooterLinks = *TranslationLinkNewGetFooterLinks;
+*TranslationLinkOldGetFooterLinks = \&GetFooterLinks;
+*GetFooterLinks = \&TranslationLinkNewGetFooterLinks;
 
 sub TranslationLinkNewGetFooterLinks {
   my $html = TranslationLinkOldGetFooterLinks(@_);

@@ -35,8 +35,8 @@ AddModuleDescription('pingback-server.pl', 'Pingback Server Extension');
 
 our ($CommentsPrefix);
 
-*OldPingbackServerGetHtmlHeader = *GetHtmlHeader;
-*GetHtmlHeader = *NewPingbackServerGetHtmlHeader;
+*OldPingbackServerGetHtmlHeader = \&GetHtmlHeader;
+*GetHtmlHeader = \&NewPingbackServerGetHtmlHeader;
 
 # Add the <link ...> to the header
 sub NewPingbackServerGetHtmlHeader {
@@ -50,8 +50,8 @@ sub NewPingbackServerGetHtmlHeader {
   return $header;
 }
 
-*OldPingbackServerInitRequest = *InitRequest;
-*InitRequest = *NewPingbackServerInitRequest;
+*OldPingbackServerInitRequest = \&InitRequest;
+*InitRequest = \&NewPingbackServerInitRequest;
 
 sub NewPingbackServerInitRequest {
   if($ENV{'QUERY_STRING'} =~ /action=pingback;id=(.*)/) {

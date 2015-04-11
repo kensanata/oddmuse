@@ -100,8 +100,8 @@ sub SmartTitlesRule {
 }
 
 # ....................{ FUNCTIONS                          }....................
-*GetHeaderSmartTitlesOld = *GetHeader;
-*GetHeader =               *GetHeaderSmartTitles;
+*GetHeaderSmartTitlesOld = \&GetHeader;
+*GetHeader =               \&GetHeaderSmartTitles;
 
 =head2 GetSmartTitles
 

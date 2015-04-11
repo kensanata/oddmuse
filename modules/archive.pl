@@ -22,8 +22,8 @@ AddModuleDescription('archive.pl', 'Archive Extension');
 
 our ($q);
 
-*OldArchiveGetHeader = *GetHeader;
-*GetHeader = *NewArchiveGetHeader;
+*OldArchiveGetHeader = \&GetHeader;
+*GetHeader = \&NewArchiveGetHeader;
 
 # this assumes that *all* calls to GetHeader will print!
 sub NewArchiveGetHeader {

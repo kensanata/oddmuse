@@ -22,8 +22,8 @@ AddModuleDescription('aawrapperdiv.pl', 'WrapperDiv Module');
 
 our ($q);
 
-*OldGetHeader = *GetHeader;
-*GetHeader = *WrapperGetHeader;
+*OldGetHeader = \&GetHeader;
+*GetHeader = \&WrapperGetHeader;
 
 sub WrapperGetHeader {
   my ($id, $title, $oldId, $nocache, $status) = @_;
@@ -31,8 +31,8 @@ sub WrapperGetHeader {
   $result .= $q->start_div({-class=>'wrapper'});
 }
 
-*OldPrintFooter = *PrintFooter;
-*PrintFooter = *WrapperPrintFooter;
+*OldPrintFooter = \&PrintFooter;
+*PrintFooter = \&WrapperPrintFooter;
 
 sub WrapperPrintFooter {
   my ($id, $rev, $comment) = @_;

@@ -112,8 +112,8 @@ sub TocInit {
 }
 
 # ....................{ MARKUP                             }....................
-*RunMyRulesTocOld = *RunMyRules;
-*RunMyRules       = *RunMyRulesToc;
+*RunMyRulesTocOld = \&RunMyRules;
+*RunMyRules       = \&RunMyRulesToc;
 
 push(@MyRules, \&TocRule);
 
@@ -219,8 +219,8 @@ sub RunMyRulesToc {
 # ....................{ MARKUP =after                      }....................
 my $TocCommentPattern = qr~\Q<!-- toc\E.*?\Q -->\E~;
 
-*OldTocApplyRules = *ApplyRules;
-*ApplyRules = *NewTocApplyRules;
+*OldTocApplyRules = \&ApplyRules;
+*ApplyRules = \&NewTocApplyRules;
 
 # This changes the entire rendering engine such that it no longer
 # prints output as it goes along. Instead all the output is collected

@@ -31,7 +31,7 @@ our ($HtmlTemplateDir);
 
 $HtmlTemplateDir   = "$DataDir/templates";
 
-*BrowsePage = *DoHtmlTemplate;
+*BrowsePage = \&DoHtmlTemplate;
 
 # replace all actions with DoHtmlTemplate!
 foreach my $key (keys %Action) {

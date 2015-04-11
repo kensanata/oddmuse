@@ -177,8 +177,8 @@ and all pages in C<%AdminPages>.
 
 =cut
 
-*OldNearLinksResolveId = *ResolveId;
-*ResolveId = *NewNearLinksResolveId;
+*OldNearLinksResolveId = \&ResolveId;
+*ResolveId = \&NewNearLinksResolveId;
 
 sub NewNearLinksResolveId {
   my $id = shift;
@@ -232,8 +232,8 @@ will be necessary in all cases.
 
 =cut
 
-*OldNearLinksSearchMenu = *SearchMenu;
-*SearchMenu = *NewNearLinksSearchMenu;
+*OldNearLinksSearchMenu = \&SearchMenu;
+*SearchMenu = \&NewNearLinksSearchMenu;
 
 sub NewNearLinksSearchMenu {
   my $string = shift;
@@ -244,8 +244,8 @@ sub NewNearLinksSearchMenu {
   return $result;
 }
 
-*OldNearLinksSearchTitleAndBody = *SearchTitleAndBody;
-*SearchTitleAndBody = *NewNearLinksSearchTitleAndBody;
+*OldNearLinksSearchTitleAndBody = \&SearchTitleAndBody;
+*SearchTitleAndBody = \&NewNearLinksSearchTitleAndBody;
 
 sub NewNearLinksSearchTitleAndBody {
   my $string = shift;

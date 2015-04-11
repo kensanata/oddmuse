@@ -21,8 +21,8 @@ our ($DeleteAge);
 
 $DeleteAge = 172800; # 2*24*60*60
 
-*OldDelPageDeletable = *PageDeletable;
-*PageDeletable = *NewDelPageDeletable;
+*OldDelPageDeletable = \&PageDeletable;
+*PageDeletable = \&NewDelPageDeletable;
 
 # All pages will be deleted after two days of inactivity!
 sub NewDelPageDeletable {

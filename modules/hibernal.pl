@@ -530,7 +530,7 @@ hibernal provides the following functions (for implementing those actions).
 =cut
 
 # ....................{ CORE REFACTORS                     }....................
-*AddComment = *AddHibernalComment;
+*AddComment = \&AddHibernalComment;
 
 =head2 AddHibernalComment
 

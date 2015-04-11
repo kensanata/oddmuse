@@ -22,8 +22,8 @@ AddModuleDescription('commentcount.pl', 'Comment Count Extension');
 
 our ($CommentsPrefix);
 
-*OldCommentcountAddComment = *AddComment;
-*AddComment = *NewCommentcountAddComment;
+*OldCommentcountAddComment = \&AddComment;
+*AddComment = \&NewCommentcountAddComment;
 
 sub NewCommentcountAddComment {
   my ($old, $comment) = @_;
@@ -43,8 +43,8 @@ sub NewCommentcountAddComment {
   return $new;
 }
 
-*OldCommentcountScriptLink = *ScriptLink;
-*ScriptLink = *NewCommentcountScriptLink;
+*OldCommentcountScriptLink = \&ScriptLink;
+*ScriptLink = \&NewCommentcountScriptLink;
 
 sub NewCommentcountScriptLink {
   my ($action, $text, @rest) = @_;

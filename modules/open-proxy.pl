@@ -45,8 +45,8 @@ sub DoSelfBan {
 
 # Before you can edit a page, we do the open proxy scanning.
 
-*OpenProxyOldDoEdit = *DoEdit;
-*DoEdit = *OpenProxyNewDoEdit;
+*OpenProxyOldDoEdit = \&DoEdit;
+*DoEdit = \&OpenProxyNewDoEdit;
 
 sub OpenProxyNewDoEdit {
   BanOpenProxy();

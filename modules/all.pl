@@ -36,8 +36,8 @@ sub DoPrintAllPages {
   PrintFooter();
 }
 
-*OldAllScriptLink = *ScriptLink;
-*ScriptLink = *NewAllScriptLink;
+*OldAllScriptLink = \&ScriptLink;
+*ScriptLink = \&NewAllScriptLink;
 
 sub NewAllScriptLink {
   my ($action, $text, $class, $name, $title, $accesskey, $nofollow) = @_;

@@ -27,8 +27,8 @@ AddModuleDescription('doubleclick.pl', 'Doubleclick Extension');
 
 our ($ScriptName);
 
-*OldDoubleclickGetHeader = *GetHeader;
-*GetHeader = *NewDoubleclickGetHeader;
+*OldDoubleclickGetHeader = \&GetHeader;
+*GetHeader = \&NewDoubleclickGetHeader;
 
 sub NewDoubleclickGetHeader {
     my $id = shift;

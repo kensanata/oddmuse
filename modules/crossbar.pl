@@ -138,8 +138,8 @@ sub CrossbarInit {
 }
 
 # ....................{ MARKUP =before                     }....................
-*OldCrossbarApplyRules = *ApplyRules;
-*ApplyRules = *NewCrossbarApplyRules;
+*OldCrossbarApplyRules = \&ApplyRules;
+*ApplyRules = \&NewCrossbarApplyRules;
 
 sub NewCrossbarApplyRules {
   my $text = shift;
@@ -227,8 +227,8 @@ sub PrintPageContentCrossbar {
 }
 
 # ....................{ EDITING                            }....................
-*GetEditFormCrossbarOld = *GetEditForm;
-*GetEditForm            = *GetEditFormCrossbar;
+*GetEditFormCrossbarOld = \&GetEditForm;
+*GetEditForm            = \&GetEditFormCrossbar;
 
 sub GetEditFormCrossbar {
   my ($page_name) = @_;

@@ -184,8 +184,8 @@ correct URL to link to.
 
 =cut
 
-*OldNamespaceGetRcLines = *GetRcLines;
-*GetRcLines = *NewNamespaceGetRcLines;
+*OldNamespaceGetRcLines = \&GetRcLines;
+*GetRcLines = \&NewNamespaceGetRcLines;
 
 sub NewNamespaceGetRcLines { # starttime, hash of seen pages to use as a second return value
   my $starttime = shift || GetParam('from', 0) ||
@@ -280,8 +280,8 @@ This should preserve the slash added between namespace and pagename.
 
 =cut
 
-*OldNamespaceUrlEncode = *UrlEncode;
-*UrlEncode = *NewNamespaceUrlEncode;
+*OldNamespaceUrlEncode = \&UrlEncode;
+*UrlEncode = \&NewNamespaceUrlEncode;
 
 sub NewNamespaceUrlEncode {
   my $result = OldNamespaceUrlEncode(@_);
@@ -303,8 +303,8 @@ This is used for ordinary page viewing and RecentChanges.
 
 =cut
 
-*OldNamespaceScriptUrl = *ScriptUrl;
-*ScriptUrl = *NewNamespaceScriptUrl;
+*OldNamespaceScriptUrl = \&ScriptUrl;
+*ScriptUrl = \&NewNamespaceScriptUrl;
 
 sub NewNamespaceScriptUrl {
   my ($action, @rest) = @_;
@@ -343,8 +343,8 @@ running. This is important so that author links are printed.
 
 =cut
 
-*OldNamespaceGetAuthorLink = *GetAuthorLink;
-*GetAuthorLink = *NewNamespaceGetAuthorLink;
+*OldNamespaceGetAuthorLink = \&GetAuthorLink;
+*GetAuthorLink = \&NewNamespaceGetAuthorLink;
 
 sub NewNamespaceGetAuthorLink {
   local *OldNamespaceValidId = *ValidId;
@@ -373,8 +373,8 @@ play.
 
 =cut
 
-*OldNamespaceBrowsePage = *BrowsePage;
-*BrowsePage = *NewNamespaceBrowsePage;
+*OldNamespaceBrowsePage = \&BrowsePage;
+*BrowsePage = \&NewNamespaceBrowsePage;
 
 sub NewNamespaceBrowsePage {
   #REDIRECT into different namespaces
@@ -429,8 +429,8 @@ sub NamespacesMenu {
 		  'namespaces'));
 }
 
-*NamespacesOldGetId = *GetId;
-*GetId = *NamespacesNewGetId;
+*NamespacesOldGetId = \&GetId;
+*GetId = \&NamespacesNewGetId;
 
 sub NamespacesNewGetId {
   my $id = NamespacesOldGetId(@_);

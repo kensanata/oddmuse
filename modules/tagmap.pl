@@ -190,8 +190,8 @@ sub GetTags {
 	return @tags;
 }
 
-*TagMapOldBrowseResolvedPage = *BrowseResolvedPage;
-*BrowseResolvedPage = *TagMapBrowseResolvedPage;
+*TagMapOldBrowseResolvedPage = \&BrowseResolvedPage;
+*BrowseResolvedPage = \&TagMapBrowseResolvedPage;
 
 sub TagMapBrowseResolvedPage {
 	my $title = shift;
@@ -204,8 +204,8 @@ sub TagMapBrowseResolvedPage {
 	}
 }
 
-*TagMapOldPrintWikiToHTML = *PrintWikiToHTML;
-*PrintWikiToHTML = *TagMapPrintWikiToHTML;
+*TagMapOldPrintWikiToHTML = \&PrintWikiToHTML;
+*PrintWikiToHTML = \&TagMapPrintWikiToHTML;
 
 sub TagMapPrintWikiToHTML {
 	my ($pageText, $savecache, $revision, $islocked) = @_;

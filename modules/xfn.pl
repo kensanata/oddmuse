@@ -30,8 +30,8 @@ push ( @MyRules, \&xfnRule );
 
 my $PersonPattern = '\[\[person:(.*?)\]\]';
 
-*MyOldGetHtmlHeader = *GetHtmlHeader;
-*GetHtmlHeader      = *MyNewGetHtmlHeader;
+*MyOldGetHtmlHeader = \&GetHtmlHeader;
+*GetHtmlHeader      = \&MyNewGetHtmlHeader;
 
 sub MyNewGetHtmlHeader {
     my $result = MyOldGetHtmlHeader(@_);

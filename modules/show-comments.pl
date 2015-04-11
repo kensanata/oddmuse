@@ -25,8 +25,8 @@ AddModuleDescription('show-comments.pl', 'Comment Pages');
 
 our (%Page, $OpenPageName, $CommentsPrefix, $CollectingJournal);
 
-*OldPrintJournal = *PrintJournal;
-*PrintJournal = *NewPrintJournal;
+*OldPrintJournal = \&PrintJournal;
+*PrintJournal = \&NewPrintJournal;
 
 sub NewPrintJournal {
   my ($num, $regexp, $mode) = @_;

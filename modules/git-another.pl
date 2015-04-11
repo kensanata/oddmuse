@@ -60,8 +60,8 @@ sub RenderHtmlCacheWithoutPrinting { # requires an open page
   }
 }
 
-*GitOldSave = *Save;
-*Save = *GitNewSave;
+*GitOldSave = \&Save;
+*Save = \&GitNewSave;
 
 sub GitNewSave {
   GitInitRepository();

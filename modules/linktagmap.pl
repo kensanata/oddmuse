@@ -219,8 +219,8 @@ sub GetLinkTags { # Retrieve tags (if present) from a link
 
 }
 
-*LinkTagMapOldBrowseResolvedPage = *BrowseResolvedPage;
-*BrowseResolvedPage = *LinkTagMapBrowseResolvedPage;
+*LinkTagMapOldBrowseResolvedPage = \&BrowseResolvedPage;
+*BrowseResolvedPage = \&LinkTagMapBrowseResolvedPage;
 
 sub LinkTagMapBrowseResolvedPage {
 
@@ -235,8 +235,8 @@ sub LinkTagMapBrowseResolvedPage {
 
 }
 
-*LinkTagMapOldPrintWikiToHTML = *PrintWikiToHTML;
-*PrintWikiToHTML = *LinkTagMapPrintWikiToHTML;
+*LinkTagMapOldPrintWikiToHTML = \&PrintWikiToHTML;
+*PrintWikiToHTML = \&LinkTagMapPrintWikiToHTML;
 
 sub LinkTagMapPrintWikiToHTML {
 
