@@ -56,13 +56,13 @@ sub NewPartialPrintAllPages {
 
 sub NewPartialPrintJournal {
   # We redefine PrintAllPages temporarily
-  *OldPartialPrintAllPages = *PrintAllPages;
-  *PrintAllPages = *NewPartialPrintAllPages;
+  *OldPartialPrintAllPages = \&PrintAllPages;
+  *PrintAllPages = \&NewPartialPrintAllPages;
 
   # Then we call the PrintJournal
   my $out = OldPartialPrintJournal(@_);
 
   # Then we put PrintAllPages back!
-  *PrintAllPages = *OldPartialPrintAllPages;
+  *PrintAllPages = \&OldPartialPrintAllPages;
   return $out;
 }

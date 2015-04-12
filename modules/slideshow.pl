@@ -69,8 +69,8 @@ sub DoSlideShow {
 	IndexSlideShow($id);
 
 	push(@MyRules, \&SlideShowRule);
-	*OldPrintWikiToHTML = *PrintWikiToHTML;
-	*PrintWikiToHTML = *PrintSlideWikiToHTML;
+	*OldPrintWikiToHTML = \&PrintWikiToHTML;
+	*PrintWikiToHTML = \&PrintSlideWikiToHTML;
 	$IgnoreForTOC = 1;
 
 	OpenPage($id);

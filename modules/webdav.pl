@@ -158,9 +158,9 @@ sub put {
   local *OddMuse::ReBrowsePage;
   OddMuse::AllPagesList();
   if ($OddMuse::IndexHash{$id}) {
-    *OddMuse::ReBrowsePage = *no_content; # modified existing page
+    *OddMuse::ReBrowsePage = \&no_content; # modified existing page
   } else {
-    *OddMuse::ReBrowsePage = *created; # created new page
+    *OddMuse::ReBrowsePage = \&created; # created new page
   }
   OddMuse::DoPost($id); # do the real posting
 }

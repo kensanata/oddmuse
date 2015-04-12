@@ -29,8 +29,8 @@ sub AdSenseInit {
   if ($AdSensePlace eq 'bottom') {  # Process adsense after all modules have been loaded
     push (@MyFooters, \&GetAdSense);
   } elsif ($AdSensePlace eq 'top')  {
-   *AdSenseOldGetHtmlHeader = *GetHtmlHeader;
-   *GetHtmlHeader = *AdSenseNewGetHtmlHeader;
+   *AdSenseOldGetHtmlHeader = \&GetHtmlHeader;
+   *GetHtmlHeader = \&AdSenseNewGetHtmlHeader;
   }
 }
 
