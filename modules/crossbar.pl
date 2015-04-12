@@ -112,15 +112,15 @@ sub CrossbarInit {
   # If pulling the crossbar div outside the content div, we redefine the
   # default PrintPageContent() function to do this.
   if ($CrossbarDivIsOutsideContentDiv) {
-    *PrintPageContentCrossbarOld = *PrintPageContent;
-    *PrintPageContent            = *PrintPageContentCrossbar;
+    *PrintPageContentCrossbarOld = \&PrintPageContent;
+    *PrintPageContent            = \&PrintPageContentCrossbar;
   }
 
   # If this user is an authenticated administrator, forcefully clear the page
   # cache whenever saving the crossbar page.
   if (UserIsAdmin()) {
-    *SaveCrossbarOld = *Save;
-    *Save            = *SaveCrossbar;
+    *SaveCrossbarOld = \&Save;
+    *Save            = \&SaveCrossbar;
   }
 
   # If the Table of Contents module is also installed, we must prevent handling
@@ -132,8 +132,8 @@ sub CrossbarInit {
   # headers would add those headers to the Table of Contents for //every// page.
   # (Trust us on this one...)
   if (defined &RunMyRulesToc) {
-    *RunMyRulesCrossbarOld = *RunMyRules;
-    *RunMyRules            = *RunMyRulesCrossbar;
+    *RunMyRulesCrossbarOld = \&RunMyRules;
+    *RunMyRules            = \&RunMyRulesCrossbar;
   }
 }
 
@@ -263,17 +263,17 @@ sub SaveCrossbar {
     # Prevent the RequestLockOrError() and ReleaseLock() functions from doing
     # anything while in the DoClearCache() method, since the default Save()
     # function already obtains the lock. (We can't obtain it twice!)
-    *RequestLockOrErrorCrossbarOld = *RequestLockOrError;
-    *RequestLockOrError            = *RequestLockOrErrorCrossbarNoop;
-    *ReleaseLockCrossbarOld = *ReleaseLock;
-    *ReleaseLock            = *ReleaseLockCrossbarNoop;
+    *RequestLockOrErrorCrossbarOld = \&RequestLockOrError;
+    *RequestLockOrError            = \&RequestLockOrErrorCrossbarNoop;
+    *ReleaseLockCrossbarOld = \&ReleaseLock;
+    *ReleaseLock            = \&ReleaseLockCrossbarNoop;
 
     # Clear the page cache, now. Go! (Note: this prints a heap of HTML.)
     DoClearCache();
 
     # Restore locking functionality.
-    *RequestLockOrError = *RequestLockOrErrorCrossbarOld;
-    *ReleaseLock =        *ReleaseLockCrossbarOld;
+    *RequestLockOrError = \&RequestLockOrErrorCrossbarOld;
+    *ReleaseLock =        \&ReleaseLockCrossbarOld;
   }
 }
 

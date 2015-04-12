@@ -137,7 +137,7 @@ sub AutoLockInit {
   }
 
   if ($AutoLockUserCanEditEditorFix) {
-    *UserCanEditAutoLockOld = *UserCanEditAutoLockFix;
+    *UserCanEditAutoLockOld = \&UserCanEditAutoLockFix;
   }
 }
 

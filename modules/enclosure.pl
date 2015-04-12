@@ -40,16 +40,16 @@ sub EnclosureRule {
   return;
 }
 
-* OldEnclosurePrintWikiToHTML = *PrintWikiToHTML;
-* PrintWikiToHTML = *NewEnclosurePrintWikiToHTML;
+*OldEnclosurePrintWikiToHTML = \&PrintWikiToHTML;
+*PrintWikiToHTML = \&NewEnclosurePrintWikiToHTML;
 
 sub NewEnclosurePrintWikiToHTML {
   $Page{enclosures} = '';
   return OldEnclosurePrintWikiToHTML(@_);
 }
 
-* OldEnclosureRssItem = *RssItem;
-* RssItem = *NewEnclosureRssItem;
+*OldEnclosureRssItem = \&RssItem;
+*RssItem = \&NewEnclosureRssItem;
 
 sub NewEnclosureRssItem {
   my $id = shift;
