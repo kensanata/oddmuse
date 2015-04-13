@@ -53,7 +53,7 @@ negative_xpath_test($page,
 
 # uninstall sidebar.pl
 remove_module('sidebar.pl');
-*GetHeader = *OldSideBarGetHeader;
+*GetHeader = \&OldSideBarGetHeader;
 
 # ....................{ TESTS =toc                         }....................
 add_module('toc.pl');

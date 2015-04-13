@@ -61,10 +61,10 @@ sub StaticMimeTypes {
 sub StaticWriteFiles {
   my $raw = GetParam('raw', 0);
   my $html = GetParam('html', 0);
-  local *ScriptLink = *StaticScriptLink;
-  local *GetDownloadLink = *StaticGetDownloadLink;
+  local *ScriptLink = \&StaticScriptLink;
+  local *GetDownloadLink = \&StaticGetDownloadLink;
   # get rid of subscribe link in the footer by mail.pl
-  local *GetCommentForm = *MailOldGetCommentForm if defined &MailNewGetCommentForm;
+  local *GetCommentForm = \&MailOldGetCommentForm if defined &MailNewGetCommentForm;
   foreach my $id (AllPagesList()) {
     if ($StaticAlways > 1
 	or $html

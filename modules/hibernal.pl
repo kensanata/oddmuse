@@ -373,8 +373,8 @@ sub HibernalInit {
   # correctly piggyback our redefinition of the GetHeader() function on the
   # back of the SmartTitles refefinition, we forceably reassign that typeglob
   # here, rather than outside a function definition as we'd commonly do.
-  *GetHibernalHeaderOld = *GetHeader;
-  *GetHeader            = *GetHibernalHeader;
+  *GetHibernalHeaderOld = \&GetHeader;
+  *GetHeader            = \&GetHibernalHeader;
 
   # Provide default values for comments authorship markup, depending on which
   # other markup modules - if any - are installed.
