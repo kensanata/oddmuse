@@ -104,7 +104,7 @@ sub PlainSiteRcHtml {
 	if (!(UserIsAdmin() or UserIsEditor())) {
 		return;
 	} else {
-		*GetRcHtml = *OldGetRcHtml;
+		*GetRcHtml = \&OldGetRcHtml;
 		return OldGetRcHtml();
 	}
 }

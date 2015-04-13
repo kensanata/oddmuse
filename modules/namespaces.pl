@@ -347,8 +347,8 @@ running. This is important so that author links are printed.
 *GetAuthorLink = \&NewNamespaceGetAuthorLink;
 
 sub NewNamespaceGetAuthorLink {
-  local *OldNamespaceValidId = *ValidId;
-  local *ValidId = *NewNamespaceValidId;
+  local *OldNamespaceValidId = \&ValidId;
+  local *ValidId = \&NewNamespaceValidId;
   # local $NamespaceSlashing = 1;
   return OldNamespaceGetAuthorLink(@_);
 }

@@ -55,7 +55,7 @@ sub DoStatic {
 	%StaticFiles = ();
 	my $id = GetParam('id', '');
 	if ($id) {
-		local *GetDownloadLink = *StaticGetDownloadLink;
+		local *GetDownloadLink = \&StaticGetDownloadLink;
 		StaticWriteFile($id);
 	} else {
 		StaticWriteFiles();
@@ -80,7 +80,7 @@ sub StaticMimeTypes {
 
 sub StaticWriteFiles {
 	my $raw = GetParam('raw', 0);
-	local *GetDownloadLink = *StaticGetDownloadLink;
+	local *GetDownloadLink = \&StaticGetDownloadLink;
 	foreach my $id (AllPagesList()) {
 		SetParam('rcclusteronly',0);
 		if (! grep(/^$id$/,@StaticIgnoredPages)) {
@@ -162,9 +162,9 @@ sub StaticHtml {
 	my $title = $id;
 	$title =~ s/_/ /g;
 	my $result = '';
-	
-	local *GetHttpHeader = *StaticGetHttpHeader;
-	local *GetCommentForm = *StaticGetCommentForm;
+
+	local *GetHttpHeader = \&StaticGetHttpHeader;
+	local *GetCommentForm = \&StaticGetCommentForm;
 	%NearLinksUsed = ();
 
 	# Isolate our output
@@ -346,7 +346,7 @@ sub AddLinkedFilesToQueue {
 sub StaticWriteLinkedFiles {
 	my $raw = GetParam('raw', 0);
 	my $writeRC = 0;
-	local *GetDownloadLink = *StaticGetDownloadLink;
+	local *GetDownloadLink = \&StaticGetDownloadLink;
 
 	foreach my $id (@StaticQueue) {
 		if (! grep(/^$id$/,@StaticIgnoredPages)) {

@@ -28,7 +28,7 @@ sub DoJournalRss {
   return if $CollectingJournal; # avoid infinite loops
   local $CollectingJournal = 1;
   # Fake the result of GetRcLines()
-  local *GetRcLines = *JournalRssGetRcLines;
+  local *GetRcLines = \&JournalRssGetRcLines;
   print GetHttpHeader('application/xml') . GetRcRss();
 }
 
