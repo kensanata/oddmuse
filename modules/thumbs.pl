@@ -96,7 +96,7 @@ sub ThumbNailSupportRule {
       AllPagesList();
 
       # if the page does exists
-   
+
       if ($IndexHash{$id})
       {
 
@@ -106,11 +106,11 @@ sub ThumbNailSupportRule {
                    GenerateThumbNail ($id, $size);
            }
 
-   
+
          my %img_attribs;
 
           my $action = "$ThumbnailCacheUrl/" . UrlEncode($id) . "/$size";
-         
+  
          $img_attribs{'-src'} = $action;
 
          if (defined $comment)  {
@@ -127,7 +127,7 @@ sub ThumbNailSupportRule {
 
          if (defined $frame) {
               if (defined $comment)  { $result = $result . $q->div({-class=>'thumbcaption'}, "$comment"); }
-             
+      
               if ($size>0) {
                    $result = $q->div({-style=>"width:" .  ($size+2) . "px"}, $result);
                    $result = $q->div({-class=>"thumb " .  $alignment_framed}, $result);
@@ -150,12 +150,12 @@ sub ThumbNailSupportRule {
     {
            Dirty($RawMatch);
            print $result;
-         
+  
            $result = '';
      }
 
     return $result;
-   
+
 }
 
 
@@ -175,14 +175,14 @@ sub GenerateThumbNail {
    ValidIdOrDie($id);
 
     AllPagesList();
-   
+
      if (not $IndexHash{$id}) { ReportError(Ts('Error creating thumbnail from non existant page %s.' , $id), '500 INTERNAL SERVER ERROR'); }   # Page Doesn't exist,
 
 
      my $openpage = $OpenPageName;       # remember  the current page we are on
 
 
-    RequestLockOrError(); 
+    RequestLockOrError();
     OpenPage($id);
 
      # Parse out some data
@@ -211,7 +211,7 @@ sub GenerateThumbNail {
 
      # Decode the original image to a temp file
 
-     open(FD, "> $filename") or ReportError(Ts("Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.",$filename), '500 INTERNAL SERVER ERROR'); 
+     open(FD, "> $filename") or ReportError(Ts("Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.",$filename), '500 INTERNAL SERVER ERROR');
      binmode(FD);
      print FD MIME::Base64::decode($data);
      close(FD);
@@ -253,7 +253,7 @@ sub GenerateThumbNail {
         # save tag to page
         #$Page{'thumbnail_' . $size} = '#FILE ' . $type . ' created=' . $Now . ' revision=' . $Page{'revision'} . ' size=' . $scaled_size_x . 'x' . $scaled_size_y . "\n" . $thumbnail_data;
         #SavePage();
-       
+
         ReleaseLock();
 
         OpenPage($openpage);      # restore original open page
