@@ -67,9 +67,9 @@ sub DoTagSearch {
     print GetHeader('',$header,'');  # print title
 
     print '<div class="content">';
-   
+
     my $SearchResult = GenerateSearchResult($searchedtag);
-   
+
     print $SearchResult;
     print '</div>';
     PrintFooter();
@@ -77,14 +77,14 @@ sub DoTagSearch {
 }
 
 sub GenerateSearchResult {
-   
+
     my $searchedtag = shift @_;
-   
+
     my @pages = AllPagesList();
-   
+
     local %Page;
     local $OpenPageName='';
-   
+
     my $SearchResult .= "<ul>";
 
     foreach my $page (@pages) {
@@ -130,11 +130,11 @@ sub CreateTagMap {
 		OpenPage($page);
 		my @tags = GetTags($Page{text});
 		$page = FreeToNormal($page);
-	
+
 		my $count = @tags;
 		if ($count != 0) {
 			$TagXML .= "<object><id>$page</id>\n";
-				
+
 			foreach (@tags) {
 				$TagXML .= "<tag>$_</tag>";
 				$TagList{$_} = 1;
@@ -158,7 +158,7 @@ sub PrintTagMap {
 		<tag[ ]title="(.*?)">
 	}{
 		my $tag = $1;
-	
+
 		"<li>$tag</li>\n<ul>";
 	}xsge;
 
@@ -171,7 +171,7 @@ sub PrintTagMap {
 		$name =~ s/_/ /g;
 		"<li><a href=\"$ScriptName\/$id\">$name</a></li>";
 	}xsge;
-	print $result;	
+	print $result;
 }
 
 sub GetTags {
