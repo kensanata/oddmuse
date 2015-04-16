@@ -237,7 +237,7 @@ sub draw_month {
 }
 
 # formula of Zeller (Julius Christian Johannes Zeller * 1822, + 1899) for countig the day of week
-# only works for all years greater then 0 and can handle 1582 the year Pope Gregor has changed the 
+# only works for all years greater then 0 and can handle 1582 the year Pope Gregor has changed the
 # calculation of times from the Julian calendar to the Gregorian calendar
 sub zeller {
     my $t = shift;

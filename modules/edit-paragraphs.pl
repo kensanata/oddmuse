@@ -51,7 +51,7 @@ sub DoEditParagraph {
     } else {
       $text = $Page{text};
     }
-    
+   
     my $done;
     if ($around) {
       # The tricky part is that the numbers refer to the HTML quoted text. What a pain.
@@ -189,7 +189,7 @@ sub EditParagraph {
     # <table><tr><td>...</td></tr></table><p><a ...>&#x270E;</a></p>
     # What we want, I guess, is this:
     # <table><tr><td>...<a ...>&#x270E;</a></td></tr></table></p>
-    
+   
     $pos = $pos || length(QuoteHtml($Page{text})); # make sure we have an around value
     my $title = UrlEncode($OpenPageName);
     my $paragraph = UrlEncode(UnquoteHtml($text));

@@ -195,7 +195,7 @@ sub MakeLaTeX {
 	$output = qx($dvipngPath -T tight -bg Transparent srender.dvi);
 	$error = "[dvipng error $? ($output)]" if $?;
       }
-      
+     
       if (not $error and -f 'srender1.png' and not -z 'srender1.png') {
 	my $png = ReadFileOrDie("srender1.png");
 	WriteStringToFile ("$LatexDir/$hash.png", $png);
