@@ -181,7 +181,7 @@ sub PrintLinkTagMap {
         <tag[ ]title="(.*?)">
     }{
         my $tag = $1;
-        
+
         "<li id=\"$tag\">$tag</li>\n<ul>";
     }xsge;
 
