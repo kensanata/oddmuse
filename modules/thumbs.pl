@@ -110,7 +110,7 @@ sub ThumbNailSupportRule {
          my %img_attribs;
 
           my $action = "$ThumbnailCacheUrl/" . UrlEncode($id) . "/$size";
-  
+
          $img_attribs{'-src'} = $action;
 
          if (defined $comment)  {
@@ -127,7 +127,7 @@ sub ThumbNailSupportRule {
 
          if (defined $frame) {
               if (defined $comment)  { $result = $result . $q->div({-class=>'thumbcaption'}, "$comment"); }
-      
+
               if ($size>0) {
                    $result = $q->div({-style=>"width:" .  ($size+2) . "px"}, $result);
                    $result = $q->div({-class=>"thumb " .  $alignment_framed}, $result);
@@ -150,7 +150,7 @@ sub ThumbNailSupportRule {
     {
            Dirty($RawMatch);
            print $result;
-  
+
            $result = '';
      }
 
