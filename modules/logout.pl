@@ -113,7 +113,7 @@ has several unnerving effects:
 =cut
 sub DoLogout {
   my $id = shift;
- 
+
   SetParam('username', $CookieParameters{username});
   SetParam('pwd', $CookieParameters{pwd});
 
@@ -256,7 +256,7 @@ logout retains this (admittedly loose) concept of a "user."
 logout is "little brother" to the login module - from which it was inspired and
 for which it's partly named, in antiparallel.
 
-logout only implements a slim subset of functionality implemented by the login 
+logout only implements a slim subset of functionality implemented by the login
 module. For a full-bodied, fully configurable alternative to Oddmuse security,
 please use that module instead.
 
