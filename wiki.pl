@@ -2767,7 +2767,7 @@ sub SaveKeepFile {
   delete $Page{'diff-minor'};
   $Page{'keep-ts'} = $Now;  # expire only $KeepDays from $Now!
   CreateDir($KeepDir);
-  CreateDir("$KeepDir/$OpenPageName");
+  CreateDir(GetKeepDir($OpenPageName));
   WriteStringToFile(GetKeepFile($OpenPageName, $Page{revision}), EncodePage(%Page));
 }
 
