@@ -2735,7 +2735,7 @@ sub GetPageFile {
 
 sub GetKeepFile {
   my ($id, $revision) = @_; die "No revision for $id" unless $revision; #FIXME
-  return "$KeepDir/$id/$revision.kp";
+  return GetKeepDir($id) . "/$revision.kp";
 }
 
 sub GetKeepDir {
