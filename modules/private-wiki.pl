@@ -25,9 +25,6 @@ AddModuleDescription('private-wiki.pl', 'Private Wiki Extension');
 
 our ($q, $TempDir, $KeepDir);
 
-# Use this to generate it: head -c 32 /dev/random | base64
-my $Key = 'qczvOy5h6iHzbpZNq0OHYzXJpF+R0ukLqkrCri2T3tw=';
-
 my ($cipher, $random);
 my $PrivateWikiInitialized = '';
 
