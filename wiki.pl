@@ -3271,15 +3271,27 @@ sub AllPagesList {
   my $refresh = GetParam('refresh', 0);
   return @IndexList if @IndexList and not $refresh;
   SetParam('refresh', 0) if $refresh;
-  if (not $refresh and -f $IndexFile) {
-    my ($status, $rawIndex) = ReadFile($IndexFile); # not fatal
-    if ($status) {
-      @IndexList = split(/ /, $rawIndex);
-      %IndexHash = map {$_ => 1} @IndexList;
-      return @IndexList;
-    }
-    # If open fails just refresh the index
+  return @IndexList if not $refresh and -f $IndexFile and ReadIndex();
+  # If open fails just refresh the index
+  RefreshIndex();
+  return @IndexList;
+}
+
+sub ReadIndex {
+  my ($status, $rawIndex) = ReadFile($IndexFile); # not fatal
+  if ($status) {
+    @IndexList = split(/ /, $rawIndex);
+    %IndexHash = map {$_ => 1} @IndexList;
+    return @IndexList;
   }
+  return;
+}
+
+sub WriteIndex {
+  WriteStringToFile($IndexFile, join(' ', @IndexList));
+}
+
+sub RefreshIndex {
   @IndexList = ();
   %IndexHash = ();
   # If file exists and cannot be changed, error!
@@ -3291,9 +3303,15 @@ sub AllPagesList {
     push(@IndexList, $id);
     $IndexHash{$id} = 1;
   }
-  WriteStringToFile($IndexFile, join(' ', @IndexList)) if $locked;
+  WriteIndex() if $locked;
   ReleaseLockDir('index') if $locked;
-  return @IndexList;
+}
+
+sub AddToIndex {
+  my ($id) = @_;
+  $IndexHash{$id} = 1;
+  @IndexList = sort(keys %IndexHash);
+  WriteIndex();
 }
 
 sub DoSearch {
@@ -3692,11 +3710,7 @@ sub Save {      # call within lock, with opened page
     WriteStringToFile(GetLockedPageFile($id), 'LockOnCreation');
   }
   WriteRcLog($id, $summary, $minor, $revision, $user, $host, $languages, GetCluster($new));
-  if ($revision == 1) {
-    $IndexHash{$id} = 1;
-    @IndexList = sort(keys %IndexHash);
-    WriteStringToFile($IndexFile, join(' ', @IndexList));
-  }
+  AddToIndex($id) if ($revision == 1)
 }
 
 sub TouchIndexFile {
