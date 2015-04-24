@@ -268,7 +268,6 @@ sub remove_rule {
 sub add_module {
   my ($mod, $subdir) = @_;
   $subdir .= '/' if $subdir and substr($subdir, -1) ne '/';
-  my $filename = 
   mkdir $ModuleDir unless -d $ModuleDir;
   my $dir = `/bin/pwd`;
   chop($dir);
