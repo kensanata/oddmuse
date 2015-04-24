@@ -52,7 +52,7 @@ $CommentsPrefix, $CommentsPattern, @UploadTypes, $AllNetworkFiles, $UsePathInfo,
 %PlainTextPages, $RssInterwikiTranslate, $UseCache, $Counter, $ModuleDir, $FullUrlPattern, $SummaryDefaultLength,
 $FreeInterLinkPattern, %InvisibleCookieParameters, %AdminPages, $UseQuestionmark, $JournalLimit, $LockExpiration, $RssStrip,
 %LockExpires, @IndexOptions, @Debugging, $DocumentHeader, %HtmlEnvironmentContainers, @MyAdminCode, @MyFooters,
-@MyInitVariables, @MyMacros, @MyMaintenance, @MyRules);
+@MyInitVariables, @MyMacros, @MyMaintenance, @MyRules, $PageNameLimit);
 
 # Internal variables:
 our (%Page, %InterSite, %IndexHash, %Translate, %OldCookie, $FootnoteNumber, $OpenPageName, @IndexList, $Message, $q, $Now,
@@ -155,6 +155,7 @@ $HtmlHeaders      = '';        	# Additional stuff to put in the HTML <head> sec
 $IndentLimit      = 20;        	# Maximum depth of nested lists
 $LanguageLimit     = 3;        	# Number of matches req. for each language
 $JournalLimit    = 200;        	# how many pages can be collected in one go?
+$PageNameLimit   = 120;        	# max length of page name in bytes
 $DocumentHeader = qq(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN")
   . qq( "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n)
   . qq(<html xmlns="http://www.w3.org/1999/xhtml">);
@@ -1342,7 +1343,8 @@ sub DoBrowseRequest {
 sub ValidId { # hack alert: returns error message if invalid, and unfortunately the empty string if valid!
   my $id = FreeToNormal(shift);
   return T('Page name is missing') unless $id;
-  return Ts('Page name is too long: %s', $id) if length($id) > 120;
+  require bytes;
+  return Ts('Page name is too long: %s', $id) if bytes::length($id) > $PageNameLimit;
   return Ts('Invalid Page %s (must not end with .db)', $id) if $id =~ m|\.db$|;
   return Ts('Invalid Page %s (must not end with .lck)', $id) if $id =~ m|\.lck$|;
   return Ts('Invalid Page %s', $id) if $FreeLinks ? $id !~ m|^$FreeLinkPattern$| : $id !~ m|^$LinkPattern$|;
