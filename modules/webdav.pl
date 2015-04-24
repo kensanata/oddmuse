@@ -46,6 +46,7 @@ package OddMuse::DAV;
 
 use strict;
 use warnings;
+no warnings 'once'; # TODO Name "OddMuse::Var" used only once: possible typo ... ?
 use HTTP::Date qw(time2str time2isoz);
 use XML::LibXML;
 use Digest::MD5 qw(md5_base64);

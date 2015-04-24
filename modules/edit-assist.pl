@@ -68,7 +68,7 @@ function mwInsertEditButton(parent, item) {
 		insertTags(item.tagOpen, item.tagClose, item.sampleText);
 		return false;
 	};
-	
+
 	parent.appendChild(image);
 	return true;
 }
@@ -86,13 +86,13 @@ function mwSetupToolbar() {
 
 	var textbox = document.getElementById('text');
 	if (!textbox) { return false; }
-	
+
 	// Don't generate buttons for browsers which don't fully
 	// support it.
 	if (!document.selection && textbox.selectionStart === null) {
 		return false;
 	}
-	
+
 	for (var i in mwEditButtons) {
 		mwInsertEditButton(toolbar, mwEditButtons[i]);
 	}
@@ -173,7 +173,7 @@ function insertTags(tagOpen, tagClose, sampleText) {
 	}
 }
 
- 
+
 addButton('/images/button_bold.png','Bold text','**','**','Bold text');
 addButton('/images/button_italic.png','Italic text','//','//','Italic text');
 
@@ -181,7 +181,7 @@ addButton('/images/button_link.png','Internal link','[[',']]','Link title');
 addButton('/images/button_extlink.png','External link (remember http:// prefix)','[',']','http://www.example.com link title');
 
 addButton('/images/button_headline.png','Level 2 headline','\\n== ',' ==\\n','Headline text');
- 
+
 addButton('/images/button_image.png','Embedded image','[[image:',']]','Example.jpg');
 
 addButton('/images/button_nowiki.png','Ignore wiki formatting','{{{','}}}','Insert non-formatted text here');
