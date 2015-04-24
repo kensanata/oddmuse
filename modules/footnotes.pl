@@ -179,7 +179,7 @@ C<$FootnoteNumber> is the number for another footnote. This module assigns each
 footnote definition a unique number, beginning at "1". Thus, this markup allows
 you to reference one footnote definition in multiple places throughout a page.
 As example, you might write:
-    
+
   History suggests that societal decline does not result from a single cause,
   but rather the confluence of several interwoven causes.((Diamond, Jared. 2005.
   **Collapse: How Societies Choose to Fail or Succeed.** %%Viking, New York.%%))
@@ -193,7 +193,7 @@ As example, you might write:
 
 The final footnote, above, is a reference to the first footnote definition
 rather than a new footnote definition.
-  
+
 =head3 REFERENCING A RANGE OF OTHER FOOTNOTES
 
 footnotes also handles marking resembling:
@@ -222,7 +222,7 @@ definitions in multiple places throughout a page. As example, you might write:
 The final footnotes, above, are a reference to the first two footnote
 definitions followed by a reference to the fourth footnote definition. This
 module visually renders this disjoint list like: "1-2, 4".
-  
+
 =head3 CREATING THE SET OF FOOTNOTES
 
 footnotes also handles markup resembling:

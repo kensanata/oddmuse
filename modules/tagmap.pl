@@ -67,9 +67,9 @@ sub DoTagSearch {
     print GetHeader('',$header,'');  # print title
 
     print '<div class="content">';
-    
+
     my $SearchResult = GenerateSearchResult($searchedtag);
-    
+
     print $SearchResult;
     print '</div>';
     PrintFooter();
@@ -77,14 +77,14 @@ sub DoTagSearch {
 }
 
 sub GenerateSearchResult {
-    
+
     my $searchedtag = shift @_;
-    
+
     my @pages = AllPagesList();
-    
+
     local %Page;
     local $OpenPageName='';
-    
+
     my $SearchResult .= "<ul>";
 
     foreach my $page (@pages) {
@@ -104,37 +104,37 @@ sub GenerateSearchResult {
 }
 
 sub DoTagMap {
-	
+
 	print GetHeader('',$TagMapPage,'');
-	
+
 	CreateTagMap();
-	
+
 	print '<div class="content">';
 
 	PrintTagMap();
-	
+
 	print '</div>';
-	
+
 	PrintFooter();
 }
 
 
 sub CreateTagMap {
 	my @pages = AllPagesList();
-	
+
 	local %Page;
 	local $OpenPageName='';
 	$TagXML .= "<taglist>\n";
-	
+
 	foreach my $page (@pages) {
 		OpenPage($page);
 		my @tags = GetTags($Page{text});
 		$page = FreeToNormal($page);
-		
+
 		my $count = @tags;
 		if ($count != 0) {
 			$TagXML .= "<object><id>$page</id>\n";
-					
+
 			foreach (@tags) {
 				$TagXML .= "<tag>$_</tag>";
 				$TagList{$_} = 1;
@@ -142,9 +142,9 @@ sub CreateTagMap {
 			$TagXML .= "\n</object>\n";
 		}
 	}
-	
+
 	$TagXML .= "</taglist>\n";
-	
+
 }
 
 sub PrintTagMap {
@@ -153,15 +153,15 @@ sub PrintTagMap {
 	my $result = TagCategorizer::ProcessXML($TagXML);
 	$result =~ s/\<tagHierarchy\>/<ul>/;
 	$result =~ s/\<\/tagHierarchy\>/<\/ul>/;
-	
+
 	$result =~ s{
 		<tag[ ]title="(.*?)">
 	}{
 		my $tag = $1;
-		
+
 		"<li>$tag</li>\n<ul>";
 	}xsge;
-	
+
 	$result =~ s/\<\/tag\>/<\/ul>/g;
 	$result =~ s{
 		<object>(.*?)</object>
@@ -171,7 +171,7 @@ sub PrintTagMap {
 		$name =~ s/_/ /g;
 		"<li><a href=\"$ScriptName\/$id\">$name</a></li>";
 	}xsge;
-	print $result;		
+	print $result;
 }
 
 sub GetTags {
@@ -186,7 +186,7 @@ sub GetTags {
 	} else {
 		return;
 	}
-	
+
 	return @tags;
 }
 

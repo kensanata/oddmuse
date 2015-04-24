@@ -165,7 +165,7 @@ sub UsemodRule {
     return UnquoteHtml($1);
   }
   # miscellaneous html tags
-  elsif (m/\G\&lt;($UsemodHtmlRegExp)(\s+[^<>]*?)?\&gt;/cogi) { 
+  elsif (m/\G\&lt;($UsemodHtmlRegExp)(\s+[^<>]*?)?\&gt;/cogi) {
     return AddHtmlEnvironment($1, $2); }
   elsif (m/\G\&lt;\/($UsemodHtmlRegExp)\&gt;/cogi) {
     return CloseHtmlEnvironment($1); }

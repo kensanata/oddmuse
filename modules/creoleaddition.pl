@@ -114,9 +114,9 @@ sub CreoleAdditionRule {
   elsif ($CreoleAdditionDefList && $bol && m/\G\s*\;[ \t]*(?=(.+(\n)(\s)*\:))/cg
     or InElement('dd') && m/\G\s*\n(\s)*\;[ \t]*(?=(.+\n(\s)*\:))/cg) {
         return CloseHtmlEnvironmentUntil('dd') . OpenHtmlEnvironment('dl', 1)
-        . AddHtmlEnvironment('dt'); }# `:' needs special treatment, later 
+        . AddHtmlEnvironment('dt'); }# `:' needs special treatment, later
     elsif (InElement('dt') and m/\G\s*\n(\s)*\:[ \t]*(?=(.+(\n)(\s)*\:)*)/cg) {
-        return CloseHtmlEnvironment() . AddHtmlEnvironment('dd');} 
+        return CloseHtmlEnvironment() . AddHtmlEnvironment('dd');}
     elsif (InElement('dd') and m/\G\s*\n(\s)*\:[ \t]*(?=(.+(\n)(\s)*\:)*)/cg) {
     return  CloseHtmlEnvironment() . AddHtmlEnvironment('dd');}
   # """block quotes"""
