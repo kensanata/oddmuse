@@ -154,7 +154,7 @@ span.bar a:first-child {
 
 span.bar a {
     padding-right: 0.5ex;
-    padding-left: -0.5ex;
+    padding-left: 0.5ex;
 }
 
 .rc .author {
