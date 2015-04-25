@@ -150,8 +150,14 @@ div.left .left, div.right .right {
 span.author {
     color: #501;
 }
+
+span.bar a:first-child {
+    margin-left:-0.5ex;
+}
+
 span.bar a {
-	padding-right:1ex;
+    padding-right:0.5ex;
+    padding-left:-0.5ex;
 }
 
 .rc .author {
