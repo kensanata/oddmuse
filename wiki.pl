@@ -3112,7 +3112,7 @@ sub DoPassword {
     }
     print GetFormStart(undef, undef, 'password'),
       $q->p(GetHiddenValue('action', 'password'), T('Password:'), ' ',
-	    $q->password_field(-name=>'pwd', -size=>20, -maxlength=>50),
+	    $q->password_field(-name=>'pwd', -size=>20, -maxlength=>64),
 	    $q->hidden(-name=>'id', -value=>$id),
 	    $q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save'))),
       $q->end_form;
