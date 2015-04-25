@@ -2209,7 +2209,6 @@ sub GetRCLink {
 sub GetHeader {
   my ($id, $title, $oldId, $nocache, $status) = @_;
   my $embed = GetParam('embed', $EmbedWiki);
-  my $alt = T('[Home]');
   my $result = GetHttpHeader('text/html', $nocache, $status);
   if ($oldId) {
     $Message .= $q->p('(' . Ts('redirected from %s', GetEditLink($oldId, $oldId)) . ')');
@@ -2219,10 +2218,16 @@ sub GetHeader {
     $result .= $q->div({-class=>'header'}, $q->div({-class=>'message'}, $Message)) if $Message;
     return $result;
   }
-  $result .= $q->start_div({-class=>'header'});
+  $result .= GetHeaderDiv($id, $title, $oldId, $embed);
+  return $result . $q->start_div({-class=>'wrapper'});
+}
+
+sub GetHeaderDiv {
+  my ($id, $title, $oldId, $embed) = @_;
+  my $result .= $q->start_div({-class=>'header'});
   if (not $embed and $LogoUrl) {
     my $url = $IndexHash{$LogoUrl} ? GetDownloadLink($LogoUrl, 2) : $LogoUrl;
-    $result .= ScriptLink(UrlEncode($HomePage), $q->img({-src=>$url, -alt=>$alt, -class=>'logo'}), 'logo');
+    $result .= ScriptLink(UrlEncode($HomePage), $q->img({-src=>$url, -alt=>T('[Home]'), -class=>'logo'}), 'logo');
   }
   $result .= $q->start_div({-class=>'menu'});
   if (GetParam('toplinkbar', $TopLinkBar) != 2) {
@@ -2239,7 +2244,8 @@ sub GetHeader {
   $result .= $q->end_div();
   $result .= $q->div({-class=>'message'}, $Message) if $Message;
   $result .= GetHeaderTitle($id, $title, $oldId);
-  return $result . $q->end_div() . $q->start_div({-class=>'wrapper'});
+  $result .= $q->end_div();
+  return $result;
 }
 
 sub GetHeaderTitle {
