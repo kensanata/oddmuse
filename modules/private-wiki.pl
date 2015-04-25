@@ -18,12 +18,10 @@ use v5.10;
 
 use Crypt::Rijndael;
 use Crypt::Random::Seed;
-use Digest::SHA qw(sha256_hex);
-use MIME::Base64;
 
 AddModuleDescription('private-wiki.pl', 'Private Wiki Extension');
 
-our ($q, $TempDir, $KeepDir);
+our ($q, $FS, @IndexList, %IndexHash, $IndexFile, $TempDir, $KeepDir);
 
 my ($cipher, $random);
 my $PrivateWikiInitialized = '';
@@ -33,7 +31,9 @@ sub PrivateWikiInit {
   $PrivateWikiInitialized = 1;
   if (UserIsEditor()) {
     # keysize() is 32, but 24 and 16 are also possible, blocksize() is 16
-    $cipher = Crypt::Rijndael->new(decode_base64(GetParam('pwd')), Crypt::Rijndael::MODE_CBC());
+    my $pass = GetParam('pwd');
+    $cipher = Crypt::Rijndael->new(pack "H*", GetParam('pwd'), Crypt::Rijndael::MODE_CBC());
+    # TODO print error if the password Is not in hex?
 
     # We are using /dev/urandom (or other nonblocking source) because we don't want
     # to make our users wait for a couple of minutes until we get our numbers...
@@ -42,9 +42,11 @@ sub PrivateWikiInit {
 }
 
 sub PadTo16Bytes { # use this only on UTF-X strings (after utf8::encode)
-  my $endBytes = length($_[0]) % 16;
-  return $_[0] if $endBytes == 0;
-  return $_[0] . "\0" x (16 - $endBytes);
+  my ($data, $minLength) = @_;
+  my $endBytes = length($data) % 16;
+  $data .= "\0" x (16 - $endBytes) if $endBytes != 0;
+  $data .= "\0" x ($minLength - length $data) if $minLength;
+  return $data;
 }
 
 my $errorMessage = T('This error should not happen. If your password is set correctly and you are still'
@@ -65,6 +67,7 @@ sub NewPrivateWikiReadFile {
     local $/ = undef; # Read complete files
     my $data = <IN>;
     close IN;
+    return (1, '') unless $data;
     $cipher->set_iv(substr $data, 0, 16);
     $data = $cipher->decrypt(substr $data, 16);
     my $copy = $data; # copying is required, see https://github.com/briandfoy/crypt-rijndael/issues/5
@@ -99,20 +102,86 @@ sub AppendStringToFile {
   WriteStringToFile($file, ReadFile($file) . $string); # This should be happening under a lock
 }
 
-# We do not want to store page names in plaintext, let's hash them!
-# Therefore we will rely on the pageidx file. If you loose it, you won't be
-# able to restore page names.
+# We do not want to store page names in plaintext, let's encrypt them!
+# Therefore we will rely on the pageidx file.
+
+#*OldPrivateWikiRefreshIndex = \&RefreshIndex;
+*RefreshIndex = \&NewPrivateWikiRefreshIndex;
+
+sub NewPrivateWikiRefreshIndex {
+  if (not -f $IndexFile) { # Index file does not exist yet, this is a new wiki
+    my $fh;
+    open($fh, '>', $IndexFile) or die "Unable to open file $IndexFile : $!"; # 'touch' equivalent
+    close($fh) or die "Unable to close file : $IndexFile $!";
+    return;
+  }
+  return;
+  #ReportError(T('Cannot refresh index.'), '500 Internal Server Error', 0,
+  #$q->p('If you see this message, then there is a bug, please report it. '
+  #. 'Normally Private Wiki Extension should prevent attempts to refresh the index, but this time something weird has happened.'));
+}
+
+our %PageIvs = ();
+
+#*OldPrivateWikiReadIndex = \&ReadIndex;
+*ReadIndex = \&NewPrivateWikiReadIndex;
+
+sub NewPrivateWikiReadIndex {
+  my ($status, $rawIndex) = ReadFile($IndexFile); # not fatal
+  if ($status) {
+    my @rawPageList = split(/ /, $rawIndex);
+    for (@rawPageList) {
+      print STDERR $_, "\n";
+      my ($pageName, $iv) = split /!/, $_, 2;
+      push @IndexList, $pageName;
+      $PageIvs{$pageName} = pack "H*", $iv; # decode hex string
+    }
+    %IndexHash = map {$_ => 1} @IndexList;
+    return @IndexList;
+  }
+  return;
+}
+
+#*OldPrivateWikiWriteIndex = \&WriteIndex;
+*WriteIndex = \&NewPrivateWikiWriteIndex;
+
+sub NewPrivateWikiWriteIndex {
+  WriteStringToFile($IndexFile, join(' ', map { $_ . '!' . unpack "H*", $PageIvs{$_} } @IndexList));
+}
+
+# pages longer than 6 blocks will result in filenames that are longer than 255 bytes
+our $PageNameLimit = 96;
+
+sub GetPrivatePageFile {
+  my ($id) = @_;
+  PrivateWikiInit();
+  my $iv = $PageIvs{$id};
+  if (not $iv) {
+    # generate iv for new pages. It is okay if we are not called from SavePage, because
+    # in that case the caller will probably check if that file exists (and it clearly does not)
+    $iv = $random->random_bytes(16);
+    $PageIvs{$id} = $iv;
+  }
+  $cipher->set_iv($iv);
+  # We cannot use full byte range because of the filesystem limits
+  utf8::encode($id);
+  my $returnName = unpack "H*", $iv . $cipher->encrypt(PadTo16Bytes $id, 96); # to hex string
+  return $returnName;
+}
 
 *OldPrivateWikiGetPageFile = \&GetPageFile;
 *GetPageFile = \&NewPrivateWikiGetPageFile;
 
-sub NewPrivateWikiGetPageFile { OldPrivateWikiGetPageFile(sha256_hex $_[0]) }
+sub NewPrivateWikiGetPageFile {
+  OldPrivateWikiGetPageFile(GetPrivatePageFile @_);
+}
 
 *OldPrivateWikiGetKeepDir = \&GetKeepDir;
 *GetKeepDir = \&NewPrivateWikiGetKeepDir;
 
-sub NewPrivateWikiGetKeepDir { OldPrivateWikiGetKeepDir(sha256_hex $_[0]) }
-
+sub NewPrivateWikiGetKeepDir {
+  OldPrivateWikiGetKeepDir(GetPrivatePageFile @_);
+}
 
 # Now let's do some hacks!
 
@@ -130,6 +199,9 @@ sub UserIsBanned {
 
 *OldPrivateWikiAllPagesList = \&AllPagesList;
 *AllPagesList = \&NewPrivateWikiAllPagesList;
+
+our @MyInitVariables;
+push(@MyInitVariables, \&AllPagesList);
 
 sub NewPrivateWikiAllPagesList {
   return () if not UserIsEditor(); # no key - no AllPagesList
@@ -179,7 +251,7 @@ sub MergeRevisions {   # merge change from file2 to file3 into file1
 # it is a tool against people who have no password set (thus we have no key
 # to do encryption).
 
-our ($VisitorFile, %RecentVisitors, $FS, $Now, $SurgeProtectionTime, $SurgeProtectionViews);
+our ($VisitorFile, %RecentVisitors, $Now, $SurgeProtectionTime, $SurgeProtectionViews);
 
 # This sub is copied from the core. Lines marked with CHANGED were changed.
 sub ReadRecentVisitors {
@@ -317,4 +389,21 @@ sub GetRcLinesFor {
 		   \@languages, $cluster]);
   }
   return @result;
+}
+
+# We do not want to print the header to unauthorized users because it contains
+# the gotobar, our logo and a useless search form.
+
+*OldPrivateWikiGetHeaderDiv = \&GetHeaderDiv;
+*GetHeaderDiv = \&NewPrivateWikiGetHeaderDiv;
+
+sub NewPrivateWikiGetHeaderDiv {
+  return OldPrivateWikiGetHeaderDiv(@_) if UserIsEditor();
+  my ($id, $title, $oldId, $embed) = @_;
+  my $result .= $q->start_div({-class=>'header'});
+  our $Message;
+  $result .= $q->div({-class=>'message'}, $Message) if $Message;
+  $result .= GetHeaderTitle($id, $title, $oldId);
+  $result .= $q->end_div();
+  return $result;
 }
