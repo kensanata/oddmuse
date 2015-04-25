@@ -26,7 +26,7 @@ a:visited {
 
 div.header h1 a:hover, h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover,
 a:hover, span.caption a.image:hover {
-    background:#fee;
+     background:#fee;
 }
 
 img.logo {
@@ -68,9 +68,6 @@ h1, h2, h3, h4, h1 a, h1 a:visited, p a.definition {
 h3, h4 {
     font-size: inherit;
 }
-
-
-
 
 div.diff {
     padding: 1em 3em;
@@ -178,7 +175,7 @@ hr {
     border:none;
     color:black;
     background-color:#000;
-    height:2px; 
+    height:2px;
     margin-top:2ex;
 }
 
@@ -196,8 +193,8 @@ div.content > div.comment {
 }
 
 div.wrapper > div.comment {
-  border-top: 2px solid #000;
-  padding-top: 2em;
+    border-top: 2px solid #000;
+    padding-top: 2em;
 }
 
 pre {
@@ -218,48 +215,48 @@ tt, pre, code {
 };
 
 @font-face {
-  font-family: 'Gentium Basic';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Gentium Basic'), local('GentiumBasic'), url(/fonts/GenBasR.woff) format('woff');
+    font-family: 'Gentium Basic';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Gentium Basic'), local('GentiumBasic'), url(/fonts/GenBasR.woff) format('woff');
 }
 
 @font-face {
-  font-family: 'Gentium Basic';
-  font-style: normal;
-  font-weight: 700;
-  src: local('Gentium Basic Bold'), local('GentiumBasic-Bold'), url(/fonts/GenBasB.woff) format('woff');
+    font-family: 'Gentium Basic';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Gentium Basic Bold'), local('GentiumBasic-Bold'), url(/fonts/GenBasB.woff) format('woff');
 }
 
 @font-face {
-  font-family: 'Gentium Basic';
-  font-style: italic;
-  font-weight: 400;
-  src: local('Gentium Basic Italic'), local('GentiumBasic-Italic'), url(/fonts/GenBasI.woff) format('woff');
+    font-family: 'Gentium Basic';
+    font-style: italic;
+    font-weight: 400;
+    src: local('Gentium Basic Italic'), local('GentiumBasic-Italic'), url(/fonts/GenBasI.woff) format('woff');
 }
 
 @font-face {
-  font-family: 'Gentium Basic';
-  font-style: italic;
-  font-weight: 700;
-  src: local('Gentium Basic Bold Italic'), local('GentiumBasic-BoldItalic'), url(/fonts/GenBasBI.woff) format('woff');
+    font-family: 'Gentium Basic';
+    font-style: italic;
+    font-weight: 700;
+    src: local('Gentium Basic Bold Italic'), local('GentiumBasic-BoldItalic'), url(/fonts/GenBasBI.woff) format('woff');
 }
 
 @font-face {
-  font-family: 'Gentium Plus';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Gentium Plus'), local('GentiumPlus'), url(/fonts/GentiumPlus-R.woff) format('woff');
+    font-family: 'Gentium Plus';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Gentium Plus'), local('GentiumPlus'), url(/fonts/GentiumPlus-R.woff) format('woff');
 }
 
 @font-face {
-  font-family: 'Gentium Plus';
-  font-style: italic;
-  font-weight: 400;
-  src: local('Gentium Plus Italic'), local('GentiumPlus-Italic'), url(/fonts/GentiumPlus-I.woff) format('woff');
+    font-family: 'Gentium Plus';
+    font-style: italic;
+    font-weight: 400;
+    src: local('Gentium Plus Italic'), local('GentiumPlus-Italic'), url(/fonts/GentiumPlus-I.woff) format('woff');
 }
 
 @font-face {
-  font-family: 'Symbola';
-  src: local('Symbola'), url('/fonts/Symbola.woff') format('woff') url('/fonts/Symbola.ttf') format('truetype');
+    font-family: 'Symbola';
+    src: local('Symbola'), url('/fonts/Symbola.woff') format('woff') url('/fonts/Symbola.ttf') format('truetype');
 }
