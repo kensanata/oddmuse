@@ -22,8 +22,6 @@ creoleaddition is simply installable; simply:
 =back
 
 =cut
-package OddMuse;
-
 AddModuleDescription('creoleaddition.pl', 'Creole Addition Markup Extension');
 
 our ($bol, @MyRules, %RuleOrder);

@@ -14,8 +14,6 @@
 
 use strict;
 
-package OddMuse;
-
 AddModuleDescription('edit-paragraphs.pl', 'Edit Paragraphs Extension');
 
 our ($q, $OpenPageName, $Fragment, %Page, %Action, @MyRules, $LastUpdate);

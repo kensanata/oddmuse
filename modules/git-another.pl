@@ -15,8 +15,6 @@
 
 use strict;
 
-package OddMuse;
-
 AddModuleDescription('git-another.pl', 'Another Git Extension');
 
 use Cwd;

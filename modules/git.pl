@@ -25,8 +25,6 @@ subdirectory for your data directory (C<$DataDir>).
 
 =cut
 
-package OddMuse;
-
 =head1 CONFIGURATION
 
 Set these variables in the B<config> file within your data directory.

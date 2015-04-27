@@ -25,8 +25,6 @@ autolock is easily installable: move this file into the B<wiki/modules/>
 directory of your Oddmuse Wiki.
 
 =cut
-package OddMuse;
-
 AddModuleDescription('autolock.pl', 'Autolock Extension');
 
 our (@MyInitVariables, $CommentsPrefix, $EditAllowed, $NoEditFile, %LockOnCreation);

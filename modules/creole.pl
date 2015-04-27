@@ -14,8 +14,6 @@ creole is easily installable; move this file into the B<wiki/modules/>
 directory for your Oddmuse Wiki.
 
 =cut
-package OddMuse;
-
 AddModuleDescription('creole.pl', 'Creole Markup Extension');
 
 our ($q, $bol, %InterSite, $FreeLinkPattern, $FullUrlPattern, $FreeLinkPattern, $FreeInterLinkPattern, $InterSitePattern, @MyRules, %RuleOrder, @MyInitVariables, @HtmlStack, @HtmlAttrStack);

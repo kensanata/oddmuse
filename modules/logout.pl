@@ -22,8 +22,6 @@ logout is easily installable: move this file into the B<wiki/modules/>
 directory of your Oddmuse Wiki.
 
 =cut
-package OddMuse;
-
 AddModuleDescription('logout.pl', 'Logout Extension');
 
 our ($q, %Action, $CommentsPrefix, $Message, $LinkPattern, $FreeLinks, $FreeLinkPattern, $SiteName, %CookieParameters);

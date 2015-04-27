@@ -14,8 +14,6 @@
 
 use strict;
 
-package OddMuse;
-
 AddModuleDescription('banned-regexps.pl', 'Banning Regular Expressions');
 
 =h1 Compatibility

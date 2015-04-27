@@ -15,8 +15,6 @@
 
 use strict;
 
-package OddMuse;
-
 AddModuleDescription('comment-div-wrapper.pl', 'Comment Div Wrapper Extension');
 
 our ($q, $bol, $OpenPageName, @MyRules, %RuleOrder, $CommentsPrefix, $CommentsPattern, $FS);

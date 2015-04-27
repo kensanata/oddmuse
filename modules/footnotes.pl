@@ -13,8 +13,6 @@ footnotes is easily installable; move this file into the B<wiki/modules/>
 directory for your Oddmuse Wiki.
 
 =cut
-package OddMuse;
-
 AddModuleDescription('footnotes.pl', 'Footnotes Extension');
 
 our ($q, $bol, @MyRules, @MyInitVariables);
