@@ -42,14 +42,16 @@ sub NewPrintJournal {
       # Begin modifications to PrintJournal
       if ($mode eq 'reverse') {
         @pages = sort {
-          my ($A,$B) = ($a,$b);
-          map {s/^$CommentsPrefix// and $_.='z'} ($A,$B);
+          my ($A, $B) = ($a, $b);
+          $A .= 'z' unless $A =~ s/^$CommentsPrefix//;
+          $B .= 'z' unless $B =~ s/^$CommentsPrefix//;
           $B cmp $A;
         } @pages;
       } else {
         @pages = sort {
-          my ($A,$B) = ($a,$b);
-          map {s/^$CommentsPrefix// or $_.='z'} ($A,$B);
+          my ($A, $B) = ($a, $b);
+          $A .= 'z' unless $A =~ s/^$CommentsPrefix//;
+          $B .= 'z' unless $B =~ s/^$CommentsPrefix//;
           $B cmp $A;
         } @pages;
       }
