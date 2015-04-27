@@ -725,7 +725,8 @@ This function should, probably, be the C<JournalSort>'s default implementation.
 =cut
 sub SortHibernalPostNames {
   my ($A, $B) = ($a, $b);
-  map { s~^$CommentsPrefix~~ or $_ .= 'z' } ($A, $B);
+  $A .= 'z' unless $A =~ s/^$CommentsPrefix//;
+  $B .= 'z' unless $B =~ s/^$CommentsPrefix//;
   $B cmp $A;
 }
 
