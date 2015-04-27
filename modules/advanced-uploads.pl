@@ -14,8 +14,6 @@
 
 use strict;
 
-package OddMuse;
-
 AddModuleDescription('advanced-uploads.pl', 'Advanced File Upload Extension');
 
 our ($q, $HtmlHeaders);

@@ -15,8 +15,6 @@
 
 use strict;
 
-package OddMuse;
-
 AddModuleDescription('new-window.pl', 'New Window Links Extension');
 
 our ($q, @MyRules, $FullUrlPattern, $UrlProtocols, $BracketText);

@@ -45,8 +45,6 @@ for posts having such a subtitle.
 # FIXME: to add to Hibernal: correct Oddmuse's failure to link comment author-names
 #     having spaces; e.g., entering a username of "David Curry" should auto-link to
 #     "David_Curry".
-package OddMuse;
-
 AddModuleDescription('hibernal.pl', 'Hibernal Extension');
 
 our ($q, $bol, %Action, %Page, $OpenPageName, %IndexHash, $Now, $Today, %RuleOrder, @MyRules, @MyInitVariables, $CommentsPrefix, $NewComment, $DeletedPage, $CalAsTable);

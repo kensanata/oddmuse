@@ -15,8 +15,6 @@
 
 use strict;
 
-package OddMuse;
-
 AddModuleDescription('big-brother.pl', 'Big Brother Extension');
 
 our ($q, $Now, %Action, $SurgeProtectionViews, $SurgeProtectionTime, @MyAdminCode, $RCName, $VisitorFile, $FS);

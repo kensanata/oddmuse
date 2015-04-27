@@ -17,8 +17,6 @@ use strict;
 use v5.10;
 use utf8;
 
-package OddMuse;
-
 AddModuleDescription('pygmentize.pl', 'Pygmentize Extension');
 
 our ($q, $bol, @KnownLocks, %RuleOrder, @MyRules, $TempDir, @MyInitVariables);

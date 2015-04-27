@@ -55,8 +55,6 @@ By default, these have the values of "idiot" and "looser", for obvious reasons.
 
 =cut
 
-package OddMuse;
-
 our ($q, $Now, @MyInitVariables, $QuestionaskerRememberAnswer, $QuestionaskerSecretKey);
 our ($HoneyPotOk, $HoneyPotIdiot, $HoneyPotTimestamp, $HoneyPotIdiot1, $HoneyPotIdiot2);
 

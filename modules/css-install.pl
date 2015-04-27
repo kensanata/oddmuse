@@ -27,8 +27,6 @@ C<@CssList> contains a list of all the recommended CSS URLs.
 
 =cut
 
-package OddMuse;
-
 our ($q, %Action, @MyAdminCode, $StyleSheet, $StyleSheetPage);
 our (@CssList);
 

@@ -16,8 +16,6 @@ use strict;
 
 use Digest::SHA qw(sha256_hex);
 
-package OddMuse;
-
 AddModuleDescription('imagify.pl', 'Imagify Extension');
 
 our ($q, @MyRules, $ScriptName, $DataDir);

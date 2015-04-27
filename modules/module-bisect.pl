@@ -14,8 +14,6 @@
 
 use strict;
 
-package OddMuse;
-
 use File::Basename;
 use File::Copy;
 

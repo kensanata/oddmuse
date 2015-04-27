@@ -15,8 +15,6 @@
 
 use strict;
 
-package OddMuse;
-
 AddModuleDescription('diff.pl', 'Diff Action Extension');
 
 our ($q, %Action, @IndexList, @MyRules, $TempDir);
