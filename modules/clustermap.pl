@@ -183,14 +183,13 @@ sub CreateClusterMap {
 
 sub ClusterMapPrintRcHtml {
 	my ( @options ) = @_;
-	my $page = "";
 	my $cluster = GetParam('rcclusteronly');
 
 	if ($cluster ne "") {
 		CreateClusterMap();
 		print "Pages in this cluster:";
 		print "<ul>";
-		foreach $page (sort keys %{$ClusterMap{$cluster}}) {
+		foreach my $page (sort keys %{$ClusterMap{$cluster}}) {
 			my $title = $page;
 			$title =~ s/_/ /g;
 			print "<li>" . ScriptLink($page, $title, 'local') . "</li>";

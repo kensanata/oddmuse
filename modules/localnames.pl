@@ -313,7 +313,7 @@ sub LocalNamesNewSave {
 	   length(@collection > 1)
 	   ? join(', and ',
 		  join(', ', @collection[0 .. $#collection-1]),
-		  @collection[-1])
+		  $collection[-1])
 	   : @collection), 1)
     unless $localnames eq $Page{text};
 }

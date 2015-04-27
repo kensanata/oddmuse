@@ -32,7 +32,7 @@ sub NewPrintJournal {
   my ($num, $regexp, $mode) = @_;
   if (!$CollectingJournal) {
     $CollectingJournal = 1;
-    $regexp = "^\d\d\d\d-\d\d-\d\d" unless $regexp;
+    $regexp = '^\d\d\d\d-\d\d-\d\d' unless $regexp;
     $num = 10 unless $num;
     my @pages = (grep(/$regexp/, AllPagesList()));
     if (defined &JournalSort) {

@@ -111,9 +111,9 @@ extensions (namely, hibernal) to obtain the title and subtitle for pages.
 
 =cut
 sub GetSmartTitles {
-  my ($title)    = $Page{text} =~ m/(?:^|\n)\#TITLE[ \t]+(.*?)\s*\n+/c;
-  my ($subtitle) = $Page{text} =~ m/(?:^|\n)\#SUBTITLE[ \t]+(.*?)\s*\n+/c;
-  my ($interlink, $suburl) = $Page{text} =~ m/(?:^|\n)\#SUBURL(:)?[ \t]+(.*?)\s*\n+/c;
+  my ($title)    = $Page{text} =~ m/(?:^|\n)\#TITLE[ \t]+(.*?)\s*\n+/;
+  my ($subtitle) = $Page{text} =~ m/(?:^|\n)\#SUBTITLE[ \t]+(.*?)\s*\n+/;
+  my ($interlink, $suburl) = $Page{text} =~ m/(?:^|\n)\#SUBURL(:)?[ \t]+(.*?)\s*\n+/;
   return ($title, $subtitle, $suburl, $interlink ? 1 : '');
 }
 

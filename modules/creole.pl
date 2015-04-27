@@ -16,7 +16,7 @@ directory for your Oddmuse Wiki.
 =cut
 AddModuleDescription('creole.pl', 'Creole Markup Extension');
 
-our ($q, $bol, %InterSite, $FreeLinkPattern, $FullUrlPattern, $FreeLinkPattern, $FreeInterLinkPattern, $InterSitePattern, @MyRules, %RuleOrder, @MyInitVariables, @HtmlStack, @HtmlAttrStack);
+our ($q, $bol, %InterSite, $FullUrlPattern, $FreeLinkPattern, $FreeInterLinkPattern, $InterSitePattern, @MyRules, %RuleOrder, @MyInitVariables, @HtmlStack, @HtmlAttrStack);
 
 # ....................{ CONFIGURATION                      }....................
 

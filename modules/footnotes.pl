@@ -245,7 +245,7 @@ sub FootnotesRule {
     my $is_adjacent_footnote = defined $3;
 
     # A number range (e.g., "2-5") of references to other footnotes.
-    if ($footnote_text =~ m/^(\d+)-(\d+)$/co) {
+    if ($footnote_text =~ m/^(\d+)-(\d+)$/o) {
       my ($footnote_number_first, $footnote_number_last) = ($1, $2);
       # '&#x2013;', below, is the HTML entity for a Unicode en-dash.
       print $q->a({-href=> '#footnotes' .$footnote_number_first,
@@ -258,7 +258,7 @@ sub FootnotesRule {
                   }, $footnote_number_last.($is_adjacent_footnote ? ', ' : ''));
     }
     # A number (e.g., "5") implying reference to another footnote.
-    elsif ($footnote_text =~ m/^(\d+)$/co) {
+    elsif ($footnote_text =~ m/^(\d+)$/o) {
       my $footnote_number = $1;
       print $q->a({-href=> '#footnotes' .$footnote_number,
                    -title=> 'Footnote #'.$footnote_number,
@@ -322,7 +322,7 @@ sub PrintFooterFootnotes {
 Prints the list of footnotes.
 
 =cut
-sub PrintFootnotes() {
+sub PrintFootnotes {
   print
      $q->start_div({-class=> 'footnotes'})
     .$q->h2(T($FootnotesHeaderText));

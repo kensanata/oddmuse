@@ -123,7 +123,7 @@ sub DoPingbackServer {
   if ($res->is_success) {
     $out =  $res->content;
   } else {
-    $out = $res->status_line, "\n";
+    $out = $res->status_line . "\n";
   }
 
   result('200 OK', 0, "Oddmuse PingbackServer! $id OK");

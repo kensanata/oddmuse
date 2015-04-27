@@ -90,10 +90,10 @@ sub GitRun {
     # read the temporary file with the output
     close($fh);
     open(STDOUT, ">&", $oldout) or die "Can't dup \$oldout: $!";
-    open(F, '<', $fh) or die "Can't open temp file for reading: $!";
+    open(my $F, '<', $fh) or die "Can't open temp file for reading: $!";
     local $/ = undef; # Read complete files
-    $GitResult = <F>;
-    close(F);
+    $GitResult = <$F>;
+    close($F);
   } else {
     $exitStatus = system($GitBinary, @_);
   }

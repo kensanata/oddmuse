@@ -207,7 +207,7 @@ sub RunMyRulesToc {
       # lookahead expression resembling (?!\s+id=".*?") to work. As such, I
       # use a simple negative character class hack. *shrug*
       while ($html =~ s~<h([1-6](\s+[^i]\w+\s+=\s+"[^"]")*)>
-        ~<h$1 id="$TocAnchorPrefix$TocHeaderNumber">~cgx) {
+        ~<h$1 id="$TocAnchorPrefix$TocHeaderNumber">~gx) {
         $TocHeaderNumber++;
       }
     }
@@ -231,7 +231,7 @@ sub NewTocApplyRules {
   {
     local *STDOUT;
     open(  STDOUT, '>', \$html) or die "Can't open memory file: $!";
-    binmode STDOUT, ":utf8";
+    binmode STDOUT, ":encoding(UTF-8)";
     ($blocks, $flags) = OldTocApplyRules(@_);
     close  STDOUT;
     utf8::decode($blocks);

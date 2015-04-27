@@ -63,10 +63,10 @@ sub NewPrivateWikiReadFile {
   PrivateWikiInit();
   my $file = shift;
   utf8::encode($file); # filenames are bytes!
-  if (open(IN, '<', $file)) {
+  if (open(my $IN, '<', $file)) {
     local $/ = undef; # Read complete files
-    my $data = <IN>;
-    close IN;
+    my $data = <$IN>;
+    close $IN;
     return (1, '') unless $data;
     $cipher->set_iv(substr $data, 0, 16);
     $data = $cipher->decrypt(substr $data, 16);
@@ -87,13 +87,13 @@ sub NewPrivateWikiWriteStringToFile {
   PrivateWikiInit();
   my ($file, $string) = @_;
   utf8::encode($file);
-  open(OUT, '>', $file) or ReportError(Ts('Cannot write %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
+  open(my $OUT, '>', $file) or ReportError(Ts('Cannot write %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
   utf8::encode($string);
   my $iv = $random->random_bytes(16);
   $cipher->set_iv($iv);
-  print OUT $iv;
-  print OUT $cipher->encrypt(PadTo16Bytes $string);
-  close(OUT);
+  print $OUT $iv;
+  print $OUT $cipher->encrypt(PadTo16Bytes $string);
+  close($OUT);
 }
 
 # TODO is there any better way to append data to encrypted files?
@@ -323,9 +323,9 @@ sub GetRcLines { # starttime, hash of seen pages to use as a second return value
   # check the first timestamp in the default file, maybe read old log file
 
   my $filelike = ReadFile($RcFile); # CHANGED
-  open F, '<:utf8', \$filelike or die $!; # CHANGED
+  open my $F, '<:encoding(UTF-8)', \$filelike or die $!; # CHANGED
 
-  my $line = <F>;
+  my $line = <$F>;
   my ($ts) = split(/$FS/o, $line); # the first timestamp in the regular rc file
   if (not $ts or $ts > $starttime) { # we need to read the old rc file, too
     push(@result, GetRcLinesFor($RcOldFile, $starttime, \%match, \%following));
@@ -353,9 +353,9 @@ sub GetRcLinesFor {
   my @result = ();
 
   my $filelike = ReadFile($file); # CHANGED
-  open F, '<:utf8', \$filelike or return (); # CHANGED
+  open my $F, '<:encoding(UTF-8)', \$filelike or return (); # CHANGED
 
-  while (my $line = <F>) {
+  while (my $line = <$F>) {
     chomp($line);
     my ($ts, $id, $minor, $summary, $host, $username, $revision,
 	$languages, $cluster) = split(/$FS/o, $line);

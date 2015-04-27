@@ -72,18 +72,18 @@ for (my $i=0; $q->param("fileToUpload$i"); $i++) {
     squeak 'Error: Filename contains invalid characters'; # this should not happen
   }
 
-  open(LOGFILE, '>>', $logFile) or squeak "$!";
-  print LOGFILE $q->param("key") . ' ' . $ENV{REMOTE_ADDR} . ' ' . $curFilename . "\n";
-  close LOGFILE;
+  open(my $LOGFILE, '>>', $logFile) or squeak "$!";
+  print $LOGFILE $q->param("key") . ' ' . $ENV{REMOTE_ADDR} . ' ' . $curFilename . "\n";
+  close $LOGFILE;
 
   my $uploadFileHandle = $q->upload("fileToUpload$i");
 
-  open(UPLOADFILE, '>', "$uploadDir/$curFilename") or squeak "$!";
-  binmode UPLOADFILE;
+  open($UPLOADFILE, '>', "$uploadDir/$curFilename") or squeak "$!";
+  binmode $UPLOADFILE;
   while (<$uploadFileHandle>) {
-    print UPLOADFILE;
+    print $UPLOADFILE;
   }
-  close UPLOADFILE;
+  close $UPLOADFILE;
   if ($q->param("nameOnly")) {
     print "$curFilename\n";
   } else {
