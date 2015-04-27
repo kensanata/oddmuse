@@ -78,7 +78,7 @@ sub HoneyPotNewGetFormStart {
     $html .= $q->textfield({-name=>$HoneyPotOk, -id=>$HoneyPotOk,
 			    -default=>time,
 			    -size=>40, -maxlength=>250}) if $HoneyPotOk;
-    $html .= $q->label({-for=>$HoneyPotIdiot1}, 'Leave empty:'), ' ',
+    $html .= $q->label({-for=>$HoneyPotIdiot1}, 'Leave empty:') . ' ' .
       $q->textfield({-name=>$HoneyPotIdiot1, -id=>$HoneyPotIdiot1,
 		     -size=>40, -maxlength=>250}) if $HoneyPotIdiot1;
     $html .= $q->textarea(-name=>$HoneyPotIdiot2, -id=>$HoneyPotIdiot2,

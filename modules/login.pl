@@ -21,7 +21,7 @@ use strict;
 AddModuleDescription('login.pl', 'Login Module');
 
 our ($q, %Action, $SiteName, @MyAdminCode, $IndexFile, $DataDir, $FullUrl);
-our ($RegistrationForm, $MinimumPasswordLength, $RegistrationsMustBeApproved, $LoginForm, $PasswordFile, $PasswordFileToUse, $PendingPasswordFile, $RequireLoginToEdit, $ConfirmEmailAddress, $UncomfirmedPasswordFile, $EmailSenderAddress, $EmailCommand, $EmailRegExp, $NotifyPendingRegistrations, $EmailConfirmationMessage, $ResetPasswordMessage, $RegistrationForm, $LogoutForm, $ResetForm, $ChangePassForm, $RequireCamelUserName, $UsernameRegExp);
+our ($RegistrationForm, $MinimumPasswordLength, $RegistrationsMustBeApproved, $LoginForm, $PasswordFile, $PasswordFileToUse, $PendingPasswordFile, $RequireLoginToEdit, $ConfirmEmailAddress, $UncomfirmedPasswordFile, $EmailSenderAddress, $EmailCommand, $EmailRegExp, $NotifyPendingRegistrations, $EmailConfirmationMessage, $ResetPasswordMessage, $LogoutForm, $ResetForm, $ChangePassForm, $RequireCamelUserName, $UsernameRegExp);
 
 my $EncryptedPassword = "";
 
@@ -372,7 +372,6 @@ sub AddUser {
 
 	my %passwords = ();
 	my %emails = ();
-	my $key;
 
 	if (open (PASSWD, $FileToUse)) {
 		while ( <PASSWD> ) {
@@ -388,7 +387,7 @@ sub AddUser {
 	$emails{$username} = $email;
 
 	open (PASSWD, ">$FileToUse");
-	foreach $key ( sort keys(%passwords)) {
+	foreach my $key ( sort keys(%passwords)) {
 		print PASSWD "$key:$passwords{$key}:$emails{$key}\n";
 	}
 	close PASSWD;
@@ -515,7 +514,6 @@ sub RemoveUser {
 
 	my %passwords = ();
 	my %emails = ();
-	my $key;
 
 	if (open (PASSWD, $FileToUse)) {
 		while ( <PASSWD> ) {
@@ -529,7 +527,7 @@ sub RemoveUser {
 	close PASSWD;
 
 	open (PASSWD, ">$FileToUse");
-	foreach $key ( sort keys(%passwords)) {
+	foreach my $key ( sort keys(%passwords)) {
 		print PASSWD "$key:$passwords{$key}:$emails{$key}\n";
 	}
 	close PASSWD;
@@ -600,7 +598,6 @@ sub ChangePassword {
 
 	my %passwords = ();
 	my %emails = ();
-	my $key;
 
 	if (open (PASSWD, $PasswordFile)) {
 		while ( <PASSWD> ) {
@@ -615,7 +612,7 @@ sub ChangePassword {
 	$passwords{$user} = $hash;
 
 	open (PASSWD, ">$PasswordFile");
-	foreach $key ( sort keys(%passwords)) {
+	foreach my $key ( sort keys(%passwords)) {
 		print PASSWD "$key:$passwords{$key}:$emails{$key}\n";
 	}
 	close PASSWD;
