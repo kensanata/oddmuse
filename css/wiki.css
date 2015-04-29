@@ -39,6 +39,7 @@ img.logo {
 img {
     padding: 0.5em;
     margin: 0 1em;
+    max-width: 95%;
 }
 
 a.image:hover {
