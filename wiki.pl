@@ -1638,12 +1638,12 @@ sub RcHeader {
   my $action = '';
   my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly,
       $match, $lang, $followup) =
-  map {
-    my $val = GetParam($_, '');
-    $html .= $q->p($q->b('(' . Ts('for %s only', $val) . ')')) if $val;
-    $action .= ";$_=$val" if $val; # remember these parameters later!
-    $val;
-  } qw(rcidonly rcuseronly rchostonly rcclusteronly rcfilteronly
+	  map {
+	    my $val = GetParam($_, '');
+	    $html .= $q->p($q->b('(' . Ts('for %s only', $val) . ')')) if $val;
+	    $action .= ";$_=$val" if $val; # remember these parameters later!
+	    $val;
+      } qw(rcidonly rcuseronly rchostonly rcclusteronly rcfilteronly
        match lang followup);
   my $rss = "action=rss$action;days=$days;all=$all;showedit=$edits";
   if ($clusterOnly) {
@@ -1727,61 +1727,7 @@ sub RcHtml {
   my $all = GetParam('all', 0);
   my $admin = UserIsAdmin();
   my $rollback_was_possible = 0;
-  my $printDailyTear = sub {
-    my $date = shift;
-    if ($inlist) {
-      $html .= '</ul>';
-      $inlist = 0;
-    }
-    $html .= $q->p($q->strong($date));
-    if (not $inlist) {
-      $html .= '<ul>';
-      $inlist = 1;
-    }
-  };
-  my $printRCLine = sub {
-    my($id, $ts, $host, $username, $summary, $minor, $revision,
-       $languages, $cluster, $last) = @_;
-    my $all_revision = $last ? undef : $revision; # no revision for the last one
-    $host = QuoteHtml($host);
-    my $author = GetAuthorLink($host, $username);
-    my $sum = $summary ? $q->span({class=>'dash'}, ' &#8211; ')
-      . $q->strong(QuoteHtml($summary)) : '';
-    my $edit = $minor ? $q->em({class=>'type'}, T('(minor)')) : '';
-    my $lang = @{$languages}
-      ? $q->span({class=>'lang'}, '[' . join(', ', @{$languages}) . ']') : '';
-    my ($pagelink, $history, $diff, $rollback) = ('', '', '', '');
-    if ($all) {
-      $pagelink = GetOldPageLink('browse', $id, $all_revision, $id, $cluster);
-      my $rollback_is_possible = RollbackPossible($ts);
-      if ($admin and ($rollback_is_possible or $rollback_was_possible)) {
-	$rollback = $q->submit("rollback-$ts", T('rollback'));
-	$rollback_was_possible = $rollback_is_possible;
-      } else {
-	$rollback_was_possible = 0;
-      }
-    } elsif ($cluster) {
-      $pagelink = GetOldPageLink('browse', $id, $revision, $id, $cluster);
-    } else {
-      $pagelink = GetPageLink($id, $cluster);
-      $history = '(' . GetHistoryLink($id, T('history')) . ')';
-    }
-    if ($cluster and $PageCluster) {
-      $diff .= GetPageLink($PageCluster) . ':';
-    } elsif ($UseDiff and GetParam('diffrclink', 1)) {
-      if ($revision == 1) {
-	$diff .= '(' . $q->span({-class=>'new'}, T('new')) . ')';
-      } elsif ($all) {
-	$diff .= '(' . ScriptLinkDiff(2, $id, T('diff'), '', $all_revision) .')';
-      } else {
-	$diff .= '(' . ScriptLinkDiff($minor ? 2 : 1, $id, T('diff'), '') . ')';
-      }
-    }
-    $html .= $q->li($q->span({-class=>'time'}, CalcTime($ts)), $diff, $history,
-		    $rollback, $pagelink, T(' . . . . '), $author, $sum, $lang,
-		    $edit);
-  };
-  ProcessRcLines($printDailyTear, $printRCLine);
+  ProcessRcLines(\&PrintDailyTear, \&PrintRcLine);
   $html .= '</ul>' if $inlist;
   # use delta between from and upto, or use days, whichever is available
   my $to = GetParam('from', GetParam('upto', $Now - GetParam('days', $RcDefault) * 86400));
@@ -1808,6 +1754,62 @@ sub PrintRcHtml { # to append RC to existing page, or action=rc directly
     print RcHeader() . RcHtml() . GetFilterForm() . $q->end_div();
   }
   PrintFooter($id) if $standalone;
+}
+
+sub PrintDailyTear {
+  my $date = shift;
+  if ($inlist) {
+    $html .= '</ul>';
+    $inlist = 0;
+  }
+  $html .= $q->p($q->strong($date));
+  if (not $inlist) {
+    $html .= '<ul>';
+    $inlist = 1;
+  }
+}
+
+sub PrintRcLine {
+  my($id, $ts, $host, $username, $summary, $minor, $revision,
+     $languages, $cluster, $last) = @_;
+  my $all_revision = $last ? undef : $revision; # no revision for the last one
+  $host = QuoteHtml($host);
+  my $author = GetAuthorLink($host, $username);
+  my $sum = $summary ? $q->span({class=>'dash'}, ' &#8211; ')
+      . $q->strong(QuoteHtml($summary)) : '';
+  my $edit = $minor ? $q->em({class=>'type'}, T('(minor)')) : '';
+  my $lang = @{$languages}
+  ? $q->span({class=>'lang'}, '[' . join(', ', @{$languages}) . ']') : '';
+  my ($pagelink, $history, $diff, $rollback) = ('', '', '', '');
+  if ($all) {
+    $pagelink = GetOldPageLink('browse', $id, $all_revision, $id, $cluster);
+    my $rollback_is_possible = RollbackPossible($ts);
+    if ($admin and ($rollback_is_possible or $rollback_was_possible)) {
+      $rollback = $q->submit("rollback-$ts", T('rollback'));
+      $rollback_was_possible = $rollback_is_possible;
+    } else {
+      $rollback_was_possible = 0;
+    }
+  } elsif ($cluster) {
+    $pagelink = GetOldPageLink('browse', $id, $revision, $id, $cluster);
+  } else {
+    $pagelink = GetPageLink($id, $cluster);
+    $history = '(' . GetHistoryLink($id, T('history')) . ')';
+  }
+  if ($cluster and $PageCluster) {
+    $diff .= GetPageLink($PageCluster) . ':';
+  } elsif ($UseDiff and GetParam('diffrclink', 1)) {
+    if ($revision == 1) {
+      $diff .= '(' . $q->span({-class=>'new'}, T('new')) . ')';
+    } elsif ($all) {
+      $diff .= '(' . ScriptLinkDiff(2, $id, T('diff'), '', $all_revision) .')';
+    } else {
+      $diff .= '(' . ScriptLinkDiff($minor ? 2 : 1, $id, T('diff'), '') . ')';
+    }
+  }
+  $html .= $q->li($q->span({-class=>'time'}, CalcTime($ts)), $diff, $history,
+		  $rollback, $pagelink, T(' . . . . '), $author, $sum, $lang,
+		  $edit);
 }
 
 sub RcTextItem {
@@ -1942,53 +1944,63 @@ sub DoHistory {
   ValidIdOrDie($id);
   OpenPage($id);
   if (GetParam('raw', 0)) {
-    print GetHttpHeader('text/plain'),
-      RcTextItem('title', Ts('History of %s', NormalToFree($OpenPageName))),
-      RcTextItem('date', TimeToText($Now)),
-      RcTextItem('link', ScriptUrl("action=history;id=$OpenPageName;raw=1")),
-      RcTextItem('generator', 'Oddmuse');
-    SetParam('all', 1);
-    my @languages = split(/,/, $Page{languages});
-    RcTextRevision($id, $Page{ts}, $Page{host}, $Page{username}, $Page{summary},
-		   $Page{minor}, $Page{revision}, \@languages, undef, 1);
-    foreach my $revision (GetKeepRevisions($OpenPageName)) {
-      my %keep = GetKeptRevision($revision);
-      @languages = split(/,/, $keep{languages});
-      RcTextRevision($id, $keep{ts}, $keep{host}, $keep{username},
-		     $keep{summary}, $keep{minor}, $keep{revision}, \@languages);
-    }
+    DoRawHistory();
   } else {
-    print GetHeader('', Ts('History of %s', NormalToFree($id)));
-    my $row = 0;
-    my $rollback = UserCanEdit($id, 0) && (GetParam('username', '')
-					   or UserIsEditor());
-    my $date = CalcDay($Page{ts});
-    my @html = (GetHistoryLine($id, \%Page, $row++, $rollback, $date, 1));
-    foreach my $revision (GetKeepRevisions($OpenPageName)) {
-      my %keep = GetKeptRevision($revision);
-      my $new = CalcDay($keep{ts});
-      push(@html, GetHistoryLine($id, \%keep, $row++, $rollback,
-				 $new, $new ne $date));
-      $date = $new;
-    }
-    @html = (GetFormStart(undef, 'get', 'history'),
-       $q->p($q->submit({-name=>T('Compare')}),
-       # don't use $q->hidden here!
-       $q->input({-type=>'hidden', -name=>'action', -value=>'browse'}),
-       $q->input({-type=>'hidden', -name=>'diff', -value=>'1'}),
-       $q->input({-type=>'hidden', -name=>'id', -value=>$id})),
-       $q->table({-class=>'history'}, @html),
-       $q->p($q->submit({-name=>T('Compare')})),
-       $q->end_form()) if $UseDiff;
-    if ($KeepDays and $rollback and $Page{revision}) {
-      push(@html, $q->p(ScriptLink('title=' . UrlEncode($id) . ';text='
-				   . UrlEncode($DeletedPage) . ';summary='
-				   . UrlEncode(T('Deleted')),
-				   T('Mark this page for deletion'))));
-    }
-    print $q->div({-class=>'content history'}, @html);
-    PrintFooter($id, 'history');
+    DoHtmlHistory();
   }
+}
+
+sub DoRawHistory {
+  my ($id) = @_;
+  print GetHttpHeader('text/plain'),
+  RcTextItem('title', Ts('History of %s', NormalToFree($OpenPageName))),
+  RcTextItem('date', TimeToText($Now)),
+  RcTextItem('link', ScriptUrl("action=history;id=$OpenPageName;raw=1")),
+  RcTextItem('generator', 'Oddmuse');
+  SetParam('all', 1);
+  my @languages = split(/,/, $Page{languages});
+  RcTextRevision($id, $Page{ts}, $Page{host}, $Page{username}, $Page{summary},
+		 $Page{minor}, $Page{revision}, \@languages, undef, 1);
+  foreach my $revision (GetKeepRevisions($OpenPageName)) {
+    my %keep = GetKeptRevision($revision);
+    @languages = split(/,/, $keep{languages});
+    RcTextRevision($id, $keep{ts}, $keep{host}, $keep{username},
+		   $keep{summary}, $keep{minor}, $keep{revision}, \@languages);
+  }
+}
+
+sub DoHtmlHistory {
+  my ($id) = @_;
+  print GetHeader('', Ts('History of %s', NormalToFree($id)));
+  my $row = 0;
+  my $rollback = UserCanEdit($id, 0) && (GetParam('username', '')
+					 or UserIsEditor());
+  my $date = CalcDay($Page{ts});
+  my @html = (GetHistoryLine($id, \%Page, $row++, $rollback, $date, 1));
+  foreach my $revision (GetKeepRevisions($OpenPageName)) {
+    my %keep = GetKeptRevision($revision);
+    my $new = CalcDay($keep{ts});
+    push(@html, GetHistoryLine($id, \%keep, $row++, $rollback,
+			       $new, $new ne $date));
+    $date = $new;
+  }
+  @html = (GetFormStart(undef, 'get', 'history'),
+	   $q->p($q->submit({-name=>T('Compare')}),
+		 # don't use $q->hidden here!
+		 $q->input({-type=>'hidden', -name=>'action', -value=>'browse'}),
+		 $q->input({-type=>'hidden', -name=>'diff', -value=>'1'}),
+		 $q->input({-type=>'hidden', -name=>'id', -value=>$id})),
+	   $q->table({-class=>'history'}, @html),
+	   $q->p($q->submit({-name=>T('Compare')})),
+	   $q->end_form()) if $UseDiff;
+  if ($KeepDays and $rollback and $Page{revision}) {
+    push(@html, $q->p(ScriptLink('title=' . UrlEncode($id) . ';text='
+				 . UrlEncode($DeletedPage) . ';summary='
+				 . UrlEncode(T('Deleted')),
+				 T('Mark this page for deletion'))));
+  }
+  print $q->div({-class=>'content history'}, @html);
+  PrintFooter($id, 'history');
 }
 
 sub GetHistoryLine {
@@ -2789,6 +2801,22 @@ sub EncodePage {
 sub EscapeNewlines {
   $_[0] =~ s/\n/\n\t/g;   # modify original instead of copying
   return $_[0];
+}
+
+sub ExpireAllKeepFiles {
+  my $html = '';
+  foreach my $name (AllPagesList()) {
+    $html .= $q->br() . GetPageLink($name);
+    OpenPage($name);
+    my $delete = PageDeletable();
+    if ($delete) {
+      my $status = DeletePage($OpenPageName);
+      $html .= ' ' . ($status ? T('not deleted: ') . $status : T('deleted'));
+    } else {
+      ExpireKeepFiles();
+    }
+  }
+  return $html;
 }
 
 sub ExpireKeepFiles {   # call with opened page
@@ -3789,20 +3817,7 @@ sub DoMaintain {
       return;
     }
   }
-  print '<p>', T('Expiring keep files and deleting pages marked for deletion');
-  # Expire all keep files
-  foreach my $name (AllPagesList()) {
-    print $q->br(), GetPageLink($name);
-    OpenPage($name);
-    my $delete = PageDeletable();
-    if ($delete) {
-      my $status = DeletePage($OpenPageName);
-      print ' ' . ($status ? T('not deleted: ') . $status : T('deleted'));
-    } else {
-      ExpireKeepFiles();
-    }
-  }
-  print '</p>';
+  print $q->p(T('Expiring keep files and deleting pages marked for deletion'), ExpireAllKeepFiles());
   RequestLockOrError();
   print $q->p(T('Main lock obtained.'));
   print $q->p(Ts('Moving part of the %s log file.', $RCName));
