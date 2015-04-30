@@ -63,8 +63,8 @@ sub PrivatePageLocked {
   return $lock;
 }
 
-*OldPrivatePagesUserCanEdit = *UserCanEdit;
-*UserCanEdit = *NewPrivatePagesUserCanEdit;
+*OldPrivatePagesUserCanEdit = \&UserCanEdit;
+*UserCanEdit = \&NewPrivatePagesUserCanEdit;
 
 sub NewPrivatePagesUserCanEdit {
   my ($id, $editing, @rest) = @_;
@@ -95,8 +95,8 @@ sub PrivatePageMessage {
 # matter since the text starts with #PASSWORD and therefore cannot be
 # the empty string or $DeletedPage.
 
-*OldPrivatePagesOpenPage = *OpenPage;
-*OpenPage = *NewPrivatePagesOpenPage;
+*OldPrivatePagesOpenPage = \&OpenPage;
+*OpenPage = \&NewPrivatePagesOpenPage;
 
 sub NewPrivatePagesOpenPage {
   OldPrivatePagesOpenPage(@_);
@@ -110,8 +110,8 @@ sub NewPrivatePagesOpenPage {
 
 # prevent reading of page content by other code
 
-*OldPrivatePagesGetPageContent = *GetPageContent;
-*GetPageContent = *NewPrivatePagesGetPageContent;
+*OldPrivatePagesGetPageContent = \&GetPageContent;
+*GetPageContent = \&NewPrivatePagesGetPageContent;
 
 sub NewPrivatePagesGetPageContent {
   my $text = OldPrivatePagesGetPageContent(@_);
@@ -123,8 +123,8 @@ sub NewPrivatePagesGetPageContent {
 
 # prevent reading of old revisions
 
-*OldPrivatePagesGetTextRevision = *GetTextRevision;
-*GetTextRevision = *NewPrivatePagesGetTextRevision;
+*OldPrivatePagesGetTextRevision = \&GetTextRevision;
+*GetTextRevision = \&NewPrivatePagesGetTextRevision;
 
 sub NewPrivatePagesGetTextRevision {
   my ($text, $revision) = OldPrivatePagesGetTextRevision(@_);
@@ -147,8 +147,8 @@ sub PrivatePageRule {
 
 # prevent leaking of edit summary
 
-*OldPrivatePagesGetSummary = *GetSummary;
-*GetSummary = *NewPrivatePagesGetSummary;
+*OldPrivatePagesGetSummary = \&GetSummary;
+*GetSummary = \&NewPrivatePagesGetSummary;
 
 sub NewPrivatePagesGetSummary {
   my $text = GetParam('text', '');

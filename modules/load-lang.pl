@@ -49,7 +49,7 @@ sub LoadLanguage {
   my $requested_language = $q->http('Accept-language');
   my @languages = split(/ *, */, $requested_language);
   my %Lang = ();
-  foreach $_ (@languages) {
+  foreach (@languages) {
     my $qual = 1;
     $qual = $1 if (/q=([0-9.]+)/);
     $Lang{$qual} = $1 if (/^([-a-z]+)/);
@@ -62,7 +62,7 @@ sub LoadLanguage {
   #                . "Result: "
   #                . join(', ', map { "$_ ($Lang{$_})" } @prefs))
   #      . $q->end_html) && exit if GetParam('debug', '');
-  foreach $_ (@prefs) {
+  foreach (@prefs) {
     last if $Lang{$_} eq 'en'; # the default
     my $file = $library{$Lang{$_}};
     $file = "$LoadLanguageDir/$file" if defined $LoadLanguageDir;

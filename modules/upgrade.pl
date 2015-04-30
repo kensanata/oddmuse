@@ -23,8 +23,8 @@ our ($q, %Action, %InterSite, $ModuleDir, $IndexFile, $DataDir, $PageDir, $KeepD
 # We are now running in InitModules. InitVariables will be called later.
 # We want to prevent any calls to GetPageContent and the like.
 
-*UpgradeOldInitVariables = *InitVariables;
-*InitVariables = *UpgradeNewInitVariables;
+*UpgradeOldInitVariables = \&InitVariables;
+*InitVariables = \&UpgradeNewInitVariables;
 
 sub UpgradeNewInitVariables {
   $InterMap = undef;
@@ -35,7 +35,7 @@ sub UpgradeNewInitVariables {
   UpgradeOldInitVariables(@_);
 }
 
-*DoBrowseRequest = *DoUpgrade;
+*DoBrowseRequest = \&DoUpgrade;
 
 sub DoUpgrade {
   # The only thing allowed besides upgrading is login and unlock

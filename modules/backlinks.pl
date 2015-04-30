@@ -16,8 +16,8 @@ AddModuleDescription('backlinks.pl', 'Backlinks Extension');
 
 our ($q, %Action, %Page, $OpenPageName);
 
-*OldGetSearchLink = *GetSearchLink;
-*GetSearchLink = *NewGetSearchLink;
+*OldGetSearchLink = \&GetSearchLink;
+*GetSearchLink = \&NewGetSearchLink;
 sub NewGetSearchLink {
   my ($text, $class, $name, $title) = @_;
   my $id = UrlEncode(QuoteRegexp($text));

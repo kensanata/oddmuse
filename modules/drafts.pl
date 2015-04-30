@@ -58,8 +58,8 @@ sub DoDraft {
 
 # add preview button to edit page (but not to GetCommentForm!)
 
-*DraftOldGetEditForm = *GetEditForm;
-*GetEditForm = *DraftNewGetEditForm;
+*DraftOldGetEditForm = \&GetEditForm;
+*GetEditForm = \&DraftNewGetEditForm;
 
 sub DraftNewGetEditForm {
   my $html = DraftOldGetEditForm(@_);
@@ -75,9 +75,10 @@ push(@MyMaintenance, \&DraftCleanup);
 
 sub DraftFiles {
   return map {
-    $_ = substr($_, length($DraftDir) + 1);
-    utf8::decode($_);
-    $_;
+    my $x = $_;
+    $x = substr($x, length($DraftDir) + 1);
+    utf8::decode($x);
+    $x;
   } bsd_glob("$DraftDir/*"), bsd_glob("$DraftDir/.*");
 }
 

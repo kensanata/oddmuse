@@ -31,7 +31,7 @@ our ($HtmlTemplateDir);
 
 $HtmlTemplateDir   = "$DataDir/templates";
 
-*BrowsePage = *DoHtmlTemplate;
+*BrowsePage = \&DoHtmlTemplate;
 
 # replace all actions with DoHtmlTemplate!
 foreach my $key (keys %Action) {
@@ -99,7 +99,7 @@ sub HtmlTemplateLanguage {
   my $requested_language = $q->http('Accept-language');
   my @languages = split(/ *, */, $requested_language);
   my %Lang = ();
-  foreach $_ (@languages) {
+  foreach (@languages) {
     my $qual = 1;
     $qual = $1 if (/q=([0-9.]+)/);
     $Lang{$qual} = $1 if (/^([-a-z]+)/);

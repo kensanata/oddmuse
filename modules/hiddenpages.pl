@@ -52,8 +52,8 @@ $HideAdminPages = 1;
 $HideRegExEditor = 'HiddenE$';
 $HideRegExAdmin = 'Hidden$';
 
-*OldOpenPage = *OpenPage;
-*OpenPage = *NewOpenPage;
+*OldOpenPage = \&OpenPage;
+*OpenPage = \&NewOpenPage;
 
 sub NewOpenPage {
   # Get page id/name sent in to OpenPage

@@ -61,10 +61,10 @@ sub StaticMimeTypes {
 sub StaticWriteFiles {
   my $raw = GetParam('raw', 0);
   my $html = GetParam('html', 0);
-  local *ScriptLink = *StaticScriptLink;
-  local *GetDownloadLink = *StaticGetDownloadLink;
+  local *ScriptLink = \&StaticScriptLink;
+  local *GetDownloadLink = \&StaticGetDownloadLink;
   # get rid of subscribe link in the footer by mail.pl
-  local *GetCommentForm = *MailOldGetCommentForm if defined &MailNewGetCommentForm;
+  local *GetCommentForm = \&MailOldGetCommentForm if defined &MailNewGetCommentForm;
   foreach my $id (AllPagesList()) {
     if ($StaticAlways > 1
 	or $html
@@ -142,7 +142,7 @@ sub StaticWriteFile {
     binmode(F);
     StaticFile($id, $mimetype, $data);
   } elsif ($html) {
-    binmode(F, ':utf8');
+    binmode(F, ':encoding(UTF-8)');
     StaticHtml($id);
   } else {
     print "no data for ";
@@ -245,8 +245,8 @@ sub StaticWriteCss {
   chmod 0644,"$StaticDir/static.css";
 }
 
-*StaticFilesOldSave = *Save;
-*Save = *StaticFilesNewSave;
+*StaticFilesOldSave = \&Save;
+*Save = \&StaticFilesNewSave;
 
 sub StaticFilesNewSave {
   my ($id, $new) = @_;
@@ -262,8 +262,8 @@ sub StaticFilesNewSave {
   }
 }
 
-*StaticOldDeletePage = *DeletePage;
-*DeletePage = *StaticNewDeletePage;
+*StaticOldDeletePage = \&DeletePage;
+*DeletePage = \&StaticNewDeletePage;
 
 sub StaticNewDeletePage {
   my $id = shift;

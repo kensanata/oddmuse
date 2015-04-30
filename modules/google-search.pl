@@ -49,7 +49,7 @@ sub GoogleSearchInit {
       and not GetParam('old', 0)) {
     SetParam('action', 'search');
   }
-  *SearchTitleAndBody = *GoogleSearchDoNothing if $GoogleSearchExclusive;
+  *SearchTitleAndBody = \&GoogleSearchDoNothing if $GoogleSearchExclusive;
 }
 
 # disable all other searches

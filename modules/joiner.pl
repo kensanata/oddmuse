@@ -1195,8 +1195,8 @@ sub JoinerIsLoggedIn {
   return $JoinerLoggedIn;
 }
 
-*OldJoinerUserCanEdit = *UserCanEdit;
-*UserCanEdit = *NewJoinerUserCanEdit;
+*OldJoinerUserCanEdit = \&UserCanEdit;
+*UserCanEdit = \&NewJoinerUserCanEdit;
 
 sub NewJoinerUserCanEdit {
   my ($id, $editing, $comment) = @_;
@@ -1211,8 +1211,8 @@ sub NewJoinerUserCanEdit {
   return JoinerIsLoggedIn();
 }
 
-*OldJoinerGetHeader = *GetHeader;
-*GetHeader = *NewJoinerGetHeader;
+*OldJoinerGetHeader = \&GetHeader;
+*GetHeader = \&NewJoinerGetHeader;
 
 sub NewJoinerGetHeader {
   if (JoinerIsLoggedIn()) {

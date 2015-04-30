@@ -42,8 +42,8 @@ sub DoDates {
 my %date_collection;
 my $date_page;
 
-*OldDatesSearchString = *SearchString;
-*SearchString = *NewDatesSearchString;
+*OldDatesSearchString = \&SearchString;
+*SearchString = \&NewDatesSearchString;
 
 sub NewDatesSearchString {
   $date_page = $_[1]; # save the page text!

@@ -29,8 +29,8 @@ AddModuleDescription('creationdate.pl', 'CreationDate Module');
 
 our (%Page, $Now);
 
-*CreationDateOldOpenPage = *OpenPage;
-*OpenPage = *CreationDateOpenPage;
+*CreationDateOldOpenPage = \&OpenPage;
+*OpenPage = \&CreationDateOpenPage;
 
 sub CreationDateOpenPage{
 	CreationDateOldOpenPage(@_);

@@ -28,8 +28,8 @@ $CalendarOnEveryPage = 0;   # 1=on every page is a month-div situated in the hea
 $CalAsTable = 0;            # 0=every month-div is "free", 1=every month-div is caught in a table, use css to control
 $CalStartMonday = 0;        # 0=week starts with Su, 1=week starts with Mo
 
-*OldCalendarGetHeader = *GetHeader;
-*GetHeader = *NewCalendarGetHeader;
+*OldCalendarGetHeader = \&GetHeader;
+*GetHeader = \&NewCalendarGetHeader;
 
 sub NewCalendarGetHeader {
   my $header = OldCalendarGetHeader(@_);
@@ -237,7 +237,7 @@ sub draw_month {
 }
 
 # formula of Zeller (Julius Christian Johannes Zeller * 1822, + 1899) for countig the day of week
-# only works for all years greater then 0 and can handle 1582 the year Pope Gregor has changed the 
+# only works for all years greater then 0 and can handle 1582 the year Pope Gregor has changed the
 # calculation of times from the Julian calendar to the Gregorian calendar
 sub zeller {
     my $t = shift;

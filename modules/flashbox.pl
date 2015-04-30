@@ -15,8 +15,6 @@ flashbox is easily installable: move this file into the B<wiki/modules/>
 directory of your Oddmuse Wiki.
 
 =cut
-package OddMuse;
-
 AddModuleDescription('flashbox.pl', 'Flashbox Extension');
 
 our ($bol, @MyRules, %RuleOrder);

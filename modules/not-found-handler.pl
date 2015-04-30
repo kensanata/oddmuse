@@ -94,8 +94,8 @@ sub RefreshLinkDb {
 
 # maintain link database
 
-*OldNotFoundHandlerSave = *Save;
-*Save = *NewNotFoundHandlerSave;
+*OldNotFoundHandlerSave = \&Save;
+*Save = \&NewNotFoundHandlerSave;
 
 sub NewNotFoundHandlerSave {
   my @args = @_;
@@ -139,8 +139,8 @@ sub NotFoundHandlerCacheUpdate {
   }
 }
 
-*OldNotFoundHandlerDeletePage = *DeletePage;
-*DeletePage = *NewNotFoundHandlerDeletePage;
+*OldNotFoundHandlerDeletePage = \&DeletePage;
+*DeletePage = \&NewNotFoundHandlerDeletePage;
 
 sub NewNotFoundHandlerDeletePage {
   my $id = shift;

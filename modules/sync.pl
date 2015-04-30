@@ -33,15 +33,15 @@ sub SyncRule {
   return;
 }
 
-*SyncOldSave = *Save;
-*Save = *SyncNewSave;
+*SyncOldSave = \&Save;
+*Save = \&SyncNewSave;
 
 sub SyncNewSave {
   my ($id) = @_;
   SyncOldSave(@_);
   # %Page is now set, but the reply was not yet sent back to the
   # browser
-  my $id = $OpenPageName;
+  my $id = $OpenPageName; # TODO masks earlier declaration
   my $data = $Page{text};
   my $user = $Page{username};
   my $summary = $Page{summary};

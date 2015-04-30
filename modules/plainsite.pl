@@ -23,8 +23,8 @@ AddModuleDescription('plainsite.pl', 'PlainSite Module');
 our ($q, $OpenPageName, $HomePage, $CommentsPrefix, $RCName);
 our ($PlainSiteAllowCommentLink);
 
-*OldGetFooterLinks = *GetFooterLinks;
-*GetFooterLinks = *PlainSiteGetFooterLinks;
+*OldGetFooterLinks = \&GetFooterLinks;
+*GetFooterLinks = \&PlainSiteGetFooterLinks;
 
 sub PlainSiteGetFooterLinks {
 	return if (GetParam('action','') eq 'static');
@@ -54,8 +54,8 @@ sub CommentFooterLink {
   return @elements ? $q->span({-class=>'edit bar'}, $q->br(), @elements) : '';
 }
 
-*OldGetFooterTimestamp = *GetFooterTimestamp;
-*GetFooterTimestamp = *PlainSiteGetFooterTimestamp;
+*OldGetFooterTimestamp = \&GetFooterTimestamp;
+*GetFooterTimestamp = \&PlainSiteGetFooterTimestamp;
 
 sub PlainSiteGetFooterTimestamp {
 	return if (GetParam('action','') eq 'static');
@@ -66,8 +66,8 @@ sub PlainSiteGetFooterTimestamp {
 	}
 }
 
-*OldGetRcRss = *GetRcRss;
-*GetRcRss = *PlainSiteGetRcRss;
+*OldGetRcRss = \&GetRcRss;
+*GetRcRss = \&PlainSiteGetRcRss;
 
 sub PlainSiteGetRcRss {
 	# Have Rss point to HomePage rather than RecentChanges, since we want
@@ -76,7 +76,7 @@ sub PlainSiteGetRcRss {
 	OldGetRcRss(@_);
 }
 
-*GetNearLinksUsed = *PlainSiteGetNearLinksUsed;
+*GetNearLinksUsed = \&PlainSiteGetNearLinksUsed;
 
 sub PlainSiteGetNearLinksUsed {
 	return;
@@ -87,8 +87,8 @@ sub PlainSiteGetNearLinksUsed {
 # Must load before clustermap module if that module is used
 
 
-*OldPrintRc = *PrintRc;
-*PrintRc = *PlainSitePrintRc;
+*OldPrintRc = \&PrintRc;
+*PrintRc = \&PlainSitePrintRc;
 
 sub PlainSitePrintRc{
 	my ($id, $standalone) = @_;
@@ -104,7 +104,7 @@ sub PlainSiteRcHtml {
 	if (!(UserIsAdmin() or UserIsEditor())) {
 		return;
 	} else {
-		*GetRcHtml = *OldGetRcHtml;
+		*GetRcHtml = \&OldGetRcHtml;
 		return OldGetRcHtml();
 	}
 }

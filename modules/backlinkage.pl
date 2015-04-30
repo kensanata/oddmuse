@@ -100,7 +100,7 @@ sub GetBackLink {
 
     our ($BacklinkBanned);
     $BacklinkBanned = "HomePage|ScratchPad" if !$BacklinkBanned;
-    tie my %backhash, 'MLDBM', $backfile, O_CREAT|O_RDWR, 0644 or die "Cannot open file $backfile $!\n";
+    tie my %backhash, 'MLDBM', $backfile, O_CREAT|O_RDWR, oct(644) or die "Cannot open file $backfile $!\n";
 
     # Search database for matches
     while ( my ($source, $hashes) = each %backhash ) {

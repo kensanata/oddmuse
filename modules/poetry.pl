@@ -19,8 +19,6 @@ poetry is easily installable; move this file into the B<wiki/modules/>
 directory for your Oddmuse Wiki.
 
 =cut
-package OddMuse;
-
 AddModuleDescription('poetry.pl', 'Poetry Extension');
 
 our ($q, $bol, %RuleOrder, @MyRules);

@@ -45,8 +45,6 @@ for posts having such a subtitle.
 # FIXME: to add to Hibernal: correct Oddmuse's failure to link comment author-names
 #     having spaces; e.g., entering a username of "David Curry" should auto-link to
 #     "David_Curry".
-package OddMuse;
-
 AddModuleDescription('hibernal.pl', 'Hibernal Extension');
 
 our ($q, $bol, %Action, %Page, $OpenPageName, %IndexHash, $Now, $Today, %RuleOrder, @MyRules, @MyInitVariables, $CommentsPrefix, $NewComment, $DeletedPage, $CalAsTable);
@@ -373,8 +371,8 @@ sub HibernalInit {
   # correctly piggyback our redefinition of the GetHeader() function on the
   # back of the SmartTitles refefinition, we forceably reassign that typeglob
   # here, rather than outside a function definition as we'd commonly do.
-  *GetHibernalHeaderOld = *GetHeader;
-  *GetHeader            = *GetHibernalHeader;
+  *GetHibernalHeaderOld = \&GetHeader;
+  *GetHeader            = \&GetHibernalHeader;
 
   # Provide default values for comments authorship markup, depending on which
   # other markup modules - if any - are installed.
@@ -530,7 +528,7 @@ hibernal provides the following functions (for implementing those actions).
 =cut
 
 # ....................{ CORE REFACTORS                     }....................
-*AddComment = *AddHibernalComment;
+*AddComment = \&AddHibernalComment;
 
 =head2 AddHibernalComment
 
@@ -727,7 +725,8 @@ This function should, probably, be the C<JournalSort>'s default implementation.
 =cut
 sub SortHibernalPostNames {
   my ($A, $B) = ($a, $b);
-  map { s~^$CommentsPrefix~~ or $_ .= 'z' } ($A, $B);
+  $A .= 'z' unless $A =~ s/^$CommentsPrefix//;
+  $B .= 'z' unless $B =~ s/^$CommentsPrefix//;
   $B cmp $A;
 }
 

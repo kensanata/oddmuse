@@ -30,8 +30,8 @@ sub SvgInitVariables {
     unless grep {$_ eq $SvgMimeType} @UploadTypes;
 }
 
-*OldSvgGetDownloadLink = *GetDownloadLink;
-*GetDownloadLink = *NewSvgGetDownloadLink;
+*OldSvgGetDownloadLink = \&GetDownloadLink;
+*GetDownloadLink = \&NewSvgGetDownloadLink;
 
 sub NewSvgGetDownloadLink {
   my ($name, $image, $revision, $alt) = @_;
@@ -68,8 +68,8 @@ sub SvgDimensions {
   return $x, $y;
 }
 
-*OldSvgGetEditForm = *GetEditForm;
-*GetEditForm = *NewSvgGetEditForm;
+*OldSvgGetEditForm = \&GetEditForm;
+*GetEditForm = \&NewSvgGetEditForm;
 
 sub NewSvgGetEditForm {
   my $html = OldSvgGetEditForm(@_);

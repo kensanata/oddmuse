@@ -25,14 +25,14 @@ AddModuleDescription('show-comments.pl', 'Comment Pages');
 
 our (%Page, $OpenPageName, $CommentsPrefix, $CollectingJournal);
 
-*OldPrintJournal = *PrintJournal;
-*PrintJournal = *NewPrintJournal;
+*OldPrintJournal = \&PrintJournal;
+*PrintJournal = \&NewPrintJournal;
 
 sub NewPrintJournal {
   my ($num, $regexp, $mode) = @_;
   if (!$CollectingJournal) {
     $CollectingJournal = 1;
-    $regexp = "^\d\d\d\d-\d\d-\d\d" unless $regexp;
+    $regexp = '^\d\d\d\d-\d\d-\d\d' unless $regexp;
     $num = 10 unless $num;
     my @pages = (grep(/$regexp/, AllPagesList()));
     if (defined &JournalSort) {
@@ -42,14 +42,16 @@ sub NewPrintJournal {
       # Begin modifications to PrintJournal
       if ($mode eq 'reverse') {
         @pages = sort {
-          my ($A,$B) = ($a,$b);
-          map {s/^$CommentsPrefix// and $_.='z'} ($A,$B);
+          my ($A, $B) = ($a, $b);
+          $A .= 'z' unless $A =~ s/^$CommentsPrefix//;
+          $B .= 'z' unless $B =~ s/^$CommentsPrefix//;
           $B cmp $A;
         } @pages;
       } else {
         @pages = sort {
-          my ($A,$B) = ($a,$b);
-          map {s/^$CommentsPrefix// or $_.='z'} ($A,$B);
+          my ($A, $B) = ($a, $b);
+          $A .= 'z' unless $A =~ s/^$CommentsPrefix//;
+          $B .= 'z' unless $B =~ s/^$CommentsPrefix//;
           $B cmp $A;
         } @pages;
       }

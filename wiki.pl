@@ -52,7 +52,7 @@ $CommentsPrefix, $CommentsPattern, @UploadTypes, $AllNetworkFiles, $UsePathInfo,
 %PlainTextPages, $RssInterwikiTranslate, $UseCache, $Counter, $ModuleDir, $FullUrlPattern, $SummaryDefaultLength,
 $FreeInterLinkPattern, %InvisibleCookieParameters, %AdminPages, $UseQuestionmark, $JournalLimit, $LockExpiration, $RssStrip,
 %LockExpires, @IndexOptions, @Debugging, $DocumentHeader, %HtmlEnvironmentContainers, @MyAdminCode, @MyFooters,
-@MyInitVariables, @MyMacros, @MyMaintenance, @MyRules);
+@MyInitVariables, @MyMacros, @MyMaintenance, @MyRules, $PageNameLimit);
 
 # Internal variables:
 our (%Page, %InterSite, %IndexHash, %Translate, %OldCookie, $FootnoteNumber, $OpenPageName, @IndexList, $Message, $q, $Now,
@@ -155,6 +155,7 @@ $HtmlHeaders      = '';        	# Additional stuff to put in the HTML <head> sec
 $IndentLimit      = 20;        	# Maximum depth of nested lists
 $LanguageLimit     = 3;        	# Number of matches req. for each language
 $JournalLimit    = 200;        	# how many pages can be collected in one go?
+$PageNameLimit   = 120;        	# max length of page name in bytes
 $DocumentHeader = qq(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN")
   . qq( "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n)
   . qq(<html xmlns="http://www.w3.org/1999/xhtml">);
@@ -1342,7 +1343,8 @@ sub DoBrowseRequest {
 sub ValidId { # hack alert: returns error message if invalid, and unfortunately the empty string if valid!
   my $id = FreeToNormal(shift);
   return T('Page name is missing') unless $id;
-  return Ts('Page name is too long: %s', $id) if length($id) > 120;
+  require bytes;
+  return Ts('Page name is too long: %s', $id) if bytes::length($id) > $PageNameLimit;
   return Ts('Invalid Page %s (must not end with .db)', $id) if $id =~ m|\.db$|;
   return Ts('Invalid Page %s (must not end with .lck)', $id) if $id =~ m|\.lck$|;
   return Ts('Invalid Page %s', $id) if $FreeLinks ? $id !~ m|^$FreeLinkPattern$| : $id !~ m|^$LinkPattern$|;
@@ -2207,7 +2209,6 @@ sub GetRCLink {
 sub GetHeader {
   my ($id, $title, $oldId, $nocache, $status) = @_;
   my $embed = GetParam('embed', $EmbedWiki);
-  my $alt = T('[Home]');
   my $result = GetHttpHeader('text/html', $nocache, $status);
   if ($oldId) {
     $Message .= $q->p('(' . Ts('redirected from %s', GetEditLink($oldId, $oldId)) . ')');
@@ -2217,10 +2218,16 @@ sub GetHeader {
     $result .= $q->div({-class=>'header'}, $q->div({-class=>'message'}, $Message)) if $Message;
     return $result;
   }
-  $result .= $q->start_div({-class=>'header'});
+  $result .= GetHeaderDiv($id, $title, $oldId, $embed);
+  return $result . $q->start_div({-class=>'wrapper'});
+}
+
+sub GetHeaderDiv {
+  my ($id, $title, $oldId, $embed) = @_;
+  my $result .= $q->start_div({-class=>'header'});
   if (not $embed and $LogoUrl) {
     my $url = $IndexHash{$LogoUrl} ? GetDownloadLink($LogoUrl, 2) : $LogoUrl;
-    $result .= ScriptLink(UrlEncode($HomePage), $q->img({-src=>$url, -alt=>$alt, -class=>'logo'}), 'logo');
+    $result .= ScriptLink(UrlEncode($HomePage), $q->img({-src=>$url, -alt=>T('[Home]'), -class=>'logo'}), 'logo');
   }
   $result .= $q->start_div({-class=>'menu'});
   if (GetParam('toplinkbar', $TopLinkBar) != 2) {
@@ -2237,7 +2244,8 @@ sub GetHeader {
   $result .= $q->end_div();
   $result .= $q->div({-class=>'message'}, $Message) if $Message;
   $result .= GetHeaderTitle($id, $title, $oldId);
-  return $result . $q->end_div() . $q->start_div({-class=>'wrapper'});
+  $result .= $q->end_div();
+  return $result;
 }
 
 sub GetHeaderTitle {
@@ -2293,7 +2301,7 @@ sub Cookie {
   my ($changed, $visible, %params) = CookieData(); # params are URL encoded
   if ($changed) {
     my $cookie = join(UrlEncode($FS), %params); # no CTL in field values
-    my $result = $q->cookie(-name=>$CookieName, -value=>$cookie, -expires=>'+2y');
+    my $result = $q->cookie(-name=>$CookieName, -value=>$cookie, -expires=>'+2y', secure=>$ENV{'HTTPS'}, httponly=>$ENV{'HTTPS'});
     if ($visible) {
       $Message .= $q->p(T('Cookie: ') . $CookieName . ', '
 			. join(', ', map {$_ . '=' . $params{$_}} keys(%params)));
@@ -2735,7 +2743,7 @@ sub GetPageFile {
 
 sub GetKeepFile {
   my ($id, $revision) = @_; die "No revision for $id" unless $revision; #FIXME
-  return "$KeepDir/$id/$revision.kp";
+  return GetKeepDir($id) . "/$revision.kp";
 }
 
 sub GetKeepDir {
@@ -2767,7 +2775,7 @@ sub SaveKeepFile {
   delete $Page{'diff-minor'};
   $Page{'keep-ts'} = $Now;  # expire only $KeepDays from $Now!
   CreateDir($KeepDir);
-  CreateDir("$KeepDir/$OpenPageName");
+  CreateDir(GetKeepDir($OpenPageName));
   WriteStringToFile(GetKeepFile($OpenPageName, $Page{revision}), EncodePage(%Page));
 }
 
@@ -3093,27 +3101,31 @@ sub DoPassword {
   my $id = shift;
   print GetHeader('', T('Password')), $q->start_div({-class=>'content password'});
   print $q->p(T('Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.'));
-  if (UserIsAdmin()) {
-    print $q->p(T('You are currently an administrator on this site.'));
-  } elsif (UserIsEditor()) {
-    print $q->p(T('You are currently an editor on this site.'));
+  if (not $AdminPass and not $EditPass) {
+    print $q->p(T('This site does not use admin or editor passwords.'));
   } else {
-    print $q->p(T('You are a normal user on this site.'));
-    if ($AdminPass or $EditPass) {
-      print $q->p(T('Your password does not match any of the administrator or editor passwords.'));
+    if (UserIsAdmin()) {
+      print $q->p(T('You are currently an administrator on this site.'));
+    } elsif (UserIsEditor()) {
+      print $q->p(T('You are currently an editor on this site.'));
+    } else {
+      print $q->p(T('You are a normal user on this site.'));
+      if (not GetParam('pwd')) {
+	print $q->p(T('You do not have a password set.'));
+      } else {
+	print $q->p(T('Your password does not match any of the administrator or editor passwords.'));
+      }
     }
-  }
-  if ($AdminPass or $EditPass) {
     print GetFormStart(undef, undef, 'password'),
       $q->p(GetHiddenValue('action', 'password'), T('Password:'), ' ',
-      $q->password_field(-name=>'pwd', -size=>20, -maxlength=>50),
-      $q->hidden(-name=>'id', -value=>$id),
-      $q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save'))), $q->end_form;
-  } else {
-    print $q->p(T('This site does not use admin or editor passwords.'));
+	    $q->password_field(-name=>'pwd', -size=>20, -maxlength=>64),
+	    $q->hidden(-name=>'id', -value=>$id),
+	    $q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save'))),
+      $q->end_form;
   }
   if ($id) {
-    print $q->p(ScriptLink('action=browse;id=' . UrlEncode($id) . '&time=' . time, T('Return to ' . NormalToFree($id))));
+    print $q->p(ScriptLink('action=browse;id=' . UrlEncode($id) . ';time=' . time,
+			   T('Return to ' . NormalToFree($id))));
   }
   print $q->end_div();
   PrintFooter();
@@ -3271,15 +3283,27 @@ sub AllPagesList {
   my $refresh = GetParam('refresh', 0);
   return @IndexList if @IndexList and not $refresh;
   SetParam('refresh', 0) if $refresh;
-  if (not $refresh and -f $IndexFile) {
-    my ($status, $rawIndex) = ReadFile($IndexFile); # not fatal
-    if ($status) {
-      @IndexList = split(/ /, $rawIndex);
-      %IndexHash = map {$_ => 1} @IndexList;
-      return @IndexList;
-    }
-    # If open fails just refresh the index
+  return @IndexList if not $refresh and -f $IndexFile and ReadIndex();
+  # If open fails just refresh the index
+  RefreshIndex();
+  return @IndexList;
+}
+
+sub ReadIndex {
+  my ($status, $rawIndex) = ReadFile($IndexFile); # not fatal
+  if ($status) {
+    @IndexList = split(/ /, $rawIndex);
+    %IndexHash = map {$_ => 1} @IndexList;
+    return @IndexList;
   }
+  return;
+}
+
+sub WriteIndex {
+  WriteStringToFile($IndexFile, join(' ', @IndexList));
+}
+
+sub RefreshIndex {
   @IndexList = ();
   %IndexHash = ();
   # If file exists and cannot be changed, error!
@@ -3291,9 +3315,15 @@ sub AllPagesList {
     push(@IndexList, $id);
     $IndexHash{$id} = 1;
   }
-  WriteStringToFile($IndexFile, join(' ', @IndexList)) if $locked;
+  WriteIndex() if $locked;
   ReleaseLockDir('index') if $locked;
-  return @IndexList;
+}
+
+sub AddToIndex {
+  my ($id) = @_;
+  $IndexHash{$id} = 1;
+  @IndexList = sort(keys %IndexHash);
+  WriteIndex();
 }
 
 sub DoSearch {
@@ -3692,11 +3722,7 @@ sub Save {      # call within lock, with opened page
     WriteStringToFile(GetLockedPageFile($id), 'LockOnCreation');
   }
   WriteRcLog($id, $summary, $minor, $revision, $user, $host, $languages, GetCluster($new));
-  if ($revision == 1) {
-    $IndexHash{$id} = 1;
-    @IndexList = sort(keys %IndexHash);
-    WriteStringToFile($IndexFile, join(' ', @IndexList));
-  }
+  AddToIndex($id) if ($revision == 1)
 }
 
 sub TouchIndexFile {

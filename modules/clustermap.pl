@@ -45,8 +45,8 @@ $PrintTOCAnchor = 0;
 
 %ClusterMap = ();
 
-*OldPrintRcHtml = *PrintRcHtml;
-*PrintRcHtml = *ClusterMapPrintRcHtml;
+*OldPrintRcHtml = \&PrintRcHtml;
+*PrintRcHtml = \&ClusterMapPrintRcHtml;
 
 push(@MyAdminCode, \&ClusterMapAdminRule);
 
@@ -183,14 +183,13 @@ sub CreateClusterMap {
 
 sub ClusterMapPrintRcHtml {
 	my ( @options ) = @_;
-	my $page = "";
 	my $cluster = GetParam('rcclusteronly');
 
 	if ($cluster ne "") {
 		CreateClusterMap();
 		print "Pages in this cluster:";
 		print "<ul>";
-		foreach $page (sort keys %{$ClusterMap{$cluster}}) {
+		foreach my $page (sort keys %{$ClusterMap{$cluster}}) {
 			my $title = $page;
 			$title =~ s/_/ /g;
 			print "<li>" . ScriptLink($page, $title, 'local') . "</li>";
@@ -220,8 +219,8 @@ sub ClusterMapAdminRule {
 	push(@$menuref, ScriptLink('action=unclustered', T('Pages without a Cluster'), 'unclustered'));
 }
 
-*OldBrowseResolvedPage = *BrowseResolvedPage;
-*BrowseResolvedPage = *ClusterMapBrowseResolvedPage;
+*OldBrowseResolvedPage = \&BrowseResolvedPage;
+*BrowseResolvedPage = \&ClusterMapBrowseResolvedPage;
 
 sub ClusterMapBrowseResolvedPage {
 	my $title = shift;
@@ -250,8 +249,8 @@ sub ClusterMapBrowseResolvedPage {
 	}
 }
 
-*OldPrintWikiToHTML = *PrintWikiToHTML;
-*PrintWikiToHTML = *ClusterMapPrintWikiToHTML;
+*OldPrintWikiToHTML = \&PrintWikiToHTML;
+*PrintWikiToHTML = \&ClusterMapPrintWikiToHTML;
 
 sub ClusterMapPrintWikiToHTML {
 	my ($pageText, $savecache, $revision, $islocked) = @_;

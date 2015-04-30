@@ -114,8 +114,8 @@ that will be added to BannedHosts.
 
 =cut
 
-*OldBanContributorsWriteRcLog = *WriteRcLog;
-*WriteRcLog = *NewBanContributorsWriteRcLog;
+*OldBanContributorsWriteRcLog = \&WriteRcLog;
+*WriteRcLog = \&NewBanContributorsWriteRcLog;
 
 sub NewBanContributorsWriteRcLog {
   my ($tag, $id, $to) = @_;

@@ -47,8 +47,8 @@ sub FaqRule {
   return;
 }
 
-*OldFaqGetHeader = *GetHeader;
-*GetHeader = *NewFaqGetHeader;
+*OldFaqGetHeader = \&GetHeader;
+*GetHeader = \&NewFaqGetHeader;
 
 sub NewFaqGetHeader {
   my ($id) = @_;

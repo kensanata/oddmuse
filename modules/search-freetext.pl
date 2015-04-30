@@ -226,8 +226,8 @@ sub UpdateSearchFreeTextIndex {
   }
 }
 
-*OldSearchFreeTextSave = *Save;
-*Save = *NewSearchFreeTextSave;
+*OldSearchFreeTextSave = \&Save;
+*Save = \&NewSearchFreeTextSave;
 
 sub NewSearchFreeTextSave { # called within a lock!
   OldSearchFreeTextSave(@_);
@@ -321,7 +321,7 @@ because the page will be indexed under the key C<foo_bar>.
 =cut
 
 # override the standard printing of results
-*SearchResultCount = *SearchFreeTextNop;
+*SearchResultCount = \&SearchFreeTextNop;
 
 sub SearchFreeTextNop { '' };
 
@@ -330,8 +330,8 @@ sub SearchFreeTextNop { '' };
 my $SearchFreeTextNum = 10;  # results per page
 my $SearchFreeTextMax = 10;  # max. number of pages
 
-*OldSearchFreeTextTitleAndBody = *SearchTitleAndBody;
-*SearchTitleAndBody = *NewSearchFreeTextTitleAndBody;
+*OldSearchFreeTextTitleAndBody = \&SearchTitleAndBody;
+*SearchTitleAndBody = \&NewSearchFreeTextTitleAndBody;
 
 sub NewSearchFreeTextTitleAndBody {
   return OldSearchFreeTextTitleAndBody(@_) if GetParam('old', 0);
@@ -525,8 +525,8 @@ sub SearchFreeTextDB {
 
 # highlighting changes if new search is used
 
-*OldSearchFreeTextNewSearchRegexp = *SearchRegexp;
-*SearchRegexp = *NewSearchFreeTextNewSearchRegexp;
+*OldSearchFreeTextNewSearchRegexp = \&SearchRegexp;
+*SearchRegexp = \&NewSearchFreeTextNewSearchRegexp;
 
 sub NewSearchFreeTextNewSearchRegexp {
   return OldSearchFreeTextNewSearchRegexp(@_) if GetParam('old', 0);
@@ -537,8 +537,8 @@ sub NewSearchFreeTextNewSearchRegexp {
 
 # tagging of uploaded files
 
-*OldSearchFreePrintFooter = *PrintFooter;
-*PrintFooter = *NewSearchFreePrintFooter;
+*OldSearchFreePrintFooter = \&PrintFooter;
+*PrintFooter = \&NewSearchFreePrintFooter;
 
 sub NewSearchFreePrintFooter {
   my ($id, $rev, $comment) = @_;

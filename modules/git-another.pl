@@ -15,8 +15,6 @@
 
 use strict;
 
-package OddMuse;
-
 AddModuleDescription('git-another.pl', 'Another Git Extension');
 
 use Cwd;
@@ -60,8 +58,8 @@ sub RenderHtmlCacheWithoutPrinting { # requires an open page
   }
 }
 
-*GitOldSave = *Save;
-*Save = *GitNewSave;
+*GitOldSave = \&Save;
+*Save = \&GitNewSave;
 
 sub GitNewSave {
   GitInitRepository();
