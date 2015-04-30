@@ -22,8 +22,8 @@ AddModuleDescription('search-shortcut.pl', 'Comments on Searching');
 
 our ($FullUrl);
 
-*OldGetHeader = *GetHeader;
-*GetHeader = *NewGetHeader;
+*OldGetHeader = \&GetHeader;
+*GetHeader = \&NewGetHeader;
 
 sub NewGetHeader {
   my $html = OldGetHeader(@_);

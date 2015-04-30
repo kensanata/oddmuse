@@ -58,8 +58,8 @@ input[name="Preview"] { display: none; }
   }
 }
 
-*OldFckImproveDiff = *ImproveDiff;
-*ImproveDiff = *NewFckImproveDiff;
+*OldFckImproveDiff = \&ImproveDiff;
+*ImproveDiff = \&NewFckImproveDiff;
 
 sub NewFckImproveDiff {
   my $old = OldFckImproveDiff(@_);

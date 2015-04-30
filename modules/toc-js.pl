@@ -14,8 +14,6 @@
 
 use strict;
 
-package OddMuse;
-
 AddModuleDescription('toc-js.pl', 'Javascript Table of Contents Extension');
 
 our ($HtmlHeaders, @MyInitVariables);

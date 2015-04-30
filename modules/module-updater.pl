@@ -17,8 +17,6 @@ use strict;
 use File::Basename;
 use File::Copy;
 
-package OddMuse;
-
 AddModuleDescription('module-updater.pl', 'Module Updater Extension');
 
 our ($q, %Action, @MyAdminCode, $TempDir, $ModuleDir);

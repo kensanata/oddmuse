@@ -29,8 +29,8 @@ $CookieParameters{trail} = '';
 $InvisibleCookieParameters{trail} = 1;
 my @PageTrail;
 
-*OldPageTrailBrowsePage = *BrowsePage;
-*BrowsePage = *NewPageTrailBrowsePage;
+*OldPageTrailBrowsePage = \&BrowsePage;
+*BrowsePage = \&NewPageTrailBrowsePage;
 
 sub NewPageTrailBrowsePage {
   my ($id, @rest) = @_;
@@ -49,8 +49,8 @@ sub UpdatePageTrail {
   @PageTrail = @trail;
 }
 
-*OldPageTrailGetGotoBar = *GetGotoBar;
-*GetGotoBar = *NewPageTrailGetGotoBar;
+*OldPageTrailGetGotoBar = \&GetGotoBar;
+*GetGotoBar = \&NewPageTrailGetGotoBar;
 
 sub NewPageTrailGetGotoBar {
   my $bar = OldPageTrailGetGotoBar(@_);

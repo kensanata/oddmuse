@@ -14,11 +14,9 @@ creole is easily installable; move this file into the B<wiki/modules/>
 directory for your Oddmuse Wiki.
 
 =cut
-package OddMuse;
-
 AddModuleDescription('creole.pl', 'Creole Markup Extension');
 
-our ($q, $bol, %InterSite, $FreeLinkPattern, $FullUrlPattern, $FreeLinkPattern, $FreeInterLinkPattern, $InterSitePattern, @MyRules, %RuleOrder, @MyInitVariables, @HtmlStack, @HtmlAttrStack);
+our ($q, $bol, %InterSite, $FullUrlPattern, $FreeLinkPattern, $FreeInterLinkPattern, $InterSitePattern, @MyRules, %RuleOrder, @MyInitVariables, @HtmlStack, @HtmlAttrStack);
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -467,7 +465,7 @@ sub CreoleListAndNewLineRule {
   # # numbered list
   # * bullet list (nestable; needs space when nested to disambiguate from bold)
   if (($bol             and m/\G[ \t]*([#*])[ \t]*/cg) or
-      ($is_in_list_item and m/\G[ \t]*\n+[ \t]*(#+)[ \t]*/cg) or 
+      ($is_in_list_item and m/\G[ \t]*\n+[ \t]*(#+)[ \t]*/cg) or
       ($is_in_list_item and m/\G[ \t]*\n+[ \t]*(\*+)[ \t]+/cg)) {
     # Note: the first line of this return statement is --not-- equivalent to:
     # "return CloseHtmlEnvironmentUntil('li')", as that line does not permit
@@ -563,8 +561,8 @@ sub GetCreoleLinkHtml {
 }
 
 # ....................{ FUNCTIONS                          }....................
-*RunMyRulesCreoleOld = *RunMyRules;
-*RunMyRules =          *RunMyRulesCreole;
+*RunMyRulesCreoleOld = \&RunMyRules;
+*RunMyRules =          \&RunMyRulesCreole;
 
 =head2 RunMyRulesCreole
 

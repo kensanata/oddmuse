@@ -55,7 +55,7 @@ sub DoStatic {
 	%StaticFiles = ();
 	my $id = GetParam('id', '');
 	if ($id) {
-		local *GetDownloadLink = *StaticGetDownloadLink;
+		local *GetDownloadLink = \&StaticGetDownloadLink;
 		StaticWriteFile($id);
 	} else {
 		StaticWriteFiles();
@@ -80,7 +80,7 @@ sub StaticMimeTypes {
 
 sub StaticWriteFiles {
 	my $raw = GetParam('raw', 0);
-	local *GetDownloadLink = *StaticGetDownloadLink;
+	local *GetDownloadLink = \&StaticGetDownloadLink;
 	foreach my $id (AllPagesList()) {
 		SetParam('rcclusteronly',0);
 		if (! grep(/^$id$/,@StaticIgnoredPages)) {
@@ -162,9 +162,9 @@ sub StaticHtml {
 	my $title = $id;
 	$title =~ s/_/ /g;
 	my $result = '';
-	
-	local *GetHttpHeader = *StaticGetHttpHeader;
-	local *GetCommentForm = *StaticGetCommentForm;
+
+	local *GetHttpHeader = \&StaticGetHttpHeader;
+	local *GetCommentForm = \&StaticGetCommentForm;
 	%NearLinksUsed = ();
 
 	# Isolate our output
@@ -194,8 +194,8 @@ sub StaticHtml {
 	return;
 }
 
-*StaticFilesOldDoPost = *DoPost;
-*DoPost = *StaticFilesNewDoPost;
+*StaticFilesOldDoPost = \&DoPost;
+*DoPost = \&StaticFilesNewDoPost;
 
 sub StaticFilesNewDoPost {
 	my $id = FreeToNormal(shift);
@@ -226,8 +226,8 @@ sub StaticFilesNewDoPost {
 	}
 }
 
-*StaticOldDeletePage = *DeletePage;
-*DeletePage = *StaticNewDeletePage;
+*StaticOldDeletePage = \&DeletePage;
+*DeletePage = \&StaticNewDeletePage;
 
 sub StaticNewDeletePage {
 	my $id = shift;
@@ -346,7 +346,7 @@ sub AddLinkedFilesToQueue {
 sub StaticWriteLinkedFiles {
 	my $raw = GetParam('raw', 0);
 	my $writeRC = 0;
-	local *GetDownloadLink = *StaticGetDownloadLink;
+	local *GetDownloadLink = \&StaticGetDownloadLink;
 
 	foreach my $id (@StaticQueue) {
 		if (! grep(/^$id$/,@StaticIgnoredPages)) {
@@ -394,8 +394,8 @@ sub AddNewFilesToQueue {
 
 # Make rollback compatible
 
-*StaticOldDoRollback = *DoRollback;
-*DoRollback = *StaticNewDoRollback;
+*StaticOldDoRollback = \&DoRollback;
+*DoRollback = \&StaticNewDoRollback;
 $Action{rollback} = \&StaticNewDoRollback;
 
 # Delete the static file so that changes made during a rollback are propogated
@@ -436,8 +436,8 @@ sub StaticNewDoRollback {
   PrintFooter();
 }
 
-*StaticOldDespamPage = *DespamPage;
-*DespamPage = *StaticNewDespamPage;
+*StaticOldDespamPage = \&DespamPage;
+*DespamPage = \&StaticNewDespamPage;
 
 sub StaticNewDespamPage {
   my $rule = shift;

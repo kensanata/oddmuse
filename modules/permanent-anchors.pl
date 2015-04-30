@@ -167,8 +167,8 @@ anchors.
 
 =cut
 
-*OldPermanentAnchorsDeletePage = *DeletePage;
-*DeletePage = *NewPermanentAnchorsDeletePage;
+*OldPermanentAnchorsDeletePage = \&DeletePage;
+*DeletePage = \&NewPermanentAnchorsDeletePage;
 
 sub NewPermanentAnchorsDeletePage {
   my $status = OldPermanentAnchorsDeletePage(@_);
@@ -176,8 +176,8 @@ sub NewPermanentAnchorsDeletePage {
   DeletePermanentAnchors(@_); # the only parameter is $id
 }
 
-*OldPermanentAnchorsSave = *Save;
-*Save = *NewPermanentAnchorsSave;
+*OldPermanentAnchorsSave = \&Save;
+*Save = \&NewPermanentAnchorsSave;
 
 sub NewPermanentAnchorsSave {
   OldPermanentAnchorsSave(@_);
@@ -212,8 +212,8 @@ page foo also exists.”
 
 =cut
 
-*OldPermanentAnchorsResolveId = *ResolveId;
-*ResolveId = *NewPermanentAnchorsResolveId;
+*OldPermanentAnchorsResolveId = \&ResolveId;
+*ResolveId = \&NewPermanentAnchorsResolveId;
 
 sub NewPermanentAnchorsResolveId {
   my $id = shift;
@@ -234,8 +234,8 @@ automatically allow internal transclusion.
 
 =cut
 
-*OldPermanentAnchorsGetPageContent = *GetPageContent;
-*GetPageContent = *NewPermanentAnchorsGetPageContent;
+*OldPermanentAnchorsGetPageContent = \&GetPageContent;
+*GetPageContent = \&NewPermanentAnchorsGetPageContent;
 
 sub NewPermanentAnchorsGetPageContent {
   my $id = shift;
@@ -274,8 +274,8 @@ browse links from C<GetHistoryLine>.
 
 =cut
 
-*OldPermanentAnchorsGetHistoryLine = *GetHistoryLine;
-*GetHistoryLine = *NewPermanentAnchorsGetHistoryLine;
+*OldPermanentAnchorsGetHistoryLine = \&GetHistoryLine;
+*GetHistoryLine = \&NewPermanentAnchorsGetHistoryLine;
 
 sub NewPermanentAnchorsGetHistoryLine {
   my $id = shift;

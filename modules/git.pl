@@ -25,8 +25,6 @@ subdirectory for your data directory (C<$DataDir>).
 
 =cut
 
-package OddMuse;
-
 =head1 CONFIGURATION
 
 Set these variables in the B<config> file within your data directory.
@@ -92,10 +90,10 @@ sub GitRun {
     # read the temporary file with the output
     close($fh);
     open(STDOUT, ">&", $oldout) or die "Can't dup \$oldout: $!";
-    open(F, '<', $fh) or die "Can't open temp file for reading: $!";
+    open(my $F, '<', $fh) or die "Can't open temp file for reading: $!";
     local $/ = undef; # Read complete files
-    $GitResult = <F>;
-    close(F);
+    $GitResult = <$F>;
+    close($F);
   } else {
     $exitStatus = system($GitBinary, @_);
   }
@@ -125,8 +123,8 @@ sub GitInitRepository {
   GitRun(qw(commit --quiet -m), 'initial import', "--author=Oddmuse <$GitMail>");
 }
 
-*GitOldSave = *Save;
-*Save = *GitNewSave;
+*GitOldSave = \&Save;
+*Save = \&GitNewSave;
 
 sub GitNewSave {
 
@@ -154,8 +152,8 @@ sub GitNewSave {
 	 "--author=$author <$GitMail>", '--', $id);
 }
 
-*GitOldDeletePage = *DeletePage;
-*DeletePage = *GitNewDeletePage;
+*GitOldDeletePage = \&DeletePage;
+*DeletePage = \&GitNewDeletePage;
 
 sub GitNewDeletePage {
   my $error = GitOldDeletePage(@_);

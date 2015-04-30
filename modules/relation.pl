@@ -81,8 +81,8 @@ sub RelationRule {
   return;
 }
 
-*OldRelationPrintFooter = *PrintFooter;
-*PrintFooter = *RelationPrintFooter;
+*OldRelationPrintFooter = \&PrintFooter;
+*PrintFooter = \&RelationPrintFooter;
 
 sub RelationPrintFooter {
   my @params = @_;

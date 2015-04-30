@@ -26,8 +26,6 @@ recaptcha is simply installable; simply:
 =back
 
 =cut
-package OddMuse;
-
 AddModuleDescription('recaptcha.pl', 'ReCaptcha Extension');
 
 # ....................{ CONFIGURATION                      }....................
@@ -146,11 +144,11 @@ sub ReCaptchaInit {
 }
 
 # ....................{ EDITING                            }....................
-*OldReCaptchaGetEditForm = *GetEditForm;
-*GetEditForm = *NewReCaptchaGetEditForm;
+*OldReCaptchaGetEditForm = \&GetEditForm;
+*GetEditForm = \&NewReCaptchaGetEditForm;
 
-*OldReCaptchaGetCommentForm = *GetCommentForm;
-*GetCommentForm = *NewReCaptchaGetCommentForm;
+*OldReCaptchaGetCommentForm = \&GetCommentForm;
+*GetCommentForm = \&NewReCaptchaGetCommentForm;
 
 sub NewReCaptchaGetEditForm {
   return ReCaptchaQuestionAddTo(OldReCaptchaGetEditForm(@_), $_[1]);
@@ -215,8 +213,8 @@ sub ReCaptchaGetQuestionHtml {
 }
 
 # ....................{ POSTING                            }....................
-*OldReCaptchaDoPost = *DoPost;
-*DoPost = *NewReCaptchaDoPost;
+*OldReCaptchaDoPost = \&DoPost;
+*DoPost = \&NewReCaptchaDoPost;
 
 sub NewReCaptchaDoPost {
   my(@params) = @_;

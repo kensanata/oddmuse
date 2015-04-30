@@ -21,8 +21,8 @@ use strict;
 
 AddModuleDescription('pdf.pl', 'PDF Module');
 
-*PdfOldDoBrowseRequest = *DoBrowseRequest;
-*DoBrowseRequest = *PdfDoBrowseRequest;
+*PdfOldDoBrowseRequest = \&DoBrowseRequest;
+*DoBrowseRequest = \&PdfDoBrowseRequest;
 
 our ($q, %Page, $OpenPageName, $ModuleDir, $ScriptName, $SiteName);
 our (@NoLinkToPdf, $pdfDirectory, $pdfProcessCommand, $tempBaseDirectory); # TODO use CamelCase (first capital letter) for public vars
@@ -166,8 +166,8 @@ sub createPDF {
 # If we save a new version of a file, we want to delete the old pdf
 # To save wasted time, don't recreate it until called for
 
-*PdfOldDoPost = *DoPost;
-*DoPost = *PdfNewDoPost;
+*PdfOldDoPost = \&DoPost;
+*DoPost = \&PdfNewDoPost;
 
 sub PdfNewDoPost {
 	my $id = FreeToNormal(shift);
@@ -203,8 +203,8 @@ sub CreateTempDirectory {
 
 # Fix Wiki Links - they have to be fully qualified
 
-*PdfOldCreateWikiLink = *CreateWikiLink;
-*CreateWikiLink = *PdfNewCreateWikiLink;
+*PdfOldCreateWikiLink = \&CreateWikiLink;
+*CreateWikiLink = \&PdfNewCreateWikiLink;
 
 sub PdfNewCreateWikiLink {
 	my $title = shift;
@@ -220,8 +220,8 @@ sub PdfNewCreateWikiLink {
 	}
 }
 
-*PdfOldGetFooterLinks = *GetFooterLinks;
-*GetFooterLinks = *PdfNewGetFooterLinks;
+*PdfOldGetFooterLinks = \&GetFooterLinks;
+*GetFooterLinks = \&PdfNewGetFooterLinks;
 
 sub PdfNewGetFooterLinks {
 	my ($id, $rev) = @_;

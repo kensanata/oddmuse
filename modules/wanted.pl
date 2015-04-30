@@ -18,8 +18,6 @@
 
 use strict;
 
-package OddMuse;
-
 our ($WantedPageName, $WantedPageNameFilter, $WantedPageReferrerFilter);
 
 AddModuleDescription('wanted.pl', 'Wanted Pages Extension');

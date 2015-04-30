@@ -14,8 +14,6 @@
 
 use strict;
 
-package OddMuse;
-
 our ($q, $Message, $HomePage, $SiteName, @MyInitVariables);
 our ($MonitorUser, $MonitorPassword, $MonitorHost,
 	    $MonitorFrom, $MonitorTo, $MonitorRegexp);

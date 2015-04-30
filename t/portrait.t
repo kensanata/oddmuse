@@ -45,8 +45,8 @@ test_page(update_page('headers', "[new]foo\n== one ==\ntext\n== two ==\ntext\n==
 
 remove_module('toc.pl');
 # The next two are necessary so that toc.pl can be reloaded safely later!
-*ApplyRules = *OldTocApplyRules;
-*RunMyRules = *RunMyRulesTocOld;
+*ApplyRules = \&OldTocApplyRules;
+*RunMyRules = \&RunMyRulesTocOld;
 remove_rule(\&TocRule);
 remove_module('usemod.pl');
 remove_rule(\&UsemodRule);

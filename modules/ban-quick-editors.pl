@@ -21,8 +21,8 @@ AddModuleDescription('ban-quick-editors.pl', 'Banning Quick Editors');
 
 our ($Now, %RecentVisitors, $SurgeProtection);
 
-*BanQuickOldUserIsBanned = *UserIsBanned;
-*UserIsBanned = *BanQuickNewUserIsBanned;
+*BanQuickOldUserIsBanned = \&UserIsBanned;
+*UserIsBanned = \&BanQuickNewUserIsBanned;
 
 sub BanQuickNewUserIsBanned {
   my $rule = BanQuickOldUserIsBanned(@_);

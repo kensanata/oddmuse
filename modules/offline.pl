@@ -100,8 +100,8 @@ sub DoOffline {
 }
 
 # Fix redirection.
-*OldOfflineReBrowsePage = *ReBrowsePage;
-*ReBrowsePage = *NewOfflineReBrowsePage;
+*OldOfflineReBrowsePage = \&ReBrowsePage;
+*ReBrowsePage = \&NewOfflineReBrowsePage;
 
 sub NewOfflineReBrowsePage {
   my ($id) = @_;

@@ -52,8 +52,8 @@ sub AnchorsRule {
   return;
 }
 
-*OldAnchorsBrowsePage=*BrowsePage;
-*BrowsePage=*NewAnchorsBrowsePage;
+*OldAnchorsBrowsePage=\&BrowsePage;
+*BrowsePage=\&NewAnchorsBrowsePage;
 
 sub NewAnchorsBrowsePage {
   my ($id) = @_;

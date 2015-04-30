@@ -13,8 +13,6 @@ footnotes is easily installable; move this file into the B<wiki/modules/>
 directory for your Oddmuse Wiki.
 
 =cut
-package OddMuse;
-
 AddModuleDescription('footnotes.pl', 'Footnotes Extension');
 
 our ($q, $bol, @MyRules, @MyInitVariables);
@@ -179,7 +177,7 @@ C<$FootnoteNumber> is the number for another footnote. This module assigns each
 footnote definition a unique number, beginning at "1". Thus, this markup allows
 you to reference one footnote definition in multiple places throughout a page.
 As example, you might write:
-    
+
   History suggests that societal decline does not result from a single cause,
   but rather the confluence of several interwoven causes.((Diamond, Jared. 2005.
   **Collapse: How Societies Choose to Fail or Succeed.** %%Viking, New York.%%))
@@ -193,7 +191,7 @@ As example, you might write:
 
 The final footnote, above, is a reference to the first footnote definition
 rather than a new footnote definition.
-  
+
 =head3 REFERENCING A RANGE OF OTHER FOOTNOTES
 
 footnotes also handles marking resembling:
@@ -222,7 +220,7 @@ definitions in multiple places throughout a page. As example, you might write:
 The final footnotes, above, are a reference to the first two footnote
 definitions followed by a reference to the fourth footnote definition. This
 module visually renders this disjoint list like: "1-2, 4".
-  
+
 =head3 CREATING THE SET OF FOOTNOTES
 
 footnotes also handles markup resembling:
@@ -247,7 +245,7 @@ sub FootnotesRule {
     my $is_adjacent_footnote = defined $3;
 
     # A number range (e.g., "2-5") of references to other footnotes.
-    if ($footnote_text =~ m/^(\d+)-(\d+)$/co) {
+    if ($footnote_text =~ m/^(\d+)-(\d+)$/o) {
       my ($footnote_number_first, $footnote_number_last) = ($1, $2);
       # '&#x2013;', below, is the HTML entity for a Unicode en-dash.
       print $q->a({-href=> '#footnotes' .$footnote_number_first,
@@ -260,7 +258,7 @@ sub FootnotesRule {
                   }, $footnote_number_last.($is_adjacent_footnote ? ', ' : ''));
     }
     # A number (e.g., "5") implying reference to another footnote.
-    elsif ($footnote_text =~ m/^(\d+)$/co) {
+    elsif ($footnote_text =~ m/^(\d+)$/o) {
       my $footnote_number = $1;
       print $q->a({-href=> '#footnotes' .$footnote_number,
                    -title=> 'Footnote #'.$footnote_number,
@@ -302,8 +300,8 @@ sub FootnotesRule {
 }
 
 # ....................{ HTML OUTPUT                        }....................
-*PrintFooterFootnotesOld = *PrintFooter;
-*PrintFooter =             *PrintFooterFootnotes;
+*PrintFooterFootnotesOld = \&PrintFooter;
+*PrintFooter =             \&PrintFooterFootnotes;
 
 =head2 PrintFooterFootnotes
 
@@ -324,7 +322,7 @@ sub PrintFooterFootnotes {
 Prints the list of footnotes.
 
 =cut
-sub PrintFootnotes() {
+sub PrintFootnotes {
   print
      $q->start_div({-class=> 'footnotes'})
     .$q->h2(T($FootnotesHeaderText));

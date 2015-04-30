@@ -40,8 +40,8 @@ sub LangRule {
   return;
 }
 
-*OldLangInitCookie = *InitCookie;
-*InitCookie = *NewLangInitCookie;
+*OldLangInitCookie = \&InitCookie;
+*InitCookie = \&NewLangInitCookie;
 
 sub NewLangInitCookie {
   OldLangInitCookie(@_);
@@ -61,8 +61,8 @@ sub NewLangInitCookie {
   }
 }
 
-*OldLangGetNearLinksUsed = *GetNearLinksUsed;
-*GetNearLinksUsed = *NewLangGetNearLinksUsed;
+*OldLangGetNearLinksUsed = \&GetNearLinksUsed;
+*GetNearLinksUsed = \&NewLangGetNearLinksUsed;
 
 sub NewLangGetNearLinksUsed {
   my $id = shift;

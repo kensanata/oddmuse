@@ -14,8 +14,6 @@
 
 use strict;
 
-package OddMuse;
-
 AddModuleDescription('div-foo.pl', 'Div Foo Extension');
 
 our (@MyRules);

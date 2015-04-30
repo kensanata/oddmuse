@@ -15,8 +15,6 @@
 
 use strict;
 
-package OddMuse;
-
 AddModuleDescription('accesskeys.pl', 'Links With AccessKeys Extension');
 
 our (@MyRules, $FreeLinkPattern);

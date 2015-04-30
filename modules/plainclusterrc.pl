@@ -27,7 +27,7 @@
 AddModuleDescription('plainclusterrc.pl');
 #use vars qw($q);
 
-*GetRcHtml = *PlainGetRcHtml;
+*GetRcHtml = \&PlainGetRcHtml;
 
 sub PlainGetRcHtml {
   my ($html, $inlist);

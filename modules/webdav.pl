@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-# use strict; # TODO namespace:: weirdness
+use strict;
 
 AddModuleDescription('webdav.pl', 'WebDAV Extension');
 
@@ -26,16 +26,16 @@ push(@KnownLocks, 'webdav');
 
 use CGI;
 
-*DavOldDoBrowseRequest = *DoBrowseRequest;
-*DoBrowseRequest = *DavNewDoBrowseRequest;
+*DavOldDoBrowseRequest = \&DoBrowseRequest;
+*DoBrowseRequest = \&DavNewDoBrowseRequest;
 
 sub DavNewDoBrowseRequest {
   my $dav = new OddMuse::DAV;
   $dav->run($q)||DavOldDoBrowseRequest();
 }
 
-*DavOldOpenPage = *OpenPage;
-*OpenPage = *DavNewOpenPage;
+*DavOldOpenPage = \&OpenPage;
+*OpenPage = \&DavNewOpenPage;
 
 sub DavNewOpenPage {
   DavOldOpenPage(@_);
@@ -46,6 +46,7 @@ package OddMuse::DAV;
 
 use strict;
 use warnings;
+no warnings 'once'; # TODO Name "OddMuse::Var" used only once: possible typo ... ?
 use HTTP::Date qw(time2str time2isoz);
 use XML::LibXML;
 use Digest::MD5 qw(md5_base64);
@@ -158,9 +159,9 @@ sub put {
   local *OddMuse::ReBrowsePage;
   OddMuse::AllPagesList();
   if ($OddMuse::IndexHash{$id}) {
-    *OddMuse::ReBrowsePage = *no_content; # modified existing page
+    *OddMuse::ReBrowsePage = \&no_content; # modified existing page
   } else {
-    *OddMuse::ReBrowsePage = *created; # created new page
+    *OddMuse::ReBrowsePage = \&created; # created new page
   }
   OddMuse::DoPost($id); # do the real posting
 }
@@ -205,7 +206,7 @@ sub propfind {
   if ($q->http('HTTP_IF_NONE_MATCH') and GetParam('cache', $OddMuse::UseCache) >= 2
       and $q->http('HTTP_IF_NONE_MATCH') eq md5_base64($OddMuse::LastUpdate
 						       . $req->toString)) {
-    warn "RESPONSE: 304\n\n";
+    warn "RESPONSE: 304\n\n" if $verbose;
     print $q->header( -status       => '304 Not Modified', );
     return;
   }
@@ -236,7 +237,7 @@ sub propfind {
     my $id = OddMuse::GetId();
     # warn "single page, id: $id\n";
     if (not $OddMuse::IndexHash{$id}) {
-      warn "RESPONSE: 404\n\n";
+      warn "RESPONSE: 404\n\n" if $verbose;
       print $q->header( -status       => "404 Not Found", );
       print $OddMuse::NewText;
       return;

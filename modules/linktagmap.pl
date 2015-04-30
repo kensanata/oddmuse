@@ -89,7 +89,7 @@ sub DoLinkTagMap {
 }
 
 sub DoLinkTagSearch {
-    
+
     my $searchedtag = GetParam('linktag');  # get tag parameter
     my $header = Ts($LinkTagSearchTitle, $searchedtag);  # modify page title with requested tag
     print GetHeader('',$header,'');  # print title
@@ -97,7 +97,7 @@ sub DoLinkTagSearch {
     print '<div class="content">';
 
     my $SearchResult = GenerateLinkSearchResult($searchedtag);
-    
+
     print $SearchResult;
     print '</div>';
     PrintFooter();
@@ -181,7 +181,7 @@ sub PrintLinkTagMap {
         <tag[ ]title="(.*?)">
     }{
         my $tag = $1;
-                
+
         "<li id=\"$tag\">$tag</li>\n<ul>";
     }xsge;
 
@@ -219,8 +219,8 @@ sub GetLinkTags { # Retrieve tags (if present) from a link
 
 }
 
-*LinkTagMapOldBrowseResolvedPage = *BrowseResolvedPage;
-*BrowseResolvedPage = *LinkTagMapBrowseResolvedPage;
+*LinkTagMapOldBrowseResolvedPage = \&BrowseResolvedPage;
+*BrowseResolvedPage = \&LinkTagMapBrowseResolvedPage;
 
 sub LinkTagMapBrowseResolvedPage {
 
@@ -235,8 +235,8 @@ sub LinkTagMapBrowseResolvedPage {
 
 }
 
-*LinkTagMapOldPrintWikiToHTML = *PrintWikiToHTML;
-*PrintWikiToHTML = *LinkTagMapPrintWikiToHTML;
+*LinkTagMapOldPrintWikiToHTML = \&PrintWikiToHTML;
+*PrintWikiToHTML = \&LinkTagMapPrintWikiToHTML;
 
 sub LinkTagMapPrintWikiToHTML {
 

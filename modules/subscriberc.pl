@@ -61,10 +61,10 @@ sub Subscribe {
   pos = $oldpos;
   my $html = 'My subscribed ';
   return $html unless @pageslist or @catlist;
-  $html .= 'pages: ' . join(', ', map { s/_/ /g; $_; } @pageslist)
+  $html .= 'pages: ' . join(', ', map { my $x = $_; $x =~ s/_/ /g; $x; } @pageslist)
     if @pageslist;
   $html .= ', ' if @pageslist and @catlist;
-  $html .= 'categories: ' . join(', ', map { s/_/ /g; $_; } @catlist)
+  $html .= 'categories: ' . join(', ', map { my $x = $_; $x =~ s/_/ /g; $x; } @catlist)
     if @catlist;
   return ScriptLink('action=rc;rcfilteronly=' . $regexp, $html);
 }
