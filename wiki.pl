@@ -683,7 +683,7 @@ sub CloseHtmlEnvironments { # close all -- remember to use AddHtmlEnvironment('p
 }
 
 sub CloseHtmlEnvironment {  # close environments up to and including $html_tag
-  my $html = CloseHtmlEnvironmentUntil(@_) if @_ and InElement(@_);
+  my $html = (@_ and InElement(@_)) ? CloseHtmlEnvironmentUntil(@_) : '';
   if (@HtmlStack and (not(@_) or defined $html)) {
     shift(@HtmlAttrStack);
     return $html . '</' . shift(@HtmlStack) . '>';
@@ -3603,7 +3603,7 @@ sub DoPost {
     ReportError(T('Browser reports no file type.'), '415 UNSUPPORTED MEDIA TYPE') unless $type;
     local $/ = undef;		# Read complete files
     my $content = <$file>; # Apparently we cannot count on <$file> to always work within the eval!?
-    my $encoding = 'gzip' if substr($content, 0, 2) eq "\x1f\x8b";
+    my $encoding = substr($content, 0, 2) eq "\x1f\x8b" ? 'gzip' : '';
     eval { require MIME::Base64; $_ = MIME::Base64::encode($content) };
     $string = "#FILE $type $encoding\n" . $_;
   } else {			# ordinary text edit
@@ -3906,7 +3906,8 @@ sub DoPageLock {
   return unless UserIsAdminOrError();
   print GetHeader('', T('Set or Remove page edit lock'));
   my $id = GetParam('id', '');
-  my $fname = GetLockedPageFile($id) if ValidIdOrDie($id);
+  ValidIdOrDie($id);
+  my $fname = GetLockedPageFile($id);
   if (GetParam('set', 1)) {
     WriteStringToFile($fname, 'editing locked.');
   } else {
