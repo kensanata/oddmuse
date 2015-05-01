@@ -2767,7 +2767,8 @@ sub GetKeepFiles {
 }
 
 sub GetKeepRevisions {
-  return sort {$b <=> $a} map { m/([0-9]+)\.kp$/; $1; } GetKeepFiles(shift);
+  my @result = sort {$b <=> $a} map { m/([0-9]+)\.kp$/; $1; } GetKeepFiles(shift);
+  return @result;
 }
 
 # Always call SavePage within a lock.
@@ -3447,7 +3448,8 @@ sub GrepFiltered { # grep is so much faster!!
   }
   close($F);
   return @pages if $?;
-  return sort @result;
+  @result = sort @result;
+  return @result;
 }
 
 sub SearchString {
