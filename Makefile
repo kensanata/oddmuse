@@ -43,6 +43,9 @@ translations: $(TRANSLATIONS)
 	  perl oddtrans -l $$f wiki.pl $(MODULES) > $$f-new && mv $$f-new $$f; \
 	done
 
+test:
+	prove t
+
 # UNTESTED/OBSOLETE: these targets have not been tested in a long time
 # and are potentially obsolete.
 VERSION=oddmuse-$(VERSION_NO)
@@ -156,9 +159,6 @@ deb:
 install:
 	@echo This only installs the deb file, not the script itself.
 	dpkg -i oddmuse*.deb
-
-test:
-	prove t
 
 package-upload: debian-$(VERSION).tar.gz debian-$(VERSION).tar.gz.sig
 	curl -T "{debian-$(VERSION).tar.gz,debian-$(VERSION).tar.gz.sig}" \
