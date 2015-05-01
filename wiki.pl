@@ -1485,8 +1485,8 @@ sub GetRcLines { # starttime, hash of seen pages to use as a second return value
   my %following = ();
   my @result = ();
   # check the first timestamp in the default file, maybe read old log file
-  open(F, '<:encoding(UTF-8)', $RcFile);
-  my $line = <F>;
+  open(my $F, '<:encoding(UTF-8)', $RcFile);
+  my $line = <$F>;
   my ($ts) = split(/$FS/o, $line); # the first timestamp in the regular rc file
   if (not $ts or $ts > $starttime) { # we need to read the old rc file, too
     push(@result, GetRcLinesFor($RcOldFile, $starttime, \%match, \%following));
@@ -1568,8 +1568,8 @@ sub GetRcLinesFor {
         rcclusteronly rcfilteronly match lang followup);
   # parsing and filtering
   my @result = ();
-  open(F, '<:encoding(UTF-8)', $file) or return ();
-  while (my $line = <F>) {
+  open(my $F, '<:encoding(UTF-8)', $file) or return ();
+  while (my $line = <$F>) {
     chomp($line);
     my ($ts, $id, $minor, $summary, $host, $username, $revision,
 	$languages, $cluster) = split(/$FS/o, $line);
@@ -2691,12 +2691,13 @@ sub OpenPage {      # Sets global variables
     %Page = ();
     $Page{ts} = $Now;
     $Page{revision} = 0;
-    if ($id eq $HomePage
-	and (open(F, '<:encoding(UTF-8)', $ReadMe)
-	     or open(F, '<:encoding(UTF-8)', 'README'))) {
-      local $/ = undef;
-      $Page{text} = <F>;
-      close F;
+    if ($id eq $HomePage) {
+      my $F;
+      if (open($F, '<:encoding(UTF-8)', $ReadMe) or open($F, '<:encoding(UTF-8)', 'README')) {
+	local $/ = undef;
+	$Page{text} = <$F>;
+	close $F;
+      }
     }
   }
   $OpenPageName = $id;
@@ -2829,10 +2830,10 @@ sub ExpireKeepFiles {   # call with opened page
 sub ReadFile {
   my $file = shift;
   utf8::encode($file); # filenames are bytes!
-  if (open(IN, '<:encoding(UTF-8)', $file)) {
+  if (open(my $IN, '<:encoding(UTF-8)', $file)) {
     local $/ = undef; # Read complete files
-    my $data=<IN>;
-    close IN;
+    my $data=<$IN>;
+    close $IN;
     return (1, $data);
   }
   return (0, '');
@@ -2851,19 +2852,19 @@ sub ReadFileOrDie {
 sub WriteStringToFile {
   my ($file, $string) = @_;
   utf8::encode($file);
-  open(OUT, '>:encoding(UTF-8)', $file)
+  open(my $OUT, '>:encoding(UTF-8)', $file)
     or ReportError(Ts('Cannot write %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
-  print OUT  $string;
-  close(OUT);
+  print $OUT  $string;
+  close($OUT);
 }
 
 sub AppendStringToFile {
   my ($file, $string) = @_;
   utf8::encode($file);
-  open(OUT, '>>:encoding(UTF-8)', $file)
+  open(my $OUT, '>>:encoding(UTF-8)', $file)
     or ReportError(Ts('Cannot write %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
-  print OUT  $string;
-  close(OUT);
+  print $OUT  $string;
+  close($OUT);
 }
 
 sub CreateDir {
@@ -3395,11 +3396,11 @@ sub PageIsUploadedFile {
   if ($IndexHash{$id}) {
     my $file = GetPageFile($id);
     utf8::encode($file); # filenames are bytes!
-    open(FILE, '<:encoding(UTF-8)', $file)
+    open(my $FILE, '<:encoding(UTF-8)', $file)
       or ReportError(Ts('Cannot open %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
-    while (defined($_ = <FILE>) and $_ !~ /^text: /) {
+    while (defined($_ = <$FILE>) and $_ !~ /^text: /) {
     }          # read lines until we get to the text key
-    close FILE;
+    close $FILE;
     return TextIsFile(substr($_, 6)); # pass "#FILE image/png\n" to the test
   }
 }
@@ -3440,11 +3441,11 @@ sub GrepFiltered { # grep is so much faster!!
   # if we know of any remaining grep incompatibilities we should
   # return @pages here!
   $regexp = quotemeta($regexp);
-  open(F, '-|:encoding(UTF-8)', "grep -rli $regexp '$PageDir' 2>/dev/null");
-  while (<F>) {
+  open(my $F, '-|:encoding(UTF-8)', "grep -rli $regexp '$PageDir' 2>/dev/null");
+  while (<$F>) {
     push(@result, $1) if m/.*\/(.*)\.pg/ and not $found{$1};
   }
-  close(F);
+  close($F);
   return @pages if $?;
   return sort @result;
 }
