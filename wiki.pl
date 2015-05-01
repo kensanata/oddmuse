@@ -910,7 +910,7 @@ sub RSS {
   my $tHistory = T('history');
   my $wikins = 'http://purl.org/rss/1.0/modules/wiki/';
   my $rdfns = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
-  @uris = map { s/^"?(.*?)"?$/$1/; $_; } @uris; # strip quotes of uris
+  @uris = map { my $x = $_; $x =~ s/^"?(.*?)"?$/$1/; $x; } @uris; # strip quotes of uris
   my ($str, %data) = GetRss(@uris);
   foreach my $uri (keys %data) {
     my $data = $data{$uri};
@@ -2358,7 +2358,7 @@ sub GetFeeds {      # default for $HtmlHeaders
 }
 
 sub GetCss {      # prevent javascript injection
-  my @css = map { s/\".*//; $_; } split(/\s+/, GetParam('css', ''));
+  my @css = map { my $x = $_; $x =~ s/\".*//; $x; } split(/\s+/, GetParam('css', ''));
   push (@css, $StyleSheet) if $StyleSheet and not @css;
   if ($IndexHash{$StyleSheetPage} and not @css) {
     push (@css, "$ScriptName?action=browse;id=" . UrlEncode($StyleSheetPage) . ";raw=1;mime-type=text/css")
