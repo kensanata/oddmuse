@@ -212,8 +212,8 @@ sub ReportError {   # fatal!
 }
 
 sub Init {
-  binmode(STDOUT, ':utf8'); # this is where the HTML gets printed
-  binmode(STDERR, ':utf8'); # just in case somebody prints debug info to stderr
+  binmode(STDOUT, ':encoding(UTF-8)'); # this is where the HTML gets printed
+  binmode(STDERR, ':encoding(UTF-8)'); # just in case somebody prints debug info to stderr
   InitDirConfig();
   $FS = "\x1e"; # The FS character is the RECORD SEPARATOR control char in ASCII
   $Message = ''; # Warnings and non-fatal errors.
@@ -1261,13 +1261,13 @@ sub PageHtml {
   OpenPage($id);
   open(STDOUT, '>', \$diff) or die "Can't open memory file: $!";
   binmode(STDOUT); # works whether STDOUT already has the UTF8 layer or not
-  binmode(STDOUT, ":utf8");
+  binmode(STDOUT, ":encoding(UTF-8)");
   PrintPageDiff();
   utf8::decode($diff);
   return $error if $limit and length($diff) > $limit;
   open(STDOUT, '>', \$page) or die "Can't open memory file: $!";
   binmode(STDOUT); # works whether STDOUT already has the UTF8 layer or not
-  binmode(STDOUT, ":utf8");
+  binmode(STDOUT, ":encoding(UTF-8)");
   PrintPageHtml();
   utf8::decode($page);
   return $diff . $q->p($error) if $limit and length($diff . $page) > $limit;
@@ -1485,7 +1485,7 @@ sub GetRcLines { # starttime, hash of seen pages to use as a second return value
   my %following = ();
   my @result = ();
   # check the first timestamp in the default file, maybe read old log file
-  open(F, '<:utf8', $RcFile);
+  open(F, '<:encoding(UTF-8)', $RcFile);
   my $line = <F>;
   my ($ts) = split(/$FS/o, $line); # the first timestamp in the regular rc file
   if (not $ts or $ts > $starttime) { # we need to read the old rc file, too
@@ -1568,7 +1568,7 @@ sub GetRcLinesFor {
         rcclusteronly rcfilteronly match lang followup);
   # parsing and filtering
   my @result = ();
-  open(F, '<:utf8', $file) or return ();
+  open(F, '<:encoding(UTF-8)', $file) or return ();
   while (my $line = <F>) {
     chomp($line);
     my ($ts, $id, $minor, $summary, $host, $username, $revision,
@@ -2692,8 +2692,8 @@ sub OpenPage {      # Sets global variables
     $Page{ts} = $Now;
     $Page{revision} = 0;
     if ($id eq $HomePage
-	and (open(F, '<:utf8', $ReadMe)
-	     or open(F, '<:utf8', 'README'))) {
+	and (open(F, '<:encoding(UTF-8)', $ReadMe)
+	     or open(F, '<:encoding(UTF-8)', 'README'))) {
       local $/ = undef;
       $Page{text} = <F>;
       close F;
@@ -2829,7 +2829,7 @@ sub ExpireKeepFiles {   # call with opened page
 sub ReadFile {
   my $file = shift;
   utf8::encode($file); # filenames are bytes!
-  if (open(IN, '<:utf8', $file)) {
+  if (open(IN, '<:encoding(UTF-8)', $file)) {
     local $/ = undef; # Read complete files
     my $data=<IN>;
     close IN;
@@ -3395,7 +3395,7 @@ sub PageIsUploadedFile {
   if ($IndexHash{$id}) {
     my $file = GetPageFile($id);
     utf8::encode($file); # filenames are bytes!
-    open(FILE, '<:utf8', $file)
+    open(FILE, '<:encoding(UTF-8)', $file)
       or ReportError(Ts('Cannot open %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
     while (defined($_ = <FILE>) and $_ !~ /^text: /) {
     }          # read lines until we get to the text key
