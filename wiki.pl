@@ -1727,7 +1727,61 @@ sub RcHtml {
   my $all = GetParam('all', 0);
   my $admin = UserIsAdmin();
   my $rollback_was_possible = 0;
-  ProcessRcLines(\&PrintDailyTear, \&PrintRcLine);
+  my $printDailyTear = sub {
+    my $date = shift;
+    if ($inlist) {
+      $html .= '</ul>';
+      $inlist = 0;
+    }
+    $html .= $q->p($q->strong($date));
+    if (not $inlist) {
+      $html .= '<ul>';
+      $inlist = 1;
+    }
+  };
+  my $printRCLine = sub {
+    my($id, $ts, $host, $username, $summary, $minor, $revision,
+       $languages, $cluster, $last) = @_;
+    my $all_revision = $last ? undef : $revision; # no revision for the last one
+    $host = QuoteHtml($host);
+    my $author = GetAuthorLink($host, $username);
+    my $sum = $summary ? $q->span({class=>'dash'}, ' &#8211; ')
+      . $q->strong(QuoteHtml($summary)) : '';
+    my $edit = $minor ? $q->em({class=>'type'}, T('(minor)')) : '';
+    my $lang = @{$languages}
+      ? $q->span({class=>'lang'}, '[' . join(', ', @{$languages}) . ']') : '';
+    my ($pagelink, $history, $diff, $rollback) = ('', '', '', '');
+    if ($all) {
+      $pagelink = GetOldPageLink('browse', $id, $all_revision, $id, $cluster);
+      my $rollback_is_possible = RollbackPossible($ts);
+      if ($admin and ($rollback_is_possible or $rollback_was_possible)) {
+	$rollback = $q->submit("rollback-$ts", T('rollback'));
+	$rollback_was_possible = $rollback_is_possible;
+      } else {
+	$rollback_was_possible = 0;
+      }
+    } elsif ($cluster) {
+      $pagelink = GetOldPageLink('browse', $id, $revision, $id, $cluster);
+    } else {
+      $pagelink = GetPageLink($id, $cluster);
+      $history = '(' . GetHistoryLink($id, T('history')) . ')';
+    }
+    if ($cluster and $PageCluster) {
+      $diff .= GetPageLink($PageCluster) . ':';
+    } elsif ($UseDiff and GetParam('diffrclink', 1)) {
+      if ($revision == 1) {
+	$diff .= '(' . $q->span({-class=>'new'}, T('new')) . ')';
+      } elsif ($all) {
+	$diff .= '(' . ScriptLinkDiff(2, $id, T('diff'), '', $all_revision) .')';
+      } else {
+	$diff .= '(' . ScriptLinkDiff($minor ? 2 : 1, $id, T('diff'), '') . ')';
+      }
+    }
+    $html .= $q->li($q->span({-class=>'time'}, CalcTime($ts)), $diff, $history,
+		    $rollback, $pagelink, T(' . . . . '), $author, $sum, $lang,
+		    $edit);
+  };
+  ProcessRcLines($printDailyTear, $printRCLine);
   $html .= '</ul>' if $inlist;
   # use delta between from and upto, or use days, whichever is available
   my $to = GetParam('from', GetParam('upto', $Now - GetParam('days', $RcDefault) * 86400));
@@ -1754,62 +1808,6 @@ sub PrintRcHtml { # to append RC to existing page, or action=rc directly
     print RcHeader() . RcHtml() . GetFilterForm() . $q->end_div();
   }
   PrintFooter($id) if $standalone;
-}
-
-sub PrintDailyTear {
-  my $date = shift;
-  if ($inlist) {
-    $html .= '</ul>';
-    $inlist = 0;
-  }
-  $html .= $q->p($q->strong($date));
-  if (not $inlist) {
-    $html .= '<ul>';
-    $inlist = 1;
-  }
-}
-
-sub PrintRcLine {
-  my($id, $ts, $host, $username, $summary, $minor, $revision,
-     $languages, $cluster, $last) = @_;
-  my $all_revision = $last ? undef : $revision; # no revision for the last one
-  $host = QuoteHtml($host);
-  my $author = GetAuthorLink($host, $username);
-  my $sum = $summary ? $q->span({class=>'dash'}, ' &#8211; ')
-      . $q->strong(QuoteHtml($summary)) : '';
-  my $edit = $minor ? $q->em({class=>'type'}, T('(minor)')) : '';
-  my $lang = @{$languages}
-  ? $q->span({class=>'lang'}, '[' . join(', ', @{$languages}) . ']') : '';
-  my ($pagelink, $history, $diff, $rollback) = ('', '', '', '');
-  if ($all) {
-    $pagelink = GetOldPageLink('browse', $id, $all_revision, $id, $cluster);
-    my $rollback_is_possible = RollbackPossible($ts);
-    if ($admin and ($rollback_is_possible or $rollback_was_possible)) {
-      $rollback = $q->submit("rollback-$ts", T('rollback'));
-      $rollback_was_possible = $rollback_is_possible;
-    } else {
-      $rollback_was_possible = 0;
-    }
-  } elsif ($cluster) {
-    $pagelink = GetOldPageLink('browse', $id, $revision, $id, $cluster);
-  } else {
-    $pagelink = GetPageLink($id, $cluster);
-    $history = '(' . GetHistoryLink($id, T('history')) . ')';
-  }
-  if ($cluster and $PageCluster) {
-    $diff .= GetPageLink($PageCluster) . ':';
-  } elsif ($UseDiff and GetParam('diffrclink', 1)) {
-    if ($revision == 1) {
-      $diff .= '(' . $q->span({-class=>'new'}, T('new')) . ')';
-    } elsif ($all) {
-      $diff .= '(' . ScriptLinkDiff(2, $id, T('diff'), '', $all_revision) .')';
-    } else {
-      $diff .= '(' . ScriptLinkDiff($minor ? 2 : 1, $id, T('diff'), '') . ')';
-    }
-  }
-  $html .= $q->li($q->span({-class=>'time'}, CalcTime($ts)), $diff, $history,
-		  $rollback, $pagelink, T(' . . . . '), $author, $sum, $lang,
-		  $edit);
 }
 
 sub RcTextItem {
@@ -2804,19 +2802,17 @@ sub EscapeNewlines {
 }
 
 sub ExpireAllKeepFiles {
-  my $html = '';
   foreach my $name (AllPagesList()) {
-    $html .= $q->br() . GetPageLink($name);
+    print $q->br(), GetPageLink($name);
     OpenPage($name);
     my $delete = PageDeletable();
     if ($delete) {
       my $status = DeletePage($OpenPageName);
-      $html .= ' ' . ($status ? T('not deleted: ') . $status : T('deleted'));
+      print ' ', ($status ? T('not deleted: ') . $status : T('deleted'));
     } else {
       ExpireKeepFiles();
     }
   }
-  return $html;
 }
 
 sub ExpireKeepFiles {   # call with opened page
@@ -3817,7 +3813,9 @@ sub DoMaintain {
       return;
     }
   }
-  print $q->p(T('Expiring keep files and deleting pages marked for deletion'), ExpireAllKeepFiles());
+  print '<p>', T('Expiring keep files and deleting pages marked for deletion');
+  ExpireAllKeepFiles();
+  print '</p>';
   RequestLockOrError();
   print $q->p(T('Main lock obtained.'));
   print $q->p(Ts('Moving part of the %s log file.', $RCName));
