@@ -1,6 +1,6 @@
 ;;; oddmuse-curl.el -- edit pages on an Oddmuse wiki using curl
 ;; 
-;; Copyright (C) 2006–2014  Alex Schroeder <alex@gnu.org>
+;; Copyright (C) 2006–2015  Alex Schroeder <alex@gnu.org>
 ;;           (C) 2007  rubikitch <rubikitch@ruby-lang.org>
 ;; 
 ;; Latest version:
@@ -805,15 +805,21 @@ Use a prefix argument to force a reload of the page."
     (if (and (get-buffer name)
              (not current-prefix-arg))
         (pop-to-buffer (get-buffer name))
-      (set-buffer (find-file-noselect (concat oddmuse-directory "/" wiki "/" pagename)))
+      ;; If the user has something set int auto-mode-alist, we would
+      ;; run oddmuse-mode twice. That's why we'll inhibit this.
+      (let ((auto-mode-alist nil))
+	(set-buffer (find-file-noselect
+		     (concat oddmuse-directory "/" wiki "/" pagename))))
       (erase-buffer)
       (oddmuse-run "Loading" oddmuse-get-command wiki pagename)
       (oddmuse-revision-put wiki pagename (oddmuse-get-latest-revision wiki pagename))
       ;; fix it for VC in the new buffer because this is not a vc-checkout
       (vc-mode-line buffer-file-name 'oddmuse)
       (pop-to-buffer (current-buffer))
-      (oddmuse-mode)
-      (write-file (buffer-file-name)))))
+      ;; this also changes the buffer name
+      (basic-save-buffer)
+      ;; this makes sure that the buffer name is set correctly
+      (oddmuse-mode))))
 
 (defalias 'oddmuse-go 'oddmuse-edit)
 
