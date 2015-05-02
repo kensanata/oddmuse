@@ -144,7 +144,7 @@ sub MakeLaTeX {
   # User selects which hash to use
   my $hash;
   my $hasMD5;
-  if ($useMD5)  { $hasMD5 = eval "require Digest::MD5;"; }
+  $hasMD5 = eval { require Digest::MD5 } if $useMD5;
   if ($useMD5 && $hasMD5) {
     $hash = Digest::MD5::md5_base64($latex);
     $hash =~ s/\//a/g;
