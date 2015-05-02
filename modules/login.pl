@@ -226,13 +226,13 @@ sub DoProcessRegistration {
 		unless (length($pwd1) > ($MinimumPasswordLength-1));
 	ReportError(T('That email address is invalid.'))
 		unless ($email =~ /$EmailRegExp/);
-	ReportError(Ts('The username %s has already been registered.',$username))
+	ReportError(Ts('The username %s has already been registered.', $username))
 		if (UserExists($username));
 
 	print GetHeader('', Ts('Register for %s', $SiteName), '');
 
 	if ($RegistrationsMustBeApproved) {
-		if (AddUser($username,$pwd1,$email,$PasswordFileToUse)) {
+		if (AddUser($username, $pwd1, $email, $PasswordFileToUse)) {
 			print Ts('Your registration for %s has been submitted.', $SiteName);
 			print "  ";
 			print T('Please allow time for the webmaster to approve your request.');
@@ -247,8 +247,8 @@ sub DoProcessRegistration {
 			ReportError(T('There was an error saving your registration.'));
 		}
 	} else {
-		if (AddUser($username, $pwd1, $email,$PasswordFileToUse)) {
-			print Ts('An account was created for %s.',$username);
+		if (AddUser($username, $pwd1, $email, $PasswordFileToUse)) {
+			print Ts('An account was created for %s.', $username);
 			print "  ";
 			if ($ConfirmEmailAddress) {
 				print Ts('An email has been sent to "%s" with further instructions.', $email);
@@ -327,35 +327,35 @@ sub DoProcessLogout {
 
 sub UserExists {
 	my $username = shift;
-	if (open (PASSWD, $PasswordFile)) {
-		while ( <PASSWD> ) {
+	if (open (my $PASSWD, '<', $PasswordFile)) {
+		while ( <$PASSWD> ) {
 			if ($_ =~ /^$username:/) {
 				return 1;
 			}
 		}
+		close $PASSWD;
 	}
-	close PASSWD;
 
 	if ($RegistrationsMustBeApproved) {
-		if (open (PASSWD, $PendingPasswordFile)) {
-			while ( <PASSWD> ) {
+		if (open (my $PASSWD, '<', $PendingPasswordFile)) {
+			while ( <$PASSWD> ) {
 				if ($_ =~ /^$username:/) {
 					return 1;
 				}
 			}
+			close $PASSWD;
 		}
-		close PASSWD;
 	}
 
 	if ($ConfirmEmailAddress) {
-		if (open (PASSWD, $UncomfirmedPasswordFile)) {
-			while ( <PASSWD> ) {
+		if (open (my $PASSWD, '<', $UncomfirmedPasswordFile)) {
+			while ( <$PASSWD> ) {
 				if ($_ =~ /^$username:/) {
 					return 1;
 				}
 			}
+			close $PASSWD;
 		}
-		close PASSWD;
 	}
 
 	return 0;
@@ -373,24 +373,24 @@ sub AddUser {
 	my %passwords = ();
 	my %emails = ();
 
-	if (open (PASSWD, $FileToUse)) {
-		while ( <PASSWD> ) {
+	if (open (my $PASSWD, '<', $FileToUse)) {
+		while ( <$PASSWD> ) {
 			if ($_ =~ /^(.*):(.*):(.*)$/) {
 				$passwords{$1}=$2;
 				$emails{$1}=$3;
 			}
 		}
+		close $PASSWD;
 	}
-	close PASSWD;
 
 	$passwords{$username} = $encrypted;
 	$emails{$username} = $email;
 
-	open (PASSWD, ">$FileToUse");
+	open (my $PASSWD, '>', $FileToUse);
 	foreach my $key ( sort keys(%passwords)) {
-		print PASSWD "$key:$passwords{$key}:$emails{$key}\n";
+		print $PASSWD "$key:$passwords{$key}:$emails{$key}\n";
 	}
-	close PASSWD;
+	close $PASSWD;
 
 	return 1;
 }
@@ -420,17 +420,17 @@ sub AuthenticateUser {
 	my ($username, $password) = @_;
 	my $line;
 
-	if (open(PASSWD, $PasswordFile)) {
-		while ($line = <PASSWD>) {
+	if (open(my $PASSWD, '<', $PasswordFile)) {
+		while ($line = <$PASSWD>) {
 			if ($line =~ /^$username:(.*):(.*)/) {
 				if (crypt($password,$1) eq $1) {
-					close PASSWD;
+					close $PASSWD;
 					return 1;
 				}
 			}
 		}
+		close $PASSWD;
 	}
-	close PASSWD;
 	return 0;
 }
 
@@ -459,9 +459,9 @@ sub SendConfirmationEmail {
 
 	my $confirmationLink = "$FullUrl?action=confirm_registration;account=$username;key=$encrypted;";
 
-	open (MAIL, "| $EmailCommand");
-	print MAIL "To: $email\n$EmailConfirmationMessage\n\nClick on the following link to confirm:\n\n$confirmationLink\n\n";
-	close MAIL;
+	open (my $MAIL, '|', $EmailCommand);
+	print $MAIL "To: $email\n$EmailConfirmationMessage\n\nClick on the following link to confirm:\n\n$confirmationLink\n\n";
+	close $MAIL;
 
 }
 
@@ -490,12 +490,12 @@ sub ConfirmUser {
 	my $FileToUse = $RegistrationsMustBeApproved
 		? $PendingPasswordFile : $PasswordFileToUse;
 
-	if (open(PASSWD, $UncomfirmedPasswordFile)) {
-		while (<PASSWD>) {
+	if (open(my $PASSWD, '<', $UncomfirmedPasswordFile)) {
+		while (<$PASSWD>) {
 			if ($_ =~ /^$username:(.*):(.*)/) {
 				if (crypt($1,$key) eq $key) {
 					AddUser($username,$1,$2,$FileToUse);
-					close PASSWD;
+					close $PASSWD;
 					RemoveUser($username,$UncomfirmedPasswordFile);
 					if ($RegistrationsMustBeApproved) {
 						SendNotification($username);
@@ -515,22 +515,22 @@ sub RemoveUser {
 	my %passwords = ();
 	my %emails = ();
 
-	if (open (PASSWD, $FileToUse)) {
-		while ( <PASSWD> ) {
+	if (open (my $PASSWD, '<', $FileToUse)) {
+		while ( <$PASSWD> ) {
 			if ($_ =~ /^(.*):(.*):(.*)$/) {
 				next if ($1 eq $username);
 				$passwords{$1}=$2;
 				$emails{$1}=$3;
 			}
 		}
+		close $PASSWD;
 	}
-	close PASSWD;
 
-	open (PASSWD, ">$FileToUse");
+	open (my $PASSWD, '>', $FileToUse);
 	foreach my $key ( sort keys(%passwords)) {
-		print PASSWD "$key:$passwords{$key}:$emails{$key}\n";
+		print $PASSWD "$key:$passwords{$key}:$emails{$key}\n";
 	}
-	close PASSWD;
+	close $PASSWD;
 
 	return 1;
 }
@@ -599,23 +599,23 @@ sub ChangePassword {
 	my %passwords = ();
 	my %emails = ();
 
-	if (open (PASSWD, $PasswordFile)) {
-		while ( <PASSWD> ) {
+	if (open (my $PASSWD, '<', $PasswordFile)) {
+		while ( <$PASSWD> ) {
 			if ($_ =~ /^(.*):(.*):(.*)$/) {
 				$passwords{$1}=$2;
 				$emails{$1}=$3;
 			}
 		}
+		close $PASSWD;
 	}
-	close PASSWD;
 
 	$passwords{$user} = $hash;
 
-	open (PASSWD, ">$PasswordFile");
+	open (my $PASSWD, '>', $PasswordFile);
 	foreach my $key ( sort keys(%passwords)) {
-		print PASSWD "$key:$passwords{$key}:$emails{$key}\n";
+		print $PASSWD "$key:$passwords{$key}:$emails{$key}\n";
 	}
-	close PASSWD;
+	close $PASSWD;
 
 	return $emails{$user};
 }
@@ -638,9 +638,9 @@ sub DoReset {
 sub SendResetEmail {
 	my ($email, $newpass) = @_;
 
-	open (MAIL, "| $EmailCommand");
-	print MAIL "To: $email\n$EmailConfirmationMessage\n\nYour new temporary password:\n\n$newpass\n\n";
-	close MAIL;
+	open (my $MAIL, '|', $EmailCommand);
+	print $MAIL "To: $email\n$EmailConfirmationMessage\n\nYour new temporary password:\n\n$newpass\n\n";
+	close $MAIL;
 }
 
 
@@ -692,9 +692,9 @@ sub DoProcessChangePassword {
 sub SendNotification {
 	my $NewUser = shift;
 
-	open (MAIL, "| $EmailCommand");
-	print MAIL "To: $NotifyPendingRegistrations\nFrom: $EmailSenderAddress\nSubject: New User at $SiteName\n\nYou have a new pending registration at $SiteName:\n\n$NewUser\n\n";
-	close MAIL;
+	open (my $MAIL, '|', $EmailCommand);
+	print $MAIL "To: $NotifyPendingRegistrations\nFrom: $EmailSenderAddress\nSubject: New User at $SiteName\n\nYou have a new pending registration at $SiteName:\n\n$NewUser\n\n";
+	close $MAIL;
 }
 
 
@@ -718,8 +718,8 @@ sub DoApprovePending {
 		}
 	} else {
 		print T('<ul>');
-		if (open(PASSWD, $PendingPasswordFile)) {
-			while (<PASSWD>) {
+		if (open(my $PASSWD, '<', $PendingPasswordFile)) {
+			while (<$PASSWD>) {
 				if ($_ =~ /^(.*):(.*):(.*)$/) {
 					print Tss('<li>%1 - %2</li>',ScriptLink("action=approve_pending;user=$1;",$1),"$3");
 					$count++;
@@ -740,11 +740,11 @@ sub DoApprovePending {
 sub ApproveUser {
 	my ($username) = @_;
 
-	if (open(PASSWD, $PendingPasswordFile)) {
-		while (<PASSWD>) {
+	if (open(my $PASSWD, '<', $PendingPasswordFile)) {
+		while (<$PASSWD>) {
 			if ($_ =~ /^$username:(.*):(.*)/) {
 				AddUser($username,$1,$2,$PasswordFile);
-				close PASSWD;
+				close $PASSWD;
 				RemoveUser($username,$PendingPasswordFile);
 				return 1;
 			}
