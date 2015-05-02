@@ -99,5 +99,6 @@ sub GetLinkList { # for the currently open page
       }
     }
   }
-  return sort keys %links;
+  my @result = sort keys %links;
+  return @result;
 }

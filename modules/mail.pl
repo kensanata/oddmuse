@@ -276,7 +276,8 @@ sub MailSubscription {
   tie my %h, "DB_File", $MailFile;
   my @result = split(/$FS/, UrlDecode($h{UrlEncode($mail)}));
   untie %h;
-  return sort @result;
+  @result = sort @result;
+  return @result;
 }
 
 =head1 Administrator Access
