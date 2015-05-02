@@ -127,24 +127,25 @@ sub DoPingbackServer {
   }
 
   result('200 OK', 0, "Oddmuse PingbackServer! $id OK");
+}
 
-  sub result {
-      my($status, $error, $data, $extra) = @_;
-      my $response;
-      if ($error) {
-          $response = RPC::XML::response->new(
-            RPC::XML::fault->new($error, $data));
-      } else {
-          $response = RPC::XML::response->new(RPC::XML::string->new($data));
-      }
-      print "Status: $status\n";
-      if (defined($extra)) {
-          print "$extra\n";
-      }
-      print "Content-Type: text/xml\n\n";
-      print $response->as_string;
-      exit;
+sub result {
+  my($status, $error, $data, $extra) = @_;
+  my $response;
+  if ($error) {
+    $response = RPC::XML::response->new(
+      RPC::XML::fault->new($error, $data));
+  } else {
+    $response = RPC::XML::response->new(RPC::XML::string->new($data));
   }
+  print "Status: $status\n";
+  if (defined($extra)) {
+    print "$extra\n";
+  }
+  print "Content-Type: text/xml\n\n";
+  print $response->as_string;
+  exit;
+}
 
 =pod
 
@@ -173,5 +174,3 @@ sub DoPingbackServer {
   }
 
 =cut
-
-}
