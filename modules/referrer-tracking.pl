@@ -154,7 +154,7 @@ sub GetReferers {
 
 sub PageContentToTitle {
   my ($content) = @_;
-  my $title = $1 if $content =~ m!<h1.*?>(.*?)</h1>!;
+  my $title = $content =~ m!<h1.*?>(.*?)</h1>! ? $1 : '';
   $title = $1 if not $title and $content =~ m!<title>(.*?)</title>!;
   # get rid of extra tags
   $title =~ s!<.*?>!!g;
