@@ -1095,7 +1095,7 @@ sub JoinerDoBan {
   print GetFormStart(undef, undef, undef);
   print $q->input({-type=>'hidden', -name=>'action', -value=>'joiner_process_ban'});
   print $q->input({-type=>'hidden', -name=>'joiner_ban', -value=>'0'});
-  my $table = '';
+  $table = '';
   $table .= $q->Tr($q->td($q->label({-for=>'joiner_username'}, T('Username:'))),
     $q->td($q->textfield(-name=>'joiner_username', -id=>'joiner_username')));
   $table .= $q->Tr($q->td(), $q->td($q->submit(-name=>'Unban', -value=>T('Unban'))));

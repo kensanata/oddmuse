@@ -94,7 +94,7 @@ sub LocalMapWorkHorse {
 
    my $retval_me .= ScriptLink("action=localmap;id=" . UrlEncode($id), $name);
    $retval_me .= ' (' . GetPageLink($id, T('view')) . ')';
-   my $retval_me = $q->li($retval_me);
+   $retval_me = $q->li($retval_me);
 
    my $retval_children = '';
    if ($depth > 0) {

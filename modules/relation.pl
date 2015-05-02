@@ -25,8 +25,8 @@ our (@RelationLinking, $RelationPassedFlag);
 
 push(@MyRules, \&RelationRule);
 
+$RelationPassedFlag = 0;
 my $referencefile = "References.txt";
-my $RelationPassedFlag = 0;
 my $dummy = RelationRead();
 
 sub RelationRead {

@@ -41,7 +41,7 @@ sub SyncNewSave {
   SyncOldSave(@_);
   # %Page is now set, but the reply was not yet sent back to the
   # browser
-  my $id = $OpenPageName; # TODO masks earlier declaration
+  $id = $OpenPageName; # TODO masks earlier declaration
   my $data = $Page{text};
   my $user = $Page{username};
   my $summary = $Page{summary};
