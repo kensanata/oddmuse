@@ -20,9 +20,9 @@ use vars qw($raw);
 
 # Test::More explains how to fix wide character in print issues
 my $builder = Test::More->builder;
-binmode $builder->output,         ":utf8";
-binmode $builder->failure_output, ":utf8";
-binmode $builder->todo_output,    ":utf8";
+binmode $builder->output,         ":encoding(UTF-8)";
+binmode $builder->failure_output, ":encoding(UTF-8)";
+binmode $builder->todo_output,    ":encoding(UTF-8)";
 
 # Import the functions
 
@@ -161,7 +161,7 @@ sub test_page {
 # one file, many tests
 sub test_file {
   my ($file, @tests) = @_;
-  if (open(F, '< :utf8', $file)) {
+  if (open(F, '< :encoding(UTF-8)', $file)) {
     local $/ = undef;
     test_page(<F>, @tests);
     close(F);
@@ -222,7 +222,7 @@ sub xpath_test {
 
 sub xpath_test_file {
   my ($file, @tests) = @_;
-  if (open(F, '< :utf8', $file)) {
+  if (open(F, '< :encoding(UTF-8)', $file)) {
     local $/ = undef;
     xpath_test(<F>, @tests);
     close(F);
