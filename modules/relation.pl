@@ -25,20 +25,20 @@ our (@RelationLinking, $RelationPassedFlag);
 
 push(@MyRules, \&RelationRule);
 
+$RelationPassedFlag = 0;
 my $referencefile = "References.txt";
-my $RelationPassedFlag = 0;
 my $dummy = RelationRead();
 
 sub RelationRead {
 #   return scalar(@RelationLinking) if (scalar(@RelationLinking));
-   open (RRR,"<$DataDir/$referencefile") || return(0);
-   while (<RRR>) {
+   open (my $RRR, '<', "$DataDir/$referencefile") || return(0);
+   while (<$RRR>) {
       chomp;
       my ($a,$b,$c) = split(';');
       # print "<!--- a,b,c=<$a,$b,$c> ---!>\n";
       push @RelationLinking, [$a, $b, $c];
    };
-   close(RRR);
+   close($RRR);
    return (scalar(@RelationLinking));
 }
 
@@ -171,18 +171,17 @@ $Action{'updaterelates'} = sub {
   else {
         print "no new source<br />\n";
   }
-  open (RRR,">$DataDir/$referencefile");
+  open (my $RRR, '>', "$DataDir/$referencefile");
   print "<br />\n";
   foreach my $t (@RelationLinking) {
       next unless (defined($t));
 #      print "trace:". $t->[0] .";". $t->[1].";". $t->[2] ."<br />\n";
-      print RRR $t->[0] .";". $t->[1].";". $t->[2] ."\n";
+      print $RRR $t->[0] .";". $t->[1].";". $t->[2] ."\n";
   };
-  close(RRR);
+  close($RRR);
 
   print ScriptLink('id='.$id, $id, 'index');
   print "</body></html>\n";
 };
 
 1;
-

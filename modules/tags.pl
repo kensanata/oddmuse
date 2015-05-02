@@ -232,7 +232,8 @@ sub TagFind {
       $page{$id} = 1;
     }
   }
-  return sort keys %page;
+  my @result = sort keys %page;
+  return @result;
 }
 
 *OldTagGrepFiltered = \&GrepFiltered;

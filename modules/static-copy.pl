@@ -47,14 +47,14 @@ sub DoStatic {
 sub StaticMimeTypes {
   my %hash;
   # the default mapping matches the default @UploadTypes...
-  open(F,$StaticMimeTypes)
+  open(my $F, '<', $StaticMimeTypes)
     or return ('image/jpeg' => 'jpg', 'image/png' => 'png', );
-  while (<F>) {
+  while (<$F>) {
     s/\#.*//;                   # remove comments
     my($type, $ext) = split;
     $hash{$type} = $ext if $ext;
   }
-  close(F);
+  close($F);
   return %hash;
 }
 
@@ -136,18 +136,18 @@ sub StaticWriteFile {
   OpenPage($id);
   my ($mimetype, $encoding, $data) =
     $Page{text} =~ /^\#FILE ([^ \n]+) ?([^ \n]*)\n(.*)/s;
-  open(F,"> $StaticDir/$filename")
+  open(my $F, '>', "$StaticDir/$filename")
     or ReportError(Ts('Cannot write %s', $filename));
   if ($data) {
-    binmode(F);
+    binmode($F);
     StaticFile($id, $mimetype, $data);
   } elsif ($html) {
-    binmode(F, ':encoding(UTF-8)');
+    binmode($F, ':encoding(UTF-8)');
     StaticHtml($id);
   } else {
     print "no data for ";
   }
-  close(F);
+  close($F);
   chmod 0644,"$StaticDir/$filename";
   print $filename, $raw ? "\n" : $q->br();
 }

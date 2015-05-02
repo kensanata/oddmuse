@@ -209,16 +209,16 @@ sub JoinerSendRegistrationConfirmationEmail {
 
   my $link = "$FullUrl?action=joiner_confirm_registration&joiner_username=" . UrlEncode($username) . "&joiner_key=$key";
 
-  open (EMAIL, "| $JoinerEmailCommand");
-  print EMAIL "To: $email\n";
-  print EMAIL "From: $JoinerEmailSenderAddress\n";
-  print EMAIL "Subject: $SiteName " . T('Registration Confirmation') . "\n";
-  print EMAIL "\n";
-  print EMAIL T('Visit the link blow to confirm registration.') . "\n";
-  print EMAIL "\n";
-  print EMAIL "$link\n";
-  print EMAIL "\n";
-  close EMAIL;
+  open (my $EMAIL, '|', $JoinerEmailCommand);
+  print $EMAIL "To: $email\n";
+  print $EMAIL "From: $JoinerEmailSenderAddress\n";
+  print $EMAIL "Subject: $SiteName " . T('Registration Confirmation') . "\n";
+  print $EMAIL "\n";
+  print $EMAIL T('Visit the link blow to confirm registration.') . "\n";
+  print $EMAIL "\n";
+  print $EMAIL "$link\n";
+  print $EMAIL "\n";
+  close $EMAIL;
 }
 
 sub JoinerSendRecoverAccountEmail {
@@ -226,16 +226,16 @@ sub JoinerSendRecoverAccountEmail {
 
   my $link = "$FullUrl?action=joiner_recover&joiner_username=" . UrlEncode($username) . "&joiner_key=$key";
 
-  open (EMAIL, "| $JoinerEmailCommand");
-  print EMAIL "To: $email\n";
-  print EMAIL "From: $JoinerEmailSenderAddress\n";
-  print EMAIL "Subject: " . T('Recover Account') . " - $SiteName\n";
-  print EMAIL "\n";
-  print EMAIL T('You can login by following the link below. Then set new password.') . "\n";
-  print EMAIL "\n";
-  print EMAIL "$link\n";
-  print EMAIL "\n";
-  close EMAIL;
+  open (my $EMAIL, '|', $JoinerEmailCommand);
+  print $EMAIL "To: $email\n";
+  print $EMAIL "From: $JoinerEmailSenderAddress\n";
+  print $EMAIL "Subject: " . T('Recover Account') . " - $SiteName\n";
+  print $EMAIL "\n";
+  print $EMAIL T('You can login by following the link below. Then set new password.') . "\n";
+  print $EMAIL "\n";
+  print $EMAIL "$link\n";
+  print $EMAIL "\n";
+  close $EMAIL;
 }
 
 sub JoinerSendChangeEmailEmail {
@@ -243,16 +243,16 @@ sub JoinerSendChangeEmailEmail {
 
   my $link = "$FullUrl?action=joiner_confirm_email&joiner_username=" . UrlEncode($username) . "&joiner_key=$key";
 
-  open (EMAIL, "| $JoinerEmailCommand");
-  print EMAIL "To: $email\n";
-  print EMAIL "From: $JoinerEmailSenderAddress\n";
-  print EMAIL "Subject: " . T('Change Email Address') . " - $SiteName\n";
-  print EMAIL "\n";
-  print EMAIL T('To confirm changing email address, follow the link below.') . "\n";
-  print EMAIL "\n";
-  print EMAIL "$link\n";
-  print EMAIL "\n";
-  close EMAIL;
+  open (my $EMAIL, '|', $JoinerEmailCommand);
+  print $EMAIL "To: $email\n";
+  print $EMAIL "From: $JoinerEmailSenderAddress\n";
+  print $EMAIL "Subject: " . T('Change Email Address') . " - $SiteName\n";
+  print $EMAIL "\n";
+  print $EMAIL T('To confirm changing email address, follow the link below.') . "\n";
+  print $EMAIL "\n";
+  print $EMAIL "$link\n";
+  print $EMAIL "\n";
+  close $EMAIL;
 }
 
 sub JoinerQuestionaskerGetQuestion {
@@ -1095,7 +1095,7 @@ sub JoinerDoBan {
   print GetFormStart(undef, undef, undef);
   print $q->input({-type=>'hidden', -name=>'action', -value=>'joiner_process_ban'});
   print $q->input({-type=>'hidden', -name=>'joiner_ban', -value=>'0'});
-  my $table = '';
+  $table = '';
   $table .= $q->Tr($q->td($q->label({-for=>'joiner_username'}, T('Username:'))),
     $q->td($q->textfield(-name=>'joiner_username', -id=>'joiner_username')));
   $table .= $q->Tr($q->td(), $q->td($q->submit(-name=>'Unban', -value=>T('Unban'))));

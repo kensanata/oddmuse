@@ -211,10 +211,10 @@ sub GenerateThumbNail {
 
      # Decode the original image to a temp file
 
-     open(FD, "> $filename") or ReportError(Ts("Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.",$filename), '500 INTERNAL SERVER ERROR');
-     binmode(FD);
-     print FD MIME::Base64::decode($data);
-     close(FD);
+     open(my $FD, '>', $filename) or ReportError(Ts("Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.",$filename), '500 INTERNAL SERVER ERROR');
+     binmode($FD);
+     print $FD MIME::Base64::decode($data);
+     close($FD);
 
      eval { mkpath("$ThumbnailCacheDir/$id") };
      if ($@) {
@@ -224,12 +224,12 @@ sub GenerateThumbNail {
     # create the thumbnail
 
      my $command = "$ThumbnailConvert '$filename' -verbose -resize ${size}x '$ThumbnailCacheDir/$id/$size' 2>&1";
-     open (MESSAGE, '-|', $command)
+     open (my $MESSAGE, '-|', $command)
        or ReportError(Tss("Failed to run %1 to create thumbnail: %2", $ThumbnailConvert, $!),
 		      '500 INTERNAL SERVER ERROR');
 
-      my $convert = <MESSAGE>;
-      close(MESSAGE);
+      my $convert = <$MESSAGE>;
+      close($MESSAGE);
 
       my $scaled_size_x;
       my $scaled_size_y;
