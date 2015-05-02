@@ -144,7 +144,7 @@ sub MakeLaTeX {
   # User selects which hash to use
   my $hash;
   my $hasMD5;
-  if ($useMD5)  { $hasMD5 = eval "require Digest::MD5;"; }
+  $hasMD5 = eval { require Digest::MD5 } if $useMD5;
   if ($useMD5 && $hasMD5) {
     $hash = Digest::MD5::md5_base64($latex);
     $hash =~ s/\//a/g;
@@ -160,9 +160,9 @@ sub MakeLaTeX {
     # read template and replace <math>
     mkdir($LatexDir) unless -d $LatexDir;
     if (not -f $LatexDefaultTemplateName) {
-      open (F, "> $LatexDefaultTemplateName") or return '[Unable to write template]';
-      print F $LatexDefaultTemplate;
-      close (F);
+      open (my $F, '>', $LatexDefaultTemplateName) or return '[Unable to write template]';
+      print $F $LatexDefaultTemplate;
+      close $F;
     }
     my $template = ReadFileOrDie($LatexDefaultTemplateName);
     $template =~ s/<math>/$latex/ig;

@@ -51,5 +51,6 @@ sub PrintableIndexPages {
   push(@pages, keys %NearSource) if GetParam('near', 0);
   my $match = GetParam('match', '');
   @pages = grep /$match/i, @pages if $match;
-  return sort @pages;
+  @pages = sort @pages;
+  return @pages;
 }

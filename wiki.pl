@@ -212,8 +212,8 @@ sub ReportError {   # fatal!
 }
 
 sub Init {
-  binmode(STDOUT, ':utf8'); # this is where the HTML gets printed
-  binmode(STDERR, ':utf8'); # just in case somebody prints debug info to stderr
+  binmode(STDOUT, ':encoding(UTF-8)'); # this is where the HTML gets printed
+  binmode(STDERR, ':encoding(UTF-8)'); # just in case somebody prints debug info to stderr
   InitDirConfig();
   $FS = "\x1e"; # The FS character is the RECORD SEPARATOR control char in ASCII
   $Message = ''; # Warnings and non-fatal errors.
@@ -683,7 +683,7 @@ sub CloseHtmlEnvironments { # close all -- remember to use AddHtmlEnvironment('p
 }
 
 sub CloseHtmlEnvironment {  # close environments up to and including $html_tag
-  my $html = CloseHtmlEnvironmentUntil(@_) if @_ and InElement(@_);
+  my $html = (@_ and InElement(@_)) ? CloseHtmlEnvironmentUntil(@_) : '';
   if (@HtmlStack and (not(@_) or defined $html)) {
     shift(@HtmlAttrStack);
     return $html . '</' . shift(@HtmlStack) . '>';
@@ -910,7 +910,7 @@ sub RSS {
   my $tHistory = T('history');
   my $wikins = 'http://purl.org/rss/1.0/modules/wiki/';
   my $rdfns = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
-  @uris = map { s/^"?(.*?)"?$/$1/; $_; } @uris; # strip quotes of uris
+  @uris = map { my $x = $_; $x =~ s/^"?(.*?)"?$/$1/; $x; } @uris; # strip quotes of uris
   my ($str, %data) = GetRss(@uris);
   foreach my $uri (keys %data) {
     my $data = $data{$uri};
@@ -1261,13 +1261,13 @@ sub PageHtml {
   OpenPage($id);
   open(STDOUT, '>', \$diff) or die "Can't open memory file: $!";
   binmode(STDOUT); # works whether STDOUT already has the UTF8 layer or not
-  binmode(STDOUT, ":utf8");
+  binmode(STDOUT, ":encoding(UTF-8)");
   PrintPageDiff();
   utf8::decode($diff);
   return $error if $limit and length($diff) > $limit;
   open(STDOUT, '>', \$page) or die "Can't open memory file: $!";
   binmode(STDOUT); # works whether STDOUT already has the UTF8 layer or not
-  binmode(STDOUT, ":utf8");
+  binmode(STDOUT, ":encoding(UTF-8)");
   PrintPageHtml();
   utf8::decode($page);
   return $diff . $q->p($error) if $limit and length($diff . $page) > $limit;
@@ -1485,8 +1485,8 @@ sub GetRcLines { # starttime, hash of seen pages to use as a second return value
   my %following = ();
   my @result = ();
   # check the first timestamp in the default file, maybe read old log file
-  open(F, '<:utf8', $RcFile);
-  my $line = <F>;
+  open(my $F, '<:encoding(UTF-8)', $RcFile);
+  my $line = <$F>;
   my ($ts) = split(/$FS/o, $line); # the first timestamp in the regular rc file
   if (not $ts or $ts > $starttime) { # we need to read the old rc file, too
     push(@result, GetRcLinesFor($RcOldFile, $starttime, \%match, \%following));
@@ -1568,8 +1568,8 @@ sub GetRcLinesFor {
         rcclusteronly rcfilteronly match lang followup);
   # parsing and filtering
   my @result = ();
-  open(F, '<:utf8', $file) or return ();
-  while (my $line = <F>) {
+  open(my $F, '<:encoding(UTF-8)', $file) or return ();
+  while (my $line = <$F>) {
     chomp($line);
     my ($ts, $id, $minor, $summary, $host, $username, $revision,
 	$languages, $cluster) = split(/$FS/o, $line);
@@ -1638,12 +1638,12 @@ sub RcHeader {
   my $action = '';
   my ($idOnly, $userOnly, $hostOnly, $clusterOnly, $filterOnly,
       $match, $lang, $followup) =
-  map {
-    my $val = GetParam($_, '');
-    $html .= $q->p($q->b('(' . Ts('for %s only', $val) . ')')) if $val;
-    $action .= ";$_=$val" if $val; # remember these parameters later!
-    $val;
-  } qw(rcidonly rcuseronly rchostonly rcclusteronly rcfilteronly
+	  map {
+	    my $val = GetParam($_, '');
+	    $html .= $q->p($q->b('(' . Ts('for %s only', $val) . ')')) if $val;
+	    $action .= ";$_=$val" if $val; # remember these parameters later!
+	    $val;
+      } qw(rcidonly rcuseronly rchostonly rcclusteronly rcfilteronly
        match lang followup);
   my $rss = "action=rss$action;days=$days;all=$all;showedit=$edits";
   if ($clusterOnly) {
@@ -1942,53 +1942,63 @@ sub DoHistory {
   ValidIdOrDie($id);
   OpenPage($id);
   if (GetParam('raw', 0)) {
-    print GetHttpHeader('text/plain'),
-      RcTextItem('title', Ts('History of %s', NormalToFree($OpenPageName))),
-      RcTextItem('date', TimeToText($Now)),
-      RcTextItem('link', ScriptUrl("action=history;id=$OpenPageName;raw=1")),
-      RcTextItem('generator', 'Oddmuse');
-    SetParam('all', 1);
-    my @languages = split(/,/, $Page{languages});
-    RcTextRevision($id, $Page{ts}, $Page{host}, $Page{username}, $Page{summary},
-		   $Page{minor}, $Page{revision}, \@languages, undef, 1);
-    foreach my $revision (GetKeepRevisions($OpenPageName)) {
-      my %keep = GetKeptRevision($revision);
-      @languages = split(/,/, $keep{languages});
-      RcTextRevision($id, $keep{ts}, $keep{host}, $keep{username},
-		     $keep{summary}, $keep{minor}, $keep{revision}, \@languages);
-    }
+    DoRawHistory();
   } else {
-    print GetHeader('', Ts('History of %s', NormalToFree($id)));
-    my $row = 0;
-    my $rollback = UserCanEdit($id, 0) && (GetParam('username', '')
-					   or UserIsEditor());
-    my $date = CalcDay($Page{ts});
-    my @html = (GetHistoryLine($id, \%Page, $row++, $rollback, $date, 1));
-    foreach my $revision (GetKeepRevisions($OpenPageName)) {
-      my %keep = GetKeptRevision($revision);
-      my $new = CalcDay($keep{ts});
-      push(@html, GetHistoryLine($id, \%keep, $row++, $rollback,
-				 $new, $new ne $date));
-      $date = $new;
-    }
-    @html = (GetFormStart(undef, 'get', 'history'),
-       $q->p($q->submit({-name=>T('Compare')}),
-       # don't use $q->hidden here!
-       $q->input({-type=>'hidden', -name=>'action', -value=>'browse'}),
-       $q->input({-type=>'hidden', -name=>'diff', -value=>'1'}),
-       $q->input({-type=>'hidden', -name=>'id', -value=>$id})),
-       $q->table({-class=>'history'}, @html),
-       $q->p($q->submit({-name=>T('Compare')})),
-       $q->end_form()) if $UseDiff;
-    if ($KeepDays and $rollback and $Page{revision}) {
-      push(@html, $q->p(ScriptLink('title=' . UrlEncode($id) . ';text='
-				   . UrlEncode($DeletedPage) . ';summary='
-				   . UrlEncode(T('Deleted')),
-				   T('Mark this page for deletion'))));
-    }
-    print $q->div({-class=>'content history'}, @html);
-    PrintFooter($id, 'history');
+    DoHtmlHistory();
   }
+}
+
+sub DoRawHistory {
+  my ($id) = @_;
+  print GetHttpHeader('text/plain'),
+  RcTextItem('title', Ts('History of %s', NormalToFree($OpenPageName))),
+  RcTextItem('date', TimeToText($Now)),
+  RcTextItem('link', ScriptUrl("action=history;id=$OpenPageName;raw=1")),
+  RcTextItem('generator', 'Oddmuse');
+  SetParam('all', 1);
+  my @languages = split(/,/, $Page{languages});
+  RcTextRevision($id, $Page{ts}, $Page{host}, $Page{username}, $Page{summary},
+		 $Page{minor}, $Page{revision}, \@languages, undef, 1);
+  foreach my $revision (GetKeepRevisions($OpenPageName)) {
+    my %keep = GetKeptRevision($revision);
+    @languages = split(/,/, $keep{languages});
+    RcTextRevision($id, $keep{ts}, $keep{host}, $keep{username},
+		   $keep{summary}, $keep{minor}, $keep{revision}, \@languages);
+  }
+}
+
+sub DoHtmlHistory {
+  my ($id) = @_;
+  print GetHeader('', Ts('History of %s', NormalToFree($id)));
+  my $row = 0;
+  my $rollback = UserCanEdit($id, 0) && (GetParam('username', '')
+					 or UserIsEditor());
+  my $date = CalcDay($Page{ts});
+  my @html = (GetHistoryLine($id, \%Page, $row++, $rollback, $date, 1));
+  foreach my $revision (GetKeepRevisions($OpenPageName)) {
+    my %keep = GetKeptRevision($revision);
+    my $new = CalcDay($keep{ts});
+    push(@html, GetHistoryLine($id, \%keep, $row++, $rollback,
+			       $new, $new ne $date));
+    $date = $new;
+  }
+  @html = (GetFormStart(undef, 'get', 'history'),
+	   $q->p($q->submit({-name=>T('Compare')}),
+		 # don't use $q->hidden here!
+		 $q->input({-type=>'hidden', -name=>'action', -value=>'browse'}),
+		 $q->input({-type=>'hidden', -name=>'diff', -value=>'1'}),
+		 $q->input({-type=>'hidden', -name=>'id', -value=>$id})),
+	   $q->table({-class=>'history'}, @html),
+	   $q->p($q->submit({-name=>T('Compare')})),
+	   $q->end_form()) if $UseDiff;
+  if ($KeepDays and $rollback and $Page{revision}) {
+    push(@html, $q->p(ScriptLink('title=' . UrlEncode($id) . ';text='
+				 . UrlEncode($DeletedPage) . ';summary='
+				 . UrlEncode(T('Deleted')),
+				 T('Mark this page for deletion'))));
+  }
+  print $q->div({-class=>'content history'}, @html);
+  PrintFooter($id, 'history');
 }
 
 sub GetHistoryLine {
@@ -2348,7 +2358,7 @@ sub GetFeeds {      # default for $HtmlHeaders
 }
 
 sub GetCss {      # prevent javascript injection
-  my @css = map { s/\".*//; $_; } split(/\s+/, GetParam('css', ''));
+  my @css = map { my $x = $_; $x =~ s/\".*//; $x; } split(/\s+/, GetParam('css', ''));
   push (@css, $StyleSheet) if $StyleSheet and not @css;
   if ($IndexHash{$StyleSheetPage} and not @css) {
     push (@css, "$ScriptName?action=browse;id=" . UrlEncode($StyleSheetPage) . ";raw=1;mime-type=text/css")
@@ -2681,12 +2691,13 @@ sub OpenPage {      # Sets global variables
     %Page = ();
     $Page{ts} = $Now;
     $Page{revision} = 0;
-    if ($id eq $HomePage
-	and (open(F, '<:utf8', $ReadMe)
-	     or open(F, '<:utf8', 'README'))) {
-      local $/ = undef;
-      $Page{text} = <F>;
-      close F;
+    if ($id eq $HomePage) {
+      my $F;
+      if (open($F, '<:encoding(UTF-8)', $ReadMe) or open($F, '<:encoding(UTF-8)', 'README')) {
+	local $/ = undef;
+	$Page{text} = <$F>;
+	close $F;
+      }
     }
   }
   $OpenPageName = $id;
@@ -2756,7 +2767,8 @@ sub GetKeepFiles {
 }
 
 sub GetKeepRevisions {
-  return sort {$b <=> $a} map { m/([0-9]+)\.kp$/; $1; } GetKeepFiles(shift);
+  my @result = sort {$b <=> $a} map { m/([0-9]+)\.kp$/; $1; } GetKeepFiles(shift);
+  return @result;
 }
 
 # Always call SavePage within a lock.
@@ -2791,6 +2803,20 @@ sub EscapeNewlines {
   return $_[0];
 }
 
+sub ExpireAllKeepFiles {
+  foreach my $name (AllPagesList()) {
+    print $q->br(), GetPageLink($name);
+    OpenPage($name);
+    my $delete = PageDeletable();
+    if ($delete) {
+      my $status = DeletePage($OpenPageName);
+      print ' ', ($status ? T('not deleted: ') . $status : T('deleted'));
+    } else {
+      ExpireKeepFiles();
+    }
+  }
+}
+
 sub ExpireKeepFiles {   # call with opened page
   return unless $KeepDays;
   my $expirets = $Now - ($KeepDays * 86400); # 24*60*60
@@ -2805,10 +2831,10 @@ sub ExpireKeepFiles {   # call with opened page
 sub ReadFile {
   my $file = shift;
   utf8::encode($file); # filenames are bytes!
-  if (open(IN, '<:utf8', $file)) {
+  if (open(my $IN, '<:encoding(UTF-8)', $file)) {
     local $/ = undef; # Read complete files
-    my $data=<IN>;
-    close IN;
+    my $data=<$IN>;
+    close $IN;
     return (1, $data);
   }
   return (0, '');
@@ -2827,19 +2853,19 @@ sub ReadFileOrDie {
 sub WriteStringToFile {
   my ($file, $string) = @_;
   utf8::encode($file);
-  open(OUT, '>:encoding(UTF-8)', $file)
+  open(my $OUT, '>:encoding(UTF-8)', $file)
     or ReportError(Ts('Cannot write %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
-  print OUT  $string;
-  close(OUT);
+  print $OUT  $string;
+  close($OUT);
 }
 
 sub AppendStringToFile {
   my ($file, $string) = @_;
   utf8::encode($file);
-  open(OUT, '>>:encoding(UTF-8)', $file)
+  open(my $OUT, '>>:encoding(UTF-8)', $file)
     or ReportError(Ts('Cannot write %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
-  print OUT  $string;
-  close(OUT);
+  print $OUT  $string;
+  close($OUT);
 }
 
 sub CreateDir {
@@ -3371,11 +3397,11 @@ sub PageIsUploadedFile {
   if ($IndexHash{$id}) {
     my $file = GetPageFile($id);
     utf8::encode($file); # filenames are bytes!
-    open(FILE, '<:utf8', $file)
+    open(my $FILE, '<:encoding(UTF-8)', $file)
       or ReportError(Ts('Cannot open %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
-    while (defined($_ = <FILE>) and $_ !~ /^text: /) {
+    while (defined($_ = <$FILE>) and $_ !~ /^text: /) {
     }          # read lines until we get to the text key
-    close FILE;
+    close $FILE;
     return TextIsFile(substr($_, 6)); # pass "#FILE image/png\n" to the test
   }
 }
@@ -3416,13 +3442,14 @@ sub GrepFiltered { # grep is so much faster!!
   # if we know of any remaining grep incompatibilities we should
   # return @pages here!
   $regexp = quotemeta($regexp);
-  open(F, '-|:encoding(UTF-8)', "grep -rli $regexp '$PageDir' 2>/dev/null");
-  while (<F>) {
+  open(my $F, '-|:encoding(UTF-8)', "grep -rli $regexp '$PageDir' 2>/dev/null");
+  while (<$F>) {
     push(@result, $1) if m/.*\/(.*)\.pg/ and not $found{$1};
   }
-  close(F);
+  close($F);
   return @pages if $?;
-  return sort @result;
+  @result = sort @result;
+  return @result;
 }
 
 sub SearchString {
@@ -3578,7 +3605,7 @@ sub DoPost {
     ReportError(T('Browser reports no file type.'), '415 UNSUPPORTED MEDIA TYPE') unless $type;
     local $/ = undef;		# Read complete files
     my $content = <$file>; # Apparently we cannot count on <$file> to always work within the eval!?
-    my $encoding = 'gzip' if substr($content, 0, 2) eq "\x1f\x8b";
+    my $encoding = substr($content, 0, 2) eq "\x1f\x8b" ? 'gzip' : '';
     eval { require MIME::Base64; $_ = MIME::Base64::encode($content) };
     $string = "#FILE $type $encoding\n" . $_;
   } else {			# ordinary text edit
@@ -3790,18 +3817,7 @@ sub DoMaintain {
     }
   }
   print '<p>', T('Expiring keep files and deleting pages marked for deletion');
-  # Expire all keep files
-  foreach my $name (AllPagesList()) {
-    print $q->br(), GetPageLink($name);
-    OpenPage($name);
-    my $delete = PageDeletable();
-    if ($delete) {
-      my $status = DeletePage($OpenPageName);
-      print ' ' . ($status ? T('not deleted: ') . $status : T('deleted'));
-    } else {
-      ExpireKeepFiles();
-    }
-  }
+  ExpireAllKeepFiles();
   print '</p>';
   RequestLockOrError();
   print $q->p(T('Main lock obtained.'));
@@ -3892,7 +3908,8 @@ sub DoPageLock {
   return unless UserIsAdminOrError();
   print GetHeader('', T('Set or Remove page edit lock'));
   my $id = GetParam('id', '');
-  my $fname = GetLockedPageFile($id) if ValidIdOrDie($id);
+  ValidIdOrDie($id);
+  my $fname = GetLockedPageFile($id);
   if (GetParam('set', 1)) {
     WriteStringToFile($fname, 'editing locked.');
   } else {

@@ -188,10 +188,10 @@ sub GdSecurityImageIsValidId {
 sub GdSecurityImageReadImageFile {
   my $file = shift;
   utf8::encode($file); # filenames are bytes!
-  if (open(IN, '<:raw', $file)) {
+  if (open(my $IN, '<:raw', $file)) {
     local $/ = undef;   # Read complete files
-    my $data=<IN>;
-    close IN;
+    my $data=<$IN>;
+    close $IN;
     return (1, $data);
   }
   return (0, '');

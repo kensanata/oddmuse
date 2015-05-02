@@ -67,14 +67,14 @@ sub DoStatic {
 sub StaticMimeTypes {
 	my %hash;
 	# the default mapping matches the default @UploadTypes...
-	open(F,$StaticMimeTypes)
+	open(my $F, '<', $StaticMimeTypes)
 		or return ('image/jpeg' => 'jpg', 'image/png' => 'png', 'image/gif' => 'gif');
-	while (<F>) {
+	while (<$F>) {
 		s/\#.*//;					# remove comments
 			my($type, $ext) = split;
 		$hash{$type} = $ext if $ext;
 	}
-			close(F);
+			close($F);
 		return %hash;
 }
 
@@ -137,13 +137,13 @@ sub StaticWriteFile {
 	OpenPage($id);
 	my ($mimetype, $data) = $Page{text} =~ /^\#FILE ([^ \n]+)\n(.*)/s;
 	return unless $html or $data;
-	open(F,"> $StaticDir/$filename") or ReportError(Ts('Cannot write %s', $filename));
+	open(my $F, '>', "$StaticDir/$filename") or ReportError(Ts('Cannot write %s', $filename));
 	if ($data) {
-		StaticFile($id, $mimetype, $data);
+		StaticFile($id, $mimetype, $data, $F);
 	} elsif ($html) {
-		StaticHtml($id);
+		StaticHtml($id, $F);
 	}
-	close(F);
+	close($F);
 	chmod 0644,"$StaticDir/$filename";
 	if (lc(GetParam('action','')) eq "static") {
 		print $filename, $raw ? "\n" : $q->br();
@@ -151,14 +151,15 @@ sub StaticWriteFile {
 }
 
 sub StaticFile {
-	my ($id, $type, $data) = @_;
+	my ($id, $type, $data, $F) = @_;
 	require MIME::Base64;
-	binmode(F);
-	print F MIME::Base64::decode($data);
+	binmode($F);
+	print $F MIME::Base64::decode($data);
 }
 
 sub StaticHtml {
 	my $id = FreeToNormal(shift);
+	my $F = shift;
 	my $title = $id;
 	$title =~ s/_/ /g;
 	my $result = '';
@@ -171,7 +172,7 @@ sub StaticHtml {
 	local *STDOUT;
 	open(STDOUT, '>', \$result);
 	local *STDERR;
-	open(STDERR, '>/dev/null');
+	open(STDERR, '>', '/dev/null');
 
 	# Process the page
 	local $Message = "";
@@ -190,7 +191,7 @@ sub StaticHtml {
 		print $q->end_div();
 	}
 	PrintFooter($id);
-	print F $result;
+	print $F $result;
 	return;
 }
 

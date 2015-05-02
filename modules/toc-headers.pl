@@ -29,8 +29,8 @@ our ($MinTocSize, $OrderedLists);
 
 push(@MyRules, \&HeadersRule);
 
-my $MinTocSize = 4; # show toc only if the number of headings is greater or equal to this value
-my $OrderedLists = 0; # 1 if use <ol> instead of <ul>
+$MinTocSize = 4; # show toc only if the number of headings is greater or equal to this value
+$OrderedLists = 0; # 1 if use <ol> instead of <ul>
 
 my $TocCounter = 0; # private
 my $TocShown = 0; # private
