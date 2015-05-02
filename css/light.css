@@ -310,6 +310,8 @@ img.logo {
 	border: 1px solid black;
 }
 
+.hexmap a img { background: #fff; border: none; }
+
 /* fancy bold underline */
 em.underline { font-weight: bold; }
 
