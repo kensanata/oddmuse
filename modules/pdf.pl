@@ -123,28 +123,28 @@ sub outputHTML {
 	local *STDOUT;
 	open(STDOUT, '>', \$result);
 	local *STDERR;
-	open(STDERR, '>/dev/null');
+	open(STDERR, '>', '/dev/null');
 
 	# Fix Markdown
 	print PageHtml($id);
 
-	open(FILE,"> $tempDirectory/temp.html") or ReportError(Ts('Cannot write %s', "temp.html"));
+	open(my $FILE, '>', "$tempDirectory/temp.html") or ReportError(Ts('Cannot write %s', "temp.html"));
 
-	print FILE qq{<?xml version="1.0" encoding="UTF-8" ?>
+	print $FILE qq{<?xml version="1.0" encoding="UTF-8" ?>
 <html>
 	<head>};
 
 	# Create meta-data (you can customize this)
-	print FILE qq{<title>$OpenPageName</title>};
-	print FILE qq{<meta name="author" content="$SiteName"/>};
-	print FILE qq{<meta name="copyright" content="2005. This work is licensed under a Creative Commons License:  http://creativecommons.org/licenses/by-sa/2.5/"/>};
-	print FILE qq{<meta name="XMP" content="CCAttributionShareAlike"/>};
-	print FILE "</head><body>";
+	print $FILE qq{<title>$OpenPageName</title>};
+	print $FILE qq{<meta name="author" content="$SiteName"/>};
+	print $FILE qq{<meta name="copyright" content="2005. This work is licensed under a Creative Commons License:  http://creativecommons.org/licenses/by-sa/2.5/"/>};
+	print $FILE qq{<meta name="XMP" content="CCAttributionShareAlike"/>};
+	print $FILE "</head><body>";
 
 	# Output the body and close the file
-	print FILE $result;
-	print FILE "\n</body>\n</html>\n";
-	close FILE;
+	print $FILE $result;
+	print $FILE "\n</body>\n</html>\n";
+	close $FILE;
 }
 
 
@@ -153,9 +153,9 @@ sub outputHTML {
 sub createPDF {
 	my $id = shift;
 	local *STDOUT;
-	open(STDOUT, '>/dev/null');
+	open(STDOUT, '>', '/dev/null');
 	local *STDERR;
-	open(STDERR, '>/dev/null');
+	open(STDERR, '>', '/dev/null');
 
 	# Run latex script and copy pdf to final location
 	system("cd \"$tempDirectory\"; \"$pdfProcessCommand\" temp.html > /dev/null; /bin/cp temp.pdf \"$pdfDirectory/$id.pdf\" ");

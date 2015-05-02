@@ -160,9 +160,9 @@ sub MakeLaTeX {
     # read template and replace <math>
     mkdir($LatexDir) unless -d $LatexDir;
     if (not -f $LatexDefaultTemplateName) {
-      open (F, "> $LatexDefaultTemplateName") or return '[Unable to write template]';
-      print F $LatexDefaultTemplate;
-      close (F);
+      open (my $F, '>', $LatexDefaultTemplateName) or return '[Unable to write template]';
+      print $F $LatexDefaultTemplate;
+      close $F;
     }
     my $template = ReadFileOrDie($LatexDefaultTemplateName);
     $template =~ s/<math>/$latex/ig;
