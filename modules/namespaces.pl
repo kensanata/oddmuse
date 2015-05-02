@@ -224,8 +224,8 @@ sub NewNamespaceGetRcLines { # starttime, hash of seen pages to use as a second 
   # starttime. If any rcfile exists with no timestamp before the
   # starttime, we need to open its rcoldfile.
   foreach my $file (@rcfiles) {
-    open(F, '<:encoding(UTF-8)', $file);
-    my $line = <F>;
+    open(my $F, '<:encoding(UTF-8)', $file);
+    my $line = <$F>;
     my ($ts) = split(/$FS/o, $line); # the first timestamp in the regular rc file
     my @new;
     if (not $ts or $ts > $starttime) {	# we need to read the old rc file, too
