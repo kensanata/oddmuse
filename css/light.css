@@ -238,29 +238,8 @@ a:active {
 	img[smiley] { line-height: inherit; }
 }
 
-/* edit paragraphs */
-a.pencil {
-    padding-left: 1ex;
-    text-decoration: none;
-    color: inherit;
-    visible: hidden;
-    transition: visibility 0s 1s, opacity 1s linear;
-    opacity: 0;
-}
-*:hover > a.pencil {
-    visible: visible;
-    transition: opacity .5s linear;
-    opacity: 1;
-}
-@media print {
-    a.pencil {
-	display: none;
-    }
-}
-table a.pencil {
-    position: absolute;
-    right: inherit;
-}
+/* edit paragraphs: no more */
+a.pencil { display: none; }
 
 /* table of contents */
 .toc {
@@ -309,6 +288,8 @@ img.logo {
 	margin-bottom: 1ex;
 	border: 1px solid black;
 }
+
+.hexmap a img { background: #fff; border: none; }
 
 /* fancy bold underline */
 em.underline { font-weight: bold; }
