@@ -16,7 +16,7 @@
 
 use strict;
 
-AddModuleDescription('edit-assist.pl');
+AddModuleDescription('edit-assist.pl', 'Edit Assist Extension');
 
 our ($q, $HtmlHeaders, @MyInitVariables);
 
