@@ -3442,7 +3442,7 @@ sub GrepFiltered { # grep is so much faster!!
   # if we know of any remaining grep incompatibilities we should
   # return @pages here!
   $regexp = quotemeta($regexp);
-  open(my $F, '-|:encoding(UTF-8)', "grep -rli $regexp '$PageDir' 2>/dev/null");
+  open(my $F, '-|:encoding(UTF-8)', "grep -li $regexp '$PageDir' 2>/dev/null");
   while (<$F>) {
     push(@result, $1) if m/.*\/(.*)\.pg/ and not $found{$1};
   }
