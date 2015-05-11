@@ -44,7 +44,7 @@ $IndentLimit, $RecentTop, $RecentLink, $EditAllowed, $UseDiff, $KeepDays, $KeepM
 $AdminPass, $EditPass, $PassHashFunction, $PassSalt, $NetworkFile, $BracketWiki, $FreeLinks, $WikiLinks, $SummaryHours,
 $FreeLinkPattern, $RCName, $RunCGI, $ShowEdits, $LinkPattern, $RssExclude, $InterLinkPattern, $MaxPost, $UseGrep, $UrlPattern,
 $UrlProtocols, $ImageExtensions, $InterSitePattern, $FS, $CookieName, $SiteBase, $StyleSheet, $NotFoundPg, $FooterNote, $NewText,
-$EditNote, $UserGotoBar, $VisitorFile, $RcFile, %Smilies, %SpecialDays, $InterWikiMoniker, $SiteDescription, $RssImageUrl,
+$EditNote, $UserGotoBar, $VisitorFile, $DeleteFile, $RcFile, %Smilies, %SpecialDays, $InterWikiMoniker, $SiteDescription, $RssImageUrl,
 $ReadMe, $RssRights, $BannedCanRead, $SurgeProtection, $TopLinkBar, $TopSearchForm, $MatchingPages, $LanguageLimit,
 $SurgeProtectionTime, $SurgeProtectionViews, $DeletedPage, %Languages, $InterMap, $ValidatorLink, %LockOnCreation,
 $RssStyleSheet, %CookieParameters, @UserGotoBarPages, $NewComment, $HtmlHeaders, $StyleSheetPage, $ConfigPage, $ScriptName,
@@ -259,6 +259,7 @@ sub InitDirConfig {
   $RcOldFile   = "$DataDir/oldrc.log"; # Old RecentChanges logfile
   $IndexFile   = "$DataDir/pageidx";   # List of all pages
   $VisitorFile = "$DataDir/visitors.log"; # List of recent visitors
+  $DeleteFile  = "$DataDir/delete.log"; # Deletion logfile
   $RssDir      = "$DataDir/rss";    # For rss feed cache
   $ReadMe      = "$DataDir/README"; # file with default content for the HomePage
   $ConfigFile ||= "$DataDir/config";  # Config file with Perl code to execute
@@ -2840,7 +2841,7 @@ sub ReadFile {
   return (0, '');
 }
 
-sub ReadFileOrDie {
+sub ReadFileOrDie  {
   my ($file) = @_;
   my ($status, $data);
   ($status, $data) = ReadFile($file);
@@ -3883,6 +3884,7 @@ sub PageMarkedForDeletion {
 sub DeletePage {    # Delete must be done inside locks.
   my $id = shift;
   ValidIdOrDie($id);
+  AppendStringToFile($DeleteFile, "$id\n");
   foreach my $name (GetPageFile($id), GetKeepFiles($id), GetKeepDir($id), GetLockedPageFile($id), $IndexFile) {
     unlink $name if -f $name;
     rmdir  $name if -d $name;
