@@ -3869,7 +3869,7 @@ sub DoMaintain {
 sub PageDeletable {
   return unless $KeepDays;
   my $expirets = $Now - ($KeepDays * 86400); # 24*60*60
-  return 0 unless $Page{ts} < $expirets;
+  return 0 if $Page{ts} >= $expirets;
   return PageMarkedForDeletion();
 }
 
