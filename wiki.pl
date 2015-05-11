@@ -3873,8 +3873,11 @@ sub PageDeletable {
 }
 
 sub PageMarkedForDeletion {
-  return 1 if $Page{text} =~ /^\s*$/; # only whitespace is also to be deleted
-  return $DeletedPage && substr($Page{text}, 0, length($DeletedPage)) eq $DeletedPage; # no regexp!
+  # Only pages explicitly marked for deletion of whitespace-only pages
+  # are deleted; taking into account the very rare possiblity of a
+  # read error and the page text being undefined.
+  return 1 if defined $Page{text} and $Page{text} =~ /^\s*$/;
+  return $DeletedPage && substr($Page{text}, 0, length($DeletedPage)) eq $DeletedPage;
 }
 
 sub DeletePage {    # Delete must be done inside locks.
