@@ -3873,7 +3873,7 @@ sub PageDeletable {
 }
 
 sub PageMarkedForDeletion {
-  # Only pages explicitly marked for deletion of whitespace-only pages
+  # Only pages explicitly marked for deletion or whitespace-only pages
   # are deleted; taking into account the very rare possiblity of a
   # read error and the page text being undefined.
   return 1 if defined $Page{text} and $Page{text} =~ /^\s*$/;
