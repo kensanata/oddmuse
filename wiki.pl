@@ -1943,9 +1943,9 @@ sub DoHistory {
   ValidIdOrDie($id);
   OpenPage($id);
   if (GetParam('raw', 0)) {
-    DoRawHistory();
+    DoRawHistory($id);
   } else {
-    DoHtmlHistory();
+    DoHtmlHistory($id);
   }
 }
 
