@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright (C) 2006, 2007  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006–2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
 require 't/test.pl';
 package OddMuse;
 use Test::More tests => 30;
+use utf8;
 
 clear_pages();
 
