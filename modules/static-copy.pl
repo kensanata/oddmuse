@@ -47,14 +47,14 @@ sub DoStatic {
 sub StaticMimeTypes {
   my %hash;
   # the default mapping matches the default @UploadTypes...
-  open(my $F, '<', $StaticMimeTypes)
+  open(my $fh, '<', $StaticMimeTypes)
     or return ('image/jpeg' => 'jpg', 'image/png' => 'png', );
-  while (<$F>) {
+  while (<$fh>) {
     s/\#.*//;                   # remove comments
     my($type, $ext) = split;
     $hash{$type} = $ext if $ext;
   }
-  close($F);
+  close($fh);
   return %hash;
 }
 
@@ -136,35 +136,35 @@ sub StaticWriteFile {
   OpenPage($id);
   my ($mimetype, $encoding, $data) =
     $Page{text} =~ /^\#FILE ([^ \n]+) ?([^ \n]*)\n(.*)/s;
-  open(my $F, '>', "$StaticDir/$filename")
+  open(my $fh, '>', "$StaticDir/$filename")
     or ReportError(Ts('Cannot write %s', $filename));
   if ($data) {
-    binmode($F);
-    StaticFile($id, $mimetype, $data);
+    binmode($fh);
+    StaticFile($id, $fh, $mimetype, $data);
   } elsif ($html) {
-    binmode($F, ':encoding(UTF-8)');
-    StaticHtml($id);
+    binmode($fh, ':utf8');
+    StaticHtml($id, $fh);
   } else {
     print "no data for ";
   }
-  close($F);
+  close($fh);
   chmod 0644,"$StaticDir/$filename";
   print $filename, $raw ? "\n" : $q->br();
 }
 
 sub StaticFile {
-  my ($id, $type, $data) = @_;
+  my ($id, $fh, $type, $data) = @_;
   require MIME::Base64;
-  print F MIME::Base64::decode($data);
+  print $fh (MIME::Base64::decode($data));
 }
 
 sub StaticHtml {
-  my $id = shift; # assume open page
+  my ($id, $fh) = @_; # assume open page
   # redirect
   if (($FreeLinks and $Page{text} =~ /^\#REDIRECT\s+\[\[$FreeLinkPattern\]\]/)
       or ($WikiLinks and $Page{text} =~ /^\#REDIRECT\s+$LinkPattern/)) {
     my $target = StaticFileName($1);
-    print F <<"EOT";
+    print $fh <<"EOT";
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
@@ -180,7 +180,7 @@ sub StaticHtml {
 EOT
     return;
   }
-  print F <<"EOT";
+  print $fh <<"EOT";
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
@@ -206,11 +206,11 @@ EOT
   my $name = $id;
   $name =~ s|_| |g;
   $header .= $q->h1($name);
-  print F $q->div({-class=>'header'}, $header);
+  print $fh $q->div({-class=>'header'}, $header);
   # sidebar, if the module is loaded
-  print F $q->div({-class=>'sidebar'}, PageHtml($SidebarName)) if $SidebarName;
+  print $fh $q->div({-class=>'sidebar'}, PageHtml($SidebarName)) if $SidebarName;
   # content
-  print F $q->div({-class=>'content'}, PageHtml($id)); # this reopens the page currently open
+  print $fh $q->div({-class=>'content'}, PageHtml($id)); # this reopens the page currently open
   # footer
   my $links = '';
   if ($OpenPageName !~ /^$CommentsPrefix/ # fails if $CommentsPrefix is empty!
@@ -223,11 +223,11 @@ EOT
     $links .= Ts('Back to %s', GetPageLink($1, $1));
   }
   $links = $q->br() . $links if $links;
-  print F $q->div({-class=>'footer'}, $q->hr(), $toolbar,
+  print $fh $q->div({-class=>'footer'}, $q->hr(), $toolbar,
                   $q->span({-class=>'edit'}, $links),
                   $q->span({-class=>'time'}, GetFooterTimestamp($id)));
   # finish
-  print F '</body></html>';
+  print $fh '</body></html>';
 }
 
 sub StaticWriteCss {
