@@ -1,4 +1,5 @@
 # Copyright (C) 2015  Alex-Daniel Jakimenko <alex.jakimenko@gmail.com>
+# Copyright (C) 2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -14,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 1;
+use Test::More tests => 2;
 
 clear_pages();
 
@@ -30,4 +31,13 @@ close(F);
 
 # First of all, let's test basic editing
 get_page('Save=1', 'title=Test', 'summary=MySummary', 'recent_edit=on', 'text=HelloPrivateWiki', 'pwd=5de2cbd1cbb2048e4c753c9fa118c130c1c8b91312154bb30bb99961bd620303');
-test_page(get_page('Test', 'pwd=5de2cbd1cbb2048e4c753c9fa118c130c1c8b91312154bb30bb99961bd620303'), 'HelloPrivateWiki');
+
+# Page is known
+test_page(get_page('action=index', 'raw=1',
+		   'pwd=5de2cbd1cbb2048e4c753c9fa118c130c1c8b91312154bb30bb99961bd620303'),
+	  'Test');
+
+# Page can be read
+test_page(get_page('action=browse', 'id=Test',
+		   'pwd=5de2cbd1cbb2048e4c753c9fa118c130c1c8b91312154bb30bb99961bd620303'),
+	  'HelloPrivateWiki');
