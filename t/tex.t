@@ -27,7 +27,7 @@ test_page(update_page('Example', '4\times7 right\copyright a\inftyb'),
 ok($Tex{'\textreferencemark'}, "TeX patterns ok");
 
 # Create the table of documentation:
-# binmode(STDOUT, ':utf8');
+# binmode(STDOUT, ':encoding(UTF-8)');
 # my $i = 1;
 # foreach (sort keys %Tex) {
 #   printf "||%s || %s ", $_, $Tex{$_};

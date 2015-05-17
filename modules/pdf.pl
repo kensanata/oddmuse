@@ -118,15 +118,12 @@ sub PdfDoBrowseRequest{
 # Create an HTML file with just the content of the page body
 sub outputHTML {
 	my ($id) = @_;
-	my $result = '';
 
-	local *STDOUT;
-	open(STDOUT, '>', \$result);
 	local *STDERR;
 	open(STDERR, '>', '/dev/null');
 
 	# Fix Markdown
-	print PageHtml($id);
+	my $result = ToString sub { print PageHtml($id) };
 
 	open(my $FILE, '>', "$tempDirectory/temp.html") or ReportError(Ts('Cannot write %s', "temp.html"));
 
