@@ -444,7 +444,7 @@ sub ApplyRules {
 	  if ($type eq 'text') {
 	    print $q->pre({class=>"include $uri"}, QuoteHtml(GetRaw($uri)));
 	  } else { # never use local links for remote pages, with a starting tag
-	    print $q->start_div({class=>"include $uri"});
+	    print $q->start_div({class=>"include"});
 	    ApplyRules(QuoteHtml(GetRaw($uri)), 0, ($type eq 'with-anchors'), undef, 'p');
 	    print $q->end_div();
 	  }
@@ -2334,7 +2334,7 @@ sub GetHtmlHeader {   # always HTML!
     . $q->head($q->title($title) . $base
       . GetCss() . GetRobots() . GetFeeds() . $HtmlHeaders
       . '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />')
-      . '<body class="' . GetParam('theme', $ScriptName) . '">';
+      . '<body class="' . GetParam('theme', 'default') . '">';
 }
 
 sub GetRobots { # NOINDEX for non-browse pages.
