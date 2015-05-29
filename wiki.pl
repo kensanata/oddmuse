@@ -818,7 +818,7 @@ sub GetRaw {
 
 sub DoJournal {
   print GetHeader(undef, T('Journal'));
-  print $q->start_div({-class=>'content'});
+  print $q->start_div({-class=>'content journal'});
   PrintJournal(map { GetParam($_, ''); } qw(num num regexp mode offset search variation));
   print $q->end_div();
   PrintFooter();
