@@ -4,6 +4,7 @@
 # Copyright (C) 2004  Andrei Bulava <abulava@users.sourceforge.net>
 # Copyright (C) 2006  Igor Afanasyev <afan@mail.ru>
 # Copyright (c) 2007  Alexander Uvizhev <uvizhe@yandex.ru>
+# Copyright (C) 2015  Alex-Daniel Jakimenko <alex.jakimenko@gmail.com>
 #
 # Permission is granted to copy, distribute and/or modify this
 # document under the terms of the GNU Free Documentation License,
@@ -24,15 +25,15 @@ use utf8;
 AddModuleDescription('russian-utf8.pl', 'Russian');
 %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.
-
+Эта страница пуста.
 Add your comment here:
-
+Добавьте свой комментарий здесь:
 Reading not allowed: user, ip, or network is blocked.
 Просмотр недоступен: имя пользователя, IP-адрес или сеть заблокированы.
 Login
 
 Error
-
+Ошибка
 %s calls
 
 Cannot create %s
@@ -44,11 +45,11 @@ Hекорректное имя пользователя %s: не сохране�
 UserName must be 50 characters or less: not saved
 Имя пользователя не может содержать больше 50 символов: не сохранено
 This page contains an uploaded file:
-
+Эта страница содержит загруженный файл:
 No summary was provided for this file.
-
+Описание не было указано для этого файла.
 Recursive include of %s!
-
+Рекурсивное включение страницы %s!
 Clear Cache
 Очистить кэш
 Main lock obtained.
@@ -56,13 +57,13 @@ Main lock obtained.
 Main lock released.
 Блокировка сайта снята.
 Journal
-
+Журнал
 More...
-
+Еще...
 Comments on this page
 Комментарии к этой странице
 XML::RSS is not available on this system.
-
+XML::RSS не доступен на этом сервере.
 diff
 изменения
 history
@@ -92,7 +93,7 @@ Invalid Page %s (must not end with .lck)
 Invalid Page %s
 Некорректная страница %s
 Too many redirections
-
+Слишком много перенаправлений
 No redirection for old revisions
 
 Invalid link pattern for #REDIRECT
@@ -124,15 +125,15 @@ Include minor changes
 %s days
 %s дней
 %s day
-
+%s день
 List later changes
 Показать недавние изменения
 RSS
-
+RSS
 RSS with pages
-
+RSS со страницами
 RSS with pages and diff
-
+RSS со страницами изменениями
 Filters
 Фильтры
 Title:
@@ -142,7 +143,7 @@ Title and Body:
 Username:
 Имя пользователя:
 Host:
-Сервер:
+Хост:
 Follow up to:
 
 Language:
@@ -154,9 +155,9 @@ Go!
 rollback
 откат
 new
-
+новая
 All changes for %s
-
+Все изменения страницы %s
 This page is too big to send over RSS.
 Эта страница слишком велика для трансляции в RSS.
 History of %s
@@ -164,21 +165,21 @@ History of %s
 Compare
 Сравнить
 Deleted
-
+Удалено
 Mark this page for deletion
 Удалить эту страницу
 No other revisions available
-
+Нет других доступных версий
 current
 текущая
 Revision %s
 Версия %s
 Contributors to %s
-
+Редакторы страницы %s
 Missing target for rollback.
-
+Нет цели для отката.
 Target for rollback is too far back.
-
+Цель отката слишком далеко.
 A username is required for ordinary users.
 
 Rolling back changes
@@ -188,7 +189,7 @@ The two revisions are the same.
 Editing not allowed: %s is read-only.
 Редактирование не допустимо: %s только для чтения.
 Rollback of %s would restore banned content.
-
+Откат страницы %s восстановит неразрешенный контент.
 Rollback to %s
 Откат до %s
 %s rolled back
@@ -232,7 +233,7 @@ redirected from %s
 Click to search for references to this page
 Щелкните для поиска ссылок на эту страницу
 Cookie: 
-Кука:
+Куки:
 Edit this page
 Редактировать
 Preview:
@@ -246,7 +247,7 @@ Database is stored in temporary directory %s
 %s seconds
 %s секунд
 Last edited
-Редактировалось последний раз 
+Редактировалось последний раз
 Edited
 Правленное
 by %s
@@ -262,7 +263,7 @@ Edit revision %s of this page
 e
 
 This page is read-only
-Эта страница предназначена только для чтения
+Страница только для чтения
 View other revisions
 История
 View current revision
@@ -270,7 +271,7 @@ View current revision
 View all changes
 Смотреть все изменения
 View contributors
-
+Смотреть редакторов
 Homepage URL:
 
 s
@@ -288,15 +289,15 @@ f
 Replace:
 Замена:
 Delete
-
+Удалить
 Filter:
 Фильтр:
 Validate HTML
-
+Провалидировать HTML
 Validate CSS
-
+Провалидировать CSS
 Last edit
-
+Поледнее изменение
 Summary:
 Описание:
 Difference between revision %1 and %2
@@ -306,13 +307,13 @@ revision %s
 current revision
 текущей версии
 Last major edit (%s)
-
+Последнее значительное изменение (%s)
 later minor edits
-
+более поздние незначительные изменения
 No diff available.
 Функция сравнения (diff) недоступна.
 Old revision:
-
+Старая версия:
 Changed:
 Изменилось:
 Deleted:
@@ -328,43 +329,43 @@ showing current revision instead
 Showing revision %s
 Показ версии %s
 Cannot save a nameless page.
-
+Не могу сохранить страницу без названия.
 Cannot save a page without revision.
-
+Не могу сохранить страницу без версии.
 Cannot open %s
-
+Не могу открыть %s
 Cannot write %s
-
+Не могу записать %s
 unlock the wiki
-
+разблокировать вики
 Could not get %s lock
-
+Не могу получить блокировку %s
 The lock was created %s.
-
+Блокировка была создана %s.
 Maybe the user running this script is no longer allowed to remove the lock directory?
-
+Возможно пользователь, под которым запущен этот скрипт, более не может удалить lock-директорию?
 This operation may take several seconds...
 Эта операция может занять несколько секунд...
 Forced unlock of %s lock.
-
+Принудительный сброс блокировки %s.
 No unlock required.
 Разблокировка не требуется.
 %s hours ago
-
+%s часов назад
 1 hour ago
-
+1 час назад
 %s minutes ago
-
+%s минут назад
 1 minute ago
-
+1 минуту назад
 %s seconds ago
-
+%s секунд назад
 1 second ago
-
+1 секунду назад
 just now
-
+только что
 Only administrators can upload files.
-
+Только администраторы могут загружать файлы.
 Editing revision %s of
 Редактирование версии %s
 Editing %s
@@ -382,7 +383,7 @@ Replace this file with text
 Replace this text with a file
 Заменить этот текст файлом
 File to upload: 
-Файл для загрузки:
+Файл для загрузки: 
 Files of type %s are not allowed.
 Загрузка файлов типа "%s" не разрешена.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
@@ -400,7 +401,7 @@ Password:
 This site does not use admin or editor passwords.
 Этот сайт не использует пароли администратора или редактора.
 Return to 
-
+Вернуться на 
 This operation is restricted to site editors only...
 Эта операция доступна только для редакторов сайта...
 This operation is restricted to administrators only...
@@ -412,7 +413,7 @@ Editing not allowed: user, ip, or network is blocked.
 Contact the wiki administrator for more information.
 Свяжитесь с нашей администрацией чтоб узнать больше.
 The rule %s matched for you.
-
+Сработало правило %s.
 See %s for more information.
 
 SampleUndefinedPage
@@ -424,23 +425,23 @@ Rule "%1" matched "%2" on this page.
 Reason: %s.
 
 Reason unknown.
-
+Причина неизвестна.
 (for %s)
 (%s)
 %s pages found.
 Найдено %s страниц
 Malformed regular expression in %s
-
+Неправильно регулярное выражение %s
 Replaced: %s
-
+Заменено: %s
 Search for: %s
 Искать: %s
 View changes for these pages
 Посмотреть изменения для этих страниц
 last updated
-
+редактировалось последний раз
 by
-
+пользователем
 Transfer Error: %s
 
 Browser reports no file info.
@@ -456,23 +457,23 @@ This page was changed by somebody else %s.
 The changes conflict.  Please check the page again.
 Изменения конфликтуют. Проверьте страницу снова.
 Please check whether you overwrote those changes.
-
+Пожалуйста удостоверьтесь, что вы не перезаписали чужие изменения.
 Anonymous
 Аноним
 Cannot delete the index file %s.
-
+Не могу удалить индекс-файл %s.
 Please check the directory permissions.
 Проверьте разрешения этой директории.
 Your changes were not saved.
 Ваши изменения не были сохранены.
 Could not get a lock to merge!
-
+Не могу получить lock для слияния страниц!
 you
-
+ваша версия
 ancestor
-
+изначально
 other
-
+чужая версия
 Run Maintenance
 Процедура техобслуживания
 Maintenance not done.
@@ -484,19 +485,19 @@ Remove the "maintain" file or wait.
 Expiring keep files and deleting pages marked for deletion
 Удаление устаревших версий страниц и страниц, явно помеченных к удалению
 not deleted: 
-не удалена:
+не удалена: 
 deleted
 удалена
 Moving part of the %s log file.
-
+Перемещаю часть лог файла %s.
 Could not open %s log file
-Не возможно открыть файл протокола %s 
+Не возможно открыть файл протокола %s
 Error was
-Были ошибки 
+Были ошибки
 Note: This error is normal if no changes have been made.
 Примечание: Эта ошибка - нормально, если не было сделано изменений.
 Moving %s log entries.
-
+Перемещаю %s лог записей.
 Set or Remove global edit lock
 Установка или снятие глобальной блокировки на редактирование
 Edit lock created.
@@ -512,29 +513,29 @@ Lock for %s removed.
 Displaying Wiki Version
 Версия Wiki
 Debugging Information
-
+Отладочная информация
 Too many connections by %s
-
+Слишком много подключений от %s
 Please do not fetch more than %1 pages in %2 seconds.
 Пожалйуста, не запрашивайте более %1 страниц в течение %2 секунд.
 Check whether the web server can create the directory %s and whether it can create files in it.
 
 , see 
-
+, смотрите 
 Backlinks
 
 Recover Draft
-
+Восстановить черновик
 No text to save
-
+Отсутствует текст для сохранения
 Draft saved
-
+Черновик сохранен
 Draft recovered
-
+Черновик восстановлен
 No draft available to recover
-
+Нет черновика для восстановления
 Save Draft
-
+Сохранить черновик
 Draft Cleanup
 
 %1 was last modified %2 and was kept
@@ -542,7 +543,7 @@ Draft Cleanup
 %1 was last modified %2 and was deleted
 
 Unable to delete draft %s
-
+Не могу удалить черновик %s
 Recent Visitors
 
 some action
@@ -570,39 +571,39 @@ Bisect modules
 Module Bisect
 
 All modules enabled now!
-
+Все модули теперь включены!
 Go back
-
+Вернуться
 Test / Always enabled / Always disabled
-
+Проверить / Всегда включены / Всегда выключены
 Start
-
+Начать
 Biscecting proccess is already active.
 
 Stop
-
+Остановить
 It seems like module %s is causing your problem.
-
+Судя по всему, модуль %s вызывает вашу проблему.
 Please note that this module does not handle situations when your problem is caused by a combination of specific modules (which is rare anyway).
 
 Good luck fixing your problem! ;)
-
+Удачи в решении вашей проблемы! ;)
 Module count (only testable modules): 
-
+Количество модулей (только тестируемые модули):
 Current module statuses:
 
 Good
-
+Нет проблемы
 Bad
-
+Есть проблема
 Enabling %s
-
+Включаю %s
 Invalid Mail %s: not saved.
 
 unsubscribe
-
+отписаться
 subscribe
-
+подписаться
 %s appears to be an invalid mail address
 
 Your mail subscriptions
@@ -610,29 +611,29 @@ Your mail subscriptions
 All mail subscriptions
 
 Subscriptions
-
+Подписки
 Show
 
 Subscriptions for %s:
-
+Подписки на %s:
 Unsubscribe
-
+Отписаться
 There are no subscriptions for %s.
-
+Нет подписок на %s.
 Change email address
-
+Изменить email адрес
 Mail addresses are linked to unsubscription links.
 
 Subscribe to %s.
-
+Подписаться на %s.
 Subscribe
-
+Подписаться
 Subscribed %s to the following pages:
-
+%s был подписан на следующие страницы:
 The remaining pages do not exist.
-
+Оставшиеся страницы не существуют.
 Unsubscribed %s from the following pages:
-
+%s был отписан от следующих страниц:
 Migrating Subscriptions
 
 No non-migrated email addresses found, migration not necessary.
@@ -640,7 +641,7 @@ No non-migrated email addresses found, migration not necessary.
 Migrated %s rows.
 
 List of locked pages
-
+Список заблокированных страних
 Wanted Pages
 
 %s pages
@@ -662,35 +663,35 @@ Rebuilding index not done.
 (Rebuilding the index can only be done once every 12 hours.)
 
 Rebuild tag index
-
+Пересоздать индекс тегов
 list tags
-
+список тегов
 tag cloud
-
+облако тегов
 Full Link List
 Полный список ссылок
 %s is not a legal name for a namespace
 
 Namespaces
-
+Пространства имен
 Upgrading Database
-
+Обновление базы данных
 Did the previous upgrade end with an error? A lock was left behind.
-
+Lock не был удален, возможно предыдущее обновление закончилось с ошибкой?
 Unlock wiki
-
+Разблокировать вики
 Upgrade complete.
-
+Обновление заершено.
 Upgrade complete. Please remove $ModuleDir/upgade.pl, now.
-
+Обновление завершено. Пожалуйста удалите $ModuleDir/upgade.pl.
 no summary available
-
+нет описания
 page was marked for deletion
-
+страница была помечена для удаления
 Oddmuse
 
 Cleaning up git repository
-
+Чищу git репозиторий
 Alternatively, use one of the following templates:
 
 Set $FormTimeoutSalt.
@@ -702,23 +703,23 @@ LocalMap
 No page id for action localmap
 
 Requested page %s does not exist
-
+Запрошенная страница %s не существует
 Local Map for %s
 
 view
 
 Matching page names:
-
+Подходящие названия страниц:
 None
 
 Type
 
 Illegal year value: Use 0001-9999
-
+Неправильное значение года, используйте 0001-9999
 The match parameter is missing.
 
 Page Collection for %s
-
+Страницы (%s)
 Previous
 Назад
 Next
@@ -764,9 +765,9 @@ November
 December
 Декабрь
 Clearing Cache
-
+Очищаю кэш.
 Done.
-
+Готово.
 Generating Link Database
 
 The 404 handler extension requires the link data extension (links.pl).
@@ -820,7 +821,7 @@ Include near pages
 EditNearLinks
 
 The same page on other sites:
-
+Та же страница на других сайтах:
 Fix character encoding
 
 Fix HTML escapes
@@ -856,17 +857,17 @@ Template without parameters
 The template %s is either empty or does not exist.
 
 Attach file:
-
+Прикрепить файл:
 Upload
 
 Only Editors are allowed to see this hidden page.
-
+Только редакторы могут видеть эту скрытую страницу.
 Only Admins are allowed to see this hidden page.
-
+Только администраторы могут видеть эту скрытую страницу.
 Back to %s
 Назад к %s
 Rebuild index for searching
-
+Обновить индекс для поиска
 Search::FreeText is not available on this system.
 
 New Pages for Indexed Search
@@ -880,15 +881,15 @@ Result pages:
 (%s results)
 
 Tags:
-
+Теги:
 Tags: %s.
-
+Теги: %s.
 No tags
-
+Нет тегов
 Index
-
+Индекс
 Upload is limited to %s bytes
-
+Закрузки ограничены до %s байт
 Matching pages:
 
 New
@@ -900,21 +901,21 @@ Ban contributors
 Ban Contributors to %s
 
 %s is banned
-
+%s забанен
 Ban!
-
+Заблокировать!
 These URLs were rolled back. Perhaps you want to add a regular expression to %s?
 
 Regular expression:
-
+Регулярное выражение:
 Consider banning the IP number as well: 
-
+Также вы можете забанить IP адрес: 
 Archive:
-
+Архив:
 Too many instances.  Only %s allowed.
 
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
-
+Попробуйте еще раз попозже. Возможно, кто-то запустил процедуру техобслуживания, или в процессе находится долгий поиск. К сожалению, ресурсы этого сайта ограничены, мы вынуждены попросить Вас быть терпеливыми.
 Banned Content
 
 Rule "%1" matched on this page.
@@ -942,35 +943,35 @@ There was an error generating the pdf for %s.  Please report this to webmaster, 
 Someone else is generating a pdf for %s.  Please wait a minute and then try again.
 
 Download this page as PDF
-
+Скачать эту страницу в PDF
 Trail: 
 
 This page is password protected. If you know the password, you can %s. Once you have done that, return and reload this page.
-
+Эта страница защищена паролем. Если вы знаете пароль, вы можете %s. Как только вы это сделали, просто перезагрузите эту страницу.
 supply the password now
-
+указать пароль прямо сейчас
 Deleting %s
-
+Удаляю %s
 Deleted %s
-
+%s удалена
 Renaming %1 to %2.
-
+Переименовываю %1 в %2.
 The page %s does not exist
-
+Страница %s не существует
 The page %s already exists
-
+Страница %s уже существует
 Cannot rename %1 to %2
-
+Не могу переименовать %1 в %2
 Renamed to %s
-
+Переименовано в %s
 Renamed from %s
-
+Переименовано с %s
 Renamed %1 to %2.
-
+%1 Переименовано в %2
 Immediately delete %s
-
+Немедленно удалить %s
 Rename %s to:
-
+Переименовать %s в:
 Install CSS
 Загрузить CSS-стиль
 Copy one of the following stylesheets to %s:
@@ -978,7 +979,7 @@ Copy one of the following stylesheets to %s:
 Reset
 
 Create a new page for today
-
+Создать новую страницу для сегодняшнего дня
 Upload of %s file
 
 Web application for offline browsing
@@ -986,15 +987,15 @@ Web application for offline browsing
 Rebuild BackLink database
 
 Internal Page: 
-
+Внутренняя страница:
 Pages that link to this page
-
+Страницы ссылающиеся на эту страницу
 Referrers
 
 Please type the following two words:
 
 Please answer this captcha:
-
+Пожалуйста введите капчу:
 You did not answer correctly.
 
 All Referrers
@@ -1002,7 +1003,7 @@ All Referrers
 ordinary changes
 
 No summary provided
-
+Без описания
 http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
 
 http://www.amazon.com/exec/obidos/ISBN=%s
@@ -1016,7 +1017,7 @@ search
 Timezone
 
 Pick your timezone:
-
+Выберите ваш часовой пояс:
 Set
 
 Could not identify the paragraph you were editing
@@ -1026,13 +1027,13 @@ This is the section you edited:
 This is the current page:
 
 Update modules
-
+Обновить модули
 Module Updater
-
+Обновление модулей
 Looks good. Update modules now!
-
+Всё в порядке. Обновить модули!
 To save this page you must answer this question:
-
+Чтобы сохранить эту страницу вы должны ответить на вопрос:
 GD or Image::Magick modules not available.
 
 GD::SecurityImage module not available.
@@ -1050,13 +1051,13 @@ CAPTCHA
 $GdSecurityImageFont is not set.
 
 This page is a translation of %s. 
-
+Эта страница является переводом %s. 
 The translation is up to date.
 
 The translation is outdated.
-
+Это перевод устарел.
 The page does not exist.
-
+Эта страница не существует.
 Page list for %s
 
 Orphan List
@@ -1100,35 +1101,35 @@ The username must be valid page name.
 Confirmation email will be sent to the email address.
 
 Repeat Password:
-
+Повторите пароль:
 Email:
 
 Bad email address format.
 
 Password needs to have at least %s characters.
-
+Пароль должен содержать как минимум %s символов.
 Passwords differ.
-
+Пароли не совпадают.
 Email Sent
 
 Confirmation email has been sent to %s. Visit the link on the mail to confirm registration.
-
+Письмо для подтверждения было отправлено на %s. Пройдите по ссылке в письме чтобы подтвердить регистрацию.
 Failed to Confirm Registration
-
+Не получилось подтвердить регистрацию
 Invalid key.
-
+Неправильный ключ.
 The key expired.
-
+Ключ устарел.
 Registration Confirmed
-
+Регистрация подтверждена
 Now, you can login by using username and password.
 
 Forgot your password?
-
+Забыли пароль?
 Login failed.
 
 You are banned.
-
+Вы забанены.
 You must confirm email address.
 
 Logged in
@@ -1138,7 +1139,7 @@ Logged in
 You should set new password immediately.
 
 Change Password
-
+Изменить пароль
 Logged out
 
 %s has logged out.
@@ -1146,17 +1147,17 @@ Logged out
 Account Settings
 
 Current Password:
-
+Текущий пароль:
 New Password:
-
+Новый пароль:
 Repeat New Password:
-
+Повторить новый пароль:
 Password is wrong.
-
+Пароль неправильный.
 Password Changed
-
+Пароль изменен
 Your password has been changed.
-
+Ваш пароль был изменен.
 Forgot Password
 
 Enter email address, and recovery login ticket will be sent.
@@ -1194,23 +1195,23 @@ Enter username of the account to unban:
 Unban
 
 %s is already banned.
-
+%s уже заблокирован.
 %s has been banned.
-
+%s заблокирован.
 %s is not banned.
-
+%s не заблокирован.
 %s has been unbanned.
-
+%s разблокирован.
 Register
 
 Comments on 
-Комментарии к
+Комментарии к 
 Comment on 
-Комментарий к
+Комментарий к 
 Index of all small pages
 
 Languages:
-
+Языки:
 Show!
 
 Permalink to "%s"
@@ -1226,13 +1227,13 @@ Register for %s
 Please choose a username of the form "FirstLast" using your real name.
 
 The passwords do not match.
-
+Пароли не сходятся.
 The password must be at least %s characters.
-
+Пароль должен быть как минимум %s символов.
 That email address is invalid.
 
 The username %s has already been registered.
-
+Пользователь %s уже зарегистрирован.
 Your registration for %s has been submitted.
 
 Please allow time for the webmaster to approve your request.
@@ -1256,9 +1257,9 @@ Logout of %s?
 Register a new account
 
 Who am I?
-
+Кто я?
 Change your password
-
+Изменить пароль
 Approve pending registrations
 
 Confirm Registration for %s
@@ -1268,7 +1269,7 @@ Confirm Registration for %s
 Confirmation failed.  Please email %s for help.
 
 Who Am I?
-
+Кто я?
 You are logged in as %s.
 
 You are not logged in.
@@ -1280,15 +1281,15 @@ The password for %s was reset.  It has been emailed to the address on file.
 There was an error resetting the password for %s.
 
 The username "%s" does not exist.
-
+Пользователь "%s" не существует.
 Reset Password for %s
 
 Reset Password?
-
+Сбросить пароль?
 Change Password for %s
 
 Change Password?
-
+Изменить пароль?
 Your current password is incorrect.
 
 Approve Pending Registrations for %s
@@ -1306,11 +1307,11 @@ There was an error approving %s.
 There are no pending registrations.
 
 Comments:
-
+Комментарии:
 This error should not happen. If your password is set correctly and you are still
 
 Attempt to read encrypted data without a password.
-
+Попытка прочитать зашифрованные данные без пароля.
 thumb
 
 Error creating thumbnail from non existant page %s.
@@ -1332,13 +1333,13 @@ Failed to run %1 to create thumbnail: %2
 Failed to parse %s.
 
 Edit image in the browser
-
+Отредактировать изображение в браузере
 Summary of your changes: 
-
+Описание изменений:
 Page diff
-
+Сравнение страниц
 Diff
-
+Сравнить
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 
 Learn more...
@@ -1346,7 +1347,7 @@ Learn more...
 Slideshow:%s
 
 Add Translation
-
+Добавить перевод
 Please provide a different page name for the translation.
 
 Added translation: %1 (%2)
@@ -1374,7 +1375,7 @@ Copy to %1 failed: %2.
 Self-ban by %s
 
 You have banned your own IP.
-
+Вы заблокировали свой собственный IP.
 Extract all dates from the database
 
 Dates
