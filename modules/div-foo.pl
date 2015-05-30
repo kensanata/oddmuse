@@ -24,10 +24,10 @@ $DivFooPrefix = 'foo_';
 push(@MyRules, \&DivFooRule);
 
 sub DivFooRule {
-  if (m/\G \&lt; ([a-z-_][a-z-_ ]+[a-z-_]) \&gt; \s*\n /cgx) {
+  if (m/\G \&lt; ([a-z_-][a-z0-9 _-]+[a-z0-9_-]) \&gt; \s*\n /cgx) {
     return CloseHtmlEnvironment('p') . AddHtmlEnvironment('div', 'class="' . join(' ', map {"$DivFooPrefix$_"} split /\s+/, $1) . '"');
   }
-  if (m/\G \&lt; ([a-z-_][a-z-_ ]+[a-z-_]) (\?(.*?(?=\&gt;)))? \&gt; /cgx) {
+  if (m/\G \&lt; ([a-z_-][a-z0-9 _-]+[a-z0-9_-]) (\?(.*?(?=\&gt;)))? \&gt; /cgx) {
     my $title = $3 ? ' title="' . QuoteHtml($3) . '"' : '';
     return AddHtmlEnvironment('span', 'class="' . join(' ', map {"$DivFooPrefix$_"} split /\s+/, $1) . '"' . $title);
   }
