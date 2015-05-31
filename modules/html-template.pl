@@ -55,10 +55,7 @@ sub DoHtmlTemplate {
 # string instead of printing directly.
 
 sub HtmlTemplateRc {
-  my $result = '';
-  local *STDOUT;
-  open(STDOUT, '>', \$result) or die "Can't open memory file: $!";
-  DoRc(\&GetRcHtml);
+  my $result = ToString sub { DoRc(\&GetRcHtml) };
   return $result;
 }
 

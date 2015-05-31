@@ -212,8 +212,8 @@ sub ReportError {   # fatal!
 }
 
 sub Init {
-  binmode(STDOUT, ':utf8'); # this is where the HTML gets printed
-  binmode(STDERR, ':utf8'); # just in case somebody prints debug info to stderr
+  binmode(STDOUT, ':encoding(UTF-8)'); # this is where the HTML gets printed
+  binmode(STDERR, ':encoding(UTF-8)'); # just in case somebody prints debug info to stderr
   InitDirConfig();
   $FS = "\x1e"; # The FS character is the RECORD SEPARATOR control char in ASCII
   $Message = ''; # Warnings and non-fatal errors.
@@ -444,7 +444,7 @@ sub ApplyRules {
 	  if ($type eq 'text') {
 	    print $q->pre({class=>"include $uri"}, QuoteHtml(GetRaw($uri)));
 	  } else { # never use local links for remote pages, with a starting tag
-	    print $q->start_div({class=>"include $uri"});
+	    print $q->start_div({class=>"include"});
 	    ApplyRules(QuoteHtml(GetRaw($uri)), 0, ($type eq 'with-anchors'), undef, 'p');
 	    print $q->end_div();
 	  }
@@ -818,7 +818,7 @@ sub GetRaw {
 
 sub DoJournal {
   print GetHeader(undef, T('Journal'));
-  print $q->start_div({-class=>'content'});
+  print $q->start_div({-class=>'content journal'});
   PrintJournal(map { GetParam($_, ''); } qw(num num regexp mode offset search variation));
   print $q->end_div();
   PrintFooter();
@@ -1255,22 +1255,24 @@ sub PrintPageDiff {   # print diff for open page
   }
 }
 
+sub ToString {
+  my ($sub_ref) = @_;
+  my $output;
+  open(my $outputFH, '>:encoding(UTF-8)', \$output) or die "Can't open memory file: $!";
+  my $oldFH = select $outputFH;
+  $sub_ref->();
+  select $oldFH;
+  close $outputFH;
+  utf8::decode($output);
+  return $output;
+}
+
 sub PageHtml {
   my ($id, $limit, $error) = @_;
-  my ($diff, $page);
-  local *STDOUT;
   OpenPage($id);
-  open(STDOUT, '>', \$diff) or die "Can't open memory file: $!";
-  binmode(STDOUT); # works whether STDOUT already has the UTF8 layer or not
-  binmode(STDOUT, ":utf8");
-  PrintPageDiff();
-  utf8::decode($diff);
+  my $diff = ToString \&PrintPageDiff;
   return $error if $limit and length($diff) > $limit;
-  open(STDOUT, '>', \$page) or die "Can't open memory file: $!";
-  binmode(STDOUT); # works whether STDOUT already has the UTF8 layer or not
-  binmode(STDOUT, ":utf8");
-  PrintPageHtml();
-  utf8::decode($page);
+  my $page = ToString \&PrintPageHtml;
   return $diff . $q->p($error) if $limit and length($diff . $page) > $limit;
   return $diff . $page;
 }
@@ -1486,7 +1488,7 @@ sub GetRcLines { # starttime, hash of seen pages to use as a second return value
   my %following = ();
   my @result = ();
   # check the first timestamp in the default file, maybe read old log file
-  open(my $F, '<:utf8', $RcFile);
+  open(my $F, '<:encoding(UTF-8)', $RcFile);
   my $line = <$F>;
   my ($ts) = split(/$FS/o, $line); # the first timestamp in the regular rc file
   if (not $ts or $ts > $starttime) { # we need to read the old rc file, too
@@ -1569,7 +1571,7 @@ sub GetRcLinesFor {
         rcclusteronly rcfilteronly match lang followup);
   # parsing and filtering
   my @result = ();
-  open(my $F, '<:utf8', $file) or return ();
+  open(my $F, '<:encoding(UTF-8)', $file) or return ();
   while (my $line = <$F>) {
     chomp($line);
     my ($ts, $id, $minor, $summary, $host, $username, $revision,
@@ -2332,7 +2334,7 @@ sub GetHtmlHeader {   # always HTML!
     . $q->head($q->title($title) . $base
       . GetCss() . GetRobots() . GetFeeds() . $HtmlHeaders
       . '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />')
-      . '<body class="' . GetParam('theme', $ScriptName) . '">';
+      . '<body class="' . GetParam('theme', 'default') . '">';
 }
 
 sub GetRobots { # NOINDEX for non-browse pages.
@@ -2694,7 +2696,7 @@ sub OpenPage {      # Sets global variables
     $Page{revision} = 0;
     if ($id eq $HomePage) {
       my $F;
-      if (open($F, '<:utf8', $ReadMe) or open($F, '<:utf8', 'README')) {
+      if (open($F, '<:encoding(UTF-8)', $ReadMe) or open($F, '<:encoding(UTF-8)', 'README')) {
 	local $/ = undef;
 	$Page{text} = <$F>;
 	close $F;
@@ -2832,7 +2834,7 @@ sub ExpireKeepFiles {   # call with opened page
 sub ReadFile {
   my $file = shift;
   utf8::encode($file); # filenames are bytes!
-  if (open(my $IN, '<:utf8', $file)) {
+  if (open(my $IN, '<:encoding(UTF-8)', $file)) {
     local $/ = undef; # Read complete files
     my $data=<$IN>;
     close $IN;
@@ -2854,7 +2856,7 @@ sub ReadFileOrDie  {
 sub WriteStringToFile {
   my ($file, $string) = @_;
   utf8::encode($file);
-  open(my $OUT, '>:utf8', $file)
+  open(my $OUT, '>:encoding(UTF-8)', $file)
     or ReportError(Ts('Cannot write %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
   print $OUT  $string;
   close($OUT);
@@ -2863,7 +2865,7 @@ sub WriteStringToFile {
 sub AppendStringToFile {
   my ($file, $string) = @_;
   utf8::encode($file);
-  open(my $OUT, '>>:utf8', $file)
+  open(my $OUT, '>>:encoding(UTF-8)', $file)
     or ReportError(Ts('Cannot write %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
   print $OUT  $string;
   close($OUT);
@@ -3398,7 +3400,7 @@ sub PageIsUploadedFile {
   if ($IndexHash{$id}) {
     my $file = GetPageFile($id);
     utf8::encode($file); # filenames are bytes!
-    open(my $FILE, '<:utf8', $file)
+    open(my $FILE, '<:encoding(UTF-8)', $file)
       or ReportError(Ts('Cannot open %s', $file) . ": $!", '500 INTERNAL SERVER ERROR');
     while (defined($_ = <$FILE>) and $_ !~ /^text: /) {
     }          # read lines until we get to the text key
@@ -3443,7 +3445,7 @@ sub GrepFiltered { # grep is so much faster!!
   # if we know of any remaining grep incompatibilities we should
   # return @pages here!
   $regexp = quotemeta($regexp);
-  open(my $F, '-|:utf8', "grep -li $regexp '$PageDir' 2>/dev/null");
+  open(my $F, '-|:encoding(UTF-8)', "grep -li $regexp '$PageDir' 2>/dev/null");
   while (<$F>) {
     push(@result, $1) if m/.*\/(.*)\.pg/ and not $found{$1};
   }
