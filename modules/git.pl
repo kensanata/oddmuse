@@ -81,6 +81,7 @@ sub GitRun {
 
   chdir($GitRepo);
   if ($GitDebug) {
+    # TODO use ToString here
     # capture the output of the git comand in a temporary file
     my $fh = File::Temp->new();
     open(my $oldout, ">&STDOUT") or die "Can't dup STDOUT: $!";

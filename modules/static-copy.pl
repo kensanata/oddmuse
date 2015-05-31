@@ -142,7 +142,7 @@ sub StaticWriteFile {
     binmode($fh);
     StaticFile($id, $fh, $mimetype, $data);
   } elsif ($html) {
-    binmode($fh, ':utf8');
+    binmode($fh, ':encoding(UTF-8)');
     StaticHtml($id, $fh);
   } else {
     print "no data for ";

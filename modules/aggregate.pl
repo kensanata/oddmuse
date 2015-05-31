@@ -143,12 +143,7 @@ sub DoAggregate {
       my $minor = $data{minor};
       my $revision = $data{revision};
       my $cluster = GetCluster($page);
-      my $description;
-      {
-	local *STDOUT;
-	open(STDOUT, '>', \$description) or die "Can't open memory file: $!";
-	ApplyRules(QuoteHtml($page), 1, 0, undef, 'p');
-      }
+      my $description = ToString sub { ApplyRules(QuoteHtml($page), 1, 0, undef, 'p') };
       $description .= $q->p(GetPageLink($id, T('Learn more...')))
 	if length($page) < $size;
       $rss .= "\n<item>\n";
