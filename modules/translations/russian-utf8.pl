@@ -61,7 +61,7 @@ Journal
 More...
 Еще...
 Comments on this page
-Комментарии к этой странице
+Комментарии
 XML::RSS is not available on this system.
 XML::RSS не доступен на этом сервере.
 diff
