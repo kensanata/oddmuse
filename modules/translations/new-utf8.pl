@@ -16,8 +16,11 @@
 # file in there. It will be loaded automatically.
 #
 use utf8;
+use strict;
+
 AddModuleDescription('fixme-utf8.pl', 'Fixme');
-%Translate = split(/\n/,<<'END_OF_TRANSLATION');
+
+our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.
 
 Add your comment here:

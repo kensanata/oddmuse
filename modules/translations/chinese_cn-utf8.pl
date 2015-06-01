@@ -26,18 +26,20 @@
 #(http://search.cpan.org/~qjzhou/Encode-CNMap-0.32/bin/cnmap) by Qing-Jie Zhou <qjzhou@hotmail.com>.
 #
 use utf8;
+use strict;
+
 AddModuleDescription('chinese_cn-utf8.pl', 'Chinese');
-$SiteName = '我的Wiki'; # Name of site (used for titles)
-$HomePage = '首页'; # Home page
-$NewText = "新页面内容\n"; # New page text
-$NewComment = "请添加评论\n"; # New comment text
-$BannedContent = '禁用'; # Page for banned content (usually for link-ban)
-$BannedHosts = '封禁地址'; # Page for banned hosts
-$DeletedPage = '删除页面'; # Pages starting with this can be deleted
-$RCName = '最近更新'; # Name of changes page
-$RssExclude = 'RSS排除页面'; # name of the page that lists pages to be excluded from the feed
-$CategoriesPage = '日志类别';
-%Translate = split(/\n/,<<'END_OF_TRANSLATION');
+our $SiteName = '我的Wiki'; # Name of site (used for titles)
+our $HomePage = '首页'; # Home page
+our $NewText = "新页面内容\n"; # New page text
+our $NewComment = "请添加评论\n"; # New comment text
+our $BannedContent = '禁用'; # Page for banned content (usually for link-ban)
+our $BannedHosts = '封禁地址'; # Page for banned hosts
+our $DeletedPage = '删除页面'; # Pages starting with this can be deleted
+our $RCName = '最近更新'; # Name of changes page
+our $RssExclude = 'RSS排除页面'; # name of the page that lists pages to be excluded from the feed
+our $CategoriesPage = '日志类别';
+our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.
 
 Add your comment here:

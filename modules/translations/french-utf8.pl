@@ -22,10 +22,11 @@
 # This translation was last checked for Oddmuse 2.2.
 
 use utf8;
+use strict;
 
 AddModuleDescription('french-utf8.pl', 'French');
 
-%Translate = split(/\n/,<<'END_OF_TRANSLATION');
+our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.
 Cette page est vide.
 Add your comment here:
