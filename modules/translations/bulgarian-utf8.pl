@@ -19,8 +19,11 @@
 # This translation was updated for Oddmuse 1.354.
 #
 use utf8;
+use strict;
+
 AddModuleDescription('bulgarian-utf8.pl', 'Bulgarian');
-%Translate = split(/\n/,<<'END_OF_TRANSLATION');
+
+our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.
 
 Add your comment here:
