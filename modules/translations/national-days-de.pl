@@ -25,10 +25,11 @@
 # load this file from your language-specific config file.
 
 use utf8;
+use strict;
 
 AddModuleDescription('national-days-de.pl', 'Special Days');
 
-%SpecialDays = (
+our %SpecialDays = (
   '1-1' => 'Haiti: Erlangung der Unabhängigkeit 1804, Kuba: Jahrestag der Revolution 1959, Sudan: Erlangung der Unabhängigkeit 1956',
   '1-26' => 'Australien: Nationalfeiertag (Australia Day), Indien: Republic Day',
   '1-31' => 'Nauru: Erlangung der Unabhängigkeit 1968',

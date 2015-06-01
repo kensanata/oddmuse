@@ -22,8 +22,11 @@
 # This script was last checked for Oddmuse version 1.658.
 #
 use utf8;
+use strict;
+
 AddModuleDescription('russian-utf8.pl', 'Russian');
-%Translate = split(/\n/,<<'END_OF_TRANSLATION');
+
+our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.
 Эта страница пуста.
 Add your comment here:

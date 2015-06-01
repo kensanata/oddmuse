@@ -18,8 +18,11 @@
 # This translation was last checked for Oddmuse version 1.893.
 #
 use utf8;
+use strict;
+
 AddModuleDescription('catalan-utf8.pl', 'Catalan');
-%Translate = split(/\n/,<<END_OF_TRANSLATION);
+
+our %Translate = split(/\n/,<<END_OF_TRANSLATION);
 Reading not allowed: user, ip, or network is blocked.
 Lectura no permesa: l'usuari, ip o sub-xarxa està bloquejat.
 Login
@@ -89,7 +92,7 @@ Previsualització només, encara no guardat
 Please go on to %s.
 Si us plau procedeix a %s.
 All changes for %s
-Tots els canvis per $s
+Tots els canvis per %s
 No updates since %s
 Sense actualitzacions des de %s
 Updates since %s
@@ -539,7 +542,7 @@ Copia una de les següents fulles d\'estil a %s:
 Deleting %s
 Borrant %s
 Deleted %s
-Borrant $s
+Borrant %s
 Renaming %1 to %2.
 Reanomenant %1 a %2.
 The page %s does not exist

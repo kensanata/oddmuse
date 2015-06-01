@@ -17,10 +17,11 @@
 #    Boston, MA 02111-1307 USA
 
 use utf8;
+use strict;
 
 AddModuleDescription('national-days.pl', 'Special Days');
 
-%SpecialDays = (
+our %SpecialDays = (
    '1-1' => 'Sudan, National Day, Haiti, Independence Day, Cuba, Liberation Day',
    '1-4' => 'Myanmar, Independence Day',
    '1-9' => 'Northern Mariana Islands, National Day',
