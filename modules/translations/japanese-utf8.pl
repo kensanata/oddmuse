@@ -16,10 +16,11 @@
 # file in there. It will be loaded automatically.
 #
 use utf8;
+use strict;
 
 AddModuleDescription('japanese-utf8.pl', 'Japanese');
 
-%Translate = split(/\n/,<<'END_OF_TRANSLATION');
+our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.
 このページは空です。
 Add your comment here:

@@ -19,8 +19,11 @@
 # This translation was last checked for Oddmuse version 1.504.
 #
 use utf8;
+use strict;
+
 AddModuleDescription('chinese-utf8.pl', 'Chinese');
-%Translate = split(/\n/,<<'END_OF_TRANSLATION');
+
+our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.
 
 Add your comment here:

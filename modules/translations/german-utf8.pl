@@ -16,10 +16,11 @@
 # there. It will be loaded automatically.
 #
 use utf8;
+use strict;
 
 AddModuleDescription('german-utf8.pl', 'German');
 
-%Translate = split(/\n/,<<'END_OF_TRANSLATION');
+our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.
 Diese Seite ist leer.
 Add your comment here:

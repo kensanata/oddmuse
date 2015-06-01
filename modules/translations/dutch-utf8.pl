@@ -25,8 +25,11 @@
 # This translation was last checked for Oddmuse version 1.215.
 #
 use utf8;
+use strict;
+
 AddModuleDescription('dutch-utf8.pl', 'Dutch');
-%Translate = split(/\n/,<<'END_OF_TRANSLATION');
+
+our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.
 
 Add your comment here:
