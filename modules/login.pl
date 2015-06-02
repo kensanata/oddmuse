@@ -717,16 +717,16 @@ sub DoApprovePending {
 			print Ts('There was an error approving %s.',$ToBeApproved);
 		}
 	} else {
-		print T('<ul>');
+		print '<ul>';
 		if (open(my $PASSWD, '<', $PendingPasswordFile)) {
 			while (<$PASSWD>) {
 				if ($_ =~ /^(.*):(.*):(.*)$/) {
-					print Tss('<li>%1 - %2</li>',ScriptLink("action=approve_pending;user=$1;",$1),"$3");
+					print '<li>' . ScriptLink("action=approve_pending;user=$1;",$1) . ' - ' . $3 . '</li>';
 					$count++;
 				}
 			}
 		}
-		print T('</ul>');
+		print '</ul>';
 
 		if ($count == 0) {
 			print T('There are no pending registrations.');
