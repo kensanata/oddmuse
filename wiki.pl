@@ -38,145 +38,142 @@ use File::Glob ':glob';
 local $| = 1; # Do not buffer output (localized for mod_perl)
 
 # Options:
-our ($RssLicense, $RssCacheHours, @RcDays, $TempDir, $LockDir, $DataDir, $KeepDir, $PageDir, $RcOldFile, $IndexFile,
-$BannedContent, $NoEditFile, $BannedHosts, $ConfigFile, $FullUrl, $SiteName, $HomePage, $LogoUrl, $RcDefault, $RssDir,
-$IndentLimit, $RecentTop, $RecentLink, $EditAllowed, $UseDiff, $KeepDays, $KeepMajor, $EmbedWiki, $BracketText, $UseConfig,
-$AdminPass, $EditPass, $PassHashFunction, $PassSalt, $NetworkFile, $BracketWiki, $FreeLinks, $WikiLinks, $SummaryHours,
-$FreeLinkPattern, $RCName, $RunCGI, $ShowEdits, $LinkPattern, $RssExclude, $InterLinkPattern, $MaxPost, $UseGrep, $UrlPattern,
-$UrlProtocols, $ImageExtensions, $InterSitePattern, $FS, $CookieName, $SiteBase, $StyleSheet, $NotFoundPg, $FooterNote, $NewText,
-$EditNote, $UserGotoBar, $VisitorFile, $DeleteFile, $RcFile, %Smilies, %SpecialDays, $InterWikiMoniker, $SiteDescription, $RssImageUrl,
-$ReadMe, $RssRights, $BannedCanRead, $SurgeProtection, $TopLinkBar, $TopSearchForm, $MatchingPages, $LanguageLimit,
-$SurgeProtectionTime, $SurgeProtectionViews, $DeletedPage, %Languages, $InterMap, $ValidatorLink, %LockOnCreation,
-$RssStyleSheet, %CookieParameters, @UserGotoBarPages, $NewComment, $HtmlHeaders, $StyleSheetPage, $ConfigPage, $ScriptName,
-$CommentsPrefix, $CommentsPattern, @UploadTypes, $AllNetworkFiles, $UsePathInfo, $UploadAllowed, $LastUpdate, $PageCluster,
-%PlainTextPages, $RssInterwikiTranslate, $UseCache, $Counter, $ModuleDir, $FullUrlPattern, $SummaryDefaultLength,
-$FreeInterLinkPattern, %InvisibleCookieParameters, %AdminPages, $UseQuestionmark, $JournalLimit, $LockExpiration, $RssStrip,
-%LockExpires, @IndexOptions, @Debugging, $DocumentHeader, %HtmlEnvironmentContainers, @MyAdminCode, @MyFooters,
-@MyInitVariables, @MyMacros, @MyMaintenance, @MyRules, $PageNameLimit);
+our ($RssLicense, $TempDir, $LockDir, $KeepDir, $PageDir, $RcOldFile, $IndexFile,
+$NoEditFile, $ConfigFile, $FullUrl, $RssDir,
+$FreeLinkPattern, $LinkPattern, $InterLinkPattern, $UrlPattern,
+$UrlProtocols, $ImageExtensions, $InterSitePattern, $FS, $VisitorFile, $DeleteFile, $RcFile,
+$ReadMe,
+%LockOnCreation,
+$ScriptName,
+$LastUpdate,
+%PlainTextPages, $Counter, $ModuleDir, $FullUrlPattern,
+$FreeInterLinkPattern, %AdminPages,
+@Debugging, $DocumentHeader, %HtmlEnvironmentContainers, @MyAdminCode, @MyFooters,
+@MyInitVariables, @MyMacros, @MyMaintenance);
 
 # Internal variables:
 our (%Page, %InterSite, %IndexHash, %Translate, %OldCookie, $FootnoteNumber, $OpenPageName, @IndexList, $Message, $q, $Now,
 %RecentVisitors, @HtmlStack, @HtmlAttrStack, %MyInc, $CollectingJournal, $bol, $WikiDescription, $PrintedHeader,
-%Locks, $Fragment, @Blocks, @Flags, $Today, @KnownLocks, $ModulesDescription, %Action, %RuleOrder, %Includes,
+%Locks, $Fragment, @Blocks, @Flags, $Today, $ModulesDescription, %Includes,
 %RssInterwikiTranslate);
 
 # Can be set outside the script: $DataDir, $UseConfig, $ConfigFile, $ModuleDir,
 # $ConfigPage, $AdminPass, $EditPass, $ScriptName, $FullUrl, $RunCGI.
 
 # 1 = load config file in the data directory
-$UseConfig //= 1;
+our $UseConfig //= 1;
 
 # Main wiki directory
-$DataDir     = $ENV{WikiDataDir} if $UseConfig and not $DataDir;
+our $DataDir     = $ENV{WikiDataDir} if $UseConfig and not $DataDir;
 $DataDir   ||= '/tmp/oddmuse'; # FIXME: /var/opt/oddmuse/wiki ?
-$ConfigPage ||= ''; # config page
+our $ConfigPage ||= ''; # config page
 
 # 1 = Run script as CGI instead of loading as module
-$RunCGI    //= 1;
+our $RunCGI    //= 1;
 
 # 1 = allow page views using wiki.pl/PageName
-$UsePathInfo = 1;
+our $UsePathInfo = 1;
 
 # -1 = disabled, 0 = 10s; 1 = partial HTML cache; 2 = HTTP/1.1 caching
-$UseCache    = 2;
+our $UseCache    = 2;
 
-$SiteName    = 'Wiki';          # Name of site (used for titles)
-$HomePage    = 'HomePage';      # Home page
-$CookieName  = 'Wiki';          # Name for this wiki (for multi-wiki sites)
+our $SiteName    = 'Wiki';          # Name of site (used for titles)
+our $HomePage    = 'HomePage';      # Home page
+our $CookieName  = 'Wiki';          # Name for this wiki (for multi-wiki sites)
 
-$SiteBase    = '';              # Full URL for <BASE> header
-$MaxPost     = 1024 * 210;      # Maximum 210K posts (about 200K for pages)
-$StyleSheet  = '';              # URL for CSS stylesheet (like '/wiki.css')
-$StyleSheetPage = '';           # Page for CSS sheet
-$LogoUrl     = '';              # URL for site logo ('' for no logo)
-$NotFoundPg  = '';              # Page for not-found links ('' for blank pg)
+our $SiteBase    = '';              # Full URL for <BASE> header
+our $MaxPost     = 1024 * 210;      # Maximum 210K posts (about 200K for pages)
+our $StyleSheet  = '';              # URL for CSS stylesheet (like '/wiki.css')
+our $StyleSheetPage = '';           # Page for CSS sheet
+our $LogoUrl     = '';              # URL for site logo ('' for no logo)
+our $NotFoundPg  = '';              # Page for not-found links ('' for blank pg)
 
-$NewText     = T('This page is empty.') . "\n";    # New page text
-$NewComment  = T('Add your comment here:'); # New comment text
+our $NewText     = T('This page is empty.') . "\n";    # New page text
+our $NewComment  = T('Add your comment here:'); # New comment text
 
-$EditAllowed = 1;               # 0 = no, 1 = yes, 2 = comments pages only, 3 = comments only
-$AdminPass //= '';              # Whitespace separated passwords.
-$EditPass  //= '';              # Whitespace separated passwords.
-$PassHashFunction //= '';       # Name of the function to create hashes
-$PassSalt  //= '';              # Salt will be added to any password before hashing
+our $EditAllowed = 1;               # 0 = no, 1 = yes, 2 = comments pages only, 3 = comments only
+our $AdminPass //= '';              # Whitespace separated passwords.
+our $EditPass  //= '';              # Whitespace separated passwords.
+our $PassHashFunction //= '';       # Name of the function to create hashes
+our $PassSalt  //= '';              # Salt will be added to any password before hashing
 
-$BannedHosts = 'BannedHosts';   # Page for banned hosts
-$BannedCanRead = 1;             # 1 = banned cannot edit, 0 = banned cannot read
-$BannedContent = 'BannedContent'; # Page for banned content (usually for link-ban)
-$WikiLinks   = 1;               # 1 = LinkPattern is a link
-$FreeLinks   = 1;               # 1 = [[some text]] is a link
-$UseQuestionmark = 1;           # 1 = append questionmark to links to nonexisting pages
-$BracketText = 1;               # 1 = [URL desc] uses a description for the URL
-$BracketWiki = 1;               # 1 = [WikiLink desc] uses a desc for the local link
-$NetworkFile = 1;               # 1 = file: is a valid protocol for URLs
-$AllNetworkFiles = 0;           # 1 = file:///foo is allowed -- the default allows only file://foo
-$InterMap    = 'InterMap';      # name of the intermap page, '' = disable
-$RssInterwikiTranslate = 'RssInterwikiTranslate'; # name of RSS interwiki translation page, '' = disable
+our $BannedHosts = 'BannedHosts';   # Page for banned hosts
+our $BannedCanRead = 1;             # 1 = banned cannot edit, 0 = banned cannot read
+our $BannedContent = 'BannedContent'; # Page for banned content (usually for link-ban)
+our $WikiLinks   = 1;               # 1 = LinkPattern is a link
+our $FreeLinks   = 1;               # 1 = [[some text]] is a link
+our $UseQuestionmark = 1;           # 1 = append questionmark to links to nonexisting pages
+our $BracketText = 1;               # 1 = [URL desc] uses a description for the URL
+our $BracketWiki = 1;               # 1 = [WikiLink desc] uses a desc for the local link
+our $NetworkFile = 1;               # 1 = file: is a valid protocol for URLs
+our $AllNetworkFiles = 0;           # 1 = file:///foo is allowed -- the default allows only file://foo
+our $InterMap    = 'InterMap';      # name of the intermap page, '' = disable
+our $RssInterwikiTranslate = 'RssInterwikiTranslate'; # name of RSS interwiki translation page, '' = disable
 $ENV{PATH}   = '/bin:/usr/bin'; # Path used to find 'diff' and 'grep'
-$UseDiff     = 1;               # 1 = use diff
-$UseGrep     = 1;               # 1 = use grep to speed up searches
-$SurgeProtection      = 1;      # 1 = protect against leeches
-$SurgeProtectionTime  = 20;     # Size of the protected window in seconds
-$SurgeProtectionViews = 20;     # How many page views to allow in this window
-$DeletedPage = 'DeletedPage';   # Pages starting with this can be deleted
-$RCName      = 'RecentChanges'; # Name of changes page
-@RcDays      = qw(1 3 7 30 90); # Days for links on RecentChanges
-$RcDefault   = 30;              # Default number of RecentChanges days
-$KeepDays    = 14;              # Days to keep old revisions
-$KeepMajor   = 1;               # 1 = keep at least one major rev when expiring pages
-$SummaryHours = 4;              # Hours to offer the old subject when editing a page
-$SummaryDefaultLength = 150;    # Length of default text for summary (0 to disable)
-$ShowEdits   = 0;               # 1 = major and show minor edits in recent changes
-$RecentTop   = 1;               # 1 = most recent entries at the top of the list
-$RecentLink  = 1;               # 1 = link to usernames
-$PageCluster = '';              # name of cluster page, eg. 'Cluster' to enable
-$InterWikiMoniker = '';        	# InterWiki prefix for this wiki for RSS
-$SiteDescription  = '';        	# RSS Description of this wiki
-$RssStrip = '^\d\d\d\d-\d\d-\d\d_'; # Regexp to strip from feed item titles
-$RssImageUrl      = $LogoUrl;  	# URL to image to associate with your RSS feed
-$RssRights        = '';        	# Copyright notice for RSS, usually an URL to the appropriate text
-$RssExclude       = 'RssExclude'; # name of the page that lists pages to be excluded from the feed
-$RssCacheHours    =  1;        	# How many hours to cache remote RSS files
-$RssStyleSheet    = '';        	# External style sheet for RSS files
-$UploadAllowed    =  0;        	# 1 = yes, 0 = administrators only
-@UploadTypes = ('image/jpeg', 'image/png'); # MIME types allowed, all allowed if empty list
-$EmbedWiki         = 0;        	# 1 = no headers/footers
-$FooterNote       = '';        	# HTML for bottom of every page
-$EditNote         = '';        	# HTML notice above buttons on edit page
-$TopLinkBar        = 1;        	# 0 = goto bar both at the top and bottom; 1 = top, 2 = bottom
-$TopSearchForm     = 1;         # 0 = search form both at the top and bottom; 1 = top, 2 = bottom
-$MatchingPages     = 0;         # 1 = search page content and page titles
-@UserGotoBarPages = ();        	# List of pagenames
-$UserGotoBar      = '';        	# HTML added to end of goto bar
-$ValidatorLink     = 0;        	# 1 = Link to the W3C HTML validator service
-$CommentsPrefix   = '';        	# prefix for comment pages, eg. 'Comments_on_' to enable
-$CommentsPattern = undef;      	# regex used to match comment pages
-$HtmlHeaders      = '';        	# Additional stuff to put in the HTML <head> section
-$IndentLimit      = 20;        	# Maximum depth of nested lists
-$LanguageLimit     = 3;        	# Number of matches req. for each language
-$JournalLimit    = 200;        	# how many pages can be collected in one go?
-$PageNameLimit   = 120;        	# max length of page name in bytes
+our $UseDiff     = 1;               # 1 = use diff
+our $UseGrep     = 1;               # 1 = use grep to speed up searches
+our $SurgeProtection      = 1;      # 1 = protect against leeches
+our $SurgeProtectionTime  = 20;     # Size of the protected window in seconds
+our $SurgeProtectionViews = 20;     # How many page views to allow in this window
+our $DeletedPage = 'DeletedPage';   # Pages starting with this can be deleted
+our $RCName      = 'RecentChanges'; # Name of changes page
+our @RcDays      = qw(1 3 7 30 90); # Days for links on RecentChanges
+our $RcDefault   = 30;              # Default number of RecentChanges days
+our $KeepDays    = 14;              # Days to keep old revisions
+our $KeepMajor   = 1;               # 1 = keep at least one major rev when expiring pages
+our $SummaryHours = 4;              # Hours to offer the old subject when editing a page
+our $SummaryDefaultLength = 150;    # Length of default text for summary (0 to disable)
+our $ShowEdits   = 0;               # 1 = major and show minor edits in recent changes
+our $RecentTop   = 1;               # 1 = most recent entries at the top of the list
+our $RecentLink  = 1;               # 1 = link to usernames
+our $PageCluster = '';              # name of cluster page, eg. 'Cluster' to enable
+our $InterWikiMoniker = '';        	# InterWiki prefix for this wiki for RSS
+our $SiteDescription  = '';        	# RSS Description of this wiki
+our $RssStrip = '^\d\d\d\d-\d\d-\d\d_'; # Regexp to strip from feed item titles
+our $RssImageUrl      = $LogoUrl;  	# URL to image to associate with your RSS feed
+our $RssRights        = '';        	# Copyright notice for RSS, usually an URL to the appropriate text
+our $RssExclude       = 'RssExclude'; # name of the page that lists pages to be excluded from the feed
+our $RssCacheHours    =  1;        	# How many hours to cache remote RSS files
+our $RssStyleSheet    = '';        	# External style sheet for RSS files
+our $UploadAllowed    =  0;        	# 1 = yes, 0 = administrators only
+our @UploadTypes = ('image/jpeg', 'image/png'); # MIME types allowed, all allowed if empty list
+our $EmbedWiki         = 0;        	# 1 = no headers/footers
+our $FooterNote       = '';        	# HTML for bottom of every page
+our $EditNote         = '';        	# HTML notice above buttons on edit page
+our $TopLinkBar        = 1;        	# 0 = goto bar both at the top and bottom; 1 = top, 2 = bottom
+our $TopSearchForm     = 1;         # 0 = search form both at the top and bottom; 1 = top, 2 = bottom
+our $MatchingPages     = 0;         # 1 = search page content and page titles
+our @UserGotoBarPages = ();        	# List of pagenames
+our $UserGotoBar      = '';        	# HTML added to end of goto bar
+our $ValidatorLink     = 0;        	# 1 = Link to the W3C HTML validator service
+our $CommentsPrefix   = '';        	# prefix for comment pages, eg. 'Comments_on_' to enable
+our $CommentsPattern = undef;      	# regex used to match comment pages
+our $HtmlHeaders      = '';        	# Additional stuff to put in the HTML <head> section
+our $IndentLimit      = 20;        	# Maximum depth of nested lists
+our $LanguageLimit     = 3;        	# Number of matches req. for each language
+our $JournalLimit    = 200;        	# how many pages can be collected in one go?
+our $PageNameLimit   = 120;        	# max length of page name in bytes
 $DocumentHeader = qq(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN")
   . qq( "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n)
   . qq(<html xmlns="http://www.w3.org/1999/xhtml">);
 				# Checkboxes at the end of the index.
-@IndexOptions = ();
+our @IndexOptions = ();
 # Display short comments below the GotoBar for special days
 # Example: %SpecialDays = ('1-1' => 'New Year', '1-2' => 'Next Day');
-%SpecialDays = ();
+our %SpecialDays = ();
 # Replace regular expressions with inlined images
 # Example: %Smilies = (":-?D(?=\\W)" => '/pics/grin.png');
-%Smilies = ();
+our %Smilies = ();
 # Detect page languages when saving edits
 # Example: %Languages = ('de' => '\b(der|die|das|und|oder)\b');
-%Languages = ();
-@KnownLocks = qw(main diff index merge visitors); # locks to remove
-$LockExpiration = 60; # How long before expirable locks are expired
-%LockExpires = (diff=>1, index=>1, merge=>1, visitors=>1); # locks to expire after some time
-%CookieParameters = (username=>'', pwd=>'', homepage=>'', theme=>'', css=>'', msg=>'', lang=>'', embed=>$EmbedWiki,
+our %Languages = ();
+our @KnownLocks = qw(main diff index merge visitors); # locks to remove
+our $LockExpiration = 60; # How long before expirable locks are expired
+our %LockExpires = (diff=>1, index=>1, merge=>1, visitors=>1); # locks to expire after some time
+our %CookieParameters = (username=>'', pwd=>'', homepage=>'', theme=>'', css=>'', msg=>'', lang=>'', embed=>$EmbedWiki,
 		     toplinkbar=>$TopLinkBar, topsearchform=>$TopSearchForm, matchingpages=>$MatchingPages, );
-%InvisibleCookieParameters = (msg=>1, pwd=>1,);
-%Action = (rc => \&BrowseRc,               rollback => \&DoRollback,
+our %InvisibleCookieParameters = (msg=>1, pwd=>1,);
+our %Action = (rc => \&BrowseRc,               rollback => \&DoRollback,
            browse => \&BrowseResolvedPage, maintain => \&DoMaintain,
            random => \&DoRandom,           pagelock => \&DoPageLock,
            history => \&DoHistory,         editlock => \&DoEditLock,
@@ -186,8 +183,8 @@ $LockExpiration = 60; # How long before expirable locks are expired
            index => \&DoIndex,             admin => \&DoAdminPage,
            clear => \&DoClearCache,        debug => \&DoDebug,
            contrib => \&DoContributors,    more => \&DoJournal);
-@MyRules = (\&LinkRules, \&ListRule); # don't set this variable, add to it!
-%RuleOrder = (\&LinkRules => 0, \&ListRule => 0);
+our @MyRules = (\&LinkRules, \&ListRule); # don't set this variable, add to it!
+our %RuleOrder = (\&LinkRules => 0, \&ListRule => 0);
 
 # The 'main' program, called at the end of this script file (aka. as handler)
 sub DoWikiRequest {
