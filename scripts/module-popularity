@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (C) 2014  Alex-Daniel Jakimenko <alex.jakimenko@gmail.com>
+# Copyright (C) 2014-2015  Alex-Daniel Jakimenko <alex.jakimenko@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -17,6 +17,9 @@
 # Use this script like this: ./module-popularity < list | tee popularity
 # Where 'list' is a file with a list of links to action=version (one link on each line)
 
+MODULES_PATH='../modules/'
+S='||' # table separator
+
 declare -A modules
 declare -A moduleLinks
 
@@ -31,5 +34,16 @@ done
 
 
 for curModule in "${!modules[@]}"; do
-  echo "${modules[$curModule]} $curModule${moduleLinks[$curModule]}"
-done | sort -k 2 | sort -nrs
+    if [[ -f "$MODULES_PATH/$curModule" ]]; then
+	usefulLinks="Module:$curModule $S"
+	wikiPage=$(grep -Po "AddModuleDescription\('[^']+',\s*'\K[^']+" "$MODULES_PATH/$curModule")
+	if [[ $wikiPage ]]; then
+	    usefulLinks+="[[$wikiPage]]"
+	else
+	    usefulLinks+='No wiki page'
+	fi
+    else
+	usefulLinks="${S} Custom module"
+    fi
+    echo "$S ${modules[$curModule]} $S$curModule $S$usefulLinks $S ${moduleLinks[$curModule]} $S"
+done | sort -k 3 | sort -nrsk 2
