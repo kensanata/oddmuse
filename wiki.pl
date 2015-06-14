@@ -38,24 +38,22 @@ use File::Glob ':glob';
 local $| = 1; # Do not buffer output (localized for mod_perl)
 
 # Options:
-our ($RssLicense, $TempDir, $LockDir, $KeepDir, $PageDir, $RcOldFile, $IndexFile,
-$NoEditFile, $ConfigFile, $FullUrl, $RssDir,
-$FreeLinkPattern, $LinkPattern, $InterLinkPattern, $UrlPattern,
-$UrlProtocols, $ImageExtensions, $InterSitePattern, $FS, $VisitorFile, $DeleteFile, $RcFile,
-$ReadMe,
-%LockOnCreation,
-$ScriptName,
-$LastUpdate,
-%PlainTextPages, $Counter, $ModuleDir, $FullUrlPattern,
-$FreeInterLinkPattern, %AdminPages,
-@Debugging, $DocumentHeader, %HtmlEnvironmentContainers, @MyAdminCode, @MyFooters,
-@MyInitVariables, @MyMacros, @MyMaintenance);
+our ($ScriptName, $FullUrl, $ModuleDir, $PageDir, $TempDir, $LockDir, $KeepDir, $RssDir,
+     $ConfigFile, $RcFile, $RcOldFile, $IndexFile, $NoEditFile, $VisitorFile, $DeleteFile,
+     $RssLicense, $ReadMe,
+     $FreeLinkPattern, $LinkPattern, $FreeInterLinkPattern, $InterLinkPattern,
+     $UrlPattern, $FullUrlPattern, $InterSitePattern,
+     $UrlProtocols, $ImageExtensions, $LastUpdate,
+     %LockOnCreation, %PlainTextPages, %AdminPages,
+     @MyAdminCode, @MyFooters, @MyInitVariables, @MyMacros, @MyMaintenance,
+     $DocumentHeader, %HtmlEnvironmentContainers, $FS, $Counter, @Debugging);
 
 # Internal variables:
-our (%Page, %InterSite, %IndexHash, %Translate, %OldCookie, $FootnoteNumber, $OpenPageName, @IndexList, $Message, $q, $Now,
-%RecentVisitors, @HtmlStack, @HtmlAttrStack, %MyInc, $CollectingJournal, $bol, $WikiDescription, $PrintedHeader,
-%Locks, $Fragment, @Blocks, @Flags, $Today, $ModulesDescription, %Includes,
-%RssInterwikiTranslate);
+our ($q, $bol, $OpenPageName, %Page, %Translate, %IndexHash, @IndexList,
+     @HtmlStack, @HtmlAttrStack, @Blocks, @Flags,
+     %Includes, $FootnoteNumber, $CollectingJournal, $PrintedHeader,
+     %Locks, $Fragment, $Today, $ModulesDescription, %RssInterwikiTranslate,
+     $Message, $Now, %RecentVisitors, %MyInc, $WikiDescription, %InterSite, %OldCookie);
 
 # Can be set outside the script: $DataDir, $UseConfig, $ConfigFile, $ModuleDir,
 # $ConfigPage, $AdminPass, $EditPass, $ScriptName, $FullUrl, $RunCGI.
