@@ -48,6 +48,13 @@ my $stardata = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3e
 
 main();
 
+sub canonical {
+  my $url = shift;
+  # handle blogspot domain munging
+  $url =~ s/blogspot(\.[a-z]+)+/blogspot.com/;
+  return $url;
+}
+
 sub toc {
   # start with the homepage
   my @values;
@@ -73,9 +80,7 @@ sub top {
   for my $id (GetPageContent($HomePage) =~ /\* \[\[(.*?)\]\]/g) {
     for my $item (GetPageContent(FreeToNormal($id)) =~ /^\*+\s+\[(https?:\/\/[^\/\n\t ]+)/mg) {
       $n++;
-      # handle blogspot domain munging
-      $item =~ s/blogspot(\.[a-z]+)+/blogspot.com/;
-      $blog{$item}++;
+      $blog{canonical($item)}++;
     }
   }
   print $q->p("Total links counted: $n.");
@@ -136,6 +141,32 @@ sub default {
   print html_toc();
   print $q->submit('go', 'Add!');
   print $q->end_form();
+}
+
+sub links {
+  # start with the homepage
+  my @links; # [["url", "title", "page id"], ...]
+  for my $id (GetPageContent($HomePage) =~ /\* \[\[(.*?)\]\]/g) {
+    for my $item (GetPageContent(FreeToNormal($id)) =~ /^\*+\s+\[(https?:\/\/.*?)\]/mg) {
+      my ($url, $title) = split(/\s+/, $item, 2);
+      push(@links, [$url, $title, $id]);
+    }
+  }
+  return @links;
+}
+
+sub is_duplicate {
+  my $url = shift;
+  for my $link (links()) {
+    if ($link->[0] eq $url) {
+      print $q->p($q->strong("Oops, we seem to have a problem!"));
+      print $q->p(GetPageLink(NormalToFree($link->[2])),
+                  " already links to the URL you submitted:",
+	        GetUrl($link->[0], $link->[1]));
+      return 1;
+    }      
+  }
+  return 0;
 }
 
 sub confirm {
@@ -296,13 +327,15 @@ sub main {
     $UserGotoBar = $q->a({-href=>$q->url . '/source'}, 'Source');
     print GetHeader('', 'Submit a new link');
     print $q->start_div({-class=>'content index'});
-    my $url = GetParam('url');
+    my $url = canonical(GetParam('url'));
     my $name = UnquoteHtml(GetParam('name', get_name($url)));
     my $toc = GetParam('toc');
     my $confirm = GetParam('confirm');
     my $summary = GetParam('summary');
-    if (not $url or not $toc) {
+    if (not $url) {
       default();
+    } elsif (not $toc) {
+      default() if not is_duplicate($url);
     } elsif (not $confirm) {
       confirm($url, $name, $toc);
     } else {
