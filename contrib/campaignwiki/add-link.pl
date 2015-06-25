@@ -1,6 +1,6 @@
 #! /usr/bin/perl
 
-# Copyright (C) 2011–2014  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2011–2015  Alex Schroeder <alex@gnu.org>
 
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -25,11 +25,22 @@ use utf8;
 $RunCGI = 0;
 do "wiki.pl";
 
-# globals
-my $self = "http://campaignwiki.org/add-link";
-my $name = "OSR Links to Wisdom";
-my $wiki = 'LinksToWisdom';
-my $site = "http://campaignwiki.org/wiki/$wiki";
+# globals depending on the name of the script
+my ($self, $name, $wiki);
+if ($0 eq '/home/alex/campaignwiki.org/add-link.pl') {
+  $self = "https://campaignwiki.org/add-link";
+  $name = "OSR Links to Wisdom";
+  $wiki = 'LinksToWisdom';
+} elsif ($0 eq '/home/alex/campaignwiki.org/add-adventure.pl') {
+  $self = "https://campaignwiki.org/add-adventure";
+  $name = "OSR Links to Adventures";
+  $wiki = 'Adventures';
+} else {
+  ReportError('Cannot determine wiki!', '500 INTERNAL SERVER ERROR');
+}
+
+# derived variables
+my $site = "https://campaignwiki.org/wiki/$wiki";
 # my $site = "http://localhost/wiki.pl";
 my $home = "$site/$HomePage";
 # http://www.emacswiki.org/pics/star.png
@@ -230,8 +241,7 @@ sub post {
   my $response = $ua->post($site, \%params);
   if ($response->is_error) {
     print $q->p("The submission failed!");
-    print $q->pre($response->status_line . "\n"
-  		  . $response->content);
+    print $response->content;
   } else {
     print $q->p("See for yourself: ", GetPageLink($id));
   }
