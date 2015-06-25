@@ -1,18 +1,18 @@
-Name: OddMuseWiki
+Name: Oddmuse
 Version: 2007.12.31
 Release: 1suse
 Group: Applications/Productivity
-License: /opt/OddMuseWiki/doc/COPYING
+License: /opt/oddmuse/doc/COPYING
 Summary: Simple user-editted website (wiki)
 
 Distribution: any perl+webserver+cgi distro
 Vendor: Alex Schröder
 Packager: Dr. Robert J. Meier <grandfather@sourceforge.org>
-URL: http://www.oddmusewiki.org/
+URL: http://www.oddmuse.org/
 
 BuildRoot: /var/tmp/rpm-oddmusewiki-root
 BuildArch: noarch
-Prefix: /opt/OddMuseWiki
+Prefix: /opt/oddmuse
 Prefix: /srv/www/wiki
 Prefix: /srv/www/cgi-bin
 Prefix: /etc/httpd/conf.d
@@ -30,7 +30,7 @@ AutoProv: no
 
 
 %description
-OddMuseWiki is a program to run a wiki.
+Oddmuse is a program to run a wiki.
 A wiki can be used for communication in a team or for documentation,
 when things have to be quick and easy: Content Management for everybody.
 
@@ -42,7 +42,7 @@ or describe internal processes.
 For many free software projects wikis have taken an important role
 somewhere between manual, FAQ, IRC, and mailing lists.
 
-OddMuseWiki is very easy to install: Simple installation, compact code,
+Oddmuse is very easy to install: Simple installation, compact code,
 and easy extensibility were the most important design factors.
 
 Features
@@ -90,19 +90,19 @@ if [ "$RPM_DUMPENV" != "" ] ; then env | sort > /tmp/rpm-build.log; fi
 if [ "$RPM_DUMPENV" != "" ] ; then env | sort > /tmp/rpm-install.log; fi
 
 rm -rf "$RPM_BUILD_ROOT"
-mkdir -p "$RPM_BUILD_ROOT"/opt/OddMuseWiki/cgi-bin
-mkdir -p "$RPM_BUILD_ROOT"/opt/OddMuseWiki/doc
-mkdir -p "$RPM_BUILD_ROOT"/opt/OddMuseWiki/etc
-mkdir -p "$RPM_BUILD_ROOT"/opt/OddMuseWiki/libperl
+mkdir -p "$RPM_BUILD_ROOT"/opt/oddmuse/cgi-bin
+mkdir -p "$RPM_BUILD_ROOT"/opt/oddmuse/doc
+mkdir -p "$RPM_BUILD_ROOT"/opt/oddmuse/etc
+mkdir -p "$RPM_BUILD_ROOT"/opt/oddmuse/libperl
 mkdir -p "$RPM_BUILD_ROOT"/srv/www/cgi-bin
 mkdir -p "$RPM_BUILD_ROOT"/srv/www/wiki
 mkdir -p "$RPM_BUILD_ROOT"/etc/httpd/conf.d
 
-install cgi-bin/wiki.pl "$RPM_BUILD_ROOT"/opt/OddMuseWiki/cgi-bin
+install cgi-bin/wiki.pl "$RPM_BUILD_ROOT"/opt/oddmuse/cgi-bin
 install cgi-bin/wiki.pl "$RPM_BUILD_ROOT"/srv/www/cgi-bin
-install doc/COPYING "$RPM_BUILD_ROOT"/opt/OddMuseWiki/doc
-install etc/oddmusewiki.conf "$RPM_BUILD_ROOT"/opt/OddMuseWiki/etc
-install libperl/current libperl/*.pl "$RPM_BUILD_ROOT"/opt/OddMuseWiki/libperl
+install doc/COPYING "$RPM_BUILD_ROOT"/opt/oddmuse/doc
+install etc/oddmusewiki.conf "$RPM_BUILD_ROOT"/opt/oddmuse/etc
+install libperl/current libperl/*.pl "$RPM_BUILD_ROOT"/opt/oddmuse/libperl
 cp -r wiki "$RPM_BUILD_ROOT"/srv/www
 
 
@@ -133,7 +133,7 @@ if [ "$RPM_DUMPENV" != "" ] ; then env | sort > /tmp/rpm-post.log; fi
 #   it cannot be symlinked into a public access site at rpmbuild -bb time.
 if [ \( -d "$RPM_INSTALL_PREFIX2" -a -w "$RPM_INSTALL_PREFIX2" \) -o -w "$RPM_INSTALL_PREFIX2"/wiki.pl ]; then
   cat "$RPM_INSTALL_PREFIX0"/cgi-bin/wiki.pl |
-  perl -pe 's:/opt/OddMuseWiki:'"$RPM_INSTALL_PREFIX0"':;' |
+  perl -pe 's:/opt/oddmuse:'"$RPM_INSTALL_PREFIX0"':;' |
   perl -pe 's:/srv/www/wiki:'"$RPM_INSTALL_PREFIX1"':;' |
   cat > "$RPM_INSTALL_PREFIX2"/wiki.pl
 fi
@@ -160,8 +160,8 @@ if [ "$RPM_DUMPENV" != "" ] ; then env | sort > /tmp/rpm-postun.log; fi
 # The doc, config, attr and many other macros are well documented in RPM-HOWTO
 %defattr(0444,root,root)
 %license
-%attr(0555,root,root) /opt/OddMuseWiki
-%config /opt/OddMuseWiki/etc/oddmusewiki.conf
+%attr(0555,root,root) /opt/oddmuse
+%config /opt/oddmuse/etc/oddmusewiki.conf
 %attr(0777,root,root) /srv/www/wiki
 %attr(0555,root,root) /srv/www/cgi-bin/wiki.pl
 
