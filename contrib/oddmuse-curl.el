@@ -951,7 +951,8 @@ Use a prefix argument to search a different wiki."
 	(dolist (line lines)
 	  (insert "[[" (replace-regexp-in-string "_" " " line) "]]\n")))
       (oddmuse-mode)
-      (set (make-local-variable 'oddmuse-wiki) wiki))))
+      (set (make-local-variable 'oddmuse-wiki) wiki)
+      (display-buffer (current-buffer)))))
 
 ;;;###autoload
 (defun oddmuse-rc (&optional include-minor-edits)
