@@ -18,11 +18,13 @@ package OddMuse;
 use Test::More tests => 28;
 clear_pages();
 
+add_module('big-brother.pl');
+
+$VisitorTime = 5;
+
 AppendStringToFile($ConfigFile,
 		   "\$SurgeProtection = 1;\n"
-		   . "\$VisitorTime = 30;\n");
-
-add_module('big-brother.pl');
+		   . "\$VisitorTime = $VisitorTime;\n");
 
 get_page('action=browse id=SomePage username=Alex');
 get_page('username=Berta pwd=foo');
@@ -58,11 +60,11 @@ my  %entries = %{$BigBrotherData{Alex}};
 my @times = sort keys %entries;
 ok(@times == $SurgeProtectionViews, "$SurgeProtectionViews entries in the log file");
 
-# $VisitorTime is 30 but since the latest entry into the log gets a +1
-# added whenever there is a duplicate entry, we might have entries in
-# the list that are a few seconds into the future. Take this into
-# account as we are waiting for $VisitorTime to expire.
-my $seconds = 30 + $times[-1] - time() + 1;
+# Since the latest entry into the log gets a +1 added whenever there is
+# a duplicate entry, we might have entries in the list that are a few
+# seconds into the future. Take this into account as we are waiting for
+# $VisitorTime to expire.
+my $seconds = $VisitorTime + $times[-1] - time() + 1;
 diag("Waiting for ${seconds}s");
 sleep $seconds;
 
