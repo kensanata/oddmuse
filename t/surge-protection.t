@@ -15,10 +15,15 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 24;
+use Test::More tests => 7;
 clear_pages();
 
-AppendStringToFile($ConfigFile, "\$SurgeProtection = 1;\n");
+$SurgeProtectionViews = 3;
+$SurgeProtectionTime  = 3;
+AppendStringToFile($ConfigFile,
+                   "\$SurgeProtection = 1;\n"
+                   . "\$SurgeProtectionViews = $SurgeProtectionViews;\n"
+                   . "\$SurgeProtectionTime  = $SurgeProtectionTime;\n");
 
 # check surge protection
 for (1..$SurgeProtectionViews) {
