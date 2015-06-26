@@ -304,6 +304,9 @@ Example:
 	      (url-hexify-string pagename))
     (error nil)))
 
+(defvar oddmuse-pagename-history nil
+  "History of Oddmuse pages edited.")
+
 (defun oddmuse-read-pagename (wiki &optional require default)
   "Read a pagename of WIKI with completion.
 Optional arguments REQUIRE and DEFAULT are passed on to `completing-read'.
@@ -313,7 +316,11 @@ Typically you would use t and a `oddmuse-page-name', if that makes sense."
 			 (concat "Pagename [" default "]: ")
 		       "Pagename: ")
 		     (oddmuse-make-completion-table wiki)
-		     nil require nil nil default)))
+		     nil require nil 'oddmuse-pagename-history default)))
+
+(defvar oddmuse-wiki-history nil
+  "History of Oddmuse Wikis edited.
+This is a list referring to `oddmuse-wikis'.")
 
 (defun oddmuse-pagename (&optional arg)
   "Return the wiki and pagename the user wants to edit or follow.
@@ -327,7 +334,8 @@ Use this function when following links in regular wiki buffers,
 in Recent Changes, History Buffers, and also in text files and
 the like."
   (let* ((wiki (or (and (not arg) oddmuse-wiki)
-		  (completing-read "Wiki: " oddmuse-wikis nil t)))
+                   (completing-read "Wiki: " oddmuse-wikis nil t nil
+                                    'oddmuse-wiki-history)))
 	 (pagename (or (and arg (oddmuse-read-pagename wiki))
 		       (oddmuse-pagename-at-point)
 		       (oddmuse-read-pagename wiki nil (word-at-point)))))
