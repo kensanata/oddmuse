@@ -309,11 +309,11 @@ sub write_config_file {
 
 sub clear_pages {
   if (-f "/bin/rm") {
-    system("/bin/rm -rf $DataDir");
+    system("/bin/rm -rf '$DataDir'");
   } else {
-    system("c:/cygwin/bin/rm.exe -rf $DataDir");
+    system("c:/cygwin/bin/rm.exe -rf '$DataDir'");
   }
-  die "Cannot remove $DataDir!\n" if -e $DataDir;
+  die "Cannot remove '$DataDir'!\n" if -e $DataDir;
   mkdir $DataDir;
   add_module('mac.pl') if $^O eq 'darwin'; # guessing HFS filesystem
   write_config_file();
