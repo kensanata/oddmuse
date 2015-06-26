@@ -472,8 +472,8 @@ code on stdout, so usually we want to provide either 302 or 200
 as EXPECTED-CODE.
 
 In addition to that, we check the HTML in the buffer for
-indications of an error. If we find any, that willget reported as
-well."
+indications of an error. If we find any, that will get reported
+as well."
   (let* ((max-mini-window-height 1)
 	 (wiki (or wiki oddmuse-wiki))
 	 (pagename (or pagename oddmuse-page-name))
