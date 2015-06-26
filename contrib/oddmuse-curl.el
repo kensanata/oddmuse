@@ -805,25 +805,31 @@ Requires all the variables to be bound for
 (defun oddmuse-edit (wiki pagename)
   "Edit a page on a wiki.
 WIKI is the name of the wiki as defined in `oddmuse-wikis',
-PAGENAME is the pagename of the page you want to edit.
-Use a prefix argument to force a reload of the page."
+PAGENAME is the pagename of the page you want to edit. If the
+page is already in a buffer, pop to that buffer instead of
+loading the page Use a prefix argument to force a reload of the
+page."
   (interactive (oddmuse-pagename))
   (make-directory (concat oddmuse-directory "/" wiki) t)
   (let ((name (concat wiki ":" pagename)))
     (if (and (get-buffer name)
              (not current-prefix-arg))
         (pop-to-buffer (get-buffer name))
-      ;; If the user has something set int auto-mode-alist, we would
-      ;; run oddmuse-mode twice. That's why we'll inhibit this.
-      (let ((auto-mode-alist nil))
-	(set-buffer (find-file-noselect
-		     (concat oddmuse-directory "/" wiki "/" pagename))))
-      (erase-buffer)
+      ;; insert page content from the wiki
+      (set-buffer (get-buffer-create name))
+      (erase-buffer); in case of current-prefix-arg
       (oddmuse-run "Loading" oddmuse-get-command wiki pagename)
       (oddmuse-revision-put wiki pagename (oddmuse-get-latest-revision wiki pagename))
-      ;; fix it for VC in the new buffer because this is not a vc-checkout
+      ;; fix mode-line for VC in the new buffer because this is not a vc-checkout
+      (setq buffer-file-name (concat oddmuse-directory "/" wiki "/" pagename))
       (vc-mode-line buffer-file-name 'oddmuse)
       (pop-to-buffer (current-buffer))
+      ;; check for a diff (this ends with display-buffer) and bury the
+      ;; buffer if there are no hunks
+      (diff-buffer-with-file)
+      (with-current-buffer (get-buffer "*Diff*")
+        (unless (next-property-change (point-min))
+          (kill-buffer)))
       ;; this also changes the buffer name
       (basic-save-buffer)
       ;; this makes sure that the buffer name is set correctly
