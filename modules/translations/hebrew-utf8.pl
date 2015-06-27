@@ -45,6 +45,8 @@ UserName must be 50 characters or less: not saved
 שם המשתמש חייב להיות באורך 50 תווים או פחות: לא נשמר
 This page contains an uploaded file:
 
+No summary was provided for this file.
+
 Recursive include of %s!
 
 Clear Cache
@@ -121,6 +123,8 @@ Include minor changes
 
 %s days
 %s ימים
+%s day
+
 List later changes
 
 RSS
@@ -181,8 +185,8 @@ Rolling back changes
 
 The two revisions are the same.
 
-Editing not allowed for %s.
-לא ניתן לערוך את %s.
+Editing not allowed: %s is read-only.
+לא ניתן לערוך: %s מיועד לקריאה בלבד.
 Rollback of %s would restore banned content.
 
 Rollback to %s
@@ -195,12 +199,12 @@ Index of all pages
 תוכן כל הדפים:
 Wiki Version
 מציג את גירסת ה-Wiki.
-Unlock Wiki
-משחרר נעילה
 Password
 ססמה
 Run maintenance
 
+Unlock Wiki
+משחרר נעילה
 Unlock site
 
 Lock site
@@ -219,12 +223,12 @@ To mark a page for deletion, put <strong>%s</strong> on the first line.
 
 from %s
 מ %s
-[Home]
-[דף בית]
 redirected from %s
 הוכוון מחדש מ %s
 %s: 
 
+[Home]
+[דף בית]
 Click to search for references to this page
 
 Cookie: 
@@ -285,6 +289,8 @@ Replace:
 החלפה:
 Delete
 
+Filter:
+
 Validate HTML
 אמת HTML
 Validate CSS
@@ -325,6 +331,10 @@ Cannot save a nameless page.
 
 Cannot save a page without revision.
 
+not deleted: 
+
+deleted
+נמחק
 Cannot open %s
 
 Cannot write %s
@@ -357,18 +367,6 @@ No unlock required.
 לפני שניה
 just now
 ממש עכשיו
-Edit Denied
-
-Editing not allowed: user, ip, or network is blocked.
-עריכה אסורה: משתמש, כתובת או רשת חסומים
-Contact the wiki administrator for more information.
-צור קשר עם מנהל המערכת למידע נוסף
-The rule %s matched for you.
-
-See %s for more information.
-
-Editing not allowed: %s is read-only.
-לא ניתן לערוך: %s מיועד לקריאה בלבד.
 Only administrators can upload files.
 
 Editing revision %s of
@@ -393,33 +391,45 @@ Files of type %s are not allowed.
 
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 הססמה שלך נשמרת כ-cookie, אם cookies מופעלות. Cookies עלולות ללכת לאיבוד אם תתחבר ממחשב אחר או מתוכנה אחרת.
+This site does not use admin or editor passwords.
+אתר זה לא משתמש בססמאות מנהל ועורך.
 You are currently an administrator on this site.
 אתה כרגע מנהל באתר זה.
 You are currently an editor on this site.
 אתה כרגע עורך באתר זה.
 You are a normal user on this site.
 אתה משתמש רגיל באתר זה.
+You do not have a password set.
+
 Your password does not match any of the administrator or editor passwords.
 הססמה שלך לא מתאימה ללסמאות של המנהל או העורך.
 Password:
 ססמה:
-This site does not use admin or editor passwords.
-אתר זה לא משתמש בססמאות מנהל ועורך.
+Return to 
+
 This operation is restricted to site editors only...
 פעולה זו מוגבלת לעורכים בלבד...
 This operation is restricted to administrators only...
 פעולה זו מוגבלת למנהלים בלבד...
+Edit Denied
+
+Editing not allowed: user, ip, or network is blocked.
+עריכה אסורה: משתמש, כתובת או רשת חסומים
+Contact the wiki administrator for more information.
+צור קשר עם מנהל המערכת למידע נוסף
+The rule %s matched for you.
+
+See %s for more information.
+
 SampleUndefinedPage
 
 Sample_Undefined_Page
 דף_לא_מוגדר_לדוגמא
-Rule "%1" matched "%2" on this page.
+Rule 
 
 Reason: %s.
 
 Reason unknown.
-
-Filter:
 
 (for %s)
 
@@ -475,14 +485,10 @@ Maintenance not done.
 תחזוקה לא בוצעה.
 (Maintenance can only be done once every 12 hours.)
 (ניתן לבצע תחזוקה רק מדי 12 שעות.)
-Remove the "maintain" file or wait.
-הסר את הקובץ "maintain" או המתן.
+Remove the 
+
 Expiring keep files and deleting pages marked for deletion
 מוציא קבצי שמירה מתוקפם, ומוחק דפים שסומנו למחיקה
-not deleted: 
-
-deleted
-נמחק
 Moving part of the %s log file.
 מזיז חלק מקובץ היומן %s.
 Could not open %s log file
@@ -575,11 +581,7 @@ Regular expression:
 
 Consider banning the IP number as well: 
 
-Regular expression "%1" matched "%2" on this page.
-
-Regular expression "%s" matched on this page.
-
-Cannot highlight the language %s.
+Regular expression 
 
 Recent Visitors
 מבקרים מהזמן האחרון
@@ -669,8 +671,6 @@ Dates
 
 No dates found.
 
-Inter links:
-
 List spammed pages
 
 Despamming pages
@@ -713,6 +713,12 @@ Add Comment
 
 ordinary changes
 
+Could not identify the paragraph you were editing
+
+This is the section you edited:
+
+This is the current page:
+
 Matching page names:
 
 Fix character encoding
@@ -750,6 +756,12 @@ page was marked for deletion
 Oddmuse
 
 Cleaning up git repository
+
+Google +1 Buttons
+
+All Pages +1
+
+This page lists the twenty last diary entries and their +1 buttons.
 
 Email: 
 
@@ -901,13 +913,19 @@ Languages:
 
 Show!
 
+====(\d+) persons? liked this====
+
+====%d persons liked this====
+
+====1 person liked this====
+
+I like this!
+
 Define
 
 Full Link List
 רשימת קישורים מלאה
 Banned Content
-
-Rule "%1" matched on this page.
 
 List of locked pages
 
@@ -933,7 +951,7 @@ IP number matched %s
 
 Register for %s
 
-Please choose a username of the form "FirstLast" using your real name.
+Please choose a username of the form 
 
 The passwords do not match.
 
@@ -947,7 +965,7 @@ Your registration for %s has been submitted.
 
 Please allow time for the webmaster to approve your request.
 
-An email has been sent to "%s" with further instructions.
+An email has been sent to 
 
 There was an error saving your registration.
 
@@ -993,7 +1011,7 @@ The password for %s was reset.  It has been emailed to the address on file.
 
 There was an error resetting the password for %s.
 
-The username "%s" does not exist.
+The username 
 
 Reset Password for %s
 
@@ -1010,12 +1028,6 @@ Approve Pending Registrations for %s
 %s has been approved.
 
 There was an error approving %s.
-
-<ul>
-
-<li>%1 - %2</li>
-
-</ul>
 
 There are no pending registrations.
 
@@ -1061,9 +1073,43 @@ No non-migrated email addresses found, migration not necessary.
 
 Migrated %s rows.
 
+Bisect modules
+
+Module Bisect
+
+All modules enabled now!
+
+Go back
+
+Test / Always enabled / Always disabled
+
+Start
+
+Biscecting proccess is already active.
+
+Stop
+
+It seems like module %s is causing your problem.
+
+Please note that this module does not handle situations when your problem is caused by a combination of specific modules (which is rare anyway).
+
+Good luck fixing your problem! ;)
+
+Module count (only testable modules): 
+
+Current module statuses:
+
+Good
+
+Bad
+
+Enabling %s
+
 Update modules
 
 Module Updater
+
+Looks good. Update modules now!
 
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 
@@ -1131,7 +1177,7 @@ None
 
 Type
 
-Permalink to "%s"
+Permalink to 
 
 anchor first defined here: %s
 
@@ -1153,6 +1199,12 @@ This page is password protected. If you know the password, you can %s. Once you 
 
 supply the password now
 
+This error should not happen. If your password is set correctly and you are still seeing this message, then it is a bug, please report it. If you are just a stranger and trying to get unsolicited access, then keep in mind that all of the data is encrypted with AES-256 and the key is not stored on the server, good luck.
+
+Attempt to read encrypted data without a password.
+
+Cannot refresh index.
+
 Publish %s
 
 No target wiki was specified in the config file.
@@ -1171,36 +1223,6 @@ Referrers
 מפנים
 All Referrers
 כל המפנים
-Tag
-
-Rebuild index for searching
-
-Tag Cloud
-
-Search::FreeText is not available on this system.
-
-Rebuilding index not done.
-
-(Rebuilding the index can only be done once every 12 hours.)
-
-New Pages for Indexed Search
-
-List changes since %s
-
- ... 
-
-Search term missing.
-
-Result pages: 
-
-(%s results)
-
-Tags:
-
-Tags: %s.
-
-No tags
-
 Page list for %s
 
 Slideshow:%s
@@ -1211,6 +1233,8 @@ Static Copy
 
 Back to %s
 
+Editing not allowed for %s.
+לא ניתן לערוך את %s.
 Edit image in the browser
 
 Summary of your changes: 
@@ -1219,7 +1243,17 @@ Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
 
+Tag
+
 Feed for this tag
+
+Tag Cloud
+
+ ... 
+
+Rebuilding index not done.
+
+(Rebuilding the index can only be done once every 12 hours.)
 
 Rebuild tag index
 
@@ -1228,26 +1262,6 @@ list tags
 tag cloud
 
 Alternatively, use one of the following templates:
-
-Thread: %s
-
-ID parameter is missing.
-
-Thread %s does not exist.
-
-Page %s does not contain a thread.
-
-Add
-
-URL parameter is missing.
-
-Add to %s thread
-
-Below:
-
-URL:
-
-Name:
 
 Too many instances.  Only %s allowed.
 

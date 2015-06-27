@@ -43,6 +43,8 @@ UserName must be 50 characters or less: not saved
 Käyttäjännimen on oltava alle 50 merkkiä pitkä: ei tallennettu
 This page contains an uploaded file:
 
+No summary was provided for this file.
+
 Recursive include of %s!
 
 Clear Cache
@@ -119,6 +121,8 @@ Include minor changes
 Näytä pienet korjaukset
 %s days
 %s päivää
+%s day
+
 List later changes
 Luettele myöhemmät muutokset
 RSS
@@ -179,8 +183,8 @@ Rolling back changes
 Sivua palautetaan
 The two revisions are the same.
 
-Editing not allowed for %s.
-Muokkaus ei ole sallittu: %s.
+Editing not allowed: %s is read-only.
+Muokkaus estetty: %s on lukittu muutoksilta.
 Rollback of %s would restore banned content.
 
 Rollback to %s
@@ -193,12 +197,12 @@ Index of all pages
 Sivuston sisällysluettelo
 Wiki Version
 Wikin versio
-Unlock Wiki
-Avataan lukitus
 Password
 Salasana
 Run maintenance
 Ylläpitotoiminto
+Unlock Wiki
+Avataan lukitus
 Unlock site
 Avaa sivuston lukko
 Lock site
@@ -217,12 +221,12 @@ To mark a page for deletion, put <strong>%s</strong> on the first line.
 
 from %s
 %s:stä
-[Home]
-[Etusivu]
 redirected from %s
 uudelleenohjattu sivulta %s
 %s: 
 
+[Home]
+[Etusivu]
 Click to search for references to this page
 Klikkaa hakeaksesi viittauksia tälle sivulle
 Cookie: 
@@ -283,6 +287,8 @@ Replace:
 Korvaa:
 Delete
 
+Filter:
+
 Validate HTML
 Tarkista HTML
 Validate CSS
@@ -323,6 +329,10 @@ Cannot save a nameless page.
 Sivua ei voi tallentaa ilman nimeä.
 Cannot save a page without revision.
 Sivua ei voi tallentaa ilman versiota.
+not deleted: 
+ei poistettu: 
+deleted
+poistettu
 Cannot open %s
 Ei voitu avata: %s
 Cannot write %s
@@ -355,18 +365,6 @@ yhtä minuuttia aiemmin
 yhtä sekuntia aiemmin
 just now
 juuri nyt
-Edit Denied
-Muokkaus estetty
-Editing not allowed: user, ip, or network is blocked.
-Muokkaus estetty: käyttäjä, IP tai verkko on estetty.
-Contact the wiki administrator for more information.
-Ota yhteyttä wikin ylläpitoon lisätiedon tarpeessa.
-The rule %s matched for you.
-Sääntö %s sopi sinuun.
-See %s for more information.
-Katso %s lisätiedon tarpeessa.
-Editing not allowed: %s is read-only.
-Muokkaus estetty: %s on lukittu muutoksilta.
 Only administrators can upload files.
 Vain ylläpito voi tallentaa tiedostoja.
 Editing revision %s of
@@ -391,33 +389,45 @@ Files of type %s are not allowed.
 Tyyppiä %s olevat tiedostot eivät ole sallittuja.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 Salasanasi tallennetaan keksiin (cookie), jos cookies-toiminto on päällä. Tallennettu cookie voi kadota, jos siirryt toiselle tietokoneelle, toiselle käyttäjäntunnukselle tai eri verkkoselaimelle.
+This site does not use admin or editor passwords.
+Tämä sivusto ei käytä ylläpidon tai toimittajien salasanoja.
 You are currently an administrator on this site.
 Olet tällä hetkellä kirjautunut sivuston ylläpitäjänä.
 You are currently an editor on this site.
 Olet tällä hetkellä sivuston toimittaja (editor).
 You are a normal user on this site.
 Olet tällä hetkellä tavallinen sivuston käyttäjä.
+You do not have a password set.
+
 Your password does not match any of the administrator or editor passwords.
 Salasanasi ei ole yksikään ylläpidon tai toimittajien salasanoista.
 Password:
 Salasana:
-This site does not use admin or editor passwords.
-Tämä sivusto ei käytä ylläpidon tai toimittajien salasanoja.
+Return to 
+
 This operation is restricted to site editors only...
 Tämä toiminto on rajoitettu sivuston toimittajille...
 This operation is restricted to administrators only...
 Tämä toiminto on rajoitettu sivuston ylläpitäjille...
+Edit Denied
+Muokkaus estetty
+Editing not allowed: user, ip, or network is blocked.
+Muokkaus estetty: käyttäjä, IP tai verkko on estetty.
+Contact the wiki administrator for more information.
+Ota yhteyttä wikin ylläpitoon lisätiedon tarpeessa.
+The rule %s matched for you.
+Sääntö %s sopi sinuun.
+See %s for more information.
+Katso %s lisätiedon tarpeessa.
 SampleUndefinedPage
 EsimerkkiSivu
 Sample_Undefined_Page
 Esimerkki_Sivu
-Rule "%1" matched "%2" on this page.
-Sääntö "%1" sopi "%2":teen tällä sivulla.
+Rule 
+
 Reason: %s.
 
 Reason unknown.
-
-Filter:
 
 (for %s)
 (%s:lle)
@@ -473,14 +483,10 @@ Maintenance not done.
 Ylläpitoa ei suoritettu.
 (Maintenance can only be done once every 12 hours.)
 Ylläpitotoiminto voidaan suorittaa vain kerran 12 tunnissa.)
-Remove the "maintain" file or wait.
-Poista "maintain" -tiedosto tai odota.
+Remove the 
+
 Expiring keep files and deleting pages marked for deletion
 Eräännytetään keep-tiedostot ja poistetaan poistettaviksi merkityt sivut
-not deleted: 
-ei poistettu: 
-deleted
-poistettu
 Moving part of the %s log file.
 Siirretään osa %s lokitiedostosta.
 Could not open %s log file
@@ -573,12 +579,8 @@ Regular expression:
 
 Consider banning the IP number as well: 
 
-Regular expression "%1" matched "%2" on this page.
+Regular expression 
 
-Regular expression "%s" matched on this page.
-
-Cannot highlight the language %s.
-Kieltä %s ei voida merkitä
 Recent Visitors
 Viimeisimmät vierailijat
 some action
@@ -667,8 +669,6 @@ Dates
 
 No dates found.
 
-Inter links:
-Kaukolinkit:
 List spammed pages
 
 Despamming pages
@@ -711,6 +711,12 @@ Add Comment
 
 ordinary changes
 
+Could not identify the paragraph you were editing
+
+This is the section you edited:
+
+This is the current page:
+
 Matching page names:
 
 Fix character encoding
@@ -748,6 +754,12 @@ page was marked for deletion
 Oddmuse
 
 Cleaning up git repository
+
+Google +1 Buttons
+
+All Pages +1
+
+This page lists the twenty last diary entries and their +1 buttons.
 
 Email: 
 
@@ -899,13 +911,19 @@ Languages:
 Kielet:
 Show!
 Näytä
+====(\d+) persons? liked this====
+
+====%d persons liked this====
+
+====1 person liked this====
+
+I like this!
+
 Define
 Määritä
 Full Link List
 Täysi linkkilista
 Banned Content
-
-Rule "%1" matched on this page.
 
 List of locked pages
 
@@ -931,7 +949,7 @@ IP number matched %s
 
 Register for %s
 
-Please choose a username of the form "FirstLast" using your real name.
+Please choose a username of the form 
 
 The passwords do not match.
 
@@ -945,7 +963,7 @@ Your registration for %s has been submitted.
 
 Please allow time for the webmaster to approve your request.
 
-An email has been sent to "%s" with further instructions.
+An email has been sent to 
 
 There was an error saving your registration.
 
@@ -991,7 +1009,7 @@ The password for %s was reset.  It has been emailed to the address on file.
 
 There was an error resetting the password for %s.
 
-The username "%s" does not exist.
+The username 
 
 Reset Password for %s
 
@@ -1008,12 +1026,6 @@ Approve Pending Registrations for %s
 %s has been approved.
 
 There was an error approving %s.
-
-<ul>
-
-<li>%1 - %2</li>
-
-</ul>
 
 There are no pending registrations.
 
@@ -1059,9 +1071,43 @@ No non-migrated email addresses found, migration not necessary.
 
 Migrated %s rows.
 
+Bisect modules
+
+Module Bisect
+
+All modules enabled now!
+
+Go back
+
+Test / Always enabled / Always disabled
+
+Start
+
+Biscecting proccess is already active.
+
+Stop
+
+It seems like module %s is causing your problem.
+
+Please note that this module does not handle situations when your problem is caused by a combination of specific modules (which is rare anyway).
+
+Good luck fixing your problem! ;)
+
+Module count (only testable modules): 
+
+Current module statuses:
+
+Good
+
+Bad
+
+Enabling %s
+
 Update modules
 
 Module Updater
+
+Looks good. Update modules now!
 
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 
@@ -1129,8 +1175,8 @@ None
 Ei yhtään
 Type
 Tyyppi
-Permalink to "%s"
-Pysyvä linkki "%s":ään
+Permalink to 
+
 anchor first defined here: %s
 ankkuri nimetty ensimmäisen kerran täällä: %s
 the page %s also exists
@@ -1151,6 +1197,12 @@ This page is password protected. If you know the password, you can %s. Once you 
 
 supply the password now
 
+This error should not happen. If your password is set correctly and you are still seeing this message, then it is a bug, please report it. If you are just a stranger and trying to get unsolicited access, then keep in mind that all of the data is encrypted with AES-256 and the key is not stored on the server, good luck.
+
+Attempt to read encrypted data without a password.
+
+Cannot refresh index.
+
 Publish %s
 
 No target wiki was specified in the config file.
@@ -1169,36 +1221,6 @@ Referrers
 Viittaukset
 All Referrers
 Kaikki viittaukset
-Tag
-
-Rebuild index for searching
-
-Tag Cloud
-
-Search::FreeText is not available on this system.
-
-Rebuilding index not done.
-
-(Rebuilding the index can only be done once every 12 hours.)
-
-New Pages for Indexed Search
-
-List changes since %s
-
- ... 
-
-Search term missing.
-
-Result pages: 
-
-(%s results)
-
-Tags:
-
-Tags: %s.
-
-No tags
-
 Page list for %s
 
 Slideshow:%s
@@ -1209,6 +1231,8 @@ Static Copy
 Staattinen kopio
 Back to %s
 Takaisin %s:ään
+Editing not allowed for %s.
+Muokkaus ei ole sallittu: %s.
 Edit image in the browser
 
 Summary of your changes: 
@@ -1217,7 +1241,17 @@ Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
 
+Tag
+
 Feed for this tag
+
+Tag Cloud
+
+ ... 
+
+Rebuilding index not done.
+
+(Rebuilding the index can only be done once every 12 hours.)
 
 Rebuild tag index
 
@@ -1227,26 +1261,6 @@ tag cloud
 
 Alternatively, use one of the following templates:
 Vaihtoehtoisesti, käytä yhtä seuraavista pohjista:
-Thread: %s
-Säie: %s
-ID parameter is missing.
-ID-parametri puuttuu.
-Thread %s does not exist.
-Säie %s ei ole olemassa.
-Page %s does not contain a thread.
-Sivu %s ei sisällä säiettä.
-Add
-Lisää
-URL parameter is missing.
-URL-parametri puuttuu.
-Add to %s thread
-Lisää %s säikeeseen
-Below:
-Alla:
-URL:
-URL:
-Name:
-Nimi:
 Too many instances.  Only %s allowed.
 
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.

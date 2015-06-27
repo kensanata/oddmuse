@@ -43,6 +43,8 @@ UserName must be 50 characters or less: not saved
 Ім'я користувача має бути довжиною не більше 50 символів: не збережено
 This page contains an uploaded file:
 Ця сторінка містить завантажений файл:
+No summary was provided for this file.
+
 Recursive include of %s!
 Рекурсивне включення %s!
 Clear Cache
@@ -119,6 +121,8 @@ Include minor changes
 Включити незначні зміни
 %s days
 %s днів
+%s day
+
 List later changes
 Перелічити пізніші зміни
 RSS
@@ -179,8 +183,8 @@ Rolling back changes
 Скасовую зміни
 The two revisions are the same.
 Дві версії однакові.
-Editing not allowed for %s.
-Редагування не дозволено для %s.
+Editing not allowed: %s is read-only.
+Редагування не дозволено: %s тільки для читання.
 Rollback of %s would restore banned content.
 
 Rollback to %s
@@ -193,12 +197,12 @@ Index of all pages
 Покажчик зі всіх сторінок
 Wiki Version
 Версія Вікі
-Unlock Wiki
-Розблокувати Вікі
 Password
 Пароль
 Run maintenance
 Запустити поточну профілактику
+Unlock Wiki
+Розблокувати Вікі
 Unlock site
 Розблокувати сайт
 Lock site
@@ -217,12 +221,12 @@ To mark a page for deletion, put <strong>%s</strong> on the first line.
 Для того, щоб помітити сторінку для видалення, вставте <strong>%s</strong> на першу строчку.
 from %s
 від %s
-[Home]
-[Перша сторінка]
 redirected from %s
 перенаправлено з %s
 %s: 
 
+[Home]
+[Перша сторінка]
 Click to search for references to this page
 Натисніть для пошуку посилань на цю сторінку
 Cookie: 
@@ -283,6 +287,8 @@ Replace:
 Замінити:
 Delete
 
+Filter:
+Фільтр:
 Validate HTML
 Перевірити HTML
 Validate CSS
@@ -323,6 +329,10 @@ Cannot save a nameless page.
 Не можна зберегти безіменну сторінку.
 Cannot save a page without revision.
 Не можна зберегти сторінку без версії.
+not deleted: 
+
+deleted
+видалено
 Cannot open %s
 Неможливо відкрити %s
 Cannot write %s
@@ -355,18 +365,6 @@ No unlock required.
 1 секунду тому
 just now
 тільки що
-Edit Denied
-Редагування заборонено
-Editing not allowed: user, ip, or network is blocked.
-Редагування заборонено: користувач, IP, або мережа заблоковані.
-Contact the wiki administrator for more information.
-Зверніться до адміністратора Вікі за додатковою інформацією.
-The rule %s matched for you.
-Правило %s співпало.
-See %s for more information.
-Дивіться %s для додаткової інформації.
-Editing not allowed: %s is read-only.
-Редагування не дозволено: %s тільки для читання.
 Only administrators can upload files.
 Тільки адміністратори можуть завантажувати файли.
 Editing revision %s of
@@ -391,34 +389,46 @@ Files of type %s are not allowed.
 Файли типу %s не дозволені.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 Ваш пароль зберігається в кукі, в разі якщо вони у вас дозволені. Кукі можуть втрачатись, якщо ви під'эднаєтесь з іншої машини, іншого облікового запису, або, використовуючі інші програми.
+This site does not use admin or editor passwords.
+Цей сайт не використовує паролі адміністратора або редактора.
 You are currently an administrator on this site.
 Наразі, ви адміністратор цього сайта.
 You are currently an editor on this site.
 Наразі, ви редактор на цьому сайті.
 You are a normal user on this site.
 Ви звичайний користувач сайту.
+You do not have a password set.
+
 Your password does not match any of the administrator or editor passwords.
 Ваш пароль не збігається ні з паролєм адміністратора, ні з паролєм редактора.
 Password:
 Пароль:
-This site does not use admin or editor passwords.
-Цей сайт не використовує паролі адміністратора або редактора.
+Return to 
+
 This operation is restricted to site editors only...
 Операцію дозволено виконувати лише редакторам...
 This operation is restricted to administrators only...
 Операцію дозволено виконувати лише адміністраторам...
+Edit Denied
+Редагування заборонено
+Editing not allowed: user, ip, or network is blocked.
+Редагування заборонено: користувач, IP, або мережа заблоковані.
+Contact the wiki administrator for more information.
+Зверніться до адміністратора Вікі за додатковою інформацією.
+The rule %s matched for you.
+Правило %s співпало.
+See %s for more information.
+Дивіться %s для додаткової інформації.
 SampleUndefinedPage
 
 Sample_Undefined_Page
 
-Rule "%1" matched "%2" on this page.
-На цій сторінці "%2" відповідає правилу "%1"
+Rule 
+
 Reason: %s.
 
 Reason unknown.
 
-Filter:
-Фільтр:
 (for %s)
 (для %s)
 %s pages found.
@@ -473,14 +483,10 @@ Maintenance not done.
 Поточна профілактика не виконана.
 (Maintenance can only be done once every 12 hours.)
 (Поточна профілактика може запускатись кожні 12 годин.)
-Remove the "maintain" file or wait.
-Видаліть файл "maintain" або зачекайте.
+Remove the 
+
 Expiring keep files and deleting pages marked for deletion
 
-not deleted: 
-
-deleted
-видалено
 Moving part of the %s log file.
 Переміщення частини файлу журанала %s.
 Could not open %s log file
@@ -573,12 +579,8 @@ Regular expression:
 
 Consider banning the IP number as well: 
 
-Regular expression "%1" matched "%2" on this page.
+Regular expression 
 
-Regular expression "%s" matched on this page.
-
-Cannot highlight the language %s.
-Не можу підсвічувати мову %s.
 Recent Visitors
 Нещодавні відвідувачі
 some action
@@ -667,8 +669,6 @@ Dates
 
 No dates found.
 
-Inter links:
-Внутрішні посилання:
 List spammed pages
 
 Despamming pages
@@ -711,6 +711,12 @@ Add Comment
 Додати коментар
 ordinary changes
 звичайні зміни
+Could not identify the paragraph you were editing
+
+This is the section you edited:
+
+This is the current page:
+
 Matching page names:
 
 Fix character encoding
@@ -748,6 +754,12 @@ page was marked for deletion
 Oddmuse
 
 Cleaning up git repository
+
+Google +1 Buttons
+
+All Pages +1
+
+This page lists the twenty last diary entries and their +1 buttons.
 
 Email: 
 
@@ -899,13 +911,19 @@ Languages:
 Мови:
 Show!
 Показати:
+====(\d+) persons? liked this====
+
+====%d persons liked this====
+
+====1 person liked this====
+
+I like this!
+
 Define
 Визначити
 Full Link List
 Повний перелік посилань
 Banned Content
-
-Rule "%1" matched on this page.
 
 List of locked pages
 
@@ -931,8 +949,8 @@ IP number matched %s
 
 Register for %s
 Зареєструвати для %s
-Please choose a username of the form "FirstLast" using your real name.
-Будь ласка, вкажіть ім'я користувача у вигляді "Ім'яПрізвище" використовуючі власні імена.
+Please choose a username of the form 
+
 The passwords do not match.
 Паролі не збігаються.
 The password must be at least %s characters.
@@ -945,8 +963,8 @@ Your registration for %s has been submitted.
 
 Please allow time for the webmaster to approve your request.
 
-An email has been sent to "%s" with further instructions.
-Повідомлення було відправлено "%s" з поадльшими інструціями.
+An email has been sent to 
+
 There was an error saving your registration.
 Виникла помилка при збереженні вашої реєстрації.
 An account was created for %s.
@@ -991,8 +1009,8 @@ The password for %s was reset.  It has been emailed to the address on file.
 
 There was an error resetting the password for %s.
 
-The username "%s" does not exist.
-Користувача з іменем "%s" не існує.
+The username 
+
 Reset Password for %s
 
 Reset Password?
@@ -1009,12 +1027,6 @@ Approve Pending Registrations for %s
 
 There was an error approving %s.
 
-<ul>
-<ul>
-<li>%1 - %2</li>
-<li>%1 - %2</li>
-</ul>
-</ul>
 There are no pending registrations.
 
 Invalid Mail %s: not saved.
@@ -1059,9 +1071,43 @@ No non-migrated email addresses found, migration not necessary.
 
 Migrated %s rows.
 
+Bisect modules
+
+Module Bisect
+
+All modules enabled now!
+
+Go back
+
+Test / Always enabled / Always disabled
+
+Start
+
+Biscecting proccess is already active.
+
+Stop
+
+It seems like module %s is causing your problem.
+
+Please note that this module does not handle situations when your problem is caused by a combination of specific modules (which is rare anyway).
+
+Good luck fixing your problem! ;)
+
+Module count (only testable modules): 
+
+Current module statuses:
+
+Good
+
+Bad
+
+Enabling %s
+
 Update modules
 
 Module Updater
+
+Looks good. Update modules now!
 
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 
@@ -1129,8 +1175,8 @@ None
 Немає
 Type
 Тип
-Permalink to "%s"
-Постійне посилання на "%s"
+Permalink to 
+
 anchor first defined here: %s
 якір вперше визначається тут: %s
 the page %s also exists
@@ -1151,6 +1197,12 @@ This page is password protected. If you know the password, you can %s. Once you 
 
 supply the password now
 
+This error should not happen. If your password is set correctly and you are still seeing this message, then it is a bug, please report it. If you are just a stranger and trying to get unsolicited access, then keep in mind that all of the data is encrypted with AES-256 and the key is not stored on the server, good luck.
+
+Attempt to read encrypted data without a password.
+
+Cannot refresh index.
+
 Publish %s
 
 No target wiki was specified in the config file.
@@ -1169,36 +1221,6 @@ Referrers
 
 All Referrers
 
-Tag
-
-Rebuild index for searching
-
-Tag Cloud
-
-Search::FreeText is not available on this system.
-Модуль Search::FreeText не доступний на цій системі.
-Rebuilding index not done.
-Перебудова покажника не виконана.
-(Rebuilding the index can only be done once every 12 hours.)
-
-New Pages for Indexed Search
-
-List changes since %s
-
- ... 
- ...
-Search term missing.
-Відсутній ключ для пошуку.
-Result pages: 
-Результати пошуку:
-(%s results)
-(%s результатів)
-Tags:
-
-Tags: %s.
-
-No tags
-
 Page list for %s
 
 Slideshow:%s
@@ -1209,6 +1231,8 @@ Static Copy
 Статична копія
 Back to %s
 Назад до %s
+Editing not allowed for %s.
+Редагування не дозволено для %s.
 Edit image in the browser
 
 Summary of your changes: 
@@ -1217,7 +1241,17 @@ Copy to %1 succeeded: %2.
 Копіювання в %1 виконано: %2.
 Copy to %1 failed: %2.
 Не вдалось скопіювати в %1: %2
+Tag
+
 Feed for this tag
+
+Tag Cloud
+
+ ... 
+ ...
+Rebuilding index not done.
+Перебудова покажника не виконана.
+(Rebuilding the index can only be done once every 12 hours.)
 
 Rebuild tag index
 
@@ -1227,26 +1261,6 @@ tag cloud
 
 Alternatively, use one of the following templates:
 Як варіант, використовуйте один із наступних шаблонів:
-Thread: %s
-Тред: %s
-ID parameter is missing.
-параметр ID відсутній.
-Thread %s does not exist.
-Тред %s не існує.
-Page %s does not contain a thread.
-Сторінка %s не містить тред.
-Add
-Додати
-URL parameter is missing.
-Параметр URL відсутній.
-Add to %s thread
-Додати до треду %s
-Below:
-Нижче:
-URL:
-URL:
-Name:
-Ім'я:
 Too many instances.  Only %s allowed.
 
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.

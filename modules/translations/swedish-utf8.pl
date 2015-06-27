@@ -47,6 +47,8 @@ UserName must be 50 characters or less: not saved
 Användarnamn får bestå av högst 50 tecken: Ej sparad.
 This page contains an uploaded file:
 Denna sida innehåller en uppladdad fil:
+No summary was provided for this file.
+
 Recursive include of %s!
 
 Clear Cache
@@ -123,6 +125,8 @@ Include minor changes
 Visa små ändringar också
 %s days
 %s dagar
+%s day
+
 List later changes
 Visa senare ändringar
 RSS
@@ -183,8 +187,8 @@ Rolling back changes
 Återställer
 The two revisions are the same.
 De två versionerna är identiska.
-Editing not allowed for %s.
-%s kan inte redigeras.
+Editing not allowed: %s is read-only.
+Redigering är inte tillåten: %s är skrivskyddad.
 Rollback of %s would restore banned content.
 
 Rollback to %s
@@ -197,12 +201,12 @@ Index of all pages
 Innehållsförteckning
 Wiki Version
 Wikiversion
-Unlock Wiki
-Lås upp wiki
 Password
 Lösenord
 Run maintenance
 Utför underhåll
+Unlock Wiki
+Lås upp wiki
 Unlock site
 Lås upp wikin
 Lock site
@@ -221,12 +225,12 @@ To mark a page for deletion, put <strong>%s</strong> on the first line.
 För att markera en sida för radering, skriv <strong>%s</strong> på första raden.
 from %s
 från %s
-[Home]
-[Startsida]
 redirected from %s
 omdirigerad från %s
 %s: 
 
+[Home]
+[Startsida]
 Click to search for references to this page
 Klicka för att söka efter referenser till den här sidan
 Cookie: 
@@ -287,6 +291,8 @@ Replace:
 Ersätt:
 Delete
 
+Filter:
+
 Validate HTML
 Validera HTML
 Validate CSS
@@ -327,6 +333,10 @@ Cannot save a nameless page.
 Kan inte spara en namnlös sida.
 Cannot save a page without revision.
 Kan inte spara en sida utan ändringar.
+not deleted: 
+ej borttagen:
+deleted
+borttagen
 Cannot open %s
 Kan inte öppna %s
 Cannot write %s
@@ -359,18 +369,6 @@ för %s sekunder sedan
 för 1 sekund sedan
 just now
 just nu
-Edit Denied
-Redigering nekas
-Editing not allowed: user, ip, or network is blocked.
-Redigering inte tillåten: användare, ip-adress eller nätverk är blockerat.
-Contact the wiki administrator for more information.
-Kontakta wiki-administratören för mer information.
-The rule %s matched for you.
-Regeln %s passar in på dig.
-See %s for more information.
-Se %s för mer information.
-Editing not allowed: %s is read-only.
-Redigering är inte tillåten: %s är skrivskyddad.
 Only administrators can upload files.
 Endast administratörer kan ladda upp filer.
 Editing revision %s of
@@ -395,33 +393,45 @@ Files of type %s are not allowed.
 Filer av typen %s är inte tillåtna.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 Ditt lösenord sparas i en cookie om du har cookies påslagna. Cookies kan försvinna om du ansluter från en annan dator, från ett annat konto eller med ett annat program.
+This site does not use admin or editor passwords.
+Den här webbplatsen använder inte administratörs- eller redaktörslösenord.
 You are currently an administrator on this site.
 Du är för närvarande administratör för den här webbplatsen.
 You are currently an editor on this site.
 Du är för närvarande redaktör för den här webbplatsen.
 You are a normal user on this site.
 Du är en normal användare på den här webbplatsen.
+You do not have a password set.
+
 Your password does not match any of the administrator or editor passwords.
 Ditt lösenord motsvarar inget av admininistratörs- eller redaktörslösenorden.
 Password:
 Lösenord:
-This site does not use admin or editor passwords.
-Den här webbplatsen använder inte administratörs- eller redaktörslösenord.
+Return to 
+
 This operation is restricted to site editors only...
 Den här funktionen kan bara utföras av redaktörer...
 This operation is restricted to administrators only...
 Den här funktionen kan bara utföras av adminstratörer...
+Edit Denied
+Redigering nekas
+Editing not allowed: user, ip, or network is blocked.
+Redigering inte tillåten: användare, ip-adress eller nätverk är blockerat.
+Contact the wiki administrator for more information.
+Kontakta wiki-administratören för mer information.
+The rule %s matched for you.
+Regeln %s passar in på dig.
+See %s for more information.
+Se %s för mer information.
 SampleUndefinedPage
 OdefinieradExempelsida
 Sample_Undefined_Page
 Odefinierad_exempelsida
-Rule "%1" matched "%2" on this page.
-Regel "%1"  matchade "%2" på denna sida.
+Rule 
+
 Reason: %s.
 
 Reason unknown.
-
-Filter:
 
 (for %s)
 (för: %s)
@@ -477,14 +487,10 @@ Maintenance not done.
 Underhåll ej slutfört.
 (Maintenance can only be done once every 12 hours.)
 (Underhåll kan bara utföras en gång var 12:e timme.)
-Remove the "maintain" file or wait.
-Ta bort "maintain"-filen eller vänta.
+Remove the 
+
 Expiring keep files and deleting pages marked for deletion
 Avlägsnar "keep"-filer och raderar sidor märkta för radering
-not deleted: 
-ej borttagen:
-deleted
-borttagen
 Moving part of the %s log file.
 Flyttar del av %s-loggen.
 Could not open %s log file
@@ -577,12 +583,8 @@ Regular expression:
 
 Consider banning the IP number as well: 
 
-Regular expression "%1" matched "%2" on this page.
+Regular expression 
 
-Regular expression "%s" matched on this page.
-
-Cannot highlight the language %s.
-Kan ej markera språket %s.
 Recent Visitors
 Senaste besökare
 some action
@@ -671,8 +673,6 @@ Dates
 
 No dates found.
 
-Inter links:
-Interlänkar:
 List spammed pages
 
 Despamming pages
@@ -715,6 +715,12 @@ Add Comment
 Lägg till kommentar
 ordinary changes
 vanliga ändringar
+Could not identify the paragraph you were editing
+
+This is the section you edited:
+
+This is the current page:
+
 Matching page names:
 
 Fix character encoding
@@ -752,6 +758,12 @@ page was marked for deletion
 Oddmuse
 
 Cleaning up git repository
+
+Google +1 Buttons
+
+All Pages +1
+
+This page lists the twenty last diary entries and their +1 buttons.
 
 Email: 
 
@@ -903,13 +915,19 @@ Languages:
 Språk:
 Show!
 Visa!
+====(\d+) persons? liked this====
+
+====%d persons liked this====
+
+====1 person liked this====
+
+I like this!
+
 Define
 Definiera
 Full Link List
 Fullständing länklista
 Banned Content
-
-Rule "%1" matched on this page.
 
 List of locked pages
 
@@ -935,7 +953,7 @@ IP number matched %s
 
 Register for %s
 
-Please choose a username of the form "FirstLast" using your real name.
+Please choose a username of the form 
 
 The passwords do not match.
 
@@ -949,7 +967,7 @@ Your registration for %s has been submitted.
 
 Please allow time for the webmaster to approve your request.
 
-An email has been sent to "%s" with further instructions.
+An email has been sent to 
 
 There was an error saving your registration.
 
@@ -995,7 +1013,7 @@ The password for %s was reset.  It has been emailed to the address on file.
 
 There was an error resetting the password for %s.
 
-The username "%s" does not exist.
+The username 
 
 Reset Password for %s
 
@@ -1012,12 +1030,6 @@ Approve Pending Registrations for %s
 %s has been approved.
 
 There was an error approving %s.
-
-<ul>
-
-<li>%1 - %2</li>
-
-</ul>
 
 There are no pending registrations.
 
@@ -1063,9 +1075,43 @@ No non-migrated email addresses found, migration not necessary.
 
 Migrated %s rows.
 
+Bisect modules
+
+Module Bisect
+
+All modules enabled now!
+
+Go back
+
+Test / Always enabled / Always disabled
+
+Start
+
+Biscecting proccess is already active.
+
+Stop
+
+It seems like module %s is causing your problem.
+
+Please note that this module does not handle situations when your problem is caused by a combination of specific modules (which is rare anyway).
+
+Good luck fixing your problem! ;)
+
+Module count (only testable modules): 
+
+Current module statuses:
+
+Good
+
+Bad
+
+Enabling %s
+
 Update modules
 
 Module Updater
+
+Looks good. Update modules now!
 
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 
@@ -1133,8 +1179,8 @@ None
 Inga
 Type
 Sort
-Permalink to "%s"
-Permanentlänk till "%s"
+Permalink to 
+
 anchor first defined here: %s
 ankare definierades först här: %s
 the page %s also exists
@@ -1155,6 +1201,12 @@ This page is password protected. If you know the password, you can %s. Once you 
 
 supply the password now
 
+This error should not happen. If your password is set correctly and you are still seeing this message, then it is a bug, please report it. If you are just a stranger and trying to get unsolicited access, then keep in mind that all of the data is encrypted with AES-256 and the key is not stored on the server, good luck.
+
+Attempt to read encrypted data without a password.
+
+Cannot refresh index.
+
 Publish %s
 
 No target wiki was specified in the config file.
@@ -1173,36 +1225,6 @@ Referrers
 Sidor som länkat hit
 All Referrers
 Alla som länkat hit
-Tag
-
-Rebuild index for searching
-
-Tag Cloud
-
-Search::FreeText is not available on this system.
-
-Rebuilding index not done.
-
-(Rebuilding the index can only be done once every 12 hours.)
-
-New Pages for Indexed Search
-
-List changes since %s
-
- ... 
-
-Search term missing.
-Sökord saknas.
-Result pages: 
-
-(%s results)
-
-Tags:
-
-Tags: %s.
-
-No tags
-
 Page list for %s
 
 Slideshow:%s
@@ -1213,6 +1235,8 @@ Static Copy
 Statisk kopia
 Back to %s
 Tillbaka till %s
+Editing not allowed for %s.
+%s kan inte redigeras.
 Edit image in the browser
 
 Summary of your changes: 
@@ -1221,7 +1245,17 @@ Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
 
+Tag
+
 Feed for this tag
+
+Tag Cloud
+
+ ... 
+
+Rebuilding index not done.
+
+(Rebuilding the index can only be done once every 12 hours.)
 
 Rebuild tag index
 
@@ -1231,26 +1265,6 @@ tag cloud
 
 Alternatively, use one of the following templates:
 Eller använd en av följande mallar:
-Thread: %s
-Tråd: %s
-ID parameter is missing.
-ID-parametern saknas.
-Thread %s does not exist.
-Tråden %s finns inte.
-Page %s does not contain a thread.
-Sidan %s innehåller ingen tråd.
-Add
-Lägg till
-URL parameter is missing.
-URL-parametern saknas.
-Add to %s thread
-Lägg till till %s-tråden
-Below:
-Nedan:
-URL:
-URL:
-Name:
-Namn:
 Too many instances.  Only %s allowed.
 
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.

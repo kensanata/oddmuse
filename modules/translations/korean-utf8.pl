@@ -43,6 +43,8 @@ UserName must be 50 characters or less: not saved
 사용자이름은 50자를 이내이어야 합니다: 저장되지 않았습니다.
 This page contains an uploaded file:
 이 페이지는 업로드된 파일을 포함하고 있습니다:
+No summary was provided for this file.
+
 Recursive include of %s!
 %s 가 재귀적으로 포함되었습니다!
 Clear Cache
@@ -119,6 +121,8 @@ Include minor changes
 작은 변경사항 포함
 %s days
 %s 일
+%s day
+
 List later changes
 이후의 변경 나열
 RSS
@@ -179,8 +183,8 @@ Rolling back changes
 변경사항을 롤백
 The two revisions are the same.
 이 두개의 리비젼은 동일합니다.
-Editing not allowed for %s.
-%s 에 대한 편집이 허용되지 않습니다.
+Editing not allowed: %s is read-only.
+편집이 허용되지 않습니다: %s 는 읽기전용입니다.
 Rollback of %s would restore banned content.
 
 Rollback to %s
@@ -193,12 +197,12 @@ Index of all pages
 모든 페이지에 대한 인덱스
 Wiki Version
 위키 버젼
-Unlock Wiki
-위키 잠금 해제
 Password
 암호
 Run maintenance
 유지보수 실행
+Unlock Wiki
+위키 잠금 해제
 Unlock site
 사이트 잠금
 Lock site
@@ -217,12 +221,12 @@ To mark a page for deletion, put <strong>%s</strong> on the first line.
 특정 페이지를 삭제 요청페이지로 하려면, <strong>%s</strong> 를 첫줄에 입력하세요. 
 from %s
 %s 로 부터
-[Home]
-[홈]
 redirected from %s
 %s 에서 재전송됨
 %s: 
 
+[Home]
+[홈]
 Click to search for references to this page
 이 페이지에 대한 참조를 검색하려면 클릭
 Cookie: 
@@ -283,6 +287,8 @@ Replace:
 바꾸기:
 Delete
 
+Filter:
+필터:
 Validate HTML
 HTML 검증
 Validate CSS
@@ -323,6 +329,10 @@ Cannot save a nameless page.
 이름없는 페이지는 저장할 수 없습니다.
 Cannot save a page without revision.
 리비젼 없는 페이지는 저장할 수 없습니다.
+not deleted: 
+삭제되지 않음:
+deleted
+삭제됨
 Cannot open %s
 %s (을)를 열 수 없습니다.
 Cannot write %s
@@ -355,18 +365,6 @@ No unlock required.
 1 초 전
 just now
 바로 지금
-Edit Denied
-편집 거부되었습니다.
-Editing not allowed: user, ip, or network is blocked.
-편집이 허용되지 않습니다: 사용자명, ip, 또는 네트워크가 충돌하였습니다.
-Contact the wiki administrator for more information.
-상세 정보를 위해서는 위키 관리자에게 연락하세요.
-The rule %s matched for you.
-%s 규칙이 맞았습니다.
-See %s for more information.
-상세정보는 %s 를 참조하세요.
-Editing not allowed: %s is read-only.
-편집이 허용되지 않습니다: %s 는 읽기전용입니다.
 Only administrators can upload files.
 오직 관리자만이 파일을 업로드할 수 있습니다.
 Editing revision %s of
@@ -391,34 +389,46 @@ Files of type %s are not allowed.
 %s (이)란 파일 유형은 허용되지 않습니다.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 쿠키가 활성화 되어 있다면, 암호가 쿠키에 저장됩니다. 쿠키는 다른 컴퓨터에서, 다른 계정으로 또는 다른 소프트웨어로 접속하게 되면 없어질 수 있습니다.
+This site does not use admin or editor passwords.
+이 사이트는 관리자 또는 편집자 암호를 사용하지 않습니다.
 You are currently an administrator on this site.
 사용자가 이 사이트에 관리자입니다.
 You are currently an editor on this site.
 사용자가 이 페이지의 편집인입니다.
 You are a normal user on this site.
 사용자가 이 사이트의 정상 사용자입니다.
+You do not have a password set.
+
 Your password does not match any of the administrator or editor passwords.
 사용자의 암호가 관리자 또는 편집자의 암호와 일치하지 않습니다.
 Password:
 암호:
-This site does not use admin or editor passwords.
-이 사이트는 관리자 또는 편집자 암호를 사용하지 않습니다.
+Return to 
+
 This operation is restricted to site editors only...
 이 동작은 사이트 편집자만 할 수 있습니다...
 This operation is restricted to administrators only...
 이 동작은 관리자만 할 수 있습니다.
+Edit Denied
+편집 거부되었습니다.
+Editing not allowed: user, ip, or network is blocked.
+편집이 허용되지 않습니다: 사용자명, ip, 또는 네트워크가 충돌하였습니다.
+Contact the wiki administrator for more information.
+상세 정보를 위해서는 위키 관리자에게 연락하세요.
+The rule %s matched for you.
+%s 규칙이 맞았습니다.
+See %s for more information.
+상세정보는 %s 를 참조하세요.
 SampleUndefinedPage
 SampleUndefinedPage
 Sample_Undefined_Page
 Sample_Undefined_Page
-Rule "%1" matched "%2" on this page.
-규칙 "%1" 은 "%2" 와 이 페이지에서 맞지 않습니다.
+Rule 
+
 Reason: %s.
 
 Reason unknown.
 
-Filter:
-필터:
 (for %s)
 (%s(을)를 위하여)
 %s pages found.
@@ -473,14 +483,10 @@ Maintenance not done.
 (사이트)관리가 완료되지 않았습니다.
 (Maintenance can only be done once every 12 hours.)
 (매 12시간에 한번씩 사이트 관리가 수행될 수 있습니다.)
-Remove the "maintain" file or wait.
-"유지보수(maintain)" 파일을 제거하거나 기다리세요.
+Remove the 
+
 Expiring keep files and deleting pages marked for deletion
 
-not deleted: 
-삭제되지 않음:
-deleted
-삭제됨
 Moving part of the %s log file.
 %s 로그 파일의 일부를 옮김.
 Could not open %s log file
@@ -573,12 +579,8 @@ Regular expression:
 
 Consider banning the IP number as well: 
 
-Regular expression "%1" matched "%2" on this page.
+Regular expression 
 
-Regular expression "%s" matched on this page.
-
-Cannot highlight the language %s.
-%s 언어에 대해서 구문강조를 할 수 없습니다.
 Recent Visitors
 
 some action
@@ -667,8 +669,6 @@ Dates
 
 No dates found.
 
-Inter links:
-인터 링크:
 List spammed pages
 
 Despamming pages
@@ -711,6 +711,12 @@ Add Comment
 
 ordinary changes
 
+Could not identify the paragraph you were editing
+
+This is the section you edited:
+
+This is the current page:
+
 Matching page names:
 
 Fix character encoding
@@ -748,6 +754,12 @@ page was marked for deletion
 Oddmuse
 
 Cleaning up git repository
+
+Google +1 Buttons
+
+All Pages +1
+
+This page lists the twenty last diary entries and their +1 buttons.
 
 Email: 
 
@@ -899,13 +911,19 @@ Languages:
 언어:
 Show!
 보여주세요!
+====(\d+) persons? liked this====
+
+====%d persons liked this====
+
+====1 person liked this====
+
+I like this!
+
 Define
 정의
 Full Link List
 전체 링크 목록
 Banned Content
-
-Rule "%1" matched on this page.
 
 List of locked pages
 
@@ -931,7 +949,7 @@ IP number matched %s
 
 Register for %s
 
-Please choose a username of the form "FirstLast" using your real name.
+Please choose a username of the form 
 
 The passwords do not match.
 
@@ -945,7 +963,7 @@ Your registration for %s has been submitted.
 
 Please allow time for the webmaster to approve your request.
 
-An email has been sent to "%s" with further instructions.
+An email has been sent to 
 
 There was an error saving your registration.
 
@@ -991,7 +1009,7 @@ The password for %s was reset.  It has been emailed to the address on file.
 
 There was an error resetting the password for %s.
 
-The username "%s" does not exist.
+The username 
 
 Reset Password for %s
 
@@ -1008,12 +1026,6 @@ Approve Pending Registrations for %s
 %s has been approved.
 
 There was an error approving %s.
-
-<ul>
-
-<li>%1 - %2</li>
-
-</ul>
 
 There are no pending registrations.
 
@@ -1059,9 +1071,43 @@ No non-migrated email addresses found, migration not necessary.
 
 Migrated %s rows.
 
+Bisect modules
+
+Module Bisect
+
+All modules enabled now!
+
+Go back
+
+Test / Always enabled / Always disabled
+
+Start
+
+Biscecting proccess is already active.
+
+Stop
+
+It seems like module %s is causing your problem.
+
+Please note that this module does not handle situations when your problem is caused by a combination of specific modules (which is rare anyway).
+
+Good luck fixing your problem! ;)
+
+Module count (only testable modules): 
+
+Current module statuses:
+
+Good
+
+Bad
+
+Enabling %s
+
 Update modules
 
 Module Updater
+
+Looks good. Update modules now!
 
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 
@@ -1129,7 +1175,7 @@ None
 
 Type
 
-Permalink to "%s"
+Permalink to 
 
 anchor first defined here: %s
 책갈피가 여기서 처음 거부되었습니다: %s
@@ -1151,6 +1197,12 @@ This page is password protected. If you know the password, you can %s. Once you 
 
 supply the password now
 
+This error should not happen. If your password is set correctly and you are still seeing this message, then it is a bug, please report it. If you are just a stranger and trying to get unsolicited access, then keep in mind that all of the data is encrypted with AES-256 and the key is not stored on the server, good luck.
+
+Attempt to read encrypted data without a password.
+
+Cannot refresh index.
+
 Publish %s
 
 No target wiki was specified in the config file.
@@ -1169,36 +1221,6 @@ Referrers
 
 All Referrers
 
-Tag
-
-Rebuild index for searching
-
-Tag Cloud
-
-Search::FreeText is not available on this system.
-
-Rebuilding index not done.
-
-(Rebuilding the index can only be done once every 12 hours.)
-
-New Pages for Indexed Search
-
-List changes since %s
-
- ... 
-
-Search term missing.
-
-Result pages: 
-
-(%s results)
-
-Tags:
-
-Tags: %s.
-
-No tags
-
 Page list for %s
 
 Slideshow:%s
@@ -1209,6 +1231,8 @@ Static Copy
 
 Back to %s
 
+Editing not allowed for %s.
+%s 에 대한 편집이 허용되지 않습니다.
 Edit image in the browser
 
 Summary of your changes: 
@@ -1217,7 +1241,17 @@ Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
 
+Tag
+
 Feed for this tag
+
+Tag Cloud
+
+ ... 
+
+Rebuilding index not done.
+
+(Rebuilding the index can only be done once every 12 hours.)
 
 Rebuild tag index
 
@@ -1226,26 +1260,6 @@ list tags
 tag cloud
 
 Alternatively, use one of the following templates:
-
-Thread: %s
-
-ID parameter is missing.
-
-Thread %s does not exist.
-
-Page %s does not contain a thread.
-
-Add
-
-URL parameter is missing.
-
-Add to %s thread
-
-Below:
-
-URL:
-
-Name:
 
 Too many instances.  Only %s allowed.
 

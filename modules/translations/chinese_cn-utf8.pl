@@ -62,6 +62,8 @@ UserName must be 50 characters or less: not saved
 无法保存, 使用者名称不可超过 50 个字符。
 This page contains an uploaded file:
 本页包含一个已上传的文件：
+No summary was provided for this file.
+
 Recursive include of %s!
 递归包含 %s
 Clear Cache
@@ -138,6 +140,8 @@ Include minor changes
 显示次要的更改
 %s days
 %s天
+%s day
+
 List later changes
 列出随后的更改
 RSS
@@ -198,8 +202,8 @@ Rolling back changes
 回滚更改
 The two revisions are the same.
 两个版本相同
-Editing not allowed for %s.
-不允许编辑%s。
+Editing not allowed: %s is read-only.
+禁止编辑；%s为只读。
 Rollback of %s would restore banned content.
 
 Rollback to %s
@@ -212,12 +216,12 @@ Index of all pages
 所有页面的索引
 Wiki Version
 显示 Wiki 的版本
-Unlock Wiki
-解锁 Wiki
 Password
 密码
 Run maintenance
 执行维护动作
+Unlock Wiki
+解锁 Wiki
 Unlock site
 解锁网站
 Lock site
@@ -236,12 +240,12 @@ To mark a page for deletion, put <strong>%s</strong> on the first line.
 在首行加入 <strong>%s</strong>以将页面标记为删除。
 from %s
 自 %s
-[Home]
-[首页]
 redirected from %s
 自%s重定向 
 %s: 
 %s：
+[Home]
+[首页]
 Click to search for references to this page
 按下即可以搜索参考至本页的数据
 Cookie: 
@@ -302,6 +306,8 @@ Replace:
 取代：
 Delete
 删除
+Filter:
+过滤规则：
 Validate HTML
 验证 HTML
 Validate CSS
@@ -342,6 +348,10 @@ Cannot save a nameless page.
 无法保存没有名称的页面。
 Cannot save a page without revision.
 无法保存没有版本信息的页面。
+not deleted: 
+未删除：
+deleted
+已删除
 Cannot open %s
 无法打开 %s
 Cannot write %s
@@ -374,18 +384,6 @@ No unlock required.
 1 秒前
 just now
 刚才
-Edit Denied
-禁止编辑
-Editing not allowed: user, ip, or network is blocked.
-禁止编辑；用户、IP 或是网络已被禁止连接。
-Contact the wiki administrator for more information.
-请通知 wiki 管理员以获得更多的信息。
-The rule %s matched for you.
-符合您的规则：%s。
-See %s for more information.
-请参阅%s以获得更多信息。
-Editing not allowed: %s is read-only.
-禁止编辑；%s为只读。
 Only administrators can upload files.
 只有管理员可以上传文件。
 Editing revision %s of
@@ -410,34 +408,46 @@ Files of type %s are not allowed.
 不允许%s类型的文件。
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 如果您已经开启了 cookie， 您的密码会被保存在 cookie 中。Cookie可能会因为您使用其他机器、帐号、或别的软件来连接而丢失。
+This site does not use admin or editor passwords.
+本站并不使用管理员或编辑者密码功能。
 You are currently an administrator on this site.
 您现在是本站的管理员。
 You are currently an editor on this site.
 您现在是本站的编辑者。
 You are a normal user on this site.
 您现在是本站的普通用户。
+You do not have a password set.
+
 Your password does not match any of the administrator or editor passwords.
 您的密码和任何管理员或编辑者的密码都不匹配。
 Password:
 密码：
-This site does not use admin or editor passwords.
-本站并不使用管理员或编辑者密码功能。
+Return to 
+
 This operation is restricted to site editors only...
 这个动作限定只允许编辑者使用…
 This operation is restricted to administrators only...
 这个动作限定只允许管理员使用…
+Edit Denied
+禁止编辑
+Editing not allowed: user, ip, or network is blocked.
+禁止编辑；用户、IP 或是网络已被禁止连接。
+Contact the wiki administrator for more information.
+请通知 wiki 管理员以获得更多的信息。
+The rule %s matched for you.
+符合您的规则：%s。
+See %s for more information.
+请参阅%s以获得更多信息。
 SampleUndefinedPage
 未定义页面
 Sample_Undefined_Page
 未定义_页面
-Rule "%1" matched "%2" on this page.
-本页的 "%2" 符合规则 "%1"。
+Rule 
+
 Reason: %s.
 原因：%s。
 Reason unknown.
 未知原因。
-Filter:
-过滤规则：
 (for %s)
 (列出%s)
 %s pages found.
@@ -492,14 +502,10 @@ Maintenance not done.
 无法进行管理。
 (Maintenance can only be done once every 12 hours.)
 (管理每 12 小时只能进行一次。)
-Remove the "maintain" file or wait.
-移除 "maintain" 档，或等时间到了再进行。
+Remove the 
+
 Expiring keep files and deleting pages marked for deletion
 清除过期的库存档和删除已标记的文件
-not deleted: 
-未删除：
-deleted
-已删除
 Moving part of the %s log file.
 移除部分在%s日志文件中的数据。
 Could not open %s log file
@@ -592,12 +598,8 @@ Regular expression:
 
 Consider banning the IP number as well: 
 
-Regular expression "%1" matched "%2" on this page.
+Regular expression 
 
-Regular expression "%s" matched on this page.
-
-Cannot highlight the language %s.
-无法高亮显示语言%s。
 Recent Visitors
 最近的游客
 some action
@@ -686,8 +688,6 @@ Dates
 
 No dates found.
 
-Inter links:
-内部链接：
 List spammed pages
 列出垃圾页面
 Despamming pages
@@ -730,6 +730,12 @@ Add Comment
 添加评论
 ordinary changes
 普通改动
+Could not identify the paragraph you were editing
+
+This is the section you edited:
+
+This is the current page:
+
 Matching page names:
 匹配页名称：
 Fix character encoding
@@ -767,6 +773,12 @@ page was marked for deletion
 Oddmuse
 
 Cleaning up git repository
+
+Google +1 Buttons
+
+All Pages +1
+
+This page lists the twenty last diary entries and their +1 buttons.
 
 Email: 
 邮件：
@@ -918,13 +930,19 @@ Languages:
 语言：
 Show!
 显示!
+====(\d+) persons? liked this====
+
+====%d persons liked this====
+
+====1 person liked this====
+
+I like this!
+
 Define
 定义
 Full Link List
 完整链接列表
 Banned Content
-
-Rule "%1" matched on this page.
 
 List of locked pages
 列出被锁定的页面
@@ -950,8 +968,8 @@ IP number matched %s
 
 Register for %s
 为%s注册
-Please choose a username of the form "FirstLast" using your real name.
-请使用您的名字注册。
+Please choose a username of the form 
+
 The passwords do not match.
 两次输入的口令不一致。
 The password must be at least %s characters.
@@ -964,8 +982,8 @@ Your registration for %s has been submitted.
 账号%s的注册信息已经发送。
 Please allow time for the webmaster to approve your request.
 请静候管理员的处理和回复。
-An email has been sent to "%s" with further instructions.
-请查看您的电子信箱"%s"获取详细说明。
+An email has been sent to 
+
 There was an error saving your registration.
 您的注册信息保存时出错。
 An account was created for %s.
@@ -1010,8 +1028,8 @@ The password for %s was reset.  It has been emailed to the address on file.
 用户%s的口令已重置。请查看您的电子邮件。
 There was an error resetting the password for %s.
 重置%s口令时出错。
-The username "%s" does not exist.
-用户名“%s”不存在。
+The username 
+
 Reset Password for %s
 重置“%s”的口令
 Reset Password?
@@ -1028,12 +1046,6 @@ Approve Pending Registrations for %s
 用户“%s”已批准。
 There was an error approving %s.
 批准用户%s注册信息时出错。
-<ul>
-
-<li>%1 - %2</li>
-
-</ul>
-
 There are no pending registrations.
 无待候审批用户
 Invalid Mail %s: not saved.
@@ -1078,9 +1090,43 @@ No non-migrated email addresses found, migration not necessary.
 
 Migrated %s rows.
 
+Bisect modules
+
+Module Bisect
+
+All modules enabled now!
+
+Go back
+
+Test / Always enabled / Always disabled
+
+Start
+
+Biscecting proccess is already active.
+
+Stop
+
+It seems like module %s is causing your problem.
+
+Please note that this module does not handle situations when your problem is caused by a combination of specific modules (which is rare anyway).
+
+Good luck fixing your problem! ;)
+
+Module count (only testable modules): 
+
+Current module statuses:
+
+Good
+
+Bad
+
+Enabling %s
+
 Update modules
 
 Module Updater
+
+Looks good. Update modules now!
 
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 您已经对同一个域名的连接已经超过 %s 次。这似乎只有垃圾邮件发送者会这么做。您的编辑被拒绝。
@@ -1148,8 +1194,8 @@ None
 不指定
 Type
 类别
-Permalink to "%s"
-永久链接至 "%s"
+Permalink to 
+
 anchor first defined here: %s
 锚点已被定义于 %s
 the page %s also exists
@@ -1170,6 +1216,12 @@ This page is password protected. If you know the password, you can %s. Once you 
 
 supply the password now
 
+This error should not happen. If your password is set correctly and you are still seeing this message, then it is a bug, please report it. If you are just a stranger and trying to get unsolicited access, then keep in mind that all of the data is encrypted with AES-256 and the key is not stored on the server, good luck.
+
+Attempt to read encrypted data without a password.
+
+Cannot refresh index.
+
 Publish %s
 发表%s
 No target wiki was specified in the config file.
@@ -1188,36 +1240,6 @@ Referrers
 引用者
 All Referrers
 所有的引用者
-Tag
-标签
-Rebuild index for searching
-重建检索索引
-Tag Cloud
-标签云
-Search::FreeText is not available on this system.
-Search::FreeText不存在
-Rebuilding index not done.
-重建索引尚未完成
-(Rebuilding the index can only be done once every 12 hours.)
-（自动重建索引间隔为12个小时。）
-New Pages for Indexed Search
-收录搜索的新页面
-List changes since %s
-列出自 %s 以来的更改
- ... 
- ... 
-Search term missing.
-缺少搜索项。
-Result pages: 
-返回结果：
-(%s results)
-（%s个页面）
-Tags:
-标签：
-Tags: %s.
-标签：%s。
-No tags
-无标签
 Page list for %s
 ％s的页面列表
 Slideshow:%s
@@ -1228,6 +1250,8 @@ Static Copy
 静态页面备份
 Back to %s
 返回 %s
+Editing not allowed for %s.
+不允许编辑%s。
 Edit image in the browser
 
 Summary of your changes: 
@@ -1236,8 +1260,18 @@ Copy to %1 succeeded: %2.
 成功复制为%1：%2
 Copy to %1 failed: %2.
 无法复制为%1：%2
+Tag
+标签
 Feed for this tag
 订阅这个标签
+Tag Cloud
+标签云
+ ... 
+ ... 
+Rebuilding index not done.
+重建索引尚未完成
+(Rebuilding the index can only be done once every 12 hours.)
+（自动重建索引间隔为12个小时。）
 Rebuild tag index
 重建标签索引
 list tags
@@ -1246,26 +1280,6 @@ tag cloud
 标签云
 Alternatively, use one of the following templates:
 或者，使用下列模板之一:
-Thread: %s
-讨论主题: %s
-ID parameter is missing.
-未指定 ID 参数。
-Thread %s does not exist.
-讨论主题%s不存在。
-Page %s does not contain a thread.
-页面%s不包含讨论主题.
-Add
-加入
-URL parameter is missing.
-未指定 URL 参数。
-Add to %s thread
-加入%s讨论主题
-Below:
-以下:
-URL:
-网址:
-Name:
-姓名:
 Too many instances.  Only %s allowed.
 太多的实例。只有%s被允许。
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
