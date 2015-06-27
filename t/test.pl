@@ -276,7 +276,7 @@ sub add_module {
   } elsif (eval{ symlink("$dir/modules/$subdir$mod", "$ModuleDir/$mod"); 1; }) {
     # do nothing
   } else {
-    system("copy '$dir/modules/$subdir$mod' '$ModuleDir/$mod'");
+    system('copy', "$dir/modules/$subdir$mod", "$ModuleDir/$mod");
   }
   die "Cannot symlink $mod: $!" unless -e "$ModuleDir/$mod";
   do "$ModuleDir/$mod";
@@ -309,9 +309,9 @@ sub write_config_file {
 
 sub clear_pages {
   if (-f "/bin/rm") {
-    system("/bin/rm -rf '$DataDir'");
+    system('/bin/rm', '-rf', $DataDir);
   } else {
-    system("c:/cygwin/bin/rm.exe -rf '$DataDir'");
+    system('c:/cygwin/bin/rm.exe', '-rf', $DataDir);
   }
   die "Cannot remove '$DataDir'!\n" if -e $DataDir;
   mkdir $DataDir;
