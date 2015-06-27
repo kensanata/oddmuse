@@ -43,6 +43,8 @@ UserName must be 50 characters or less: not saved
 Lungimea numelui este de maximum 50 de caractere: nu sa salvat
 This page contains an uploaded file:
 
+No summary was provided for this file.
+
 Recursive include of %s!
 
 Clear Cache
@@ -119,6 +121,8 @@ Include minor changes
 Include modificările minore
 %s days
 %s zile
+%s day
+
 List later changes
 Arată modificările ulterioare
 RSS
@@ -179,8 +183,8 @@ Rolling back changes
 
 The two revisions are the same.
 
-Editing not allowed for %s.
-Editarea nu este permisă pentru %s
+Editing not allowed: %s is read-only.
+Editarea nu este permisă: %s este numai pentru citire.
 Rollback of %s would restore banned content.
 
 Rollback to %s
@@ -193,12 +197,12 @@ Index of all pages
 Indexul tuturor paginilor
 Wiki Version
 Versiunea Wiki
-Unlock Wiki
-Deblochează Wiki
 Password
 Parola
 Run maintenance
 
+Unlock Wiki
+Deblochează Wiki
 Unlock site
 Deblochează site-ul
 Lock site
@@ -217,12 +221,12 @@ To mark a page for deletion, put <strong>%s</strong> on the first line.
 
 from %s
 de la %s
-[Home]
-[Acasă]
 redirected from %s
 redirecţionat de la %s
 %s: 
 
+[Home]
+[Acasă]
 Click to search for references to this page
 Caută referinţe la această pagină
 Cookie: 
@@ -283,6 +287,8 @@ Replace:
 Înlocuieşte:
 Delete
 
+Filter:
+Filtru:
 Validate HTML
 HTML Valid
 Validate CSS
@@ -323,6 +329,10 @@ Cannot save a nameless page.
 
 Cannot save a page without revision.
 
+not deleted: 
+
+deleted
+şters
 Cannot open %s
 
 Cannot write %s
@@ -355,18 +365,6 @@ cu %s secunde în urmă
 cu 1 secundă în urmă
 just now
 acum
-Edit Denied
-Editarea nu este permisă
-Editing not allowed: user, ip, or network is blocked.
-Editarea nu este permisă: utilizatorul, ip-ul sau reţeaua este blocată.
-Contact the wiki administrator for more information.
-Contactaţi administratorul pentru mai multă informaţie.
-The rule %s matched for you.
-
-See %s for more information.
-Vezi %s pentru mai multă informaţie.
-Editing not allowed: %s is read-only.
-Editarea nu este permisă: %s este numai pentru citire.
 Only administrators can upload files.
 Numai administratorii pot adăuga fişiere.
 Editing revision %s of
@@ -391,34 +389,46 @@ Files of type %s are not allowed.
 Fişierele de tipul %s nu sunt permise.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 
+This site does not use admin or editor passwords.
+Acest site nu foloseşte parole pentru administrare sau editare.
 You are currently an administrator on this site.
 Sunteţi administrator pe acest site.
 You are currently an editor on this site.
 Sunteţi editor pe acest site.
 You are a normal user on this site.
 Sunteţi un utilizator obişnuit pe acest site.
+You do not have a password set.
+
 Your password does not match any of the administrator or editor passwords.
 Parola dumneavoastră nu corespunde nici unei parole de administrator sau editor.
 Password:
 Parola:
-This site does not use admin or editor passwords.
-Acest site nu foloseşte parole pentru administrare sau editare.
+Return to 
+
 This operation is restricted to site editors only...
 Această operaţie este permisă numai editorilor...
 This operation is restricted to administrators only...
 Această operaţie este permisă numai administratorilor...
+Edit Denied
+Editarea nu este permisă
+Editing not allowed: user, ip, or network is blocked.
+Editarea nu este permisă: utilizatorul, ip-ul sau reţeaua este blocată.
+Contact the wiki administrator for more information.
+Contactaţi administratorul pentru mai multă informaţie.
+The rule %s matched for you.
+
+See %s for more information.
+Vezi %s pentru mai multă informaţie.
 SampleUndefinedPage
 
 Sample_Undefined_Page
 
-Rule "%1" matched "%2" on this page.
+Rule 
 
 Reason: %s.
 
 Reason unknown.
 
-Filter:
-Filtru:
 (for %s)
 (pentru %s)
 %s pages found.
@@ -473,14 +483,10 @@ Maintenance not done.
 
 (Maintenance can only be done once every 12 hours.)
 
-Remove the "maintain" file or wait.
+Remove the 
 
 Expiring keep files and deleting pages marked for deletion
 
-not deleted: 
-
-deleted
-şters
 Moving part of the %s log file.
 
 Could not open %s log file
@@ -573,11 +579,7 @@ Regular expression:
 
 Consider banning the IP number as well: 
 
-Regular expression "%1" matched "%2" on this page.
-
-Regular expression "%s" matched on this page.
-
-Cannot highlight the language %s.
+Regular expression 
 
 Recent Visitors
 Vizitatori Recenţi
@@ -667,8 +669,6 @@ Dates
 
 No dates found.
 
-Inter links:
-
 List spammed pages
 
 Despamming pages
@@ -711,6 +711,12 @@ Add Comment
 Adaugă Comentariu
 ordinary changes
 
+Could not identify the paragraph you were editing
+
+This is the section you edited:
+
+This is the current page:
+
 Matching page names:
 
 Fix character encoding
@@ -748,6 +754,12 @@ page was marked for deletion
 Oddmuse
 
 Cleaning up git repository
+
+Google +1 Buttons
+
+All Pages +1
+
+This page lists the twenty last diary entries and their +1 buttons.
 
 Email: 
 
@@ -899,13 +911,19 @@ Languages:
 Limbi:
 Show!
 
+====(\d+) persons? liked this====
+
+====%d persons liked this====
+
+====1 person liked this====
+
+I like this!
+
 Define
 
 Full Link List
 
 Banned Content
-
-Rule "%1" matched on this page.
 
 List of locked pages
 
@@ -931,7 +949,7 @@ IP number matched %s
 
 Register for %s
 
-Please choose a username of the form "FirstLast" using your real name.
+Please choose a username of the form 
 
 The passwords do not match.
 Parolele nu se potrivesc.
@@ -945,7 +963,7 @@ Your registration for %s has been submitted.
 
 Please allow time for the webmaster to approve your request.
 
-An email has been sent to "%s" with further instructions.
+An email has been sent to 
 
 There was an error saving your registration.
 
@@ -991,7 +1009,7 @@ The password for %s was reset.  It has been emailed to the address on file.
 
 There was an error resetting the password for %s.
 
-The username "%s" does not exist.
+The username 
 
 Reset Password for %s
 
@@ -1008,12 +1026,6 @@ Approve Pending Registrations for %s
 %s has been approved.
 
 There was an error approving %s.
-
-<ul>
-
-<li>%1 - %2</li>
-
-</ul>
 
 There are no pending registrations.
 
@@ -1059,9 +1071,43 @@ No non-migrated email addresses found, migration not necessary.
 
 Migrated %s rows.
 
+Bisect modules
+
+Module Bisect
+
+All modules enabled now!
+
+Go back
+
+Test / Always enabled / Always disabled
+
+Start
+
+Biscecting proccess is already active.
+
+Stop
+
+It seems like module %s is causing your problem.
+
+Please note that this module does not handle situations when your problem is caused by a combination of specific modules (which is rare anyway).
+
+Good luck fixing your problem! ;)
+
+Module count (only testable modules): 
+
+Current module statuses:
+
+Good
+
+Bad
+
+Enabling %s
+
 Update modules
 
 Module Updater
+
+Looks good. Update modules now!
 
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 
@@ -1129,7 +1175,7 @@ None
 
 Type
 Tip
-Permalink to "%s"
+Permalink to 
 
 anchor first defined here: %s
 
@@ -1151,6 +1197,12 @@ This page is password protected. If you know the password, you can %s. Once you 
 
 supply the password now
 
+This error should not happen. If your password is set correctly and you are still seeing this message, then it is a bug, please report it. If you are just a stranger and trying to get unsolicited access, then keep in mind that all of the data is encrypted with AES-256 and the key is not stored on the server, good luck.
+
+Attempt to read encrypted data without a password.
+
+Cannot refresh index.
+
 Publish %s
 
 No target wiki was specified in the config file.
@@ -1169,36 +1221,6 @@ Referrers
 
 All Referrers
 
-Tag
-
-Rebuild index for searching
-
-Tag Cloud
-
-Search::FreeText is not available on this system.
-
-Rebuilding index not done.
-
-(Rebuilding the index can only be done once every 12 hours.)
-
-New Pages for Indexed Search
-
-List changes since %s
-
- ... 
-
-Search term missing.
-
-Result pages: 
-
-(%s results)
-(%s rezultate)
-Tags:
-
-Tags: %s.
-
-No tags
-
 Page list for %s
 
 Slideshow:%s
@@ -1209,6 +1231,8 @@ Static Copy
 
 Back to %s
 Înapoi la %s
+Editing not allowed for %s.
+Editarea nu este permisă pentru %s
 Edit image in the browser
 
 Summary of your changes: 
@@ -1217,7 +1241,17 @@ Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
 
+Tag
+
 Feed for this tag
+
+Tag Cloud
+
+ ... 
+
+Rebuilding index not done.
+
+(Rebuilding the index can only be done once every 12 hours.)
 
 Rebuild tag index
 
@@ -1227,26 +1261,6 @@ tag cloud
 
 Alternatively, use one of the following templates:
 
-Thread: %s
-
-ID parameter is missing.
-
-Thread %s does not exist.
-
-Page %s does not contain a thread.
-
-Add
-Adaugă
-URL parameter is missing.
-
-Add to %s thread
-
-Below:
-
-URL:
-
-Name:
-Nume:
 Too many instances.  Only %s allowed.
 
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.

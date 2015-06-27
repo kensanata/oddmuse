@@ -52,6 +52,8 @@ UserName must be 50 characters or less: not saved
 Niet opgeslagen: de GebruikersNaam mag hoogstens 50 tekens lang zijn.
 This page contains an uploaded file:
 
+No summary was provided for this file.
+
 Recursive include of %s!
 
 Clear Cache
@@ -128,6 +130,8 @@ Include minor changes
 Toon ook kleine wijzigingen
 %s days
 %s dagen
+%s day
+
 List later changes
 Toon latere veranderingen
 RSS
@@ -188,8 +192,8 @@ Rolling back changes
 Bezig met ongedaan maken van wijzigingen
 The two revisions are the same.
 
-Editing not allowed for %s.
-Het wijzigen van %s is niet toegestaan.
+Editing not allowed: %s is read-only.
+Wijzigen niet toegestaan: %s mag alleen gelezen worden.
 Rollback of %s would restore banned content.
 
 Rollback to %s
@@ -202,12 +206,12 @@ Index of all pages
 Index van alle pagina's
 Wiki Version
 Tonen van Wiki-versie
-Unlock Wiki
-Bezig met ontgrendelen
 Password
 Wachtwoord
 Run maintenance
 Voor onderhoud uit
+Unlock Wiki
+Bezig met ontgrendelen
 Unlock site
 Ontgrendel site
 Lock site
@@ -226,12 +230,12 @@ To mark a page for deletion, put <strong>%s</strong> on the first line.
 
 from %s
 vanaf %s
-[Home]
-[Start]
 redirected from %s
 doorverwezen vanaf %s
 %s: 
 
+[Home]
+[Start]
 Click to search for references to this page
 Klik hier om te zoeken naar verwijzingen naar deze pagina
 Cookie: 
@@ -292,6 +296,8 @@ Replace:
 Vervangen door:
 Delete
 
+Filter:
+
 Validate HTML
 Valideer HTML
 Validate CSS
@@ -332,6 +338,10 @@ Cannot save a nameless page.
 Kan een pagina zonder naam niet opslaan.
 Cannot save a page without revision.
 
+not deleted: 
+niet verwijderd: 
+deleted
+verwijderd
 Cannot open %s
 Kan %s niet openen
 Cannot write %s
@@ -364,18 +374,6 @@ Ontgrendelen is niet nodig.
 1 seconde geleden
 just now
 precies op dit moment
-Edit Denied
-Wijzigen niet toegestaan
-Editing not allowed: user, ip, or network is blocked.
-U mag deze pagina niet wijzigen: uw account op deze Wiki, uw IP of uw netwerk is buitengesloten.
-Contact the wiki administrator for more information.
-Neem contact op met de beheerder van de wiki voor meer informatie.
-The rule %s matched for you.
-Uw gegevens passen bij de door de beheerder ingestelde regel %s.
-See %s for more information.
-Zie %s voor meer informatie.
-Editing not allowed: %s is read-only.
-Wijzigen niet toegestaan: %s mag alleen gelezen worden.
 Only administrators can upload files.
 Alleen beheerders kunnen bestanden publiceren.
 Editing revision %s of
@@ -400,33 +398,45 @@ Files of type %s are not allowed.
 Bestanden van het type %s zijn niet toegestaan.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 Als uw browser gebruik maakt van cookies, is uw wachtwoord in een cookie opgeslagen. Cookies kunnen verloren gaan als u verbinding maakt vanaf een andere machine, vanaf een ander account of met behulp van andere software.
+This site does not use admin or editor passwords.
+Deze site heeft geen beheerders- of redacteurswachtwoorden.
 You are currently an administrator on this site.
 U bent een beheerder van deze site.
 You are currently an editor on this site.
 U bent een redacteur op deze site.
 You are a normal user on this site.
 U bent een gewone gebruiker op deze site.
+You do not have a password set.
+
 Your password does not match any of the administrator or editor passwords.
 Uw wachtwoord komt niet overeen met een beheerders- of redacteurswachtwoord.
 Password:
 Wachtwoord:
-This site does not use admin or editor passwords.
-Deze site heeft geen beheerders- of redacteurswachtwoorden.
+Return to 
+
 This operation is restricted to site editors only...
 Deze taak mag alleen uitgevoerd worden door redacteuren...
 This operation is restricted to administrators only...
 Deze taak mag alleen uitgevoerd worden door beheerders...
+Edit Denied
+Wijzigen niet toegestaan
+Editing not allowed: user, ip, or network is blocked.
+U mag deze pagina niet wijzigen: uw account op deze Wiki, uw IP of uw netwerk is buitengesloten.
+Contact the wiki administrator for more information.
+Neem contact op met de beheerder van de wiki voor meer informatie.
+The rule %s matched for you.
+Uw gegevens passen bij de door de beheerder ingestelde regel %s.
+See %s for more information.
+Zie %s voor meer informatie.
 SampleUndefinedPage
 VoorbeeldVanEenNietBestaandePagina
 Sample_Undefined_Page
 Voorbeeld_Van_Een_Niet_Bestaande_Pagina
-Rule "%1" matched "%2" on this page.
+Rule 
 
 Reason: %s.
 
 Reason unknown.
-
-Filter:
 
 (for %s)
 (voor %s)
@@ -482,14 +492,10 @@ Maintenance not done.
 Er is geen onderhoud gepleegd.
 (Maintenance can only be done once every 12 hours.)
 (Onderhoud kan slechts eens in de 12 uur uitgevoerd worden.)
-Remove the "maintain" file or wait.
-Verwijder het bestand "maintain" of wacht.
+Remove the 
+
 Expiring keep files and deleting pages marked for deletion
 Bezig met verwijderen van te oude revisies uit de archieven, en verwijderen van pagina's die daarvoor gemarkeerd zijn
-not deleted: 
-niet verwijderd: 
-deleted
-verwijderd
 Moving part of the %s log file.
 Bezig met verplaatsen van een deel van het logboekbestand %s
 Could not open %s log file
@@ -582,11 +588,7 @@ Regular expression:
 
 Consider banning the IP number as well: 
 
-Regular expression "%1" matched "%2" on this page.
-
-Regular expression "%s" matched on this page.
-
-Cannot highlight the language %s.
+Regular expression 
 
 Recent Visitors
 Recente bezoekers
@@ -676,8 +678,6 @@ Dates
 
 No dates found.
 
-Inter links:
-Interkoppelingen:
 List spammed pages
 
 Despamming pages
@@ -720,6 +720,12 @@ Add Comment
 
 ordinary changes
 
+Could not identify the paragraph you were editing
+
+This is the section you edited:
+
+This is the current page:
+
 Matching page names:
 
 Fix character encoding
@@ -757,6 +763,12 @@ page was marked for deletion
 Oddmuse
 
 Cleaning up git repository
+
+Google +1 Buttons
+
+All Pages +1
+
+This page lists the twenty last diary entries and their +1 buttons.
 
 Email: 
 
@@ -908,13 +920,19 @@ Languages:
 Talen:
 Show!
 Tonen!
+====(\d+) persons? liked this====
+
+====%d persons liked this====
+
+====1 person liked this====
+
+I like this!
+
 Define
 Definiëren
 Full Link List
 Volledige lijst van koppelingen
 Banned Content
-
-Rule "%1" matched on this page.
 
 List of locked pages
 
@@ -940,7 +958,7 @@ IP number matched %s
 
 Register for %s
 
-Please choose a username of the form "FirstLast" using your real name.
+Please choose a username of the form 
 
 The passwords do not match.
 
@@ -954,7 +972,7 @@ Your registration for %s has been submitted.
 
 Please allow time for the webmaster to approve your request.
 
-An email has been sent to "%s" with further instructions.
+An email has been sent to 
 
 There was an error saving your registration.
 
@@ -1000,7 +1018,7 @@ The password for %s was reset.  It has been emailed to the address on file.
 
 There was an error resetting the password for %s.
 
-The username "%s" does not exist.
+The username 
 
 Reset Password for %s
 
@@ -1017,12 +1035,6 @@ Approve Pending Registrations for %s
 %s has been approved.
 
 There was an error approving %s.
-
-<ul>
-
-<li>%1 - %2</li>
-
-</ul>
 
 There are no pending registrations.
 
@@ -1068,9 +1080,43 @@ No non-migrated email addresses found, migration not necessary.
 
 Migrated %s rows.
 
+Bisect modules
+
+Module Bisect
+
+All modules enabled now!
+
+Go back
+
+Test / Always enabled / Always disabled
+
+Start
+
+Biscecting proccess is already active.
+
+Stop
+
+It seems like module %s is causing your problem.
+
+Please note that this module does not handle situations when your problem is caused by a combination of specific modules (which is rare anyway).
+
+Good luck fixing your problem! ;)
+
+Module count (only testable modules): 
+
+Current module statuses:
+
+Good
+
+Bad
+
+Enabling %s
+
 Update modules
 
 Module Updater
+
+Looks good. Update modules now!
 
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 
@@ -1138,7 +1184,7 @@ None
 Geen
 Type
 Type
-Permalink to "%s"
+Permalink to 
 
 anchor first defined here: %s
 bladwijzer als eerste hier gedefinieerd: %s
@@ -1160,6 +1206,12 @@ This page is password protected. If you know the password, you can %s. Once you 
 
 supply the password now
 
+This error should not happen. If your password is set correctly and you are still seeing this message, then it is a bug, please report it. If you are just a stranger and trying to get unsolicited access, then keep in mind that all of the data is encrypted with AES-256 and the key is not stored on the server, good luck.
+
+Attempt to read encrypted data without a password.
+
+Cannot refresh index.
+
 Publish %s
 
 No target wiki was specified in the config file.
@@ -1178,36 +1230,6 @@ Referrers
 Verwijzingen
 All Referrers
 Alle verwijzingen
-Tag
-
-Rebuild index for searching
-
-Tag Cloud
-
-Search::FreeText is not available on this system.
-
-Rebuilding index not done.
-
-(Rebuilding the index can only be done once every 12 hours.)
-
-New Pages for Indexed Search
-
-List changes since %s
-
- ... 
-
-Search term missing.
-
-Result pages: 
-
-(%s results)
-
-Tags:
-
-Tags: %s.
-
-No tags
-
 Page list for %s
 
 Slideshow:%s
@@ -1218,6 +1240,8 @@ Static Copy
 
 Back to %s
 Terug naar %s
+Editing not allowed for %s.
+Het wijzigen van %s is niet toegestaan.
 Edit image in the browser
 
 Summary of your changes: 
@@ -1226,7 +1250,17 @@ Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
 
+Tag
+
 Feed for this tag
+
+Tag Cloud
+
+ ... 
+
+Rebuilding index not done.
+
+(Rebuilding the index can only be done once every 12 hours.)
 
 Rebuild tag index
 
@@ -1236,26 +1270,6 @@ tag cloud
 
 Alternatively, use one of the following templates:
 
-Thread: %s
-Draad: %s
-ID parameter is missing.
-Parameter 'ID' ontbreekt.
-Thread %s does not exist.
-De draad %s bestaat niet.
-Page %s does not contain a thread.
-De pagina %s bevat geen draad.
-Add
-Voeg toe
-URL parameter is missing.
-Parameter 'URL' ontbreekt.
-Add to %s thread
-Voeg toe aan de draad %s
-Below:
-Onder:
-URL:
-URL:
-Name:
-Naam:
 Too many instances.  Only %s allowed.
 
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.

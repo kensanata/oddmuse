@@ -46,6 +46,8 @@ UserName must be 50 characters or less: not saved
 UserName debe conener 50 caracteres o menos: no  guardado.
 This page contains an uploaded file:
 Esta página contiene un archivo adjunto:
+No summary was provided for this file.
+
 Recursive include of %s!
 Inclusión recursiva de %!
 Clear Cache
@@ -122,6 +124,8 @@ Include minor changes
 Incluir cambios menores
 %s days
 %s días
+%s day
+
 List later changes
 Listar últimos cambios
 RSS
@@ -182,8 +186,8 @@ Rolling back changes
 Rollback de cambios
 The two revisions are the same.
 Las dos revisiones son iguales.
-Editing not allowed for %s.
-No se permite editar %s.
+Editing not allowed: %s is read-only.
+Editar no permitido: %s es de sólo-lectura.
 Rollback of %s would restore banned content.
 
 Rollback to %s
@@ -196,12 +200,12 @@ Index of all pages
 Índice de todas las páginas
 Wiki Version
 Wiki Versión
-Unlock Wiki
-Desbloquear Wiki
 Password
 Contraseña
 Run maintenance
 Ejecutar mantenimiento
+Unlock Wiki
+Desbloquear Wiki
 Unlock site
 Desbloquear sitio
 Lock site
@@ -220,12 +224,12 @@ To mark a page for deletion, put <strong>%s</strong> on the first line.
 Para marcar una página para borrado, escribir  <strong>%s</strong> en la primera línea.
 from %s
 desde %s
-[Home]
-[Inicio]
 redirected from %s
 redirigido desde %s
 %s: 
 
+[Home]
+[Inicio]
 Click to search for references to this page
 Clic para buscar Referer a esta página
 Cookie: 
@@ -286,6 +290,8 @@ Replace:
 Reemplazar:
 Delete
 Borrar
+Filter:
+Filtro:
 Validate HTML
 Validar HTML
 Validate CSS
@@ -326,6 +332,10 @@ Cannot save a nameless page.
 No puede guardarse una página sin nombre.
 Cannot save a page without revision.
 No puede guardarse una página sin revisión.
+not deleted: 
+no borrado: 
+deleted
+borrado
 Cannot open %s
 No puede abrirse %s
 Cannot write %s
@@ -358,18 +368,6 @@ hace %s segundos
 hace un segundo
 just now
 justo ahora
-Edit Denied
-Edición denegada
-Editing not allowed: user, ip, or network is blocked.
-Editar no permitido: usuario, ip o subred ha sido bloqueado.
-Contact the wiki administrator for more information.
-Contacta con el wiki administrador para más información.
-The rule %s matched for you.
-La regla %s concuerda para ti.
-See %s for more information.
-Ver %s para más información.
-Editing not allowed: %s is read-only.
-Editar no permitido: %s es de sólo-lectura.
 Only administrators can upload files.
 Sólo administradores pueden subir archivos.
 Editing revision %s of
@@ -394,34 +392,46 @@ Files of type %s are not allowed.
 Archivos de tipo %s no se permiten.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 Tu contraseña se guardó en una cookie, caso de tener las cookies habilitadas en tu navegador. Estas cookies pueden perderse si te conectas desde otra máquina, otra cuenta u otro navegador diferente.
+This site does not use admin or editor passwords.
+Este sitio no utiliza contraseñas de administrador o editor.
 You are currently an administrator on this site.
 Ahora eres un administrador en este sitio.
 You are currently an editor on this site.
 Ahora eres un editor en este sitio.
 You are a normal user on this site.
 Eres un usuario normal en este sitio.
+You do not have a password set.
+
 Your password does not match any of the administrator or editor passwords.
 Tu contraseña no coincide con ninguna de las contraseñas de administrador o editor.
 Password:
 Contraseña:
-This site does not use admin or editor passwords.
-Este sitio no utiliza contraseñas de administrador o editor.
+Return to 
+
 This operation is restricted to site editors only...
 Esta operación se restringe a sólo editores del sitio ...
 This operation is restricted to administrators only...
 Esta operación se restringe a sólo administradores ...
+Edit Denied
+Edición denegada
+Editing not allowed: user, ip, or network is blocked.
+Editar no permitido: usuario, ip o subred ha sido bloqueado.
+Contact the wiki administrator for more information.
+Contacta con el wiki administrador para más información.
+The rule %s matched for you.
+La regla %s concuerda para ti.
+See %s for more information.
+Ver %s para más información.
 SampleUndefinedPage
 PaginaEjemploSinDefinir
 Sample_Undefined_Page
 Pagina_Ejemplo_Sin_Definir
-Rule "%1" matched "%2" on this page.
-Regla "%1" concuerda con "%2" en esta página.
+Rule 
+
 Reason: %s.
 Motivo: %s.
 Reason unknown.
 Motivo desconocido.
-Filter:
-Filtro:
 (for %s)
 (para %s)
 %s pages found.
@@ -476,14 +486,10 @@ Maintenance not done.
 Mantenimiento no realizado.
 (Maintenance can only be done once every 12 hours.)
 (El mantenimiento sólo puede realizarse una vez cada 12 horas.)
-Remove the "maintain" file or wait.
-Elimina el archivo "maintain" o espera.
+Remove the 
+
 Expiring keep files and deleting pages marked for deletion
 Expirando archivos "keep" y eliminando páginas marcadas para borrado
-not deleted: 
-no borrado: 
-deleted
-borrado
 Moving part of the %s log file.
 Moviendo parte del archivo de registro %s.
 Could not open %s log file
@@ -576,12 +582,8 @@ Regular expression:
 
 Consider banning the IP number as well: 
 
-Regular expression "%1" matched "%2" on this page.
+Regular expression 
 
-Regular expression "%s" matched on this page.
-
-Cannot highlight the language %s.
-No puede resaltarse el lenguaje %s.
 Recent Visitors
 Visitantes Recientes
 some action
@@ -670,8 +672,6 @@ Dates
 
 No dates found.
 
-Inter links:
-Interlinks:
 List spammed pages
 Lista de páginas con spam
 Despamming pages
@@ -714,6 +714,12 @@ Add Comment
 Añadir Comentario
 ordinary changes
 cambios normales
+Could not identify the paragraph you were editing
+
+This is the section you edited:
+
+This is the current page:
+
 Matching page names:
 Coincidencias con nombres de página:
 Fix character encoding
@@ -751,6 +757,12 @@ page was marked for deletion
 Oddmuse
 
 Cleaning up git repository
+
+Google +1 Buttons
+
+All Pages +1
+
+This page lists the twenty last diary entries and their +1 buttons.
 
 Email: 
 
@@ -902,13 +914,19 @@ Languages:
 Idiomas:
 Show!
 Mostrar!
+====(\d+) persons? liked this====
+
+====%d persons liked this====
+
+====1 person liked this====
+
+I like this!
+
 Define
 Definir
 Full Link List
 Lista Completa de Enlaces
 Banned Content
-
-Rule "%1" matched on this page.
 
 List of locked pages
 
@@ -934,8 +952,8 @@ IP number matched %s
 
 Register for %s
 Registro para %s
-Please choose a username of the form "FirstLast" using your real name.
-Por favor, elije un nombre de usuario en la forma "PrincipioFinal" usando tu nombre real.
+Please choose a username of the form 
+
 The passwords do not match.
 Las contraseñas no coinciden.
 The password must be at least %s characters.
@@ -948,8 +966,8 @@ Your registration for %s has been submitted.
 Tu registro para %s ha sido enviado.
 Please allow time for the webmaster to approve your request.
 Por favor, permite tiempo para que el webmaster apruebe tu solicitud.
-An email has been sent to "%s" with further instructions.
-Se envió un correo-e a "%s" con instrucciones adicionales.
+An email has been sent to 
+
 There was an error saving your registration.
 Hubo un error guardando tu registro.
 An account was created for %s.
@@ -994,8 +1012,8 @@ The password for %s was reset.  It has been emailed to the address on file.
 La contraseña para %s fue restaurada.  Se ha enviado un correo-e a las dirección del archivo.
 There was an error resetting the password for %s.
 Hubo un error restaurando la contraseña para %s.
-The username "%s" does not exist.
-El nombre de  usuario "%s" no existe.
+The username 
+
 Reset Password for %s
 Restaurar Contraseña para %s
 Reset Password?
@@ -1012,12 +1030,6 @@ Aprobados registros pendientes para %s
 %s ha sido aprobado.
 There was an error approving %s.
 Hubo un error aprobando %s.
-<ul>
-<ul>
-<li>%1 - %2</li>
-<li>%1 - %2</li>
-</ul>
-</ul>
 There are no pending registrations.
 No existen registros pendientes.
 Invalid Mail %s: not saved.
@@ -1062,9 +1074,43 @@ No non-migrated email addresses found, migration not necessary.
 
 Migrated %s rows.
 
+Bisect modules
+
+Module Bisect
+
+All modules enabled now!
+
+Go back
+
+Test / Always enabled / Always disabled
+
+Start
+
+Biscecting proccess is already active.
+
+Stop
+
+It seems like module %s is causing your problem.
+
+Please note that this module does not handle situations when your problem is caused by a combination of specific modules (which is rare anyway).
+
+Good luck fixing your problem! ;)
+
+Module count (only testable modules): 
+
+Current module statuses:
+
+Good
+
+Bad
+
+Enabling %s
+
 Update modules
 
 Module Updater
+
+Looks good. Update modules now!
 
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 
@@ -1132,8 +1178,8 @@ None
 Ninguno
 Type
 Tipo
-Permalink to "%s"
-Permalink a "%s"
+Permalink to 
+
 anchor first defined here: %s
 primera ancla definida aquí: %s
 the page %s also exists
@@ -1154,6 +1200,12 @@ This page is password protected. If you know the password, you can %s. Once you 
 
 supply the password now
 
+This error should not happen. If your password is set correctly and you are still seeing this message, then it is a bug, please report it. If you are just a stranger and trying to get unsolicited access, then keep in mind that all of the data is encrypted with AES-256 and the key is not stored on the server, good luck.
+
+Attempt to read encrypted data without a password.
+
+Cannot refresh index.
+
 Publish %s
 Publicar %s
 No target wiki was specified in the config file.
@@ -1172,36 +1224,6 @@ Referrers
 Referrers
 All Referrers
 Todos los Referrers
-Tag
-Etiqueta
-Rebuild index for searching
-Reconstruir índice para búsqueda
-Tag Cloud
-Nube de Etiqueta
-Search::FreeText is not available on this system.
-Search::FreeText no disponible en este sistema
-Rebuilding index not done.
-Reconstruir índice no hecho
-(Rebuilding the index can only be done once every 12 hours.)
-(Reconstruir el índice sólo puede ser hecho una vez cada 12 horas.)
-New Pages for Indexed Search
-
-List changes since %s
-
- ... 
- ... 
-Search term missing.
-Buscar términos perdidos.
-Result pages: 
-Resultado de páginas:
-(%s results)
-(%s resultados)
-Tags:
-Etiquetas:
-Tags: %s.
-Etiquetas: %s.
-No tags
-Sin etiquetas
 Page list for %s
 
 Slideshow:%s
@@ -1212,6 +1234,8 @@ Static Copy
 Copia estática
 Back to %s
 Volver a %s
+Editing not allowed for %s.
+No se permite editar %s.
 Edit image in the browser
 
 Summary of your changes: 
@@ -1220,8 +1244,18 @@ Copy to %1 succeeded: %2.
 Copiar a %1 logrado: %2.
 Copy to %1 failed: %2.
 Copiar a %1 fallido: %2.
+Tag
+Etiqueta
 Feed for this tag
 
+Tag Cloud
+Nube de Etiqueta
+ ... 
+ ... 
+Rebuilding index not done.
+Reconstruir índice no hecho
+(Rebuilding the index can only be done once every 12 hours.)
+(Reconstruir el índice sólo puede ser hecho una vez cada 12 horas.)
 Rebuild tag index
 
 list tags
@@ -1230,26 +1264,6 @@ tag cloud
 
 Alternatively, use one of the following templates:
 O bien, usa una de las siguientes plantillas:
-Thread: %s
-Hilo: %s
-ID parameter is missing.
-Parámetro ID perdido
-Thread %s does not exist.
-Hilo %s no existe.
-Page %s does not contain a thread.
-Página %s no contiene ningún hilo
-Add
-Añadir
-URL parameter is missing.
-Parámetro URL perdido
-Add to %s thread
-Añadir a hilo %s
-Below:
-Abajo:
-URL:
-URL:
-Name:
-Nombre:
 Too many instances.  Only %s allowed.
 Demasiadas instancias. Sólo %s permitidas
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.

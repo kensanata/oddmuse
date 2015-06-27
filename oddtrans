@@ -45,11 +45,16 @@ while ($arg =~ /^-l/) {
 }
 unshift(@ARGV,$arg); # shove the last one back because it is not -l!
 
-print q{%Translate = split(/\n/,<<'END_OF_TRANSLATION');
+print q{our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 };
+undef $/; # slurp
 foreach (<>) {
-  s/Ts?s?\(\'([^']+)/&trans($1)/ge;
-  s/Ts?s?\(\"([^"]+)/&trans($1)/ge;
+  # switch to single quotes
+  tr/"/'/;
+  # join split strings
+  s/'\s*\.\s*'//g;
+  # extract calls to T, Ts and Tss
+  while(/Ts?s?\(\'([^']+)/g) { trans($1); }
 }
 
 print "END_OF_TRANSLATION\n";
@@ -74,7 +79,7 @@ sub header_info_extract{
   $file = shift;
   open(FILE, "<:encoding(utf8)", $file) or die "Can't open $file because: $!";
   foreach (<FILE>) {
-    last if (/^%/);
+    last if (/^our %Translate = /);
     print;
   }
   close FILE;

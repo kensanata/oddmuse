@@ -227,12 +227,12 @@ To mark a page for deletion, put <strong>%s</strong> on the first line.
 Чтобы пометить любую страницу к удалению, поместите <strong>%s</strong> первой строкой страницы.
 from %s
 с %s
-[Home]
-[Домой]
 redirected from %s
 перенаправлено с %s
 %s: 
 
+[Home]
+[Домой]
 Click to search for references to this page
 Щелкните для поиска ссылок на эту страницу
 Cookie: 
@@ -335,6 +335,10 @@ Cannot save a nameless page.
 Не могу сохранить страницу без названия.
 Cannot save a page without revision.
 Не могу сохранить страницу без версии.
+not deleted: 
+не удалена: 
+deleted
+удалена
 Cannot open %s
 Не могу открыть %s
 Cannot write %s
@@ -391,18 +395,20 @@ Files of type %s are not allowed.
 Загрузка файлов типа "%s" не разрешена.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 Ваш пароль сохраняется в куке (cookie), если поддержка кук в браузере включена. При подключении с другого компьютера, с другой учётной записи или из другого браузера вам придется вводить пароль заново.
+This site does not use admin or editor passwords.
+Этот сайт не использует пароли администратора или редактора.
 You are currently an administrator on this site.
 Сейчас вы имеете права администратора.
 You are currently an editor on this site.
 Сейчас вы имеете права редактора.
 You are a normal user on this site.
 Сейчас вы имеете права обычного пользователя.
+You do not have a password set.
+
 Your password does not match any of the administrator or editor passwords.
 Ваш пароль не совпадает с паролями администратора или редактора.
 Password:
 Пароль:
-This site does not use admin or editor passwords.
-Этот сайт не использует пароли администратора или редактора.
 Return to 
 Вернуться на 
 This operation is restricted to site editors only...
@@ -423,7 +429,7 @@ SampleUndefinedPage
 ПримерПроизвольнойСтраницы
 Sample_Undefined_Page
 Пример_Произвольной_Страницы
-Rule "%1" matched "%2" on this page.
+Rule 
 
 Reason: %s.
 
@@ -483,14 +489,10 @@ Maintenance not done.
 Техобслуживание не выполнено.
 (Maintenance can only be done once every 12 hours.)
 (Техобслуживание может выполняться раз в 12 часов, не чаще).
-Remove the "maintain" file or wait.
-Удалите файл "maintain" или подождите
+Remove the 
+
 Expiring keep files and deleting pages marked for deletion
 Удаление устаревших версий страниц и страниц, явно помеченных к удалению
-not deleted: 
-не удалена: 
-deleted
-удалена
 Moving part of the %s log file.
 Перемещаю часть лог файла %s.
 Could not open %s log file
@@ -525,28 +527,66 @@ Check whether the web server can create the directory %s and whether it can crea
 
 , see 
 , смотрите 
-Backlinks
+Deleting %s
+Удаляю %s
+Deleted %s
+%s удалена
+Renaming %1 to %2.
+Переименовываю %1 в %2.
+The page %s does not exist
+Страница %s не существует
+The page %s already exists
+Страница %s уже существует
+Cannot rename %1 to %2
+Не могу переименовать %1 в %2
+Renamed to %s
+Переименовано в %s
+Renamed from %s
+Переименовано с %s
+Renamed %1 to %2.
+%1 Переименовано в %2
+Immediately delete %s
+Немедленно удалить %s
+Rename %s to:
+Переименовать %s в:
+Attach file:
+Прикрепить файл:
+Upload
 
-Recover Draft
-Восстановить черновик
-No text to save
-Отсутствует текст для сохранения
-Draft saved
-Черновик сохранен
-Draft recovered
-Черновик восстановлен
-No draft available to recover
-Нет черновика для восстановления
-Save Draft
-Сохранить черновик
-Draft Cleanup
+Learn more...
 
-%1 was last modified %2 and was kept
+Complete Content
 
-%1 was last modified %2 and was deleted
+The main page is %s.
 
-Unable to delete draft %s
-Не могу удалить черновик %s
+Archive:
+Архив:
+Rebuild BackLink database
+
+Internal Page: 
+Внутренняя страница:
+Pages that link to this page
+Страницы ссылающиеся на эту страницу
+The search parameter is missing.
+
+Pages link to %s
+
+Ban contributors
+
+Ban Contributors to %s
+
+%s is banned
+%s забанен
+Ban!
+Заблокировать!
+These URLs were rolled back. Perhaps you want to add a regular expression to %s?
+
+Regular expression:
+Регулярное выражение:
+Consider banning the IP number as well: 
+Также вы можете забанить IP адрес: 
+Regular expression 
+
 Recent Visitors
 
 some action
@@ -554,168 +594,6 @@ some action
 was here
 
 and read
-
-Email: 
-
-Add Comment
-Комментировать
-Portrait
-
-Clustermap
-Кластеры
-Pages without a Cluster
-Некластеризованые страницы
-IP number matched %s
-
-Could not find %1.html template in %2
-
-Bisect modules
-
-Module Bisect
-
-All modules enabled now!
-Все модули теперь включены!
-Go back
-Вернуться
-Test / Always enabled / Always disabled
-Проверить / Всегда включены / Всегда выключены
-Start
-Начать
-Biscecting proccess is already active.
-
-Stop
-Остановить
-It seems like module %s is causing your problem.
-Судя по всему, модуль %s вызывает вашу проблему.
-Please note that this module does not handle situations when your problem is caused by a combination of specific modules (which is rare anyway).
-
-Good luck fixing your problem! ;)
-Удачи в решении вашей проблемы! ;)
-Module count (only testable modules): 
-Количество модулей (только тестируемые модули):
-Current module statuses:
-
-Good
-Нет проблемы
-Bad
-Есть проблема
-Enabling %s
-Включаю %s
-Invalid Mail %s: not saved.
-
-unsubscribe
-отписаться
-subscribe
-подписаться
-%s appears to be an invalid mail address
-
-Your mail subscriptions
-
-All mail subscriptions
-
-Subscriptions
-Подписки
-Show
-
-Subscriptions for %s:
-Подписки на %s:
-Unsubscribe
-Отписаться
-There are no subscriptions for %s.
-Нет подписок на %s.
-Change email address
-Изменить email адрес
-Mail addresses are linked to unsubscription links.
-
-Subscribe to %s.
-Подписаться на %s.
-Subscribe
-Подписаться
-Subscribed %s to the following pages:
-%s был подписан на следующие страницы:
-The remaining pages do not exist.
-Оставшиеся страницы не существуют.
-Unsubscribed %s from the following pages:
-%s был отписан от следующих страниц:
-Migrating Subscriptions
-
-No non-migrated email addresses found, migration not necessary.
-
-Migrated %s rows.
-
-List of locked pages
-Список заблокированных страних
-Wanted Pages
-
-%s pages
-
-%s, referenced from:
-
- (create locally)
-
-Tag
-
-Feed for this tag
-
-Tag Cloud
-
- ... 
-
-Rebuilding index not done.
-
-(Rebuilding the index can only be done once every 12 hours.)
-
-Rebuild tag index
-Пересоздать индекс тегов
-list tags
-список тегов
-tag cloud
-облако тегов
-Full Link List
-Полный список ссылок
-%s is not a legal name for a namespace
-
-Namespaces
-Пространства имен
-Upgrading Database
-Обновление базы данных
-Did the previous upgrade end with an error? A lock was left behind.
-Lock не был удален, возможно предыдущее обновление закончилось с ошибкой?
-Unlock wiki
-Разблокировать вики
-Upgrade complete.
-Обновление заершено.
-Upgrade complete. Please remove $ModuleDir/upgade.pl, now.
-Обновление завершено. Пожалуйста удалите $ModuleDir/upgade.pl.
-no summary available
-нет описания
-page was marked for deletion
-страница была помечена для удаления
-Oddmuse
-
-Cleaning up git repository
-Чищу git репозиторий
-Alternatively, use one of the following templates:
-
-Set $FormTimeoutSalt.
-
-Form Timeout
-
-LocalMap
-
-No page id for action localmap
-
-Requested page %s does not exist
-Запрошенная страница %s не существует
-Local Map for %s
-
-view
-
-Matching page names:
-Подходящие названия страниц:
-None
-
-Type
 
 Illegal year value: Use 0001-9999
 Неправильное значение года, используйте 0001-9999
@@ -767,22 +645,42 @@ November
 Ноябрь
 December
 Декабрь
-Clearing Cache
-Очищаю кэш.
-Done.
-Готово.
-Generating Link Database
+set %s
 
-The 404 handler extension requires the link data extension (links.pl).
+unset %s
 
-Static Copy
+Clustermap
+Кластеры
+Pages without a Cluster
+Некластеризованые страницы
+Comments:
+Комментарии:
+Comments on 
+Комментарии к 
+Comment on 
+Комментарий к 
+Compilation for %s
 
-image
-изображение
-download
-загрузить
-Editing not allowed for %s.
-Редактирование не разрешено для %s.
+Compilation tag is missing a regular expression.
+
+Install CSS
+Загрузить CSS-стиль
+Copy one of the following stylesheets to %s:
+Выберите один из перечисленных стилей для копирования в %s
+Reset
+
+Extract all dates from the database
+
+Dates
+
+No dates found.
+
+List spammed pages
+
+Despamming pages
+
+Spammed pages
+
 Cannot find revision %s.
 
 Revert to revision %1: %2
@@ -791,237 +689,33 @@ Marked as %s.
 
 Cannot find unspammed revision.
 
-Complete Content
-
-The main page is %s.
-
-anchor first defined here: %s
-
-Click to search for references to this permanent anchor
-
-the page %s also exists
-
-Include permanent anchors
-
-Logged out of %s
-
-You are now logged out.
-
-Logout
-
-Getting page index file for %s.
-
-Near links:
-
-Search sites on the %s as well
-
-Fetching results from %s:
-
-Near pages:
-
-Include near pages
-
-EditNearLinks
-
-The same page on other sites:
-Та же страница на других сайтах:
-Fix character encoding
-
-Fix HTML escapes
-
-Compilation for %s
-
-Compilation tag is missing a regular expression.
-
-Make available offline
-
-Offline
-
-You are currently offline and what you requested is not part of the offline application. You need to be online to do this.
-
- -- defined on %s
-
-Local names defined on %1: %2
-
-Define
-
-Name: 
-
-URL: 
-
-Define Local Names
-
-Define external redirect: 
-
-Blog
-
-Template without parameters
-
-The template %s is either empty or does not exist.
-
-Attach file:
-Прикрепить файл:
-Upload
-
-Only Editors are allowed to see this hidden page.
-Только редакторы могут видеть эту скрытую страницу.
-Only Admins are allowed to see this hidden page.
-Только администраторы могут видеть эту скрытую страницу.
-Back to %s
-Назад к %s
-Rebuild index for searching
-Обновить индекс для поиска
-Search::FreeText is not available on this system.
-
-New Pages for Indexed Search
-
-List changes since %s
-
-Search term missing.
-
-Result pages: 
-
-(%s results)
-
-Tags:
-Теги:
-Tags: %s.
-Теги: %s.
-No tags
-Нет тегов
-Index
-Индекс
-Upload is limited to %s bytes
-Закрузки ограничены до %s байт
-Matching pages:
-
-New
-
-Edit %s.
-
-Ban contributors
-
-Ban Contributors to %s
-
-%s is banned
-%s забанен
-Ban!
-Заблокировать!
-These URLs were rolled back. Perhaps you want to add a regular expression to %s?
-
-Regular expression:
-Регулярное выражение:
-Consider banning the IP number as well: 
-Также вы можете забанить IP адрес: 
-Archive:
-Архив:
-Too many instances.  Only %s allowed.
-
-Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
-Попробуйте еще раз попозже. Возможно, кто-то запустил процедуру техобслуживания, или в процессе находится долгий поиск. К сожалению, ресурсы этого сайта ограничены, мы вынуждены попросить Вас быть терпеливыми.
-Banned Content
-
-Rule "%1" matched on this page.
-
-The search parameter is missing.
-
-Pages link to %s
-
-Title: 
-
-Tags: 
-
-Regular expression "%1" matched "%2" on this page.
-
-Regular expression "%s" matched on this page.
-
-Publish %s
-
-No target wiki was specified in the config file.
-
-The target wiki was misconfigured.
-
-There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
-
-Someone else is generating a pdf for %s.  Please wait a minute and then try again.
-
-Download this page as PDF
-Скачать эту страницу в PDF
-Trail: 
-
-This page is password protected. If you know the password, you can %s. Once you have done that, return and reload this page.
-Эта страница защищена паролем. Если вы знаете пароль, вы можете %s. Как только вы это сделали, просто перезагрузите эту страницу.
-supply the password now
-указать пароль прямо сейчас
-Deleting %s
-Удаляю %s
-Deleted %s
-%s удалена
-Renaming %1 to %2.
-Переименовываю %1 в %2.
-The page %s does not exist
-Страница %s не существует
-The page %s already exists
-Страница %s уже существует
-Cannot rename %1 to %2
-Не могу переименовать %1 в %2
-Renamed to %s
-Переименовано в %s
-Renamed from %s
-Переименовано с %s
-Renamed %1 to %2.
-%1 Переименовано в %2
-Immediately delete %s
-Немедленно удалить %s
-Rename %s to:
-Переименовать %s в:
-Install CSS
-Загрузить CSS-стиль
-Copy one of the following stylesheets to %s:
-Выберите один из перечисленных стилей для копирования в %s
-Reset
-
-Create a new page for today
-Создать новую страницу для сегодняшнего дня
-Upload of %s file
-
-Web application for offline browsing
-
-Rebuild BackLink database
-
-Internal Page: 
-Внутренняя страница:
-Pages that link to this page
-Страницы ссылающиеся на эту страницу
-Referrers
-
-Please type the following two words:
-
-Please answer this captcha:
-Пожалуйста введите капчу:
-You did not answer correctly.
-
-All Referrers
-
+Page diff
+Сравнение страниц
+Diff
+Сравнить
+Recover Draft
+Восстановить черновик
+No text to save
+Отсутствует текст для сохранения
+Draft saved
+Черновик сохранен
+Draft recovered
+Черновик восстановлен
+No draft available to recover
+Нет черновика для восстановления
+Save Draft
+Сохранить черновик
+Draft Cleanup
+
+%1 was last modified %2 and was kept
+
+%1 was last modified %2 and was deleted
+
+Unable to delete draft %s
+Не могу удалить черновик %s
+Add Comment
+Комментировать
 ordinary changes
-
-No summary provided
-Без описания
-http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
-
-http://www.amazon.com/exec/obidos/ISBN=%s
-
-alternate
-альтернативный
-http://www.pricescan.com/books/BookDetail.asp?isbn=%s
-
-search
-поиск
-Timezone
-
-Pick your timezone:
-Выберите ваш часовой пояс:
-Set
 
 Could not identify the paragraph you were editing
 
@@ -1029,14 +723,16 @@ This is the section you edited:
 
 This is the current page:
 
-Update modules
-Обновить модули
-Module Updater
-Обновление модулей
-Looks good. Update modules now!
-Всё в порядке. Обновить модули!
-To save this page you must answer this question:
-Чтобы сохранить эту страницу вы должны ответить на вопрос:
+Matching page names:
+Подходящие названия страниц:
+Fix character encoding
+
+Fix HTML escapes
+
+Set $FormTimeoutSalt.
+
+Form Timeout
+
 GD or Image::Magick modules not available.
 
 GD::SecurityImage module not available.
@@ -1051,28 +747,36 @@ Submit
 
 CAPTCHA
 
+You did not answer correctly.
+
 $GdSecurityImageFont is not set.
 
-This page is a translation of %s. 
-Эта страница является переводом %s. 
-The translation is up to date.
+No summary provided
+Без описания
+no summary available
+нет описания
+page was marked for deletion
+страница была помечена для удаления
+Oddmuse
 
-The translation is outdated.
-Это перевод устарел.
-The page does not exist.
-Эта страница не существует.
-Page list for %s
+Cleaning up git repository
+Чищу git репозиторий
+Google +1 Buttons
 
-Orphan List
+All Pages +1
 
-List spammed pages
+This page lists the twenty last diary entries and their +1 buttons.
 
-Despamming pages
+Email: 
 
-Spammed pages
+Could not find %1.html template in %2
 
-Pages tagged with %s
-
+Only Editors are allowed to see this hidden page.
+Только редакторы могут видеть эту скрытую страницу.
+Only Admins are allowed to see this hidden page.
+Только администраторы могут видеть эту скрытую страницу.
+Index
+Индекс
 The username %s already exists.
 
 The email address %s has already been used.
@@ -1149,6 +853,8 @@ Logged out
 
 Account Settings
 
+Logout
+
 Current Password:
 Текущий пароль:
 New Password:
@@ -1207,27 +913,49 @@ Unban
 %s разблокирован.
 Register
 
-Comments on 
-Комментарии к 
-Comment on 
-Комментарий к 
-Index of all small pages
-
 Languages:
 Языки:
 Show!
 
-Permalink to "%s"
+====(\d+) persons? liked this====
 
-set %s
+====%d persons liked this====
 
-unset %s
+====1 person liked this====
 
-Contents
+I like this!
+
+Define
+
+Full Link List
+Полный список ссылок
+Banned Content
+
+List of locked pages
+Список заблокированных страних
+Pages tagged with %s
+
+Template without parameters
+
+The template %s is either empty or does not exist.
+
+ -- defined on %s
+
+Local names defined on %1: %2
+
+Name: 
+
+URL: 
+
+Define Local Names
+
+Define external redirect: 
+
+IP number matched %s
 
 Register for %s
 
-Please choose a username of the form "FirstLast" using your real name.
+Please choose a username of the form 
 
 The passwords do not match.
 Пароли не сходятся.
@@ -1241,7 +969,7 @@ Your registration for %s has been submitted.
 
 Please allow time for the webmaster to approve your request.
 
-An email has been sent to "%s" with further instructions.
+An email has been sent to 
 
 There was an error saving your registration.
 
@@ -1256,6 +984,10 @@ Logged in as %s.
 Logout of %s
 
 Logout of %s?
+
+Logged out of %s
+
+You are now logged out.
 
 Register a new account
 
@@ -1283,8 +1015,8 @@ The password for %s was reset.  It has been emailed to the address on file.
 
 There was an error resetting the password for %s.
 
-The username "%s" does not exist.
-Пользователь "%s" не существует.
+The username 
+
 Reset Password for %s
 
 Reset Password?
@@ -1301,20 +1033,244 @@ Approve Pending Registrations for %s
 
 There was an error approving %s.
 
-<ul>
-
-<li>%1 - %2</li>
-
-</ul>
-
 There are no pending registrations.
 
-Comments:
-Комментарии:
-This error should not happen. If your password is set correctly and you are still
+Invalid Mail %s: not saved.
+
+unsubscribe
+отписаться
+subscribe
+подписаться
+%s appears to be an invalid mail address
+
+Your mail subscriptions
+
+All mail subscriptions
+
+Subscriptions
+Подписки
+Show
+
+Subscriptions for %s:
+Подписки на %s:
+Unsubscribe
+Отписаться
+There are no subscriptions for %s.
+Нет подписок на %s.
+Change email address
+Изменить email адрес
+Mail addresses are linked to unsubscription links.
+
+Subscribe to %s.
+Подписаться на %s.
+Subscribe
+Подписаться
+Subscribed %s to the following pages:
+%s был подписан на следующие страницы:
+The remaining pages do not exist.
+Оставшиеся страницы не существуют.
+Unsubscribed %s from the following pages:
+%s был отписан от следующих страниц:
+Migrating Subscriptions
+
+No non-migrated email addresses found, migration not necessary.
+
+Migrated %s rows.
+
+Bisect modules
+
+Module Bisect
+
+All modules enabled now!
+Все модули теперь включены!
+Go back
+Вернуться
+Test / Always enabled / Always disabled
+Проверить / Всегда включены / Всегда выключены
+Start
+Начать
+Biscecting proccess is already active.
+
+Stop
+Остановить
+It seems like module %s is causing your problem.
+Судя по всему, модуль %s вызывает вашу проблему.
+Please note that this module does not handle situations when your problem is caused by a combination of specific modules (which is rare anyway).
+
+Good luck fixing your problem! ;)
+Удачи в решении вашей проблемы! ;)
+Module count (only testable modules): 
+Количество модулей (только тестируемые модули):
+Current module statuses:
+
+Good
+Нет проблемы
+Bad
+Есть проблема
+Enabling %s
+Включаю %s
+Update modules
+Обновить модули
+Module Updater
+Обновление модулей
+Looks good. Update modules now!
+Всё в порядке. Обновить модули!
+You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
+
+%s is not a legal name for a namespace
+
+Namespaces
+Пространства имен
+Getting page index file for %s.
+
+Near links:
+
+Search sites on the %s as well
+
+Fetching results from %s:
+
+Near pages:
+
+Include near pages
+
+EditNearLinks
+
+The same page on other sites:
+Та же страница на других сайтах:
+ (create locally)
+
+image
+изображение
+download
+загрузить
+Backlinks
+
+Clearing Cache
+Очищаю кэш.
+Done.
+Готово.
+Generating Link Database
+
+The 404 handler extension requires the link data extension (links.pl).
+
+Make available offline
+
+Offline
+
+You are currently offline and what you requested is not part of the offline application. You need to be online to do this.
+
+LocalMap
+
+No page id for action localmap
+
+Requested page %s does not exist
+Запрошенная страница %s не существует
+Local Map for %s
+
+view
+
+Self-ban by %s
+
+You have banned your own IP.
+Вы заблокировали свой собственный IP.
+Orphan List
+
+Trail: 
+
+None
+
+Type
+
+Permalink to 
+
+anchor first defined here: %s
+
+the page %s also exists
+
+There was an error generating the pdf for %s.  Please report this to webmaster, but do not try to download again as it will not work.
+
+Someone else is generating a pdf for %s.  Please wait a minute and then try again.
+
+Download this page as PDF
+Скачать эту страницу в PDF
+Click to search for references to this permanent anchor
+
+Include permanent anchors
+
+Portrait
+
+This page is password protected. If you know the password, you can %s. Once you have done that, return and reload this page.
+Эта страница защищена паролем. Если вы знаете пароль, вы можете %s. Как только вы это сделали, просто перезагрузите эту страницу.
+supply the password now
+указать пароль прямо сейчас
+This error should not happen. If your password is set correctly and you are still seeing this message, then it is a bug, please report it. If you are just a stranger and trying to get unsolicited access, then keep in mind that all of the data is encrypted with AES-256 and the key is not stored on the server, good luck.
 
 Attempt to read encrypted data without a password.
 Попытка прочитать зашифрованные данные без пароля.
+Cannot refresh index.
+
+Publish %s
+
+No target wiki was specified in the config file.
+
+The target wiki was misconfigured.
+
+Upload is limited to %s bytes
+Закрузки ограничены до %s байт
+To save this page you must answer this question:
+Чтобы сохранить эту страницу вы должны ответить на вопрос:
+Please type the following two words:
+
+Please answer this captcha:
+Пожалуйста введите капчу:
+Referrers
+
+All Referrers
+
+Page list for %s
+
+Slideshow:%s
+
+Index of all small pages
+
+Static Copy
+
+Back to %s
+Назад к %s
+Editing not allowed for %s.
+Редактирование не разрешено для %s.
+Edit image in the browser
+Отредактировать изображение в браузере
+Summary of your changes: 
+Описание изменений:
+Copy to %1 succeeded: %2.
+
+Copy to %1 failed: %2.
+
+Tag
+
+Feed for this tag
+
+Tag Cloud
+
+ ... 
+
+Rebuilding index not done.
+
+(Rebuilding the index can only be done once every 12 hours.)
+
+Rebuild tag index
+Пересоздать индекс тегов
+list tags
+список тегов
+tag cloud
+облако тегов
+Alternatively, use one of the following templates:
+
+Too many instances.  Only %s allowed.
+
+Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
+Попробуйте еще раз попозже. Возможно, кто-то запустил процедуру техобслуживания, или в процессе находится долгий поиск. К сожалению, ресурсы этого сайта ограничены, мы вынуждены попросить Вас быть терпеливыми.
 thumb
 
 Error creating thumbnail from non existant page %s.
@@ -1335,20 +1291,16 @@ Failed to run %1 to create thumbnail: %2
 
 Failed to parse %s.
 
-Edit image in the browser
-Отредактировать изображение в браузере
-Summary of your changes: 
-Описание изменений:
-Page diff
-Сравнение страниц
-Diff
-Сравнить
-You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
+Timezone
 
-Learn more...
+Pick your timezone:
+Выберите ваш часовой пояс:
+Set
 
-Slideshow:%s
+Contents
 
+Create a new page for today
+Создать новую страницу для сегодняшнего дня
 Add Translation
 Добавить перевод
 Please provide a different page name for the translation.
@@ -1371,18 +1323,54 @@ More help may be available here: %s.
 
 Translated page: 
 
-Copy to %1 succeeded: %2.
+This page is a translation of %s. 
+Эта страница является переводом %s. 
+The translation is up to date.
 
-Copy to %1 failed: %2.
+The translation is outdated.
+Это перевод устарел.
+The page does not exist.
+Эта страница не существует.
+Upgrading Database
+Обновление базы данных
+Did the previous upgrade end with an error? A lock was left behind.
+Lock не был удален, возможно предыдущее обновление закончилось с ошибкой?
+Unlock wiki
+Разблокировать вики
+Upgrade complete.
+Обновление заершено.
+Upgrade complete. Please remove $ModuleDir/upgade.pl, now.
+Обновление завершено. Пожалуйста удалите $ModuleDir/upgade.pl.
+http://search.barnesandnoble.com/booksearch/isbninquiry.asp?ISBN=%s
 
-Self-ban by %s
+http://www.amazon.com/exec/obidos/ISBN=%s
 
-You have banned your own IP.
-Вы заблокировали свой собственный IP.
-Extract all dates from the database
+alternate
+альтернативный
+http://www.pricescan.com/books/BookDetail.asp?isbn=%s
 
-Dates
+search
+поиск
+Wanted Pages
 
-No dates found.
+%s pages
+
+%s, referenced from:
+
+Web application for offline browsing
+
+Upload of %s file
+
+Blog
+
+Matching pages:
+
+New
+
+Edit %s.
+
+Title: 
+
+Tags: 
 
 END_OF_TRANSLATION

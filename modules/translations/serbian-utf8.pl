@@ -45,6 +45,8 @@ UserName must be 50 characters or less: not saved
 Корисничко име мора имати 50 или мање знакова: није снимљено.
 This page contains an uploaded file:
 
+No summary was provided for this file.
+
 Recursive include of %s!
 
 Clear Cache
@@ -121,6 +123,8 @@ Include minor changes
 
 %s days
 %s дана
+%s day
+
 List later changes
 
 RSS
@@ -181,8 +185,8 @@ Rolling back changes
 Враћам измене
 The two revisions are the same.
 
-Editing not allowed for %s.
-Уређивање није дозвољено за %s.
+Editing not allowed: %s is read-only.
+Уређивање није дозвољено: %s је само за читање.
 Rollback of %s would restore banned content.
 
 Rollback to %s
@@ -195,12 +199,12 @@ Index of all pages
 Списак свих страна:
 Wiki Version
 Приказујем верзију Викија
-Unlock Wiki
-Откључавам
 Password
 Лозинка
 Run maintenance
 
+Unlock Wiki
+Откључавам
 Unlock site
 
 Lock site
@@ -219,12 +223,12 @@ To mark a page for deletion, put <strong>%s</strong> on the first line.
 
 from %s
 од %s
-[Home]
-[Кућа]
 redirected from %s
 преусмерено са %s
 %s: 
 
+[Home]
+[Кућа]
 Click to search for references to this page
 
 Cookie: 
@@ -285,6 +289,8 @@ Replace:
 Замени:
 Delete
 
+Filter:
+
 Validate HTML
 Провери HTML
 Validate CSS
@@ -325,6 +331,10 @@ Cannot save a nameless page.
 Не могу да снимим безимену страну.
 Cannot save a page without revision.
 
+not deleted: 
+
+deleted
+обрисано
 Cannot open %s
 
 Cannot write %s
@@ -357,18 +367,6 @@ No unlock required.
 пре 1 секунде
 just now
 управо сада
-Edit Denied
-
-Editing not allowed: user, ip, or network is blocked.
-Уређивање није дозвољено: приступ за корисника, IP број или мрежу је блокиран.
-Contact the wiki administrator for more information.
-Обратите се администратору за више информација.
-The rule %s matched for you.
-
-See %s for more information.
-Погледајте %s за више информација.
-Editing not allowed: %s is read-only.
-Уређивање није дозвољено: %s је само за читање.
 Only administrators can upload files.
 Само администратори могу да каче датотеке.
 Editing revision %s of
@@ -393,33 +391,45 @@ Files of type %s are not allowed.
 Датотеке типа %s нису дозвољене.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 Ваша лозинка је снимљена у колачићу, ако су укључени. Колачићи могу бити изгубљени ако се повежете са друге машине, са другог налога, или користећи други програм.
+This site does not use admin or editor passwords.
+Овај сајт не користи администраторске или уредничке лозинке.
 You are currently an administrator on this site.
 Тренутно сте администратор на овом сајту.
 You are currently an editor on this site.
 Тренутно сте уредник на овом сајту.
 You are a normal user on this site.
 Ви сте нормални корисник на овом сајту.
+You do not have a password set.
+
 Your password does not match any of the administrator or editor passwords.
 Ваша лозинка се не поклапа ни са једном од аминистраторских или уредничких лозинки.
 Password:
 Лозинка:
-This site does not use admin or editor passwords.
-Овај сајт не користи администраторске или уредничке лозинке.
+Return to 
+
 This operation is restricted to site editors only...
 Ово смеју да раде само уредници сајта...
 This operation is restricted to administrators only...
 Ово сме да ради само администратор...
+Edit Denied
+
+Editing not allowed: user, ip, or network is blocked.
+Уређивање није дозвољено: приступ за корисника, IP број или мрежу је блокиран.
+Contact the wiki administrator for more information.
+Обратите се администратору за више информација.
+The rule %s matched for you.
+
+See %s for more information.
+Погледајте %s за више информација.
 SampleUndefinedPage
 НенаписанаСтраницаЗаПример
 Sample_Undefined_Page
 Ненаписана_Страница_За_Пример
-Rule "%1" matched "%2" on this page.
+Rule 
 
 Reason: %s.
 
 Reason unknown.
-
-Filter:
 
 (for %s)
 
@@ -475,14 +485,10 @@ Maintenance not done.
 Одржавање није урађено.
 (Maintenance can only be done once every 12 hours.)
 (Одржавање може да се уради једном сваких 13 часова.)
-Remove the "maintain" file or wait.
-Уклони датотеку одржавања или чекај.
+Remove the 
+
 Expiring keep files and deleting pages marked for deletion
 Истичем датотеке чувања и бришем странице означене за брисање
-not deleted: 
-
-deleted
-обрисано
 Moving part of the %s log file.
 Премештам део дневничке датотеке %s.
 Could not open %s log file
@@ -575,11 +581,7 @@ Regular expression:
 
 Consider banning the IP number as well: 
 
-Regular expression "%1" matched "%2" on this page.
-
-Regular expression "%s" matched on this page.
-
-Cannot highlight the language %s.
+Regular expression 
 
 Recent Visitors
 Скори посетиоци
@@ -669,8 +671,6 @@ Dates
 
 No dates found.
 
-Inter links:
-
 List spammed pages
 
 Despamming pages
@@ -713,6 +713,12 @@ Add Comment
 
 ordinary changes
 
+Could not identify the paragraph you were editing
+
+This is the section you edited:
+
+This is the current page:
+
 Matching page names:
 
 Fix character encoding
@@ -750,6 +756,12 @@ page was marked for deletion
 Oddmuse
 
 Cleaning up git repository
+
+Google +1 Buttons
+
+All Pages +1
+
+This page lists the twenty last diary entries and their +1 buttons.
 
 Email: 
 
@@ -901,13 +913,19 @@ Languages:
 
 Show!
 
+====(\d+) persons? liked this====
+
+====%d persons liked this====
+
+====1 person liked this====
+
+I like this!
+
 Define
 
 Full Link List
 Потпуни списак веза
 Banned Content
-
-Rule "%1" matched on this page.
 
 List of locked pages
 
@@ -933,7 +951,7 @@ IP number matched %s
 
 Register for %s
 
-Please choose a username of the form "FirstLast" using your real name.
+Please choose a username of the form 
 
 The passwords do not match.
 
@@ -947,7 +965,7 @@ Your registration for %s has been submitted.
 
 Please allow time for the webmaster to approve your request.
 
-An email has been sent to "%s" with further instructions.
+An email has been sent to 
 
 There was an error saving your registration.
 
@@ -993,7 +1011,7 @@ The password for %s was reset.  It has been emailed to the address on file.
 
 There was an error resetting the password for %s.
 
-The username "%s" does not exist.
+The username 
 
 Reset Password for %s
 
@@ -1010,12 +1028,6 @@ Approve Pending Registrations for %s
 %s has been approved.
 
 There was an error approving %s.
-
-<ul>
-
-<li>%1 - %2</li>
-
-</ul>
 
 There are no pending registrations.
 
@@ -1061,9 +1073,43 @@ No non-migrated email addresses found, migration not necessary.
 
 Migrated %s rows.
 
+Bisect modules
+
+Module Bisect
+
+All modules enabled now!
+
+Go back
+
+Test / Always enabled / Always disabled
+
+Start
+
+Biscecting proccess is already active.
+
+Stop
+
+It seems like module %s is causing your problem.
+
+Please note that this module does not handle situations when your problem is caused by a combination of specific modules (which is rare anyway).
+
+Good luck fixing your problem! ;)
+
+Module count (only testable modules): 
+
+Current module statuses:
+
+Good
+
+Bad
+
+Enabling %s
+
 Update modules
 
 Module Updater
+
+Looks good. Update modules now!
 
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 
@@ -1131,7 +1177,7 @@ None
 
 Type
 
-Permalink to "%s"
+Permalink to 
 
 anchor first defined here: %s
 сидро је прво дефинисано овде: %s
@@ -1153,6 +1199,12 @@ This page is password protected. If you know the password, you can %s. Once you 
 
 supply the password now
 
+This error should not happen. If your password is set correctly and you are still seeing this message, then it is a bug, please report it. If you are just a stranger and trying to get unsolicited access, then keep in mind that all of the data is encrypted with AES-256 and the key is not stored on the server, good luck.
+
+Attempt to read encrypted data without a password.
+
+Cannot refresh index.
+
 Publish %s
 
 No target wiki was specified in the config file.
@@ -1171,36 +1223,6 @@ Referrers
 Референце
 All Referrers
 Све референце
-Tag
-
-Rebuild index for searching
-
-Tag Cloud
-
-Search::FreeText is not available on this system.
-
-Rebuilding index not done.
-
-(Rebuilding the index can only be done once every 12 hours.)
-
-New Pages for Indexed Search
-
-List changes since %s
-
- ... 
-
-Search term missing.
-
-Result pages: 
-
-(%s results)
-
-Tags:
-
-Tags: %s.
-
-No tags
-
 Page list for %s
 
 Slideshow:%s
@@ -1211,6 +1233,8 @@ Static Copy
 
 Back to %s
 
+Editing not allowed for %s.
+Уређивање није дозвољено за %s.
 Edit image in the browser
 
 Summary of your changes: 
@@ -1219,7 +1243,17 @@ Copy to %1 succeeded: %2.
 
 Copy to %1 failed: %2.
 
+Tag
+
 Feed for this tag
+
+Tag Cloud
+
+ ... 
+
+Rebuilding index not done.
+
+(Rebuilding the index can only be done once every 12 hours.)
 
 Rebuild tag index
 
@@ -1228,26 +1262,6 @@ list tags
 tag cloud
 
 Alternatively, use one of the following templates:
-
-Thread: %s
-
-ID parameter is missing.
-
-Thread %s does not exist.
-
-Page %s does not contain a thread.
-
-Add
-
-URL parameter is missing.
-
-Add to %s thread
-
-Below:
-
-URL:
-
-Name:
 
 Too many instances.  Only %s allowed.
 

@@ -46,6 +46,8 @@ UserName must be 50 characters or less: not saved
 無法儲存。使用者名稱不可超過 50 個字元。
 This page contains an uploaded file:
 本頁包含一個已上傳的檔案：
+No summary was provided for this file.
+
 Recursive include of %s!
 
 Clear Cache
@@ -122,6 +124,8 @@ Include minor changes
 也顯示次要的修改
 %s days
 %s 天
+%s day
+
 List later changes
 列出最新的修改
 RSS
@@ -182,8 +186,8 @@ Rolling back changes
 回滾修改
 The two revisions are the same.
 二個版本相同
-Editing not allowed for %s.
-不允許編輯 %s 。
+Editing not allowed: %s is read-only.
+不允許編輯； %s 是唯讀的
 Rollback of %s would restore banned content.
 
 Rollback to %s
@@ -196,12 +200,12 @@ Index of all pages
 所有頁面的索引
 Wiki Version
 顯示 Wiki 的版本
-Unlock Wiki
-解鎖
 Password
 密碼
 Run maintenance
 執行維護動作
+Unlock Wiki
+解鎖
 Unlock site
 網站解鎖
 Lock site
@@ -220,12 +224,12 @@ To mark a page for deletion, put <strong>%s</strong> on the first line.
 在該頁首行加入 <strong>%s</strong> 可將頁面標記為刪除
 from %s
 自 %s
-[Home]
-[首頁]
 redirected from %s
 由 %s 轉址 
 %s: 
 
+[Home]
+[首頁]
 Click to search for references to this page
 按下即可以搜尋參考至本頁的資料
 Cookie: 
@@ -286,6 +290,8 @@ Replace:
 取代：
 Delete
 刪除
+Filter:
+過濾規則:
 Validate HTML
 驗證 HTML
 Validate CSS
@@ -326,6 +332,10 @@ Cannot save a nameless page.
 無法儲存沒有名稱的頁面。
 Cannot save a page without revision.
 無法儲存沒有版本資訊的頁面。
+not deleted: 
+未刪除：
+deleted
+已刪除
 Cannot open %s
 無法開啟 %s
 Cannot write %s
@@ -358,18 +368,6 @@ No unlock required.
 1 秒前
 just now
 就是現在
-Edit Denied
-禁止編輯
-Editing not allowed: user, ip, or network is blocked.
-禁止編輯；使用者、ip 或是網路已被禁止連線。
-Contact the wiki administrator for more information.
-請通知 wiki 管理者，以取得更多的資訊。
-The rule %s matched for you.
-你符合的規則： %s 。
-See %s for more information.
-請參閱 %s 以取得更多資訊。
-Editing not allowed: %s is read-only.
-不允許編輯； %s 是唯讀的
 Only administrators can upload files.
 只有管理者可以上傳檔案。
 Editing revision %s of
@@ -394,34 +392,46 @@ Files of type %s are not allowed.
 不允許 %s 型態的檔案。
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 如果你的 cookie 功能開啟的話，則你的密碼會被儲放在 cookie 中。如果你由其他機器、用其他的帳號、或使用別的軟體來連線的話，則 cookie 可能會消失。
+This site does not use admin or editor passwords.
+本站並不使用管理者或編輯者密碼功能。
 You are currently an administrator on this site.
 你現在是本站的管理者。
 You are currently an editor on this site.
 你現在是本站的編輯者。
 You are a normal user on this site.
 你現在是本站的一般使用者。
+You do not have a password set.
+
 Your password does not match any of the administrator or editor passwords.
 你的密碼不符合任何管理者或編輯者的密碼。
 Password:
 密碼：
-This site does not use admin or editor passwords.
-本站並不使用管理者或編輯者密碼功能。
+Return to 
+
 This operation is restricted to site editors only...
 這個動作限定只允許編輯者使用…
 This operation is restricted to administrators only...
 這個動作限定只允許管理者使用…
+Edit Denied
+禁止編輯
+Editing not allowed: user, ip, or network is blocked.
+禁止編輯；使用者、ip 或是網路已被禁止連線。
+Contact the wiki administrator for more information.
+請通知 wiki 管理者，以取得更多的資訊。
+The rule %s matched for you.
+你符合的規則： %s 。
+See %s for more information.
+請參閱 %s 以取得更多資訊。
 SampleUndefinedPage
 未定義頁面
 Sample_Undefined_Page
 未定義頁面
-Rule "%1" matched "%2" on this page.
-本頁的 "%2" 符合規則 "%1"。
+Rule 
+
 Reason: %s.
 原因: %s
 Reason unknown.
 未知原因
-Filter:
-過濾規則:
 (for %s)
 (列出 %s )
 %s pages found.
@@ -476,14 +486,10 @@ Maintenance not done.
 無法進行管理。
 (Maintenance can only be done once every 12 hours.)
 (管理每 12 小時只能進行一次。)
-Remove the "maintain" file or wait.
-移除 "maintain" 檔，或等時間到了再進行。
+Remove the 
+
 Expiring keep files and deleting pages marked for deletion
 清除過期的庫存檔和刪除已標記的檔案
-not deleted: 
-未刪除：
-deleted
-已刪除
 Moving part of the %s log file.
 移除部分在 %s 記錄檔中的資料。
 Could not open %s log file
@@ -576,12 +582,8 @@ Regular expression:
 
 Consider banning the IP number as well: 
 
-Regular expression "%1" matched "%2" on this page.
+Regular expression 
 
-Regular expression "%s" matched on this page.
-
-Cannot highlight the language %s.
-無法強調顯示 %s 。
 Recent Visitors
 最近的參訪者
 some action
@@ -670,8 +672,6 @@ Dates
 
 No dates found.
 
-Inter links:
-內部連結：
 List spammed pages
 列出 SPAM 頁面
 Despamming pages
@@ -714,6 +714,12 @@ Add Comment
 新增評論
 ordinary changes
 普通變更
+Could not identify the paragraph you were editing
+
+This is the section you edited:
+
+This is the current page:
+
 Matching page names:
 匹配頁面的名稱:
 Fix character encoding
@@ -751,6 +757,12 @@ page was marked for deletion
 Oddmuse
 
 Cleaning up git repository
+
+Google +1 Buttons
+
+All Pages +1
+
+This page lists the twenty last diary entries and their +1 buttons.
 
 Email: 
 
@@ -902,13 +914,19 @@ Languages:
 語文：
 Show!
 顯示!
+====(\d+) persons? liked this====
+
+====%d persons liked this====
+
+====1 person liked this====
+
+I like this!
+
 Define
 定義
 Full Link List
 完整連結列表
 Banned Content
-
-Rule "%1" matched on this page.
 
 List of locked pages
 
@@ -934,8 +952,8 @@ IP number matched %s
 
 Register for %s
 為 %s 註冊
-Please choose a username of the form "FirstLast" using your real name.
-請選擇符合您真實名字的 "FirstLast"
+Please choose a username of the form 
+
 The passwords do not match.
 密碼不正確
 The password must be at least %s characters.
@@ -948,8 +966,8 @@ Your registration for %s has been submitted.
 您註冊的使用者名稱 %s 已提交
 Please allow time for the webmaster to approve your request.
 請等待一段時間網站管理者為盡快回應您的需求
-An email has been sent to "%s" with further instructions.
-E-Mail 已被送到 "%s" 等待進一步的指示
+An email has been sent to 
+
 There was an error saving your registration.
 存取的註冊資訊有一個錯誤
 An account was created for %s.
@@ -994,8 +1012,8 @@ The password for %s was reset.  It has been emailed to the address on file.
 %s 密碼已重設，已發送 E-mail 至該地址
 There was an error resetting the password for %s.
 重設密碼時發生錯誤 %s
-The username "%s" does not exist.
-使用者名稱 "%s" 不存在
+The username 
+
 Reset Password for %s
 重設密碼 %s
 Reset Password?
@@ -1012,12 +1030,6 @@ Approve Pending Registrations for %s
 %s 已核准
 There was an error approving %s.
 核准有一處錯誤 %s
-<ul>
-
-<li>%1 - %2</li>
-
-</ul>
-
 There are no pending registrations.
 沒有等候的註冊
 Invalid Mail %s: not saved.
@@ -1062,9 +1074,43 @@ No non-migrated email addresses found, migration not necessary.
 
 Migrated %s rows.
 
+Bisect modules
+
+Module Bisect
+
+All modules enabled now!
+
+Go back
+
+Test / Always enabled / Always disabled
+
+Start
+
+Biscecting proccess is already active.
+
+Stop
+
+It seems like module %s is causing your problem.
+
+Please note that this module does not handle situations when your problem is caused by a combination of specific modules (which is rare anyway).
+
+Good luck fixing your problem! ;)
+
+Module count (only testable modules): 
+
+Current module statuses:
+
+Good
+
+Bad
+
+Enabling %s
+
 Update modules
 
 Module Updater
+
+Looks good. Update modules now!
 
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 
@@ -1132,8 +1178,8 @@ None
 不指定
 Type
 類別
-Permalink to "%s"
-永久連結至 "%s"
+Permalink to 
+
 anchor first defined here: %s
 錨點已被定義於 %s
 the page %s also exists
@@ -1154,6 +1200,12 @@ This page is password protected. If you know the password, you can %s. Once you 
 
 supply the password now
 
+This error should not happen. If your password is set correctly and you are still seeing this message, then it is a bug, please report it. If you are just a stranger and trying to get unsolicited access, then keep in mind that all of the data is encrypted with AES-256 and the key is not stored on the server, good luck.
+
+Attempt to read encrypted data without a password.
+
+Cannot refresh index.
+
 Publish %s
 發表 %s
 No target wiki was specified in the config file.
@@ -1172,36 +1224,6 @@ Referrers
 引用者
 All Referrers
 所有的引用者
-Tag
-標籤
-Rebuild index for searching
-重建搜尋索引檔
-Tag Cloud
-標籤雲
-Search::FreeText is not available on this system.
-搜尋::關鍵字不存在
-Rebuilding index not done.
-重建索引尚未完成
-(Rebuilding the index can only be done once every 12 hours.)
-(重建索引間隔為 12 小時)
-New Pages for Indexed Search
-
-List changes since %s
-
- ... 
-
-Search term missing.
-缺少搜尋項
-Result pages: 
-搜尋結果頁面:
-(%s results)
-(%s 結果)
-Tags:
-標籤:
-Tags: %s.
-標籤: %s
-No tags
-無標籤
 Page list for %s
 
 Slideshow:%s
@@ -1212,6 +1234,8 @@ Static Copy
 靜態頁面備份
 Back to %s
 返回 %s
+Editing not allowed for %s.
+不允許編輯 %s 。
 Edit image in the browser
 
 Summary of your changes: 
@@ -1220,8 +1244,18 @@ Copy to %1 succeeded: %2.
 從 %2 複製到 %1 成功
 Copy to %1 failed: %2.
 從 %2 複製到 %1 失敗
+Tag
+標籤
 Feed for this tag
 
+Tag Cloud
+標籤雲
+ ... 
+
+Rebuilding index not done.
+重建索引尚未完成
+(Rebuilding the index can only be done once every 12 hours.)
+(重建索引間隔為 12 小時)
 Rebuild tag index
 
 list tags
@@ -1230,26 +1264,6 @@ tag cloud
 
 Alternatively, use one of the following templates:
 或者，使用下列範本之一:
-Thread: %s
-討論緒: %s
-ID parameter is missing.
-未指定 ID 參數。
-Thread %s does not exist.
-討論緒 %s 不存在。
-Page %s does not contain a thread.
-頁面 %s 不包含討論主題
-Add
-加入
-URL parameter is missing.
-未指定 URL 參數。
-Add to %s thread
-加入 %s 討論緒
-Below:
-討論:
-URL:
-網址:
-Name:
-姓名:
 Too many instances.  Only %s allowed.
 太多請求，只允許 %s
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.

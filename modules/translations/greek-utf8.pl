@@ -43,6 +43,8 @@ UserName must be 50 characters or less: not saved
 Το ΌνομαΧρήστη πρέπει να είναι το πολύ 50 χαρακτήρες: δεν αποθηκεύθηκε.
 This page contains an uploaded file:
 Αυτή η σελίδα περιέχει ένα μεταφορτωμένο αρχείο:
+No summary was provided for this file.
+
 Recursive include of %s!
 Αναδρομική συμπερίληψη του %s
 Clear Cache
@@ -119,6 +121,8 @@ Include minor changes
 Αναφορά και των μικρών αλλαγών
 %s days
 %s ημέρες
+%s day
+
 List later changes
 Αναφορά πιο πρόσφατων αλλαγών
 RSS
@@ -179,8 +183,8 @@ Rolling back changes
 Επαναφορά παλιότερων εκδόσεων
 The two revisions are the same.
 Οι δύο εκδόσεις είναι πανομοιότυπες.
-Editing not allowed for %s.
-Δεν επιτρέπεται η επεξεργασία του %s.
+Editing not allowed: %s is read-only.
+Δεν επιτρέπεται η επεξεργασία: το %s είναι μόνο για ανάγνωση.
 Rollback of %s would restore banned content.
 
 Rollback to %s
@@ -193,12 +197,12 @@ Index of all pages
 Κατάλογος όλων των σελίδων
 Wiki Version
 Έκδοση του Wiki
-Unlock Wiki
-Ξεκλείδωμα του Wiki
 Password
 Κωδικός
 Run maintenance
 Εκκίνηση συντήρησης
+Unlock Wiki
+Ξεκλείδωμα του Wiki
 Unlock site
 Ξεκλείδωμα ιστότοπου
 Lock site
@@ -217,12 +221,12 @@ To mark a page for deletion, put <strong>%s</strong> on the first line.
 Για να σημειωθεί μια σελίδα προς διαγραφή, εισάγετε το κείμενο <strong>%s</strong> στην πρώτη γραμμή της σελίδας.
 from %s
 από %s
-[Home]
-[Αρχική Σελίδα]
 redirected from %s
 προώθηση από το %s
 %s: 
 
+[Home]
+[Αρχική Σελίδα]
 Click to search for references to this page
 Πατήστε για αναζήτηση αναφορών σε αυτή τη σελίδα
 Cookie: 
@@ -283,6 +287,8 @@ Replace:
 Αντικατάσταση με:
 Delete
 διαγραφή
+Filter:
+Filter:
 Validate HTML
 Έλεγχος Εγκυρότητας HTML
 Validate CSS
@@ -323,6 +329,10 @@ Cannot save a nameless page.
 Δε μπορεί να αποθηκευθεί μια σελίδα χωρίς όνομα.
 Cannot save a page without revision.
 Δε μπορεί να αποθηκευθεί μια σελίδα χωρίς έκδοση.
+not deleted: 
+δε διαγράφηκε: 
+deleted
+διαγράφηκε
 Cannot open %s
 Σφάλμα ανάγνωσης του %s
 Cannot write %s
@@ -355,18 +365,6 @@ No unlock required.
 πριν 1 από 1 δευτερόλεπτο
 just now
 μόλις τώρα
-Edit Denied
-Απαγορεύεται η Επεξεργασία
-Editing not allowed: user, ip, or network is blocked.
-Δεν επιτρέπεται η επεξεργασία: αυτός ο χρήστης, η διεύθυνση, ή το δίκτυο έχουν μπλοκαριστεί.
-Contact the wiki administrator for more information.
-Επικοινωνήστε με το διαχειριστή του wiki για περισσότερες πληροφορίες.
-The rule %s matched for you.
-Ο κανόνας %s ταίριαξε με εσάς.
-See %s for more information.
-Δείτε το %s για περισσότερες πληροφορίες.
-Editing not allowed: %s is read-only.
-Δεν επιτρέπεται η επεξεργασία: το %s είναι μόνο για ανάγνωση.
 Only administrators can upload files.
 Μόνο οι διαχειριστές μπορούν να μεταφορτώσουν αρχεία.
 Editing revision %s of
@@ -391,34 +389,46 @@ Files of type %s are not allowed.
 Δεν επιτρέπονται αρχεία τύπου %s.
 Your password is saved in a cookie, if you have cookies enabled. Cookies may get lost if you connect from another machine, from another account, or using another software.
 Ο κωδικός σας αποθηκεύεται σε ένα cookie, όταν έχετε ενεργοποιήσει τα cookies.  Τα cookies όμως μπορεί να μην ισχύουν πλέον ή να χαθούν αν συνδεθείτε από κάποιο άλλο μηχάνημα, από άλλο λογαριασμό, ή χρησιμοποιώντας κάποιο άλλο φυλλομετρητή.
+This site does not use admin or editor passwords.
+Αυτός ο ιστότοπος δε χρησιμοποιεί κωδικούς διαχειριστή ή κωδικούς εκδότη.
 You are currently an administrator on this site.
 Αυτή τη στιγμή είστε ένας διαχειριστής σε αυτό το δικτυακό τόπο.
 You are currently an editor on this site.
 Είστε ένας εκδότης σε αυτό το δικτυακό τόπο.
 You are a normal user on this site.
 Είστε ένας απλός χρήστης σε αυτό το δικτυακό τόπο.
+You do not have a password set.
+
 Your password does not match any of the administrator or editor passwords.
 Ο κωδικός σας δεν ταιριάζει με κανένα κωδικό από τους διαχειριστές ή τους εκδότες.
 Password:
 Κωδικός:
-This site does not use admin or editor passwords.
-Αυτός ο ιστότοπος δε χρησιμοποιεί κωδικούς διαχειριστή ή κωδικούς εκδότη.
+Return to 
+
 This operation is restricted to site editors only...
 Αυτή η ενέργεια είναι διαθέσιμη μόνο στους εκδότες του ιστότοπου...
 This operation is restricted to administrators only...
 Αυτή η ενέργεια είναι διαθέσιμη μόνο στους διαχειριστές του ιστότοπου...
+Edit Denied
+Απαγορεύεται η Επεξεργασία
+Editing not allowed: user, ip, or network is blocked.
+Δεν επιτρέπεται η επεξεργασία: αυτός ο χρήστης, η διεύθυνση, ή το δίκτυο έχουν μπλοκαριστεί.
+Contact the wiki administrator for more information.
+Επικοινωνήστε με το διαχειριστή του wiki για περισσότερες πληροφορίες.
+The rule %s matched for you.
+Ο κανόνας %s ταίριαξε με εσάς.
+See %s for more information.
+Δείτε το %s για περισσότερες πληροφορίες.
 SampleUndefinedPage
 ΠαράδειγμαΑνύπαρκτηςΣελίδας
 Sample_Undefined_Page
 Παράδειγμα_Ανύπαρκτης_Σελίδας
-Rule "%1" matched "%2" on this page.
-Ο κανόνας "%1" ταίριαξε με το "%2" σε αυτή τη σελίδα.
+Rule 
+
 Reason: %s.
 Λόγος: %s.
 Reason unknown.
 Άγνωστος λόγος.
-Filter:
-Filter:
 (for %s)
 (για %s)
 %s pages found.
@@ -473,14 +483,10 @@ Maintenance not done.
 Η Συντήρηση δεν έγινε.
 (Maintenance can only be done once every 12 hours.)
 (Η Συντήρηση μπορεί να γίνει μόνο μια φορά κάθε 12 ώρες.)
-Remove the "maintain" file or wait.
-Σβήστε το αρχείο "maintain" ή περιμένετε.
+Remove the 
+
 Expiring keep files and deleting pages marked for deletion
 Εκκαθάριση αρχείων και διαγραφή σελίδων σημειωμένων για διαγραφή
-not deleted: 
-δε διαγράφηκε: 
-deleted
-διαγράφηκε
 Moving part of the %s log file.
 Μετακίνηση τμήματος του αρχείου καταγραφής για το %s.
 Could not open %s log file
@@ -573,12 +579,8 @@ Regular expression:
 
 Consider banning the IP number as well: 
 
-Regular expression "%1" matched "%2" on this page.
+Regular expression 
 
-Regular expression "%s" matched on this page.
-
-Cannot highlight the language %s.
-Δεν υποστηρίζεται χρωματισμός για τη γλώσσα %s.
 Recent Visitors
 Πρόσφατοι Επισκέπτες
 some action
@@ -667,8 +669,6 @@ Dates
 
 No dates found.
 
-Inter links:
-Inter Links:
 List spammed pages
 Λίστα σελίδων με spam
 Despamming pages
@@ -711,6 +711,12 @@ Add Comment
 Προσθήκη Σχολίου
 ordinary changes
 απλές αλλαγές
+Could not identify the paragraph you were editing
+
+This is the section you edited:
+
+This is the current page:
+
 Matching page names:
 Σελίδες με όνομα που ταιριάζει:
 Fix character encoding
@@ -748,6 +754,12 @@ page was marked for deletion
 Oddmuse
 
 Cleaning up git repository
+
+Google +1 Buttons
+
+All Pages +1
+
+This page lists the twenty last diary entries and their +1 buttons.
 
 Email: 
 
@@ -899,13 +911,19 @@ Languages:
 Γλώσσες:
 Show!
 Προβολή!
+====(\d+) persons? liked this====
+
+====%d persons liked this====
+
+====1 person liked this====
+
+I like this!
+
 Define
 Ορισμός
 Full Link List
 Λίστα Όλων των Συνδέσμων
 Banned Content
-
-Rule "%1" matched on this page.
 
 List of locked pages
 
@@ -931,8 +949,8 @@ IP number matched %s
 
 Register for %s
 Εγγραφή στο %s
-Please choose a username of the form "FirstLast" using your real name.
-Παρακαλώ επιλέξτε ένα όνομα χρήστη της μορφής "ΜικρόΕπώνυμο" χρησιμοποιώντας το κανονικό σας όνομα.
+Please choose a username of the form 
+
 The passwords do not match.
 Οι κωδικοί δεν ταιριάζουν.
 The password must be at least %s characters.
@@ -945,8 +963,8 @@ Your registration for %s has been submitted.
 Η εγγραφή σας για το %s έχει καταχωρηθεί.
 Please allow time for the webmaster to approve your request.
 Παρακαλώ δώστε λίγο χρόνο στο διαχειριστή του συστήματος να εγκρίνει την αίτησή σας.
-An email has been sent to "%s" with further instructions.
-Έχει αποσταλλεί ένα μήνυμα στη διεύθυνση "%s" με περισσότερες οδηγίες.
+An email has been sent to 
+
 There was an error saving your registration.
 Η αίτηση εγγραφής σας δε μπόρεσε να αποθηκευθεί.
 An account was created for %s.
@@ -991,8 +1009,8 @@ The password for %s was reset.  It has been emailed to the address on file.
 Έγινε επαναφορά κωδικού για τον χρήστη %s.  Σας έχει αποσταλλεί στην ηλεκτρονική σας διεύθυνση μέσω email.
 There was an error resetting the password for %s.
 Η επαναφορά του κωδικού για τον χρήστη %s απέτυχε.
-The username "%s" does not exist.
-Δεν υπάρχει λογαριασμός χρήστη με το όνομα "%s".
+The username 
+
 Reset Password for %s
 Επαναφορά Κωδικού για τον Χρήστη %s
 Reset Password?
@@ -1009,12 +1027,6 @@ Offene Gesuche für %s bestätigen
 το %s έχει διαγραφεί.
 There was an error approving %s.
 Παρουσιάστηκε κάποιο σφάλμα κατά την έγκριση του %s.
-<ul>
-<ul>
-<li>%1 - %2</li>
-<li>%1 - %2</li>
-</ul>
-</ul>
 There are no pending registrations.
 Δεν υπάρχουν εγγραφές προς επικύρωση.
 Invalid Mail %s: not saved.
@@ -1059,9 +1071,43 @@ No non-migrated email addresses found, migration not necessary.
 
 Migrated %s rows.
 
+Bisect modules
+
+Module Bisect
+
+All modules enabled now!
+
+Go back
+
+Test / Always enabled / Always disabled
+
+Start
+
+Biscecting proccess is already active.
+
+Stop
+
+It seems like module %s is causing your problem.
+
+Please note that this module does not handle situations when your problem is caused by a combination of specific modules (which is rare anyway).
+
+Good luck fixing your problem! ;)
+
+Module count (only testable modules): 
+
+Current module statuses:
+
+Good
+
+Bad
+
+Enabling %s
+
 Update modules
 
 Module Updater
+
+Looks good. Update modules now!
 
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 
@@ -1129,8 +1175,8 @@ None
 Κανένα
 Type
 Τύπος
-Permalink to "%s"
-Μόνιμος Σύνδεσμος για το "%s"
+Permalink to 
+
 anchor first defined here: %s
 ο σύνδεσμος έχει οριστεί ήδη εδώ: %s
 the page %s also exists
@@ -1151,6 +1197,12 @@ This page is password protected. If you know the password, you can %s. Once you 
 
 supply the password now
 
+This error should not happen. If your password is set correctly and you are still seeing this message, then it is a bug, please report it. If you are just a stranger and trying to get unsolicited access, then keep in mind that all of the data is encrypted with AES-256 and the key is not stored on the server, good luck.
+
+Attempt to read encrypted data without a password.
+
+Cannot refresh index.
+
 Publish %s
 Έκδοση του %s
 No target wiki was specified in the config file.
@@ -1169,36 +1221,6 @@ Referrers
 Σύνδεσμοι προς Αυτόν τον Ιστότοπο
 All Referrers
 Όλοι οι Σύνδεσμοι προς Αυτόν τον Ιστότοπο
-Tag
-Ετικέτα
-Rebuild index for searching
-
-Tag Cloud
-Σύννεφο Ετικετών
-Search::FreeText is not available on this system.
-Η αναζήτηση Search::FreeText δεν είναι διαθέσιμη σε αυτό το σύστημα.
-Rebuilding index not done.
-Η ενημέρωση του καταλόγου δεν έχει ολοκληρωθεί ακόμη.
-(Rebuilding the index can only be done once every 12 hours.)
-(Η ενημέρωση του καταλόγου μπορεί να γίνει μόνο μία φορά κάθε 12 ώρες.)
-New Pages for Indexed Search
-
-List changes since %s
-
- ... 
- ... 
-Search term missing.
-Λείπει ο όρος αναζήτησης.
-Result pages: 
-Αποτελέσματα: 
-(%s results)
-(%s αποτελέσματα)
-Tags:
-Ετικέτες:
-Tags: %s.
-Ετικέτες: %s.
-No tags
-Δεν υπάρχουν ετικέτες
 Page list for %s
 
 Slideshow:%s
@@ -1209,6 +1231,8 @@ Static Copy
 Στατικό Αντίγραφο
 Back to %s
 Επιστροφή στο %s
+Editing not allowed for %s.
+Δεν επιτρέπεται η επεξεργασία του %s.
 Edit image in the browser
 
 Summary of your changes: 
@@ -1217,8 +1241,18 @@ Copy to %1 succeeded: %2.
 Η αντιγραφή στο %1 ολοκληρώθηκε με επιτυχία: %2.
 Copy to %1 failed: %2.
 Η αντιγραφή στο %1 απέτυχε: %2.
+Tag
+Ετικέτα
 Feed for this tag
 
+Tag Cloud
+Σύννεφο Ετικετών
+ ... 
+ ... 
+Rebuilding index not done.
+Η ενημέρωση του καταλόγου δεν έχει ολοκληρωθεί ακόμη.
+(Rebuilding the index can only be done once every 12 hours.)
+(Η ενημέρωση του καταλόγου μπορεί να γίνει μόνο μία φορά κάθε 12 ώρες.)
 Rebuild tag index
 
 list tags
@@ -1227,26 +1261,6 @@ tag cloud
 
 Alternatively, use one of the following templates:
 Εναλλακτικά, χρησιμοποιήστε ένα από τα παρακάτω templates:
-Thread: %s
-Συζήτηση: %s
-ID parameter is missing.
-Λείπει η παράμετρος ID.
-Thread %s does not exist.
-Η συζήτηση %s δεν υπάρχει.
-Page %s does not contain a thread.
-Η σελίδα %s δεν περιέχει κάποια συζήτηση.
-Add
-Προσθήκη
-URL parameter is missing.
-Λείπει η παράμετρος URL.
-Add to %s thread
-Προσθήκη στη συζήτηση %s
-Below:
-Κάτω από:
-URL:
-URL:
-Name:
-Όνομα:
 Too many instances.  Only %s allowed.
 Πάρα πολλές ταυτόχρονες αιτήσεις στον εξυπηρετητή αυτής της σελίδας.  Επιτρέπονται μόνο %s ταυτόχρονες συνδέσεις.
 Please try again later. Perhaps somebody is running maintenance or doing a long search. Unfortunately the site has limited resources, and so we must ask you for a bit of patience.
