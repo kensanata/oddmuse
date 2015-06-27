@@ -181,8 +181,6 @@ A username is required for ordinary users.
 
 Rolling back changes
 변경사항을 롤백
-The two revisions are the same.
-이 두개의 리비젼은 동일합니다.
 Editing not allowed: %s is read-only.
 편집이 허용되지 않습니다: %s 는 읽기전용입니다.
 Rollback of %s would restore banned content.
@@ -423,8 +421,8 @@ SampleUndefinedPage
 SampleUndefinedPage
 Sample_Undefined_Page
 Sample_Undefined_Page
-Rule 
-
+Rule "%1" matched "%2" on this page.
+규칙 "%1" 은 "%2" 와 이 페이지에서 맞지 않습니다.
 Reason: %s.
 
 Reason unknown.
@@ -483,8 +481,8 @@ Maintenance not done.
 (사이트)관리가 완료되지 않았습니다.
 (Maintenance can only be done once every 12 hours.)
 (매 12시간에 한번씩 사이트 관리가 수행될 수 있습니다.)
-Remove the 
-
+Remove the "maintain" file or wait.
+"유지보수(maintain)" 파일을 제거하거나 기다리세요.
 Expiring keep files and deleting pages marked for deletion
 
 Moving part of the %s log file.
@@ -521,6 +519,8 @@ Check whether the web server can create the directory %s and whether it can crea
 웹서버가 디렉토리 %s 를 생성하고 그 안에 파일을 생성할 수 있는지 확인하여 주세요.
 , see 
 
+The two revisions are the same.
+이 두개의 리비젼은 동일합니다.
 Deleting %s
 %s 를 삭제하고 있습니다
 Deleted %s
@@ -569,17 +569,19 @@ Ban contributors
 
 Ban Contributors to %s
 
-%s is banned
-
 Ban!
-
-These URLs were rolled back. Perhaps you want to add a regular expression to %s?
 
 Regular expression:
 
+%s is banned
+
+These URLs were rolled back. Perhaps you want to add a regular expression to %s?
+
 Consider banning the IP number as well: 
 
-Regular expression 
+Regular expression "%1" matched "%2" on this page.
+
+Regular expression "%s" matched on this page.
 
 Recent Visitors
 
@@ -701,11 +703,11 @@ Save Draft
 
 Draft Cleanup
 
+Unable to delete draft %s
+
 %1 was last modified %2 and was kept
 
 %1 was last modified %2 and was deleted
-
-Unable to delete draft %s
 
 Add Comment
 
@@ -925,6 +927,8 @@ Full Link List
 전체 링크 목록
 Banned Content
 
+Rule "%1" matched on this page.
+
 List of locked pages
 
 Pages tagged with %s
@@ -933,10 +937,6 @@ Template without parameters
 파라메터 없는 템플릿
 The template %s is either empty or does not exist.
 템플릿 %s (이)가 비어있거나 존재하지 않습니다.
- -- defined on %s
- -- %s 에 정의됨
-Local names defined on %1: %2
-%1 에 정의된 로컬 이름 : %2
 Name: 
 
 URL: 
@@ -945,11 +945,15 @@ Define Local Names
 
 Define external redirect: 
 
+ -- defined on %s
+ -- %s 에 정의됨
+Local names defined on %1: %2
+%1 에 정의된 로컬 이름 : %2
 IP number matched %s
 
 Register for %s
 
-Please choose a username of the form 
+Please choose a username of the form "FirstLast" using your real name.
 
 The passwords do not match.
 
@@ -963,7 +967,7 @@ Your registration for %s has been submitted.
 
 Please allow time for the webmaster to approve your request.
 
-An email has been sent to 
+An email has been sent to "%s" with further instructions.
 
 There was an error saving your registration.
 
@@ -1009,7 +1013,7 @@ The password for %s was reset.  It has been emailed to the address on file.
 
 There was an error resetting the password for %s.
 
-The username 
+The username "%s" does not exist.
 
 Reset Password for %s
 
@@ -1175,7 +1179,7 @@ None
 
 Type
 
-Permalink to 
+Permalink to "%s"
 
 anchor first defined here: %s
 책갈피가 여기서 처음 거부되었습니다: %s
@@ -1273,9 +1277,9 @@ Can not create thumbnail for file type %s.
 
 Can not create thumbnail for a text document
 
-Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
-
 Can not create path for thumbnail - %s
+
+Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
 
 Failed to run %1 to create thumbnail: %2
 
@@ -1297,8 +1301,6 @@ Create a new page for today
 
 Add Translation
 
-Please provide a different page name for the translation.
-
 Added translation: %1 (%2)
 
 Translate %s
@@ -1316,6 +1318,8 @@ Please indicate a page name for the translation of %s.
 More help may be available here: %s.
 
 Translated page: 
+
+Please provide a different page name for the translation.
 
 This page is a translation of %s. 
 

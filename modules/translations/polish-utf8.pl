@@ -183,8 +183,6 @@ A username is required for ordinary users.
 Zwykły użytkownik musi mieć nazwę.
 Rolling back changes
 Cofam zmiany
-The two revisions are the same.
-Te dwie wersje są identyczne.
 Editing not allowed: %s is read-only.
 Edycja zabroniona: %s jest tylko do odczytu.
 Rollback of %s would restore banned content.
@@ -425,8 +423,8 @@ SampleUndefinedPage
 PrzykładNiezdefiniowanejStrony
 Sample_Undefined_Page
 Przykład_Niezdefiniowanej_Strony
-Rule 
-
+Rule "%1" matched "%2" on this page.
+Reguła "%1" pasuje do "%2" na tej stronie.
 Reason: %s.
 Przyczyna: %s.
 Reason unknown.
@@ -485,8 +483,8 @@ Maintenance not done.
 Konserwacja nie przeprowadzona.
 (Maintenance can only be done once every 12 hours.)
 (Konserwacja może być przeprowadzona tylko raz na 12 godzin).
-Remove the 
-
+Remove the "maintain" file or wait.
+Usuń plik "maintain" lub czekaj.
 Expiring keep files and deleting pages marked for deletion
 Przedawnianie plików staroci i usuwanie stron zaznaczonych do usunięcia
 Moving part of the %s log file.
@@ -523,6 +521,8 @@ Check whether the web server can create the directory %s and whether it can crea
 Sprawdź czy serwer WWW może utworzyć katalog %s, oraz czy może tworzyć w nim pliki.
 , see 
 
+The two revisions are the same.
+Te dwie wersje są identyczne.
 Deleting %s
 Kasowanie %s
 Deleted %s
@@ -571,17 +571,19 @@ Ban contributors
 
 Ban Contributors to %s
 
-%s is banned
-
 Ban!
-
-These URLs were rolled back. Perhaps you want to add a regular expression to %s?
 
 Regular expression:
 
+%s is banned
+
+These URLs were rolled back. Perhaps you want to add a regular expression to %s?
+
 Consider banning the IP number as well: 
 
-Regular expression 
+Regular expression "%1" matched "%2" on this page.
+
+Regular expression "%s" matched on this page.
 
 Recent Visitors
 Ostatni Odwiedzający
@@ -703,12 +705,12 @@ Save Draft
 Zapisz brudnopis
 Draft Cleanup
 Czyszczenie brudnopisu
+Unable to delete draft %s
+Nie udało się skasować brudnopisu %s
 %1 was last modified %2 and was kept
 %1 było ostatnio modyfikowane %2 i zostało zachowane
 %1 was last modified %2 and was deleted
 %1 było ostatnio modyfikowane %2 i zostało skasowane
-Unable to delete draft %s
-Nie udało się skasować brudnopisu %s
 Add Comment
 Dodaj komentarz
 ordinary changes
@@ -927,6 +929,8 @@ Full Link List
 Pełna lista odnośników
 Banned Content
 
+Rule "%1" matched on this page.
+
 List of locked pages
 
 Pages tagged with %s
@@ -935,10 +939,6 @@ Template without parameters
 Szablon bez parametrów
 The template %s is either empty or does not exist.
 Szablon %s albo jest pusty, albo nie istnieje.
- -- defined on %s
- -- zdefiniowane na %s
-Local names defined on %1: %2
-Lokalne nazwy zdefiniowane na %1: %2
 Name: 
 
 URL: 
@@ -947,12 +947,16 @@ Define Local Names
 
 Define external redirect: 
 
+ -- defined on %s
+ -- zdefiniowane na %s
+Local names defined on %1: %2
+Lokalne nazwy zdefiniowane na %1: %2
 IP number matched %s
 
 Register for %s
 Zarejestruj dla %s
-Please choose a username of the form 
-
+Please choose a username of the form "FirstLast" using your real name.
+Proszę wybrać nazwę użytkownika w postaci "ImięNazwisko".
 The passwords do not match.
 Hasła nie zgadzają się.
 The password must be at least %s characters.
@@ -965,8 +969,8 @@ Your registration for %s has been submitted.
 Twoja rejestracja dla %s została wysłana.
 Please allow time for the webmaster to approve your request.
 Proszę dać administratorowi czas na potwierdzenie.
-An email has been sent to 
-
+An email has been sent to "%s" with further instructions.
+Wysłano e-mail do "%s" z dalszymi instrukcjami.
 There was an error saving your registration.
 Wystąpił błąd podczas zapisywania rejestracji.
 An account was created for %s.
@@ -1011,8 +1015,8 @@ The password for %s was reset.  It has been emailed to the address on file.
 Hasło dla %s zostało zresetowane. Nowe hasło zostało wysłane pocztą.
 There was an error resetting the password for %s.
 Nastąpił błąd podczas resetowania hasła dla %s.
-The username 
-
+The username "%s" does not exist.
+Nazwa użytkownika "%s" nie istnieje.
 Reset Password for %s
 Zresetuj hasło dla %s
 Reset Password?
@@ -1177,8 +1181,8 @@ None
 Żaden
 Type
 Typ
-Permalink to 
-
+Permalink to "%s"
+Stały odnośnik do "%s"
 anchor first defined here: %s
 odnośnik zdefiniowano uprzednio tutaj: %s
 the page %s also exists
@@ -1275,9 +1279,9 @@ Can not create thumbnail for file type %s.
 
 Can not create thumbnail for a text document
 
-Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
-
 Can not create path for thumbnail - %s
+
+Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
 
 Failed to run %1 to create thumbnail: %2
 
@@ -1299,8 +1303,6 @@ Create a new page for today
 Utwórz nową stronę na dzisiaj
 Add Translation
 
-Please provide a different page name for the translation.
-
 Added translation: %1 (%2)
 
 Translate %s
@@ -1318,6 +1320,8 @@ Please indicate a page name for the translation of %s.
 More help may be available here: %s.
 
 Translated page: 
+
+Please provide a different page name for the translation.
 
 This page is a translation of %s. 
 Ta strona jest tłumaczeniem %s.

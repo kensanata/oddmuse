@@ -324,8 +324,6 @@ A username is required for ordinary users.
 
 Rolling back changes
 
-The two revisions are the same.
-
 Editing not allowed: %s is read-only.
 
 Rollback of %s would restore banned content.
@@ -566,7 +564,7 @@ SampleUndefinedPage
 
 Sample_Undefined_Page
 
-Rule 
+Rule "%1" matched "%2" on this page.
 
 Reason: %s.
 
@@ -626,7 +624,7 @@ Maintenance not done.
 
 (Maintenance can only be done once every 12 hours.)
 
-Remove the 
+Remove the "maintain" file or wait.
 
 Expiring keep files and deleting pages marked for deletion
 
@@ -663,6 +661,8 @@ Please do not fetch more than %1 pages in %2 seconds.
 Check whether the web server can create the directory %s and whether it can create files in it.
 
 , see 
+
+The two revisions are the same.
 
 Deleting %s
 
@@ -712,17 +712,19 @@ Ban contributors
 
 Ban Contributors to %s
 
-%s is banned
-
 Ban!
-
-These URLs were rolled back. Perhaps you want to add a regular expression to %s?
 
 Regular expression:
 
+%s is banned
+
+These URLs were rolled back. Perhaps you want to add a regular expression to %s?
+
 Consider banning the IP number as well: 
 
-Regular expression 
+Regular expression "%1" matched "%2" on this page.
+
+Regular expression "%s" matched on this page.
 
 Recent Visitors
 
@@ -844,11 +846,11 @@ Save Draft
 
 Draft Cleanup
 
+Unable to delete draft %s
+
 %1 was last modified %2 and was kept
 
 %1 was last modified %2 and was deleted
-
-Unable to delete draft %s
 
 Add Comment
 
@@ -1068,6 +1070,8 @@ Full Link List
 
 Banned Content
 
+Rule "%1" matched on this page.
+
 List of locked pages
 
 Pages tagged with %s
@@ -1075,10 +1079,6 @@ Pages tagged with %s
 Template without parameters
 
 The template %s is either empty or does not exist.
-
- -- defined on %s
-
-Local names defined on %1: %2
 
 Name: 
 
@@ -1088,11 +1088,15 @@ Define Local Names
 
 Define external redirect: 
 
+ -- defined on %s
+
+Local names defined on %1: %2
+
 IP number matched %s
 
 Register for %s
 
-Please choose a username of the form 
+Please choose a username of the form "FirstLast" using your real name.
 
 The passwords do not match.
 
@@ -1106,7 +1110,7 @@ Your registration for %s has been submitted.
 
 Please allow time for the webmaster to approve your request.
 
-An email has been sent to 
+An email has been sent to "%s" with further instructions.
 
 There was an error saving your registration.
 
@@ -1152,7 +1156,7 @@ The password for %s was reset.  It has been emailed to the address on file.
 
 There was an error resetting the password for %s.
 
-The username 
+The username "%s" does not exist.
 
 Reset Password for %s
 
@@ -1318,7 +1322,7 @@ None
 
 Type
 
-Permalink to 
+Permalink to "%s"
 
 anchor first defined here: %s
 
@@ -1416,9 +1420,9 @@ Can not create thumbnail for file type %s.
 
 Can not create thumbnail for a text document
 
-Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
-
 Can not create path for thumbnail - %s
+
+Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
 
 Failed to run %1 to create thumbnail: %2
 
@@ -1440,8 +1444,6 @@ Create a new page for today
 
 Add Translation
 
-Please provide a different page name for the translation.
-
 Added translation: %1 (%2)
 
 Translate %s
@@ -1459,6 +1461,8 @@ Please indicate a page name for the translation of %s.
 More help may be available here: %s.
 
 Translated page: 
+
+Please provide a different page name for the translation.
 
 This page is a translation of %s. 
 

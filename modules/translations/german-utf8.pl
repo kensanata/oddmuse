@@ -181,8 +181,6 @@ A username is required for ordinary users.
 Gewöhnliche Benutzer müssen einen Benutzername angeben.
 Rolling back changes
 Änderungen werden rückgängig gemacht
-The two revisions are the same.
-Es gibt keinen Unterschied zwischen den beiden Versionen.
 Editing not allowed: %s is read-only.
 Bearbeitung nicht erlaubt: %s ist schreibgeschützt.
 Rollback of %s would restore banned content.
@@ -423,8 +421,8 @@ SampleUndefinedPage
 BeispielEinerUndefiniertenSeite
 Sample_Undefined_Page
 Beispiel_Einer_Undefinierten_Seite
-Rule 
-
+Rule "%1" matched "%2" on this page.
+Auf dieser Seite verstösst "%2" gegen die Regel "%1".
 Reason: %s.
 Grund: %s.
 Reason unknown.
@@ -483,8 +481,8 @@ Maintenance not done.
 Wartungsarbeiten nicht erfolgt.
 (Maintenance can only be done once every 12 hours.)
 (Wartungsarbeiten können frühestens alle 12 Stunden durchgeführt werden.)
-Remove the 
-
+Remove the "maintain" file or wait.
+Löschen Sie die Datei "maintain" oder warten Sie.
 Expiring keep files and deleting pages marked for deletion
 Alte Versionen werden aus dem Archiv entfernt und Seiten, die als gelöscht markiert wurden, werden gelöscht
 Moving part of the %s log file.
@@ -521,6 +519,8 @@ Check whether the web server can create the directory %s and whether it can crea
 Vielleicht kann der Webserver das Verzeichnis %s nicht anlegen oder es wurde schon angelegt, aber der Webserver kann darin keine neuen Dateien anlegen.
 , see 
 , siehe 
+The two revisions are the same.
+Es gibt keinen Unterschied zwischen den beiden Versionen.
 Deleting %s
 %s löschen
 Deleted %s
@@ -569,18 +569,20 @@ Ban contributors
 Mitautoren sperren
 Ban Contributors to %s
 Mitautorren von %s sperren
-%s is banned
-%s ist schon gesperrt
 Ban!
 Sperren!
-These URLs were rolled back. Perhaps you want to add a regular expression to %s?
-Diese URLs wurden rückgängig gemacht. Vielleicht wollen Sie einen passenden regulären Ausdruck zu %s hinzufügen?
 Regular expression:
 Regulärer Ausdruck:
+%s is banned
+%s ist schon gesperrt
+These URLs were rolled back. Perhaps you want to add a regular expression to %s?
+Diese URLs wurden rückgängig gemacht. Vielleicht wollen Sie einen passenden regulären Ausdruck zu %s hinzufügen?
 Consider banning the IP number as well: 
 Überlegen Sie sich, ob sie die IP Nummer ebenfalls sperren wollen: 
-Regular expression 
-
+Regular expression "%1" matched "%2" on this page.
+Regulärer Ausdruck "%1" passt zu "%2" auf dieser Seite.
+Regular expression "%s" matched on this page.
+Regulärer Ausdruck "%1" passt auf dieser Seite.
 Recent Visitors
 Kürzliche Besucher
 some action
@@ -701,12 +703,12 @@ Save Draft
 Entwurf speichern
 Draft Cleanup
 Alte Entwürfe löschen
+Unable to delete draft %s
+Der Entwurf %s konnte nicht gelöscht werden
 %1 was last modified %2 and was kept
 %1 wurde am %2 zuletzt gespeichert und nicht gelöscht
 %1 was last modified %2 and was deleted
 %1 wurde am %2 zuletzt gespeichert und deswegen gelöscht
-Unable to delete draft %s
-Der Entwurf %s konnte nicht gelöscht werden
 Add Comment
 Kommentar hinzufügen
 ordinary changes
@@ -925,6 +927,8 @@ Full Link List
 Liste aller Verweise
 Banned Content
 Gesperrte Inhalte
+Rule "%1" matched on this page.
+Regel "%1" passt auf dieser Seite.
 List of locked pages
 Liste der gesperrten Seiten
 Pages tagged with %s
@@ -933,10 +937,6 @@ Template without parameters
 Vorlage ohne Parameter
 The template %s is either empty or does not exist.
 Die %s Vorlage ist entweder leer oder existiert gar nicht.
- -- defined on %s
- -- definiert auf der Seite %s
-Local names defined on %1: %2
-Der lokale Namen %2 wurde auf der Seite %1 definiert
 Name: 
 Name: 
 URL: 
@@ -945,12 +945,16 @@ Define Local Names
 Lokalen Namen definieren
 Define external redirect: 
 Umleitung auf eine externe Seite definieren: 
+ -- defined on %s
+ -- definiert auf der Seite %s
+Local names defined on %1: %2
+Der lokale Namen %2 wurde auf der Seite %1 definiert
 IP number matched %s
 IP Nummer passt auf %s
 Register for %s
 Anmeldung für %s
-Please choose a username of the form 
-
+Please choose a username of the form "FirstLast" using your real name.
+Bitte verwenden sie ihren Vorname und Nachname ohne Leerzeichen ("VornameNachname") als ihren Benutzernamen.
 The passwords do not match.
 Das Passwort stimmt nicht mit der Kopie überein.
 The password must be at least %s characters.
@@ -963,8 +967,8 @@ Your registration for %s has been submitted.
 Ihre Anmeldung für den Benutzername %s wurde weitergeleitet.
 Please allow time for the webmaster to approve your request.
 Bitte geben Sie dem Webmaster etwas Zeit, um ihr Gesuch zu bewilligen.
-An email has been sent to 
-
+An email has been sent to "%s" with further instructions.
+Eine Email mit weiteren Instruktionen wurde an %s verschickt.
 There was an error saving your registration.
 Es gab einen Fehler beim Speichern ihrer Registrierung.
 An account was created for %s.
@@ -1009,8 +1013,8 @@ The password for %s was reset.  It has been emailed to the address on file.
 Das Passwort für %s wurde zurückgesetzt. Eine entsprechende Email wurde an die dazugehörige Adresse geschickt.
 There was an error resetting the password for %s.
 Das Passwort konnte für %s wegen einem Fehler nicht gesetzt werden.
-The username 
-
+The username "%s" does not exist.
+Der Benutzer "%s" existiert nicht.
 Reset Password for %s
 Passwort für %s zurücksetzen
 Reset Password?
@@ -1175,8 +1179,8 @@ None
 Keiner
 Type
 Typ
-Permalink to 
-
+Permalink to "%s"
+Permalink für "%s"
 anchor first defined here: %s
 Der Anker wurde hier zuerst definiert: %s
 the page %s also exists
@@ -1273,9 +1277,9 @@ Can not create thumbnail for file type %s.
 
 Can not create thumbnail for a text document
 
-Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
-
 Can not create path for thumbnail - %s
+
+Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
 
 Failed to run %1 to create thumbnail: %2
 
@@ -1297,8 +1301,6 @@ Create a new page for today
 Erstellen Sie eine neue Seite für den heutigen Tag
 Add Translation
 Übersetzung hinzufügen
-Please provide a different page name for the translation.
-Die Übersetzung darf nicht gleich heissen.
 Added translation: %1 (%2)
 Übersetzung hinzugefügt: %1 (%2)
 Translate %s
@@ -1317,6 +1319,8 @@ More help may be available here: %s.
 Möglicherweise finden Sie auf %s weitere Informationen.
 Translated page: 
 Übersetzte Seite:
+Please provide a different page name for the translation.
+Die Übersetzung darf nicht gleich heissen.
 This page is a translation of %s. 
 Diese Seite ist eine Übersetzung von %s. 
 The translation is up to date.

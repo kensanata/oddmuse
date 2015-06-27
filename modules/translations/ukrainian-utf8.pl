@@ -181,8 +181,6 @@ A username is required for ordinary users.
 
 Rolling back changes
 Скасовую зміни
-The two revisions are the same.
-Дві версії однакові.
 Editing not allowed: %s is read-only.
 Редагування не дозволено: %s тільки для читання.
 Rollback of %s would restore banned content.
@@ -423,8 +421,8 @@ SampleUndefinedPage
 
 Sample_Undefined_Page
 
-Rule 
-
+Rule "%1" matched "%2" on this page.
+На цій сторінці "%2" відповідає правилу "%1"
 Reason: %s.
 
 Reason unknown.
@@ -483,8 +481,8 @@ Maintenance not done.
 Поточна профілактика не виконана.
 (Maintenance can only be done once every 12 hours.)
 (Поточна профілактика може запускатись кожні 12 годин.)
-Remove the 
-
+Remove the "maintain" file or wait.
+Видаліть файл "maintain" або зачекайте.
 Expiring keep files and deleting pages marked for deletion
 
 Moving part of the %s log file.
@@ -521,6 +519,8 @@ Check whether the web server can create the directory %s and whether it can crea
 Перевірте, чи може веб сервер створити директорію %s і чи може він створювати в ній файли.
 , see 
 
+The two revisions are the same.
+Дві версії однакові.
 Deleting %s
 Видаляється %s
 Deleted %s
@@ -569,17 +569,19 @@ Ban contributors
 
 Ban Contributors to %s
 
-%s is banned
-
 Ban!
-
-These URLs were rolled back. Perhaps you want to add a regular expression to %s?
 
 Regular expression:
 
+%s is banned
+
+These URLs were rolled back. Perhaps you want to add a regular expression to %s?
+
 Consider banning the IP number as well: 
 
-Regular expression 
+Regular expression "%1" matched "%2" on this page.
+
+Regular expression "%s" matched on this page.
 
 Recent Visitors
 Нещодавні відвідувачі
@@ -701,11 +703,11 @@ Save Draft
 
 Draft Cleanup
 
+Unable to delete draft %s
+
 %1 was last modified %2 and was kept
 
 %1 was last modified %2 and was deleted
-
-Unable to delete draft %s
 
 Add Comment
 Додати коментар
@@ -925,6 +927,8 @@ Full Link List
 Повний перелік посилань
 Banned Content
 
+Rule "%1" matched on this page.
+
 List of locked pages
 
 Pages tagged with %s
@@ -933,10 +937,6 @@ Template without parameters
 Шаблон без параметрів
 The template %s is either empty or does not exist.
 Шаблон %s або порожній, або не існує.
- -- defined on %s
- -- визначено в %s
-Local names defined on %1: %2
-Локальні імена визначено в %1: %2
 Name: 
 
 URL: 
@@ -945,12 +945,16 @@ Define Local Names
 
 Define external redirect: 
 
+ -- defined on %s
+ -- визначено в %s
+Local names defined on %1: %2
+Локальні імена визначено в %1: %2
 IP number matched %s
 
 Register for %s
 Зареєструвати для %s
-Please choose a username of the form 
-
+Please choose a username of the form "FirstLast" using your real name.
+Будь ласка, вкажіть ім'я користувача у вигляді "Ім'яПрізвище" використовуючі власні імена.
 The passwords do not match.
 Паролі не збігаються.
 The password must be at least %s characters.
@@ -963,8 +967,8 @@ Your registration for %s has been submitted.
 
 Please allow time for the webmaster to approve your request.
 
-An email has been sent to 
-
+An email has been sent to "%s" with further instructions.
+Повідомлення було відправлено "%s" з поадльшими інструціями.
 There was an error saving your registration.
 Виникла помилка при збереженні вашої реєстрації.
 An account was created for %s.
@@ -1009,8 +1013,8 @@ The password for %s was reset.  It has been emailed to the address on file.
 
 There was an error resetting the password for %s.
 
-The username 
-
+The username "%s" does not exist.
+Користувача з іменем "%s" не існує.
 Reset Password for %s
 
 Reset Password?
@@ -1175,8 +1179,8 @@ None
 Немає
 Type
 Тип
-Permalink to 
-
+Permalink to "%s"
+Постійне посилання на "%s"
 anchor first defined here: %s
 якір вперше визначається тут: %s
 the page %s also exists
@@ -1273,9 +1277,9 @@ Can not create thumbnail for file type %s.
 
 Can not create thumbnail for a text document
 
-Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
-
 Can not create path for thumbnail - %s
+
+Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
 
 Failed to run %1 to create thumbnail: %2
 
@@ -1297,8 +1301,6 @@ Create a new page for today
 
 Add Translation
 
-Please provide a different page name for the translation.
-
 Added translation: %1 (%2)
 
 Translate %s
@@ -1316,6 +1318,8 @@ Please indicate a page name for the translation of %s.
 More help may be available here: %s.
 
 Translated page: 
+
+Please provide a different page name for the translation.
 
 This page is a translation of %s. 
 Ця сторінка є перекладом %s.

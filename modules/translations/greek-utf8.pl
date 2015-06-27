@@ -181,8 +181,6 @@ A username is required for ordinary users.
 Χρειάζεται όνομα χρήστη για τους απλούς χρήστες.
 Rolling back changes
 Επαναφορά παλιότερων εκδόσεων
-The two revisions are the same.
-Οι δύο εκδόσεις είναι πανομοιότυπες.
 Editing not allowed: %s is read-only.
 Δεν επιτρέπεται η επεξεργασία: το %s είναι μόνο για ανάγνωση.
 Rollback of %s would restore banned content.
@@ -423,8 +421,8 @@ SampleUndefinedPage
 ΠαράδειγμαΑνύπαρκτηςΣελίδας
 Sample_Undefined_Page
 Παράδειγμα_Ανύπαρκτης_Σελίδας
-Rule 
-
+Rule "%1" matched "%2" on this page.
+Ο κανόνας "%1" ταίριαξε με το "%2" σε αυτή τη σελίδα.
 Reason: %s.
 Λόγος: %s.
 Reason unknown.
@@ -483,8 +481,8 @@ Maintenance not done.
 Η Συντήρηση δεν έγινε.
 (Maintenance can only be done once every 12 hours.)
 (Η Συντήρηση μπορεί να γίνει μόνο μια φορά κάθε 12 ώρες.)
-Remove the 
-
+Remove the "maintain" file or wait.
+Σβήστε το αρχείο "maintain" ή περιμένετε.
 Expiring keep files and deleting pages marked for deletion
 Εκκαθάριση αρχείων και διαγραφή σελίδων σημειωμένων για διαγραφή
 Moving part of the %s log file.
@@ -521,6 +519,8 @@ Check whether the web server can create the directory %s and whether it can crea
 Επιβεβαιώστε ότι ο εξυπηρετητής web μπορεί να δημιουργήσει τον κατάλογο %s και να δημιουργήσει αρχεία σε αυτόν.
 , see 
 
+The two revisions are the same.
+Οι δύο εκδόσεις είναι πανομοιότυπες.
 Deleting %s
 Διαγραφή του %s
 Deleted %s
@@ -569,17 +569,19 @@ Ban contributors
 
 Ban Contributors to %s
 
-%s is banned
-
 Ban!
-
-These URLs were rolled back. Perhaps you want to add a regular expression to %s?
 
 Regular expression:
 
+%s is banned
+
+These URLs were rolled back. Perhaps you want to add a regular expression to %s?
+
 Consider banning the IP number as well: 
 
-Regular expression 
+Regular expression "%1" matched "%2" on this page.
+
+Regular expression "%s" matched on this page.
 
 Recent Visitors
 Πρόσφατοι Επισκέπτες
@@ -701,12 +703,12 @@ Save Draft
 Αποθήκευση Πρόχειρου
 Draft Cleanup
 Εκκαθάριση Πρόχειρων Σελίδων
+Unable to delete draft %s
+Δε μπορεί να διαγραφεί το πρόχειρο %s
 %1 was last modified %2 and was kept
 το %1 ενημερώθηκε τελευταία φορά στις %2 και αποθηκεύθηκε
 %1 was last modified %2 and was deleted
 το %1 ενημερώθηκε τελευταία φορά στις %2 και διαγράφηκε
-Unable to delete draft %s
-Δε μπορεί να διαγραφεί το πρόχειρο %s
 Add Comment
 Προσθήκη Σχολίου
 ordinary changes
@@ -925,6 +927,8 @@ Full Link List
 Λίστα Όλων των Συνδέσμων
 Banned Content
 
+Rule "%1" matched on this page.
+
 List of locked pages
 
 Pages tagged with %s
@@ -933,10 +937,6 @@ Template without parameters
 Template χωρίς παραμέτρους
 The template %s is either empty or does not exist.
 Το template %s είναι άδειο ή δεν υπάρχει.
- -- defined on %s
- -- ορίζεται στο %s
-Local names defined on %1: %2
-Τοπικά ονόματα ορισμένα στο %1: %2
 Name: 
 
 URL: 
@@ -945,12 +945,16 @@ Define Local Names
 
 Define external redirect: 
 
+ -- defined on %s
+ -- ορίζεται στο %s
+Local names defined on %1: %2
+Τοπικά ονόματα ορισμένα στο %1: %2
 IP number matched %s
 
 Register for %s
 Εγγραφή στο %s
-Please choose a username of the form 
-
+Please choose a username of the form "FirstLast" using your real name.
+Παρακαλώ επιλέξτε ένα όνομα χρήστη της μορφής "ΜικρόΕπώνυμο" χρησιμοποιώντας το κανονικό σας όνομα.
 The passwords do not match.
 Οι κωδικοί δεν ταιριάζουν.
 The password must be at least %s characters.
@@ -963,8 +967,8 @@ Your registration for %s has been submitted.
 Η εγγραφή σας για το %s έχει καταχωρηθεί.
 Please allow time for the webmaster to approve your request.
 Παρακαλώ δώστε λίγο χρόνο στο διαχειριστή του συστήματος να εγκρίνει την αίτησή σας.
-An email has been sent to 
-
+An email has been sent to "%s" with further instructions.
+Έχει αποσταλλεί ένα μήνυμα στη διεύθυνση "%s" με περισσότερες οδηγίες.
 There was an error saving your registration.
 Η αίτηση εγγραφής σας δε μπόρεσε να αποθηκευθεί.
 An account was created for %s.
@@ -1009,8 +1013,8 @@ The password for %s was reset.  It has been emailed to the address on file.
 Έγινε επαναφορά κωδικού για τον χρήστη %s.  Σας έχει αποσταλλεί στην ηλεκτρονική σας διεύθυνση μέσω email.
 There was an error resetting the password for %s.
 Η επαναφορά του κωδικού για τον χρήστη %s απέτυχε.
-The username 
-
+The username "%s" does not exist.
+Δεν υπάρχει λογαριασμός χρήστη με το όνομα "%s".
 Reset Password for %s
 Επαναφορά Κωδικού για τον Χρήστη %s
 Reset Password?
@@ -1175,8 +1179,8 @@ None
 Κανένα
 Type
 Τύπος
-Permalink to 
-
+Permalink to "%s"
+Μόνιμος Σύνδεσμος για το "%s"
 anchor first defined here: %s
 ο σύνδεσμος έχει οριστεί ήδη εδώ: %s
 the page %s also exists
@@ -1273,9 +1277,9 @@ Can not create thumbnail for file type %s.
 
 Can not create thumbnail for a text document
 
-Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
-
 Can not create path for thumbnail - %s
+
+Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
 
 Failed to run %1 to create thumbnail: %2
 
@@ -1297,8 +1301,6 @@ Create a new page for today
 Δημιουργία μιας νέας σελίδας για τη σημερινή ημερομηνία
 Add Translation
 
-Please provide a different page name for the translation.
-
 Added translation: %1 (%2)
 
 Translate %s
@@ -1316,6 +1318,8 @@ Please indicate a page name for the translation of %s.
 More help may be available here: %s.
 
 Translated page: 
+
+Please provide a different page name for the translation.
 
 This page is a translation of %s. 
 Αυτή η σελίδα είναι μετάφραση της %s. 

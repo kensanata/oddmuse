@@ -185,8 +185,6 @@ A username is required for ordinary users.
 
 Rolling back changes
 Återställer
-The two revisions are the same.
-De två versionerna är identiska.
 Editing not allowed: %s is read-only.
 Redigering är inte tillåten: %s är skrivskyddad.
 Rollback of %s would restore banned content.
@@ -427,8 +425,8 @@ SampleUndefinedPage
 OdefinieradExempelsida
 Sample_Undefined_Page
 Odefinierad_exempelsida
-Rule 
-
+Rule "%1" matched "%2" on this page.
+Regel "%1"  matchade "%2" på denna sida.
 Reason: %s.
 
 Reason unknown.
@@ -487,8 +485,8 @@ Maintenance not done.
 Underhåll ej slutfört.
 (Maintenance can only be done once every 12 hours.)
 (Underhåll kan bara utföras en gång var 12:e timme.)
-Remove the 
-
+Remove the "maintain" file or wait.
+Ta bort "maintain"-filen eller vänta.
 Expiring keep files and deleting pages marked for deletion
 Avlägsnar "keep"-filer och raderar sidor märkta för radering
 Moving part of the %s log file.
@@ -525,6 +523,8 @@ Check whether the web server can create the directory %s and whether it can crea
 Kontrollera att webservern kan skapa biblioteket %s och att den kan skapa filer i det.
 , see 
 
+The two revisions are the same.
+De två versionerna är identiska.
 Deleting %s
 Tar bort %s
 Deleted %s
@@ -573,17 +573,19 @@ Ban contributors
 
 Ban Contributors to %s
 
-%s is banned
-
 Ban!
-
-These URLs were rolled back. Perhaps you want to add a regular expression to %s?
 
 Regular expression:
 
+%s is banned
+
+These URLs were rolled back. Perhaps you want to add a regular expression to %s?
+
 Consider banning the IP number as well: 
 
-Regular expression 
+Regular expression "%1" matched "%2" on this page.
+
+Regular expression "%s" matched on this page.
 
 Recent Visitors
 Senaste besökare
@@ -705,11 +707,11 @@ Save Draft
 
 Draft Cleanup
 
+Unable to delete draft %s
+
 %1 was last modified %2 and was kept
 
 %1 was last modified %2 and was deleted
-
-Unable to delete draft %s
 
 Add Comment
 Lägg till kommentar
@@ -929,6 +931,8 @@ Full Link List
 Fullständing länklista
 Banned Content
 
+Rule "%1" matched on this page.
+
 List of locked pages
 
 Pages tagged with %s
@@ -937,10 +941,6 @@ Template without parameters
 Mall utan parametrar
 The template %s is either empty or does not exist.
 Mallen %s är antingen tom eller saknas.
- -- defined on %s
- -- definierad på %s
-Local names defined on %1: %2
-Lokala namn definierade på %1: %2
 Name: 
 
 URL: 
@@ -949,11 +949,15 @@ Define Local Names
 
 Define external redirect: 
 
+ -- defined on %s
+ -- definierad på %s
+Local names defined on %1: %2
+Lokala namn definierade på %1: %2
 IP number matched %s
 
 Register for %s
 
-Please choose a username of the form 
+Please choose a username of the form "FirstLast" using your real name.
 
 The passwords do not match.
 
@@ -967,7 +971,7 @@ Your registration for %s has been submitted.
 
 Please allow time for the webmaster to approve your request.
 
-An email has been sent to 
+An email has been sent to "%s" with further instructions.
 
 There was an error saving your registration.
 
@@ -1013,7 +1017,7 @@ The password for %s was reset.  It has been emailed to the address on file.
 
 There was an error resetting the password for %s.
 
-The username 
+The username "%s" does not exist.
 
 Reset Password for %s
 
@@ -1179,8 +1183,8 @@ None
 Inga
 Type
 Sort
-Permalink to 
-
+Permalink to "%s"
+Permanentlänk till "%s"
 anchor first defined here: %s
 ankare definierades först här: %s
 the page %s also exists
@@ -1277,9 +1281,9 @@ Can not create thumbnail for file type %s.
 
 Can not create thumbnail for a text document
 
-Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
-
 Can not create path for thumbnail - %s
+
+Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
 
 Failed to run %1 to create thumbnail: %2
 
@@ -1301,8 +1305,6 @@ Create a new page for today
 
 Add Translation
 
-Please provide a different page name for the translation.
-
 Added translation: %1 (%2)
 
 Translate %s
@@ -1320,6 +1322,8 @@ Please indicate a page name for the translation of %s.
 More help may be available here: %s.
 
 Translated page: 
+
+Please provide a different page name for the translation.
 
 This page is a translation of %s. 
 Denna sida är en översättning av %s. 

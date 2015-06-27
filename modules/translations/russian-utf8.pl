@@ -187,8 +187,6 @@ A username is required for ordinary users.
 
 Rolling back changes
 Откат изменений
-The two revisions are the same.
-Заданы одинаковые версии страницы
 Editing not allowed: %s is read-only.
 Редактирование не допустимо: %s только для чтения.
 Rollback of %s would restore banned content.
@@ -429,7 +427,7 @@ SampleUndefinedPage
 ПримерПроизвольнойСтраницы
 Sample_Undefined_Page
 Пример_Произвольной_Страницы
-Rule 
+Rule "%1" matched "%2" on this page.
 
 Reason: %s.
 
@@ -489,8 +487,8 @@ Maintenance not done.
 Техобслуживание не выполнено.
 (Maintenance can only be done once every 12 hours.)
 (Техобслуживание может выполняться раз в 12 часов, не чаще).
-Remove the 
-
+Remove the "maintain" file or wait.
+Удалите файл "maintain" или подождите
 Expiring keep files and deleting pages marked for deletion
 Удаление устаревших версий страниц и страниц, явно помеченных к удалению
 Moving part of the %s log file.
@@ -527,6 +525,8 @@ Check whether the web server can create the directory %s and whether it can crea
 
 , see 
 , смотрите 
+The two revisions are the same.
+Заданы одинаковые версии страницы
 Deleting %s
 Удаляю %s
 Deleted %s
@@ -575,17 +575,19 @@ Ban contributors
 
 Ban Contributors to %s
 
-%s is banned
-%s забанен
 Ban!
 Заблокировать!
-These URLs were rolled back. Perhaps you want to add a regular expression to %s?
-
 Regular expression:
 Регулярное выражение:
+%s is banned
+%s забанен
+These URLs were rolled back. Perhaps you want to add a regular expression to %s?
+
 Consider banning the IP number as well: 
 Также вы можете забанить IP адрес: 
-Regular expression 
+Regular expression "%1" matched "%2" on this page.
+
+Regular expression "%s" matched on this page.
 
 Recent Visitors
 
@@ -707,12 +709,12 @@ Save Draft
 Сохранить черновик
 Draft Cleanup
 
+Unable to delete draft %s
+Не могу удалить черновик %s
 %1 was last modified %2 and was kept
 
 %1 was last modified %2 and was deleted
 
-Unable to delete draft %s
-Не могу удалить черновик %s
 Add Comment
 Комментировать
 ordinary changes
@@ -931,6 +933,8 @@ Full Link List
 Полный список ссылок
 Banned Content
 
+Rule "%1" matched on this page.
+
 List of locked pages
 Список заблокированных страних
 Pages tagged with %s
@@ -938,10 +942,6 @@ Pages tagged with %s
 Template without parameters
 
 The template %s is either empty or does not exist.
-
- -- defined on %s
-
-Local names defined on %1: %2
 
 Name: 
 
@@ -951,11 +951,15 @@ Define Local Names
 
 Define external redirect: 
 
+ -- defined on %s
+
+Local names defined on %1: %2
+
 IP number matched %s
 
 Register for %s
 
-Please choose a username of the form 
+Please choose a username of the form "FirstLast" using your real name.
 
 The passwords do not match.
 Пароли не сходятся.
@@ -969,7 +973,7 @@ Your registration for %s has been submitted.
 
 Please allow time for the webmaster to approve your request.
 
-An email has been sent to 
+An email has been sent to "%s" with further instructions.
 
 There was an error saving your registration.
 
@@ -1015,8 +1019,8 @@ The password for %s was reset.  It has been emailed to the address on file.
 
 There was an error resetting the password for %s.
 
-The username 
-
+The username "%s" does not exist.
+Пользователь "%s" не существует.
 Reset Password for %s
 
 Reset Password?
@@ -1181,7 +1185,7 @@ None
 
 Type
 
-Permalink to 
+Permalink to "%s"
 
 anchor first defined here: %s
 
@@ -1279,9 +1283,9 @@ Can not create thumbnail for file type %s.
 
 Can not create thumbnail for a text document
 
-Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
-
 Can not create path for thumbnail - %s
+
+Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
 
 Failed to run %1 to create thumbnail: %2
 
@@ -1303,8 +1307,6 @@ Create a new page for today
 Создать новую страницу для сегодняшнего дня
 Add Translation
 Добавить перевод
-Please provide a different page name for the translation.
-
 Added translation: %1 (%2)
 
 Translate %s
@@ -1322,6 +1324,8 @@ Please indicate a page name for the translation of %s.
 More help may be available here: %s.
 
 Translated page: 
+
+Please provide a different page name for the translation.
 
 This page is a translation of %s. 
 Эта страница является переводом %s. 
