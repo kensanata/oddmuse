@@ -186,8 +186,6 @@ A username is required for ordinary users.
 
 Rolling back changes
 
-The two revisions are the same.
-
 Editing not allowed: %s is read-only.
 Edição não permitida: %s é apenas para leitura.
 Rollback of %s would restore banned content.
@@ -428,8 +426,8 @@ SampleUndefinedPage
 ExemploPaginaNaoDefinida
 Sample_Undefined_Page
 Exemplo_Pagina_Nao_Definida
-Rule 
-
+Rule "%1" matched "%2" on this page.
+A regra "%1" coincide com a "%2" nesta página.
 Reason: %s.
 
 Reason unknown.
@@ -488,8 +486,8 @@ Maintenance not done.
 Manutenção não concluída.
 (Maintenance can only be done once every 12 hours.)
 (Manutenção pode ser feita apenas de 12 em 12 horas.)
-Remove the 
-
+Remove the "maintain" file or wait.
+Remover o arquivo "manter" ou esperar.
 Expiring keep files and deleting pages marked for deletion
 Expirando arquivos a manter e apagando páginas marcadas para apagar
 Moving part of the %s log file.
@@ -525,6 +523,8 @@ Por favor não busque mais do que %1 páginas em %2 segundos.
 Check whether the web server can create the directory %s and whether it can create files in it.
 Verificar se o servidor web pode criar ao directório %s e se pode criar ficheiros no directório.
 , see 
+
+The two revisions are the same.
 
 Deleting %s
 Apagando %s
@@ -574,17 +574,19 @@ Ban contributors
 
 Ban Contributors to %s
 
-%s is banned
-
 Ban!
-
-These URLs were rolled back. Perhaps you want to add a regular expression to %s?
 
 Regular expression:
 
+%s is banned
+
+These URLs were rolled back. Perhaps you want to add a regular expression to %s?
+
 Consider banning the IP number as well: 
 
-Regular expression 
+Regular expression "%1" matched "%2" on this page.
+
+Regular expression "%s" matched on this page.
 
 Recent Visitors
 Visitantes recentes
@@ -706,11 +708,11 @@ Save Draft
 
 Draft Cleanup
 
+Unable to delete draft %s
+
 %1 was last modified %2 and was kept
 
 %1 was last modified %2 and was deleted
-
-Unable to delete draft %s
 
 Add Comment
 Adicionar comentário
@@ -930,6 +932,8 @@ Full Link List
 Lista completa de Ligações
 Banned Content
 
+Rule "%1" matched on this page.
+
 List of locked pages
 
 Pages tagged with %s
@@ -938,10 +942,6 @@ Template without parameters
 <i>Template</i> sem parâmetros
 The template %s is either empty or does not exist.
 O <i>template</i> está em branco ou não existe.
- -- defined on %s
-
-Local names defined on %1: %2
-
 Name: 
 
 URL: 
@@ -950,12 +950,16 @@ Define Local Names
 
 Define external redirect: 
 
+ -- defined on %s
+
+Local names defined on %1: %2
+
 IP number matched %s
 
 Register for %s
 Registar para %s
-Please choose a username of the form 
-
+Please choose a username of the form "FirstLast" using your real name.
+Por favor escolha um nome de utilizador no formulário "FirstLast" usando o seu nome verdadeiro.
 The passwords do not match.
 As senhas não coincidem.
 The password must be at least %s characters.
@@ -968,7 +972,7 @@ Your registration for %s has been submitted.
 O seu registo para % foi enviado
 Please allow time for the webmaster to approve your request.
 
-An email has been sent to 
+An email has been sent to "%s" with further instructions.
 
 There was an error saving your registration.
 
@@ -1014,7 +1018,7 @@ The password for %s was reset.  It has been emailed to the address on file.
 
 There was an error resetting the password for %s.
 
-The username 
+The username "%s" does not exist.
 
 Reset Password for %s
 
@@ -1180,8 +1184,8 @@ None
 Nenhum
 Type
 Tipo
-Permalink to 
-
+Permalink to "%s"
+<i>Permalink</i> para "%s"
 anchor first defined here: %s
 âncora definida previamente aqui: %s
 the page %s also exists
@@ -1278,9 +1282,9 @@ Can not create thumbnail for file type %s.
 
 Can not create thumbnail for a text document
 
-Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
-
 Can not create path for thumbnail - %s
+
+Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
 
 Failed to run %1 to create thumbnail: %2
 
@@ -1302,8 +1306,6 @@ Create a new page for today
 
 Add Translation
 
-Please provide a different page name for the translation.
-
 Added translation: %1 (%2)
 
 Translate %s
@@ -1321,6 +1323,8 @@ Please indicate a page name for the translation of %s.
 More help may be available here: %s.
 
 Translated page: 
+
+Please provide a different page name for the translation.
 
 This page is a translation of %s. 
 Esta página é uma tradução de %s.

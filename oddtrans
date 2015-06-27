@@ -49,12 +49,12 @@ print q{our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 };
 undef $/; # slurp
 foreach (<>) {
-  # switch to single quotes
-  tr/"/'/;
   # join split strings
   s/'\s*\.\s*'//g;
+  s/"\s*\.\s*"//g;
   # extract calls to T, Ts and Tss
   while(/Ts?s?\(\'([^']+)/g) { trans($1); }
+  while(/Ts?s?\(\"([^"]+)/g) { trans($1); }
 }
 
 print "END_OF_TRANSLATION\n";

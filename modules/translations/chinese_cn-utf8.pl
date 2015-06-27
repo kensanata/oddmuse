@@ -200,8 +200,6 @@ A username is required for ordinary users.
 需要一个普通用户的用户名。
 Rolling back changes
 回滚更改
-The two revisions are the same.
-两个版本相同
 Editing not allowed: %s is read-only.
 禁止编辑；%s为只读。
 Rollback of %s would restore banned content.
@@ -442,8 +440,8 @@ SampleUndefinedPage
 未定义页面
 Sample_Undefined_Page
 未定义_页面
-Rule 
-
+Rule "%1" matched "%2" on this page.
+本页的 "%2" 符合规则 "%1"。
 Reason: %s.
 原因：%s。
 Reason unknown.
@@ -502,8 +500,8 @@ Maintenance not done.
 无法进行管理。
 (Maintenance can only be done once every 12 hours.)
 (管理每 12 小时只能进行一次。)
-Remove the 
-
+Remove the "maintain" file or wait.
+移除 "maintain" 档，或等时间到了再进行。
 Expiring keep files and deleting pages marked for deletion
 清除过期的库存档和删除已标记的文件
 Moving part of the %s log file.
@@ -540,6 +538,8 @@ Check whether the web server can create the directory %s and whether it can crea
 请确认网站服务器是否可建立%s目录，并且在其中建立文件。
 , see 
 
+The two revisions are the same.
+两个版本相同
 Deleting %s
 正在删除 %s
 Deleted %s
@@ -588,17 +588,19 @@ Ban contributors
 
 Ban Contributors to %s
 
-%s is banned
-
 Ban!
-
-These URLs were rolled back. Perhaps you want to add a regular expression to %s?
 
 Regular expression:
 
+%s is banned
+
+These URLs were rolled back. Perhaps you want to add a regular expression to %s?
+
 Consider banning the IP number as well: 
 
-Regular expression 
+Regular expression "%1" matched "%2" on this page.
+
+Regular expression "%s" matched on this page.
 
 Recent Visitors
 最近的游客
@@ -720,12 +722,12 @@ Save Draft
 保存草稿
 Draft Cleanup
 清除草稿
+Unable to delete draft %s
+不能删除草稿 %s
 %1 was last modified %2 and was kept
 %1 最后修改 %2 已被保持
 %1 was last modified %2 and was deleted
 %1 最后修改 %2 已被删除
-Unable to delete draft %s
-不能删除草稿 %s
 Add Comment
 添加评论
 ordinary changes
@@ -944,6 +946,8 @@ Full Link List
 完整链接列表
 Banned Content
 
+Rule "%1" matched on this page.
+
 List of locked pages
 列出被锁定的页面
 Pages tagged with %s
@@ -952,10 +956,6 @@ Template without parameters
 未指定 template 参数
 The template %s is either empty or does not exist.
 模板%s可能为空或不存在。
- -- defined on %s
- -- 在%s中定义
-Local names defined on %1: %2
-定义在%s:%2的局部变量
 Name: 
 
 URL: 
@@ -964,12 +964,16 @@ Define Local Names
 
 Define external redirect: 
 
+ -- defined on %s
+ -- 在%s中定义
+Local names defined on %1: %2
+定义在%s:%2的局部变量
 IP number matched %s
 
 Register for %s
 为%s注册
-Please choose a username of the form 
-
+Please choose a username of the form "FirstLast" using your real name.
+请使用您的名字注册。
 The passwords do not match.
 两次输入的口令不一致。
 The password must be at least %s characters.
@@ -982,8 +986,8 @@ Your registration for %s has been submitted.
 账号%s的注册信息已经发送。
 Please allow time for the webmaster to approve your request.
 请静候管理员的处理和回复。
-An email has been sent to 
-
+An email has been sent to "%s" with further instructions.
+请查看您的电子信箱"%s"获取详细说明。
 There was an error saving your registration.
 您的注册信息保存时出错。
 An account was created for %s.
@@ -1028,8 +1032,8 @@ The password for %s was reset.  It has been emailed to the address on file.
 用户%s的口令已重置。请查看您的电子邮件。
 There was an error resetting the password for %s.
 重置%s口令时出错。
-The username 
-
+The username "%s" does not exist.
+用户名“%s”不存在。
 Reset Password for %s
 重置“%s”的口令
 Reset Password?
@@ -1194,8 +1198,8 @@ None
 不指定
 Type
 类别
-Permalink to 
-
+Permalink to "%s"
+永久链接至 "%s"
 anchor first defined here: %s
 锚点已被定义于 %s
 the page %s also exists
@@ -1292,9 +1296,9 @@ Can not create thumbnail for file type %s.
 
 Can not create thumbnail for a text document
 
-Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
-
 Can not create path for thumbnail - %s
+
+Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
 
 Failed to run %1 to create thumbnail: %2
 
@@ -1316,8 +1320,6 @@ Create a new page for today
 创建一个今天的新页面
 Add Translation
 添加翻译
-Please provide a different page name for the translation.
-
 Added translation: %1 (%2)
 已添加翻译：%1 (%2)
 Translate %s
@@ -1336,6 +1338,8 @@ More help may be available here: %s.
 在 %s 查找更多帮助
 Translated page: 
 已翻译页面：
+Please provide a different page name for the translation.
+
 This page is a translation of %s. 
 本页是页面%s的翻译。
 The translation is up to date.

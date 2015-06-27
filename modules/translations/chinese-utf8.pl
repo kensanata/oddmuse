@@ -184,8 +184,6 @@ A username is required for ordinary users.
 需使用普通用戶名稱
 Rolling back changes
 回滾修改
-The two revisions are the same.
-二個版本相同
 Editing not allowed: %s is read-only.
 不允許編輯； %s 是唯讀的
 Rollback of %s would restore banned content.
@@ -426,8 +424,8 @@ SampleUndefinedPage
 未定義頁面
 Sample_Undefined_Page
 未定義頁面
-Rule 
-
+Rule "%1" matched "%2" on this page.
+本頁的 "%2" 符合規則 "%1"。
 Reason: %s.
 原因: %s
 Reason unknown.
@@ -486,8 +484,8 @@ Maintenance not done.
 無法進行管理。
 (Maintenance can only be done once every 12 hours.)
 (管理每 12 小時只能進行一次。)
-Remove the 
-
+Remove the "maintain" file or wait.
+移除 "maintain" 檔，或等時間到了再進行。
 Expiring keep files and deleting pages marked for deletion
 清除過期的庫存檔和刪除已標記的檔案
 Moving part of the %s log file.
@@ -524,6 +522,8 @@ Check whether the web server can create the directory %s and whether it can crea
 請確認網站伺服器是否可建立 %s 目錄，並且在其中建立檔案。
 , see 
 
+The two revisions are the same.
+二個版本相同
 Deleting %s
 正在刪除 %s
 Deleted %s
@@ -572,17 +572,19 @@ Ban contributors
 
 Ban Contributors to %s
 
-%s is banned
-
 Ban!
-
-These URLs were rolled back. Perhaps you want to add a regular expression to %s?
 
 Regular expression:
 
+%s is banned
+
+These URLs were rolled back. Perhaps you want to add a regular expression to %s?
+
 Consider banning the IP number as well: 
 
-Regular expression 
+Regular expression "%1" matched "%2" on this page.
+
+Regular expression "%s" matched on this page.
 
 Recent Visitors
 最近的參訪者
@@ -704,12 +706,12 @@ Save Draft
 儲存草稿
 Draft Cleanup
 清除草稿
+Unable to delete draft %s
+無法刪除草稿 %s
 %1 was last modified %2 and was kept
 %1 最後修改 %2 及保存
 %1 was last modified %2 and was deleted
 %1 最後修改 %2 及刪除
-Unable to delete draft %s
-無法刪除草稿 %s
 Add Comment
 新增評論
 ordinary changes
@@ -928,6 +930,8 @@ Full Link List
 完整連結列表
 Banned Content
 
+Rule "%1" matched on this page.
+
 List of locked pages
 
 Pages tagged with %s
@@ -936,10 +940,6 @@ Template without parameters
 未指定 template 參數
 The template %s is either empty or does not exist.
 範本 %s 可能為空或不存在。
- -- defined on %s
- -- 在 %s 中定義
-Local names defined on %1: %2
-定義本地名稱在 %1: %2
 Name: 
 
 URL: 
@@ -948,12 +948,16 @@ Define Local Names
 
 Define external redirect: 
 
+ -- defined on %s
+ -- 在 %s 中定義
+Local names defined on %1: %2
+定義本地名稱在 %1: %2
 IP number matched %s
 
 Register for %s
 為 %s 註冊
-Please choose a username of the form 
-
+Please choose a username of the form "FirstLast" using your real name.
+請選擇符合您真實名字的 "FirstLast"
 The passwords do not match.
 密碼不正確
 The password must be at least %s characters.
@@ -966,8 +970,8 @@ Your registration for %s has been submitted.
 您註冊的使用者名稱 %s 已提交
 Please allow time for the webmaster to approve your request.
 請等待一段時間網站管理者為盡快回應您的需求
-An email has been sent to 
-
+An email has been sent to "%s" with further instructions.
+E-Mail 已被送到 "%s" 等待進一步的指示
 There was an error saving your registration.
 存取的註冊資訊有一個錯誤
 An account was created for %s.
@@ -1012,8 +1016,8 @@ The password for %s was reset.  It has been emailed to the address on file.
 %s 密碼已重設，已發送 E-mail 至該地址
 There was an error resetting the password for %s.
 重設密碼時發生錯誤 %s
-The username 
-
+The username "%s" does not exist.
+使用者名稱 "%s" 不存在
 Reset Password for %s
 重設密碼 %s
 Reset Password?
@@ -1178,8 +1182,8 @@ None
 不指定
 Type
 類別
-Permalink to 
-
+Permalink to "%s"
+永久連結至 "%s"
 anchor first defined here: %s
 錨點已被定義於 %s
 the page %s also exists
@@ -1276,9 +1280,9 @@ Can not create thumbnail for file type %s.
 
 Can not create thumbnail for a text document
 
-Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
-
 Can not create path for thumbnail - %s
+
+Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
 
 Failed to run %1 to create thumbnail: %2
 
@@ -1300,8 +1304,6 @@ Create a new page for today
 建立今日頁面
 Add Translation
 
-Please provide a different page name for the translation.
-
 Added translation: %1 (%2)
 
 Translate %s
@@ -1319,6 +1321,8 @@ Please indicate a page name for the translation of %s.
 More help may be available here: %s.
 
 Translated page: 
+
+Please provide a different page name for the translation.
 
 This page is a translation of %s. 
 本頁是頁面 %s 的翻譯。

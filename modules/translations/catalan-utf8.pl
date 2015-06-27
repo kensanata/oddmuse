@@ -183,8 +183,6 @@ A username is required for ordinary users.
 Es requereix un nom d'usuari per usuaris normals.
 Rolling back changes
 Rollback de canvis
-The two revisions are the same.
-Les dues revisions són iguals.
 Editing not allowed: %s is read-only.
 Editat no permès: %s és de només-lectura.
 Rollback of %s would restore banned content.
@@ -425,8 +423,8 @@ SampleUndefinedPage
 ExemplePaginaSenseDefinir
 Sample_Undefined_Page
 Exemple_Pagina_Sense_Definir
-Rule 
-
+Rule "%1" matched "%2" on this page.
+Regla "%1" concorda amb "%2" en aquesta pàgina.
 Reason: %s.
 Motiu: %s.
 Reason unknown.
@@ -485,8 +483,8 @@ Maintenance not done.
 Manteniment no realitzat.
 (Maintenance can only be done once every 12 hours.)
 (El manteniment només pot realizarse un cop cada 12 hores.)
-Remove the 
-
+Remove the "maintain" file or wait.
+Elimina el arxiu "maintain" o espera.
 Expiring keep files and deleting pages marked for deletion
 Expirant arxius "keep" i eliminant pàgines marcades per esborrar
 Moving part of the %s log file.
@@ -523,6 +521,8 @@ Check whether the web server can create the directory %s and whether it can crea
 Comprova si el servidor web pot crear el directori %s i si pot crear arxius dins d'ell.
 , see 
 
+The two revisions are the same.
+Les dues revisions són iguals.
 Deleting %s
 Borrant %s
 Deleted %s
@@ -571,17 +571,19 @@ Ban contributors
 
 Ban Contributors to %s
 
-%s is banned
-
 Ban!
-
-These URLs were rolled back. Perhaps you want to add a regular expression to %s?
 
 Regular expression:
 
+%s is banned
+
+These URLs were rolled back. Perhaps you want to add a regular expression to %s?
+
 Consider banning the IP number as well: 
 
-Regular expression 
+Regular expression "%1" matched "%2" on this page.
+
+Regular expression "%s" matched on this page.
 
 Recent Visitors
 Visitants Recents
@@ -703,12 +705,12 @@ Save Draft
 Guardar Esborrany
 Draft Cleanup
 Neteja de Esborrany
+Unable to delete draft %s
+Imposible esborrar esborrany %s
 %1 was last modified %2 and was kept
 %1 fou la darrera modificació %2 i fou guardado
 %1 was last modified %2 and was deleted
 %1 fou la darrera modificació i %2 fou esborrat
-Unable to delete draft %s
-Imposible esborrar esborrany %s
 Add Comment
 Afegir Comentari
 ordinary changes
@@ -927,6 +929,8 @@ Full Link List
 Llista Completa de Enllaços
 Banned Content
 
+Rule "%1" matched on this page.
+
 List of locked pages
 
 Pages tagged with %s
@@ -935,10 +939,6 @@ Template without parameters
 Plantilla sense paràmetres
 The template %s is either empty or does not exist.
 La plantilla %s està buida o bé no existeix.
- -- defined on %s
- -- definit en %s
-Local names defined on %1: %2
-Noms locals definits en %1: %2
 Name: 
 
 URL: 
@@ -947,12 +947,16 @@ Define Local Names
 
 Define external redirect: 
 
+ -- defined on %s
+ -- definit en %s
+Local names defined on %1: %2
+Noms locals definits en %1: %2
 IP number matched %s
 
 Register for %s
 Registre per %s
-Please choose a username of the form 
-
+Please choose a username of the form "FirstLast" using your real name.
+Si us plau, escolleix un nom d'usuari en la forma "PrincipiFinal" usant el teu nom real.
 The passwords do not match.
 Els mots de pas no coincideixen.
 The password must be at least %s characters.
@@ -965,8 +969,8 @@ Your registration for %s has been submitted.
 El teu registre per %s ha estat enviat.
 Please allow time for the webmaster to approve your request.
 Si us plau, dona temps per a que el webmaster aprovi la teva sol·licitud.
-An email has been sent to 
-
+An email has been sent to "%s" with further instructions.
+S'ha enviat un correo-i a "%s" amb instruccions addicionals.
 There was an error saving your registration.
 Ha hagut un error guardando el teu registre.
 An account was created for %s.
@@ -1011,8 +1015,8 @@ The password for %s was reset.  It has been emailed to the address on file.
 El mot de pas per %s fou restaurat. S'ha enviat un correo-i a la adreça del arxiu.
 There was an error resetting the password for %s.
 Ha hagut un error restaurant el mot de pas per %s.
-The username 
-
+The username "%s" does not exist.
+El nom d'usuari "%s" no existeix.
 Reset Password for %s
 Restaurar mot de pas per %s
 Reset Password?
@@ -1177,8 +1181,8 @@ None
 Cap
 Type
 Tipus
-Permalink to 
-
+Permalink to "%s"
+Enllaç permanent a "%s"
 anchor first defined here: %s
 primera ancora definida aquí: %s
 the page %s also exists
@@ -1275,9 +1279,9 @@ Can not create thumbnail for file type %s.
 
 Can not create thumbnail for a text document
 
-Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
-
 Can not create path for thumbnail - %s
+
+Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
 
 Failed to run %1 to create thumbnail: %2
 
@@ -1299,8 +1303,6 @@ Create a new page for today
 Crear una pàgina nova per avui
 Add Translation
 
-Please provide a different page name for the translation.
-
 Added translation: %1 (%2)
 
 Translate %s
@@ -1318,6 +1320,8 @@ Please indicate a page name for the translation of %s.
 More help may be available here: %s.
 
 Translated page: 
+
+Please provide a different page name for the translation.
 
 This page is a translation of %s. 
 
