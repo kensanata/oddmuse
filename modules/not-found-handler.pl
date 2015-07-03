@@ -78,7 +78,7 @@ sub RefreshLinkDb {
     # in a multilingual setting we would need to determine the correct
     # filename in which to store it in order to get headers
     # etc. right.
-    ToString sub { PrintWikiToHTML($Page{text}, 1, 0, 1) }; # revision 0, is already locked
+    ToString(sub { PrintWikiToHTML($Page{text}, 1, 0, 1) }); # revision 0, is already locked
   }
   my @links = GetLinkList(1, 0, 0, 1); # works on cached blocks...
   ReadLinkDb();
