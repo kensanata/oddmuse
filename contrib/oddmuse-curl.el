@@ -233,10 +233,10 @@ calling `oddmuse-post' on an ordinary file that's not in Oddmuse
 Mode."
   (when (or (not oddmuse-wiki) arg)
     (set (make-local-variable 'oddmuse-wiki)
-         (completing-read "Wiki: " oddmuse-wikis nil t)))
+         (oddmuse-read-wiki)))
   (when (not oddmuse-page-name)
     (set (make-local-variable 'oddmuse-page-name)
-         (read-from-minibuffer "Pagename: " (buffer-name)))))
+         (oddmuse-read-pagename oddmuse-wiki t (buffer-name)))))
 
 (defvar oddmuse-minor nil
   "Is this edit a minor change?")
@@ -316,11 +316,45 @@ Typically you would use t and a `oddmuse-page-name', if that makes sense."
 			 (concat "Pagename [" default "]: ")
 		       "Pagename: ")
 		     (oddmuse-make-completion-table wiki)
-		     nil require nil 'oddmuse-pagename-history default)))
+		     nil require nil
+                     'oddmuse-pagename-history default)))
 
 (defvar oddmuse-wiki-history nil
   "History of Oddmuse Wikis edited.
 This is a list referring to `oddmuse-wikis'.")
+
+(defun oddmuse-read-wiki (&optional require default)
+  "Read wiki name with completion.
+Optional arguments REQUIRE and DEFAULT are passed on to `completing-read'.
+Typically you would use t and the current wiki, `oddmuse-wiki'.
+
+If you want to use the current wiki unless the function was
+called with C-u. This is what you want for functions that end
+users call and that you might want to run on a different wiki
+such as searching.
+
+\(let* ((wiki (or (and (not current-prefix-arg) oddmuse-wiki)
+		 (oddmuse-read-wiki))))
+        ...)
+ ...)
+
+If you want to ask only when there is no current wiki:
+
+\(let* ((wiki (or oddmuse-wiki (oddmuse-read-wiki)))
+        ...)
+ ...)
+
+If you want to ask for a wiki and provide the current one as
+default:
+
+\(oddmuse-read-wiki t oddmuse-wiki)"
+  (let ((completion-ignore-case t))
+    (completing-read (if default
+			 (concat "Wiki [" default "]: ")
+		       "Wiki: ")
+		     oddmuse-wikis
+                     nil require nil
+                     'oddmuse-wiki-history default)))
 
 (defun oddmuse-pagename (&optional arg)
   "Return the wiki and pagename the user wants to edit or follow.
@@ -334,8 +368,7 @@ Use this function when following links in regular wiki buffers,
 in Recent Changes, History Buffers, and also in text files and
 the like."
   (let* ((wiki (or (and (not arg) oddmuse-wiki)
-                   (completing-read "Wiki: " oddmuse-wikis nil t nil
-                                    'oddmuse-wiki-history)))
+                   (oddmuse-read-wiki)))
 	 (pagename (or (and arg (oddmuse-read-pagename wiki))
 		       (oddmuse-pagename-at-point)
 		       (oddmuse-read-pagename wiki nil (word-at-point)))))
@@ -516,7 +549,7 @@ If available, return precomputed one."
 This command is used to reflect new pages to `oddmuse-pages-hash'."
   (interactive)
   (let* ((wiki (or wiki-arg
-                   (completing-read "Wiki: " oddmuse-wikis nil t oddmuse-wiki)))
+                   (oddmuse-read-wiki t oddmuse-wiki)))
          (url (cadr (assoc wiki oddmuse-wikis)))
          (command (oddmuse-format-command oddmuse-get-index-command))
          table)
@@ -826,10 +859,11 @@ page."
       (pop-to-buffer (current-buffer))
       ;; check for a diff (this ends with display-buffer) and bury the
       ;; buffer if there are no hunks
-      (diff-buffer-with-file)
-      (with-current-buffer (get-buffer "*Diff*")
-        (unless (next-property-change (point-min))
-          (kill-buffer)))
+      (when (file-exists-p buffer-file-name)
+        (diff-buffer-with-file)
+        (with-current-buffer (get-buffer "*Diff*")
+          (unless (next-property-change (point-min))
+            (kill-buffer))))
       ;; this also changes the buffer name
       (basic-save-buffer)
       ;; this makes sure that the buffer name is set correctly
@@ -843,8 +877,8 @@ page."
 WIKI is the name of the wiki as defined in `oddmuse-wikis'.
 The pagename begins with the current date."
   (interactive 
-   (list (or oddmuse-wiki
-	     (completing-read "Wiki: " oddmuse-wikis nil t oddmuse-wiki))
+   (list (or (and (not current-prefix-arg) oddmuse-wiki)
+             (oddmuse-read-wiki))
 	 (replace-regexp-in-string
 	  " +" "_"
 	  (read-from-minibuffer "Pagename: "
@@ -931,7 +965,7 @@ wiki (ie. it must use Perl syntax).
 Use a prefix argument to search a different wiki."
   (interactive "sSearch term: ")
   (let* ((wiki (or (and (not current-prefix-arg) oddmuse-wiki)
-		   (completing-read "Wiki: " oddmuse-wikis nil t)))
+		   (oddmuse-read-wiki)))
 	 (name (concat "*" wiki ": search for '" regexp "'*")))
     (if (and (get-buffer name)
              (not current-prefix-arg))
@@ -952,7 +986,7 @@ wiki (ie. it must use Perl syntax).
 Use a prefix argument to search a different wiki."
   (interactive "sPages matching: ")
   (let* ((wiki (or (and (not current-prefix-arg) oddmuse-wiki)
-		   (completing-read "Wiki: " oddmuse-wikis nil t)))
+		   (oddmuse-read-wiki)))
 	 (name (concat "*" wiki ": matches for '" regexp "'*")))
     (if (and (get-buffer name)
              (not current-prefix-arg))
@@ -973,8 +1007,8 @@ Use a prefix argument to search a different wiki."
   "Show Recent Changes.
 With universal argument, reload."
   (interactive "P")
-  (let* ((wiki (or oddmuse-wiki
-		   (completing-read "Wiki: " oddmuse-wikis nil t)))
+  (let* ((wiki (or (and (not current-prefix-arg) oddmuse-wiki)
+                   (oddmuse-read-wiki)))
 	 (name (concat "*" wiki ": recent changes*")))
     (if (and (get-buffer name) (not current-prefix-arg))
         (pop-to-buffer (get-buffer name))
