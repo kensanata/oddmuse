@@ -17,7 +17,7 @@ use strict;
 
 AddModuleDescription('load-lang.pl', 'Language Browser Preferences');
 
-our ($q, %CookieParameters, $ConfigFile, $DataDir, $ReadMe, $NamespaceCurrent, @MyInitVariables);
+our ($q, %CookieParameters, $ConfigFile, $DataDir, $NamespaceCurrent, @MyInitVariables);
 our ($CurrentLanguage, $LoadLanguageDir);
 
 $CookieParameters{interface} = '';
@@ -70,13 +70,6 @@ sub LoadLanguage {
       do $file;
       do "$ConfigFile-$Lang{$_}" if -r "$ConfigFile-$Lang{$_}";
       $CurrentLanguage = $Lang{$_};
-      my $f;
-      if ($NamespaceCurrent) {
-	$f = "$DataDir/../README.$Lang{$_}";
-      } else {
-	$f = "$DataDir/README.$Lang{$_}";
-      }
-      $ReadMe = $f if -r $f;
       last;
     }
   }
