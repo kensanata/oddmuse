@@ -47,7 +47,7 @@ for posts having such a subtitle.
 #     "David_Curry".
 AddModuleDescription('hibernal.pl', 'Hibernal Extension');
 
-our ($q, $bol, %Action, %Page, $OpenPageName, %IndexHash, $Now, $Today, %RuleOrder, @MyRules, @MyInitVariables, $CommentsPrefix, $NewComment, $DeletedPage, $CalAsTable);
+our ($q, $bol, %Action, %Page, $OpenPageName, %IndexHash, $Now, $Today, %RuleOrder, @MyRules, @MyInitVariables, $CommentsPrefix, $DeletedPage, $CalAsTable);
 
 # ....................{ CONFIGURATION                      }....................
 
@@ -541,7 +541,7 @@ sub AddHibernalComment {
   $comment =~ s~\r~~g;     # remove all "\r" (0x0d) characters
   $comment =~ s~\s+$~~gs;  # remove all trailing whitespace
 
-  if ($comment and $comment ne $NewComment) {
+  if ($comment) {
     my  $author =   GetParam('username', T('Anonymous'));
     my  $homepage = GetParam('homepage', '');
     if ($homepage) {

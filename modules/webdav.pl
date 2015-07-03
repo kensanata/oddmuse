@@ -129,7 +129,7 @@ sub get {
     }
   } else {
     print $q->header( -status         => "404 Not Found", );
-    print $OddMuse::NewText unless $head;
+    print OddMuse::NewText($id) unless $head;
   }
 }
 
@@ -239,7 +239,7 @@ sub propfind {
     if (not $OddMuse::IndexHash{$id}) {
       warn "RESPONSE: 404\n\n" if $verbose;
       print $q->header( -status       => "404 Not Found", );
-      print $OddMuse::NewText;
+      print OddMuse::NewText($id);
       return;
     }
     @pages = ($id);

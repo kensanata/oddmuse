@@ -29,11 +29,11 @@ test_page($redirect, '403 FORBIDDEN', 'Editing not allowed: TestLock is read-onl
 test_page(get_page('action=editlock set=0'), 'operation is restricted');
 test_page(get_page('action=editlock set=0 pwd=foo'), 'Edit lock removed');
 RequestLockDir('main');
-test_page(update_page('TestLock', 'mu!'), 'This page is empty');
+test_page(update_page('TestLock', 'mu!'), 'This page does not exist');
 test_page($redirect, 'Status: 503 SERVICE UNAVAILABLE',
 	  'Could not get main lock', 'File exists',
 	  'The lock was created (just now|1 second ago|2 seconds ago)');
-test_page(update_page('TestLock', 'mu!'), 'This page is empty');
+test_page(update_page('TestLock', 'mu!'), 'This page does not exist');
 test_page($redirect, 'Status: 503 SERVICE UNAVAILABLE',
 	  'Could not get main lock', 'File exists',
 	  'The lock was created \d+ seconds ago');

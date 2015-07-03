@@ -19,7 +19,7 @@ AddModuleDescription('askpage.pl', 'Ask Page Extension');
 
 use Fcntl qw(:DEFAULT :flock);
 
-our ($DataDir, $NewComment);
+our ($DataDir);
 our ($AskPage, $QuestionPage, $NewQuestion);
 # Don't forget to set your $CommentsPattern to include both $AskPage and $QuestionPage
 $AskPage = 'Ask';
@@ -54,7 +54,7 @@ sub NewAskPageDoPost {
 *GetCommentForm=\&NewAskPageGetCommentForm;
 sub NewAskPageGetCommentForm {
   my ($id, $rev, $comment) = @_;
-  $NewComment = $NewQuestion if $id eq $AskPage;
+  $comment = $NewQuestion if not $comment and $id eq $AskPage;
   OldAskPageGetCommentForm(@_);
 }
 

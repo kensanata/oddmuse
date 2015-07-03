@@ -150,7 +150,7 @@ xpath_test($page, '//p[text()="Matching pages:"]');
 # the tag parameter, it doesn't exists
 
 $page = get_page('Baz');
-xpath_test($page, '//p[text()="This page is empty."]');
+xpath_test($page, '//p[contains(text(),"This page does not exist")]');
 xpath_test_negative($page, '//h1/a[text()="2012-12-31 Foo Baz"]');
 
 # Baz with the tag parameter defaults to the journal.

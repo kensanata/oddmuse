@@ -23,13 +23,13 @@ add_module('creole.pl');
 
 # no Like link on an empty page
 $page = get_page('Test');
-test_page($page, 'This page is empty');
+test_page($page, 'This page does not exist');
 test_page_negative($page, 'I like this');
 
 # Like link doesn't work for empty pages
 get_page('action=like id=Test');
 $page = get_page('Test');
-test_page($page, 'This page is empty');
+test_page($page, 'This page does not exist');
 test_page_negative($page, 'persons? liked this');
 
 # create page and like twice, checking counter

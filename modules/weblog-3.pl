@@ -18,7 +18,7 @@ AddModuleDescription('weblog-3.pl', 'Create a Blog Front Page');
 
 # Categories
 
-our ($q, %Action, %Page, $OpenPageName, $NewText, $HomePage, $ScriptName, @MyInitVariables, $FreeLinkPattern, $UserGotoBar, @UserGotoBarPages, $UsePathInfo);
+our ($q, %Action, %Page, $OpenPageName, $HomePage, $ScriptName, @MyInitVariables, $FreeLinkPattern, $UserGotoBar, @UserGotoBarPages, $UsePathInfo);
 our ($CategoriesPage);
 
 $CategoriesPage = 'Categories';
@@ -30,36 +30,30 @@ my %Category = (); # fast checking
 my @Categories = (); # correct order
 my $CategoryInit = 0;
 
-# handle reset of $NewText in mod_apache environment
+*OldCategoriesNewText = \&NewText;
+*NewText = \&NewCategoriesNewText;
 
-my $CategoryNewText;
-
-push(@MyInitVariables, sub {
-       if (defined $CategoryNewText) {
-	 $NewText = $CategoryNewText;
-       } else {
-	 $CategoryNewText = $NewText;
-       }
-});
-
-# Set $NewText on OpenPage in some case only
+sub NewCategoriesNewText {
+  my $id = shift;
+  if ($id eq $HomePage) {
+    return '<journal>';
+  } elsif (GetParam('tag','')
+           or $Category{$id}) {
+    # if the page is either on the categories page, or the tag=1
+    # parameter was added, show a journal
+    $Page{text} = T('Matching pages:')
+        . "\n\n"
+        . '<journal "^\d\d\d\d-\d\d-\d\d.*'
+        . $OpenPageName
+        . '">';
+  } else {
+    return OldCategoriesNewText($id, @_);
+  }
+}
 
 sub CategoriesNewOpenPage {
   CategoryInit() unless $CategoryInit;
   CategoriesOldOpenPage(@_);
-  if ($Page{revision} == 0) {
-    if ($OpenPageName eq $HomePage) {
-      $NewText = '<journal>';
-    } elsif (GetParam('tag','') or $Category{$OpenPageName}) {
-      # if the page is either on the categories page, or the tag=1
-      # parameter was added, show a journal
-      $NewText = T('Matching pages:')
-	. "\n\n"
-	. '<journal "^\d\d\d\d-\d\d-\d\d.*'
-	. $OpenPageName
-	. '">';
-    }
-  }
 }
 
 # Category page

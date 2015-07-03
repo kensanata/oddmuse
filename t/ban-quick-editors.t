@@ -27,7 +27,7 @@ add_module('ban-quick-editors.pl');
 
 get_page('Test');
 test_page(update_page('Test', 'cannot edit'),
-	  'This page is empty');
+	  'This page does not exist');
 test_page($redirect, 'Editing not allowed',
 	  'fast editing spam bot');
 sleep 5;

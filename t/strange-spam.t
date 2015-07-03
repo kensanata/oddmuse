@@ -23,7 +23,7 @@ add_module('strange-spam.pl');
 
 update_page('StrangeBannedContent', "XXX\n", undef, undef, 1);
 test_page(update_page('pr0n', 'some XXX movies'),
-	  'This page is empty');
+	  'This page does not exist');
 test_page($redirect,
 	  'banned text', 'wiki administrator', 'matched',
 	  'See .*BannedContent.* for more information',

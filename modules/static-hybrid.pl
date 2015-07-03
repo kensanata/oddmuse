@@ -21,7 +21,7 @@ use strict;
 
 AddModuleDescription('static-hybrid.pl', 'Static Hybrid Module');
 
-our ($q, $Now, %Action, %Page, %IndexHash, @IndexList, $OpenPageName, $ScriptName, $FS, $RCName, $DeletedPage, $UsePathInfo, $CommentsPrefix, $Message, $KeepDays, $NewComment, $EmbedWiki, $ClusterMapPage, %NearLinksUsed);
+our ($q, $Now, %Action, %Page, %IndexHash, @IndexList, $OpenPageName, $ScriptName, $FS, $RCName, $DeletedPage, $UsePathInfo, $CommentsPrefix, $Message, $KeepDays, $EmbedWiki, $ClusterMapPage, %NearLinksUsed);
 our ($StaticDir, $StaticAlways, %StaticMimeTypes, $StaticUrl,
 
 %StaticLinkedPages, @StaticIgnoredPages);
@@ -362,7 +362,7 @@ sub StaticGetCommentForm {
 		and $OpenPageName =~ /^$CommentsPrefix/) {
 		return $q->div({-class=>'comment'}, GetFormStart(undef, undef, 'comment'),
 					   $q->p(GetHiddenValue('title', $OpenPageName),
-							 GetTextArea('aftertext', $comment ? $comment : $NewComment)),
+							 GetTextArea('aftertext', $comment)),
 					   $q->p(T('Username:'), ' ',
 							 $q->textfield(-name=>'username', -default=>'',
 										   -override=>1, -size=>20, -maxlength=>50),
