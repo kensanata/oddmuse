@@ -38,7 +38,7 @@ sub PlainGetRcHtml {
   my $tDiff = T('diff');
   my $tHistory = T('history');
   my $tRollback = T('rollback');
-  GetRc
+  GetRc(
     # printDailyTear
     sub {
       my $date = shift;
@@ -91,7 +91,7 @@ sub PlainGetRcHtml {
 	$html .= $q->li($q->span({-class=>'time'}, CalcTime($timestamp)), $diff, $history, $rollback,
 			$pagelink, T(' . . . . '), $author, $sum, $lang, $edit);
       },
-	@_;
+    @_);
   $html .= '</ul>' if ($inlist);
   return $html;
 }
