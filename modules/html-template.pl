@@ -55,7 +55,7 @@ sub DoHtmlTemplate {
 # string instead of printing directly.
 
 sub HtmlTemplateRc {
-  my $result = ToString sub { DoRc(\&GetRcHtml) };
+  my $result = ToString(sub { DoRc(\&GetRcHtml) });
   return $result;
 }
 
