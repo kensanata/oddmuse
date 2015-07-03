@@ -174,22 +174,22 @@ sub StaticHtml {
 	# Process the page
 	local $Message = "";
 	# encoding is left off, so fix it:
-	my $result = ToString sub {
-		print qq!<?xml version="1.0" encoding="UTF-8" ?>!;
-		print GetHeader($id, QuoteHtml($id), undef, "");
-		print $q->start_div({-class=> 'content browse'});
-		print PageHtml($id);
-		print $q->end_div();
-		SetParam('rcclusteronly', $id) if (FreeToNormal(GetCluster($Page{text})) eq $id);
-		if (($id eq $RCName) || (T($RCName) eq $id) || (T($id) eq $RCName)
-			|| GetParam('rcclusteronly', '')) {
-			print $q->start_div({-class=>'rc'});;
-			print $q->hr()  if not GetParam('embed', $EmbedWiki);
-			DoRc(\&GetRcHtml);
-			print $q->end_div();
-		}
-		PrintFooter($id);
-	}
+	my $result = ToString(sub {
+          print qq!<?xml version="1.0" encoding="UTF-8" ?>!;
+          print GetHeader($id, QuoteHtml($id), undef, "");
+          print $q->start_div({-class=> 'content browse'});
+          print PageHtml($id);
+          print $q->end_div();
+          SetParam('rcclusteronly', $id) if (FreeToNormal(GetCluster($Page{text})) eq $id);
+          if (($id eq $RCName) || (T($RCName) eq $id) || (T($id) eq $RCName)
+              || GetParam('rcclusteronly', '')) {
+            print $q->start_div({-class=>'rc'});;
+            print $q->hr()  if not GetParam('embed', $EmbedWiki);
+            DoRc(\&GetRcHtml);
+            print $q->end_div();
+          }
+          PrintFooter($id);
+        });
 	print $F $result;
 	return;
 }
