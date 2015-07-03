@@ -123,7 +123,7 @@ sub outputHTML {
 	open(STDERR, '>', '/dev/null');
 
 	# Fix Markdown
-	my $result = ToString sub { print PageHtml($id) };
+	my $result = ToString(sub { print PageHtml($id) });
 
 	open(my $FILE, '>', "$tempDirectory/temp.html") or ReportError(Ts('Cannot write %s', "temp.html"));
 
