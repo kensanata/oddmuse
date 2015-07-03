@@ -131,7 +131,6 @@ sub NewPrivateWikiReadIndex {
   if ($status) {
     my @rawPageList = split(/ /, $rawIndex);
     for (@rawPageList) {
-      print STDERR $_, "\n";
       my ($pageName, $iv) = split /!/, $_, 2;
       push @IndexList, $pageName;
       $PageIvs{$pageName} = pack "H*", $iv; # decode hex string
