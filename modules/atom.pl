@@ -21,7 +21,7 @@ use XML::Atom::Person;
 
 AddModuleDescription('atom.pl', 'Atom Extension');
 
-our ($q, %Page, %Action, $CommentsPrefix, $ScriptName, $SiteName, $MaxPost, $UseDiff, $NewText, $DeletedPage, @MyInitVariables, @MyMacros, $FS, $BannedContent, $RssStyleSheet, $RssRights, $RssLicense, $RssImageUrl, $RssExclude, $RCName, @UploadTypes, $UploadAllowed, $UsePathInfo, $SiteDescription, $LastUpdate, $InterWikiMoniker);
+our ($q, %Page, %Action, $CommentsPrefix, $ScriptName, $SiteName, $MaxPost, $UseDiff, $DeletedPage, @MyInitVariables, @MyMacros, $FS, $BannedContent, $RssStyleSheet, $RssRights, $RssLicense, $RssImageUrl, $RssExclude, $RCName, @UploadTypes, $UploadAllowed, $UsePathInfo, $SiteDescription, $LastUpdate, $InterWikiMoniker);
 
 push(@MyInitVariables, \&AtomInit);
 
@@ -185,7 +185,7 @@ sub DoAtomSave {
   my $oldrev = $Page{revision};
   if ($old eq $string and $oldid eq $id) {
     ReportError(T('No changes to be saved.'), '200 OK'); # an update without consequence
-  } elsif ($oldrev == 0 and ($string eq $NewText or $string eq "\n")) {
+  } elsif ($oldrev == 0 and $string eq "\n") {
     ReportError(T('No changes to be saved.'), '400 BAD REQUEST'); # don't fake page creation because of webdav
   } else {
     # My providing a different title, the entry is automatically renamed

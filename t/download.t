@@ -46,7 +46,7 @@ Ssm6gEacSVxiJW1Ia1zKEDAGdDDWUrM7WBzVW7XFQK/gv34RcpvC1w29WhnGeSMfyRZ2qOWJ1ROn
 Y2x+OvAf9cMAAAA=
 EOT
 
-test_page(update_page('Trogs', $page), 'page is empty');
+test_page(update_page('Trogs', $page), 'This page does not exist');
 test_page($redirect, "Status: 415");
 AppendStringToFile($ConfigFile, q{push(@UploadTypes, "image/svg+xml");
 });

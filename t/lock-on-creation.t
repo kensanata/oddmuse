@@ -46,7 +46,7 @@ test_page(get_page('action=rc'), 'RecentChanges', 'second test');
 test_page(update_page('InterMap',
 		      " OddMuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n",
 		      'required'),
-	  'This page is empty');
+	  'This page does not exist');
 
 # Create InterMap page as admin
 

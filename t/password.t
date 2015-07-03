@@ -37,9 +37,9 @@ EOT
 # using the above settings results in no permission to edit normal
 # pages
 test_page(update_page('normal_page', 'normal edit'),
-	  'This page is empty');
+	  'This page does not exist');
 test_page(update_page('normal_page', 'admin edit', 0, 0, 1),
-	  'This page is empty');
+	  'This page does not exist');
 
 # test suggested fix
 WriteStringToFile($ConfigFile, <<'EOT');
@@ -54,6 +54,6 @@ EOT
 
 # using the password works, now
 test_page(update_page('normal_page', 'normal edit'),
-	  'This page is empty');
+	  'This page does not exist');
 test_page(update_page('normal_page', 'admin edit', 0, 0, 1),
 	  'admin edit');

@@ -21,7 +21,7 @@ test_page(get_page('HomePage'), '<div class="crossbar"><p>mu</p></div>');
 
 # Verify that raw pages are not mangled
 $page = get_page('action=browse raw=1 id=HomePage');
-test_page($page, 'This page is empty');
+test_page($page, 'This page does not exist');
 test_page_negative($page, 'mu');
 
 # Verify that images pages are not mangled

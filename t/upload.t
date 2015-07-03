@@ -19,11 +19,11 @@ use Test::More tests => 12;
 
 clear_pages();
 
-test_page(update_page('Logo', "#FILE image/png\niVBORw0KGgoAAAA"), 'This page is empty');
+test_page(update_page('Logo', "#FILE image/png\niVBORw0KGgoAAAA"), 'This page does not exist');
 
 AppendStringToFile($ConfigFile, "\$UploadAllowed = 1;\n");
 
-test_page(update_page('Logo', "#FILE image/foo\niVBORw0KGgoAAAA"), 'This page is empty');
+test_page(update_page('Logo', "#FILE image/foo\niVBORw0KGgoAAAA"), 'This page does not exist');
 
 $page = update_page('alex pic', "#FILE image/png\niVBORw0KGgoAAAA");
 test_page($page, 'This page contains an uploaded file:');
@@ -34,5 +34,5 @@ test_page_negative(get_page('search=AAA raw=1'), 'alex_pic');
 test_page(get_page('search=alex raw=1'), 'alex_pic', 'image/png');
 test_page(get_page('search=png raw=1'), 'alex_pic', 'image/png');
 
-test_page(update_page('MimeTest', "#FILE foo/bar\niVBORw0KGgoAAAA"), 'This page is empty');
+test_page(update_page('MimeTest', "#FILE foo/bar\niVBORw0KGgoAAAA"), 'This page does not exist');
 test_page($redirect, '<h1>Files of type foo/bar are not allowed.</h1>');

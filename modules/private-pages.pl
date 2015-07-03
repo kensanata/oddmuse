@@ -31,9 +31,6 @@ Notes:
 
 =over
 
-=item * This extension might not work in a mod_perl environment because it
-        sets C<$NewText> without ever resetting it.
-
 =item * If you're protecting a comment page, people can still leave comments
         -- they just can't read the resulting page.
 
@@ -43,7 +40,7 @@ Notes:
 
 AddModuleDescription('private-pages.pl', 'Private Pages Extension');
 
-our (%IndexHash, %Page, $OpenPageName, $Now, @MyRules, $NewText);
+our (%IndexHash, %Page, $OpenPageName, $Now, @MyRules);
 
 sub PrivatePageLocked {
   my $text = shift;
@@ -79,7 +76,9 @@ sub NewPrivatePagesUserCanEdit {
   return $result;
 }
 
-sub PrivatePageMessage {
+*OldPrivatePageNewText = \&NewText;
+
+sub NewPrivatePageNewText {
   return Ts('This page is password protected. If you know the password, you can %s. Once you have done that, return and reload this page.',
 	    '[' . ScriptUrl('action=password') . ' '
 	    . T('supply the password now') . ']');
@@ -87,13 +86,12 @@ sub PrivatePageMessage {
 
 # prevent unauthorized reading
 
-# If we leave $Page{revision}, PrintWikiToHTML will save the new
-# PrivatePageMessage as the new page content. If we delete
-# $Page{revision}, the text shown will be based on $NewText. If we
-# have no $Page{ts} and no $Page{text}, PageDeletable will return 1.
-# As a workaround, we set a timestamp. Aging of the page doesn't
-# matter since the text starts with #PASSWORD and therefore cannot be
-# the empty string or $DeletedPage.
+# If we leave $Page{revision} set, PrintWikiToHTML will save the new
+# PrivatePageMessage as the new page content. If we don't set $Page{revision},
+# BrowsePage() will show NewText(). Therefore we need to override NewText(). If
+# we have no $Page{ts}, PageDeletable will return 1. As a workaround, we set a
+# timestamp. Aging of the page doesn't matter since the text starts with
+# #PASSWORD and therefore cannot be the empty string or $DeletedPage.
 
 *OldPrivatePagesOpenPage = \&OpenPage;
 *OpenPage = \&NewPrivatePagesOpenPage;
@@ -103,7 +101,9 @@ sub NewPrivatePagesOpenPage {
   if (PrivatePageLocked($Page{text})) {
     %Page = (); # reset everything
     $Page{ts} = $Now;
-    $NewText = PrivatePageMessage();
+    *NewText = \&NewPrivatePageNewText;
+  } else {
+    *NewText = \&OldPrivatePageNewText;
   }
   return $OpenPageName;
 }
@@ -116,7 +116,7 @@ sub NewPrivatePagesOpenPage {
 sub NewPrivatePagesGetPageContent {
   my $text = OldPrivatePagesGetPageContent(@_);
   if (PrivatePageLocked($text)) {
-    return PrivatePageMessage();
+    return NewPrivatePageNewText();
   }
   return $text;
 }
@@ -129,7 +129,7 @@ sub NewPrivatePagesGetPageContent {
 sub NewPrivatePagesGetTextRevision {
   my ($text, $revision) = OldPrivatePagesGetTextRevision(@_);
   if (PrivatePageLocked($text)) {
-    return (PrivatePageMessage(), $revision);
+    return (NewPrivatePageNewText(), $revision);
   }
   return ($text, $revision);
 }

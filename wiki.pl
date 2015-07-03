@@ -86,9 +86,6 @@ our $StyleSheetPage = '';           # Page for CSS sheet
 our $LogoUrl     = '';              # URL for site logo ('' for no logo)
 our $NotFoundPg  = '';              # Page for not-found links ('' for blank pg)
 
-our $NewText     = T('This page is empty.') . "\n";    # New page text
-our $NewComment  = T('Add your comment here:'); # New comment text
-
 our $EditAllowed = 1;               # 0 = no, 1 = yes, 2 = comments pages only, 3 = comments only
 our $AdminPass //= '';              # Whitespace separated passwords.
 our $EditPass  //= '';              # Whitespace separated passwords.
@@ -1376,11 +1373,18 @@ sub BrowseResolvedPage {
   }
 }
 
+sub NewText {
+  my $id = shift;
+  return Ts('This page does not exist, but you can %s.',
+            '[' . ScriptUrl('action=edit;id=' . UrlEncode($id)) . ' '
+            . T('create it now') . ']')
+}
+
 sub BrowsePage {
   my ($id, $raw, $comment, $status) = @_;
   OpenPage($id);
   my ($text, $revision, $summary) = GetTextRevision(GetParam('revision', ''));
-  $text = $NewText unless $revision or $Page{revision}; # new text for new pages
+  $text = NewText($id) unless $revision or $Page{revision}; # new text for new pages
   # handle a single-level redirect
   my $oldId = GetParam('oldid', '');
   if ((substr($text, 0, 10) eq '#REDIRECT ')) {
@@ -2461,7 +2465,7 @@ sub GetCommentForm {
   if ($CommentsPattern ne '' and $id and $rev ne 'history' and $rev ne 'edit'
       and $id =~ /$CommentsPattern/o and UserCanEdit($id, 0, 1)) {
     return $q->div({-class=>'comment'}, GetFormStart(undef, undef, 'comment'), # protected by questionasker
-       $q->p(GetHiddenValue('title', $id), $q->label({-for=>'aftertext', -accesskey=>T('c')}, $NewComment),
+       $q->p(GetHiddenValue('title', $id), $q->label({-for=>'aftertext', -accesskey=>T('c')}),
        $q->br(), GetTextArea('aftertext', $comment, 10)), $EditNote,
        $q->p($q->span({-class=>'username'},
 		      $q->label({-for=>'username'}, T('Username:')), ' ',
@@ -3630,7 +3634,7 @@ sub DoPost {
   } elsif ($old eq $string) {
     ReleaseLock();	 # No changes -- just show the same page again
     return ReBrowsePage($id);
-  } elsif ($oldrev == 0 and ($string eq $NewText or $string eq "\n")) {
+  } elsif ($oldrev == 0 and $string eq "\n") {
     ReportError(T('No changes to be saved.'), '400 BAD REQUEST'); # don't fake page creation because of webdav
   }
   my $newAuthor = 0;
