@@ -40,7 +40,7 @@ local $| = 1; # Do not buffer output (localized for mod_perl)
 # Options:
 our ($ScriptName, $FullUrl, $ModuleDir, $PageDir, $TempDir, $LockDir, $KeepDir, $RssDir,
      $ConfigFile, $RcFile, $RcOldFile, $IndexFile, $NoEditFile, $VisitorFile, $DeleteFile,
-     $RssLicense, $ReadMe,
+     $RssLicense,
      $FreeLinkPattern, $LinkPattern, $FreeInterLinkPattern, $InterLinkPattern,
      $UrlPattern, $FullUrlPattern, $InterSitePattern,
      $UrlProtocols, $ImageExtensions, $LastUpdate,
@@ -256,7 +256,6 @@ sub InitDirConfig {
   $VisitorFile = "$DataDir/visitors.log"; # List of recent visitors
   $DeleteFile  = "$DataDir/delete.log"; # Deletion logfile
   $RssDir      = "$DataDir/rss";    # For rss feed cache
-  $ReadMe      = "$DataDir/README"; # file with default content for the HomePage
   $ConfigFile ||= "$DataDir/config";  # Config file with Perl code to execute
   $ModuleDir  ||= "$DataDir/modules"; # For extensions (ending in .pm or .pl)
 }
@@ -2689,14 +2688,7 @@ sub OpenPage {      # Sets global variables
     %Page = ();
     $Page{ts} = $Now;
     $Page{revision} = 0;
-    if ($id eq $HomePage) {
-      my $F;
-      if (open($F, '<:encoding(UTF-8)', $ReadMe) or open($F, '<:encoding(UTF-8)', 'README')) {
-	local $/ = undef;
-	$Page{text} = <$F>;
-	close $F;
-      }
-    }
+    $Page{text} = T('Welcome!') if $id eq $HomePage;
   }
   $OpenPageName = $id;
 }
