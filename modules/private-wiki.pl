@@ -32,7 +32,7 @@ sub PrivateWikiInit {
   if (UserIsEditor()) {
     # keysize() is 32, but 24 and 16 are also possible, blocksize() is 16
     my $pass = GetParam('pwd');
-    $cipher = Crypt::Rijndael->new(pack "H*", GetParam('pwd'), Crypt::Rijndael::MODE_CBC());
+    $cipher = Crypt::Rijndael->new(pack("H*", GetParam('pwd')), Crypt::Rijndael::MODE_CBC());
     # TODO print error if the password Is not in hex?
 
     # We are using /dev/urandom (or other nonblocking source) because we don't want
