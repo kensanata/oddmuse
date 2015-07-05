@@ -19,9 +19,6 @@ use Test::More tests => 16;
 use utf8; # test data is UTF-8 and it matters
 
 SKIP: {
-
-  clear_pages();
-
   test_page(update_page('Legacy', 'an old page'), 'an old page');
 
   add_module('git.pl');

@@ -16,8 +16,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 5;
 
-clear_pages();
-
 xpath_test(update_page('Start', '[[Hello?]]'),
 	   '//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/wiki.pl?action=edit;id=Hello%3f"][text()="?"]');
 xpath_test(update_page('Hello?', 'Test'),

@@ -17,7 +17,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 20;
 
-clear_pages();
 add_module('simple-rules.pl');
 
 update_page('foo', 'test');

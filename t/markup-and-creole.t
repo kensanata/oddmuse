@@ -16,7 +16,6 @@
 require 't/test.pl';
 package OddMuse;
 use Test::More tests => 5;
-clear_pages();
 
 add_module('creole.pl');
 add_module('markup.pl');

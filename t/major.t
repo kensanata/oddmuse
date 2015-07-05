@@ -20,8 +20,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 64;
 
-clear_pages();
-
 # start with minor
 update_page('bar', 'one', '', 1); # lastmajor is undef
 test_page(get_page('action=browse id=bar diff=1'), 'No diff available', 'one', 'Last major edit',

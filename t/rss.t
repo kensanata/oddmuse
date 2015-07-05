@@ -18,7 +18,6 @@ package OddMuse;
 use Test::More tests => 114;
 use utf8; # tests contain UTF-8 characters and it matters
 
-clear_pages();
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
 
 xpath_test(get_page('action=browse id=HomePage username=alex'),

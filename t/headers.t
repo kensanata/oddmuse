@@ -17,8 +17,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 13;
 
-clear_pages();
-
 # without portrait-support
 
 # nothing

@@ -17,7 +17,7 @@ require 't/test.pl';
 package OddMuse;
 use utf8;
 use Test::More tests => 2;
-clear_pages();
+
 add_module('google-plus-one.pl');
 
 # Unfortunately, we cannot test Javascript! For now, test that it runs and that

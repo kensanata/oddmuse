@@ -18,8 +18,6 @@ package OddMuse;
 use Test::More tests => 9;
 use utf8; # tests contain UTF-8 characters and it matters
 
-clear_pages();
-
 # test message when using an undefined link pattern in a redirect
 test_page(update_page('John_Coltrane', '#REDIRECT Coltrane'),
 	  '#REDIRECT Coltrane',

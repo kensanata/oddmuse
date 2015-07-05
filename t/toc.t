@@ -19,8 +19,6 @@ package OddMuse;
 use Test::More tests => 30;
 use utf8;
 
-clear_pages();
-
 add_module('toc.pl');
 add_module('usemod.pl');
 

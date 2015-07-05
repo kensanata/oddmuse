@@ -17,8 +17,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 8;
 
-clear_pages();
-
 update_page('2009-08-14', 'this is the first page');
 update_page('2009-08-15', 'this is the second page');
 update_page('Archive', '<search second>');

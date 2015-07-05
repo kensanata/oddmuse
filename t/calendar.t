@@ -19,7 +19,6 @@
 require 't/test.pl';
 package OddMuse;
 use Test::More tests => 12;
-clear_pages();
 
 my ($sec, $min, $hour, $mday, $mon, $year) = localtime($Now);
 $mon++;

@@ -19,7 +19,6 @@
 require 't/test.pl';
 package OddMuse;
 use Test::More tests => 15;
-clear_pages();
 
 add_module('moin.pl');
 

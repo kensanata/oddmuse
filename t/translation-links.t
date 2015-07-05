@@ -18,8 +18,6 @@ package OddMuse;
 use Test::More tests => 33;
 use utf8; # tests contain UTF-8 characters and it matters
 
-clear_pages();
-
 add_module('translation-links.pl');
 
 AppendStringToFile($ConfigFile, q{

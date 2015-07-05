@@ -20,8 +20,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 11;
 
-clear_pages();
-
 update_page('link', 'some [http://example.com content]');
 update_page('long', q{This program is >>free<< software;
 you can redistribute it and/or modify it under the

@@ -16,8 +16,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 45;
 
-clear_pages();
-
 add_module('weblog-3.pl');
 
 update_page('This_paragraph', 'bla');

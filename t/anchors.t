@@ -16,8 +16,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 11;
 
-clear_pages();
-
 add_module('anchors.pl');
 add_module('link-all.pl');
 

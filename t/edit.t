@@ -20,8 +20,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 4;
 
-clear_pages();
-
 xpath_test(get_page('action=edit id=NewPage'),
 	   '//textarea[@name="text"][@id="text"][not(boolean(text()))]',
 	   '//div[@class="wrapper"]/div[@class="content edit"]',

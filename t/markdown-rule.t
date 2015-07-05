@@ -17,7 +17,6 @@
 require 't/test.pl';
 package OddMuse;
 use Test::More tests => 34;
-clear_pages();
 
 add_module('markdown-rule.pl');
 

@@ -18,7 +18,6 @@ package OddMuse;
 use Test::More tests => 4;
 use utf8; # tests contain UTF-8 characters and it matters
 
-clear_pages();
 add_module('tex.pl');
 
 test_page(update_page('Example', '4\times7 right\copyright a\inftyb'),

@@ -18,8 +18,6 @@ package OddMuse;
 use utf8; # tests contain UTF-8 characters and it matters
 use Test::More tests => 52;
 
-clear_pages();
-
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
 
 add_module('mail.pl');

@@ -17,8 +17,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 2;
 
-clear_pages();
-
 add_module('private-wiki.pl');
 
 open(F, '>:encoding(utf-8)', "$DataDir/config");

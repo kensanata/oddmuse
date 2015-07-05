@@ -17,7 +17,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 1;
 
-clear_pages();
 add_module('sitemap.pl');
 
 update_page('test', 'foo');

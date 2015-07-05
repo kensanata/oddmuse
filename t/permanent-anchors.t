@@ -18,8 +18,6 @@ package OddMuse;
 use Test::More tests => 25;
 use utf8; # tests contain UTF-8 characters and it matters
 
-clear_pages();
-
 add_module('permanent-anchors.pl');
 
 # define permanent anchor

@@ -17,8 +17,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 47;
 
-clear_pages();
-
 # Create a 2.2.6 wiki first.
 $page = qx(perl t/oddmuse-2.2.6.pl title=Test text=Hello);
 test_page($page, "Status: 302 Found");

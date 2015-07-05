@@ -18,7 +18,6 @@ package OddMuse;
 use Test::More tests => 15;
 use utf8;
 
-clear_pages();
 add_module('questionasker.pl');
 
 test_page_negative(update_page('test', 'edit allowed'),

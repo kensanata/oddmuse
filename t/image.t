@@ -17,8 +17,6 @@ package OddMuse;
 use Test::More tests => 33;
 use utf8; # tests contain UTF-8 characters and it matters
 
-clear_pages();
-
 add_module('image.pl');
 
 update_page('bar', 'foo');

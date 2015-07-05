@@ -20,8 +20,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 33;
 
-clear_pages();
-
 AppendStringToFile($ConfigFile, "\$PageCluster = 'Cluster';\n");
 
 update_page('ClusterIdea', 'This is just a page.', 'one');

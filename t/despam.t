@@ -20,8 +20,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 13;
 
-clear_pages();
-
 add_module('despam.pl');
 
 update_page('HilariousPage', "Ordinary text.");

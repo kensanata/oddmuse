@@ -16,8 +16,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 13;
 
-clear_pages();
-
 AppendStringToFile($ConfigFile, "\$UploadAllowed = 1;\n");
 
 test_page_negative(get_page('HomePage'), 'logo');

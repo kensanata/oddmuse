@@ -17,8 +17,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 42;
 
-clear_pages();
-
 $RcDefault = 7;
 AppendStringToFile($ConfigFile, "\$RcDefault = $RcDefault;\n");
 
