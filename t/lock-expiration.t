@@ -20,7 +20,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 17;
 
-clear_pages(); # this also disables Surge Protection
 AppendStringToFile($ConfigFile, "\$SurgeProtection = 1;\n");
 $localhost = 'confusibombus';
 $ENV{'REMOTE_ADDR'} = $localhost;

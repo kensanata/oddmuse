@@ -6,7 +6,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 22;
 
-clear_pages();
 add_module('crossbar.pl');
 
 # The crossbar page is editable only by administrators. Consequently, we enable

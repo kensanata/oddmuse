@@ -17,8 +17,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 12;
 
-clear_pages();
-
 test_page(update_page('Logo', "#FILE image/png\niVBORw0KGgoAAAA"), 'This page does not exist');
 
 AppendStringToFile($ConfigFile, "\$UploadAllowed = 1;\n");

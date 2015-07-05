@@ -17,8 +17,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 2;
 
-clear_pages();
-
 test_page(update_page('Test', 'Hallo'), 'Hallo');
 print qx(perl scripts/raw.pl --page $PageDir --dir $DataDir/raw/);
 my ($status, $data) = ReadFile("$DataDir/raw/Test"); # not fatal

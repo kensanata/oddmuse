@@ -16,7 +16,6 @@
 require 't/test.pl';
 package OddMuse;
 use Test::More tests => 3;
-clear_pages();
 
 add_module('google-custom-search.pl');
 

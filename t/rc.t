@@ -17,8 +17,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 92;
 
-clear_pages();
-
 # Before doing anything, let's check the More... links
 
 my $more = xpath_test(get_page('action=rc days=3'),

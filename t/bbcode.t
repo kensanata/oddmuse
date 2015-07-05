@@ -20,8 +20,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 39;
 
-clear_pages();
-
 add_module('bbcode.pl');
 
 run_tests(split('\n',<<'EOT'));

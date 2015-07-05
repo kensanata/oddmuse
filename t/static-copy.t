@@ -17,7 +17,6 @@ require 't/test.pl';
 package OddMuse;
 use utf8;
 use Test::More tests => 36;
-clear_pages();
 
 add_module('static-copy.pl');
 

@@ -20,8 +20,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 6;
 
-clear_pages();
-
 update_page('foo_moo', 'foo_bar');
 test_page(update_page('yadda', '<include "foo moo">'),
 	  qq{<div class="include foo_moo"><p>foo_bar</p></div>});

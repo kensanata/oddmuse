@@ -17,7 +17,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 59;
 
-clear_pages();
 # Using add_module causes problems during startup
 # add_module('usemod.pl');
 # add_module('aggregate.pl');

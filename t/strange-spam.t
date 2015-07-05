@@ -17,8 +17,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 12;
 
-clear_pages();
-
 add_module('strange-spam.pl');
 
 update_page('StrangeBannedContent', "XXX\n", undef, undef, 1);

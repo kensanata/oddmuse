@@ -20,8 +20,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 4;
 
-clear_pages();
-
 update_page('.dotfile', 'old content', 'older summary');
 update_page('.dotfile', 'some content', 'some summary');
 test_page(get_page('.dotfile'), 'some content');

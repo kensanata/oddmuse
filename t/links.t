@@ -20,7 +20,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 55;
 
-clear_pages();
 add_module('links.pl');
 
 update_page('InterMap',

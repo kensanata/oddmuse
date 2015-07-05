@@ -16,7 +16,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 29;
 
-clear_pages();
 add_module('private-pages.pl');
 
 # create password protected page: can't read it without password!

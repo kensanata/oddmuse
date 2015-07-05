@@ -20,8 +20,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 8;
 
-clear_pages();
-
 # Now let us test a more elaborate setup: Use TimeToRFC822 for pages.
 # Change JournalSort and Today accordingly, and test the past and
 # future stuff.

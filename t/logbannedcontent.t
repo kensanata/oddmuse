@@ -16,7 +16,7 @@
 require 't/test.pl';
 package OddMuse;
 use Test::More tests => 1;
-clear_pages();
+
 AppendStringToFile($ConfigFile, "\$BannedContent = 'MyBannedContent';\n");
 
 add_module('logbannedcontent.pl');

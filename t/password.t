@@ -16,7 +16,7 @@
 require 't/test.pl';
 package OddMuse;
 use Test::More tests => 6;
-clear_pages();
+
 AppendStringToFile($ConfigFile, "\$EditPass = 'bar';\n");
 test_page(update_page('test', 'normal edit'),
 	  'normal edit');
