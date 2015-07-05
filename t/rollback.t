@@ -17,11 +17,7 @@ package OddMuse;
 use Test::More tests => 69;
 use utf8; # tests contain UTF-8 characters and it matters
 
-WriteStringToFile($RcFile, "1FirstPage1\n");
-AppendStringToFile($RcFile, "2SecondPage1\n");
-
 # reproduce a particular bug from emacswiki.org
-clear_pages();
 update_page('SiteMap', 'initial entry');
 sleep(1);
 update_page('SiteMap', 'last good entry was a minor edit', '', 1);
