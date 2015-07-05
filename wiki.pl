@@ -79,7 +79,6 @@ our $SiteName    = 'Wiki';          # Name of site (used for titles)
 our $HomePage    = 'HomePage';      # Home page
 our $CookieName  = 'Wiki';          # Name for this wiki (for multi-wiki sites)
 
-our $SiteBase    = '';              # Full URL for <BASE> header
 our $MaxPost     = 1024 * 210;      # Maximum 210K posts (about 200K for pages)
 our $StyleSheet  = '';              # URL for CSS stylesheet (like '/wiki.css')
 our $StyleSheetPage = '';           # Page for CSS sheet
@@ -2323,12 +2322,11 @@ sub Cookie {
 
 sub GetHtmlHeader {   # always HTML!
   my ($title, $id) = @_;
-  my $base = $SiteBase ? $q->base({-href=>$SiteBase}) : '';
-  $base .= '<link rel="alternate" type="application/wiki" title="'
+  my $edit_link .= '<link rel="alternate" type="application/wiki" title="'
     . T('Edit this page') . '" href="'
     . ScriptUrl('action=edit;id=' . UrlEncode($id)) . '" />' if $id;
   return $DocumentHeader
-    . $q->head($q->title($title) . $base
+    . $q->head($q->title($title) . $edit_link
       . GetCss() . GetRobots() . GetFeeds() . $HtmlHeaders
       . '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />')
       . '<body class="' . GetParam('theme', 'default') . '">';
