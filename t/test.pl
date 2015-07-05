@@ -42,6 +42,7 @@ if ($ENV{PERLBREW_PATH}) {
   $ENV{PATH} = '/usr/local/bin:' . $ENV{PATH};
 }
 
+clear_pages();
 Init();
 use vars qw($redirect);
 

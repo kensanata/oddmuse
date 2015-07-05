@@ -16,8 +16,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 4;
 
-clear_pages();
-
 test_page(update_page('Test', 'some text'), 'some text');
 test_page(update_page('.emacs', 'some code'), 'some code');
 unlink $IndexFile;

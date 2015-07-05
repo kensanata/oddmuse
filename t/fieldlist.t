@@ -12,7 +12,6 @@
 require 't/test.pl';
 package OddMuse;
 use Test::More tests => 9;
-clear_pages();
 
 add_module('fieldlist.pl');
 

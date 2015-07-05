@@ -17,8 +17,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 3;
 
-clear_pages();
-
 # Test that newlines are in fact stripped
 update_page('Hello', 'Some text', '', '', '', "'username=alex'");
 update_page('Hello', 'Wrold', '', '', '', "'username=berta'");

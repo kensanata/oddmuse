@@ -15,7 +15,6 @@
 require 't/test.pl';
 package OddMuse;
 use Test::More tests => 36;
-clear_pages();
 
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
 

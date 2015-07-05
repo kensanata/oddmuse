@@ -26,7 +26,6 @@ SKIP: {
 
   skip "Captcha::reCAPTCHA not installed", 5 if $@;
 
-  clear_pages();
   $ENV{'REMOTE_ADDR'}='127.0.0.1';
   add_module('recaptcha.pl');
 

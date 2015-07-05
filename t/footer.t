@@ -16,7 +16,6 @@
 require 't/test.pl';
 package OddMuse;
 use Test::More tests => 3;
-clear_pages();
 
 xpath_test(get_page('Thelonius_M%c3%b6nk'),
 	   Encode::encode_utf8('//a[@class="admin"][@href="http://localhost/wiki.pl?action=admin;id=Thelonius_M%c3%b6nk"][text()="Administration"]'),

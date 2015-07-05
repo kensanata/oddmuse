@@ -18,8 +18,6 @@ package OddMuse;
 use Test::More tests => 18;
 use utf8;
 
-clear_pages();
-
 # Basic usage that broke when I last changed the cookie handling code.
 test_page(get_page('username=Alex'), 'Status: 404');
 test_page(get_page('action=browse id=Alex'), 'Alex');

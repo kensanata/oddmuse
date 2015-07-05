@@ -17,8 +17,6 @@ package OddMuse;
 use Test::More tests => 77;
 use utf8; # tests contain UTF-8 characters and it matters
 
-clear_pages();
-
 add_module('namespaces.pl');
 
 test_page_negative(get_page('/Test?username=alex'), 'Wiki Test: Test');

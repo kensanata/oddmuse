@@ -15,7 +15,7 @@
 require 't/test.pl';
 package OddMuse;
 use Test::More tests => 15;
-clear_pages();
+
 add_module('gravatar.pl');
 
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");

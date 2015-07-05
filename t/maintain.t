@@ -16,7 +16,6 @@
 require 't/test.pl';
 package OddMuse;
 use Test::More tests => 10;
-clear_pages();
 
 # old log entry to be moved
 my $log = join($FS, '1235079422', 'Ganz_und_Gar', '',

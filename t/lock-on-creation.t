@@ -20,8 +20,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 18;
 
-clear_pages();
-
 # Create a sample page, and test for regular expressions in the output
 
 $page = update_page('SandBox', 'This is a test.', 'first test');

@@ -16,7 +16,6 @@
 require 't/test.pl';
 package OddMuse;
 use Test::More tests => 2;
-clear_pages();
 
 test_page(get_page(q{'search=<script>alert("Owned!")</script>'}),
 	  quotemeta('Search for: &lt;script&gt;alert("Owned!")&lt;/script&gt;'));

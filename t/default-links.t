@@ -17,8 +17,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 63;
 
-clear_pages();
-
 $AllNetworkFiles = 1;
 
 update_page('HomePage', "This page exists.");

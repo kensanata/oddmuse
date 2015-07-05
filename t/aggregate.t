@@ -20,7 +20,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 24;
 
-clear_pages();
 add_module('aggregate.pl');
 
 update_page('InnocentPage', 'We are innocent!');

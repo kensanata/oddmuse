@@ -19,7 +19,6 @@
 require 't/test.pl';
 package OddMuse;
 use Test::More tests => 1;
-clear_pages();
 
 AppendStringToFile($ConfigFile, "\$PageCluster = 'Cluster';\n");
 

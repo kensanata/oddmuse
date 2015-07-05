@@ -17,8 +17,6 @@ package OddMuse;
 use Test::More tests => 6;
 use utf8; # tests contain UTF-8 characters and it matters
 
-clear_pages();
-
 test_page(update_page('HomePage', 'tätärätää!'),
 	  'Edit this page', 'Last edited', 'tätärätää!');
 

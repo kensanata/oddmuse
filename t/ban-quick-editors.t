@@ -16,8 +16,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 4;
 
-clear_pages();
-
 # switch it back on again
 AppendStringToFile($ConfigFile, "\$SurgeProtection = 1;\n");
 # make sure the visitors.log is filled

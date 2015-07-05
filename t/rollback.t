@@ -17,7 +17,6 @@ package OddMuse;
 use Test::More tests => 69;
 use utf8; # tests contain UTF-8 characters and it matters
 
-clear_pages();
 WriteStringToFile($RcFile, "1FirstPage1\n");
 AppendStringToFile($RcFile, "2SecondPage1\n");
 

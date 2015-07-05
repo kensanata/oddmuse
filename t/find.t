@@ -17,8 +17,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 18;
 
-clear_pages();
-
 add_module('find.pl');
 
 update_page('Alex', 'He is a man.');
