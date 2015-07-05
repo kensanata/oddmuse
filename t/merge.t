@@ -20,8 +20,6 @@ use Test::More tests => 3;
 # These tests are similar to conflict.t except we are interested in
 # UTF8 corruption.
 
-clear_pages();
-
 update_page('Test', 'Alex Schröder was born in Iceland.');
 my $page = get_page('action=edit id=Test');
 my $oldtime = xpath_test(get_page('action=edit id=Test'),
