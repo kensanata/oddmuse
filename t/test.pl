@@ -316,7 +316,14 @@ sub clear_pages {
   }
   die "Cannot remove '$DataDir'!\n" if -e $DataDir;
   mkdir $DataDir;
-  add_module('mac.pl') if $^O eq 'darwin'; # guessing HFS filesystem
+  if ($^O eq 'darwin') {
+    # On a Mac we are probably using the HFS filesystem which uses NFD instead
+    # of NFC for filenames. Since clear_pages runs as the very first thing, the
+    # modules directory doesn't exist, yet. And as Init() hasn't run, $ModuleDir
+    # is not set either. All we have is $DataDir.
+    $ModuleDir = "$DataDir/modules";
+    add_module('mac.pl');
+  }
   write_config_file();
 }
 
