@@ -44,7 +44,7 @@ Länge des Benutzernamens maximal 50 Zeichen: nicht gespeichert.
 This page contains an uploaded file:
 Diese Seite enthält eine hochgeladene Datei:
 No summary was provided for this file.
-
+Es gibt keine Inhaltsangabe für diese Datei.
 Recursive include of %s!
 %s wird rekursiv eingelesen!
 Clear Cache
@@ -119,10 +119,8 @@ List only major changes
 Nur grössere Änderungen
 Include minor changes
 Inklusive kleinere Änderungen
-%s days
-%s Tage
-%s day
-
+days
+Tage
 List later changes
 Spätere Änderungen
 RSS
@@ -529,6 +527,10 @@ Renaming %1 to %2.
 Die %1 Seite wird zu %2 umbenannt
 The page %s does not exist
 Die %s Seite gibt es nicht
+This page does not exist, but you can %s.
+Diese Seite gibt es nicht, aber du kannst %s.
+create it now
+sie jetzt anlegen
 The page %s already exists
 Die %s Seite gibt es schon
 Cannot rename %1 to %2
