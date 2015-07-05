@@ -16,8 +16,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 8;
 
-clear_pages();
-
 sub get_etag {
   my $str = shift;
   return $1 if $str =~ /Etag: (.*)\r\n/;

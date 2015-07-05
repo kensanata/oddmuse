@@ -17,7 +17,7 @@ require 't/test.pl';
 package OddMuse;
 use utf8;
 use Test::More tests => 17;
-clear_pages();
+
 add_module('like.pl');
 add_module('creole.pl');
 

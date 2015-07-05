@@ -17,8 +17,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 10;
 
-clear_pages();
-
 AppendStringToFile($ConfigFile, "\$BannedContent = 'MyBannedContent';\n");
 AppendStringToFile($ConfigFile, "\$MultiUrlWhiteList = 'MyWhitelist';\n");
 

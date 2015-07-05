@@ -17,8 +17,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 51;
 
-clear_pages();
-
 $today = CalcDay($Now);
 $tomorrow = CalcDay($Now + 24*60*60);
 $yesterday = CalcDay($Now - 24*60*60);

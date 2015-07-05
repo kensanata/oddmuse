@@ -20,8 +20,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 26;
 
-clear_pages();
-
 # Using the example files from the diff3 manual
 
 my $lao_file = q{The Way that can be told of is not the eternal Way;

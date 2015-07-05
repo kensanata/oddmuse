@@ -20,7 +20,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 17;
 
-clear_pages();
 test_page(get_page('action=editlock'), 'operation is restricted');
 test_page(get_page('action=editlock pwd=foo'), 'Edit lock created');
 xpath_test(update_page('TestLock', 'mu!'),

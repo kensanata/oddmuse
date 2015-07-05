@@ -18,8 +18,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 6;
 
-clear_pages();
-
 add_module('sidebar.pl');
 
 test_page(update_page($SidebarName, 'mu'), '<div class="sidebar"><p>mu</p></div>');

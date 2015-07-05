@@ -16,8 +16,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 12;
 
-clear_pages();
-
 AppendStringToFile($ConfigFile, "\$StyleSheetPage = 'css';\n");
 
 # Default

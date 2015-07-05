@@ -16,8 +16,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 21;
 
-clear_pages();
-
 add_module('ban-contributors.pl');
 $localhost = '127.0.0.1';
 $ENV{'REMOTE_ADDR'} = $localhost;

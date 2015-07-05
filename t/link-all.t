@@ -20,8 +20,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 2;
 
-clear_pages();
-
 add_module('link-all.pl');
 
 update_page('foo', 'link-all for bar');

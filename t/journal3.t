@@ -16,8 +16,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 35;
 
-clear_pages();
-
 update_page('2011-12-17', "today");
 update_page('2011-12-16', "yesterday");
 update_page('2011-12-15', "before yesterday");

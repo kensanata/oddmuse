@@ -20,8 +20,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 44;
 
-clear_pages();
-
 add_module('usemod.pl');
 
 InitVariables();

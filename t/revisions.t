@@ -20,8 +20,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 16;
 
-clear_pages();
-
 ## Test revision and diff stuff
 
 update_page('KeptRevisions', 'first');

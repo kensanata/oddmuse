@@ -20,8 +20,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 37;
 
-clear_pages();
-
 $page = get_page('action=history id=hist');
 test_page($page,
 	  'No other revisions available',

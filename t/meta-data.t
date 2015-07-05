@@ -17,8 +17,6 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 5;
 
-clear_pages();
-
 AppendStringToFile($ConfigFile, qq(\$HtmlHeaders = '<meta name="ICBM" content="47.3787648948578, 8.52716503722805">'
       . '<meta name="DC.title" content="Home of Alex">';\n));
 xpath_test(get_page('HomePage'),
