@@ -18,8 +18,6 @@ package OddMuse;
 use Test::More tests => 41;
 use utf8; # tests contain UTF-8 characters and it matters
 
-clear_pages();
-
 add_module('mac.pl');
 
 # Search for broken regular expressions

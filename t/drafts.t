@@ -17,8 +17,6 @@ package OddMuse;
 use Test::More tests => 26;
 use utf8;
 
-clear_pages();
-
 # No draft button by default
 test_page_negative(get_page('action=edit id=HomePage'),
 		   'Save Draft');

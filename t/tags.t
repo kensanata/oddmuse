@@ -18,8 +18,6 @@ package OddMuse;
 use Test::More tests => 70;
 use utf8;
 
-clear_pages();
-
 add_module('tags.pl');
 InitVariables();
 

@@ -17,8 +17,6 @@ package OddMuse;
 use Test::More tests => 11;
 use utf8; # tests contain UTF-8 characters and it matters
 
-clear_pages();
-
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
 
 test_page(update_page('2011-07-06', 'Hallo'),

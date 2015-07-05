@@ -17,8 +17,6 @@ package OddMuse;
 use Test::More tests => 25;
 use utf8;
 
-clear_pages();
-
 # encoding stuff
 update_page('dash', "- en ‘dash’\n");
 update_page('dash', "- en ‘dash’\n— em “dash”\n");

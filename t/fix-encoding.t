@@ -17,7 +17,6 @@ package OddMuse;
 use Test::More tests => 22;
 use utf8; # tests contain UTF-8 characters and it matters
 
-clear_pages();
 add_module('fix-encoding.pl');
 
 # make sure no menu shows if no page is provided

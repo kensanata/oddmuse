@@ -17,8 +17,6 @@ package OddMuse;
 use Test::More tests => 40;
 use utf8; # tests contain UTF-8 characters and it matters
 
-clear_pages();
-
 xpath_test(update_page('Start', '[[D&D]]'),
 	   '//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/wiki.pl?action=edit;id=D%26D"][text()="?"]');
 xpath_test(get_page('action=rc'),
