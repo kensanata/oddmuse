@@ -61,7 +61,7 @@ SKIP: {
   # This page must actually exist and link back!
   $response = $ua->get('http://oddmuse.org/test.html');
   ok($response->is_success, "http://oddmuse.org/test.html exists");
-  test_page($response->content, $ScriptName);
+  test_page($response->content, "http://localhost/cgi-bin/wiki.pl");
 
   # If it is lost, here's what it should contain:
 
