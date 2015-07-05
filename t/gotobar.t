@@ -18,8 +18,6 @@ package OddMuse;
 use Test::More tests => 7;
 use utf8;
 
-clear_pages();
-
 add_module('gotobar.pl');
 
 test_page(update_page('GotoBar', q{
