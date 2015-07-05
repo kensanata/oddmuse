@@ -46,8 +46,6 @@ SKIP: {
   skip("Wiki running at $wiki doesn't have the atom extension installed", 42)
     unless $response->content =~ /\$Id: atom\.pl/;
 
-  clear_pages();
-
   my $api = XML::Atom::Client->new;
   my $entry = XML::Atom::Entry->new;
   my $title = 'New Post';

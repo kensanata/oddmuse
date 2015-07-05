@@ -21,7 +21,6 @@ use Test::More tests => 3;
 # ($ts, $id, $minor, $summary, $host, $username, $revision, $languages, $cluster)
 # ($ts, '[[rollback]]', $to, $page)
 
-clear_pages();
 WriteStringToFile ($RcFile, "1Aone1\n"); # original
 AppendStringToFile($RcFile, "2Atwo2\n"); # to be rolled back
 AppendStringToFile($RcFile, "3A0one3\n"); # back to the original

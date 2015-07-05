@@ -25,8 +25,6 @@ $dir = cwd;
 $uri = "file://$dir/t/feeds";
 $uri =~ s/ /%20/g; # for cygdrive stuff including spaces
 
-clear_pages();
-
 add_module('localnames.pl');
 
 xpath_test(update_page('LocalNames', "* [http://www.oddmuse.org/ OddMuse]\n"
