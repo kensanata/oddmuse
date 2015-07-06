@@ -94,7 +94,7 @@ our $PassSalt  //= '';              # Salt will be added to any password before 
 our $BannedHosts = 'BannedHosts';   # Page for banned hosts
 our $BannedCanRead = 1;             # 1 = banned cannot edit, 0 = banned cannot read
 our $BannedContent = 'BannedContent'; # Page for banned content (usually for link-ban)
-our $WikiLinks   = 1;               # 1 = LinkPattern is a link
+our $WikiLinks   = '';              # 1 = LinkPattern is a link
 our $FreeLinks   = 1;               # 1 = [[some text]] is a link
 our $UseQuestionmark = 1;           # 1 = append questionmark to links to nonexisting pages
 our $BracketText = 1;               # 1 = [URL desc] uses a description for the URL
