@@ -1084,7 +1084,7 @@ sub GetInterLink {
   } elsif (not $text) {
     $text = $q->span({-class=>'site'}, $site)
       . $q->span({-class=>'separator'}, ':')
-      . $q->span({-class=>'page'}, $page);
+      . $q->span({-class=>'interpage'}, $page);
   } elsif ($bracket) {    # and $text is set
     $class .= ' outside';
   }
