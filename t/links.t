@@ -21,7 +21,9 @@ package OddMuse;
 use Test::More tests => 55;
 
 add_module('links.pl');
-
+AppendStringToFile($ConfigFile, q{
+$WikiLinks = 1;
+});
 update_page('InterMap',
 	    " Oddmuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n",
 	    'required', 0, 1);
