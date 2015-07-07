@@ -36,6 +36,8 @@ xpath_test(update_page('LocalNames', "* [http://www.oddmuse.org/ OddMuse]\n"
 
 InitVariables();
 
+$WikiLinks = 1;
+
 xpath_run_tests(split('\n',<<'EOT'));
 [http://www.oddmuse.org/ OddMuse]
 //a[@class="url http outside"][@href="http://www.oddmuse.org/"][text()="OddMuse"]
@@ -43,6 +45,7 @@ OddMuse
 //a[@class="near"][@title="LocalNames"][@href="http://www.oddmuse.org/"][text()="OddMuse"]
 EOT
 
+AppendStringToFile($ConfigFile, "\$WikiLinks = 1;\n");
 
 # now check whether the integration with InitVariables works
 $page = update_page('LocalNamesTest', 'OddMuse [[my blog]]');
