@@ -18,7 +18,8 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 55;
+use Test::More tests => 60;
+use utf8;
 
 add_module('links.pl');
 AppendStringToFile($ConfigFile, q{
@@ -59,22 +60,24 @@ xpath_test(get_page('action=links inter=1'), @Test);
 
 AppendStringToFile($ConfigFile, "\$BracketWiki = 0;\n");
 
-update_page('a', '[[b]] [[[c]]] [[d|e]] FooBar [FooBaz] [FooQuux fnord] ');
+update_page('a', '[[b]] [[[c]]] [[d|e]] FooBar 𝖀𝖓𝖎𝖈𝖔𝖉𝖊𝓦𝓲𝓴𝓲𝓦𝓸𝓻𝓭𝓼 東京 [FooBaz] [FooQuux fnord] ');
 $page = get_page('action=links raw=1');
 
 test_page($page, split('\n',<<'EOT'));
 "a" -> "b"
 "a" -> "c"
 "a" -> "FooBar"
+"a" -> "𝖀𝖓𝖎𝖈𝖔𝖉𝖊𝓦𝓲𝓴𝓲𝓦𝓸𝓻𝓭𝓼"
 "a" -> "FooBaz"
 "a" -> "FooQuux"
 EOT
 
 test_page_negative($page, '"a" -> "d"');
+test_page_negative($page, '"a" -> "東京"'); # WikiWords can only work for languages where capitalization exists.
 
 AppendStringToFile($ConfigFile, "\$BracketWiki = 1;\n");
 
-update_page('a', '[[b]] [[[c]]] [[d|e]] FooBar [FooBaz] [FooQuux fnord] '
+update_page('a', '[[b]] [[[c]]] [[d|e]] FooBar 𝖀𝖓𝖎𝖈𝖔𝖉𝖊𝓦𝓲𝓴𝓲𝓦𝓸𝓻𝓭𝓼 [FooBaz] [FooQuux fnord] '
 	    . 'http://www.oddmuse.org/ [http://www.emacswiki.org/] '
 	    . '[http://www.communitywiki.org/ cw]');
 
@@ -83,6 +86,7 @@ update_page('a', '[[b]] [[[c]]] [[d|e]] FooBar [FooBaz] [FooQuux fnord] '
 "a" -> "c"
 "a" -> "d"
 "a" -> "FooBar"
+"a" -> "𝖀𝖓𝖎𝖈𝖔𝖉𝖊𝓦𝓲𝓴𝓲𝓦𝓸𝓻𝓭𝓼"
 "a" -> "FooBaz"
 "a" -> "FooQuux"
 EOT
