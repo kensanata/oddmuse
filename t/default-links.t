@@ -1,4 +1,4 @@
-# Copyright (C) 2006, 2007, 2008  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006–2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ $AllNetworkFiles = 1;
 update_page('HomePage', "This page exists.");
 update_page('InterMap', " Oddmuse http://www.emacswiki.org/cgi-bin/oddmuse.pl?\n PlanetMath http://planetmath.org/encyclopedia/%s.html", 'required', 0, 1);
 $InterInit = 0;
+$WikiLinks = 1; # old default
 $BracketWiki = 0; # old default
 InitVariables();
 
@@ -87,25 +88,25 @@ URL in brackets with other text: [http://www.oddmuse.org/|oddmuse]
 URL in brackets with other text: [[http://www.oddmuse.org/|oddmuse]]
 //a[@class="url http outside"][@href="http://www.oddmuse.org/"][text()="oddmuse"]
 URL abbreviation: Oddmuse:Link_Pattern
-//a[@class="inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"]/span[@class="site"][text()="Oddmuse"]/following-sibling::span[@class="separator"][text()=":"]/following-sibling::span[@class="page"][text()="Link_Pattern"]
+//a[@class="inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"]/span[@class="site"][text()="Oddmuse"]/following-sibling::span[@class="separator"][text()=":"]/following-sibling::span[@class="interpage"][text()="Link_Pattern"]
 URL abbreviation with extra brackets: [Oddmuse:Link_Pattern]
 //a[@class="inter Oddmuse number"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
 URL abbreviation with other text: [Oddmuse:Link_Pattern link patterns]
 //a[@class="inter Oddmuse outside"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"][text()="link patterns"]
 URL abbreviation with meta characters: Oddmuse:Link+Pattern
-//a[@class="inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link+Pattern"]/span[@class="site"][text()="Oddmuse"]/following-sibling::span[@class="separator"][text()=":"]/following-sibling::span[@class="page"][text()="Link+Pattern"]
+//a[@class="inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link+Pattern"]/span[@class="site"][text()="Oddmuse"]/following-sibling::span[@class="separator"][text()=":"]/following-sibling::span[@class="interpage"][text()="Link+Pattern"]
 URL abbreviation with meta characters and extra brackets: [Oddmuse:Link+Pattern]
 //a[@class="inter Oddmuse number"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link+Pattern"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
 URL abbreviation with meta characters and other text: [Oddmuse:Link+Pattern link patterns]
 //a[@class="inter Oddmuse outside"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link+Pattern"][text()="link patterns"]
 free URL abbreviation: [[Oddmuse:Link Pattern]]
-//a[@class="inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern"]/span[@class="site"][text()="Oddmuse"]/following-sibling::span[@class="separator"][text()=":"]/following-sibling::span[@class="page"][text()="Link Pattern"]
+//a[@class="inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern"]/span[@class="site"][text()="Oddmuse"]/following-sibling::span[@class="separator"][text()=":"]/following-sibling::span[@class="interpage"][text()="Link Pattern"]
 free URL abbreviation with extra brackets: [[[Oddmuse:Link Pattern]]]
 //a[@class="inter Oddmuse number"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
 free URL abbreviation with other text: [[Oddmuse:Link Pattern|link patterns]]
 //a[@class="inter Oddmuse outside"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern"][text()="link patterns"]
 free URL abbreviation with meta characters: [[Oddmuse:Link+Pattern]]
-//a[@class="inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%2bPattern"]/span[@class="site"][text()="Oddmuse"]/following-sibling::span[@class="separator"][text()=":"]/following-sibling::span[@class="page"][text()="Link+Pattern"]
+//a[@class="inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%2bPattern"]/span[@class="site"][text()="Oddmuse"]/following-sibling::span[@class="separator"][text()=":"]/following-sibling::span[@class="interpage"][text()="Link+Pattern"]
 free URL abbreviation with meta characters and extra brackets: [[[Oddmuse:Link+Pattern]]]
 //a[@class="inter Oddmuse number"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%2bPattern"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
 free URL abbreviation with meta characters and other text: [[Oddmuse:Link+Pattern|link patterns]]
@@ -147,13 +148,13 @@ URL in brackets: [http://www.oddmuse.org/]
 URL in brackets with other text: [http://www.oddmuse.org/ oddmuse]
 //a[@class="url http outside"][@href="http://www.oddmuse.org/"][text()="oddmuse"]
 URL abbreviation: Oddmuse:Link_Pattern
-//a[@class="inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"]/span[@class="site"][text()="Oddmuse"]/following-sibling::span[@class="separator"][text()=":"]/following-sibling::span[@class="page"][text()="Link_Pattern"]
+//a[@class="inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"]/span[@class="site"][text()="Oddmuse"]/following-sibling::span[@class="separator"][text()=":"]/following-sibling::span[@class="interpage"][text()="Link_Pattern"]
 URL abbreviation with extra brackets: [Oddmuse:Link_Pattern]
 //a[@class="inter Oddmuse number"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
 URL abbreviation with other text: [Oddmuse:Link_Pattern link patterns]
 //a[@class="inter Oddmuse outside"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link_Pattern"][text()="link patterns"]
 free URL abbreviation: [[Oddmuse:Link Pattern]]
-//a[@class="inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern"]/span[@class="site"][text()="Oddmuse"]/following-sibling::span[@class="separator"][text()=":"]/following-sibling::span[@class="page"][text()="Link Pattern"]
+//a[@class="inter Oddmuse"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern"]/span[@class="site"][text()="Oddmuse"]/following-sibling::span[@class="separator"][text()=":"]/following-sibling::span[@class="interpage"][text()="Link Pattern"]
 free URL abbreviation with extra brackets: [[[Oddmuse:Link Pattern]]]
 //a[@class="inter Oddmuse number"][@href="http://www.emacswiki.org/cgi-bin/oddmuse.pl?Link%20Pattern"]/span/span[@class="bracket"][text()="["]/following-sibling::text()[string()="1"]/following-sibling::span[@class="bracket"][text()="]"]
 free URL abbreviation with other text: [[Oddmuse:Link Pattern|link pattern]]
