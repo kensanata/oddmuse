@@ -21,6 +21,7 @@ package OddMuse;
 use Test::More tests => 33;
 
 AppendStringToFile($ConfigFile, "\$PageCluster = 'Cluster';\n");
+AppendStringToFile($ConfigFile, "\$WikiLinks = 1;\n");
 
 update_page('ClusterIdea', 'This is just a page.', 'one');
 update_page('ClusterIdea', "This is just a page.\nBut somebody has to do it.", 'two');

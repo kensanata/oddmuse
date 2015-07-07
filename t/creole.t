@@ -23,6 +23,8 @@ add_module('creole.pl');
 # Permit testing of dash-style list markup.
 $CreoleDashStyleUnorderedLists = 1;
 
+$WikiLinks = 1;
+
 run_tests(split('\n',<<'EOT'));
 # one
 <ol><li>one</li></ol>

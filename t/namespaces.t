@@ -18,6 +18,7 @@ use Test::More tests => 77;
 use utf8; # tests contain UTF-8 characters and it matters
 
 add_module('namespaces.pl');
+AppendStringToFile($ConfigFile, "\$WikiLinks = 1;\n");
 
 test_page_negative(get_page('/Test?username=alex'), 'Wiki Test: Test');
 
@@ -83,7 +84,7 @@ xpath_test(get_page('action=browse id=Goo ns=Ford oldid=Muu:Mu'),
 	  '//div[@class="message"]/p[contains(text(),"redirected from")]/a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/wiki.pl/Muu?action=edit;id=Mu"][text()="Muu:Mu"]');
 # check Main:Mu and verify that only a single redirection hop is allowed
 xpath_test(get_page('action=browse id=Mu ns=Muu oldid=Main:Mu'),
-	   '//div/p[contains(text(),"#REDIRECT")]/a[@href="http://localhost/wiki.pl/Ford/Goo"][@class="inter Ford"]/span[@class="site"][text()="Ford"]/following-sibling::span[@class="page"][text()="Goo"]');
+	   '//div/p[contains(text(),"#REDIRECT")]/a[@href="http://localhost/wiki.pl/Ford/Goo"][@class="inter Ford"]/span[@class="site"][text()="Ford"]/following-sibling::span[@class="interpage"][text()="Goo"]');
 # redirecting back to the Main namespace is different, so test separately
 test_page(update_page('BackHome', '#REDIRECT Main:HomePage', undef, undef, undef, 'ns=Muu'),
 	  'Status: 302',

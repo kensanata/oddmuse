@@ -17,6 +17,7 @@ package OddMuse;
 use Test::More tests => 16;
 
 add_module('near-links.pl');
+AppendStringToFile($ConfigFile, "\$WikiLinks = 1;\n");
 
 CreateDir($NearDir);
 WriteStringToFile("$NearDir/EmacsWiki", "AlexSchroeder\nFooBar\n"
