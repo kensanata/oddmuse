@@ -33,6 +33,7 @@ test_page(get_page('action=browse id=HomePage username=AlexSchroeder'),
 test_page(get_page('action=browse id=HomePage username=Alex%20Schroeder'),
 	  'username=Alex Schroeder');
 AppendStringToFile($ConfigFile, "\$FreeLinks = 0;\n");
+AppendStringToFile($ConfigFile, "\$WikiLinks = 1;\n");
 test_page(get_page('action=browse id=HomePage username=Alex%20Schroeder'),
 	  'Invalid UserName Alex Schroeder: not saved');
 test_page(get_page('action=browse id=HomePage username=AlexSchroeder'),
