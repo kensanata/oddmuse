@@ -1,0 +1,122 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Copyright 2006 Free Software Foundation, Inc.
+#
+# GNU Radio is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3, or (at your option)
+# any later version.
+#
+# GNU Radio is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with GNU Radio; see the file COPYING.  If not, write to
+# the Free Software Foundation, Inc., 51 Franklin Street,
+# Boston, MA 02110-1301, USA.
+
+# This file is based on code from GNU Radio.
+# https://github.com/balister/GNU-Radio/blob/master/dtools/bin/fix-copyright-years
+
+import re
+import datetime
+import subprocess
+import multiprocessing
+
+def command(*args): return subprocess.Popen(args, stdout=subprocess.PIPE).communicate()[0]
+
+def is_free_software(lines):
+    for line in lines[:50]:
+        if 'This program is free software' in line: return True
+    return False
+
+def get_copyright_lines(lines):
+    start = -1
+    end = -1
+    for i, line in enumerate(lines[:20]):
+        if line.startswith('# Copyright'):
+            if start == -1: start = i
+            end = i
+    if start == -1: raise Exception
+    return start, end
+
+def copyright_line(author, years):
+    from_year = years.pop()
+    to_year = from_year
+    for year in years:
+        if year > to_year: to_year = year
+        elif year < from_year: from_year = year
+
+    if from_year == to_year:
+        return '# Copyright (C) %d  %s\n' % (from_year, author)
+    else:
+        return '# Copyright (C) %d–%d  %s\n' % (from_year, to_year, author)
+
+author_re = re.compile('\nAuthor: (.*)\nDate:.* (\d\d\d\d) ')
+
+def fix_co_years(files):
+    for file in files:
+        print file
+        years = {}
+        changed = False
+        lines = open(file).readlines()
+        if not is_free_software(lines):
+            print '    is not Free Software'
+            continue
+
+        # extract authors and years from git log
+        log = command('git', 'log', file)
+        it = re.finditer(author_re, log)
+        for match in it:
+            author, year = match.groups()
+            if author in years:
+                years[author].add(int(year))
+            else:
+                years[author] = set([int(year)])
+                
+        # extract copyright beginning and end from 
+        try:
+            start, end = get_copyright_lines(lines)
+        except:
+            print '    copyright lines not found'
+            continue
+
+        # only update or add existing authors, don't touch authors not in git log
+        for author in years.keys():
+            found = False
+            for i in range(start, end + 1):
+                if author in lines[i]:
+                    line = copyright_line(author, years[author])
+                    if line != lines[i]:
+                        lines[i] = line
+                        changed = True
+                    found = True
+                    continue
+                
+            if not found:
+                lines.insert(end, copyright_line(author, years[author]))
+                changed = True
+
+        # write file
+        if changed:
+            # print ''.join(lines[:30])
+            # print '------------------------------------------------------------------------'
+            open(file, 'w').write(''.join(lines))
+
+if __name__ == "__main__":
+    # get recursive list of files in the repo
+    files = command('git', 'ls-tree', '--name-only', 'HEAD', '-r').splitlines()
+    # files = ['contrib/campaignwiki/add-link.pl']
+    
+    # start n+1 processes to handle the files
+    num_procs = multiprocessing.cpu_count()
+    # num_procs = 1
+    procs = [multiprocessing.Process(
+        target=lambda *files: fix_co_years(files),
+        args=files[num::num_procs],
+    ) for num in range(num_procs)]
+    map(multiprocessing.Process.start, procs)
+    map(multiprocessing.Process.join, procs)
