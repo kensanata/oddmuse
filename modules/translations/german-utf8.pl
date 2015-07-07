@@ -1,7 +1,7 @@
 # UTF-8 encoded German translation file for use with Oddmuse
 #
 # Copyright (c) 2003  Karl Loncarek <karl@loncarek.de>
-# Copyright (c) 2003-2014  Alex Schröder <alex@gnu.org>
+# Copyright (c) 2003-2015  Alex Schröder <alex@gnu.org>
 #
 # Permission is granted to copy, distribute and/or modify this document under
 # the terms of the GNU Free Documentation License, Version 1.2 or any later
@@ -254,7 +254,7 @@ c
 Edit revision %s of this page
 Version %s dieser Seite bearbeiten
 e
-b
+
 This page is read-only
 Diese Seite ist schreibgeschützt
 View other revisions
@@ -394,13 +394,13 @@ Sie sind momentan ein Redaktor auf dieser Webseite.
 You are a normal user on this site.
 Sie sind ein normaler Benutzer auf dieser Webseite.
 You do not have a password set.
-
+Sie haben kein Passwort gesetzt
 Your password does not match any of the administrator or editor passwords.
 Ihr Passwort stimmt nicht mit einem Administrator- oder Redaktor-Passwort überein.
 Password:
 Passwort:
 Return to 
-
+Zurück zu 
 This operation is restricted to site editors only...
 Diese Aktion darf nur von Redaktoren durchgeführt werden...
 This operation is restricted to administrators only...
@@ -716,11 +716,11 @@ Kommentar hinzufügen
 ordinary changes
 normale Änderungen
 Could not identify the paragraph you were editing
-
+Der bearbeitete Paragraph wurde nicht gefunden
 This is the section you edited:
-
+Diesen Abschnitt haben Sie bearbeitet:
 This is the current page:
-
+Das ist die aktuelle Seite:
 Matching page names:
 Übereinstimmende Seitennamen:
 Fix character encoding
@@ -760,11 +760,11 @@ Oddmuse
 Cleaning up git repository
 Git Repo wird aufgeräumt
 Google +1 Buttons
-
+Google +1 Schaltflächen
 All Pages +1
-
+Alle Seiten mit Google +1 Schaltflächen
 This page lists the twenty last diary entries and their +1 buttons.
-
+Diese Seite führt die letzten zwanzig Tagesseiten mit ihren +1 Schaltflächen auf.
 Email: 
 Email: 
 Could not find %1.html template in %2
@@ -916,13 +916,13 @@ Sprachen:
 Show!
 Zeigen!
 ====(\d+) persons? liked this====
-
+====(\d+) Person(en)? liked this====
 ====%d persons liked this====
-
+====%d Personen gefällt das====
 ====1 person liked this====
-
+====1 Person gefällt das====
 I like this!
-
+Das gefällt mir!
 Define
 Definieren
 Full Link List
@@ -1078,43 +1078,43 @@ Es wurden keine Email Adressen gefundne, die zu migrieren wären.
 Migrated %s rows.
 %s Zeilen wurden migriert.
 Bisect modules
-
+Bisektion der Module
 Module Bisect
-
+Bisektion der Module
 All modules enabled now!
-
+Alle Module sind im Moment aktiv!
 Go back
-
+Zurück
 Test / Always enabled / Always disabled
-
+Test / Immer aktiv / Immer deaktiviert
 Start
-
+Start
 Biscecting proccess is already active.
-
+Der Bisektionsprozess ist schon aktiv.
 Stop
-
+Stop
 It seems like module %s is causing your problem.
-
+Sieht so aus wie wenn Modul %s das Problem verursacht.
 Please note that this module does not handle situations when your problem is caused by a combination of specific modules (which is rare anyway).
-
+Bitte beachten Sie, dass dieses Module das Problem nicht isolieren kann, wenn es durch das gemeinsame Installieren mehrerer Module auftaucht.
 Good luck fixing your problem! ;)
-
+Viel Glück beim Beheben des Problems! ;)
 Module count (only testable modules): 
-
+Anzahl Module, die getestet werden können:
 Current module statuses:
-
+Aktueller Status der Module:
 Good
-
+Gut
 Bad
-
+Schlecht
 Enabling %s
-
+%s aktivieren
 Update modules
 Module auf den neuesten Stand bringen
 Module Updater
 Modul Updater
 Looks good. Update modules now!
-
+Sieht gut aus. Module werden auf den neusten Stand gebracht!
 You linked more than %s times to the same domain. It would seem that only a spammer would do this. Your edit is refused.
 Sie haben mehr als %s Links auf die selbe Domäne gesetzt. Normalerweise machen das nur Spammer. Die Änderung wird deswegen abgelehnt.
 %s is not a legal name for a namespace
@@ -1204,11 +1204,11 @@ Diese Seite ist durch ein Passwort geschützt. Falls Sie das Passwort kennen, k�
 supply the password now
 dieses nun angeben
 This error should not happen. If your password is set correctly and you are still seeing this message, then it is a bug, please report it. If you are just a stranger and trying to get unsolicited access, then keep in mind that all of the data is encrypted with AES-256 and the key is not stored on the server, good luck.
-
+Dieser Fehler sollte nicht passieren. Falls ihr Passwort korrekt gesetzt ist und diese Fehlermeldung trotzdem auftaucht, dann handelt es sich um einen Fehler. Bitte melden Sie den Fehler!
 Attempt to read encrypted data without a password.
-
+Die verschlüsselten Daten können ohne Passwort nicht gelesen werden.
 Cannot refresh index.
-
+Der Index kann nicht geschrieben werden.
 Publish %s
 %s publizieren
 No target wiki was specified in the config file.
@@ -1274,17 +1274,17 @@ Versuchen Sie es später nocheinmal. Vielleicht werden gerade Wartungsarbeiten d
 thumb
 Vorschau
 Error creating thumbnail from non existant page %s.
-
+Die Vorschau für %s konnte nicht erstellt werden, da diese Seite nicht existiert.
 Can not create thumbnail for file type %s.
-
+Für Dateien vom Typ %s kann keine Vorschau erstellt werden.
 Can not create thumbnail for a text document
-
+Für ein Text Dokument kann keine Vorschau erstellt werden
 Can not create path for thumbnail - %s
-
+Der Pfad für die Vorschau konnte nicht erstellt werden: %s
 Could not open %s for writing whilst trying to save image before creating thumbnail. Check write permissions.
-
+%s konnte nicht geschrieben werden. Bitte überprüfen Sie die Berechtigungen.
 Failed to run %1 to create thumbnail: %2
-
+%1 konnte nicht gestartet werden. Die Vorschau wurde nicht erstellt: %2
 %s ran into an error
 %s hat einen Fehler festgestellt
 %s produced no output
