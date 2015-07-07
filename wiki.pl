@@ -364,7 +364,7 @@ sub SetParam {
 sub InitLinkPatterns {
   my ($WikiWord, $QDelim);
   $QDelim = '(?:"")?'; # Optional quote delimiter (removed from the output)
-  $WikiWord = '[A-Z]+[a-z\x{0080}-\x{fffd}]+[A-Z][A-Za-z\x{0080}-\x{fffd}]*'; # exclude noncharacters FFFE and FFFF
+  $WikiWord = '\p{Uppercase}+\p{Lowercase}+\p{Uppercase}\p{Alphabetic}*';
   $LinkPattern = "($WikiWord)$QDelim";
   $FreeLinkPattern = "([-,.()'%&?;<> _1-9A-Za-z\x{0080}-\x{fffd}]|[-,.()'%&?;<> _0-9A-Za-z\x{0080}-\x{fffd}][-,.()'%&?;<> _0-9A-Za-z\x{0080}-\x{fffd}]+)"; # disallow "0" and must match HTML and plain text (ie. > and &gt;)
   # Intersites must start with uppercase letter to avoid confusion with URLs.
