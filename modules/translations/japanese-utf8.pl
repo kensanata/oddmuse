@@ -18,7 +18,7 @@
 use utf8;
 use strict;
 
-AddModuleDescription('japanese-utf8.pl', 'Japanese');
+AddModuleDescription('japanese-utf8.pl', 'Japanese') if defined &AddModuleDescription;
 
 our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.

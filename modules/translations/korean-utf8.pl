@@ -18,7 +18,7 @@
 use utf8;
 use strict;
 
-AddModuleDescription('korean-utf8.pl', 'Korean');
+AddModuleDescription('korean-utf8.pl', 'Korean') if defined &AddModuleDescription;
 
 our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.

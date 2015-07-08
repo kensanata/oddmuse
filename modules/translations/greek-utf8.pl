@@ -18,7 +18,7 @@
 use utf8;
 use strict;
 
-AddModuleDescription('greek-utf8.pl', 'Greek');
+AddModuleDescription('greek-utf8.pl', 'Greek') if defined &AddModuleDescription;
 
 our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.

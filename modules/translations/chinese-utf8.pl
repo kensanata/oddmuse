@@ -21,7 +21,7 @@
 use utf8;
 use strict;
 
-AddModuleDescription('chinese-utf8.pl', 'Chinese');
+AddModuleDescription('chinese-utf8.pl', 'Chinese') if defined &AddModuleDescription;
 
 our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.

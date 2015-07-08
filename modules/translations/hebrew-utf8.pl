@@ -20,7 +20,7 @@
 use utf8;
 use strict;
 
-AddModuleDescription('hebrew-utf8.pl', 'Hebrew');
+AddModuleDescription('hebrew-utf8.pl', 'Hebrew') if defined &AddModuleDescription;
 
 our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.
