@@ -49,7 +49,7 @@ sub GetRc {
     }
   }
   $wanted_clusters{$clusterOnly} = $clusterOnly;
-  @outrc = reverse @outrc if GetParam('newtop', $RecentTop);
+  @outrc = reverse @outrc;
   my @filters;
   @filters = SearchTitleAndBody($filterOnly) if $filterOnly;
   foreach my $rcline (@outrc) {

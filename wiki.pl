@@ -118,7 +118,6 @@ our $KeepMajor   = 1;               # 1 = keep at least one major rev when expir
 our $SummaryHours = 4;              # Hours to offer the old subject when editing a page
 our $SummaryDefaultLength = 150;    # Length of default text for summary (0 to disable)
 our $ShowEdits   = 0;               # 1 = major and show minor edits in recent changes
-our $RecentTop   = 1;               # 1 = most recent entries at the top of the list
 our $RecentLink  = 1;               # 1 = link to usernames
 our $PageCluster = '';              # name of cluster page, eg. 'Cluster' to enable
 our $InterWikiMoniker = '';        	# InterWiki prefix for this wiki for RSS
