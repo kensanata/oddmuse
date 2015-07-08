@@ -21,7 +21,7 @@
 use utf8;
 use strict;
 
-AddModuleDescription('bulgarian-utf8.pl', 'Bulgarian');
+AddModuleDescription('bulgarian-utf8.pl', 'Bulgarian') if defined &AddModuleDescription;
 
 our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.

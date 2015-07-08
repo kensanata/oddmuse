@@ -18,7 +18,7 @@
 use utf8;
 use strict;
 
-AddModuleDescription('german-utf8.pl', 'German');
+AddModuleDescription('german-utf8.pl', 'German') if defined &AddModuleDescription;
 
 our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.

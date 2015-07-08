@@ -18,7 +18,7 @@
 use utf8;
 use strict;
 
-AddModuleDescription('fixme-utf8.pl', 'Fixme');
+AddModuleDescription('fixme-utf8.pl', 'Fixme') if defined &AddModuleDescription;
 
 our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.

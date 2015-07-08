@@ -20,7 +20,7 @@
 use utf8;
 use strict;
 
-AddModuleDescription('catalan-utf8.pl', 'Catalan');
+AddModuleDescription('catalan-utf8.pl', 'Catalan') if defined &AddModuleDescription;
 
 our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.

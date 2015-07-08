@@ -20,7 +20,7 @@
 use utf8;
 use strict;
 
-AddModuleDescription('polish-utf8.pl', 'Polish');
+AddModuleDescription('polish-utf8.pl', 'Polish') if defined &AddModuleDescription;
 
 our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.

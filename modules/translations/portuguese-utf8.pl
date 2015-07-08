@@ -23,7 +23,7 @@
 use utf8;
 use strict;
 
-AddModuleDescription('portuguese-utf8.pl', 'Portuguese');
+AddModuleDescription('portuguese-utf8.pl', 'Portuguese') if defined &AddModuleDescription;
 
 our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.

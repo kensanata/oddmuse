@@ -24,7 +24,7 @@
 use utf8;
 use strict;
 
-AddModuleDescription('russian-utf8.pl', 'Russian');
+AddModuleDescription('russian-utf8.pl', 'Russian') if defined &AddModuleDescription;
 
 our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.

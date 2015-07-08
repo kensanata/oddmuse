@@ -18,7 +18,7 @@
 use utf8;
 use strict;
 
-AddModuleDescription('romanian-utf8.pl', 'Romanian');
+AddModuleDescription('romanian-utf8.pl', 'Romanian') if defined &AddModuleDescription;
 
 our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.
