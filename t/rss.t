@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 114;
+use Test::More tests => 126;
 use utf8; # tests contain UTF-8 characters and it matters
 
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
@@ -25,6 +25,40 @@ xpath_test(get_page('action=browse id=HomePage username=alex'),
 	   . '[@title="Follow-ups for alex"]'
 	   . '[@href="http://localhost/wiki.pl?action=rss;followup=alex"]');
 
+# make sure the right summary is shown
+
+update_page('big',
+            'A monk asked Seijo: "I understand that a Buddha who lived before '
+            . 'recorded history sat in meditation for ten cycles of existence '
+            . 'and could not realize the highest truth, and so could not become '
+            . 'fully emancipated. Why was this so?',
+            'A Buddha Before History');
+test_page(get_page('action=rss full=1 diff=1'),
+          'A monk asked Seijo', 'A Buddha Before History', 'No diff available.');
+
+update_page('big',
+            'Seijo replied: "Your question is self-explanatory."',
+            'The first answer');
+test_page(get_page('action=rss full=1 diff=1'),
+          '&lt;strong class="changes"&gt;A monk asked&lt;/strong&gt; Seijo', 'Seijo replied', 'The first answer');
+
+update_page('big',
+            'The monk asked: "Since the Buddha was meditating, '
+            . 'why could he not fulfill Buddahood?"',
+            'A follow-up question');
+
+update_page('big', 'Seijo said: "He was not a Buddha."',
+            'The second answer', 1); # minor change
+
+# this diff ignores the minor change
+test_page(get_page('action=rss full=1 diff=1'),
+          'Seijo replied', 'The monk asked', 'A follow-up question');
+
+# this diff shows the minor change
+test_page(get_page('action=rss full=1 diff=2'),
+          'The monk asked', 'Seijo said', 'The second answer');
+
+# the order of pages and comment pages; the stripping of dates
 update_page('big', 'foofoo');
 update_page('2008-08-07_New_Hope', 'testing');
 update_page('2008-08-08', 'testing');
@@ -37,19 +71,27 @@ test_page(get_page('action=rss full=1'),
 	  '<title>2008-08-08</title>',
 	  '<title>Comments on New Hope</title>',
 	  '<description>&lt;p&gt;foo foo&lt;/p&gt;</description>');
+
+# no stripping of dates
 test_page(get_page('action=rss short=0'),
 	  '<title>big</title>',
 	  '<title>2008-08-07 New Hope</title>',
 	  '<title>2008-08-07 12h50 Forget It</title>',
 	  '<title>Comments on 2008-08-07 New Hope</title>');
+
+# changing $RssStrip to strip the hours in addition to the date
 AppendStringToFile($ConfigFile, "\$RssStrip = '^\\d\\d\\d\\d-\\d\\d-\\d\\d_(\\d\\d?h\\d\\d_)?';\n");
 test_page(get_page('action=rss'),
 	  '<title>New Hope</title>',
 	  '<title>Forget It</title>');
+
+# no more stripping
 AppendStringToFile($ConfigFile, "\$RssStrip = '';\n");
 test_page(get_page('action=rss'),
 	  '<title>2008-08-07 New Hope</title>',
 	  '<title>2008-08-07 12h50 Forget It</title>');
+
+# limiting the size of our RSS feed
 update_page('big', 'foo foo foo', '<mu>');
 test_page(get_page('action=rss'), '<description>&lt;mu&gt;</description>');
 test_page(get_page('action=rss full=1'), 'foo foo foo');

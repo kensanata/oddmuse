@@ -2535,18 +2535,20 @@ sub PrintHtmlDiff {
       $old = $Page{revision} - 1;
     }
   }
-  $summary = $Page{summary} if not $summary and not $new;
-  $summary = $q->p({-class=>'summary'}, T('Summary:') . ' ' . $summary) if $summary;
   if ($old > 0) { # generate diff if the computed old revision makes sense
     $diff = GetKeptDiff($text, $old);
     $intro = Tss('Difference between revision %1 and %2', $old,
 		 $new ? Ts('revision %s', $new) : T('current revision'));
   } elsif ($type == 1 and $Page{lastmajor} != $Page{revision}) {
+    my %keep = GetKeptRevision($Page{lastmajor});
+    $summary = $keep{summary};
     $intro = Ts('Last major edit (%s)', ScriptLinkDiff(1, $OpenPageName, T('later minor edits'),
 						       undef, $Page{lastmajor} || 1));
   }
   $diff =~ s!<p><strong>(.*?)</strong></p>!'<p><strong>' . T($1) . '</strong></p>'!ge;
   $diff ||= T('No diff available.');
+  $summary = $Page{summary} if not $summary and not $new;
+  $summary = $q->p({-class=>'summary'}, T('Summary:') . ' ' . $summary) if $summary;
   print $q->div({-class=>'diff'}, $q->p($q->b($intro)), $summary, $diff);
 }
 
