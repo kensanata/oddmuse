@@ -118,6 +118,7 @@ sub ImageGetExternalUrl {
     } elsif ($UsePathInfo and !$Monolithic) {
       $link = $ScriptName . '/' . $link;
     } elsif ($Monolithic) {
+      # if used together with all.pl
       $link = '#' . $link;
     } else {
       $link = $ScriptName . '?' . $link;
