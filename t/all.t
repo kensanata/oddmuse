@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 8;
+use Test::More tests => 10;
 
 add_module('all.pl');
 
@@ -36,4 +36,10 @@ xpath_test(get_page('action=all pwd=foo'),
 	   '//a[@class="edit"][@title="Click to edit this page"][@href="http://localhost/wiki.pl?action=edit;id=baz"][text()="?"]',
 	   '//h1/a[@name="pic"][text()="pic"]',
 	   '//a[@class="local"][@href="#pic"][text()="pic"]',
-	  );
+    );
+
+update_page('bar', 'link to [[baz]].\n\n[[image:pic]]');
+xpath_test(get_page('action=all pwd=foo'),
+           '//p[text()="This page contains an uploaded file:"]',
+           '//img[@src="http://localhost/wiki.pl/download/pic"][@alt="pic"][@class="upload"]',
+    );
