@@ -1,24 +1,20 @@
-# Copyright (C) 2006, 2007  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006–2015  Alex Schroeder <alex@gnu.org>
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 3 of the License, or (at your option) any later
+# version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 44;
+use Test::More tests => 47;
 
 add_module('usemod.pl');
 
@@ -118,4 +114,24 @@ $UseModMarkupInTitles = 1;
 run_tests(split('\n',<<'EOT'));
 ==n&auml;n==
 <h2>n&auml;n</h2>
+EOT
+
+
+# $HtmlLinks
+
+run_tests_negative(split('\n',<<'EOT'));
+<a href="http://www.emacswiki.org/">Emacs Wiki</a>
+&lt;a href="http://www.emacswiki.org/"&gt;Emacs Wiki&lt;a/a&gt;
+EOT
+
+$HtmlLinks = 1;
+
+run_tests(split('\n',<<'EOT'));
+<a href="http://www.emacswiki.org/">Emacs Wiki</a>
+<a href="http://www.emacswiki.org/">Emacs Wiki</a>
+EOT
+
+run_tests_negative(split('\n',<<'EOT'));
+<a onload="alert(document.cookie)" href="http://www.emacswiki.org"/>Emacs Wiki</a>
+<a onload="alert(document.cookie)" href="http://www.emacswiki.org"/>Emacs Wiki</a>
 EOT
