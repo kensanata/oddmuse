@@ -18,6 +18,7 @@ AddModuleDescription('div-foo.pl', 'Div Foo Extension');
 
 our (@MyRules);
 our ($DivFooPrefix);
+our (%RuleOrder);
 
 $DivFooPrefix = 'foo_';
 
