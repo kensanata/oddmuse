@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 10;
+use Test::More tests => 13;
 
 add_module('all.pl');
 
@@ -42,4 +42,18 @@ update_page('bar', 'link to [[baz]].\n\n[[image:pic]]');
 xpath_test(get_page('action=all pwd=foo'),
            '//p[text()="This page contains an uploaded file:"]',
            '//img[@src="http://localhost/wiki.pl/download/pic"][@alt="pic"][@class="upload"]',
+    );
+
+update_page('bar', 'link to [[baz]].\n\n[[image:pic|nice]]');
+xpath_test(get_page('action=all pwd=foo'),
+           '//p[text()="This page contains an uploaded file:"]',
+           '//img[@src="http://localhost/wiki.pl/download/pic"][@alt="nice"][@class="upload"]',
+    );
+
+add_module('image.pl');
+
+# we need to pass cache=0 because this link to the page 'foo' is created "clean"
+update_page('bar', "link to [[baz]].\n\n[[image:pic|nice|foo]]");
+xpath_test(get_page('action=all pwd=foo cache=0'),
+           '//a[@href="#foo"]/img[@src="http://localhost/wiki.pl/download/pic"][@alt="nice"][@class="upload"]',
     );
