@@ -23,6 +23,9 @@ $DivFooPrefix = 'foo_';
 
 push(@MyRules, \&DivFooRule);
 
+# conflicts with <nowiki> and other such rules by usemod.pl
+$RuleOrder{\&DivFooRule} = 200;
+
 sub DivFooRule {
   if (m/\G \&lt; ([a-z_-][a-z0-9 _-]+[a-z0-9_-]) \&gt; \s*\n /cgx) {
     return CloseHtmlEnvironment('p') . AddHtmlEnvironment('div', 'class="' . join(' ', map {"$DivFooPrefix$_"} split /\s+/, $1) . '"');
