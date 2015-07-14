@@ -18,7 +18,7 @@
 use utf8;
 use strict;
 
-AddModuleDescription('ukrainian-utf8.pl', 'Ukrainian');
+AddModuleDescription('ukrainian-utf8.pl', 'Ukrainian') if defined &AddModuleDescription;
 
 our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.

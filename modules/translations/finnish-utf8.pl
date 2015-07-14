@@ -18,7 +18,7 @@
 use utf8;
 use strict;
 
-AddModuleDescription('finnish-utf8.pl', 'Finnish');
+AddModuleDescription('finnish-utf8.pl', 'Finnish') if defined &AddModuleDescription;
 
 our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.

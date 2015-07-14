@@ -27,7 +27,7 @@
 use utf8;
 use strict;
 
-AddModuleDescription('dutch-utf8.pl', 'Dutch');
+AddModuleDescription('dutch-utf8.pl', 'Dutch') if defined &AddModuleDescription;
 
 our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.

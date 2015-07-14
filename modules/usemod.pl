@@ -172,7 +172,7 @@ sub UsemodRule {
   elsif (m/\G\&lt;($UsemodHtmlRegExp) *\/\&gt;/cogi) {
     return "<$1 />"; }
   # <a ...>text</a> for html links
-  elsif ($HtmlLinks && m/\G\&lt;a(\s[^<>]+?)\&gt;(.*?)\&lt;\/a\&gt;/cgi) {
+  elsif ($HtmlLinks && m/\G\&lt;a(\s+href="\S+")\&gt;(.*?)\&lt;\/a\&gt;/cgi) {
     return "<a$1>$2</a>";
   }
   return;

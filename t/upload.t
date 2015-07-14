@@ -1,4 +1,4 @@
-# Copyright (C) 2006, 2009  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006–2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,12 +17,16 @@ require 't/test.pl';
 package OddMuse;
 use Test::More tests => 12;
 
+# file upload not enabled
 test_page(update_page('Logo', "#FILE image/png\niVBORw0KGgoAAAA"), 'This page does not exist');
 
+# enable uploads
 AppendStringToFile($ConfigFile, "\$UploadAllowed = 1;\n");
 
+# wrong MIME type
 test_page(update_page('Logo', "#FILE image/foo\niVBORw0KGgoAAAA"), 'This page does not exist');
 
+# now it should work
 $page = update_page('alex pic', "#FILE image/png\niVBORw0KGgoAAAA");
 test_page($page, 'This page contains an uploaded file:');
 xpath_test($page, '//img[@class="upload"][@src="http://localhost/wiki.pl/download/alex_pic"][@alt="alex pic"]');

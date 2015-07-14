@@ -20,7 +20,7 @@
 use utf8;
 use strict;
 
-AddModuleDescription('serbian-utf8.pl', 'Serbian');
+AddModuleDescription('serbian-utf8.pl', 'Serbian') if defined &AddModuleDescription;
 
 our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.

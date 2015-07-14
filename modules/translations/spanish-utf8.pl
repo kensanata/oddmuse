@@ -21,7 +21,7 @@
 use utf8;
 use strict;
 
-AddModuleDescription('spanish-utf8.pl', 'Spanish');
+AddModuleDescription('spanish-utf8.pl', 'Spanish') if defined &AddModuleDescription;
 
 our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.

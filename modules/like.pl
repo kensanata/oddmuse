@@ -18,8 +18,6 @@ use strict;
 # use warnings;
 use v5.10;
 
-package OddMuse;
-
 AddModuleDescription('like.pl', 'Like Button');
 
 our $LikeRegexp =      T('====(\d+) persons? liked this===='); # must match all translations

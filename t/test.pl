@@ -1,4 +1,4 @@
-# Copyright (C) 2004, 2005, 2006, 2008, 2012  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2004–2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -129,6 +129,17 @@ sub run_tests {
   }
 }
 
+# alternating input and output strings for applying rules
+sub run_tests_negative {
+  # translate embedded newlines (other backslashes remain untouched)
+  my @tests = newlines(@_);
+  my ($input, $output);
+  while (($input, $output, @tests) = @tests) {
+    my $result = apply_rules($input);
+    isnt($result, $output, name($input));
+  }
+}
+
 sub apply_rules {
   my $input = shift;
   local *STDOUT;
@@ -248,6 +259,16 @@ sub xpath_run_tests {
   while (($input, $output, @tests) = @tests) {
     my $result = apply_rules($input);
     xpath_test("<div>$result</div>", $output);
+  }
+}
+
+sub xpath_run_tests_negative {
+  # translate embedded newlines (other backslashes remain untouched)
+  my @tests = newlines(@_);
+  my ($input, $output);
+  while (($input, $output, @tests) = @tests) {
+    my $result = apply_rules($input);
+    xpath_test_negative("<div>$result</div>", $output);
   }
 }
 
