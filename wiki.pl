@@ -2539,7 +2539,7 @@ sub PrintHtmlDiff {
     $diff = GetKeptDiff($text, $old);
     $intro = Tss('Difference between revision %1 and %2', $old,
 		 $new ? Ts('revision %s', $new) : T('current revision'));
-  } elsif ($type == 1 and $Page{lastmajor} != $Page{revision}) {
+  } elsif ($type == 1 and $Page{lastmajor} and $Page{lastmajor} != $Page{revision}) {
     my %keep = GetKeptRevision($Page{lastmajor});
     $summary = $keep{summary};
     $intro = Ts('Last major edit (%s)', ScriptLinkDiff(1, $OpenPageName, T('later minor edits'),
