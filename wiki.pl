@@ -235,7 +235,7 @@ sub InitConfig {
   if ($ConfigPage) { # $FS and $MaxPost must be set in config file!
     my ($status, $data) = ReadFile(GetPageFile(FreeToNormal($ConfigPage)));
     my %data = ParseData($data); # before InitVariables so GetPageContent won't work
-    eval $data{text} if $data{text};
+    eval $data{text} if $data{text}; # perlcritic dislikes the use of eval here but we really mean it
     $Message .= CGI::p("$ConfigPage: $@") if $@;
   }
 }
@@ -3221,7 +3221,7 @@ sub UserHasPassword {
   my ($pwd, $pass) = @_;
   return 0 unless $pass;
   if ($PassHashFunction ne '') {
-    no strict 'refs';
+    no strict 'refs'; # TODO this is kept for compatibility. Feel free to remove it later (comment written on 2015-07-14)
     $pwd = &$PassHashFunction($pwd . $PassSalt);
   }
   foreach (split(/\s+/, $pass)) {
