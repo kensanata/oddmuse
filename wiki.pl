@@ -62,7 +62,8 @@ our ($q, $bol, $OpenPageName, %Page, %Translate, %IndexHash, @IndexList,
 our $UseConfig //= 1;
 
 # Main wiki directory
-our $DataDir     = $ENV{WikiDataDir} if $UseConfig and not $DataDir;
+our $DataDir;
+$DataDir     = $ENV{WikiDataDir} if $UseConfig and not $DataDir;
 $DataDir   ||= '/tmp/oddmuse'; # FIXME: /var/opt/oddmuse/wiki ?
 our $ConfigPage ||= ''; # config page
 
@@ -2322,13 +2323,14 @@ sub Cookie {
 
 sub GetHtmlHeader {   # always HTML!
   my ($title, $id) = @_;
-  my $edit_link .= '<link rel="alternate" type="application/wiki" title="'
-    . T('Edit this page') . '" href="'
-    . ScriptUrl('action=edit;id=' . UrlEncode($id)) . '" />' if $id;
+  my $edit_link = '';
+  $edit_link = '<link rel="alternate" type="application/wiki" title="'
+      . T('Edit this page') . '" href="'
+      . ScriptUrl('action=edit;id=' . UrlEncode($id)) . '" />' if $id;
   return $DocumentHeader
-    . $q->head($q->title($title) . $edit_link
-      . GetCss() . GetRobots() . GetFeeds() . $HtmlHeaders
-      . '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />')
+      . $q->head($q->title($title) . $edit_link
+		 . GetCss() . GetRobots() . GetFeeds() . $HtmlHeaders
+		 . '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />')
       . '<body class="' . GetParam('theme', 'default') . '">';
 }
 
