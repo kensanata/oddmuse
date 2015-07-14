@@ -276,7 +276,7 @@ sub InitVariables {  # Init global session variables for mod_perl!
   %RecentVisitors = ();
   $OpenPageName = '';   # Currently open page
   my $add_space = $CommentsPrefix =~ /[ \t_]$/;
-  map { $$_ = FreeToNormal($$_); } # convert spaces to underscores on all configurable pagenames
+  $$_ = FreeToNormal($$_) for # convert spaces to underscores on all configurable pagenames
     (\$HomePage, \$RCName, \$BannedHosts, \$InterMap, \$StyleSheetPage, \$CommentsPrefix,
      \$ConfigPage, \$NotFoundPg, \$RssInterwikiTranslate, \$BannedContent, \$RssExclude, );
   $CommentsPrefix .= '_' if $add_space;
