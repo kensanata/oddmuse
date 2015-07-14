@@ -22,7 +22,7 @@
 use utf8;
 use strict;
 
-AddModuleDescription('swedish-utf8.pl', 'Swedish');
+AddModuleDescription('swedish-utf8.pl', 'Swedish') if defined &AddModuleDescription;
 
 our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.

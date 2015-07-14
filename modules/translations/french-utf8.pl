@@ -24,7 +24,7 @@
 use utf8;
 use strict;
 
-AddModuleDescription('french-utf8.pl', 'French');
+AddModuleDescription('french-utf8.pl', 'French') if defined &AddModuleDescription;
 
 our %Translate = split(/\n/,<<'END_OF_TRANSLATION');
 This page is empty.

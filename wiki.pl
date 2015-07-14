@@ -119,7 +119,6 @@ our $KeepMajor   = 1;               # 1 = keep at least one major rev when expir
 our $SummaryHours = 4;              # Hours to offer the old subject when editing a page
 our $SummaryDefaultLength = 150;    # Length of default text for summary (0 to disable)
 our $ShowEdits   = 0;               # 1 = major and show minor edits in recent changes
-our $RecentTop   = 1;               # 1 = most recent entries at the top of the list
 our $RecentLink  = 1;               # 1 = link to usernames
 our $PageCluster = '';              # name of cluster page, eg. 'Cluster' to enable
 our $InterWikiMoniker = '';        	# InterWiki prefix for this wiki for RSS
@@ -2538,18 +2537,20 @@ sub PrintHtmlDiff {
       $old = $Page{revision} - 1;
     }
   }
-  $summary = $Page{summary} if not $summary and not $new;
-  $summary = $q->p({-class=>'summary'}, T('Summary:') . ' ' . $summary) if $summary;
   if ($old > 0) { # generate diff if the computed old revision makes sense
     $diff = GetKeptDiff($text, $old);
     $intro = Tss('Difference between revision %1 and %2', $old,
 		 $new ? Ts('revision %s', $new) : T('current revision'));
-  } elsif ($type == 1 and $Page{lastmajor} != $Page{revision}) {
+  } elsif ($type == 1 and $Page{lastmajor} and $Page{lastmajor} != $Page{revision}) {
+    my %keep = GetKeptRevision($Page{lastmajor});
+    $summary = $keep{summary};
     $intro = Ts('Last major edit (%s)', ScriptLinkDiff(1, $OpenPageName, T('later minor edits'),
 						       undef, $Page{lastmajor} || 1));
   }
   $diff =~ s!<p><strong>(.*?)</strong></p>!'<p><strong>' . T($1) . '</strong></p>'!ge;
   $diff ||= T('No diff available.');
+  $summary = $Page{summary} if not $summary and not $new;
+  $summary = $q->p({-class=>'summary'}, T('Summary:') . ' ' . $summary) if $summary;
   print $q->div({-class=>'diff'}, $q->p($q->b($intro)), $summary, $diff);
 }
 

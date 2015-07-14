@@ -1,0 +1,36 @@
+Here's how to determine how many translation strings you're missing, for
+each language.
+
+alex@Megabombus:~/src/oddmuse (master %>)$ for f in modules/translations/*-utf8.pl; do perl -e "sub AddModuleDescription { print shift, ' ' }; do '$f'; \$i = 0; map { \$_ || \$i++} values %Translate; printf(qq{%d/%d translations missing (%d%% done)\n}, \$i, scalar keys %Translate, 100 * (keys(%Translate) - \$i) / keys %Translate);"; done
+brazilian-portuguese-utf8.pl 231/675 translations missing (65% done)
+bulgarian-utf8.pl 496/675 translations missing (26% done)
+catalan-utf8.pl 255/675 translations missing (62% done)
+chinese-utf8.pl 249/675 translations missing (63% done)
+chinese_cn-utf8.pl 192/675 translations missing (71% done)
+dutch-utf8.pl 459/675 translations missing (32% done)
+finnish-utf8.pl 436/675 translations missing (35% done)
+french-utf8.pl 167/675 translations missing (75% done)
+german-utf8.pl 4/676 translations missing (99% done)
+greek-utf8.pl 236/675 translations missing (65% done)
+hebrew-utf8.pl 556/675 translations missing (17% done)
+italian-utf8.pl 426/675 translations missing (36% done)
+japanese-utf8.pl 436/675 translations missing (35% done)
+korean-utf8.pl 392/675 translations missing (41% done)
+fixme-utf8.pl 675/675 translations missing (0% done)
+polish-utf8.pl 233/675 translations missing (65% done)
+portuguese-utf8.pl 388/675 translations missing (42% done)
+romanian-utf8.pl 514/675 translations missing (23% done)
+russian-utf8.pl 291/675 translations missing (56% done)
+serbian-utf8.pl 526/675 translations missing (22% done)
+spanish-utf8.pl 240/675 translations missing (64% done)
+swedish-utf8.pl 372/675 translations missing (44% done)
+ukrainian-utf8.pl 341/675 translations missing (49% done)
+
+Here is one way to determine how many translations strings you're
+missing, given a set of modules. In the example we're trying to
+determine how many Russian translation strings we're missing, given that
+we're only interested in the core script and the Creole markup
+extension.
+
+alex@Megabombus:~/src/oddmuse (master %>)$ (./oddtrans -l modules/translations/russian-utf8.pl wiki.pl modules/creole.pl; echo 'my $i = 0; map { $_ || $i++} values %Translate; printf(qq{%d/%d translations missing (%d%% done)\n}, $i, scalar keys %Translate, 100 * (keys(%Translate) - $i) / keys %Translate);') | perl
+33/250 translations missing (86% done)

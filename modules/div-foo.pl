@@ -18,10 +18,14 @@ AddModuleDescription('div-foo.pl', 'Div Foo Extension');
 
 our (@MyRules);
 our ($DivFooPrefix);
+our (%RuleOrder);
 
 $DivFooPrefix = 'foo_';
 
 push(@MyRules, \&DivFooRule);
+
+# conflicts with <nowiki> and other such rules by usemod.pl
+$RuleOrder{\&DivFooRule} = 200;
 
 sub DivFooRule {
   if (m/\G \&lt; ([a-z_-][a-z0-9 _-]+[a-z0-9_-]) \&gt; \s*\n /cgx) {

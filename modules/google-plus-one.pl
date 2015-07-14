@@ -16,8 +16,6 @@ use strict;
 # use warnings;
 use v5.10;
 
-package OddMuse;
-
 AddModuleDescription('google-plus-one.pl', 'Google Plus One Module');
 
 our ($q, @MyAdminCode, %Action);
