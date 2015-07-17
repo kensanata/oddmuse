@@ -21,5 +21,5 @@ add_module('pygmentize.pl');
 $ENV{PATH} = '.'; # pygmentize is not installed in the current directory
 $page = apply_rules(newlines('{{{\ntest\n}}}\n'));
 test_page($page,
-           'sh: pygmentize: command not found',
+           '\bsh\b.*\bpygmentize\b.*\bnot found\b',
            '<pre>test</pre>');
