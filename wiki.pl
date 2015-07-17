@@ -51,7 +51,7 @@ our ($ScriptName, $FullUrl, $ModuleDir, $PageDir, $TempDir, $LockDir, $KeepDir, 
 # Internal variables:
 our ($q, $bol, $OpenPageName, %Page, %Translate, %IndexHash, @IndexList,
      @HtmlStack, @HtmlAttrStack, @Blocks, @Flags,
-     %Includes, $FootnoteNumber, $CollectingJournal, $PrintedHeader,
+     %Includes, $FootnoteNumber, $CollectingJournal, $HeaderIsPrinted,
      %Locks, $Fragment, $Today, $ModulesDescription, %RssInterwikiTranslate,
      $Message, $Now, %RecentVisitors, %MyInc, $WikiDescription, %InterSite, %OldCookie);
 
@@ -264,7 +264,7 @@ sub InitVariables {  # Init global session variables for mod_perl!
   $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
-  $PrintedHeader = 0; # Error messages don't print headers unless necessary
+  $HeaderIsPrinted = 0; # print HTTP headers only once
   $ScriptName //= $q->url(); # URL used in links
   $FullUrl ||= $ScriptName; # URL used in forms
   %Locks = ();
@@ -2263,15 +2263,18 @@ sub GetHeaderTitle {
 }
 
 sub GetHttpHeader {
-  return if $PrintedHeader;
-  $PrintedHeader = 1;
+  return if $HeaderIsPrinted; # When calling ReportError, we don't know whether HTTP headers have
+  $HeaderIsPrinted = 1;       # already been printed. We want them printed just once.
   my ($type, $ts, $status, $encoding) = @_;
   $q->charset($type =~ m!^(text/|application/xml)! ? 'utf-8' : ''); # text/plain, text/html, application/xml: UTF-8
   my %headers = (-cache_control=>($UseCache < 0 ? 'no-cache' : 'max-age=10'));
-  # Set $ts when serving raw content that cannot be modified by cookie parameters; or 'nocache'; or undef. If you
-  # provide a $ts, the last-modiefied header generated will by used by HTTP/1.0 clients. If you provide no $ts, the etag
-  # header generated will be used by HTTP/1.1 clients. In this situation, cookie parameters can influence the look of
-  # the page and we cannot rely on $LastUpdate. HTTP/1.0 clients will ignore etags. See RFC 2616 section 13.3.4.
+  # Set $ts when serving raw content that cannot be modified by cookie
+  # parameters; or 'nocache'; or undef. If you provide a $ts, the last-modified
+  # header generated will by used by HTTP/1.0 clients. If you provide no $ts,
+  # the etag header generated will be used by HTTP/1.1 clients. In this
+  # situation, cookie parameters can influence the look of the page and we
+  # cannot rely on $LastUpdate. HTTP/1.0 clients will ignore etags. See RFC 2616
+  # section 13.3.4.
   if (GetParam('cache', $UseCache) >= 2 and $ts ne 'nocache') {
     $headers{'-last-modified'} = TimeToRFC822($ts) if $ts;
     $headers{-etag} = PageEtag();
