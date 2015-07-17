@@ -139,7 +139,6 @@ our $TopSearchForm     = 1;         # 0 = search form both at the top and bottom
 our $MatchingPages     = 0;         # 1 = search page content and page titles
 our @UserGotoBarPages = ();        	# List of pagenames
 our $UserGotoBar      = '';        	# HTML added to end of goto bar
-our $ValidatorLink     = 0;        	# 1 = Link to the W3C HTML validator service
 our $CommentsPrefix   = '';        	# prefix for comment pages, eg. 'Comments_on_' to enable
 our $CommentsPattern = undef;      	# regex used to match comment pages
 our $HtmlHeaders      = '';        	# Additional stuff to put in the HTML <head> section
@@ -2402,7 +2401,6 @@ sub PrintFooter {
     . Ts('Database is stored in temporary directory %s', $DataDir));
   }
   print T($FooterNote) if $FooterNote;
-  print $q->p(GetValidatorLink()) if GetParam('validate', $ValidatorLink);
   print $q->p(Ts('%s seconds', (time - $Now))) if GetParam('timing', 0);
   print $q->end_div();
   PrintMyContent($id) if defined(&PrintMyContent);
@@ -2509,11 +2507,6 @@ sub GetSearchForm {
   }
   $html .= $q->submit('dosearch', T('Go!')) . $q->end_p . $q->end_form;
   return $html;
-}
-
-sub GetValidatorLink {
-  return $q->a({-href => 'http://validator.w3.org/check/referer'}, T('Validate HTML'))
-    . ' ' . $q->a({-href=>'http://jigsaw.w3.org/css-validator/check/referer'}, T('Validate CSS'));
 }
 
 sub GetGotoBar {    # ignore $id parameter
