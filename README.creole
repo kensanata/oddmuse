@@ -1,9 +1,27 @@
 This is the README file distributed together with the
-[http://oddmuse.org/ Oddmuse] script.
+[[http://oddmuse.org/|Oddmuse]] script.
 
-To install the script on a Debian system running Apache, you need to
-copy wiki.pl into your cgi-bin directory. You will need to be {{{root}}}
-in order to write in this directory. Then, make the script executable.
+== Installing Oddmuse on a Debian System running Apache
+
+The following instructions require a number of tools. You can make sure
+they're all installed by issuing the following command as root:
+
+{{{
+apt-get install coreutils apache2 sudo wget w3m perl-base
+}}}
+
+You probably created an account for yourself. You might have to add this
+user to the {{{sudo}}} group. Here's how I created my own user:
+
+{{{
+adduser alex
+usermod -a -G sudo alex
+}}}
+
+Now you can login as {{{alex}}} and do everything else using {{{sudo}}}.
+
+You need to copy wiki.pl into your cgi-bin directory, and you need to
+make the script executable.
 
 {{{
 sudo wget -O /usr/lib/cgi-bin/wiki.pl \
@@ -11,16 +29,39 @@ sudo wget -O /usr/lib/cgi-bin/wiki.pl \
 sudo chmod +x /usr/lib/cgi-bin/wiki.pl
 }}}
 
-You should be able to test it right now!
+You should be able to test it right now! Visit
+{{{http://localhost/cgi-bin/wiki.pl}}}. If your site is available from
+the outside, you will be able to use a normal browser. If don't have a
+domain name yet, you'll probably have to use a text browser like
+{{{w3m}}}.
 
 {{{
 w3m http://localhost/cgi-bin/wiki.pl
 }}}
 
 If you create pages in this wiki, these will get stored in a temporary
-directory. You need change the $DataDir option in the script from
-{{{"/tmp/oddmuse"}}} to like {{{"/var/www/oddmuse"}}}. You will need to
-be {{{root}}} in order to create this directory. You webserver runs CGI
+directory. You need change the data directory from {{{"/tmp/oddmuse"}}}
+to like {{{"/var/www/oddmuse"}}}. The best way to do this without
+changing {{{wiki.pl}}} is by editing
+{{{/etc/apache2/sites-available/default}}}. Add the following line:
+
+{{{
+SetEnv WikiDataDir /var/www/oddmuse
+}}}
+
+Enable the default site by calling the following command:
+
+{{{
+sudo a2ensite default
+}}}
+
+Reload the Apache configuration by calling the following command:
+
+{{{
+sudo service apache2 reload
+}}}
+
+You need to create the new data directory. You webserver runs CGI
 scripts as {{{www-data}}}. Thus, you need to change the owner and group
 of the directory to {{{www-data}}}.
 
@@ -29,10 +70,10 @@ sudo mkdir -p /var/www/oddmuse
 sudo chown www-data.www-data /var/www/oddmuse
 }}}
 
-In order to start your wiki, click on the edit link (the first link
-below the navigation bar, at the bottom of the page).  This will allow
-you to enter some text for this page.  Click the Save button and you
-are done.
+Done! Visit your wiki and start editing. Click on the edit link (the
+first link below the navigation bar, at the bottom of the page). This
+will allow you to enter some text for this page. Click the Save button
+and you are done.
 
 To add new pages, edit the homepage and add links to new pages by
 putting their names in {{{[[double square brackets]]}}}.
@@ -47,9 +88,8 @@ files and modules that are part of this package.
 If you think this information doesn't work for you, here are some things
 to check.
 
-Apache is the {{{apache2}}} package in Debian. It's config directory is
-{{{/etc/apache2/apache2.conf}}}. This is where we get the {{{www-data}}}
-username from. It says:
+Apache's config directory is {{{/etc/apache2/apache2.conf}}}. This is
+where we get the {{{www-data}}} username from. It says:
 
 {{{
 # These need to be set in /etc/apache2/envvars
@@ -86,6 +126,13 @@ ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
 
 This means that {{{http://localhost/cgi-bin/wiki.pl}}} will call
 {{{/usr/lib/cgi-bin/wiki.pl}}}
+
+Don't forget to reload the Apache configuration as shown above, or
+simply restart it all:
+
+{{{
+sudo service apache2 graceful
+}}}
 
 ----------------------------------------------------------------------
 
