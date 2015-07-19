@@ -42,12 +42,12 @@ w3m http://localhost/cgi-bin/wiki.pl
 
 If you create pages in this wiki, these will get stored in a temporary
 directory. You need change the data directory from {{{"/tmp/oddmuse"}}}
-to like {{{"/var/www/oddmuse"}}}. The best way to do this without
+to like {{{"/var/local/oddmuse"}}}. The best way to do this without
 changing {{{wiki.pl}}} is by editing
 {{{/etc/apache2/sites-available/default}}}. Add the following line:
 
 {{{
-SetEnv WikiDataDir /var/www/oddmuse
+SetEnv WikiDataDir /var/local/oddmuse
 }}}
 
 Enable the default site by calling the following command:
@@ -67,8 +67,8 @@ scripts as {{{www-data}}}. Thus, you need to change the owner and group
 of the directory to {{{www-data}}}.
 
 {{{
-sudo mkdir -p /var/www/oddmuse
-sudo chown www-data.www-data /var/www/oddmuse
+sudo mkdir -p /var/local/oddmuse
+sudo chown www-data.www-data /var/local/oddmuse
 }}}
 
 Done! Visit your wiki and start editing. Click on the edit link (the
