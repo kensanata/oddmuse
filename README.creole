@@ -4,14 +4,15 @@ This is the README file distributed together with the
 == Installing Oddmuse on a Debian System running Apache
 
 The following instructions require a number of tools. You can make sure
-they're all installed by issuing the following command as root:
+they're all installed by issuing the following command as {{{root}}}:
 
 {{{
 apt-get install coreutils apache2 sudo wget w3m perl-base
 }}}
 
 You probably created an account for yourself. You might have to add this
-user to the {{{sudo}}} group. Here's how I created my own user:
+user to the {{{sudo}}} group. Here's how I created my own user as
+{{{root}}}:
 
 {{{
 adduser alex
