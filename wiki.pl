@@ -1373,9 +1373,13 @@ sub BrowseResolvedPage {
 
 sub NewText {
   my $id = shift;
-  return Ts('This page does not exist, but you can %s.',
-            '[' . ScriptUrl('action=edit;id=' . UrlEncode($id)) . ' '
-            . T('create it now') . ']')
+  if ($id =~ /^($CommentsPrefix)/o) {
+    return T('There are no comments, yet. Be the first to leave a comment!');
+  } else {
+    return Ts('This page does not exist, but you can %s.',
+              '[' . ScriptUrl('action=edit;id=' . UrlEncode($id)) . ' '
+              . T('create it now') . ']');
+  }
 }
 
 sub BrowsePage {

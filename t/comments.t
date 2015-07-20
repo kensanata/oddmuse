@@ -1,4 +1,4 @@
-# Copyright (C) 2006–2014  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006–2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -14,12 +14,14 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 36;
+use Test::More tests => 37;
 
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
 
 # $EditAllowed
 
+test_page(get_page('Comments_on_Test'),
+          'There are no comments, yet. Be the first to leave a comment!');
 $page = update_page('Test', 'Can edit page by default');
 test_page($page, 'Can edit page by default');
 xpath_test($page,
