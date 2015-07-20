@@ -2886,13 +2886,13 @@ sub RequestLockDir {
 	return 1 if RequestLockDir($name, undef, undef, undef, 1);
       }
       return 0 unless $error;
-      my $unlock = ScriptLink('action=unlock', T('unlock the wiki'), 'unlock');
       ReportError(Ts('Could not get %s lock', $name) . ": $!. ",
-        '503 SERVICE UNAVAILABLE', undef,
-        Ts('The lock was created %s.', CalcTimeSince($Now - $ts))
-	. ($retried ? ' ' . T('Maybe the user running this script is no longer allowed to remove the lock directory?') : '')
-        . ' ' . qq{Sometimes locks are left behind if a job crashes.}
-	. ' ' . qq{After ten minutes, you could try to $unlock.});
+		  '503 SERVICE UNAVAILABLE', undef,
+		  Ts('The lock was created %s.', CalcTimeSince($Now - $ts))
+		  . ($retried && ' ' . T('Maybe the user running this script is no longer allowed to remove the lock directory?'))
+		  . ' ' . T('Sometimes locks are left behind if a job crashes.') . ' '
+		  . ($Now - $ts < 600 ? T('After ten minutes, you could try to unlock the wiki.')
+		     : ScriptLink('action=unlock', T('Unlock Wiki'), 'unlock')));
     }
     sleep($wait);
   }
