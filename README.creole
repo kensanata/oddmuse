@@ -7,7 +7,8 @@ The following instructions require a number of tools. You can make sure
 they're all installed by issuing the following command as {{{root}}}:
 
 {{{
-apt-get install coreutils apache2 sudo wget w3m perl-base
+apt-get install coreutils apache2 sudo wget w3m perl \
+    libwww-perl libxml-rss-perl diffutils
 }}}
 
 You probably created an account for yourself. You might have to add this
