@@ -1,0 +1,2 @@
+These files are used by
+[[https://oddmuse.org/wiki/HTML_Templates|HTML Templates]].
