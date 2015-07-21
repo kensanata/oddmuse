@@ -78,7 +78,7 @@ SKIP: {
   # involving referrer tracking.
   # <a href="http://localhost/cgi-bin/wiki.pl">Test</a>.
 
-  $response = $ua->get("$wiki/$id", 'Referer' => 'http://oddmuse.org/test.html');
+  $response = $ua->get("$wiki/$id", 'Referer' => 'https://oddmuse.org/test.html');
   ok($response->is_success, "Request $wiki/$id with existing referrer");
   $response = $ua->get("$wiki?action=refer");
   ok($response->is_success, 'Get list of all referrers');
@@ -86,7 +86,7 @@ SKIP: {
 	     '//h1[text()="All Referrers"]',
 	     qq{//div[\@class="content refer"]/div[\@class="page"]},
 	     qq{//div[\@class="page"]/p/a[\@href="$wiki/$id"][text()="$id"]},
-	     qq{//div[\@class="refer"]/p/a[\@href="http://oddmuse.org/test.html"][text()="Tëst"]});
+	     qq{//div[\@class="refer"]/p/a[\@href="https://oddmuse.org/test.html"][text()="Tëst"]});
 
   # Clean up
   $ua->get("$wiki?title=$id;text=");
