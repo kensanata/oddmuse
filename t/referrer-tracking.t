@@ -30,15 +30,22 @@ SKIP: {
   my $wiki = 'http://localhost/cgi-bin/wiki.pl';
   my $ua = LWP::UserAgent->new;
   my $response = $ua->get("$wiki?action=version");
+
   skip("No wiki running at $wiki", 12)
     unless $response->is_success;
+
   # check that the wiki is capable of running these tests
   skip("Wiki running at $wiki doesn't have the Referrer-Tracking Extension installed", 12)
     unless $response->content =~ /referrer-tracking\.pl/;
+
   # if we're running in some random environment where localhost is not
   # a wiki for us to interact with
   skip("Wiki running at $wiki has the Question Asker Extension installed", 12)
       if $response->content =~ /questionasker\.pl/;
+
+  # if HTTPS is not supported
+  skip("No HTTPS support available: $@", 12)
+      unless eval { require LWP::Protocol::https; };
 
   my $id = 'Random' . time;
   # make sure we're not being fooled by 404 errors
@@ -59,8 +66,8 @@ SKIP: {
 		      qq{//div[\@class="content refer"]/div/p/a[text()="$id"]});
 
   # This page must actually exist and link back!
-  $response = $ua->get('http://oddmuse.org/test.html');
-  ok($response->is_success, "http://oddmuse.org/test.html exists");
+  $response = $ua->get('https://oddmuse.org/test.html');
+  ok($response->is_success, "https://oddmuse.org/test.html exists");
   test_page($response->content, "http://localhost/cgi-bin/wiki.pl");
 
   # If it is lost, here's what it should contain:
