@@ -1,6 +1,9 @@
 /* Copyright 2005  Alex Schroeder <alex@emacswiki.org>
    based on http://simon.incutio.com/archive/2004/05/30/plinks#p-13
    Copyright 2004  Simon Willison
+
+   This script adds purple numbers to paragraphs.
+   https://oddmuse.org/wiki/Purple_Numbers_Extension
 */
 
 function plinkHighlight() {
