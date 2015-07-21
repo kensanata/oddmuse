@@ -55,7 +55,7 @@ xpath_test(get_page('FooBar'),
 	   '//a[@class="comment local"][@href="http://localhost/wiki.pl/Comments_on_FooBar"][text()="Comments on FooBar"]');
 
 xpath_test(get_page('Comments_on_FooBar'),
-	   qq{//div[\@class="content browse"]/p[contains(text(),"This page does not exist")]});
+	   qq{//div[\@class="content browse"]/p[contains(text(),"There are no comments")]});
 
 $page=get_page('action=rc rcfilteronly=alex');
 xpath_test($page, '//a[text()="FooBar"]',
