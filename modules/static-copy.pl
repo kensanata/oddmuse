@@ -239,7 +239,7 @@ sub StaticWriteCss {
     $css = GetPageContent($StyleSheetPage);
   }
   if (not $css) {
-    $css = GetRaw('http://www.oddmuse.org/default.css');
+    $css = GetRaw('https://www.oddmuse.org/default.css');
   }
   WriteStringToFile("$StaticDir/static.css", $css) if $css;
   chmod 0644,"$StaticDir/static.css";
