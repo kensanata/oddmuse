@@ -1373,7 +1373,7 @@ sub BrowseResolvedPage {
 
 sub NewText {
   my $id = shift;
-  if ($id =~ /^($CommentsPrefix)/o) {
+  if ($CommentsPrefix and $id =~ /^($CommentsPrefix)/o) {
     return T('There are no comments, yet. Be the first to leave a comment!');
   } else {
     return Ts('This page does not exist, but you can %s.',
