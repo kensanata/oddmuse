@@ -112,7 +112,7 @@ instructions above.
 The default site is configured in
 {{{/etc/apache2/sites-available/default}}}. In order for it to be
 //enabled//, there must be a symlink from a file in
-{{{{{{/etc/apache2/sites-enabled}}} to the file in
+{{{/etc/apache2/sites-enabled}}} to the file in
 {{{sites-available}}}. You can enable it using the following command:
 
 {{{
