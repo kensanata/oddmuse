@@ -141,8 +141,16 @@ xpath_test_file("$DataDir/static/Test.html",
 	   '//a[text()="HomePage"][@href="HomePage.html"]');
 test_file("$DataDir/static/Test.html",
 	  "Ümlaute");
-test_file("$DataDir/static/static.css",
-	  "This is the default CSS file for Oddmuse wikis");
+SKIP: {
+  eval {
+    require LWP::Protocol::https;
+  };
+
+  skip "LWP::Protocol::https not installed", 1 if $@;
+
+  test_file("$DataDir/static/static.css",
+            "This is the default CSS file for Oddmuse wikis");
+}
 
 # make sure spaces are translated to underscores (fixed in image.pl)
 add_module('image.pl');
