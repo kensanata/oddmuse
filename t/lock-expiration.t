@@ -14,9 +14,17 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 19;
+use Test::More tests => 17;
 
-AppendStringToFile($ConfigFile, "\$SurgeProtection = 1;\n");
+# TODO move that to test.pl?
+# we will be using the same fake time in these tests as well
+BEGIN {
+  sub updateFakeTime { utime($_[0], $_[0], "$DataDir/ts") }
+  *CORE::GLOBAL::sleep = sub { updateFakeTime((stat("$DataDir/ts"))[9] + $_[0]) };
+  *CORE::GLOBAL::time  = sub { (stat("$DataDir/ts"))[9] };
+}
+
+# AppendStringToFile($ConfigFile, "\$SurgeProtection = 1;\n"); # why are we enabling it?
 $localhost = 'confusibombus';
 $ENV{'REMOTE_ADDR'} = $localhost;
 my $lock = $LockDir . 'visitors';
@@ -33,7 +41,7 @@ ok(open(F, '>', $lock), "create bogus ${LockDir}visitors");
 my $ts = time - 120;
 utime($ts, $ts, $lock); # change mtime of the lockfile
 
-# Getting a time will now time out because no visitor lock can ge aquired.
+# Getting a time will now time out because no visitor lock can be acquired.
 $ts = time;
 get_page('fail-to-get-lock');
 

@@ -330,26 +330,16 @@ sub write_config_file {
 }
 
 sub write_modified_wiki {
-  my $preamble = <<EOT;
+  my $preamble = <<'EOT';
 
 BEGIN {
-  my \$delta = 0;
-
-  *CORE::GLOBAL::sleep = sub {
-    \$delta += shift;
-    my \$ts = time + \$delta;
-    utime(\$ts, \$ts, "$DataDir/ts")
-  };
-
-  sub newtime {
-    return time + \$delta;
-  };
-
-  *CORE::GLOBAL::time = \&newtime;
+  sub updateFakeTime { utime($_[0], $_[0], "$DataDir/ts") }
+  *CORE::GLOBAL::sleep = sub { updateFakeTime((stat("$DataDir/ts"))[9] + $_[0]) };
+  *CORE::GLOBAL::time  = sub { (stat("$DataDir/ts"))[9] };
 }
 
 EOT
-     
+
   WriteStringToFile("$DataDir/test-wiki.pl", $preamble . ReadFileOrDie('wiki.pl'));
   WriteStringToFile("$DataDir/ts", '');
 }
