@@ -38,10 +38,11 @@ my $ts = time - 120;
 utime($ts, $ts, $lock); # change mtime of the lockfile
 $ts = time;
 get_page('fail-to-get-lock');
-my $waiting = time - $ts;
+my $fakets = (stat("$DataDir/ts"))[9];
+my $waiting = $fakets - $ts;
 ok($waiting >= 16, "waited $waiting seconds (min. 16)");
 unlink($LockDir . 'visitors');
-$ts = time;
+$ts = (stat("$DataDir/ts"))[9];
 test_page(get_page('get-lock'), 'get-lock');
 my $waiting = time - $ts;
 ok($waiting <= 2, "waited $waiting seconds (max. 2)");
@@ -67,7 +68,7 @@ test_page($redirect, 'Status: 503 SERVICE UNAVAILABLE',
 ok(-d $LockDir . 'visitors', 'visitors lock remained');
 ok($ts == (stat($VisitorFile))[10], 'visitors log was not modified');
 
-AppendStringToFile($ConfigFile, "\$LockExpiration = 3;\n");
+AppendStringToFile($ConfigFile, "\$LockExpiration = -1;\n");
 test_page(update_page('Test', 'page updated'), 'page updated');
 ok(! -d $LockDir . 'visitors', 'visitors lock expired');
 ok($ts != (stat($VisitorFile))[10], 'visitors log was modified');

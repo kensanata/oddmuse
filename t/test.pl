@@ -74,12 +74,12 @@ sub url_encode {
 sub capture {
   my $command = shift;
   if ($raw) {
-    open (CL, '-|', $command) or die "Can't run $command: $!";
+    open ($fh, '-|', $command) or die "Can't run $command: $!";
   } else {
-    open (CL, '-|:encoding(utf-8)', $command) or die "Can't run $command: $!";
+    open ($fh, '-|:encoding(utf-8)', $command) or die "Can't run $command: $!";
   }
-  my $result = <CL>;
-  close CL;
+  my $result = <$fh>;
+  close $fh;
   return $result;
 }
 
@@ -91,8 +91,8 @@ sub update_page {
   $summary = url_encode($summary);
   $minor = $minor ? 'on' : 'off';
   my $rest = join(' ', @rest);
-  $redirect = capture("perl wiki.pl 'Save=1' 'title=$page' 'summary=$summary' 'recent_edit=$minor' 'text=$text' 'pwd=$pwd' $rest");
-  $output = capture("perl wiki.pl action=browse id=$page $rest");
+  $redirect = capture("perl $DataDir/test-wiki.pl 'Save=1' 'title=$page' 'summary=$summary' 'recent_edit=$minor' 'text=$text' 'pwd=$pwd' $rest");
+  $output = capture("perl $DataDir/test-wiki.pl action=browse id=$page $rest");
   if ($redirect =~ /^Status: 302 /) {
     # just in case a new page got created or NearMap or InterMap
     $IndexHash{$id} = 1;
@@ -103,7 +103,7 @@ sub update_page {
 }
 
 sub get_page {
-  return capture("perl wiki.pl @_");
+  return capture("perl $DataDir/test-wiki.pl @_");
 }
 
 sub name {
@@ -312,12 +312,12 @@ sub remove_module {
 }
 
 sub write_config_file {
-  open(F, '>:encoding(utf-8)', "$DataDir/config");
-  print F "\$AdminPass = 'foo';\n";
+  open($fh, '>:encoding(utf-8)', "$DataDir/config");
+  print $fh "\$AdminPass = 'foo';\n";
   # this used to be the default in earlier CGI.pm versions
-  print F "\$ScriptName = 'http://localhost/wiki.pl';\n";
-  print F "\$SurgeProtection = 0;\n";
-  close(F);
+  print $fh "\$ScriptName = 'http://localhost/wiki.pl';\n";
+  print $fh "\$SurgeProtection = 0;\n";
+  close($fh);
   $ScriptName = 'http://localhost/test.pl'; # different!
   $IndexInit = 0;
   %IndexHash = ();
@@ -327,6 +327,31 @@ sub write_config_file {
   $NearSiteInit = 0;
   %NearSite = ();
   %NearSearch = ();
+}
+
+sub write_modified_wiki {
+  my $preamble = <<EOT;
+
+BEGIN {
+  my \$delta = 0;
+
+  *CORE::GLOBAL::sleep = sub {
+    \$delta += shift;
+    my \$ts = time + \$delta;
+    utime(\$ts, \$ts, "$DataDir/ts")
+  };
+
+  sub newtime {
+    return time + \$delta;
+  };
+
+  *CORE::GLOBAL::time = \&newtime;
+}
+
+EOT
+     
+  WriteStringToFile("$DataDir/test-wiki.pl", $preamble . ReadFileOrDie('wiki.pl'));
+  WriteStringToFile("$DataDir/ts", '');
 }
 
 sub clear_pages {
@@ -346,6 +371,7 @@ sub clear_pages {
     add_module('mac.pl');
   }
   write_config_file();
+  write_modified_wiki();
 }
 
 1;
