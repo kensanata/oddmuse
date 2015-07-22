@@ -1,24 +1,20 @@
-# Copyright (C) 2007  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2007–2015  Alex Schroeder <alex@gnu.org>
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 3 of the License, or (at your option) any later
+# version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 17;
+use Test::More tests => 19;
 
 AppendStringToFile($ConfigFile, "\$SurgeProtection = 1;\n");
 $localhost = 'confusibombus';
@@ -27,25 +23,43 @@ my $lock = $LockDir . 'visitors';
 ok(! -d $lock, 'visitors lock does not exist yet');
 ok(! -f $VisitorFile, 'visitors log does not exist yet');
 
-# Don't loop forever trying to remove a lock older than
-# $LockExpiration that cannot be removed (eg. if the script user was
-# changed, so that the old lockfile cannot be removed by the new
-# user). Locks are directories; we simulate a lock that cannot be
-# removed by creating a file with the same name instead.
+# Don't loop forever trying to remove a lock older than $LockExpiration that
+# cannot be removed (eg. if the script user was changed, so that the old
+# lockfile cannot be removed by the new user). Locks are directories; we
+# simulate a lock that cannot be removed by creating a file with the same name
+# instead. At the same time, test fake-time!
 mkdir($TempDir);
 ok(open(F, '>', $lock), "create bogus ${LockDir}visitors");
 my $ts = time - 120;
 utime($ts, $ts, $lock); # change mtime of the lockfile
+
+# Getting a time will now time out because no visitor lock can ge aquired.
 $ts = time;
 get_page('fail-to-get-lock');
-my $fakets = (stat("$DataDir/ts"))[9];
-my $waiting = $fakets - $ts;
-ok($waiting >= 16, "waited $waiting seconds (min. 16)");
-unlink($LockDir . 'visitors');
-$ts = (stat("$DataDir/ts"))[9];
-test_page(get_page('get-lock'), 'get-lock');
+
+# Since we're using fake-time, let's make sure that no real time passed.
 my $waiting = time - $ts;
+ok($waiting <= 1, "waited $waiting real seconds (max. 1)");
+
+# Fake time is available in the timestamp file.
+my $fakets = (stat("$DataDir/ts"))[9];
+$waiting = $fakets - $ts;
+ok($waiting >= 16, "waited $waiting fake seconds (min. 16)");
+
+# Remove the fake visitors lock and redo this. Reset the fake timestamp on the
+# file. Get a file. This should take no real time and no fake time (as there was
+# no sleeping involved).
+unlink($LockDir . 'visitors');
+$ts = time;
+utime($ts, $ts, "$DataDir/ts");
+test_page(get_page('get-lock'), 'get-lock');
+$waiting = time - $ts;
 ok($waiting <= 2, "waited $waiting seconds (max. 2)");
+
+# Make sure no fake time elapsed!
+$fakets = (stat("$DataDir/ts"))[9];
+$waiting = $fakets - time;
+ok($waiting <= 2, "waited $waiting fake seconds (max. 2)");
 
 # The main lock works as intended.
 RequestLockOrError();
