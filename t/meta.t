@@ -22,6 +22,8 @@ package OddMuse;
 require 't/test.pl';
 use Test::More tests => 11;
 use File::Basename;
+use Pod::Strip;
+use Pod::Simple::TextContent;
 
 my @modules = grep { $_ ne 'modules/404handler.pl' } <modules/*.pl>;
 my @badModules;
@@ -47,15 +49,28 @@ unless (ok(@badModules == 0, '"use strict;" in modules')) {
 }
 
 @badModules = grep {
-  my $text = ReadFile($_);
-  $text =~ / [[:^ascii:]] /x && $text !~ / ^ use \s+ utf8; /xm
+  my $code = ReadFile($_);
+  # warn "Looking at $_: " . length($code);
+
+  # check Perl source code
+  my $perl;
+  my $pod_stripper = Pod::Strip->new;
+  $pod_stripper->output_string(\$perl);
+  $pod_stripper->parse_string_document($code);
+  $perl =~ s/#.*//g;
+  my $bad_perl = $perl !~ / ^ use \s+ utf8; /xm && $perl =~ / ([[:^ascii:]]+) /x;
+  diag(qq{$_ has no "use utf8;" but contains non-ASCII characters in Perl code, eg. "$1"}) if $bad_perl;
+
+  # check POD
+  my $pod;
+  my $pod_text = Pod::Simple::TextContent->new;
+  $pod_text->output_string(\$pod);
+  $pod_text->parse_string_document($code);
+  my $bad_pod = $code !~ / ^ =encoding \s+ utf8 /xm && $pod =~ / ([[:^ascii:]]+) /x;
+  diag(qq{$_ has no "=encoding utf8" but contains non-ASCII characters in POD, eg. "$1"}) if $bad_pod;
+  $bad_perl || $bad_pod;
 } @modules;
-unless (ok(@badModules == 0, '"use utf8;" in modules')) {
-  for my $module (@badModules) {
-    ReadFile($module) =~ / ([[:^ascii:]]+) /x;
-    diag(qq{$module has no "use utf8;" but contains non-ASCII characters, eg. "$1"});
-  }
-}
+ok(@badModules == 0, 'utf8 in modules');
 
  SKIP: {
    skip 'documentation tests, we did not try to document every module yet', 1;

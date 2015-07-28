@@ -1,7 +1,10 @@
 #!/usr/bin/env perl
 use strict;
+use utf8;
 
 # ====================[ hibernal.pl                        ]====================
+
+=encoding utf8
 
 =head1 NAME
 

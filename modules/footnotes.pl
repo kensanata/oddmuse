@@ -3,6 +3,8 @@ use strict;
 
 # ====================[ footnotes.pl                       ]====================
 
+=encoding utf8
+
 =head1 NAME
 
 footnotes - An Oddmuse module for adding footnotes to Oddmuse Wiki pages.

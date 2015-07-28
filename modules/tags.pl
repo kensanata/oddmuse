@@ -1,5 +1,7 @@
 use strict;
 
+=encoding utf8
+
 =head1 NAME
 
 tags - an Oddmuse module that implements tagging of pages and

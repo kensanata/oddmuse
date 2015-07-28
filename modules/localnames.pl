@@ -19,6 +19,8 @@ AddModuleDescription('localnames.pl', 'Local Names Extension');
 
 our ($q, $Now, %Page, %Action, $OpenPageName, $ScriptName, $DataDir, $RssDir, @MyRules, @MyMaintenance, @MyInitVariables, $FullUrlPattern, $FreeLinkPattern, $CommentsPrefix, $UseCache, @UserGotoBarPages, %AdminPages, @MyAdminCode, @MyFooters, $UsePathInfo);
 
+=encoding utf8
+
 =head1 Local Names
 
 This module allows you to centrally define redirections. Thus you can
