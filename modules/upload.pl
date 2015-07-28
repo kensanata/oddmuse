@@ -78,7 +78,7 @@ for (my $i=0; $q->param("fileToUpload$i"); $i++) {
 
   my $uploadFileHandle = $q->upload("fileToUpload$i");
 
-  open($UPLOADFILE, '>', "$uploadDir/$curFilename") or squeak "$!";
+  open(my $UPLOADFILE, '>', "$uploadDir/$curFilename") or squeak "$!";
   binmode $UPLOADFILE;
   while (<$uploadFileHandle>) {
     print $UPLOADFILE;
