@@ -602,7 +602,7 @@ This command is used to reflect new pages to `oddmuse-pages-hash'."
     ("{{{.*?}}}"
      0 '(face shadow
 	      help-echo "Creole code"))
-    ("^{{{\n\\(.*\n\\)+?}}}\n"
+    ("^{{{\\(.*\n\\)+?}}}\n"
      0 '(face shadow
 	      help-echo "Creole multiline code")))
     "Implement markup rules for the Creole markup extension.
@@ -841,7 +841,9 @@ WIKI is the name of the wiki as defined in `oddmuse-wikis',
 PAGENAME is the pagename of the page you want to edit. If the
 page is already in a buffer, pop to that buffer instead of
 loading the page Use a prefix argument to force a reload of the
-page."
+page. Use \\[oddmuse-reload] to reload the list of pages
+available if you changed the URL in `oddmuse-wikis' or if other
+people have been editing the wiki in the mean time."
   (interactive (oddmuse-pagename))
   (make-directory (concat oddmuse-directory "/" wiki) t)
   (let ((name (concat wiki ":" pagename)))
