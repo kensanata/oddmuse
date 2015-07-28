@@ -419,7 +419,7 @@ sub TagsMenu {
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2005-2015  Alex Schroeder <alex@gnu.org>
+Copyright (C) 2005–2015  Alex Schroeder <alex@gnu.org>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
