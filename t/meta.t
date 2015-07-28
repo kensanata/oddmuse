@@ -1,4 +1,5 @@
 # Copyright (C) 2015  Alex Jakimenko <alex.jakimenko@gmail.com>
+# Copyright (C) 2015  Alex Schroeder <alex@gnu.com>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -19,7 +20,8 @@ use utf8;
 
 package OddMuse;
 require 't/test.pl';
-use Test::More tests => 10;
+use Test::More tests => 11;
+use File::Basename;
 
 my @modules = <modules/*.pl>;
 my @badModules;
@@ -82,6 +84,14 @@ unless (ok(@badModules == 0, 'no trailing whitespace in modules')) {
 @badModules = grep { ReadFile($_) =~ / This (program|file) is free software /x } @modules;
 unless (ok(@badModules == 0, 'license is specified in every module')) {
   diag(qq{$_ has no license specified}) for @badModules;
+}
+
+@badModules = grep {
+  my ($name, $path, $suffix) = fileparse($_, '.pl');
+  ReadFile($_) !~ /^AddModuleDescription\('$name.pl'/mx;
+ } @modules;
+unless (ok(@badModules == 0, 'AddModuleDescription is used in every module')) {
+  diag(qq{$_ does not use AddModuleDescription}) for @badModules;
 }
 
 # we have to use shell to redirect the output :(
