@@ -23,7 +23,7 @@ require 't/test.pl';
 use Test::More tests => 11;
 use File::Basename;
 
-my @modules = <modules/*.pl>;
+my @modules = grep { $_ ne 'modules/404handler.pl' } <modules/*.pl>;
 my @badModules;
 
 @badModules = grep { (stat $_)[2] != oct '100644' } @modules;
