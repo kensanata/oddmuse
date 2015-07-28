@@ -19,6 +19,8 @@ AddModuleDescription('permanent-anchors.pl', 'Permanent Anchors');
 
 our ($q, $OpenPageName, %IndexHash, $DataDir, $ScriptName, @MyRules, @MyInitVariables, $FS, $FreeLinkPattern, @IndexOptions);
 
+=encoding utf8
+
 =head1 Permanent Anchors
 
 This module allows you to create link targets within a page. These

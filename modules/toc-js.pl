@@ -13,6 +13,7 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
 use strict;
+use utf8;
 
 AddModuleDescription('toc-js.pl', 'Javascript Table of Contents Extension');
 

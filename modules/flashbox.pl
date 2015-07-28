@@ -3,6 +3,8 @@ use strict;
 
 # ====================[ flashbox.pl                        ]====================
 
+=encoding utf8
+
 =head1 NAME
 
 flashbox - An Oddmuse module for embedding offsite-hosted Flash videos within
