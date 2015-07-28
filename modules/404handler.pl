@@ -27,7 +27,7 @@ my @path = split(/\//, $ENV{REDIRECT_URL});
 my $file = $path[$#path];
 
 # for dynamic pages
-use vars qw($NotFoundHandlerExceptionsPage);
+our ($NotFoundHandlerExceptionsPage);
 $NotFoundHandlerExceptionsPage = 'NoCachePages';
 $RunCGI = 0;
 do $script;
