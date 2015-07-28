@@ -1,4 +1,4 @@
-# Copyright (C) 2003–2015  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2003-2015  Alex Schroeder <alex@gnu.org>
 # Copyright (C) 2004  Haixing Hu <huhaixing@msn.com>
 # Copyright (C) 2004, 2005 Todd Neal <tolchz@tolchz.net>
 #
