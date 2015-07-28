@@ -23,7 +23,7 @@ AddModuleDescription('like.pl', 'Like Button');
 our $LikeRegexp =      T('====(\d+) persons? liked this===='); # must match all translations
 our $LikeReplacement = T('====%d persons liked this===='); # used for sprintf
 our $LikeFirst =       T('====1 person liked this====');
-    
+
 our (%Action, %Page, $OpenPageName, @MyFooters);
 $Action{like} = \&DoLike;
 push(@MyFooters, \&LikeFooter);

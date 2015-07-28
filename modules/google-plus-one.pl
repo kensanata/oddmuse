@@ -52,7 +52,7 @@ function loadScript(jssource,thelink) {
 };
 }
 
-# Google +1 list                                                                                         
+# Google +1 list
 
 push(@MyAdminCode, sub {
        my ($id, $menuref, $restref) = @_;
@@ -71,7 +71,7 @@ sub DoPlusOne {
   foreach my $id (AllPagesList()) {
     push(@pages, $id) if $id =~ /^\d\d\d\d-\d\d-\d\d/;
   }
-  splice(@pages, 0, $#pages - 19); # last 20 items                                                       
+  splice(@pages, 0, $#pages - 19); # last 20 items
   print "<ul>";
   foreach my $id (@pages) {
     my $url = ScriptUrl(UrlEncode($id));
