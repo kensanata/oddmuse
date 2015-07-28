@@ -46,12 +46,15 @@ unless (ok(@badModules == 0, '"use strict;" in modules')) {
    }
 }
 
- SKIP: {
-   skip '"use utf8;" tests, we are not doing "use utf8;" everywhere yet', 1;
-   @badModules = grep { ReadFile($_) !~ / ^ use \s+ utf8; /xm } @modules;
-   unless (ok(@badModules == 0, '"use utf8;" in modules')) {
-     diag(qq{$_ has no "use utf8;"}) for @badModules;
-   }
+@badModules = grep {
+  my $text = ReadFile($_);
+  $text =~ / [[:^ascii:]] /x && $text !~ / ^ use \s+ utf8; /xm
+} @modules;
+unless (ok(@badModules == 0, '"use utf8;" in modules')) {
+  for my $module (@badModules) {
+    ReadFile($module) =~ / ([[:^ascii:]]+) /x;
+    diag(qq{$module has no "use utf8;" but contains non-ASCII characters, eg. "$1"});
+  }
 }
 
  SKIP: {
