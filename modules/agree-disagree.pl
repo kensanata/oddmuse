@@ -93,7 +93,7 @@ sub AgreeDisagreeSupportRule {
 
 	$html .= $q->div({-class=>'agreeNames'}) . printNames(@ayes) . '</div>' ;
 	$html .= $q->div({-class=>'disagreeCount'}) . '  ' . ($#nayes+1) . '</div>' ;
-	$html .= $q->div({-class=>'disagreeNames'}) . printNames(@nayes) . '</div>' ;	
+	$html .= $q->div({-class=>'disagreeNames'}) . printNames(@nayes) . '</div>' ;
 
 
 	return $html;
