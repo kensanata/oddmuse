@@ -1,5 +1,5 @@
-# Copyright (C) 2011-2015  Alex Schroeder <alex@gnu.org>
-# Copyright (C) 2014-2015  Aleks-Daniel Jakimenko <alex.jakimenko@gmail.com>
+# Copyright (C) 2011–2015  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2014–2015  Aleks-Daniel Jakimenko <alex.jakimenko@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
