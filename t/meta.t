@@ -88,4 +88,5 @@ unless (ok(@badModules == 0, 'license is specified in every module')) {
 @badModules = grep { system("perl -cT \Q$_\E > /dev/null 2>&1") != 0 } @modules;
 unless (ok(@badModules == 0, 'modules are syntatically correct')) {
   diag(qq{$_ has syntax errors}) for @badModules;
+  diag("▶▶▶ Use this command to see the problems: perl -c @badModules");
 }
