@@ -1,5 +1,5 @@
-# Copyright (C) 2005–2015 Alex Schroeder <alex@emacswiki.org>
-# Copyright (C) 2014–2015  Aleks-Daniel Jakimenko <alex.jakimenko@gmail.com>
+# Copyright (C) 2005-2015 Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2014-2015  Aleks-Daniel Jakimenko <alex.jakimenko@gmail.com>
 # Copyright (C) 2004, Leon Brocard
 #
 # This program is free software; you can redistribute it and/or modify it under

@@ -184,7 +184,7 @@ As example, you might write:
 
   Such causes include a human-dominated ecosystem moving to a brittle, non-
   resilient state due to climatological changes.((Weiss H, Bradley RS. 2001.
-  **What drives societal collapse?** %%Science 291:609–610.%%))
+  **What drives societal collapse?** %%Science 291:609-610.%%))
 
   Societal decline only occurs, however, when socio-ecological systems become
   brittle and incapable of adaptation.((1))
@@ -208,11 +208,11 @@ definitions in multiple places throughout a page. As example, you might write:
 
   Such causes include a human-dominated ecosystem moving to a brittle, non-
   resilient state due to climatological changes((Weiss H, Bradley RS. 2001.
-  **What drives societal collapse?** %%Science 291:609–610.%%)), external
+  **What drives societal collapse?** %%Science 291:609-610.%%)), external
   forcings((Tainter, Jared. 2006. **Social complexity and sustainability.**
-  %%Ecol Complex 3:91–103.%%)), or internal pressures((Cullen HM, et al. 2000.
+  %%Ecol Complex 3:91-103.%%)), or internal pressures((Cullen HM, et al. 2000.
   **Climate change and the collapse of the Akkadian empire: Evidence from the
-  deep sea.** %%Geology 28:379–382.%%)).
+  deep sea.** %%Geology 28:379-382.%%)).
 
   Societal decline only occurs, however, when socio-ecological systems become
   brittle and incapable of adaptation.((1-2))((4))

@@ -1,4 +1,4 @@
-# Copyright (C) 2004–2015  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2004-2015  Alex Schroeder <alex@gnu.org>
 # Copyright (C)      2015  Matt Adams <opensource@radicaldynamic.com>
 #
 # This program is free software: you can redistribute it and/or modify it under
