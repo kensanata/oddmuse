@@ -21,7 +21,7 @@ use v5.10;
 
 our ($Now, @MyMacros, @MyRules, $DefaultStyleSheet, $q, $bol);
 
-    AddModuleDescription('agree-disagree.pl', 'AgreeDisagreePlugin');
+AddModuleDescription('agree-disagree.pl', 'AgreeDisagreePlugin');
 
 push(@MyRules, \&AgreeDisagreeSupportRule);
 
@@ -92,7 +92,7 @@ sub AgreeDisagreeSupportRule {
         my ($ignore, $name, $time) = split(/:/, $1, 3);
         push(@nayes, $name);
       }
-      
+
       my $html = CloseHtmlEnvironments() ;
       $html .= $q->div({-class=>'agreeCount'}) . ($#ayes+1) . '  ' . '</div>' ;
 
@@ -110,7 +110,7 @@ sub AgreeDisagreeSupportRule {
 
 sub printNames {
   my @names = @_;
-  
+
   my $html = '';
   foreach my $name (@names)  {
     $html .= "$name<br>";
