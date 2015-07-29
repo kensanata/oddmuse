@@ -3347,9 +3347,10 @@ sub AddToIndex {
 }
 
 sub DoSearch {
-  my $string = shift || GetParam('search', '');;
+  my $string = shift || GetParam('search', '');
+  my $re = UnquoteHtml($string);
   return DoIndex() if $string eq '';
-  eval { qr/$string/ }
+  eval { qr/$re/ }
     or $@ and ReportError(Ts('Malformed regular expression in %s', $string),
 			  '400 BAD REQUEST');
   my $replacement = GetParam('replace', undef);
