@@ -35,6 +35,9 @@ use utf8; # in case anybody ever addes UTF8 characters to the source
 use CGI qw/-utf8/;
 use CGI::Carp qw(fatalsToBrowser);
 use File::Glob ':glob';
+use Crypt::CBC;
+use Crypt::Cipher::AES;
+use MIME::Base64;
 local $| = 1; # Do not buffer output (localized for mod_perl)
 
 # Options:
@@ -91,7 +94,9 @@ our $AdminPass //= '';              # Whitespace separated passwords.
 our $EditPass  //= '';              # Whitespace separated passwords.
 our $PassHashFunction //= '';       # Name of the function to create hashes
 our $PassSalt  //= '';              # Salt will be added to any password before hashing
-
+# Key to encrypt challenge token. Use Emacs to generate one, for example.
+# (dotimes (n 16) (let ((i (random 256))) (insert (format "\\x%x" i))))
+our $TokenKey //= '\x40\x77\x79\xfc\xd9\x33\x21\xf0\x6e\xf7\xa1\x86\xbe\xc6\x5f\xed';
 our $BannedHosts = 'BannedHosts';   # Page for banned hosts
 our $BannedCanRead = 1;             # 1 = banned cannot edit, 0 = banned cannot read
 our $BannedContent = 'BannedContent'; # Page for banned content (usually for link-ban)
@@ -1326,6 +1331,7 @@ sub DoBrowseRequest {
     SetParam('action', 'search'); # make sure this gets a NOINDEX
     DoSearch();
   } elsif (GetParam('title', '') and not GetParam('Cancel', '')) {
+    SetParam('action', 'edit'); # make sure this gets a NOINDEX
     DoPost(GetParam('title', ''));
   } else {
     BrowseResolvedPage($id || $HomePage);  # default action!
@@ -2483,12 +2489,34 @@ sub GetCommentForm {
   return '';
 }
 
+sub GetChallengeToken {
+  my ($action, $id) = @_;
+  my $token = join($FS, $Now, GetParam('username'), $q->remote_addr(), $action, $id);
+  my $cipher = Crypt::CBC->new( -cipher=>'Cipher::AES', -key=>$TokenKey );
+  my $ciphertext = $cipher->encrypt($token);
+  return encode_base64($ciphertext);
+}
+
+sub CheckToken {
+  my $code = UnquoteHtml(GetParam('token'));
+  ReportError(T('Token is missing.'), '403 FORBIDDEN') unless $code;
+  my $cipher = Crypt::CBC->new( -cipher=>'Cipher::AES', -key=>$TokenKey );
+  my ($ts, $name, $ip, $action, $id) = split(/$FS/, $cipher->decrypt(decode_base64($code)));
+  # FIXME add retry functionality
+  ReportError(T('Token mismatch on time.'), '403 FORBIDDEN', '', "$ts >= $Now - 60 * 60") unless $ts >= $Now - 60 * 60; # 1h
+  ReportError(T('Token mismatch on IP number.'), '403 FORBIDDEN', '', $q->remote_addr . "eq $ip") unless $q->remote_addr eq $ip;
+  ReportError(T('Token mismatch on action.'), '403 FORBIDDEN', '', GetParam('action') . "eq $action") unless GetParam('action') eq $action;
+  ReportError(T('Token mismatch on id.'), '403 FORBIDDEN') unless GetParam('id', GetParam('title')) eq $id;
+}
+
 sub GetFormStart {
-  my ($ignore, $method, $class) = @_;
+  my ($ignore, $method, $class, $action, $id) = @_;
   $method ||= 'post';
   $class  ||= 'form';
-  return $q->start_multipart_form(-method=>$method, -action=>$FullUrl,
-				  -accept_charset=>'utf-8', -class=>$class);
+  my $html = $q->start_multipart_form(-method=>$method, -action=>$FullUrl,
+                                      -accept_charset=>'utf-8', -class=>$class);
+  $html .= GetHiddenValue('token', GetChallengeToken($action, $id)) if $action;
+  return $html;
 }
 
 sub GetSearchForm {
@@ -3055,9 +3083,9 @@ sub DoEdit {
 }
 
 sub GetEditForm {
-  my ($page_name, $upload, $oldText, $revision) = @_;
-  my $html = GetFormStart(undef, undef, $upload ? 'edit upload' : 'edit text') # protected by questionasker
-    .$q->p(GetHiddenValue("title", $page_name),
+  my ($id, $upload, $oldText, $revision) = @_;
+  my $html = GetFormStart(undef, undef, $upload ? 'edit upload' : 'edit text', 'edit', $id) # protected by questionasker
+    .$q->p(GetHiddenValue("title", $id),
 	   ($revision ? GetHiddenValue('revision', $revision) : ''),
            GetHiddenValue('oldtime', GetParam('oldtime', $Page{ts})), # prefer parameter over actual timestamp
 	   ($upload ? GetUpload() : GetTextArea('text', $oldText)));
@@ -3075,9 +3103,9 @@ sub GetEditForm {
            ($upload ? '' : ' ' . $q->submit(-name=>'Preview', -accesskey=>T('p'), -value=>T('Preview'))).
            ' '.$q->submit(-name=>'Cancel', -value=>T('Cancel')));
   if ($upload) {
-    $html .= $q->p(ScriptLink('action=edit;upload=0;id=' . UrlEncode($page_name), T('Replace this file with text'),   'upload'));
+    $html .= $q->p(ScriptLink('action=edit;upload=0;id=' . UrlEncode($id), T('Replace this file with text'),   'upload'));
   } elsif ($UploadAllowed or UserIsAdmin()) {
-    $html .= $q->p(ScriptLink('action=edit;upload=1;id=' . UrlEncode($page_name), T('Replace this text with a file'), 'upload'));
+    $html .= $q->p(ScriptLink('action=edit;upload=1;id=' . UrlEncode($id), T('Replace this text with a file'), 'upload'));
   }
   $html .= $q->end_form();
   return $html;
@@ -3104,9 +3132,8 @@ sub DoDownload {
       ReportError(Ts('Files of type %s are not allowed.', $type), '415 UNSUPPORTED MEDIA TYPE');
     }
     print GetHttpHeader($type, $Page{ts}, undef, $encoding);
-    require MIME::Base64;
     binmode(STDOUT, ":pop:raw"); # need to pop utf8 for Windows users!?
-    print MIME::Base64::decode($data);
+    print decode_base64($data);
   } else {
     print GetHttpHeader('text/plain', $Page{ts});
     print $text;
@@ -3569,6 +3596,7 @@ sub Replace {
 sub DoPost {
   my $id = FreeToNormal(shift);
   UserCanEditOrDie($id);
+  CheckToken();
   # Lock before getting old page to prevent races
   RequestLockOrError();		# fatal
   OpenPage($id);
@@ -3597,7 +3625,7 @@ sub DoPost {
     local $/ = undef;		# Read complete files
     my $content = <$file>; # Apparently we cannot count on <$file> to always work within the eval!?
     my $encoding = substr($content, 0, 2) eq "\x1f\x8b" ? 'gzip' : '';
-    eval { require MIME::Base64; $_ = MIME::Base64::encode($content) };
+    $_ = encode_base64($content);
     $string = "#FILE $type $encoding\n" . $_;
   } else {			# ordinary text edit
     $string = AddComment($old, $comment) if $comment;

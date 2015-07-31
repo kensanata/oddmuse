@@ -13,7 +13,9 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
 package OddMuse;
-use lib '.';
+use Crypt::CBC;
+use Crypt::Cipher::AES;
+use MIME::Base64;
 use XML::LibXML;
 use utf8;
 use vars qw($raw);
@@ -90,8 +92,10 @@ sub update_page {
   $text = url_encode($text);
   $summary = url_encode($summary);
   $minor = $minor ? 'on' : 'off';
+  my $token = GetChallengeToken('edit', $id);
+  warn $TokenKey;
   my $rest = join(' ', @rest);
-  $redirect = capture("perl wiki.pl 'Save=1' 'title=$page' 'summary=$summary' 'recent_edit=$minor' 'text=$text' 'pwd=$pwd' $rest");
+  $redirect = capture("perl wiki.pl 'Save=1' 'title=$page' 'summary=$summary' 'recent_edit=$minor' 'text=$text' 'token=$token' 'pwd=$pwd' $rest");
   $output = capture("perl wiki.pl action=browse id=$page $rest");
   if ($redirect =~ /^Status: 302 /) {
     # just in case a new page got created or NearMap or InterMap
