@@ -2546,7 +2546,7 @@ sub PrintHtmlDiff {
   $diff =~ s!<p><strong>(.*?)</strong></p>!'<p><strong>' . T($1) . '</strong></p>'!ge;
   $diff ||= T('No diff available.');
   $summary = $Page{summary} if not $summary and not $new;
-  $summary = $q->p({-class=>'summary'}, T('Summary:') . ' ' . $summary) if $summary;
+  $summary = $q->p({-class=>'summary'}, T('Summary:') . ' ' . QuoteHtml($summary)) if $summary;
   print $q->div({-class=>'diff'}, $q->p($q->b($intro)), $summary, $diff);
 }
 
