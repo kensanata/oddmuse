@@ -94,8 +94,7 @@ our $AdminPass //= '';              # Whitespace separated passwords.
 our $EditPass  //= '';              # Whitespace separated passwords.
 our $PassHashFunction //= '';       # Name of the function to create hashes
 our $PassSalt  //= '';              # Salt will be added to any password before hashing
-# Key to encrypt challenge token. Use Emacs to generate one, for example.
-# (dotimes (n 16) (let ((i (random 256))) (insert (format "\\x%x" i))))
+# Key to encrypt challenge token. Use make prepare to create a new one.
 our $TokenKey //= '\x40\x77\x79\xfc\xd9\x33\x21\xf0\x6e\xf7\xa1\x86\xbe\xc6\x5f\xed';
 our $BannedHosts = 'BannedHosts';   # Page for banned hosts
 our $BannedCanRead = 1;             # 1 = banned cannot edit, 0 = banned cannot read
