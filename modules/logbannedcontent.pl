@@ -47,6 +47,6 @@ sub LogWrite {
   my $rule = shift;
   my $id = $OpenPageName || GetId();
   AppendStringToFile($BannedFile,
-		     join("\t", TimeToW3($Now), GetRemoteHost(), $id, $rule)
+		     join("\t", TimeToW3($Now), $q->remote_addr(), $id, $rule)
 		     . "\n");
 }

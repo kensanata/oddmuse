@@ -39,7 +39,7 @@ sub AdminPowerDelete {
   } else {
     print $q->p(GetPageLink($id) . ' ' . T('deleted'));
     WriteRcLog($id, Ts('Deleted %s', $id), 0, $Page{revision},
-	       GetParam('username', ''), GetRemoteHost(), $Page{languages},
+	       GetParam('username', ''), $q->remote_addr(), $Page{languages},
 	       GetCluster($Page{text}));
   }
   # Regenerate index on next request
@@ -88,10 +88,10 @@ sub AdminPowerRename {
   # RecentChanges
   OpenPage($new);
   WriteRcLog($id, Ts('Renamed to %s', $new), 0, $Page{revision},
-	     GetParam('username', ''), GetRemoteHost(), $Page{languages},
+	     GetParam('username', ''), $q->remote_addr(), $Page{languages},
 	     GetCluster($Page{text}));
   WriteRcLog($new, Ts('Renamed from %s', $id), 0, $Page{revision},
-	     GetParam('username', ''), GetRemoteHost(), $Page{languages},
+	     GetParam('username', ''), $q->remote_addr(), $Page{languages},
 	     GetCluster($Page{text}));
   print $q->p(Tss('Renamed %1 to %2.', GetPageLink($id), GetPageLink($new)));
   ReleaseLock();
