@@ -28,7 +28,7 @@ push(@MyInitVariables, \&DraftInit);
 sub DraftInit {
   if (GetParam('Draft', '')) {
     SetParam('action', 'draft') ; # Draft button used
-  } elsif (-f "$DraftDir/" . GetParam('username', GetRemoteHost()) # draft exists
+  } elsif (-f "$DraftDir/" . GetParam('username', $q->remote_addr()) # draft exists
 	   and $FooterNote !~ /action=draft/) {                    # take care of mod_perl persistence
     $FooterNote = $q->p(ScriptLink('action=draft', T('Recover Draft'))) . $FooterNote;
   }
@@ -38,7 +38,7 @@ $Action{draft} = \&DoDraft;
 
 sub DoDraft {
   my $id = shift;
-  my $draft = $DraftDir . '/' . GetParam('username', GetRemoteHost());
+  my $draft = $DraftDir . '/' . GetParam('username', $q->remote_addr());
   if ($id) {
     my $text = GetParam('text', '');
     ReportError(T('No text to save'), '400 BAD REQUEST') unless $text;

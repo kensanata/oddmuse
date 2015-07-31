@@ -36,10 +36,10 @@ $Action{$SelfBan} = \&DoSelfBan;
 
 sub DoSelfBan {
   my $date = &TimeToText($Now);
-  my $str = '^' . quotemeta(GetRemoteHost());
+  my $str = '^' . quotemeta($q->remote_addr());
   OpenPage($BannedHosts);
   Save ($BannedHosts, $Page{text} . "\n\nself-ban on $date\n $str",
-	Ts("Self-ban by %s", GetRemoteHost()), 1); # minor edit
+	Ts("Self-ban by %s", $q->remote_addr()), 1); # minor edit
   ReportError(T("You have banned your own IP."));
 }
 
@@ -55,7 +55,7 @@ sub OpenProxyNewDoEdit {
 
 sub BanOpenProxy {
   my ($force) = @_;
-  my $ip = GetRemoteHost();
+  my $ip = $q->remote_addr();
   my $limit = 60*60*24*30; # rescan after 30 days
   # Only check each IP address once a month
   my %proxy = split(/\s+/,  ReadFile($OpenProxies));

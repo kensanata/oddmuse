@@ -2087,7 +2087,7 @@ sub DoRollback {
     } elsif (not UserIsEditor() and my $rule = BannedContent($text)) {
       print Ts('Rollback of %s would restore banned content.', $id), $rule, $q->br();
     } else {
-      Save($id, $text, Ts('Rollback to %s', TimeToText($to)), $minor, ($Page{host} ne GetRemoteHost()));
+      Save($id, $text, Ts('Rollback to %s', TimeToText($to)), $minor, ($Page{host} ne $q->remote_addr()));
       print Ts('%s rolled back', GetPageLink($id)), ($ts ? ' ' . Ts('to %s', TimeToText($to)) : ''), $q->br();
     }
   }
@@ -2178,10 +2178,6 @@ sub ScriptLinkDiff {
   $action .= ";diffrevision=$old" if $old;
   $action .= ";revision=$new"     if $new;
   return ScriptLink($action, $text, 'diff');
-}
-
-sub GetRemoteHost {
-  return $ENV{REMOTE_ADDR};
 }
 
 sub GetAuthor {
@@ -3199,7 +3195,7 @@ sub UserCanEdit {
 
 sub UserIsBanned {
   return 0 if GetParam('action', '') eq 'password'; # login is always ok
-  my $host = GetRemoteHost();
+  my $host = $q->remote_addr();
   foreach (split(/\n/, GetPageContent($BannedHosts))) {
     if (/^\s*([^#]\S+)/) { # all lines except empty lines and comments, trim whitespace
       my $regexp = $1;
@@ -3563,7 +3559,7 @@ sub Replace {
     };
     if (s/$from/$replacement->()/gei) { # allows use of backreferences
       push (@result, $id);
-      Save($id, $_, $from . ' → ' . $to, 1, ($Page{host} ne GetRemoteHost()));
+      Save($id, $_, $from . ' → ' . $to, 1, ($Page{host} ne $q->remote_addr()));
     }
   }
   ReleaseLock();
@@ -3642,7 +3638,7 @@ sub DoPost {
   if ($oldrev) { # the first author (no old revision) is not considered to be "new"
     # prefer usernames for potential new author detection
     $newAuthor = 1 if not $Page{username} or $Page{username} ne GetParam('username', '');
-    $newAuthor = 1 if not GetRemoteHost() or not $Page{host} or GetRemoteHost() ne $Page{host};
+    $newAuthor = 1 if not $q->remote_addr() or not $Page{host} or $q->remote_addr() ne $Page{host};
   }
   my $oldtime = $Page{ts};
   my $myoldtime = GetParam('oldtime', ''); # maybe empty!
@@ -3716,7 +3712,7 @@ sub AddComment {
 sub Save {      # call within lock, with opened page
   my ($id, $new, $summary, $minor, $upload) = @_;
   my $user = GetParam('username', '');
-  my $host = GetRemoteHost();
+  my $host = $q->remote_addr();
   my $revision = $Page{revision} + 1;
   my $old = $Page{text};
   my $olddiff = $Page{'diff-major'} == '1' ? $Page{'diff-minor'} : $Page{'diff-major'};
@@ -3944,7 +3940,7 @@ sub DoDebug {
 
 sub DoSurgeProtection {
   return unless $SurgeProtection;
-  my $name = GetParam('username', GetRemoteHost());
+  my $name = GetParam('username', $q->remote_addr());
   return unless $name;
   ReadRecentVisitors();
   AddRecentVisitor($name);
