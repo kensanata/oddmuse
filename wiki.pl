@@ -1909,6 +1909,8 @@ sub RssItem {
   my $name = ItemName($id);
   if (GetParam('full', 0)) { # full page means summary is not shown
     $summary = PageHtml($id, 50 * 1024, T('This page is too big to send over RSS.'));
+  } else {
+    $summary = QuoteHtml($summary); # page summary must be quoted
   }
   my $date = TimeToRFC822($ts);
   $username = QuoteHtml($username);
