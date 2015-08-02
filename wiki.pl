@@ -1206,7 +1206,7 @@ sub GetDownloadLink {
   if ($image) {
     $action = $ScriptName . (($UsePathInfo and not $revision) ? '/' : '?') . $action;
     return $action if $image == 2;
-    my $result = $q->img({-src=>$action, -alt=>UnquoteHtml($alt), -class=>'upload'});
+    my $result = $q->img({-src=>$action, -alt=>UnquoteHtml($alt), -title=>UnquoteHtml($alt), -class=>'upload'});
     $result = ScriptLink(UrlEncode($id), $result, 'image') unless $id eq $OpenPageName;
     return $result;
   } else {
