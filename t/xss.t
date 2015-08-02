@@ -14,9 +14,11 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 2;
+use Test::More tests => 3;
 
 test_page(update_page('Test', 'Content is saved', '<xss>'),
           'Content is saved');
 test_page(get_page('action=browse id=Test diff=1'),
           '&lt;xss&gt;');
+test_page(get_page('action=rss'),
+          '&amp;lt;xss&amp;gt;');
