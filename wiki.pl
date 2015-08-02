@@ -2312,7 +2312,7 @@ sub Cookie {
   my ($changed, $visible, %params) = CookieData(); # params are URL encoded
   if ($changed) {
     my $cookie = join(UrlEncode($FS), %params); # no CTL in field values
-    my $result = $q->cookie(-name=>$CookieName, -value=>$cookie, -expires=>'+2y', secure=>$ENV{'HTTPS'}, httponly=>$ENV{'HTTPS'});
+    my $result = $q->cookie(-name=>$CookieName, -value=>$cookie, -expires=>'+2y', secure=>$ENV{'HTTPS'}, httponly=>1);
     if ($visible) {
       $Message .= $q->p(T('Cookie: ') . $CookieName . ', '
 			. join(', ', map {$_ . '=' . $params{$_}} keys(%params)));
