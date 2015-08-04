@@ -213,6 +213,7 @@ pre {
 
 tt, pre, code {
     font-size: 80%;
+    background: #eee;
 };
 
 @font-face {
