@@ -217,6 +217,7 @@ tt, pre, code {
 
 code {
     background: #eee;
+    white-space: pre-wrap;
 }
 
 @font-face {
