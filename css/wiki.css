@@ -213,8 +213,11 @@ pre {
 
 tt, pre, code {
     font-size: 80%;
-    background: #eee;
 };
+
+code {
+    background: #eee;
+}
 
 @font-face {
   font-family: 'Gentium Basic';
