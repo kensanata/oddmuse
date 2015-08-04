@@ -106,7 +106,6 @@ our $InterMap    = 'InterMap';      # name of the intermap page, '' = disable
 our $RssInterwikiTranslate = 'RssInterwikiTranslate'; # name of RSS interwiki translation page, '' = disable
 $ENV{PATH}   = '/bin:/usr/bin'; # Path used to find 'diff' and 'grep'
 our $UseDiff     = 1;               # 1 = use diff
-our $UseGrep     = 1;               # 1 = use grep to speed up searches
 our $SurgeProtection      = 1;      # 1 = protect against leeches
 our $SurgeProtectionTime  = 20;     # Size of the protected window in seconds
 our $SurgeProtectionViews = 20;     # How many page views to allow in this window
@@ -3404,7 +3403,7 @@ sub SearchTitleAndBody { # expects search string to be HTML quoted and will unqu
   $string = UnquoteHtml($string);
   my @found;
   my $lang = GetParam('lang', '');
-  foreach my $id (GrepFiltered($string, AllPagesList())) {
+  foreach my $id (AllPagesList()) {
     my $name = NormalToFree($id);
     my ($text) = PageIsUploadedFile($id); # set to mime-type if this is an uploaded file
     if (not $text) { # not uploaded file, therefore allow searching of page body
@@ -3422,27 +3421,6 @@ sub SearchTitleAndBody { # expects search string to be HTML quoted and will unqu
     }
   }
   return @found;
-}
-
-sub GrepFiltered { # grep is so much faster!!
-  my ($string, @pages) = @_;
-  my $regexp = SearchRegexp($string);
-  return @pages unless GetParam('grep', $UseGrep) and $regexp;
-  my @result = grep(/$regexp/i, @pages);
-  my %found = map {$_ => 1} @result;
-  $regexp =~ s/\\n(\)*)$/\$$1/g; # sometimes \n can be replaced with $
-  $regexp =~ s/([?+{|()])/\\$1/g; # basic regular expressions from man grep
-  # if we know of any remaining grep incompatibilities we should
-  # return @pages here!
-  $regexp = quotemeta($regexp);
-  open(my $F, '-|:encoding(UTF-8)', "grep -li $regexp '$PageDir' 2>/dev/null");
-  while (<$F>) {
-    push(@result, $1) if m/.*\/(.*)\.pg/ and not $found{$1};
-  }
-  close($F);
-  return @pages if $?;
-  @result = sort @result;
-  return @result;
 }
 
 sub SearchString {
@@ -3927,7 +3905,6 @@ sub DoShowVersion {
     $q->p('XML::RSS: ', eval { local $SIG{__DIE__}; require XML::RSS; $XML::RSS::VERSION; }),
       $q->p('XML::Parser: ', eval { local $SIG{__DIE__}; $XML::Parser::VERSION; });
   print $q->p('diff: ' . (`diff --version` || $!)), $q->p('diff3: ' . (`diff3 --version` || $!)) if $UseDiff;
-  print $q->p('grep: ' . (`grep --version` || $!)) if $UseGrep;
   print $q->end_div();
   PrintFooter();
 }
