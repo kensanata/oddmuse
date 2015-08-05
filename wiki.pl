@@ -2499,7 +2499,8 @@ sub GetSearchForm {
   if (GetParam('search') ne '' and UserIsAdmin()) { # see DoBrowseRequest
     $html .= $q->label({-for=>'replace'}, T('Replace:')) . ' '
 	. $q->textfield(-name=>'replace', -id=>'replace', -size=>20) . ' '
-	. $q->checkbox(-name=>'delete', -label=>T('Delete')) . ' ';
+        . $q->label({-for=>'delete', -title=>'If you want to replace matches with the empty string'}, T('Delete')) . ' '
+	. $q->input({-type=>'checkbox', -name=>'delete'});
   }
   if (GetParam('matchingpages', $MatchingPages)) {
     $html .= $q->label({-for=>'matchingpage'}, T('Filter:')) . ' '
