@@ -188,7 +188,7 @@ div.footer hr {
 
 div.content > div.comment {
     border-top: none;
-    padding-top: none;
+    padding-top: 0;
     border-left: 1ex solid #bbb;
     padding-left: 1ex;
 }
@@ -213,7 +213,12 @@ pre {
 
 tt, pre, code {
     font-size: 80%;
-};
+}
+
+code {
+    background: #eee;
+    white-space: pre-wrap;
+}
 
 @font-face {
   font-family: 'Gentium Basic';
