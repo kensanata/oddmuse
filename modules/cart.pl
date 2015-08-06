@@ -15,9 +15,14 @@
 #    Free Software Foundation, Inc.
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
+use strict;
+use utf8;
 
+AddModuleDescription('cart.pl', 'Cart Extension');
 
-$ModulesDescription .= '<p>$Id: cart-bfc4.pl,v 0.7 2009/08/08 23:20:09 Eric Hsu Exp $</p>';
+our ($q, %Action, $UserGotoBar, $CookieName);
+our ($CartPic, $CartName, %Cart, $ShowCart, @CartOrdered);
+my $LOADED_CART_JS;
 
 # ============
 # = cart-bfc =
@@ -56,8 +61,8 @@ $UserGotoBar .= '<a href="?action=cart;cache=0">View Cart</a>';
 
 # Manage Cart Routines
 
-push @MyPrintSearchResultsPrefix, \&PrintCheckboxTableStart;
-push @MyPrintSearchResultsSuffix, \&PrintCheckboxTableEnd;
+#push @MyPrintSearchResultsPrefix, \&PrintCheckboxTableStart;
+#push @MyPrintSearchResultsSuffix, \&PrintCheckboxTableEnd;
 
 # I can't hack into Init, so let's tap into InitCookie.
 # We also tap into Cookie() to arrange writing out our cleaned up Cart.
@@ -100,7 +105,7 @@ sub InitCart {
   if ($q->cookie($CartName)) {
     # @pairs = split(/&/, $q->cookie($CartName));
     @pairs =  $q->cookie($CartName);
-    foreach $pair (@pairs) {
+    foreach my $pair (@pairs) {
       # my $encodedequals = UrlEncode("=");
       my ($name, $val)= split(/\=/, $pair);
       $Cart{"$name"}=$val;
@@ -151,11 +156,10 @@ sub MakeCheckbox {
 	        var value = YAHOO.util.Cookie.getSub("$CartName", "$name");
 	        if (value == 1 ) { YAHOO.util.Cookie.removeSub("$CartName", "$name"); }
 	        else { YAHOO.util.Cookie.setSub("$CartName", "$name", 1 ); }
-	        $debug
 	    });
 	})();
 	</script>
-HTMLEND;
+HTMLEND
 
   return $html unless ($q->param('action') eq 'edit' || $q->param('Preview'));
   # no checkboxes for edit pages.
