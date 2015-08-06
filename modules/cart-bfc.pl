@@ -17,7 +17,7 @@
 #    Boston, MA 02111-1307 USA
 
 
-$ModulesDescription .= '<p>$Id: cart-bfc.pl,v 0.5 2008/07/22 23:20:09 Eric Hsu Exp $</p>';
+$ModulesDescription .= '<p>$Id: cart-bfc4.pl,v 0.7 2009/08/08 23:20:09 Eric Hsu Exp $</p>';
 
 # ============
 # = cart-bfc =
@@ -41,22 +41,8 @@ $ModulesDescription .= '<p>$Id: cart-bfc.pl,v 0.5 2008/07/22 23:20:09 Eric Hsu E
 	# we'll feed this display to a variant of search display. 
 # I'll have to check oddmuse.pl.
 
-# When we make the checkbox, we need to make sure we set the initial SELECTED state correctly. 
-# We'll go with a little cart png with a checkbox, if possible. 
-
 # load Yahoo UI code bit to manage subcookies. 
-
-$UserGotoBar .= '<a href="?action=cart;cache=0">View Cart</a>';
-
-$HtmlHeaders.=<<SCRIPTEND;
-<script type="text/javascript" src="../build/yuiloader/yuiloader-beta-min.js"></script>
-<script type="text/javascript" src="../build/event/event-min.js"></script>
-<script type="text/javascript" src="../build/cookie/cookie-beta-min.js"></script>
-<script type="text/javascript" src="../build/dom/dom-min.js"></script>
-<script type="text/javascript" src="../build/element/element-beta-min.js"></script>
-<script type="text/javascript" src="../build/button/button-min.js"></script>
-SCRIPTEND
-
+ 
 $Action{cart} = \&DoCart;    
 
 sub DoCart {	                   
@@ -65,6 +51,8 @@ sub DoCart {
 	# } 
 	DoSearch(\@CartOrdered); 	
 }
+
+$UserGotoBar .= '<a href="?action=cart;cache=0">View Cart</a>';
 
 # Manage Cart Routines
 
@@ -77,15 +65,17 @@ push @MyPrintSearchResultsSuffix, \&PrintCheckboxTableEnd;
 *OldInitCookie = *InitCookie;
 *InitCookie = *InitCookieAndCart;
 
+# To get a checkbox in the titles of pages, we patch GetHeader.
+*OldGetHeader = *GetHeader;
+*GetHeader = *GetHeaderAndCart;
+
+
 sub InitCookieAndCart {
 	OldInitCookie();
 	InitCart();  
 }
 
 
-# To get a checkbox in the titles of pages, we patch GetHeader.
-*OldGetHeader = *GetHeader;
-*GetHeader = *GetHeaderAndCart;
 
 sub GetHeaderAndCart {
 	my ($id, $title, $oldId, $nocache, $status) = @_;
@@ -94,7 +84,7 @@ sub GetHeaderAndCart {
 	return ($result) unless ($id);
 	
 	my $checkbox = MakeCheckbox($id);
-	$checkbox = qq(<span style="float:right">$checkbox</span>);
+	$checkbox = qq(<span class="cart-checkbox" style="float:right">$checkbox</span>);
 	
 	$result =~ s/(<\/h1>)/$checkbox$1/;
 	
@@ -148,23 +138,17 @@ sub PrintCheckboxTableEnd {
 sub MakeCheckbox {
 	my ($name, $regex, $text, $type) = @_;
 	my $html;
-	# $CartPic=qq(<img src="../cart.png"/>);
+     
+	return unless ($ShowCart);
+	unless ($LOADED_CART_JS) {
+		$html .= '<script type="text/javascript" src="http://yui.yahooapis.com/combo?2.7.0/build/yahoo/yahoo-min.js&2.7.0/build/cookie/cookie-min.js&2.7.0/build/event/event-min.js"></script>'; 
+		$LOADED_CART_JS=1;
+	}                     
 	
-	# TEST.
-	# unless ($DUMPED) {
-	# 	use Data::Dumper;
-	# 	
-	# 	print "<pre>", Dumper (\%Cart, \($q->cookie($CartName)) ,
-	# 	"</pre>"
-	# 			);
-	# 	$DUMPED++;
-	# } 
-	# my $debug = qq(value = YAHOO.util.Cookie.get("$CartName"); alert(value););
-
 	my $selected = qq(checked="yes") if ($Cart{"$name"});
 	
 	$html .=<<HTMLEND;
-	$CartPic<input type="checkbox" value="cart" id="$name-set" $selected/> <br>
+	$CartPic<input type="checkbox" value="cart" id="$name-set" title="Add To Cart" $selected/> <br>
 	<script type="text/javascript">
 	(function(){
 	    YAHOO.util.Event.on("$name-set", "change", function(){
@@ -178,12 +162,18 @@ sub MakeCheckbox {
 HTMLEND
 	
 	
-	return $html;
+	return $html unless ($q->param('action') eq 'edit' || $q->param('Preview'));    
+		# no checkboxes for edit pages.
+	return;
 	
 }
                               
 __END__
-=               
+
+=              
+(0.7) Load JS libraries on first checkbox (so won't load if we are editing).
+(0.6) Changed the JS source to be Yahoo's CDN. 
+(0.51) Use CSS class cart-checkbox for the cart checkbox!  That way, we can remove them for printouts, for instance.
 (0.5) Our hack of cookies was not working cross-platform. We have a mismatch because our attempts to send out a cookie from oddmuse were getting the contents encoded and unreadable for the YUI routines.  Instead,we will use removeSub to avoid ever having to send the cookie back from our server!      
 (0.4) Now every page title has a checkbox floated to the right, which controls the cart status.                                       
 (0.3) Allow cart editing from cart display. Currently, doesn't seem to affect the cart.
