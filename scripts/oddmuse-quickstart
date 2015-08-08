@@ -1,0 +1,322 @@
+#!/bin/bash
+# Copyright (C) 2015  Alex-Daniel Jakimenko <alex.jakimenko@gmail.com>
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
+
+set -e # fatal errors
+
+REPO_LINK='https://raw.githubusercontent.com/kensanata/oddmuse/2.3.5/'
+
+exit_reason=''
+
+# We will use alternating colors so that it is easier to see which part
+# was just printed. Otherwise it is pretty hard to use.
+color1=$(tput setaf 4)
+color2=$(tput setaf 6)
+colorNone=$(tput sgr0)
+
+prompt() {
+    local answer prompt default
+
+    if [[ ! $2 || ${2^} = Y* ]]; then
+	prompt='Y/n'
+	default='Y'
+    elif [[ ${2^} = N* ]]; then
+	prompt='y/N'
+	default='N'
+    fi
+
+    while :; do
+	if [[ $curColor == "$color2" ]]; then # TODO more colors?
+	    curColor=$color1
+	else
+	    curColor=$color2
+	fi
+	read -r -p "$curColor$1$colorNone [$prompt] " answer
+
+	[[ ! $answer ]] && answer=$default
+
+	if [[ ${answer^} = Y* ]]; then
+	    echo
+	    return 0
+	fi
+	if [[ ${answer^} = N* ]]; then
+	    exit_reason='quit'
+	    echo
+	    return 1
+	fi
+    done
+}
+
+err() {
+    printf "%s\n" "$1"
+    exit_reason='err'
+    exit
+}
+
+clean() {
+    case $exit_reason in
+	ok)
+	    echo 'Good luck! (:'
+	    exit 0;
+	    ;;
+	quit)
+	    echo 'You have aborted this script.'
+	    exit 1
+	    ;;
+	*)
+	    echo 'This script terminated unexpectedly. :('
+	    exit 1
+    esac
+}
+trap clean EXIT
+
+echo '== Welcome! =='
+echo 'This script will guide you through the process of **setting up a new** Oddmuse wiki.'
+echo 'It will also attempt to explain every step.'
+echo
+echo 'Every step will ask your confirmation. It will look like "[Y/n]".'
+echo 'Enter "y" (yes) or "n" (no) to answer the question.'
+echo 'Uppercase letter means that this action is the default and you can just press Enter.'
+echo
+echo 'At any moment you can press Ctrl-C to abort the process.'
+echo
+
+echo '== Main script =='
+echo 'First of all, we have to download the main script and put it into ##cgi-bin## directory.'
+
+if [[ ! -d 'cgi-bin' ]]; then
+    echo
+    echo 'It seems like your ##cgi-bin## directory is missing.'
+    echo
+    if ! prompt 'Do you want to create cgi-bin now?' Y; then
+	exit_reason='quit'
+	exit
+    fi
+    mkdir -- 'cgi-bin' || err 'Cannot create cgi-bin directory. This may be caused by the lack of permissions.'
+    echo '##cgi-bin## directory was created.'
+    chmod 755 -- 'cgi-bin'
+    echo '##cgi-bin## permissions were set to 755 (rwxr-xr-x).'
+fi
+
+echo
+
+prompt 'Download wiki.pl right now?' Y
+wget -O cgi-bin/wiki.pl "$REPO_LINK/wiki.pl" || err 'Cannot download the main script (wiki.pl).'
+
+echo '##wiki.pl## was successfully downloaded into your ##cgi-bin## directory.'
+echo
+echo '== Wrapper script =='
+echo 'You have to specify some location for permanent data storage.'
+echo
+echo 'If you wont do that, the wiki will run in **temporary mode**.'
+echo
+echo 'In temporary mode, any change is stored in /tmp (and therefore will be eventually deleted)'
+echo
+echo 'In order to keep the data you must specify ##$DataDir##. This is usually done with a wrapper script.'
+echo
+echo 'This script will create ##cgi-bin/run.pl## with the required contents.'
+echo 'Your ##$DataDir## will be set to ##../wiki## (relative to ##cgi-bin## directory).'
+echo
+prompt 'Create a wrapper script?' Y
+cat <<'EOF' > 'cgi-bin/run.pl'
+#!/usr/bin/perl
+package OddMuse;
+$DataDir = '../wiki';
+do 'wiki.pl';
+EOF
+
+echo 'Wrapper script was created with these contents:'
+echo '{{{'
+cat 'cgi-bin/run.pl'
+echo '}}}'
+echo
+
+chmod +x 'cgi-bin/run.pl'
+echo '##cgi-bin/run.pl## file is now executable (##chmod +x cgi-bin/run.pl##)'
+echo
+
+echo '== Basic setup =='
+echo
+if [[ ! -d 'wiki/' ]]; then
+    echo '=== wiki/ ==='
+    echo '##wiki/## directory will contain all data associated with your wiki, that is:'
+    echo '* Pages and kept pages (previous versions)'
+    echo '* Modules (also called Extensions)'
+    echo '* Temp files and logs'
+    echo '* And some other less relevant stuff'
+    echo
+    prompt 'Create ##wiki/## directory?' Y
+    mkdir 'wiki'
+    echo '##wiki/## directory was created.'
+    echo
+fi
+
+if [[ ! -d 'wiki/modules/' ]]; then
+    echo '=== wiki/modules/ ==='
+    echo '##wiki/modules/## can contain perl files that extend the functionality of the core.'
+    echo 'These could be your own modules, or one of the 200+ contributed modules.'
+    echo 'You can see a structured list of modules on https://oddmuse.org/wiki/Site_Map'
+    echo
+    prompt 'Create ##wiki/modules## directory?' Y
+    mkdir 'wiki/modules'
+    echo '##wiki/modules/## directory was created.'
+    echo
+fi
+
+if [[ ! -f 'wiki/config' ]]; then
+    echo '=== wiki/config ==='
+    default_config=$'use utf8; # allow utf-8 characters in config file\n'
+    echo '##wiki/config## can contain perl code that will be ran during the core initialization.'
+    echo
+    echo 'Config file will be initialized in ##wiki/config## with these contents:'
+    echo '{{{'
+    echo "$default_config"
+    echo '}}}'
+    echo
+    prompt 'Initialize config file?' Y
+    printf "%s\n" "$default_config" >> 'wiki/config'
+    echo 'Config file was initialized.'
+    echo
+fi
+
+if [[ ! -f '.htaccess' ]]; then
+    main_htaccess='# Do not let people see your directory structure
+Options -Indexes
+
+# Make your wiki accessible with just /SomePage instead of /cgi-bin/run.pl/SomePage
+RewriteEngine On
+RewriteRule ^([^/]*)$ /cgi-bin/run.pl/$1 [QSA,L]
+RewriteRule ^$ cgi-bin/run.pl [QSA,L,PT]'
+    echo '=== .htaccess ==='
+    echo '##.htaccess## is a configuration file that is used by several web servers (e.g. Apache).'
+    echo '##.htaccess## file will be created with these contents:'
+    echo '{{{'
+    echo "$main_htaccess"
+    echo '}}}'
+    echo
+    prompt 'Create ##.htaccess## file?' Y
+    printf "%s\n" "$main_htaccess" >> '.htaccess'
+    echo '##.htaccess## was created.'
+    echo
+fi
+
+if [[ ! -f 'wiki/.htaccess' ]]; then
+    wiki_htaccess='# Hide this directory from world
+Deny from all'
+    echo '=== wiki/.htaccess ==='
+    echo 'We have to hide files in ##wiki/## from public.'
+    echo '##wiki/.htaccess## file be created with these contents:'
+    echo '{{{'
+    echo "$wiki_htaccess"
+    echo '}}}'
+    echo
+    prompt 'Create ##wiki/.htaccess## file?' Y
+    printf "%s\n" "$wiki_htaccess" >> 'wiki/.htaccess'
+    echo '##wiki/.htaccess## was created.'
+    echo
+fi
+
+echo '== Config file =='
+echo 'Now we will do a couple of modifications to the ##wiki/config## file.'
+echo
+echo 'Config file is just a perl script that is ran by the core during initialization.'
+echo
+echo 'Feel free to edit it yourself manually at any time!'
+echo
+echo '=== Password ==='
+echo 'It is a good idea to have administrator password set.'
+echo
+echo 'This script will hash your salted password with sha256 and then it will save that hash in your config file.'
+echo
+echo 'Although salt is used, it is still easy to bruteforce sha256 hashes.'
+echo
+echo 'Please use a strong password (we will let you decide yourself which password is strong enough, you can use any characters).'
+echo
+prompt 'Do you want to set your password now?' Y
+echo '//You will not see what you are typing, this is OK.//'
+read -rs -p "Password:" password
+echo
+echo
+
+password_config='use Digest::SHA qw(sha256_hex);
+$PassHashFunction = \&sha256_hex;
+'
+
+salt=$(head -c 32 /dev/urandom | xxd -p -c 32) # urandom is OK for generating random strings
+password_config+="\$PassSalt = '$salt'; # random salt. Generated with: head -c 32 /dev/urandom | xxd -p -c 32"$'\n'
+password_config+="\$AdminPass = '$(printf "%s" "$password$salt" | sha256sum | cut -d ' ' -f 1)'"'; # Generated with: printf "%s" "$password$salt" | sha256sum'$'\n'
+echo 'This will be written to your config file:'
+echo '{{{'
+echo "$password_config"
+echo '}}}'
+echo
+printf "%s\n" "$password_config" >> 'wiki/config'
+
+echo '== Essential set of modules =='
+echo 'Now we will install a couple of modules.'
+echo 'Oddmuse is very modular in nature, some of the very essential stuff was separated from the core.'
+echo 'Although you can still use Oddmuse without any modules, we think that any healthy wiki will require some modules.'
+echo 'This is discussed in https://oddmuse.org/wiki/Essential_Set_of_Modules'
+echo 'Next steps will guide you through installing some of the modules.'
+echo
+
+echo '=== creole.pl ==='
+echo 'First of all, you need something that will handle the syntax on your wiki. These modules will give you bold, italics, tables, sometimes additional link patterns, ordered/unordered lists and lots of other stuff.'
+echo 'There are several modules for this, but Creole Markup Extension is currently the best choice.'
+echo
+prompt 'Do you want to install Creole Markup Extension?' Y
+
+wget -O wiki/modules/creole.pl "$REPO_LINK/modules/creole.pl" || err 'Cannot download the module (creole.pl).'
+
+echo '=== questionasker.pl ==='
+echo 'Any website that has an edit form is bound to accumulate spam over time. Unfortunately, that’s the Internet we are living in – spam bots crawl the web and attempt to put stuff into anything that they can find. Once you get at least one successful spam edit, you will get into a list and bots will attempt to post spam all the time.'
+echo
+echo 'There is no solution that will keep your wiki 100% free from spam, but there are some good ways to mitigate it.'
+echo
+echo '[[QuestionAsker Extension]] will add a question to the edit form. Once it is answered, the user gets a cookie and will not be asked the question again. Surprisingly, this keeps almost all of the spambots away.'
+echo
+prompt 'Do you want to install QuestionAsker Extension?' Y
+
+wget -O wiki/modules/questionasker.pl "$REPO_LINK/modules/questionasker.pl" || err 'Cannot download the module (questionasker.pl).'
+
+echo '=== ban-contributors.pl ==='
+echo 'Several times per year some spam will get through. You will rollback your pages, but after some time it will appear again. That’s when you might want to ban some IPs. [[Ban Contributors Extension]] will help you with that!
+
+Whenever you rollback a page, it will provide several ways to prevent that spam from getting in again. Basically it will add a convenient way to ban some IPs.'
+echo
+prompt 'Do you want to install [[Ban Contributors Extension]]?' Y
+
+wget -O wiki/modules/ban-contributors.pl "$REPO_LINK/modules/ban-contributors.pl" || err 'Cannot download the module (ban-contributors.pl).'
+
+if [[ ! -f 'wiki/css/wiki.css' ]]; then
+    echo '== CSS =='
+    echo 'By default the main script will attempt to use default stylsheet (the one that you see on https://oddmuse.org).'
+    echo
+    echo 'However, you probably want your users to download it from your own server.'
+    echo
+    prompt 'Do you want to fetch default CSS into ##css/wiki.css##?' Y
+    echo
+    mkdir -p 'wiki/css'
+    wget -O wiki/css/wiki.css "$REPO_LINK/css/wiki.css" || err 'Cannot download default stylesheet.'
+fi
+
+echo
+echo '== Finish =='
+echo 'Congratulations! You went through all of the steps.'
+echo 'Now open your website and enjoy the result.'
+echo
+echo 'If you have problems or questions, please write a comment on https://oddmuse.org/.'
+echo 'We will be glad to help you!'
+echo
+exit_reason='ok'
