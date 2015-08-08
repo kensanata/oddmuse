@@ -187,7 +187,7 @@ sub CookieUsernameFix {
     }
 
     $Message .= "<tr><td>COOKIE::</td></tr>";
-    my ($changed, $visible, %cookie_parameters) = CookieData();
+    my ($changed, %cookie_parameters) = CookieData();
     foreach my $cookie_parameter (keys %cookie_parameters) {
       $Message.="<tr>"
         ."<td>${cookie_parameter}:</td>"
