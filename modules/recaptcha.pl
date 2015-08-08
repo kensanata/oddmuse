@@ -37,7 +37,7 @@ file for your Oddmuse Wiki.
 
 =cut
 
-our ($q, %AdminPages, $LinkPattern, $FreeLinks, $FreeLinkPattern, $WikiLinks, @MyInitVariables, %CookieParameters, %InvisibleCookieParameters);
+our ($q, %AdminPages, $LinkPattern, $FreeLinks, $FreeLinkPattern, $WikiLinks, @MyInitVariables, %CookieParameters);
 our ($ReCaptchaPrivateKey,
   $ReCaptchaPublicKey,
   $ReCaptchaTheme,
@@ -140,7 +140,6 @@ sub ReCaptchaInit {
   $ReCaptchaRequiredList = FreeToNormal($ReCaptchaRequiredList);
   $AdminPages{$ReCaptchaRequiredList} = 1;
   $CookieParameters{$ReCaptchaSecretKey} = '';
-  $InvisibleCookieParameters{$ReCaptchaSecretKey} = 1;
 }
 
 # ....................{ EDITING                            }....................

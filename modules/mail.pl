@@ -45,7 +45,7 @@ automatically.
 
 AddModuleDescription('mail.pl', 'Mail Extension');
 
-our ($q, %Action, %IndexHash, $FS, $DataDir, %CookieParameters, %InvisibleCookieParameters, @MyInitVariables, @MyAdminCode, $Message);
+our ($q, %Action, %IndexHash, $FS, $DataDir, %CookieParameters, @MyInitVariables, @MyAdminCode, $Message);
 our ($MailFile, $MailPattern);
 
 push (@MyInitVariables, sub {
@@ -74,7 +74,6 @@ index file at the end of the subscribe and unsubscribe function.
 
 $CookieParameters{mail} = '';
 $CookieParameters{sub} = '';
-$InvisibleCookieParameters{sub} = 1;
 
 sub MailNewInitCookie {
   MailOldInitCookie(@_);

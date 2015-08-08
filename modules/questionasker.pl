@@ -18,7 +18,7 @@ use strict;
 
 AddModuleDescription('questionasker.pl', 'QuestionAsker Extension');
 
-our ($q, $bol, $FreeLinks, $FreeLinkPattern, $LinkPattern, $WikiLinks, @MyInitVariables, %AdminPages, %CookieParameters, %InvisibleCookieParameters);
+our ($q, $bol, $FreeLinks, $FreeLinkPattern, $LinkPattern, $WikiLinks, @MyInitVariables, %AdminPages, %CookieParameters);
 our (@QuestionaskerQuestions,
 	    $QuestionaskerRememberAnswer,
 	    $QuestionaskerSecretKey,
@@ -61,7 +61,6 @@ sub QuestionaskerInit {
   $QuestionaskerRequiredList = FreeToNormal($QuestionaskerRequiredList);
   $AdminPages{$QuestionaskerRequiredList} = 1;
   $CookieParameters{$QuestionaskerSecretKey} = '';
-  $InvisibleCookieParameters{$QuestionaskerSecretKey} = 1;
 }
 
 *OldQuestionaskerDoPost = \&DoPost;

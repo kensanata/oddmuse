@@ -26,7 +26,7 @@ use strict;
 
 AddModuleDescription('gd_security_image.pl', 'GD Security Image Extension');
 
-our ($q, $Now, %Action, $FullUrl, $LinkPattern, $FreeLinks, $FreeLinkPattern, $WikiLinks, $DataDir, $ModuleDir, @MyInitVariables, %CookieParameters, %InvisibleCookieParameters);
+our ($q, $Now, %Action, $FullUrl, $LinkPattern, $FreeLinks, $FreeLinkPattern, $WikiLinks, $DataDir, $ModuleDir, @MyInitVariables, %CookieParameters);
 
 =head1 DESCRIPTION
 
@@ -396,7 +396,5 @@ sub GdSecurityImageInitVariables {
   $GdSecurityImagePngToAA = "$ModuleDir/pngtoaa";
 
   $CookieParameters{'gd_security_image_id'} = '';
-  $InvisibleCookieParameters{'gd_security_image_id'} = 1;
   $CookieParameters{'gd_security_image_answer'} = '';
-  $InvisibleCookieParameters{'gd_security_image_answer'} = 1;
 }

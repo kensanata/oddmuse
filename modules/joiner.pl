@@ -31,7 +31,7 @@ use strict;
 
 AddModuleDescription('joiner.pl', 'Joiner Extension');
 
-our ($q, $Now, %Action, @MyAdminCode, @MyInitVariables, $UserGotoBar, $DataDir, $FullUrl, $SiteName, %CookieParameters, %InvisibleCookieParameters, @QuestionaskerQuestions, $QuestionaskerRememberAnswer, $QuestionaskerSecretKey, $ReCaptchaSecretKey, $ReCaptchaRememberAnswer);
+our ($q, $Now, %Action, @MyAdminCode, @MyInitVariables, $UserGotoBar, $DataDir, $FullUrl, $SiteName, %CookieParameters, @QuestionaskerQuestions, $QuestionaskerRememberAnswer, $QuestionaskerSecretKey, $ReCaptchaSecretKey, $ReCaptchaRememberAnswer);
 
 =head1 DESCRIPTION
 
@@ -1261,7 +1261,5 @@ sub JoinerInitVariables {
   $JoinerLoggedIn = '';
 
   $CookieParameters{'joiner_session'} = '';
-  $InvisibleCookieParameters{'joiner_session'} = 1;
   $CookieParameters{'joiner_recover'} = '';
-  $InvisibleCookieParameters{'joiner_recover'} = 1;
 }
