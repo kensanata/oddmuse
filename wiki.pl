@@ -164,7 +164,6 @@ our $LockExpiration = 60; # How long before expirable locks are expired
 our %LockExpires = (diff=>1, index=>1, merge=>1, visitors=>1); # locks to expire after some time
 our %CookieParameters = (username=>'', pwd=>'', homepage=>'', theme=>'', css=>'', msg=>'', lang=>'', embed=>$EmbedWiki,
 		     toplinkbar=>$TopLinkBar, topsearchform=>$TopSearchForm, matchingpages=>$MatchingPages, );
-our %InvisibleCookieParameters = (msg=>1, pwd=>1,);
 our %Action = (rc => \&BrowseRc,               rollback => \&DoRollback,
            browse => \&BrowseResolvedPage, maintain => \&DoMaintain,
            random => \&DoRandom,           pagelock => \&DoPageLock,
