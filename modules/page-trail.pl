@@ -20,13 +20,12 @@ use strict;
 
 AddModuleDescription('page-trail.pl', 'Page Trail Extension');
 
-our ($q, %CookieParameters, %InvisibleCookieParameters);
+our ($q, %CookieParameters);
 our ($PageTrailLength);
 
 $PageTrailLength = 10;
 
 $CookieParameters{trail} = '';
-$InvisibleCookieParameters{trail} = 1;
 my @PageTrail;
 
 *OldPageTrailBrowsePage = \&BrowsePage;
