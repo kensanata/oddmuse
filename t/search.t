@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 41;
+use Test::More tests => 40;
 use utf8; # tests contain UTF-8 characters and it matters
 
 add_module('mac.pl');
@@ -128,8 +128,3 @@ test_page(get_page('search="<b>"'),
 	  '<h1>Search for: &lt;b&gt;</h1>',
 	  '<p class="result">1 pages found.</p>',
 	  "This is <strong>&lt;b&gt;</strong>.");
-
-# Test fallback when grep is unavailable
-
-AppendStringToFile($ConfigFile, "\$ENV{PATH} = '';\n");
-test_page(get_page('search=empty'), "1 pages found");
