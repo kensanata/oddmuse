@@ -164,7 +164,6 @@ our $LockExpiration = 60; # How long before expirable locks are expired
 our %LockExpires = (diff=>1, index=>1, merge=>1, visitors=>1); # locks to expire after some time
 our %CookieParameters = (username=>'', pwd=>'', homepage=>'', theme=>'', css=>'', msg=>'', lang=>'', embed=>$EmbedWiki,
 		     toplinkbar=>$TopLinkBar, topsearchform=>$TopSearchForm, matchingpages=>$MatchingPages, );
-our %InvisibleCookieParameters = (msg=>1, pwd=>1,);
 our %Action = (rc => \&BrowseRc,               rollback => \&DoRollback,
            browse => \&BrowseResolvedPage, maintain => \&DoMaintain,
            random => \&DoRandom,           pagelock => \&DoPageLock,
@@ -1459,7 +1458,7 @@ sub PageFresh { # pages can depend on other pages (ie. last update), admin statu
 }
 
 sub PageEtag {
-  my ($changed, $visible, %params) = CookieData();
+  my ($changed, %params) = CookieData();
   return UrlEncode(join($FS, $LastUpdate||$Now, sort(values %params))); # no CTL in field values
 }
 
@@ -2293,7 +2292,7 @@ sub GetHttpHeader {
 }
 
 sub CookieData {
-  my ($changed, $visible, %params);
+  my ($changed, %params);
   foreach my $key (keys %CookieParameters) {
     my $default = $CookieParameters{$key};
     my $value = GetParam($key, $default);
@@ -2303,22 +2302,16 @@ sub CookieData {
     # not the same as the old value, or if there was no old value, and
     # the new value is not the default.
     my $change = (defined $OldCookie{$key} ? ($value ne $OldCookie{$key}) : ($value ne $default));
-    $visible = 1 if $change and not $InvisibleCookieParameters{$key};
     $changed = 1 if $change; # note if any parameter changed and needs storing
   }
-  return $changed, $visible, %params;
+  return $changed, %params;
 }
 
 sub Cookie {
-  my ($changed, $visible, %params) = CookieData(); # params are URL encoded
+  my ($changed, %params) = CookieData(); # params are URL encoded
   if ($changed) {
     my $cookie = join(UrlEncode($FS), %params); # no CTL in field values
-    my $result = $q->cookie(-name=>$CookieName, -value=>$cookie, -expires=>'+2y', secure=>$ENV{'HTTPS'}, httponly=>1);
-    if ($visible) {
-      $Message .= $q->p(T('Cookie: ') . $CookieName . ', '
-			. join(', ', map {$_ . '=' . $params{$_}} keys(%params)));
-    }
-    return $result;
+    return $q->cookie(-name=>$CookieName, -value=>$cookie, -expires=>'+2y', secure=>$ENV{'HTTPS'}, httponly=>1);
   }
   return '';
 }
