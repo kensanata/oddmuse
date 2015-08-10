@@ -3358,9 +3358,9 @@ sub DoSearch {
     return unless UserIsAdminOrError();
     print GetHeader('', Ts('Replaced: %s', $string . " &#x2192; " . $replacement)),
       $q->start_div({-class=>'content replacement'});
-    @results = Replace($string, $replacement);
+    @results = Replace($re, UnquoteHtml($replacement));
     foreach (@results) {
-      PrintSearchResult($_, SearchRegexp($replacement || $string));
+      PrintSearchResult($_, $replacement || $re);
     }
   } else {
     if ($raw) {
@@ -3371,7 +3371,7 @@ sub DoSearch {
       print GetHeader('', Ts('Search for: %s', $string)), $q->start_div({-class=>'content search'});
       print $q->p({-class=>'links'}, SearchMenu($string));
     }
-    @results = SearchTitleAndBody($string, \&PrintSearchResult, SearchRegexp($string));
+    @results = SearchTitleAndBody($re, \&PrintSearchResult, SearchRegexp($re));
   }
   print SearchResultCount($#results + 1), $q->end_div() unless $raw;
   PrintFooter() unless $raw;
@@ -3399,9 +3399,8 @@ sub PageIsUploadedFile {
   }
 }
 
-sub SearchTitleAndBody { # expects search string to be HTML quoted and will unquote it
-  my ($string, $func, @args) = @_;
-  $string = UnquoteHtml($string);
+sub SearchTitleAndBody {
+  my ($regex, $func, @args) = @_;
   my @found;
   my $lang = GetParam('lang', '');
   foreach my $id (AllPagesList()) {
@@ -3416,7 +3415,7 @@ sub SearchTitleAndBody { # expects search string to be HTML quoted and will unqu
       }
       $text = $Page{text};
     }
-    if (SearchString($string, $name . "\n" . $text)) { # the real search code
+    if (SearchString($regex, $name . "\n" . $text)) { # the real search code
       push(@found, $id);
       &$func($id, @args) if $func;
     }
@@ -3453,17 +3452,16 @@ sub PrintSearchResult {
   $text =~ s/[\s]+/ /g;   #  Shrink whitespace
   $text =~ s/([-_=\\*\\.]){10,}/$1$1$1$1$1/g ; # e.g. shrink "----------"
   $entry{title} = $name;
-  $entry{description} =  $type || SearchExtract(QuoteHtml($text), $regex);
+  $entry{description} =  $type || SearchHighlight(QuoteHtml(SearchExtract($text, $regex)), QuoteHtml($regex));
   $entry{size} = int((length($text) / 1024) + 1) . 'K';
   $entry{'last-modified'} = TimeToText($Page{ts});
   $entry{username} = $Page{username};
   $entry{host} = $Page{host};
-  PrintSearchResultEntry(\%entry, $regex);
+  PrintSearchResultEntry(\%entry);
 }
 
 sub PrintSearchResultEntry {
   my %entry = %{(shift)}; # get value from reference
-  my $regex = shift;
   if (GetParam('raw', 0)) {
     $entry{generator} = GetAuthor($entry{host}, $entry{username});
     foreach my $key (qw(title description size last-modified generator username host)) {
@@ -3478,7 +3476,7 @@ sub PrintSearchResultEntry {
     my $text = NormalToFree($id);
     my $result = $q->span({-class=>'result'}, ScriptLink(UrlEncode($resolved), $text, $class, undef, $title));
     my $description = $entry{description};
-    $description = $q->br() . SearchHighlight($description, $regex) if $description;
+    $description = $q->br() . $description if $description;
     my $info = $entry{size};
     $info .= ' - ' if $info;
     $info .= T('last updated') . ' ' . $entry{'last-modified'} if $entry{'last-modified'};
@@ -3495,7 +3493,7 @@ sub SearchHighlight {
 }
 
 sub SearchExtract {
-  my ($data, $string) = @_;
+  my ($data, $regex) = @_;
   my ($snippetlen, $maxsnippets) = (100, 4); #  these seem nice.
   # show a snippet from the beginning of the document
   my $j = index($data, ' ', $snippetlen); # end on word boundary
@@ -3503,7 +3501,7 @@ sub SearchExtract {
   my $result = $t . ' . . .';
   $data = substr($data, $j);  # to avoid rematching
   my $jsnippet = 0 ;
-  while ($jsnippet < $maxsnippets and $data =~ m/($string)/i) {
+  while ($jsnippet < $maxsnippets and $data =~ m/($regex)/i) {
     $jsnippet++;
     if (($j = index($data, $1)) > -1 ) {
       # get substr containing (start of) match, ending on word boundaries
