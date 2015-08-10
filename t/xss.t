@@ -14,14 +14,24 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 4;
+use Test::More tests => 7;
 
-test_page(update_page('Test', 'Content is saved', '<xss>'),
+# Edit summary in diff
+test_page(update_page('Test', 'Content is saved with <xss1>', '<xss>'),
           'Content is saved');
 test_page(get_page('action=browse id=Test diff=1'),
           '&lt;xss&gt;');
+
+# RSS
 test_page(get_page('action=rss'),
           '&amp;lt;xss&amp;gt;');
+
+# Search & Replace
+test_page(get_page('search=%3cxss1%3e'),
+          'Search for: &lt;xss1&gt;');
+test_page(get_page('search=%3cxss1%3e replace=%3cxss2%3e pwd=foo'),
+          'Replaced: &lt;xss1&gt; &#x2192; &lt;xss2&gt;',
+          'saved with &lt;xss2&gt;');
 
 # enable uploads
 AppendStringToFile($ConfigFile, "\$UploadAllowed = 1;\n");
