@@ -33,7 +33,7 @@ test_page(get_page('action=rc raw=1'),
 	  "is >>free<< software",
 	  "Public License as \\. \\. \\.\n");
 test_page(get_page('action=rss'),
-	  "is &gt;&gt;free&lt;&lt; software");
+	  "is &amp;gt;&amp;gt;free&amp;lt;&amp;lt; software");
 
 # second edit doesn't automatically set a summary
 update_page('link', 'fnord');
