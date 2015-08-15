@@ -45,8 +45,8 @@ ok(-d $UseModWiki::DataDir, "$UseModWiki::DataDir created");
 ok(-f UseModWiki::GetPageFile('TestPage'), "TestPage was created");
 ok(-f $UseModWiki::RcFile, "log file was created");
 
-my $output = `perl upgrade-files.pl separator='UseMod 1.00' dir='$UseModWiki::DataDir' sure=yes`;
-test_page_negative($output, 'does not seem to be a data directory');
+my $output = `perl stuff/upgrade-files.pl separator='UseMod 1.00' dir='$UseModWiki::DataDir' sure=yes`;
+test_page_negative($output, '"does not seem to be a data directory"');
 test_page($output, "Reading page " . UseModWiki::GetPageFile('TestPage'),
 	  "Writing " . GetPageFile('TestPage'),
 	  "Reading $UseModWiki::RcFile",
