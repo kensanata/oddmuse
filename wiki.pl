@@ -3439,7 +3439,6 @@ sub SearchRegexp {
 sub PrintSearchResult {
   my ($name, $regex) = @_;
   return PrintPage($name) if not GetParam('context', 1);
-  my $raw = GetParam('raw', 0);
   OpenPage($name);     # should be open already, just making sure!
   my $text = $Page{text};
   my ($type) = TextIsFile($text); # MIME type if an uploaded file
@@ -3485,7 +3484,7 @@ sub PrintSearchResultEntry {
 
 sub SearchHighlight {
   my ($data, $regex) = @_;
-  $data =~ s/($regex)/<strong>$1<\/strong>/gi;
+  $data =~ s/($regex)/<strong>$1<\/strong>/gi unless GetParam('raw');
   return $data;
 }
 
