@@ -16,7 +16,7 @@ use strict;
 
 AddModuleDescription('mac.pl', 'Mac');
 
-our (%InterSite, %IndexHash, @IndexList, @MyInitVariables, $UseGrep, %Namespaces, $NamespaceRoot);
+our (%InterSite, %IndexHash, @IndexList, @MyInitVariables, %Namespaces, $NamespaceRoot);
 
 use Unicode::Normalize;
 
@@ -37,11 +37,11 @@ sub NewMacAllPagesList {
   return @new;
 }
 
-*OldMacGrepFiltered = \&GrepFiltered;
-*GrepFiltered = \&NewMacGrepFiltered;
+*OldMacFiltered = \&Filtered;
+*Filtered = \&NewMacFiltered;
 
-sub NewMacGrepFiltered {
-  my @pages = OldMacGrepFiltered(@_);
+sub NewMacFiltered {
+  my @pages = OldMacFiltered(@_);
   foreach my $id (@pages) {
     $id = NFC($id);
   }
@@ -51,22 +51,6 @@ sub NewMacGrepFiltered {
 push(@MyInitVariables, \&MacFixEncoding);
 
 sub MacFixEncoding {
-  # disable grep if searching for non-ascii stuff:
-
-  # $ mkdir /tmp/dir
-  # $ echo schroeder > /tmp/dir/schroeder
-  # $ echo schröder > /tmp/dir/schröder
-  # $ echo SCHRÖDER > /tmp/dir/SCHRÖDER-UP # don't use SCHRÖDER because of HFS
-  # $ grep -rli schröder /tmp/dir
-  # /tmp/dir/schröder
-  # $ grep -rli SCHRÖDER /tmp/dir
-  # /tmp/dir/schröder
-  #
-  # Why is grep not finding the upper case variant in the SCHRÖDER-UP
-  # file?
-
-  $UseGrep = 0 if GetParam('search', '') =~ /[x{0080}-\x{fffd}]/;
-
   # the rest is only necessary if using namespaces.pl
   return unless %Namespaces;
   my %hash = ();

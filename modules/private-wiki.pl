@@ -296,10 +296,6 @@ sub NewPrivateWikiDelayRequired {
   OldPrivateWikiDelayRequired(@_);
 }
 
-# grep-ing encrypted files is not useful, let's disable it
-
-our $UseGrep = '';
-
 # PageIsUploadedFile attempts to read the file partially, which does not work that
 # well on encrypted data. Therefore, we disable file uploads for now.
 

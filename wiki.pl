@@ -3396,7 +3396,7 @@ sub SearchTitleAndBody {
   my ($regex, $func, @args) = @_;
   my @found;
   my $lang = GetParam('lang', '');
-  foreach my $id (AllPagesList()) {
+  foreach my $id (Filtered($regex, AllPagesList())) {
     my $name = NormalToFree($id);
     my ($text) = PageIsUploadedFile($id); # set to mime-type if this is an uploaded file
     if (not $text) { # not uploaded file, therefore allow searching of page body
@@ -3414,6 +3414,10 @@ sub SearchTitleAndBody {
     }
   }
   return @found;
+}
+
+sub Filtered {         # this is overwriten in extensions such as tags.pl
+  return @_[1 .. $#_]; # ignores $regex and returns all pages
 }
 
 sub SearchString {
