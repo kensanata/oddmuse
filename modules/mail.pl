@@ -337,6 +337,7 @@ your cookie. Multiple pages parameters contain the pages to subscribe.
 $Action{subscribe} = \&DoMailSubscribe;
 
 sub DoMailSubscribe {
+  local $CGI::LIST_CONTEXT_WARN = 0;
   my @pages = $q->param('pages');
   return DoMailSubscriptions(@_) unless @pages;
   my $mail = GetParam('mail', '');
@@ -414,6 +415,7 @@ $Action{unsubscribe} = \&DoMailUnsubscribe;
 
 sub DoMailUnsubscribe {
   my $mail = GetParam('who', GetParam('mail', ''));
+  local $CGI::LIST_CONTEXT_WARN = 0;
   my @pages = $q->param('pages');
   return DoMailSubscriptions(@_) unless $mail;
   my @real = ();
