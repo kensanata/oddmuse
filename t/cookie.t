@@ -1,4 +1,4 @@
-# Copyright (C) 2009–2014  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2009–2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,27 +23,27 @@ test_page(get_page('username=Alex'), 'Status: 404');
 test_page(get_page('action=browse id=Alex'), 'Alex');
 
 # Username
-test_page(get_page('action=browse id=HomePage username=Alex'), 'username=Alex');
+test_page(get_page('action=browse id=HomePage username=Alex'), "\nSet-Cookie: Wiki=username%251eAlex");
 test_page(get_page('action=browse id=HomePage username=01234567890123456789012345678901234567890123456789'),
-	  'username=01234567890123456789012345678901234567890123456789');
+	  "\nSet-Cookie: Wiki=username%251e01234567890123456789012345678901234567890123456789");
 test_page(get_page('action=browse id=HomePage username=01234567890123456789012345678901234567890123456789X'),
 	  'UserName must be 50 characters or less: not saved');
 test_page(get_page('action=browse id=HomePage username=AlexSchroeder'),
-	  'username=AlexSchroeder');
+	  "\nSet-Cookie: Wiki=username%251eAlexSchroeder");
 test_page(get_page('action=browse id=HomePage username=Alex%20Schroeder'),
-	  'username=Alex Schroeder');
+	  "\nSet-Cookie: Wiki=username%251eAlex%20Schroeder");
 AppendStringToFile($ConfigFile, "\$FreeLinks = 0;\n");
 AppendStringToFile($ConfigFile, "\$WikiLinks = 1;\n");
 test_page(get_page('action=browse id=HomePage username=Alex%20Schroeder'),
 	  'Invalid UserName Alex Schroeder: not saved');
 test_page(get_page('action=browse id=HomePage username=AlexSchroeder'),
-	  'username=AlexSchroeder');
+	  "\nSet-Cookie: Wiki=username%251eAlexSchroeder");
 test_page(get_page('action=browse id=HomePage username=Alex'),
 	  'Invalid UserName Alex: not saved');
 # single words are ok if we switch off $WikiLinks as well!
 AppendStringToFile($ConfigFile, "\$WikiLinks = 0;\n");
 test_page(get_page('action=browse id=HomePage username=Alex'),
-	  'username=Alex');
+	  "\nSet-Cookie: Wiki=username%251eAlex");
 
 SKIP: {
 
@@ -53,7 +53,7 @@ SKIP: {
   eval { require HTTP::Cookies; };
   skip "HTTP::Cookies not installed", 7 if $@;
 
-  my $wiki = 'http://localhost/cgi-bin/wiki.pl';
+  my $wiki = 'http://127.0.0.1/cgi-bin/wiki.pl';
   my $ua = LWP::UserAgent->new;
   my $response = $ua->get("$wiki?action=version");
   skip("No wiki running at $wiki", 7)
@@ -81,8 +81,8 @@ SKIP: {
 
   # Encoding issues
   $response = $ua->get("$wiki?action=rc;username=Alex\%20Schr\%C3\%B6der");
+  test_page($response->header('Set-Cookie'),
+	    qq{^Wiki=username%251eAlex%20Schr%C3%B6der});
   test_page($ua->cookie_jar->as_string,
 	    qq{Set-Cookie.*: $cookie=username%251eAlex%20Schr%C3%B6der});
-  test_page($response->decoded_content,
-	    qq{Cookie: $cookie, username=Alex Schröder});
 };
