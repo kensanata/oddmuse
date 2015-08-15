@@ -19,7 +19,7 @@ use Test::More tests => 28;
 
 add_module('big-brother.pl');
 
-$VisitorTime = 5;
+$VisitorTime = 10;
 
 AppendStringToFile($ConfigFile,
 		   "\$SurgeProtection = 1;\n"
