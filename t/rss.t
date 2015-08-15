@@ -93,7 +93,7 @@ test_page(get_page('action=rss'),
 
 # limiting the size of our RSS feed
 update_page('big', 'foo foo foo', '<mu>');
-test_page(get_page('action=rss'), '<description>&lt;mu&gt;</description>');
+test_page(get_page('action=rss'), '<description>&amp;lt;mu&amp;gt;</description>');
 test_page(get_page('action=rss full=1'), 'foo foo foo');
 test_page(get_page('action=rss full=1 diff=1'), '&lt;div class="diff"&gt;');
 update_page('big', 'x' x 49000);
