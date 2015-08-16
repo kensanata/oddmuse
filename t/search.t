@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 40;
+use Test::More tests => 44;
 use utf8; # tests contain UTF-8 characters and it matters
 
 add_module('mac.pl');
@@ -128,3 +128,21 @@ test_page(get_page('search="<b>"'),
 	  '<h1>Search for: &lt;b&gt;</h1>',
 	  '<p class="result">1 pages found.</p>',
 	  "This is <strong>&lt;b&gt;</strong>.");
+
+# Search for quoted strings
+
+update_page("Tugend", "Ein wirklich tugendhafter Mensch
+bemüht sich nicht um seine Tugend,
+darum ist er tugendhaft.");
+update_page("Laster", "Ein scheinbar tugendhafter Mensch
+bemüht sich dauernd um seine Tugend,
+darum ist er nicht wirklich tugendhaft.");
+
+# unordered words
+test_page(get_page('search="darum ist er tugendhaft" raw=1'),
+          'title: Tugend', 'title: Laster');
+
+# in order
+$page = get_page('search="\"darum ist er tugendhaft\"" raw=1');
+test_page($page, 'title: Tugend');
+test_page_negative($page, 'title: Laster');
