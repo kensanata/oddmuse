@@ -34,7 +34,7 @@ if (not param('dir')) {
     p, 'Convert Latin-1 to UTF-8: ', param('convert') ? 'Yes' : 'No',
     p, submit('Confirm'), "\n", end_form;
 } else {
-  rewrite(param('dir'));
+  rewrite(scalar(param('dir')));
 }
 print end_html();
 

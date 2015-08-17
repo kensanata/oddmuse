@@ -100,7 +100,7 @@
 }
 @font-face {
   font-family: 'Symbola';
-  src: local('Symbola'), url('/fonts/Symbola.woff') format('woff') url('/fonts/Symbola.ttf') format('truetype');
+  src: local('Symbola'), url('/fonts/Symbola.woff') format('woff'), url('/fonts/Symbola.ttf') format('truetype');
 }
 
 body, rss {
@@ -271,7 +271,7 @@ label[for="searchlang"], #searchlang, .header input[type="submit"] {
     visibility: hidden; position: absolute;
 }
 /* wrap on the iphone */
-@media media only screen and (max-device-width: 480px) {
+@media only screen and (max-device-width: 480px) {
 }
 
 .header input {
