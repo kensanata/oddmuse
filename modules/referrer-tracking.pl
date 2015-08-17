@@ -13,7 +13,7 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 use strict;
 
-AddModuleDescription('referrer-tracking.pl', 'Automatic Link Back', undef, '2.3.5-153-g09efd91');
+AddModuleDescription('referrer-tracking.pl', 'Automatic Link Back');
 
 use LWP::UserAgent;
 
