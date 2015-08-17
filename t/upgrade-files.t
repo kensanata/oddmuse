@@ -17,6 +17,10 @@
 $_ = 'nocgi';
 require 't/usemod-1.0.4.pl';
 
+# wipe /tmp/mywikidb!
+use File::Path;
+rmtree([$UseModWiki::DataDir]);
+
 package UseModWiki;
 
 InitRequest();
@@ -36,6 +40,7 @@ require 't/test.pl';
 package OddMuse;
 $DataDir = $UseModWiki::DataDir;
 $ENV{WikiDataDir} = $DataDir;
+
 Init(); # again
 
 use Test::More tests => 11;
