@@ -26,7 +26,7 @@ AddModuleDescription('open-proxy.pl', 'Open Proxy Banning Extension');
 # the proxy has banned himself.  Ordinary users should never call the
 # self-ban action.
 
-our (%Action, %Page, $Now, $ScriptName, $BannedHosts, $DataDir);
+our ($q, %Action, %Page, $Now, $ScriptName, $BannedHosts, $DataDir);
 our ($SelfBan, $OpenProxies);
 
 $SelfBan = "xyzzy"; # change this from time to time in your config file

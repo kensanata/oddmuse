@@ -238,13 +238,13 @@ sub TagFind {
   return @result;
 }
 
-*OldTagGrepFiltered = \&GrepFiltered;
-*GrepFiltered = \&NewTagGrepFiltered;
+*OldTagFiltered = \&Filtered;
+*Filtered = \&NewTagFiltered;
 
-sub NewTagGrepFiltered { # called within a lock!
+sub NewTagFiltered { # called within a lock!
   my ($string, @pages) = @_;
   my %page = map { $_ => 1 } @pages;
-  # this is based on the code in SearchRegexp()
+  # looking at all the "tag:SOME TERMS" and and tag:TERM
   my @tagterms = map { FreeToNormal($_) } grep(/^-?tag:/, shift =~ /\"([^\"]+)\"|(\S+)/g);
   my @positives = map {substr($_, 4)} grep(/^tag:/, @tagterms);
   my @negatives = map {substr($_, 5)} grep(/^-tag:/, @tagterms);
@@ -262,7 +262,7 @@ sub NewTagGrepFiltered { # called within a lock!
   # filter out the tags from the search string
   $string = join(' ', grep(!/^-?tag:/, $string =~ /\"([^\"]+)\"|(\S+)/g));
   # run the old code for any remaining search terms
-  return OldTagGrepFiltered($string, sort keys %page);
+  return OldTagFiltered($string, sort keys %page);
 }
 
 =pod

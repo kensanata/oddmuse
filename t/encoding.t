@@ -72,10 +72,11 @@ test_page($page, 'title: Search for: öl', 'title: Öl');
 test_page(get_page('search=ähren raw=1'),
 	  'title: Search for: ähren', 'title: Öl');
 
-# the username keeps getting reported as changed
-test_page(get_page('action=browse id=Möglich username=Schr%C3%B6der'),
-	  'Set-Cookie: Wiki=username%251eSchr%C3%B6der',
-	  'username=Schröder');
+# the username is decoded correctly in the footer
+test_page(update_page('Möglich', 'Egal', 'Zusammenfassung', '', '',
+                      'username=Schr%C3%B6der'),
+	  'Schröder');
+test_page($redirect, 'Set-Cookie: Wiki=\S*username%251eSchr%C3%B6der');
 
 # verify that non-ASCII parameters work as intended
 AppendStringToFile($ConfigFile, "use utf8;\n\$CookieParameters{ärger} = 1;\n");

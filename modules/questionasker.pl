@@ -18,12 +18,14 @@ use strict;
 
 AddModuleDescription('questionasker.pl', 'QuestionAsker Extension');
 
-our ($q, $bol, $FreeLinks, $FreeLinkPattern, $LinkPattern, $WikiLinks, @MyInitVariables, %AdminPages, %CookieParameters);
+our ($q, $bol, $FreeLinks, $FreeLinkPattern, $LinkPattern, $WikiLinks,
+     @MyInitVariables, %AdminPages, %CookieParameters, @MyFooters);
+
 our (@QuestionaskerQuestions,
-	    $QuestionaskerRememberAnswer,
-	    $QuestionaskerSecretKey,
-	    $QuestionaskerRequiredList,
-	    %QuestionaskerProtectedForms);
+     $QuestionaskerRememberAnswer,
+     $QuestionaskerSecretKey,
+     $QuestionaskerRequiredList,
+     %QuestionaskerProtectedForms);
 
 # A list of arrays. The first element in each array is a string, the
 # question to be asked. The second element is a subroutine which is
@@ -105,6 +107,11 @@ sub NewQuestionaskerGetEditForm {
 
 *OldQuestionaskerGetCommentForm = \&GetCommentForm;
 *GetCommentForm = \&NewQuestionaskerGetCommentForm;
+foreach (@MyFooters) {
+  if ($_ == \&OldQuestionaskerGetCommentForm) {
+    $_ = \&NewQuestionaskerGetCommentForm;
+  }
+}
 
 sub NewQuestionaskerGetCommentForm {
   return QuestionAddTo(OldQuestionaskerGetCommentForm(@_));

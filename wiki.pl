@@ -148,7 +148,8 @@ our $PageNameLimit   = 120;        	# max length of page name in bytes
 $DocumentHeader = qq(<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN")
   . qq( "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n)
   . qq(<html xmlns="http://www.w3.org/1999/xhtml">);
-				# Checkboxes at the end of the index.
+our @MyFooters = (\&GetCommentForm, \&WrapperEnd, \&DefaultFooter);
+# Checkboxes at the end of the index.
 our @IndexOptions = ();
 # Display short comments below the GotoBar for special days
 # Example: %SpecialDays = ('1-1' => 'New Year', '1-2' => 'Next Day');
@@ -259,7 +260,7 @@ sub InitRequest { # set up $q
 }
 
 sub InitVariables {  # Init global session variables for mod_perl!
-  $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
+  $WikiDescription = $q->p($q->a({-href=>'http://git.savannah.gnu.org/cgit/oddmuse.git/tag/?id=2.3.5-153-g09efd91'}, 'wiki.pl') . ' (2.3.5-153-g09efd91), see ' . $q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $HeaderIsPrinted = 0; # print HTTP headers only once
@@ -2387,24 +2388,32 @@ sub PrintFooter {
     print $q->end_html, "\n";
     return;
   }
-  print GetCommentForm($id, $rev, $comment),
-  $q->start_div({-class=>'wrapper close'}), $q->end_div(), $q->end_div();
-  print $q->start_div({-class=>'footer'}), $q->hr();
-  print GetGotoBar($id) if GetParam('toplinkbar', $TopLinkBar) != 1;
-  print GetFooterLinks($id, $rev), GetFooterTimestamp($id, $rev);
-  print GetSearchForm() if GetParam('topsearchform', $TopSearchForm) != 1;
-  if ($DataDir =~ m|/tmp/|) {
-    print $q->p($q->strong(T('Warning') . ': ')
-    . Ts('Database is stored in temporary directory %s', $DataDir));
-  }
-  print T($FooterNote) if $FooterNote;
-  print $q->p(Ts('%s seconds', (time - $Now))) if GetParam('timing', 0);
-  print $q->end_div();
   PrintMyContent($id) if defined(&PrintMyContent);
   foreach my $sub (@MyFooters) {
     print &$sub(@_);
   }
   print $q->end_html, "\n";
+}
+
+sub WrapperEnd { # called via @MyFooters
+  return $q->start_div({-class=>'wrapper close'}) . $q->end_div() . $q->end_div(); # closes content
+}
+
+sub DefaultFooter { # called via @MyFooters
+  my ($id, $rev, $comment) = @_;
+  my $html = $q->start_div({-class=>'footer'}) . $q->hr();
+  $html .= GetGotoBar($id) if GetParam('toplinkbar', $TopLinkBar) != 1;
+  $html .= GetFooterLinks($id, $rev);
+  $html .= GetFooterTimestamp($id, $rev);
+  $html .= GetSearchForm() if GetParam('topsearchform', $TopSearchForm) != 1;
+  if ($DataDir =~ m|/tmp/|) {
+    $html .= $q->p($q->strong(T('Warning') . ': ')
+    . Ts('Database is stored in temporary directory %s', $DataDir));
+  }
+  $html .= T($FooterNote) if $FooterNote;
+  $html .= $q->p(Ts('%s seconds', (time - $Now))) if GetParam('timing', 0);
+  $html .= $q->end_div();
+  return $html;
 }
 
 sub GetFooterTimestamp {
@@ -2458,21 +2467,23 @@ sub GetCommentForm {
   if ($CommentsPattern ne '' and $id and $rev ne 'history' and $rev ne 'edit'
       and $id =~ /$CommentsPattern/o and UserCanEdit($id, 0, 1)) {
     return $q->div({-class=>'comment'}, GetFormStart(undef, undef, 'comment'), # protected by questionasker
-       $q->p(GetHiddenValue('title', $id), $q->label({-for=>'aftertext', -accesskey=>T('c')}),
-       $q->br(), GetTextArea('aftertext', $comment, 10)), $EditNote,
-       $q->p($q->span({-class=>'username'},
-		      $q->label({-for=>'username'}, T('Username:')), ' ',
-		      $q->textfield(-name=>'username', -id=>'username',
-				    -default=>GetParam('username', ''),
-				    -override=>1, -size=>20, -maxlength=>50)),
-	     $q->span({-class=>'homepage'},
-		      $q->label({-for=>'homepage'}, T('Homepage URL:')), ' ',
-		      $q->textfield(-name=>'homepage', -id=>'homepage',
-				    -default=>GetParam('homepage', ''),
-				    -override=>1, -size=>40, -maxlength=>100))),
-       $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save')), ' ',
-       $q->submit(-name=>'Preview', -accesskey=>T('p'), -value=>T('Preview'))),
-       $q->end_form());
+		   $q->p(GetHiddenValue('title', $id), $q->br(),
+			 $q->label({-for=>'aftertext', -accesskey=>T('c')},
+				   GetTextArea('aftertext', $comment, 10))),
+		   $EditNote,
+		   $q->p($q->span({-class=>'username'},
+				  $q->label({-for=>'username'}, T('Username:')), ' ',
+				  $q->textfield(-name=>'username', -id=>'username',
+						-default=>GetParam('username', ''),
+						-override=>1, -size=>20, -maxlength=>50)),
+			 $q->span({-class=>'homepage'},
+				  $q->label({-for=>'homepage'}, T('Homepage URL:')), ' ',
+				  $q->textfield(-name=>'homepage', -id=>'homepage',
+						-default=>GetParam('homepage', ''),
+						-override=>1, -size=>40, -maxlength=>100))),
+		   $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save')), ' ',
+			 $q->submit(-name=>'Preview', -accesskey=>T('p'), -value=>T('Preview'))),
+		   $q->end_form());
   }
   return '';
 }
@@ -3352,9 +3363,9 @@ sub DoSearch {
     return unless UserIsAdminOrError();
     print GetHeader('', Ts('Replaced: %s', $string . " &#x2192; " . $replacement)),
       $q->start_div({-class=>'content replacement'});
-    @results = Replace($string, $replacement);
+    @results = Replace($re, UnquoteHtml($replacement));
     foreach (@results) {
-      PrintSearchResult($_, SearchRegexp($replacement || $string));
+      PrintSearchResult($_, $replacement || $re);
     }
   } else {
     if ($raw) {
@@ -3365,7 +3376,7 @@ sub DoSearch {
       print GetHeader('', Ts('Search for: %s', $string)), $q->start_div({-class=>'content search'});
       print $q->p({-class=>'links'}, SearchMenu($string));
     }
-    @results = SearchTitleAndBody($string, \&PrintSearchResult, SearchRegexp($string));
+    @results = SearchTitleAndBody($re, \&PrintSearchResult, SearchRegexp($re));
   }
   print SearchResultCount($#results + 1), $q->end_div() unless $raw;
   PrintFooter() unless $raw;
@@ -3393,12 +3404,11 @@ sub PageIsUploadedFile {
   }
 }
 
-sub SearchTitleAndBody { # expects search string to be HTML quoted and will unquote it
-  my ($string, $func, @args) = @_;
-  $string = UnquoteHtml($string);
+sub SearchTitleAndBody {
+  my ($regex, $func, @args) = @_;
   my @found;
   my $lang = GetParam('lang', '');
-  foreach my $id (AllPagesList()) {
+  foreach my $id (Filtered($regex, AllPagesList())) {
     my $name = NormalToFree($id);
     my ($text) = PageIsUploadedFile($id); # set to mime-type if this is an uploaded file
     if (not $text) { # not uploaded file, therefore allow searching of page body
@@ -3410,12 +3420,16 @@ sub SearchTitleAndBody { # expects search string to be HTML quoted and will unqu
       }
       $text = $Page{text};
     }
-    if (SearchString($string, $name . "\n" . $text)) { # the real search code
+    if (SearchString($regex, $name . "\n" . $text)) { # the real search code
       push(@found, $id);
       &$func($id, @args) if $func;
     }
   }
   return @found;
+}
+
+sub Filtered {         # this is overwriten in extensions such as tags.pl
+  return @_[1 .. $#_]; # ignores $regex and returns all pages
 }
 
 sub SearchString {
@@ -3437,7 +3451,6 @@ sub SearchRegexp {
 sub PrintSearchResult {
   my ($name, $regex) = @_;
   return PrintPage($name) if not GetParam('context', 1);
-  my $raw = GetParam('raw', 0);
   OpenPage($name);     # should be open already, just making sure!
   my $text = $Page{text};
   my ($type) = TextIsFile($text); # MIME type if an uploaded file
@@ -3447,17 +3460,16 @@ sub PrintSearchResult {
   $text =~ s/[\s]+/ /g;   #  Shrink whitespace
   $text =~ s/([-_=\\*\\.]){10,}/$1$1$1$1$1/g ; # e.g. shrink "----------"
   $entry{title} = $name;
-  $entry{description} =  $type || SearchExtract(QuoteHtml($text), $regex);
+  $entry{description} =  $type || SearchHighlight(QuoteHtml(SearchExtract($text, $regex)), QuoteHtml($regex));
   $entry{size} = int((length($text) / 1024) + 1) . 'K';
   $entry{'last-modified'} = TimeToText($Page{ts});
   $entry{username} = $Page{username};
   $entry{host} = $Page{host};
-  PrintSearchResultEntry(\%entry, $regex);
+  PrintSearchResultEntry(\%entry);
 }
 
 sub PrintSearchResultEntry {
   my %entry = %{(shift)}; # get value from reference
-  my $regex = shift;
   if (GetParam('raw', 0)) {
     $entry{generator} = GetAuthor($entry{host}, $entry{username});
     foreach my $key (qw(title description size last-modified generator username host)) {
@@ -3472,7 +3484,7 @@ sub PrintSearchResultEntry {
     my $text = NormalToFree($id);
     my $result = $q->span({-class=>'result'}, ScriptLink(UrlEncode($resolved), $text, $class, undef, $title));
     my $description = $entry{description};
-    $description = $q->br() . SearchHighlight($description, $regex) if $description;
+    $description = $q->br() . $description if $description;
     my $info = $entry{size};
     $info .= ' - ' if $info;
     $info .= T('last updated') . ' ' . $entry{'last-modified'} if $entry{'last-modified'};
@@ -3484,12 +3496,12 @@ sub PrintSearchResultEntry {
 
 sub SearchHighlight {
   my ($data, $regex) = @_;
-  $data =~ s/($regex)/<strong>$1<\/strong>/gi;
+  $data =~ s/($regex)/<strong>$1<\/strong>/gi unless GetParam('raw');
   return $data;
 }
 
 sub SearchExtract {
-  my ($data, $string) = @_;
+  my ($data, $regex) = @_;
   my ($snippetlen, $maxsnippets) = (100, 4); #  these seem nice.
   # show a snippet from the beginning of the document
   my $j = index($data, ' ', $snippetlen); # end on word boundary
@@ -3497,7 +3509,7 @@ sub SearchExtract {
   my $result = $t . ' . . .';
   $data = substr($data, $j);  # to avoid rematching
   my $jsnippet = 0 ;
-  while ($jsnippet < $maxsnippets and $data =~ m/($string)/i) {
+  while ($jsnippet < $maxsnippets and $data =~ m/($regex)/i) {
     $jsnippet++;
     if (($j = index($data, $1)) > -1 ) {
       # get substr containing (start of) match, ending on word boundaries

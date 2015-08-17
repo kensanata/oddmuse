@@ -1,4 +1,4 @@
-# Copyright (C) 2013  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2013–2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -19,7 +19,7 @@ use strict;
 
 AddModuleDescription('ban-quick-editors.pl', 'Banning Quick Editors');
 
-our ($Now, %RecentVisitors, $SurgeProtection);
+our ($q, $Now, %RecentVisitors, $SurgeProtection);
 
 *BanQuickOldUserIsBanned = \&UserIsBanned;
 *UserIsBanned = \&BanQuickNewUserIsBanned;

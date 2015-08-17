@@ -18,7 +18,7 @@ use strict;
 
 AddModuleDescription('logbannedcontent.pl', 'LogBannedContent Module');
 
-our ($OpenPageName, $Now, $DataDir, $BannedContent);
+our ($q, $OpenPageName, $Now, $DataDir, $BannedContent);
 our ($BannedFile);
 
 $BannedFile = "$DataDir/spammer.log" unless defined $BannedFile;

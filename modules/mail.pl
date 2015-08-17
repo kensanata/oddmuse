@@ -45,7 +45,9 @@ automatically.
 
 AddModuleDescription('mail.pl', 'Mail Extension');
 
-our ($q, %Action, %IndexHash, $FS, $DataDir, %CookieParameters, @MyInitVariables, @MyAdminCode, $Message);
+our ($q, %Action, %IndexHash, $FS, $DataDir, %CookieParameters,
+     @MyInitVariables, @MyAdminCode, $Message, @MyFooters);
+
 our ($MailFile, $MailPattern);
 
 push (@MyInitVariables, sub {
@@ -90,6 +92,11 @@ sub MailNewInitCookie {
 
 *MailOldGetCommentForm = \&GetCommentForm;
 *GetCommentForm = \&MailNewGetCommentForm;
+foreach (@MyFooters) {
+  if ($_ == \&MailOldGetCommentForm) {
+    $_ = \&MailNewGetCommentForm;
+  }
+}
 
 sub MailNewGetCommentForm {
   my $html = MailOldGetCommentForm(@_);
@@ -337,6 +344,7 @@ your cookie. Multiple pages parameters contain the pages to subscribe.
 $Action{subscribe} = \&DoMailSubscribe;
 
 sub DoMailSubscribe {
+  local $CGI::LIST_CONTEXT_WARN = 0;
   my @pages = $q->param('pages');
   return DoMailSubscriptions(@_) unless @pages;
   my $mail = GetParam('mail', '');
@@ -414,6 +422,7 @@ $Action{unsubscribe} = \&DoMailUnsubscribe;
 
 sub DoMailUnsubscribe {
   my $mail = GetParam('who', GetParam('mail', ''));
+  local $CGI::LIST_CONTEXT_WARN = 0;
   my @pages = $q->param('pages');
   return DoMailSubscriptions(@_) unless $mail;
   my @real = ();
