@@ -260,7 +260,7 @@ sub InitRequest { # set up $q
 }
 
 sub InitVariables {  # Init global session variables for mod_perl!
-  $WikiDescription = $q->p($q->a({-href=>'http://git.savannah.gnu.org/cgit/oddmuse.git/tag/?id=2.3.5-153-g09efd91'}, 'wiki.pl') . ' (2.3.5-153-g09efd91), see ' . $q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
+  $WikiDescription = $q->p($q->a({-href=>'http://www.oddmuse.org/'}, 'Oddmuse'),
 			   $Counter++ > 0 ? Ts('%s calls', $Counter) : '');
   $WikiDescription .= $ModulesDescription if $ModulesDescription;
   $HeaderIsPrinted = 0; # print HTTP headers only once
