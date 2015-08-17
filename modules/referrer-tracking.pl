@@ -13,11 +13,14 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 use strict;
 
-AddModuleDescription('referrer-tracking.pl', 'Automatic Link Back');
+AddModuleDescription('referrer-tracking.pl', 'Automatic Link Back', undef, '2.3.5-153-g09efd91');
 
 use LWP::UserAgent;
 
-our ($q, $Now, $OpenPageName, %Action, @KnownLocks, %AdminPages, $ScriptName, $DataDir, $EmbedWiki, $FS, @MyInitVariables, @MyAdminCode, $FullUrlPattern);
+our ($q, $Now, $OpenPageName, %Action, @KnownLocks, %AdminPages,
+$ScriptName, $DataDir, $EmbedWiki, $FS, @MyInitVariables,
+@MyAdminCode, $FullUrlPattern, @MyFooters);
+
 push(@KnownLocks, "refer_*");
 $Action{refer} = \&DoPrintAllReferers;
 
@@ -42,18 +45,6 @@ push(@MyAdminCode, \&RefererMenu);
 sub RefererMenu {
   my ($id, $menuref, $restref) = @_;
   push(@$menuref, ScriptLink('action=refer', T('All Referrers'), 'refer'));
-}
-
-*RefererOldPrintFooter = \&PrintFooter;
-*PrintFooter = \&RefererNewPrintFooter;
-
-sub RefererNewPrintFooter {
-  my ($id, $rev, $comment, @rest) = @_;
-  if (not GetParam('embed', $EmbedWiki)) {
-    my $referers = RefererTrack($id);
-    print $referers if $referers;
-  }
-  RefererOldPrintFooter($id, $rev, $comment, @rest);
 }
 
 *RefererOldExpireKeepFiles = \&ExpireKeepFiles;
@@ -198,6 +189,12 @@ sub WriteReferers {
     unlink $file; # just try it, doesn't matter if it fails
   }
   ReleaseLockDir('refer_' . $id);
+}
+
+if ($MyFooters[-1] == \&DefaultFooter) {
+  splice(@MyFooters, -1, 0, \&RefererTrack);
+} else {
+  push(@MyFooters, \&RefererTrack);
 }
 
 sub RefererTrack {
