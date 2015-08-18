@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 15;
+use Test::More tests => 16;
 
 add_module('gravatar.pl');
 
@@ -69,3 +69,10 @@ xpath_test($page,
 negative_xpath_test($page,
 		    '//span[@class="portrait gravatar"]',
 		    '//img[@src="https://secure.gravatar.com/avatar/' . $gravatar . '"]');
+
+# testing interactions with mail.pl
+
+add_module('mail.pl');
+
+test_page_negative(get_page('Comments_on_Test'),
+		   'Email:.*Email:');
