@@ -38,7 +38,7 @@ file for your Oddmuse Wiki.
 
 =cut
 
-our ($q, %AdminPages, $LinkPattern, $FreeLinks, $FreeLinkPattern, $WikiLinks, @MyInitVariables, %CookieParameters, @MyFooters);
+our ($q, %AdminPages, $LinkPattern, $FreeLinks, $FreeLinkPattern, $WikiLinks, @MyInitVariables, %CookieParameters, @MyFormChanges);
 our ($ReCaptchaPrivateKey,
   $ReCaptchaPublicKey,
   $ReCaptchaTheme,
@@ -144,27 +144,11 @@ sub ReCaptchaInit {
 }
 
 # ....................{ EDITING                            }....................
-*OldReCaptchaGetEditForm = \&GetEditForm;
-*GetEditForm = \&NewReCaptchaGetEditForm;
 
-*OldReCaptchaGetCommentForm = \&GetCommentForm;
-*GetCommentForm = \&NewReCaptchaGetCommentForm;
-foreach (@MyFooters) {
-  if ($_ == \&OldReCaptchaGetCommentForm) {
-    $_ = \&NewReCaptchaGetCommentForm;
-  }
-}
-
-sub NewReCaptchaGetEditForm {
-  return ReCaptchaQuestionAddTo(OldReCaptchaGetEditForm(@_), $_[1]);
-}
-
-sub NewReCaptchaGetCommentForm {
-  return ReCaptchaQuestionAddTo(OldReCaptchaGetCommentForm(@_));
-}
+push(@MyFormChanges, \&ReCaptchaQuestionAddTo);
 
 sub ReCaptchaQuestionAddTo {
-  my ($form, $upload) = @_;
+  my ($form, $type, $upload) = @_;
 
   if (not $upload
       and not ReCaptchaException(GetId())
@@ -283,13 +267,14 @@ sub ReCaptchaException {
 }
 
 =head1 COPYRIGHT AND LICENSE
+=encoding utf8
 
 The information below applies to everything in this distribution,
 except where noted.
 
-Copyleft  2008             by B.w.Curry <http://www.raiazome.com>.
-Copyright 2004, 2008       by Brock Wilcox <awwaiid@thelackthereof.org>.
-Copyright 2006, 2007, 2008 by Alex Schroeder <alex@gnu.org>.
+Copyleft  2008      by B.w.Curry <http://www.raiazome.com>.
+Copyright 2004–2008 by Brock Wilcox <awwaiid@thelackthereof.org>.
+Copyright 2006–2015 by Alex Schroeder <alex@gnu.org>.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

@@ -1,4 +1,4 @@
-# Copyright (C) 2010  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2010–2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -19,7 +19,7 @@ AddModuleDescription('gravatar.pl', 'Gravatar');
 
 use Digest::MD5 qw(md5_hex);
 
-our ($q, $bol, %CookieParameters, $FullUrlPattern, @MyRules, @MyInitVariables);
+our ($q, $bol, %CookieParameters, $FullUrlPattern, @MyRules, @MyInitVariables, @MyFormChanges);
 
 # Same as in mail.pl
 $CookieParameters{mail} = '';
@@ -46,13 +46,17 @@ sub GravatarRule {
   return;
 }
 
-*GravatarOldGetCommentForm = \&GetCommentForm;
-*GetCommentForm = \&GravatarNewGetCommentForm;
+push(@MyFormChanges, \&GravatarAddTo);
 
-sub GravatarNewGetCommentForm {
-  my $html = GravatarOldGetCommentForm(@_);
+sub GravatarAddTo {
+  my ($html, $type) = @_;
+
+  # gravatars only make sense for comments
+  return $html unless $type eq 'comment';
+
   # the implementation in mail.pl takes precedence!
   return $html if defined &MailNewGetCommentForm;
+
   my $addition = $q->span({-class=>'mail'},
 			  $q->label({-for=>'mail'}, T('Email: '))
 			  . ' ' . $q->textfield(-name=>'mail', -id=>'mail',

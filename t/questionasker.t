@@ -1,4 +1,4 @@
-# Copyright (C) 2008–2014  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2008–2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,11 +15,12 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 15;
+use Test::More tests => 16;
 use utf8;
 
 add_module('questionasker.pl');
-
+test_page(get_page('action=edit id=test'),
+	  'you must answer this question');
 test_page_negative(update_page('test', 'edit allowed'),
 		   'edit allowed');
 test_page_negative(update_page('test', 'cheating using preview', '', 0, 0, 'Preview=1'),
