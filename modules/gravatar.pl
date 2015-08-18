@@ -46,16 +46,11 @@ sub GravatarRule {
   return;
 }
 
-push(@MyFormChanges, \&GravatarAddTo);
-
-sub GravatarAddTo {
+sub GravatarFormAddition {
   my ($html, $type) = @_;
 
   # gravatars only make sense for comments
   return $html unless $type eq 'comment';
-
-  # the implementation in mail.pl takes precedence!
-  return $html if defined &MailNewGetCommentForm;
 
   my $addition = $q->span({-class=>'mail'},
 			  $q->label({-for=>'mail'}, T('Email: '))
@@ -68,6 +63,12 @@ sub GravatarAddTo {
 push(@MyInitVariables, \&AddGravatar);
 
 sub AddGravatar {
+
+  # the implementation in mail.pl takes precedence!
+  if (not grep { $_ == \&MailCommentAdditions } @MyFormChanges) {
+    push(@MyFormChanges, \&GravatarFormAddition);
+  }
+
   my $aftertext = UnquoteHtml(GetParam('aftertext'));
   my $mail = GetParam('mail');
   $mail =~ s/^[ \t]+//;

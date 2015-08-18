@@ -47,7 +47,7 @@ automatically.
 AddModuleDescription('mail.pl', 'Mail Extension');
 
 our ($q, %Action, %IndexHash, $FS, $DataDir, %CookieParameters,
-     @MyInitVariables, @MyAdminCode, $Message, @MyFooters);
+     @MyInitVariables, @MyAdminCode, $Message, @MyFormChanges);
 
 our ($MailFile, $MailPattern);
 
@@ -91,17 +91,11 @@ sub MailNewInitCookie {
   }
 }
 
-*MailOldGetCommentForm = \&GetCommentForm;
-*GetCommentForm = \&MailNewGetCommentForm;
-foreach (@MyFooters) {
-  if ($_ == \&MailOldGetCommentForm) {
-    $_ = \&MailNewGetCommentForm;
-  }
-}
+push(@MyFormChanges, \&MailCommentAdditions);
 
-sub MailNewGetCommentForm {
-  my $html = MailOldGetCommentForm(@_);
-  my $id = shift;
+sub MailCommentAdditions {
+  my $html = shift;
+  my $id = GetId();
   my $mail = GetParam('mail', '');
   my $addition;
   if (MailIsSubscribed($id, $mail)) {
