@@ -37,7 +37,7 @@ file for your Oddmuse Wiki.
 
 =cut
 
-our ($q, %AdminPages, $LinkPattern, $FreeLinks, $FreeLinkPattern, $WikiLinks, @MyInitVariables, %CookieParameters);
+our ($q, %AdminPages, $LinkPattern, $FreeLinks, $FreeLinkPattern, $WikiLinks, @MyInitVariables, %CookieParameters, @MyFooters);
 our ($ReCaptchaPrivateKey,
   $ReCaptchaPublicKey,
   $ReCaptchaTheme,
@@ -148,6 +148,11 @@ sub ReCaptchaInit {
 
 *OldReCaptchaGetCommentForm = \&GetCommentForm;
 *GetCommentForm = \&NewReCaptchaGetCommentForm;
+foreach (@MyFooters) {
+  if ($_ == \&OldReCaptchaGetCommentForm) {
+    $_ = \&NewReCaptchaGetCommentForm;
+  }
+}
 
 sub NewReCaptchaGetEditForm {
   return ReCaptchaQuestionAddTo(OldReCaptchaGetEditForm(@_), $_[1]);
