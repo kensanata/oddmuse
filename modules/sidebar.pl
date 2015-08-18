@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 use strict;
+use v5.10;
 
 AddModuleDescription('sidebar.pl', 'Sidebar Extension');
 

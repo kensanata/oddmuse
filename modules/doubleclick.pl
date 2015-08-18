@@ -22,6 +22,7 @@
 # JavaScript enabled for this to work.
 
 use strict;
+use v5.10;
 
 AddModuleDescription('doubleclick.pl', 'Doubleclick Extension');
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env perl
 use strict;
+use v5.10;
 
 # ====================[ creoleaddition.pl                  ]====================
 

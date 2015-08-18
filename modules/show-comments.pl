@@ -20,6 +20,7 @@
 # Includes comment pages in journal collections.
 
 use strict;
+use v5.10;
 
 AddModuleDescription('show-comments.pl', 'Comment Pages');
 

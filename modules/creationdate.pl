@@ -24,6 +24,7 @@
 # Of course, you can customize this to store more information
 
 use strict;
+use v5.10;
 
 AddModuleDescription('creationdate.pl', 'CreationDate Module');
 

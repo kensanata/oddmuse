@@ -24,6 +24,7 @@
 # span[lang=it] { background-color:#dfd; }
 
 use strict;
+use v5.10;
 
 AddModuleDescription('lang.pl', 'Language Extension');
 

@@ -16,6 +16,7 @@
 # We just try to autodetect everything.
 
 use strict;
+use v5.10;
 
 AddModuleDescription('vcard.pl');
 

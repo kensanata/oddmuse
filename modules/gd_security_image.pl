@@ -7,7 +7,7 @@
 #
 # Codes reused from questionasker.pl for Oddmuse
 # Copyright (C) 2004  Brock Wilcox <awwaiid@thelackthereof.org>
-# Copyright (C) 2006, 2007  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006–2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,10 +23,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 use strict;
+use v5.10;
 
 AddModuleDescription('gd_security_image.pl', 'GD Security Image Extension');
 
-our ($q, $Now, %Action, $FullUrl, $LinkPattern, $FreeLinks, $FreeLinkPattern, $WikiLinks, $DataDir, $ModuleDir, @MyInitVariables, %CookieParameters);
+our ($q, $Now, %Action, $FullUrl, $LinkPattern, $FreeLinks, $FreeLinkPattern, $WikiLinks, $DataDir, $ModuleDir, @MyInitVariables, %CookieParameters, @MyFormChanges);
 
 =head1 DESCRIPTION
 
@@ -324,22 +325,10 @@ sub NewGdSecurityImageDoPost {
   return (OldGdSecurityImageDoPost(@params));
 }
 
-*OldGdSecurityImageGetEditForm = \&GetEditForm;
-*GetEditForm = \&NewGdSecurityImageGetEditForm;
-
-sub NewGdSecurityImageGetEditForm {
-  return GdSecurityImageAddTo(OldGdSecurityImageGetEditForm(@_), $_[1]);
-}
-
-*OldGdSecurityImageGetCommentForm = \&GetCommentForm;
-*GetCommentForm = \&NewGdSecurityImageGetCommentForm;
-
-sub NewGdSecurityImageGetCommentForm {
-  return GdSecurityImageAddTo(OldGdSecurityImageGetCommentForm(@_));
-}
+push(@MyFormChanges, \&GdSecurityImageAddTo);
 
 sub GdSecurityImageAddTo {
-  my ($form, $upload) = @_;
+  my ($form, $type, $upload) = @_;
   if (not $upload
       and not GdSecurityImageException(GetId())
       and not UserIsEditor()) {

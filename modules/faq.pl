@@ -24,6 +24,7 @@
 # the css classes div.question and div.answer.
 
 use strict;
+use v5.10;
 
 AddModuleDescription('faq.pl', 'FAQ Extension');
 

@@ -22,6 +22,7 @@
 # $InstanceThrottleDir
 
 use strict;
+use v5.10;
 
 AddModuleDescription('throttle.pl', 'Limit Number Of Instances Running');
 

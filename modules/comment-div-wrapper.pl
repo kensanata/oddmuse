@@ -14,6 +14,7 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
 use strict;
+use v5.10;
 
 AddModuleDescription('comment-div-wrapper.pl', 'Comment Div Wrapper Extension');
 

@@ -24,6 +24,7 @@
 # Basic idea got from MoinMoin.
 
 use strict;
+use v5.10;
 
 our ($q, %Action, %IndexHash, $FS, $LinkPattern, $FreeLinks, $FreeLinkPattern, $WikiLinks, $BracketWiki, @MyInitVariables, $UserGotoBar);
 

@@ -19,6 +19,7 @@
 # Based on code of tagmap.pl module by Fletcher T. Penney
 # and searchtags.pl module by Brock Wilcox
 use strict;
+use v5.10;
 
 AddModuleDescription('linktagmap.pl', 'LinkTagMap Module');
 

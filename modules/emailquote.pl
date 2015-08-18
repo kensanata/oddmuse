@@ -11,6 +11,7 @@
 # http://www.oddmuse.org/cgi-bin/oddmuse/Email_Quote_Extension
 
 use strict;
+use v5.10;
 
 AddModuleDescription('emailquote.pl', 'Email Quote Extension');
 

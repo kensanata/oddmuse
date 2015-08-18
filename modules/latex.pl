@@ -29,6 +29,7 @@
 # img.DisplayMath
 
 use strict;
+use v5.10;
 
 use File::Glob ':glob';
 

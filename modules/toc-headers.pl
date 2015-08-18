@@ -21,6 +21,7 @@
 # It is based on headers.pl 1.12 and toc.pl 1.30.
 
 use strict;
+use v5.10;
 
 AddModuleDescription('toc-headers.pl');
 

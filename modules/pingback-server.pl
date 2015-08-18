@@ -24,6 +24,7 @@
 #     - We have to capture the script before CGI.pm starts to get STDIN
 
 use strict;
+use v5.10;
 
 use LWP::UserAgent; # This one will one day be eliminated! Hopefully!
 

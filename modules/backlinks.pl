@@ -11,6 +11,7 @@
 # http://www.oddmuse.org/cgi-bin/oddmuse/Backlinks_Extension
 
 use strict;
+use v5.10;
 
 AddModuleDescription('backlinks.pl', 'Backlinks Extension');
 

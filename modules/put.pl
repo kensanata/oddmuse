@@ -29,6 +29,7 @@ only works reliably for GET requests.
 =cut
 
 use strict;
+use v5.10;
 
 AddModuleDescription('put.pl');
 

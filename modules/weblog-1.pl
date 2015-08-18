@@ -17,6 +17,7 @@
 #    Boston, MA 02111-1307 USA
 
 use strict;
+use v5.10;
 
 our (@MyInitVariables, $UserGotoBar, @UserGotoBarPages, $CommentsPrefix, $EditAllowed);
 our ($WeblogTextLogo, $WeblogXmlLogo);

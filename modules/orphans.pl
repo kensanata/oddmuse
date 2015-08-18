@@ -23,6 +23,7 @@
 # subgraphs on this wiki.
 
 use strict;
+use v5.10;
 
 AddModuleDescription('orphans.pl', 'Orphans Extension');
 

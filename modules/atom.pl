@@ -14,6 +14,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use strict;
+use v5.10;
 
 use XML::Atom::Entry;
 use XML::Atom::Link;

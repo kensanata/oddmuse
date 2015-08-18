@@ -15,6 +15,7 @@
 #    Boston, MA 02111-1307 USA
 
 use strict;
+use v5.10;
 
 AddModuleDescription('edit-assist.pl', 'Edit Assist Extension');
 
