@@ -45,7 +45,7 @@ our ($ScriptName, $FullUrl, $ModuleDir, $PageDir, $TempDir, $LockDir, $KeepDir, 
      $UrlPattern, $FullUrlPattern, $InterSitePattern,
      $UrlProtocols, $ImageExtensions, $LastUpdate,
      %LockOnCreation, %PlainTextPages, %AdminPages,
-     @MyAdminCode, @MyFooters, @MyInitVariables, @MyMacros, @MyMaintenance,
+     @MyAdminCode, @MyFooters, @MyFormChanges, @MyInitVariables, @MyMacros, @MyMaintenance,
      $DocumentHeader, %HtmlEnvironmentContainers, $FS, $Counter, @Debugging);
 
 # Internal variables:
@@ -296,7 +296,7 @@ sub InitVariables {  # Init global session variables for mod_perl!
   ReportError(Ts('Cannot create %s', $DataDir) . ": $!", '500 INTERNAL SERVER ERROR') unless -d $DataDir;
   @IndexOptions = (['pages', T('Include normal pages'), 1, \&AllPagesList]);
   foreach my $sub (@MyInitVariables) {
-    my $result = &$sub;
+    my $result = $sub->();
     $Message .= $q->p($@) if $@;
   }
 }
@@ -704,7 +704,7 @@ sub SmileyReplace {
 sub RunMyRules {
   my ($locallinks, $withanchors) = @_;
   foreach my $sub (@MyRules) {
-    my $result = &$sub($locallinks, $withanchors);
+    my $result = $sub->($locallinks, $withanchors);
     SetParam('msg', $@) if $@;
     return $result if defined($result);
   }
@@ -713,7 +713,7 @@ sub RunMyRules {
 
 sub RunMyMacros {
   $_ = shift;
-  foreach my $macro (@MyMacros) { &$macro };
+  foreach my $macro (@MyMacros) { $macro->() };
   return $_;
 }
 
@@ -1616,9 +1616,9 @@ sub ProcessRcLines {
 	$cluster, $last) = @$line;
     if ($date ne CalcDay($ts)) {
       $date = CalcDay($ts);
-      &$printDailyTear($date);
+      $printDailyTear->($date);
     }
-    &$printRCLine($id, $ts, $host, $username, $summary, $minor, $revision,
+    $printRCLine->($id, $ts, $host, $username, $summary, $minor, $revision,
       $languageref, $cluster, $last);
   }
 }
@@ -2137,7 +2137,7 @@ sub DoAdminPage {
     push(@menu, ScriptLink('action=clear', T('Clear Cache'), 'clear')) if $Action{clear};
   }
   foreach my $sub (@MyAdminCode) {
-    &$sub($id, \@menu, \@rest);
+    $sub->($id, \@menu, \@rest);
     $Message .= $q->p($@) if $@; # since this happens before GetHeader is called, the message will be shown
   }
   print GetHeader('', T('Administration')),
@@ -2390,7 +2390,7 @@ sub PrintFooter {
   }
   PrintMyContent($id) if defined(&PrintMyContent);
   foreach my $sub (@MyFooters) {
-    print &$sub(@_);
+    print $sub->(@_);
   }
   print $q->end_html, "\n";
 }
@@ -2466,24 +2466,29 @@ sub GetCommentForm {
   my ($id, $rev, $comment) = @_;
   if ($CommentsPattern ne '' and $id and $rev ne 'history' and $rev ne 'edit'
       and $id =~ /$CommentsPattern/o and UserCanEdit($id, 0, 1)) {
-    return $q->div({-class=>'comment'}, GetFormStart(undef, undef, 'comment'), # protected by questionasker
-		   $q->p(GetHiddenValue('title', $id), $q->br(),
-			 $q->label({-for=>'aftertext', -accesskey=>T('c')},
-				   GetTextArea('aftertext', $comment, 10))),
-		   $EditNote,
-		   $q->p($q->span({-class=>'username'},
-				  $q->label({-for=>'username'}, T('Username:')), ' ',
-				  $q->textfield(-name=>'username', -id=>'username',
-						-default=>GetParam('username', ''),
-						-override=>1, -size=>20, -maxlength=>50)),
-			 $q->span({-class=>'homepage'},
-				  $q->label({-for=>'homepage'}, T('Homepage URL:')), ' ',
-				  $q->textfield(-name=>'homepage', -id=>'homepage',
-						-default=>GetParam('homepage', ''),
-						-override=>1, -size=>40, -maxlength=>100))),
-		   $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save')), ' ',
-			 $q->submit(-name=>'Preview', -accesskey=>T('p'), -value=>T('Preview'))),
-		   $q->end_form());
+    my $html = $q->div({-class=>'comment'},
+		       GetFormStart(undef, undef, 'comment'),
+		       $q->p(GetHiddenValue('title', $id), $q->br(),
+			     $q->label({-for=>'aftertext', -accesskey=>T('c')},
+				       GetTextArea('aftertext', $comment, 10))),
+		       $EditNote,
+		       $q->p($q->span({-class=>'username'},
+				      $q->label({-for=>'username'}, T('Username:')), ' ',
+				      $q->textfield(-name=>'username', -id=>'username',
+						    -default=>GetParam('username', ''),
+						    -override=>1, -size=>20, -maxlength=>50)),
+			     $q->span({-class=>'homepage'},
+				      $q->label({-for=>'homepage'}, T('Homepage URL:')), ' ',
+				      $q->textfield(-name=>'homepage', -id=>'homepage',
+						    -default=>GetParam('homepage', ''),
+						    -override=>1, -size=>40, -maxlength=>100))),
+		       $q->p($q->submit(-name=>'Save', -accesskey=>T('s'), -value=>T('Save')), ' ',
+			     $q->submit(-name=>'Preview', -accesskey=>T('p'), -value=>T('Preview'))),
+		       $q->end_form());
+    foreach my $sub (@MyFormChanges) {
+      $html = $sub->($html, 'comment');
+    }
+    return $html;
   }
   return '';
 }
@@ -3086,6 +3091,9 @@ sub GetEditForm {
     $html .= $q->p(ScriptLink('action=edit;upload=1;id=' . UrlEncode($page_name), T('Replace this text with a file'), 'upload'));
   }
   $html .= $q->end_form();
+  foreach my $sub (@MyFormChanges) {
+    $html = $sub->($html, 'edit', $upload);
+  }
   return $html;
 }
 

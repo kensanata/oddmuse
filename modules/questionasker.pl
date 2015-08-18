@@ -20,7 +20,7 @@ use v5.10;
 AddModuleDescription('questionasker.pl', 'QuestionAsker Extension');
 
 our ($q, $bol, $FreeLinks, $FreeLinkPattern, $LinkPattern, $WikiLinks,
-     @MyInitVariables, %AdminPages, %CookieParameters, @MyFooters);
+     @MyInitVariables, %AdminPages, %CookieParameters, @MyFormChanges);
 
 our (@QuestionaskerQuestions,
      $QuestionaskerRememberAnswer,
@@ -99,27 +99,10 @@ sub NewQuestionaskerDoPost {
   return (OldQuestionaskerDoPost(@params));
 }
 
-*OldQuestionaskerGetEditForm = \&GetEditForm;
-*GetEditForm = \&NewQuestionaskerGetEditForm;
-
-sub NewQuestionaskerGetEditForm {
-  return QuestionAddTo(OldQuestionaskerGetEditForm(@_), $_[1]);
-}
-
-*OldQuestionaskerGetCommentForm = \&GetCommentForm;
-*GetCommentForm = \&NewQuestionaskerGetCommentForm;
-foreach (@MyFooters) {
-  if ($_ == \&OldQuestionaskerGetCommentForm) {
-    $_ = \&NewQuestionaskerGetCommentForm;
-  }
-}
-
-sub NewQuestionaskerGetCommentForm {
-  return QuestionAddTo(OldQuestionaskerGetCommentForm(@_));
-}
+push(@MyFormChanges, \&QuestionAddTo);
 
 sub QuestionAddTo {
-  my ($form, $upload) = @_;
+  my ($form, $type, $upload) = @_;
   if (not $upload
       and not QuestionaskerException(GetId())
       and not $QuestionaskerRememberAnswer && GetParam($QuestionaskerSecretKey, 0)
