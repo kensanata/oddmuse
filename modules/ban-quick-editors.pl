@@ -16,6 +16,7 @@
 # editors will be logged.
 
 use strict;
+use v5.10;
 
 AddModuleDescription('ban-quick-editors.pl', 'Banning Quick Editors');
 

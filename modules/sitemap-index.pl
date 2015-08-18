@@ -19,6 +19,7 @@
 # Create a plain text listing of all pages in your wiki
 
 use strict;
+use v5.10;
 
 AddModuleDescription('sitemap-index.pl', 'Sitemap-index Extension');
 

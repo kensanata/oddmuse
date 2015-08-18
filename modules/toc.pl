@@ -1,5 +1,6 @@
 #!/usr/bin/env perl
 use strict;
+use v5.10;
 
 our ($q, $bol, @HtmlStack, @MyRules, @MyInitVariables);
 # ====================[ toc.pl                             ]====================

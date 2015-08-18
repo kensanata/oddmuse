@@ -17,6 +17,7 @@
 # Conflicts with the "Image extension module"
 
 use strict;
+use v5.10;
 
 require MIME::Base64;
 

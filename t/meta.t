@@ -39,13 +39,10 @@ unless (ok(@badModules == 0, '"use strict;" in modules')) {
   diag(qq{$_ has no "use strict;"}) for @badModules;
 }
 
- SKIP: {
-   skip '"use v5.10;" tests, we are not doing "use v5.10;" everywhere yet', 1;
-   @badModules = grep { ReadFile($_) !~ / ^ use \s+ v5\.10; /xm } @modules;
-   unless (ok(@badModules == 0, '"use v5.10;" in modules')) {
-     diag(qq{$_ has no "use v5.10;"}) for @badModules;
-     diag(q{Minimum perl version for the core is v5.10, it seems like there is no reason not to have "use v5.10;" everywhere else.});
-   }
+@badModules = grep { ReadFile($_) !~ / ^ use \s+ v5\.10; /xm } @modules;
+unless (ok(@badModules == 0, '"use v5.10;" in modules')) {
+  diag(qq{$_ has no "use v5.10;"}) for @badModules;
+  diag(q{Minimum perl version for the core is v5.10, it seems like there is no reason not to have "use v5.10;" everywhere else.});
 }
 
 @badModules = grep {

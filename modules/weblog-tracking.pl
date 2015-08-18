@@ -19,6 +19,7 @@
 # Weblog Tracker Notification Extension
 
 use strict;
+use v5.10;
 
 our ($q, $UsePathInfo, $ScriptName, $SiteName);
 our (%NotifyJournalPage, @NotifyUrlPatterns);

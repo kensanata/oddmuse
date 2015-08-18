@@ -25,6 +25,7 @@
 # page cluster.
 
 use strict;
+use v5.10;
 
 AddModuleDescription('hiddenpages.pl', 'Hidden Pages Extension');
 

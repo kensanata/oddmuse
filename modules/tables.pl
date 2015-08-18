@@ -17,6 +17,7 @@
 #    Boston, MA 02111-1307 USA
 
 use strict;
+use v5.10;
 
 AddModuleDescription('tables.pl', 'Table Markup Extension');
 

@@ -11,6 +11,7 @@
 # http://www.oddmuse.org/cgi-bin/oddmuse/Html_Comment_Extension
 
 use strict;
+use v5.10;
 
 AddModuleDescription('htmlcomment.pl', 'Html Comment Extension');
 

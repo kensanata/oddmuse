@@ -20,6 +20,7 @@
 # ie: http://search.cpan.org/CPAN/authors/id/C/CH/CHAMAS/MLDBM-2.01.tar.gz
 
 use strict;
+use v5.10;
 
 use Fcntl;
 use MLDBM qw( DB_File Storable );

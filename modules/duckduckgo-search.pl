@@ -13,6 +13,7 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
 use strict;
+use v5.10;
 
 AddModuleDescription('duckduckgo-search.pl', 'Use DuckDuckGo For Searches');
 

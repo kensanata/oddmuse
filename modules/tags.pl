@@ -1,4 +1,5 @@
 use strict;
+use v5.10;
 
 =encoding utf8
 

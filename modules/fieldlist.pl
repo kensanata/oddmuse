@@ -11,6 +11,7 @@
 # http://www.oddmuse.org/cgi-bin/oddmuse/Field_List_Extension
 
 use strict;
+use v5.10;
 
 AddModuleDescription('fieldlist.pl', 'Field List Extension');
 

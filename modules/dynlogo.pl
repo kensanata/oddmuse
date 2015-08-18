@@ -28,6 +28,7 @@
 #
 
 use strict;
+use v5.10;
 
 AddModuleDescription('dynlogo.pl', 'Dynamic Logo');
 

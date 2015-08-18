@@ -2,6 +2,7 @@
 # ====================[ usemod.pl                          ]====================
 
 use strict;
+use v5.10;
 
 AddModuleDescription('usemod.pl', 'Usemod Markup Extension');
 

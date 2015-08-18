@@ -17,6 +17,7 @@
 # Porter stemming algorithm code copied verbatim from http://www.tartarus.org/~martin/PorterStemmer/
 
 use strict;
+use v5.10;
 
 AddModuleDescription('wordstem.pl', 'WordStemming');
 

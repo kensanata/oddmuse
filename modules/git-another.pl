@@ -14,6 +14,7 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
 use strict;
+use v5.10;
 
 AddModuleDescription('git-another.pl', 'Another Git Extension');
 

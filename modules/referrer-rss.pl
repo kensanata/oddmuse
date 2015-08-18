@@ -19,6 +19,7 @@
 # TODO referers and refeRrers
 
 use strict;
+use v5.10;
 
 AddModuleDescription('referrer-rss.pl', 'Comments on Automatic Link Back');
 
