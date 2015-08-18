@@ -51,12 +51,14 @@ sub NewAskPageDoPost {
   OldAskPageDoPost($id, @_); # keep original functionality for regular edits
 }
 
-*OldAskPageGetCommentForm=\&GetCommentForm;
-*GetCommentForm=\&NewAskPageGetCommentForm;
-sub NewAskPageGetCommentForm {
-  my ($id, $rev, $comment) = @_;
-  $comment = $NewQuestion if not $comment and $id eq $AskPage;
-  OldAskPageGetCommentForm(@_);
+*OldAskPageGetTextArea=\&GetTextArea;
+*GetTextArea=\&NewAskPageGetTextArea;
+sub NewAskPageGetTextArea {
+  my ($name, $text, @rest) = @_;
+  if ($name eq 'aftertext' and not $text and GetId() eq $AskPage) {
+    $text = $NewQuestion;
+  }
+  OldAskPageGetTextArea($name, $text, @rest);
 }
 
 *OldAskPageJournalSort=\&JournalSort;
