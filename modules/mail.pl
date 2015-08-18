@@ -91,9 +91,9 @@ sub MailNewInitCookie {
   }
 }
 
-push(@MyFormChanges, \&MailCommentAdditions);
+push(@MyFormChanges, \&MailFormAddition);
 
-sub MailCommentAdditions {
+sub MailFormAddition {
   my $html = shift;
   my $id = GetId();
   my $mail = GetParam('mail', '');

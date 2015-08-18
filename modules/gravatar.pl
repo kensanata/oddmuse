@@ -65,7 +65,7 @@ push(@MyInitVariables, \&AddGravatar);
 sub AddGravatar {
 
   # the implementation in mail.pl takes precedence!
-  if (not grep { $_ == \&MailCommentAdditions } @MyFormChanges) {
+  if (not grep { $_ == \&MailFormAddition } @MyFormChanges) {
     push(@MyFormChanges, \&GravatarFormAddition);
   }
 
