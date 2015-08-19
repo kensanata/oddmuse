@@ -7,7 +7,7 @@ ODDMUSE_TEST_LOCATION='../oddmuse-for-tests/'
 LAST_COMMIT_FILE='../last_commit'
 FIRST_TESTABLE_COMMIT='1c0801bd6ca23de71c7c360a18a648c2b953f1da'
 RESULT_FILE='../output'
-WIKIPUT='../oddmuse/wikiput'
+WIKIPUT='../oddmuse/scripts/cli/wikiput'
 STATUS_PAGE='Test Status'
 OUT_PAGE='https://github.com/kensanata/oddmuse-tests/blob/master/output'
 WIKI_LOCATION='https://oddmuse.org/wiki/'
@@ -54,7 +54,7 @@ while :; do
 
   # "${git[@]}" push
 
-  if (( $status == 0 )); then
+  if (( status == 0 )); then
     "$WIKIPUT" -u "$USER_NAME" -s 'Tests PASSED' -z 'ham' "$WIKI_LOCATION/$STATUS_PAGE" <<< "**TEST STATUS – OK**\n\nCommit:$currentCommit – see See [[$OUT_PAGE|test log]]"
   else
     "$WIKIPUT" -u "$USER_NAME" -s 'Tests FAILED' -z 'ham' "$WIKI_LOCATION/$STATUS_PAGE" <<< "**TEST STATUS – FAIL**\n\nCommit:$currentCommit – see See [[$OUT_PAGE|test log]]"
