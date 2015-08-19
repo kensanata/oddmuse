@@ -9,7 +9,7 @@ FIRST_TESTABLE_COMMIT='1c0801bd6ca23de71c7c360a18a648c2b953f1da'
 RESULT_FILE='../output'
 WIKIPUT='../oddmuse/scripts/cli/wikiput'
 STATUS_PAGE='Test Status'
-OUT_PAGE='https://github.com/kensanata/oddmuse-tests/blob/master/output'
+OUT_PAGE='https://github.com/AlexDaniel/oddmuse-alexine/blob/master/output'
 WIKI_LOCATION='https://oddmuse.org/wiki/'
 USER_NAME='Alexine'
 
