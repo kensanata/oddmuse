@@ -246,6 +246,25 @@ sub MergeRevisions {   # merge change from file2 to file3 into file1
   return $output;
 }
 
+*OldPrivateWikiCleanLock = \&CleanLock;
+*CleanLock = \&NewPrivateWikiCleanLock;
+
+sub NewPrivateWikiCleanLock {
+  my ($name) = @_;
+  if ($name eq 'diff') {
+    my $oldName = "$TempDir/old";
+    my $newName = "$TempDir/new";
+    unlink $oldName if -f $oldName;
+    unlink $newName if -f $newName;
+  } elsif ($name eq 'merge') {
+    my ($name1, $name2, $name3) = ("$TempDir/file1", "$TempDir/file2", "$TempDir/file3");
+    unlink $name1 if -f $name1;
+    unlink $name2 if -f $name2;
+    unlink $name3 if -f $name3;
+  }
+  OldPrivateWikiCleanLock(@_);
+}
+
 # Surge protection has to be unencrypted because in the context of this module
 # it is a tool against people who have no password set (thus we have no key
 # to do encryption).

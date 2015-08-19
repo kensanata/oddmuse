@@ -57,7 +57,7 @@ sub DoUpgrade {
 	      '403 FORBIDDEN', 0,
 	      $q->p(T('Did the previous upgrade end with an error? A lock was left behind.'))
 	      . $q->p(ScriptLink('action=unlock', T('Unlock wiki'), 'unlock')))
-    unless RequestLockDir('main');
+    unless RequestLockDir('main', 0);
 
   print GetHeader('', T('Upgrading Database')),
     $q->start_div({-class=>'content upgrade'});

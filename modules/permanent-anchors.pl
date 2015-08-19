@@ -99,7 +99,7 @@ sub GetPermanentAnchor {
 		    ScriptLink(UrlEncode($resolved), $text, 'alias')) . ']';
   } elsif ($PermanentAnchors{$id} ne $OpenPageName
 	   # 10 tries, 3 second wait, die on error
-	   and RequestLockDir('permanentanchors', 10, 3, 1)) {
+	   and RequestLockDir('permanentanchors', 1, 10, 3, 1)) {
     # Somebody may have added a permanent anchor in the mean time.
     # Comparing $LastUpdate to the $IndexFile mtime does not work for
     # subsecond changes and updates are rare, so just reread the file!
@@ -190,7 +190,7 @@ sub NewPermanentAnchorsSave {
 sub DeletePermanentAnchors {
   my $id = shift;
   # 10 tries, 3 second wait, die on error
-  RequestLockDir('permanentanchors', 10, 3, 1);
+  RequestLockDir('permanentanchors', 1, 10, 3, 1);
   foreach (keys %PermanentAnchors) {
     if ($PermanentAnchors{$_} eq $id and !$PagePermanentAnchors{$_}) {
       delete($PermanentAnchors{$_}) ;

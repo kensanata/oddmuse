@@ -149,7 +149,7 @@ sub JoinerGetPasswordHash {
 sub JoinerRequestLockOrError {
   my ($name) = @_;
   # 10 tries, 3 second wait, die on error
-  return RequestLockDir($name, 10, 3, 1);
+  return RequestLockDir($name, 0, 10, 3, 1);
 }
 
 sub JoinerGetEmailFile {

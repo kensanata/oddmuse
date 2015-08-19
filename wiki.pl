@@ -728,7 +728,7 @@ sub PrintWikiToHTML {
       and $Page{blocks} ne $blocks and $Page{flags} ne $flags) {
     $Page{blocks} = $blocks;
     $Page{flags}  = $flags;
-    if ($is_locked or RequestLockDir('main')) { # not fatal!
+    if ($is_locked or RequestLockDir('main', 0)) { # not fatal!
       SavePage();
       ReleaseLock() unless $is_locked;
     }
@@ -2883,7 +2883,8 @@ sub GetLockedPageFile {
 }
 
 sub RequestLockDir {
-  my ($name, $tries, $wait, $error, $retried) = @_;
+  my ($name, $autoclean, $tries, $wait, $error, $retried) = @_; # $retried is used for recursion
+  $autoclean //= 1;
   $tries ||= 4;
   $wait ||= 2;
   CreateDir($TempDir);
@@ -2892,9 +2893,9 @@ sub RequestLockDir {
   while (mkdir($lock, 0555) == 0) {
     if ($n++ >= $tries) {
       my $ts = (stat($lock))[9];
-      if ($Now - $ts > $LockExpiration and $LockExpires{$name} and not $retried) {
+      if ($Now - $ts > $LockExpiration and $LockExpires{$name} and not $retried) { # XXX should we remove this now?
 	ReleaseLockDir($name); # try to expire lock (no checking)
-	return 1 if RequestLockDir($name, undef, undef, undef, 1);
+	return 1 if RequestLockDir($name, $autoclean, undef, undef, undef, 1);
       }
       return 0 unless $error;
       ReportError(Ts('Could not get %s lock', $name) . ": $!. ",
@@ -2907,8 +2908,17 @@ sub RequestLockDir {
     }
     sleep($wait);
   }
-  $Locks{$name} = 1;
+  $Locks{$name} = $autoclean ? 2 : 1;
   return 1;
+}
+
+sub signal_handler {
+  CleanLock($_) foreach grep { $Locks{$_} == 2 } keys %Locks;
+}
+
+sub CleanLock {
+  my ($name) = @_;
+  ReleaseLockDir($name);
 }
 
 sub ReleaseLockDir {
@@ -2918,11 +2928,11 @@ sub ReleaseLockDir {
 }
 
 sub RequestLockOrError {
-  return RequestLockDir('main', 10, 3, 1); # 10 tries, 3 second wait, die on error
+  return RequestLockDir('main', 0, 10, 3, 1); # 10 tries, 3 second wait, die on error
 }
 
 sub ReleaseLock {
-  ReleaseLockDir('main');
+  ReleaseLockDir('main', 0);
 }
 
 sub ForceReleaseLock {
@@ -2930,8 +2940,8 @@ sub ForceReleaseLock {
   my $forced;
   foreach my $name (bsd_glob $pattern) {
     # First try to obtain lock (in case of normal edit lock)
-    $forced = 1 unless RequestLockDir($name, 5, 3, 0);
-    ReleaseLockDir($name); # Release the lock, even if we didn't get it.
+    $forced = 1 unless RequestLockDir($name, 0, 5, 3, 0);
+    LockCleanup($name); # Release the lock, even if we didn't get it.
   }
   return $forced;
 }
@@ -3338,7 +3348,7 @@ sub RefreshIndex {
   @IndexList = ();
   %IndexHash = ();
   # If file exists and cannot be changed, error!
-  my $locked = RequestLockDir('index', undef, undef, -f $IndexFile);
+  my $locked = RequestLockDir('index', 0, undef, undef, -f $IndexFile);
   foreach (bsd_glob("$PageDir/*.pg"), bsd_glob("$PageDir/.*.pg")) {
     next unless m|/.*/(.+)\.pg$|;
     my $id = $1;
