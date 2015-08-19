@@ -35,6 +35,7 @@ use utf8; # in case anybody ever addes UTF8 characters to the source
 use CGI qw/-utf8/;
 use CGI::Carp qw(fatalsToBrowser);
 use File::Glob ':glob';
+use sigtrap 'handler' => \&HandleSignals, 'normal-signals';
 local $| = 1; # Do not buffer output (localized for mod_perl)
 
 # Options:
@@ -2912,7 +2913,7 @@ sub RequestLockDir {
   return 1;
 }
 
-sub signal_handler {
+sub HandleSignals {
   CleanLock($_) foreach grep { $Locks{$_} == 2 } keys %Locks;
 }
 
