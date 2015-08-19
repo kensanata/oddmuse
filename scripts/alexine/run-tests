@@ -1,0 +1,62 @@
+#!/bin/bash
+set -e
+
+TEST_LOCK='../testlock'
+TEST_LOG='../log'
+ODDMUSE_TEST_LOCATION='../oddmuse-for-tests/'
+LAST_COMMIT_FILE='../last_commit'
+FIRST_TESTABLE_COMMIT='1c0801bd6ca23de71c7c360a18a648c2b953f1da'
+RESULT_FILE='../output'
+WIKIPUT='../oddmuse/wikiput'
+STATUS_PAGE='Test Status'
+OUT_PAGE='https://github.com/kensanata/oddmuse-tests/blob/master/output'
+WIKI_LOCATION='https://oddmuse.org/wiki/'
+USER_NAME='Alexine'
+
+clean() {
+  while popd &> /dev/null; do :; done # change directory back
+  rmdir -- "$TEST_LOCK"
+}
+
+[[ -d $ODDMUSE_TEST_LOCATION ]] || git clone -- 'https://github.com/kensanata/oddmuse.git' "$ODDMUSE_TEST_LOCATION"
+
+if mkdir -- "$TEST_LOCK"; then # only one instance running
+  trap clean EXIT
+else
+  exit 0
+fi
+
+git=('git' '--git-dir' "$ODDMUSE_TEST_LOCATION/.git" '--work-tree' "$ODDMUSE_TEST_LOCATION")
+while :; do
+  "${git[@]}" fetch # get latest changes
+  "${git[@]}" reset --hard origin/master # starting our search from the last commit
+
+  [[ -f $LAST_COMMIT_FILE ]] || echo "$FIRST_TESTABLE_COMMIT" > "$LAST_COMMIT_FILE"
+  lastCommit=$(< "$LAST_COMMIT_FILE")
+
+  logOutput=$("${git[@]}" log --topo-order --pretty=oneline | grep --before 1 -m 1 "^$lastCommit")
+  (($(wc -l <<< "$logOutput") < 2)) && exit 0 # No more commits to process, good!
+  read -r currentCommit _ <<< "$logOutput"
+
+  "${git[@]}" checkout "$currentCommit"
+  # ((startTime = SECONDS)) ||:
+  pushd -- "$ODDMUSE_TEST_LOCATION" || exit 1
+  output=$(make test 2>&1) &&:
+  status=$?
+  popd
+  # ((duration = SECONDS - startTime)) ||:
+  printf "%s\n" "$output" > "$RESULT_FILE"
+  # echo "Duration: $((duration/60))m$((duration%60))s Status: $status" >> "$RESULT_FILE"
+  printf "%s\n" "$currentCommit" > "$LAST_COMMIT_FILE"
+
+  git add -- "$RESULT_FILE" "$LAST_COMMIT_FILE" # other git repo, therefore just 'git'
+  git commit -m "Test status at $currentCommit (automated commit)"
+
+  # "${git[@]}" push
+
+  if (( $status == 0 )); then
+    "$WIKIPUT" -u "$USER_NAME" -s 'Tests PASSED' "$WIKI_LOCATION/$STATUS_PAGE" <<< "**TEST STATUS – OK**\n\nCommit:$currentCommit – see See [[$OUT_PAGE|test log]]"
+  else
+    "$WIKIPUT" -u "$USER_NAME" -s 'Tests FAILED' "$WIKI_LOCATION/$STATUS_PAGE" <<< "**TEST STATUS – FAIL**\n\nCommit:$currentCommit – see See [[$OUT_PAGE|test log]]"
+  fi
+done
