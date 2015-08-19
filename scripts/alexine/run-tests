@@ -55,8 +55,8 @@ while :; do
   # "${git[@]}" push
 
   if (( status == 0 )); then
-    "$WIKIPUT" -m -u "$USER_NAME" -s 'Tests PASSED' -z 'ham' "$WIKI_LOCATION/$STATUS_PAGE" <<< $'TEST STATUS – **OK**\n\n'"Commit:$currentCommit – see [[$OUT_PAGE|test log]]"
+    "$WIKIPUT" -m -u "$USER_NAME" -s 'Tests PASSED' -z 'ham' "$WIKI_LOCATION/$STATUS_PAGE" <<< $'TEST STATUS – **OK**\n\n'"Commit:${currentCommit:0:7} – see [[$OUT_PAGE|test log]]"
   else
-    "$WIKIPUT" -u "$USER_NAME" -s 'Tests FAILED' -z 'ham' "$WIKI_LOCATION/$STATUS_PAGE" <<< $'TEST STATUS – **FAIL**\n\n'"Commit:$currentCommit – see [[$OUT_PAGE|test log]]"
+    "$WIKIPUT" -u "$USER_NAME" -s 'Tests FAILED' -z 'ham' "$WIKI_LOCATION/$STATUS_PAGE" <<< $'TEST STATUS – **FAIL**\n\n'"Commit:${currentCommit:0:7} – see [[$OUT_PAGE|test log]]"
   fi
 done
