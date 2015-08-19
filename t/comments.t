@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 37;
+use Test::More tests => 38;
 
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
 
@@ -71,6 +71,8 @@ xpath_test($page,
 	   '//a[@class="original local"][@href="http://localhost/wiki.pl/Test"][text()="Test"]',
 	   '//a[@class="password"][@href="http://localhost/wiki.pl?action=password"][text()="This page is read-only"]',
 	   '//textarea[@name="aftertext"]');
+$page = update_page('Comments_on_Test', '', '', 1, '', 'aftertext=Cannot%20add%20minor%20comments%20with%20edit%20allowed%20eq%203');
+test_page_negative($page, 'Cannot add minor comments with edit allowed eq 3');
 $page = update_page('Comments_on_Test', '', '', '', '', 'aftertext=Can%20add%20comments%20with%20edit%20allowed%20eq%203');
 test_page($page, 'Can add comments with edit allowed eq 3');
 

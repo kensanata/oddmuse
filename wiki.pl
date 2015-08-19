@@ -3202,7 +3202,7 @@ sub UserCanEdit {
   return 0 if not $EditAllowed or -f $NoEditFile;
   return 0 if $editing and UserIsBanned(); # this call is more expensive
   return 0 if $EditAllowed >= 2 and (not $CommentsPattern or $id !~ /$CommentsPattern/o);
-  return 1 if $EditAllowed >= 3 and not GetParam('recent_edit', '') # disallow minor comments
+  return 1 if $EditAllowed >= 3 and GetParam('recent_edit', '') ne 'on' # disallow minor comments
 			and ($comment or (GetParam('aftertext', '') and not GetParam('text', '')));
   return 0 if $EditAllowed >= 3;
   return 1;
