@@ -65,7 +65,7 @@ while :; do
   git add -- "$RESULT_FILE" "$LAST_COMMIT_FILE" # other git repo, therefore just 'git'
   git commit -m "Test status at $currentCommit (automated commit)"
 
-  "${git[@]}" push
+  git push
 
   if (( status == 0 )); then
     "$WIKIPUT" -m -u "$USER_NAME" -s 'Tests PASSED' -z 'ham' "$WIKI_LOCATION/$STATUS_PAGE" <<< $'TEST STATUS – **OK**\n\n'"Commit:${currentCommit:0:7} – see [[$OUT_PAGE|test log]]"
