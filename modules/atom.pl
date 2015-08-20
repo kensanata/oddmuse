@@ -16,6 +16,7 @@
 use strict;
 use v5.10;
 
+use XML::Atom;
 use XML::Atom::Entry;
 use XML::Atom::Link;
 use XML::Atom::Person;
