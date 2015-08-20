@@ -1,0 +1,31 @@
+#!/bin/bash
+set -e
+
+RELEASE_LOCK='../releaselock'
+ODDMUSE_LOCATION='../oddmuse-for-releases/'
+WIKIPUT='../oddmuse/scripts/cli/wikiput'
+WIKI_LOCATION='https://oddmuse.org/wiki/'
+USER_NAME='Alexine'
+
+clean() {
+  rmdir -- "$RELEASE_LOCK"
+}
+
+[[ -d $ODDMUSE_LOCATION ]] || git clone -- 'https://github.com/kensanata/oddmuse.git' "$ODDMUSE_LOCATION"
+
+if mkdir -- "$RELEASE_LOCK"; then # only one instance running
+  trap clean EXIT
+else
+  exit 0
+fi
+
+git=('git' '--git-dir' "$ODDMUSE_LOCATION/.git" '--work-tree' "$ODDMUSE_LOCATION")
+"${git[@]}" fetch # get latest changes
+"${git[@]}" reset --hard origin/master # move to the last commit
+
+# lastRelease=$("${git[@]}" tag -l --sort='-version:refname' | head -n 1) # old git versions can't do that
+lastRelease=$("${git[@]}" tag -l | sort -rV | head -n 1)
+
+pageText=$(curl -- "$WIKI_LOCATION/Local_Intermap?raw=1")
+
+"$WIKIPUT" -u "$USER_NAME" -s 'New release' -z 'ham' "$WIKI_LOCATION/Local_Intermap" < <(sed 's/[0-9]\+\.[0-9]\+\.[0-9]\+'"/$lastRelease/g" <<< "$pageText")
