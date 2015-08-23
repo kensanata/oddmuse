@@ -33,7 +33,7 @@ our ($q, @HtmlStack, @MyRules, $FullUrl);
 push(@MyRules, \&LangRule);
 
 sub LangRule {
-  if  (m/\G\[([a-z][a-z])\]/gc) {
+  if  (m/\G\[([a-z][a-z])\]/cg) {
     my $html;
     $html .= "</" . shift(@HtmlStack) . ">"  if $HtmlStack[0] eq 'span';
     return $html . AddHtmlEnvironment('span', "lang=\"$1\"") . "[$1]";

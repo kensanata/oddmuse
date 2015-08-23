@@ -111,14 +111,14 @@ sub LocalMapWorkHorse {
          local $_ = $blocks[$i];
 
          if ($WikiLinks
-             && ($BracketWiki && m/\G(\[$LinkPattern\s+([^\]]+?)\])/cog
-                 or m/\G(\[$LinkPattern\])/cog or m/\G($LinkPattern)/cog)) {
+             && ($BracketWiki && m/\G(\[$LinkPattern\s+([^\]]+?)\])/cg
+                 or m/\G(\[$LinkPattern\])/cg or m/\G($LinkPattern)/cg)) {
             $sub_id = $1;
          } elsif ($FreeLinks
                   && (($BracketWiki
-                       && m/\G(\[\[($FreeLinkPattern)\|([^\]]+)\]\])/cog)
-                      or m/\G(\[\[\[($FreeLinkPattern)\]\]\])/cog
-                      or m/\G(\[\[($FreeLinkPattern)\]\])/cog)) {
+                       && m/\G(\[\[($FreeLinkPattern)\|([^\]]+)\]\])/cg)
+                      or m/\G(\[\[\[($FreeLinkPattern)\]\]\])/cg
+                      or m/\G(\[\[($FreeLinkPattern)\]\])/cg)) {
             $sub_id = $2;
          }
 

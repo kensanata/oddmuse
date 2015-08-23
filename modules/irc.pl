@@ -33,7 +33,7 @@ $IrcLinkNick = 0;
 # This adds an extra <br> at the beginning.  Alternatively, add it to
 # the last line, or only add it when required.
 sub IrcRule {
-  if ($bol && m/\G(?:\[?(\d\d?:\d\d(?:am|pm)?)\]?)?\s*&lt;($IrcNickRegexp)&gt; ?/gc) {
+  if ($bol && m/\G(?:\[?(\d\d?:\d\d(?:am|pm)?)\]?)?\s*&lt;($IrcNickRegexp)&gt; ?/cg) {
     my ($time, $nick) = ($1, $2);
     my ($error) = ValidId($nick);
     # if we're in a dl, close the open dd but not the dl.  (if we're

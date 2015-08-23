@@ -258,7 +258,7 @@ sub ReadRecentVisitors {
   %RecentVisitors = ();
   return unless $status;
   foreach (split(/\n/, $data)) {
-    my @entries = split /$FS/o;
+    my @entries = split /$FS/;
     my $name = shift(@entries);
     $RecentVisitors{$name} = \@entries if $name;
   }
@@ -321,7 +321,7 @@ sub GetRcLines { # starttime, hash of seen pages to use as a second return value
   open my $F, '<:encoding(UTF-8)', \$filelike or die $!; # CHANGED
 
   my $line = <$F>;
-  my ($ts) = split(/$FS/o, $line); # the first timestamp in the regular rc file
+  my ($ts) = split(/$FS/, $line); # the first timestamp in the regular rc file
   if (not $ts or $ts > $starttime) { # we need to read the old rc file, too
     push(@result, GetRcLinesFor($RcOldFile, $starttime, \%match, \%following));
   }
@@ -353,7 +353,7 @@ sub GetRcLinesFor {
   while (my $line = <$F>) {
     chomp($line);
     my ($ts, $id, $minor, $summary, $host, $username, $revision,
-	$languages, $cluster) = split(/$FS/o, $line);
+	$languages, $cluster) = split(/$FS/, $line);
     next if $ts < $starttime;
     $following{$id} = $ts if $followup and $followup eq $username;
     next if $followup and (not $following{$id} or $ts <= $following{$id});
@@ -368,7 +368,7 @@ sub GetRcLinesFor {
     next if $lang and @languages and not grep(/$lang/, @languages);
     if ($PageCluster) {
       ($cluster, $summary) = ($1, $2) if $summary =~ /^\[\[$FreeLinkPattern\]\] ?: *(.*)/
-	  or $summary =~ /^$LinkPattern ?: *(.*)/o;
+	  or $summary =~ /^$LinkPattern ?: *(.*)/;
       next if ($clusterOnly and $clusterOnly ne $cluster);
       $cluster = '' if $clusterOnly; # don't show cluster if $clusterOnly eq $cluster
       if ($all < 2 and not $clusterOnly and $cluster) {

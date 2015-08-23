@@ -56,34 +56,34 @@ sub UsemodRule {
   elsif (m/\G\&lt;nowiki\&gt;(.*?)\&lt;\/nowiki\&gt;/cgis) { return $1; }
   # whitespace for monospaced, preformatted and escaped, all clean
   # note that ([ \t]+(.+\n)*.*) seems to crash very long blocks (2000 lines and more)
-  elsif ($bol && m/\G(\s*\n)*([ \t]+.+)\n?/gc) {
+  elsif ($bol && m/\G(\s*\n)*([ \t]+.+)\n?/cg) {
     my $str = $2;
-    while (m/\G([ \t]+.*)\n?/gc) {
+    while (m/\G([ \t]+.*)\n?/cg) {
       $str .= "\n" . $1;
     }
     return OpenHtmlEnvironment('pre',1) . $str; # always level 1
   }
   # unumbered lists using *
-  elsif ($bol && m/\G(\s*\n)*(\*+)[ \t]{$UseModSpaceRequired,}/cog
-	 or InElement('li') && m/\G(\s*\n)+(\*+)[ \t]{$UseModSpaceRequired,}/cog) {
+  elsif ($bol && m/\G(\s*\n)*(\*+)[ \t]{$UseModSpaceRequired,}/cg
+	 or InElement('li') && m/\G(\s*\n)+(\*+)[ \t]{$UseModSpaceRequired,}/cg) {
     return CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ul',length($2))
       . AddHtmlEnvironment('li');
   }
   # numbered lists using #
-  elsif ($bol && m/\G(\s*\n)*(\#+)[ \t]{$UseModSpaceRequired,}/cog
-	 or InElement('li') && m/\G(\s*\n)+(\#+)[ \t]{$UseModSpaceRequired,}/cog) {
+  elsif ($bol && m/\G(\s*\n)*(\#+)[ \t]{$UseModSpaceRequired,}/cg
+	 or InElement('li') && m/\G(\s*\n)+(\#+)[ \t]{$UseModSpaceRequired,}/cg) {
     return CloseHtmlEnvironmentUntil('li') . OpenHtmlEnvironment('ol',length($2))
       . AddHtmlEnvironment('li');
   }
   # indented text using : (use blockquote instead?)
-  elsif ($bol && m/\G(\s*\n)*(\:+)[ \t]{$UseModSpaceRequired,}/cog
-	 or InElement('dd') && m/\G(\s*\n)+(\:+)[ \t]{$UseModSpaceRequired,}/cog) {
+  elsif ($bol && m/\G(\s*\n)*(\:+)[ \t]{$UseModSpaceRequired,}/cg
+	 or InElement('dd') && m/\G(\s*\n)+(\:+)[ \t]{$UseModSpaceRequired,}/cg) {
     return CloseHtmlEnvironmentUntil('dd') . OpenHtmlEnvironment('dl',length($2), 'quote')
       . $q->dt() . AddHtmlEnvironment('dd');
   }
   # definition lists using ;
-  elsif (($bol and m/\G(\s*\n)*(\;+)[ \t]{$UseModSpaceRequired,}(?=.*[ \t]{$UseModExtraSpaceRequired,}\:)/cog) or
-         (InElement('dd') and m/\G(\s*\n)+(\;+)[ \t]{$UseModSpaceRequired,}(?=.*[ \t]{$UseModExtraSpaceRequired,}\:)/cog)) {
+  elsif (($bol and m/\G(\s*\n)*(\;+)[ \t]{$UseModSpaceRequired,}(?=.*[ \t]{$UseModExtraSpaceRequired,}\:)/cg) or
+         (InElement('dd') and m/\G(\s*\n)+(\;+)[ \t]{$UseModSpaceRequired,}(?=.*[ \t]{$UseModExtraSpaceRequired,}\:)/cg)) {
     return CloseHtmlEnvironmentUntil('dd')
       .OpenHtmlEnvironment('dl', length($2))
       .AddHtmlEnvironment('dt');  # `:' needs special treatment, later
@@ -150,9 +150,9 @@ sub UsemodRule {
     return CloseHtmlEnvironments() . AddHtmlEnvironment('p');
   }
   # RFC
-  elsif (m/\G$RFCPattern/cog) { return &RFC($1); }
+  elsif (m/\G$RFCPattern/cg) { return &RFC($1); }
   # ISBN -- dirty because the URL translations will change
-  elsif (m/\G($ISBNPattern)/cog) { Dirty($1); print ISBN($2); return ''; }
+  elsif (m/\G($ISBNPattern)/cg) { Dirty($1); print ISBN($2); return ''; }
   # traditional wiki syntax closure for bold italic'''''
   elsif (InElement('strong') and InElement('em') and m/\G'''''/cg) { # close both
     return CloseHtmlEnvironment('strong').CloseHtmlEnvironment('em');
@@ -166,11 +166,11 @@ sub UsemodRule {
     return UnquoteHtml($1);
   }
   # miscellaneous html tags
-  elsif (m/\G\&lt;($UsemodHtmlRegExp)(\s+[^<>]*?)?\&gt;/cogi) {
+  elsif (m/\G\&lt;($UsemodHtmlRegExp)(\s+[^<>]*?)?\&gt;/cgi) {
     return AddHtmlEnvironment($1, $2); }
-  elsif (m/\G\&lt;\/($UsemodHtmlRegExp)\&gt;/cogi) {
+  elsif (m/\G\&lt;\/($UsemodHtmlRegExp)\&gt;/cgi) {
     return CloseHtmlEnvironment($1); }
-  elsif (m/\G\&lt;($UsemodHtmlRegExp) *\/\&gt;/cogi) {
+  elsif (m/\G\&lt;($UsemodHtmlRegExp) *\/\&gt;/cgi) {
     return "<$1 />"; }
   # <a ...>text</a> for html links
   elsif ($HtmlLinks && m/\G\&lt;a(\s+href="\S+")\&gt;(.*?)\&lt;\/a\&gt;/cgi) {

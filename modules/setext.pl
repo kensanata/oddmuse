@@ -41,7 +41,7 @@ push(@MyRules, \&SeTextRule);
 my $word = '([-A-Za-z\x{0080}-\x{fffd}]+)';
 sub SeTextRule {
   my $oldpos = pos;
-  if ($bol && ((m/\G((.+?)[ \t]*\n(-+|=+)[ \t]*\n)/gc
+  if ($bol && ((m/\G((.+?)[ \t]*\n(-+|=+)[ \t]*\n)/cg
 		and (length($2) == length($3)))
 	       or ((pos = $oldpos) and 0))) {
     my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '');
@@ -52,17 +52,17 @@ sub SeTextRule {
     }
     $PortraitSupportColorDiv = 0;
     return $html . AddHtmlEnvironment('p');
-  } elsif ($bol && m/\G((&gt; .*\n)+)/gc) {
+  } elsif ($bol && m/\G((&gt; .*\n)+)/cg) {
     my $text = $1;
     return CloseHtmlEnvironments() . $q->pre($text) . AddHtmlEnvironment('p');
-  } elsif (m/\G\*\*($word( $word)*)\*\*/goc) {
+  } elsif (m/\G\*\*($word( $word)*)\*\*/cg) {
     return "<b>$1</b>";
-  } elsif (m/\G~$word~/goc) {
+  } elsif (m/\G~$word~/cg) {
     return "<i>$1</i>";
-  } elsif (m/\G\b_($word(_$word)*)_\b/goc) {
+  } elsif (m/\G\b_($word(_$word)*)_\b/cg) {
     return '<em style="text-decoration: underline; font-style: normal;">'
       . join(' ', split(/_/, $1)) . "</em>"; # don't clobber pos
-  } elsif (m/\G`_(.+)_`/gc) {
+  } elsif (m/\G`_(.+)_`/cg) {
     return $1;
   }
   return;

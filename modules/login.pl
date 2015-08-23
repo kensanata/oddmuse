@@ -199,9 +199,9 @@ sub DoRegister {
 	my $id = shift;
 	print GetHeader('', Ts('Register for %s', $SiteName), '');
 	print '<div class="content">';
-    $RegistrationForm =~ s/\%([a-z]+)\%/GetParam($1)/ige;
+    $RegistrationForm =~ s/\%([a-z]+)\%/GetParam($1)/egi;
     $RegistrationForm =~ s/\$([a-z]+)\$/$q->span({-class=>'param'}, GetParam($1))
-      . $q->input({-type=>'hidden', -name=>$1, -value=>GetParam($1)})/ge;
+      . $q->input({-type=>'hidden', -name=>$1, -value=>GetParam($1)})/eg;
 	print $RegistrationForm;
 	print '</div>';
 	PrintFooter();
@@ -271,9 +271,9 @@ sub DoLogin {
 	my $id = shift;
 	print GetHeader('', Ts('Login to %s', $SiteName), '');
 	print '<div class="content">';
-    $LoginForm =~ s/\%([a-z]+)\%/GetParam($1)/ge;
+    $LoginForm =~ s/\%([a-z]+)\%/GetParam($1)/eg;
     $LoginForm =~ s/\$([a-z]+)\$/$q->span({-class=>'param'}, GetParam($1))
-      . $q->input({-type=>'hidden', -name=>$1, -value=>GetParam($1)})/ge;
+      . $q->input({-type=>'hidden', -name=>$1, -value=>GetParam($1)})/eg;
 	print $LoginForm;
 	print '</div>';
 	PrintFooter();
@@ -305,9 +305,9 @@ sub DoLogout {
 	print GetHeader('', Ts('Logout of %s', $SiteName), '');
 	print '<div class="content">';
 	print '<p>' . Ts('Logout of %s?',$SiteName) . '</p>';
-    $LogoutForm =~ s/\%([a-z]+)\%/GetParam($1)/ge;
+    $LogoutForm =~ s/\%([a-z]+)\%/GetParam($1)/eg;
     $LogoutForm =~ s/\$([a-z]+)\$/$q->span({-class=>'param'}, GetParam($1))
-      . $q->input({-type=>'hidden', -name=>$1, -value=>GetParam($1)})/ge;
+      . $q->input({-type=>'hidden', -name=>$1, -value=>GetParam($1)})/eg;
 	print $LogoutForm;
 	print '</div>';
 	PrintFooter();
@@ -628,9 +628,9 @@ sub DoReset {
 	print GetHeader('', Ts('Reset Password for %s', $SiteName), '');
 	print '<div class="content">';
 	print '<p>' . T('Reset Password?') . '</p>';
-    $ResetForm =~ s/\%([a-z]+)\%/GetParam($1)/ge;
+    $ResetForm =~ s/\%([a-z]+)\%/GetParam($1)/eg;
     $ResetForm =~ s/\$([a-z]+)\$/$q->span({-class=>'param'}, GetParam($1))
-      . $q->input({-type=>'hidden', -name=>$1, -value=>GetParam($1)})/ge;
+      . $q->input({-type=>'hidden', -name=>$1, -value=>GetParam($1)})/eg;
 	print $ResetForm;
 	print '</div>';
 	PrintFooter();
@@ -652,9 +652,9 @@ sub DoChangePassword {
 	print GetHeader('', Ts('Change Password for %s', $SiteName), '');
 	print '<div class="content">';
 	print '<p>' . T('Change Password?') . '</p>';
-    $ChangePassForm =~ s/\%([a-z]+)\%/GetParam($1)/ge;
+    $ChangePassForm =~ s/\%([a-z]+)\%/GetParam($1)/eg;
     $ChangePassForm =~ s/\$([a-z]+)\$/$q->span({-class=>'param'}, GetParam($1))
-      . $q->input({-type=>'hidden', -name=>$1, -value=>GetParam($1)})/ge;
+      . $q->input({-type=>'hidden', -name=>$1, -value=>GetParam($1)})/eg;
 	print $ChangePassForm;
 	print '</div>';
 	PrintFooter();

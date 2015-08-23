@@ -38,10 +38,10 @@ $FaqAnswerText = "Answer: " unless $FaqAnswerText;
 push(@MyRules, \&FaqRule);
 
 sub FaqRule {
-  if ($bol && m/\GQ: (.+)/gc) {
+  if ($bol && m/\GQ: (.+)/cg) {
     return $q->a({name=>'FAQ_' . UrlEncode($1)},'')
       . $q->div({class=>'question'}, $FaqQuestionText . $1);
-  } elsif ($bol && m/\GA:[ \t]*/gc) {
+  } elsif ($bol && m/\GA:[ \t]*/cg) {
     return CloseHtmlEnvironments()
       . AddHtmlEnvironment('div', "class='answer'") . $FaqAnswerText;
   }

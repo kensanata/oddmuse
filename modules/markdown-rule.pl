@@ -45,14 +45,14 @@ sub MarkdownRule {
       . AddHtmlEnvironment("p");
   }
   # setext headers
-  elsif ($bol and m/\G((\s*\n)*(.+?)[ \t]*\n(-+|=+)[ \t]*\n)/gc) {
+  elsif ($bol and m/\G((\s*\n)*(.+?)[ \t]*\n(-+|=+)[ \t]*\n)/cg) {
     return CloseHtmlEnvironments()
       . (substr($4,0,1) eq '=' ? $q->h2($3) : $q->h3($3))
       . AddHtmlEnvironment('p');
   }
   # > blockquote
   # with continuation
-  elsif ($bol and m/\G&gt;/gc) {
+  elsif ($bol and m/\G&gt;/cg) {
     return CloseHtmlEnvironments()
       . AddHtmlEnvironment('blockquote');
   }
@@ -117,20 +117,20 @@ sub MarkdownRule {
       . AddHtmlEnvironment('td');
   }
   # whitespace indentation = code
-  elsif ($bol and m/\G(\s*\n)*(    .+)\n?/gc) {
+  elsif ($bol and m/\G(\s*\n)*(    .+)\n?/cg) {
     my $str = substr($2, 4);
-    while (m/\G(    .*)\n?/gc) {
+    while (m/\G(    .*)\n?/cg) {
       $str .= "\n" . substr($1, 4);
     }
     return OpenHtmlEnvironment('pre',1) . $str; # always level 1
   }
   # ``` = code
-  elsif ($bol and m/\G```[ \t]*\n(.*?)\n```[ \t]*(\n|$)/gcs) {
+  elsif ($bol and m/\G```[ \t]*\n(.*?)\n```[ \t]*(\n|$)/cgs) {
     return CloseHtmlEnvironments() . $q->pre($1)
       . AddHtmlEnvironment("p");
   }
   # [an example](http://example.com/ "Title")
-  elsif (m/\G\[(.+?)\]\($FullUrlPattern(\s+"(.+?)")?\)/goc) {
+  elsif (m/\G\[(.+?)\]\($FullUrlPattern(\s+"(.+?)")?\)/cg) {
     my ($text, $url, $title) = ($1, $2, $4);
     $url =~ /^($UrlProtocols)/;
     my %params;

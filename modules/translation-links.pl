@@ -97,7 +97,7 @@ C<%Page> which will be saved to disk if no HTML cache exists.
 push(@MyRules, \&TranslationLinkRule);
 
 sub TranslationLinkRule {
-  if (m/\G$TranslationLinkPattern/cog) {
+  if (m/\G$TranslationLinkPattern/cg) {
     $TranslationLinkData{$1} = $2;
     $Page{translations} = join($FS, %TranslationLinkData);
     return '';

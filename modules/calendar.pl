@@ -74,7 +74,7 @@ sub Cal {
       $link .= ScriptLink('action=collect;match=' . UrlEncode($re), $day,  'local collection' . $class);
     }
     $link;
-  }}ge;
+  }}eg;
   $cal =~ s{(\S+) (\d\d\d\d)}{{
     my ($month_text, $year_text) = ($1, $2);
     my $date = sprintf("%d-%02d", $year, $mon);
@@ -118,22 +118,22 @@ sub DoCollect {
 push(@MyRules, \&CalendarRule);
 
 sub CalendarRule {
-  if (/\G(calendar:(\d\d\d\d))/gc) {
+  if (/\G(calendar:(\d\d\d\d))/cg) {
     my $oldpos = pos;
     Clean(CloseHtmlEnvironments());
     Dirty($1);
     PrintYearCalendar($2);
     pos = $oldpos;
     return AddHtmlEnvironment('p');
-  } elsif (/\G(month:(\d\d\d\d)-(\d\d))/gc) {
+  } elsif (/\G(month:(\d\d\d\d)-(\d\d))/cg) {
     my $oldpos = pos;
     Clean(CloseHtmlEnvironments());
     Dirty($1);
     print Cal($2, $3);
     pos = $oldpos;
     return AddHtmlEnvironment('p');
-  } elsif (/\G(month:([+-]\d\d?))/gc
-	  or /\G(\[\[month:([+-]\d\d?) $FreeLinkPattern\]\])/gc) {
+  } elsif (/\G(month:([+-]\d\d?))/cg
+	  or /\G(\[\[month:([+-]\d\d?) $FreeLinkPattern\]\])/cg) {
     my $oldpos = pos;
     Clean(CloseHtmlEnvironments());
     Dirty($1);

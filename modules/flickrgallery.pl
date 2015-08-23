@@ -66,7 +66,7 @@ $RuleOrder{\&FlickrGalleryRule} = -10;
 
 sub FlickrGalleryRule {
 	# This code is used when Markdown is not available
-	if (/\G^([\n\r]*\&lt;\s*FlickrSet:\s*(\d+)\s*\&gt;\s*)$/mgci) {
+	if (/\G^([\n\r]*\&lt;\s*FlickrSet:\s*(\d+)\s*\&gt;\s*)$/cgim) {
 		my $oldpos = pos;
 		my $oldstr = $_;
 
@@ -79,7 +79,7 @@ sub FlickrGalleryRule {
 		return '';
 	}
 
-	if (/\G^([\n\r]*\&lt;\s*FlickrPhoto:\s*(\d+)\s*([a-z0-9]*?)\s*($size)?\s*\&gt;\s*)$/mgci) {
+	if (/\G^([\n\r]*\&lt;\s*FlickrPhoto:\s*(\d+)\s*([a-z0-9]*?)\s*($size)?\s*\&gt;\s*)$/cgim) {
 		my $oldpos = pos;
 		my $oldstr = $_;
 
@@ -103,13 +103,13 @@ sub MarkdownFlickrGalleryRule {
 		^&lt;FlickrSet:\s*(\d+)\s*\>
 	}{
 		FlickrGallery($1);
-	}xmgei;
+	}egimx;
 
 	$text =~ s{
 		^&lt;FlickrPhoto:\s*(\d+)\s*([a-z0-9]*?)\s*($size)?\s*\>
 	}{
 		GetFlickrPhoto($1,$2,$3);
-	}xmgei;
+	}egimx;
 
 	return $text
 }
@@ -135,7 +135,7 @@ sub FlickrGallery {
 
 	$result = $FlickrHeaderTemplate;
 
-	$result =~ s/(\$[a-zA-Z\d]+)/"defined $1 ? $1 : ''"/gee;
+	$result =~ s/(\$[a-zA-Z\d]+)/"defined $1 ? $1 : ''"/eeg;
 
 	# Get list of photos and process them
 	$url = $FlickrBaseUrl . "?method=flickr.photosets.getPhotos&api_key=" .
@@ -153,7 +153,7 @@ sub FlickrGallery {
 
 	my $footer = $FlickrFooterTemplate;
 
-	$footer =~ s/(\$[a-zA-Z\d]+)/"defined $1 ? $1 : ''"/gee;
+	$footer =~ s/(\$[a-zA-Z\d]+)/"defined $1 ? $1 : ''"/eeg;
 	$result .= $footer;
 
 	return $result;
@@ -192,7 +192,7 @@ sub FlickrPhoto {
 
 
 	my $output = $FlickrImageTemplate;
-	$output =~ s/(\$[a-zA-Z\d]+)/"defined $1 ? $1 : ''"/gee;
+	$output =~ s/(\$[a-zA-Z\d]+)/"defined $1 ? $1 : ''"/eeg;
 
 	return $output
 }

@@ -242,13 +242,13 @@ sub FootnotesRule {
   # Footnotes and the set of all footnotes must be marked so as to ensure their
   # reevaluation, as each of the footnotes might contain Wiki markup requiring
   # reevaluation (like, say, free links).
-  if (m/\G($FootnotePattern)(?=([ \t]*$FootnotePattern)?)/gcos) {
+  if (m/\G($FootnotePattern)(?=([ \t]*$FootnotePattern)?)/cgs) {
     Dirty($1);  # do not cache the prefixing "\G"
     my $footnote_text = $2;
     my $is_adjacent_footnote = defined $3;
 
     # A number range (e.g., "2-5") of references to other footnotes.
-    if ($footnote_text =~ m/^(\d+)-(\d+)$/o) {
+    if ($footnote_text =~ m/^(\d+)-(\d+)$/) {
       my ($footnote_number_first, $footnote_number_last) = ($1, $2);
       # '&#x2013;', below, is the HTML entity for a Unicode en-dash.
       print $q->a({-href=> '#footnotes' .$footnote_number_first,
@@ -261,7 +261,7 @@ sub FootnotesRule {
                   }, $footnote_number_last.($is_adjacent_footnote ? ', ' : ''));
     }
     # A number (e.g., "5") implying reference to another footnote.
-    elsif ($footnote_text =~ m/^(\d+)$/o) {
+    elsif ($footnote_text =~ m/^(\d+)$/) {
       my $footnote_number = $1;
       print $q->a({-href=> '#footnotes' .$footnote_number,
                    -title=> 'Footnote #'.$footnote_number,
@@ -285,7 +285,7 @@ sub FootnotesRule {
     return '';
   }
   # The "<footnotes>" list of all footnotes at the foot of a page.
-  elsif ($bol && m/\G($FootnotesPattern)/gcios) {
+  elsif ($bol && m/\G($FootnotesPattern)/cgis) {
     Clean(CloseHtmlEnvironments());
     Dirty($1);  # do not cache the prefixing "\G"
 

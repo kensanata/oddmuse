@@ -201,10 +201,10 @@ sub CookieUsernameFix {
   # Only valid usernames get stored in the new cookie.
   my   $name = GetParam('username', '');
   if (!$name) { }
-  elsif (!$FreeLinks && !($name =~ /^$LinkPattern$/o)) {
+  elsif (!$FreeLinks && !($name =~ /^$LinkPattern$/)) {
     CookieUsernameFixDelete(Ts('Invalid UserName %s: not saved.', $name));
   }
-  elsif ($FreeLinks && (!($name =~ /^$FreeLinkPattern$/o))) {
+  elsif ($FreeLinks && (!($name =~ /^$FreeLinkPattern$/))) {
     CookieUsernameFixDelete(Ts('Invalid UserName %s: not saved.', $name));
   }
   elsif (length($name) > 50) {  # Too long

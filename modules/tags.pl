@@ -98,8 +98,8 @@ sub TagWriteHash {
 push(@MyRules, \&TagsRule);
 
 sub TagsRule {
-  if (m/\G(\[\[tag:$FreeLinkPattern\]\])/cog
-      or m/\G(\[\[tag:$FreeLinkPattern\|([^]|]+)\]\])/cog) {
+  if (m/\G(\[\[tag:$FreeLinkPattern\]\])/cg
+      or m/\G(\[\[tag:$FreeLinkPattern\|([^]|]+)\]\])/cg) {
     # [[tag:Free Link]], [[tag:Free Link|alt text]]
     my ($tag, $text) = ($2, $3);
     my $html = $q->a({-href=>TagsGetLink($TagUrl, $tag),

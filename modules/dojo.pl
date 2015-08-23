@@ -30,7 +30,7 @@ $DojoTheme = 'tundra';
 push (@MyRules, \&WysiwygRule);
 
 sub WysiwygRule {
-  if (m/\G(&lt;.*?&gt;)/gc) {
+  if (m/\G(&lt;.*?&gt;)/cg) {
     return $1 if substr($1,5,6) eq 'script'
       or substr($1,4,6) eq 'script';
     return UnquoteHtml($1);

@@ -65,7 +65,7 @@ sub ThumbNailSupportRule {
    my $result;
    my $RawMatch;
 
-  if (m!\G(\[\[thumb:$FreeLinkPattern(\|.*?)?\]\])!gc)
+  if (m!\G(\[\[thumb:$FreeLinkPattern(\|.*?)?\]\])!cg)
   {
 
        $RawMatch = $1;

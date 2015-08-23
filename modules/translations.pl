@@ -27,7 +27,7 @@ our (@MyRules, $FreeLinkPattern);
 push(@MyRules, \&TranslationRule);
 
 sub TranslationRule {
-  if (m/\G(\&lt;translation +\[\[$FreeLinkPattern\]\] +(\d+)\&gt;[ \t]*)/gc) {
+  if (m/\G(\&lt;translation +\[\[$FreeLinkPattern\]\] +(\d+)\&gt;[ \t]*)/cg) {
     Dirty($1);
     print GetTranslationLink($2, $3);
     return '';

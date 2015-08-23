@@ -242,7 +242,7 @@ sub NewTocApplyRules {
   # contents.
   if ($TocHeaderNumber > 2) {
     $html =~ s~\Q<!-- toc header_text="\E([^"]+)\Q" class="\E([^"]+)\Q" -->\E~
-      GetTocHtml(\$html, \$blocks, $1, $2)~ge;
+      GetTocHtml(\$html, \$blocks, $1, $2)~eg;
   }
   # Otherwise, remove the table of contents placeholder comments.
   else {

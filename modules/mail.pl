@@ -84,7 +84,7 @@ sub MailNewInitCookie {
   $q->delete('mail');
   if (!$mail) {
     # do nothing
-  } elsif (!($mail =~ /$MailPattern/o)) {
+  } elsif (!($mail =~ /$MailPattern/)) {
     $Message .= $q->p(Ts('Invalid Mail %s: not saved.', $mail));
   } else {
     SetParam('mail', $mail);

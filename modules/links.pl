@@ -71,31 +71,31 @@ sub GetLinkList { # for the currently open page
   my %links;
   foreach my $block (@blocks) {
     if (shift(@flags)) {  # dirty block and interlinks or normal links
-      if ($inter and ($BracketText && $block =~ m/^(\[$InterLinkPattern\s+([^\]]+?)\])$/o
-		      or $BracketText && $block =~ m/^(\[\[$FreeInterLinkPattern\|([^\]]+?)\]\])$/o
-		      or $block =~ m/^(\[$InterLinkPattern\])$/o
-		      or $block =~ m/^(\[\[\[$FreeInterLinkPattern\]\]\])$/o
-		      or $block =~ m/^($InterLinkPattern)$/o
-		      or $block =~ m/^(\[\[$FreeInterLinkPattern\]\])$/o)) {
+      if ($inter and ($BracketText && $block =~ m/^(\[$InterLinkPattern\s+([^\]]+?)\])$/
+		      or $BracketText && $block =~ m/^(\[\[$FreeInterLinkPattern\|([^\]]+?)\]\])$/
+		      or $block =~ m/^(\[$InterLinkPattern\])$/
+		      or $block =~ m/^(\[\[\[$FreeInterLinkPattern\]\]\])$/
+		      or $block =~ m/^($InterLinkPattern)$/
+		      or $block =~ m/^(\[\[$FreeInterLinkPattern\]\])$/)) {
 	$links{$raw ? $2 : GetInterLink($2, $3)} = 1 if $InterSite{substr($2,0,index($2, ':'))};
       } elsif ($link
-	       and (($WikiLinks and $block !~ m/!$LinkPattern/o
-		     and ($BracketWiki && $block =~ m/^(\[$LinkPattern\s+([^\]]+?)\])$/o
-			  or $block =~ m/^(\[$LinkPattern\])$/o
-			  or $block =~ m/^($LinkPattern)$/o))
+	       and (($WikiLinks and $block !~ m/!$LinkPattern/
+		     and ($BracketWiki && $block =~ m/^(\[$LinkPattern\s+([^\]]+?)\])$/
+			  or $block =~ m/^(\[$LinkPattern\])$/
+			  or $block =~ m/^($LinkPattern)$/))
 		    or ($FreeLinks
-			and ($BracketWiki && $block =~ m/^(\[\[$FreeLinkPattern\|([^\]]+)\]\])$/o
-			     or $block =~ m/^(\[\[\[$FreeLinkPattern\]\]\])$/o
-			     or $block =~ m/^(\[\[$FreeLinkPattern\]\])$/o)))) {
+			and ($BracketWiki && $block =~ m/^(\[\[$FreeLinkPattern\|([^\]]+)\]\])$/
+			     or $block =~ m/^(\[\[\[$FreeLinkPattern\]\]\])$/
+			     or $block =~ m/^(\[\[$FreeLinkPattern\]\])$/)))) {
 	$links{$raw ? FreeToNormal($2) : GetPageOrEditLink($2, $3)} = 1;
-      } elsif ($url and $block =~ m/^\[$FullUrlPattern\]$/og) {
+      } elsif ($url and $block =~ m/^\[$FullUrlPattern\]$/g) {
 	$links{$raw ? $1 : GetUrl($1)} = 1;
       }
     } elsif ($url) {		# clean block and url
-      while ($block =~ m/$UrlPattern/og) {
+      while ($block =~ m/$UrlPattern/g) {
 	$links{$raw ? $1 : GetUrl($1)} = 1;
       }
-      while ($block =~ m/\[$FullUrlPattern\s+[^\]]+?\]/og) {
+      while ($block =~ m/\[$FullUrlPattern\s+[^\]]+?\]/g) {
 	$links{$raw ? $1 : GetUrl($1)} = 1;
       }
     }

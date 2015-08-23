@@ -26,7 +26,7 @@ our (@MyRules);
 push(@MyRules, \&SearchTagRule);
 
 sub SearchTagRule {
-  if (m/\GTags:\s*(.+)/gc) {
+  if (m/\GTags:\s*(.+)/cg) {
     my $tag_text = $1;
     my @tags = split /,\s*/, $tag_text;
     @tags = map {

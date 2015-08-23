@@ -77,7 +77,7 @@ sub DoCheckBox{
       $summary{$3} = 0 if $2 eq 'x' or $2 eq 'X';
       "${1}[[ :${3}]]";
     }
-  }eig;
+  }egi;
   SetParam('text', $text);
   SetParam('summary', join(', ', map {
     if ($summary{$_}) {

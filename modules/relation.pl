@@ -44,7 +44,7 @@ sub RelationRead {
 }
 
 sub RelationRule {
-  if (m/\G((forward@@|backward@@|forward@|backward@):([_A-Za-z0-9 ]+?);)/gc) {
+  if (m/\G((forward@@|backward@@|forward@|backward@):([_A-Za-z0-9 ]+?);)/cg) {
     Dirty($1);
     my $rememberpos = pos;
     my $fwbw =$2;

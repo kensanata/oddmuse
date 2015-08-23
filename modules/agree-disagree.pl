@@ -26,11 +26,11 @@ AddModuleDescription('agree-disagree.pl', 'AgreeDisagreePlugin');
 push(@MyRules, \&AgreeDisagreeSupportRule);
 
 push(@MyMacros, sub{ s/\[\+\]/"[+:" . GetParam('username', T('Anonymous'))
-                       . ':' . TimeToText($Now) . "]"/ge });
-push(@MyMacros, sub{ s/\[\+(:[^]:]+)\]/"[+$1:" . TimeToText($Now) . "]"/ge });
+                       . ':' . TimeToText($Now) . "]"/eg });
+push(@MyMacros, sub{ s/\[\+(:[^]:]+)\]/"[+$1:" . TimeToText($Now) . "]"/eg });
 push(@MyMacros, sub{ s/\[\-\]/"[-:" . GetParam('username', T('Anonymous'))
-                       . ':' . TimeToText($Now) . "]"/ge });
-push(@MyMacros, sub{ s/\[\-(:[^]:]+)\]/"[-$1:" . TimeToText($Now) . "]"/ge });
+                       . ':' . TimeToText($Now) . "]"/eg });
+push(@MyMacros, sub{ s/\[\-(:[^]:]+)\]/"[-$1:" . TimeToText($Now) . "]"/eg });
 
 
 $DefaultStyleSheet .= <<'EOT' unless $DefaultStyleSheet =~ /div\.agree/; # mod_perl?
@@ -78,17 +78,17 @@ EOT
 
 sub AgreeDisagreeSupportRule {
   if ($bol) {
-    if ($bol && m/(\G(\s*\[\+(.*?)\]|\s*\[-(.*?)\])+)/gcs) {
+    if ($bol && m/(\G(\s*\[\+(.*?)\]|\s*\[-(.*?)\])+)/cgs) {
 
       my $votes = $1;
       my @ayes = ();
       my @nayes = ();
-      while ($votes =~ m/\G.*?\[\+(.*?)\]/gcs) {
+      while ($votes =~ m/\G.*?\[\+(.*?)\]/cgs) {
         my ($ignore, $name, $time) = split(/:/, $1, 3);
         push(@ayes, $name);
       }
       my $votes2 = $votes;
-      while ($votes2 =~ m/\G.*?\[-(.*?)\]/gcs) {
+      while ($votes2 =~ m/\G.*?\[-(.*?)\]/cgs) {
         my ($ignore, $name, $time) = split(/:/, $1, 3);
         push(@nayes, $name);
       }

@@ -62,7 +62,7 @@ foreach (@ClusterMapAdminPages){
 }
 
 sub ClusterMapRule {
-	if (/\G^([\n\r]*\<\s*clustermap\s*\>\s*)$/mgc) {
+	if (/\G^([\n\r]*\<\s*clustermap\s*\>\s*)$/cgm) {
 		Dirty($1);
 		my $oldpos = pos;
 		my $oldstr = $_;

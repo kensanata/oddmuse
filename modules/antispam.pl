@@ -34,7 +34,7 @@ push(@MyRules, \&MaskEmailRule);
 
 sub MaskEmailRule {
 	# Allow [email@foo.bar Email Me] links
-	if (m/\G\[($EmailRegExp(\s\w+)*\s*)\]/igc) {
+	if (m/\G\[($EmailRegExp(\s\w+)*\s*)\]/cgi) {
 		my $chunk = $1;
 		$chunk =~ s/($EmailRegExp)//i;
 		my $email = $1;
@@ -51,7 +51,7 @@ sub MaskEmailRule {
 		return "<a href=\"mailto:$email\">$chunk</a>";
 	}
 
-	if (m/\G($EmailRegExp)/igc) {
+	if (m/\G($EmailRegExp)/cgi) {
 		my $email = $1;
 		if ($DoMaskEmail) {
 			my $masked="";

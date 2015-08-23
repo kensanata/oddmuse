@@ -27,7 +27,7 @@ our ($q, %Page, @MyRules, $CommentsPrefix);
 push(@MyRules, \&PartialCutRule);
 
 sub PartialCutRule {
-  if (m/\G(?<=\n)\s*--\s*cut\s*--\s*(?=\n)/gc) {
+  if (m/\G(?<=\n)\s*--\s*cut\s*--\s*(?=\n)/cg) {
     return CloseHtmlEnvironments() . '<hr class="cut" />' . AddHtmlEnvironment('p');
   }
   return;

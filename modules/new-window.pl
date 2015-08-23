@@ -24,8 +24,8 @@ our ($q, @MyRules, $FullUrlPattern, $UrlProtocols, $BracketText);
 push(@MyRules, \&NewWindowLink);
 sub NewWindowLink {
   # compare sub LinkRules in oddmuse.pl
-  if ($BracketText && m/\G(\[new:$FullUrlPattern\s+([^\]]+?)\])/cog
-      or m/\G(\[new:$FullUrlPattern\])/cog) {
+  if ($BracketText && m/\G(\[new:$FullUrlPattern\s+([^\]]+?)\])/cg
+      or m/\G(\[new:$FullUrlPattern\])/cg) {
     my ($url, $text) = ($2, $3);
     $url =~ /^($UrlProtocols)/;
     my $class = "url $1";      # get protocol (http, ftp, ...)

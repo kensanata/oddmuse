@@ -45,7 +45,7 @@ sub PrintGrep {
   foreach my $id (AllPagesList()) {
     my $text = GetPageContent($id);
     next if (TextIsFile($text)); # skip files
-    while ($text =~ m{($regexp)}ig) {
+    while ($text =~ m{($regexp)}gi) {
       print $q->li(GetPageLink($id) . ': ' . $1);
     }
   }

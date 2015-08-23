@@ -27,7 +27,7 @@ my $org_emph_re = qr!\G([ \t('\"])*(([*/_=+])([^ \t\r\n,*/_=+].*?(?:\n.*?){0,1}[
 my %org_emphasis_alist = qw!* b / i _ u = code + del!;
 
 sub OrgModeRule {
-  if (/$org_emph_re/cgo) {
+  if (/$org_emph_re/cg) {
     my $tag = $org_emphasis_alist{$3};
     return "$1<$tag>$4</$tag>$5";
   }

@@ -27,7 +27,7 @@ push(@MyRules, \&SyncRule);
 
 sub SyncRule {
   # [[copy:http://example.com/wiki]]
-  if (m/\G\[\[(copy:$FullUrlPattern)\]\]/cog) {
+  if (m/\G\[\[(copy:$FullUrlPattern)\]\]/cg) {
     my ($text, $url) = ($1, $2);
     return $q->a({-href=>$2, class=>'outside copy'}, $text);
   }

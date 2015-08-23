@@ -46,13 +46,13 @@ sub NewMultiUrlBannedContent {
 
 sub MultiUrlBannedContent {
   my $str = shift;
-  my @urls = $str =~ /$FullUrlPattern/go;
+  my @urls = $str =~ /$FullUrlPattern/g;
   my %domains;
   my %whitelist;
   my $max = 0;
   my $label = '[a-z]([a-z0-9-]*[a-z0-9])?'; # RFC 1034
   foreach (split(/\n/, GetPageContent($MultiUrlWhiteList))) {
-    next unless m/^\s*($label\.$label)/io;
+    next unless m/^\s*($label\.$label)/i;
     $whitelist{$1} = 1;
   }
   foreach my $url (@urls) {
