@@ -292,6 +292,7 @@ sub main {
   Init();                          # read config file (no modules!)
   $ScriptName = $site;             # undo setting in the config file
   $FullUrl = $site;                #
+  InitPageVariables();             # call again: $ScriptName was wrong
   binmode(STDOUT,':utf8');
   $q->charset('utf8');
   if ($q->path_info eq '/source') {
