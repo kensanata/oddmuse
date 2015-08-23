@@ -140,7 +140,7 @@ sub NewPrivatePagesGetTextRevision {
 push(@MyRules, \&PrivatePageRule);
 
 sub PrivatePageRule {
-  if (pos == 0 && m/\G#PASSWORD.*\n/gc) {
+  if (pos == 0 && m/\G#PASSWORD.*\n/cg) {
     return '';
   }
   return;

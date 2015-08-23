@@ -28,7 +28,7 @@ push(@MyRules, \&ParagraphLinkRule);
 $RuleOrder{\&ParagraphLinkRule} = 100;
 
 sub ParagraphLinkRule {
-  if ($bol && m/\G(\[(-)?$FreeLinkPattern\])/cog) {
+  if ($bol && m/\G(\[(-)?$FreeLinkPattern\])/cg) {
     Dirty($1);
     my $invisible = $2;
     my $orig = $3;

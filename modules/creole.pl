@@ -218,7 +218,7 @@ sub CreoleRule {
   }
   # escape next char (and prevent // in URLs from enabling italics)
   # ~
-  elsif (m/\G(~($FullUrlPattern|\S))/cgo) {
+  elsif (m/\G(~($FullUrlPattern|\S))/cg) {
     return
       ($CreoleTildeAlternative and
        index( 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -234,12 +234,12 @@ sub CreoleRule {
   # {{{preformatted code}}}
   elsif (m/\G\{\{\{(.*?}*)\}\}\}/cg) { return $q->code($1); }
   # download: {{pic}} and {{pic|text}}
-  elsif (m/\G(\{\{$FreeLinkPattern$CreoleLinkTextPattern\}\})/cgos) {
+  elsif (m/\G(\{\{$FreeLinkPattern$CreoleLinkTextPattern\}\})/cgs) {
     my $text = $4 || $2;
     return GetCreoleLinkHtml($1, GetDownloadLink(FreeToNormal($2), 1, undef, $text), $text);
   }
   # image link: {{url}} and {{url|text}}
-  elsif (m/\G\{\{$FullUrlPattern$CreoleLinkTextPattern\}\}/cgos) {
+  elsif (m/\G\{\{$FullUrlPattern$CreoleLinkTextPattern\}\}/cgs) {
     return GetCreoleImageHtml(
       $q->a({-href=> UnquoteHtml($1),
              -class=> 'image outside'},
@@ -250,7 +250,7 @@ sub CreoleRule {
   }
   # image link: [[link|{{pic}}]] and [[link|{{pic|text}}]]
   elsif (m/\G(\[\[$FreeLinkPattern$CreoleLinkPipePattern
-              \{\{$FreeLinkPattern$CreoleLinkTextPattern\}\}\]\])/cgosx) {
+              \{\{$FreeLinkPattern$CreoleLinkTextPattern\}\}\]\])/cgsx) {
     my $text = $5 || $2;
     return GetCreoleLinkHtml($1, GetCreoleImageHtml(
       ScriptLink(UrlEncode(FreeToNormal($2)),
@@ -261,7 +261,7 @@ sub CreoleRule {
   }
   # image link: [[link|{{url}}]] and [[link|{{url|text}}]]
   elsif (m/\G(\[\[$FreeLinkPattern$CreoleLinkPipePattern
-              \{\{$FullUrlPattern$CreoleLinkTextPattern\}\}\]\])/cgosx) {
+              \{\{$FullUrlPattern$CreoleLinkTextPattern\}\}\]\])/cgsx) {
     my $text = $5 || $2;
     return GetCreoleLinkHtml($1, GetCreoleImageHtml(
       ScriptLink(UrlEncode(FreeToNormal($2)),
@@ -272,7 +272,7 @@ sub CreoleRule {
   }
   # image link: [[url|{{pic}}]] and [[url|{{pic|text}}]]
   elsif (m/\G(\[\[$FullUrlPattern$CreoleLinkPipePattern
-              \{\{$FreeLinkPattern$CreoleLinkTextPattern\}\}\]\])/cgosx) {
+              \{\{$FreeLinkPattern$CreoleLinkTextPattern\}\}\]\])/cgsx) {
     my $text = $5 || $2;
     return GetCreoleLinkHtml($1, GetCreoleImageHtml(
       $q->a({-href=> UnquoteHtml($2), -class=> 'image outside'},
@@ -283,7 +283,7 @@ sub CreoleRule {
   }
   # image link: [[url|{{url}}]] and [[url|{{url|text}}]]
   elsif (m/\G\[\[$FullUrlPattern$CreoleLinkPipePattern
-             \{\{$FullUrlPattern$CreoleLinkTextPattern\}\}\]\]/cgosx) {
+             \{\{$FullUrlPattern$CreoleLinkTextPattern\}\}\]\]/cgsx) {
     return GetCreoleImageHtml(
       $q->a({-href=> UnquoteHtml($1), -class=> 'image outside'},
             $q->img({-src=> UnquoteHtml($2),
@@ -292,7 +292,7 @@ sub CreoleRule {
                      -class=> 'url outside'})));
   }
   # link: [[url]] and [[url|text]]
-  elsif (m/\G\[\[$FullUrlPattern$CreoleLinkTextPattern\]\]/cgos) {
+  elsif (m/\G\[\[$FullUrlPattern$CreoleLinkTextPattern\]\]/cgs) {
     # Permit embedding of Creole syntax within link text. (Rather complicated,
     # but it does the job remarkably.)
     my $link_url  = $1;
@@ -305,7 +305,7 @@ sub CreoleRule {
     return GetUrl($link_url, $link_text, 1);
   }
   # link: [[page]] and [[page|text]]
-  elsif (m/\G(\[\[$FreeLinkPattern$CreoleLinkTextPattern\]\])/cgos) {
+  elsif (m/\G(\[\[$FreeLinkPattern$CreoleLinkTextPattern\]\])/cgs) {
     my $markup =    $1;
     my $page_name = $2;
     my $link_text = $4 ? CreoleRuleRecursive($4, @_) : $page_name;
@@ -315,7 +315,7 @@ sub CreoleRule {
   }
   # interlink: [[Wiki:page]] and [[Wiki:page|text]]
   elsif ($is_interlinking and
-         m/\G(\[\[$FreeInterLinkPattern$CreoleLinkTextPattern\]\])/cgos) {
+         m/\G(\[\[$FreeInterLinkPattern$CreoleLinkTextPattern\]\])/cgs) {
     my $markup =    $1;
     my $interlink = $2;
     my $interlink_text = $4;

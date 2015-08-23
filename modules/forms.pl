@@ -19,9 +19,9 @@ sub FormsRule {
       my $oldpos = pos;
       Clean(CloseHtmlEnvironments());
       Dirty($form);
-      $form =~ s/\%([a-z]+)\%/GetParam($1)/ge;
+      $form =~ s/\%([a-z]+)\%/GetParam($1)/eg;
       $form =~ s/\$([a-z]+)\$/$q->span({-class=>'param'}, GetParam($1))
-        .$q->input({-type=>'hidden', -name=>$1, -value=>GetParam($1)})/ge;
+        .$q->input({-type=>'hidden', -name=>$1, -value=>GetParam($1)})/eg;
       print UnquoteHtml($form);
       pos = $oldpos;
       return AddHtmlEnvironment('p');

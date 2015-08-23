@@ -98,7 +98,7 @@ EOT
 push(@MyRules, \&LatexRule);
 
 sub LatexRule {
-  if (m/\G\\\[(\(.*?\))?((.*\n)*?.*?)\\\]/gc) {
+  if (m/\G\\\[(\(.*?\))?((.*\n)*?.*?)\\\]/cg) {
     my $label = $1;
     my $latex = $2;
     $label =~ s#\(?\)?##g;# Remove the ()'s from the label and convert case
@@ -106,13 +106,13 @@ sub LatexRule {
     $eqCounter++;
     $eqHash{$label} = $eqCounter;
     return &MakeLaTeX("\\begin{displaymath} $latex \\end{displaymath}", "display math",$label);
-  } elsif (m/\G\$\$((.*\n)*?.*?)\$\$/gc) {
+  } elsif (m/\G\$\$((.*\n)*?.*?)\$\$/cg) {
     return &MakeLaTeX("\$\$ $1 \$\$", $LatexSingleDollars ? "display math" : "inline math");
-  } elsif ($LatexSingleDollars and m/\G\$((.*\n)*?.*?)\$/gc) {
+  } elsif ($LatexSingleDollars and m/\G\$((.*\n)*?.*?)\$/cg) {
     return &MakeLaTeX("\$ $1 \$", "inline math");
-  } elsif ($allowPlainLaTeX && m/\G\$\[((.*\n)*?.*?)\]\$/gc) { #Pick up plain LaTeX commands
+  } elsif ($allowPlainLaTeX && m/\G\$\[((.*\n)*?.*?)\]\$/cg) { #Pick up plain LaTeX commands
     return &MakeLaTeX(" $1 ", "LaTeX");
-  } elsif (m/\GEQ\((.*?)\)/gc) { # Handle references to equations
+  } elsif (m/\GEQ\((.*?)\)/cg) { # Handle references to equations
     my $label = $1;
     $label =~ tr/A-Z/a-z/;
     if ($eqHash{$label}) {
@@ -166,7 +166,7 @@ sub MakeLaTeX {
       close $F;
     }
     my $template = ReadFileOrDie($LatexDefaultTemplateName);
-    $template =~ s/<math>/$latex/ig;
+    $template =~ s/<math>/$latex/gi;
     #setup rendering directory
     my $dir = "$LatexDir/$hash";
     if (-d $dir) {

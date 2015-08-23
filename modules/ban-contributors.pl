@@ -125,9 +125,9 @@ sub NewBanContributorsWriteRcLog {
     # we currently have the clean page loaded, so we need to reload
     # the spammed revision (there is a possible race condition here)
     my ($old) = GetTextRevision($Page{revision}-1, 1);
-    my %urls = map {$_ => 1 } $old =~ /$UrlPattern/og;
+    my %urls = map {$_ => 1 } $old =~ /$UrlPattern/g;
     # we open the file again to force a load of the despammed page
-    foreach my $url ($Page{text} =~ /$UrlPattern/og) {
+    foreach my $url ($Page{text} =~ /$UrlPattern/g) {
       delete($urls{$url});
     }
     # we also remove any candidates that are already banned

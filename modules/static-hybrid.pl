@@ -125,7 +125,7 @@ sub StaticFileName {
 
 sub StaticUrlDecode {
 	my $str = shift;
-	$str =~ s/%([0-9a-f][0-9a-f])/chr(hex($1))/ge;
+	$str =~ s/%([0-9a-f][0-9a-f])/chr(hex($1))/eg;
 	return $str;
 }
 
@@ -410,7 +410,7 @@ sub StaticNewDoRollback {
   my @ids = ();
   if (not $page) { # cannot just use list length because of ('')
     return unless UserIsAdminOrError(); # only admins can do mass changes
-    my %ids = map { my ($ts, $id) = split(/$FS/o); $id => 1; } # make unique via hash
+    my %ids = map { my ($ts, $id) = split(/$FS/); $id => 1; } # make unique via hash
       GetRcLines($Now - $KeepDays * 86400, 1); # 24*60*60
     @ids = keys %ids;
   } else {

@@ -185,7 +185,7 @@ sub NewNearLinksResolveId {
   my $id = shift;
   my @result = OldNearLinksResolveId($id, @_);
   my %forbidden = map { $_ => 1 } @UserGotoBarPages, %AdminPages;
-  $forbidden{$id} = 1 if $CommentsPrefix and $id =~ /^$CommentsPrefix/o;
+  $forbidden{$id} = 1 if $CommentsPrefix and $id =~ /^$CommentsPrefix/;
   if (not $result[1] and $NearSource{$id} and not $forbidden{$id}) {
     $NearLinksUsed{$id} = 1;
     my $site = $NearSource{$id}[0];
@@ -264,7 +264,7 @@ sub SearchNearPages {
   if (%NearSearch and GetParam('near', 1) > 1 and GetParam('context',1)) {
     foreach my $site (keys %NearSearch) {
       my $url = $NearSearch{$site};
-      $url =~ s/\%s/UrlEncode($string)/ge or $url .= UrlEncode($string);
+      $url =~ s/\%s/UrlEncode($string)/eg or $url .= UrlEncode($string);
       print $q->hr(), $q->p(Ts('Fetching results from %s:', $q->a({-href=>$url}, $site)))
 	unless GetParam('raw', 0);
       my $data = GetRaw($url);

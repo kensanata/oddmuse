@@ -179,7 +179,7 @@ push(@MyRules, \&TexRule);
 $RuleOrder{\&TexRule} = 160;
 
 sub TexRule {
-  if (m/\G$TexRe/goc) {
+  if (m/\G$TexRe/cg) {
     return $Tex{$1};
   }
   return;

@@ -175,7 +175,7 @@ sub UserCanEditAutoLockFix {
   return 0 if $LockOnCreation{$id} and not -f GetPageFile($id); # new page
   return 0 if !$EditAllowed or -f $NoEditFile;
   return 0 if $editing and UserIsBanned(); # this call is more expensive
-  return 0 if $EditAllowed >= 2 and (not $CommentsPrefix or $id !~ /^$CommentsPrefix/o);
+  return 0 if $EditAllowed >= 2 and (not $CommentsPrefix or $id !~ /^$CommentsPrefix/);
   return 1 if $EditAllowed >= 3 and ($comment or (GetParam('aftertext', '') and not GetParam('text', '')));
   return 0 if $EditAllowed >= 3;
   return 1;

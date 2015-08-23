@@ -39,7 +39,7 @@ sub DoListBannedContent {
   print $BannedRegexps . ': ' . scalar(keys(%text_regexps)) . $q->br() . "\n";
  PAGE: foreach my $id (@pages) {
     OpenPage($id);
-    my @urls = $Page{text} =~ /$FullUrlPattern/go;
+    my @urls = $Page{text} =~ /$FullUrlPattern/g;
     foreach my $url (@urls) {
       foreach my $re (keys %url_regexps) {
 	if ($url =~ $re) {

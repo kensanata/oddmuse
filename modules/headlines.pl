@@ -32,7 +32,7 @@ push(@MyRules, \&HeadlinesRule);
 $HeadlineNumber = 20;
 
 sub HeadlinesRule {
-  if (m/\G(\&lt;headlines(:(\d+))?\&gt;)/gci) {
+  if (m/\G(\&lt;headlines(:(\d+))?\&gt;)/cgi) {
     if (($3) and ($3>0)) {$HeadlineNumber = $3;};
     Clean(CloseHtmlEnvironments());
     Dirty($1);

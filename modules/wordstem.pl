@@ -61,49 +61,49 @@ sub stem
    if ($w =~ /(ss|i)es$/) { $w=$`.$1; }
    elsif ($w =~ /([^s])s$/) { $w=$`.$1; }
    # Step 1b
-   if ($w =~ /eed$/) { if ($` =~ /$mgr0/o) { chop($w); } }
+   if ($w =~ /eed$/) { if ($` =~ /$mgr0/) { chop($w); } }
    elsif ($w =~ /(ed|ing)$/)
    {  $stem = $`;
-      if ($stem =~ /$_v/o)
+      if ($stem =~ /$_v/)
       {  $w = $stem;
          if ($w =~ /(at|bl|iz)$/) { $w .= "e"; }
          elsif ($w =~ /([^aeiouylsz])\1$/) { chop($w); }
-         elsif ($w =~ /^${C}${v}[^aeiouwxy]$/o) { $w .= "e"; }
+         elsif ($w =~ /^${C}${v}[^aeiouwxy]$/) { $w .= "e"; }
       }
    }
    # Step 1c
-   if ($w =~ /y$/) { $stem = $`; if ($stem =~ /$_v/o) { $w = $stem."i"; } }
+   if ($w =~ /y$/) { $stem = $`; if ($stem =~ /$_v/) { $w = $stem."i"; } }
 
    # Step 2
    if ($w =~ /(ational|tional|enci|anci|izer|bli|alli|entli|eli|ousli|ization|ation|ator|alism|iveness|fulness|ousness|aliti|iviti|biliti|logi)$/)
    { $stem = $`; $suffix = $1;
-     if ($stem =~ /$mgr0/o) { $w = $stem . $step2list{$suffix}; }
+     if ($stem =~ /$mgr0/) { $w = $stem . $step2list{$suffix}; }
    }
 
    # Step 3
 
    if ($w =~ /(icate|ative|alize|iciti|ical|ful|ness)$/)
    { $stem = $`; $suffix = $1;
-     if ($stem =~ /$mgr0/o) { $w = $stem . $step3list{$suffix}; }
+     if ($stem =~ /$mgr0/) { $w = $stem . $step3list{$suffix}; }
    }
 
    # Step 4
 
    if ($w =~ /(al|ance|ence|er|ic|able|ible|ant|ement|ment|ent|ou|ism|ate|iti|ous|ive|ize)$/)
-   { $stem = $`; if ($stem =~ /$mgr1/o) { $w = $stem; } }
+   { $stem = $`; if ($stem =~ /$mgr1/) { $w = $stem; } }
    elsif ($w =~ /(s|t)(ion)$/)
-   { $stem = $` . $1; if ($stem =~ /$mgr1/o) { $w = $stem; } }
+   { $stem = $` . $1; if ($stem =~ /$mgr1/) { $w = $stem; } }
 
 
    #  Step 5
 
    if ($w =~ /e$/)
    { $stem = $`;
-     if ($stem =~ /$mgr1/o or
-         ($stem =~ /$meq1/o and not $stem =~ /^${C}${v}[^aeiouwxy]$/o))
+     if ($stem =~ /$mgr1/ or
+         ($stem =~ /$meq1/ and not $stem =~ /^${C}${v}[^aeiouwxy]$/))
         { $w = $stem; }
    }
-   if ($w =~ /ll$/ and $w =~ /$mgr1/o) { chop($w); }
+   if ($w =~ /ll$/ and $w =~ /$mgr1/) { chop($w); }
 
    # and turn initial Y back to y
    if ($firstch =~ /^y/) { $w = lcfirst $w; }

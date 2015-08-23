@@ -22,7 +22,7 @@ our (@MyRules, $FreeLinkPattern);
 
 push(@MyRules, \&LinksWithAccessKeys);
 sub LinksWithAccessKeys {
-  if (m/\G(\[\[$FreeLinkPattern\{(.)\}\]\])/cog) {
+  if (m/\G(\[\[$FreeLinkPattern\{(.)\}\]\])/cg) {
     my ($id, $key) = ($2, $3);
     Dirty($1);
     $id = FreeToNormal($id);

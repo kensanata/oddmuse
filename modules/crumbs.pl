@@ -28,8 +28,8 @@ $RuleOrder{\&CrumbsRule} = -10; # run before default rules!
 
 sub CrumbsRule {
   if (not (pos) # first!
-      and (($WikiLinks && /\G($LinkPattern\n)/cgo)
-	   or ($FreeLinks && /\G(\[\[$FreeLinkPattern\]\]\n)/cgo))) {
+      and (($WikiLinks && /\G($LinkPattern\n)/cg)
+	   or ($FreeLinks && /\G(\[\[$FreeLinkPattern\]\]\n)/cg))) {
     my $oldpos = pos; # will be trashed below
     my $cluster = FreeToNormal($2);
     my %seen = ($cluster => 1);

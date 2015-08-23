@@ -68,7 +68,7 @@ sub NewSimpleRulesApplyRules {
       }
       ($block =~ s/(\&lt;journal(\s+(\d*))?(\s+"(.*)")?(\s+(reverse))?\&gt;)/
        my ($str, $num, $regexp, $reverse) = ($1, $3, $5, $7);
-       SimpleRulesDirty($str, sub { PrintJournal($num, $regexp, $reverse)});/ego);
+       SimpleRulesDirty($str, sub { PrintJournal($num, $regexp, $reverse)});/eg);
       $result .= NewSimpleRulesApplyInlineRules($block);
     }
   }
@@ -78,14 +78,14 @@ sub NewSimpleRulesApplyRules {
 sub NewSimpleRulesApplyInlineRules {
   my ($block, $locallinks) = @_;
   $block = NewSimpleRulesApplyDirtyInlineRules($block, $locallinks);
-  $block =~ s/$UrlPattern/SimpleRulesProtect($q->a({-href=>$1}, $1))/seg;
+  $block =~ s/$UrlPattern/SimpleRulesProtect($q->a({-href=>$1}, $1))/egs;
   $block =~ s/~(\S+)~/SimpleRulesProtect($q->em($1))/eg;
-  $block =~ s/\*\*(.+?)\*\*/SimpleRulesProtect($q->strong($1))/seg;
-  $block =~ s/\/\/(.+?)\/\//SimpleRulesProtect($q->em($1))/seg;
-  $block =~ s/\_\_(.+?)\_\_/SimpleRulesProtect($q->u($1))/seg;
-  $block =~ s/\*(.+?)\*/SimpleRulesProtect($q->b($1))/seg;
-  $block =~ s/\/(.+?)\//SimpleRulesProtect($q->i($1))/seg;
-  $block =~ s/\_(.+?)\_/SimpleRulesProtect($q->u($1))/seg;
+  $block =~ s/\*\*(.+?)\*\*/SimpleRulesProtect($q->strong($1))/egs;
+  $block =~ s/\/\/(.+?)\/\//SimpleRulesProtect($q->em($1))/egs;
+  $block =~ s/\_\_(.+?)\_\_/SimpleRulesProtect($q->u($1))/egs;
+  $block =~ s/\*(.+?)\*/SimpleRulesProtect($q->b($1))/egs;
+  $block =~ s/\/(.+?)\//SimpleRulesProtect($q->i($1))/egs;
+  $block =~ s/\_(.+?)\_/SimpleRulesProtect($q->u($1))/egs;
   return $block;
 }
 
@@ -94,10 +94,10 @@ sub NewSimpleRulesApplyDirtyInlineRules {
   if ($locallinks) {
     ($block =~ s/(\[\[$FreeLinkPattern\]\])/
      my ($str, $link) = ($1, $2);
-     SimpleRulesDirty($str, GetPageOrEditLink($link,0,0,1))/ego);
+     SimpleRulesDirty($str, GetPageOrEditLink($link,0,0,1))/eg);
     ($block =~ s/(\[\[image:$FreeLinkPattern\]\])/
      my ($str, $link) = ($1, $2);
-     SimpleRulesDirty($str, GetDownloadLink($link, 1))/ego);
+     SimpleRulesDirty($str, GetDownloadLink($link, 1))/eg);
   }
   return $block;
 }
@@ -159,7 +159,7 @@ sub SimpleRulesMungeResult {
 
 sub SimpleRulesUnprotect {
   my $raw = shift;
-  $raw =~ s/$PROT([0-9]+)$PROT/$protected{$1}/ge
+  $raw =~ s/$PROT([0-9]+)$PROT/$protected{$1}/eg
     while $raw =~ /$PROT([0-9]+)$PROT/; # find recursive replacements!
   return $raw;
 }

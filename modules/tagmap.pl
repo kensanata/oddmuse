@@ -49,7 +49,7 @@ my $TagXML;
 
 sub TagRule { # Process page tags on a page
 
-    if ( m/\G$TagMark\s*(.*)/gc) {  # find page tags
+    if ( m/\G$TagMark\s*(.*)/cg) {  # find page tags
         my @tags = split /,\s*/, $1;  # push them in array
         @tags = map {                 # and generate html output:
             qq{<a href="$ScriptName?action=tagsearch;tag=$_">$_</a>};  # each tag is a link to search all pages with that tag
@@ -161,7 +161,7 @@ sub PrintTagMap {
 		my $tag = $1;
 
 		"<li>$tag</li>\n<ul>";
-	}xsge;
+	}egsx;
 
 	$result =~ s/\<\/tag\>/<\/ul>/g;
 	$result =~ s{
@@ -171,7 +171,7 @@ sub PrintTagMap {
 		my $name = $id;
 		$name =~ s/_/ /g;
 		"<li><a href=\"$ScriptName\/$id\">$name</a></li>";
-	}xsge;
+	}egsx;
 	print $result;
 }
 

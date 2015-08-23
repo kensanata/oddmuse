@@ -26,7 +26,7 @@ our ($q, $bol, %Action, %Page, $OpenPageName, $UseDiff, $UsePathInfo, $RssStyleS
 push(@MyRules, \&AggregateRule);
 
 sub AggregateRule {
-  if ($bol && m/\G(&lt;aggregate\s+((("[^\"&]+",?\s*)+)|(sort\s+)?search\s+(.+?))&gt;)/gc) {
+  if ($bol && m/\G(&lt;aggregate\s+((("[^\"&]+",?\s*)+)|(sort\s+)?search\s+(.+?))&gt;)/cg) {
     Clean(CloseHtmlEnvironments());
     Dirty($1);
     my ($oldpos, $old_, $str, $sort, $search) = ((pos), $_, $3, $5, $6);

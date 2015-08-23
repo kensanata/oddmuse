@@ -27,11 +27,11 @@ push(@MyRules, \&SubscribedRecentChangesRule);
 
 sub SubscribedRecentChangesRule {
   if ($bol) {
-    if (m/\GMy\s+subscribed\s+pages:\s*((?:(?:$LinkPattern|\[\[$FreeLinkPattern\]\]),\s*)+)categories:\s*((?:(?:$LinkPattern|\[\[$FreeLinkPattern\]\]),\s*)*(?:$LinkPattern|\[\[$FreeLinkPattern\]\]))/gc) {
+    if (m/\GMy\s+subscribed\s+pages:\s*((?:(?:$LinkPattern|\[\[$FreeLinkPattern\]\]),\s*)+)categories:\s*((?:(?:$LinkPattern|\[\[$FreeLinkPattern\]\]),\s*)*(?:$LinkPattern|\[\[$FreeLinkPattern\]\]))/cg) {
       return Subscribe($1, $4);
-    } elsif (m/\GMy\s+subscribed\s+pages:\s*((?:(?:$LinkPattern|\[\[$FreeLinkPattern\]\]),\s*)*(?:$LinkPattern|\[\[$FreeLinkPattern\]\]))/gc) {
+    } elsif (m/\GMy\s+subscribed\s+pages:\s*((?:(?:$LinkPattern|\[\[$FreeLinkPattern\]\]),\s*)*(?:$LinkPattern|\[\[$FreeLinkPattern\]\]))/cg) {
       return Subscribe($1, '');
-    } elsif (m/\GMy\s+subscribed\s+categories:\s*((?:(?:$LinkPattern|\[\[$FreeLinkPattern\]\]),\s*)*(?:$LinkPattern|\[\[$FreeLinkPattern\]\]))/gc) {
+    } elsif (m/\GMy\s+subscribed\s+categories:\s*((?:(?:$LinkPattern|\[\[$FreeLinkPattern\]\]),\s*)*(?:$LinkPattern|\[\[$FreeLinkPattern\]\]))/cg) {
       return Subscribe('', $1);
     }
   }

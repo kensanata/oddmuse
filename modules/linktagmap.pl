@@ -52,7 +52,7 @@ push (@MyRules, \&LinkTagRule, \&LinkDescriptionRule);
 
 sub LinkTagRule { # Process link tags on a page
 
-    if ( m/\G$LinkTagMark(.*?)$LinkTagMark/gc) {      # find tags
+    if ( m/\G$LinkTagMark(.*?)$LinkTagMark/cg) {      # find tags
         my @linktags = split /,\s*/, $1;              # push them in array
         @linktags = map {                             # and generate html output:
             qq{<a href="$ScriptName?action=linktagsearch;linktag=$_">$_</a>};  # each tag is a link to search all links with that tag
@@ -66,7 +66,7 @@ sub LinkTagRule { # Process link tags on a page
 
 sub LinkDescriptionRule { # Process link descriptions on a page
 
-    if ( m/\G$LinkDescMark(.*?)$LinkDescMark/gc) {          # find description
+    if ( m/\G$LinkDescMark(.*?)$LinkDescMark/cg) {          # find description
         return qq{<span class="$LinkDescClass">$1</span>};  # put it in SPAN block
     }
     return;
@@ -184,7 +184,7 @@ sub PrintLinkTagMap {
         my $tag = $1;
 
         "<li id=\"$tag\">$tag</li>\n<ul>";
-    }xsge;
+    }egsx;
 
     $result =~ s/\<\/tag\>/<\/ul>/g;
     $result =~ s{
@@ -194,7 +194,7 @@ sub PrintLinkTagMap {
         my $name = $2; if ( length $name == 0 ) { $name = $url; }   # name (if not present use url instead)
         my $description = $3;                                       # and description
         "<li><a href=\"$url\">$name</a> <span class=\"$LinkDescClass\">$description</span></li>";
-    }xsge;
+    }egsx;
     print $result;
 
 }

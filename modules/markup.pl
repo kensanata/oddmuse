@@ -142,18 +142,18 @@ sub MarkupTag {
 }
 
 sub MarkupRule {
-  if ($bol and %MarkupLines and m/$markup_lines_re/gc) {
+  if ($bol and %MarkupLines and m/$markup_lines_re/cg) {
     my ($tag, $str) = ($1, $2);
     $str = $q->span($tag) . $str;
-    while (m/$markup_lines_re/gc) {
+    while (m/$markup_lines_re/cg) {
       $str .= $q->span($1) . $2;
     }
     return CloseHtmlEnvironments()
       . MarkupTag($MarkupLines{UnquoteHtml($tag)}, $str)
       . AddHtmlEnvironment('p');
-  } elsif (%MarkupSingles and m/$markup_singles_re/gc) {
+  } elsif (%MarkupSingles and m/$markup_singles_re/cg) {
     return $MarkupSingles{UnquoteHtml($1)};
-  } elsif (%MarkupForcedPairs and m/$markup_forced_pairs_re/gc) {
+  } elsif (%MarkupForcedPairs and m/$markup_forced_pairs_re/cg) {
     my $tag = $1;
     my $start = $tag;
     my $end = $tag;
@@ -168,20 +168,20 @@ sub MarkupRule {
     $endre .= '[ \t]*\n?' if $block_element{$start}; # skip trailing whitespace if block
     # may match the empty string, or multiple lines, but may not span
     # paragraphs.
-    if ($endre and m/\G$endre/gc) {
+    if ($endre and m/\G$endre/cg) {
       return $tag . $end;
-    } elsif ($tag eq $end && m/\G((:?.+?\n)*?.+?)$endre/gc) { # may not span paragraphs
+    } elsif ($tag eq $end && m/\G((:?.+?\n)*?.+?)$endre/cg) { # may not span paragraphs
       return MarkupTag($data, $1);
-    } elsif ($tag ne $end && m/\G((:?.|\n)+?)$endre/gc) {
+    } elsif ($tag ne $end && m/\G((:?.|\n)+?)$endre/cg) {
       return MarkupTag($data, $1);
     } else {
       return $tag;
     }
-  } elsif (%MarkupPairs and m/$markup_pairs_re/gc) {
+  } elsif (%MarkupPairs and m/$markup_pairs_re/cg) {
     return MarkupTag($MarkupPairs{UnquoteHtml($1)}, $2);
-  } elsif ($MarkupPairs{'/'} and m|\G~/|gc) {
+  } elsif ($MarkupPairs{'/'} and m|\G~/|cg) {
     return '~/'; # fix ~/elisp/ example
-  } elsif ($MarkupPairs{'/'} and m|\G(/[-A-Za-z0-9\x{0080}-\x{fffd}/]+/$words/)|gc) {
+  } elsif ($MarkupPairs{'/'} and m|\G(/[-A-Za-z0-9\x{0080}-\x{fffd}/]+/$words/)|cg) {
     return $1; # fix /usr/share/lib/! example
   }
   # "foo

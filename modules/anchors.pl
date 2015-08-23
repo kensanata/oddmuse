@@ -21,13 +21,13 @@ our ($q, %Page, $FootnoteNumber, $FreeLinkPattern, @MyRules, $BracketWiki);
 push(@MyRules, \&AnchorsRule);
 
 sub AnchorsRule {
-  if (m/\G\[\[\#$FreeLinkPattern\]\]/gc) {
+  if (m/\G\[\[\#$FreeLinkPattern\]\]/cg) {
     return $q->a({-href=>'#' . FreeToNormal($1), -class=>'local anchor'}, $1);
-  } elsif ($BracketWiki && m/\G\[\[\#$FreeLinkPattern\|([^\]]+)\]\]/gc) {
+  } elsif ($BracketWiki && m/\G\[\[\#$FreeLinkPattern\|([^\]]+)\]\]/cg) {
     return $q->a({-href=>'#' . FreeToNormal($1), -class=>'local anchor'}, $2);
-  } elsif ($BracketWiki && m/\G(\[\[$FreeLinkPattern\#$FreeLinkPattern\|([^\]]+)\]\])/cog
-	   or m/\G(\[\[\[$FreeLinkPattern\#$FreeLinkPattern\]\]\])/cog
-	   or m/\G(\[\[$FreeLinkPattern\#$FreeLinkPattern\]\])/cog) {
+  } elsif ($BracketWiki && m/\G(\[\[$FreeLinkPattern\#$FreeLinkPattern\|([^\]]+)\]\])/cg
+	   or m/\G(\[\[\[$FreeLinkPattern\#$FreeLinkPattern\]\]\])/cg
+	   or m/\G(\[\[$FreeLinkPattern\#$FreeLinkPattern\]\])/cg) {
     # This one is not a dirty rule because the output is always a page
     # link, never an edit link (unlike normal free links).
     my $bracket = (substr($1, 0, 3) eq '[[[');
@@ -47,7 +47,7 @@ sub AnchorsRule {
     $text = $id unless $text;
     $text =~ s/_/ /g;
     return ScriptLink(UrlEncode($id), $text, $class, undef, $title);
-  } elsif (m/\G\[\:$FreeLinkPattern\]/gc) {
+  } elsif (m/\G\[\:$FreeLinkPattern\]/cg) {
     return $q->a({-name=>FreeToNormal($1), -class=>'anchor'}, '');
   }
   return;

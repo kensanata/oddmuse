@@ -29,7 +29,7 @@ my $gravatar_regexp = "\\[\\[gravatar:(?:$FullUrlPattern )?([^\n:]+):([0-9a-f]+)
 push(@MyRules, \&GravatarRule);
 
 sub GravatarRule {
-  if ($bol && m!\G$gravatar_regexp!cog) {
+  if ($bol && m!\G$gravatar_regexp!cg) {
     my $url = $1;
     my $gravatar = "https://secure.gravatar.com/avatar/$3";
     my $name = FreeToNormal($2);
@@ -90,6 +90,6 @@ sub AddGravatar {
 
 sub GravatarNewGetSummary {
   my $summary = GravatarOldGetSummary(@_);
-  $summary =~ s/^$gravatar_regexp *//o;
+  $summary =~ s/^$gravatar_regexp *//;
   return $summary;
 }

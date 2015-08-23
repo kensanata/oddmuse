@@ -41,7 +41,7 @@ $RuleOrder{\&HeadersRule} = 95;
 
 sub HeadersRule {
   my $oldpos = pos;
-  if ($bol && (m/\G((.+?)[ \t]*\n(---+|===+)[ \t]*\n)/gc)) {
+  if ($bol && (m/\G((.+?)[ \t]*\n(---+|===+)[ \t]*\n)/cg)) {
     my $html = CloseHtmlEnvironments() . ($PortraitSupportColorDiv ? '</div>' : '');
     if (substr($3,0,1) eq '=') {
       $html .= $q->h2($2);

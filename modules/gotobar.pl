@@ -39,7 +39,7 @@ sub GotobarInit {
     @UserGotoBarPages = ();
     $UserGotoBar = '';
     my $count = 0;
-    while ($Page{text} =~ m/($LinkPattern|\[\[$FreeLinkPattern\]\]|\[\[$FreeLinkPattern\|([^\]]+)\]\]|\[$InterLinkPattern\s+([^\]]+?)\]|\[$FullUrlPattern[|[:space:]]([^\]]+?)\])/og) {
+    while ($Page{text} =~ m/($LinkPattern|\[\[$FreeLinkPattern\]\]|\[\[$FreeLinkPattern\|([^\]]+)\]\]|\[$InterLinkPattern\s+([^\]]+?)\]|\[$FullUrlPattern[|[:space:]]([^\]]+?)\])/g) {
       my $page = $2||$3||$4||$6||$8;
       my $text = $5||$7||$9;
       $UserGotoBar .= ' ' if $UserGotoBar;

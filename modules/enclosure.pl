@@ -28,7 +28,7 @@ push(@MyRules, \&EnclosureRule);
 # [[enclosure:url|size in bytes|mime type]]
 
 sub EnclosureRule {
-  if (m!\G\[\[enclosure:\s*$FreeLinkPattern(\|([^\]]+))?\]\]!ogci) {
+  if (m!\G\[\[enclosure:\s*$FreeLinkPattern(\|([^\]]+))?\]\]!cgi) {
     my $id = FreeToNormal($1);
     # Make sure we don't add duplicates; we will add non-existing
     # enclosures as well. We test for existence only when the RSS feed

@@ -45,7 +45,7 @@ sub CommentFooterLink {
   my @elements;
   if ($id and $rev ne 'history' and $rev ne 'edit') {
     if ($CommentsPrefix) {
-      if ($OpenPageName =~ /^$CommentsPrefix(.*)/o) {
+      if ($OpenPageName =~ /^$CommentsPrefix(.*)/) {
 	push(@elements, GetPageLink($1, undef, 'original'));
       } else {
 	push(@elements, GetPageLink($CommentsPrefix . $OpenPageName, undef, 'comment'));

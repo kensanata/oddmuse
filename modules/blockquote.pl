@@ -28,10 +28,10 @@ push(@MyRules, \&BlockQuoteRule);
 sub BlockQuoteRule {
   # indented text using : with the option of spanning multiple text
   # paragraphs (but not lists etc).
-  if (InElement('blockquote') && m/\G(\s*\n)+:[ \t]*/cog) {
+  if (InElement('blockquote') && m/\G(\s*\n)+:[ \t]*/cg) {
     return CloseHtmlEnvironmentUntil('blockquote')
       . AddHtmlEnvironment('p');
-  } elsif ($bol && m/\G(\s*\n)*:[ \t]*/cog) {
+  } elsif ($bol && m/\G(\s*\n)*:[ \t]*/cg) {
     return CloseHtmlEnvironments()
       . AddHtmlEnvironment('blockquote')
       . AddHtmlEnvironment('p');

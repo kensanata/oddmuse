@@ -78,7 +78,7 @@ push(@MyRules, \&PermanentAnchorsRule);
 
 sub PermanentAnchorsRule {
   my ($locallinks, $withanchors) = @_;
-  if (m/\G(\[::$FreeLinkPattern\])/cog) {
+  if (m/\G(\[::$FreeLinkPattern\])/cg) {
     #[::Free Link] permanent anchor create only $withanchors
     Dirty($1);
     if ($withanchors) {
@@ -246,7 +246,7 @@ sub NewPermanentAnchorsGetPageContent {
   if (not $result and $PermanentAnchors{$id}) {
     $result = OldPermanentAnchorsGetPageContent($PermanentAnchors{$id});
     $result =~ s/^(.*\n)*.*\[::$id\]// or return '';
-    $result =~ s/(\n=|\n----|\[::$FreeLinkPattern\])(.*\n)*.*$//o;
+    $result =~ s/(\n=|\n----|\[::$FreeLinkPattern\])(.*\n)*.*$//;
   }
   return $result;
 }

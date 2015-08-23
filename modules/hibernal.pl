@@ -1212,7 +1212,7 @@ sub GetHibernalArchiveMonth {
   ~e;
   $html_month =~ s~( {1,2})(\d{1,2})\b~
     $1.GetHibernalArchiveMonthDay($post_name_regexp, $year, $month, $2)
-  ~ge;
+  ~eg;
 
   # Float the HTML for each month horizontally past the month preceding it;
   # failure to float months in this manner causes these months to stack

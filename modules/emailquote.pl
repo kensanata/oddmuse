@@ -21,14 +21,14 @@ push(@MyRules, \&EmailQuoteRule);
 
 sub EmailQuoteRule {
     #  > on a line of its own should work
-    if ($bol && m/\G(\s*\n)*((\&gt;))+\n/cog) {
+    if ($bol && m/\G(\s*\n)*((\&gt;))+\n/cg) {
         return $q->p();
     }
     # > hi, you mentioned that:
     # >> I don't like Oddmuse.
     # > in last letter.
-    elsif ($bol && m/\G(\s*\n)*((\&gt;)+)[ \t]/cog
-           or InElement('dd') && m/\G(\s*\n)+((\&gt;)+)[ \t]/cog) {
+    elsif ($bol && m/\G(\s*\n)*((\&gt;)+)[ \t]/cg
+           or InElement('dd') && m/\G(\s*\n)+((\&gt;)+)[ \t]/cg) {
         my $leng = length($2) / 4;
         return CloseHtmlEnvironmentUntil('dd') . OpenHtmlEnvironment('dl',$leng, 'quote')
         . $q->dt() . AddHtmlEnvironment('dd');

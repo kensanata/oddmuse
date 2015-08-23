@@ -25,8 +25,8 @@ push(@MyRules, \&NumberedListRule);
 sub NumberedListRule {
   # numbered lists using # copied from usemod.pl but allow leading
   # whitespace
-  if ($bol && m/\G(\s*\n)*\s*(\#+)[ \t]/cog
-      or InElement('li') && m/\G(\s*\n)+\s*(\#+)[ \t]/cog) {
+  if ($bol && m/\G(\s*\n)*\s*(\#+)[ \t]/cg
+      or InElement('li') && m/\G(\s*\n)+\s*(\#+)[ \t]/cg) {
     return CloseHtmlEnvironmentUntil('li')
       . OpenHtmlEnvironment('ol',length($2))
       . AddHtmlEnvironment('li');

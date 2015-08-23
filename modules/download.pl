@@ -28,8 +28,8 @@ push( @MyRules, \&DownloadSupportRule );
 # [[download:page name|alternate title]]
 
 sub DownloadSupportRule {
-  if (m/\G(\[\[download:$FreeLinkPattern\|([^\]]+)\]\])/cog
-      or m!\G(\[\[download:$FreeLinkPattern\]\])!cog) {
+  if (m/\G(\[\[download:$FreeLinkPattern\|([^\]]+)\]\])/cg
+      or m!\G(\[\[download:$FreeLinkPattern\]\])!cg) {
     Dirty($1);
     print GetDownloadLink($2, undef, undef, $3);
     return '';

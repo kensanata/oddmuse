@@ -44,7 +44,7 @@ sub HeadersRule {
     $TocShown = 1;
   }
 
-  if ($bol && (m/\G((.+?)[ \t]*\n(---+|===+)[ \t]*\n)/gc)) {
+  if ($bol && (m/\G((.+?)[ \t]*\n(---+|===+)[ \t]*\n)/cg)) {
     $html .= CloseHtmlEnvironments();
     $TocCounter++;
     $html .= "<a name=\"#$TocCounter\"></a>";

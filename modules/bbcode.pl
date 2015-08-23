@@ -61,12 +61,12 @@ sub bbCodeRule {
       return AddHtmlEnvironment('strong', qq{class="highlight"}); }
     elsif ($tag eq 'url') {
       if ($option) {
-	$option =~ /^($UrlProtocols)/o;
+	$option =~ /^($UrlProtocols)/;
 	my $class = "url $1";
 	return AddHtmlEnvironment('a', qq{href="$option" class="$class"}); }
-      elsif (/\G$FullUrlPattern\s*\[\/url\]/cogi) {
+      elsif (/\G$FullUrlPattern\s*\[\/url\]/cgi) {
 	return GetUrl($1); }}
-    elsif ($tag eq 'img' and /\G$FullUrlPattern\s*\[\/img\]/cogi) {
+    elsif ($tag eq 'img' and /\G$FullUrlPattern\s*\[\/img\]/cgi) {
       return GetUrl($1, undef, undef, 1); } # force image
     elsif ($tag eq 'quote') {
       my $html = CloseHtmlEnvironments();

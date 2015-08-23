@@ -26,17 +26,17 @@ our ($Now, @MyRules, @MyMacros);
 push(@MyRules, \&SignatureExceptionRule);
 
 push(@MyMacros, sub{ s/(?<![!+])\+\+\+\+/'-- ' . GetParam('username', T('Anonymous'))
-                       . ' ' . TimeToText($Now) /ge });
-push(@MyMacros, sub{ s/(?<![!+])\+\+\+/'-- ' . GetParam('username', T('Anonymous'))/ge });
+                       . ' ' . TimeToText($Now) /eg });
+push(@MyMacros, sub{ s/(?<![!+])\+\+\+/'-- ' . GetParam('username', T('Anonymous'))/eg });
 
 push(@MyMacros, sub{ s/(?<![!+])\~\~\~\~/GetParam('username', T('Anonymous'))
-                       . ' ' . TimeToText($Now) /ge });
-push(@MyMacros, sub{ s/(?<![!~])\~\~\~/GetParam('username', T('Anonymous'))/ge });
+                       . ' ' . TimeToText($Now) /eg });
+push(@MyMacros, sub{ s/(?<![!~])\~\~\~/GetParam('username', T('Anonymous'))/eg });
 
 sub SignatureExceptionRule {
-  if (m/\G!\+\+\+/gc) {
+  if (m/\G!\+\+\+/cg) {
     return '+++';
-  } elsif (m/\G!\~\~\~/gc) {
+  } elsif (m/\G!\~\~\~/cg) {
     return '~~~';
   }
   return;

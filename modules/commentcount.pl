@@ -52,7 +52,7 @@ sub NewCommentcountScriptLink {
   if ($CommentsPrefix && $action =~ /^$CommentsPrefix(.*)/) { # TODO use $CommentsPattern ?
     # Add the number of comments here
     my $id = $action;
-    $id =~ s/%([0-9a-f][0-9a-f])/chr(hex($1))/ge; # undo urlencode
+    $id =~ s/%([0-9a-f][0-9a-f])/chr(hex($1))/eg; # undo urlencode
     my $comments = GetPageContent($id);
     my $num = 0;
     if($comments =~ /=== (\d+) Comments?\. ===/) {

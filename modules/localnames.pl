@@ -103,7 +103,7 @@ L<http://ln.taoriver.net/>.
 push(@MyRules, \&LocalNamesRule);
 
 sub LocalNamesRule {
-  if (m/\G\[\[ln:$FullUrlPattern\s*([^\]]*)\]\]/cog) {
+  if (m/\G\[\[ln:$FullUrlPattern\s*([^\]]*)\]\]/cg) {
     # [[ln:url text]], [[ln:url]]
     return $q->a({-class=>'url outside ln', -href=>$1}, $2||$1);
   }
@@ -144,7 +144,7 @@ sub LocalNamesInit {
   $LocalNamesPage = FreeToNormal($LocalNamesPage); # spaces to underscores
   $AdminPages{$LocalNamesPage} = 1;
   my $data = GetPageContent($LocalNamesPage);
-  while ($data =~ m/\[$FullUrlPattern\s+([^\]]+?)\]/go) {
+  while ($data =~ m/\[$FullUrlPattern\s+([^\]]+?)\]/g) {
     my ($page, $url) = ($2, $1);
     my $id = FreeToNormal($page);
     $LocalNames{$id} = $url;
@@ -152,7 +152,7 @@ sub LocalNamesInit {
   # Now read data from ln links, checking cache if possible. For all
   # URLs not in the cache or with invalid cache, fetch the file again,
   # and save it in the cache.
-  my @ln = $data =~ m/\[\[ln:$FullUrlPattern[^\]]*?\]\]/go;
+  my @ln = $data =~ m/\[\[ln:$FullUrlPattern[^\]]*?\]\]/g;
   my %todo = map {$_, GetLnFile($_)} @ln;
   my %data = ();
   if (GetParam('cache', $UseCache) > 0) {
@@ -347,13 +347,13 @@ sub DoLocalNames {
   if (GetParam('expand', 0)) {
     print "# Local names defined on $LocalNamesPage:\n";
     my $data = GetPageContent($LocalNamesPage);
-    while ($data =~ m/\[$FullUrlPattern\s+([^\]]+?)\]/go) {
+    while ($data =~ m/\[$FullUrlPattern\s+([^\]]+?)\]/g) {
       my ($title, $url) = ($2, $1);
       my $id = FreeToNormal($title);
       print qq{LN "$title" "$url"\n};
     }
     print "# Namespace delegations defined on $LocalNamesPage:\n";
-    while ($data =~ m/\[\[ln:$FullUrlPattern([^\]]*)?\]\]/go) {
+    while ($data =~ m/\[\[ln:$FullUrlPattern([^\]]*)?\]\]/g) {
       my ($title, $url) = ($2, $1);
       my $id = FreeToNormal($title);
       print qq{NS "$title" "$url"\n};
@@ -430,7 +430,7 @@ sub GetWantedPages {
   # skip comment pages
   if ($CommentsPrefix) {
     foreach my $id (keys %WantedPages) {
-      delete $WantedPages{$id} if $id =~ /^$CommentsPrefix/o; # TODO use $CommentsPattern ?
+      delete $WantedPages{$id} if $id =~ /^$CommentsPrefix/; # TODO use $CommentsPattern ?
     }
   }
   # now something more complicated: if near-links.pl was loaded, then

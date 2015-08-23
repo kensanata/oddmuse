@@ -64,13 +64,13 @@ sub MoinListLevel {
 
 sub MoinRule {
   # ["free link"]
-  if (m/\G(\["(.*?)"\])/gcs) {
+  if (m/\G(\["(.*?)"\])/cgs) {
     Dirty($1);
     print GetPageOrEditLink($2);
     return '';
   }
   # [[BR]]
-  elsif (m/\G\[\[BR\]\]/gc) {
+  elsif (m/\G\[\[BR\]\]/cg) {
     return $q->br();
   }
   # {{{

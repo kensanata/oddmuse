@@ -21,8 +21,8 @@ AddModuleDescription('portrait-support.pl', 'Portraits Support Extension');
 our ($q, $bol, $Now, @MyMacros, @MyRules, $FreeLinkPattern, $UrlPattern, $FS);
 
 push(@MyMacros, sub{ s/\[new::\]/"[new:" . GetParam('username', T('Anonymous'))
-		       . ':' . TimeToText($Now) . "]"/ge });
-push(@MyMacros, sub{ s/\[new:$FreeLinkPattern\]/"[new:$1:" . TimeToText($Now) . "]"/ge });
+		       . ':' . TimeToText($Now) . "]"/eg });
+push(@MyMacros, sub{ s/\[new:$FreeLinkPattern\]/"[new:$1:" . TimeToText($Now) . "]"/eg });
 
 push(@MyRules, \&PortraitSupportRule);
 
@@ -41,9 +41,9 @@ sub PortraitSupportRule {
 	. $q->hr() . AddHtmlEnvironment('p');
       $PortraitSupportColorDiv = 0;
       return $html;
-    } elsif ($bol && m/\Gportrait:$UrlPattern/gc) {
+    } elsif ($bol && m/\Gportrait:$UrlPattern/cg) {
       return $q->img({-src=>$1, -alt=>T("Portrait"), -class=>'portrait'});
-    } elsif ($bol && m/\G(:*)\[new(.*)\]/gc) {
+    } elsif ($bol && m/\G(:*)\[new(.*)\]/cg) {
       my $portrait = '';
       my $depth = length($1);
       my ($ignore, $name, $time) = split(/:/, $2, 3);

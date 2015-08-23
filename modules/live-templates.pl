@@ -26,7 +26,7 @@ our ($q, $bol, @MyRules, $FreeLinkPattern);
 push(@MyRules, \&LiveTemplateRule);
 
 sub LiveTemplateRule {
-  if ($bol and /\G(&lt;&lt;$FreeLinkPattern\n)/cog) {
+  if ($bol and /\G(&lt;&lt;$FreeLinkPattern\n)/cg) {
     Clean(CloseHtmlEnvironments());
     my $str = $1;
     my $template = FreeToNormal($2);

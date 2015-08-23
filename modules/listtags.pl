@@ -31,7 +31,7 @@ $TagListLabel = "tag:";
 push(@MyRules, \&ListTagRule);
 
 sub ListTagRule {
-  if ($bol && /\G(\[\[\!tag\s*(.+)\]\])/gc) {
+  if ($bol && /\G(\[\[\!tag\s*(.+)\]\])/cg) {
     my $tag_text = $2;
     my @tags = split /,\s*/, $tag_text;
     @tags = map {
