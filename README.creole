@@ -1,5 +1,5 @@
 This is the README file distributed together with the
-[[http://oddmuse.org/|Oddmuse]] script.
+[[https://oddmuse.org/|Oddmuse]] script.
 
 == Installing Oddmuse on a Debian System running Apache
 
@@ -82,7 +82,7 @@ putting their names in {{{[[double square brackets]]}}}.
 
 Enjoy your wiki experience.
 
-Visit http://www.oddmuse.org/ to learn more about the translation
+Visit https://www.oddmuse.org/ to learn more about the translation
 files and modules that are part of this package.
 
 == Apache
