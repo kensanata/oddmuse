@@ -3260,6 +3260,14 @@ sub BannedContent {
   return 0;
 }
 
+sub SortIndex {
+  my ($A, $B) = ($a, $b);
+  my $aIsComment = $A =~ s/^$CommentsPrefix//;
+  $B =~ s/^$CommentsPrefix//;
+  return $aIsComment ? 1 : -1 if $A eq $B;
+  $A cmp $B;
+}
+
 sub DoIndex {
   my $raw = GetParam('raw', 0);
   my $match = GetParam('match', '');
@@ -3274,7 +3282,7 @@ sub DoIndex {
     push(@menu, $q->checkbox(-name=>$option, -checked=>$value, -label=>$text));
   }
   @pages = grep /$match/i, @pages if $match;
-  @pages = sort @pages;
+  @pages = sort SortIndex @pages;
   if ($raw) {
     print GetHttpHeader('text/plain'); # and ignore @menu
   } else {
