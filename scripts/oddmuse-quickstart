@@ -51,7 +51,6 @@ prompt() {
 	    return 0
 	fi
 	if [[ ${answer^} = N* ]]; then
-	    exit_reason='quit'
 	    echo
 	    return 1
 	fi
@@ -100,6 +99,9 @@ if [[ ! -d 'cgi-bin' ]]; then
     echo 'It seems like your ##cgi-bin## directory is missing.'
     echo
     if ! prompt 'Do you want to create cgi-bin now?' Y; then
+	echo 'You decided not to create ##cgi-bin## folder.'
+	echo 'This script was meant for simple setups with cgi-bin folder.'
+	echo 'See https://oddmuse.org/wiki/Setup for manual installation instructions.'
 	exit_reason='quit'
 	exit
     fi
@@ -107,43 +109,51 @@ if [[ ! -d 'cgi-bin' ]]; then
     echo '##cgi-bin## directory was created.'
     chmod 755 -- 'cgi-bin'
     echo '##cgi-bin## permissions were set to 755 (rwxr-xr-x).'
+    cat <<'EOF' > 'cgi-bin/.htaccess'
+Options +ExecCGI
+SetHandler cgi-script
+EOF
+    echo '##cgi-bin/.htaccess## file was created with these contents:'
+    echo '{{{'
+    cat 'cgi-bin/.htaccess'
+    echo '}}}'
+    echo
 fi
 
 echo
 
-prompt 'Download wiki.pl right now?' Y
-wget -O cgi-bin/wiki.pl "$REPO_LINK/wiki.pl" || err 'Cannot download the main script (wiki.pl).'
+if ! prompt 'Download wiki.pl right now?' Y; then
+    echo 'You have decided not to download the script, but you cannot use Oddmuse without downloading it first.'
+    echo
+    echo 'See https://oddmuse.org/wiki/Setup for manual installation instructions.'
+    exit
+fi
+wget -nv -O cgi-bin/wiki.pl "$REPO_LINK/wiki.pl" || err 'Cannot download the main script (wiki.pl).'
 
 echo '##wiki.pl## was successfully downloaded into your ##cgi-bin## directory.'
 echo
-echo '== Wrapper script =='
+chmod +x 'cgi-bin/wiki.pl'
+echo '##cgi-bin/wiki.pl## file is now executable (##chmod +x cgi-bin/run.pl##)'
+echo
+echo '== Data directory =='
 echo 'You have to specify some location for permanent data storage.'
 echo
 echo 'If you wont do that, the wiki will run in **temporary mode**.'
 echo
 echo 'In temporary mode, any change is stored in /tmp (and therefore will be eventually deleted)'
 echo
-echo 'In order to keep the data you must specify ##$DataDir##. This is usually done with a wrapper script.'
+echo 'In order to keep the data you must specify ##$DataDir##.'
 echo
-echo 'This script will create ##cgi-bin/run.pl## with the required contents.'
-echo 'Your ##$DataDir## will be set to ##../wiki## (relative to ##cgi-bin## directory).'
+echo 'The easiest way to do that is to set ##WikiDataDir## environment variable in ##.htaccess##.'
 echo
-prompt 'Create a wrapper script?' Y
-cat <<'EOF' > 'cgi-bin/run.pl'
-#!/usr/bin/perl
-package OddMuse;
-$DataDir = '../wiki';
-do 'wiki.pl';
-EOF
 
-echo 'Wrapper script was created with these contents:'
+echo >> '.htaccess'
+echo 'SetEnv WikiDataDir ../wiki' >> '.htaccess'
+
+echo 'This was appended to your ##.htaccess## file:'
 echo '{{{'
-cat 'cgi-bin/run.pl'
+echo 'SetEnv WikiDataDir ../wiki'
 echo '}}}'
-echo
-
-chmod +x 'cgi-bin/run.pl'
-echo '##cgi-bin/run.pl## file is now executable (##chmod +x cgi-bin/run.pl##)'
 echo
 
 echo '== Basic setup =='
@@ -177,7 +187,7 @@ fi
 if [[ ! -f 'wiki/config' ]]; then
     echo '=== wiki/config ==='
     default_config=$'use utf8; # allow utf-8 characters in config file\n'
-    echo '##wiki/config## can contain perl code that will be ran during the core initialization.'
+    echo '##wiki/config## can contain perl code that will be ran during the core initialization on each request.'
     echo
     echo 'Config file will be initialized in ##wiki/config## with these contents:'
     echo '{{{'
@@ -237,11 +247,14 @@ echo
 echo '=== Password ==='
 echo 'It is a good idea to have administrator password set.'
 echo
-echo 'This script will hash your salted password with sha256 and then it will save that hash in your config file.'
+echo 'This script will hash your salted password with sha256 and then it'
+echo 'will save that hash in your config file.'
 echo
 echo 'Although salt is used, it is still easy to bruteforce sha256 hashes.'
+echo 'If you think that bcrypt is a better option, you can change your config file later.'
 echo
-echo 'Please use a strong password (we will let you decide yourself which password is strong enough, you can use any characters).'
+echo 'Please use a strong password (we will let you decide yourself which'
+echo 'password is strong enough, you can use any characters).'
 echo
 prompt 'Do you want to set your password now?' Y
 echo '//You will not see what you are typing, this is OK.//'
@@ -256,59 +269,88 @@ $PassHashFunction = \&sha256_hex;
 salt=$(head -c 32 /dev/urandom | xxd -p -c 32) # urandom is OK for generating random strings
 password_config+="\$PassSalt = '$salt'; # random salt. Generated with: head -c 32 /dev/urandom | xxd -p -c 32"$'\n'
 password_config+="\$AdminPass = '$(printf "%s" "$password$salt" | sha256sum | cut -d ' ' -f 1)'"'; # Generated with: printf "%s" "$password$salt" | sha256sum'$'\n'
-echo 'This will be written to your config file:'
+printf "%s\n" "$password_config" >> 'wiki/config'
+echo 'This was written to your config file:'
 echo '{{{'
 echo "$password_config"
 echo '}}}'
 echo
-printf "%s\n" "$password_config" >> 'wiki/config'
+
 
 echo '== Essential set of modules =='
 echo 'Now we will install a couple of modules.'
-echo 'Oddmuse is very modular in nature, some of the very essential stuff was separated from the core.'
-echo 'Although you can still use Oddmuse without any modules, we think that any healthy wiki will require some modules.'
+echo 'Oddmuse is very modular in nature, some of the very'
+echo 'essential stuff was separated from the core.'
+echo 'Although you can still use Oddmuse without any modules, we'
+echo 'think that any healthy wiki will require some of them.'
 echo 'This is discussed in https://oddmuse.org/wiki/Essential_Set_of_Modules'
 echo 'Next steps will guide you through installing some of the modules.'
 echo
 
 echo '=== creole.pl ==='
-echo 'First of all, you need something that will handle the syntax on your wiki. These modules will give you bold, italics, tables, sometimes additional link patterns, ordered/unordered lists and lots of other stuff.'
-echo 'There are several modules for this, but Creole Markup Extension is currently the best choice.'
+echo 'First of all, you need something that will handle the syntax on your wiki.'
+echo 'These modules will give you bold, italics, tables, sometimes additional link'
+echo 'patterns, ordered/unordered lists and lots of other stuff.'
+echo 'There are several modules for this, but [[Creole Markup Extension]] is'
+echo 'currently the best choice.'
 echo
-prompt 'Do you want to install Creole Markup Extension?' Y
+prompt 'Do you want to install [[Creole Markup Extension]]?' Y
 
-wget -O wiki/modules/creole.pl "$REPO_LINK/modules/creole.pl" || err 'Cannot download the module (creole.pl).'
+wget -nv -O wiki/modules/creole.pl "$REPO_LINK/modules/creole.pl" || err 'Cannot download the module (creole.pl).'
 
 echo '=== questionasker.pl ==='
-echo 'Any website that has an edit form is bound to accumulate spam over time. Unfortunately, that’s the Internet we are living in – spam bots crawl the web and attempt to put stuff into anything that they can find. Once you get at least one successful spam edit, you will get into a list and bots will attempt to post spam all the time.'
+echo 'Any website that has an edit form is bound to accumulate spam over time.'
+echo 'Unfortunately, that’s the Internet we are living in – spam bots crawl'
+echo 'the web and attempt to put stuff into anything that they can find.'
+echo 'Once you get at least one successful spam edit, you will be added to'
+echo 'the list and bots will attempt to post spam all the time.'
 echo
-echo 'There is no solution that will keep your wiki 100% free from spam, but there are some good ways to mitigate it.'
+echo 'There is no solution that will keep your wiki 100% free from spam,'
+echo 'but there are some good ways to mitigate it.'
 echo
-echo '[[QuestionAsker Extension]] will add a question to the edit form. Once it is answered, the user gets a cookie and will not be asked the question again. Surprisingly, this keeps almost all of the spambots away.'
+echo '[[QuestionAsker Extension]] will add a question to the edit form.'
+echo 'Once it is answered, the user gets a cookie and will not be asked the question again.'
+echo 'Surprisingly, this keeps almost all of the spambots away.'
 echo
-prompt 'Do you want to install QuestionAsker Extension?' Y
+prompt 'Do you want to install [[QuestionAsker Extension]]?' Y
 
-wget -O wiki/modules/questionasker.pl "$REPO_LINK/modules/questionasker.pl" || err 'Cannot download the module (questionasker.pl).'
+wget -nv -O wiki/modules/questionasker.pl "$REPO_LINK/modules/questionasker.pl" || err 'Cannot download the module (questionasker.pl).'
 
 echo '=== ban-contributors.pl ==='
-echo 'Several times per year some spam will get through. You will rollback your pages, but after some time it will appear again. That’s when you might want to ban some IPs. [[Ban Contributors Extension]] will help you with that!
+echo 'Several times per year some spam will get through.'
+echo 'You will rollback your pages, but after some time it will appear again.'
+echo 'That’s when you might want to ban some IPs.'
+echo
+echo '[[Ban Contributors Extension]] will help you with that!'
 
-Whenever you rollback a page, it will provide several ways to prevent that spam from getting in again. Basically it will add a convenient way to ban some IPs.'
+echo 'Whenever you rollback a page, it will provide several ways to prevent'
+echo 'that spam from getting in again.'
+echo 'Basically, it will add a convenient way to ban some IPs.'
 echo
 prompt 'Do you want to install [[Ban Contributors Extension]]?' Y
 
-wget -O wiki/modules/ban-contributors.pl "$REPO_LINK/modules/ban-contributors.pl" || err 'Cannot download the module (ban-contributors.pl).'
+wget -nv -O wiki/modules/ban-contributors.pl "$REPO_LINK/modules/ban-contributors.pl" || err 'Cannot download the module (ban-contributors.pl).'
 
 if [[ ! -f 'wiki/css/wiki.css' ]]; then
     echo '== CSS =='
-    echo 'By default the main script will attempt to use default stylsheet (the one that you see on https://oddmuse.org).'
+    echo 'By default, the main script will attempt to use default stylsheet'
+    echo 'https://oddmuse.org is also using the default stylesheet.'
+    echo 'Feel free to visit it to get the impression.'
     echo
     echo 'However, you probably want your users to download it from your own server.'
+    echo 'If you want to add your own modifications – just edit that css file directly.'
     echo
     prompt 'Do you want to fetch default CSS into ##css/wiki.css##?' Y
     echo
-    mkdir -p 'wiki/css'
-    wget -O wiki/css/wiki.css "$REPO_LINK/css/wiki.css" || err 'Cannot download default stylesheet.'
+    mkdir -p 'css'
+    wget -nv -O css/wiki.css "$REPO_LINK/css/wiki.css" || err 'Cannot download default stylesheet.'
+
+    stylesheet_config="\$StyleSheet = 'css/wiki.css'"
+    printf "%s\n" "$stylesheet_config" >> 'wiki/config'
+    echo 'This was written to your config file:'
+    echo '{{{'
+    echo "$stylesheet_config"
+    echo '}}}'
 fi
 
 echo
@@ -318,5 +360,8 @@ echo 'Now open your website and enjoy the result.'
 echo
 echo 'If you have problems or questions, please write a comment on https://oddmuse.org/.'
 echo 'We will be glad to help you!'
+echo
+echo 'Tell others about your wiki!'
+echo 'You can add your website to the list on https://oddmuse.org/wiki/Users'
 echo
 exit_reason='ok'
