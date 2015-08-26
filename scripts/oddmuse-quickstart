@@ -23,6 +23,7 @@ exit_reason=''
 # was just printed. Otherwise it is pretty hard to use.
 color1=$(tput setaf 4)
 color2=$(tput setaf 6)
+colorHeading=$(tput setaf 2)
 colorNone=$(tput sgr0)
 
 prompt() {
@@ -80,7 +81,7 @@ clean() {
 }
 trap clean EXIT
 
-echo '== Welcome! =='
+echo "==$colorHeading Welcome! $colorNone=="
 echo 'This script will guide you through the process of **setting up a new** Oddmuse wiki.'
 echo 'It will also attempt to explain every step.'
 echo
@@ -91,7 +92,7 @@ echo
 echo 'At any moment you can press Ctrl-C to abort the process.'
 echo
 
-echo '== Main script =='
+echo "==$colorHeading Main script $colorNone=="
 echo 'First of all, we have to download the main script and put it into ##cgi-bin## directory.'
 
 if [[ ! -d 'cgi-bin' ]]; then
@@ -106,18 +107,17 @@ if [[ ! -d 'cgi-bin' ]]; then
 	exit
     fi
     mkdir -- 'cgi-bin' || err 'Cannot create cgi-bin directory. This may be caused by the lack of permissions.'
-    echo '##cgi-bin## directory was created.'
+    echo '* ##cgi-bin## directory was created.'
     chmod 755 -- 'cgi-bin'
-    echo '##cgi-bin## permissions were set to 755 (rwxr-xr-x).'
+    echo '* ##cgi-bin## permissions were set to 755 (rwxr-xr-x).'
     cat <<'EOF' > 'cgi-bin/.htaccess'
 Options +ExecCGI
 SetHandler cgi-script
 EOF
-    echo '##cgi-bin/.htaccess## file was created with these contents:'
+    echo '* ##cgi-bin/.htaccess## file was created with these contents:'
     echo '{{{'
     cat 'cgi-bin/.htaccess'
     echo '}}}'
-    echo
 fi
 
 echo
@@ -130,36 +130,47 @@ if ! prompt 'Download wiki.pl right now?' Y; then
 fi
 wget -nv -O cgi-bin/wiki.pl "$REPO_LINK/wiki.pl" || err 'Cannot download the main script (wiki.pl).'
 
-echo '##wiki.pl## was successfully downloaded into your ##cgi-bin## directory.'
 echo
+echo '* ##wiki.pl## was successfully downloaded into your ##cgi-bin## directory.'
+
 chmod +x 'cgi-bin/wiki.pl'
-echo '##cgi-bin/wiki.pl## file is now executable (##chmod +x cgi-bin/run.pl##)'
+echo '* ##cgi-bin/wiki.pl## file is now executable.'
 echo
-echo '== Data directory =='
+echo "==$colorHeading Data directory $colorNone=="
 echo 'You have to specify some location for permanent data storage.'
 echo
 echo 'If you wont do that, the wiki will run in **temporary mode**.'
 echo
-echo 'In temporary mode, any change is stored in /tmp (and therefore will be eventually deleted)'
+echo 'In temporary mode, any change is stored in /tmp (and therefore will be eventually deleted).'
 echo
 echo 'In order to keep the data you must specify ##$DataDir##.'
 echo
 echo 'The easiest way to do that is to set ##WikiDataDir## environment variable in ##.htaccess##.'
 echo
 
-echo >> '.htaccess'
-echo 'SetEnv WikiDataDir ../wiki' >> '.htaccess'
-
-echo 'This was appended to your ##.htaccess## file:'
+echo 'This will be appended to your ##.htaccess## file:'
 echo '{{{'
 echo 'SetEnv WikiDataDir ../wiki'
 echo '}}}'
 echo
 
-echo '== Basic setup =='
+if ! prompt 'Set WikiDataDir environment variable?' Y; then
+    echo 'You have decided not to use WikiDataDir environment variable.'
+    echo
+    echo 'This means that you have to use a wrapper script instead.'
+    echo
+    echo 'See https://oddmuse.org/wiki/Setup for more instructions.'
+    exit
+fi
+echo >> '.htaccess'
+echo 'SetEnv WikiDataDir ../wiki' >> '.htaccess'
+echo '* WikiDataDir variable is now conigured to ##../wiki## (relative to ##cgi-bin## directory).'
+echo
+
+echo "==$colorHeading Basic setup $colorNone=="
 echo
 if [[ ! -d 'wiki/' ]]; then
-    echo '=== wiki/ ==='
+    echo "===$colorHeading wiki/ $colorNone==="
     echo '##wiki/## directory will contain all data associated with your wiki, that is:'
     echo '* Pages and kept pages (previous versions)'
     echo '* Modules (also called Extensions)'
@@ -173,7 +184,7 @@ if [[ ! -d 'wiki/' ]]; then
 fi
 
 if [[ ! -d 'wiki/modules/' ]]; then
-    echo '=== wiki/modules/ ==='
+    echo "===$colorHeading wiki/modules/ $colorNone==="
     echo '##wiki/modules/## can contain perl files that extend the functionality of the core.'
     echo 'These could be your own modules, or one of the 200+ contributed modules.'
     echo 'You can see a structured list of modules on https://oddmuse.org/wiki/Site_Map'
@@ -185,7 +196,7 @@ if [[ ! -d 'wiki/modules/' ]]; then
 fi
 
 if [[ ! -f 'wiki/config' ]]; then
-    echo '=== wiki/config ==='
+    echo "===$colorHeading wiki/config $colorNone==="
     default_config=$'use utf8; # allow utf-8 characters in config file\n'
     echo '##wiki/config## can contain perl code that will be ran during the core initialization on each request.'
     echo
@@ -208,7 +219,7 @@ Options -Indexes
 RewriteEngine On
 RewriteRule ^([^/]*)$ /cgi-bin/run.pl/$1 [QSA,L]
 RewriteRule ^$ cgi-bin/run.pl [QSA,L,PT]'
-    echo '=== .htaccess ==='
+    echo "===$colorHeading .htaccess $colorNone==="
     echo '##.htaccess## is a configuration file that is used by several web servers (e.g. Apache).'
     echo '##.htaccess## file will be created with these contents:'
     echo '{{{'
@@ -224,7 +235,7 @@ fi
 if [[ ! -f 'wiki/.htaccess' ]]; then
     wiki_htaccess='# Hide this directory from world
 Deny from all'
-    echo '=== wiki/.htaccess ==='
+    echo "===$colorHeading wiki/.htaccess $colorNone==="
     echo 'We have to hide files in ##wiki/## from public.'
     echo '##wiki/.htaccess## file be created with these contents:'
     echo '{{{'
@@ -237,14 +248,14 @@ Deny from all'
     echo
 fi
 
-echo '== Config file =='
+echo "==$colorHeading Config file $colorNone=="
 echo 'Now we will do a couple of modifications to the ##wiki/config## file.'
 echo
 echo 'Config file is just a perl script that is ran by the core during initialization.'
 echo
 echo 'Feel free to edit it yourself manually at any time!'
 echo
-echo '=== Password ==='
+echo "===$colorHeading Password $colorNone==="
 echo 'It is a good idea to have administrator password set.'
 echo
 echo 'This script will hash your salted password with sha256 and then it'
@@ -277,31 +288,42 @@ echo '}}}'
 echo
 
 
-echo '== Essential set of modules =='
+echo "==$colorHeading Essential set of modules $colorNone=="
 echo 'Now we will install a couple of modules.'
+echo
 echo 'Oddmuse is very modular in nature, some of the very'
 echo 'essential stuff was separated from the core.'
+echo
 echo 'Although you can still use Oddmuse without any modules, we'
 echo 'think that any healthy wiki will require some of them.'
+echo
 echo 'This is discussed in https://oddmuse.org/wiki/Essential_Set_of_Modules'
+echo
 echo 'Next steps will guide you through installing some of the modules.'
 echo
 
-echo '=== creole.pl ==='
+echo "===$colorHeading creole.pl $colorNone==="
 echo 'First of all, you need something that will handle the syntax on your wiki.'
+echo
 echo 'These modules will give you bold, italics, tables, sometimes additional link'
 echo 'patterns, ordered/unordered lists and lots of other stuff.'
+echo
 echo 'There are several modules for this, but [[Creole Markup Extension]] is'
 echo 'currently the best choice.'
 echo
 prompt 'Do you want to install [[Creole Markup Extension]]?' Y
 
 wget -nv -O wiki/modules/creole.pl "$REPO_LINK/modules/creole.pl" || err 'Cannot download the module (creole.pl).'
+echo
+echo '* [[Creole Markup Extension]] was installed into ##wiki/modules/creole.pl##.'
+echo
 
-echo '=== questionasker.pl ==='
+echo "===$colorHeading questionasker.pl $colorNone==="
 echo 'Any website that has an edit form is bound to accumulate spam over time.'
-echo 'Unfortunately, that’s the Internet we are living in – spam bots crawl'
+echo
+echo 'Unfortunately, that’s the Internet we are living in - spam bots crawl'
 echo 'the web and attempt to put stuff into anything that they can find.'
+echo
 echo 'Once you get at least one successful spam edit, you will be added to'
 echo 'the list and bots will attempt to post spam all the time.'
 echo
@@ -315,32 +337,42 @@ echo
 prompt 'Do you want to install [[QuestionAsker Extension]]?' Y
 
 wget -nv -O wiki/modules/questionasker.pl "$REPO_LINK/modules/questionasker.pl" || err 'Cannot download the module (questionasker.pl).'
+echo
+echo '* [[QuestionAsker Extension]] was installed into ##wiki/modules/questionasker.pl##.'
+echo
 
-echo '=== ban-contributors.pl ==='
+echo "===$colorHeading ban-contributors.pl $colorNone==="
 echo 'Several times per year some spam will get through.'
 echo 'You will rollback your pages, but after some time it will appear again.'
+echo
 echo 'That’s when you might want to ban some IPs.'
 echo
 echo '[[Ban Contributors Extension]] will help you with that!'
 
 echo 'Whenever you rollback a page, it will provide several ways to prevent'
 echo 'that spam from getting in again.'
+echo
 echo 'Basically, it will add a convenient way to ban some IPs.'
 echo
 prompt 'Do you want to install [[Ban Contributors Extension]]?' Y
 
 wget -nv -O wiki/modules/ban-contributors.pl "$REPO_LINK/modules/ban-contributors.pl" || err 'Cannot download the module (ban-contributors.pl).'
 
+echo
+echo '* [[Ban Contributors Extension]] was installed into ##wiki/modules/ban-contributors.pl##.'
+echo
 if [[ ! -f 'wiki/css/wiki.css' ]]; then
-    echo '== CSS =='
-    echo 'By default, the main script will attempt to use default stylsheet'
+    echo "==$colorHeading CSS $colorNone=="
+    echo 'By default, the main script will attempt to use default stylsheet.'
+    echo
     echo 'https://oddmuse.org is also using the default stylesheet.'
     echo 'Feel free to visit it to get the impression.'
     echo
     echo 'However, you probably want your users to download it from your own server.'
-    echo 'If you want to add your own modifications – just edit that css file directly.'
     echo
-    prompt 'Do you want to fetch default CSS into ##css/wiki.css##?' Y
+    echo 'If you want to add your own modifications - just edit that css file directly.'
+    echo
+    prompt 'Do you want to fetch default CSS into ##css/wiki.css##?' Y # TODO
     echo
     mkdir -p 'css'
     wget -nv -O css/wiki.css "$REPO_LINK/css/wiki.css" || err 'Cannot download default stylesheet.'
@@ -354,7 +386,8 @@ if [[ ! -f 'wiki/css/wiki.css' ]]; then
 fi
 
 echo
-echo '== Finish =='
+echo
+echo "==$colorHeading Finish $colorNone=="
 echo 'Congratulations! You went through all of the steps.'
 echo 'Now open your website and enjoy the result.'
 echo
