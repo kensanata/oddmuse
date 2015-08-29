@@ -3603,7 +3603,7 @@ sub DoPost {
     eval { require MIME::Base64; $_ = MIME::Base64::encode($content) };
     $string = "#FILE $type $encoding\n" . $_;
   } else {			# ordinary text edit
-    $string = AddComment($old, $comment) if $comment;
+    $string = AddComment($old, $comment) if defined $comment;
     if ($comment and substr($string, 0, length($DeletedPage)) eq $DeletedPage) { # look ma, no regexp!
       $string = substr($string, length($DeletedPage)); # undelete pages when adding a comment
     }
@@ -3625,7 +3625,7 @@ sub DoPost {
   my $oldrev = $Page{revision};
   if (GetParam('Preview', '')) { # Preview button was used
     ReleaseLock();
-    if ($comment) {
+    if (defined $comment) {
       BrowsePage($id, 0, RunMyMacros($comment)); # show macros in preview
     } else {
       DoEdit($id, $string, 1);
@@ -3651,7 +3651,7 @@ sub DoPost {
     $string = $2;
   }
   my $generalwarning = 0;
-  if ($newAuthor and $oldtime ne $myoldtime and not $comment) {
+  if ($newAuthor and $oldtime ne $myoldtime and not defined $comment) {
     if ($myoldtime) {
       my ($ancestor) = GetTextAtTime($myoldtime);
       if ($ancestor and $old ne $ancestor) {
