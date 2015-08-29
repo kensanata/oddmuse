@@ -14,7 +14,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 38;
+use Test::More tests => 43;
 
 AppendStringToFile($ConfigFile, "\$CommentsPrefix = 'Comments on ';\n");
 
@@ -80,22 +80,39 @@ test_page($page, 'Can add comments with edit allowed eq 3');
 
 AppendStringToFile($ConfigFile, "\$EditAllowed = 1;\n");
 
-get_page('title=Yadda', 'aftertext=This%20is%20my%20comment.', 'username=Alex');
-test_page(get_page('Yadda'), 'This is my comment.');
+get_page('title=Yadda', 'aftertext=This%20is%20my%20comment%20on%20an%20ordinary%20page.', 'username=Alex');
+test_page(get_page('Yadda'), 'This is my comment on an ordinary page\.');
 
-get_page('title=Comments_on_Yadda', 'aftertext=This%20is%20my%20comment.', 'username=Alex');
-test_page(get_page('Comments_on_Yadda'), 'This is my comment\.', '-- Alex');
+get_page('title=Comments_on_Yadda', 'aftertext=This%20is%20my%20comment%20on%20a%20comment%20page.', 'username=Alex');
+test_page(get_page('Comments_on_Yadda'), 'This is my comment on a comment page\.', '-- Alex');
 test_page(get_page('action=rc raw=1'), 'title: Comments on Yadda',
-	  'description: This is my comment.', 'generator: Alex');
+	  'description: This is my comment on a comment page\.', 'generator: Alex');
+
+# No wiping with empty comment
+
+get_page('title=Comments_on_Yadda', 'aftertext=', 'username=Berta');
+$page = get_page('Comments_on_Yadda');
+test_page($page, 'This is my comment on a comment page\.');
+test_page_negative('Berta');
+
+# No wiping with a comment that evaluates to false
+
+get_page('title=Comments_on_Yadda', 'aftertext=0', 'username=Berta');
+test_page(get_page('Comments_on_Yadda'),
+	  'This is my comment on a comment page\.',
+	  '<p>0</p>',
+	  'Berta');
 
 # homepage
 get_page('title=Comments_on_Yadda', 'aftertext=This%20is%20another%20comment.',
 	 'username=Alex', 'homepage=http%3a%2f%2fwww%2eoddmuse%2eorg%2f');
 xpath_test(get_page('Comments_on_Yadda'),
-	   '//p[contains(text(),"This is my comment.")]',
+	   '//p[contains(text(),"This is my comment on a comment page.")]', # not wiped
+	   '//p[contains(text(),"This is another comment.")]', # not wiped
 	   '//a[@class="url http outside"][@href="http://www.oddmuse.org/"][text()="Alex"]');
+
 # variant without protocol
-get_page('title=Comments_on_Yadda', 'aftertext=This%20is%20another%20comment.',
+get_page('title=Comments_on_Yadda', 'aftertext=This%20is%20yet%20another%20comment.',
 	 'username=Berta', 'homepage=alexschroeder%2ech');
 xpath_test(get_page('Comments_on_Yadda'),
 	   '//a[@class="url http outside"][@href="http://alexschroeder.ch"][text()="Berta"]');
