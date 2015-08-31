@@ -1625,7 +1625,7 @@ sub ProcessRcLines {
 
 sub RcHeader {
   my ($from, $upto, $html) = (GetParam('from', 0), GetParam('upto', 0), '');
-  my $days = GetParam('days', $RcDefault);
+  my $days = GetParam('days') + 0 || $RcDefault; # force numeric $days
   my $all = GetParam('all', 0);
   my $edits = GetParam('showedit', 0);
   my $rollback = GetParam('rollback', 0);
