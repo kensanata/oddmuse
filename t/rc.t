@@ -1,4 +1,4 @@
-# Copyright (C) 2006–20014  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006–20015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,9 +15,12 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 92;
+use Test::More tests => 93;
 
-# Before doing anything, let's check the More... links
+# Make sure Days is numeric
+test_page(get_page(qw(action=rc days=WTF)), 'Updates in the last 30 days');
+
+# Check the More... links
 
 my $more = xpath_test(get_page('action=rc days=3'),
 		      '//a[text()="More..."]/attribute::href');
@@ -33,7 +36,6 @@ $more = xpath_test(get_page("action=rc from=$from upto=$upto"),
 is($upto - $from, 3 * 24 * 60 * 60, 'Next More... link is for 3 days, too');
 
 # Click it twice...
-
 
 $more = xpath_test(get_page("action=rc from=$from upto=$upto"),
 		   '//a[text()="More..."]/attribute::href');
