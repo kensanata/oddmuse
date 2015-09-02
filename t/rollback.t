@@ -71,6 +71,9 @@ update_page('MinorPage', 'Ramtatam', 'testerror', 1);
 test_page(get_page('NicePage'), 'Bad content');
 test_page(get_page('InnocentPage'), 'Lamb');
 
+# make sure all those spammers are in the past
+sleep(1);
+
 # find the rollback link for the last good revision
 $to = xpath_test(get_page('action=rc all=1 pwd=foo'),
 		 '//strong[text()="good guy two"]/preceding-sibling::input[@type="submit"]/attribute::name');
@@ -92,6 +95,9 @@ test_page(get_page('OtherPage'), 'Other cute content 12');
 test_page(get_page('EvilPage'), 'DeletedPage');
 test_page(get_page('AnotherEvilPage'), 'DeletedPage');
 test_page(get_page('InnocentPage'), 'Lamb');
+
+# make sure $Now of Recent Changes is larger than $LastUpdate
+sleep(1);
 
 # this includes rollback info and rollback links
 my $rc = get_page('action=rc all=1 showedit=1 pwd=foo from=1');
