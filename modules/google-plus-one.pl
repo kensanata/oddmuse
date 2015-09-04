@@ -56,7 +56,7 @@ sub GooglePlusPrintFooter {
     return q{
 <!-- start of Google+ -->
 <script type="text/javascript">
-function loadScript(jssource,link_id) {
+function loadScript(jssource) {
    // add javascript
    var jsnode = document.createElement('script');
    jsnode.setAttribute('type','text/javascript');
@@ -66,15 +66,24 @@ function loadScript(jssource,link_id) {
    var butn = document.createElement('div');
    butn.setAttribute('class', 'g-plusone');
    butn.setAttribute('id', 'my_plusone');
-   var link = document.getElementById(link_id);
+   var link = document.getElementById('plus1');
    link.parentNode.insertBefore(butn, link);
    // hide the link
    link.innerHTML = "";
+   // when looking at action=plusone
+   var ul = document.getElementById('plus1s');
+   var children = ul.children;
+   for (var i = 0; i < children.length; i++) {
+     var li = children[i];
+     butn = document.createElement('g:plusone');
+     butn.setAttribute('href', li.firstElementChild.getAttribute('href'));
+     butn.setAttribute('id', 'my_plusone' + i);
+     li.appendChild(butn);
+   }
  }
- var plus1source = "https://apis.google.com/js/plusone.js";
 </script>
 <p id="plus1">
-  <a href="javascript:loadScript(plus1source,'plus1')">
+  <a href="javascript:loadScript('https://apis.google.com/js/plusone.js')">
     <img src="/pics/plusone-h24.png" alt="Show Google +1" />
   </a>
 </p>
@@ -103,11 +112,9 @@ sub DoPlusOne {
     push(@pages, $id) if $id =~ /^\d\d\d\d-\d\d-\d\d/;
   }
   splice(@pages, 0, $#pages - 19); # last 20 items
-  print "<ul>";
+  print '<ul id="plus1s">';
   foreach my $id (@pages) {
-    my $url = ScriptUrl(UrlEncode($id));
-    print $q->li(GetPageLink($id),
-                qq{ <g:plusone href="$url"></g:plusone>});
+    print $q->li(GetPageLink($id), ' ');
   }
   print "</ul>";
   print $q->end_div();
