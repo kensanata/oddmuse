@@ -56,8 +56,8 @@ sub NewEnclosureRssItem {
   my $id = shift;
   my $rss = OldEnclosureRssItem($id, @_);
   require MIME::Base64;
-  my %data = ParseData(ReadFileOrDie(GetPageFile($id)));
-  my @enclosures = split(' ', $data{enclosures});
+  my $data = ParseData(ReadFileOrDie(GetPageFile($id)));
+  my @enclosures = split(' ', $data->{enclosures});
   my $enclosures = '';
   foreach my $enclosure (@enclosures) {
     # Don't add the enclosure if the page has been deleted in the mean

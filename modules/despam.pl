@@ -133,14 +133,14 @@ sub DespamPage {
   # from DoHistory()
   my @revisions = sort {$b <=> $a} map { m|/([0-9]+).kp$|; $1; } GetKeepFiles($OpenPageName);
   foreach my $revision (@revisions) {
-    my ($text, $rev) = GetTextRevision($revision, 1); # quiet
+    my ($revisionPage, $rev) = GetTextRevision($revision, 1); # quiet
     if (not $rev) {
       print ': ' . Ts('Cannot find revision %s.', $revision);
       return;
-    } elsif (not DespamBannedContent($text)) {
+    } elsif (not DespamBannedContent($revisionPage->{text})) {
       my $summary = Tss('Revert to revision %1: %2', $revision, $rule);
       print ': ' . $summary;
-      Save($OpenPageName, $text, $summary) unless GetParam('debug', 0);
+      Save($OpenPageName, $revisionPage->{text}, $summary) unless GetParam('debug', 0);
       return;
     }
   }

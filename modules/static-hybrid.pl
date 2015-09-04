@@ -113,9 +113,9 @@ sub StaticFileName {
 	return $StaticFiles{$id} if $StaticFiles{$id}; # cache filenames
 	my ($status, $data) = ReadFile(GetPageFile(StaticUrlDecode($id)));
 	print "cannot read " . GetPageFile(StaticUrlDecode($id)) . $q->br() unless $status;
-	my %hash = ParseData($data);
+	my $hash = ParseData($data);
 	my $ext = '.html';
-	if ($hash{text} =~ /^\#FILE ([^ \n]+)\n(.*)/s) {
+	if ($hash->{text} =~ /^\#FILE ([^ \n]+)\n(.*)/s) {
 		$ext = $StaticMimeTypes{$1};
 		$ext = '.' . $ext if $ext;
 	}
@@ -445,15 +445,15 @@ sub StaticNewDespamPage {
   # from DoHistory()
   my @revisions = sort {$b <=> $a} map { m|/([0-9]+).kp$|; $1; } GetKeepFiles($OpenPageName);
   foreach my $revision (@revisions) {
-    my ($text, $rev) = GetTextRevision($revision, 1); # quiet
+    my ($revisionPage, $rev) = GetTextRevision($revision, 1); # quiet
     if (not $rev) {
       print ': ' . Ts('Cannot find revision %s.', $revision);
       return;
-    } elsif (not DespamBannedContent($text)) {
+    } elsif (not DespamBannedContent($revisionPage->{text})) {
       my $summary = Tss('Revert to revision %1: %2', $revision, $rule);
       print ': ' . $summary;
-      Save($OpenPageName, $text, $summary) unless GetParam('debug', 0);
-		StaticDeleteFile($OpenPageName);
+      Save($OpenPageName, $revisionPage->{text}, $summary) unless GetParam('debug', 0);
+      StaticDeleteFile($OpenPageName);
       return;
     }
   }
@@ -461,7 +461,7 @@ sub StaticNewDespamPage {
     my $summary = Ts($rule). ' ' . Ts('Marked as %s.', $DeletedPage);
     print ': ' . $summary;
     Save($OpenPageName, $DeletedPage, $summary) unless GetParam('debug', 0);
-	StaticDeleteFile($OpenPageName);
+    StaticDeleteFile($OpenPageName);
   } else {
     print ': ' . T('Cannot find unspammed revision.');
   }

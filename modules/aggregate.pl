@@ -126,8 +126,8 @@ sub DoAggregate {
       }
     }
     foreach my $id (@pages) {
-      my %data = ParseData(ReadFileOrDie(GetPageFile(FreeToNormal($id))));
-      my $page = $data{text};
+      my $data = ParseData(ReadFileOrDie(GetPageFile(FreeToNormal($id))));
+      my $page = $data->{text};
       my $size = length($page);
       my $i = index($page, "\n=");
       my $j = index($page, "\n----");
@@ -136,13 +136,13 @@ sub DoAggregate {
       $page =~ s/^=.*\n//; # if it starts with a header
       my $name = $id;
       $name =~ s/_/ /g;
-      my $date = TimeToRFC822($data{ts});
-      my $host = $data{host};
-      my $username = $data{username};
+      my $date = TimeToRFC822($data->{ts});
+      my $host = $data->{host};
+      my $username = $data->{username};
       $username = QuoteHtml($username);
       $username = $host unless $username;
-      my $minor = $data{minor};
-      my $revision = $data{revision};
+      my $minor = $data->{minor};
+      my $revision = $data->{revision};
       my $cluster = GetCluster($page);
       my $description = ToString(sub { ApplyRules(QuoteHtml($page), 1, 0, undef, 'p') });
       $description .= $q->p(GetPageLink($id, T('Learn more...')))
