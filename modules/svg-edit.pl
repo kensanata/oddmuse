@@ -42,7 +42,7 @@ sub NewSvgGetDownloadLink {
   local (%Page, $OpenPageName);
   OpenPage($name);
   if ($revision) {
-    ($data) = GetTextRevision($revision); # ignore revision reset
+    $data = GetTextRevision($revision)->{text}; # ignore revision reset
   } else {
     $data = $Page{text};
   }

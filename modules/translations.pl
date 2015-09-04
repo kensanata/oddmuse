@@ -37,8 +37,7 @@ sub TranslationRule {
 
 sub GetCurrentPageRevision {
   my $id   = shift;
-  my %page = ParseData(ReadFileOrDie(GetPageFile($id)));
-  return $page{revision};
+  return ParseData(ReadFileOrDie(GetPageFile($id)))->{revision};
 }
 
 sub GetTranslationLink {

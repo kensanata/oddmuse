@@ -35,12 +35,12 @@ sub LiveTemplateRule {
     Dirty($str);
     my $oldpos = pos;
     my $old_ = $_;
-    my %hash = ParseData($2);
+    my $hash = ParseData($2);
     my $text = GetPageContent($template);
     return $q->p($q->strong(Ts('The template %s is either empty or does not exist.',
 			       $template))) . AddHtmlEnvironment('p') unless $text;
-    foreach my $key (keys %hash) {
-      $text =~ s/\$$key\$/$hash{$key}/g;
+    foreach my $key (keys %$hash) {
+      $text =~ s/\$$key\$/$hash->{$key}/g;
     }
     print "<div class=\"template $template\">";
     ApplyRules(QuoteHtml($text), 1, 1, undef, 'p');
