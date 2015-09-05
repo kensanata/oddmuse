@@ -1421,7 +1421,7 @@ sub BrowsePage {
   PrintPageContent($text, $revision, $comment);
   SetParam('rcclusteronly', $id) if FreeToNormal(GetCluster($text)) eq $id; # automatically filter by cluster
   PrintRcHtml($id);
-  PrintFooter($id, $revision, $comment);
+  PrintFooter($id, $revision, $comment, $revisionPage);
 }
 
 sub ReBrowsePage {
@@ -2384,7 +2384,7 @@ sub PrintPageContent {
 }
 
 sub PrintFooter {
-  my ($id, $rev, $comment) = @_;
+  my ($id, $rev, $comment, $page) = @_;
   if (GetParam('embed', $EmbedWiki)) {
     print $q->end_html, "\n";
     return;
@@ -2401,11 +2401,11 @@ sub WrapperEnd { # called via @MyFooters
 }
 
 sub DefaultFooter { # called via @MyFooters
-  my ($id, $rev, $comment) = @_;
+  my ($id, $rev, $comment, $page) = @_;
   my $html = $q->start_div({-class=>'footer'}) . $q->hr();
   $html .= GetGotoBar($id) if GetParam('toplinkbar', $TopLinkBar) != 1;
   $html .= GetFooterLinks($id, $rev);
-  $html .= GetFooterTimestamp($id, $rev);
+  $html .= GetFooterTimestamp($id, $rev, $page);
   $html .= GetSearchForm() if GetParam('topsearchform', $TopSearchForm) != 1;
   if ($DataDir =~ m|/tmp/|) {
     $html .= $q->p($q->strong(T('Warning') . ': ')
@@ -2418,11 +2418,12 @@ sub DefaultFooter { # called via @MyFooters
 }
 
 sub GetFooterTimestamp {
-  my ($id, $rev) = @_;
-  if ($id and $rev ne 'history' and $rev ne 'edit' and $Page{revision}) {
-    my @elements = (($rev eq '' ? T('Last edited') : T('Edited')), TimeToText($Page{ts}),
-		    Ts('by %s', GetAuthorLink($Page{host}, $Page{username})));
-    push(@elements, ScriptLinkDiff(2, $id, T('(diff)'), $rev)) if $UseDiff and $Page{revision} > 1;
+  my ($id, $rev, $page) = @_;
+  $page //= \%Page;
+  if ($id and $rev ne 'history' and $rev ne 'edit' and $page->{revision}) {
+    my @elements = (($rev eq '' ? T('Last edited') : T('Edited')), TimeToText($page->{ts}),
+		    Ts('by %s', GetAuthorLink($page->{host}, $page->{username})));
+    push(@elements, ScriptLinkDiff(2, $id, T('(diff)'), $rev)) if $UseDiff and $page->{revision} > 1;
     return $q->div({-class=>'time'}, @elements);
   }
   return '';
