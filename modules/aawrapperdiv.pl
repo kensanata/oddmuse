@@ -36,8 +36,7 @@ sub WrapperGetHeader {
 *PrintFooter = \&WrapperPrintFooter;
 
 sub WrapperPrintFooter {
-  my ($id, $rev, $comment) = @_;
   print $q->start_div({-class=>'wrapper close'});
   print $q->end_div(), $q->end_div();
-  OldPrintFooter($id, $rev, $comment);
+  OldPrintFooter(@_);
 }
