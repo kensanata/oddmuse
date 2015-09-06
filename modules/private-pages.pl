@@ -69,8 +69,8 @@ sub NewPrivatePagesUserCanEdit {
   my $result = OldPrivatePagesUserCanEdit($id, $editing, @rest);
   # bypass OpenPage and GetPageContent (these are redefined below)
   if ($result > 0 and $editing and $IndexHash{$id}) {
-    my %data = ParseData(ReadFileOrDie(GetPageFile($id)));
-    if (PrivatePageLocked($data{text})) {
+    my $data = ParseData(ReadFileOrDie(GetPageFile($id)));
+    if (PrivatePageLocked($data->{text})) {
       return 0;
     }
   }
@@ -128,11 +128,11 @@ sub NewPrivatePagesGetPageContent {
 *GetTextRevision = \&NewPrivatePagesGetTextRevision;
 
 sub NewPrivatePagesGetTextRevision {
-  my ($text, $revision) = OldPrivatePagesGetTextRevision(@_);
-  if (PrivatePageLocked($text)) {
-    return (NewPrivatePageNewText(), $revision);
+  my ($page, $revision) = OldPrivatePagesGetTextRevision(@_);
+  if (PrivatePageLocked($page->{text})) {
+    return ({text => NewPrivatePageNewText()}, $revision); # XXX faking a page object like this is not good
   }
-  return ($text, $revision);
+  return wantarray ? ($page, $revision) : $page;
 }
 
 # hide #PASSWORD

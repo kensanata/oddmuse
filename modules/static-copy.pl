@@ -117,9 +117,9 @@ sub StaticFileName {
   my ($status, $data) = ReadFile(GetPageFile(UrlDecode($id)));
   # If the link points to a wanted page, we cannot make this static.
   return $id unless $status;
-  my %hash = ParseData($data);
+  my $hash = ParseData($data);
   my $ext = '.html';
-  if ($hash{text} =~ /^\#FILE ([^ \n]+ ?[^ \n]*)\n(.*)/s) {
+  if ($hash->{text} =~ /^\#FILE ([^ \n]+ ?[^ \n]*)\n(.*)/s) {
     %StaticMimeTypes = StaticMimeTypes() unless %StaticMimeTypes;
     $ext = $StaticMimeTypes{"$1"};
     $ext = '.' . $ext if $ext;

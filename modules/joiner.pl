@@ -174,18 +174,17 @@ sub JoinerCreateAccount {
   }
 
   my ($email_status, $email_data) = ReadFile(JoinerGetEmailFile($email));
-  my %email_page = ();
   if ($email_status) {
-    %email_page = ParseData($email_data);
-    if ($email_page{confirmed}) {
+    my $email_page = ParseData($email_data);
+    if ($email_page->{confirmed}) {
       return Ts('The email address %s has already been used.', $email);
     }
-    if ($email_page{registration_time} + $JoinerWait > $Now) {
-      my $min = 1 + int(($email_page{registration_time} + $JoinerWait - $Now) / 60);
+    if ($email_page->{registration_time} + $JoinerWait > $Now) {
+      my $min = 1 + int(($email_page->{registration_time} + $JoinerWait - $Now) / 60);
       return Ts('Wait %s minutes before try again.', $min);
     }
   }
-  %email_page = ();
+  my %email_page = ();
   $email_page{username} = $username;
   $email_page{email} = $email;
   $email_page{confirmed} = 0;
@@ -468,37 +467,37 @@ sub JoinerDoConfirmRegistration {
     JoinerShowRegistrationConfirmationFailed();
     return;
   }
-  my %page = ParseData($data);
+  my $page = ParseData($data);
 
-  if ($key ne $page{key}) {
+  if ($key ne $page->{key}) {
     $JoinerMessage = T('Invalid key.');
     JoinerShowRegistrationConfirmationFailed();
     return;
   }
 
-  if ($page{registration_time} + $JoinerWait < $Now) {
+  if ($page->{registration_time} + $JoinerWait < $Now) {
     $JoinerMessage = T('The key expired.');
     JoinerShowRegistrationConfirmationFailed();
     return;
   }
 
-  $page{key} = '';
-  $page{confirmed} = 1;
+  $page->{key} = '';
+  $page->{confirmed} = 1;
   JoinerRequestLockOrError('joiner');
   CreateDir($JoinerDir);
-  WriteStringToFile(JoinerGetAccountFile($username), EncodePage(%page));
+  WriteStringToFile(JoinerGetAccountFile($username), EncodePage(%$page));
   ReleaseLockDir('joiner');
 
-  my $email = $page{email};
+  my $email = $page->{email};
   JoinerRequestLockOrError('joiner');
   my ($email_status, $email_data) = ReadFile(JoinerGetEmailFile($email));
   ReleaseLockDir('joiner');
   if ($email_status) {
-    my %email_page = ParseData($email_data);
-    $email_page{confirmed} = 1;
+    my $email_page = ParseData($email_data);
+    $email_page->{confirmed} = 1;
     JoinerRequestLockOrError('joiner');
     CreateDir($JoinerEmailDir);
-    WriteStringToFile(JoinerGetEmailFile($email), EncodePage(%email_page));
+    WriteStringToFile(JoinerGetEmailFile($email), EncodePage(%$email_page));
     ReleaseLockDir('joiner');
   }
 
@@ -570,41 +569,41 @@ sub JoinerDoProcessLogin {
     JoinerDoLogin();
     return;
   }
-  my %page = ParseData($data);
+  my $page = ParseData($data);
   my $hash = JoinerGetPasswordHash($password);
-  if ($hash eq $page{password}) {
-    $page{recover} = 0;
+  if ($hash eq $page->{password}) {
+    $page->{recover} = 0;
     SetParam('joiner_recover', 0);
-  } elsif ($key ne '' && $key eq $page{recover_key}) {
-    if ($page{recover_time} + $JoinerWait < $Now) {
+  } elsif ($key ne '' && $key eq $page->{recover_key}) {
+    if ($page->{recover_time} + $JoinerWait < $Now) {
       $JoinerMessage = T('The key expired.');
       JoinerDoLogin();
       return;
     }
-    $page{recover} = 1;
+    $page->{recover} = 1;
     SetParam('joiner_recover', 1);
   } else {
     $JoinerMessage = T('Login failed.');
     JoinerDoLogin();
     return;
   }
-  if ($page{banned}) {
+  if ($page->{banned}) {
     $JoinerMessage = T('You are banned.');
     JoinerDoLogin();
     return;
   }
 
-  if (!$page{confirmed}) {
+  if (!$page->{confirmed}) {
     $JoinerMessage = T('You must confirm email address.');
     JoinerDoLogin();
     return;
   }
 
   my $session = Digest::MD5::md5_hex(rand());
-  $page{session} = $session;
+  $page->{session} = $session;
   JoinerRequestLockOrError('joiner');
   CreateDir($JoinerDir);
-  WriteStringToFile(JoinerGetAccountFile($username), EncodePage(%page));
+  WriteStringToFile(JoinerGetAccountFile($username), EncodePage(%$page));
   ReleaseLockDir('joiner');
 
   SetParam('username', $username);
@@ -617,7 +616,7 @@ sub JoinerDoProcessLogin {
   print Ts('%s has logged in.', $username);
   print $q->end_p();
 
-  if ($page{recover}) {
+  if ($page->{recover}) {
     print $q->start_p();
     print T('You should set new password immediately.');
     print $q->end_p();
@@ -735,9 +734,9 @@ sub JoinerDoProcessChangePassword {
     JoinerDoChangePassword();
     return;
   }
-  my %page = ParseData($data);
+  my $page = ParseData($data);
   my $hash = JoinerGetPasswordHash($current_password);
-  if (!$page{recover} && $hash ne $page{password}) {
+  if (!$page->{recover} && $hash ne $page->{password}) {
     $JoinerMessage = T('Current Password:') . ' ' . T('Password is wrong.');
     JoinerDoChangePassword();
     return;
@@ -754,12 +753,12 @@ sub JoinerDoProcessChangePassword {
     return;
   }
 
-  $page{password} = JoinerGetPasswordHash($new_password);
-  $page{key} = '';
-  $page{recover} = '';
+  $page->{password} = JoinerGetPasswordHash($new_password);
+  $page->{key} = '';
+  $page->{recover} = '';
   JoinerRequestLockOrError('joiner');
   CreateDir($JoinerDir);
-  WriteStringToFile(JoinerGetAccountFile($username), EncodePage(%page));
+  WriteStringToFile(JoinerGetAccountFile($username), EncodePage(%$page));
   ReleaseLockDir('joiner');
 
   SetParam('joiner_recover', 0);
@@ -823,9 +822,9 @@ sub JoinerDoProcessForgotPassword {
     JoinerDoForgotPassword();
     return;
   }
-  my %email_page = ParseData($email_data);
+  my $email_page = ParseData($email_data);
 
-  my $username = $email_page{username};
+  my $username = $email_page->{username};
   JoinerRequestLockOrError('joiner');
   my ($status, $data) = ReadFile(JoinerGetAccountFile($username));
   ReleaseLockDir('joiner');
@@ -834,27 +833,27 @@ sub JoinerDoProcessForgotPassword {
     JoinerDoForgotPassword();
     return;
   }
-  my %page = ParseData($data);
+  my $page = ParseData($data);
 
-  if ($email ne $page{email}) {
+  if ($email ne $page->{email}) {
     $JoinerMessage = T('The mail address is not valid anymore.');
     JoinerDoForgotPassword();
     return;
   }
 
-  if ($page{recover_time} + $JoinerWait > $Now) {
-    my $min = 1 + int(($page{recover_time} + $JoinerWait - $Now) / 60);
+  if ($page->{recover_time} + $JoinerWait > $Now) {
+    my $min = 1 + int(($page->{recover_time} + $JoinerWait - $Now) / 60);
     $JoinerMessage = Ts('Wait %s minutes before try again.', $min);
     JoinerDoForgotPassword();
     return;
   }
 
   my $key = Digest::MD5::md5_hex($JoinerGeneratorSalt . rand());
-  $page{recover_time} = $Now;
-  $page{recover_key} = $key;
+  $page->{recover_time} = $Now;
+  $page->{recover_key} = $key;
   JoinerRequestLockOrError('joiner');
   CreateDir($JoinerDir);
-  WriteStringToFile(JoinerGetAccountFile($username), EncodePage(%page));
+  WriteStringToFile(JoinerGetAccountFile($username), EncodePage(%$page));
   ReleaseLockDir('joiner');
 
   JoinerSendRecoverAccountEmail($email, $username, $key);
@@ -922,8 +921,8 @@ sub JoinerDoProcessChangeEmail {
   my ($email_status, $email_data) = ReadFile(JoinerGetEmailFile($email));
   ReleaseLockDir('joiner');
   if ($email_status) {
-    my %email_page = ParseData($email_data);
-    if ($email_page{confirmed} && $email_page{username} ne $username) {
+    my $email_page = ParseData($email_data);
+    if ($email_page->{confirmed} && $email_page->{username} ne $username) {
       $JoinerMessage = T('Email:') . ' ' .
         Ts('The email address %s has already been used.', $email);
       JoinerDoChangeEmail();
@@ -939,29 +938,29 @@ sub JoinerDoProcessChangeEmail {
     JoinerDoChangeEmail();
     return;
   }
-  my %page = ParseData($data);
+  my $page = ParseData($data);
 
-  if ($page{change_email_time} + $JoinerWait > $Now) {
-    my $min = 1 + int(($page{change_email_time} + $JoinerWait - $Now) / 60);
+  if ($page->{change_email_time} + $JoinerWait > $Now) {
+    my $min = 1 + int(($page->{change_email_time} + $JoinerWait - $Now) / 60);
     $JoinerMessage = Ts('Wait %s minutes before try again.', $min);
     JoinerDoChangeEmail();
     return;
   }
 
   my $hash = JoinerGetPasswordHash($password);
-  if ($hash ne $page{password}) {
+  if ($hash ne $page->{password}) {
     $JoinerMessage = T('Password:') . ' ' . T('Password is wrong.');
     JoinerDoChangeEmail();
     return;
   }
 
   my $key = Digest::MD5::md5_hex(rand());
-  $page{change_email} = $email;
-  $page{change_email_key} = $key;
-  $page{change_email_time} = $Now;
+  $page->{change_email} = $email;
+  $page->{change_email_key} = $key;
+  $page->{change_email_time} = $Now;
   JoinerRequestLockOrError('joiner');
   CreateDir($JoinerDir);
-  WriteStringToFile(JoinerGetAccountFile($username), EncodePage(%page));
+  WriteStringToFile(JoinerGetAccountFile($username), EncodePage(%$page));
   ReleaseLockDir('joiner');
 
   JoinerSendChangeEmailEmail($email, $username, $key);
@@ -1012,22 +1011,22 @@ sub JoinerDoConfirmEmail {
     JoinerShowConfirmEmailFailed();
     return;
   }
-  my %page = ParseData($data);
+  my $page = ParseData($data);
 
-  if ($key ne $page{change_email_key}) {
+  if ($key ne $page->{change_email_key}) {
     $JoinerMessage = T('Invalid key.');
     JoinerShowConfirmEmailFailed();
     return;
   }
 
-  my $new_email = $page{change_email};
-  $page{email} = $new_email;
-  $page{change_email} = '';
-  $page{change_email_key} = '';
-  $page{change_email_time} = '';
+  my $new_email = $page->{change_email};
+  $page->{email} = $new_email;
+  $page->{change_email} = '';
+  $page->{change_email_key} = '';
+  $page->{change_email_time} = '';
   JoinerRequestLockOrError('joiner');
   CreateDir($JoinerDir);
-  WriteStringToFile(JoinerGetAccountFile($username), EncodePage(%page));
+  WriteStringToFile(JoinerGetAccountFile($username), EncodePage(%$page));
   ReleaseLockDir('joiner');
 
   my %email_page = ();
@@ -1128,30 +1127,30 @@ sub JoinerDoProcessBan {
     JoinerDoBan();
     return;
   }
-  my %page = ParseData($data);
+  my $page = ParseData($data);
 
   if ($ban) {
-    if ($page{banned}) {
+    if ($page->{banned}) {
       $JoinerMessage = Ts('%s is already banned.', $username);
       JoinerDoBan();
       return;
     }
-    $page{banned} = 1;
-    $page{session} = '';
+    $page->{banned} = 1;
+    $page->{session} = '';
     $JoinerMessage = Ts('%s has been banned.', $username);
   } else {
-    if (!$page{banned}) {
+    if (!$page->{banned}) {
       $JoinerMessage = Ts('%s is not banned.', $username);
       JoinerDoBan();
       return;
     }
-    $page{banned} = 0;
+    $page->{banned} = 0;
     $JoinerMessage = Ts('%s has been unbanned.', $username);
   }
 
   JoinerRequestLockOrError('joiner');
   CreateDir($JoinerDir);
-  WriteStringToFile(JoinerGetAccountFile($username), EncodePage(%page));
+  WriteStringToFile(JoinerGetAccountFile($username), EncodePage(%$page));
   ReleaseLockDir('joiner');
 
   JoinerDoBan();
@@ -1178,16 +1177,16 @@ sub JoinerIsLoggedIn {
     $JoinerLoggedIn = 0;
     return $JoinerLoggedIn;
   }
-  my %page = ParseData($data);
-  if (!$page{confirmed}) {
+  my $page = ParseData($data);
+  if (!$page->{confirmed}) {
     $JoinerLoggedIn = 0;
     return $JoinerLoggedIn;
   }
-  if ($session ne $page{session}) {
+  if ($session ne $page->{session}) {
     $JoinerLoggedIn = 0;
     return $JoinerLoggedIn;
   }
-  if ($page{banned}) {
+  if ($page->{banned}) {
     $JoinerLoggedIn = 0;
     return $JoinerLoggedIn;
   }

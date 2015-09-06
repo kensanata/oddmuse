@@ -18,12 +18,14 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 16;
+use Test::More tests => 17;
 
 ## Test revision and diff stuff
 
 update_page('KeptRevisions', 'first');
-update_page('KeptRevisions', 'second');
+#sleep 120; # TODO implement fake time!
+update_page('KeptRevisions', 'second', '', 0, 0, 'username=BestContributorEver');
+#sleep 120; # TODO implement fake time!
 update_page('KeptRevisions', 'third');
 update_page('KeptRevisions', 'fourth', '', 1);
 update_page('KeptRevisions', 'fifth', '', 1);
@@ -49,6 +51,10 @@ test_page(get_page('action=browse revision=1 id=KeptRevisions'),
 test_page(get_page('action=browse revision=9 id=KeptRevisions'),
 	  'Revision 9 not available \(showing current revision instead\)',
 	  'fifth');
+
+my ($ts2) = get_page('action=browse revision=2 id=KeptRevisions') =~ /edited (.*?) diff/ix;
+my ($ts3) = get_page('action=browse revision=3 id=KeptRevisions') =~ /edited (.*?) diff/ix;
+ok($ts2 ne $ts3, 'Revision timestamp or author is different');
 
 # Disable cache and request the correct last major diff
 test_page(get_page('action=browse diff=1 id=KeptRevisions cache=0'),

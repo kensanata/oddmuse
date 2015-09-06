@@ -99,9 +99,9 @@ sub LocalMapWorkHorse {
 
    my $retval_children = '';
    if ($depth > 0) {
-      my %data = ParseData(ReadFileOrDie(GetPageFile($id)));
-      my @flags = split(/$FS/, $data{'flags'});
-      my @blocks = split(/$FS/, $data{'blocks'});
+      my $data = ParseData(ReadFileOrDie(GetPageFile($id)));
+      my @flags = split(/$FS/, $data->{'flags'});
+      my @blocks = split(/$FS/, $data->{'blocks'});
       my @subpages;
 
       # Iterate over blocks, operate only on "dirty" ones
