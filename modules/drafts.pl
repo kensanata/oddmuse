@@ -48,10 +48,10 @@ sub DoDraft {
     SetParam('msg', T('Draft saved')); # invalidate cache
     print GetHttpHeader('', T('Draft saved'), '204 NO CONTENT');
   } elsif (-f $draft) {
-    my %data = ParseData(ReadFileOrDie($draft));
+    my $data = ParseData(ReadFileOrDie($draft));
     unlink ($draft);
     $Message .= $q->p(T('Draft recovered'));
-    DoEdit($data{id}, $data{text}, 1);
+    DoEdit($data->{id}, $data->{text}, 1);
   } else {
     ReportError(T('No draft available to recover'), '404 NOT FOUND');
   }

@@ -271,11 +271,11 @@ sub SearchNearPages {
       my @entries = split(/\n\n+/, $data);
       shift @entries; # skip head
       foreach my $entry (@entries) {
-	my %entry = ParseData($entry); # need to pass reference
-	my $name = $entry{title};
+	my $entryPage = ParseData($entry); # need to pass reference
+	my $name = $entryPage->{title};
 	next if $found{$name}; # do not duplicate local pages
 	$found{$name} = 1;
-	PrintSearchResultEntry(\%entry, $regex); # with context and full search!
+	PrintSearchResultEntry($entryPage, $regex); # with context and full search!
       }
     }
   }

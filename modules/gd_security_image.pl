@@ -240,9 +240,9 @@ sub GdSecurityImageCheck {
   if ($answer ne '' && GdSecurityImageIsValidId($id)) {
     my ($status, $data) = ReadFile(GdSecurityImageGetTicketFile($id));
     if ($status) {
-      my %page = ParseData($data);
-      if ($page{generation_time} + $GdSecurityImageDuration > $Now) {
-        if ($answer eq $page{string}) {
+      my $page = ParseData($data);
+      if ($page->{generation_time} + $GdSecurityImageDuration > $Now) {
+        if ($answer eq $page->{string}) {
           $GdSecurityImageId = '';
           if (!$GdSecurityImageRememberAnswer) {
             SetParam('gd_security_image_id', '');

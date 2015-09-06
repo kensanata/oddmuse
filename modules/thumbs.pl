@@ -190,7 +190,7 @@ sub GenerateThumbNail {
      #   Check MIME type supported
      #   Check is a file
 
-     my ($text, $revision) = GetTextRevision(GetParam('revision', '')); # maybe revision reset!
+     my $text = GetTextRevision(GetParam('revision', ''))->{text}; # maybe revision reset!
      my ($type) = TextIsFile($text); # MIME type if an uploaded file
      my $data = substr($text, index($text, "\n") + 1);
 
