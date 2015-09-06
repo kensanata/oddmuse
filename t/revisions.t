@@ -1,24 +1,20 @@
-# Copyright (C) 2006  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006–2015  Alex Schroeder <alex@gnu.org>
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 3 of the License, or (at your option) any later
+# version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 17;
+use Test::More tests => 23;
 
 ## Test revision and diff stuff
 
@@ -56,11 +52,20 @@ my ($ts2) = get_page('action=browse revision=2 id=KeptRevisions') =~ /edited (.*
 my ($ts3) = get_page('action=browse revision=3 id=KeptRevisions') =~ /edited (.*?) diff/ix;
 ok($ts2 ne $ts3, 'Revision timestamp or author is different');
 
-# Disable cache and request the correct last major diff
-test_page(get_page('action=browse diff=1 id=KeptRevisions cache=0'),
-	  'Difference between revision 2 and revision 3',
-	  'second',
-	  'third');
+# Request the correct last major diff
+xpath_test(get_page('action=browse diff=1 id=KeptRevisions'),
+	   '//div[@class="diff"]/p/b[contains(text(), "Last major edit")]',
+	   '//div[@class="diff"]/p/b/a[contains(text(), "later minor edits")]',
+	   '//div[@class="diff"]/p/b/a[@href="http://localhost/wiki.pl?action=browse;diff=2;id=KeptRevisions;diffrevision=3"]',
+	   '//div[@class="diff"]/div[@class="old"]/p/strong[contains(text(), "second")]',
+	   '//div[@class="diff"]/div[@class="new"]/p/strong[contains(text(), "third")]',
+	   '//div[@class="content browse"]/p[contains(text(), "fifth")]');
+
+# Look at the remaining differences
+test_page(get_page('action=browse diff=2 id=KeptRevisions diffrevision=3'),
+	  'Difference between revision 3 and current revision',
+	  'third',
+	  'fifth');
 
 # Show a diff from the history page comparing two specific revisions
 test_page(get_page('action=browse diff=1 revision=4 diffrevision=2 id=KeptRevisions'),
@@ -71,5 +76,5 @@ test_page(get_page('action=browse diff=1 revision=4 diffrevision=2 id=KeptRevisi
 # Show no difference
 update_page('KeptRevisions', 'second');
 test_page(get_page('action=browse diff=1 revision=6 diffrevision=2 id=KeptRevisions'),
-	  'Difference between revision 2 and revision 6',
+	  'Difference between revision 2 and current revision',
 	  'The two revisions are the same');

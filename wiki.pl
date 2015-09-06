@@ -1415,7 +1415,7 @@ sub BrowsePage {
   print GetHeader($id, NormalToFree($id), $oldId, undef, $status);
   my $showDiff = GetParam('diff', 0);
   if ($UseDiff and $showDiff) {
-    PrintHtmlDiff($showDiff, GetParam('diffrevision', $revision), $revision, $text, $revisionPage->{summary});
+    PrintHtmlDiff($showDiff, GetParam('diffrevision'), $revisionPage, $Page{revision});
     print $q->hr();
   }
   PrintPageContent($text, $revision, $comment);
@@ -1774,9 +1774,9 @@ sub RcHtml {
       if ($revision == 1) {
 	$diff .= '(' . $q->span({-class=>'new'}, T('new')) . ')';
       } elsif ($all) {
-	$diff .= '(' . ScriptLinkDiff(2, $id, T('diff'), '', $all_revision) .')';
+	$diff .= '(' . ScriptLinkDiff(2, $id, T('diff'), $all_revision) .')';
       } else {
-	$diff .= '(' . ScriptLinkDiff($minor ? 2 : 1, $id, T('diff'), '') . ')';
+	$diff .= '(' . ScriptLinkDiff($minor ? 2 : 1, $id, T('diff')) . ')';
       }
     }
     $html .= $q->li($q->span({-class=>'time'}, CalcTime($ts)), $diff, $history,
@@ -2532,45 +2532,41 @@ sub GetGotoBar {    # ignore $id parameter
 }
 
 sub PrintHtmlDiff {
-  my ($type, $old, $new, $text, $summary) = @_;
+  my ($type, $old, $page, $current) = @_;
+  $page //= \%Page;
+  $current //= $page->{revision};
+  $type = 2 if $old or $page->{revision} != $current; # explicit revisions means minor diffs!
+  my $summary = $page->{$type == 1 ? 'lastmajorsummary' : 'summary'};
   my $intro = T('Last edit');
-  my $diff = GetCacheDiff($type == 1 ? 'major' : 'minor');
-  # compute old revision if cache is disabled or no cached diff is available
-  if (not $old and (not $diff or GetParam('cache', $UseCache) < 1)) {
-    if ($type == 1) {
-      $old = $Page{lastmajor} - 1;
-      if (not $new and $Page{lastmajor} != $Page{revision}) {
-	my $revisionPage;
-	($revisionPage, $new) = GetTextRevision($Page{lastmajor}, 1);
-	$text    = $revisionPage->{text};
-	$summary = $revisionPage->{summary};
-      }
-    } elsif ($new) {
-      $old = $new - 1;
-    } else {
-      $old = $Page{revision} - 1;
-    }
+  my $diff;
+  # use the cached diff if possible
+  if (not $old or $old == $page->{$type == 1 ? 'lastmajor' : 'revision'} - 1) {
+    $diff = GetCacheDiff($type == 1 ? 'major' : 'minor', $page);
+    $old = $page->{$type == 1 ? 'lastmajor' : 'revision'} - 1 if not $old;
   }
-  if ($old > 0) { # generate diff if the computed old revision makes sense
-    $diff = GetKeptDiff($text, $old);
-    $intro = Tss('Difference between revision %1 and %2', $old,
-		 $new ? Ts('revision %s', $new) : T('current revision'));
-  } elsif ($type == 1 and $Page{lastmajor} and $Page{lastmajor} != $Page{revision}) {
-    $summary = GetKeptRevision($Page{lastmajor})->{summary};
-    $intro = Ts('Last major edit (%s)', ScriptLinkDiff(1, $OpenPageName, T('later minor edits'),
-						       undef, $Page{lastmajor} || 1));
+  # if there was no cached diff: compute it, and new intro
+  if (not $diff and $old > 0) {
+    ($diff, my $keptPage) = GetKeptDiff($page->{text}, $old);
+    my $to = $page->{revision} != $current ? Ts('revision %s', $page->{revision}) : T('current revision');
+    $intro = Tss('Difference between revision %1 and %2', $old, $to);
+  }
+  # if this is the last major diff and there are minor diffs to look at, and we
+  # didn't request a particular old revision
+  if ($type == 1 and $page->{lastmajor} and $page->{lastmajor} != $current) {
+    $intro = Ts('Last major edit (%s)', ScriptLinkDiff(2, $OpenPageName, T('later minor edits'),
+						       undef, $page->{lastmajor} || 1));
   }
   $diff =~ s!<p><strong>(.*?)</strong></p>!'<p><strong>' . T($1) . '</strong></p>'!eg;
   $diff ||= T('No diff available.');
-  $summary = $Page{summary} if not $summary and not $new;
-  $summary = $q->p({-class=>'summary'}, T('Summary:') . ' ' . QuoteHtml($summary)) if $summary;
-  print $q->div({-class=>'diff'}, $q->p($q->b($intro)), $summary, $diff);
+  print $q->div({-class=>'diff'}, $q->p($q->b($intro)),
+		$summary ? $q->p({-class=>'summary'}, T('Summary:') . ' ' . QuoteHtml($summary)) : '',
+		$diff);
 }
 
 sub GetCacheDiff {
-  my $type = shift;
-  my $diff = $Page{"diff-$type"};
-  $diff = $Page{"diff-minor"} if $diff eq '1'; # if major eq minor diff
+  my ($type, $page) = @_;
+  my $diff = $page->{"diff-$type"};
+  $diff = $page->{"diff-minor"} if $diff eq '1'; # if major eq minor diff
   return $diff;
 }
 
@@ -2578,9 +2574,9 @@ sub GetKeptDiff {
   my ($new, $revision) = @_;
   $revision ||= 1;
   my ($revisionPage, $rev) = GetTextRevision($revision, 1);
-  return '' unless $rev;
-  return T("The two revisions are the same.") if $revisionPage->{text} eq $new;
-  return GetDiff($revisionPage->{text}, $new, $rev);
+  return '', $revisionPage unless $rev;
+  return T("The two revisions are the same."), $revisionPage if $revisionPage->{text} eq $new;
+  return GetDiff($revisionPage->{text}, $new, $rev), $revisionPage;
 }
 
 sub DoDiff {      # Actualy call the diff program
@@ -3736,6 +3732,7 @@ sub Save {      # call within lock, with opened page
   SaveKeepFile(); # deletes blocks, flags, diff-major, and diff-minor, and sets keep-ts
   ExpireKeepFiles();
   $Page{lastmajor} = $revision unless $minor;
+  $Page{lastmajorsummary} = $summary unless $minor;
   @Page{qw(ts revision summary username host minor text)} =
       ($Now, $revision, $summary, $user, $host, $minor, $new);
   if ($UseDiff and $UseCache > 1 and $revision > 1 and not $upload and not TextIsFile($old)) {
