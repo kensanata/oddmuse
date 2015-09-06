@@ -2470,9 +2470,10 @@ sub GetCommentForm {
       and $id =~ /$CommentsPattern/ and UserCanEdit($id, 0, 1)) {
     my $html = $q->div({-class=>'comment'},
 		       GetFormStart(undef, undef, 'comment'),
-		       $q->p(GetHiddenValue('title', $id), $q->br(),
+		       $q->p(GetHiddenValue('title', $id),
 			     $q->label({-for=>'aftertext', -accesskey=>T('c')},
-				       GetTextArea('aftertext', $comment, 10))),
+				       T('Add your comment here:')), $q->br(),
+			     GetTextArea('aftertext', $comment, 10)),
 		       $EditNote,
 		       $q->p($q->span({-class=>'username'},
 				      $q->label({-for=>'username'}, T('Username:')), ' ',
