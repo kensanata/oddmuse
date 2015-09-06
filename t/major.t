@@ -39,14 +39,14 @@ test_page(get_page('action=browse id=bla diff=1'), 'No diff available', 'one', '
 test_page(get_page('action=browse id=bla diff=2'), 'No diff available', 'one', 'Last edit');
 update_page('bla', 'two', '', 1); # lastmajor is 1
 test_page(get_page('action=browse id=bla diff=1'), 'No diff available', 'two', 'Last major edit',
-	  'diff=1;id=bla;diffrevision=1');
+	  'diff=2;id=bla;diffrevision=1');
 test_page(get_page('action=browse id=bla diff=2'), 'one', 'two', 'Last edit');
 update_page('bla', 'three'); # lastmajor is 3
 test_page(get_page('action=browse id=bla diff=1'), 'two', 'three', 'Last edit');
 test_page(get_page('action=browse id=bla diff=2'), 'two', 'three', 'Last edit');
 update_page('bla', 'four', '', 1); # lastmajor is 3
 test_page(get_page('action=browse id=bla diff=1'), 'two', 'three', 'Last major edit',
-	  'diff=1;id=bla;diffrevision=3');
+	  'diff=2;id=bla;diffrevision=3');
 test_page(get_page('action=browse id=bla diff=2'), 'three', 'four', 'Last edit');
 update_page('bla', 'five'); # lastmajor is 5
 test_page(get_page('action=browse id=bla diff=1'), 'four', 'five', 'Last edit');
