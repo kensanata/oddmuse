@@ -20,7 +20,7 @@ AddModuleDescription('askpage.pl', 'Ask Page Extension');
 
 use Fcntl qw(:DEFAULT :flock);
 
-our ($DataDir);
+our ($DataDir, %Translate, @MyFooters);
 our ($AskPage, $QuestionPage, $NewQuestion);
 # Don't forget to set your $CommentsPattern to include both $AskPage and $QuestionPage
 $AskPage = 'Ask';
