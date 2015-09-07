@@ -1386,7 +1386,7 @@ sub BrowsePage {
   OpenPage($id);
   my ($revisionPage, $revision) = GetTextRevision(GetParam('revision', ''));
   my $text    = $revisionPage->{text};
-  $text = NewText($id) unless $revision or $Page{revision}; # new text for new pages
+  $text = NewText($id) unless $revision or $Page{revision} or $comment; # new text for new pages
   # handle a single-level redirect
   my $oldId = GetParam('oldid', '');
   if ((substr($text, 0, 10) eq '#REDIRECT ')) {
