@@ -39,8 +39,8 @@ sub IncrementInFile {
   return $num;
 }
 
-*OldAskPageDoPost=\&DoPost;
-*DoPost=\&NewAskPageDoPost;
+*OldAskPageDoPost = \&DoPost;
+*DoPost = \&NewAskPageDoPost;
 sub NewAskPageDoPost {
   my $id = FreeToNormal(shift);
   if ($id eq $AskPage and not GetParam('text', undef)) { # comment, not a regular edit
@@ -51,18 +51,18 @@ sub NewAskPageDoPost {
   OldAskPageDoPost($id, @_); # keep original functionality for regular edits
 }
 
-*OldAskPageGetTextArea=\&GetTextArea;
-*GetTextArea=\&NewAskPageGetTextArea;
-sub NewAskPageGetTextArea {
-  my ($name, $text, @rest) = @_;
-  if ($name eq 'aftertext' and not $text and GetId() eq $AskPage) {
-    $text = $NewQuestion;
-  }
-  OldAskPageGetTextArea($name, $text, @rest);
+*OldAskPageGetCommentForm = \&GetCommentForm;
+*GetCommentForm = \&NewAskPageGetCommentForm;
+@MyFooters = map { $_ == \&OldAskPageGetCommentForm ? \&NewAskPageGetCommentForm : $_ } @MyFooters;
+
+sub NewAskPageGetCommentForm {
+  my ($id) = @_;
+  $Translate{'Add your comment here:'} = $NewQuestion if $id eq $AskPage;
+  OldAskPageGetCommentForm(@_);
 }
 
-*OldAskPageJournalSort=\&JournalSort;
-*JournalSort=\&NewAskPageJournalSort;
+*OldAskPageJournalSort = \&JournalSort;
+*JournalSort = \&NewAskPageJournalSort;
 sub NewAskPageJournalSort {
   return OldAskPageJournalSort() unless $a =~ m/^$QuestionPage\d+$/ and $b =~ m/^$QuestionPage\d+$/;
   ($b =~ m/$QuestionPage(\d+)/)[0] <=> ($a =~ m/$QuestionPage(\d+)/)[0];
