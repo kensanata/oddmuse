@@ -231,10 +231,6 @@ a:active {
 		font-weight: normal;
 	}
 	a.edit, div.footer, form, span.gotobar, a.number span { display:none; }
-	a[class="url number"]:after, a[class="inter number"]:after {
-		content:"[" attr(href) "]";
-	}
-	a[class="local number"]:after { content:"[" attr(title) "]"; }
 	img[smiley] { line-height: inherit; }
 }
 
