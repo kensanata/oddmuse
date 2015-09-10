@@ -94,7 +94,7 @@ that point.
 
 =cut
 sub SmartTitlesRule {
-  return '' if m/\G (^|\n)? #(TITLE|SUBTITLE|SUBURL) [ \t]+ (.*?) \s*(\n+|$) /cgx;
+  return '' if m/\G (^|\n)? \#(TITLE|SUBTITLE|SUBURL) [ \t]+ (.*?) \s*(\n+|$) /cgx;
   return;
 }
 
