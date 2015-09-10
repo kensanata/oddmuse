@@ -28,8 +28,8 @@ file for your Oddmuse Wiki.
 
 =cut
 our ($SmartTitlesBrowserTitle,
-            $SmartTitlesBrowserTitleWithoutSubtitle,
-            $SmartTitlesSubUrlText);
+     $SmartTitlesBrowserTitleWithoutSubtitle,
+     $SmartTitlesSubUrlText);
 
 =head2 $SmartTitlesBrowserTitle
 
@@ -94,7 +94,7 @@ that point.
 
 =cut
 sub SmartTitlesRule {
-  return '' if m/\G(^|\n)?#(TITLE|SUBTITLE|SUBURL:?)[ \t]+(.*?)\s*(\n+|$)/cg;
+  return '' if m/\G (^|\n)? #(TITLE|SUBTITLE|SUBURL) [ \t]+ (.*?) \s*(\n+|$) /cgx;
   return;
 }
 
@@ -112,10 +112,10 @@ extensions (namely, hibernal) to obtain the title and subtitle for pages.
 
 =cut
 sub GetSmartTitles {
-  my ($title)    = $Page{text} =~ m/(?:^|\n)\#TITLE[ \t]+(.*?)\s*\n+/;
-  my ($subtitle) = $Page{text} =~ m/(?:^|\n)\#SUBTITLE[ \t]+(.*?)\s*\n+/;
-  my ($interlink, $suburl) = $Page{text} =~ m/(?:^|\n)\#SUBURL(:)?[ \t]+(.*?)\s*\n+/;
-  return ($title, $subtitle, $suburl, $interlink ? 1 : '');
+  my ($title)    = $Page{text} =~ m/ (?:^|\n) \#TITLE    [ \t]+ (.*?) \s*\n+ /x;
+  my ($subtitle) = $Page{text} =~ m/ (?:^|\n) \#SUBTITLE [ \t]+ (.*?) \s*\n+ /x;
+  my ($suburl)   = $Page{text} =~ m/ (?:^|\n) \#SUBURL   [ \t]+ (.*?) \s*\n+ /x;
+  return ($title, $subtitle, $suburl);
 }
 
 =head2 GetHeaderSmartTitles
@@ -127,27 +127,30 @@ within that passed page's Wiki content.
 
 sub GetHeaderSmartTitles {
   my ($page_name, $title, undef, undef, undef, undef, $subtitle) = @_;
-  my ($smart_title, $smart_subtitle, $smart_suburl, $smart_interlink);
+  my ($smart_title, $smart_subtitle, $smart_suburl);
   my  $html_header = GetHeaderSmartTitlesOld(@_);
 
   if ($page_name) {
     OpenPage($page_name);
     $title = NormalToFree($title);
-    ($smart_title, $smart_subtitle, $smart_suburl, $smart_interlink) = GetSmartTitles();
+    ($smart_title, $smart_subtitle, $smart_suburl) = GetSmartTitles();
   }
 
   $smart_title ||= $title;
   $smart_subtitle ||= $subtitle;
 
-  $smart_title = QuoteHtml($smart_title);
+  $smart_title    = QuoteHtml($smart_title);
   $smart_subtitle = QuoteHtml($smart_subtitle);
+  $smart_suburl   = QuoteHtml($smart_suburl);
 
   $html_header =~ s~\Q>$title</a>\E~>$smart_title</a>~g;
   if ($smart_subtitle) {
     my $subtitlehtml = '<p class="subtitle">' . $smart_subtitle;
     if ($smart_suburl) {
-      $subtitlehtml .= $smart_interlink ? GetInterLink($smart_suburl, undef, 1, 1)
-	                                : GetUrl($smart_suburl, $SmartTitlesSubUrlText, 1);
+      # ApplyRules is too much, we just want links. LinkRules should be enough.
+      # $subtitlehtml .= ' ' . ToString(sub { ApplyRules($smart_suburl, 1, 1) }) if $smart_suburl;
+      $_ = $smart_suburl;
+      $subtitlehtml .= ' ' . ToString(sub {LinkRules(1)});
     }
     $html_header =~ s~\Q</h1>\E~</h1>$subtitlehtml</p>~;
   }
@@ -172,7 +175,7 @@ sub GetHeaderSmartTitles {
 The information below applies to everything in this distribution,
 except where noted.
 
-Copyright 2014 Alex-Daniel Jakimenko <alex.jakimenko@gmail.com>
+Copyright 2014-2015 Alex-Daniel Jakimenko <alex.jakimenko@gmail.com>
 Copyleft  2008 by B.w.Curry <http://www.raiazome.com>.
 Copyright 2006 by Charles Mauch <mailto://cmauch@gmail.com>.
 
