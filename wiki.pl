@@ -3380,7 +3380,7 @@ sub DoSearch {
     return unless UserIsAdminOrError();
     if (GetParam('preview', '')) { # Preview button was used
       print GetHeader('', Ts('Preview: %s', $string . " &#x2192; " . $replacement));
-      @results = SearchTitleAndBody($re, \&ReplaceAndDiff, $re, UnquoteHtml($replacement));
+      @results = ReplaceAndDiff($re, UnquoteHtml($replacement));
     } elsif (GetParam('More', '')) { # More button was used
       # FIXME
     } else {
@@ -3562,7 +3562,7 @@ sub ReplaceAndSave {
 }
 
 sub ReplaceAndDiff {
-  my ($id, $from, $to) = @_;
+  my ($from, $to) = @_;
   return Replace($from, $to, sub {
     my ($id, $new) = @_;
     print $q->h2(GetPageLink($id)), $q->div({-class=>'diff'}, ImproveDiff(DoDiff($Page{text}, $new)));
