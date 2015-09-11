@@ -15,7 +15,7 @@
 
 require 't/test.pl';
 package OddMuse;
-use Test::More tests => 44;
+use Test::More tests => 72;
 use utf8; # tests contain UTF-8 characters and it matters
 
 add_module('mac.pl');
@@ -56,6 +56,19 @@ test_page(get_page('search=foo pwd=foo'),
 test_page(get_page('search=foo replace=bar'),
 	  'This operation is restricted to administrators only...');
 
+# Preview simple replacement operation
+
+test_page(get_page('search=fooz replace=fuuz preview=1 pwd=foo'), split('\n',<<'EOT'));
+<h1>Preview: fooz &#x2192; fuuz</h1>
+<p class="result">1 pages found.</p>
+<div class="old"><p>&lt; This is <strong class="changes">fooz</strong> and this is barz.
+<div class="new"><p>&gt; This is <strong class="changes">fuuz</strong> and this is barz.
+EOT
+
+# Verify that the change has not been made
+
+test_page(get_page('SearchAndReplace'), 'This is fooz and this is barz.');
+
 # Simple replace where the replacement pattern is found
 
 test_page(get_page('search=fooz replace=fuuz pwd=foo'), split('\n',<<'EOT'));
@@ -64,7 +77,9 @@ test_page(get_page('search=fooz replace=fuuz pwd=foo'), split('\n',<<'EOT'));
 This is <strong>fuuz</strong> and this is barz.
 EOT
 
-# 'This is fuuz and this is barz.'
+# Verify that the change has been made
+
+test_page(get_page('SearchAndReplace'), 'This is fuuz and this is barz.');
 
 # Replace with empty string
 
@@ -74,8 +89,32 @@ test_page(get_page('search=this%20is%20 replace= pwd=foo delete=1'), split('\n',
 fuuz and barz.
 EOT
 
-# 'fuuz and barz.'
+test_page(get_page('SearchAndReplace'), '<p>fuuz and barz.');
 
+# Creating 12 pages
+for my $i ('A' .. 'M') {
+  OpenPage("Page_$i");
+  Save("Page_$i", 'Something');
+}
+
+# Testing default pagination (10 pages)
+
+$page = get_page('search=Something replace=Other preview=1 pwd=foo');
+test_page($page, split('\n',<<'EOT'));
+<h1>Preview: Something &#x2192; Other</h1>
+<p class="result">13 pages found.</p>
+<div class="old"><p>&lt; <strong class="changes">Something</strong>
+<div class="new"><p>&gt; <strong class="changes">Other</strong>
+EOT
+
+test_page($page, map { "Page_$_" } ('A' .. 'J'));
+test_page_negative($page, map { "Page_$_" } ('K' .. 'M'));
+xpath_test($page, '//a[@class="more"][@href="http://localhost/wiki.pl?search=Something;preview=1;offset=10;num=10;replace=Other"]');
+
+# Next page
+
+$page = get_page('search=Something preview=1 offset=10 num=10 replace=Other pwd=foo');
+test_page($page, map { "Page_$_" } ('K' .. 'M'));
 
 # Replace with backreferences, where the replacement pattern is no longer found.
 # Take 'fuuz and barz.' and replace ([a-z]+)z with x$1 results in 'xfuu and xbar.'
