@@ -85,6 +85,7 @@ sub capture {
 
 sub update_page {
   my ($id, $text, $summary, $minor, $admin, @rest) = @_;
+  $id = FreeToNormal($id);
   my $pwd = $admin ? 'foo' : 'wrong';
   my $page = url_encode($id);
   $text = url_encode($text);

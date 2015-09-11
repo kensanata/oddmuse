@@ -3380,9 +3380,8 @@ sub DoSearch {
     return unless UserIsAdminOrError();
     if (GetParam('preview', '')) { # Preview button was used
       print GetHeader('', Ts('Preview: %s', $string . " &#x2192; " . $replacement));
+      print $q->start_div({-class=>'content replacement'});
       @results = ReplaceAndDiff($re, UnquoteHtml($replacement));
-    } elsif (GetParam('More', '')) { # More button was used
-      # FIXME
     } else {
       print GetHeader('', Ts('Replaced: %s', $string . " &#x2192; " . $replacement));
       print $q->start_div({-class=>'content replacement'});
@@ -3780,7 +3779,7 @@ sub Save {      # call within lock, with opened page
     WriteStringToFile(GetLockedPageFile($id), 'LockOnCreation');
   }
   WriteRcLog($id, $summary, $minor, $revision, $user, $host, $languages, GetCluster($new));
-  AddToIndex($id) if ($revision == 1)
+  AddToIndex($id) if ($revision == 1);
 }
 
 sub TouchIndexFile {
