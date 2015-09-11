@@ -3576,7 +3576,7 @@ sub ReplaceAndDiff {
     print $q->p({-class=>'more'}, ScriptLink($more, T('More...'), 'more'));
   }
   return @found;
-}  
+}
 
 sub Replace {
   my ($from, $to, $func) = @_; # $func takes $id and $new text
@@ -3603,7 +3603,7 @@ sub Replace {
     }
   }
   return @result;
-}  
+}
 
 sub DoPost {
   my $id = FreeToNormal(shift);

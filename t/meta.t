@@ -26,6 +26,7 @@ use Pod::Strip;
 use Pod::Simple::TextContent;
 
 my @modules = grep { $_ ne 'modules/404handler.pl' } <modules/*.pl>;
+my @other = 'wiki.pl';
 my @badModules;
 
 @badModules = grep { (stat $_)[2] != oct '100644' } @modules;
@@ -90,8 +91,8 @@ unless (ok(@badModules == 0, 'no "use vars" in modules')) {
   diag(q{▶▶▶ Use this command to do automatic conversion: perl -0pi -e 's/^([\t ]*)use vars qw\s*\(\s*(.*?)\s*\);/$x = $2; $x =~ s{(?<=\w)\b(?!$)}{,}g;"$1our ($x);"/gems' } . "@badModules");
 }
 
-@badModules = grep { ReadFile($_) =~ / [ \t]+ $ /mx } @modules;
-unless (ok(@badModules == 0, 'no trailing whitespace in modules')) {
+@badModules = grep { ReadFile($_) =~ / [ \t]+ $ /mx } @modules, @other;
+unless (ok(@badModules == 0, 'no trailing whitespace in modules (and other perl files)')) {
   diag(qq{$_ has trailing whitespace}) for @badModules;
   diag(q{▶▶▶ Use this command to do automatic trailing whitespace removal: perl -pi -e 's/[ \t]+$//g' } . "@badModules");
 }
