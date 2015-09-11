@@ -3372,9 +3372,7 @@ sub DoSearch {
   my $string = shift || GetParam('search', '');
   my $re = UnquoteHtml($string);
   return DoIndex() if $string eq '';
-  eval { qr/$re/ }
-    or $@ and ReportError(Ts('Malformed regular expression in %s', $string),
-			  '400 BAD REQUEST');
+  eval { qr/$re/ } or $re = quotemeta($re);
   my $replacement = GetParam('replace', undef);
   my $raw = GetParam('raw', '');
   my @results;
