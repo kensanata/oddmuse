@@ -2512,7 +2512,8 @@ sub GetSearchForm {
     $html .= $q->label({-for=>'replace'}, T('Replace:')) . ' '
 	. $q->textfield(-name=>'replace', -id=>'replace', -size=>20) . ' '
         . $q->label({-for=>'delete', -title=>'If you want to replace matches with the empty string'}, T('Delete')) . ' '
-	. $q->input({-type=>'checkbox', -name=>'delete'});
+	. $q->input({-type=>'checkbox', -name=>'delete'})
+	. $q->submit('preview', T('Preview'));
   }
   if (GetParam('matchingpages', $MatchingPages)) {
     $html .= $q->label({-for=>'matchingpage'}, T('Filter:')) . ' '
@@ -3236,7 +3237,7 @@ sub UserHasPassword {
   return 0 unless $pass;
   if ($PassHashFunction ne '') {
     no strict 'refs'; # TODO this is kept for compatibility. Feel free to remove it later (comment written on 2015-07-14)
-    $pwd = &$PassHashFunction($pwd . $PassSalt);
+    $pwd = $PassHashFunction->($pwd . $PassSalt);
   }
   foreach (split(/\s+/, $pass)) {
     return 1 if $pwd eq $_;
@@ -3280,7 +3281,7 @@ sub DoIndex {
     my ($option, $text, $default, $sub) = @$data;
     my $value = GetParam($option, $default); # HTML checkbox warning!
     $value = 0 if GetParam('manual', 0) and $value ne 'on';
-    push(@pages, &$sub) if $value;
+    push(@pages, $sub->()) if $value;
     push(@menu, $q->checkbox(-name=>$option, -checked=>$value, -label=>$text));
   }
   @pages = grep /$match/i, @pages if $match;
@@ -3379,11 +3380,18 @@ sub DoSearch {
   my @results;
   if ($replacement or GetParam('delete', 0)) {
     return unless UserIsAdminOrError();
-    print GetHeader('', Ts('Replaced: %s', $string . " &#x2192; " . $replacement)),
-      $q->start_div({-class=>'content replacement'});
-    @results = Replace($re, UnquoteHtml($replacement));
-    foreach (@results) {
-      PrintSearchResult($_, $replacement || $re);
+    if (GetParam('preview', '')) { # Preview button was used
+      print GetHeader('', Ts('Preview: %s', $string . " &#x2192; " . $replacement));
+      @results = SearchTitleAndBody($re, \&ReplaceAndDiff, $re, UnquoteHtml($replacement));
+    } elsif (GetParam('More', '')) { # More button was used
+      # FIXME
+    } else {
+      print GetHeader('', Ts('Replaced: %s', $string . " &#x2192; " . $replacement));
+      print $q->start_div({-class=>'content replacement'});
+      @results = ReplaceAndSave($re, UnquoteHtml($replacement));
+      foreach (@results) {
+	PrintSearchResult($_, $replacement || $re);
+      }
     }
   } else {
     if ($raw) {
@@ -3440,7 +3448,7 @@ sub SearchTitleAndBody {
     }
     if (SearchString($regex, $name . "\n" . $text)) { # the real search code
       push(@found, $id);
-      &$func($id, @args) if $func;
+      $func->($id, @args) if $func;
     }
   }
   return @found;
@@ -3544,11 +3552,29 @@ sub SearchExtract {
   return $result;
 }
 
-sub Replace {
+sub ReplaceAndSave {
   my ($from, $to) = @_;
+  RequestLockOrError();   # fatal
+  my @result = Replace($from, $to, sub {
+    my ($id, $new) = @_;
+    Save($id, $new, $from . ' → ' . $to, 1, ($Page{host} ne $q->remote_addr()));
+		       });
+  ReleaseLock();
+  return @result;
+}
+
+sub ReplaceAndDiff {
+  my ($id, $from, $to) = @_;
+  return Replace($from, $to, sub {
+    my ($id, $new) = @_;
+    print $q->h2(GetPageLink($id)), $q->div({-class=>'diff'}, ImproveDiff(DoDiff($Page{text}, $new)));
+		 });
+}  
+
+sub Replace {
+  my ($from, $to, $func) = @_; # $func takes $id and $new text
   my $lang = GetParam('lang', '');
   my @result;
-  RequestLockOrError();   # fatal
   foreach my $id (AllPagesList()) {
     OpenPage($id);
     if ($lang) {
@@ -3564,12 +3590,11 @@ sub Replace {
     };
     if (s/$from/$replacement->()/egi) { # allows use of backreferences
       push (@result, $id);
-      Save($id, $_, $from . ' → ' . $to, 1, ($Page{host} ne $q->remote_addr()));
+      $func->($id, $_);
     }
   }
-  ReleaseLock();
   return @result;
-}
+}  
 
 sub DoPost {
   my $id = FreeToNormal(shift);
@@ -3853,8 +3878,8 @@ sub DoMaintain {
     }
     closedir DIR;
   }
-  foreach my $sub (@MyMaintenance) {
-    &$sub;
+  foreach my $func (@MyMaintenance) {
+    $func->();
   }
   WriteStringToFile($fname, 'Maintenance done at ' . TimeToText($Now));
   ReleaseLock();
@@ -3938,7 +3963,7 @@ sub DoShowVersion {
 sub DoDebug {
   print GetHeader('', T('Debugging Information')),
     $q->start_div({-class=>'content debug'});
-  foreach my $sub (@Debugging) { &$sub }
+  foreach my $func (@Debugging) { $func->() }
   print $q->end_div();
   PrintFooter();
 }
