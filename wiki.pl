@@ -3563,15 +3563,26 @@ sub ReplaceAndSave {
 
 sub ReplaceAndDiff {
   my ($from, $to) = @_;
-  return Replace($from, $to, sub {
+  my @found = Replace($from, $to, sub {
     my ($id, $new) = @_;
     print $q->h2(GetPageLink($id)), $q->div({-class=>'diff'}, ImproveDiff(DoDiff($Page{text}, $new)));
-		 });
+		      });
+  if (@found > GetParam('offset', 0) + GetParam('num', 10)) {
+    my $more = "search=" . UrlEncode($from) . ";preview=1"
+	. ";offset=" . (GetParam('num', 10) + GetParam('offset', 0))
+	. ";num=" . GetParam('num', 10);
+    $more .= ";replace=" . UrlEncode($to) if $to;
+    $more .= ";delete=1" unless $to;
+    print $q->p({-class=>'more'}, ScriptLink($more, T('More...'), 'more'));
+  }
+  return @found;
 }  
 
 sub Replace {
   my ($from, $to, $func) = @_; # $func takes $id and $new text
   my $lang = GetParam('lang', '');
+  my $num = GetParam('num', 10);
+  my $offset = GetParam('offset', 0);
   my @result;
   foreach my $id (AllPagesList()) {
     OpenPage($id);
@@ -3588,7 +3599,7 @@ sub Replace {
     };
     if (s/$from/$replacement->()/egi) { # allows use of backreferences
       push (@result, $id);
-      $func->($id, $_);
+      $func->($id, $_) if @result > $offset and @result <= $offset + $num;
     }
   }
   return @result;
