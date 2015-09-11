@@ -22,8 +22,7 @@ add_module('mac.pl');
 
 # Search for broken regular expressions
 
-test_page(get_page('search=%2Btest'),
-	  '<h1>Malformed regular expression in \+test</h1>');
+test_page(get_page('search=%2Btest'), 'Search for: \+test');
 
 # Test search, make sure ordinary users don't see the replacement form
 
