@@ -150,7 +150,7 @@ sub GetRcAtom {
 # Based on DoPost
 sub DoAtomSave {
   my ($type, $oldid) = @_;
-  my $entry = AtomEntry();
+  my $entry = AtomEntry($type);
   my $title = $entry->title();
   my $author = $entry->author();
   SetParam('username', $author->name) if $author; # Used in Save()
@@ -231,15 +231,8 @@ sub DoAtomGet {
 }
 
 sub AtomEntry {
-  my $data = $q->param('POSTDATA');
-  if (not $data) {
-    # CGI provides POSTDATA for POST requests, not for PUT requests.
-    # The following code is based on the CGI->init code.
-    my $content_length = defined($ENV{'CONTENT_LENGTH'}) ? $ENV{'CONTENT_LENGTH'} : 0;
-    if ($content_length > 0 and $content_length < $MaxPost) {
-      $q->read_from_client(\$data, $content_length, 0);
-    }
-  }
+  my $type = shift || 'POST';
+  my $data = $q->param($type . 'DATA'); # PUTDATA or POSTDATA
   my $entry = XML::Atom::Entry->new(\$data);
   return $entry;
 }
