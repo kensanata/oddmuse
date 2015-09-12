@@ -1,8 +1,8 @@
-# Copyright (C) 2006  Alex Schroeder <alex@emacswiki.org>
+# Copyright (C) 2006–2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation; either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -11,15 +11,12 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 require 't/test.pl';
 package OddMuse;
 
-use Test::More tests => 42;
+use Test::More tests => 44;
 use LWP::UserAgent;
 use XML::Atom::Client;
 use XML::Atom::Entry;
@@ -28,10 +25,8 @@ use XML::Atom::Person;
 my $wiki = 'http://localhost/cgi-bin/wiki.pl';
 my $ua = LWP::UserAgent->new;
 my $response = $ua->get("$wiki?action=version");
-skip("No wiki running at $wiki", 42)
-    unless $response->is_success;
-skip("Wiki running at $wiki doesn't have the atom extension installed", 42)
-    unless $response->content =~ /\$Id: atom\.pl/;
+ok($response->is_success, "There is a wiki running at $wiki");
+like($response->content, qr/\batom\.pl/, "The  has the atom extension installed");
 
 my $api = XML::Atom::Client->new;
 my $entry = XML::Atom::Entry->new;
@@ -47,7 +42,7 @@ ok($author->name($username), 'set author name');
 ok($entry->author($author), 'set entry author');
 my $PostURI = "$wiki/atom";
 my $MemberURI = $api->createEntry($PostURI, $entry);
-ok($MemberURI, 'posting entry returns member URI')
+ok($MemberURI, "posting entry returns member URI $MemberURI")
     or diag($api->errstr);
 
 my $result = $api->getEntry($MemberURI);
@@ -66,7 +61,7 @@ for my $link (@links) {
     last;
   }
 }
-ok($MemberURI, 'entry contains member URI');
+ok($MemberURI, "entry contains member URI $MemberURI");
 
 $summary = 'Updated';
 $content = "No more random numbers!\n";
